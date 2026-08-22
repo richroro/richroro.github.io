@@ -314,7 +314,7 @@ var TOP = TIERS.length - 1;
    ══════════════════════════════════════════════════════════════ */
 var FW = 420, FH = 640;
 var DROP_Y = 46;        // 동전이 대기하는 높이
-var DANGER_Y = 100;     // 이 선 위에서 멈추면 위험
+var DANGER_Y = 250;     // 이 선 위에서 멈추면 위험 (실측으로 맞춘 값)
 var GRAV = 0.62;        // 프레임당 중력
 var AIR = 0.994;        // 공기 저항
 var ITER = 8;           // 위치 보정 반복 횟수
@@ -329,7 +329,8 @@ var MAXUP = 11;         // 위로 튀는 속도 상한. 이 게임에서 정상�
 var WALL_E = 0.28;      // 벽 반발
 var FLOOR_FRICTION = 0.86;
 var DROP_COOLDOWN = 0.32;
-var DANGER_HOLD = 1.2;  // 위험선 위에서 이만큼 멈춰 있으면 게임 오버
+var RAMP_DROPS = 70;    // 이만큼 떨어뜨리면 난이도가 최대치에 도달한다
+var DANGER_HOLD = 0.6;  // 위험선 위에서 이만큼 멈춰 있으면 게임 오버
 
 var canvas = document.getElementById("field");
 var ctx = canvas.getContext("2d");
@@ -371,24 +372,39 @@ var score = 0;
 var best = parseInt(store.get("best", "0"), 10) || 0;
 var seen = parseInt(store.get("seen", "0"), 10) || 0;  // 지금까지 도달한 최고 티어
 var current = 0, next = 0;
+var drops = 0;          // 이번 판에 떨어뜨린 개수 (난이도 진행에 쓴다)
 var aimX = FW / 2;
 var dragging = false;
 var cooldown = 0;
 var shake = 0;
 var lastMergedTier = -1;
 
+// 투입 횟수가 쌓일수록 큰 동전 비중이 올라간다.
+// 큰 동전은 자리를 많이 먹고 짝도 맞추기 어려워서 판이 빨리 찬다.
+// 이게 없으면 금괴가 터질 때마다 자리가 크게 비어서 판이 사실상 끝나지 않는다.
+// 후반에는 1천원까지 떨어져 한 번에 먹는 면적이 약 두 배가 된다.
 function pickTier() {
-  var r = Math.random() * 100;
-  if (r < 40) return 0;
-  if (r < 70) return 1;
-  if (r < 90) return 2;
-  return 3;
+  var t = Math.min(1, drops / RAMP_DROPS);
+  var w = [
+    45 - 40 * t,   // 10원
+    30 - 10 * t,   // 50원
+    18 + 12 * t,   // 100원
+     7 + 23 * t,   // 500원
+     0 + 15 * t    // 1천원 (후반에만 등장)
+  ];
+  var r = Math.random() * (w[0] + w[1] + w[2] + w[3] + w[4]);
+  for (var i = 0; i < w.length; i++) {
+    r -= w[i];
+    if (r < 0) return i;
+  }
+  return 0;
 }
 
 function reset() {
   coins.length = 0;
   sparks.length = 0;
   score = 0;
+  drops = 0;
   cooldown = 0;
   shake = 0;
   current = pickTier();
@@ -835,6 +851,7 @@ function onUp() {
 }
 function drop() {
   addCoin(aimX, DROP_Y, current, 0, 0);
+  drops++;
   sfx.drop();
   cooldown = DROP_COOLDOWN;
   current = next;
