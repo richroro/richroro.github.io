@@ -6,6 +6,19 @@
 <meta name="theme-color" content="#F2F4F6">
 <meta name="description" content="10원부터 금괴까지, 같은 돈끼리 합쳐 태산을 쌓는 한 손 병합 게임">
 <title>티끌모아 태산</title>
+<link rel="canonical" href="https://richroro.github.io/games/tikkeul-moa/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="티끌모아 태산">
+<meta property="og:title" content="티끌모아 태산">
+<meta property="og:description" content="10원부터 금괴까지, 같은 돈끼리 합쳐 태산을 쌓는 한 손 게임. 한 판 2~4분.">
+<meta property="og:url" content="https://richroro.github.io/games/tikkeul-moa/">
+<meta property="og:image" content="https://richroro.github.io/games/tikkeul-moa/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="티끌모아 태산">
+<meta name="twitter:description" content="10원부터 금괴까지, 같은 돈끼리 합쳐 태산을 쌓는 한 손 게임. 한 판 2~4분.">
+<meta name="twitter:image" content="https://richroro.github.io/games/tikkeul-moa/og.png">
 <style>
   :root{
     --bg:#F2F4F6;
@@ -23,6 +36,8 @@
   }
   *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
   html,body{height:100%;overflow:hidden;overscroll-behavior:none}
+  /* iOS 사파리는 주소창 높이까지 100%에 포함시켜 화면 아래가 잘린다 */
+  @supports (height:100dvh){ html,body{height:100dvh} }
   body{
     font-family:'Pretendard','Apple SD Gothic Neo','Malgun Gothic',system-ui,-apple-system,sans-serif;
     background:var(--bg);color:var(--ink);
@@ -123,6 +138,14 @@
   .chain{display:flex;align-items:center;justify-content:center;gap:2px;flex-wrap:wrap;margin-top:14px}
   .chain i{display:block;border-radius:50%}
   .chain u{color:var(--ink-3);font-size:9px;text-decoration:none}
+
+  #toast{
+    position:fixed;left:50%;bottom:calc(28px + env(safe-area-inset-bottom));
+    transform:translate(-50%,10px);z-index:30;pointer-events:none;
+    background:rgba(25,31,40,.92);color:#fff;font-size:13px;font-weight:600;
+    padding:11px 18px;border-radius:12px;opacity:0;transition:opacity .2s, transform .2s;
+  }
+  #toast.show{opacity:1;transform:translate(-50%,0)}
 </style>
 </head>
 <body>
@@ -151,6 +174,7 @@
 </div>
 
 <div class="hint">화면을 드래그해 위치를 잡고, 떼면 떨어져요</div>
+<div id="toast"></div>
 
 <!-- 시작 -->
 <div class="veil show" id="vStart">
@@ -197,6 +221,7 @@
     <div class="btns">
       <button class="btn primary" id="btnRetry">다시하기</button>
       <div class="row">
+        <button class="btn ghost" id="btnShare">공유</button>
         <button class="btn ghost" id="btnOverRank">랭킹</button>
         <button class="btn ghost" id="btnOverExit">나가기</button>
       </div>
@@ -724,6 +749,8 @@ function render() {
 /* ══════════════════════════════════════════════════════════════
    8. 사운드 (파일 없이 WebAudio로 생성)
    ══════════════════════════════════════════════════════════════ */
+var tapped = false;   // 실제 사용자 입력이 한 번이라도 있었는지
+
 var sfx = (function () {
   var ac = null;
   var muted = store.get("muted", "0") === "1";
@@ -752,8 +779,10 @@ var sfx = (function () {
     o.start(); o.stop(a.currentTime + dur + 0.02);
   }
   function buzz(ms) {
-    if (muted) return;
-    if (navigator.vibrate) { try { navigator.vibrate(ms); } catch (e) {} }
+    // 사용자가 화면을 한 번도 건드리지 않은 상태에서 부르면
+    // 브라우저가 막으면서 콘솔에 에러를 남긴다
+    if (muted || !tapped || !navigator.vibrate) return;
+    try { navigator.vibrate(ms); } catch (e) {}
   }
   return {
     isMuted: function () { return muted; },
@@ -859,7 +888,7 @@ function drop() {
   aimX = clampAim(aimX);
 }
 
-stage.addEventListener("pointerdown", function (e) { e.preventDefault(); sfx.unlock(); onDown(e); });
+stage.addEventListener("pointerdown", function (e) { e.preventDefault(); tapped = true; sfx.unlock(); onDown(e); });
 stage.addEventListener("pointermove", function (e) { e.preventDefault(); onMove(e); });
 window.addEventListener("pointerup", onUp);
 window.addEventListener("pointercancel", function () { dragging = false; });
@@ -924,7 +953,8 @@ document.addEventListener("visibilitychange", function () {
   if (document.hidden) { sfx.stopAll(); pause(); }
   else if (state === "paused") { /* 사용자가 '이어하기'를 누를 때 재개 */ }
 });
-window.addEventListener("blur", function () { if (state === "playing") pause(); });
+// blur 로도 멈추게 했더니 데스크톱에서 창 밖을 누를 때마다 판이 끊겼다.
+// 백그라운드 전환(앱 전환·탭 전환)은 위의 visibilitychange 가 잡아 준다.
 
 // 버튼
 var btnSound = document.getElementById("btnSound");
@@ -973,6 +1003,39 @@ function doExit() {
 }
 document.getElementById("btnExit").addEventListener("click", askExit);
 document.getElementById("btnOverExit").addEventListener("click", askExit);
+
+/* ── 공유 ─────────────────────────────── */
+var toastEl = document.getElementById("toast");
+var toastTimer = 0;
+function toast(msg) {
+  toastEl.textContent = msg;
+  toastEl.classList.add("show");
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(function () { toastEl.classList.remove("show"); }, 1800);
+}
+
+var SHARE_URL = "https://richroro.github.io/games/tikkeul-moa/";
+function shareScore() {
+  var pt = comma(Math.max(best, score));
+  var text = "티끌모아 태산에서 " + pt + "점 기록했어요. 10원부터 금괴까지 합쳐보세요!";
+  if (navigator.share) {
+    navigator.share({ title: "티끌모아 태산", text: text, url: SHARE_URL })
+      .catch(function () { /* 사용자가 공유를 취소한 경우 */ });
+    return;
+  }
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(text + " " + SHARE_URL).then(
+      function () { toast("링크를 복사했어요"); },
+      function () { toast("복사에 실패했어요"); }
+    );
+    return;
+  }
+  toast(SHARE_URL);
+}
+var btnShare = document.getElementById("btnShare");
+// 토스 웹뷰 안에서는 토스 자체 공유를 쓰므로 웹 공유 버튼을 숨긴다
+if (Toss.inToss()) btnShare.style.display = "none";
+else btnShare.addEventListener("click", shareScore);
 document.getElementById("btnExitNo").addEventListener("click", function () {
   veil("vExit", false);
   if (state === "paused" && !anyVeilOpen()) resume();
