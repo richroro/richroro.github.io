@@ -76,71 +76,62 @@
 
 **콘솔 등록 후에 연결해야 하는 것**
 
-- 리더보드 점수 제출 → `Game.setLeaderboardScore`
-- 리더보드 열기 → `Game.openLeaderboard`
-- 미니앱 종료 → `Screen.close`
-- 사용자 식별키 → **미해결.** 아래 참고
+미니앱 이식본에서는 이미 전부 연결돼 있다 (`toss-miniapp/` 참고).
+웹 단일 파일 버전은 브릿지가 없어 조용히 건너뛴다.
 
-세 가지는 `index.html` 상단의 **`Toss` 어댑터** 한 곳에 모여 있다.
-토스 웹뷰가 브릿지를 주입하면 자동으로 그걸 쓰고, 없으면 일반 웹으로 동작한다.
+| 필요한 것 | SDK |
+| --- | --- |
+| 리더보드 점수 제출 | `Game.setLeaderboardScore({ score: String(n) })` — 점수는 **문자열** |
+| 리더보드 열기 | `Game.openLeaderboard()` |
+| 미니앱 종료 | `Screen.close()` |
+| 사용자 식별키 | `User.getAnonymousKey()` → `{ type: 'HASH', hash }` |
+| 세로 고정 | `Screen.setOrientation({ type: 'portrait' })` |
+| 뒤로가기 제스처 차단 | `Screen.setIosSwipeBack({ isEnabled: false })` |
+| 기록 저장 | `Storage.getItem` / `setItem` (비동기) |
+| 햅틱 | `Device.triggerHaptic({ type })` |
 
-사용자 식별키는 아직 붙일 데가 없다. `Game.getUserProfile()` 이 돌려주는 건
-`{ statusCode, nickname, profileImageUri }` 뿐이라 고유 ID 가 없어서 기록을
-묶는 키로 쓸 수 없다. 콘솔 등록 후 로그인/유저 API 를 확인해 교체해야 한다.
-그전까지는 로컬 익명 ID 를 쓴다.
+식별키는 문서에서 못 찾아 한동안 미해결로 뒀는데, 설치한 패키지의 타입 정의를
+열어 보고 찾았다. `Game.getUserProfile()` 은 닉네임·프로필사진만 줘서 못 쓰고,
+`User.getAnonymousKey()` 가 기기를 바꿔도 같은 해시를 주는 진짜 식별키다.
 
-## 앱인토스에 실제로 올리려면
+## 앱인토스 미니앱 이식본
+
+`toss-miniapp/tikkeul-moa/` 에 있다. 빌드까지 통과한 상태다.
 
 **중요: 배포된 웹 URL 을 그대로 가리키는 방식이 아니다.** 앱인토스는 SDK 를
-프로젝트에 설치해 번들을 만들고, 그 번들을 콘솔에 업로드하는 구조다. 지금의
+설치해 번들을 만들고 그 번들(`.ait`)을 콘솔에 업로드하는 구조다. 지금의
 GitHub Pages 주소를 미니앱으로 감싸는 건 안 된다.
 
-1. [사업자 등록](https://developers-apps-in-toss.toss.im/guide/operation/register-business.md)
-   — **개인사업자 등록증 필요. 사업자만 미니앱을 등록할 수 있다.**
-2. 콘솔에서 미니앱 등록 (앱 로고, 앱 이름, `appName`, 사용 연령, 고객센터 연락처, 게임 카테고리)
-3. 프로젝트 생성 후 이 `index.html` 의 게임 로직을 옮긴다
+```bash
+python toss-miniapp/port.py     # 웹 버전 -> 미니앱 소스 이식
+cd toss-miniapp/tikkeul-moa
+npm run build                   # dist/ + tikkeul-moa.ait
+```
 
-   ```bash
-   npm install @apps-in-toss/web-framework
-   npx ait init
-   ```
+웹 단일 파일이 원본이고, `port.py` 가 style/markup/script 를 뽑아 미니앱에 다시
+쓴다. 손으로 옮기면 두 벌이 갈라지므로 게임을 고치면 이 스크립트를 다시 돌린다.
+바꿔치는 곳은 네 군데뿐이다 — Toss 어댑터, `store`(→ Storage), `buzz`(→ 햅틱),
+공유 버튼(미니앱에선 제거).
 
-4. `apps-in-toss.config.ts` (SDK 3.x. 2.x 의 `granite.config.ts` 에서 이름이 바뀌었다)
+이식하면서 실제로 걸린 것 두 가지:
 
-   ```ts
-   import { defineConfig } from '@apps-in-toss/web-framework/config';
+- **토스 웹뷰 밖에서 SDK 가 예외를 던진다.** `isSupported()` 가 내부 전역을 못 찾아
+  `operationalEnvironment` 에서 터지고, 그게 부팅을 통째로 죽여 흰 화면이 됐다.
+  → `isSupported()` 호출을 전부 try/catch 로 감싸고, 부팅이 실패해도
+  `finally` 로 게임은 반드시 시작하게 했다.
+- `create-ait-app` 이 `@apps-in-toss/devtools` 를 의존성에만 넣고 번들러 설정은
+  직접 하라고 안내만 한다. `vite.config.js` 를 만들어 플러그인을 붙였다.
 
-   export default defineConfig({
-     appName: 'tikkeul-moa',
-     brand: { primaryColor: '#3182F6' },
-     webView: {
-       // 출시 가이드가 OS 뒤로가기 제스처를 금지한다
-       allowsBackForwardNavigationGestures: false,
-       pullToRefreshEnabled: false,
-       bounces: false,
-     },
-     permissions: [],
-     webBundleDir: 'dist',
-   });
-   ```
+### 남은 것
 
-5. `Toss` 어댑터 세 함수를 실제 SDK 호출로 교체 (전부 Promise 를 돌려준다)
+1. **사업자 등록** — 앱인토스는 사업자만 미니앱을 등록할 수 있다
+2. 콘솔에서 미니앱 등록 (`store/앱인토스_등록_준비물.md` 에 입력값 정리)
+3. CORS 도메인 등록 — `https://tikkeul-moa.web.tossmini.com`
+4. `tikkeul-moa.ait` 업로드 → **실기기 테스트** → 심사 제출
 
-   ```js
-   import { Game, Screen } from '@apps-in-toss/web-framework';
-
-   await Game.setLeaderboardScore({ score: String(score) });  // 점수는 '문자열'
-   await Game.openLeaderboard();
-   await Screen.close();
-   ```
-
-   점수를 숫자로 넘기면 `statusCode` 가 `UNPARSABLE_SCORE` 로 떨어진다.
-
-6. CORS 허용 도메인 등록
-   - 실제: `https://tikkeul-moa.web.tossmini.com`
-   - 테스트: `https://tikkeul-moa.private-web.tossmini.com`
-
-7. `npm run build` 로 나온 번들을 콘솔에 업로드 → 실기기 테스트 → 심사 제출
+실기기 테스트는 콘솔 등록 후에만 가능하다. 지금 이식본은 빌드가 통과하고
+브라우저에서 정상 부팅하는 것까지만 확인됐고, 토스 앱 안에서의 동작은
+검증되지 않았다.
 
 ## 라이선스
 
