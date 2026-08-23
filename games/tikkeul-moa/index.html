@@ -266,38 +266,62 @@
    주입하는 브릿지를 런타임에 탐지해 쓰고, 없으면 일반 웹으로
    똑같이 동작하도록 감싼다.
 
-   번들 환경으로 옮길 때는 아래 네 함수만 실제 SDK 호출로 교체하면 된다.
-     import { Game, close } from '@apps-in-toss/web-framework';
-       submitScore  -> Game.setLeaderboardScore({ score })
-       openBoard    -> Game.openLeaderboard()
-       profile      -> Game.getUserProfile()
-       exitApp      -> close()
+   번들 환경으로 옮길 때는 아래 세 함수만 실제 SDK 호출로 교체하면 된다.
+   (SDK 3.x 기준, 전부 Promise 를 돌려준다)
+
+     import { Game, Screen } from '@apps-in-toss/web-framework';
+
+       submitScore -> await Game.setLeaderboardScore({ score: String(score) })
+                      점수는 실수 '문자열'이어야 한다. 숫자로 넘기면
+                      statusCode 가 UNPARSABLE_SCORE 로 떨어진다.
+       openBoard   -> await Game.openLeaderboard()
+       exitApp     -> await Screen.close()      // close() 가 아니라 Screen.close()
+
+   사용자 식별키는 아직 남은 숙제다. Game.getUserProfile() 은
+   { statusCode, nickname, profileImageUri } 만 돌려주고 고유 ID 가 없어서
+   기록을 묶을 키로 쓸 수 없다. 콘솔 등록 후 로그인/유저 API 를 확인해
+   교체해야 한다. 그전까지는 로컬 익명 ID 를 쓴다.
    ══════════════════════════════════════════════════════════════ */
 var Toss = (function () {
   function bridge() {
     var w = window;
     return w.AppsInToss || w.appsInToss || w.__APPS_IN_TOSS__ || null;
   }
-  function call(name, arg) {
+  // domain 은 SDK 의 네임스페이스(Game, Screen ...). 브릿지가 평면 구조로
+  // 주입하는 경우도 있어서 두 가지 모양을 모두 본다.
+  function api(domain, name) {
     var b = bridge();
     if (!b) return null;
-    var fn = (b.Game && b.Game[name]) || b[name];
-    if (typeof fn !== "function") return null;
-    try { return fn(arg); } catch (e) { return null; }
+    var fn = (b[domain] && b[domain][name]) || b[domain + "." + name] || b[name];
+    return typeof fn === "function" ? fn : null;
+  }
+  // SDK 함수는 전부 비동기다. 게임 흐름을 막을 이유가 없으니
+  // 호출만 걸어두고 성공 여부(=연결됐는지)만 즉시 돌려준다.
+  function fire(fn, arg) {
+    try { Promise.resolve(fn(arg)).catch(function () {}); } catch (e) {}
+    return true;
   }
   return {
     inToss: function () { return !!bridge(); },
-    // 사용자 식별키: 토스에선 게임센터 프로필, 웹에선 로컬 익명 ID
+    // 재접속해도 기록이 유지되도록 붙잡아 두는 키.
+    // 토스 고유 ID 가 노출되면 그걸로 교체한다.
     userKey: function () {
-      var p = call("getUserProfile");
-      if (p && p.userId) return "toss:" + p.userId;
       var k = store.get("uid", "");
       if (!k) { k = "web:" + Math.random().toString(36).slice(2, 12); store.set("uid", k); }
       return k;
     },
-    submitScore: function (score) { call("setLeaderboardScore", { score: score }); },
-    openBoard: function () { return call("openLeaderboard") !== null; },
-    exitApp: function () { return call("close") !== null; }
+    submitScore: function (score) {
+      var fn = api("Game", "setLeaderboardScore");
+      return fn ? fire(fn, { score: String(score) }) : false;
+    },
+    openBoard: function () {
+      var fn = api("Game", "openLeaderboard");
+      return fn ? fire(fn) : false;
+    },
+    exitApp: function () {
+      var fn = api("Screen", "close");
+      return fn ? fire(fn) : false;
+    }
   };
 })();
 
