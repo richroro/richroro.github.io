@@ -1,0 +1,808 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="연봉을 넣으면 월 실수령액과 전국 근로소득자 중 상위 몇 %인지 알려주는 계산기.">
+</head>
+<body>
+<title>내 연봉은 몇 등일까</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans+KR:wght@300;400;500;600;700&display=swap">
+
+<style>
+:root{
+  --paper:#F1F3F0;
+  --surface:#FBFCFA;
+  --surface-2:#E9EDE9;
+  --ink:#121A17;
+  --ink-2:#3E4A45;
+  --ink-3:#6E7B76;
+  --line:#D5DCD7;
+  --line-soft:#E3E8E3;
+  --accent:#0E6E5C;
+  --accent-deep:#0A4E42;
+  --accent-soft:#CFE3DB;
+  --accent-wash:#E6F0EC;
+  --on-accent:#FBFCFA;
+  --brass:#96681A;
+  --bar:#C2CCC6;
+  --shadow:0 1px 2px rgba(18,26,23,.06), 0 8px 24px -12px rgba(18,26,23,.18);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --paper:#0B100E;
+    --surface:#131A17;
+    --surface-2:#1B2420;
+    --ink:#E9EEEB;
+    --ink-2:#B2BEB8;
+    --ink-3:#7F8D87;
+    --line:#26312C;
+    --line-soft:#1E2823;
+    --accent:#54C9AA;
+    --accent-deep:#8FE0C9;
+    --accent-soft:#1E3E36;
+    --accent-wash:#16241F;
+    --on-accent:#0B100E;
+    --brass:#DCA94A;
+    --bar:#2C3833;
+    --shadow:0 1px 2px rgba(0,0,0,.4), 0 8px 24px -12px rgba(0,0,0,.6);
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#0B100E;
+  --surface:#131A17;
+  --surface-2:#1B2420;
+  --ink:#E9EEEB;
+  --ink-2:#B2BEB8;
+  --ink-3:#7F8D87;
+  --line:#26312C;
+  --line-soft:#1E2823;
+  --accent:#54C9AA;
+  --accent-deep:#8FE0C9;
+  --accent-soft:#1E3E36;
+  --accent-wash:#16241F;
+  --on-accent:#0B100E;
+  --brass:#DCA94A;
+  --bar:#2C3833;
+  --shadow:0 1px 2px rgba(0,0,0,.4), 0 8px 24px -12px rgba(0,0,0,.6);
+}
+
+*{box-sizing:border-box}
+body{
+  margin:0;
+  background:var(--paper);
+  color:var(--ink);
+  font-family:"IBM Plex Sans KR","Apple SD Gothic Neo","Malgun Gothic",system-ui,sans-serif;
+  font-weight:400;
+  line-height:1.6;
+  -webkit-font-smoothing:antialiased;
+}
+.num{font-family:"IBM Plex Mono","IBM Plex Sans KR",ui-monospace,monospace;font-variant-numeric:tabular-nums;letter-spacing:-.01em}
+.wrap{max-width:1120px;margin:0 auto;padding:0 20px 80px}
+
+/* ---------- masthead ---------- */
+.masthead{
+  border-bottom:1px solid var(--line);
+  background:var(--surface);
+}
+.masthead-in{
+  max-width:1120px;margin:0 auto;padding:26px 20px 24px;
+  display:flex;flex-wrap:wrap;align-items:flex-end;gap:16px 28px;justify-content:space-between;
+}
+.brand{display:flex;flex-direction:column;gap:6px}
+.eyebrow{
+  font-size:11px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;
+  color:var(--accent);
+}
+h1{
+  font-family:"Gowun Batang","IBM Plex Sans KR",serif;
+  font-weight:700;font-size:clamp(28px,4.4vw,42px);line-height:1.15;margin:0;
+  text-wrap:balance;letter-spacing:-.01em;
+}
+.masthead-note{
+  font-size:12.5px;color:var(--ink-3);max-width:34ch;line-height:1.55;
+  border-left:2px solid var(--line);padding-left:12px;
+}
+
+/* ---------- layout ---------- */
+.cols{display:grid;grid-template-columns:352px minmax(0,1fr);gap:28px;align-items:start;padding-top:28px}
+/* minmax(0,…): an auto minimum lets the payslip table's min-content stretch the track */
+@media (max-width:900px){.cols{grid-template-columns:minmax(0,1fr);gap:20px}}
+
+.panel{
+  background:var(--surface);
+  border:1px solid var(--line);
+  border-radius:3px;
+  box-shadow:var(--shadow);
+}
+.form{position:sticky;top:20px;padding:22px 20px}
+@media (max-width:900px){.form{position:static}}
+
+.form-title{
+  font-size:11px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3);
+  padding-bottom:12px;margin-bottom:18px;border-bottom:1px solid var(--line);
+  display:flex;justify-content:space-between;align-items:center;
+}
+.fields{display:flex;flex-direction:column;gap:18px}
+.field{display:flex;flex-direction:column;gap:7px}
+.field > label{font-size:13px;font-weight:500;color:var(--ink-2);display:flex;justify-content:space-between;align-items:baseline;gap:8px}
+.hint{font-size:11.5px;color:var(--ink-3);font-weight:400}
+
+.salary-input{display:flex;align-items:stretch;border:1.5px solid var(--line);border-radius:2px;background:var(--paper);overflow:hidden}
+.salary-input:focus-within{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-wash)}
+.salary-input input{
+  flex:1;min-width:0;border:0;background:transparent;color:var(--ink);
+  font-family:"IBM Plex Mono",monospace;font-variant-numeric:tabular-nums;
+  font-size:26px;font-weight:600;padding:10px 4px 10px 14px;text-align:right;outline:none;
+}
+.salary-input input::-webkit-outer-spin-button,.salary-input input::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
+.salary-input input[type=number]{-moz-appearance:textfield}
+.salary-input .unit{display:flex;align-items:center;padding:0 14px 0 6px;font-size:14px;color:var(--ink-3);font-weight:500}
+
+input[type=range]{
+  -webkit-appearance:none;appearance:none;width:100%;height:22px;background:transparent;cursor:pointer;margin:0;
+}
+input[type=range]::-webkit-slider-runnable-track{height:3px;background:var(--surface-2);border-radius:2px}
+input[type=range]::-moz-range-track{height:3px;background:var(--surface-2);border-radius:2px}
+input[type=range]::-webkit-slider-thumb{
+  -webkit-appearance:none;width:16px;height:16px;border-radius:50%;background:var(--accent);
+  border:2px solid var(--surface);box-shadow:0 0 0 1px var(--accent);margin-top:-6.5px;
+}
+input[type=range]::-moz-range-thumb{
+  width:14px;height:14px;border-radius:50%;background:var(--accent);
+  border:2px solid var(--surface);box-shadow:0 0 0 1px var(--accent);
+}
+input[type=range]:focus-visible::-webkit-slider-thumb{box-shadow:0 0 0 1px var(--accent),0 0 0 4px var(--accent-wash)}
+
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+select,.mini-input{
+  width:100%;border:1.5px solid var(--line);border-radius:2px;background:var(--paper);color:var(--ink);
+  padding:8px 10px;font-size:14px;font-family:inherit;outline:none;
+}
+.mini-input{font-family:"IBM Plex Mono",monospace;font-variant-numeric:tabular-nums;text-align:right}
+select:focus-visible,.mini-input:focus-visible{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-wash)}
+
+.toggle-row{display:flex;gap:0;border:1.5px solid var(--line);border-radius:2px;overflow:hidden}
+.toggle-row button{
+  flex:1;border:0;background:var(--paper);color:var(--ink-3);
+  font-family:inherit;font-size:12.5px;font-weight:500;padding:9px 6px;cursor:pointer;transition:background .15s,color .15s;
+}
+.toggle-row button + button{border-left:1.5px solid var(--line)}
+.toggle-row button[aria-pressed="true"]{background:var(--accent);color:var(--on-accent);font-weight:600}
+.toggle-row button:focus-visible{outline:2px solid var(--accent);outline-offset:-2px}
+
+details.rates{margin-top:20px;border-top:1px solid var(--line);padding-top:14px}
+details.rates summary{
+  font-size:12px;color:var(--ink-3);cursor:pointer;list-style:none;display:flex;align-items:center;gap:6px;font-weight:500;
+}
+details.rates summary::-webkit-details-marker{display:none}
+details.rates summary::before{content:"+";font-family:"IBM Plex Mono",monospace;color:var(--accent);font-weight:600}
+details.rates[open] summary::before{content:"−"}
+.rate-grid{display:grid;grid-template-columns:1fr auto;gap:8px 12px;align-items:center;margin-top:14px}
+.rate-grid label{font-size:12.5px;color:var(--ink-2)}
+.rate-grid input{width:82px;padding:5px 8px;font-size:12.5px}
+
+/* ---------- verdict ---------- */
+.verdict{padding:26px 26px 22px;position:relative;overflow:hidden}
+.verdict-label{font-size:11px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3);margin-bottom:6px}
+.rank-line{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
+.rank-big{
+  font-family:"IBM Plex Mono",monospace;font-variant-numeric:tabular-nums;
+  font-size:clamp(52px,9.5vw,84px);font-weight:600;line-height:1;color:var(--accent);letter-spacing:-.03em;
+}
+.rank-suffix{font-size:26px;font-weight:600;color:var(--accent);font-family:"IBM Plex Sans KR",sans-serif}
+.rank-tag{
+  font-family:"Gowun Batang",serif;font-size:clamp(17px,2.4vw,21px);color:var(--ink);margin-left:auto;text-align:right;
+}
+.rank-sub{margin-top:12px;font-size:14px;color:var(--ink-2);line-height:1.7}
+.rank-sub b{color:var(--ink);font-weight:600}
+
+/* unit chart : 100명 */
+.unitchart{margin-top:22px}
+.unitchart-head{display:flex;justify-content:space-between;align-items:baseline;font-size:11.5px;color:var(--ink-3);margin-bottom:8px}
+.dots{display:flex;gap:2px;height:46px;align-items:flex-end}
+.dots span{flex:1;min-width:0;border-radius:1px;background:var(--bar);height:60%;transition:height .35s cubic-bezier(.22,1,.36,1),background .2s}
+.dots span.above{background:var(--accent-soft);height:78%}
+/* the marker must stay findable even when 100 slots leave each under 2px */
+.dots span.me{background:var(--accent);height:100%;border-radius:1px 1px 0 0;position:relative;z-index:1;box-shadow:0 0 0 1.5px var(--accent)}
+@media (max-width:640px){.dots{gap:1px}}
+.axis-100{display:flex;justify-content:space-between;font-size:10.5px;color:var(--ink-3);margin-top:7px;font-family:"IBM Plex Mono",monospace}
+
+/* ---------- stat cards ---------- */
+/* flex-wrap, not grid: a short last row grows to fill, so the --line ground
+   never shows through as empty cells when the card count doesn't divide evenly */
+.stats{display:flex;flex-wrap:wrap;gap:1px;background:var(--line);border:1px solid var(--line);border-radius:3px;overflow:hidden;margin-top:20px}
+.stat{background:var(--surface);flex:1 1 148px;min-width:0;padding:16px 18px 15px;display:flex;flex-direction:column;gap:4px}
+.stat .k{font-size:11.5px;color:var(--ink-3);font-weight:500}
+.stat .v{font-family:"IBM Plex Mono",monospace;font-variant-numeric:tabular-nums;font-size:22px;font-weight:600;color:var(--ink);letter-spacing:-.02em}
+.stat .v small{font-size:13px;font-weight:500;color:var(--ink-2);margin-left:2px;font-family:"IBM Plex Sans KR",sans-serif}
+.stat .d{font-size:11.5px;color:var(--ink-3)}
+.stat.hero .v{color:var(--accent);font-size:26px}
+/* two cards per row leaves ~130px of content: 8-figure amounts need the smaller step,
+   and the hero card is already marked by colour rather than size */
+@media (max-width:520px){
+  .stat{padding:14px 14px 13px}
+  .stat .v,.stat.hero .v{font-size:18px}
+}
+
+/* ---------- section ---------- */
+.section{margin-top:28px}
+.section-head{display:flex;align-items:baseline;justify-content:space-between;gap:14px;flex-wrap:wrap;margin-bottom:14px;padding-bottom:10px;border-bottom:1px solid var(--line)}
+.section-head h2{font-family:"Gowun Batang",serif;font-size:19px;font-weight:700;margin:0;letter-spacing:-.01em}
+.section-head p{margin:0;font-size:12.5px;color:var(--ink-3)}
+
+/* ---------- histogram ---------- */
+.chart{padding:22px 22px 16px}
+.chart-legend{display:flex;gap:16px;font-size:11.5px;color:var(--ink-3);margin-bottom:16px;flex-wrap:wrap}
+.chart-legend i{display:inline-block;width:9px;height:9px;border-radius:1px;margin-right:5px;vertical-align:-1px}
+.plot{position:relative;height:210px;display:flex;align-items:flex-end;gap:3px}
+.gridlines{position:absolute;inset:0;pointer-events:none}
+.gridlines div{position:absolute;left:0;right:0;border-top:1px solid var(--line-soft);font-size:10px;color:var(--ink-3);font-family:"IBM Plex Mono",monospace;padding-left:2px}
+.col{flex:1;display:flex;flex-direction:column;justify-content:flex-end;height:100%;position:relative;cursor:default;min-width:0}
+.col .fill{background:var(--bar);border-radius:4px 4px 0 0;transition:height .4s cubic-bezier(.22,1,.36,1),background .2s;width:100%}
+.col.me .fill{background:var(--accent)}
+.col .val{
+  position:absolute;left:0;right:0;text-align:center;font-size:10.5px;color:var(--ink-3);
+  font-family:"IBM Plex Mono",monospace;font-variant-numeric:tabular-nums;opacity:0;transition:opacity .2s;pointer-events:none;
+}
+.col.me .val{opacity:1;color:var(--accent);font-weight:600}
+.col:hover .val{opacity:1}
+.col:hover .fill{filter:brightness(.94)}
+.xaxis{display:flex;gap:3px;margin-top:9px;border-top:1px solid var(--line)}
+.xaxis div{
+  flex:1;min-width:0;text-align:center;font-size:10.5px;color:var(--ink-3);padding-top:7px;
+  font-family:"IBM Plex Mono",monospace;line-height:1.35;white-space:nowrap;overflow:visible;
+}
+.xaxis div.me{color:var(--accent);font-weight:600}
+/* narrow viewports: thin the axis rather than let labels wrap to three lines */
+.xaxis div.hide{visibility:hidden}
+
+/* ---------- payslip ---------- */
+.slip{padding:0;overflow:hidden}
+.slip-head{
+  display:grid;grid-template-columns:1fr auto;gap:10px;padding:16px 22px;background:var(--surface-2);
+  border-bottom:1px solid var(--line);font-size:11.5px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3);
+}
+.slip-head span:last-child{text-align:right}
+table.slip-table{width:100%;border-collapse:collapse}
+table.slip-table th,table.slip-table td{padding:10px 22px;text-align:left;font-size:13.5px;border-bottom:1px solid var(--line-soft)}
+table.slip-table td.n{text-align:right;font-family:"IBM Plex Mono",monospace;font-variant-numeric:tabular-nums;color:var(--ink-2)}
+table.slip-table tr.group th{
+  font-size:11px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);
+  background:var(--accent-wash);border-bottom:1px solid var(--line);padding-top:9px;padding-bottom:9px;
+}
+table.slip-table tr.total td,table.slip-table tr.total th{
+  font-weight:600;color:var(--ink);border-top:1.5px solid var(--line);border-bottom:none;background:var(--surface-2);font-size:14.5px;
+}
+table.slip-table tr.total td.n{color:var(--ink)}
+table.slip-table tr.final td,table.slip-table tr.final th{font-size:16px;color:var(--accent)}
+table.slip-table tr.final td.n{color:var(--accent);font-size:19px}
+.tbl-scroll{overflow-x:auto}
+
+/* ---------- notes ---------- */
+.notes{margin-top:28px;border-left:2px solid var(--accent-soft);padding:2px 0 2px 18px;display:flex;flex-direction:column;gap:12px}
+.notes h3{font-size:12px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3);margin:0}
+.notes p{margin:0;font-size:13px;color:var(--ink-2);line-height:1.75;max-width:70ch}
+.notes p b{color:var(--ink);font-weight:600}
+footer{margin-top:34px;padding-top:18px;border-top:1px solid var(--line);font-size:12px;color:var(--ink-3);display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap}
+
+.theme-btn{
+  border:1px solid var(--line);background:var(--surface);color:var(--ink-3);border-radius:2px;
+  font-family:inherit;font-size:11.5px;padding:6px 11px;cursor:pointer;
+}
+.theme-btn:hover{color:var(--ink);border-color:var(--ink-3)}
+.theme-btn:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+@media (prefers-reduced-motion: reduce){
+  *{transition-duration:.01ms !important;animation-duration:.01ms !important}
+}
+</style>
+
+<header class="masthead">
+  <div class="masthead-in">
+    <div class="brand">
+      <div class="eyebrow">대한민국 근로소득 백분위</div>
+      <h1>내 연봉은 몇 등일까</h1>
+    </div>
+    <p class="masthead-note">
+      연봉을 넣으면 월 실수령액과 함께,
+      전국 근로소득자 약 2,085만 명 사이에서의 위치를 알려줍니다.
+    </p>
+  </div>
+</header>
+
+<div class="wrap">
+  <div class="cols">
+
+    <!-- ============ 입력 ============ -->
+    <form class="panel form" id="form" autocomplete="off">
+      <div class="form-title">
+        <span>조건 입력</span>
+        <button type="button" class="theme-btn" id="themeBtn">테마</button>
+      </div>
+
+      <div class="fields">
+        <div class="field">
+          <label for="salary">세전 연봉 <span class="hint">계약 연봉 기준</span></label>
+          <div class="salary-input">
+            <input type="number" id="salary" value="4500" min="0" max="500000" step="50" inputmode="numeric" aria-describedby="salaryHint">
+            <span class="unit">만원</span>
+          </div>
+          <input type="range" id="salaryRange" min="1000" max="20000" step="50" value="4500" aria-label="연봉 슬라이더">
+          <span class="hint" id="salaryHint">슬라이더는 1,000만 ~ 2억. 직접 입력은 제한 없음.</span>
+        </div>
+
+        <div class="field">
+          <label>퇴직금</label>
+          <div class="toggle-row" role="group" aria-label="퇴직금 포함 여부">
+            <button type="button" id="sevSep" aria-pressed="true">별도</button>
+            <button type="button" id="sevInc" aria-pressed="false">연봉에 포함</button>
+          </div>
+          <span class="hint">‘포함’이면 실지급 연봉을 12/13으로 환산합니다.</span>
+        </div>
+
+        <div class="grid2">
+          <div class="field">
+            <label for="deps">부양가족</label>
+            <select id="deps">
+              <option value="1" selected>본인 1명</option>
+              <option value="2">2명</option>
+              <option value="3">3명</option>
+              <option value="4">4명</option>
+              <option value="5">5명</option>
+              <option value="6">6명</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="kids">8~20세 자녀</label>
+            <select id="kids">
+              <option value="0" selected>없음</option>
+              <option value="1">1명</option>
+              <option value="2">2명</option>
+              <option value="3">3명</option>
+              <option value="4">4명</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="nontax">월 비과세액 <span class="hint">식대 등</span></label>
+          <input type="number" class="mini-input" id="nontax" value="200000" step="10000" min="0" max="3000000" inputmode="numeric">
+        </div>
+      </div>
+
+      <details class="rates">
+        <summary>4대보험 요율 직접 수정</summary>
+        <div class="rate-grid">
+          <label for="rPension">국민연금 (%)</label><input class="mini-input" id="rPension" type="number" value="4.5" step="0.01">
+          <label for="rHealth">건강보험 (%)</label><input class="mini-input" id="rHealth" type="number" value="3.545" step="0.001">
+          <label for="rCare">장기요양 (건보료의 %)</label><input class="mini-input" id="rCare" type="number" value="12.95" step="0.01">
+          <label for="rEmp">고용보험 (%)</label><input class="mini-input" id="rEmp" type="number" value="0.9" step="0.01">
+        </div>
+        <p class="hint" style="margin-top:12px">근로자 부담분 기준. 요율이 바뀌면 여기서 고쳐 쓰세요.</p>
+      </details>
+    </form>
+
+    <!-- ============ 결과 ============ -->
+    <main>
+      <section class="panel verdict" aria-live="polite">
+        <div class="verdict-label">전국 근로소득자 중 내 위치</div>
+        <div class="rank-line">
+          <span class="rank-big" id="pctBig">상위 12.4</span><span class="rank-suffix">%</span>
+          <span class="rank-tag" id="rankTag">상위권</span>
+        </div>
+        <p class="rank-sub" id="rankSub"></p>
+
+        <div class="unitchart">
+          <div class="unitchart-head">
+            <span>근로소득자 100명을 연봉순으로 세웠을 때</span>
+            <span id="unitPos"></span>
+          </div>
+          <div class="dots" id="dots" role="img" aria-label="100명 중 내 위치"></div>
+          <div class="axis-100"><span>1등</span><span>50등</span><span>100등</span></div>
+        </div>
+      </section>
+
+      <div class="stats" id="stats"></div>
+
+      <section class="section">
+        <div class="section-head">
+          <h2>연봉 구간별 인원 분포</h2>
+          <p>내 구간은 강조 표시</p>
+        </div>
+        <div class="panel chart">
+          <div class="chart-legend">
+            <span><i style="background:var(--accent)"></i>내 연봉 구간</span>
+            <span><i style="background:var(--bar)"></i>다른 구간</span>
+            <span style="margin-left:auto">세로축 = 전체 근로소득자 중 비중(%)</span>
+          </div>
+          <div class="plot" id="plot"><div class="gridlines" id="gridlines"></div></div>
+          <div class="xaxis" id="xaxis"></div>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="section-head">
+          <h2>실수령액 계산 내역</h2>
+          <p id="slipCaption"></p>
+        </div>
+        <div class="panel slip">
+          <div class="slip-head"><span>항목</span><span>월 기준</span></div>
+          <div class="tbl-scroll">
+            <table class="slip-table" id="slipTable"></table>
+          </div>
+        </div>
+      </section>
+
+      <div class="notes">
+        <h3>읽기 전에</h3>
+        <p>
+          순위는 <b>국세청 근로소득 백분위 자료를 바탕으로 만든 추정 분포</b>에서 계산합니다.
+          모수는 연말정산 대상 근로소득자 전체(약 2,085만 명)로, 평균 연봉 약 4,332만 원,
+          중위 연봉 약 3,300만 원 수준입니다.
+        </p>
+        <p>
+          여기에는 <b>아르바이트·단기·연중 일부만 일한 사람이 모두 포함</b>됩니다.
+          그래서 하위 구간이 실제 체감보다 낮게 깔려 있고, 그만큼 내 순위는 후하게 나옵니다.
+          정규직 풀타임끼리만 비교하면 순위는 지금보다 뒤로 밀린다고 보는 편이 맞습니다.
+        </p>
+        <p>
+          실수령액은 <b>4대보험(근로자 부담분)과 연말정산 방식의 근사 계산</b> 결과입니다.
+          의료비·기부금·연금저축 같은 개별 공제와 회사별 공제 항목은 반영하지 않으므로
+          실제 급여명세서와는 차이가 납니다. 4대보험 요율은 2025년 기준값을 기본으로 두었고,
+          왼쪽 패널에서 직접 고칠 수 있습니다.
+        </p>
+      </div>
+
+      <footer>
+        <span>분포 출처 · 국세청 근로소득 백분위 기반 추정</span>
+        <span class="num" id="stamp"></span>
+      </footer>
+    </main>
+  </div>
+</div>
+
+<script>
+(function(){
+  "use strict";
+
+  /* ---------- 분포: 상위 백분위 → 연봉(만원) 경계값 ---------- */
+  var CURVE = [
+    [0.1,47000],[0.5,25000],[1,19000],[2,14000],[3,12000],[5,10000],[7,8800],
+    [10,7800],[15,6700],[20,5900],[25,5300],[30,4800],[35,4400],[40,4000],
+    [45,3650],[50,3300],[55,3000],[60,2750],[65,2500],[70,2250],[75,2000],
+    [80,1750],[85,1450],[90,1150],[95,700],[99,250]
+  ];
+  var WORKERS = 20850000;   // 근로소득자 수
+  var MEAN = 4332;          // 평균 연봉(만원)
+  var MEDIAN = 3300;        // 중위 연봉(만원)
+
+  // 연봉(만원) → 상위 %
+  function topPct(man){
+    if(man >= CURVE[0][1]) return Math.max(0.001, 0.1 * Math.pow(CURVE[0][1]/man, 2.2));
+    var last = CURVE[CURVE.length-1];
+    if(man <= last[1]) return Math.min(99.99, 99 + (1 - man/last[1]));
+    for(var i=0;i<CURVE.length-1;i++){
+      var hi = CURVE[i], lo = CURVE[i+1];      // hi: 낮은 %, 높은 연봉
+      if(man <= hi[1] && man >= lo[1]){
+        var t = (Math.log(man) - Math.log(lo[1])) / (Math.log(hi[1]) - Math.log(lo[1]));
+        return Math.exp(Math.log(lo[0]) + t * (Math.log(hi[0]) - Math.log(lo[0])));
+      }
+    }
+    return 50;
+  }
+
+  var BUCKETS = [
+    [0,1000,"~1천"],[1000,2000,"1~2천"],[2000,3000,"2~3천"],[3000,4000,"3~4천"],
+    [4000,5000,"4~5천"],[5000,6000,"5~6천"],[6000,7000,"6~7천"],[7000,8000,"7~8천"],
+    [8000,10000,"8천~1억"],[10000,15000,"1~1.5억"],[15000,Infinity,"1.5억+"]
+  ];
+  var SHARES = BUCKETS.map(function(b){
+    var top = b[1]===Infinity ? 0 : topPct(b[1]);
+    var bot = b[0]===0 ? 100 : topPct(b[0]);
+    return Math.max(0, bot - top);
+  });
+
+  /* ---------- 세금 ---------- */
+  function earnedIncomeDeduction(T){
+    var d;
+    if(T <= 5000000) d = T*0.7;
+    else if(T <= 15000000) d = 3500000 + (T-5000000)*0.4;
+    else if(T <= 45000000) d = 7500000 + (T-15000000)*0.15;
+    else if(T <= 100000000) d = 12000000 + (T-45000000)*0.05;
+    else d = 14750000 + (T-100000000)*0.02;
+    return Math.min(d, 20000000);
+  }
+  var BRACKETS = [
+    [14000000,0.06,0],[50000000,0.15,1260000],[88000000,0.24,5760000],
+    [150000000,0.35,15440000],[300000000,0.38,19940000],[500000000,0.40,25940000],
+    [1000000000,0.42,35940000],[Infinity,0.45,65940000]
+  ];
+  function incomeTax(base){
+    if(base<=0) return 0;
+    for(var i=0;i<BRACKETS.length;i++){
+      if(base <= BRACKETS[i][0]) return base*BRACKETS[i][1] - BRACKETS[i][2];
+    }
+    return 0;
+  }
+  function earnedTaxCredit(calc, T){
+    var c = calc <= 1300000 ? calc*0.55 : 715000 + (calc-1300000)*0.30;
+    var cap;
+    if(T <= 33000000) cap = 740000;
+    else if(T <= 70000000) cap = Math.max(660000, 740000 - (T-33000000)*0.008);
+    else if(T <= 120000000) cap = Math.max(500000, 660000 - (T-70000000)*0.5);
+    else cap = Math.max(200000, 500000 - (T-120000000)*0.5);
+    return Math.min(c, cap);
+  }
+  function childCredit(n){
+    if(n<=0) return 0;
+    if(n===1) return 250000;
+    if(n===2) return 550000;
+    return 550000 + (n-2)*400000;
+  }
+
+  var PENSION_MIN = 400000, PENSION_MAX = 6370000;
+
+  var ZERO = {
+    gross:0, grossMonth:0, nonTaxYear:0, pension:0, health:0, care:0, emp:0,
+    insMonth:0, incomeTaxM:0, localTaxM:0, taxMonth:0, dedMonth:0, netYear:0, netMonth:0, ratio:0
+  };
+
+  function compute(s){
+    var gross = s.salaryMan * 10000;
+    if(s.severanceIncluded) gross = gross * 12/13;
+    if(gross <= 0) return ZERO;
+
+    var nonTaxYear = Math.min(s.nontax*12, gross);
+    var T = Math.max(0, gross - nonTaxYear);   // 총급여(과세대상)
+    var mTaxable = T/12;
+
+    var pensionBase = mTaxable > 0 ? Math.min(Math.max(mTaxable, PENSION_MIN), PENSION_MAX) : 0;
+    var pension = pensionBase * s.rPension/100;
+    var health  = mTaxable * s.rHealth/100;
+    var care    = health * s.rCare/100;
+    var emp     = mTaxable * s.rEmp/100;
+    pension=Math.floor(pension/10)*10; health=Math.floor(health/10)*10;
+    care=Math.floor(care/10)*10; emp=Math.floor(emp/10)*10;
+
+    var insMonth = pension + health + care + emp;
+    var insYear = insMonth*12;
+
+    var incomeAmt = T - earnedIncomeDeduction(T);
+    var base = incomeAmt - (1500000*s.deps) - (pension*12) - ((health+care+emp)*12);
+    base = Math.max(0, base);
+    var calc = incomeTax(base);
+    var determined = Math.max(0, calc - earnedTaxCredit(calc, T) - childCredit(s.kids));
+    var local = determined*0.1;
+
+    var taxMonth = Math.floor((determined+local)/12/10)*10;
+    var netYear = gross - insYear - determined - local;
+
+    return {
+      gross:gross, grossMonth:gross/12, nonTaxYear:nonTaxYear,
+      pension:pension, health:health, care:care, emp:emp,
+      insMonth:insMonth, incomeTaxM:Math.floor(determined/12/10)*10, localTaxM:Math.floor(local/12/10)*10,
+      taxMonth:taxMonth, dedMonth:insMonth+taxMonth,
+      netYear:netYear, netMonth:netYear/12,
+      ratio: netYear/gross*100
+    };
+  }
+
+  /* ---------- 포맷 ---------- */
+  function won(n){ return Math.round(n).toLocaleString("ko-KR"); }
+  function manWon(n){
+    var m = Math.round(n/10000);
+    if(m >= 10000){
+      var eok = Math.floor(m/10000), rest = m%10000;
+      return eok + "억" + (rest ? " " + rest.toLocaleString("ko-KR") : "");
+    }
+    return m.toLocaleString("ko-KR");
+  }
+  function tagFor(p){
+    if(p <= 0.1) return "0.1% 구간";
+    if(p <= 1)  return "최상위 1%";
+    if(p <= 5)  return "상위 5% 안";
+    if(p <= 10) return "상위 10% 안";
+    if(p <= 25) return "상위 4분의 1";
+    if(p <= 40) return "평균 언저리 위";
+    if(p <= 60) return "딱 한가운데";
+    if(p <= 80) return "중하위 구간";
+    return "하위 구간";
+  }
+
+  /* ---------- DOM ---------- */
+  var $ = function(id){ return document.getElementById(id); };
+  var state = { severanceIncluded:false };
+
+  function read(){
+    var man = parseFloat($("salary").value);
+    if(!isFinite(man) || man < 0) man = 0;
+    return {
+      salaryMan: man,
+      severanceIncluded: state.severanceIncluded,
+      deps: parseInt($("deps").value,10),
+      kids: parseInt($("kids").value,10),
+      nontax: Math.max(0, parseFloat($("nontax").value)||0),
+      rPension: parseFloat($("rPension").value)||0,
+      rHealth: parseFloat($("rHealth").value)||0,
+      rCare: parseFloat($("rCare").value)||0,
+      rEmp: parseFloat($("rEmp").value)||0
+    };
+  }
+
+  function buildGrid(max){
+    var g = $("gridlines"); g.innerHTML = "";
+    var steps = 4;
+    for(var i=0;i<=steps;i++){
+      var v = max*i/steps;
+      var d = document.createElement("div");
+      d.style.bottom = (i/steps*100) + "%";
+      d.textContent = v.toFixed(0) + "%";
+      g.appendChild(d);
+    }
+  }
+
+  function buildPlot(){
+    var plot = $("plot"), xaxis = $("xaxis");
+    BUCKETS.forEach(function(b,i){
+      var col = document.createElement("div");
+      col.className = "col"; col.id = "col"+i;
+      col.title = "연봉 " + b[2] + " 구간 · 근로소득자의 " + SHARES[i].toFixed(1) + "%";
+      var val = document.createElement("span");
+      val.className = "val"; val.textContent = SHARES[i].toFixed(1)+"%";
+      var fill = document.createElement("div");
+      fill.className = "fill";
+      col.appendChild(val); col.appendChild(fill);
+      plot.appendChild(col);
+
+      var lab = document.createElement("div");
+      lab.id = "lab"+i; lab.textContent = b[2];
+      xaxis.appendChild(lab);
+    });
+    var max = Math.ceil(Math.max.apply(null, SHARES)/5)*5;
+    buildGrid(max);
+    BUCKETS.forEach(function(b,i){
+      var h = SHARES[i]/max*100;
+      var col = $("col"+i);
+      col.querySelector(".fill").style.height = h + "%";
+      col.querySelector(".val").style.bottom = "calc(" + h + "% + 5px)";
+    });
+  }
+
+  // 셀 폭이 라벨보다 좁아지면 한 칸 걸러 하나만 남긴다.
+  // 내 구간 라벨은 항상 살리고, 대신 양옆을 지워 겹침을 막는다.
+  function labelAxis(myBucket){
+    var cell = $("plot").getBoundingClientRect().width / BUCKETS.length;
+    var thin = cell > 0 && cell < 34;
+    var keep = [];
+    for(var i=0;i<BUCKETS.length;i++) keep[i] = thin ? (i % 2 === 0) : true;
+    if(thin && myBucket >= 0){
+      keep[myBucket] = true;
+      if(myBucket > 0) keep[myBucket-1] = false;
+      if(myBucket < BUCKETS.length-1) keep[myBucket+1] = false;
+    }
+    for(var j=0;j<BUCKETS.length;j++){
+      $("lab"+j).className = (keep[j] ? "" : "hide") + (j===myBucket ? " me" : "");
+    }
+  }
+
+  function buildDots(){
+    var d = $("dots"); d.innerHTML = "";
+    for(var i=0;i<100;i++) d.appendChild(document.createElement("span"));
+  }
+
+  function render(){
+    var s = read();
+    var r = compute(s);
+    var p = topPct(s.salaryMan);
+    var pShow = p < 1 ? p.toFixed(2) : p.toFixed(1);
+    var rankN = Math.max(1, Math.round(p/100*WORKERS));
+    var among100 = Math.min(100, Math.max(1, Math.round(p)));
+
+    $("pctBig").textContent = "상위 " + pShow;
+    $("rankTag").textContent = tagFor(p);
+    $("rankSub").innerHTML =
+      "연봉 <b>" + s.salaryMan.toLocaleString("ko-KR") + "만원</b>이면 " +
+      "근로소득자 약 2,085만 명 중 <b>" + rankN.toLocaleString("ko-KR") + "번째</b>입니다. " +
+      "평균(4,332만)의 <b>" + (s.salaryMan/MEAN).toFixed(2) + "배</b>, " +
+      "중위(3,300만)의 <b>" + (s.salaryMan/MEDIAN).toFixed(2) + "배</b>.";
+    $("unitPos").textContent = among100 + "번째 자리";
+
+    var dots = $("dots").children;
+    for(var i=0;i<100;i++){
+      var el = dots[i];
+      el.className = (i === among100-1) ? "me" : (i < among100-1 ? "above" : "");
+    }
+
+    // 구간 강조
+    var myBucket = -1;
+    for(var b=0;b<BUCKETS.length;b++){
+      if(s.salaryMan >= BUCKETS[b][0] && s.salaryMan < BUCKETS[b][1]){ myBucket = b; break; }
+    }
+    for(var c=0;c<BUCKETS.length;c++){
+      $("col"+c).className = "col" + (c===myBucket ? " me" : "");
+    }
+    labelAxis(myBucket);
+
+    // stat cards
+    $("stats").innerHTML = [
+      card("월 실수령액", won(r.netMonth), "원", "세금·4대보험 뺀 실입금액", true),
+      card("연 실수령액", manWon(r.netYear), "만원", "1년 합계"),
+      card("월 공제 합계", won(r.dedMonth), "원", "4대보험 " + won(r.insMonth) + " + 세금 " + won(r.taxMonth)),
+      card("실수령 비율", r.ratio.toFixed(1), "%", "세전 대비")
+    ].join("");
+
+    // payslip
+    $("slipCaption").textContent =
+      "세전 월급 " + won(r.grossMonth) + "원 · 환산 시급 " + won(r.grossMonth/209) + "원(월 209시간)" +
+      (s.severanceIncluded ? " · 퇴직금 포함 연봉을 환산" : "");
+    $("slipTable").innerHTML =
+      '<tr class="group"><th colspan="2">지급</th></tr>' +
+      row("세전 월급여", won(r.grossMonth)) +
+      row("비과세 (계산 제외분)", won(r.nonTaxYear/12)) +
+      '<tr class="group"><th colspan="2">공제</th></tr>' +
+      row("국민연금 " + fmtRate(s.rPension), "−" + won(r.pension)) +
+      row("건강보험 " + fmtRate(s.rHealth), "−" + won(r.health)) +
+      row("장기요양 " + fmtRate(s.rCare) + " (건보료 대비)", "−" + won(r.care)) +
+      row("고용보험 " + fmtRate(s.rEmp), "−" + won(r.emp)) +
+      row("소득세", "−" + won(r.incomeTaxM)) +
+      row("지방소득세", "−" + won(r.localTaxM)) +
+      '<tr class="total"><th>공제 합계</th><td class="n">−' + won(r.dedMonth) + '</td></tr>' +
+      '<tr class="total final"><th>월 실수령액</th><td class="n">' + won(r.netMonth) + '</td></tr>';
+  }
+
+  function fmtRate(v){ return "· " + v + "%"; }
+  function row(k,v){ return "<tr><th>"+k+'</th><td class="n">'+v+"</td></tr>"; }
+  function card(k,v,u,d,hero){
+    return '<div class="stat'+(hero?" hero":"")+'"><span class="k">'+k+'</span>' +
+           '<span class="v">'+v+'<small>'+u+'</small></span>' +
+           '<span class="d">'+d+'</span></div>';
+  }
+
+  /* ---------- 이벤트 ---------- */
+  var salary = $("salary"), range = $("salaryRange");
+  salary.addEventListener("input", function(){
+    var v = parseFloat(salary.value);
+    if(isFinite(v)) range.value = Math.min(20000, Math.max(1000, v));
+    render();
+  });
+  range.addEventListener("input", function(){ salary.value = range.value; render(); });
+  ["deps","kids","nontax","rPension","rHealth","rCare","rEmp"].forEach(function(id){
+    $(id).addEventListener("input", render);
+    $(id).addEventListener("change", render);
+  });
+
+  $("sevSep").addEventListener("click", function(){ setSev(false); });
+  $("sevInc").addEventListener("click", function(){ setSev(true); });
+  function setSev(inc){
+    state.severanceIncluded = inc;
+    $("sevInc").setAttribute("aria-pressed", String(inc));
+    $("sevSep").setAttribute("aria-pressed", String(!inc));
+    render();
+  }
+
+  $("themeBtn").addEventListener("click", function(){
+    var root = document.documentElement;
+    var cur = root.getAttribute("data-theme");
+    var dark = cur ? cur === "dark"
+      : window.matchMedia("(prefers-color-scheme: dark)").matches;
+    root.setAttribute("data-theme", dark ? "light" : "dark");
+  });
+
+  var resizeTimer;
+  window.addEventListener("resize", function(){
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(render, 120);
+  });
+
+  $("stamp").textContent = "2,085만 명 · 평균 4,332만 · 중위 3,300만";
+
+  buildDots();
+  buildPlot();
+  render();
+})();
+</script>
+</body>
+</html>
