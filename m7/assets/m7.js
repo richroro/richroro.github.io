@@ -185,7 +185,7 @@ function render() {
 '</div></header>' +
 
 '<nav class="snav" aria-label="섹션 바로가기"><div class="wrap snav-in">' +
-  '<a href="#top">개요</a><a href="#mix">매출 구성</a><a href="#signature">' + esc(CO.signature.nav) + '</a>' +
+  '<a href="#top">개요 · 최근 분기</a><a href="#mix">매출 구성</a><a href="#signature">' + esc(CO.signature.nav) + '</a>' +
   '<a href="#korea">한국 공급망</a><a href="#watch">체크포인트</a><a href="#sources">출처</a>' +
   '<a href="/m7/">← M7 전체</a>' +
 '</div></nav>' +
@@ -197,6 +197,10 @@ function render() {
   '<h2 class="title mt16">' + CO.headline + '</h2><p class="lead">' + CO.lead + '</p>' +
   '<div class="stats c4 mt16" role="group" aria-label="핵심 지표">' + statsHtml(CO.stats) + '</div>' +
   (CO.fy.note ? '<div class="note mt12"><span class="ic">📅</span><div>' + CO.fy.note + '</div></div>' : '') +
+  (CO.recent ? '<div class="card pad mt16"><div class="rowsplit"><h3>' + esc(CO.recent.title) +
+    '</h3><span class="fybadge">' + esc(CO.recent.period) + ' · 가장 최근 발표</span></div>' +
+    '<div class="stats c4 mt12" role="group" aria-label="최근 분기 지표">' + statsHtml(CO.recent.stats) + '</div>' +
+    '<div class="note mt12"><span class="ic">🆕</span><div>' + CO.recent.note + '</div></div></div>' : '') +
 '</div></section>' +
 
 '<section id="mix"><div class="wrap">' +

@@ -39,6 +39,7 @@
     <a href="#margin">영업이익률</a>
     <a href="#size">매출 규모</a>
     <a href="#fy">회계연도 함정</a>
+    <a href="#recent">최근 분기</a>
     <a href="#korea">한국과의 접점</a>
   </div>
 </nav>
@@ -119,9 +120,47 @@
   </div>
 </section>
 
+<section id="recent">
+  <div class="wrap">
+    <p class="eyebrow">04 · Latest quarter</p>
+    <h2 class="title">가장 최근 발표된 분기</h2>
+    <p class="lead">위 연간 수치보다 최대 세 분기 더 최신입니다. 일곱 곳 모두 <b>두 자릿수로 성장</b>하고 있는데,
+      마진이 가는 방향은 서로 갈립니다.</p>
+    <div class="card mt16">
+      <div class="tscroll">
+        <table>
+          <thead><tr><th>회사</th><th>분기</th><th>종료</th><th>매출</th><th>전년 대비</th><th>영업이익률</th></tr></thead>
+          <tbody id="recentRows"></tbody>
+        </table>
+      </div>
+    </div>
+    <div class="grid2 mt16">
+      <div class="card pad">
+        <h3>마진이 좋아진 쪽</h3>
+        <ul class="hint mt8" style="list-style:none;display:flex;flex-direction:column;gap:8px">
+          <li>· <b style="color:var(--ink)">알파벳</b> — 32.0% → <b style="color:var(--ink)">34.1%</b>. 클라우드가 +82%로 뛰면서 영업이익이 30% 늘었습니다.</li>
+          <li>· <b style="color:var(--ink)">아마존</b> — 11.2% → <b style="color:var(--ink)">13.7%</b>. AWS 영업이익 비중이 57%에서 60.4%로 더 올라갔습니다.</li>
+          <li>· <b style="color:var(--ink)">엔비디아</b> — 총마진이 71.1% → <b style="color:var(--ink)">75.0%</b>. 데이터센터만 890억 달러입니다.</li>
+        </ul>
+      </div>
+      <div class="card pad">
+        <h3>마진이 나빠진 쪽</h3>
+        <ul class="hint mt8" style="list-style:none;display:flex;flex-direction:column;gap:8px">
+          <li>· <b style="color:var(--ink)">메타</b> — 43% → <b style="color:var(--ink)">31%</b>. 매출은 +28%인데 순이익이 14% 줄었습니다. AI 투자에 법적 비용 24억, 희망퇴직 11.8억이 겹쳤습니다.</li>
+          <li>· <b style="color:var(--ink)">테슬라</b> — 최근 분기 영업이익률 <b style="color:var(--ink)">1.4%</b>. 매출은 사상 최대였습니다.</li>
+          <li>· 공통점은 <b style="color:var(--ink)">AI 설비투자</b>입니다. 알파벳은 한 분기 설비투자 449억 달러로 잉여현금흐름이 −59억이 됐습니다.</li>
+        </ul>
+      </div>
+    </div>
+    <div class="note mt16"><span class="ic">⚠️</span><div>분기 순이익에 <b>일회성 평가이익</b>이 섞인 곳이 있습니다 —
+      알파벳(지분 평가이익 990억), 아마존(앤스로픽 관련 534억). 영업 실적과 반드시 구분해서 읽어야 합니다.
+      엔비디아와 애플은 분기 영업이익을 이 페이지에 담지 않아 영업이익률을 비워 뒀습니다.</div></div>
+  </div>
+</section>
+
 <section id="korea" style="padding-bottom:10px">
   <div class="wrap">
-    <p class="eyebrow">04 · Korea</p>
+    <p class="eyebrow">05 · Korea</p>
     <h2 class="title">일곱 회사가 한국과 만나는 지점</h2>
     <p class="lead">한국 투자자에게는 M7 주가만큼이나 <b>그 회사들이 한국 기업에서 무엇을 사는지</b>가 중요합니다.
       성격이 세 갈래로 갈립니다.</p>
@@ -184,8 +223,8 @@ const HUB = [
     fy:"FY2026", span:"2025년 2월 ~ 2026년 1월" },
   { slug:"aapl",  rev:416.161,oi:133.05,  top:{k:"아이폰", v:209.59, of:416.161},
     fy:"FY2025", span:"2024년 10월 ~ 2025년 9월" },
-  { slug:"msft",  rev:281.7,  oi:128.5,   top:{k:"생산성·비즈니스", v:120.81, of:281.7},
-    fy:"FY2025", span:"2024년 7월 ~ 2025년 6월" },
+  { slug:"msft",  rev:331.839,oi:155.2,   top:{k:"생산성·비즈니스", v:139.996, of:331.839},
+    fy:"FY2026", span:"2025년 7월 ~ 2026년 6월" },
   { slug:"googl", rev:402.8,  oi:129.039, top:{k:"구글 서비스", v:342.721, of:402.8},
     fy:"2025",   span:"2025년 1월 ~ 12월" },
   { slug:"amzn",  rev:716.9,  oi:80.0,    top:{k:"북미", v:426.3, of:716.9},
@@ -210,6 +249,23 @@ document.getElementById("fyRows").innerHTML = HUB.map((h) => {
   return "<tr><td class='tx'>" + m.ko + "</td><td>" + h.fy + "</td><td class='tx'>" + h.span +
     "</td><td>$" + h.rev.toFixed(1) + "B</td><td>" + h.om.toFixed(1) + "%</td><td class='tx'>" +
     h.top.k + " " + h.topShare.toFixed(1) + "%" + (h.top.q ? " (분기)" : "") + "</td></tr>";
+}).join("");
+
+/* 각 사 가장 최근 발표 분기. om 이 null 이면 분기 영업이익을 담지 않은 것입니다. */
+const RECENT = [
+  { slug:"nvda",  q:"FY2027 2분기", end:"2026년 7월", rev:96.22,  yoy:"약 2배", om:null },
+  { slug:"aapl",  q:"FY2026 3분기", end:"2026년 6월", rev:109.4,  yoy:"+16%",  om:null },
+  { slug:"msft",  q:"FY2026 4분기", end:"2026년 6월", rev:90.0,   yoy:"+18%",  om:40.6/90.0*100 },
+  { slug:"googl", q:"2026년 2분기", end:"2026년 6월", rev:119.8,  yoy:"+24%",  om:40.8/119.8*100 },
+  { slug:"amzn",  q:"2026년 2분기", end:"2026년 6월", rev:200.6,  yoy:"+20%",  om:27.5/200.6*100 },
+  { slug:"meta",  q:"2026년 2분기", end:"2026년 6월", rev:60.80,  yoy:"+28%",  om:18.8/60.80*100 },
+  { slug:"tesla", q:"2026년 2분기", end:"2026년 6월", rev:28.24,  yoy:"+26%",  om:1.4 }
+];
+document.getElementById("recentRows").innerHTML = RECENT.map((r) => {
+  const m = meta(r.slug), href = m.href || ("/m7/" + m.slug + "/");
+  return "<tr><td class='tx'><a href='" + href + "' style='border-bottom:1px solid var(--line)'>" + m.ko +
+    "</a></td><td class='tx'>" + r.q + "</td><td>" + r.end + "</td><td>$" + r.rev.toFixed(1) +
+    "B</td><td class='up'>" + r.yoy + "</td><td>" + (r.om == null ? "—" : r.om.toFixed(1) + "%") + "</td></tr>";
 }).join("");
 
 function drawHubBars(svgId, tipId, key, fmt, unit) {

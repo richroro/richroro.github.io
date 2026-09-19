@@ -82,6 +82,9 @@ p.lead{font-size:14.5px;color:var(--ink-2);font-weight:300;max-width:64ch;line-h
 .mt8{margin-top:8px}.mt12{margin-top:12px}.mt16{margin-top:16px}.mt24{margin-top:24px}
 .rowsplit{display:flex;flex-wrap:wrap;gap:10px;align-items:baseline;justify-content:space-between}
 .up{color:var(--up)}.down{color:var(--down)}
+/* .st .s 가 (0,2,0) 이라 단독 .up/.down 을 이깁니다 — 보조 문구에도 색이 먹도록 명시 */
+.st .s.up,.st .v.up{color:var(--up)}
+.st .s.down,.st .v.down{color:var(--down)}
 .grid2{display:grid;grid-template-columns:1fr;gap:14px}
 @media(min-width:860px){.grid2{grid-template-columns:1fr 1fr}}
 
