@@ -126,7 +126,7 @@ const THEMES = {
     check: '#00e5ff', closing: '#ff6fc0', brand: '#63678f',
     display: 'Display', displayCase: 'none', h1: 'Body', h1Weight: '800',
     closingFont: 'Body', badgeFont: 'Body',
-    glow: '0 0 16px rgba(0,229,255,.55), 0 0 38px rgba(0,229,255,.22)',
+    glow: '0 0 10px rgba(0,229,255,.40), 0 0 26px rgba(0,229,255,.16)',
     slotGlow: '0 0 20px rgba(255,45,149,.32)',
   },
 };
@@ -202,7 +202,22 @@ const COINS = [
         `<path d="M58 40l26-14-6 22-7-7-13 13-6-6 13-13z"/>`,
 ];
 
-const ICONS = { building: BUILDINGS, medal: MEDALS, coin: COINS };
+const CARS = [
+  // car, three-quarter block
+  () => `<path d="M14 62c0-4 3-7 7-7h58c4 0 7 3 7 7v12H14V62z"/>` +
+        `<path d="M26 34h48l10 21H16z"/><rect x="30" y="38" width="17" height="13" rx="2" fill="${SLOT_BG}"/>` +
+        `<rect x="53" y="38" width="17" height="13" rx="2" fill="${SLOT_BG}"/>` +
+        `<circle cx="30" cy="76" r="8"/><circle cx="70" cy="76" r="8"/>`,
+  // charging plug
+  () => `<rect x="34" y="14" width="32" height="40" rx="8"/><rect x="40" y="6" width="6" height="12" rx="3"/>` +
+        `<rect x="54" y="6" width="6" height="12" rx="3"/><rect x="45" y="54" width="10" height="14"/>` +
+        `<path d="M50 66c-14 0-22 8-22 18h44c0-10-8-18-22-18z"/>`,
+  // battery with a bolt
+  () => `<rect x="14" y="30" width="66" height="40" rx="7"/><rect x="80" y="42" width="8" height="16" rx="3"/>` +
+        `<path d="M50 34l-14 20h11l-4 14 16-21H48z" fill="${SLOT_BG}"/>`,
+];
+
+const ICONS = { building: BUILDINGS, medal: MEDALS, coin: COINS, car: CARS };
 
 const buildingSvg = (i, set = 'building') => {
   const family = ICONS[set] || BUILDINGS;
