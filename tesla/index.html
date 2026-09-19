@@ -1,0 +1,1306 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>테슬라 주주 계산기 · TSLA 손익·세금·전기차 지표</title>
+<meta name="description" content="TSLA 평단가와 환율 손익을 분리해서 보여주는 계산기. 해외주식 양도소득세(250만원 공제·22%) 시뮬레이션과 테슬라 분기 인도량·에너지 저장장치·글로벌 전기차 지표까지 한 페이지에.">
+<link rel="canonical" href="https://richroro.github.io/tesla/">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="ko_KR">
+<meta property="og:site_name" content="Cadence">
+<meta property="og:url" content="https://richroro.github.io/tesla/">
+<meta property="og:title" content="테슬라 주주 계산기 · TSLA 손익·세금·전기차 지표">
+<meta property="og:description" content="수익이 주가에서 났는지 환율에서 났는지 갈라서 보여줍니다. 양도세 시뮬레이션과 전기차 산업 지표까지.">
+<meta name="twitter:card" content="summary">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%23E82127'/><path d='M22 30h56l-4 11H60v31H40V41H26z' fill='white'/></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans+KR:wght@300;400;500;600;700&display=swap">
+
+<style>
+:root{
+  color-scheme:light;
+  --paper:#F5F6F8; --surface:#FFFFFF; --surface-2:#EEF0F4; --surface-3:#E6EAF0;
+  --ink:#14161C; --ink-2:#4A5260; --ink-3:#6E7683;
+  --line:#E3E7ED; --line-soft:#EDF0F4; --grid:#E8EBF0;
+  --brand:#E82127; --brand-deep:#C81E3A; --brand-wash:#FDECEC;
+  --up:#C81E3A; --down:#1257B5; --up-wash:#FCEBEE; --down-wash:#E9F1FD;
+  --s1:#2a78d6; --s2:#eb6834; --s3:#1baf7a;
+  --shadow:0 1px 2px rgba(20,22,28,.05), 0 10px 28px -16px rgba(20,22,28,.22);
+  --radius:14px;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    color-scheme:dark;
+    --paper:#0F1218; --surface:#161A21; --surface-2:#1D2229; --surface-3:#242A33;
+    --ink:#E9EDF3; --ink-2:#AEB7C4; --ink-3:#8B95A3;
+    --line:#252B34; --line-soft:#1E242C; --grid:#232932;
+    --brand:#FF4C52; --brand-deep:#FF6B7A; --brand-wash:#2A1A1E;
+    --up:#FF6B7A; --down:#77B0F7; --up-wash:#2A1A1E; --down-wash:#141F2E;
+    --s1:#3987e5; --s2:#d95926; --s3:#199e70;
+    --shadow:0 1px 2px rgba(0,0,0,.4), 0 10px 28px -16px rgba(0,0,0,.7);
+  }
+}
+:root[data-theme="dark"]{
+  color-scheme:dark;
+  --paper:#0F1218; --surface:#161A21; --surface-2:#1D2229; --surface-3:#242A33;
+  --ink:#E9EDF3; --ink-2:#AEB7C4; --ink-3:#8B95A3;
+  --line:#252B34; --line-soft:#1E242C; --grid:#232932;
+  --brand:#FF4C52; --brand-deep:#FF6B7A; --brand-wash:#2A1A1E;
+  --up:#FF6B7A; --down:#77B0F7; --up-wash:#2A1A1E; --down-wash:#141F2E;
+  --s1:#3987e5; --s2:#d95926; --s3:#199e70;
+  --shadow:0 1px 2px rgba(0,0,0,.4), 0 10px 28px -16px rgba(0,0,0,.7);
+}
+
+*{box-sizing:border-box;margin:0;padding:0}
+[hidden]{display:none !important}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+body{
+  font-family:"IBM Plex Sans KR","Pretendard","Apple SD Gothic Neo",system-ui,sans-serif;
+  background:var(--paper);color:var(--ink);line-height:1.6;letter-spacing:-.2px;
+  font-weight:400;-webkit-font-smoothing:antialiased;
+}
+a{color:inherit;text-decoration:none}
+.num{font-family:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,monospace;font-variant-numeric:tabular-nums;letter-spacing:-.4px}
+.wrap{max-width:1000px;margin:0 auto;padding:0 16px}
+@media(min-width:720px){.wrap{padding:0 24px}}
+
+/* ---------- header ---------- */
+header{position:sticky;top:0;z-index:50;background:color-mix(in srgb,var(--paper) 88%,transparent);
+  backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
+.hbar{display:flex;align-items:center;justify-content:space-between;gap:12px;height:56px}
+.brand{display:flex;align-items:center;gap:9px;min-width:0}
+.brand .mk{width:28px;height:28px;border-radius:8px;background:var(--brand);color:#fff;flex:none;
+  display:grid;place-items:center;font-weight:700;font-size:15px;font-family:"IBM Plex Mono",monospace}
+.brand b{font-size:15.5px;font-weight:600;letter-spacing:-.4px;white-space:nowrap}
+.brand small{display:block;font-size:11px;color:var(--ink-3);font-weight:400;letter-spacing:0;line-height:1.2}
+.hactions{display:flex;align-items:center;gap:6px;flex:none}
+.ghost{background:var(--surface);border:1px solid var(--line);color:var(--ink-2);border-radius:9px;
+  height:34px;padding:0 11px;font:inherit;font-size:13px;font-weight:500;cursor:pointer;
+  display:inline-flex;align-items:center;gap:6px;transition:.15s}
+.ghost:hover{background:var(--surface-2);color:var(--ink)}
+.ghost:focus-visible,a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible{
+  outline:2px solid var(--s1);outline-offset:2px}
+
+/* ---------- section nav ---------- */
+.snav{position:sticky;top:56px;z-index:40;background:color-mix(in srgb,var(--paper) 88%,transparent);
+  backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
+.snav-in{display:flex;gap:2px;overflow-x:auto;scrollbar-width:none;height:46px;align-items:center}
+.snav-in::-webkit-scrollbar{display:none}
+.snav a{font-size:13.5px;font-weight:500;color:var(--ink-3);padding:7px 11px;border-radius:8px;white-space:nowrap}
+.snav a:hover{color:var(--ink);background:var(--surface-2)}
+
+/* ---------- blocks ---------- */
+section{padding:34px 0;scroll-margin-top:112px}
+@media(min-width:720px){section{padding:44px 0}}
+.eyebrow{font-size:12px;font-weight:600;color:var(--brand-deep);letter-spacing:.4px;text-transform:uppercase;
+  font-family:"IBM Plex Mono",monospace}
+h2.title{font-size:clamp(21px,3.4vw,27px);font-weight:600;letter-spacing:-.8px;margin:7px 0 6px;line-height:1.3}
+p.lead{font-size:14.5px;color:var(--ink-2);font-weight:300;max-width:62ch;line-height:1.7}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow)}
+.pad{padding:18px}
+@media(min-width:720px){.pad{padding:22px}}
+.card h3{font-size:15px;font-weight:600;letter-spacing:-.3px}
+.hint{font-size:12.5px;color:var(--ink-3);font-weight:300;line-height:1.6}
+.mt8{margin-top:8px}.mt12{margin-top:12px}.mt16{margin-top:16px}.mt24{margin-top:24px}
+.rowsplit{display:flex;align-items:baseline;justify-content:space-between;gap:12px}
+</style>
+<style>
+/* ---------- quote strip ---------- */
+.quote{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);
+  box-shadow:var(--shadow);overflow:hidden}
+.q-top{display:grid;grid-template-columns:1fr;gap:18px;padding:20px 18px}
+@media(min-width:760px){.q-top{grid-template-columns:auto 1fr auto;align-items:center;gap:26px;padding:22px}}
+.q-id{display:flex;align-items:center;gap:11px}
+.q-id .tick{font-family:"IBM Plex Mono",monospace;font-size:20px;font-weight:600;letter-spacing:-.6px}
+.q-id .nm{font-size:12.5px;color:var(--ink-3);font-weight:300}
+.q-price{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap}
+.q-price .usd{font-size:clamp(30px,6vw,40px);font-weight:600;letter-spacing:-1.6px;line-height:1.05}
+.q-price .krw{font-size:15px;color:var(--ink-2);font-weight:400}
+.q-meta{display:flex;flex-wrap:wrap;gap:8px 18px;align-items:center}
+.q-meta .mi{font-size:12.5px;color:var(--ink-3);font-weight:300}
+.q-meta .mi b{display:block;font-size:14px;color:var(--ink);font-weight:500;
+  font-family:"IBM Plex Mono",monospace;font-variant-numeric:tabular-nums}
+.q-bottom{border-top:1px solid var(--line-soft);background:var(--surface-2);padding:12px 18px;
+  display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between}
+@media(min-width:760px){.q-bottom{padding:12px 22px}}
+.badge{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:500;border-radius:999px;
+  padding:4px 10px;border:1px solid var(--line);background:var(--surface);color:var(--ink-2)}
+.badge .dot{width:6px;height:6px;border-radius:50%;background:var(--ink-3);flex:none}
+.badge.live{border-color:color-mix(in srgb,var(--s3) 45%,var(--line));color:var(--s3)}
+.badge.live .dot{background:var(--s3);animation:pulse 1.8s infinite}
+.badge.snap{border-color:color-mix(in srgb,var(--s2) 45%,var(--line));color:var(--s2)}
+.badge.snap .dot{background:var(--s2)}
+.badge.manual{border-color:color-mix(in srgb,var(--s1) 45%,var(--line));color:var(--s1)}
+.badge.manual .dot{background:var(--s1)}
+@keyframes pulse{50%{opacity:.35}}
+.manual-in{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.manual-in label{font-size:12.5px;color:var(--ink-3);font-weight:300;display:flex;align-items:center;gap:6px}
+.manual-in input{width:104px}
+
+/* ---------- forms ---------- */
+input,select,button{font:inherit}
+input[type=number],input[type=text],input[type=date],select{
+  background:var(--surface);border:1px solid var(--line);color:var(--ink);border-radius:9px;
+  padding:8px 10px;font-size:14px;width:100%;transition:.15s;
+  font-family:"IBM Plex Mono",monospace;font-variant-numeric:tabular-nums}
+select{font-family:inherit}
+input:hover,select:hover{border-color:var(--ink-3)}
+input:focus,select:focus{border-color:var(--s1)}
+input[type=number]{-moz-appearance:textfield}
+input[type=number]::-webkit-outer-spin-button,input[type=number]::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
+.field{display:block}
+.field>span{display:block;font-size:12px;color:var(--ink-3);font-weight:400;margin-bottom:5px}
+.btn{border:none;border-radius:9px;padding:9px 15px;font-size:13.5px;font-weight:500;cursor:pointer;transition:.15s;
+  display:inline-flex;align-items:center;gap:6px;justify-content:center}
+.btn-p{background:var(--brand);color:#fff}
+.btn-p:hover{background:var(--brand-deep)}
+.btn-s{background:var(--surface-2);color:var(--ink-2);border:1px solid var(--line)}
+.btn-s:hover{background:var(--surface-3);color:var(--ink)}
+.btn-x{background:none;border:none;color:var(--ink-3);cursor:pointer;font-size:17px;line-height:1;padding:6px;border-radius:7px}
+.btn-x:hover{background:var(--up-wash);color:var(--up)}
+
+/* buy lot rows */
+.lots{display:flex;flex-direction:column;gap:8px}
+.lot{display:grid;grid-template-columns:1fr 1fr 1fr auto;gap:8px;align-items:end}
+.lot .field>span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+@media(max-width:560px){
+  .lot{grid-template-columns:1fr 1fr;gap:8px 8px;padding:12px;background:var(--surface-2);border-radius:11px;position:relative}
+  .lot .btn-x{position:absolute;top:6px;right:6px}
+  .lot .f-fx{grid-column:1/-1}
+}
+.lotbar{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+
+/* ---------- result stats ---------- */
+.stats{display:grid;grid-template-columns:repeat(2,1fr);gap:1px;background:var(--line-soft);
+  border:1px solid var(--line);border-radius:12px;overflow:hidden}
+@media(min-width:720px){.stats.c4{grid-template-columns:repeat(4,1fr)}.stats.c3{grid-template-columns:repeat(3,1fr)}}
+.st{background:var(--surface);padding:14px 15px}
+.st .k{font-size:11.5px;color:var(--ink-3);font-weight:400;display:flex;align-items:center;gap:5px}
+.st .v{font-size:19px;font-weight:600;letter-spacing:-.7px;margin-top:3px;white-space:nowrap;
+  font-family:"IBM Plex Mono",monospace;font-variant-numeric:tabular-nums;line-height:1.25}
+.st .v .ar{font-size:.62em;vertical-align:.12em;margin-right:.12em}
+.st .s{font-size:12px;color:var(--ink-3);font-weight:300;margin-top:2px;
+  font-family:"IBM Plex Mono",monospace;font-variant-numeric:tabular-nums}
+.up{color:var(--up)}.down{color:var(--down)}
+.st.hero{background:var(--surface)}
+.st.hero .v{font-size:clamp(19px,3.6vw,26px)}
+
+/* ---------- decomposition bar ---------- */
+.decomp{margin-top:8px}
+.dbar{display:flex;height:34px;border-radius:9px;overflow:hidden;background:var(--surface-2);gap:2px}
+.dseg{display:grid;place-items:center;font-size:11.5px;font-weight:500;color:#fff;min-width:0;
+  font-family:"IBM Plex Mono",monospace;overflow:hidden;white-space:nowrap}
+.dlegend{display:flex;flex-wrap:wrap;gap:6px 16px;margin-top:10px}
+.dlg{display:flex;align-items:center;gap:7px;font-size:12.5px;color:var(--ink-2);font-weight:300}
+.dlg .sw{width:11px;height:11px;border-radius:3px;flex:none}
+.dlg b{font-weight:500;font-family:"IBM Plex Mono",monospace;font-variant-numeric:tabular-nums;color:var(--ink)}
+
+/* ---------- tables ---------- */
+table{width:100%;border-collapse:collapse;font-size:13.5px}
+th,td{padding:9px 10px;text-align:right;border-bottom:1px solid var(--line-soft)}
+th:first-child,td:first-child{text-align:left}
+thead th{font-size:11.5px;font-weight:500;color:var(--ink-3);border-bottom:1px solid var(--line);
+  position:sticky;top:0;background:var(--surface)}
+tbody td{font-family:"IBM Plex Mono",monospace;font-variant-numeric:tabular-nums}
+tbody td:first-child{font-family:inherit}
+tbody tr:last-child td{border-bottom:none}
+.tscroll{overflow-x:auto;-webkit-overflow-scrolling:touch}
+.tfoot td{font-weight:600;border-top:1px solid var(--line);background:var(--surface-2)}
+
+/* ---------- notes ---------- */
+.note{display:flex;gap:9px;background:var(--surface-2);border-radius:11px;padding:12px 13px;
+  font-size:12.5px;color:var(--ink-2);font-weight:300;line-height:1.65}
+.note .ic{flex:none;font-size:13px;line-height:1.5}
+.note b{font-weight:500;color:var(--ink)}
+.warn{background:var(--brand-wash)}
+</style>
+<style>
+/* ---------- charts ---------- */
+.chart-head{display:flex;flex-wrap:wrap;gap:10px;align-items:flex-start;justify-content:space-between}
+.chart-head .ct{font-size:15px;font-weight:600;letter-spacing:-.3px}
+.chart-head .cs{font-size:12.5px;color:var(--ink-3);font-weight:300;margin-top:2px}
+.seg{display:inline-flex;background:var(--surface-2);border:1px solid var(--line);border-radius:9px;padding:2px;flex:none}
+.seg button{background:none;border:none;color:var(--ink-3);font-size:12px;font-weight:500;padding:5px 10px;
+  border-radius:7px;cursor:pointer;transition:.15s}
+.seg button[aria-pressed="true"]{background:var(--surface);color:var(--ink);box-shadow:0 1px 2px rgba(0,0,0,.08)}
+.legend{display:flex;flex-wrap:wrap;gap:6px 15px;margin-top:12px}
+.lg{display:flex;align-items:center;gap:6px;font-size:12.5px;color:var(--ink-2);font-weight:400}
+.lg .sw{width:11px;height:11px;border-radius:3px;flex:none}
+.figwrap{position:relative;margin-top:14px}
+.fig{display:block;width:100%;height:auto;overflow:visible;touch-action:pan-y}
+.fig text{font-family:"IBM Plex Mono",monospace;font-variant-numeric:tabular-nums}
+.fig .axis{font-size:10.5px;fill:var(--ink-3)}
+.fig .axis-name{font-size:10px;fill:var(--ink-3);font-family:"IBM Plex Sans KR",sans-serif}
+.fig .gridline{stroke:var(--grid);stroke-width:1}
+.fig .baseline{stroke:var(--line);stroke-width:1}
+.fig .dlabel{font-size:10.5px;fill:var(--ink-2);font-weight:500}
+.fig .hit{fill:transparent;cursor:pointer}
+.fig .hit:hover+.barset .bar,.fig .bar{transition:opacity .12s}
+.fig .band.on{fill:var(--surface-2)}
+.tip{position:absolute;pointer-events:none;opacity:0;transform:translate(-50%,-100%);
+  background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:9px 11px;
+  box-shadow:var(--shadow);font-size:12.5px;min-width:150px;transition:opacity .1s;z-index:5}
+.tip.on{opacity:1}
+.tip .th{font-size:11.5px;color:var(--ink-3);font-weight:400;margin-bottom:5px}
+.tip .tr{display:flex;align-items:center;gap:7px;justify-content:space-between;margin-top:3px}
+.tip .tr .nm{display:flex;align-items:center;gap:6px;color:var(--ink-2);font-weight:300}
+.tip .tr .sw{width:9px;height:9px;border-radius:2px;flex:none}
+.tip .tr b{font-family:"IBM Plex Mono",monospace;font-variant-numeric:tabular-nums;font-weight:500}
+.grid2{display:grid;grid-template-columns:1fr;gap:14px}
+@media(min-width:840px){.grid2{grid-template-columns:1fr 1fr}}
+
+/* ---------- footer ---------- */
+footer{border-top:1px solid var(--line);background:var(--surface);margin-top:20px;padding:28px 0 40px}
+footer .fgrid{display:grid;gap:18px;grid-template-columns:1fr}
+@media(min-width:720px){footer .fgrid{grid-template-columns:1.3fr 1fr}}
+footer h4{font-size:12.5px;font-weight:600;color:var(--ink-2);margin-bottom:7px}
+footer p,footer li{font-size:12.5px;color:var(--ink-3);font-weight:300;line-height:1.75}
+footer ul{list-style:none}
+footer a{color:var(--ink-2);border-bottom:1px solid var(--line);padding-bottom:1px}
+footer a:hover{color:var(--brand-deep);border-color:var(--brand-deep)}
+.disc{margin-top:20px;padding-top:16px;border-top:1px solid var(--line-soft);font-size:12px;color:var(--ink-3);
+  font-weight:300;line-height:1.7}
+@media(prefers-reduced-motion:reduce){*{animation:none !important;transition:none !important}html{scroll-behavior:auto}}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap hbar">
+    <a class="brand" href="./">
+      <span class="mk">T</span>
+      <span><b>테슬라 주주 계산기</b><small>TSLA · 손익 · 세금 · 전기차 지표</small></span>
+    </a>
+    <div class="hactions">
+      <button class="ghost" id="themeBtn" type="button" aria-label="화면 테마 전환"><span id="themeIco">◐</span><span id="themeTxt">테마</span></button>
+    </div>
+  </div>
+</header>
+
+<nav class="snav" aria-label="섹션 바로가기">
+  <div class="wrap snav-in">
+    <a href="#position">내 수익률</a>
+    <a href="#average">평단 계산</a>
+    <a href="#tax">양도세</a>
+    <a href="#metrics">전기차 지표</a>
+    <a href="#sources">데이터 출처</a>
+  </div>
+</nav>
+
+<main>
+
+<!-- ============ QUOTE ============ -->
+<section style="padding-top:22px">
+  <div class="wrap">
+    <div class="quote">
+      <div class="q-top">
+        <div class="q-id">
+          <span class="mk" style="width:38px;height:38px;border-radius:10px;background:var(--brand);color:#fff;display:grid;place-items:center;font-weight:600;font-family:'IBM Plex Mono',monospace">T</span>
+          <div>
+            <div class="tick">TSLA</div>
+            <div class="nm">Tesla, Inc. · NASDAQ</div>
+          </div>
+        </div>
+        <div>
+          <div class="q-price">
+            <span class="usd num" id="qUsd">—</span>
+            <span class="krw num" id="qKrw">—</span>
+          </div>
+          <div class="hint" id="qAsOf" style="margin-top:4px">불러오는 중…</div>
+        </div>
+        <div class="q-meta">
+          <div class="mi">환율 USD/KRW<b class="num" id="qFx">—</b></div>
+        </div>
+      </div>
+      <div class="q-bottom">
+        <span class="badge" id="qBadge"><span class="dot"></span><span id="qBadgeTxt">확인 중</span></span>
+        <div class="manual-in">
+          <label>주가 $<input type="number" id="inPrice" step="0.01" min="0" inputmode="decimal" aria-label="TSLA 주가 직접 입력(달러)"></label>
+          <label>환율 ₩<input type="number" id="inFx" step="0.1" min="0" inputmode="decimal" aria-label="원달러 환율 직접 입력"></label>
+          <button class="btn btn-s" id="btnRefresh" type="button">시세 새로고침</button>
+        </div>
+      </div>
+    </div>
+    <div class="note mt12"><span class="ic">ℹ️</span><div id="quoteNote">시세는 공개 API에서 가져오며, 차단되거나 실패하면 <b>기준일 종가</b>로 계산합니다. 위 칸에 직접 입력하면 그 값이 항상 우선합니다.</div></div>
+  </div>
+</section>
+
+<!-- ============ POSITION ============ -->
+<section id="position">
+  <div class="wrap">
+    <p class="eyebrow">01 · My position</p>
+    <h2 class="title">수익이 <span style="color:var(--up)">주가</span>에서 났는지 <span style="color:var(--down)">환율</span>에서 났는지</h2>
+    <p class="lead">미국 주식은 두 번 베팅합니다. 주가에 한 번, 달러에 한 번. 매수할 때 환율을 같이 넣으면
+      지금 수익의 몇 퍼센트가 테슬라 덕이고 몇 퍼센트가 환율 덕인지 갈라서 보여드립니다.</p>
+
+    <div class="card pad mt16">
+      <div class="rowsplit">
+        <h3>매수 내역</h3>
+        <span class="hint">환율을 모르면 비워 두세요 — 현재 환율로 계산합니다</span>
+      </div>
+      <div class="lots mt12" id="lots"></div>
+      <div class="lotbar">
+        <button class="btn btn-s" id="btnAddLot" type="button">+ 매수 추가</button>
+        <button class="btn btn-s" id="btnSample" type="button">예시 채우기</button>
+        <button class="btn btn-s" id="btnClear" type="button">비우기</button>
+      </div>
+    </div>
+
+    <div class="stats c4 mt16" role="group" aria-label="보유 요약">
+      <div class="st"><div class="k">보유 주수</div><div class="v num" id="rQty">0</div><div class="s" id="rLots">매수 0건</div></div>
+      <div class="st"><div class="k">평균 단가</div><div class="v num" id="rAvg">$0</div><div class="s" id="rAvgFx">평균 환율 —</div></div>
+      <div class="st"><div class="k">투자 원금</div><div class="v num" id="rCost">₩0</div><div class="s" id="rCostUsd">$0</div></div>
+      <div class="st"><div class="k">현재 평가액</div><div class="v num" id="rVal">₩0</div><div class="s" id="rValUsd">$0</div></div>
+    </div>
+
+    <div class="grid2 mt16">
+      <div class="card pad">
+        <h3>평가 손익</h3>
+        <div class="stats mt12" style="grid-template-columns:1fr 1fr">
+          <div class="st hero"><div class="k">원화 기준</div><div class="v num" id="rPnlKrw">₩0</div><div class="s" id="rRoiKrw">0.00%</div></div>
+          <div class="st hero"><div class="k">달러 기준</div><div class="v num" id="rPnlUsd">$0</div><div class="s" id="rRoiUsd">0.00%</div></div>
+        </div>
+        <div class="note mt12"><span class="ic">💡</span><div id="rInsight">매수 내역을 입력하면 분석이 나옵니다.</div></div>
+      </div>
+
+      <div class="card pad">
+        <h3>원화 손익은 어디서 왔나</h3>
+        <p class="hint mt8">원화 손익 = 주가 효과 + 환율 효과 + 교차 효과</p>
+        <div class="decomp">
+          <div class="dbar" id="dBar" role="img" aria-label="손익 구성 막대"></div>
+          <div class="dlegend">
+            <div class="dlg"><span class="sw" style="background:var(--s1)"></span>주가 효과 <b class="num" id="dPrice">₩0</b></div>
+            <div class="dlg"><span class="sw" style="background:var(--s2)"></span>환율 효과 <b class="num" id="dFx">₩0</b></div>
+            <div class="dlg"><span class="sw" style="background:var(--s3)"></span>교차 효과 <b class="num" id="dCross">₩0</b></div>
+          </div>
+        </div>
+        <div class="note mt12"><span class="ic">🧮</span><div>주가 효과 = 보유주수 × (현재가 − 평단) × <b>매수 당시 환율</b>.
+          환율 효과 = 보유주수 × 평단 × (현재 환율 − 매수 환율). 교차 효과는 둘이 동시에 움직여 생긴 나머지입니다.</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ AVERAGE ============ -->
+<section id="average">
+  <div class="wrap">
+    <p class="eyebrow">02 · Averaging</p>
+    <h2 class="title">평단을 얼마까지 내릴 수 있나</h2>
+    <p class="lead">위에 입력한 보유분을 기준으로, 지금 가격에 더 사면 평단이 어디까지 내려가는지 양방향으로 계산합니다.</p>
+
+    <div class="grid2 mt16">
+      <div class="card pad">
+        <h3>목표 평단 → 필요한 매수</h3>
+        <p class="hint mt8">원하는 평단가를 넣으면 몇 주가 더 필요한지 계산합니다.</p>
+        <label class="field mt12"><span>목표 평단가 (USD)</span>
+          <input type="number" id="inTarget" step="0.01" min="0" inputmode="decimal" placeholder="예: 320"></label>
+        <div class="stats mt12" style="grid-template-columns:1fr 1fr">
+          <div class="st"><div class="k">추가 매수</div><div class="v num" id="aQty">—</div><div class="s">주</div></div>
+          <div class="st"><div class="k">필요 금액</div><div class="v num" id="aCostKrw">—</div><div class="s num" id="aCostUsd">—</div></div>
+        </div>
+        <div class="note mt12" id="aNote"><span class="ic">ℹ️</span><div>보유분과 목표 평단을 넣어 주세요.</div></div>
+      </div>
+
+      <div class="card pad">
+        <h3>추가 매수 → 바뀌는 평단</h3>
+        <p class="hint mt8">몇 주 더 살지 정해져 있다면 이쪽입니다.</p>
+        <label class="field mt12"><span>추가로 살 주수</span>
+          <input type="number" id="inMore" step="0.0001" min="0" inputmode="decimal" placeholder="예: 10"></label>
+        <div class="stats mt12" style="grid-template-columns:1fr 1fr">
+          <div class="st"><div class="k">바뀐 평단</div><div class="v num" id="bAvg">—</div><div class="s" id="bAvgDelta">—</div></div>
+          <div class="st"><div class="k">총 보유</div><div class="v num" id="bQty">—</div><div class="s num" id="bCost">—</div></div>
+        </div>
+        <div class="note mt12"><span class="ic">⚠️</span><div>평단이 내려가는 것과 손실이 줄어드는 것은 다릅니다.
+          물타기는 손실 금액을 줄여주지 않고, <b>본전 가격</b>만 낮춥니다.</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ TAX ============ -->
+<section id="tax">
+  <div class="wrap">
+    <p class="eyebrow">03 · Capital gains tax</p>
+    <h2 class="title">지금 팔면 세금은 얼마</h2>
+    <p class="lead">해외주식 양도차익은 연간 250만원을 빼고 남은 금액에 22%(양도소득세 20% + 지방소득세 2%)가 붙습니다.
+      1월 1일~12월 31일 거래분을 이듬해 5월에 신고·납부합니다.</p>
+
+    <div class="card pad mt16">
+      <div class="rowsplit"><h3>매도 시뮬레이션</h3><span class="hint">평단·환율은 위 보유 내역에서 가져옵니다</span></div>
+      <div class="lot mt12" style="grid-template-columns:1fr 1fr 1fr">
+        <label class="field"><span>매도할 주수</span>
+          <input type="number" id="inSellQty" step="0.0001" min="0" inputmode="decimal" placeholder="0"></label>
+        <label class="field"><span>매도 단가 (USD)</span>
+          <input type="number" id="inSellPrice" step="0.01" min="0" inputmode="decimal" placeholder="현재가"></label>
+        <label class="field"><span>올해 다른 해외주식 손익 (원)</span>
+          <input type="number" id="inOther" step="1" inputmode="numeric" placeholder="0"></label>
+      </div>
+      <div class="lotbar"><button class="btn btn-s" id="btnSellAll" type="button">전량 매도로 채우기</button></div>
+    </div>
+
+    <div class="stats c4 mt16" role="group" aria-label="세금 요약">
+      <div class="st"><div class="k">양도차익 합계</div><div class="v num" id="tGain">₩0</div><div class="s" id="tGainSub">이번 매도 + 기타</div></div>
+      <div class="st"><div class="k">과세표준</div><div class="v num" id="tBase">₩0</div><div class="s">기본공제 250만원 차감</div></div>
+      <div class="st"><div class="k">예상 세액</div><div class="v num" id="tTax">₩0</div><div class="s">세율 22%</div></div>
+      <div class="st hero"><div class="k">세후 실현 손익</div><div class="v num" id="tNet">₩0</div><div class="s" id="tNetSub">—</div></div>
+    </div>
+
+    <div class="grid2 mt16">
+      <div class="card pad">
+        <h3>올해 남은 공제 한도</h3>
+        <p class="hint mt8">기본공제 250만원은 <b>해마다 새로 생기고 이월되지 않습니다.</b> 안 쓰면 사라집니다.</p>
+        <div class="stats mt12" style="grid-template-columns:1fr 1fr">
+          <div class="st"><div class="k">남은 공제</div><div class="v num" id="tRoom">₩2,500,000</div><div class="s">올해 기준</div></div>
+          <div class="st"><div class="k">무세금 매도 가능</div><div class="v num" id="tFreeQty">—</div><div class="s">주 (현재가 기준)</div></div>
+        </div>
+        <div class="note mt12"><span class="ic">💡</span><div id="tTip">공제 한도만큼만 팔고 바로 되사면 평단을 올려 두어 나중에 낼 세금을 줄일 수 있습니다.</div></div>
+      </div>
+      <div class="card pad">
+        <h3>계산에서 빠진 것</h3>
+        <ul class="hint mt8" style="list-style:none;display:flex;flex-direction:column;gap:7px">
+          <li>· <b style="color:var(--ink)">환율 기준</b> — 국세청은 매매 <b style="color:var(--ink)">결제일</b>(보통 T+1) 기준환율을 씁니다. 여기서는 입력한 환율 하나로 계산합니다.</li>
+          <li>· <b style="color:var(--ink)">증권사 수수료·제비용</b>은 빼지 않았습니다. 실제 차익은 이보다 조금 작습니다.</li>
+          <li>· <b style="color:var(--ink)">취득가액 계산법</b>은 증권사마다 선입선출·이동평균이 다릅니다.</li>
+          <li>· <b style="color:var(--ink)">배당소득</b>은 양도세가 아니라 배당소득세(미국 15% 원천징수) 영역입니다.</li>
+        </ul>
+        <div class="note warn mt12"><span class="ic">⚠️</span><div>실제 신고는 반드시 증권사 양도소득 자료와 세무 전문가 확인을 거치세요. 이 계산은 참고용입니다.</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ METRICS ============ -->
+<section id="metrics">
+  <div class="wrap">
+    <p class="eyebrow">04 · EV metrics</p>
+    <h2 class="title">숫자로 보는 테슬라와 전기차 시장</h2>
+    <p class="lead">주가 말고 회사가 실제로 찍어내는 숫자들입니다. 테슬라가 분기마다 직접 발표하는
+      인도량·생산량·에너지 저장장치 배포량과, 글로벌 전기차 판매를 함께 봅니다.</p>
+
+    <div class="stats c4 mt16" role="group" aria-label="핵심 지표">
+      <div class="st"><div class="k">2025 연간 인도량</div><div class="v num">1,636,129</div><div class="s down">−8.6% YoY</div></div>
+      <div class="st"><div class="k">2026 상반기 인도량</div><div class="v num">838,149</div><div class="s up">+16.3% YoY</div></div>
+      <div class="st"><div class="k">2025 에너지 저장장치</div><div class="v num">46.7<span style="font-size:13px"> GWh</span></div><div class="s up">+48.7% YoY</div></div>
+      <div class="st"><div class="k">2025 글로벌 EV 판매</div><div class="v num">20.7<span style="font-size:13px">M대</span></div><div class="s up">+20% YoY</div></div>
+    </div>
+
+    <div class="card pad mt16">
+      <div class="chart-head">
+        <div>
+          <div class="ct">분기별 차량 인도량</div>
+          <div class="cs">같은 분기끼리 연도를 나란히 놓아 계절성을 뺀 비교</div>
+        </div>
+        <div class="seg" role="group" aria-label="보기 전환">
+          <button type="button" data-view="chart" data-target="deliv" aria-pressed="true">차트</button>
+          <button type="button" data-view="table" data-target="deliv" aria-pressed="false">표</button>
+        </div>
+      </div>
+      <div class="legend" id="legDeliv"></div>
+      <div class="figwrap" id="wrapDeliv">
+        <svg class="fig" id="figDeliv" role="img" aria-label="테슬라 분기별 차량 인도량 막대그래프"></svg>
+        <div class="tip" id="tipDeliv"></div>
+      </div>
+      <div class="tscroll mt12" id="tblDeliv" hidden></div>
+      <div class="note mt12"><span class="ic">📦</span><div id="prodNote"></div></div>
+    </div>
+
+    <div class="card pad mt16">
+      <div class="chart-head">
+        <div>
+          <div class="ct">분기별 에너지 저장장치 배포량</div>
+          <div class="cs">메가팩·파워월 설치 용량 (GWh) — 차량보다 빠르게 크는 쪽</div>
+        </div>
+        <div class="seg" role="group" aria-label="보기 전환">
+          <button type="button" data-view="chart" data-target="nrg" aria-pressed="true">차트</button>
+          <button type="button" data-view="table" data-target="nrg" aria-pressed="false">표</button>
+        </div>
+      </div>
+      <div class="legend" id="legNrg"></div>
+      <div class="figwrap" id="wrapNrg">
+        <svg class="fig" id="figNrg" role="img" aria-label="테슬라 분기별 에너지 저장장치 배포량 막대그래프"></svg>
+        <div class="tip" id="tipNrg"></div>
+      </div>
+      <div class="tscroll mt12" id="tblNrg" hidden></div>
+      <div class="note mt12"><span class="ic">🔋</span><div>2023년 14.7 GWh → 2024년 31.4 GWh → 2025년 46.7 GWh.
+        차량 인도량이 두 해 연속 줄어드는 동안 에너지 부문은 3년 만에 3배가 됐습니다.</div></div>
+    </div>
+
+    <div class="card pad mt16">
+      <div class="chart-head">
+        <div>
+          <div class="ct">2025년 BYD vs 테슬라</div>
+          <div class="cs">BYD 합계에는 플러그인 하이브리드(PHEV)가 절반쯤 섞여 있습니다 — 순수 전기차(BEV)만 보면 격차가 줄어듭니다</div>
+        </div>
+        <div class="seg" role="group" aria-label="보기 전환">
+          <button type="button" data-view="chart" data-target="cmp" aria-pressed="true">차트</button>
+          <button type="button" data-view="table" data-target="cmp" aria-pressed="false">표</button>
+        </div>
+      </div>
+      <div class="legend" id="legCmp"></div>
+      <div class="figwrap" id="wrapCmp">
+        <svg class="fig" id="figCmp" role="img" aria-label="2025년 BYD와 테슬라 판매량 비교 막대그래프"></svg>
+        <div class="tip" id="tipCmp"></div>
+      </div>
+      <div class="tscroll mt12" id="tblCmp" hidden></div>
+      <div class="note mt12"><span class="ic">🌏</span><div>테슬라의 글로벌 BEV 점유율은 2024년 16.5%에서 2025년 <b>11.9%</b>로 내려왔습니다.
+        전기차 시장 자체는 20% 커졌는데 테슬라 판매가 8.6% 줄어든 결과입니다.</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SOURCES ============ -->
+<section id="sources" style="padding-bottom:10px">
+  <div class="wrap">
+    <p class="eyebrow">05 · Sources</p>
+    <h2 class="title">데이터 출처</h2>
+    <p class="lead">지표는 전부 원 출처가 공개된 숫자만 담았습니다. 분기 합계가 회사 발표 연간 합계와 맞는지 확인했습니다.</p>
+    <div class="card pad mt16">
+      <div class="tscroll">
+        <table>
+          <thead><tr><th>항목</th><th>기간</th><th>출처</th></tr></thead>
+          <tbody>
+            <tr><td>차량 인도량·생산량</td><td>2024 Q1 ~ 2026 Q2</td><td style="text-align:left;font-family:inherit">Tesla IR 분기 발표 (Form 8-K)</td></tr>
+            <tr><td>에너지 저장장치 배포량</td><td>2024 Q1 ~ 2026 Q2</td><td style="text-align:left;font-family:inherit">Tesla IR 분기 발표</td></tr>
+            <tr><td>BYD 판매량</td><td>2025 연간</td><td style="text-align:left;font-family:inherit">BYD 월간 판매 공시 (CnEVPost 집계)</td></tr>
+            <tr><td>글로벌 EV 판매</td><td>2025 연간</td><td style="text-align:left;font-family:inherit">Rho Motion</td></tr>
+            <tr><td>BEV 점유율</td><td>2024 · 2025</td><td style="text-align:left;font-family:inherit">Autovista24</td></tr>
+            <tr><td>양도소득세 규정</td><td>2026년 신고 기준</td><td style="text-align:left;font-family:inherit">국세청 해외주식 양도소득세 안내</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="note mt12"><span class="ic">🗓️</span><div>지표 기준일 <b id="asOfLabel">—</b>.
+        테슬라는 보통 분기 종료 2~3일 뒤에 인도량을, 2~3주 뒤에 실적을 발표합니다.
+        다음 발표가 나오면 숫자를 갱신해야 합니다.</div></div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="fgrid">
+      <div>
+        <h4>이 페이지에 대해</h4>
+        <p>서학개미용 TSLA 계산기입니다. 입력한 매수 내역은 서버로 가지 않고 브라우저에만 저장됩니다.
+           외부 스크립트 없이 HTML 한 파일로 돌아갑니다.</p>
+      </div>
+      <div>
+        <h4>만든 곳</h4>
+        <ul>
+          <li><a href="/">Cadence · 업무 자동화 스튜디오</a></li>
+          <li><a href="/salary-rank/">내 연봉은 몇 등일까</a></li>
+          <li><a href="/video-editor/">웹컷 · 무료 영상 편집기</a></li>
+        </ul>
+      </div>
+    </div>
+    <p class="disc">이 페이지는 투자 권유나 세무 자문이 아닙니다. 시세·지표는 지연되거나 틀릴 수 있고,
+      세금 계산은 기본 규정만 반영한 참고용입니다. 투자와 신고의 최종 판단과 책임은 이용자 본인에게 있습니다.</p>
+  </div>
+</footer>
+
+<script>
+"use strict";
+
+/* =========================================================================
+   DATA — 모든 수치는 원 출처가 공개된 값만. 갱신할 때는 이 블록만 고치면 됩니다.
+   분기 합계가 회사 발표 연간 합계와 일치하는지 검증 후 기입:
+     2024 인도 386,810+443,956+462,890+495,570 = 1,789,226 (발표치 일치)
+     2025 인도 336,681+384,122+497,099+418,227 = 1,636,129 (발표치 일치)
+     2024 에너지 4.1+9.4+6.9+11.0 = 31.4 GWh (발표치 일치)
+     2025 에너지 10.4+9.6+12.5+14.2 = 46.7 GWh (발표치 일치)
+   ========================================================================= */
+const DATA = {
+  asOf: "2026-09-19",
+  snapshot: {
+    price: 364.27, priceDate: "2026-09-18",
+    fx: 1343.56, fxDate: "2026-09-13"
+  },
+  // d = 인도량, s = 에너지 저장장치 배포량(GWh), p = 생산량(확인된 분기만)
+  quarters: [
+    { y: 2024, q: 1, d: 386810, s: 4.1 },
+    { y: 2024, q: 2, d: 443956, s: 9.4 },
+    { y: 2024, q: 3, d: 462890, s: 6.9 },
+    { y: 2024, q: 4, d: 495570, s: 11.0 },
+    { y: 2025, q: 1, d: 336681, s: 10.4 },
+    { y: 2025, q: 2, d: 384122, s: 9.6 },
+    { y: 2025, q: 3, d: 497099, s: 12.5, p: 447450 },
+    { y: 2025, q: 4, d: 418227, s: 14.2, p: 434358 },
+    { y: 2026, q: 1, d: 358023, s: 8.8, p: 408386 },
+    { y: 2026, q: 2, d: 480126, s: 13.5, p: 451758 }
+  ],
+  // 2025 연간. BYD 합계 2,256,714+2,288,709+57,013 = 4,602,436 (발표치 일치)
+  cmp2025: {
+    segments: [
+      { key: "bev", name: "승용 BEV (순수 전기)", color: "--s1" },
+      { key: "phev", name: "승용 PHEV (플러그인 하이브리드)", color: "--s2" },
+      { key: "comm", name: "상용차 (버스·트럭)", color: "--s3" }
+    ],
+    rows: [
+      { name: "BYD", bev: 2256714, phev: 2288709, comm: 57013 },
+      { name: "테슬라", bev: 1636129, phev: 0, comm: 0 }
+    ]
+  },
+  TAX_DEDUCTION: 2500000,   // 해외주식 양도소득 기본공제 (연 250만원)
+  TAX_RATE: 0.22            // 양도소득세 20% + 지방소득세 2%
+};
+
+/* ---------------------------- helpers ---------------------------- */
+const $ = (id) => document.getElementById(id);
+const nf = new Intl.NumberFormat("ko-KR");
+const clampNum = (v) => (Number.isFinite(v) ? v : 0);
+const num = (el) => { const v = parseFloat(el && el.value); return Number.isFinite(v) ? v : NaN; };
+
+function krw(n) { return "₩" + nf.format(Math.round(clampNum(n))); }
+function usd(n) {
+  return "$" + clampNum(n).toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+}
+function pct(n) { return (n >= 0 ? "+" : "−") + Math.abs(clampNum(n)).toFixed(2) + "%"; }
+function signed(fmt, n) { n = clampNum(n); return !n ? fmt(0) : (n > 0 ? "+" : "−") + fmt(Math.abs(n)); }
+function pnl(fmt, n) {
+  n = clampNum(n);
+  if (!n) return fmt(0);
+  return '<span class="ar">' + (n > 0 ? "▲" : "▼") + "</span>" + fmt(Math.abs(n));
+}
+function arrow(n) { return n > 0 ? "▲ " : n < 0 ? "▼ " : ""; }
+function cls(n) { return n > 0 ? "up" : n < 0 ? "down" : ""; }
+function manwon(n) {  // 40만 / 1,636만 식 축약
+  if (!n) return "0";
+  const m = n / 10000;
+  return (m >= 100 ? nf.format(Math.round(m)) : m.toFixed(m % 1 === 0 ? 0 : 1)) + "만";
+}
+function css(v) { return getComputedStyle(document.documentElement).getPropertyValue(v).trim(); }
+
+const store = {
+  get(k, fb) { try { const v = localStorage.getItem(k); return v == null ? fb : JSON.parse(v); } catch (e) { return fb; } },
+  set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) { /* private mode */ } }
+};
+
+/* ---------------------------- theme ---------------------------- */
+(function theme() {
+  const saved = store.get("tsla.theme", null);
+  if (saved === "dark" || saved === "light") document.documentElement.dataset.theme = saved;
+  const paint = () => {
+    const dark = document.documentElement.dataset.theme
+      ? document.documentElement.dataset.theme === "dark"
+      : matchMedia("(prefers-color-scheme:dark)").matches;
+    $("themeIco").textContent = dark ? "☾" : "☀";
+    $("themeTxt").textContent = dark ? "어둡게" : "밝게";
+  };
+  $("themeBtn").addEventListener("click", () => {
+    const dark = document.documentElement.dataset.theme
+      ? document.documentElement.dataset.theme === "dark"
+      : matchMedia("(prefers-color-scheme:dark)").matches;
+    document.documentElement.dataset.theme = dark ? "light" : "dark";
+    store.set("tsla.theme", document.documentElement.dataset.theme);
+    paint(); drawAll();
+  });
+  matchMedia("(prefers-color-scheme:dark)").addEventListener("change", () => { paint(); drawAll(); });
+  paint();
+})();
+
+/* ---------------------------- market state ---------------------------- */
+const MKT = {
+  price: DATA.snapshot.price,
+  fx: DATA.snapshot.fx,
+  mode: "snapshot",            // live | snapshot | manual
+  priceSrc: DATA.snapshot.priceDate + " 종가",
+  fxSrc: DATA.snapshot.fxDate + " 기준"
+};
+
+function effPrice() { const v = num($("inPrice")); return Number.isFinite(v) && v > 0 ? v : MKT.price; }
+function effFx() { const v = num($("inFx")); return Number.isFinite(v) && v > 0 ? v : MKT.fx; }
+function isManual() {
+  const p = num($("inPrice")), f = num($("inFx"));
+  return (Number.isFinite(p) && p > 0) || (Number.isFinite(f) && f > 0);
+}
+
+function paintQuote() {
+  const p = effPrice(), f = effFx();
+  $("qUsd").textContent = usd(p);
+  $("qKrw").textContent = "≈ " + krw(p * f);
+  $("qFx").textContent = nf.format(Math.round(f * 100) / 100);
+
+  const badge = $("qBadge"), txt = $("qBadgeTxt");
+  badge.className = "badge";
+  if (isManual()) {
+    badge.classList.add("manual"); txt.textContent = "직접 입력";
+    $("qAsOf").textContent = "입력한 값으로 계산 중";
+  } else if (MKT.mode === "live") {
+    badge.classList.add("live"); txt.textContent = "실시간 시세";
+    $("qAsOf").textContent = MKT.priceSrc + " · 환율 " + MKT.fxSrc;
+  } else {
+    badge.classList.add("snap"); txt.textContent = "기준일 스냅샷";
+    $("qAsOf").textContent = MKT.priceSrc + " · 환율 " + MKT.fxSrc + " (실시간 연결 실패)";
+  }
+  recalc();
+}
+
+/* 공개 API에서 시세를 시도합니다. 실패해도 스냅샷으로 계속 동작합니다. */
+async function grab(url, ms) {
+  const ctl = new AbortController();
+  const t = setTimeout(() => ctl.abort(), ms || 7000);
+  try {
+    const r = await fetch(url, { signal: ctl.signal, cache: "no-store" });
+    if (!r.ok) throw new Error("HTTP " + r.status);
+    return await r.text();
+  } finally { clearTimeout(t); }
+}
+
+async function fetchPrice() {
+  const csvUrl = "https://stooq.com/q/l/?s=tsla.us&f=sd2t2ohlcv&h&e=csv";
+  const tries = [csvUrl, "https://api.allorigins.win/raw?url=" + encodeURIComponent(csvUrl)];
+  for (const u of tries) {
+    try {
+      const txt = await grab(u);
+      const line = txt.trim().split("\n")[1];
+      if (!line) continue;
+      const c = line.split(",");
+      const close = parseFloat(c[6]);
+      if (Number.isFinite(close) && close > 0) {
+        MKT.price = close;
+        MKT.priceSrc = (c[1] || "") + " 종가";
+        return true;
+      }
+    } catch (e) { /* 다음 소스로 */ }
+  }
+  return false;
+}
+
+async function fetchFx() {
+  const tries = [
+    { u: "https://api.frankfurter.app/latest?from=USD&to=KRW", pick: (j) => [j.rates && j.rates.KRW, j.date] },
+    { u: "https://open.er-api.com/v6/latest/USD", pick: (j) => [j.rates && j.rates.KRW, (j.time_last_update_utc || "").slice(5, 16)] }
+  ];
+  for (const t of tries) {
+    try {
+      const j = JSON.parse(await grab(t.u));
+      const [rate, when] = t.pick(j);
+      if (Number.isFinite(rate) && rate > 0) { MKT.fx = rate; MKT.fxSrc = (when || "") + " 기준"; return true; }
+    } catch (e) { /* 다음 소스로 */ }
+  }
+  return false;
+}
+
+async function refreshQuote() {
+  const btn = $("btnRefresh");
+  btn.disabled = true; btn.textContent = "불러오는 중…";
+  const [okP, okF] = await Promise.all([fetchPrice(), fetchFx()]);
+  MKT.mode = (okP && okF) ? "live" : "snapshot";
+  if (!okP) { MKT.price = DATA.snapshot.price; MKT.priceSrc = DATA.snapshot.priceDate + " 종가"; }
+  if (!okF) { MKT.fx = DATA.snapshot.fx; MKT.fxSrc = DATA.snapshot.fxDate + " 기준"; }
+  btn.disabled = false; btn.textContent = "시세 새로고침";
+  paintQuote();
+}
+</script>
+
+<script>
+"use strict";
+
+/* ---------------------------- 매수 내역 (lots) ---------------------------- */
+let LOTS = store.get("tsla.lots", null) || [{ q: "", p: "", f: "" }];
+
+function renderLots() {
+  const box = $("lots");
+  box.innerHTML = "";
+  LOTS.forEach((lot, i) => {
+    const row = document.createElement("div");
+    row.className = "lot";
+    row.innerHTML =
+      '<label class="field"><span>주수</span><input type="number" step="0.0001" min="0" inputmode="decimal" data-k="q" placeholder="0"></label>' +
+      '<label class="field"><span>매수 단가 (USD)</span><input type="number" step="0.01" min="0" inputmode="decimal" data-k="p" placeholder="0"></label>' +
+      '<label class="field f-fx"><span>매수 환율 (원/달러)</span><input type="number" step="0.1" min="0" inputmode="decimal" data-k="f" placeholder="현재 환율"></label>' +
+      '<button class="btn-x" type="button" aria-label="' + (i + 1) + '번째 매수 삭제">✕</button>';
+    row.querySelectorAll("input").forEach((inp) => {
+      inp.value = lot[inp.dataset.k];
+      inp.addEventListener("input", () => { LOTS[i][inp.dataset.k] = inp.value; save(); recalc(); });
+    });
+    row.querySelector(".btn-x").addEventListener("click", () => {
+      LOTS.splice(i, 1);
+      if (!LOTS.length) LOTS.push({ q: "", p: "", f: "" });
+      save(); renderLots(); recalc();
+    });
+    box.appendChild(row);
+  });
+}
+function save() { store.set("tsla.lots", LOTS); }
+
+/* ---------------------------- 포지션 계산 ---------------------------- */
+function position() {
+  const F1 = effFx();
+  let Q = 0, usdCost = 0, krwCost = 0, n = 0;
+  for (const l of LOTS) {
+    const q = parseFloat(l.q), p = parseFloat(l.p);
+    if (!Number.isFinite(q) || !Number.isFinite(p) || q <= 0 || p <= 0) continue;
+    const fRaw = parseFloat(l.f);
+    const f = Number.isFinite(fRaw) && fRaw > 0 ? fRaw : F1;
+    Q += q; usdCost += q * p; krwCost += q * p * f; n++;
+  }
+  if (Q <= 0) return null;
+  const P0 = usdCost / Q;          // 평단 (USD)
+  const F0 = krwCost / usdCost;    // 금액 가중 평균 매수 환율
+  const P1 = effPrice();
+  return {
+    n, Q, P0, F0, P1, F1, usdCost, krwCost,
+    valUsd: Q * P1,
+    valKrw: Q * P1 * F1,
+    pnlUsd: Q * P1 - usdCost,
+    pnlKrw: Q * P1 * F1 - krwCost,
+    priceEff: Q * (P1 - P0) * F0,
+    fxEff: Q * P0 * (F1 - F0),
+    crossEff: Q * (P1 - P0) * (F1 - F0)
+  };
+}
+
+function paintPosition(s) {
+  if (!s) {
+    $("rQty").textContent = "0"; $("rLots").textContent = "매수 0건";
+    $("rAvg").textContent = "$0"; $("rAvgFx").textContent = "평균 환율 —";
+    $("rCost").textContent = "₩0"; $("rCostUsd").textContent = "$0";
+    $("rVal").textContent = "₩0"; $("rValUsd").textContent = "$0";
+    $("rPnlKrw").textContent = "₩0"; $("rPnlKrw").className = "v num";
+    $("rRoiKrw").textContent = "0.00%"; $("rRoiKrw").className = "s";
+    $("rPnlUsd").textContent = "$0"; $("rPnlUsd").className = "v num";
+    $("rRoiUsd").textContent = "0.00%"; $("rRoiUsd").className = "s";
+    $("rInsight").textContent = "매수 주수와 단가를 넣으면 주가·환율 손익을 갈라서 보여드립니다.";
+    $("dBar").innerHTML = "";
+    $("dPrice").textContent = "₩0"; $("dFx").textContent = "₩0"; $("dCross").textContent = "₩0";
+    return;
+  }
+  const roiK = (s.pnlKrw / s.krwCost) * 100, roiU = (s.pnlUsd / s.usdCost) * 100;
+  $("rQty").textContent = nf.format(Math.round(s.Q * 10000) / 10000);
+  $("rLots").textContent = "매수 " + s.n + "건";
+  $("rAvg").textContent = usd(s.P0);
+  $("rAvgFx").textContent = "평균 환율 " + nf.format(Math.round(s.F0));
+  $("rCost").textContent = krw(s.krwCost); $("rCostUsd").textContent = usd(s.usdCost);
+  $("rVal").textContent = krw(s.valKrw); $("rValUsd").textContent = usd(s.valUsd);
+
+  $("rPnlKrw").innerHTML = pnl(krw, s.pnlKrw);
+  $("rPnlKrw").className = "v num " + cls(s.pnlKrw);
+  $("rRoiKrw").textContent = pct(roiK); $("rRoiKrw").className = "s " + cls(s.pnlKrw);
+  $("rPnlUsd").innerHTML = pnl(usd, s.pnlUsd);
+  $("rPnlUsd").className = "v num " + cls(s.pnlUsd);
+  $("rRoiUsd").textContent = pct(roiU); $("rRoiUsd").className = "s " + cls(s.pnlUsd);
+
+  $("dPrice").textContent = signed(krw, s.priceEff);
+  $("dFx").textContent = signed(krw, s.fxEff);
+  $("dCross").textContent = signed(krw, s.crossEff);
+
+  // 구성 막대 — 절대값 비중으로 그리고 부호는 범례 금액으로 읽습니다
+  const parts = [
+    { v: s.priceEff, c: "--s1", n: "주가" },
+    { v: s.fxEff, c: "--s2", n: "환율" },
+    { v: s.crossEff, c: "--s3", n: "교차" }
+  ];
+  const tot = parts.reduce((a, b) => a + Math.abs(b.v), 0);
+  const bar = $("dBar");
+  bar.innerHTML = "";
+  if (tot > 0) {
+    parts.forEach((p) => {
+      const share = Math.abs(p.v) / tot;
+      if (share < 0.002) return;
+      const d = document.createElement("div");
+      d.className = "dseg";
+      d.style.flex = share;
+      d.style.background = "var(" + p.c + ")";
+      d.textContent = share > 0.13 ? Math.round(share * 100) + "%" : "";
+      d.title = p.n + " 효과 " + signed(krw, p.v);
+      bar.appendChild(d);
+    });
+  }
+
+  // 한 줄 해설
+  const fxShare = tot > 0 ? Math.abs(s.fxEff + s.crossEff) / tot : 0;
+  let msg;
+  if (Math.abs(s.pnlKrw) < 1) msg = "지금은 본전 근처입니다.";
+  else if (s.priceEff >= 0 && s.fxEff >= 0)
+    msg = "주가도 환율도 같은 편입니다. 원화 수익 " + signed(krw, s.pnlKrw) + " 중 환율이 만든 몫이 " +
+      Math.round(fxShare * 100) + "%입니다.";
+  else if (s.priceEff < 0 && s.fxEff > 0)
+    msg = "주가로는 " + signed(usd, s.pnlUsd) + " 잃었지만 환율이 " + signed(krw, s.fxEff) +
+      " 메워줬습니다. 달러가 내려가면 이 완충은 사라집니다.";
+  else if (s.priceEff > 0 && s.fxEff < 0)
+    msg = "주가는 올랐는데 환율이 " + signed(krw, s.fxEff) + " 깎아먹었습니다. 살 때보다 원화가 강해졌습니다.";
+  else
+    msg = "주가와 환율이 함께 불리하게 움직였습니다. 원화 손실 " + signed(krw, s.pnlKrw) + ".";
+  $("rInsight").textContent = msg;
+}
+
+/* ---------------------------- 평단 계산 ---------------------------- */
+function paintAverage(s) {
+  const P1 = effPrice(), F1 = effFx();
+  const T = num($("inTarget")), more = num($("inMore"));
+  const note = $("aNote").querySelector("div");
+
+  if (!s || !Number.isFinite(T) || T <= 0) {
+    $("aQty").textContent = "—"; $("aCostKrw").textContent = "—"; $("aCostUsd").textContent = "—";
+    note.textContent = s ? "목표 평단가를 넣어 주세요." : "먼저 위에 보유 내역을 입력해 주세요.";
+  } else if ((s.P0 > P1 && (T <= P1 || T >= s.P0)) || (s.P0 < P1 && (T >= P1 || T <= s.P0)) || T === P1) {
+    $("aQty").textContent = "—"; $("aCostKrw").textContent = "—"; $("aCostUsd").textContent = "—";
+    const lo = Math.min(s.P0, P1), hi = Math.max(s.P0, P1);
+    note.innerHTML = "추가 매수로 만들 수 있는 평단은 <b>" + usd(lo) + " ~ " + usd(hi) +
+      "</b> 사이뿐입니다. 현재가(" + usd(P1) + ")를 넘어설 수는 없습니다.";
+  } else {
+    const x = (s.Q * (s.P0 - T)) / (T - P1);
+    const costUsd = x * P1;
+    $("aQty").textContent = nf.format(Math.round(x * 100) / 100);
+    $("aCostKrw").textContent = krw(costUsd * F1);
+    $("aCostUsd").textContent = usd(costUsd);
+    note.innerHTML = "지금 가격 " + usd(P1) + "로 <b>" + nf.format(Math.round(x * 100) / 100) +
+      "주</b>를 더 사면 평단이 " + usd(s.P0) + " → <b>" + usd(T) + "</b>가 됩니다.";
+  }
+
+  if (!s || !Number.isFinite(more) || more <= 0) {
+    $("bAvg").textContent = "—"; $("bAvgDelta").textContent = "—";
+    $("bQty").textContent = "—"; $("bCost").textContent = "—";
+  } else {
+    const newQ = s.Q + more, newCostUsd = s.usdCost + more * P1, newAvg = newCostUsd / newQ;
+    const delta = newAvg - s.P0;
+    $("bAvg").textContent = usd(newAvg);
+    $("bAvgDelta").textContent = (delta === 0 ? "변화 없음" : (delta < 0 ? "▼ " : "▲ ") + usd(Math.abs(delta)));
+    $("bAvgDelta").className = "s " + (delta < 0 ? "down" : delta > 0 ? "up" : "");
+    $("bQty").textContent = nf.format(Math.round(newQ * 10000) / 10000) + "주";
+    $("bCost").textContent = "추가 " + krw(more * P1 * F1);
+  }
+}
+
+/* ---------------------------- 양도소득세 ---------------------------- */
+function paintTax(s) {
+  const F1 = effFx();
+  const sq = num($("inSellQty"));
+  const spRaw = num($("inSellPrice"));
+  const sp = Number.isFinite(spRaw) && spRaw > 0 ? spRaw : effPrice();
+  const other = Number.isFinite(num($("inOther"))) ? num($("inOther")) : 0;
+
+  let gain = 0, perShare = 0;
+  if (s && Number.isFinite(sq) && sq > 0) {
+    const q = Math.min(sq, s.Q);
+    perShare = sp * F1 - s.P0 * s.F0;
+    gain = q * perShare;
+  }
+  const total = gain + other;
+  const base = Math.max(0, total - DATA.TAX_DEDUCTION);
+  const tax = base * DATA.TAX_RATE;
+  const net = total - tax;
+
+  $("tGain").innerHTML = pnl(krw, total);
+  $("tGain").className = "v num " + cls(total);
+  $("tGainSub").textContent = "이번 매도 " + signed(krw, gain) + " + 기타 " + signed(krw, other);
+  $("tBase").textContent = krw(base);
+  $("tTax").textContent = tax > 0 ? "−" + krw(tax) : "₩0";
+  $("tTax").className = "v num " + (tax > 0 ? "down" : "");
+  $("tNet").innerHTML = pnl(krw, net);
+  $("tNet").className = "v num " + cls(net);
+  $("tNetSub").textContent = total > 0
+    ? "실효세율 " + (total > 0 ? ((tax / total) * 100).toFixed(1) : "0.0") + "%"
+    : (total < 0 ? "손실은 내년으로 이월되지 않습니다" : "—");
+
+  const room = Math.max(0, DATA.TAX_DEDUCTION - other);
+  $("tRoom").textContent = krw(room);
+  if (!s) {
+    $("tFreeQty").textContent = "—";
+    $("tTip").textContent = "보유 내역을 넣으면 세금 없이 팔 수 있는 주수를 알려드립니다.";
+  } else {
+    const gps = effPrice() * F1 - s.P0 * s.F0;   // 1주당 실현 차익(원)
+    if (gps <= 0) {
+      $("tFreeQty").textContent = "전량";
+      $("tTip").innerHTML = "지금 팔면 <b>손실 구간</b>이라 양도세가 없습니다. 오히려 이 손실을 실현해 두면 " +
+        "같은 해 다른 종목의 이익과 <b>손익통산</b>되어 세금을 줄입니다.";
+    } else {
+      const free = Math.min(s.Q, room / gps);
+      $("tFreeQty").textContent = nf.format(Math.round(free * 100) / 100);
+      $("tTip").innerHTML = "올해 <b>" + nf.format(Math.round(free * 100) / 100) + "주</b>까지는 팔아도 세금이 0원입니다" +
+        (free >= s.Q ? " (보유 전량)." : ". 공제는 해를 넘기면 사라집니다.");
+    }
+  }
+}
+
+/* ---------------------------- recalc ---------------------------- */
+function recalc() {
+  const s = position();
+  paintPosition(s); paintAverage(s); paintTax(s);
+}
+</script>
+
+<script>
+"use strict";
+
+/* ========================= charts (inline SVG, no libs) ========================= */
+const SVGNS = "http://www.w3.org/2000/svg";
+const YEARS = [2024, 2025, 2026];
+const YCOL = { 2024: "--s1", 2025: "--s2", 2026: "--s3" };
+const QNAME = ["1분기", "2분기", "3분기", "4분기"];
+
+function el(tag, attrs, style) {
+  const n = document.createElementNS(SVGNS, tag);
+  for (const k in attrs) if (attrs[k] != null) n.setAttribute(k, attrs[k]);
+  if (style) n.setAttribute("style", style);
+  return n;
+}
+/* 눈금이 1/2/2.5/5 × 10^k 로만 떨어지게 잡습니다 (12.5만 같은 눈금 방지) */
+function niceScale(v, want) {
+  if (!(v > 0)) return { max: 1, step: 1, ticks: 1 };
+  const raw = v / (want || 5);
+  const p = Math.pow(10, Math.floor(Math.log10(raw))), n = raw / p;
+  const step = (n <= 1 ? 1 : n <= 2 ? 2 : n <= 2.5 ? 2.5 : n <= 5 ? 5 : 10) * p;
+  const max = Math.ceil(v / step - 1e-9) * step;
+  return { max: max, step: step, ticks: Math.round(max / step) };
+}
+function barTop(x, y, w, h, r) {   // 데이터 끝만 둥글게, 바닥은 기준선에 붙임
+  r = Math.max(0, Math.min(r, w / 2, h));
+  return "M" + x + "," + (y + h) + "L" + x + "," + (y + r) + "Q" + x + "," + y + " " + (x + r) + "," + y +
+    "L" + (x + w - r) + "," + y + "Q" + (x + w) + "," + y + " " + (x + w) + "," + (y + r) +
+    "L" + (x + w) + "," + (y + h) + "Z";
+}
+function groupsOf(field) {
+  return [1, 2, 3, 4].map((q) => ({
+    q,
+    vals: YEARS.map((y) => {
+      const r = DATA.quarters.find((r2) => r2.y === y && r2.q === q);
+      return { y, v: r ? r[field] : null };
+    })
+  }));
+}
+
+/* ---- 연도별 묶음 막대 ---- */
+function drawGrouped(svgId, tipId, field, fmtTick, fmtVal) {
+  const svg = $(svgId), wrap = svg.parentElement;
+  const W = Math.max(280, wrap.clientWidth || 320);
+  const small = W < 560;
+  const H = small ? 244 : 292;
+  const L = small ? 40 : 48, R = 8, T = 22, B = 36;
+  const pw = W - L - R, ph = H - T - B;
+  const data = groupsOf(field);
+  const sc = niceScale(Math.max.apply(null, data.flatMap((g) => g.vals.map((v) => v.v || 0))), 5);
+  const max = sc.max, ticks = sc.ticks, yOf = (v) => T + ph - (v / max) * ph;
+
+  svg.setAttribute("width", W); svg.setAttribute("height", H);
+  svg.setAttribute("viewBox", "0 0 " + W + " " + H);
+  while (svg.firstChild) svg.removeChild(svg.firstChild);
+
+  for (let i = 0; i <= ticks; i++) {
+    const v = (max / ticks) * i, y = yOf(v);
+    svg.appendChild(el("line", { x1: L, x2: L + pw, y1: y, y2: y, class: i === 0 ? "baseline" : "gridline" }));
+    svg.appendChild(Object.assign(el("text", { x: L - 7, y: y + 3.5, "text-anchor": "end", class: "axis" }),
+      { textContent: fmtTick(v) }));
+  }
+
+  const gw = pw / 4, inner = gw * 0.80, gap = 2;
+  const bw = (inner - gap * (YEARS.length - 1)) / YEARS.length;
+
+  data.forEach((g, gi) => {
+    const gx = L + gw * gi, cx = gx + gw / 2;
+    const band = el("rect", { x: gx + 1, y: T - 6, width: gw - 2, height: ph + 6, rx: 7, class: "band", fill: "transparent" });
+    svg.appendChild(band);
+
+    g.vals.forEach((d, si) => {
+      if (d.v == null) return;
+      const x = gx + (gw - inner) / 2 + si * (bw + gap);
+      const h = Math.max(1, (d.v / max) * ph), y = T + ph - h;
+      svg.appendChild(el("path", { d: barTop(x, y, bw, h, 4) }, "fill:var(" + YCOL[d.y] + ")"));
+      if (d.y === 2026) {   // 최신 연도만 직접 라벨 (모든 막대에 숫자를 달지 않음)
+        svg.appendChild(Object.assign(
+          el("text", { x: x + bw / 2, y: y - 6, "text-anchor": "middle", class: "dlabel" }),
+          { textContent: fmtVal(d.v) }));
+      }
+    });
+
+    svg.appendChild(Object.assign(
+      el("text", { x: cx, y: H - 12, "text-anchor": "middle", class: "axis" }), { textContent: QNAME[gi] }));
+
+    const hit = el("rect", { x: gx, y: T - 8, width: gw, height: ph + 8, class: "hit" });
+    const show = () => {
+      band.classList.add("on");
+      const tip = $(tipId);
+      tip.innerHTML = '<div class="th">' + QNAME[gi] + "</div>" +
+        g.vals.map((d) => '<div class="tr"><span class="nm"><span class="sw" style="background:var(' +
+          YCOL[d.y] + ')"></span>' + d.y + "년</span><b>" + (d.v == null ? "—" : fmtVal(d.v)) + "</b></div>").join("");
+      tip.classList.add("on");
+      const maxL = wrap.clientWidth - 8, half = tip.offsetWidth / 2;
+      tip.style.left = Math.max(half + 4, Math.min(cx, maxL - half)) + "px";
+      tip.style.top = (T + 4) + "px";
+    };
+    const hide = () => { band.classList.remove("on"); $(tipId).classList.remove("on"); };
+    hit.addEventListener("mouseenter", show);
+    hit.addEventListener("mousemove", show);
+    hit.addEventListener("mouseleave", hide);
+    hit.addEventListener("touchstart", (e) => { show(); e.stopPropagation(); }, { passive: true });
+    svg.appendChild(hit);
+  });
+  wrap.addEventListener("touchend", () => setTimeout(() => $(tipId).classList.remove("on"), 1800), { passive: true });
+}
+
+/* ---- 가로 누적 막대 (BYD vs 테슬라) ---- */
+function drawCompare() {
+  const svg = $("figCmp"), wrap = svg.parentElement, tip = $("tipCmp");
+  const W = Math.max(280, wrap.clientWidth || 320);
+  const small = W < 560;
+  const L = small ? 52 : 64, R = small ? 8 : 12, T = 10, B = 26;
+  const rowH = 38, gapY = small ? 30 : 34;
+  const rows = DATA.cmp2025.rows, segs = DATA.cmp2025.segments;
+  const H = T + rows.length * (rowH + gapY) + B;
+  const pw = W - L - R;
+  const totals = rows.map((r) => segs.reduce((a, s) => a + r[s.key], 0));
+  const sc = niceScale(Math.max.apply(null, totals), 5);
+  const max = sc.max, xticks = sc.ticks, xOf = (v) => (v / max) * pw;
+
+  svg.setAttribute("width", W); svg.setAttribute("height", H);
+  svg.setAttribute("viewBox", "0 0 " + W + " " + H);
+  while (svg.firstChild) svg.removeChild(svg.firstChild);
+
+  for (let i = 0; i <= xticks; i++) {
+    const v = (max / xticks) * i, x = L + xOf(v);
+    svg.appendChild(el("line", { x1: x, x2: x, y1: T, y2: H - B + 4, class: i === 0 ? "baseline" : "gridline" }));
+    svg.appendChild(Object.assign(el("text", { x: x, y: H - B + 18, "text-anchor": "middle", class: "axis" }),
+      { textContent: v === 0 ? "0" : (v / 1e6).toFixed(v % 1e6 === 0 ? 0 : 1) + "M" }));
+  }
+
+  rows.forEach((r, ri) => {
+    const y = T + ri * (rowH + gapY);
+    svg.appendChild(Object.assign(
+      el("text", { x: L, y: y - 7, class: "axis-name" }),
+      { textContent: r.name + " · " + nf.format(totals[ri]) + "대" }));
+    let x = L;
+    segs.forEach((s) => {
+      const v = r[s.key];
+      if (!v) return;
+      const w = Math.max(2, xOf(v) - 2);
+      svg.appendChild(el("rect", { x: x, y: y, width: w, height: rowH, rx: 4 }, "fill:var(" + s.color + ")"));
+      if (w > (small ? 62 : 84)) {
+        svg.appendChild(Object.assign(
+          el("text", { x: x + w / 2, y: y + rowH / 2 + 4, "text-anchor": "middle", class: "dlabel" },
+            "fill:#fff;font-weight:600"),
+          { textContent: (v / 1e6).toFixed(2) + "M" }));
+      }
+      const hit = el("rect", { x: x, y: y, width: w, height: rowH, class: "hit" });
+      const cx = x + w / 2, cy = y;
+      hit.addEventListener("mouseenter", () => {
+        tip.innerHTML = '<div class="th">' + r.name + " · 2025</div>" +
+          '<div class="tr"><span class="nm"><span class="sw" style="background:var(' + s.color + ')"></span>' +
+          s.name + "</span><b>" + nf.format(v) + "</b></div>" +
+          '<div class="tr"><span class="nm">합계</span><b>' + nf.format(totals[ri]) + "</b></div>";
+        tip.classList.add("on");
+        const maxL = wrap.clientWidth - 8, half = tip.offsetWidth / 2;
+        tip.style.left = Math.max(half + 4, Math.min(cx, maxL - half)) + "px";
+        tip.style.top = cy + "px";
+      });
+      hit.addEventListener("mouseleave", () => tip.classList.remove("on"));
+      svg.appendChild(hit);
+      x += xOf(v);
+    });
+  });
+}
+
+/* ---- 표 보기 ---- */
+function buildTables() {
+  const rowsHtml = (field, fmt) => [1, 2, 3, 4].map((q) => {
+    const cells = YEARS.map((y) => {
+      const r = DATA.quarters.find((r2) => r2.y === y && r2.q === q);
+      return "<td>" + (r ? fmt(r[field]) : "—") + "</td>";
+    }).join("");
+    return "<tr><td>" + QNAME[q - 1] + "</td>" + cells + "</tr>";
+  }).join("");
+  const totals = (field, fmt) => "<tr class='tfoot'><td>연간</td>" + YEARS.map((y) => {
+    const rs = DATA.quarters.filter((r) => r.y === y);
+    const sum = rs.reduce((a, r) => a + r[field], 0);
+    return "<td>" + (rs.length === 4 ? fmt(sum) : fmt(sum) + "*") + "</td>";
+  }).join("") + "</tr>";
+  const head = "<thead><tr><th>분기</th>" + YEARS.map((y) => "<th>" + y + "</th>").join("") + "</tr></thead>";
+
+  $("tblDeliv").innerHTML = "<table>" + head + "<tbody>" + rowsHtml("d", (v) => nf.format(v)) +
+    totals("d", (v) => nf.format(v)) + "</tbody></table>" +
+    "<p class='hint mt8'>* 2026년은 상반기까지의 합계입니다. 단위: 대</p>";
+  $("tblNrg").innerHTML = "<table>" + head + "<tbody>" + rowsHtml("s", (v) => v.toFixed(1)) +
+    totals("s", (v) => v.toFixed(1)) + "</tbody></table>" +
+    "<p class='hint mt8'>* 2026년은 상반기까지의 합계입니다. 단위: GWh</p>";
+
+  const segs = DATA.cmp2025.segments;
+  $("tblCmp").innerHTML = "<table><thead><tr><th>구분</th>" +
+    segs.map((s) => "<th>" + s.name.replace(/ \(.*\)/, "") + "</th>").join("") + "<th>합계</th></tr></thead><tbody>" +
+    DATA.cmp2025.rows.map((r) => "<tr><td>" + r.name + "</td>" +
+      segs.map((s) => "<td>" + (r[s.key] ? nf.format(r[s.key]) : "—") + "</td>").join("") +
+      "<td>" + nf.format(segs.reduce((a, s) => a + r[s.key], 0)) + "</td></tr>").join("") +
+    "</tbody></table><p class='hint mt8'>2025년 연간, 단위: 대</p>";
+}
+
+function buildLegends() {
+  const yrs = YEARS.map((y) => '<span class="lg"><span class="sw" style="background:var(' + YCOL[y] + ')"></span>' + y + "년</span>").join("");
+  $("legDeliv").innerHTML = yrs;
+  $("legNrg").innerHTML = yrs;
+  $("legCmp").innerHTML = DATA.cmp2025.segments.map((s) =>
+    '<span class="lg"><span class="sw" style="background:var(' + s.color + ')"></span>' + s.name + "</span>").join("");
+}
+
+function drawAll() {
+  drawGrouped("figDeliv", "tipDeliv", "d", (v) => manwon(v), (v) => nf.format(v));
+  drawGrouped("figNrg", "tipNrg", "s", (v) => v.toFixed(0), (v) => v.toFixed(1) + " GWh");
+  drawCompare();
+}
+
+/* ---------------------------- init ---------------------------- */
+(function init() {
+  renderLots();
+  buildLegends();
+  buildTables();
+  drawAll();
+
+  $("asOfLabel").textContent = DATA.asOf;
+
+  const last = DATA.quarters[DATA.quarters.length - 1];
+  const diff = last.p - last.d;
+  $("prodNote").innerHTML = "가장 최근 분기(" + last.y + "년 " + QNAME[last.q - 1] + ")는 생산 <b>" +
+    nf.format(last.p) + "대</b>에 인도 <b>" + nf.format(last.d) + "대</b>. " +
+    (diff < 0
+      ? "인도가 생산보다 " + nf.format(-diff) + "대 많아 재고가 그만큼 줄었습니다."
+      : "생산이 인도보다 " + nf.format(diff) + "대 많아 재고가 그만큼 쌓였습니다.");
+
+  ["inPrice", "inFx"].forEach((id) => $(id).addEventListener("input", paintQuote));
+  ["inTarget", "inMore", "inSellQty", "inSellPrice", "inOther"].forEach((id) => $(id).addEventListener("input", recalc));
+  $("btnRefresh").addEventListener("click", refreshQuote);
+
+  $("btnAddLot").addEventListener("click", () => {
+    LOTS.push({ q: "", p: "", f: "" }); save(); renderLots();
+    const rows = $("lots").querySelectorAll(".lot input");
+    if (rows.length) rows[rows.length - 3].focus();
+  });
+  $("btnSample").addEventListener("click", () => {
+    LOTS = [{ q: "10", p: "240.50", f: "1310" }, { q: "5", p: "412.00", f: "1455" }];
+    save(); renderLots(); recalc();
+  });
+  $("btnClear").addEventListener("click", () => {
+    LOTS = [{ q: "", p: "", f: "" }]; save(); renderLots(); recalc();
+  });
+  $("btnSellAll").addEventListener("click", () => {
+    const s = position();
+    if (!s) return;
+    $("inSellQty").value = Math.round(s.Q * 10000) / 10000;
+    $("inSellPrice").value = effPrice().toFixed(2);
+    recalc();
+  });
+
+  document.querySelectorAll(".seg button").forEach((b) => {
+    b.addEventListener("click", () => {
+      const t = b.dataset.target, view = b.dataset.view;
+      b.parentElement.querySelectorAll("button").forEach((x) =>
+        x.setAttribute("aria-pressed", String(x.dataset.view === view)));
+      const wrapId = "wrap" + t[0].toUpperCase() + t.slice(1);
+      const tblId = "tbl" + t[0].toUpperCase() + t.slice(1);
+      const legId = "leg" + t[0].toUpperCase() + t.slice(1);
+      $(wrapId).hidden = view === "table";
+      $(legId).hidden = view === "table";
+      $(tblId).hidden = view !== "table";
+      if (view === "chart") drawAll();
+    });
+  });
+
+  let rt;
+  addEventListener("resize", () => { clearTimeout(rt); rt = setTimeout(drawAll, 140); });
+
+  paintQuote();
+  refreshQuote();
+})();
+</script>
+</body>
+</html>
