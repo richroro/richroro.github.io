@@ -4,6 +4,11 @@
 //   node cards/tools/shorts.mjs cards/tools/content/0006-younger-me.json
 //   -> cards/<slug>/shorts.mp4
 //
+// With --frames=<dir>, it uses frames another renderer already produced (and
+// that dir's manifest.json for the hold times) instead of rendering cards:
+//   node cards/tools/rankcards.mjs <content.json> /tmp/f
+//   node cards/tools/shorts.mjs <content.json> --frames=/tmp/f --out=shorts.mp4
+//
 // Needs ffmpeg (libx264 + aac) and python3 with numpy for the bgm.
 import { readFileSync, mkdtempSync, rmSync } from 'node:fs';
 import { dirname, resolve, join } from 'node:path';
@@ -24,31 +29,43 @@ if (!process.argv[2]) {
   console.error('usage: node cards/tools/shorts.mjs <content.json>');
   process.exit(1);
 }
+const arg = (k) => (process.argv.find((a) => a.startsWith(`--${k}=`)) || '').split('=')[1];
 const contentPath = resolve(process.argv[2]);
 const data = JSON.parse(readFileSync(contentPath, 'utf8'));
-const outFile = resolve(HERE, '..', data.slug, 'shorts.mp4');
+const framesDir = arg('frames') ? resolve(arg('frames')) : null;
+const outFile = resolve(HERE, '..', data.slug, arg('out') || 'shorts.mp4');
+const slide = Number(arg('slide') || SLIDE);
 
 const run = (cmd, args) => execFileSync(cmd, args, { stdio: 'inherit' });
 const tmp = mkdtempSync(join(tmpdir(), 'shorts-'));
 
 try {
-  console.log('1/3  rendering 9:16 frames');
-  run('node', [resolve(HERE, 'render.mjs'), contentPath, join(tmp, 'frames'), '--frame=1080x1920']);
-
-  const durations = [COVER, ...data.lists.map(() => LIST), OUTRO];
-  const names = [
-    '01_cover.png',
-    ...data.lists.map((_, i) => `${String(i + 2).padStart(2, '0')}_list${String(i + 1).padStart(2, '0')}.png`),
-    `${String(data.lists.length + 2).padStart(2, '0')}_outro.png`,
-  ];
-  const total = durations.reduce((a, d) => a + d, 0) - (durations.length - 1) * SLIDE;
+  let dir, names, durations;
+  if (framesDir) {
+    console.log('1/3  using prepared frames');
+    dir = framesDir;
+    const manifest = JSON.parse(readFileSync(join(dir, 'manifest.json'), 'utf8'));
+    names = manifest.map((m) => m.file);
+    durations = manifest.map((m) => m.seconds);
+  } else {
+    console.log('1/3  rendering 9:16 frames');
+    run('node', [resolve(HERE, 'render.mjs'), contentPath, join(tmp, 'frames'), '--frame=1080x1920']);
+    dir = join(tmp, 'frames');
+    durations = [COVER, ...data.lists.map(() => LIST), OUTRO];
+    names = [
+      '01_cover.png',
+      ...data.lists.map((_, i) => `${String(i + 2).padStart(2, '0')}_list${String(i + 1).padStart(2, '0')}.png`),
+      `${String(data.lists.length + 2).padStart(2, '0')}_outro.png`,
+    ];
+  }
+  const total = durations.reduce((a, d) => a + d, 0) - (durations.length - 1) * slide;
 
   console.log(`2/3  writing bgm (${total.toFixed(1)}s)`);
   const bgm = join(tmp, 'bgm.wav');
   run('python3', [resolve(HERE, 'bgm.py'), bgm, total.toFixed(2)]);
 
   console.log('3/3  encoding');
-  const inputs = names.flatMap((n, i) => ['-loop', '1', '-t', String(durations[i]), '-i', join(tmp, 'frames', n)]);
+  const inputs = names.flatMap((n, i) => ['-loop', '1', '-t', String(durations[i]), '-i', join(dir, n)]);
 
   // Normalise every still, then slide each one over the last. xfade's offset is
   // measured on the chain built so far, which is why it tracks the running total.
@@ -57,8 +74,8 @@ try {
   let last = '[v0]';
   for (let i = 1; i < names.length; i++) {
     const tag = `[x${i}]`;
-    steps.push(`${last}[v${i}]xfade=transition=slideleft:duration=${SLIDE}:offset=${(acc - SLIDE).toFixed(3)}${tag}`);
-    acc += durations[i] - SLIDE;
+    steps.push(`${last}[v${i}]xfade=transition=slideleft:duration=${slide}:offset=${(acc - slide).toFixed(3)}${tag}`);
+    acc += durations[i] - slide;
     last = tag;
   }
 

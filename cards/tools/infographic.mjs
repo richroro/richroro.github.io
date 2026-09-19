@@ -29,6 +29,45 @@ const font = (f) => `url(data:font/ttf;base64,${readFileSync(resolve(FONT_DIR, f
 const esc = (s) => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 const img = (p) => `data:image/png;base64,${readFileSync(p).toString('base64')}`;
 
+// Decorative building silhouettes. These stand in for photography we have no
+// licence to use; they are not drawings of the actual buildings, which the
+// footer says outright. Varying the shape keeps a long list from flattening.
+const SLOT_BG = '#2b2622';
+
+// Windows are punched in the slot's background colour - drawn in the body
+// colour they simply vanish into it.
+const windows = (x, y, w, h, cols, rows, gap = 4) => {
+  const cw = (w - gap * (cols - 1)) / cols;
+  const ch = (h - gap * (rows - 1)) / rows;
+  let out = '';
+  for (let c = 0; c < cols; c++)
+    for (let r = 0; r < rows; r++)
+      out += `<rect x="${(x + c * (cw + gap)).toFixed(1)}" y="${(y + r * (ch + gap)).toFixed(1)}" ` +
+             `width="${cw.toFixed(1)}" height="${ch.toFixed(1)}" rx="1" fill="${SLOT_BG}"/>`;
+  return out;
+};
+
+const BUILDINGS = [
+  // slim tower with a crown
+  () => `<rect x="42" y="10" width="16" height="9" rx="2"/><rect x="28" y="19" width="44" height="71" rx="3"/>` +
+        windows(35, 27, 30, 46, 3, 4),
+  // twin towers
+  () => `<rect x="16" y="30" width="30" height="60" rx="3"/><rect x="54" y="18" width="30" height="72" rx="3"/>` +
+        windows(22, 38, 18, 36, 2, 3) + windows(60, 26, 18, 48, 2, 4),
+  // wide block
+  () => `<rect x="12" y="28" width="76" height="62" rx="3"/>` + windows(21, 37, 58, 40, 4, 3),
+  // stepped terraces
+  () => `<rect x="10" y="52" width="32" height="38" rx="3"/><rect x="38" y="34" width="30" height="56" rx="3"/>` +
+        `<rect x="64" y="60" width="26" height="30" rx="3"/>` +
+        windows(16, 60, 20, 20, 2, 2) + windows(44, 42, 18, 32, 2, 3),
+  // tower on a podium
+  () => `<rect x="38" y="10" width="26" height="44" rx="3"/><rect x="16" y="50" width="68" height="40" rx="3"/>` +
+        windows(43, 17, 16, 30, 2, 3) + windows(24, 58, 52, 22, 4, 2),
+];
+
+const buildingSvg = (i) =>
+  `<svg viewBox="0 0 100 100" fill="currentColor" aria-hidden="true">${BUILDINGS[i % BUILDINGS.length]()}</svg>`;
+
 const CSS = () => `
 @font-face{font-family:'Display';src:${font('BlackHanSans.ttf')}}
 @font-face{font-family:'Body';src:${font('GothicA1-Bold.ttf')};font-weight:700}
@@ -67,8 +106,13 @@ body{width:${W}px;font-family:'Body',sans-serif;font-weight:700;
   padding:22px 26px;margin-bottom:14px;box-shadow:0 4px 14px rgba(120,95,50,.10)}
 .slot{width:104px;height:104px;border-radius:20px;flex:none;overflow:hidden;
   background:#2b2622;color:#ffd84d;display:flex;align-items:center;justify-content:center;
-  font-family:'Display';font-size:44px}
+  font-family:'Display';font-size:44px;position:relative}
 .slot img{width:100%;height:100%;object-fit:cover}
+.slot svg{width:78px;height:78px}
+.rankbadge{position:absolute;left:-9px;top:-9px;width:42px;height:42px;border-radius:50%;
+  background:#e0392b;color:#fff;font-family:'Display';font-size:21px;
+  display:flex;align-items:center;justify-content:center;
+  box-shadow:0 2px 6px rgba(0,0,0,.28)}
 .who{width:196px;flex:none}
 .who .n{font-family:'Display';font-size:38px;color:#2b2622;letter-spacing:-.01em}
 .who .s{font-size:21px;color:#8d8172;margin-top:5px;font-weight:700}
@@ -82,6 +126,16 @@ body{width:${W}px;font-family:'Body',sans-serif;font-weight:700;
 .res{width:210px;flex:none;text-align:right}
 .res .big{font-family:'Display';font-size:33px;color:#e0392b;white-space:nowrap}
 .res .cap{font-size:20px;color:#8d8172;margin-top:5px}
+
+/* ---- rank rows ---- */
+.rk .who{width:300px}
+.rk .who .n{font-family:'Body';font-weight:800;font-size:35px;letter-spacing:-.03em;white-space:nowrap}
+.rk .who .n.sm{font-size:30px}
+.rk .who .n.xs{font-size:26px}
+.rk .mid{width:150px;flex:none;font-size:23px;color:#8d8172;text-align:right}
+.rk .pr{flex:1;text-align:right}
+.rk .pr .big{font-family:'Display';font-size:37px;color:#e0392b;white-space:nowrap}
+.rk .meter{height:9px;border-radius:5px;background:#e0392b;margin:9px 0 0 auto;opacity:.85}
 
 /* ---- footer ---- */
 .note{margin-top:26px;background:rgba(255,255,255,.72);border:2px solid #e3d4b6;
@@ -109,7 +163,20 @@ const rowHtml = (r, i) => {
   </div>`;
 };
 
+const rankRow = (r, i) => {
+  const slot = r.image && existsSync(r.image) ? `<img src="${img(r.image)}">` : buildingSvg(i);
+  return `<div class="row rk">
+    <div class="slot">${slot}<div class="rankbadge">${r.rank}</div></div>
+    <div class="who"><div class="n ${r.label.length <= 7 ? '' : r.label.length <= 9 ? 'sm' : 'xs'}">${esc(r.label)}</div>
+      <div class="s">${esc(r.sub)}</div></div>
+    <div class="mid">${esc(r.mid)}</div>
+    <div class="pr"><div class="big">${esc(r.price)}</div>
+      <div class="meter" style="width:${Math.round(r.bar * 240)}px"></div></div>
+  </div>`;
+};
+
 const data = JSON.parse(readFileSync(process.argv[2] || '', 'utf8'));
+const renderRow = data.rowType === 'rank' ? rankRow : rowHtml;
 const html = `<!doctype html><html lang="ko"><head><meta charset="utf-8"><style>${CSS()}</style></head><body>
 <div class="page">
   <div class="head">
@@ -120,8 +187,10 @@ const html = `<!doctype html><html lang="ko"><head><meta charset="utf-8"><style>
     </div>
     <div class="sub">${esc(data.subtitle)}</div>
   </div>
-  <div class="key"><span><i class="g"></i>${esc(data.head.left)}</span><span><i class="r"></i>${esc(data.head.right)}</span></div>
-  ${data.rows.map(rowHtml).join('')}
+  ${data.rowType === 'rank'
+      ? `<div class="key"><span>${esc(data.head.left)}</span><span style="width:250px;text-align:right">${esc(data.head.right)}</span></div>`
+      : `<div class="key"><span><i class="g"></i>${esc(data.head.left)}</span><span><i class="r"></i>${esc(data.head.right)}</span></div>`}
+  ${data.rows.map(renderRow).join('')}
   <div class="note">${data.note.map((n) => `<p>${esc(n)}</p>`).join('')}</div>
   <div class="close">${data.closing.map(esc).join('<br>')}</div>
   <div class="brand">${esc(data.brand)}</div>
