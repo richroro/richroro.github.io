@@ -555,8 +555,12 @@ function toast(msg, kind){
 }
 
 /* ---------------- 테마 ---------------- */
+const store = {
+  get(k){ try{ return localStorage.getItem(k); }catch(e){ return null; } },
+  set(k,v){ try{ localStorage.setItem(k,v); }catch(e){} },
+};
 (function initTheme(){
-  const saved = localStorage.getItem('webcut.theme');
+  const saved = store.get('webcut.theme');
   if(saved) document.documentElement.dataset.theme = saved;
   else if(window.matchMedia('(prefers-color-scheme: light)').matches) document.documentElement.dataset.theme='light';
   else document.documentElement.dataset.theme='dark';
@@ -564,7 +568,7 @@ function toast(msg, kind){
 $('#themeBtn').onclick = () => {
   const next = document.documentElement.dataset.theme==='light' ? 'dark' : 'light';
   document.documentElement.dataset.theme = next;
-  localStorage.setItem('webcut.theme', next);
+  store.set('webcut.theme', next);
   drawRuler();
 };
 
@@ -1873,7 +1877,31 @@ function deleteSel(){
 /* ============================================================
    내보내기 (캔버스 + 오디오 그래프를 실시간 녹화)
    ============================================================ */
-const EXP = { res:1080, fps:30, q:8, rec:null, chunks:[], mime:'', url:'', name:'' };
+const EXP = { res:1080, fps:30, q:8, rec:null, chunks:[], mime:'', url:'', name:'', blob:null };
+
+/* 샌드박스(클로드 아티팩트 등)에서는 페이지가 직접 시작한 다운로드가 막힌다.
+   호스트가 저장 창구를 열어주면 그걸 쓰고, 아니면 평범한 <a download> 로 간다. */
+let hostSave = null;
+if(window.claude && typeof window.claude.use === 'function'){
+  Promise.resolve(window.claude.use('downloads')).then(d=>{ hostSave = d || null; }).catch(()=>{});
+}
+async function offerFile(blob, name, url){
+  if(hostSave){
+    try{
+      await hostSave.save({ filename:name, data:blob });
+      toast(`${name} 저장 완료`);
+      return;
+    }catch(err){
+      const code = err && err.code;
+      if(code==='declined'){ toast('저장을 취소했습니다'); return; }
+      if(code==='rate_limited'){ toast('잠시 뒤 다시 눌러주세요','bad'); return; }
+      // 그 밖의 사유면 아래 기본 방식으로 내려간다
+    }
+  }
+  const tmp = document.createElement('a');
+  tmp.href = url; tmp.download = name;
+  document.body.appendChild(tmp); tmp.click(); tmp.remove();
+}
 
 function pickMime(){
   if(!window.MediaRecorder) return '';
@@ -2015,6 +2043,7 @@ function onRecStop(){
   if(aborted){ EXP.chunks = []; return; }
   const blob = new Blob(EXP.chunks, { type:EXP.mime });
   EXP.chunks = [];
+  EXP.blob = blob;
   if(EXP.url) URL.revokeObjectURL(EXP.url);
   EXP.url = URL.createObjectURL(blob);
   const now = new Date();
@@ -2025,11 +2054,9 @@ function onRecStop(){
   $('#expProg').hidden = true;
   $('#expDone').hidden = false;
   $('#expCancel').textContent = '닫기';
-  const tmp = document.createElement('a');
-  tmp.href = EXP.url; tmp.download = EXP.name;
-  document.body.appendChild(tmp); tmp.click(); tmp.remove();
   seek(0);
-  toast(`${(blob.size/1048576).toFixed(1)}MB · ${EXP.name} 저장 완료`);
+  toast(`${(blob.size/1048576).toFixed(1)}MB · 저장을 시작합니다`);
+  offerFile(blob, EXP.name, EXP.url);
 }
 
 document.addEventListener('visibilitychange', ()=>{
@@ -2158,6 +2185,11 @@ $('#tracks').addEventListener('pointerdown', e=>{ if(!e.target.closest('.clip'))
 $('#exportBtn').onclick = openExport;
 $('#expCancel').onclick = closeExport;
 $('#expStart').onclick  = startExport;
+$('#expLink').addEventListener('click', e=>{
+  if(!EXP.blob) return;
+  e.preventDefault();
+  offerFile(EXP.blob, EXP.name, EXP.url);
+});
 $('#helpBtn').onclick   = ()=> $('#helpMask').hidden = false;
 $('#helpClose').onclick = ()=> $('#helpMask').hidden = true;
 $('#helpMask').addEventListener('click', e=>{ if(e.target.id==='helpMask') $('#helpMask').hidden = true; });
