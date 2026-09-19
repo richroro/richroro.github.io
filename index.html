@@ -171,6 +171,17 @@
   /* PROMISE */
   .promise{max-width:840px;margin:40px auto 0;display:grid;grid-template-columns:repeat(2,1fr);gap:14px}
   @media(max-width:640px){.promise{grid-template-columns:1fr}}
+
+  /* side projects */
+  .works{max-width:840px;margin:40px auto 0;display:grid;grid-template-columns:repeat(2,1fr);gap:14px}
+  @media(max-width:640px){.works{grid-template-columns:1fr}}
+  .work{display:block;background:var(--soft);border:1px solid transparent;border-radius:16px;padding:24px;transition:.18s}
+  .work:hover{background:#fff;border-color:var(--line);box-shadow:0 12px 30px rgba(0,0,0,.05)}
+  .work .tag{display:inline-block;font-size:12px;font-weight:800;color:var(--red);
+    background:rgba(252,28,73,.09);border-radius:999px;padding:4px 10px}
+  .work h3{font-size:18px;font-weight:800;margin:12px 0 6px}
+  .work p{font-size:14px;color:var(--sub);font-weight:500;line-height:1.65}
+  .work .go{margin-top:14px;font-size:13px;font-weight:800;color:var(--red)}
   .pcard{display:flex;gap:14px;align-items:flex-start;background:#fff;border:1.5px solid var(--line);border-radius:14px;padding:20px}
   .pcard .ic{width:40px;height:40px;border-radius:10px;background:rgba(18,184,134,.12);color:var(--green);
     display:grid;place-items:center;font-size:20px;flex:none}
@@ -671,6 +682,32 @@ merged.to_excel("전체합본.xlsx", index=False)</pre>
       <div class="pcard"><span class="ic">🛠️</span><div><h3>납품 후 무상 수정</h3><p>전달 후 일정 기간 발생하는 문제와 사소한 수정은 무상으로 지원합니다.</p></div></div>
       <div class="pcard"><span class="ic">📂</span><div><h3>소스·사용법 제공</h3><p>실행 파일과 사용 설명서, 필요 시 소스코드까지 함께 드립니다.</p></div></div>
       <div class="pcard"><span class="ic">🔒</span><div><h3>자료는 안전하게</h3><p>업무 자료는 작업 목적 외 사용하지 않으며, 요청 시 작업 후 폐기합니다.</p></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- WORKS -->
+<section id="works">
+  <div class="wrap">
+    <p class="eyebrow">사이드 프로젝트</p>
+    <h2 class="title">직접 만들어 본 것들</h2>
+    <p class="desc">일로 받은 건 아니고, 만들어 보고 싶어서 만든 것들입니다. 코드와 기록을 전부 공개해 두었습니다.</p>
+    <div class="works">
+      <a class="work" href="/games/tikkeul-moa/">
+        <span class="tag">웹 게임</span>
+        <h3>티끌모아 태산</h3>
+        <p>10원부터 금괴까지, 같은 금액끼리 합쳐 태산을 쌓는 한 손 세로형 병합 게임.
+           물리를 직접 구현했고 외부 스크립트·에셋 없이 HTML 한 파일로 돌아갑니다.</p>
+        <div class="go">바로 플레이 &rarr;</div>
+      </a>
+      <a class="work" href="https://github.com/richroro/richroro.github.io/tree/main/roblox/tikkeul-tycoon"
+         target="_blank" rel="noopener">
+        <span class="tag">로블록스</span>
+        <h3>티끌 타이쿤</h3>
+        <p>드로퍼가 떨어뜨린 돈이 컨베이어를 타고 금고로 들어가는 타이쿤.
+           맵과 UI를 전부 코드로 지어서 Studio 에서 손으로 배치할 것이 없습니다.</p>
+        <div class="go">소스 보기 &rarr;</div>
+      </a>
     </div>
   </div>
 </section>
