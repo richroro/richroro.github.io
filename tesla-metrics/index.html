@@ -364,24 +364,65 @@ footer a:hover{color:var(--brand-deep);border-color:var(--brand-deep)}
   </div>
 </section>
 
-<!-- ============ SEGMENTS ============ -->
+<!-- ============ MIX ============ -->
 <section id="segments">
   <div class="wrap">
-    <p class="eyebrow">03 · Segments</p>
-    <h2 class="title">자동차는 줄고 에너지는 큰다</h2>
-    <p class="lead">2025년 전체 매출은 3% 줄었지만 속을 보면 방향이 갈립니다. 자동차가 10% 빠지는 동안 에너지가 27% 늘어
-      구멍을 일부 메웠습니다.</p>
+    <p class="eyebrow">03 · Revenue mix</p>
+    <h2 class="title">매출 구성이 조용히 바뀌고 있다</h2>
+    <p class="lead">전체 매출만 보면 3년째 90억 달러대에서 제자리입니다. 속을 열면 다른 이야기가 나옵니다 —
+      자동차 비중이 <b>85% → 73%</b>로 내려오는 동안 에너지가 <b>두 배 넘게</b> 커졌습니다.</p>
+
     <div class="card pad mt16">
       <div class="chart-head"><div>
-        <div class="ct">2025년 사업 부문별 매출</div><div class="cs">단위: 10억 달러 · 괄호는 전년 대비</div>
-      </div></div>
-      <div class="figwrap" id="wrapSeg">
-        <svg class="fig" id="figSeg" role="img" aria-label="2025년 테슬라 사업 부문별 매출 막대그래프"></svg>
-        <div class="tip" id="tipSeg"></div>
+        <div class="ct">사업 부문별 매출 추이</div><div class="cs">단위: 10억 달러 · 막대 위 숫자는 그해 합계</div>
       </div>
-      <div class="note mt12"><span class="ic">🔋</span><div>에너지 부문은 매출 <b>128억 달러</b>로 이제 전체의
-        <b id="nrgShare">—</b>를 차지합니다. 인도량이 두 해 연속 줄어드는 동안 이쪽은 계속 컸습니다 —
-        <a href="/tesla/#metrics" style="border-bottom:1px solid var(--line)">분기별 배포량(GWh)은 이쪽</a>에 있습니다.</div></div>
+      <div class="seg" role="group" aria-label="보기 전환">
+        <button type="button" data-view="chart" data-target="mix" aria-pressed="true">차트</button>
+        <button type="button" data-view="table" data-target="mix" aria-pressed="false">표</button>
+      </div></div>
+      <div class="legend" id="legMix"></div>
+      <div class="figwrap" id="wrapMix">
+        <svg class="fig" id="figMix" role="img" aria-label="테슬라 사업 부문별 매출 3년 추이 누적 막대그래프"></svg>
+        <div class="tip" id="tipMix"></div>
+      </div>
+      <div class="tscroll mt12" id="tblMix" hidden></div>
+      <div class="note mt12"><span class="ic">🔀</span><div>2025년 자동차는 <b>−9.8%</b>, 에너지는 <b>+26.9%</b>, 서비스는 <b>+19.0%</b>입니다.
+        에너지와 서비스를 합치면 이미 전체의 <b id="nonAuto">—</b> — 테슬라를 자동차 회사로만 보기 어려워지는 지점입니다.
+        분기별 에너지 배포량(GWh)은 <a href="/tesla/#metrics" style="border-bottom:1px solid var(--line)">이쪽</a>에 있습니다.</div></div>
+    </div>
+
+    <div class="card pad mt16">
+      <div class="chart-head"><div>
+        <div class="ct">2025년 지역별 매출</div><div class="cs">미국이 절반, 중국이 5분의 1</div>
+      </div></div>
+      <div class="figwrap" id="wrapReg">
+        <svg class="fig" id="figReg" role="img" aria-label="2025년 테슬라 지역별 매출 비중 막대그래프"></svg>
+        <div class="tip" id="tipReg"></div>
+      </div>
+      <div class="legend" id="legReg"></div>
+      <div class="note mt12"><span class="ic">🌍</span><div>중국 매출이 <b>210억 달러</b>로 전체의 22%입니다.
+        중국 현지 업체와의 가격 경쟁이 실적에 곧바로 들어오는 크기라는 뜻입니다 —
+        <a href="/china-ev/" style="border-bottom:1px solid var(--line)">경쟁 상대 쪽 숫자는 여기</a>에 정리했습니다.</div></div>
+    </div>
+
+    <div class="card pad mt16">
+      <div class="chart-head"><div>
+        <div class="ct">탄소배출권 매출</div><div class="cs">원가가 거의 없어 사실상 전액이 이익으로 잡히는 매출입니다</div>
+      </div></div>
+      <div class="stats c3 mt12" role="group" aria-label="탄소배출권 지표">
+        <div class="st"><div class="k">2024년</div><div class="v">2.76<span class="u">B$</span></div><div class="s">역대 최대</div></div>
+        <div class="st"><div class="k">2025년</div><div class="v">1.99<span class="u">B$</span></div><div class="s down">−28% YoY</div></div>
+        <div class="st"><div class="k">2025 영업이익 중 비중</div><div class="v" id="credShare">—</div><div class="s">영업이익 4.35B$ 기준</div></div>
+      </div>
+      <div class="figwrap" id="wrapCred">
+        <svg class="fig" id="figCred" role="img" aria-label="2025년 분기별 탄소배출권 매출 막대그래프"></svg>
+        <div class="tip" id="tipCred"></div>
+      </div>
+      <div class="note warn mt12"><span class="ic">⚠️</span><div>여기가 <b>매출 구성에서 가장 약한 고리</b>입니다.
+        배출권은 차를 더 만들지 않아도 들어오는 돈이라 원가가 거의 없습니다. 즉 <b>2025년 영업이익 43.5억 달러 중
+        19.9억 달러가 이 항목</b>에서 나왔습니다. 미국이 미달 업체에 물리던 벌금을 없애면서 배출권을 살 이유가 사라졌고,
+        증권가에서는 2027년이면 <b>0에 수렴</b>한다는 전망까지 나옵니다. 그대로 사라진다고 가정하면 2025년 영업이익률은
+        4.6%가 아니라 <b id="credIfZero">—</b> 수준이 됩니다.</div></div>
     </div>
   </div>
 </section>
@@ -517,12 +558,33 @@ const DATA = {
     { y: 2021, om: 12.12 }, { y: 2022, om: 16.76 }, { y: 2023, om: 9.19 },
     { y: 2024, om: 7.24 }, { y: 2025, om: 4.59 }
   ],
-  seg2025: [
-    { k: "자동차", v: 69.52, yoy: -10 },
-    { k: "에너지 생성·저장", v: 12.80, yoy: 27 },
-    { k: "서비스·기타", v: 12.53, yoy: 19 }
+  // 부문별 매출. YoY 와 비중은 전부 이 배열에서 계산합니다(수치 중복 기입 방지).
+  //   2023 82.42+6.04+8.32 = 96.78 (발표 96.77)
+  //   2024 77.07+10.09+10.53 = 97.69 (발표와 일치)
+  //   2025 69.52+12.80+12.53 = 94.85 (발표 94.83, 각 수치 반올림 차이)
+  segSeries: [
+    { key: "auto", name: "자동차", color: "--s1" },
+    { key: "nrg", name: "에너지 생성·저장", color: "--s2" },
+    { key: "svc", name: "서비스·기타", color: "--s3" }
   ],
-  fy2025: { rev: 94.83, ni: 3.79, eps: 1.08, eps2024: 2.04 },
+  segYears: [
+    { y: 2023, auto: 82.42, nrg: 6.04, svc: 8.32, total: 96.77 },
+    { y: 2024, auto: 77.07, nrg: 10.09, svc: 10.53, total: 97.69 },
+    { y: 2025, auto: 69.52, nrg: 12.80, svc: 12.53, total: 94.83 }
+  ],
+  // 2025 지역별. 47.63+20.96+26.24 = 94.83 — 연간 발표치와 정확히 일치합니다.
+  region2025: [
+    { k: "미국", v: 47.63, color: "--s1" },
+    { k: "중국", v: 20.96, color: "--s2" },
+    { k: "기타 국가", v: 26.24, color: "--s3" }
+  ],
+  // 탄소배출권. 0.595+0.439+0.417+0.542 = 1.993 (연간 발표 1.99)
+  credits: {
+    y2024: 2.76, y2025: 1.99,
+    q: [{ q: "25 Q1", v: 0.595 }, { q: "25 Q2", v: 0.439 },
+        { q: "25 Q3", v: 0.417 }, { q: "25 Q4", v: 0.542 }]
+  },
+  fy2025: { rev: 94.83, ni: 3.79, eps: 1.08, eps2024: 2.04, oi: 4.35, om: 4.59 },
   lanes: [
     { t: "배터리 셀", d: "차량과 메가팩에 들어가는 셀", dest: "차량 · 메가팩",
       nodes: [
@@ -638,41 +700,87 @@ function drawCols(svgId, tipId, rows, opt) {
   });
 }
 
-/* 가로 막대 (사업 부문) */
-function drawSeg() {
-  const svg = $("figSeg"), wrap = svg.parentElement, tip = $("tipSeg");
+/* 누적 세로 막대 (부문별 3년) */
+function drawStack() {
+  const svg = $("figMix"), wrap = svg.parentElement, tip = $("tipMix");
   const W = Math.max(280, wrap.clientWidth || 320);
-  const small = W < 520;
-  const L = small ? 96 : 130, R = small ? 62 : 84, T = 6, B = 24;
-  const rowH = 32, gap = 12, rows = DATA.seg2025;
-  const H = T + rows.length * (rowH + gap) - gap + B;
-  const pw = Math.max(40, W - L - R);
-  const sc = niceScale(Math.max.apply(null, rows.map((r) => r.v)), small ? 3 : 4);
-  const COL = ["--s1", "--s2", "--s3"];
+  const small = W < 520, H = small ? 250 : 296;
+  const L = small ? 38 : 46, R = 8, T = 26, B = 34;
+  const pw = W - L - R, ph = H - T - B;
+  const ser = DATA.segSeries, rows = DATA.segYears;
+  const sc = niceScale(Math.max.apply(null, rows.map((r) => r.total)), small ? 3 : 5);
+  const yOf = (v) => T + ph - (v / sc.max) * ph;
 
   svg.setAttribute("width", W); svg.setAttribute("height", H);
   svg.setAttribute("viewBox", "0 0 " + W + " " + H);
   while (svg.firstChild) svg.removeChild(svg.firstChild);
   for (let i = 0; i <= sc.ticks; i++) {
-    const x = L + (sc.step * i / sc.max) * pw;
-    svg.appendChild(el("line", { x1: x, x2: x, y1: T, y2: H - B + 3, class: i === 0 ? "baseline" : "gridline" }));
-    svg.appendChild(txt(el("text", { x: x, y: H - B + 16, "text-anchor": "middle", class: "axis" }), sc.step * i));
+    const v = sc.step * i, y = yOf(v);
+    svg.appendChild(el("line", { x1: L, x2: L + pw, y1: y, y2: y, class: i === 0 ? "baseline" : "gridline" }));
+    svg.appendChild(txt(el("text", { x: L - 7, y: y + 3.5, "text-anchor": "end", class: "axis" }), v));
   }
+  const gw = pw / rows.length, bw = Math.min(small ? 54 : 84, gw * 0.56);
   rows.forEach((r, i) => {
-    const y = T + i * (rowH + gap), w = Math.max(2, (r.v / sc.max) * pw);
-    svg.appendChild(txt(el("text", { x: L - 8, y: y + rowH / 2 + 4, "text-anchor": "end", class: "name" }), r.k));
-    svg.appendChild(el("rect", { x: L, y: y, width: w, height: rowH, rx: 4 }, "fill:var(" + COL[i] + ")"));
-    svg.appendChild(txt(el("text", { x: L + w + 7, y: y + rowH / 2 + 4, class: "dlabel" }),
-      r.v.toFixed(2) + "B (" + pctTxt(r.yoy) + ")"));
-    const hit = el("rect", { x: L, y: y - gap / 2, width: pw + R - 8, height: rowH + gap, class: "hit" });
+    const cx = L + gw * i + gw / 2, x = cx - bw / 2;
+    let acc = 0;
+    ser.forEach((se, si) => {
+      const v = r[se.key];
+      const y0 = yOf(acc), y1 = yOf(acc + v);
+      const h = Math.max(2, y0 - y1 - 2);           // 2px 간격으로 구간을 띄웁니다
+      const top = si === ser.length - 1;
+      svg.appendChild(top
+        ? el("path", { d: barTop(x, y1, bw, h, 4) }, "fill:var(" + se.color + ")")
+        : el("rect", { x: x, y: y1, width: bw, height: h }, "fill:var(" + se.color + ")"));
+      if (h > 20 && bw > 46) {
+        svg.appendChild(txt(el("text", { x: cx, y: y1 + h / 2 + 4, "text-anchor": "middle", class: "dlabel" },
+          "fill:#fff;font-weight:600"), v.toFixed(1)));
+      }
+      acc += v;
+    });
+    svg.appendChild(txt(el("text", { x: cx, y: yOf(acc) - 8, "text-anchor": "middle", class: "dlabel" }),
+      r.total.toFixed(1)));
+    svg.appendChild(txt(el("text", { x: cx, y: H - 12, "text-anchor": "middle", class: "axis" }), r.y));
+    const hit = el("rect", { x: L + gw * i, y: T - 12, width: gw, height: ph + 12, class: "hit" });
+    hit.addEventListener("mouseenter", () => showTip(tip, wrap,
+      '<div class="th">' + r.y + "년 · 단위 B$</div>" +
+      ser.map((se) => '<div class="tr"><span class="nm"><span class="sw" style="background:var(' + se.color +
+        ')"></span>' + se.name + "</span><b>" + r[se.key].toFixed(2) + " (" +
+        ((r[se.key] / r.total) * 100).toFixed(1) + "%)</b></div>").join("") +
+      '<div class="tr"><span class="nm">합계</span><b>' + r.total.toFixed(2) + "</b></div>", cx, T));
+    hit.addEventListener("mouseleave", () => tip.classList.remove("on"));
+    svg.appendChild(hit);
+  });
+}
+
+/* 가로 누적 막대 (지역별) */
+function drawRegion() {
+  const svg = $("figReg"), wrap = svg.parentElement, tip = $("tipReg");
+  const W = Math.max(280, wrap.clientWidth || 320);
+  const H = 92, T = 22, barH = 46;
+  const rows = DATA.region2025, total = rows.reduce((a, r) => a + r.v, 0);
+  svg.setAttribute("width", W); svg.setAttribute("height", H);
+  svg.setAttribute("viewBox", "0 0 " + W + " " + H);
+  while (svg.firstChild) svg.removeChild(svg.firstChild);
+  svg.appendChild(txt(el("text", { x: 0, y: 13, class: "name" }), "2025년 합계 $" + total.toFixed(2) + "B"));
+  let x = 0;
+  rows.forEach((r) => {
+    const w = Math.max(2, (r.v / total) * W - 2);
+    svg.appendChild(el("rect", { x: x, y: T, width: w, height: barH, rx: 5 }, "fill:var(" + r.color + ")"));
+    if (w > 84) {
+      svg.appendChild(txt(el("text", { x: x + w / 2, y: T + 21, "text-anchor": "middle", class: "dlabel" },
+        "fill:#fff;font-weight:600"), "$" + r.v.toFixed(2) + "B"));
+      svg.appendChild(txt(el("text", { x: x + w / 2, y: T + 37, "text-anchor": "middle", class: "dlabel" },
+        "fill:#fff;opacity:.88"), ((r.v / total) * 100).toFixed(1) + "%"));
+    }
+    const hit = el("rect", { x: x, y: T, width: w, height: barH, class: "hit" });
+    const cx = x + w / 2;
     hit.addEventListener("mouseenter", () => showTip(tip, wrap,
       '<div class="th">' + r.k + " · 2025</div>" +
       '<div class="tr"><span class="nm">매출</span><b>$' + r.v.toFixed(2) + "B</b></div>" +
-      '<div class="tr"><span class="nm">전년 대비</span><b class="' + cls(r.yoy) + '">' + pctTxt(r.yoy) + "</b></div>" +
-      '<div class="tr"><span class="nm">전체 비중</span><b>' +
-      ((r.v / DATA.fy2025.rev) * 100).toFixed(1) + "%</b></div>", L + w / 2, y));
+      '<div class="tr"><span class="nm">비중</span><b>' + ((r.v / total) * 100).toFixed(1) + "%</b></div>", cx, T));
     hit.addEventListener("mouseleave", () => tip.classList.remove("on"));
     svg.appendChild(hit);
+    x += (r.v / total) * W;
   });
 }
 
@@ -695,7 +803,13 @@ function drawAll() {
     tip: (r) => '<div class="th">' + r.name + "년</div>" +
       '<div class="tr"><span class="nm">영업이익률</span><b>' + r.v.toFixed(2) + "%</b></div>"
   });
-  drawSeg();
+  drawStack();
+  drawRegion();
+  drawCols("figCred", "tipCred", DATA.credits.q.map((d) => ({ name: d.q, v: d.v })), {
+    color: "--s2", tick: (v) => v.toFixed(1), label: (v) => "$" + v.toFixed(3) + "B",
+    tip: (r) => '<div class="th">20' + r.name + "</div>" +
+      '<div class="tr"><span class="nm">탄소배출권 매출</span><b>$' + r.v.toFixed(3) + "B</b></div>"
+  });
 }
 
 /* ========================= 공급망 도식 ========================= */
@@ -715,8 +829,35 @@ function renderLanes() {
   renderLanes();
   drawAll();
   $("asOfLabel").textContent = DATA.asOf;
-  const nrg = DATA.seg2025.find((s) => s.k.indexOf("에너지") === 0);
-  $("nrgShare").textContent = ((nrg.v / DATA.fy2025.rev) * 100).toFixed(1) + "%";
+
+  const y25 = DATA.segYears[DATA.segYears.length - 1];
+  $("nonAuto").textContent = (((y25.nrg + y25.svc) / y25.total) * 100).toFixed(1) + "%";
+
+  const cr = DATA.credits, oi = DATA.fy2025.oi;
+  $("credShare").textContent = Math.round((cr.y2025 / oi) * 100) + "%";
+  // 배출권은 원가가 거의 없어 전액 이익으로 봅니다 — 사라졌다고 가정한 영업이익률
+  $("credIfZero").textContent = (((oi - cr.y2025) / DATA.fy2025.rev) * 100).toFixed(1) + "%";
+
+  // 범례
+  $("legMix").innerHTML = DATA.segSeries.map((se) =>
+    '<span class="lg"><span class="sw" style="background:var(' + se.color + ')"></span>' + se.name + "</span>").join("");
+  $("legReg").innerHTML = DATA.region2025.map((r) =>
+    '<span class="lg"><span class="sw" style="background:var(' + r.color + ')"></span>' + r.k + "</span>").join("");
+
+  // 부문 표 — 비중과 전년 대비를 전부 segYears 에서 계산합니다
+  const yrs = DATA.segYears;
+  $("tblMix").innerHTML = "<table class='narrow'><thead><tr><th>부문</th>" +
+    yrs.map((r) => "<th>" + r.y + "</th>").join("") + "<th>2025 비중</th><th>2025 YoY</th></tr></thead><tbody>" +
+    DATA.segSeries.map((se) => {
+      const last = yrs[yrs.length - 1], prev = yrs[yrs.length - 2];
+      const yoy = (last[se.key] / prev[se.key] - 1) * 100;
+      return "<tr><td class='tx'>" + se.name + "</td>" +
+        yrs.map((r) => "<td>" + r[se.key].toFixed(2) + "</td>").join("") +
+        "<td>" + ((last[se.key] / last.total) * 100).toFixed(1) + "%</td>" +
+        "<td class='" + cls(yoy) + "'>" + pctTxt(yoy) + "</td></tr>";
+    }).join("") +
+    "<tr class='tfoot'><td>합계</td>" + yrs.map((r) => "<td>" + r.total.toFixed(2) + "</td>").join("") +
+    "<td colspan='2'>단위: 10억 달러</td></tr></tbody></table>";
 
   $("tblRev").innerHTML = "<table class='narrow'><thead><tr><th>분기</th><th>매출(B$)</th><th>영업이익률</th>" +
     "<th>영업이익(추정)</th></tr></thead><tbody>" +
