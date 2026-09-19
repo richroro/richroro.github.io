@@ -115,6 +115,10 @@ body{width:${W}px;font-family:'Body',sans-serif;font-weight:700;
   background:#2b2622;color:#ffd84d;display:flex;align-items:center;justify-content:center;
   font-family:'Display';font-size:44px;position:relative}
 .slot img{width:100%;height:100%;object-fit:cover}
+/* fit:"contain" shows the photo whole. Cropping counts as an adaptation under
+   CC, which drags ShareAlike onto the finished poster; left uncropped the
+   poster stays a collection. */
+.slot img.contain{object-fit:contain;background:#1b1714}
 .slot svg{width:78px;height:78px}
 .rankbadge{position:absolute;left:-9px;top:-9px;width:42px;height:42px;border-radius:50%;
   background:#e0392b;color:#fff;font-family:'Display';font-size:21px;
@@ -201,8 +205,12 @@ const rowHtml = (r, i) => {
 
 const nameClass = (t) => (t.length <= 7 ? '' : t.length <= 9 ? 'sm' : 'xs');
 
+const slotFor = (r, i) => (r.image && existsSync(r.image)
+  ? `<img class="${r.fit === 'contain' ? 'contain' : ''}" src="${img(r.image)}">`
+  : buildingSvg(i));
+
 const tallRow = (r, i) => {
-  const slot = r.image && existsSync(r.image) ? `<img src="${img(r.image)}">` : buildingSvg(i);
+  const slot = slotFor(r, i);
   return `<div class="row">
     <div class="slot">${slot}<div class="rankbadge">${r.rank}</div></div>
     <div class="st">
@@ -215,7 +223,7 @@ const tallRow = (r, i) => {
 };
 
 const rankRow = (r, i) => {
-  const slot = r.image && existsSync(r.image) ? `<img src="${img(r.image)}">` : buildingSvg(i);
+  const slot = slotFor(r, i);
   return `<div class="row rk">
     <div class="slot">${slot}<div class="rankbadge">${r.rank}</div></div>
     <div class="who"><div class="n ${r.label.length <= 7 ? '' : r.label.length <= 9 ? 'sm' : 'xs'}">${esc(r.label)}</div>
