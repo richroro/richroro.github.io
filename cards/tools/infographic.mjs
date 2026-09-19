@@ -53,6 +53,7 @@ const THEMES = {
     check: '#3f9a6a', closing: '#a8744a', brand: '#a99b85',
     display: 'Display', displayCase: 'none', h1: 'Body', h1Weight: '800',
     closingFont: 'Hand', badgeFont: 'Hand',
+    glow: 'none', slotGlow: 'none',
   },
   // dark, editorial, gold - for money and property
   noir: {
@@ -71,6 +72,7 @@ const THEMES = {
     check: '#d9b46a', closing: '#c9a45f', brand: '#6e6a62',
     display: 'Display', displayCase: 'none', h1: 'Body', h1Weight: '800',
     closingFont: 'Serif', badgeFont: 'Body',
+    glow: 'none', slotGlow: 'none',
   },
   // light, airy, clean - for rates and calculations
   mint: {
@@ -87,6 +89,7 @@ const THEMES = {
     check: '#0d9b74', closing: '#3f7f6c', brand: '#9aa8a3',
     display: 'Body', displayCase: 'none', h1: 'Body', h1Weight: '800',
     closingFont: 'Body', badgeFont: 'Body',
+    glow: 'none', slotGlow: 'none',
   },
   // newsprint, serif, restrained - for statistics
   press: {
@@ -103,6 +106,28 @@ const THEMES = {
     check: '#7d7a70', closing: '#4a4740', brand: '#959186',
     display: 'Serif', displayCase: 'none', h1: 'Serif', h1Weight: '800',
     closingFont: 'Serif', badgeFont: 'Serif',
+    glow: 'none', slotGlow: 'none',
+  },
+  // electric, dark, glowing - for tech, crypto, anything loud
+  neon: {
+    bg: 'linear-gradient(180deg,#0b0620 0%,#0e0a26 52%,#07050f 100%)',
+    card: 'rgba(125,105,255,.07)', cardEdge: '1px solid rgba(0,229,255,.20)',
+    cardShadow: '0 0 22px rgba(0,229,255,.07)',
+    ink: '#eef2ff', muted: '#8b8fb5', faint: '#63678f',
+    accent: '#00e5ff', accentSoft: 'rgba(0,229,255,.8)',
+    slotBg: '#120f2e', slotInk: '#ff2d95',
+    badgeBg: 'transparent', badgeInk: '#00e5ff',
+    badgeShadow: 'inset 0 0 0 2px rgba(0,229,255,.55), 0 0 16px rgba(0,229,255,.28)',
+    rankBg: '#ff2d95', rankInk: '#0b0620',
+    pillBg: 'rgba(0,229,255,.12)', pillInk: '#9ff4ff',
+    mark: 'transparent', markOpacity: '0',
+    noteBg: 'rgba(255,255,255,.035)', noteEdge: '1px solid rgba(0,229,255,.16)',
+    rule: 'rgba(0,229,255,.20)',
+    check: '#00e5ff', closing: '#ff6fc0', brand: '#63678f',
+    display: 'Display', displayCase: 'none', h1: 'Body', h1Weight: '800',
+    closingFont: 'Body', badgeFont: 'Body',
+    glow: '0 0 16px rgba(0,229,255,.55), 0 0 38px rgba(0,229,255,.22)',
+    slotGlow: '0 0 20px rgba(255,45,149,.32)',
   },
 };
 
@@ -207,7 +232,7 @@ body{width:${W}px;font-family:'Body',sans-serif;font-weight:700;
   box-shadow:${T.badgeShadow}}
 .title{margin-left:212px}
 .t1{font-family:'${T.h1}';font-weight:${T.h1Weight};font-size:58px;color:${T.ink};letter-spacing:-.02em}
-.t2{font-family:'${T.display}';font-weight:800;font-size:82px;color:${T.accent};letter-spacing:-.02em;
+.t2{font-family:'${T.display}';font-weight:800;font-size:82px;color:${T.accent};letter-spacing:-.02em;text-shadow:${T.glow};
   margin-top:2px;display:inline-block;position:relative}
 .t2::after{content:'';position:absolute;left:-8px;right:-8px;bottom:18px;height:20px;
   background:${T.mark};opacity:${T.markOpacity};z-index:-1;border-radius:4px}
@@ -225,7 +250,7 @@ body{width:${W}px;font-family:'Body',sans-serif;font-weight:700;
   padding:22px 26px;margin-bottom:14px;box-shadow:${T.cardShadow}}
 .slot{width:104px;height:104px;border-radius:20px;flex:none;overflow:hidden;
   background:${T.slotBg};color:${T.slotInk};display:flex;align-items:center;justify-content:center;
-  font-family:'${T.display}';font-size:44px;position:relative}
+  font-family:'${T.display}';font-size:44px;position:relative;box-shadow:${T.slotGlow}}
 .slot img{width:100%;height:100%;object-fit:cover}
 /* fit:"contain" shows the photo whole. Cropping counts as an adaptation under
    CC, which drags ShareAlike onto the finished poster; left uncropped the
@@ -272,7 +297,7 @@ body{width:${W}px;font-family:'Body',sans-serif;font-weight:700;
 .tall .st .n.xs{font-size:45px}
 .tall .st .s{font-size:31px;color:${T.muted};margin-top:6px}
 .tall .st .a{font-size:29px;color:${T.faint};margin-top:4px}
-.tall .st .p{font-family:'${T.display}';font-weight:800;font-size:62px;color:${T.accent};margin-top:12px;line-height:1.24}
+.tall .st .p{font-family:'${T.display}';font-weight:800;font-size:62px;color:${T.accent};margin-top:12px;line-height:1.24;text-shadow:${T.glow}}
 .tall .note{padding:32px 36px;border-radius:24px;margin-top:36px}
 .tall .note p{font-size:29px;line-height:1.7;padding-left:40px;text-indent:-40px}
 .tall .close{font-size:56px;margin-top:40px}
@@ -303,7 +328,7 @@ body{width:${W}px;font-family:'Body',sans-serif;font-weight:700;
 .fit .st .a{display:none}
 .fit .st .p{display:none}
 .fit .val{flex:none;text-align:right}
-.fit .val .p{display:block;font-family:'${T.display}';font-weight:800;font-size:42px;color:${T.accent};line-height:1.2}
+.fit .val .p{display:block;font-family:'${T.display}';font-weight:800;font-size:42px;color:${T.accent};line-height:1.2;text-shadow:${T.glow}}
 .fit .val .a{display:block;font-size:21px;color:${T.faint};margin-top:1px}
 .fit .note{margin-top:14px;padding:16px 22px;border-radius:16px}
 .fit .note p{font-size:20px;line-height:1.5;padding-left:26px;text-indent:-26px}
@@ -314,7 +339,7 @@ body{width:${W}px;font-family:'Body',sans-serif;font-weight:700;
 .rk .who .n.xs{font-size:26px}
 .rk .mid{width:150px;flex:none;font-size:23px;color:${T.muted};text-align:right}
 .rk .pr{flex:1;text-align:right}
-.rk .pr .big{font-family:'${T.display}';font-weight:800;font-size:37px;color:${T.accent};white-space:nowrap}
+.rk .pr .big{font-family:'${T.display}';font-weight:800;font-size:37px;color:${T.accent};white-space:nowrap;text-shadow:${T.glow}}
 .rk .meter{height:9px;border-radius:5px;background:${T.accentSoft};margin:9px 0 0 auto}
 
 /* ---- footer ---- */

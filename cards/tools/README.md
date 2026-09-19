@@ -210,6 +210,7 @@ node cards/tools/scrollshorts.mjs cards/tools/content/0008-apt.json --fit \
 | `noir` | 짙은 차콜 + 금색 | 부동산, 고액, 순위 |
 | `mint` | 밝은 화이트 + 초록 | 금리, 계산, 금융 |
 | `press` | 미색 + 명조체 + 진홍 | 통계, 공공 자료 |
+| `neon` | 짙은 보라 + 시안·마젠타, 발광 | 확률, IT, 자극적인 숫자 |
 
 ```bash
 node cards/tools/infographic.mjs cards/tools/content/0008-apt.json --fit --theme=noir
@@ -218,6 +219,9 @@ node cards/tools/infographic.mjs cards/tools/content/0008-apt.json --fit --theme
 색과 서체는 전부 `THEMES` 객체의 토큰으로만 정의한다. 레이아웃 쪽에는
 색상 리터럴이 남아 있지 않아서, 테마를 하나 더 만들 때 CSS를 건드릴 일이 없다.
 아이콘 창(`slotBg`)은 SVG 안에서도 쓰이므로 토큰이 SVG 생성기까지 전달된다.
+
+`neon`만 발광을 쓴다. `glow`(강조 글자의 text-shadow)와 `slotGlow`(아이콘 창의
+box-shadow) 두 토큰이고, 나머지 테마는 `'none'`으로 꺼둔다.
 
 테마를 새로 만들 때 확인할 것: **순위 배지가 아이콘 창 위에서 읽히는지.**
 `noir`는 처음에 금색 배지를 금색 창 위에 올려서 숫자가 사라졌다.
