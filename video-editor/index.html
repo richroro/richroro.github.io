@@ -1,0 +1,2221 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#0e0f13">
+<meta name="description" content="설치 없이 브라우저에서 바로 쓰는 무료 영상 편집기. 자르기·분할·자막·음악·필터·속도 조절 후 MP4로 저장. 파일은 업로드되지 않고 내 기기에서만 처리됩니다.">
+<title>웹컷 · 무료 영상 편집기</title>
+<link rel="canonical" href="https://richroro.github.io/video-editor/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="웹컷">
+<meta property="og:title" content="웹컷 · 설치 없는 무료 영상 편집기">
+<meta property="og:description" content="자르기·분할·자막·음악·필터·속도까지. 브라우저에서 바로 편집하고 저장하세요. 업로드 없음, 워터마크 없음, 로그인 없음.">
+<meta property="og:url" content="https://richroro.github.io/video-editor/">
+<meta property="og:locale" content="ko_KR">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="웹컷 · 설치 없는 무료 영상 편집기">
+<meta name="twitter:description" content="자르기·분할·자막·음악·필터·속도까지. 브라우저에서 바로 편집하고 저장하세요.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='24' fill='%234f7cff'/><path d='M34 28v44l34-22z' fill='white'/></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&family=Nanum+Myeongjo:wght@400;700;800&family=Gaegu:wght@400;700&display=swap">
+<style>
+:root{
+  --bg:#0e0f13; --panel:#15171d; --panel-2:#1a1d25; --elev:#212632;
+  --line:#272b36; --line-2:#363c4b;
+  --ink:#eef1f6; --ink-2:#a8b0c0; --ink-3:#6d7687;
+  --accent-wash:#1b2440; --on-accent:#fff;
+  --danger:#ff5470; --amber:#ffb340; --mint:#2fd6a6;
+  --clip-v:#31508f; --clip-v2:#3d63b0; --clip-a:#1c6b58; --clip-a2:#248872; --clip-t:#8a5a22; --clip-t2:#a86f2c;
+  --shadow:0 12px 34px -16px rgba(0,0,0,.8);
+  --r:12px; --r-sm:8px;
+}
+:root[data-theme="light"]{
+  --bg:#eef0f4; --panel:#ffffff; --panel-2:#f5f7fa; --elev:#ffffff;
+  --line:#e2e6ed; --line-2:#cfd5e0;
+  --ink:#151922; --ink-2:#4e5766; --ink-3:#858e9d;
+  --accent:#2f62f5; --accent-2:#1d4ed8; --accent-wash:#e7eeff; --on-accent:#fff;
+  --danger:#e0364f; --amber:#b4740c; --mint:#0d9b76;
+  --clip-v:#4b73c9; --clip-v2:#5b85df; --clip-a:#2a9078; --clip-a2:#34a98d; --clip-t:#b47c33; --clip-t2:#c9903f;
+  --shadow:0 10px 26px -14px rgba(20,26,40,.35);
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+[hidden]{display:none !important}
+html,body{height:100%}
+@supports (height:100dvh){html,body{height:100dvh}}
+body{
+  font-family:"Noto Sans KR","Apple SD Gothic Neo","Malgun Gothic",system-ui,sans-serif;
+  background:var(--bg);color:var(--ink);letter-spacing:-.2px;line-height:1.45;
+  overflow:hidden;-webkit-font-smoothing:antialiased;
+}
+button,input,select,textarea{font-family:inherit;color:inherit;font-size:13px}
+button{cursor:pointer;border:none;background:none}
+::-webkit-scrollbar{width:10px;height:10px}
+::-webkit-scrollbar-thumb{background:var(--line-2);border-radius:99px;border:3px solid transparent;background-clip:content-box}
+::-webkit-scrollbar-track{background:transparent}
+
+/* ---------- 공용 컨트롤 ---------- */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;height:34px;padding:0 13px;
+  border-radius:var(--r-sm);background:var(--elev);border:1px solid var(--line);color:var(--ink);
+  font-size:13px;font-weight:600;transition:.14s;white-space:nowrap}
+.btn:hover:not(:disabled){border-color:var(--line-2);transform:translateY(-1px)}
+.btn:disabled{opacity:.38;cursor:not-allowed}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:var(--on-accent)}
+.btn.primary:hover:not(:disabled){background:var(--accent-2)}
+.btn.ghost{background:transparent}
+.btn.icon{width:34px;padding:0}
+.btn.sm{height:28px;padding:0 10px;font-size:12px;font-weight:600}
+.btn.sm.icon{width:28px}
+.chip{height:28px;padding:0 11px;border-radius:99px;background:var(--panel-2);border:1px solid var(--line);
+  font-size:12px;font-weight:600;color:var(--ink-2);display:inline-flex;align-items:center;gap:5px}
+.chip.on{background:var(--accent-wash);border-color:var(--accent);color:var(--accent-2)}
+select,input[type=text],input[type=number],textarea{
+  background:var(--panel-2);border:1px solid var(--line);color:var(--ink);border-radius:var(--r-sm);
+  padding:7px 9px;width:100%;outline:none;transition:.14s}
+select:focus,input:focus,textarea:focus{border-color:var(--accent)}
+textarea{resize:vertical;min-height:62px;line-height:1.5}
+input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:20px;background:transparent}
+input[type=range]::-webkit-slider-runnable-track{height:4px;border-radius:99px;background:var(--line-2)}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:14px;height:14px;border-radius:50%;
+  background:var(--accent);margin-top:-5px;border:2px solid var(--panel);box-shadow:0 1px 4px rgba(0,0,0,.4)}
+input[type=range]::-moz-range-track{height:4px;border-radius:99px;background:var(--line-2)}
+input[type=range]::-moz-range-thumb{width:14px;height:14px;border:2px solid var(--panel);border-radius:50%;background:var(--accent)}
+input[type=color]{width:100%;height:32px;padding:2px;background:var(--panel-2);border:1px solid var(--line);border-radius:var(--r-sm)}
+label{font-size:12px;font-weight:600;color:var(--ink-2)}
+
+/* ---------- 레이아웃 ---------- */
+.app{display:grid;grid-template-rows:auto auto minmax(0,1fr) auto;height:100%;min-width:0;overflow:hidden}
+.app>header{grid-row:1}
+.app>.mob-tabs{grid-row:2}
+.app>.stage{grid-row:3}
+.app>.tl{grid-row:4}
+header{display:flex;align-items:center;gap:10px;padding:9px 14px;background:var(--panel);
+  border-bottom:1px solid var(--line);flex-wrap:nowrap;min-width:0}
+.brand{display:flex;align-items:center;gap:9px;margin-right:4px}
+.brand .mark{width:30px;height:30px;border-radius:9px;background:var(--accent);display:grid;place-items:center;flex:none}
+.brand .mark svg{width:15px;height:15px;fill:#fff}
+.brand b{font-size:16px;font-weight:900;letter-spacing:-.6px;display:block;line-height:1.1}
+.brand small{font-size:10.5px;color:var(--ink-3);font-weight:600}
+.hdr-sp{flex:1}
+.hdr-group{display:flex;align-items:center;gap:6px}
+.hdr-group label{font-size:11.5px;color:var(--ink-3)}
+header select{width:auto;padding:6px 8px;font-size:12.5px;font-weight:600}
+
+.stage{display:grid;grid-template-columns:232px minmax(0,1fr) 296px;min-height:0;min-width:0;background:var(--bg)}
+.panel{background:var(--panel);display:flex;flex-direction:column;min-height:0;min-width:0}
+.panel.left{border-right:1px solid var(--line)}
+.panel.right{border-left:1px solid var(--line)}
+.panel-head{display:flex;align-items:center;gap:8px;padding:11px 13px 9px;border-bottom:1px solid var(--line);flex:none}
+.panel-head h2{font-size:12.5px;font-weight:800;letter-spacing:.2px;color:var(--ink-2);text-transform:uppercase}
+.panel-body{overflow-y:auto;overflow-x:hidden;padding:12px;flex:1;min-height:0}
+
+/* ---------- 미디어 패널 ---------- */
+.drop{border:1.5px dashed var(--line-2);border-radius:var(--r);padding:16px 12px;text-align:center;
+  color:var(--ink-3);font-size:12px;transition:.15s;cursor:pointer;background:var(--panel-2)}
+.drop:hover,.drop.over{border-color:var(--accent);color:var(--accent-2);background:var(--accent-wash)}
+.drop b{display:block;font-size:13px;color:var(--ink);margin-bottom:3px}
+.media-list{display:flex;flex-direction:column;gap:7px;margin-top:11px}
+.mitem{display:flex;gap:9px;align-items:center;padding:7px;border-radius:var(--r-sm);background:var(--panel-2);
+  border:1px solid var(--line);cursor:grab;transition:.13s;position:relative}
+.mitem:hover{border-color:var(--line-2)}
+.mitem .th{width:48px;height:34px;border-radius:5px;background:#000;flex:none;object-fit:cover;display:grid;place-items:center;
+  font-size:16px;color:var(--ink-3);overflow:hidden}
+.mitem .th img,.mitem .th canvas{width:100%;height:100%;object-fit:cover;display:block}
+.mitem .meta{flex:1;min-width:0}
+.mitem .meta b{display:block;font-size:11.5px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.mitem .meta small{font-size:10.5px;color:var(--ink-3)}
+.mitem .add{flex:none;width:26px;height:26px;border-radius:6px;background:var(--elev);border:1px solid var(--line);
+  display:grid;place-items:center;font-size:15px;color:var(--ink-2);line-height:1}
+.mitem .add:hover{background:var(--accent);border-color:var(--accent);color:#fff}
+.mitem .del{position:absolute;top:-6px;right:-6px;width:19px;height:19px;border-radius:50%;background:var(--danger);
+  color:#fff;font-size:11px;line-height:19px;text-align:center;opacity:0;transition:.13s}
+.mitem:hover .del{opacity:1}
+.hint{font-size:11.5px;color:var(--ink-3);line-height:1.6;margin-top:12px;padding-top:11px;border-top:1px solid var(--line)}
+.hint b{color:var(--ink-2)}
+kbd{display:inline-block;padding:1px 5px;border-radius:4px;background:var(--elev);border:1px solid var(--line-2);
+  font-size:10.5px;font-family:ui-monospace,monospace;color:var(--ink-2)}
+
+/* ---------- 프리뷰 ---------- */
+.center{display:flex;flex-direction:column;min-width:0;min-height:0;background:var(--bg)}
+.preview{flex:1;min-height:0;display:grid;place-items:center;padding:16px;position:relative}
+.canvas-box{position:relative;max-width:100%;max-height:100%;box-shadow:var(--shadow);border-radius:6px;overflow:hidden;background:#000}
+#stageCanvas{display:block;max-width:100%;max-height:100%;background:#000}
+.empty{position:absolute;inset:0;display:grid;place-items:center;text-align:center;color:var(--ink-3);
+  font-size:13px;pointer-events:none;padding:20px;line-height:1.7}
+.empty b{display:block;font-size:15px;color:var(--ink-2);margin-bottom:5px}
+.txt-layer{position:absolute;inset:0;cursor:default}
+.txt-handle{position:absolute;border:1.5px dashed rgba(255,255,255,.65);border-radius:4px;cursor:move;touch-action:none;
+  transform:translate(-50%,-50%);background:rgba(79,124,255,.08)}
+.txt-handle.on{border-color:var(--accent-2);border-style:solid;background:rgba(79,124,255,.14)}
+.transport{display:flex;align-items:center;gap:10px;padding:8px 14px;background:var(--panel);border-top:1px solid var(--line);flex:none}
+.time{font-family:ui-monospace,"IBM Plex Mono",monospace;font-size:12.5px;color:var(--ink-2);font-weight:500;letter-spacing:-.2px}
+.time b{color:var(--ink)}
+.vol{display:flex;align-items:center;gap:6px;width:110px}
+
+/* ---------- 인스펙터 ---------- */
+.insp-empty{color:var(--ink-3);font-size:12.5px;text-align:center;padding:34px 10px;line-height:1.8}
+.grp{margin-bottom:15px;padding-bottom:14px;border-bottom:1px solid var(--line)}
+.grp:last-child{border-bottom:none;margin-bottom:0}
+.grp>h3{font-size:11.5px;font-weight:800;color:var(--ink-3);text-transform:uppercase;letter-spacing:.4px;margin-bottom:9px}
+.row{display:flex;align-items:center;gap:8px;margin-bottom:9px}
+.row:last-child{margin-bottom:0}
+.row label{flex:none;width:58px;font-size:12px}
+.row .val{flex:none;width:44px;text-align:right;font-size:11.5px;color:var(--ink-3);
+  font-family:ui-monospace,monospace}
+.seg{display:flex;gap:4px;flex:1}
+.seg button{flex:1;height:30px;border-radius:7px;background:var(--panel-2);border:1px solid var(--line);
+  font-size:12px;font-weight:600;color:var(--ink-2)}
+.seg button.on{background:var(--accent);border-color:var(--accent);color:#fff}
+.presets{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
+.presets button{padding:7px 4px;border-radius:7px;background:var(--panel-2);border:1px solid var(--line);
+  font-size:11.5px;font-weight:600;color:var(--ink-2)}
+.presets button.on{border-color:var(--accent);color:var(--accent-2);background:var(--accent-wash)}
+.sel-title{display:flex;align-items:center;gap:7px;margin-bottom:13px}
+.sel-title .tag{font-size:10.5px;font-weight:800;padding:3px 7px;border-radius:5px;background:var(--accent-wash);color:var(--accent-2)}
+.sel-title b{font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;flex:1;min-width:0}
+
+/* ---------- 타임라인 ---------- */
+.tl{background:var(--panel);border-top:1px solid var(--line);display:flex;flex-direction:column;height:262px;flex:none;min-width:0}
+.tl-bar{display:flex;align-items:center;gap:6px;padding:7px 12px;border-bottom:1px solid var(--line);flex-wrap:nowrap;overflow-x:auto;min-width:0}
+.tl-bar>*{flex:none}
+.tl-bar .sp{flex:1;min-width:6px}
+.tl-main{display:flex;flex:1;min-height:0;min-width:0}
+.tl-heads{width:52px;flex:none;border-right:1px solid var(--line);background:var(--panel);overflow:hidden;z-index:8}
+.th-sp{height:24px;border-bottom:1px solid var(--line)}
+.th{margin-top:8px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;
+  font-size:10px;font-weight:800;color:var(--ink-3);letter-spacing:.2px}
+.th i{font-style:normal;font-size:13px;opacity:.85}
+.th.h-vid{height:54px} .th.h-aud{height:44px} .th.h-txt{height:40px}
+.tl-scroll{flex:1;overflow-x:auto;overflow-y:auto;position:relative;min-height:0;min-width:0}
+.tl-inner{position:relative;min-width:100%;padding-bottom:8px}
+.ruler{height:24px;position:sticky;top:0;z-index:5;background:var(--panel-2);border-bottom:1px solid var(--line);cursor:pointer;touch-action:none}
+.ruler canvas{display:block;height:24px}
+.track{display:flex;align-items:center;height:54px;margin-top:8px;position:relative}
+.track-lane{position:absolute;inset:0;border-radius:var(--r-sm);background:var(--panel-2);
+  border:1px solid var(--line);overflow:hidden}
+.track.t-txt{height:40px}
+.track.t-aud{height:44px}
+.clip{position:absolute;top:0;bottom:0;border-radius:7px;overflow:hidden;cursor:grab;touch-action:none;
+  border:1.5px solid transparent;display:flex;align-items:center;user-select:none;
+  background:linear-gradient(180deg,var(--clip-v2),var(--clip-v));box-shadow:0 2px 8px -3px rgba(0,0,0,.5)}
+.clip.sel{border-color:#fff;box-shadow:0 0 0 1px var(--accent),0 4px 14px -4px rgba(0,0,0,.6);z-index:3}
+.clip .cl-label{position:relative;z-index:2;padding:0 9px;font-size:11.5px;font-weight:700;color:#fff;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;text-shadow:0 1px 3px rgba(0,0,0,.6);pointer-events:none}
+.clip .cl-thumb{position:absolute;inset:0;opacity:.42;background-size:auto 100%;background-repeat:repeat-x;pointer-events:none}
+.clip .cl-sub{font-weight:500;opacity:.8;font-size:10.5px;margin-left:5px}
+.clip.a{background:linear-gradient(180deg,var(--clip-a2),var(--clip-a))}
+.clip.t{background:linear-gradient(180deg,var(--clip-t2),var(--clip-t))}
+.clip.dragging{opacity:.75;cursor:grabbing;z-index:9}
+.handle{position:absolute;top:0;bottom:0;width:14px;z-index:4;cursor:ew-resize;display:grid;place-items:center;touch-action:none}
+.handle:before{content:"";width:3px;height:16px;border-radius:2px;background:rgba(255,255,255,.7);opacity:0;transition:.12s}
+.clip:hover .handle:before,.clip.sel .handle:before{opacity:.9}
+.handle.l{left:0}.handle.r{right:0}
+.wave{position:absolute;inset:0;opacity:.5;pointer-events:none}
+.playhead{position:absolute;top:0;bottom:0;width:2px;background:var(--danger);z-index:7;pointer-events:none;margin-left:-1px}
+.playhead:before{content:"";position:absolute;top:0;left:50%;transform:translateX(-50%);
+  border-left:6px solid transparent;border-right:6px solid transparent;border-top:8px solid var(--danger)}
+.tl-empty{padding:26px 12px;text-align:center;color:var(--ink-3);font-size:12.5px;line-height:1.7}
+
+/* ---------- 모달 ---------- */
+.mask{position:fixed;inset:0;background:rgba(4,6,10,.72);backdrop-filter:blur(3px);z-index:100;
+  display:grid;place-items:center;padding:20px}
+.mask[hidden]{display:none}
+.modal{background:var(--panel);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);
+  width:min(440px,100%);max-height:88vh;overflow-y:auto;padding:20px}
+.modal.wide{width:min(620px,100%)}
+.modal h3{font-size:17px;font-weight:800;margin-bottom:4px}
+.modal .sub{font-size:12.5px;color:var(--ink-3);margin-bottom:16px;line-height:1.6}
+.modal .foot{display:flex;gap:8px;justify-content:flex-end;margin-top:18px}
+.bar{height:8px;border-radius:99px;background:var(--panel-2);overflow:hidden;border:1px solid var(--line)}
+.bar i{display:block;height:100%;background:linear-gradient(90deg,var(--accent),var(--mint));width:0%;transition:width .2s}
+.exp-stat{display:flex;justify-content:space-between;font-size:12px;color:var(--ink-2);margin-top:8px}
+.note{background:var(--panel-2);border:1px solid var(--line);border-radius:var(--r-sm);padding:10px 12px;
+  font-size:12px;color:var(--ink-2);line-height:1.65}
+.note b{color:var(--ink)}
+.help-sec{margin-bottom:14px}
+.help-sec h4{font-size:13px;font-weight:800;margin-bottom:6px}
+.help-sec p,.help-sec li{font-size:12.5px;color:var(--ink-2);line-height:1.75}
+.help-sec ul{padding-left:17px}
+.kbd-grid{display:grid;grid-template-columns:auto 1fr;gap:6px 12px;font-size:12.5px;color:var(--ink-2);align-items:center}
+
+/* ---------- 토스트 ---------- */
+.toast-wrap{position:fixed;bottom:18px;left:50%;transform:translateX(-50%);z-index:200;display:flex;
+  flex-direction:column;gap:8px;align-items:center;pointer-events:none}
+.toast{background:var(--elev);border:1px solid var(--line-2);color:var(--ink);padding:10px 16px;border-radius:99px;
+  font-size:12.5px;font-weight:600;box-shadow:var(--shadow);animation:pop .2s}
+.toast.bad{border-color:var(--danger);color:var(--danger)}
+@keyframes pop{from{opacity:0;transform:translateY(8px)}}
+
+/* ---------- 모바일 ---------- */
+.mob-tabs{display:none;gap:6px;padding:7px 12px;background:var(--panel);border-bottom:1px solid var(--line)}
+@media (max-width:1040px){
+  .stage{grid-template-columns:1fr}
+  .panel.left,.panel.right{position:absolute;top:0;bottom:0;width:min(300px,86vw);z-index:40;box-shadow:var(--shadow)}
+  .panel.left{left:0;transform:translateX(-102%)}
+  .panel.right{right:0;transform:translateX(102%)}
+  .panel.open{transform:none}
+  .panel{transition:transform .22s}
+  .stage{position:relative}
+  .mob-tabs{display:flex}
+  .tl{height:250px}
+}
+@media (max-width:620px){
+  header{flex-wrap:wrap;gap:7px}
+  .brand small{display:none}
+  .hdr-group.res{display:none}
+  .tl{height:228px}
+  .track{height:46px} .track.t-aud{height:38px} .track.t-txt{height:34px}
+  .th.h-vid{height:46px} .th.h-aud{height:38px} .th.h-txt{height:34px}
+  .tl-heads{width:44px}
+  .transport{gap:7px;padding:7px 10px}
+  .vol{display:none}
+}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+</style>
+</head>
+<body>
+<div class="app">
+
+  <header>
+    <div class="brand">
+      <div class="mark"><svg viewBox="0 0 24 24"><path d="M4 3v18l16-9z"/></svg></div>
+      <div><b>웹컷</b><small>설치 없는 무료 영상 편집기</small></div>
+    </div>
+
+    <div class="hdr-sp"></div>
+
+    <div class="hdr-group">
+      <label for="ratioSel" class="sr">화면 비율</label>
+      <select id="ratioSel" title="화면 비율">
+        <option value="9:16">9:16 세로</option>
+        <option value="16:9">16:9 가로</option>
+        <option value="1:1">1:1 정사각</option>
+        <option value="4:5">4:5 피드</option>
+      </select>
+    </div>
+    <div class="hdr-group res">
+      <label for="resSel" class="sr">해상도</label>
+      <select id="resSel" title="해상도">
+        <option value="720">720p</option>
+        <option value="1080" selected>1080p</option>
+      </select>
+    </div>
+    <button class="btn icon ghost" id="undoBtn" title="되돌리기 (Ctrl+Z)">↶</button>
+    <button class="btn icon ghost" id="redoBtn" title="다시 실행 (Ctrl+Shift+Z)">↷</button>
+    <button class="btn icon ghost" id="themeBtn" title="밝기 전환">◐</button>
+    <button class="btn ghost" id="helpBtn" title="도움말">도움말</button>
+    <button class="btn primary" id="exportBtn">내보내기</button>
+  </header>
+
+  <div class="mob-tabs">
+    <button class="btn sm" id="tabMedia">☰ 미디어</button>
+    <div class="sp" style="flex:1"></div>
+    <button class="btn sm" id="tabInsp">속성 ☰</button>
+  </div>
+
+  <div class="stage">
+
+    <!-- 미디어 패널 -->
+    <aside class="panel left" id="leftPanel">
+      <div class="panel-head"><h2>미디어</h2><div style="flex:1"></div>
+        <button class="btn sm" id="sampleBtn" title="샘플 클립으로 바로 체험">샘플</button>
+      </div>
+      <div class="panel-body">
+        <div class="drop" id="dropZone">
+          <b>＋ 파일 추가</b>
+          영상 · 사진 · 음악을<br>끌어다 놓거나 눌러서 선택
+        </div>
+        <input type="file" id="fileInput" accept="video/*,image/*,audio/*" multiple hidden>
+        <div class="media-list" id="mediaList"></div>
+        <div class="hint">
+          <b>내 기기에서만 처리됩니다.</b><br>
+          파일은 서버로 올라가지 않고 브라우저 안에서만 열립니다. 워터마크·로그인·용량 제한 없음.
+        </div>
+      </div>
+    </aside>
+
+    <!-- 프리뷰 -->
+    <div class="center">
+      <div class="preview" id="previewWrap">
+        <div class="canvas-box" id="canvasBox">
+          <canvas id="stageCanvas" width="1080" height="1920"></canvas>
+          <div class="txt-layer" id="txtLayer"></div>
+        </div>
+        <div class="empty" id="emptyHint">
+          <div>
+            <b>영상을 올려 편집을 시작하세요</b>
+            왼쪽 <b style="display:inline">미디어</b> 패널에 파일을 끌어다 놓거나<br>
+            <b style="display:inline">샘플</b> 버튼으로 먼저 둘러봐도 됩니다.
+          </div>
+        </div>
+      </div>
+      <div class="transport">
+        <button class="btn icon" id="toStartBtn" title="처음으로">⏮</button>
+        <button class="btn icon primary" id="playBtn" title="재생 / 일시정지 (Space)">▶</button>
+        <button class="btn icon" id="toEndBtn" title="끝으로">⏭</button>
+        <div class="time"><b id="curTime">00:00.0</b> / <span id="totTime">00:00.0</span></div>
+        <div style="flex:1"></div>
+        <div class="vol">
+          <svg viewBox="0 0 24 24" width="15" height="15" fill="currentColor" style="flex:none;opacity:.7">
+            <path d="M4 9v6h4l5 4V5L8 9H4zm12.5 3a4.5 4.5 0 0 0-2.5-4v8a4.5 4.5 0 0 0 2.5-4zM14 3.2v2.1a6.8 6.8 0 0 1 0 13.4v2.1a8.9 8.9 0 0 0 0-17.6z"/>
+          </svg>
+          <input type="range" id="masterVol" min="0" max="1.5" step="0.05" value="1" title="미리보기 음량">
+        </div>
+      </div>
+    </div>
+
+    <!-- 인스펙터 -->
+    <aside class="panel right" id="rightPanel">
+      <div class="panel-head"><h2>속성</h2></div>
+      <div class="panel-body" id="inspector">
+        <div class="insp-empty">타임라인에서 클립을 선택하면<br>여기에서 자세히 조절할 수 있습니다.</div>
+      </div>
+    </aside>
+
+  </div>
+
+  <!-- 타임라인 -->
+  <div class="tl">
+    <div class="tl-bar">
+      <button class="btn sm" id="splitBtn" title="재생 위치에서 자르기 (S)">✂ 분할</button>
+      <button class="btn sm" id="dupBtn" title="선택 클립 복제 (Ctrl+D)">복제</button>
+      <button class="btn sm" id="delBtn" title="선택 클립 삭제 (Delete)">삭제</button>
+      <span style="width:1px;height:20px;background:var(--line);margin:0 3px"></span>
+      <button class="btn sm" id="addTextBtn">＋ 자막</button>
+      <button class="btn sm" id="addMusicBtn">＋ 음악</button>
+      <div class="sp"></div>
+      <button class="chip" id="snapChip" title="클립 경계·재생헤드에 자석처럼 붙기">스냅</button>
+      <button class="btn sm icon" id="zoomOut" title="축소">－</button>
+      <button class="btn sm icon" id="zoomIn" title="확대">＋</button>
+      <button class="btn sm" id="zoomFit" title="전체 보기">맞춤</button>
+    </div>
+    <div class="tl-main">
+      <div class="tl-heads">
+        <div class="th-sp"></div>
+        <div id="thTracks">
+          <div class="th h-vid"><i>▣</i>영상</div>
+          <div class="th h-aud"><i>♪</i>음악</div>
+          <div class="th h-txt"><i>T</i>자막</div>
+        </div>
+      </div>
+      <div class="tl-scroll" id="tlScroll">
+        <div class="tl-inner" id="tlInner">
+          <div class="ruler" id="ruler"><canvas id="rulerCv" height="24"></canvas></div>
+          <div id="tracks" style="padding:0 0 4px"></div>
+          <div class="playhead" id="playhead" style="left:0"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 내보내기 모달 -->
+<div class="mask" id="exportMask" hidden>
+  <div class="modal">
+    <h3>영상 내보내기</h3>
+    <p class="sub">타임라인을 처음부터 끝까지 재생하며 녹화합니다. 영상 길이만큼 시간이 걸리고, 그동안 이 탭을 열어두어야 합니다.</p>
+
+    <div id="expForm">
+      <div class="row"><label>해상도</label><div class="seg" id="expRes">
+        <button data-v="720">720p</button><button data-v="1080" class="on">1080p</button>
+      </div></div>
+      <div class="row"><label>프레임</label><div class="seg" id="expFps">
+        <button data-v="24">24</button><button data-v="30" class="on">30</button><button data-v="60">60</button>
+      </div></div>
+      <div class="row"><label>화질</label><div class="seg" id="expQ">
+        <button data-v="4">보통</button><button data-v="8" class="on">높음</button><button data-v="14">최고</button>
+      </div></div>
+      <div class="note" style="margin-top:12px">
+        예상 길이 <b id="expDur">0초</b> · 형식 <b id="expFmt">-</b><br>
+        <span id="expWarn" style="color:var(--amber)"></span>
+      </div>
+    </div>
+
+    <div id="expProg" hidden>
+      <div class="bar"><i id="expBar"></i></div>
+      <div class="exp-stat"><span id="expMsg">준비 중…</span><b id="expPct">0%</b></div>
+    </div>
+
+    <div id="expDone" hidden>
+      <div class="note">저장이 끝났습니다. 다운로드가 시작되지 않았다면 아래 버튼을 눌러주세요.</div>
+      <div style="margin-top:12px"><a class="btn primary" id="expLink" download style="width:100%">파일 다시 받기</a></div>
+    </div>
+
+    <div class="foot">
+      <button class="btn ghost" id="expCancel">닫기</button>
+      <button class="btn primary" id="expStart">녹화 시작</button>
+    </div>
+  </div>
+</div>
+
+<!-- 도움말 모달 -->
+<div class="mask" id="helpMask" hidden>
+  <div class="modal wide">
+    <h3>웹컷 사용법</h3>
+    <p class="sub">설치도 로그인도 없이, 브라우저 안에서 영상을 자르고 붙이고 자막을 얹는 편집기입니다.</p>
+    <div class="help-sec">
+      <h4>1. 불러오기</h4>
+      <p>왼쪽 <b>미디어</b>에 영상·사진·음악을 끌어다 놓습니다. 목록의 <b>＋</b>를 누르면 타임라인 끝에 붙습니다.</p>
+    </div>
+    <div class="help-sec">
+      <h4>2. 다듬기</h4>
+      <ul>
+        <li>클립 <b>양 끝을 드래그</b>하면 앞뒤가 잘립니다.</li>
+        <li>클립을 좌우로 <b>끌면 순서</b>가 바뀝니다.</li>
+        <li>재생 위치에서 <kbd>S</kbd> 를 누르면 <b>분할</b>됩니다.</li>
+        <li>오른쪽 <b>속성</b>에서 속도·볼륨·필터·화면 맞춤을 조절합니다.</li>
+      </ul>
+    </div>
+    <div class="help-sec">
+      <h4>3. 자막과 음악</h4>
+      <p><b>＋ 자막</b>으로 문구를 얹고, 미리보기 화면에서 <b>직접 끌어</b> 위치를 잡습니다. <b>＋ 음악</b>으로 배경음악을 깔면 원본 소리와 함께 섞여 나갑니다.</p>
+    </div>
+    <div class="help-sec">
+      <h4>4. 저장</h4>
+      <p>오른쪽 위 <b>내보내기</b>. 타임라인을 실시간으로 재생하며 녹화하므로 <b>영상 길이만큼</b> 기다려야 하고, 그동안 탭을 그대로 두어야 합니다. 브라우저가 지원하면 MP4, 아니면 WebM으로 저장됩니다.</p>
+    </div>
+    <div class="help-sec">
+      <h4>단축키</h4>
+      <div class="kbd-grid">
+        <kbd>Space</kbd><span>재생 / 일시정지</span>
+        <kbd>S</kbd><span>재생 위치에서 분할</span>
+        <kbd>Delete</kbd><span>선택한 클립 삭제</span>
+        <kbd>Ctrl+D</kbd><span>선택한 클립 복제</span>
+        <kbd>Ctrl+Z</kbd><span>되돌리기 / <kbd>Ctrl+Shift+Z</kbd> 다시 실행</span>
+        <kbd>← →</kbd><span>0.1초 이동 (Shift: 1초)</span>
+        <kbd>Home / End</kbd><span>처음 / 끝으로</span>
+      </div>
+    </div>
+    <div class="note" style="margin-top:14px">
+      <b>알아두세요.</b> 모든 처리는 이 브라우저 안에서만 일어납니다. 파일이 어디로도 전송되지 않는 대신,
+      탭을 닫으면 편집 내용이 사라집니다. 긴 영상은 메모리를 많이 쓰니 PC 크롬·엣지 계열을 권합니다.
+    </div>
+    <div class="foot"><button class="btn primary" id="helpClose">닫기</button></div>
+  </div>
+</div>
+
+<div class="toast-wrap" id="toasts"></div>
+
+<script>
+"use strict";
+/* ============================================================
+   웹컷 — 브라우저 안에서만 도는 영상 편집기
+   외부 스크립트 없음. 파일은 objectURL 로만 열고 서버에 보내지 않는다.
+   ============================================================ */
+
+const $  = (s,r=document) => r.querySelector(s);
+const $$ = (s,r=document) => [...r.querySelectorAll(s)];
+const uid = p => p + Math.random().toString(36).slice(2,9);
+const clamp = (v,a,b) => v<a?a:(v>b?b:v);
+const round2 = v => Math.round(v*100)/100;
+
+function fmtTime(s){
+  s = Math.max(0,s||0);
+  const m = Math.floor(s/60), r = s-m*60;
+  return String(m).padStart(2,'0')+':'+(r<10?'0':'')+r.toFixed(1);
+}
+function fmtDur(s){
+  s = Math.max(0,s||0);
+  if(s<60) return s.toFixed(1)+'초';
+  return Math.floor(s/60)+'분 '+Math.round(s%60)+'초';
+}
+
+/* ---------------- 상태 ---------------- */
+const P = {              // 프로젝트 (되돌리기 대상)
+  media : [],            // {id,kind,name,url,duration,w,h,thumb}
+  clips : [],            // 영상 트랙 (순서대로 이어붙임)
+  audios: [],            // 음악 트랙 (시작 시간 자유)
+  texts : [],            // 자막 트랙
+  ratio : '9:16',
+  res   : 1080,
+};
+const UI = {
+  sel:null, playhead:0, playing:false, zoom:1, snap:true, masterVol:1,
+  needsDraw:true, exporting:false,
+};
+
+const cv  = $('#stageCanvas');
+const ctx = cv.getContext('2d', { alpha:false });
+const canFilter = typeof ctx.filter === 'string';
+const mediaBox = document.createElement('div');
+mediaBox.style.cssText = 'position:fixed;left:-9999px;top:0;width:1px;height:1px;overflow:hidden;opacity:0;pointer-events:none';
+document.body.appendChild(mediaBox);
+
+/* ---------------- 토스트 ---------------- */
+let toastTimer = null;
+function toast(msg, kind){
+  const wrap = $('#toasts');
+  const el = document.createElement('div');
+  el.className = 'toast' + (kind==='bad' ? ' bad' : '');
+  el.textContent = msg;
+  wrap.appendChild(el);
+  clearTimeout(toastTimer);
+  setTimeout(()=>el.remove(), 2600);
+}
+
+/* ---------------- 테마 ---------------- */
+(function initTheme(){
+  const saved = localStorage.getItem('webcut.theme');
+  if(saved) document.documentElement.dataset.theme = saved;
+  else if(window.matchMedia('(prefers-color-scheme: light)').matches) document.documentElement.dataset.theme='light';
+  else document.documentElement.dataset.theme='dark';
+})();
+$('#themeBtn').onclick = () => {
+  const next = document.documentElement.dataset.theme==='light' ? 'dark' : 'light';
+  document.documentElement.dataset.theme = next;
+  localStorage.setItem('webcut.theme', next);
+  drawRuler();
+};
+
+/* ---------------- 프로젝트 치수 ---------------- */
+function dims(res){
+  const [a,b] = P.ratio.split(':').map(Number);
+  const s = (res||P.res) / Math.min(a,b);
+  return { w: Math.round(a*s/2)*2, h: Math.round(b*s/2)*2 };
+}
+function applyCanvasSize(){
+  const d = dims(P.res);
+  if(cv.width!==d.w || cv.height!==d.h){ cv.width=d.w; cv.height=d.h; }
+  fitCanvasBox();
+  UI.needsDraw = true;
+}
+function fitCanvasBox(){
+  const wrap = $('#previewWrap'), box = $('#canvasBox');
+  const pad = 32;
+  const aw = wrap.clientWidth - pad, ah = wrap.clientHeight - pad;
+  if(aw<=0 || ah<=0) return;
+  const s = Math.min(aw/cv.width, ah/cv.height);
+  box.style.width  = Math.floor(cv.width*s)+'px';
+  box.style.height = Math.floor(cv.height*s)+'px';
+  cv.style.width   = '100%';
+  cv.style.height  = '100%';
+}
+
+/* ---------------- 길이 계산 ---------------- */
+const mediaById = id => P.media.find(m=>m.id===id);
+function clipDur(c){ return Math.max(0.05,(c.out-c.in)/(c.kind==='image'?1:c.speed)); }
+function audDur(a){ return Math.max(0.05, a.out-a.in); }
+
+function layout(){
+  let t=0;
+  for(const c of P.clips){ c._s=t; c._d=clipDur(c); t+=c._d; }
+  return t;
+}
+function totalDur(){
+  let t = layout();
+  for(const a of P.audios) t = Math.max(t, a.start + audDur(a));
+  for(const x of P.texts)  t = Math.max(t, x.start + x.dur);
+  return t;
+}
+function videoDur(){ return layout(); }
+function clipAt(t){
+  for(const c of P.clips) if(t >= c._s - 1e-6 && t < c._s + c._d - 1e-6) return c;
+  return null;
+}
+
+/* ---------------- 되돌리기 ---------------- */
+const hist = { u:[], r:[] };
+function serialize(){
+  return JSON.stringify({ clips:P.clips, audios:P.audios, texts:P.texts, ratio:P.ratio });
+}
+function snap(){
+  hist.u.push(serialize());
+  if(hist.u.length>80) hist.u.shift();
+  hist.r.length = 0;
+  histBtns();
+}
+function restore(json){
+  const o = JSON.parse(json);
+  P.clips  = (o.clips ||[]).filter(c=>mediaById(c.mediaId));
+  P.audios = (o.audios||[]).filter(a=>mediaById(a.mediaId));
+  P.texts  = o.texts||[];
+  if(o.ratio && o.ratio!==P.ratio){ P.ratio=o.ratio; $('#ratioSel').value=o.ratio; applyCanvasSize(); }
+  UI.sel = null;
+  renderAll();
+}
+function undo(){ if(!hist.u.length) return; hist.r.push(serialize()); restore(hist.u.pop()); histBtns(); toast('되돌렸습니다'); }
+function redo(){ if(!hist.r.length) return; hist.u.push(serialize()); restore(hist.r.pop()); histBtns(); toast('다시 실행했습니다'); }
+function histBtns(){ $('#undoBtn').disabled = !hist.u.length; $('#redoBtn').disabled = !hist.r.length; }
+
+/* ---------------- 미디어 요소 (클립마다 하나) ---------------- */
+const els = new Map();   // clipId -> HTMLMediaElement
+function elFor(clip){
+  let el = els.get(clip.id);
+  if(el) return el;
+  const m = mediaById(clip.mediaId);
+  if(!m) return null;
+  if(clip.kind==='image') { els.set(clip.id, m.img); return m.img; }
+  el = document.createElement(clip.kind==='audio' ? 'audio' : 'video');
+  el.src = m.url;
+  el.preload = 'auto';
+  el.playsInline = true;
+  el.crossOrigin = 'anonymous';
+  el.addEventListener('seeked', ()=>{ UI.needsDraw = true; });
+  el.addEventListener('loadeddata', ()=>{ UI.needsDraw = true; });
+  mediaBox.appendChild(el);
+  els.set(clip.id, el);
+  return el;
+}
+function dropEl(clipId){
+  const el = els.get(clipId);
+  if(el && el.tagName!=='IMG'){ try{ el.pause(); el.removeAttribute('src'); el.load(); el.remove(); }catch(e){} }
+  const g = gains.get(clipId);
+  if(g){ try{ g.src.disconnect(); g.gain.disconnect(); }catch(e){} gains.delete(clipId); }
+  els.delete(clipId);
+}
+
+/* ---------------- 오디오 그래프 ---------------- */
+let actx=null, mixNode=null, prevGain=null, recDest=null;
+const gains = new Map();   // clipId -> {src,gain}
+function ensureAudio(){
+  if(actx) return actx;
+  const AC = window.AudioContext || window.webkitAudioContext;
+  if(!AC) return null;
+  actx = new AC();
+  mixNode  = actx.createGain();
+  prevGain = actx.createGain();
+  prevGain.gain.value = UI.masterVol;
+  mixNode.connect(prevGain).connect(actx.destination);
+  recDest = actx.createMediaStreamDestination();
+  mixNode.connect(recDest);         // 미리보기 음량과 무관하게 원본 그대로 녹음
+  return actx;
+}
+function gainFor(clip){
+  if(!actx) return null;
+  let g = gains.get(clip.id);
+  if(g) return g;
+  const el = elFor(clip);
+  if(!el || el.tagName==='IMG') return null;
+  try{
+    const src  = actx.createMediaElementSource(el);
+    const gain = actx.createGain();
+    gain.gain.value = 0;
+    src.connect(gain).connect(mixNode);
+    g = { src, gain };
+    gains.set(clip.id, g);
+    return g;
+  }catch(e){ return null; }
+}
+
+/* ============================================================
+   미디어 불러오기
+   ============================================================ */
+function kindOf(file){
+  const t = file.type||'';
+  if(t.startsWith('video/')) return 'video';
+  if(t.startsWith('audio/')) return 'audio';
+  if(t.startsWith('image/')) return 'image';
+  const n = (file.name||'').toLowerCase();
+  if(/\.(mp4|mov|webm|mkv|avi|m4v)$/.test(n)) return 'video';
+  if(/\.(mp3|wav|m4a|aac|ogg|flac)$/.test(n)) return 'audio';
+  if(/\.(png|jpe?g|gif|webp|bmp|avif)$/.test(n)) return 'image';
+  return null;
+}
+
+/* MediaRecorder 로 만든 webm 등은 duration 이 Infinity 로 온다. 끝까지 탐색해 강제로 확정시킨다. */
+function settleDuration(el){
+  return new Promise(res=>{
+    if(isFinite(el.duration) && el.duration>0) return res(el.duration);
+    let done = false;
+    const finish = d => { if(done) return; done=true; el.removeEventListener('timeupdate',onTime); res(d); };
+    const onTime = () => {
+      if(isFinite(el.duration) && el.duration>0){ const d=el.duration; el.currentTime=0; finish(d); }
+    };
+    el.addEventListener('timeupdate', onTime);
+    try{ el.currentTime = 1e6; }catch(e){}
+    setTimeout(()=>finish(isFinite(el.duration)&&el.duration>0 ? el.duration : 0), 2500);
+  });
+}
+
+function loadVideoMeta(url){
+  return new Promise((res,rej)=>{
+    const v = document.createElement('video');
+    v.preload='auto'; v.muted=true; v.playsInline=true; v.src=url;
+    mediaBox.appendChild(v);
+    const fail = ()=>{ v.remove(); rej(new Error('decode')); };
+    v.onerror = fail;
+    v.onloadedmetadata = async ()=>{
+      const dur = await settleDuration(v);
+      res({ v, duration:dur, w:v.videoWidth, h:v.videoHeight });
+    };
+    setTimeout(()=>{ if(!v.videoWidth && !v.duration) fail(); }, 12000);
+  });
+}
+
+function grabThumb(v, dur){
+  return new Promise(res=>{
+    const c = document.createElement('canvas');
+    c.width = 160; c.height = 90;
+    const g = c.getContext('2d');
+    const done = ()=>{ try{ res(c.toDataURL('image/jpeg',0.6)); }catch(e){ res(''); } };
+    const at = Math.min(Math.max(0.05, dur*0.08), Math.max(0.05,dur-0.05));
+    const onSeek = ()=>{
+      try{
+        const s = Math.min(c.width/v.videoWidth, c.height/v.videoHeight);
+        const w = v.videoWidth*s, h = v.videoHeight*s;
+        g.fillStyle='#000'; g.fillRect(0,0,c.width,c.height);
+        g.drawImage(v, (c.width-w)/2, (c.height-h)/2, w, h);
+      }catch(e){}
+      done();
+    };
+    v.addEventListener('seeked', onSeek, {once:true});
+    try{ v.currentTime = at; }catch(e){ done(); }
+    setTimeout(done, 4000);
+  });
+}
+
+async function addFiles(fileList){
+  const files = [...fileList];
+  if(!files.length) return;
+  let added = 0;
+  for(const f of files){
+    const kind = kindOf(f);
+    if(!kind){ toast(`${f.name} 은(는) 지원하지 않는 형식입니다`,'bad'); continue; }
+    const url = URL.createObjectURL(f);
+    try{
+      if(kind==='video'){
+        const { v, duration, w, h } = await loadVideoMeta(url);
+        if(!duration){ throw new Error('길이를 읽지 못했습니다'); }
+        const thumb = await grabThumb(v, duration);
+        v.remove();
+        P.media.push({ id:uid('m'), kind, name:f.name, url, duration, w, h, thumb });
+      }else if(kind==='image'){
+        const img = await new Promise((res,rej)=>{
+          const i = new Image(); i.onload=()=>res(i); i.onerror=rej; i.src=url;
+        });
+        P.media.push({ id:uid('m'), kind, name:f.name, url, duration:4, w:img.naturalWidth, h:img.naturalHeight, thumb:url, img });
+      }else{
+        const a = document.createElement('audio');
+        a.preload='auto'; a.src=url; mediaBox.appendChild(a);
+        await new Promise((res,rej)=>{ a.onloadedmetadata=res; a.onerror=rej; setTimeout(res,8000); });
+        const dur = await settleDuration(a);
+        a.remove();
+        P.media.push({ id:uid('m'), kind, name:f.name, url, duration:dur||0, w:0, h:0, thumb:'' });
+      }
+      added++;
+    }catch(err){
+      URL.revokeObjectURL(url);
+      toast(`${f.name} 을(를) 열지 못했습니다`,'bad');
+    }
+  }
+  if(added){ renderMedia(); toast(`${added}개 불러왔습니다`); }
+}
+
+/* 샘플: 파일 없이도 바로 만져볼 수 있게 캔버스로 그림 두 장을 만든다 */
+async function addSamples(){
+  const palettes = [
+    { a:'#4f7cff', b:'#8b5cf6', t:'오늘의 한 컷' },
+    { a:'#ff7a59', b:'#ffb340', t:'무료 · 워터마크 없음' },
+    { a:'#0ea5e9', b:'#2fd6a6', t:'브라우저에서 바로' },
+  ];
+  for(const p of palettes){
+    const c = document.createElement('canvas');
+    c.width=1080; c.height=1920;
+    const g = c.getContext('2d');
+    const grad = g.createLinearGradient(0,0,c.width,c.height);
+    grad.addColorStop(0,p.a); grad.addColorStop(1,p.b);
+    g.fillStyle=grad; g.fillRect(0,0,c.width,c.height);
+    g.globalAlpha=.16; g.fillStyle='#fff';
+    for(let i=0;i<26;i++){
+      g.beginPath();
+      g.arc(Math.random()*c.width, Math.random()*c.height, 30+Math.random()*180, 0, Math.PI*2);
+      g.fill();
+    }
+    g.globalAlpha=1;
+    g.fillStyle='rgba(255,255,255,.95)';
+    g.font='900 96px "Noto Sans KR", sans-serif';
+    g.textAlign='center'; g.textBaseline='middle';
+    g.fillText(p.t, c.width/2, c.height/2);
+    const url = await new Promise(r=>c.toBlob(b=>r(URL.createObjectURL(b)),'image/png'));
+    const img = await new Promise(res=>{ const i=new Image(); i.onload=()=>res(i); i.src=url; });
+    const m = { id:uid('m'), kind:'image', name:'샘플 '+p.t, url, duration:3, w:1080, h:1920, thumb:url, img };
+    P.media.push(m);
+  }
+  snap();
+  P.media.slice(-3).forEach(m=>addToTimeline(m, true));
+  renderMedia(); renderAll();
+  toast('샘플을 타임라인에 올렸습니다');
+}
+
+/* ---------------- 미디어 목록 ---------------- */
+function renderMedia(){
+  const list = $('#mediaList');
+  list.innerHTML = '';
+  for(const m of P.media){
+    const el = document.createElement('div');
+    el.className = 'mitem';
+    el.draggable = true;
+    el.dataset.id = m.id;
+    const icon = m.kind==='audio' ? '♪' : (m.kind==='image' ? '▣' : '▶');
+    el.innerHTML =
+      `<div class="th">${m.thumb ? `<img src="${m.thumb}" alt="">` : icon}</div>
+       <div class="meta"><b></b><small>${m.kind==='audio'?'음악':m.kind==='image'?'사진':'영상'} · ${m.duration?fmtDur(m.duration):'–'}</small></div>
+       <button class="add" title="타임라인에 추가">＋</button>
+       <button class="del" title="목록에서 제거">×</button>`;
+    el.querySelector('.meta b').textContent = m.name;
+    el.querySelector('.add').onclick = e => { e.stopPropagation(); snap(); addToTimeline(m); renderAll(); };
+    el.querySelector('.del').onclick = e => { e.stopPropagation(); removeMedia(m); };
+    el.ondragstart = e => { e.dataTransfer.setData('text/webcut-media', m.id); };
+    list.appendChild(el);
+  }
+  syncEmptyHint();
+}
+function syncEmptyHint(){
+  $('#emptyHint').hidden = P.clips.length>0 || P.texts.length>0;
+}
+
+function removeMedia(m){
+  const used = P.clips.some(c=>c.mediaId===m.id) || P.audios.some(a=>a.mediaId===m.id);
+  if(used && !confirm(`"${m.name}" 을(를) 쓰는 클립도 함께 지워집니다. 계속할까요?`)) return;
+  snap();
+  P.clips.filter(c=>c.mediaId===m.id).forEach(c=>dropEl(c.id));
+  P.audios.filter(a=>a.mediaId===m.id).forEach(a=>dropEl(a.id));
+  P.clips  = P.clips.filter(c=>c.mediaId!==m.id);
+  P.audios = P.audios.filter(a=>a.mediaId!==m.id);
+  P.media  = P.media.filter(x=>x!==m);
+  try{ URL.revokeObjectURL(m.url); }catch(e){}
+  UI.sel = null;
+  renderMedia(); renderAll();
+}
+
+/* ---------------- 클립 만들기 ---------------- */
+function newClip(m){
+  return {
+    id:uid('c'), mediaId:m.id, kind:m.kind, in:0, out:m.kind==='image'?3:Math.max(.2,m.duration),
+    speed:1, vol:1, muted:false, fit:'cover', scale:1, ox:0, oy:0, rot:0,
+    f:{ bri:1, con:1, sat:1, hue:0, blur:0, gray:0, sepia:0 }, preset:'none',
+    fin:0, fout:0, kb:'none',
+  };
+}
+function newAudio(m, start){
+  return { id:uid('a'), mediaId:m.id, kind:'audio', start:start||0, in:0, out:Math.max(.2,m.duration||10),
+           vol:.7, fin:0, fout:0, loop:false };
+}
+function newText(start, dur){
+  return { id:uid('t'), text:'자막을 입력하세요', start:start||0, dur:dur||3,
+           x:.5, y:.82, size:7.5, color:'#ffffff', stroke:'#000000', strokeOn:true,
+           bg:'#000000', bgOn:false, weight:900, align:'center', font:'gothic', anim:'fade' };
+}
+function addToTimeline(m, silent){
+  if(m.kind==='audio'){
+    P.audios.push(newAudio(m, 0));
+  }else{
+    P.clips.push(newClip(m));
+  }
+  if(!silent) toast('타임라인에 추가했습니다');
+}
+
+/* ============================================================
+   타임라인
+   ============================================================ */
+const PPS_BASE = 56;
+const pps = () => PPS_BASE * UI.zoom;
+
+function contentWidth(){
+  return Math.max(totalDur()*pps() + 240, $('#tlScroll').clientWidth);
+}
+
+function drawRuler(){
+  const c = $('#rulerCv');
+  const w = contentWidth();
+  const dpr = Math.min(2, window.devicePixelRatio||1);
+  c.style.width = w+'px';
+  c.width = Math.floor(w*dpr); c.height = Math.floor(24*dpr);
+  const g = c.getContext('2d');
+  g.setTransform(dpr,0,0,dpr,0,0);
+  const css = getComputedStyle(document.documentElement);
+  g.clearRect(0,0,w,24);
+  g.fillStyle = css.getPropertyValue('--ink-3').trim() || '#888';
+  g.strokeStyle = css.getPropertyValue('--line-2').trim() || '#555';
+  g.font = '10px ui-monospace, monospace';
+  g.textBaseline = 'top';
+  const step = [0.5,1,2,5,10,15,30,60,120,300].find(s=>s*pps()>=64) || 600;
+  const end = w/pps();
+  g.lineWidth = 1;
+  for(let t=0; t<=end; t+=step){
+    const x = Math.round(t*pps())+.5;
+    g.globalAlpha=.55;
+    g.beginPath(); g.moveTo(x,14); g.lineTo(x,24); g.stroke();
+    g.globalAlpha=1;
+    const m = Math.floor(t/60), s = Math.round(t%60);
+    g.fillText(m>0 ? `${m}:${String(s).padStart(2,'0')}` : (step<1 ? t.toFixed(1)+'s' : s+'s'), x+3, 3);
+    if(step>=1){
+      const hx = Math.round((t+step/2)*pps())+.5;
+      g.globalAlpha=.3;
+      g.beginPath(); g.moveTo(hx,19); g.lineTo(hx,24); g.stroke();
+      g.globalAlpha=1;
+    }
+  }
+}
+
+function trackRow(cls){
+  const row = document.createElement('div');
+  row.className = 'track ' + cls;
+  row.innerHTML = '<div class="track-lane"></div>';
+  return row;
+}
+
+function renderTimeline(){
+  layout();
+  const inner = $('#tlInner');
+  const w = contentWidth();
+  inner.style.width = w+'px';
+  drawRuler();
+
+  const host = $('#tracks');
+  host.innerHTML = '';
+
+  // 영상 트랙
+  const vr = trackRow('t-vid');
+  for(const c of P.clips){
+    const m = mediaById(c.mediaId);
+    const el = document.createElement('div');
+    el.className = 'clip' + (UI.sel && UI.sel.id===c.id ? ' sel' : '');
+    el.style.left  = (c._s*pps())+'px';
+    el.style.width = Math.max(14, c._d*pps())+'px';
+    el.dataset.id = c.id; el.dataset.type = 'clip';
+    const sub = [];
+    if(c.speed!==1) sub.push(c.speed+'×');
+    if(c.muted || c.vol===0) sub.push('무음');
+    el.innerHTML =
+      `${m && m.thumb ? `<div class="cl-thumb" style="background-image:url(${m.thumb})"></div>` : ''}
+       <div class="handle l"></div><div class="handle r"></div>
+       <span class="cl-label"></span>`;
+    el.querySelector('.cl-label').innerHTML =
+      `${escapeHtml(m?m.name:'?')}<span class="cl-sub">${c._d.toFixed(1)}s${sub.length?' · '+sub.join(' · '):''}</span>`;
+    vr.appendChild(el);
+  }
+  if(!P.clips.length){
+    const hint = document.createElement('div');
+    hint.className='cl-label';
+    hint.style.cssText='position:absolute;left:12px;top:19px;color:var(--ink-3);text-shadow:none;font-weight:600';
+    hint.textContent = '미디어를 ＋ 로 올리면 여기에 놓입니다';
+    vr.appendChild(hint);
+  }
+  host.appendChild(vr);
+
+  // 오디오 트랙
+  const ar = trackRow('t-aud');
+  for(const a of P.audios){
+    const m = mediaById(a.mediaId);
+    const el = document.createElement('div');
+    el.className = 'clip a' + (UI.sel && UI.sel.id===a.id ? ' sel' : '');
+    el.style.left  = (a.start*pps())+'px';
+    el.style.width = Math.max(14, audDur(a)*pps())+'px';
+    el.dataset.id = a.id; el.dataset.type = 'audio';
+    el.innerHTML = `<div class="wave" style="background:repeating-linear-gradient(90deg,rgba(255,255,255,.35) 0 2px,transparent 2px 6px)"></div>
+       <div class="handle l"></div><div class="handle r"></div><span class="cl-label"></span>`;
+    el.querySelector('.cl-label').innerHTML = `♪ ${escapeHtml(m?m.name:'?')}<span class="cl-sub">${audDur(a).toFixed(1)}s</span>`;
+    ar.appendChild(el);
+  }
+  host.appendChild(ar);
+
+  // 자막 트랙
+  const tr = trackRow('t-txt');
+  for(const x of P.texts){
+    const el = document.createElement('div');
+    el.className = 'clip t' + (UI.sel && UI.sel.id===x.id ? ' sel' : '');
+    el.style.left  = (x.start*pps())+'px';
+    el.style.width = Math.max(14, x.dur*pps())+'px';
+    el.dataset.id = x.id; el.dataset.type = 'text';
+    el.innerHTML = `<div class="handle l"></div><div class="handle r"></div><span class="cl-label"></span>`;
+    el.querySelector('.cl-label').textContent = 'T ' + (x.text.split('\n')[0] || '자막');
+    tr.appendChild(el);
+  }
+  host.appendChild(tr);
+
+  updatePlayhead();
+}
+function escapeHtml(s){ return String(s).replace(/[&<>"]/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[ch])); }
+
+function updatePlayhead(){
+  $('#playhead').style.left = (UI.playhead*pps())+'px';
+}
+function scrollPlayheadIntoView(){
+  const sc = $('#tlScroll');
+  const x = UI.playhead*pps();
+  if(x < sc.scrollLeft+40) sc.scrollLeft = Math.max(0, x-40);
+  else if(x > sc.scrollLeft + sc.clientWidth - 60) sc.scrollLeft = x - sc.clientWidth + 60;
+}
+
+/* ---------------- 시간 이동 ---------------- */
+function seek(t, keepScroll){
+  UI.playhead = clamp(t, 0, Math.max(0, totalDur()));
+  updatePlayhead();
+  updateTimeUI();
+  UI.needsDraw = true;
+  if(!UI.playing) syncMedia(true);
+  if(!keepScroll) scrollPlayheadIntoView();
+}
+function updateTimeUI(){
+  $('#curTime').textContent = fmtTime(UI.playhead);
+  $('#totTime').textContent = fmtTime(totalDur());
+}
+
+/* ---------------- 눈금자 드래그 ---------------- */
+(function rulerDrag(){
+  const r = $('#ruler');
+  let on = false;
+  const toTime = e => {
+    const rect = $('#tlInner').getBoundingClientRect();
+    return (e.clientX - rect.left) / pps();
+  };
+  r.addEventListener('pointerdown', e => {
+    on = true;
+    try{ r.setPointerCapture(e.pointerId); }catch(_){}
+    if(UI.playing) pause();
+    seek(toTime(e), true);
+  });
+  r.addEventListener('pointermove', e => { if(on) seek(toTime(e), true); });
+  r.addEventListener('pointerup',   e => { on = false; try{ r.releasePointerCapture(e.pointerId); }catch(_){} });
+  r.addEventListener('pointercancel', ()=>{ on=false; });
+})();
+
+/* ---------------- 클립 드래그 ---------------- */
+function snapPoints(exceptId){
+  const pts = [0, UI.playhead];
+  layout();
+  for(const c of P.clips){ pts.push(c._s, c._s+c._d); }
+  for(const a of P.audios) if(a.id!==exceptId){ pts.push(a.start, a.start+audDur(a)); }
+  for(const x of P.texts)  if(x.id!==exceptId){ pts.push(x.start, x.start+x.dur); }
+  return pts;
+}
+function applySnap(t, exceptId){
+  if(!UI.snap) return t;
+  const tol = 9/pps();
+  let best = t, bd = tol;
+  for(const p of snapPoints(exceptId)){
+    const d = Math.abs(p-t);
+    if(d < bd){ bd = d; best = p; }
+  }
+  return best;
+}
+
+(function clipDrag(){
+  const host = $('#tracks');
+  let drag = null;
+
+  host.addEventListener('pointerdown', e => {
+    const clipEl = e.target.closest('.clip');
+    if(!clipEl) { return; }
+    const type = clipEl.dataset.type, id = clipEl.dataset.id;
+    select(type, id);
+    const handle = e.target.closest('.handle');
+    const item = findItem(type, id);
+    if(!item) return;
+    try{ clipEl.setPointerCapture(e.pointerId); }catch(_){}
+    drag = {
+      el:clipEl, type, id, item, mode: handle ? (handle.classList.contains('l')?'trimL':'trimR') : 'move',
+      x0:e.clientX, moved:false,
+      snapshot:{ in:item.in, out:item.out, start:item.start, dur:item.dur },
+      origLeft: parseFloat(clipEl.style.left)||0, origW: parseFloat(clipEl.style.width)||0,
+    };
+    if(UI.playing) pause();
+  });
+
+  host.addEventListener('pointermove', e => {
+    if(!drag) return;
+    const dx = e.clientX - drag.x0;
+    if(!drag.moved && Math.abs(dx) < 3) return;
+    if(!drag.moved){ drag.moved = true; snap(); drag.el.classList.add('dragging'); }
+    const dt = dx/pps();
+    const it = drag.item;
+
+    if(drag.mode==='move'){
+      if(drag.type==='clip'){
+        drag.el.style.transform = `translateX(${dx}px)`;
+      }else{
+        const raw = Math.max(0, drag.snapshot.start + dt);
+        it.start = Math.max(0, applySnap(raw, it.id));
+        drag.el.style.left = (it.start*pps())+'px';
+      }
+    }else if(drag.mode==='trimL'){
+      if(drag.type==='text'){
+        const end = drag.snapshot.start + drag.snapshot.dur;
+        const ns = clamp(applySnap(drag.snapshot.start + dt, it.id), 0, end-0.2);
+        it.start = ns; it.dur = end - ns;
+      }else{
+        const sp = drag.type==='clip' ? (it.kind==='image'?1:it.speed) : 1;
+        const ni = clamp(drag.snapshot.in + dt*sp, 0, drag.snapshot.out-0.1);
+        if(drag.type==='audio'){
+          const delta = ni - drag.snapshot.in;
+          it.in = ni; it.start = Math.max(0, drag.snapshot.start + delta);
+        }else{
+          it.in = ni;
+        }
+      }
+      refreshDragEl(drag);
+    }else{
+      const m = mediaById(it.mediaId);
+      const maxOut = drag.type==='clip'
+        ? (it.kind==='image' ? 60 : (m?m.duration:9999))
+        : (m?m.duration:9999);
+      if(drag.type==='text'){
+        it.dur = Math.max(0.2, drag.snapshot.dur + dt);
+      }else{
+        const sp = drag.type==='clip' ? (it.kind==='image'?1:it.speed) : 1;
+        it.out = clamp(drag.snapshot.out + dt*sp, it.in+0.1, maxOut);
+      }
+      refreshDragEl(drag);
+    }
+    if(drag.type!=='clip' || drag.mode!=='move'){ layout(); }
+    UI.needsDraw = true;
+    updateTimeUI();
+  });
+
+  function refreshDragEl(d){
+    const it = d.item;
+    if(d.type==='clip'){
+      layout();
+      d.el.style.left  = (it._s*pps())+'px';
+      d.el.style.width = Math.max(14, clipDur(it)*pps())+'px';
+      // 뒤 클립들도 즉시 밀린다
+      for(const c of P.clips){
+        const n = $(`.clip[data-id="${c.id}"]`);
+        if(n){ n.style.left=(c._s*pps())+'px'; n.style.width=Math.max(14,c._d*pps())+'px'; }
+      }
+    }else{
+      const dur = d.type==='audio' ? audDur(it) : it.dur;
+      d.el.style.left  = (it.start*pps())+'px';
+      d.el.style.width = Math.max(14, dur*pps())+'px';
+    }
+  }
+
+  function end(e){
+    if(!drag) return;
+    const d = drag; drag = null;
+    d.el.classList.remove('dragging');
+    d.el.style.transform = '';
+    try{ d.el.releasePointerCapture(e.pointerId); }catch(_){}
+    if(d.moved && d.type==='clip' && d.mode==='move'){
+      const dx = e.clientX - d.x0;
+      layout();
+      const c = d.item;
+      const center = c._s + dx/pps() + c._d/2;
+      const rest = P.clips.filter(x=>x!==c);
+      let idx = rest.length, acc = 0;
+      for(let i=0;i<rest.length;i++){
+        const dur = clipDur(rest[i]);
+        if(center < acc + dur/2){ idx = i; break; }
+        acc += dur;
+      }
+      P.clips = rest;
+      P.clips.splice(idx, 0, c);
+    }
+    if(d.moved) renderAll(); else { renderTimeline(); renderInspector(); }
+  }
+  host.addEventListener('pointerup', end);
+  host.addEventListener('pointercancel', end);
+})();
+
+function findItem(type, id){
+  if(type==='clip')  return P.clips.find(c=>c.id===id);
+  if(type==='audio') return P.audios.find(a=>a.id===id);
+  if(type==='text')  return P.texts.find(t=>t.id===id);
+  return null;
+}
+function select(type, id){
+  UI.sel = (type&&id) ? {type,id} : null;
+  $$('.clip').forEach(n=>n.classList.toggle('sel', !!UI.sel && n.dataset.id===UI.sel.id));
+  renderInspector();
+  UI.needsDraw = true;
+}
+function selected(){ return UI.sel ? findItem(UI.sel.type, UI.sel.id) : null; }
+
+/* ============================================================
+   인스펙터 (오른쪽 속성 패널)
+   ============================================================ */
+const FILTER_PRESETS = {
+  none   : { label:'원본',   f:{bri:1,   con:1,   sat:1,   hue:0,  blur:0, gray:0, sepia:0} },
+  vivid  : { label:'선명',   f:{bri:1.05,con:1.15,sat:1.35, hue:0, blur:0, gray:0, sepia:0} },
+  warm   : { label:'따뜻',   f:{bri:1.06,con:1.03,sat:1.15, hue:-8,blur:0, gray:0, sepia:.18} },
+  cool   : { label:'차가움', f:{bri:1.02,con:1.08,sat:1.05, hue:14,blur:0, gray:0, sepia:0} },
+  film   : { label:'빈티지', f:{bri:1.02,con:.92, sat:.82,  hue:-4,blur:0, gray:0, sepia:.35} },
+  mono   : { label:'흑백',   f:{bri:1.04,con:1.12,sat:1,    hue:0, blur:0, gray:1,  sepia:0} },
+};
+const FONTS = {
+  gothic : { label:'고딕', css:'"Noto Sans KR","Apple SD Gothic Neo","Malgun Gothic",sans-serif' },
+  myeongjo:{ label:'명조', css:'"Nanum Myeongjo","Gowun Batang",serif' },
+  hand   : { label:'손글씨', css:'"Gaegu","Nanum Pen Script",cursive' },
+};
+const ANIMS = { none:'없음', fade:'서서히', up:'아래에서', pop:'톡 튀어나옴', type:'타자기' };
+
+function rangeRow(label, path, min, max, step, val, suffix, re){
+  return `<div class="row"><label>${label}</label>
+    <input type="range" data-p="${path}" min="${min}" max="${max}" step="${step}" value="${val}" ${re?'data-re="tl"':''}>
+    <span class="val" data-v="${path}">${val}${suffix||''}</span></div>`;
+}
+function segRow(label, path, opts, cur, re){
+  return `<div class="row"><label>${label}</label><div class="seg">` +
+    opts.map(o=>`<button data-set="${path}" data-val="${o.v}" ${re?'data-re="tl"':''} class="${String(cur)===String(o.v)?'on':''}">${o.t}</button>`).join('') +
+    `</div></div>`;
+}
+
+function renderInspector(){
+  const host = $('#inspector');
+  const it = selected();
+  if(!it){ host.innerHTML = projectPanel(); return; }
+  if(UI.sel.type==='clip')  host.innerHTML = clipPanel(it);
+  if(UI.sel.type==='audio') host.innerHTML = audioPanel(it);
+  if(UI.sel.type==='text')  host.innerHTML = textPanel(it);
+  bindInputs(host, it);
+}
+
+function projectPanel(){
+  const t = totalDur();
+  return `<div class="grp">
+      <h3>프로젝트</h3>
+      <div class="row"><label>길이</label><div style="flex:1;font-size:13px;font-weight:700">${fmtDur(t)}</div></div>
+      <div class="row"><label>클립</label><div style="flex:1;font-size:13px">영상 ${P.clips.length} · 음악 ${P.audios.length} · 자막 ${P.texts.length}</div></div>
+      <div class="row"><label>해상도</label><div style="flex:1;font-size:13px">${dims(P.res).w}×${dims(P.res).h}</div></div>
+    </div>
+    <div class="grp"><h3>팁</h3>
+      <p style="font-size:12.5px;color:var(--ink-2);line-height:1.8">
+        · 클립을 클릭하면 여기서 속도·볼륨·필터를 만집니다.<br>
+        · 클립 <b>양 끝</b>을 끌면 앞뒤가 잘립니다.<br>
+        · <kbd>S</kbd> 로 재생 위치에서 분할.<br>
+        · 자막은 미리보기에서 <b>직접 끌어</b> 옮깁니다.
+      </p>
+    </div>`;
+}
+
+function clipPanel(c){
+  const m = mediaById(c.mediaId);
+  const isImg = c.kind==='image';
+  const maxOut = isImg ? 60 : (m ? m.duration : 60);
+  return `
+  <div class="sel-title"><span class="tag">${isImg?'사진':'영상'}</span><b>${escapeHtml(m?m.name:'')}</b></div>
+
+  <div class="grp"><h3>자르기</h3>
+    <div class="row"><label>시작</label>
+      <input type="number" data-p="in" data-re="tl" min="0" max="${round2(maxOut)}" step="0.1" value="${round2(c.in)}">
+      <label style="width:auto">끝</label>
+      <input type="number" data-p="out" data-re="tl" min="0.1" max="${round2(maxOut)}" step="0.1" value="${round2(c.out)}"></div>
+    <div class="row"><label>길이</label><div style="flex:1;font-size:12.5px;font-weight:700" data-live="dur">${clipDur(c).toFixed(1)}초</div></div>
+    ${isImg ? '' : rangeRow('속도','speed',0.25,4,0.05,c.speed,'×',true)}
+    ${isImg ? '' : segRow('','speed',[{v:0.5,t:'0.5×'},{v:1,t:'1×'},{v:1.5,t:'1.5×'},{v:2,t:'2×'}],c.speed,true)}
+  </div>
+
+  ${isImg ? `<div class="grp"><h3>움직임</h3>
+      ${segRow('효과','kb',[{v:'none',t:'없음'},{v:'in',t:'줌 인'},{v:'out',t:'줌 아웃'}],c.kb)}
+    </div>` : `<div class="grp"><h3>소리</h3>
+      ${rangeRow('볼륨','vol',0,1.5,0.05,c.vol,'')}
+      ${segRow('음소거','muted',[{v:false,t:'켜짐'},{v:true,t:'음소거'}],c.muted,true)}
+    </div>`}
+
+  <div class="grp"><h3>화면</h3>
+    ${segRow('맞춤','fit',[{v:'cover',t:'채우기'},{v:'contain',t:'전체 보기'}],c.fit)}
+    ${rangeRow('확대','scale',0.3,3,0.01,c.scale,'×')}
+    ${rangeRow('좌우','ox',-0.5,0.5,0.005,c.ox,'')}
+    ${rangeRow('상하','oy',-0.5,0.5,0.005,c.oy,'')}
+    ${segRow('회전','rot',[{v:0,t:'0°'},{v:90,t:'90°'},{v:180,t:'180°'},{v:270,t:'270°'}],c.rot)}
+  </div>
+
+  <div class="grp"><h3>페이드</h3>
+    ${rangeRow('인','fin',0,3,0.1,c.fin,'초')}
+    ${rangeRow('아웃','fout',0,3,0.1,c.fout,'초')}
+  </div>
+
+  <div class="grp"><h3>필터</h3>
+    ${canFilter ? `<div class="presets" style="margin-bottom:11px">
+      ${Object.entries(FILTER_PRESETS).map(([k,v])=>`<button data-preset="${k}" class="${c.preset===k?'on':''}">${v.label}</button>`).join('')}
+    </div>
+    ${rangeRow('밝기','f.bri',0.2,2,0.01,c.f.bri,'')}
+    ${rangeRow('대비','f.con',0.2,2,0.01,c.f.con,'')}
+    ${rangeRow('채도','f.sat',0,2.5,0.01,c.f.sat,'')}
+    ${rangeRow('색조','f.hue',-180,180,1,c.f.hue,'°')}
+    ${rangeRow('흐림','f.blur',0,20,0.5,c.f.blur,'')}`
+    : `<p style="font-size:12px;color:var(--ink-3)">이 브라우저는 캔버스 필터를 지원하지 않습니다.</p>`}
+  </div>
+
+  <div class="grp"><div class="row" style="gap:6px">
+    <button class="btn sm" data-act="split" style="flex:1">✂ 분할</button>
+    <button class="btn sm" data-act="dup" style="flex:1">복제</button>
+    <button class="btn sm" data-act="del" style="flex:1;color:var(--danger)">삭제</button>
+  </div></div>`;
+}
+
+function audioPanel(a){
+  const m = mediaById(a.mediaId);
+  return `
+  <div class="sel-title"><span class="tag">음악</span><b>${escapeHtml(m?m.name:'')}</b></div>
+  <div class="grp"><h3>위치와 길이</h3>
+    <div class="row"><label>시작</label>
+      <input type="number" data-p="start" data-re="tl" min="0" step="0.1" value="${round2(a.start)}"></div>
+    <div class="row"><label>구간</label>
+      <input type="number" data-p="in" data-re="tl" min="0" step="0.1" value="${round2(a.in)}">
+      <input type="number" data-p="out" data-re="tl" min="0.1" max="${m?round2(m.duration):999}" step="0.1" value="${round2(a.out)}"></div>
+    <div class="row"><label>길이</label><div style="flex:1;font-size:12.5px;font-weight:700" data-live="dur">${audDur(a).toFixed(1)}초</div></div>
+  </div>
+  <div class="grp"><h3>소리</h3>
+    ${rangeRow('볼륨','vol',0,1.5,0.05,a.vol,'')}
+    ${rangeRow('페이드 인','fin',0,5,0.1,a.fin,'초')}
+    ${rangeRow('페이드 아웃','fout',0,5,0.1,a.fout,'초')}
+  </div>
+  <div class="grp"><div class="row" style="gap:6px">
+    <button class="btn sm" data-act="dup" style="flex:1">복제</button>
+    <button class="btn sm" data-act="del" style="flex:1;color:var(--danger)">삭제</button>
+  </div></div>`;
+}
+
+function textPanel(t){
+  return `
+  <div class="sel-title"><span class="tag">자막</span><b>${escapeHtml(t.text.split('\n')[0]||'자막')}</b></div>
+  <div class="grp"><h3>내용</h3>
+    <textarea data-p="text" data-re="tl" placeholder="여러 줄도 됩니다">${escapeHtml(t.text)}</textarea>
+  </div>
+  <div class="grp"><h3>시간</h3>
+    <div class="row"><label>시작</label>
+      <input type="number" data-p="start" data-re="tl" min="0" step="0.1" value="${round2(t.start)}">
+      <label style="width:auto">길이</label>
+      <input type="number" data-p="dur" data-re="tl" min="0.2" step="0.1" value="${round2(t.dur)}"></div>
+  </div>
+  <div class="grp"><h3>글자</h3>
+    ${segRow('글꼴','font',Object.entries(FONTS).map(([k,v])=>({v:k,t:v.label})),t.font)}
+    ${segRow('굵기','weight',[{v:400,t:'보통'},{v:700,t:'굵게'},{v:900,t:'아주 굵게'}],t.weight)}
+    ${rangeRow('크기','size',2,20,0.1,t.size,'')}
+    <div class="row"><label>색</label><input type="color" data-p="color" value="${t.color}"></div>
+    <div class="row"><label>외곽선</label>
+      <input type="color" data-p="stroke" value="${t.stroke}" style="flex:1">
+      <button class="btn sm" data-set="strokeOn" data-val="${t.strokeOn?'false':'true'}" style="flex:none">${t.strokeOn?'끄기':'켜기'}</button></div>
+    <div class="row"><label>배경</label>
+      <input type="color" data-p="bg" value="${t.bg}" style="flex:1">
+      <button class="btn sm" data-set="bgOn" data-val="${t.bgOn?'false':'true'}" style="flex:none">${t.bgOn?'끄기':'켜기'}</button></div>
+  </div>
+  <div class="grp"><h3>배치</h3>
+    ${segRow('정렬','align',[{v:'left',t:'왼쪽'},{v:'center',t:'가운데'},{v:'right',t:'오른쪽'}],t.align)}
+    ${rangeRow('가로','x',0.05,0.95,0.005,t.x,'')}
+    ${rangeRow('세로','y',0.05,0.95,0.005,t.y,'')}
+    <div class="row"><label>효과</label>
+      <select data-p="anim">${Object.entries(ANIMS).map(([k,v])=>`<option value="${k}" ${t.anim===k?'selected':''}>${v}</option>`).join('')}</select></div>
+    <p style="font-size:11.5px;color:var(--ink-3);margin-top:7px">미리보기 화면에서 글자를 직접 끌어 옮길 수 있습니다.</p>
+  </div>
+  <div class="grp"><div class="row" style="gap:6px">
+    <button class="btn sm" data-act="dup" style="flex:1">복제</button>
+    <button class="btn sm" data-act="del" style="flex:1;color:var(--danger)">삭제</button>
+  </div></div>`;
+}
+
+/* ---------------- 인스펙터 바인딩 ---------------- */
+function getPath(o,p){ return p.split('.').reduce((x,k)=>x[k], o); }
+function setPath(o,p,v){ const ks=p.split('.'), last=ks.pop(); ks.reduce((x,k)=>x[k],o)[last]=v; }
+
+function bindInputs(root, item){
+  root.querySelectorAll('[data-p]').forEach(inp=>{
+    const path = inp.dataset.p;
+    const re   = inp.dataset.re==='tl';
+    let armed = false;
+    const commit = () => {
+      let v = inp.value;
+      if(inp.type==='range' || inp.type==='number') v = parseFloat(v);
+      if(inp.type==='number' && !isFinite(v)) return;
+      setPath(item, path, v);
+      if(path==='in'  && item.out!=null) item.in  = clamp(item.in, 0, item.out-0.1);
+      if(path==='out' && item.in!=null)  item.out = Math.max(item.in+0.1, item.out);
+      if(path==='start') item.start = Math.max(0, item.start);
+      const disp = root.querySelector(`[data-v="${path}"]`);
+      if(disp){
+        const n = getPath(item, path);
+        disp.textContent = (Math.round(n*100)/100) + (disp.textContent.replace(/^[-\d.]*/,''));
+      }
+      const live = root.querySelector('[data-live="dur"]');
+      if(live) live.textContent = (UI.sel.type==='audio'?audDur(item):UI.sel.type==='text'?item.dur:clipDur(item)).toFixed(1)+'초';
+      UI.needsDraw = true;
+      if(re){ layout(); renderTimeline(); updateTimeUI(); }
+      if(UI.sel.type==='clip' && !UI.playing) syncMedia(true);
+    };
+    inp.addEventListener('input', ()=>{ if(!armed){ armed=true; snap(); } commit(); });
+    inp.addEventListener('change', ()=>{ armed=false; commit(); });
+    inp.addEventListener('blur',   ()=>{ armed=false; });
+  });
+
+  root.querySelectorAll('[data-set]').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      snap();
+      let v = btn.dataset.val;
+      if(v==='true') v=true; else if(v==='false') v=false;
+      else if(v!=='' && !isNaN(parseFloat(v)) && /^[-\d.]+$/.test(v)) v=parseFloat(v);
+      setPath(item, btn.dataset.set, v);
+      layout(); renderTimeline(); renderInspector(); updateTimeUI();
+      UI.needsDraw = true;
+      if(!UI.playing) syncMedia(true);
+    });
+  });
+
+  root.querySelectorAll('[data-preset]').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      snap();
+      const k = btn.dataset.preset;
+      item.preset = k;
+      item.f = Object.assign({}, FILTER_PRESETS[k].f);
+      renderInspector(); UI.needsDraw = true;
+    });
+  });
+
+  root.querySelectorAll('[data-act]').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      const a = btn.dataset.act;
+      if(a==='split') splitAtPlayhead();
+      if(a==='dup')   duplicateSel();
+      if(a==='del')   deleteSel();
+    });
+  });
+}
+
+/* ============================================================
+   재생 엔진
+   ============================================================ */
+function fadeMul(local, dur, fin, fout){
+  let v = 1;
+  if(fin  > 0) v = Math.min(v, local/fin);
+  if(fout > 0) v = Math.min(v, (dur-local)/fout);
+  return clamp(v, 0, 1);
+}
+function trySeek(el, t){
+  const max = isFinite(el.duration) && el.duration>0 ? el.duration-0.03 : t;
+  try{ el.currentTime = clamp(t, 0, Math.max(0,max)); }catch(e){}
+}
+function setGain(item, v){
+  if(actx){
+    const g = gainFor(item);
+    if(g){ g.gain.gain.setTargetAtTime(clamp(v,0,2), actx.currentTime, 0.012); return; }
+  }
+  const el = els.get(item.id);
+  if(el && el.tagName!=='IMG'){ try{ el.volume = clamp(v,0,1); }catch(e){} }
+}
+
+function syncMedia(forceSeek){
+  const t = UI.playhead;
+  layout();
+  const act = clipAt(t);
+
+  for(const c of P.clips){
+    if(c.kind==='image') continue;
+    const el = els.get(c.id);
+    if(!el || c===act) continue;
+    if(!el.paused) el.pause();
+    setGain(c, 0);
+  }
+
+  if(act && act.kind!=='image'){
+    const el = elFor(act);
+    if(el){
+      const want = act.in + (t - act._s) * act.speed;
+      try{ el.playbackRate = clamp(act.speed, 0.0625, 16); }catch(e){}
+      if(UI.playing){
+        if(el.paused){ trySeek(el, want); el.play().catch(()=>{}); }
+        else if(Math.abs(el.currentTime - want) > 0.32) trySeek(el, want);
+      }else{
+        if(!el.paused) el.pause();
+        if(forceSeek && Math.abs(el.currentTime - want) > 0.04) trySeek(el, want);
+      }
+      setGain(act, act.muted ? 0 : act.vol * fadeMul(t-act._s, act._d, act.fin, act.fout));
+    }
+  }
+
+  // 다음 클립 미리 준비 (전환 순간 검은 화면 방지)
+  if(UI.playing && act){
+    const nxt = P.clips[P.clips.indexOf(act)+1];
+    if(nxt && nxt.kind!=='image' && act._s+act._d - t < 1.2){
+      const el = elFor(nxt);
+      if(el && el.paused && Math.abs(el.currentTime - nxt.in) > 0.15) trySeek(el, nxt.in);
+    }
+  }
+
+  for(const a of P.audios){
+    const d  = audDur(a);
+    const on = t >= a.start-1e-6 && t < a.start + d;
+    const el = on ? elFor(a) : els.get(a.id);
+    if(!el) continue;
+    if(!on){ if(!el.paused) el.pause(); setGain(a, 0); continue; }
+    const want = a.in + (t - a.start);
+    if(UI.playing){
+      if(el.paused){ trySeek(el, want); el.play().catch(()=>{}); }
+      else if(Math.abs(el.currentTime - want) > 0.32) trySeek(el, want);
+    }else{
+      if(!el.paused) el.pause();
+      if(forceSeek && Math.abs(el.currentTime - want) > 0.04) trySeek(el, want);
+    }
+    setGain(a, a.vol * fadeMul(t-a.start, d, a.fin, a.fout));
+  }
+}
+
+function pauseAll(){
+  els.forEach(el=>{ if(el.tagName!=='IMG' && !el.paused){ try{ el.pause(); }catch(e){} } });
+}
+function play(){
+  if(UI.playing) return;
+  const T = totalDur();
+  if(T <= 0){ toast('먼저 영상이나 사진을 올려주세요','bad'); return; }
+  if(UI.playhead >= T-0.03) UI.playhead = 0;
+  ensureAudio();
+  if(actx && actx.state==='suspended') actx.resume();
+  UI.playing = true;
+  $('#playBtn').textContent = '⏸';
+  lastT = performance.now();
+  syncMedia(true);
+}
+function pause(){
+  if(!UI.playing) return;
+  UI.playing = false;
+  $('#playBtn').textContent = '▶';
+  pauseAll();
+  UI.needsDraw = true;
+}
+function togglePlay(){ UI.playing ? pause() : play(); }
+
+let lastT = performance.now();
+function loop(){
+  requestAnimationFrame(loop);
+  const now = performance.now();
+  const dt  = Math.min(0.5, (now-lastT)/1000);
+  lastT = now;
+  if(UI.playing){
+    const T = totalDur();
+    UI.playhead = Math.min(T, UI.playhead + dt);
+    updatePlayhead(); updateTimeUI();
+    if(!UI.exporting) scrollPlayheadIntoView();
+    syncMedia(false);
+    drawFrame(UI.playhead);
+    if(UI.exporting) exportTick();
+    if(UI.playhead >= T-1e-3){
+      pause();
+      if(UI.exporting) finishExport();
+    }
+  }else if(UI.needsDraw){
+    UI.needsDraw = false;
+    drawFrame(UI.playhead);
+  }
+}
+requestAnimationFrame(loop);
+
+/* ============================================================
+   화면 그리기
+   ============================================================ */
+function filterStr(f){
+  const p = [];
+  if(f.bri!==1)  p.push(`brightness(${f.bri})`);
+  if(f.con!==1)  p.push(`contrast(${f.con})`);
+  if(f.sat!==1)  p.push(`saturate(${f.sat})`);
+  if(f.hue)      p.push(`hue-rotate(${f.hue}deg)`);
+  if(f.blur)     p.push(`blur(${(f.blur*cv.width/1080).toFixed(2)}px)`);
+  if(f.gray)     p.push(`grayscale(${f.gray})`);
+  if(f.sepia)    p.push(`sepia(${f.sepia})`);
+  return p.length ? p.join(' ') : 'none';
+}
+
+function drawFrame(t){
+  ctx.save();
+  ctx.setTransform(1,0,0,1,0,0);
+  ctx.globalAlpha = 1; if(canFilter) ctx.filter='none';
+  ctx.fillStyle = '#000';
+  ctx.fillRect(0,0,cv.width,cv.height);
+  ctx.restore();
+
+  const c = clipAt(t);
+  if(c) drawClip(c, t);
+  for(const x of P.texts){
+    if(t >= x.start && t < x.start + x.dur) drawTextItem(x, t - x.start);
+    else x._box = null;
+  }
+  syncTextHandles();
+}
+
+function drawClip(c, t){
+  const m = mediaById(c.mediaId);
+  if(!m) return;
+  let src=null, sw=0, sh=0;
+  if(c.kind==='image'){ src = m.img; sw = m.w; sh = m.h; }
+  else {
+    const el = els.get(c.id) || elFor(c);
+    if(!el || el.readyState < 2) return;
+    src = el; sw = el.videoWidth; sh = el.videoHeight;
+  }
+  if(!src || !sw || !sh) return;
+
+  const local = t - c._s, dur = c._d;
+  let extra = 1;
+  if(c.kind==='image' && c.kb!=='none'){
+    const k = clamp(local/Math.max(.001,dur), 0, 1);
+    extra = c.kb==='in' ? 1 + 0.16*k : 1.16 - 0.16*k;
+  }
+  const W = cv.width, H = cv.height;
+  const swap = (c.rot % 180) !== 0;
+  const bw = swap ? sh : sw, bh = swap ? sw : sh;
+  const base = c.fit==='cover' ? Math.max(W/bw, H/bh) : Math.min(W/bw, H/bh);
+  const s = base * c.scale * extra;
+
+  ctx.save();
+  ctx.globalAlpha = fadeMul(local, dur, c.fin, c.fout);
+  if(canFilter) ctx.filter = filterStr(c.f);
+  ctx.translate(W/2 + c.ox*W, H/2 + c.oy*H);
+  if(c.rot) ctx.rotate(c.rot*Math.PI/180);
+  try{ ctx.drawImage(src, -sw*s/2, -sh*s/2, sw*s, sh*s); }catch(e){}
+  ctx.restore();
+}
+
+function wrapLines(text, maxW){
+  const out = [];
+  for(const para of String(text).split('\n')){
+    if(!para){ out.push(''); continue; }
+    let line = '';
+    for(const ch of para){
+      const test = line + ch;
+      if(ctx.measureText(test).width > maxW && line){ out.push(line); line = ch; }
+      else line = test;
+    }
+    out.push(line);
+  }
+  return out;
+}
+function roundRect(g, x, y, w, h, r){
+  g.beginPath();
+  g.moveTo(x+r, y);
+  g.arcTo(x+w, y, x+w, y+h, r);
+  g.arcTo(x+w, y+h, x, y+h, r);
+  g.arcTo(x, y+h, x, y, r);
+  g.arcTo(x, y, x+w, y, r);
+  g.closePath();
+}
+
+function drawTextItem(x, local){
+  const W = cv.width, H = cv.height;
+  const size = Math.max(6, x.size/100*W);
+  ctx.save();
+  ctx.font = `${x.weight} ${size}px ${FONTS[x.font].css}`;
+  ctx.textBaseline = 'middle';
+
+  let body = x.text;
+  let alpha = 1, dy = 0, sc = 1;
+  const inT = 0.32;
+  if(x.anim==='fade'){
+    alpha = clamp(local/inT,0,1) * clamp((x.dur-local)/0.28,0,1);
+  }else if(x.anim==='up'){
+    const k = clamp(local/inT,0,1);
+    alpha = k; dy = (1-k)*size*0.9;
+  }else if(x.anim==='pop'){
+    const k = clamp(local/0.3,0,1);
+    alpha = k; sc = 0.66 + 0.34*(1 - Math.pow(1-k,3)) + Math.sin(k*Math.PI)*0.06;
+  }else if(x.anim==='type'){
+    const chars = [...x.text];
+    const k = clamp(local/Math.max(0.4, Math.min(x.dur*0.6, chars.length*0.08)), 0, 1);
+    body = chars.slice(0, Math.max(1, Math.round(k*chars.length))).join('');
+  }
+
+  const lines = wrapLines(body, W*0.9);
+  const lh = size*1.3;
+  const blockH = lines.length*lh;
+  let blockW = 0;
+  for(const l of lines) blockW = Math.max(blockW, ctx.measureText(l).width);
+  const cx = x.x*W, cy = x.y*H + dy;
+  const pad = size*0.34;
+
+  ctx.globalAlpha = alpha;
+  ctx.translate(cx, cy);
+  if(sc!==1) ctx.scale(sc, sc);
+
+  if(x.bgOn){
+    ctx.fillStyle = x.bg;
+    ctx.globalAlpha = alpha*0.72;
+    roundRect(ctx, -blockW/2-pad, -blockH/2-pad*0.7, blockW+pad*2, blockH+pad*1.4, size*0.22);
+    ctx.fill();
+    ctx.globalAlpha = alpha;
+  }
+
+  ctx.textAlign = x.align;
+  const anchor = x.align==='left' ? -blockW/2 : x.align==='right' ? blockW/2 : 0;
+  ctx.lineJoin = 'round';
+  ctx.miterLimit = 2;
+  lines.forEach((l,i)=>{
+    const ly = -blockH/2 + lh*(i+0.5);
+    if(x.strokeOn){
+      ctx.strokeStyle = x.stroke;
+      ctx.lineWidth = Math.max(2, size*0.16);
+      ctx.strokeText(l, anchor, ly);
+    }else{
+      ctx.shadowColor = 'rgba(0,0,0,.45)';
+      ctx.shadowBlur = size*0.18;
+      ctx.shadowOffsetY = size*0.04;
+    }
+    ctx.fillStyle = x.color;
+    ctx.fillText(l, anchor, ly);
+    ctx.shadowColor = 'transparent'; ctx.shadowBlur = 0; ctx.shadowOffsetY = 0;
+  });
+  ctx.restore();
+
+  x._box = { cx, cy, w: (blockW + pad*2)*sc, h: (blockH + pad*1.4)*sc };
+}
+
+/* ---------------- 미리보기 위 자막 손잡이 ---------------- */
+function syncTextHandles(){
+  const layer = $('#txtLayer');
+  const active = P.texts.filter(x=>x._box);
+  const sig = active.map(x=>x.id).join(',');
+  if(layer.dataset.sig !== sig){
+    layer.dataset.sig = sig;
+    layer.innerHTML = '';
+    for(const x of active){
+      const h = document.createElement('div');
+      h.className = 'txt-handle';
+      h.dataset.id = x.id;
+      layer.appendChild(h);
+    }
+  }
+  const sx = layer.clientWidth / cv.width, sy = layer.clientHeight / cv.height;
+  for(const x of active){
+    const h = layer.querySelector(`.txt-handle[data-id="${x.id}"]`);
+    if(!h) continue;
+    h.style.left   = (x._box.cx*sx)+'px';
+    h.style.top    = (x._box.cy*sy)+'px';
+    h.style.width  = Math.max(28, x._box.w*sx)+'px';
+    h.style.height = Math.max(22, x._box.h*sy)+'px';
+    h.classList.toggle('on', !!UI.sel && UI.sel.id===x.id);
+  }
+}
+(function textDrag(){
+  const layer = $('#txtLayer');
+  let d = null;
+  layer.addEventListener('pointerdown', e=>{
+    const h = e.target.closest('.txt-handle');
+    if(!h) return;
+    const x = P.texts.find(t=>t.id===h.dataset.id);
+    if(!x) return;
+    select('text', x.id);
+    try{ h.setPointerCapture(e.pointerId); }catch(_){}
+    d = { x, sx:e.clientX, sy:e.clientY, ox:x.x, oy:x.y, moved:false };
+    e.preventDefault();
+  });
+  layer.addEventListener('pointermove', e=>{
+    if(!d) return;
+    const r = layer.getBoundingClientRect();
+    if(!d.moved){
+      if(Math.abs(e.clientX-d.sx)<3 && Math.abs(e.clientY-d.sy)<3) return;
+      d.moved = true; snap();
+    }
+    d.x.x = clamp(d.ox + (e.clientX-d.sx)/r.width,  0.04, 0.96);
+    d.x.y = clamp(d.oy + (e.clientY-d.sy)/r.height, 0.04, 0.96);
+    UI.needsDraw = true;
+  });
+  const end = ()=>{ if(d && d.moved) renderInspector(); d = null; };
+  layer.addEventListener('pointerup', end);
+  layer.addEventListener('pointercancel', end);
+})();
+
+/* ============================================================
+   편집 동작
+   ============================================================ */
+function splitAtPlayhead(){
+  const t = UI.playhead;
+  const sel = selected();
+  if(sel && UI.sel.type==='text' && t>sel.start+0.2 && t<sel.start+sel.dur-0.2){
+    snap();
+    const b = Object.assign({}, sel, { id:uid('t'), start:t, dur:sel.start+sel.dur-t });
+    sel.dur = t - sel.start;
+    P.texts.push(b);
+    renderAll(); toast('자막을 나눴습니다'); return;
+  }
+  if(sel && UI.sel.type==='audio' && t>sel.start+0.2 && t<sel.start+audDur(sel)-0.2){
+    snap();
+    const cut = sel.in + (t - sel.start);
+    const b = Object.assign({}, sel, { id:uid('a'), start:t, in:cut });
+    sel.out = cut;
+    P.audios.push(b);
+    renderAll(); toast('음악을 나눴습니다'); return;
+  }
+  layout();
+  const c = clipAt(t);
+  if(!c){ toast('재생 위치에 클립이 없습니다','bad'); return; }
+  const local = t - c._s;
+  if(local < 0.1 || c._d - local < 0.1){ toast('너무 끝쪽이라 나눌 수 없습니다','bad'); return; }
+  snap();
+  const cut = c.in + local*(c.kind==='image'?1:c.speed);
+  const b = JSON.parse(JSON.stringify(c));
+  b.id = uid('c'); b.in = cut;
+  c.out = cut;
+  P.clips.splice(P.clips.indexOf(c)+1, 0, b);
+  UI.sel = { type:'clip', id:b.id };
+  renderAll();
+  toast('클립을 나눴습니다');
+}
+
+function duplicateSel(){
+  const it = selected();
+  if(!it){ toast('먼저 클립을 선택하세요','bad'); return; }
+  snap();
+  const copy = JSON.parse(JSON.stringify(it));
+  if(UI.sel.type==='clip'){
+    copy.id = uid('c');
+    P.clips.splice(P.clips.indexOf(it)+1, 0, copy);
+  }else if(UI.sel.type==='audio'){
+    copy.id = uid('a'); copy.start = it.start + audDur(it);
+    P.audios.push(copy);
+  }else{
+    copy.id = uid('t'); copy.start = it.start + it.dur;
+    P.texts.push(copy);
+  }
+  UI.sel = { type:UI.sel.type, id:copy.id };
+  renderAll();
+}
+
+function deleteSel(){
+  const it = selected();
+  if(!it){ toast('먼저 클립을 선택하세요','bad'); return; }
+  snap();
+  dropEl(it.id);
+  if(UI.sel.type==='clip')       P.clips  = P.clips.filter(c=>c!==it);
+  else if(UI.sel.type==='audio') P.audios = P.audios.filter(a=>a!==it);
+  else                           P.texts  = P.texts.filter(x=>x!==it);
+  UI.sel = null;
+  renderAll();
+}
+
+/* ============================================================
+   내보내기 (캔버스 + 오디오 그래프를 실시간 녹화)
+   ============================================================ */
+const EXP = { res:1080, fps:30, q:8, rec:null, chunks:[], mime:'', url:'', name:'' };
+
+function pickMime(){
+  if(!window.MediaRecorder) return '';
+  // H.264 MP4 가 가장 두루 먹힌다. 없으면 WebM, 그래도 없으면 브라우저 기본 MP4.
+  const cands = [
+    'video/mp4;codecs=avc1.42E01E,mp4a.40.2',
+    'video/mp4;codecs=avc1,mp4a.40.2',
+    'video/mp4;codecs=h264,aac',
+    'video/webm;codecs=vp9,opus',
+    'video/webm;codecs=vp8,opus',
+    'video/mp4',
+    'video/webm',
+  ];
+  for(const c of cands){
+    try{ if(MediaRecorder.isTypeSupported(c)) return c; }catch(e){}
+  }
+  return '';
+}
+function extOf(mime){ return mime.includes('mp4') ? 'mp4' : 'webm'; }
+
+function primeAudio(){
+  ensureAudio();
+  if(!actx) return;
+  for(const c of P.clips) if(c.kind!=='image') gainFor(c);
+  for(const a of P.audios) gainFor(a);
+}
+
+function openExport(){
+  const T = totalDur();
+  const mime = pickMime();
+  $('#expDur').textContent = fmtDur(T);
+  $('#expFmt').textContent = mime ? extOf(mime).toUpperCase() : '지원 안 함';
+  let warn = '';
+  if(!mime || !cv.captureStream) warn = '이 브라우저는 녹화를 지원하지 않습니다. 크롬·엣지·파이어폭스 최신 버전을 권합니다.';
+  else if(T <= 0) warn = '타임라인이 비어 있습니다.';
+  else if(extOf(mime)==='webm') warn = 'MP4 녹화를 지원하지 않는 브라우저라 WebM으로 저장됩니다. (크롬·엣지 최신 버전에서는 MP4)';
+  $('#expWarn').textContent = warn;
+  $('#expStart').disabled = !mime || !cv.captureStream || T<=0;
+  $('#expForm').hidden = false;
+  $('#expProg').hidden = true;
+  $('#expDone').hidden = true;
+  $('#expCancel').textContent = '닫기';
+  $('#expStart').hidden = false;
+  $('#exportMask').hidden = false;
+}
+function closeExport(){
+  if(UI.exporting){ abortExport(); return; }
+  $('#exportMask').hidden = true;
+}
+
+async function startExport(){
+  const T = totalDur();
+  if(T<=0) return;
+  const mime = pickMime();
+  if(!mime) return;
+
+  pause();
+  UI.exporting = true;
+  EXP.mime = mime; EXP.chunks = [];
+  $('#expForm').hidden = true;
+  $('#expProg').hidden = false;
+  $('#expDone').hidden = true;
+  $('#expStart').hidden = true;
+  $('#expCancel').textContent = '중단';
+  $('#expMsg').textContent = '준비 중…';
+  $('#expBar').style.width = '0%';
+  $('#expPct').textContent = '0%';
+
+  const d = dims(EXP.res);
+  cv.width = d.w; cv.height = d.h;
+  fitCanvasBox();
+
+  try{ await document.fonts.ready; }catch(e){}
+  primeAudio();
+  if(actx && actx.state==='suspended'){ try{ await actx.resume(); }catch(e){} }
+
+  seek(0, true);
+  syncMedia(true);
+  drawFrame(0);
+  await new Promise(r=>setTimeout(r, 450));   // 첫 프레임 디코딩 대기
+  drawFrame(0);
+
+  let stream;
+  try{
+    stream = cv.captureStream(EXP.fps);
+    if(recDest){
+      const at = recDest.stream.getAudioTracks()[0];
+      if(at) stream.addTrack(at);
+    }
+    EXP.rec = new MediaRecorder(stream, {
+      mimeType: mime,
+      videoBitsPerSecond: EXP.q*1000*1000,
+      audioBitsPerSecond: 160000,
+    });
+  }catch(err){
+    UI.exporting = false;
+    applyCanvasSize();
+    $('#expMsg').textContent = '녹화를 시작하지 못했습니다';
+    toast('이 브라우저에서는 녹화를 시작할 수 없습니다','bad');
+    return;
+  }
+
+  EXP.rec.ondataavailable = e => { if(e.data && e.data.size) EXP.chunks.push(e.data); };
+  EXP.rec.onstop = onRecStop;
+  EXP.rec.start(500);
+  $('#expMsg').textContent = '녹화 중 — 이 탭을 그대로 두세요';
+  play();
+}
+
+function exportTick(){
+  const T = totalDur();
+  const pct = clamp(UI.playhead/Math.max(0.001,T), 0, 1);
+  $('#expBar').style.width = (pct*100).toFixed(1)+'%';
+  $('#expPct').textContent = Math.round(pct*100)+'%';
+  const left = Math.max(0, T - UI.playhead);
+  $('#expMsg').textContent = `녹화 중 — 약 ${Math.ceil(left)}초 남음 (탭을 그대로 두세요)`;
+}
+
+function finishExport(){
+  if(!UI.exporting) return;
+  UI.exporting = false;
+  $('#expMsg').textContent = '파일로 묶는 중…';
+  setTimeout(()=>{ try{ EXP.rec && EXP.rec.state!=='inactive' && EXP.rec.stop(); }catch(e){} }, 140);
+}
+function abortExport(){
+  if(!UI.exporting) return;
+  UI.exporting = false;
+  EXP.aborted = true;
+  pause();
+  try{ EXP.rec && EXP.rec.state!=='inactive' && EXP.rec.stop(); }catch(e){}
+  applyCanvasSize();
+  $('#exportMask').hidden = true;
+  toast('내보내기를 중단했습니다');
+}
+
+function onRecStop(){
+  const aborted = EXP.aborted; EXP.aborted = false;
+  applyCanvasSize();
+  if(aborted){ EXP.chunks = []; return; }
+  const blob = new Blob(EXP.chunks, { type:EXP.mime });
+  EXP.chunks = [];
+  if(EXP.url) URL.revokeObjectURL(EXP.url);
+  EXP.url = URL.createObjectURL(blob);
+  const now = new Date();
+  const pad = n => String(n).padStart(2,'0');
+  EXP.name = `webcut_${now.getFullYear()}${pad(now.getMonth()+1)}${pad(now.getDate())}_${pad(now.getHours())}${pad(now.getMinutes())}.${extOf(EXP.mime)}`;
+  const a = $('#expLink');
+  a.href = EXP.url; a.download = EXP.name;
+  $('#expProg').hidden = true;
+  $('#expDone').hidden = false;
+  $('#expCancel').textContent = '닫기';
+  const tmp = document.createElement('a');
+  tmp.href = EXP.url; tmp.download = EXP.name;
+  document.body.appendChild(tmp); tmp.click(); tmp.remove();
+  seek(0);
+  toast(`${(blob.size/1048576).toFixed(1)}MB · ${EXP.name} 저장 완료`);
+}
+
+document.addEventListener('visibilitychange', ()=>{
+  if(document.hidden && UI.exporting) toast('탭을 벗어나면 녹화가 끊깁니다','bad');
+});
+
+/* ============================================================
+   화면 연결
+   ============================================================ */
+function renderAll(){
+  layout();
+  renderTimeline();
+  renderInspector();
+  updateTimeUI();
+  histBtns();
+  syncEmptyHint();
+  UI.needsDraw = true;
+}
+
+/* 파일 입력 */
+$('#dropZone').onclick = ()=> $('#fileInput').click();
+$('#fileInput').onchange = e => { addFiles(e.target.files); e.target.value=''; };
+$('#sampleBtn').onclick = addSamples;
+
+['dragenter','dragover'].forEach(ev=>{
+  document.addEventListener(ev, e=>{
+    if(!e.dataTransfer || ![...e.dataTransfer.types].includes('Files')) return;
+    e.preventDefault();
+    $('#dropZone').classList.add('over');
+  });
+});
+['dragleave','drop'].forEach(ev=>{
+  document.addEventListener(ev, e=>{ if(ev==='drop') e.preventDefault(); $('#dropZone').classList.remove('over'); });
+});
+document.addEventListener('drop', e=>{
+  if(e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files.length){
+    e.preventDefault();
+    addFiles(e.dataTransfer.files);
+  }
+});
+/* 미디어 목록 → 타임라인 끌어놓기 */
+$('#tlScroll').addEventListener('dragover', e=>{
+  if([...e.dataTransfer.types].includes('text/webcut-media')) e.preventDefault();
+});
+$('#tlScroll').addEventListener('drop', e=>{
+  const id = e.dataTransfer.getData('text/webcut-media');
+  if(!id) return;
+  e.preventDefault();
+  const m = mediaById(id);
+  if(!m) return;
+  snap(); addToTimeline(m); renderAll();
+});
+
+/* 트랜스포트 */
+$('#playBtn').onclick    = togglePlay;
+$('#toStartBtn').onclick = ()=>{ pause(); seek(0); };
+$('#toEndBtn').onclick   = ()=>{ pause(); seek(totalDur()); };
+$('#masterVol').oninput  = e => {
+  UI.masterVol = parseFloat(e.target.value);
+  if(prevGain) prevGain.gain.value = UI.masterVol;
+  els.forEach((el,id)=>{ if(!actx && el.tagName!=='IMG'){ try{ el.volume = clamp(UI.masterVol,0,1); }catch(_){} } });
+};
+
+/* 비율 / 해상도 */
+$('#ratioSel').onchange = e => { snap(); P.ratio = e.target.value; applyCanvasSize(); renderInspector(); };
+$('#resSel').onchange   = e => { P.res = parseInt(e.target.value,10); EXP.res = P.res; applyCanvasSize(); renderInspector();
+  $$('#expRes button').forEach(b=>b.classList.toggle('on', b.dataset.v==String(P.res))); };
+
+/* 타임라인 도구 */
+$('#splitBtn').onclick = splitAtPlayhead;
+$('#dupBtn').onclick   = duplicateSel;
+$('#delBtn').onclick   = deleteSel;
+$('#addTextBtn').onclick = ()=>{
+  snap();
+  const t = newText(UI.playhead, 3);
+  P.texts.push(t);
+  UI.sel = { type:'text', id:t.id };
+  renderAll();
+  const ta = $('#inspector textarea');
+  if(ta){ ta.focus(); ta.select(); }
+  toast('자막을 추가했습니다');
+};
+const musicInput = document.createElement('input');
+musicInput.type='file'; musicInput.accept='audio/*'; musicInput.multiple = true; musicInput.hidden = true;
+document.body.appendChild(musicInput);
+musicInput.onchange = async e => {
+  const before = P.media.length;
+  await addFiles(e.target.files);
+  e.target.value='';
+  const added = P.media.slice(before).filter(m=>m.kind==='audio');
+  if(added.length){
+    snap();
+    added.forEach(m=>P.audios.push(newAudio(m, 0)));
+    renderAll();
+  }
+};
+$('#addMusicBtn').onclick = ()=> musicInput.click();
+
+$('#snapChip').onclick = ()=>{ UI.snap = !UI.snap; $('#snapChip').classList.toggle('on', UI.snap); };
+$('#snapChip').classList.add('on');
+function setZoom(z){
+  UI.zoom = clamp(z, 0.12, 14);
+  renderTimeline(); scrollPlayheadIntoView();
+}
+$('#zoomIn').onclick  = ()=> setZoom(UI.zoom*1.4);
+$('#zoomOut').onclick = ()=> setZoom(UI.zoom/1.4);
+$('#zoomFit').onclick = ()=>{
+  const T = totalDur();
+  if(T<=0) return setZoom(1);
+  setZoom(($('#tlScroll').clientWidth - 90) / (T*PPS_BASE));
+  $('#tlScroll').scrollLeft = 0;
+};
+$('#tlScroll').addEventListener('scroll', ()=>{
+  $('#thTracks').style.transform = `translateY(${-$('#tlScroll').scrollTop}px)`;
+});
+$('#tlScroll').addEventListener('wheel', e=>{
+  if(!(e.ctrlKey||e.metaKey)) return;
+  e.preventDefault();
+  setZoom(UI.zoom * (e.deltaY>0 ? 0.88 : 1.14));
+}, { passive:false });
+
+/* 빈 곳 클릭 → 선택 해제 */
+$('#tracks').addEventListener('pointerdown', e=>{ if(!e.target.closest('.clip')) select(null,null); });
+
+/* 모달 */
+$('#exportBtn').onclick = openExport;
+$('#expCancel').onclick = closeExport;
+$('#expStart').onclick  = startExport;
+$('#helpBtn').onclick   = ()=> $('#helpMask').hidden = false;
+$('#helpClose').onclick = ()=> $('#helpMask').hidden = true;
+$('#helpMask').addEventListener('click', e=>{ if(e.target.id==='helpMask') $('#helpMask').hidden = true; });
+$$('#expRes button').forEach(b=>b.onclick = ()=>{ EXP.res=parseInt(b.dataset.v,10); $$('#expRes button').forEach(x=>x.classList.toggle('on',x===b)); });
+$$('#expFps button').forEach(b=>b.onclick = ()=>{ EXP.fps=parseInt(b.dataset.v,10); $$('#expFps button').forEach(x=>x.classList.toggle('on',x===b)); });
+$$('#expQ button').forEach(b=>b.onclick   = ()=>{ EXP.q=parseInt(b.dataset.v,10);   $$('#expQ button').forEach(x=>x.classList.toggle('on',x===b)); });
+
+/* 되돌리기 버튼 */
+$('#undoBtn').onclick = undo;
+$('#redoBtn').onclick = redo;
+
+/* 모바일 패널 */
+$('#tabMedia').onclick = ()=>{ $('#leftPanel').classList.toggle('open'); $('#rightPanel').classList.remove('open'); };
+$('#tabInsp').onclick  = ()=>{ $('#rightPanel').classList.toggle('open'); $('#leftPanel').classList.remove('open'); };
+
+/* 단축키 */
+document.addEventListener('keydown', e=>{
+  const tag = (e.target.tagName||'').toLowerCase();
+  if(tag==='input' || tag==='textarea' || tag==='select') return;
+  if(!$('#exportMask').hidden || !$('#helpMask').hidden){
+    if(e.key==='Escape'){ $('#helpMask').hidden = true; if(!UI.exporting) $('#exportMask').hidden = true; }
+    return;
+  }
+  const mod = e.ctrlKey || e.metaKey;
+  if(mod && e.key.toLowerCase()==='z'){ e.preventDefault(); e.shiftKey ? redo() : undo(); return; }
+  if(mod && e.key.toLowerCase()==='d'){ e.preventDefault(); duplicateSel(); return; }
+  if(mod) return;
+  switch(e.key){
+    case ' ': e.preventDefault(); togglePlay(); break;
+    case 's': case 'S': case 'ㄴ': e.preventDefault(); splitAtPlayhead(); break;
+    case 'Delete': case 'Backspace': e.preventDefault(); deleteSel(); break;
+    case 'ArrowLeft':  e.preventDefault(); pause(); seek(UI.playhead - (e.shiftKey?1:0.1)); break;
+    case 'ArrowRight': e.preventDefault(); pause(); seek(UI.playhead + (e.shiftKey?1:0.1)); break;
+    case 'Home': e.preventDefault(); pause(); seek(0); break;
+    case 'End':  e.preventDefault(); pause(); seek(totalDur()); break;
+    case 'Escape': select(null,null); break;
+  }
+});
+
+/* 창 크기 */
+let rsTimer = null;
+window.addEventListener('resize', ()=>{
+  fitCanvasBox();
+  clearTimeout(rsTimer);
+  rsTimer = setTimeout(()=>{ renderTimeline(); UI.needsDraw = true; }, 120);
+});
+window.addEventListener('beforeunload', e=>{
+  if(P.clips.length || P.texts.length || P.audios.length){ e.preventDefault(); e.returnValue=''; }
+});
+
+/* 시작 */
+applyCanvasSize();
+renderMedia();
+renderAll();
+drawFrame(0);
+if(!window.MediaRecorder || !cv.captureStream){
+  $('#exportBtn').title = '이 브라우저는 녹화를 지원하지 않습니다';
+}
+</script>
+</body>
+</html>
