@@ -1,0 +1,86 @@
+name: 실거래가 자동 수집
+
+# 국토교통부 실거래가 API 로 아파트 매매 자료를 받아 real-estate/data/latest.json 으로 커밋한다.
+# 페이지(https://richroro.github.io/real-estate/)는 열릴 때 이 파일을 자동으로 읽는다.
+#
+# 준비물: 공공데이터포털(data.go.kr)에서 "국토교통부_아파트 매매 실거래가 상세 자료" 활용신청 후
+#         발급받은 인증키를 저장소 Settings → Secrets and variables → Actions 에
+#         DATA_GO_KR_KEY 라는 이름으로 등록.
+# 수집 지역·기간은 real-estate/regions.json 에서 바꾼다.
+
+on:
+  schedule:
+    - cron: '10 21 * * *'   # 매일 06:10 KST (실거래가는 하루 단위로 갱신된다)
+  workflow_dispatch:
+    inputs:
+      months:
+        description: '최근 몇 개월치를 받을지 (비우면 regions.json 값)'
+        required: false
+        type: string
+      lawd:
+        description: '이번 실행만 특정 시군구 코드로 (쉼표 구분, 비우면 regions.json 전체)'
+        required: false
+        type: string
+
+concurrency:
+  group: real-estate-fetch
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: 인증키 확인
+        env:
+          KEY: ${{ secrets.DATA_GO_KR_KEY }}
+        run: |
+          if [ -z "$KEY" ]; then
+            echo "::error::DATA_GO_KR_KEY 시크릿이 없습니다. 저장소 Settings → Secrets and variables → Actions 에 등록하세요."
+            exit 1
+          fi
+
+      - name: 실거래가 받기
+        env:
+          DATA_GO_KR_KEY: ${{ secrets.DATA_GO_KR_KEY }}
+          MONTHS: ${{ inputs.months }}
+          LAWD: ${{ inputs.lawd }}
+        run: |
+          set -o pipefail
+          args=(--out data/latest.json --max-fail 5)
+          if [ -n "$LAWD" ]; then args+=(--lawd "$LAWD"); else args+=(--config regions.json); fi
+          if [ -n "$MONTHS" ]; then args+=(--months "$MONTHS"); fi
+          cd real-estate
+          python fetch_molit.py "${args[@]}" 2>&1 | tee "$RUNNER_TEMP/fetch.log"
+          {
+            echo "### 실거래가 수집"
+            echo '```'
+            tail -n 12 "$RUNNER_TEMP/fetch.log"
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: 바뀐 게 있으면 커밋
+        run: |
+          if git diff --quiet -- real-estate/data; then
+            echo "변경 없음 — 커밋하지 않습니다." >> "$GITHUB_STEP_SUMMARY"
+            exit 0
+          fi
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add real-estate/data
+          git commit -m "실거래가 자동 갱신 $(TZ=Asia/Seoul date '+%Y-%m-%d %H:%M KST')"
+          for i in 1 2 3 4; do
+            git push && break
+            echo "푸시 실패, 재시도 $i"
+            git pull --rebase --autostash origin "${GITHUB_REF_NAME}" || true
+            sleep $((2 ** i))
+          done
