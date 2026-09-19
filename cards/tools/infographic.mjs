@@ -72,8 +72,39 @@ const BUILDINGS = [
         windows(43, 17, 16, 30, 2, 3) + windows(24, 58, 52, 22, 4, 2),
 ];
 
-const buildingSvg = (i) =>
-  `<svg viewBox="0 0 100 100" fill="currentColor" aria-hidden="true">${BUILDINGS[i % BUILDINGS.length]()}</svg>`;
+const MEDALS = [
+  // trophy
+  () => `<path d="M30 18h40v22a20 20 0 0 1-40 0V18z"/><rect x="44" y="60" width="12" height="14"/>` +
+        `<rect x="32" y="74" width="36" height="9" rx="3"/><path d="M30 24h-10v8a14 14 0 0 0 10 12V24z"/>` +
+        `<path d="M70 24h10v8a14 14 0 0 1-10 12V24z"/>`,
+  // medal on a ribbon
+  () => `<path d="M32 10h12l10 24H38z"/><path d="M68 10H56l-10 24h16z"/><circle cx="50" cy="62" r="26"/>` +
+        `<circle cx="50" cy="62" r="15" fill="${SLOT_BG}"/>`,
+  // rosette
+  () => `<circle cx="50" cy="42" r="26"/><circle cx="50" cy="42" r="14" fill="${SLOT_BG}"/>` +
+        `<path d="M36 64l-8 26 22-11 22 11-8-26z"/>`,
+];
+
+const COINS = [
+  // coin stack
+  () => `<ellipse cx="50" cy="26" rx="30" ry="11"/><rect x="20" y="26" width="60" height="16"/>` +
+        `<ellipse cx="50" cy="42" rx="30" ry="11"/><rect x="20" y="42" width="60" height="16"/>` +
+        `<ellipse cx="50" cy="58" rx="30" ry="11"/><rect x="20" y="58" width="60" height="16"/>` +
+        `<ellipse cx="50" cy="74" rx="30" ry="11"/>`,
+  // banknote
+  () => `<rect x="12" y="28" width="76" height="44" rx="5"/><circle cx="50" cy="50" r="13" fill="${SLOT_BG}"/>` +
+        `<circle cx="24" cy="38" r="4" fill="${SLOT_BG}"/><circle cx="76" cy="62" r="4" fill="${SLOT_BG}"/>`,
+  // coin with a rising arrow
+  () => `<circle cx="38" cy="58" r="28"/><circle cx="38" cy="58" r="15" fill="${SLOT_BG}"/>` +
+        `<path d="M58 40l26-14-6 22-7-7-13 13-6-6 13-13z"/>`,
+];
+
+const ICONS = { building: BUILDINGS, medal: MEDALS, coin: COINS };
+
+const buildingSvg = (i, set = 'building') => {
+  const family = ICONS[set] || BUILDINGS;
+  return `<svg viewBox="0 0 100 100" fill="currentColor" aria-hidden="true">${family[i % family.length]()}</svg>`;
+};
 
 const CSS = () => `
 @font-face{font-family:'Display';src:${font('BlackHanSans.ttf')}}
@@ -207,16 +238,16 @@ const nameClass = (t) => (t.length <= 7 ? '' : t.length <= 9 ? 'sm' : 'xs');
 
 const slotFor = (r, i) => (r.image && existsSync(r.image)
   ? `<img class="${r.fit === 'contain' ? 'contain' : ''}" src="${img(r.image)}">`
-  : buildingSvg(i));
+  : buildingSvg(i, data.icons));
 
 const tallRow = (r, i) => {
   const slot = slotFor(r, i);
   return `<div class="row">
-    <div class="slot">${slot}<div class="rankbadge">${r.rank}</div></div>
+    <div class="slot">${slot}${data.showRank === false ? '' : `<div class="rankbadge">${r.rank}</div>`}</div>
     <div class="st">
       <div class="n ${nameClass(r.label)}">${esc(r.label)}</div>
       <div class="s">${esc(r.sub)}</div>
-      <div class="a">전용 ${esc(r.mid)}</div>
+      ${r.mid ? `<div class="a">${esc(data.midLabel || '')}${data.midLabel ? ' ' : ''}${esc(r.mid)}</div>` : ''}
       <div class="p">${esc(r.price)}</div>
     </div>
   </div>`;
@@ -225,10 +256,10 @@ const tallRow = (r, i) => {
 const rankRow = (r, i) => {
   const slot = slotFor(r, i);
   return `<div class="row rk">
-    <div class="slot">${slot}<div class="rankbadge">${r.rank}</div></div>
+    <div class="slot">${slot}${data.showRank === false ? '' : `<div class="rankbadge">${r.rank}</div>`}</div>
     <div class="who"><div class="n ${r.label.length <= 7 ? '' : r.label.length <= 9 ? 'sm' : 'xs'}">${esc(r.label)}</div>
       <div class="s">${esc(r.sub)}</div></div>
-    <div class="mid">${esc(r.mid)}</div>
+    <div class="mid">${esc(r.mid || '')}</div>
     <div class="pr"><div class="big">${esc(r.price)}</div>
       <div class="meter" style="width:${Math.round(r.bar * 240)}px"></div></div>
   </div>`;
