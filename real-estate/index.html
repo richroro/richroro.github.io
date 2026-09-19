@@ -205,6 +205,7 @@ table.ledger{width:100%;border-collapse:collapse;font-size:13px}
 
 /* timeline */
 .tl{padding:6px 0}
+.tl-note{margin:12px 16px 4px;padding:10px 12px;background:var(--accent-wash);border-left:2px solid var(--accent);border-radius:0 4px 4px 0;font-size:12.5px;color:var(--ink-2)}
 .tl-month{padding:10px 16px 4px;font-size:11px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3);border-bottom:1px solid var(--line-soft)}
 .tl-row{display:grid;grid-template-columns:78px minmax(0,1fr) auto;gap:6px 14px;align-items:center;padding:10px 16px;border-bottom:1px solid var(--line-soft);cursor:pointer}
 .tl-row:hover{background:var(--surface-2)}
@@ -309,7 +310,7 @@ table.deals{width:100%;border-collapse:collapse;font-size:12.5px}
         <li>파일을 위에 놓으면 단지·전용면적별로 <b>최근 시세 · 신고가 · 경신 이력 · 고점 대비</b>가 표로 정리됩니다</li>
         <li>지역·기간이 다른 파일을 여러 개 넣어도 합쳐서 봅니다. 정리표는 CSV로 내려받거나 바로 복사할 수 있습니다</li>
       </ol>
-      <div class="note"><b>자동 수집</b> — 서울 25개 구 최근 12개월 자료는 매일 아침 실거래가 API 로 받아 두어서, 파일을 넣지 않아도 바로 보입니다. 위쪽 띠에 갱신 시각이 나옵니다.</div>
+      <div class="note"><b>자동 수집</b> — 안양시(만안구·동안구) 아파트 매매 최근 6년치는 매일 아침 실거래가 API 로 받아 두어서, 파일을 넣지 않아도 바로 보입니다. 위쪽 띠에 갱신 시각이 나옵니다. 다른 지역은 파일을 넣으면 됩니다.</div>
       <div class="note">신고가 = 같은 단지·면적에서 이전 어떤 거래보다 높은 값에 체결된 거래. 해제(취소)된 거래는 기본으로 뺍니다. 시세는 최근 N개월 거래의 중위값이고, 거래가 없으면 마지막 거래가를 씁니다.</div>
     </div>
   </section>
@@ -688,7 +689,7 @@ function renderKpis(){
   const tiles=[
     {l:'단지 · 면적',v:G.length.toLocaleString(),u:'개',d:`거래 ${deals.toLocaleString()}건 · 기준일 ${fmtDate(S.ref)}`},
     {l:`신고가 경신 · 최근 ${S.f.win}개월`,v:recs.length.toLocaleString(),u:'개',d:G.length?`전체의 ${Math.round(recs.length/G.length*100)}%`:'-',c:recs.length?'up':''},
-    {l:'평균 경신폭',v:fmtPct(avgPct),d:'직전 신고가 대비',c:dir(avgPct)},
+    {l:'평균 경신폭',v:fmtPct(avgPct),d:recs.length?'직전 신고가 대비':`최근 ${S.f.win}개월 경신 없음`,c:dir(avgPct)},
     {l:'고점 대비 시세',v:fmtPct(avgPeak),d:'단지별 단순 평균',c:dir(avgPeak)},
     {l:'최고가 거래',v:top?fmtManShort(top.max.price):'-',d:top?`${top.apt} ${top.areaKey}㎡ · ${fmtYM(top.max.date)}`:'-'},
   ];
@@ -740,10 +741,13 @@ function renderLedger(){
 function renderTimeline(){
   const evs=[]; for(const g of S.shown)for(const r of g.recs)evs.push({g,r});
   evs.sort((a,b)=>a.r.date<b.r.date?1:a.r.date>b.r.date?-1:b.r.price-a.r.price);
-  const from=S.ref?monthsAgo(S.ref,12):''; const list=evs.filter(e=>e.r.date>=from).slice(0,500); S.tl=list;
+  const list=evs.slice(0,500); S.tl=list;
   $('#nTimeline').textContent=list.length?list.length.toLocaleString():'';
-  if(!list.length){ $('#timeline').innerHTML=`<div class="empty">${S.deals.length?'최근 12개월 안에 신고가 경신 거래가 없습니다.':'데이터를 불러오면 여기에 정리됩니다.'}</div>`; return; }
+  if(!list.length){ $('#timeline').innerHTML=`<div class="empty">${S.deals.length?'신고가 경신 이력이 없습니다.':'데이터를 불러오면 여기에 정리됩니다.'}</div>`; return; }
+  const winFrom=S.ref?monthsAgo(S.ref,S.f.win):'';
   let html='',cur='';
+  if(list[0].r.date<winFrom)
+    html+=`<div class="tl-note">최근 ${S.f.win}개월 안에는 신고가 경신이 없습니다. 아래는 그 이전의 경신 이력이고, 가장 최근 경신은 ${fmtDate(list[0].r.date)} 입니다.</div>`;
   for(const {g,r} of list){
     const ym=r.date.slice(0,7); if(ym!==cur){cur=ym;html+=`<div class="tl-month">${ym.slice(0,4)}년 ${+ym.slice(5)}월</div>`;}
     html+=`<div class="tl-row" data-key="${esc(g.key)}" role="button" tabindex="0"><div class="d num">${fmtDate(r.date)}</div>
