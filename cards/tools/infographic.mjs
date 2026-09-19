@@ -24,6 +24,7 @@ const chromium = (() => {
 const HERE = dirname(fileURLToPath(import.meta.url));
 const FONT_DIR = resolve(HERE, '.fonts');
 const W = 1080;
+const themeArg = (process.argv.find((a) => a.startsWith('--theme=')) || '').split('=')[1];
 const TALL = process.argv.includes('--tall');
 // --fit packs the whole thing into one 1080x1920 frame, for a shorts card that
 // is read at a glance rather than scrolled.
@@ -32,6 +33,79 @@ const FIT_H = 1920;
 
 const font = (f) => `url(data:font/ttf;base64,${readFileSync(resolve(FONT_DIR, f)).toString('base64')})`;
 const esc = (s) => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+
+// ---- themes -------------------------------------------------------------
+// Every colour and face the layout uses, so a topic can pick a look without
+// the layout knowing anything about it.
+const THEMES = {
+  // warm, printed, a little playful
+  paper: {
+    bg: 'linear-gradient(180deg,#fdf4e2 0%,#f8ead0 55%,#f3e2c4 100%)',
+    card: '#fff', cardEdge: 'none', cardShadow: '0 4px 14px rgba(120,95,50,.10)',
+    ink: '#2b2622', muted: '#8d8172', faint: '#a2977f',
+    accent: '#e0392b', accentSoft: 'rgba(224,57,43,.85)',
+    slotBg: '#2b2622', slotInk: '#ffd84d',
+    badgeBg: '#ffe27a', badgeInk: '#4a3a12', badgeShadow: '0 6px 14px rgba(150,110,30,.22)',
+    rankBg: '#e0392b', rankInk: '#fff',
+    pillBg: '#2b2622', pillInk: '#fdf4e2',
+    mark: '#ffd84d', markOpacity: '.55',
+    noteBg: 'rgba(255,255,255,.72)', noteEdge: '2px solid #e3d4b6', rule: '#d9d3c7',
+    check: '#3f9a6a', closing: '#a8744a', brand: '#a99b85',
+    display: 'Display', displayCase: 'none', h1: 'Body', h1Weight: '800',
+    closingFont: 'Hand', badgeFont: 'Hand',
+  },
+  // dark, editorial, gold - for money and property
+  noir: {
+    bg: 'linear-gradient(180deg,#16181d 0%,#101216 55%,#0b0d10 100%)',
+    card: 'rgba(255,255,255,.055)', cardEdge: '1px solid rgba(212,175,95,.16)',
+    cardShadow: '0 4px 18px rgba(0,0,0,.30)',
+    ink: '#f3efe6', muted: '#8f8b82', faint: '#6e6a62',
+    accent: '#d9b46a', accentSoft: 'rgba(217,180,106,.85)',
+    slotBg: '#d9b46a', slotInk: '#14161a',
+    badgeBg: 'transparent', badgeInk: '#d9b46a', badgeShadow: 'inset 0 0 0 2px rgba(217,180,106,.5)',
+    rankBg: '#14161a', rankInk: '#d9b46a',
+    pillBg: 'rgba(217,180,106,.14)', pillInk: '#e6d2a8',
+    mark: 'transparent', markOpacity: '0',
+    noteBg: 'rgba(255,255,255,.04)', noteEdge: '1px solid rgba(255,255,255,.10)',
+    rule: 'rgba(255,255,255,.14)',
+    check: '#d9b46a', closing: '#c9a45f', brand: '#6e6a62',
+    display: 'Display', displayCase: 'none', h1: 'Body', h1Weight: '800',
+    closingFont: 'Serif', badgeFont: 'Body',
+  },
+  // light, airy, clean - for rates and calculations
+  mint: {
+    bg: 'linear-gradient(180deg,#fbfdfc 0%,#f1f7f4 55%,#e8f1ed 100%)',
+    card: '#fff', cardEdge: '1px solid #e2ece7', cardShadow: '0 3px 12px rgba(20,80,60,.07)',
+    ink: '#15211d', muted: '#6c7c77', faint: '#94a29d',
+    accent: '#0d9b74', accentSoft: 'rgba(13,155,116,.85)',
+    slotBg: '#0d9b74', slotInk: '#eafaf4',
+    badgeBg: '#d4f2e6', badgeInk: '#0a6b50', badgeShadow: 'none',
+    rankBg: '#0d9b74', rankInk: '#fff',
+    pillBg: '#15211d', pillInk: '#f1f7f4',
+    mark: '#9fe8cd', markOpacity: '.5',
+    noteBg: 'rgba(255,255,255,.8)', noteEdge: '1px solid #dcebe5', rule: '#dcebe5',
+    check: '#0d9b74', closing: '#3f7f6c', brand: '#9aa8a3',
+    display: 'Body', displayCase: 'none', h1: 'Body', h1Weight: '800',
+    closingFont: 'Body', badgeFont: 'Body',
+  },
+  // newsprint, serif, restrained - for statistics
+  press: {
+    bg: 'linear-gradient(180deg,#f7f5f0 0%,#f2efe8 100%)',
+    card: '#fff', cardEdge: '1px solid #e4e0d6', cardShadow: 'none',
+    ink: '#1b1a17', muted: '#6d6a62', faint: '#959186',
+    accent: '#a82a24', accentSoft: 'rgba(168,42,36,.85)',
+    slotBg: '#1b1a17', slotInk: '#f7f5f0',
+    badgeBg: '#1b1a17', badgeInk: '#f7f5f0', badgeShadow: 'none',
+    rankBg: '#a82a24', rankInk: '#fff',
+    pillBg: 'transparent', pillInk: '#1b1a17',
+    mark: 'transparent', markOpacity: '0',
+    noteBg: 'transparent', noteEdge: '1px solid #ddd8cc', rule: '#ddd8cc',
+    check: '#7d7a70', closing: '#4a4740', brand: '#959186',
+    display: 'Serif', displayCase: 'none', h1: 'Serif', h1Weight: '800',
+    closingFont: 'Serif', badgeFont: 'Serif',
+  },
+};
+
 const MIME = { png: 'image/png', jpg: 'image/jpeg', jpeg: 'image/jpeg', webp: 'image/webp', gif: 'image/gif' };
 const img = (p) => {
   const ext = p.split('.').pop().toLowerCase();
@@ -43,7 +117,7 @@ const img = (p) => {
 // Decorative building silhouettes. These stand in for photography we have no
 // licence to use; they are not drawings of the actual buildings, which the
 // footer says outright. Varying the shape keeps a long list from flattening.
-const SLOT_BG = '#2b2622';
+
 
 // Windows are punched in the slot's background colour - drawn in the body
 // colour they simply vanish into it.
@@ -114,10 +188,13 @@ const CSS = () => `
 @font-face{font-family:'Display';src:${font('BlackHanSans.ttf')}}
 @font-face{font-family:'Body';src:${font('GothicA1-Bold.ttf')};font-weight:700}
 @font-face{font-family:'Body';src:${font('GothicA1-ExtraBold.ttf')};font-weight:800}
+@font-face{font-family:'Body';src:${font('GothicA1-Medium.ttf')};font-weight:500}
+@font-face{font-family:'Serif';src:${font('NanumMyeongjo-ExtraBold.ttf')};font-weight:800}
+@font-face{font-family:'Serif';src:${font('NanumMyeongjo-Bold.ttf')};font-weight:700}
 @font-face{font-family:'Hand';src:${font('Gaegu-Bold.ttf')}}
 *{margin:0;padding:0;box-sizing:border-box}
 body{width:${W}px;font-family:'Body',sans-serif;font-weight:700;
-  background:linear-gradient(180deg,#fdf4e2 0%,#f8ead0 55%,#f3e2c4 100%);
+  background:${T.bg};
   -webkit-font-smoothing:antialiased}
 .page{padding:44px 40px 40px}
 
@@ -125,57 +202,57 @@ body{width:${W}px;font-family:'Body',sans-serif;font-weight:700;
 .head{position:relative;padding:34px 30px 30px}
 .t1,.t2,.who .n,.res .big,.slot{line-height:1.32}
 .badge{position:absolute;top:0;left:6px;transform:rotate(-7deg);
-  background:#ffe27a;border-radius:10px;padding:14px 18px;text-align:center;
-  font-family:'Hand';font-size:27px;line-height:1.24;color:#4a3a12;
-  box-shadow:0 6px 14px rgba(150,110,30,.22)}
+  background:${T.badgeBg};border-radius:10px;padding:14px 18px;text-align:center;
+  font-family:'${T.badgeFont}';font-weight:800;font-size:27px;line-height:1.24;color:${T.badgeInk};
+  box-shadow:${T.badgeShadow}}
 .title{margin-left:212px}
-.t1{font-family:'Body';font-weight:800;font-size:58px;color:#2b2622;letter-spacing:-.02em}
-.t2{font-family:'Display';font-size:82px;color:#e0392b;letter-spacing:-.02em;
+.t1{font-family:'${T.h1}';font-weight:${T.h1Weight};font-size:58px;color:${T.ink};letter-spacing:-.02em}
+.t2{font-family:'${T.display}';font-weight:800;font-size:82px;color:${T.accent};letter-spacing:-.02em;
   margin-top:2px;display:inline-block;position:relative}
 .t2::after{content:'';position:absolute;left:-8px;right:-8px;bottom:18px;height:20px;
-  background:#ffd84d;opacity:.55;z-index:-1;border-radius:4px}
-.sub{margin:22px 0 0;display:inline-block;background:#2b2622;color:#fdf4e2;
+  background:${T.mark};opacity:${T.markOpacity};z-index:-1;border-radius:4px}
+.sub{margin:22px 0 0;display:inline-block;background:${T.pillBg};color:${T.pillInk};
   border-radius:999px;padding:13px 30px;font-size:29px;letter-spacing:-.01em}
 
 /* ---- column key ---- */
-.key{display:flex;gap:22px;justify-content:flex-end;padding:22px 26px 12px;font-size:22px;color:#7d7060}
+.key{display:flex;gap:22px;justify-content:flex-end;padding:22px 26px 12px;font-size:22px;color:${T.muted}}
 .key i{display:inline-block;width:26px;height:10px;border-radius:5px;margin-right:8px;vertical-align:middle}
-.key .g{background:#c9bda8}
-.key .r{background:#e0392b}
+.key .g{background:${T.faint}}
+.key .r{background:${T.accent}}
 
 /* ---- rows ---- */
-.row{display:flex;align-items:center;gap:26px;background:#fff;border-radius:22px;
-  padding:22px 26px;margin-bottom:14px;box-shadow:0 4px 14px rgba(120,95,50,.10)}
+.row{display:flex;align-items:center;gap:26px;background:${T.card};border:${T.cardEdge};border-radius:22px;
+  padding:22px 26px;margin-bottom:14px;box-shadow:${T.cardShadow}}
 .slot{width:104px;height:104px;border-radius:20px;flex:none;overflow:hidden;
-  background:#2b2622;color:#ffd84d;display:flex;align-items:center;justify-content:center;
-  font-family:'Display';font-size:44px;position:relative}
+  background:${T.slotBg};color:${T.slotInk};display:flex;align-items:center;justify-content:center;
+  font-family:'${T.display}';font-size:44px;position:relative}
 .slot img{width:100%;height:100%;object-fit:cover}
 /* fit:"contain" shows the photo whole. Cropping counts as an adaptation under
    CC, which drags ShareAlike onto the finished poster; left uncropped the
    poster stays a collection. */
-.slot img.contain{object-fit:contain;background:#1b1714}
+.slot img.contain{object-fit:contain;background:${T.slotBg}}
 .slot svg{width:78px;height:78px}
 .rankbadge{position:absolute;left:-9px;top:-9px;width:42px;height:42px;border-radius:50%;
-  background:#e0392b;color:#fff;font-family:'Display';font-size:21px;
+  background:${T.rankBg};color:${T.rankInk};font-family:'${T.display}';font-weight:800;font-size:21px;
   display:flex;align-items:center;justify-content:center;
-  box-shadow:0 2px 6px rgba(0,0,0,.28)}
+  box-shadow:${T.badgeShadow === 'none' ? '0 2px 6px rgba(0,0,0,.28)' : T.badgeShadow}}
 .who{width:196px;flex:none}
-.who .n{font-family:'Display';font-size:38px;color:#2b2622;letter-spacing:-.01em}
-.who .s{font-size:21px;color:#8d8172;margin-top:5px;font-weight:700}
+.who .n{font-family:'${T.display}';font-weight:800;font-size:38px;color:${T.ink};letter-spacing:-.01em}
+.who .s{font-size:21px;color:${T.muted};margin-top:5px;font-weight:700}
 .bars{width:360px;flex:none}
 .bar{display:flex;align-items:center;gap:12px;margin:7px 0}
 .track{height:16px;border-radius:8px;flex:none;min-width:14px}
-.track.g{background:#c9bda8}
-.track.r{background:#e0392b}
-.bt{font-size:21px;color:#6f6455;white-space:nowrap}
-.bt.r{color:#e0392b;font-weight:800;font-size:23px}
+.track.g{background:${T.faint}}
+.track.r{background:${T.accent}}
+.bt{font-size:21px;color:${T.muted};white-space:nowrap}
+.bt.r{color:${T.accent};font-weight:800;font-size:23px}
 .res{width:210px;flex:none;text-align:right}
-.res .big{font-family:'Display';font-size:33px;color:#e0392b;white-space:nowrap}
-.res .cap{font-size:20px;color:#8d8172;margin-top:5px}
+.res .big{font-family:'${T.display}';font-weight:800;font-size:33px;color:${T.accent};white-space:nowrap}
+.res .cap{font-size:20px;color:${T.muted};margin-top:5px}
 
 /* ---- rank rows ---- */
 .rk .who{width:300px}
-.rk .who .n{font-family:'Body';font-weight:800;font-size:35px;letter-spacing:-.03em;white-space:nowrap}
+.rk .who .n{font-family:'${T.h1}';font-weight:800;font-size:35px;letter-spacing:-.03em;white-space:nowrap}
 
 /* ---- stacked rows, for the scrolling shorts cut ---- */
 .tall .head{padding:60px 30px 44px}
@@ -189,13 +266,13 @@ body{width:${W}px;font-family:'Body',sans-serif;font-weight:700;
 .tall .slot svg{width:124px;height:124px}
 .tall .rankbadge{width:62px;height:62px;font-size:31px;left:-13px;top:-13px}
 .tall .st{flex:1;min-width:0}
-.tall .st .n{font-family:'Body';font-weight:800;font-size:60px;color:#2b2622;
+.tall .st .n{font-family:'${T.h1}';font-weight:800;font-size:60px;color:${T.ink};
   letter-spacing:-.035em;white-space:nowrap;line-height:1.3}
 .tall .st .n.sm{font-size:52px}
 .tall .st .n.xs{font-size:45px}
-.tall .st .s{font-size:31px;color:#8d8172;margin-top:6px}
-.tall .st .a{font-size:29px;color:#a2977f;margin-top:4px}
-.tall .st .p{font-family:'Display';font-size:62px;color:#e0392b;margin-top:12px;line-height:1.24}
+.tall .st .s{font-size:31px;color:${T.muted};margin-top:6px}
+.tall .st .a{font-size:29px;color:${T.faint};margin-top:4px}
+.tall .st .p{font-family:'${T.display}';font-weight:800;font-size:62px;color:${T.accent};margin-top:12px;line-height:1.24}
 .tall .note{padding:32px 36px;border-radius:24px;margin-top:36px}
 .tall .note p{font-size:29px;line-height:1.7;padding-left:40px;text-indent:-40px}
 .tall .close{font-size:56px;margin-top:40px}
@@ -218,16 +295,16 @@ body{width:${W}px;font-family:'Body',sans-serif;font-weight:700;
 .fit .slot svg{width:54px;height:54px}
 .fit .rankbadge{width:34px;height:34px;font-size:18px;left:-7px;top:-7px}
 .fit .st{flex:1;min-width:0}
-.fit .st .n{font-family:'Body';font-weight:800;font-size:40px;color:#2b2622;
+.fit .st .n{font-family:'${T.h1}';font-weight:800;font-size:40px;color:${T.ink};
   letter-spacing:-.035em;white-space:nowrap;line-height:1.24}
 .fit .st .n.sm{font-size:35px}
 .fit .st .n.xs{font-size:30px}
-.fit .st .s{font-size:22px;color:#8d8172;margin-top:2px;white-space:nowrap;overflow:hidden}
+.fit .st .s{font-size:22px;color:${T.muted};margin-top:2px;white-space:nowrap;overflow:hidden}
 .fit .st .a{display:none}
 .fit .st .p{display:none}
 .fit .val{flex:none;text-align:right}
-.fit .val .p{display:block;font-family:'Display';font-size:42px;color:#e0392b;line-height:1.2}
-.fit .val .a{display:block;font-size:21px;color:#a2977f;margin-top:1px}
+.fit .val .p{display:block;font-family:'${T.display}';font-weight:800;font-size:42px;color:${T.accent};line-height:1.2}
+.fit .val .a{display:block;font-size:21px;color:${T.faint};margin-top:1px}
 .fit .note{margin-top:14px;padding:16px 22px;border-radius:16px}
 .fit .note p{font-size:20px;line-height:1.5;padding-left:26px;text-indent:-26px}
 .fit .credit{font-size:18px;margin-top:10px;padding-top:10px}
@@ -235,25 +312,25 @@ body{width:${W}px;font-family:'Body',sans-serif;font-weight:700;
 .fit .brand{font-size:22px;margin-top:10px}
 .rk .who .n.sm{font-size:30px}
 .rk .who .n.xs{font-size:26px}
-.rk .mid{width:150px;flex:none;font-size:23px;color:#8d8172;text-align:right}
+.rk .mid{width:150px;flex:none;font-size:23px;color:${T.muted};text-align:right}
 .rk .pr{flex:1;text-align:right}
-.rk .pr .big{font-family:'Display';font-size:37px;color:#e0392b;white-space:nowrap}
-.rk .meter{height:9px;border-radius:5px;background:#e0392b;margin:9px 0 0 auto;opacity:.85}
+.rk .pr .big{font-family:'${T.display}';font-weight:800;font-size:37px;color:${T.accent};white-space:nowrap}
+.rk .meter{height:9px;border-radius:5px;background:${T.accentSoft};margin:9px 0 0 auto}
 
 /* ---- footer ---- */
-.note{margin-top:26px;background:rgba(255,255,255,.72);border:2px solid #e3d4b6;
+.note{margin-top:26px;background:${T.noteBg};border:${T.noteEdge};
   border-radius:18px;padding:22px 26px}
-.note p{font-size:21px;line-height:1.66;color:#6f6455;font-weight:700;
+.note p{font-size:21px;line-height:1.66;color:${T.muted};font-weight:500;
   padding-left:30px;text-indent:-30px}
-.note p::before{content:'✓ ';color:#3f9a6a;font-weight:800}
-.credit{margin-top:18px;padding-top:16px;border-top:1px dashed #ddcdaa;
-  font-size:19px;line-height:1.62;color:#8d8172;font-weight:700}
-.credit b{display:block;color:#6f6455;margin-bottom:4px}
+.note p::before{content:'✓ ';color:${T.check};font-weight:800}
+.credit{margin-top:18px;padding-top:16px;border-top:1px dashed ${T.rule};
+  font-size:19px;line-height:1.62;color:${T.muted};font-weight:500}
+.credit b{display:block;color:${T.ink};margin-bottom:4px}
 .credit span{display:block}
 .tall .credit{font-size:26px;margin-top:24px;padding-top:22px}
-.close{margin-top:26px;text-align:center;font-family:'Hand';font-size:40px;
-  color:#a8744a;line-height:1.36}
-.brand{margin-top:16px;text-align:center;font-size:21px;color:#a99b85;letter-spacing:.14em}
+.close{margin-top:26px;text-align:center;font-family:'${T.closingFont}';font-weight:800;font-size:40px;
+  color:${T.closing};line-height:1.36}
+.brand{margin-top:16px;text-align:center;font-size:21px;color:${T.brand};letter-spacing:.14em}
 `;
 
 const rowHtml = (r, i) => {
@@ -316,6 +393,8 @@ const rankRow = (r, i) => {
 };
 
 const data = JSON.parse(readFileSync(process.argv[2] || '', 'utf8'));
+const T = THEMES[themeArg || data.theme] || THEMES.paper;
+const SLOT_BG = T.slotBg;
 
 // Most open licences (CC BY, CC BY-SA) require the credit to travel with the
 // image, so it is rendered from the data rather than left to whoever posts it.
