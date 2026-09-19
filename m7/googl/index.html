@@ -1,0 +1,222 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>알파벳 지표 · 매출 구성과 한국 공급망 | M7</title>
+<meta name="description" content="2025년 매출 4,028억 달러 중 85%가 구글 서비스. 부문 영업이익 합계와 실제 영업이익이 168억 달러 차이 나는 이유까지 정리했습니다.">
+<link rel="canonical" href="https://richroro.github.io/m7/googl/">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="ko_KR">
+<meta property="og:site_name" content="Cadence">
+<meta property="og:url" content="https://richroro.github.io/m7/googl/">
+<meta property="og:title" content="알파벳 지표 | M7">
+<meta property="og:description" content="2025년 매출 4,028억 달러 중 85%가 구글 서비스. 부문 영업이익 합계와 실제 영업이익이 168억 달러 차이 나는 이유까지 정리했습니다.">
+<meta name="twitter:card" content="summary">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='#eb6834'/><text x='50' y='66' font-size='42' text-anchor='middle' fill='white' font-family='monospace' font-weight='bold'>GO</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans+KR:wght@300;400;500;600;700&display=swap">
+<link rel="stylesheet" href="/m7/assets/m7.css">
+</head>
+<body>
+<noscript><div style="padding:24px;font-family:sans-serif">
+  <h1>알파벳 지표</h1><p>2025년 매출 4,028억 달러 중 85%가 구글 서비스. 부문 영업이익 합계와 실제 영업이익이 168억 달러 차이 나는 이유까지 정리했습니다.</p>
+  <p>이 페이지는 차트를 그리기 위해 자바스크립트를 씁니다. <a href="/m7/">M7 전체 비교</a></p>
+</div></noscript>
+<script>
+/* =========================================================================
+   알파벳 (GOOGL) — 이 블록만 고치면 페이지 전체가 따라 바뀝니다.
+   검산: 342.721+58.705+1.537 = 402.96 (헤지 −0.16 반영 시 402.8) / 139.404+13.910−7.515 = 145.80, 본사 −16.8 → 129.04
+   ========================================================================= */
+const CO = {
+  "slug": "googl",
+  "tk": "GOOGL",
+  "ko": "알파벳",
+  "en": "Alphabet",
+  "ab": "GO",
+  "color": "#eb6834",
+  "asOf": "2026-09-19",
+  "fy": {
+    "label": "2025 회계연도 · 12월 종료",
+    "note": null
+  },
+  "headline": "광고가 버는 돈으로 나머지를 다 굴린다",
+  "lead": "매출 4,028억 달러, 영업이익 1,290억 달러(32.0%). 그런데 부문 영업이익을 다 더하면 <b>1,458억</b>입니다. 차이 168억은 부문에 배부되지 않는 본사 비용입니다.",
+  "stats": [
+    {
+      "k": "2025 매출",
+      "v": "402.8",
+      "u": "B$",
+      "s": "구글 서비스가 85%"
+    },
+    {
+      "k": "영업이익",
+      "v": "129.0",
+      "u": "B$",
+      "s": "영업이익률 32.0%"
+    },
+    {
+      "k": "클라우드 매출",
+      "v": "58.7",
+      "u": "B$",
+      "s": "이익 내는 단계 진입",
+      "stone": "up"
+    },
+    {
+      "k": "기타 베팅 손실",
+      "v": "−7.5",
+      "u": "B$",
+      "s": "웨이모 등",
+      "tone": "down"
+    }
+  ],
+  "mix": {
+    "title": "셋으로 나뉘지만 사실상 하나",
+    "chartTitle": "2025년 부문별 매출",
+    "period": "2025",
+    "total": 402.8,
+    "rows": [
+      {
+        "k": "구글 서비스",
+        "v": 342.72,
+        "yoy": null,
+        "color": "--s1"
+      },
+      {
+        "k": "구글 클라우드",
+        "v": 58.71,
+        "yoy": null,
+        "color": "--s2"
+      },
+      {
+        "k": "기타 베팅",
+        "v": 1.54,
+        "yoy": null,
+        "color": "--s3"
+      }
+    ],
+    "lead": "검색·유튜브·안드로이드가 들어간 구글 서비스가 <b>85.1%</b>입니다. 클라우드가 14.6%, 웨이모 같은 기타 베팅은 0.4%에 불과합니다.",
+    "note": "부문 합계(402.96)가 총매출(402.8)보다 약간 큰 건 <b>헤지 손익</b>이 별도 항목으로 잡히기 때문입니다. 알파벳 공시의 정상적인 구조입니다.",
+    "tnote": "유튜브는 별도 부문이 아니라 구글 서비스 안에 들어갑니다. 광고·구독 합산 2025년 600억 달러를 넘었습니다."
+  },
+  "signature": {
+    "nav": "이익 구조",
+    "eyebrow": "Profit engine",
+    "title": "이익을 내는 부문은 둘, 쓰는 곳은 넷",
+    "lead": "매출보다 영업이익으로 나눠 보면 구조가 더 분명합니다. 서비스가 1,394억을 벌고, 클라우드가 139억을 보태고, 기타 베팅과 본사가 그중 상당액을 씁니다.",
+    "split": {
+      "title": "2025년 이익을 내는 두 부문의 영업이익",
+      "sub": "기타 베팅(−75억)과 본사 비용(−168억)은 여기서 빠집니다",
+      "parts": [
+        {
+          "k": "구글 서비스",
+          "v": 139.4,
+          "color": "--s1",
+          "label": "$139.4B"
+        },
+        {
+          "k": "구글 클라우드",
+          "v": 13.91,
+          "color": "--s2",
+          "label": "$13.9B"
+        }
+      ],
+      "note": "클라우드 영업이익이 1년 새 <b>78억 달러 늘었습니다.</b> 오래 적자였던 부문이 이익 기여로 돌아섰다는 게 2025년의 변화입니다. 다만 아직 서비스의 10분의 1이고, 검색 광고가 흔들리면 받쳐줄 크기는 아닙니다."
+    },
+    "stats": [
+      {
+        "k": "서비스 영업이익",
+        "v": "139.4",
+        "u": "B$",
+        "s": "전년 대비 +18.1B$",
+        "stone": "up"
+      },
+      {
+        "k": "클라우드 영업이익",
+        "v": "13.9",
+        "u": "B$",
+        "s": "전년 대비 +7.8B$",
+        "stone": "up"
+      },
+      {
+        "k": "본사·조정",
+        "v": "−16.8",
+        "u": "B$",
+        "s": "부문에 배부되지 않는 비용",
+        "tone": "down"
+      }
+    ]
+  },
+  "korea": {
+    "title": "설비투자가 한국 메모리로 이어지는 경로",
+    "lead": "알파벳은 자체 AI 칩(TPU)을 쓰지만 그 칩에도 메모리는 들어갑니다. 한국 기업과의 연결은 부품 계약이 아니라 <b>설비투자 → AI 서버 → 메모리 수요</b> 경로입니다.",
+    "lanes": [
+      {
+        "t": "AI 데이터센터 메모리",
+        "d": "설비투자가 곧 메모리 수요로 이어지는 구간",
+        "dest": "AI 서버",
+        "nodes": [
+          {
+            "n": "SK하이닉스",
+            "c": "KR",
+            "kr": true,
+            "d": "HBM 1위. 2026년 매출 기준 점유율 50% 유지 전망, 차세대 HBM4에서는 70%까지 본다는 전망(UBS)."
+          },
+          {
+            "n": "삼성전자",
+            "c": "KR",
+            "kr": true,
+            "d": "HBM4 세계 최초 양산 출하. 엔비디아가 멀티 벤더로 돌아서면서 반격 구간에 들어섰습니다."
+          },
+          {
+            "n": "마이크론",
+            "c": "US",
+            "kr": false,
+            "d": "세 번째 공급사."
+          }
+        ]
+      }
+    ]
+  },
+  "notes": [
+    {
+      "h": "숫자를 볼 때",
+      "items": [
+        "<b style=\"color:var(--ink)\">부문 영업이익 합 ≠ 전체 영업이익</b> — 본사 비용 때문입니다. 부문 숫자만 더해서 회사 이익이라 읽으면 틀립니다.",
+        "<b style=\"color:var(--ink)\">유튜브는 부문이 아닙니다</b> — 구글 서비스 안에 섞여 있어 단독 수익성은 공개되지 않습니다.",
+        "<b style=\"color:var(--ink)\">헤지 손익 별도</b> — 부문 합계와 총매출이 조금 다른 이유입니다."
+      ]
+    },
+    {
+      "h": "위험 쪽",
+      "items": [
+        "<b style=\"color:var(--ink)\">검색 의존</b> — 매출의 85%가 한 부문이고, 그 안에서 검색 광고가 다시 큰 비중입니다.",
+        "<b style=\"color:var(--ink)\">규제</b> — 검색·광고·앱마켓이 여러 나라에서 동시에 소송·규제 대상입니다.",
+        "<b style=\"color:var(--ink)\">AI가 검색을 대체할 가능성</b> — 질문에 바로 답하는 방식이 늘면 광고 노출 구조 자체가 바뀝니다."
+      ]
+    }
+  ],
+  "sources": [
+    {
+      "i": "매출·영업이익·부문별 실적",
+      "p": "2025",
+      "s": "Alphabet 10-K · 실적 발표"
+    },
+    {
+      "i": "유튜브 매출",
+      "p": "2025",
+      "s": "Alphabet 실적 발표"
+    },
+    {
+      "i": "HBM 점유율·전망",
+      "p": "2026",
+      "s": "UBS 전망 · 업계 보도"
+    }
+  ],
+  "checksum": "검산 — 부문 매출 342.721+58.705+1.537 = 402.96으로, 헤지 손익(약 −0.16B)을 반영하면 발표 총매출 402.8과 맞습니다. 부문 영업이익 139.404+13.910−7.515 = 145.80이고, 여기서 본사 비용 약 16.8B를 빼면 발표 영업이익 129.04가 됩니다."
+};
+</script>
+<script src="/m7/assets/m7.js"></script>
+</body>
+</html>

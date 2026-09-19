@@ -1,0 +1,227 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>엔비디아 지표 · 매출 구성과 한국 공급망 | M7</title>
+<meta name="description" content="FY2026 매출 2,159억 달러에 영업이익률 60.4%. 매출의 90% 이상이 데이터센터 한 부문에서 나오고, 그 절반이 하이퍼스케일러입니다. HBM으로 이어지는 한국 공급망까지 정리했습니다.">
+<link rel="canonical" href="https://richroro.github.io/m7/nvda/">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="ko_KR">
+<meta property="og:site_name" content="Cadence">
+<meta property="og:url" content="https://richroro.github.io/m7/nvda/">
+<meta property="og:title" content="엔비디아 지표 | M7">
+<meta property="og:description" content="FY2026 매출 2,159억 달러에 영업이익률 60.4%. 매출의 90% 이상이 데이터센터 한 부문에서 나오고, 그 절반이 하이퍼스케일러입니다. HBM으로 이어지는 한국 공급망까지 정리했습니다.">
+<meta name="twitter:card" content="summary">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='#3987e5'/><text x='50' y='66' font-size='42' text-anchor='middle' fill='white' font-family='monospace' font-weight='bold'>NV</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans+KR:wght@300;400;500;600;700&display=swap">
+<link rel="stylesheet" href="/m7/assets/m7.css">
+</head>
+<body>
+<noscript><div style="padding:24px;font-family:sans-serif">
+  <h1>엔비디아 지표</h1><p>FY2026 매출 2,159억 달러에 영업이익률 60.4%. 매출의 90% 이상이 데이터센터 한 부문에서 나오고, 그 절반이 하이퍼스케일러입니다. HBM으로 이어지는 한국 공급망까지 정리했습니다.</p>
+  <p>이 페이지는 차트를 그리기 위해 자바스크립트를 씁니다. <a href="/m7/">M7 전체 비교</a></p>
+</div></noscript>
+<script>
+/* =========================================================================
+   엔비디아 (NVDA) — 이 블록만 고치면 페이지 전체가 따라 바뀝니다.
+   검산: 하이퍼스케일러 38 + ACIE 37 = 75 (데이터센터 합계) / 130.387 ÷ 215.9 = 60.4%
+   ========================================================================= */
+const CO = {
+  "slug": "nvda",
+  "tk": "NVDA",
+  "ko": "엔비디아",
+  "en": "NVIDIA",
+  "ab": "NV",
+  "color": "#3987e5",
+  "asOf": "2026-09-19",
+  "fy": {
+    "label": "FY2026 · 2026년 1월 종료",
+    "note": "엔비디아 회계연도는 1월 말에 끝납니다. <b>FY2026은 2025년 2월~2026년 1월</b>이라, 달력 연도로 비교하려면 한 해 앞당겨 읽어야 합니다. 아래 최근 분기는 이미 FY2027입니다."
+  },
+  "headline": "한 부문이 회사 전부인 상태",
+  "lead": "FY2026 매출 2,159억 달러에 영업이익률 60.4%. 제조업에서 보기 어려운 숫자입니다. 다만 그 매출의 <b>90% 이상이 데이터센터 한 부문</b>에서 나옵니다.",
+  "stats": [
+    {
+      "k": "FY2026 매출",
+      "v": "215.9",
+      "u": "B$",
+      "s": "+65% YoY",
+      "stone": "up"
+    },
+    {
+      "k": "영업이익률",
+      "v": "60.4",
+      "u": "%",
+      "s": "영업이익 130.4B$"
+    },
+    {
+      "k": "총마진(GAAP)",
+      "v": "71.1",
+      "u": "%",
+      "s": "블랙웰 전환으로 소폭 하락"
+    },
+    {
+      "k": "최근 분기 매출",
+      "v": "96.22",
+      "u": "B$",
+      "s": "FY2027 2분기"
+    }
+  ],
+  "mix": {
+    "title": "두 부문으로 줄어든 공시",
+    "chartTitle": "FY2027 1분기 부문별 매출",
+    "period": "FY2027 1분기",
+    "total": 81.6,
+    "rows": [
+      {
+        "k": "데이터센터",
+        "v": 75.0,
+        "yoy": 92,
+        "color": "--s1"
+      },
+      {
+        "k": "엣지 컴퓨팅",
+        "v": 6.4,
+        "yoy": 29,
+        "color": "--s2"
+      }
+    ],
+    "lead": "FY2027 1분기부터 공시 구조가 <b>5개 부문에서 2개로</b> 바뀌었습니다. 게이밍·프로 비주얼라이제이션·오토모티브가 모두 '엣지 컴퓨팅' 하나로 합쳐져서, 이제 게이밍 매출은 따로 볼 수 없습니다.",
+    "note": "데이터센터가 <b>92%</b>입니다. 과거 게이밍 회사였다는 사실이 숫자에서 거의 사라졌습니다. 부문 합계 81.4는 각 수치가 반올림된 값이라 발표 총매출 81.6과 0.2 차이가 납니다.",
+    "tnote": "FY2027 1분기 기준. 부문 구조 변경으로 이전 분기와 직접 비교되지 않습니다."
+  },
+  "signature": {
+    "nav": "고객 집중",
+    "eyebrow": "Concentration",
+    "title": "데이터센터 안에서도 절반이 하이퍼스케일러",
+    "lead": "부문을 하나 더 열어보면 집중도가 더 선명해집니다. 데이터센터 750억 달러 중 절반이 소수의 대형 클라우드 사업자에서 나옵니다.",
+    "split": {
+      "title": "FY2027 1분기 데이터센터 750억 달러의 구성",
+      "sub": "엔비디아가 새로 나눠 공개하기 시작한 구분입니다",
+      "parts": [
+        {
+          "k": "하이퍼스케일러",
+          "v": 38,
+          "color": "--s1",
+          "label": "$38B"
+        },
+        {
+          "k": "AI 클라우드·산업·기업(ACIE)",
+          "v": 37,
+          "color": "--s2",
+          "label": "$37B"
+        }
+      ],
+      "note": "<b>소수 고객의 설비투자 계획이 그대로 엔비디아 매출</b>이 됩니다. 마이크로소프트·아마존·구글·메타의 자본지출 가이던스를 같이 봐야 하는 이유입니다 — 이 페이지들에 그 네 곳이 다 있습니다."
+    },
+    "stats": [
+      {
+        "k": "데이터센터 비중",
+        "v": "92",
+        "u": "%",
+        "s": "FY2027 1분기"
+      },
+      {
+        "k": "데이터센터 성장",
+        "v": "+92",
+        "u": "%",
+        "s": "전년 동기 대비",
+        "stone": "up"
+      },
+      {
+        "k": "ACIE 성장",
+        "v": "+31",
+        "u": "%",
+        "s": "전분기 대비",
+        "stone": "up"
+      }
+    ]
+  },
+  "korea": {
+    "title": "엔비디아 매출이 한국으로 흐르는 길",
+    "lead": "엔비디아 가속기 한 장에는 HBM이 여러 개 올라갑니다. M7 중 한국 기업과 가장 직접적으로 연결된 회사입니다.",
+    "lanes": [
+      {
+        "t": "AI 데이터센터 메모리",
+        "d": "설비투자가 곧 메모리 수요로 이어지는 구간",
+        "dest": "AI 서버",
+        "nodes": [
+          {
+            "n": "SK하이닉스",
+            "c": "KR",
+            "kr": true,
+            "d": "HBM 1위. 2026년 매출 기준 점유율 50% 유지 전망, 차세대 HBM4에서는 70%까지 본다는 전망(UBS)."
+          },
+          {
+            "n": "삼성전자",
+            "c": "KR",
+            "kr": true,
+            "d": "HBM4 세계 최초 양산 출하. 엔비디아가 멀티 벤더로 돌아서면서 반격 구간에 들어섰습니다."
+          },
+          {
+            "n": "마이크론",
+            "c": "US",
+            "kr": false,
+            "d": "세 번째 공급사."
+          }
+        ]
+      },
+      {
+        "t": "파운드리·패키징",
+        "d": "다이 생산과 첨단 패키징",
+        "dest": "GPU 다이",
+        "nodes": [
+          {
+            "n": "TSMC",
+            "c": "TW",
+            "kr": false,
+            "d": "첨단 공정과 CoWoS 패키징. 한국 기업이 아니지만 병목이 여기 있습니다."
+          }
+        ]
+      }
+    ]
+  },
+  "notes": [
+    {
+      "h": "숫자를 볼 때",
+      "items": [
+        "<b style=\"color:var(--ink)\">회계연도 주의</b> — FY2026이 사실상 2025년입니다. 다른 M7과 나란히 놓을 때 한 칸 밀려 보입니다.",
+        "<b style=\"color:var(--ink)\">부문 비교 단절</b> — FY2027 1분기부터 구조가 바뀌어 게이밍 추이가 끊깁니다.",
+        "<b style=\"color:var(--ink)\">총마진 하락은 믹스 때문</b> — 시스템 단위 판매로 옮겨가면서 마진율이 내려갑니다. 절대 이익은 늘었습니다."
+      ]
+    },
+    {
+      "h": "위험 쪽",
+      "items": [
+        "<b style=\"color:var(--ink)\">고객이 곧 경쟁자</b> — 하이퍼스케일러들이 자체 AI 칩을 만듭니다. 매출의 절반이 그쪽에서 나옵니다.",
+        "<b style=\"color:var(--ink)\">한 분기 수주가 실적을 흔든다</b> — 설비투자 사이클이 꺾이면 성장률이 빠르게 반전될 수 있는 구조입니다.",
+        "<b style=\"color:var(--ink)\">재고·구매 약정 손실</b> — FY2026에 H20 관련 45억 달러 비용이 총마진을 깎았습니다."
+      ]
+    }
+  ],
+  "sources": [
+    {
+      "i": "연간 매출·영업이익·총마진",
+      "p": "FY2026",
+      "s": "NVIDIA 실적 발표 · 8-K"
+    },
+    {
+      "i": "분기 매출·부문 구성",
+      "p": "FY2027 1~2분기",
+      "s": "NVIDIA 실적 발표"
+    },
+    {
+      "i": "HBM 점유율·전망",
+      "p": "2026",
+      "s": "UBS 전망 · 업계 보도"
+    }
+  ],
+  "checksum": "검산 — 데이터센터 하이퍼스케일러 38 + ACIE 37 = 75로 데이터센터 합계와 맞습니다. 영업이익 130.387 ÷ 매출 215.9 = 60.4%로 발표 영업이익률과 일치합니다."
+};
+</script>
+<script src="/m7/assets/m7.js"></script>
+</body>
+</html>

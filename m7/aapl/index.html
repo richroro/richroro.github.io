@@ -1,0 +1,239 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>애플 지표 · 매출 구성과 한국 공급망 | M7</title>
+<meta name="description" content="FY2025 매출 4,162억 달러, 아이폰이 절반. 그런데 성장은 서비스에서 나왔습니다. 부문별 매출과 OLED·카메라 모듈로 이어지는 한국 공급망을 정리했습니다.">
+<link rel="canonical" href="https://richroro.github.io/m7/aapl/">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="ko_KR">
+<meta property="og:site_name" content="Cadence">
+<meta property="og:url" content="https://richroro.github.io/m7/aapl/">
+<meta property="og:title" content="애플 지표 | M7">
+<meta property="og:description" content="FY2025 매출 4,162억 달러, 아이폰이 절반. 그런데 성장은 서비스에서 나왔습니다. 부문별 매출과 OLED·카메라 모듈로 이어지는 한국 공급망을 정리했습니다.">
+<meta name="twitter:card" content="summary">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='#6E7683'/><text x='50' y='66' font-size='42' text-anchor='middle' fill='white' font-family='monospace' font-weight='bold'>AA</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans+KR:wght@300;400;500;600;700&display=swap">
+<link rel="stylesheet" href="/m7/assets/m7.css">
+</head>
+<body>
+<noscript><div style="padding:24px;font-family:sans-serif">
+  <h1>애플 지표</h1><p>FY2025 매출 4,162억 달러, 아이폰이 절반. 그런데 성장은 서비스에서 나왔습니다. 부문별 매출과 OLED·카메라 모듈로 이어지는 한국 공급망을 정리했습니다.</p>
+  <p>이 페이지는 차트를 그리기 위해 자바스크립트를 씁니다. <a href="/m7/">M7 전체 비교</a></p>
+</div></noscript>
+<script>
+/* =========================================================================
+   애플 (AAPL) — 이 블록만 고치면 페이지 전체가 따라 바뀝니다.
+   검산: 부문 합계 416.17 ≈ 발표 416.161 / 133.05 ÷ 416.161 = 31.97%
+   ========================================================================= */
+const CO = {
+  "slug": "aapl",
+  "tk": "AAPL",
+  "ko": "애플",
+  "en": "Apple",
+  "ab": "AA",
+  "color": "#6E7683",
+  "asOf": "2026-09-19",
+  "fy": {
+    "label": "FY2025 · 2025년 9월 종료",
+    "note": "애플 회계연도는 9월 말에 끝납니다. FY2025는 2024년 10월~2025년 9월입니다."
+  },
+  "headline": "매출은 아이폰, 이익은 서비스",
+  "lead": "매출 4,162억 달러 중 아이폰이 <b>50.4%</b>입니다. 그런데 회사의 이익 무게중심은 이미 기기가 아니라 서비스 쪽으로 옮겨가 있습니다.",
+  "stats": [
+    {
+      "k": "FY2025 매출",
+      "v": "416.2",
+      "u": "B$",
+      "s": "+6% YoY",
+      "stone": "up"
+    },
+    {
+      "k": "영업이익률",
+      "v": "31.97",
+      "u": "%",
+      "s": "영업이익 133.05B$"
+    },
+    {
+      "k": "총마진",
+      "v": "46.91",
+      "u": "%",
+      "s": "총이익 195.2B$"
+    },
+    {
+      "k": "서비스 매출",
+      "v": "109.2",
+      "u": "B$",
+      "s": "+13.5% YoY",
+      "stone": "up"
+    }
+  ],
+  "mix": {
+    "title": "다섯 갈래로 나뉜 매출",
+    "chartTitle": "FY2025 부문별 매출",
+    "period": "FY2025",
+    "total": 416.161,
+    "rows": [
+      {
+        "k": "아이폰",
+        "v": 209.59,
+        "yoy": 4.2,
+        "color": "--s1"
+      },
+      {
+        "k": "서비스",
+        "v": 109.16,
+        "yoy": 13.5,
+        "color": "--s2"
+      },
+      {
+        "k": "웨어러블·홈",
+        "v": 35.69,
+        "yoy": -3.6,
+        "color": "--s3"
+      },
+      {
+        "k": "맥",
+        "v": 33.71,
+        "yoy": 12.4,
+        "color": "--s1"
+      },
+      {
+        "k": "아이패드",
+        "v": 28.02,
+        "yoy": 5.0,
+        "color": "--s2"
+      }
+    ],
+    "lead": "성장은 아이폰이 아니라 <b>서비스·맥</b>에서 나왔습니다. 아이폰은 +4.2%로 전체 성장률(+6%)에 못 미쳤고, 웨어러블은 두 해 연속 줄었습니다.",
+    "note": "서비스가 <b>매출의 26.2%</b>인데, 총마진율이 하드웨어보다 훨씬 높아 총이익 기여는 이보다 훨씬 큽니다(업계 집계로는 40%대). 애플을 하드웨어 회사로만 보면 이익 구조를 놓칩니다.",
+    "tnote": "웨어러블 전년 대비는 FY2024 총매출에서 나머지 네 부문을 뺀 값(37.02B$)으로 계산했습니다."
+  },
+  "signature": {
+    "nav": "서비스",
+    "eyebrow": "Services",
+    "title": "4분의 1이 벌어오는 이익의 절반 가까이",
+    "lead": "서비스는 앱스토어·아이클라우드·광고·구독처럼 기기를 팔지 않아도 들어오는 매출입니다. 재고도 관세도 거의 걸리지 않습니다.",
+    "split": {
+      "title": "FY2025 매출 4,162억 달러",
+      "sub": "서비스와 하드웨어(아이폰·맥·아이패드·웨어러블)로 나눈 것",
+      "parts": [
+        {
+          "k": "하드웨어",
+          "v": 307.0,
+          "color": "--s1",
+          "label": "$307.0B"
+        },
+        {
+          "k": "서비스",
+          "v": 109.16,
+          "color": "--s2",
+          "label": "$109.2B"
+        }
+      ],
+      "note": "서비스 매출은 <b>+13.5%</b>로 하드웨어보다 빠르게 큽니다. 마진이 높은 쪽이 더 빨리 자라고 있다는 뜻이라, 전체 총마진(46.9%)을 계속 밀어 올리는 구조입니다."
+    },
+    "stats": [
+      {
+        "k": "서비스 비중",
+        "v": "26.2",
+        "u": "%",
+        "s": "매출 기준"
+      },
+      {
+        "k": "아이폰 비중",
+        "v": "50.4",
+        "u": "%",
+        "s": "여전히 절반"
+      },
+      {
+        "k": "서비스 성장",
+        "v": "+13.5",
+        "u": "%",
+        "s": "전체 +6% 대비",
+        "stone": "up"
+      }
+    ]
+  },
+  "korea": {
+    "title": "아이폰 한 대에 들어가는 한국 부품",
+    "lead": "애플은 공급사별 비중을 공시하지 않습니다. 다만 디스플레이와 카메라 모듈은 한국 기업 이름이 업계에서 꾸준히 확인되는 영역입니다.",
+    "lanes": [
+      {
+        "t": "OLED 디스플레이",
+        "d": "아이폰 패널 메인 공급망",
+        "dest": "아이폰 디스플레이",
+        "nodes": [
+          {
+            "n": "삼성디스플레이",
+            "c": "KR",
+            "kr": true,
+            "d": "아이폰 OLED 메인 공급사 지위를 유지하는 것으로 관측됩니다."
+          },
+          {
+            "n": "LG디스플레이",
+            "c": "KR",
+            "kr": true,
+            "d": "공급 비중 25~35% 수준으로 알려져 있고, 프로 전용이던 고사양 패널을 일반 라인업까지 넓히는 흐름입니다."
+          }
+        ]
+      },
+      {
+        "t": "카메라 모듈",
+        "d": "후면 카메라 조립",
+        "dest": "아이폰 카메라",
+        "nodes": [
+          {
+            "n": "LG이노텍",
+            "c": "KR",
+            "kr": true,
+            "d": "프로 라인업 후면 카메라 모듈의 80% 이상을 공급한 이력. 중국 업체와의 경쟁이 변수입니다."
+          }
+        ]
+      }
+    ]
+  },
+  "notes": [
+    {
+      "h": "숫자를 볼 때",
+      "items": [
+        "<b style=\"color:var(--ink)\">회계연도 주의</b> — FY2025가 2025년 9월에 끝납니다. 12월 결산 회사와 한 분기 어긋납니다.",
+        "<b style=\"color:var(--ink)\">부문별 이익은 공시되지 않습니다</b> — 애플은 부문별 매출만 공개하고 영업이익은 회사 전체로만 냅니다.",
+        "<b style=\"color:var(--ink)\">서비스는 규제 리스크</b> — 앱스토어 수수료와 검색 트래픽 계약은 각국 규제·소송의 표적입니다."
+      ]
+    },
+    {
+      "h": "공급망 쪽",
+      "items": [
+        "<b style=\"color:var(--ink)\">공급사 비중은 추정치</b> — 애플이 공시하지 않아 업계 관측에 의존합니다. 숫자를 확정으로 읽으면 안 됩니다.",
+        "<b style=\"color:var(--ink)\">단가 인하 압력</b> — 물량은 크지만 단가 협상력이 애플 쪽에 있어, 공급사 실적이 아이폰 판매량만큼 늘지 않는 경우가 많습니다.",
+        "<b style=\"color:var(--ink)\">메모리는 여기 넣지 않았습니다</b> — 관계는 알려져 있으나 이번에 확인한 범위를 벗어나서 뺐습니다."
+      ]
+    }
+  ],
+  "sources": [
+    {
+      "i": "매출·부문별 매출·영업이익",
+      "p": "FY2025",
+      "s": "Apple 10-K · 실적 발표"
+    },
+    {
+      "i": "부문 전년 대비",
+      "p": "FY2024 → FY2025",
+      "s": "Apple 실적 발표(웨어러블은 파생 계산)"
+    },
+    {
+      "i": "한국 공급사",
+      "p": "2025~2026",
+      "s": "업계 보도"
+    }
+  ],
+  "checksum": "검산 — 부문 합계 209.59+109.16+35.69+33.71+28.02 = 416.17로 발표 총매출 416.161과 반올림 차이 안에 있습니다. 영업이익 133.05 ÷ 416.161 = 31.97%로 발표치와 일치합니다."
+};
+</script>
+<script src="/m7/assets/m7.js"></script>
+</body>
+</html>
