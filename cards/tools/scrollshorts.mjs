@@ -21,14 +21,16 @@ if (!process.argv[2]) {
 const data = JSON.parse(readFileSync(resolve(process.argv[2]), 'utf8'));
 const dur = Number(arg('dur', 30));
 const style = arg('style', 'drive');
-const poster = resolve(arg('poster', resolve(HERE, '..', data.slug, 'poster-tall.png')));
+const poster = resolve(arg('poster', resolve(HERE, '..', data.slug,
+  process.argv.includes('--fit') ? 'poster-fit.png' : 'poster-tall.png')));
 const outFile = resolve(HERE, '..', data.slug, arg('out', 'shorts.mp4'));
 
 // PNG IHDR carries width and height as big-endian uint32s at byte 16.
 const header = readFileSync(poster).subarray(16, 24);
 const posterH = header.readUInt32BE(4);
-const travel = posterH - H;
-if (travel <= 0) throw new Error(`poster is ${posterH}px tall; needs to exceed ${H} to scroll`);
+// A poster that already fits the frame is held still - nothing to reveal.
+const travel = Math.max(0, posterH - H);
+const still = travel === 0;
 
 const tmp = mkdtempSync(join(tmpdir(), 'scroll-'));
 try {
@@ -36,15 +38,20 @@ try {
   const bgm = join(tmp, 'bgm.wav');
   execFileSync('python3', [resolve(HERE, 'bgm.py'), bgm, String(dur), style], { stdio: 'inherit' });
 
-  console.log(`2/2  encoding — ${travel}px of travel over ${(dur - HOLD * 2).toFixed(1)}s`);
+  console.log(still
+    ? `2/2  encoding — still frame, ${dur}s`
+    : `2/2  encoding — ${travel}px of travel over ${(dur - HOLD * 2).toFixed(1)}s`);
   // y walks from 0 to travel between the two holds; commas inside the
   // expression are escaped so the filter parser does not split on them.
   const y = `(ih-oh)*clip((t-${HOLD})/${(dur - HOLD * 2).toFixed(3)}\\,0\\,1)`;
+  const vf = still
+    ? `[0:v]scale=${W}:${H},format=yuv420p,fps=30,setsar=1[v]`
+    : `[0:v]crop=${W}:${H}:0:'${y}',format=yuv420p,fps=30,setsar=1[v]`;
   execFileSync('ffmpeg', [
     '-y', '-hide_banner', '-loglevel', 'error', '-stats',
     '-loop', '1', '-t', String(dur), '-i', poster,
     '-i', bgm,
-    '-filter_complex', `[0:v]crop=${W}:${H}:0:'${y}',format=yuv420p,fps=30,setsar=1[v]`,
+    '-filter_complex', vf,
     '-map', '[v]', '-map', '1:a',
     '-c:v', 'libx264', '-preset', 'slow', '-crf', '20', '-pix_fmt', 'yuv420p', '-r', '30',
     '-c:a', 'aac', '-b:a', '160k', '-movflags', '+faststart', '-shortest',

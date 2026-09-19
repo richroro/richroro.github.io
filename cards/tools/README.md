@@ -171,3 +171,30 @@ node cards/tools/make.mjs cards/tools/content/0019-marketcap.json --dur=30 --sty
 
 만들고 나면 `subtitle`과 `note`의 **기준일과 출처를 반드시 채운다.**
 시가총액·시세처럼 매일 바뀌는 값은 기준일이 없으면 틀린 숫자가 된다.
+
+## 한 화면에 다 보이는 쇼츠 (--fit)
+
+스크롤도 전환도 없이, 1080×1920 한 프레임에 전부 담는다.
+
+```bash
+node cards/tools/infographic.mjs cards/tools/content/0008-apt.json --fit
+node cards/tools/scrollshorts.mjs cards/tools/content/0008-apt.json --fit \
+  --dur=20 --style=drive --out=shorts-fit.mp4
+```
+
+`--fit`은 행을 한 줄로 압축한다. 왼쪽에 작은 아이콘과 순위, 가운데 이름과
+부연, 오른쪽에 값. 10행이 여백까지 포함해 1920px에 들어간다.
+
+세 가지 레이아웃의 쓰임이 다르다.
+
+| 모드 | 크기 | 용도 |
+|---|---|---|
+| 기본 | 1080×2500 안팎 | 블로그·카톡용 가로 4열 |
+| `--tall` | 1080×4700 안팎 | 스크롤 쇼츠. 글자가 크다 |
+| `--fit` | 1080×1920 고정 | 한눈에 보는 정지 쇼츠 |
+
+포스터가 프레임보다 크지 않으면 `scrollshorts.mjs`가 스크롤을 생략하고
+정지 화면으로 인코딩한다. 별도 플래그가 필요 없다.
+
+`--fit`에서는 상단 칼럼 머리말을 빼는데, 값이 오른쪽 한 칼럼에 세로로
+쌓이기 때문에 2열 머리말이 아래 내용과 맞지 않아서다.

@@ -25,6 +25,10 @@ const HERE = dirname(fileURLToPath(import.meta.url));
 const FONT_DIR = resolve(HERE, '.fonts');
 const W = 1080;
 const TALL = process.argv.includes('--tall');
+// --fit packs the whole thing into one 1080x1920 frame, for a shorts card that
+// is read at a glance rather than scrolled.
+const FIT = process.argv.includes('--fit');
+const FIT_H = 1920;
 
 const font = (f) => `url(data:font/ttf;base64,${readFileSync(resolve(FONT_DIR, f)).toString('base64')})`;
 const esc = (s) => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
@@ -196,6 +200,39 @@ body{width:${W}px;font-family:'Body',sans-serif;font-weight:700;
 .tall .note p{font-size:29px;line-height:1.7;padding-left:40px;text-indent:-40px}
 .tall .close{font-size:56px;margin-top:40px}
 .tall .brand{font-size:29px;margin-top:22px}
+
+/* ---- one-frame layout ---- */
+.fit{height:${FIT_H}px;padding:52px 40px 44px;display:flex;flex-direction:column}
+.fit .head{padding:0 26px 22px}
+.fit .badge{top:-6px;left:2px;font-size:23px;padding:11px 14px}
+.fit .title{margin-left:196px}
+.fit .t1{font-size:50px}
+.fit .t2{font-size:68px}
+.fit .t2::after{bottom:14px;height:18px}
+.fit .sub{margin-top:16px;font-size:26px;padding:11px 26px}
+.fit .key{padding:0 30px 10px;font-size:22px}
+.fit .rows{flex:1;display:flex;flex-direction:column;justify-content:space-between}
+.fit .row{padding:0 26px;margin:0;border-radius:18px;gap:20px;min-height:0;flex:1;
+  margin-bottom:9px;align-items:center}
+.fit .slot{width:74px;height:74px;border-radius:16px}
+.fit .slot svg{width:54px;height:54px}
+.fit .rankbadge{width:34px;height:34px;font-size:18px;left:-7px;top:-7px}
+.fit .st{flex:1;min-width:0}
+.fit .st .n{font-family:'Body';font-weight:800;font-size:40px;color:#2b2622;
+  letter-spacing:-.035em;white-space:nowrap;line-height:1.24}
+.fit .st .n.sm{font-size:35px}
+.fit .st .n.xs{font-size:30px}
+.fit .st .s{font-size:22px;color:#8d8172;margin-top:2px;white-space:nowrap;overflow:hidden}
+.fit .st .a{display:none}
+.fit .st .p{display:none}
+.fit .val{flex:none;text-align:right}
+.fit .val .p{display:block;font-family:'Display';font-size:42px;color:#e0392b;line-height:1.2}
+.fit .val .a{display:block;font-size:21px;color:#a2977f;margin-top:1px}
+.fit .note{margin-top:14px;padding:16px 22px;border-radius:16px}
+.fit .note p{font-size:20px;line-height:1.5;padding-left:26px;text-indent:-26px}
+.fit .credit{font-size:18px;margin-top:10px;padding-top:10px}
+.fit .close{font-size:38px;margin-top:16px}
+.fit .brand{font-size:22px;margin-top:10px}
 .rk .who .n.sm{font-size:30px}
 .rk .who .n.xs{font-size:26px}
 .rk .mid{width:150px;flex:none;font-size:23px;color:#8d8172;text-align:right}
@@ -240,6 +277,19 @@ const slotFor = (r, i) => (r.image && existsSync(r.image)
   ? `<img class="${r.fit === 'contain' ? 'contain' : ''}" src="${img(r.image)}">`
   : buildingSvg(i, data.icons));
 
+const fitRow = (r, i) => {
+  const slot = slotFor(r, i);
+  return `<div class="row">
+    <div class="slot">${slot}${data.showRank === false ? '' : `<div class="rankbadge">${r.rank}</div>`}</div>
+    <div class="st">
+      <div class="n ${nameClass(r.label)}">${esc(r.label)}</div>
+      ${r.sub ? `<div class="s">${esc(r.sub)}</div>` : ''}
+    </div>
+    <div class="val"><div class="p">${esc(r.price)}</div>
+      ${r.mid ? `<div class="a">${esc(r.mid)}</div>` : ''}</div>
+  </div>`;
+};
+
 const tallRow = (r, i) => {
   const slot = slotFor(r, i);
   return `<div class="row">
@@ -275,9 +325,9 @@ const credits = () => {
   if (!lines.length) return '';
   return `<div class="credit"><b>사진 출처</b>${lines.map((l) => `<span>${esc(l)}</span>`).join('')}</div>`;
 };
-const renderRow = data.rowType !== 'rank' ? rowHtml : TALL ? tallRow : rankRow;
+const renderRow = data.rowType !== 'rank' ? rowHtml : FIT ? fitRow : TALL ? tallRow : rankRow;
 const html = `<!doctype html><html lang="ko"><head><meta charset="utf-8"><style>${CSS()}</style></head><body>
-<div class="page${TALL ? ' tall' : ''}">
+<div class="page${TALL ? ' tall' : ''}${FIT ? ' fit' : ''}">
   <div class="head">
     <div class="badge">${data.badge.map(esc).join('<br>')}</div>
     <div class="title">
@@ -286,11 +336,11 @@ const html = `<!doctype html><html lang="ko"><head><meta charset="utf-8"><style>
     </div>
     <div class="sub">${esc(data.subtitle)}</div>
   </div>
-  ${TALL ? ''
+  ${TALL || FIT ? ''
       : data.rowType === 'rank'
       ? `<div class="key"><span>${esc(data.head.left)}</span><span style="width:250px;text-align:right">${esc(data.head.right)}</span></div>`
       : `<div class="key"><span><i class="g"></i>${esc(data.head.left)}</span><span><i class="r"></i>${esc(data.head.right)}</span></div>`}
-  ${data.rows.map(renderRow).join('')}
+  ${FIT ? `<div class="rows">${data.rows.map(renderRow).join('')}</div>` : data.rows.map(renderRow).join('')}
   <div class="note">${data.note.map((n) => `<p>${esc(n)}</p>`).join('')}${credits()}</div>
   <div class="close">${data.closing.map(esc).join('<br>')}</div>
   <div class="brand">${esc(data.brand)}</div>
@@ -298,13 +348,13 @@ const html = `<!doctype html><html lang="ko"><head><meta charset="utf-8"><style>
 
 const outDir = resolve(HERE, '..', data.slug);
 mkdirSync(outDir, { recursive: true });
-const out = resolve(outDir, TALL ? 'poster-tall.png' : 'poster.png');
+const out = resolve(outDir, FIT ? 'poster-fit.png' : TALL ? 'poster-tall.png' : 'poster.png');
 
 const browser = await chromium.launch();
-const p = await browser.newPage({ viewport: { width: W, height: 1400 }, deviceScaleFactor: 1 });
+const p = await browser.newPage({ viewport: { width: W, height: FIT ? FIT_H : 1400 }, deviceScaleFactor: 1 });
 await p.setContent(html, { waitUntil: 'load' });
 await p.evaluate(() => document.fonts.ready);
-await p.screenshot({ path: out, fullPage: true });
+await p.screenshot({ path: out, fullPage: !FIT });
 const h = await p.evaluate(() => document.body.scrollHeight);
 await browser.close();
 
