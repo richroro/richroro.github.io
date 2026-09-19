@@ -24,10 +24,17 @@ const chromium = (() => {
 const HERE = dirname(fileURLToPath(import.meta.url));
 const FONT_DIR = resolve(HERE, '.fonts');
 const W = 1080;
+const TALL = process.argv.includes('--tall');
 
 const font = (f) => `url(data:font/ttf;base64,${readFileSync(resolve(FONT_DIR, f)).toString('base64')})`;
 const esc = (s) => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
-const img = (p) => `data:image/png;base64,${readFileSync(p).toString('base64')}`;
+const MIME = { png: 'image/png', jpg: 'image/jpeg', jpeg: 'image/jpeg', webp: 'image/webp', gif: 'image/gif' };
+const img = (p) => {
+  const ext = p.split('.').pop().toLowerCase();
+  const type = MIME[ext];
+  if (!type) throw new Error(`unsupported image type: ${p}`);
+  return `data:${type};base64,${readFileSync(p).toString('base64')}`;
+};
 
 // Decorative building silhouettes. These stand in for photography we have no
 // licence to use; they are not drawings of the actual buildings, which the
@@ -130,6 +137,30 @@ body{width:${W}px;font-family:'Body',sans-serif;font-weight:700;
 /* ---- rank rows ---- */
 .rk .who{width:300px}
 .rk .who .n{font-family:'Body';font-weight:800;font-size:35px;letter-spacing:-.03em;white-space:nowrap}
+
+/* ---- stacked rows, for the scrolling shorts cut ---- */
+.tall .head{padding:60px 30px 44px}
+.tall .t1{font-size:76px}
+.tall .t2{font-size:104px}
+.tall .t2::after{bottom:24px;height:26px}
+.tall .sub{font-size:38px;padding:17px 38px}
+.tall .key{font-size:28px;padding:30px 26px 16px}
+.tall .row{padding:34px 36px;gap:34px;border-radius:28px;margin-bottom:22px}
+.tall .slot{width:168px;height:168px;border-radius:30px}
+.tall .slot svg{width:124px;height:124px}
+.tall .rankbadge{width:62px;height:62px;font-size:31px;left:-13px;top:-13px}
+.tall .st{flex:1;min-width:0}
+.tall .st .n{font-family:'Body';font-weight:800;font-size:60px;color:#2b2622;
+  letter-spacing:-.035em;white-space:nowrap;line-height:1.3}
+.tall .st .n.sm{font-size:52px}
+.tall .st .n.xs{font-size:45px}
+.tall .st .s{font-size:31px;color:#8d8172;margin-top:6px}
+.tall .st .a{font-size:29px;color:#a2977f;margin-top:4px}
+.tall .st .p{font-family:'Display';font-size:62px;color:#e0392b;margin-top:12px;line-height:1.24}
+.tall .note{padding:32px 36px;border-radius:24px;margin-top:36px}
+.tall .note p{font-size:29px;line-height:1.7;padding-left:40px;text-indent:-40px}
+.tall .close{font-size:56px;margin-top:40px}
+.tall .brand{font-size:29px;margin-top:22px}
 .rk .who .n.sm{font-size:30px}
 .rk .who .n.xs{font-size:26px}
 .rk .mid{width:150px;flex:none;font-size:23px;color:#8d8172;text-align:right}
@@ -143,6 +174,11 @@ body{width:${W}px;font-family:'Body',sans-serif;font-weight:700;
 .note p{font-size:21px;line-height:1.66;color:#6f6455;font-weight:700;
   padding-left:30px;text-indent:-30px}
 .note p::before{content:'✓ ';color:#3f9a6a;font-weight:800}
+.credit{margin-top:18px;padding-top:16px;border-top:1px dashed #ddcdaa;
+  font-size:19px;line-height:1.62;color:#8d8172;font-weight:700}
+.credit b{display:block;color:#6f6455;margin-bottom:4px}
+.credit span{display:block}
+.tall .credit{font-size:26px;margin-top:24px;padding-top:22px}
 .close{margin-top:26px;text-align:center;font-family:'Hand';font-size:40px;
   color:#a8744a;line-height:1.36}
 .brand{margin-top:16px;text-align:center;font-size:21px;color:#a99b85;letter-spacing:.14em}
@@ -163,6 +199,21 @@ const rowHtml = (r, i) => {
   </div>`;
 };
 
+const nameClass = (t) => (t.length <= 7 ? '' : t.length <= 9 ? 'sm' : 'xs');
+
+const tallRow = (r, i) => {
+  const slot = r.image && existsSync(r.image) ? `<img src="${img(r.image)}">` : buildingSvg(i);
+  return `<div class="row">
+    <div class="slot">${slot}<div class="rankbadge">${r.rank}</div></div>
+    <div class="st">
+      <div class="n ${nameClass(r.label)}">${esc(r.label)}</div>
+      <div class="s">${esc(r.sub)}</div>
+      <div class="a">전용 ${esc(r.mid)}</div>
+      <div class="p">${esc(r.price)}</div>
+    </div>
+  </div>`;
+};
+
 const rankRow = (r, i) => {
   const slot = r.image && existsSync(r.image) ? `<img src="${img(r.image)}">` : buildingSvg(i);
   return `<div class="row rk">
@@ -176,9 +227,18 @@ const rankRow = (r, i) => {
 };
 
 const data = JSON.parse(readFileSync(process.argv[2] || '', 'utf8'));
-const renderRow = data.rowType === 'rank' ? rankRow : rowHtml;
+
+// Most open licences (CC BY, CC BY-SA) require the credit to travel with the
+// image, so it is rendered from the data rather than left to whoever posts it.
+const credits = () => {
+  const lines = data.rows.filter((r) => r.image && r.credit)
+    .map((r) => `${r.label} — ${r.credit}`);
+  if (!lines.length) return '';
+  return `<div class="credit"><b>사진 출처</b>${lines.map((l) => `<span>${esc(l)}</span>`).join('')}</div>`;
+};
+const renderRow = data.rowType !== 'rank' ? rowHtml : TALL ? tallRow : rankRow;
 const html = `<!doctype html><html lang="ko"><head><meta charset="utf-8"><style>${CSS()}</style></head><body>
-<div class="page">
+<div class="page${TALL ? ' tall' : ''}">
   <div class="head">
     <div class="badge">${data.badge.map(esc).join('<br>')}</div>
     <div class="title">
@@ -187,18 +247,19 @@ const html = `<!doctype html><html lang="ko"><head><meta charset="utf-8"><style>
     </div>
     <div class="sub">${esc(data.subtitle)}</div>
   </div>
-  ${data.rowType === 'rank'
+  ${TALL ? ''
+      : data.rowType === 'rank'
       ? `<div class="key"><span>${esc(data.head.left)}</span><span style="width:250px;text-align:right">${esc(data.head.right)}</span></div>`
       : `<div class="key"><span><i class="g"></i>${esc(data.head.left)}</span><span><i class="r"></i>${esc(data.head.right)}</span></div>`}
   ${data.rows.map(renderRow).join('')}
-  <div class="note">${data.note.map((n) => `<p>${esc(n)}</p>`).join('')}</div>
+  <div class="note">${data.note.map((n) => `<p>${esc(n)}</p>`).join('')}${credits()}</div>
   <div class="close">${data.closing.map(esc).join('<br>')}</div>
   <div class="brand">${esc(data.brand)}</div>
 </div></body></html>`;
 
 const outDir = resolve(HERE, '..', data.slug);
 mkdirSync(outDir, { recursive: true });
-const out = resolve(outDir, 'poster.png');
+const out = resolve(outDir, TALL ? 'poster-tall.png' : 'poster.png');
 
 const browser = await chromium.launch();
 const p = await browser.newPage({ viewport: { width: W, height: 1400 }, deviceScaleFactor: 1 });

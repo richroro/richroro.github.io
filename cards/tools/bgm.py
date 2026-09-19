@@ -7,7 +7,11 @@ MusicGen, ships its weights under CC-BY-NC, which rules it out for a channel
 that might be monetised.) Deterministic: a given duration always renders the
 same track.
 
-    python3 cards/tools/bgm.py out.wav 45.9
+    python3 cards/tools/bgm.py out.wav 45.9 [ballad|drive]
+
+ballad - slow piano, for the reflective card sets.
+drive  - four-on-the-floor pulse under a plucked arpeggio, for rankings and
+         countdowns, where a ballad just sits there.
 """
 import math
 import sys
@@ -110,7 +114,11 @@ def strings(f0, dur, vel=1.0):
 
 
 def add(buf, sig, at, gain=1.0, pan=0.5):
+    # Humanising jitter can push an onset slightly before zero; a negative
+    # index would wrap the slice to the end of the buffer instead of clipping.
     start = int(at * SR)
+    if start < 0:
+        sig, start = sig[-start:], 0
     length = min(len(sig), buf.shape[0] - start)
     if length <= 0:
         return
@@ -193,7 +201,7 @@ def render(seconds):
         for i, f in enumerate(figure):
             when = t0 + i * beat / 2 + rng.normal(0, 0.006)  # human, not quantised
             vel = 0.5 if i % 2 else 0.66
-            add(buf, piano(f, 2.4, vel), max(0, when), 0.30, 0.42 + 0.16 * (i % 3) / 2)
+            add(buf, piano(f, 2.4, vel), when, 0.30, 0.42 + 0.16 * (i % 3) / 2)
 
         # Pad underneath.
         for f in tones:
@@ -220,10 +228,110 @@ def render(seconds):
     return buf
 
 
+# ---------------------------------------------------------------- drive style
+
+DRIVE_CHORDS = [  # Am - F - C - G, one bar each
+    ('A2', ['A3', 'C4', 'E4', 'A4']),
+    ('F2', ['F3', 'A3', 'C4', 'F4']),
+    ('C3', ['C4', 'E4', 'G4', 'C5']),
+    ('G2', ['G3', 'B3', 'D4', 'G4']),
+]
+
+
+def kick(dur=0.30):
+    n = int(dur * SR)
+    t = np.arange(n) / SR
+    # Pitch drops fast from a click down to the body of the drum.
+    f = 118 * np.exp(-t * 34) + 44
+    body = np.sin(2 * math.pi * np.cumsum(f) / SR) * np.exp(-t * 15)
+    click = np.random.default_rng(1).normal(0, 1, n) * np.exp(-t * 320) * 0.25
+    return body + click
+
+
+def hat(dur=0.07, seed=2):
+    n = int(dur * SR)
+    rng = np.random.default_rng(seed)
+    x = rng.normal(0, 1, n)
+    x = np.diff(np.r_[0, x])  # crude highpass - leaves only the hiss
+    return x * np.exp(-np.arange(n) / (SR * 0.011)) * 0.35
+
+
+def pluck(f0, dur=0.42, vel=1.0):
+    n = int(dur * SR)
+    t = np.arange(n) / SR
+    v = np.zeros(n)
+    for k, a in ((1, 1.0), (2, 0.45), (3, 0.22), (4, 0.11), (5, 0.06)):
+        v += a * np.sin(2 * math.pi * f0 * k * t)
+    return v * np.exp(-t * 7.5) * (1 - np.exp(-t * 700)) * vel / 1.9
+
+
+def bass(f0, dur=0.5, vel=1.0):
+    n = int(dur * SR)
+    t = np.arange(n) / SR
+    v = np.sin(2 * math.pi * f0 * t) + 0.4 * np.sin(2 * math.pi * f0 * 2 * t)
+    return v * np.exp(-t * 4.2) * (1 - np.exp(-t * 400)) * vel / 1.5
+
+
+def render_drive(seconds):
+    bpm = 104.0
+    beat = 60 / bpm
+    bar = beat * 4
+    bars = max(4, int(math.ceil(seconds / bar)))
+
+    n = int(seconds * SR) + int(2 * SR)
+    buf = np.zeros((n, 2))
+    rng = np.random.default_rng(5)
+
+    for b in range(bars):
+        t0 = b * bar
+        if t0 > seconds:
+            break
+        root, tones = DRIVE_CHORDS[b % 4]
+        # Layers enter one at a time so the track builds instead of starting flat.
+        lv_kick = 0.0 if b < 2 else 1.0
+        lv_bass = 0.0 if b < 3 else 1.0
+        lv_hat = 0.0 if b < 5 else 1.0
+
+        for k in range(4):
+            if lv_kick:
+                add(buf, kick(), t0 + k * beat, 0.62, 0.5)
+            if lv_hat:
+                add(buf, hat(seed=2 + b * 4 + k), t0 + k * beat + beat / 2, 0.30, 0.5)
+        if lv_bass:
+            for k in (0, 2):
+                add(buf, bass(freq(root), vel=1.0), t0 + k * beat, 0.46, 0.5)
+
+        # Eighth-note arpeggio, the part that actually carries the movement.
+        pattern = [0, 1, 2, 3, 2, 1, 2, 3]
+        for i, idx in enumerate(pattern):
+            f = freq(tones[idx])
+            vel = 0.9 if i % 2 == 0 else 0.62
+            add(buf, pluck(f, vel=vel), t0 + i * beat / 2 + rng.normal(0, 0.004),
+                0.30, 0.34 + 0.32 * (i % 3) / 2)
+
+        for f in tones[:3]:
+            add(buf, strings(freq(f) / 2, bar + 0.8, 0.5), t0, 0.045, 0.5)
+
+    buf = buf[:int(seconds * SR)]
+    for ch in range(2):
+        buf[:, ch] = reverb(buf[:, ch], wet=0.20)
+
+    fi, fo = int(0.35 * SR), int(1.8 * SR)
+    buf[:fi] *= np.linspace(0, 1, fi).reshape(-1, 1)
+    buf[-fo:] *= np.linspace(1, 0, fo).reshape(-1, 1) ** 1.5
+
+    peak = np.abs(buf).max()
+    if peak > 0:
+        buf *= 0.62 / peak
+    print(f'  drive: {bars} bars @ {bpm:.0f} BPM', file=sys.stderr)
+    return buf
+
+
 def main():
     out = sys.argv[1] if len(sys.argv) > 1 else 'bgm.wav'
     seconds = float(sys.argv[2]) if len(sys.argv) > 2 else 45.0
-    audio = render(seconds)
+    style = sys.argv[3] if len(sys.argv) > 3 else 'ballad'
+    audio = render_drive(seconds) if style == 'drive' else render(seconds)
     with wave.open(out, 'wb') as w:
         w.setnchannels(2)
         w.setsampwidth(2)
