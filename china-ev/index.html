@@ -1,0 +1,895 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>중국 전기차 주식 노트 · 종목·인도량·상장 구조</title>
+<meta name="description" content="BYD·립모터·샤오펑·리오토·니오·샤오미·지커의 홍콩/미국/A주 티커와 인도량을 한 표에. 월별 인도량, 중국 전기차 침투율의 함정, 홍콩·ADR·본토 시장별 거래시간과 세금까지.">
+<link rel="canonical" href="https://richroro.github.io/china-ev/">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="ko_KR">
+<meta property="og:site_name" content="Cadence">
+<meta property="og:url" content="https://richroro.github.io/china-ev/">
+<meta property="og:title" content="중국 전기차 주식 노트">
+<meta property="og:description" content="종목별 티커와 인도량, 침투율 65%의 함정, 시장별 투자 경로를 한 페이지에.">
+<meta name="twitter:card" content="summary">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%23E82127'/><path d='M28 66V34h11l11 18 11-18h11v32H61V49l-9 15h-4l-9-15v17z' fill='white'/></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans+KR:wght@300;400;500;600;700&display=swap">
+
+<style>
+:root{
+  color-scheme:light;
+  --paper:#F5F6F8; --surface:#FFFFFF; --surface-2:#EEF0F4; --surface-3:#E6EAF0;
+  --ink:#14161C; --ink-2:#4A5260; --ink-3:#6E7683;
+  --line:#E3E7ED; --line-soft:#EDF0F4; --grid:#E8EBF0;
+  --brand:#E82127; --brand-deep:#C81E3A; --brand-wash:#FDECEC;
+  --up:#C81E3A; --down:#1257B5; --up-wash:#FCEBEE; --down-wash:#E9F1FD;
+  --fill-up:#D92B4A; --fill-down:#1B6BD0;          /* 발산형 차트 채움 (검증됨) */
+  --s1:#2a78d6; --s2:#eb6834; --s3:#1baf7a;
+  --shadow:0 1px 2px rgba(20,22,28,.05), 0 10px 28px -16px rgba(20,22,28,.22);
+  --radius:14px;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    color-scheme:dark;
+    --paper:#0F1218; --surface:#161A21; --surface-2:#1D2229; --surface-3:#242A33;
+    --ink:#E9EDF3; --ink-2:#AEB7C4; --ink-3:#8B95A3;
+    --line:#252B34; --line-soft:#1E242C; --grid:#232932;
+    --brand:#FF4C52; --brand-deep:#FF6B7A; --brand-wash:#2A1A1E;
+    --up:#FF6B7A; --down:#77B0F7; --up-wash:#2A1A1E; --down-wash:#141F2E;
+    --fill-up:#E34948; --fill-down:#3987e5;
+    --s1:#3987e5; --s2:#d95926; --s3:#199e70;
+    --shadow:0 1px 2px rgba(0,0,0,.4), 0 10px 28px -16px rgba(0,0,0,.7);
+  }
+}
+:root[data-theme="dark"]{
+  color-scheme:dark;
+  --paper:#0F1218; --surface:#161A21; --surface-2:#1D2229; --surface-3:#242A33;
+  --ink:#E9EDF3; --ink-2:#AEB7C4; --ink-3:#8B95A3;
+  --line:#252B34; --line-soft:#1E242C; --grid:#232932;
+  --brand:#FF4C52; --brand-deep:#FF6B7A; --brand-wash:#2A1A1E;
+  --up:#FF6B7A; --down:#77B0F7; --up-wash:#2A1A1E; --down-wash:#141F2E;
+  --fill-up:#E34948; --fill-down:#3987e5;
+  --s1:#3987e5; --s2:#d95926; --s3:#199e70;
+  --shadow:0 1px 2px rgba(0,0,0,.4), 0 10px 28px -16px rgba(0,0,0,.7);
+}
+
+*{box-sizing:border-box;margin:0;padding:0}
+[hidden]{display:none !important}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+body{font-family:"IBM Plex Sans KR","Pretendard","Apple SD Gothic Neo",system-ui,sans-serif;
+  background:var(--paper);color:var(--ink);line-height:1.6;letter-spacing:-.2px;-webkit-font-smoothing:antialiased}
+a{color:inherit;text-decoration:none}
+.num{font-family:"IBM Plex Mono",ui-monospace,Menlo,monospace;font-variant-numeric:tabular-nums;letter-spacing:-.4px}
+.wrap{max-width:1040px;margin:0 auto;padding:0 16px}
+@media(min-width:720px){.wrap{padding:0 24px}}
+
+header{position:sticky;top:0;z-index:50;background:color-mix(in srgb,var(--paper) 88%,transparent);
+  backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
+.hbar{display:flex;align-items:center;justify-content:space-between;gap:12px;height:56px}
+.brand{display:flex;align-items:center;gap:9px;min-width:0}
+.brand .mk{width:28px;height:28px;border-radius:8px;background:var(--brand);color:#fff;flex:none;
+  display:grid;place-items:center;font-weight:700;font-size:14px;font-family:"IBM Plex Mono",monospace}
+.brand b{font-size:15.5px;font-weight:600;letter-spacing:-.4px;white-space:nowrap}
+.brand small{display:block;font-size:11px;color:var(--ink-3);font-weight:400;letter-spacing:0;line-height:1.2}
+.hactions{display:flex;align-items:center;gap:6px;flex:none}
+.ghost{background:var(--surface);border:1px solid var(--line);color:var(--ink-2);border-radius:9px;
+  height:34px;padding:0 11px;font:inherit;font-size:13px;font-weight:500;cursor:pointer;
+  display:inline-flex;align-items:center;gap:6px;transition:.15s}
+.ghost:hover{background:var(--surface-2);color:var(--ink)}
+:focus-visible{outline:2px solid var(--s1);outline-offset:2px}
+
+.snav{position:sticky;top:56px;z-index:40;background:color-mix(in srgb,var(--paper) 88%,transparent);
+  backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
+.snav-in{display:flex;gap:2px;overflow-x:auto;scrollbar-width:none;height:46px;align-items:center}
+.snav-in::-webkit-scrollbar{display:none}
+.snav a{font-size:13.5px;font-weight:500;color:var(--ink-3);padding:7px 11px;border-radius:8px;white-space:nowrap}
+.snav a:hover{color:var(--ink);background:var(--surface-2)}
+
+section{padding:34px 0;scroll-margin-top:112px}
+@media(min-width:720px){section{padding:44px 0}}
+.eyebrow{font-size:12px;font-weight:600;color:var(--brand-deep);letter-spacing:.4px;text-transform:uppercase;
+  font-family:"IBM Plex Mono",monospace}
+h2.title{font-size:clamp(21px,3.4vw,27px);font-weight:600;letter-spacing:-.8px;margin:7px 0 6px;line-height:1.3}
+p.lead{font-size:14.5px;color:var(--ink-2);font-weight:300;max-width:64ch;line-height:1.7}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow)}
+.pad{padding:18px}
+@media(min-width:720px){.pad{padding:22px}}
+.card h3{font-size:15px;font-weight:600;letter-spacing:-.3px}
+.hint{font-size:12.5px;color:var(--ink-3);font-weight:300;line-height:1.6}
+.mt8{margin-top:8px}.mt12{margin-top:12px}.mt16{margin-top:16px}.mt24{margin-top:24px}
+.rowsplit{display:flex;flex-wrap:wrap;gap:10px;align-items:baseline;justify-content:space-between}
+.up{color:var(--up)}.down{color:var(--down)}
+/* .st .s 가 (0,2,0) 이라 단독 .up/.down 을 이깁니다 — 보조 문구에도 색이 먹도록 명시 */
+.st .s.up,.st .v.up{color:var(--up)}
+.st .s.down,.st .v.down{color:var(--down)}
+.grid2{display:grid;grid-template-columns:1fr;gap:14px}
+@media(min-width:860px){.grid2{grid-template-columns:1fr 1fr}}
+
+.stats{display:grid;grid-template-columns:repeat(2,1fr);gap:1px;background:var(--line-soft);
+  border:1px solid var(--line);border-radius:12px;overflow:hidden}
+@media(min-width:720px){.stats.c4{grid-template-columns:repeat(4,1fr)}.stats.c3{grid-template-columns:repeat(3,1fr)}}
+.st{background:var(--surface);padding:14px 15px}
+.st .k{font-size:11.5px;color:var(--ink-3);font-weight:400}
+.st .v{font-size:20px;font-weight:600;letter-spacing:-.7px;margin-top:3px;white-space:nowrap;
+  font-family:"IBM Plex Mono",monospace;font-variant-numeric:tabular-nums;line-height:1.25}
+.st .v .u{font-size:13px;font-weight:500}
+.st .s{font-size:12px;color:var(--ink-3);font-weight:300;margin-top:2px;
+  font-family:"IBM Plex Mono",monospace;font-variant-numeric:tabular-nums}
+
+.note{display:flex;gap:9px;background:var(--surface-2);border-radius:11px;padding:12px 13px;
+  font-size:12.5px;color:var(--ink-2);font-weight:300;line-height:1.65}
+.note .ic{flex:none;font-size:13px}
+.note b{font-weight:500;color:var(--ink)}
+.warn{background:var(--brand-wash)}
+</style>
+<style>
+/* ---------- tables ---------- */
+.tscroll{overflow-x:auto;-webkit-overflow-scrolling:touch}
+table{width:100%;border-collapse:collapse;font-size:13.5px;min-width:660px}
+table.narrow{min-width:0}
+th,td{padding:10px;text-align:right;border-bottom:1px solid var(--line-soft);white-space:nowrap}
+th:first-child,td:first-child{text-align:left}
+thead th{font-size:11.5px;font-weight:500;color:var(--ink-3);border-bottom:1px solid var(--line);background:var(--surface)}
+tbody td{font-family:"IBM Plex Mono",monospace;font-variant-numeric:tabular-nums}
+tbody td.tx{font-family:inherit}
+tbody tr:last-child td{border-bottom:none}
+tbody tr:hover{background:var(--surface-2)}
+th.sortable{cursor:pointer;user-select:none}
+th.sortable:hover{color:var(--ink)}
+th.sortable::after{content:"↕";opacity:.32;margin-left:4px;font-size:10px}
+th.sortable[aria-sort="descending"]::after{content:"↓";opacity:1;color:var(--brand-deep)}
+th.sortable[aria-sort="ascending"]::after{content:"↑";opacity:1;color:var(--brand-deep)}
+.co{display:flex;align-items:center;gap:9px}
+.co .av{width:26px;height:26px;border-radius:7px;flex:none;display:grid;place-items:center;
+  font-size:11px;font-weight:600;background:var(--surface-2);color:var(--ink-2);font-family:"IBM Plex Mono",monospace}
+.co b{font-weight:600;font-size:13.5px;display:block;line-height:1.3}
+.co small{font-size:11px;color:var(--ink-3);font-weight:300}
+.tk{display:inline-flex;align-items:center;gap:4px;font-family:"IBM Plex Mono",monospace;font-size:11.5px;
+  font-weight:500;border:1px solid var(--line);border-radius:6px;padding:2px 6px;color:var(--ink-2);background:var(--surface)}
+.tk i{font-style:normal;font-size:9.5px;color:var(--ink-3);letter-spacing:.3px}
+.tk.dead{opacity:.55;text-decoration:line-through}
+.tkwrap{display:flex;gap:4px;flex-wrap:wrap;justify-content:flex-end}
+
+/* ---------- charts ---------- */
+.chart-head{display:flex;flex-wrap:wrap;gap:10px;align-items:flex-start;justify-content:space-between}
+.chart-head .ct{font-size:15px;font-weight:600;letter-spacing:-.3px}
+.chart-head .cs{font-size:12.5px;color:var(--ink-3);font-weight:300;margin-top:2px;max-width:56ch}
+.seg{display:inline-flex;background:var(--surface-2);border:1px solid var(--line);border-radius:9px;padding:2px;flex:none}
+.seg button{background:none;border:none;color:var(--ink-3);font-size:12px;font-weight:500;padding:5px 10px;
+  border-radius:7px;cursor:pointer;transition:.15s}
+.seg button[aria-pressed="true"]{background:var(--surface);color:var(--ink);box-shadow:0 1px 2px rgba(0,0,0,.08)}
+.legend{display:flex;flex-wrap:wrap;gap:6px 15px;margin-top:12px}
+.lg{display:flex;align-items:center;gap:6px;font-size:12.5px;color:var(--ink-2);font-weight:400}
+.lg .sw{width:11px;height:11px;border-radius:3px;flex:none}
+.figwrap{position:relative;margin-top:14px}
+.fig{display:block;width:100%;height:auto;overflow:visible}
+.fig text{font-family:"IBM Plex Mono",monospace;font-variant-numeric:tabular-nums}
+.fig .axis{font-size:10.5px;fill:var(--ink-3)}
+.fig .name{font-size:11.5px;fill:var(--ink-2);font-family:"IBM Plex Sans KR",sans-serif}
+.fig .gridline{stroke:var(--grid);stroke-width:1}
+.fig .baseline{stroke:var(--line);stroke-width:1}
+.fig .zero{stroke:var(--ink-3);stroke-width:1}
+.fig .dlabel{font-size:11px;fill:var(--ink-2);font-weight:500}
+.fig .hit{fill:transparent;cursor:pointer}
+.tip{position:absolute;pointer-events:none;opacity:0;transform:translate(-50%,-100%);
+  background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:9px 11px;
+  box-shadow:var(--shadow);font-size:12.5px;min-width:160px;transition:opacity .1s;z-index:5}
+.tip.on{opacity:1}
+.tip .th{font-size:11.5px;color:var(--ink-3);margin-bottom:5px}
+.tip .tr{display:flex;gap:10px;justify-content:space-between;margin-top:3px}
+.tip .tr .nm{color:var(--ink-2);font-weight:300}
+.tip .tr b{font-family:"IBM Plex Mono",monospace;font-variant-numeric:tabular-nums;font-weight:500}
+
+/* ---------- market hours ---------- */
+.mkts{display:grid;grid-template-columns:1fr;gap:1px;background:var(--line-soft);
+  border:1px solid var(--line);border-radius:12px;overflow:hidden}
+@media(min-width:720px){.mkts{grid-template-columns:repeat(3,1fr)}}
+.mkt{background:var(--surface);padding:15px 16px}
+.mkt .top{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.mkt .nm{font-size:13.5px;font-weight:600}
+.mkt .nm small{display:block;font-size:11px;color:var(--ink-3);font-weight:300;letter-spacing:0}
+.pill{display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:600;border-radius:999px;
+  padding:3px 9px;border:1px solid var(--line);color:var(--ink-3);background:var(--surface-2);flex:none}
+.pill .dot{width:6px;height:6px;border-radius:50%;background:var(--ink-3);flex:none}
+.pill.open{color:var(--s3);border-color:color-mix(in srgb,var(--s3) 45%,var(--line));background:transparent}
+.pill.open .dot{background:var(--s3);animation:pulse 1.8s infinite}
+@keyframes pulse{50%{opacity:.35}}
+.mkt .lt{margin-top:10px;font-size:12px;color:var(--ink-3);font-weight:300}
+.mkt .lt b{font-family:"IBM Plex Mono",monospace;font-variant-numeric:tabular-nums;color:var(--ink);font-weight:500}
+.mkt .ses{margin-top:8px;display:flex;flex-direction:column;gap:3px}
+.mkt .ses div{font-size:12px;font-family:"IBM Plex Mono",monospace;font-variant-numeric:tabular-nums;color:var(--ink-2)}
+.mkt .ses span{color:var(--ink-3);font-family:"IBM Plex Sans KR",sans-serif;font-weight:300;font-size:11.5px}
+
+footer{border-top:1px solid var(--line);background:var(--surface);margin-top:20px;padding:28px 0 40px}
+footer .fgrid{display:grid;gap:18px;grid-template-columns:1fr}
+@media(min-width:720px){footer .fgrid{grid-template-columns:1.3fr 1fr}}
+footer h4{font-size:12.5px;font-weight:600;color:var(--ink-2);margin-bottom:7px}
+footer p,footer li{font-size:12.5px;color:var(--ink-3);font-weight:300;line-height:1.75}
+footer ul{list-style:none}
+footer a{color:var(--ink-2);border-bottom:1px solid var(--line)}
+footer a:hover{color:var(--brand-deep);border-color:var(--brand-deep)}
+.disc{margin-top:20px;padding-top:16px;border-top:1px solid var(--line-soft);font-size:12px;color:var(--ink-3);
+  font-weight:300;line-height:1.7}
+@media(prefers-reduced-motion:reduce){*{animation:none !important;transition:none !important}html{scroll-behavior:auto}}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap hbar">
+    <a class="brand" href="./">
+      <span class="mk">CN</span>
+      <span><b>중국 전기차 주식 노트</b><small>종목 · 인도량 · 상장 구조</small></span>
+    </a>
+    <div class="hactions">
+      <button class="ghost" id="themeBtn" type="button" aria-label="화면 테마 전환"><span id="themeIco">◐</span><span id="themeTxt">테마</span></button>
+    </div>
+  </div>
+</header>
+
+<nav class="snav" aria-label="섹션 바로가기">
+  <div class="wrap snav-in">
+    <a href="#market">시장 온도</a>
+    <a href="#stocks">종목 표</a>
+    <a href="#charts">인도량 비교</a>
+    <a href="#byd">BYD 해부</a>
+    <a href="#access">투자 경로</a>
+    <a href="#watch">체크포인트</a>
+  </div>
+</nav>
+
+<main>
+
+<!-- ============ MARKET ============ -->
+<section id="market" style="padding-top:26px">
+  <div class="wrap">
+    <p class="eyebrow">01 · Market</p>
+    <h2 class="title">침투율은 사상 최고, 판매량은 8개월 연속 감소</h2>
+    <p class="lead">중국 전기차 뉴스에서 가장 자주 인용되는 숫자가 <b>침투율 65%</b>입니다. 그런데 같은 달 전기차 소매 판매는
+      전년보다 10% 줄었습니다. 둘 다 사실입니다 — 내연기관차가 더 빠르게 무너지면 분모가 줄어서, 전기차가 덜 팔려도 비율은 올라갑니다.
+      중국 종목을 볼 때 <b>비율이 아니라 대수</b>를 봐야 하는 이유입니다.</p>
+
+    <div class="stats c4 mt16" role="group" aria-label="중국 전기차 시장 지표">
+      <div class="st"><div class="k">8월 NEV 소매 침투율</div><div class="v">65.2<span class="u">%</span></div><div class="s up">사상 최고 · +9.9%p YoY</div></div>
+      <div class="st"><div class="k">8월 NEV 소매 판매</div><div class="v">100.5<span class="u">만대</span></div><div class="s down">−10.1% YoY</div></div>
+      <div class="st"><div class="k">전년 대비 감소</div><div class="v">8<span class="u">개월 연속</span></div><div class="s">2026년 1월부터</div></div>
+      <div class="st"><div class="k">침투율 60% 첫 돌파</div><div class="v">2026<span class="u">년 4월</span></div><div class="s">60.6%</div></div>
+    </div>
+
+    <div class="note mt16"><span class="ic">📉</span><div>월별 침투율: 4월 <b>60.6%</b> → 6월 <b>62.8%</b> → 7월 <b>65.1%</b> → 8월 <b>65.2%</b>.
+      상승 폭은 이미 거의 멈췄습니다(7→8월 +0.1%p). 침투율이 천장에 닿으면 그다음부터 업체 실적을 가르는 건
+      <b>점유율 싸움과 수출</b>입니다. 아래 BYD 해부가 그 사례입니다.</div></div>
+  </div>
+</section>
+
+<!-- ============ STOCKS ============ -->
+<section id="stocks">
+  <div class="wrap">
+    <p class="eyebrow">02 · Tickers</p>
+    <h2 class="title">종목 표</h2>
+    <p class="lead">같은 회사가 홍콩·미국·본토에 다른 코드로 상장돼 있습니다. 어느 시장에서 사느냐에 따라
+      거래시간·통화·세금·상장폐지 위험이 전부 달라집니다. 열 제목을 누르면 정렬됩니다.</p>
+
+    <div class="card mt16">
+      <div class="tscroll">
+        <table id="tblStocks">
+          <thead><tr>
+            <th class="sortable" data-k="ko" data-t="s">회사</th>
+            <th>티커</th>
+            <th class="sortable" data-k="y2025" data-t="n" aria-sort="none">2025 연간</th>
+            <th class="sortable" data-k="y2025yoy" data-t="n">2025 YoY</th>
+            <th class="sortable" data-k="m" data-t="n" aria-sort="descending">2026년 8월</th>
+            <th class="sortable" data-k="myoy" data-t="n">8월 YoY</th>
+          </tr></thead>
+          <tbody id="stockRows"></tbody>
+        </table>
+      </div>
+    </div>
+    <div class="note mt12"><span class="ic">🏷️</span><div id="noteRows"></div></div>
+    <div class="note mt12"><span class="ic">🤝</span><div>표에 없는 큰 축이 하나 더 있습니다. 화웨이가 이끄는
+      <b>HIMA 연합</b>(아이토·럭시드 등)은 2025년 <b>589,107대</b>(+32%)를 팔았지만, 화웨이는 차를 직접 만들지도
+      상장하지도 않습니다. 세레스·체리·베이징기차 같은 <b>제조 파트너사 주식</b>을 통해야 간접 노출됩니다.</div></div>
+  </div>
+</section>
+
+<!-- ============ CHARTS ============ -->
+<section id="charts">
+  <div class="wrap">
+    <p class="eyebrow">03 · Volume</p>
+    <h2 class="title">누가 얼마나 팔았나</h2>
+    <p class="lead">연간 수치는 확정된 숫자라 회사 간 체급 비교에 좋고, 최근 월 수치는 지금 어느 쪽으로 흐르는지를 보여줍니다.
+      두 개를 같이 봐야 합니다 — 체급이 큰 회사와 지금 빠르게 크는 회사가 서로 다릅니다.</p>
+
+    <div class="card pad mt16">
+      <div class="chart-head">
+        <div>
+          <div class="ct">2025년 연간 인도량</div>
+          <div class="cs">확정치. BYD가 나머지를 전부 합친 것보다 큽니다</div>
+        </div>
+        <div class="seg" role="group" aria-label="보기 전환">
+          <button type="button" data-view="chart" data-target="year" aria-pressed="true">차트</button>
+          <button type="button" data-view="table" data-target="year" aria-pressed="false">표</button>
+        </div>
+      </div>
+      <div class="figwrap" id="wrapYear">
+        <svg class="fig" id="figYear" role="img" aria-label="2025년 중국 전기차 업체별 연간 인도량 막대그래프"></svg>
+        <div class="tip" id="tipYear"></div>
+      </div>
+      <div class="tscroll mt12" id="tblYear" hidden></div>
+      <div class="note mt12"><span class="ic">⚖️</span><div>BYD를 뺀 6개사를 다 합쳐도 <b id="sumRest">—</b>로 BYD 한 곳의
+        <b id="sumRatio">—</b> 수준입니다. "중국 전기차 주식"이라고 묶어 부르지만 체급 차이가 이만큼 납니다.</div></div>
+    </div>
+
+    <div class="grid2 mt16">
+      <div class="card pad">
+        <div class="chart-head"><div>
+          <div class="ct">2026년 8월 인도량</div>
+          <div class="cs">가장 최근에 발표된 달</div>
+        </div></div>
+        <div class="figwrap" id="wrapMon">
+          <svg class="fig" id="figMon" role="img" aria-label="2026년 8월 업체별 인도량 막대그래프"></svg>
+          <div class="tip" id="tipMon"></div>
+        </div>
+      </div>
+      <div class="card pad">
+        <div class="chart-head"><div>
+          <div class="ct">2026년 8월 전년 대비</div>
+          <div class="cs">같은 순서로 놓았습니다 — 많이 파는 것과 빨리 크는 것은 다릅니다</div>
+        </div></div>
+        <div class="legend">
+          <span class="lg"><span class="sw" style="background:var(--fill-up)"></span>증가</span>
+          <span class="lg"><span class="sw" style="background:var(--fill-down)"></span>감소</span>
+        </div>
+        <div class="figwrap" id="wrapYoy">
+          <svg class="fig" id="figYoy" role="img" aria-label="2026년 8월 업체별 전년 대비 증감률 막대그래프"></svg>
+          <div class="tip" id="tipYoy"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ BYD ============ -->
+<section id="byd">
+  <div class="wrap">
+    <p class="eyebrow">04 · Case</p>
+    <h2 class="title">BYD 8월 실적을 쪼개보면</h2>
+    <p class="lead">헤드라인은 "BYD 8월 판매 17.8% 증가, 올해 최고"였습니다. 지역별로 쪼개면 정반대 이야기 두 개가 나옵니다.
+      <b>중국 내수는 14.3% 줄었고, 해외가 134% 늘어 그 구멍을 메우고도 남았습니다.</b></p>
+
+    <div class="grid2 mt16">
+      <div class="card pad">
+        <h3>어디서 팔렸나</h3>
+        <div class="figwrap" id="wrapByd">
+          <svg class="fig" id="figByd" role="img" aria-label="BYD 8월 판매의 중국 내수와 해외 비중 막대그래프"></svg>
+          <div class="tip" id="tipByd"></div>
+        </div>
+        <div class="legend">
+          <span class="lg"><span class="sw" style="background:var(--s1)"></span>중국 내수</span>
+          <span class="lg"><span class="sw" style="background:var(--s2)"></span>해외</span>
+        </div>
+        <div class="note mt16"><span class="ic">🔋</span><div>차종 구성도 움직였습니다. 승용 NEV 중 순수전기(BEV) 비중이
+          <b>59.1%</b>로 1년 전 53.7%에서 올랐습니다. BYD는 원래 플러그인 하이브리드가 강한 회사였습니다.</div></div>
+        <div class="note mt12"><span class="ic">🧾</span><div>같은 달을 차종으로 쪼개면 승용 <b>433,384</b>대 + 상용
+          <b>6,909</b>대입니다. 지역별로 쪼개든 차종으로 쪼개든 합계 440,293대로 맞아떨어집니다.</div></div>
+      </div>
+      <div class="card pad">
+        <h3>같은 달, 다른 방향</h3>
+        <div class="stats mt12" style="grid-template-columns:1fr 1fr">
+          <div class="st"><div class="k">중국 내수</div><div class="v num">250,827</div><div class="s down">▼ 14.3% YoY</div></div>
+          <div class="st"><div class="k">해외</div><div class="v num">189,466</div><div class="s up">▲ 134.5% YoY</div></div>
+        </div>
+        <div class="note mt12"><span class="ic">🚢</span><div>해외 비중이 <b id="bydShare">—</b>까지 올라왔습니다.
+          BYD 투자 논리가 "중국 전기차 1등"에서 <b>"신흥국 수출 기업"</b>으로 옮겨가는 중이라는 뜻입니다.
+          그래서 이제는 중국 내수 통계보다 <b>관세·현지 공장·환율</b>이 더 중요한 변수가 됩니다.</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ ACCESS ============ -->
+<section id="access">
+  <div class="wrap">
+    <p class="eyebrow">05 · Access</p>
+    <h2 class="title">어느 시장에서 사느냐</h2>
+    <p class="lead">같은 회사라도 홍콩·미국 ADR·본토 A주는 완전히 다른 상품입니다. 거래시간과 통화가 다르고,
+      ADR은 상장폐지라는 고유 위험이 있습니다. 지커가 2025년 12월 NYSE에서 사라진 게 실제 사례입니다.</p>
+
+    <div class="mkts mt16" id="mkts" role="group" aria-label="시장별 개장 상태"></div>
+    <div class="note mt12"><span class="ic">🕐</span><div>개장 여부는 <b>브라우저 시계</b>로 판단합니다. 서머타임은 자동 반영되지만
+      <b>각국 공휴일은 반영되지 않습니다</b>. 중국 춘절·국경절 같은 장기 휴장이 있으니 실제 주문 전에 증권사 공지를 확인하세요.</div></div>
+
+    <div class="card mt16">
+      <div class="tscroll">
+        <table>
+          <thead><tr><th>구분</th><th>홍콩 (HKEX)</th><th>미국 ADR</th><th>본토 A주</th></tr></thead>
+          <tbody>
+            <tr><td class="tx">거래 통화</td><td>HKD</td><td>USD</td><td>CNY</td></tr>
+            <tr><td class="tx">해당 종목</td><td class="tx">BYD·니오·샤오펑·리오토·립모터·샤오미</td><td class="tx">니오·샤오펑·리오토</td><td class="tx">BYD</td></tr>
+            <tr><td class="tx">국내 증권사 거래</td><td class="tx">대부분 가능</td><td class="tx">가능</td><td class="tx">후강퉁·선강퉁 경유</td></tr>
+            <tr><td class="tx">양도소득세</td><td class="tx">연 250만원 공제 후 22%</td><td class="tx">동일</td><td class="tx">동일</td></tr>
+            <tr><td class="tx">거래세</td><td class="tx">인지세 등 부과</td><td class="tx">SEC 수수료(매도)</td><td class="tx">인지세(매도)</td></tr>
+            <tr><td class="tx">고유 위험</td><td class="tx">환율(HKD·USD 연동)</td><td class="tx">상장폐지·예탁증서 수수료</td><td class="tx">한도·결제 제약, 상하한가 ±10%</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="note mt12"><span class="ic">💸</span><div>세금은 <b>어느 시장이든 같습니다.</b> 해외주식 양도차익은 전부 합산해
+      연 250만원을 공제하고 22%(양도세 20% + 지방세 2%)입니다. 미국 주식 손실과 중국 주식 이익은 같은 해에
+      <b>손익통산</b>됩니다. 계산은 <a href="/tesla/#tax" style="border-bottom:1px solid var(--line)">테슬라 주주 계산기의 양도세 탭</a>을 그대로 쓸 수 있습니다.</div></div>
+  </div>
+</section>
+
+<!-- ============ WATCH ============ -->
+<section id="watch">
+  <div class="wrap">
+    <p class="eyebrow">06 · Checkpoints</p>
+    <h2 class="title">매달 확인할 것</h2>
+    <p class="lead">중국 전기차 업체는 미국 기업과 달리 <b>매달 1일</b> 인도량을 직접 공개합니다.
+      분기 실적을 기다릴 필요 없이 한 달 단위로 흐름이 보이는 게 이 섹터의 특징입니다.</p>
+
+    <div class="grid2 mt16">
+      <div class="card pad">
+        <h3>일정</h3>
+        <ul class="hint mt8" style="list-style:none;display:flex;flex-direction:column;gap:8px">
+          <li>· <b style="color:var(--ink)">매월 1일</b> — 각 사 전월 인도량 발표. 주가가 가장 크게 움직이는 날입니다.</li>
+          <li>· <b style="color:var(--ink)">매월 초·중순</b> — 중국승용차협회(CPCA) 전월 소매·침투율 집계.</li>
+          <li>· <b style="color:var(--ink)">분기 후 6~10주</b> — 실적 발표. 인도량은 이미 알려져 있어서 관전 포인트는 <b style="color:var(--ink)">대당 마진</b>입니다.</li>
+        </ul>
+      </div>
+      <div class="card pad">
+        <h3>숫자를 볼 때 조심할 것</h3>
+        <ul class="hint mt8" style="list-style:none;display:flex;flex-direction:column;gap:8px">
+          <li>· <b style="color:var(--ink)">인도량 ≠ 이익</b> — 가격 전쟁 중이라 많이 팔고도 적자인 회사가 있습니다.</li>
+          <li>· <b style="color:var(--ink)">NEV에는 하이브리드가 섞입니다</b> — BYD·리오토 숫자의 상당 부분은 순수 전기차가 아닙니다.</li>
+          <li>· <b style="color:var(--ink)">도매 vs 소매</b> — 회사 발표는 보통 출고(도매) 기준이라 실제 판매보다 앞서갑니다.</li>
+          <li>· <b style="color:var(--ink)">연합·자회사 구조</b> — 지커는 지리 안으로, 화웨이 연합은 제조사 쪽으로 들어가 있습니다.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="card pad mt16">
+      <div class="rowsplit"><h3>데이터 출처</h3><span class="hint">지표 기준일 <b id="asOfLabel">—</b></span></div>
+      <div class="tscroll mt12">
+        <table class="narrow">
+          <thead><tr><th>항목</th><th>기간</th><th>출처</th></tr></thead>
+          <tbody>
+            <tr><td class="tx">업체별 인도량</td><td>2025 연간 · 2026년 8월</td><td class="tx">각 사 월간 발표 / IR</td></tr>
+            <tr><td class="tx">BYD 내수·해외 분해</td><td>2026년 8월</td><td class="tx">BYD 월간 판매 공시</td></tr>
+            <tr><td class="tx">NEV 소매·침투율</td><td>2026년 4~8월</td><td class="tx">중국승용차협회(CPCA)</td></tr>
+            <tr><td class="tx">지커 상장폐지</td><td>2025-12-22</td><td class="tx">지리·지커 합병 완료 공시</td></tr>
+            <tr><td class="tx">티커·상장 시장</td><td>2026-09 기준</td><td class="tx">각 거래소 종목 정보</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="note mt12"><span class="ic">🔄</span><div>인도량은 매월 1일에 갱신됩니다. 이 페이지의 숫자가 기준일보다 오래됐다면
+        각 사 발표를 확인하세요 — 수치는 소스 맨 위 <b>DATA</b> 블록 한 곳에 모여 있습니다.</div></div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="fgrid">
+      <div>
+        <h4>이 페이지에 대해</h4>
+        <p>중국 전기차 종목을 볼 때 매번 다시 찾게 되는 것들 — 티커, 인도량, 시장별 차이 — 을 한 곳에 모은 참고용 노트입니다.
+           외부 스크립트 없이 HTML 한 파일로 돌아갑니다.</p>
+      </div>
+      <div>
+        <h4>같이 만든 것</h4>
+        <ul>
+          <li><a href="/tesla/">테슬라 주주 계산기</a></li>
+          <li><a href="/tesla-metrics/">테슬라 지표 — 실적·공급망</a></li>
+          <li><a href="/salary-rank/">내 연봉은 몇 등일까</a></li>
+          <li><a href="/">Cadence · 업무 자동화 스튜디오</a></li>
+        </ul>
+      </div>
+    </div>
+    <p class="disc">이 페이지는 투자 권유나 세무 자문이 아닙니다. 인도량·티커·제도는 바뀔 수 있고 오류가 있을 수 있으니
+      실제 투자 전에 각 사 공시와 증권사 안내를 확인하세요. 투자 판단과 책임은 이용자 본인에게 있습니다.</p>
+  </div>
+</footer>
+
+<script>
+"use strict";
+
+/* =========================================================================
+   DATA — 갱신은 이 블록만. 인도량은 매월 1일 각 사 발표.
+   검증된 항등식:
+     BYD 8월  250,827(내수) + 189,466(해외)   = 440,293
+     BYD 8월  433,384(승용) +   6,909(상용)   = 440,293
+   ========================================================================= */
+const DATA = {
+  asOf: "2026-09-19",
+  latest: "2026년 8월",
+  makers: [
+    { ko:"비야디", en:"BYD", ab:"BYD", hk:"1211", us:"BYDDY", usNote:"OTC", cn:"002594",
+      y2025:4602436, y2025yoy:7.7, m:440293, myoy:17.8,
+      note:"성장분이 전부 수출. 중국 내수는 −14.3%" },
+    { ko:"립모터", en:"Leapmotor", ab:"LP", hk:"9863", us:null, cn:null,
+      y2025:596555, y2025yoy:103.0, m:103129, myoy:80.7,
+      note:"월 10만대 돌파. 스텔란티스가 주요 주주" },
+    { ko:"샤오펑", en:"XPeng", ab:"XP", hk:"9868", us:"XPEV", cn:null,
+      y2025:429445, y2025yoy:126.0, m:39107, myoy:3.7,
+      note:"2025년 2배 넘게 컸지만 증가율은 한 자리로 둔화" },
+    { ko:"리오토", en:"Li Auto", ab:"LI", hk:"2015", us:"LI", cn:null,
+      y2025:406343, y2025yoy:-18.8, m:37679, myoy:32.1,
+      note:"2025년 역성장 뒤 2년 만의 최고 증가율" },
+    { ko:"샤오미", en:"Xiaomi EV", ab:"MI", hk:"1810", us:null, cn:null,
+      y2025:410000, approx:true, y2025yoy:null, m:30153, myoy:-17.2,
+      note:"전기차는 사업부 일부 — 주가는 휴대폰·IoT와 함께 움직임" },
+    { ko:"니오", en:"NIO", ab:"NIO", hk:"9866", us:"NIO", cn:null,
+      y2025:326028, y2025yoy:46.9, m:35836, myoy:14.5,
+      note:"니오·온보·파이어플라이 3개 브랜드. 1~8월 누적 +57.9%" },
+    { ko:"지커", en:"Zeekr", ab:"ZK", hk:null, hkNote:"지리 0175 편입", us:null, usNote:"상장폐지", cn:null,
+      y2025:224133, y2025yoy:null, m:36981, myoy:109.8, delisted:true,
+      note:"2025-12 NYSE 상장폐지, 지리 100% 자회사 — 지리(0175)로만 투자 가능" }
+  ],
+  byd: { total:440293, china:250827, chinaYoY:-14.34, overseas:189466, overseasYoY:134.45,
+         passenger:433384, commercial:6909, bevShare:59.1 }
+};
+
+/* ---------------------------- helpers ---------------------------- */
+const $ = (id) => document.getElementById(id);
+const nf = new Intl.NumberFormat("ko-KR");
+const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;" }[c]));
+function pctTxt(v) { return v == null ? "—" : (v > 0 ? "+" : v < 0 ? "−" : "") + Math.abs(v).toFixed(1) + "%"; }
+function cls(v) { return v == null ? "" : v > 0 ? "up" : v < 0 ? "down" : ""; }
+function manDae(n) { return (n / 10000).toFixed(n >= 1000000 ? 0 : 1) + "만대"; }
+const store = {
+  get(k, fb) { try { const v = localStorage.getItem(k); return v == null ? fb : JSON.parse(v); } catch (e) { return fb; } },
+  set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} }
+};
+
+/* ---------------------------- theme ---------------------------- */
+(function () {
+  const saved = store.get("cnev.theme", null);
+  if (saved === "dark" || saved === "light") document.documentElement.dataset.theme = saved;
+  const isDark = () => document.documentElement.dataset.theme
+    ? document.documentElement.dataset.theme === "dark"
+    : matchMedia("(prefers-color-scheme:dark)").matches;
+  const paint = () => { $("themeIco").textContent = isDark() ? "☾" : "☀"; $("themeTxt").textContent = isDark() ? "어둡게" : "밝게"; };
+  $("themeBtn").addEventListener("click", () => {
+    document.documentElement.dataset.theme = isDark() ? "light" : "dark";
+    store.set("cnev.theme", document.documentElement.dataset.theme);
+    paint(); drawAll();
+  });
+  matchMedia("(prefers-color-scheme:dark)").addEventListener("change", () => { paint(); drawAll(); });
+  paint();
+})();
+
+/* ---------------------------- 종목 표 ---------------------------- */
+let sortKey = "m", sortDir = -1;
+
+function tickerChips(mk) {
+  const out = [];
+  if (mk.hk) out.push('<span class="tk"><i>HK</i>' + mk.hk + "</span>");
+  else if (mk.hkNote) out.push('<span class="tk"><i>HK</i>' + esc(mk.hkNote) + "</span>");
+  if (mk.us) out.push('<span class="tk"><i>US</i>' + mk.us + (mk.usNote ? " " + esc(mk.usNote) : "") + "</span>");
+  else if (mk.usNote) out.push('<span class="tk dead"><i>US</i>' + esc(mk.usNote) + "</span>");
+  if (mk.cn) out.push('<span class="tk"><i>CN</i>' + mk.cn + "</span>");
+  return '<div class="tkwrap">' + out.join("") + "</div>";
+}
+
+function renderStocks() {
+  const rows = DATA.makers.slice().sort((a, b) => {
+    const av = a[sortKey], bv = b[sortKey];
+    if (typeof av === "string") return av.localeCompare(bv, "ko") * sortDir;
+    if (av == null) return 1;            // 값 없는 행은 항상 아래로
+    if (bv == null) return -1;
+    return (av - bv) * sortDir;
+  });
+  $("stockRows").innerHTML = rows.map((mk) =>
+    "<tr>" +
+    '<td class="tx"><div class="co"><span class="av">' + esc(mk.ab) + "</span><span><b>" + esc(mk.ko) +
+      "</b><small>" + esc(mk.en) + "</small></span></div></td>" +
+    "<td>" + tickerChips(mk) + "</td>" +
+    "<td>" + (mk.approx ? "약 " : "") + nf.format(mk.y2025) + "</td>" +
+    '<td class="' + cls(mk.y2025yoy) + '">' + pctTxt(mk.y2025yoy) + "</td>" +
+    "<td>" + nf.format(mk.m) + "</td>" +
+    '<td class="' + cls(mk.myoy) + '">' + pctTxt(mk.myoy) + "</td>" +
+    "</tr>").join("");
+
+  document.querySelectorAll("#tblStocks th.sortable").forEach((th) => {
+    th.setAttribute("aria-sort", th.dataset.k === sortKey ? (sortDir === -1 ? "descending" : "ascending") : "none");
+  });
+}
+
+document.querySelectorAll("#tblStocks th.sortable").forEach((th) => {
+  th.addEventListener("click", () => {
+    const k = th.dataset.k;
+    if (k === sortKey) sortDir = -sortDir;
+    else { sortKey = k; sortDir = th.dataset.t === "s" ? 1 : -1; }
+    renderStocks();
+  });
+});
+</script>
+
+<script>
+"use strict";
+
+/* ========================= charts (inline SVG, no libs) ========================= */
+const SVGNS = "http://www.w3.org/2000/svg";
+function el(tag, attrs, style) {
+  const n = document.createElementNS(SVGNS, tag);
+  for (const k in attrs) if (attrs[k] != null) n.setAttribute(k, attrs[k]);
+  if (style) n.setAttribute("style", style);
+  return n;
+}
+function txt(node, s) { node.textContent = s; return node; }
+function niceScale(v, want) {
+  if (!(v > 0)) return { max: 1, step: 1, ticks: 1 };
+  const raw = v / (want || 4);
+  const p = Math.pow(10, Math.floor(Math.log10(raw))), n = raw / p;
+  const step = (n <= 1 ? 1 : n <= 2 ? 2 : n <= 2.5 ? 2.5 : n <= 5 ? 5 : 10) * p;
+  const max = Math.ceil(v / step - 1e-9) * step;
+  return { max: max, step: step, ticks: Math.round(max / step) };
+}
+function showTip(tip, wrap, html, x, y) {
+  tip.innerHTML = html;
+  tip.classList.add("on");
+  const maxL = wrap.clientWidth - 8, half = tip.offsetWidth / 2;
+  tip.style.left = Math.max(half + 4, Math.min(x, maxL - half)) + "px";
+  tip.style.top = y + "px";
+}
+
+/* ---- 가로 막대 (단일 계열) ---- */
+function drawBars(svgId, tipId, rows, opt) {
+  const svg = $(svgId), wrap = svg.parentElement, tip = $(tipId);
+  const W = Math.max(280, wrap.clientWidth || 320);
+  const small = W < 480;
+  const L = small ? 52 : 62, R = small ? 54 : 72, T = 6, B = 24;
+  const rowH = small ? 26 : 28, gap = small ? 9 : 10;
+  const H = T + rows.length * (rowH + gap) - gap + B;
+  const pw = Math.max(40, W - L - R);
+  const sc = niceScale(Math.max.apply(null, rows.map((r) => r.v)), small ? 3 : 5);
+  const xOf = (v) => (v / sc.max) * pw;
+
+  svg.setAttribute("width", W); svg.setAttribute("height", H);
+  svg.setAttribute("viewBox", "0 0 " + W + " " + H);
+  while (svg.firstChild) svg.removeChild(svg.firstChild);
+
+  for (let i = 0; i <= sc.ticks; i++) {
+    const v = sc.step * i, x = L + xOf(v);
+    svg.appendChild(el("line", { x1: x, x2: x, y1: T, y2: H - B + 3, class: i === 0 ? "baseline" : "gridline" }));
+    svg.appendChild(txt(el("text", { x: x, y: H - B + 16, "text-anchor": "middle", class: "axis" }), opt.tick(v)));
+  }
+
+  rows.forEach((r, i) => {
+    const y = T + i * (rowH + gap);
+    svg.appendChild(txt(el("text", { x: L - 8, y: y + rowH / 2 + 4, "text-anchor": "end", class: "name" }), r.name));
+    const w = Math.max(2, xOf(r.v));
+    svg.appendChild(el("rect", { x: L, y: y, width: w, height: rowH, rx: 4 }, "fill:var(" + opt.color + ")"));
+    svg.appendChild(txt(el("text", { x: L + w + 7, y: y + rowH / 2 + 4, class: "dlabel" }), opt.label(r.v)));
+    const hit = el("rect", { x: L, y: y - gap / 2, width: pw + R - 8, height: rowH + gap, class: "hit" });
+    hit.addEventListener("mouseenter", () =>
+      showTip(tip, wrap, '<div class="th">' + r.name + "</div>" + opt.tip(r), L + w / 2, y));
+    hit.addEventListener("mouseleave", () => tip.classList.remove("on"));
+    svg.appendChild(hit);
+  });
+}
+
+/* ---- 발산형 가로 막대 (0 기준 좌우) ---- */
+function drawDiverging(svgId, tipId, rows) {
+  const svg = $(svgId), wrap = svg.parentElement, tip = $(tipId);
+  const W = Math.max(280, wrap.clientWidth || 320);
+  const small = W < 480;
+  const L = small ? 52 : 62, R = 14, T = 6, B = 24;
+  const rowH = small ? 26 : 28, gap = small ? 9 : 10;
+  const H = T + rows.length * (rowH + gap) - gap + B;
+  const pw = Math.max(40, W - L - R);
+  const lo = Math.min(0, Math.min.apply(null, rows.map((r) => r.v)));
+  const hi = Math.max(0, Math.max.apply(null, rows.map((r) => r.v)));
+  // 양쪽을 같은 눈금 간격으로 맞춰야 0 이 눈금에 정확히 걸립니다
+  const step = niceScale(Math.max(hi, -lo), pw >= 340 ? 5 : 3).step;
+  const negMax = Math.ceil(-lo / step - 1e-9) * step;
+  const posMax = Math.ceil(hi / step - 1e-9) * step;
+  const span = negMax + posMax || 1;
+  const zero = L + (negMax / span) * pw;
+  const xOf = (v) => (v / span) * pw;
+
+  svg.setAttribute("width", W); svg.setAttribute("height", H);
+  svg.setAttribute("viewBox", "0 0 " + W + " " + H);
+  while (svg.firstChild) svg.removeChild(svg.firstChild);
+
+  for (let v = -negMax; v <= posMax + 1e-9; v += step) {
+    const x = zero + xOf(v);
+    if (x < L - 1 || x > L + pw + 1) continue;
+    const isZero = Math.abs(v) < 1e-9;
+    svg.appendChild(el("line", { x1: x, x2: x, y1: T, y2: H - B + 3, class: isZero ? "zero" : "gridline" }));
+    svg.appendChild(txt(el("text", { x: x, y: H - B + 16, "text-anchor": "middle", class: "axis" }),
+      (v > 0 ? "+" : v < 0 ? "−" : "") + Math.round(Math.abs(v)) + "%"));
+  }
+
+  rows.forEach((r, i) => {
+    const y = T + i * (rowH + gap);
+    svg.appendChild(txt(el("text", { x: L - 8, y: y + rowH / 2 + 4, "text-anchor": "end", class: "name" }), r.name));
+    const w = Math.max(2, Math.abs(xOf(r.v)));
+    const x = r.v >= 0 ? zero : zero - w;
+    svg.appendChild(el("rect", { x: x, y: y, width: w, height: rowH, rx: 4 },
+      "fill:var(" + (r.v >= 0 ? "--fill-up" : "--fill-down") + ")"));
+    const lx = r.v >= 0 ? x + w + 6 : x - 6;
+    svg.appendChild(txt(el("text", { x: lx, y: y + rowH / 2 + 4, class: "dlabel",
+      "text-anchor": r.v >= 0 ? "start" : "end" }), pctTxt(r.v)));
+    const hit = el("rect", { x: L, y: y - gap / 2, width: pw, height: rowH + gap, class: "hit" });
+    hit.addEventListener("mouseenter", () => showTip(tip, wrap,
+      '<div class="th">' + r.name + " · " + DATA.latest + "</div>" +
+      '<div class="tr"><span class="nm">인도량</span><b>' + nf.format(r.m) + "</b></div>" +
+      '<div class="tr"><span class="nm">전년 대비</span><b class="' + cls(r.v) + '">' + pctTxt(r.v) + "</b></div>",
+      zero + (r.v >= 0 ? w / 2 : -w / 2), y));
+    hit.addEventListener("mouseleave", () => tip.classList.remove("on"));
+    svg.appendChild(hit);
+  });
+}
+
+/* ---- BYD 내수 / 해외 누적 막대 ---- */
+function drawByd() {
+  const svg = $("figByd"), wrap = svg.parentElement, tip = $("tipByd");
+  const W = Math.max(280, wrap.clientWidth || 320);
+  const H = 116, L = 0, R = 0, T = 26, barH = 44;
+  const b = DATA.byd, total = b.china + b.overseas;
+  const segs = [
+    { k: "중국 내수", v: b.china, yoy: b.chinaYoY, c: "--s1" },
+    { k: "해외", v: b.overseas, yoy: b.overseasYoY, c: "--s2" }
+  ];
+  svg.setAttribute("width", W); svg.setAttribute("height", H);
+  svg.setAttribute("viewBox", "0 0 " + W + " " + H);
+  while (svg.firstChild) svg.removeChild(svg.firstChild);
+  svg.appendChild(txt(el("text", { x: 0, y: 14, class: "name" }),
+    DATA.latest + " 합계 " + nf.format(total) + "대"));
+
+  let x = 0;
+  segs.forEach((s) => {
+    const w = Math.max(2, (s.v / total) * W - 2);
+    svg.appendChild(el("rect", { x: x, y: T, width: w, height: barH, rx: 5 }, "fill:var(" + s.c + ")"));
+    if (w > 92) {
+      svg.appendChild(txt(el("text", { x: x + w / 2, y: T + 20, "text-anchor": "middle", class: "dlabel" },
+        "fill:#fff;font-weight:600"), nf.format(s.v)));
+      svg.appendChild(txt(el("text", { x: x + w / 2, y: T + 36, "text-anchor": "middle", class: "dlabel" },
+        "fill:#fff;opacity:.88"), Math.round((s.v / total) * 100) + "%"));
+    }
+    const hit = el("rect", { x: x, y: T, width: w, height: barH, class: "hit" });
+    const cx = x + w / 2;
+    hit.addEventListener("mouseenter", () => showTip(tip, wrap,
+      '<div class="th">BYD · ' + DATA.latest + "</div>" +
+      '<div class="tr"><span class="nm">' + s.k + '</span><b>' + nf.format(s.v) + "</b></div>" +
+      '<div class="tr"><span class="nm">전년 대비</span><b class="' + cls(s.yoy) + '">' + pctTxt(s.yoy) + "</b></div>" +
+      '<div class="tr"><span class="nm">비중</span><b>' + ((s.v / total) * 100).toFixed(1) + "%</b></div>", cx, T));
+    hit.addEventListener("mouseleave", () => tip.classList.remove("on"));
+    svg.appendChild(hit);
+    x += (s.v / total) * W;
+  });
+}
+
+function drawAll() {
+  const byYear = DATA.makers.slice().sort((a, b) => b.y2025 - a.y2025)
+    .map((mk) => ({ name: mk.ko, v: mk.y2025, mk: mk }));
+  drawBars("figYear", "tipYear", byYear, {
+    color: "--s1",
+    tick: (v) => (v === 0 ? "0" : (v / 10000) + "만"),
+    label: (v) => manDae(v),
+    tip: (r) => '<div class="tr"><span class="nm">2025 연간</span><b>' +
+      (r.mk.approx ? "약 " : "") + nf.format(r.v) + "</b></div>" +
+      '<div class="tr"><span class="nm">전년 대비</span><b class="' + cls(r.mk.y2025yoy) + '">' + pctTxt(r.mk.y2025yoy) + "</b></div>"
+  });
+
+  const byMonth = DATA.makers.slice().sort((a, b) => b.m - a.m);
+  drawBars("figMon", "tipMon", byMonth.map((mk) => ({ name: mk.ko, v: mk.m, mk: mk })), {
+    color: "--s1",
+    tick: (v) => (v === 0 ? "0" : (v / 10000) + "만"),
+    label: (v) => nf.format(v),
+    tip: (r) => '<div class="tr"><span class="nm">' + DATA.latest + '</span><b>' + nf.format(r.v) + "</b></div>" +
+      '<div class="tr"><span class="nm">전년 대비</span><b class="' + cls(r.mk.myoy) + '">' + pctTxt(r.mk.myoy) + "</b></div>"
+  });
+
+  drawDiverging("figYoy", "tipYoy", byMonth.map((mk) => ({ name: mk.ko, v: mk.myoy, m: mk.m })));
+  drawByd();
+}
+</script>
+
+<script>
+"use strict";
+
+/* ========================= 시장별 개장 상태 (서머타임 자동 반영) ========================= */
+const MARKETS = [
+  { name: "홍콩", sub: "HKEX · HKD", tz: "Asia/Hong_Kong",
+    sessions: [{ t: "오전", a: 9 * 60 + 30, b: 12 * 60 }, { t: "오후", a: 13 * 60, b: 16 * 60 }] },
+  { name: "본토 A주", sub: "상하이·선전 · CNY", tz: "Asia/Shanghai",
+    sessions: [{ t: "오전", a: 9 * 60 + 30, b: 11 * 60 + 30 }, { t: "오후", a: 13 * 60, b: 15 * 60 }] },
+  { name: "미국", sub: "NYSE·나스닥 · USD", tz: "America/New_York",
+    sessions: [{ t: "정규장", a: 9 * 60 + 30, b: 16 * 60 }] }
+];
+const KO_DAY = { Sun: "일", Mon: "월", Tue: "화", Wed: "수", Thu: "목", Fri: "금", Sat: "토" };
+
+function zoneInfo(date, tz) {
+  const p = {};
+  new Intl.DateTimeFormat("en-US", {
+    timeZone: tz, hour12: false, weekday: "short",
+    year: "numeric", month: "2-digit", day: "2-digit",
+    hour: "2-digit", minute: "2-digit", second: "2-digit"
+  }).formatToParts(date).forEach((x) => { p[x.type] = x.value; });
+  const h = p.hour === "24" ? 0 : +p.hour;
+  const asUTC = Date.UTC(+p.year, +p.month - 1, +p.day, h, +p.minute, +p.second);
+  return {
+    weekday: p.weekday,
+    minutes: h * 60 + (+p.minute),
+    hhmm: String(h).padStart(2, "0") + ":" + p.minute,
+    offset: (asUTC - Math.floor(date.getTime() / 1000) * 1000) / 60000
+  };
+}
+function shiftClock(min, diff) {
+  const t = min + diff, day = Math.floor(t / 1440), m = ((t % 1440) + 1440) % 1440;
+  return { s: String(Math.floor(m / 60)).padStart(2, "0") + ":" + String(m % 60).padStart(2, "0"), day: day };
+}
+
+function renderMarkets() {
+  const now = new Date();
+  const kst = zoneInfo(now, "Asia/Seoul");
+  $("mkts").innerHTML = MARKETS.map((mk) => {
+    const z = zoneInfo(now, mk.tz);
+    const diff = kst.offset - z.offset;                       // 한국시간 − 현지시간 (분)
+    const weekend = z.weekday === "Sat" || z.weekday === "Sun";
+    const open = !weekend && mk.sessions.some((s) => z.minutes >= s.a && z.minutes < s.b);
+    const ses = mk.sessions.map((s) => {
+      const a = shiftClock(s.a, diff), b = shiftClock(s.b, diff);
+      const roll = b.day > 0 ? ' <span style="opacity:.7">+1일</span>' : "";
+      return "<div><span>" + s.t + "</span> " + a.s + " ~ " + b.s + roll + "</div>";
+    }).join("");
+    return '<div class="mkt"><div class="top"><div class="nm">' + mk.name + "<small>" + mk.sub + "</small></div>" +
+      '<span class="pill' + (open ? " open" : "") + '"><span class="dot"></span>' +
+      (open ? "개장 중" : weekend ? "주말 휴장" : "장 마감") + "</span></div>" +
+      '<div class="lt">현지 <b>' + z.hhmm + "</b> (" + KO_DAY[z.weekday] + ") · 아래는 <b>한국시간</b></div>" +
+      '<div class="ses">' + ses + "</div></div>";
+  }).join("");
+}
+
+/* ---------------------------- init ---------------------------- */
+(function init() {
+  renderStocks();
+  drawAll();
+  renderMarkets();
+  setInterval(renderMarkets, 30000);
+
+  $("asOfLabel").textContent = DATA.asOf;
+
+  const byd = DATA.makers.find((m) => m.en === "BYD");
+  const rest = DATA.makers.filter((m) => m.en !== "BYD").reduce((a, m) => a + m.y2025, 0);
+  $("sumRest").textContent = manDae(rest);
+  $("sumRatio").textContent = Math.round((rest / byd.y2025) * 100) + "%";
+  $("bydShare").textContent = Math.round((DATA.byd.overseas / DATA.byd.total) * 100) + "%";
+
+  $("noteRows").innerHTML = "한 줄 메모 — " + DATA.makers
+    .map((m) => "<b>" + m.ko + "</b> " + m.note).join(" · ");
+
+  $("tblYear").innerHTML = "<table class='narrow'><thead><tr><th>회사</th><th>2025 연간</th><th>2025 YoY</th>" +
+    "<th>" + DATA.latest + "</th><th>8월 YoY</th></tr></thead><tbody>" +
+    DATA.makers.slice().sort((a, b) => b.y2025 - a.y2025).map((m) =>
+      "<tr><td class='tx'>" + m.ko + "</td><td>" + (m.approx ? "약 " : "") + nf.format(m.y2025) + "</td>" +
+      "<td class='" + cls(m.y2025yoy) + "'>" + pctTxt(m.y2025yoy) + "</td>" +
+      "<td>" + nf.format(m.m) + "</td><td class='" + cls(m.myoy) + "'>" + pctTxt(m.myoy) + "</td></tr>").join("") +
+    "</tbody></table><p class='hint mt8'>단위: 대. 샤오미 2025년은 회사가 정확한 수치를 공개하지 않아 근사치입니다.</p>";
+
+  document.querySelectorAll(".seg button").forEach((b) => {
+    b.addEventListener("click", () => {
+      const t = b.dataset.target, view = b.dataset.view;
+      b.parentElement.querySelectorAll("button").forEach((x) =>
+        x.setAttribute("aria-pressed", String(x.dataset.view === view)));
+      const cap = t[0].toUpperCase() + t.slice(1);
+      $("wrap" + cap).hidden = view === "table";
+      $("tbl" + cap).hidden = view !== "table";
+      if (view === "chart") drawAll();
+    });
+  });
+
+  let rt;
+  addEventListener("resize", () => { clearTimeout(rt); rt = setTimeout(drawAll, 140); });
+})();
+</script>
+</body>
+</html>
