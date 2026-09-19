@@ -1,0 +1,255 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>아마존 지표 · 매출 구성과 한국 공급망 | M7</title>
+<meta name="description" content="2025년 매출 7,169억 달러 중 AWS는 18%뿐인데 영업이익의 57%를 냅니다. 매출과 이익으로 각각 그려 순서가 뒤집히는 걸 보여줍니다.">
+<link rel="canonical" href="https://richroro.github.io/m7/amzn/">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="ko_KR">
+<meta property="og:site_name" content="Cadence">
+<meta property="og:url" content="https://richroro.github.io/m7/amzn/">
+<meta property="og:title" content="아마존 지표 | M7">
+<meta property="og:description" content="2025년 매출 7,169억 달러 중 AWS는 18%뿐인데 영업이익의 57%를 냅니다. 매출과 이익으로 각각 그려 순서가 뒤집히는 걸 보여줍니다.">
+<meta name="twitter:card" content="summary">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='#c98500'/><text x='50' y='66' font-size='42' text-anchor='middle' fill='white' font-family='monospace' font-weight='bold'>AM</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans+KR:wght@300;400;500;600;700&display=swap">
+<link rel="stylesheet" href="/m7/assets/m7.css">
+</head>
+<body>
+<noscript><div style="padding:24px;font-family:sans-serif">
+  <h1>아마존 지표</h1><p>2025년 매출 7,169억 달러 중 AWS는 18%뿐인데 영업이익의 57%를 냅니다. 매출과 이익으로 각각 그려 순서가 뒤집히는 걸 보여줍니다.</p>
+  <p>이 페이지는 차트를 그리기 위해 자바스크립트를 씁니다. <a href="/m7/">M7 전체 비교</a></p>
+</div></noscript>
+<script>
+/* =========================================================================
+   아마존 (AMZN) — 이 블록만 고치면 페이지 전체가 따라 바뀝니다.
+   검산: 426.3+161.9+128.7 = 716.9 (정확 일치) / 29.6+4.7+45.6 = 79.9 ≈ 80.0
+   ========================================================================= */
+const CO = {
+  "slug": "amzn",
+  "tk": "AMZN",
+  "ko": "아마존",
+  "en": "Amazon",
+  "ab": "AM",
+  "color": "#c98500",
+  "asOf": "2026-09-19",
+  "fy": {
+    "label": "2025 회계연도 · 12월 종료",
+    "note": null
+  },
+  "headline": "매출의 18%가 이익의 57%를 만든다",
+  "lead": "매출 7,169억 달러 중 AWS는 1,287억으로 <b>18%</b>입니다. 그런데 영업이익 799억 중 456억, 즉 <b>57%</b>가 AWS에서 나옵니다. 소매가 매출을, 클라우드가 이익을 담당하는 회사입니다.",
+  "stats": [
+    {
+      "k": "2025 매출",
+      "v": "716.9",
+      "u": "B$",
+      "s": "+12% YoY",
+      "stone": "up"
+    },
+    {
+      "k": "영업이익",
+      "v": "80.0",
+      "u": "B$",
+      "s": "전년 68.6B$",
+      "stone": "up"
+    },
+    {
+      "k": "AWS 매출",
+      "v": "128.7",
+      "u": "B$",
+      "s": "+20% YoY",
+      "stone": "up"
+    },
+    {
+      "k": "AWS 영업이익",
+      "v": "45.6",
+      "u": "B$",
+      "s": "전체 이익의 57%"
+    }
+  ],
+  "mix": {
+    "title": "매출은 소매가 만든다",
+    "chartTitle": "2025년 부문별 매출",
+    "period": "2025",
+    "total": 716.9,
+    "rows": [
+      {
+        "k": "북미",
+        "v": 426.3,
+        "yoy": 10,
+        "color": "--s1"
+      },
+      {
+        "k": "인터내셔널",
+        "v": 161.9,
+        "yoy": 13,
+        "color": "--s2"
+      },
+      {
+        "k": "AWS",
+        "v": 128.7,
+        "yoy": 20,
+        "color": "--s3"
+      }
+    ],
+    "lead": "매출만 보면 평범한 소매 회사로 보입니다. 북미와 인터내셔널을 합치면 <b>82%</b>입니다. AWS는 세 부문 중 가장 작습니다.",
+    "note": "세 부문 합계가 <b>716.9로 발표 총매출과 정확히 일치</b>합니다. 아마존은 지역·사업을 겹치지 않게 나눠 공시해서 검산이 깔끔한 편입니다.",
+    "tnote": "인터내셔널 성장률이 북미보다 높습니다(13% vs 10%)."
+  },
+  "signature": {
+    "nav": "AWS",
+    "eyebrow": "AWS",
+    "title": "이익으로 나눠 보면 완전히 다른 회사",
+    "lead": "같은 세 부문을 영업이익으로 다시 그리면 순서가 뒤집힙니다. 가장 작은 부문이 가장 큰 이익을 냅니다.",
+    "split": {
+      "title": "2025년 부문별 영업이익 799억 달러",
+      "sub": "매출 순서와 비교해 보세요 — 순서가 반대입니다",
+      "parts": [
+        {
+          "k": "AWS",
+          "v": 45.6,
+          "color": "--s3",
+          "label": "$45.6B"
+        },
+        {
+          "k": "북미",
+          "v": 29.6,
+          "color": "--s1",
+          "label": "$29.6B"
+        },
+        {
+          "k": "인터내셔널",
+          "v": 4.7,
+          "color": "--s2",
+          "label": "$4.7B"
+        }
+      ],
+      "note": "소매는 <b>매출 588억 달러당 영업이익 34억</b> 수준(마진 5.8%)이고, AWS는 <b>매출 1,287억에 영업이익 456억</b>(마진 35.4%)입니다. 아마존 주가가 소매 지표보다 AWS 성장률에 반응하는 이유입니다."
+    },
+    "stats": [
+      {
+        "k": "AWS 매출 비중",
+        "v": "18.0",
+        "u": "%",
+        "s": "세 부문 중 최소"
+      },
+      {
+        "k": "AWS 이익 비중",
+        "v": "57.1",
+        "u": "%",
+        "s": "세 부문 중 최대"
+      },
+      {
+        "k": "AWS 영업이익률",
+        "v": "35.4",
+        "u": "%",
+        "s": "소매는 5.8%"
+      }
+    ]
+  },
+  "korea": {
+    "title": "설비투자가 한국 메모리로 이어지는 경로",
+    "lead": "AWS의 AI 인프라 증설은 서버 수요로, 서버 수요는 HBM·D램 수요로 이어집니다. 아마존은 자체 칩(트레이니엄)도 쓰지만 메모리는 외부에서 삽니다.",
+    "lanes": [
+      {
+        "t": "AI 데이터센터 메모리",
+        "d": "설비투자가 곧 메모리 수요로 이어지는 구간",
+        "dest": "AI 서버",
+        "nodes": [
+          {
+            "n": "SK하이닉스",
+            "c": "KR",
+            "kr": true,
+            "d": "HBM 1위. 2026년 매출 기준 점유율 50% 유지 전망, 차세대 HBM4에서는 70%까지 본다는 전망(UBS)."
+          },
+          {
+            "n": "삼성전자",
+            "c": "KR",
+            "kr": true,
+            "d": "HBM4 세계 최초 양산 출하. 엔비디아가 멀티 벤더로 돌아서면서 반격 구간에 들어섰습니다."
+          },
+          {
+            "n": "마이크론",
+            "c": "US",
+            "kr": false,
+            "d": "세 번째 공급사."
+          }
+        ]
+      }
+    ]
+  },
+  "notes": [
+    {
+      "h": "숫자를 볼 때",
+      "items": [
+        "<b style=\"color:var(--ink)\">부문이 지역과 사업이 섞여 있습니다</b> — 북미·인터내셔널은 지역, AWS는 사업 단위입니다.",
+        "<b style=\"color:var(--ink)\">광고 매출은 부문이 아닙니다</b> — 북미·인터내셔널 안에 들어가 별도 영업이익이 보이지 않습니다.",
+        "<b style=\"color:var(--ink)\">잉여현금흐름을 같이 봐야 합니다</b> — 설비투자가 커서 영업이익과 현금흐름의 간격이 벌어질 수 있습니다."
+      ]
+    },
+    {
+      "h": "위험 쪽",
+      "items": [
+        "<b style=\"color:var(--ink)\">이익이 한 부문에 몰려 있습니다</b> — AWS 성장률이 꺾이면 전체 이익이 바로 흔들립니다.",
+        "<b style=\"color:var(--ink)\">클라우드 가격 경쟁</b> — 애저·구글 클라우드와 정면으로 겹칩니다.",
+        "<b style=\"color:var(--ink)\">소매 마진은 얇습니다</b> — 5.8%라 물류비·인건비 변화에 민감합니다."
+      ]
+    }
+  ],
+  "sources": [
+    {
+      "i": "매출·영업이익·부문별 실적",
+      "p": "2025",
+      "s": "Amazon 실적 발표 · 10-K"
+    },
+    {
+      "i": "HBM 점유율·전망",
+      "p": "2026",
+      "s": "UBS 전망 · 업계 보도"
+    }
+  ],
+  "checksum": "검산 — 부문 매출 426.3+161.9+128.7 = 716.9로 발표 총매출과 정확히 일치합니다. 부문 영업이익 29.6+4.7+45.6 = 79.9로 발표 영업이익 80.0과 반올림 차이 안에 있습니다.",
+  "recent": {
+    "title": "2026년 2분기",
+    "period": "2026년 6월 종료",
+    "stats": [
+      {
+        "k": "분기 매출",
+        "v": "200.6",
+        "u": "B$",
+        "s": "+20% YoY",
+        "stone": "up"
+      },
+      {
+        "k": "영업이익",
+        "v": "27.5",
+        "u": "B$",
+        "s": "+43% YoY",
+        "stone": "up"
+      },
+      {
+        "k": "AWS 매출",
+        "v": "42.2",
+        "u": "B$",
+        "s": "+37% YoY",
+        "stone": "up"
+      },
+      {
+        "k": "AWS 영업이익 비중",
+        "v": "60.4",
+        "u": "%",
+        "s": "연간 57.1%에서 상승"
+      }
+    ],
+    "note": "쏠림이 더 심해졌습니다. AWS 영업이익 166억 달러는 분기 전체 영업이익 275억의 <b>60.4%</b>로, 연간 기준 57.1%보다 올라갔습니다. AWS 영업이익률도 <b>39.4%</b>입니다. 분기 순이익에는 앤스로픽 투자 관련 비영업 이익 534억 달러가 들어 있어 영업 실적과 구분해야 합니다."
+  }
+};
+</script>
+<script src="/m7/assets/m7.js"></script>
+</body>
+</html>

@@ -1,0 +1,890 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>테슬라 지표 · 실적·마진·공급망</title>
+<meta name="description" content="테슬라 분기 매출과 영업이익률, 사업 부문 구성, 그리고 배터리 셀부터 AI 칩까지 공급망을 한 페이지에. 삼성 파운드리·LG에너지솔루션·엘앤에프 등 한국 기업이 어디에 들어가 있는지 표시했습니다.">
+<link rel="canonical" href="https://richroro.github.io/tesla-metrics/">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="ko_KR">
+<meta property="og:site_name" content="Cadence">
+<meta property="og:url" content="https://richroro.github.io/tesla-metrics/">
+<meta property="og:title" content="테슬라 지표 · 실적·마진·공급망">
+<meta property="og:description" content="매출은 사상 최대, 영업이익률은 1.4%. 숫자와 공급망을 한 페이지에.">
+<meta name="twitter:card" content="summary">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%23E82127'/><path d='M20 72h12V44H20zm24 0h12V28H44zm24 0h12V54H68z' fill='white'/></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans+KR:wght@300;400;500;600;700&display=swap">
+
+<style>
+:root{
+  color-scheme:light;
+  --paper:#F5F6F8; --surface:#FFFFFF; --surface-2:#EEF0F4; --surface-3:#E6EAF0;
+  --ink:#14161C; --ink-2:#4A5260; --ink-3:#6E7683;
+  --line:#E3E7ED; --line-soft:#EDF0F4; --grid:#E8EBF0;
+  --brand:#E82127; --brand-deep:#C81E3A; --brand-wash:#FDECEC;
+  --up:#C81E3A; --down:#1257B5; --up-wash:#FCEBEE; --down-wash:#E9F1FD;
+  --fill-up:#D92B4A; --fill-down:#1B6BD0;          /* 발산형 차트 채움 (검증됨) */
+  --s1:#2a78d6; --s2:#eb6834; --s3:#1baf7a;
+  --shadow:0 1px 2px rgba(20,22,28,.05), 0 10px 28px -16px rgba(20,22,28,.22);
+  --radius:14px;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    color-scheme:dark;
+    --paper:#0F1218; --surface:#161A21; --surface-2:#1D2229; --surface-3:#242A33;
+    --ink:#E9EDF3; --ink-2:#AEB7C4; --ink-3:#8B95A3;
+    --line:#252B34; --line-soft:#1E242C; --grid:#232932;
+    --brand:#FF4C52; --brand-deep:#FF6B7A; --brand-wash:#2A1A1E;
+    --up:#FF6B7A; --down:#77B0F7; --up-wash:#2A1A1E; --down-wash:#141F2E;
+    --fill-up:#E34948; --fill-down:#3987e5;
+    --s1:#3987e5; --s2:#d95926; --s3:#199e70;
+    --shadow:0 1px 2px rgba(0,0,0,.4), 0 10px 28px -16px rgba(0,0,0,.7);
+  }
+}
+:root[data-theme="dark"]{
+  color-scheme:dark;
+  --paper:#0F1218; --surface:#161A21; --surface-2:#1D2229; --surface-3:#242A33;
+  --ink:#E9EDF3; --ink-2:#AEB7C4; --ink-3:#8B95A3;
+  --line:#252B34; --line-soft:#1E242C; --grid:#232932;
+  --brand:#FF4C52; --brand-deep:#FF6B7A; --brand-wash:#2A1A1E;
+  --up:#FF6B7A; --down:#77B0F7; --up-wash:#2A1A1E; --down-wash:#141F2E;
+  --fill-up:#E34948; --fill-down:#3987e5;
+  --s1:#3987e5; --s2:#d95926; --s3:#199e70;
+  --shadow:0 1px 2px rgba(0,0,0,.4), 0 10px 28px -16px rgba(0,0,0,.7);
+}
+
+*{box-sizing:border-box;margin:0;padding:0}
+[hidden]{display:none !important}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+body{font-family:"IBM Plex Sans KR","Pretendard","Apple SD Gothic Neo",system-ui,sans-serif;
+  background:var(--paper);color:var(--ink);line-height:1.6;letter-spacing:-.2px;-webkit-font-smoothing:antialiased}
+a{color:inherit;text-decoration:none}
+.num{font-family:"IBM Plex Mono",ui-monospace,Menlo,monospace;font-variant-numeric:tabular-nums;letter-spacing:-.4px}
+.wrap{max-width:1040px;margin:0 auto;padding:0 16px}
+@media(min-width:720px){.wrap{padding:0 24px}}
+
+header{position:sticky;top:0;z-index:50;background:color-mix(in srgb,var(--paper) 88%,transparent);
+  backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
+.hbar{display:flex;align-items:center;justify-content:space-between;gap:12px;height:56px}
+.brand{display:flex;align-items:center;gap:9px;min-width:0}
+.brand .mk{width:28px;height:28px;border-radius:8px;background:var(--brand);color:#fff;flex:none;
+  display:grid;place-items:center;font-weight:700;font-size:14px;font-family:"IBM Plex Mono",monospace}
+.brand b{font-size:15.5px;font-weight:600;letter-spacing:-.4px;white-space:nowrap}
+.brand small{display:block;font-size:11px;color:var(--ink-3);font-weight:400;letter-spacing:0;line-height:1.2}
+.hactions{display:flex;align-items:center;gap:6px;flex:none}
+.ghost{background:var(--surface);border:1px solid var(--line);color:var(--ink-2);border-radius:9px;
+  height:34px;padding:0 11px;font:inherit;font-size:13px;font-weight:500;cursor:pointer;
+  display:inline-flex;align-items:center;gap:6px;transition:.15s}
+.ghost:hover{background:var(--surface-2);color:var(--ink)}
+:focus-visible{outline:2px solid var(--s1);outline-offset:2px}
+
+.snav{position:sticky;top:56px;z-index:40;background:color-mix(in srgb,var(--paper) 88%,transparent);
+  backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
+.snav-in{display:flex;gap:2px;overflow-x:auto;scrollbar-width:none;height:46px;align-items:center}
+.snav-in::-webkit-scrollbar{display:none}
+.snav a{font-size:13.5px;font-weight:500;color:var(--ink-3);padding:7px 11px;border-radius:8px;white-space:nowrap}
+.snav a:hover{color:var(--ink);background:var(--surface-2)}
+
+section{padding:34px 0;scroll-margin-top:112px}
+@media(min-width:720px){section{padding:44px 0}}
+.eyebrow{font-size:12px;font-weight:600;color:var(--brand-deep);letter-spacing:.4px;text-transform:uppercase;
+  font-family:"IBM Plex Mono",monospace}
+h2.title{font-size:clamp(21px,3.4vw,27px);font-weight:600;letter-spacing:-.8px;margin:7px 0 6px;line-height:1.3}
+p.lead{font-size:14.5px;color:var(--ink-2);font-weight:300;max-width:64ch;line-height:1.7}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow)}
+.pad{padding:18px}
+@media(min-width:720px){.pad{padding:22px}}
+.card h3{font-size:15px;font-weight:600;letter-spacing:-.3px}
+.hint{font-size:12.5px;color:var(--ink-3);font-weight:300;line-height:1.6}
+.mt8{margin-top:8px}.mt12{margin-top:12px}.mt16{margin-top:16px}.mt24{margin-top:24px}
+.rowsplit{display:flex;flex-wrap:wrap;gap:10px;align-items:baseline;justify-content:space-between}
+.up{color:var(--up)}.down{color:var(--down)}
+/* .st .s 가 (0,2,0) 이라 단독 .up/.down 을 이깁니다 — 보조 문구에도 색이 먹도록 명시 */
+.st .s.up,.st .v.up{color:var(--up)}
+.st .s.down,.st .v.down{color:var(--down)}
+.grid2{display:grid;grid-template-columns:1fr;gap:14px}
+@media(min-width:860px){.grid2{grid-template-columns:1fr 1fr}}
+
+.stats{display:grid;grid-template-columns:repeat(2,1fr);gap:1px;background:var(--line-soft);
+  border:1px solid var(--line);border-radius:12px;overflow:hidden}
+@media(min-width:720px){.stats.c4{grid-template-columns:repeat(4,1fr)}.stats.c3{grid-template-columns:repeat(3,1fr)}}
+.st{background:var(--surface);padding:14px 15px}
+.st .k{font-size:11.5px;color:var(--ink-3);font-weight:400}
+.st .v{font-size:20px;font-weight:600;letter-spacing:-.7px;margin-top:3px;white-space:nowrap;
+  font-family:"IBM Plex Mono",monospace;font-variant-numeric:tabular-nums;line-height:1.25}
+.st .v .u{font-size:13px;font-weight:500}
+.st .s{font-size:12px;color:var(--ink-3);font-weight:300;margin-top:2px;
+  font-family:"IBM Plex Mono",monospace;font-variant-numeric:tabular-nums}
+
+.note{display:flex;gap:9px;background:var(--surface-2);border-radius:11px;padding:12px 13px;
+  font-size:12.5px;color:var(--ink-2);font-weight:300;line-height:1.65}
+.note .ic{flex:none;font-size:13px}
+.note b{font-weight:500;color:var(--ink)}
+.warn{background:var(--brand-wash)}
+</style>
+<style>
+/* ---------- tables ---------- */
+.tscroll{overflow-x:auto;-webkit-overflow-scrolling:touch}
+table{width:100%;border-collapse:collapse;font-size:13.5px;min-width:660px}
+table.narrow{min-width:0}
+th,td{padding:10px;text-align:right;border-bottom:1px solid var(--line-soft);white-space:nowrap}
+th:first-child,td:first-child{text-align:left}
+thead th{font-size:11.5px;font-weight:500;color:var(--ink-3);border-bottom:1px solid var(--line);background:var(--surface)}
+tbody td{font-family:"IBM Plex Mono",monospace;font-variant-numeric:tabular-nums}
+tbody td.tx{font-family:inherit}
+tbody tr:last-child td{border-bottom:none}
+tbody tr:hover{background:var(--surface-2)}
+th.sortable{cursor:pointer;user-select:none}
+th.sortable:hover{color:var(--ink)}
+th.sortable::after{content:"↕";opacity:.32;margin-left:4px;font-size:10px}
+th.sortable[aria-sort="descending"]::after{content:"↓";opacity:1;color:var(--brand-deep)}
+th.sortable[aria-sort="ascending"]::after{content:"↑";opacity:1;color:var(--brand-deep)}
+.co{display:flex;align-items:center;gap:9px}
+.co .av{width:26px;height:26px;border-radius:7px;flex:none;display:grid;place-items:center;
+  font-size:11px;font-weight:600;background:var(--surface-2);color:var(--ink-2);font-family:"IBM Plex Mono",monospace}
+.co b{font-weight:600;font-size:13.5px;display:block;line-height:1.3}
+.co small{font-size:11px;color:var(--ink-3);font-weight:300}
+.tk{display:inline-flex;align-items:center;gap:4px;font-family:"IBM Plex Mono",monospace;font-size:11.5px;
+  font-weight:500;border:1px solid var(--line);border-radius:6px;padding:2px 6px;color:var(--ink-2);background:var(--surface)}
+.tk i{font-style:normal;font-size:9.5px;color:var(--ink-3);letter-spacing:.3px}
+.tk.dead{opacity:.55;text-decoration:line-through}
+.tkwrap{display:flex;gap:4px;flex-wrap:wrap;justify-content:flex-end}
+
+/* ---------- charts ---------- */
+.chart-head{display:flex;flex-wrap:wrap;gap:10px;align-items:flex-start;justify-content:space-between}
+.chart-head .ct{font-size:15px;font-weight:600;letter-spacing:-.3px}
+.chart-head .cs{font-size:12.5px;color:var(--ink-3);font-weight:300;margin-top:2px;max-width:56ch}
+.seg{display:inline-flex;background:var(--surface-2);border:1px solid var(--line);border-radius:9px;padding:2px;flex:none}
+.seg button{background:none;border:none;color:var(--ink-3);font-size:12px;font-weight:500;padding:5px 10px;
+  border-radius:7px;cursor:pointer;transition:.15s}
+.seg button[aria-pressed="true"]{background:var(--surface);color:var(--ink);box-shadow:0 1px 2px rgba(0,0,0,.08)}
+.legend{display:flex;flex-wrap:wrap;gap:6px 15px;margin-top:12px}
+.lg{display:flex;align-items:center;gap:6px;font-size:12.5px;color:var(--ink-2);font-weight:400}
+.lg .sw{width:11px;height:11px;border-radius:3px;flex:none}
+.figwrap{position:relative;margin-top:14px}
+.fig{display:block;width:100%;height:auto;overflow:visible}
+.fig text{font-family:"IBM Plex Mono",monospace;font-variant-numeric:tabular-nums}
+.fig .axis{font-size:10.5px;fill:var(--ink-3)}
+.fig .name{font-size:11.5px;fill:var(--ink-2);font-family:"IBM Plex Sans KR",sans-serif}
+.fig .gridline{stroke:var(--grid);stroke-width:1}
+.fig .baseline{stroke:var(--line);stroke-width:1}
+.fig .zero{stroke:var(--ink-3);stroke-width:1}
+.fig .dlabel{font-size:11px;fill:var(--ink-2);font-weight:500}
+.fig .hit{fill:transparent;cursor:pointer}
+.tip{position:absolute;pointer-events:none;opacity:0;transform:translate(-50%,-100%);
+  background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:9px 11px;
+  box-shadow:var(--shadow);font-size:12.5px;min-width:160px;transition:opacity .1s;z-index:5}
+.tip.on{opacity:1}
+.tip .th{font-size:11.5px;color:var(--ink-3);margin-bottom:5px}
+.tip .tr{display:flex;gap:10px;justify-content:space-between;margin-top:3px}
+.tip .tr .nm{color:var(--ink-2);font-weight:300}
+.tip .tr b{font-family:"IBM Plex Mono",monospace;font-variant-numeric:tabular-nums;font-weight:500}
+
+/* ---------- market hours ---------- */
+.mkts{display:grid;grid-template-columns:1fr;gap:1px;background:var(--line-soft);
+  border:1px solid var(--line);border-radius:12px;overflow:hidden}
+@media(min-width:720px){.mkts{grid-template-columns:repeat(3,1fr)}}
+.mkt{background:var(--surface);padding:15px 16px}
+.mkt .top{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.mkt .nm{font-size:13.5px;font-weight:600}
+.mkt .nm small{display:block;font-size:11px;color:var(--ink-3);font-weight:300;letter-spacing:0}
+.pill{display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:600;border-radius:999px;
+  padding:3px 9px;border:1px solid var(--line);color:var(--ink-3);background:var(--surface-2);flex:none}
+.pill .dot{width:6px;height:6px;border-radius:50%;background:var(--ink-3);flex:none}
+.pill.open{color:var(--s3);border-color:color-mix(in srgb,var(--s3) 45%,var(--line));background:transparent}
+.pill.open .dot{background:var(--s3);animation:pulse 1.8s infinite}
+@keyframes pulse{50%{opacity:.35}}
+.mkt .lt{margin-top:10px;font-size:12px;color:var(--ink-3);font-weight:300}
+.mkt .lt b{font-family:"IBM Plex Mono",monospace;font-variant-numeric:tabular-nums;color:var(--ink);font-weight:500}
+.mkt .ses{margin-top:8px;display:flex;flex-direction:column;gap:3px}
+.mkt .ses div{font-size:12px;font-family:"IBM Plex Mono",monospace;font-variant-numeric:tabular-nums;color:var(--ink-2)}
+.mkt .ses span{color:var(--ink-3);font-family:"IBM Plex Sans KR",sans-serif;font-weight:300;font-size:11.5px}
+
+footer{border-top:1px solid var(--line);background:var(--surface);margin-top:20px;padding:28px 0 40px}
+footer .fgrid{display:grid;gap:18px;grid-template-columns:1fr}
+@media(min-width:720px){footer .fgrid{grid-template-columns:1.3fr 1fr}}
+footer h4{font-size:12.5px;font-weight:600;color:var(--ink-2);margin-bottom:7px}
+footer p,footer li{font-size:12.5px;color:var(--ink-3);font-weight:300;line-height:1.75}
+footer ul{list-style:none}
+footer a{color:var(--ink-2);border-bottom:1px solid var(--line)}
+footer a:hover{color:var(--brand-deep);border-color:var(--brand-deep)}
+.disc{margin-top:20px;padding-top:16px;border-top:1px solid var(--line-soft);font-size:12px;color:var(--ink-3);
+  font-weight:300;line-height:1.7}
+@media(prefers-reduced-motion:reduce){*{animation:none !important;transition:none !important}html{scroll-behavior:auto}}
+</style>
+<style>
+/* ---------- hero compare ---------- */
+.vs{display:grid;grid-template-columns:1fr auto 1fr;gap:12px;align-items:center;margin-top:14px}
+@media(max-width:620px){.vs{grid-template-columns:1fr;gap:8px}.vs .mid{transform:rotate(90deg);justify-self:center}}
+.vsb{background:var(--surface-2);border-radius:12px;padding:15px 16px}
+.vsb .q{font-size:12px;color:var(--ink-3);font-weight:400}
+.vsb .r{font-size:22px;font-weight:600;letter-spacing:-.6px;margin-top:4px;
+  font-family:"IBM Plex Mono",monospace;font-variant-numeric:tabular-nums}
+.vsb .o{font-size:13px;margin-top:6px;font-family:"IBM Plex Mono",monospace;color:var(--ink-2)}
+.vsb .o b{font-weight:600}
+.vs .mid{font-size:20px;color:var(--ink-3);padding:0 4px}
+
+/* ---------- supply chain diagram ---------- */
+.lane{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:16px;box-shadow:var(--shadow)}
+.lane+.lane{margin-top:12px}
+.lane-hd{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;margin-bottom:12px}
+.lane-hd b{font-size:14.5px;font-weight:600}
+.lane-hd span{font-size:12.5px;color:var(--ink-3);font-weight:300}
+.flow{display:grid;grid-template-columns:1fr auto auto;gap:12px;align-items:center}
+@media(max-width:760px){.flow{grid-template-columns:1fr;gap:10px}.flow .arrow{transform:rotate(90deg);justify-self:center}}
+.nodes{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:8px;min-width:0}
+.node{background:var(--surface-2);border:1px solid transparent;border-radius:11px;padding:11px 12px}
+.node.kr{background:var(--brand-wash);border-color:color-mix(in srgb,var(--brand) 32%,transparent)}
+.node .nh{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.node .nn{font-size:13px;font-weight:600;letter-spacing:-.2px}
+.node .cc{font-size:10px;font-weight:600;border-radius:5px;padding:1px 5px;background:var(--surface-3);
+  color:var(--ink-3);font-family:"IBM Plex Mono",monospace;flex:none}
+.node.kr .cc{background:var(--brand);color:#fff}
+.node .nd{font-size:11.5px;color:var(--ink-2);font-weight:300;line-height:1.55;margin-top:5px}
+.arrow{font-size:17px;color:var(--ink-3);flex:none;text-align:center}
+/* 목적지 칩: --ink/--paper 라 라이트·다크에서 알아서 반전됩니다 */
+.dest{background:var(--ink);color:var(--paper);border-radius:11px;padding:12px 14px;text-align:center;flex:none;min-width:104px}
+.dest b{font-size:13px;font-weight:600;display:block}
+.dest small{font-size:11px;opacity:.72;font-weight:300}
+.krlegend{display:flex;align-items:center;gap:7px;font-size:12.5px;color:var(--ink-2);font-weight:300}
+.krlegend .sw{width:12px;height:12px;border-radius:4px;background:var(--brand-wash);
+  border:1px solid color-mix(in srgb,var(--brand) 32%,transparent);flex:none}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap hbar">
+    <a class="brand" href="./">
+      <span class="mk">T</span>
+      <span><b>테슬라 지표</b><small>실적 · 마진 · 공급망</small></span>
+    </a>
+    <div class="hactions">
+      <button class="ghost" id="themeBtn" type="button" aria-label="화면 테마 전환"><span id="themeIco">◐</span><span id="themeTxt">테마</span></button>
+    </div>
+  </div>
+</header>
+
+<nav class="snav" aria-label="섹션 바로가기">
+  <div class="wrap snav-in">
+    <a href="#latest">최근 분기</a>
+    <a href="#trend">매출·마진</a>
+    <a href="#segments">사업 부문</a>
+    <a href="#supply">공급망</a>
+    <a href="#auto">자율주행</a>
+    <a href="#sources">출처</a>
+  </div>
+</nav>
+
+<main>
+
+<!-- ============ LATEST ============ -->
+<section id="latest" style="padding-top:26px">
+  <div class="wrap">
+    <p class="eyebrow">01 · Latest quarter</p>
+    <h2 class="title">매출은 사상 최대, 이익률은 1.4%</h2>
+    <p class="lead">2026년 2분기 매출 <b>282억 달러</b>는 테슬라 역사상 가장 큰 분기입니다.
+      그런데 같은 분기 영업이익률은 <b>1.4%</b>로 떨어졌습니다. 차를 더 많이 팔았는데 남는 게 줄었다는 뜻입니다.</p>
+
+    <div class="stats c4 mt16" role="group" aria-label="2026년 2분기 핵심 지표">
+      <div class="st"><div class="k">매출</div><div class="v">28.24<span class="u">B$</span></div><div class="s up">+26% YoY · 최대</div></div>
+      <div class="st"><div class="k">영업이익률</div><div class="v">1.4<span class="u">%</span></div><div class="s down">영업이익 3.98억$ · −57%</div></div>
+      <div class="st"><div class="k">자동차 총마진</div><div class="v">16.9<span class="u">%</span></div><div class="s">탄소배출권 빼면 16.3%</div></div>
+      <div class="st"><div class="k">잉여현금흐름</div><div class="v down">−1.09<span class="u">B$</span></div><div class="s">1분기 +1.44B$에서 적자 전환</div></div>
+    </div>
+
+    <div class="card pad mt16">
+      <h3>같은 매출, 4분의 1 토막 난 이익</h3>
+      <p class="hint mt8">1년 전 분기와 매출이 거의 똑같습니다. 영업이익만 달라졌습니다.</p>
+      <div class="vs">
+        <div class="vsb">
+          <div class="q">2025년 3분기</div>
+          <div class="r">$28.10B</div>
+          <div class="o">영업이익률 5.8% → 영업이익 <b>약 $1.63B</b></div>
+        </div>
+        <div class="mid" aria-hidden="true">→</div>
+        <div class="vsb">
+          <div class="q">2026년 2분기</div>
+          <div class="r">$28.24B</div>
+          <div class="o">영업이익률 1.4% → 영업이익 <b class="down">$0.40B</b></div>
+        </div>
+      </div>
+      <div class="note mt16"><span class="ic">🧮</span><div>매출은 <b>+0.5%</b> 늘었는데 영업이익은 <b>−76%</b>입니다.
+        판관비·연구개발비가 1년 새 <b>47% 늘어 43.5억 달러</b>가 된 게 가장 큰 이유입니다 — AI 인프라와 자율주행에 쓰는 돈입니다.
+        지금 테슬라 손익계산서는 <b>자동차 회사가 AI 회사 비용을 대고 있는 구조</b>입니다.</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ TREND ============ -->
+<section id="trend">
+  <div class="wrap">
+    <p class="eyebrow">02 · Revenue & margin</p>
+    <h2 class="title">매출과 마진은 따로 움직인다</h2>
+    <p class="lead">두 지표를 한 그래프에 겹치면 착시가 생깁니다. 축이 다른 값이라 따로 그렸습니다 — 순서가 같으니 위아래로 비교해서 보세요.</p>
+
+    <div class="card pad mt16">
+      <div class="chart-head"><div>
+        <div class="ct">분기별 매출</div><div class="cs">단위: 10억 달러</div>
+      </div>
+      <div class="seg" role="group" aria-label="보기 전환">
+        <button type="button" data-view="chart" data-target="rev" aria-pressed="true">차트</button>
+        <button type="button" data-view="table" data-target="rev" aria-pressed="false">표</button>
+      </div></div>
+      <div class="figwrap" id="wrapRev">
+        <svg class="fig" id="figRev" role="img" aria-label="테슬라 분기별 매출 막대그래프"></svg>
+        <div class="tip" id="tipRev"></div>
+      </div>
+      <div class="tscroll mt12" id="tblRev" hidden></div>
+    </div>
+
+    <div class="card pad mt16">
+      <div class="chart-head"><div>
+        <div class="ct">분기별 영업이익률</div><div class="cs">같은 분기 순서 · 단위: %</div>
+      </div></div>
+      <div class="figwrap" id="wrapOm">
+        <svg class="fig" id="figOm" role="img" aria-label="테슬라 분기별 영업이익률 막대그래프"></svg>
+        <div class="tip" id="tipOm"></div>
+      </div>
+      <div class="note mt12"><span class="ic">📉</span><div>2025년 내내 올라오던 마진이 2026년 들어 다시 꺾였습니다.
+        매출 그래프와 모양이 전혀 다릅니다 — <b>매출이 늘어도 마진은 따라오지 않습니다.</b></div></div>
+    </div>
+
+    <div class="card pad mt16">
+      <div class="chart-head"><div>
+        <div class="ct">연간 영업이익률</div><div class="cs">2022년이 정점이었습니다</div>
+      </div></div>
+      <div class="figwrap" id="wrapYr">
+        <svg class="fig" id="figYr" role="img" aria-label="테슬라 연간 영업이익률 막대그래프"></svg>
+        <div class="tip" id="tipYr"></div>
+      </div>
+      <div class="note mt12"><span class="ic">📅</span><div>16.8%(2022) → 9.2% → 7.2% → <b>4.6%</b>(2025).
+        3년 연속 내려왔습니다. 2025년 순이익은 <b>37.9억 달러로 46% 줄었고</b>, 주당순이익은 $2.04에서 <b>$1.08</b>이 됐습니다.</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ MIX ============ -->
+<section id="segments">
+  <div class="wrap">
+    <p class="eyebrow">03 · Revenue mix</p>
+    <h2 class="title">매출 구성이 조용히 바뀌고 있다</h2>
+    <p class="lead">전체 매출만 보면 3년째 90억 달러대에서 제자리입니다. 속을 열면 다른 이야기가 나옵니다 —
+      자동차 비중이 <b>85% → 73%</b>로 내려오는 동안 에너지가 <b>두 배 넘게</b> 커졌습니다.</p>
+
+    <div class="card pad mt16">
+      <div class="chart-head"><div>
+        <div class="ct">사업 부문별 매출 추이</div><div class="cs">단위: 10억 달러 · 막대 위 숫자는 그해 합계</div>
+      </div>
+      <div class="seg" role="group" aria-label="보기 전환">
+        <button type="button" data-view="chart" data-target="mix" aria-pressed="true">차트</button>
+        <button type="button" data-view="table" data-target="mix" aria-pressed="false">표</button>
+      </div></div>
+      <div class="legend" id="legMix"></div>
+      <div class="figwrap" id="wrapMix">
+        <svg class="fig" id="figMix" role="img" aria-label="테슬라 사업 부문별 매출 3년 추이 누적 막대그래프"></svg>
+        <div class="tip" id="tipMix"></div>
+      </div>
+      <div class="tscroll mt12" id="tblMix" hidden></div>
+      <div class="note mt12"><span class="ic">🔀</span><div>2025년 자동차는 <b>−9.8%</b>, 에너지는 <b>+26.9%</b>, 서비스는 <b>+19.0%</b>입니다.
+        에너지와 서비스를 합치면 이미 전체의 <b id="nonAuto">—</b> — 테슬라를 자동차 회사로만 보기 어려워지는 지점입니다.
+        분기별 에너지 배포량(GWh)은 <a href="/tesla/#metrics" style="border-bottom:1px solid var(--line)">이쪽</a>에 있습니다.</div></div>
+    </div>
+
+    <div class="card pad mt16">
+      <div class="chart-head"><div>
+        <div class="ct">2025년 지역별 매출</div><div class="cs">미국이 절반, 중국이 5분의 1</div>
+      </div></div>
+      <div class="figwrap" id="wrapReg">
+        <svg class="fig" id="figReg" role="img" aria-label="2025년 테슬라 지역별 매출 비중 막대그래프"></svg>
+        <div class="tip" id="tipReg"></div>
+      </div>
+      <div class="legend" id="legReg"></div>
+      <div class="note mt12"><span class="ic">🌍</span><div>중국 매출이 <b>210억 달러</b>로 전체의 22%입니다.
+        중국 현지 업체와의 가격 경쟁이 실적에 곧바로 들어오는 크기라는 뜻입니다 —
+        <a href="/china-ev/" style="border-bottom:1px solid var(--line)">경쟁 상대 쪽 숫자는 여기</a>에 정리했습니다.</div></div>
+    </div>
+
+    <div class="card pad mt16">
+      <div class="chart-head"><div>
+        <div class="ct">탄소배출권 매출</div><div class="cs">원가가 거의 없어 사실상 전액이 이익으로 잡히는 매출입니다</div>
+      </div></div>
+      <div class="stats c3 mt12" role="group" aria-label="탄소배출권 지표">
+        <div class="st"><div class="k">2024년</div><div class="v">2.76<span class="u">B$</span></div><div class="s">역대 최대</div></div>
+        <div class="st"><div class="k">2025년</div><div class="v">1.99<span class="u">B$</span></div><div class="s down">−28% YoY</div></div>
+        <div class="st"><div class="k">2025 영업이익 중 비중</div><div class="v" id="credShare">—</div><div class="s">영업이익 4.35B$ 기준</div></div>
+      </div>
+      <div class="figwrap" id="wrapCred">
+        <svg class="fig" id="figCred" role="img" aria-label="2025년 분기별 탄소배출권 매출 막대그래프"></svg>
+        <div class="tip" id="tipCred"></div>
+      </div>
+      <div class="note warn mt12"><span class="ic">⚠️</span><div>여기가 <b>매출 구성에서 가장 약한 고리</b>입니다.
+        배출권은 차를 더 만들지 않아도 들어오는 돈이라 원가가 거의 없습니다. 즉 <b>2025년 영업이익 43.5억 달러 중
+        19.9억 달러가 이 항목</b>에서 나왔습니다. 미국이 미달 업체에 물리던 벌금을 없애면서 배출권을 살 이유가 사라졌고,
+        증권가에서는 2027년이면 <b>0에 수렴</b>한다는 전망까지 나옵니다. 그대로 사라진다고 가정하면 2025년 영업이익률은
+        4.6%가 아니라 <b id="credIfZero">—</b> 수준이 됩니다.</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SUPPLY ============ -->
+<section id="supply">
+  <div class="wrap">
+    <p class="eyebrow">04 · Supply chain</p>
+    <h2 class="title">테슬라는 어디서 사 오나</h2>
+    <p class="lead">테슬라 주가만 보는 것보다 <b>누가 테슬라에 납품하는지</b>를 아는 쪽이 한국 투자자에게는 더 쓸모 있을 때가 많습니다.
+      배터리 셀·양극재·AI 칩 세 갈래 모두에 한국 기업이 들어가 있습니다.</p>
+    <div class="krlegend mt12"><span class="sw"></span>표시된 곳이 한국 기업입니다</div>
+
+    <div class="mt16" id="lanes"></div>
+
+    <div class="note mt12"><span class="ic">⚠️</span><div>공급 계약은 바뀝니다. 계약 기간이 끝났거나 물량이 옮겨간 경우가 있으니
+      <b>투자 판단 전에 각 사 공시로 최신 상태를 확인하세요.</b> 여기 적힌 것은 공개 발표·보도로 확인된 시점의 내용입니다.</div></div>
+  </div>
+</section>
+
+<!-- ============ AUTONOMY ============ -->
+<section id="auto">
+  <div class="wrap">
+    <p class="eyebrow">05 · Autonomy</p>
+    <h2 class="title">돈이 들어가고 있는 쪽</h2>
+    <p class="lead">영업이익률을 끌어내린 비용이 향하는 곳입니다. 아직 매출로 잡히는 규모는 작아서,
+      지금은 <b>실적이 아니라 진행 상황으로 볼 수밖에 없는</b> 영역입니다.</p>
+
+    <div class="stats c3 mt16" role="group" aria-label="자율주행 현황">
+      <div class="st"><div class="k">무인 로보택시 운행 도시</div><div class="v">3<span class="u">곳</span></div><div class="s">오스틴 · 댈러스 · 휴스턴 (텍사스)</div></div>
+      <div class="st"><div class="k">무인 차량 대수</div><div class="v">25<span class="u">대</span></div><div class="s">오스틴 19 · 댈러스 3 · 휴스턴 3</div></div>
+      <div class="st"><div class="k">판관비·연구개발비</div><div class="v">4.35<span class="u">B$</span></div><div class="s down">분기 기준 +47% YoY</div></div>
+    </div>
+
+    <div class="grid2 mt16">
+      <div class="card pad">
+        <h3>지금 상태</h3>
+        <ul class="hint mt8" style="list-style:none;display:flex;flex-direction:column;gap:8px">
+          <li>· 샌프란시스코 만 지역 서비스는 대수는 가장 많지만 <b style="color:var(--ink)">안전요원이 탑승</b>합니다.
+            캘리포니아가 리무진 영업으로 분류해 무인 운행으로 치지 않습니다.</li>
+          <li>· 목표는 2026년 말까지 <b style="color:var(--ink)">미국 12개 주 안팎</b>으로 넓히는 것입니다.</li>
+          <li>· 본격 확장은 <b style="color:var(--ink)">FSD v15</b>(파라미터 10억 → 100억 규모 재작성)에 걸려 있고,
+            일정은 2026년 말~2027년 초로 이야기됩니다.</li>
+        </ul>
+      </div>
+      <div class="card pad">
+        <h3>숫자를 볼 때</h3>
+        <ul class="hint mt8" style="list-style:none;display:flex;flex-direction:column;gap:8px">
+          <li>· <b style="color:var(--ink)">대수가 아직 두 자리입니다.</b> 25대는 실적에 영향을 주는 규모가 아닙니다.
+            지금 주가에 반영된 건 실적이 아니라 기대입니다.</li>
+          <li>· <b style="color:var(--ink)">안전요원 탑승 여부</b>가 핵심 구분선입니다. "로보택시 운행 중"이라는 표현은
+            둘을 섞어 쓰는 경우가 많습니다.</li>
+          <li>· 칩(AI5·AI6)은 <b style="color:var(--ink)">삼성·TSMC</b>가 만듭니다. 자율주행 진척은 파운드리 실적과도 연결됩니다.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SOURCES ============ -->
+<section id="sources" style="padding-bottom:10px">
+  <div class="wrap">
+    <p class="eyebrow">06 · Sources</p>
+    <h2 class="title">데이터 출처</h2>
+    <p class="lead">실적 수치는 테슬라가 분기마다 내는 발표 자료 기준입니다. 분기 합계가 연간 발표치와 맞는지 확인했습니다.</p>
+    <div class="card pad mt16">
+      <div class="tscroll">
+        <table class="narrow">
+          <thead><tr><th>항목</th><th>기간</th><th>출처</th></tr></thead>
+          <tbody>
+            <tr><td class="tx">매출·영업이익률·부문별 매출</td><td>2025 Q1 ~ 2026 Q2</td><td class="tx">Tesla 분기 실적 발표 (Quarterly Update / 8-K)</td></tr>
+            <tr><td class="tx">연간 영업이익률</td><td>2021 ~ 2025</td><td class="tx">Tesla 연간 실적 · 10-K</td></tr>
+            <tr><td class="tx">배터리 셀 공급사</td><td>2026-09 기준</td><td class="tx">각 사 발표 및 업계 보도</td></tr>
+            <tr><td class="tx">AI 칩 위탁생산</td><td>2025-07 계약</td><td class="tx">삼성전자 공시 · 머스크 공개 확인</td></tr>
+            <tr><td class="tx">양극재 공급 계약</td><td>2024 ~ 2025</td><td class="tx">엘앤에프 공시</td></tr>
+            <tr><td class="tx">로보택시 운행 현황</td><td>2026-09 기준</td><td class="tx">로보택시 추적 집계</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="note mt12"><span class="ic">✅</span><div>검산 — 2025년 분기 매출 19.34 + 22.50 + 28.10 + 24.90 = <b>94.83</b>으로
+        연간 발표치와 일치합니다. 분기 영업이익률 × 매출도 발표된 영업이익과 맞습니다(2026년 2분기 3.95억 vs 발표 3.98억, 반올림 차이).
+        부문별 매출 합계는 각 수치가 반올림돼 연간 합계와 0.03B 차이가 납니다.</div></div>
+      <div class="note mt12"><span class="ic">🗓️</span><div>지표 기준일 <b id="asOfLabel">—</b>.
+        테슬라 실적은 보통 분기 종료 3~4주 뒤에 나옵니다. 수치는 소스 맨 위 <b>DATA</b> 블록 한 곳에 모여 있습니다.</div></div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="fgrid">
+      <div>
+        <h4>이 페이지에 대해</h4>
+        <p>테슬라를 볼 때 인도량 말고 <b>돈이 어떻게 도는지</b>와 <b>누가 납품하는지</b>를 같이 보려고 만든 지표 페이지입니다.
+           외부 스크립트 없이 HTML 한 파일로 돌아갑니다.</p>
+      </div>
+      <div>
+        <h4>같이 만든 것</h4>
+        <ul>
+          <li><a href="/tesla/">테슬라 주주 계산기 — 손익·세금</a></li>
+          <li><a href="/m7/">M7 지표 노트 — 나머지 여섯 회사</a></li>
+          <li><a href="/china-ev/">중국 전기차 주식 노트</a></li>
+          <li><a href="/">Cadence · 업무 자동화 스튜디오</a></li>
+        </ul>
+      </div>
+    </div>
+    <p class="disc">이 페이지는 투자 권유가 아닙니다. 실적·공급 계약은 바뀌고 오류가 있을 수 있으니
+      투자 전에 각 사 공시를 확인하세요. 판단과 책임은 이용자 본인에게 있습니다.</p>
+  </div>
+</footer>
+
+<script>
+"use strict";
+
+/* =========================================================================
+   DATA — 테슬라 분기 실적 발표 기준. 갱신은 이 블록만.
+   검증된 항등식:
+     2025 분기 매출 19.335+22.496+28.095+24.901 = 94.827  (연간 발표 94.83)
+     영업이익 = 매출 × 영업이익률 → 26Q2 28.24×1.4% = 0.395 (발표 0.398, 반올림)
+   ========================================================================= */
+const DATA = {
+  asOf: "2026-09-19",
+  quarters: [
+    { q: "25 Q1", rev: 19.335, om: 2.1 },
+    { q: "25 Q2", rev: 22.496, om: 4.1 },
+    { q: "25 Q3", rev: 28.095, om: 5.8 },
+    { q: "25 Q4", rev: 24.901, om: 5.7 },
+    { q: "26 Q1", rev: 22.390, om: 4.2 },
+    { q: "26 Q2", rev: 28.240, om: 1.4 }
+  ],
+  years: [
+    { y: 2021, om: 12.12 }, { y: 2022, om: 16.76 }, { y: 2023, om: 9.19 },
+    { y: 2024, om: 7.24 }, { y: 2025, om: 4.59 }
+  ],
+  // 부문별 매출. YoY 와 비중은 전부 이 배열에서 계산합니다(수치 중복 기입 방지).
+  //   2023 82.42+6.04+8.32 = 96.78 (발표 96.77)
+  //   2024 77.07+10.09+10.53 = 97.69 (발표와 일치)
+  //   2025 69.52+12.80+12.53 = 94.85 (발표 94.83, 각 수치 반올림 차이)
+  segSeries: [
+    { key: "auto", name: "자동차", color: "--s1" },
+    { key: "nrg", name: "에너지 생성·저장", color: "--s2" },
+    { key: "svc", name: "서비스·기타", color: "--s3" }
+  ],
+  segYears: [
+    { y: 2023, auto: 82.42, nrg: 6.04, svc: 8.32, total: 96.77 },
+    { y: 2024, auto: 77.07, nrg: 10.09, svc: 10.53, total: 97.69 },
+    { y: 2025, auto: 69.52, nrg: 12.80, svc: 12.53, total: 94.83 }
+  ],
+  // 2025 지역별. 47.63+20.96+26.24 = 94.83 — 연간 발표치와 정확히 일치합니다.
+  region2025: [
+    { k: "미국", v: 47.63, color: "--s1" },
+    { k: "중국", v: 20.96, color: "--s2" },
+    { k: "기타 국가", v: 26.24, color: "--s3" }
+  ],
+  // 탄소배출권. 0.595+0.439+0.417+0.542 = 1.993 (연간 발표 1.99)
+  credits: {
+    y2024: 2.76, y2025: 1.99,
+    q: [{ q: "25 Q1", v: 0.595 }, { q: "25 Q2", v: 0.439 },
+        { q: "25 Q3", v: 0.417 }, { q: "25 Q4", v: 0.542 }]
+  },
+  fy2025: { rev: 94.83, ni: 3.79, eps: 1.08, eps2024: 2.04, oi: 4.35, om: 4.59 },
+  lanes: [
+    { t: "배터리 셀", d: "차량과 메가팩에 들어가는 셀", dest: "차량 · 메가팩",
+      nodes: [
+        { n: "테슬라 자체 4680", c: "US", kr: false,
+          d: "2025년 말 기준 kWh당 원가가 가장 낮은 셀. 건식 전극으로 양극·음극까지 직접 만듭니다." },
+        { n: "파나소닉", c: "JP", kr: false,
+          d: "2170 주력(네바다). 4680은 와카야마·네바다 파일럿, 캔자스 공장 준비." },
+        { n: "LG에너지솔루션", c: "KR", kr: true,
+          d: "2170 공급. 4680은 오창 파일럿(2024.08)을 거쳐 애리조나에서 2026년 상반기 양산 목표. ESS 배터리 공급 계약도 별도." },
+        { n: "CATL", c: "CN", kr: false,
+          d: "각형 LFP 공급. 46시리즈 셀도 테스트 중." }
+      ] },
+    { t: "양극재", d: "셀 제조사로 들어가는 핵심 소재", dest: "셀 제조사",
+      nodes: [
+        { n: "엘앤에프", c: "KR", kr: true,
+          d: "테슬라 메인 양극재 공급사로 선정. 하이니켈 양극재 29억 달러 규모(2024~2025년 말) 계약." },
+        { n: "포스코퓨처엠 · 에코프로비엠", c: "KR", kr: true,
+          d: "국내 양극재 축. 테슬라 추가 계약 가능성이 계속 거론되는 곳입니다." }
+      ] },
+    { t: "AI 칩", d: "FSD와 옵티머스를 돌리는 추론 칩", dest: "FSD · 옵티머스",
+      nodes: [
+        { n: "삼성전자 파운드리", c: "KR", kr: true,
+          d: "AI6 전량 위탁생산 — 165억 달러 규모, 텍사스 테일러 공장, 2033년까지. AI5 물량도 나눠 맡습니다." },
+        { n: "TSMC", c: "TW", kr: false,
+          d: "AI5 물량 분담(애리조나)." }
+      ] }
+  ]
+};
+
+const $ = (id) => document.getElementById(id);
+const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+function pctTxt(v) { return (v > 0 ? "+" : v < 0 ? "−" : "") + Math.abs(v).toFixed(1) + "%"; }
+function cls(v) { return v > 0 ? "up" : v < 0 ? "down" : ""; }
+const store = {
+  get(k, fb) { try { const v = localStorage.getItem(k); return v == null ? fb : JSON.parse(v); } catch (e) { return fb; } },
+  set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} }
+};
+
+(function () {
+  const saved = store.get("tm.theme", null);
+  if (saved === "dark" || saved === "light") document.documentElement.dataset.theme = saved;
+  const isDark = () => document.documentElement.dataset.theme
+    ? document.documentElement.dataset.theme === "dark"
+    : matchMedia("(prefers-color-scheme:dark)").matches;
+  const paint = () => { $("themeIco").textContent = isDark() ? "☾" : "☀"; $("themeTxt").textContent = isDark() ? "어둡게" : "밝게"; };
+  $("themeBtn").addEventListener("click", () => {
+    document.documentElement.dataset.theme = isDark() ? "light" : "dark";
+    store.set("tm.theme", document.documentElement.dataset.theme); paint(); drawAll();
+  });
+  matchMedia("(prefers-color-scheme:dark)").addEventListener("change", () => { paint(); drawAll(); });
+  paint();
+})();
+
+/* ========================= charts ========================= */
+const SVGNS = "http://www.w3.org/2000/svg";
+function el(tag, attrs, style) {
+  const n = document.createElementNS(SVGNS, tag);
+  for (const k in attrs) if (attrs[k] != null) n.setAttribute(k, attrs[k]);
+  if (style) n.setAttribute("style", style);
+  return n;
+}
+function txt(n, s) { n.textContent = s; return n; }
+function niceScale(v, want) {
+  if (!(v > 0)) return { max: 1, step: 1, ticks: 1 };
+  const raw = v / (want || 4);
+  const p = Math.pow(10, Math.floor(Math.log10(raw))), n = raw / p;
+  const step = (n <= 1 ? 1 : n <= 2 ? 2 : n <= 2.5 ? 2.5 : n <= 5 ? 5 : 10) * p;
+  const max = Math.ceil(v / step - 1e-9) * step;
+  return { max: max, step: step, ticks: Math.round(max / step) };
+}
+function barTop(x, y, w, h, r) {
+  r = Math.max(0, Math.min(r, w / 2, h));
+  return "M" + x + "," + (y + h) + "L" + x + "," + (y + r) + "Q" + x + "," + y + " " + (x + r) + "," + y +
+    "L" + (x + w - r) + "," + y + "Q" + (x + w) + "," + y + " " + (x + w) + "," + (y + r) +
+    "L" + (x + w) + "," + (y + h) + "Z";
+}
+function showTip(tip, wrap, html, x, y) {
+  tip.innerHTML = html; tip.classList.add("on");
+  const maxL = wrap.clientWidth - 8, half = tip.offsetWidth / 2;
+  tip.style.left = Math.max(half + 4, Math.min(x, maxL - half)) + "px";
+  tip.style.top = y + "px";
+}
+
+/* 세로 막대 (단일 계열) */
+function drawCols(svgId, tipId, rows, opt) {
+  const svg = $(svgId), wrap = svg.parentElement, tip = $(tipId);
+  const W = Math.max(280, wrap.clientWidth || 320);
+  const small = W < 520, H = small ? 216 : 262;
+  const L = small ? 38 : 46, R = 8, T = 24, B = 34;
+  const pw = W - L - R, ph = H - T - B;
+  const sc = niceScale(Math.max.apply(null, rows.map((r) => r.v)), small ? 3 : 5);
+  const yOf = (v) => T + ph - (v / sc.max) * ph;
+
+  svg.setAttribute("width", W); svg.setAttribute("height", H);
+  svg.setAttribute("viewBox", "0 0 " + W + " " + H);
+  while (svg.firstChild) svg.removeChild(svg.firstChild);
+
+  for (let i = 0; i <= sc.ticks; i++) {
+    const v = sc.step * i, y = yOf(v);
+    svg.appendChild(el("line", { x1: L, x2: L + pw, y1: y, y2: y, class: i === 0 ? "baseline" : "gridline" }));
+    svg.appendChild(txt(el("text", { x: L - 7, y: y + 3.5, "text-anchor": "end", class: "axis" }), opt.tick(v)));
+  }
+  const gw = pw / rows.length, bw = Math.min(small ? 34 : 54, gw * 0.62);
+  rows.forEach((r, i) => {
+    const cx = L + gw * i + gw / 2, h = Math.max(1, (r.v / sc.max) * ph), y = T + ph - h;
+    svg.appendChild(el("path", { d: barTop(cx - bw / 2, y, bw, h, 4) }, "fill:var(" + (r.color || opt.color) + ")"));
+    svg.appendChild(txt(el("text", { x: cx, y: y - 7, "text-anchor": "middle", class: "dlabel" }), opt.label(r.v)));
+    svg.appendChild(txt(el("text", { x: cx, y: H - 12, "text-anchor": "middle", class: "axis" }), r.name));
+    const hit = el("rect", { x: L + gw * i, y: T - 10, width: gw, height: ph + 10, class: "hit" });
+    hit.addEventListener("mouseenter", () => showTip(tip, wrap, opt.tip(r), cx, T));
+    hit.addEventListener("mouseleave", () => tip.classList.remove("on"));
+    svg.appendChild(hit);
+  });
+}
+
+/* 누적 세로 막대 (부문별 3년) */
+function drawStack() {
+  const svg = $("figMix"), wrap = svg.parentElement, tip = $("tipMix");
+  const W = Math.max(280, wrap.clientWidth || 320);
+  const small = W < 520, H = small ? 250 : 296;
+  const L = small ? 38 : 46, R = 8, T = 26, B = 34;
+  const pw = W - L - R, ph = H - T - B;
+  const ser = DATA.segSeries, rows = DATA.segYears;
+  const sc = niceScale(Math.max.apply(null, rows.map((r) => r.total)), small ? 3 : 5);
+  const yOf = (v) => T + ph - (v / sc.max) * ph;
+
+  svg.setAttribute("width", W); svg.setAttribute("height", H);
+  svg.setAttribute("viewBox", "0 0 " + W + " " + H);
+  while (svg.firstChild) svg.removeChild(svg.firstChild);
+  for (let i = 0; i <= sc.ticks; i++) {
+    const v = sc.step * i, y = yOf(v);
+    svg.appendChild(el("line", { x1: L, x2: L + pw, y1: y, y2: y, class: i === 0 ? "baseline" : "gridline" }));
+    svg.appendChild(txt(el("text", { x: L - 7, y: y + 3.5, "text-anchor": "end", class: "axis" }), v));
+  }
+  const gw = pw / rows.length, bw = Math.min(small ? 54 : 84, gw * 0.56);
+  rows.forEach((r, i) => {
+    const cx = L + gw * i + gw / 2, x = cx - bw / 2;
+    let acc = 0;
+    ser.forEach((se, si) => {
+      const v = r[se.key];
+      const y0 = yOf(acc), y1 = yOf(acc + v);
+      const h = Math.max(2, y0 - y1 - 2);           // 2px 간격으로 구간을 띄웁니다
+      const top = si === ser.length - 1;
+      svg.appendChild(top
+        ? el("path", { d: barTop(x, y1, bw, h, 4) }, "fill:var(" + se.color + ")")
+        : el("rect", { x: x, y: y1, width: bw, height: h }, "fill:var(" + se.color + ")"));
+      if (h > 20 && bw > 46) {
+        svg.appendChild(txt(el("text", { x: cx, y: y1 + h / 2 + 4, "text-anchor": "middle", class: "dlabel" },
+          "fill:#fff;font-weight:600"), v.toFixed(1)));
+      }
+      acc += v;
+    });
+    svg.appendChild(txt(el("text", { x: cx, y: yOf(acc) - 8, "text-anchor": "middle", class: "dlabel" }),
+      r.total.toFixed(1)));
+    svg.appendChild(txt(el("text", { x: cx, y: H - 12, "text-anchor": "middle", class: "axis" }), r.y));
+    const hit = el("rect", { x: L + gw * i, y: T - 12, width: gw, height: ph + 12, class: "hit" });
+    hit.addEventListener("mouseenter", () => showTip(tip, wrap,
+      '<div class="th">' + r.y + "년 · 단위 B$</div>" +
+      ser.map((se) => '<div class="tr"><span class="nm"><span class="sw" style="background:var(' + se.color +
+        ')"></span>' + se.name + "</span><b>" + r[se.key].toFixed(2) + " (" +
+        ((r[se.key] / r.total) * 100).toFixed(1) + "%)</b></div>").join("") +
+      '<div class="tr"><span class="nm">합계</span><b>' + r.total.toFixed(2) + "</b></div>", cx, T));
+    hit.addEventListener("mouseleave", () => tip.classList.remove("on"));
+    svg.appendChild(hit);
+  });
+}
+
+/* 가로 누적 막대 (지역별) */
+function drawRegion() {
+  const svg = $("figReg"), wrap = svg.parentElement, tip = $("tipReg");
+  const W = Math.max(280, wrap.clientWidth || 320);
+  const H = 92, T = 22, barH = 46;
+  const rows = DATA.region2025, total = rows.reduce((a, r) => a + r.v, 0);
+  svg.setAttribute("width", W); svg.setAttribute("height", H);
+  svg.setAttribute("viewBox", "0 0 " + W + " " + H);
+  while (svg.firstChild) svg.removeChild(svg.firstChild);
+  svg.appendChild(txt(el("text", { x: 0, y: 13, class: "name" }), "2025년 합계 $" + total.toFixed(2) + "B"));
+  let x = 0;
+  rows.forEach((r) => {
+    const w = Math.max(2, (r.v / total) * W - 2);
+    svg.appendChild(el("rect", { x: x, y: T, width: w, height: barH, rx: 5 }, "fill:var(" + r.color + ")"));
+    if (w > 84) {
+      svg.appendChild(txt(el("text", { x: x + w / 2, y: T + 21, "text-anchor": "middle", class: "dlabel" },
+        "fill:#fff;font-weight:600"), "$" + r.v.toFixed(2) + "B"));
+      svg.appendChild(txt(el("text", { x: x + w / 2, y: T + 37, "text-anchor": "middle", class: "dlabel" },
+        "fill:#fff;opacity:.88"), ((r.v / total) * 100).toFixed(1) + "%"));
+    }
+    const hit = el("rect", { x: x, y: T, width: w, height: barH, class: "hit" });
+    const cx = x + w / 2;
+    hit.addEventListener("mouseenter", () => showTip(tip, wrap,
+      '<div class="th">' + r.k + " · 2025</div>" +
+      '<div class="tr"><span class="nm">매출</span><b>$' + r.v.toFixed(2) + "B</b></div>" +
+      '<div class="tr"><span class="nm">비중</span><b>' + ((r.v / total) * 100).toFixed(1) + "%</b></div>", cx, T));
+    hit.addEventListener("mouseleave", () => tip.classList.remove("on"));
+    svg.appendChild(hit);
+    x += (r.v / total) * W;
+  });
+}
+
+function drawAll() {
+  drawCols("figRev", "tipRev", DATA.quarters.map((d) => ({ name: d.q, v: d.rev, d: d })), {
+    color: "--s1", tick: (v) => v, label: (v) => v.toFixed(1),
+    tip: (r) => '<div class="th">20' + r.name + "</div>" +
+      '<div class="tr"><span class="nm">매출</span><b>$' + r.v.toFixed(2) + "B</b></div>" +
+      '<div class="tr"><span class="nm">영업이익률</span><b>' + r.d.om.toFixed(1) + "%</b></div>" +
+      '<div class="tr"><span class="nm">영업이익(추정)</span><b>$' + (r.v * r.d.om / 100).toFixed(2) + "B</b></div>"
+  });
+  drawCols("figOm", "tipOm", DATA.quarters.map((d) => ({ name: d.q, v: d.om, d: d })), {
+    color: "--s1", tick: (v) => v + "%", label: (v) => v.toFixed(1) + "%",
+    tip: (r) => '<div class="th">20' + r.name + "</div>" +
+      '<div class="tr"><span class="nm">영업이익률</span><b>' + r.v.toFixed(1) + "%</b></div>" +
+      '<div class="tr"><span class="nm">매출</span><b>$' + r.d.rev.toFixed(2) + "B</b></div>"
+  });
+  drawCols("figYr", "tipYr", DATA.years.map((d) => ({ name: d.y, v: d.om })), {
+    color: "--s1", tick: (v) => v + "%", label: (v) => v.toFixed(1) + "%",
+    tip: (r) => '<div class="th">' + r.name + "년</div>" +
+      '<div class="tr"><span class="nm">영업이익률</span><b>' + r.v.toFixed(2) + "%</b></div>"
+  });
+  drawStack();
+  drawRegion();
+  drawCols("figCred", "tipCred", DATA.credits.q.map((d) => ({ name: d.q, v: d.v })), {
+    color: "--s2", tick: (v) => v.toFixed(1), label: (v) => "$" + v.toFixed(3) + "B",
+    tip: (r) => '<div class="th">20' + r.name + "</div>" +
+      '<div class="tr"><span class="nm">탄소배출권 매출</span><b>$' + r.v.toFixed(3) + "B</b></div>"
+  });
+}
+
+/* ========================= 공급망 도식 ========================= */
+function renderLanes() {
+  $("lanes").innerHTML = DATA.lanes.map((ln) =>
+    '<div class="lane"><div class="lane-hd"><b>' + esc(ln.t) + "</b><span>" + esc(ln.d) + "</span></div>" +
+    '<div class="flow"><div class="nodes">' +
+    ln.nodes.map((n) =>
+      '<div class="node' + (n.kr ? " kr" : "") + '"><div class="nh"><span class="nn">' + esc(n.n) +
+      '</span><span class="cc">' + esc(n.c) + '</span></div><div class="nd">' + esc(n.d) + "</div></div>").join("") +
+    '</div><div class="arrow" aria-hidden="true">→</div>' +
+    '<div class="dest"><b>' + esc(ln.dest) + "</b><small>테슬라</small></div></div></div>").join("");
+}
+
+/* ========================= init ========================= */
+(function init() {
+  renderLanes();
+  drawAll();
+  $("asOfLabel").textContent = DATA.asOf;
+
+  const y25 = DATA.segYears[DATA.segYears.length - 1];
+  $("nonAuto").textContent = (((y25.nrg + y25.svc) / y25.total) * 100).toFixed(1) + "%";
+
+  const cr = DATA.credits, oi = DATA.fy2025.oi;
+  $("credShare").textContent = Math.round((cr.y2025 / oi) * 100) + "%";
+  // 배출권은 원가가 거의 없어 전액 이익으로 봅니다 — 사라졌다고 가정한 영업이익률
+  $("credIfZero").textContent = (((oi - cr.y2025) / DATA.fy2025.rev) * 100).toFixed(1) + "%";
+
+  // 범례
+  $("legMix").innerHTML = DATA.segSeries.map((se) =>
+    '<span class="lg"><span class="sw" style="background:var(' + se.color + ')"></span>' + se.name + "</span>").join("");
+  $("legReg").innerHTML = DATA.region2025.map((r) =>
+    '<span class="lg"><span class="sw" style="background:var(' + r.color + ')"></span>' + r.k + "</span>").join("");
+
+  // 부문 표 — 비중과 전년 대비를 전부 segYears 에서 계산합니다
+  const yrs = DATA.segYears;
+  $("tblMix").innerHTML = "<table class='narrow'><thead><tr><th>부문</th>" +
+    yrs.map((r) => "<th>" + r.y + "</th>").join("") + "<th>2025 비중</th><th>2025 YoY</th></tr></thead><tbody>" +
+    DATA.segSeries.map((se) => {
+      const last = yrs[yrs.length - 1], prev = yrs[yrs.length - 2];
+      const yoy = (last[se.key] / prev[se.key] - 1) * 100;
+      return "<tr><td class='tx'>" + se.name + "</td>" +
+        yrs.map((r) => "<td>" + r[se.key].toFixed(2) + "</td>").join("") +
+        "<td>" + ((last[se.key] / last.total) * 100).toFixed(1) + "%</td>" +
+        "<td class='" + cls(yoy) + "'>" + pctTxt(yoy) + "</td></tr>";
+    }).join("") +
+    "<tr class='tfoot'><td>합계</td>" + yrs.map((r) => "<td>" + r.total.toFixed(2) + "</td>").join("") +
+    "<td colspan='2'>단위: 10억 달러</td></tr></tbody></table>";
+
+  $("tblRev").innerHTML = "<table class='narrow'><thead><tr><th>분기</th><th>매출(B$)</th><th>영업이익률</th>" +
+    "<th>영업이익(추정)</th></tr></thead><tbody>" +
+    DATA.quarters.map((d) => "<tr><td class='tx'>20" + d.q + "</td><td>" + d.rev.toFixed(3) + "</td><td>" +
+      d.om.toFixed(1) + "%</td><td>" + (d.rev * d.om / 100).toFixed(2) + "</td></tr>").join("") +
+    "<tr class='tfoot'><td>2025 합계</td><td>" +
+    DATA.quarters.filter((d) => d.q.indexOf("25") === 0).reduce((a, d) => a + d.rev, 0).toFixed(3) +
+    "</td><td colspan='2'>연간 발표 94.83과 일치</td></tr></tbody></table>";
+
+  document.querySelectorAll(".seg button").forEach((b) => {
+    b.addEventListener("click", () => {
+      const t = b.dataset.target, view = b.dataset.view;
+      b.parentElement.querySelectorAll("button").forEach((x) =>
+        x.setAttribute("aria-pressed", String(x.dataset.view === view)));
+      const cap = t[0].toUpperCase() + t.slice(1);
+      $("wrap" + cap).hidden = view === "table";
+      $("tbl" + cap).hidden = view !== "table";
+      if (view === "chart") drawAll();
+    });
+  });
+  let rt;
+  addEventListener("resize", () => { clearTimeout(rt); rt = setTimeout(drawAll, 140); });
+})();
+</script>
+</body>
+</html>

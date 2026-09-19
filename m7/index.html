@@ -1,0 +1,335 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>M7 지표 노트 · 매그니피센트 7 매출 구성과 마진 비교</title>
+<meta name="description" content="엔비디아·애플·마이크로소프트·알파벳·아마존·메타·테슬라를 같은 틀로 비교합니다. 영업이익률 4.6%부터 60.4%까지, 회계연도가 제각각인 M7을 나란히 놓을 때 필요한 것들.">
+<link rel="canonical" href="https://richroro.github.io/m7/">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="ko_KR">
+<meta property="og:site_name" content="Cadence">
+<meta property="og:url" content="https://richroro.github.io/m7/">
+<meta property="og:title" content="M7 지표 노트">
+<meta property="og:description" content="영업이익률 4.6%부터 60.4%까지. 같은 틀로 정리한 매그니피센트 7.">
+<meta name="twitter:card" content="summary">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%2314161C'/><text x='50' y='68' font-size='46' text-anchor='middle' fill='white' font-family='monospace' font-weight='bold'>M7</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans+KR:wght@300;400;500;600;700&display=swap">
+<link rel="stylesheet" href="/m7/assets/m7.css">
+</head>
+<body>
+
+<header>
+  <div class="wrap hbar">
+    <a class="brand" href="/m7/">
+      <span class="mk">M7</span>
+      <span><b>M7 지표 노트</b><small>매출 구성 · 마진 · 한국 공급망</small></span>
+    </a>
+    <div class="hactions">
+      <button class="ghost" id="themeBtn" type="button" aria-label="화면 테마 전환"><span id="themeIco">◐</span><span id="themeTxt">테마</span></button>
+    </div>
+  </div>
+</header>
+
+<nav class="snav" aria-label="섹션 바로가기">
+  <div class="wrap snav-in">
+    <a href="#companies">일곱 회사</a>
+    <a href="#margin">영업이익률</a>
+    <a href="#size">매출 규모</a>
+    <a href="#fy">회계연도 함정</a>
+    <a href="#recent">최근 분기</a>
+    <a href="#korea">한국과의 접점</a>
+  </div>
+</nav>
+
+<main>
+<section id="companies" style="padding-top:26px">
+  <div class="wrap">
+    <p class="eyebrow">Magnificent 7</p>
+    <h2 class="title">같은 묶음으로 불리지만 전혀 다른 회사들</h2>
+    <p class="lead">'M7'이라는 한 단어로 묶이지만 영업이익률은 <b>4.6%에서 60.4%까지</b> 벌어져 있습니다.
+      돈 버는 방식도, 회계연도도, 부문을 나누는 기준도 제각각입니다. 일곱 개를 같은 틀로 정리했습니다.</p>
+    <div class="m7nav mt16" id="cards"></div>
+  </div>
+</section>
+
+<section id="margin">
+  <div class="wrap">
+    <p class="eyebrow">01 · Margin</p>
+    <h2 class="title">영업이익률: 같은 M7 안에서 13배 차이</h2>
+    <p class="lead">가장 최근 회계연도 기준입니다. 회사마다 연도가 끝나는 달이 달라서 완전히 같은 기간은 아닙니다 —
+      아래 회계연도 표를 같이 보세요.</p>
+    <div class="card pad mt16">
+      <div class="chart-head"><div>
+        <div class="ct">회사별 영업이익률</div>
+        <div class="cs">영업이익 ÷ 매출로 직접 계산한 값 · 단위 %</div>
+      </div>
+      <div class="seg" role="group" aria-label="보기 전환">
+        <button type="button" data-view="chart" data-target="Om" aria-pressed="true">차트</button>
+        <button type="button" data-view="table" data-target="Om" aria-pressed="false">표</button>
+      </div></div>
+      <div class="figwrap" id="wrapOm">
+        <svg class="fig" id="figOm" role="img" aria-label="M7 회사별 영업이익률 막대그래프"></svg>
+        <div class="tip" id="tipOm"></div>
+      </div>
+      <div class="tscroll mt12" id="tblOm" hidden></div>
+      <div class="note mt12"><span class="ic">📊</span><div>엔비디아(60.4%)와 테슬라(4.6%)가 같은 지수 묶음에 들어 있습니다.
+        <b>M7을 하나의 성격으로 묶어 이야기하기 어려운 이유</b>가 이 그래프 하나에 다 들어 있습니다.</div></div>
+    </div>
+  </div>
+</section>
+
+<section id="size">
+  <div class="wrap">
+    <p class="eyebrow">02 · Scale</p>
+    <h2 class="title">매출 규모는 순서가 또 다르다</h2>
+    <div class="card pad mt16">
+      <div class="chart-head"><div>
+        <div class="ct">회사별 연간 매출</div>
+        <div class="cs">각 사 최근 회계연도 · 단위 10억 달러</div>
+      </div></div>
+      <div class="figwrap" id="wrapRev">
+        <svg class="fig" id="figRev" role="img" aria-label="M7 회사별 연간 매출 막대그래프"></svg>
+        <div class="tip" id="tipRev"></div>
+      </div>
+      <div class="note mt12"><span class="ic">🔁</span><div>매출로는 아마존이 1위인데 영업이익률로는 아래에서 두 번째입니다.
+        <b>규모와 수익성의 순서가 반대</b>인 회사들이 섞여 있습니다.</div></div>
+    </div>
+  </div>
+</section>
+
+<section id="fy">
+  <div class="wrap">
+    <p class="eyebrow">03 · Fiscal year</p>
+    <h2 class="title">M7을 비교할 때 먼저 봐야 할 것</h2>
+    <p class="lead">'2025년 실적'이라는 말이 회사마다 다른 기간을 가리킵니다. 엔비디아의 FY2026은 사실상 2025년이고,
+      마이크로소프트의 FY2025는 절반이 2024년입니다. <b>같은 해라고 생각하고 나란히 놓으면 틀립니다.</b></p>
+    <div class="card mt16">
+      <div class="tscroll">
+        <table id="fyTable">
+          <thead><tr><th>회사</th><th>표기</th><th>실제 기간</th><th>매출</th><th>영업이익률</th><th>최대 부문 비중</th></tr></thead>
+          <tbody id="fyRows"></tbody>
+        </table>
+      </div>
+    </div>
+    <div class="note mt12"><span class="ic">🧭</span><div>최대 부문 비중은 <b>집중 위험</b>을 보는 가장 빠른 지표입니다.
+      메타(98.9%)·알파벳(85.1%)·엔비디아(92%)는 사실상 한 사업이고, 마이크로소프트(42.9%)가 가장 고릅니다.
+      엔비디아 수치만 분기 기준인데, 부문 공시 구조가 최근 바뀌어서입니다.</div></div>
+  </div>
+</section>
+
+<section id="recent">
+  <div class="wrap">
+    <p class="eyebrow">04 · Latest quarter</p>
+    <h2 class="title">가장 최근 발표된 분기</h2>
+    <p class="lead">위 연간 수치보다 최대 세 분기 더 최신입니다. 일곱 곳 모두 <b>두 자릿수로 성장</b>하고 있는데,
+      마진이 가는 방향은 서로 갈립니다.</p>
+    <div class="card mt16">
+      <div class="tscroll">
+        <table>
+          <thead><tr><th>회사</th><th>분기</th><th>종료</th><th>매출</th><th>전년 대비</th><th>영업이익률</th></tr></thead>
+          <tbody id="recentRows"></tbody>
+        </table>
+      </div>
+    </div>
+    <div class="grid2 mt16">
+      <div class="card pad">
+        <h3>마진이 좋아진 쪽</h3>
+        <ul class="hint mt8" style="list-style:none;display:flex;flex-direction:column;gap:8px">
+          <li>· <b style="color:var(--ink)">알파벳</b> — 32.0% → <b style="color:var(--ink)">34.1%</b>. 클라우드가 +82%로 뛰면서 영업이익이 30% 늘었습니다.</li>
+          <li>· <b style="color:var(--ink)">아마존</b> — 11.2% → <b style="color:var(--ink)">13.7%</b>. AWS 영업이익 비중이 57%에서 60.4%로 더 올라갔습니다.</li>
+          <li>· <b style="color:var(--ink)">엔비디아</b> — 총마진이 71.1% → <b style="color:var(--ink)">75.0%</b>. 데이터센터만 890억 달러입니다.</li>
+        </ul>
+      </div>
+      <div class="card pad">
+        <h3>마진이 나빠진 쪽</h3>
+        <ul class="hint mt8" style="list-style:none;display:flex;flex-direction:column;gap:8px">
+          <li>· <b style="color:var(--ink)">메타</b> — 43% → <b style="color:var(--ink)">31%</b>. 매출은 +28%인데 순이익이 14% 줄었습니다. AI 투자에 법적 비용 24억, 희망퇴직 11.8억이 겹쳤습니다.</li>
+          <li>· <b style="color:var(--ink)">테슬라</b> — 최근 분기 영업이익률 <b style="color:var(--ink)">1.4%</b>. 매출은 사상 최대였습니다.</li>
+          <li>· 공통점은 <b style="color:var(--ink)">AI 설비투자</b>입니다. 알파벳은 한 분기 설비투자 449억 달러로 잉여현금흐름이 −59억이 됐습니다.</li>
+        </ul>
+      </div>
+    </div>
+    <div class="note mt16"><span class="ic">⚠️</span><div>분기 순이익에 <b>일회성 평가이익</b>이 섞인 곳이 있습니다 —
+      알파벳(지분 평가이익 990억), 아마존(앤스로픽 관련 534억). 영업 실적과 반드시 구분해서 읽어야 합니다.
+      엔비디아와 애플은 분기 영업이익을 이 페이지에 담지 않아 영업이익률을 비워 뒀습니다.</div></div>
+  </div>
+</section>
+
+<section id="korea" style="padding-bottom:10px">
+  <div class="wrap">
+    <p class="eyebrow">05 · Korea</p>
+    <h2 class="title">일곱 회사가 한국과 만나는 지점</h2>
+    <p class="lead">한국 투자자에게는 M7 주가만큼이나 <b>그 회사들이 한국 기업에서 무엇을 사는지</b>가 중요합니다.
+      성격이 세 갈래로 갈립니다.</p>
+    <div class="grid2 mt16">
+      <div class="card pad">
+        <h3>직접 납품 — 계약이 보이는 쪽</h3>
+        <ul class="hint mt8" style="list-style:none;display:flex;flex-direction:column;gap:8px">
+          <li>· <b style="color:var(--ink)"><a href="/m7/nvda/" style="border-bottom:1px solid var(--line)">엔비디아</a></b> — 가속기마다 HBM이 올라갑니다. SK하이닉스·삼성전자가 직접 공급사입니다.</li>
+          <li>· <b style="color:var(--ink)"><a href="/m7/aapl/" style="border-bottom:1px solid var(--line)">애플</a></b> — OLED(삼성디스플레이·LG디스플레이), 카메라 모듈(LG이노텍).</li>
+          <li>· <b style="color:var(--ink)"><a href="/tesla-metrics/" style="border-bottom:1px solid var(--line)">테슬라</a></b> — AI6 칩 전량을 삼성 파운드리가 맡습니다(165억 달러, 2033년까지). 배터리·양극재도.</li>
+        </ul>
+      </div>
+      <div class="card pad">
+        <h3>간접 수요 — 계약이 아니라 경로</h3>
+        <ul class="hint mt8" style="list-style:none;display:flex;flex-direction:column;gap:8px">
+          <li>· <b style="color:var(--ink)">마이크로소프트 · 알파벳 · 아마존 · 메타</b> — 부품 공급사를 공시하지 않습니다.
+            연결은 <b style="color:var(--ink)">설비투자 → AI 서버 → HBM·서버 D램 수요</b> 경로입니다.</li>
+          <li>· 이 네 곳의 자본지출 가이던스가 한국 메모리 업황 전망의 출발점이 되는 이유입니다.</li>
+          <li>· 동시에 이들은 <b style="color:var(--ink)">엔비디아의 최대 고객</b>이기도 합니다 — 같은 돈이 두 번 계산되지 않게 주의해야 합니다.</li>
+        </ul>
+      </div>
+    </div>
+    <div class="note warn mt16"><span class="ic">⚠️</span><div>공급 관계는 바뀌고, 비중이 공개되지 않는 경우가 많습니다.
+      각 회사 페이지에 어디까지가 공시이고 어디부터가 업계 관측인지 적어 두었습니다.
+      이 페이지는 투자 권유가 아닙니다.</div></div>
+  </div>
+</section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="fgrid">
+      <div>
+        <h4>이 페이지에 대해</h4>
+        <p>매그니피센트 7을 같은 틀로 정리한 지표 노트입니다. 수치는 각 사 실적 발표와 연차보고서에서 가져왔고,
+           부문 합계가 발표 총액과 맞는지 전부 검산했습니다. 외부 라이브러리 없이 돌아갑니다.</p>
+      </div>
+      <div>
+        <h4>같이 만든 것</h4>
+        <ul>
+          <li><a href="/tesla-metrics/">테슬라 지표 — 실적·공급망</a></li>
+          <li><a href="/tesla/">테슬라 주주 계산기 — 손익·세금</a></li>
+          <li><a href="/china-ev/">중국 전기차 주식 노트</a></li>
+          <li><a href="/">Cadence · 업무 자동화 스튜디오</a></li>
+        </ul>
+      </div>
+    </div>
+    <p class="disc">이 페이지는 투자 권유가 아닙니다. 실적은 바뀌고 오류가 있을 수 있으니 투자 전에 각 사 공시를 확인하세요.
+      판단과 책임은 이용자 본인에게 있습니다.</p>
+  </div>
+</footer>
+
+<script src="/m7/assets/m7.js"></script>
+<script>
+"use strict";
+/* 회사별 요약 — 각 회사 페이지의 CO 와 같은 출처입니다.
+   영업이익률과 최대 부문 비중은 하드코딩하지 않고 여기서 계산합니다. */
+const HUB = [
+  { slug:"nvda",  rev:215.9,  oi:130.387, top:{k:"데이터센터", v:75.0, of:81.6, q:true},
+    fy:"FY2026", span:"2025년 2월 ~ 2026년 1월" },
+  { slug:"aapl",  rev:416.161,oi:133.05,  top:{k:"아이폰", v:209.59, of:416.161},
+    fy:"FY2025", span:"2024년 10월 ~ 2025년 9월" },
+  { slug:"msft",  rev:331.839,oi:155.2,   top:{k:"생산성·비즈니스", v:139.996, of:331.839},
+    fy:"FY2026", span:"2025년 7월 ~ 2026년 6월" },
+  { slug:"googl", rev:402.8,  oi:129.039, top:{k:"구글 서비스", v:342.721, of:402.8},
+    fy:"2025",   span:"2025년 1월 ~ 12월" },
+  { slug:"amzn",  rev:716.9,  oi:80.0,    top:{k:"북미", v:426.3, of:716.9},
+    fy:"2025",   span:"2025년 1월 ~ 12월" },
+  { slug:"meta",  rev:200.97, oi:83.28,   top:{k:"패밀리 오브 앱스", v:198.76, of:200.97},
+    fy:"2025",   span:"2025년 1월 ~ 12월" },
+  { slug:"tesla", rev:94.83,  oi:4.35,    top:{k:"자동차", v:69.52, of:94.83},
+    fy:"2025",   span:"2025년 1월 ~ 12월" }
+];
+const meta = (s) => M7.find((m) => m.slug === s);
+HUB.forEach((h) => { h.om = (h.oi / h.rev) * 100; h.topShare = (h.top.v / h.top.of) * 100; });
+
+document.getElementById("cards").innerHTML = HUB.map((h) => {
+  const m = meta(h.slug), href = m.href || ("/m7/" + m.slug + "/");
+  return '<a class="m7card" href="' + href + '"><div class="tp"><span class="dot" style="background:' + m.c +
+    '">' + m.ab + '</span><span><b>' + m.ko + "</b><small>" + m.tk + "</small></span></div>" +
+    '<div class="mt">영업이익률 <b>' + h.om.toFixed(1) + "%</b><br>" + m.hint + "</div></a>";
+}).join("");
+
+document.getElementById("fyRows").innerHTML = HUB.map((h) => {
+  const m = meta(h.slug);
+  return "<tr><td class='tx'>" + m.ko + "</td><td>" + h.fy + "</td><td class='tx'>" + h.span +
+    "</td><td>$" + h.rev.toFixed(1) + "B</td><td>" + h.om.toFixed(1) + "%</td><td class='tx'>" +
+    h.top.k + " " + h.topShare.toFixed(1) + "%" + (h.top.q ? " (분기)" : "") + "</td></tr>";
+}).join("");
+
+/* 각 사 가장 최근 발표 분기. om 이 null 이면 분기 영업이익을 담지 않은 것입니다. */
+const RECENT = [
+  { slug:"nvda",  q:"FY2027 2분기", end:"2026년 7월", rev:96.22,  yoy:"약 2배", om:null },
+  { slug:"aapl",  q:"FY2026 3분기", end:"2026년 6월", rev:109.4,  yoy:"+16%",  om:null },
+  { slug:"msft",  q:"FY2026 4분기", end:"2026년 6월", rev:90.0,   yoy:"+18%",  om:40.6/90.0*100 },
+  { slug:"googl", q:"2026년 2분기", end:"2026년 6월", rev:119.8,  yoy:"+24%",  om:40.8/119.8*100 },
+  { slug:"amzn",  q:"2026년 2분기", end:"2026년 6월", rev:200.6,  yoy:"+20%",  om:27.5/200.6*100 },
+  { slug:"meta",  q:"2026년 2분기", end:"2026년 6월", rev:60.80,  yoy:"+28%",  om:18.8/60.80*100 },
+  { slug:"tesla", q:"2026년 2분기", end:"2026년 6월", rev:28.24,  yoy:"+26%",  om:1.4 }
+];
+document.getElementById("recentRows").innerHTML = RECENT.map((r) => {
+  const m = meta(r.slug), href = m.href || ("/m7/" + m.slug + "/");
+  return "<tr><td class='tx'><a href='" + href + "' style='border-bottom:1px solid var(--line)'>" + m.ko +
+    "</a></td><td class='tx'>" + r.q + "</td><td>" + r.end + "</td><td>$" + r.rev.toFixed(1) +
+    "B</td><td class='up'>" + r.yoy + "</td><td>" + (r.om == null ? "—" : r.om.toFixed(1) + "%") + "</td></tr>";
+}).join("");
+
+function drawHubBars(svgId, tipId, key, fmt, unit) {
+  const svg = document.getElementById(svgId), wrap = svg.parentElement, tip = document.getElementById(tipId);
+  const rows = HUB.slice().sort((a, b) => b[key] - a[key]);
+  const W = Math.max(280, wrap.clientWidth || 320);
+  const small = W < 560;
+  const L = small ? 92 : 124, R = small ? 62 : 84, T = 6, B = 24;
+  const rowH = small ? 26 : 30, gap = small ? 9 : 11;
+  const H = T + rows.length * (rowH + gap) - gap + B;
+  const pw = Math.max(40, W - L - R);
+  const sc = niceScale(Math.max.apply(null, rows.map((r) => r[key])), small ? 3 : 5);
+  svg.setAttribute("width", W); svg.setAttribute("height", H);
+  svg.setAttribute("viewBox", "0 0 " + W + " " + H);
+  while (svg.firstChild) svg.removeChild(svg.firstChild);
+  for (let i = 0; i <= sc.ticks; i++) {
+    const x = L + (sc.step * i / sc.max) * pw;
+    svg.appendChild(el("line", { x1: x, x2: x, y1: T, y2: H - B + 3, class: i === 0 ? "baseline" : "gridline" }));
+    svg.appendChild(txt(el("text", { x: x, y: H - B + 16, "text-anchor": "middle", class: "axis" }), sc.step * i));
+  }
+  rows.forEach((r, i) => {
+    const m = meta(r.slug), y = T + i * (rowH + gap), w = Math.max(2, (r[key] / sc.max) * pw);
+    svg.appendChild(txt(el("text", { x: L - 8, y: y + rowH / 2 + 4, "text-anchor": "end", class: "name" }), m.ko));
+    svg.appendChild(el("rect", { x: L, y: y, width: w, height: rowH, rx: 4 }, "fill:" + m.c));
+    svg.appendChild(txt(el("text", { x: L + w + 7, y: y + rowH / 2 + 4, class: "dlabel" }), fmt(r[key])));
+    const hit = el("rect", { x: L, y: y - gap / 2, width: pw + R - 8, height: rowH + gap, class: "hit" });
+    hit.addEventListener("mouseenter", () => showTip(tip, wrap,
+      '<div class="th">' + m.ko + " · " + r.fy + "</div>" +
+      '<div class="tr"><span class="nm">매출</span><b>$' + r.rev.toFixed(1) + "B</b></div>" +
+      '<div class="tr"><span class="nm">영업이익</span><b>$' + r.oi.toFixed(1) + "B</b></div>" +
+      '<div class="tr"><span class="nm">영업이익률</span><b>' + r.om.toFixed(1) + "%</b></div>" +
+      '<div class="tr"><span class="nm">최대 부문</span><b>' + r.topShare.toFixed(1) + "%</b></div>",
+      L + w / 2, y));
+    hit.addEventListener("mouseleave", () => tip.classList.remove("on"));
+    svg.appendChild(hit);
+  });
+}
+
+function drawAll() {
+  drawHubBars("figOm", "tipOm", "om", (v) => v.toFixed(1) + "%");
+  drawHubBars("figRev", "tipRev", "rev", (v) => "$" + v.toFixed(0) + "B");
+}
+
+document.getElementById("tblOm").innerHTML =
+  "<table class='narrow'><thead><tr><th>회사</th><th>매출(B$)</th><th>영업이익(B$)</th><th>영업이익률</th></tr></thead><tbody>" +
+  HUB.slice().sort((a, b) => b.om - a.om).map((h) =>
+    "<tr><td class='tx'>" + meta(h.slug).ko + "</td><td>" + h.rev.toFixed(1) + "</td><td>" +
+    h.oi.toFixed(2) + "</td><td>" + h.om.toFixed(1) + "%</td></tr>").join("") +
+  "</tbody></table><p class='hint mt8'>영업이익률은 영업이익 ÷ 매출로 직접 계산한 값입니다.</p>";
+
+document.querySelectorAll(".seg button").forEach((b) => {
+  b.addEventListener("click", () => {
+    const t = b.dataset.target, view = b.dataset.view;
+    b.parentElement.querySelectorAll("button").forEach((x) =>
+      x.setAttribute("aria-pressed", String(x.dataset.view === view)));
+    document.getElementById("wrap" + t).hidden = view === "table";
+    document.getElementById("tbl" + t).hidden = view !== "table";
+    if (view === "chart") drawAll();
+  });
+});
+initTheme();
+drawAll();
+let rt;
+addEventListener("resize", () => { clearTimeout(rt); rt = setTimeout(drawAll, 140); });
+</script>
+</body>
+</html>
