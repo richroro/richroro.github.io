@@ -136,6 +136,9 @@ textarea{resize:vertical;min-height:54px;font-family:inherit;line-height:1.6}
 .src .meta{flex:1;min-width:0}
 .src .nm{font-size:12.5px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .src .st{font-size:11px;color:var(--ink-3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.src .th-x{width:62px;height:35px;border-radius:6px;background:var(--elev);border:1px solid var(--line-2);
+  display:grid;place-items:center;font-size:11px;font-weight:700;color:var(--ink-3);flex:none}
+.src .lic{width:100%;margin-top:4px;padding:3px 5px;font-size:11px;border-radius:6px}
 .src .x{color:var(--ink-3);padding:4px 6px;border-radius:6px;font-size:12px}
 .src .x:hover{color:var(--danger);background:var(--elev)}
 
@@ -247,6 +250,7 @@ textarea{resize:vertical;min-height:54px;font-family:inherit;line-height:1.6}
             <option value="sound">사운드 사용 — 소리만 가져오고 화면은 내가 촬영</option>
             <option value="green">그린 스크린 — 원본을 배경에 깔고 내가 앞에</option>
             <option value="collab">콜라보 — 원본과 분할 화면</option>
+            <option value="edit">직접 편집 — 파일을 받아 편집기에서 (퍼블릭 도메인·CC·내 소재)</option>
             <option value="mine">내 촬영·해설 — 원본 없이 직접 찍는 구간</option>
           </select>
           <button class="btn primary" id="addCut">＋ 컷 담기</button>
@@ -275,6 +279,11 @@ textarea{resize:vertical;min-height:54px;font-family:inherit;line-height:1.6}
             <span>이 도구는 영상을 <b>내려받지 않습니다</b>. 유튜브 공식 플레이어로 보면서 구간만 기록하고,
               실제 편집은 유튜브 앱의 <b>리믹스</b> 버튼으로 합니다. 리믹스 버튼이 보이지 않는 영상은
               원작자가 리믹스를 꺼둔 것이니 소재로 쓰지 마세요.</span>
+          </div>
+          <div class="note">
+            퍼블릭 도메인·CC 소재는 유튜브 링크 대신 <b>받을 수 있는 곳의 주소나 파일 이름</b>을 그대로 넣으면
+            컷 시트에 같이 담깁니다(인터넷 아카이브, 위키미디어 커먼즈, 공공누리, 무료 스톡 등).
+            소재마다 아래 칸에서 어떤 자격으로 쓰는지 골라두면 출처 표기와 경고가 거기에 맞춰 바뀝니다.
           </div>
         </div>
       </div>
@@ -444,6 +453,11 @@ function parseStart(u){
   return 0;
 }
 const linkAt = (vid, t) => 'https://youtu.be/' + vid + (t>0 ? '?t=' + Math.floor(t) : '');
+function linkOf(c){
+  const s = srcOf(c.vid);
+  if(!s) return '';
+  return s.yt ? linkAt(c.vid, c.in) : (s.url || '');
+}
 
 /* ---------- 리믹스 방식 ---------- */
 const WAYS = {
@@ -455,8 +469,17 @@ const WAYS = {
             how:'리믹스 → 그린 스크린 → 원본을 배경으로 두고 앞에서 촬영' },
   collab: { label:'콜라보',     short:'콜라보',   max:null, src:true,
             how:'리믹스 → 콜라보 → 분할 화면으로 같이 촬영' },
+  edit:   { label:'직접 편집',   short:'편집',     max:null, src:true,
+            how:'파일을 내려받아 편집기(웹컷 등)에서 직접 편집' },
   mine:   { label:'내 촬영·해설', short:'내 촬영', max:null, src:false,
             how:'원본 없이 직접 촬영하거나 편집기에서 만든 구간' },
+};
+/* 소재를 어떤 자격으로 쓰는지. 여기서 출처 표기 방식과 경고가 갈린다. */
+const LICS = {
+  remix: { label:'유튜브 · 리믹스로만',  dl:false },
+  cc:    { label:'CC 라이선스 · 표기 필수', dl:true },
+  pd:    { label:'퍼블릭 도메인',        dl:true },
+  own:   { label:'내 소재 · 권리 있음',   dl:true },
 };
 const COLORS = ['#7c5cff','#2fd6a6','#ffb340','#ff5470','#4aa8ff','#c05cff','#7bd14a'];
 
@@ -481,7 +504,10 @@ function load(){
     const raw = localStorage.getItem(KEY);
     if(!raw) return;
     const d = JSON.parse(raw);
-    if(Array.isArray(d.srcs)) S.srcs = d.srcs;
+    if(Array.isArray(d.srcs)) S.srcs = d.srcs.map(x => ({
+      yt: x.yt !== undefined ? x.yt : /^[\w-]{11}$/.test(x.vid||''),
+      url: x.url || '', lic: x.lic || 'remix', ...x,
+    }));
     if(Array.isArray(d.cuts)) S.cuts = d.cuts;
     if(d.plan) Object.assign(S.plan, d.plan);
     if(d.cur) S.cur = d.cur;
@@ -524,6 +550,14 @@ function mountPlayer(vid, startAt){
   if(!vid) return;
   S.cur = vid; save(); renderSrcs();
   MARK.in = null; MARK.out = null; renderIO();
+  const src = srcOf(vid);
+  if(src && !src.yt){                      /* 유튜브 밖 소재 — 시간만 직접 적는다 */
+    if(player && player.pauseVideo){ try{ player.pauseVideo(); }catch(e){} }
+    $('#playerNone').innerHTML = '유튜브 밖 소재입니다: <b>' + esc(src.title) + '</b><br>' +
+      '재생은 원래 있던 곳에서 하고, 여기서는 <b>시작·끝 시간을 눌러 직접 입력</b>하세요.';
+    $('#playerNone').hidden = false;
+    return;
+  }
   if(apiFailed){ $('#playerNone').hidden = false; return; }
   if(!apiReady){ pendingVid = vid; return; }
   $('#playerNone').hidden = true;
@@ -671,11 +705,16 @@ function renderSrcs(){
   }
   box.innerHTML = S.srcs.map(s => `
     <div class="src${s.vid===S.cur?' on':''}" data-vid="${s.vid}">
-      <img src="https://i.ytimg.com/vi/${s.vid}/mqdefault.jpg" alt="" loading="lazy"
-           onerror="this.style.visibility='hidden'">
+      ${s.yt
+        ? `<img src="https://i.ytimg.com/vi/${s.vid}/mqdefault.jpg" alt="" loading="lazy"
+                onerror="this.style.visibility='hidden'">`
+        : `<span class="th-x">파일</span>`}
       <div class="meta">
         <div class="nm">${esc(s.title || s.vid)}</div>
-        <div class="st">${esc(s.author||'채널 정보 없음')}${s.dur?' · '+fmtC(s.dur):''} · 담은 컷 ${countCuts(s.vid)}개</div>
+        <div class="st">${s.yt ? esc(s.author||'채널 정보 없음') : '유튜브 밖 소재'}${s.dur?' · '+fmtC(s.dur):''} · 담은 컷 ${countCuts(s.vid)}개</div>
+        <select data-lic="${s.vid}" class="lic">
+          ${Object.keys(LICS).map(k=>`<option value="${k}"${k===s.lic?' selected':''}>${LICS[k].label}</option>`).join('')}
+        </select>
       </div>
       <button class="x" data-del="${s.vid}" title="목록에서 빼기">✕</button>
     </div>`).join('');
@@ -760,12 +799,22 @@ function renderWarns(by, total){
     const w = WAYS[c.way] || WAYS.cut;
     if(w.max && cutLen(c) > w.max + 0.05)
       out.push(`${i+1}번 컷이 ${fmtLen(cutLen(c))}입니다. 잘라내기로 가져올 수 있는 길이는 한 번에 ${w.max}초까지라, 나눠 담거나 다른 방식으로 바꾸세요.`);
+    if(!w.src) return;
+    const s = srcOf(c.vid);
+    if(!s) return;
+    const lic = s.lic || 'remix';
+    if(c.way === 'edit' && s.yt && !LICS[lic].dl)
+      out.push(`${i+1}번 컷 — 유튜브에 올라온 영상을 내려받아 편집하는 것은 약관 위반입니다. 리믹스 방식으로 바꾸거나, 내려받기를 허용하는 곳에서 같은 소재를 구하세요.`);
+    if(c.way !== 'edit' && !s.yt)
+      out.push(`${i+1}번 컷 — 유튜브 밖 소재라 리믹스 버튼을 쓸 수 없습니다. 방식을 "직접 편집"으로 바꾸세요.`);
+    if(c.way === 'edit' && s.yt && lic === 'cc')
+      out.push(`${i+1}번 컷 — CC 영상이라도 유튜브에서 직접 내려받는 것은 약관 위반입니다. 원저작자가 올려둔 원본 파일을 구해서 쓰세요.`);
   });
   if(total > S.plan.target + 0.5)
     out.push(`목표보다 ${fmtLen(total - S.plan.target)} 깁니다. 긴 컷부터 줄이세요.`);
   const mine = by.get('__mine') || 0;
   if(total > 0 && mine <= 0)
-    out.push('내 촬영·해설 구간이 하나도 없습니다. 원본만 이어 붙인 쇼츠는 재사용 콘텐츠로 분류돼 수익 창출에서 빠질 수 있습니다.');
+    out.push('내 촬영·해설 구간이 하나도 없습니다. 저작권이 풀린 소재만 써도, 원본을 그대로 이어 붙인 쇼츠는 재사용·비진정 콘텐츠로 분류돼 수익 창출에서 빠집니다.');
   for(const [k,v] of by){
     if(k === '__mine') continue;
     if(total > 0 && v/total > 0.5)
@@ -788,6 +837,11 @@ function buildSteps(){
       out.push(`${i+1}번 컷 — 내 촬영·해설 ${fmtLen(cutLen(c))}${cap}`);
       return;
     }
+    if(c.way === 'edit'){
+      out.push(`${i+1}번 컷 — "${nameOf(c.vid)}" 파일을 편집기에 넣고 ` +
+               `${fmtT(c.in)} ~ ${fmtT(c.out)} 구간 사용 (${fmtLen(cutLen(c))})${cap}`);
+      return;
+    }
     out.push(`${i+1}번 컷 — 유튜브 앱에서 "${nameOf(c.vid)}" 열기 → ${w.how} · ` +
              `${fmtC(c.in)} 지점부터 ${fmtLen(cutLen(c))}${cap}`);
   });
@@ -800,13 +854,24 @@ function buildSteps(){
 }
 
 function creditBlock(){
-  const used = [...new Set(S.cuts.filter(c => (WAYS[c.way]||{}).src).map(c=>c.vid))];
+  const used = [...new Set(S.cuts.filter(c => (WAYS[c.way]||{}).src).map(c=>c.vid))]
+    .map(srcOf).filter(Boolean);
   if(!used.length) return '';
-  return '사용한 원본 영상\n' + used.map(v => {
-    const s = srcOf(v);
-    return '· ' + (s && s.title ? s.title : v) + (s && s.author ? ' (@' + s.author + ')' : '') +
-           ' — https://youtu.be/' + v;
-  }).join('\n');
+  const url = s => s.url || (s.yt ? 'https://youtu.be/' + s.vid : '');
+  const L = [], grp = k => used.filter(s => (s.lic||'remix') === k);
+  const push = (head, list, fmt) => {
+    if(!list.length) return;
+    if(L.length) L.push('');
+    L.push(head);
+    list.forEach(s => L.push(fmt(s)));
+  };
+  push('리믹스로 가져온 원본', grp('remix'),
+       s => '· ' + (s.title || s.vid) + (s.author ? ' (@'+s.author+')' : '') + ' — ' + url(s));
+  push('CC 라이선스 소재 — 제목 / 저작자 / 라이선스 / 링크를 모두 적어야 합니다', grp('cc'),
+       s => '· ' + (s.title || '제목') + ' / ' + (s.author || '저작자') + ' / CC BY / ' + url(s));
+  push('퍼블릭 도메인 소재', grp('pd'),
+       s => '· ' + (s.title || '제목') + (url(s) ? ' — ' + url(s) : ''));
+  return L.join('\n');
 }
 
 function buildSheet(){
@@ -824,7 +889,7 @@ function buildSheet(){
     if(w.src){
       const s = srcOf(c.vid);
       L.push(`   소재: ${s && s.title ? s.title : c.vid}${s && s.author ? ' (@'+s.author+')' : ''}`);
-      L.push(`   구간: ${fmtT(c.in)} ~ ${fmtT(c.out)}  ${linkAt(c.vid, c.in)}`);
+      L.push(`   구간: ${fmtT(c.in)} ~ ${fmtT(c.out)}  ${linkOf(c)}`.trimEnd());
     }
     if(c.cap) L.push(`   자막: ${c.cap}`);
   });
@@ -853,7 +918,7 @@ function buildCSV(){
       w.src ? fmtT(c.in) : '', w.src ? fmtT(c.out) : '',
       (Math.round(cutLen(c)*10)/10).toFixed(1),
       c.cap || '',
-      w.src ? linkAt(c.vid, c.in) : '',
+      w.src ? linkOf(c) : '',
     ];
   });
   const q = v => '"' + String(v).replace(/"/g,'""') + '"';
@@ -873,21 +938,45 @@ Content ID 클레임·저작권 경고 대상이 됩니다. 리믹스로 만든 
 막힌 영상입니다. 메뉴 이름과 위치는 앱 버전에 따라 조금씩 다를 수 있습니다.<br><br>
 <b style="color:var(--ink)">내 것이 얼마나 들어갔는지 봅니다.</b> 해설·자막·재구성 없이 원본만 이어 붙이면
 재사용 콘텐츠로 분류돼 수익 창출이 막힙니다. 위 비중 표에서 내 촬영·해설이 보이게 유지하세요.<br><br>
-<b style="color:var(--ink)">소재를 더 넓히려면</b> 유튜브 검색 필터의 크리에이티브 커먼즈(CC BY) 영상,
-퍼블릭 도메인 자료, 무료 스톡 영상을 쓰면 됩니다. 이때는 편집기에서 직접 편집해도 됩니다.
+<b style="color:var(--ink)">소재를 더 넓히려면</b> 크리에이티브 커먼즈(CC BY) 영상, 퍼블릭 도메인 자료,
+무료 스톡 영상을 쓰면 됩니다. 다만 <b style="color:var(--ink)">유튜브에 올라온 것을 내려받는 것은
+저작권이 풀린 자료라도 약관 위반</b>입니다. 인터넷 아카이브·위키미디어 커먼즈·공공누리처럼
+내려받기를 허용하는 곳에서 원본 파일을 구하세요.<br><br>
+<b style="color:var(--ink)">그래서 이게 내 영상이 되나?</b> 새로 생기는 권리는 <b style="color:var(--ink)">내가
+더한 부분</b>에만 생깁니다 — 내 촬영분, 해설, 자막, 컷 구성. 원본 조각의 권리는 그대로 원작자 것이고,
+퍼블릭 도메인 소재는 남들도 똑같이 쓸 수 있습니다. 전체를 내 것이라고 주장하거나 남의 사용을 막을 수는
+없습니다. 수익화 심사는 또 별개라, 오리지널 요소가 실질적으로 들어가야 통과합니다.
 `;
 
 /* ============================================================
    조작
    ============================================================ */
 function addSource(raw){
+  raw = (raw||'').trim();
+  if(!raw) return;
   const vid = parseId(raw);
-  if(!vid){ toast('유튜브 링크를 알아볼 수 없습니다','bad'); return; }
-  const at = parseStart(raw);
-  if(!srcOf(vid)) S.srcs.push({ vid, title:'', author:'', dur:0 });
+  if(vid){
+    const at = parseStart(raw);
+    if(!srcOf(vid)) S.srcs.push({ vid, yt:true, url:'https://youtu.be/'+vid, title:'', author:'', dur:0, lic:'remix' });
+    $('#urlIn').value = '';
+    save(); renderSrcs(); renderOutputs();
+    mountPlayer(vid, at);
+    return;
+  }
+  /* 유튜브 링크가 아니면 바깥 소재(아카이브·스톡·내 파일)로 담는다. 플레이어는 못 띄운다. */
+  const isUrl = /^https?:\/\//i.test(raw);
+  if(!isUrl && raw.length < 2){ toast('링크나 소재 이름을 적어주세요','bad'); return; }
+  let title = raw;
+  if(isUrl){
+    try{
+      const u = new URL(raw);
+      title = decodeURIComponent(u.pathname.split('/').filter(Boolean).pop() || u.hostname);
+    }catch(e){}
+  }
+  S.srcs.push({ vid:uid('x'), yt:false, url:isUrl?raw:'', title, author:'', dur:0, lic:'pd' });
   $('#urlIn').value = '';
   save(); renderSrcs(); renderOutputs();
-  mountPlayer(vid, at);
+  mountPlayer(S.srcs[S.srcs.length-1].vid);
 }
 
 function addCut(){
@@ -949,7 +1038,16 @@ $('#urlIn').addEventListener('paste', ()=>setTimeout(()=>{
   if(parseId(v)) addSource(v);
 }, 30));
 
+$('#srcs').addEventListener('change', e => {
+  const sel = e.target.closest('[data-lic]');
+  if(!sel) return;
+  const src = srcOf(sel.dataset.lic);
+  if(!src) return;
+  src.lic = sel.value;
+  save(); renderCuts(); renderOutputs();
+});
 $('#srcs').addEventListener('click', e => {
+  if(e.target.tagName === 'SELECT') return;     /* 라이선스 고르는 중엔 영상을 바꾸지 않는다 */
   const del = e.target.closest('[data-del]');
   if(del){
     const vid = del.dataset.del;
