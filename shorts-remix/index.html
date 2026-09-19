@@ -1,0 +1,1124 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#0d0e12">
+<meta name="description" content="유튜브 영상을 보면서 쓸 구간을 찍어 쇼츠 리믹스 컷 시트를 만듭니다. 시작·끝 타임코드, 총 길이, 훅 대본, 출처 표기, 공식 리믹스 실행 순서까지 한 장으로. 영상을 내려받지 않고 브라우저에서만 돌아갑니다.">
+<title>쇼츠 리믹스 기획 · 유튜브 영상으로 쇼츠 컷 시트 만들기</title>
+<link rel="canonical" href="https://richroro.github.io/shorts-remix/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="쇼츠 리믹스 기획">
+<meta property="og:title" content="쇼츠 리믹스 기획 · 유튜브 영상으로 쇼츠 컷 시트 만들기">
+<meta property="og:description" content="남의 영상을 공식 플레이어로 보면서 I·O 키로 구간을 찍고, 컷 시트·훅 대본·출처 표기를 뽑습니다. 내려받기 없음, 로그인 없음.">
+<meta property="og:url" content="https://richroro.github.io/shorts-remix/">
+<meta property="og:locale" content="ko_KR">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="쇼츠 리믹스 기획 · 유튜브 영상으로 쇼츠 컷 시트 만들기">
+<meta name="twitter:description" content="구간 찍고 컷 시트 뽑아 유튜브 공식 리믹스로 실행. 내려받기 없음, 로그인 없음.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='24' fill='%237c5cff'/><path d='M28 26h13v48H28zM50 26h22v13H50zM50 43h22v13H50zM50 61h22v13H50z' fill='white'/></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&display=swap">
+<style>
+:root{
+  --bg:#0d0e12; --bg-2:#08090c; --panel:#15161d; --panel-2:#1a1c25; --elev:#20232e;
+  --line:#262936; --line-2:#353a4a;
+  --ink:#eef0f6; --ink-2:#a6adbe; --ink-3:#6b7384;
+  --accent:#7c5cff; --accent-2:#6344f0; --accent-wash:#211a45; --on-accent:#fff;
+  --mint:#2fd6a6; --amber:#ffb340; --danger:#ff5470;
+  --r:12px; --r-sm:8px;
+  --shadow:0 14px 36px -18px rgba(0,0,0,.85);
+}
+:root[data-theme="light"]{
+  --bg:#eff1f5; --bg-2:#e4e7ee; --panel:#fff; --panel-2:#f5f6fa; --elev:#fff;
+  --line:#e1e5ec; --line-2:#cdd3de;
+  --ink:#141822; --ink-2:#4d5665; --ink-3:#848d9c;
+  --accent:#5b3df0; --accent-2:#4527d6; --accent-wash:#ece8ff;
+  --mint:#0d9b76; --amber:#a96b06; --danger:#dd3550;
+  --shadow:0 14px 34px -20px rgba(20,24,34,.45);
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+[hidden]{display:none !important}
+html,body{height:100%}
+body{
+  background:var(--bg); color:var(--ink);
+  font-family:'Noto Sans KR',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+  font-size:14px; line-height:1.5;
+}
+button,input,select,textarea{font:inherit;color:inherit}
+button{background:none;border:0;cursor:pointer}
+::-webkit-scrollbar{width:9px;height:9px}
+::-webkit-scrollbar-thumb{background:var(--line-2);border-radius:9px}
+::-webkit-scrollbar-track{background:transparent}
+
+/* ---------- 골격 ---------- */
+.app{display:grid;grid-template-rows:auto minmax(0,1fr);height:100dvh}
+header{display:flex;align-items:center;gap:8px;padding:10px 13px;background:var(--panel);border-bottom:1px solid var(--line)}
+.logo{display:flex;align-items:center;gap:8px;font-weight:900;letter-spacing:-.02em;font-size:15px}
+.logo .mark{width:26px;height:26px;border-radius:8px;background:linear-gradient(135deg,var(--accent),#c05cff);display:grid;place-items:center;color:#fff;font-size:13px;flex:none}
+.logo small{display:block;font-size:11px;font-weight:500;color:var(--ink-3);letter-spacing:0;white-space:nowrap}
+@media (max-width:480px){ .logo small{display:none} }
+.spacer{flex:1}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:8px 12px;border-radius:var(--r-sm);
+  background:var(--elev);border:1px solid var(--line-2);font-size:13px;font-weight:700;white-space:nowrap}
+.btn:hover{border-color:var(--accent)}
+.btn:disabled{opacity:.4;cursor:not-allowed}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:var(--on-accent)}
+.btn.primary:hover{background:var(--accent-2)}
+.btn.ghost{background:transparent}
+.btn.sm{padding:5px 9px;font-size:12px;border-radius:7px}
+.btn.wide{width:100%}
+
+main{display:grid;grid-template-rows:auto minmax(0,1fr);overflow:hidden}
+@media (min-width:1000px) and (min-height:760px){ .stage{justify-content:center} }
+@media (min-width:1000px){
+  main{grid-template-rows:minmax(0,1fr);grid-template-columns:minmax(0,1fr) minmax(380px,440px)}
+  .stage{grid-column:1;grid-row:1;overflow:auto}
+  .rail{grid-column:2;grid-row:1;border-left:1px solid var(--line);border-top:0}
+}
+
+/* ---------- 플레이어 ---------- */
+.stage{background:var(--bg-2);padding:12px;display:flex;flex-direction:column;gap:10px;min-height:0}
+.stage>*{flex:none}
+.player-wrap{position:relative;width:100%;max-width:640px;margin:0 auto;aspect-ratio:16/9;background:#000;border-radius:10px;overflow:hidden;box-shadow:var(--shadow)}
+.player-wrap iframe,.player-wrap #player{position:absolute;inset:0;width:100%;height:100%;border:0}
+.player-none{position:absolute;inset:0;display:grid;place-items:center;text-align:center;padding:18px;color:var(--ink-3);font-size:13px;font-weight:600;line-height:1.7}
+.deck{width:100%;max-width:640px;margin:0 auto;display:flex;flex-direction:column;gap:9px}
+.timebar{position:relative;height:30px;display:flex;align-items:center;cursor:pointer;touch-action:none}
+.timebar .track{position:relative;width:100%;height:10px;border-radius:6px;background:var(--elev);overflow:hidden}
+.timebar .range{position:absolute;top:0;bottom:0;background:var(--accent);opacity:.55}
+.timebar .head{position:absolute;top:50%;width:3px;height:20px;border-radius:2px;background:var(--ink);transform:translate(-50%,-50%);pointer-events:none}
+.timebar .mk{position:absolute;top:50%;width:2px;height:16px;background:var(--mint);transform:translate(-50%,-50%);pointer-events:none}
+.deck-row{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.clock{font-variant-numeric:tabular-nums;font-size:12.5px;font-weight:700;color:var(--ink-2);min-width:112px}
+.clock b{color:var(--ink)}
+.io{display:flex;align-items:center;gap:6px;background:var(--panel);border:1px solid var(--line);border-radius:9px;padding:6px 8px;flex-wrap:wrap}
+.io .grp{display:inline-flex;align-items:center;gap:6px;white-space:nowrap}
+.io .tag{font-size:11px;font-weight:800;color:var(--ink-3)}
+.io .v{font-size:12.5px;font-weight:800;font-variant-numeric:tabular-nums;min-width:46px;cursor:pointer}
+.io .v.set{color:var(--mint)}
+.keyhint{font-size:11px;color:var(--ink-3);text-align:center}
+.keyhint kbd{background:var(--elev);border:1px solid var(--line-2);border-bottom-width:2px;border-radius:5px;padding:1px 5px;font-size:10.5px;font-family:inherit;font-weight:700;color:var(--ink-2)}
+
+/* ---------- 패널 ---------- */
+.rail{overflow:auto;padding:12px;display:flex;flex-direction:column;gap:12px;min-height:0;border-top:1px solid var(--line)}
+/* 세로 플렉스 안에서는 기본값(flex-shrink:1)이 카드를 눌러 내용을 잘라 먹는다. 스크롤로 넘긴다. */
+.rail>*{flex:none}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);overflow:hidden}
+.card>h2{display:flex;align-items:center;gap:8px;padding:11px 13px;font-size:13px;font-weight:800;border-bottom:1px solid var(--line);background:var(--panel-2)}
+.card>h2 .no{width:19px;height:19px;border-radius:6px;background:var(--accent-wash);color:var(--accent);display:grid;place-items:center;font-size:11px;font-weight:900;flex:none}
+.card>h2 .sub{margin-left:auto;font-size:11px;font-weight:600;color:var(--ink-3)}
+.card .body{padding:12px 13px;display:flex;flex-direction:column;gap:10px}
+.note{font-size:11.5px;line-height:1.6;color:var(--ink-3)}
+.note b{color:var(--ink-2)}
+.note a{color:var(--accent)}
+.banner{display:flex;gap:8px;padding:9px 10px;border-radius:9px;background:var(--accent-wash);border:1px solid var(--line-2);font-size:11.5px;line-height:1.6;color:var(--ink-2)}
+.banner .ic{flex:none}
+.banner.warn{background:transparent;border-color:var(--amber);color:var(--amber)}
+
+.rows{display:flex;flex-direction:column;gap:9px}
+.row{display:flex;align-items:center;gap:8px}
+.row>label{font-size:12px;font-weight:700;color:var(--ink-2);width:74px;flex:none}
+.seg-ctl{display:flex;background:var(--elev);border:1px solid var(--line-2);border-radius:8px;padding:2px;gap:2px;flex:1;min-width:0}
+.seg-ctl button{flex:1;padding:6px 4px;border-radius:6px;font-size:12px;font-weight:700;color:var(--ink-2);white-space:nowrap}
+.seg-ctl button.on{background:var(--accent);color:var(--on-accent)}
+input[type=text],input[type=number],input[type=url],select,textarea{
+  flex:1;min-width:0;background:var(--elev);border:1px solid var(--line-2);border-radius:8px;padding:8px 9px;font-size:12.5px}
+input:focus,select:focus,textarea:focus{outline:2px solid var(--accent);outline-offset:-1px}
+textarea{resize:vertical;min-height:54px;font-family:inherit;line-height:1.6}
+
+/* 소재 목록 */
+.srcs{display:flex;flex-direction:column;gap:7px}
+.src{display:flex;gap:9px;align-items:center;background:var(--panel-2);border:1px solid var(--line);border-radius:10px;padding:7px;cursor:pointer}
+.src.on{border-color:var(--accent);background:var(--accent-wash)}
+.src img{width:62px;height:35px;border-radius:6px;background:#000;object-fit:cover;flex:none}
+.src .meta{flex:1;min-width:0}
+.src .nm{font-size:12.5px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.src .st{font-size:11px;color:var(--ink-3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.src .x{color:var(--ink-3);padding:4px 6px;border-radius:6px;font-size:12px}
+.src .x:hover{color:var(--danger);background:var(--elev)}
+
+/* 컷 목록 */
+.cuts{display:flex;flex-direction:column;gap:8px}
+.cut{display:flex;gap:9px;padding:9px;border-radius:10px;background:var(--panel-2);border:1px solid var(--line)}
+.cut.sel{border-color:var(--accent)}
+.cut.mine{border-left:3px solid var(--mint)}
+.cut .idx{width:20px;height:20px;border-radius:6px;background:var(--elev);color:var(--ink-2);display:grid;place-items:center;font-size:11px;font-weight:900;flex:none}
+.cut .info{flex:1;min-width:0;display:flex;flex-direction:column;gap:4px}
+.cut .t1{font-size:12.5px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cut .t2{font-size:11px;color:var(--ink-3);font-variant-numeric:tabular-nums;display:flex;gap:7px;flex-wrap:wrap;align-items:center}
+.cut .way{background:var(--elev);border:1px solid var(--line);border-radius:5px;padding:1px 5px;font-size:10.5px;font-weight:700;color:var(--ink-2)}
+.cut .cap{font-size:11.5px;color:var(--ink-2);background:var(--elev);border-radius:6px;padding:4px 7px;line-height:1.5}
+.cut .acts{display:flex;flex-wrap:wrap;gap:4px}
+.cut .acts button{padding:3px 6px;font-size:11px;border-radius:6px;background:var(--elev);border:1px solid var(--line);color:var(--ink-2);font-weight:700}
+.cut .acts button:hover{border-color:var(--accent);color:var(--ink)}
+.cut .bad{color:var(--amber);font-weight:700}
+.empty{padding:16px;text-align:center;color:var(--ink-3);font-size:12px;line-height:1.7}
+
+/* 길이 게이지 */
+.gauge{display:flex;flex-direction:column;gap:5px}
+.gauge .bar{height:12px;border-radius:7px;background:var(--elev);overflow:hidden;display:flex}
+.gauge .bar i{height:100%;display:block;border-right:1px solid var(--panel)}
+.gauge .lab{display:flex;justify-content:space-between;font-size:11px;color:var(--ink-3);font-variant-numeric:tabular-nums}
+.gauge .lab b{color:var(--ink)}
+.mix{display:flex;flex-direction:column;gap:4px}
+.mix .r{display:flex;align-items:center;gap:6px;font-size:11.5px;color:var(--ink-2)}
+.mix .sw{width:9px;height:9px;border-radius:3px;flex:none}
+.mix .pct{margin-left:auto;font-variant-numeric:tabular-nums;color:var(--ink-3)}
+
+/* 체크리스트 */
+.steps{display:flex;flex-direction:column;gap:8px;counter-reset:st}
+.step{display:flex;gap:9px;font-size:12px;line-height:1.65;color:var(--ink-2)}
+.step:before{counter-increment:st;content:counter(st);width:19px;height:19px;border-radius:6px;background:var(--elev);
+  border:1px solid var(--line-2);color:var(--ink-2);display:grid;place-items:center;font-size:10.5px;font-weight:900;flex:none;margin-top:1px}
+.step b{color:var(--ink)}
+.out{background:var(--bg-2);border:1px solid var(--line);border-radius:9px;padding:10px;font-size:11.5px;line-height:1.7;
+  white-space:pre-wrap;word-break:break-all;max-height:220px;overflow:auto;font-variant-numeric:tabular-nums}
+
+#toast{position:fixed;left:50%;bottom:20px;transform:translateX(-50%);z-index:80;display:flex;flex-direction:column;gap:6px;align-items:center;pointer-events:none}
+#toast div{background:var(--elev);border:1px solid var(--line-2);color:var(--ink);padding:8px 13px;border-radius:99px;font-size:12.5px;font-weight:700;box-shadow:var(--shadow)}
+#toast div.bad{border-color:var(--danger);color:var(--danger)}
+#toast div.ok{border-color:var(--mint);color:var(--mint)}
+</style>
+</head>
+<body>
+<div class="app">
+  <header>
+    <div class="logo">
+      <span class="mark">▶</span>
+      <span>쇼츠 리믹스 기획<small>유튜브 리믹스 버튼으로 실행하는 컷 시트</small></span>
+    </div>
+    <span class="spacer"></span>
+    <button class="btn ghost sm" id="themeBtn" title="밝게 / 어둡게">◐</button>
+    <button class="btn primary sm" id="copyBtn">컷 시트 복사</button>
+  </header>
+
+  <main>
+    <!-- ================= 플레이어 ================= -->
+    <section class="stage">
+      <div class="player-wrap">
+        <div id="player"></div>
+        <div class="player-none" id="playerNone">
+          영상 링크를 붙여넣으면 여기서 재생됩니다.<br>
+          보면서 <kbd>I</kbd> 로 시작점, <kbd>O</kbd> 로 끝점을 찍으세요.
+        </div>
+      </div>
+
+      <div class="deck">
+        <div class="timebar" id="timebar">
+          <div class="track">
+            <div class="range" id="tbRange" hidden></div>
+          </div>
+          <div class="head" id="tbHead" style="left:0"></div>
+          <div class="mk" id="tbIn" hidden></div>
+          <div class="mk" id="tbOut" hidden></div>
+        </div>
+
+        <div class="deck-row">
+          <button class="btn sm" id="back1" title="1초 뒤로">◀ 1s</button>
+          <button class="btn sm" id="playBtn" style="min-width:64px">재생</button>
+          <button class="btn sm" id="fwd1" title="1초 앞으로">1s ▶</button>
+          <span class="clock" id="clock"><b>0:00.0</b> / 0:00</span>
+          <span class="spacer"></span>
+          <select id="rate" style="flex:none;width:78px" title="재생 속도">
+            <option value="0.25">0.25배</option>
+            <option value="0.5">0.5배</option>
+            <option value="1" selected>1배</option>
+            <option value="1.5">1.5배</option>
+            <option value="2">2배</option>
+          </select>
+        </div>
+
+        <div class="io">
+          <span class="grp"><span class="tag">시작</span><span class="v" id="inV">–</span>
+            <button class="btn sm" id="setIn">I 찍기</button></span>
+          <span class="grp"><span class="tag">끝</span><span class="v" id="outV">–</span>
+            <button class="btn sm" id="setOut">O 찍기</button></span>
+          <span class="grp"><span class="tag">길이</span><span class="v" id="lenV">–</span></span>
+          <span class="spacer"></span>
+          <button class="btn sm" id="loopBtn" title="찍은 구간만 반복">구간 반복</button>
+          <button class="btn sm" id="clearIO">지우기</button>
+        </div>
+
+        <div class="deck-row">
+          <select id="wayPick" style="flex:1">
+            <option value="cut">잘라내기 — 원본 화면을 내 쇼츠에 넣기 (최대 5초)</option>
+            <option value="sound">사운드 사용 — 소리만 가져오고 화면은 내가 촬영</option>
+            <option value="green">그린 스크린 — 원본을 배경에 깔고 내가 앞에</option>
+            <option value="collab">콜라보 — 원본과 분할 화면</option>
+            <option value="mine">내 촬영·해설 — 원본 없이 직접 찍는 구간</option>
+          </select>
+          <button class="btn primary" id="addCut">＋ 컷 담기</button>
+        </div>
+
+        <p class="keyhint">
+          <kbd>Space</kbd> 재생 · <kbd>I</kbd> 시작 · <kbd>O</kbd> 끝 · <kbd>Enter</kbd> 컷 담기 ·
+          <kbd>←</kbd><kbd>→</kbd> 1초 · <kbd>Shift</kbd>+<kbd>←</kbd><kbd>→</kbd> 0.1초
+        </p>
+      </div>
+    </section>
+
+    <!-- ================= 오른쪽 패널 ================= -->
+    <section class="rail">
+
+      <div class="card">
+        <h2><span class="no">1</span>소재 영상<span class="sub" id="srcCount">0개</span></h2>
+        <div class="body">
+          <div class="row">
+            <input type="url" id="urlIn" placeholder="유튜브 링크 붙여넣기 (쇼츠·일반 영상 모두)" inputmode="url">
+            <button class="btn" id="addSrc" style="flex:none">추가</button>
+          </div>
+          <div class="srcs" id="srcs"></div>
+          <div class="banner">
+            <span class="ic">🔒</span>
+            <span>이 도구는 영상을 <b>내려받지 않습니다</b>. 유튜브 공식 플레이어로 보면서 구간만 기록하고,
+              실제 편집은 유튜브 앱의 <b>리믹스</b> 버튼으로 합니다. 리믹스 버튼이 보이지 않는 영상은
+              원작자가 리믹스를 꺼둔 것이니 소재로 쓰지 마세요.</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2><span class="no">2</span>컷 시트<span class="sub" id="cutCount">0컷</span></h2>
+        <div class="body">
+          <div class="row">
+            <label>목표 길이</label>
+            <div class="seg-ctl" id="targetSeg">
+              <button data-v="15">15초</button>
+              <button data-v="30">30초</button>
+              <button data-v="60" class="on">60초</button>
+              <button data-v="180">3분</button>
+            </div>
+          </div>
+          <div class="gauge">
+            <div class="bar" id="gaugeBar"></div>
+            <div class="lab"><span id="gaugeLeft">0컷 · 0.0초</span><span>목표 <b id="gaugeTarget">60초</b></span></div>
+          </div>
+          <div class="mix" id="mix"></div>
+          <div id="warns"></div>
+          <div class="cuts" id="cuts"></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2><span class="no">3</span>대본</h2>
+        <div class="body">
+          <div class="rows">
+            <div class="row"><label>쇼츠 제목</label><input type="text" id="pTitle" placeholder="업로드할 제목"></div>
+            <div class="row" style="align-items:flex-start"><label>훅 (0~3초)</label>
+              <textarea id="pHook" placeholder="첫 3초에 말할 문장 — 여기서 이탈이 갈립니다"></textarea></div>
+            <div class="row" style="align-items:flex-start"><label>마무리</label>
+              <textarea id="pOutro" placeholder="마지막 한 문장 · 구독 유도 등"></textarea></div>
+            <div class="row"><label>해시태그</label><input type="text" id="pTags" placeholder="#shorts #리믹스"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2><span class="no">4</span>실행 순서<span class="sub">유튜브 앱</span></h2>
+        <div class="body">
+          <div class="steps" id="steps"></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2><span class="no">5</span>내보내기</h2>
+        <div class="body">
+          <div class="out" id="preview"></div>
+          <div class="row">
+            <button class="btn" id="copyBtn2" style="flex:1">텍스트 복사</button>
+            <button class="btn" id="txtBtn" style="flex:1">.txt 저장</button>
+            <button class="btn" id="csvBtn" style="flex:1">.csv 저장</button>
+          </div>
+          <button class="btn ghost sm wide" id="resetBtn">전부 지우고 새로 시작</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2><span class="no">6</span>올리기 전 확인</h2>
+        <div class="body">
+          <div class="note" id="policy"></div>
+        </div>
+      </div>
+
+    </section>
+  </main>
+</div>
+
+<div id="toast"></div>
+<script>
+/* ============================================================
+   쇼츠 리믹스 기획 — 유튜브 공식 리믹스로 실행할 컷 시트를 만든다.
+   · 영상 파일을 내려받지 않는다. 공식 IFrame 플레이어로 보면서 구간만 기록한다.
+   · 저장은 이 브라우저(localStorage)에만 남는다. 서버로 가는 것은 없다.
+   ============================================================ */
+
+/* ---------- 유틸 ---------- */
+const $  = s => document.querySelector(s);
+const $$ = s => [...document.querySelectorAll(s)];
+const clamp = (v,a,b) => v<a?a:v>b?b:v;
+const uid = p => p + Math.random().toString(36).slice(2,9);
+const esc = s => String(s??'').replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+
+/* 12.34 → "0:12.3" */
+function fmtT(s){
+  if(s==null || !isFinite(s)) return '–';
+  s = Math.max(0,s);
+  const m = Math.floor(s/60), r = s-m*60;
+  return m + ':' + (r<10?'0':'') + r.toFixed(1);
+}
+/* 12.34 → "0:12" (링크·시트용) */
+function fmtC(s){
+  if(s==null || !isFinite(s)) return '0:00';
+  s = Math.max(0,Math.round(s));
+  const m = Math.floor(s/60);
+  return m + ':' + String(s-m*60).padStart(2,'0');
+}
+const fmtLen = s => (Math.round(s*10)/10).toFixed(1) + '초';
+
+function toast(msg, kind){
+  const box = $('#toast');
+  const d = document.createElement('div');
+  if(kind) d.className = kind;
+  d.textContent = msg;
+  box.appendChild(d);
+  setTimeout(()=>{ d.style.opacity='0'; d.style.transition='opacity .3s'; }, 1500);
+  setTimeout(()=>d.remove(), 1850);
+}
+
+/* 샌드박스에서 페이지가 직접 시작한 다운로드가 막히면 호스트 저장 창구를 쓴다. (웹컷과 동일) */
+let hostSave = null;
+if(window.claude && typeof window.claude.use === 'function'){
+  Promise.resolve(window.claude.use('downloads')).then(d=>{ hostSave = d || null; }).catch(()=>{});
+}
+async function offerFile(text, name, mime){
+  const blob = new Blob([text], {type:mime||'text/plain;charset=utf-8'});
+  if(hostSave){
+    try{ await hostSave.save({filename:name, data:blob}); toast(name+' 저장 완료','ok'); return; }
+    catch(err){
+      const code = err && err.code;
+      if(code==='declined'){ toast('저장을 취소했습니다'); return; }
+      if(code==='rate_limited'){ toast('잠시 뒤 다시 눌러주세요','bad'); return; }
+    }
+  }
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = name;
+  document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(()=>URL.revokeObjectURL(url), 4000);
+  toast(name+' 저장','ok');
+}
+async function copyText(text){
+  try{
+    await navigator.clipboard.writeText(text);
+    toast('복사했습니다','ok'); return true;
+  }catch(e){
+    const ta = document.createElement('textarea');
+    ta.value = text; ta.style.position='fixed'; ta.style.opacity='0';
+    document.body.appendChild(ta); ta.select();
+    let ok = false;
+    try{ ok = document.execCommand('copy'); }catch(e2){}
+    ta.remove();
+    toast(ok ? '복사했습니다' : '복사가 막혀 있습니다. 아래 상자에서 직접 선택해 주세요', ok?'ok':'bad');
+    return ok;
+  }
+}
+
+/* ---------- 링크 파싱 ---------- */
+function parseId(u){
+  u = (u||'').trim();
+  if(/^[\w-]{11}$/.test(u)) return u;
+  const m = u.match(/(?:youtube\.com\/(?:watch\?(?:[^#]*&)?v=|shorts\/|embed\/|live\/|v\/)|youtu\.be\/)([\w-]{11})/);
+  return m ? m[1] : '';
+}
+/* ?t=1m30s / ?t=90 / &start=90 → 초 */
+function parseStart(u){
+  u = u||'';
+  let m = u.match(/[?&](?:t|start)=(\d+)h(\d+)m(\d+)s/i);
+  if(m) return +m[1]*3600 + +m[2]*60 + +m[3];
+  m = u.match(/[?&](?:t|start)=(\d+)m(\d+)s/i);
+  if(m) return +m[1]*60 + +m[2];
+  m = u.match(/[?&](?:t|start)=(\d+)s?\b/i);
+  if(m) return +m[1];
+  return 0;
+}
+const linkAt = (vid, t) => 'https://youtu.be/' + vid + (t>0 ? '?t=' + Math.floor(t) : '');
+
+/* ---------- 리믹스 방식 ---------- */
+const WAYS = {
+  cut:    { label:'잘라내기',   short:'잘라내기', max:5,   src:true,
+            how:'리믹스 → 잘라내기 → 해당 구간 선택(최대 5초)' },
+  sound:  { label:'사운드 사용', short:'사운드',   max:null, src:true,
+            how:'리믹스 → 사운드 → 그 소리 위에 내 화면 촬영' },
+  green:  { label:'그린 스크린', short:'그린',     max:null, src:true,
+            how:'리믹스 → 그린 스크린 → 원본을 배경으로 두고 앞에서 촬영' },
+  collab: { label:'콜라보',     short:'콜라보',   max:null, src:true,
+            how:'리믹스 → 콜라보 → 분할 화면으로 같이 촬영' },
+  mine:   { label:'내 촬영·해설', short:'내 촬영', max:null, src:false,
+            how:'원본 없이 직접 촬영하거나 편집기에서 만든 구간' },
+};
+const COLORS = ['#7c5cff','#2fd6a6','#ffb340','#ff5470','#4aa8ff','#c05cff','#7bd14a'];
+
+/* ---------- 상태 ---------- */
+const S = {
+  srcs: [],                     // {vid, title, author, dur}
+  cuts: [],                     // {id, vid, way, in, out, cap}
+  plan: { target:60, title:'', hook:'', outro:'', tags:'#shorts' },
+  cur: '',                      // 지금 플레이어에 올린 영상
+  sel: '',                      // 컷 목록에서 선택된 컷
+};
+const MARK = { in:null, out:null };
+const KEY = 'shorts-remix/v1';
+
+function save(){
+  try{
+    localStorage.setItem(KEY, JSON.stringify({srcs:S.srcs, cuts:S.cuts, plan:S.plan, cur:S.cur}));
+  }catch(e){}
+}
+function load(){
+  try{
+    const raw = localStorage.getItem(KEY);
+    if(!raw) return;
+    const d = JSON.parse(raw);
+    if(Array.isArray(d.srcs)) S.srcs = d.srcs;
+    if(Array.isArray(d.cuts)) S.cuts = d.cuts;
+    if(d.plan) Object.assign(S.plan, d.plan);
+    if(d.cur) S.cur = d.cur;
+  }catch(e){}
+}
+const srcOf = vid => S.srcs.find(s=>s.vid===vid) || null;
+const nameOf = vid => { const s = srcOf(vid); return s ? (s.title || s.vid) : (vid || '내 촬영'); };
+function colorOf(vid){
+  const i = S.srcs.findIndex(s=>s.vid===vid);
+  return i<0 ? 'var(--mint)' : COLORS[i % COLORS.length];
+}
+const cutLen = c => Math.max(0, (c.out ?? 0) - (c.in ?? 0));
+const totalLen = () => S.cuts.reduce((a,c)=>a+cutLen(c), 0);
+
+/* ============================================================
+   유튜브 공식 IFrame 플레이어
+   원본 영상은 유튜브 서버에서 그대로 재생된다. 프레임을 읽거나 받아오지 않는다.
+   ============================================================ */
+let player = null, apiReady = false, apiFailed = false, pendingVid = '';
+let curT = 0, curD = 0, playing = false, loopOn = false;
+
+function loadAPI(){
+  if(window.YT && window.YT.Player){ apiReady = true; return; }
+  const s = document.createElement('script');
+  s.src = 'https://www.youtube.com/iframe_api';
+  s.onerror = () => {
+    apiFailed = true;
+    $('#playerNone').innerHTML = '유튜브 플레이어를 불러오지 못했습니다.<br>' +
+      '유튜브에서 영상을 직접 보면서 <b>시작·끝 시간을 눌러 직접 입력</b>하면 컷 시트는 그대로 만들 수 있습니다.';
+    $('#playerNone').hidden = false;
+  };
+  document.head.appendChild(s);
+}
+window.onYouTubeIframeAPIReady = function(){
+  apiReady = true;
+  if(pendingVid){ const v = pendingVid; pendingVid = ''; mountPlayer(v); }
+};
+
+function mountPlayer(vid, startAt){
+  if(!vid) return;
+  S.cur = vid; save(); renderSrcs();
+  MARK.in = null; MARK.out = null; renderIO();
+  if(apiFailed){ $('#playerNone').hidden = false; return; }
+  if(!apiReady){ pendingVid = vid; return; }
+  $('#playerNone').hidden = true;
+  const opts = {
+    playsinline:1, rel:0, modestbranding:1, enablejsapi:1,
+    origin: location.origin, start: Math.floor(startAt||0),
+  };
+  if(player && player.loadVideoById){
+    try{ player.loadVideoById({videoId:vid, startSeconds:Math.floor(startAt||0)}); }
+    catch(e){ player.loadVideoById(vid); }
+    return;
+  }
+  try{
+    player = new YT.Player('player', {
+      videoId: vid, playerVars: opts,
+      events: {
+        onReady: () => { grabMeta(); startPoll(); },
+        onStateChange: e => {
+          playing = (e.data === 1);
+          $('#playBtn').textContent = playing ? '일시정지' : '재생';
+          if(e.data === 1) grabMeta();
+        },
+        onError: () => toast('이 영상은 외부 재생이 막혀 있습니다. 유튜브 앱에서 확인하세요','bad'),
+      },
+    });
+  }catch(e){ apiFailed = true; }
+}
+
+/* 제목·채널은 플레이어가 알려준다(별도 요청 없음). */
+function grabMeta(){
+  if(!player || !player.getVideoData) return;
+  let d = null;
+  try{ d = player.getVideoData(); }catch(e){}
+  if(!d || !d.video_id) return;
+  const s = srcOf(d.video_id);
+  if(!s) return;
+  let changed = false;
+  if(d.title && s.title !== d.title){ s.title = d.title; changed = true; }
+  if(d.author && s.author !== d.author){ s.author = d.author; changed = true; }
+  try{
+    const dur = player.getDuration();
+    if(dur && isFinite(dur) && Math.abs((s.dur||0) - dur) > 0.5){ s.dur = dur; changed = true; }
+  }catch(e){}
+  if(changed){ save(); renderSrcs(); renderCuts(); renderOutputs(); }
+}
+
+let pollId = 0;
+function startPoll(){
+  if(pollId) return;
+  pollId = setInterval(()=>{
+    if(!player || !player.getCurrentTime) return;
+    try{
+      curT = player.getCurrentTime() || 0;
+      curD = player.getDuration() || 0;
+    }catch(e){ return; }
+    if(loopOn && MARK.in!=null && MARK.out!=null && MARK.out > MARK.in){
+      if(curT > MARK.out || curT < MARK.in - 0.4) seekTo(MARK.in);
+    }
+    renderClock();
+  }, 90);
+}
+/* 구간을 찍는 순간에는 폴링값(최대 90ms 전)이 아니라 플레이어에서 바로 읽는다. */
+function nowT(){
+  if(player && player.getCurrentTime){
+    try{
+      const t = player.getCurrentTime();
+      if(isFinite(t)){ curT = t; return t; }
+    }catch(e){}
+  }
+  return curT;
+}
+function seekTo(t){
+  t = clamp(t, 0, curD || 1e6);
+  curT = t;
+  if(player && player.seekTo){ try{ player.seekTo(t, true); }catch(e){} }
+  renderClock();
+}
+function togglePlay(){
+  if(!player) return;
+  try{ playing ? player.pauseVideo() : player.playVideo(); }catch(e){}
+}
+
+/* ---------- 시간 막대 · 시계 ---------- */
+function renderClock(){
+  $('#clock').innerHTML = '<b>' + fmtT(curT) + '</b> / ' + fmtC(curD);
+  const w = curD > 0 ? clamp(curT/curD, 0, 1) : 0;
+  $('#tbHead').style.left = (w*100) + '%';
+  const mk = (el, t) => {
+    const on = t!=null && curD>0;
+    el.hidden = !on;
+    if(on) el.style.left = (clamp(t/curD,0,1)*100) + '%';
+  };
+  mk($('#tbIn'), MARK.in);
+  mk($('#tbOut'), MARK.out);
+  const r = $('#tbRange');
+  if(MARK.in!=null && MARK.out!=null && curD>0 && MARK.out>MARK.in){
+    r.hidden = false;
+    r.style.left  = (clamp(MARK.in/curD,0,1)*100) + '%';
+    r.style.width = (clamp((MARK.out-MARK.in)/curD,0,1)*100) + '%';
+  }else r.hidden = true;
+}
+function renderIO(){
+  const iv = $('#inV'), ov = $('#outV');
+  iv.textContent = MARK.in==null ? '–' : fmtT(MARK.in);
+  ov.textContent = MARK.out==null ? '–' : fmtT(MARK.out);
+  iv.classList.toggle('set', MARK.in!=null);
+  ov.classList.toggle('set', MARK.out!=null);
+  const len = (MARK.in!=null && MARK.out!=null) ? MARK.out-MARK.in : null;
+  $('#lenV').textContent = (len!=null && len>0) ? fmtLen(len) : '–';
+  $('#lenV').classList.toggle('set', len!=null && len>0);
+  renderClock();
+}
+
+/* "1:23.4" · "83.4" 둘 다 받는다 */
+function parseTC(s){
+  s = String(s||'').trim().replace(/초$/,'');
+  if(!s) return null;
+  const m = s.match(/^(\d+):([0-5]?\d(?:\.\d+)?)$/);
+  if(m) return +m[1]*60 + +m[2];
+  const n = parseFloat(s);
+  return isFinite(n) && n>=0 ? n : null;
+}
+function askTime(which){
+  const cur = which==='in' ? MARK.in : MARK.out;
+  const v = prompt(which==='in' ? '시작 시간 (예: 1:23.4)' : '끝 시간 (예: 1:28.0)', cur==null?'':fmtT(cur));
+  if(v===null) return;
+  const t = parseTC(v);
+  if(t===null){ toast('시간 형식을 알아볼 수 없습니다','bad'); return; }
+  if(which==='in') MARK.in = t; else MARK.out = t;
+  if(MARK.in!=null && MARK.out!=null && MARK.out <= MARK.in) MARK.out = MARK.in + 1;
+  renderIO();
+}
+
+/* ============================================================
+   소재 · 컷 목록 그리기
+   ============================================================ */
+const countCuts = vid => S.cuts.filter(c=>c.vid===vid).length;
+
+function renderSrcs(){
+  const box = $('#srcs');
+  $('#srcCount').textContent = S.srcs.length + '개';
+  if(!S.srcs.length){
+    box.innerHTML = '<div class="empty">아직 소재가 없습니다.<br>쓰고 싶은 유튜브 영상 링크를 붙여넣으세요.</div>';
+    return;
+  }
+  box.innerHTML = S.srcs.map(s => `
+    <div class="src${s.vid===S.cur?' on':''}" data-vid="${s.vid}">
+      <img src="https://i.ytimg.com/vi/${s.vid}/mqdefault.jpg" alt="" loading="lazy"
+           onerror="this.style.visibility='hidden'">
+      <div class="meta">
+        <div class="nm">${esc(s.title || s.vid)}</div>
+        <div class="st">${esc(s.author||'채널 정보 없음')}${s.dur?' · '+fmtC(s.dur):''} · 담은 컷 ${countCuts(s.vid)}개</div>
+      </div>
+      <button class="x" data-del="${s.vid}" title="목록에서 빼기">✕</button>
+    </div>`).join('');
+}
+
+function wayOptions(sel){
+  return Object.keys(WAYS).map(k =>
+    `<option value="${k}"${k===sel?' selected':''}>${WAYS[k].label}</option>`).join('');
+}
+
+function renderCuts(){
+  const box = $('#cuts');
+  $('#cutCount').textContent = S.cuts.length + '컷';
+  if(!S.cuts.length){
+    box.innerHTML = '<div class="empty">담은 컷이 없습니다.<br>영상을 보면서 <b>I</b>·<b>O</b> 로 구간을 찍고 <b>컷 담기</b>를 누르세요.</div>';
+    return;
+  }
+  box.innerHTML = S.cuts.map((c,i) => {
+    const w = WAYS[c.way] || WAYS.cut;
+    const len = cutLen(c);
+    const over = w.max && len > w.max + 0.05;
+    const where = w.src
+      ? `${fmtT(c.in)} ~ ${fmtT(c.out)}`
+      : '직접 촬영';
+    return `
+    <div class="cut${c.id===S.sel?' sel':''}${w.src?'':' mine'}" data-id="${c.id}"
+         style="border-left:3px solid ${colorOf(c.vid)}">
+      <span class="idx">${i+1}</span>
+      <div class="info">
+        <div class="t1">${esc(w.src ? nameOf(c.vid) : '내 촬영·해설')}</div>
+        <div class="t2">
+          <span class="way">${w.label}</span>
+          <span>${where}</span>
+          <span class="${over?'bad':''}">${fmtLen(len)}${over?' · 5초 넘음':''}</span>
+        </div>
+        ${c.cap ? `<div class="cap">${esc(c.cap)}</div>` : ''}
+        <div class="acts">
+          <select data-way="${c.id}" style="padding:3px 5px;font-size:11px;flex:none;width:auto">${wayOptions(c.way)}</select>
+          ${w.src ? `<button data-go="${c.id}">장면 보기</button>` : ''}
+          <button data-time="${c.id}">시간</button>
+          <button data-cap="${c.id}">자막</button>
+          <button data-up="${c.id}">▲</button>
+          <button data-down="${c.id}">▼</button>
+          <button data-del-cut="${c.id}">삭제</button>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function renderGauge(){
+  const total = totalLen(), target = S.plan.target;
+  const span = Math.max(total, target);
+  $('#gaugeBar').innerHTML = S.cuts.map(c =>
+    `<i style="width:${span>0 ? (cutLen(c)/span*100) : 0}%;background:${colorOf(c.vid)}"></i>`).join('');
+  $('#gaugeLeft').innerHTML = S.cuts.length + '컷 · <b style="color:' +
+    (total>target ? 'var(--amber)' : 'var(--ink)') + '">' + fmtLen(total) + '</b>';
+  $('#gaugeTarget').textContent = target >= 60 ? (target/60) + '분' : target + '초';
+
+  /* 소재별 비중 */
+  const by = new Map();
+  for(const c of S.cuts){
+    const k = WAYS[c.way] && WAYS[c.way].src ? c.vid : '__mine';
+    by.set(k, (by.get(k)||0) + cutLen(c));
+  }
+  const total2 = total || 1;
+  const rows = [...by.entries()].sort((a,b)=>b[1]-a[1]).map(([k,v]) => {
+    const isMine = k === '__mine';
+    return `<div class="r">
+      <span class="sw" style="background:${isMine?'var(--mint)':colorOf(k)}"></span>
+      <span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(isMine?'내 촬영·해설':nameOf(k))}</span>
+      <span class="pct">${Math.round(v/total2*100)}% · ${fmtLen(v)}</span>
+    </div>`;
+  });
+  $('#mix').innerHTML = rows.join('');
+  renderWarns(by, total);
+}
+
+function renderWarns(by, total){
+  const out = [];
+  S.cuts.forEach((c,i) => {
+    const w = WAYS[c.way] || WAYS.cut;
+    if(w.max && cutLen(c) > w.max + 0.05)
+      out.push(`${i+1}번 컷이 ${fmtLen(cutLen(c))}입니다. 잘라내기로 가져올 수 있는 길이는 한 번에 ${w.max}초까지라, 나눠 담거나 다른 방식으로 바꾸세요.`);
+  });
+  if(total > S.plan.target + 0.5)
+    out.push(`목표보다 ${fmtLen(total - S.plan.target)} 깁니다. 긴 컷부터 줄이세요.`);
+  const mine = by.get('__mine') || 0;
+  if(total > 0 && mine <= 0)
+    out.push('내 촬영·해설 구간이 하나도 없습니다. 원본만 이어 붙인 쇼츠는 재사용 콘텐츠로 분류돼 수익 창출에서 빠질 수 있습니다.');
+  for(const [k,v] of by){
+    if(k === '__mine') continue;
+    if(total > 0 && v/total > 0.5)
+      out.push(`"${nameOf(k)}" 한 편이 전체의 ${Math.round(v/total*100)}%입니다. 한 영상 비중은 절반 아래로 두는 편이 안전합니다.`);
+  }
+  $('#warns').innerHTML = out.length
+    ? out.map(t => `<div class="banner warn"><span class="ic">!</span><span>${esc(t)}</span></div>`).join('')
+    : '';
+}
+
+/* ============================================================
+   실행 순서 · 컷 시트 만들기
+   ============================================================ */
+function buildSteps(){
+  const out = [];
+  S.cuts.forEach((c,i) => {
+    const w = WAYS[c.way] || WAYS.cut;
+    const cap = c.cap ? ` · 자막 "${c.cap}"` : '';
+    if(!w.src){
+      out.push(`${i+1}번 컷 — 내 촬영·해설 ${fmtLen(cutLen(c))}${cap}`);
+      return;
+    }
+    out.push(`${i+1}번 컷 — 유튜브 앱에서 "${nameOf(c.vid)}" 열기 → ${w.how} · ` +
+             `${fmtC(c.in)} 지점부터 ${fmtLen(cutLen(c))}${cap}`);
+  });
+  if(S.cuts.length){
+    out.push('쇼츠 편집기에서 위 순서대로 배치하고, 컷마다 자막을 얹습니다.');
+    out.push('훅 문구는 0~3초 안에 화면에 보이게 합니다.');
+  }
+  out.push('설명란에 아래 출처 표기를 붙여넣고 업로드합니다. 리믹스로 만든 쇼츠에는 원본 링크가 자동으로 달리지만, 설명란에도 적어두면 분쟁이 줄어듭니다.');
+  return out;
+}
+
+function creditBlock(){
+  const used = [...new Set(S.cuts.filter(c => (WAYS[c.way]||{}).src).map(c=>c.vid))];
+  if(!used.length) return '';
+  return '사용한 원본 영상\n' + used.map(v => {
+    const s = srcOf(v);
+    return '· ' + (s && s.title ? s.title : v) + (s && s.author ? ' (@' + s.author + ')' : '') +
+           ' — https://youtu.be/' + v;
+  }).join('\n');
+}
+
+function buildSheet(){
+  const total = totalLen();
+  const L = [];
+  L.push('🎬 쇼츠 리믹스 컷 시트');
+  if(S.plan.title) L.push('제목: ' + S.plan.title);
+  L.push(`목표 ${S.plan.target}초 / 현재 ${fmtLen(total)} · ${S.cuts.length}컷`);
+  L.push('');
+  if(S.plan.hook) L.push('[훅 0~3초] ' + S.plan.hook);
+  L.push('');
+  S.cuts.forEach((c,i) => {
+    const w = WAYS[c.way] || WAYS.cut;
+    L.push(`${i+1}. ${w.label} · ${fmtLen(cutLen(c))}`);
+    if(w.src){
+      const s = srcOf(c.vid);
+      L.push(`   소재: ${s && s.title ? s.title : c.vid}${s && s.author ? ' (@'+s.author+')' : ''}`);
+      L.push(`   구간: ${fmtT(c.in)} ~ ${fmtT(c.out)}  ${linkAt(c.vid, c.in)}`);
+    }
+    if(c.cap) L.push(`   자막: ${c.cap}`);
+  });
+  L.push('');
+  if(S.plan.outro) L.push('[마무리] ' + S.plan.outro);
+  if(S.plan.tags)  L.push('해시태그: ' + S.plan.tags);
+  const cr = creditBlock();
+  if(cr){ L.push(''); L.push('── 설명란 출처 표기 ──'); L.push(cr); }
+  L.push('');
+  L.push('── 유튜브 앱에서 실행 ──');
+  buildSteps().forEach((s,i) => L.push(`${i+1}) ${s}`));
+  L.push('');
+  L.push('※ 원본 영상은 내려받지 않고, 유튜브 리믹스 기능으로만 가져옵니다.');
+  return L.join('\n');
+}
+
+function buildCSV(){
+  const head = ['순서','방식','소재','채널','시작','끝','길이(초)','자막/메모','링크'];
+  const rows = S.cuts.map((c,i) => {
+    const w = WAYS[c.way] || WAYS.cut;
+    const s = srcOf(c.vid);
+    return [
+      i+1, w.label,
+      w.src ? (s && s.title ? s.title : c.vid) : '내 촬영·해설',
+      w.src ? (s && s.author ? s.author : '') : '',
+      w.src ? fmtT(c.in) : '', w.src ? fmtT(c.out) : '',
+      (Math.round(cutLen(c)*10)/10).toFixed(1),
+      c.cap || '',
+      w.src ? linkAt(c.vid, c.in) : '',
+    ];
+  });
+  const q = v => '"' + String(v).replace(/"/g,'""') + '"';
+  return '﻿' + [head, ...rows].map(r => r.map(q).join(',')).join('\r\n');
+}
+
+function renderOutputs(){
+  renderGauge();
+  $('#steps').innerHTML = buildSteps().map(s => `<div class="step">${esc(s)}</div>`).join('');
+  $('#preview').textContent = buildSheet();
+}
+
+const POLICY = `
+<b style="color:var(--ink)">리믹스 버튼으로만 가져오세요.</b> 화면 녹화나 내려받기로 남의 영상을 가져오면
+Content ID 클레임·저작권 경고 대상이 됩니다. 리믹스로 만든 쇼츠는 원본이 자동으로 연결돼 출처가 남습니다.<br><br>
+<b style="color:var(--ink)">리믹스 버튼이 없으면 쓰지 않습니다.</b> 원작자가 리믹스를 꺼뒀거나, 음원 라이선스 때문에
+막힌 영상입니다. 메뉴 이름과 위치는 앱 버전에 따라 조금씩 다를 수 있습니다.<br><br>
+<b style="color:var(--ink)">내 것이 얼마나 들어갔는지 봅니다.</b> 해설·자막·재구성 없이 원본만 이어 붙이면
+재사용 콘텐츠로 분류돼 수익 창출이 막힙니다. 위 비중 표에서 내 촬영·해설이 보이게 유지하세요.<br><br>
+<b style="color:var(--ink)">소재를 더 넓히려면</b> 유튜브 검색 필터의 크리에이티브 커먼즈(CC BY) 영상,
+퍼블릭 도메인 자료, 무료 스톡 영상을 쓰면 됩니다. 이때는 편집기에서 직접 편집해도 됩니다.
+`;
+
+/* ============================================================
+   조작
+   ============================================================ */
+function addSource(raw){
+  const vid = parseId(raw);
+  if(!vid){ toast('유튜브 링크를 알아볼 수 없습니다','bad'); return; }
+  const at = parseStart(raw);
+  if(!srcOf(vid)) S.srcs.push({ vid, title:'', author:'', dur:0 });
+  $('#urlIn').value = '';
+  save(); renderSrcs(); renderOutputs();
+  mountPlayer(vid, at);
+}
+
+function addCut(){
+  const way = $('#wayPick').value;
+  const w = WAYS[way] || WAYS.cut;
+  if(w.src){
+    if(!S.cur){ toast('먼저 소재 영상을 추가하세요','bad'); return; }
+    if(MARK.in == null){ toast('시작점부터 찍으세요 (I)','bad'); return; }
+    let a = MARK.in, b = MARK.out;
+    if(b == null || b <= a) b = a + Math.min(w.max || 3, 3);
+    S.cuts.push({ id:uid('c'), vid:S.cur, way, in:+a.toFixed(2), out:+b.toFixed(2), cap:'' });
+  }else{
+    const len = (MARK.in!=null && MARK.out!=null && MARK.out>MARK.in) ? MARK.out-MARK.in : 3;
+    S.cuts.push({ id:uid('c'), vid:'', way, in:0, out:+len.toFixed(2), cap:'' });
+  }
+  MARK.in = null; MARK.out = null; renderIO();
+  save(); renderSrcs(); renderCuts(); renderOutputs();
+  toast('컷을 담았습니다','ok');
+}
+
+const cutById = id => S.cuts.find(c=>c.id===id);
+
+function editTime(c){
+  const w = WAYS[c.way] || WAYS.cut;
+  if(!w.src){
+    const v = prompt('이 구간의 길이(초)', String(Math.round(cutLen(c)*10)/10));
+    if(v === null) return;
+    const n = parseFloat(v);
+    if(!isFinite(n) || n <= 0){ toast('숫자를 입력해 주세요','bad'); return; }
+    c.in = 0; c.out = n;
+  }else{
+    const a = prompt('시작 시간 (예: 1:23.4)', fmtT(c.in));
+    if(a === null) return;
+    const ta = parseTC(a);
+    if(ta === null){ toast('시간 형식을 알아볼 수 없습니다','bad'); return; }
+    const b = prompt('끝 시간 (예: 1:28.0)', fmtT(c.out));
+    if(b === null) return;
+    const tb = parseTC(b);
+    if(tb === null || tb <= ta){ toast('끝은 시작보다 뒤여야 합니다','bad'); return; }
+    c.in = ta; c.out = tb;
+  }
+  save(); renderCuts(); renderOutputs();
+}
+
+function moveCut(id, dir){
+  const i = S.cuts.findIndex(c=>c.id===id);
+  const j = i + dir;
+  if(i < 0 || j < 0 || j >= S.cuts.length) return;
+  const [c] = S.cuts.splice(i,1);
+  S.cuts.splice(j,0,c);
+  save(); renderCuts(); renderOutputs();
+}
+
+/* ---------- 이벤트 ---------- */
+$('#addSrc').addEventListener('click', ()=>addSource($('#urlIn').value));
+$('#urlIn').addEventListener('keydown', e=>{ if(e.key==='Enter') addSource($('#urlIn').value); });
+$('#urlIn').addEventListener('paste', ()=>setTimeout(()=>{
+  const v = $('#urlIn').value;
+  if(parseId(v)) addSource(v);
+}, 30));
+
+$('#srcs').addEventListener('click', e => {
+  const del = e.target.closest('[data-del]');
+  if(del){
+    const vid = del.dataset.del;
+    const used = countCuts(vid);
+    if(used && !confirm('이 영상으로 담은 컷 ' + used + '개도 함께 지웁니다. 계속할까요?')) return;
+    S.srcs = S.srcs.filter(s=>s.vid!==vid);
+    S.cuts = S.cuts.filter(c=>c.vid!==vid);
+    if(S.cur === vid) S.cur = S.srcs.length ? S.srcs[0].vid : '';
+    save(); renderSrcs(); renderCuts(); renderOutputs();
+    if(S.cur) mountPlayer(S.cur);
+    return;
+  }
+  const row = e.target.closest('[data-vid]');
+  if(row) mountPlayer(row.dataset.vid);
+});
+
+$('#cuts').addEventListener('change', e => {
+  const sel = e.target.closest('[data-way]');
+  if(!sel) return;
+  const c = cutById(sel.dataset.way);
+  if(!c) return;
+  c.way = sel.value;
+  if(!(WAYS[c.way]||{}).src && c.vid){   /* 내 촬영으로 바꾸면 길이만 남긴다 */
+    c.out = cutLen(c) || 3; c.in = 0; c.vid = '';
+  }
+  save(); renderCuts(); renderOutputs();
+});
+$('#cuts').addEventListener('click', e => {
+  const btn = e.target.closest('button');
+  const card = e.target.closest('[data-id]');
+  if(card) S.sel = card.dataset.id;
+  if(!btn){ renderCuts(); return; }
+  const d = btn.dataset;
+  const c = cutById(d.go || d.time || d.cap || d.up || d.down || d.delCut);
+  if(!c) return;
+  if(d.go){ mountPlayer(c.vid, Math.max(0, c.in - 0.5)); MARK.in = c.in; MARK.out = c.out; renderIO(); }
+  else if(d.time) editTime(c);
+  else if(d.cap){
+    const v = prompt('이 컷에 넣을 자막 / 메모', c.cap || '');
+    if(v === null) return;
+    c.cap = v.trim(); save(); renderCuts(); renderOutputs();
+  }
+  else if(d.up) moveCut(c.id, -1);
+  else if(d.down) moveCut(c.id, 1);
+  else if(d.delCut){
+    S.cuts = S.cuts.filter(x=>x.id!==c.id);
+    save(); renderSrcs(); renderCuts(); renderOutputs();
+  }
+});
+
+$('#playBtn').addEventListener('click', togglePlay);
+$('#back1').addEventListener('click', ()=>seekTo(nowT()-1));
+$('#fwd1').addEventListener('click', ()=>seekTo(nowT()+1));
+$('#rate').addEventListener('change', e=>{
+  if(player && player.setPlaybackRate){ try{ player.setPlaybackRate(+e.target.value); }catch(err){} }
+});
+$('#setIn').addEventListener('click', ()=>{
+  MARK.in = nowT();
+  if(MARK.out != null && MARK.out <= MARK.in) MARK.out = null;
+  renderIO();
+});
+$('#setOut').addEventListener('click', ()=>{
+  const t = nowT();
+  if(MARK.in == null) MARK.in = Math.max(0, t-3);
+  MARK.out = Math.max(t, MARK.in + 0.1);
+  renderIO();
+});
+$('#clearIO').addEventListener('click', ()=>{ MARK.in = null; MARK.out = null; renderIO(); });
+$('#loopBtn').addEventListener('click', e=>{
+  loopOn = !loopOn;
+  e.currentTarget.classList.toggle('primary', loopOn);
+  if(loopOn && MARK.in != null) seekTo(MARK.in);
+});
+$('#addCut').addEventListener('click', addCut);
+$('#inV').addEventListener('click', ()=>askTime('in'));
+$('#outV').addEventListener('click', ()=>askTime('out'));
+
+/* 시간 막대 */
+(function(){
+  const tb = $('#timebar');
+  let drag = false;
+  const at = e => {
+    const r = tb.getBoundingClientRect();
+    seekTo(clamp((e.clientX - r.left)/r.width, 0, 1) * (curD||0));
+  };
+  tb.addEventListener('pointerdown', e=>{
+    drag = true;
+    try{ tb.setPointerCapture(e.pointerId); }catch(err){}
+    at(e);
+  });
+  tb.addEventListener('pointermove', e=>{ if(drag) at(e); });
+  const up = e => {
+    if(!drag) return;
+    drag = false;
+    try{ tb.releasePointerCapture(e.pointerId); }catch(err){}
+  };
+  tb.addEventListener('pointerup', up);
+  tb.addEventListener('pointercancel', up);
+})();
+
+$('#targetSeg').addEventListener('click', e=>{
+  const b = e.target.closest('button[data-v]');
+  if(!b) return;
+  S.plan.target = +b.dataset.v;
+  $$('#targetSeg button').forEach(x=>x.classList.toggle('on', x===b));
+  save(); renderOutputs();
+});
+[['#pTitle','title'],['#pHook','hook'],['#pOutro','outro'],['#pTags','tags']].forEach(([sel,key])=>{
+  $(sel).addEventListener('input', e=>{ S.plan[key] = e.target.value; save(); renderOutputs(); });
+});
+
+$('#copyBtn').addEventListener('click', ()=>copyText(buildSheet()));
+$('#copyBtn2').addEventListener('click', ()=>copyText(buildSheet()));
+$('#txtBtn').addEventListener('click', ()=>{
+  const stamp = new Date().toISOString().slice(0,10).replace(/-/g,'');
+  offerFile(buildSheet(), '쇼츠리믹스_컷시트_' + stamp + '.txt');
+});
+$('#csvBtn').addEventListener('click', ()=>{
+  const stamp = new Date().toISOString().slice(0,10).replace(/-/g,'');
+  offerFile(buildCSV(), '쇼츠리믹스_컷시트_' + stamp + '.csv', 'text/csv;charset=utf-8');
+});
+$('#resetBtn').addEventListener('click', ()=>{
+  if(!confirm('소재·컷·대본을 전부 지웁니다. 계속할까요?')) return;
+  S.srcs = []; S.cuts = []; S.cur = ''; S.sel = '';
+  S.plan = { target:60, title:'', hook:'', outro:'', tags:'#shorts' };
+  try{ localStorage.removeItem(KEY); }catch(e){}
+  ['#pTitle','#pHook','#pOutro'].forEach(s=>$(s).value='');
+  $('#pTags').value = S.plan.tags;
+  $$('#targetSeg button').forEach(b=>b.classList.toggle('on', +b.dataset.v===60));
+  MARK.in = null; MARK.out = null;
+  renderSrcs(); renderCuts(); renderIO(); renderOutputs();
+  toast('처음 상태로 되돌렸습니다');
+});
+
+$('#themeBtn').addEventListener('click', ()=>{
+  const next = document.documentElement.getAttribute('data-theme')==='light' ? '' : 'light';
+  if(next) document.documentElement.setAttribute('data-theme','light');
+  else document.documentElement.removeAttribute('data-theme');
+  try{ localStorage.setItem(KEY+'/theme', next); }catch(e){}
+});
+
+document.addEventListener('keydown', e=>{
+  const t = e.target;
+  if(t && (t.tagName==='INPUT' || t.tagName==='TEXTAREA' || t.tagName==='SELECT' || t.isContentEditable)) return;
+  if(e.metaKey || e.ctrlKey || e.altKey) return;
+  const k = (e.key||'').toLowerCase();
+  if(e.code === 'Space' || k === ' '){ e.preventDefault(); togglePlay(); }
+  else if(k === 'i'){ $('#setIn').click(); }
+  else if(k === 'o'){ $('#setOut').click(); }
+  else if(k === 'enter'){ e.preventDefault(); addCut(); }
+  else if(e.key === 'ArrowLeft'){ e.preventDefault(); seekTo(nowT() - (e.shiftKey?0.1:1)); }
+  else if(e.key === 'ArrowRight'){ e.preventDefault(); seekTo(nowT() + (e.shiftKey?0.1:1)); }
+});
+
+/* ---------- 시작 ---------- */
+(function boot(){
+  try{ if(localStorage.getItem(KEY+'/theme')==='light') document.documentElement.setAttribute('data-theme','light'); }catch(e){}
+  load();
+  $('#pTitle').value = S.plan.title || '';
+  $('#pHook').value  = S.plan.hook  || '';
+  $('#pOutro').value = S.plan.outro || '';
+  $('#pTags').value  = S.plan.tags  || '';
+  $$('#targetSeg button').forEach(b=>b.classList.toggle('on', +b.dataset.v === S.plan.target));
+  $('#policy').innerHTML = POLICY;
+  renderSrcs(); renderCuts(); renderIO(); renderOutputs();
+  loadAPI();
+  if(S.cur && srcOf(S.cur)) mountPlayer(S.cur);
+  else $('#playerNone').hidden = false;
+})();
+</script>
+</body>
+</html>
