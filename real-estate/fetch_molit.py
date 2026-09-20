@@ -10,12 +10,14 @@
 브라우저에서 이 API 를 직접 부를 수 없어서(CORS 미허용 + 키 노출) 이 스크립트를 깃허브 액션에서
 돌리고 결과 파일만 배포한다. 표준 라이브러리만 쓴다.
 """
-import argparse, csv, json, os, sys, time, urllib.error, urllib.parse, urllib.request
+import argparse, csv, json, os, statistics, sys, tempfile, time, urllib.error, urllib.parse, urllib.request
 import xml.etree.ElementTree as ET
 from datetime import date, datetime, timedelta, timezone
 
 DEFAULT_ENDPOINT = "https://apis.data.go.kr/1613000/RTMSDataSvcAptTradeDev/getRTMSDataSvcAptTradeDev"
 KST = timezone(timedelta(hours=9))
+HISTORY_HEAD = ["수집일", "시군구", "창(개월)", "거래건수", "중위가(만원)", "평균단가(만원/㎡)",
+                "최고가(만원)", "전체거래건수", "전체취소건수", "범위시작", "범위끝"]
 CSV_HEAD = ["NO", "시군구", "번지", "본번", "부번", "단지명", "전용면적(㎡)", "계약년월", "계약일",
             "거래금액(만원)", "동", "층", "매수자", "매도자", "건축년도", "도로명", "해제사유발생일",
             "거래유형", "중개사소재지", "등기일자", "주택유형"]
@@ -174,6 +176,68 @@ def unchanged(path, packed):
     return all(old.get(k) == packed.get(k) for k in ("rows", "dict", "cols", "regions", "range"))
 
 
+def digest(deals, regions, months, today):
+    """지역별 하루치 요약 한 줄씩. 이게 30년 시계열의 재료다.
+
+    가격 통계는 '최근 12개월' 처럼 길이가 고정된 창에서 낸다. 수집 범위(months)를 나중에
+    늘리거나 줄여도 예전 줄과 그대로 비교되게 하려는 것이다. 실제로 쓴 창 길이는 칸으로 남긴다.
+    """
+    window = months[-12:]
+    yms = {int(m) for m in window}
+    rows = []
+    for _, name in regions:
+        mine = [d for d in deals if d["sgg"] == name]
+        if not mine:
+            continue
+        recent = [d for d in mine if d["ymd"] // 100 in yms]
+        prices = [d["price"] for d in recent]
+        units = [d["price"] / d["area"] for d in recent if d["area"]]
+        rows.append([
+            today, name, len(window), len(recent),
+            round(statistics.median(prices)) if prices else "",
+            round(statistics.fmean(units), 2) if units else "",
+            max(prices) if prices else "",
+            len(mine),
+            sum(1 for d in mine if d["cancel"]),
+            f"{months[0][:4]}-{months[0][4:]}", f"{months[-1][:4]}-{months[-1][4:]}",
+        ])
+    return rows
+
+
+def append_history(path, rows, today):
+    """이력 CSV 에 오늘 줄을 더한다. 과거 줄은 건드리지 않는다.
+
+    같은 날 두 번 돌려도 오늘 줄만 새것으로 바뀌도록 오늘 날짜만 걷어내고 다시 붙인다.
+    임시 파일에 다 쓴 뒤 바꿔치기해서, 중간에 죽어도 기존 이력이 날아가지 않게 한다.
+    """
+    keep = []
+    try:
+        with open(path, newline="", encoding="utf-8-sig") as f:
+            rd = csv.reader(f)
+            head = next(rd, None)
+            if head and head != HISTORY_HEAD:
+                log(f"{path}: 칸 구성이 예전과 다릅니다. 새 줄을 붙이지 않습니다.")
+                return 0
+            keep = [r for r in rd if r and r[0] != today]
+    except FileNotFoundError:
+        pass
+
+    d = os.path.dirname(path) or "."
+    os.makedirs(d, exist_ok=True)
+    fd, tmp = tempfile.mkstemp(dir=d, suffix=".csv")
+    try:
+        with os.fdopen(fd, "w", newline="", encoding="utf-8-sig") as f:
+            w = csv.writer(f)
+            w.writerow(HISTORY_HEAD)
+            w.writerows(keep)
+            w.writerows(rows)
+        os.replace(tmp, path)
+    except BaseException:
+        os.unlink(tmp)
+        raise
+    return len(keep) + len(rows)
+
+
 def write_csv(path, deals):
     with open(path, "w", newline="", encoding="utf-8-sig") as f:
         w = csv.writer(f)
@@ -200,6 +264,7 @@ def main():
     ap.add_argument("--sleep", type=float, default=0.15, help="호출 간 대기(초)")
     ap.add_argument("--timeout", type=float, default=60)
     ap.add_argument("--tries", type=int, default=3, help="실패 시 재시도 횟수")
+    ap.add_argument("--history", default="", help="지역별 하루치 요약을 덧붙일 CSV (예: data/history.csv)")
     ap.add_argument("--max-fail", type=int, default=0, help="허용할 실패 (시군구×월) 수. 넘으면 종료코드 1")
     a = ap.parse_args()
     a.months_set = any(x.startswith("--months") for x in sys.argv)
@@ -244,6 +309,15 @@ def main():
         return 1
 
     os.makedirs(os.path.dirname(a.out) or ".", exist_ok=True)
+
+    # 거래 내용이 어제와 같은 날에도 이력은 남긴다. 아래 unchanged() 가 먼저 빠져나가 버리면
+    # 그 하루가 통째로 비고, 지난 날짜는 나중에 다시 만들 수 없다.
+    if a.history:
+        today = datetime.now(KST).strftime("%Y-%m-%d")
+        rows = digest(deals, regions, months, today)
+        total = append_history(a.history, rows, today)
+        log(f"{a.history}: {today} {len(rows)}개 지역 기록 · 누적 {total:,}줄")
+
     if a.format == "csv":
         deals.sort(key=lambda d: (d["ymd"], d["sgg"], d["dong"], d["apt"]))
         write_csv(a.out, deals)

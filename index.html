@@ -303,6 +303,7 @@
   .sticky .btn{padding:13px 24px;font-size:15px}
   @media(max-width:520px){.sticky .p small{display:none}}
 </style>
+<script src="/assets/analytics.js" defer></script>
 </head>
 <body>
 
@@ -895,9 +896,14 @@ merged.to_excel("전체합본.xlsx", index=False)</pre>
       if (data && (data.success === 'true' || data.success === true)) {
         f.style.display = 'none';
         document.getElementById('formDone').style.display = 'block';
+        // 같은 자동화 종류가 세 번 들어오면 그건 용역이 아니라 제품이다.
+        // 그 횟수를 세려고 종류·예산을 함께 남긴다.
+        if (window.track) track('quote_submit', { automation_type: f.type.value, budget: f.budget.value });
       } else { throw new Error('fail'); }
     })
     .catch(function(){
+      // 문의가 조용히 사라지는 게 제일 비싸다. 실패도 세어 둔다.
+      if (window.track) track('quote_fail', { automation_type: f.type.value });
       btn.disabled = false; btn.textContent = '무료 진단 신청하기 →';
       msg.style.display = 'block'; msg.style.color = '#FC1C49';
       msg.innerHTML = '전송에 실패했어요. 잠시 후 다시 시도하시거나 <b>from0731@naver.com</b> 으로 보내주세요.';
