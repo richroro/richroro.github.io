@@ -169,7 +169,8 @@
     <p class="eyebrow">People</p>
     <h2 class="title">사람 수로 나눠 보면</h2>
     <p class="lead">매출을 임직원 수로 나누면 회사의 성격이 드러납니다.
-      가장 높은 곳과 낮은 곳이 <b id="revSpread">—</b> 벌어지고, 영업이익 기준으로는 <b id="oiSpread">—</b>까지 갑니다.</p>
+      가장 높은 곳과 낮은 곳이 <b id="revSpread">—</b> 벌어지고, 영업이익 기준으로는
+      <b id="oiSpread">—</b>까지 갑니다<span id="oiLoss"></span>.</p>
     <div class="card pad mt16">
       <div class="chart-head"><div>
         <div class="ct">1인당 매출</div>
@@ -337,27 +338,43 @@ function drawMarg() {
   const rowH = small ? 24 : 28, gap = small ? 8 : 10;
   const H = T + Math.max(1, rows.length) * (rowH + gap) - gap + B;
   const pw = Math.max(40, W - L - R);
-  const sc = niceScale(Math.max.apply(null, rows.map((r) => r[margKey]).concat([1])), small ? 3 : 5);
+  // 적자 회사(인텔)가 있어 0선을 기준으로 양쪽으로 그립니다. 눈금 간격은 하나로 맞춥니다 —
+  // 좌우를 따로 잡으면 같은 1%p 가 다른 길이로 보입니다.
+  const vals = rows.map((r) => r[margKey]);
+  const hi = Math.max.apply(null, vals.concat([1])), lo = Math.min.apply(null, vals.concat([0]));
+  const step = niceScale(Math.max(hi, -lo), small ? 3 : 5).step;
+  const posMax = Math.max(step, Math.ceil(hi / step - 1e-9) * step);
+  const negMax = Math.ceil(-lo / step - 1e-9) * step;
+  const span = posMax + negMax;
+  const X = (v) => L + ((v + negMax) / span) * pw;
   svg.setAttribute("width", W); svg.setAttribute("height", H);
   svg.setAttribute("viewBox", "0 0 " + W + " " + H);
   while (svg.firstChild) svg.removeChild(svg.firstChild);
-  for (let i = 0; i <= sc.ticks; i++) {
-    const x = L + (sc.step * i / sc.max) * pw;
-    svg.appendChild(el("line", { x1: x, x2: x, y1: T, y2: H - B + 3, class: i === 0 ? "baseline" : "gridline" }));
-    svg.appendChild(txt(el("text", { x: x, y: H - B + 16, "text-anchor": "middle", class: "axis" }), sc.step * i));
+  for (let v = -negMax; v <= posMax + 1e-9; v += step) {
+    const x = X(v), zero = Math.abs(v) < 1e-9;
+    svg.appendChild(el("line", { x1: x, x2: x, y1: T, y2: H - B + 3, class: zero ? "baseline" : "gridline" }));
+    svg.appendChild(txt(el("text", { x: x, y: H - B + 16, "text-anchor": "middle", class: "axis" }),
+      (v > 0 ? "" : v < 0 ? "−" : "") + Math.abs(Math.round(v * 10) / 10)));
   }
   rows.forEach((r, i) => {
-    const y = T + i * (rowH + gap), w = Math.max(2, (r[margKey] / sc.max) * pw);
+    const v = r[margKey], y = T + i * (rowH + gap);
+    const x0 = X(Math.min(0, v)), x1 = X(Math.max(0, v)), w = Math.max(2, x1 - x0);
     svg.appendChild(txt(el("text", { x: L - 8, y: y + rowH / 2 + 4, "text-anchor": "end", class: "name" }), r.ko));
-    svg.appendChild(el("rect", { x: L, y: y, width: w, height: rowH, rx: 4 }, "fill:" + r.c));
-    svg.appendChild(txt(el("text", { x: L + w + 7, y: y + rowH / 2 + 4, class: "dlabel" }), r[margKey].toFixed(1) + "%"));
+    svg.appendChild(el("rect", { x: v < 0 ? x1 - w : x0, y: y, width: w, height: rowH, rx: 4 },
+      "fill:" + (v < 0 ? "var(--down)" : r.c)));
+    const lab = (v < 0 ? "−" : "") + Math.abs(v).toFixed(1) + "%";
+    svg.appendChild(txt(el("text", {
+      x: v < 0 ? x0 - w - 7 : x0 + w + 7, y: y + rowH / 2 + 4,
+      "text-anchor": v < 0 ? "end" : "start", class: "dlabel" + (v < 0 ? " down" : "") }), lab));
     const hit = el("rect", { x: L, y: y - gap / 2, width: pw + R - 8, height: rowH + gap, class: "hit" });
     hit.addEventListener("mouseenter", () => showTip(tip, wrap,
       '<div class="th">' + r.ko + " · " + r.fy + "</div>" +
       '<div class="tr"><span class="nm">매출</span><b>' + r.cur + r.rev.toFixed(1) + "B</b></div>" +
-      '<div class="tr"><span class="nm">영업이익률</span><b>' + (r.om == null ? "—" : r.om.toFixed(1) + "%") + "</b></div>" +
-      '<div class="tr"><span class="nm">순이익률</span><b>' + (r.nm == null ? "—" : r.nm.toFixed(1) + "%") + "</b></div>" +
-      '<div class="tr"><span class="nm">한국과의 관계</span><b>' + r.kr + "</b></div>", L + w / 2, y));
+      '<div class="tr"><span class="nm">영업이익률</span><b class="' + cls(r.om) + '">' +
+        (r.om == null ? "—" : r.om.toFixed(1) + "%") + "</b></div>" +
+      '<div class="tr"><span class="nm">순이익률</span><b class="' + cls(r.nm) + '">' +
+        (r.nm == null ? "—" : r.nm.toFixed(1) + "%") + "</b></div>" +
+      '<div class="tr"><span class="nm">한국과의 관계</span><b>' + r.kr + "</b></div>", (x0 + x1) / 2, y));
     hit.addEventListener("mouseleave", () => tip.classList.remove("on"));
     svg.appendChild(hit);
   });
@@ -367,6 +384,7 @@ function drawMarg() {
   const both = view().filter((r) => r.om != null && r.nm != null);
   const worst = both.slice().sort((a, b) => (a.nm - a.om) - (b.nm - b.om))[0];
   const flip = both.filter((r) => r.nm > r.om).map((r) => r.ko);
+  const neg = view().filter((r) => r[margKey] != null && r[margKey] < 0).map((r) => r.ko);
   const missing = view().filter((r) => r[margKey] == null).map((r) => r.ko);
   document.getElementById("omNote").innerHTML = '<span class="ic">ℹ️</span><div>' +
     (missing.length ? "<b>" + missing.join(" · ") + "</b>" + josa(missing.join(" · "), "은", "는") + " 확인한 자료에 " + MARG[margKey].w +
@@ -374,8 +392,13 @@ function drawMarg() {
       : "이 목록은 모든 회사의 " + (margKey === "om" ? "영업이익률" : "순이익률") + "을 확인했습니다. ") +
     (worst ? "두 값이 가장 크게 벌어지는 곳은 <b>" + worst.ko + "</b>입니다 — 영업이익률 " +
       worst.om.toFixed(1) + "%가 순이익률 " + worst.nm.toFixed(1) + "%로 내려갑니다. " : "") +
+    (neg.length ? "<b>" + neg.join(" · ") + josa(neg.join(" · "), "은", "는") +
+      " 0선 왼쪽</b>입니다 — 적자라서 파란 막대로 그렸고, 0선을 기준으로 눈금 간격은 좌우가 같습니다. " : "") +
     (flip.length ? "반대로 <b>" + flip.join(" · ") + "</b>" + josa(flip.join(" · "), "은", "는") +
-      " 순이익률이 더 높습니다 — 영업 외 수익이 세금보다 컸습니다." : "") +
+      " 순이익률이 더 높습니다 — 영업 외 수익이 세금보다 컸습니다." +
+      (flip.some((k) => neg.indexOf(k) >= 0)
+        ? " 다만 <b>" + flip.filter((k) => neg.indexOf(k) >= 0).join(" · ") +
+          "</b>은 둘 다 적자인 상태에서 손실 폭이 작다는 뜻이지, 돈을 더 벌었다는 뜻이 아닙니다." : "") : "") +
     "</div>";
 }
 
@@ -544,11 +567,16 @@ document.querySelectorAll("#ptbl th.sortable").forEach((th) => {
 
 (function spreads() {
   const rv = ROWS.filter((r) => r.revPer != null).map((r) => r.revPer);
-  const oi = ROWS.filter((r) => r.oiPer != null).map((r) => r.oiPer);
+  // 적자 회사가 섞이면 최대÷최소가 음수로 나와 뜻이 없어집니다 — 흑자끼리만 배수를 냅니다.
+  const oi = ROWS.filter((r) => r.oiPer != null && r.oiPer > 0).map((r) => r.oiPer);
+  const loss = ROWS.filter((r) => r.oiPer != null && r.oiPer <= 0).map((r) => r.ko);
   document.getElementById("revSpread").textContent =
     (Math.max.apply(null, rv) / Math.min.apply(null, rv)).toFixed(1) + "배";
-  document.getElementById("oiSpread").textContent =
-    Math.round(Math.max.apply(null, oi) / Math.min.apply(null, oi)) + "배";
+  document.getElementById("oiSpread").textContent = oi.length > 1
+    ? Math.round(Math.max.apply(null, oi) / Math.min.apply(null, oi)) + "배" : "—";
+  document.getElementById("oiLoss").innerHTML = loss.length
+    ? "(흑자 회사끼리 · <b>" + loss.join(" · ") + josa(loss.join(" · "), "은", "는") + " 적자라 배수에서 뺐습니다</b>)"
+    : "";
 })();
 
 /* --- 앞으로: 회사가 공시한 숫자만 모은 표 --- */

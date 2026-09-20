@@ -1,0 +1,231 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>마벨 지표 · 매출 구성과 한국과의 관계 | 종목 노트</title>
+<meta name="description" content="FY2026 매출 82억 달러로 +42%, 순이익 26.7억 달러. 매출의 4분의 3이 데이터센터이고, SK하이닉스 HBM이 이 회사의 커스텀 칩에 들어갑니다.">
+<link rel="canonical" href="https://richroro.github.io/stocks/mrvl/">
+<meta property="og:type" content="website"><meta property="og:locale" content="ko_KR">
+<meta property="og:site_name" content="Cadence">
+<meta property="og:url" content="https://richroro.github.io/stocks/mrvl/">
+<meta property="og:title" content="마벨 지표 | 종목 노트">
+<meta property="og:description" content="FY2026 매출 82억 달러로 +42%, 순이익 26.7억 달러. 매출의 4분의 3이 데이터센터이고, SK하이닉스 HBM이 이 회사의 커스텀 칩에 들어갑니다.">
+<meta name="twitter:card" content="summary">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='#9085e9'/><text x='50' y='66' font-size='30' text-anchor='middle' fill='white' font-family='monospace' font-weight='bold'>MRVL</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans+KR:wght@300;400;500;600;700&display=swap">
+<link rel="stylesheet" href="/m7/assets/m7.css">
+</head>
+<body>
+<noscript><div style="padding:24px;font-family:sans-serif"><h1>마벨 지표</h1><p>FY2026 매출 82억 달러로 +42%, 순이익 26.7억 달러. 매출의 4분의 3이 데이터센터이고, SK하이닉스 HBM이 이 회사의 커스텀 칩에 들어갑니다.</p>
+<p>차트를 그리는 데 자바스크립트를 씁니다. <a href="/stocks/">종목 노트 전체</a></p></div></noscript>
+<script src="/stocks/assets/registry.js"></script>
+<script>
+/* 마벨 (MRVL) — 이 블록만 고치면 페이지 전체가 따라 바뀝니다.
+   검산: 8.195 ÷ 5.767 − 1 = +42.1% (FY2025 대비) */
+const CO = {
+  "group": "semi",
+  "hubHref": "/stocks/",
+  "hubName": "종목 노트 전체",
+  "hubMark": "종목",
+  "peersTitle": "같은 분야 다른 회사",
+  "asOf": "2026-09-20",
+  "slug": "mrvl",
+  "tk": "MRVL",
+  "ko": "마벨",
+  "en": "Marvell Technology",
+  "ab": "MV",
+  "color": "#9085e9",
+  "fy": {
+    "label": "FY2026 · 2026년 1월 종료",
+    "note": "마벨 회계연도는 <b>1월 말</b>에 끝납니다. FY2026은 2025년 2월~2026년 1월이라, 달력 2025년과 거의 겹칩니다."
+  },
+  "headline": "매출의 4분의 3이 데이터센터",
+  "lead": "FY2026 매출 <b>82억 달러</b>, 전년 대비 <b>+42%</b>입니다. 그중 데이터센터가 <b>60억 달러를 넘었습니다</b> — 통신 칩 회사에서 AI 인프라 회사로 바뀐 해입니다.",
+  "stats": [
+    {
+      "k": "FY2026 매출",
+      "v": "8.195",
+      "u": "B$",
+      "s": "+42.1% YoY",
+      "stone": "up"
+    },
+    {
+      "k": "순이익",
+      "v": "2.670",
+      "u": "B$",
+      "s": "순이익률 32.6%",
+      "stone": "up"
+    },
+    {
+      "k": "데이터센터",
+      "v": "6",
+      "u": "B$ 이상",
+      "s": "+46% YoY",
+      "stone": "up"
+    },
+    {
+      "k": "임직원",
+      "v": "7,042",
+      "u": "명",
+      "s": "1인당 매출 $1.16M"
+    }
+  ],
+  "signature": {
+    "nav": "데이터센터 쏠림",
+    "eyebrow": "Mix",
+    "title": "통신에서 AI로 갈아탄 해",
+    "lead": "마벨은 원래 스토리지·통신용 칩 회사였습니다. 지금은 매출의 <b>4분의 3 가까이</b>가 데이터센터에서 나옵니다.",
+    "split": {
+      "title": "FY2026 매출 82억의 구성",
+      "sub": "데이터센터와 나머지",
+      "parts": [
+        {
+          "k": "데이터센터",
+          "v": 6.0,
+          "color": "--s1",
+          "label": "60억$ 이상 · +46%"
+        },
+        {
+          "k": "나머지",
+          "v": 2.195,
+          "color": "--s3",
+          "label": "통신·스토리지 등"
+        }
+      ],
+      "note": "마벨의 데이터센터 매출은 <b>커스텀 실리콘</b>이 주축입니다 — 하이퍼스케일러가 자기 AI 칩을 설계해 달라고 맡기는 사업이고, 브로드컴과 같은 시장입니다. 회사 표현이 <b>‘60억 달러 돌파’</b>라서 정확한 금액이 아니라 하한값입니다 — 그래서 이 페이지의 비중은 <b>‘4분의 3 가까이’</b>로만 적었습니다."
+    },
+    "stats": [
+      {
+        "k": "FY2025 매출",
+        "v": "5.767",
+        "u": "B$",
+        "s": "비교 기준"
+      },
+      {
+        "k": "FY2026 매출",
+        "v": "8.195",
+        "u": "B$",
+        "s": "+42.1%",
+        "stone": "up"
+      },
+      {
+        "k": "순이익률",
+        "v": "32.6",
+        "u": "%",
+        "s": "2.670 ÷ 8.195"
+      }
+    ]
+  },
+  "recent": {
+    "title": "FY2027 1분기",
+    "period": "2026년 5월 종료",
+    "stats": [
+      {
+        "k": "분기 매출",
+        "v": "2.418",
+        "u": "B$",
+        "s": "+28% YoY",
+        "stone": "up"
+      },
+      {
+        "k": "직전 분기 대비",
+        "v": "+9",
+        "u": "%",
+        "stone": "up"
+      },
+      {
+        "k": "FY2027 목표",
+        "v": "약 11.5",
+        "u": "B$",
+        "s": "회사 제시"
+      },
+      {
+        "k": "FY2028 목표",
+        "v": "약 16.5",
+        "u": "B$",
+        "s": "2년 만에 두 배"
+      }
+    ],
+    "note": "분기 매출 <b>24.18억 달러</b>는 기록입니다. 회사는 같은 발표에서 FY2027을 <b>약 115억 달러</b>, FY2028을 <b>약 165억 달러</b>로 올렸습니다 — FY2026 82억에서 2년 만에 두 배가 되는 그림이고, 인터커넥트 성장률 전망도 +50%에서 <b>+70% 이상</b>으로 올렸습니다."
+  },
+  "korea": {
+    "kind": "공급 — 한국 메모리가 들어간다",
+    "title": "SK하이닉스 HBM이 마벨 칩 위에 올라간다",
+    "lead": "마벨의 커스텀 AI 칩은 <b>HBM 없이는 동작하지 않습니다.</b> 고객사가 맡긴 가속기를 설계하면서 그 옆에 붙일 고대역폭 메모리를 함께 정합니다 — 여기서 SK하이닉스·삼성전자가 공급사로 들어옵니다.",
+    "lanes": [
+      {
+        "t": "커스텀 AI 칩 한 장의 구성",
+        "d": "설계는 마벨, 메모리는 한국, 생산은 대만",
+        "dest": "커스텀 AI 가속기",
+        "nodes": [
+          {
+            "n": "SK하이닉스",
+            "c": "KR",
+            "kr": true,
+            "d": "HBM 공급. AI 가속기 한 장에 여러 개가 붙는다."
+          },
+          {
+            "n": "삼성전자",
+            "c": "KR",
+            "kr": true,
+            "d": "HBM 멀티 벤더 전환의 후보. 파운드리로도 접점이 있다."
+          },
+          {
+            "n": "TSMC",
+            "c": "TW",
+            "kr": false,
+            "d": "마벨 칩의 실제 생산과 첨단 패키징."
+          }
+        ]
+      }
+    ]
+  },
+  "notes": [
+    {
+      "h": "숫자를 볼 때",
+      "items": [
+        "<b style='color:var(--ink)'>연간 총마진과 영업이익을 담지 않았습니다</b> — 확인한 자료에 분기 수치만 있어 비웠습니다. 참고로 분기 GAAP 총마진은 50.3~51.7% 사이에서 움직였습니다.",
+        "<b style='color:var(--ink)'>데이터센터 비중은 하한값입니다</b> — 회사 표현이 ‘60억 달러 돌파’라 정확한 금액이 아닙니다. 그래서 최대 부문 비중 열을 비웠습니다.",
+        "<b style='color:var(--ink)'>회계연도가 1월에 끝납니다</b> — 'FY2026'이 사실상 달력 2025년입니다."
+      ]
+    },
+    {
+      "h": "위험 쪽",
+      "items": [
+        "<b style='color:var(--ink)'>고객 집중</b> — 커스텀 실리콘은 하이퍼스케일러 몇 곳에 매출이 몰립니다. 한 프로그램을 잃으면 타격이 큽니다.",
+        "<b style='color:var(--ink)'>브로드컴과 같은 시장</b> — AI 수주잔고 730억 달러를 쌓아 둔 경쟁자와 정면으로 부딪힙니다.",
+        "<b style='color:var(--ink)'>목표치가 자주 상향됩니다</b> — 좋은 신호지만, 반대로 꺾일 때도 같은 속도로 내려갈 수 있습니다."
+      ]
+    }
+  ],
+  "sources": [
+    {
+      "i": "매출·순이익",
+      "p": "FY2026",
+      "s": "Marvell 실적 발표 · 10-K"
+    },
+    {
+      "i": "FY2025 매출(성장률 계산 기준)",
+      "p": "FY2025",
+      "s": "Marvell 실적 발표"
+    },
+    {
+      "i": "FY2027·FY2028 목표",
+      "p": "장기",
+      "s": "Marvell FY2027 1분기 실적 발표"
+    },
+    {
+      "i": "임직원",
+      "p": "FY2025",
+      "s": "Marvell 연차보고"
+    }
+  ],
+  "checksum": "검산 — 8.195 ÷ 5.767 − 1 = +42.1%로 성장률이 맞습니다. 순이익률 2.670 ÷ 8.195 = 32.6%. 데이터센터 매출은 회사 표현이 ‘60억 달러 돌파’라 하한값이고, 그래서 최대 부문 비중을 계산하지 않고 비워 뒀습니다."
+};
+</script>
+<script src="/m7/assets/m7.js"></script>
+</body>
+</html>

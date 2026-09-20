@@ -1,0 +1,215 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>암 지표 · 매출 구성과 한국과의 관계 | 종목 노트</title>
+<meta name="description" content="FY2026 매출 49.2억 달러에 총마진 97.5%. 칩을 직접 만들지 않고 설계도만 빌려주는 사업이 어떤 숫자인지, 그리고 삼성·LG가 왜 이 회사에 돈을 내는지 정리했습니다.">
+<link rel="canonical" href="https://richroro.github.io/stocks/arm/">
+<meta property="og:type" content="website"><meta property="og:locale" content="ko_KR">
+<meta property="og:site_name" content="Cadence">
+<meta property="og:url" content="https://richroro.github.io/stocks/arm/">
+<meta property="og:title" content="암 지표 | 종목 노트">
+<meta property="og:description" content="FY2026 매출 49.2억 달러에 총마진 97.5%. 칩을 직접 만들지 않고 설계도만 빌려주는 사업이 어떤 숫자인지, 그리고 삼성·LG가 왜 이 회사에 돈을 내는지 정리했습니다.">
+<meta name="twitter:card" content="summary">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='#008300'/><text x='50' y='66' font-size='42' text-anchor='middle' fill='white' font-family='monospace' font-weight='bold'>ARM</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans+KR:wght@300;400;500;600;700&display=swap">
+<link rel="stylesheet" href="/m7/assets/m7.css">
+</head>
+<body>
+<noscript><div style="padding:24px;font-family:sans-serif"><h1>암 지표</h1><p>FY2026 매출 49.2억 달러에 총마진 97.5%. 칩을 직접 만들지 않고 설계도만 빌려주는 사업이 어떤 숫자인지, 그리고 삼성·LG가 왜 이 회사에 돈을 내는지 정리했습니다.</p>
+<p>차트를 그리는 데 자바스크립트를 씁니다. <a href="/stocks/">종목 노트 전체</a></p></div></noscript>
+<script src="/stocks/assets/registry.js"></script>
+<script>
+/* 암 (ARM) — 이 블록만 고치면 페이지 전체가 따라 바뀝니다.
+   검산: 로열티 2.61 + 라이선스 2.31 = 4.92 (연간 발표치와 정확히 일치) */
+const CO = {
+  "group": "semi",
+  "hubHref": "/stocks/",
+  "hubName": "종목 노트 전체",
+  "hubMark": "종목",
+  "peersTitle": "같은 분야 다른 회사",
+  "asOf": "2026-09-20",
+  "slug": "arm",
+  "tk": "ARM",
+  "ko": "암",
+  "en": "Arm Holdings",
+  "ab": "AR",
+  "color": "#008300",
+  "fy": {
+    "label": "FY2026 · 2026년 3월 종료",
+    "note": "암 회계연도는 <b>3월 말</b>에 끝납니다. FY2026은 2025년 4월~2026년 3월이라, 달력 2025년과 거의 겹칩니다."
+  },
+  "headline": "칩을 안 만드는데 거의 모든 칩에 들어간다",
+  "lead": "매출은 <b>49.2억 달러</b>로 이 목록에서 가장 작습니다. 그런데 <b>총마진이 97.5%</b>입니다. 공장도 재고도 없이 설계도를 빌려주고 로열티를 받는 사업이라, 매출이 거의 그대로 이익 앞단까지 옵니다.",
+  "stats": [
+    {
+      "k": "FY2026 매출",
+      "v": "4.92",
+      "u": "B$",
+      "s": "+23% YoY",
+      "stone": "up"
+    },
+    {
+      "k": "총마진",
+      "v": "97.5",
+      "u": "%",
+      "s": "원가가 거의 없다"
+    },
+    {
+      "k": "순이익",
+      "v": "0.90",
+      "u": "B$",
+      "s": "순이익률 18.4%"
+    },
+    {
+      "k": "임직원",
+      "v": "7,096",
+      "u": "명",
+      "s": "1인당 매출 $0.69M"
+    }
+  ],
+  "mix": {
+    "nav": "로열티 vs 라이선스",
+    "title": "두 줄기로 번다",
+    "lead": "암의 매출은 <b>로열티</b>와 <b>라이선스</b> 둘뿐입니다. 성격이 전혀 다릅니다 — 라이선스는 설계를 빌려줄 때 한 번 받고, 로열티는 그 설계로 만든 칩이 <b>팔릴 때마다</b> 받습니다.",
+    "chartTitle": "FY2026 부문별 매출",
+    "unit": "단위: 10억 달러 · 괄호는 전년 대비",
+    "total": 4.92,
+    "rows": [
+      {
+        "k": "로열티",
+        "v": 2.61,
+        "yoy": 21.0,
+        "color": "--s1"
+      },
+      {
+        "k": "라이선스",
+        "v": 2.31,
+        "yoy": 25.0,
+        "color": "--s2"
+      }
+    ],
+    "note": "<b>로열티가 암의 진짜 자산입니다.</b> 한 번 설계가 채택되면 그 칩이 팔리는 내내 들어옵니다 — 스마트폰은 10년 넘게 로열티가 이어진 사례가 흔합니다. 반면 라이선스는 계약 시점에 몰려서 분기마다 크게 튑니다. <b>분기 실적이 흔들리면 대개 라이선스 쪽입니다.</b>",
+    "tnote": "두 부문 합계 4.92는 연간 발표 총매출과 정확히 일치합니다."
+  },
+  "signature": {
+    "nav": "마진 구조",
+    "eyebrow": "Margin",
+    "title": "총마진 97.5%가 뜻하는 것",
+    "lead": "제조업에서 나올 수 없는 숫자입니다. 이 목록에서 두 번째로 높은 메타(82%)와도 15%p 넘게 차이가 납니다.",
+    "split": {
+      "title": "매출 100원이 어디로 가나",
+      "sub": "FY2026 총마진 기준",
+      "parts": [
+        {
+          "k": "매출총이익",
+          "v": 97.5,
+          "color": "--s1",
+          "label": "97.5%"
+        },
+        {
+          "k": "원가",
+          "v": 2.5,
+          "color": "--s3",
+          "label": "2.5%"
+        }
+      ],
+      "note": "<b>공장이 없으니 원가가 없습니다.</b> 대신 돈은 전부 연구개발과 인건비로 나갑니다 — 그래서 총마진 97.5%인데 순이익률은 18.4%입니다. <b>총마진과 순이익률을 79%p가 갈라놓는 회사</b>이고, 그 사이에 있는 것이 전부 R&D입니다."
+    },
+    "stats": [
+      {
+        "k": "총마진",
+        "v": "97.5",
+        "u": "%",
+        "s": "FY2026 GAAP"
+      },
+      {
+        "k": "순이익률",
+        "v": "18.4",
+        "u": "%",
+        "s": "0.904 ÷ 4.92"
+      },
+      {
+        "k": "두 값의 차이",
+        "v": "79.1",
+        "u": "%p",
+        "s": "전부 R&D·인건비"
+      }
+    ]
+  },
+  "korea": {
+    "kind": "고객 — 한국 기업이 돈을 내는 쪽",
+    "title": "삼성·LG·현대차가 암에 로열티를 낸다",
+    "lead": "암은 한국 기업의 <b>공급사가 아니라 징수자</b>에 가깝습니다. 삼성 엑시노스도, LG의 차량용 칩도, 현대차의 제어기도 암 아키텍처 위에 올라갑니다. <b>한국 반도체·가전이 잘 팔릴수록 암의 로열티가 늘어납니다.</b>",
+    "lanes": [
+      {
+        "t": "암 아키텍처를 쓰는 한국 기업",
+        "d": "설계를 빌려 쓰고 칩이 팔릴 때마다 로열티를 낸다",
+        "dest": "로열티 수입",
+        "nodes": [
+          {
+            "n": "삼성전자",
+            "c": "KR",
+            "kr": true,
+            "d": "엑시노스 AP가 암 코어 기반. 모바일·웨어러블 전 라인."
+          },
+          {
+            "n": "LG전자",
+            "c": "KR",
+            "kr": true,
+            "d": "가전·차량용 제어 칩. 자체 SoC에도 암 코어를 쓴다."
+          },
+          {
+            "n": "현대차그룹",
+            "c": "KR",
+            "kr": true,
+            "d": "차량용 제어기(ECU)와 인포테인먼트 SoC 대부분이 암 계열."
+          }
+        ]
+      }
+    ]
+  },
+  "notes": [
+    {
+      "h": "숫자를 볼 때",
+      "items": [
+        "<b style='color:var(--ink)'>회계연도가 3월에 끝납니다</b> — FY2026이 달력 2025년과 거의 겹칩니다.",
+        "<b style='color:var(--ink)'>연간 영업이익을 담지 않았습니다</b> — 확인한 자료에 분기 수치만 있어 비웠습니다. 총마진과 순이익률로 대신했습니다.",
+        "<b style='color:var(--ink)'>라이선스는 분기마다 크게 튑니다</b> — 계약 체결 시점에 몰립니다. 한 분기만 보고 추세로 읽으면 안 됩니다."
+      ]
+    },
+    {
+      "h": "위험 쪽",
+      "items": [
+        "<b style='color:var(--ink)'>직접 칩을 팔기 시작했습니다</b> — 2031년 칩 매출 150억 달러 목표는, 지금 고객인 회사들과 경쟁하겠다는 뜻이기도 합니다.",
+        "<b style='color:var(--ink)'>RISC-V</b> — 로열티가 없는 개방형 아키텍처가 대안으로 큽니다.",
+        "<b style='color:var(--ink)'>소프트뱅크가 대주주입니다</b> — 유통 주식이 적어 주가 변동이 큽니다."
+      ]
+    }
+  ],
+  "sources": [
+    {
+      "i": "매출·부문·총마진·순이익",
+      "p": "FY2026",
+      "s": "Arm 실적 발표 · 20-F"
+    },
+    {
+      "i": "2031년 목표",
+      "p": "장기",
+      "s": "Arm FY2026 4분기 발표 자료"
+    },
+    {
+      "i": "한국 기업의 암 아키텍처 채택",
+      "p": "2026",
+      "s": "각 사 제품 사양 및 업계 자료"
+    }
+  ],
+  "checksum": "검산 — 로열티 2.61 + 라이선스 2.31 = 4.92로 연간 발표 총매출과 정확히 일치합니다. 순이익률 0.904 ÷ 4.92 = 18.4%, 총마진과의 차이 79.1%p도 계산한 값입니다."
+};
+</script>
+<script src="/m7/assets/m7.js"></script>
+</body>
+</html>

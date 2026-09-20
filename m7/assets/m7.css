@@ -164,6 +164,9 @@ th.sortable[aria-sort="ascending"]::after{content:"↑";opacity:1;color:var(--br
 .fig .baseline{stroke:var(--line);stroke-width:1}
 .fig .zero{stroke:var(--ink-3);stroke-width:1}
 .fig .dlabel{font-size:11px;fill:var(--ink-2);font-weight:500}
+/* SVG 텍스트는 color 가 아니라 fill 입니다 — .up/.down 만으로는 안 먹습니다 */
+.fig .dlabel.up{fill:var(--up)}
+.fig .dlabel.down{fill:var(--down)}
 .fig .hit{fill:transparent;cursor:pointer}
 .tip{position:absolute;pointer-events:none;opacity:0;transform:translate(-50%,-100%);
   background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:9px 11px;

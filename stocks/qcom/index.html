@@ -1,0 +1,247 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>퀄컴 지표 · 매출 구성과 한국과의 관계 | 종목 노트</title>
+<meta name="description" content="FY2025 매출 443억 달러로 +14% 성장했는데 GAAP 순이익은 55억 달러. 일회성 세금 57억 달러가 만든 격차와, 삼성이 고객이자 경쟁자인 구조를 정리했습니다.">
+<link rel="canonical" href="https://richroro.github.io/stocks/qcom/">
+<meta property="og:type" content="website"><meta property="og:locale" content="ko_KR">
+<meta property="og:site_name" content="Cadence">
+<meta property="og:url" content="https://richroro.github.io/stocks/qcom/">
+<meta property="og:title" content="퀄컴 지표 | 종목 노트">
+<meta property="og:description" content="FY2025 매출 443억 달러로 +14% 성장했는데 GAAP 순이익은 55억 달러. 일회성 세금 57억 달러가 만든 격차와, 삼성이 고객이자 경쟁자인 구조를 정리했습니다.">
+<meta name="twitter:card" content="summary">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='#d55181'/><text x='50' y='66' font-size='30' text-anchor='middle' fill='white' font-family='monospace' font-weight='bold'>QCOM</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans+KR:wght@300;400;500;600;700&display=swap">
+<link rel="stylesheet" href="/m7/assets/m7.css">
+</head>
+<body>
+<noscript><div style="padding:24px;font-family:sans-serif"><h1>퀄컴 지표</h1><p>FY2025 매출 443억 달러로 +14% 성장했는데 GAAP 순이익은 55억 달러. 일회성 세금 57억 달러가 만든 격차와, 삼성이 고객이자 경쟁자인 구조를 정리했습니다.</p>
+<p>차트를 그리는 데 자바스크립트를 씁니다. <a href="/stocks/">종목 노트 전체</a></p></div></noscript>
+<script src="/stocks/assets/registry.js"></script>
+<script>
+/* 퀄컴 (QCOM) — 이 블록만 고치면 페이지 전체가 따라 바뀝니다.
+   검산: QCT 38.37 + QTL 5.58 = 43.95 (총매출 44.3, 차이 0.35는 QSI·기타) */
+const CO = {
+  "group": "semi",
+  "hubHref": "/stocks/",
+  "hubName": "종목 노트 전체",
+  "hubMark": "종목",
+  "peersTitle": "같은 분야 다른 회사",
+  "asOf": "2026-09-20",
+  "slug": "qcom",
+  "tk": "QCOM",
+  "ko": "퀄컴",
+  "en": "Qualcomm",
+  "ab": "QC",
+  "color": "#d55181",
+  "fy": {
+    "label": "FY2025 · 2025년 9월 종료",
+    "note": "퀄컴 회계연도는 <b>9월 마지막 일요일</b>에 끝납니다. FY2025는 2024년 9월~2025년 9월입니다."
+  },
+  "headline": "매출은 +14%, GAAP 이익은 반토막",
+  "lead": "영업이익률은 <b>27.9%</b>인데 순이익률은 <b>12.5%</b>입니다. 사업이 나빠진 게 아니라, 2025년 세법 개정(OBBBA)에 따른 <b>일회성 비현금 법인세 57억 달러</b>가 한 번에 잡혔기 때문입니다.",
+  "stats": [
+    {
+      "k": "FY2025 매출",
+      "v": "44.3",
+      "u": "B$",
+      "s": "+14% YoY",
+      "stone": "up"
+    },
+    {
+      "k": "영업이익률",
+      "v": "27.9",
+      "u": "%",
+      "s": "영업이익 12.36B$"
+    },
+    {
+      "k": "순이익률",
+      "v": "12.5",
+      "u": "%",
+      "s": "일회성 세금 반영",
+      "stone": "down"
+    },
+    {
+      "k": "GAAP EPS",
+      "v": "5.01",
+      "u": "$",
+      "s": "non-GAAP 12.03$",
+      "stone": "down"
+    }
+  ],
+  "mix": {
+    "nav": "칩 vs 특허",
+    "title": "칩을 팔아 벌고, 특허로도 번다",
+    "lead": "퀄컴 매출의 87%는 칩(QCT)이지만, 이익의 성격은 <b>특허(QTL)</b> 쪽이 전혀 다릅니다. QTL은 휴대폰이 팔릴 때마다 단말 가격의 일정 비율을 받는 사업이라, 원가가 거의 없습니다.",
+    "chartTitle": "FY2025 부문별 매출",
+    "unit": "단위: 10억 달러",
+    "total": 44.3,
+    "rows": [
+      {
+        "k": "QCT(칩)",
+        "v": 38.37,
+        "color": "--s1"
+      },
+      {
+        "k": "QTL(특허)",
+        "v": 5.58,
+        "color": "--s2"
+      }
+    ],
+    "note": "<b>QTL은 매출의 12.7%지만 퀄컴의 협상력 자체입니다.</b> 칩을 안 사는 제조사도 특허료는 냅니다. 반대로 이 구조가 각국 규제 당국과 반복해서 부딪히는 지점이기도 합니다 — 중국·EU·한국에서 모두 조사를 받았습니다.",
+    "tnote": "두 부문 합계 43.95와 총매출 44.3의 차이 0.35는 QSI(투자 부문)와 기타입니다 — 정상적인 공시 구조입니다."
+  },
+  "signature": {
+    "nav": "세금",
+    "eyebrow": "One-off",
+    "title": "영업이익의 55%가 사라진 이유",
+    "lead": "영업이익 123.6억 달러 중 순이익까지 남은 건 55.4억 달러입니다. 거의 절반이 <b>한 번의 세금 처리</b>로 빠졌습니다.",
+    "split": {
+      "title": "영업이익 123.6억이 어디로 갔나",
+      "sub": "FY2025 GAAP 기준",
+      "parts": [
+        {
+          "k": "순이익",
+          "v": 55.4,
+          "color": "--s1",
+          "label": "55.4억$"
+        },
+        {
+          "k": "세금·영업 외",
+          "v": 68.2,
+          "color": "--s2",
+          "label": "68.2억$"
+        }
+      ],
+      "note": "<b>OBBBA(2025년 7월 시행)에 따른 비현금 법인세 57억 달러</b>가 핵심입니다. 미국 연방 이연법인세자산에 평가충당금을 설정한 것으로, <b>현금이 나간 게 아닙니다.</b> 같은 법 때문에 메타도 159.3억 달러를 한 번에 털었습니다 — 2025년 실적을 비교할 때 이 항목을 빼고 봐야 추세가 보입니다."
+    },
+    "stats": [
+      {
+        "k": "일회성 세금",
+        "v": "5.7",
+        "u": "B$",
+        "s": "비현금 · OBBBA"
+      },
+      {
+        "k": "GAAP EPS",
+        "v": "5.01",
+        "u": "$",
+        "stone": "down"
+      },
+      {
+        "k": "non-GAAP EPS",
+        "v": "12.03",
+        "u": "$",
+        "s": "일회성 제외",
+        "stone": "up"
+      }
+    ]
+  },
+  "recent": {
+    "title": "FY2026 1분기",
+    "period": "2025년 12월 종료",
+    "stats": [
+      {
+        "k": "분기 매출",
+        "v": "12.25",
+        "u": "B$",
+        "s": "+5% YoY",
+        "stone": "up"
+      },
+      {
+        "k": "회계연도",
+        "v": "FY2026",
+        "s": "1분기 기준"
+      },
+      {
+        "k": "데이터센터",
+        "v": "FY2027~",
+        "s": "매출로 잡히기 시작"
+      },
+      {
+        "k": "비핸드셋 성장",
+        "v": "+24",
+        "u": "%",
+        "s": "FY2026 · FY2027은 +60% 이상 목표",
+        "stone": "up"
+      }
+    ],
+    "note": "퀄컴의 다음 이야기는 <b>휴대폰 밖</b>입니다. 자동차·IoT·데이터센터를 묶은 비핸드셋 매출이 FY2026 +24%에서 FY2027 <b>+60% 이상</b>으로 가속한다는 것이 회사 목표입니다. 데이터센터 칩 매출은 FY2027부터 실적에 잡히기 시작합니다."
+  },
+  "korea": {
+    "kind": "고객 — 그리고 동시에 경쟁자",
+    "title": "삼성은 퀄컴의 최대 고객이자 유일한 경쟁자",
+    "lead": "이 관계가 한국 투자자에게 특이합니다. <b>삼성전자는 갤럭시에 스냅드래곤을 사 갑니다</b>(고객). 동시에 <b>엑시노스로 같은 시장에서 싸웁니다</b>(경쟁). 그리고 일부 물량은 <b>삼성 파운드리가 만듭니다</b>(공급). 한 회사와 세 방향으로 엮여 있습니다.",
+    "lanes": [
+      {
+        "t": "삼성과의 세 갈래",
+        "d": "고객이면서 경쟁자이면서 생산 파트너",
+        "dest": "퀄컴",
+        "nodes": [
+          {
+            "n": "삼성전자 MX",
+            "c": "KR",
+            "kr": true,
+            "d": "갤럭시 플래그십에 스냅드래곤 탑재. 퀄컴의 최대 단일 고객 중 하나."
+          },
+          {
+            "n": "삼성전자 S.LSI",
+            "c": "KR",
+            "kr": true,
+            "d": "엑시노스로 같은 모바일 AP 시장에서 경쟁."
+          },
+          {
+            "n": "삼성 파운드리",
+            "c": "KR",
+            "kr": true,
+            "d": "스냅드래곤 일부 물량을 위탁 생산한 이력. 현재 주력은 TSMC."
+          }
+        ]
+      }
+    ]
+  },
+  "notes": [
+    {
+      "h": "숫자를 볼 때",
+      "items": [
+        "<b style='color:var(--ink)'>GAAP과 non-GAAP 차이가 FY2025에 특히 큽니다</b> — EPS 5.01 vs 12.03. 일회성 세금 때문이고, 다음 해에는 이 격차가 줄어듭니다.",
+        "<b style='color:var(--ink)'>순이익률만 보고 판단하면 안 됩니다</b> — 이 페이지에서 순이익률이 가장 왜곡된 회사입니다.",
+        "<b style='color:var(--ink)'>QTL은 소송 결과에 따라 움직입니다</b> — 특허 매출은 분쟁 한 건으로 크게 바뀝니다."
+      ]
+    },
+    {
+      "h": "위험 쪽",
+      "items": [
+        "<b style='color:var(--ink)'>애플의 자체 모뎀</b> — 최대 고객 하나가 자체 칩으로 넘어가는 중입니다.",
+        "<b style='color:var(--ink)'>규제</b> — 특허 라이선스 모델이 여러 나라에서 반복적으로 조사 대상이 됐습니다.",
+        "<b style='color:var(--ink)'>데이터센터는 아직 매출이 아닙니다</b> — FY2027 목표치이고, 엔비디아·AMD·브로드컴이 이미 자리 잡은 시장입니다."
+      ]
+    }
+  ],
+  "sources": [
+    {
+      "i": "매출·부문·영업이익·순이익",
+      "p": "FY2025",
+      "s": "Qualcomm 실적 발표 · 10-K"
+    },
+    {
+      "i": "일회성 법인세 57억$",
+      "p": "FY2025",
+      "s": "Qualcomm 실적 발표 (OBBBA 관련)"
+    },
+    {
+      "i": "FY2026 1분기·비핸드셋 목표",
+      "p": "FY2026~FY2027",
+      "s": "Qualcomm 분기 실적 발표"
+    }
+  ],
+  "checksum": "검산 — QCT 38.37 + QTL 5.58 = 43.95이고 발표 총매출 44.3과의 차이 0.35는 QSI·기타입니다. 영업이익률 12.36 ÷ 44.3 = 27.9%, 순이익률 5.54 ÷ 44.3 = 12.5%로 둘 다 계산한 값입니다."
+};
+</script>
+<script src="/m7/assets/m7.js"></script>
+</body>
+</html>

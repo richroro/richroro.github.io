@@ -1,0 +1,231 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>슈퍼마이크로 지표 · 매출 구성과 한국과의 관계 | 종목 노트</title>
+<meta name="description" content="FY2026 매출 391억 달러로 +78%, 그런데 총마진은 10.8%. 1인당 매출이 엔비디아보다 높은 이유와, 삼성·SK 메모리가 이 회사 서버에 들어가는 구조를 정리했습니다.">
+<link rel="canonical" href="https://richroro.github.io/stocks/smci/">
+<meta property="og:type" content="website"><meta property="og:locale" content="ko_KR">
+<meta property="og:site_name" content="Cadence">
+<meta property="og:url" content="https://richroro.github.io/stocks/smci/">
+<meta property="og:title" content="슈퍼마이크로 지표 | 종목 노트">
+<meta property="og:description" content="FY2026 매출 391억 달러로 +78%, 그런데 총마진은 10.8%. 1인당 매출이 엔비디아보다 높은 이유와, 삼성·SK 메모리가 이 회사 서버에 들어가는 구조를 정리했습니다.">
+<meta name="twitter:card" content="summary">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='#e66767'/><text x='50' y='66' font-size='30' text-anchor='middle' fill='white' font-family='monospace' font-weight='bold'>SMCI</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans+KR:wght@300;400;500;600;700&display=swap">
+<link rel="stylesheet" href="/m7/assets/m7.css">
+</head>
+<body>
+<noscript><div style="padding:24px;font-family:sans-serif"><h1>슈퍼마이크로 지표</h1><p>FY2026 매출 391억 달러로 +78%, 그런데 총마진은 10.8%. 1인당 매출이 엔비디아보다 높은 이유와, 삼성·SK 메모리가 이 회사 서버에 들어가는 구조를 정리했습니다.</p>
+<p>차트를 그리는 데 자바스크립트를 씁니다. <a href="/stocks/">종목 노트 전체</a></p></div></noscript>
+<script src="/stocks/assets/registry.js"></script>
+<script>
+/* 슈퍼마이크로 (SMCI) — 이 블록만 고치면 페이지 전체가 따라 바뀝니다.
+   검산: 39.1 ÷ 22.0 − 1 = +77.7% (FY2025 대비) */
+const CO = {
+  "group": "semi",
+  "hubHref": "/stocks/",
+  "hubName": "종목 노트 전체",
+  "hubMark": "종목",
+  "peersTitle": "같은 분야 다른 회사",
+  "asOf": "2026-09-20",
+  "slug": "smci",
+  "tk": "SMCI",
+  "ko": "슈퍼마이크로",
+  "en": "Super Micro Computer",
+  "ab": "SM",
+  "color": "#e66767",
+  "fy": {
+    "label": "FY2026 · 2026년 6월 종료",
+    "note": "슈퍼마이크로 회계연도는 <b>6월 30일</b>에 끝납니다. FY2026은 2025년 7월~2026년 6월입니다."
+  },
+  "headline": "매출은 두 배, 총마진은 10.8%",
+  "lead": "FY2026 매출 <b>391억 달러</b>는 전년 220억에서 <b>+78%</b>입니다. 그런데 총마진은 <b>10.8%</b>로 이 목록에서 가장 낮습니다. AI 서버를 조립해 파는 사업의 구조가 그대로 드러나는 숫자입니다.",
+  "stats": [
+    {
+      "k": "FY2026 매출",
+      "v": "39.1",
+      "u": "B$",
+      "s": "+77.7% YoY",
+      "stone": "up"
+    },
+    {
+      "k": "총마진",
+      "v": "10.8",
+      "u": "%",
+      "s": "이 목록 최저",
+      "stone": "down"
+    },
+    {
+      "k": "순이익",
+      "v": "2.2",
+      "u": "B$",
+      "s": "순이익률 5.6%"
+    },
+    {
+      "k": "1인당 매출",
+      "v": "5.92",
+      "u": "M$",
+      "s": "이 목록 1위"
+    }
+  ],
+  "signature": {
+    "nav": "조립 마진",
+    "eyebrow": "Margin",
+    "title": "매출 100 중 89가 원가",
+    "lead": "슈퍼마이크로가 파는 서버 한 대 값의 대부분은 <b>안에 들어간 부품값</b>입니다 — 엔비디아 GPU, 삼성·SK 메모리, 스토리지. 회사가 붙이는 몫은 10.8%입니다.",
+    "split": {
+      "title": "매출 100원이 어디로 가나",
+      "sub": "FY2026 총마진 기준",
+      "parts": [
+        {
+          "k": "원가",
+          "v": 89.2,
+          "color": "--s3",
+          "label": "89.2%"
+        },
+        {
+          "k": "매출총이익",
+          "v": 10.8,
+          "color": "--s1",
+          "label": "10.8%"
+        }
+      ],
+      "note": "<b>1인당 매출 592만 달러로 이 목록 1위입니다 — 엔비디아(514만)보다 높습니다.</b> 그런데 이걸 ‘생산성이 더 좋다’로 읽으면 완전히 틀립니다. 부품을 사서 조립해 파는 사업은 <b>매출이 부품값을 그대로 통과시키기 때문에</b> 구조적으로 1인당 매출이 크게 나옵니다. 1인당 <b>순이익</b>으로 보면 33만 달러로, 엔비디아(286만)의 9분의 1입니다."
+    },
+    "stats": [
+      {
+        "k": "1인당 매출",
+        "v": "5.92",
+        "u": "M$",
+        "s": "1위",
+        "stone": "up"
+      },
+      {
+        "k": "1인당 순이익",
+        "v": "0.33",
+        "u": "M$",
+        "s": "엔비디아의 1/9",
+        "stone": "down"
+      },
+      {
+        "k": "총마진",
+        "v": "10.8",
+        "u": "%",
+        "s": "엔비디아 71.1%"
+      }
+    ]
+  },
+  "korea": {
+    "kind": "공급 — 한국 메모리가 들어간다",
+    "title": "서버 한 대 값의 상당 부분이 메모리값",
+    "lead": "AI 서버는 GPU와 <b>메모리</b>가 원가의 대부분입니다. 슈퍼마이크로가 서버를 많이 팔수록 삼성전자·SK하이닉스의 서버용 D램과 HBM 수요가 늘어납니다 — <b>가장 직접적인 연결 고리 중 하나입니다.</b>",
+    "lanes": [
+      {
+        "t": "AI 서버 한 대의 원가",
+        "d": "조립은 슈퍼마이크로, 값나가는 건 안쪽 부품",
+        "dest": "AI 서버 랙",
+        "nodes": [
+          {
+            "n": "SK하이닉스",
+            "c": "KR",
+            "kr": true,
+            "d": "HBM·서버용 D램. GPU 옆과 시스템 메모리 양쪽에 들어간다."
+          },
+          {
+            "n": "삼성전자",
+            "c": "KR",
+            "kr": true,
+            "d": "서버 D램·SSD. 스토리지까지 포함하면 비중이 더 커진다."
+          },
+          {
+            "n": "엔비디아",
+            "c": "US",
+            "kr": false,
+            "d": "GPU. 서버 한 대 원가에서 가장 큰 단일 항목."
+          }
+        ]
+      }
+    ]
+  },
+  "recent": {
+    "title": "FY2027 전망",
+    "period": "2026년 7월~2027년 6월",
+    "stats": [
+      {
+        "k": "FY2027 매출 가이던스",
+        "v": "65~72",
+        "u": "B$",
+        "s": "FY2026의 최대 1.8배",
+        "stone": "up"
+      },
+      {
+        "k": "신규 AI 수주",
+        "v": "60",
+        "u": "B$ 이상",
+        "s": "역대 최대 수주잔고",
+        "stone": "up"
+      },
+      {
+        "k": "가이던스 폭",
+        "v": "7",
+        "u": "B$",
+        "s": "범위가 이례적으로 넓다"
+      },
+      {
+        "k": "배당",
+        "v": "없음",
+        "s": "무배당"
+      }
+    ],
+    "note": "<b>가이던스 범위가 65억이 아니라 70억 달러 폭입니다.</b> 회사가 스스로도 매출 인식 시점을 확신하지 못한다는 뜻으로 읽는 게 맞습니다 — AI 서버는 대형 계약 한 건이 분기를 넘나들면 숫자가 크게 흔들립니다. 신규 AI 수주 <b>600억 달러 이상</b>은 회사가 밝힌 역대 최대치입니다."
+  },
+  "notes": [
+    {
+      "h": "숫자를 볼 때",
+      "items": [
+        "<b style='color:var(--ink)'>1인당 매출로 회사를 비교하면 안 되는 대표 사례입니다</b> — 이 목록 1위지만 조립·유통 구조 때문입니다.",
+        "<b style='color:var(--ink)'>연간 영업이익을 담지 않았습니다</b> — 확인한 자료에 없어 비웠습니다. 총마진과 순이익률로 대신했습니다.",
+        "<b style='color:var(--ink)'>부문 매출을 담지 않았습니다</b> — 의미 있는 부문 구분을 공시하지 않습니다."
+      ]
+    },
+    {
+      "h": "위험 쪽",
+      "items": [
+        "<b style='color:var(--ink)'>마진이 얇습니다</b> — 총마진 10.8%에서는 부품값이 조금만 올라도 이익이 크게 줄어듭니다.",
+        "<b style='color:var(--ink)'>GPU 물량에 종속됩니다</b> — 엔비디아 할당이 매출 상한을 정합니다.",
+        "<b style='color:var(--ink)'>회계 이슈 이력</b> — 과거 감사인 교체와 공시 지연이 있었습니다. 실적 신뢰도에 할인 요인으로 보는 시각이 남아 있습니다."
+      ]
+    }
+  ],
+  "sources": [
+    {
+      "i": "매출·총마진·순이익",
+      "p": "FY2026",
+      "s": "Supermicro 실적 발표"
+    },
+    {
+      "i": "FY2025 매출(성장률 계산 기준)",
+      "p": "FY2025",
+      "s": "Supermicro 실적 발표"
+    },
+    {
+      "i": "FY2027 가이던스·AI 수주",
+      "p": "FY2027",
+      "s": "Supermicro FY2026 4분기 실적 발표"
+    },
+    {
+      "i": "임직원",
+      "p": "2026년 3월",
+      "s": "공개 집계"
+    }
+  ],
+  "checksum": "검산 — 39.1 ÷ 22.0 − 1 = +77.7%로 성장률이 맞습니다. 순이익률 2.2 ÷ 39.1 = 5.6%, 1인당 매출 39.1B ÷ 6,605명 = 592만 달러, 1인당 순이익 2.2B ÷ 6,605명 = 33만 달러로 전부 계산한 값입니다."
+};
+</script>
+<script src="/m7/assets/m7.js"></script>
+</body>
+</html>

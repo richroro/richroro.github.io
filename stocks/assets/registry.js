@@ -160,5 +160,63 @@ const REGISTRY = [
       { k:"수주잔고", v:"38.8", u:"B€", p:"2025년 말", t:"backlog",
         s:"2026년 시스템 매출을 덮고 2027년까지 간다 · 2026년부터 분기 수주는 공시하지 않는다" }
     ] },
-    data:{ fy:"2025", growth:15.6, gm:52.8, emp:44209, empAsOf:"2025년", rev:32.7, oi:null, ni:9.6, top:null, cur:"€" } }
+    data:{ fy:"2025", growth:15.6, gm:52.8, emp:44209, empAsOf:"2025년", rev:32.7, oi:null, ni:9.6, top:null, cur:"€" } },
+  /* ---- 반도체 2차 (설계 IP · 모바일 · 파운드리 · 커스텀 실리콘 · AI 서버) ---- */
+  { slug:"arm", kr:"고객", tk:"ARM", ko:"암", ab:"AR", c:"#008300", group:"semi", base:"/stocks/",
+    sector:"반도체 IP", hint:"칩을 안 만드는데 거의 모든 칩에 들어간다",
+    p:{ est:1990, estNote:"에이콘·애플·VLSI 합작으로 출범 · 2016년 소프트뱅크가 인수, 2023년 재상장",
+        hq:"영국 케임브리지", ex:"나스닥 ADS", ceo:"르네 하스", ceoEn:"Rene Haas",
+        since:2022, fye:"3월 31일", div:false },
+    f:{ asOf:"2026년 9월", items:[
+      { k:"2031년 칩 매출 목표", v:"15", u:"B$", p:"2031년", t:"guide",
+        s:"IP 로열티만 받던 회사가 칩을 직접 판다는 계획 · 장기 목표지 가이던스가 아니다" },
+      { k:"2031년 EPS 목표", v:"9 이상", u:"$", p:"2031년", t:"guide",
+        s:"FY2026 실적 발표 자료에서 제시" }
+    ] },
+    data:{ fy:"FY2026", growth:23.0, gm:97.5, emp:7096, empAsOf:"2026년 3월", rev:4.92, oi:null, ni:0.904,
+           top:{k:"로열티", v:2.61, of:4.92} } },
+  { slug:"qcom", kr:"고객", tk:"QCOM", ko:"퀄컴", ab:"QC", c:"#d55181", group:"semi", base:"/stocks/",
+    sector:"반도체", hint:"매출 +14%인데 GAAP 이익은 반토막",
+    p:{ est:1985, hq:"미국 캘리포니아 샌디에이고", ex:"나스닥", ceo:"크리스티아누 아몬", ceoEn:"Cristiano Amon",
+        since:2021, fye:"9월 말(52/53주)", div:true },
+    f:{ asOf:"2026년 9월", items:[
+      { k:"비핸드셋 매출 성장", v:"+60 이상", u:"%", p:"FY2027", t:"guide",
+        s:"FY2026 +24%에서 가속 · 데이터센터 매출이 FY2027부터 잡히기 시작한다" }
+    ] },
+    data:{ fy:"FY2025", growth:14.0, gm:55.0, emp:52000, empAsOf:"2025년 9월", rev:44.3, oi:12.36, ni:5.54,
+           top:{k:"QCT(칩)", v:38.37, of:44.3} } },
+  { slug:"intc", kr:"경쟁", tk:"INTC", ko:"인텔", ab:"IN", c:"#256abf", group:"semi", base:"/stocks/",
+    sector:"반도체", hint:"매출 제자리, 파운드리는 90억 달러 적자",
+    p:{ est:1968, hq:"미국 캘리포니아 산타클라라", ex:"나스닥", ceo:"립부 탄", ceoEn:"Lip-Bu Tan",
+        since:2025, fye:"12월 말(52/53주)", div:false, divNote:"2024년 2분기부터 배당을 중단했다" },
+    f:{ asOf:"2026년 9월", items:[
+      { k:"2026 자본지출", v:"20 이상", u:"B$", p:"2026년", t:"capex",
+        s:"2분기 실적 뒤 상향 · 2027년에는 더 높아진다고 밝혔다" }
+    ] },
+    data:{ fy:"2025", growth:0.0, gm:34.8, emp:85100, empAsOf:"2025년 말", rev:52.9, oi:-2.22, ni:-0.3,
+           top:{k:"파운드리", v:17.8, of:52.9} } },
+  { slug:"mrvl", kr:"공급", tk:"MRVL", ko:"마벨", ab:"MV", c:"#9085e9", group:"semi", base:"/stocks/",
+    sector:"반도체", hint:"매출의 4분의 3이 데이터센터",
+    p:{ est:1995, hq:"미국 캘리포니아 산타클라라", ex:"나스닥", ceo:"맷 머피", ceoEn:"Matt Murphy",
+        since:2016, fye:"1월 말(52/53주)", div:true },
+    f:{ asOf:"2026년 9월", items:[
+      { k:"FY2027 매출 목표", v:"약 11.5", u:"B$", p:"FY2027", t:"guide",
+        s:"FY2026 8.195B$에서 약 +40% · 1분기 실적 뒤 상향" },
+      { k:"FY2028 매출 목표", v:"약 16.5", u:"B$", p:"FY2028", t:"guide",
+        s:"2년 만에 두 배 · 회사가 직접 제시한 중기 목표" },
+      { k:"인터커넥트 성장", v:"+70 이상", u:"%", p:"FY2027", t:"guide",
+        s:"기존 전망 +50%에서 상향" }
+    ] },
+    data:{ fy:"FY2026", growth:42.1, gm:null, emp:7042, empAsOf:"FY2025", rev:8.195, oi:null, ni:2.670, top:null } },
+  { slug:"smci", kr:"공급", tk:"SMCI", ko:"슈퍼마이크로", ab:"SM", c:"#e66767", group:"semi", base:"/stocks/",
+    sector:"AI 서버", hint:"매출 두 배, 총마진 10.8%",
+    p:{ est:1993, hq:"미국 캘리포니아 산호세", ex:"나스닥", ceo:"찰스 량", ceoEn:"Charles Liang",
+        since:1993, fye:"6월 30일", div:false },
+    f:{ asOf:"2026년 9월", items:[
+      { k:"FY2027 매출 가이던스", v:"65~72", u:"B$", p:"FY2027", t:"guide",
+        s:"FY2026 39.1B$에서 최대 84% · 회사가 제시한 범위가 이례적으로 넓다" },
+      { k:"신규 AI 수주", v:"60 이상", u:"B$", p:"FY2026 4분기 발표", t:"backlog",
+        s:"회사는 역대 최대 수주잔고라고 밝혔다 · 금액 기준일은 따로 공시하지 않았다" }
+    ] },
+    data:{ fy:"FY2026", growth:77.7, gm:10.8, emp:6605, empAsOf:"2026년 3월", rev:39.1, oi:null, ni:2.2, top:null } }
 ];
