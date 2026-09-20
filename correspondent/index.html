@@ -64,6 +64,8 @@
 }
 
 *{box-sizing:border-box}
+/* display:flex/grid 를 준 요소는 hidden 속성만으로 안 사라진다 — 작성자 규칙이 브라우저 기본을 이긴다 */
+[hidden]{display:none !important}
 html,body{margin:0;padding:0}
 body{
   background:var(--paper);color:var(--ink);
@@ -271,9 +273,21 @@ textarea.input{min-height:76px;resize:vertical;line-height:1.55}
 
 /* ════════ 장소 ════════ */
 .places{display:grid;gap:9px}
-.pl{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:13px 15px;
-  width:100%;text-align:left;cursor:pointer;font:inherit;color:inherit;transition:.15s}
+.pl{background:var(--surface);border:1px solid var(--line);border-left:3px solid var(--line);
+  border-radius:var(--r);padding:13px 15px;width:100%;text-align:left;cursor:pointer;font:inherit;
+  color:inherit;transition:.15s}
 .pl:hover{border-color:var(--accent);box-shadow:var(--shadow)}
+.pl.age-live{border-left-color:var(--live-dot)}
+.pl.age-soft{border-left-color:var(--accent)}
+.pl.age-old{background:var(--surface-2)}
+
+/* 특파원 얼굴 겹치기 — 몇 명이 봤는지가 장소의 무게다 */
+.avs{display:inline-flex;align-items:center;flex:none}
+.avs i{width:20px;height:20px;border-radius:50%;background:var(--accent-wash);color:var(--accent-deep);
+  display:grid;place-items:center;font-size:10.5px;font-weight:700;font-style:normal;
+  border:1.5px solid var(--surface);margin-right:-6px}
+.avs i:last-child{margin-right:3px}
+.pl.age-old .avs i{border-color:var(--surface-2)}
 .pl-top{display:flex;gap:4px 9px;align-items:baseline;flex-wrap:wrap}
 .pl-name{font-size:16.5px;font-weight:700;letter-spacing:-.5px}
 .pl-meta{margin-top:9px;display:flex;gap:4px 13px;flex-wrap:wrap;font-size:12px;color:var(--ink-3)}
@@ -288,12 +302,20 @@ textarea.input{min-height:76px;resize:vertical;line-height:1.55}
 .pr .av{width:36px;height:36px;border-radius:50%;background:var(--accent-wash);color:var(--accent-deep);
   display:grid;place-items:center;font-weight:700;font-size:14px;flex:none}
 .pr .who{flex:1 1 150px;min-width:0}
-.pr .who b{font-size:15px;font-weight:600;display:block}
-.pr .who small{font-size:11.5px;color:var(--ink-3)}
+.pr .who b{font-size:15px;font-weight:600;display:flex;align-items:center;gap:6px}
+.pr .who small{font-size:11.5px;color:var(--ink-2);display:block}
+.pr .who small.sub{color:var(--ink-3);font-size:11px}
+.pr .who b .dot{color:var(--live-dot)}
 .pr .cnt{text-align:right;font-family:"IBM Plex Mono",monospace}
 .pr .cnt b{font-size:18px;font-weight:600;display:block;line-height:1.2}
 .pr .cnt small{font-size:11px;color:var(--ink-3)}
 .pr.me{border-color:var(--accent)}
+.me-panel{padding:14px 15px}
+.me-set{display:flex;align-items:center;gap:10px}
+.me-set .av{width:32px;height:32px;border-radius:50%;background:var(--accent-wash);color:var(--accent-deep);
+  display:grid;place-items:center;font-weight:700;font-size:13px;flex:none}
+.me-txt{font-size:13.5px;color:var(--ink-3);flex:1;min-width:0}
+.me-txt b{color:var(--ink);font-weight:600;font-size:15px}
 
 /* ════════ 주고받기 ════════ */
 .code-box{width:100%;min-height:104px;font-family:"IBM Plex Mono",monospace;font-size:12.5px;
@@ -438,16 +460,23 @@ footer{border-top:1px solid var(--line);margin-top:36px;background:var(--surface
 
   <!-- ===== 특파원 ===== -->
   <section class="view" id="view-people" role="tabpanel" aria-label="특파원" hidden>
-    <div class="panel" style="margin-bottom:12px">
-      <div class="panel-t">내 이름</div>
-      <div class="filter-row">
-        <input class="input grow" id="meInput" type="text" maxlength="20" placeholder="예: 리처드" aria-label="내 특파원 이름">
-        <button class="btn sm" id="meSave" type="button">저장</button>
+    <div class="panel me-panel" style="margin-bottom:12px">
+      <div class="me-set" id="meSet" hidden>
+        <span class="av" id="meAv" aria-hidden="true"></span>
+        <span class="me-txt"><b id="meName"></b> 특파원으로 씁니다</span>
+        <button class="link-btn" id="meEdit" type="button">바꾸기</button>
       </div>
-      <p class="note" style="margin-top:8px">리포트에 적히는 이름입니다. 이 브라우저에만 저장되고, 리포트를 보낼 때만 링크에 함께 실립니다.</p>
+      <div id="meForm">
+        <div class="panel-t">내 이름</div>
+        <div class="filter-row">
+          <input class="input grow" id="meInput" type="text" maxlength="20" placeholder="예: 리처드" aria-label="내 특파원 이름">
+          <button class="btn sm" id="meSave" type="button">저장</button>
+        </div>
+        <p class="note" style="margin-top:8px">리포트에 적히는 이름입니다. 이 브라우저에만 저장되고, 리포트를 보낼 때만 링크에 함께 실립니다.</p>
+      </div>
     </div>
     <div class="people" id="people"></div>
-    <p class="note" style="margin-top:12px">리포트를 많이 쓴 순서일 뿐, 내용이 정확하다는 뜻은 아닙니다.</p>
+    <p class="note" style="margin-top:12px">최근에 소식을 보낸 순서입니다. 지금 물어볼 수 있는 사람이 위로 옵니다 — 내용이 정확하다는 뜻은 아닙니다.</p>
   </section>
 
   <!-- ===== 주고받기 ===== -->
@@ -793,6 +822,7 @@ let draft = { cat:"play", wait:-1, crowd:-1, park:-1, rate:0, tags:[] };
 let openPlaceKey = null;
 let lastFocus = null;
 let inboxCache = null;
+let meEditing = false;
 
 /* =========================================================================
    현장 정보 그리기
@@ -1151,19 +1181,21 @@ function renderPlaces(){
     const cat = CATS.find((c) => c.k === g.cat) || CATS[CATS.length - 1];
     const chips = statChips(g.last);
     const d = Date.now() - g.last.t;
-    return '<button class="pl" type="button" data-openkey="' + esc(g.key) + '">' +
+    return '<button class="pl age-' + ageClass(g.last.t) + '" type="button" data-openkey="' + esc(g.key) + '">' +
       '<div class="pl-top">' +
         '<span class="cat">' + cat.ic + " " + esc(cat.nm) + "</span>" +
         '<span class="pl-name">' + esc(g.place) + "</span>" +
-        (g.area ? '<span class="age mono">' + esc(g.area) + "</span>" : "") +
+        (g.area ? '<span class="age">' + esc(g.area) + "</span>" : "") +
       "</div>" +
       (chips.length ? '<div class="live-row' + (d >= SOFT ? " faded" : "") + '">' +
         '<span class="live-label">' + esc(liveLabel(g.last.t)) + "</span>" +
-        chips.map((c) => '<span class="stat ' + c.tone + '">' + esc(c.s) + "</span>").join("") + "</div>" : "") +
+        chips.map((c) => '<span class="stat ' + c.tone + '">' + esc(c.s) + "</span>").join("") +
+        meterHtml(g.last) + "</div>" : "") +
       (g.conflicts.length ? '<div class="conflict">엇갈립니다 · ' + esc(g.conflicts[0]) + "</div>" : "") +
       '<div class="pl-meta">' +
-        "<span>리포트 <b>" + g.n + "건</b></span>" +
+        avsHtml(g.people) +
         "<span>특파원 <b>" + g.people.length + "명</b></span>" +
+        "<span>리포트 <b>" + g.n + "건</b></span>" +
         (g.rate ? "<span>별점 <b>" + g.rate.toFixed(1) + "</b></span>" : "") +
         "<span>마지막 <b>" + esc(ago(g.last.t)) + "</b></span>" +
         (g.tags.length ? '<span class="tags">' + g.tags.map((t) => "#" + esc(t)).join(" ") + "</span>" : "") +
@@ -1171,35 +1203,58 @@ function renderPlaces(){
   }).join("") : '<div class="empty"><b>아직 장소가 없습니다</b><p>리포트가 쌓이면 같은 장소끼리 묶어서 보여 줍니다.</p></div>';
 }
 
+/** 몇 사람이 봤는지 — 얼굴을 겹쳐서 한눈에. 네 명까지 보이고 나머지는 숫자로. */
+function avsHtml(people){
+  const show = people.slice(0, 4);
+  return '<span class="avs">' + show.map((n) => '<i title="' + esc(n) + '">' + esc(n.slice(0, 1)) + "</i>").join("") +
+    (people.length > 4 ? '<i title="외 ' + (people.length - 4) + '명">+' + (people.length - 4) + "</i>" : "") + "</span>";
+}
+
 function renderPeople(){
   const all = reports();
   const map = new Map();
   all.forEach((r) => {
     let p = map.get(r.by);
-    if (!p) { p = { by:r.by, n:0, last:0, live:0, areas:{}, cats:{} }; map.set(r.by, p); }
+    if (!p) { p = { by:r.by, n:0, last:0, lastR:null, day:0, areas:{}, cats:{} }; map.set(r.by, p); }
     p.n++;
-    p.last = Math.max(p.last, r.t);
-    if (Date.now() - r.t < DAY) p.live++;
+    if (r.t > p.last) { p.last = r.t; p.lastR = r; }
+    if (Date.now() - r.t < DAY) p.day++;
     if (r.area) p.areas[r.area] = (p.areas[r.area] || 0) + 1;
     p.cats[r.cat] = (p.cats[r.cat] || 0) + 1;
   });
-  const list = Array.from(map.values()).sort((a, b) => (b.n - a.n) || (b.last - a.last));
+  /* 많이 쓴 순으로 세우면 오래전에 많이 쓴 사람이 맨 위에 남는다.
+     지금 물어볼 수 있는 사람이 위로 와야 쓸모가 있다. */
+  const list = Array.from(map.values()).sort((a, b) => b.last - a.last);
   $("#nPeople").textContent = list.length ? list.length : "";
-  $("#people").innerHTML = list.length ? list.map((p) => {
-    const area = Object.keys(p.areas).sort((a, b) => p.areas[b] - p.areas[a])[0];
-    const catK = Object.keys(p.cats).sort((a, b) => p.cats[b] - p.cats[a])[0];
+
+  const out = [];
+  let band = -1;
+  list.forEach((p) => {
+    const b = Date.now() - p.last < SOFT ? 0 : 1;
+    if (b !== band) {
+      band = b;
+      const n = list.filter((x) => (Date.now() - x.last < SOFT ? 0 : 1) === b).length;
+      out.push('<div class="tgroup"><b>' + (b === 0 ? "지금 나가 있는 특파원" : "그 밖에") +
+        "</b><i></i><span>" + n + "명</span></div>");
+    }
+    const area = Object.keys(p.areas).sort((x, y) => p.areas[y] - p.areas[x])[0];
+    const catK = Object.keys(p.cats).sort((x, y) => p.cats[y] - p.cats[x])[0];
     const cat = CATS.find((c) => c.k === catK);
-    const bits = [];
-    if (area) bits.push(esc(area));
-    if (cat) bits.push(cat.ic + " " + esc(cat.nm));
-    bits.push("마지막 " + esc(ago(p.last)));
-    if (p.live) bits.push("하루 안 " + p.live + "건");
-    return '<div class="pr' + (p.by === board.me ? " me" : "") + '">' +
+    const sub = [];
+    if (area) sub.push("주로 " + esc(area));
+    if (cat) sub.push(cat.ic + " " + esc(cat.nm));
+    if (p.day) sub.push("하루 안 " + p.day + "건");
+    out.push('<div class="pr' + (p.by === board.me ? " me" : "") + '">' +
       '<span class="av" aria-hidden="true">' + esc(p.by.slice(0, 2)) + "</span>" +
-      '<span class="who"><b>' + esc(p.by) + (p.by === board.me ? " (나)" : "") + "</b>" +
-        "<small>" + bits.join(" · ") + "</small></span>" +
-      '<span class="cnt"><b>' + p.n + "</b><small>리포트</small></span></div>";
-  }).join("") : '<div class="empty"><b>아직 특파원이 없습니다</b><p>첫 리포트를 남기면 이름이 올라갑니다.</p></div>';
+      '<span class="who"><b>' + esc(p.by) + (p.by === board.me ? " (나)" : "") +
+        (b === 0 ? '<span class="dot on" title="3시간 안쪽에 소식을 보냈습니다"></span>' : "") + "</b>" +
+        "<small>" + esc(ago(p.last)) + " · " + esc(p.lastR.place) + "</small>" +
+        (sub.length ? '<small class="sub">' + sub.join(" · ") + "</small>" : "") +
+      "</span>" +
+      '<span class="cnt"><b>' + p.n + "</b><small>리포트</small></span></div>");
+  });
+  $("#people").innerHTML = list.length ? out.join("")
+    : '<div class="empty"><b>아직 특파원이 없습니다</b><p>첫 리포트를 남기면 이름이 올라갑니다.</p></div>';
 }
 
 function renderSync(){
@@ -1223,6 +1278,10 @@ function renderDatalists(){
 
 function paintMe(){
   $("#intro").hidden = !isSample();
+  const named = !!board.me && !meEditing;
+  $("#meSet").hidden = !named;
+  $("#meForm").hidden = named;
+  if (named) { $("#meName").textContent = board.me; $("#meAv").textContent = board.me.slice(0, 2); }
   $("#meLbl").textContent = board.me || "이름";
   $("#meBtn").title = board.me ? "특파원: " + board.me : "특파원 이름 정하기";
 }
@@ -1479,6 +1538,8 @@ function bind(){
   });
   $("#meBtn").addEventListener("click", () => {
     switchView("people");
+    meEditing = true;
+    paintMe();
     $("#meInput").value = board.me;
     setTimeout(() => $("#meInput").focus(), 60);
   });
@@ -1505,8 +1566,15 @@ function bind(){
   $("#psort").addEventListener("change", (e) => { pflt.sort = e.target.value; renderPlaces(); });
 
   /* 내 이름 */
+  $("#meEdit").addEventListener("click", () => {
+    meEditing = true;
+    paintMe();
+    $("#meInput").value = board.me;
+    $("#meInput").focus();
+  });
   $("#meSave").addEventListener("click", () => {
     board.me = clip($("#meInput").value, 20);
+    meEditing = false;
     save();
     paintMe();
     renderPeople();
