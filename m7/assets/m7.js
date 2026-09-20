@@ -121,26 +121,35 @@ function regEntry() {
 }
 function peopleHtml() {
   const e = regEntry();
-  if (!e || !e.data || !e.data.emp) return "";
+  if (!e || !e.data) return "";
   const d = e.data, cur = d.cur || "$";
-  const revPer = (d.rev * 1e9) / d.emp;
-  const oiPer = d.oi == null ? null : (d.oi * 1e9) / d.emp;
-  const m = (v) => cur + (v / 1e6).toFixed(v / 1e6 >= 1 ? 2 : 3) + "M";
-  return '<div class="card pad mt16"><div class="rowsplit"><h3>인력과 1인당 지표</h3>' +
-    '<span class="fybadge">임직원 ' + esc(d.empAsOf) + ' 기준</span></div>' +
+  const money = (v) => cur + (v / 1e6).toFixed(v / 1e6 >= 1 ? 2 : 3) + "M";
+  const revPer = d.emp ? (d.rev * 1e9) / d.emp : null;
+  const oiPer = (d.emp && d.oi != null) ? (d.oi * 1e9) / d.emp : null;
+  const om = d.oi == null ? null : (d.oi / d.rev) * 100;
+  const tile = (k, v, sub, cl) =>
+    '<div class="st"><div class="k">' + k + '</div><div class="v num' + (cl ? " " + cl : "") +
+    '">' + v + '</div><div class="s">' + sub + "</div></div>";
+  return '<div class="card pad mt16"><div class="rowsplit"><h3>요약 지표</h3>' +
+    '<span class="fybadge">' + esc(d.fy) + ' 실적 · 임직원 ' + esc(d.empAsOf || "—") + ' 기준</span></div>' +
+    '<div class="stats c4 mt12" role="group" aria-label="재무 요약">' +
+      tile("매출", cur + d.rev.toFixed(1) + "B", esc(d.fy)) +
+      tile("전년 대비", d.growth == null ? "—" : pctTxt(d.growth), "매출 증감",
+           d.growth == null ? "" : cls(d.growth)) +
+      tile("총마진", d.gm == null ? "—" : d.gm.toFixed(1) + "%", "매출총이익 ÷ 매출") +
+      tile("영업이익률", om == null ? "—" : om.toFixed(1) + "%",
+           om == null ? "영업이익 미공개" : "영업이익 " + cur + d.oi.toFixed(1) + "B") +
+    '</div>' +
     '<div class="stats c4 mt12" role="group" aria-label="인력 지표">' +
-    '<div class="st"><div class="k">임직원 수</div><div class="v num">' + nf.format(d.emp) +
-      '</div><div class="s">' + esc(d.empAsOf) + '</div></div>' +
-    '<div class="st"><div class="k">1인당 매출</div><div class="v num">' + m(revPer) +
-      '</div><div class="s">' + cur + d.rev.toFixed(1) + 'B ÷ 임직원</div></div>' +
-    '<div class="st"><div class="k">1인당 영업이익</div><div class="v num">' +
-      (oiPer == null ? "—" : m(oiPer)) + '</div><div class="s">' +
-      (oiPer == null ? "영업이익 미공개" : cur + d.oi.toFixed(1) + "B ÷ 임직원") + '</div></div>' +
-    '<div class="st"><div class="k">매출 기준 회계연도</div><div class="v">' + esc(d.fy) +
-      '</div><div class="s">임직원 시점과 다를 수 있음</div></div></div>' +
-    '<div class="note mt12"><span class="ic">👥</span><div>' +
-      (CO.peopleNote || "1인당 지표는 매출·영업이익을 임직원 수로 나눈 값입니다. 업종이 다르면 그대로 비교하면 안 됩니다 — " +
-       "제조·물류 인력이 많은 회사는 구조적으로 낮게 나옵니다.") +
+      tile("임직원 수", d.emp ? nf.format(d.emp) : "—", esc(d.empAsOf || "—")) +
+      tile("1인당 매출", revPer == null ? "—" : money(revPer), "매출 ÷ 임직원") +
+      tile("1인당 영업이익", oiPer == null ? "—" : money(oiPer),
+           oiPer == null ? "영업이익 미공개" : "영업이익 ÷ 임직원") +
+      tile("한국과의 관계", esc(e.kr || "—"), "공급 · 경쟁 · 고객 · 간접") +
+    '</div>' +
+    '<div class="note mt12"><span class="ic">📐</span><div>' +
+      (CO.peopleNote || "이 블록은 매출·영업이익·임직원 수에서 <b>계산한 값</b>입니다. 같은 숫자를 두 군데 적지 않으려고 파생시킵니다. " +
+       "1인당 지표는 업종이 다르면 그대로 비교하면 안 됩니다 — 제조·물류 인력이 많은 회사는 구조적으로 낮게 나옵니다.") +
       ' <a href="/stocks/#people" style="border-bottom:1px solid var(--line)">다른 회사와 비교</a></div></div></div>';
 }
 
