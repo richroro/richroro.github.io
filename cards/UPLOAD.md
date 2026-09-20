@@ -1,8 +1,7 @@
 # 업로드 목록
 
-각 폴더의 `upload.md`에 제목·설명·태그가 들어 있다.
+주제 24개. 각 폴더의 `upload.md`에 제목·설명·태그가 있다.
 영상은 `shorts-quiet.mp4`, 썸네일 후보는 `poster-quiet.png`.
-장식을 얹은 이전 판은 `shorts-fit.mp4` / `poster-fit.png`로 남겨뒀다.
 
 | 폴더 | 제목 | 테마 |
 |---|---|---|
@@ -20,22 +19,27 @@
 | `0018-lotto` | 로또 1등 되려면 몇 년을 사야 할까 | neon |
 | `0019-billionaires` | 세계 1위 부자 재산, 1,204조원 | noir |
 | `0020-tesla` | 테슬라는 한 분기에 몇 대나 팔까 | neon |
-
+| `0021-inflation` | 지금 1억, 20년 뒤엔 5,537만원 | press |
+| `0022-savings` | 적금 이자가 예금의 절반인 이유 | mint |
+| `0023-debt` | 빚 1,000만원, 매달 10만원씩 갚으면 | paper |
+| `0024-trillion` | 1조원을 하루 100만원씩 쓰면 2,739년 | press |
+| `0025-fx` | 환율 100원 오르면 얼마나 손해일까 | mint |
+| `0026-installment` | 120만원 24개월 할부, 수수료가 19만원 | paper |
+| `0027-saverate` | 월급 300만원, 저축률별 1년에 모이는 돈 | mint |
+| `0028-compound` | 복리와 단리, 30년 뒤 1,821만원 차이 | press |
+| `0029-real` | 이자 3%, 물가 3%면 남는 게 0입니다 | mint |
+| `0030-homeprice` | 집값 1% 상승, 3억 집과 30억 집의 차이 | paper |
 
 ## 다시 만들려면
 
 ```bash
-# 카드·영상
 node cards/tools/infographic.mjs cards/tools/content/<슬러그>.json --quiet
 node cards/tools/scrollshorts.mjs cards/tools/content/<슬러그>.json \
-  --poster=cards/<슬러그>/poster-quiet.png --dur=20 --style=drive --out=shorts-quiet.mp4
-# 업로드 메타데이터
+  --poster=cards/<슬러그>/poster-quiet.png --dur=20 --style=bright --out=shorts-quiet.mp4
 node cards/tools/upload.mjs cards/tools/content/<슬러그>.json
+python3 cards/tools/factcheck.py
 ```
 
-제목과 태그는 콘텐츠 JSON의 `youtube` 항목에 있다. 거기만 고치고
-`upload.mjs`를 다시 돌리면 설명까지 같이 갱신된다.
-
-설명에는 카드 하단 고지 중 앞의 세 줄이 자동으로 들어간다.
-출처와 기준일이 영상 밖에도 남아야 하기 때문이다. 시세처럼 움직이는
-숫자는 기준이 빠지면 주장이 된다.
+제목과 태그는 콘텐츠 JSON의 `youtube` 항목에 있다.
+설명에는 카드 하단 고지 앞 세 줄이 자동으로 들어간다. 출처와 기준일이
+영상 밖에도 남아야 하기 때문이다.

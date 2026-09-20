@@ -462,7 +462,8 @@ const quietRow = (r, i) => `<div class="row">
     <span class="vl">${esc(r.price)}</span>
   </div>
   ${r.sub || r.mid ? `<div class="meta">${[r.sub, r.mid].filter(Boolean).map(esc).join(' · ')}</div>` : ''}
-  <div class="barwrap"><div class="bar" style="width:${(r.bar * 100).toFixed(1)}%"></div></div>
+  ${data.showBar === false ? ''
+    : `<div class="barwrap"><div class="bar" style="width:${(r.bar * 100).toFixed(1)}%"></div></div>`}
 </div>`;
 
 const tallRow = (r, i) => {
