@@ -11,7 +11,7 @@ const M7 = [
   { slug: "googl", tk: "GOOGL", ko: "알파벳", ab: "GO", c: "#eb6834", hint: "광고가 버는 돈으로 다 한다" },
   { slug: "amzn", tk: "AMZN", ko: "아마존", ab: "AM", c: "#c98500", hint: "매출 18%가 이익 57%" },
   { slug: "meta", tk: "META", ko: "메타", ab: "ME", c: "#4a3aa7", hint: "광고 이익의 19%를 태운다" },
-  { slug: "tesla", tk: "TSLA", ko: "테슬라", ab: "TS", c: "#E82127", hint: "매출 최대, 이익률 1.4%", href: "/tesla-metrics/" }
+  { slug: "tesla", tk: "TSLA", ko: "테슬라", ab: "TS", c: "#E82127", hint: "매출 최대, 최근 분기 이익률 1.4%", href: "/tesla-metrics/" }
 ];
 
 const $ = (id) => document.getElementById(id);
@@ -19,6 +19,17 @@ const nf = new Intl.NumberFormat("ko-KR");
 const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
 function pctTxt(v) { return v == null ? "—" : (v > 0 ? "+" : v < 0 ? "−" : "") + Math.abs(v).toFixed(1) + "%"; }
 function cls(v) { return v == null ? "" : v > 0 ? "up" : v < 0 ? "down" : ""; }
+/* 조사 — 마지막 글자에 받침이 있는지로 고릅니다. 회사 이름이 알파벳이면
+   한국어로 읽을 때의 끝소리를 적어 둡니다(ASML=에스엠엘 → 받침 ㄹ). */
+const READS = { AMD: "디", TSMC: "씨", ASML: "엘", NVDA: "에이", MU: "유", TSM: "엠", AVGO: "오" };
+function josa(word, withJong, without) {
+  const s = String(word).trim();
+  const last = READS[s.split(/[\s·,]+/).pop()] || s.slice(-1);
+  const c = last.charCodeAt(0) - 0xAC00;
+  if (c < 0 || c > 11171) return withJong + "(" + without + ")";
+  return (c % 28) ? withJong : without;
+}
+
 const store = {
   get(k, fb) { try { const v = localStorage.getItem(k); return v == null ? fb : JSON.parse(v); } catch (e) { return fb; } },
   set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} }
@@ -114,22 +125,63 @@ function drawMix() {
 function drawAll() { drawMix(); }
 
 
-/* ---------------------------- 인력 · 1인당 지표 ---------------------------- */
+/* ---------------------------- 회사 프로필 · 요약 지표 ---------------------------- */
 function regEntry() {
   if (typeof REGISTRY === "undefined") return null;
   return REGISTRY.find((r) => r.slug === CO.slug) || null;
 }
+const YEAR = new Date().getFullYear();
+function pfTile(k, v, sub) {
+  return '<div class="pf"><div class="k">' + k + '</div><div class="v">' + v + '</div>' +
+    (sub ? '<div class="s">' + sub + "</div>" : "") + "</div>";
+}
+function profileHtml() {
+  const e = regEntry();
+  if (!e || !e.p) return "";
+  const p = e.p, age = YEAR - p.est, tenure = YEAR - p.since;
+  return '<div class="card pad mt16"><div class="rowsplit"><h3>회사 프로필</h3>' +
+    '<span class="fybadge">설립 ' + p.est + '년 · 올해로 ' + age + '년차</span></div>' +
+    '<div class="prof mt12" role="group" aria-label="회사 기본 정보">' +
+      pfTile("설립", p.est + "년", p.estNote ? esc(p.estNote) : "올해로 " + age + "년차") +
+      pfTile("본사", esc(p.hq), "") +
+      pfTile("상장 거래소", esc(p.ex), "티커 " + esc(e.tk) + (p.ex2 ? " · " + esc(p.ex2) : "")) +
+      pfTile("CEO", esc(p.ceo) + ' <small>' + esc(p.ceoEn) + "</small>",
+             p.sinceNote ? esc(p.sinceNote)
+               : p.since + "년 취임 · " + (tenure >= 1 ? tenure + "년째" : "취임 첫해")) +
+      pfTile("회계연도 종료", esc(p.fye),
+             e.data ? "표에는 " + esc(e.data.fy) + " 로 적습니다" : "") +
+      pfTile("배당", p.div ? "지급" : "없음",
+             p.divNote ? esc(p.divNote)
+               : p.div ? "배당률은 주가에 따라 바뀌어 싣지 않았습니다" : "이익을 전액 재투자·자사주에 씁니다") +
+    "</div>" +
+    '<div class="note mt12"><span class="ic">🪪</span><div>자주 바뀌지 않는 값만 모았습니다. ' +
+      '<b>설립 ' + age + '년차</b>와 <b>CEO 재임 기간</b>은 올해 연도에서 빼서 자동으로 계산합니다. ' +
+      '시가총액·배당률처럼 매일 움직이는 값은 정적 페이지에 싣지 않습니다 — 금방 틀린 값이 됩니다.</div></div></div>';
+}
+
 function peopleHtml() {
   const e = regEntry();
   if (!e || !e.data) return "";
   const d = e.data, cur = d.cur || "$";
   const money = (v) => cur + (v / 1e6).toFixed(v / 1e6 >= 1 ? 2 : 3) + "M";
-  const revPer = d.emp ? (d.rev * 1e9) / d.emp : null;
-  const oiPer = (d.emp && d.oi != null) ? (d.oi * 1e9) / d.emp : null;
+  const per = (v) => (d.emp && v != null) ? (v * 1e9) / d.emp : null;
+  const revPer = per(d.rev), oiPer = per(d.oi), niPer = per(d.ni);
   const om = d.oi == null ? null : (d.oi / d.rev) * 100;
+  const nm = d.ni == null ? null : (d.ni / d.rev) * 100;
   const tile = (k, v, sub, cl) =>
     '<div class="st"><div class="k">' + k + '</div><div class="v num' + (cl ? " " + cl : "") +
     '">' + v + '</div><div class="s">' + sub + "</div></div>";
+  // 영업이익률과 순이익률의 차이는 세금·영업 외 손익이 만듭니다 — 방향을 문장으로 짚어 둡니다.
+  let gapNote = "";
+  if (om != null && nm != null) {
+    const gap = nm - om;
+    gapNote = Math.abs(gap) < 1
+      ? "영업이익률과 순이익률이 거의 같습니다 — 세금과 영업 외 손익이 서로 상쇄된 해입니다. "
+      : gap > 0
+        ? "<b>순이익률이 영업이익률보다 " + gap.toFixed(1) + "%p 높습니다</b> — 지분·이자 같은 영업 외 수익이 세금보다 컸다는 뜻입니다. "
+        : "<b>영업이익의 " + ((1 - d.ni / d.oi) * 100).toFixed(0) + "%가 세금·영업 외 비용으로 빠졌습니다</b>(" +
+          Math.abs(gap).toFixed(1) + "%p 차이). ";
+  }
   return '<div class="card pad mt16"><div class="rowsplit"><h3>요약 지표</h3>' +
     '<span class="fybadge">' + esc(d.fy) + ' 실적 · 임직원 ' + esc(d.empAsOf || "—") + ' 기준</span></div>' +
     '<div class="stats c4 mt12" role="group" aria-label="재무 요약">' +
@@ -140,15 +192,21 @@ function peopleHtml() {
       tile("영업이익률", om == null ? "—" : om.toFixed(1) + "%",
            om == null ? "영업이익 미공개" : "영업이익 " + cur + d.oi.toFixed(1) + "B") +
     '</div>' +
-    '<div class="stats c4 mt12" role="group" aria-label="인력 지표">' +
+    '<div class="stats c4 mt12" role="group" aria-label="순이익과 인력">' +
+      tile("순이익", d.ni == null ? "—" : cur + d.ni.toFixed(1) + "B", esc(d.fy) + " 당기순이익") +
+      tile("순이익률", nm == null ? "—" : nm.toFixed(1) + "%", "순이익 ÷ 매출") +
       tile("임직원 수", d.emp ? nf.format(d.emp) : "—", esc(d.empAsOf || "—")) +
+      tile("한국과의 관계", esc(e.kr || "—"), "공급 · 경쟁 · 고객 · 간접") +
+    '</div>' +
+    '<div class="stats c3 mt12" role="group" aria-label="1인당 지표">' +
       tile("1인당 매출", revPer == null ? "—" : money(revPer), "매출 ÷ 임직원") +
       tile("1인당 영업이익", oiPer == null ? "—" : money(oiPer),
            oiPer == null ? "영업이익 미공개" : "영업이익 ÷ 임직원") +
-      tile("한국과의 관계", esc(e.kr || "—"), "공급 · 경쟁 · 고객 · 간접") +
+      tile("1인당 순이익", niPer == null ? "—" : money(niPer),
+           niPer == null ? "순이익 미공개" : "순이익 ÷ 임직원") +
     '</div>' +
-    '<div class="note mt12"><span class="ic">📐</span><div>' +
-      (CO.peopleNote || "이 블록은 매출·영업이익·임직원 수에서 <b>계산한 값</b>입니다. 같은 숫자를 두 군데 적지 않으려고 파생시킵니다. " +
+    '<div class="note mt12"><span class="ic">📐</span><div>' + gapNote +
+      (CO.peopleNote || "이 블록은 매출·영업이익·순이익·임직원 수에서 <b>계산한 값</b>입니다. 같은 숫자를 두 군데 적지 않으려고 파생시킵니다. " +
        "1인당 지표는 업종이 다르면 그대로 비교하면 안 됩니다 — 제조·물류 인력이 많은 회사는 구조적으로 낮게 나옵니다.") +
       ' <a href="/stocks/#people" style="border-bottom:1px solid var(--line)">다른 회사와 비교</a></div></div></div>';
 }
@@ -247,6 +305,7 @@ function render() {
   '<h2 class="title mt16">' + CO.headline + '</h2><p class="lead">' + CO.lead + '</p>' +
   '<div class="stats c4 mt16" role="group" aria-label="핵심 지표">' + statsHtml(CO.stats) + '</div>' +
   (CO.fy.note ? '<div class="note mt12"><span class="ic">📅</span><div>' + CO.fy.note + '</div></div>' : '') +
+  profileHtml() +
   peopleHtml() +
   (CO.recent ? '<div class="card pad mt16"><div class="rowsplit"><h3>' + esc(CO.recent.title) +
     '</h3><span class="fybadge">' + esc(CO.recent.period) + ' · 가장 최근 발표</span></div>' +

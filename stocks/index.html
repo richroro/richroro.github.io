@@ -40,7 +40,7 @@
 </div></header>
 
 <nav class="snav" aria-label="섹션 바로가기"><div class="wrap snav-in">
-  <a href="#screener">스크리너</a><a href="#margin">영업이익률</a>
+  <a href="#screener">스크리너</a><a href="#profile">회사 프로필</a><a href="#margin">이익률</a>
   <a href="#quality">성장×마진</a><a href="#people">1인당 지표</a><a href="#korea">한국과의 관계</a><a href="/m7/">M7 허브</a>
 </div></nav>
 
@@ -63,6 +63,7 @@
             <th class="sortable" data-k="growth" data-t="n">전년 대비</th>
             <th class="sortable" data-k="gm" data-t="n">총마진</th>
             <th class="sortable" data-k="om" data-t="n">영업이익률</th>
+            <th class="sortable" data-k="nm" data-t="n">순이익률</th>
             <th class="sortable" data-k="topShare" data-t="n">최대 부문 비중</th>
             <th class="sortable" data-k="emp" data-t="n">임직원</th>
             <th class="sortable" data-k="revPer" data-t="n">1인당 매출</th>
@@ -72,23 +73,62 @@
         </table>
       </div>
     </div>
-    <div class="note mt12"><span class="ic">📏</span><div><b>영업이익률과 최대 부문 비중은 계산한 값입니다.</b>
-      매출과 영업이익, 부문 금액에서 직접 나눴습니다 — 하드코딩하지 않았습니다.
+    <div class="note mt12"><span class="ic">📏</span><div><b>영업이익률·순이익률·최대 부문 비중은 계산한 값입니다.</b>
+      매출과 영업이익·순이익, 부문 금액에서 직접 나눴습니다 — 하드코딩하지 않았습니다.
+      영업이익률은 <b>본업에서</b> 남긴 비율, 순이익률은 <b>세금과 영업 외 손익까지 끝낸 뒤</b> 남은 비율입니다.
       회계연도가 회사마다 달라 완전히 같은 기간이 아니라는 점은 <a href="/m7/#fy" style="border-bottom:1px solid var(--line)">M7 허브의 회계연도 표</a>에 정리해 뒀습니다.</div></div>
     <div class="note warn mt12"><span class="ic">💶</span><div>ASML 금액만 <b>유로(€)</b>입니다. 네덜란드 회사라 유로로 공시합니다 —
       달러 종목과 매출을 직접 비교하면 안 됩니다. 표에서 통화 기호로 구분했습니다.</div></div>
   </div>
 </section>
 
+<section id="profile">
+  <div class="wrap">
+    <p class="eyebrow">Profile</p>
+    <h2 class="title">실적 말고 회사 자체를</h2>
+    <p class="lead">설립 연도·본사·상장 거래소·CEO·회계연도 종료·배당 여부입니다.
+      <b>자주 바뀌지 않는 값</b>만 실었습니다 — 시가총액이나 배당률처럼 매일 움직이는 값은
+      정적 페이지에 적는 순간 틀린 값이 되기 때문에 뺐습니다.</p>
+    <div class="card mt16">
+      <div class="tscroll">
+        <table id="ptbl">
+          <thead><tr>
+            <th class="sortable" data-k="ko" data-t="s">회사</th>
+            <th class="sortable" data-k="est" data-t="n" aria-sort="ascending">설립</th>
+            <th>본사</th>
+            <th>거래소</th>
+            <th>CEO</th>
+            <th class="sortable" data-k="tenure" data-t="n">재임</th>
+            <th>회계연도 종료</th>
+            <th class="sortable" data-k="div" data-t="s">배당</th>
+          </tr></thead>
+          <tbody id="prows"></tbody>
+        </table>
+      </div>
+    </div>
+    <div class="note mt12" id="pNote"></div>
+    <div class="note warn mt12"><span class="ic">🗓️</span><div><b>회계연도 종료일이 회사마다 다릅니다.</b>
+      엔비디아 FY2026은 <b>2026년 1월</b>에 끝난 해이고, 마이크로소프트 FY2026은 <b>2026년 6월</b>,
+      애플 FY2025는 <b>2025년 9월</b>에 끝난 해입니다. 같은 'FY2026'이라도 가리키는 기간이 다르니
+      매출·이익을 나란히 볼 때 이 열을 먼저 확인하세요.</div></div>
+  </div>
+</section>
+
 <section id="margin">
   <div class="wrap">
     <p class="eyebrow">Margin</p>
-    <h2 class="title">영업이익률로 줄 세우면</h2>
-    <p class="lead">같은 '기술주'로 묶이지만 돈을 남기는 정도는 전혀 다릅니다.</p>
+    <h2 class="title">이익률로 줄 세우면</h2>
+    <p class="lead">같은 '기술주'로 묶이지만 돈을 남기는 정도는 전혀 다릅니다.
+      <b>영업이익률</b>은 본업에서 남긴 비율이고, <b>순이익률</b>은 세금과 영업 외 손익까지 끝낸 뒤 남은 비율입니다.
+      두 값의 차이가 큰 회사에는 그해의 사정이 들어 있습니다.</p>
     <div class="card pad mt16">
       <div class="chart-head"><div>
         <div class="ct">회사별 영업이익률</div>
         <div class="cs">영업이익 ÷ 매출 · 공개하지 않는 회사는 빠집니다</div>
+      </div>
+      <div class="seg" role="group" aria-label="이익률 전환">
+        <button type="button" data-marg="om" aria-pressed="true">영업이익률</button>
+        <button type="button" data-marg="nm" aria-pressed="false">순이익률</button>
       </div></div>
       <div class="figwrap" id="wrapOm">
         <svg class="fig" id="figOm" role="img" aria-label="회사별 영업이익률 막대그래프"></svg>
@@ -137,6 +177,7 @@
       <div class="seg" role="group" aria-label="지표 전환">
         <button type="button" data-per="rev" aria-pressed="true">1인당 매출</button>
         <button type="button" data-per="oi" aria-pressed="false">1인당 영업이익</button>
+        <button type="button" data-per="ni" aria-pressed="false">1인당 순이익</button>
       </div></div>
       <div class="figwrap" id="wrapPer">
         <svg class="fig" id="figPer" role="img" aria-label="회사별 1인당 지표 막대그래프"></svg>
@@ -189,9 +230,14 @@ const ROWS = REGISTRY.filter((r) => r.data).map((r) => {
   return Object.assign({}, r, {
     rev: d.rev, fy: d.fy, cur: d.cur || "$",
     om: d.oi == null ? null : (d.oi / d.rev) * 100,
+    nm: d.ni == null ? null : (d.ni / d.rev) * 100,
+    ni: d.ni == null ? null : d.ni,
     emp: d.emp || null, empAsOf: d.empAsOf, growth: d.growth, gm: d.gm,
     revPer: d.emp ? (d.rev * 1e9) / d.emp : null,
     oiPer: (d.emp && d.oi != null) ? (d.oi * 1e9) / d.emp : null,
+    niPer: (d.emp && d.ni != null) ? (d.ni * 1e9) / d.emp : null,
+    est: r.p ? r.p.est : null, age: r.p ? YEAR - r.p.est : null,
+    tenure: r.p ? YEAR - r.p.since : null, div: r.p ? (r.p.div ? "지급" : "없음") : null,
     topShare: d.top ? (d.top.v / d.top.of) * 100 : null,
     topK: d.top ? d.top.k : null
   });
@@ -225,6 +271,7 @@ function render() {
         (r.growth == null ? "—" : (r.growth > 0 ? "+" : "−") + Math.abs(r.growth).toFixed(1) + "%") + "</td>" +
       "<td>" + (r.gm == null ? "—" : r.gm.toFixed(1) + "%") + "</td>" +
       "<td>" + (r.om == null ? "—" : r.om.toFixed(1) + "%") + "</td>" +
+      "<td>" + (r.nm == null ? "—" : r.nm.toFixed(1) + "%") + "</td>" +
       "<td>" + (r.topShare == null ? "—" : r.topShare.toFixed(1) + "%") + "</td>" +
       "<td>" + (r.emp == null ? "—" : r.emp.toLocaleString("ko-KR")) + "</td>" +
       "<td>" + (r.revPer == null ? "—" : r.cur + (r.revPer / 1e6).toFixed(2) + "M") + "</td>" +
@@ -250,15 +297,21 @@ document.getElementById("filters").addEventListener("click", (e) => {
   render();
 });
 
-function drawAll() {
+let margKey = "om";
+const MARG = {
+  om: { t: "회사별 영업이익률", s: "영업이익 ÷ 매출 · 공개하지 않는 회사는 빠집니다", w: "연간 영업이익" },
+  nm: { t: "회사별 순이익률", s: "순이익 ÷ 매출 · 세금과 영업 외 손익까지 반영한 값", w: "연간 순이익" }
+};
+function drawAll() { drawMarg(); drawPer(); drawScat(); }
+function drawMarg() {
   const svg = document.getElementById("figOm"), wrap = svg.parentElement, tip = document.getElementById("tipOm");
-  const rows = view().filter((r) => r.om != null).sort((a, b) => b.om - a.om);
+  const rows = view().filter((r) => r[margKey] != null).sort((a, b) => b[margKey] - a[margKey]);
   const W = Math.max(280, wrap.clientWidth || 320), small = W < 560;
   const L = small ? 92 : 124, R = small ? 58 : 76, T = 6, B = 24;
   const rowH = small ? 24 : 28, gap = small ? 8 : 10;
   const H = T + Math.max(1, rows.length) * (rowH + gap) - gap + B;
   const pw = Math.max(40, W - L - R);
-  const sc = niceScale(Math.max.apply(null, rows.map((r) => r.om).concat([1])), small ? 3 : 5);
+  const sc = niceScale(Math.max.apply(null, rows.map((r) => r[margKey]).concat([1])), small ? 3 : 5);
   svg.setAttribute("width", W); svg.setAttribute("height", H);
   svg.setAttribute("viewBox", "0 0 " + W + " " + H);
   while (svg.firstChild) svg.removeChild(svg.firstChild);
@@ -268,25 +321,36 @@ function drawAll() {
     svg.appendChild(txt(el("text", { x: x, y: H - B + 16, "text-anchor": "middle", class: "axis" }), sc.step * i));
   }
   rows.forEach((r, i) => {
-    const y = T + i * (rowH + gap), w = Math.max(2, (r.om / sc.max) * pw);
+    const y = T + i * (rowH + gap), w = Math.max(2, (r[margKey] / sc.max) * pw);
     svg.appendChild(txt(el("text", { x: L - 8, y: y + rowH / 2 + 4, "text-anchor": "end", class: "name" }), r.ko));
     svg.appendChild(el("rect", { x: L, y: y, width: w, height: rowH, rx: 4 }, "fill:" + r.c));
-    svg.appendChild(txt(el("text", { x: L + w + 7, y: y + rowH / 2 + 4, class: "dlabel" }), r.om.toFixed(1) + "%"));
+    svg.appendChild(txt(el("text", { x: L + w + 7, y: y + rowH / 2 + 4, class: "dlabel" }), r[margKey].toFixed(1) + "%"));
     const hit = el("rect", { x: L, y: y - gap / 2, width: pw + R - 8, height: rowH + gap, class: "hit" });
     hit.addEventListener("mouseenter", () => showTip(tip, wrap,
       '<div class="th">' + r.ko + " · " + r.fy + "</div>" +
       '<div class="tr"><span class="nm">매출</span><b>' + r.cur + r.rev.toFixed(1) + "B</b></div>" +
-      '<div class="tr"><span class="nm">영업이익률</span><b>' + r.om.toFixed(1) + "%</b></div>" +
+      '<div class="tr"><span class="nm">영업이익률</span><b>' + (r.om == null ? "—" : r.om.toFixed(1) + "%") + "</b></div>" +
+      '<div class="tr"><span class="nm">순이익률</span><b>' + (r.nm == null ? "—" : r.nm.toFixed(1) + "%") + "</b></div>" +
       '<div class="tr"><span class="nm">한국과의 관계</span><b>' + r.kr + "</b></div>", L + w / 2, y));
     hit.addEventListener("mouseleave", () => tip.classList.remove("on"));
     svg.appendChild(hit);
   });
-  drawPer();
-  drawScat();
-  const missing = view().filter((r) => r.om == null).map((r) => r.ko);
+  document.querySelector("#margin .ct").textContent = MARG[margKey].t;
+  document.querySelector("#margin .cs").textContent = MARG[margKey].s;
+  // 영업이익률과 순이익률이 둘 다 있는 회사 중 가장 크게 벌어진 곳을 짚어 줍니다
+  const both = view().filter((r) => r.om != null && r.nm != null);
+  const worst = both.slice().sort((a, b) => (a.nm - a.om) - (b.nm - b.om))[0];
+  const flip = both.filter((r) => r.nm > r.om).map((r) => r.ko);
+  const missing = view().filter((r) => r[margKey] == null).map((r) => r.ko);
   document.getElementById("omNote").innerHTML = '<span class="ic">ℹ️</span><div>' +
-    (missing.length ? "<b>" + missing.join(" · ") + "</b> 은(는) 확인한 자료에 연간 영업이익이 없어 이 그래프에서 빠졌습니다. " +
-      "각 종목 페이지에는 총마진 등 확인된 지표를 실었습니다." : "이 분야는 모든 회사의 영업이익률을 확인했습니다.");
+    (missing.length ? "<b>" + missing.join(" · ") + "</b>" + josa(missing.join(" · "), "은", "는") + " 확인한 자료에 " + MARG[margKey].w +
+      "이 없어 이 그래프에서 빠졌습니다. 각 종목 페이지에는 확인된 지표만 실었습니다. "
+      : "이 목록은 모든 회사의 " + (margKey === "om" ? "영업이익률" : "순이익률") + "을 확인했습니다. ") +
+    (worst ? "두 값이 가장 크게 벌어지는 곳은 <b>" + worst.ko + "</b>입니다 — 영업이익률 " +
+      worst.om.toFixed(1) + "%가 순이익률 " + worst.nm.toFixed(1) + "%로 내려갑니다. " : "") +
+    (flip.length ? "반대로 <b>" + flip.join(" · ") + "</b>" + josa(flip.join(" · "), "은", "는") +
+      " 순이익률이 더 높습니다 — 영업 외 수익이 세금보다 컸습니다." : "") +
+    "</div>";
 }
 
 /* --- 성장 × 총마진 산점도 --- */
@@ -374,6 +438,8 @@ function drawPer() {
       '<div class="tr"><span class="nm">1인당 매출</span><b>' + r.cur + (r.revPer / 1e6).toFixed(2) + "M</b></div>" +
       '<div class="tr"><span class="nm">1인당 영업이익</span><b>' +
         (r.oiPer == null ? "—" : r.cur + (r.oiPer / 1e6).toFixed(3) + "M") + "</b></div>" +
+      '<div class="tr"><span class="nm">1인당 순이익</span><b>' +
+        (r.niPer == null ? "—" : r.cur + (r.niPer / 1e6).toFixed(3) + "M") + "</b></div>" +
       '<div class="tr"><span class="nm">임직원 기준</span><b>' + r.empAsOf + "</b></div>", L + w / 2, y));
     hit.addEventListener("mouseleave", () => tip.classList.remove("on"));
     svg.appendChild(hit);
@@ -381,16 +447,75 @@ function drawPer() {
 }
 document.querySelectorAll('.seg button[data-per]').forEach((b) => {
   b.addEventListener("click", () => {
-    perKey = b.dataset.per === "oi" ? "oiPer" : "revPer";
+    const PER = { rev: ["1인당 매출", "매출", ""], oi: ["1인당 영업이익", "영업이익", " · 영업이익 미공개 회사는 빠집니다"],
+                  ni: ["1인당 순이익", "순이익", ""] };
+    perKey = b.dataset.per + "Per";
     document.querySelectorAll(".seg button[data-per]").forEach((x) =>
       x.setAttribute("aria-pressed", String(x.dataset.per === b.dataset.per)));
-    document.querySelector("#people .ct").textContent = perKey === "oiPer" ? "1인당 영업이익" : "1인당 매출";
+    document.querySelector("#people .ct").textContent = PER[b.dataset.per][0];
     document.querySelector("#people .cs").textContent =
-      (perKey === "oiPer" ? "영업이익" : "매출") + " ÷ 임직원 수 · 단위 100만" +
-      (perKey === "oiPer" ? " · 영업이익 미공개 회사는 빠집니다" : "");
+      PER[b.dataset.per][1] + " ÷ 임직원 수 · 단위 100만" + PER[b.dataset.per][2];
     drawPer();
   });
 });
+document.querySelectorAll('.seg button[data-marg]').forEach((b) => {
+  b.addEventListener("click", () => {
+    margKey = b.dataset.marg;
+    document.querySelectorAll(".seg button[data-marg]").forEach((x) =>
+      x.setAttribute("aria-pressed", String(x.dataset.marg === margKey)));
+    drawMarg();
+  });
+});
+
+/* --- 회사 프로필 표 --- */
+const PROF = ROWS.filter((r) => r.p);
+let pKey = "est", pDir = 1;
+function prender() {
+  const list = PROF.slice().sort((a, b) => {
+    const av = a[pKey], bv = b[pKey];
+    if (typeof av === "string") return av.localeCompare(bv, "ko") * pDir;
+    return (av - bv) * pDir;
+  });
+  document.getElementById("prows").innerHTML = list.map((r) => {
+    const p = r.p, href = r.href || ((r.base || "/m7/") + r.slug + "/");
+    return "<tr><td class='tx'><div class='co'><span class='av' style='background:" + r.c +
+      ";color:#fff'>" + r.ab + "</span><span><b><a href='" + href +
+      "' style='border-bottom:1px solid var(--line)'>" + r.ko + "</a></b><small>" + r.tk +
+      "</small></span></div></td>" +
+      "<td>" + p.est + "<br><small style='color:var(--ink-3)'>" + r.age + "년차</small></td>" +
+      "<td class='tx'>" + p.hq + "</td>" +
+      "<td class='tx'>" + p.ex + (p.ex2 ? "<br><small style='color:var(--ink-3)'>" + p.ex2 + "</small>" : "") + "</td>" +
+      "<td class='tx'>" + p.ceo + "<br><small style='color:var(--ink-3)'>" + p.ceoEn + " · " + p.since + "년</small></td>" +
+      "<td>" + (r.tenure >= 1 ? r.tenure + "년" : "첫해") + "</td>" +
+      "<td class='tx'>" + p.fye + "</td>" +
+      "<td class='tx'>" + r.div + "</td></tr>";
+  }).join("");
+  document.querySelectorAll("#ptbl th.sortable").forEach((th) =>
+    th.setAttribute("aria-sort", th.dataset.k === pKey ? (pDir === -1 ? "descending" : "ascending") : "none"));
+}
+document.querySelectorAll("#ptbl th.sortable").forEach((th) => {
+  th.addEventListener("click", () => {
+    if (th.dataset.k === pKey) pDir = -pDir;
+    else { pKey = th.dataset.k; pDir = th.dataset.k === "tenure" ? -1 : 1; }  // 설립은 오래된 순, 재임은 긴 순부터
+    prender();
+  });
+});
+(function pNote() {
+  if (!PROF.length) return;
+  const byAge = PROF.slice().sort((a, b) => a.est - b.est);
+  const old = byAge[0], young = byAge[byAge.length - 1];
+  const longest = PROF.slice().sort((a, b) => a.p.since - b.p.since)[0];
+  const pay = PROF.filter((r) => r.p.div).length;
+  const offCal = PROF.filter((r) => r.p.fye.indexOf("12월 31일") !== 0).map((r) => r.ko);
+  document.getElementById("pNote").innerHTML = '<span class="ic">📇</span><div>가장 오래된 회사는 <b>' +
+    old.ko + "</b>(" + old.est + "년 · " + old.age + "년차), 가장 젊은 곳은 <b>" + young.ko + "</b>(" +
+    young.est + "년 · " + young.age + "년차)입니다. CEO를 가장 오래 맡고 있는 사람은 <b>" +
+    longest.p.ceo + "</b>(" + longest.ko + " · " + longest.tenure + "년째)입니다. " +
+    PROF.length + "곳 중 <b>" + pay + "곳</b>이 배당을 주고, <b>" + offCal.length +
+    "곳</b>의 회계연도가 12월에 끝나지 않습니다(" + offCal.join(" · ") + "). " +
+    "<b>업력과 재임 기간은 올해 연도에서 빼서 계산합니다</b> — 해가 바뀌면 자동으로 늘어납니다.</div>";
+})();
+
 (function spreads() {
   const rv = ROWS.filter((r) => r.revPer != null).map((r) => r.revPer);
   const oi = ROWS.filter((r) => r.oiPer != null).map((r) => r.oiPer);
@@ -418,6 +543,7 @@ document.getElementById("krCards").innerHTML = ["공급", "경쟁", "고객", "�
 
 initTheme();
 render();
+prender();
 let rt; addEventListener("resize", () => { clearTimeout(rt); rt = setTimeout(drawAll, 140); });
 </script>
 </body>

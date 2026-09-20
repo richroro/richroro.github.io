@@ -111,6 +111,8 @@ p.lead{font-size:14.5px;color:var(--ink-2);font-weight:300;max-width:64ch;line-h
 .stats{display:grid;grid-template-columns:repeat(2,1fr);gap:1px;background:var(--line-soft);
   border:1px solid var(--line);border-radius:12px;overflow:hidden}
 @media(min-width:720px){.stats.c4{grid-template-columns:repeat(4,1fr)}.stats.c3{grid-template-columns:repeat(3,1fr)}}
+/* 좁은 화면에서 3칸 묶음은 2+1 이 되는데, 남는 칸을 비워 두지 않고 넓힙니다 */
+@media(max-width:719px){.stats.c3 .st:nth-child(3):last-child{grid-column:span 2}}
 .st{background:var(--surface);padding:14px 15px}
 .st .k{font-size:11.5px;color:var(--ink-3);font-weight:400}
 .st .v{font-size:20px;font-weight:600;letter-spacing:-.7px;margin-top:3px;white-space:nowrap;
@@ -118,6 +120,16 @@ p.lead{font-size:14.5px;color:var(--ink-2);font-weight:300;max-width:64ch;line-h
 .st .v .u{font-size:13px;font-weight:500}
 .st .s{font-size:12px;color:var(--ink-3);font-weight:300;margin-top:2px;
   font-family:"IBM Plex Mono",monospace;font-variant-numeric:tabular-nums}
+
+/* 회사 프로필 — 값이 숫자가 아니라 문장이라 .st 와 달리 줄바꿈을 허용합니다 */
+.prof{display:grid;grid-template-columns:repeat(2,1fr);gap:1px;background:var(--line-soft);
+  border:1px solid var(--line);border-radius:12px;overflow:hidden}
+@media(min-width:720px){.prof{grid-template-columns:repeat(3,1fr)}}
+.pf{background:var(--surface);padding:13px 15px;min-width:0}
+.pf .k{font-size:11.5px;color:var(--ink-3);font-weight:400}
+.pf .v{font-size:15px;font-weight:600;letter-spacing:-.3px;margin-top:4px;line-height:1.45;overflow-wrap:anywhere}
+.pf .v small{font-size:12px;font-weight:400;color:var(--ink-3);letter-spacing:0}
+.pf .s{font-size:11.5px;color:var(--ink-3);font-weight:300;margin-top:4px;line-height:1.55}
 
 .note{display:flex;gap:9px;background:var(--surface-2);border-radius:11px;padding:12px 13px;
   font-size:12.5px;color:var(--ink-2);font-weight:300;line-height:1.65}
@@ -270,6 +282,7 @@ footer a:hover{color:var(--brand-deep);border-color:var(--brand-deep)}
 
 <nav class="snav" aria-label="섹션 바로가기">
   <div class="wrap snav-in">
+    <a href="#profile">회사 개요</a>
     <a href="#latest">최근 분기</a>
     <a href="#trend">매출·마진</a>
     <a href="#segments">사업 부문</a>
@@ -285,7 +298,30 @@ footer a:hover{color:var(--brand-deep);border-color:var(--brand-deep)}
 <main>
 
 <!-- ============ LATEST ============ -->
-<section id="latest" style="padding-top:26px">
+<section id="profile" style="padding-top:26px">
+  <div class="wrap">
+    <p class="eyebrow">00 · Profile</p>
+    <h2 class="title">회사 개요와 2025년 한 해</h2>
+    <p class="lead">아래 지표는 대부분 <b>분기</b> 이야기라 진폭이 큽니다. 먼저 회사의 기본 정보와
+      <b>2025년 한 해 전체</b>를 놓고 시작합니다.</p>
+
+    <div class="card pad mt16">
+      <div class="rowsplit"><h3>회사 프로필</h3><span class="fybadge" id="pfBadge">—</span></div>
+      <div class="prof mt12" id="pfGrid" role="group" aria-label="테슬라 기본 정보"></div>
+      <div class="note mt12"><span class="ic">🪪</span><div>자주 바뀌지 않는 값만 실었습니다. 업력은 올해 연도에서 설립 연도를
+        빼서 자동으로 계산합니다. 시가총액·배당률처럼 매일 움직이는 값은 정적 페이지에 적는 순간 틀린 값이 되어 뺐습니다.
+        같은 형식으로 정리한 다른 회사는 <a href="/stocks/#profile">종목 노트의 회사 프로필 표</a>에 있습니다.</div></div>
+    </div>
+
+    <div class="card pad mt16">
+      <div class="rowsplit"><h3>2025년 연간 실적</h3><span class="fybadge">2025년 1월 ~ 12월 · 10-K</span></div>
+      <div class="stats c4 mt12" id="fyGrid" role="group" aria-label="2025년 연간 실적"></div>
+      <div class="note mt12"><span class="ic">📐</span><div id="fyNote">—</div></div>
+    </div>
+  </div>
+</section>
+
+<section id="latest">
   <div class="wrap">
     <p class="eyebrow">01 · Latest quarter</p>
     <h2 class="title">매출은 사상 최대, 이익률은 1.4%</h2>
@@ -669,6 +705,7 @@ footer a:hover{color:var(--brand-deep);border-color:var(--brand-deep)}
   </div>
 </footer>
 
+<script src="/stocks/assets/registry.js"></script>
 <script>
 "use strict";
 
@@ -1045,6 +1082,45 @@ function renderLanes() {
       if (view === "chart") drawAll();
     });
   });
+  /* ---- 00 · 회사 프로필과 2025년 연간 실적 ----
+     프로필은 레지스트리(/stocks/assets/registry.js)에서만 읽습니다 — 다른 종목 페이지와 같은 출처입니다.
+     연간 지표는 DATA.fy2025 에서 나눠서 만듭니다. 비율을 따로 적어 두지 않습니다. */
+  (function profile() {
+    const e = typeof REGISTRY === "undefined" ? null : REGISTRY.find((r) => r.slug === "tesla");
+    const YEAR = new Date().getFullYear();
+    if (e && e.p) {
+      const p = e.p, age = YEAR - p.est, tenure = YEAR - p.since;
+      const pf = (k, v, sub) => '<div class="pf"><div class="k">' + k + '</div><div class="v">' + v +
+        "</div>" + (sub ? '<div class="s">' + sub + "</div>" : "") + "</div>";
+      $("pfBadge").textContent = "설립 " + p.est + "년 · 올해로 " + age + "년차";
+      $("pfGrid").innerHTML =
+        pf("설립", p.est + "년", p.estNote ? esc(p.estNote) : "올해로 " + age + "년차") +
+        pf("본사", esc(p.hq), "2021년 캘리포니아에서 이전") +
+        pf("상장 거래소", esc(p.ex), "티커 " + esc(e.tk) + (p.ex2 ? " · " + esc(p.ex2) : "")) +
+        pf("CEO", esc(p.ceo) + " <small>" + esc(p.ceoEn) + "</small>",
+           p.sinceNote ? esc(p.sinceNote) : p.since + "년 취임 · " + (tenure >= 1 ? tenure + "년째" : "취임 첫해")) +
+        pf("회계연도 종료", esc(p.fye), "달력 연도와 같아 비교가 쉽습니다") +
+        pf("배당", p.div ? "지급" : "없음", p.div ? "" : "이익을 전액 재투자·설비에 씁니다") +
+        pf("임직원", e.data.emp.toLocaleString("ko-KR") + "명", esc(e.data.empAsOf) + " 기준") +
+        pf("한국과의 관계", esc(e.kr), "LG엔솔·삼성SDI 등이 부품을 댑니다") +
+        pf("최대 사업 부문", esc(e.data.top.k),
+           "2025년 매출의 " + ((e.data.top.v / e.data.top.of) * 100).toFixed(1) + "%");
+    }
+    const f = DATA.fy2025, om = (f.oi / f.rev) * 100, nm = (f.ni / f.rev) * 100;
+    const st = (k, v, u, sub, tone) => '<div class="st"><div class="k">' + k + '</div><div class="v' +
+      (tone ? " " + tone : "") + '">' + v + (u ? '<span class="u">' + u + "</span>" : "") + "</div>" +
+      '<div class="s">' + sub + "</div></div>";
+    $("fyGrid").innerHTML =
+      st("연간 매출", f.rev.toFixed(2), "B$", "2024년 97.69B$에서 −3%", "") +
+      st("영업이익", f.oi.toFixed(2), "B$", "영업이익률 " + om.toFixed(1) + "%", "") +
+      st("순이익", f.ni.toFixed(2), "B$", "순이익률 " + nm.toFixed(1) + "%", "") +
+      st("주당순이익", f.eps.toFixed(2), "$", "2024년 " + f.eps2024.toFixed(2) + "$에서 하락", "down");
+    $("fyNote").innerHTML = "이 네 칸 중 <b>영업이익률 " + om.toFixed(1) + "%와 순이익률 " + nm.toFixed(1) +
+      "%는 계산한 값</b>입니다 — 영업이익·순이익을 매출로 나눴습니다. 2025년 영업이익 " + f.oi.toFixed(2) +
+      "B$ 중 <b>" + ((DATA.credits.y2025 / f.oi) * 100).toFixed(0) + "%가 탄소배출권</b>이라는 점은 " +
+      '<a href="#segments">사업 부문</a>에서 따로 다룹니다. 매출은 2025년이 전년보다 줄어든 첫 해입니다.';
+  })();
+
   let rt;
   addEventListener("resize", () => { clearTimeout(rt); rt = setTimeout(drawAll, 140); });
 })();
