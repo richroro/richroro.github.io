@@ -1,0 +1,1886 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>숏폼 해부기 · 내 영상의 컷·소리·안전영역을 수치로</title>
+<meta name="description" content="영상 파일을 넣으면 컷 전환 시점, 컷 길이 분포, 라우드니스(LUFS), 무음 구간, 후킹 구간 밀도, 플랫폼 UI 안전영역을 브라우저 안에서만 분석합니다. 업로드 없음." />
+<meta property="og:type" content="website" />
+<meta property="og:site_name" content="Cadence" />
+<meta property="og:title" content="숏폼 해부기 · 내 영상의 컷·소리·안전영역을 수치로" />
+<meta property="og:description" content="컷 전환·라우드니스·무음·안전영역을 브라우저에서만 분석. 파일은 서버로 올라가지 않습니다." />
+<meta property="og:url" content="https://richroro.github.io/shorts-analyzer/" />
+<meta property="og:locale" content="ko_KR" />
+<link rel="canonical" href="https://richroro.github.io/shorts-analyzer/" />
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%233987e5'/><g fill='white'><rect x='24' y='30' width='7' height='40' rx='3'/><rect x='38' y='42' width='7' height='28' rx='3'/><rect x='52' y='22' width='7' height='48' rx='3'/><rect x='66' y='50' width='7' height='20' rx='3'/></g></svg>" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;800&display=swap" rel="stylesheet" />
+<style>
+:root{
+  --bg:#0e0f13; --panel:#15171d; --panel-2:#1a1d25; --elev:#212632;
+  --line:#272b36; --line-2:#363c4b;
+  --ink:#eef1f6; --ink-2:#a8b0c0; --ink-3:#6d7687;
+  --accent:#3987e5; --accent-2:#2a78d6; --accent-wash:#1b2440; --on-accent:#fff;
+  --s1:#3987e5; --s2:#d95926; --s3:#199e70;
+  --grid:#232733; --axis:#343a48;
+  --shadow:0 12px 34px -16px rgba(0,0,0,.8);
+  --r:12px; --r-sm:8px;
+}
+:root[data-theme="light"]{
+  --bg:#eef0f4; --panel:#ffffff; --panel-2:#f5f7fa; --elev:#ffffff;
+  --line:#e2e6ed; --line-2:#cfd5e0;
+  --ink:#151922; --ink-2:#4e5766; --ink-3:#858e9d;
+  --accent:#2f62f5; --accent-2:#1d4ed8; --accent-wash:#e7eeff; --on-accent:#fff;
+  --s1:#2a78d6; --s2:#eb6834; --s3:#1baf7a;
+  --grid:#e8ebf0; --axis:#cfd5e0;
+  --shadow:0 10px 26px -14px rgba(20,26,40,.35);
+}
+/* 상태색은 테마 불변 — 반드시 아이콘+라벨과 함께 쓴다 */
+:root{ --ok:#0ca30c; --warn:#fab219; --serious:#ec835a; --crit:#d03b3b; }
+
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+[hidden]{display:none !important}
+body{
+  font-family:"Noto Sans KR","Apple SD Gothic Neo","Malgun Gothic",system-ui,sans-serif;
+  background:var(--bg);color:var(--ink);letter-spacing:-.2px;line-height:1.5;
+  -webkit-font-smoothing:antialiased;padding-bottom:64px;
+}
+a{color:var(--accent);text-decoration:none}
+a:hover{text-decoration:underline}
+button{font-family:inherit;color:inherit;cursor:pointer;border:none;background:none}
+::-webkit-scrollbar{width:10px;height:10px}
+::-webkit-scrollbar-thumb{background:var(--line-2);border-radius:99px;border:3px solid transparent;background-clip:content-box}
+::-webkit-scrollbar-track{background:transparent}
+
+.wrap{max-width:1120px;margin:0 auto;padding:0 16px}
+
+/* ---------- 헤더 ---------- */
+.top{position:sticky;top:0;z-index:40;background:color-mix(in srgb,var(--bg) 88%,transparent);
+  backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
+.top .wrap{display:flex;align-items:center;gap:12px;height:56px}
+.brand{display:flex;align-items:center;gap:9px;font-weight:800;font-size:16px;letter-spacing:-.4px}
+.brand .mk{width:26px;height:26px;border-radius:7px;background:var(--accent);display:grid;place-items:center;
+  color:#fff;font-size:13px;font-weight:800}
+.top .sp{flex:1}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;height:34px;padding:0 13px;
+  border-radius:var(--r-sm);background:var(--elev);border:1px solid var(--line);color:var(--ink);
+  font-size:13px;font-weight:700;transition:.14s;white-space:nowrap}
+.btn:hover:not(:disabled){border-color:var(--line-2);transform:translateY(-1px)}
+.btn:disabled{opacity:.4;cursor:not-allowed;transform:none}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:var(--on-accent)}
+.btn.primary:hover:not(:disabled){background:var(--accent-2)}
+.btn.sm{height:28px;padding:0 10px;font-size:12px}
+.btn.icon{width:34px;padding:0}
+
+/* ---------- 인트로 / 드롭존 ---------- */
+.hero{padding:34px 0 8px}
+.hero h1{font-size:clamp(22px,4.4vw,32px);font-weight:800;letter-spacing:-1px;line-height:1.25}
+.hero p{color:var(--ink-2);margin-top:9px;font-size:14.5px;max-width:62ch}
+.hero .pill{display:inline-flex;align-items:center;gap:6px;margin-top:14px;padding:5px 11px;border-radius:99px;
+  background:var(--accent-wash);border:1px solid var(--accent);color:var(--accent);font-size:12px;font-weight:700}
+
+.drop{margin-top:18px;border:1.5px dashed var(--line-2);border-radius:var(--r);background:var(--panel);
+  padding:34px 20px;text-align:center;transition:.16s}
+.drop.over{border-color:var(--accent);background:var(--accent-wash)}
+.drop h2{font-size:16px;font-weight:700}
+.drop p{color:var(--ink-3);font-size:13px;margin-top:6px}
+.drop .row{display:flex;gap:9px;justify-content:center;flex-wrap:wrap;margin-top:16px}
+
+.note{margin-top:16px;padding:13px 15px;border-radius:var(--r-sm);background:var(--panel-2);
+  border:1px solid var(--line);color:var(--ink-2);font-size:12.5px;line-height:1.65}
+.note b{color:var(--ink)}
+
+/* ---------- 진행 ---------- */
+.prog{margin-top:18px;background:var(--panel);border:1px solid var(--line);border-radius:var(--r);padding:18px}
+.prog .lbl{display:flex;justify-content:space-between;font-size:13px;font-weight:700;margin-bottom:9px}
+.prog .lbl span:last-child{color:var(--ink-3);font-variant-numeric:tabular-nums;font-weight:600}
+.bar{height:6px;border-radius:99px;background:var(--panel-2);overflow:hidden}
+.bar > i{display:block;height:100%;background:var(--accent);border-radius:99px;transition:width .18s}
+
+/* ---------- 카드 ---------- */
+.card{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);padding:16px 17px;box-shadow:var(--shadow);min-width:0}
+.card > header{display:flex;align-items:baseline;gap:10px;margin-bottom:3px;flex-wrap:wrap}
+.card h3{font-size:14px;font-weight:800;letter-spacing:-.3px}
+.card .sub{color:var(--ink-3);font-size:12px;font-weight:500}
+.card .hint{color:var(--ink-3);font-size:11.5px;margin-top:2px;margin-bottom:11px;line-height:1.6}
+
+/* 그리드·플렉스 자식의 기본값 min-width:auto 는 내용 폭만큼 늘어난다.
+   표와 캔버스가 카드를 밀어내 페이지 전체에 가로 스크롤이 생기는 원인. */
+.grid{display:grid;gap:14px;margin-top:14px}
+.grid > *{min-width:0}
+.plot{min-width:0}
+@media(min-width:900px){ .grid.two{grid-template-columns:1fr 1fr;align-items:start} }
+
+/* ---------- KPI 타일 ---------- */
+.kpi{display:grid;grid-template-columns:repeat(auto-fit,minmax(148px,1fr));gap:10px;margin-top:18px}
+.tile{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);padding:13px 14px}
+.tile .k{color:var(--ink-3);font-size:11.5px;font-weight:700;letter-spacing:.1px}
+.tile .v{font-size:25px;font-weight:800;letter-spacing:-1px;line-height:1.15;margin-top:3px}
+.tile .u{font-size:13px;font-weight:700;color:var(--ink-2);margin-left:2px;letter-spacing:-.2px}
+.tile .d{color:var(--ink-3);font-size:11.5px;margin-top:3px}
+
+/* ---------- 체크리스트 ---------- */
+.checks{display:flex;flex-direction:column;gap:2px;margin-top:9px}
+.chk{display:grid;grid-template-columns:22px 1fr;gap:10px;padding:9px 2px;border-top:1px solid var(--line)}
+.chk:first-child{border-top:none}
+.chk .ic{width:20px;height:20px;border-radius:99px;display:grid;place-items:center;font-size:11px;
+  font-weight:800;color:#fff;margin-top:1px}
+.chk .ti{font-size:13px;font-weight:700;display:flex;gap:7px;align-items:baseline;flex-wrap:wrap}
+.chk .st{font-size:10.5px;font-weight:800;padding:1px 6px;border-radius:99px;border:1px solid var(--line-2);
+  color:var(--ink-2);letter-spacing:.2px}
+.chk .ds{color:var(--ink-2);font-size:12.5px;margin-top:2px;line-height:1.6}
+.chk .ds b{color:var(--ink);font-variant-numeric:tabular-nums}
+
+/* ---------- 차트 ---------- */
+.plot{position:relative;width:100%;overflow:hidden}
+.plot canvas{display:block;width:100%}
+.tip{position:absolute;pointer-events:none;z-index:5;background:var(--elev);border:1px solid var(--line-2);
+  border-radius:var(--r-sm);padding:8px 10px;font-size:12px;box-shadow:var(--shadow);min-width:132px;
+  opacity:0;transition:opacity .1s}
+.tip.on{opacity:1}
+.tip .tt{font-weight:800;font-size:12px;margin-bottom:5px;font-variant-numeric:tabular-nums}
+.tip .tr{display:flex;align-items:center;gap:6px;justify-content:space-between;margin-top:3px}
+.tip .tr .nm{display:flex;align-items:center;gap:6px;color:var(--ink-2)}
+.tip .sw{width:9px;height:9px;border-radius:2px;flex:none}
+.tip .tv{font-weight:700;font-variant-numeric:tabular-nums}
+
+/* ---------- 필름스트립 ---------- */
+.strip{display:flex;gap:6px;overflow-x:auto;padding:4px 0 10px;scroll-snap-type:x proximity;min-width:0}
+.sh{flex:none;width:76px;scroll-snap-align:start;background:none;text-align:left}
+.sh img{width:76px;border-radius:6px;display:block;border:1px solid var(--line);background:var(--panel-2)}
+.sh.on img{border-color:var(--accent);box-shadow:0 0 0 2px var(--accent-wash)}
+.sh .m{font-size:10.5px;color:var(--ink-3);margin-top:4px;font-variant-numeric:tabular-nums;
+  display:flex;justify-content:space-between;gap:4px}
+.sh .m b{color:var(--ink-2);font-weight:700}
+
+/* ---------- 안전영역 ---------- */
+.safe{display:grid;gap:12px;margin-top:10px;min-width:0}
+.safe > *{min-width:0}
+@media(min-width:620px){ .safe{grid-template-columns:auto 1fr;align-items:start} }
+.safe .stage{position:relative;width:196px;max-width:100%;margin:0 auto;border-radius:10px;overflow:hidden;
+  border:1px solid var(--line);background:#000}
+.safe .stage canvas{display:block;width:100%}
+.tabs{display:flex;gap:5px;flex-wrap:wrap}
+.tab{height:28px;padding:0 11px;border-radius:99px;background:var(--panel-2);border:1px solid var(--line);
+  font-size:12px;font-weight:700;color:var(--ink-2)}
+.tab.on{background:var(--accent-wash);border-color:var(--accent);color:var(--accent)}
+.legend{display:flex;flex-direction:column;gap:7px;margin-top:11px}
+.legend .li{display:flex;gap:8px;align-items:flex-start;font-size:12px;color:var(--ink-2);line-height:1.55}
+.legend .bx{width:11px;height:11px;border-radius:3px;flex:none;margin-top:4px;border:1px solid rgba(255,255,255,.35)}
+.scrub{display:flex;align-items:center;gap:9px;margin-top:11px}
+.scrub input[type=range]{flex:1;-webkit-appearance:none;appearance:none;height:20px;background:transparent}
+.scrub input[type=range]::-webkit-slider-runnable-track{height:4px;border-radius:99px;background:var(--line-2)}
+.scrub input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:14px;height:14px;border-radius:50%;
+  background:var(--accent);margin-top:-5px;border:2px solid var(--panel)}
+.scrub input[type=range]::-moz-range-track{height:4px;border-radius:99px;background:var(--line-2)}
+.scrub input[type=range]::-moz-range-thumb{width:14px;height:14px;border:2px solid var(--panel);border-radius:50%;background:var(--accent)}
+.scrub .t{font-size:12px;color:var(--ink-3);font-variant-numeric:tabular-nums;font-weight:700;min-width:44px;text-align:right}
+
+/* ---------- 표 ---------- */
+.tblwrap{overflow-x:auto;margin-top:9px;border:1px solid var(--line);border-radius:var(--r-sm);max-width:100%}
+table{width:100%;border-collapse:collapse;font-size:12.5px}
+th,td{padding:7px 10px;text-align:right;white-space:nowrap;border-top:1px solid var(--line);
+  font-variant-numeric:tabular-nums}
+th{background:var(--panel-2);color:var(--ink-3);font-size:11.5px;font-weight:700;border-top:none;
+  position:sticky;top:0}
+th:first-child,td:first-child{text-align:left}
+th:nth-child(4),td:nth-child(4){text-align:left}
+tbody tr:hover{background:var(--panel-2)}
+tbody tr.on{background:var(--accent-wash)}
+
+.foot{margin-top:26px;color:var(--ink-3);font-size:12px;line-height:1.7;border-top:1px solid var(--line);padding-top:16px}
+.err{margin-top:14px;padding:12px 14px;border-radius:var(--r-sm);font-size:13px;line-height:1.6;
+  background:color-mix(in srgb,var(--crit) 12%,var(--panel));border:1px solid color-mix(in srgb,var(--crit) 45%,var(--line))}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+</style>
+</head>
+<body>
+<script>
+  // 저장된 테마를 그리기 전에 먼저 반영해 깜빡임을 없앤다.
+  try{
+    var _t = localStorage.getItem('sa-theme');
+    if(!_t) _t = matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+    if(_t === 'light') document.documentElement.setAttribute('data-theme','light');
+  }catch(e){}
+</script>
+
+<header class="top">
+  <div class="wrap">
+    <span class="brand"><span class="mk">◨</span>숏폼 해부기</span>
+    <span class="sp"></span>
+    <button class="btn sm" id="btnReset" hidden>다른 영상</button>
+    <button class="btn sm icon" id="btnTheme" title="밝기 전환" aria-label="밝기 전환">◐</button>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <section class="hero" id="intro">
+    <h1>내 숏폼이 왜 안 터지는지<br />수치로 먼저 확인하기</h1>
+    <p>영상 파일을 넣으면 컷 전환 시점, 컷 길이 분포, 라우드니스(LUFS), 무음 구간, 도입 3초의 밀도,
+       플랫폼 UI에 가려지는 영역을 뽑아 줍니다. 남의 영상을 가져다 쓰는 대신, 내가 만든 걸 뜯어보는 쪽입니다.</p>
+    <span class="pill">● 파일은 서버로 올라가지 않습니다 — 전부 브라우저 안에서 처리</span>
+  </section>
+
+  <section class="drop" id="drop">
+    <h2>영상 파일을 여기에 끌어다 놓으세요</h2>
+    <p>mp4 · webm · mov — 30초 안팎의 세로 영상에 맞춰 만들었습니다</p>
+    <div class="row">
+      <button class="btn primary" id="btnPick">파일 고르기</button>
+      <button class="btn" id="btnSample">샘플 영상 만들어 보기</button>
+    </div>
+    <input type="file" id="file" accept="video/*" hidden />
+  </section>
+
+  <div id="err" class="err" hidden></div>
+
+  <section class="prog" id="prog" hidden>
+    <div class="lbl"><span id="progLbl">준비 중</span><span id="progPct">0%</span></div>
+    <div class="bar"><i id="progBar" style="width:0%"></i></div>
+  </section>
+
+  <section id="report" hidden>
+
+    <div class="kpi" id="kpi"></div>
+
+    <div class="grid">
+      <div class="card">
+        <header><h3>진단</h3><span class="sub">기준은 아래 &lsquo;숫자의 출처&rsquo; 참고</span></header>
+        <div class="checks" id="checks"></div>
+      </div>
+    </div>
+
+    <div class="grid">
+      <div class="card">
+        <header><h3>시간축</h3><span class="sub">샷 배치 · 화면 변화량 · 소리 크기</span></header>
+        <p class="hint">세 지표는 단위가 달라서 한 축에 겹치지 않고 위아래로 나눠 그렸습니다. 가로축은 셋이 공유합니다.
+           아래 두 패널의 세로선은 컷이 감지된 지점입니다.</p>
+        <div class="plot" id="tlPlot">
+          <canvas id="tl" role="img" aria-label="시간축 그래프: 샷 배치, 화면 변화량, 소리 크기"></canvas>
+          <div class="tip" id="tlTip"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="grid two">
+      <div class="card">
+        <header><h3>컷 길이 분포</h3><span class="sub" id="cutSub"></span></header>
+        <p class="hint">한 컷이 몇 초나 머무는지. 오른쪽으로 길게 늘어질수록 늘어지는 구간이 있다는 뜻입니다.</p>
+        <div class="plot" id="hiPlot">
+          <canvas id="hist" role="img" aria-label="컷 길이 분포 막대그래프"></canvas>
+          <div class="tip" id="hiTip"></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <header><h3>플랫폼 UI 안전영역</h3><span class="sub">근사치 — 기기·버전마다 다릅니다</span></header>
+        <p class="hint">빨간 영역은 앱 UI(버튼·캡션·사운드바)가 덮는 자리입니다. 자막이나 중요한 피사체가 그 안에 들어가면 가려집니다.</p>
+        <div class="tabs" id="platTabs"></div>
+        <div class="safe">
+          <div class="stage"><canvas id="safeCv"></canvas></div>
+          <div>
+            <div class="legend" id="safeLegend"></div>
+            <div class="scrub">
+              <input type="range" id="safeRange" min="0" max="1000" value="0" aria-label="미리보기 시점" />
+              <span class="t" id="safeT">0.0초</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="grid">
+      <div class="card">
+        <header><h3>샷 스트립</h3><span class="sub" id="stripSub"></span></header>
+        <p class="hint">각 샷의 가운데 프레임입니다. 누르면 위 미리보기가 그 지점으로 이동합니다.</p>
+        <div class="strip" id="strip"></div>
+      </div>
+    </div>
+
+    <div class="grid">
+      <div class="card">
+        <header>
+          <h3>샷별 수치</h3><span class="sub">그래프와 같은 값 — 표로도 읽을 수 있게</span>
+          <span style="flex:1"></span>
+          <button class="btn sm" id="btnCsv">CSV</button>
+          <button class="btn sm" id="btnJson">JSON</button>
+        </header>
+        <div class="tblwrap">
+          <table id="tbl">
+            <thead><tr>
+              <th>샷</th><th>시작</th><th>길이</th><th>시작 방식</th>
+              <th>평균 밝기</th><th>화면 변화량</th><th>소리</th>
+            </tr></thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <div class="grid">
+      <div class="card">
+        <header><h3>숫자의 출처</h3></header>
+        <div class="hint" style="margin-bottom:0" id="method"></div>
+      </div>
+    </div>
+  </section>
+
+  <div class="note" id="privacy">
+    <b>무엇을 저장하나요 — 아무것도 저장하지 않습니다.</b><br />
+    영상은 <code>URL.createObjectURL</code> 로 브라우저 안에서만 열립니다. 업로드도, 서버 저장도, 분석 결과 전송도 없습니다.
+    탭을 닫으면 전부 사라집니다. 페이지를 닫은 뒤 결과가 필요하면 CSV·JSON 으로 내려받아 두세요.
+  </div>
+
+  <div class="foot">
+    브라우저 안에서만 도는 정적 페이지입니다 · 외부 스크립트 없음 ·
+    <a href="/video-editor/">웹컷 — 무료 영상 편집기</a> ·
+    <a href="https://github.com/richroro/richroro.github.io/tree/main/shorts-analyzer" target="_blank" rel="noopener">소스 보기</a>
+  </div>
+</main>
+
+<script>
+"use strict";
+
+/* ============================================================
+   숏폼 해부기
+   전부 브라우저 안에서 돈다. 업로드도 외부 요청도 없다.
+   흐름: 파일 → 프레임 샘플링 → 컷 검출 → 오디오 해석 → 진단 → 그리기
+   ============================================================ */
+
+/* ---------- 작은 도구들 ---------- */
+const $  = (s, r) => (r || document).querySelector(s);
+const $$ = (s, r) => Array.from((r || document).querySelectorAll(s));
+const clamp = (v, a, b) => v < a ? a : v > b ? b : v;
+const cssVar = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+const fmtT = s => {
+  if (!isFinite(s)) return '–';
+  const m = Math.floor(s / 60), r = s - m * 60;
+  return m ? m + ':' + (r < 10 ? '0' : '') + r.toFixed(1) : r.toFixed(1) + '초';
+};
+const fmtT2 = s => isFinite(s) ? s.toFixed(2) + '초' : '–';
+const nf = (v, d) => (v == null || !isFinite(v)) ? '–' : v.toFixed(d == null ? 1 : d);
+const median = a => {
+  if (!a.length) return 0;
+  const s = Float64Array.from(a).sort();
+  const h = s.length >> 1;
+  return s.length % 2 ? s[h] : (s[h - 1] + s[h]) / 2;
+};
+const mean = a => a.length ? a.reduce((x, y) => x + y, 0) / a.length : 0;
+const idle = () => new Promise(r => setTimeout(r, 0));
+
+/* ---------- 튜닝 상수 ---------- */
+const CFG = {
+  GRID_W: 48,          // 프레임 축소 폭(px) — 컷 검출용
+  MAX_SAMPLES: 640,    // 전체 샘플 수 상한
+  MAX_HZ: 15,          // 초당 최대 샘플
+  HB_Y: 8, HB_C: 4,    // 히스토그램 칸: 밝기 8 × Cb 4 × Cr 4 = 128
+  MAX_RUN: 0.5,        // 융기 구간을 이 이상으로는 합치지 않는다(초)
+  K: 6,                // 임계값 = 중앙값 + K×σ(robust)
+  FLOOR: 0.085,        // 임계값 하한 — 정적인 영상에서 잡음이 컷으로 잡히는 걸 막는다
+  MIN_SHOT: 0.18,      // 이보다 짧은 간격의 두 번째 컷은 버린다(초)
+  MAX_THUMBS: 120,
+  SILENCE_DB: -50,     // 이 아래면 무음 취급
+  SILENCE_MIN: 0.35,   // 무음이 이만큼 이어져야 구간으로 센다(초)
+  AUDIBLE_DB: -45,     // 소리가 "시작됐다"고 보는 기준
+  HOOK: 3,             // 도입 구간 길이(초)
+  TARGET_LUFS: -14     // 주요 플랫폼 노멀라이즈 기준(근사)
+};
+
+/* ---------- 상태 ---------- */
+let A = null;            // 분석 결과
+let videoEl = null;      // 살아 있는 <video> (미리보기 스크럽용)
+let objURL = null;
+let activePlat = 'tiktok';
+let selShot = -1;
+
+/* ---------- 테마 ---------- */
+const themeBtn = $('#btnTheme');
+themeBtn.addEventListener('click', () => {
+  const light = document.documentElement.getAttribute('data-theme') === 'light';
+  document.documentElement.setAttribute('data-theme', light ? 'dark' : 'light');
+  try { localStorage.setItem('sa-theme', light ? 'dark' : 'light'); } catch (e) {}
+  if (A) drawAll();
+});
+
+/* ---------- 오류 표시 ---------- */
+const errBox = $('#err');
+function fail(msg) {
+  errBox.innerHTML = msg;
+  errBox.hidden = false;
+  $('#prog').hidden = true;
+}
+function clearErr() { errBox.hidden = true; }
+
+/* ---------- 진행 ---------- */
+function prog(label, pct) {
+  $('#prog').hidden = false;
+  $('#progLbl').textContent = label;
+  $('#progPct').textContent = Math.round(pct * 100) + '%';
+  $('#progBar').style.width = (pct * 100).toFixed(1) + '%';
+}
+
+/* ============================================================
+   1. 영상 열기
+   ============================================================ */
+
+function makeVideo(url) {
+  const v = document.createElement('video');
+  v.src = url;
+  v.muted = true;
+  v.playsInline = true;
+  v.preload = 'auto';
+  v.crossOrigin = 'anonymous';
+  // display:none 이면 일부 브라우저가 프레임을 그리지 않는다. 화면 밖으로 밀어 둔다.
+  v.style.cssText = 'position:fixed;left:-9999px;top:0;width:2px;height:2px;opacity:.01;pointer-events:none';
+  document.body.appendChild(v);
+  return v;
+}
+
+function onceEvent(el, ok, bad, ms) {
+  return new Promise((res, rej) => {
+    let done = false;
+    const cleanup = () => {
+      done = true;
+      el.removeEventListener(ok, good);
+      if (bad) el.removeEventListener(bad, oops);
+      clearTimeout(timer);
+    };
+    const good = () => { if (!done) { cleanup(); res(true); } };
+    const oops = () => { if (!done) { cleanup(); rej(new Error(el.error ? el.error.message : bad)); } };
+    const timer = setTimeout(() => { if (!done) { cleanup(); res(false); } }, ms || 15000);
+    el.addEventListener(ok, good);
+    if (bad) el.addEventListener(bad, oops);
+  });
+}
+
+// MediaRecorder 가 만든 webm 은 duration 메타가 비어 있어 Infinity 로 읽힌다.
+// 끝까지 보낸 뒤 확정된 값을 받아 되감는다.
+function settleDuration(v) {
+  if (isFinite(v.duration) && v.duration > 0) return Promise.resolve(v.duration);
+  return new Promise(res => {
+    let settled = false;
+    const onT = () => {
+      if (settled) return;
+      if (isFinite(v.duration) && v.duration > 0) {
+        settled = true;
+        v.removeEventListener('timeupdate', onT);
+        v.currentTime = 0;
+        res(v.duration);
+      }
+    };
+    v.addEventListener('timeupdate', onT);
+    setTimeout(() => { if (!settled) { settled = true; v.removeEventListener('timeupdate', onT); res(v.duration); } }, 6000);
+    try { v.currentTime = 1e6; } catch (e) { res(v.duration); }
+  });
+}
+
+function seek(v, t) {
+  return new Promise(res => {
+    let done = false;
+    const fin = () => { if (done) return; done = true; v.removeEventListener('seeked', fin); clearTimeout(tm); res(); };
+    // 이미 그 위치면 seeked 가 안 오는 경우가 있어 타임아웃으로 넘어간다.
+    const tm = setTimeout(fin, 2500);
+    v.addEventListener('seeked', fin);
+    try { v.currentTime = t; } catch (e) { fin(); }
+  });
+}
+
+/* ============================================================
+   2. 프레임 샘플링 — 축소판 밝기 격자 + 밝기 히스토그램
+   ============================================================ */
+
+async function sampleFrames(v, dur, onProg) {
+  const gw = CFG.GRID_W;
+  const gh = Math.max(16, Math.round(gw * v.videoHeight / v.videoWidth));
+  const cv = document.createElement('canvas');
+  cv.width = gw; cv.height = gh;
+  const g = cv.getContext('2d', { willReadFrequently: true });
+
+  const step = Math.max(dur / CFG.MAX_SAMPLES, 1 / CFG.MAX_HZ);
+  const n = Math.max(2, Math.floor(dur / step));
+  const N = gw * gh;
+  const NB = CFG.HB_Y * CFG.HB_C * CFG.HB_C;
+
+  const t = new Float64Array(n);
+  const lumaAvg = new Float32Array(n);
+  const dPix = new Float32Array(n);
+  const dHist = new Float32Array(n);
+
+  // 밝기만 보면 밝기가 같고 색만 다른 컷(색보정 전환, 배경색 교체)을 통째로 놓친다.
+  // Y 와 함께 Cb·Cr 을 같이 들고 간다. 격자는 [Y | Cb | Cr] 세 면을 이어 붙인 하나의 배열.
+  let prevG = null, prevH = null;
+  let f0G = null, f0H = null, fNG = null, fNH = null;   // 루프 판정용 첫·마지막 프레임
+  const curG = new Uint8Array(N * 3);
+  const curH = new Float32Array(NB);
+
+  for (let i = 0; i < n; i++) {
+    const tt = Math.min(dur - 1e-3, i * step);
+    t[i] = tt;
+    await seek(v, tt);
+    try { g.drawImage(v, 0, 0, gw, gh); } catch (e) { /* 디코드 실패 프레임은 직전 값 유지 */ }
+    const px = g.getImageData(0, 0, gw, gh).data;
+
+    curH.fill(0);
+    let sum = 0;
+    for (let p = 0, q = 0; p < N; p++, q += 4) {
+      const r = px[q], gg = px[q + 1], b = px[q + 2];
+      const y = (r * 77 + gg * 150 + b * 29) >> 8;               // Rec.601 휘도
+      const cb = clamp(128 + (((b - y) * 577) >> 10), 0, 255);   // 0.564 ≈ 577/1024
+      const cr = clamp(128 + (((r - y) * 730) >> 10), 0, 255);   // 0.713 ≈ 730/1024
+      curG[p] = y; curG[N + p] = cb; curG[N * 2 + p] = cr;
+      sum += y;
+      curH[(y >> 5) * 16 + (cb >> 6) * 4 + (cr >> 6)]++;
+    }
+    lumaAvg[i] = sum / N / 255;
+
+    if (prevG) {
+      let dp = 0;
+      for (let p = 0; p < N * 3; p++) dp += Math.abs(curG[p] - prevG[p]);
+      dPix[i] = dp / (N * 3 * 255);
+      let dh = 0;
+      for (let b = 0; b < NB; b++) dh += Math.abs(curH[b] - prevH[b]);
+      dHist[i] = dh / (2 * N);          // 0(동일) ~ 1(완전히 다름)
+    }
+
+    if (i === 0) { f0G = curG.slice(); f0H = curH.slice(); }
+    if (i === n - 1) { fNG = curG.slice(); fNH = curH.slice(); }
+
+    if (!prevG) { prevG = new Uint8Array(N * 3); prevH = new Float32Array(NB); }
+    prevG.set(curG); prevH.set(curH);
+
+    if (i % 8 === 0) { onProg(i / n); await idle(); }
+  }
+  return { t, lumaAvg, dPix, dHist, n, step, gw, gh, nbins: NB, f0G, f0H, fNG, fNH };
+}
+
+/* ============================================================
+   3. 컷 검출
+   히스토그램 변화(카메라 움직임에 둔감)와 픽셀 변화(비슷한 색조의 컷을 잡음)를
+   섞은 점수에 robust 임계값을 건다.
+   ============================================================ */
+
+function detectCuts(F, dur) {
+  const { t, dPix, dHist, n, step } = F;
+  const score = new Float32Array(n);
+  for (let i = 0; i < n; i++) score[i] = 0.65 * dHist[i] + 0.35 * dPix[i];
+
+  // 중앙값 + K×(1.4826×MAD). 평균/표준편차는 컷 자체에 끌려가서 쓸 수 없다.
+  const body = Array.from(score.slice(1));
+  const med = median(body);
+  const mad = median(body.map(s => Math.abs(s - med)));
+  const thr = Math.max(med + CFG.K * 1.4826 * mad, CFG.FLOOR);
+  const soft = thr * 0.45;
+
+  const cuts = [];
+  const maxRun = Math.max(2, Math.ceil(CFG.MAX_RUN / step));
+  let last = -Infinity;
+  for (let i = 1; i < n - 1; i++) {
+    if (score[i] < thr) continue;
+    if (score[i] < score[i - 1] || score[i] < score[i + 1]) continue;   // 국소 최대만
+    if (t[i] - last < CFG.MIN_SHOT) continue;
+    // 임계 위에 머무는 구간 전체를 찾는다. 평탄한 마루를 그냥 두면 같은 전환의
+    // 시작과 끝이 각각 컷으로 잡힌다. 다만 움직임이 큰 영상에서 무한정 번지지
+    // 않도록 한쪽 최대 MAX_RUN 초까지만 넓힌다.
+    let a = i, b = i;
+    while (a > 1 && score[a - 1] > soft && i - a < maxRun) a--;
+    while (b < n - 1 && score[b + 1] > soft && b - i < maxRun) b++;
+    const w = b - a + 1;
+    cuts.push({ t: t[i], score: score[i], kind: w >= 3 ? 'trans' : 'hard', width: w * step, i0: a, i1: b });
+    last = t[b];
+    i = b;                                    // 같은 융기에서 두 번 잡지 않는다
+  }
+
+  // 컷 경계로 샷을 만든다
+  const bounds = [0].concat(cuts.map(c => c.t), [dur]);
+  const shots = [];
+  for (let i = 0; i < bounds.length - 1; i++) {
+    const s = bounds[i], e = bounds[i + 1];
+    if (e - s < 0.04) continue;
+    shots.push({ i: shots.length, start: s, end: e, dur: e - s, kind: i === 0 ? 'open' : cuts[i - 1].kind });
+  }
+  return { cuts, shots, thr, score };
+}
+
+/* ============================================================
+   4. 오디오 — RMS 엔벌로프 + BS.1770-4 통합 라우드니스(LUFS)
+   ============================================================ */
+
+function decode(ctx, ab) {
+  // Safari 는 콜백형만 받는다
+  return new Promise((res, rej) => {
+    const p = ctx.decodeAudioData(ab, res, rej);
+    if (p && p.then) p.then(res, rej);
+  });
+}
+
+// 직접형 II 전치 biquad
+function biquad(x, b0, b1, b2, a1, a2) {
+  const y = new Float32Array(x.length);
+  let x1 = 0, x2 = 0, y1 = 0, y2 = 0;
+  for (let i = 0; i < x.length; i++) {
+    const xi = x[i];
+    const yi = b0 * xi + b1 * x1 + b2 * x2 - a1 * y1 - a2 * y2;
+    x2 = x1; x1 = xi; y2 = y1; y1 = yi;
+    y[i] = yi;
+  }
+  return y;
+}
+
+// ITU-R BS.1770-4 K-가중 (48kHz 계수)
+function kWeight(ch) {
+  const s1 = biquad(ch, 1.53512485958697, -2.69169618940638, 1.19839281085285, -1.69065929318241, 0.73248077421585);
+  return biquad(s1, 1.0, -2.0, 1.0, -1.99004745483398, 0.99007225036621);
+}
+
+function integratedLUFS(chans, sr) {
+  const G = [1, 1, 1, 1.41, 1.41];
+  const blockN = Math.round(0.4 * sr);
+  const hop = Math.round(0.1 * sr);
+  if (chans[0].length < blockN) return null;
+
+  const kw = chans.map(kWeight);
+  const nb = Math.floor((chans[0].length - blockN) / hop) + 1;
+  const sums = new Float64Array(nb);
+  const ls = new Float64Array(nb);
+
+  for (let b = 0; b < nb; b++) {
+    const o = b * hop;
+    let acc = 0;
+    for (let c = 0; c < kw.length; c++) {
+      const y = kw[c];
+      let z = 0;
+      for (let i = o; i < o + blockN; i++) z += y[i] * y[i];
+      acc += (G[c] || 1) * (z / blockN);
+    }
+    sums[b] = acc;
+    ls[b] = acc > 0 ? -0.691 + 10 * Math.log10(acc) : -Infinity;
+  }
+
+  // 절대 게이트 -70 LUFS
+  let keep = [];
+  for (let b = 0; b < nb; b++) if (ls[b] > -70) keep.push(b);
+  if (!keep.length) return null;
+  // 상대 게이트 -10 LU
+  const m1 = keep.reduce((s, b) => s + sums[b], 0) / keep.length;
+  const gamma = -0.691 + 10 * Math.log10(m1) - 10;
+  const keep2 = keep.filter(b => ls[b] > gamma);
+  const use = keep2.length ? keep2 : keep;
+  const m2 = use.reduce((s, b) => s + sums[b], 0) / use.length;
+  return -0.691 + 10 * Math.log10(m2);
+}
+
+async function analyzeAudio(file, onProg) {
+  const OAC = window.OfflineAudioContext || window.webkitOfflineAudioContext;
+  if (!OAC) return { ok: false, why: '이 브라우저가 오디오 디코딩을 지원하지 않습니다.' };
+
+  let decoded;
+  try {
+    const ab = await file.arrayBuffer();
+    decoded = await decode(new OAC(1, 256, 48000), ab);
+  } catch (e) {
+    return { ok: false, why: '오디오 트랙을 읽지 못했습니다. 소리가 없거나 브라우저가 못 푸는 코덱입니다.' };
+  }
+  if (!decoded || !decoded.length) return { ok: false, why: '오디오 트랙이 비어 있습니다.' };
+  onProg(0.4);
+
+  // LUFS 계수가 48kHz 기준이라 48k 로 맞춘다
+  const sr = 48000;
+  const chN = Math.min(decoded.numberOfChannels, 2);
+  let rendered = decoded;
+  if (decoded.sampleRate !== sr || decoded.numberOfChannels > 2) {
+    const oc = new OAC(chN, Math.ceil(decoded.duration * sr), sr);
+    const src = oc.createBufferSource();
+    src.buffer = decoded;
+    src.connect(oc.destination);
+    src.start();
+    rendered = await oc.startRendering();
+  }
+  onProg(0.7);
+
+  const chans = [];
+  for (let c = 0; c < rendered.numberOfChannels; c++) chans.push(rendered.getChannelData(c));
+  const len = chans[0].length;
+
+  // 모노 합성으로 엔벌로프 / 피크 / 클리핑
+  const hop = Math.round(0.05 * sr);
+  const nb = Math.max(1, Math.floor(len / hop));
+  const envT = new Float64Array(nb);
+  const envDb = new Float32Array(nb);
+  let peak = 0, clipped = 0;
+
+  for (let b = 0; b < nb; b++) {
+    const o = b * hop, e = Math.min(len, o + hop);
+    let ss = 0;
+    for (let i = o; i < e; i++) {
+      let m = 0;
+      for (let c = 0; c < chans.length; c++) { const a = Math.abs(chans[c][i]); if (a > m) m = a; }
+      if (m > peak) peak = m;
+      if (m >= 0.9995) clipped++;
+      let mix = 0;
+      for (let c = 0; c < chans.length; c++) mix += chans[c][i];
+      mix /= chans.length;
+      ss += mix * mix;
+    }
+    const rms = Math.sqrt(ss / Math.max(1, e - o));
+    envT[b] = b * 0.05;
+    envDb[b] = rms > 0 ? clamp(20 * Math.log10(rms), -70, 6) : -70;
+  }
+  onProg(0.9);
+
+  // 무음 구간
+  const sil = [];
+  let run = -1;
+  for (let b = 0; b <= nb; b++) {
+    const quiet = b < nb && envDb[b] < CFG.SILENCE_DB;
+    if (quiet && run < 0) run = b;
+    else if (!quiet && run >= 0) {
+      const s = run * 0.05, e = b * 0.05;
+      if (e - s >= CFG.SILENCE_MIN) sil.push({ start: s, end: e, dur: e - s });
+      run = -1;
+    }
+  }
+
+  let firstAudible = null;
+  for (let b = 0; b < nb; b++) if (envDb[b] >= CFG.AUDIBLE_DB) { firstAudible = b * 0.05; break; }
+
+  return {
+    ok: true,
+    envT, envDb, nb,
+    peakDb: peak > 0 ? 20 * Math.log10(peak) : -70,
+    clippedSamples: clipped,
+    lufs: integratedLUFS(chans, sr),
+    silences: sil,
+    firstAudible,
+    channels: decoded.numberOfChannels,
+    sampleRate: decoded.sampleRate
+  };
+}
+
+/* ============================================================
+   5. 대표 프레임
+   ============================================================ */
+
+async function grabThumbs(v, shots, onProg) {
+  const W = 152;
+  const H = Math.round(W * v.videoHeight / v.videoWidth);
+  const cv = document.createElement('canvas');
+  cv.width = W; cv.height = H;
+  const g = cv.getContext('2d');
+  const take = shots.length <= CFG.MAX_THUMBS
+    ? shots
+    : shots.filter((_, i) => i % Math.ceil(shots.length / CFG.MAX_THUMBS) === 0);
+
+  for (let i = 0; i < take.length; i++) {
+    const s = take[i];
+    await seek(v, clamp(s.start + s.dur / 2, 0, v.duration - 1e-3));
+    try {
+      g.drawImage(v, 0, 0, W, H);
+      s.thumb = cv.toDataURL('image/jpeg', 0.72);
+    } catch (e) { s.thumb = null; }
+    if (i % 4 === 0) { onProg(i / take.length); await idle(); }
+  }
+}
+
+/* ============================================================
+   6. 지표와 진단
+   ============================================================ */
+
+function maskCutSpikes(F, C) {
+  const m = Float32Array.from(F.dPix);
+  C.cuts.forEach(c => {
+    const lo = Math.max(1, c.i0 - 1), hi = Math.min(F.n - 1, c.i1 + 1);
+    const a = m[Math.max(1, lo - 1)], b = m[Math.min(F.n - 1, hi + 1)];
+    for (let i = lo; i <= hi; i++) m[i] = a + (b - a) * ((i - lo + 1) / (hi - lo + 2));
+  });
+  if (F.n > 1) m[0] = m[1];
+  return m;
+}
+
+function buildReport(meta, F, C, AU) {
+  const dur = meta.dur;
+  F.motion = maskCutSpikes(F, C);
+  const durs = C.shots.map(s => s.dur);
+  const medShot = median(durs);
+  const avgShot = mean(durs);
+  const longest = C.shots.reduce((a, b) => (b.dur > a.dur ? b : a), C.shots[0] || { dur: 0, start: 0 });
+
+  // 도입 구간
+  const hookEnd = Math.min(CFG.HOOK, dur);
+  let hookMotion = 0, hookN = 0, allMotion = 0, allN = 0;
+  for (let i = 1; i < F.n; i++) {
+    allMotion += F.motion[i]; allN++;
+    if (F.t[i] <= hookEnd) { hookMotion += F.motion[i]; hookN++; }
+  }
+  const motionAll = allN ? allMotion / allN : 0;
+  const motionHook = hookN ? hookMotion / hookN : 0;
+  const hookCuts = C.cuts.filter(c => c.t <= hookEnd).length;
+  const firstCut = C.cuts.length ? C.cuts[0].t : null;
+
+  // 거의 움직이지 않는 가장 긴 구간
+  const quiet = Math.max(motionAll * 0.35, 0.004);
+  let statBest = 0, statAt = 0, runS = -1;
+  for (let i = 1; i <= F.n; i++) {
+    const still = i < F.n && F.motion[i] < quiet;
+    if (still && runS < 0) runS = i;
+    else if (!still && runS >= 0) {
+      const len = F.t[Math.min(i, F.n - 1)] - F.t[runS];
+      if (len > statBest) { statBest = len; statAt = F.t[runS]; }
+      runS = -1;
+    }
+  }
+
+  // 첫 프레임 ↔ 마지막 프레임 유사도 (루프가 매끄럽게 이어지는가)
+  let loopSim = null;
+  if (F.f0G && F.fNG) {
+    const N3 = F.f0G.length, N = N3 / 3;
+    let dp = 0, dh = 0;
+    for (let p = 0; p < N3; p++) dp += Math.abs(F.f0G[p] - F.fNG[p]);
+    for (let b = 0; b < F.nbins; b++) dh += Math.abs(F.f0H[b] - F.fNH[b]);
+    loopSim = clamp(1 - (0.65 * (dh / (2 * N)) + 0.35 * (dp / (N3 * 255))), 0, 1);
+  }
+
+  const silTotal = AU.ok ? AU.silences.reduce((s, x) => s + x.dur, 0) : 0;
+  const brightness = mean(Array.from(F.lumaAvg));
+  const ratio = meta.w / meta.h;
+
+  const m = {
+    dur, w: meta.w, h: meta.h, ratio, fileName: meta.name, fileSize: meta.size,
+    cuts: C.cuts.length, shots: C.shots.length,
+    medShot, avgShot, longestShot: longest.dur, longestAt: longest.start,
+    cutsPerMin: dur > 0 ? C.cuts.length / dur * 60 : 0,
+    hookCuts, firstCut, motionHook, motionAll,
+    hookRatio: motionAll > 0 ? motionHook / motionAll : null,
+    staticLongest: statBest, staticAt: statAt,
+    loopSim, brightness,
+    silTotal, silShare: dur > 0 ? silTotal / dur : 0,
+    lufs: AU.ok ? AU.lufs : null,
+    peakDb: AU.ok ? AU.peakDb : null,
+    clipped: AU.ok ? AU.clippedSamples : null,
+    firstAudible: AU.ok ? AU.firstAudible : null,
+    sampleHz: 1 / F.step, threshold: C.thr
+  };
+
+  return { meta, F, C, AU, m, checks: diagnose(m, AU) };
+}
+
+/* 상태는 색만으로 뜻을 전달하지 않는다 — 아이콘과 글자 라벨을 항상 함께 붙인다 */
+const ST = {
+  ok:      { c: 'var(--ok)',      i: '✓', l: '좋음' },
+  warn:    { c: 'var(--warn)',    i: '!', l: '주의' },
+  serious: { c: 'var(--serious)', i: '▲', l: '손보기' },
+  crit:    { c: 'var(--crit)',    i: '✕', l: '문제' },
+  info:    { c: 'var(--ink-3)',   i: '·', l: '참고' }
+};
+
+function diagnose(m, AU) {
+  const out = [];
+  const add = (title, status, desc) => out.push({ title, status, desc });
+
+  /* 화면 규격 */
+  if (m.ratio > 1.05) {
+    add('화면 비율', 'crit', `가로 영상(${m.w}×${m.h})입니다. 세로 피드에 올리면 위아래가 잘리거나 레터박스가 생깁니다. 9:16(1080×1920)으로 다시 뽑는 쪽이 낫습니다.`);
+  } else if (Math.abs(m.ratio - 9 / 16) < 0.02) {
+    add('화면 비율', 'ok', `9:16 세로 (${m.w}×${m.h}) — 숏폼 피드 기본 규격입니다.`);
+  } else {
+    add('화면 비율', 'warn', `${m.w}×${m.h} (${m.ratio.toFixed(3)}:1) — 9:16(0.563)에서 벗어나 있습니다. 앱이 잘라 맞추면서 가장자리가 날아갈 수 있습니다.`);
+  }
+
+  if (m.h >= 1920) add('해상도', 'ok', `세로 ${m.h}px — 권장치(1920) 이상입니다.`);
+  else if (m.h >= 1280) add('해상도', 'warn', `세로 ${m.h}px — 올라가긴 하지만 1920px 로 뽑으면 재압축 손실이 줄어듭니다.`);
+  else add('해상도', 'serious', `세로 ${m.h}px — 낮습니다. 앱이 확대하면서 뭉개집니다.`);
+
+  /* 길이 */
+  if (m.dur < 5) add('길이', 'warn', `${nf(m.dur)}초 — 반복 재생에는 유리하지만 담을 정보가 적습니다.`);
+  else if (m.dur <= 60) add('길이', 'ok', `${nf(m.dur)}초 — 세 플랫폼 모두에서 무난한 구간입니다.`);
+  else if (m.dur <= 180) add('길이', 'warn', `${nf(m.dur)}초 — 쇼츠 한도(3분) 안이지만, 끝까지 보는 비율이 급격히 떨어지는 길이입니다.`);
+  else add('길이', 'serious', `${nf(m.dur)}초 — 유튜브 쇼츠 한도(3분)를 넘습니다. 일반 영상으로 올라갑니다.`);
+
+  /* 컷 리듬 */
+  if (m.cuts === 0) {
+    add('컷 리듬', 'serious', '컷이 하나도 감지되지 않았습니다. 한 테이크를 통으로 쓴 영상이거나, 전환이 너무 부드러워 검출되지 않았습니다.');
+  } else if (m.medShot < 0.4) {
+    add('컷 리듬', 'warn', `컷 ${m.cuts}개, 중앙값 <b>${nf(m.medShot, 2)}초</b> — 매우 빠릅니다. 자막을 읽을 시간이 안 나올 수 있습니다.`);
+  } else if (m.medShot <= 2.5) {
+    add('컷 리듬', 'ok', `컷 ${m.cuts}개, 중앙값 <b>${nf(m.medShot, 2)}초</b> (분당 ${nf(m.cutsPerMin, 0)}컷) — 숏폼에서 흔한 리듬입니다.`);
+  } else if (m.medShot <= 4) {
+    add('컷 리듬', 'warn', `컷 중앙값 <b>${nf(m.medShot, 2)}초</b> — 다소 느립니다. 분당 ${nf(m.cutsPerMin, 0)}컷.`);
+  } else {
+    add('컷 리듬', 'serious', `컷 중앙값 <b>${nf(m.medShot, 2)}초</b> — 한 화면이 오래 머뭅니다. 분당 ${nf(m.cutsPerMin, 0)}컷.`);
+  }
+
+  /* 도입 3초 */
+  const hr = m.hookRatio;
+  const fc = m.firstCut == null ? '없음' : nf(m.firstCut, 2) + '초';
+  if (hr == null) {
+    add('도입 3초', 'info', '비교할 만한 변화량이 없습니다.');
+  } else if (m.hookCuts >= 1 && hr >= 0.9) {
+    add('도입 3초', 'ok', `첫 컷 ${fc}, 도입부 화면 변화량이 전체 평균의 <b>${nf(hr * 100, 0)}%</b> — 시작부터 움직입니다.`);
+  } else if (hr >= 0.6) {
+    add('도입 3초', 'warn', `첫 컷 ${fc}, 도입부 변화량이 전체 평균의 <b>${nf(hr * 100, 0)}%</b> — 앞부분이 뒤보다 정적입니다. 가장 센 장면을 앞으로 당기는 편집이 흔한 해법입니다.`);
+  } else {
+    add('도입 3초', 'serious', `첫 컷 ${fc}, 도입부 변화량이 전체 평균의 <b>${nf(hr * 100, 0)}%</b>에 그칩니다. 스크롤이 가장 많이 일어나는 구간이 밋밋합니다.`);
+  }
+
+  /* 소리 */
+  if (!AU.ok) {
+    add('소리', 'warn', AU.why + ' 아래 소리 관련 항목은 건너뜁니다.');
+  } else {
+    if (m.firstAudible == null) add('소리 시작', 'serious', '영상 전체에서 들리는 소리가 없습니다. 무음 영상은 피드에서 대부분 그냥 넘어갑니다.');
+    else if (m.firstAudible <= 0.3) add('소리 시작', 'ok', `<b>${nf(m.firstAudible, 2)}초</b>부터 소리가 납니다.`);
+    else if (m.firstAudible <= 0.8) add('소리 시작', 'warn', `앞 <b>${nf(m.firstAudible, 2)}초</b>가 무음입니다. 짧지만 도입에서는 긴 시간입니다.`);
+    else add('소리 시작', 'serious', `앞 <b>${nf(m.firstAudible, 2)}초</b>가 무음입니다. 시작 부분의 빈 소리는 이탈로 직결됩니다.`);
+
+    if (m.lufs == null) {
+      add('라우드니스', 'info', '통합 라우드니스를 계산할 만큼 소리가 들어 있지 않습니다.');
+    } else {
+      const d = m.lufs - CFG.TARGET_LUFS;
+      if (Math.abs(d) <= 2) add('라우드니스', 'ok', `<b>${nf(m.lufs)} LUFS</b> — 플랫폼 기준(약 ${CFG.TARGET_LUFS} LUFS) 근처입니다.`);
+      else if (d > 2) add('라우드니스', d > 5 ? 'serious' : 'warn', `<b>${nf(m.lufs)} LUFS</b> — 기준보다 ${nf(d)} LU 큽니다. 업로드 후 플랫폼이 깎아 내리면서 다이내믹이 납작해집니다.`);
+      else add('라우드니스', d < -5 ? 'serious' : 'warn', `<b>${nf(m.lufs)} LUFS</b> — 기준보다 ${nf(-d)} LU 작습니다. 다른 영상 사이에서 상대적으로 작게 들립니다.`);
+    }
+
+    if (m.clipped > 0) {
+      add('피크', m.clipped > 200 ? 'serious' : 'warn', `최대치에 닿은 샘플이 <b>${m.clipped.toLocaleString('ko-KR')}개</b>, 피크 ${nf(m.peakDb)} dBFS. 재압축 과정에서 지직거릴 수 있습니다.`);
+    } else {
+      add('피크', 'ok', `피크 <b>${nf(m.peakDb)} dBFS</b> — 클리핑 없습니다.`);
+    }
+
+    if (m.silShare <= 0.1) add('무음 구간', 'ok', `무음 ${nf(m.silTotal)}초 (전체의 ${nf(m.silShare * 100, 0)}%).`);
+    else if (m.silShare <= 0.25) add('무음 구간', 'warn', `무음이 <b>${nf(m.silTotal)}초</b>, 전체의 ${nf(m.silShare * 100, 0)}% 입니다.`);
+    else add('무음 구간', 'serious', `무음이 <b>${nf(m.silTotal)}초</b>로 전체의 ${nf(m.silShare * 100, 0)}% 를 차지합니다.`);
+  }
+
+  /* 늘어지는 구간 */
+  if (m.staticLongest < 1.5) add('멈춰 있는 구간', 'ok', `가장 긴 정적 구간이 ${nf(m.staticLongest)}초입니다.`);
+  else if (m.staticLongest < 3) add('멈춰 있는 구간', 'warn', `<b>${nf(m.staticAt)}초</b>부터 <b>${nf(m.staticLongest)}초</b> 동안 화면이 거의 안 움직입니다.`);
+  else add('멈춰 있는 구간', 'serious', `<b>${nf(m.staticAt)}초</b>부터 <b>${nf(m.staticLongest)}초</b> 동안 화면이 거의 멈춰 있습니다. 이탈이 몰리는 지점입니다.`);
+
+  /* 밝기 */
+  if (m.brightness < 0.18) add('화면 밝기', 'warn', `평균 밝기 ${nf(m.brightness * 100, 0)}/100 — 어둡습니다. 밝은 곳에서 폰으로 보면 잘 안 보입니다.`);
+  else if (m.brightness > 0.85) add('화면 밝기', 'warn', `평균 밝기 ${nf(m.brightness * 100, 0)}/100 — 날아간 영역이 많을 수 있습니다.`);
+  else add('화면 밝기', 'ok', `평균 밝기 ${nf(m.brightness * 100, 0)}/100 — 무난합니다.`);
+
+  /* 루프 */
+  if (m.loopSim != null) {
+    if (m.loopSim >= 0.88) add('루프 연결', 'ok', `첫 프레임과 마지막 프레임이 <b>${nf(m.loopSim * 100, 0)}%</b> 닮았습니다. 자동 반복이 자연스럽게 이어집니다.`);
+    else add('루프 연결', 'info', `첫·마지막 프레임 유사도 <b>${nf(m.loopSim * 100, 0)}%</b>. 끝을 시작과 비슷하게 맞추면 반복 재생이 이어져 보입니다(필수는 아닙니다).`);
+  }
+
+  return out;
+}
+
+/* ============================================================
+   7. 그리기
+   단위가 다른 지표는 한 축에 겹치지 않는다. 위아래로 나누고 가로축만 공유한다.
+   ============================================================ */
+
+const FONT = '"Noto Sans KR","Apple SD Gothic Neo",system-ui,sans-serif';
+
+function fit(cv, cssH) {
+  const dpr = Math.min(window.devicePixelRatio || 1, 2);
+  const w = Math.max(240, cv.parentElement.clientWidth);
+  cv.style.height = cssH + 'px';
+  cv.width = Math.round(w * dpr);
+  cv.height = Math.round(cssH * dpr);
+  const g = cv.getContext('2d');
+  g.setTransform(dpr, 0, 0, dpr, 0, 0);
+  g.clearRect(0, 0, w, cssH);
+  return { g, w, h: cssH };
+}
+
+function roundTop(g, x, y, w, h, r) {
+  r = Math.min(r, w / 2, h);
+  g.beginPath();
+  g.moveTo(x, y + h);
+  g.lineTo(x, y + r);
+  g.quadraticCurveTo(x, y, x + r, y);
+  g.lineTo(x + w - r, y);
+  g.quadraticCurveTo(x + w, y, x + w, y + r);
+  g.lineTo(x + w, y + h);
+  g.closePath();
+}
+
+function niceTimeTicks(dur, px) {
+  const want = clamp(Math.floor(px / 78), 2, 9);
+  const raw = dur / want;
+  const steps = [0.5, 1, 2, 5, 10, 15, 30, 60, 120, 300];
+  const st = steps.find(s => s >= raw) || 600;
+  const out = [];
+  for (let t = 0; t <= dur + 1e-6; t += st) out.push(t);
+  return out;
+}
+
+const TL = { L: 48, R: 14, T: 6, B: 24, laneShot: 32, lane: 72, gap: 14 };
+TL.H = TL.T + TL.laneShot + TL.gap + TL.lane + TL.gap + TL.lane + TL.B;
+
+function tlGeom(w) {
+  const x0 = TL.L, x1 = w - TL.R;
+  const shotY = TL.T;
+  const mY = shotY + TL.laneShot + TL.gap;
+  const aY = mY + TL.lane + TL.gap;
+  return { x0, x1, pw: Math.max(10, x1 - x0), shotY, mY, aY };
+}
+
+function panelTitle(g, x, y, color, text, note) {
+  g.fillStyle = color;
+  g.beginPath(); g.roundRect ? g.roundRect(x, y - 8, 9, 9, 2) : g.rect(x, y - 8, 9, 9); g.fill();
+  g.fillStyle = cssVar('--ink-2');
+  g.font = '700 11.5px ' + FONT;
+  g.textAlign = 'left'; g.textBaseline = 'alphabetic';
+  g.fillText(text, x + 14, y);
+  if (note) {
+    const wd = g.measureText(text).width;
+    g.fillStyle = cssVar('--ink-3');
+    g.font = '500 11px ' + FONT;
+    g.fillText(note, x + 20 + wd, y);
+  }
+}
+
+function drawTimeline(hoverT) {
+  const cv = $('#tl');
+  const { g, w } = fit(cv, TL.H);
+  const { F, C, AU, m } = A;
+  const dur = m.dur;
+  const G = tlGeom(w);
+  const X = t => G.x0 + clamp(t / dur, 0, 1) * G.pw;
+
+  const inkMut = cssVar('--ink-3'), grid = cssVar('--grid'), axis = cssVar('--axis');
+  const surf = cssVar('--panel');
+  const s1 = cssVar('--s1'), s2 = cssVar('--s2'), s3 = cssVar('--s3');
+
+  /* --- 선택된 샷 강조 --- */
+  if (selShot >= 0 && C.shots[selShot]) {
+    const s = C.shots[selShot];
+    g.fillStyle = cssVar('--accent-wash');
+    g.fillRect(X(s.start), TL.T, Math.max(2, X(s.end) - X(s.start)), TL.H - TL.T - TL.B);
+  }
+
+  /* --- 샷 레인 --- */
+  panelTitle(g, G.x0, G.shotY + 9, s3, '샷 배치', `${C.shots.length}개`);
+  const barY = G.shotY + 14, barH = 16;
+  g.fillStyle = s3;
+  C.shots.forEach(s => {
+    const a = X(s.start), b = X(s.end);
+    const bw = b - a - 2;                       // 2px 은 표면 틈 — 테두리를 그리지 않는다
+    if (bw <= 0.6) { g.fillRect(a, barY, Math.max(0.6, b - a), barH); return; }
+    g.beginPath();
+    g.roundRect ? g.roundRect(a, barY, bw, barH, 3) : g.rect(a, barY, bw, barH);
+    g.fill();
+  });
+  // 번호는 들어갈 자리가 있을 때만 (잘린 라벨은 안 그리느니만 못하다)
+  g.font = '700 10px ' + FONT;
+  g.textAlign = 'center'; g.textBaseline = 'middle';
+  C.shots.forEach(s => {
+    const a = X(s.start), b = X(s.end);
+    const label = String(s.i + 1);
+    if (b - a - 2 < g.measureText(label).width + 10) return;
+    g.fillStyle = '#fff';
+    g.fillText(label, (a + b) / 2, barY + barH / 2 + .5);
+  });
+
+  /* --- 두 패널 공통 그리기 --- */
+  const panels = [
+    {
+      y: G.mY, color: s1, title: '화면 변화량', note: '×100 · 컷 순간 제외',
+      min: 0, max: Math.max(1e-4, Math.max.apply(null, Array.from(F.motion)) * 1.08),
+      ticks: null, fmt: v => (v * 100).toFixed(1),
+      xs: F.t, ys: F.motion, nn: F.n
+    }
+  ];
+  if (AU.ok) panels.push({
+    y: G.aY, color: s2, title: '소리 크기', note: 'dBFS (RMS 50ms)',
+    min: -60, max: 0, ticks: [-60, -40, -20, 0], fmt: v => v.toFixed(0),
+    xs: AU.envT, ys: AU.envDb, nn: AU.nb
+  });
+
+  panels.forEach(p => {
+    const top = p.y + 16, hgt = TL.lane - 16;
+    const Y = v => top + hgt - (clamp(v, p.min, p.max) - p.min) / (p.max - p.min) * hgt;
+    const ticks = p.ticks || [p.min, (p.min + p.max) / 2, p.max];
+
+    // 격자 — 실선 헤어라인, 표면에서 한 단계만 뗀다
+    g.lineWidth = 1;
+    g.strokeStyle = grid;
+    ticks.forEach(v => {
+      const y = Math.round(Y(v)) + .5;
+      g.beginPath(); g.moveTo(G.x0, y); g.lineTo(G.x1, y); g.stroke();
+    });
+    g.strokeStyle = axis;
+    g.beginPath();
+    g.moveTo(G.x0, Math.round(Y(p.min)) + .5); g.lineTo(G.x1, Math.round(Y(p.min)) + .5);
+    g.stroke();
+
+    g.fillStyle = inkMut;
+    g.font = '500 10px ' + FONT;
+    g.textAlign = 'right'; g.textBaseline = 'middle';
+    ticks.forEach(v => g.fillText(p.fmt(v), G.x0 - 7, Y(v)));
+
+    // 컷 지점
+    if (C.cuts.length) {
+      g.strokeStyle = axis;
+      g.lineWidth = 1;
+      C.cuts.forEach(c => {
+        const x = Math.round(X(c.t)) + .5;
+        g.beginPath(); g.moveTo(x, top); g.lineTo(x, top + hgt); g.stroke();
+      });
+    }
+
+    // 면 + 선
+    g.beginPath();
+    for (let i = 0; i < p.nn; i++) {
+      const x = X(p.xs[i]), y = Y(p.ys[i]);
+      i ? g.lineTo(x, y) : g.moveTo(x, y);
+    }
+    const lastX = X(p.xs[p.nn - 1]);
+    g.lineTo(lastX, Y(p.min)); g.lineTo(X(p.xs[0]), Y(p.min)); g.closePath();
+    g.fillStyle = p.color; g.globalAlpha = .16; g.fill(); g.globalAlpha = 1;
+
+    g.beginPath();
+    for (let i = 0; i < p.nn; i++) {
+      const x = X(p.xs[i]), y = Y(p.ys[i]);
+      i ? g.lineTo(x, y) : g.moveTo(x, y);
+    }
+    g.strokeStyle = p.color; g.lineWidth = 2; g.lineJoin = 'round'; g.stroke();
+
+    panelTitle(g, G.x0, p.y + 9, p.color, p.title, p.note);
+  });
+
+  if (!AU.ok) {
+    g.fillStyle = inkMut;
+    g.font = '500 12px ' + FONT;
+    g.textAlign = 'center'; g.textBaseline = 'middle';
+    g.fillText('소리 분석 없음 — ' + AU.why, (G.x0 + G.x1) / 2, G.aY + TL.lane / 2);
+  }
+
+  /* --- 가로축 --- */
+  g.fillStyle = inkMut;
+  g.font = '500 10.5px ' + FONT;
+  g.textAlign = 'center'; g.textBaseline = 'top';
+  niceTimeTicks(dur, G.pw).forEach(t => {
+    if (t > dur) return;
+    g.fillText(t >= 60 ? fmtT(t) : t + '초', X(t), TL.H - TL.B + 6);
+  });
+
+  /* --- 커서 --- */
+  if (hoverT != null) {
+    const x = Math.round(X(hoverT)) + .5;
+    g.strokeStyle = cssVar('--ink-3');
+    g.lineWidth = 1;
+    g.beginPath(); g.moveTo(x, TL.T); g.lineTo(x, TL.H - TL.B); g.stroke();
+    panels.forEach(p => {
+      const top = p.y + 16, hgt = TL.lane - 16;
+      const Y = v => top + hgt - (clamp(v, p.min, p.max) - p.min) / (p.max - p.min) * hgt;
+      const i = nearestIdx(p.xs, p.nn, hoverT);
+      const y = Y(p.ys[i]);
+      g.beginPath(); g.arc(x, y, 4.5, 0, 7);
+      g.fillStyle = p.color; g.fill();
+      g.strokeStyle = surf; g.lineWidth = 2; g.stroke();   // 표면색 링으로 떼어 놓는다
+    });
+  }
+}
+
+function nearestIdx(xs, n, t) {
+  let lo = 0, hi = n - 1;
+  while (lo < hi) {
+    const mid = (lo + hi) >> 1;
+    if (xs[mid] < t) lo = mid + 1; else hi = mid;
+  }
+  if (lo > 0 && Math.abs(xs[lo - 1] - t) < Math.abs(xs[lo] - t)) lo--;
+  return lo;
+}
+
+/* ---------- 컷 길이 분포 ---------- */
+let HIST = null;
+
+function drawHist(hoverBin) {
+  const cv = $('#hist');
+  const H = 186;
+  const { g, w } = fit(cv, H);
+  const durs = A.C.shots.map(s => s.dur);
+  if (!durs.length) return;
+
+  const L = 34, R = 10, T = 14, B = 30;
+  const pw = Math.max(10, w - L - R), ph = H - T - B;
+  const max = Math.max.apply(null, durs);
+  const nb = clamp(Math.round(Math.sqrt(durs.length)), 5, 14);
+  const bw = max / nb;
+  const bins = new Array(nb).fill(0);
+  durs.forEach(d => bins[clamp(Math.floor(d / bw), 0, nb - 1)]++);
+  const top = Math.max.apply(null, bins);
+  HIST = { bins, bw, nb, L, R, T, B, pw, ph, top, w };
+
+  const grid = cssVar('--grid'), axis = cssVar('--axis'), inkMut = cssVar('--ink-3');
+  const yTicks = top <= 4 ? Array.from({ length: top + 1 }, (_, i) => i) : [0, Math.round(top / 2), top];
+
+  g.lineWidth = 1; g.strokeStyle = grid;
+  yTicks.forEach(v => {
+    const y = Math.round(T + ph - v / top * ph) + .5;
+    g.beginPath(); g.moveTo(L, y); g.lineTo(w - R, y); g.stroke();
+  });
+  g.strokeStyle = axis;
+  g.beginPath(); g.moveTo(L, T + ph + .5); g.lineTo(w - R, T + ph + .5); g.stroke();
+
+  g.fillStyle = inkMut; g.font = '500 10px ' + FONT;
+  g.textAlign = 'right'; g.textBaseline = 'middle';
+  yTicks.forEach(v => g.fillText(String(v), L - 7, T + ph - v / top * ph));
+
+  const slot = pw / nb;
+  const modal = bins.indexOf(top);
+  bins.forEach((c, i) => {
+    if (!c) return;
+    const x = L + i * slot + 1;                   // 좌우 1px 씩 = 막대 사이 2px 표면 틈
+    const bh = c / top * ph;
+    g.fillStyle = cssVar('--s1');
+    g.globalAlpha = hoverBin == null || hoverBin === i ? 1 : .45;
+    roundTop(g, x, T + ph - bh, Math.max(1, slot - 2), bh, 4);
+    g.fill();
+    g.globalAlpha = 1;
+  });
+
+  // 직접 라벨은 최빈 구간 하나만 — 모든 막대에 숫자를 붙이면 읽히지 않는다
+  if (top > 0) {
+    const x = L + modal * slot + slot / 2;
+    const bh = top / top * ph;
+    g.fillStyle = cssVar('--ink');
+    g.font = '800 11px ' + FONT;
+    g.textAlign = 'center'; g.textBaseline = 'bottom';
+    g.fillText(top + '컷', x, T + ph - bh - 3);
+  }
+
+  g.fillStyle = inkMut; g.font = '500 10px ' + FONT;
+  g.textAlign = 'center'; g.textBaseline = 'top';
+  const every = slot < 42 ? 2 : 1;
+  for (let i = 0; i <= nb; i += every) g.fillText((i * bw).toFixed(1), L + i * slot, T + ph + 7);
+  g.textAlign = 'right';
+  g.fillText('초', w - R, T + ph + 19);
+}
+
+function drawAll() {
+  if (!A) return;
+  drawTimeline(null);
+  drawHist(null);
+  drawSafe();
+}
+
+/* ============================================================
+   8. 플랫폼 UI 안전영역
+   공개된 앱 화면을 재어 만든 근사치다. 기기·앱 버전·언어에 따라 달라진다.
+   ============================================================ */
+
+const PLATS = {
+  tiktok: {
+    name: '틱톡',
+    zones: [
+      { x: 0, y: 0,    w: 1,    h: .085, label: '상단 탭' },
+      { x: .80, y: .40, w: .20, h: .46,  label: '우측 버튼' },
+      { x: 0, y: .78,  w: .78,  h: .15,  label: '캡션·계정명' },
+      { x: 0, y: .93,  w: 1,    h: .07,  label: '하단 내비' }
+    ],
+    safe: { x: .06, y: .12, w: .72, h: .62 }
+  },
+  reels: {
+    name: '릴스',
+    zones: [
+      { x: 0, y: 0,    w: 1,    h: .07, label: '상단' },
+      { x: .82, y: .42, w: .18, h: .42, label: '우측 버튼' },
+      { x: 0, y: .74,  w: .80,  h: .16, label: '캡션' },
+      { x: 0, y: .90,  w: 1,    h: .10, label: '하단 내비' }
+    ],
+    safe: { x: .06, y: .10, w: .74, h: .60 }
+  },
+  shorts: {
+    name: '쇼츠',
+    zones: [
+      { x: 0, y: 0,    w: 1,    h: .07, label: '상단' },
+      { x: .82, y: .45, w: .18, h: .43, label: '우측 버튼' },
+      { x: 0, y: .80,  w: .80,  h: .14, label: '제목·채널' },
+      { x: 0, y: .94,  w: 1,    h: .06, label: '하단 내비' }
+    ],
+    safe: { x: .06, y: .10, w: .74, h: .66 }
+  }
+};
+
+function drawSafe() {
+  if (!A || !videoEl) return;
+  const cv = $('#safeCv');
+  const stage = cv.parentElement;
+  const W = Math.max(120, stage.clientWidth);
+  const H = Math.round(W * A.m.h / A.m.w);
+  const dpr = Math.min(window.devicePixelRatio || 1, 2);
+  cv.style.height = H + 'px';
+  cv.width = Math.round(W * dpr); cv.height = Math.round(H * dpr);
+  const g = cv.getContext('2d');
+  g.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+  g.fillStyle = '#000'; g.fillRect(0, 0, W, H);
+  try { g.drawImage(videoEl, 0, 0, W, H); } catch (e) {}
+
+  const P = PLATS[activePlat];
+  const crit = cssVar('--crit'), ok = cssVar('--ok');
+
+  P.zones.forEach(z => {
+    const x = z.x * W, y = z.y * H, w = z.w * W, h = z.h * H;
+    g.fillStyle = crit; g.globalAlpha = .34; g.fillRect(x, y, w, h);
+    g.globalAlpha = .95; g.strokeStyle = crit; g.lineWidth = 1;
+    g.strokeRect(x + .5, y + .5, w - 1, h - 1);
+    g.globalAlpha = 1;
+    // 라벨은 들어갈 자리가 있을 때만 그린다
+    g.font = '700 9px ' + FONT;
+    const tw = g.measureText(z.label).width;
+    if (w > tw + 10 && h > 14) {
+      g.fillStyle = '#fff';
+      g.textAlign = 'left'; g.textBaseline = 'top';
+      g.fillText(z.label, x + 4, y + 3);
+    }
+  });
+
+  const s = P.safe;
+  g.strokeStyle = ok; g.lineWidth = 2;
+  g.strokeRect(s.x * W, s.y * H, s.w * W, s.h * H);
+  g.font = '700 9px ' + FONT;
+  g.fillStyle = ok;
+  g.textAlign = 'left'; g.textBaseline = 'bottom';
+  g.fillText('자막 안전', s.x * W + 2, s.y * H - 3);
+}
+
+function renderPlatUI() {
+  const tabs = $('#platTabs');
+  tabs.innerHTML = '';
+  Object.keys(PLATS).forEach(k => {
+    const b = document.createElement('button');
+    b.className = 'tab' + (k === activePlat ? ' on' : '');
+    b.textContent = PLATS[k].name;
+    b.setAttribute('aria-pressed', k === activePlat);
+    b.onclick = () => { activePlat = k; renderPlatUI(); drawSafe(); };
+    tabs.appendChild(b);
+  });
+  const lg = $('#safeLegend');
+  lg.innerHTML = '';
+  const rows = PLATS[activePlat].zones.map(z => ({
+    c: 'color-mix(in srgb, var(--crit) 55%, transparent)',
+    t: `<b>${z.label}</b> — 세로 ${Math.round(z.y * 100)}~${Math.round((z.y + z.h) * 100)}%` +
+       (z.w < .99 ? `, 가로 ${Math.round(z.x * 100)}~${Math.round((z.x + z.w) * 100)}%` : '')
+  }));
+  rows.push({ c: 'transparent', b: 'var(--ok)', t: '<b style="color:var(--ok)">초록 테두리</b> — 자막과 중요한 피사체를 이 안에 두면 어느 기기에서도 가려지지 않습니다.' });
+  rows.forEach(r => {
+    const d = document.createElement('div');
+    d.className = 'li';
+    d.innerHTML = `<span class="bx" style="background:${r.c};border-color:${r.b || 'rgba(128,128,128,.45)'};border-width:${r.b ? 2 : 1}px"></span><span>${r.t}</span>`;
+    lg.appendChild(d);
+  });
+}
+
+/* ============================================================
+   9. 리포트 렌더
+   ============================================================ */
+
+function shotStats() {
+  const { F, AU, C } = A;
+  return C.shots.map(s => {
+    let lum = 0, mot = 0, n = 0;
+    for (let i = 0; i < F.n; i++) {
+      if (F.t[i] < s.start || F.t[i] >= s.end) continue;
+      lum += F.lumaAvg[i]; mot += F.motion[i]; n++;
+    }
+    let db = null;
+    if (AU.ok) {
+      let p = 0, m = 0;
+      for (let b = 0; b < AU.nb; b++) {
+        const t = AU.envT[b];
+        if (t < s.start || t >= s.end) continue;
+        p += Math.pow(10, AU.envDb[b] / 10); m++;
+      }
+      if (m) db = 10 * Math.log10(p / m);
+    }
+    return { ...s, lum: n ? lum / n : 0, mot: n ? mot / n : 0, db };
+  });
+}
+
+function renderKPI() {
+  const m = A.m;
+  const tiles = [
+    { k: '길이', v: nf(m.dur, 1), u: '초', d: `${m.w}×${m.h}` },
+    { k: '컷', v: String(m.cuts), u: '개', d: `샷 ${m.shots}개 · 분당 ${nf(m.cutsPerMin, 0)}컷` },
+    { k: '컷 길이 중앙값', v: nf(m.medShot, 2), u: '초', d: `가장 긴 컷 ${nf(m.longestShot, 1)}초` },
+    { k: '라우드니스', v: m.lufs == null ? '–' : nf(m.lufs, 1), u: m.lufs == null ? '' : 'LUFS', d: `기준 ${CFG.TARGET_LUFS} LUFS` },
+    { k: '도입 3초 변화량', v: m.hookRatio == null ? '–' : nf(m.hookRatio * 100, 0), u: m.hookRatio == null ? '' : '%', d: '전체 평균 대비' },
+    { k: '무음', v: nf(m.silTotal, 1), u: '초', d: `전체의 ${nf(m.silShare * 100, 0)}%` }
+  ];
+  $('#kpi').innerHTML = tiles.map(t =>
+    `<div class="tile"><div class="k">${t.k}</div>
+     <div class="v">${t.v}<span class="u">${t.u}</span></div>
+     <div class="d">${t.d}</div></div>`).join('');
+}
+
+function renderChecks() {
+  $('#checks').innerHTML = A.checks.map(c => {
+    const s = ST[c.status] || ST.info;
+    return `<div class="chk">
+      <span class="ic" style="background:${s.c}" aria-hidden="true">${s.i}</span>
+      <div><div class="ti">${c.title}<span class="st">${s.l}</span></div>
+      <div class="ds">${c.desc}</div></div></div>`;
+  }).join('');
+}
+
+const KIND = { open: '시작', hard: '하드컷', trans: '전환' };
+
+function renderStrip() {
+  const st = A.stats;
+  $('#stripSub').textContent = `${st.length}개 샷`;
+  const box = $('#strip');
+  box.innerHTML = '';
+  st.forEach(s => {
+    if (!s.thumb) return;
+    const b = document.createElement('button');
+    b.className = 'sh' + (s.i === selShot ? ' on' : '');
+    b.innerHTML = `<img src="${s.thumb}" alt="샷 ${s.i + 1} 대표 프레임" loading="lazy" />
+      <div class="m"><b>${s.i + 1}</b><span>${nf(s.dur, 1)}s</span></div>`;
+    b.onclick = () => selectShot(s.i);
+    box.appendChild(b);
+  });
+}
+
+function renderTable() {
+  const tb = $('#tbl tbody');
+  tb.innerHTML = A.stats.map(s =>
+    `<tr data-i="${s.i}" class="${s.i === selShot ? 'on' : ''}">
+      <td>${s.i + 1}</td><td>${nf(s.start, 2)}</td><td>${nf(s.dur, 2)}</td>
+      <td>${KIND[s.kind] || s.kind}</td><td>${nf(s.lum * 100, 0)}</td>
+      <td>${nf(s.mot * 100, 2)}</td><td>${s.db == null ? '–' : nf(s.db, 1)}</td>
+    </tr>`).join('');
+  $$('#tbl tbody tr').forEach(tr => tr.onclick = () => selectShot(+tr.dataset.i));
+}
+
+function selectShot(i) {
+  selShot = selShot === i ? -1 : i;
+  renderStrip(); renderTable(); drawTimeline(null);
+  const s = A.C.shots[i];
+  if (s && selShot >= 0) {
+    const t = clamp(s.start + s.dur / 2, 0, A.m.dur - 1e-3);
+    $('#safeRange').value = Math.round(t / A.m.dur * 1000);
+    previewAt(t);
+  }
+}
+
+function renderMethod() {
+  const m = A.m;
+  $('#method').innerHTML = `
+  <p><b>컷 검출</b> — 영상을 초당 ${nf(m.sampleHz, 1)}회 표본으로 읽어 각 프레임을 ${A.F.gw}×${A.F.gh} 로 줄입니다.
+     각 픽셀을 밝기(Y)와 색차(Cb·Cr)로 바꾼 뒤, 이웃한 두 표본 사이의
+     <i>Y×Cb×Cr 결합 히스토그램 차이</i>(카메라 움직임에 둔감)와 <i>격자 픽셀 차이</i>(구도가 비슷한 컷을 잡음)를
+     0.65 : 0.35 로 섞은 값이 점수입니다. 색차를 같이 보는 이유는, 밝기만 재면
+     <b>밝기가 같고 색만 바뀌는 컷</b>(배경색 교체, 색보정 전환)이 통째로 안 잡히기 때문입니다.</p>
+  <p><b>화면 변화량</b> — 같은 프레임 차이값이지만, <b>컷이 일어난 순간은 빼고</b> 양옆 값으로 이어 붙였습니다.
+     컷의 프레임 차이는 그 자체로 압도적이라 그냥 두면 세로축을 혼자 차지해서, 정작 <i>한 샷 안에서
+     얼마나 움직이는지</i>가 바닥에 깔려 안 보이게 됩니다. 컷의 위치는 샷 레인과 세로 점선이 이미 보여 줍니다. 임계값은 <code>중앙값 + ${CFG.K}×1.4826×MAD</code> 이고 하한은 ${CFG.FLOOR} 입니다
+     (이번 영상에서는 <b>${nf(m.threshold, 3)}</b>). 평균·표준편차 대신 중앙값·MAD 를 쓰는 이유는 컷 자체가 평균을 끌어올려
+     자기 기준을 망치기 때문입니다. ${CFG.MIN_SHOT}초 안에 겹쳐 잡힌 두 번째 컷은 버리고,
+     임계 위에 3표본 이상 머물면 하드컷이 아니라 전환(디졸브·줌)으로 분류합니다.</p>
+  <p><b>라우드니스</b> — ITU-R BS.1770-4 그대로입니다. 48kHz 로 리샘플 후 K-가중 2단 필터를 걸고,
+     400ms 블록을 75% 겹쳐 재면서 절대 게이트 −70 LUFS, 상대 게이트 −10 LU 를 적용한 통합값입니다.
+     비교 기준으로 쓴 <b>${CFG.TARGET_LUFS} LUFS</b> 는 주요 플랫폼이 공개한 노멀라이즈 목표에 가까운 값이지만,
+     플랫폼이 예고 없이 바꾸는 수치라 절대 기준으로 받아들이지 마세요.</p>
+  <p><b>무음·소리 크기</b> — 50ms 구간 RMS 를 dBFS 로 환산했습니다. ${CFG.SILENCE_DB} dBFS 아래가
+     ${CFG.SILENCE_MIN}초 이상 이어지면 무음 구간으로 셉니다.</p>
+  <p><b>진단 문구의 임계값은 업계에서 흔히 쓰는 경험칙</b>이지, 검증된 알고리즘이 아닙니다.
+     "컷 중앙값 2.5초", "도입 3초" 같은 기준은 참고선으로만 쓰세요. 이 페이지가 하는 일은
+     <i>당신의 영상이 실제로 어떤 수치인지</i> 재는 것까지입니다.</p>
+  <p><b>안전영역</b> — 공개된 앱 화면을 재어 만든 근사치입니다. 기기 해상도, 앱 버전, 언어, 캡션 길이에 따라 달라지므로
+     경계선에 걸친 자막은 실제 기기에서 한 번 더 확인하세요.</p>`;
+}
+
+/* ============================================================
+   10. 내보내기
+   ============================================================ */
+
+function download(name, text, mime) {
+  const blob = new Blob([text], { type: mime });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = name;
+  document.body.appendChild(a);
+  a.click();
+  setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 1500);
+}
+
+function baseName() {
+  return (A.m.fileName || 'video').replace(/\.[^.]+$/, '').slice(0, 60);
+}
+
+$('#btnCsv').onclick = () => {
+  const head = ['shot', 'start_s', 'duration_s', 'start_kind', 'brightness_0_100', 'motion_x100', 'loudness_dbfs'];
+  const rows = A.stats.map(s => [s.i + 1, s.start.toFixed(3), s.dur.toFixed(3), KIND[s.kind] || s.kind,
+    (s.lum * 100).toFixed(1), (s.mot * 100).toFixed(3), s.db == null ? '' : s.db.toFixed(2)]);
+  const csv = [head].concat(rows).map(r => r.join(',')).join('\r\n');
+  download(baseName() + '-shots.csv', '﻿' + csv, 'text/csv;charset=utf-8');
+};
+
+$('#btnJson').onclick = () => {
+  const { m } = A;
+  const out = {
+    generatedAt: new Date().toISOString(),
+    tool: '숏폼 해부기',
+    file: { name: m.fileName, bytes: m.fileSize, width: m.w, height: m.h, duration_s: +m.dur.toFixed(3) },
+    summary: {
+      cuts: m.cuts, shots: m.shots,
+      shot_median_s: +m.medShot.toFixed(3), shot_mean_s: +m.avgShot.toFixed(3),
+      longest_shot_s: +m.longestShot.toFixed(3), longest_shot_at_s: +m.longestAt.toFixed(3),
+      cuts_per_min: +m.cutsPerMin.toFixed(2),
+      hook_cuts_first_3s: m.hookCuts, first_cut_s: m.firstCut == null ? null : +m.firstCut.toFixed(3),
+      hook_motion_ratio: m.hookRatio == null ? null : +m.hookRatio.toFixed(3),
+      static_longest_s: +m.staticLongest.toFixed(3), static_at_s: +m.staticAt.toFixed(3),
+      loop_similarity: m.loopSim == null ? null : +m.loopSim.toFixed(3),
+      brightness_0_1: +m.brightness.toFixed(3),
+      lufs_integrated: m.lufs == null ? null : +m.lufs.toFixed(2),
+      peak_dbfs: m.peakDb == null ? null : +m.peakDb.toFixed(2),
+      clipped_samples: m.clipped,
+      first_audible_s: m.firstAudible == null ? null : +m.firstAudible.toFixed(3),
+      silence_total_s: +m.silTotal.toFixed(3), silence_share: +m.silShare.toFixed(4)
+    },
+    params: { ...CFG, sample_hz: +m.sampleHz.toFixed(2), threshold: +m.threshold.toFixed(4) },
+    cuts: A.C.cuts.map(c => ({ t: +c.t.toFixed(3), kind: c.kind, score: +c.score.toFixed(4) })),
+    shots: A.stats.map(s => ({
+      i: s.i + 1, start: +s.start.toFixed(3), dur: +s.dur.toFixed(3), kind: s.kind,
+      brightness: +(s.lum * 100).toFixed(1), motion: +(s.mot * 100).toFixed(3),
+      loudness_dbfs: s.db == null ? null : +s.db.toFixed(2)
+    })),
+    checks: A.checks.map(c => ({ title: c.title, status: c.status, note: c.desc.replace(/<[^>]+>/g, '') }))
+  };
+  download(baseName() + '-analysis.json', JSON.stringify(out, null, 2), 'application/json');
+};
+
+/* ============================================================
+   11. 상호작용 — 호버·키보드·미리보기
+   툴팁은 값을 읽는 유일한 통로가 아니다. 같은 값이 표에도 있다.
+   ============================================================ */
+
+let hoverT = null, seekBusy = false, seekWant = null;
+
+async function previewAt(t) {
+  if (!videoEl) return;
+  seekWant = t;
+  if (seekBusy) return;
+  seekBusy = true;
+  while (seekWant != null) {
+    const want = seekWant; seekWant = null;
+    await seek(videoEl, clamp(want, 0, A.m.dur - 1e-3));
+    drawSafe();
+  }
+  seekBusy = false;
+}
+
+function hideTip(tipEl) {
+  tipEl.classList.remove('on');
+  tipEl.style.left = '0px';          // 화면 밖 좌표에 남겨 두면 문서 폭이 늘어난다
+  tipEl.style.top = '0px';
+}
+
+function tipAt(tipEl, host, px, py, html) {
+  tipEl.innerHTML = html;
+  tipEl.classList.add('on');
+  const r = host.getBoundingClientRect();
+  const tw = tipEl.offsetWidth, th = tipEl.offsetHeight;
+  let x = px + 14, y = py - th - 10;
+  if (x + tw > r.width - 4) x = px - tw - 14;
+  if (y < 0) y = py + 16;
+  tipEl.style.left = clamp(x, 2, Math.max(2, r.width - tw - 2)) + 'px';
+  tipEl.style.top = clamp(y, 2, Math.max(2, r.height - th - 2)) + 'px';
+}
+
+function tlRow(color, name, val) {
+  return `<div class="tr"><span class="nm"><span class="sw" style="background:${color}"></span>${name}</span><span class="tv">${val}</span></div>`;
+}
+
+function tlHover(px, py) {
+  if (!A) return;
+  const host = $('#tlPlot');
+  const w = host.clientWidth;
+  const G = tlGeom(w);
+  if (px < G.x0 - 6 || px > G.x1 + 6) return tlLeave();
+
+  hoverT = clamp((px - G.x0) / G.pw, 0, 1) * A.m.dur;
+  drawTimeline(hoverT);
+
+  const mi = nearestIdx(A.F.t, A.F.n, hoverT);
+  const shot = A.C.shots.find(s => hoverT >= s.start && hoverT < s.end);
+  let html = `<div class="tt">${nf(hoverT, 2)}초${shot ? ` · 샷 ${shot.i + 1}` : ''}</div>`;
+  html += tlRow(cssVar('--s1'), '화면 변화량', nf(A.F.motion[mi] * 100, 2));
+  if (A.AU.ok) {
+    const ai = nearestIdx(A.AU.envT, A.AU.nb, hoverT);
+    html += tlRow(cssVar('--s2'), '소리', nf(A.AU.envDb[ai], 1) + ' dB');
+  }
+  if (shot) html += tlRow(cssVar('--s3'), '샷 길이', nf(shot.dur, 2) + '초');
+  tipAt($('#tlTip'), host, px, py, html);
+}
+
+function tlLeave() {
+  hoverT = null;
+  hideTip($('#tlTip'));
+  if (A) drawTimeline(null);
+}
+
+(function wireTimeline() {
+  const host = $('#tlPlot');
+  host.addEventListener('pointermove', e => {
+    const r = host.getBoundingClientRect();
+    tlHover(e.clientX - r.left, e.clientY - r.top);
+  });
+  host.addEventListener('pointerleave', tlLeave);
+  host.addEventListener('click', () => {
+    if (hoverT == null || !A) return;
+    $('#safeRange').value = Math.round(hoverT / A.m.dur * 1000);
+    $('#safeT').textContent = nf(hoverT, 1) + '초';
+    previewAt(hoverT);
+  });
+
+  // 키보드로도 같은 값에 닿을 수 있어야 한다
+  const cv = $('#tl');
+  cv.tabIndex = 0;
+  cv.addEventListener('keydown', e => {
+    if (!A) return;
+    const stepT = A.m.dur / 120;
+    if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') {
+      hoverT = clamp((hoverT == null ? 0 : hoverT) + (e.key === 'ArrowRight' ? stepT : -stepT), 0, A.m.dur);
+    } else if (e.key === 'Home') hoverT = 0;
+    else if (e.key === 'End') hoverT = A.m.dur;
+    else return;
+    e.preventDefault();
+    const G = tlGeom($('#tlPlot').clientWidth);
+    tlHover(G.x0 + hoverT / A.m.dur * G.pw, TL.T + 40);
+  });
+  cv.addEventListener('blur', tlLeave);
+})();
+
+(function wireHist() {
+  const host = $('#hiPlot');
+  host.addEventListener('pointermove', e => {
+    if (!A || !HIST) return;
+    const r = host.getBoundingClientRect();
+    const px = e.clientX - r.left, py = e.clientY - r.top;
+    const slot = HIST.pw / HIST.nb;
+    const i = Math.floor((px - HIST.L) / slot);
+    if (i < 0 || i >= HIST.nb) { hideTip($('#hiTip')); drawHist(null); return; }
+    drawHist(i);
+    tipAt($('#hiTip'), host, px, py,
+      `<div class="tt">${(i * HIST.bw).toFixed(1)} ~ ${((i + 1) * HIST.bw).toFixed(1)}초</div>` +
+      tlRow(cssVar('--s1'), '컷 수', HIST.bins[i] + '개'));
+  });
+  host.addEventListener('pointerleave', () => { hideTip($('#hiTip')); if (A) drawHist(null); });
+})();
+
+$('#safeRange').addEventListener('input', e => {
+  if (!A) return;
+  const t = +e.target.value / 1000 * A.m.dur;
+  $('#safeT').textContent = nf(t, 1) + '초';
+  previewAt(t);
+});
+
+let rzTimer = null;
+window.addEventListener('resize', () => {
+  hoverT = null;
+  hideTip($('#tlTip')); hideTip($('#hiTip'));
+  clearTimeout(rzTimer);
+  rzTimer = setTimeout(() => { if (A) drawAll(); }, 140);
+});
+
+/* ============================================================
+   12. 파이프라인
+   ============================================================ */
+
+function teardown() {
+  if (videoEl) { try { videoEl.pause(); } catch (e) {} videoEl.remove(); videoEl = null; }
+  if (objURL) { URL.revokeObjectURL(objURL); objURL = null; }
+}
+
+async function run(file) {
+  clearErr();
+  if (!file || !/^video\//.test(file.type || '') && !/\.(mp4|webm|mov|m4v|ogv)$/i.test(file.name || '')) {
+    return fail('영상 파일이 아닙니다. mp4 · webm · mov 를 넣어 주세요.');
+  }
+  teardown();
+  A = null; selShot = -1; HIST = null;
+  $('#report').hidden = true;
+  $('#drop').hidden = true;
+  $('#intro').hidden = true;
+  $('#btnReset').hidden = false;
+
+  try {
+    prog('영상 여는 중', .02);
+    objURL = URL.createObjectURL(file);
+    videoEl = makeVideo(objURL);
+    const got = await onceEvent(videoEl, 'loadedmetadata', 'error', 20000);
+    if (!got || !videoEl.videoWidth) throw new Error('이 브라우저가 열 수 없는 영상입니다. mp4(H.264) 또는 webm 으로 바꿔서 넣어 보세요.');
+
+    const dur = await settleDuration(videoEl);
+    if (!isFinite(dur) || dur <= 0) throw new Error('영상 길이를 읽지 못했습니다.');
+    if (dur > 900) throw new Error(`${Math.round(dur / 60)}분짜리 영상입니다. 이 도구는 숏폼(3분 이내)에 맞춰져 있어 시간이 지나치게 오래 걸립니다.`);
+
+    const meta = { dur, w: videoEl.videoWidth, h: videoEl.videoHeight, name: file.name, size: file.size };
+
+    prog('프레임 읽는 중', .05);
+    const F = await sampleFrames(videoEl, dur, p => prog('프레임 읽는 중', .05 + p * .5));
+
+    prog('컷 찾는 중', .56);
+    await idle();
+    const C = detectCuts(F, dur);
+
+    prog('소리 분석 중', .6);
+    await idle();
+    const AU = await analyzeAudio(file, p => prog('소리 분석 중', .6 + p * .2));
+
+    prog('대표 프레임 뽑는 중', .8);
+    await grabThumbs(videoEl, C.shots, p => prog('대표 프레임 뽑는 중', .8 + p * .18));
+
+    prog('정리 중', .99);
+    A = buildReport(meta, F, C, AU);
+    A.stats = shotStats();
+
+    $('#prog').hidden = true;
+    $('#report').hidden = false;
+    $('#cutSub').textContent = `${A.C.shots.length}개 샷 · 중앙값 ${nf(A.m.medShot, 2)}초`;
+    renderKPI(); renderChecks(); renderPlatUI(); renderStrip(); renderTable(); renderMethod();
+    await previewAt(0);
+    drawAll();
+    $('#report').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  } catch (e) {
+    teardown();
+    $('#drop').hidden = false;
+    $('#intro').hidden = false;
+    $('#btnReset').hidden = true;
+    fail((e && e.message) || '분석에 실패했습니다.');
+  }
+}
+
+$('#btnReset').onclick = () => {
+  teardown();
+  A = null; selShot = -1;
+  $('#report').hidden = true;
+  $('#drop').hidden = false;
+  $('#intro').hidden = false;
+  $('#btnReset').hidden = true;
+  clearErr();
+  $('#file').value = '';
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+};
+
+/* ---------- 파일 받기 ---------- */
+$('#btnPick').onclick = () => $('#file').click();
+$('#file').addEventListener('change', e => { if (e.target.files[0]) run(e.target.files[0]); });
+
+const dz = $('#drop');
+['dragenter', 'dragover'].forEach(t => dz.addEventListener(t, e => { e.preventDefault(); dz.classList.add('over'); }));
+['dragleave', 'drop'].forEach(t => dz.addEventListener(t, e => { e.preventDefault(); dz.classList.remove('over'); }));
+dz.addEventListener('drop', e => {
+  const f = e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files[0];
+  if (f) run(f);
+});
+window.addEventListener('dragover', e => e.preventDefault());
+window.addEventListener('drop', e => {
+  e.preventDefault();
+  if (!A && e.dataTransfer && e.dataTransfer.files[0]) run(e.dataTransfer.files[0]);
+});
+
+/* ============================================================
+   13. 샘플 영상 — 컷 시점과 무음 구간을 미리 정해 두고 실시간 녹화한다.
+   도구가 뭘 재는지 보여주는 용도이자, 검출기가 맞게 도는지 확인하는 기준이기도 하다.
+   ============================================================ */
+
+const SAMPLE = {
+  dur: 12,
+  cuts: [1.2, 2.0, 3.4, 4.2, 6.5, 7.1, 8.0, 10.2],
+  audioOn: [[0.6, 4.5], [6.0, 12]],          // 나머지는 의도적 무음
+  still: [8.0, 10.2]                          // 일부러 안 움직이는 구간
+};
+
+function pickMime() {
+  const c = ['video/mp4;codecs=avc1.42E01E,mp4a.40.2', 'video/webm;codecs=vp9,opus', 'video/webm;codecs=vp8,opus', 'video/webm'];
+  return c.find(m => window.MediaRecorder && MediaRecorder.isTypeSupported(m)) || '';
+}
+
+async function makeSample() {
+  if (!window.MediaRecorder) return fail('이 브라우저는 MediaRecorder 를 지원하지 않아 샘플을 만들 수 없습니다.');
+  clearErr();
+  $('#btnSample').disabled = true;
+  $('#btnPick').disabled = true;
+
+  const W = 540, H = 960;
+  const cv = document.createElement('canvas');
+  cv.width = W; cv.height = H;
+  const g = cv.getContext('2d');
+  const hues = [205, 18, 158, 265, 42, 190, 0, 120, 280];
+
+  const ac = new (window.AudioContext || window.webkitAudioContext)();
+  const dest = ac.createMediaStreamDestination();
+  const osc = ac.createOscillator();
+  const gain = ac.createGain();
+  osc.type = 'triangle';
+  osc.connect(gain); gain.connect(dest);
+  gain.gain.value = 0;
+  const t0a = ac.currentTime + 0.08;
+  SAMPLE.audioOn.forEach(([s, e]) => {
+    gain.gain.setValueAtTime(0, t0a + s);
+    gain.gain.linearRampToValueAtTime(0.22, t0a + s + 0.05);
+    gain.gain.setValueAtTime(0.22, t0a + Math.min(e, SAMPLE.dur) - 0.05);
+    gain.gain.linearRampToValueAtTime(0, t0a + Math.min(e, SAMPLE.dur));
+  });
+  SAMPLE.cuts.forEach((c, i) => osc.frequency.setValueAtTime(220 + (i % 5) * 110, t0a + c));
+  osc.frequency.setValueAtTime(220, t0a);
+  osc.start(t0a);
+
+  const stream = cv.captureStream(30);
+  dest.stream.getAudioTracks().forEach(t => stream.addTrack(t));
+  const mime = pickMime();
+  const mr = new MediaRecorder(stream, mime ? { mimeType: mime, videoBitsPerSecond: 3.5e6 } : undefined);
+  const parts = [];
+  mr.ondataavailable = e => { if (e.data && e.data.size) parts.push(e.data); };
+
+  const done = new Promise(res => { mr.onstop = res; });
+  const t0 = performance.now();
+  mr.start();
+
+  function frame() {
+    const t = (performance.now() - t0) / 1000;
+    if (t >= SAMPLE.dur) { try { mr.stop(); } catch (e) {} osc.stop(); return; }
+    let idx = 0;
+    for (let i = 0; i < SAMPLE.cuts.length; i++) if (t >= SAMPLE.cuts[i]) idx = i + 1;
+    const hue = hues[idx % hues.length];
+    g.fillStyle = `hsl(${hue} 62% 22%)`;
+    g.fillRect(0, 0, W, H);
+    const still = t >= SAMPLE.still[0] && t < SAMPLE.still[1];
+    const ph = still ? 0 : t * 2.1;
+    g.fillStyle = `hsl(${(hue + 40) % 360} 78% 62%)`;
+    g.beginPath();
+    g.arc(W / 2 + Math.sin(ph) * 150, H / 2 + Math.cos(ph * 0.8) * 250, 108, 0, 7);
+    g.fill();
+    g.fillStyle = 'rgba(255,255,255,.93)';
+    g.font = '800 62px ' + FONT;
+    g.textAlign = 'center'; g.textBaseline = 'middle';
+    g.fillText('샷 ' + (idx + 1), W / 2, H * 0.24);
+    g.font = '600 30px ' + FONT;
+    g.fillText(t.toFixed(1) + '초', W / 2, H * 0.24 + 58);
+    prog('샘플 녹화 중 — 실시간이라 ' + SAMPLE.dur + '초 걸립니다', clamp(t / SAMPLE.dur, 0, 1) * 0.98);
+    requestAnimationFrame(frame);
+  }
+  requestAnimationFrame(frame);
+
+  await done;
+  try { ac.close(); } catch (e) {}
+  $('#btnSample').disabled = false;
+  $('#btnPick').disabled = false;
+  const blob = new Blob(parts, { type: mime || 'video/webm' });
+  const ext = /mp4/.test(mime) ? 'mp4' : 'webm';
+  run(new File([blob], 'sample-9x16.' + ext, { type: blob.type }));
+}
+
+$('#btnSample').onclick = makeSample;
+
+/* 헤드리스 검증에서 쓰는 통로 — 화면과 같은 코드를 탄다 */
+window.__sa = {
+  run,
+  get result() { return A; },
+  CFG, SAMPLE, detectCuts, integratedLUFS
+};
+</script>
+</body>
+</html>
