@@ -1,0 +1,1686 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>동네 특파원</title>
+<meta name="description" content="놀이공간·맛집·카페… 지금 거기 나가 있는 사람이 보내는 현장 속보를 모으는 게시판. 리포트는 링크 한 줄로 오가고 서버에 올라가지 않습니다.">
+<meta property="og:type" content="website">
+<meta property="og:title" content="동네 특파원 · 나가 있는 사람이 전하는 현장">
+<meta property="og:description" content="웨이팅·혼잡·주차처럼 금방 상하는 정보를 시간과 함께 보여 줍니다. 리포트는 링크로 주고받고, 서버 없이 브라우저에서만 돌아갑니다.">
+<meta property="og:url" content="https://richroro.github.io/correspondent/">
+<meta property="og:locale" content="ko_KR">
+<link rel="canonical" href="https://richroro.github.io/correspondent/">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%230F6E63'/><circle cx='50' cy='62' r='9' fill='white'/><path d='M34 47 A22 22 0 0 1 66 47' fill='none' stroke='white' stroke-width='7' stroke-linecap='round'/><path d='M23 34 A38 38 0 0 1 77 34' fill='none' stroke='white' stroke-width='7' stroke-linecap='round'/></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans+KR:wght@300;400;500;600;700&display=swap">
+<style>
+:root{
+  color-scheme:light;
+  --paper:#F6F4EF; --surface:#FFFFFF; --surface-2:#F0EDE6; --surface-3:#E6E2D9;
+  --ink:#16181A; --ink-2:#494D51; --ink-3:#787D83;
+  --line:#DED9CF; --line-soft:#EBE7DF;
+  --accent:#0F6E63; --accent-deep:#0A554C; --accent-wash:#E0F0ED; --on-accent:#FFFFFF;
+  --live:#C2410C; --live-dot:#E8590C; --live-wash:#FCEBE0;
+  --good:#276749; --good-wash:#E4F1E9;
+  --mid:#8A5300;  --mid-wash:#F7EEDC;
+  --bad:#B03A0B;  --bad-wash:#FAE7DD;
+  --worst:#B02525; --worst-wash:#F9E3E3;
+  --star:#B4801A;
+  --shadow:0 1px 2px rgba(22,24,26,.05),0 10px 28px -14px rgba(22,24,26,.22);
+  --radius:12px;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    color-scheme:dark;
+    --paper:#101215; --surface:#181B1E; --surface-2:#1F2327; --surface-3:#282D32;
+    --ink:#E9E7E1; --ink-2:#B4B1A9; --ink-3:#848990;
+    --line:#2C3137; --line-soft:#232830;
+    --accent:#5FC9B8; --accent-deep:#8FDDD0; --accent-wash:#12302C; --on-accent:#101215;
+    --live:#F2955C; --live-dot:#F2762B; --live-wash:#331D10;
+    --good:#6FCB9B; --good-wash:#16301F;
+    --mid:#E0B15A; --mid-wash:#33280F;
+    --bad:#F0975E; --bad-wash:#33200F;
+    --worst:#F08A8A; --worst-wash:#331A1A;
+    --star:#E0B15A;
+    --shadow:0 1px 2px rgba(0,0,0,.4),0 10px 28px -14px rgba(0,0,0,.6);
+  }
+}
+:root[data-theme="dark"]{
+  color-scheme:dark;
+  --paper:#101215; --surface:#181B1E; --surface-2:#1F2327; --surface-3:#282D32;
+  --ink:#E9E7E1; --ink-2:#B4B1A9; --ink-3:#848990;
+  --line:#2C3137; --line-soft:#232830;
+  --accent:#5FC9B8; --accent-deep:#8FDDD0; --accent-wash:#12302C; --on-accent:#101215;
+  --live:#F2955C; --live-dot:#F2762B; --live-wash:#331D10;
+  --good:#6FCB9B; --good-wash:#16301F;
+  --mid:#E0B15A; --mid-wash:#33280F;
+  --bad:#F0975E; --bad-wash:#33200F;
+  --worst:#F08A8A; --worst-wash:#331A1A;
+  --star:#E0B15A;
+  --shadow:0 1px 2px rgba(0,0,0,.4),0 10px 28px -14px rgba(0,0,0,.6);
+}
+
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{
+  background:var(--paper);color:var(--ink);
+  font-family:"IBM Plex Sans KR","Apple SD Gothic Neo","Malgun Gothic",system-ui,sans-serif;
+  font-size:15px;line-height:1.6;letter-spacing:-.2px;-webkit-font-smoothing:antialiased;
+  overflow-wrap:anywhere;
+}
+a{color:var(--accent);text-decoration:none}
+a:hover{text-decoration:underline}
+h1,h2,h3,p,ul,ol{margin:0}
+button{font:inherit;color:inherit}
+.wrap{max-width:900px;margin:0 auto;padding:0 16px}
+.mono{font-family:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,monospace;font-variant-numeric:tabular-nums}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+
+/* ---------- 머리 ---------- */
+.masthead{background:var(--surface);border-bottom:1px solid var(--line)}
+.masthead-in{max-width:900px;margin:0 auto;padding:18px 16px 14px;display:flex;gap:18px;
+  align-items:flex-start;justify-content:space-between;flex-wrap:wrap}
+.brand .eyebrow{display:block;font-size:11.5px;font-weight:600;letter-spacing:.06em;color:var(--accent);
+  text-transform:none;margin-bottom:2px}
+.brand h1{font-size:27px;font-weight:700;letter-spacing:-1px;line-height:1.2}
+.brand h1 .mark{color:var(--accent)}
+.masthead-right{margin-left:auto;max-width:430px;text-align:right}
+.masthead-note{font-size:12.5px;color:var(--ink-3);line-height:1.55}
+.masthead-btns{margin-top:8px;display:flex;gap:6px;justify-content:flex-end;flex-wrap:wrap}
+.chip-btn{background:var(--surface-2);border:1px solid var(--line);border-radius:999px;
+  padding:5px 12px;font-size:12.5px;font-weight:500;color:var(--ink-2);cursor:pointer}
+.chip-btn:hover{border-color:var(--accent);color:var(--accent)}
+@media (max-width:640px){
+  .masthead-right{margin-left:0;text-align:left;max-width:none}
+  .masthead-btns{justify-content:flex-start}
+}
+
+/* 띠 */
+.ticker{background:var(--surface-2);border-top:1px solid var(--line-soft)}
+.ticker-in{max-width:900px;margin:0 auto;padding:9px 16px;font-size:12.5px;color:var(--ink-2);
+  display:flex;gap:6px 16px;flex-wrap:wrap;align-items:center}
+.ticker b{color:var(--ink);font-weight:600}
+.dot{width:7px;height:7px;border-radius:50%;background:var(--live-dot);display:inline-block;
+  margin-right:5px;vertical-align:1px}
+.dot.on{animation:blink 1.6s ease-in-out infinite}
+.dot.off{background:var(--ink-3);animation:none}
+@keyframes blink{50%{opacity:.25}}
+@media (prefers-reduced-motion:reduce){.dot.on{animation:none}}
+
+/* ---------- 큰 버튼 ---------- */
+.actions{display:flex;gap:8px;margin:18px 0 4px;flex-wrap:wrap}
+.btn{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:10px 16px;
+  font-size:14px;font-weight:500;color:var(--ink);cursor:pointer;transition:.15s;min-height:42px}
+.btn:hover{border-color:var(--accent);color:var(--accent)}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:var(--on-accent);font-weight:600}
+.btn.primary:hover{background:var(--accent-deep);border-color:var(--accent-deep);color:var(--on-accent)}
+.btn.big{flex:1 1 200px;min-height:50px;font-size:15.5px}
+.btn.sm{padding:6px 12px;font-size:13px;min-height:34px;border-radius:8px}
+.btn.ghost{background:transparent}
+.btn[disabled]{opacity:.45;cursor:not-allowed}
+
+/* ---------- 탭 ---------- */
+.tabs{margin-top:16px;display:flex;gap:2px;border-bottom:1px solid var(--line);overflow-x:auto;
+  scrollbar-width:none}
+.tabs::-webkit-scrollbar{display:none}
+.tab{background:none;border:none;border-bottom:2px solid transparent;padding:10px 14px;cursor:pointer;
+  font-size:14.5px;font-weight:500;color:var(--ink-3);white-space:nowrap;margin-bottom:-1px}
+.tab:hover{color:var(--ink)}
+.tab[aria-selected="true"]{color:var(--accent);border-bottom-color:var(--accent);font-weight:600}
+.tab .n{font-size:11.5px;color:var(--ink-3);margin-left:5px;font-family:"IBM Plex Mono",monospace}
+.tab[aria-selected="true"] .n{color:var(--accent)}
+
+main{padding-bottom:64px}
+section[hidden]{display:none}
+.view{padding-top:18px}
+
+/* ---------- 패널 ---------- */
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:16px}
+.panel + .panel{margin-top:12px}
+.panel-t{font-size:13px;font-weight:600;color:var(--ink-2);margin-bottom:10px;
+  letter-spacing:.02em;display:flex;align-items:center;justify-content:space-between;gap:10px}
+.note{font-size:12.5px;color:var(--ink-3);line-height:1.6}
+.note + .note{margin-top:6px}
+
+/* ---------- 지금 갈 만한 곳 ---------- */
+.pick{background:var(--accent-wash);border:1px solid var(--accent);border-radius:var(--radius);
+  padding:14px 16px;margin-bottom:14px}
+.pick h2{font-size:14px;font-weight:600;color:var(--accent-deep);margin-bottom:2px}
+.pick .sub{font-size:12px;color:var(--ink-2);margin-bottom:10px}
+.pick ol{list-style:none;padding:0;display:grid;gap:6px}
+.pick li{display:flex;gap:10px;align-items:baseline;flex-wrap:wrap}
+.pick .rank{font-size:12px;font-weight:600;color:var(--accent-deep);min-width:16px;
+  font-family:"IBM Plex Mono",monospace}
+.pick .nm{font-size:14.5px;font-weight:600;background:none;border:none;padding:0;cursor:pointer;
+  text-align:left;color:var(--ink)}
+.pick .nm:hover{color:var(--accent);text-decoration:underline}
+.pick .why{font-size:12px;color:var(--ink-2)}
+.pick.empty{background:var(--surface-2);border-color:var(--line)}
+.pick.empty h2{color:var(--ink)}
+
+/* ---------- 거르개 ---------- */
+.filters{display:grid;gap:10px;margin-bottom:14px}
+.chips{display:flex;gap:6px;flex-wrap:wrap}
+.chip{background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:7px 13px;
+  font-size:13.5px;color:var(--ink-2);cursor:pointer;transition:.15s;min-height:36px;
+  display:inline-flex;align-items:center;gap:5px}
+.chip:hover{border-color:var(--accent)}
+.chip[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--on-accent);font-weight:600}
+.filter-row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.input{background:var(--surface);border:1px solid var(--line);border-radius:9px;padding:9px 12px;
+  font-size:15px;color:var(--ink);font-family:inherit;min-height:42px;width:100%}
+.input:focus{outline:2px solid var(--accent);outline-offset:-1px;border-color:var(--accent)}
+.input.grow{flex:1 1 180px;width:auto}
+select.input{min-width:130px;width:auto}
+textarea.input{min-height:76px;resize:vertical;line-height:1.55}
+
+/* ---------- 리포트 카드 ---------- */
+.feed{display:grid;gap:10px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);
+  padding:14px 16px;position:relative;border-left:3px solid var(--line)}
+.card.age-live{border-left-color:var(--live-dot)}
+.card.age-soft{border-left-color:var(--accent)}
+.card.age-dim{border-left-color:var(--line)}
+.card.age-old{border-left-color:var(--line-soft);background:var(--surface-2)}
+.card-top{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:6px}
+.cat{font-size:12px;font-weight:600;padding:3px 9px;border-radius:999px;
+  background:var(--surface-2);color:var(--ink-2);border:1px solid var(--line-soft)}
+.age{font-size:12px;color:var(--ink-3);font-family:"IBM Plex Mono",monospace}
+.card.age-live .age{color:var(--live);font-weight:600}
+.badge{font-size:11px;font-weight:600;padding:2px 7px;border-radius:999px;
+  background:var(--mid-wash);color:var(--mid);border:1px solid transparent}
+.card .del{margin-left:auto;background:none;border:none;color:var(--ink-3);cursor:pointer;
+  font-size:15px;line-height:1;padding:4px 6px;border-radius:6px}
+.card .del:hover{color:var(--worst);background:var(--worst-wash)}
+.place{font-size:17px;font-weight:600;letter-spacing:-.4px;line-height:1.35}
+.place .area{font-size:12.5px;font-weight:400;color:var(--ink-3);margin-left:6px;white-space:nowrap}
+.place button{background:none;border:none;padding:0;font:inherit;color:inherit;cursor:pointer;text-align:left}
+.place button:hover{color:var(--accent);text-decoration:underline}
+
+.live-row{display:flex;gap:6px;flex-wrap:wrap;margin-top:9px;align-items:center}
+.live-label{font-size:11.5px;color:var(--ink-3);font-family:"IBM Plex Mono",monospace;margin-right:2px}
+.stat{font-size:13px;font-weight:600;padding:4px 10px;border-radius:7px;white-space:nowrap}
+.stat.good{background:var(--good-wash);color:var(--good)}
+.stat.mid{background:var(--mid-wash);color:var(--mid)}
+.stat.bad{background:var(--bad-wash);color:var(--bad)}
+.stat.worst{background:var(--worst-wash);color:var(--worst)}
+.stat.none{background:var(--surface-2);color:var(--ink-3);font-weight:500}
+.live-row.faded{opacity:.5}
+.live-row.faded .stat{font-weight:500}
+
+.note-line{margin-top:10px;font-size:14.5px;color:var(--ink);line-height:1.6}
+.note-line::before{content:"“"}
+.note-line::after{content:"”"}
+.card-bot{margin-top:10px;padding-top:9px;border-top:1px solid var(--line-soft);
+  display:flex;gap:6px 12px;flex-wrap:wrap;align-items:center;font-size:12.5px;color:var(--ink-3)}
+.stars{color:var(--star);letter-spacing:1px;font-size:13px}
+.tags{color:var(--ink-3);font-size:12px}
+.by{font-weight:600;color:var(--ink-2)}
+.card-bot .spacer{margin-left:auto}
+.link-btn{background:none;border:none;color:var(--accent);font-size:12.5px;font-weight:600;
+  cursor:pointer;padding:4px 6px;border-radius:6px;min-height:32px}
+.link-btn:hover{background:var(--accent-wash)}
+
+/* ---------- 빈 화면 ---------- */
+.empty{text-align:center;padding:42px 18px;color:var(--ink-3);background:var(--surface);
+  border:1px dashed var(--line);border-radius:var(--radius)}
+.empty b{display:block;font-size:16px;color:var(--ink);font-weight:600;margin-bottom:6px}
+.empty p{font-size:13.5px;line-height:1.7}
+
+/* ---------- 장소 ---------- */
+.places{display:grid;gap:10px}
+.pl{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:14px 16px;
+  width:100%;text-align:left;cursor:pointer;font:inherit;color:inherit;transition:.15s}
+.pl:hover{border-color:var(--accent);box-shadow:var(--shadow)}
+.pl-top{display:flex;gap:8px;align-items:baseline;flex-wrap:wrap}
+.pl-name{font-size:16.5px;font-weight:600;letter-spacing:-.4px}
+.pl-meta{margin-top:8px;display:flex;gap:6px 14px;flex-wrap:wrap;font-size:12.5px;color:var(--ink-3)}
+.pl-meta b{color:var(--ink-2);font-weight:600}
+.conflict{margin-top:9px;font-size:12.5px;color:var(--bad);background:var(--bad-wash);
+  padding:7px 10px;border-radius:8px;line-height:1.5}
+
+/* ---------- 특파원 ---------- */
+.people{display:grid;gap:8px}
+.pr{display:flex;gap:12px;align-items:center;background:var(--surface);border:1px solid var(--line);
+  border-radius:var(--radius);padding:12px 16px;flex-wrap:wrap}
+.pr .av{width:38px;height:38px;border-radius:50%;background:var(--accent-wash);color:var(--accent-deep);
+  display:grid;place-items:center;font-weight:600;font-size:15px;flex:none}
+.pr .who{flex:1 1 150px;min-width:0}
+.pr .who b{font-size:15px;font-weight:600;display:block}
+.pr .who small{font-size:12px;color:var(--ink-3)}
+.pr .cnt{text-align:right;font-family:"IBM Plex Mono",monospace}
+.pr .cnt b{font-size:18px;font-weight:600;display:block;line-height:1.2}
+.pr .cnt small{font-size:11.5px;color:var(--ink-3)}
+.pr.me{border-color:var(--accent)}
+
+/* ---------- 주고받기 ---------- */
+.code-box{width:100%;min-height:104px;font-family:"IBM Plex Mono",monospace;font-size:12.5px;
+  line-height:1.6;background:var(--surface-2);border:1px solid var(--line);border-radius:9px;
+  padding:11px 12px;color:var(--ink);resize:vertical}
+.code-box:focus{outline:2px solid var(--accent);outline-offset:-1px}
+.row{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px;align-items:center}
+.status{margin-top:10px;font-size:13px;min-height:20px}
+.status.ok{color:var(--good)}
+.status.err{color:var(--worst)}
+.kv{display:grid;grid-template-columns:auto 1fr;gap:4px 14px;font-size:13px;margin-top:6px}
+.kv dt{color:var(--ink-3)}
+.kv dd{margin:0;font-weight:500}
+
+/* ---------- 도착 알림 ---------- */
+.inbox{background:var(--live-wash);border:1px solid var(--live-dot);border-radius:var(--radius);
+  padding:14px 16px;margin-top:14px}
+.inbox h2{font-size:15px;font-weight:600;color:var(--live);margin-bottom:4px}
+.inbox p{font-size:13px;color:var(--ink-2)}
+
+/* ---------- 시트(모달) ---------- */
+.backdrop{position:fixed;inset:0;background:rgba(10,12,14,.5);z-index:80;display:none;
+  align-items:flex-end;justify-content:center;padding:0}
+.backdrop.open{display:flex}
+@media (min-width:700px){.backdrop{align-items:center;padding:24px}}
+.sheet{background:var(--surface);width:100%;max-width:640px;max-height:92vh;overflow-y:auto;
+  border-radius:16px 16px 0 0;border:1px solid var(--line);box-shadow:var(--shadow)}
+@media (min-width:700px){.sheet{border-radius:14px;max-height:88vh}}
+.sheet-head{position:sticky;top:0;background:var(--surface);border-bottom:1px solid var(--line);
+  padding:14px 18px;display:flex;align-items:center;justify-content:space-between;gap:12px;z-index:2}
+.sheet-head h2{font-size:17px;font-weight:600;letter-spacing:-.4px}
+.sheet-head .x{background:none;border:none;font-size:22px;line-height:1;color:var(--ink-3);
+  cursor:pointer;padding:4px 8px;border-radius:8px}
+.sheet-head .x:hover{background:var(--surface-2);color:var(--ink)}
+.sheet-body{padding:16px 18px 22px}
+.sheet-foot{position:sticky;bottom:0;background:var(--surface);border-top:1px solid var(--line);
+  padding:12px 18px;display:flex;gap:8px}
+.sheet-foot .btn{flex:1}
+
+/* ---------- 폼 ---------- */
+.field{margin-bottom:16px}
+.field > label,.field > .lbl{display:block;font-size:13px;font-weight:600;color:var(--ink-2);margin-bottom:7px}
+.field .hint{font-size:12px;color:var(--ink-3);font-weight:400;margin-left:6px}
+fieldset{border:none;padding:0;margin:0 0 16px}
+fieldset legend{font-size:13px;font-weight:600;color:var(--ink-2);padding:0;margin-bottom:7px}
+.seg{display:flex;gap:6px;flex-wrap:wrap}
+.seg .chip{flex:0 1 auto}
+.field .cnt{float:right;font-size:11.5px;color:var(--ink-3);font-family:"IBM Plex Mono",monospace;font-weight:400}
+.star-pick{display:flex;gap:2px}
+.star-pick button{background:none;border:none;font-size:27px;line-height:1;color:var(--surface-3);
+  cursor:pointer;padding:2px 3px;min-height:44px}
+.star-pick button.on{color:var(--star)}
+.star-pick button:hover{color:var(--star)}
+.form-note{font-size:12px;color:var(--ink-3);background:var(--surface-2);border-radius:9px;
+  padding:10px 12px;line-height:1.6}
+
+/* ---------- 장소 상세 ---------- */
+.tl{display:grid;gap:10px;margin-top:4px}
+.tl .card{border-left-width:3px}
+.det-head{display:grid;gap:8px;margin-bottom:16px}
+.det-stats{display:flex;gap:8px 20px;flex-wrap:wrap;font-size:13px;color:var(--ink-3)}
+.det-stats b{color:var(--ink);font-weight:600;font-size:15px}
+
+footer{border-top:1px solid var(--line);margin-top:40px;background:var(--surface)}
+.foot-in{max-width:900px;margin:0 auto;padding:22px 16px 32px;font-size:12.5px;color:var(--ink-3);
+  display:grid;gap:6px;line-height:1.7}
+.foot-in a{color:var(--ink-2)}
+
+.expired{margin-top:9px}
+.expired summary{font-size:12px;color:var(--ink-3);cursor:pointer;list-style:none;display:inline-flex;
+  align-items:center;gap:5px;padding:5px 10px;border-radius:7px;background:var(--surface-2);min-height:30px}
+.expired summary::-webkit-details-marker{display:none}
+.expired summary::before{content:"▸"}
+.expired[open] summary::before{content:"▾"}
+.expired summary:hover{color:var(--ink-2)}
+.expired[open] summary{margin-bottom:7px}
+.det-head .live-row{margin-top:2px}
+.det-head .tags{font-size:12.5px}
+.toast{position:fixed;left:50%;bottom:22px;transform:translateX(-50%);background:var(--ink);
+  color:var(--paper);padding:11px 18px;border-radius:999px;font-size:13.5px;font-weight:500;
+  z-index:120;box-shadow:var(--shadow);max-width:calc(100vw - 32px);text-align:center}
+.toast[hidden]{display:none}
+</style>
+</head>
+<body>
+<header class="masthead">
+  <div class="masthead-in">
+    <div class="brand">
+      <span class="eyebrow">나가 있는 사람이 전하는 현장</span>
+      <h1>동네 <span class="mark">특파원</span></h1>
+    </div>
+    <div class="masthead-right">
+      <p class="masthead-note">놀이공간·맛집·카페… 지금 거기 있는 사람이 남긴 속보를 모읍니다.
+        웨이팅처럼 금방 상하는 정보는 시간과 함께 흐려집니다. 리포트는 링크로 오가고 서버에 올라가지 않습니다.</p>
+      <div class="masthead-btns">
+        <button class="chip-btn" id="meBtn" type="button">특파원 이름 정하기</button>
+        <button class="chip-btn" id="themeBtn" type="button">테마: 자동</button>
+      </div>
+    </div>
+  </div>
+  <div class="ticker"><div class="ticker-in" id="ticker" aria-live="polite"></div></div>
+</header>
+
+<main class="wrap">
+  <div id="inbox"></div>
+
+  <div class="actions">
+    <button class="btn primary big" id="writeBtn" type="button">📡 리포트 보내기</button>
+    <button class="btn big" id="recvBtn" type="button">📥 받은 링크 붙여넣기</button>
+  </div>
+
+  <div class="tabs" role="tablist" aria-label="화면 전환">
+    <button class="tab" type="button" role="tab" aria-selected="true"  data-view="feed">속보<span class="n" id="nFeed"></span></button>
+    <button class="tab" type="button" role="tab" aria-selected="false" data-view="places">장소<span class="n" id="nPlaces"></span></button>
+    <button class="tab" type="button" role="tab" aria-selected="false" data-view="people">특파원<span class="n" id="nPeople"></span></button>
+    <button class="tab" type="button" role="tab" aria-selected="false" data-view="sync">주고받기</button>
+  </div>
+
+  <!-- ===== 속보 ===== -->
+  <section class="view" id="view-feed" role="tabpanel" aria-label="속보">
+    <div id="pick"></div>
+    <div class="filters">
+      <div class="chips" id="catFilter" role="group" aria-label="분야 거르개"></div>
+      <div class="filter-row">
+        <input class="input grow" id="q" type="search" placeholder="장소·동네·특파원·메모 검색" autocomplete="off" aria-label="검색">
+        <button class="chip" id="liveOnly" type="button" aria-pressed="false">3시간 안쪽만</button>
+        <label class="sr" for="sort">정렬</label>
+        <select class="input" id="sort">
+          <option value="new">최신순</option>
+          <option value="fresh">신선한 순</option>
+          <option value="rate">별점순</option>
+          <option value="place">장소 이름순</option>
+        </select>
+      </div>
+    </div>
+    <div class="feed" id="feed"></div>
+  </section>
+
+  <!-- ===== 장소 ===== -->
+  <section class="view" id="view-places" role="tabpanel" aria-label="장소" hidden>
+    <div class="filters">
+      <div class="filter-row">
+        <input class="input grow" id="pq" type="search" placeholder="장소·동네 검색" autocomplete="off" aria-label="장소 검색">
+        <label class="sr" for="psort">장소 정렬</label>
+        <select class="input" id="psort">
+          <option value="recent">최근 소식순</option>
+          <option value="many">리포트 많은 순</option>
+          <option value="rate">별점순</option>
+          <option value="people">특파원 많은 순</option>
+        </select>
+      </div>
+    </div>
+    <div class="places" id="places"></div>
+  </section>
+
+  <!-- ===== 특파원 ===== -->
+  <section class="view" id="view-people" role="tabpanel" aria-label="특파원" hidden>
+    <div class="panel" style="margin-bottom:12px">
+      <div class="panel-t">내 이름</div>
+      <div class="filter-row">
+        <input class="input grow" id="meInput" type="text" maxlength="20" placeholder="예: 리처드" aria-label="내 특파원 이름">
+        <button class="btn sm" id="meSave" type="button">저장</button>
+      </div>
+      <p class="note" style="margin-top:8px">리포트에 적히는 이름입니다. 이 브라우저에만 저장되고, 리포트를 보낼 때만 링크에 함께 실립니다.</p>
+    </div>
+    <div class="people" id="people"></div>
+    <p class="note" style="margin-top:12px">리포트를 많이 쓴 순서일 뿐, 내용이 정확하다는 뜻은 아닙니다.</p>
+  </section>
+
+  <!-- ===== 주고받기 ===== -->
+  <section class="view" id="view-sync" role="tabpanel" aria-label="주고받기" hidden>
+    <div class="panel">
+      <div class="panel-t">받기</div>
+      <p class="note" style="margin-bottom:9px">카톡으로 받은 내용을 통째로 붙여 넣으세요. 링크만 넣어도 되고, 앞뒤 글이 섞여 있어도 알아서 찾습니다.</p>
+      <textarea class="code-box" id="recvBox" placeholder="예: 📡 [맛집] 만안 손칼국수 … 받기 → https://richroro.github.io/correspondent/#r=…" spellcheck="false"></textarea>
+      <div class="row">
+        <button class="btn primary sm" id="recvGo" type="button">받아서 합치기</button>
+        <button class="btn sm ghost" id="recvClear" type="button">지우기</button>
+      </div>
+      <div class="status" id="recvStatus" aria-live="polite"></div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-t">묶어서 보내기</div>
+      <p class="note" style="margin-bottom:9px">지금 보드에 있는 리포트를 링크 한 줄로 묶습니다. 새로 들어온 사람에게 한 번에 넘겨줄 때 쓰세요.
+        링크가 너무 길어지지 않게 최근 것부터 담고, 넘치면 오래된 것은 뺍니다.</p>
+      <div class="row" style="margin-top:0">
+        <button class="btn sm" id="bundleBtn" type="button">묶음 링크 만들기</button>
+        <button class="btn sm ghost" id="fileSave" type="button">파일로 저장</button>
+        <button class="btn sm ghost" id="fileLoad" type="button">파일에서 불러오기</button>
+        <input type="file" id="fileInput" accept=".json,application/json" hidden>
+      </div>
+      <textarea class="code-box" id="bundleBox" style="margin-top:10px" readonly hidden spellcheck="false"></textarea>
+      <div class="row" id="bundleRow" hidden>
+        <button class="btn primary sm" id="bundleCopy" type="button">복사</button>
+        <button class="btn sm ghost" id="bundleShare" type="button" hidden>공유</button>
+      </div>
+      <div class="status" id="bundleStatus" aria-live="polite"></div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-t">보드 정리</div>
+      <dl class="kv" id="boardInfo"></dl>
+      <div class="row">
+        <button class="btn sm" id="purgeOld" type="button">30일 넘은 리포트 지우기</button>
+        <button class="btn sm ghost" id="wipe" type="button">전부 비우기</button>
+      </div>
+      <p class="note" style="margin-top:10px">리포트는 이 브라우저(<span class="mono">localStorage</span>)에만 있습니다.
+        브라우저 기록을 지우면 같이 사라지니, 오래 남길 것은 파일로 저장해 두세요.</p>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="foot-in">
+    <div><b>동네 특파원</b> · 서버 없이 브라우저에서만 도는 현장 속보 게시판</div>
+    <div>리포트는 쓴 사람이 링크를 건넨 곳까지만 갑니다. 이 사이트는 아무것도 모으지 않고, 받은 내용의 사실 여부도 확인하지 못합니다.</div>
+    <div><a href="/">← 다른 것들 보기</a></div>
+  </div>
+</footer>
+
+<!-- ===== 리포트 쓰기 ===== -->
+<div class="backdrop" id="composeBack">
+  <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="composeTitle">
+    <div class="sheet-head">
+      <h2 id="composeTitle">📡 리포트 보내기</h2>
+      <button class="x" type="button" data-close aria-label="닫기">&times;</button>
+    </div>
+    <form class="sheet-body" id="composeForm" novalidate>
+      <div class="field">
+        <label for="fPlace">어디에 계신가요? <span class="hint">필수</span></label>
+        <input class="input" id="fPlace" type="text" maxlength="40" required autocomplete="off"
+               list="placeList" placeholder="예: 별빛 키즈카페">
+        <datalist id="placeList"></datalist>
+      </div>
+      <div class="field">
+        <label for="fArea">동네 <span class="hint">선택 · 예: 안양 안양동</span></label>
+        <input class="input" id="fArea" type="text" maxlength="30" autocomplete="off"
+               list="areaList" placeholder="동네를 적어 두면 장소를 구분하기 좋습니다">
+        <datalist id="areaList"></datalist>
+      </div>
+      <fieldset>
+        <legend>어떤 곳인가요?</legend>
+        <div class="seg" id="fCat" role="group" aria-label="분야"></div>
+      </fieldset>
+
+      <div class="form-note" style="margin-bottom:16px">
+        아래 세 가지는 <b>몇 시간이면 쓸모가 없어지는 정보</b>입니다. 시간이 지나면 흐려지고,
+        하루가 지나면 속보 화면에서 접어 둡니다. 모르면 <b>모름</b>으로 두세요 — 빈칸이 틀린 정보보다 낫습니다.
+      </div>
+      <fieldset><legend>웨이팅</legend><div class="seg" id="fWait" role="group" aria-label="웨이팅"></div></fieldset>
+      <fieldset><legend>사람</legend><div class="seg" id="fCrowd" role="group" aria-label="혼잡도"></div></fieldset>
+      <fieldset><legend>주차</legend><div class="seg" id="fPark" role="group" aria-label="주차"></div></fieldset>
+
+      <div class="field">
+        <span class="lbl">이 장소 자체는 어떤가요? <span class="hint">선택 · 시간이 지나도 남는 평가</span></span>
+        <div class="star-pick" id="fRate" role="group" aria-label="별점"></div>
+      </div>
+      <fieldset>
+        <legend>태그 <span class="hint">최대 6개</span></legend>
+        <div class="seg" id="fTags" role="group" aria-label="태그"></div>
+      </fieldset>
+      <div class="field">
+        <label for="fNote">한 줄 <span class="cnt" id="noteCnt">0/200</span></label>
+        <textarea class="input" id="fNote" maxlength="200"
+                  placeholder="예: 2시 넘으니 자리 났어요. 주차는 골목 유료로 대는 게 빠릅니다."></textarea>
+      </div>
+      <div class="field">
+        <label for="fBy">특파원 이름</label>
+        <input class="input" id="fBy" type="text" maxlength="20" autocomplete="off" placeholder="예: 리처드">
+      </div>
+      <div class="status err" id="composeErr" aria-live="polite"></div>
+    </form>
+    <div class="sheet-foot">
+      <button class="btn ghost" type="button" data-close>취소</button>
+      <button class="btn primary" type="submit" form="composeForm" id="composeGo">남기고 공유</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== 공유 ===== -->
+<div class="backdrop" id="shareBack">
+  <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="shareTitle">
+    <div class="sheet-head">
+      <h2 id="shareTitle">보낼 준비가 됐습니다</h2>
+      <button class="x" type="button" data-close aria-label="닫기">&times;</button>
+    </div>
+    <div class="sheet-body">
+      <p class="note" style="margin-bottom:10px">아래를 통째로 복사해서 단톡방에 붙여 넣으세요.
+        링크를 누른 사람의 보드에 이 리포트가 더해집니다.</p>
+      <label class="sr" for="shareBox">공유할 내용</label>
+      <textarea class="code-box" id="shareBox" style="min-height:150px" readonly spellcheck="false"></textarea>
+      <div class="status" id="shareStatus" aria-live="polite"></div>
+    </div>
+    <div class="sheet-foot">
+      <button class="btn primary" type="button" id="shareCopy">복사</button>
+      <button class="btn" type="button" id="shareNative" hidden>공유</button>
+      <button class="btn ghost" type="button" data-close>닫기</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== 장소 상세 ===== -->
+<div class="backdrop" id="placeBack">
+  <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="placeTitle">
+    <div class="sheet-head">
+      <h2 id="placeTitle">장소</h2>
+      <button class="x" type="button" data-close aria-label="닫기">&times;</button>
+    </div>
+    <div class="sheet-body" id="placeBody"></div>
+    <div class="sheet-foot">
+      <button class="btn" type="button" id="placeShare">이 장소 소식 묶어서 공유</button>
+      <button class="btn ghost" type="button" data-close>닫기</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast" role="status" hidden></div>
+<script>
+"use strict";
+
+/* =========================================================================
+   동네 특파원 — 서버 없는 현장 속보 게시판
+
+   두 종류의 정보를 갈라서 다룬다.
+     · 속보(웨이팅·사람·주차) — 몇 시간이면 상한다. 시간과 함께 흐려지고 하루면 접힌다.
+     · 기록(별점·태그·메모)   — 시간이 지나도 쓸모가 남는다. 흐려지지 않는다.
+
+   리포트는 링크 한 줄(#r=…)에 통째로 실려 오간다. 서버도 계정도 없다.
+   ========================================================================= */
+
+/* ---------------------------- 상수 ---------------------------- */
+const KEY = "tpw.v1";
+const MIN = 60e3, HOUR = 3600e3, DAY = 86400e3;
+const LIVE = 1 * HOUR;    // 이 안쪽은 "지금"
+const SOFT = 3 * HOUR;    // 이 안쪽까지 현장 정보로 친다
+const DIM  = 12 * HOUR;
+const DEAD = 24 * HOUR;   // 넘으면 속보 항목을 접는다
+const HALF = 3 * HOUR;    // 신선도 반감기
+const MAX_CODE = 40000;   // 받아들일 코드 길이 상한
+const MAX_BYTES = 500000; // 풀었을 때 크기 상한
+const MAX_REPORTS = 400;  // 한 번에 받아들일 리포트 수 상한
+const BUNDLE_CAP = 1600;  // 묶음 링크 payload 목표 길이(카톡에서 안 깨지는 선)
+
+const CATS = [
+  { k:"play", ic:"🛝", nm:"놀이공간" },
+  { k:"food", ic:"🍚", nm:"맛집" },
+  { k:"cafe", ic:"☕", nm:"카페" },
+  { k:"trip", ic:"🧺", nm:"나들이" },
+  { k:"etc",  ic:"📍", nm:"그 밖에" }
+];
+const WAIT = [
+  { v:0,  nm:"바로 입장", s:"대기 없음",   tone:"good" },
+  { v:10, nm:"10분",      s:"대기 10분",   tone:"good" },
+  { v:30, nm:"30분",      s:"대기 30분",   tone:"mid"  },
+  { v:60, nm:"1시간+",    s:"대기 1시간+", tone:"bad"  },
+  { v:-1, nm:"모름",      s:"",            tone:"none" }
+];
+const CROWD = [
+  { v:0,  nm:"한산", s:"한산", tone:"good"  },
+  { v:1,  nm:"보통", s:"보통", tone:"mid"   },
+  { v:2,  nm:"붐빔", s:"붐빔", tone:"bad"   },
+  { v:3,  nm:"터짐", s:"터짐", tone:"worst" },
+  { v:-1, nm:"모름", s:"",     tone:"none"  }
+];
+const PARK = [
+  { v:0,  nm:"넉넉",       s:"주차 넉넉", tone:"good"  },
+  { v:1,  nm:"보통",       s:"주차 보통", tone:"mid"   },
+  { v:2,  nm:"만석",       s:"주차 만석", tone:"bad"   },
+  { v:3,  nm:"댈 곳 없음", s:"주차 불가", tone:"worst" },
+  { v:-1, nm:"모름",       s:"",          tone:"none"  }
+];
+const TAGS = ["아이동반","실내","야외","무료","그늘","주차무료","화장실깔끔","유아의자","예약가능","포장가능","반려동물","넓음"];
+const TONE_SCORE = { good:1, mid:.55, bad:.2, worst:0 };
+
+/* ---------------------------- 잡기구 ---------------------------- */
+const $  = (s) => document.querySelector(s);
+const $$ = (s) => Array.prototype.slice.call(document.querySelectorAll(s));
+const esc = (s) => String(s == null ? "" : s).replace(/[&<>"']/g, (c) =>
+  ({ "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#39;" }[c]));
+const clamp = (n, a, b) => Math.max(a, Math.min(b, n));
+const store = {
+  get(k, fb){ try { const v = localStorage.getItem(k); return v == null ? fb : JSON.parse(v); } catch(e){ return fb; } },
+  set(k, v){ try { localStorage.setItem(k, JSON.stringify(v)); return true; } catch(e){ return false; } }
+};
+const opt = (table, v) => table.find((o) => o.v === v) || table[table.length - 1];
+const newId = () => Math.random().toString(36).slice(2, 10);
+
+/** 한 줄로 만들고 제어문자를 턴 뒤 길이를 자른다. */
+function clip(s, n){
+  return String(s == null ? "" : s).replace(/[\u0000-\u001F\u007F]/g, " ").replace(/\s+/g, " ").trim().slice(0, n);
+}
+/** 장소 묶음 열쇠 — 공백과 대소문자를 무시한다. */
+const norm = (s) => String(s == null ? "" : s).replace(/\s+/g, "").toLowerCase();
+/** "안양 안양동" 도 "안양동" 도 같은 동네로 본다 — 마지막 토막만 본다. */
+function areaKey(s){
+  const parts = String(s == null ? "" : s).trim().split(/\s+/).filter(Boolean);
+  return parts.length ? norm(parts[parts.length - 1]) : "";
+}
+
+function ago(ms){
+  const d = Date.now() - ms;
+  if (d < 2 * MIN)  return "방금";
+  if (d < HOUR)     return Math.floor(d / MIN) + "분 전";
+  if (d < DAY)      return Math.floor(d / HOUR) + "시간 전";
+  if (d < 2 * DAY)  return "어제";
+  if (d < 30 * DAY) return Math.floor(d / DAY) + "일 전";
+  return new Date(ms).toLocaleDateString("ko-KR", { month:"numeric", day:"numeric" });
+}
+function fmtTime(ms){
+  return new Date(ms).toLocaleString("ko-KR", { month:"numeric", day:"numeric", hour:"2-digit", minute:"2-digit" });
+}
+/** 신선도 0~1 — 3시간 반감기. */
+const freshness = (t) => Math.pow(0.5, Math.max(0, Date.now() - t) / HALF);
+function ageClass(t){
+  const d = Date.now() - t;
+  return d < LIVE ? "live" : d < SOFT ? "soft" : d < DIM ? "dim" : "old";
+}
+/** 현장 정보에 붙일 시점 딱지. */
+function liveLabel(t){
+  const d = Date.now() - t;
+  if (d < 10 * MIN) return "지금";
+  if (d < LIVE) return "조금 전";
+  if (d < DAY) return Math.floor(d / HOUR) + "시간 전";
+  return ago(t);
+}
+
+/* ---------------------------- 보드 ---------------------------- */
+/** 밖에서 들어온 것은 전부 여기를 지난다. 못 믿을 값은 버리거나 깎는다. */
+function sane(o){
+  if (!o || typeof o !== "object") return null;
+  const t = Number(o.t);
+  if (!isFinite(t) || t < 1577836800000 || t > Date.now() + DAY) return null;  // 2020년 이전 · 하루 넘게 미래면 버린다
+  const place = clip(o.place, 40);
+  if (!place) return null;
+  const inSet = (tab, v) => tab.some((x) => x.v === v) ? v : -1;
+  let tags = Array.isArray(o.tags) ? o.tags.map((x) => clip(x, 12)).filter(Boolean) : [];
+  tags = tags.filter((x, i) => tags.indexOf(x) === i).slice(0, 6);
+  return {
+    id:    /^[A-Za-z0-9_-]{1,24}$/.test(o.id) ? o.id : newId(),
+    t:     Math.round(t),
+    by:    clip(o.by, 20) || "이름 없는 특파원",
+    cat:   CATS.some((c) => c.k === o.cat) ? o.cat : "etc",
+    place,
+    area:  clip(o.area, 30),
+    wait:  inSet(WAIT,  Number(o.wait)),
+    crowd: inSet(CROWD, Number(o.crowd)),
+    park:  inSet(PARK,  Number(o.park)),
+    rate:  clamp(Math.round(Number(o.rate) || 0), 0, 5),
+    tags,
+    note:  clip(o.note, 200)
+  };
+}
+
+const board = (function load(){
+  const raw = store.get(KEY, null);
+  const b = { reports: [], me: "", seeded: false };
+  if (raw && typeof raw === "object") {
+    if (Array.isArray(raw.reports)) b.reports = raw.reports.map(sane).filter(Boolean);
+    b.me = clip(raw.me, 20);
+    b.seeded = !!raw.seeded;
+  }
+  b.reports.sort((a, c) => c.t - a.t);
+  return b;
+})();
+const save = () => store.set(KEY, board);
+
+/* ---------------------------- 예시 ---------------------------- */
+/* 직접 쓴 리포트가 하나라도 생기면 예시는 사라지고 다시 오지 않는다.
+   예시는 저장하지 않으므로 공유 링크에도 백업 파일에도 섞이지 않는다. */
+const SAMPLE_SEED = [
+  { m:14,   by:"민지", cat:"play", place:"별빛 키즈카페",   area:"안양 안양동",
+    wait:0,  crowd:0,  park:2,  rate:4, tags:["아이동반","실내"],
+    note:"평일 낮이라 텅 비었어요. 주차는 건물 만석이라 골목에 댔습니다." },
+  { m:38,   by:"준호", cat:"food", place:"만안 손칼국수",   area:"안양 안양동",
+    wait:10, crowd:2,  park:1,  rate:5, tags:["포장가능","유아의자"],
+    note:"12시 반인데 열 명쯤 서 있고 회전은 빠릅니다." },
+  { m:95,   by:"민지", cat:"trip", place:"안양천 물놀이터", area:"안양 석수동",
+    wait:0,  crowd:1,  park:0,  rate:4, tags:["야외","무료","그늘"],
+    note:"분수 오후 2시 가동. 그늘막 자리는 벌써 다 찼습니다." },
+  { m:170,  by:"서연", cat:"cafe", place:"온기 로스터리",   area:"평촌 범계동",
+    wait:0,  crowd:1,  park:-1, rate:4, tags:["넓음","예약가능"],
+    note:"2층 창가 두 자리 비어 있습니다. 콘센트는 벽쪽만." },
+  { m:260,  by:"준호", cat:"play", place:"별빛 키즈카페",   area:"안양 안양동",
+    wait:30, crowd:2,  park:3,  rate:4, tags:["아이동반"],
+    note:"주말 오후 들어오니 대기 걸립니다. 아까와 딴판이에요." },
+  { m:400,  by:"태오", cat:"food", place:"구산 돈까스",     area:"안양 비산동",
+    wait:60, crowd:3,  park:2,  rate:5, tags:["포장가능"],
+    note:"웨이팅 앱으로 미리 걸어 두는 게 낫습니다." },
+  { m:1500, by:"서연", cat:"trip", place:"수리산 임도길",   area:"안양 안양동",
+    wait:-1, crowd:0,  park:1,  rate:5, tags:["야외","무료","반려동물"],
+    note:"유모차도 올라갑니다. 입구 주차장은 아침에만 여유." },
+  { m:2600, by:"태오", cat:"cafe", place:"들판 베이커리",   area:"평촌 범계동",
+    wait:-1, crowd:-1, park:-1, rate:3, tags:["포장가능"],
+    note:"소금빵은 오전에 나오고 오후엔 없습니다." }
+];
+const SAMPLES = SAMPLE_SEED.map((s, i) => sane({
+  id: "sample" + i, t: Date.now() - s.m * MIN, by: s.by, cat: s.cat, place: s.place, area: s.area,
+  wait: s.wait, crowd: s.crowd, park: s.park, rate: s.rate, tags: s.tags, note: s.note
+})).filter(Boolean);
+
+const isSample = () => board.reports.length === 0 && !board.seeded;
+const reports = () => isSample() ? SAMPLES : board.reports;
+
+/* ---------------------------- 화면 상태 ---------------------------- */
+let view = "feed";
+const flt = { cat:"", q:"", liveOnly:false, sort:"new" };
+const pflt = { q:"", sort:"recent" };
+let draft = { cat:"play", wait:-1, crowd:-1, park:-1, rate:0, tags:[] };
+let openPlaceKey = null;
+let lastFocus = null;
+let inboxCache = null;
+
+/* =========================================================================
+   현장 정보 그리기
+   ========================================================================= */
+function statChips(r){
+  const out = [];
+  const w = opt(WAIT, r.wait), c = opt(CROWD, r.crowd), p = opt(PARK, r.park);
+  if (w.v !== -1) out.push({ s:w.s, tone:w.tone });
+  if (c.v !== -1) out.push({ s:c.s, tone:c.tone });
+  if (p.v !== -1) out.push({ s:p.s, tone:p.tone });
+  return out;
+}
+function liveRowHtml(r){
+  const chips = statChips(r);
+  if (!chips.length) return "";
+  const d = Date.now() - r.t;
+  const faded = d >= SOFT ? " faded" : "";
+  const label = d >= LIVE ? '<span class="live-label">' + esc(liveLabel(r.t)) + " 상황</span>" : "";
+  const inner = '<div class="live-row' + faded + '">' + label +
+    chips.map((c) => '<span class="stat ' + c.tone + '">' + esc(c.s) + "</span>").join("") + "</div>";
+  if (d < DEAD) return inner;
+  return '<details class="expired"><summary>' + esc(ago(r.t)) + " 현장 정보 — 펼치기</summary>" + inner + "</details>";
+}
+const starsHtml = (n) => n ? '<span class="stars" title="별 ' + n + '개">' + "★".repeat(n) + "☆".repeat(5 - n) + "</span>" : "";
+
+function cardHtml(r, o){
+  o = o || {};
+  const cat = CATS.find((c) => c.k === r.cat) || CATS[CATS.length - 1];
+  const sample = isSample();
+  return '<article class="card age-' + ageClass(r.t) + '">' +
+    '<div class="card-top">' +
+      '<span class="cat">' + cat.ic + " " + esc(cat.nm) + "</span>" +
+      '<span class="age mono" title="' + esc(fmtTime(r.t)) + '">' + esc(ago(r.t)) + "</span>" +
+      (sample ? '<span class="badge">예시</span>' : "") +
+      (sample || o.noDelete ? "" :
+        '<button class="del" type="button" data-del="' + esc(r.id) + '" aria-label="이 리포트 지우기" title="지우기">&times;</button>') +
+    "</div>" +
+    '<h3 class="place">' +
+      (o.plain ? esc(r.place) : '<button type="button" data-open="' + esc(r.id) + '">' + esc(r.place) + "</button>") +
+      (r.area ? '<span class="area">' + esc(r.area) + "</span>" : "") +
+    "</h3>" +
+    liveRowHtml(r) +
+    (r.note ? '<p class="note-line">' + esc(r.note) + "</p>" : "") +
+    '<div class="card-bot">' +
+      starsHtml(r.rate) +
+      (r.tags.length ? '<span class="tags">' + r.tags.map((t) => "#" + esc(t)).join(" ") + "</span>" : "") +
+      '<span class="by">— ' + esc(r.by) + " 특파원</span>" +
+      '<span class="spacer"></span>' +
+      (sample ? "" : '<button class="link-btn" type="button" data-share="' + esc(r.id) + '">공유</button>') +
+    "</div>" +
+  "</article>";
+}
+
+/* =========================================================================
+   거르기 · 정렬
+   ========================================================================= */
+/** 지금 가기 좋은 정도 0~1 — 아는 항목만 평균. 아무것도 모르면 0.5. */
+function cond(r){
+  const t = [];
+  const w = opt(WAIT, r.wait), c = opt(CROWD, r.crowd), p = opt(PARK, r.park);
+  if (w.v !== -1) t.push(TONE_SCORE[w.tone]);
+  if (c.v !== -1) t.push(TONE_SCORE[c.tone]);
+  if (p.v !== -1) t.push(TONE_SCORE[p.tone] * .8 + .2);   // 주차는 덜 결정적으로
+  if (!t.length) return .5;
+  return t.reduce((a, b) => a + b, 0) / t.length;
+}
+function filtered(){
+  const q = flt.q.trim().toLowerCase();
+  const list = reports().filter((r) => {
+    if (flt.cat && r.cat !== flt.cat) return false;
+    if (flt.liveOnly && Date.now() - r.t >= SOFT) return false;
+    if (q) {
+      const hay = (r.place + " " + r.area + " " + r.by + " " + r.note + " " + r.tags.join(" ")).toLowerCase();
+      if (hay.indexOf(q) === -1) return false;
+    }
+    return true;
+  });
+  const by = {
+    new:   (a, b) => b.t - a.t,
+    fresh: (a, b) => cond(b) * freshness(b.t) - cond(a) * freshness(a.t),
+    rate:  (a, b) => (b.rate - a.rate) || (b.t - a.t),
+    place: (a, b) => a.place.localeCompare(b.place, "ko") || (b.t - a.t)
+  };
+  return list.sort(by[flt.sort] || by.new);
+}
+
+/* =========================================================================
+   장소 묶기
+   ========================================================================= */
+function groups(){
+  const list = reports();
+  /* 동네를 안 적은 리포트는, 같은 이름에서 가장 많이 쓰인 동네에 붙인다. */
+  const areaOf = {};
+  list.forEach((r) => {
+    if (!r.area) return;
+    const n = norm(r.place), k = areaKey(r.area);
+    (areaOf[n] = areaOf[n] || {})[k] = (areaOf[n][k] || 0) + 1;
+  });
+  const topArea = {};
+  Object.keys(areaOf).forEach((n) => {
+    topArea[n] = Object.keys(areaOf[n]).sort((a, b) => areaOf[n][b] - areaOf[n][a])[0];
+  });
+
+  const map = new Map();
+  list.forEach((r) => {
+    const n = norm(r.place);
+    const a = r.area ? areaKey(r.area) : (topArea[n] || "");
+    const key = n + "|" + a;
+    let g = map.get(key);
+    if (!g) { g = { key, place:r.place, area:r.area, rs:[] }; map.set(key, g); }
+    g.rs.push(r);
+    if (r.area && r.area.length > g.area.length) g.area = r.area;   // 더 자세히 적힌 쪽을 쓴다
+  });
+
+  return Array.from(map.values()).map((g) => {
+    g.rs.sort((a, b) => b.t - a.t);
+    const rated = g.rs.filter((r) => r.rate > 0);
+    g.last = g.rs[0];
+    g.n = g.rs.length;
+    g.people = Array.from(new Set(g.rs.map((r) => r.by)));
+    g.rate = rated.length ? rated.reduce((s, r) => s + r.rate, 0) / rated.length : 0;
+    g.tags = Array.from(new Set([].concat.apply([], g.rs.map((r) => r.tags)))).slice(0, 8);
+    g.cat = g.last.cat;
+    g.conflicts = conflicts(g.rs);
+    return g;
+  });
+}
+/** 최근 3시간 안에 다른 특파원이 다르게 본 항목을 찾는다. */
+function conflicts(rs){
+  const recent = rs.filter((r) => Date.now() - r.t < SOFT);
+  const out = [];
+  [["wait", WAIT, "웨이팅"], ["crowd", CROWD, "사람"], ["park", PARK, "주차"]].forEach((f) => {
+    const seen = new Map();
+    recent.forEach((r) => { if (r[f[0]] !== -1 && !seen.has(r[f[0]])) seen.set(r[f[0]], r); });
+    if (seen.size < 2) return;
+    const who = new Set(Array.from(seen.values()).map((r) => r.by));
+    if (who.size < 2) return;   // 같은 사람이 시간차를 두고 쓴 것은 엇갈림이 아니다
+    out.push(f[2] + " — " + Array.from(seen.values())
+      .map((r) => opt(f[1], r[f[0]]).nm + "(" + r.by + " · " + ago(r.t) + ")").join(" / "));
+  });
+  return out;
+}
+
+/* =========================================================================
+   링크로 싣고 내리기 — deflate-raw + base64url. 외부 라이브러리 없이 브라우저 내장만 쓴다.
+     "1" + base64  : 날것
+     "2" + base64  : 압축
+   ========================================================================= */
+function b64e(bytes){
+  let s = "";
+  for (let i = 0; i < bytes.length; i += 0x8000) s += String.fromCharCode.apply(null, bytes.subarray(i, i + 0x8000));
+  return btoa(s).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
+}
+function b64d(str){
+  const s = atob(str.replace(/-/g, "+").replace(/_/g, "/"));
+  const a = new Uint8Array(s.length);
+  for (let i = 0; i < s.length; i++) a[i] = s.charCodeAt(i);
+  return a;
+}
+const toRow = (r) => [r.id, Math.round(r.t / 1000), r.by, r.cat, r.place, r.area, r.wait, r.crowd, r.park, r.rate, r.note, r.tags.join(",")];
+const fromRow = (a) => sane({
+  id:a[0], t:Number(a[1]) * 1000, by:a[2], cat:a[3], place:a[4], area:a[5],
+  wait:a[6], crowd:a[7], park:a[8], rate:a[9], note:a[10],
+  tags:String(a[11] == null ? "" : a[11]).split(",").filter(Boolean)
+});
+
+async function pack(list){
+  const bytes = new TextEncoder().encode(JSON.stringify(list.map(toRow)));
+  const plain = "1" + b64e(bytes);
+  if (typeof CompressionStream === "function") {
+    try {
+      const buf = await new Response(new Blob([bytes]).stream()
+        .pipeThrough(new CompressionStream("deflate-raw"))).arrayBuffer();
+      const zipped = "2" + b64e(new Uint8Array(buf));
+      if (zipped.length < plain.length) return zipped;
+    } catch(e){ /* 압축이 안 되면 날것으로 */ }
+  }
+  return plain;
+}
+async function unpack(code){
+  if (!code) throw new Error("링크를 찾지 못했습니다.");
+  if (code.length > MAX_CODE) throw new Error("내용이 너무 깁니다.");
+  const v = code.charAt(0), body = code.slice(1);
+  if (!/^[A-Za-z0-9_-]+$/.test(body)) throw new Error("링크가 중간에 잘린 것 같습니다.");
+  let bytes = b64d(body);
+  if (v === "2") {
+    if (typeof DecompressionStream !== "function") throw new Error("이 브라우저는 압축된 링크를 풀지 못합니다.");
+    const buf = await new Response(new Blob([bytes]).stream()
+      .pipeThrough(new DecompressionStream("deflate-raw"))).arrayBuffer();
+    if (buf.byteLength > MAX_BYTES) throw new Error("내용이 너무 큽니다.");
+    bytes = new Uint8Array(buf);
+  } else if (v !== "1") {
+    throw new Error("모르는 형식입니다.");
+  }
+  const rows = JSON.parse(new TextDecoder().decode(bytes));
+  if (!Array.isArray(rows)) throw new Error("내용을 읽지 못했습니다.");
+  const out = rows.slice(0, MAX_REPORTS).map((a) => Array.isArray(a) ? fromRow(a) : sane(a)).filter(Boolean);
+  if (!out.length) throw new Error("쓸 만한 리포트가 없습니다.");
+  return out;
+}
+
+function baseUrl(){
+  if (location.protocol === "http:" || location.protocol === "https:")
+    return location.origin + location.pathname.replace(/index\.html?$/i, "");
+  return "https://richroro.github.io/correspondent/";
+}
+/** 카톡에 그대로 붙여 넣을 글. 링크를 안 눌러도 읽히게 쓴다. */
+function shareText(list, code){
+  const url = baseUrl() + "#r=" + code;
+  if (list.length === 1) {
+    const r = list[0];
+    const cat = CATS.find((c) => c.k === r.cat) || CATS[CATS.length - 1];
+    const chips = statChips(r).map((c) => c.s).join(" · ");
+    const lines = ["📡 [" + cat.nm + "] " + r.place + (r.area ? " · " + r.area : "")];
+    if (chips) lines.push(chips + "  (" + fmtTime(r.t) + " 기준)");
+    if (r.note) lines.push("“" + r.note + "”");
+    const tail = [];
+    if (r.rate) tail.push("★".repeat(r.rate));
+    if (r.tags.length) tail.push(r.tags.map((t) => "#" + t).join(" "));
+    if (tail.length) lines.push(tail.join("  "));
+    lines.push("— " + r.by + " 특파원");
+    lines.push("받기 → " + url);
+    return lines.join("\n");
+  }
+  const names = Array.from(new Set(list.map((r) => r.place)));
+  const head = "📡 특파원 리포트 " + list.length + "건 (" + names.slice(0, 3).join(", ") +
+    (names.length > 3 ? " 외 " + (names.length - 3) + "곳" : "") + ")";
+  const body = list.slice(0, 5).map((r) => {
+    const chips = statChips(r).map((c) => c.s).join(" · ");
+    return "· " + r.place + (chips ? " — " + chips : "") + " (" + ago(r.t) + ", " + r.by + ")";
+  });
+  if (list.length > 5) body.push("· … 외 " + (list.length - 5) + "건");
+  return [head].concat(body, ["받기 → " + url]).join("\n");
+}
+
+/* =========================================================================
+   그리기
+   ========================================================================= */
+function renderTicker(){
+  const all = reports();
+  const live = all.filter((r) => Date.now() - r.t < SOFT).length;
+  const last = all.length ? Math.max.apply(null, all.map((r) => r.t)) : 0;
+  const people = new Set(all.map((r) => r.by)).size;
+  const parts = [
+    '<span><span class="dot ' + (live ? "on" : "off") + '"></span>3시간 안쪽 <b>' + live + "건</b></span>",
+    "<span>리포트 <b>" + all.length + "건</b></span>",
+    "<span>장소 <b>" + groups().length + "곳</b></span>",
+    "<span>특파원 <b>" + people + "명</b></span>"
+  ];
+  if (last) parts.push("<span>마지막 소식 <b>" + esc(ago(last)) + "</b></span>");
+  if (isSample()) parts.push('<span style="margin-left:auto">지금 보이는 건 <b>예시</b>입니다 · ' +
+    '<button class="link-btn" type="button" id="dropSample">예시 치우고 시작하기</button></span>');
+  $("#ticker").innerHTML = parts.join("");
+  const drop = $("#dropSample");
+  if (drop) drop.addEventListener("click", () => { board.seeded = true; save(); renderAll(); toast("예시를 치웠습니다."); });
+}
+
+function renderPick(){
+  const now = reports().filter((r) => Date.now() - r.t < SOFT);
+  if (!now.length) {
+    $("#pick").innerHTML = '<div class="pick empty"><h2>지금 들어온 소식이 없습니다</h2>' +
+      '<p class="sub" style="margin-bottom:0">3시간 안쪽 리포트가 있어야 “지금”을 말할 수 있습니다. ' +
+      '밖에 계신 분이 첫 소식을 보내 주세요.</p></div>';
+    return;
+  }
+  const best = new Map();
+  now.forEach((r) => {
+    const k = norm(r.place) + "|" + areaKey(r.area);
+    const s = cond(r) * freshness(r.t);
+    const cur = best.get(k);
+    if (!cur || s > cur.s) best.set(k, { r, s });
+  });
+  const top = Array.from(best.values()).filter((x) => cond(x.r) >= .5).sort((a, b) => b.s - a.s).slice(0, 3);
+  if (!top.length) {
+    $("#pick").innerHTML = '<div class="pick empty"><h2>지금은 다들 붐빈다고 합니다</h2>' +
+      '<p class="sub" style="margin-bottom:0">3시간 안쪽 리포트 ' + now.length + '건 가운데 ' +
+      '“여유 있다”는 곳이 없습니다.</p></div>';
+    return;
+  }
+  $("#pick").innerHTML = '<div class="pick"><h2>지금 갈 만한 곳</h2>' +
+    '<p class="sub">3시간 안쪽 리포트만 보고, 대기·혼잡·주차가 여유롭다는 순서로 세웠습니다.</p><ol>' +
+    top.map((x, i) => {
+      const chips = statChips(x.r).map((c) => c.s).join(" · ");
+      return "<li>" +
+        '<span class="rank">' + (i + 1) + "</span>" +
+        '<button class="nm" type="button" data-open="' + esc(x.r.id) + '">' + esc(x.r.place) + "</button>" +
+        '<span class="why">' + esc(ago(x.r.t)) + (chips ? " · " + esc(chips) : "") + " · " + esc(x.r.by) + " 특파원</span>" +
+      "</li>";
+    }).join("") + "</ol></div>";
+}
+
+function renderFeed(){
+  const list = filtered();
+  $("#nFeed").textContent = list.length ? list.length : "";
+  $("#feed").innerHTML = list.length ? list.map((r) => cardHtml(r)).join("")
+    : '<div class="empty"><b>보여 줄 리포트가 없습니다</b>' +
+      "<p>" + (reports().length ? "거르개를 풀어 보세요." : "첫 리포트를 남기면 여기에 쌓입니다.") + "</p></div>";
+  renderPick();
+}
+
+function renderPlaces(){
+  let gs = groups();
+  const q = pflt.q.trim().toLowerCase();
+  if (q) gs = gs.filter((g) => (g.place + " " + g.area).toLowerCase().indexOf(q) !== -1);
+  const by = {
+    recent: (a, b) => b.last.t - a.last.t,
+    many:   (a, b) => (b.n - a.n) || (b.last.t - a.last.t),
+    rate:   (a, b) => (b.rate - a.rate) || (b.last.t - a.last.t),
+    people: (a, b) => (b.people.length - a.people.length) || (b.last.t - a.last.t)
+  };
+  gs.sort(by[pflt.sort] || by.recent);
+  $("#nPlaces").textContent = gs.length ? gs.length : "";
+  $("#places").innerHTML = gs.length ? gs.map((g) => {
+    const cat = CATS.find((c) => c.k === g.cat) || CATS[CATS.length - 1];
+    const chips = statChips(g.last);
+    const d = Date.now() - g.last.t;
+    return '<button class="pl" type="button" data-openkey="' + esc(g.key) + '">' +
+      '<div class="pl-top">' +
+        '<span class="cat">' + cat.ic + " " + esc(cat.nm) + "</span>" +
+        '<span class="pl-name">' + esc(g.place) + "</span>" +
+        (g.area ? '<span class="age mono">' + esc(g.area) + "</span>" : "") +
+      "</div>" +
+      (chips.length ? '<div class="live-row' + (d >= SOFT ? " faded" : "") + '">' +
+        '<span class="live-label">' + esc(liveLabel(g.last.t)) + "</span>" +
+        chips.map((c) => '<span class="stat ' + c.tone + '">' + esc(c.s) + "</span>").join("") + "</div>" : "") +
+      (g.conflicts.length ? '<div class="conflict">엇갈립니다 · ' + esc(g.conflicts[0]) + "</div>" : "") +
+      '<div class="pl-meta">' +
+        "<span>리포트 <b>" + g.n + "건</b></span>" +
+        "<span>특파원 <b>" + g.people.length + "명</b></span>" +
+        (g.rate ? "<span>별점 <b>" + g.rate.toFixed(1) + "</b></span>" : "") +
+        "<span>마지막 <b>" + esc(ago(g.last.t)) + "</b></span>" +
+        (g.tags.length ? '<span class="tags">' + g.tags.map((t) => "#" + esc(t)).join(" ") + "</span>" : "") +
+      "</div></button>";
+  }).join("") : '<div class="empty"><b>아직 장소가 없습니다</b><p>리포트가 쌓이면 같은 장소끼리 묶어서 보여 줍니다.</p></div>';
+}
+
+function renderPeople(){
+  const all = reports();
+  const map = new Map();
+  all.forEach((r) => {
+    let p = map.get(r.by);
+    if (!p) { p = { by:r.by, n:0, last:0, live:0, areas:{}, cats:{} }; map.set(r.by, p); }
+    p.n++;
+    p.last = Math.max(p.last, r.t);
+    if (Date.now() - r.t < DAY) p.live++;
+    if (r.area) p.areas[r.area] = (p.areas[r.area] || 0) + 1;
+    p.cats[r.cat] = (p.cats[r.cat] || 0) + 1;
+  });
+  const list = Array.from(map.values()).sort((a, b) => (b.n - a.n) || (b.last - a.last));
+  $("#nPeople").textContent = list.length ? list.length : "";
+  $("#people").innerHTML = list.length ? list.map((p) => {
+    const area = Object.keys(p.areas).sort((a, b) => p.areas[b] - p.areas[a])[0];
+    const catK = Object.keys(p.cats).sort((a, b) => p.cats[b] - p.cats[a])[0];
+    const cat = CATS.find((c) => c.k === catK);
+    const bits = [];
+    if (area) bits.push(esc(area));
+    if (cat) bits.push(cat.ic + " " + esc(cat.nm));
+    bits.push("마지막 " + esc(ago(p.last)));
+    if (p.live) bits.push("하루 안 " + p.live + "건");
+    return '<div class="pr' + (p.by === board.me ? " me" : "") + '">' +
+      '<span class="av" aria-hidden="true">' + esc(p.by.slice(0, 2)) + "</span>" +
+      '<span class="who"><b>' + esc(p.by) + (p.by === board.me ? " (나)" : "") + "</b>" +
+        "<small>" + bits.join(" · ") + "</small></span>" +
+      '<span class="cnt"><b>' + p.n + "</b><small>리포트</small></span></div>";
+  }).join("") : '<div class="empty"><b>아직 특파원이 없습니다</b><p>첫 리포트를 남기면 이름이 올라갑니다.</p></div>';
+}
+
+function renderSync(){
+  const rs = board.reports;
+  const bytes = (function(){ try { return (localStorage.getItem(KEY) || "").length; } catch(e){ return 0; } })();
+  const oldest = rs.length ? Math.min.apply(null, rs.map((r) => r.t)) : 0;
+  $("#boardInfo").innerHTML =
+    "<dt>내 보드에 저장된 리포트</dt><dd>" + rs.length + "건" + (isSample() ? " (지금 화면은 예시)" : "") + "</dd>" +
+    "<dt>장소</dt><dd>" + (rs.length ? groups().length + "곳" : "—") + "</dd>" +
+    "<dt>가장 오래된 리포트</dt><dd>" + (oldest ? esc(fmtTime(oldest)) + " (" + esc(ago(oldest)) + ")" : "—") + "</dd>" +
+    "<dt>차지하는 용량</dt><dd>" + (bytes ? (bytes / 1024).toFixed(1) + " KB" : "0 KB") + "</dd>";
+}
+
+function renderDatalists(){
+  const gs = groups();
+  $("#placeList").innerHTML = Array.from(new Set(gs.map((g) => g.place)))
+    .map((p) => '<option value="' + esc(p) + '"></option>').join("");
+  $("#areaList").innerHTML = Array.from(new Set(gs.map((g) => g.area).filter(Boolean)))
+    .map((a) => '<option value="' + esc(a) + '"></option>').join("");
+}
+
+function paintMe(){
+  $("#meBtn").textContent = board.me ? "특파원: " + board.me : "특파원 이름 정하기";
+}
+function renderAll(){
+  paintMe();
+  renderTicker(); renderFeed(); renderPlaces(); renderPeople(); renderSync(); renderDatalists();
+  if (openPlaceKey) {
+    const g = groups().find((x) => x.key === openPlaceKey);
+    if (g) fillPlaceSheet(g);
+  }
+}
+
+/* =========================================================================
+   시트(모달)
+   ========================================================================= */
+function openSheet(sel){
+  if (!lastFocus) lastFocus = document.activeElement;
+  $(sel).classList.add("open");
+  document.body.style.overflow = "hidden";
+  const f = $(sel).querySelector("input:not([hidden]),textarea,button:not(.x)");
+  if (f) setTimeout(() => f.focus(), 30);
+}
+function closeSheets(keepFocus){
+  $$(".backdrop.open").forEach((b) => b.classList.remove("open"));
+  document.body.style.overflow = "";
+  openPlaceKey = null;
+  if (!keepFocus && lastFocus && lastFocus.focus) { try { lastFocus.focus(); } catch(e){} }
+  if (!keepFocus) lastFocus = null;
+}
+let toastTimer = null;
+function toast(msg){
+  const t = $("#toast");
+  t.textContent = msg;
+  t.hidden = false;
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => { t.hidden = true; }, 2600);
+}
+async function copyText(text){
+  try { await navigator.clipboard.writeText(text); return true; } catch(e){}
+  try {
+    const ta = document.createElement("textarea");
+    ta.value = text;
+    ta.style.cssText = "position:fixed;top:0;left:0;opacity:0";
+    document.body.appendChild(ta);
+    ta.select();
+    const ok = document.execCommand("copy");
+    document.body.removeChild(ta);
+    return ok;
+  } catch(e){ return false; }
+}
+
+/* =========================================================================
+   리포트 쓰기
+   ========================================================================= */
+function segHtml(table, sel, field){
+  return table.map((o) => '<button class="chip" type="button" data-f="' + field + '" data-v="' + o.v +
+    '" aria-pressed="' + (o.v === sel) + '">' + esc(o.nm) + "</button>").join("");
+}
+function paintCompose(){
+  $("#fCat").innerHTML = CATS.map((c) => '<button class="chip" type="button" data-f="cat" data-v="' + c.k +
+    '" aria-pressed="' + (c.k === draft.cat) + '">' + c.ic + " " + esc(c.nm) + "</button>").join("");
+  $("#fWait").innerHTML  = segHtml(WAIT,  draft.wait,  "wait");
+  $("#fCrowd").innerHTML = segHtml(CROWD, draft.crowd, "crowd");
+  $("#fPark").innerHTML  = segHtml(PARK,  draft.park,  "park");
+  $("#fTags").innerHTML  = TAGS.map((t) => '<button class="chip" type="button" data-tag="' + esc(t) +
+    '" aria-pressed="' + (draft.tags.indexOf(t) !== -1) + '">#' + esc(t) + "</button>").join("");
+  $("#fRate").innerHTML = [1, 2, 3, 4, 5].map((n) => '<button type="button" data-star="' + n +
+    '" class="' + (n <= draft.rate ? "on" : "") + '" aria-label="별 ' + n + '개" aria-pressed="' +
+    (n === draft.rate) + '">★</button>').join("");
+}
+function openCompose(){
+  const mine = board.reports.filter((r) => r.by === board.me);
+  draft = { cat:"play", wait:-1, crowd:-1, park:-1, rate:0, tags:[] };
+  $("#fPlace").value = "";
+  $("#fArea").value = mine.length ? mine[0].area : "";
+  $("#fNote").value = "";
+  $("#fBy").value = board.me;
+  $("#noteCnt").textContent = "0/200";
+  $("#composeErr").textContent = "";
+  paintCompose();
+  openSheet("#composeBack");
+}
+
+let shareCache = "";
+async function openShare(list){
+  $("#shareBox").value = "만드는 중…";
+  const st = $("#shareStatus");
+  st.textContent = ""; st.className = "status";
+  $("#shareNative").hidden = !navigator.share;
+  openSheet("#shareBack");
+  try {
+    const code = await pack(list);
+    shareCache = shareText(list, code);
+    $("#shareBox").value = shareCache;
+  } catch(e) {
+    shareCache = "";
+    $("#shareBox").value = "";
+    st.textContent = "공유글을 만들지 못했습니다: " + e.message;
+    st.className = "status err";
+  }
+}
+
+/* =========================================================================
+   장소 상세
+   ========================================================================= */
+function fillPlaceSheet(g){
+  const cat = CATS.find((c) => c.k === g.cat) || CATS[CATS.length - 1];
+  $("#placeTitle").textContent = g.place;
+  $("#placeBody").innerHTML =
+    '<div class="det-head">' +
+      '<div class="pl-top"><span class="cat">' + cat.ic + " " + esc(cat.nm) + "</span>" +
+        (g.area ? '<span class="age mono">' + esc(g.area) + "</span>" : "") + "</div>" +
+      '<div class="det-stats">' +
+        "<span>리포트 <b>" + g.n + "</b>건</span>" +
+        "<span>특파원 <b>" + g.people.length + "</b>명</span>" +
+        (g.rate ? "<span>별점 <b>" + g.rate.toFixed(1) + "</b></span>" : "") +
+        "<span>마지막 <b>" + esc(ago(g.last.t)) + "</b></span>" +
+      "</div>" +
+      (g.tags.length ? '<div class="tags">' + g.tags.map((t) => "#" + esc(t)).join(" ") + "</div>" : "") +
+      '<div class="note">가장 최근 현장 정보 — ' + esc(liveLabel(g.last.t)) + " 기준</div>" +
+      (liveRowHtml(g.last) || '<div class="note">현장 정보 없이 메모만 남은 곳입니다.</div>') +
+      (g.conflicts.length ? g.conflicts.map((c) => '<div class="conflict">엇갈립니다 · ' + esc(c) + "</div>").join("") : "") +
+      (g.people.length > 1 ? '<div class="note">' + esc(g.people.join(", ")) + " 특파원이 다녀갔습니다.</div>" : "") +
+    "</div>" +
+    '<div class="panel-t">들어온 순서대로</div>' +
+    '<div class="tl">' + g.rs.map((r) => cardHtml(r, { plain:true, noDelete:true })).join("") + "</div>";
+}
+function openPlaceSheet(g){
+  openPlaceKey = g.key;
+  fillPlaceSheet(g);
+  openSheet("#placeBack");
+}
+
+/* =========================================================================
+   받기
+   ========================================================================= */
+function findCode(text){
+  const s = String(text == null ? "" : text).trim();
+  const m = s.match(/[#?&]r=([A-Za-z0-9_-]+)/);
+  if (m) return m[1];
+  if (/^[12][A-Za-z0-9_-]{8,}$/.test(s)) return s;
+  return null;
+}
+function merge(list){
+  const have = new Set(board.reports.map((r) => r.id));
+  let added = 0, dup = 0;
+  list.forEach((r) => {
+    if (have.has(r.id)) { dup++; return; }
+    have.add(r.id);
+    board.reports.push(r);
+    added++;
+  });
+  if (added) {
+    board.seeded = true;
+    board.reports.sort((a, b) => b.t - a.t);
+    if (!save()) toast("저장 공간이 부족합니다. 오래된 리포트를 지워 보세요.");
+  }
+  return { added, dup };
+}
+function clearHash(){
+  if (location.hash) history.replaceState(null, "", location.pathname + location.search);
+}
+async function checkHash(){
+  const m = location.hash.match(/^#r=([A-Za-z0-9_-]+)$/);
+  if (!m) return;
+  const box = $("#inbox");
+  try {
+    const list = await unpack(m[1]);
+    inboxCache = list;
+    const have = new Set(board.reports.map((r) => r.id));
+    const fresh = list.filter((r) => !have.has(r.id));
+    const names = Array.from(new Set(list.map((r) => r.place))).slice(0, 4).join(", ");
+    if (!fresh.length) {
+      box.innerHTML = '<div class="inbox"><h2>이미 갖고 있는 리포트입니다</h2>' +
+        "<p>" + esc(names) + " · " + list.length + "건 모두 보드에 있습니다.</p>" +
+        '<div class="row"><button class="btn sm ghost" id="inboxNo" type="button">닫기</button></div></div>';
+    } else {
+      box.innerHTML = '<div class="inbox"><h2>📡 리포트 ' + fresh.length + "건이 도착했습니다</h2>" +
+        "<p>" + esc(names) + (list.length > fresh.length ? " · 이미 있는 " + (list.length - fresh.length) + "건은 뺐습니다" : "") + "</p>" +
+        '<div class="row"><button class="btn primary sm" id="inboxYes" type="button">보드에 받기</button>' +
+        '<button class="btn sm ghost" id="inboxNo" type="button">안 받기</button></div></div>';
+    }
+  } catch(e) {
+    box.innerHTML = '<div class="inbox"><h2>링크를 읽지 못했습니다</h2><p>' + esc(e.message) +
+      ' 링크가 잘렸을 수 있으니, 받은 글을 통째로 복사해서 <b>주고받기</b> 칸에 붙여 넣어 보세요.</p>' +
+      '<div class="row"><button class="btn sm ghost" id="inboxNo" type="button">닫기</button></div></div>';
+  }
+  const yes = $("#inboxYes"), no = $("#inboxNo");
+  if (yes) yes.addEventListener("click", () => {
+    const res = merge(inboxCache || []);
+    box.innerHTML = "";
+    clearHash();
+    renderAll();
+    toast(res.added + "건을 받았습니다." + (res.dup ? " (" + res.dup + "건은 이미 있었음)" : ""));
+  });
+  if (no) no.addEventListener("click", () => { box.innerHTML = ""; clearHash(); });
+}
+
+/* =========================================================================
+   묶음 만들기 — 카톡에서 안 깨지게 길이를 맞춘다
+   ========================================================================= */
+async function packCapped(list, cap){
+  let n = Math.min(list.length, 120);
+  let code = await pack(list.slice(0, n));
+  while (code.length > cap && n > 1) {
+    n = Math.max(1, Math.floor(n * .75));
+    code = await pack(list.slice(0, n));
+  }
+  return { code, used: list.slice(0, n) };
+}
+
+/* =========================================================================
+   테마
+   ========================================================================= */
+const TH = { auto:"자동", light:"밝게", dark:"어둡게" };
+let theme = store.get("tpw.theme", "auto");
+function applyTheme(t){
+  theme = TH[t] ? t : "auto";
+  if (theme === "auto") document.documentElement.removeAttribute("data-theme");
+  else document.documentElement.dataset.theme = theme;
+  $("#themeBtn").textContent = "테마: " + TH[theme];
+  store.set("tpw.theme", theme);
+}
+
+/* =========================================================================
+   화면 전환
+   ========================================================================= */
+function switchView(name){
+  view = name;
+  $$(".tab").forEach((b) => b.setAttribute("aria-selected", String(b.dataset.view === name)));
+  $$(".view").forEach((s) => { s.hidden = s.id !== "view-" + name; });
+}
+
+/* =========================================================================
+   이벤트
+   ========================================================================= */
+function bind(){
+  /* 탭 */
+  $$(".tab").forEach((b) => b.addEventListener("click", () => switchView(b.dataset.view)));
+
+  /* 큰 버튼 */
+  $("#writeBtn").addEventListener("click", openCompose);
+  $("#recvBtn").addEventListener("click", () => {
+    switchView("sync");
+    $("#view-sync").scrollIntoView({ behavior:"smooth", block:"start" });
+    setTimeout(() => $("#recvBox").focus(), 250);
+  });
+  $("#themeBtn").addEventListener("click", () => {
+    applyTheme(theme === "auto" ? "light" : theme === "light" ? "dark" : "auto");
+  });
+  $("#meBtn").addEventListener("click", () => {
+    switchView("people");
+    $("#meInput").value = board.me;
+    setTimeout(() => $("#meInput").focus(), 60);
+  });
+
+  /* 속보 거르개 */
+  $("#catFilter").innerHTML = [{ k:"", ic:"", nm:"전체" }].concat(CATS).map((c) =>
+    '<button class="chip" type="button" data-cat="' + c.k + '" aria-pressed="' + (c.k === flt.cat) + '">' +
+    (c.ic ? c.ic + " " : "") + esc(c.nm) + "</button>").join("");
+  $("#catFilter").addEventListener("click", (e) => {
+    const b = e.target.closest("[data-cat]");
+    if (!b) return;
+    flt.cat = b.dataset.cat;
+    $$("#catFilter .chip").forEach((x) => x.setAttribute("aria-pressed", String(x.dataset.cat === flt.cat)));
+    renderFeed();
+  });
+  $("#q").addEventListener("input", (e) => { flt.q = e.target.value; renderFeed(); });
+  $("#liveOnly").addEventListener("click", (e) => {
+    flt.liveOnly = !flt.liveOnly;
+    e.currentTarget.setAttribute("aria-pressed", String(flt.liveOnly));
+    renderFeed();
+  });
+  $("#sort").addEventListener("change", (e) => { flt.sort = e.target.value; renderFeed(); });
+  $("#pq").addEventListener("input", (e) => { pflt.q = e.target.value; renderPlaces(); });
+  $("#psort").addEventListener("change", (e) => { pflt.sort = e.target.value; renderPlaces(); });
+
+  /* 내 이름 */
+  $("#meSave").addEventListener("click", () => {
+    board.me = clip($("#meInput").value, 20);
+    save();
+    paintMe();
+    renderPeople();
+    toast(board.me ? board.me + " 특파원으로 저장했습니다." : "이름을 비웠습니다.");
+  });
+  $("#meInput").addEventListener("keydown", (e) => { if (e.key === "Enter") { e.preventDefault(); $("#meSave").click(); } });
+
+  /* 카드·장소·지금갈만한곳 — 위임 */
+  document.addEventListener("click", (e) => {
+    const open = e.target.closest("[data-open]");
+    if (open) {
+      const g = groups().find((x) => x.rs.some((r) => r.id === open.dataset.open));
+      if (g) openPlaceSheet(g);
+      return;
+    }
+    const key = e.target.closest("[data-openkey]");
+    if (key) {
+      const g = groups().find((x) => x.key === key.dataset.openkey);
+      if (g) openPlaceSheet(g);
+      return;
+    }
+    const sh = e.target.closest("[data-share]");
+    if (sh) {
+      const r = reports().find((x) => x.id === sh.dataset.share);
+      if (r) openShare([r]);
+      return;
+    }
+    const del = e.target.closest("[data-del]");
+    if (del) {
+      const r = board.reports.find((x) => x.id === del.dataset.del);
+      if (!r) return;
+      if (!confirm("“" + r.place + "” 리포트를 지울까요? 이 브라우저에서만 지워집니다.")) return;
+      board.reports = board.reports.filter((x) => x.id !== r.id);
+      save();
+      renderAll();
+      toast("지웠습니다.");
+    }
+  });
+
+  /* 시트 닫기 */
+  $$("[data-close]").forEach((b) => b.addEventListener("click", () => closeSheets()));
+  $$(".backdrop").forEach((b) => b.addEventListener("click", (e) => { if (e.target === b) closeSheets(); }));
+  document.addEventListener("keydown", (e) => { if (e.key === "Escape" && $(".backdrop.open")) closeSheets(); });
+
+  /* 리포트 쓰기 */
+  $("#composeForm").addEventListener("click", (e) => {
+    const seg = e.target.closest("[data-f]");
+    if (seg) {
+      const f = seg.dataset.f;
+      draft[f] = f === "cat" ? seg.dataset.v : Number(seg.dataset.v);
+      paintCompose();
+      return;
+    }
+    const tag = e.target.closest("[data-tag]");
+    if (tag) {
+      const t = tag.dataset.tag, i = draft.tags.indexOf(t);
+      if (i === -1) {
+        if (draft.tags.length >= 6) { toast("태그는 6개까지입니다."); return; }
+        draft.tags.push(t);
+      } else draft.tags.splice(i, 1);
+      paintCompose();
+      return;
+    }
+    const st = e.target.closest("[data-star]");
+    if (st) {
+      const n = Number(st.dataset.star);
+      draft.rate = draft.rate === n ? 0 : n;
+      paintCompose();
+    }
+  });
+  $("#fNote").addEventListener("input", (e) => { $("#noteCnt").textContent = e.target.value.length + "/200"; });
+  $("#composeForm").addEventListener("submit", (e) => {
+    e.preventDefault();
+    const place = clip($("#fPlace").value, 40);
+    if (!place) {
+      $("#composeErr").textContent = "어디에 계신지 적어 주세요.";
+      $("#fPlace").focus();
+      return;
+    }
+    const by = clip($("#fBy").value, 20) || board.me || "이름 없는 특파원";
+    const r = sane({
+      id:newId(), t:Date.now(), by, cat:draft.cat, place, area:clip($("#fArea").value, 30),
+      wait:draft.wait, crowd:draft.crowd, park:draft.park, rate:draft.rate, tags:draft.tags,
+      note:clip($("#fNote").value, 200)
+    });
+    if (!r) { $("#composeErr").textContent = "리포트를 만들지 못했습니다."; return; }
+    const first = !board.reports.length;
+    board.reports.unshift(r);
+    board.seeded = true;
+    board.me = by;
+    if (!save()) toast("저장 공간이 부족합니다. 오래된 리포트를 지워 보세요.");
+    switchView("feed");
+    renderAll();
+    closeSheets(true);
+    openShare([r]);
+    if (first) setTimeout(() => toast("예시는 치웠습니다. 이제 진짜 보드입니다."), 900);
+  });
+
+  /* 공유 */
+  $("#shareCopy").addEventListener("click", async () => {
+    if (!shareCache) return;
+    const ok = await copyText(shareCache);
+    const st = $("#shareStatus");
+    st.textContent = ok ? "복사했습니다. 단톡방에 붙여 넣으세요." : "복사가 막혔습니다. 위 글을 직접 긁어서 복사해 주세요.";
+    st.className = "status " + (ok ? "ok" : "err");
+  });
+  $("#shareNative").addEventListener("click", () => {
+    if (navigator.share && shareCache) navigator.share({ text: shareCache }).catch(() => {});
+  });
+  $("#placeShare").addEventListener("click", async () => {
+    const g = groups().find((x) => x.key === openPlaceKey);
+    if (!g) return;
+    if (isSample()) { toast("예시 리포트는 공유할 수 없습니다."); return; }
+    const list = g.rs.slice(0, 10);
+    closeSheets(true);
+    openShare(list);
+  });
+
+  /* 받기 */
+  $("#recvGo").addEventListener("click", async () => {
+    const st = $("#recvStatus");
+    const code = findCode($("#recvBox").value);
+    if (!code) {
+      st.textContent = "붙여 넣은 내용에서 링크를 찾지 못했습니다. 받기 → 로 시작하는 줄이 들어 있어야 합니다.";
+      st.className = "status err";
+      return;
+    }
+    st.textContent = "읽는 중…";
+    st.className = "status";
+    try {
+      const list = await unpack(code);
+      const res = merge(list);
+      renderAll();
+      st.textContent = res.added + "건을 받았습니다." + (res.dup ? " " + res.dup + "건은 이미 갖고 있어서 건너뛰었습니다." : "");
+      st.className = "status ok";
+      if (res.added) { $("#recvBox").value = ""; switchView("feed"); }
+    } catch(err) {
+      st.textContent = "받지 못했습니다: " + err.message;
+      st.className = "status err";
+    }
+  });
+  $("#recvClear").addEventListener("click", () => {
+    $("#recvBox").value = "";
+    $("#recvStatus").textContent = "";
+    $("#recvStatus").className = "status";
+  });
+
+  /* 묶음 */
+  $("#bundleBtn").addEventListener("click", async () => {
+    const st = $("#bundleStatus");
+    if (!board.reports.length) {
+      st.textContent = "보드가 비어 있습니다. (예시 리포트는 보내지 않습니다)";
+      st.className = "status err";
+      return;
+    }
+    st.textContent = "만드는 중…";
+    st.className = "status";
+    try {
+      const r = await packCapped(board.reports, BUNDLE_CAP);
+      const text = shareText(r.used, r.code);
+      $("#bundleBox").value = text;
+      $("#bundleBox").hidden = false;
+      $("#bundleRow").hidden = false;
+      $("#bundleShare").hidden = !navigator.share;
+      st.textContent = board.reports.length + "건 가운데 최근 " + r.used.length + "건을 담았습니다. 링크 길이 " + r.code.length + "자.";
+      st.className = "status ok";
+    } catch(e) {
+      st.textContent = "만들지 못했습니다: " + e.message;
+      st.className = "status err";
+    }
+  });
+  $("#bundleCopy").addEventListener("click", async () => {
+    const ok = await copyText($("#bundleBox").value);
+    const st = $("#bundleStatus");
+    st.textContent = ok ? "복사했습니다." : "복사가 막혔습니다. 직접 긁어서 복사해 주세요.";
+    st.className = "status " + (ok ? "ok" : "err");
+  });
+  $("#bundleShare").addEventListener("click", () => {
+    if (navigator.share) navigator.share({ text: $("#bundleBox").value }).catch(() => {});
+  });
+
+  /* 파일 */
+  $("#fileSave").addEventListener("click", () => {
+    if (!board.reports.length) { toast("저장할 리포트가 없습니다."); return; }
+    const d = new Date();
+    const stamp = d.getFullYear() + String(d.getMonth() + 1).padStart(2, "0") + String(d.getDate()).padStart(2, "0");
+    const blob = new Blob([JSON.stringify({ app:"동네 특파원", v:1, savedAt:d.toISOString(), reports:board.reports }, null, 1)],
+      { type:"application/json" });
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = "teukpawon-" + stamp + ".json";
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+    toast(board.reports.length + "건을 파일로 저장했습니다.");
+  });
+  $("#fileLoad").addEventListener("click", () => $("#fileInput").click());
+  $("#fileInput").addEventListener("change", async (e) => {
+    const f = e.target.files && e.target.files[0];
+    if (!f) return;
+    const st = $("#bundleStatus");
+    try {
+      const raw = JSON.parse(await f.text());
+      const arr = Array.isArray(raw) ? raw : (raw && Array.isArray(raw.reports) ? raw.reports : null);
+      if (!arr) throw new Error("리포트가 들어 있지 않습니다.");
+      const res = merge(arr.slice(0, MAX_REPORTS).map(sane).filter(Boolean));
+      renderAll();
+      st.textContent = res.added + "건을 불러왔습니다." + (res.dup ? " " + res.dup + "건은 이미 있었습니다." : "");
+      st.className = "status ok";
+    } catch(err) {
+      st.textContent = "파일을 읽지 못했습니다: " + err.message;
+      st.className = "status err";
+    }
+    e.target.value = "";
+  });
+
+  /* 정리 */
+  $("#purgeOld").addEventListener("click", () => {
+    const cut = Date.now() - 30 * DAY;
+    const before = board.reports.length;
+    const gone = before - board.reports.filter((r) => r.t >= cut).length;
+    if (!gone) { toast("30일 넘은 리포트가 없습니다."); return; }
+    if (!confirm(gone + "건을 지울까요?")) return;
+    board.reports = board.reports.filter((r) => r.t >= cut);
+    save();
+    renderAll();
+    toast(gone + "건을 지웠습니다.");
+  });
+  $("#wipe").addEventListener("click", () => {
+    if (!confirm("이 브라우저에 저장된 리포트를 전부 지웁니다. 되돌릴 수 없습니다. 계속할까요?")) return;
+    board.reports = [];
+    board.seeded = false;
+    save();
+    renderAll();
+    toast("전부 비웠습니다.");
+  });
+
+  window.addEventListener("hashchange", checkHash);
+}
+
+/* ---------------------------- 시작 ---------------------------- */
+applyTheme(theme);
+bind();
+$("#meInput").value = board.me;
+renderAll();
+checkHash();
+/* 시간이 흐르면 "몇 분 전"과 신선도가 달라진다 — 1분마다 다시 그린다. */
+setInterval(() => { renderTicker(); renderFeed(); renderPlaces(); }, 60e3);
+</script>
+</body>
+</html>
