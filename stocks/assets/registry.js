@@ -218,5 +218,74 @@ const REGISTRY = [
       { k:"신규 AI 수주", v:"60 이상", u:"B$", p:"FY2026 4분기 발표", t:"backlog",
         s:"회사는 역대 최대 수주잔고라고 밝혔다 · 금액 기준일은 따로 공시하지 않았다" }
     ] },
-    data:{ fy:"FY2026", growth:77.7, gm:10.8, emp:6605, empAsOf:"2026년 3월", rev:39.1, oi:null, ni:2.2, top:null } }
+    data:{ fy:"FY2026", growth:77.7, gm:10.8, emp:6605, empAsOf:"2026년 3월", rev:39.1, oi:null, ni:2.2, top:null } },
+  /* ---- 소프트웨어 · AI 플랫폼 ---- */
+  { slug:"pltr", kr:"간접", tk:"PLTR", ko:"팔란티어", ab:"PL", c:"#5b4bc4", group:"soft", base:"/stocks/",
+    sector:"소프트웨어", hint:"정부 54% · 민간 46%, 그리고 +56%",
+    p:{ est:2003, hq:"미국 콜로라도 덴버", ex:"나스닥", ceo:"알렉스 카프", ceoEn:"Alex Karp",
+        since:2003, fye:"12월 31일", div:false },
+    f:{ asOf:"2026년 9월", items:[
+      { k:"2026 매출 가이던스", v:"8.150~8.158", u:"B$", p:"2026년", t:"guide",
+        s:"5월 7.65B$에서 상향 · 2025년 4.475B$ 대비 약 +82%" },
+      { k:"미국 민간 매출 성장", v:"+120", u:"%", p:"2026년", t:"guide",
+        s:"회사가 따로 떼어 제시하는 지표 · 1분기에 +104%를 기록했다" }
+    ] },
+    data:{ fy:"2025", growth:56.2, gm:null, emp:4429, empAsOf:"2025년 말", rev:4.475, oi:1.414, ni:1.625,
+           top:{k:"정부", v:2.417, of:4.475} } },
+  { slug:"orcl", kr:"간접", tk:"ORCL", ko:"오라클", ab:"OR", c:"#C74634", group:"soft", base:"/stocks/",
+    sector:"소프트웨어", hint:"계약 잔고가 1년 만에 4.6배",
+    p:{ est:1977, hq:"미국 텍사스 오스틴", estNote:"1977년 캘리포니아에서 창업 · 2020년 오스틴으로 본사 이전",
+        ex:"뉴욕증권거래소", ceo:"클레이 마고크 · 마이크 시실리아", ceoEn:"Clay Magouyrk · Mike Sicilia",
+        since:2025, sinceNote:"2025년 9월 공동 CEO 취임 · 사프라 캐츠는 이사회 부회장으로 · 래리 엘리슨은 회장 겸 CTO",
+        fye:"5월 31일", div:true },
+    f:{ asOf:"2026년 9월", items:[
+      { k:"계약 잔고(RPO)", v:"638", u:"B$", p:"FY2026 말", n:638, rel:"total", t:"backlog",
+        s:"전년 대비 +363% · 이 목록에서 연매출 대비 배수가 가장 크다" },
+      { k:"클라우드 인프라(OCI) 매출", v:"9.9", u:"B$", p:"FY2026", t:"guide",
+        s:"+93% · 잔고의 대부분이 이 부문에서 나온다" }
+    ] },
+    data:{ fy:"FY2026", growth:17.3, gm:null, emp:141000, empAsOf:"2026년", rev:67.357, oi:20.6, ni:17.0,
+           top:null } },
+  { slug:"crm", kr:"간접", tk:"CRM", ko:"세일즈포스", ab:"CR", c:"#00A1E0", group:"soft", base:"/stocks/",
+    sector:"소프트웨어", hint:"성장은 10%, 대신 마진을 올렸다",
+    p:{ est:1999, hq:"미국 캘리포니아 샌프란시스코", ex:"뉴욕증권거래소", ceo:"마크 베니오프", ceoEn:"Marc Benioff",
+        since:1999, fye:"1월 31일", div:true, divNote:"2024년 첫 배당 개시" },
+    f:{ asOf:"2026년 9월", items:[
+      { k:"FY2027 매출 가이던스", v:"46.1~46.4", u:"B$", p:"FY2027", t:"guide",
+        s:"2분기에 상향 · FY2026 41.5B$ 대비 약 +11%" },
+      { k:"에이전트포스 ARR", v:"1.5 초과", u:"B$", p:"FY2027 2분기", t:"guide",
+        s:"AI 제품의 연간 반복 매출 · 회사가 따로 공시하기 시작한 지표" }
+    ] },
+    data:{ fy:"FY2026", growth:10.0, gm:null, emp:83334, empAsOf:"2026년", rev:41.5, oi:8.34, ni:7.457,
+           top:null } },
+
+  /* ---- 양자컴퓨팅 · 우주 (아직 매출보다 손실이 큰 단계) ---- */
+  { slug:"ionq", kr:"간접", tk:"IONQ", ko:"아이온큐", ab:"IQ", c:"#FF4D8D", group:"frontier", base:"/stocks/",
+    sector:"양자컴퓨팅", hint:"매출 1.3억, 순손실 5.1억 달러",
+    p:{ est:2015, hq:"미국 메릴랜드 칼리지파크", ex:"뉴욕증권거래소", ceo:"니콜로 데 마시", ceoEn:"Niccolo de Masi",
+        since:2025, sinceNote:"2025년 2월 회장 겸 CEO 취임", fye:"12월 31일", div:false },
+    f:{ asOf:"2026년 9월", items:[
+      { k:"수주잔고", v:"470", u:"M$", p:"2026년 1분기", t:"backlog",
+        s:"2025년 연매출 130M$의 3.6배 · 인도 시점은 여러 해에 걸친다" },
+      { k:"2026 조정 EBITDA", v:"−330~−310", u:"M$", p:"2026년", t:"guide",
+        s:"회사가 제시한 손실 폭 · 흑자 전환 시점은 밝히지 않았다" }
+    ] },
+    data:{ fy:"2025", growth:202.0, gm:null, emp:null, empAsOf:"—", rev:0.130, oi:null, ni:-0.5104,
+           top:null } },
+  { slug:"rgti", kr:"간접", tk:"RGTI", ko:"리게티", ab:"RG", c:"#8A6FE8", group:"frontier", base:"/stocks/",
+    sector:"양자컴퓨팅", hint:"연매출 710만 달러, 순손실 2.16억",
+    p:{ est:2013, hq:"미국 캘리포니아 버클리", ex:"나스닥", ceo:"수보드 쿨카르니", ceoEn:"Subodh Kulkarni",
+        since:2022, fye:"12월 31일", div:false },
+    data:{ fy:"2025", growth:-34.0, gm:null, emp:null, empAsOf:"—", rev:0.0071, oi:null, ni:-0.2162,
+           top:null } },
+  { slug:"rklb", kr:"간접", tk:"RKLB", ko:"로켓랩", ab:"RL", c:"#0B7285", group:"frontier", base:"/stocks/",
+    sector:"우주발사", hint:"매출 +38%, 수주잔고 18.5억 달러",
+    p:{ est:2006, estNote:"뉴질랜드에서 창업 · 현재 본사는 미국", hq:"미국 캘리포니아 롱비치",
+        ex:"나스닥", ceo:"피터 벡", ceoEn:"Peter Beck", since:2006, fye:"12월 31일", div:false },
+    f:{ asOf:"2026년 9월", items:[
+      { k:"수주잔고", v:"1.85", u:"B$", p:"2025년 말", n:1.85, rel:"total", t:"backlog",
+        s:"전년 대비 +73% · 2025년 연매출 0.602B$의 3배가 넘는다" }
+    ] },
+    data:{ fy:"2025", growth:38.0, gm:null, emp:null, empAsOf:"—", rev:0.6018, oi:null, ni:-0.1982,
+           top:null } }
 ];

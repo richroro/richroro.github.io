@@ -82,6 +82,14 @@ function showTip(tip, wrap, html, x, y) {
 }
 let CUR = "$";
 function fmtB(v) { return CUR + (Math.abs(v) >= 100 ? v.toFixed(0) : v.toFixed(2)) + "B"; }
+/* 10억 미만은 백만 단위로 적습니다 — 리게티 연매출 0.0071 을 "$0.0B" 로 쓰면 0 으로 읽힙니다.
+   음수는 앞에 −(U+2212)를 붙입니다. "$-0.3B" 보다 "−$300M" 이 읽힙니다. */
+function fmtAmt(v, cur) {
+  if (v == null) return "—";
+  cur = cur || "$";
+  const a = Math.abs(v), sign = v < 0 ? "−" : "";
+  return sign + cur + (a < 1 ? (a * 1000).toFixed(a * 1000 < 10 ? 1 : 0) + "M" : a.toFixed(1) + "B");
+}
 
 /* ---------------------------- 매출 구성 가로막대 ---------------------------- */
 function drawMix() {
@@ -163,7 +171,8 @@ function peopleHtml() {
   const e = regEntry();
   if (!e || !e.data) return "";
   const d = e.data, cur = d.cur || "$";
-  const money = (v) => cur + (v / 1e6).toFixed(v / 1e6 >= 1 ? 2 : 3) + "M";
+  const money = (v) => { const a = Math.abs(v) / 1e6;
+    return (v < 0 ? "−" : "") + cur + a.toFixed(a >= 1 ? 2 : 3) + "M"; };
   const per = (v) => (d.emp && v != null) ? (v * 1e9) / d.emp : null;
   const revPer = per(d.rev), oiPer = per(d.oi), niPer = per(d.ni);
   const om = d.oi == null ? null : (d.oi / d.rev) * 100;
@@ -185,15 +194,15 @@ function peopleHtml() {
   return '<div class="card pad mt16"><div class="rowsplit"><h3>요약 지표</h3>' +
     '<span class="fybadge">' + esc(d.fy) + ' 실적 · 임직원 ' + esc(d.empAsOf || "—") + ' 기준</span></div>' +
     '<div class="stats c4 mt12" role="group" aria-label="재무 요약">' +
-      tile("매출", cur + d.rev.toFixed(1) + "B", esc(d.fy)) +
+      tile("매출", fmtAmt(d.rev, cur), esc(d.fy)) +
       tile("전년 대비", d.growth == null ? "—" : pctTxt(d.growth), "매출 증감",
            d.growth == null ? "" : cls(d.growth)) +
       tile("총마진", d.gm == null ? "—" : d.gm.toFixed(1) + "%", "매출총이익 ÷ 매출") +
       tile("영업이익률", om == null ? "—" : om.toFixed(1) + "%",
-           om == null ? "영업이익 미공개" : "영업이익 " + cur + d.oi.toFixed(1) + "B") +
+           om == null ? "영업이익 미공개" : "영업이익 " + fmtAmt(d.oi, cur)) +
     '</div>' +
     '<div class="stats c4 mt12" role="group" aria-label="순이익과 인력">' +
-      tile("순이익", d.ni == null ? "—" : cur + d.ni.toFixed(1) + "B", esc(d.fy) + " 당기순이익") +
+      tile("순이익", fmtAmt(d.ni, cur), esc(d.fy) + " 당기순이익") +
       tile("순이익률", nm == null ? "—" : nm.toFixed(1) + "%", "순이익 ÷ 매출") +
       tile("임직원 수", d.emp ? nf.format(d.emp) : "—", esc(d.empAsOf || "—")) +
       tile("한국과의 관계", esc(e.kr || "—"), "공급 · 경쟁 · 고객 · 간접") +
@@ -227,7 +236,7 @@ function forwardHtml() {
     const kind = FKIND[it.t] || FKIND.none;
     // 전사 기준 잔고만 연매출 대비 배수를 계산합니다. 부문 잔고는 분모가 달라 비교하면 안 됩니다.
     const mult = (it.rel === "total" && it.n != null && d && d.rev)
-      ? '<div class="s">연매출 ' + cur + d.rev.toFixed(1) + "B의 <b>" + (it.n / d.rev).toFixed(1) + "배</b></div>"
+      ? '<div class="s">연매출 ' + fmtAmt(d.rev, cur) + "의 <b>" + (it.n / d.rev).toFixed(1) + "배</b></div>"
       : "";
     return '<div class="st"><div class="k"><span class="ktag" style="background:var(' + kind.c + ')"></span>' +
       esc(it.k) + '</div><div class="v num">' + esc(it.v) +

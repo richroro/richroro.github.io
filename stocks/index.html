@@ -293,7 +293,7 @@ function render() {
       "' style='border-bottom:1px solid var(--line)'>" + r.ko + "</a></b><small>" + r.tk +
       "</small></span></div></td>" +
       "<td class='tx'>" + r.sector + "</td><td class='tx'>" + r.fy + "</td>" +
-      "<td>" + r.cur + r.rev.toFixed(1) + "B</td>" +
+      "<td>" + fmtAmt(r.rev, r.cur) + "</td>" +
       "<td class='" + (r.growth == null ? "" : (r.growth > 0 ? "up" : "down")) + "'>" +
         (r.growth == null ? "—" : (r.growth > 0 ? "+" : "−") + Math.abs(r.growth).toFixed(1) + "%") + "</td>" +
       "<td>" + (r.gm == null ? "—" : r.gm.toFixed(1) + "%") + "</td>" +
@@ -330,9 +330,11 @@ const MARG = {
   nm: { t: "회사별 순이익률", s: "순이익 ÷ 매출 · 세금과 영업 외 손익까지 반영한 값", w: "연간 순이익" }
 };
 function drawAll() { drawMarg(); drawPer(); drawScat(); }
+const MARG_CAP = 200;   // |이익률| 이 이 값을 넘으면 축에서 뺍니다 (아직 매출이 거의 없는 회사)
 function drawMarg() {
   const svg = document.getElementById("figOm"), wrap = svg.parentElement, tip = document.getElementById("tipOm");
-  const rows = view().filter((r) => r[margKey] != null).sort((a, b) => b[margKey] - a[margKey]);
+  const all = view().filter((r) => r[margKey] != null);
+  const rows = all.filter((r) => Math.abs(r[margKey]) <= MARG_CAP).sort((a, b) => b[margKey] - a[margKey]);
   const W = Math.max(280, wrap.clientWidth || 320), small = W < 560;
   const L = small ? 92 : 124, R = small ? 58 : 76, T = 6, B = 24;
   const rowH = small ? 24 : 28, gap = small ? 8 : 10;
@@ -360,16 +362,17 @@ function drawMarg() {
     const v = r[margKey], y = T + i * (rowH + gap);
     const x0 = X(Math.min(0, v)), x1 = X(Math.max(0, v)), w = Math.max(2, x1 - x0);
     svg.appendChild(txt(el("text", { x: L - 8, y: y + rowH / 2 + 4, "text-anchor": "end", class: "name" }), r.ko));
-    svg.appendChild(el("rect", { x: v < 0 ? x1 - w : x0, y: y, width: w, height: rowH, rx: 4 },
+    svg.appendChild(el("rect", { x: x0, y: y, width: w, height: rowH, rx: 4 },
       "fill:" + (v < 0 ? "var(--down)" : r.c)));
     const lab = (v < 0 ? "−" : "") + Math.abs(v).toFixed(1) + "%";
+    // 라벨은 막대 바깥쪽 끝에 붙입니다 — 음수는 왼쪽 끝(x0) 바로 왼쪽, 양수는 오른쪽 끝(x1) 바로 오른쪽
     svg.appendChild(txt(el("text", {
-      x: v < 0 ? x0 - w - 7 : x0 + w + 7, y: y + rowH / 2 + 4,
+      x: v < 0 ? x0 - 7 : x1 + 7, y: y + rowH / 2 + 4,
       "text-anchor": v < 0 ? "end" : "start", class: "dlabel" + (v < 0 ? " down" : "") }), lab));
     const hit = el("rect", { x: L, y: y - gap / 2, width: pw + R - 8, height: rowH + gap, class: "hit" });
     hit.addEventListener("mouseenter", () => showTip(tip, wrap,
       '<div class="th">' + r.ko + " · " + r.fy + "</div>" +
-      '<div class="tr"><span class="nm">매출</span><b>' + r.cur + r.rev.toFixed(1) + "B</b></div>" +
+      '<div class="tr"><span class="nm">매출</span><b>' + fmtAmt(r.rev, r.cur) + "</b></div>" +
       '<div class="tr"><span class="nm">영업이익률</span><b class="' + cls(r.om) + '">' +
         (r.om == null ? "—" : r.om.toFixed(1) + "%") + "</b></div>" +
       '<div class="tr"><span class="nm">순이익률</span><b class="' + cls(r.nm) + '">' +
@@ -384,9 +387,15 @@ function drawMarg() {
   const both = view().filter((r) => r.om != null && r.nm != null);
   const worst = both.slice().sort((a, b) => (a.nm - a.om) - (b.nm - b.om))[0];
   const flip = both.filter((r) => r.nm > r.om).map((r) => r.ko);
-  const neg = view().filter((r) => r[margKey] != null && r[margKey] < 0).map((r) => r.ko);
+  const off = all.filter((r) => Math.abs(r[margKey]) > MARG_CAP)
+    .sort((a, b) => a[margKey] - b[margKey]);
+  const neg = rows.filter((r) => r[margKey] < 0).map((r) => r.ko);
   const missing = view().filter((r) => r[margKey] == null).map((r) => r.ko);
   document.getElementById("omNote").innerHTML = '<span class="ic">ℹ️</span><div>' +
+    (off.length ? "<b>" + off.map((r) => r.ko + "(" + r[margKey].toFixed(0) + "%)").join(" · ") +
+      "</b>" + josa(off[off.length - 1].ko, "은", "는") + " 축에서 뺐습니다 — " +
+      "매출이 아직 작아 이익률이 수백 %로 나오고, 같은 축에 두면 나머지 회사가 전부 0선에 붙어 버립니다. " +
+      "<b>값을 숨긴 게 아니라 자리만 옮긴 것이고, 위 스크리너 표에 그대로 있습니다.</b> " : "") +
     (missing.length ? "<b>" + missing.join(" · ") + "</b>" + josa(missing.join(" · "), "은", "는") + " 확인한 자료에 " + MARG[margKey].w +
       "이 없어 이 그래프에서 빠졌습니다. 각 종목 페이지에는 확인된 지표만 실었습니다. "
       : "이 목록은 모든 회사의 " + (margKey === "om" ? "영업이익률" : "순이익률") + "을 확인했습니다. ") +
@@ -438,6 +447,7 @@ function drawScat() {
     const hit = el("circle", { cx: cx, cy: cy, r: 16, class: "hit" });
     hit.addEventListener("mouseenter", () => showTip(tip, wrap,
       '<div class="th">' + r.ko + " · " + r.fy + "</div>" +
+      '<div class="tr"><span class="nm">매출</span><b>' + fmtAmt(r.rev, r.cur) + "</b></div>" +
       '<div class="tr"><span class="nm">전년 대비</span><b class="' + (r.growth > 0 ? "up" : "down") + '">' +
         (r.growth > 0 ? "+" : "−") + Math.abs(r.growth).toFixed(1) + "%</b></div>" +
       '<div class="tr"><span class="nm">총마진</span><b>' + r.gm.toFixed(1) + "%</b></div>" +
@@ -479,7 +489,7 @@ function drawPer() {
     svg.appendChild(txt(el("text", { x: L - 8, y: y + rowH / 2 + 4, "text-anchor": "end", class: "name" }), r.ko));
     svg.appendChild(el("rect", { x: L, y: y, width: w, height: rowH, rx: 4 }, "fill:" + r.c));
     svg.appendChild(txt(el("text", { x: L + w + 7, y: y + rowH / 2 + 4, class: "dlabel" }),
-      r.cur + v.toFixed(v >= 1 ? 2 : 3) + "M"));
+      (v < 0 ? "−" : "") + r.cur + Math.abs(v).toFixed(Math.abs(v) >= 1 ? 2 : 3) + "M"));
     const hit = el("rect", { x: L, y: y - gap / 2, width: pw + R - 8, height: rowH + gap, class: "hit" });
     hit.addEventListener("mouseenter", () => showTip(tip, wrap,
       '<div class="th">' + r.ko + " · " + r.fy + "</div>" +
@@ -534,7 +544,8 @@ function prender() {
       "<td>" + p.est + "<br><small style='color:var(--ink-3)'>" + r.age + "년차</small></td>" +
       "<td class='tx'>" + p.hq + "</td>" +
       "<td class='tx'>" + p.ex + (p.ex2 ? "<br><small style='color:var(--ink-3)'>" + p.ex2 + "</small>" : "") + "</td>" +
-      "<td class='tx'>" + p.ceo + "<br><small style='color:var(--ink-3)'>" + p.ceoEn + " · " + p.since + "년</small></td>" +
+      "<td class='tx' style='white-space:normal;min-width:136px'>" + p.ceo +
+      "<br><small style='color:var(--ink-3)'>" + p.ceoEn + " · " + p.since + "년</small></td>" +
       "<td>" + (r.tenure >= 1 ? r.tenure + "년" : "첫해") + "</td>" +
       "<td class='tx'>" + p.fye + "</td>" +
       "<td class='tx'>" + r.div + "</td></tr>";
