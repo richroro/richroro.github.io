@@ -189,6 +189,25 @@ th:nth-child(4),td:nth-child(4){text-align:left}
 tbody tr:hover{background:var(--panel-2)}
 tbody tr.on{background:var(--accent-wash)}
 
+/* 참고 세트 */
+.refbar{display:flex;flex-wrap:wrap;gap:7px;align-items:center;margin-top:10px}
+.ref{display:inline-flex;align-items:center;gap:6px;height:26px;padding:0 4px 0 10px;border-radius:99px;
+  background:var(--panel-2);border:1px solid var(--line);font-size:11.5px;font-weight:700;color:var(--ink-2);
+  max-width:100%}
+.ref .nm{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:150px}
+.ref button{width:18px;height:18px;border-radius:99px;display:grid;place-items:center;color:var(--ink-3);
+  font-size:13px;line-height:1;flex:none}
+.ref button:hover{background:var(--line);color:var(--ink)}
+.empty{color:var(--ink-3);font-size:12.5px;padding:14px 0 4px;line-height:1.65}
+.lgd{display:flex;gap:14px;flex-wrap:wrap;margin:11px 0 2px;font-size:11.5px;color:var(--ink-2);font-weight:700}
+.lgd i{display:inline-flex;align-items:center;gap:6px;font-style:normal}
+.lgd .dot{width:10px;height:10px;border-radius:99px;background:var(--accent)}
+.lgd .band{width:22px;height:9px;border-radius:3px;background:color-mix(in srgb,var(--ink-3) 34%,transparent);
+  border-left:2px solid var(--ink-2)}
+.warnline{margin-top:10px;padding:9px 12px;border-radius:var(--r-sm);background:var(--panel-2);
+  border:1px solid var(--line);color:var(--ink-2);font-size:12px;line-height:1.6}
+.warnline b{color:var(--ink)}
+
 .foot{margin-top:26px;color:var(--ink-3);font-size:12px;line-height:1.7;border-top:1px solid var(--line);padding-top:16px}
 .err{margin-top:14px;padding:12px 14px;border-radius:var(--r-sm);font-size:13px;line-height:1.6;
   background:color-mix(in srgb,var(--crit) 12%,var(--panel));border:1px solid color-mix(in srgb,var(--crit) 45%,var(--line))}
@@ -326,10 +345,48 @@ tbody tr.on{background:var(--accent-wash)}
     </div>
   </section>
 
+  <!-- 영상을 열지 않아도 저장된 참고 세트를 보고 관리할 수 있도록 #report 밖에 둔다 -->
+  <section id="refSection" hidden>
+    <div class="grid">
+      <div class="card">
+        <header>
+          <h3>참고 세트와 비교</h3><span class="sub">잘 도는 영상들을 모아 내 영상을 그 옆에 놓아 보기</span>
+          <span style="flex:1"></span>
+          <button class="btn sm primary" id="btnAddRef">이 영상을 참고 세트에 추가</button>
+          <button class="btn sm" id="btnClearRefs">전부 지우기</button>
+        </header>
+        <p class="hint">여러 영상을 차례로 넣어 &lsquo;참고 세트&rsquo;에 쌓으면, 그 분포 위에 지금 영상이 어디쯤 있는지
+           보여 줍니다. 영상이 아니라 <b>수치만</b> 이 브라우저에 남습니다.</p>
+        <div class="refbar" id="refBar"></div>
+        <div id="cmpEmpty" class="empty"></div>
+        <div id="cmpBody" hidden>
+          <div class="warnline" id="cmpWarn" hidden></div>
+          <div class="lgd">
+            <i><span class="dot"></span>내 영상</i>
+            <i><span class="band"></span>참고 세트 — 사분범위와 중앙값</i>
+          </div>
+          <div class="plot" id="cmpPlot">
+            <canvas id="cmp" role="img" aria-label="참고 세트 대비 내 영상 위치"></canvas>
+            <div class="tip" id="cmpTip"></div>
+          </div>
+          <div class="tblwrap">
+            <table id="cmpTbl">
+              <thead><tr><th>지표</th><th>내 영상</th><th>참고 중앙값</th><th>참고 범위</th><th>n</th></tr></thead>
+              <tbody></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </section>
+
   <div class="note" id="privacy">
-    <b>무엇을 저장하나요 — 아무것도 저장하지 않습니다.</b><br />
-    영상은 <code>URL.createObjectURL</code> 로 브라우저 안에서만 열립니다. 업로드도, 서버 저장도, 분석 결과 전송도 없습니다.
-    탭을 닫으면 전부 사라집니다. 페이지를 닫은 뒤 결과가 필요하면 CSV·JSON 으로 내려받아 두세요.
+    <b>영상은 이 브라우저 밖으로 나가지 않습니다.</b><br />
+    <code>URL.createObjectURL</code> 로 브라우저 안에서만 열립니다. 업로드도, 서버 저장도, 분석 결과 전송도 없습니다.
+    탭을 닫으면 영상과 분석 결과는 사라집니다. 결과가 필요하면 CSV·JSON 으로 내려받아 두세요.<br />
+    딱 하나 예외는 <b>참고 세트</b>입니다. &lsquo;참고 세트에 추가&rsquo;를 누르면 파일 이름과 지표 <b>숫자만</b>
+    이 브라우저의 <code>localStorage</code> 에 남습니다(영상도, 프레임도 아닙니다). &lsquo;전부 지우기&rsquo;로 언제든 삭제됩니다.
   </div>
 
   <div class="foot">
@@ -1261,6 +1318,7 @@ function drawAll() {
   drawTimeline(null);
   drawHist(null);
   drawSafe();
+  if (!$('#cmpBody').hidden) drawCompare(null);
 }
 
 /* ============================================================
@@ -1679,7 +1737,7 @@ $('#safeRange').addEventListener('input', e => {
 let rzTimer = null;
 window.addEventListener('resize', () => {
   hoverT = null;
-  hideTip($('#tlTip')); hideTip($('#hiTip'));
+  hideTip($('#tlTip')); hideTip($('#hiTip')); hideTip($('#cmpTip'));
   clearTimeout(rzTimer);
   rzTimer = setTimeout(() => { if (A) drawAll(); }, 140);
 });
@@ -1740,6 +1798,7 @@ async function run(file) {
     $('#report').hidden = false;
     $('#cutSub').textContent = `${A.C.shots.length}개 샷 · 중앙값 ${nf(A.m.medShot, 2)}초`;
     renderKPI(); renderChecks(); renderPlatUI(); renderStrip(); renderTable(); renderMethod();
+    renderCompare();
     await previewAt(0);
     drawAll();
     $('#report').scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -1875,12 +1934,244 @@ async function makeSample() {
 
 $('#btnSample').onclick = makeSample;
 
+
+/* ============================================================
+   14. 참고 세트 — 여러 영상의 수치를 모아 분포로 삼는다
+   영상이 아니라 숫자만 남긴다. 한 영상의 절대값보다, 잘 도는 영상들이
+   어느 범위에 몰려 있고 내 것이 그 어디쯤인지가 훨씬 쓸모 있다.
+   ============================================================ */
+
+const MET = [
+  { k: 'dur',           l: '길이',            u: '초',    d: 1, get: m => m.dur },
+  { k: 'medShot',       l: '컷 길이 중앙값',   u: '초',    d: 2, get: m => m.medShot },
+  { k: 'cutsPerMin',    l: '분당 컷',          u: '컷',    d: 0, get: m => m.cutsPerMin },
+  { k: 'firstCut',      l: '첫 컷',            u: '초',    d: 2, get: m => m.firstCut },
+  { k: 'hookRatio',     l: '도입 3초 변화량',   u: '%',    d: 0, get: m => m.hookRatio == null ? null : m.hookRatio * 100 },
+  { k: 'motionAll',     l: '평균 화면 변화량',  u: '',     d: 2, get: m => m.motionAll * 100 },
+  { k: 'lufs',          l: '라우드니스',        u: 'LUFS', d: 1, get: m => m.lufs },
+  { k: 'silShare',      l: '무음 비율',         u: '%',    d: 0, get: m => m.silShare * 100 },
+  { k: 'staticLongest', l: '최장 정적 구간',    u: '초',   d: 1, get: m => m.staticLongest },
+  { k: 'brightness',    l: '평균 밝기',         u: '',     d: 0, get: m => m.brightness * 100 }
+];
+
+const REF_KEY = 'sa-refs';
+let REFS = (function () {
+  try {
+    const a = JSON.parse(localStorage.getItem(REF_KEY) || '[]');
+    return Array.isArray(a) ? a.filter(r => r && r.v && r.id) : [];
+  } catch (e) { return []; }
+})();
+
+function saveRefs() {
+  // 프라이빗 모드나 용량 초과로 막혀도 이번 세션 안에서는 그대로 쓴다
+  try { localStorage.setItem(REF_KEY, JSON.stringify(REFS)); } catch (e) {}
+}
+
+function quant(sorted, q) {
+  if (!sorted.length) return null;
+  const i = (sorted.length - 1) * q, lo = Math.floor(i), hi = Math.ceil(i);
+  return lo === hi ? sorted[lo] : sorted[lo] + (sorted[hi] - sorted[lo]) * (i - lo);
+}
+
+function compareRows() {
+  const mineId = A && A.refId;
+  return MET.map(met => {
+    const raw = A ? met.get(A.m) : null;
+    const vals = REFS.filter(r => r.id !== mineId)
+      .map(r => r.v[met.k])
+      .filter(v => v != null && isFinite(v))
+      .sort((a, b) => a - b);
+    return {
+      met,
+      mine: (raw != null && isFinite(raw)) ? raw : null,
+      vals,
+      q: vals.length ? {
+        min: vals[0], p25: quant(vals, .25), med: quant(vals, .5),
+        p75: quant(vals, .75), max: vals[vals.length - 1]
+      } : null
+    };
+  });
+}
+
+const BUL = { rowH: 30, top: 10, bot: 10 };
+let CMP = null;
+
+function cmpGeom(w) {
+  const narrow = w < 520;
+  return { L: narrow ? 94 : 132, R: narrow ? 72 : 98 };
+}
+
+function drawCompare(hoverRow) {
+  const rows = compareRows();
+  const H = BUL.top + rows.length * BUL.rowH + BUL.bot;
+  const { g, w } = fit($('#cmp'), H);
+  const { L, R } = cmpGeom(w);
+  const x0 = L, x1 = Math.max(L + 30, w - R), pw = x1 - x0;
+  CMP = { rows, L, R, w, H };
+
+  const grid = cssVar('--grid'), ink2 = cssVar('--ink-2'), ink3 = cssVar('--ink-3');
+  const ink = cssVar('--ink'), acc = cssVar('--accent'), surf = cssVar('--panel');
+
+  rows.forEach((r, i) => {
+    const cy = BUL.top + i * BUL.rowH + BUL.rowH / 2;
+    if (hoverRow === i) {
+      g.fillStyle = cssVar('--accent-wash');
+      g.fillRect(0, cy - BUL.rowH / 2, w, BUL.rowH);
+    }
+
+    g.fillStyle = ink2;
+    g.font = '600 11.5px ' + FONT;
+    g.textAlign = 'right'; g.textBaseline = 'middle';
+    g.fillText(r.met.l, L - 11, cy);
+
+    // 이 행에서 그릴 값들의 범위 (지표마다 단위가 달라 행마다 따로 잡는다)
+    const all = r.vals.concat(r.mine == null ? [] : [r.mine]);
+    g.strokeStyle = grid; g.lineWidth = 1;
+    g.beginPath(); g.moveTo(x0, Math.round(cy) + .5); g.lineTo(x1, Math.round(cy) + .5); g.stroke();
+    if (!all.length) {
+      g.fillStyle = ink3; g.font = '500 11px ' + FONT; g.textAlign = 'left';
+      g.fillText('값 없음', x0 + 6, cy);
+      return;
+    }
+    let lo = Math.min.apply(null, all), hi = Math.max.apply(null, all);
+    if (hi - lo < 1e-9) { lo -= Math.abs(lo) * .1 + .5; hi += Math.abs(hi) * .1 + .5; }
+    const pad = (hi - lo) * .08; lo -= pad; hi += pad;
+    const X = v => x0 + (v - lo) / (hi - lo) * pw;
+
+    if (r.q) {
+      // 사분범위 띠 — 색이 아니라 회색으로 물러나 있고, 강조는 내 영상 하나에만 준다
+      g.fillStyle = ink3; g.globalAlpha = .3;
+      const bx = X(r.q.p25), bw = Math.max(3, X(r.q.p75) - bx);
+      g.beginPath();
+      g.roundRect ? g.roundRect(bx, cy - 4.5, bw, 9, 3) : g.rect(bx, cy - 4.5, bw, 9);
+      g.fill(); g.globalAlpha = 1;
+
+      if (r.vals.length <= 14) {
+        g.fillStyle = ink3; g.globalAlpha = .8;
+        r.vals.forEach(v => { g.beginPath(); g.arc(X(v), cy, 2.5, 0, 7); g.fill(); });
+        g.globalAlpha = 1;
+      }
+      g.strokeStyle = ink2; g.lineWidth = 2;
+      g.beginPath(); g.moveTo(X(r.q.med), cy - 7); g.lineTo(X(r.q.med), cy + 7); g.stroke();
+    }
+
+    if (r.mine != null) {
+      g.beginPath(); g.arc(X(r.mine), cy, 5, 0, 7);
+      g.fillStyle = acc; g.fill();
+      g.strokeStyle = surf; g.lineWidth = 2; g.stroke();   // 표면색 링으로 띠에서 떼어 놓는다
+    }
+
+    g.fillStyle = ink;
+    g.font = '700 11.5px ' + FONT;
+    g.textAlign = 'right'; g.textBaseline = 'middle';
+    g.fillText(r.mine == null ? '–' : nf(r.mine, r.met.d) + (r.met.u ? ' ' + r.met.u : ''), w - 4, cy);
+  });
+}
+
+function renderCompare() {
+  // 캔버스가 제 폭을 재려면 그리기 전에 먼저 펼쳐 둬야 한다
+  $('#refSection').hidden = !(REFS.length || A);
+
+  const bar = $('#refBar');
+  bar.innerHTML = '';
+  REFS.forEach(r => {
+    const el = document.createElement('span');
+    el.className = 'ref';
+    const cur = A && A.refId === r.id;
+    el.innerHTML = `<span class="nm" title="${r.name}">${r.name}</span>` +
+      (cur ? '<span style="color:var(--accent)">지금</span>' : '') +
+      `<button type="button" aria-label="${r.name} 빼기" data-id="${r.id}">×</button>`;
+    bar.appendChild(el);
+  });
+  $$('#refBar button').forEach(b => b.onclick = () => {
+    REFS = REFS.filter(r => r.id !== b.dataset.id);
+    saveRefs(); renderCompare();
+  });
+  $('#btnClearRefs').disabled = !REFS.length;
+  $('#btnAddRef').disabled = !A || (A.refId && REFS.some(r => r.id === A.refId));
+
+  const others = REFS.filter(r => !A || r.id !== A.refId).length;
+  $('#cmpEmpty').hidden = others > 0;
+  $('#cmpBody').hidden = others === 0;
+  if (!others) {
+    $('#cmpEmpty').innerHTML = REFS.length
+      ? '참고 세트에 이 영상 하나뿐입니다. 비교하려면 다른 영상을 더 넣어 주세요.'
+      : '아직 참고 세트가 비어 있습니다. 잘 도는 영상을 하나씩 넣고 <b>참고 세트에 추가</b>를 누르면 여기에 분포가 쌓입니다. ' +
+        '영상은 저장되지 않고 위 지표 숫자만 남습니다.';
+    return;
+  }
+
+  const warn = $('#cmpWarn');
+  warn.hidden = others >= 8;
+  if (!warn.hidden) {
+    warn.innerHTML = `참고 영상이 <b>${others}개</b>뿐입니다. 이 개수의 중앙값·사분범위는 경향이라고 부르기 어렵습니다 — ` +
+      `<b>최소 8~10개</b>는 모아야 의미가 생깁니다. 지금은 점이 어디 찍히는지 정도로만 보세요.`;
+  }
+
+  const tb = $('#cmpTbl tbody');
+  tb.innerHTML = compareRows().map(r => {
+    const u = r.met.u ? ' ' + r.met.u : '';
+    return `<tr><td>${r.met.l}</td>
+      <td>${r.mine == null ? '–' : nf(r.mine, r.met.d) + u}</td>
+      <td>${r.q ? nf(r.q.med, r.met.d) + u : '–'}</td>
+      <td>${r.q ? nf(r.q.min, r.met.d) + ' ~ ' + nf(r.q.max, r.met.d) + u : '–'}</td>
+      <td>${r.vals.length}</td></tr>`;
+  }).join('');
+
+  drawCompare(null);
+}
+
+function addCurrentToRefs() {
+  if (!A) return;
+  const v = {};
+  MET.forEach(m => {
+    const x = m.get(A.m);
+    v[m.k] = (x != null && isFinite(x)) ? +x.toFixed(4) : null;
+  });
+  A.refId = 'r' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
+  REFS.push({ id: A.refId, name: A.m.fileName || '이름 없음', ts: Date.now(), v });
+  saveRefs(); renderCompare();
+}
+
+$('#btnAddRef').onclick = addCurrentToRefs;
+$('#btnClearRefs').onclick = () => {
+  if (!REFS.length) return;
+  REFS = []; if (A) A.refId = null;
+  saveRefs(); renderCompare();
+};
+
+(function wireCompare() {
+  const host = $('#cmpPlot');
+  host.addEventListener('pointermove', e => {
+    if (!CMP) return;
+    const r = host.getBoundingClientRect();
+    const px = e.clientX - r.left, py = e.clientY - r.top;
+    const i = Math.floor((py - BUL.top) / BUL.rowH);
+    if (i < 0 || i >= CMP.rows.length) { hideTip($('#cmpTip')); drawCompare(null); return; }
+    drawCompare(i);
+    const row = CMP.rows[i], u = row.met.u ? ' ' + row.met.u : '';
+    let html = `<div class="tt">${row.met.l}</div>`;
+    html += tlRow(cssVar('--accent'), '내 영상', row.mine == null ? '–' : nf(row.mine, row.met.d) + u);
+    if (row.q) {
+      html += tlRow(cssVar('--ink-3'), '참고 중앙값', nf(row.q.med, row.met.d) + u);
+      html += tlRow('transparent', '사분범위', nf(row.q.p25, row.met.d) + ' ~ ' + nf(row.q.p75, row.met.d));
+      html += tlRow('transparent', '최소~최대', nf(row.q.min, row.met.d) + ' ~ ' + nf(row.q.max, row.met.d));
+      html += tlRow('transparent', '참고 n', row.vals.length + '개');
+    }
+    tipAt($('#cmpTip'), host, px, py, html);
+  });
+  host.addEventListener('pointerleave', () => { hideTip($('#cmpTip')); if (CMP) drawCompare(null); });
+})();
+
 /* 헤드리스 검증에서 쓰는 통로 — 화면과 같은 코드를 탄다 */
 window.__sa = {
   run,
   get result() { return A; },
-  CFG, SAMPLE, detectCuts, integratedLUFS
+  get refs() { return REFS; },
+  CFG, SAMPLE, MET, REF_KEY, detectCuts, integratedLUFS, compareRows, renderCompare
 };
+
+renderCompare();
 </script>
 </body>
 </html>
