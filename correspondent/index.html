@@ -486,7 +486,7 @@ footer{border-top:1px solid var(--line);margin-top:40px;background:var(--surface
       <div class="field">
         <label for="fPlace">어디에 계신가요? <span class="hint">필수</span></label>
         <input class="input" id="fPlace" type="text" maxlength="40" required autocomplete="off"
-               list="placeList" placeholder="예: 별빛 키즈카페">
+               list="placeList" placeholder="예: 별빛 키즈카페" data-autofocus>
         <datalist id="placeList"></datalist>
       </div>
       <div class="field">
@@ -549,7 +549,7 @@ footer{border-top:1px solid var(--line);margin-top:40px;background:var(--surface
       <div class="status" id="shareStatus" aria-live="polite"></div>
     </div>
     <div class="sheet-foot">
-      <button class="btn primary" type="button" id="shareCopy">복사</button>
+      <button class="btn primary" type="button" id="shareCopy" data-autofocus>복사</button>
       <button class="btn" type="button" id="shareNative" hidden>공유</button>
       <button class="btn ghost" type="button" data-close>닫기</button>
     </div>
@@ -1171,7 +1171,8 @@ function openSheet(sel){
   if (!lastFocus) lastFocus = document.activeElement;
   $(sel).classList.add("open");
   document.body.style.overflow = "hidden";
-  const f = $(sel).querySelector("input:not([hidden]),textarea,button:not(.x)");
+  const f = $(sel).querySelector("[data-autofocus]") ||
+            $(sel).querySelector("input:not([hidden]),textarea,button:not(.x)");
   if (f) setTimeout(() => f.focus(), 30);
 }
 function closeSheets(keepFocus){
@@ -1245,7 +1246,10 @@ async function openShare(list){
   try {
     const code = await pack(list);
     shareCache = shareText(list, code);
-    $("#shareBox").value = shareCache;
+    const box = $("#shareBox");
+    box.value = shareCache;
+    box.scrollTop = 0;
+    try { box.setSelectionRange(0, 0); } catch(e){}
   } catch(e) {
     shareCache = "";
     $("#shareBox").value = "";
@@ -1593,6 +1597,7 @@ function bind(){
       const r = await packCapped(board.reports, BUNDLE_CAP);
       const text = shareText(r.used, r.code);
       $("#bundleBox").value = text;
+      $("#bundleBox").scrollTop = 0;
       $("#bundleBox").hidden = false;
       $("#bundleRow").hidden = false;
       $("#bundleShare").hidden = !navigator.share;
