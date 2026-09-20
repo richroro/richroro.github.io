@@ -41,7 +41,7 @@
 
 <nav class="snav" aria-label="섹션 바로가기"><div class="wrap snav-in">
   <a href="#screener">스크리너</a><a href="#margin">영업이익률</a>
-  <a href="#korea">한국과의 관계</a><a href="/m7/">M7 허브</a>
+  <a href="#people">1인당 지표</a><a href="#korea">한국과의 관계</a><a href="/m7/">M7 허브</a>
 </div></nav>
 
 <main>
@@ -62,6 +62,8 @@
             <th class="sortable" data-k="rev" data-t="n" aria-sort="descending">매출</th>
             <th class="sortable" data-k="om" data-t="n">영업이익률</th>
             <th class="sortable" data-k="topShare" data-t="n">최대 부문 비중</th>
+            <th class="sortable" data-k="emp" data-t="n">임직원</th>
+            <th class="sortable" data-k="revPer" data-t="n">1인당 매출</th>
             <th class="sortable" data-k="kr" data-t="s">한국과의 관계</th>
           </tr></thead>
           <tbody id="rows"></tbody>
@@ -91,6 +93,35 @@
         <div class="tip" id="tipOm"></div>
       </div>
       <div class="note mt12" id="omNote"></div>
+    </div>
+  </div>
+</section>
+
+<section id="people">
+  <div class="wrap">
+    <p class="eyebrow">People</p>
+    <h2 class="title">사람 수로 나눠 보면</h2>
+    <p class="lead">매출을 임직원 수로 나누면 회사의 성격이 드러납니다.
+      가장 높은 곳과 낮은 곳이 <b id="revSpread">—</b> 벌어지고, 영업이익 기준으로는 <b id="oiSpread">—</b>까지 갑니다.</p>
+    <div class="card pad mt16">
+      <div class="chart-head"><div>
+        <div class="ct">1인당 매출</div>
+        <div class="cs">매출 ÷ 임직원 수 · 단위 100만</div>
+      </div>
+      <div class="seg" role="group" aria-label="지표 전환">
+        <button type="button" data-per="rev" aria-pressed="true">1인당 매출</button>
+        <button type="button" data-per="oi" aria-pressed="false">1인당 영업이익</button>
+      </div></div>
+      <div class="figwrap" id="wrapPer">
+        <svg class="fig" id="figPer" role="img" aria-label="회사별 1인당 지표 막대그래프"></svg>
+        <div class="tip" id="tipPer"></div>
+      </div>
+      <div class="note warn mt12"><span class="ic">⚖️</span><div><b>업종이 다르면 그대로 비교하면 안 됩니다.</b>
+        아마존 임직원 158만 명에는 물류창고 인력이, 테슬라 13만 명에는 공장 인력이 들어 있습니다.
+        반면 엔비디아 4.2만 명은 대부분 설계·소프트웨어이고 <b>생산은 TSMC가 합니다</b> —
+        외주로 넘긴 인력은 이 숫자에 잡히지 않습니다. 같은 업종끼리 볼 때 의미가 있는 지표입니다.</div></div>
+      <div class="note mt12"><span class="ic">📆</span><div>임직원 수 시점과 매출 회계연도가 정확히 일치하지 않는 회사가 있습니다.
+        표에 각각의 기준 시점을 적어 뒀습니다.</div></div>
     </div>
   </div>
 </section>
@@ -132,6 +163,9 @@ const ROWS = REGISTRY.filter((r) => r.data).map((r) => {
   return Object.assign({}, r, {
     rev: d.rev, fy: d.fy, cur: d.cur || "$",
     om: d.oi == null ? null : (d.oi / d.rev) * 100,
+    emp: d.emp || null, empAsOf: d.empAsOf,
+    revPer: d.emp ? (d.rev * 1e9) / d.emp : null,
+    oiPer: (d.emp && d.oi != null) ? (d.oi * 1e9) / d.emp : null,
     topShare: d.top ? (d.top.v / d.top.of) * 100 : null,
     topK: d.top ? d.top.k : null
   });
@@ -163,6 +197,8 @@ function render() {
       "<td>" + r.cur + r.rev.toFixed(1) + "B</td>" +
       "<td>" + (r.om == null ? "—" : r.om.toFixed(1) + "%") + "</td>" +
       "<td>" + (r.topShare == null ? "—" : r.topShare.toFixed(1) + "%") + "</td>" +
+      "<td>" + (r.emp == null ? "—" : r.emp.toLocaleString("ko-KR")) + "</td>" +
+      "<td>" + (r.revPer == null ? "—" : r.cur + (r.revPer / 1e6).toFixed(2) + "M") + "</td>" +
       "<td><span class='krtag " + r.kr + "'>" + r.kr + "</span></td></tr>";
   }).join("");
   document.querySelectorAll("#tbl th.sortable").forEach((th) =>
@@ -216,11 +252,72 @@ function drawAll() {
     hit.addEventListener("mouseleave", () => tip.classList.remove("on"));
     svg.appendChild(hit);
   });
+  drawPer();
   const missing = view().filter((r) => r.om == null).map((r) => r.ko);
   document.getElementById("omNote").innerHTML = '<span class="ic">ℹ️</span><div>' +
     (missing.length ? "<b>" + missing.join(" · ") + "</b> 은(는) 확인한 자료에 연간 영업이익이 없어 이 그래프에서 빠졌습니다. " +
       "각 종목 페이지에는 총마진 등 확인된 지표를 실었습니다." : "이 분야는 모든 회사의 영업이익률을 확인했습니다.");
 }
+
+/* --- 1인당 지표 --- */
+let perKey = "revPer";
+function drawPer() {
+  const svg = document.getElementById("figPer"), wrap = svg.parentElement, tip = document.getElementById("tipPer");
+  const rows = ROWS.filter((r) => r[perKey] != null).sort((a, b) => b[perKey] - a[perKey]);
+  const W = Math.max(280, wrap.clientWidth || 320), small = W < 560;
+  const L = small ? 92 : 124, R = small ? 62 : 82, T = 6, B = 24;
+  const rowH = small ? 24 : 28, gap = small ? 8 : 10;
+  const H = T + Math.max(1, rows.length) * (rowH + gap) - gap + B;
+  const pw = Math.max(40, W - L - R);
+  const maxM = Math.max.apply(null, rows.map((r) => r[perKey] / 1e6));
+  const sc = niceScale(maxM, small ? 3 : 5);
+  svg.setAttribute("width", W); svg.setAttribute("height", H);
+  svg.setAttribute("viewBox", "0 0 " + W + " " + H);
+  while (svg.firstChild) svg.removeChild(svg.firstChild);
+  for (let i = 0; i <= sc.ticks; i++) {
+    const x = L + (sc.step * i / sc.max) * pw;
+    svg.appendChild(el("line", { x1: x, x2: x, y1: T, y2: H - B + 3, class: i === 0 ? "baseline" : "gridline" }));
+    svg.appendChild(txt(el("text", { x: x, y: H - B + 16, "text-anchor": "middle", class: "axis" }),
+      Math.round(sc.step * i * 100) / 100));
+  }
+  rows.forEach((r, i) => {
+    const v = r[perKey] / 1e6, y = T + i * (rowH + gap), w = Math.max(2, (v / sc.max) * pw);
+    svg.appendChild(txt(el("text", { x: L - 8, y: y + rowH / 2 + 4, "text-anchor": "end", class: "name" }), r.ko));
+    svg.appendChild(el("rect", { x: L, y: y, width: w, height: rowH, rx: 4 }, "fill:" + r.c));
+    svg.appendChild(txt(el("text", { x: L + w + 7, y: y + rowH / 2 + 4, class: "dlabel" }),
+      r.cur + v.toFixed(v >= 1 ? 2 : 3) + "M"));
+    const hit = el("rect", { x: L, y: y - gap / 2, width: pw + R - 8, height: rowH + gap, class: "hit" });
+    hit.addEventListener("mouseenter", () => showTip(tip, wrap,
+      '<div class="th">' + r.ko + " · " + r.fy + "</div>" +
+      '<div class="tr"><span class="nm">임직원</span><b>' + r.emp.toLocaleString("ko-KR") + "</b></div>" +
+      '<div class="tr"><span class="nm">1인당 매출</span><b>' + r.cur + (r.revPer / 1e6).toFixed(2) + "M</b></div>" +
+      '<div class="tr"><span class="nm">1인당 영업이익</span><b>' +
+        (r.oiPer == null ? "—" : r.cur + (r.oiPer / 1e6).toFixed(3) + "M") + "</b></div>" +
+      '<div class="tr"><span class="nm">임직원 기준</span><b>' + r.empAsOf + "</b></div>", L + w / 2, y));
+    hit.addEventListener("mouseleave", () => tip.classList.remove("on"));
+    svg.appendChild(hit);
+  });
+}
+document.querySelectorAll('.seg button[data-per]').forEach((b) => {
+  b.addEventListener("click", () => {
+    perKey = b.dataset.per === "oi" ? "oiPer" : "revPer";
+    document.querySelectorAll(".seg button[data-per]").forEach((x) =>
+      x.setAttribute("aria-pressed", String(x.dataset.per === b.dataset.per)));
+    document.querySelector("#people .ct").textContent = perKey === "oiPer" ? "1인당 영업이익" : "1인당 매출";
+    document.querySelector("#people .cs").textContent =
+      (perKey === "oiPer" ? "영업이익" : "매출") + " ÷ 임직원 수 · 단위 100만" +
+      (perKey === "oiPer" ? " · 영업이익 미공개 회사는 빠집니다" : "");
+    drawPer();
+  });
+});
+(function spreads() {
+  const rv = ROWS.filter((r) => r.revPer != null).map((r) => r.revPer);
+  const oi = ROWS.filter((r) => r.oiPer != null).map((r) => r.oiPer);
+  document.getElementById("revSpread").textContent =
+    (Math.max.apply(null, rv) / Math.min.apply(null, rv)).toFixed(1) + "배";
+  document.getElementById("oiSpread").textContent =
+    Math.round(Math.max.apply(null, oi) / Math.min.apply(null, oi)) + "배";
+})();
 
 const KR_DESC = {
   "공급": ["한국 기업이 부품을 대는 쪽", "이 회사가 잘되면 납품사 실적에 직접 붙습니다. 다만 단가 협상력이 보통 사는 쪽에 있어, 물량만큼 이익이 따라가지 않는 경우가 많습니다."],

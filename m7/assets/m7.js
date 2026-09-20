@@ -113,6 +113,37 @@ function drawMix() {
 
 function drawAll() { drawMix(); }
 
+
+/* ---------------------------- 인력 · 1인당 지표 ---------------------------- */
+function regEntry() {
+  if (typeof REGISTRY === "undefined") return null;
+  return REGISTRY.find((r) => r.slug === CO.slug) || null;
+}
+function peopleHtml() {
+  const e = regEntry();
+  if (!e || !e.data || !e.data.emp) return "";
+  const d = e.data, cur = d.cur || "$";
+  const revPer = (d.rev * 1e9) / d.emp;
+  const oiPer = d.oi == null ? null : (d.oi * 1e9) / d.emp;
+  const m = (v) => cur + (v / 1e6).toFixed(v / 1e6 >= 1 ? 2 : 3) + "M";
+  return '<div class="card pad mt16"><div class="rowsplit"><h3>인력과 1인당 지표</h3>' +
+    '<span class="fybadge">임직원 ' + esc(d.empAsOf) + ' 기준</span></div>' +
+    '<div class="stats c4 mt12" role="group" aria-label="인력 지표">' +
+    '<div class="st"><div class="k">임직원 수</div><div class="v num">' + nf.format(d.emp) +
+      '</div><div class="s">' + esc(d.empAsOf) + '</div></div>' +
+    '<div class="st"><div class="k">1인당 매출</div><div class="v num">' + m(revPer) +
+      '</div><div class="s">' + cur + d.rev.toFixed(1) + 'B ÷ 임직원</div></div>' +
+    '<div class="st"><div class="k">1인당 영업이익</div><div class="v num">' +
+      (oiPer == null ? "—" : m(oiPer)) + '</div><div class="s">' +
+      (oiPer == null ? "영업이익 미공개" : cur + d.oi.toFixed(1) + "B ÷ 임직원") + '</div></div>' +
+    '<div class="st"><div class="k">매출 기준 회계연도</div><div class="v">' + esc(d.fy) +
+      '</div><div class="s">임직원 시점과 다를 수 있음</div></div></div>' +
+    '<div class="note mt12"><span class="ic">👥</span><div>' +
+      (CO.peopleNote || "1인당 지표는 매출·영업이익을 임직원 수로 나눈 값입니다. 업종이 다르면 그대로 비교하면 안 됩니다 — " +
+       "제조·물류 인력이 많은 회사는 구조적으로 낮게 나옵니다.") +
+      ' <a href="/stocks/#people" style="border-bottom:1px solid var(--line)">다른 회사와 비교</a></div></div></div>';
+}
+
 /* ---------------------------- 페이지 렌더 ---------------------------- */
 function navList() {
   // 종목 페이지는 registry.js 를 먼저 불러 같은 그룹의 동료를 내비에 띄웁니다.
@@ -207,6 +238,7 @@ function render() {
   '<h2 class="title mt16">' + CO.headline + '</h2><p class="lead">' + CO.lead + '</p>' +
   '<div class="stats c4 mt16" role="group" aria-label="핵심 지표">' + statsHtml(CO.stats) + '</div>' +
   (CO.fy.note ? '<div class="note mt12"><span class="ic">📅</span><div>' + CO.fy.note + '</div></div>' : '') +
+  peopleHtml() +
   (CO.recent ? '<div class="card pad mt16"><div class="rowsplit"><h3>' + esc(CO.recent.title) +
     '</h3><span class="fybadge">' + esc(CO.recent.period) + ' · 가장 최근 발표</span></div>' +
     '<div class="stats c4 mt12" role="group" aria-label="최근 분기 지표">' + statsHtml(CO.recent.stats) + '</div>' +
