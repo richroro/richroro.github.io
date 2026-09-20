@@ -1,0 +1,249 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#04070e">
+<title>차가 보는 것 · 자율주행 시각화</title>
+<meta name="description" content="자율주행 화면이 보여 주는 층들 — 차선·물체·주행 가능 영역·계획 경로·점유 격자 — 이 각각 무엇이고 어떻게 겹쳐 보이는지, 슬라이더로 실제 장면과 겹쳐 가며 봅니다. 실제 주행 소프트웨어의 출력이 아니라 코드로 다시 그린 그림입니다.">
+<link rel="canonical" href="https://richroro.github.io/fsd/">
+<meta property="og:type" content="website"><meta property="og:locale" content="ko_KR">
+<meta property="og:site_name" content="Cadence">
+<meta property="og:url" content="https://richroro.github.io/fsd/">
+<meta property="og:title" content="차가 보는 것 — 자율주행 시각화를 코드로 다시 그리다">
+<meta property="og:description" content="슬라이더를 밀면 실제 장면이 인식 레이어로 녹습니다. 차선·물체·주행 가능 영역·계획 경로·점유 격자.">
+<meta name="twitter:card" content="summary">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%2314161C'/><path d='M20 64h60' stroke='%236fe3ff' stroke-width='5' stroke-linecap='round'/><rect x='34' y='34' width='32' height='20' rx='4' fill='none' stroke='%237cf2b0' stroke-width='4'/></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans+KR:wght@300;400;500;600;700&display=swap">
+<style>
+  :root{
+    --ink:#eef3fb; --dim:#93a3bd; --line:rgba(255,255,255,.13);
+    --glass:rgba(8,13,22,.7); --glass2:rgba(13,19,31,.92);
+    --acc:#6fe3ff; --pad:16px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+  html,body{height:100%;overflow:hidden;overscroll-behavior:none;background:#04070e}
+  @supports (height:100dvh){ html,body{height:100dvh} }
+  body{font-family:"IBM Plex Sans KR","Pretendard","Apple SD Gothic Neo",system-ui,sans-serif;
+    color:var(--ink);letter-spacing:-.2px;-webkit-font-smoothing:antialiased}
+  #stage{position:fixed;inset:0}
+  canvas{display:block;width:100%;height:100%;touch-action:none;cursor:grab}
+  canvas:active{cursor:grabbing}
+
+  .ui{position:fixed;z-index:10}
+  #top{top:max(var(--pad),env(safe-area-inset-top));left:max(var(--pad),env(safe-area-inset-left));max-width:min(54vw,420px)}
+  #top h1{font-size:clamp(17px,2.2vw,22px);font-weight:700;letter-spacing:-.6px;text-shadow:0 2px 18px #000}
+  #top p{margin-top:6px;font-size:12px;color:var(--dim);line-height:1.55;text-shadow:0 1px 10px #000}
+  #top .warn{margin-top:7px;font-size:11px;color:#8c9ab3;border-left:2px solid rgba(255,255,255,.18);padding-left:8px;line-height:1.5}
+
+  #panel{left:max(var(--pad),env(safe-area-inset-left));bottom:max(var(--pad),env(safe-area-inset-bottom));
+    width:276px;border:1px solid var(--line);border-radius:14px;background:var(--glass);
+    backdrop-filter:blur(15px);-webkit-backdrop-filter:blur(15px);overflow:hidden;box-shadow:0 22px 50px -22px #000}
+  #panel .head{display:flex;justify-content:space-between;align-items:center;padding:11px 13px;cursor:pointer}
+  #panel .head b{font-size:12px}
+  #panel .head span{font-size:11px;color:var(--dim);font-family:"IBM Plex Mono",monospace}
+  #panel.closed .body{display:none}
+  #panel .body{padding:6px 13px 13px;border-top:1px solid rgba(255,255,255,.07)}
+  .grp{margin-top:11px}
+  .grp>label{display:flex;justify-content:space-between;align-items:baseline;font-size:11px;font-weight:700;color:var(--dim);margin-bottom:6px}
+  .grp>label i{font-style:normal;color:var(--ink);font-family:"IBM Plex Mono",monospace}
+  input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:20px;background:transparent;cursor:pointer}
+  input[type=range]::-webkit-slider-runnable-track{height:3px;border-radius:3px;background:rgba(255,255,255,.18)}
+  input[type=range]::-moz-range-track{height:3px;border-radius:3px;background:rgba(255,255,255,.18)}
+  input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:14px;height:14px;border-radius:50%;
+    background:var(--acc);margin-top:-5.5px;box-shadow:0 0 0 4px rgba(111,227,255,.16)}
+  input[type=range]::-moz-range-thumb{width:14px;height:14px;border:0;border-radius:50%;background:var(--acc);
+    box-shadow:0 0 0 4px rgba(111,227,255,.16)}
+  .cams{display:grid;grid-template-columns:repeat(4,1fr);gap:4px}
+  .cam{padding:7px 2px;border-radius:7px;border:1px solid var(--line);background:rgba(255,255,255,.04);
+    color:var(--dim);font-size:11px;font-weight:700;cursor:pointer;font-family:inherit}
+  .cam.on{background:rgba(111,227,255,.14);border-color:rgba(111,227,255,.5);color:#cdf3ff}
+  .lays{display:grid;gap:5px;margin-top:11px}
+  .lay{display:flex;align-items:center;gap:8px;padding:7px 9px;border-radius:8px;border:1px solid var(--line);
+    background:rgba(255,255,255,.04);font-size:11.5px;font-weight:600;color:var(--dim);cursor:pointer;
+    font-family:inherit;text-align:left;width:100%}
+  .lay .d{width:8px;height:8px;border-radius:2px;flex:none;opacity:.35}
+  .lay.on{color:var(--ink);background:rgba(255,255,255,.07)}
+  .lay.on .d{opacity:1;box-shadow:0 0 8px currentColor}
+
+  #tour{right:max(var(--pad),env(safe-area-inset-right));top:max(var(--pad),env(safe-area-inset-top));width:300px;
+    border:1px solid var(--line);border-radius:14px;background:var(--glass2);backdrop-filter:blur(15px);
+    -webkit-backdrop-filter:blur(15px);padding:14px;box-shadow:0 22px 50px -22px #000}
+  #tour .step{font-size:11px;color:var(--dim);font-family:"IBM Plex Mono",monospace}
+  #tour h2{margin-top:8px;font-size:15px;font-weight:700}
+  #tour p{margin-top:8px;font-size:12.5px;line-height:1.65;color:#bccbe2}
+  #tour .btns{display:flex;gap:6px;margin-top:12px}
+  #tour button{flex:1;padding:8px;border-radius:8px;border:1px solid var(--line);background:rgba(255,255,255,.05);
+    color:var(--ink);font-family:inherit;font-size:12px;font-weight:700;cursor:pointer}
+  #tour button:hover{background:rgba(255,255,255,.11)}
+  #tour button.main{background:rgba(111,227,255,.15);border-color:rgba(111,227,255,.45);color:#cdf3ff}
+  #tour button:disabled{opacity:.35;cursor:default}
+
+  #boot{position:fixed;inset:0;z-index:40;display:grid;place-items:center;background:#04070e;transition:opacity .45s}
+  #boot.gone{opacity:0;pointer-events:none}
+  #boot p{font-size:12px;color:var(--dim)}
+  #boot .sp{width:44px;height:44px;margin:0 auto 14px;border-radius:50%;border:2px solid rgba(111,227,255,.2);
+    border-top-color:var(--acc);animation:sp 1s linear infinite}
+  @keyframes sp{to{transform:rotate(360deg)}}
+  #nogl{display:none;max-width:430px;text-align:center;padding:24px;font-size:13px;line-height:1.7;color:var(--dim)}
+  #nogl b{display:block;color:var(--ink);font-size:15px;margin-bottom:9px}
+
+  @media (max-width:880px){
+    :root{--pad:11px}
+    #top{max-width:calc(100vw - 22px)}
+    #top .warn{display:none}
+    #panel,#tour{width:calc(100vw - 22px);max-width:340px}
+    #tour{top:auto;bottom:calc(env(safe-area-inset-bottom) + 58px);right:11px}
+  }
+</style>
+</head>
+<body>
+
+<div id="stage"><canvas id="c"></canvas></div>
+
+<div class="ui" id="top">
+  <h1>차가 보는 것</h1>
+  <p>슬라이더를 밀면 실제 장면이 인식 레이어로 녹습니다. 앞차가 느리면 <b>계획 경로가 먼저</b> 옆 차선으로 휘고,
+     차체는 그 뒤를 따라갑니다.</p>
+  <p class="warn">실제 주행 소프트웨어의 출력이 아닙니다. 자율주행 화면이 보여 주는 층들이
+     각각 무엇인지 코드로 다시 그린 그림입니다.</p>
+</div>
+
+<div class="ui" id="panel">
+  <div class="head" id="head"><b>시야와 층</b><span id="stat">—</span></div>
+  <div class="body">
+    <div class="grp">
+      <label>시야 <i id="vVis">차가 보는 것</i></label>
+      <input type="range" id="sVis" min="0" max="100" value="100">
+    </div>
+    <div class="grp">
+      <label>속도 <i id="vSpd">1.0×</i></label>
+      <input type="range" id="sSpd" min="0" max="200" value="100">
+    </div>
+    <div class="grp">
+      <label>카메라</label>
+      <div class="cams" id="cams"></div>
+    </div>
+    <div class="lays" id="lays"></div>
+  </div>
+</div>
+
+<div class="ui" id="tour">
+  <div class="step" id="tStep">해설</div>
+  <h2 id="tTitle">다섯 개의 층</h2>
+  <p id="tBody">차가 세상을 보는 방식은 한 장의 그림이 아니라 여러 층이 겹친 것입니다.
+     차선, 물체, 갈 수 있는 바닥, 갈 길, 그리고 격자. 하나씩 켜 가며 보여 드릴게요.</p>
+  <div class="btns">
+    <button id="tPrev" disabled>‹ 이전</button>
+    <button id="tNext" class="main">해설 시작 ›</button>
+  </div>
+</div>
+
+<div id="boot">
+  <div class="in" id="bootIn"><div class="sp"></div><p>길을 까는 중…</p></div>
+  <div id="nogl">
+    <b>WebGL2 를 쓸 수 없습니다</b>
+    이 페이지는 브라우저의 3D 가속이 필요합니다. 최신 크롬·사파리·엣지에서 열어 주세요.
+  </div>
+</div>
+
+<script type="module">
+import { createFSD, LAYERS } from './assets/fsd.js';
+
+const $ = (s) => document.querySelector(s);
+const CAMS = [['chase', '추적'], ['hood', '보닛'], ['top', '위'], ['free', '자유']];
+
+let app = null, bootErr = null;
+try {
+  app = createFSD($('#c'), { onCamera: (m) => paintCams(m) });
+} catch (e) { bootErr = e; console.error(e); }
+
+function paintCams(mode) {
+  document.querySelectorAll('.cam').forEach((b) => b.classList.toggle('on', b.dataset.k === mode));
+}
+
+if (!app) {
+  const hasGL2 = (() => { try { return !!document.createElement('canvas').getContext('webgl2'); } catch (e) { return false; } })();
+  if (hasGL2 && bootErr) $('#nogl').innerHTML = '<b>화면을 시작하지 못했습니다</b>브라우저 콘솔에 오류가 찍혀 있습니다.';
+  $('#bootIn').style.display = 'none';
+  $('#nogl').style.display = 'block';
+  document.querySelectorAll('.ui').forEach((el) => el.remove());
+} else {
+  window.__fsd = app;
+  requestAnimationFrame(() => requestAnimationFrame(() => {
+    $('#boot').classList.add('gone');
+    setTimeout(() => $('#boot').remove(), 500);
+  }));
+
+  /* 시야 · 속도 */
+  const sVis = $('#sVis'), sSpd = $('#sSpd');
+  const syncVis = () => {
+    const v = sVis.value / 100;
+    app.setVision(v);
+    $('#vVis').textContent = v > 0.92 ? '차가 보는 것' : v < 0.08 ? '실제 장면' : Math.round(v * 100) + '% 겹침';
+  };
+  const syncSpd = () => { const v = sSpd.value / 100; app.setSpeed(v); $('#vSpd').textContent = v.toFixed(1) + '×'; };
+  sVis.addEventListener('input', syncVis);
+  sSpd.addEventListener('input', syncSpd);
+
+  /* 카메라 */
+  $('#cams').innerHTML = CAMS.map(([k, ko]) => `<button class="cam${k === 'chase' ? ' on' : ''}" data-k="${k}">${ko}</button>`).join('');
+  $('#cams').addEventListener('click', (e) => {
+    const b = e.target.closest('.cam'); if (!b) return;
+    app.setCamera(b.dataset.k);
+    paintCams(b.dataset.k);
+  });
+
+  /* 층 */
+  $('#lays').innerHTML = Object.entries(LAYERS).map(([k, l]) =>
+    `<button class="lay on" data-k="${k}" title="${l.desc}"><span class="d" style="background:#${l.color.toString(16).padStart(6, '0')};color:#${l.color.toString(16).padStart(6, '0')}"></span>${l.ko}</button>`).join('');
+  $('#lays').addEventListener('click', (e) => {
+    const b = e.target.closest('.lay'); if (!b) return;
+    const on = !b.classList.contains('on');
+    b.classList.toggle('on', on);
+    app.setLayer(b.dataset.k, on);
+  });
+  const paintLays = () => document.querySelectorAll('.lay').forEach((b) => b.classList.toggle('on', app.state.layers[b.dataset.k]));
+
+  $('#head').addEventListener('click', () => $('#panel').classList.toggle('closed'));
+  if (matchMedia('(max-width:880px)').matches) $('#panel').classList.add('closed');
+  $('#stat').textContent = '3차선 · ' + app.info().cars + '대';
+
+  /* 해설 */
+  let step = -1;
+  const intro = ['다섯 개의 층', '차가 세상을 보는 방식은 한 장의 그림이 아니라 여러 층이 겹친 것입니다. 차선, 물체, 갈 수 있는 바닥, 갈 길, 그리고 격자. 하나씩 켜 가며 보여 드릴게요.'];
+  const render = () => {
+    const st = app.tour[step];
+    $('#tStep').textContent = step < 0 ? '해설' : `해설 ${step + 1} / ${app.tour.length}`;
+    $('#tPrev').disabled = step < 0;
+    $('#tTitle').textContent = st ? st.title : intro[0];
+    $('#tBody').textContent = st ? st.body : intro[1];
+    $('#tNext').textContent = step < 0 ? '해설 시작 ›' : (step >= app.tour.length - 1 ? '처음으로' : '다음 ›');
+    sVis.value = 100; syncVis();
+    paintLays();
+  };
+  $('#tNext').addEventListener('click', () => {
+    step = step >= app.tour.length - 1 ? -1 : step + 1;
+    if (step < 0) app.clearTour(); else app.goTour(step);
+    render();
+  });
+  $('#tPrev').addEventListener('click', () => {
+    step = Math.max(-1, step - 1);
+    if (step < 0) app.clearTour(); else app.goTour(step);
+    render();
+  });
+
+  addEventListener('keydown', (e) => {
+    if (e.target.tagName === 'INPUT') return;
+    const k = e.key.toLowerCase();
+    if (k === 'arrowright') $('#tNext').click();
+    else if (k === 'arrowleft') $('#tPrev').click();
+    else if (k === 'v') { sVis.value = sVis.value > 50 ? 0 : 100; syncVis(); }
+    else if (['1', '2', '3', '4'].includes(k)) { const c = CAMS[+k - 1]; app.setCamera(c[0]); paintCams(c[0]); }
+  });
+}
+</script>
+</body>
+</html>
