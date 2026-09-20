@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#04070e">
+<title>기계 나비 · three.js</title>
+<meta name="description" content="three.js 로 만든 기계 나비. 날개 골격과 막, 태엽, 무지갯빛 질감, 빛 번짐까지 외부 에셋 없이 전부 코드로 계산합니다. 드래그로 돌려 보세요.">
+<link rel="canonical" href="https://richroro.github.io/butterfly/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="기계 나비">
+<meta property="og:title" content="기계 나비 · three.js">
+<meta property="og:description" content="날개 골격·막·태엽·무지갯빛까지 전부 코드로 만든 3D 기계 나비. 브라우저에서 바로 돌려 보세요.">
+<meta property="og:url" content="https://richroro.github.io/butterfly/">
+<meta property="og:image" content="https://richroro.github.io/butterfly/og.jpg">
+<meta property="og:image:type" content="image/jpeg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:locale" content="ko_KR">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="기계 나비 · three.js">
+<meta name="twitter:description" content="날개 골격·막·태엽·무지갯빛까지 전부 코드로 만든 3D 기계 나비.">
+<meta name="twitter:image" content="https://richroro.github.io/butterfly/og.jpg">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%23070b16'/><path d='M50 30c-9-14-30-16-33-2-3 13 10 24 33 26 23-2 36-13 33-26-3-14-24-12-33 2z' fill='%23f6cd83'/><rect x='47' y='28' width='6' height='42' rx='3' fill='%236fe9ff'/></svg>">
+<style>
+  :root{
+    --ink:#f4f7ff; --dim:#9aa7bd; --line:rgba(255,255,255,.14);
+    --glass:rgba(10,14,24,.62); --glass-2:rgba(16,21,34,.86);
+    --gold:#f6cd83; --cyan:#6fe9ff;
+    --pad:16px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+  html,body{height:100%;overflow:hidden;overscroll-behavior:none;background:#04070e}
+  @supports (height:100dvh){ html,body{height:100dvh} }
+  body{
+    font-family:"Pretendard","Apple SD Gothic Neo","Malgun Gothic",system-ui,sans-serif;
+    color:var(--ink);letter-spacing:-.2px;-webkit-font-smoothing:antialiased;
+  }
+  #stage{position:fixed;inset:0}
+  canvas{display:block;width:100%;height:100%;touch-action:none;cursor:grab}
+  canvas:active{cursor:grabbing}
+
+  .ui{position:fixed;z-index:10;transition:opacity .28s ease, transform .28s ease}
+  body.bare .ui:not(.keep){opacity:0;pointer-events:none;transform:translateY(6px)}
+
+  /* ── 제목 ── */
+  #title{top:max(var(--pad),env(safe-area-inset-top));left:max(var(--pad),env(safe-area-inset-left));max-width:min(60vw,420px)}
+  #title h1{font-size:clamp(19px,2.4vw,25px);font-weight:800;line-height:1.2;letter-spacing:-.8px;
+    text-shadow:0 2px 24px rgba(0,0,0,.6)}
+  #title h1 span{color:var(--gold)}
+  #title p{margin-top:7px;font-size:12.5px;color:var(--dim);font-weight:500;line-height:1.5;text-shadow:0 1px 10px rgba(0,0,0,.7)}
+  #title .hint{margin-top:9px;font-size:11.5px;color:#7d8aa0;font-weight:600}
+  #title .hint b{color:#aab7cc;font-weight:700}
+
+  /* ── 오른쪽 위 버튼 ── */
+  #tools{top:max(var(--pad),env(safe-area-inset-top));right:max(var(--pad),env(safe-area-inset-right));display:flex;gap:7px}
+  .icon{width:38px;height:38px;border-radius:11px;border:1px solid var(--line);background:var(--glass);
+    backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);color:var(--ink);display:grid;place-items:center;
+    cursor:pointer;font-size:15px;font-family:inherit;transition:.16s}
+  .icon:hover{background:var(--glass-2);border-color:rgba(255,255,255,.28);transform:translateY(-1px)}
+  .icon.on{border-color:rgba(246,205,131,.6);color:var(--gold)}
+
+  /* ── 조작 패널 ── */
+  #panel{left:max(var(--pad),env(safe-area-inset-left));bottom:max(var(--pad),env(safe-area-inset-bottom));
+    width:290px;border:1px solid var(--line);border-radius:16px;background:var(--glass);
+    backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);overflow:hidden;
+    box-shadow:0 24px 60px -24px rgba(0,0,0,.9)}
+  #panel .head{display:flex;align-items:center;justify-content:space-between;padding:12px 14px;cursor:pointer}
+  #panel .head b{font-size:12.5px;font-weight:800;letter-spacing:.2px}
+  #panel .head .fold{font-size:11px;color:var(--dim);font-weight:700;transition:.2s}
+  #panel.closed .body{display:none}
+  #panel.closed .head .fold{transform:rotate(180deg)}
+  #panel .body{padding:2px 14px 14px;border-top:1px solid rgba(255,255,255,.08)}
+  .grp{margin-top:13px}
+  .grp>label{display:flex;justify-content:space-between;align-items:baseline;font-size:11.5px;font-weight:700;color:var(--dim);margin-bottom:7px}
+  .grp>label i{font-style:normal;color:var(--ink);font-size:11.5px;font-variant-numeric:tabular-nums}
+  .chips{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+  .chip{padding:8px 6px;border-radius:9px;border:1px solid var(--line);background:rgba(255,255,255,.04);
+    color:var(--dim);font-size:11.5px;font-weight:700;font-family:inherit;cursor:pointer;transition:.15s;text-align:center}
+  .chip:hover{background:rgba(255,255,255,.09);color:var(--ink)}
+  .chip.on{background:rgba(246,205,131,.14);border-color:rgba(246,205,131,.55);color:var(--gold)}
+  input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:22px;background:transparent;cursor:pointer}
+  input[type=range]::-webkit-slider-runnable-track{height:3px;border-radius:3px;background:rgba(255,255,255,.18)}
+  input[type=range]::-moz-range-track{height:3px;border-radius:3px;background:rgba(255,255,255,.18)}
+  input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:15px;height:15px;border-radius:50%;
+    background:var(--gold);margin-top:-6px;box-shadow:0 0 0 4px rgba(246,205,131,.16)}
+  input[type=range]::-moz-range-thumb{width:15px;height:15px;border:0;border-radius:50%;background:var(--gold);
+    box-shadow:0 0 0 4px rgba(246,205,131,.16)}
+  .toggles{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:13px}
+  .tg{display:flex;align-items:center;gap:7px;padding:8px 9px;border-radius:9px;border:1px solid var(--line);
+    background:rgba(255,255,255,.04);font-size:11.5px;font-weight:700;color:var(--dim);cursor:pointer;
+    font-family:inherit;transition:.15s;text-align:left}
+  .tg .dot{width:7px;height:7px;border-radius:50%;background:#4a5568;flex:none;transition:.15s}
+  .tg.on{color:var(--ink);border-color:rgba(111,233,255,.4);background:rgba(111,233,255,.08)}
+  .tg.on .dot{background:var(--cyan);box-shadow:0 0 9px var(--cyan)}
+
+  /* ── 정보 ── */
+  #sheet{position:fixed;inset:0;z-index:30;display:none;place-items:center;padding:20px;
+    background:rgba(3,5,10,.72);backdrop-filter:blur(6px)}
+  #sheet.open{display:grid}
+  .card{width:min(560px,100%);max-height:min(80vh,720px);overflow:auto;border-radius:18px;border:1px solid var(--line);
+    background:var(--glass-2);backdrop-filter:blur(20px);padding:24px 24px 20px;box-shadow:0 40px 90px -30px #000}
+  .card h2{font-size:18px;font-weight:800;letter-spacing:-.5px}
+  .card h2 + p{margin-top:8px;color:var(--dim);font-size:13px;line-height:1.65}
+  .card h3{margin:20px 0 8px;font-size:12px;font-weight:800;color:var(--gold);letter-spacing:.4px}
+  .card ul{list-style:none;display:grid;gap:7px}
+  .card li{font-size:13px;line-height:1.6;color:#c8d2e2;display:flex;gap:9px}
+  .card li b{color:var(--ink);font-weight:700;flex:none;min-width:74px}
+  .card .stat{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-top:6px}
+  .card .stat div{border:1px solid var(--line);border-radius:10px;padding:9px 11px;background:rgba(255,255,255,.03)}
+  .card .stat span{display:block;font-size:10.5px;color:var(--dim);font-weight:700}
+  .card .stat i{font-style:normal;font-size:14px;font-weight:800;font-variant-numeric:tabular-nums}
+  .card .close{margin-top:20px;width:100%;padding:12px;border-radius:11px;border:1px solid var(--line);
+    background:rgba(255,255,255,.06);color:var(--ink);font-family:inherit;font-size:13px;font-weight:800;cursor:pointer}
+  .card .close:hover{background:rgba(255,255,255,.12)}
+  .card .back{display:inline-block;margin-top:14px;font-size:12px;color:var(--dim);text-decoration:none;font-weight:700}
+  .card .back:hover{color:var(--ink)}
+
+  /* ── 로딩 · 대체 화면 ── */
+  #boot{position:fixed;inset:0;z-index:40;display:grid;place-items:center;background:#04070e;transition:opacity .5s ease}
+  #boot.gone{opacity:0;pointer-events:none}
+  #boot .in{text-align:center}
+  #boot .wing{width:54px;height:54px;margin:0 auto 16px;border-radius:50%;
+    border:2px solid rgba(246,205,131,.2);border-top-color:var(--gold);animation:spin 1s linear infinite}
+  @keyframes spin{to{transform:rotate(360deg)}}
+  #boot p{font-size:12.5px;color:var(--dim);font-weight:600}
+  #nogl{display:none;max-width:420px;text-align:center;padding:24px;font-size:13.5px;line-height:1.7;color:var(--dim)}
+  #nogl b{display:block;color:var(--ink);font-size:16px;margin-bottom:10px}
+
+  #toast{position:fixed;left:50%;bottom:28px;transform:translate(-50%,14px);z-index:35;padding:10px 18px;border-radius:999px;
+    background:var(--glass-2);border:1px solid var(--line);font-size:12.5px;font-weight:700;opacity:0;
+    transition:.25s;pointer-events:none;backdrop-filter:blur(10px)}
+  #toast.on{opacity:1;transform:translate(-50%,0)}
+
+  @media (max-width:760px){
+    :root{--pad:12px}
+    #panel{width:calc(100vw - 24px);max-width:360px}
+    #title{max-width:calc(100vw - 130px)}
+    #title .hint{display:none}
+  }
+  @media (max-height:520px){ #panel .body{max-height:42vh;overflow:auto} }
+</style>
+</head>
+<body>
+
+<div id="stage"><canvas id="c"></canvas></div>
+
+<div class="ui" id="title">
+  <h1>기계 <span>나비</span></h1>
+  <p>날개 뼈대와 막, 태엽, 무지갯빛까지 — 외부 에셋 없이 three.js 로 계산해 그립니다.</p>
+  <p class="hint"><b>드래그</b> 돌리기 · <b>휠</b> 확대 · <b>H</b> 화면 정리</p>
+</div>
+
+<div class="ui" id="tools">
+  <button class="icon" id="btnShot" title="사진으로 저장 (S)" aria-label="사진으로 저장">⤓</button>
+  <button class="icon" id="btnBare" title="화면 정리 (H)" aria-label="화면 정리">◲</button>
+  <button class="icon" id="btnInfo" title="만든 방법 (I)" aria-label="만든 방법">i</button>
+</div>
+
+<div class="ui" id="panel">
+  <div class="head" id="panelHead"><b>조작</b><span class="fold">▾</span></div>
+  <div class="body">
+    <div class="grp">
+      <label>색</label>
+      <div class="chips" id="chips"></div>
+    </div>
+    <div class="grp">
+      <label>날갯짓 <i id="vFlap">1.0×</i></label>
+      <input type="range" id="sFlap" min="0" max="250" value="100">
+    </div>
+    <div class="grp">
+      <label>빛 번짐 <i id="vBloom">1.0</i></label>
+      <input type="range" id="sBloom" min="0" max="220" value="100">
+    </div>
+    <div class="grp">
+      <label>날개 폭 <i id="vAmp">100%</i></label>
+      <input type="range" id="sAmp" min="20" max="130" value="100">
+    </div>
+    <div class="toggles">
+      <button class="tg on" id="tRotate"><span class="dot"></span>자동 회전</button>
+      <button class="tg on" id="tFlight"><span class="dot"></span>비행</button>
+      <button class="tg on" id="tSpark"><span class="dot"></span>빛가루</button>
+      <button class="tg" id="tPause"><span class="dot"></span>정지</button>
+    </div>
+  </div>
+</div>
+
+<div id="sheet">
+  <div class="card">
+    <h2>어떻게 만들었나</h2>
+    <p>“three.js 로 아름다운 기계 나비 만들기” 한 줄에서 시작했습니다.
+       모델링 파일도, 텍스처 이미지도 쓰지 않습니다. 아래 것들이 전부 페이지가 열릴 때 계산돼 만들어집니다.</p>
+
+    <h3>형상</h3>
+    <ul>
+      <li><b>날개</b>닫힌 스플라인으로 바깥선을 뽑고, 뿌리에서 부챗살처럼 맥을 건 뒤, 맥 사이를 판으로 채워 안쪽으로 줄여 금속 틈을 냅니다. 네 장 모두 각각 다른 형상입니다.</li>
+      <li><b>휘어짐</b>판판한 날개를 스팬 방향으로 처지게 하고 끝으로 갈수록 비틀어(워시아웃) 실제 날개의 단면을 흉내 냅니다.</li>
+      <li><b>태엽</b>이빨·축구멍·살창까지 도형으로 깎은 톱니. 크랭크가 한 바퀴 돌 때 날개가 정확히 한 번 칩니다. 연결봉은 매 프레임 두 끝을 다시 재서 길이와 각도를 맞춥니다.</li>
+      <li><b>몸통</b>가슴은 회전체, 배는 일곱 마디. 마디 사이로 속에 넣은 빛이 샙니다.</li>
+    </ul>
+
+    <h3>빛과 질감</h3>
+    <ul>
+      <li><b>무지갯빛</b>박막 간섭(iridescence). 캔버스에 그린 두께 지도가 자리마다 색을 갈라 놓아, 보는 각도에 따라 색이 바뀝니다.</li>
+      <li><b>환경광</b>정방형도법 HDR 환경맵을 픽셀 단위로 계산해 굽습니다. 금속의 하이라이트 모양이 여기서 정해집니다.</li>
+      <li><b>빛 번짐</b>밝은 부분만 뽑아 다섯 단계로 흐린 뒤 합치고, ACES 톤매핑·비네팅·필름 그레인·색수차를 한 패스에서 입힙니다. 애드온 없이 직접 짠 셰이더입니다.</li>
+    </ul>
+
+    <h3>지금 이 화면</h3>
+    <div class="stat">
+      <div><span>삼각형</span><i id="iTri">–</i></div>
+      <div><span>초당 프레임</span><i id="iFps">–</i></div>
+      <div><span>렌더 해상도</span><i id="iSize">–</i></div>
+      <div><span>three.js</span><i id="iRev">–</i></div>
+    </div>
+
+    <h3>단축키</h3>
+    <ul>
+      <li><b>드래그</b>돌리기 · <b>휠/핀치</b> 확대</li>
+      <li><b>H</b>화면 정리 · <b>I</b> 이 설명 · <b>S</b> 사진 저장</li>
+      <li><b>Space</b>정지 · <b>R</b> 시점 처음으로</li>
+    </ul>
+    <button class="close" id="btnClose">닫기</button>
+    <a class="back" href="/">← richroro.github.io</a>
+  </div>
+</div>
+
+<div id="boot">
+  <div class="in" id="bootIn"><div class="wing"></div><p>나비를 깎는 중…</p></div>
+  <div id="nogl">
+    <b>WebGL2 를 쓸 수 없습니다</b>
+    이 페이지는 브라우저의 3D 가속(WebGL2)이 필요합니다.
+    최신 크롬·사파리·엣지에서 열거나, 설정에서 하드웨어 가속을 켜 주세요.
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<script type="module">
+import { createScene, PRESETS } from './assets/butterfly.js';
+
+const $ = (s) => document.querySelector(s);
+const canvas = $('#c');
+const boot = $('#boot');
+
+let app = null;
+try { app = createScene(canvas, { preset: 'gold' }); } catch (e) { console.error(e); }
+
+if (!app) {
+  $('#bootIn').style.display = 'none';
+  $('#nogl').style.display = 'block';
+  document.querySelectorAll('.ui').forEach((el) => el.remove());
+} else {
+  window.__butterfly = app;          // 콘솔에서 만져 볼 수 있게 열어 둔다
+  requestAnimationFrame(() => requestAnimationFrame(() => {
+    boot.classList.add('gone');
+    setTimeout(() => boot.remove(), 600);
+  }));
+
+  /* ── 색 프리셋 ── */
+  const chips = $('#chips');
+  Object.entries(PRESETS).forEach(([k, p]) => {
+    const b = document.createElement('button');
+    b.className = 'chip' + (k === app.preset ? ' on' : '');
+    b.textContent = p.label;
+    b.dataset.k = k;
+    b.addEventListener('click', () => {
+      app.setPreset(k);
+      chips.querySelectorAll('.chip').forEach((c) => c.classList.toggle('on', c.dataset.k === k));
+    });
+    chips.appendChild(b);
+  });
+
+  /* ── 슬라이더 ── */
+  const sFlap = $('#sFlap'), sBloom = $('#sBloom'), sAmp = $('#sAmp');
+  const syncFlap = () => { const v = sFlap.value / 100; app.set('flapSpeed', v); $('#vFlap').textContent = v.toFixed(1) + '×'; };
+  const syncBloom = () => { const v = sBloom.value / 100; app.set('bloom', v); $('#vBloom').textContent = v.toFixed(1); };
+  const syncAmp = () => { const v = sAmp.value / 100; app.set('flapAmp', v); $('#vAmp').textContent = Math.round(v * 100) + '%'; };
+  sFlap.addEventListener('input', syncFlap);
+  sBloom.addEventListener('input', syncBloom);
+  sAmp.addEventListener('input', syncAmp);
+  sFlap.value = Math.round(app.state.flapSpeed * 100);
+  syncFlap(); syncBloom(); syncAmp();
+
+  /* ── 토글 ── */
+  const toggle = (id, key, onSet) => {
+    const el = $(id);
+    el.classList.toggle('on', !!app.state[key]);
+    el.addEventListener('click', () => {
+      const next = !el.classList.contains('on');
+      el.classList.toggle('on', next);
+      (onSet || ((v) => app.set(key, v)))(next);
+    });
+  };
+  toggle('#tRotate', 'autoRotate');
+  toggle('#tSpark', 'sparks');
+  $('#tFlight').classList.toggle('on', app.state.flight > 0.5);
+  $('#tFlight').addEventListener('click', () => {
+    const next = !$('#tFlight').classList.contains('on');
+    $('#tFlight').classList.toggle('on', next);
+    app.set('flight', next ? 1 : 0);
+  });
+  $('#tPause').addEventListener('click', () => {
+    const next = !$('#tPause').classList.contains('on');
+    $('#tPause').classList.toggle('on', next);
+    app.set('paused', next);
+  });
+
+  /* ── 패널 접기 ── */
+  const panel = $('#panel');
+  $('#panelHead').addEventListener('click', () => panel.classList.toggle('closed'));
+  if (matchMedia('(max-width:760px)').matches || matchMedia('(max-height:560px)').matches) panel.classList.add('closed');
+
+  /* ── 정보 ── */
+  const sheet = $('#sheet');
+  const openInfo = () => {
+    const i = app.info();
+    $('#iTri').textContent = i.triangles.toLocaleString('ko-KR');
+    $('#iFps').textContent = i.fps;
+    $('#iSize').textContent = i.size;
+    $('#iRev').textContent = 'r' + i.three;
+    sheet.classList.add('open');
+  };
+  $('#btnInfo').addEventListener('click', openInfo);
+  $('#btnClose').addEventListener('click', () => sheet.classList.remove('open'));
+  sheet.addEventListener('click', (e) => { if (e.target === sheet) sheet.classList.remove('open'); });
+
+  /* ── 화면 정리 ── */
+  const bare = () => {
+    document.body.classList.toggle('bare');
+    $('#btnBare').classList.toggle('on', document.body.classList.contains('bare'));
+  };
+  $('#btnBare').addEventListener('click', bare);
+  $('#btnBare').classList.add('keep');
+  $('#tools').classList.add('keep');
+
+  /* ── 사진 저장 ── */
+  const toast = (msg) => {
+    const t = $('#toast');
+    t.textContent = msg; t.classList.add('on');
+    clearTimeout(t._h); t._h = setTimeout(() => t.classList.remove('on'), 1900);
+  };
+  const stamp = () => {
+    const d = new Date(), z = (n) => String(n).padStart(2, '0');
+    return `${d.getFullYear()}${z(d.getMonth() + 1)}${z(d.getDate())}-${z(d.getHours())}${z(d.getMinutes())}${z(d.getSeconds())}`;
+  };
+  const shoot = async () => {
+    const url = await app.snapshot();
+    if (!url) { toast('저장하지 못했습니다'); return; }
+    // data: URL 로 바로 내려받으면 브라우저가 파일 이름을 버린다. Blob 으로 바꾸고,
+    // 이름은 아스키로 짓는다(크롬은 한글 download 이름을 버리고 확장자 없는 'download' 로 저장한다).
+    const href = URL.createObjectURL(await (await fetch(url)).blob());
+    const a = document.createElement('a');
+    a.href = href;
+    a.download = `mechanical-butterfly-${stamp()}.png`;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    setTimeout(() => URL.revokeObjectURL(href), 5000);
+    toast('사진을 저장했습니다');
+  };
+  $('#btnShot').addEventListener('click', shoot);
+
+  /* ── 단축키 ── */
+  addEventListener('keydown', (e) => {
+    if (e.target.tagName === 'INPUT') return;
+    const k = e.key.toLowerCase();
+    if (k === 'h') bare();
+    else if (k === 'i') sheet.classList.contains('open') ? sheet.classList.remove('open') : openInfo();
+    else if (k === 's') shoot();
+    else if (k === 'r') { app.resetView(); toast('시점을 되돌렸습니다'); }
+    else if (k === 'escape') sheet.classList.remove('open');
+    else if (e.code === 'Space') { e.preventDefault(); $('#tPause').click(); }
+  });
+
+  canvas.addEventListener('webglcontextlost', (e) => { e.preventDefault(); toast('그래픽 연결이 끊겼습니다. 새로고침해 주세요.'); });
+}
+</script>
+</body>
+</html>
