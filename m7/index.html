@@ -41,6 +41,7 @@
     <a href="#fy">회계연도 함정</a>
     <a href="#recent">최근 분기</a>
     <a href="#korea">한국과의 접점</a>
+    <a href="/stocks/">종목 노트 →</a>
   </div>
 </nav>
 
@@ -109,7 +110,7 @@
     <div class="card mt16">
       <div class="tscroll">
         <table id="fyTable">
-          <thead><tr><th>회사</th><th>표기</th><th>실제 기간</th><th>매출</th><th>영업이익률</th><th>최대 부문 비중</th></tr></thead>
+          <thead><tr><th>회사</th><th>표기</th><th>실제 기간</th><th>매출</th><th>영업이익률</th><th>순이익률</th><th>최대 부문 비중</th></tr></thead>
           <tbody id="fyRows"></tbody>
         </table>
       </div>
@@ -117,6 +118,9 @@
     <div class="note mt12"><span class="ic">🧭</span><div>최대 부문 비중은 <b>집중 위험</b>을 보는 가장 빠른 지표입니다.
       메타(98.9%)·알파벳(85.1%)·엔비디아(92%)는 사실상 한 사업이고, 마이크로소프트(42.9%)가 가장 고릅니다.
       엔비디아 수치만 분기 기준인데, 부문 공시 구조가 최근 바뀌어서입니다.</div></div>
+    <div class="note mt12"><span class="ic">🪪</span><div>설립 연도·본사·CEO·회계연도 종료일 같은
+      <b>회사 프로필</b>은 M7과 반도체 종목을 한 표에 모아 뒀습니다 —
+      <a href="/stocks/#profile" style="border-bottom:1px solid var(--line)">종목 노트의 회사 프로필 표</a>에서 정렬해 보세요.</div></div>
   </div>
 </section>
 
@@ -201,6 +205,7 @@
       <div>
         <h4>같이 만든 것</h4>
         <ul>
+          <li><a href="/stocks/">종목 노트 — 반도체 등 더 많은 종목</a></li>
           <li><a href="/tesla-metrics/">테슬라 지표 — 실적·공급망</a></li>
           <li><a href="/tesla/">테슬라 주주 계산기 — 손익·세금</a></li>
           <li><a href="/china-ev/">중국 전기차 주식 노트</a></li>
@@ -213,6 +218,7 @@
   </div>
 </footer>
 
+<script src="/stocks/assets/registry.js"></script>
 <script src="/m7/assets/m7.js"></script>
 <script>
 "use strict";
@@ -235,7 +241,14 @@ const HUB = [
     fy:"2025",   span:"2025년 1월 ~ 12월" }
 ];
 const meta = (s) => M7.find((m) => m.slug === s);
-HUB.forEach((h) => { h.om = (h.oi / h.rev) * 100; h.topShare = (h.top.v / h.top.of) * 100; });
+// 순이익은 레지스트리(/stocks/assets/registry.js)에서만 읽습니다 — 같은 숫자를 두 군데 적지 않으려고.
+HUB.forEach((h) => {
+  const e = REGISTRY.find((r) => r.slug === h.slug);
+  h.ni = e && e.data ? e.data.ni : null;
+  h.om = (h.oi / h.rev) * 100;
+  h.nm = h.ni == null ? null : (h.ni / h.rev) * 100;
+  h.topShare = (h.top.v / h.top.of) * 100;
+});
 
 document.getElementById("cards").innerHTML = HUB.map((h) => {
   const m = meta(h.slug), href = m.href || ("/m7/" + m.slug + "/");
@@ -247,7 +260,8 @@ document.getElementById("cards").innerHTML = HUB.map((h) => {
 document.getElementById("fyRows").innerHTML = HUB.map((h) => {
   const m = meta(h.slug);
   return "<tr><td class='tx'>" + m.ko + "</td><td>" + h.fy + "</td><td class='tx'>" + h.span +
-    "</td><td>$" + h.rev.toFixed(1) + "B</td><td>" + h.om.toFixed(1) + "%</td><td class='tx'>" +
+    "</td><td>$" + h.rev.toFixed(1) + "B</td><td>" + h.om.toFixed(1) + "%</td><td>" +
+    (h.nm == null ? "—" : h.nm.toFixed(1) + "%") + "</td><td class='tx'>" +
     h.top.k + " " + h.topShare.toFixed(1) + "%" + (h.top.q ? " (분기)" : "") + "</td></tr>";
 }).join("");
 
@@ -310,11 +324,15 @@ function drawAll() {
 }
 
 document.getElementById("tblOm").innerHTML =
-  "<table class='narrow'><thead><tr><th>회사</th><th>매출(B$)</th><th>영업이익(B$)</th><th>영업이익률</th></tr></thead><tbody>" +
+  "<table class='narrow'><thead><tr><th>회사</th><th>매출(B$)</th><th>영업이익(B$)</th><th>영업이익률</th>" +
+  "<th>순이익(B$)</th><th>순이익률</th></tr></thead><tbody>" +
   HUB.slice().sort((a, b) => b.om - a.om).map((h) =>
     "<tr><td class='tx'>" + meta(h.slug).ko + "</td><td>" + h.rev.toFixed(1) + "</td><td>" +
-    h.oi.toFixed(2) + "</td><td>" + h.om.toFixed(1) + "%</td></tr>").join("") +
-  "</tbody></table><p class='hint mt8'>영업이익률은 영업이익 ÷ 매출로 직접 계산한 값입니다.</p>";
+    h.oi.toFixed(2) + "</td><td>" + h.om.toFixed(1) + "%</td><td>" +
+    (h.ni == null ? "—" : h.ni.toFixed(2)) + "</td><td>" +
+    (h.nm == null ? "—" : h.nm.toFixed(1) + "%") + "</td></tr>").join("") +
+  "</tbody></table><p class='hint mt8'>영업이익률·순이익률은 각각 영업이익·순이익을 매출로 나눈 값입니다. " +
+  "순이익은 세금과 영업 외 손익까지 반영한 뒤의 숫자라, 그해의 일회성 사정이 섞여 있습니다.</p>";
 
 document.querySelectorAll(".seg button").forEach((b) => {
   b.addEventListener("click", () => {

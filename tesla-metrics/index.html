@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>테슬라 지표 · 실적·마진·공급망</title>
-<meta name="description" content="테슬라 분기 매출과 영업이익률, 사업 부문 구성, 그리고 배터리 셀부터 AI 칩까지 공급망을 한 페이지에. 삼성 파운드리·LG에너지솔루션·엘앤에프 등 한국 기업이 어디에 들어가 있는지 표시했습니다.">
+<title>테슬라 지표 · 실적·마진·로보택시·공급망</title>
+<meta name="description" content="테슬라 분기 매출과 영업이익률, 사업 부문 구성, 로보택시·FSD·자본지출 지표, 그리고 배터리 셀부터 AI 칩까지 공급망을 한 페이지에. 웨이모와의 대조와 한국 공급사까지 정리했습니다.">
 <link rel="canonical" href="https://richroro.github.io/tesla-metrics/">
 <meta property="og:type" content="website">
 <meta property="og:locale" content="ko_KR">
@@ -111,6 +111,8 @@ p.lead{font-size:14.5px;color:var(--ink-2);font-weight:300;max-width:64ch;line-h
 .stats{display:grid;grid-template-columns:repeat(2,1fr);gap:1px;background:var(--line-soft);
   border:1px solid var(--line);border-radius:12px;overflow:hidden}
 @media(min-width:720px){.stats.c4{grid-template-columns:repeat(4,1fr)}.stats.c3{grid-template-columns:repeat(3,1fr)}}
+/* 좁은 화면에서 3칸 묶음은 2+1 이 되는데, 남는 칸을 비워 두지 않고 넓힙니다 */
+@media(max-width:719px){.stats.c3 .st:nth-child(3):last-child{grid-column:span 2}}
 .st{background:var(--surface);padding:14px 15px}
 .st .k{font-size:11.5px;color:var(--ink-3);font-weight:400}
 .st .v{font-size:20px;font-weight:600;letter-spacing:-.7px;margin-top:3px;white-space:nowrap;
@@ -118,6 +120,16 @@ p.lead{font-size:14.5px;color:var(--ink-2);font-weight:300;max-width:64ch;line-h
 .st .v .u{font-size:13px;font-weight:500}
 .st .s{font-size:12px;color:var(--ink-3);font-weight:300;margin-top:2px;
   font-family:"IBM Plex Mono",monospace;font-variant-numeric:tabular-nums}
+
+/* 회사 프로필 — 값이 숫자가 아니라 문장이라 .st 와 달리 줄바꿈을 허용합니다 */
+.prof{display:grid;grid-template-columns:repeat(2,1fr);gap:1px;background:var(--line-soft);
+  border:1px solid var(--line);border-radius:12px;overflow:hidden}
+@media(min-width:720px){.prof{grid-template-columns:repeat(3,1fr)}}
+.pf{background:var(--surface);padding:13px 15px;min-width:0}
+.pf .k{font-size:11.5px;color:var(--ink-3);font-weight:400}
+.pf .v{font-size:15px;font-weight:600;letter-spacing:-.3px;margin-top:4px;line-height:1.45;overflow-wrap:anywhere}
+.pf .v small{font-size:12px;font-weight:400;color:var(--ink-3);letter-spacing:0}
+.pf .s{font-size:11.5px;color:var(--ink-3);font-weight:300;margin-top:4px;line-height:1.55}
 
 .note{display:flex;gap:9px;background:var(--surface-2);border-radius:11px;padding:12px 13px;
   font-size:12.5px;color:var(--ink-2);font-weight:300;line-height:1.65}
@@ -270,11 +282,15 @@ footer a:hover{color:var(--brand-deep);border-color:var(--brand-deep)}
 
 <nav class="snav" aria-label="섹션 바로가기">
   <div class="wrap snav-in">
+    <a href="#profile">회사 개요</a>
     <a href="#latest">최근 분기</a>
     <a href="#trend">매출·마진</a>
     <a href="#segments">사업 부문</a>
     <a href="#supply">공급망</a>
-    <a href="#auto">자율주행</a>
+    <a href="#auto">로보택시</a>
+    <a href="#fsd">FSD</a>
+    <a href="#capex">자본지출</a>
+    <a href="#energy">에너지</a>
     <a href="#sources">출처</a>
   </div>
 </nav>
@@ -282,7 +298,30 @@ footer a:hover{color:var(--brand-deep);border-color:var(--brand-deep)}
 <main>
 
 <!-- ============ LATEST ============ -->
-<section id="latest" style="padding-top:26px">
+<section id="profile" style="padding-top:26px">
+  <div class="wrap">
+    <p class="eyebrow">00 · Profile</p>
+    <h2 class="title">회사 개요와 2025년 한 해</h2>
+    <p class="lead">아래 지표는 대부분 <b>분기</b> 이야기라 진폭이 큽니다. 먼저 회사의 기본 정보와
+      <b>2025년 한 해 전체</b>를 놓고 시작합니다.</p>
+
+    <div class="card pad mt16">
+      <div class="rowsplit"><h3>회사 프로필</h3><span class="fybadge" id="pfBadge">—</span></div>
+      <div class="prof mt12" id="pfGrid" role="group" aria-label="테슬라 기본 정보"></div>
+      <div class="note mt12"><span class="ic">🪪</span><div>자주 바뀌지 않는 값만 실었습니다. 업력은 올해 연도에서 설립 연도를
+        빼서 자동으로 계산합니다. 시가총액·배당률처럼 매일 움직이는 값은 정적 페이지에 적는 순간 틀린 값이 되어 뺐습니다.
+        같은 형식으로 정리한 다른 회사는 <a href="/stocks/#profile">종목 노트의 회사 프로필 표</a>에 있습니다.</div></div>
+    </div>
+
+    <div class="card pad mt16">
+      <div class="rowsplit"><h3>2025년 연간 실적</h3><span class="fybadge">2025년 1월 ~ 12월 · 10-K</span></div>
+      <div class="stats c4 mt12" id="fyGrid" role="group" aria-label="2025년 연간 실적"></div>
+      <div class="note mt12"><span class="ic">📐</span><div id="fyNote">—</div></div>
+    </div>
+  </div>
+</section>
+
+<section id="latest">
   <div class="wrap">
     <p class="eyebrow">01 · Latest quarter</p>
     <h2 class="title">매출은 사상 최대, 이익률은 1.4%</h2>
@@ -446,41 +485,161 @@ footer a:hover{color:var(--brand-deep);border-color:var(--brand-deep)}
   </div>
 </section>
 
-<!-- ============ AUTONOMY ============ -->
+<!-- ============ ROBOTAXI ============ -->
 <section id="auto">
   <div class="wrap">
-    <p class="eyebrow">05 · Autonomy</p>
-    <h2 class="title">돈이 들어가고 있는 쪽</h2>
-    <p class="lead">영업이익률을 끌어내린 비용이 향하는 곳입니다. 아직 매출로 잡히는 규모는 작아서,
-      지금은 <b>실적이 아니라 진행 상황으로 볼 수밖에 없는</b> 영역입니다.</p>
+    <p class="eyebrow">05 · Robotaxi</p>
+    <h2 class="title">로보택시는 지금 어디까지 왔나</h2>
+    <p class="lead">영업이익률을 1.4%까지 끌어내린 돈이 향하는 곳입니다. 매출로 잡히는 규모는 아직 작아서
+      <b>실적이 아니라 진행 상황으로 볼 수밖에 없는</b> 영역이고, 그래서 숫자를 최대한 쪼개 놨습니다.</p>
 
-    <div class="stats c3 mt16" role="group" aria-label="자율주행 현황">
-      <div class="st"><div class="k">무인 로보택시 운행 도시</div><div class="v">3<span class="u">곳</span></div><div class="s">오스틴 · 댈러스 · 휴스턴 (텍사스)</div></div>
-      <div class="st"><div class="k">무인 차량 대수</div><div class="v">25<span class="u">대</span></div><div class="s">오스틴 19 · 댈러스 3 · 휴스턴 3</div></div>
-      <div class="st"><div class="k">판관비·연구개발비</div><div class="v">4.35<span class="u">B$</span></div><div class="s down">분기 기준 +47% YoY</div></div>
+    <div class="stats c4 mt16" role="group" aria-label="로보택시 현황">
+      <div class="st"><div class="k">유료 운행 도시</div><div class="v">6<span class="u">곳</span></div><div class="s">오스틴·댈러스·휴스턴·마이애미·올랜도·탬파</div></div>
+      <div class="st"><div class="k">텍사스 등록 자율주행차</div><div class="v num">420</div><div class="s">모델Y 375 + 사이버캡 45</div></div>
+      <div class="st"><div class="k">사이버캡 승인 대수</div><div class="v num">45</div><div class="s">2026-09-03 기준 · 오스틴 한정</div></div>
+      <div class="st"><div class="k">운행 시간</div><div class="v">06–22<span class="u">시</span></div><div class="s">주 7일</div></div>
     </div>
 
-    <div class="grid2 mt16">
-      <div class="card pad">
-        <h3>지금 상태</h3>
-        <ul class="hint mt8" style="list-style:none;display:flex;flex-direction:column;gap:8px">
-          <li>· 샌프란시스코 만 지역 서비스는 대수는 가장 많지만 <b style="color:var(--ink)">안전요원이 탑승</b>합니다.
-            캘리포니아가 리무진 영업으로 분류해 무인 운행으로 치지 않습니다.</li>
-          <li>· 목표는 2026년 말까지 <b style="color:var(--ink)">미국 12개 주 안팎</b>으로 넓히는 것입니다.</li>
-          <li>· 본격 확장은 <b style="color:var(--ink)">FSD v15</b>(파라미터 10억 → 100억 규모 재작성)에 걸려 있고,
-            일정은 2026년 말~2027년 초로 이야기됩니다.</li>
-        </ul>
+    <div class="card pad mt16">
+      <h3>웨이모와 나란히 놓으면</h3>
+      <p class="hint mt8">같은 시점(2026년 9월 초) 기준입니다. 로보택시 이야기에서 가장 자주 빠지는 비교입니다.</p>
+      <div class="vs">
+        <div class="vsb">
+          <div class="q">웨이모</div>
+          <div class="r">4,000대+</div>
+          <div class="o">유료 운행 도시 <b>14곳</b> · 주간 유료 운행 <b>50만 건+</b></div>
+        </div>
+        <div class="mid" aria-hidden="true">vs</div>
+        <div class="vsb">
+          <div class="q">테슬라</div>
+          <div class="r">420대</div>
+          <div class="o">유료 운행 도시 <b>6곳</b> · 주간 운행 건수 <b class="down">미공개</b></div>
+        </div>
       </div>
-      <div class="card pad">
-        <h3>숫자를 볼 때</h3>
-        <ul class="hint mt8" style="list-style:none;display:flex;flex-direction:column;gap:8px">
-          <li>· <b style="color:var(--ink)">대수가 아직 두 자리입니다.</b> 25대는 실적에 영향을 주는 규모가 아닙니다.
-            지금 주가에 반영된 건 실적이 아니라 기대입니다.</li>
-          <li>· <b style="color:var(--ink)">안전요원 탑승 여부</b>가 핵심 구분선입니다. "로보택시 운행 중"이라는 표현은
-            둘을 섞어 쓰는 경우가 많습니다.</li>
-          <li>· 칩(AI5·AI6)은 <b style="color:var(--ink)">삼성·TSMC</b>가 만듭니다. 자율주행 진척은 파운드리 실적과도 연결됩니다.</li>
-        </ul>
+      <div class="note mt16"><span class="ic">📐</span><div><b>두 숫자는 성격이 다릅니다.</b> 웨이모 4,000대는 실제 운행 중인 함대이고,
+        테슬라 420대는 <b>텍사스에 등록된 자율주행 차량</b> 수입니다. 그대로 1:1로 비교하면 안 됩니다.
+        그럼에도 자릿수 차이는 분명하고, 웨이모는 2년 만에 주간 5만 건 → <b>50만 건</b>으로 10배가 됐습니다.
+        연말 목표는 주간 100만 건입니다.</div></div>
+      <div class="note warn mt12"><span class="ic">🔇</span><div>더 중요한 건 <b>공개하지 않는 항목</b>입니다.
+        테슬라는 로보택시의 <b>운행 건수·매출·대당 가동률을 따로 공시하지 않습니다.</b>
+        투자 판단에 쓸 수 있는 숫자가 사실상 도시 수와 등록 대수뿐이라는 뜻입니다.</div></div>
+    </div>
+
+    <div class="card pad mt16">
+      <div class="rowsplit"><h3>공개된 항목 대조</h3><span class="hint">빈칸은 회사가 공개하지 않는 항목입니다</span></div>
+      <div class="tscroll mt12">
+        <table class="narrow">
+          <thead><tr><th>항목</th><th>웨이모</th><th>테슬라</th></tr></thead>
+          <tbody>
+            <tr><td class="tx">유료 운행 도시</td><td>14곳</td><td>6곳</td></tr>
+            <tr><td class="tx">운행 차량</td><td>4,000대+</td><td class="tx">텍사스 등록 420대</td></tr>
+            <tr><td class="tx">주간 유료 운행</td><td>50만 건+</td><td class="down">미공개</td></tr>
+            <tr><td class="tx">안전요원 없는 운행</td><td class="tx">14개 도시 전부</td><td class="tx">텍사스·플로리다 / 캘리포니아는 탑승 필수</td></tr>
+            <tr><td class="tx">부문 매출</td><td class="tx">알파벳 기타 베팅에 포함</td><td class="down">미공개</td></tr>
+            <tr><td class="tx">확장 계획</td><td class="tx">연말 주간 100만 건 목표</td><td class="down">일정 미공개</td></tr>
+          </tbody>
+        </table>
       </div>
+      <div class="note mt12"><span class="ic">🌉</span><div>캘리포니아는 테슬라 서비스를 무인 운행이 아니라
+        <b>리무진 영업으로 분류</b>해 안전요원 탑승을 요구합니다. 베이 지역이 대수로는 가장 크지만
+        "무인 로보택시"로 세지 않는 이유입니다.</div></div>
+    </div>
+
+    <div class="card pad mt16">
+      <div class="rowsplit"><h3>사이버캡 — 약속과 현재</h3><span class="hint">전용 차량 없이는 단가가 안 내려갑니다</span></div>
+      <div class="tscroll mt12">
+        <table class="narrow">
+          <thead><tr><th>시점</th><th>내용</th></tr></thead>
+          <tbody>
+            <tr><td>2024-10</td><td class="tx">머스크, 2026년 양산 + 연 200만대 목표 발표</td></tr>
+            <tr><td>2026-02</td><td class="tx">기가 텍사스에서 첫 생산 차량</td></tr>
+            <tr><td>2026-04</td><td class="tx">정식 생산 개시</td></tr>
+            <tr><td>2026-07</td><td class="tx"><b>테슬라가 사이버캡을 '2026년 양산 예정' 목록에서 제외</b></td></tr>
+            <tr><td>2026-09-03</td><td class="tx">오스틴 론칭 (비공개 행사) · 상업 승인 45대</td></tr>
+            <tr><td>2026-09-04</td><td class="tx">일반 로보택시 배차에 편입 — 지정 호출 불가, 오스틴 한정</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="note warn mt12"><span class="ic">⏳</span><div>론칭 <b>6주 전</b>에 회사 스스로 2026년 양산 목록에서 뺐습니다.
+        설비 기준 생산능력은 12.5만대 이상으로 등록돼 있지만, 실제 승인 대수는 <b>45대</b>입니다.
+        로보택시 단가를 낮추는 건 전용 차량인데, 그 전용 차량이 아직 두 자릿수라는 게 현재 위치입니다.</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ FSD ============ -->
+<section id="fsd">
+  <div class="wrap">
+    <p class="eyebrow">06 · FSD</p>
+    <h2 class="title">당장 돈이 되는 쪽은 로보택시가 아니라 구독</h2>
+    <p class="lead">무인 운행이 420대일 때, 감독형 FSD는 <b>148만 건이 구독 중</b>입니다.
+      자율주행이 실적에 들어오는 경로는 지금으로선 이쪽입니다.</p>
+    <div class="stats c4 mt16" role="group" aria-label="FSD 지표">
+      <div class="st"><div class="k">활성 구독</div><div class="v num">1,480,000</div><div class="s">2026년 2분기 기준</div></div>
+      <div class="st"><div class="k">구독 가격</div><div class="v">99<span class="u">$/월</span></div><div class="s">일시불은 2026년 초 대부분 종료</div></div>
+      <div class="st"><div class="k">연환산 구독 매출</div><div class="v num" id="fsdArr">—</div><div class="s">148만 × $99 × 12 단순 계산</div></div>
+      <div class="st"><div class="k">소프트웨어 버전</div><div class="v">v14.3<span class="u">.6</span></div><div class="s">v15는 4분기 프리뷰</div></div>
+    </div>
+    <div class="note mt16"><span class="ic">💳</span><div>과거 최대 <b>$15,000</b> 일시불이던 FSD를 <b>$8,000</b>을 거쳐
+      2026년 초 <b>구독 전용</b>으로 바꿨습니다. 일시불은 파는 순간 끝나지만 구독은 매달 반복 매출로 쌓입니다 —
+      회계상 성격이 완전히 다른 전환입니다. 머스크는 $99가 영구 가격이 아니라고 밝혔습니다.</div></div>
+    <div class="note mt12"><span class="ic">🧮</span><div>위 연환산 값은 <b>구독 수 × 정가 × 12</b>로 단순 계산한 것입니다.
+      실제로는 할인·해지·일시불 이연 인식이 섞여 있어 회사가 공시하는 FSD 매출과 다릅니다. 규모 감각용으로만 보세요.</div></div>
+  </div>
+</section>
+
+<!-- ============ CAPEX ============ -->
+<section id="capex">
+  <div class="wrap">
+    <p class="eyebrow">07 · Capex</p>
+    <h2 class="title">마진을 눌러앉힌 숫자</h2>
+    <p class="lead">앞에서 본 영업이익률 1.4%의 배경입니다. 2026년 자본지출 계획이
+      <b>250억 달러로 지난해의 세 배</b>입니다.</p>
+    <div class="card pad mt16">
+      <div class="chart-head"><div>
+        <div class="ct">연도별 자본지출</div>
+        <div class="cs">단위: 10억 달러 · 2026년은 회사 계획치</div>
+      </div>
+      <div class="seg" role="group" aria-label="보기 전환">
+        <button type="button" data-view="chart" data-target="Cap" aria-pressed="true">차트</button>
+        <button type="button" data-view="table" data-target="Cap" aria-pressed="false">표</button>
+      </div></div>
+      <div class="figwrap" id="wrapCap">
+        <svg class="fig" id="figCap" role="img" aria-label="테슬라 연도별 자본지출 막대그래프"></svg>
+        <div class="tip" id="tipCap"></div>
+      </div>
+      <div class="tscroll mt12" id="tblCap" hidden></div>
+      <div class="note mt12"><span class="ic">🏗️</span><div>2분기 한 분기에만 <b>58억 달러</b>를 썼습니다 —
+        1년 전 같은 분기(24억)보다 <b>142%</b> 많습니다. 분기 매출 282억의 <b id="capexShare">—</b>에 해당합니다.
+        잉여현금흐름이 −10.9억으로 돌아선 이유가 여기 있습니다.</div></div>
+      <div class="note mt12"><span class="ic">🎯</span><div>돈이 가는 곳은 <b>로보택시 함대 · AI 컴퓨팅 · 옵티머스 제조 ·
+        오스틴 반도체 팹</b>입니다. 전부 지금 매출을 내지 않는 항목이라, 마진이 회복되려면
+        이 투자들이 매출로 바뀌는 시점이 와야 합니다. 회사는 향후 2~3년 더 늘어난다고 했습니다.</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ ENERGY CAPACITY ============ -->
+<section id="energy">
+  <div class="wrap">
+    <p class="eyebrow">08 · Energy capacity</p>
+    <h2 class="title">이미 돈을 벌고 있는 쪽</h2>
+    <p class="lead">로보택시가 420대일 때, 에너지 부문은 이미 매출 <b>128억 달러</b>에 연 80 GWh 규모의 공장을 돌리고 있습니다.</p>
+    <div class="card mt16">
+      <div class="tscroll">
+        <table class="narrow">
+          <thead><tr><th>공장</th><th>연간 생산능력</th><th>상태</th></tr></thead>
+          <tbody>
+            <tr><td class="tx">라스롭 (캘리포니아)</td><td>40 GWh · 1만 대</td><td class="tx">가동 중 · 주 200대</td></tr>
+            <tr><td class="tx">상하이 (중국)</td><td>40 GWh · 1만 대</td><td class="tx">2026-03 연환산 40 GWh 도달</td></tr>
+            <tr><td class="tx">브룩셔 (텍사스)</td><td>50 GWh</td><td class="tx">메가팩 3 · 2026년 말 목표</td></tr>
+            <tr class="tfoot"><td>합계</td><td>약 130 GWh</td><td class="tx">세 곳 모두 가동 시</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="note mt12"><span class="ic">⚡</span><div>2025년 실제 배포량은 <b>46.7 GWh</b>였습니다.
+        지금 짓고 있는 생산능력(130 GWh)은 그 <b>2.8배</b>입니다. 회사가 어디에 베팅하는지가 설비에 드러납니다 —
+        <a href="/tesla/#metrics" style="border-bottom:1px solid var(--line)">분기별 배포량 추이는 이쪽</a>입니다.</div></div>
     </div>
   </div>
 </section>
@@ -488,7 +647,7 @@ footer a:hover{color:var(--brand-deep);border-color:var(--brand-deep)}
 <!-- ============ SOURCES ============ -->
 <section id="sources" style="padding-bottom:10px">
   <div class="wrap">
-    <p class="eyebrow">06 · Sources</p>
+    <p class="eyebrow">09 · Sources</p>
     <h2 class="title">데이터 출처</h2>
     <p class="lead">실적 수치는 테슬라가 분기마다 내는 발표 자료 기준입니다. 분기 합계가 연간 발표치와 맞는지 확인했습니다.</p>
     <div class="card pad mt16">
@@ -501,13 +660,20 @@ footer a:hover{color:var(--brand-deep);border-color:var(--brand-deep)}
             <tr><td class="tx">배터리 셀 공급사</td><td>2026-09 기준</td><td class="tx">각 사 발표 및 업계 보도</td></tr>
             <tr><td class="tx">AI 칩 위탁생산</td><td>2025-07 계약</td><td class="tx">삼성전자 공시 · 머스크 공개 확인</td></tr>
             <tr><td class="tx">양극재 공급 계약</td><td>2024 ~ 2025</td><td class="tx">엘앤에프 공시</td></tr>
-            <tr><td class="tx">로보택시 운행 현황</td><td>2026-09 기준</td><td class="tx">로보택시 추적 집계</td></tr>
+            <tr><td class="tx">로보택시 도시·차량 수</td><td>2026-09 기준</td><td class="tx">텍사스 등록 자료 · 로보택시 추적 집계</td></tr>
+            <tr><td class="tx">웨이모 비교 수치</td><td>2026-09-01 기준</td><td class="tx">Waymo 발표 · 업계 집계</td></tr>
+            <tr><td class="tx">사이버캡 일정</td><td>2024-10 ~ 2026-09</td><td class="tx">테슬라 발표 · 보도</td></tr>
+            <tr><td class="tx">FSD 구독 수·가격</td><td>2026 2분기</td><td class="tx">업계 집계 · Tesla 지원 페이지</td></tr>
+            <tr><td class="tx">자본지출</td><td>2023 ~ 2026 계획</td><td class="tx">Tesla 실적 발표 · 분기 업데이트</td></tr>
+            <tr><td class="tx">메가팩 공장 생산능력</td><td>2026 기준</td><td class="tx">Tesla 발표 · 업계 보도</td></tr>
           </tbody>
         </table>
       </div>
       <div class="note mt12"><span class="ic">✅</span><div>검산 — 2025년 분기 매출 19.34 + 22.50 + 28.10 + 24.90 = <b>94.83</b>으로
         연간 발표치와 일치합니다. 분기 영업이익률 × 매출도 발표된 영업이익과 맞습니다(2026년 2분기 3.95억 vs 발표 3.98억, 반올림 차이).
-        부문별 매출 합계는 각 수치가 반올림돼 연간 합계와 0.03B 차이가 납니다.</div></div>
+        부문별 매출 합계는 각 수치가 반올림돼 연간 합계와 0.03B 차이가 납니다.
+        로보택시·FSD 쪽은 회사가 부문으로 공시하지 않아 검산할 합계가 없습니다 — 대신 어디까지가 회사 발표이고
+        어디부터가 외부 집계인지 각 표에 적었습니다.</div></div>
       <div class="note mt12"><span class="ic">🗓️</span><div>지표 기준일 <b id="asOfLabel">—</b>.
         테슬라 실적은 보통 분기 종료 3~4주 뒤에 나옵니다. 수치는 소스 맨 위 <b>DATA</b> 블록 한 곳에 모여 있습니다.</div></div>
     </div>
@@ -539,6 +705,7 @@ footer a:hover{color:var(--brand-deep);border-color:var(--brand-deep)}
   </div>
 </footer>
 
+<script src="/stocks/assets/registry.js"></script>
 <script>
 "use strict";
 
@@ -589,6 +756,14 @@ const DATA = {
         { q: "25 Q3", v: 0.417 }, { q: "25 Q4", v: 0.542 }]
   },
   fy2025: { rev: 94.83, ni: 3.79, eps: 1.08, eps2024: 2.04, oi: 4.35, om: 4.59 },
+  // 연도별 자본지출. 2026 은 회사가 제시한 계획치라 est 로 표시해 막대를 다르게 그립니다.
+  capex: [
+    { y: 2023, v: 8.9 }, { y: 2024, v: 11.3 }, { y: 2025, v: 8.5 },
+    { y: 2026, v: 25.0, est: true }
+  ],
+  capexQ2_2026: 5.8,           // 분기 자본지출 (전년 동기 2.4)
+  q2rev: 28.24,                // 비중 계산용 (최근 분기 매출)
+  fsd: { subs: 1480000, price: 99 },
   lanes: [
     { t: "배터리 셀", d: "차량과 메가팩에 들어가는 셀", dest: "차량 · 메가팩",
       nodes: [
@@ -694,8 +869,13 @@ function drawCols(svgId, tipId, rows, opt) {
   const gw = pw / rows.length, bw = Math.min(small ? 34 : 54, gw * 0.62);
   rows.forEach((r, i) => {
     const cx = L + gw * i + gw / 2, h = Math.max(1, (r.v / sc.max) * ph), y = T + ph - h;
-    svg.appendChild(el("path", { d: barTop(cx - bw / 2, y, bw, h, 4) }, "fill:var(" + (r.color || opt.color) + ")"));
-    svg.appendChild(txt(el("text", { x: cx, y: y - 7, "text-anchor": "middle", class: "dlabel" }), opt.label(r.v)));
+    // 계획치는 실적과 같은 채움으로 그리면 안 됩니다 — 옅은 면 + 테두리로 구분합니다
+    svg.appendChild(el("path", { d: barTop(cx - bw / 2, y, bw, h, 4) },
+      r.est ? "fill:var(" + (r.color || opt.color) + ");fill-opacity:.28;stroke:var(" +
+              (r.color || opt.color) + ");stroke-width:1.5;stroke-dasharray:4 3"
+            : "fill:var(" + (r.color || opt.color) + ")"));
+    svg.appendChild(txt(el("text", { x: cx, y: y - 7, "text-anchor": "middle", class: "dlabel" }),
+      opt.label(r.v) + (r.est ? " 계획" : "")));
     svg.appendChild(txt(el("text", { x: cx, y: H - 12, "text-anchor": "middle", class: "axis" }), r.name));
     const hit = el("rect", { x: L + gw * i, y: T - 10, width: gw, height: ph + 10, class: "hit" });
     hit.addEventListener("mouseenter", () => showTip(tip, wrap, opt.tip(r), cx, T));
@@ -807,6 +987,11 @@ function drawAll() {
     tip: (r) => '<div class="th">' + r.name + "년</div>" +
       '<div class="tr"><span class="nm">영업이익률</span><b>' + r.v.toFixed(2) + "%</b></div>"
   });
+  drawCols("figCap", "tipCap", DATA.capex.map((d) => ({ name: d.y, v: d.v, est: d.est })), {
+    color: "--s1", tick: (v) => v, label: (v) => v.toFixed(1),
+    tip: (r) => '<div class="th">' + r.name + "년" + (r.est ? " · 회사 계획치" : "") + "</div>" +
+      '<div class="tr"><span class="nm">자본지출</span><b>$' + r.v.toFixed(1) + "B</b></div>"
+  });
   drawStack();
   drawRegion();
   drawCols("figCred", "tipCred", DATA.credits.q.map((d) => ({ name: d.q, v: d.v })), {
@@ -833,6 +1018,21 @@ function renderLanes() {
   renderLanes();
   drawAll();
   $("asOfLabel").textContent = DATA.asOf;
+
+  // FSD 연환산 구독 매출 (단순 계산 — 페이지에 그렇게 적어 뒀습니다)
+  $("fsdArr").textContent = "$" + ((DATA.fsd.subs * DATA.fsd.price * 12) / 1e9).toFixed(1) + "B";
+  $("capexShare").textContent = ((DATA.capexQ2_2026 / DATA.q2rev) * 100).toFixed(1) + "%";
+
+  $("tblCap").innerHTML = "<table class='narrow'><thead><tr><th>연도</th><th>자본지출(B$)</th><th>전년 대비</th>" +
+    "<th>구분</th></tr></thead><tbody>" +
+    DATA.capex.map((d, i) => {
+      const prev = i > 0 ? DATA.capex[i - 1].v : null;
+      const yoy = prev ? ((d.v / prev - 1) * 100) : null;
+      return "<tr><td class='tx'>" + d.y + "</td><td>" + d.v.toFixed(1) + "</td><td class='" +
+        (yoy == null ? "" : cls(yoy)) + "'>" + (yoy == null ? "—" : pctTxt(yoy)) + "</td><td class='tx'>" +
+        (d.est ? "회사 계획" : "실적") + "</td></tr>";
+    }).join("") + "</tbody></table>";
+
 
   const y25 = DATA.segYears[DATA.segYears.length - 1];
   $("nonAuto").textContent = (((y25.nrg + y25.svc) / y25.total) * 100).toFixed(1) + "%";
@@ -882,6 +1082,45 @@ function renderLanes() {
       if (view === "chart") drawAll();
     });
   });
+  /* ---- 00 · 회사 프로필과 2025년 연간 실적 ----
+     프로필은 레지스트리(/stocks/assets/registry.js)에서만 읽습니다 — 다른 종목 페이지와 같은 출처입니다.
+     연간 지표는 DATA.fy2025 에서 나눠서 만듭니다. 비율을 따로 적어 두지 않습니다. */
+  (function profile() {
+    const e = typeof REGISTRY === "undefined" ? null : REGISTRY.find((r) => r.slug === "tesla");
+    const YEAR = new Date().getFullYear();
+    if (e && e.p) {
+      const p = e.p, age = YEAR - p.est, tenure = YEAR - p.since;
+      const pf = (k, v, sub) => '<div class="pf"><div class="k">' + k + '</div><div class="v">' + v +
+        "</div>" + (sub ? '<div class="s">' + sub + "</div>" : "") + "</div>";
+      $("pfBadge").textContent = "설립 " + p.est + "년 · 올해로 " + age + "년차";
+      $("pfGrid").innerHTML =
+        pf("설립", p.est + "년", p.estNote ? esc(p.estNote) : "올해로 " + age + "년차") +
+        pf("본사", esc(p.hq), "2021년 캘리포니아에서 이전") +
+        pf("상장 거래소", esc(p.ex), "티커 " + esc(e.tk) + (p.ex2 ? " · " + esc(p.ex2) : "")) +
+        pf("CEO", esc(p.ceo) + " <small>" + esc(p.ceoEn) + "</small>",
+           p.sinceNote ? esc(p.sinceNote) : p.since + "년 취임 · " + (tenure >= 1 ? tenure + "년째" : "취임 첫해")) +
+        pf("회계연도 종료", esc(p.fye), "달력 연도와 같아 비교가 쉽습니다") +
+        pf("배당", p.div ? "지급" : "없음", p.div ? "" : "이익을 전액 재투자·설비에 씁니다") +
+        pf("임직원", e.data.emp.toLocaleString("ko-KR") + "명", esc(e.data.empAsOf) + " 기준") +
+        pf("한국과의 관계", esc(e.kr), "LG엔솔·삼성SDI 등이 부품을 댑니다") +
+        pf("최대 사업 부문", esc(e.data.top.k),
+           "2025년 매출의 " + ((e.data.top.v / e.data.top.of) * 100).toFixed(1) + "%");
+    }
+    const f = DATA.fy2025, om = (f.oi / f.rev) * 100, nm = (f.ni / f.rev) * 100;
+    const st = (k, v, u, sub, tone) => '<div class="st"><div class="k">' + k + '</div><div class="v' +
+      (tone ? " " + tone : "") + '">' + v + (u ? '<span class="u">' + u + "</span>" : "") + "</div>" +
+      '<div class="s">' + sub + "</div></div>";
+    $("fyGrid").innerHTML =
+      st("연간 매출", f.rev.toFixed(2), "B$", "2024년 97.69B$에서 −3%", "") +
+      st("영업이익", f.oi.toFixed(2), "B$", "영업이익률 " + om.toFixed(1) + "%", "") +
+      st("순이익", f.ni.toFixed(2), "B$", "순이익률 " + nm.toFixed(1) + "%", "") +
+      st("주당순이익", f.eps.toFixed(2), "$", "2024년 " + f.eps2024.toFixed(2) + "$에서 하락", "down");
+    $("fyNote").innerHTML = "이 네 칸 중 <b>영업이익률 " + om.toFixed(1) + "%와 순이익률 " + nm.toFixed(1) +
+      "%는 계산한 값</b>입니다 — 영업이익·순이익을 매출로 나눴습니다. 2025년 영업이익 " + f.oi.toFixed(2) +
+      "B$ 중 <b>" + ((DATA.credits.y2025 / f.oi) * 100).toFixed(0) + "%가 탄소배출권</b>이라는 점은 " +
+      '<a href="#segments">사업 부문</a>에서 따로 다룹니다. 매출은 2025년이 전년보다 줄어든 첫 해입니다.';
+  })();
+
   let rt;
   addEventListener("resize", () => { clearTimeout(rt); rt = setTimeout(drawAll, 140); });
 })();

@@ -91,6 +91,8 @@ p.lead{font-size:14.5px;color:var(--ink-2);font-weight:300;max-width:64ch;line-h
 .stats{display:grid;grid-template-columns:repeat(2,1fr);gap:1px;background:var(--line-soft);
   border:1px solid var(--line);border-radius:12px;overflow:hidden}
 @media(min-width:720px){.stats.c4{grid-template-columns:repeat(4,1fr)}.stats.c3{grid-template-columns:repeat(3,1fr)}}
+/* 좁은 화면에서 3칸 묶음은 2+1 이 되는데, 남는 칸을 비워 두지 않고 넓힙니다 */
+@media(max-width:719px){.stats.c3 .st:nth-child(3):last-child{grid-column:span 2}}
 .st{background:var(--surface);padding:14px 15px}
 .st .k{font-size:11.5px;color:var(--ink-3);font-weight:400}
 .st .v{font-size:20px;font-weight:600;letter-spacing:-.7px;margin-top:3px;white-space:nowrap;
@@ -98,6 +100,16 @@ p.lead{font-size:14.5px;color:var(--ink-2);font-weight:300;max-width:64ch;line-h
 .st .v .u{font-size:13px;font-weight:500}
 .st .s{font-size:12px;color:var(--ink-3);font-weight:300;margin-top:2px;
   font-family:"IBM Plex Mono",monospace;font-variant-numeric:tabular-nums}
+
+/* 회사 프로필 — 값이 숫자가 아니라 문장이라 .st 와 달리 줄바꿈을 허용합니다 */
+.prof{display:grid;grid-template-columns:repeat(2,1fr);gap:1px;background:var(--line-soft);
+  border:1px solid var(--line);border-radius:12px;overflow:hidden}
+@media(min-width:720px){.prof{grid-template-columns:repeat(3,1fr)}}
+.pf{background:var(--surface);padding:13px 15px;min-width:0}
+.pf .k{font-size:11.5px;color:var(--ink-3);font-weight:400}
+.pf .v{font-size:15px;font-weight:600;letter-spacing:-.3px;margin-top:4px;line-height:1.45;overflow-wrap:anywhere}
+.pf .v small{font-size:12px;font-weight:400;color:var(--ink-3);letter-spacing:0}
+.pf .s{font-size:11.5px;color:var(--ink-3);font-weight:300;margin-top:4px;line-height:1.55}
 
 .note{display:flex;gap:9px;background:var(--surface-2);border-radius:11px;padding:12px 13px;
   font-size:12.5px;color:var(--ink-2);font-weight:300;line-height:1.65}

@@ -1,0 +1,215 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AMD 지표 · 매출 구성과 한국과의 관계 | 종목 노트</title>
+<meta name="description" content="2025년 매출 346억 달러로 사상 최대인데 영업이익률은 10.7%. 같은 시장 엔비디아(60.4%)와 나란히 놓고 봅니다.">
+<link rel="canonical" href="https://richroro.github.io/stocks/amd/">
+<meta property="og:type" content="website"><meta property="og:locale" content="ko_KR">
+<meta property="og:site_name" content="Cadence">
+<meta property="og:url" content="https://richroro.github.io/stocks/amd/">
+<meta property="og:title" content="AMD 지표 | 종목 노트">
+<meta property="og:description" content="2025년 매출 346억 달러로 사상 최대인데 영업이익률은 10.7%. 같은 시장 엔비디아(60.4%)와 나란히 놓고 봅니다.">
+<meta name="twitter:card" content="summary">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='#eb6834'/><text x='50' y='66' font-size='42' text-anchor='middle' fill='white' font-family='monospace' font-weight='bold'>AD</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans+KR:wght@300;400;500;600;700&display=swap">
+<link rel="stylesheet" href="/m7/assets/m7.css">
+</head>
+<body>
+<noscript><div style="padding:24px;font-family:sans-serif"><h1>AMD 지표</h1><p>2025년 매출 346억 달러로 사상 최대인데 영업이익률은 10.7%. 같은 시장 엔비디아(60.4%)와 나란히 놓고 봅니다.</p>
+<p>차트를 그리는 데 자바스크립트를 씁니다. <a href="/stocks/">종목 노트 전체</a></p></div></noscript>
+<script src="/stocks/assets/registry.js"></script>
+<script>
+/* AMD (AMD) — 이 블록만 고치면 페이지 전체가 따라 바뀝니다.
+   검산: 16.6+14.6+3.4 = 34.6 (정확 일치) / 3.7 ÷ 34.6 = 10.7% */
+const CO = {
+  "group": "semi",
+  "hubHref": "/stocks/",
+  "hubName": "종목 노트 전체",
+  "hubMark": "종목",
+  "peersTitle": "같은 분야 다른 회사",
+  "asOf": "2026-09-20",
+  "slug": "amd",
+  "tk": "AMD",
+  "ko": "AMD",
+  "en": "Advanced Micro Devices",
+  "ab": "AD",
+  "color": "#eb6834",
+  "fy": {
+    "label": "2025 회계연도 · 12월 종료",
+    "note": null
+  },
+  "headline": "같은 시장, 6분의 1 이익률",
+  "lead": "매출 346억 달러로 사상 최대입니다. 그런데 영업이익률은 <b>10.7%</b>. 같은 AI 가속기 시장에 있는 엔비디아는 <b>60.4%</b>입니다.",
+  "stats": [
+    {
+      "k": "2025 매출",
+      "v": "34.6",
+      "u": "B$",
+      "s": "사상 최대",
+      "stone": "up"
+    },
+    {
+      "k": "영업이익률",
+      "v": "10.7",
+      "u": "%",
+      "s": "영업이익 3.7B$"
+    },
+    {
+      "k": "총마진",
+      "v": "50",
+      "u": "%",
+      "s": "엔비디아 71.1%"
+    },
+    {
+      "k": "데이터센터",
+      "v": "16.6",
+      "u": "B$",
+      "s": "영업이익 3.6B$"
+    }
+  ],
+  "mix": {
+    "title": "데이터센터와 나머지가 거의 반반",
+    "chartTitle": "2025년 부문별 매출",
+    "period": "2025",
+    "total": 34.6,
+    "rows": [
+      {
+        "k": "데이터센터",
+        "v": 16.6,
+        "yoy": null,
+        "color": "--s1"
+      },
+      {
+        "k": "클라이언트·게이밍",
+        "v": 14.6,
+        "yoy": 51,
+        "color": "--s2"
+      },
+      {
+        "k": "임베디드",
+        "v": 3.4,
+        "yoy": null,
+        "color": "--s3"
+      }
+    ],
+    "lead": "AI 가속기가 들어간 데이터센터가 48%로 가장 크지만, PC·게임기용 칩(클라이언트·게이밍)이 <b>+51%</b>로 더 빠르게 컸습니다. 엔비디아와 달리 <b>소비자 쪽 비중이 여전히 큽니다</b>.",
+    "note": "세 부문 합계가 <b>34.6으로 발표 총매출과 정확히 일치</b>합니다. 데이터센터 영업이익 36억 달러는 회사 전체 영업이익 37억과 거의 같습니다 — 나머지 부문이 사실상 이익을 남기지 못했다는 뜻입니다."
+  },
+  "signature": {
+    "nav": "엔비디아 대조",
+    "eyebrow": "vs NVDA",
+    "title": "같은 시장에 있다는 말의 실제 의미",
+    "lead": "AI 가속기 시장을 두고 엔비디아와 비교되지만, 손익계산서를 나란히 놓으면 다른 체급입니다.",
+    "split": {
+      "title": "2025년 영업이익률 비교",
+      "sub": "AMD 2025 회계연도 vs 엔비디아 FY2026",
+      "parts": [
+        {
+          "k": "엔비디아 60.4%",
+          "v": 60.4,
+          "color": "--s1",
+          "label": "영업이익률"
+        },
+        {
+          "k": "AMD 10.7%",
+          "v": 10.7,
+          "color": "--s2",
+          "label": "영업이익률"
+        }
+      ],
+      "note": "매출도 엔비디아 2,159억 vs AMD 346억으로 <b>6배</b> 차이입니다. AMD가 AI 가속기에서 의미 있는 몫을 가져가면 그 자체가 큰 변화지만, 현재 숫자는 아직 <a href=\"/m7/nvda/\" style=\"border-bottom:1px solid var(--line)\">엔비디아</a>의 독주에 가깝습니다."
+    },
+    "stats": [
+      {
+        "k": "데이터센터 비중",
+        "v": "48.0",
+        "u": "%",
+        "s": "2025년"
+      },
+      {
+        "k": "클라이언트·게이밍 성장",
+        "v": "+51",
+        "u": "%",
+        "s": "2025년",
+        "stone": "up"
+      },
+      {
+        "k": "주당순이익",
+        "v": "2.65",
+        "u": "$",
+        "s": "순이익 4.3B$"
+      }
+    ]
+  },
+  "korea": {
+    "kind": "공급 — HBM 직접 탑재",
+    "title": "AMD 가속기에도 HBM이 올라간다",
+    "lead": "AMD의 MI 시리즈 가속기 역시 HBM을 씁니다. 엔비디아만큼은 아니지만 한국 메모리 수요에 직접 연결됩니다.",
+    "lanes": [
+      {
+        "t": "HBM (고대역폭 메모리)",
+        "d": "AI 가속기에 반드시 올라가는 메모리",
+        "dest": "AI 가속기",
+        "nodes": [
+          {
+            "n": "SK하이닉스",
+            "c": "KR",
+            "kr": true,
+            "d": "HBM 1위. 2026년 매출 기준 점유율 50% 유지 전망."
+          },
+          {
+            "n": "삼성전자",
+            "c": "KR",
+            "kr": true,
+            "d": "HBM4 세계 최초 양산 출하."
+          },
+          {
+            "n": "마이크론",
+            "c": "US",
+            "kr": false,
+            "d": "세 번째 공급사."
+          }
+        ]
+      }
+    ]
+  },
+  "notes": [
+    {
+      "h": "숫자를 볼 때",
+      "items": [
+        "<b style=\"color:var(--ink)\">부문 영업이익 합이 전체와 거의 같습니다</b> — 데이터센터 36억 ≈ 전체 37억. 나머지 부문이 이익을 거의 못 냈다는 뜻입니다.",
+        "<b style=\"color:var(--ink)\">총마진 50%는 엔비디아(71.1%)보다 낮습니다</b> — 소비자용 칩 비중이 마진을 누릅니다.",
+        "<b style=\"color:var(--ink)\">부문별 전년 대비를 일부만 담았습니다</b> — 확인된 값만 표시했습니다."
+      ]
+    },
+    {
+      "h": "위험 쪽",
+      "items": [
+        "<b style=\"color:var(--ink)\">소프트웨어 생태계</b> — CUDA에 맞서는 ROCm의 성숙도가 채택 속도를 정합니다.",
+        "<b style=\"color:var(--ink)\">같은 파운드리를 씁니다</b> — TSMC 캐파를 엔비디아와 나눠 받습니다.",
+        "<b style=\"color:var(--ink)\">PC 사이클 의존</b> — 매출의 42%가 클라이언트·게이밍입니다."
+      ]
+    }
+  ],
+  "sources": [
+    {
+      "i": "매출·부문별 매출·영업이익",
+      "p": "2025",
+      "s": "AMD 실적 발표 · 10-K"
+    },
+    {
+      "i": "엔비디아 비교 수치",
+      "p": "FY2026",
+      "s": "NVIDIA 실적 발표"
+    }
+  ],
+  "checksum": "검산 — 부문 합계 16.6 + 14.6 + 3.4 = 34.6으로 발표 총매출과 정확히 일치합니다. 영업이익 3.7 ÷ 34.6 = 10.7%."
+};
+</script>
+<script src="/m7/assets/m7.js"></script>
+</body>
+</html>

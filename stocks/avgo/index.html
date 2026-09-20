@@ -1,0 +1,210 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>브로드컴 지표 · 매출 구성과 한국과의 관계 | 종목 노트</title>
+<meta name="description" content="FY2025 매출 639억 달러가 반도체 58%·소프트웨어 42%로 갈립니다. 총마진 78.6%의 이유와 HBM으로 이어지는 한국 연결을 정리했습니다.">
+<link rel="canonical" href="https://richroro.github.io/stocks/avgo/">
+<meta property="og:type" content="website"><meta property="og:locale" content="ko_KR">
+<meta property="og:site_name" content="Cadence">
+<meta property="og:url" content="https://richroro.github.io/stocks/avgo/">
+<meta property="og:title" content="브로드컴 지표 | 종목 노트">
+<meta property="og:description" content="FY2025 매출 639억 달러가 반도체 58%·소프트웨어 42%로 갈립니다. 총마진 78.6%의 이유와 HBM으로 이어지는 한국 연결을 정리했습니다.">
+<meta name="twitter:card" content="summary">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='#C81E3A'/><text x='50' y='66' font-size='42' text-anchor='middle' fill='white' font-family='monospace' font-weight='bold'>BR</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans+KR:wght@300;400;500;600;700&display=swap">
+<link rel="stylesheet" href="/m7/assets/m7.css">
+</head>
+<body>
+<noscript><div style="padding:24px;font-family:sans-serif"><h1>브로드컴 지표</h1><p>FY2025 매출 639억 달러가 반도체 58%·소프트웨어 42%로 갈립니다. 총마진 78.6%의 이유와 HBM으로 이어지는 한국 연결을 정리했습니다.</p>
+<p>차트를 그리는 데 자바스크립트를 씁니다. <a href="/stocks/">종목 노트 전체</a></p></div></noscript>
+<script src="/stocks/assets/registry.js"></script>
+<script>
+/* 브로드컴 (AVGO) — 이 블록만 고치면 페이지 전체가 따라 바뀝니다.
+   검산: 36,858 + 27,029 = 63,887 (정확 일치) */
+const CO = {
+  "group": "semi",
+  "hubHref": "/stocks/",
+  "hubName": "종목 노트 전체",
+  "hubMark": "종목",
+  "peersTitle": "같은 분야 다른 회사",
+  "asOf": "2026-09-20",
+  "slug": "avgo",
+  "tk": "AVGO",
+  "ko": "브로드컴",
+  "en": "Broadcom",
+  "ab": "BR",
+  "color": "#C81E3A",
+  "fy": {
+    "label": "FY2025 · 2025년 11월 종료",
+    "note": "브로드컴 회계연도는 10~11월에 끝납니다. FY2025는 2024년 11월~2025년 11월입니다."
+  },
+  "headline": "반쪽은 반도체, 반쪽은 소프트웨어",
+  "lead": "매출 639억 달러가 거의 반으로 갈립니다 — 반도체 <b>58%</b>, 인프라 소프트웨어 <b>42%</b>. AI 칩 회사로만 보면 절반을 놓칩니다.",
+  "stats": [
+    {
+      "k": "FY2025 매출",
+      "v": "63.9",
+      "u": "B$",
+      "s": "반도체+소프트웨어"
+    },
+    {
+      "k": "총마진",
+      "v": "78.6",
+      "u": "%",
+      "s": "반도체 회사에서 보기 어려운 수준"
+    },
+    {
+      "k": "반도체 솔루션",
+      "v": "36.9",
+      "u": "B$",
+      "s": "+22% YoY",
+      "stone": "up"
+    },
+    {
+      "k": "인프라 소프트웨어",
+      "v": "27.0",
+      "u": "B$",
+      "s": "+26% YoY",
+      "stone": "up"
+    }
+  ],
+  "mix": {
+    "title": "두 개의 회사가 한 회사 안에",
+    "chartTitle": "FY2025 부문별 매출",
+    "period": "FY2025",
+    "total": 63.887,
+    "rows": [
+      {
+        "k": "반도체 솔루션",
+        "v": 36.858,
+        "yoy": 22,
+        "color": "--s1"
+      },
+      {
+        "k": "인프라 소프트웨어",
+        "v": 27.029,
+        "yoy": 26,
+        "color": "--s2"
+      }
+    ],
+    "lead": "커스텀 AI 가속기와 네트워킹이 반도체 쪽을 끌었고, VMware 클라우드 파운데이션이 소프트웨어 쪽을 끌었습니다. <b>소프트웨어가 반도체보다 빠르게 크고 있습니다</b>(+26% vs +22%).",
+    "note": "두 부문 합계가 <b>63,887백만 달러로 발표 총매출과 정확히 일치</b>합니다. 총마진 78.6%는 순수 반도체 회사에서 나오기 어려운 숫자인데, <b>소프트웨어가 42%를 차지하기 때문</b>입니다."
+  },
+  "signature": {
+    "nav": "VMware",
+    "eyebrow": "Software",
+    "title": "마진의 비밀은 VMware에 있다",
+    "lead": "브로드컴을 엔비디아·AMD와 같은 칸에 놓고 비교하면 마진이 이상하게 높아 보입니다. 소프트웨어 부문을 떼고 보면 설명이 됩니다.",
+    "split": {
+      "title": "FY2025 매출 639억 달러",
+      "sub": "반도체 회사이면서 동시에 대형 소프트웨어 회사입니다",
+      "parts": [
+        {
+          "k": "반도체 솔루션",
+          "v": 36.858,
+          "color": "--s1",
+          "label": "$36.9B"
+        },
+        {
+          "k": "인프라 소프트웨어",
+          "v": 27.029,
+          "color": "--s2",
+          "label": "$27.0B"
+        }
+      ],
+      "note": "VMware 인수 후 <b>영구 라이선스를 구독으로 바꾸는 전환</b>이 진행 중입니다. 구독은 반복 매출이고 마진이 높습니다. 커스텀 AI 가속기(하이퍼스케일러가 자체 칩을 만들 때 설계를 맡기는 쪽)와 이 소프트웨어가 같이 굴러가는 게 이 회사 구조입니다."
+    },
+    "stats": [
+      {
+        "k": "반도체 비중",
+        "v": "57.7",
+        "u": "%",
+        "s": "FY2025"
+      },
+      {
+        "k": "소프트웨어 비중",
+        "v": "42.3",
+        "u": "%",
+        "s": "FY2025"
+      },
+      {
+        "k": "소프트웨어 성장",
+        "v": "+26",
+        "u": "%",
+        "s": "반도체 +22% 대비",
+        "stone": "up"
+      }
+    ]
+  },
+  "korea": {
+    "kind": "간접 — 수요 경로",
+    "title": "브로드컴 매출이 한국으로 이어지는 길",
+    "lead": "브로드컴은 한국 기업에서 부품을 산다고 공시하지 않습니다. 연결은 <b>커스텀 AI 가속기 → HBM 수요</b> 경로입니다.",
+    "lanes": [
+      {
+        "t": "HBM (고대역폭 메모리)",
+        "d": "AI 가속기에 반드시 올라가는 메모리",
+        "dest": "AI 가속기",
+        "nodes": [
+          {
+            "n": "SK하이닉스",
+            "c": "KR",
+            "kr": true,
+            "d": "HBM 1위. 2026년 매출 기준 점유율 50% 유지 전망."
+          },
+          {
+            "n": "삼성전자",
+            "c": "KR",
+            "kr": true,
+            "d": "HBM4 세계 최초 양산 출하."
+          },
+          {
+            "n": "마이크론",
+            "c": "US",
+            "kr": false,
+            "d": "세 번째 공급사."
+          }
+        ]
+      }
+    ]
+  },
+  "notes": [
+    {
+      "h": "숫자를 볼 때",
+      "items": [
+        "<b style=\"color:var(--ink)\">회계연도가 11월에 끝납니다</b> — 12월 결산 회사와 한 달 어긋납니다.",
+        "<b style=\"color:var(--ink)\">GAAP 영업이익을 이 페이지에 담지 않았습니다</b> — 확인한 자료에 연간 GAAP 영업이익이 없어 비웠습니다. 회사가 주로 쓰는 건 non-GAAP 수치입니다.",
+        "<b style=\"color:var(--ink)\">VMware 전환 효과는 일시적일 수 있습니다</b> — 라이선스 인식 방식 변경이 섞여 있습니다."
+      ]
+    },
+    {
+      "h": "위험 쪽",
+      "items": [
+        "<b style=\"color:var(--ink)\">고객 집중</b> — 커스텀 AI 칩은 소수 하이퍼스케일러 주문에 달려 있습니다.",
+        "<b style=\"color:var(--ink)\">VMware 가격 인상 반발</b> — 구독 전환 과정에서 고객 이탈이 변수입니다.",
+        "<b style=\"color:var(--ink)\">엔비디아와 다른 싸움</b> — 범용 GPU가 아니라 맞춤 설계라 수주 사이클이 덜 매끄럽습니다."
+      ]
+    }
+  ],
+  "sources": [
+    {
+      "i": "매출·부문별 매출·총마진",
+      "p": "FY2025",
+      "s": "Broadcom 10-K · 실적 발표"
+    },
+    {
+      "i": "HBM 점유율 전망",
+      "p": "2026",
+      "s": "UBS 전망 · 업계 보도"
+    }
+  ],
+  "checksum": "검산 — 부문 합계 36,858 + 27,029 = 63,887백만 달러로 발표 총매출과 정확히 일치합니다. 비중 57.7% / 42.3% 도 이 값에서 계산했습니다."
+};
+</script>
+<script src="/m7/assets/m7.js"></script>
+</body>
+</html>
