@@ -1,7 +1,8 @@
 # 업로드 목록
 
 각 폴더의 `upload.md`에 제목·설명·태그가 들어 있다.
-영상은 `shorts-fit.mp4`, 썸네일 후보는 `poster-fit.png`.
+영상은 `shorts-quiet.mp4`, 썸네일 후보는 `poster-quiet.png`.
+장식을 얹은 이전 판은 `shorts-fit.mp4` / `poster-fit.png`로 남겨뒀다.
 
 | 폴더 | 제목 | 테마 |
 |---|---|---|
@@ -25,9 +26,9 @@
 
 ```bash
 # 카드·영상
-node cards/tools/infographic.mjs cards/tools/content/<슬러그>.json --fit
-node cards/tools/scrollshorts.mjs cards/tools/content/<슬러그>.json --fit \
-  --dur=20 --style=drive --out=shorts-fit.mp4
+node cards/tools/infographic.mjs cards/tools/content/<슬러그>.json --quiet
+node cards/tools/scrollshorts.mjs cards/tools/content/<슬러그>.json \
+  --poster=cards/<슬러그>/poster-quiet.png --dur=20 --style=drive --out=shorts-quiet.mp4
 # 업로드 메타데이터
 node cards/tools/upload.mjs cards/tools/content/<슬러그>.json
 ```

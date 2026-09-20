@@ -389,7 +389,7 @@ body{width:${W}px;font-family:'Body',sans-serif;font-weight:700;
 .quiet .meta{margin:5px 0 0 62px;font-size:22px;color:${T.muted};font-weight:500;line-height:1.3}
 /* one series, one colour; thin, rounded end, anchored left */
 .quiet .barwrap{margin:8px 0 0 62px;height:7px;border-radius:4px;background:${T.rule}}
-.quiet .bar{height:7px;border-radius:4px;background:${T.accent}}
+.quiet .bar{height:7px;border-radius:4px;background:${T.accent};min-width:9px}
 .quiet .note{margin-top:16px;background:none;border:0;border-top:1px solid ${T.rule};
   border-radius:0;padding:18px 0 0}
 .quiet .note p{font-size:19px;line-height:1.45;color:${T.muted};font-weight:500;
