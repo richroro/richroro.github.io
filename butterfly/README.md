@@ -5,7 +5,8 @@
 전부 페이지가 열릴 때 계산해서 만든다.
 
 - 배포: https://richroro.github.io/butterfly/
-- 소스: `index.html`(화면·조작) + `assets/butterfly.js`(장면) + `assets/three.min.js`(라이브러리)
+- 소스: `index.html`(화면·조작) + `assets/butterfly.js`(장면)
+- 공용: `/assets/scene-kit.js`(환경광·블룸·배경 — 종목 3D 지도와 같이 씁니다) + `/assets/three.min.js`
 
 ## 두 기종
 
@@ -23,7 +24,7 @@
 
 | 항목 | 내용 |
 | --- | --- |
-| 라이브러리 | three.js r186 한 개. CDN 을 쓰지 않고 저장소에 함께 둔다(`assets/three.min.js`, MIT) |
+| 라이브러리 | three.js r186 한 개. CDN 을 쓰지 않고 저장소에 함께 둔다(`/assets/three.min.js`, MIT) |
 | 에셋 | 없음. `.glb`·`.jpg`·`.hdr` 가 하나도 없다 |
 | 빌드 | 없음. 정적 파일 그대로 GitHub Pages 에 올라간다 |
 | 요구 사항 | WebGL2. 지원하지 않으면 안내 화면으로 대체한다 |
@@ -148,8 +149,8 @@ __butterfly.info();                 // 삼각형 수 · fps · 해상도
 
 이 사이트의 다른 페이지들처럼 **외부 스크립트 없이** 돌아가게 하고 싶었다.
 CDN 이 막히거나 버전이 바뀌면 페이지가 통째로 깨지는데, 정적 사이트에서 그건 되돌리기 어렵다.
-`assets/three.min.js` 는 npm `three@0.186.0` 의 `build/three.module.js` 를 esbuild 로 묶어 압축한 것이다.
-원본과 라이선스(MIT)는 `assets/three.LICENSE.txt` 에 함께 둔다.
+`/assets/three.min.js` 는 npm `three@0.186.0` 의 `build/three.module.js` 를 esbuild 로 묶어 압축한 것이다.
+원본과 라이선스(MIT)는 `/assets/three.LICENSE.txt` 에 함께 둔다. 사이트 전체가 이 한 벌을 쓴다.
 
 ```bash
 npm i three@0.186.0
