@@ -29,6 +29,10 @@ const TALL = process.argv.includes('--tall');
 // --fit packs the whole thing into one 1080x1920 frame, for a shorts card that
 // is read at a glance rather than scrolled.
 const FIT = process.argv.includes('--fit');
+// --quiet drops the decoration and lets the figures carry the card: no row
+// cards, no gradient, no display face on the numbers. The value wears text
+// ink and a thin bar beside it carries the comparison.
+const QUIET = process.argv.includes('--quiet');
 const FIT_H = 1920;
 
 const font = (f) => `url(data:font/ttf;base64,${readFileSync(resolve(FONT_DIR, f)).toString('base64')})`;
@@ -350,6 +354,50 @@ body{width:${W}px;font-family:'Body',sans-serif;font-weight:700;
 .fit .credit{font-size:18px;margin-top:10px;padding-top:10px}
 .fit .close{font-size:38px;margin-top:16px}
 .fit .brand{font-size:22px;margin-top:10px}
+
+/* ---- quiet: information, no ornament ---- */
+.quiet{height:${FIT_H}px;padding:52px 56px 44px;display:flex;flex-direction:column;
+  background:${T.card === '#fff' ? '#faf9f6' : T.bg}}
+.quiet .head{padding:0 0 18px}
+.quiet .badge{position:static;transform:none;display:block;background:none;
+  box-shadow:none;padding:0;text-align:left;font-family:'Body';font-weight:700;
+  font-size:24px;letter-spacing:.14em;color:${T.accent}}
+.quiet .badge br{display:none}
+.quiet .badge span+span::before{content:' '}
+.quiet .title{margin:14px 0 0}
+.quiet .t1{font-family:'Body';font-weight:500;font-size:43px;color:${T.muted};letter-spacing:-.02em;line-height:1.2}
+.quiet .t2{font-family:'Body';font-weight:800;font-size:60px;color:${T.ink};
+  letter-spacing:-.03em;text-shadow:none;display:block;line-height:1.22}
+.quiet .t2::after{display:none}
+.quiet .sub{margin-top:13px;background:none;padding:0;color:${T.muted};
+  font-family:'Body';font-weight:500;font-size:25px;letter-spacing:0}
+.quiet .rows{flex:1;display:flex;flex-direction:column;justify-content:space-between;
+  border-top:1px solid ${T.rule};padding-top:6px}
+.quiet .row{display:block;background:none;border:0;box-shadow:none;border-radius:0;
+  padding:0 0 9px;margin:0;border-bottom:1px solid ${T.rule};flex:0 0 auto}
+.quiet .row:last-child{border-bottom:0}
+.quiet .slot{display:none}
+.quiet .line{display:flex;align-items:baseline;gap:20px;line-height:1.14}
+.quiet .rk{font-family:'Body';font-weight:700;font-size:26px;color:${T.faint};
+  width:42px;flex:none;font-variant-numeric:tabular-nums}
+.quiet .nm{font-family:'Body';font-weight:800;font-size:40px;color:${T.ink};line-height:1.14;
+  letter-spacing:-.03em;white-space:nowrap;flex:1;min-width:0}
+.quiet .nm.sm{font-size:35px}
+.quiet .nm.xs{font-size:30px}
+.quiet .vl{font-family:'Body';font-weight:800;font-size:39px;color:${T.ink};line-height:1.14;
+  letter-spacing:-.02em;white-space:nowrap;font-variant-numeric:tabular-nums}
+.quiet .meta{margin:5px 0 0 62px;font-size:22px;color:${T.muted};font-weight:500;line-height:1.3}
+/* one series, one colour; thin, rounded end, anchored left */
+.quiet .barwrap{margin:8px 0 0 62px;height:7px;border-radius:4px;background:${T.rule}}
+.quiet .bar{height:7px;border-radius:4px;background:${T.accent}}
+.quiet .note{margin-top:16px;background:none;border:0;border-top:1px solid ${T.rule};
+  border-radius:0;padding:18px 0 0}
+.quiet .note p{font-size:19px;line-height:1.45;color:${T.muted};font-weight:500;
+  padding-left:0;text-indent:0;margin-bottom:3px}
+.quiet .note p::before{content:'';margin:0}
+.quiet .close{margin-top:16px;text-align:left;font-family:'Body';font-weight:800;
+  font-size:30px;color:${T.ink};line-height:1.42;letter-spacing:-.02em}
+.quiet .brand{margin-top:10px;text-align:left;font-size:20px;color:${T.faint};letter-spacing:.14em}
 .rk .who .n.sm{font-size:30px}
 .rk .who .n.xs{font-size:26px}
 .rk .mid{width:150px;flex:none;font-size:23px;color:${T.muted};text-align:right}
@@ -407,6 +455,16 @@ const fitRow = (r, i) => {
   </div>`;
 };
 
+const quietRow = (r, i) => `<div class="row">
+  <div class="line">
+    ${data.showRank === false ? '' : `<span class="rk">${r.rank}</span>`}
+    <span class="nm ${nameClass(r.label)}">${esc(r.label)}</span>
+    <span class="vl">${esc(r.price)}</span>
+  </div>
+  ${r.sub || r.mid ? `<div class="meta">${[r.sub, r.mid].filter(Boolean).map(esc).join(' · ')}</div>` : ''}
+  <div class="barwrap"><div class="bar" style="width:${(r.bar * 100).toFixed(1)}%"></div></div>
+</div>`;
+
 const tallRow = (r, i) => {
   const slot = slotFor(r, i);
   return `<div class="row">
@@ -444,37 +502,65 @@ const credits = () => {
   if (!lines.length) return '';
   return `<div class="credit"><b>사진 출처</b>${lines.map((l) => `<span>${esc(l)}</span>`).join('')}</div>`;
 };
-const renderRow = data.rowType !== 'rank' ? rowHtml : FIT ? fitRow : TALL ? tallRow : rankRow;
+const renderRow = data.rowType !== 'rank' ? rowHtml
+  : QUIET ? quietRow : FIT ? fitRow : TALL ? tallRow : rankRow;
 const html = `<!doctype html><html lang="ko"><head><meta charset="utf-8"><style>${CSS()}</style></head><body>
-<div class="page${TALL ? ' tall' : ''}${FIT ? ' fit' : ''}">
+<div class="page${TALL ? ' tall' : ''}${FIT ? ' fit' : ''}${QUIET ? ' quiet' : ''}">
   <div class="head">
-    <div class="badge">${data.badge.map(esc).join('<br>')}</div>
+    <div class="badge">${QUIET ? `<span>${data.badge.map(esc).join('</span><span>')}</span>`
+      : data.badge.map(esc).join('<br>')}</div>
     <div class="title">
       <div class="t1">${esc(data.title[0])}</div>
       <div class="t2">${esc(data.title[1])}</div>
     </div>
     <div class="sub">${esc(data.subtitle)}</div>
   </div>
-  ${TALL || FIT ? ''
+  ${TALL || FIT || QUIET ? ''
       : data.rowType === 'rank'
       ? `<div class="key"><span>${esc(data.head.left)}</span><span style="width:250px;text-align:right">${esc(data.head.right)}</span></div>`
       : `<div class="key"><span><i class="g"></i>${esc(data.head.left)}</span><span><i class="r"></i>${esc(data.head.right)}</span></div>`}
-  ${FIT ? `<div class="rows">${data.rows.map(renderRow).join('')}</div>` : data.rows.map(renderRow).join('')}
-  <div class="note">${data.note.map((n) => `<p>${esc(n)}</p>`).join('')}${credits()}</div>
+  ${FIT || QUIET ? `<div class="rows">${data.rows.map(renderRow).join('')}</div>` : data.rows.map(renderRow).join('')}
+  <div class="note">${(QUIET ? data.note.slice(0, 3) : data.note).map((n) => `<p>${esc(n)}</p>`).join('')}${credits()}</div>
   <div class="close">${data.closing.map(esc).join('<br>')}</div>
   <div class="brand">${esc(data.brand)}</div>
 </div></body></html>`;
 
 const outDir = resolve(HERE, '..', data.slug);
 mkdirSync(outDir, { recursive: true });
-const out = resolve(outDir, FIT ? 'poster-fit.png' : TALL ? 'poster-tall.png' : 'poster.png');
+const out = resolve(outDir, QUIET ? 'poster-quiet.png' : FIT ? 'poster-fit.png' : TALL ? 'poster-tall.png' : 'poster.png');
 
 const browser = await chromium.launch();
-const p = await browser.newPage({ viewport: { width: W, height: FIT ? FIT_H : 1400 }, deviceScaleFactor: 1 });
+const p = await browser.newPage({ viewport: { width: W, height: FIT || QUIET ? FIT_H : 1400 }, deviceScaleFactor: 1 });
 await p.setContent(html, { waitUntil: 'load' });
 await p.evaluate(() => document.fonts.ready);
-await p.screenshot({ path: out, fullPage: !FIT });
-const h = await p.evaluate(() => document.body.scrollHeight);
+await p.screenshot({ path: out, fullPage: !(FIT || QUIET) });
+if (process.env.MEASURE) {
+  console.error(await p.evaluate(() => {
+    const h = (sel) => { const e = document.querySelector(sel); return e ? Math.round(e.getBoundingClientRect().height) : 0; };
+    const rows = [...document.querySelectorAll('.rows .row')].map(e => Math.round(e.getBoundingClientRect().height));
+    const avg = rows.length ? Math.round(rows.reduce((a, b) => a + b, 0) / rows.length) : 0;
+    let detail = '';
+    const r0 = document.querySelector('.rows .row');
+    if (r0) {
+      const part = (sel) => { const e = r0.querySelector(sel); return e ? Math.round(e.getBoundingClientRect().height) : 0; };
+      const cs = getComputedStyle(r0);
+      detail = `\n    row1 = line ${part('.line')} + meta ${part('.meta')} + bar ${part('.barwrap')}` +
+               ` | pad ${cs.paddingTop}/${cs.paddingBottom} | nm ${part('.nm')} vl ${part('.vl')}`;
+    }
+    const page = document.querySelector('.page');
+    const pcs = getComputedStyle(page);
+    const kids = [...page.children].map(e => `${e.className.split(' ')[0]}:${Math.round(e.getBoundingClientRect().height)}`).join(' ');
+    detail += `\n    page h=${Math.round(page.getBoundingClientRect().height)} display=${pcs.display} dir=${pcs.flexDirection} pad=${pcs.paddingTop}/${pcs.paddingBottom}` +
+              `\n    children: ${kids}`;
+    return `  head ${h('.head')}  rows ${h('.rows')} (${rows.length} x ~${avg})  note ${h('.note')}` +
+           `  close ${h('.close')}  brand ${h('.brand')}  body ${document.body.scrollHeight}` + detail;
+  }));
+}
+const docH = await p.evaluate(() => document.body.scrollHeight);
+const h = FIT || QUIET ? FIT_H : docH;
+if ((FIT || QUIET) && docH > FIT_H + 2) {
+  console.error(`  ! content is ${docH - FIT_H}px taller than the frame and will be cut`);
+}
 await browser.close();
 
 try {

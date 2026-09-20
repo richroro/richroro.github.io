@@ -273,3 +273,39 @@ node cards/tools/upload.mjs cards/tools/content/0008-apt.json
 ```
 
 전체 목록은 `cards/UPLOAD.md`에 있다.
+
+## --quiet : 장식을 뺀 판
+
+```bash
+node cards/tools/infographic.mjs cards/tools/content/0008-apt.json --quiet --theme=press
+# -> cards/0008-apt/poster-quiet.png (1080×1920)
+```
+
+`--fit`과 같은 한 프레임이지만 만드는 방식이 반대다. `--fit`은 행마다 카드와
+그림자와 아이콘을 얹고 숫자를 굵은 제목용 서체와 강조색으로 쓴다. `--quiet`는
+그걸 전부 뺀다.
+
+- 행 카드·그림자·아이콘 없음. 얇은 구분선만 둔다
+- **숫자는 본문 잉크색으로 쓴다.** 색은 옆의 막대가 맡는다
+- 값 옆에 길이 비례 막대를 둔다. 순위표에서 1위와 10위가 몇 배인지는
+  숫자를 읽어야 알 수 있는데, 막대는 보는 즉시 알려준다
+- 배경 그라데이션 없이 단색
+
+굵고 진한 덩어리를 크게 쓰면 시끄럽고 유치해 보인다. 채도 높은 면은 작은
+마크와 강조에만 쓰고, 큰 면적에는 쓰지 않는다.
+
+### 한 프레임에 맞추기
+
+내용이 1920px을 넘으면 잘린다. 렌더러가 넘친 양을 경고로 알려준다.
+
+```
+! content is 226px taller than the frame and will be cut
+```
+
+`MEASURE=1`을 붙이면 머리·행·고지 블록별 높이를 찍어준다. 눈으로 줄이지 말고
+이걸 보고 줄인다.
+
+행은 `flex:0 0 auto`로 두어 내용 높이만 차지하게 하고, 남는 공간은
+`justify-content:space-between`이 행 **사이 간격**으로 나눈다. 행에 `flex:1`을
+주면 여유 공간이 행 안쪽으로 들어가 행이 부풀고, 10행이면 그것만으로 500px이
+넘어간다.
