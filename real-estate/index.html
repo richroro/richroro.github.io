@@ -224,6 +224,24 @@ table.ledger{width:100%;border-collapse:collapse;font-size:13px}
 .bar{height:10px;border-radius:0 3px 3px 0;background:var(--series-record);min-width:2px}
 .bar.deal{background:var(--series-deal)}
 
+/* 비슷한 단지 비교 */
+.peer-note{font-size:12.5px;color:var(--ink-2);margin:-2px 0 10px;line-height:1.6}
+.peer-note b{font-weight:600;color:var(--ink)}
+table.peers td,table.peers th{vertical-align:middle}
+table.peers tbody tr{cursor:pointer}
+table.peers tbody tr:hover{background:var(--surface-2)}
+table.peers tr.self{background:var(--accent-wash)}
+table.peers tr.self:hover{background:var(--accent-wash)}
+table.peers tr.self td{font-weight:600}
+.peers .nm{max-width:140px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.peers .sub2{font-size:11px;color:var(--ink-3);font-weight:400}
+.ppybar{display:flex;align-items:center;gap:7px;min-width:110px}
+.ppybar .t{flex:1;height:8px;border-radius:4px;background:var(--surface-2);overflow:hidden;min-width:44px}
+.ppybar .f{height:100%;border-radius:0 4px 4px 0;background:var(--ink-3);min-width:2px}
+tr.self .ppybar .f{background:var(--accent)}
+.vs{font-weight:600}
+.vs.hi{color:var(--up-ink)} .vs.lo{color:var(--down-ink)} .vs.eq{color:var(--flat)}
+
 /* 추천 */
 .rec-form{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px 14px;padding:16px;border-bottom:1px solid var(--line)}
 .rec-form .f{min-width:0}
@@ -467,6 +485,7 @@ table.deals{width:100%;border-collapse:collapse;font-size:12.5px}
       <div class="legend"><span><i style="background:var(--series-deal)"></i>거래</span><span><i class="line" style="background:var(--series-record)"></i>신고가 갱신선</span></div>
     </div>
     <div><p class="sec-t">신고가 경신 이력</p><ul class="rec-list" id="dRecs"></ul></div>
+    <div><p class="sec-t">비슷한 단지와 비교</p><div id="dPeerNote" class="peer-note"></div><div class="tablewrap"><table class="deals peers" id="dPeers"></table></div></div>
     <div><p class="sec-t">전체 거래</p><div class="tablewrap"><table class="deals" id="dDeals"></table></div></div>
   </div>
 </aside>
@@ -982,6 +1001,52 @@ function renderRecommend(){
   }).join('');
 }
 
+/* ---------- 비슷한 단지 ---------- */
+function similarGroups(g,limit){
+  const band=bandOf(g.area);
+  const sameComplex=x=>x.apt===g.apt&&x.dong===g.dong&&x.sgg===g.sgg;
+  const pick=(pool)=>pool.filter(x=>x.key!==g.key&&!sameComplex(x)&&bandOf(x.area)===band&&Math.abs(x.area-g.area)/g.area<=0.25);
+  let pool=pick(S.groups.filter(x=>x.sgg===g.sgg));
+  if(pool.length<3)pool=pick(S.groups);
+  const cost=x=>{
+    const area=Math.abs(x.area-g.area)/g.area*2;
+    const age=(g.built&&x.built)?Math.abs(x.built-g.built)/40:0.25;
+    const near=x.dong===g.dong?0:(x.sgg===g.sgg?0.3:0.6);
+    const thin=x.count12>=3?0:0.15;
+    return area+age+near+thin;
+  };
+  return pool.map(x=>({g:x,c:cost(x)})).sort((a,b)=>a.c-b.c).slice(0,limit).map(x=>x.g);
+}
+function renderPeers(g){
+  const peers=similarGroups(g,6), note=$('#dPeerNote'), tb=$('#dPeers');
+  if(!peers.length){
+    note.textContent='같은 면적대에서 견줄 만한 단지를 찾지 못했습니다.';
+    tb.innerHTML=''; return;
+  }
+  const all=[g,...peers], maxPpy=Math.max(...all.map(x=>x.ppy));
+  const cheaper=peers.filter(x=>x.ppy<g.ppy).length;
+  const rank=all.slice().sort((a,b)=>a.ppy-b.ppy).findIndex(x=>x.key===g.key)+1;
+  const cheapSide=rank*2<=all.length;
+  const place=cheapSide?rank:all.length-rank+1;
+  const sameSgg=peers.every(x=>x.sgg===g.sgg);
+  note.innerHTML=`${sameSgg?esc(g.gu||g.sgg):'전체'} ${BAND_NAMES[bandOf(g.area)]} 가운데 면적·연식이 가까운 <b>${peers.length}</b>곳과 견주면,`
+    +` 평단가가 <b>${all.length}곳 중 ${place}번째로 ${cheapSide?'싼':'비싼'}</b> 편입니다`
+    +`${cheaper?` (더 싼 곳 ${cheaper}곳)`:''}.`;
+  const row=(x,self)=>{
+    const d=self?0:x.ppy/g.ppy-1;
+    const cls=Math.abs(d)<0.02?'eq':d>0?'hi':'lo';
+    return `<tr class="${self?'self':''}" ${self?'':`data-key="${esc(x.key)}"`}>
+<td><div class="nm" title="${esc(x.apt)}">${self?'▸ ':''}${esc(x.apt)}</div><div class="sub2">${esc(x.dong)} · ${x.areaKey}㎡${x.built?` · ${x.built}년`:''}</div></td>
+<td class="r num">${fmtManShort(x.price)}</td>
+<td><div class="ppybar"><div class="t"><div class="f" style="width:${Math.max(3,Math.round(x.ppy/maxPpy*100))}%"></div></div><span class="num">${Math.round(x.ppy).toLocaleString()}</span></div></td>
+<td class="r">${self?'<span class="vs eq">기준</span>':`<span class="vs ${cls}">${d>0?'+':''}${(d*100).toFixed(0)}%</span>`}</td>
+<td class="r num">${fmtPct(x.vsPeak,0)}</td>
+<td class="r num">${x.count12}</td></tr>`;
+  };
+  tb.innerHTML='<thead><tr><th>단지</th><th class="r">시세</th><th>평단가(만원)</th><th class="r">이 단지 대비</th><th class="r">고점 대비</th><th class="r">1년 거래</th></tr></thead><tbody>'
+    +row(g,true)+peers.map(x=>row(x,false)).join('')+'</tbody>';
+}
+
 /* ---------- drawer & chart ---------- */
 function niceTicks(mn,mx,n){ const raw=(mx-mn)/n, p=Math.pow(10,Math.floor(Math.log10(raw))); const step=[1,2,2.5,5,10].map(x=>x*p).find(x=>x>=raw); const t=[]; for(let v=Math.ceil(mn/step)*step;v<=mx;v+=step)t.push(v); return t; }
 function drawChart(g){
@@ -1027,6 +1092,7 @@ function openDrawer(key){
   const recSet=new Set(g.recs.map(r=>r.deal));
   $('#dDeals').innerHTML='<thead><tr><th>계약일</th><th class="r">거래금액</th><th class="r">층</th><th>동</th><th>유형</th><th>비고</th></tr></thead><tbody>'+
     [...g.deals].reverse().map(d=>`<tr class="${d.cancel?'cancel':''} ${recSet.has(d)?'rec':''}"><td class="num">${fmtDate(d.date)}</td><td class="r num p">${fmtMan(d.price)}</td><td class="r num">${d.floor??'-'}</td><td>${esc(d.bdong||'-')}</td><td>${esc(d.type||'-')}</td><td>${d.cancel?'해제 '+esc(d.cancelDate):recSet.has(d)?'신고가':''}</td></tr>`).join('')+'</tbody>';
+  renderPeers(g);
   $('#drawer').classList.add('on'); $('#drawer').setAttribute('aria-hidden','false'); $('#scrim').classList.add('on'); document.body.style.overflow='hidden';
 }
 function closeDrawer(){ $('#drawer').classList.remove('on'); $('#drawer').setAttribute('aria-hidden','true'); $('#scrim').classList.remove('on'); document.body.style.overflow=''; $('#dTip').classList.remove('on'); }
@@ -1143,6 +1209,7 @@ function bind(){
   $('#pager').onclick=e=>{ const b=e.target.closest('[data-pg]'); if(!b)return; S.page+=+b.dataset.pg; renderLedger(); $('#viewLedger').scrollIntoView({block:'start',behavior:'smooth'}); };
   $('#timeline').addEventListener('click',e=>{ const r=e.target.closest('[data-key]'); if(r)openDrawer(r.dataset.key); });
   $('#timeline').addEventListener('keydown',e=>{ const r=e.target.closest('[data-key]'); if(r&&(e.key==='Enter'||e.key===' ')){e.preventDefault();openDrawer(r.dataset.key);} });
+  $('#dPeers').addEventListener('click',e=>{ const tr=e.target.closest('tr[data-key]'); if(tr){ openDrawer(tr.dataset.key); $('#drawer').scrollTop=0; } });
   $('#dClose').onclick=closeDrawer; $('#scrim').onclick=closeDrawer;
   document.addEventListener('keydown',e=>{ if(e.key==='Escape')closeDrawer(); });
   $('#dChart').addEventListener('mousemove',chartHover); $('#dChart').addEventListener('mouseleave',()=>$('#dTip').classList.remove('on'));
