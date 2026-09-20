@@ -40,16 +40,42 @@ jobs:
         with:
           python-version: '3.12'
 
+      # 키가 없을 때 예약 실행까지 빨갛게 실패하면 매일 알림이 옵니다. 매일 오는 실패는
+      # 곧 안 보게 되므로, 예약 실행은 건너뛰고(초록) 사람이 직접 돌린 실행만 실패시킵니다.
+      # 어느 쪽이든 이유와 등록 방법은 실행 요약에 남습니다.
       - name: 인증키 확인
+        id: key
         env:
           KEY: ${{ secrets.DATA_GO_KR_KEY }}
+          EVENT: ${{ github.event_name }}
         run: |
-          if [ -z "$KEY" ]; then
-            echo "::error::DATA_GO_KR_KEY 시크릿이 없습니다. 저장소 Settings → Secrets and variables → Actions 에 등록하세요."
-            exit 1
+          if [ -n "$KEY" ]; then
+            echo "ok=true" >> "$GITHUB_OUTPUT"
+            exit 0
           fi
+          echo "ok=false" >> "$GITHUB_OUTPUT"
+          {
+            echo "### 건너뜀 — 인증키가 없습니다"
+            echo
+            echo "\`DATA_GO_KR_KEY\` 시크릿이 등록돼 있지 않아 이번 실행은 아무것도 받지 않았습니다."
+            echo "그동안 페이지는 **가상의 샘플 데이터**로 뜹니다(그렇게 적혀 있습니다)."
+            echo
+            echo "등록하는 법:"
+            echo "1. 공공데이터포털(data.go.kr)에서 *국토교통부_아파트 매매 실거래가 상세 자료* 활용신청"
+            echo "2. 발급받은 **일반 인증키(Decoding)** 복사"
+            echo "3. 저장소 Settings → Secrets and variables → Actions → New repository secret"
+            echo "4. 이름 \`DATA_GO_KR_KEY\`, 값은 2번의 키"
+            echo "5. Actions 탭에서 이 워크플로를 Run workflow 로 한 번 돌려 확인"
+          } >> "$GITHUB_STEP_SUMMARY"
+          if [ "$EVENT" = "schedule" ]; then
+            echo "::warning::DATA_GO_KR_KEY 시크릿이 없어 예약 실행을 건너뜁니다. 등록 방법은 실행 요약에 있습니다."
+            exit 0
+          fi
+          echo "::error::DATA_GO_KR_KEY 시크릿이 없습니다. 저장소 Settings → Secrets and variables → Actions 에 등록하세요."
+          exit 1
 
       - name: 실거래가 받기
+        if: steps.key.outputs.ok == 'true'
         env:
           DATA_GO_KR_KEY: ${{ secrets.DATA_GO_KR_KEY }}
           MONTHS: ${{ inputs.months }}
@@ -69,6 +95,7 @@ jobs:
           } >> "$GITHUB_STEP_SUMMARY"
 
       - name: 바뀐 게 있으면 커밋
+        if: steps.key.outputs.ok == 'true'
         run: |
           if git diff --quiet -- real-estate/data; then
             echo "변경 없음 — 커밋하지 않습니다." >> "$GITHUB_STEP_SUMMARY"
