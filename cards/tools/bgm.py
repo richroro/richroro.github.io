@@ -7,11 +7,12 @@ MusicGen, ships its weights under CC-BY-NC, which rules it out for a channel
 that might be monetised.) Deterministic: a given duration always renders the
 same track.
 
-    python3 cards/tools/bgm.py out.wav 45.9 [ballad|drive]
+    python3 cards/tools/bgm.py out.wav 45.9 [ballad|drive|bright]
 
 ballad - slow piano, for the reflective card sets.
 drive  - four-on-the-floor pulse under a plucked arpeggio, for rankings and
          countdowns, where a ballad just sits there.
+bright - major key, marimba and claps, syncopated. Light rather than urgent.
 """
 import math
 import sys
@@ -238,6 +239,25 @@ DRIVE_CHORDS = [  # Am - F - C - G, one bar each
 ]
 
 
+def _lp(x, cutoff, poles=2):
+    """One-pole lowpass for short percussion buffers.
+
+    These start as a difference of white noise, which is very nearly a
+    differentiator: almost all of the energy lands at the top of the spectrum
+    and reads as hiss rather than as an instrument. This puts each one back in
+    its own band.
+    """
+    a = math.exp(-2 * math.pi * cutoff / SR)
+    for _ in range(poles):
+        out = np.empty_like(x)
+        acc = 0.0
+        for i in range(len(x)):
+            acc = (1 - a) * x[i] + a * acc
+            out[i] = acc
+        x = out
+    return x
+
+
 def kick(dur=0.30):
     n = int(dur * SR)
     t = np.arange(n) / SR
@@ -251,9 +271,9 @@ def kick(dur=0.30):
 def hat(dur=0.07, seed=2):
     n = int(dur * SR)
     rng = np.random.default_rng(seed)
-    x = rng.normal(0, 1, n)
-    x = np.diff(np.r_[0, x])  # crude highpass - leaves only the hiss
-    return x * np.exp(-np.arange(n) / (SR * 0.011)) * 0.35
+    x = np.diff(np.r_[0, rng.normal(0, 1, n)])
+    x = _lp(x, 4200)
+    return x * np.exp(-np.arange(n) / (SR * 0.011)) * 2.2
 
 
 def pluck(f0, dur=0.42, vel=1.0):
@@ -327,11 +347,129 @@ def render_drive(seconds):
     return buf
 
 
+# --------------------------------------------------------------- bright style
+
+# I-V-vi-IV in C. The bass note is separate because the fifth answers it.
+BRIGHT_CHORDS = [
+    ('C3', 'G3', ['C5', 'E5', 'G5', 'C6']),
+    ('G2', 'D3', ['B4', 'D5', 'G5', 'B5']),
+    ('A2', 'E3', ['A4', 'C5', 'E5', 'A5']),
+    ('F2', 'C3', ['A4', 'C5', 'F5', 'A5']),
+]
+
+# Where the hits land inside a bar, in eighths. Off-beats are what make it
+# bounce instead of march.
+MARIMBA_PATTERN = [0, 1.5, 2, 3, 4, 5.5, 6, 7]
+MELODY_PATTERN = [(0, 3), (1.5, 2), (3, 1), (4, 2), (5.5, 3), (7, 0)]
+
+
+def marimba(f0, dur=0.7, vel=1.0):
+    """Struck wood: odd harmonics, quick decay, a little knock at the onset."""
+    n = int(dur * SR)
+    t = np.arange(n) / SR
+    v = np.zeros(n)
+    # a bar's overtones sit near the 4th and 10th partial, not the octave
+    for mult, amp, dec in ((1.0, 1.0, 5.0), (3.9, 0.34, 12.0), (10.0, 0.05, 26.0)):
+        v += amp * np.sin(2 * math.pi * f0 * mult * t) * np.exp(-t * dec)
+    knock = np.random.default_rng(int(f0) % 97).normal(0, 1, n) * np.exp(-t * 420) * 0.12
+    return (v + knock) * (1 - np.exp(-t * 900)) * vel / 1.7
+
+
+def clap(dur=0.26, seed=4):
+    """Three quick noise bursts, then a short tail - a hand clap, not a snare."""
+    n = int(dur * SR)
+    rng = np.random.default_rng(seed)
+    x = rng.normal(0, 1, n)
+    x = np.diff(np.r_[0, x])
+    env = np.zeros(n)
+    for off, amp in ((0.0, 1.0), (0.011, 0.8), (0.022, 0.65)):
+        i = int(off * SR)
+        env[i:] = np.maximum(env[i:], amp * np.exp(-np.arange(n - i) / (SR * 0.013)))
+    env += 0.30 * np.exp(-np.arange(n) / (SR * 0.055))
+    return _lp(x * env, 2200) * 7.0
+
+
+def shaker(dur=0.06, seed=9, vel=1.0):
+    n = int(dur * SR)
+    rng = np.random.default_rng(seed)
+    x = _lp(np.diff(np.r_[0, rng.normal(0, 1, n)]), 4600)
+    return x * np.exp(-np.arange(n) / (SR * 0.009)) * 2.2 * vel
+
+
+def bounce_bass(f0, dur=0.34, vel=1.0):
+    n = int(dur * SR)
+    t = np.arange(n) / SR
+    v = np.sin(2 * math.pi * f0 * t) + 0.3 * np.sin(2 * math.pi * f0 * 2 * t)
+    return v * np.exp(-t * 7.5) * (1 - np.exp(-t * 600)) * vel / 1.5
+
+
+def render_bright(seconds):
+    bpm = 124.0
+    beat = 60 / bpm
+    bar = beat * 4
+    eighth = beat / 2
+    bars = max(4, int(math.ceil(seconds / bar)))
+
+    n = int(seconds * SR) + int(2 * SR)
+    buf = np.zeros((n, 2))
+    rng = np.random.default_rng(13)
+
+    for b in range(bars):
+        t0 = b * bar
+        if t0 > seconds:
+            break
+        root, fifth, tones = BRIGHT_CHORDS[b % 4]
+        full = b >= 2          # let the marimba open alone for two bars
+        busy = b >= 4
+
+        if full:
+            for k in (0, 2):
+                add(buf, kick(0.22), t0 + k * beat, 0.70, 0.5)
+            for k in (1, 3):
+                add(buf, clap(seed=4 + b * 4 + k), t0 + k * beat, 0.22, 0.5)
+            add(buf, bounce_bass(freq(root)), t0, 0.62, 0.5)
+            add(buf, bounce_bass(freq(fifth)), t0 + 2 * beat, 0.52, 0.5)
+        if busy:
+            for e in range(8):
+                add(buf, shaker(seed=9 + b * 8 + e, vel=1.0 if e % 2 else 0.55),
+                    t0 + e * eighth, 0.12, 0.42 + 0.16 * (e % 2))
+
+        for i, pos in enumerate(MARIMBA_PATTERN):
+            f = freq(tones[i % len(tones)])
+            vel = 0.95 if pos == int(pos) else 0.66
+            add(buf, marimba(f, vel=vel), t0 + pos * eighth + rng.normal(0, 0.004),
+                0.48, 0.34 + 0.32 * (i % 3) / 2)
+
+        if full:
+            for pos, idx in MELODY_PATTERN:
+                add(buf, marimba(freq(tones[idx]) * 2, dur=0.5, vel=0.55),
+                    t0 + pos * eighth, 0.20, 0.5)
+
+        for f in tones[:3]:
+            add(buf, strings(freq(f) / 4, bar + 0.6, 0.5), t0, 0.035, 0.5)
+
+    buf = buf[:int(seconds * SR)]
+    for ch in range(2):
+        buf[:, ch] = reverb(buf[:, ch], wet=0.16)
+
+    fi, fo = int(0.25 * SR), int(1.4 * SR)
+    buf[:fi] *= np.linspace(0, 1, fi).reshape(-1, 1)
+    buf[-fo:] *= np.linspace(1, 0, fo).reshape(-1, 1) ** 1.4
+
+    peak = np.abs(buf).max()
+    if peak > 0:
+        buf *= 0.62 / peak
+    print(f'  bright: {bars} bars @ {bpm:.0f} BPM', file=sys.stderr)
+    return buf
+
+
 def main():
     out = sys.argv[1] if len(sys.argv) > 1 else 'bgm.wav'
     seconds = float(sys.argv[2]) if len(sys.argv) > 2 else 45.0
     style = sys.argv[3] if len(sys.argv) > 3 else 'ballad'
-    audio = render_drive(seconds) if style == 'drive' else render(seconds)
+    audio = (render_bright(seconds) if style == 'bright'
+             else render_drive(seconds) if style == 'drive'
+             else render(seconds))
     with wave.open(out, 'wb') as w:
         w.setnchannels(2)
         w.setsampwidth(2)

@@ -114,12 +114,28 @@ node cards/tools/scrollshorts.mjs cards/tools/content/0008-apt.json --dur=30 --s
 ## BGM 두 가지
 
 ```bash
+python3 cards/tools/bgm.py out.wav 20 bright   # 경쾌한 정보 카드용
 python3 cards/tools/bgm.py out.wav 30 drive    # 순위·카운트다운용
-python3 cards/tools/bgm.py out.wav 45 ballad   # 잔잔한 카드용(기본)
+python3 cards/tools/bgm.py out.wav 45 ballad   # 잔잔한 카드용
 ```
+
+`bright`는 C장조 I–V–vi–IV에 마림바·박수·셰이커를 얹은 124 BPM이다.
+`drive`가 A단조로 몰아친다면 이쪽은 밝고 가볍다. 마디 안의 타점을 8분음표
+격자에서 일부러 어긋나게 찍어(0, 1.5, 2, 3, 4, 5.5, 6, 7) 행진이 아니라
+통통 튀게 만든다.
 
 `drive`는 104 BPM에 킥·하이햇·베이스·분산화음을 얹고, 마디가 지나면서 악기를
 하나씩 더한다(2마디 킥, 3마디 베이스, 5마디 하이햇). 처음부터 다 깔면 밋밋해진다.
+
+### 타악기는 반드시 대역을 제한할 것
+
+셰이커·하이햇·박수는 백색잡음의 차분으로 만드는데, 이건 사실상 미분기라
+에너지가 거의 전부 최상단에 쏠린다. 그대로 쓰면 악기가 아니라 치찰음으로
+들린다. 각각 2차 저역통과로 제 대역에 내려놓는다(박수 2.2kHz, 하이햇 4.2kHz,
+셰이커 4.6kHz).
+
+귀 대신 **스펙트럼 중심**으로 확인한다. 일반 팝이 1.5~3kHz인데, 손보기 전
+`bright`가 8.2kHz, `drive`가 6.5kHz였다. 지금은 둘 다 4kHz 근처다.
 
 ## 사진 넣기
 
