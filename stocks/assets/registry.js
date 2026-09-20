@@ -348,5 +348,68 @@ const REGISTRY = [
       { k:"2026 연간 성장 전망", v:"10%대 초중반", u:"", p:"2026년", t:"guide",
         s:"2025년 +11%에서 가속한다는 것이 회사 설명" }
     ] },
-    data:{ fy:"2025", growth:11.0, gm:null, emp:8200, empAsOf:"2025년", rev:12.2, oi:null, ni:2.5, top:null } }
+    data:{ fy:"2025", growth:11.0, gm:null, emp:8200, empAsOf:"2025년", rev:12.2, oi:null, ni:2.5, top:null } },
+  /* ---- 헬스케어 ---- */
+  { slug:"lly", kr:"공급", tk:"LLY", ko:"일라이릴리", ab:"LY", c:"#E11D48", group:"health", base:"/stocks/",
+    sector:"제약", hint:"삼성바이오로직스가 만드는 약",
+    p:{ est:1876, hq:"미국 인디애나 인디애나폴리스", ex:"뉴욕증권거래소", ceo:"데이비드 릭스", ceoEn:"David Ricks",
+        since:2017, fye:"12월 31일", div:true },
+    f:{ asOf:"2026년 9월", items:[
+      { k:"2026 매출 가이던스", v:"85~87", u:"B$", p:"2026년", t:"guide",
+        s:"82~85B$에서 상향 · 2025년 65.2B$ 대비 약 +32%" }
+    ] },
+    data:{ fy:"2025", growth:null, gm:null, emp:50000, empAsOf:"2025년", rev:65.18, oi:null, ni:20.64, top:null } },
+  { slug:"nvo", kr:"간접", tk:"NVO", ko:"노보노디스크", ab:"NN", c:"#0E9594", group:"health", base:"/stocks/",
+    sector:"제약", hint:"매출 +10%, 그런데 2026 전망이 어둡다",
+    p:{ est:1923, estNote:"노보와 노르디스크가 1989년 합병해 현재 형태", hq:"덴마크 벡스보",
+        ex:"코펜하겐 증권거래소", ex2:"뉴욕증권거래소 ADR", ceo:"마이크 두스타",
+        ceoEn:"Mike Doustdar", since:2025, fye:"12월 31일", div:true },
+    data:{ fy:"2025", growth:10.0, gm:null, emp:null, empAsOf:"—", rev:45.9, oi:null, ni:15.2, top:null } },
+
+  /* ---- 소비 · 유통 (플랫폼과 같은 그룹) ---- */
+  { slug:"cost", kr:"공급", tk:"COST", ko:"코스트코", ab:"CT", c:"#1B6BD0", group:"consumer", base:"/stocks/",
+    sector:"유통", hint:"순이익의 66%가 회비",
+    p:{ est:1983, estNote:"1983년 코스트코 창업 · 1993년 프라이스클럽과 합병",
+        hq:"미국 워싱턴 이사콰", ex:"나스닥", ceo:"론 배크리스", ceoEn:"Ron Vachris",
+        since:2024, fye:"8월 말~9월 초", div:true },
+    data:{ fy:"FY2025", growth:8.0, gm:null, emp:341000, empAsOf:"2025년", rev:275.23, oi:null, ni:8.10,
+           top:{k:"상품 매출", v:269.91, of:275.23} } },
+  { slug:"dis", kr:"공급", tk:"DIS", ko:"디즈니", ab:"DS", c:"#7C3AED", group:"consumer", base:"/stocks/",
+    sector:"미디어", hint:"성장 3%, 순이익률 13%",
+    p:{ est:1923, hq:"미국 캘리포니아 버뱅크", ex:"뉴욕증권거래소", ceo:"밥 아이거", ceoEn:"Bob Iger",
+        since:2022, sinceNote:"2005~2020년 재임 후 2022년 복귀", fye:"9월 말~10월 초", div:true },
+    data:{ fy:"FY2025", growth:3.0, gm:null, emp:231000, empAsOf:"2025년", rev:94.4, oi:null, ni:12.4, top:null } },
+  { slug:"wmt", kr:"공급", tk:"WMT", ko:"월마트", ab:"WM", c:"#F59E0B", group:"consumer", base:"/stocks/",
+    sector:"유통", hint:"매출 7,132억, 순이익률 3.1%",
+    p:{ est:1962, hq:"미국 아칸소 벤턴빌", ex:"뉴욕증권거래소", ceo:"존 퍼너", ceoEn:"John Furner",
+        since:2026, sinceNote:"2026년 2월 취임 · 더그 맥밀런의 뒤를 이었다", fye:"1월 31일", div:true },
+    f:{ asOf:"2026년 9월", items:[
+      { k:"FY2027 순매출 성장", v:"+4~5", u:"%", p:"FY2027", t:"guide",
+        s:"3.5~4.5%에서 상향 · 2분기 실적 뒤" }
+    ] },
+    data:{ fy:"FY2026", growth:4.7, gm:null, emp:2100000, empAsOf:"2026년", rev:713.163, oi:null, ni:22.270, top:null } },
+
+  /* ---- 금융 (은행 · 결제망 · 복합기업) ---- */
+  { slug:"jpm", kr:"간접", tk:"JPM", ko:"JP모건", ab:"JP", c:"#78350F", group:"fin", base:"/stocks/",
+    sector:"은행", hint:"순이익 570억, 순이익률 31%",
+    p:{ est:1799, estNote:"맨해튼 컴퍼니(1799)까지 거슬러 올라가는 계보 · 2000년 JP모건과 체이스 합병",
+        hq:"미국 뉴욕", ex:"뉴욕증권거래소", ceo:"제이미 다이먼", ceoEn:"Jamie Dimon",
+        since:2005, fye:"12월 31일", div:true },
+    f:{ asOf:"2026년 9월", items:[
+      { k:"2026 비용 계획", v:"약 105", u:"B$", p:"2026년", t:"capex",
+        s:"금리 효과가 줄어드는 국면에 쓰겠다고 밝힌 금액 · 매출이 아니라 지출 계획이다" }
+    ] },
+    data:{ fy:"2025", growth:null, gm:null, emp:318512, empAsOf:"2025년", rev:182.4, oi:null, ni:57.0, top:null } },
+  { slug:"brk", kr:"간접", tk:"BRK.B", ko:"버크셔 해서웨이", ab:"BK", c:"#475569", group:"fin", base:"/stocks/",
+    sector:"복합기업", hint:"버핏이 보지 말라는 숫자가 순이익",
+    p:{ est:1839, estNote:"방직회사로 출발 · 1965년 버핏이 경영권 인수",
+        hq:"미국 네브래스카 오마하", ex:"뉴욕증권거래소", ceo:"그렉 아벨", ceoEn:"Greg Abel",
+        since:2026, sinceNote:"2026년 초 취임 · 워런 버핏은 이사회 의장으로", fye:"12월 31일", div:false },
+    data:{ fy:"2025", growth:null, gm:null, emp:null, empAsOf:"—", rev:371.444, oi:44.49, ni:66.97, top:null } },
+  { slug:"v", kr:"고객", tk:"V", ko:"비자", ab:"VI", c:"#1A1F71", group:"fin", base:"/stocks/",
+    sector:"결제망", hint:"순이익률 50%, 한국 카드사가 수수료를 낸다",
+    p:{ est:1958, estNote:"뱅크아메리카드로 출발 · 1976년 비자로 개명 · 2008년 상장",
+        hq:"미국 캘리포니아 샌프란시스코", ex:"뉴욕증권거래소", ceo:"라이언 맥이너니",
+        ceoEn:"Ryan McInerney", since:2023, fye:"9월 30일", div:true },
+    data:{ fy:"FY2025", growth:11.0, gm:null, emp:34000, empAsOf:"FY2025", rev:40.0, oi:null, ni:20.06, top:null } }
 ];

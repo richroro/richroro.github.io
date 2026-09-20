@@ -1,0 +1,176 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>JP모건 지표 · 매출 구성과 한국과의 관계 | 종목 노트</title>
+<meta name="description" content="2025년 순영업수익 1,824억 달러, 순이익 570억. 이 목록에서 순이익 절대액이 가장 큽니다 — 엔비디아·마이크로소프트보다 적지만 애플보다 적고 알파벳보다 적습니다.">
+<link rel="canonical" href="https://richroro.github.io/stocks/jpm/">
+<meta property="og:type" content="website"><meta property="og:locale" content="ko_KR">
+<meta property="og:site_name" content="Cadence">
+<meta property="og:url" content="https://richroro.github.io/stocks/jpm/">
+<meta property="og:title" content="JP모건 지표 | 종목 노트">
+<meta property="og:description" content="2025년 순영업수익 1,824억 달러, 순이익 570억. 이 목록에서 순이익 절대액이 가장 큽니다 — 엔비디아·마이크로소프트보다 적지만 애플보다 적고 알파벳보다 적습니다.">
+<meta name="twitter:card" content="summary">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='#78350F'/><text x='50' y='66' font-size='42' text-anchor='middle' fill='white' font-family='monospace' font-weight='bold'>JPM</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans+KR:wght@300;400;500;600;700&display=swap">
+<link rel="stylesheet" href="/m7/assets/m7.css">
+</head>
+<body>
+<noscript><div style="padding:24px;font-family:sans-serif"><h1>JP모건 지표</h1><p>2025년 순영업수익 1,824억 달러, 순이익 570억. 이 목록에서 순이익 절대액이 가장 큽니다 — 엔비디아·마이크로소프트보다 적지만 애플보다 적고 알파벳보다 적습니다.</p>
+<p>차트를 그리는 데 자바스크립트를 씁니다. <a href="/stocks/">종목 노트 전체</a></p></div></noscript>
+<script src="/stocks/assets/registry.js"></script>
+<script>
+/* JP모건 (JPM) — 이 블록만 고치면 페이지 전체가 따라 바뀝니다.
+   검산: 순이익률 57.0 ÷ 182.4 = 31.3% */
+const CO = {
+  "group": "fin",
+  "hubHref": "/stocks/",
+  "hubName": "종목 노트 전체",
+  "hubMark": "종목",
+  "peersTitle": "같은 분야 다른 회사",
+  "asOf": "2026-09-20",
+  "slug": "jpm",
+  "tk": "JPM",
+  "ko": "JP모건",
+  "en": "JPMorgan Chase",
+  "ab": "JP",
+  "color": "#78350F",
+  "fy": {
+    "label": "2025 · 2025년 12월 종료",
+    "note": "JP모건 회계연도는 달력 연도와 같습니다."
+  },
+  "headline": "순이익 570억, 순이익률 31%",
+  "lead": "2025년 순영업수익 <b>1,824억 달러</b>, 순이익 <b>570억</b>입니다. 순이익률 <b>31.3%</b>는 은행치고 높은 수치이고, 이 목록 전체에서도 상위권입니다.",
+  "stats": [
+    {
+      "k": "2025 순영업수익",
+      "v": "182.4",
+      "u": "B$"
+    },
+    {
+      "k": "순이익",
+      "v": "57.0",
+      "u": "B$",
+      "s": "순이익률 31.3%"
+    },
+    {
+      "k": "임직원",
+      "v": "318,512",
+      "u": "명",
+      "s": "66개국"
+    },
+    {
+      "k": "1인당 매출",
+      "v": "0.57",
+      "u": "M$"
+    }
+  ],
+  "signature": {
+    "nav": "은행의 매출",
+    "eyebrow": "Definition",
+    "title": "은행에서 '매출'은 다른 뜻이다",
+    "lead": "제조업의 매출은 물건값입니다. 은행의 <b>순영업수익(net revenue)</b>은 <b>이자수익에서 이자비용을 뺀 것</b>에 수수료를 더한 값입니다 — 총액이 아니라 이미 한 번 차감된 숫자입니다.",
+    "split": {
+      "title": "2025년 순영업수익과 순이익",
+      "sub": "둘의 관계",
+      "parts": [
+        {
+          "k": "비용·충당금·세금",
+          "v": 125.4,
+          "color": "--s3",
+          "label": "1,254억$"
+        },
+        {
+          "k": "순이익",
+          "v": 57.0,
+          "color": "--s1",
+          "label": "570억$"
+        }
+      ],
+      "note": "은행의 순이익률을 제조업과 나란히 놓으면 <b>분모의 정의가 달라 과대평가됩니다.</b> 이 페이지의 31.3%도 그런 숫자입니다. 은행끼리 비교하거나 <b>ROE(자기자본이익률)</b>로 보는 편이 맞습니다 — 다만 이 사이트는 모든 종목을 같은 틀로 놓는 것이 목적이라 매출·순이익 기준을 유지했고, 대신 이 주의를 적었습니다."
+    },
+    "stats": [
+      {
+        "k": "순이익률",
+        "v": "31.3",
+        "u": "%",
+        "s": "정의 주의"
+      },
+      {
+        "k": "2026 비용 계획",
+        "v": "약 105",
+        "u": "B$",
+        "s": "회사 제시"
+      },
+      {
+        "k": "임직원",
+        "v": "318,512",
+        "u": "명"
+      }
+    ]
+  },
+  "korea": {
+    "kind": "간접 — 계약이 아니라 금융 경로",
+    "title": "한국 기업의 자금 조달 창구 중 하나",
+    "lead": "JP모건은 한국 기업의 <b>해외채 발행과 인수·합병 자문</b>에 참여합니다. 다만 개별 딜 규모가 회사 전체 매출에서 차지하는 비중은 작고, 공시도 되지 않습니다. <b>간접</b>으로 분류했습니다.",
+    "lanes": [
+      {
+        "t": "간접 연결",
+        "d": "금융 서비스의 고객 중 일부",
+        "dest": "JP모건",
+        "nodes": [
+          {
+            "n": "글로벌 금융 활동",
+            "c": "—",
+            "kr": false,
+            "d": "금리·거래량·기업 활동이 매출을 정합니다."
+          },
+          {
+            "n": "한국 기업·정부",
+            "c": "KR",
+            "kr": true,
+            "d": "해외채 발행, M&A 자문 등. 비중은 공시되지 않습니다."
+          }
+        ]
+      }
+    ]
+  },
+  "notes": [
+    {
+      "h": "숫자를 볼 때",
+      "items": [
+        "<b style='color:var(--ink)'>은행의 매출은 정의가 다릅니다</b> — 제조업 매출과 같은 축에 놓고 이익률을 비교하면 안 됩니다.",
+        "<b style='color:var(--ink)'>전년 대비 성장률을 담지 않았습니다</b> — 2024년 순영업수익을 확인하지 못해 비웠습니다.",
+        "<b style='color:var(--ink)'>총마진·영업이익은 은행에 맞지 않는 개념이라 비웠습니다</b> — 억지로 채우지 않았습니다."
+      ]
+    },
+    {
+      "h": "위험 쪽",
+      "items": [
+        "<b style='color:var(--ink)'>금리</b> — 순이자마진이 이익의 큰 축입니다. 금리가 내려가면 먼저 줄어듭니다.",
+        "<b style='color:var(--ink)'>대손충당금</b> — 경기가 나빠지면 미리 쌓아야 해서 이익이 먼저 꺾입니다.",
+        "<b style='color:var(--ink)'>규제 자본</b> — 자본 규제가 강화되면 자사주 매입·배당 여력이 줄어듭니다."
+      ]
+    }
+  ],
+  "sources": [
+    {
+      "i": "순영업수익·순이익·임직원",
+      "p": "2025",
+      "s": "JPMorgan Chase 실적 발표 · 10-K"
+    },
+    {
+      "i": "2026 비용 계획",
+      "p": "2026",
+      "s": "JPMorgan Chase 실적 발표 및 보도"
+    }
+  ],
+  "checksum": "검산 — 순이익률 57.0 ÷ 182.4 = 31.3%, 1인당 매출 182.4B ÷ 318,512명 = 57만 달러입니다. 비용·충당금·세금 합계는 182.4 − 57.0 = 125.4로 역산한 값이고, 항목별 내역이 아닙니다."
+};
+</script>
+<script src="/m7/assets/m7.js"></script>
+</body>
+</html>

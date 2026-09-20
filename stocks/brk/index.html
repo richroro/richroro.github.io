@@ -1,0 +1,181 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>버크셔 해서웨이 지표 · 매출 구성과 한국과의 관계 | 종목 노트</title>
+<meta name="description" content="2025년 매출 3,714억 달러, 순이익 670억. 그런데 버핏이 직접 '순이익을 보지 말라'고 해 온 회사입니다 — 영업이익 445억과의 차이를 정리했습니다.">
+<link rel="canonical" href="https://richroro.github.io/stocks/brk/">
+<meta property="og:type" content="website"><meta property="og:locale" content="ko_KR">
+<meta property="og:site_name" content="Cadence">
+<meta property="og:url" content="https://richroro.github.io/stocks/brk/">
+<meta property="og:title" content="버크셔 해서웨이 지표 | 종목 노트">
+<meta property="og:description" content="2025년 매출 3,714억 달러, 순이익 670억. 그런데 버핏이 직접 '순이익을 보지 말라'고 해 온 회사입니다 — 영업이익 445억과의 차이를 정리했습니다.">
+<meta name="twitter:card" content="summary">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='#475569'/><text x='50' y='66' font-size='26' text-anchor='middle' fill='white' font-family='monospace' font-weight='bold'>BRK.B</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans+KR:wght@300;400;500;600;700&display=swap">
+<link rel="stylesheet" href="/m7/assets/m7.css">
+</head>
+<body>
+<noscript><div style="padding:24px;font-family:sans-serif"><h1>버크셔 해서웨이 지표</h1><p>2025년 매출 3,714억 달러, 순이익 670억. 그런데 버핏이 직접 '순이익을 보지 말라'고 해 온 회사입니다 — 영업이익 445억과의 차이를 정리했습니다.</p>
+<p>차트를 그리는 데 자바스크립트를 씁니다. <a href="/stocks/">종목 노트 전체</a></p></div></noscript>
+<script src="/stocks/assets/registry.js"></script>
+<script>
+/* 버크셔 해서웨이 (BRK.B) — 이 블록만 고치면 페이지 전체가 따라 바뀝니다.
+   검산: 순이익 66.97 > 영업이익 44.49 — 차이는 투자 평가손익 */
+const CO = {
+  "group": "fin",
+  "hubHref": "/stocks/",
+  "hubName": "종목 노트 전체",
+  "hubMark": "종목",
+  "peersTitle": "같은 분야 다른 회사",
+  "asOf": "2026-09-20",
+  "slug": "brk",
+  "tk": "BRK.B",
+  "ko": "버크셔 해서웨이",
+  "en": "Berkshire Hathaway",
+  "ab": "BK",
+  "color": "#475569",
+  "fy": {
+    "label": "2025 · 2025년 12월 종료",
+    "note": "버크셔 회계연도는 달력 연도와 같습니다."
+  },
+  "headline": "버핏이 보지 말라는 숫자가 순이익",
+  "lead": "2025년 순이익은 <b>670억 달러</b>입니다. 그런데 <b>영업이익은 445억</b>입니다. 차이 225억은 <b>보유 주식 평가손익</b>이고, 버핏은 오래 주주서한에서 <b>이 숫자를 무시하고 영업이익을 보라</b>고 써 왔습니다.",
+  "stats": [
+    {
+      "k": "2025 매출",
+      "v": "371.4",
+      "u": "B$"
+    },
+    {
+      "k": "영업이익",
+      "v": "44.5",
+      "u": "B$",
+      "s": "버핏이 보라는 숫자"
+    },
+    {
+      "k": "순이익",
+      "v": "67.0",
+      "u": "B$",
+      "s": "전년 89.0B$에서 감소",
+      "stone": "down"
+    },
+    {
+      "k": "차이",
+      "v": "+22.5",
+      "u": "B$",
+      "s": "투자 평가손익"
+    }
+  ],
+  "signature": {
+    "nav": "두 개의 이익",
+    "eyebrow": "Two numbers",
+    "title": "445억과 670억",
+    "lead": "어느 쪽이 '진짜' 이익인가 — 버크셔에서는 이 질문이 실제로 중요합니다.",
+    "split": {
+      "title": "2025년 두 이익",
+      "sub": "영업이익과 순이익",
+      "parts": [
+        {
+          "k": "영업이익",
+          "v": 44.49,
+          "color": "--s1",
+          "label": "445억$"
+        },
+        {
+          "k": "투자 평가손익 등",
+          "v": 22.48,
+          "color": "--s2",
+          "label": "+225억$"
+        }
+      ],
+      "note": "<b>회계 규정상 보유 주식의 평가손익을 매 분기 손익에 넣어야 합니다.</b> 애플 주가가 오르면 버크셔 순이익이 뛰고, 내리면 순손실이 납니다 — 주식을 팔지 않았는데도요. 순이익에는 세후 투자이익 약 307억과 지분법 손상 83억이 섞여 있습니다. <b>영업이익은 보험·철도·에너지 같은 실제 사업에서 나온 돈</b>이고, 2025년에는 그쪽이 줄었습니다."
+    },
+    "stats": [
+      {
+        "k": "영업이익",
+        "v": "44.5",
+        "u": "B$",
+        "s": "실제 사업"
+      },
+      {
+        "k": "순이익",
+        "v": "67.0",
+        "u": "B$",
+        "s": "평가손익 포함"
+      },
+      {
+        "k": "2024 순이익",
+        "v": "89.0",
+        "u": "B$",
+        "s": "변동이 크다",
+        "stone": "down"
+      }
+    ]
+  },
+  "korea": {
+    "kind": "간접 — 사업적 접점이 없다",
+    "title": "한국 기업과의 공개된 관계가 없다",
+    "lead": "버크셔는 보험·철도·에너지·제조를 미국 중심으로 운영합니다. <b>한국 기업과의 공시된 공급·고객 관계가 확인되지 않습니다.</b> 한국 투자자에게 이 종목은 <b>미국 경제 전반에 대한 분산 투자</b>에 가깝습니다.",
+    "lanes": [
+      {
+        "t": "간접 연결",
+        "d": "사업 접점이 아니라 지수 성격",
+        "dest": "버크셔",
+        "nodes": [
+          {
+            "n": "미국 경제 전반",
+            "c": "—",
+            "kr": false,
+            "d": "보험·철도·에너지·소비재. 사실상 미국 내수의 단면."
+          },
+          {
+            "n": "한국 기업",
+            "c": "KR",
+            "kr": true,
+            "d": "공개된 사업 관계가 확인되지 않습니다."
+          }
+        ]
+      }
+    ]
+  },
+  "notes": [
+    {
+      "h": "숫자를 볼 때",
+      "items": [
+        "<b style='color:var(--ink)'>순이익을 실적으로 읽으면 안 됩니다</b> — 회사 스스로 그렇게 말해 왔습니다.",
+        "<b style='color:var(--ink)'>매출 3,714억에는 보험료와 투자수익이 섞입니다</b> — 제조업 매출과 성격이 다릅니다.",
+        "<b style='color:var(--ink)'>임직원·총마진을 담지 않았습니다</b> — 확인하지 못해 비웠습니다.",
+        "<b style='color:var(--ink)'>가이던스가 없습니다</b> — 버크셔는 전망치를 제시하지 않습니다. '앞으로' 섹션이 없는 이유입니다."
+      ]
+    },
+    {
+      "h": "위험 쪽",
+      "items": [
+        "<b style='color:var(--ink)'>경영진 교체</b> — 2026년 초 그렉 아벨이 CEO가 됐습니다. 버핏은 이사회 의장으로 남았습니다.",
+        "<b style='color:var(--ink)'>현금 비중</b> — 투자처를 못 찾으면 현금이 쌓이고, 수익률은 금리에 묶입니다.",
+        "<b style='color:var(--ink)'>보유 종목 집중</b> — 상위 몇 종목의 주가가 순이익을 흔듭니다."
+      ]
+    }
+  ],
+  "sources": [
+    {
+      "i": "매출·영업이익·순이익",
+      "p": "2025",
+      "s": "Berkshire Hathaway 실적 발표 · 10-K"
+    },
+    {
+      "i": "투자 평가손익 내역",
+      "p": "2025",
+      "s": "Berkshire Hathaway 실적 발표"
+    }
+  ],
+  "checksum": "검산 — 순이익 66.97 − 영업이익 44.49 = 22.48로, 이 차이가 투자 평가손익 등입니다. 영업이익률 44.49 ÷ 371.444 = 12.0%, 순이익률 66.97 ÷ 371.444 = 18.0%로 순이익률이 더 높은 형태이고, 그 이유를 본문에 적었습니다."
+};
+</script>
+<script src="/m7/assets/m7.js"></script>
+</body>
+</html>
