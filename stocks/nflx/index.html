@@ -1,0 +1,192 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>넷플릭스 지표 · 매출 구성과 한국과의 관계 | 종목 노트</title>
+<meta name="description" content="2025년 매출 452억 달러, 영업이익률 29.5%. 이 목록에서 한국 기업이 돈을 받는 쪽인 몇 안 되는 회사이고, 한국 콘텐츠에 가장 많이 쓰는 곳입니다.">
+<link rel="canonical" href="https://richroro.github.io/stocks/nflx/">
+<meta property="og:type" content="website"><meta property="og:locale" content="ko_KR">
+<meta property="og:site_name" content="Cadence">
+<meta property="og:url" content="https://richroro.github.io/stocks/nflx/">
+<meta property="og:title" content="넷플릭스 지표 | 종목 노트">
+<meta property="og:description" content="2025년 매출 452억 달러, 영업이익률 29.5%. 이 목록에서 한국 기업이 돈을 받는 쪽인 몇 안 되는 회사이고, 한국 콘텐츠에 가장 많이 쓰는 곳입니다.">
+<meta name="twitter:card" content="summary">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='#E50914'/><text x='50' y='66' font-size='30' text-anchor='middle' fill='white' font-family='monospace' font-weight='bold'>NFLX</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans+KR:wght@300;400;500;600;700&display=swap">
+<link rel="stylesheet" href="/m7/assets/m7.css">
+</head>
+<body>
+<noscript><div style="padding:24px;font-family:sans-serif"><h1>넷플릭스 지표</h1><p>2025년 매출 452억 달러, 영업이익률 29.5%. 이 목록에서 한국 기업이 돈을 받는 쪽인 몇 안 되는 회사이고, 한국 콘텐츠에 가장 많이 쓰는 곳입니다.</p>
+<p>차트를 그리는 데 자바스크립트를 씁니다. <a href="/stocks/">종목 노트 전체</a></p></div></noscript>
+<script src="/stocks/assets/registry.js"></script>
+<script>
+/* 넷플릭스 (NFLX) — 이 블록만 고치면 페이지 전체가 따라 바뀝니다.
+   검산: 영업이익 13.3 ÷ 매출 45.2 = 29.4% (발표 29.5%, 반올림) */
+const CO = {
+  "group": "consumer",
+  "hubHref": "/stocks/",
+  "hubName": "종목 노트 전체",
+  "hubMark": "종목",
+  "peersTitle": "같은 분야 다른 회사",
+  "asOf": "2026-09-20",
+  "slug": "nflx",
+  "tk": "NFLX",
+  "ko": "넷플릭스",
+  "en": "Netflix",
+  "ab": "NF",
+  "color": "#E50914",
+  "fy": {
+    "label": "2025 · 2025년 12월 종료",
+    "note": "넷플릭스 회계연도는 달력 연도와 같습니다."
+  },
+  "headline": "한국 콘텐츠를 가장 많이 사는 회사",
+  "lead": "2025년 매출 <b>452억 달러</b>(+16%), 영업이익 <b>133억</b>으로 영업이익률 <b>29.5%</b>입니다. 이 페이지에서 넷플릭스가 다른 회사와 다른 점은 <b>한국 기업이 돈을 받는 쪽</b>이라는 것입니다.",
+  "stats": [
+    {
+      "k": "2025 매출",
+      "v": "45.2",
+      "u": "B$",
+      "s": "+16% YoY",
+      "stone": "up"
+    },
+    {
+      "k": "영업이익률",
+      "v": "29.4",
+      "u": "%",
+      "s": "영업이익 13.3B$"
+    },
+    {
+      "k": "순이익",
+      "v": "11.0",
+      "u": "B$",
+      "s": "전년 8.7B$",
+      "stone": "up"
+    },
+    {
+      "k": "임직원",
+      "v": "약 16,000",
+      "u": "명",
+      "s": "1인당 매출 $2.83M"
+    }
+  ],
+  "signature": {
+    "nav": "콘텐츠 지출",
+    "eyebrow": "Content",
+    "title": "매출이 아니라 지출이 한국으로 온다",
+    "lead": "넷플릭스는 콘텐츠를 <b>사거나 제작 의뢰</b>합니다. 그 돈의 일부가 한국 제작사·스튜디오로 들어갑니다 — 반도체와 정반대 방향의 연결입니다.",
+    "split": {
+      "title": "2025년 매출 100원의 행선지",
+      "sub": "영업이익률 기준",
+      "parts": [
+        {
+          "k": "비용(콘텐츠 포함)",
+          "v": 70.6,
+          "color": "--s3",
+          "label": "70.6%"
+        },
+        {
+          "k": "영업이익",
+          "v": 29.4,
+          "color": "--s1",
+          "label": "29.4%"
+        }
+      ],
+      "note": "비용의 가장 큰 덩어리가 <b>콘텐츠</b>입니다. 넷플릭스가 한국 콘텐츠에 쓰는 돈은 국내 제작사에게 <b>매출</b>입니다. 반도체 종목들이 '한국이 부품을 대는 쪽'이라면, 넷플릭스는 <b>'한국이 물건을 파는 쪽'</b>입니다 — 이 목록에서 드문 방향입니다."
+    },
+    "stats": [
+      {
+        "k": "2026 매출 전망",
+        "v": "약 51",
+        "u": "B$",
+        "s": "회사 제시",
+        "stone": "up"
+      },
+      {
+        "k": "2025 영업이익률",
+        "v": "29.4",
+        "u": "%"
+      },
+      {
+        "k": "1인당 매출",
+        "v": "2.83",
+        "u": "M$",
+        "s": "인원 대비 큰 매출"
+      }
+    ]
+  },
+  "korea": {
+    "kind": "공급 — 한국이 파는 쪽",
+    "title": "오징어 게임 이후 구조가 바뀌었다",
+    "lead": "넷플릭스는 한국 콘텐츠의 <b>최대 구매자 중 하나</b>입니다. 국내 제작사에게는 방송사 외의 판로가 생긴 것이고, 넷플릭스에게는 상대적으로 싼 값에 글로벌 흥행작을 얻는 경로입니다. <b>돈이 미국에서 한국으로 흐르는 몇 안 되는 종목</b>입니다.",
+    "lanes": [
+      {
+        "t": "콘텐츠 공급망",
+        "d": "넷플릭스가 사고, 한국이 만든다",
+        "dest": "넷플릭스 라이브러리",
+        "nodes": [
+          {
+            "n": "국내 제작사",
+            "c": "KR",
+            "kr": true,
+            "d": "스튜디오드래곤·에이스토리 등. 오리지널 제작과 판권 판매."
+          },
+          {
+            "n": "국내 배우·스태프",
+            "c": "KR",
+            "kr": true,
+            "d": "제작비의 상당 부분이 인건비로 국내에 남습니다."
+          },
+          {
+            "n": "글로벌 구독자",
+            "c": "—",
+            "kr": false,
+            "d": "만들어진 콘텐츠가 도달하는 곳."
+          }
+        ]
+      }
+    ]
+  },
+  "notes": [
+    {
+      "h": "숫자를 볼 때",
+      "items": [
+        "<b style='color:var(--ink)'>영업이익률은 계산한 값입니다</b> — 13.3 ÷ 45.2 = 29.4%로, 회사 발표 29.5%와 반올림 차이입니다.",
+        "<b style='color:var(--ink)'>총마진과 부문 매출을 담지 않았습니다</b> — 확인하지 못해 비웠습니다.",
+        "<b style='color:var(--ink)'>한국 콘텐츠 투자 금액은 싣지 않았습니다</b> — 연도별 공시가 일정하지 않아 숫자로 넣지 않고 관계만 적었습니다."
+      ]
+    },
+    {
+      "h": "위험 쪽",
+      "items": [
+        "<b style='color:var(--ink)'>콘텐츠 비용은 선불입니다</b> — 흥행 여부와 무관하게 먼저 나갑니다.",
+        "<b style='color:var(--ink)'>구독자 수를 더 이상 분기마다 공개하지 않습니다</b> — 성장 확인이 어려워졌습니다.",
+        "<b style='color:var(--ink)'>경쟁</b> — 디즈니+·아마존 프라임 등과 같은 콘텐츠·같은 제작사를 놓고 경쟁합니다."
+      ]
+    }
+  ],
+  "sources": [
+    {
+      "i": "매출·영업이익·순이익",
+      "p": "2025",
+      "s": "Netflix 실적 발표 · 10-K"
+    },
+    {
+      "i": "2026 매출 전망",
+      "p": "2026",
+      "s": "Netflix 2025년 4분기 실적 발표"
+    },
+    {
+      "i": "한국 제작 관계",
+      "p": "2026",
+      "s": "각 사 공시 및 업계 보도"
+    }
+  ],
+  "checksum": "검산 — 영업이익률 13.3 ÷ 45.2 = 29.4%(발표 29.5%, 반올림 차이), 순이익률 11.0 ÷ 45.2 = 24.3%, 1인당 매출 45.2B ÷ 16,000명 = 283만 달러로 계산한 값입니다."
+};
+</script>
+<script src="/m7/assets/m7.js"></script>
+</body>
+</html>

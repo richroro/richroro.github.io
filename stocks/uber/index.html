@@ -1,0 +1,178 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>우버 지표 · 매출 구성과 한국과의 관계 | 종목 노트</title>
+<meta name="description" content="2025년 매출 520억 달러, 순이익 101억. 오래 적자였던 회사가 어떤 숫자가 됐는지와, 총예약과 매출을 헷갈리면 안 되는 이유를 정리했습니다.">
+<link rel="canonical" href="https://richroro.github.io/stocks/uber/">
+<meta property="og:type" content="website"><meta property="og:locale" content="ko_KR">
+<meta property="og:site_name" content="Cadence">
+<meta property="og:url" content="https://richroro.github.io/stocks/uber/">
+<meta property="og:title" content="우버 지표 | 종목 노트">
+<meta property="og:description" content="2025년 매출 520억 달러, 순이익 101억. 오래 적자였던 회사가 어떤 숫자가 됐는지와, 총예약과 매출을 헷갈리면 안 되는 이유를 정리했습니다.">
+<meta name="twitter:card" content="summary">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='#276EF1'/><text x='50' y='66' font-size='30' text-anchor='middle' fill='white' font-family='monospace' font-weight='bold'>UBER</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans+KR:wght@300;400;500;600;700&display=swap">
+<link rel="stylesheet" href="/m7/assets/m7.css">
+</head>
+<body>
+<noscript><div style="padding:24px;font-family:sans-serif"><h1>우버 지표</h1><p>2025년 매출 520억 달러, 순이익 101억. 오래 적자였던 회사가 어떤 숫자가 됐는지와, 총예약과 매출을 헷갈리면 안 되는 이유를 정리했습니다.</p>
+<p>차트를 그리는 데 자바스크립트를 씁니다. <a href="/stocks/">종목 노트 전체</a></p></div></noscript>
+<script src="/stocks/assets/registry.js"></script>
+<script>
+/* 우버 (UBER) — 이 블록만 고치면 페이지 전체가 따라 바뀝니다.
+   검산: 순이익률 10.1 ÷ 52.017 = 19.4% */
+const CO = {
+  "group": "consumer",
+  "hubHref": "/stocks/",
+  "hubName": "종목 노트 전체",
+  "hubMark": "종목",
+  "peersTitle": "같은 분야 다른 회사",
+  "asOf": "2026-09-20",
+  "slug": "uber",
+  "tk": "UBER",
+  "ko": "우버",
+  "en": "Uber Technologies",
+  "ab": "UB",
+  "color": "#276EF1",
+  "fy": {
+    "label": "2025 · 2025년 12월 종료",
+    "note": "우버 회계연도는 달력 연도와 같습니다."
+  },
+  "headline": "매출 520억, 순이익 101억",
+  "lead": "2025년 매출 <b>520억 달러</b>(+18.3%), 순이익 <b>101억</b>입니다. 오래 '돈 못 버는 회사'의 대명사였던 곳이 <b>순이익률 19.4%</b>를 냅니다.",
+  "stats": [
+    {
+      "k": "2025 매출",
+      "v": "52.0",
+      "u": "B$",
+      "s": "+18.3% YoY",
+      "stone": "up"
+    },
+    {
+      "k": "순이익",
+      "v": "10.1",
+      "u": "B$",
+      "s": "순이익률 19.4%",
+      "stone": "up"
+    },
+    {
+      "k": "임직원",
+      "v": "약 34,000",
+      "u": "명",
+      "s": "기사는 포함되지 않음"
+    },
+    {
+      "k": "1인당 매출",
+      "v": "1.53",
+      "u": "M$"
+    }
+  ],
+  "signature": {
+    "nav": "총예약 vs 매출",
+    "eyebrow": "Definition",
+    "title": "575억과 520억은 다른 숫자다",
+    "lead": "우버 기사를 읽을 때 가장 자주 섞이는 게 <b>총예약(Gross Bookings)</b>과 <b>매출(Revenue)</b>입니다. 전혀 다른 숫자입니다.",
+    "split": {
+      "title": "2026년 2분기 가이던스와 연매출",
+      "sub": "단위가 같아 보이지만 정의가 다릅니다",
+      "parts": [
+        {
+          "k": "분기 총예약 가이던스",
+          "v": 57,
+          "color": "--s2",
+          "label": "562.5~577.5억$"
+        },
+        {
+          "k": "2025 연매출",
+          "v": 52.017,
+          "color": "--s1",
+          "label": "520억$"
+        }
+      ],
+      "note": "<b>총예약은 플랫폼을 지나간 돈 전체</b>입니다 — 승객이 낸 요금 전부. <b>매출은 그중 우버가 갖는 몫</b>입니다. 한 분기 총예약이 한 해 매출보다 큰 이유가 여기 있습니다. 기사 제목에 '575억 달러'가 나오면 그게 어느 쪽인지부터 확인해야 합니다."
+    },
+    "stats": [
+      {
+        "k": "2026 2Q 총예약 가이던스",
+        "v": "56.25~57.75",
+        "u": "B$",
+        "s": "고정환율 +18~22%"
+      },
+      {
+        "k": "2025 연매출",
+        "v": "52.0",
+        "u": "B$"
+      },
+      {
+        "k": "순이익률",
+        "v": "19.4",
+        "u": "%"
+      }
+    ]
+  },
+  "korea": {
+    "kind": "간접 — 한국 사업은 작다",
+    "title": "한국에서는 택시 호출 정도",
+    "lead": "우버는 한국에서 <b>규제 때문에 승차공유를 하지 못합니다.</b> 택시 호출(우티) 수준이고 매출 기여는 미미합니다. 한국 투자자에게는 <b>글로벌 모빌리티·배달 수요에 대한 베팅</b>이지 국내 사업과의 연결은 아닙니다.",
+    "lanes": [
+      {
+        "t": "간접 연결",
+        "d": "한국 사업 비중이 작다",
+        "dest": "우버",
+        "nodes": [
+          {
+            "n": "글로벌 이동·배달 수요",
+            "c": "—",
+            "kr": false,
+            "d": "매출의 사실상 전부."
+          },
+          {
+            "n": "한국 시장",
+            "c": "KR",
+            "kr": true,
+            "d": "규제로 승차공유 불가. 택시 호출 중심이라 기여가 작습니다."
+          }
+        ]
+      }
+    ]
+  },
+  "notes": [
+    {
+      "h": "숫자를 볼 때",
+      "items": [
+        "<b style='color:var(--ink)'>총예약과 매출을 구분해야 합니다</b> — 이 페이지에서 가장 중요한 주의점입니다.",
+        "<b style='color:var(--ink)'>임직원 3.4만에 기사는 포함되지 않습니다</b> — 기사는 계약자라 1인당 매출 해석에 주의가 필요합니다.",
+        "<b style='color:var(--ink)'>연간 영업이익·총마진을 담지 않았습니다</b> — 확인하지 못해 비웠습니다."
+      ]
+    },
+    {
+      "h": "위험 쪽",
+      "items": [
+        "<b style='color:var(--ink)'>순이익에 지분 평가이익이 섞입니다</b> — 우버는 여러 모빌리티 기업 지분을 보유해 평가손익이 손익에 들어옵니다.",
+        "<b style='color:var(--ink)'>기사 분류 소송</b> — 계약자냐 근로자냐 판단이 나라마다 다르고, 바뀌면 원가 구조가 달라집니다.",
+        "<b style='color:var(--ink)'>로보택시</b> — 자율주행이 보편화되면 우버가 수혜인지 피해인지 아직 정해지지 않았습니다."
+      ]
+    }
+  ],
+  "sources": [
+    {
+      "i": "매출·순이익·임직원",
+      "p": "2025",
+      "s": "Uber 실적 발표 · 10-K"
+    },
+    {
+      "i": "2026 2분기 총예약 가이던스",
+      "p": "2026",
+      "s": "Uber 2026년 1분기 실적 발표"
+    }
+  ],
+  "checksum": "검산 — 순이익률 10.1 ÷ 52.017 = 19.4%, 1인당 매출 52.017B ÷ 34,000명 = 153만 달러로 계산한 값입니다. 총예약과 매출은 정의가 다른 숫자라 같은 축에 놓되 라벨로 구분했습니다."
+};
+</script>
+<script src="/m7/assets/m7.js"></script>
+</body>
+</html>

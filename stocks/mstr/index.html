@@ -1,0 +1,185 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>스트래티지 지표 · 매출 구성과 한국과의 관계 | 종목 노트</title>
+<meta name="description" content="2025년 매출 4.77억 달러에 영업손실 54억, 순손실 42억. 소프트웨어 회사의 외형을 한 비트코인 보유 기구이고, 손익은 비트코인 평가에 따라 움직입니다.">
+<link rel="canonical" href="https://richroro.github.io/stocks/mstr/">
+<meta property="og:type" content="website"><meta property="og:locale" content="ko_KR">
+<meta property="og:site_name" content="Cadence">
+<meta property="og:url" content="https://richroro.github.io/stocks/mstr/">
+<meta property="og:title" content="스트래티지 지표 | 종목 노트">
+<meta property="og:description" content="2025년 매출 4.77억 달러에 영업손실 54억, 순손실 42억. 소프트웨어 회사의 외형을 한 비트코인 보유 기구이고, 손익은 비트코인 평가에 따라 움직입니다.">
+<meta name="twitter:card" content="summary">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='#F7931A'/><text x='50' y='66' font-size='30' text-anchor='middle' fill='white' font-family='monospace' font-weight='bold'>MSTR</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans+KR:wght@300;400;500;600;700&display=swap">
+<link rel="stylesheet" href="/m7/assets/m7.css">
+</head>
+<body>
+<noscript><div style="padding:24px;font-family:sans-serif"><h1>스트래티지 지표</h1><p>2025년 매출 4.77억 달러에 영업손실 54억, 순손실 42억. 소프트웨어 회사의 외형을 한 비트코인 보유 기구이고, 손익은 비트코인 평가에 따라 움직입니다.</p>
+<p>차트를 그리는 데 자바스크립트를 씁니다. <a href="/stocks/">종목 노트 전체</a></p></div></noscript>
+<script src="/stocks/assets/registry.js"></script>
+<script>
+/* 스트래티지 (MSTR) — 이 블록만 고치면 페이지 전체가 따라 바뀝니다.
+   검산: 순손실 4.2B ÷ 매출 0.477B = −880% (순이익률) */
+const CO = {
+  "group": "fin",
+  "hubHref": "/stocks/",
+  "hubName": "종목 노트 전체",
+  "hubMark": "종목",
+  "peersTitle": "같은 분야 다른 회사",
+  "asOf": "2026-09-20",
+  "slug": "mstr",
+  "tk": "MSTR",
+  "ko": "스트래티지",
+  "en": "Strategy (MicroStrategy)",
+  "ab": "MS",
+  "color": "#F7931A",
+  "fy": {
+    "label": "2025 · 2025년 12월 종료",
+    "note": "스트래티지 회계연도는 달력 연도와 같습니다."
+  },
+  "headline": "매출 4.8억, 영업손실 54억",
+  "lead": "소프트웨어 매출은 <b>4억 7,700만 달러</b>입니다. 같은 해 영업손실은 <b>54억 달러</b> — 매출의 <b>11배</b>입니다. 이 손실은 사업이 망가져서 난 게 아니라, <b>보유 비트코인을 공정가치로 다시 평가</b>하면서 생긴 회계상 숫자입니다.",
+  "stats": [
+    {
+      "k": "2025 소프트웨어 매출",
+      "v": "477",
+      "u": "M$",
+      "s": "+2.9% YoY"
+    },
+    {
+      "k": "영업손실",
+      "v": "−5.4",
+      "u": "B$",
+      "s": "매출의 11배",
+      "stone": "down"
+    },
+    {
+      "k": "순손실",
+      "v": "−4.2",
+      "u": "B$",
+      "s": "순이익률 −880%",
+      "stone": "down"
+    },
+    {
+      "k": "보유 비트코인",
+      "v": "713,502",
+      "u": "BTC",
+      "s": "2026년 1월 포함"
+    }
+  ],
+  "signature": {
+    "nav": "비트코인",
+    "eyebrow": "Holdings",
+    "title": "손익계산서를 봐도 회사가 안 보인다",
+    "lead": "이 회사의 손익은 <b>비트코인 가격의 함수</b>입니다. 매출·영업이익 같은 보통의 지표로는 설명되지 않습니다.",
+    "split": {
+      "title": "2025년 매출과 영업손실",
+      "sub": "같은 축에 놓고 보면",
+      "parts": [
+        {
+          "k": "소프트웨어 매출",
+          "v": 477,
+          "color": "--s1",
+          "label": "4.8억$"
+        },
+        {
+          "k": "영업손실",
+          "v": 5400,
+          "color": "--s2",
+          "label": "54억$"
+        }
+      ],
+      "note": "<b>이 종목의 이익률은 이익률 차트 축에서 빠집니다</b>(−880%). 값을 숨긴 게 아니라 <a href=\"/stocks/#screener\">스크리너 표</a>에 그대로 있습니다. 중요한 건 <b>이 숫자가 본업과 거의 무관하다</b>는 점입니다. 비트코인이 오른 분기에는 같은 항목이 거대한 이익으로 잡힙니다 — <b>부호가 분기마다 뒤집힙니다.</b>"
+    },
+    "stats": [
+      {
+        "k": "보유 비트코인",
+        "v": "713,502",
+        "u": "BTC",
+        "s": "2026년 1월 기준"
+      },
+      {
+        "k": "소프트웨어 매출 비중",
+        "v": "—",
+        "s": "손익에서 사실상 무의미"
+      },
+      {
+        "k": "배당",
+        "v": "없음",
+        "s": "보통주 기준"
+      }
+    ]
+  },
+  "korea": {
+    "kind": "간접 — 비트코인 대리 투자",
+    "title": "사실상 비트코인을 사는 것에 가깝다",
+    "lead": "한국 기업과의 접점은 없습니다. 한국 투자자에게 이 종목의 의미는 <b>주식 계좌로 비트코인 익스포저를 갖는 통로</b>라는 데 있습니다 — 다만 <b>레버리지가 끼어 있어 비트코인보다 더 크게 움직입니다.</b>",
+    "lanes": [
+      {
+        "t": "간접 연결",
+        "d": "한국 기업과의 사업 접점이 없다",
+        "dest": "스트래티지",
+        "nodes": [
+          {
+            "n": "비트코인 가격",
+            "c": "—",
+            "kr": false,
+            "d": "이 회사 손익의 사실상 유일한 변수."
+          },
+          {
+            "n": "한국 투자자",
+            "c": "KR",
+            "kr": true,
+            "d": "주식 계좌로 비트코인 노출을 만드는 용도로 사는 경우가 많습니다."
+          }
+        ]
+      }
+    ]
+  },
+  "notes": [
+    {
+      "h": "숫자를 볼 때",
+      "items": [
+        "<b style='color:var(--ink)'>손익을 실적으로 읽으면 안 됩니다</b> — 비트코인 평가손익이 지배합니다.",
+        "<b style='color:var(--ink)'>이익률 차트 축에서 빠집니다</b> — −880%를 같은 축에 두면 나머지가 안 보입니다.",
+        "<b style='color:var(--ink)'>임직원·총마진을 담지 않았습니다</b> — 확인하지 못해 비웠습니다.",
+        "<b style='color:var(--ink)'>가이던스가 없습니다</b> — 그래서 이 페이지에 '앞으로' 섹션이 없습니다."
+      ]
+    },
+    {
+      "h": "위험 쪽",
+      "items": [
+        "<b style='color:var(--ink)'>레버리지</b> — 비트코인을 빚과 증자로 삽니다. 하락할 때 더 크게 내려갑니다.",
+        "<b style='color:var(--ink)'>희석</b> — 매입 자금을 주식 발행으로 조달하면 기존 주주 지분이 줄어듭니다.",
+        "<b style='color:var(--ink)'>본업이 작습니다</b> — 소프트웨어 매출 4.8억으로는 이자와 비용을 감당하기 어렵습니다."
+      ]
+    }
+  ],
+  "sources": [
+    {
+      "i": "매출·영업손실·순손실",
+      "p": "2025",
+      "s": "Strategy 실적 발표"
+    },
+    {
+      "i": "2024 매출(성장률 계산 기준)",
+      "p": "2024",
+      "s": "MicroStrategy 실적 발표"
+    },
+    {
+      "i": "보유 비트코인",
+      "p": "2026년 1월",
+      "s": "Strategy 공시"
+    }
+  ],
+  "checksum": "검산 — 순이익률 −4.2 ÷ 0.477 = −880%, 영업손실이 매출의 11.3배입니다. 성장률 477 ÷ 463.456 − 1 = +2.9%입니다. 이 종목은 |이익률| 200%를 넘어 이익률 차트 축에서 제외되며, 그 사실을 차트 아래에 밝혔습니다."
+};
+</script>
+<script src="/m7/assets/m7.js"></script>
+</body>
+</html>

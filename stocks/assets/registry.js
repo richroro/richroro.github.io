@@ -287,5 +287,66 @@ const REGISTRY = [
         s:"전년 대비 +73% · 2025년 연매출 0.602B$의 3배가 넘는다" }
     ] },
     data:{ fy:"2025", growth:38.0, gm:null, emp:null, empAsOf:"—", rev:0.6018, oi:null, ni:-0.1982,
-           top:null } }
+           top:null } },
+  /* ---- 금융 · 크립토 ---- */
+  { slug:"coin", kr:"간접", tk:"COIN", ko:"코인베이스", ab:"CO", c:"#0052FF", group:"fin", base:"/stocks/",
+    sector:"크립토 거래소", hint:"매출의 44%가 거래 수수료 밖에서",
+    p:{ est:2012, hq:"본사 없음(원격 근무)", estNote:"2020년 본사를 없애고 전면 원격 근무로 전환",
+        ex:"나스닥", ceo:"브라이언 암스트롱", ceoEn:"Brian Armstrong", since:2012, fye:"12월 31일", div:false },
+    f:{ asOf:"2026년 9월", items:[
+      { k:"구독·서비스 매출 가이던스", v:"565~645", u:"M$", p:"2026년 2분기", t:"guide",
+        s:"거래량과 무관한 매출 · 회사가 분기마다 범위로 제시한다" },
+      { k:"순매출 중 구독·서비스", v:"44", u:"%", p:"2026년", t:"guide",
+        s:"거래 수수료 변동을 덜 타게 만드는 구조 전환 지표" }
+    ] },
+    data:{ fy:"2025", growth:9.4, gm:null, emp:4951, empAsOf:"2025년 말", rev:7.181, oi:null, ni:1.26, top:null } },
+  { slug:"mstr", kr:"간접", tk:"MSTR", ko:"스트래티지", ab:"MS", c:"#F7931A", group:"fin", base:"/stocks/",
+    sector:"비트코인 보유사", hint:"매출 4.8억, 영업손실 54억",
+    p:{ est:1989, hq:"미국 버지니아 타이슨스코너", ex:"나스닥", ceo:"퐁 리", ceoEn:"Phong Le",
+        since:2022, sinceNote:"마이클 세일러는 이사회 의장(Executive Chairman)", fye:"12월 31일",
+        div:false, divNote:"보통주 배당은 없다(우선주 배당은 별도)" },
+    data:{ fy:"2025", growth:2.9, gm:null, emp:null, empAsOf:"—", rev:0.477, oi:-5.4, ni:-4.2, top:null } },
+  { slug:"hood", kr:"간접", tk:"HOOD", ko:"로빈후드", ab:"HD", c:"#00A806", group:"fin", base:"/stocks/",
+    sector:"증권 플랫폼", hint:"매출 +53%, 순이익률 42%",
+    p:{ est:2013, hq:"미국 캘리포니아 멘로파크", ex:"나스닥", ceo:"블라드 테네브", ceoEn:"Vlad Tenev",
+        since:2013, fye:"12월 31일", div:false },
+    f:{ asOf:"2026년 9월", items:[
+      { k:"2026 조정 영업비용+SBC", v:"2.7~2.825", u:"B$", p:"2026년", t:"guide",
+        s:"매출이 아니라 비용을 가이던스로 준다 — 수수료 수입이 시장 상황에 달려 있어서다" },
+      { k:"골드 구독자", v:"430만", u:"명", p:"2026년 1분기", t:"guide",
+        s:"+36% · 거래량과 무관한 구독 매출의 기반" }
+    ] },
+    data:{ fy:"2025", growth:52.5, gm:null, emp:2900, empAsOf:"2025년", rev:4.5, oi:null, ni:1.9, top:null } },
+
+  /* ---- 소비 · 미디어 플랫폼 ---- */
+  { slug:"nflx", kr:"공급", tk:"NFLX", ko:"넷플릭스", ab:"NF", c:"#E50914", group:"consumer", base:"/stocks/",
+    sector:"미디어", hint:"한국 콘텐츠를 가장 많이 사는 회사",
+    p:{ est:1997, hq:"미국 캘리포니아 로스가토스", ex:"나스닥", ceo:"테드 서랜도스 · 그렉 피터스",
+        ceoEn:"Ted Sarandos · Greg Peters", since:2023, sinceNote:"2023년부터 공동 CEO 체제",
+        fye:"12월 31일", div:false },
+    f:{ asOf:"2026년 9월", items:[
+      { k:"2026 매출 전망", v:"약 51", u:"B$", p:"2026년", t:"guide",
+        s:"2025년 45.2B$ 대비 약 +13% · 회사가 실적 발표에서 제시" }
+    ] },
+    data:{ fy:"2025", growth:16.0, gm:null, emp:16000, empAsOf:"2025년", rev:45.2, oi:13.3, ni:11.0, top:null } },
+  { slug:"uber", kr:"간접", tk:"UBER", ko:"우버", ab:"UB", c:"#276EF1", group:"consumer", base:"/stocks/",
+    sector:"모빌리티", hint:"매출 520억, 순이익 101억",
+    p:{ est:2009, hq:"미국 캘리포니아 샌프란시스코", ex:"뉴욕증권거래소", ceo:"다라 코스로샤히",
+        ceoEn:"Dara Khosrowshahi", since:2017, fye:"12월 31일", div:false },
+    f:{ asOf:"2026년 9월", items:[
+      { k:"총예약(Gross Bookings) 가이던스", v:"56.25~57.75", u:"B$", p:"2026년 2분기", t:"guide",
+        s:"고정환율 +18~22% · 총예약은 매출이 아니라 플랫폼을 지나간 돈 전체다" }
+    ] },
+    data:{ fy:"2025", growth:18.3, gm:null, emp:34000, empAsOf:"2025년 말", rev:52.017, oi:null, ni:10.1, top:null } },
+  { slug:"abnb", kr:"간접", tk:"ABNB", ko:"에어비앤비", ab:"AB", c:"#FF5A5F", group:"consumer", base:"/stocks/",
+    sector:"숙박 플랫폼", hint:"성장 11%, 순이익률 20%",
+    p:{ est:2008, hq:"미국 캘리포니아 샌프란시스코", ex:"나스닥", ceo:"브라이언 체스키", ceoEn:"Brian Chesky",
+        since:2008, fye:"12월 31일", div:false },
+    f:{ asOf:"2026년 9월", items:[
+      { k:"2026 2분기 매출 가이던스", v:"3.54~3.60", u:"B$", p:"2026년 2분기", t:"guide",
+        s:"전년 대비 +14~16% · 환율 효과 약 3%p 포함" },
+      { k:"2026 연간 성장 전망", v:"10%대 초중반", u:"", p:"2026년", t:"guide",
+        s:"2025년 +11%에서 가속한다는 것이 회사 설명" }
+    ] },
+    data:{ fy:"2025", growth:11.0, gm:null, emp:8200, empAsOf:"2025년", rev:12.2, oi:null, ni:2.5, top:null } }
 ];
