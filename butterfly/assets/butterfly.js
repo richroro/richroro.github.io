@@ -248,7 +248,10 @@ function makeWingMaps(preset, seed) {
   return { map: tex(cMap, true), alphaMap: tex(cAlpha, false), iridMap: tex(cIrid, false), emissiveMap: tex(cEm, true) };
 }
 
-/* 금속 표면의 결(브러시드 메탈) — 거칠기를 미세하게 흔들어 준다. */
+/* 금속 표면의 결(브러시드 메탈) — 거칠기를 미세하게 흔들어 준다.
+   three 는 최종 거칠기를 `roughness × 지도의 초록 채널`로 계산한다. 이 지도는 회색(0.5)
+   언저리라 재질에 적은 값이 절반쯤으로 줄어든다. 기종마다 곱할 배수(roughK)를 따로
+   들고 다니는 건 그래서다 — 유리날개는 거울처럼, 황동은 주물처럼 보여야 한다. */
 function makeMetalRoughnessMap(seed) {
   const [c, x] = canvas2d(512, 512);
   const rand = rng(seed);
@@ -665,6 +668,7 @@ function buildButterfly(preset, maps, metalRough) {
     color: preset.metal, metalness: 1, roughness: preset.metalRough,
     roughnessMap: metalRough, envMapIntensity: 1.25, clearcoat: 0.7, clearcoatRoughness: 0.18,
   });
+  metalMat.userData.roughK = 1;
   const darkMat = new THREE.MeshStandardMaterial({
     color: preset.frame, metalness: 1, roughness: preset.frameRough, roughnessMap: metalRough, envMapIntensity: 0.95,
   });
@@ -798,6 +802,7 @@ function buildButterfly(preset, maps, metalRough) {
     color: preset.metal, metalness: 1, roughness: preset.metalRough * 1.3,
     roughnessMap: metalRough, envMapIntensity: 1.0,
   });
+  gearMat.userData.roughK = 1.3;
   const gears = [];
   const rods = [];
   const rodGeo = new THREE.CylinderGeometry(0.0075, 0.0075, 1, 8);
@@ -896,6 +901,386 @@ function buildButterfly(preset, maps, metalRough) {
   const materials = { metalMat, darkMat, glowMat, eyeMat, gearMat, wings: wings.map((w) => w.wing.userData) };
   return { root, body, wings, update, materials, coreLight, setPhase(v) { phase = v; } };
 }
+
+/* ══════════════════════════════════════════════════════════════
+   나비 II — 황동 부채살
+
+   같은 프롬프트에 대한 두 번째 답. 첫 번째가 유리와 무지갯빛이라면
+   이쪽은 놋쇠와 리벳이다. 날개가 한 장의 막이 아니라 부챗살 열한 개여서,
+   내려칠 때 활짝 펴져 바람을 안고 올릴 때 접혀서 흘린다.
+   보일러 가슴에 압력계가 달려 날갯짓에 맞춰 바늘이 떨고, 굴뚝에서 김이 난다.
+   ══════════════════════════════════════════════════════════════ */
+
+// 살 한 장의 윤곽에 뚫을 창(긴 구멍). 살에도 쓰고, 그 자리에 끼울 유리판에도 쓴다.
+function slotPath(x0, x1, hw) {
+  const p = new THREE.Path();
+  p.moveTo(x0, -hw);
+  p.lineTo(x1, -hw);
+  p.absarc(x1, 0, hw, -Math.PI / 2, Math.PI / 2, false);
+  p.lineTo(x0, hw);
+  p.absarc(x0, 0, hw, Math.PI / 2, Math.PI * 1.5, false);
+  return p;
+}
+
+// 부챗살. 뿌리가 좁고 끝이 넓어서 접으면 서로 포개진다.
+function fanPlate(L, w0, w1, thick) {
+  const s = new THREE.Shape();
+  s.moveTo(0.03, -w0 / 2);
+  s.lineTo(L * 0.8, -w1 / 2);
+  s.quadraticCurveTo(L * 0.99, -w1 * 0.3, L, 0);          // 끝을 칼날처럼
+  s.quadraticCurveTo(L * 0.99, w1 * 0.3, L * 0.8, w1 / 2);
+  s.lineTo(0.03, w0 / 2);
+  s.absarc(0.03, 0, w0 / 2, Math.PI / 2, Math.PI * 1.5, false);
+  const hw = w1 * 0.2;
+  s.holes.push(slotPath(L * 0.3, L * 0.86, hw));
+  const g = new THREE.ExtrudeGeometry(s, {
+    depth: thick, bevelEnabled: true, bevelThickness: thick * 0.3, bevelSize: thick * 0.3,
+    bevelSegments: 1, curveSegments: 7,
+  });
+  g.translate(0, 0, -thick / 2);
+  return { geom: g, win: { x0: L * 0.36, x1: L * 0.82, hw } };
+}
+
+function buildFanButterfly(preset, maps, metalRough) {
+  const root = new THREE.Group();
+  const body = new THREE.Group();
+  root.add(body);
+
+  /* ── 재료 ── */
+  const metalMat = new THREE.MeshPhysicalMaterial({      // 주물 놋쇠. 유리날개보다 거칠다.
+    color: preset.metal, metalness: 1, roughness: preset.metalRough * 5.2,
+    roughnessMap: metalRough, envMapIntensity: 0.82, clearcoat: 0.18, clearcoatRoughness: 0.55,
+  });
+  metalMat.userData.roughK = 5.2;
+  const darkMat = new THREE.MeshStandardMaterial({
+    color: preset.frame, metalness: 1, roughness: Math.min(0.92, preset.frameRough * 4.2),
+    roughnessMap: metalRough, envMapIntensity: 0.75,
+  });
+  darkMat.userData.roughK = 4.2;
+  const gearMat = new THREE.MeshPhysicalMaterial({
+    color: preset.metal, metalness: 1, roughness: preset.metalRough * 4.6,
+    roughnessMap: metalRough, envMapIntensity: 0.9,
+  });
+  gearMat.userData.roughK = 4.6;
+  const glowMat = new THREE.MeshStandardMaterial({
+    color: 0x0a0806, emissive: new THREE.Color(preset.core), emissiveIntensity: 0.5, roughness: 0.7, metalness: 0.1,
+  });
+  const eyeMat = new THREE.MeshPhysicalMaterial({
+    color: 0x120d08, metalness: 0.5, roughness: 0.18,
+    emissive: new THREE.Color(preset.eye), emissiveIntensity: 1.1,
+    iridescence: 0.6, iridescenceIOR: 1.8, iridescenceThicknessRange: [200, 640], envMapIntensity: 1.3,
+  });
+  const paneMat = new THREE.MeshPhysicalMaterial({       // 살에 끼운 유리창
+    color: preset.membrane, transparent: true, opacity: 0.55, depthWrite: false, side: THREE.DoubleSide,
+    metalness: 0.2, roughness: 0.14,
+    iridescence: 0.8, iridescenceIOR: 1.9, iridescenceThicknessRange: preset.iridRange.slice(),
+    iridescenceThicknessMap: maps.iridMap,
+    emissive: new THREE.Color(preset.emissive), emissiveIntensity: 0.38,
+    envMapIntensity: 1.3, clearcoat: 1, clearcoatRoughness: 0.1,
+  });
+  paneMat.userData.tint = 1;
+
+  /* ── 보일러 가슴 ── */
+  const boiler = new THREE.Mesh(new THREE.CylinderGeometry(0.1, 0.094, 0.34, 26), metalMat);
+  boiler.geometry.rotateX(Math.PI / 2);
+  boiler.position.z = -0.02;
+  body.add(boiler);
+
+  const rivetGeo = new THREE.SphereGeometry(0.0085, 8, 6);
+  for (const z of [0.12, 0.0, -0.12]) {                  // 리벳 박힌 테
+    const band = new THREE.Mesh(new THREE.TorusGeometry(0.103, 0.011, 8, 34), darkMat);
+    band.position.z = z;
+    body.add(band);
+    const n = 14;
+    const rv = new THREE.InstancedMesh(rivetGeo, metalMat, n);
+    const d = new THREE.Object3D();
+    for (let i = 0; i < n; i++) {
+      const a = (i / n) * TAU;
+      d.position.set(Math.cos(a) * 0.108, Math.sin(a) * 0.108, z);
+      d.updateMatrix();
+      rv.setMatrixAt(i, d.matrix);
+    }
+    rv.instanceMatrix.needsUpdate = true;
+    body.add(rv);
+  }
+  const cap = new THREE.Mesh(new THREE.SphereGeometry(0.1, 24, 16, 0, TAU, 0, Math.PI / 2), metalMat);
+  cap.geometry.rotateX(Math.PI / 2);
+  cap.scale.z = 0.62;
+  cap.position.z = 0.15;
+  body.add(cap);
+
+  /* ── 굴뚝 ── */
+  const stackProfile = [[0.018, 0], [0.02, 0.04], [0.022, 0.07], [0.034, 0.088], [0.03, 0.095], [0.016, 0.093]]
+    .map(([x, y]) => new THREE.Vector2(x, y));
+  const stack = new THREE.Mesh(new THREE.LatheGeometry(stackProfile, 18), darkMat);
+  stack.position.set(0, 0.092, 0.03);
+  stack.rotation.x = -0.22;
+  body.add(stack);
+  const stackPort = new THREE.Object3D();                // 김이 나오는 자리
+  stackPort.position.set(0, 0.2, 0.055);
+  body.add(stackPort);
+
+  /* ── 압력계 — 바늘이 날갯짓을 따라 떤다 ── */
+  const gauge = new THREE.Group();
+  gauge.position.set(0.075, 0.088, 0.055);
+  gauge.rotation.set(-0.5, 0.5, 0);
+  const dial = new THREE.Mesh(new THREE.CylinderGeometry(0.046, 0.046, 0.016, 22), metalMat);
+  dial.geometry.rotateX(Math.PI / 2);
+  gauge.add(dial);
+  const face = new THREE.Mesh(new THREE.CylinderGeometry(0.036, 0.036, 0.004, 22), darkMat);
+  face.geometry.rotateX(Math.PI / 2);
+  face.position.z = 0.009;
+  gauge.add(face);
+  const needle = new THREE.Mesh(new THREE.BoxGeometry(0.005, 0.03, 0.003), glowMat);
+  needle.geometry.translate(0, 0.013, 0);
+  needle.position.z = 0.013;
+  gauge.add(needle);
+  body.add(gauge);
+
+  /* ── 배 — 겹친 갑주판 사이로 불씨가 보인다 ── */
+  const abdomen = new THREE.Group();
+  // 갑주판은 뚜껑이 없는 껍질이라 양면으로 그려야 한다. 공용 재질을 건드리지 않게 따로 뜬다.
+  const shellMats = [metalMat.clone(), darkMat.clone()];
+  shellMats.forEach((m, i) => { m.side = THREE.DoubleSide; m.userData.roughK = i ? 4.2 : 5.2; });
+  const SEG = 6;
+  for (let i = 0; i < SEG; i++) {
+    const t = i / (SEG - 1);
+    const r = lerp(0.088, 0.03, Math.pow(t, 0.9));
+    const shell = new THREE.Mesh(
+      new THREE.CylinderGeometry(r, r * 0.88, 0.085, 18, 1, true, -Math.PI * 0.66, Math.PI * 1.32),
+      shellMats[i % 2],
+    );
+    shell.geometry.rotateX(Math.PI / 2);
+    shell.position.z = -0.2 - i * 0.062;
+    shell.userData.base = shell.position.z;
+    abdomen.add(shell);
+  }
+  const ember = new THREE.Mesh(new THREE.CylinderGeometry(0.036, 0.016, 0.44, 14), glowMat);
+  ember.geometry.rotateX(Math.PI / 2);
+  ember.position.z = -0.38;
+  abdomen.add(ember);
+  const coreLight = new THREE.PointLight(new THREE.Color(preset.core), 0.35, 1.8, 2);
+  coreLight.position.set(0, 0, -0.34);
+  abdomen.add(coreLight);
+  body.add(abdomen);
+
+  /* ── 머리 — 등燈 하나와 태엽 더듬이 ── */
+  const head = new THREE.Group();
+  head.position.set(0, 0.01, 0.2);
+  const lantern = new THREE.Mesh(new THREE.CylinderGeometry(0.056, 0.064, 0.1, 8), metalMat);
+  lantern.geometry.rotateX(Math.PI / 2);
+  head.add(lantern);
+  const lens = new THREE.Mesh(new THREE.CylinderGeometry(0.044, 0.044, 0.014, 20), eyeMat);
+  lens.geometry.rotateX(Math.PI / 2);
+  lens.position.z = 0.054;
+  head.add(lens);
+  const lampLight = new THREE.PointLight(new THREE.Color(preset.eye), 0.28, 1.4, 2);
+  lampLight.position.set(0, 0, 0.12);
+  head.add(lampLight);
+
+  for (const s of [1, -1]) {                             // 코일 스프링 더듬이
+    const pts = [];
+    for (let i = 0; i <= 46; i++) {
+      const u = i / 46;
+      const coil = u * Math.PI * 5.2;
+      const rad = 0.032 * (1 - u * 0.5);
+      pts.push(new THREE.Vector3(
+        s * (0.028 + u * 0.2) + Math.cos(coil) * rad * 0.55,
+        0.05 + u * 0.28 + Math.sin(coil) * rad,
+        0.02 + u * 0.2,
+      ));
+    }
+    head.add(new THREE.Mesh(taperedTube(new THREE.CatmullRomCurve3(pts), 0.0075, 0.004, 90, 6), metalMat));
+    const knob = new THREE.Mesh(new THREE.SphereGeometry(0.015, 12, 8), glowMat);
+    knob.position.copy(pts[pts.length - 1]);
+    head.add(knob);
+  }
+  body.add(head);
+
+  /* ── 다리 — 각진 버팀대 (관의 단면을 사각형으로 뽑는다) ── */
+  for (const s of [1, -1]) {
+    for (let i = 0; i < 3; i++) {
+      const z = 0.08 - i * 0.085;
+      const a = new THREE.CatmullRomCurve3([
+        new THREE.Vector3(s * 0.07, -0.07, z),
+        new THREE.Vector3(s * 0.13, -0.13, z + 0.01),
+        new THREE.Vector3(s * 0.16, -0.17, z + 0.03),
+      ]);
+      const b = new THREE.CatmullRomCurve3([
+        new THREE.Vector3(s * 0.16, -0.17, z + 0.03),
+        new THREE.Vector3(s * 0.175, -0.23, z - 0.01),
+        new THREE.Vector3(s * 0.15, -0.27, z - 0.06),
+      ]);
+      body.add(new THREE.Mesh(taperedTube(a, 0.016, 0.011, 12, 4), metalMat));
+      body.add(new THREE.Mesh(taperedTube(b, 0.011, 0.005, 12, 4), darkMat));
+      const joint = new THREE.Mesh(new THREE.SphereGeometry(0.015, 10, 8), darkMat);
+      joint.position.copy(a.getPoint(1));
+      body.add(joint);
+    }
+  }
+
+  /* ── 부채 날개 ── */
+  const N = 11, LMAX = 1.24, A0 = 0.72, A1 = -0.9;      // 활짝 폈을 때 첫 살과 끝 살의 각
+  const MID = (A0 + A1) / 2;
+  const fans = [];
+  const wings = [];
+  const plateGeoms = [];
+  for (let i = 0; i < N; i++) {
+    const t = i / (N - 1);
+    const L = LMAX * (0.66 + 0.34 * Math.pow(Math.sin(Math.PI * clamp(t * 1.02, 0, 1)), 0.5));
+    const w1 = 0.225 - Math.abs(t - 0.5) * 0.07;
+    plateGeoms.push({ ...fanPlate(L, 0.08, w1, 0.009), L });
+  }
+
+  for (const side of [1, -1]) {
+    const fanRoot = new THREE.Group();
+    fanRoot.position.set(side * 0.075, 0.03, 0.03);
+    const mirror = new THREE.Group();
+    mirror.rotation.y = side === 1 ? 0 : Math.PI;
+    fanRoot.add(mirror);
+    const plane = new THREE.Group();
+    plane.rotation.x = Math.PI / 2;                      // 날개 면을 몸의 XZ 평면에 눕힌다
+    mirror.add(plane);
+
+    const hub = new THREE.Mesh(new THREE.CylinderGeometry(0.052, 0.052, 0.1, 20), metalMat);
+    hub.geometry.rotateX(Math.PI / 2);
+    plane.add(hub);
+    const hubRing = new THREE.Mesh(new THREE.TorusGeometry(0.058, 0.009, 8, 22), darkMat);
+    plane.add(hubRing);
+    const bolt = new THREE.Mesh(new THREE.CylinderGeometry(0.018, 0.018, 0.12, 6), metalMat);
+    bolt.geometry.rotateX(Math.PI / 2);
+    plane.add(bolt);
+
+    const rail = new THREE.Mesh(                          // 살이 지나가는 안내 레일
+      new THREE.TorusGeometry(LMAX * 0.36, 0.011, 7, 44, A0 - A1), metalMat);
+    rail.rotation.z = A1;
+    rail.position.z = -0.055;
+    plane.add(rail);
+
+    const plates = [];
+    for (let i = 0; i < N; i++) {
+      const t = i / (N - 1);
+      const pivot = new THREE.Group();
+      pivot.position.z = (i - (N - 1) / 2) * 0.0075;     // 부채처럼 층층이 포갠다
+      const spin = new THREE.Group();
+      pivot.add(spin);
+      plane.add(pivot);
+      const pg = plateGeoms[i];
+      spin.add(new THREE.Mesh(pg.geom, i % 2 ? darkMat : metalMat));
+      const pane = new THREE.Mesh(
+        new THREE.ExtrudeGeometry(new THREE.Shape(slotPath(pg.win.x0, pg.win.x1, pg.win.hw).getPoints(26)),
+          { depth: 0.005, bevelEnabled: false }), paneMat);
+      pane.geometry.translate(0, 0, -0.0025);
+      pane.renderOrder = 2;
+      spin.add(pane);
+      const stud = new THREE.Mesh(new THREE.SphereGeometry(0.011, 8, 6), metalMat);
+      stud.position.set(0.03, 0, 0.008);
+      spin.add(stud);
+      spin.userData.warp = (t - 0.5) * 0.3;              // 끝 살일수록 더 비틀린 자세
+      plates.push({ pivot, spin, base: lerp(A0, A1, t), t, warp: spin.userData.warp });
+    }
+
+    const tip = new THREE.Object3D();                     // 불티가 태어나는 자리
+    tip.position.set(plateGeoms[Math.round(N * 0.45)].L * 0.96, 0, 0);
+    plates[Math.round(N * 0.45)].spin.add(tip);
+
+    body.add(fanRoot);
+    fans.push({ side, fanRoot, plates });
+    wings.push({ side, kind: 'fore', tip });
+  }
+
+  /* ── 태엽 열 — 보일러 옆구리에 드러나 있다 ── */
+  const gears = [];
+  for (const s of [1, -1]) {
+    const g1 = new THREE.Mesh(gearGeometry({ r: 0.072, teeth: 18, tooth: 0.018, thick: 0.016, hole: 0.018, spokes: 5 }), gearMat);
+    g1.position.set(s * 0.108, 0.02, -0.1);
+    body.add(g1);
+    gears.push({ mesh: g1, side: s, ratio: 1 });
+
+    const g2 = new THREE.Mesh(gearGeometry({ r: 0.046, teeth: 11, tooth: 0.015, thick: 0.014, hole: 0.013, spokes: 3 }), darkMat);
+    g2.position.set(s * 0.112, 0.12, -0.14);
+    body.add(g2);
+    gears.push({ mesh: g2, side: s, ratio: -1.64 });
+
+    const g3 = new THREE.Mesh(gearGeometry({ r: 0.03, teeth: 8, tooth: 0.012, thick: 0.012, hole: 0.01, spokes: 0 }), gearMat);
+    g3.position.set(s * 0.11, 0.055, -0.185);
+    body.add(g3);
+    gears.push({ mesh: g3, side: s, ratio: 2.4 });
+  }
+
+  /* ── 김 ── */
+  const puffs = buildPuffs(preset, makeSpriteTexture(), 150);
+  root.add(puffs.pts);
+
+  /* ── 움직임 ── */
+  const portV = new THREE.Vector3();
+  let phase = 0, puffAcc = 0;
+
+  function update(dt, t, o) {
+    phase += dt * TAU * 1.78 * o.flapSpeed;              // 유리날개보다 느릿하다
+    const s = Math.sin(phase);
+    const shaped = Math.sign(s) * Math.pow(Math.abs(s), 0.62);
+    const openness = lerp(1, 0.74 + 0.26 * shaped, o.flapAmp);   // 내려칠 때 활짝, 올릴 때 접는다
+
+    for (const f of fans) {
+      f.fanRoot.rotation.z = f.side * (0.1 + shaped * 0.7 * o.flapAmp);
+      f.fanRoot.rotation.y = f.side * Math.cos(phase) * 0.05 * o.flapAmp;
+      for (const p of f.plates) {
+        const lag = p.t * 0.55;                          // 바깥 살이 조금 늦게 따라온다
+        const sp = clamp(openness + Math.cos(phase - lag) * 0.05, 0.34, 1.06);
+        p.pivot.rotation.z = (MID + (p.base - MID) * sp) * f.side;
+        p.spin.rotation.x = (p.warp + Math.cos(phase - lag) * 0.34 * o.flapAmp) * f.side;
+      }
+    }
+
+    body.position.y = Math.cos(phase) * 0.05 * o.flapAmp;
+    body.rotation.x = Math.sin(phase) * 0.06 * o.flapAmp + Math.sin(t * 0.5) * 0.02;
+    head.rotation.y = Math.sin(t * 0.29) * 0.1;
+    head.rotation.x = Math.sin(t * 0.41) * 0.05 - 0.03;
+    abdomen.rotation.x = -Math.sin(phase - 0.7) * 0.09 * o.flapAmp + 0.04;
+    abdomen.children.forEach((m, i) => {
+      if (m.userData.base === undefined) return;
+      m.position.z = m.userData.base + Math.sin(phase * 0.5 - i * 0.5) * 0.006 * o.flapAmp;
+    });
+    needle.rotation.z = -0.9 + Math.abs(shaped) * 1.5 + Math.sin(t * 9) * 0.04;   // 압력 바늘
+    glowMat.emissiveIntensity = 0.42 + Math.abs(shaped) * 0.3 + Math.sin(t * 3.1) * 0.05;
+
+    for (const g of gears) g.mesh.rotation.set(0, g.side * Math.PI / 2, phase * g.ratio * g.side);
+
+    const f = o.flight;
+    root.position.set(Math.sin(t * 0.27) * 0.6 * f, Math.sin(t * 0.64 + 1.1) * 0.15 * f, Math.sin(t * 0.2 + 2) * 0.38 * f);
+    root.rotation.set(Math.sin(t * 0.64) * 0.09 * f, Math.sin(t * 0.27 + 0.5) * 0.5 * f, -Math.sin(t * 0.27) * 0.24 * f);
+    root.updateMatrixWorld(true);
+
+    // 김은 날개를 내려칠 때마다 한 번씩 뿜는다.
+    puffAcc += dt * o.flapSpeed;
+    if (o.sparks && puffAcc > 0.5) {
+      puffAcc = 0;
+      stackPort.getWorldPosition(portV);
+      root.worldToLocal(portV);
+      puffs.emit(portV, 3);
+    }
+    puffs.step(dt);
+  }
+
+  const materials = {
+    metalMat, darkMat, glowMat, eyeMat, gearMat,
+    wings: [{ membraneMats: [paneMat], frameMat: metalMat, jointMat: darkMat }],
+  };
+  function paintExtra(p) {                                // 이 기종에만 있는 것들
+    puffs.mat.uniforms.uColor.value.set(p.mote);
+    lampLight.color.set(p.eye);
+    shellMats[0].color.set(p.metal); shellMats[0].roughness = clamp(p.metalRough * 5.2, 0.03, 0.92);
+    shellMats[1].color.set(p.frame); shellMats[1].roughness = clamp(p.frameRough * 4.2, 0.03, 0.92);
+  }
+  return { root, body, wings, update, materials, coreLight, paintExtra, setPhase(v) { phase = v; } };
+}
+
+/* 두 기종. 같은 프롬프트에 대한 서로 다른 답이다. */
+export const MODELS = {
+  glass: { label: '유리날개', note: '막과 무지갯빛', build: buildButterfly },
+  fan: { label: '황동 부채살', note: '살과 리벳', build: buildFanButterfly },
+};
 
 /* ══════════════════════════════════════════════════════════════
    배경 · 빛가루
@@ -1054,6 +1439,71 @@ function buildSparks(preset, sprite, count) {
       pos[i * 3 + 1] += vel[i * 3 + 1] * dt;
       pos[i * 3 + 2] += vel[i * 3 + 2] * dt;
       vel[i * 3 + 1] += dt * 0.02;              // 서서히 떠오르며 흩어진다
+    }
+    g.attributes.position.needsUpdate = true;
+    g.attributes.aLife.needsUpdate = true;
+  }
+  return { pts, mat, emit, step };
+}
+
+/* 굴뚝에서 오르는 김. 천천히 떠오르며 부풀고 흐려진다. */
+function buildPuffs(preset, sprite, count) {
+  const pos = new Float32Array(count * 3), life = new Float32Array(count), size = new Float32Array(count);
+  const vel = new Float32Array(count * 3);
+  const g = new THREE.BufferGeometry();
+  g.setAttribute('position', new THREE.BufferAttribute(pos, 3).setUsage(THREE.DynamicDrawUsage));
+  g.setAttribute('aLife', new THREE.BufferAttribute(life, 1).setUsage(THREE.DynamicDrawUsage));
+  g.setAttribute('aSize', new THREE.BufferAttribute(size, 1));
+  const mat = new THREE.ShaderMaterial({
+    uniforms: { uMap: { value: sprite }, uColor: { value: new THREE.Color(preset.mote) }, uScale: { value: 300 } },
+    vertexShader: /* glsl */`
+      attribute float aLife, aSize;
+      uniform float uScale;
+      varying float vL;
+      void main(){
+        vL = aLife;
+        vec4 mv = modelViewMatrix * vec4(position, 1.0);
+        gl_PointSize = clamp(aSize * (1.9 - vL) * uScale / max(0.2, -mv.z), 1.0, 240.0);
+        gl_Position = projectionMatrix * mv;
+      }`,
+    fragmentShader: /* glsl */`
+      uniform sampler2D uMap; uniform vec3 uColor;
+      varying float vL;
+      void main(){
+        if (vL <= 0.0) discard;
+        vec4 t = texture2D(uMap, gl_PointCoord);
+        float a = t.a * smoothstep(0.0, 0.3, vL) * vL * 0.28;
+        gl_FragColor = vec4(uColor * a, a);
+      }`,
+    transparent: true, depthWrite: false, blending: THREE.NormalBlending,
+  });
+  const pts = new THREE.Points(g, mat);
+  pts.frustumCulled = false;
+  let cursor = 0;
+  const rand = rng(515);
+
+  function emit(p, n) {
+    for (let k = 0; k < n; k++) {
+      const i = cursor = (cursor + 1) % count;
+      pos[i * 3] = p.x + (rand() - 0.5) * 0.04;
+      pos[i * 3 + 1] = p.y + (rand() - 0.5) * 0.02;
+      pos[i * 3 + 2] = p.z + (rand() - 0.5) * 0.04;
+      vel[i * 3] = (rand() - 0.5) * 0.08;
+      vel[i * 3 + 1] = 0.16 + rand() * 0.16;
+      vel[i * 3 + 2] = (rand() - 0.5) * 0.08;
+      life[i] = 1;
+      size[i] = 0.05 + rand() * 0.07;
+    }
+    g.attributes.aSize.needsUpdate = true;
+  }
+  function step(dt) {
+    for (let i = 0; i < count; i++) {
+      if (life[i] <= 0) continue;
+      life[i] = Math.max(0, life[i] - dt * 0.3);
+      pos[i * 3] += vel[i * 3] * dt;
+      pos[i * 3 + 1] += vel[i * 3 + 1] * dt;
+      pos[i * 3 + 2] += vel[i * 3 + 2] * dt;
+      vel[i * 3 + 1] *= 1 - dt * 0.5;            // 올라갈수록 느려진다
     }
     g.attributes.position.needsUpdate = true;
     g.attributes.aLife.needsUpdate = true;
@@ -1284,8 +1734,21 @@ export function createScene(canvas, opts = {}) {
   const sparks = buildSparks(preset, sprite, isMobile ? 220 : 420);
   scene.add(sparks.pts);
 
-  const bf = buildButterfly(preset, wingMaps, metalRough);
-  scene.add(bf.root);
+  let modelKey = opts.model && MODELS[opts.model] ? opts.model : 'glass';
+  const models = {};
+  let bf;
+  function useModel(k) {
+    if (!MODELS[k]) return;
+    if (!models[k]) {                       // 처음 고른 기종만 그때 만든다
+      models[k] = MODELS[k].build(preset, wingMaps, metalRough);
+      scene.add(models[k].root);
+      paintModel(models[k], preset);
+    }
+    for (const key of Object.keys(models)) models[key].root.visible = key === k;
+    modelKey = k;
+    bf = models[k];
+  }
+  useModel(modelKey);
 
   const composer = new Composer(renderer);
 
@@ -1391,27 +1854,35 @@ export function createScene(canvas, opts = {}) {
   }
 
   /* ── 프리셋 갈아 끼우기 (형상은 그대로, 색만 바꾼다) ── */
+  // 금속의 거칠기는 기종마다 다르다. 만들 때 적어 둔 배수를 지켜 준다.
+  function paintMetal(mat, base) { mat.roughness = clamp(base * (mat.userData.roughK ?? 1), 0.03, 0.92); }
+
+  function paintModel(m, p) {
+    const mt = m.materials;
+    mt.metalMat.color.set(p.metal); paintMetal(mt.metalMat, p.metalRough);
+    mt.gearMat.color.set(p.metal); paintMetal(mt.gearMat, p.metalRough);
+    mt.darkMat.color.set(p.frame); paintMetal(mt.darkMat, p.frameRough);
+    mt.glowMat.emissive.set(p.core);
+    mt.eyeMat.emissive.set(p.eye);
+    for (const w of mt.wings) {
+      for (const mm of w.membraneMats) {
+        const k = mm.userData.tint || 1;
+        mm.color.set(p.membrane);
+        mm.emissive.set(p.emissive);
+        mm.iridescenceThicknessRange = [p.iridRange[0] * k, p.iridRange[1] * k];
+        mm.needsUpdate = true;
+      }
+      w.frameMat.color.set(p.metal); paintMetal(w.frameMat, p.metalRough);
+      w.jointMat.color.set(p.frame); paintMetal(w.jointMat, p.frameRough);
+    }
+    m.coreLight.color.set(p.core);
+    if (m.paintExtra) m.paintExtra(p);
+  }
+
   function applyPreset(k) {
     if (!PRESETS[k]) return;
     presetKey = k; preset = PRESETS[k];
-    const m = bf.materials;
-    m.metalMat.color.set(preset.metal); m.metalMat.roughness = preset.metalRough;
-    m.gearMat.color.set(preset.metal); m.gearMat.roughness = preset.metalRough * 1.3;
-    m.darkMat.color.set(preset.frame); m.darkMat.roughness = preset.frameRough;
-    m.glowMat.emissive.set(preset.core);
-    m.eyeMat.emissive.set(preset.eye);
-    for (const w of m.wings) {
-      for (const mm of w.membraneMats) {
-        const k = mm.userData.tint || 1;
-        mm.color.set(preset.membrane);
-        mm.emissive.set(preset.emissive);
-        mm.iridescenceThicknessRange = [preset.iridRange[0] * k, preset.iridRange[1] * k];
-        mm.needsUpdate = true;
-      }
-      w.frameMat.color.set(preset.metal); w.frameMat.roughness = preset.metalRough;
-      w.jointMat.color.set(preset.frame); w.jointMat.roughness = preset.frameRough;
-    }
-    bf.coreLight.color.set(preset.core);
+    for (const key of Object.keys(models)) paintModel(models[key], preset);
     backdrop.mat.uniforms.uTop.value.set(preset.bgTop);
     backdrop.mat.uniforms.uBot.value.set(preset.bgBot);
     backdrop.mat.uniforms.uHalo.value.set(preset.halo);
@@ -1508,8 +1979,11 @@ export function createScene(canvas, opts = {}) {
   return {
     state,
     presets: PRESETS,
+    models: MODELS,
     get preset() { return presetKey; },
+    get model() { return modelKey; },
     setPreset: applyPreset,
+    setModel: useModel,
     setQuality,
     set(k, v) { state[k] = v; },
     resetView() { want.theta = 0.72; want.phi = 1.16; want.dist = fitDist(); zoomed = false; },

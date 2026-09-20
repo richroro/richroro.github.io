@@ -79,6 +79,7 @@
     color:var(--dim);font-size:11.5px;font-weight:700;font-family:inherit;cursor:pointer;transition:.15s;text-align:center}
   .chip:hover{background:rgba(255,255,255,.09);color:var(--ink)}
   .chip.on{background:rgba(246,205,131,.14);border-color:rgba(246,205,131,.55);color:var(--gold)}
+  .chip small{display:block;font-size:10px;font-weight:600;opacity:.6;margin-top:2px;letter-spacing:0}
   input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:22px;background:transparent;cursor:pointer}
   input[type=range]::-webkit-slider-runnable-track{height:3px;border-radius:3px;background:rgba(255,255,255,.18)}
   input[type=range]::-moz-range-track{height:3px;border-radius:3px;background:rgba(255,255,255,.18)}
@@ -161,6 +162,10 @@
   <div class="head" id="panelHead"><b>조작</b><span class="fold">▾</span></div>
   <div class="body">
     <div class="grp">
+      <label>기종</label>
+      <div class="chips" id="models"></div>
+    </div>
+    <div class="grp">
       <label>색</label>
       <div class="chips" id="chips"></div>
     </div>
@@ -191,7 +196,14 @@
     <p>“three.js 로 아름다운 기계 나비 만들기” 한 줄에서 시작했습니다.
        모델링 파일도, 텍스처 이미지도 쓰지 않습니다. 아래 것들이 전부 페이지가 열릴 때 계산돼 만들어집니다.</p>
 
-    <h3>형상</h3>
+    <h3>두 기종</h3>
+    <ul>
+      <li><b>유리날개</b>막을 판으로 나눠 붙인 날개. 박막 간섭으로 칸칸이 색이 갈립니다.</li>
+      <li><b>황동 부채살</b>막 대신 부챗살 열한 개. 내려칠 때 활짝 펴져 바람을 안고 올릴 때 접어서 흘립니다.
+         보일러 가슴의 압력계 바늘이 날갯짓을 따라 떨고, 굴뚝에서 김이 납니다.</li>
+    </ul>
+
+    <h3>형상 — 유리날개</h3>
     <ul>
       <li><b>날개</b>닫힌 스플라인으로 바깥선을 뽑고, 뿌리에서 부챗살처럼 맥을 건 뒤, 맥 사이를 판으로 채워 안쪽으로 줄여 금속 틈을 냅니다. 네 장 모두 각각 다른 형상입니다.</li>
       <li><b>휘어짐</b>판판한 날개를 스팬 방향으로 처지게 하고 끝으로 갈수록 비틀어(워시아웃) 실제 날개의 단면을 흉내 냅니다.</li>
@@ -237,16 +249,21 @@
 <div id="toast"></div>
 
 <script type="module">
-import { createScene, PRESETS } from './assets/butterfly.js';
+import { createScene, PRESETS, MODELS } from './assets/butterfly.js';
 
 const $ = (s) => document.querySelector(s);
 const canvas = $('#c');
 const boot = $('#boot');
 
-let app = null;
-try { app = createScene(canvas, { preset: 'gold' }); } catch (e) { console.error(e); }
+let app = null, bootErr = null;
+try { app = createScene(canvas, { preset: 'gold' }); } catch (e) { bootErr = e; console.error(e); }
 
 if (!app) {
+  // WebGL2 가 없어서인지, 코드가 터져서인지 구분해서 알려 준다.
+  const hasGL2 = (() => { try { return !!document.createElement('canvas').getContext('webgl2'); } catch (e) { return false; } })();
+  if (hasGL2 && bootErr) {
+    $('#nogl').innerHTML = '<b>장면을 시작하지 못했습니다</b>브라우저 콘솔에 오류가 찍혀 있습니다.<br>새로고침해도 같다면 알려 주세요.';
+  }
   $('#bootIn').style.display = 'none';
   $('#nogl').style.display = 'block';
   document.querySelectorAll('.ui').forEach((el) => el.remove());
@@ -256,6 +273,20 @@ if (!app) {
     boot.classList.add('gone');
     setTimeout(() => boot.remove(), 600);
   }));
+
+  /* ── 기종 ── */
+  const models = $('#models');
+  Object.entries(MODELS).forEach(([k, m]) => {
+    const b = document.createElement('button');
+    b.className = 'chip' + (k === app.model ? ' on' : '');
+    b.innerHTML = `${m.label}<small>${m.note}</small>`;
+    b.dataset.k = k;
+    b.addEventListener('click', () => {
+      app.setModel(k);
+      models.querySelectorAll('.chip').forEach((c) => c.classList.toggle('on', c.dataset.k === k));
+    });
+    models.appendChild(b);
+  });
 
   /* ── 색 프리셋 ── */
   const chips = $('#chips');
