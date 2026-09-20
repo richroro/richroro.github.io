@@ -69,11 +69,12 @@ function showTip(tip, wrap, html, x, y) {
   tip.style.left = Math.max(half + 4, Math.min(x, maxL - half)) + "px";
   tip.style.top = y + "px";
 }
-function fmtB(v) { return "$" + (Math.abs(v) >= 100 ? v.toFixed(0) : v.toFixed(2)) + "B"; }
+let CUR = "$";
+function fmtB(v) { return CUR + (Math.abs(v) >= 100 ? v.toFixed(0) : v.toFixed(2)) + "B"; }
 
 /* ---------------------------- 매출 구성 가로막대 ---------------------------- */
 function drawMix() {
-  const svg = $("figMix"); if (!svg) return;
+  const svg = $("figMix"); if (!svg || !CO.mix) return;
   const wrap = svg.parentElement, tip = $("tipMix");
   const rows = CO.mix.rows, total = CO.mix.total;
   const W = Math.max(280, wrap.clientWidth || 320);
@@ -113,9 +114,17 @@ function drawMix() {
 function drawAll() { drawMix(); }
 
 /* ---------------------------- 페이지 렌더 ---------------------------- */
+function navList() {
+  // 종목 페이지는 registry.js 를 먼저 불러 같은 그룹의 동료를 내비에 띄웁니다.
+  if (typeof REGISTRY !== "undefined" && typeof CO !== "undefined" && CO.group) {
+    const peers = REGISTRY.filter((x) => x.group === CO.group);
+    if (peers.length) return peers;
+  }
+  return M7;
+}
 function navHtml(cur) {
-  return M7.map((c) => {
-    const href = c.href || ("/m7/" + c.slug + "/");
+  return navList().map((c) => {
+    const href = c.href || ((c.base || "/m7/") + c.slug + "/");
     const on = c.slug === cur ? ' aria-current="page"' : "";
     return '<a class="m7card" href="' + href + '"' + on + '><div class="tp"><span class="dot" style="background:' +
       c.c + '">' + c.ab + '</span><span><b>' + c.ko + "</b><small>" + c.tk + "</small></span></div>" +
@@ -178,16 +187,17 @@ function render() {
   document.title = CO.ko + " 지표 · 매출 구성과 한국 공급망 | M7";
   document.body.innerHTML =
 '<header><div class="wrap hbar">' +
-  '<a class="brand" href="/m7/"><span class="mk">M7</span><span><b>' + esc(CO.ko) + ' 지표</b>' +
+  '<a class="brand" href="' + (CO.hubHref || "/m7/") + '"><span class="mk">' + esc(CO.hubMark || "M7") + '</span><span><b>' + esc(CO.ko) + ' 지표</b>' +
   '<small>매출 구성 · 마진 · 한국 공급망</small></span></a>' +
   '<div class="hactions"><button class="ghost" id="themeBtn" type="button" aria-label="화면 테마 전환">' +
   '<span id="themeIco">◐</span><span id="themeTxt">테마</span></button></div>' +
 '</div></header>' +
 
 '<nav class="snav" aria-label="섹션 바로가기"><div class="wrap snav-in">' +
-  '<a href="#top">개요 · 최근 분기</a><a href="#mix">매출 구성</a><a href="#signature">' + esc(CO.signature.nav) + '</a>' +
+  '<a href="#top">개요 · 최근 분기</a>' + (CO.mix ? '<a href="#mix">' + esc(CO.mix.nav || "매출 구성") + '</a>' : '') +
+  '<a href="#signature">' + esc(CO.signature.nav) + '</a>' +
   '<a href="#korea">한국 공급망</a><a href="#watch">체크포인트</a><a href="#sources">출처</a>' +
-  '<a href="/m7/">← M7 전체</a>' +
+  '<a href="' + (CO.hubHref || "/m7/") + '">← ' + (CO.hubName || "M7 전체") + '</a>' +
 '</div></nav>' +
 
 '<main><section id="top" style="padding-top:24px"><div class="wrap">' +
@@ -203,11 +213,11 @@ function render() {
     '<div class="note mt12"><span class="ic">🆕</span><div>' + CO.recent.note + '</div></div></div>' : '') +
 '</div></section>' +
 
-'<section id="mix"><div class="wrap">' +
+(CO.mix ? '<section id="mix"><div class="wrap">' +
   '<p class="eyebrow">01 · Revenue mix</p><h2 class="title">' + CO.mix.title + '</h2>' +
   '<p class="lead">' + CO.mix.lead + '</p>' +
   '<div class="card pad mt16"><div class="chart-head"><div><div class="ct">' + esc(CO.mix.chartTitle) +
-    '</div><div class="cs">단위: 10억 달러 · 괄호는 전년 대비</div></div>' +
+    '</div><div class="cs">' + esc(CO.mix.unit || "단위: 10억 달러 · 괄호는 전년 대비") + '</div></div>' +
     '<div class="seg" role="group" aria-label="보기 전환">' +
     '<button type="button" data-view="chart" aria-pressed="true">차트</button>' +
     '<button type="button" data-view="table" aria-pressed="false">표</button></div></div>' +
@@ -216,7 +226,7 @@ function render() {
     '<div class="tscroll mt12" id="tblMix" hidden>' + mixTableHtml() + '</div>' +
     '<div class="note mt12"><span class="ic">🔎</span><div>' + CO.mix.note + '</div></div>' +
   '</div>' +
-'</div></section>' +
+'</div></section>' : '') +
 
 '<section id="signature"><div class="wrap">' +
   '<p class="eyebrow">02 · ' + esc(CO.signature.eyebrow) + '</p>' +
@@ -235,6 +245,7 @@ function render() {
 '<section id="korea"><div class="wrap">' +
   '<p class="eyebrow">03 · Korea</p><h2 class="title">' + CO.korea.title + '</h2>' +
   '<p class="lead">' + CO.korea.lead + '</p>' +
+  (CO.korea.kind ? '<span class="fybadge mt12" style="margin-top:12px">한국 기업과의 관계 · ' + esc(CO.korea.kind) + '</span>' : '') +
   '<div class="krlegend mt12"><span class="sw"></span>표시된 곳이 한국 기업입니다</div>' +
   '<div class="mt16">' + lanesHtml(CO.korea.lanes) + '</div>' +
   '<div class="note mt12"><span class="ic">⚠️</span><div>공급 관계는 바뀌고, 비중이 공개되지 않는 경우도 많습니다. ' +
@@ -255,7 +266,7 @@ function render() {
 '</div></section>' +
 
 '<section style="padding-top:8px"><div class="wrap"><p class="eyebrow">M7</p>' +
-  '<h2 class="title">다른 회사</h2><div class="m7nav mt16">' + navHtml(CO.slug) + '</div></div></section>' +
+  '<h2 class="title">' + esc(CO.peersTitle || "다른 회사") + '</h2><div class="m7nav mt16">' + navHtml(CO.slug) + '</div></div></section>' +
 '</main>' +
 
 '<footer><div class="wrap"><div class="fgrid">' +
@@ -270,6 +281,7 @@ function render() {
 '</div><p class="disc">이 페이지는 투자 권유가 아닙니다. 실적과 공급 관계는 바뀌고 오류가 있을 수 있으니 ' +
   '투자 전에 각 사 공시를 확인하세요. 판단과 책임은 이용자 본인에게 있습니다.</p></div></footer>';
 
+  CUR = CO.cur || "$";
   initTheme();
   drawAll();
   document.querySelectorAll(".seg button").forEach((b) => {

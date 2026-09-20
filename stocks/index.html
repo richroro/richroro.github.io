@@ -1,0 +1,246 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>종목 노트 · 미국 주요 종목 매출 구성과 한국과의 관계</title>
+<meta name="description" content="서학개미가 많이 보는 미국 종목을 같은 틀로 정리했습니다. 매출·영업이익률·최대 부문 비중을 한 표에서 정렬하고, 각 회사가 한국 기업과 공급·경쟁·고객 중 어떤 관계인지 표시했습니다.">
+<link rel="canonical" href="https://richroro.github.io/stocks/">
+<meta property="og:type" content="website"><meta property="og:locale" content="ko_KR">
+<meta property="og:site_name" content="Cadence">
+<meta property="og:url" content="https://richroro.github.io/stocks/">
+<meta property="og:title" content="종목 노트 — 미국 주요 종목 스크리너">
+<meta property="og:description" content="매출·마진을 한 표에서 정렬하고, 한국 기업과 공급·경쟁·고객 중 어떤 관계인지 표시했습니다.">
+<meta name="twitter:card" content="summary">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%2314161C'/><path d='M22 70V46h12v24zm22 0V30h12v40zm22 0V54h12v16z' fill='white'/></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans+KR:wght@300;400;500;600;700&display=swap">
+<link rel="stylesheet" href="/m7/assets/m7.css">
+<style>
+.filt{display:flex;flex-wrap:wrap;gap:6px}
+.filt button{background:var(--surface);border:1px solid var(--line);color:var(--ink-2);border-radius:999px;
+  padding:6px 13px;font:inherit;font-size:13px;font-weight:500;cursor:pointer;transition:.15s}
+.filt button:hover{border-color:var(--ink-3);color:var(--ink)}
+.filt button[aria-pressed="true"]{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+.krtag{display:inline-block;font-size:11px;font-weight:600;border-radius:6px;padding:2px 7px;
+  font-family:"IBM Plex Sans KR",sans-serif}
+.krtag.공급{background:var(--up-wash);color:var(--up)}
+.krtag.고객{background:var(--down-wash);color:var(--down)}
+.krtag.경쟁{background:color-mix(in srgb,var(--s2) 16%,transparent);color:var(--s2)}
+.krtag.간접{background:var(--surface-2);color:var(--ink-3)}
+</style>
+</head>
+<body>
+<header><div class="wrap hbar">
+  <a class="brand" href="/stocks/"><span class="mk">종목</span>
+    <span><b>종목 노트</b><small>매출 구성 · 마진 · 한국과의 관계</small></span></a>
+  <div class="hactions"><button class="ghost" id="themeBtn" type="button" aria-label="화면 테마 전환">
+    <span id="themeIco">◐</span><span id="themeTxt">테마</span></button></div>
+</div></header>
+
+<nav class="snav" aria-label="섹션 바로가기"><div class="wrap snav-in">
+  <a href="#screener">스크리너</a><a href="#margin">영업이익률</a>
+  <a href="#korea">한국과의 관계</a><a href="/m7/">M7 허브</a>
+</div></nav>
+
+<main>
+<section id="screener" style="padding-top:26px">
+  <div class="wrap">
+    <p class="eyebrow">Screener</p>
+    <h2 class="title">한 표에서 정렬해 보기</h2>
+    <p class="lead">서학개미가 많이 보는 종목을 같은 틀로 정리했습니다. 열 제목을 누르면 정렬되고,
+      아래 칩으로 분야를 걸러 볼 수 있습니다. <b>검증된 수치가 있는 회사만 싣습니다</b> — 빈칸은 회사가 그 값을 공개하지 않거나 확인하지 못한 것입니다.</p>
+    <div class="filt mt16" id="filters"></div>
+    <div class="card mt12">
+      <div class="tscroll">
+        <table id="tbl">
+          <thead><tr>
+            <th class="sortable" data-k="ko" data-t="s">회사</th>
+            <th class="sortable" data-k="sector" data-t="s">분야</th>
+            <th>회계연도</th>
+            <th class="sortable" data-k="rev" data-t="n" aria-sort="descending">매출</th>
+            <th class="sortable" data-k="om" data-t="n">영업이익률</th>
+            <th class="sortable" data-k="topShare" data-t="n">최대 부문 비중</th>
+            <th class="sortable" data-k="kr" data-t="s">한국과의 관계</th>
+          </tr></thead>
+          <tbody id="rows"></tbody>
+        </table>
+      </div>
+    </div>
+    <div class="note mt12"><span class="ic">📏</span><div><b>영업이익률과 최대 부문 비중은 계산한 값입니다.</b>
+      매출과 영업이익, 부문 금액에서 직접 나눴습니다 — 하드코딩하지 않았습니다.
+      회계연도가 회사마다 달라 완전히 같은 기간이 아니라는 점은 <a href="/m7/#fy" style="border-bottom:1px solid var(--line)">M7 허브의 회계연도 표</a>에 정리해 뒀습니다.</div></div>
+    <div class="note warn mt12"><span class="ic">💶</span><div>ASML 금액만 <b>유로(€)</b>입니다. 네덜란드 회사라 유로로 공시합니다 —
+      달러 종목과 매출을 직접 비교하면 안 됩니다. 표에서 통화 기호로 구분했습니다.</div></div>
+  </div>
+</section>
+
+<section id="margin">
+  <div class="wrap">
+    <p class="eyebrow">Margin</p>
+    <h2 class="title">영업이익률로 줄 세우면</h2>
+    <p class="lead">같은 '기술주'로 묶이지만 돈을 남기는 정도는 전혀 다릅니다.</p>
+    <div class="card pad mt16">
+      <div class="chart-head"><div>
+        <div class="ct">회사별 영업이익률</div>
+        <div class="cs">영업이익 ÷ 매출 · 공개하지 않는 회사는 빠집니다</div>
+      </div></div>
+      <div class="figwrap" id="wrapOm">
+        <svg class="fig" id="figOm" role="img" aria-label="회사별 영업이익률 막대그래프"></svg>
+        <div class="tip" id="tipOm"></div>
+      </div>
+      <div class="note mt12" id="omNote"></div>
+    </div>
+  </div>
+</section>
+
+<section id="korea" style="padding-bottom:10px">
+  <div class="wrap">
+    <p class="eyebrow">Korea</p>
+    <h2 class="title">한국 기업과 어떤 관계인가</h2>
+    <p class="lead">한국 투자자에게는 이 축이 실용적입니다. 같은 'AI 수혜주'라도 한국 기업이
+      <b>부품을 대는 쪽</b>인지, <b>같은 시장에서 싸우는 쪽</b>인지, <b>돈을 받는 쪽</b>인지에 따라
+      국내 종목과의 연동 방향이 달라집니다.</p>
+    <div class="grid2 mt16" id="krCards"></div>
+    <div class="note warn mt16"><span class="ic">⚠️</span><div>이 분류는 <b>관계의 방향</b>을 보여주는 것이지
+      실적 상관관계를 보장하지 않습니다. 특히 '간접'은 계약이 아니라 수요 경로라 연결이 느슨합니다.
+      각 종목 페이지에 어디까지가 공시이고 어디부터가 업계 관측인지 적었습니다. 투자 권유가 아닙니다.</div></div>
+  </div>
+</section>
+</main>
+
+<footer><div class="wrap"><div class="fgrid">
+  <div><h4>이 페이지에 대해</h4><p>미국 주요 종목을 같은 틀로 정리한 노트입니다. 부문 합계가 회사 발표 총매출과
+    맞는지 전부 검산했고, 맞지 않는 경우에는 이유를 각 페이지에 적었습니다. 외부 라이브러리 없이 돌아갑니다.</p></div>
+  <div><h4>같이 만든 것</h4><ul>
+    <li><a href="/m7/">M7 지표 노트</a></li>
+    <li><a href="/tesla-metrics/">테슬라 지표 — 실적·로보택시·공급망</a></li>
+    <li><a href="/tesla/">테슬라 주주 계산기 — 손익·세금</a></li>
+    <li><a href="/china-ev/">중국 전기차 주식 노트</a></li>
+    <li><a href="/">Cadence · 업무 자동화 스튜디오</a></li>
+  </ul></div>
+</div><p class="disc">이 페이지는 투자 권유가 아닙니다. 실적과 공급 관계는 바뀌고 오류가 있을 수 있으니
+  투자 전에 각 사 공시를 확인하세요. 판단과 책임은 이용자 본인에게 있습니다.</p></div></footer>
+
+<script src="/stocks/assets/registry.js"></script>
+<script src="/m7/assets/m7.js"></script>
+<script>
+"use strict";
+const ROWS = REGISTRY.filter((r) => r.data).map((r) => {
+  const d = r.data;
+  return Object.assign({}, r, {
+    rev: d.rev, fy: d.fy, cur: d.cur || "$",
+    om: d.oi == null ? null : (d.oi / d.rev) * 100,
+    topShare: d.top ? (d.top.v / d.top.of) * 100 : null,
+    topK: d.top ? d.top.k : null
+  });
+});
+const SECTORS = ["전체"].concat([...new Set(ROWS.map((r) => r.sector))]);
+let filt = "전체", sortKey = "rev", sortDir = -1;
+
+document.getElementById("filters").innerHTML = SECTORS.map((s) =>
+  '<button type="button" data-s="' + s + '" aria-pressed="' + (s === filt) + '">' + s + "</button>").join("");
+
+function view() {
+  const list = ROWS.filter((r) => filt === "전체" || r.sector === filt);
+  return list.sort((a, b) => {
+    const av = a[sortKey], bv = b[sortKey];
+    if (typeof av === "string") return av.localeCompare(bv, "ko") * sortDir;
+    if (av == null) return 1;
+    if (bv == null) return -1;
+    return (av - bv) * sortDir;
+  });
+}
+function render() {
+  document.getElementById("rows").innerHTML = view().map((r) => {
+    const href = r.href || ((r.base || "/m7/") + r.slug + "/");
+    return "<tr><td class='tx'><div class='co'><span class='av' style='background:" + r.c +
+      ";color:#fff'>" + r.ab + "</span><span><b><a href='" + href +
+      "' style='border-bottom:1px solid var(--line)'>" + r.ko + "</a></b><small>" + r.tk +
+      "</small></span></div></td>" +
+      "<td class='tx'>" + r.sector + "</td><td class='tx'>" + r.fy + "</td>" +
+      "<td>" + r.cur + r.rev.toFixed(1) + "B</td>" +
+      "<td>" + (r.om == null ? "—" : r.om.toFixed(1) + "%") + "</td>" +
+      "<td>" + (r.topShare == null ? "—" : r.topShare.toFixed(1) + "%") + "</td>" +
+      "<td><span class='krtag " + r.kr + "'>" + r.kr + "</span></td></tr>";
+  }).join("");
+  document.querySelectorAll("#tbl th.sortable").forEach((th) =>
+    th.setAttribute("aria-sort", th.dataset.k === sortKey ? (sortDir === -1 ? "descending" : "ascending") : "none"));
+  drawAll();
+}
+document.querySelectorAll("#tbl th.sortable").forEach((th) => {
+  th.addEventListener("click", () => {
+    const k = th.dataset.k;
+    if (k === sortKey) sortDir = -sortDir;
+    else { sortKey = k; sortDir = th.dataset.t === "s" ? 1 : -1; }
+    render();
+  });
+});
+document.getElementById("filters").addEventListener("click", (e) => {
+  const b = e.target.closest("button"); if (!b) return;
+  filt = b.dataset.s;
+  document.querySelectorAll("#filters button").forEach((x) =>
+    x.setAttribute("aria-pressed", String(x.dataset.s === filt)));
+  render();
+});
+
+function drawAll() {
+  const svg = document.getElementById("figOm"), wrap = svg.parentElement, tip = document.getElementById("tipOm");
+  const rows = view().filter((r) => r.om != null).sort((a, b) => b.om - a.om);
+  const W = Math.max(280, wrap.clientWidth || 320), small = W < 560;
+  const L = small ? 92 : 124, R = small ? 58 : 76, T = 6, B = 24;
+  const rowH = small ? 24 : 28, gap = small ? 8 : 10;
+  const H = T + Math.max(1, rows.length) * (rowH + gap) - gap + B;
+  const pw = Math.max(40, W - L - R);
+  const sc = niceScale(Math.max.apply(null, rows.map((r) => r.om).concat([1])), small ? 3 : 5);
+  svg.setAttribute("width", W); svg.setAttribute("height", H);
+  svg.setAttribute("viewBox", "0 0 " + W + " " + H);
+  while (svg.firstChild) svg.removeChild(svg.firstChild);
+  for (let i = 0; i <= sc.ticks; i++) {
+    const x = L + (sc.step * i / sc.max) * pw;
+    svg.appendChild(el("line", { x1: x, x2: x, y1: T, y2: H - B + 3, class: i === 0 ? "baseline" : "gridline" }));
+    svg.appendChild(txt(el("text", { x: x, y: H - B + 16, "text-anchor": "middle", class: "axis" }), sc.step * i));
+  }
+  rows.forEach((r, i) => {
+    const y = T + i * (rowH + gap), w = Math.max(2, (r.om / sc.max) * pw);
+    svg.appendChild(txt(el("text", { x: L - 8, y: y + rowH / 2 + 4, "text-anchor": "end", class: "name" }), r.ko));
+    svg.appendChild(el("rect", { x: L, y: y, width: w, height: rowH, rx: 4 }, "fill:" + r.c));
+    svg.appendChild(txt(el("text", { x: L + w + 7, y: y + rowH / 2 + 4, class: "dlabel" }), r.om.toFixed(1) + "%"));
+    const hit = el("rect", { x: L, y: y - gap / 2, width: pw + R - 8, height: rowH + gap, class: "hit" });
+    hit.addEventListener("mouseenter", () => showTip(tip, wrap,
+      '<div class="th">' + r.ko + " · " + r.fy + "</div>" +
+      '<div class="tr"><span class="nm">매출</span><b>' + r.cur + r.rev.toFixed(1) + "B</b></div>" +
+      '<div class="tr"><span class="nm">영업이익률</span><b>' + r.om.toFixed(1) + "%</b></div>" +
+      '<div class="tr"><span class="nm">한국과의 관계</span><b>' + r.kr + "</b></div>", L + w / 2, y));
+    hit.addEventListener("mouseleave", () => tip.classList.remove("on"));
+    svg.appendChild(hit);
+  });
+  const missing = view().filter((r) => r.om == null).map((r) => r.ko);
+  document.getElementById("omNote").innerHTML = '<span class="ic">ℹ️</span><div>' +
+    (missing.length ? "<b>" + missing.join(" · ") + "</b> 은(는) 확인한 자료에 연간 영업이익이 없어 이 그래프에서 빠졌습니다. " +
+      "각 종목 페이지에는 총마진 등 확인된 지표를 실었습니다." : "이 분야는 모든 회사의 영업이익률을 확인했습니다.");
+}
+
+const KR_DESC = {
+  "공급": ["한국 기업이 부품을 대는 쪽", "이 회사가 잘되면 납품사 실적에 직접 붙습니다. 다만 단가 협상력이 보통 사는 쪽에 있어, 물량만큼 이익이 따라가지 않는 경우가 많습니다."],
+  "경쟁": ["같은 시장에서 싸우는 쪽", "국내 종목과 같은 업황을 탑니다. 분산 효과가 작습니다 — 한쪽이 좋으면 다른 쪽도 보통 좋습니다."],
+  "고객": ["한국 기업이 돈을 내는 쪽", "국내 기업의 설비투자가 이 회사 매출입니다. 한국 증설 사이클을 다른 각도에서 보는 창구입니다."],
+  "간접": ["계약이 아니라 수요 경로", "부품 공급사를 공시하지 않습니다. 설비투자 → AI 서버 → 메모리 수요로 이어지는 간접 연결이라 느슨합니다."]
+};
+document.getElementById("krCards").innerHTML = ["공급", "경쟁", "고객", "간접"].map((k) => {
+  const list = ROWS.filter((r) => r.kr === k);
+  if (!list.length) return "";
+  return '<div class="card pad"><div class="rowsplit"><h3><span class="krtag ' + k + '">' + k + "</span> " +
+    KR_DESC[k][0] + "</h3></div><p class='hint mt8'>" + KR_DESC[k][1] + "</p>" +
+    "<p class='mt12' style='font-size:13.5px;line-height:1.9'>" + list.map((r) =>
+      "<a href='" + (r.href || ((r.base || "/m7/") + r.slug + "/")) +
+      "' style='border-bottom:1px solid var(--line)'>" + r.ko + "</a>").join(" · ") + "</p></div>";
+}).join("");
+
+initTheme();
+render();
+let rt; addEventListener("resize", () => { clearTimeout(rt); rt = setTimeout(drawAll, 140); });
+</script>
+</body>
+</html>

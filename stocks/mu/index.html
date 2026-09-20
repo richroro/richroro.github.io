@@ -1,0 +1,236 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>마이크론 지표 · 매출 구성과 한국과의 관계 | 종목 노트</title>
+<meta name="description" content="FY2025 매출 374억 달러인데 FY2026 3분기 한 분기가 415억. 총마진 22%→40%→85%로 움직인 메모리 사이클과 한국 메모리주와의 관계를 정리했습니다.">
+<link rel="canonical" href="https://richroro.github.io/stocks/mu/">
+<meta property="og:type" content="website"><meta property="og:locale" content="ko_KR">
+<meta property="og:site_name" content="Cadence">
+<meta property="og:url" content="https://richroro.github.io/stocks/mu/">
+<meta property="og:title" content="마이크론 지표 | 종목 노트">
+<meta property="og:description" content="FY2025 매출 374억 달러인데 FY2026 3분기 한 분기가 415억. 총마진 22%→40%→85%로 움직인 메모리 사이클과 한국 메모리주와의 관계를 정리했습니다.">
+<meta name="twitter:card" content="summary">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='#1baf7a'/><text x='50' y='66' font-size='42' text-anchor='middle' fill='white' font-family='monospace' font-weight='bold'>MU</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans+KR:wght@300;400;500;600;700&display=swap">
+<link rel="stylesheet" href="/m7/assets/m7.css">
+</head>
+<body>
+<noscript><div style="padding:24px;font-family:sans-serif"><h1>마이크론 지표</h1><p>FY2025 매출 374억 달러인데 FY2026 3분기 한 분기가 415억. 총마진 22%→40%→85%로 움직인 메모리 사이클과 한국 메모리주와의 관계를 정리했습니다.</p>
+<p>차트를 그리는 데 자바스크립트를 씁니다. <a href="/stocks/">종목 노트 전체</a></p></div></noscript>
+<script src="/stocks/assets/registry.js"></script>
+<script>
+/* 마이크론 (MU) — 이 블록만 고치면 페이지 전체가 따라 바뀝니다.
+   검산: 9.77 ÷ 37.38 = 26.1% / FY26 Q3 41.46 > FY25 연간 37.38 */
+const CO = {
+  "group": "semi",
+  "hubHref": "/stocks/",
+  "hubName": "종목 노트 전체",
+  "hubMark": "종목",
+  "peersTitle": "같은 분야 다른 회사",
+  "asOf": "2026-09-20",
+  "slug": "mu",
+  "tk": "MU",
+  "ko": "마이크론",
+  "en": "Micron Technology",
+  "ab": "MU",
+  "color": "#1baf7a",
+  "fy": {
+    "label": "FY2025 · 2025년 8월 종료",
+    "note": "마이크론 회계연도는 8~9월에 끝납니다. <b>아래 최근 분기는 이미 FY2026 3분기</b>이고, 그 한 분기가 FY2025 연간보다 큽니다."
+  },
+  "headline": "한 분기가 작년 한 해보다 크다",
+  "lead": "FY2025 연간 매출이 374억 달러였습니다. 그런데 FY2026 3분기 <b>한 분기</b> 매출이 <b>415억 달러</b>입니다. 메모리 사이클이 어떤 것인지 보여주는 숫자입니다.",
+  "stats": [
+    {
+      "k": "FY2025 매출",
+      "v": "37.38",
+      "u": "B$",
+      "s": "+49% YoY",
+      "stone": "up"
+    },
+    {
+      "k": "FY2025 영업이익률",
+      "v": "26.1",
+      "u": "%",
+      "s": "영업이익 9.77B$"
+    },
+    {
+      "k": "FY2025 총마진",
+      "v": "40",
+      "u": "%",
+      "s": "FY2024 22%",
+      "stone": "up"
+    },
+    {
+      "k": "FY2026 3분기 매출",
+      "v": "41.46",
+      "u": "B$",
+      "s": "연간보다 큰 한 분기",
+      "stone": "up"
+    }
+  ],
+  "recent": {
+    "title": "FY2026 3분기",
+    "period": "2026년 5월 종료",
+    "stats": [
+      {
+        "k": "분기 매출",
+        "v": "41.46",
+        "u": "B$",
+        "s": "FY2025 연간 37.38 초과",
+        "stone": "up"
+      },
+      {
+        "k": "분기 총마진",
+        "v": "85",
+        "u": "%",
+        "s": "전년 동기 38%",
+        "stone": "up"
+      },
+      {
+        "k": "9개월 매출 증가",
+        "v": "+203",
+        "u": "%",
+        "s": "전년 동기 대비",
+        "stone": "up"
+      },
+      {
+        "k": "9개월 총마진",
+        "v": "77",
+        "u": "%",
+        "s": "전년 동기 38%",
+        "stone": "up"
+      }
+    ],
+    "note": "<b>이 페이지에서 가장 중요한 칸입니다.</b> 총마진이 38% → <b>85%</b>로 갔습니다. D램 평균판매단가가 약 140% 오르고 출하량도 30% 늘어난 결과입니다. 메모리는 원가가 크게 변하지 않는 대신 가격이 몇 배로 움직이는 산업이라, 마진이 이런 식으로 튑니다 — <b>반대 방향으로도 똑같이 움직입니다.</b>"
+  },
+  "signature": {
+    "nav": "사이클",
+    "eyebrow": "Cycle",
+    "title": "마진 22% → 40% → 85%",
+    "lead": "메모리는 성장주가 아니라 사이클 산업입니다. 3년치 총마진을 나란히 놓으면 그게 보입니다.",
+    "split": {
+      "title": "총마진의 이동",
+      "sub": "FY2024 → FY2025 → FY2026 3분기",
+      "parts": [
+        {
+          "k": "FY2024 22%",
+          "v": 22,
+          "color": "--s3",
+          "label": "총마진"
+        },
+        {
+          "k": "FY2025 40%",
+          "v": 40,
+          "color": "--s2",
+          "label": "총마진"
+        },
+        {
+          "k": "FY2026 3Q 85%",
+          "v": 85,
+          "color": "--s1",
+          "label": "총마진"
+        }
+      ],
+      "note": "2026년 캘린더 연도 <b>HBM 공급 물량과 가격을 이미 전량 계약</b>했습니다(HBM4 포함). 사이클의 위쪽 구간에서 물량을 묶어둔 셈인데, 뒤집어 말하면 <b>추가 가격 상승분은 그만큼 못 받는다</b>는 뜻이기도 합니다."
+    },
+    "stats": [
+      {
+        "k": "FY2026 1분기 클라우드 메모리",
+        "v": "5.3",
+        "u": "B$",
+        "s": "+100% YoY",
+        "stone": "up"
+      },
+      {
+        "k": "FY2026 1분기 영업이익률",
+        "v": "47.0",
+        "u": "%",
+        "s": "non-GAAP · 전년 27.5%",
+        "stone": "up"
+      },
+      {
+        "k": "2026년 HBM 공급",
+        "v": "전량",
+        "u": "계약 완료",
+        "s": "가격·물량 확정"
+      }
+    ]
+  },
+  "korea": {
+    "kind": "경쟁 — 같은 사이클",
+    "title": "한국 메모리주와 같은 배를 탄다",
+    "lead": "마이크론은 한국 기업의 공급사도 고객도 아닙니다. <b>같은 시장에서 경쟁하는 3사 중 하나</b>입니다. 그래서 한국 투자자에게는 성격이 다릅니다 — 마이크론을 사는 건 SK하이닉스·삼성전자와 <b>같은 사이클에 베팅</b>하는 것에 가깝습니다.",
+    "lanes": [
+      {
+        "t": "HBM 3사 구도",
+        "d": "AI 메모리를 나눠 갖는 세 회사",
+        "dest": "AI 가속기",
+        "nodes": [
+          {
+            "n": "SK하이닉스",
+            "c": "KR",
+            "kr": true,
+            "d": "HBM 1위. 2026년 매출 점유율 50% 유지 전망, HBM4에서 70%까지 보는 시각도."
+          },
+          {
+            "n": "삼성전자",
+            "c": "KR",
+            "kr": true,
+            "d": "HBM4 세계 최초 양산 출하. 멀티 벤더 전환의 수혜 후보."
+          },
+          {
+            "n": "마이크론",
+            "c": "US",
+            "kr": false,
+            "d": "이 페이지의 회사. 2026년 HBM 물량을 전량 선계약."
+          }
+        ]
+      }
+    ]
+  },
+  "notes": [
+    {
+      "h": "숫자를 볼 때",
+      "items": [
+        "<b style=\"color:var(--ink)\">회계연도가 8~9월에 끝납니다</b> — 'FY2026'이 사실상 2025년 하반기부터입니다.",
+        "<b style=\"color:var(--ink)\">부문 매출을 이 페이지에 담지 않았습니다</b> — D램·낸드 증감률은 공개되지만 절대 금액을 확인하지 못해 비웠습니다.",
+        "<b style=\"color:var(--ink)\">총마진이 핵심 지표입니다</b> — 메모리는 매출보다 마진이 먼저 움직입니다."
+      ]
+    },
+    {
+      "h": "위험 쪽",
+      "items": [
+        "<b style=\"color:var(--ink)\">사이클은 양방향입니다</b> — 22%에서 85%로 간 마진은 같은 속도로 되돌아올 수 있습니다.",
+        "<b style=\"color:var(--ink)\">증설 경쟁</b> — 3사가 동시에 캐파를 늘리면 다음 하강이 깊어집니다.",
+        "<b style=\"color:var(--ink)\">선계약의 양면</b> — 물량을 묶어두면 하락은 막지만 추가 상승도 못 받습니다."
+      ]
+    }
+  ],
+  "sources": [
+    {
+      "i": "매출·영업이익·총마진",
+      "p": "FY2025",
+      "s": "Micron 실적 발표 · 10-K"
+    },
+    {
+      "i": "분기 실적·HBM 계약",
+      "p": "FY2026 1~3분기",
+      "s": "Micron 실적 발표 · 10-Q"
+    },
+    {
+      "i": "HBM 점유율 전망",
+      "p": "2026",
+      "s": "UBS 전망 · 업계 보도"
+    }
+  ],
+  "checksum": "검산 — 영업이익 9.77 ÷ 매출 37.38 = 26.1%로 FY2025 영업이익률이 맞습니다. FY2026 3분기 매출 41.46은 FY2025 연간 37.38보다 크며, 이 대소 관계를 테스트로 고정해 뒀습니다."
+};
+</script>
+<script src="/m7/assets/m7.js"></script>
+</body>
+</html>
