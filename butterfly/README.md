@@ -6,7 +6,7 @@
 
 - 배포: https://richroro.github.io/butterfly/
 - 소스: `index.html`(화면·조작) + `assets/butterfly.js`(장면)
-- 공용: `/assets/scene-kit.js`(환경광·블룸·배경 — 종목 3D 지도와 같이 씁니다) + `/assets/three.min.js`
+- 공용: `/assets/scene-kit.js`(환경광·블룸·배경 — 종목 3D 지도·기계 해마와 같이 씁니다) + `/assets/three.min.js`
 
 ## 두 기종
 
