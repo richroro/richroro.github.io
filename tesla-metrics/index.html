@@ -27,7 +27,7 @@
   --brand:#E82127; --brand-deep:#C81E3A; --brand-wash:#FDECEC;
   --up:#C81E3A; --down:#1257B5; --up-wash:#FCEBEE; --down-wash:#E9F1FD;
   --fill-up:#D92B4A; --fill-down:#1B6BD0;          /* 발산형 차트 채움 (검증됨) */
-  --s1:#2a78d6; --s2:#eb6834; --s3:#1baf7a;
+  --s1:#2a78d6; --s2:#eb6834; --s3:#1baf7a; --s4:#eda100;
   --shadow:0 1px 2px rgba(20,22,28,.05), 0 10px 28px -16px rgba(20,22,28,.22);
   --radius:14px;
 }
@@ -40,7 +40,7 @@
     --brand:#FF4C52; --brand-deep:#FF6B7A; --brand-wash:#2A1A1E;
     --up:#FF6B7A; --down:#77B0F7; --up-wash:#2A1A1E; --down-wash:#141F2E;
     --fill-up:#E34948; --fill-down:#3987e5;
-    --s1:#3987e5; --s2:#d95926; --s3:#199e70;
+    --s1:#3987e5; --s2:#d95926; --s3:#199e70; --s4:#c98500;
     --shadow:0 1px 2px rgba(0,0,0,.4), 0 10px 28px -16px rgba(0,0,0,.7);
   }
 }
@@ -52,7 +52,7 @@
   --brand:#FF4C52; --brand-deep:#FF6B7A; --brand-wash:#2A1A1E;
   --up:#FF6B7A; --down:#77B0F7; --up-wash:#2A1A1E; --down-wash:#141F2E;
   --fill-up:#E34948; --fill-down:#3987e5;
-  --s1:#3987e5; --s2:#d95926; --s3:#199e70;
+  --s1:#3987e5; --s2:#d95926; --s3:#199e70; --s4:#c98500;
   --shadow:0 1px 2px rgba(0,0,0,.4), 0 10px 28px -16px rgba(0,0,0,.7);
 }
 
@@ -115,6 +115,7 @@ p.lead{font-size:14.5px;color:var(--ink-2);font-weight:300;max-width:64ch;line-h
 @media(max-width:719px){.stats.c3 .st:nth-child(3):last-child{grid-column:span 2}}
 .st{background:var(--surface);padding:14px 15px}
 .st .k{font-size:11.5px;color:var(--ink-3);font-weight:400}
+.st .k .ktag{display:inline-block;width:8px;height:8px;border-radius:2px;margin-right:6px;vertical-align:1px}
 .st .v{font-size:20px;font-weight:600;letter-spacing:-.7px;margin-top:3px;white-space:nowrap;
   font-family:"IBM Plex Mono",monospace;font-variant-numeric:tabular-nums;line-height:1.25}
 .st .v .u{font-size:13px;font-weight:500}
@@ -282,7 +283,7 @@ footer a:hover{color:var(--brand-deep);border-color:var(--brand-deep)}
 
 <nav class="snav" aria-label="섹션 바로가기">
   <div class="wrap snav-in">
-    <a href="#profile">회사 개요</a>
+    <a href="#profile">회사 개요·앞으로</a>
     <a href="#latest">최근 분기</a>
     <a href="#trend">매출·마진</a>
     <a href="#segments">사업 부문</a>
@@ -317,6 +318,16 @@ footer a:hover{color:var(--brand-deep);border-color:var(--brand-deep)}
       <div class="rowsplit"><h3>2025년 연간 실적</h3><span class="fybadge">2025년 1월 ~ 12월 · 10-K</span></div>
       <div class="stats c4 mt12" id="fyGrid" role="group" aria-label="2025년 연간 실적"></div>
       <div class="note mt12"><span class="ic">📐</span><div id="fyNote">—</div></div>
+    </div>
+
+    <div class="card pad mt16">
+      <div class="rowsplit"><h3>회사가 밝힌 앞으로의 숫자</h3><span class="fybadge" id="fwBadge">—</span></div>
+      <div class="legend mt8" id="fwLegend"></div>
+      <div class="stats c3 mt12" id="fwGrid" role="group" aria-label="앞으로의 지표"></div>
+      <div class="note warn mt12"><span class="ic">🔭</span><div>세 항목 모두 <b>회사가 직접 말한 숫자</b>입니다 —
+        실적 발표와 공시에서 그대로 가져왔습니다. <b>애널리스트 추정치나 목표주가는 싣지 않았습니다.</b>
+        자본지출은 <a href="#capex">자본지출</a>, 사이버캡은 <a href="#auto">로보택시</a>에서 더 자세히 다룹니다.
+        가이던스는 약속이 아니라 그 시점의 계획이고, 옵티머스 일정은 이미 한 번 미뤄졌습니다.</div></div>
     </div>
   </div>
 </section>
@@ -1115,6 +1126,19 @@ function renderLanes() {
       st("영업이익", f.oi.toFixed(2), "B$", "영업이익률 " + om.toFixed(1) + "%", "") +
       st("순이익", f.ni.toFixed(2), "B$", "순이익률 " + nm.toFixed(1) + "%", "") +
       st("주당순이익", f.eps.toFixed(2), "$", "2024년 " + f.eps2024.toFixed(2) + "$에서 하락", "down");
+    if (e && e.f) {
+      const KIND = { guide:["가이던스","--s1"], backlog:["수주잔고","--s2"],
+                     capex:["자본지출","--s3"], capacity:["생산능력","--s4"], none:["미공개","--ink-3"] };
+      $("fwBadge").textContent = e.f.asOf + " 기준";
+      const kinds = [...new Set(e.f.items.map((i) => i.t))];
+      $("fwLegend").innerHTML = kinds.map((k) =>
+        '<span class="lg"><span class="sw" style="background:var(' + KIND[k][1] + ')"></span>' + KIND[k][0] + "</span>").join("");
+      $("fwGrid").innerHTML = e.f.items.map((it) =>
+        '<div class="st"><div class="k"><span class="ktag" style="background:var(' + KIND[it.t][1] +
+        ')"></span>' + esc(it.k) + '</div><div class="v">' + esc(it.v) +
+        (it.u ? '<span class="u">' + esc(it.u) + "</span>" : "") + "</div>" +
+        '<div class="s">' + esc(it.s) + "</div></div>").join("");
+    }
     $("fyNote").innerHTML = "이 네 칸 중 <b>영업이익률 " + om.toFixed(1) + "%와 순이익률 " + nm.toFixed(1) +
       "%는 계산한 값</b>입니다 — 영업이익·순이익을 매출로 나눴습니다. 2025년 영업이익 " + f.oi.toFixed(2) +
       "B$ 중 <b>" + ((DATA.credits.y2025 / f.oi) * 100).toFixed(0) + "%가 탄소배출권</b>이라는 점은 " +

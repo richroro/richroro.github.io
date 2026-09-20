@@ -7,7 +7,7 @@
   --brand:#E82127; --brand-deep:#C81E3A; --brand-wash:#FDECEC;
   --up:#C81E3A; --down:#1257B5; --up-wash:#FCEBEE; --down-wash:#E9F1FD;
   --fill-up:#D92B4A; --fill-down:#1B6BD0;          /* 발산형 차트 채움 (검증됨) */
-  --s1:#2a78d6; --s2:#eb6834; --s3:#1baf7a;
+  --s1:#2a78d6; --s2:#eb6834; --s3:#1baf7a; --s4:#eda100;
   --shadow:0 1px 2px rgba(20,22,28,.05), 0 10px 28px -16px rgba(20,22,28,.22);
   --radius:14px;
 }
@@ -20,7 +20,7 @@
     --brand:#FF4C52; --brand-deep:#FF6B7A; --brand-wash:#2A1A1E;
     --up:#FF6B7A; --down:#77B0F7; --up-wash:#2A1A1E; --down-wash:#141F2E;
     --fill-up:#E34948; --fill-down:#3987e5;
-    --s1:#3987e5; --s2:#d95926; --s3:#199e70;
+    --s1:#3987e5; --s2:#d95926; --s3:#199e70; --s4:#c98500;
     --shadow:0 1px 2px rgba(0,0,0,.4), 0 10px 28px -16px rgba(0,0,0,.7);
   }
 }
@@ -32,7 +32,7 @@
   --brand:#FF4C52; --brand-deep:#FF6B7A; --brand-wash:#2A1A1E;
   --up:#FF6B7A; --down:#77B0F7; --up-wash:#2A1A1E; --down-wash:#141F2E;
   --fill-up:#E34948; --fill-down:#3987e5;
-  --s1:#3987e5; --s2:#d95926; --s3:#199e70;
+  --s1:#3987e5; --s2:#d95926; --s3:#199e70; --s4:#c98500;
   --shadow:0 1px 2px rgba(0,0,0,.4), 0 10px 28px -16px rgba(0,0,0,.7);
 }
 
@@ -95,6 +95,7 @@ p.lead{font-size:14.5px;color:var(--ink-2);font-weight:300;max-width:64ch;line-h
 @media(max-width:719px){.stats.c3 .st:nth-child(3):last-child{grid-column:span 2}}
 .st{background:var(--surface);padding:14px 15px}
 .st .k{font-size:11.5px;color:var(--ink-3);font-weight:400}
+.st .k .ktag{display:inline-block;width:8px;height:8px;border-radius:2px;margin-right:6px;vertical-align:1px}
 .st .v{font-size:20px;font-weight:600;letter-spacing:-.7px;margin-top:3px;white-space:nowrap;
   font-family:"IBM Plex Mono",monospace;font-variant-numeric:tabular-nums;line-height:1.25}
 .st .v .u{font-size:13px;font-weight:500}

@@ -211,6 +211,45 @@ function peopleHtml() {
       ' <a href="/stocks/#people" style="border-bottom:1px solid var(--line)">다른 회사와 비교</a></div></div></div>';
 }
 
+/* ---------------------------- 앞으로 (회사가 공시한 미래 숫자) ---------------------------- */
+const FKIND = {
+  guide:    { n: "가이던스",   c: "--s1" },
+  backlog:  { n: "수주잔고",   c: "--s2" },
+  capex:    { n: "자본지출",   c: "--s3" },
+  capacity: { n: "생산능력",   c: "--s4" },
+  none:     { n: "미공개",     c: "--ink-3" }
+};
+function forwardHtml() {
+  const e = regEntry();
+  if (!e || !e.f || !e.f.items || !e.f.items.length) return "";
+  const d = e.data, cur = d && d.cur ? d.cur : "$";
+  const tiles = e.f.items.map((it) => {
+    const kind = FKIND[it.t] || FKIND.none;
+    // 전사 기준 잔고만 연매출 대비 배수를 계산합니다. 부문 잔고는 분모가 달라 비교하면 안 됩니다.
+    const mult = (it.rel === "total" && it.n != null && d && d.rev)
+      ? '<div class="s">연매출 ' + cur + d.rev.toFixed(1) + "B의 <b>" + (it.n / d.rev).toFixed(1) + "배</b></div>"
+      : "";
+    return '<div class="st"><div class="k"><span class="ktag" style="background:var(' + kind.c + ')"></span>' +
+      esc(it.k) + '</div><div class="v num">' + esc(it.v) +
+      (it.u ? '<span class="u">' + esc(it.u) + "</span>" : "") + "</div>" +
+      '<div class="s">' + esc(it.s) + "</div>" + mult + "</div>";
+  }).join("");
+  const kinds = [...new Set(e.f.items.map((i) => i.t))];
+  return '<div class="card pad mt16"><div class="rowsplit"><h3>회사가 밝힌 앞으로의 숫자</h3>' +
+    '<span class="fybadge">' + esc(e.f.asOf) + ' 기준</span></div>' +
+    '<div class="legend mt8">' + kinds.map((k) =>
+      '<span class="lg"><span class="sw" style="background:var(' + (FKIND[k] || FKIND.none).c + ')"></span>' +
+      (FKIND[k] || FKIND.none).n + "</span>").join("") + "</div>" +
+    '<div class="stats c3 mt12" role="group" aria-label="앞으로의 지표">' + tiles + "</div>" +
+    '<div class="note warn mt12"><span class="ic">🔭</span><div><b>여기 있는 숫자는 전부 회사가 직접 말한 것입니다</b> — ' +
+      '실적 발표·공시에서 그대로 가져왔습니다. <b>애널리스트 추정치는 한 줄도 싣지 않았습니다.</b> ' +
+      '증권사 목표주가나 컨센서스는 매주 바뀌고 출처마다 달라서, 정적 페이지에 적으면 금방 틀린 값이 됩니다.' +
+      '<br><br>가이던스는 <b>약속이 아니라 현재 시점의 계획</b>입니다. 회사는 분기마다 고칩니다 — ' +
+      '이 목록에도 이미 상향된 값이 섞여 있습니다. 수주잔고는 계약된 금액이지 매출로 확정된 금액이 아니고, ' +
+      '자본지출 계획은 지출이지 수익이 아닙니다. <b>부문 잔고(AWS·클라우드·AI)는 전사 매출과 나누면 안 됩니다</b> — ' +
+      '분모가 다릅니다.</div></div></div>';
+}
+
 /* ---------------------------- 페이지 렌더 ---------------------------- */
 function navList() {
   // 종목 페이지는 registry.js 를 먼저 불러 같은 그룹의 동료를 내비에 띄웁니다.
@@ -282,6 +321,7 @@ function mixTableHtml() {
 }
 
 function render() {
+  const FWD = forwardHtml();   // 세 군데서 쓰므로 한 번만 만듭니다
   document.title = CO.ko + " 지표 · 매출 구성과 한국 공급망 | M7";
   document.body.innerHTML =
 '<header><div class="wrap hbar">' +
@@ -294,7 +334,8 @@ function render() {
 '<nav class="snav" aria-label="섹션 바로가기"><div class="wrap snav-in">' +
   '<a href="#top">개요 · 최근 분기</a>' + (CO.mix ? '<a href="#mix">' + esc(CO.mix.nav || "매출 구성") + '</a>' : '') +
   '<a href="#signature">' + esc(CO.signature.nav) + '</a>' +
-  '<a href="#korea">한국 공급망</a><a href="#watch">체크포인트</a><a href="#sources">출처</a>' +
+  '<a href="#korea">한국 공급망</a>' + (FWD ? '<a href="#forward">앞으로</a>' : '') +
+  '<a href="#watch">체크포인트</a><a href="#sources">출처</a>' +
   '<a href="' + (CO.hubHref || "/m7/") + '">← ' + (CO.hubName || "M7 전체") + '</a>' +
 '</div></nav>' +
 
@@ -352,13 +393,20 @@ function render() {
     '투자 판단 전에 각 사 공시로 확인하세요.</div></div>' +
 '</div></section>' +
 
+(FWD ? '<section id="forward"><div class="wrap">' +
+  '<p class="eyebrow">04 · Forward</p><h2 class="title">앞으로</h2>' +
+  '<p class="lead">지금까지는 이미 일어난 일입니다. 여기서부터는 <b>회사가 앞으로 이렇게 될 것이라고 직접 말한 숫자</b>입니다 — ' +
+  '가이던스, 계약해 둔 잔고, 쓰겠다고 밝힌 돈. 추정이 아니라 공시라서 나중에 맞았는지 틀렸는지 확인할 수 있습니다.</p>' +
+  FWD +
+'</div></section>' : '') +
+
 '<section id="watch"><div class="wrap">' +
-  '<p class="eyebrow">04 · Checkpoints</p><h2 class="title">볼 때 조심할 것</h2>' +
+  '<p class="eyebrow">05 · Checkpoints</p><h2 class="title">볼 때 조심할 것</h2>' +
   '<div class="grid2 mt16">' + notesHtml(CO.notes) + '</div>' +
 '</div></section>' +
 
 '<section id="sources" style="padding-bottom:10px"><div class="wrap">' +
-  '<p class="eyebrow">05 · Sources</p><h2 class="title">데이터 출처</h2>' +
+  '<p class="eyebrow">06 · Sources</p><h2 class="title">데이터 출처</h2>' +
   '<div class="card pad mt16"><div class="tscroll">' + sourcesHtml(CO.sources) + '</div>' +
   '<div class="note mt12"><span class="ic">✅</span><div>' + CO.checksum + '</div></div>' +
   '<div class="note mt12"><span class="ic">🗓️</span><div>지표 기준일 <b>' + esc(CO.asOf) +

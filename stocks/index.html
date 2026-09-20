@@ -29,6 +29,7 @@
 .krtag.고객{background:var(--down-wash);color:var(--down)}
 .krtag.경쟁{background:color-mix(in srgb,var(--s2) 16%,transparent);color:var(--s2)}
 .krtag.간접{background:var(--surface-2);color:var(--ink-3)}
+.ktag{display:inline-block;width:8px;height:8px;border-radius:2px;margin-right:6px;vertical-align:1px}
 </style>
 </head>
 <body>
@@ -41,7 +42,7 @@
 
 <nav class="snav" aria-label="섹션 바로가기"><div class="wrap snav-in">
   <a href="#screener">스크리너</a><a href="#profile">회사 프로필</a><a href="#margin">이익률</a>
-  <a href="#quality">성장×마진</a><a href="#people">1인당 지표</a><a href="#korea">한국과의 관계</a><a href="/m7/">M7 허브</a>
+  <a href="#quality">성장×마진</a><a href="#people">1인당 지표</a><a href="#forward">앞으로</a><a href="#korea">한국과의 관계</a><a href="/m7/">M7 허브</a>
 </div></nav>
 
 <main>
@@ -190,6 +191,31 @@
       <div class="note mt12"><span class="ic">📆</span><div>임직원 수 시점과 매출 회계연도가 정확히 일치하지 않는 회사가 있습니다.
         표에 각각의 기준 시점을 적어 뒀습니다.</div></div>
     </div>
+  </div>
+</section>
+
+<section id="forward">
+  <div class="wrap">
+    <p class="eyebrow">Forward</p>
+    <h2 class="title">회사가 밝힌 앞으로의 숫자</h2>
+    <p class="lead">여기까지가 이미 일어난 일이라면, 이 표는 <b>회사가 직접 앞으로 이렇게 된다고 말한 것</b>입니다.
+      가이던스·수주잔고·자본지출 계획을 실적 발표와 공시에서 그대로 가져왔습니다.
+      <b>애널리스트 추정치와 목표주가는 한 줄도 없습니다.</b></p>
+    <div class="filt mt16" id="fkinds"></div>
+    <div class="card mt12">
+      <div class="tscroll">
+        <table id="ftbl">
+          <thead><tr><th>회사</th><th>종류</th><th>항목</th><th>값</th><th>기준</th><th>내용</th></tr></thead>
+          <tbody id="frows"></tbody>
+        </table>
+      </div>
+    </div>
+    <div class="note mt12" id="fNote"></div>
+    <div class="note warn mt12"><span class="ic">🔭</span><div><b>가이던스는 약속이 아니라 그 시점의 계획입니다.</b>
+      회사는 분기마다 고칩니다 — 이 표에도 이미 한 번 이상 상향된 값이 여럿 섞여 있습니다.
+      <b>수주잔고는 계약 금액이지 확정 매출이 아니고</b>, 자본지출 계획은 나가는 돈이지 들어오는 돈이 아닙니다.
+      그리고 <b>잔고마다 범위가 다릅니다</b> — 마이크로소프트 RPO는 전사, AWS·구글 클라우드·브로드컴은 그 부문만입니다.
+      서로 나란히 놓고 크기를 비교하면 안 됩니다.</div></div>
   </div>
 </section>
 
@@ -525,6 +551,54 @@ document.querySelectorAll("#ptbl th.sortable").forEach((th) => {
     Math.round(Math.max.apply(null, oi) / Math.min.apply(null, oi)) + "배";
 })();
 
+/* --- 앞으로: 회사가 공시한 숫자만 모은 표 --- */
+const FROWS = ROWS.filter((r) => r.f && r.f.items).flatMap((r) =>
+  r.f.items.map((it) => Object.assign({}, it, {
+    ko: r.ko, tk: r.tk, c: r.c, ab: r.ab, slug: r.slug,
+    href: r.href || ((r.base || "/m7/") + r.slug + "/"), asOf: r.f.asOf
+  })));
+const FK = { guide:"가이던스", backlog:"수주잔고", capex:"자본지출", capacity:"생산능력", none:"미공개" };
+const FC = { guide:"--s1", backlog:"--s2", capex:"--s3", capacity:"--s4", none:"--ink-3" };
+let fkind = "전체";
+const FKINDS = ["전체"].concat(["guide", "backlog", "capex", "capacity", "none"]
+  .filter((k) => FROWS.some((r) => r.t === k)));
+document.getElementById("fkinds").innerHTML = FKINDS.map((k) =>
+  '<button type="button" data-k="' + k + '" aria-pressed="' + (k === fkind) + '">' +
+  (k === "전체" ? "전체" : '<span class="ktag" style="background:var(' + FC[k] + ')"></span>' + FK[k]) +
+  "</button>").join("");
+function frender() {
+  const list = FROWS.filter((r) => fkind === "전체" || r.t === fkind);
+  document.getElementById("frows").innerHTML = list.map((r) =>
+    "<tr><td class='tx'><div class='co'><span class='av' style='background:" + r.c +
+    ";color:#fff'>" + r.ab + "</span><span><b><a href='" + r.href +
+    "' style='border-bottom:1px solid var(--line)'>" + r.ko + "</a></b><small>" + r.tk +
+    "</small></span></div></td>" +
+    "<td class='tx'><span class='ktag' style='background:var(" + FC[r.t] + ")'></span>" + FK[r.t] + "</td>" +
+    "<td class='tx'>" + r.k + "</td>" +
+    "<td><b>" + r.v + (r.u ? " " + r.u : "") + "</b></td>" +
+    "<td class='tx'>" + r.p + "</td>" +
+    "<td class='tx' style='white-space:normal;min-width:260px;font-weight:300'>" + r.s + "</td></tr>").join("");
+  document.querySelectorAll("#fkinds button").forEach((b) =>
+    b.setAttribute("aria-pressed", String(b.dataset.k === fkind)));
+}
+document.getElementById("fkinds").addEventListener("click", (e) => {
+  const b = e.target.closest("button"); if (!b) return;
+  fkind = b.dataset.k; frender();
+});
+(function fnote() {
+  const co = new Set(FROWS.map((r) => r.slug));
+  const silent = ROWS.filter((r) => !FROWS.some((f) => f.slug === r.slug) ||
+    (r.f && r.f.items.every((i) => i.t === "none"))).map((r) => r.ko);
+  const cap = FROWS.filter((r) => r.t === "capex");
+  document.getElementById("fNote").innerHTML = '<span class="ic">🗓️</span><div><b>' + co.size +
+    "곳에서 " + FROWS.length + "개 항목</b>을 모았습니다. 가장 많은 것은 <b>자본지출 계획</b>(" +
+    cap.length + "건)인데, 지금 이 시장의 성격을 그대로 보여 줍니다 — " +
+    "<b>돈을 버는 계획보다 돈을 쓰는 계획이 먼저 공시됩니다.</b>" +
+    (silent.length ? " 반대로 <b>" + silent.join(" · ") + josa(silent.join(" · "), "은", "는") +
+      " 수치 가이던스를 주지 않습니다</b> — 회사의 방침이고, 그 자체가 정보입니다." : "") +
+    " 표의 모든 값은 각 사 실적 발표·공시에서 가져왔고, 기준 시점을 함께 적었습니다.</div>";
+})();
+
 const KR_DESC = {
   "공급": ["한국 기업이 부품을 대는 쪽", "이 회사가 잘되면 납품사 실적에 직접 붙습니다. 다만 단가 협상력이 보통 사는 쪽에 있어, 물량만큼 이익이 따라가지 않는 경우가 많습니다."],
   "경쟁": ["같은 시장에서 싸우는 쪽", "국내 종목과 같은 업황을 탑니다. 분산 효과가 작습니다 — 한쪽이 좋으면 다른 쪽도 보통 좋습니다."],
@@ -544,6 +618,7 @@ document.getElementById("krCards").innerHTML = ["공급", "경쟁", "고객", "�
 initTheme();
 render();
 prender();
+frender();
 let rt; addEventListener("resize", () => { clearTimeout(rt); rt = setTimeout(drawAll, 140); });
 </script>
 </body>
