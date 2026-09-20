@@ -218,5 +218,198 @@ const REGISTRY = [
       { k:"신규 AI 수주", v:"60 이상", u:"B$", p:"FY2026 4분기 발표", t:"backlog",
         s:"회사는 역대 최대 수주잔고라고 밝혔다 · 금액 기준일은 따로 공시하지 않았다" }
     ] },
-    data:{ fy:"FY2026", growth:77.7, gm:10.8, emp:6605, empAsOf:"2026년 3월", rev:39.1, oi:null, ni:2.2, top:null } }
+    data:{ fy:"FY2026", growth:77.7, gm:10.8, emp:6605, empAsOf:"2026년 3월", rev:39.1, oi:null, ni:2.2, top:null } },
+  /* ---- 소프트웨어 · AI 플랫폼 ---- */
+  { slug:"pltr", kr:"간접", tk:"PLTR", ko:"팔란티어", ab:"PL", c:"#5b4bc4", group:"soft", base:"/stocks/",
+    sector:"소프트웨어", hint:"정부 54% · 민간 46%, 그리고 +56%",
+    p:{ est:2003, hq:"미국 콜로라도 덴버", ex:"나스닥", ceo:"알렉스 카프", ceoEn:"Alex Karp",
+        since:2003, fye:"12월 31일", div:false },
+    f:{ asOf:"2026년 9월", items:[
+      { k:"2026 매출 가이던스", v:"8.150~8.158", u:"B$", p:"2026년", t:"guide",
+        s:"5월 7.65B$에서 상향 · 2025년 4.475B$ 대비 약 +82%" },
+      { k:"미국 민간 매출 성장", v:"+120", u:"%", p:"2026년", t:"guide",
+        s:"회사가 따로 떼어 제시하는 지표 · 1분기에 +104%를 기록했다" }
+    ] },
+    data:{ fy:"2025", growth:56.2, gm:null, emp:4429, empAsOf:"2025년 말", rev:4.475, oi:1.414, ni:1.625,
+           top:{k:"정부", v:2.417, of:4.475} } },
+  { slug:"orcl", kr:"간접", tk:"ORCL", ko:"오라클", ab:"OR", c:"#C74634", group:"soft", base:"/stocks/",
+    sector:"소프트웨어", hint:"계약 잔고가 1년 만에 4.6배",
+    p:{ est:1977, hq:"미국 텍사스 오스틴", estNote:"1977년 캘리포니아에서 창업 · 2020년 오스틴으로 본사 이전",
+        ex:"뉴욕증권거래소", ceo:"클레이 마고크 · 마이크 시실리아", ceoEn:"Clay Magouyrk · Mike Sicilia",
+        since:2025, sinceNote:"2025년 9월 공동 CEO 취임 · 사프라 캐츠는 이사회 부회장으로 · 래리 엘리슨은 회장 겸 CTO",
+        fye:"5월 31일", div:true },
+    f:{ asOf:"2026년 9월", items:[
+      { k:"계약 잔고(RPO)", v:"638", u:"B$", p:"FY2026 말", n:638, rel:"total", t:"backlog",
+        s:"전년 대비 +363% · 이 목록에서 연매출 대비 배수가 가장 크다" },
+      { k:"클라우드 인프라(OCI) 매출", v:"9.9", u:"B$", p:"FY2026", t:"guide",
+        s:"+93% · 잔고의 대부분이 이 부문에서 나온다" }
+    ] },
+    data:{ fy:"FY2026", growth:17.3, gm:null, emp:141000, empAsOf:"2026년", rev:67.357, oi:20.6, ni:17.0,
+           top:null } },
+  { slug:"crm", kr:"간접", tk:"CRM", ko:"세일즈포스", ab:"CR", c:"#00A1E0", group:"soft", base:"/stocks/",
+    sector:"소프트웨어", hint:"성장은 10%, 대신 마진을 올렸다",
+    p:{ est:1999, hq:"미국 캘리포니아 샌프란시스코", ex:"뉴욕증권거래소", ceo:"마크 베니오프", ceoEn:"Marc Benioff",
+        since:1999, fye:"1월 31일", div:true, divNote:"2024년 첫 배당 개시" },
+    f:{ asOf:"2026년 9월", items:[
+      { k:"FY2027 매출 가이던스", v:"46.1~46.4", u:"B$", p:"FY2027", t:"guide",
+        s:"2분기에 상향 · FY2026 41.5B$ 대비 약 +11%" },
+      { k:"에이전트포스 ARR", v:"1.5 초과", u:"B$", p:"FY2027 2분기", t:"guide",
+        s:"AI 제품의 연간 반복 매출 · 회사가 따로 공시하기 시작한 지표" }
+    ] },
+    data:{ fy:"FY2026", growth:10.0, gm:null, emp:83334, empAsOf:"2026년", rev:41.5, oi:8.34, ni:7.457,
+           top:null } },
+
+  /* ---- 양자컴퓨팅 · 우주 (아직 매출보다 손실이 큰 단계) ---- */
+  { slug:"ionq", kr:"간접", tk:"IONQ", ko:"아이온큐", ab:"IQ", c:"#FF4D8D", group:"frontier", base:"/stocks/",
+    sector:"양자컴퓨팅", hint:"매출 1.3억, 순손실 5.1억 달러",
+    p:{ est:2015, hq:"미국 메릴랜드 칼리지파크", ex:"뉴욕증권거래소", ceo:"니콜로 데 마시", ceoEn:"Niccolo de Masi",
+        since:2025, sinceNote:"2025년 2월 회장 겸 CEO 취임", fye:"12월 31일", div:false },
+    f:{ asOf:"2026년 9월", items:[
+      { k:"수주잔고", v:"470", u:"M$", p:"2026년 1분기", t:"backlog",
+        s:"2025년 연매출 130M$의 3.6배 · 인도 시점은 여러 해에 걸친다" },
+      { k:"2026 조정 EBITDA", v:"−330~−310", u:"M$", p:"2026년", t:"guide",
+        s:"회사가 제시한 손실 폭 · 흑자 전환 시점은 밝히지 않았다" }
+    ] },
+    data:{ fy:"2025", growth:202.0, gm:null, emp:null, empAsOf:"—", rev:0.130, oi:null, ni:-0.5104,
+           top:null } },
+  { slug:"rgti", kr:"간접", tk:"RGTI", ko:"리게티", ab:"RG", c:"#8A6FE8", group:"frontier", base:"/stocks/",
+    sector:"양자컴퓨팅", hint:"연매출 710만 달러, 순손실 2.16억",
+    p:{ est:2013, hq:"미국 캘리포니아 버클리", ex:"나스닥", ceo:"수보드 쿨카르니", ceoEn:"Subodh Kulkarni",
+        since:2022, fye:"12월 31일", div:false },
+    data:{ fy:"2025", growth:-34.0, gm:null, emp:null, empAsOf:"—", rev:0.0071, oi:null, ni:-0.2162,
+           top:null } },
+  { slug:"rklb", kr:"간접", tk:"RKLB", ko:"로켓랩", ab:"RL", c:"#0B7285", group:"frontier", base:"/stocks/",
+    sector:"우주발사", hint:"매출 +38%, 수주잔고 18.5억 달러",
+    p:{ est:2006, estNote:"뉴질랜드에서 창업 · 현재 본사는 미국", hq:"미국 캘리포니아 롱비치",
+        ex:"나스닥", ceo:"피터 벡", ceoEn:"Peter Beck", since:2006, fye:"12월 31일", div:false },
+    f:{ asOf:"2026년 9월", items:[
+      { k:"수주잔고", v:"1.85", u:"B$", p:"2025년 말", n:1.85, rel:"total", t:"backlog",
+        s:"전년 대비 +73% · 2025년 연매출 0.602B$의 3배가 넘는다" }
+    ] },
+    data:{ fy:"2025", growth:38.0, gm:null, emp:null, empAsOf:"—", rev:0.6018, oi:null, ni:-0.1982,
+           top:null } },
+  /* ---- 금융 · 크립토 ---- */
+  { slug:"coin", kr:"간접", tk:"COIN", ko:"코인베이스", ab:"CO", c:"#0052FF", group:"fin", base:"/stocks/",
+    sector:"크립토 거래소", hint:"매출의 44%가 거래 수수료 밖에서",
+    p:{ est:2012, hq:"본사 없음(원격 근무)", estNote:"2020년 본사를 없애고 전면 원격 근무로 전환",
+        ex:"나스닥", ceo:"브라이언 암스트롱", ceoEn:"Brian Armstrong", since:2012, fye:"12월 31일", div:false },
+    f:{ asOf:"2026년 9월", items:[
+      { k:"구독·서비스 매출 가이던스", v:"565~645", u:"M$", p:"2026년 2분기", t:"guide",
+        s:"거래량과 무관한 매출 · 회사가 분기마다 범위로 제시한다" },
+      { k:"순매출 중 구독·서비스", v:"44", u:"%", p:"2026년", t:"guide",
+        s:"거래 수수료 변동을 덜 타게 만드는 구조 전환 지표" }
+    ] },
+    data:{ fy:"2025", growth:9.4, gm:null, emp:4951, empAsOf:"2025년 말", rev:7.181, oi:null, ni:1.26, top:null } },
+  { slug:"mstr", kr:"간접", tk:"MSTR", ko:"스트래티지", ab:"MS", c:"#F7931A", group:"fin", base:"/stocks/",
+    sector:"비트코인 보유사", hint:"매출 4.8억, 영업손실 54억",
+    p:{ est:1989, hq:"미국 버지니아 타이슨스코너", ex:"나스닥", ceo:"퐁 리", ceoEn:"Phong Le",
+        since:2022, sinceNote:"마이클 세일러는 이사회 의장(Executive Chairman)", fye:"12월 31일",
+        div:false, divNote:"보통주 배당은 없다(우선주 배당은 별도)" },
+    data:{ fy:"2025", growth:2.9, gm:null, emp:null, empAsOf:"—", rev:0.477, oi:-5.4, ni:-4.2, top:null } },
+  { slug:"hood", kr:"간접", tk:"HOOD", ko:"로빈후드", ab:"HD", c:"#00A806", group:"fin", base:"/stocks/",
+    sector:"증권 플랫폼", hint:"매출 +53%, 순이익률 42%",
+    p:{ est:2013, hq:"미국 캘리포니아 멘로파크", ex:"나스닥", ceo:"블라드 테네브", ceoEn:"Vlad Tenev",
+        since:2013, fye:"12월 31일", div:false },
+    f:{ asOf:"2026년 9월", items:[
+      { k:"2026 조정 영업비용+SBC", v:"2.7~2.825", u:"B$", p:"2026년", t:"guide",
+        s:"매출이 아니라 비용을 가이던스로 준다 — 수수료 수입이 시장 상황에 달려 있어서다" },
+      { k:"골드 구독자", v:"430만", u:"명", p:"2026년 1분기", t:"guide",
+        s:"+36% · 거래량과 무관한 구독 매출의 기반" }
+    ] },
+    data:{ fy:"2025", growth:52.5, gm:null, emp:2900, empAsOf:"2025년", rev:4.5, oi:null, ni:1.9, top:null } },
+
+  /* ---- 소비 · 미디어 플랫폼 ---- */
+  { slug:"nflx", kr:"공급", tk:"NFLX", ko:"넷플릭스", ab:"NF", c:"#E50914", group:"consumer", base:"/stocks/",
+    sector:"미디어", hint:"한국 콘텐츠를 가장 많이 사는 회사",
+    p:{ est:1997, hq:"미국 캘리포니아 로스가토스", ex:"나스닥", ceo:"테드 서랜도스 · 그렉 피터스",
+        ceoEn:"Ted Sarandos · Greg Peters", since:2023, sinceNote:"2023년부터 공동 CEO 체제",
+        fye:"12월 31일", div:false },
+    f:{ asOf:"2026년 9월", items:[
+      { k:"2026 매출 전망", v:"약 51", u:"B$", p:"2026년", t:"guide",
+        s:"2025년 45.2B$ 대비 약 +13% · 회사가 실적 발표에서 제시" }
+    ] },
+    data:{ fy:"2025", growth:16.0, gm:null, emp:16000, empAsOf:"2025년", rev:45.2, oi:13.3, ni:11.0, top:null } },
+  { slug:"uber", kr:"간접", tk:"UBER", ko:"우버", ab:"UB", c:"#276EF1", group:"consumer", base:"/stocks/",
+    sector:"모빌리티", hint:"매출 520억, 순이익 101억",
+    p:{ est:2009, hq:"미국 캘리포니아 샌프란시스코", ex:"뉴욕증권거래소", ceo:"다라 코스로샤히",
+        ceoEn:"Dara Khosrowshahi", since:2017, fye:"12월 31일", div:false },
+    f:{ asOf:"2026년 9월", items:[
+      { k:"총예약(Gross Bookings) 가이던스", v:"56.25~57.75", u:"B$", p:"2026년 2분기", t:"guide",
+        s:"고정환율 +18~22% · 총예약은 매출이 아니라 플랫폼을 지나간 돈 전체다" }
+    ] },
+    data:{ fy:"2025", growth:18.3, gm:null, emp:34000, empAsOf:"2025년 말", rev:52.017, oi:null, ni:10.1, top:null } },
+  { slug:"abnb", kr:"간접", tk:"ABNB", ko:"에어비앤비", ab:"AB", c:"#FF5A5F", group:"consumer", base:"/stocks/",
+    sector:"숙박 플랫폼", hint:"성장 11%, 순이익률 20%",
+    p:{ est:2008, hq:"미국 캘리포니아 샌프란시스코", ex:"나스닥", ceo:"브라이언 체스키", ceoEn:"Brian Chesky",
+        since:2008, fye:"12월 31일", div:false },
+    f:{ asOf:"2026년 9월", items:[
+      { k:"2026 2분기 매출 가이던스", v:"3.54~3.60", u:"B$", p:"2026년 2분기", t:"guide",
+        s:"전년 대비 +14~16% · 환율 효과 약 3%p 포함" },
+      { k:"2026 연간 성장 전망", v:"10%대 초중반", u:"", p:"2026년", t:"guide",
+        s:"2025년 +11%에서 가속한다는 것이 회사 설명" }
+    ] },
+    data:{ fy:"2025", growth:11.0, gm:null, emp:8200, empAsOf:"2025년", rev:12.2, oi:null, ni:2.5, top:null } },
+  /* ---- 헬스케어 ---- */
+  { slug:"lly", kr:"공급", tk:"LLY", ko:"일라이릴리", ab:"LY", c:"#E11D48", group:"health", base:"/stocks/",
+    sector:"제약", hint:"삼성바이오로직스가 만드는 약",
+    p:{ est:1876, hq:"미국 인디애나 인디애나폴리스", ex:"뉴욕증권거래소", ceo:"데이비드 릭스", ceoEn:"David Ricks",
+        since:2017, fye:"12월 31일", div:true },
+    f:{ asOf:"2026년 9월", items:[
+      { k:"2026 매출 가이던스", v:"85~87", u:"B$", p:"2026년", t:"guide",
+        s:"82~85B$에서 상향 · 2025년 65.2B$ 대비 약 +32%" }
+    ] },
+    data:{ fy:"2025", growth:null, gm:null, emp:50000, empAsOf:"2025년", rev:65.18, oi:null, ni:20.64, top:null } },
+  { slug:"nvo", kr:"간접", tk:"NVO", ko:"노보노디스크", ab:"NN", c:"#0E9594", group:"health", base:"/stocks/",
+    sector:"제약", hint:"매출 +10%, 그런데 2026 전망이 어둡다",
+    p:{ est:1923, estNote:"노보와 노르디스크가 1989년 합병해 현재 형태", hq:"덴마크 벡스보",
+        ex:"코펜하겐 증권거래소", ex2:"뉴욕증권거래소 ADR", ceo:"마이크 두스타",
+        ceoEn:"Mike Doustdar", since:2025, fye:"12월 31일", div:true },
+    data:{ fy:"2025", growth:10.0, gm:null, emp:null, empAsOf:"—", rev:45.9, oi:null, ni:15.2, top:null } },
+
+  /* ---- 소비 · 유통 (플랫폼과 같은 그룹) ---- */
+  { slug:"cost", kr:"공급", tk:"COST", ko:"코스트코", ab:"CT", c:"#1B6BD0", group:"consumer", base:"/stocks/",
+    sector:"유통", hint:"순이익의 66%가 회비",
+    p:{ est:1983, estNote:"1983년 코스트코 창업 · 1993년 프라이스클럽과 합병",
+        hq:"미국 워싱턴 이사콰", ex:"나스닥", ceo:"론 배크리스", ceoEn:"Ron Vachris",
+        since:2024, fye:"8월 말~9월 초", div:true },
+    data:{ fy:"FY2025", growth:8.0, gm:null, emp:341000, empAsOf:"2025년", rev:275.23, oi:null, ni:8.10,
+           top:{k:"상품 매출", v:269.91, of:275.23} } },
+  { slug:"dis", kr:"공급", tk:"DIS", ko:"디즈니", ab:"DS", c:"#7C3AED", group:"consumer", base:"/stocks/",
+    sector:"미디어", hint:"성장 3%, 순이익률 13%",
+    p:{ est:1923, hq:"미국 캘리포니아 버뱅크", ex:"뉴욕증권거래소", ceo:"밥 아이거", ceoEn:"Bob Iger",
+        since:2022, sinceNote:"2005~2020년 재임 후 2022년 복귀", fye:"9월 말~10월 초", div:true },
+    data:{ fy:"FY2025", growth:3.0, gm:null, emp:231000, empAsOf:"2025년", rev:94.4, oi:null, ni:12.4, top:null } },
+  { slug:"wmt", kr:"공급", tk:"WMT", ko:"월마트", ab:"WM", c:"#F59E0B", group:"consumer", base:"/stocks/",
+    sector:"유통", hint:"매출 7,132억, 순이익률 3.1%",
+    p:{ est:1962, hq:"미국 아칸소 벤턴빌", ex:"뉴욕증권거래소", ceo:"존 퍼너", ceoEn:"John Furner",
+        since:2026, sinceNote:"2026년 2월 취임 · 더그 맥밀런의 뒤를 이었다", fye:"1월 31일", div:true },
+    f:{ asOf:"2026년 9월", items:[
+      { k:"FY2027 순매출 성장", v:"+4~5", u:"%", p:"FY2027", t:"guide",
+        s:"3.5~4.5%에서 상향 · 2분기 실적 뒤" }
+    ] },
+    data:{ fy:"FY2026", growth:4.7, gm:null, emp:2100000, empAsOf:"2026년", rev:713.163, oi:null, ni:22.270, top:null } },
+
+  /* ---- 금융 (은행 · 결제망 · 복합기업) ---- */
+  { slug:"jpm", kr:"간접", tk:"JPM", ko:"JP모건", ab:"JP", c:"#78350F", group:"fin", base:"/stocks/",
+    sector:"은행", hint:"순이익 570억, 순이익률 31%",
+    p:{ est:1799, estNote:"맨해튼 컴퍼니(1799)까지 거슬러 올라가는 계보 · 2000년 JP모건과 체이스 합병",
+        hq:"미국 뉴욕", ex:"뉴욕증권거래소", ceo:"제이미 다이먼", ceoEn:"Jamie Dimon",
+        since:2005, fye:"12월 31일", div:true },
+    f:{ asOf:"2026년 9월", items:[
+      { k:"2026 비용 계획", v:"약 105", u:"B$", p:"2026년", t:"capex",
+        s:"금리 효과가 줄어드는 국면에 쓰겠다고 밝힌 금액 · 매출이 아니라 지출 계획이다" }
+    ] },
+    data:{ fy:"2025", growth:null, gm:null, emp:318512, empAsOf:"2025년", rev:182.4, oi:null, ni:57.0, top:null } },
+  { slug:"brk", kr:"간접", tk:"BRK.B", ko:"버크셔 해서웨이", ab:"BK", c:"#475569", group:"fin", base:"/stocks/",
+    sector:"복합기업", hint:"버핏이 보지 말라는 숫자가 순이익",
+    p:{ est:1839, estNote:"방직회사로 출발 · 1965년 버핏이 경영권 인수",
+        hq:"미국 네브래스카 오마하", ex:"뉴욕증권거래소", ceo:"그렉 아벨", ceoEn:"Greg Abel",
+        since:2026, sinceNote:"2026년 초 취임 · 워런 버핏은 이사회 의장으로", fye:"12월 31일", div:false },
+    data:{ fy:"2025", growth:null, gm:null, emp:null, empAsOf:"—", rev:371.444, oi:44.49, ni:66.97, top:null } },
+  { slug:"v", kr:"고객", tk:"V", ko:"비자", ab:"VI", c:"#1A1F71", group:"fin", base:"/stocks/",
+    sector:"결제망", hint:"순이익률 50%, 한국 카드사가 수수료를 낸다",
+    p:{ est:1958, estNote:"뱅크아메리카드로 출발 · 1976년 비자로 개명 · 2008년 상장",
+        hq:"미국 캘리포니아 샌프란시스코", ex:"뉴욕증권거래소", ceo:"라이언 맥이너니",
+        ceoEn:"Ryan McInerney", since:2023, fye:"9월 30일", div:true },
+    data:{ fy:"FY2025", growth:11.0, gm:null, emp:34000, empAsOf:"FY2025", rev:40.0, oi:null, ni:20.06, top:null } }
 ];

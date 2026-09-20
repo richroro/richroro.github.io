@@ -1,0 +1,203 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>코스트코 지표 · 매출 구성과 한국과의 관계 | 종목 노트</title>
+<meta name="description" content="FY2025 매출 2,752억 달러에 순이익 81억. 그런데 회비 수입만 53억입니다 — 순이익의 66%가 물건을 팔아서가 아니라 회비에서 나옵니다.">
+<link rel="canonical" href="https://richroro.github.io/stocks/cost/">
+<meta property="og:type" content="website"><meta property="og:locale" content="ko_KR">
+<meta property="og:site_name" content="Cadence">
+<meta property="og:url" content="https://richroro.github.io/stocks/cost/">
+<meta property="og:title" content="코스트코 지표 | 종목 노트">
+<meta property="og:description" content="FY2025 매출 2,752억 달러에 순이익 81억. 그런데 회비 수입만 53억입니다 — 순이익의 66%가 물건을 팔아서가 아니라 회비에서 나옵니다.">
+<meta name="twitter:card" content="summary">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='#1B6BD0'/><text x='50' y='66' font-size='30' text-anchor='middle' fill='white' font-family='monospace' font-weight='bold'>COST</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans+KR:wght@300;400;500;600;700&display=swap">
+<link rel="stylesheet" href="/m7/assets/m7.css">
+</head>
+<body>
+<noscript><div style="padding:24px;font-family:sans-serif"><h1>코스트코 지표</h1><p>FY2025 매출 2,752억 달러에 순이익 81억. 그런데 회비 수입만 53억입니다 — 순이익의 66%가 물건을 팔아서가 아니라 회비에서 나옵니다.</p>
+<p>차트를 그리는 데 자바스크립트를 씁니다. <a href="/stocks/">종목 노트 전체</a></p></div></noscript>
+<script src="/stocks/assets/registry.js"></script>
+<script>
+/* 코스트코 (COST) — 이 블록만 고치면 페이지 전체가 따라 바뀝니다.
+   검산: 회비 5.32 ÷ 순이익 8.10 = 65.7% */
+const CO = {
+  "group": "consumer",
+  "hubHref": "/stocks/",
+  "hubName": "종목 노트 전체",
+  "hubMark": "종목",
+  "peersTitle": "같은 분야 다른 회사",
+  "asOf": "2026-09-20",
+  "slug": "cost",
+  "tk": "COST",
+  "ko": "코스트코",
+  "en": "Costco Wholesale",
+  "ab": "CT",
+  "color": "#1B6BD0",
+  "fy": {
+    "label": "FY2025 · 2025년 8월 종료",
+    "note": "코스트코 회계연도는 <b>8월 말~9월 초</b>에 끝납니다. FY2025는 2024년 9월~2025년 8월입니다."
+  },
+  "headline": "순이익의 66%가 회비에서 나온다",
+  "lead": "FY2025 총매출 <b>2,752억 달러</b>, 순이익 <b>81억</b>으로 순이익률은 <b>2.9%</b>입니다. 이 목록에서 거의 최저입니다. 그런데 <b>회비 수입만 53억 달러</b> — 순이익의 <b>66%</b>가 물건 마진이 아니라 회비입니다.",
+  "stats": [
+    {
+      "k": "FY2025 총매출",
+      "v": "275.2",
+      "u": "B$",
+      "s": "+8% YoY",
+      "stone": "up"
+    },
+    {
+      "k": "순이익",
+      "v": "8.10",
+      "u": "B$",
+      "s": "순이익률 2.9%"
+    },
+    {
+      "k": "회비 수입",
+      "v": "5.32",
+      "u": "B$",
+      "s": "+10%",
+      "stone": "up"
+    },
+    {
+      "k": "순이익 중 회비 비중",
+      "v": "66",
+      "u": "%"
+    }
+  ],
+  "mix": {
+    "nav": "상품 vs 회비",
+    "title": "두 개의 사업이 붙어 있다",
+    "lead": "코스트코의 손익은 <b>거의 원가로 파는 유통업</b>과 <b>마진 100%에 가까운 회비 사업</b>이 붙어 있는 구조입니다.",
+    "chartTitle": "FY2025 매출 구성",
+    "unit": "단위: 10억 달러",
+    "total": 275.23,
+    "rows": [
+      {
+        "k": "상품 매출",
+        "v": 269.91,
+        "yoy": 8.0,
+        "color": "--s1"
+      },
+      {
+        "k": "회비",
+        "v": 5.32,
+        "yoy": 10.0,
+        "color": "--s2"
+      }
+    ],
+    "note": "<b>회비는 매출의 1.9%지만 순이익의 66%입니다.</b> 물건은 거의 남기지 않고 팔아 회원을 모으고, 돈은 회비에서 법니다. 그래서 이 회사에서 가장 중요한 숫자는 매출 성장률이 아니라 <b>회원 갱신율</b>입니다 — 갱신율이 떨어지면 이익이 먼저 무너집니다.",
+    "tnote": "상품 269.91 + 회비 5.32 = 275.23으로 총매출과 정확히 일치합니다."
+  },
+  "signature": {
+    "nav": "회비",
+    "eyebrow": "Membership",
+    "title": "매출의 1.9%가 이익의 66%",
+    "lead": "두 비중의 차이가 이 회사의 사업 모델 전체입니다.",
+    "split": {
+      "title": "순이익 81억의 출처",
+      "sub": "FY2025 기준",
+      "parts": [
+        {
+          "k": "회비",
+          "v": 5.32,
+          "color": "--s2",
+          "label": "53억$ · 66%"
+        },
+        {
+          "k": "나머지",
+          "v": 2.78,
+          "color": "--s1",
+          "label": "28억$ · 34%"
+        }
+      ],
+      "note": "회비는 원가가 거의 없습니다 — 받으면 그대로 이익입니다. 그래서 <b>회비를 올리는 것이 가장 확실한 이익 증가 수단</b>이고, 실제로 코스트코는 몇 년에 한 번 회비를 올립니다. 반대로 <b>회원이 줄기 시작하면 이익이 매출보다 훨씬 빨리 꺾입니다.</b>"
+    },
+    "stats": [
+      {
+        "k": "회비 / 순이익",
+        "v": "66",
+        "u": "%"
+      },
+      {
+        "k": "회비 / 매출",
+        "v": "1.9",
+        "u": "%"
+      },
+      {
+        "k": "순이익률",
+        "v": "2.9",
+        "u": "%",
+        "s": "이 목록 최저권"
+      }
+    ]
+  },
+  "korea": {
+    "kind": "공급 — 한국 상품이 매대에 오른다",
+    "title": "국내 식품·소비재의 수출 창구",
+    "lead": "코스트코는 한국에서 매장을 운영하기도 하지만, 한국 투자자에게 더 실질적인 연결은 <b>국내 제조사가 미국 코스트코에 납품하는 쪽</b>입니다. 코스트코 매대에 들어가면 단일 채널로 큰 물량이 나갑니다 — 다만 <b>단가 압박이 매우 셉니다.</b>",
+    "lanes": [
+      {
+        "t": "상품 공급망",
+        "d": "코스트코가 사고, 한국이 만든다",
+        "dest": "코스트코 매대",
+        "nodes": [
+          {
+            "n": "국내 식품 제조사",
+            "c": "KR",
+            "kr": true,
+            "d": "김·라면·만두 등. 단일 SKU로 큰 물량이 나갑니다."
+          },
+          {
+            "n": "국내 소비재·가전",
+            "c": "KR",
+            "kr": true,
+            "d": "PB 납품 포함. 브랜드 없이 들어가는 경우도 많습니다."
+          },
+          {
+            "n": "미국 소비자",
+            "c": "—",
+            "kr": false,
+            "d": "실제 구매자."
+          }
+        ]
+      }
+    ]
+  },
+  "notes": [
+    {
+      "h": "숫자를 볼 때",
+      "items": [
+        "<b style='color:var(--ink)'>순이익률 2.9%를 낮다고만 읽으면 안 됩니다</b> — 유통업은 원래 얇고, 이 회사는 회전으로 법니다.",
+        "<b style='color:var(--ink)'>회계연도가 8월에 끝납니다</b> — FY2025가 2024년 9월부터입니다.",
+        "<b style='color:var(--ink)'>총마진·영업이익을 담지 않았습니다</b> — 확인하지 못해 비웠습니다."
+      ]
+    },
+    {
+      "h": "위험 쪽",
+      "items": [
+        "<b style='color:var(--ink)'>회원 갱신율</b> — 이 회사에서 가장 먼저 봐야 할 숫자입니다. 이익의 66%가 걸려 있습니다.",
+        "<b style='color:var(--ink)'>마진이 얇습니다</b> — 순이익률 2.9%에서는 작은 원가 변동도 이익을 크게 흔듭니다.",
+        "<b style='color:var(--ink)'>가이던스를 주지 않습니다</b> — 그래서 이 페이지에 '앞으로' 섹션이 없습니다."
+      ]
+    }
+  ],
+  "sources": [
+    {
+      "i": "매출·회비·순이익·임직원",
+      "p": "FY2025",
+      "s": "Costco 실적 발표 · 10-K"
+    }
+  ],
+  "checksum": "검산 — 상품 269.91 + 회비 5.32 = 275.23으로 총매출과 정확히 일치합니다. 회비 비중 5.32 ÷ 8.10 = 65.7%(반올림 66%), 순이익률 8.10 ÷ 275.23 = 2.9%로 계산한 값입니다."
+};
+</script>
+<script src="/m7/assets/m7.js"></script>
+</body>
+</html>

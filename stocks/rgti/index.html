@@ -1,0 +1,188 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>리게티 지표 · 매출 구성과 한국과의 관계 | 종목 노트</title>
+<meta name="description" content="2025년 매출 710만 달러, 순손실 2억 1,620만 달러. 매출이 전년보다 34% 줄었습니다. 숫자를 있는 그대로 적었습니다.">
+<link rel="canonical" href="https://richroro.github.io/stocks/rgti/">
+<meta property="og:type" content="website"><meta property="og:locale" content="ko_KR">
+<meta property="og:site_name" content="Cadence">
+<meta property="og:url" content="https://richroro.github.io/stocks/rgti/">
+<meta property="og:title" content="리게티 지표 | 종목 노트">
+<meta property="og:description" content="2025년 매출 710만 달러, 순손실 2억 1,620만 달러. 매출이 전년보다 34% 줄었습니다. 숫자를 있는 그대로 적었습니다.">
+<meta name="twitter:card" content="summary">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='#8A6FE8'/><text x='50' y='66' font-size='30' text-anchor='middle' fill='white' font-family='monospace' font-weight='bold'>RGTI</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans+KR:wght@300;400;500;600;700&display=swap">
+<link rel="stylesheet" href="/m7/assets/m7.css">
+</head>
+<body>
+<noscript><div style="padding:24px;font-family:sans-serif"><h1>리게티 지표</h1><p>2025년 매출 710만 달러, 순손실 2억 1,620만 달러. 매출이 전년보다 34% 줄었습니다. 숫자를 있는 그대로 적었습니다.</p>
+<p>차트를 그리는 데 자바스크립트를 씁니다. <a href="/stocks/">종목 노트 전체</a></p></div></noscript>
+<script src="/stocks/assets/registry.js"></script>
+<script>
+/* 리게티 (RGTI) — 이 블록만 고치면 페이지 전체가 따라 바뀝니다.
+   검산: 순손실 216.2M ÷ 매출 7.1M = −3,045% (순이익률) */
+const CO = {
+  "group": "frontier",
+  "hubHref": "/stocks/",
+  "hubName": "종목 노트 전체",
+  "hubMark": "종목",
+  "peersTitle": "같은 분야 다른 회사",
+  "asOf": "2026-09-20",
+  "slug": "rgti",
+  "tk": "RGTI",
+  "ko": "리게티",
+  "en": "Rigetti Computing",
+  "ab": "RG",
+  "color": "#8A6FE8",
+  "fy": {
+    "label": "2025 · 2025년 12월 종료",
+    "note": "리게티 회계연도는 달력 연도와 같습니다."
+  },
+  "headline": "연매출 710만 달러, 순손실 2.16억",
+  "lead": "2025년 <b>연간</b> 매출이 <b>710만 달러</b>입니다. 분기가 아니라 한 해 전체입니다. 같은 해 순손실은 <b>2억 1,620만 달러</b> — 매출의 <b>30배</b>입니다. 그리고 매출은 전년보다 <b>34% 줄었습니다.</b>",
+  "stats": [
+    {
+      "k": "2025 매출",
+      "v": "7.1",
+      "u": "M$",
+      "s": "−34% YoY",
+      "stone": "down"
+    },
+    {
+      "k": "순손실",
+      "v": "−216",
+      "u": "M$",
+      "s": "매출의 30배",
+      "stone": "down"
+    },
+    {
+      "k": "순이익률",
+      "v": "−3,045",
+      "u": "%",
+      "s": "이 목록 최하위",
+      "stone": "down"
+    },
+    {
+      "k": "4분기 매출",
+      "v": "1.9",
+      "u": "M$",
+      "s": "한 분기 기준"
+    }
+  ],
+  "signature": {
+    "nav": "규모",
+    "eyebrow": "Scale",
+    "title": "매출이 줄어든 해",
+    "lead": "이 목록의 다른 회사들과 자릿수가 다릅니다. 엔비디아의 <b>한 시간치 매출</b>이 리게티의 <b>1년치</b>보다 큽니다.",
+    "split": {
+      "title": "2025년 매출과 순손실",
+      "sub": "같은 축에 놓고 보면",
+      "parts": [
+        {
+          "k": "매출",
+          "v": 7.1,
+          "color": "--s1",
+          "label": "710만$"
+        },
+        {
+          "k": "순손실",
+          "v": 216.2,
+          "color": "--s2",
+          "label": "2.16억$"
+        }
+      ],
+      "note": "<b>양자컴퓨팅에 대한 기대와 이 회사의 실적은 지금 전혀 다른 크기입니다.</b> 그게 틀렸다는 뜻은 아닙니다 — 초기 산업은 원래 그렇습니다. 다만 <b>주가가 무엇을 반영하고 있는지</b>는 이 숫자를 보고 판단해야 합니다. 비GAAP 기준 순손실은 5,050만 달러로, GAAP과 4배 넘게 차이가 납니다."
+    },
+    "stats": [
+      {
+        "k": "GAAP 순손실",
+        "v": "−216.2",
+        "u": "M$",
+        "stone": "down"
+      },
+      {
+        "k": "non-GAAP 순손실",
+        "v": "−50.5",
+        "u": "M$",
+        "s": "GAAP의 4분의 1"
+      },
+      {
+        "k": "매출 증감",
+        "v": "−34",
+        "u": "%",
+        "s": "2024년 대비",
+        "stone": "down"
+      }
+    ]
+  },
+  "korea": {
+    "kind": "간접 — 계약이 아니라 기대",
+    "title": "한국 기업과의 공개된 접점이 없다",
+    "lead": "리게티는 한국 기업과의 <b>공급·납품 관계를 공시한 적이 없습니다.</b> 아이온큐와 마찬가지로 국내 투자자 관심은 높지만 사업적 연결은 얇습니다.",
+    "lanes": [
+      {
+        "t": "연결이 얇다는 것",
+        "d": "관심과 접점이 따로 논다",
+        "dest": "리게티",
+        "nodes": [
+          {
+            "n": "양자컴퓨팅 기대",
+            "c": "—",
+            "kr": false,
+            "d": "기술 자체에 대한 기대가 주가를 움직입니다."
+          },
+          {
+            "n": "한국 기업",
+            "c": "KR",
+            "kr": true,
+            "d": "공개된 공급 계약이 확인되지 않습니다."
+          }
+        ]
+      }
+    ]
+  },
+  "notes": [
+    {
+      "h": "숫자를 볼 때",
+      "items": [
+        "<b style='color:var(--ink)'>단위가 백만 달러입니다</b> — 이 페이지에서 유일하게 연매출이 1,000만 달러 미만입니다.",
+        "<b style='color:var(--ink)'>GAAP과 non-GAAP 차이가 4배가 넘습니다</b> — 어느 쪽을 보는지에 따라 이야기가 달라집니다.",
+        "<b style='color:var(--ink)'>총마진·영업이익·임직원을 담지 않았습니다</b> — 확인하지 못해 비웠습니다."
+      ]
+    },
+    {
+      "h": "위험 쪽",
+      "items": [
+        "<b style='color:var(--ink)'>매출이 줄었습니다</b> — 이 목록에서 테슬라와 함께 둘뿐입니다. 테슬라는 −3%, 리게티는 −34%입니다.",
+        "<b style='color:var(--ink)'>자금 조달이 반복됩니다</b> — 손실 규모가 매출의 30배라 외부 자금 없이는 유지되지 않습니다.",
+        "<b style='color:var(--ink)'>가이던스가 없습니다</b> — 회사가 수치 전망을 제시하지 않아 이 페이지에 '앞으로' 섹션이 없습니다."
+      ]
+    }
+  ],
+  "sources": [
+    {
+      "i": "매출·순손실",
+      "p": "2025",
+      "s": "Rigetti 실적 발표 · 10-K"
+    },
+    {
+      "i": "non-GAAP 순손실",
+      "p": "2025",
+      "s": "Rigetti 실적 발표"
+    },
+    {
+      "i": "CEO·본사",
+      "p": "2026",
+      "s": "Rigetti 공시"
+    }
+  ],
+  "checksum": "검산 — 순이익률 −216.2 ÷ 7.1 = −3,045%입니다. 손실이 매출의 30배이고, 이 종목은 이익률 차트 축에서 제외됩니다(그 사실을 차트 아래에 밝혔습니다). 가이던스를 제시하지 않아 '앞으로' 섹션이 없습니다."
+};
+</script>
+<script src="/m7/assets/m7.js"></script>
+</body>
+</html>

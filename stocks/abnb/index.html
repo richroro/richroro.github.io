@@ -1,0 +1,180 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>에어비앤비 지표 · 매출 구성과 한국과의 관계 | 종목 노트</title>
+<meta name="description" content="2025년 매출 122억 달러로 +11%, 순이익 25억. 플랫폼 세 곳(우버·에어비앤비·넷플릭스)을 같은 틀로 놓고 볼 수 있게 정리했습니다.">
+<link rel="canonical" href="https://richroro.github.io/stocks/abnb/">
+<meta property="og:type" content="website"><meta property="og:locale" content="ko_KR">
+<meta property="og:site_name" content="Cadence">
+<meta property="og:url" content="https://richroro.github.io/stocks/abnb/">
+<meta property="og:title" content="에어비앤비 지표 | 종목 노트">
+<meta property="og:description" content="2025년 매출 122억 달러로 +11%, 순이익 25억. 플랫폼 세 곳(우버·에어비앤비·넷플릭스)을 같은 틀로 놓고 볼 수 있게 정리했습니다.">
+<meta name="twitter:card" content="summary">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='#FF5A5F'/><text x='50' y='66' font-size='30' text-anchor='middle' fill='white' font-family='monospace' font-weight='bold'>ABNB</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans+KR:wght@300;400;500;600;700&display=swap">
+<link rel="stylesheet" href="/m7/assets/m7.css">
+</head>
+<body>
+<noscript><div style="padding:24px;font-family:sans-serif"><h1>에어비앤비 지표</h1><p>2025년 매출 122억 달러로 +11%, 순이익 25억. 플랫폼 세 곳(우버·에어비앤비·넷플릭스)을 같은 틀로 놓고 볼 수 있게 정리했습니다.</p>
+<p>차트를 그리는 데 자바스크립트를 씁니다. <a href="/stocks/">종목 노트 전체</a></p></div></noscript>
+<script src="/stocks/assets/registry.js"></script>
+<script>
+/* 에어비앤비 (ABNB) — 이 블록만 고치면 페이지 전체가 따라 바뀝니다.
+   검산: 순이익률 2.5 ÷ 12.2 = 20.5% */
+const CO = {
+  "group": "consumer",
+  "hubHref": "/stocks/",
+  "hubName": "종목 노트 전체",
+  "hubMark": "종목",
+  "peersTitle": "같은 분야 다른 회사",
+  "asOf": "2026-09-20",
+  "slug": "abnb",
+  "tk": "ABNB",
+  "ko": "에어비앤비",
+  "en": "Airbnb",
+  "ab": "AB",
+  "color": "#FF5A5F",
+  "fy": {
+    "label": "2025 · 2025년 12월 종료",
+    "note": "에어비앤비 회계연도는 달력 연도와 같습니다."
+  },
+  "headline": "성장 11%, 순이익률 20%",
+  "lead": "2025년 매출 <b>122억 달러</b>(+11%), 순이익 <b>25억</b>입니다. 성장은 두 자릿수 초반으로 내려왔고, 대신 <b>잉여현금흐름 46억 달러</b>를 냅니다 — 자산을 직접 소유하지 않는 플랫폼의 특징입니다.",
+  "stats": [
+    {
+      "k": "2025 매출",
+      "v": "12.2",
+      "u": "B$",
+      "s": "+11% YoY",
+      "stone": "up"
+    },
+    {
+      "k": "순이익",
+      "v": "2.5",
+      "u": "B$",
+      "s": "순이익률 20.5%"
+    },
+    {
+      "k": "잉여현금흐름",
+      "v": "4.6",
+      "u": "B$",
+      "s": "순이익보다 크다",
+      "stone": "up"
+    },
+    {
+      "k": "임직원",
+      "v": "8,200",
+      "u": "명",
+      "s": "1인당 매출 $1.49M"
+    }
+  ],
+  "signature": {
+    "nav": "현금흐름",
+    "eyebrow": "Cash",
+    "title": "순이익보다 현금이 많이 들어온다",
+    "lead": "잉여현금흐름 <b>46억</b>이 순이익 <b>25억</b>보다 큽니다. 숙박비를 <b>먼저 받고 나중에 호스트에게 주는</b> 구조 때문입니다.",
+    "split": {
+      "title": "2025년 순이익과 잉여현금흐름",
+      "sub": "같은 해 두 숫자",
+      "parts": [
+        {
+          "k": "잉여현금흐름",
+          "v": 4.6,
+          "color": "--s1",
+          "label": "46억$"
+        },
+        {
+          "k": "순이익",
+          "v": 2.5,
+          "color": "--s3",
+          "label": "25억$"
+        }
+      ],
+      "note": "<b>고객이 예약할 때 돈을 받고, 체크인 뒤에 호스트에게 줍니다.</b> 그 사이의 돈이 회사 계좌에 머뭅니다 — 회계상 부채지만 현금은 실제로 들어와 있습니다. 예약이 늘어나는 동안에는 이 격차가 유지되고, <b>줄어들기 시작하면 반대로 작동합니다.</b>"
+    },
+    "stats": [
+      {
+        "k": "잉여현금흐름 / 순이익",
+        "v": "1.8",
+        "u": "배"
+      },
+      {
+        "k": "2026 2Q 매출 가이던스",
+        "v": "3.54~3.60",
+        "u": "B$",
+        "s": "+14~16%"
+      },
+      {
+        "k": "2026 연간 전망",
+        "v": "10%대 초중반",
+        "s": "가속",
+        "stone": "up"
+      }
+    ]
+  },
+  "korea": {
+    "kind": "간접 — 한국은 규제가 까다롭다",
+    "title": "국내 영업보다 한국인의 해외 여행 쪽",
+    "lead": "한국은 <b>내국인 대상 도시 민박 규제</b>가 엄격해 에어비앤비의 국내 공급이 제한적입니다. 한국과의 연결은 오히려 <b>한국인이 해외에서 예약하는 쪽</b>에 있습니다 — 사업 관계가 아니라 수요 경로입니다.",
+    "lanes": [
+      {
+        "t": "간접 연결",
+        "d": "국내 공급보다 해외 수요",
+        "dest": "에어비앤비",
+        "nodes": [
+          {
+            "n": "글로벌 여행 수요",
+            "c": "—",
+            "kr": false,
+            "d": "매출의 사실상 전부."
+          },
+          {
+            "n": "한국 여행객",
+            "c": "KR",
+            "kr": true,
+            "d": "해외 숙소 예약. 공급이 아니라 수요 쪽입니다."
+          }
+        ]
+      }
+    ]
+  },
+  "notes": [
+    {
+      "h": "숫자를 볼 때",
+      "items": [
+        "<b style='color:var(--ink)'>현금흐름이 순이익보다 큽니다</b> — 선수금 구조 때문이고, 성장이 멈추면 격차가 줄어듭니다.",
+        "<b style='color:var(--ink)'>연간 영업이익·총마진을 담지 않았습니다</b> — 확인하지 못해 비웠습니다.",
+        "<b style='color:var(--ink)'>성장률이 11%입니다</b> — 이 목록의 플랫폼 세 곳 중 가장 느립니다(우버 18%, 넷플릭스 16%)."
+      ]
+    },
+    {
+      "h": "위험 쪽",
+      "items": [
+        "<b style='color:var(--ink)'>도시별 규제</b> — 뉴욕·바르셀로나 등이 단기임대를 제한했습니다. 한 도시의 규칙이 공급을 크게 바꿉니다.",
+        "<b style='color:var(--ink)'>여행 수요는 경기를 탑니다</b> — 불황에 먼저 줄어드는 지출입니다.",
+        "<b style='color:var(--ink)'>호텔·경쟁 플랫폼</b> — 부킹닷컴 등이 같은 재고를 놓고 경쟁합니다."
+      ]
+    }
+  ],
+  "sources": [
+    {
+      "i": "매출·순이익·잉여현금흐름·임직원",
+      "p": "2025",
+      "s": "Airbnb 주주서한"
+    },
+    {
+      "i": "2026 가이던스",
+      "p": "2026",
+      "s": "Airbnb 2026년 1분기 실적 발표"
+    }
+  ],
+  "checksum": "검산 — 순이익률 2.5 ÷ 12.2 = 20.5%, 잉여현금흐름 배수 4.6 ÷ 2.5 = 1.8배, 1인당 매출 12.2B ÷ 8,200명 = 149만 달러로 전부 계산한 값입니다."
+};
+</script>
+<script src="/m7/assets/m7.js"></script>
+</body>
+</html>

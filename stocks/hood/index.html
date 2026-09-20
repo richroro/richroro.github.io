@@ -1,0 +1,184 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>로빈후드 지표 · 매출 구성과 한국과의 관계 | 종목 노트</title>
+<meta name="description" content="2025년 매출 45억 달러로 +53%, 순이익 19억으로 순이익률 42%. 매출이 아니라 비용을 가이던스로 주는 이유까지 정리했습니다.">
+<link rel="canonical" href="https://richroro.github.io/stocks/hood/">
+<meta property="og:type" content="website"><meta property="og:locale" content="ko_KR">
+<meta property="og:site_name" content="Cadence">
+<meta property="og:url" content="https://richroro.github.io/stocks/hood/">
+<meta property="og:title" content="로빈후드 지표 | 종목 노트">
+<meta property="og:description" content="2025년 매출 45억 달러로 +53%, 순이익 19억으로 순이익률 42%. 매출이 아니라 비용을 가이던스로 주는 이유까지 정리했습니다.">
+<meta name="twitter:card" content="summary">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='#00A806'/><text x='50' y='66' font-size='30' text-anchor='middle' fill='white' font-family='monospace' font-weight='bold'>HOOD</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans+KR:wght@300;400;500;600;700&display=swap">
+<link rel="stylesheet" href="/m7/assets/m7.css">
+</head>
+<body>
+<noscript><div style="padding:24px;font-family:sans-serif"><h1>로빈후드 지표</h1><p>2025년 매출 45억 달러로 +53%, 순이익 19억으로 순이익률 42%. 매출이 아니라 비용을 가이던스로 주는 이유까지 정리했습니다.</p>
+<p>차트를 그리는 데 자바스크립트를 씁니다. <a href="/stocks/">종목 노트 전체</a></p></div></noscript>
+<script src="/stocks/assets/registry.js"></script>
+<script>
+/* 로빈후드 (HOOD) — 이 블록만 고치면 페이지 전체가 따라 바뀝니다.
+   검산: 순이익률 1.9 ÷ 4.5 = 42.2% */
+const CO = {
+  "group": "fin",
+  "hubHref": "/stocks/",
+  "hubName": "종목 노트 전체",
+  "hubMark": "종목",
+  "peersTitle": "같은 분야 다른 회사",
+  "asOf": "2026-09-20",
+  "slug": "hood",
+  "tk": "HOOD",
+  "ko": "로빈후드",
+  "en": "Robinhood Markets",
+  "ab": "HD",
+  "color": "#00A806",
+  "fy": {
+    "label": "2025 · 2025년 12월 종료",
+    "note": "로빈후드 회계연도는 달력 연도와 같습니다."
+  },
+  "headline": "매출 +53%, 순이익률 42%",
+  "lead": "2025년 매출 <b>45억 달러</b>(+53%), 순이익 <b>19억</b>입니다. 순이익률 <b>42.2%</b>는 이 목록에서 엔비디아·마이크로소프트 다음입니다. 인원은 <b>2,900명</b>뿐입니다.",
+  "stats": [
+    {
+      "k": "2025 매출",
+      "v": "4.5",
+      "u": "B$",
+      "s": "+52.5% YoY",
+      "stone": "up"
+    },
+    {
+      "k": "순이익",
+      "v": "1.9",
+      "u": "B$",
+      "s": "순이익률 42.2%",
+      "stone": "up"
+    },
+    {
+      "k": "임직원",
+      "v": "2,900",
+      "u": "명",
+      "s": "이 목록 최소"
+    },
+    {
+      "k": "1인당 매출",
+      "v": "1.55",
+      "u": "M$"
+    }
+  ],
+  "signature": {
+    "nav": "비용 가이던스",
+    "eyebrow": "Guidance",
+    "title": "매출 대신 비용을 약속한다",
+    "lead": "로빈후드는 <b>매출 가이던스를 주지 않습니다.</b> 대신 <b>비용</b>을 범위로 제시합니다 — 이 회사 매출이 무엇에 달려 있는지 그대로 드러내는 선택입니다.",
+    "split": {
+      "title": "2026년 회사가 약속한 것",
+      "sub": "조정 영업비용 + 주식보상",
+      "parts": [
+        {
+          "k": "비용 가이던스",
+          "v": 2.76,
+          "color": "--s3",
+          "label": "27~28.25억$"
+        },
+        {
+          "k": "2025 매출",
+          "v": 4.5,
+          "color": "--s1",
+          "label": "45억$"
+        }
+      ],
+      "note": "<b>수수료 수입은 시장이 정합니다.</b> 거래가 많으면 매출이 뛰고 조용하면 줄어듭니다 — 회사가 통제할 수 없습니다. 통제할 수 있는 건 비용이라, 거기에만 숫자를 겁니다. <b>이런 형태의 가이던스를 주는 회사는 매출 변동성이 크다는 신호로 읽는 게 맞습니다.</b>"
+    },
+    "stats": [
+      {
+        "k": "골드 구독자",
+        "v": "430만",
+        "u": "명",
+        "s": "+36%",
+        "stone": "up"
+      },
+      {
+        "k": "2026 비용 가이던스",
+        "v": "2.7~2.825",
+        "u": "B$"
+      },
+      {
+        "k": "매출 가이던스",
+        "v": "없음",
+        "s": "회사 방침"
+      }
+    ]
+  },
+  "korea": {
+    "kind": "간접 — 한국에서 영업하지 않는다",
+    "title": "서학개미가 쓰는 앱은 아니다",
+    "lead": "로빈후드는 <b>한국에서 서비스하지 않습니다.</b> 국내 증권사(키움·토스증권 등)와 같은 업이지만 고객이 겹치지 않습니다. 한국 투자자에게 이 종목은 <b>미국 개인 투자 열기에 대한 베팅</b>입니다.",
+    "lanes": [
+      {
+        "t": "간접 연결",
+        "d": "같은 업, 다른 시장",
+        "dest": "로빈후드",
+        "nodes": [
+          {
+            "n": "미국 개인 거래량",
+            "c": "—",
+            "kr": false,
+            "d": "주식·옵션·크립토. 매출의 대부분이 여기서 나옵니다."
+          },
+          {
+            "n": "국내 증권사",
+            "c": "KR",
+            "kr": true,
+            "d": "키움·토스증권 등. 같은 업이지만 시장이 다릅니다."
+          }
+        ]
+      }
+    ]
+  },
+  "notes": [
+    {
+      "h": "숫자를 볼 때",
+      "items": [
+        "<b style='color:var(--ink)'>1인당 매출이 155만 달러입니다</b> — 인원 2,900명으로 45억 달러를 냅니다.",
+        "<b style='color:var(--ink)'>연간 영업이익·총마진을 담지 않았습니다</b> — 확인하지 못해 비웠습니다.",
+        "<b style='color:var(--ink)'>매출 가이던스가 없습니다</b> — '앞으로' 섹션에 비용 가이던스만 있는 이유입니다."
+      ]
+    },
+    {
+      "h": "위험 쪽",
+      "items": [
+        "<b style='color:var(--ink)'>강세장 의존</b> — 거래가 줄면 매출이 먼저 줍니다. 2025년 +53%는 그 반대 방향이었습니다.",
+        "<b style='color:var(--ink)'>규제</b> — 주문 흐름 판매(PFOF) 등 수익 구조가 규제 논의 대상입니다.",
+        "<b style='color:var(--ink)'>크립토 비중</b> — 크립토 거래 수수료 비중이 커지면 코인베이스와 같은 위험을 집니다."
+      ]
+    }
+  ],
+  "sources": [
+    {
+      "i": "매출·순이익·임직원",
+      "p": "2025",
+      "s": "Robinhood 실적 발표"
+    },
+    {
+      "i": "2024 매출(성장률 계산 기준)",
+      "p": "2024",
+      "s": "Robinhood 실적 발표"
+    },
+    {
+      "i": "2026 비용 가이던스·구독자",
+      "p": "2026",
+      "s": "Robinhood 분기 실적 발표"
+    }
+  ],
+  "checksum": "검산 — 성장률 4.5 ÷ 2.95 − 1 = +52.5%, 순이익률 1.9 ÷ 4.5 = 42.2%, 1인당 매출 4.5B ÷ 2,900명 = 155만 달러로 전부 계산한 값입니다."
+};
+</script>
+<script src="/m7/assets/m7.js"></script>
+</body>
+</html>

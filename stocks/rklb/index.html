@@ -1,0 +1,188 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>로켓랩 지표 · 매출 구성과 한국과의 관계 | 종목 노트</title>
+<meta name="description" content="2025년 매출 6억 달러로 +38%, 순손실 1억 9,820만 달러. 수주잔고 18.5억 달러는 연매출의 3배가 넘습니다.">
+<link rel="canonical" href="https://richroro.github.io/stocks/rklb/">
+<meta property="og:type" content="website"><meta property="og:locale" content="ko_KR">
+<meta property="og:site_name" content="Cadence">
+<meta property="og:url" content="https://richroro.github.io/stocks/rklb/">
+<meta property="og:title" content="로켓랩 지표 | 종목 노트">
+<meta property="og:description" content="2025년 매출 6억 달러로 +38%, 순손실 1억 9,820만 달러. 수주잔고 18.5억 달러는 연매출의 3배가 넘습니다.">
+<meta name="twitter:card" content="summary">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='#0B7285'/><text x='50' y='66' font-size='30' text-anchor='middle' fill='white' font-family='monospace' font-weight='bold'>RKLB</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans+KR:wght@300;400;500;600;700&display=swap">
+<link rel="stylesheet" href="/m7/assets/m7.css">
+</head>
+<body>
+<noscript><div style="padding:24px;font-family:sans-serif"><h1>로켓랩 지표</h1><p>2025년 매출 6억 달러로 +38%, 순손실 1억 9,820만 달러. 수주잔고 18.5억 달러는 연매출의 3배가 넘습니다.</p>
+<p>차트를 그리는 데 자바스크립트를 씁니다. <a href="/stocks/">종목 노트 전체</a></p></div></noscript>
+<script src="/stocks/assets/registry.js"></script>
+<script>
+/* 로켓랩 (RKLB) — 이 블록만 고치면 페이지 전체가 따라 바뀝니다.
+   검산: 잔고 1.85B ÷ 매출 0.6018B = 3.1배 */
+const CO = {
+  "group": "frontier",
+  "hubHref": "/stocks/",
+  "hubName": "종목 노트 전체",
+  "hubMark": "종목",
+  "peersTitle": "같은 분야 다른 회사",
+  "asOf": "2026-09-20",
+  "slug": "rklb",
+  "tk": "RKLB",
+  "ko": "로켓랩",
+  "en": "Rocket Lab",
+  "ab": "RL",
+  "color": "#0B7285",
+  "fy": {
+    "label": "2025 · 2025년 12월 종료",
+    "note": "로켓랩 회계연도는 달력 연도와 같습니다."
+  },
+  "headline": "매출 +38%, 잔고는 연매출의 3배",
+  "lead": "2025년 매출 <b>6억 달러</b>(+38%), 순손실 <b>1억 9,820만 달러</b>입니다. 아직 적자지만 <b>손실이 매출보다 작습니다</b> — 같은 목록의 양자컴퓨팅 두 곳과 자릿수가 다릅니다. 수주잔고는 <b>18.5억 달러</b>로 연매출의 3.1배입니다.",
+  "stats": [
+    {
+      "k": "2025 매출",
+      "v": "602",
+      "u": "M$",
+      "s": "+38% YoY",
+      "stone": "up"
+    },
+    {
+      "k": "순손실",
+      "v": "−198",
+      "u": "M$",
+      "s": "매출의 0.33배",
+      "stone": "down"
+    },
+    {
+      "k": "순이익률",
+      "v": "−32.9",
+      "u": "%",
+      "stone": "down"
+    },
+    {
+      "k": "수주잔고",
+      "v": "1.85",
+      "u": "B$",
+      "s": "+73%",
+      "stone": "up"
+    }
+  ],
+  "signature": {
+    "nav": "잔고",
+    "eyebrow": "Backlog",
+    "title": "이미 받아 둔 주문이 3년치",
+    "lead": "적자 회사를 볼 때 중요한 건 손실 크기보다 <b>손실이 줄어들 경로가 있느냐</b>입니다. 로켓랩의 경우 그 경로가 잔고에 있습니다.",
+    "split": {
+      "title": "수주잔고와 연매출",
+      "sub": "2025년 말 기준",
+      "parts": [
+        {
+          "k": "수주잔고",
+          "v": 1850,
+          "color": "--s2",
+          "label": "18.5억$"
+        },
+        {
+          "k": "연매출",
+          "v": 601.8,
+          "color": "--s1",
+          "label": "6.0억$"
+        }
+      ],
+      "note": "잔고가 <b>전년 대비 +73%</b>로 매출 증가율(+38%)보다 빠릅니다. 받아 둔 주문이 파는 속도보다 빨리 쌓인다는 뜻입니다. 다만 <b>우주 발사는 일정이 자주 밀립니다</b> — 잔고가 언제 매출이 되는지는 발사 성공과 일정에 달려 있고, 그건 회사가 완전히 통제하지 못합니다."
+    },
+    "stats": [
+      {
+        "k": "잔고 / 연매출",
+        "v": "3.1",
+        "u": "배"
+      },
+      {
+        "k": "잔고 증가율",
+        "v": "+73",
+        "u": "%",
+        "s": "2024년 대비",
+        "stone": "up"
+      },
+      {
+        "k": "매출 증가율",
+        "v": "+38",
+        "u": "%",
+        "s": "2024년 436M$ 대비",
+        "stone": "up"
+      }
+    ]
+  },
+  "korea": {
+    "kind": "간접 — 계약이 아니라 수요 경로",
+    "title": "한국 기업과의 공개된 공급 관계는 없다",
+    "lead": "로켓랩은 발사체와 위성 부품을 주로 자체 생산하거나 미국 내에서 조달합니다. <b>한국 기업과의 공시된 공급 계약은 확인되지 않습니다.</b> 한국 우주산업과는 같은 시장에서 경쟁하는 축에 가깝지만, 규모와 단계가 달라 직접 비교는 어렵습니다.",
+    "lanes": [
+      {
+        "t": "간접 연결",
+        "d": "소형 발사체 시장이라는 같은 판",
+        "dest": "로켓랩",
+        "nodes": [
+          {
+            "n": "소형 위성 발사 수요",
+            "c": "—",
+            "kr": false,
+            "d": "통신·관측 위성이 늘면서 커지는 시장."
+          },
+          {
+            "n": "한국 우주산업",
+            "c": "KR",
+            "kr": true,
+            "d": "누리호 계열과 민간 기업들. 단계가 달라 직접 경쟁은 아직 제한적입니다."
+          }
+        ]
+      }
+    ]
+  },
+  "notes": [
+    {
+      "h": "숫자를 볼 때",
+      "items": [
+        "<b style='color:var(--ink)'>손실이 매출보다 작습니다</b> — 같은 '적자 성장주'라도 아이온큐(3.9배)·리게티(30배)와 성격이 다릅니다.",
+        "<b style='color:var(--ink)'>총마진·영업이익·임직원을 담지 않았습니다</b> — 확인하지 못해 비웠습니다.",
+        "<b style='color:var(--ink)'>잔고는 인도 시점이 정해져 있지 않습니다</b> — 3년치라는 표현은 단순히 연매출로 나눈 값입니다."
+      ]
+    },
+    {
+      "h": "위험 쪽",
+      "items": [
+        "<b style='color:var(--ink)'>발사 실패 한 번의 무게가 큽니다</b> — 일정이 밀리면 잔고가 매출로 바뀌는 시점도 밀립니다.",
+        "<b style='color:var(--ink)'>뉴트론(중형 발사체)이 아직 증명되지 않았습니다</b> — 회사의 다음 성장은 여기에 걸려 있습니다.",
+        "<b style='color:var(--ink)'>스페이스X와의 격차</b> — 발사 단가와 빈도에서 상대가 압도적입니다."
+      ]
+    }
+  ],
+  "sources": [
+    {
+      "i": "매출·순손실·잔고",
+      "p": "2025",
+      "s": "Rocket Lab 실적 발표"
+    },
+    {
+      "i": "2024 매출(성장률 계산 기준)",
+      "p": "2024",
+      "s": "Rocket Lab 실적 발표"
+    },
+    {
+      "i": "CEO·본사·설립",
+      "p": "2026",
+      "s": "Rocket Lab 공시"
+    }
+  ],
+  "checksum": "검산 — 성장률 601.8 ÷ 436.2 − 1 = +38.0%, 순이익률 −198.2 ÷ 601.8 = −32.9%, 잔고 배수 1,850 ÷ 601.8 = 3.1배로 전부 계산한 값입니다."
+};
+</script>
+<script src="/m7/assets/m7.js"></script>
+</body>
+</html>

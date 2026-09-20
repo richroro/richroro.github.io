@@ -1,0 +1,184 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>월마트 지표 · 매출 구성과 한국과의 관계 | 종목 노트</title>
+<meta name="description" content="FY2026 매출 7,132억 달러, 순이익 223억. 임직원 210만 명으로 1인당 매출은 34만 달러 — 이 목록 최저입니다. 그 숫자가 뜻하는 것을 정리했습니다.">
+<link rel="canonical" href="https://richroro.github.io/stocks/wmt/">
+<meta property="og:type" content="website"><meta property="og:locale" content="ko_KR">
+<meta property="og:site_name" content="Cadence">
+<meta property="og:url" content="https://richroro.github.io/stocks/wmt/">
+<meta property="og:title" content="월마트 지표 | 종목 노트">
+<meta property="og:description" content="FY2026 매출 7,132억 달러, 순이익 223억. 임직원 210만 명으로 1인당 매출은 34만 달러 — 이 목록 최저입니다. 그 숫자가 뜻하는 것을 정리했습니다.">
+<meta name="twitter:card" content="summary">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='#F59E0B'/><text x='50' y='66' font-size='42' text-anchor='middle' fill='white' font-family='monospace' font-weight='bold'>WMT</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans+KR:wght@300;400;500;600;700&display=swap">
+<link rel="stylesheet" href="/m7/assets/m7.css">
+</head>
+<body>
+<noscript><div style="padding:24px;font-family:sans-serif"><h1>월마트 지표</h1><p>FY2026 매출 7,132억 달러, 순이익 223억. 임직원 210만 명으로 1인당 매출은 34만 달러 — 이 목록 최저입니다. 그 숫자가 뜻하는 것을 정리했습니다.</p>
+<p>차트를 그리는 데 자바스크립트를 씁니다. <a href="/stocks/">종목 노트 전체</a></p></div></noscript>
+<script src="/stocks/assets/registry.js"></script>
+<script>
+/* 월마트 (WMT) — 이 블록만 고치면 페이지 전체가 따라 바뀝니다.
+   검산: 1인당 매출 713.163B ÷ 210만 = 34만 달러 */
+const CO = {
+  "group": "consumer",
+  "hubHref": "/stocks/",
+  "hubName": "종목 노트 전체",
+  "hubMark": "종목",
+  "peersTitle": "같은 분야 다른 회사",
+  "asOf": "2026-09-20",
+  "slug": "wmt",
+  "tk": "WMT",
+  "ko": "월마트",
+  "en": "Walmart",
+  "ab": "WM",
+  "color": "#F59E0B",
+  "fy": {
+    "label": "FY2026 · 2026년 1월 종료",
+    "note": "월마트 회계연도는 <b>1월 31일</b>에 끝납니다. FY2026은 2025년 2월~2026년 1월입니다."
+  },
+  "headline": "210만 명이 7,132억 달러를 판다",
+  "lead": "매출 <b>7,132억 달러</b>로 이 목록에서 아마존(7,169억) 다음입니다. 순이익률은 <b>3.1%</b>, 1인당 매출은 <b>34만 달러</b>로 <b>둘 다 최저</b>입니다. 이건 나쁜 회사라는 뜻이 아니라 <b>유통업의 숫자</b>입니다.",
+  "stats": [
+    {
+      "k": "FY2026 매출",
+      "v": "713.2",
+      "u": "B$",
+      "s": "+4.7% YoY",
+      "stone": "up"
+    },
+    {
+      "k": "순이익",
+      "v": "22.3",
+      "u": "B$",
+      "s": "순이익률 3.1%"
+    },
+    {
+      "k": "임직원",
+      "v": "210만",
+      "u": "명",
+      "s": "이 목록 최다"
+    },
+    {
+      "k": "1인당 매출",
+      "v": "0.34",
+      "u": "M$",
+      "s": "이 목록 최저"
+    }
+  ],
+  "signature": {
+    "nav": "1인당 지표",
+    "eyebrow": "Per head",
+    "title": "엔비디아의 15분의 1",
+    "lead": "월마트의 1인당 매출은 34만 달러, 엔비디아는 514만 달러입니다. <b>15배 차이</b>입니다. 이 숫자로 두 회사를 비교하는 건 의미가 없습니다.",
+    "split": {
+      "title": "1인당 매출",
+      "sub": "월마트와 엔비디아",
+      "parts": [
+        {
+          "k": "엔비디아",
+          "v": 5.14,
+          "color": "--s1",
+          "label": "514만$"
+        },
+        {
+          "k": "월마트",
+          "v": 0.34,
+          "color": "--s3",
+          "label": "34만$"
+        }
+      ],
+      "note": "<b>매장에서 물건을 파는 일은 사람이 합니다.</b> 계산대, 진열, 재고, 배송 — 매출을 늘리려면 사람도 같이 늘어납니다. 설계만 하고 생산을 맡기는 회사와는 구조가 다릅니다. <a href=\"/stocks/#people\">1인당 지표 섹션</a>의 경고가 왜 있는지 보여주는 반대쪽 사례입니다 — 슈퍼마이크로가 위쪽 극단이라면 월마트가 아래쪽 극단입니다."
+    },
+    "stats": [
+      {
+        "k": "월마트 1인당 매출",
+        "v": "0.34",
+        "u": "M$"
+      },
+      {
+        "k": "엔비디아 1인당 매출",
+        "v": "5.14",
+        "u": "M$",
+        "s": "15배"
+      },
+      {
+        "k": "월마트 순이익률",
+        "v": "3.1",
+        "u": "%"
+      }
+    ]
+  },
+  "korea": {
+    "kind": "공급 — 한국 상품이 들어간다",
+    "title": "매대에 올리면 물량이 다르다",
+    "lead": "코스트코와 같은 구조입니다. 국내 식품·소비재 기업에게 월마트 납품은 <b>단일 계약으로 가장 큰 물량</b>이 나가는 경로입니다. 대신 <b>단가와 납기 조건이 매우 빡빡합니다.</b>",
+    "lanes": [
+      {
+        "t": "상품 공급망",
+        "d": "월마트가 사고, 한국이 만든다",
+        "dest": "월마트 매대",
+        "nodes": [
+          {
+            "n": "국내 식품 제조사",
+            "c": "KR",
+            "kr": true,
+            "d": "K-푸드 카테고리. 최근 몇 년 사이 진열 면적이 늘었습니다."
+          },
+          {
+            "n": "국내 소비재",
+            "c": "KR",
+            "kr": true,
+            "d": "PB 납품 포함."
+          },
+          {
+            "n": "미국 소비자",
+            "c": "—",
+            "kr": false,
+            "d": "실제 구매자."
+          }
+        ]
+      }
+    ]
+  },
+  "notes": [
+    {
+      "h": "숫자를 볼 때",
+      "items": [
+        "<b style='color:var(--ink)'>1인당 지표로 업종을 넘어 비교하면 안 됩니다</b> — 이 페이지가 그 하한 사례입니다.",
+        "<b style='color:var(--ink)'>회계연도가 1월에 끝납니다</b> — 'FY2026'이 사실상 달력 2025년입니다.",
+        "<b style='color:var(--ink)'>총마진·영업이익·부문 매출을 담지 않았습니다</b> — 확인하지 못해 비웠습니다."
+      ]
+    },
+    {
+      "h": "위험 쪽",
+      "items": [
+        "<b style='color:var(--ink)'>마진이 얇습니다</b> — 순이익률 3.1%에서는 인건비·물류비 변동이 크게 반영됩니다.",
+        "<b style='color:var(--ink)'>아마존과의 경쟁</b> — 온라인 비중이 커질수록 물류 투자가 더 필요합니다.",
+        "<b style='color:var(--ink)'>관세</b> — 수입 비중이 높아 관세 정책이 원가에 직접 옵니다."
+      ]
+    }
+  ],
+  "sources": [
+    {
+      "i": "매출·순이익·임직원",
+      "p": "FY2026",
+      "s": "Walmart 실적 발표 · 연차보고"
+    },
+    {
+      "i": "FY2027 가이던스",
+      "p": "FY2027",
+      "s": "Walmart FY2027 2분기 실적 발표"
+    }
+  ],
+  "checksum": "검산 — 순이익률 22.270 ÷ 713.163 = 3.1%, 1인당 매출 713.163B ÷ 2,100,000명 = 34만 달러입니다. 엔비디아(514만 달러)와의 배수 15배도 계산한 값입니다."
+};
+</script>
+<script src="/m7/assets/m7.js"></script>
+</body>
+</html>
