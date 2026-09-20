@@ -1,6 +1,6 @@
 # 업로드 목록
 
-주제 24개. 각 폴더의 `upload.md`에 제목·설명·태그가 있다.
+주제 34개. 각 폴더의 `upload.md`에 제목·설명·태그가 있다.
 영상은 `shorts-quiet.mp4`, 썸네일 후보는 `poster-quiet.png`.
 
 | 폴더 | 제목 | 테마 |
@@ -22,13 +22,23 @@
 | `0021-inflation` | 지금 1억, 20년 뒤엔 5,537만원 | press |
 | `0022-savings` | 적금 이자가 예금의 절반인 이유 | mint |
 | `0023-debt` | 빚 1,000만원, 매달 10만원씩 갚으면 | paper |
-| `0024-trillion` | 1조원을 하루 100만원씩 쓰면 2,739년 | press |
+| `0024-trillion` | 1조원을 하루 100만원씩 쓰면 2,738년 | press |
 | `0025-fx` | 환율 100원 오르면 얼마나 손해일까 | mint |
-| `0026-installment` | 120만원 24개월 할부, 수수료가 19만원 | paper |
+| `0026-installment` | 120만원 24개월 할부, 수수료가 19만 6천원 | paper |
 | `0027-saverate` | 월급 300만원, 저축률별 1년에 모이는 돈 | mint |
-| `0028-compound` | 복리와 단리, 30년 뒤 1,821만원 차이 | press |
+| `0028-compound` | 복리와 단리, 30년 뒤 1,822만원 차이 | press |
 | `0029-real` | 이자 3%, 물가 3%면 남는 게 0입니다 | mint |
 | `0030-homeprice` | 집값 1% 상승, 3억 집과 30억 집의 차이 | paper |
+| `0031-lotto-tax` | 로또 20억 당첨, 실제로 받는 건 13억 | paper |
+| `0032-insurance` | 연봉 5,000만원, 4대보험으로 매달 40만원 | mint |
+| `0033-buycost` | 10억 집 살 때 집값 말고 3,800만원 더 든다 | press |
+| `0034-severance` | 연봉 5,000만원 10년 다니면 퇴직금 4,167만원 | paper |
+| `0035-lifetime` | 연봉 5,000만원, 평생 버는 돈은 15억 | press |
+| `0036-pir` | 연봉 5,000만원으로 서울 아파트, 35년에서 63년 | neon |
+| `0037-hundred` | 월 얼마 모으면 1억이 될까, 저축액별 기간 | mint |
+| `0038-taxfree` | 1,000만원 예금 이자, 세금 떼면 25만원 | paper |
+| `0039-retire` | 은퇴 후 30년, 월 250만원 쓰면 9억 필요 | press |
+| `0040-overtime` | 연봉별 야근수당, 한 시간에 얼마일까 | noir |
 
 ## 다시 만들려면
 
@@ -38,8 +48,11 @@ node cards/tools/scrollshorts.mjs cards/tools/content/<슬러그>.json \
   --poster=cards/<슬러그>/poster-quiet.png --dur=20 --style=bright --out=shorts-quiet.mp4
 node cards/tools/upload.mjs cards/tools/content/<슬러그>.json
 python3 cards/tools/factcheck.py
+node cards/tools/contrast.mjs
 ```
 
-제목과 태그는 콘텐츠 JSON의 `youtube` 항목에 있다.
-설명에는 카드 하단 고지 앞 세 줄이 자동으로 들어간다. 출처와 기준일이
+제목과 태그는 콘텐츠 JSON의 `youtube` 항목에 있다. 카드의 숫자를 고치면
+제목도 같이 고쳐야 한다. `factcheck.py`가 어긋난 것을 잡아준다.
+
+설명에는 카드 하단 고지 네 줄이 그대로 들어간다. 출처와 계산 가정이
 영상 밖에도 남아야 하기 때문이다.

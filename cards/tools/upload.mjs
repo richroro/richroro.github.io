@@ -36,8 +36,8 @@ const hashtags = [...tags.slice(0, 7), 'shorts'].map((t) => `#${t}`).join(' ');
 
 const md = `# ${d.slug} — 유튜브 업로드
 
-영상: \`shorts-fit.mp4\` (1080×1920, 20초)
-썸네일 후보: \`poster-fit.png\`
+영상: \`shorts-quiet.mp4\` (1080×1920, 20초)
+썸네일 후보: \`poster-quiet.png\`
 
 ## 제목
 
@@ -54,7 +54,7 @@ ${d.subtitle}
 
 ${rows}
 
-${d.note.slice(0, 3).map((n) => `※ ${n}`).join('\n')}
+${d.note.slice(0, 4).map((n) => `※ ${n}`).join('\n')}
 
 ${d.showRank === false
   ? '어느 숫자가 가장 의외였나요? 댓글에 남겨주세요.'

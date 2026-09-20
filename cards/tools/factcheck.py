@@ -85,7 +85,10 @@ def check(path):
                 v = tok.replace(',', '')
                 if v.replace('.', '').isdigit() and float(v) >= 100:
                     row_nums.add(float(v))
-    prose = ' '.join(d.get('note', []) + d.get('closing', []))
+    # the YouTube title is a separate field and drifts when a figure is
+    # corrected in the card but not in it - 0024, 0028, 0034 all did
+    title = (d.get('youtube') or {}).get('title', '')
+    prose = ' '.join(d.get('note', []) + d.get('closing', []) + [title])
     for tok in re.findall(r'[\d,]+\.?\d*', prose):
         v = tok.replace(',', '')
         if not v.replace('.', '').isdigit() or float(v) < 100:
@@ -100,12 +103,48 @@ def check(path):
     return out
 
 
+UNIT = r'(?:조|억|만)?\s*(?:원|년|개월|대|%|배)?'
+
+
+def title_figures(d):
+    """Title figures with no exact counterpart in the card.
+
+    Not a failure: a title may round on purpose ('13억 7,300만원' -> '13억').
+    But '4대보험으로 매달 38만원' against a card saying 404,891원 is a mistake,
+    and only a person can tell the two apart. So list them and let them look.
+    """
+    title = (d.get('youtube') or {}).get('title', '')
+    if not title:
+        return []
+    card = []
+    for r in d.get('rows', []):
+        for f in ('price', 'sub', 'mid', 'label'):
+            card += re.findall(r'[\d,]+\.?\d*\s*' + UNIT, str(r.get(f, '')))
+    for line in (d.get('note', []) + d.get('closing', [])
+                 + d.get('title', []) + [d.get('subtitle', '')]):
+        card += re.findall(r'[\d,]+\.?\d*\s*' + UNIT, line)
+    mags = {m for m in (parse(c) for c in card) if m is not None}
+    odd = []
+    for tok in re.findall(r'[\d,]+\.?\d*\s*' + UNIT, title):
+        v = parse(tok)
+        if v is None or v < 100:
+            continue
+        if not any(abs(v - m) / max(v, m) < 1e-9 for m in mags):
+            odd.append(tok.strip())
+    return [f"{d['slug']}: 제목의 {t} 는 카드에 그대로 나오지 않는다" for t in odd]
+
+
 def main():
-    problems = []
+    problems, advisories = [], []
     files = sorted(CONTENT.glob('0*.json'))
     for p in files:
         problems += check(p)
+        advisories += title_figures(json.loads(p.read_text(encoding='utf-8')))
     print(f'{len(files)} cards checked')
+    if advisories:
+        print('제목 숫자 확인 (실패 아님, 눈으로 볼 것):')
+        for line in advisories:
+            print(f'  ~ {line}')
     if not problems:
         print('no inconsistencies found')
         return 0

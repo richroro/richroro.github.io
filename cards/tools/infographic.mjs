@@ -33,6 +33,9 @@ const FIT = process.argv.includes('--fit');
 // cards, no gradient, no display face on the numbers. The value wears text
 // ink and a thin bar beside it carries the comparison.
 const QUIET = process.argv.includes('--quiet');
+// quiet 카드는 고지를 네 줄까지 싣는다. 자료 범위와 가정을 적는 줄이
+// 네 번째에 오는 주제가 있어서다. 넘치면 MEASURE=1 로 확인할 것.
+const QUIET_NOTES = 4;
 const FIT_H = 1920;
 
 const font = (f) => `url(data:font/ttf;base64,${readFileSync(resolve(FONT_DIR, f)).toString('base64')})`;
@@ -521,7 +524,7 @@ const html = `<!doctype html><html lang="ko"><head><meta charset="utf-8"><style>
       ? `<div class="key"><span>${esc(data.head.left)}</span><span style="width:250px;text-align:right">${esc(data.head.right)}</span></div>`
       : `<div class="key"><span><i class="g"></i>${esc(data.head.left)}</span><span><i class="r"></i>${esc(data.head.right)}</span></div>`}
   ${FIT || QUIET ? `<div class="rows">${data.rows.map(renderRow).join('')}</div>` : data.rows.map(renderRow).join('')}
-  <div class="note">${(QUIET ? data.note.slice(0, 3) : data.note).map((n) => `<p>${esc(n)}</p>`).join('')}${credits()}</div>
+  <div class="note">${(QUIET ? data.note.slice(0, QUIET_NOTES) : data.note).map((n) => `<p>${esc(n)}</p>`).join('')}${credits()}</div>
   <div class="close">${data.closing.map(esc).join('<br>')}</div>
   <div class="brand">${esc(data.brand)}</div>
 </div></body></html>`;

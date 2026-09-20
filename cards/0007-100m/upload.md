@@ -1,7 +1,7 @@
 # 0007-100m — 유튜브 업로드
 
-영상: `shorts-fit.mp4` (1080×1920, 20초)
-썸네일 후보: `poster-fit.png`
+영상: `shorts-quiet.mp4` (1080×1920, 20초)
+썸네일 후보: `poster-quiet.png`
 
 ## 제목
 
