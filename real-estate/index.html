@@ -224,6 +224,45 @@ table.ledger{width:100%;border-collapse:collapse;font-size:13px}
 .bar{height:10px;border-radius:0 3px 3px 0;background:var(--series-record);min-width:2px}
 .bar.deal{background:var(--series-deal)}
 
+/* 추천 */
+.rec-form{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px 14px;padding:16px;border-bottom:1px solid var(--line)}
+.rec-form .f{min-width:0}
+.rec-form .f select,.rec-form .f input{width:100%}
+.budget{display:flex;align-items:stretch;border:1.5px solid var(--line);border-radius:4px;background:var(--paper);overflow:hidden;min-height:34px}
+.budget:focus-within{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-wash)}
+.budget input{flex:1;min-width:0;border:0;background:transparent;font-family:"IBM Plex Mono",monospace;font-variant-numeric:tabular-nums;
+  font-size:17px;font-weight:600;padding:4px 2px 4px 10px;text-align:right;outline:none}
+.budget input::-webkit-outer-spin-button,.budget input::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
+.budget input[type=number]{-moz-appearance:textfield}
+.budget .unit{display:grid;place-items:center;padding:0 10px;font-size:13px;color:var(--ink-3);background:var(--surface-2);border-left:1px solid var(--line)}
+.rec-sum{padding:10px 16px;border-bottom:1px solid var(--line);font-size:12.5px;color:var(--ink-2);display:flex;flex-wrap:wrap;gap:4px 16px;align-items:center}
+.rec-sum b{color:var(--ink);font-weight:600}
+.rec-list2{display:flex;flex-direction:column}
+.rc{display:grid;grid-template-columns:44px minmax(0,1fr) 250px;gap:0 16px;padding:14px 16px;border-bottom:1px solid var(--line-soft);cursor:pointer;align-items:start}
+.rc:hover{background:var(--surface-2)}
+@media (max-width:820px){.rc{grid-template-columns:36px minmax(0,1fr);gap:0 12px}.rc .bars{grid-column:2/-1;margin-top:10px;width:100%}}
+.rc .rank{font-family:"IBM Plex Mono",monospace;font-size:19px;font-weight:600;color:var(--ink-3);line-height:1.3;text-align:right}
+.rc.top .rank{color:var(--accent)}
+.rc .who h4{margin:0;font-size:16px;font-weight:700;line-height:1.3}
+.rc .who .meta{font-size:12.5px;color:var(--ink-3);margin-top:2px}
+.rc .nums{display:flex;flex-wrap:wrap;gap:2px 14px;margin-top:8px;font-size:13px}
+.rc .nums span{color:var(--ink-3)}
+.rc .nums b{font-weight:600;color:var(--ink);font-family:"IBM Plex Mono",monospace;font-variant-numeric:tabular-nums}
+.rc .why{margin-top:8px;display:flex;flex-wrap:wrap;gap:5px}
+.rc .why i{font-style:normal;font-size:11.5px;background:var(--surface-2);color:var(--ink-2);border-radius:999px;padding:3px 9px}
+.rc .why i.up{background:var(--up-wash);color:var(--up-ink)}
+.rc .why i.dn{background:var(--down-wash);color:var(--down-ink)}
+.rc .bars{display:flex;flex-direction:column;gap:5px}
+.rc .score{display:flex;align-items:baseline;gap:6px;margin-bottom:3px}
+.rc .score b{font-size:22px;font-weight:600;font-family:"IBM Plex Mono",monospace;line-height:1}
+.rc .score span{font-size:11.5px;color:var(--ink-3)}
+.bar-row{display:grid;grid-template-columns:66px minmax(0,1fr);gap:8px;align-items:center;font-size:11.5px;color:var(--ink-3)}
+.bar-row span{white-space:nowrap}
+.bar-track{height:8px;border-radius:4px;background:var(--accent-wash);overflow:hidden}
+.bar-fill{height:100%;background:var(--accent);border-radius:0 4px 4px 0;min-width:2px}
+.rec-note{padding:14px 16px;font-size:12px;color:var(--ink-3);line-height:1.7;border-top:1px solid var(--line);background:var(--paper)}
+.rec-note b{color:var(--ink-2)}
+
 /* detail drawer */
 .scrim{position:fixed;inset:0;background:rgba(15,17,20,.45);z-index:40;opacity:0;pointer-events:none;transition:.2s}
 .scrim.on{opacity:1;pointer-events:auto}
@@ -351,6 +390,7 @@ table.deals{width:100%;border-collapse:collapse;font-size:12.5px}
     <button class="tab" type="button" role="tab" aria-selected="true" data-view="ledger">정리표<span class="n" id="nLedger"></span></button>
     <button class="tab" type="button" role="tab" aria-selected="false" data-view="timeline">신고가 타임라인<span class="n" id="nTimeline"></span></button>
     <button class="tab" type="button" role="tab" aria-selected="false" data-view="region">지역 요약</button>
+    <button class="tab" type="button" role="tab" aria-selected="false" data-view="recommend">내게 맞는 단지<span class="n" id="nRec"></span></button>
   </div>
 
   <section class="view panel" id="viewLedger" role="tabpanel">
@@ -377,6 +417,32 @@ table.deals{width:100%;border-collapse:collapse;font-size:12.5px}
   <section class="view panel" id="viewRegion" role="tabpanel" hidden>
     <div class="panel-h"><div class="panel-t">읍면동별 요약</div><div class="count" id="regionNote"></div></div>
     <div class="tablewrap"><table class="ledger region" id="regionTable"><thead></thead><tbody></tbody></table></div>
+  </section>
+
+  <section class="view panel" id="viewRecommend" role="tabpanel" hidden>
+    <div class="panel-h"><div class="panel-t">조건을 넣으면 후보를 점수순으로 정리합니다</div><button class="btn sm" id="expRec" type="button">추천 목록 복사</button></div>
+    <div class="rec-form">
+      <div class="f"><label for="rBudget">예산 <span class="hint">보유 자금 + 대출</span></label>
+        <div class="budget"><input type="number" id="rBudget" min="0" step="0.5" value="8"><span class="unit">억</span></div></div>
+      <div class="f"><label for="rArea">필요 전용면적</label>
+        <select id="rArea"><option value="0">상관없음</option><option value="40">40㎡ 이상 · 1~2인</option><option value="55">55㎡ 이상 · 2~3인</option><option value="70" selected>70㎡ 이상 · 3~4인</option><option value="84">84㎡ 이상 · 4인 이상</option><option value="100">100㎡ 이상</option></select></div>
+      <div class="f"><label for="rBuilt">연식</label>
+        <select id="rBuilt"><option value="0">상관없음</option><option value="5">5년 이내</option><option value="10">10년 이내</option><option value="15">15년 이내</option><option value="20">20년 이내</option><option value="30">30년 이내</option></select></div>
+      <div class="f"><label for="rProfile">무엇을 중요하게 볼지</label>
+        <select id="rProfile"></select></div>
+      <div class="f"><label for="rMinDeals">최소 거래 건수 <span class="hint">최근 1년</span></label>
+        <select id="rMinDeals"><option value="0">상관없음</option><option value="2">2건 이상</option><option value="5" selected>5건 이상</option><option value="10">10건 이상</option></select></div>
+      <div class="f"><label id="rCostLabel">부대비용</label>
+        <label class="toggle" style="min-height:34px"><input type="checkbox" id="rCost" checked> 취득세·중개보수 빼고 계산</label></div>
+    </div>
+    <div class="rec-sum" id="recSum"></div>
+    <div class="rec-list2" id="recList"></div>
+    <div class="rec-note">
+      <b>이 점수가 보는 것</b> — 실거래가에서 계산할 수 있는 것만 봅니다. 거래가 얼마나 활발한지, 고점에서 얼마나 내려왔는지,
+      최근 6개월 흐름이 어떤지, 같은 값이 얼마나 안정적으로 찍히는지, 같은 동네 같은 면적대보다 싼지, 연식이 어떤지.
+      <br><b>이 점수가 모르는 것</b> — 학군, 역까지 거리, 세대수, 관리비, 전세가율, 재건축·리모델링 추진 상황, 향·조망·층·수리 상태, 매물 유무.
+      집값을 좌우하는 것들이 여기 다 빠져 있습니다. 후보를 좁히는 데까지만 쓰고, 실제 판단은 직접 보고 하세요. 투자 권유가 아닙니다.
+    </div>
   </section>
 
   <footer class="foot">
@@ -622,6 +688,7 @@ function sampleDeals(){
 
 /* ---------- state & analysis ---------- */
 const S={deals:[],source:'',sample:false,ref:'',groups:[],shown:[],tl:[],view:'ledger',sort:'rec',dir:-1,page:0,per:50,open:null,
+  r:{budget:8,minArea:70,maxAge:0,profile:'balanced',minDeals:5,useCost:true},
   f:{sgg:'',dong:'',q:'',area:'all',recent:0,win:3,priceWin:3,recOnly:false,exCancel:true}};
 function median(arr){ if(!arr.length)return null; const a=[...arr].sort((x,y)=>x-y); const m=a.length>>1; return a.length%2?a[m]:(a[m-1]+a[m])/2; }
 function mode(arr){ const c=new Map(); let best=arr[0],bn=0; for(const v of arr){ const n=(c.get(v)||0)+1; c.set(v,n); if(n>bn){bn=n;best=v;} } return best; }
@@ -637,6 +704,7 @@ function analyze(){
     g.deals.push(d);
   }
   const ref=S.ref, winFrom=ref?monthsAgo(ref,f.win):'', pFrom=ref&&f.priceWin?monthsAgo(ref,f.priceWin):null, from12=ref?monthsAgo(ref,12):'';
+  const from6=ref?monthsAgo(ref,6):'';
   const months=[]; for(let i=11;i>=0;i--)months.push(ref?ymShift(ref,i):'');
   const groups=[];
   for(const g of map.values()){
@@ -652,9 +720,34 @@ function analyze(){
     g.price=price; g.priceN=recent.length; g.vsPeak=price/max.price-1; g.count=ds.length;
     g.count12=ds.filter(d=>d.date>=from12).length; g.min=Math.min(...ds.map(d=>d.price));
     g.spark=months.map(ym=>byM.has(ym)?median(byM.get(ym)):null);
+    const in6=ds.filter(d=>d.date>=from6), in6p=ds.filter(d=>d.date>=from12&&d.date<from6), in12=ds.filter(d=>d.date>=from12);
+    g.p6=in6.length?median(in6.map(d=>d.price)):null;
+    g.p6p=in6p.length?median(in6p.map(d=>d.price)):null;
+    g.mom=(g.p6!=null&&g.p6p)?g.p6/g.p6p-1:null;
+    g.cv=null;
+    if(in12.length>=3){ const v=in12.map(d=>d.price), mean=v.reduce((a,b)=>a+b,0)/v.length;
+      g.cv=Math.sqrt(v.reduce((t,x)=>t+(x-mean)*(x-mean),0)/v.length)/mean; }
+    g.ppy=g.price/(g.area/3.305785);
     groups.push(g);
   }
   S.groups=groups;
+  computePeers(groups);
+}
+
+/* 같은 동네·같은 면적대의 평단가 중위값. 싼지 비싼지는 이걸 기준으로 본다. */
+const AREA_BANDS=[[0,60],[60,85],[85,135],[135,1e9]];
+const BAND_NAMES=['60㎡ 미만','60~85㎡','85~135㎡','135㎡ 이상'];
+const pctAbs=(x,d=0)=>`${(Math.abs(x)*100).toFixed(d)}%`;
+const bandOf=a=>{ const i=AREA_BANDS.findIndex(([lo,hi])=>a>=lo&&a<hi); return i<0?AREA_BANDS.length-1:i; };
+function computePeers(groups){
+  const by=(keyFn)=>{ const m=new Map(); for(const g of groups){ const k=keyFn(g); (m.get(k)||m.set(k,[]).get(k)).push(g.ppy); } return m; };
+  const dongM=by(g=>`${g.sgg}|${g.dong}|${bandOf(g.area)}`), sggM=by(g=>`${g.sgg}|${bandOf(g.area)}`), allM=by(g=>String(bandOf(g.area)));
+  const med=(m,k)=>{ const v=m.get(k); return v&&v.length>=3?median(v):null; };
+  for(const g of groups){
+    const b=bandOf(g.area);
+    const peer=med(dongM,`${g.sgg}|${g.dong}|${b}`)||med(sggM,`${g.sgg}|${b}`)||med(allM,String(b));
+    g.peerPpy=peer; g.valueGap=peer?g.ppy/peer-1:null;
+  }
 }
 const SORTS={
   rec:{v:g=>g.lastRec?g.lastRec.date:''}, recPct:{v:g=>g.recRecent?g.lastRec.pct:-Infinity},
@@ -771,6 +864,124 @@ function renderRegion(){
 <td class="full" data-l="최고가"><span class="num">${fmtMan(r.top.max.price)}</span><div class="sub">${esc(r.top.apt)} ${r.top.areaKey}㎡ · ${fmtYM(r.top.max.date)}</div></td></tr>`; }).join('')
     :'<tr><td colspan="8" class="empty">표시할 지역이 없습니다.</td></tr>';
 }
+/* ---------- 추천 ---------- */
+const FACTORS={liq:'거래 활발',disc:'고점 낙폭',mom:'6개월 흐름',stab:'가격 안정',val:'동네 대비',age:'연식'};
+const PROFILES={
+  balanced:{n:'균형 있게',w:{liq:.25,disc:.2,mom:.15,stab:.15,val:.2,age:.05}},
+  live:{n:'실거주 · 안정 우선',w:{liq:.2,disc:0,mom:.05,stab:.3,val:.2,age:.25}},
+  value:{n:'저평가 · 낙폭 큰 곳',w:{liq:.15,disc:.35,mom:0,stab:.1,val:.4,age:0}},
+  trend:{n:'반등 · 상승 흐름',w:{liq:.25,disc:.1,mom:.45,stab:.05,val:.15,age:0}},
+  liquid:{n:'환금성 · 팔기 쉬운 곳',w:{liq:.5,disc:.05,mom:.1,stab:.2,val:.1,age:.05}},
+};
+/* 1주택·개략 기준 부대비용. 취득세 + 지방교육세(취득세의 10%) + 85㎡ 초과 농특세 0.2% + 중개보수 상한 */
+function acqRate(price,area){
+  const eok=price/10000;
+  const t=eok<=6?1:eok<=9?Math.round((eok*2/3-3)*1e4)/1e4:3;
+  return (t*1.1+(area>85?0.2:0))/100;
+}
+function brokerFee(price){
+  const eok=price/10000;
+  const r=eok<0.5?.006:eok<2?.005:eok<9?.004:eok<12?.005:eok<15?.006:.007;
+  let fee=price*r;
+  if(eok<0.5)fee=Math.min(fee,25); else if(eok<2)fee=Math.min(fee,80);
+  return fee;
+}
+function buyCost(price,area){ const acq=price*acqRate(price,area), br=brokerFee(price); return {acq,br,total:acq+br}; }
+
+/* 값이 작은 순으로 0~1 백분위. 동점은 평균 순위. */
+function rankMap(items,fn){
+  const v=items.map(fn), idx=v.map((_,i)=>i).sort((a,b)=>v[a]-v[b]), out=new Array(items.length);
+  if(items.length===1){ out[0]=.5; return out; }
+  let i=0;
+  while(i<idx.length){
+    let j=i; while(j+1<idx.length&&v[idx[j+1]]===v[idx[i]])j++;
+    const r=((i+j)/2)/(idx.length-1);
+    for(let k=i;k<=j;k++)out[idx[k]]=r;
+    i=j+1;
+  }
+  return out;
+}
+function medianOf(arr){ return arr.length?median(arr):0; }
+function recommend(){
+  const r=S.r, budget=Math.round(r.budget*10000);
+  const base=S.shown.filter(g=>
+    g.area>=r.minArea && g.count12>=r.minDeals && g.last.date>=(S.ref?monthsAgo(S.ref,12):'') &&
+    (!r.maxAge||(g.built&&(+S.ref.slice(0,4))-g.built<=r.maxAge)));
+  const fits=[]; let cheapest=null;
+  for(const g of base){
+    const cost=r.useCost?buyCost(g.price,g.area):{acq:0,br:0,total:0};
+    const need=g.price+cost.total;
+    if(!cheapest||need<cheapest.need)cheapest={g,need};
+    if(budget>0&&need>budget)continue;
+    fits.push({g,cost,need,left:budget-need});
+  }
+  if(!fits.length)return {list:[],base:base.length,fit:0,budget,cheapest};
+  const gs=fits.map(x=>x.g);
+  const medMom=medianOf(gs.filter(g=>g.mom!=null).map(g=>g.mom));
+  const medCv=medianOf(gs.filter(g=>g.cv!=null).map(g=>g.cv));
+  const medAge=medianOf(gs.filter(g=>g.built).map(g=>g.built));
+  const R={
+    liq:rankMap(gs,g=>g.count12),
+    disc:rankMap(gs,g=>-g.vsPeak),
+    mom:rankMap(gs,g=>g.mom==null?medMom:g.mom),
+    stab:rankMap(gs,g=>-(g.cv==null?medCv:g.cv)),
+    val:rankMap(gs,g=>-(g.valueGap==null?0:g.valueGap)),
+    age:rankMap(gs,g=>g.built||medAge),
+  };
+  const w=PROFILES[r.profile].w;
+  fits.forEach((x,i)=>{
+    x.parts={}; let sum=0;
+    for(const k in FACTORS){ const v=R[k][i]; x.parts[k]={rank:v,w:w[k],pts:v*w[k]}; sum+=v*w[k]; }
+    x.score=Math.round(sum*1000)/10;
+  });
+  fits.sort((a,b)=>b.score-a.score||b.g.count12-a.g.count12);
+  return {list:fits.slice(0,30),base:base.length,fit:fits.length,budget};
+}
+function whyChips(x){
+  const g=x.g, out=[];
+  if(g.count12>=10)out.push(['',`최근 1년 ${g.count12}건 거래`]);
+  else if(g.count12<=3)out.push(['',`최근 1년 ${g.count12}건뿐`]);
+  if(g.vsPeak<=-.1)out.push(['dn',`고점 대비 ${fmtPct(g.vsPeak)}`]);
+  else if(g.vsPeak>=-.02)out.push(['up','고점 부근']);
+  if(g.mom!=null&&Math.abs(g.mom)>=.02)out.push([g.mom>0?'up':'dn',`6개월 ${fmtPct(g.mom)}`]);
+  if(g.valueGap!=null&&Math.abs(g.valueGap)>=.05)
+    out.push([g.valueGap<0?'dn':'', `${esc(g.dong)} ${BAND_NAMES[bandOf(g.area)]} 평단가보다 ${pctAbs(g.valueGap)} ${g.valueGap<0?'싼 편':'비싼 편'}`]);
+  if(g.built)out.push(['',`${(+S.ref.slice(0,4))-g.built}년차`]);
+  return out.map(([c,t])=>`<i class="${c}">${t}</i>`).join('');
+}
+function renderRecommend(){
+  const el=$('#recList'), sum=$('#recSum'), r=S.r;
+  if(!S.deals.length){ sum.textContent=''; $('#nRec').textContent='';
+    el.innerHTML='<div class="empty">데이터를 불러오면 여기에 정리됩니다.</div>'; return; }
+  const res=recommend(), budget=res.budget;
+  $('#nRec').textContent=res.list.length?res.list.length.toLocaleString():'';
+  sum.innerHTML=`면적·연식·거래 조건에 맞는 <b>${res.base.toLocaleString()}</b>개 가운데 예산 안에 드는 <b>${(res.fit||0).toLocaleString()}</b>개`
+    +` <span>·</span> 예산 <b>${fmtMan(budget)}</b>${r.useCost?' <span>취득세·중개보수 포함</span>':''}`
+    +` <span>·</span> 기준 <b>${PROFILES[r.profile].n}</b>`;
+  if(!res.list.length){
+    let msg;
+    if(!res.base)msg='면적·연식·거래 건수 조건에 맞는 단지가 없습니다. 조건을 풀어 보세요.';
+    else if(res.cheapest){ const c=res.cheapest;
+      msg=`예산 안에 드는 단지가 없습니다. 가장 싼 후보는 <b>${esc(c.g.apt)} ${c.g.areaKey}㎡</b> 로 ${fmtMan(c.need)}${r.useCost?' (부대비용 포함)':''} 필요합니다 — 예산을 <b>${(Math.ceil(c.need/1000)/10).toFixed(1)}억</b> 으로 올리면 잡힙니다.`; }
+    else msg='예산 안에 드는 단지가 없습니다.';
+    el.innerHTML=`<div class="empty">${msg}</div>`;
+    return;
+  }
+  const w=PROFILES[r.profile].w;
+  const keys=Object.keys(FACTORS).filter(k=>w[k]>0).sort((a,b)=>w[b]-w[a]);
+  el.innerHTML=res.list.map((x,i)=>{
+    const g=x.g;
+    const bars=keys.map(k=>`<div class="bar-row"><span>${FACTORS[k]}</span><div class="bar-track"><div class="bar-fill" style="width:${Math.max(2,Math.round(x.parts[k].rank*100))}%"></div></div></div>`).join('');
+    return `<div class="rc ${i<3?'top':''}" data-key="${esc(g.key)}" role="button" tabindex="0">
+<div class="rank num">${i+1}</div>
+<div class="who"><h4>${esc(g.apt)} <span class="num" style="font-weight:600;color:var(--ink-3)">${g.areaKey}㎡</span></h4>
+  <div class="meta">${esc([g.gu||g.sgg,g.dong].filter(Boolean).join(' '))} · ${pyeong(g.area)}평${g.built?` · ${g.built}년 준공`:''}</div>
+  <div class="nums"><span>시세 <b>${fmtMan(g.price)}</b></span>${r.useCost?`<span>부대비용 <b>${fmtMan(x.cost.total)}</b></span><span>합계 <b>${fmtMan(x.need)}</b></span>`:''}<span>예산 여유 <b>${fmtMan(x.left)}</b></span></div>
+  <div class="why">${whyChips(x)}</div></div>
+<div class="bars"><div class="score"><b>${x.score.toFixed(0)}</b><span>/ 100점</span></div>${bars}</div></div>`;
+  }).join('');
+}
+
 /* ---------- drawer & chart ---------- */
 function niceTicks(mn,mx,n){ const raw=(mx-mn)/n, p=Math.pow(10,Math.floor(Math.log10(raw))); const step=[1,2,2.5,5,10].map(x=>x*p).find(x=>x>=raw); const t=[]; for(let v=Math.ceil(mn/step)*step;v<=mx;v+=step)t.push(v); return t; }
 function drawChart(g){
@@ -862,6 +1073,13 @@ function renderDataset(){
 function persist(){ try{ if(S.sample||S.auto||!S.deals.length){if(S.sample||!S.deals.length)localStorage.removeItem('sgj.data');return;} const s=JSON.stringify({source:S.source,deals:S.deals}); if(s.length<4e6)localStorage.setItem('sgj.data',s); else localStorage.removeItem('sgj.data'); }catch(e){} }
 function restore(){ try{ const o=JSON.parse(localStorage.getItem('sgj.data')||'null'); if(!o||!o.deals||!o.deals.length)return false; setDeals(o.deals,o.source||'이전 데이터',false,false); setStatus(`이전에 불러온 데이터를 다시 열었습니다 (${o.deals.length.toLocaleString()}건).`); return true; }catch(e){return false;} }
 function saveF(){ try{ localStorage.setItem('sgj.f',JSON.stringify({win:S.f.win,priceWin:S.f.priceWin,exCancel:S.f.exCancel})); }catch(e){} }
+function saveR(){ try{ localStorage.setItem('sgj.r',JSON.stringify(S.r)); }catch(e){} }
+function loadR(){
+  $('#rProfile').innerHTML=Object.entries(PROFILES).map(([k,v])=>`<option value="${k}">${v.n}</option>`).join('');
+  try{ const o=JSON.parse(localStorage.getItem('sgj.r')||'null'); if(o&&PROFILES[o.profile])Object.assign(S.r,o); }catch(e){}
+  $('#rBudget').value=S.r.budget; $('#rArea').value=S.r.minArea; $('#rBuilt').value=S.r.maxAge;
+  $('#rProfile').value=S.r.profile; $('#rMinDeals').value=S.r.minDeals; $('#rCost').checked=S.r.useCost;
+}
 function loadF(){ try{ const o=JSON.parse(localStorage.getItem('sgj.f')||'null'); if(o){ Object.assign(S.f,o); $('#fWin').value=S.f.win; $('#fPrice').value=S.f.priceWin; $('#fExCancel').checked=S.f.exCancel; } }catch(e){} }
 function setStatus(msg,err){ const s=$('#status'); s.textContent=msg; s.classList.toggle('err',!!err); }
 async function handleFiles(files){
@@ -889,7 +1107,7 @@ async function loadURL(url,quiet,auto){
 }
 
 /* ---------- render all ---------- */
-function render(){ analyze(); fillFilters(); applyFilters(); renderDataset(); renderKpis(); renderLedger(); renderTimeline(); renderRegion();
+function render(){ analyze(); fillFilters(); applyFilters(); renderDataset(); renderKpis(); renderLedger(); renderTimeline(); renderRegion(); renderRecommend();
   $('#count').textContent=S.groups.length?`${S.shown.length.toLocaleString()} / ${S.groups.length.toLocaleString()}개 표시`:''; }
 
 /* ---------- theme ---------- */
@@ -920,7 +1138,7 @@ function bind(){
   $('#fPrice').onchange=e=>{ S.f.priceWin=+e.target.value; F(1); };
   $('#fRecOnly').onchange=e=>{ S.f.recOnly=e.target.checked; F(); };
   $('#fExCancel').onchange=e=>{ S.f.exCancel=e.target.checked; F(1); };
-  document.querySelectorAll('.tab').forEach(t=>t.onclick=()=>{ S.view=t.dataset.view; document.querySelectorAll('.tab').forEach(x=>x.setAttribute('aria-selected',x===t?'true':'false')); ['ledger','timeline','region'].forEach(v=>$('#view'+v[0].toUpperCase()+v.slice(1)).hidden=v!==S.view); });
+  document.querySelectorAll('.tab').forEach(t=>t.onclick=()=>{ S.view=t.dataset.view; document.querySelectorAll('.tab').forEach(x=>x.setAttribute('aria-selected',x===t?'true':'false')); ['ledger','timeline','region','recommend'].forEach(v=>$('#view'+v[0].toUpperCase()+v.slice(1)).hidden=v!==S.view); });
   $('#ledger').addEventListener('click',e=>{ const sb=e.target.closest('[data-sort]'); if(sb){ const k=sb.dataset.sort; if(S.sort===k)S.dir=-S.dir; else {S.sort=k;S.dir=k==='apt'||k==='vsPeak'?1:-1;} S.page=0; applyFilters(); renderLedger(); return; } const tr=e.target.closest('tr[data-key]'); if(tr)openDrawer(tr.dataset.key); });
   $('#pager').onclick=e=>{ const b=e.target.closest('[data-pg]'); if(!b)return; S.page+=+b.dataset.pg; renderLedger(); $('#viewLedger').scrollIntoView({block:'start',behavior:'smooth'}); };
   $('#timeline').addEventListener('click',e=>{ const r=e.target.closest('[data-key]'); if(r)openDrawer(r.dataset.key); });
@@ -932,6 +1150,18 @@ function bind(){
   $('#expCsv').onclick=()=>{ if(!S.shown.length)return toast('내려받을 행이 없습니다'); download(`singoga-ledger_${(S.ref||'').replace(/-/g,'')}.csv`,'﻿'+[HEAD,...ledgerRows()].map(r=>r.map(c=>`"${String(c).replace(/"/g,'""')}"`).join(',')).join('\r\n'),'text/csv;charset=utf-8'); };
   $('#expTsv').onclick=()=>{ if(!S.shown.length)return toast('복사할 행이 없습니다'); copyText([HEAD,...ledgerRows()].map(r=>r.join('\t')).join('\n'),`${S.shown.length}행을 복사했습니다 (엑셀에 붙여넣기)`); };
   $('#expTxt').onclick=()=>copyText(summaryText(),'요약 텍스트를 복사했습니다');
+  const R=()=>{ saveR(); renderRecommend(); };
+  $('#rBudget').oninput=e=>{ S.r.budget=Math.max(0,+e.target.value||0); R(); };
+  $('#rArea').onchange=e=>{ S.r.minArea=+e.target.value; R(); };
+  $('#rBuilt').onchange=e=>{ S.r.maxAge=+e.target.value; R(); };
+  $('#rProfile').onchange=e=>{ S.r.profile=e.target.value; R(); };
+  $('#rMinDeals').onchange=e=>{ S.r.minDeals=+e.target.value; R(); };
+  $('#rCost').onchange=e=>{ S.r.useCost=e.target.checked; R(); };
+  $('#recList').addEventListener('click',e=>{ const c=e.target.closest('[data-key]'); if(c)openDrawer(c.dataset.key); });
+  $('#recList').addEventListener('keydown',e=>{ const c=e.target.closest('[data-key]'); if(c&&(e.key==='Enter'||e.key===' ')){e.preventDefault();openDrawer(c.dataset.key);} });
+  $('#expRec').onclick=()=>{ const res=recommend(); if(!res.list.length)return toast('복사할 추천이 없습니다');
+    const head=`[내게 맞는 단지] 예산 ${fmtMan(res.budget)}${S.r.useCost?'(부대비용 포함)':''} · ${PROFILES[S.r.profile].n} · 기준일 ${fmtDate(S.ref)}`;
+    copyText(head+'\n'+res.list.map((x,i)=>`${i+1}. ${x.g.apt} ${x.g.areaKey}㎡ (${x.g.dong}) 시세 ${fmtMan(x.g.price)} · ${x.score.toFixed(0)}점 · 고점대비 ${fmtPct(x.g.vsPeak)} · 최근1년 ${x.g.count12}건`).join('\n'),`${res.list.length}건을 복사했습니다`); };
   $('#expTl').onclick=()=>{ if(!S.tl.length)return toast('복사할 항목이 없습니다'); copyText(S.tl.map(({g,r})=>`${fmtDate(r.date)}\t${g.apt}\t${g.areaKey}㎡\t${r.floor??''}층\t${r.price}\t${r.prev}\t${fmtPct(r.pct)}`).join('\n'),`${S.tl.length}건을 복사했습니다`); };
   $('#themeBtn').onclick=()=>applyTheme(theme==='auto'?'light':theme==='light'?'dark':'auto');
 }
@@ -939,7 +1169,7 @@ function bind(){
 /* ---------- init ---------- */
 (async function init(){
   try{ applyTheme(localStorage.getItem('sgj.theme')||'auto'); }catch(e){ applyTheme('auto'); }
-  bind(); loadF();
+  bind(); loadF(); loadR();
   const src=new URLSearchParams(location.search).get('src');
   if(src){ $('#urlInput').value=src; if(await loadURL(src))return; }
   if(restore())return;
