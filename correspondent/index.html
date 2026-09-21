@@ -134,6 +134,8 @@ section[hidden]{display:none}
 .link-btn{background:none;border:none;color:var(--accent);font-size:12.5px;font-weight:600;
   cursor:pointer;padding:4px 6px;border-radius:6px;min-height:32px}
 .link-btn:hover{background:var(--accent-wash)}
+.link-btn.flagbtn{color:var(--ink-3);font-weight:500}
+.link-btn.flagbtn:hover{background:var(--s2-bg);color:var(--s2-ink)}
 
 /* 큰 두 단추 — 좁은 화면에선 바닥에 고정 */
 .actions{display:flex;gap:8px;margin:16px 0 4px}
@@ -399,6 +401,7 @@ footer{border-top:1px solid var(--line);margin-top:36px;background:var(--surface
     </div>
     <span id="livePill"></span>
     <span class="bar-sp"></span>
+    <button class="icon-btn" id="boardBtn" type="button" hidden title="공용 보드"><span aria-hidden="true">🏘</span><span class="lbl" id="boardLbl">동네</span></button>
     <button class="icon-btn" id="meBtn" type="button" title="특파원 이름"><span aria-hidden="true">👤</span><span class="lbl" id="meLbl">이름</span></button>
     <button class="icon-btn" id="themeBtn" type="button" title="테마 바꾸기"><span aria-hidden="true">◐</span><span class="lbl">테마</span></button>
   </div>
@@ -612,6 +615,53 @@ footer{border-top:1px solid var(--line);margin-top:36px;background:var(--surface
   </div>
 </div>
 
+<!-- ===== 공용 보드 ===== -->
+<div class="backdrop" id="boardBack">
+  <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="boardTitle">
+    <div class="sheet-head">
+      <h2 id="boardTitle">🏘 공용 보드</h2>
+      <button class="x" type="button" data-close aria-label="닫기">&times;</button>
+    </div>
+    <div class="sheet-body">
+      <div class="field">
+        <label for="hoodSel">우리 동네</label>
+        <select class="input" id="hoodSel" style="width:100%"></select>
+        <p class="note" style="margin-top:7px">고른 동네의 속보만 받습니다. 위치는 받지 않습니다 — 동네는 직접 고르는 값입니다.</p>
+      </div>
+      <div class="field">
+        <span class="lbl">로그인</span>
+        <div id="authBox"></div>
+        <p class="note" style="margin-top:7px">읽기는 로그인 없이도 됩니다. <b>쓰기와 신고에만</b> 로그인이 필요합니다 — 누가 썼는지 남아야 신고가 뜻을 가집니다.</p>
+      </div>
+      <div class="status" id="boardStatus" aria-live="polite"></div>
+      <dl class="kv" id="boardKv"></dl>
+    </div>
+    <div class="sheet-foot">
+      <button class="btn primary" type="button" id="pullNow">지금 받아오기</button>
+      <button class="btn ghost" type="button" data-close>닫기</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== 신고 ===== -->
+<div class="backdrop" id="flagBack">
+  <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="flagTitle">
+    <div class="sheet-head">
+      <h2 id="flagTitle">이 리포트 신고</h2>
+      <button class="x" type="button" data-close aria-label="닫기">&times;</button>
+    </div>
+    <div class="sheet-body">
+      <p class="note" id="flagWhat" style="margin-bottom:11px"></p>
+      <div class="seg" id="flagReasons" role="group" aria-label="신고 사유"></div>
+      <p class="note" style="margin-top:11px">세 사람이 신고하면 모두에게서 가려집니다. 잘못 누르면 되돌릴 수 없으니 한 번 더 보세요.</p>
+      <div class="status" id="flagStatus" aria-live="polite"></div>
+    </div>
+    <div class="sheet-foot">
+      <button class="btn ghost" type="button" data-close>닫기</button>
+    </div>
+  </div>
+</div>
+
 <!-- ===== 장소 상세 ===== -->
 <div class="backdrop" id="placeBack">
   <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="placeTitle">
@@ -628,6 +678,9 @@ footer{border-top:1px solid var(--line);margin-top:36px;background:var(--surface
 </div>
 
 <div class="toast" id="toast" role="status" hidden></div>
+
+<script src="config.js"></script>
+<script src="sync.js"></script>
 <script>
 "use strict";
 
@@ -739,7 +792,7 @@ function liveLabel(t){
 
 /* ---------------------------- 보드 ---------------------------- */
 /** 밖에서 들어온 것은 전부 여기를 지난다. 못 믿을 값은 버리거나 깎는다. */
-function sane(o){
+function sane(o, local){
   if (!o || typeof o !== "object") return null;
   const t = Number(o.t);
   if (!isFinite(t) || t < 1577836800000 || t > Date.now() + DAY) return null;  // 2020년 이전 · 하루 넘게 미래면 버린다
@@ -760,17 +813,24 @@ function sane(o){
     park:  inSet(PARK,  Number(o.park)),
     rate:  clamp(Math.round(Number(o.rate) || 0), 0, 5),
     tags,
-    note:  clip(o.note, 200)
+    note:  clip(o.note, 200),
+    /* mine 은 내가 쓴 것이라는 표시다. 링크나 서버에서 온 것에는 절대 붙지 않는다 —
+       붙으면 남의 글을 내 계정으로 올리게 된다. local 은 내 저장소에서 읽을 때만 참이다. */
+    mine:  local ? !!o.mine : false,
+    up:    local ? !!o.up : false
   };
 }
 
 const board = (function load(){
   const raw = store.get(KEY, null);
-  const b = { reports: [], me: "", seeded: false };
+  const b = { reports: [], me: "", seeded: false, hood: "", pulledAt: 0 };
   if (raw && typeof raw === "object") {
-    if (Array.isArray(raw.reports)) b.reports = raw.reports.map(sane).filter(Boolean);
+    /* 내 저장소에서 읽는 것이므로 mine/up 을 살린다. 링크·서버에서 오는 것은 살리지 않는다. */
+    if (Array.isArray(raw.reports)) b.reports = raw.reports.map((r) => sane(r, true)).filter(Boolean);
     b.me = clip(raw.me, 20);
     b.seeded = !!raw.seeded;
+    b.hood = clip(raw.hood, 12);
+    b.pulledAt = Number(raw.pulledAt) || 0;
   }
   b.reports.sort((a, c) => c.t - a.t);
   return b;
@@ -884,6 +944,8 @@ function cardHtml(r, o){
       '<span class="by">— ' + esc(r.by) + " 특파원</span>" +
       '<span class="spacer"></span>' +
       (sample ? "" : '<button class="link-btn" type="button" data-share="' + esc(r.id) + '">공유</button>') +
+      (!sample && SY.enabled && !r.mine ?
+        '<button class="link-btn flagbtn" type="button" data-flag="' + esc(r.id) + '">신고</button>' : "") +
     "</div>" +
   "</article>";
 }
@@ -1295,6 +1357,151 @@ function renderAll(){
 }
 
 /* =========================================================================
+   공용 보드
+
+   서버가 없어도 앱은 그대로 돈다. config.js 가 비어 있으면 아래는 전부 잠들어 있고,
+   리포트는 이 브라우저에만 쌓이며 링크로만 오간다.
+
+   서버를 쓸 때도 로컬이 먼저다. 쓴 즉시 내 보드에 들어가고, 올리기는 그 다음이다.
+   못 올렸으면 up:false 로 남아 있다가 다음 기회에 올라간다 — 지하 주차장에서 쓴 것도 안 날아간다.
+   ========================================================================= */
+const SY = window.TPW_SYNC || { enabled:false, hasSession:() => false };
+let hoods = [];
+let syncing = false;
+
+function hoodLabel(code){
+  const h = hoods.find((x) => x.code === code);
+  return h ? h.label : "";
+}
+
+/** 서버에서 내려온 줄을 보드에 합친다. 링크로 받을 때와 똑같은 길목(sane/merge)을 지난다.
+
+    내 글인지는 서버가 알려 준다(mine 계산 컬럼). 브라우저를 비우거나 다른 기기로 들어가도
+    내 글이 남의 글로 보이지 않는다 — 그러면 내 글에 신고 단추가 붙는다.
+    링크로 받는 쪽은 이 표시가 없으므로 여전히 mine 이 붙지 않는다. */
+function mergeRows(rows){
+  const list = [];
+  (rows || []).forEach((row) => {
+    const r = sane(SY.toReport(row));
+    if (!r) return;
+    if (row.mine) { r.mine = true; r.up = true; }   // 이미 서버에 있는 내 글
+    list.push(r);
+  });
+  return merge(list);
+}
+
+async function syncPull(quiet){
+  if (!SY.enabled || !board.hood || syncing) return;
+  syncing = true;
+  try {
+    const rows = await SY.pull(board.hood, null, 200);
+    const res = mergeRows(rows);
+    board.pulledAt = Date.now();
+    save();
+    renderAll();
+    if (!quiet && res.added) toast(res.added + "건을 받아왔습니다.");
+    else if (!quiet) toast("새 소식이 없습니다.");
+    return res;
+  } catch (e) {
+    if (!quiet) toast("받아오지 못했습니다: " + e.message);
+  } finally { syncing = false; }
+}
+
+/** 아직 못 올린 내 리포트를 올린다. 남의 글(mine=false)은 절대 올리지 않는다. */
+async function syncPushPending(){
+  if (!SY.enabled || !board.hood || !SY.hasSession()) return 0;
+  const pending = board.reports.filter((r) => r.mine && !r.up);
+  let n = 0;
+  for (const r of pending) {
+    try { await SY.push(r, board.hood); r.up = true; n++; }
+    catch (e) {
+      /* 이미 올라가 있으면(같은 id) 올린 것으로 친다. 그 밖의 실패는 다음 기회에. */
+      if (/duplicate|already exists|23505/i.test(e.message)) r.up = true;
+      else break;
+    }
+  }
+  if (n) save();
+  return n;
+}
+
+async function boardRefresh(quiet){
+  await syncPushPending();
+  await syncPull(quiet);
+}
+
+function paintBoardBtn(){
+  $("#boardBtn").hidden = !SY.enabled;
+  if (!SY.enabled) return;
+  const lbl = board.hood ? (hoodLabel(board.hood).split(" ").pop() || "동네") : "동네 고르기";
+  $("#boardLbl").textContent = lbl;
+  $("#boardBtn").title = board.hood ? "공용 보드: " + hoodLabel(board.hood) : "동네를 고르세요";
+}
+
+function paintAuthBox(){
+  const box = $("#authBox");
+  if (SY.hasSession()) {
+    box.innerHTML = '<div class="row" style="margin-top:0"><span class="note">로그인되어 있습니다.</span>' +
+      '<button class="btn sm ghost" id="signOut" type="button">로그아웃</button></div>';
+    $("#signOut").addEventListener("click", () => {
+      SY.signOut();
+      paintAuthBox(); paintBoardBtn(); renderAll();
+      toast("로그아웃했습니다. 읽기는 그대로 됩니다.");
+    });
+  } else {
+    box.innerHTML = '<div class="row" style="margin-top:0">' +
+      '<button class="btn sm primary" id="inKakao" type="button">카카오로 로그인</button></div>' +
+      '<div class="row"><input class="input grow" id="inEmail" type="email" placeholder="메일 주소 (시험용)" autocomplete="email">' +
+      '<button class="btn sm" id="inEmailGo" type="button">링크 받기</button></div>';
+    $("#inKakao").addEventListener("click", () => SY.signInKakao());
+    $("#inEmailGo").addEventListener("click", async () => {
+      const st = $("#boardStatus");
+      const mail = $("#inEmail").value.trim();
+      if (!mail) { st.textContent = "메일 주소를 적어 주세요."; st.className = "status err"; return; }
+      try {
+        await SY.signInEmail(mail);
+        st.textContent = "메일을 보냈습니다. 링크를 누르면 이 화면으로 돌아옵니다.";
+        st.className = "status ok";
+      } catch (e) { st.textContent = "보내지 못했습니다: " + e.message; st.className = "status err"; }
+    });
+  }
+}
+
+function paintBoardKv(){
+  const mine = board.reports.filter((r) => r.mine).length;
+  const up = board.reports.filter((r) => r.mine && r.up).length;
+  $("#boardKv").innerHTML =
+    "<dt>동네</dt><dd>" + (board.hood ? esc(hoodLabel(board.hood)) : "아직 안 골랐습니다") + "</dd>" +
+    "<dt>마지막 받아오기</dt><dd>" + (board.pulledAt ? esc(ago(board.pulledAt)) : "—") + "</dd>" +
+    "<dt>내가 쓴 리포트</dt><dd>" + mine + "건 (올라간 것 " + up + "건)</dd>";
+}
+
+async function openBoardSheet(){
+  $("#boardStatus").textContent = ""; $("#boardStatus").className = "status";
+  if (!hoods.length) {
+    try { hoods = await SY.listHoods() || []; } catch (e) {}
+  }
+  $("#hoodSel").innerHTML = '<option value="">— 동네를 고르세요 —</option>' +
+    hoods.map((h) => '<option value="' + esc(h.code) + '"' + (h.code === board.hood ? " selected" : "") +
+      ">" + esc(h.label) + "</option>").join("");
+  paintAuthBox();
+  paintBoardKv();
+  openSheet("#boardBack");
+}
+
+/* ─────────────────────────── 신고 ─────────────────────────── */
+const FLAG_REASONS = ["거짓", "광고", "욕설", "사생활", "기타"];
+let flagTarget = null;
+
+function openFlagSheet(r){
+  flagTarget = r;
+  $("#flagWhat").innerHTML = "“" + esc(r.place) + "” · " + esc(r.by) + " 특파원 · " + esc(ago(r.t));
+  $("#flagStatus").textContent = ""; $("#flagStatus").className = "status";
+  $("#flagReasons").innerHTML = FLAG_REASONS.map((x) =>
+    '<button class="chip" type="button" data-reason="' + esc(x) + '">' + esc(x) + "</button>").join("");
+  openSheet("#flagBack");
+}
+
+/* =========================================================================
    시트(모달)
    ========================================================================= */
 function openSheet(sel){
@@ -1433,7 +1640,16 @@ function merge(list){
   const have = new Set(board.reports.map((r) => r.id));
   let added = 0, dup = 0;
   list.forEach((r) => {
-    if (have.has(r.id)) { dup++; return; }
+    if (have.has(r.id)) {
+      dup++;
+      /* 이미 갖고 있더라도 "내 글이고 서버에 있다"는 사실은 갱신한다.
+         안 그러면 올린 적 없는 것으로 알고 계속 다시 올리려 든다. */
+      if (r.mine) {
+        const cur = board.reports.find((x) => x.id === r.id);
+        if (cur && (!cur.mine || !cur.up)) { cur.mine = true; cur.up = true; }
+      }
+      return;
+    }
     have.add(r.id);
     board.reports.push(r);
     added++;
@@ -1577,6 +1793,9 @@ function bind(){
     meEditing = false;
     save();
     paintMe();
+    if (SY.enabled && SY.hasSession() && board.me) {
+      SY.saveProfile(board.me, board.hood || null).catch(() => {});
+    }
     renderPeople();
     toast(board.me ? board.me + " 특파원으로 저장했습니다." : "이름을 비웠습니다.");
   });
@@ -1600,6 +1819,12 @@ function bind(){
     if (sh) {
       const r = reports().find((x) => x.id === sh.dataset.share);
       if (r) openShare([r]);
+      return;
+    }
+    const fl = e.target.closest("[data-flag]");
+    if (fl) {
+      const r = reports().find((x) => x.id === fl.dataset.flag);
+      if (r) openFlagSheet(r);
       return;
     }
     const del = e.target.closest("[data-del]");
@@ -1662,10 +1887,17 @@ function bind(){
     });
     if (!r) { $("#composeErr").textContent = "리포트를 만들지 못했습니다."; return; }
     const first = !board.reports.length;
+    r.mine = true;                 // 내가 쓴 것 — 올릴 수 있는 건 이것뿐이다
     board.reports.unshift(r);
     board.seeded = true;
     board.me = by;
     if (!save()) toast("저장 공간이 부족합니다. 오래된 리포트를 지워 보세요.");
+    if (SY.enabled && board.hood) {
+      syncPushPending().then((n) => {
+        if (n) { renderAll(); toast("공용 보드에 올렸습니다."); }
+        else if (!SY.hasSession()) toast("내 보드에만 저장했습니다. 로그인하면 동네에 올라갑니다.");
+      });
+    }
     switchView("feed");
     renderAll();
     closeSheets(true);
@@ -1814,6 +2046,46 @@ function bind(){
     toast("전부 비웠습니다.");
   });
 
+  /* 공용 보드 */
+  $("#boardBtn").addEventListener("click", openBoardSheet);
+  $("#hoodSel").addEventListener("change", async (e) => {
+    board.hood = clip(e.target.value, 12);
+    save();
+    paintBoardBtn(); paintBoardKv();
+    if (board.hood) { await boardRefresh(false); paintBoardKv(); }
+  });
+  $("#pullNow").addEventListener("click", async () => {
+    if (!board.hood) { $("#boardStatus").textContent = "동네를 먼저 고르세요."; $("#boardStatus").className = "status err"; return; }
+    $("#boardStatus").textContent = "받아오는 중…"; $("#boardStatus").className = "status";
+    const res = await boardRefresh(true);
+    paintBoardKv();
+    $("#boardStatus").textContent = res ? (res.added + "건 새로 받았습니다." + (res.dup ? " (" + res.dup + "건은 이미 있음)" : ""))
+                                        : "받아오지 못했습니다.";
+    $("#boardStatus").className = "status " + (res ? "ok" : "err");
+  });
+
+  /* 신고 */
+  $("#flagReasons").addEventListener("click", async (e) => {
+    const b = e.target.closest("[data-reason]");
+    if (!b || !flagTarget) return;
+    const st = $("#flagStatus");
+    if (!SY.hasSession()) {
+      st.textContent = "신고하려면 로그인이 필요합니다. 누가 신고했는지 남아야 도배 신고를 막을 수 있습니다.";
+      st.className = "status err";
+      return;
+    }
+    st.textContent = "보내는 중…"; st.className = "status";
+    try {
+      await SY.flag(flagTarget.id, b.dataset.reason);
+      st.textContent = "신고했습니다. 세 사람이 신고하면 가려집니다.";
+      st.className = "status ok";
+      setTimeout(closeSheets, 1200);
+    } catch (e2) {
+      st.textContent = /duplicate|23505/i.test(e2.message) ? "이미 신고한 리포트입니다." : "보내지 못했습니다: " + e2.message;
+      st.className = "status err";
+    }
+  });
+
   window.addEventListener("hashchange", checkHash);
 }
 
@@ -1821,8 +2093,24 @@ function bind(){
 applyTheme(theme);
 bind();
 $("#meInput").value = board.me;
+
+/* 로그인하고 돌아오면 토큰이 해시에 실려 온다. #r= 공유 링크와 같은 자리라
+   토큰만 먼저 걷어낸 뒤에 checkHash() 를 부른다. */
+if (SY.enabled) {
+  try { SY.consumeAuthHash(); } catch (e) {}
+}
+paintBoardBtn();
 renderAll();
 checkHash();
+
+if (SY.enabled) {
+  SY.listHoods().then((h) => { hoods = h || []; paintBoardBtn(); }).catch(() => {});
+  if (SY.hasSession() && board.me) SY.saveProfile(board.me, board.hood || null).catch(() => {});
+  if (board.hood) boardRefresh(true);
+  /* 속보는 금방 상한다. 3분마다 조용히 받아온다. */
+  setInterval(() => { if (!document.hidden) boardRefresh(true); }, 3 * 60e3);
+  document.addEventListener("visibilitychange", () => { if (!document.hidden) boardRefresh(true); });
+}
 /* 시간이 흐르면 "몇 분 전"과 신선도가 달라진다 — 1분마다 다시 그린다. */
 setInterval(() => { renderTicker(); renderFeed(); renderPlaces(); }, 60e3);
 </script>
