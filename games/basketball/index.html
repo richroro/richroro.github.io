@@ -1,0 +1,1253 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="theme-color" content="#F2F4F6">
+<meta name="description" content="공을 스와이프해서 던지고, 움직이는 골대에 넣는 45초 한 손 농구 게임">
+<title>한 손 농구</title>
+<link rel="canonical" href="https://richroro.github.io/games/basketball/">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='46' fill='%23FF6B2C'/><g stroke='%235A2A08' stroke-width='5' fill='none'><circle cx='50' cy='50' r='46'/><path d='M50 4v92M4 50h92M18 18q32 32 0 64M82 18q-32 32 0 64'/></g></svg>">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="한 손 농구">
+<meta property="og:title" content="한 손 농구">
+<meta property="og:description" content="스와이프 한 번으로 던지는 45초 농구. 넣을수록 골대가 빨리 움직여요.">
+<meta property="og:url" content="https://richroro.github.io/games/basketball/">
+<meta property="og:image" content="https://richroro.github.io/games/basketball/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="한 손 농구">
+<meta name="twitter:description" content="스와이프 한 번으로 던지는 45초 농구. 넣을수록 골대가 빨리 움직여요.">
+<meta name="twitter:image" content="https://richroro.github.io/games/basketball/og.png">
+<style>
+  :root{
+    --bg:#F2F4F6;
+    --card:#FFFFFF;
+    --ink:#191F28;
+    --ink-2:#4E5968;
+    --ink-3:#8B95A1;
+    --line:#E5E8EB;
+    --blue:#3182F6;
+    --blue-weak:#E8F3FF;
+    --red:#F04452;
+    --orange:#FF6B2C;
+    --orange-weak:#FFEFE6;
+    --shadow:0 2px 12px rgba(25,31,40,.08);
+    --field-top:#F7FAFF;
+    --field-bottom:#FFE7C7;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+  html,body{height:100%;overflow:hidden;overscroll-behavior:none}
+  /* iOS 사파리는 주소창 높이까지 100%에 포함시켜 화면 아래가 잘린다 */
+  @supports (height:100dvh){ html,body{height:100dvh} }
+  body{
+    font-family:'Pretendard','Apple SD Gothic Neo','Malgun Gothic',system-ui,-apple-system,sans-serif;
+    background:var(--bg);color:var(--ink);
+    display:flex;flex-direction:column;
+    touch-action:none;user-select:none;-webkit-user-select:none;
+    padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+  }
+
+  /* ── 헤더 ─────────────────────────────── */
+  header{
+    flex:0 0 auto;display:flex;align-items:center;gap:8px;
+    padding:10px 16px 6px;max-width:484px;width:100%;margin:0 auto;
+  }
+  .brand{font-size:15px;font-weight:800;letter-spacing:-.03em;flex:1;min-width:0;
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .icon-btn{
+    width:34px;height:34px;flex:0 0 auto;border:0;border-radius:11px;
+    background:var(--card);box-shadow:var(--shadow);color:var(--ink-2);
+    display:grid;place-items:center;cursor:pointer;font-size:15px;line-height:1;
+  }
+  .icon-btn:active{transform:scale(.94)}
+
+  .scores{
+    flex:0 0 auto;display:flex;align-items:flex-end;gap:10px;padding:0 16px 6px;
+    max-width:484px;width:100%;margin:0 auto;
+  }
+  .score-now{font-size:34px;font-weight:800;letter-spacing:-.045em;line-height:1;
+    font-variant-numeric:tabular-nums}
+  .score-now small{font-size:15px;font-weight:700;color:var(--ink-3);margin-left:3px}
+  .score-best{margin-left:auto;text-align:right;line-height:1.25}
+  .score-best b{display:block;font-size:15px;font-weight:700;letter-spacing:-.03em;
+    font-variant-numeric:tabular-nums}
+  .score-best span{font-size:11px;color:var(--ink-3);font-weight:600}
+
+  /* 연속 성공 칩: 2연속부터 보인다 */
+  .combo{
+    margin-bottom:3px;font-size:12px;font-weight:800;letter-spacing:-.02em;
+    background:var(--orange-weak);color:var(--orange);
+    padding:5px 9px;border-radius:9px;opacity:0;transform:scale(.8);
+    transition:opacity .18s, transform .18s;
+  }
+  .combo.on{opacity:1;transform:none}
+  .combo.pop{transform:scale(1.14)}
+
+  /* ── 남은 시간 ─────────────────────────── */
+  .timer{
+    flex:0 0 auto;display:flex;align-items:center;gap:9px;padding:0 16px 8px;
+    max-width:484px;width:100%;margin:0 auto;
+  }
+  .track{
+    flex:1 1 auto;height:6px;border-radius:99px;background:var(--line);overflow:hidden;
+  }
+  .track i{
+    display:block;height:100%;border-radius:99px;background:var(--blue);
+    transform-origin:left center;transform:scaleX(1);
+  }
+  .track i.low{background:var(--red)}
+  .timer span{
+    flex:0 0 auto;font-size:12px;font-weight:700;color:var(--ink-3);
+    font-variant-numeric:tabular-nums;min-width:38px;text-align:right;
+  }
+
+  /* ── 코트 ─────────────────────────────── */
+  #stage{
+    flex:1 1 auto;position:relative;min-height:0;
+    width:calc(100% - 24px);max-width:460px;margin:0 auto;
+  }
+  #field{
+    position:absolute;inset:0;width:100%;height:100%;
+    border-radius:20px;display:block;
+    background:linear-gradient(180deg,var(--field-top),var(--field-bottom));
+    box-shadow:inset 0 0 0 1px rgba(25,31,40,.06), var(--shadow);
+  }
+
+  .hint{
+    flex:0 0 auto;text-align:center;font-size:11.5px;color:var(--ink-3);
+    font-weight:600;padding:8px 16px calc(8px + env(safe-area-inset-bottom));
+  }
+
+  /* ── 오버레이 공통 ─────────────────────── */
+  .veil{
+    position:fixed;inset:0;z-index:20;display:none;
+    align-items:center;justify-content:center;padding:24px;
+    background:rgba(25,31,40,.45);backdrop-filter:blur(3px);
+  }
+  .veil.show{display:flex}
+  .sheet{
+    width:100%;max-width:340px;background:var(--card);border-radius:22px;
+    padding:26px 22px 18px;text-align:center;
+    box-shadow:0 12px 40px rgba(25,31,40,.25);
+    animation:rise .22s cubic-bezier(.2,.8,.3,1);
+  }
+  @keyframes rise{from{opacity:0;transform:translateY(14px) scale(.97)}to{opacity:1;transform:none}}
+  .sheet h2{font-size:21px;font-weight:800;letter-spacing:-.04em;margin-bottom:8px}
+  .sheet p{font-size:13.5px;color:var(--ink-2);line-height:1.65;font-weight:500}
+  .sheet .big{font-size:40px;font-weight:800;letter-spacing:-.05em;margin:10px 0 2px;
+    font-variant-numeric:tabular-nums;color:var(--blue)}
+  .sheet .sub{font-size:12.5px;color:var(--ink-3);font-weight:600;margin-bottom:18px}
+  .btns{display:flex;flex-direction:column;gap:8px;margin-top:18px}
+  .btn{
+    width:100%;border:0;border-radius:14px;padding:14px;cursor:pointer;
+    font-size:15px;font-weight:700;letter-spacing:-.02em;font-family:inherit;
+  }
+  .btn:active{transform:scale(.98)}
+  .btn.primary{background:var(--blue);color:#fff}
+  .btn.ghost{background:var(--bg);color:var(--ink-2)}
+  .row{display:flex;gap:8px}
+  .row .btn{flex:1}
+
+  .rules{text-align:left;margin-top:16px;display:flex;flex-direction:column;gap:9px}
+  .rule{display:flex;gap:10px;align-items:flex-start}
+  .rule b{
+    flex:0 0 auto;width:20px;height:20px;border-radius:7px;background:var(--blue-weak);
+    color:var(--blue);font-size:11px;font-weight:800;display:grid;place-items:center;margin-top:1px;
+  }
+  .rule span{font-size:13px;color:var(--ink-2);line-height:1.55;font-weight:500}
+
+  /* 점수표 */
+  .pts{display:flex;flex-direction:column;gap:6px;margin-top:14px;text-align:left}
+  .pt{display:flex;align-items:center;gap:8px;font-size:12.5px;font-weight:600;color:var(--ink-2)}
+  .pt em{
+    flex:0 0 auto;font-style:normal;font-weight:800;color:var(--orange);
+    background:var(--orange-weak);border-radius:8px;padding:3px 7px;font-size:11.5px;
+    min-width:38px;text-align:center;
+  }
+
+  /* 게임 끝 기록 */
+  .stats{display:flex;gap:8px;margin-top:2px;margin-bottom:16px}
+  .stat{flex:1;background:var(--bg);border-radius:13px;padding:10px 6px}
+  .stat b{display:block;font-size:16px;font-weight:800;letter-spacing:-.03em;
+    font-variant-numeric:tabular-nums}
+  .stat span{font-size:11px;color:var(--ink-3);font-weight:600}
+
+  #toast{
+    position:fixed;left:50%;bottom:calc(28px + env(safe-area-inset-bottom));
+    transform:translate(-50%,10px);z-index:30;pointer-events:none;
+    background:rgba(25,31,40,.92);color:#fff;font-size:13px;font-weight:600;
+    padding:11px 18px;border-radius:12px;opacity:0;transition:opacity .2s, transform .2s;
+  }
+  #toast.show{opacity:1;transform:translate(-50%,0)}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="brand">한 손 농구</div>
+  <button class="icon-btn" id="btnSound" aria-label="소리 켜기 끄기">🔊</button>
+  <button class="icon-btn" id="btnRank" aria-label="내 기록">🏆</button>
+  <button class="icon-btn" id="btnExit" aria-label="게임 나가기">✕</button>
+</header>
+
+<div class="scores">
+  <div>
+    <div class="score-now"><span id="scoreVal">0</span><small>점</small></div>
+  </div>
+  <div class="combo" id="comboChip">🔥 연속 <span id="comboVal">0</span></div>
+  <div class="score-best">
+    <b id="bestVal">0</b>
+    <span>최고 기록</span>
+  </div>
+</div>
+
+<div class="timer">
+  <div class="track"><i id="timerFill"></i></div>
+  <span id="timerVal">45초</span>
+</div>
+
+<div id="stage">
+  <canvas id="field"></canvas>
+</div>
+
+<div class="hint" id="hint">골대 쪽으로 스와이프하면 공이 날아가요</div>
+<div id="toast"></div>
+
+<!-- 시작 -->
+<div class="veil show" id="vStart">
+  <div class="sheet">
+    <h2>한 손 농구</h2>
+    <p>공을 골대 쪽으로 스와이프하면 던져져요.<br>45초 안에 몇 점까지 넣을 수 있을까요?</p>
+    <div class="pts">
+      <div class="pt"><em>2점</em><span>림이나 백보드를 맞고 들어가면</span></div>
+      <div class="pt"><em>3점</em><span>아무것도 안 닿고 깨끗하게 들어가면</span></div>
+      <div class="pt"><em>+시간</em><span>넣을 때마다 남은 시간이 조금씩 늘어요</span></div>
+    </div>
+    <div class="btns">
+      <button class="btn primary" id="btnStart">시작하기</button>
+      <button class="btn ghost" id="btnHow">게임 방법</button>
+    </div>
+  </div>
+</div>
+
+<!-- 게임 방법 -->
+<div class="veil" id="vHow">
+  <div class="sheet">
+    <h2>게임 방법</h2>
+    <div class="rules">
+      <div class="rule"><b>1</b><span>화면을 누른 채 던질 방향으로 끌면 예상 궤적이 점선으로 보여요. 손을 떼면 그대로 날아가요.</span></div>
+      <div class="rule"><b>2</b><span>길게 끌수록 세게 날아가요. 너무 짧게 끌면 던지지 않아요.</span></div>
+      <div class="rule"><b>3</b><span>림에 안 닿고 그물만 흔들면 스윔, 3점이에요.</span></div>
+      <div class="rule"><b>4</b><span>연속으로 넣으면 보너스가 붙고, 3골부터는 골대가 좌우로 움직여요.</span></div>
+    </div>
+    <div class="btns"><button class="btn primary" id="btnHowClose">알겠어요</button></div>
+  </div>
+</div>
+
+<!-- 일시정지 -->
+<div class="veil" id="vPause">
+  <div class="sheet">
+    <h2>잠시 멈췄어요</h2>
+    <p>다른 화면에 다녀오셨네요.<br>이어서 계속할 수 있어요.</p>
+    <div class="btns"><button class="btn primary" id="btnResume">이어하기</button></div>
+  </div>
+</div>
+
+<!-- 게임 오버 -->
+<div class="veil" id="vOver">
+  <div class="sheet">
+    <h2 id="overTitle">경기 끝!</h2>
+    <div class="big" id="overScore">0</div>
+    <div class="sub" id="overSub">최고 기록 0점</div>
+    <div class="stats">
+      <div class="stat"><b id="statMade">0/0</b><span>성공/시도</span></div>
+      <div class="stat"><b id="statRate">0%</b><span>성공률</span></div>
+      <div class="stat"><b id="statCombo">0</b><span>최다 연속</span></div>
+    </div>
+    <div class="btns">
+      <button class="btn primary" id="btnRetry">다시하기</button>
+      <div class="row">
+        <button class="btn ghost" id="btnShare">공유</button>
+        <button class="btn ghost" id="btnOverRank">기록</button>
+        <button class="btn ghost" id="btnOverExit">나가기</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 종료 확인 -->
+<div class="veil" id="vExit">
+  <div class="sheet">
+    <h2>게임을 나갈까요?</h2>
+    <p>진행 중인 경기는 저장되지 않아요.<br>최고 기록은 그대로 남아요.</p>
+    <div class="btns">
+      <div class="row">
+        <button class="btn ghost" id="btnExitNo">계속하기</button>
+        <button class="btn primary" id="btnExitYes">나가기</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 내 기록 -->
+<div class="veil" id="vRank">
+  <div class="sheet">
+    <h2>내 기록</h2>
+    <div class="big" id="rankBest">0</div>
+    <div class="sub">최고 기록</div>
+    <p id="rankNote">기록은 이 기기에만 저장돼요.</p>
+    <div class="btns"><button class="btn primary" id="btnRankClose">닫기</button></div>
+  </div>
+</div>
+
+<script>
+"use strict";
+(function () {
+
+/* ══════════════════════════════════════════════════════════════
+   1. 저장소 (기록 유지 · 재접속 시에도 남음)
+   ══════════════════════════════════════════════════════════════ */
+var store = {
+  get: function (k, d) {
+    try { var v = localStorage.getItem("hoop." + k); return v === null ? d : v; }
+    catch (e) { return d; }
+  },
+  set: function (k, v) {
+    try { localStorage.setItem("hoop." + k, String(v)); } catch (e) {}
+  }
+};
+
+/* ══════════════════════════════════════════════════════════════
+   2. 사운드 (파일 없이 WebAudio로 생성)
+   ══════════════════════════════════════════════════════════════ */
+var tapped = false;   // 실제 사용자 입력이 한 번이라도 있었는지
+
+var sfx = (function () {
+  var ac = null;
+  var muted = store.get("muted", "0") === "1";
+
+  function ensure() {
+    if (!ac) {
+      var AC = window.AudioContext || window.webkitAudioContext;
+      if (!AC) return null;
+      try { ac = new AC(); } catch (e) { return null; }
+    }
+    if (ac.state === "suspended") ac.resume();
+    return ac;
+  }
+  function tone(freq, dur, type, vol, slideTo) {
+    if (muted) return;
+    var a = ensure();
+    if (!a) return;
+    var o = a.createOscillator(), g = a.createGain();
+    o.type = type || "sine";
+    o.frequency.setValueAtTime(freq, a.currentTime);
+    if (slideTo) o.frequency.exponentialRampToValueAtTime(slideTo, a.currentTime + dur);
+    g.gain.setValueAtTime(0.0001, a.currentTime);
+    g.gain.exponentialRampToValueAtTime(vol || 0.14, a.currentTime + 0.012);
+    g.gain.exponentialRampToValueAtTime(0.0001, a.currentTime + dur);
+    o.connect(g); g.connect(a.destination);
+    o.start(); o.stop(a.currentTime + dur + 0.02);
+  }
+  // 그물 스치는 소리처럼 들리게 만든 짧은 화이트 노이즈
+  function noise(dur, vol, hz) {
+    if (muted) return;
+    var a = ensure();
+    if (!a) return;
+    var n = Math.floor(a.sampleRate * dur);
+    var buf = a.createBuffer(1, n, a.sampleRate);
+    var d = buf.getChannelData(0);
+    for (var i = 0; i < n; i++) d[i] = (Math.random() * 2 - 1) * (1 - i / n);
+    var src = a.createBufferSource(); src.buffer = buf;
+    var f = a.createBiquadFilter(); f.type = "bandpass"; f.frequency.value = hz || 2600;
+    var g = a.createGain(); g.gain.value = vol || 0.12;
+    src.connect(f); f.connect(g); g.connect(a.destination);
+    src.start();
+  }
+  function buzzer(ms) {
+    // 사용자가 화면을 한 번도 건드리지 않은 상태에서 부르면
+    // 브라우저가 막으면서 콘솔에 에러를 남긴다
+    if (muted || !tapped || !navigator.vibrate) return;
+    try { navigator.vibrate(ms); } catch (e) {}
+  }
+  return {
+    isMuted: function () { return muted; },
+    toggle: function () {
+      muted = !muted;
+      store.set("muted", muted ? "1" : "0");
+      if (!muted) { ensure(); tone(660, 0.08, "triangle", 0.1); }
+      return muted;
+    },
+    unlock: function () { ensure(); },
+    // 백그라운드 전환 시 소리 즉시 중단
+    stopAll: function () { if (ac && ac.state === "running") ac.suspend(); },
+    wake: function () { if (ac && ac.state === "suspended" && !muted) ac.resume(); },
+    shoot: function () { tone(420, 0.09, "triangle", 0.07, 700); buzzer(8); },
+    bounce: function () { tone(150, 0.07, "sine", 0.07); },
+    rim: function () { tone(1150, 0.07, "square", 0.05, 820); buzzer(10); },
+    board: function () { tone(230, 0.08, "square", 0.05); buzzer(10); },
+    swish: function () { noise(0.22, 0.1, 3200); },
+    made: function (combo) {
+      var base = 620 * Math.pow(1.06, Math.min(combo, 8));
+      tone(base, 0.1, "triangle", 0.12);
+      setTimeout(function () { tone(base * 1.5, 0.14, "sine", 0.1); }, 60);
+      buzzer(14 + Math.min(combo, 6) * 3);
+    },
+    end: function () {
+      tone(300, 0.5, "sawtooth", 0.1);
+      buzzer([18, 60, 18]);
+    }
+  };
+})();
+
+/* ══════════════════════════════════════════════════════════════
+   3. 코트 좌표계
+   가로 폭을 항상 420 단위로 고정하고, 세로는 화면 비율에 맞춰 늘린다.
+   그려 넣는 위치는 전부 이 단위를 쓰고, 화면에 옮길 때만 배율을 건다.
+   ══════════════════════════════════════════════════════════════ */
+var FW = 420, FH = 680;
+var FLOOR = 0, HOOP_Y = 0, RAIL_Y = 0, HX_MIN = 0, HX_MAX = 0, HOLD_Y = 0;
+
+var canvas = document.getElementById("field");
+var ctx = canvas.getContext("2d");
+var stage = document.getElementById("stage");
+var dpr = 1;
+
+function layout() {
+  FLOOR  = FH - 26;                       // 코트 바닥선
+  HOOP_Y = Math.round(FH * 0.34);         // 림 높이(위에서부터)
+  RAIL_Y = Math.max(22, HOOP_Y - 112);    // 백보드를 매단 레일
+  HOLD_Y = FLOOR - 46;                    // 공을 들고 있는 높이
+  HX_MIN = 152;
+  HX_MAX = FW - 58;
+  if (hoop.x < HX_MIN) hoop.x = HX_MIN;
+  if (hoop.x > HX_MAX) hoop.x = HX_MAX;
+  if (!ball.live) ball.y = HOLD_Y;
+}
+
+function resize() {
+  var rect = stage.getBoundingClientRect();
+  if (rect.width < 2 || rect.height < 2) return false;
+  dpr = Math.min(window.devicePixelRatio || 1, 2.5);
+  var w = Math.round(rect.width * dpr);
+  var h = Math.round(rect.height * dpr);
+  if (canvas.width === w && canvas.height === h) return true;
+  canvas.width = w;
+  canvas.height = h;
+  FH = Math.round(FW * (rect.height / rect.width));
+  layout();
+  return true;
+}
+// 첫 레이아웃 타이밍은 환경마다 달라서 관찰자로 붙잡는다 (초기 0px 방지)
+if (window.ResizeObserver) {
+  new ResizeObserver(resize).observe(stage);
+} else {
+  window.addEventListener("resize", resize);
+}
+window.addEventListener("orientationchange", function () { setTimeout(resize, 120); });
+
+// 화면 좌표 → 코트 좌표 배율
+function scaleOf() {
+  var rect = stage.getBoundingClientRect();
+  return rect.width > 0 ? FW / rect.width : 1;
+}
+
+/* ══════════════════════════════════════════════════════════════
+   4. 물리 상수
+   전부 '코트 단위 / 60분의 1초' 기준이다. 루프가 고정 스텝이라
+   프레임률이 달라져도 같은 궤적이 나온다.
+   ══════════════════════════════════════════════════════════════ */
+var R = 17;             // 공 반지름
+var GRAV = 0.48;        // 프레임당 중력
+var AIR = 0.997;        // 공기 저항
+var MAXV = 40;          // 프레임당 최대 이동 거리
+var POWER = 0.145;      // 드래그 길이 → 속도 환산
+var MAXPOW = 26;        // 발사 속도 상한
+var MINDRAG = 18;       // 이보다 짧게 끌면 던지지 않는다(오터치 방지)
+var WALL_E = 0.6;       // 옆벽 반발
+var FLOOR_E = 0.5;      // 바닥 반발
+var FLOOR_FRICTION = 0.84;
+var RIM = 31;           // 림 반지름(중심 → 양 끝)
+var KNOB = 5;           // 림 끝 충돌 반지름
+var RIM_E = 0.5;        // 림 반발
+var BOARD_E = 0.45;     // 백보드 반발
+var BOARD_W = 9, BOARD_H = 78;
+var BOARD_DROP = 20;   // 림보다 아래로 내려오는 길이
+var GAME_TIME = 45;     // 시작 시간(초)
+var ADD_MADE = 2;       // 성공 시 더해 주는 시간
+var ADD_SWISH = 3;      // 스윔이면 조금 더
+var RESET_DELAY = 0.5;  // 공이 죽고 다음 공이 올 때까지
+
+/* ══════════════════════════════════════════════════════════════
+   5. 게임 상태
+   ══════════════════════════════════════════════════════════════ */
+var hoop = { x: 260, y: 240, dir: 1 };
+var ball = { x: 90, y: 400, px: 90, py: 400, vx: 0, vy: 0, spin: 0, live: false };
+var state = "ready";     // ready | playing | paused | over
+var score = 0, shots = 0, makes = 0, combo = 0, bestCombo = 0;
+var best = parseInt(store.get("best", "0"), 10) || 0;
+var timeLeft = GAME_TIME;
+var scored = false;      // 이번 슛이 이미 득점 처리됐는지
+var touched = false;     // 이번 슛이 림·백보드에 닿았는지(스윔 판정용)
+var deadTimer = -1;      // 0 이상이면 다음 공까지 남은 시간
+var bobT = 0;            // 골대 위아래 흔들림 위상
+var netSway = 0;         // 그물 출렁임(0~1)
+var flash = 0;           // 득점 순간 림 강조
+var pops = [];           // 떠오르는 점수 텍스트
+var sparks = [];         // 득점 파티클
+
+// 조준
+var aiming = false;
+var aimX = 0, aimY = 0, curX = 0, curY = 0;
+
+/* ══════════════════════════════════════════════════════════════
+   6. 난이도
+   넣을수록 골대가 빨라지고, 8골부터는 위아래로도 움직인다.
+   처음 3골까지 멈춰 있는 건 던지는 감을 먼저 잡게 하려는 것이다.
+   ══════════════════════════════════════════════════════════════ */
+function hoopSpeed() {
+  if (makes < 3) return 0;
+  return Math.min(0.5 + (makes - 3) * 0.085, 1.55);
+}
+function bobAmp() {
+  if (makes < 8) return 0;
+  return Math.min((makes - 8) * 2.4, 26);
+}
+
+/* ══════════════════════════════════════════════════════════════
+   7. 한 스텝 진행
+   ══════════════════════════════════════════════════════════════ */
+var FIXED = 1 / 60;
+
+function step() {
+  timeLeft -= FIXED;
+  if (timeLeft <= 0) { timeLeft = 0; paintTimer(); gameOver(); return; }
+
+  // 골대 이동
+  hoop.x += hoop.dir * hoopSpeed();
+  if (hoop.x <= HX_MIN) { hoop.x = HX_MIN; hoop.dir = 1; }
+  if (hoop.x >= HX_MAX) { hoop.x = HX_MAX; hoop.dir = -1; }
+  bobT += FIXED;
+  hoop.y = HOOP_Y + Math.sin(bobT * 2.4) * bobAmp();
+
+  if (ball.live) {
+    move();
+    collide();
+    checkScore();
+  }
+
+  if (deadTimer >= 0) {
+    deadTimer -= FIXED;
+    if (deadTimer <= 0) nextBall();
+  }
+
+  if (netSway > 0) netSway = Math.max(0, netSway - FIXED * 2.2);
+  if (flash > 0) flash = Math.max(0, flash - FIXED * 2.5);
+
+  for (var i = pops.length - 1; i >= 0; i--) {
+    var p = pops[i];
+    p.life -= FIXED;
+    p.y -= 0.7;
+    if (p.life <= 0) pops.splice(i, 1);
+  }
+  for (var j = sparks.length - 1; j >= 0; j--) {
+    var s = sparks[j];
+    s.vy += 0.22;
+    s.x += s.vx; s.y += s.vy;
+    s.life -= FIXED;
+    if (s.life <= 0) sparks.splice(j, 1);
+  }
+}
+
+function move() {
+  ball.vy += GRAV;
+  ball.vx *= AIR;
+  ball.vy *= AIR;
+  var sp = Math.sqrt(ball.vx * ball.vx + ball.vy * ball.vy);
+  if (sp > MAXV) { ball.vx = ball.vx / sp * MAXV; ball.vy = ball.vy / sp * MAXV; }
+  ball.px = ball.x; ball.py = ball.y;
+  ball.x += ball.vx;
+  ball.y += ball.vy;
+  ball.spin += ball.vx * 0.017;
+}
+
+/* 원과 부딪혔을 때 밀어내고 속도를 반사한다 */
+function hitCircle(cx, cy, cr, e) {
+  var dx = ball.x - cx, dy = ball.y - cy;
+  var d2 = dx * dx + dy * dy;
+  var rr = cr + R;
+  if (d2 >= rr * rr) return false;
+  var d = Math.sqrt(d2);
+  var nx, ny;
+  if (d < 0.0001) { nx = 0; ny = -1; }        // 정확히 겹치면 위로 뺀다
+  else { nx = dx / d; ny = dy / d; }
+  ball.x = cx + nx * rr;
+  ball.y = cy + ny * rr;
+  var vn = ball.vx * nx + ball.vy * ny;
+  if (vn < 0) {
+    ball.vx -= (1 + e) * vn * nx;
+    ball.vy -= (1 + e) * vn * ny;
+    ball.vx *= 0.92; ball.vy *= 0.92;          // 림에 닿으면 기운이 빠진다
+  }
+  return true;
+}
+
+/* 사각형과 부딪혔을 때. 가장 가까운 점을 찾아 그 방향으로 밀어낸다 */
+function hitRect(rx, ry, rw, rh, e) {
+  var cx = Math.max(rx, Math.min(ball.x, rx + rw));
+  var cy = Math.max(ry, Math.min(ball.y, ry + rh));
+  var dx = ball.x - cx, dy = ball.y - cy;
+  var d2 = dx * dx + dy * dy;
+  if (d2 >= R * R) return false;
+  var nx, ny, d = Math.sqrt(d2);
+  if (d < 0.0001) { nx = -1; ny = 0; }         // 중심이 판 안이면 코트 쪽으로
+  else { nx = dx / d; ny = dy / d; }
+  ball.x = cx + nx * R;
+  ball.y = cy + ny * R;
+  var vn = ball.vx * nx + ball.vy * ny;
+  if (vn < 0) {
+    ball.vx -= (1 + e) * vn * nx;
+    ball.vy -= (1 + e) * vn * ny;
+  }
+  return true;
+}
+
+function collide() {
+  // 옆벽
+  if (ball.x < R) { ball.x = R; ball.vx = -ball.vx * WALL_E; }
+  if (ball.x > FW - R) { ball.x = FW - R; ball.vx = -ball.vx * WALL_E; }
+  // 천장
+  if (ball.y < R) { ball.y = R; if (ball.vy < 0) ball.vy = -ball.vy * 0.45; }
+
+  // 백보드 (림 오른쪽에 매달린 판)
+  var bx = hoop.x + RIM + 5;
+  if (hitRect(bx, hoop.y - BOARD_H + BOARD_DROP, BOARD_W, BOARD_H, BOARD_E)) {
+    if (!touched) { touched = true; sfx.board(); }
+  }
+  // 림 양 끝
+  var hitL = hitCircle(hoop.x - RIM, hoop.y, KNOB, RIM_E);
+  var hitR = hitCircle(hoop.x + RIM, hoop.y, KNOB, RIM_E);
+  if (hitL || hitR) {
+    if (!touched) { touched = true; sfx.rim(); }
+  }
+
+  // 바닥
+  if (ball.y > FLOOR - R) {
+    ball.y = FLOOR - R;
+    ball.vy = -ball.vy * FLOOR_E;
+    ball.vx *= FLOOR_FRICTION;
+    if (Math.abs(ball.vy) < 0.9) ball.vy = 0;
+    // 바닥에 닿은 순간 이 슛은 끝난 것으로 본다. 튕기는 모습은 그대로 보여 주고
+    // 잠깐 뒤에 다음 공을 준다.
+    if (deadTimer < 0) {
+      if (!scored) sfx.bounce();
+      endShot();
+    }
+  }
+}
+
+/* 림 평면을 위에서 아래로 통과하면 득점 */
+function checkScore() {
+  if (scored || deadTimer >= 0) return;
+  if (ball.vy <= 0) return;
+  if (ball.py > hoop.y || ball.y <= hoop.y) return;
+  if (Math.abs(ball.x - hoop.x) > RIM - KNOB - 8) return;
+  made();
+}
+
+function made() {
+  scored = true;
+  makes++;
+  combo++;
+  if (combo > bestCombo) bestCombo = combo;
+
+  var swish = !touched;
+  var bonus = combo >= 6 ? 3 : combo >= 4 ? 2 : combo >= 2 ? 1 : 0;
+  var pts = (swish ? 3 : 2) + bonus;
+  score += pts;
+  timeLeft = Math.min(GAME_TIME, timeLeft + (swish ? ADD_SWISH : ADD_MADE));
+
+  netSway = 1;
+  flash = 1;
+  pops.push({ x: hoop.x, y: hoop.y + 84, life: 0.95, txt: "+" + pts,
+              sub: swish ? "스윔!" : (bonus ? "연속 " + combo : ""), swish: swish });
+  for (var i = 0; i < (swish ? 16 : 10); i++) {
+    sparks.push({
+      x: hoop.x + (Math.random() * 2 - 1) * RIM,
+      y: hoop.y + 10,
+      vx: (Math.random() * 2 - 1) * 2.2,
+      vy: -Math.random() * 2.4 - 0.4,
+      life: 0.5 + Math.random() * 0.3,
+      c: swish ? "#FFB020" : "#FF6B2C"
+    });
+  }
+  if (swish) sfx.swish();
+  sfx.made(combo);
+
+  paintScore();
+  paintTimer();
+  endShot();
+}
+
+/* 이번 슛을 끝내고 다음 공을 예약한다 */
+function endShot() {
+  if (deadTimer >= 0) return;
+  deadTimer = RESET_DELAY;
+  if (!scored && combo !== 0) {
+    combo = 0;
+    paintScore();
+  }
+}
+
+function nextBall() {
+  deadTimer = -1;
+  scored = false;
+  touched = false;
+  ball.live = false;
+  ball.vx = 0; ball.vy = 0; ball.spin = 0;
+  // 던지는 자리를 매번 조금씩 바꿔 같은 슛만 반복하지 않게 한다
+  ball.x = 62 + Math.random() * 106;
+  ball.y = HOLD_Y;
+  ball.px = ball.x; ball.py = ball.y;
+}
+
+/* ══════════════════════════════════════════════════════════════
+   8. 조준과 슛
+   ══════════════════════════════════════════════════════════════ */
+function canAim() {
+  return state === "playing" && !ball.live && deadTimer < 0 && !anyVeilOpen();
+}
+
+// 던졌을 때 공이 그릴 길. 손을 떼기 전에 점선으로 보여 준다.
+// 골대까지 전부 그려 주면 가만히 있는 골대는 너무 쉬워져서, 앞부분만 보여 주고
+// 마지막 한 뼘은 눈으로 재게 남겨 둔다.
+var DOTS = 14;
+function trace(vx, vy) {
+  var px = ball.x, py = ball.y, out = [];
+  for (var i = 0; i < 120 && out.length < DOTS * 2; i++) {
+    vy += GRAV; vx *= AIR; vy *= AIR;
+    px += vx; py += vy;
+    // 옆벽은 실제와 같이 튕겨서 보여 준다. 림·백보드는 일부러 계산하지 않는다.
+    if (px < R) { px = R; vx = -vx * WALL_E; }
+    if (px > FW - R) { px = FW - R; vx = -vx * WALL_E; }
+    if (py < R) { py = R; vy = -vy * 0.45; }
+    if (py > FLOOR - R) break;
+    if (i % 4 === 0) out.push(px, py);
+  }
+  return out;
+}
+
+function aimVec() {
+  var k = scaleOf();
+  var dx = (curX - aimX) * k, dy = (curY - aimY) * k;
+  var d = Math.sqrt(dx * dx + dy * dy);
+  if (d < 0.0001) return { vx: 0, vy: 0, d: 0 };
+  var vx = dx * POWER, vy = dy * POWER;
+  var sp = Math.sqrt(vx * vx + vy * vy);
+  if (sp > MAXPOW) { vx = vx / sp * MAXPOW; vy = vy / sp * MAXPOW; }
+  return { vx: vx, vy: vy, d: d };
+}
+
+function onDown(e) {
+  tapped = true;
+  sfx.unlock();
+  if (!canAim()) return;
+  aiming = true;
+  aimX = curX = e.clientX;
+  aimY = curY = e.clientY;
+  if (stage.setPointerCapture && e.pointerId !== undefined) {
+    try { stage.setPointerCapture(e.pointerId); } catch (err) {}
+  }
+}
+function onMove(e) {
+  if (!aiming) return;
+  curX = e.clientX; curY = e.clientY;
+  if (e.cancelable) e.preventDefault();
+}
+function onUp() {
+  if (!aiming) return;
+  aiming = false;
+  if (!canAim()) return;
+  var v = aimVec();
+  if (v.d < MINDRAG) return;     // 살짝 건드린 건 슛으로 치지 않는다
+  ball.vx = v.vx; ball.vy = v.vy;
+  ball.live = true;
+  shots++;
+  sfx.shoot();
+}
+
+stage.addEventListener("pointerdown", onDown);
+stage.addEventListener("pointermove", onMove, { passive: false });
+stage.addEventListener("pointerup", onUp);
+stage.addEventListener("pointercancel", function () { aiming = false; });
+window.addEventListener("pointerup", onUp);
+
+/* ══════════════════════════════════════════════════════════════
+   9. 그리기
+   ══════════════════════════════════════════════════════════════ */
+function roundRect(x, y, w, h, r) {
+  ctx.beginPath();
+  ctx.moveTo(x + r, y);
+  ctx.arcTo(x + w, y, x + w, y + h, r);
+  ctx.arcTo(x + w, y + h, x, y + h, r);
+  ctx.arcTo(x, y + h, x, y, r);
+  ctx.arcTo(x, y, x + w, y, r);
+  ctx.closePath();
+}
+
+function drawCourt() {
+  // 바닥
+  ctx.fillStyle = "#EFCB9B";
+  ctx.fillRect(0, FLOOR, FW, FH - FLOOR);
+  ctx.strokeStyle = "rgba(150,100,50,.45)";
+  ctx.lineWidth = 2;
+  ctx.beginPath();
+  ctx.moveTo(0, FLOOR); ctx.lineTo(FW, FLOOR);
+  ctx.stroke();
+
+  // 바닥 나뭇결
+  ctx.strokeStyle = "rgba(150,100,50,.16)";
+  ctx.lineWidth = 1;
+  ctx.beginPath();
+  for (var g = 1; g < 4; g++) {
+    var gy = FLOOR + (FH - FLOOR) * (g / 4);
+    ctx.moveTo(0, gy); ctx.lineTo(FW, gy);
+  }
+  ctx.stroke();
+
+  // 코트 장식: 골대를 따라다니면 선이 미끄러져 보여서 가운데 고정
+  ctx.strokeStyle = "rgba(150,100,50,.2)";
+  ctx.lineWidth = 2;
+  ctx.beginPath();
+  ctx.arc(FW / 2, FLOOR, 128, Math.PI, Math.PI * 2);
+  ctx.stroke();
+
+  // 백보드를 매단 레일 (골대가 좌우로 움직이는 이유를 눈에 보이게)
+  ctx.strokeStyle = "rgba(139,149,161,.4)";
+  ctx.lineWidth = 3;
+  ctx.setLineDash([7, 6]);
+  ctx.beginPath();
+  ctx.moveTo(0, RAIL_Y); ctx.lineTo(FW, RAIL_Y);
+  ctx.stroke();
+  ctx.setLineDash([]);
+}
+
+function drawHoop() {
+  var hx = hoop.x, hy = hoop.y;
+  var bx = hx + RIM + 5;
+  var btop = hy - BOARD_H + BOARD_DROP;
+
+  // 행어
+  ctx.strokeStyle = "#C3CCD6";
+  ctx.lineWidth = 4;
+  ctx.beginPath();
+  ctx.moveTo(bx + BOARD_W / 2, btop);
+  ctx.lineTo(bx + BOARD_W / 2, RAIL_Y);
+  ctx.stroke();
+
+  // 백보드
+  ctx.fillStyle = "#EDF1F6";
+  ctx.strokeStyle = "#A9B6C4";
+  ctx.lineWidth = 2;
+  roundRect(bx, btop, BOARD_W, BOARD_H, 3);
+  ctx.fill();
+  ctx.stroke();
+  // 백보드 앞면(슈팅 박스 자리)
+  ctx.strokeStyle = "rgba(49,130,246,.6)";
+  ctx.lineWidth = 2.5;
+  ctx.beginPath();
+  ctx.moveTo(bx + 1.6, hy - 30);
+  ctx.lineTo(bx + 1.6, hy + 2);
+  ctx.stroke();
+
+  // 림을 판에 붙드는 브래킷
+  ctx.strokeStyle = "#B9C3CE";
+  ctx.lineWidth = 2.5;
+  ctx.beginPath();
+  ctx.moveTo(bx, hy);
+  ctx.lineTo(hx + RIM - 2, hy);
+  ctx.moveTo(bx, hy + 9);
+  ctx.lineTo(hx + RIM - 4, hy + 1);
+  ctx.stroke();
+
+  // 그물
+  drawNet(hx, hy);
+
+  // 림
+  ctx.strokeStyle = flash > 0
+    ? "rgba(255,176,32," + (0.55 + flash * 0.45) + ")"
+    : "#FF6B2C";
+  ctx.lineWidth = 6 + flash * 2;
+  ctx.lineCap = "round";
+  ctx.beginPath();
+  ctx.moveTo(hx - RIM, hy);
+  ctx.lineTo(hx + RIM, hy);
+  ctx.stroke();
+  ctx.lineCap = "butt";
+}
+
+function drawNet(hx, hy) {
+  var depth = 40 + netSway * 12;
+  var sway = Math.sin(netSway * 14) * netSway * 5;
+  var n = 6;
+  ctx.strokeStyle = "rgba(110,122,138,.5)";
+  ctx.lineWidth = 1.3;
+  ctx.beginPath();
+  for (var i = 0; i <= n; i++) {
+    var t = i / n;
+    var topX = hx - RIM + t * RIM * 2;
+    var botX = hx + (topX - hx) * 0.45 + sway;
+    ctx.moveTo(topX, hy);
+    ctx.lineTo(botX, hy + depth);
+  }
+  // 가로 줄 두 개
+  for (var k = 1; k <= 2; k++) {
+    var f = k / 3;
+    var y = hy + depth * f;
+    var half = RIM * (1 - f * 0.55);
+    ctx.moveTo(hx - half + sway * f, y);
+    ctx.lineTo(hx + half + sway * f, y);
+  }
+  ctx.stroke();
+}
+
+function drawBall() {
+  var x = ball.x, y = ball.y;
+
+  // 바닥 그림자 (높이 올라갈수록 옅고 작게)
+  var h = Math.max(0, Math.min(1, (FLOOR - y) / (FH * 0.8)));
+  ctx.fillStyle = "rgba(120,80,40," + (0.22 * (1 - h) + 0.05) + ")";
+  ctx.beginPath();
+  ctx.ellipse(x, FLOOR + 3, R * (1 - h * 0.45), R * 0.32 * (1 - h * 0.4), 0, 0, Math.PI * 2);
+  ctx.fill();
+
+  ctx.save();
+  ctx.translate(x, y);
+  ctx.rotate(ball.spin);
+
+  var g = ctx.createRadialGradient(-R * 0.35, -R * 0.4, R * 0.2, 0, 0, R);
+  g.addColorStop(0, "#FF9B5E");
+  g.addColorStop(1, "#E9520F");
+  ctx.fillStyle = g;
+  ctx.beginPath();
+  ctx.arc(0, 0, R, 0, Math.PI * 2);
+  ctx.fill();
+
+  // 농구공 줄
+  ctx.strokeStyle = "rgba(90,42,8,.75)";
+  ctx.lineWidth = 1.6;
+  ctx.beginPath();
+  ctx.arc(0, 0, R, 0, Math.PI * 2);
+  ctx.moveTo(-R, 0); ctx.lineTo(R, 0);
+  ctx.moveTo(0, -R); ctx.lineTo(0, R);
+  ctx.stroke();
+  ctx.beginPath();
+  ctx.ellipse(0, 0, R * 0.42, R, 0, 0, Math.PI * 2);
+  ctx.stroke();
+  ctx.restore();
+}
+
+function drawAim() {
+  if (!aiming) return;
+  var v = aimVec();
+  if (v.d < MINDRAG) return;
+  var pts = trace(v.vx, v.vy);
+  for (var i = 0; i < pts.length; i += 2) {
+    var t = i / pts.length;
+    ctx.fillStyle = "rgba(25,31,40," + (0.42 * (1 - t) + 0.1) + ")";
+    ctx.beginPath();
+    ctx.arc(pts[i], pts[i + 1], 3.8 * (1 - t * 0.45), 0, Math.PI * 2);
+    ctx.fill();
+  }
+  // 힘 표시
+  var sp = Math.sqrt(v.vx * v.vx + v.vy * v.vy) / MAXPOW;
+  ctx.strokeStyle = "rgba(255,107,44,.75)";
+  ctx.lineWidth = 3;
+  ctx.beginPath();
+  ctx.arc(ball.x, ball.y, R + 7, -Math.PI / 2, -Math.PI / 2 + Math.PI * 2 * sp);
+  ctx.stroke();
+}
+
+function drawPops() {
+  for (var i = 0; i < pops.length; i++) {
+    var p = pops[i];
+    var a = Math.min(1, p.life * 1.6);
+    ctx.textAlign = "center";
+    ctx.lineJoin = "round";
+    ctx.strokeStyle = "rgba(255,255,255," + (a * 0.9) + ")";
+    ctx.font = "800 25px 'Pretendard',system-ui,sans-serif";
+    ctx.lineWidth = 4;
+    ctx.strokeText(p.txt, p.x, p.y);
+    ctx.fillStyle = (p.swish ? "rgba(233,120,0," : "rgba(25,31,40,") + a + ")";
+    ctx.fillText(p.txt, p.x, p.y);
+    if (p.sub) {
+      ctx.font = "800 13px 'Pretendard',system-ui,sans-serif";
+      ctx.lineWidth = 3.5;
+      ctx.strokeText(p.sub, p.x, p.y + 18);
+      ctx.fillStyle = "rgba(255,107,44," + a + ")";
+      ctx.fillText(p.sub, p.x, p.y + 18);
+    }
+  }
+  for (var j = 0; j < sparks.length; j++) {
+    var s = sparks[j];
+    ctx.fillStyle = s.c;
+    ctx.globalAlpha = Math.min(1, s.life * 2.4);
+    ctx.beginPath();
+    ctx.arc(s.x, s.y, 2.6, 0, Math.PI * 2);
+    ctx.fill();
+  }
+  ctx.globalAlpha = 1;
+}
+
+function render() {
+  if (!canvas.width) return;
+  var s = canvas.width / FW;
+  ctx.setTransform(s, 0, 0, s, 0, 0);
+  ctx.clearRect(0, 0, FW, FH);
+  drawCourt();
+  drawHoop();
+  if (state !== "ready") {
+    drawAim();
+    drawBall();
+    drawPops();
+  }
+}
+
+/* ══════════════════════════════════════════════════════════════
+   10. 화면 표시
+   ══════════════════════════════════════════════════════════════ */
+var scoreVal = document.getElementById("scoreVal");
+var bestVal = document.getElementById("bestVal");
+var comboChip = document.getElementById("comboChip");
+var comboVal = document.getElementById("comboVal");
+var timerFill = document.getElementById("timerFill");
+var timerVal = document.getElementById("timerVal");
+var hint = document.getElementById("hint");
+
+function comma(n) { return String(n).replace(/\B(?=(\d{3})+(?!\d))/g, ","); }
+
+function paintScore() {
+  scoreVal.textContent = comma(score);
+  bestVal.textContent = comma(best);
+  comboVal.textContent = combo;
+  if (combo >= 2) {
+    comboChip.classList.add("on", "pop");
+    setTimeout(function () { comboChip.classList.remove("pop"); }, 160);
+  } else {
+    comboChip.classList.remove("on");
+  }
+}
+
+function paintTimer() {
+  var t = Math.max(0, timeLeft);
+  timerFill.style.transform = "scaleX(" + (t / GAME_TIME) + ")";
+  timerFill.classList.toggle("low", t <= 10);
+  // 1/60씩 빼다 보면 44가 44.0000000001 로 남아 ceil 이 45를 내놓는다
+  timerVal.textContent = Math.ceil(t - 1e-6) + "초";
+}
+
+function veil(id, on) {
+  document.getElementById(id).classList.toggle("show", !!on);
+}
+function anyVeilOpen() {
+  var v = document.getElementsByClassName("veil");
+  for (var i = 0; i < v.length; i++) if (v[i].classList.contains("show")) return true;
+  return false;
+}
+
+var toastEl = document.getElementById("toast");
+var toastTimer = 0;
+function toast(msg) {
+  toastEl.textContent = msg;
+  toastEl.classList.add("show");
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(function () { toastEl.classList.remove("show"); }, 1800);
+}
+
+/* ══════════════════════════════════════════════════════════════
+   11. 흐름 (시작 · 일시정지 · 종료)
+   ══════════════════════════════════════════════════════════════ */
+function start() {
+  veil("vStart", false);
+  veil("vOver", false);
+  veil("vPause", false);
+  score = 0; shots = 0; makes = 0; combo = 0; bestCombo = 0;
+  timeLeft = GAME_TIME;
+  pops.length = 0; sparks.length = 0;
+  netSway = 0; flash = 0; bobT = 0;
+  hoop.x = 260; hoop.dir = 1; hoop.y = HOOP_Y;
+  deadTimer = -1;
+  nextBall();
+  hint.textContent = "골대 쪽으로 스와이프하면 공이 날아가요";
+  state = "playing";
+  last = performance.now();
+  acc = 0;
+  sfx.unlock();
+  paintScore();
+  paintTimer();
+}
+
+function gameOver() {
+  state = "over";
+  aiming = false;
+  if (score > best) { best = score; store.set("best", best); }
+  var bc = parseInt(store.get("bestCombo", "0"), 10) || 0;
+  if (bestCombo > bc) store.set("bestCombo", bestCombo);
+  sfx.end();
+
+  document.getElementById("overTitle").textContent =
+    score >= best && score > 0 ? "최고 기록!" : "경기 끝!";
+  document.getElementById("overScore").textContent = comma(score);
+  document.getElementById("overSub").textContent = "최고 기록 " + comma(best) + "점";
+  document.getElementById("statMade").textContent = makes + "/" + shots;
+  document.getElementById("statRate").textContent =
+    (shots ? Math.round(makes / shots * 100) : 0) + "%";
+  document.getElementById("statCombo").textContent = bestCombo;
+  paintScore();
+  veil("vOver", true);
+}
+
+function pause() {
+  if (state !== "playing") return;
+  state = "paused";
+  aiming = false;
+  veil("vPause", true);
+}
+function resume() {
+  veil("vPause", false);
+  if (state === "paused") {
+    state = "playing";
+    last = performance.now();
+    acc = 0;
+    sfx.wake();
+  }
+}
+
+// 백그라운드 전환 → 즉시 소리 종료 + 일시정지 / 복귀 → '이어하기'로 재개
+document.addEventListener("visibilitychange", function () {
+  if (document.hidden) { sfx.stopAll(); pause(); }
+});
+
+var btnSound = document.getElementById("btnSound");
+btnSound.textContent = sfx.isMuted() ? "🔇" : "🔊";
+btnSound.addEventListener("click", function () {
+  btnSound.textContent = sfx.toggle() ? "🔇" : "🔊";
+});
+
+document.getElementById("btnStart").addEventListener("click", start);
+document.getElementById("btnRetry").addEventListener("click", start);
+document.getElementById("btnHow").addEventListener("click", function () { veil("vHow", true); });
+document.getElementById("btnHowClose").addEventListener("click", function () { veil("vHow", false); });
+document.getElementById("btnResume").addEventListener("click", resume);
+
+function openRank() {
+  document.getElementById("rankBest").textContent = comma(Math.max(best, score)) + "점";
+  var bc = Math.max(bestCombo, parseInt(store.get("bestCombo", "0"), 10) || 0);
+  document.getElementById("rankNote").textContent =
+    bc > 0 ? "최다 연속 " + bc + "골 · 기록은 이 기기에만 저장돼요."
+           : "기록은 이 기기에만 저장돼요.";
+  veil("vRank", true);
+}
+document.getElementById("btnRank").addEventListener("click", openRank);
+document.getElementById("btnOverRank").addEventListener("click", openRank);
+document.getElementById("btnRankClose").addEventListener("click", function () { veil("vRank", false); });
+
+// 종료: 어떤 화면에서도 나갈 수 있고, 나가기 전에 확인 모달을 띄운다
+function askExit() {
+  // 확인 모달을 띄우는 동안엔 '일시정지' 시트까지 겹쳐 띄우지 않는다
+  if (state === "playing") { state = "paused"; aiming = false; sfx.stopAll(); }
+  veil("vExit", true);
+}
+function doExit() {
+  veil("vExit", false);
+  // 히스토리를 건드리지 않고 시작 화면으로 되돌린다
+  state = "ready";
+  score = 0; combo = 0;
+  timeLeft = GAME_TIME;
+  pops.length = 0; sparks.length = 0;
+  nextBall();
+  paintScore();
+  paintTimer();
+  veil("vPause", false);
+  veil("vOver", false);
+  veil("vStart", true);
+}
+document.getElementById("btnExit").addEventListener("click", askExit);
+document.getElementById("btnOverExit").addEventListener("click", askExit);
+document.getElementById("btnExitNo").addEventListener("click", function () {
+  veil("vExit", false);
+  if (state === "paused" && !anyVeilOpen()) resume();
+});
+document.getElementById("btnExitYes").addEventListener("click", doExit);
+
+/* ── 공유 ─────────────────────────────── */
+var SHARE_URL = "https://richroro.github.io/games/basketball/";
+function shareScore() {
+  var pt = comma(Math.max(best, score));
+  var text = "한 손 농구에서 " + pt + "점 넣었어요. 45초 안에 몇 점까지 되나요?";
+  if (navigator.share) {
+    navigator.share({ title: "한 손 농구", text: text, url: SHARE_URL })
+      .catch(function () { /* 사용자가 공유를 취소한 경우 */ });
+    return;
+  }
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(text + " " + SHARE_URL).then(
+      function () { toast("링크를 복사했어요"); },
+      function () { toast("복사에 실패했어요"); }
+    );
+    return;
+  }
+  toast(SHARE_URL);
+}
+document.getElementById("btnShare").addEventListener("click", shareScore);
+
+/* ══════════════════════════════════════════════════════════════
+   12. 루프
+   ══════════════════════════════════════════════════════════════ */
+var acc = 0;
+var last = performance.now();
+var tick = 0;
+
+function frame(now) {
+  var dt = (now - last) / 1000;
+  last = now;
+  if (dt > 0.25) dt = 0.25;
+  if (state === "playing") {
+    acc += dt;
+    var guard = 0;
+    while (acc >= FIXED && guard < 5) { step(); acc -= FIXED; guard++; }
+    if (acc > FIXED) acc = 0;
+    if (++tick % 4 === 0) paintTimer();     // 남은 시간 표시는 초 단위면 충분
+  }
+  render();
+  requestAnimationFrame(frame);
+}
+
+resize();
+nextBall();
+hoop.y = HOOP_Y;
+state = "ready";
+paintScore();
+paintTimer();
+requestAnimationFrame(frame);
+
+// 테스트용 훅: 브라우저에서 물리를 직접 돌려 검증할 때 쓴다
+window.__hoop = {
+  state: function () { return { score: score, shots: shots, makes: makes, combo: combo,
+                                timeLeft: timeLeft, ball: ball, hoop: hoop, FH: FH,
+                                FLOOR: FLOOR, HOLD_Y: HOLD_Y }; },
+  start: start,
+  pause: pause,
+  shoot: function (vx, vy) { ball.vx = vx; ball.vy = vy; ball.live = true; shots++; },
+  step: step,
+  setTime: function (t) { timeLeft = t; },
+  consts: function () { return { FW: FW, R: R, GRAV: GRAV, AIR: AIR, RIM: RIM,
+                                 KNOB: KNOB, MAXPOW: MAXPOW, HX_MIN: HX_MIN, HX_MAX: HX_MAX }; }
+};
+
+})();
+</script>
+</body>
+</html>
