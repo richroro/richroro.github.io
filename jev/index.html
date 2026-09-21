@@ -1,0 +1,630 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Jev는 뭐야? · 텍스트를 만들지 않는 모델, System One 정리</title>
+<meta name="description" content="TypeSafe AI가 2026년 9월 공개한 Jev — 글을 쓰지 않고 타입이 정해진 결정과 확률만 돌려주는 System One 모델. LLM과의 차이, Choice·Score·Noul 프리미티브, 월 비용 계산기, 못 하는 일까지 한 페이지에.">
+<link rel="canonical" href="https://richroro.github.io/jev/">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="ko_KR">
+<meta property="og:site_name" content="Cadence">
+<meta property="og:url" content="https://richroro.github.io/jev/">
+<meta property="og:title" content="Jev는 뭐야? · System One 모델 정리">
+<meta property="og:description" content="글을 쓰지 않고 결정만 돌려주는 모델. LLM과 무엇이 다른지, 내 호출량에서 실제로 얼마나 싼지 직접 계산해 보세요.">
+<meta name="twitter:card" content="summary">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%234B49C8'/><path d='M30 28h14v30a8 8 0 0 1-8 8H24v-12h6V28zm26 0h14l10 38H66l-6-24-6 24H40l10-38z' fill='white'/></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans+KR:wght@300;400;500;600;700&display=swap">
+
+<style>
+:root{
+  color-scheme:light;
+  --paper:#F5F6F8; --surface:#FFFFFF; --surface-2:#EEF0F4; --surface-3:#E6EAF0;
+  --ink:#14161C; --ink-2:#4A5260; --ink-3:#6E7683;
+  --line:#E3E7ED; --line-soft:#EDF0F4; --grid:#E8EBF0;
+  --brand:#4B49C8; --brand-deep:#3A38A8; --brand-wash:#EEEEFB;
+  --good:#17795E; --bad:#C81E3A;
+  --s1:#2a78d6; --s2:#eb6834;               /* 입력/출력 2색 — 검증 통과(밝은 모드) */
+  --shadow:0 1px 2px rgba(20,22,28,.05), 0 10px 28px -16px rgba(20,22,28,.22);
+  --radius:14px;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    color-scheme:dark;
+    --paper:#0F1218; --surface:#161A21; --surface-2:#1D2229; --surface-3:#242A33;
+    --ink:#E9EDF3; --ink-2:#AEB7C4; --ink-3:#8B95A3;
+    --line:#252B34; --line-soft:#1E242C; --grid:#232932;
+    --brand:#8F8CFF; --brand-deep:#A7A4FF; --brand-wash:#1D1C33;
+    --good:#4CC79E; --bad:#FF6B7A;
+    --s1:#3987e5; --s2:#d95926;             /* 어두운 모드용으로 따로 검증 통과 */
+    --shadow:0 1px 2px rgba(0,0,0,.4), 0 10px 28px -16px rgba(0,0,0,.7);
+  }
+}
+:root[data-theme="dark"]{
+  color-scheme:dark;
+  --paper:#0F1218; --surface:#161A21; --surface-2:#1D2229; --surface-3:#242A33;
+  --ink:#E9EDF3; --ink-2:#AEB7C4; --ink-3:#8B95A3;
+  --line:#252B34; --line-soft:#1E242C; --grid:#232932;
+  --brand:#8F8CFF; --brand-deep:#A7A4FF; --brand-wash:#1D1C33;
+  --good:#4CC79E; --bad:#FF6B7A;
+  --s1:#3987e5; --s2:#d95926;
+  --shadow:0 1px 2px rgba(0,0,0,.4), 0 10px 28px -16px rgba(0,0,0,.7);
+}
+
+*{box-sizing:border-box;margin:0;padding:0}
+[hidden]{display:none !important}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+body{font-family:"IBM Plex Sans KR","Pretendard","Apple SD Gothic Neo",system-ui,sans-serif;
+  background:var(--paper);color:var(--ink);line-height:1.6;letter-spacing:-.2px;-webkit-font-smoothing:antialiased}
+a{color:inherit;text-decoration:none}
+.num{font-family:"IBM Plex Mono",ui-monospace,Menlo,monospace;font-variant-numeric:tabular-nums;letter-spacing:-.4px}
+.wrap{max-width:1040px;margin:0 auto;padding:0 16px}
+@media(min-width:720px){.wrap{padding:0 24px}}
+
+header{position:sticky;top:0;z-index:50;background:color-mix(in srgb,var(--paper) 88%,transparent);
+  backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
+.hbar{display:flex;align-items:center;justify-content:space-between;gap:12px;height:56px}
+.brand{display:flex;align-items:center;gap:9px;min-width:0}
+.brand .mk{width:28px;height:28px;border-radius:8px;background:var(--brand);color:#fff;flex:none;
+  display:grid;place-items:center;font-weight:700;font-size:13px;font-family:"IBM Plex Mono",monospace}
+.brand b{font-size:15.5px;font-weight:600;letter-spacing:-.4px;white-space:nowrap}
+.brand small{display:block;font-size:11px;color:var(--ink-3);font-weight:400;letter-spacing:0;line-height:1.2}
+.hactions{display:flex;align-items:center;gap:6px;flex:none}
+.ghost{background:var(--surface);border:1px solid var(--line);color:var(--ink-2);border-radius:9px;
+  height:34px;padding:0 11px;font:inherit;font-size:13px;font-weight:500;cursor:pointer;
+  display:inline-flex;align-items:center;gap:6px;transition:.15s}
+.ghost:hover{background:var(--surface-2);color:var(--ink)}
+:focus-visible{outline:2px solid var(--s1);outline-offset:2px}
+
+.snav{position:sticky;top:56px;z-index:40;background:color-mix(in srgb,var(--paper) 88%,transparent);
+  backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
+.snav-in{display:flex;gap:2px;overflow-x:auto;scrollbar-width:none;height:46px;align-items:center}
+.snav-in::-webkit-scrollbar{display:none}
+.snav a{font-size:13.5px;font-weight:500;color:var(--ink-3);padding:7px 11px;border-radius:8px;white-space:nowrap}
+.snav a:hover{color:var(--ink);background:var(--surface-2)}
+
+section{padding:34px 0;scroll-margin-top:112px}
+@media(min-width:720px){section{padding:44px 0}}
+.eyebrow{font-size:12px;font-weight:600;color:var(--brand-deep);letter-spacing:.4px;text-transform:uppercase;
+  font-family:"IBM Plex Mono",monospace}
+h2.title{font-size:clamp(21px,3.4vw,27px);font-weight:600;letter-spacing:-.8px;margin:7px 0 6px;line-height:1.3}
+p.lead{font-size:14.5px;color:var(--ink-2);font-weight:300;max-width:64ch;line-height:1.7}
+p.lead b{font-weight:500;color:var(--ink)}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow)}
+.pad{padding:18px}
+@media(min-width:720px){.pad{padding:22px}}
+.card h3{font-size:15px;font-weight:600;letter-spacing:-.3px}
+.hint{font-size:12.5px;color:var(--ink-3);font-weight:300;line-height:1.6}
+.mt8{margin-top:8px}.mt12{margin-top:12px}.mt16{margin-top:16px}.mt24{margin-top:24px}
+.rowsplit{display:flex;flex-wrap:wrap;gap:10px;align-items:baseline;justify-content:space-between}
+.good{color:var(--good)}.bad{color:var(--bad)}
+.st .s.good,.st .v.good{color:var(--good)}
+.st .s.bad,.st .v.bad{color:var(--bad)}
+.grid2{display:grid;grid-template-columns:1fr;gap:14px}
+@media(min-width:860px){.grid2{grid-template-columns:1fr 1fr}}
+.grid3{display:grid;grid-template-columns:1fr;gap:14px}
+@media(min-width:720px){.grid3{grid-template-columns:repeat(3,1fr)}}
+
+.stats{display:grid;grid-template-columns:repeat(2,1fr);gap:1px;background:var(--line-soft);
+  border:1px solid var(--line);border-radius:12px;overflow:hidden}
+@media(min-width:720px){.stats.c4{grid-template-columns:repeat(4,1fr)}.stats.c3{grid-template-columns:repeat(3,1fr)}}
+.st{background:var(--surface);padding:14px 15px}
+.st .k{font-size:11.5px;color:var(--ink-3);font-weight:400}
+.st .v{font-size:20px;font-weight:600;letter-spacing:-.7px;margin-top:3px;white-space:nowrap;
+  font-family:"IBM Plex Mono",monospace;font-variant-numeric:tabular-nums;line-height:1.25}
+.st .v .u{font-size:13px;font-weight:500}
+.st .s{font-size:12px;color:var(--ink-3);font-weight:300;margin-top:2px;
+  font-family:"IBM Plex Mono",monospace;font-variant-numeric:tabular-nums}
+
+.note{display:flex;gap:9px;background:var(--surface-2);border-radius:11px;padding:12px 13px;
+  font-size:12.5px;color:var(--ink-2);font-weight:300;line-height:1.65}
+.note .ic{flex:none;font-size:13px}
+.note b{font-weight:500;color:var(--ink)}
+.warn{background:var(--brand-wash)}
+
+/* ---------- tables ---------- */
+.tscroll{overflow-x:auto;-webkit-overflow-scrolling:touch}
+table{width:100%;border-collapse:collapse;font-size:13.5px;min-width:620px}
+table.narrow{min-width:0}
+th,td{padding:10px;text-align:right;border-bottom:1px solid var(--line-soft);vertical-align:top}
+th:first-child,td:first-child{text-align:left}
+thead th{font-size:11.5px;font-weight:500;color:var(--ink-3);border-bottom:1px solid var(--line);
+  background:var(--surface);white-space:nowrap}
+tbody td{font-family:"IBM Plex Mono",monospace;font-variant-numeric:tabular-nums}
+tbody td.tx{font-family:inherit;font-weight:300;color:var(--ink-2);white-space:normal;min-width:15ch}
+tbody th{font-size:13px;font-weight:500;text-align:left;white-space:nowrap;color:var(--ink);
+  border-bottom:1px solid var(--line-soft)}
+tbody tr:last-child td,tbody tr:last-child th{border-bottom:none}
+tbody tr:hover{background:var(--surface-2)}
+td.hi{font-weight:600;color:var(--ink)}
+
+/* ---------- 프리미티브 카드 ---------- */
+.prim .tag{display:inline-flex;align-items:center;gap:5px;font-family:"IBM Plex Mono",monospace;font-size:11.5px;
+  font-weight:500;border:1px solid var(--line);border-radius:6px;padding:2px 7px;color:var(--brand-deep);
+  background:var(--brand-wash)}
+.prim h3{margin-top:9px}
+.prim p{font-size:12.5px;color:var(--ink-2);font-weight:300;line-height:1.7;margin-top:6px}
+.prim .lim{margin-top:10px;padding-top:9px;border-top:1px solid var(--line-soft);font-size:11.5px;
+  color:var(--ink-3);font-family:"IBM Plex Mono",monospace}
+
+/* ---------- 계산기 ---------- */
+.calc{display:grid;grid-template-columns:1fr;gap:13px}
+@media(min-width:720px){.calc{grid-template-columns:1fr 1fr}}
+.field label{display:block;font-size:11.5px;color:var(--ink-3);font-weight:500;margin-bottom:5px}
+.field input,.field select{width:100%;height:40px;padding:0 11px;font:inherit;font-size:14px;
+  font-family:"IBM Plex Mono",monospace;font-variant-numeric:tabular-nums;
+  background:var(--surface);color:var(--ink);border:1px solid var(--line);border-radius:9px}
+.field select{font-family:"IBM Plex Sans KR",sans-serif;cursor:pointer}
+.field input:focus,.field select:focus{border-color:var(--brand);outline:none;
+  box-shadow:0 0 0 3px color-mix(in srgb,var(--brand) 18%,transparent)}
+.field .sub{font-size:11px;color:var(--ink-3);font-weight:300;margin-top:4px;line-height:1.5}
+
+.barsplit{display:flex;gap:2px;height:30px;border-radius:8px;overflow:hidden;background:var(--surface-2)}
+.barsplit i{display:block;height:100%;min-width:2px}
+.barsplit .in{background:var(--s1)}
+.barsplit .out{background:var(--s2)}
+.legend{display:flex;flex-wrap:wrap;gap:6px 15px;margin-top:10px}
+.lg{display:flex;align-items:center;gap:6px;font-size:12.5px;color:var(--ink-2);font-weight:400}
+.lg .sw{width:11px;height:11px;border-radius:3px;flex:none}
+.lg b{font-family:"IBM Plex Mono",monospace;font-variant-numeric:tabular-nums;font-weight:500;color:var(--ink)}
+
+/* ---------- 파이프라인 ---------- */
+.flow{display:flex;flex-direction:column;align-items:center;gap:0}
+.fbox{background:var(--surface-2);border:1px solid var(--line);border-radius:11px;padding:11px 14px;
+  text-align:center;max-width:100%}
+.fbox.jev{background:var(--brand-wash);border-color:color-mix(in srgb,var(--brand) 40%,var(--line))}
+.fbox b{font-size:13.5px;font-weight:600;display:block}
+.fbox small{display:block;font-size:11px;color:var(--ink-3);font-weight:300;margin-top:2px;
+  font-family:"IBM Plex Mono",monospace}
+.farrow{color:var(--ink-3);font-size:15px;line-height:1;padding:7px 0}
+.fsplit{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;width:100%}
+.fsplit .fbox{padding:10px 8px}
+.fsplit .fbox b{font-size:12.5px}
+
+/* ---------- 목록 ---------- */
+.plist{list-style:none;display:flex;flex-direction:column;gap:9px;margin-top:12px}
+.plist li{display:flex;gap:8px;font-size:13px;color:var(--ink-2);font-weight:300;line-height:1.65}
+.plist li b{font-weight:500;color:var(--ink)}
+.plist .mk{flex:none;font-family:"IBM Plex Mono",monospace;font-size:12px;font-weight:600}
+.plist .mk.y{color:var(--good)}
+.plist .mk.n{color:var(--bad)}
+
+footer{border-top:1px solid var(--line);background:var(--surface);margin-top:20px;padding:28px 0 40px}
+footer .fgrid{display:grid;gap:18px;grid-template-columns:1fr}
+@media(min-width:720px){footer .fgrid{grid-template-columns:1.3fr 1fr}}
+footer h4{font-size:12.5px;font-weight:600;color:var(--ink-2);margin-bottom:7px}
+footer p,footer li{font-size:12.5px;color:var(--ink-3);font-weight:300;line-height:1.75}
+footer ul{list-style:none}
+footer a{color:var(--ink-2);border-bottom:1px solid var(--line)}
+footer a:hover{color:var(--brand-deep);border-color:var(--brand-deep)}
+.disc{margin-top:20px;padding-top:16px;border-top:1px solid var(--line-soft);font-size:12px;color:var(--ink-3);
+  font-weight:300;line-height:1.7}
+@media(prefers-reduced-motion:reduce){*{animation:none !important;transition:none !important}html{scroll-behavior:auto}}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap hbar">
+    <a class="brand" href="./">
+      <span class="mk">Jv</span>
+      <span><b>Jev 노트</b><small>System One · 결정만 하는 모델</small></span>
+    </a>
+    <div class="hactions">
+      <button class="ghost" id="themeBtn" type="button" aria-label="화면 테마 전환"><span id="themeIco">◐</span><span id="themeTxt">테마</span></button>
+    </div>
+  </div>
+</header>
+
+<nav class="snav" aria-label="섹션 바로가기">
+  <div class="wrap snav-in">
+    <a href="#what">한 줄 정의</a>
+    <a href="#diff">LLM과 차이</a>
+    <a href="#shapes">프리미티브</a>
+    <a href="#cost">비용 계산기</a>
+    <a href="#where">끼우는 자리</a>
+    <a href="#limits">한계</a>
+    <a href="#facts">팩트·출처</a>
+  </div>
+</nav>
+
+<main>
+
+<!-- ============ WHAT ============ -->
+<section id="what" style="padding-top:26px">
+  <div class="wrap">
+    <p class="eyebrow">01 · What</p>
+    <h2 class="title">글을 쓰지 않는 모델</h2>
+    <p class="lead">Jev는 <b>TypeSafe AI</b>가 2026년 9월 15일 얼리 액세스로 공개한 모델입니다. 트랜스포머 기반이지만
+      <b>LLM이 아닙니다</b> — 문장을 만들지 않고, 미리 정해 둔 스키마에 맞는 <b>결정 하나와 그 확률</b>만 돌려줍니다.
+      토큰을 하나씩 뽑지 않고 한 번의 병렬 계산으로 끝내기 때문에 빠르고, 출력 형식이 구조적으로 어긋날 수 없습니다.
+      회사는 이런 모델을 <b>System One</b>(빠르게 판단하는 쪽)이라고 부르고, 글을 쓰는 LLM을 그 반대편에 둡니다.</p>
+
+    <div class="stats c4 mt16" role="group" aria-label="Jev 기본 수치">
+      <div class="st"><div class="k">공개</div><div class="v">2026<span class="u">-09-15</span></div><div class="s">얼리 액세스 · 웨이트리스트</div></div>
+      <div class="st"><div class="k">종단 지연</div><div class="v">70~500<span class="u">ms</span></div><div class="s">회사 발표</div></div>
+      <div class="st"><div class="k">입력 100만 토큰당</div><div class="v">$0.042</div><div class="s good">출력 과금 없음</div></div>
+      <div class="st"><div class="k">구조적 출력 오류</div><div class="v">0<span class="u">%</span></div><div class="s">형식 기준 · 정확도 아님</div></div>
+    </div>
+
+    <div class="note mt16"><span class="ic">⚠️</span><div><b>"환각을 못 한다"는 말의 범위.</b> 스키마에 없는 값은 애초에 나올 수 없다는 뜻입니다.
+      <b>유효하지만 틀린 값</b>은 그대로 나올 수 있습니다. 형식 검증이 필요 없어지는 것이고, 정답 검증이 필요 없어지는 게 아닙니다.</div></div>
+  </div>
+</section>
+
+<!-- ============ DIFF ============ -->
+<section id="diff">
+  <div class="wrap">
+    <p class="eyebrow">02 · Difference</p>
+    <h2 class="title">LLM과 무엇이 다른가</h2>
+    <p class="lead">같은 "AI 모델"이라 부르지만 쓰는 자리가 다릅니다. Jev는 LLM을 대체하는 게 아니라,
+      LLM에게 굳이 글로 물어볼 필요가 없던 일을 떼어 가는 쪽입니다.</p>
+
+    <div class="card mt16">
+      <div class="tscroll">
+        <table>
+          <thead><tr><th>항목</th><th>일반 LLM</th><th>Jev (System One)</th></tr></thead>
+          <tbody>
+            <tr><th>출력</th><td class="tx">자유 문장. 원하는 형식은 프롬프트·스키마로 유도</td><td class="tx">타입이 고정된 값 + 확률. 스키마 밖은 불가능</td></tr>
+            <tr><th>생성 방식</th><td class="tx">토큰을 하나씩 순차 생성(자기회귀)</td><td class="tx">한 번의 병렬 계산(비자기회귀)</td></tr>
+            <tr><th>지연</th><td class="tx">출력 길이에 비례해 늘어남</td><td class="tx">70~500ms, 출력 길이 개념이 없음</td></tr>
+            <tr><th>과금</th><td class="tx">입력 + 출력 토큰</td><td class="tx">입력 토큰만 ($0.042/100만), 출력 무료</td></tr>
+            <tr><th>실패 모드</th><td class="tx">형식 깨짐, 없는 값 생성, 장황함</td><td class="tx">형식은 안 깨짐. 대신 <b>틀린 선택</b>을 함</td></tr>
+            <tr><th>잘하는 일</th><td class="tx">작성·설명·계획·대화·코드</td><td class="tx">분류·라우팅·점수·게이트 판정</td></tr>
+            <tr><th>못 하는 일</th><td class="tx">—</td><td class="tx">글쓰기 전부. 이미지·음성·영상 입력도 미지원</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SHAPES ============ -->
+<section id="shapes">
+  <div class="wrap">
+    <p class="eyebrow">03 · Primitives</p>
+    <h2 class="title">물어볼 수 있는 세 가지 모양</h2>
+    <p class="lead">프롬프트를 자유롭게 쓰는 대신, 질문을 세 가지 틀 중 하나로 만들어 보냅니다.
+      코드가 받을 답의 모양을 미리 고정해 두는 방식입니다.</p>
+
+    <div class="grid3 mt16">
+      <div class="card pad prim">
+        <span class="tag">Choice</span>
+        <h3>여러 개 중 하나</h3>
+        <p>분류·라우팅·게이트 판정. 스팸인가, 어느 팀으로 보낼까, 이 요청을 LLM에 넘길까 — 답이 목록 안에 있는 질문.</p>
+        <div class="lim">옵션 최대 255개</div>
+      </div>
+      <div class="card pad prim">
+        <span class="tag">Score</span>
+        <h3>등급 매기기</h3>
+        <p>심각도·우선순위·품질 같은 단계 평가. 숫자를 계산하는 게 아니라 <b>말로 정의한 단계</b> 중 하나를 고르는 것입니다.</p>
+        <div class="lim">2~10단계</div>
+      </div>
+      <div class="card pad prim">
+        <span class="tag">Noul</span>
+        <h3>세 번째 구조</h3>
+        <p>Choice·Score와 함께 공개된 구조체. 공식 문서와 SDK 이슈에 이름이 나오지만, 공개 자료만으로는 쓰임이 명확하지 않습니다.</p>
+        <div class="lim">확인 필요</div>
+      </div>
+    </div>
+
+    <div class="note mt16"><span class="ic">📐</span><div><b>Score를 계산기로 쓰지 말 것.</b> 회사가 직접 적어 둔 주의사항입니다.
+      Score는 "얼마인지"를 재는 자가 아니라 단계 사이를 의미로 가르는 루브릭이라, 등급에서 정확한 금액이나 수치를 되돌릴 수 없습니다.</div></div>
+  </div>
+</section>
+
+<!-- ============ COST ============ -->
+<section id="cost">
+  <div class="wrap">
+    <p class="eyebrow">04 · Cost</p>
+    <h2 class="title">내 호출량에서는 실제로 얼마나 싼가</h2>
+    <p class="lead">"최대 200배 빠르고 400배 싸다"는 회사 발표입니다. 배수는 <b>무엇과 비교하느냐</b>에 따라 크게 달라지니,
+      본인 숫자를 넣어 보는 편이 빠릅니다. 분류 한 건의 입력 토큰과 월 호출 수, 비교할 모델만 고르면 됩니다.</p>
+
+    <div class="card pad mt16">
+      <div class="calc">
+        <div class="field">
+          <label for="calls">월 호출 수</label>
+          <input id="calls" type="number" min="0" step="1000" value="300000" inputmode="numeric">
+          <div class="sub">분류·라우팅으로 들어가는 건수</div>
+        </div>
+        <div class="field">
+          <label for="tokIn">호출당 입력 토큰</label>
+          <input id="tokIn" type="number" min="0" step="10" value="395" inputmode="numeric">
+          <div class="sub">기본값은 공개된 제3자 벤치마크의 티켓 분류 1건 기준</div>
+        </div>
+        <div class="field">
+          <label for="model">비교할 LLM</label>
+          <select id="model">
+            <option value="1,5" selected>Claude Haiku 4.5 — $1 / $5</option>
+            <option value="2,10">Claude Sonnet 5 — $2 / $10</option>
+            <option value="5,25">Claude Opus 5 — $5 / $25</option>
+            <option value="custom">직접 입력</option>
+          </select>
+          <div class="sub">100만 토큰당 입력 / 출력 단가 (2026-06 기준 정가)</div>
+        </div>
+        <div class="field">
+          <label for="tokOut">호출당 출력 토큰</label>
+          <input id="tokOut" type="number" min="0" step="5" value="10" inputmode="numeric">
+          <div class="sub">분류 답만 받으면 보통 한 자릿수~수십 토큰</div>
+        </div>
+        <div class="field" id="wrapPin" hidden>
+          <label for="priceIn">비교 모델 입력 단가 ($/100만)</label>
+          <input id="priceIn" type="number" min="0" step="0.1" value="1" inputmode="decimal">
+        </div>
+        <div class="field" id="wrapPout" hidden>
+          <label for="priceOut">비교 모델 출력 단가 ($/100만)</label>
+          <input id="priceOut" type="number" min="0" step="0.1" value="5" inputmode="decimal">
+        </div>
+      </div>
+
+      <div class="stats c4 mt16" role="group" aria-label="월 비용 비교 결과" aria-live="polite">
+        <div class="st"><div class="k">Jev 월 비용</div><div class="v good" id="oJev">—</div><div class="s" id="oJevPer">—</div></div>
+        <div class="st"><div class="k">비교 모델 월 비용</div><div class="v" id="oLlm">—</div><div class="s" id="oLlmPer">—</div></div>
+        <div class="st"><div class="k">월 차액</div><div class="v" id="oDiff">—</div><div class="s">연 <span id="oYear">—</span></div></div>
+        <div class="st"><div class="k">몇 배 싼가</div><div class="v" id="oRatio">—</div><div class="s">같은 건수 기준</div></div>
+      </div>
+
+      <div class="mt16">
+        <div class="rowsplit"><h3>비교 모델 청구서는 어디로 가나</h3><span class="hint">입력 vs 출력 비중</span></div>
+        <div class="barsplit mt12" role="img" aria-label="비교 모델 비용의 입력·출력 구성" id="bar">
+          <i class="in" id="barIn" style="width:70%"></i><i class="out" id="barOut" style="width:30%"></i>
+        </div>
+        <div class="legend">
+          <span class="lg"><span class="sw" style="background:var(--s1)"></span>입력 <b id="lgIn">—</b></span>
+          <span class="lg"><span class="sw" style="background:var(--s2)"></span>출력 <b id="lgOut">—</b></span>
+        </div>
+      </div>
+
+      <div class="note mt16"><span class="ic">🧮</span><div><b>검증.</b> 공개된 제3자 벤치마크의 분류 1건은
+        입력 395토큰 &times; $0.042/100만 = <b>$0.0000166</b>. 이 페이지 계산기도 같은 식을 쓰므로 호출당 비용이 그 값과 맞습니다
+        (<span class="num" id="chk">—</span>).</div></div>
+
+      <div class="note warn mt12"><span class="ic">📉</span><div><b>400배가 안 나오는 이유.</b> 회사가 말하는 수백~수천 배는
+        비싼 프런티어 모델에 긴 출력을 받는 경우입니다. 값싼 모델을 쓰고 답만 짧게 받으면 배수는 수십 배로 줄어듭니다.
+        반대로 LLM 쪽에 <b>프롬프트 캐싱</b>(반복되는 지시문 재사용)이나 <b>배치 API</b>(비동기 처리 시 50% 할인)를 적용하면 더 줄어듭니다.
+        비교하려면 지금 쓰는 모델·출력 길이·캐시 적용 상태를 그대로 넣어야 합니다.</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ WHERE ============ -->
+<section id="where">
+  <div class="wrap">
+    <p class="eyebrow">05 · Where</p>
+    <h2 class="title">파이프라인의 어디에 끼우나</h2>
+    <p class="lead">Jev를 쓰는 방식은 대체가 아니라 <b>앞단 게이트</b>입니다. 들어온 것을 먼저 싸게 판정해서,
+      정말 글이 필요한 건만 LLM으로 넘깁니다. 절감의 실체는 단가가 아니라 <b>LLM 호출 건수가 줄어드는 것</b>입니다.</p>
+
+    <div class="grid2 mt16">
+      <div class="card pad">
+        <h3>게이트 패턴</h3>
+        <div class="flow mt12">
+          <div class="fbox" style="width:100%"><b>요청 · 티켓 · 메시지</b><small>비정형 입력</small></div>
+          <div class="farrow" aria-hidden="true">↓</div>
+          <div class="fbox jev" style="width:100%"><b>Jev · Choice</b><small>70~500ms · $0.0000166/건</small></div>
+          <div class="farrow" aria-hidden="true">↓</div>
+          <div class="fsplit">
+            <div class="fbox"><b>즉시 처리</b><small>규칙으로 끝</small></div>
+            <div class="fbox"><b>차단 · 보류</b><small>사람에게</small></div>
+            <div class="fbox"><b>LLM 호출</b><small>글이 필요한 것만</small></div>
+          </div>
+        </div>
+        <div class="note mt16"><span class="ic">💡</span><div>들어온 것의 다수가 앞의 두 갈래에서 끝나면,
+          LLM 청구서는 단가가 아니라 <b>건수</b>에서 줄어듭니다.</div></div>
+      </div>
+      <div class="card pad">
+        <h3>자주 나오는 자리</h3>
+        <ul class="plist">
+          <li><span class="mk">01</span><div><b>모델 라우팅</b> — 쉬운 질문은 값싼 모델, 어려운 질문만 큰 모델로. 라우터 자체를 LLM으로 돌리던 비용이 사라집니다.</div></li>
+          <li><span class="mk">02</span><div><b>가드레일</b> — 프롬프트 인젝션·금칙어·민감정보 판정. 판정이 길 필요가 없고 빨라야 하는 일.</div></li>
+          <li><span class="mk">03</span><div><b>티켓 트리아지</b> — 문의를 팀·심각도로 나눠 큐에 넣기. Choice + Score 조합.</div></li>
+          <li><span class="mk">04</span><div><b>전처리 필터</b> — 수집한 문서 중 요약할 값이 있는 것만 골라 LLM에 넘기기.</div></li>
+        </ul>
+        <div class="note mt16"><span class="ic">🔌</span><div>호출은 <span class="num">POST https://api.typesafe.ai/v1/systemone</span>,
+          모델 라우트는 <span class="num">jev-latest</span>. 파이썬·자바스크립트 공식 SDK가 있고, 아직 웨이트리스트입니다.</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ LIMITS ============ -->
+<section id="limits">
+  <div class="wrap">
+    <p class="eyebrow">06 · Limits</p>
+    <h2 class="title">쓸 자리와 안 쓸 자리</h2>
+    <p class="lead">이 구분을 먼저 하지 않으면 "LLM보다 싼 모델"로 오해해서 엉뚱한 자리에 넣게 됩니다.
+      Jev는 더 싼 LLM이 아니라, 결정만 하는 다른 종류의 부품입니다.</p>
+
+    <div class="grid2 mt16">
+      <div class="card pad">
+        <h3 class="good">이럴 때 쓴다</h3>
+        <ul class="plist">
+          <li><span class="mk y">✓</span><div>답이 <b>미리 아는 목록</b> 안에 있다 (분류·라우팅·게이트)</div></li>
+          <li><span class="mk y">✓</span><div>사람이 읽지 않고 <b>코드가 바로 받아서</b> 분기한다</div></li>
+          <li><span class="mk y">✓</span><div>같은 판정을 <b>대량으로</b> 반복한다</div></li>
+          <li><span class="mk y">✓</span><div>응답이 <b>수백 ms 안에</b> 와야 한다</div></li>
+          <li><span class="mk y">✓</span><div>확률값을 받아 <b>애매한 건만 사람에게</b> 넘기고 싶다</div></li>
+        </ul>
+      </div>
+      <div class="card pad">
+        <h3 class="bad">이럴 때는 안 된다</h3>
+        <ul class="plist">
+          <li><span class="mk n">✕</span><div>답장·요약·설명·코드처럼 <b>글이 결과물</b>인 일 — 생성 자체를 못 합니다</div></li>
+          <li><span class="mk n">✕</span><div>이유를 붙여 설명해야 하는 일 — 판정만 나오고 근거 문장은 없습니다</div></li>
+          <li><span class="mk n">✕</span><div>정해진 선택지로 좁힐 수 없는 <b>열린 계획·탐색</b></div></li>
+          <li><span class="mk n">✕</span><div>이미지·음성·영상 입력 — 현재 <b>텍스트만</b> 읽습니다</div></li>
+          <li><span class="mk n">✕</span><div>정확한 수치 산출 — Score는 루브릭이지 계산기가 아닙니다</div></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ FACTS ============ -->
+<section id="facts">
+  <div class="wrap">
+    <p class="eyebrow">07 · Facts</p>
+    <h2 class="title">팩트와 출처</h2>
+    <p class="lead">공개된 지 얼마 안 된 모델이라 대부분의 수치가 <b>회사 발표</b>입니다.
+      제3자가 측정한 값과 회사가 말한 값을 아래에서 갈라 두었습니다.</p>
+
+    <div class="card mt16">
+      <div class="tscroll">
+        <table class="narrow">
+          <thead><tr><th>항목</th><th>내용</th><th>근거</th></tr></thead>
+          <tbody>
+            <tr><th>만든 곳</th><td class="tx">TypeSafe AI · 샌프란시스코 · 2024년 설립</td><td class="tx">회사 발표</td></tr>
+            <tr><th>창업자</th><td class="tx">Diogo Almeida (전 OpenAI 연구자)</td><td class="tx">언론 보도</td></tr>
+            <tr><th>투자</th><td class="tx">시드 4,000만 달러, DCVC 리드 · 스텔스 종료</td><td class="tx">보도자료 (2026-09-15)</td></tr>
+            <tr><th>공개</th><td class="tx">2026-09-15 얼리 액세스 · 웨이트리스트</td><td class="tx">회사 블로그</td></tr>
+            <tr><th>모델 구분</th><td class="tx">System One · 비자기회귀 · 텍스트 생성 없음</td><td class="tx">회사 문서</td></tr>
+            <tr><th>학습</th><td class="tx">RLCD (보정된 결정을 위한 강화학습)</td><td class="tx">회사 발표</td></tr>
+            <tr><th>가격</th><td class="tx">입력 $0.042/100만 토큰, 출력 무과금</td><td class="tx">회사 가격표</td></tr>
+            <tr><th>지연</th><td class="tx">종단 70~500ms</td><td class="tx">회사 자체 측정</td></tr>
+            <tr><th>속도·비용 배수</th><td class="tx">분류에서 최대 200배 빠름 / 400배 저렴, 결정 태스크에서 25~145배 낮은 지연</td><td class="tx">회사 자체 측정</td></tr>
+            <tr><th>제3자 측정</th><td class="tx">Jev 1.13을 챗 모델 15개 설정과 비교 — 분류 1건 $0.0000166 (입력 395토큰)</td><td class="tx">공개 벤치마크 저장소</td></tr>
+            <tr><th>API</th><td class="tx">POST /v1/systemone · 라우트 jev-latest · Python·JS SDK</td><td class="tx">회사 문서</td></tr>
+            <tr><th>비교 LLM 단가</th><td class="tx">Claude Haiku 4.5 $1/$5 · Sonnet 5 $2/$10 · Opus 5 $5/$25 (100만 토큰당 입력/출력)</td><td class="tx">2026-06 기준 정가</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="pad" style="padding-top:0">
+        <div class="note mt16"><span class="ic">🔗</span><div><b>참고한 곳.</b>
+          TypeSafe 공식 블로그 "Introducing System One Models &amp; Jev"와 문서(docs.typesafe.ai/concepts/system-one),
+          MarkTechPost·LangChain·DataCamp의 해설, 그리고 GitHub의 공개 분류 벤치마크 저장소입니다.
+          한국어 자료는 아직 거의 없습니다.</div></div>
+        <div class="note warn mt12"><span class="ic">🕓</span><div><b>기준일 2026-09-21.</b> 얼리 액세스 단계라
+          가격·제약·프리미티브 구성은 예고 없이 바뀔 수 있습니다. 실제로 붙이기 전에 공식 문서를 다시 확인하세요.</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="fgrid">
+      <div>
+        <h4>이 페이지에 대해</h4>
+        <p>"Jev가 뭐냐"는 질문 하나에서 시작한 정리 노트입니다. 새 모델 소개를 그대로 옮기는 대신,
+           내 호출량을 넣어 실제 배수를 보고 <b>어디에 쓸 수 있고 어디엔 못 쓰는지</b>까지 적었습니다.
+           외부 스크립트 없이 HTML 한 파일로 돌아갑니다.</p>
+      </div>
+      <div>
+        <h4>같이 만든 것</h4>
+        <ul>
+          <li><a href="/stocks/">종목 노트 — 미국 종목 스크리너</a></li>
+          <li><a href="/china-ev/">중국 전기차 주식 노트</a></li>
+          <li><a href="/tesla/">테슬라 주주 계산기</a></li>
+          <li><a href="/">Cadence · 업무 자동화 스튜디오</a></li>
+        </ul>
+      </div>
+    </div>
+    <p class="disc">이 페이지의 수치 대부분은 제조사 발표와 언론 보도를 옮긴 것이고, 독립적으로 재현한 값이 아닙니다.
+      계산기는 입력 단가와 토큰 수만으로 단순 곱셈을 하며, 캐싱·배치 할인·최소 과금·무료 한도는 반영하지 않습니다.
+      도입 판단 전에 공식 가격표와 약관을 직접 확인하세요.</p>
+  </div>
+</footer>
+
+<script>
+"use strict";
+
+const $ = (id) => document.getElementById(id);
+const store = {
+  get(k, fb) { try { const v = localStorage.getItem(k); return v == null ? fb : JSON.parse(v); } catch (e) { return fb; } },
+  set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} }
+};
+
+/* ---------------------------- theme ---------------------------- */
+(function () {
+  const saved = store.get("jev.theme", null);
+  if (saved === "dark" || saved === "light") document.documentElement.dataset.theme = saved;
+  const isDark = () => document.documentElement.dataset.theme
+    ? document.documentElement.dataset.theme === "dark"
+    : matchMedia("(prefers-color-scheme:dark)").matches;
+  const paint = () => { $("themeIco").textContent = isDark() ? "☾" : "☀"; $("themeTxt").textContent = isDark() ? "어둡게" : "밝게"; };
+  $("themeBtn").addEventListener("click", () => {
+    document.documentElement.dataset.theme = isDark() ? "light" : "dark";
+    store.set("jev.theme", document.documentElement.dataset.theme);
+    paint();
+  });
+  matchMedia("(prefers-color-scheme:dark)").addEventListener("change", paint);
+  paint();
+})();
+
+/* ---------------------------- 계산기 ---------------------------- */
+const JEV_IN = 0.042;                       /* $ / 100만 입력 토큰, 출력 무과금 */
+const PER_M = 1e6;
+
+function money(v) {
+  if (!isFinite(v)) return "—";
+  if (v === 0) return "$0";
+  if (v < 0.01) return "$" + v.toPrecision(3);
+  if (v < 1000) return "$" + v.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  return "$" + Math.round(v).toLocaleString("en-US");
+}
+function num(id) { const v = parseFloat($(id).value); return isFinite(v) && v >= 0 ? v : 0; }
+
+function calc() {
+  const custom = $("model").value === "custom";
+  $("wrapPin").hidden = !custom;
+  $("wrapPout").hidden = !custom;
+  if (!custom) {
+    const p = $("model").value.split(",");
+    $("priceIn").value = p[0];
+    $("priceOut").value = p[1];
+  }
+
+  const calls = num("calls"), tIn = num("tokIn"), tOut = num("tokOut");
+  const pIn = num("priceIn"), pOut = num("priceOut");
+
+  const jevPer = tIn * JEV_IN / PER_M;
+  const llmInPer = tIn * pIn / PER_M;
+  const llmOutPer = tOut * pOut / PER_M;
+  const llmPer = llmInPer + llmOutPer;
+
+  const jev = jevPer * calls, llm = llmPer * calls;
+
+  $("oJev").textContent = money(jev);
+  $("oLlm").textContent = money(llm);
+  $("oJevPer").textContent = "호출당 " + money(jevPer);
+  $("oLlmPer").textContent = "호출당 " + money(llmPer);
+
+  const diff = llm - jev;
+  $("oDiff").textContent = money(Math.abs(diff));
+  $("oDiff").className = "v " + (diff > 0 ? "good" : diff < 0 ? "bad" : "");
+  $("oYear").textContent = money(Math.abs(diff) * 12);
+
+  const ratio = jev > 0 ? llm / jev : NaN;
+  $("oRatio").textContent = isFinite(ratio) && ratio > 0
+    ? (ratio >= 100 ? Math.round(ratio).toLocaleString("en-US") : ratio.toFixed(1)) + "배"
+    : "—";
+
+  /* 비교 모델 청구서의 입력/출력 비중 */
+  const share = llmPer > 0 ? llmInPer / llmPer * 100 : 0;
+  $("barIn").style.width = (llmPer > 0 ? share : 0).toFixed(2) + "%";
+  $("barOut").style.width = (llmPer > 0 ? 100 - share : 0).toFixed(2) + "%";
+  $("lgIn").textContent = llmPer > 0 ? money(llmInPer * calls) + " · " + share.toFixed(0) + "%" : "—";
+  $("lgOut").textContent = llmPer > 0 ? money(llmOutPer * calls) + " · " + (100 - share).toFixed(0) + "%" : "—";
+  $("bar").setAttribute("aria-label",
+    "비교 모델 비용 구성 — 입력 " + share.toFixed(0) + "%, 출력 " + (100 - share).toFixed(0) + "%");
+
+  /* 벤치마크 항등식 확인: 395토큰이면 $0.0000166 */
+  const ref = 395 * JEV_IN / PER_M;
+  $("chk").textContent = "395토큰 → $" + ref.toPrecision(3)
+    + " · 지금 설정 " + tIn.toLocaleString("ko-KR") + "토큰 → " + money(jevPer);
+}
+
+["calls", "tokIn", "tokOut", "priceIn", "priceOut"].forEach((id) => {
+  $(id).addEventListener("input", calc);
+});
+$("model").addEventListener("change", calc);
+calc();
+</script>
+
+</body>
+</html>
