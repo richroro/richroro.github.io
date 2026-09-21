@@ -1,0 +1,272 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#04070e">
+<title>종목 3D 지도 · 종목 노트</title>
+<meta name="description" content="종목 노트의 숫자를 표 대신 공간에 세웁니다. 좌우·높이·앞뒤에 원하는 지표를 걸고 돌려 보면서, 어느 회사가 어디에 서 있는지 한눈에 봅니다.">
+<link rel="canonical" href="https://richroro.github.io/stocks/map/">
+<meta property="og:type" content="website"><meta property="og:locale" content="ko_KR">
+<meta property="og:site_name" content="Cadence">
+<meta property="og:url" content="https://richroro.github.io/stocks/map/">
+<meta property="og:title" content="종목 3D 지도 — 표 대신 공간에 세운 종목 노트">
+<meta property="og:description" content="매출·성장률·이익률·1인당 매출을 축으로 걸고 돌려 봅니다. 미공시 종목도 숨기지 않고 선반에 세워 둡니다.">
+<meta name="twitter:card" content="summary">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%2314161C'/><circle cx='34' cy='62' r='9' fill='%234ade80'/><circle cx='58' cy='40' r='11' fill='%2360a5fa'/><circle cx='74' cy='68' r='7' fill='%23f87171'/></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans+KR:wght@300;400;500;600;700&display=swap">
+<style>
+  :root{
+    --ink:#eef3fb; --dim:#93a3bd; --line:rgba(255,255,255,.13);
+    --glass:rgba(8,13,22,.68); --glass2:rgba(13,19,31,.9);
+    --up:#4ade80; --down:#f87171; --acc:#60a5fa; --pad:16px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+  html,body{height:100%;overflow:hidden;overscroll-behavior:none;background:#04070e}
+  @supports (height:100dvh){ html,body{height:100dvh} }
+  body{font-family:"IBM Plex Sans KR","Pretendard","Apple SD Gothic Neo",system-ui,sans-serif;
+    color:var(--ink);letter-spacing:-.2px;-webkit-font-smoothing:antialiased}
+  #stage{position:fixed;inset:0}
+  canvas{display:block;width:100%;height:100%;touch-action:none}
+  #labels{position:fixed;inset:0;pointer-events:none;z-index:5}
+  .lab{position:absolute;top:0;left:0;white-space:nowrap;font-family:"IBM Plex Mono",ui-monospace,monospace;
+    font-size:11px;color:#8fa4c4;text-shadow:0 1px 6px #000,0 0 2px #000}
+  .lab.axis{font-family:inherit;font-size:12px;font-weight:700;color:#cfdcf2}
+  .lab.axis.park{color:#7c8aa3;font-weight:600}
+
+  .ui{position:fixed;z-index:10}
+  #top{top:max(var(--pad),env(safe-area-inset-top));left:max(var(--pad),env(safe-area-inset-left));max-width:min(56vw,430px)}
+  #top h1{font-size:clamp(17px,2.2vw,22px);font-weight:700;letter-spacing:-.6px;text-shadow:0 2px 18px #000}
+  #top p{margin-top:6px;font-size:12px;color:var(--dim);line-height:1.55;text-shadow:0 1px 10px #000}
+  #top a{color:#9dc0ef;text-decoration:none;border-bottom:1px solid rgba(157,192,239,.35)}
+
+  #panel{left:max(var(--pad),env(safe-area-inset-left));bottom:max(var(--pad),env(safe-area-inset-bottom));
+    width:268px;border:1px solid var(--line);border-radius:14px;background:var(--glass);
+    backdrop-filter:blur(15px);-webkit-backdrop-filter:blur(15px);overflow:hidden;box-shadow:0 22px 50px -22px #000}
+  #panel .head{display:flex;justify-content:space-between;align-items:center;padding:11px 13px;cursor:pointer}
+  #panel .head b{font-size:12px;font-weight:700}
+  #panel .head span{font-size:11px;color:var(--dim)}
+  #panel.closed .body{display:none}
+  #panel .body{padding:4px 13px 13px;border-top:1px solid rgba(255,255,255,.07)}
+  .row{display:flex;align-items:center;gap:8px;margin-top:9px}
+  .row label{flex:none;width:34px;font-size:11px;font-weight:700;color:var(--dim);font-family:"IBM Plex Mono",monospace}
+  select{flex:1;min-width:0;background:rgba(255,255,255,.05);color:var(--ink);border:1px solid var(--line);
+    border-radius:8px;padding:7px 8px;font-family:inherit;font-size:12px;cursor:pointer}
+  select:focus{outline:1px solid var(--acc)}
+  option{background:#0d131f}
+  .togs{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:11px}
+  .tg{display:flex;align-items:center;gap:6px;padding:7px 8px;border-radius:8px;border:1px solid var(--line);
+    background:rgba(255,255,255,.04);font-size:11px;font-weight:600;color:var(--dim);cursor:pointer;font-family:inherit}
+  .tg .d{width:6px;height:6px;border-radius:50%;background:#46536b;flex:none}
+  .tg.on{color:var(--ink);border-color:rgba(96,165,250,.45);background:rgba(96,165,250,.1)}
+  .tg.on .d{background:var(--acc);box-shadow:0 0 8px var(--acc)}
+  #legend{display:flex;flex-wrap:wrap;gap:5px 10px;margin-top:11px;padding-top:10px;border-top:1px solid rgba(255,255,255,.07)}
+  #legend i{display:flex;align-items:center;gap:5px;font-style:normal;font-size:11px;color:var(--dim)}
+  #legend i b{width:8px;height:8px;border-radius:50%;display:block}
+
+  #card{right:max(var(--pad),env(safe-area-inset-right));bottom:max(var(--pad),env(safe-area-inset-bottom));
+    width:290px;border:1px solid var(--line);border-radius:14px;background:var(--glass2);
+    backdrop-filter:blur(15px);-webkit-backdrop-filter:blur(15px);padding:14px;box-shadow:0 22px 50px -22px #000;
+    opacity:0;transform:translateY(8px);transition:.18s;pointer-events:none}
+  #card.on{opacity:1;transform:none;pointer-events:auto}
+  #card .nm{display:flex;align-items:center;gap:9px}
+  #card .av{width:30px;height:30px;border-radius:8px;display:grid;place-items:center;font-weight:700;font-size:12px;color:#fff;flex:none}
+  #card .nm b{font-size:15px;font-weight:700;display:block}
+  #card .nm small{font-family:"IBM Plex Mono",monospace;font-size:11px;color:var(--dim)}
+  #card .hint{margin-top:9px;font-size:11.5px;color:#a9b8d1;line-height:1.5}
+  #card dl{margin-top:11px;display:grid;grid-template-columns:auto 1fr;gap:5px 10px;font-size:12px}
+  #card dt{color:var(--dim)}
+  #card dd{text-align:right;font-family:"IBM Plex Mono",monospace;font-variant-numeric:tabular-nums}
+  #card dd.up{color:var(--up)} #card dd.down{color:var(--down)} #card dd.na{color:#5f6c83}
+  #card .go{display:block;margin-top:12px;text-align:center;padding:9px;border-radius:9px;
+    background:rgba(96,165,250,.14);border:1px solid rgba(96,165,250,.4);color:#cfe2ff;
+    font-size:12px;font-weight:700;text-decoration:none}
+  #card .go:hover{background:rgba(96,165,250,.24)}
+
+  #boot{position:fixed;inset:0;z-index:40;display:grid;place-items:center;background:#04070e;transition:opacity .45s}
+  #boot.gone{opacity:0;pointer-events:none}
+  #boot p{font-size:12px;color:var(--dim)}
+  #boot .sp{width:44px;height:44px;margin:0 auto 14px;border-radius:50%;border:2px solid rgba(96,165,250,.2);
+    border-top-color:var(--acc);animation:sp 1s linear infinite}
+  @keyframes sp{to{transform:rotate(360deg)}}
+  #nogl{display:none;max-width:420px;text-align:center;padding:24px;font-size:13px;line-height:1.7;color:var(--dim)}
+  #nogl b{display:block;color:var(--ink);font-size:15px;margin-bottom:9px}
+  #nogl a{color:#9dc0ef}
+
+  @media (max-width:760px){
+    :root{--pad:11px}
+    #top{max-width:calc(100vw - 22px)}
+    #panel{width:calc(100vw - 22px);max-width:340px}
+    #card{width:calc(100vw - 22px);max-width:340px;bottom:auto;top:max(84px,env(safe-area-inset-top))}
+  }
+</style>
+</head>
+<body>
+
+<div id="stage"><canvas id="c"></canvas></div>
+<div id="labels"></div>
+
+<div class="ui" id="top">
+  <h1>종목 3D 지도</h1>
+  <p><a href="/stocks/">종목 노트</a>의 숫자를 그대로 공간에 세웠습니다. 축을 바꾸면 회사들이 자리를 옮깁니다.
+     점을 짚으면 숫자가, 누르면 그 회사 페이지가 열립니다.</p>
+</div>
+
+<div class="ui" id="panel">
+  <div class="head" id="head"><b>축과 색</b><span id="count">—</span></div>
+  <div class="body">
+    <div class="row"><label>좌우</label><select id="ax"></select></div>
+    <div class="row"><label>높이</label><select id="ay"></select></div>
+    <div class="row"><label>앞뒤</label><select id="az"></select></div>
+    <div class="row"><label>색</label><select id="acolor">
+      <option value="kr">한국 기업과의 관계</option>
+      <option value="group">묶음(M7·반도체…)</option>
+      <option value="own">회사 고유색</option>
+    </select></div>
+    <div class="row"><label>추리기</label><select id="afilter"></select></div>
+    <div class="togs">
+      <button class="tg on" id="tLabel"><span class="d"></span>이름표</button>
+      <button class="tg on" id="tRotate"><span class="d"></span>자동 회전</button>
+    </div>
+    <div id="legend"></div>
+  </div>
+</div>
+
+<div class="ui" id="card">
+  <div class="nm"><span class="av" id="cAv"></span><span><b id="cKo"></b><small id="cTk"></small></span></div>
+  <p class="hint" id="cHint"></p>
+  <dl id="cList"></dl>
+  <a class="go" id="cGo" href="#">회사 페이지 열기 →</a>
+</div>
+
+<div id="boot">
+  <div class="in" id="bootIn"><div class="sp"></div><p>숫자를 세우는 중…</p></div>
+  <div id="nogl">
+    <b>WebGL2 를 쓸 수 없습니다</b>
+    이 페이지는 브라우저의 3D 가속이 필요합니다. 최신 크롬·사파리·엣지에서 열거나,
+    <a href="/stocks/">표로 된 종목 노트</a>를 보세요.
+  </div>
+</div>
+
+<script src="/stocks/assets/registry.js"></script>
+<script>window.__REGISTRY = REGISTRY;</script>
+<script type="module">
+import { createMap, toRows, METRICS } from './assets/map.js';
+
+const $ = (s) => document.querySelector(s);
+const rows = toRows(window.__REGISTRY || []);
+const KR_C = { 공급:'#4ade80', 고객:'#60a5fa', 경쟁:'#f87171', 간접:'#94a3b8' };
+const KR_NOTE = { 공급:'한국 기업이 납품하는 쪽', 고객:'한국 기업이 사 오는 쪽', 경쟁:'같은 시장에서 겨루는 쪽', 간접:'직접 거래는 옅은 쪽' };
+const GROUP_C = { m7:'#60a5fa', semi:'#4ade80', soft:'#a78bfa', fin:'#fbbf24', consumer:'#f472b6', health:'#22d3ee', frontier:'#fb923c' };
+const GROUP_KO = { m7:'M7', semi:'반도체', soft:'소프트웨어', fin:'금융·거래', consumer:'소비·유통', health:'헬스케어', frontier:'프런티어' };
+
+/* 짚었을 때 뜨는 카드 — createMap 이 이 함수를 바로 물고 가므로 호출보다 먼저 선언한다. */
+const fmt = (k, v) => v == null ? '—' : METRICS[k].fmt(v);
+function showCard(row) {
+  const card = $('#card');
+  if (!row) { card.classList.remove('on'); return; }
+  $('#cAv').textContent = row.ab; $('#cAv').style.background = row.c;
+  $('#cKo').textContent = row.ko;
+  $('#cTk').textContent = row.tk + ' · ' + row.sector + ' · ' + row.fy;
+  $('#cHint').textContent = (row.hint ? row.hint + ' · ' : '') + '한국과는 ' + row.kr + ' 관계' +
+    (KR_NOTE[row.kr] ? '(' + KR_NOTE[row.kr] + ')' : '');
+  const items = [
+    ['매출', 'rev', row.rev], ['성장률', 'growth', row.growth], ['총마진', 'gm', row.gm],
+    ['영업이익률', 'om', row.om], ['순이익률', 'nm', row.nm],
+    ['임직원', 'emp', row.emp], ['1인당 매출', 'revPer', row.revPer],
+    ['업력', 'age', row.age], ['최대 부문', 'topShare', row.topShare],
+  ];
+  $('#cList').innerHTML = items.map(([label, k, v]) => {
+    const cls = v == null ? 'na' : (METRICS[k].signed ? (v > 0 ? 'up' : v < 0 ? 'down' : '') : '');
+    const extra = k === 'topShare' && row.topK ? ` <span style="color:#7c8aa3">${row.topK}</span>` : '';
+    return `<dt>${label}${extra}</dt><dd class="${cls}">${fmt(k, v)}</dd>`;
+  }).join('');
+  $('#cGo').href = row.href;
+  card.classList.add('on');
+}
+
+let map = null, bootErr = null;
+try {
+  map = createMap($('#c'), rows, {
+    labelHost: $('#labels'),
+    x: 'growth', y: 'nm', z: 'rev', colorBy: 'kr',
+    onHover: showCard,
+    onPick: (row) => { location.href = row.href; },
+    onLayout: ({ parked }) => {
+      $('#count').textContent = rows.length + '곳' + (parked ? ' · 미공시 ' + parked : '');
+    },
+  });
+} catch (e) { bootErr = e; console.error(e); }
+
+if (!map) {
+  const hasGL2 = (() => { try { return !!document.createElement('canvas').getContext('webgl2'); } catch (e) { return false; } })();
+  if (hasGL2 && bootErr) {
+    $('#nogl').innerHTML = '<b>화면을 시작하지 못했습니다</b>브라우저 콘솔에 오류가 찍혀 있습니다. '
+      + '<a href="/stocks/">표로 된 종목 노트</a>는 그대로 볼 수 있습니다.';
+  }
+  $('#bootIn').style.display = 'none';
+  $('#nogl').style.display = 'block';
+  document.querySelectorAll('.ui').forEach((el) => el.remove());
+} else {
+  window.__map = map;
+  requestAnimationFrame(() => requestAnimationFrame(() => {
+    $('#boot').classList.add('gone');
+    setTimeout(() => $('#boot').remove(), 500);
+  }));
+
+  /* 축 고르기 */
+  const fill = (sel, cur) => {
+    sel.innerHTML = Object.entries(METRICS)
+      .map(([k, m]) => `<option value="${k}"${k === cur ? ' selected' : ''}>${m.label}</option>`).join('');
+  };
+  fill($('#ax'), map.state.x); fill($('#ay'), map.state.y); fill($('#az'), map.state.z);
+  for (const [sel, which] of [['#ax', 'x'], ['#ay', 'y'], ['#az', 'z']]) {
+    $(sel).addEventListener('change', (e) => map.setAxis(which, e.target.value));
+  }
+  $('#acolor').addEventListener('change', (e) => { map.setColorBy(e.target.value); legend(); });
+
+  /* 추리기 */
+  const sectors = [...new Set(rows.map((r) => r.sector))].sort((a, b) => a.localeCompare(b, 'ko'));
+  const groups = [...new Set(rows.map((r) => r.group))];
+  $('#afilter').innerHTML = '<option value="전체">전체</option>'
+    + '<optgroup label="묶음">' + groups.map((g) => `<option value="${g}">${GROUP_KO[g] || g}</option>`).join('') + '</optgroup>'
+    + '<optgroup label="섹터">' + sectors.map((s) => `<option value="${s}">${s}</option>`).join('') + '</optgroup>';
+  $('#afilter').addEventListener('change', (e) => map.setFilter(e.target.value));
+
+  /* 토글 */
+  const tog = (sel, fn) => $(sel).addEventListener('click', () => {
+    const on = !$(sel).classList.contains('on');
+    $(sel).classList.toggle('on', on); fn(on);
+  });
+  tog('#tLabel', (v) => map.setLabels(v));
+  tog('#tRotate', (v) => map.setAutoRotate(v));
+  $('#tRotate').classList.toggle('on', map.state.autoRotate);
+  $('#head').addEventListener('click', () => $('#panel').classList.toggle('closed'));
+  if (matchMedia('(max-width:760px)').matches) $('#panel').classList.add('closed');
+
+  /* 범례 */
+  function legend() {
+    const mode = map.state.colorBy;
+    const box = $('#legend');
+    if (mode === 'own') { box.innerHTML = '<i style="color:#7c8aa3">회사마다 정해 둔 고유색</i>'; return; }
+    const src = mode === 'kr' ? KR_C : GROUP_C;
+    box.innerHTML = Object.entries(src).map(([k, c]) =>
+      `<i title="${KR_NOTE[k] || ''}"><b style="background:${c}"></b>${GROUP_KO[k] || k}</i>`).join('');
+  }
+  legend();
+
+  addEventListener('keydown', (e) => {
+    if (e.target.tagName === 'SELECT') return;
+    const k = e.key.toLowerCase();
+    if (k === 'r') map.resetView();
+    else if (k === 'l') $('#tLabel').click();
+  });
+
+  const q = new URLSearchParams(location.search).get('focus');
+  if (q) setTimeout(() => map.focus(q), 400);
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#02050a">
+<title>키네신 · three.js</title>
+<meta name="description" content="세포 안에서 미세소관 위를 두 다리로 걷는 운동 단백질 키네신. 한 걸음 8나노미터, 걸음마다 ATP 한 개. 외부 에셋 없이 three.js 로 계산해 그립니다.">
+<link rel="canonical" href="https://richroro.github.io/kinesin/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="키네신">
+<meta property="og:title" content="키네신 · 8 나노미터씩 걷는 분자 기계">
+<meta property="og:description" content="미세소관 위를 손잡이 넘기듯 걷는 운동 단백질. 한 걸음 8nm, 걸음마다 ATP 한 개를 씁니다.">
+<meta property="og:url" content="https://richroro.github.io/kinesin/">
+<meta property="og:image" content="https://richroro.github.io/kinesin/og.jpg">
+<meta property="og:image:type" content="image/jpeg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:locale" content="ko_KR">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="키네신 · 8 나노미터씩 걷는 분자 기계">
+<meta name="twitter:description" content="미세소관 위를 손잡이 넘기듯 걷는 운동 단백질. 걸음마다 ATP 한 개.">
+<meta name="twitter:image" content="https://richroro.github.io/kinesin/og.jpg">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%23050b12'/><rect x='10' y='64' width='80' height='13' rx='6' fill='%23446a8c'/><path d='M34 64 44 44M62 64 52 44' stroke='%23f0c07a' stroke-width='7' stroke-linecap='round' fill='none'/><circle cx='34' cy='66' r='9' fill='%23f0c07a'/><circle cx='62' cy='66' r='9' fill='%23f0c07a'/><circle cx='48' cy='30' r='13' fill='none' stroke='%238ff4ff' stroke-width='5'/></svg>">
+<style>
+  :root{
+    --ink:#f4f7ff; --dim:#9aa7bd; --line:rgba(255,255,255,.14);
+    --glass:rgba(10,14,24,.62); --glass-2:rgba(16,21,34,.86);
+    --gold:#f0c07a; --cyan:#8ff4ff;
+    --pad:16px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+  html,body{height:100%;overflow:hidden;overscroll-behavior:none;background:#04070e}
+  @supports (height:100dvh){ html,body{height:100dvh} }
+  body{
+    font-family:"Pretendard","Apple SD Gothic Neo","Malgun Gothic",system-ui,sans-serif;
+    color:var(--ink);letter-spacing:-.2px;-webkit-font-smoothing:antialiased;
+  }
+  #stage{position:fixed;inset:0}
+  canvas{display:block;width:100%;height:100%;touch-action:none;cursor:grab}
+  canvas:active{cursor:grabbing}
+
+  .ui{position:fixed;z-index:10;transition:opacity .28s ease, transform .28s ease}
+  body.bare .ui:not(.keep){opacity:0;pointer-events:none;transform:translateY(6px)}
+
+  /* ── 제목 ── */
+  #title{top:max(var(--pad),env(safe-area-inset-top));left:max(var(--pad),env(safe-area-inset-left));max-width:min(60vw,420px)}
+  #title h1{font-size:clamp(19px,2.4vw,25px);font-weight:800;line-height:1.2;letter-spacing:-.8px;
+    text-shadow:0 2px 24px rgba(0,0,0,.6)}
+  #title h1 span{color:var(--gold)}
+  #title p{margin-top:7px;font-size:12.5px;color:var(--dim);font-weight:500;line-height:1.5;text-shadow:0 1px 10px rgba(0,0,0,.7)}
+  #title .hint{margin-top:9px;font-size:11.5px;color:#7d8aa0;font-weight:600}
+  #title .hint b{color:#aab7cc;font-weight:700}
+
+  /* ── 오른쪽 위 버튼 ── */
+  #tools{top:max(var(--pad),env(safe-area-inset-top));right:max(var(--pad),env(safe-area-inset-right));display:flex;gap:7px}
+  .icon{width:38px;height:38px;border-radius:11px;border:1px solid var(--line);background:var(--glass);
+    backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);color:var(--ink);display:grid;place-items:center;
+    cursor:pointer;font-size:15px;font-family:inherit;transition:.16s}
+  .icon:hover{background:var(--glass-2);border-color:rgba(255,255,255,.28);transform:translateY(-1px)}
+  .icon.on{border-color:rgba(240,192,122,.6);color:var(--gold)}
+
+  /* ── 조작 패널 ── */
+  #panel{left:max(var(--pad),env(safe-area-inset-left));bottom:max(var(--pad),env(safe-area-inset-bottom));
+    width:290px;border:1px solid var(--line);border-radius:16px;background:var(--glass);
+    backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);overflow:hidden;
+    box-shadow:0 24px 60px -24px rgba(0,0,0,.9)}
+  #panel .head{display:flex;align-items:center;justify-content:space-between;padding:12px 14px;cursor:pointer}
+  #panel .head b{font-size:12.5px;font-weight:800;letter-spacing:.2px}
+  #panel .head .fold{font-size:11px;color:var(--dim);font-weight:700;transition:.2s}
+  #panel.closed .body{display:none}
+  #panel.closed .head .fold{transform:rotate(180deg)}
+  #panel .body{padding:2px 14px 14px;border-top:1px solid rgba(255,255,255,.08)}
+  .grp{margin-top:13px}
+  .grp>label{display:flex;justify-content:space-between;align-items:baseline;font-size:11.5px;font-weight:700;color:var(--dim);margin-bottom:7px}
+  .grp>label i{font-style:normal;color:var(--ink);font-size:11.5px;font-variant-numeric:tabular-nums}
+  .chips{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+  .chip{padding:8px 6px;border-radius:9px;border:1px solid var(--line);background:rgba(255,255,255,.04);
+    color:var(--dim);font-size:11.5px;font-weight:700;font-family:inherit;cursor:pointer;transition:.15s;text-align:center}
+  .chip:hover{background:rgba(255,255,255,.09);color:var(--ink)}
+  .chip.on{background:rgba(240,192,122,.14);border-color:rgba(240,192,122,.55);color:var(--gold)}
+  .chip small{display:block;font-size:10px;font-weight:600;opacity:.6;margin-top:2px;letter-spacing:0}
+  input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:22px;background:transparent;cursor:pointer}
+  input[type=range]::-webkit-slider-runnable-track{height:3px;border-radius:3px;background:rgba(255,255,255,.18)}
+  input[type=range]::-moz-range-track{height:3px;border-radius:3px;background:rgba(255,255,255,.18)}
+  input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:15px;height:15px;border-radius:50%;
+    background:var(--gold);margin-top:-6px;box-shadow:0 0 0 4px rgba(240,192,122,.16)}
+  input[type=range]::-moz-range-thumb{width:15px;height:15px;border:0;border-radius:50%;background:var(--gold);
+    box-shadow:0 0 0 4px rgba(240,192,122,.16)}
+  .toggles{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:13px}
+  .tg{display:flex;align-items:center;gap:7px;padding:8px 9px;border-radius:9px;border:1px solid var(--line);
+    background:rgba(255,255,255,.04);font-size:11.5px;font-weight:700;color:var(--dim);cursor:pointer;
+    font-family:inherit;transition:.15s;text-align:left}
+  .tg .dot{width:7px;height:7px;border-radius:50%;background:#4a5568;flex:none;transition:.15s}
+  .tg.on{color:var(--ink);border-color:rgba(111,233,255,.4);background:rgba(111,233,255,.08)}
+  .tg.on .dot{background:var(--cyan);box-shadow:0 0 9px var(--cyan)}
+
+  /* ── 정보 ── */
+  #sheet{position:fixed;inset:0;z-index:30;display:none;place-items:center;padding:20px;
+    background:rgba(3,5,10,.72);backdrop-filter:blur(6px)}
+  #sheet.open{display:grid}
+  .card{width:min(560px,100%);max-height:min(80vh,720px);overflow:auto;border-radius:18px;border:1px solid var(--line);
+    background:var(--glass-2);backdrop-filter:blur(20px);padding:24px 24px 20px;box-shadow:0 40px 90px -30px #000}
+  .card h2{font-size:18px;font-weight:800;letter-spacing:-.5px}
+  .card h2 + p{margin-top:8px;color:var(--dim);font-size:13px;line-height:1.65}
+  .card h3{margin:20px 0 8px;font-size:12px;font-weight:800;color:var(--gold);letter-spacing:.4px}
+  .card ul{list-style:none;display:grid;gap:7px}
+  .card li{font-size:13px;line-height:1.6;color:#c8d2e2;display:flex;gap:9px}
+  .card li b{color:var(--ink);font-weight:700;flex:none;min-width:74px}
+  .card .stat{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-top:6px}
+  .card .stat div{border:1px solid var(--line);border-radius:10px;padding:9px 11px;background:rgba(255,255,255,.03)}
+  .card .stat span{display:block;font-size:10.5px;color:var(--dim);font-weight:700}
+  .card .stat i{font-style:normal;font-size:14px;font-weight:800;font-variant-numeric:tabular-nums}
+  .card .close{margin-top:20px;width:100%;padding:12px;border-radius:11px;border:1px solid var(--line);
+    background:rgba(255,255,255,.06);color:var(--ink);font-family:inherit;font-size:13px;font-weight:800;cursor:pointer}
+  .card .close:hover{background:rgba(255,255,255,.12)}
+  .card .back{display:inline-block;margin-top:14px;font-size:12px;color:var(--dim);text-decoration:none;font-weight:700}
+  .card .back:hover{color:var(--ink)}
+
+  /* ── 로딩 · 대체 화면 ── */
+  #boot{position:fixed;inset:0;z-index:40;display:grid;place-items:center;background:#04070e;transition:opacity .5s ease}
+  #boot.gone{opacity:0;pointer-events:none}
+  #boot .in{text-align:center}
+  #boot .spin{width:54px;height:54px;margin:0 auto 16px;border-radius:50%;
+    border:2px solid rgba(240,192,122,.2);border-top-color:var(--gold);animation:spin 1s linear infinite}
+  @keyframes spin{to{transform:rotate(360deg)}}
+  #boot p{font-size:12.5px;color:var(--dim);font-weight:600}
+  #nogl{display:none;max-width:420px;text-align:center;padding:24px;font-size:13.5px;line-height:1.7;color:var(--dim)}
+  #nogl b{display:block;color:var(--ink);font-size:16px;margin-bottom:10px}
+
+  #toast{position:fixed;left:50%;bottom:28px;transform:translate(-50%,14px);z-index:35;padding:10px 18px;border-radius:999px;
+    background:var(--glass-2);border:1px solid var(--line);font-size:12.5px;font-weight:700;opacity:0;
+    transition:.25s;pointer-events:none;backdrop-filter:blur(10px)}
+  #toast.on{opacity:1;transform:translate(-50%,0)}
+
+  @media (max-width:760px){
+    :root{--pad:12px}
+    #panel{width:calc(100vw - 24px);max-width:360px}
+    #title{max-width:calc(100vw - 130px)}
+    #title .hint{display:none}
+  }
+  @media (max-height:520px){ #panel .body{max-height:42vh;overflow:auto} }
+
+  /* ── 계기판 ── */
+  #meter{right:max(var(--pad),env(safe-area-inset-right));bottom:max(var(--pad),env(safe-area-inset-bottom));
+    display:grid;grid-template-columns:repeat(3,minmax(68px,auto));gap:1px;border:1px solid var(--line);
+    border-radius:14px;overflow:hidden;background:var(--line);
+    box-shadow:0 18px 44px -20px rgba(0,0,0,.9)}
+  #meter div{background:var(--glass);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);padding:9px 13px}
+  #meter span{display:block;font-size:10px;font-weight:700;color:var(--dim);letter-spacing:.2px}
+  #meter i{font-style:normal;display:block;font-size:17px;font-weight:800;font-variant-numeric:tabular-nums;margin-top:2px}
+  #meter i b{font-size:10.5px;font-weight:700;color:var(--dim);margin-left:2px}
+  .btn{width:100%;margin-top:11px;padding:10px;border-radius:10px;border:1px solid var(--line);
+    background:rgba(255,255,255,.06);color:var(--ink);font-family:inherit;font-size:12px;font-weight:800;cursor:pointer;transition:.15s}
+  .btn:hover{background:rgba(255,255,255,.13)}
+  .card table{width:100%;border-collapse:collapse;margin-top:6px;font-size:12.5px}
+  .card th,.card td{text-align:left;padding:7px 8px;border-bottom:1px solid rgba(255,255,255,.08);vertical-align:top}
+  .card th{color:var(--dim);font-weight:700;font-size:11px;white-space:nowrap}
+  .card td b{font-variant-numeric:tabular-nums}
+  .card .note{margin-top:12px;font-size:12px;line-height:1.65;color:#9aa7bd;border-left:2px solid rgba(240,192,122,.5);padding-left:11px}
+  @media (max-width:760px){ #meter{grid-template-columns:repeat(3,1fr);left:max(var(--pad),env(safe-area-inset-left))} }
+</style></head>
+<body>
+
+<div id="stage"><canvas id="c"></canvas></div>
+
+<div class="ui" id="title">
+  <h1>키네신 <span>8 나노미터</span></h1>
+  <p>세포 안의 짐꾼. 미세소관 위를 두 다리로 걸으며 한 걸음에 8 나노미터씩 나아갑니다. 그 한 걸음마다 ATP 한 개를 씁니다.</p>
+  <p class="hint"><b>드래그</b> 돌리기 · <b>휠</b> 확대 · <b>H</b> 화면 정리</p>
+</div>
+
+<div class="ui" id="tools">
+  <button class="icon" id="btnShot" title="사진으로 저장 (S)" aria-label="사진으로 저장">⤓</button>
+  <button class="icon" id="btnBare" title="화면 정리 (H)" aria-label="화면 정리">◲</button>
+  <button class="icon" id="btnInfo" title="어떻게 걷나 (I)" aria-label="어떻게 걷나">i</button>
+</div>
+
+<div class="ui" id="meter">
+  <div><span>걸음</span><i id="mStep">0</i></div>
+  <div><span>간 거리</span><i id="mNm">0<b>nm</b></i></div>
+  <div><span>쓴 ATP</span><i id="mAtp">0</i></div>
+</div>
+
+<div class="ui" id="panel">
+  <div class="head" id="panelHead"><b>조작</b><span class="fold">▾</span></div>
+  <div class="body">
+    <div class="grp">
+      <label>시점</label>
+      <div class="chips" id="views"></div>
+    </div>
+    <div class="grp">
+      <label>색</label>
+      <div class="chips" id="chips"></div>
+    </div>
+    <div class="grp">
+      <label>걸음 속도 <i id="vSpeed">초당 1.5걸음</i></label>
+      <input type="range" id="sSpeed" min="10" max="600" value="150">
+    </div>
+    <div class="grp">
+      <label>빛 번짐 <i id="vBloom">1.0</i></label>
+      <input type="range" id="sBloom" min="0" max="200" value="100">
+    </div>
+    <div class="toggles">
+      <button class="tg on" id="tSites"><span class="dot"></span>발판 표시</button>
+      <button class="tg on" id="tAtp"><span class="dot"></span>ATP</button>
+      <button class="tg on" id="tCargo"><span class="dot"></span>짐</button>
+      <button class="tg" id="tPause"><span class="dot"></span>정지</button>
+    </div>
+    <button class="btn" id="btnStep">한 걸음만 (→)</button>
+  </div>
+</div>
+
+<div id="sheet">
+  <div class="card">
+    <h2>8 나노미터씩 걷는 기계</h2>
+    <p>나비와 해마는 제가 지어낸 기계였습니다. 키네신은 <b>진짜로 있는 기계</b>입니다.
+       여러분의 세포 하나하나에서 지금 이 순간에도 미세소관이라는 레일 위를 걸어 다니며
+       소포·미토콘드리아·단백질 꾸러미를 나르고 있습니다.</p>
+
+    <h3>어떻게 걷나</h3>
+    <ul>
+      <li><b>손잡이 넘기기</b>뒤에 있던 머리가 떨어져 앞머리를 옆으로 지나쳐 두 칸 앞에 내려앉습니다. 머리는 16 nm 를 가지만 몸의 한가운데는 8 nm 만 나아갑니다. 이게 한 걸음입니다.</li>
+      <li><b>180° 회전</b>머리는 한 걸음마다 반 바퀴 돌아갑니다. 자벌레처럼 기는 게 아니라 정말로 번갈아 딛는다는 증거였습니다.</li>
+      <li><b>연료</b>걸음마다 ATP 한 개가 앞머리에 붙고, 뒷머리에서 ADP 와 인산이 하나씩 빠져나옵니다. 화면의 계기판이 세고 있는 게 그것입니다.</li>
+      <li><b>목줄</b>머리와 자루를 잇는 짧고 무른 끈입니다. ATP 가 붙으면 이 끈이 머리에 달라붙으면서 뒷머리를 앞으로 던집니다 — 걸음을 만드는 건 사실 이 끈입니다.</li>
+    </ul>
+
+    <h3>걸어가는 길</h3>
+    <ul>
+      <li><b>미세소관</b>원섬유 13 가닥이 모여 만든 빈 관입니다. 가닥마다 α·β 튜불린이 4 nm 씩 번갈아 쌓입니다.</li>
+      <li><b>8 nm 의 정체</b>키네신의 한 걸음은 α+β 한 쌍의 길이와 정확히 같습니다. 레일의 눈금이 곧 보폭입니다.</li>
+      <li><b>이음매</b>이웃 가닥은 12/13 nm 씩 어긋나 있어서, 한 바퀴 돌면 낱개 세 칸이 밀립니다. 3 은 홀수라 α 가 β 와 만나는 줄이 딱 한 줄 생깁니다. 이 페이지도 격자를 그대로 깔았더니 그 줄이 저절로 나왔습니다.</li>
+    </ul>
+
+    <h3>이 페이지가 쓴 숫자</h3>
+    <table>
+      <tr><th>한 걸음</th><td><b>8 nm</b> — 광집게로 한 걸음씩 떼어 내 잰 값</td></tr>
+      <tr><th>머리가 가는 거리</th><td><b>16 nm</b> — 단분자 형광으로 머리 하나만 따라가 잰 값</td></tr>
+      <tr><th>걸음당 연료</th><td><b>ATP 1 개</b></td></tr>
+      <tr><th>원섬유</th><td><b>13 가닥</b>, 바깥지름 <b>25 nm</b>, 낱개 <b>4 nm</b></td></tr>
+      <tr><th>버티는 힘</th><td><b>약 5 pN</b> — 광집게로 끌어당겨 멈춰 세운 힘</td></tr>
+      <tr><th>실제 속도</th><td><b>초당 약 800 nm</b> = 초당 100 걸음</td></tr>
+      <tr><th>한 번에 가는 거리</th><td><b>약 1 µm</b> — 100 걸음쯤 걷고 레일에서 떨어집니다</td></tr>
+    </table>
+
+    <p class="note"><b>정직하게 밝혀 둘 것.</b>
+      숫자는 위와 같이 실제로 측정된 값이고, 화면의 계기판과 격자 간격은 모두 그 값에서 나옵니다.
+      그러나 <b>모양은 모식도입니다</b> — 원자 좌표(PDB)를 읽어 그린 구조 모델이 아니라, 기구가 어떻게
+      맞물리는지 보이려고 깎은 형상입니다. 걸음 속도도 기본값이 실제의 1/60 쯤으로 늦춰져 있습니다.
+      실제 속도로는 눈으로 좇을 수 없습니다.</p>
+
+    <h3>지금 이 화면</h3>
+    <div class="stat">
+      <div><span>삼각형</span><i id="iTri">–</i></div>
+      <div><span>초당 프레임</span><i id="iFps">–</i></div>
+      <div><span>렌더 해상도</span><i id="iSize">–</i></div>
+      <div><span>three.js</span><i id="iRev">–</i></div>
+    </div>
+
+    <h3>단축키</h3>
+    <ul>
+      <li><b>드래그</b>돌리기 · <b>휠/핀치</b> 확대</li>
+      <li><b>→</b>한 걸음만 · <b>Space</b> 정지</li>
+      <li><b>H</b>화면 정리 · <b>I</b> 이 설명 · <b>S</b> 사진 저장</li>
+    </ul>
+    <button class="close" id="btnClose">닫기</button>
+    <a class="back" href="/seahorse/">← 기계 해마</a>
+    <a class="back" href="/" style="margin-left:14px">richroro.github.io</a>
+  </div>
+</div>
+
+<div id="boot">
+  <div class="in" id="bootIn"><div class="spin"></div><p>레일을 까는 중…</p></div>
+  <div id="nogl">
+    <b>WebGL2 를 쓸 수 없습니다</b>
+    이 페이지는 브라우저의 3D 가속(WebGL2)이 필요합니다.
+    최신 크롬·사파리·엣지에서 열거나, 설정에서 하드웨어 가속을 켜 주세요.
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<script type="module">
+import { createKinesin, PRESETS, FACTS } from './assets/kinesin.js';
+
+const $ = (s) => document.querySelector(s);
+const canvas = $('#c');
+const boot = $('#boot');
+const NF = new Intl.NumberFormat('ko-KR');
+
+let app = null, bootErr = null;
+try { app = createKinesin(canvas, { preset: 'lab', view: 'walk' }); } catch (e) { bootErr = e; console.error(e); }
+
+if (!app) {
+  const hasGL2 = (() => { try { return !!document.createElement('canvas').getContext('webgl2'); } catch (e) { return false; } })();
+  if (hasGL2 && bootErr) {
+    $('#nogl').innerHTML = '<b>장면을 시작하지 못했습니다</b>브라우저 콘솔에 오류가 찍혀 있습니다.<br>새로고침해도 같다면 알려 주세요.';
+  }
+  $('#bootIn').style.display = 'none';
+  $('#nogl').style.display = 'block';
+  document.querySelectorAll('.ui').forEach((el) => el.remove());
+} else {
+  window.__kinesin = app;            // 콘솔에서 만져 볼 수 있게 열어 둔다
+  requestAnimationFrame(() => requestAnimationFrame(() => {
+    boot.classList.add('gone');
+    setTimeout(() => boot.remove(), 600);
+  }));
+
+  /* ── 계기판 — 초당 열 번만 고쳐 쓴다 ── */
+  const mStep = $('#mStep'), mNm = $('#mNm'), mAtp = $('#mAtp');
+  let lastPaint = 0;
+  const tick = () => {
+    const now = performance.now();
+    if (now - lastPaint < 100) return;
+    lastPaint = now;
+    const r = app.readout();
+    mStep.textContent = NF.format(r.steps);
+    mNm.innerHTML = NF.format(Math.round(r.nm)) + '<b>nm</b>';
+    mAtp.textContent = NF.format(r.atp);
+  };
+  setInterval(tick, 100);
+
+  /* ── 시점 ── */
+  const VIEW_LABEL = { walk: '걸음', feet: '발', all: '전체' };
+  const views = $('#views');
+  Object.keys(app.views).forEach((kk) => {
+    const b = document.createElement('button');
+    b.className = 'chip' + (kk === app.view ? ' on' : '');
+    b.textContent = VIEW_LABEL[kk] || kk;
+    b.dataset.k = kk;
+    b.addEventListener('click', () => {
+      app.setView(kk);
+      views.querySelectorAll('.chip').forEach((c) => c.classList.toggle('on', c.dataset.k === kk));
+    });
+    views.appendChild(b);
+  });
+
+  /* ── 색 ── */
+  const chips = $('#chips');
+  Object.entries(PRESETS).forEach(([kk, p]) => {
+    const b = document.createElement('button');
+    b.className = 'chip' + (kk === app.preset ? ' on' : '');
+    b.textContent = p.label;
+    b.dataset.k = kk;
+    b.addEventListener('click', () => {
+      app.setPreset(kk);
+      chips.querySelectorAll('.chip').forEach((c) => c.classList.toggle('on', c.dataset.k === kk));
+    });
+    chips.appendChild(b);
+  });
+
+  /* ── 슬라이더 ── */
+  const sSpeed = $('#sSpeed'), sBloom = $('#sBloom');
+  const syncSpeed = () => {
+    const v = sSpeed.value / 100;
+    app.set('stepsPerSec', v);
+    const slow = Math.max(1, Math.round((FACTS.speed / FACTS.step) / v));
+    $('#vSpeed').textContent = `초당 ${v.toFixed(1)}걸음 · 실제의 1/${slow}`;
+  };
+  const syncBloom = () => { const v = sBloom.value / 100; app.set('bloom', v); $('#vBloom').textContent = v.toFixed(1); };
+  sSpeed.addEventListener('input', syncSpeed);
+  sBloom.addEventListener('input', syncBloom);
+  syncSpeed(); syncBloom();
+
+  /* ── 토글 ── */
+  const toggle = (id, key) => {
+    const el = $(id);
+    el.classList.toggle('on', !!app.state[key]);
+    el.addEventListener('click', () => {
+      const next = !el.classList.contains('on');
+      el.classList.toggle('on', next);
+      app.set(key, next);
+    });
+  };
+  toggle('#tSites', 'sites');
+  toggle('#tAtp', 'atp');
+  toggle('#tCargo', 'cargo');
+  toggle('#tPause', 'paused');
+  const stepOnce = () => {
+    app.stepOnce();
+    $('#tPause').classList.add('on');
+  };
+  $('#btnStep').addEventListener('click', stepOnce);
+
+  /* ── 패널 접기 ── */
+  const panel = $('#panel');
+  $('#panelHead').addEventListener('click', () => panel.classList.toggle('closed'));
+  if (matchMedia('(max-width:760px)').matches || matchMedia('(max-height:560px)').matches) panel.classList.add('closed');
+
+  /* ── 정보 ── */
+  const sheet = $('#sheet');
+  const openInfo = () => {
+    const i = app.info();
+    $('#iTri').textContent = i.triangles.toLocaleString('ko-KR');
+    $('#iFps').textContent = i.fps;
+    $('#iSize').textContent = i.size;
+    $('#iRev').textContent = 'r' + i.three;
+    sheet.classList.add('open');
+  };
+  $('#btnInfo').addEventListener('click', openInfo);
+  $('#btnClose').addEventListener('click', () => sheet.classList.remove('open'));
+  sheet.addEventListener('click', (e) => { if (e.target === sheet) sheet.classList.remove('open'); });
+
+  /* ── 화면 정리 ── */
+  const bare = () => {
+    document.body.classList.toggle('bare');
+    $('#btnBare').classList.toggle('on', document.body.classList.contains('bare'));
+  };
+  $('#btnBare').addEventListener('click', bare);
+  $('#btnBare').classList.add('keep');
+  $('#tools').classList.add('keep');
+
+  /* ── 사진 저장 ── */
+  const toast = (msg) => {
+    const el = $('#toast');
+    el.textContent = msg; el.classList.add('on');
+    clearTimeout(el._h); el._h = setTimeout(() => el.classList.remove('on'), 1900);
+  };
+  const stamp = () => {
+    const d = new Date(), z = (n) => String(n).padStart(2, '0');
+    return `${d.getFullYear()}${z(d.getMonth() + 1)}${z(d.getDate())}-${z(d.getHours())}${z(d.getMinutes())}${z(d.getSeconds())}`;
+  };
+  const shoot = async () => {
+    const url = await app.snapshot();
+    if (!url) { toast('저장하지 못했습니다'); return; }
+    // 크롬은 한글 download 이름을 버리고 확장자 없는 'download' 로 저장한다. 이름은 아스키로.
+    const href = URL.createObjectURL(await (await fetch(url)).blob());
+    const a = document.createElement('a');
+    a.href = href;
+    a.download = `kinesin-${stamp()}.png`;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    setTimeout(() => URL.revokeObjectURL(href), 5000);
+    toast('사진을 저장했습니다');
+  };
+  $('#btnShot').addEventListener('click', shoot);
+
+  /* ── 단축키 ── */
+  addEventListener('keydown', (e) => {
+    if (e.target.tagName === 'INPUT') return;
+    const kk = e.key.toLowerCase();
+    if (kk === 'h') bare();
+    else if (kk === 'i') sheet.classList.contains('open') ? sheet.classList.remove('open') : openInfo();
+    else if (kk === 's') shoot();
+    else if (kk === 'arrowright') { e.preventDefault(); stepOnce(); }
+    else if (kk === 'escape') sheet.classList.remove('open');
+    else if (e.code === 'Space') { e.preventDefault(); $('#tPause').click(); }
+  });
+
+  canvas.addEventListener('webglcontextlost', (e) => { e.preventDefault(); toast('그래픽 연결이 끊겼습니다. 새로고침해 주세요.'); });
+}
+</script>
+</body>
+</html>
