@@ -335,6 +335,16 @@ node cards/tools/infographic.mjs cards/tools/content/0008-apt.json --quiet --the
 주면 여유 공간이 행 안쪽으로 들어가 행이 부풀고, 10행이면 그것만으로 500px이
 넘어간다.
 
+## 폴더에 남기는 것
+
+주제 폴더에는 `poster-quiet.png`·`shorts-quiet.mp4`·`upload.md` 세 가지만 둔다.
+`--fit`과 `--tall`은 도구에 그대로 있지만 그 결과물은 커밋하지 않는다. 같은
+카드의 판본이 네 개씩 쌓이면 어느 것이 최신인지 알 수 없고, 실제로 포스터를
+고친 뒤 옛 판으로 만든 영상이 남아 있던 적이 있다. 판본은 하나만 둔다.
+
+예외는 `0002`~`0006`이다. 순위표가 아니라 손글씨풍 카드뉴스라 12장짜리 PNG와
+자체 `shorts.mp4`를 갖는다.
+
 ## 팩트체크
 
 ```bash

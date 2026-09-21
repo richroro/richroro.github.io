@@ -4,6 +4,10 @@
 영상은 `shorts-quiet.mp4`, 썸네일 후보는 `poster-quiet.png`.
 테마는 밝은 세 가지(`paper`·`mint`·`press`)만 쓴다.
 
+폴더에는 `poster-quiet.png`·`shorts-quiet.mp4`·`upload.md` 세 가지만 둔다.
+`--fit`과 `--tall`은 도구에 남아 있지만 그 결과물은 커밋하지 않는다.
+`0002`~`0006`은 순위표가 아니라 손글씨풍 카드뉴스라 구성이 다르다.
+
 | 폴더 | 제목 | 테마 |
 |---|---|---|
 | `0007-100m` | 매달 50만원 모으면 1억까지 몇 년? | paper |
