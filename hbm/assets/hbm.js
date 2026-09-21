@@ -570,8 +570,9 @@ export function createHBM(canvas, opts = {}) {
     raf = requestAnimationFrame(frame);
     const rect = canvas.getBoundingClientRect();
     const now = performance.now() / 1000;
-    const dt = Math.min(0.05, now - last);
-    last = now; t += dt; acc += dt; frames++;
+    const elapsed = now - last;                  // 진짜 경과 시간
+    const dt = Math.min(0.05, elapsed);          // 애니메이션에 먹이는 값
+    last = now; t += dt; acc += elapsed; frames++;   // fps 는 진짜 시간으로 재야 한다
     if (acc >= 1) { fps = frames / acc; frames = 0; acc = 0; }
 
     target.y = 1.55 + explode * 3.6;                     // 층이 뜨는 만큼 시선도 올린다

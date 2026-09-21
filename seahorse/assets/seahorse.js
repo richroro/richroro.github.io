@@ -758,8 +758,9 @@ export function createSeahorse(canvas, opts = {}) {
   function frame() {
     raf = requestAnimationFrame(frame);
     const now = performance.now() / 1000;
-    const real = Math.min(0.05, now - last);
-    last = now; acc += real; frames++;
+    const elapsed = now - last;                  // 진짜 경과 시간
+    const real = Math.min(0.05, elapsed);        // 애니메이션에 먹이는 값(탭을 다시 열 때 튀지 않게)
+    last = now; acc += elapsed; frames++;        // fps 는 진짜 시간으로 재야 한다
     if (!state.paused) t += real * state.speed;
     draw(real);
     if (acc >= 1) {
