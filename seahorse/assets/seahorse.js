@@ -596,7 +596,9 @@ export function createSeahorse(canvas, opts = {}) {
     poseSeahorse(sh, 0, { curl: state.curl + 0.055, fin: 1, swim: false });   // 숨쉬는 중간쯤의 자세
     const box = new THREE.Box3().setFromObject(sh.root);
     const size = box.getSize(new THREE.Vector3());
-    focus.set(0, box.getCenter(new THREE.Vector3()).y, 0);
+    // 몸이 뒤로 기울어 있어 원점을 보면 화면에서 한쪽으로 쏠린다. 부피의 가운데를 본다.
+    focus.copy(box.getCenter(new THREE.Vector3()));
+    focus.x = 0;                                                           // 좌우는 대칭이라 그대로
     spanY = size.y; spanR = Math.max(size.x, size.z);
     bubbles.pts.position.y = focus.y;
     shafts.group.position.y = focus.y + 0.6;
