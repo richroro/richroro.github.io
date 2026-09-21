@@ -361,7 +361,7 @@ body{width:${W}px;font-family:'Body',sans-serif;font-weight:700;
 /* ---- quiet: information, no ornament ---- */
 .quiet{height:${FIT_H}px;padding:52px 56px 44px;display:flex;flex-direction:column;
   background:${T.card === '#fff' ? '#faf9f6' : T.bg}}
-.quiet .head{padding:0 0 18px}
+.quiet .head{padding:0 0 40px}
 .quiet .badge{position:static;transform:none;display:block;background:none;
   box-shadow:none;padding:0;text-align:left;font-family:'Body';font-weight:700;
   font-size:24px;letter-spacing:.14em;color:${T.accent}}
@@ -375,7 +375,7 @@ body{width:${W}px;font-family:'Body',sans-serif;font-weight:700;
 .quiet .sub{margin-top:13px;background:none;padding:0;color:${T.muted};
   font-family:'Body';font-weight:500;font-size:25px;letter-spacing:0}
 .quiet .rows{flex:1;display:flex;flex-direction:column;justify-content:space-between;
-  border-top:1px solid ${T.rule};padding-top:6px}
+  border-top:1px solid ${T.rule};padding-top:24px}
 .quiet .row{display:block;background:none;border:0;box-shadow:none;border-radius:0;
   padding:0 0 9px;margin:0;border-bottom:1px solid ${T.rule};flex:0 0 auto}
 .quiet .row:last-child{border-bottom:0}
