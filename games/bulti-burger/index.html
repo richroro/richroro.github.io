@@ -1,0 +1,1865 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="theme-color" content="#F2F4F6">
+<meta name="description" content="밀려드는 주문을 보고 재료를 순서대로 탭해 버거를 쌓아 내보내는 한 손 주문 처리 게임">
+<title>불티나 버거</title>
+<link rel="canonical" href="https://richroro.github.io/games/bulti-burger/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="불티나 버거">
+<meta property="og:title" content="불티나 버거">
+<meta property="og:description" content="주문을 보고 재료를 순서대로 탭해 버거를 쌓고 윗빵을 덮어 내보내세요. 한 판 2~4분.">
+<meta property="og:url" content="https://richroro.github.io/games/bulti-burger/">
+<meta property="og:image" content="https://richroro.github.io/games/bulti-burger/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="불티나 버거">
+<meta name="twitter:description" content="주문을 보고 재료를 순서대로 탭해 버거를 쌓고 윗빵을 덮어 내보내세요. 한 판 2~4분.">
+<meta name="twitter:image" content="https://richroro.github.io/games/bulti-burger/og.png">
+<style>
+  :root{
+    --bg:#F2F4F6;
+    --card:#FFFFFF;
+    --ink:#191F28;
+    --ink-2:#4E5968;
+    --ink-3:#8B95A1;
+    --line:#E5E8EB;
+    --blue:#3182F6;
+    --blue-weak:#E8F3FF;
+    --red:#F04452;
+    --orange:#FFB020;
+    --gold:#F5C14B;
+    --green:#00C471;
+    --shadow:0 2px 12px rgba(25,31,40,.08);
+    --board-top:#FFFDF8;
+    --board-bottom:#FFF3DE;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+  html,body{height:100%;overflow:hidden;overscroll-behavior:none}
+  /* iOS 사파리는 주소창 높이까지 100%에 포함시켜 화면 아래가 잘린다 */
+  @supports (height:100dvh){ html,body{height:100dvh} }
+  body{
+    font-family:'Pretendard','Apple SD Gothic Neo','Malgun Gothic',system-ui,-apple-system,sans-serif;
+    background:var(--bg);color:var(--ink);
+    display:flex;flex-direction:column;
+    touch-action:none;user-select:none;-webkit-user-select:none;
+    padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+  }
+
+  /* ── 헤더 ─────────────────────────────── */
+  header{
+    flex:0 0 auto;display:flex;align-items:center;gap:8px;
+    padding:8px 14px 4px;
+  }
+  .brand{font-size:15px;font-weight:800;letter-spacing:-.03em;flex:1;min-width:0;
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .icon-btn{
+    width:34px;height:34px;flex:0 0 auto;border:0;border-radius:11px;
+    background:var(--card);box-shadow:var(--shadow);color:var(--ink-2);
+    display:grid;place-items:center;cursor:pointer;font-size:15px;line-height:1;
+    font-family:inherit;
+  }
+  .icon-btn:active{transform:scale(.94)}
+
+  /* ── 점수 줄 ──────────────────────────── */
+  .scores{
+    flex:0 0 auto;display:flex;align-items:flex-end;gap:10px;padding:0 14px 6px;
+  }
+  .score-now{font-size:28px;font-weight:800;letter-spacing:-.045em;line-height:1;
+    font-variant-numeric:tabular-nums}
+  .score-now small{font-size:13px;font-weight:700;color:var(--ink-3);margin-left:3px}
+  .combo{font-size:11px;font-weight:700;color:var(--blue);letter-spacing:-.02em;
+    height:13px;line-height:13px;opacity:0;transition:opacity .15s}
+  .combo.on{opacity:1}
+  .right{margin-left:auto;text-align:right;line-height:1.2}
+  .hearts{font-size:15px;letter-spacing:1px;line-height:1.1}
+  .hearts i{font-style:normal;transition:opacity .25s, transform .25s}
+  .hearts i.gone{opacity:.22;transform:scale(.8)}
+  .best{font-size:11px;color:var(--ink-3);font-weight:600;
+    font-variant-numeric:tabular-nums}
+
+  /* ── 주문 카드 줄 ─────────────────────── */
+  #queue{
+    flex:0 0 auto;height:96px;display:flex;gap:6px;padding:0 14px 6px;
+  }
+  .card{
+    flex:1 1 0;min-width:0;height:90px;border-radius:14px;background:var(--card);
+    box-shadow:var(--shadow);border:2px solid transparent;
+    display:flex;flex-direction:column;padding:4px 5px 5px;
+    transition:border-color .15s, opacity .15s;
+    position:relative;overflow:hidden;
+  }
+  .card.dim{opacity:.45}
+  .card.live{border-color:var(--blue)}
+  .card.rush{border-color:var(--orange)}
+  .card.vip{border-color:var(--gold)}
+  .card.hot{border-color:var(--red)}
+  .card.ghost{background:rgba(255,255,255,.45);box-shadow:none;opacity:.35}
+  .card.hide{visibility:hidden}
+  /* 빨간불 손님은 카드가 흔들린다. 소리를 꺼도 급한 게 보여야 한다. */
+  .card.hot{animation:cardShake .62s linear infinite}
+  @keyframes cardShake{0%,100%{transform:translateX(-2px)}50%{transform:translateX(2px)}}
+  .crow{height:15px;display:flex;align-items:center;gap:2px;font-size:12px;line-height:1}
+  .crow .num{margin-left:auto;font-size:9px;font-weight:700;color:var(--ink-3);
+    font-variant-numeric:tabular-nums}
+  .mini{flex:1 1 auto;width:100%;min-height:0;display:block}
+  .pbar{height:4px;border-radius:2px;background:var(--line);overflow:hidden;flex:0 0 auto}
+  .pbar i{display:block;height:100%;width:100%;background:var(--blue);
+    transform-origin:left center;transition:background-color .2s}
+  .heal{
+    position:absolute;right:6px;bottom:8px;font-size:10px;font-weight:800;
+    color:var(--green);opacity:0;pointer-events:none;
+  }
+  .heal.go{animation:healUp .6s ease-out}
+  @keyframes healUp{0%{opacity:1;transform:translateY(0)}100%{opacity:0;transform:translateY(-14px)}}
+
+  /* ── 조립대 ───────────────────────────── */
+  #stage{flex:1 1 auto;position:relative;margin:0 12px;min-height:150px}
+  #board{
+    position:absolute;inset:0;width:100%;height:100%;
+    border-radius:20px;display:block;
+    background:linear-gradient(180deg,var(--board-top),var(--board-bottom));
+    box-shadow:inset 0 0 0 1px rgba(25,31,40,.06), var(--shadow);
+  }
+  #btnTrash{
+    position:absolute;top:8px;right:8px;width:28px;height:28px;border:0;
+    border-radius:9px;background:rgba(255,255,255,.82);color:var(--ink-3);
+    font-size:13px;line-height:1;display:none;place-items:center;cursor:pointer;
+    font-family:inherit;box-shadow:0 1px 5px rgba(25,31,40,.10);
+  }
+  #btnTrash.on{display:grid}
+  #btnTrash:active{transform:scale(.92)}
+
+  /* ── 재료 그리드 ──────────────────────── */
+  #grid{
+    flex:0 0 auto;height:120px;display:grid;
+    grid-template-columns:repeat(4,1fr);grid-template-rows:repeat(2,56px);
+    gap:6px;padding:8px 14px 0;
+  }
+  .ing{
+    border:0;border-radius:13px;background:var(--card);box-shadow:var(--shadow);
+    display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;
+    cursor:pointer;font-family:inherit;padding:2px 0 3px;position:relative;overflow:hidden;
+    transition:opacity .2s, transform .12s;
+  }
+  .ing canvas{display:block;width:46px;height:22px}
+  .ing span{font-size:9.5px;font-weight:700;color:var(--ink-2);letter-spacing:-.04em;
+    white-space:nowrap}
+  .ing:active{transform:scale(.94)}
+  .ing.locked{opacity:.3;pointer-events:none}
+  .ing.locked canvas{opacity:.25}
+  .ing .lk{position:absolute;inset:0;display:none;place-items:center;font-size:14px;font-style:normal}
+  .ing.bad{background:#FFE9EB}
+  .ing.locked .lk{display:grid}
+  .ing.pop{animation:ingPop .5s cubic-bezier(.2,.9,.3,1.2)}
+  @keyframes ingPop{0%{transform:scale(.2)}55%{transform:scale(1.15)}100%{transform:scale(1)}}
+  .ing.glow{box-shadow:0 0 0 2px var(--blue), var(--shadow)}
+
+  /* ── 서빙 버튼 ────────────────────────── */
+  #serveBlock{flex:0 0 auto;height:60px;padding:10px 14px 0}
+  #btnServe{
+    width:100%;height:50px;border:0;border-radius:14px;cursor:pointer;
+    background:var(--blue);color:#fff;font-family:inherit;
+    font-size:15px;font-weight:800;letter-spacing:-.03em;
+    transition:background-color .15s, color .15s;
+  }
+  #btnServe:active{transform:scale(.99)}
+  #btnServe.rush{background:var(--orange)}
+  #btnServe.off{background:var(--line);color:var(--ink-3)}
+
+  .hint{
+    flex:0 0 auto;text-align:center;font-size:11.5px;color:var(--ink-3);
+    font-weight:600;padding:6px 16px calc(8px + env(safe-area-inset-bottom));
+    height:auto;
+  }
+
+  /* ── 오버레이 공통 ─────────────────────── */
+  .veil{
+    position:fixed;inset:0;z-index:20;display:none;
+    align-items:center;justify-content:center;padding:24px;
+    background:rgba(25,31,40,.45);backdrop-filter:blur(3px);
+  }
+  .veil.show{display:flex}
+  .sheet{
+    width:100%;max-width:340px;background:var(--card);border-radius:22px;
+    padding:26px 22px 18px;text-align:center;
+    box-shadow:0 12px 40px rgba(25,31,40,.25);
+    animation:rise .22s cubic-bezier(.2,.8,.3,1);
+    max-height:88vh;overflow-y:auto;
+  }
+  @keyframes rise{from{opacity:0;transform:translateY(14px) scale(.97)}to{opacity:1;transform:none}}
+  .sheet h2{font-size:21px;font-weight:800;letter-spacing:-.04em;margin-bottom:8px}
+  .sheet p{font-size:13.5px;color:var(--ink-2);line-height:1.65;font-weight:500}
+  .sheet .big{font-size:38px;font-weight:800;letter-spacing:-.05em;margin:10px 0 2px;
+    font-variant-numeric:tabular-nums;color:var(--blue)}
+  .sheet .sub{font-size:12.5px;color:var(--ink-3);font-weight:600;margin-bottom:14px}
+  .btns{display:flex;flex-direction:column;gap:8px;margin-top:16px}
+  .btn{
+    width:100%;border:0;border-radius:14px;padding:14px;cursor:pointer;
+    font-size:15px;font-weight:700;letter-spacing:-.02em;font-family:inherit;
+  }
+  .btn:active{transform:scale(.98)}
+  .btn.primary{background:var(--blue);color:#fff}
+  .btn.ghost{background:var(--bg);color:var(--ink-2)}
+  .row{display:flex;gap:8px}
+  .row .btn{flex:1}
+
+  .rules{text-align:left;margin-top:16px;display:flex;flex-direction:column;gap:9px}
+  .rule{display:flex;gap:10px;align-items:flex-start}
+  .rule b{
+    flex:0 0 auto;width:20px;height:20px;border-radius:7px;background:var(--blue-weak);
+    color:var(--blue);font-size:11px;font-weight:800;display:grid;place-items:center;margin-top:1px;
+  }
+  .rule span{font-size:13px;color:var(--ink-2);line-height:1.55;font-weight:500}
+
+  /* 결과 화면의 버거 두 개 */
+  .shots{display:flex;gap:10px;margin:4px 0 2px}
+  .shot{flex:1 1 0;min-width:0;text-align:center}
+  .shot canvas{display:block;width:100%;height:118px}
+  .shot em{display:block;font-size:10.5px;font-weight:700;color:var(--ink-3);
+    font-style:normal;margin-top:2px;letter-spacing:-.03em}
+  .shot.miss canvas{border-radius:10px;outline:1px dashed var(--red);outline-offset:-3px}
+
+  /* 토스트는 조립대 위쪽에 띄운다. 아래에 두면 서빙 버튼을 가린다. */
+  #toast{
+    position:fixed;left:50%;top:calc(196px + env(safe-area-inset-top));
+    transform:translate(-50%,-6px);z-index:30;pointer-events:none;
+    white-space:nowrap;max-width:88vw;overflow:hidden;text-overflow:ellipsis;
+    background:rgba(25,31,40,.92);color:#fff;font-size:13px;font-weight:600;
+    padding:11px 18px;border-radius:12px;opacity:0;transition:opacity .2s, transform .2s;
+  }
+  #toast.show{opacity:1;transform:translate(-50%,0)}
+  @media (max-height:600px){ #toast{top:calc(178px + env(safe-area-inset-top))} }
+
+  /* 아주 낮은 화면(SE1 등)에서 크롬을 조금씩 깎는다 */
+  @media (max-height:600px){
+    #queue{height:88px}
+    .card{height:82px}
+    #grid{height:110px;grid-template-rows:repeat(2,51px)}
+    .score-now{font-size:24px}
+    .hint{display:none}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="brand">불티나 버거</div>
+  <button class="icon-btn" id="btnSound" aria-label="소리 켜기 끄기">🔊</button>
+  <button class="icon-btn" id="btnRank" aria-label="내 기록">🏆</button>
+  <button class="icon-btn" id="btnExit" aria-label="게임 나가기">✕</button>
+</header>
+
+<div class="scores">
+  <div>
+    <div class="score-now"><span id="scoreVal">0</span><small>점</small></div>
+    <div class="combo" id="comboVal">콤보 ×1.0</div>
+  </div>
+  <div class="right">
+    <div class="hearts" id="hearts"><i>❤️</i><i>❤️</i><i>❤️</i></div>
+    <div class="best">최고 <span id="bestVal">0</span></div>
+  </div>
+</div>
+
+<div id="queue">
+  <div class="card hide"><div class="crow"><span class="face">🙂</span><span class="crown"></span><span class="num"></span></div><canvas class="mini"></canvas><div class="pbar"><i></i></div><div class="heal">+5%</div></div>
+  <div class="card hide"><div class="crow"><span class="face">🙂</span><span class="crown"></span><span class="num"></span></div><canvas class="mini"></canvas><div class="pbar"><i></i></div><div class="heal">+5%</div></div>
+  <div class="card hide"><div class="crow"><span class="face">🙂</span><span class="crown"></span><span class="num"></span></div><canvas class="mini"></canvas><div class="pbar"><i></i></div><div class="heal">+5%</div></div>
+</div>
+
+<div id="stage">
+  <canvas id="board"></canvas>
+  <button id="btnTrash" aria-label="만들던 버거 버리기">✕</button>
+</div>
+
+<div id="grid"></div>
+
+<div id="serveBlock">
+  <button id="btnServe" class="off">윗빵 덮어 내보내기</button>
+</div>
+
+<div class="hint">주문 순서대로 재료를 누르고, 윗빵을 덮어 내보내세요</div>
+<div id="toast"></div>
+
+<!-- 시작 -->
+<div class="veil show" id="vStart">
+  <div class="sheet">
+    <h2>불티나 버거</h2>
+    <p>손님이 시킨 순서 그대로 재료를 쌓아<br>윗빵을 덮어 내보내면 돼요.</p>
+    <div class="shots" id="startShot"><div class="shot"><canvas></canvas></div></div>
+    <div class="btns">
+      <button class="btn primary" id="btnStart">시작하기</button>
+      <button class="btn ghost" id="btnHow">게임 방법</button>
+    </div>
+  </div>
+</div>
+
+<!-- 게임 방법 -->
+<div class="veil" id="vHow">
+  <div class="sheet">
+    <h2>게임 방법</h2>
+    <div class="rules">
+      <div class="rule"><b>1</b><span>아래빵은 자동으로 깔려요. 주문서에 그려진 <b style="display:inline;background:none;color:inherit;width:auto;height:auto">아래에서 위 순서</b>대로 재료 버튼을 누르세요.</span></div>
+      <div class="rule"><b>2</b><span>파란 테두리는 <b style="display:inline;background:none;color:inherit;width:auto;height:auto">지금 쌓는 게 아직 맞다</b>는 표시예요. 손님을 미리 고를 필요는 없어요.</span></div>
+      <div class="rule"><b>3</b><span>다 쌓았으면 아래 윗빵 버튼. 주문이 똑같은 손님 중 제일 급한 분께 자동으로 나갑니다.</span></div>
+      <div class="rule"><b>4</b><span>손님이 급해지면 버튼이 주황색으로 바뀌어요. 덜 쌓았어도 <b style="display:inline;background:none;color:inherit;width:auto;height:auto">급하게 내보내</b> 하트를 지킬 수 있어요.</span></div>
+      <div class="rule"><b>5</b><span>엉뚱한 재료는 저절로 치워지고 0.4초 멈춰요. 손님이 그냥 나가면 하트가 깨지고, 셋 다 잃으면 끝이에요.</span></div>
+    </div>
+    <div class="btns"><button class="btn primary" id="btnHowClose">알겠어요</button></div>
+  </div>
+</div>
+
+<!-- 일시정지 -->
+<div class="veil" id="vPause">
+  <div class="sheet">
+    <h2>잠시 멈췄어요</h2>
+    <p>다른 화면에 다녀오셨네요.<br>이어하면 1초 동안 손님들이 기다려 줘요.</p>
+    <div class="btns"><button class="btn primary" id="btnResume">이어하기</button></div>
+  </div>
+</div>
+
+<!-- 게임 오버 -->
+<div class="veil" id="vOver">
+  <div class="sheet">
+    <h2 id="overTitle">영업 끝!</h2>
+    <div class="big" id="overScore">0</div>
+    <div class="sub" id="overSub">최고 기록 0점</div>
+    <div class="shots">
+      <div class="shot"><canvas id="shotBest"></canvas><em>가장 잘 만든 버거</em></div>
+      <div class="shot miss"><canvas id="shotMiss"></canvas><em>이걸 만들다 놓쳤어요</em></div>
+    </div>
+    <div class="btns">
+      <button class="btn primary" id="btnRetry">다시하기</button>
+      <div class="row">
+        <button class="btn ghost" id="btnShare">공유</button>
+        <button class="btn ghost" id="btnOverRank">기록</button>
+        <button class="btn ghost" id="btnOverExit">나가기</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 종료 확인 -->
+<div class="veil" id="vExit">
+  <div class="sheet">
+    <h2>게임을 나갈까요?</h2>
+    <p>진행 중인 판은 저장되지 않아요.<br>최고 기록은 그대로 남아요.</p>
+    <div class="btns">
+      <div class="row">
+        <button class="btn ghost" id="btnExitNo">계속하기</button>
+        <button class="btn primary" id="btnExitYes">나가기</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 기록(로컬 대체) -->
+<div class="veil" id="vRank">
+  <div class="sheet">
+    <h2>내 기록</h2>
+    <div class="big" id="rankBest">0</div>
+    <div class="sub">최고 점수</div>
+    <p id="rankNote">최다 서빙 0개<br>토스 게임센터 리더보드는 앱인토스에 등록한 뒤 연결돼요.</p>
+    <div class="btns"><button class="btn primary" id="btnRankClose">닫기</button></div>
+  </div>
+</div>
+
+<script>
+"use strict";
+(function () {
+
+var SHARE_URL = "https://richroro.github.io/games/bulti-burger/";
+
+/* ══════════════════════════════════════════════════════════════
+   1. 저장소 (기록 유지 · 재접속 시에도 남음)
+   ══════════════════════════════════════════════════════════════ */
+var store = {
+  get: function (k, d) {
+    try { var v = localStorage.getItem("burger." + k); return v === null ? d : v; }
+    catch (e) { return d; }
+  },
+  set: function (k, v) {
+    try { localStorage.setItem("burger." + k, String(v)); } catch (e) {}
+  }
+};
+
+/* ══════════════════════════════════════════════════════════════
+   2. 앱인토스 연동 어댑터
+   ──────────────────────────────────────────────────────────────
+   앱인토스 SDK(@apps-in-toss/web-framework)는 번들러가 필요해서 정적
+   페이지에서는 직접 import 할 수 없다. 토스 웹뷰가 주입하는 브릿지를
+   런타임에 탐지해 쓰고, 없으면 일반 웹으로 똑같이 동작하도록 감싼다.
+
+   토스 웹뷰 밖에서 SDK 접근이 예외를 던지면 부팅이 통째로 죽어 흰
+   화면이 된다(티끌모아 태산 이식 때 실제로 겪은 문제). 그래서 브릿지를
+   만지는 자리는 전부 try/catch 로 감싼다.
+
+   번들 환경으로 옮길 때 교체할 곳은 네 군데다 (SDK 3.x, 전부 Promise).
+     submitScore -> await Game.setLeaderboardScore({ score: String(score) })
+                    점수는 '문자열'. 숫자로 넘기면 UNPARSABLE_SCORE 로 떨어진다.
+     openBoard   -> await Game.openLeaderboard()
+     exitApp     -> await Screen.close()
+     userKey     -> await User.getAnonymousKey()   // { type:'HASH', hash }
+   ══════════════════════════════════════════════════════════════ */
+var Toss = (function () {
+  function bridge() {
+    try {
+      var w = window;
+      return w.AppsInToss || w.appsInToss || w.__APPS_IN_TOSS__ || null;
+    } catch (e) { return null; }
+  }
+  // domain 은 SDK 네임스페이스(Game, Screen ...). 브릿지가 평면 구조로
+  // 주입하는 경우도 있어서 두 가지 모양을 모두 본다.
+  function api(domain, name) {
+    try {
+      var b = bridge();
+      if (!b) return null;
+      var fn = (b[domain] && b[domain][name]) || b[domain + "." + name] || b[name];
+      return typeof fn === "function" ? fn : null;
+    } catch (e) { return null; }
+  }
+  // SDK 함수는 전부 비동기다. 게임 흐름을 막을 이유가 없으니 호출만
+  // 걸어두고 연결 여부만 즉시 돌려준다.
+  function fire(fn, arg) {
+    try { Promise.resolve(fn(arg)).catch(function () {}); } catch (e) {}
+    return true;
+  }
+  return {
+    inToss: function () { return !!bridge(); },
+    userKey: function () {
+      var k = store.get("uid", "");
+      if (!k) { k = "web:" + Math.random().toString(36).slice(2, 12); store.set("uid", k); }
+      return k;
+    },
+    submitScore: function (s) { var f = api("Game", "setLeaderboardScore"); return f ? fire(f, { score: String(s) }) : false; },
+    openBoard:   function () { var f = api("Game", "openLeaderboard");      return f ? fire(f) : false; },
+    exitApp:     function () { var f = api("Screen", "close");              return f ? fire(f) : false; }
+  };
+})();
+
+/* ══════════════════════════════════════════════════════════════
+   3. 재료 정의
+   ──────────────────────────────────────────────────────────────
+   h  : 레이어 두께(px). 8종이 전부 다른 값이라 색을 못 봐도 구분된다.
+   mk : 패턴 마커. 색·모양·두께에 이은 네 번째 식별 채널이다.
+        주문 카드의 미니 스택(8~16px)에서는 실루엣이 뭉개져서
+        색+두께 2중으로 떨어지는데, 마커가 그 구멍을 메운다.
+   ══════════════════════════════════════════════════════════════ */
+var ING = {
+  bunB:    { name: "아래빵", h: 22, a: "#E8B678", b: "#C9873C", mk: "none" },
+  patty:   { name: "패티",   h: 26, a: "#7A4B2A", b: "#54301A", mk: "none" },
+  egg:     { name: "계란",   h: 20, a: "#FDFDFB", b: "#ECE7DC", mk: "h"    },
+  lettuce: { name: "양상추", h: 18, a: "#7FCB52", b: "#5EA838", mk: "d2"   },
+  tomato:  { name: "토마토", h: 17, a: "#EF5340", b: "#CE2C1C", mk: "v1"   },
+  cheese:  { name: "치즈",   h: 14, a: "#F7B44A", b: "#D9822B", mk: "d1"   },
+  bacon:   { name: "베이컨", h: 13, a: "#DE8C7E", b: "#B75C4E", mk: "v2"   },
+  onion:   { name: "양파",   h: 12, a: "#EDE3F7", b: "#CDBCE4", mk: "d3"   },
+  pickle:  { name: "피클",   h: 11, a: "#5CA243", b: "#3E7A2C", mk: "d4"   },
+  bunT:    { name: "윗빵",   h: 30, a: "#F0BE79", b: "#D08F3E", mk: "none" }
+};
+
+// 그리드 8칸의 순서. 판 내내 자리가 바뀌지 않는다.
+var SLOTS     = ["patty", "cheese", "lettuce", "tomato", "onion", "bacon", "egg", "pickle"];
+var UNLOCK_AT = [0, 0, 0, 0, 40, 80, 120, 160];
+// 두꺼운 재료(h>=17)는 한 레시피에 최대 3장. 렌더 시점이 아니라 생성 시점에 막는다.
+var THICK = { patty: 1, egg: 1, lettuce: 1, tomato: 1 };
+var THICK_MAX = 3;
+// 같은 재료는 한 레시피에 최대 2장 (더블패티 허용)
+var SAME_MAX = 2;
+var SAME_MAX = 2;
+// 최악 스택 높이(아래빵+재료6+윗빵)를 고정 상수로 두고 축소배율을 계산한다.
+// 쌓을 때마다 배율이 바뀌면 화면이 출렁여서 조준이 어려워진다.
+var MAX_STACK_H = 163;
+
+/* ══════════════════════════════════════════════════════════════
+   4. 그리기 헬퍼
+   ──────────────────────────────────────────────────────────────
+   ctx.roundRect 는 절대 쓰지 않는다. Safari 16 미만 웹뷰에 없어서
+   흰 화면이 된다. arcTo 로 직접 만든다.
+   ══════════════════════════════════════════════════════════════ */
+function rr2(c, x, y, w, h, rt, rb) {
+  var lim = Math.min(w / 2, h / 2);
+  rt = Math.max(0, Math.min(rt, lim));
+  rb = Math.max(0, Math.min(rb, lim));
+  if (h < 6) { rt = 0; rb = 0; }           // 1px 미만 곡률에서 arcTo 가 불안정하다
+  c.beginPath();
+  if (rt <= 0 && rb <= 0) { c.rect(x, y, w, h); c.closePath(); return; }
+  c.moveTo(x + rt, y);
+  c.lineTo(x + w - rt, y);
+  if (rt > 0) c.arcTo(x + w, y, x + w, y + rt, rt); else c.lineTo(x + w, y);
+  c.lineTo(x + w, y + h - rb);
+  if (rb > 0) c.arcTo(x + w, y + h, x + w - rb, y + h, rb); else c.lineTo(x + w, y + h);
+  c.lineTo(x + rb, y + h);
+  if (rb > 0) c.arcTo(x, y + h, x, y + h - rb, rb); else c.lineTo(x, y + h);
+  c.lineTo(x, y + rt);
+  if (rt > 0) c.arcTo(x, y, x + rt, y, rt); else c.lineTo(x, y);
+  c.closePath();
+}
+function rr(c, x, y, w, h, r) { rr2(c, x, y, w, h, r, r); }
+
+// ctx.ellipse 폴백. 스케일 변환 아래에서 만든 path 는 restore 후에도 살아 있다.
+function ell(c, x, y, rx, ry) {
+  rx = Math.max(0.01, rx); ry = Math.max(0.01, ry);
+  if (c.ellipse) { c.beginPath(); c.ellipse(x, y, rx, ry, 0, 0, Math.PI * 2); return; }
+  c.save(); c.translate(x, y); c.scale(rx, ry);
+  c.beginPath(); c.arc(0, 0, 1, 0, Math.PI * 2);
+  c.restore();
+}
+
+function vgrad(c, y, h, a, b) {
+  var g = c.createLinearGradient(0, y, 0, y + h);
+  g.addColorStop(0, a); g.addColorStop(1, b);
+  return g;
+}
+
+// 결정적 의사난수. 프레임마다 값이 흔들리면 안 되는 자리(층 어긋남, 참깨 위치)에 쓴다.
+function rnd(n) { var s = Math.sin(n * 127.1 + 311.7) * 43758.5453; return s - Math.floor(s); }
+
+var markAlpha = 0.42;
+
+// 재료 고유 마커. 레이어 오른쪽 끝에서 4px 안쪽에 그린다.
+function marker(c, mk, x, y, w, h) {
+  if (mk === "none" || w < 12 || h < 4) return;
+  c.save();
+  c.fillStyle = "rgba(0,0,0," + markAlpha + ")";
+  var mx = Math.round(x + w - 4);
+  var k = mk.charAt(0);
+  if (k === "d") {
+    var n = +mk.charAt(1);
+    var r = Math.max(1, Math.min(1.6, h / 7));
+    var gap = r * 2 + 1.4;
+    for (var i = 0; i < n; i++) {
+      c.beginPath();
+      c.arc(Math.round(mx - i * gap), Math.round(y + h / 2), r, 0, Math.PI * 2);
+      c.fill();
+    }
+  } else if (k === "v") {
+    var n2 = +mk.charAt(1);
+    var hh = Math.max(2, h - 4);
+    for (var j = 0; j < n2; j++) {
+      c.fillRect(Math.round(mx - j * 4 - 2), Math.round(y + (h - hh) / 2), 2, hh);
+    }
+  } else if (k === "h") {
+    var lw = Math.max(5, Math.min(w * 0.18, 16));
+    c.fillRect(Math.round(mx - lw), Math.round(y + h / 2 - 1), lw, 2);
+  }
+  c.restore();
+}
+
+/* ──────────────────────────────────────────────────────────────
+   재료 한 장을 그리는 단일 원천 함수.
+   조립대 큰 그림 / 주문 카드 미니 스택 / 버튼 아이콘 세 곳이 전부
+   이 함수를 부른다. 생김새가 세 곳에서 갈라질 수 없다.
+
+   장식은 베이스 path 로 clip() 을 건 뒤 정규화 좌표로 그리므로
+   크기 분기가 없고, 작아지면 자동으로 잘린다.
+   ────────────────────────────────────────────────────────────── */
+function drawIngredient(c, id, cx, cy, w, h, opt) {
+  opt = opt || {};
+  if (!(w > 0.5) || !(h > 0.5)) return;
+  var g = ING[id]; if (!g) return;
+  var a = opt.alpha == null ? 1 : opt.alpha;
+  if (a <= 0.02) return;
+
+  var x = cx - w / 2, y = cy - h / 2;
+  var detail = h >= 7 && w >= 16;     // 이보다 작으면 장식이 뭉개져서 노이즈만 된다
+  var k = h / g.h;                    // 원래 두께 대비 배율
+
+  c.save();
+  c.globalAlpha *= a;
+  if (opt.tilt) { c.translate(cx, cy); c.rotate(opt.tilt); c.translate(-cx, -cy); }
+
+  if (id === "bunB") {
+    rr2(c, x, y, w, h, 3 * k, 11 * k);
+    c.fillStyle = vgrad(c, y, h, g.a, g.b); c.fill();
+    if (detail) {
+      c.save(); c.clip();
+      c.fillStyle = "rgba(255,255,255,.22)";
+      c.fillRect(x, y, w, Math.max(1, h * 0.14));
+      c.restore();
+    }
+  } else if (id === "bunT") {
+    rr2(c, x, y, w, h, Math.min(h * 0.92, w * 0.42), 3 * k);
+    c.fillStyle = vgrad(c, y, h, g.a, g.b); c.fill();
+    if (detail) {
+      c.save(); c.clip();
+      // 참깨. 위치는 결정적이라 프레임마다 떨리지 않는다.
+      var seeds = opt.seeds == null ? 5 : opt.seeds;
+      c.fillStyle = "#FFF6E4";
+      for (var s = 0; s < seeds; s++) {
+        var sx = x + w * (0.18 + 0.64 * (s / Math.max(1, seeds - 1)));
+        var sy = y + h * (0.30 + 0.20 * rnd(s + 7));
+        ell(c, sx, sy, Math.max(1, w * 0.032), Math.max(0.7, h * 0.052)); c.fill();
+      }
+      c.restore();
+    }
+  } else if (id === "patty") {
+    rr(c, x, y, w, h, 7 * k);
+    c.fillStyle = vgrad(c, y, h, g.a, g.b); c.fill();
+    if (detail) {
+      c.save(); c.clip();
+      c.fillStyle = "rgba(48,24,10,.55)";
+      for (var p = 0; p < 5; p++) {
+        ell(c, x + w * (0.16 + 0.68 * rnd(p + 31)), y + h * (0.25 + 0.5 * rnd(p + 53)),
+            w * 0.035, h * 0.09); c.fill();
+      }
+      c.fillStyle = "rgba(255,255,255,.10)";
+      c.fillRect(x, y, w, Math.max(1, h * 0.12));
+      c.restore();
+    }
+  } else if (id === "cheese") {
+    // 윗변이 넓은 사다리꼴 + 좌우로 흘러내린 드립 2개
+    var dr = Math.min(w * 0.08, 7);
+    c.beginPath();
+    c.moveTo(x - 3 * k, y);
+    c.lineTo(x + w + 3 * k, y);
+    c.lineTo(x + w, y + h);
+    c.lineTo(x + w - dr, y + h);
+    c.lineTo(x + w - dr * 1.6, y + h * 0.62);
+    c.lineTo(x + dr * 1.6, y + h * 0.62);
+    c.lineTo(x + dr, y + h);
+    c.lineTo(x, y + h);
+    c.closePath();
+    c.fillStyle = vgrad(c, y, h, g.a, g.b); c.fill();
+  } else if (id === "lettuce") {
+    // 위아래 주기가 다른 물결. 잎이 삐져나온 느낌을 만든다.
+    var amp = Math.max(1, h * 0.22);
+    c.beginPath();
+    c.moveTo(x, y + amp);
+    var n1 = 5, i2;
+    for (i2 = 0; i2 < n1; i2++) {
+      var x0 = x + w * i2 / n1, x1 = x + w * (i2 + 1) / n1;
+      c.quadraticCurveTo((x0 + x1) / 2, y + (i2 % 2 ? amp * 2.1 : -amp * 0.5), x1, y + amp);
+    }
+    c.lineTo(x + w, y + h - amp * 0.6);
+    var n2 = 4;
+    for (i2 = n2; i2 > 0; i2--) {
+      var a0 = x + w * i2 / n2, a1 = x + w * (i2 - 1) / n2;
+      c.quadraticCurveTo((a0 + a1) / 2, y + h - (i2 % 2 ? -amp * 0.3 : amp * 1.4), a1, y + h - amp * 0.6);
+    }
+    c.closePath();
+    c.fillStyle = vgrad(c, y, h, g.a, g.b); c.fill();
+    if (detail) {
+      c.save(); c.clip();
+      c.strokeStyle = "rgba(255,255,255,.34)"; c.lineWidth = Math.max(1, h * 0.07);
+      for (var v = 0; v < 2; v++) {
+        c.beginPath();
+        c.moveTo(x + w * (0.22 + v * 0.38), y + h * 0.75);
+        c.quadraticCurveTo(x + w * (0.34 + v * 0.38), y + h * 0.35, x + w * (0.46 + v * 0.38), y + h * 0.2);
+        c.stroke();
+      }
+      c.restore();
+    }
+  } else if (id === "tomato") {
+    ell(c, cx, cy, w / 2, h / 2);
+    c.fillStyle = vgrad(c, y, h, g.a, g.b); c.fill();
+    if (detail) {
+      c.save(); c.clip();
+      c.fillStyle = "#FF9184";
+      ell(c, cx, cy, w * 0.36, h * 0.30); c.fill();
+      c.fillStyle = "rgba(255,255,255,.72)";
+      for (var sd = 0; sd < 4; sd++) {
+        ell(c, cx + w * (sd - 1.5) * 0.115, cy + h * (sd % 2 ? 0.10 : -0.10),
+            w * 0.018, h * 0.07); c.fill();
+      }
+      c.restore();
+    }
+  } else if (id === "bacon") {
+    // sin 3주기 지그재그 띠
+    var wav = Math.max(0.8, h * 0.20), step = w / 12;
+    c.beginPath();
+    var q;
+    for (q = 0; q <= 12; q++) c.lineTo(x + q * step, y + wav + Math.sin(q / 12 * Math.PI * 3) * wav);
+    for (q = 12; q >= 0; q--) c.lineTo(x + q * step, y + h - wav + Math.sin(q / 12 * Math.PI * 3) * wav);
+    c.closePath();
+    c.fillStyle = vgrad(c, y, h, g.a, g.b); c.fill();
+    if (detail) {
+      c.save(); c.clip();
+      c.strokeStyle = "rgba(255,246,243,.80)"; c.lineWidth = Math.max(1, h * 0.14);
+      for (var st = 0; st < 3; st++) {
+        c.beginPath();
+        for (q = 0; q <= 12; q++) {
+          c.lineTo(x + q * step, y + h * (0.26 + st * 0.26) + Math.sin(q / 12 * Math.PI * 3) * wav);
+        }
+        c.stroke();
+      }
+      c.restore();
+    }
+  } else if (id === "onion") {
+    // 획만 있는 열린 반원 링 3겹. 다른 재료가 전부 면이라 실루엣이 확실히 다르다.
+    rr(c, x, y, w, h, h / 2);
+    c.fillStyle = vgrad(c, y, h, g.a, g.b); c.fill();
+    if (detail) {
+      c.save(); c.clip();
+      c.strokeStyle = "rgba(140,112,178,.75)";
+      c.lineWidth = Math.max(1, h * 0.11);
+      for (var ri = 0; ri < 3; ri++) {
+        var rx = w * (0.30 - ri * 0.085), ry = h * (0.62 - ri * 0.17);
+        c.beginPath();
+        if (c.ellipse) c.ellipse(cx, cy + h * 0.16, Math.max(0.5, rx), Math.max(0.5, ry), 0, Math.PI * 1.08, Math.PI * 1.92);
+        else { c.moveTo(cx - rx, cy); c.quadraticCurveTo(cx, cy - ry * 1.6, cx + rx, cy); }
+        c.stroke();
+      }
+      c.restore();
+    }
+  } else if (id === "pickle") {
+    var pn = 4, pr = Math.min(w / (pn * 1.75), h / 2);
+    for (var pi = 0; pi < pn; pi++) {
+      var px = x + w * (0.5 + pi) / pn;
+      ell(c, px, cy, pr, Math.min(pr, h / 2));
+      c.fillStyle = vgrad(c, y, h, g.a, g.b); c.fill();
+      if (detail) {
+        c.fillStyle = "rgba(190,226,160,.85)";
+        ell(c, px - pr * 0.22, cy - h * 0.12, pr * 0.30, h * 0.16); c.fill();
+      }
+    }
+  } else if (id === "egg") {
+    // 불규칙한 흰자 블롭 + 노른자
+    c.beginPath();
+    var pts = 7;
+    for (var e = 0; e <= pts; e++) {
+      var ang = e / pts * Math.PI * 2;
+      var wob = 0.82 + 0.26 * rnd(e * 3 + 1);
+      var ex = cx + Math.cos(ang) * (w / 2) * wob;
+      var ey = cy + Math.sin(ang) * (h / 2) * wob;
+      if (e === 0) c.moveTo(ex, ey); else c.lineTo(ex, ey);
+    }
+    c.closePath();
+    c.fillStyle = vgrad(c, y, h, g.a, g.b); c.fill();
+    if (detail) {
+      c.fillStyle = "#FFC400";
+      ell(c, cx - w * 0.06, cy, Math.min(w * 0.17, h * 0.42), h * 0.34); c.fill();
+      c.fillStyle = "rgba(255,255,255,.55)";
+      ell(c, cx - w * 0.10, cy - h * 0.10, w * 0.05, h * 0.10); c.fill();
+    }
+  }
+
+  marker(c, g.mk, x, y, w, h);
+  c.restore();
+}
+
+// 아래빵 + 재료들 (+ 윗빵). baseY 는 아래빵의 바닥.
+function drawStack(c, items, cx, baseY, w, sc, opt) {
+  opt = opt || {};
+  var jit = opt.jit || 0, seed = opt.seed || 0, i;
+  var sq = opt.squash == null ? 1 : opt.squash;
+  var y = baseY;
+  function ox(n) { return jit ? (rnd(seed + n * 1.7) * 2 - 1) * jit : 0; }
+
+  var hb = ING.bunB.h * sc * sq;
+  drawIngredient(c, "bunB", cx, y - hb / 2, w + 8 * sc, hb, {});
+  y -= hb;
+  for (i = 0; i < items.length; i++) {
+    var hh = ING[items[i]].h * sc * sq;
+    drawIngredient(c, items[i], cx + ox(i), y - hh / 2, w, hh, {});
+    y -= hh;
+  }
+  if (opt.cap) {
+    var ht = ING.bunT.h * sc * sq;
+    drawIngredient(c, "bunT", cx + ox(90), y - ht / 2 + (opt.capGap || 0), w + 10 * sc, ht,
+      { tilt: opt.tilt || 0, seeds: opt.seeds });
+  }
+  return y;
+}
+
+function stackH(items, cap, sc) {
+  var h = ING.bunB.h;
+  for (var i = 0; i < items.length; i++) h += ING[items[i]].h;
+  if (cap) h += ING.bunT.h;
+  return h * (sc || 1);
+}
+
+/* ══════════════════════════════════════════════════════════════
+   5. 캔버스 / 좌표계
+   ──────────────────────────────────────────────────────────────
+   조립대는 CSS 픽셀을 그대로 좌표계로 쓴다. 명세의 두께 수치(패티 26px 등)가
+   기기와 무관하게 같은 물리 크기로 나오고, 축소배율 계산도 단순해진다.
+   ══════════════════════════════════════════════════════════════ */
+var stage  = document.getElementById("stage");
+var canvas = document.getElementById("board");
+var bctx   = canvas.getContext("2d");
+var dpr = 1, bw = 0, bh = 0;
+var LAYER_W = 150, SC = 1, BASE_Y = 0;
+
+function sizeCanvas(cv, cssW, cssH) {
+  var w = Math.max(1, Math.round(cssW * dpr));
+  var h = Math.max(1, Math.round(cssH * dpr));
+  if (cv.width !== w || cv.height !== h) { cv.width = w; cv.height = h; return true; }
+  return false;
+}
+
+function resize() {
+  dpr = Math.min(window.devicePixelRatio || 1, 2.5);
+  markAlpha = dpr < 1.5 ? 0.55 : 0.42;   // 저dpr 기기에서 2px 마커가 뭉개진다
+
+  var r = stage.getBoundingClientRect();
+  if (r.width < 2 || r.height < 2) return false;
+  bw = r.width; bh = r.height;
+  sizeCanvas(canvas, bw, bh);
+
+  LAYER_W = Math.min(170, bw * 0.55);
+  // 최악 스택(163px)이 조립대 안에 들어가도록. 상한 1.15 는 큰 화면에서
+  // 재료가 우스꽝스럽게 커지는 걸 막는다.
+  SC = Math.max(0.55, Math.min(1.15, (bh - 36) / MAX_STACK_H));
+  // 카운터 위치. 흔한 4단 버거가 조립대 한가운데에 오도록 잡고,
+  // 최악 스택(163px)이 위로 넘치지 않는 선에서만 올린다. 바닥에 붙이면
+  // 세로로 긴 기기에서 조립대 위쪽 2/3 가 빈 채로 남는다.
+  var typical = (ING.bunB.h + 4 * 17) * SC;
+  BASE_Y = Math.max(MAX_STACK_H * SC + 12,
+           Math.min(bh - 22, bh * 0.5 + typical * 0.5));
+
+  paintIcons();
+  cardsDirty = true;
+  return true;
+}
+
+if (window.ResizeObserver) new ResizeObserver(resize).observe(stage);
+else window.addEventListener("resize", resize);
+window.addEventListener("orientationchange", function () { setTimeout(resize, 120); });
+
+/* ══════════════════════════════════════════════════════════════
+   6. 사운드 (파일 없이 WebAudio 로 생성)
+   ══════════════════════════════════════════════════════════════ */
+var tapped = false;   // 사용자가 화면을 한 번이라도 건드렸는지
+
+var sfx = (function () {
+  var ac = null;
+  var muted = store.get("muted", "0") === "1";
+
+  function ensure() {
+    if (!ac) {
+      var AC = window.AudioContext || window.webkitAudioContext;
+      if (!AC) return null;
+      try { ac = new AC(); } catch (e) { return null; }
+    }
+    if (ac.state === "suspended") { try { ac.resume(); } catch (e) {} }
+    return ac;
+  }
+  function tone(freq, dur, type, vol, slideTo) {
+    if (muted) return;
+    var a = ensure(); if (!a) return;
+    try {
+      var o = a.createOscillator(), g = a.createGain();
+      o.type = type || "sine";
+      o.frequency.setValueAtTime(freq, a.currentTime);
+      if (slideTo) o.frequency.exponentialRampToValueAtTime(slideTo, a.currentTime + dur);
+      g.gain.setValueAtTime(0.0001, a.currentTime);
+      g.gain.exponentialRampToValueAtTime(vol || 0.12, a.currentTime + 0.012);
+      g.gain.exponentialRampToValueAtTime(0.0001, a.currentTime + dur);
+      o.connect(g); g.connect(a.destination);
+      o.start(); o.stop(a.currentTime + dur + 0.02);
+    } catch (e) {}
+  }
+  // 지글거리는 소리는 오실레이터로는 안 난다. 노이즈 버퍼를 즉석에서 만든다.
+  function noise(dur, freq, vol) {
+    if (muted) return;
+    var a = ensure(); if (!a) return;
+    try {
+      var n = Math.floor(a.sampleRate * dur);
+      var b = a.createBuffer(1, n, a.sampleRate), d = b.getChannelData(0);
+      for (var i = 0; i < n; i++) d[i] = Math.random() * 2 - 1;
+      var s = a.createBufferSource(); s.buffer = b;
+      var f = a.createBiquadFilter(); f.type = "bandpass";
+      f.frequency.value = freq; f.Q.value = 1.2;
+      var g = a.createGain();
+      g.gain.setValueAtTime(vol, a.currentTime);
+      g.gain.exponentialRampToValueAtTime(0.0001, a.currentTime + dur);
+      s.connect(f); f.connect(g); g.connect(a.destination); s.start();
+    } catch (e) {}
+  }
+  function buzz(ms) {
+    // 사용자가 화면을 한 번도 건드리지 않은 상태에서 부르면 브라우저가 막으면서
+    // 콘솔에 에러를 남긴다
+    if (muted || !tapped || !navigator.vibrate) return;
+    try { navigator.vibrate(ms); } catch (e) {}
+  }
+  // 층수에 따라 음정이 올라간다. 재료별이 아니라 '높이별'이라
+  // 5단 버거를 쌓으면 상승 아르페지오가 연주된다.
+  var PENTA = [262, 294, 330, 392, 440, 523, 587];
+
+  return {
+    isMuted: function () { return muted; },
+    toggle: function () {
+      muted = !muted;
+      store.set("muted", muted ? "1" : "0");
+      if (!muted) { ensure(); tone(660, 0.08, "triangle", 0.1); }
+      return muted;
+    },
+    unlockAudio: function () { ensure(); },
+    stopAll: function () { if (ac && ac.state === "running") { try { ac.suspend(); } catch (e) {} } },
+    wake:    function () { if (ac && ac.state === "suspended" && !muted) { try { ac.resume(); } catch (e) {} } },
+
+    place: function (i) { tone(PENTA[Math.min(i, PENTA.length - 1)], 0.07, "triangle", 0.10); buzz(8); },
+    sizzle: function () { noise(0.15, 2000, 0.07); },
+    cap: function () { tone(120, 0.12, "triangle", 0.13); buzz(18); },
+    serve: function () {
+      tone(523, 0.10, "triangle", 0.12);
+      setTimeout(function () { tone(659, 0.10, "triangle", 0.11); }, 55);
+      setTimeout(function () { tone(784, 0.10, "triangle", 0.10); }, 110);
+      buzz([12, 30]);
+    },
+    rushServe: function () {
+      tone(440, 0.08, "sine", 0.11);
+      setTimeout(function () { tone(523, 0.08, "sine", 0.10); }, 55);
+      buzz([10, 20]);
+    },
+    wrong:  function () { tone(160, 0.22, "sawtooth", 0.10, 90); buzz(30); },
+    waste:  function () { tone(220, 0.30, "sawtooth", 0.09, 110); buzz(40); },
+    tick:   function () { tone(1200, 0.03, "sine", 0.04); },
+    heal:   function () { tone(880, 0.06, "sine", 0.06); },
+    unlock: function () {
+      tone(659, 0.10, "triangle", 0.11);
+      setTimeout(function () { tone(880, 0.10, "triangle", 0.10); }, 70);
+      setTimeout(function () { tone(1047, 0.10, "triangle", 0.09); }, 140);
+      buzz([15, 25]);
+    },
+    heartLost: function () { tone(300, 0.35, "sawtooth", 0.13, 100); buzz([30, 60, 30]); },
+    over:      function () { tone(420, 0.50, "sawtooth", 0.14, 110); buzz(180); }
+  };
+})();
+
+/* ══════════════════════════════════════════════════════════════
+   7. 규칙 상수
+   ══════════════════════════════════════════════════════════════ */
+var HEART_MAX = 3, QUEUE_MAX = 3;
+var DEC_K = 0.0045;          // 인내심 감쇠 계수
+var PAT_FLOOR = 2.8;         // 인내심 절대 하한(초)
+var RUSH_AT = 0.35;          // 이 아래로 떨어지면 '급하게 내보내기' 가능
+var HEAL_AT = 0.60;          // 이 이상 남기고 무실수 서빙하면 다른 손님 인내심 회복
+var HEAL_AMT = 0.05;
+var PERFECT_FOR_HEART = 10;  // 무실수 연속 서빙 이만큼이면 하트 1개 회복
+var HEART_HEAL_MAX = 2;      // 판당 하트 회복 횟수 상한
+var LOCK_WRONG = 0.40, LOCK_SHORT = 0.80, LOCK_TRASH = 0.60, LOCK_ORPHAN = 0.50;
+// 급하게 내보낸 뒤의 수습 시간. 이게 없으면 반만 쌓고 던지는 쪽이
+// 제대로 만드는 것보다 처리량이 높아져서, 후반에 그냥 전부 급송하는 게 최적이 된다.
+var LOCK_RUSH = 0.35;
+var SERVE_GRACE = 0.25;      // 서빙 가능 상태가 사라진 직후의 오조작 유예
+var RESUME_GRACE = 1.0;      // 일시정지 복귀 직후 인내심 정지
+var GHOST_LEAD = 0.6;        // 손님 도착 예고(고스트 카드) 시간
+var UNLOCK_BUFFER = 8, UNLOCK_BUFFER_ADD = 0.8;
+// 손님 도착 간격. 바닥값이 가장 빠른 플레이어의 처리 시간보다 낮아야
+// 대기줄이 차고, 그래야 인내심이 실제로 압박이 된다.
+var ARRIVE_0 = 4.2, ARRIVE_SLOPE = 0.030, ARRIVE_MIN = 1.25;
+
+/* ══════════════════════════════════════════════════════════════
+   8. 게임 상태
+   ══════════════════════════════════════════════════════════════ */
+var state = "ready";         // ready | playing | paused | over
+var t = 0;                   // 경과 시간(초). 난이도는 전부 여기에 연동한다.
+var score = 0, combo = 0, served = 0, hearts = HEART_MAX;
+var heartHeals = 0, perfectStreak = 0;
+var stack = [], mistake = false;
+var lock = 0, graceT = 0, resumeGrace = 0;
+var queue = [], arrivals = 0, cid = 0;
+var spawnTimer = 0, unlockIdx = 4, lastUnlockT = -99;
+var tickTimer = 0;
+var best = parseInt(store.get("best", "0"), 10) || 0;
+var bestServed = parseInt(store.get("bestServed", "0"), 10) || 0;
+var bestBurger = null, missedOrder = null, bestGain = -1;
+
+// 연출용
+var flying = null, particles = [], pops = [], serveAnim = null;
+var shake = 0, vignette = 0, squash = 0, cardsDirty = true;
+
+function isPrefix(a, b) {
+  if (a.length > b.length) return false;
+  for (var i = 0; i < a.length; i++) if (a[i] !== b[i]) return false;
+  return true;
+}
+function unlockedPool() {
+  var out = [];
+  for (var i = 0; i < unlockIdx; i++) out.push(SLOTS[i]);
+  return out;
+}
+
+/* ── 주문 생성 ─────────────────────────────────────────────────
+   제약이 다섯 개(재료 수 / 해금된 재료만 / 같은 재료 2장 / 두꺼운 재료 3장 /
+   접두사 편향) 겹친다. 순수 랜덤 경로를 먼저 만들고 편향을 그 위에 얹는다.
+   편향이 실패하면 조용히 랜덤으로 떨어진다 — 규칙을 어기느니 편향을 버린다.
+   ────────────────────────────────────────────────────────────── */
+function fits(list, id) {
+  var same = 0, thick = 0, i;
+  for (i = 0; i < list.length; i++) {
+    if (list[i] === id) same++;
+    if (THICK[list[i]]) thick++;
+  }
+  if (same >= SAME_MAX) return false;
+  if (THICK[id] && thick >= THICK_MAX) return false;
+  return true;
+}
+function randomOrder(n, pool) {
+  var out = [], guard = 0;
+  while (out.length < n && guard < 240) {
+    guard++;
+    var id = pool[(Math.random() * pool.length) | 0];
+    if (!fits(out, id)) continue;
+    out.push(id);
+  }
+  return out.length === n ? out : null;
+}
+function biasedOrder(n, pool) {
+  // 무작위로만 뽑으면 대기 주문끼리 접두사 관계가 1.7% 밖에 안 나온다.
+  // 이 편향이 '급하게 내보내기'의 발동 조건을 성립시킨다.
+  if (!queue.length || Math.random() >= 0.35) return null;
+  for (var a = 0; a < 12; a++) {
+    var base = queue[(Math.random() * queue.length) | 0].order;
+    var cand = null;
+    if (n < base.length) {
+      cand = base.slice(0, n);
+    } else if (n > base.length) {
+      var ext = base.slice(), ok = true;
+      while (ext.length < n) {
+        var tries = 0, add = null;
+        while (tries++ < 20) {
+          var c2 = pool[(Math.random() * pool.length) | 0];
+          if (fits(ext, c2)) { add = c2; break; }
+        }
+        if (!add) { ok = false; break; }
+        ext.push(add);
+      }
+      cand = ok ? ext : null;
+    }
+    // 길이가 같으면 똑같은 주문이 되므로 버린다
+    if (cand && cand.length === n) {
+      var allIn = true;
+      for (var i = 0; i < cand.length; i++) if (pool.indexOf(cand[i]) < 0) { allIn = false; break; }
+      if (allIn) return cand;
+    }
+  }
+  return null;
+}
+function pickLen() {
+  if (t < 18)  return 2;
+  if (t < 45)  return 2 + ((Math.random() * 2) | 0);
+  if (t < 80)  return 3 + ((Math.random() * 2) | 0);
+  if (t < 125) return 4 + ((Math.random() * 2) | 0);
+  return 4 + ((Math.random() * 3) | 0);
+}
+function makeOrder(n, pool) {
+  for (var k = n; k >= 2; k--) {
+    var o = biasedOrder(k, pool) || randomOrder(k, pool);
+    if (o) return o;
+  }
+  return [pool[0]];
+}
+
+function arriveGap() {
+  var g = Math.max(ARRIVE_MIN, ARRIVE_0 - ARRIVE_SLOPE * t);
+  // 새 버튼을 최고 압박 상태에서 처음 만나지 않도록 해금 직후에는 숨을 돌려준다
+  if (t - lastUnlockT < UNLOCK_BUFFER) g += UNLOCK_BUFFER_ADD;
+  return g;
+}
+
+function spawn() {
+  var pool = unlockedPool();
+  arrivals++;
+  var vip = arrivals % 5 === 0;
+  var n = pickLen();
+  if (vip) n = Math.min(7, n + 1);
+  var order = makeOrder(n, pool);
+  // 인내심 감쇠에는 하한이 없다. 하한을 두면 대기줄이 3명에서 막히는 구조와
+  // 맞물려 평형이 생기고 판이 영원히 안 끝난다. (설계 단계에서 실제로 터진 버그)
+  var pat = Math.max(PAT_FLOOR,
+    (13.0 + 2.6 * order.length) * Math.max(0, 1 - DEC_K * t) * (0.88 + Math.random() * 0.24));
+  queue.push({
+    id: ++cid, order: order, max: pat, left: pat,
+    vip: vip, leaving: 0, healFlash: 0, face: -1, key: ""
+  });
+  cardsDirty = true;
+}
+
+/* ══════════════════════════════════════════════════════════════
+   9. 조회 헬퍼
+   ══════════════════════════════════════════════════════════════ */
+function anyAlive() {
+  for (var i = 0; i < queue.length; i++) {
+    var c = queue[i];
+    if (!c.leaving && isPrefix(stack, c.order)) return true;
+  }
+  return false;
+}
+function findExact() {
+  var best2 = null;
+  for (var i = 0; i < queue.length; i++) {
+    var c = queue[i];
+    if (c.leaving || c.order.length !== stack.length || !isPrefix(stack, c.order)) continue;
+    if (!best2 || c.left < best2.left) best2 = c;   // 제일 급한 손님에게 자동으로 나간다
+  }
+  return best2;
+}
+function findRush() {
+  if (!stack.length) return null;
+  var best2 = null;
+  for (var i = 0; i < queue.length; i++) {
+    var c = queue[i];
+    if (c.leaving || stack.length >= c.order.length || !isPrefix(stack, c.order)) continue;
+    // 절반은 쌓아야 '급하게 만든 버거'다. 아래빵만 얹고 내보내는 길을 막는다.
+    if (stack.length * 2 < c.order.length) continue;
+    if (c.left / c.max >= RUSH_AT) continue;
+    if (!best2 || c.left < best2.left) best2 = c;
+  }
+  return best2;
+}
+function mostUrgent(skip) {
+  var b = null;
+  for (var i = 0; i < queue.length; i++) {
+    var c = queue[i];
+    if (c.leaving || c === skip) continue;
+    if (!b || c.left < b.left) b = c;
+  }
+  return b;
+}
+function serveMode() {
+  if (!stack.length) return "off";
+  if (findExact()) return "normal";
+  if (findRush()) return "rush";
+  return "under";
+}
+
+/* ══════════════════════════════════════════════════════════════
+   10. 연출
+   ══════════════════════════════════════════════════════════════ */
+function burst(x, y, n, col) {
+  for (var i = 0; i < n; i++) {
+    var a = Math.random() * Math.PI * 2, sp = 40 + Math.random() * 130;
+    particles.push({ x: x, y: y, vx: Math.cos(a) * sp, vy: Math.sin(a) * sp - 40,
+                     life: 0.5 + Math.random() * 0.3, max: 0.8, col: col, r: 1.5 + Math.random() * 2 });
+  }
+}
+function pop(x, y, txt, col, big) {
+  pops.push({ x: x, y: y, txt: txt, life: 0.65, col: col, big: !!big });
+}
+function updateFx(dt) {
+  var i;
+  if (flying) {
+    flying.p += dt / flying.dur;
+    if (flying.p >= 1) { flying = null; squash = 0.22; }
+  }
+  if (serveAnim) {
+    serveAnim.p += dt / serveAnim.dur;
+    if (serveAnim.p >= 1) serveAnim = null;
+  }
+  for (i = particles.length - 1; i >= 0; i--) {
+    var p = particles[i];
+    p.life -= dt;
+    if (p.life <= 0) { particles.splice(i, 1); continue; }
+    p.x += p.vx * dt; p.y += p.vy * dt; p.vy += 420 * dt;
+  }
+  for (i = pops.length - 1; i >= 0; i--) {
+    var q = pops[i];
+    q.life -= dt; q.y -= 34 * dt;
+    if (q.life <= 0) pops.splice(i, 1);
+  }
+  if (squash > 0) squash = Math.max(0, squash - dt);
+}
+
+/* ══════════════════════════════════════════════════════════════
+   11. 플레이어 행동
+   ══════════════════════════════════════════════════════════════ */
+function tapIng(id, btn) {
+  if (state !== "playing" || lock > 0) return;   // 잠금 중 입력은 첫 줄에서 버린다
+  var next = stack.concat([id]);
+  var ok = false;
+  for (var i = 0; i < queue.length; i++) {
+    if (!queue[i].leaving && isPrefix(next, queue[i].order)) { ok = true; break; }
+  }
+  if (!ok) { wrongTap(id, btn); return; }
+
+  var below = stackH(stack, false, SC);
+  var hh = ING[id].h * SC;
+  var sr = stage.getBoundingClientRect(), br = btn.getBoundingClientRect();
+  stack.push(id);
+  flying = {
+    id: id, p: 0, dur: 0.18, h: hh,
+    x0: br.left + br.width / 2 - sr.left, y0: br.top + br.height / 2 - sr.top,
+    x1: bw / 2, y1: BASE_Y - below - hh / 2
+  };
+  sfx.place(stack.length - 1);
+  if (id === "patty") sfx.sizzle();
+  cardsDirty = true;
+}
+
+function wrongTap(id, btn) {
+  lock = LOCK_WRONG;
+  combo = 0; perfectStreak = 0;
+  mistake = true;
+  shake = 6;
+  sfx.wrong();
+  var below = stackH(stack, false, SC);
+  pops.push({ x: bw / 2, y: BASE_Y - below - 14, txt: "✕", life: 0.45, col: "#F04452", big: false });
+  if (btn) { btn.classList.add("bad"); setTimeout(function () { btn.classList.remove("bad"); }, 220); }
+  paintScore();
+}
+
+function serveTap() {
+  if (state !== "playing" || lock > 0 || !stack.length) return;
+  var c = findExact();
+  if (c) { doServe(c, false); return; }
+  c = findRush();
+  if (c) { doServe(c, true); return; }
+  // 0.25초 전까지 서빙이 가능했다면 상태 변화가 플레이어보다 빨랐던 것이다. 벌하지 않는다.
+  if (graceT > 0) return;
+  shortServe();
+}
+
+function doServe(c, isRush) {
+  var n = stack.length;
+  var ratio = Math.max(0, Math.min(1, c.left / c.max));
+  var vipMul = c.vip ? 2 : 1;
+  var gain;
+
+  if (isRush) {
+    gain = Math.round(80 * n) * vipMul;      // 인내심·무실수 보너스도 콤보배수도 없다
+    perfectStreak = 0;                        // 콤보는 유지, 연속 무실수는 끊긴다
+    lock = LOCK_RUSH;                         // 급하게 내보낸 값은 시간으로 치른다
+    sfx.rushServe();
+  } else {
+    var cm = 1 + Math.min(combo, 10) * 0.1;
+    gain = Math.round((80 * n + 120 * ratio + 50 * (mistake ? 0 : 1)) * cm) * vipMul;
+    combo++;
+    if (mistake) perfectStreak = 0;
+    else {
+      perfectStreak++;
+      // 잘 만들면 그 자리에서 시간으로 환전된다 — 가장 급한 다른 손님이 조금 더 기다려 준다
+      if (ratio >= HEAL_AT) {
+        var h = mostUrgent(c);
+        if (h) {
+          h.left = Math.min(h.max, h.left + h.max * HEAL_AMT);
+          h.healFlash = 0.45;
+          sfx.heal();
+        }
+      }
+      if (perfectStreak >= PERFECT_FOR_HEART && heartHeals < HEART_HEAL_MAX && hearts < HEART_MAX) {
+        hearts++; heartHeals++; perfectStreak = 0;
+        paintHearts(); toast("무실수 10연속 — 하트 하나 돌아왔어요");
+      }
+    }
+    sfx.cap();
+    setTimeout(function () { sfx.serve(); }, 90);
+  }
+
+  score += gain;
+  served++;
+
+  // 이번 판 최고의 한 개를 결과 화면에 그대로 재현한다
+  if (gain > bestGain) {
+    bestGain = gain;
+    bestBurger = { items: stack.slice(), ratio: ratio, mistake: mistake, rush: !!isRush };
+  }
+
+  // 서빙 애니메이션 — 손님 카드 방향으로 날아가며 작아진다
+  var slot = queue.indexOf(c);
+  var tx = bw * ((slot < 0 ? 1 : slot) + 0.5) / QUEUE_MAX;
+  serveAnim = {
+    items: stack.slice(), p: 0, dur: 0.30, tx: tx,
+    jit: ratio > 0.5 && !mistake ? 0 : (ratio < 0.25 ? 3 : 1.5),
+    tilt: ratio < 0.25 ? 0.052 : 0,
+    seeds: ratio < 0.25 ? 3 : 5,
+    capGap: isRush ? 2 : 0,
+    seed: served
+  };
+
+  var col = isRush ? "#FFB020" : "#3182F6";
+  pop(bw / 2, BASE_Y - stackH(stack, true, SC) - 6, "+" + comma(gain), col, combo >= 5 && !isRush);
+  if (combo >= 5 && !isRush) burst(bw / 2, BASE_Y - stackH(stack, true, SC), 12, "#3182F6");
+
+  if (slot >= 0) queue.splice(slot, 1);
+  stack = []; mistake = false;
+  cardsDirty = true;
+  paintScore();
+}
+
+function shortServe() {
+  score = Math.max(0, score - 150);
+  combo = 0; perfectStreak = 0;
+  lock = LOCK_SHORT;
+  shake = 7;
+  sfx.waste();
+  pop(bw / 2, BASE_Y - stackH(stack, false, SC) - 6, "−150", "#F04452", false);
+  stack = []; mistake = false;
+  cardsDirty = true;
+  paintScore();
+}
+
+function trashTap() {
+  if (state !== "playing" || lock > 0 || !stack.length) return;
+  combo = 0; perfectStreak = 0;
+  lock = LOCK_TRASH;
+  sfx.waste();
+  stack = []; mistake = false;
+  cardsDirty = true;
+  paintScore();
+}
+
+// 대기 주문 중 현재 스택을 받아 줄 손님이 하나도 안 남은 경우.
+// 손님이 나가서 생긴 일이지 플레이어 잘못이 아니므로 점수도 콤보도 건드리지 않는다.
+function orphanDiscard() {
+  lock = LOCK_ORPHAN;
+  sfx.waste();
+  stack = []; mistake = false;
+  cardsDirty = true;
+  toast("주문이 사라져서 정리했어요");
+}
+
+function loseCustomer(c) {
+  c.leaving = 0.35;
+  score = Math.max(0, score - 300);
+  combo = 0; perfectStreak = 0;
+  hearts--;
+  vignette = 0.42;
+  shake = 8;
+  missedOrder = c.order.slice();
+  sfx.heartLost();
+  paintHearts(); paintScore(); cardsDirty = true;
+  if (hearts <= 0) gameOver();
+}
+
+function doUnlock(i) {
+  var b = ingBtns[i];
+  b.className = "ing pop glow";
+  lastUnlockT = t;
+  sfx.unlock();
+  toast("새 재료: " + ING[SLOTS[i]].name);
+  setTimeout(function () { b.classList.remove("glow"); }, 900);
+  setTimeout(function () { b.classList.remove("pop"); }, 600);
+}
+
+/* ══════════════════════════════════════════════════════════════
+   12. DOM 조립
+   ══════════════════════════════════════════════════════════════ */
+var gridEl   = document.getElementById("grid");
+var btnServe = document.getElementById("btnServe");
+var btnTrash = document.getElementById("btnTrash");
+var cardEls  = [].slice.call(document.querySelectorAll("#queue .card"));
+var ingBtns  = [];
+
+(function buildGrid() {
+  for (var i = 0; i < SLOTS.length; i++) {
+    var id = SLOTS[i];
+    var b = document.createElement("button");
+    b.className = "ing locked";
+    b.setAttribute("data-id", id);
+    b.setAttribute("aria-label", ING[id].name);
+    var cv = document.createElement("canvas");
+    var sp = document.createElement("span"); sp.textContent = ING[id].name;
+    var lk = document.createElement("i"); lk.className = "lk"; lk.textContent = "🔒";
+    b.appendChild(cv); b.appendChild(sp); b.appendChild(lk);
+    gridEl.appendChild(b);
+    ingBtns.push(b);
+  }
+})();
+
+function paintIcons() {
+  for (var i = 0; i < ingBtns.length; i++) {
+    var cv = ingBtns[i].firstChild;
+    var changed = sizeCanvas(cv, 46, 22);
+    if (!changed && cv.__dpr === dpr) continue;
+    cv.__dpr = dpr;
+    var c = cv.getContext("2d");
+    c.setTransform(dpr, 0, 0, dpr, 0, 0);
+    c.clearRect(0, 0, 46, 22);
+    drawIngredient(c, SLOTS[i], 23, 11, 38, Math.min(18, ING[SLOTS[i]].h), {});
+  }
+}
+
+/* ══════════════════════════════════════════════════════════════
+   13. 화면 갱신
+   ══════════════════════════════════════════════════════════════ */
+function comma(n) { return String(n).replace(/\B(?=(\d{3})+(?!\d))/g, ","); }
+
+var scoreEl = document.getElementById("scoreVal");
+var comboEl = document.getElementById("comboVal");
+var bestEl  = document.getElementById("bestVal");
+var heartEl = document.getElementById("hearts");
+
+function paintScore() {
+  scoreEl.textContent = comma(score);
+  bestEl.textContent = comma(Math.max(best, score));
+  if (combo >= 2) {
+    comboEl.textContent = "콤보 " + combo + "연속 ×" + (1 + Math.min(combo, 10) * 0.1).toFixed(1);
+    comboEl.className = "combo on";
+  } else {
+    comboEl.className = "combo";
+  }
+}
+function paintHearts() {
+  var h = heartEl.children;
+  for (var i = 0; i < h.length; i++) h[i].className = i < hearts ? "" : "gone";
+}
+
+var FACES = ["🙂", "😐", "😠"];
+
+function paintMini(cv, order) {
+  var r = cv.getBoundingClientRect();
+  if (r.width < 6 || r.height < 10) return false;
+  sizeCanvas(cv, r.width, r.height);
+  var c = cv.getContext("2d");
+  c.setTransform(dpr, 0, 0, dpr, 0, 0);
+  c.clearRect(0, 0, r.width, r.height);
+  var capH = 6;
+  var budget = r.height - capH - 1;
+  var n = order.length;
+  // 실제 두께비가 아니라 균등 분할. 최소 8px 를 보장해야 마커가 살아남는다.
+  var lh = Math.max(8, Math.min(16, Math.floor(budget / n)));
+  var w = Math.min(r.width - 6, 54);
+  var y = r.height - 1;
+  // 아래빵은 자동으로 깔리므로 정보량이 0이다. 한 층을 아껴 6재료 주문을 예산에 넣는다.
+  for (var i = 0; i < n; i++) {
+    drawIngredient(c, order[i], r.width / 2, y - lh / 2, w, lh, {});
+    y -= lh;
+  }
+  drawIngredient(c, "bunT", r.width / 2, y - capH / 2, w + 3, capH, {});
+  return true;
+}
+
+function paintCards() {
+  var ghostSlot = -1;
+  if (state === "playing" && queue.length < QUEUE_MAX && spawnTimer > 0 && spawnTimer < GHOST_LEAD) {
+    ghostSlot = queue.length;
+  }
+  for (var i = 0; i < cardEls.length; i++) {
+    var el = cardEls[i], c = queue[i];
+    if (!c) {
+      if (i === ghostSlot) {
+        el.className = "card ghost";
+        el.style.opacity = String(0.35 * (1 - spawnTimer / GHOST_LEAD));
+      } else {
+        el.className = "card hide";
+        el.style.opacity = "";
+      }
+      continue;
+    }
+    el.style.opacity = "";
+    var ratio = Math.max(0, Math.min(1, c.left / c.max));
+    var alive = stack.length > 0 && isPrefix(stack, c.order);
+    var rushable = alive && stack.length < c.order.length && ratio < RUSH_AT;
+
+    var cls = "card";
+    if (c.leaving) cls += " dim";
+    else if (rushable) cls += " rush";
+    else if (ratio < 0.25) cls += " hot";
+    else if (alive) cls += " live";
+    else if (c.vip) cls += " vip";
+    if (stack.length && !alive && !c.leaving) cls += " dim";
+    if (el.className !== cls) el.className = cls;
+
+    var fs = ratio > 0.5 ? 0 : (ratio > 0.25 ? 1 : 2);
+    var key = c.order.join(",") + "|" + fs + "|" + c.vip + "|" + Math.round(el.clientWidth);
+    if (cardsDirty || c.key !== key) {
+      var crow = el.firstChild;
+      crow.children[0].textContent = FACES[fs];
+      crow.children[1].textContent = c.vip ? "👑" : "";
+      crow.children[2].textContent = c.order.length + "개";
+      if (paintMini(el.children[1], c.order)) c.key = key;
+    }
+
+    var bar = el.children[2].firstChild;
+    bar.style.transform = "scaleX(" + ratio.toFixed(3) + ")";
+    bar.style.backgroundColor = c.healFlash > 0 ? "#00C471"
+      : (ratio > 0.5 ? "#3182F6" : (ratio > 0.25 ? "#FFB020" : "#F04452"));
+
+    var healEl = el.children[3];
+    if (c.healFlash > 0 && !c.hf) {
+      c.hf = 1; healEl.classList.remove("go");
+      void healEl.offsetWidth;                 // 애니메이션 재시작을 강제한다
+      healEl.classList.add("go");
+    } else if (c.healFlash <= 0 && c.hf) {
+      c.hf = 0; healEl.classList.remove("go");
+    }
+  }
+  cardsDirty = false;
+}
+
+var lastServeMode = "";
+function paintServeBtn() {
+  var m = state === "playing" ? serveMode() : "off";
+  if (m === lastServeMode) return;
+  lastServeMode = m;
+  if (m === "rush") { btnServe.className = "rush"; btnServe.textContent = "급하게 내보내기"; }
+  else if (m === "off") { btnServe.className = "off"; btnServe.textContent = "윗빵 덮어 내보내기"; }
+  else { btnServe.className = ""; btnServe.textContent = "윗빵 덮어 내보내기"; }
+  btnTrash.className = (stack.length && state === "playing") ? "on" : "";
+}
+
+/* ══════════════════════════════════════════════════════════════
+   14. 진행
+   ══════════════════════════════════════════════════════════════ */
+function tick(dt) {
+  t += dt;
+
+  while (unlockIdx < SLOTS.length && t >= UNLOCK_AT[unlockIdx]) doUnlock(unlockIdx++);
+
+  // 도착 타이머는 대기줄이 꽉 차 있어도 계속 돈다. 다 돌면 0에서 멈춰 '문 앞에
+  // 서 있는' 상태가 되고, 자리가 나는 즉시 들어온다.
+  // 꽉 찬 동안 타이머를 멈추거나 되감으면 자리가 날 때마다 간격만큼 공짜 시간이
+  // 생겨서 대기줄이 3명에 도달하지 못한다. 그러면 빠른 플레이어의 대기 시간이
+  // 인내심 하한 아래에 머물러 판이 영원히 끝나지 않는다.
+  spawnTimer -= dt;
+  if (spawnTimer < 0) spawnTimer = 0;
+  if (spawnTimer <= 0 && queue.length < QUEUE_MAX) { spawn(); spawnTimer = arriveGap(); }
+
+  if (resumeGrace > 0) resumeGrace -= dt;
+
+  var i, c;
+  for (i = queue.length - 1; i >= 0; i--) {
+    c = queue[i];
+    if (c.healFlash > 0) c.healFlash -= dt;
+    if (c.leaving > 0) {
+      c.leaving -= dt;
+      if (c.leaving <= 0) { queue.splice(i, 1); cardsDirty = true; }
+      continue;
+    }
+    if (resumeGrace <= 0) c.left -= dt;
+  }
+  // 퇴장 판정을 서빙보다 먼저 돌린다. 순서가 뒤집히면 이미 나간 손님에게 서빙된다.
+  for (i = 0; i < queue.length; i++) {
+    c = queue[i];
+    if (!c.leaving && c.left <= 0) { loseCustomer(c); if (state !== "playing") return; }
+  }
+
+  if (lock > 0) lock -= dt;
+  if (graceT > 0) graceT -= dt;
+
+  if (lock <= 0 && stack.length && !anyAlive()) orphanDiscard();
+
+  var m = serveMode();
+  if (m === "normal" || m === "rush") graceT = SERVE_GRACE;
+
+  // 틱 소리는 가장 급한 손님 1명만. 셋이 동시에 울리면 소음이 된다.
+  var urg = mostUrgent();
+  if (urg && urg.left / urg.max < 0.25 && lock <= 0) {
+    tickTimer -= dt;
+    if (tickTimer <= 0) { sfx.tick(); tickTimer = 0.5; }
+  } else tickTimer = 0;
+
+  if (shake > 0) shake = Math.max(0, shake - dt * 26);
+  if (vignette > 0) vignette = Math.max(0, vignette - dt * 3);
+}
+
+function render() {
+  if (!bw) return;
+  var c = bctx;
+  c.setTransform(dpr, 0, 0, dpr, 0, 0);
+  c.clearRect(0, 0, bw, bh);
+  c.save();
+  if (shake > 0.05) c.translate((Math.random() * 2 - 1) * shake, (Math.random() * 2 - 1) * shake * 0.5);
+
+  c.fillStyle = "rgba(25,31,40,.06)";
+  ell(c, bw / 2, BASE_Y + 5, LAYER_W * 0.62, 6); c.fill();
+
+  var sq = squash > 0 ? 1 - 0.10 * Math.sin((squash / 0.22) * Math.PI) : 1;
+
+  if (state === "playing" || state === "paused" || state === "over") {
+    var items = flying ? stack.slice(0, stack.length - 1) : stack;
+    drawStack(c, items, bw / 2, BASE_Y, LAYER_W, SC, { squash: sq });
+    if (flying) {
+      var p = flying.p, e = p * p * (3 - 2 * p);
+      drawIngredient(c, flying.id,
+        flying.x0 + (flying.x1 - flying.x0) * e,
+        flying.y0 + (flying.y1 - flying.y0) * e - Math.sin(p * Math.PI) * 42,
+        LAYER_W, flying.h, {});
+    }
+  }
+
+  if (serveAnim) {
+    var se = serveAnim.p * serveAnim.p;
+    c.save();
+    c.globalAlpha = Math.max(0, 1 - se * 0.85);
+    drawStack(c, serveAnim.items,
+      bw / 2 + (serveAnim.tx - bw / 2) * se,
+      BASE_Y - se * (BASE_Y + 40),
+      LAYER_W * (1 - 0.6 * se), SC * (1 - 0.6 * se),
+      { cap: true, jit: serveAnim.jit, tilt: serveAnim.tilt, seeds: serveAnim.seeds,
+        capGap: serveAnim.capGap, seed: serveAnim.seed });
+    c.restore();
+  }
+
+  var i;
+  for (i = 0; i < particles.length; i++) {
+    var pt = particles[i];
+    c.globalAlpha = Math.max(0, Math.min(1, pt.life / 0.5));
+    c.fillStyle = pt.col;
+    c.beginPath(); c.arc(pt.x, pt.y, pt.r, 0, Math.PI * 2); c.fill();
+  }
+  c.globalAlpha = 1;
+
+  for (i = 0; i < pops.length; i++) {
+    var q = pops[i];
+    c.globalAlpha = Math.max(0, Math.min(1, q.life / 0.4));
+    c.fillStyle = q.col;
+    c.font = "800 " + (q.big ? 23 : 17) + "px 'Pretendard','Apple SD Gothic Neo',system-ui,sans-serif";
+    c.textAlign = "center"; c.textBaseline = "middle";
+    c.fillText(q.txt, q.x, q.y);
+  }
+  c.globalAlpha = 1;
+  c.restore();
+
+  if (vignette > 0.01) {
+    c.save();
+    c.globalAlpha = Math.min(0.55, vignette);
+    var g = c.createRadialGradient(bw / 2, bh / 2, Math.min(bw, bh) * 0.28,
+                                   bw / 2, bh / 2, Math.max(bw, bh) * 0.78);
+    g.addColorStop(0, "rgba(240,68,82,0)");
+    g.addColorStop(1, "rgba(240,68,82,.9)");
+    c.fillStyle = g; c.fillRect(0, 0, bw, bh);
+    c.restore();
+  }
+}
+
+/* ══════════════════════════════════════════════════════════════
+   15. 판 흐름
+   ══════════════════════════════════════════════════════════════ */
+function veil(id, on) { document.getElementById(id).classList[on ? "add" : "remove"]("show"); }
+function anyVeilOpen() {
+  var v = document.querySelectorAll(".veil");
+  for (var i = 0; i < v.length; i++) if (v[i].classList.contains("show")) return true;
+  return false;
+}
+
+var toastTimer = 0;
+function toast(msg) {
+  var el = document.getElementById("toast");
+  el.textContent = msg;
+  el.classList.add("show");
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(function () { el.classList.remove("show"); }, 1500);
+}
+
+function reset() {
+  t = 0; score = 0; combo = 0; served = 0; hearts = HEART_MAX;
+  heartHeals = 0; perfectStreak = 0;
+  stack = []; mistake = false;
+  lock = 0; graceT = 0; resumeGrace = 0;
+  queue.length = 0; arrivals = 0; spawnTimer = 1.2;
+  lastUnlockT = -99; tickTimer = 0;
+  bestBurger = null; missedOrder = null; bestGain = -1;
+  flying = null; serveAnim = null;
+  particles.length = 0; pops.length = 0;
+  shake = 0; vignette = 0; squash = 0;
+  for (var i = 0; i < ingBtns.length; i++) ingBtns[i].className = i < 4 ? "ing" : "ing locked";
+  unlockIdx = 4;
+  cardsDirty = true; lastServeMode = "";
+  paintScore(); paintHearts(); paintCards(); paintServeBtn();
+}
+
+function start() {
+  veil("vStart", false); veil("vOver", false); veil("vHow", false);
+  veil("vPause", false); veil("vRank", false); veil("vExit", false);
+  reset();
+  sfx.unlockAudio();
+  state = "playing";
+  lastT = performance.now();
+}
+
+function pause() {
+  if (state !== "playing") return;
+  state = "paused";
+  sfx.stopAll();
+  veil("vPause", true);
+}
+function resumeGame() {
+  veil("vPause", false);
+  if (state === "paused") {
+    state = "playing";
+    lastT = performance.now();
+    resumeGrace = RESUME_GRACE;   // 일시정지 경계에서 손님이 나가는 건 플레이어 잘못이 아니다
+    sfx.wake();
+  }
+}
+
+// 결과 화면의 버거 두 개. 점수 숫자만 있는 것보다 재도전 훅이 강하다.
+function drawBurgerFit(cv, items, cap, opt) {
+  var r = cv.getBoundingClientRect();
+  if (r.width < 6 || r.height < 10) return;
+  sizeCanvas(cv, r.width, r.height);
+  var c = cv.getContext("2d");
+  c.setTransform(dpr, 0, 0, dpr, 0, 0);
+  c.clearRect(0, 0, r.width, r.height);
+  var w = Math.min(r.width - 16, 92);
+  var s = Math.min(1.05, (r.height - 8) / Math.max(1, stackH(items, cap, 1)));
+  var o = {}, kk;
+  for (kk in (opt || {})) o[kk] = opt[kk];
+  o.cap = cap;
+  drawStack(c, items, r.width / 2, r.height - 4, w, s, o);
+}
+
+function gameOver() {
+  state = "over";
+  sfx.stopAll();
+  sfx.over();
+  if (score > best) { best = score; store.set("best", best); }
+  if (served > bestServed) { bestServed = served; store.set("bestServed", bestServed); }
+  Toss.submitScore(score);          // 토스 게임센터 리더보드 (웹에선 무시된다)
+
+  document.getElementById("overTitle").textContent =
+    score >= best && score > 0 ? "최고 기록!" : "영업 끝!";
+  document.getElementById("overScore").textContent = comma(score) + "점";
+  document.getElementById("overSub").textContent =
+    served + "개 서빙 · 최고 기록 " + comma(best) + "점";
+  paintScore();
+  veil("vOver", true);
+
+  // 모달이 레이아웃을 잡은 다음에 그려야 캔버스 크기가 0이 아니다
+  requestAnimationFrame(function () {
+    var bb = bestBurger || { items: ["patty", "cheese"], ratio: 1, mistake: false };
+    drawBurgerFit(document.getElementById("shotBest"), bb.items, true, {
+      jit: bb.ratio > 0.5 && !bb.mistake ? 0 : (bb.ratio < 0.25 ? 3 : 1.5),
+      tilt: bb.ratio < 0.25 ? 0.052 : 0,
+      seeds: bb.ratio < 0.25 ? 3 : 5,
+      seed: 3
+    });
+    var miss = document.getElementById("shotMiss");
+    if (missedOrder) drawBurgerFit(miss, missedOrder, false, { seed: 9 });
+    else {
+      var r = miss.getBoundingClientRect();
+      sizeCanvas(miss, r.width, r.height);
+      miss.getContext("2d").clearRect(0, 0, miss.width, miss.height);
+    }
+  });
+}
+
+/* ══════════════════════════════════════════════════════════════
+   16. 입력
+   ──────────────────────────────────────────────────────────────
+   전부 pointerdown 에서 즉시 처리한다. click 을 쓰면 모바일에서
+   300ms 가 붙어 0.4초 잠금과 구분이 안 된다.
+   ══════════════════════════════════════════════════════════════ */
+function closestIng(el) {
+  while (el && el !== gridEl) {
+    if (el.classList && el.classList.contains("ing")) return el;
+    el = el.parentNode;
+  }
+  return null;
+}
+
+window.addEventListener("pointerdown", function () {
+  tapped = true;
+  sfx.unlockAudio();
+}, true);
+
+gridEl.addEventListener("pointerdown", function (e) {
+  var b = closestIng(e.target);
+  if (!b || b.classList.contains("locked")) return;
+  e.preventDefault();
+  tapIng(b.getAttribute("data-id"), b);
+}, { passive: false });
+
+btnServe.addEventListener("pointerdown", function (e) { e.preventDefault(); serveTap(); }, { passive: false });
+btnTrash.addEventListener("pointerdown", function (e) { e.preventDefault(); trashTap(); }, { passive: false });
+
+// 시스템 제스처나 알림 배너로 포인터가 끊겨도 입력이 영구히 죽지 않도록
+// 양쪽 해제 이벤트를 모두 잡는다.
+function releaseAll() { /* 드래그 상태가 없어 정리할 것은 없지만, 훅은 남겨 둔다 */ }
+window.addEventListener("pointerup", releaseAll);
+window.addEventListener("pointercancel", releaseAll);
+document.addEventListener("gesturestart", function (e) { e.preventDefault(); });
+
+// 백그라운드 전환 → 즉시 소리 종료 + 일시정지
+document.addEventListener("visibilitychange", function () {
+  if (document.hidden) { sfx.stopAll(); pause(); }
+});
+// blur 로도 멈추게 하면 데스크톱에서 창 밖을 누를 때마다 판이 끊긴다.
+// 앱 전환·탭 전환은 위의 visibilitychange 가 잡아 준다.
+
+var btnSound = document.getElementById("btnSound");
+btnSound.textContent = sfx.isMuted() ? "🔇" : "🔊";
+btnSound.addEventListener("click", function () {
+  btnSound.textContent = sfx.toggle() ? "🔇" : "🔊";
+});
+
+document.getElementById("btnStart").addEventListener("click", start);
+document.getElementById("btnRetry").addEventListener("click", start);
+document.getElementById("btnHow").addEventListener("click", function () { veil("vHow", true); });
+document.getElementById("btnHowClose").addEventListener("click", function () { veil("vHow", false); });
+document.getElementById("btnResume").addEventListener("click", resumeGame);
+
+function openRank() {
+  if (Toss.openBoard()) return;               // 토스 게임센터 리더보드
+  document.getElementById("rankBest").textContent = comma(Math.max(best, score)) + "점";
+  document.getElementById("rankNote").innerHTML =
+    "최다 서빙 " + Math.max(bestServed, served) + "개<br>" +
+    "토스 게임센터 리더보드는 앱인토스에 등록한 뒤 연결돼요.";
+  veil("vRank", true);
+}
+document.getElementById("btnRank").addEventListener("click", function () {
+  if (state === "playing") pause();
+  openRank();
+});
+document.getElementById("btnOverRank").addEventListener("click", openRank);
+document.getElementById("btnRankClose").addEventListener("click", function () { veil("vRank", false); });
+
+function askExit() { if (state === "playing") pause(); veil("vExit", true); }
+document.getElementById("btnExit").addEventListener("click", askExit);
+document.getElementById("btnOverExit").addEventListener("click", askExit);
+document.getElementById("btnExitNo").addEventListener("click", function () { veil("vExit", false); });
+document.getElementById("btnExitYes").addEventListener("click", function () {
+  veil("vExit", false);
+  if (Toss.exitApp()) return;                 // 앱인토스에서는 미니앱을 닫는다
+  try { window.close(); } catch (e) {}
+  location.href = "/";                        // 웹에서는 랜딩으로 돌아간다
+});
+
+function shareScore() {
+  var text = "불티나 버거에서 " + comma(Math.max(best, score)) + "점 찍었어요!";
+  if (navigator.share) {
+    navigator.share({ title: "불티나 버거", text: text, url: SHARE_URL })
+      .catch(function () {});
+    return;
+  }
+  if (navigator.clipboard) {
+    navigator.clipboard.writeText(text + " " + SHARE_URL)
+      .then(function () { toast("결과를 복사했어요"); })
+      .catch(function () { toast(SHARE_URL); });
+    return;
+  }
+  toast(SHARE_URL);
+}
+document.getElementById("btnShare").addEventListener("click", shareScore);
+
+/* ══════════════════════════════════════════════════════════════
+   17. 루프
+   ──────────────────────────────────────────────────────────────
+   타이머는 전부 remain -= dt 감산이다. performance.now() 절대 시각
+   deadline 을 쓰면 백그라운드 복귀 시 타이머가 이미 다 지나 있어서
+   손님 셋이 동시에 나가 버린다. 감산 방식은 state 가 playing 일 때만
+   dt 를 누적하므로 일시정지 하나로 전부 자동 정지한다.
+   물리가 없으니 고정 타임스텝 누산도 필요 없다.
+   ══════════════════════════════════════════════════════════════ */
+var lastT = performance.now();
+
+function frame(now) {
+  var dt = (now - lastT) / 1000;
+  lastT = now;
+  if (dt > 0.25) dt = 0.25;        // 백그라운드 복귀 점프 방지
+  if (state === "playing") tick(dt);
+  if (state !== "paused") updateFx(dt);
+  paintCards();
+  paintServeBtn();
+  render();
+  requestAnimationFrame(frame);
+}
+
+/* ══════════════════════════════════════════════════════════════
+   18. 부팅
+   ══════════════════════════════════════════════════════════════ */
+resize();
+reset();
+state = "ready";
+Toss.userKey();
+bestEl.textContent = comma(best);
+
+// 시작 화면 미리보기 버거
+requestAnimationFrame(function () {
+  var cv = document.querySelector("#startShot canvas");
+  if (cv) drawBurgerFit(cv, ["patty", "cheese", "lettuce", "tomato"], true, { seed: 2, seeds: 5 });
+});
+
+requestAnimationFrame(frame);
+
+})();
+</script>
+</body>
+</html>
