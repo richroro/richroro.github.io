@@ -1,0 +1,166 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>국회의사당 3D 모델 · 블렌더 스크립트로 지은 여의도 본관</title>
+<meta name="description" content="여의도 국회의사당 본관을 Blender 파이썬 스크립트 하나로 만든 3D 모델. 24개 열주, 지름 64m 돔, 높이 70m를 실제 치수로 넣고 브라우저에서 돌려 볼 수 있습니다.">
+<link rel="canonical" href="https://richroro.github.io/national-assembly/">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="ko_KR">
+<meta property="og:site_name" content="Cadence">
+<meta property="og:url" content="https://richroro.github.io/national-assembly/">
+<meta property="og:title" content="국회의사당 3D 모델">
+<meta property="og:description" content="Blender 스크립트 한 파일로 만든 여의도 국회의사당. 24개 열주와 64m 돔을 실제 치수로.">
+<meta property="og:image" content="https://richroro.github.io/national-assembly/render_hero.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%23FC1C49'/><path d='M50 22a22 22 0 0 1 22 22v4H28v-4a22 22 0 0 1 22-22zM24 54h52v6H24zM30 62h6v18h-6zm12 0h6v18h-6zm12 0h6v18h-6zm12 0h6v18h-6z' fill='white'/></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans+KR:wght@300;400;500;600;700&display=swap">
+<script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.5.0/model-viewer.min.js"></script>
+<style>
+:root{
+  color-scheme:light;
+  --paper:#F5F6F8; --surface:#FFFFFF; --surface-2:#EEF0F4;
+  --ink:#14161C; --ink-2:#4A5260; --ink-3:#6E7683;
+  --line:#E3E7ED; --brand:#FC1C49; --dome:#4F9C8F;
+  --shadow:0 1px 2px rgba(20,22,28,.05), 0 10px 28px -16px rgba(20,22,28,.22);
+  --radius:14px;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    color-scheme:dark;
+    --paper:#0F1218; --surface:#161A21; --surface-2:#1D2229;
+    --ink:#E9EDF3; --ink-2:#AEB7C4; --ink-3:#8B95A3;
+    --line:#252B34; --brand:#FF4C52; --dome:#6FBFB0;
+    --shadow:0 1px 2px rgba(0,0,0,.4), 0 10px 28px -16px rgba(0,0,0,.7);
+  }
+}
+:root[data-theme="dark"]{
+  color-scheme:dark;
+  --paper:#0F1218; --surface:#161A21; --surface-2:#1D2229;
+  --ink:#E9EDF3; --ink-2:#AEB7C4; --ink-3:#8B95A3;
+  --line:#252B34; --brand:#FF4C52; --dome:#6FBFB0;
+  --shadow:0 1px 2px rgba(0,0,0,.4), 0 10px 28px -16px rgba(0,0,0,.7);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:"IBM Plex Sans KR","Pretendard","Apple SD Gothic Neo",system-ui,sans-serif;
+  background:var(--paper);color:var(--ink);line-height:1.6;letter-spacing:-.2px;-webkit-font-smoothing:antialiased}
+a{color:inherit}
+code,pre{font-family:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,monospace;font-size:.92em}
+.wrap{max-width:1040px;margin:0 auto;padding:0 16px}
+header{padding:40px 0 18px}
+.eyebrow{font-size:13px;font-weight:600;color:var(--brand);letter-spacing:.02em;text-transform:uppercase}
+h1{font-size:clamp(26px,4vw,38px);font-weight:700;line-height:1.2;margin:6px 0 10px}
+.lead{color:var(--ink-2);font-size:16px;max-width:720px}
+.viewer{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden;margin-top:22px}
+model-viewer{width:100%;height:min(62vh,600px);background:linear-gradient(180deg,#cfe0f3 0%,#eef3f8 100%);--poster-color:transparent}
+@media (prefers-color-scheme:dark){ :root:not([data-theme="light"]) model-viewer{background:linear-gradient(180deg,#1b2735 0%,#0f1218 100%)} }
+.viewer .bar{display:flex;flex-wrap:wrap;gap:8px 16px;align-items:center;justify-content:space-between;padding:12px 16px;border-top:1px solid var(--line);font-size:13px;color:var(--ink-3)}
+.viewer .bar b{color:var(--ink);font-weight:600}
+.btns{display:flex;flex-wrap:wrap;gap:8px}
+.btn{display:inline-block;padding:8px 14px;border-radius:10px;border:1px solid var(--line);background:var(--surface-2);font-size:13px;font-weight:600;text-decoration:none;color:var(--ink)}
+.btn.primary{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+section{padding:34px 0 0}
+h2{font-size:20px;font-weight:700;margin-bottom:12px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:14px}
+figure{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow)}
+figure img{display:block;width:100%;height:auto;aspect-ratio:16/9;object-fit:cover}
+figcaption{padding:10px 14px;font-size:13px;color:var(--ink-2)}
+table{width:100%;border-collapse:collapse;background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;font-size:14px}
+th,td{padding:10px 14px;text-align:left;border-top:1px solid var(--line);vertical-align:top}
+thead th{border-top:0;background:var(--surface-2);font-weight:600;color:var(--ink-2);font-size:13px}
+td.num{font-family:"IBM Plex Mono",monospace;white-space:nowrap}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:18px 20px;box-shadow:var(--shadow)}
+.card + .card{margin-top:12px}
+pre{background:var(--surface-2);border:1px solid var(--line);border-radius:10px;padding:14px 16px;overflow:auto;font-size:13px;line-height:1.5}
+ul{padding-left:20px;color:var(--ink-2)}
+li{margin:4px 0}
+li b{color:var(--ink);font-weight:600}
+.note{font-size:13px;color:var(--ink-3);margin-top:10px}
+footer{padding:40px 0 60px;font-size:13px;color:var(--ink-3)}
+footer a{color:var(--ink-2)}
+</style>
+</head>
+<body>
+<header class="wrap">
+  <p class="eyebrow">Blender · 프로시저럴 모델</p>
+  <h1>국회의사당 3D 모델</h1>
+  <p class="lead">여의도 국회의사당 본관을 Blender 파이썬 스크립트 <strong>한 파일</strong>로 지었습니다.
+    손으로 배치한 것은 없고, 실행하면 기단·대계단·24개 열주·처마·돔이 실제 치수대로 만들어집니다.
+    아래 모델은 마우스(터치)로 돌리고 확대할 수 있습니다.</p>
+</header>
+
+<main class="wrap">
+  <div class="viewer">
+    <model-viewer src="national_assembly.glb" alt="국회의사당 3D 모델"
+      camera-controls auto-rotate auto-rotate-delay="1500" rotation-per-second="18deg"
+      camera-target="0m 26m 0m" camera-orbit="-38deg 68deg 300m" field-of-view="32deg"
+      min-camera-orbit="auto 20deg 120m" max-camera-orbit="auto 88deg 700m"
+      environment-image="neutral" exposure="1.05" shadow-intensity="0" interaction-prompt="none"
+      loading="eager"></model-viewer>
+    <div class="bar">
+      <span><b>national_assembly.glb</b> · 메시 30개 · 1 unit = 1 m · Cycles 렌더는 아래에</span>
+      <div class="btns">
+        <a class="btn primary" href="national_assembly.blend" download>.blend 내려받기</a>
+        <a class="btn" href="national_assembly.glb" download>.glb</a>
+        <a class="btn" href="build_national_assembly.py" download>스크립트 .py</a>
+        <a class="btn" href="https://github.com/richroro/richroro.github.io/tree/main/national-assembly" target="_blank" rel="noopener">소스 보기</a>
+      </div>
+    </div>
+  </div>
+
+  <section>
+    <h2>렌더 (Cycles, 1920×1080)</h2>
+    <div class="grid">
+      <figure><img src="render_hero.png" alt="국회의사당 3/4 뷰 렌더" loading="lazy"><figcaption>정면 왼쪽에서 본 3/4 뷰. 열주 뒤 회랑과 처마 그림자, 돔 리브 24개.</figcaption></figure>
+      <figure><img src="render_aerial.png" alt="국회의사당 항공 뷰 렌더" loading="lazy"><figcaption>항공 뷰. 122×81 m 평면 위에 지름 64 m 돔이 얹힌 비율.</figcaption></figure>
+      <figure><img src="render_front.png" alt="국회의사당 정면 입면 렌더" loading="lazy"><figcaption>정면 입면(직교 투영). 전면 열주 8개, 기단 위 5개 층, 총 높이 70 m.</figcaption></figure>
+    </div>
+  </section>
+
+  <section>
+    <h2>치수 근거</h2>
+    <table>
+      <thead><tr><th>항목</th><th>값</th><th>모델에 반영한 방식</th></tr></thead>
+      <tbody>
+        <tr><td>본관 평면</td><td class="num">122 × 81 m</td><td>열주 중심선 기준. 외벽은 5.5 m 안쪽, 처마는 4 m 바깥.</td></tr>
+        <tr><td>열주</td><td class="num">24개 · 32.5 m</td><td>8각 화강석 기둥. 앞·뒤 8개씩(전면 8개 = 팔도), 좌·우 사이 4개씩 = 24절기. 위로 갈수록 살짝 가늘게.</td></tr>
+        <tr><td>돔</td><td class="num">밑지름 64 m</td><td>받침 원통 4 m 위에 높이 22 m 구면 캡. 청록색 동판 느낌의 재질, 리브 24개.</td></tr>
+        <tr><td>전체 높이</td><td class="num">70 m</td><td>기단 6 + 열주 32.5 + 처마·파라펫 5.5 + 받침 4 + 돔 22.</td></tr>
+        <tr><td>층수</td><td class="num">지상 6층</td><td>1층은 기단 안, 기단 위 5개 층 × 6.5 m. 층마다 화강석 띠와 창 띠.</td></tr>
+      </tbody>
+    </table>
+    <p class="note">창 간격·대계단 폭(46 m)·돔 리브·나무·분수 같은 요소는 사진을 보고 단순화한 값입니다. 실측치는 아니며, 스크립트 맨 위 상수를 바꿔 다시 실행하면 됩니다.</p>
+  </section>
+
+  <section>
+    <h2>직접 만들기</h2>
+    <div class="card">
+      <pre><code># Blender GUI: Scripting 탭에서 build_national_assembly.py 열고 ▶ 실행
+
+# 헤드리스
+blender -b -P build_national_assembly.py -- --out ./out --blend --glb --render
+
+# Blender 없이 (pip 의 bpy 휠, 4 코어 CPU 기준 렌더 3장에 몇 분)
+pip install bpy
+python build_national_assembly.py --out ./out --blend --glb --render</code></pre>
+      <ul>
+        <li><b>build_podium</b> 기단, 지상 1층 창 띠, 정면 대계단(단면을 X 방향으로 밀어낸 한 덩어리), 경사 난간벽</li>
+        <li><b>build_body</b> 유리 커튼월, 층마다 화강석 스팬드럴, 세로 멀리언, 정면 출입구(포털·청동문)</li>
+        <li><b>build_columns</b> 주초·8각 주신·주두 24개를 메시 하나로</li>
+        <li><b>build_roof</b> 처마 슬래브, 그림자 홈, 파라펫, 옥상 설비</li>
+        <li><b>build_dome</b> 받침 원통과 루버, 구면 캡 돔, 리브, 꼭대기 마감과 피뢰침</li>
+        <li><b>build_site</b> 잔디·광장·분수·가로수 (<code>--no-site</code> 로 생략)</li>
+        <li><b>build_lighting_and_cameras</b> 하늘 그라데이션 월드, 태양광, 카메라 3대</li>
+      </ul>
+    </div>
+  </section>
+</main>
+
+<footer class="wrap">
+  <a href="/">← Cadence 홈</a> · 국회의사당 본관(1975, 김정수 설계)을 참고한 학습용 모델입니다.
+</footer>
+</body>
+</html>
