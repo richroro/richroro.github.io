@@ -418,6 +418,7 @@
       <div class="row">
         <button class="btn ghost" id="btnErrHome">처음으로</button>
         <button class="btn primary" id="btnErrRetry">다시하기</button>
+        <button class="btn primary" id="btnErrReload" hidden>새로고침</button>
       </div>
     </div>
   </div>
@@ -702,6 +703,7 @@ var pops = [], sparks = [], trail = [], gusts = [];
 var buzzer = false;
 // 루프가 멈추지 않게 지키는 장치들의 기록 (페이지를 새로 열 때까지 누적)
 var errCount = 0, errTimes = [], wdHits = 0, nanCount = 0;
+var errRetried = false;  // 오류 시트의 다시하기·처음으로를 눌러서 온 판(시작 화면)인지
 var faultMode = null;    // 테스트가 일부러 예외를 내게 할 때만 쓴다
 var onBar = false;       // 이번 스텝에 공이 가로막에 닿았는지 (워치독용)
 
@@ -713,6 +715,8 @@ var aimId = null;
 // 공이 돌아오는 중에 미리 누른 손가락. 공이 준비되면 그대로 조준이 된다.
 var pendId = null, pendX = 0, pendY = 0;
 var readyPulse = 0;      // 미리 누른 손가락이 조준으로 바뀐 순간의 고리
+// 고리가 퍼지는 시간. 0.25초·두께 2·반투명 0.5로는 폰에서 거의 안 보였다.
+var READY_T = 0.4;
 
 /* ── 아이템 ───────────────────────────────────────────────
    켜 두면 '다음 슛 한 번'에 적용되고 던지는 순간 하나 쓴다.
@@ -830,7 +834,9 @@ function step() {
   // 시간 판정. 예전엔 0초가 되는 순간 무조건 실패였는데, 결승에서 마지막 골을 넣고
   // 다음 공까지 기다리는 0.5초 사이에 시간이 끝나면 목표를 다 채우고도 실패했다.
   // 목표를 먼저 보고, 날아가는 공은 끝까지 지켜본다(버저비터).
-  if (hasTime) {
+  // 판이 진행 중일 때만 본다. 끝난 판에서 스텝이 더 돌면(테스트의 H.step) 시간을 남기고
+  // 깬 결승이 0초에 클리어를 또 내서 보상을 두 번 줬다. timeUp 과 같은 이유다.
+  if (hasTime && state === "playing") {
     if (timeLeft > 0) {
       timeLeft -= FIXED;
       if (timeLeft <= 0) {
@@ -887,7 +893,11 @@ function step() {
         if (!def.endless) stage.ballsLeft++;
         stage.thrown = Math.max(0, stage.thrown - 1);
         shots = Math.max(0, shots - 1);
+        // 던질 때 쓴 아이템도 돌려주고 켜 둔 채로 둔다. 공만 돌려주면 '돌려드렸어요'라면서
+        // 아이템은 사라진다. nextBall 이 shotItem 을 지우니 먼저 잡아 둔다.
+        var back = shotItem;
         nextBall();
+        if (back) { inv[back] = (inv[back] || 0) + 1; saveInv(); armed = back; paintItems(); paintHint(); }
         paintBalls();
         toast("공이 이상하게 튀어서 하나 돌려드렸어요");
       } else {
@@ -1214,7 +1224,7 @@ function nextBall() {
   if (pendId !== null && canAim()) {
     aiming = true; aimId = pendId; pendId = null;
     aimX = curX = pendX; aimY = curY = pendY;
-    readyPulse = 0.25;
+    readyPulse = READY_T;
     courtEl.classList.add("aiming");
   }
 }
@@ -1275,11 +1285,14 @@ function onDown(e) {
   if (e.pointerType === "mouse" && e.button !== 0) return;
   // 이미 조준 중이면 두 번째 손가락은 무시한다. 예전엔 기준점을 그 손가락으로
   // 옮겨 버려서, 그 손가락을 떼는 순간 엉뚱한 힘으로 날아갔다.
-  if (aiming) return;
+  // 조준하던 그 포인터가 다시 눌렸다면 앞의 떼기를 놓친 것이다(창 밖에서 마우스를 뗌 등).
+  // 그걸 무시하면 새로 누른 건 먹히고, 뗄 때 예전 기준점에서 반대로 날아간다. 새로 누른 걸로 받는다.
+  if (aiming && e.pointerId !== aimId) return;
   if (!canAim()) {
     // 공이 돌아오는 중에 누른 손가락은 기억해 뒀다가 공이 준비되면 조준으로 바꾼다.
     // 안 그러면 조금 일찍 누른 사람은 손을 뗐다 다시 눌러야 한다.
-    if (state === "playing" && !anyVeilOpen() && (ball.live || deadTimer >= 0) && pendId === null) {
+    if (state === "playing" && !anyVeilOpen() && (ball.live || deadTimer >= 0) &&
+        (pendId === null || pendId === e.pointerId)) {
       pendId = e.pointerId; pendX = e.clientX; pendY = e.clientY;
       capture(e.pointerId);
     }
@@ -1586,9 +1599,9 @@ function drawBall() {
   }
   // 미리 누른 손가락이 조준으로 바뀐 순간: 이제부터 끌면 된다는 신호
   if (readyPulse > 0) {
-    var rk = readyPulse / 0.25;
-    ctx.strokeStyle = "rgba(49,130,246," + (0.5 * rk) + ")";
-    ctx.lineWidth = 2;
+    var rk = readyPulse / READY_T;
+    ctx.strokeStyle = "rgba(49,130,246," + (0.7 * rk) + ")";
+    ctx.lineWidth = 3;
     ctx.beginPath(); ctx.arc(x, y, R + 4 + 10 * (1 - rk), 0, Math.PI * 2); ctx.stroke();
   }
 
@@ -1682,7 +1695,10 @@ function drawPops() {
 }
 
 function render() {
-  if (faultMode === "render") { faultMode = null; throw new Error("hoop test fault"); }
+  if (faultMode === "render" || faultMode === "renderAlways") {
+    if (faultMode === "render") faultMode = null;
+    throw new Error("hoop test fault");
+  }
   if (!canvas.width) return;
   var s = canvas.width / FW;
   var sx = shake ? (Math.random() * 2 - 1) * shake : 0;
@@ -1967,6 +1983,7 @@ function openIntro(i, from) {
 function beginStage(def, idx) {
   closeAllVeils();
   dropAim();
+  errRetried = false;
   buzzer = false;
   readyPulse = 0;
   stage.def = def;
@@ -2200,6 +2217,7 @@ function doExit() {
   // 히스토리를 건드리지 않고 시작 화면으로 되돌린다
   closeAllVeils();
   dropAim();
+  errRetried = false;
   state = "ready";
   stage.def = null;
   score = 0; combo = 0; buzzer = false;
@@ -2221,11 +2239,19 @@ document.getElementById("btnExitNo").addEventListener("click", function () {
   if (state === "paused" && !anyVeilOpen()) resume();
 });
 document.getElementById("btnExitYes").addEventListener("click", doExit);
+// 오류 시트의 버튼으로 온 판(시작 화면)이라는 표시. 다음 beginStage·doExit 가 지운다.
+// 그래서 여기서는 이동한 '뒤에' 켠다.
 document.getElementById("btnErrRetry").addEventListener("click", function () {
   errTimes = [];
   if (stage.def) restartStage(); else doExit();
+  errRetried = true;
 });
-document.getElementById("btnErrHome").addEventListener("click", function () { errTimes = []; doExit(); });
+document.getElementById("btnErrHome").addEventListener("click", function () {
+  errTimes = [];
+  doExit();
+  errRetried = true;
+});
+document.getElementById("btnErrReload").addEventListener("click", function () { location.reload(); });
 
 /* ── 공유 ─────────────────────────────── */
 var SHARE_URL = "https://richroro.github.io/games/basketball/";
@@ -2294,21 +2320,32 @@ function loopError(e) {
     ctx.setLineDash([]);
   } catch (_) {}
   if (errTimes.length > 5) {
-    // 시작 화면에서 난 거면 다시 할 판이 없다. 같은 일을 하는 버튼 두 개를 두지 않는다.
-    var inStage = !!stage.def;
+    // 그리기가 망가지면 시트가 떠 있는 동안에도 매 프레임 여기로 온다. 시트는 한 번만 연다.
+    if (document.getElementById("vError").classList.contains("show")) return;
+    // 다시하기·처음으로가 통하는 건 물리가 그 판에서만 꼬였을 때다. 시작 화면에선 물리가
+    // 안 도니 그리기가 매 프레임 터지는 것이고, 다시하기·처음으로를 누르고 온 바로 그
+    // 자리에서 또 열렸다면 그 버튼으로는 안 고쳐진다. 둘 다 예전엔 시트 → 버튼 → 0.1초 뒤
+    // 같은 시트가 끝없이 돌았다. 이때는 새 문서로 다시 여는 새로고침을 권한다.
+    var reload = !stage.def || errRetried;
     state = "fail";
     dropAim();
     closeAllVeils();
-    document.getElementById("btnErrRetry").hidden = !inStage;
-    document.getElementById("errMsg").innerHTML = inStage
-      ? "게임을 멈췄어요.<br>이 판을 다시 하거나<br>처음으로 돌아갈 수 있어요."
-      : "게임을 멈췄어요.<br>처음으로 돌아가서<br>다시 시작해 주세요.";
+    document.getElementById("btnErrRetry").hidden = reload;
+    document.getElementById("btnErrReload").hidden = !reload;
+    document.getElementById("errMsg").innerHTML = reload
+      ? "게임을 멈췄어요.<br>새로고침하면 대부분 다시 돼요." +
+        (store.ok ? "<br>깬 스테이지와 별은 그대로 남아요." : "")
+      : "게임을 멈췄어요.<br>이 판을 다시 하거나<br>처음으로 돌아갈 수 있어요.";
     veil("vError", true);
     return;
   }
   // 날던 공은 상태를 믿을 수 없으니 이 슛을 끝낸다. 던진 공은 쓴 것으로 친다.
   if (state === "playing" && (ball.live || deadTimer >= 0)) {
+    var flying = ball.live && deadTimer < 0;
     try { afterShot(); } catch (_) {}
+    // 공중의 공이 말없이 없어지면 화면이 깨진 줄 안다. 판이 이어질 때만 알린다
+    // (공을 다 써서 끝났으면 실패 시트가 말한다).
+    if (flying && state === "playing") toast("공이 사라져서 다음 공을 드려요");
   }
 }
 
@@ -2348,7 +2385,7 @@ window.__hoop = {
   step: step,
   setTime: function (t) { timeLeft = t; },
   setFlyT: function (n) { ball.flyT = n; },
-  // 'step' / 'render' 는 한 번만, 'stepAlways' 는 끌 때까지 매 스텝 예외를 낸다
+  // 'step' / 'render' 는 한 번만, 'stepAlways' / 'renderAlways' 는 끌 때까지 매번 예외를 낸다
   fault: function (k) { faultMode = k || null; },
   starsAll: starsAll,
   consts: function () {
