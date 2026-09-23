@@ -8,6 +8,9 @@
 `--fit`과 `--tall`은 도구에 남아 있지만 그 결과물은 커밋하지 않는다.
 `0002`~`0006`은 순위표가 아니라 손글씨풍 카드뉴스라 구성이 다르다.
 
+`CONTACT.png`는 34장을 한 장에 모은 명세서다. 한 장씩 보면 안 보이는 것이
+거기서 보인다.
+
 | 폴더 | 제목 | 테마 |
 |---|---|---|
 | `0007-100m` | 매달 50만원 모으면 1억까지 몇 년? | paper |
@@ -48,12 +51,8 @@
 ## 다시 만들려면
 
 ```bash
-node cards/tools/infographic.mjs cards/tools/content/<슬러그>.json --quiet
-node cards/tools/scrollshorts.mjs cards/tools/content/<슬러그>.json \
-  --poster=cards/<슬러그>/poster-quiet.png --dur=20 --style=bright --out=shorts-quiet.mp4
-node cards/tools/upload.mjs cards/tools/content/<슬러그>.json
-python3 cards/tools/factcheck.py
-node cards/tools/contrast.mjs
+node cards/tools/make.mjs cards/tools/content/<슬러그>.json   # 포스터·영상·업로드 시트
+node cards/tools/check.mjs <슬러그>
 ```
 
 제목과 태그는 콘텐츠 JSON의 `youtube` 항목에 있다. 카드의 숫자를 고치면
@@ -61,3 +60,6 @@ node cards/tools/contrast.mjs
 
 설명에는 카드 하단 고지 네 줄이 그대로 들어간다. 출처와 계산 가정이
 영상 밖에도 남아야 하기 때문이다.
+
+전부 다시 만들 때는 `for f in cards/tools/content/0*.json; do node cards/tools/make.mjs "$f"; done`
+뒤에 `node cards/tools/contact.mjs`와 `node cards/tools/check.mjs`를 돌린다.

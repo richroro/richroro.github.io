@@ -111,7 +111,7 @@ node cards/tools/scrollshorts.mjs cards/tools/content/0008-apt.json --dur=30 --s
 
 양 끝에서 1.6초씩 멈췄다가 움직인다. 헤더와 하단 고지를 읽을 틈이다.
 
-## BGM 두 가지
+## BGM 세 가지
 
 ```bash
 python3 cards/tools/bgm.py out.wav 20 bright   # 경쾌한 정보 카드용
@@ -136,6 +136,33 @@ python3 cards/tools/bgm.py out.wav 45 ballad   # 잔잔한 카드용
 
 귀 대신 **스펙트럼 중심**으로 확인한다. 일반 팝이 1.5~3kHz인데, 손보기 전
 `bright`가 8.2kHz, `drive`가 6.5kHz였다. 지금은 둘 다 4kHz 근처다.
+
+### 주제마다 조성과 템포를 바꾼다
+
+`bgm.py`에 슬러그를 넘기면(`scrollshorts.mjs`가 자동으로 넘긴다) 그 주제의 조성과
+템포가 정해진다. 34개 영상이 똑같은 20초 루프를 쓰면 채널을 이어 보는 사람은
+같은 여덟 마디를 34번 듣는다.
+
+조합은 6개 조성 × 5개 템포로 30가지다. 처음엔 슬러그를 해시해서 골랐는데, 34개를
+30칸에 넣으니 0012와 0013이, 0026과 0027이 완전히 같은 조합을 받았다. **하필 붙어
+있는 주제끼리** 겹친 것이라, 겹침이 가장 티나는 자리에 겹쳤다.
+
+지금은 해시 대신 주제 번호에서 11칸씩 걸어간다. 11은 30과 서로소라 30가지를 다
+쓰고 나서야 다시 돌아오고, `11 % 5 == 1`이라 이웃한 주제는 템포가 반드시 다르다.
+
+```bash
+python3 cards/tools/bgm.py out.wav 20 bright 0031-lotto-tax
+#   variant 0031-lotto-tax: +2 semitones, tempo x0.94
+```
+
+### 음량은 -14 LUFS로 맞춘다
+
+유튜브는 -14 LUFS 근처로 맞춘다. 합성한 BGM은 -18.5 LUFS라 유튜브가 건드리지
+않고, 그래서 피드에서 앞뒤 영상보다 그냥 작게 들렸다.
+
+한 번에 거는 `loudnorm`은 동적 처리라 음악을 눌러버리고 트루피크도 -0.7dBFS까지
+올라갔다. 지금은 먼저 재서 그 값을 되먹이는 2패스에 `linear=true`를 써서 게인만
+한 번 건다. 결과는 -14.0 LUFS, 트루피크 -1.4dBFS, 다이내믹은 그대로다.
 
 ## 사진 넣기
 
@@ -327,6 +354,15 @@ node cards/tools/infographic.mjs cards/tools/content/0008-apt.json --quiet --the
 ! content is 226px taller than the frame and will be cut
 ```
 
+세로만이 아니라 **가로로 잘리는 것도** 경고한다. 행의 이름은 `nowrap`에 `flex:1`
+이라, 이름과 값을 합친 길이가 한 줄을 넘으면 이름이 소리 없이 잘린다. `nameClass`는
+이름의 글자 수만 보고 크기를 줄여서 옆의 값은 계산에 넣지 않는다. PNG만 봐서는
+잘렸는지 알 수 없어 렌더러가 직접 잰다.
+
+```
+! row "연봉 1억 5,000만원" is cut off by 12px - shorten it or the value beside it
+```
+
 `MEASURE=1`을 붙이면 머리·행·고지 블록별 높이를 찍어준다. 눈으로 줄이지 말고
 이걸 보고 줄인다.
 
@@ -344,6 +380,35 @@ node cards/tools/infographic.mjs cards/tools/content/0008-apt.json --quiet --the
 
 예외는 `0002`~`0006`이다. 순위표가 아니라 손글씨풍 카드뉴스라 12장짜리 PNG와
 자체 `shorts.mp4`를 갖는다.
+
+## 전체를 한 장으로 보기
+
+```bash
+node cards/tools/contact.mjs      # -> cards/CONTACT.png
+```
+
+34장을 격자로 붙인다. 한 장씩 열어볼 때는 안 보이는 것이 여기서 보인다.
+실제로 이걸 만들고 나서야 **테마가 셋이 아니라 둘이었다는 걸** 알았다. `paper`의
+빨강이 H5°, `press`의 빨강이 H3° — 2도 차이라 7px 막대에서는 같은 색이었다.
+`press`를 신문 잉크 남색(`#1d4e89`, 대비 8.39:1)으로 바꿔 빨강·초록·파랑 셋이
+되었다.
+
+## 한 번에 검사하기
+
+```bash
+node cards/tools/check.mjs          # 전부
+node cards/tools/check.mjs 0031     # 한 주제
+```
+
+아래를 다 본다. 전부 이 작업 중에 실제로 뭔가를 잡아낸 검사이고, 전부 손으로
+돌리고 있어서 가끔 안 돌렸다.
+
+- **영상이 지금 포스터와 같은 그림인가.** 영상 한 프레임과 PNG를 화소로 비교한다.
+  파일 시각으로는 알 수 없다. 포스터를 고친 뒤 옛 판으로 만든 영상이 멀쩡해 보이는
+  채로 폴더에 남아 있던 적이 세 번 있다(0033·0037·0039)
+- 폴더에 `poster-quiet.png`·`shorts-quiet.mp4`·`upload.md`만 있는가
+- 1080×1920인가, 오디오가 있는가, -14 LUFS ±1인가, 트루피크가 -1dBFS 아래인가
+- `factcheck.py`와 `contrast.mjs`
 
 ## 팩트체크
 

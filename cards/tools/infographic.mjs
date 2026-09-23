@@ -103,10 +103,13 @@ const THEMES = {
     bg: 'linear-gradient(180deg,#f7f5f0 0%,#f2efe8 100%)',
     card: '#fff', cardEdge: '1px solid #e4e0d6', cardShadow: 'none',
     ink: '#1b1a17', muted: '#6d6a62', faint: '#79756a',
-    accent: '#a82a24', accentSoft: 'rgba(168,42,36,.85)',
+    // Newspaper ink blue. It used to be #a82a24 - two degrees of hue from
+    // paper's red, which on a 7px bar is the same colour. A contact sheet of
+    // the whole set made that obvious in a way no single card could.
+    accent: '#1d4e89', accentSoft: 'rgba(29,78,137,.85)',
     slotBg: '#1b1a17', slotInk: '#f7f5f0',
     badgeBg: '#1b1a17', badgeInk: '#f7f5f0', badgeShadow: 'none',
-    rankBg: '#a82a24', rankInk: '#fff',
+    rankBg: '#1d4e89', rankInk: '#fff',
     pillBg: 'transparent', pillInk: '#1b1a17',
     mark: 'transparent', markOpacity: '0',
     noteBg: 'transparent', noteEdge: '1px solid #ddd8cc', rule: '#ddd8cc',
@@ -560,6 +563,21 @@ if (process.env.MEASURE) {
            `  close ${h('.close')}  brand ${h('.brand')}  body ${document.body.scrollHeight}` + detail;
   }));
 }
+// A row's name is nowrap with flex:1, so when name + value exceed the line the
+// name is clipped with no sign of it in the PNG. Height overflow was warned
+// about; width overflow was not, and nameClass only looks at the name's length.
+const clipped = await p.evaluate(() => [...document.querySelectorAll('.rows .row')]
+  .map((row) => {
+    const nm = row.querySelector('.nm');
+    if (!nm) return null;
+    const over = nm.scrollWidth - nm.clientWidth;
+    return over > 1 ? { name: nm.textContent, over } : null;
+  })
+  .filter(Boolean));
+for (const c of clipped) {
+  console.error(`  ! row "${c.name}" is cut off by ${c.over}px - shorten it or the value beside it`);
+}
+
 const docH = await p.evaluate(() => document.body.scrollHeight);
 const h = FIT || QUIET ? FIT_H : docH;
 if ((FIT || QUIET) && docH > FIT_H + 2) {

@@ -17,6 +17,7 @@ bright - major key, marimba and claps, syncopated. Light rather than urgent.
 import math
 import sys
 import wave
+import zlib
 
 import numpy as np
 
@@ -56,10 +57,45 @@ MELODY = [
 STEPS = {'C': 0, 'D': 2, 'E': 4, 'F': 5, 'G': 7, 'A': 9, 'B': 11}
 
 
+# Every topic used to get the identical 20-second loop, so a viewer going
+# through the channel heard the same eight bars 34 times. These two shift the
+# whole piece by topic: same writing, different key and tempo. Derived from the
+# slug, so a rebuild sounds the same as the build before it.
+TRANSPOSE = 0     # semitones
+TEMPO = 1.0       # multiplier on the style's BPM
+
+
+# intervals that keep the marimba in its good register, and tempos either side
+# of 124 BPM that still read as the same piece
+KEYS = (-4, -2, 0, 2, 3, 5)
+TEMPOS = (0.94, 0.97, 1.0, 1.03, 1.06)
+STEP = 11   # coprime with 30, and 11 % 5 == 1, so neighbours never share a tempo
+
+
+def variant(key):
+    """Pick a key and tempo for `key`, deterministically.
+
+    Hashing each slug on its own put 0012 and 0013 - and 0026 and 0027 - on the
+    identical key and tempo, which is exactly where it shows: back to back in
+    the feed. Walking the 30 combinations in steps of 11 from the topic's own
+    number instead means consecutive topics always differ, and all 30 are used
+    before any is used twice.
+    """
+    global TRANSPOSE, TEMPO
+    if not key:
+        return
+    head = key[:4]
+    n = int(head) if head.isdigit() else zlib.crc32(key.encode('utf-8'))
+    i = (n * STEP) % (len(KEYS) * len(TEMPOS))
+    TRANSPOSE = KEYS[i // len(TEMPOS)]
+    TEMPO = TEMPOS[i % len(TEMPOS)]
+    print(f'  variant {key}: {TRANSPOSE:+d} semitones, tempo x{TEMPO}', file=sys.stderr)
+
+
 def freq(name):
-    """'A4' -> 440.0"""
+    """'A4' -> 440.0, shifted by the current variant."""
     semitone = STEPS[name[0]] + (int(name[1:]) + 1) * 12
-    return 440.0 * 2 ** ((semitone - 69) / 12)
+    return 440.0 * 2 ** ((semitone - 69 + TRANSPOSE) / 12)
 
 
 _cache = {}
@@ -293,7 +329,7 @@ def bass(f0, dur=0.5, vel=1.0):
 
 
 def render_drive(seconds):
-    bpm = 104.0
+    bpm = 104.0 * TEMPO
     beat = 60 / bpm
     bar = beat * 4
     bars = max(4, int(math.ceil(seconds / bar)))
@@ -404,7 +440,7 @@ def bounce_bass(f0, dur=0.34, vel=1.0):
 
 
 def render_bright(seconds):
-    bpm = 124.0
+    bpm = 124.0 * TEMPO
     beat = 60 / bpm
     bar = beat * 4
     eighth = beat / 2
@@ -467,6 +503,7 @@ def main():
     out = sys.argv[1] if len(sys.argv) > 1 else 'bgm.wav'
     seconds = float(sys.argv[2]) if len(sys.argv) > 2 else 45.0
     style = sys.argv[3] if len(sys.argv) > 3 else 'ballad'
+    variant(sys.argv[4] if len(sys.argv) > 4 else '')
     audio = (render_bright(seconds) if style == 'bright'
              else render_drive(seconds) if style == 'drive'
              else render(seconds))
