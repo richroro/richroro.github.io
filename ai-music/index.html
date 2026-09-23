@@ -1202,11 +1202,18 @@ function compose(P) {
       const riseBars = Math.min(2, sec.bars);
       song.fx.push({ t: end - riseBars * bpb, d: riseBars * bpb, p: "riser", v: .42 * loud, tr: "fx" });
       song.fx.push({ t: end, d: 1, p: "impact", v: .75 * loud, tr: "fx" });
-      if (G.cut && sec.type === "P") cuts.push([end - 2, end]);
+      if (!sec.build) return;
+      song.fx.push({ t: end - 1, d: 1, p: "swell", v: .5 * loud, tr: "fx" });   // 후렴 첫 박으로 빨려 드는 리버스 심벌
+      if (G.cut || G.cutBeats) cuts.push([end - (G.cut ? 2 : G.cutBeats), end]);
     });
     if (cuts.length) {
       const inCut = t => cuts.some(([a, b]) => t >= a - 1e-6 && t < b - 1e-6);
       for (const key of ["chords_tr", "bass", "pad", "arp", "drums"]) song[key] = song[key].filter(n => !inCut(n.t));
+      // 컷 안으로 울려 들어오는 음도 끊는다 — 진짜 정적. 릴리스가 긴 패드는 3/4박 먼저 놓는다
+      for (const key of ["chords_tr", "bass", "pad", "arp"]) {
+        const early = key === "pad" && P.pad !== "supersaw" ? .75 : 0;
+        for (const n of song[key]) for (const [a] of cuts) if (n.t < a && n.t + n.d > a - early) n.d = Math.max(.1, a - early - n.t);
+      }
       // 끊기는 지점은 한 방으로 표시해 준다
       if (P.drums) for (const [a] of cuts) song.drums.push({ t: a, d: .1, p: "clap", v: .85, tr: "drum" });
     }
@@ -1255,17 +1262,33 @@ const DP = {
   waltz:    { kick:[1,0,0,0, 0,0,0,0, 0,0,0,0], hat:[0,0,0,0, .8,0,0,0, .8,0,0,0], snare:[0,0,0,0, .6,0,0,0, .5,0,0,0], soft:.6 },
   kpop:     { kick:[1,0,0,0, 0,0,.6,0, 1,0,0,0, 0,0,.45,0], snare:[0,0,0,0, 1,0,0,0, 0,0,0,0, 1,0,0,0],
               hat:[.9,.35,.6,.35, .9,.35,.6,.35, .9,.35,.6,.35, .9,.35,.6,.5],
-              ohat:[0,0,0,0, 0,0,0,0, 0,0,.35,0, 0,0,0,0], clap:1, hat16B:true, crashB:true },
+              ohat:[0,0,0,0, 0,0,0,0, 0,0,.35,0, 0,0,0,0], clap:1, hat16B:true, crashB:true,
+              // 섹션마다 바꿔 끼우는 부분 — 절: 스냅, 프리코러스: 하프타임, 후렴·드롭: 4온더플로어
+              sec: {
+                A: { kick:[1,0,0,0, 0,0,0,0, 0,0,1,0, 0,0,0,0], snare:null, snap:[0,0,0,0, 1,0,0,0, 0,0,0,0, 1,0,0,.3],
+                     hat:[.8,0,.55,0, .8,0,.55,0, .8,0,.55,0, .8,0,.55,.3], ohat:null },
+                P: { kick:[1,0,0,0, 0,0,0,0, 1,0,0,0, 0,0,0,0], snare:[0,0,0,0, 0,0,0,0, 1,0,0,0, 0,0,0,0],
+                     hat:[.9,0,.7,0, .9,0,.7,0, .9,0,.7,0, .9,0,.7,0], ohat:null },
+                B: { kick:[1,0,0,0, 1,0,0,0, 1,0,0,0, 1,0,0,0], ohat:[0,0,1,0, 0,0,1,0, 0,0,1,0, 0,0,1,0], hat16:[.75,.32,.55,.4] },
+                D: { kick:[1,0,0,0, 1,0,0,0, 1,0,0,0, 1,0,0,0], ohat:[0,0,1,0, 0,0,1,0, 0,0,1,0, 0,0,1,0],
+                     clap2:[0,0,0,0, 0,0,0,0, 0,0,0,0, 0,0,0,.6], shaker:[.7,.3,.5,.3, .7,.3,.5,.3, .7,.3,.5,.3, .7,.3,.5,.3] },
+                C: { kick:[1,0,0,0, 0,0,0,0, 0,0,.7,0, 0,0,0,0], snare:[0,0,0,0, 0,0,0,0, 1,0,0,0, 0,0,0,0], ohat:null,
+                     hat:[.9,.5,.9,.5, .9,.5,.9,.5, .9,.5,.9,.5, .9,.5,.9,.9] } } },
   kids:     { kick:[1,0,0,0, 0,0,0,0, 1,0,0,0, 0,0,0,0], snare:[0,0,0,0, 1,0,0,0, 0,0,0,0, 1,0,0,0], shaker:[.8,.3,.5,.3, .8,.3,.5,.3, .8,.3,.5,.3, .8,.3,.5,.3], soft:.75 }
 };
+// 브리지 앞 절반을 비워도 필로 드럼을 다시 데려올 수 있는 장르
+const DRUM_BREAK = ["kpop","pop","edm","citypop","kids","ballad","cinematic","rock","chip","hiphop","lofi"];
 function makeDrums(song, P) {
   const rand = P.rand, G = P.G, bpb = P.beats, steps = bpb * 4;
-  const pat = DP[G.drums]; if (!pat) return;
-  const soft = pat.soft || 1;
+  const base = DP[G.drums]; if (!base) return;
+  const soft = base.soft || 1;
+  const cutB = G.cut ? 2 : G.cutBeats || 0;                          // 후렴 직전에 비우는 박 수(5-8 과 같은 값)
   const add = (t, key, v) => song.drums.push({ t, d: .1, p: key, v: clamp(v * soft, .05, 1), tr: "drum" });
   const secs = song.sections;
   secs.forEach((sec, si) => {
     const next = secs[si + 1];
+    // 섹션별 패턴: sec 표가 있으면 기본 패턴 위에 덮어쓴다(없는 키는 기본값 그대로)
+    const sp = base.sec && base.sec[sec.type] ? { ...base, ...base.sec[sec.type] } : base;
     let level, light = false;
     if (sec.type === "intro") { const it = G.intro; level = it.includes("drums") ? .8 : it.includes("drums-light") ? .6 : 0; light = it.includes("drums-light"); }
     else if (sec.type === "A") level = .85; else if (sec.type === "B") level = 1; else if (sec.type === "C") level = .75;
@@ -1280,10 +1303,36 @@ function makeDrums(song, P) {
     }
     if (level === 0) return;
     const isB = sec.type === "B" || sec.type === "D";
+    // 마디별 에너지: build 스네어 롤, off 드럼 쉼(필만), light 킥·림·햇만, full 평소대로
+    const half = b => b < sec.bars / 2;
+    const modeOf = b => {
+      if (sec.build && b >= sec.bars - 2) return "build";
+      const v1 = sec.type === "A" && sec.nth === 1;
+      if (v1 && G.drums === "ballad") return "off";                           // 피아노·베이스만, 드럼은 후렴 앞 필로 들어온다
+      if (v1 && G.drums === "cinematic" && half(b)) return "off";             // 현악만 먼저
+      if (sec.type === "C" && half(b) && DRUM_BREAK.includes(G.drums)) return "off";   // 브리지 앞 절반은 비운다
+      if (v1 && half(b) && ["pop","edm","citypop","kids"].includes(G.drums)) return "light";
+      return "full";
+    };
     for (let b = 0; b < sec.bars; b++) {
       const barBeat = (sec.bar + b) * bpb;
+      const mode = modeOf(b);
+      if (mode === "build") {
+        // 후렴 앞 두 마디 빌드: 8분 → 16분 → 32분 스네어가 점점 세진다. 첫 마디만 4분 킥.
+        // 마지막 마디는 5-8 컷이 비우는 박 앞에서 멈추고, 크레셴도는 남는 길이에 맞춰 끝까지 올라간다
+        const last = b === sec.bars - 1, stop = last ? bpb - cutB : bpb, total = bpb + (bpb - cutB);
+        for (let x = 0; x < stop - 1e-6; ) {
+          const prog = ((last ? bpb : 0) + x) / total;
+          add(barBeat + x, "snare", .3 + .6 * prog);
+          if (!last && x % 1 === 0) add(barBeat + x, "kick", .95);
+          if (x % .5 === 0) add(barBeat + x, "hat", .25 + .3 * prog);
+          x += !last ? .5 : prog < .83 ? .25 : .125;
+        }
+        continue;
+      }
       const fill = next && next.type !== "outro" && b === sec.bars - 1 && !["waltz","bossa","ambient"].includes(G.drums) && rand.chance(.8);
-      const crash = (isB && b === 0) || (sec.type === "A" && b === 0 && si > 0 && pat.crashB);
+      if (mode === "off" && !fill) continue;
+      const crash = (isB && b === 0) || (sec.type === "A" && b === 0 && si > 0 && sp.crashB);
       for (let s = 0; s < steps; s++) {
         const t = barBeat + s / 4;
         const p = arr => arr && s < arr.length ? arr[s] : 0;
@@ -1294,39 +1343,58 @@ function makeDrums(song, P) {
           if (G.drums === "edm") { if (k >= 4) add(t, "snare", .5 + k * .07); else if (k % 2 === 0) add(t, "kick", 1); }
           else if (G.drums === "cinematic") { add(t, k < 4 ? "timp" : "boom", .5 + k * .06); }
           else if (G.drums === "jazz") { if (k % 2 === 0) add(t, "snare", .4 + k * .06); if (k === 6) add(t, "ride", .8); }
-          else if (G.drums === "lofi" || G.drums === "hiphop") { if (k < 6) play(pat.hat, "hat", .5); if (k === 6) add(t, "kick", .9); if (k === 4) add(t, "snare", .8); }
+          else if (G.drums === "lofi" || G.drums === "hiphop") { if (k < 6) play(sp.hat, "hat", .5); if (k === 6) add(t, "kick", .9); if (k === 4) add(t, "snare", .8); }
+          else if (G.drums === "kpop" || G.drums === "pop") {
+            // 요즘식 넘김: 킥이 빠지고 스네어·클랩 픽업, 마지막 '앤'에 오픈햇
+            if (k === 0) add(t, "kick", .9);
+            if (k === 3) add(t, "snare", .25);
+            if (k === 4) { add(t, "snare", .9); add(t, "clap", .7); }
+            if (k === 6) add(t, "ohat", .55);
+            if (k === 7) add(t, "snare", .45);
+          }
           else { const seq = ["snare","snare","snare","snare","tomH","tomH","tomL","tomL"]; if (k % 2 === 0 || k >= 4) add(t, seq[k], .45 + k * .06); }
           continue;
         }
+        if (mode === "off") continue;
         if (light) { // 인트로: 하이햇·오픈햇만
-          if (pat.hat16B && s % 2 === 0) add(t, "hat", .4); play(pat.ohat, "ohat", .5); continue;
+          if (sp.hat16B && s % 2 === 0) add(t, "hat", .4); play(sp.ohat, "ohat", .5); continue;
+        }
+        if (mode === "light") { // 1절 앞 절반: 킥 1·3, 림 2·4, 8분 햇(동요는 셰이커)
+          if (s % 8 === 0) add(t, "kick", .85);
+          if (s % 8 === 4) add(t, "rim", .6);
+          if (s % 2 === 0) add(t, sp.shaker ? "shaker" : "hat", s % 4 === 0 ? .45 : .3);
+          continue;
         }
         if (crash && s === 0) add(t, "crash", .9);
+        if (sec.final && s === 0 && b > 0 && b % 4 === 0) add(t, "crash", .7);   // 마지막 후렴: 네 마디마다 크래시
         // 킥
-        play(pat.kick, "kick", 1);
-        play(pat.boom, "boom", 1);
-        play(pat.timp, "timp", .8);
+        play(sp.kick, "kick", 1);
+        play(sp.boom, "boom", 1);
+        play(sp.timp, "timp", .8);
         // 스네어·클랩·림
-        const sn = pat.clapOnly ? null : pat.snare;
+        const sn = sp.clapOnly ? null : sp.snare;
         if (sn) {
           const q = p(sn); if (q) {
             if (q >= 1 || rand.chance(q * level)) {
-              const useRim = pat.rimVerse && !isB;
+              const useRim = sp.rimVerse && !isB;
               const key = useRim ? "rim" : "snare";
               add(t, key, q >= 1 ? .9 : .28);
-              if (pat.clap && q >= 1 && rand.chance(pat.clap)) add(t, "clap", .7);
+              if (sp.clap && q >= 1 && rand.chance(sp.clap)) add(t, "clap", .7);
             }
           }
         }
-        play(pat.clapOnly, "clap", .9);
-        play(pat.rim, "rim", .7);
-        if (isB && pat.msnare) play(pat.msnare, "snare", .5);
-        // 햇
-        if (isB && pat.hat16B) { if (G.drums === "edm") { if (s % 2 === 0) add(t, "hat", .35); } else add(t, "hat", s % 2 === 0 ? .55 : .3); }
-        else play(pat.hat, "hat", s % 4 === 0 ? .6 : .4);
-        play(pat.ohat, "ohat", .5);
-        play(pat.ride, "ride", s % 4 === 0 ? .8 : .55);
-        play(pat.shaker, "shaker", s % 4 === 0 ? .6 : .35);
+        play(sp.clapOnly, "clap", .9);
+        play(sp.snap, "snap", .8);
+        play(sp.clap2, "clap", .75);
+        play(sp.rim, "rim", .7);
+        if (isB && sp.msnare) play(sp.msnare, "snare", .5);
+        // 햇: hat16 이 있으면 16분에 강약 윤곽을 준다
+        if (isB && sp.hat16) add(t, "hat", .62 * sp.hat16[s % 4]);
+        else if (isB && sp.hat16B) { if (G.drums === "edm") { if (s % 2 === 0) add(t, "hat", .35); } else add(t, "hat", s % 2 === 0 ? .55 : .3); }
+        else play(sp.hat, "hat", s % 4 === 0 ? .6 : .4);
+        play(sp.ohat, "ohat", .5);
+        play(sp.ride, "ride", s % 4 === 0 ? .8 : .55);
+        play(sp.shaker, "shaker", s % 4 === 0 ? .6 : .35);
       }
     }
   });
@@ -1645,6 +1713,10 @@ const KIT = {
     return mk(.55, 2, c => { const b = biq("bp", 1250, 1.1), h = biq("hp", 3000, .7), offs = c ? [0, .0095, .0215, .031] : [0, .0115, .019, .0285];
       return t => { let e = 0; for (let k = 0; k < 4; k++) { const u = t - offs[k]; if (u >= 0) e += Math.exp(-u / (k < 3 ? .0038 : o.tail)); }
         const n = nz(); return (b(n) * 1.6 + h(n) * .45) * e; }; }); },
+  // 스냅: 2.4k 대역 노이즈 한 번 + 4ms 뒤 짧은 고역 틱. 손가락 튕기는 소리, L/R 따로
+  snap(D) { const { nz, biq, dec, mk } = D;
+    return mk(.12, 2, () => { const b = biq("bp", 2400, 2.5), h = biq("hp", 5500, .7), e1 = dec(.009), e2 = dec(.0045);
+      return t => b(nz()) * 3.2 * Math.min(1, t / .001) * e1() + (t >= .004 ? h(nz()) * .8 * e2() : 0); }); },
   // 햇: 금속 클러스터(BP→HP) + 약간의 노이즈, L/R 0.4% 디튠으로 폭
   hat(D, o) { const { nz, biq, dec, metal, mk } = D;
     return mk(o.dec * 5 + .02, 2, c => { const b = biq("bp", o.bp, 1.1), h = biq("hp", 7000, .7), h2 = biq("hp", 8000, .7), m = metal(c ? 1.004 : .996), e = dec(o.dec);
@@ -1771,6 +1843,7 @@ const DRUM = {
   // 스네어: 고스트(v<.5)는 살짝 느리게 = 조금 어둡게
   snare(g, out, t, v)  { g.chip ? DRUM_OSC.snare(g, out, t, v) : hit(g, out, "snare", t, v * .3, v < .5 ? .96 : 1); },
   clap(g, out, t, v)   { hit(g, out, "clap", t, v * .22); },
+  snap(g, out, t, v)   { hit(g, out, "snap", t, v * .28); },
   // 햇: 여린 16분은 짧고 어두운 hatS. 같은 스텝(휴먼라이즈 ±3.5ms)의 닫힌 햇은 열린 햇을 끊지 않고, 다음 스텝 햇이 끊는다(페달)
   hat(g, out, t, v) {
     if (g.chip) return DRUM_OSC.hat(g, out, t, v);
@@ -1797,6 +1870,13 @@ const FX = {
     o.connect(ol).connect(og).connect(out); o.start(t); o.stop(t + d + .3);
     n.onended = () => { try { a.disconnect(); og.disconnect(); } catch (e) {} };
   },
+  // 리버스 심벌: 고역 노이즈가 한 박 동안 부풀어 후렴 첫 박에서 끊긴다
+  swell(g, out, t, v, d) {
+    const n = noiseSrc(g), f = hp(g, 5000), a = g.ctx.createGain();
+    a.gain.setValueAtTime(1e-4, t); a.gain.exponentialRampToValueAtTime(Math.max(v * .35, .01), t + d);
+    a.gain.setTargetAtTime(1e-4, t + d, .01);
+    n.connect(f).connect(a).connect(out); n.start(t); n.stop(t + d + .08); n.onended = () => a.disconnect();
+  },
   impact(g, out, t, v) {
     const o = g.ctx.createOscillator(); o.type = "sine"; const amp = g.ctx.createGain();
     o.frequency.setValueAtTime(140, t); o.frequency.exponentialRampToValueAtTime(34, t + .5);
@@ -1805,7 +1885,7 @@ const FX = {
     drumNoise(g, out, t, v * .45, hp(g, 3000), 1.1, .004);
   }
 };
-const DRUM_MIDI = { kick:36, boom:35, timp:41, snare:38, rim:37, clap:39, hat:42, ohat:46, ride:51, crash:49, tomH:50, tomL:45, shaker:70 };
+const DRUM_MIDI = { kick:36, boom:35, timp:41, snare:38, rim:37, clap:39, hat:42, ohat:46, ride:51, crash:49, tomH:50, tomL:45, shaker:70, snap:37 };
 
 /* ---- 오디오 그래프: 마스터·잔향·딜레이·트랙 ---- */
 function makeIR(ctx, seconds, rand) {
@@ -2197,7 +2277,7 @@ function drawRoll(song, pos) {
   }
   ctx.globalAlpha = 1;
   // 드럼 레인
-  const laneTop = bottom + 5, laneH = 28, keys = ["crash","ohat","hat","ride","shaker","snare","clap","rim","tomH","tomL","kick","boom","timp"];
+  const laneTop = bottom + 5, laneH = 28, keys = ["crash","ohat","hat","ride","shaker","snare","clap","snap","rim","tomH","tomL","kick","boom","timp"];
   ctx.fillStyle = "rgba(0,0,0,.03)"; ctx.fillRect(0, laneTop, w, laneH);
   for (const e of song.events) { if (e.tr !== "drum") continue; const i = keys.indexOf(e.p); const y = laneTop + 2 + (i < 0 ? 12 : i / keys.length * (laneH - 6)); ctx.fillStyle = COLORS.drum; ctx.globalAlpha = .35 + e.v * .6; ctx.fillRect(px(e.beat), y, 3, 4); }
   ctx.globalAlpha = 1;
