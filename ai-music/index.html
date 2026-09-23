@@ -1276,6 +1276,11 @@ const DP = {
                      hat:[.9,.5,.9,.5, .9,.5,.9,.5, .9,.5,.9,.5, .9,.5,.9,.9] } } },
   kids:     { kick:[1,0,0,0, 0,0,0,0, 1,0,0,0, 0,0,0,0], snare:[0,0,0,0, 1,0,0,0, 0,0,0,0, 1,0,0,0], shaker:[.8,.3,.5,.3, .8,.3,.5,.3, .8,.3,.5,.3, .8,.3,.5,.3], soft:.75 }
 };
+// 고스트 스네어(e·a 자리의 여린 스네어) — 케이팝은 넣지 않는다
+DP.pop.ghost     = [0,0,0,0, 0,0,0,.35, 0,0,.25,0, 0,0,0,.3];
+DP.citypop.ghost = [0,0,.3,0, 0,0,0,.45, 0,.3,0,0, 0,0,0,.45];
+DP.hiphop.ghost  = [0,0,0,0, 0,0,0,.3, 0,0,0,0, 0,.35,0,0];
+DP.lofi.ghost    = [0,0,0,0, 0,0,0,.3, 0,0,.25,0, 0,0,0,.35];
 // 브리지 앞 절반을 비워도 필로 드럼을 다시 데려올 수 있는 장르
 const DRUM_BREAK = ["kpop","pop","edm","citypop","kids","ballad","cinematic","rock","chip","hiphop","lofi"];
 function makeDrums(song, P) {
@@ -1303,6 +1308,9 @@ function makeDrums(song, P) {
     }
     if (level === 0) return;
     const isB = sec.type === "B" || sec.type === "D";
+    // 섹션 루프 기억장치와 16분 강약 윤곽(정박 > 뒷박 > e·a). 드문 칸일수록 여리게 = 고스트처럼
+    const memo = new Map(), LOOP = 2, ACC = [1, .5, .76, .58], TIME = ["hat", "shaker", "ride"];
+    const vel = (key, s, q, v) => v * (TIME.includes(key) ? ACC[s % 4] : 1) * (q >= 1 ? 1 : .5 + .5 * q);
     // 마디별 에너지: build 스네어 롤, off 드럼 쉼(필만), light 킥·림·햇만, full 평소대로
     const half = b => b < sec.bars / 2;
     const modeOf = b => {
@@ -1336,7 +1344,17 @@ function makeDrums(song, P) {
       for (let s = 0; s < steps; s++) {
         const t = barBeat + s / 4;
         const p = arr => arr && s < arr.length ? arr[s] : 0;
-        const play = (arr, key, v) => { const q = p(arr); if (!q) return false; if (q >= 1 || rand.chance(q * level)) { add(t, key, v * (q >= 1 ? 1 : .8)); return true; } return false; };
+        // 확률 칸은 섹션마다 한 번만 굴려 두 마디 루프로 되풀이한다. 네 번째 마디 마지막 박만 새로 굴려 넘김을 만든다.
+        // 박을 세는 햇·셰이커·라이드(.7 이상)는 빠지지 않는다 — 얼어붙은 빈칸은 두 마디마다 실수처럼 들린다. 재즈 스네어 컴핑은 매번 즉흥.
+        const on = (key, q) => {
+          if (q >= 1 || (TIME.includes(key) && q >= .7)) return true;
+          const live = G.drums === "jazz" && key === "snare";
+          const fresh = live || (b % 4 === 3 && s >= steps - 4);
+          const k = key + (b % LOOP) + ":" + s;
+          if (!fresh && memo.has(k)) return memo.get(k);
+          const r = rand.chance(q * level); if (!fresh) memo.set(k, r); return r;
+        };
+        const play = (arr, key, v) => { const q = p(arr); if (!q || !on(key, q)) return false; add(t, key, vel(key, s, q, v)); return true; };
         if (fill && s >= steps - 8) {
           // 필: 스네어·탐으로 올라간다
           const k = s - (steps - 8);
@@ -1374,15 +1392,15 @@ function makeDrums(song, P) {
         // 스네어·클랩·림
         const sn = sp.clapOnly ? null : sp.snare;
         if (sn) {
-          const q = p(sn); if (q) {
-            if (q >= 1 || rand.chance(q * level)) {
-              const useRim = sp.rimVerse && !isB;
-              const key = useRim ? "rim" : "snare";
-              add(t, key, q >= 1 ? .9 : .28);
-              if (sp.clap && q >= 1 && rand.chance(sp.clap)) add(t, "clap", .7);
-            }
+          const q = p(sn); if (q && on("snare", q)) {
+            const useRim = sp.rimVerse && !isB;
+            const key = useRim ? "rim" : "snare";
+            add(t, key, q >= 1 ? .9 : .28);
+            if (sp.clap && q >= 1 && on("clap+", sp.clap)) add(t, "clap", .7);
           }
         }
+        // 고스트 스네어: 따로 기억해서 본 스네어와 겹치지 않는다(재즈의 ghost:true 는 표가 아니라 0)
+        { const q = p(sp.ghost); if (q && on("ghost", q)) add(t, "snare", vel("snare", s, q, .22)); }
         play(sp.clapOnly, "clap", .9);
         play(sp.snap, "snap", .8);
         play(sp.clap2, "clap", .75);
@@ -1390,11 +1408,11 @@ function makeDrums(song, P) {
         if (isB && sp.msnare) play(sp.msnare, "snare", .5);
         // 햇: hat16 이 있으면 16분에 강약 윤곽을 준다
         if (isB && sp.hat16) add(t, "hat", .62 * sp.hat16[s % 4]);
-        else if (isB && sp.hat16B) { if (G.drums === "edm") { if (s % 2 === 0) add(t, "hat", .35); } else add(t, "hat", s % 2 === 0 ? .55 : .3); }
-        else play(sp.hat, "hat", s % 4 === 0 ? .6 : .4);
+        else if (isB && sp.hat16B) { if (G.drums === "edm") { if (s % 2 === 0) add(t, "hat", .35); } else add(t, "hat", .6 * ACC[s % 4]); }
+        else play(sp.hat, "hat", .6);   // 강약은 ACC 가 준다
         play(sp.ohat, "ohat", .5);
-        play(sp.ride, "ride", s % 4 === 0 ? .8 : .55);
-        play(sp.shaker, "shaker", s % 4 === 0 ? .6 : .35);
+        play(sp.ride, "ride", .8);
+        play(sp.shaker, "shaker", .6);
       }
     }
   });
@@ -1813,7 +1831,7 @@ const DRUM_OSC = {
     o.connect(amp).connect(out); o.start(t); o.stop(t + .08); o.onended = () => amp.disconnect();
   },
   clap(g, out, t, v) { for (let i = 0; i < 3; i++) drumNoise(g, out, t + i * .011, v * .45, bp(g, 1300, 1.2), i === 2 ? .2 : .03); },
-  hat(g, out, t, v) { drumNoise(g, out, t, v * (g.chip ? .25 : .32), hp(g, 7500), g.chip ? .04 : .05); },
+  hat(g, out, t, v) { drumNoise(g, out, t, v * (g.chip ? .25 : .32), hp(g, 7500), g.chip ? .03 + .035 * v : .05); },   // 칩튠 햇: 센 박은 조금 더 울린다
   ohat(g, out, t, v) { drumNoise(g, out, t, v * .3, hp(g, 6500), .32); },
   ride(g, out, t, v) {
     drumNoise(g, out, t, v * .22, bp(g, 6000, .6), .5);
