@@ -97,9 +97,11 @@
   /* 자리가 모자라면 점수 칩만 줄어든다 */
   .chip.score{margin-left:auto;background:transparent;box-shadow:none;padding-right:0;
     flex:0 1 auto;min-width:0;overflow:hidden}
-  /* 375px 미만(360·320 폰)은 글자 이름을 빼고 아이콘과 숫자만. 글자는 DOM 에 남아 화면 읽기는 그대로 */
+  /* 375px 미만(360·320 폰)은 목표 칩의 이름을 빼고 아이콘과 숫자만. 글자는 DOM 에 남아 화면 읽기는 그대로.
+     점수 칩은 아이콘이 없어서 이름까지 빼면 맨숫자만 남아 바로 아래 '남은 공 N'의 개수처럼 읽힌다.
+     타임어택에선 이게 화면의 유일한 숫자다. 이름을 남겨도 320px 결승(칩 3개)에서 안 잘린다(79/79px) */
   @media (max-width:374px){
-    .chip .lab{display:none}
+    .chip:not(.score) .lab{display:none}
     .chip{padding:6px 8px;gap:4px}
     .status{gap:5px}
   }
@@ -1203,7 +1205,7 @@ function made() {
 
   var tag = ball.gold ? "황금 공 ×3" : (shotItem === "fire" ? "불공 ×2" : "");
   pushPop({ x: hoop.x, y: hoop.y + 84, life: 0.95, txt: "+" + pts,
-            sub: buzzer ? "버저비터!" : (tag || (swish ? "스윔!" : (bonus ? "연속 " + combo : ""))),
+            sub: buzzer ? "버저비터!" : (tag || (swish ? "스윔!" : (bonus ? combo + "연속!" : ""))),
             swish: swish || mult > 1 || buzzer });
   for (var i = 0; i < (swish ? 16 : 10); i++) {
     // 인자는 앞에서부터 계산되니 난수를 뽑는 순서(x, y, vx, vy, life)는 예전 그대로다
@@ -1784,8 +1786,9 @@ function drawPops() {
   ctx.globalAlpha = 1;
 }
 
-// 연속 골 배지. 코트 위 가운데 띠(y 18~42)는 비어 있다(바람 화살표는 x 26~40·380~394).
-// 연속을 그리는 건 여기 한 곳뿐이다. 나중에 연속 단계별로 색을 바꿀 때도 여기만 고친다.
+// 연속 골 배지. 코트 위 가운데 띠(y 18~42)엔 소품이 없다(바람 화살표는 x 26~40·380~394). 공은 이 띠를
+// 지나가므로 render 는 배지를 공·조준 점선보다 먼저 그린다. 연속을 그리는 건 여기 한 곳뿐이다. 나중에
+// 연속 단계별로 색을 바꿀 때도 여기만 고친다.
 function drawCombo() {
   var fs = fontPx(14), h = fs + 12;
   var txt = "🔥 " + combo + "연속";
@@ -1827,11 +1830,13 @@ function render() {
   drawHoop();
   drawFrost();
   if (state !== "ready") {
+    // 연속 배지는 공·조준 점선보다 먼저 그린다. 위에 그렸더니 높은 포물선 꼭대기(가로막 넘기는 슛)에서
+    // 공이 배지 밑으로 0.1~0.2초 사라졌다(넣은 슛 7개 중 하나꼴). 득점 글자는 골대 아래라 배지와 안 겹친다
+    if (stage.def && combo >= 2) drawCombo();
     drawAim();
     drawTrail();
     drawBall();
     drawPops();
-    if (stage.def && combo >= 2) drawCombo();
   }
 }
 
@@ -1860,21 +1865,20 @@ function chip(icon, label, now, need, cls) {
 
 // 칩은 매번 새로 만든다. 값이 바뀐 칩만 .pop 으로 한 번 튀긴다(바뀐 게 없이 다시 그리면 안 튄다).
 // chipPrev 는 beginStage 가 비운다. 안 비우면 새 판의 첫 칠에서 모든 칩이 튄다.
+// 목표 칩은 '보이는 숫자'로 비교한다. 3/3 을 채운 뒤 더 넣어도 칩은 3/3 그대로라 튀면 안 된다.
 function paintGoals() {
   if (!stage.def) { goalChips.innerHTML = ""; chipPrev = {}; return; }
   var g = stage.def.goal;
-  var now = { makes: stage.made, swish: stage.swish, coins: stage.coins, score: score };
+  var now = { makes: Math.min(stage.made, g.makes || 0), swish: Math.min(stage.swish, g.swish || 0),
+              coins: Math.min(stage.coins, g.coins || 0), score: score };
   function add(key, el) {
     if (chipPrev[key] !== undefined && chipPrev[key] !== now[key]) el.classList.add("pop");
     goalChips.appendChild(el);
   }
   goalChips.innerHTML = "";
-  if (g.makes) add("makes", chip("🏀", "골", Math.min(stage.made, g.makes), g.makes,
-                                  stage.made >= g.makes ? "done" : ""));
-  if (g.swish) add("swish", chip("✨", "스윔", Math.min(stage.swish, g.swish), g.swish,
-                                  stage.swish >= g.swish ? "done" : ""));
-  if (g.coins) add("coins", chip("🪙", "동전", Math.min(stage.coins, g.coins), g.coins,
-                                  stage.coins >= g.coins ? "done" : ""));
+  if (g.makes) add("makes", chip("🏀", "골", now.makes, g.makes, stage.made >= g.makes ? "done" : ""));
+  if (g.swish) add("swish", chip("✨", "스윔", now.swish, g.swish, stage.swish >= g.swish ? "done" : ""));
+  if (g.coins) add("coins", chip("🪙", "동전", now.coins, g.coins, stage.coins >= g.coins ? "done" : ""));
   add("score", chip("", "점수", comma(score), 0, "score"));
   chipPrev = now;
 }
@@ -1972,17 +1976,43 @@ function paintItems() {
   });
 }
 
+function armedHint(k) { var it = ITEMS[k]; return it.icon + " " + it.name + " 켜짐 · " + it.desc; }
+
 function paintHint() {
   if (!stage.def) return;
   if (armed) {
-    var it = ITEMS[armed];
-    hint.textContent = it.icon + " " + it.name + " 켜짐 · " + it.desc;
+    hint.textContent = armedHint(armed);
     hint.classList.add("armed");
   } else {
     hint.textContent = stage.def.hint;
     hint.classList.remove("armed");
   }
 }
+
+// 힌트 줄 높이는 이 판에서 뜰 수 있는 문구(판 힌트 + 켤 수 있는 아이템 4종) 중 가장 긴 것에 맞춰 둔다.
+// 아이템을 켜면 힌트가 '🧲 자석 켜짐 · …'으로 바뀌는데, 320·360px 폰에선 이때 한 줄↔두 줄이 바뀌어
+// 조준하는 동안만 코트가 줄었다 늘었다(360px 바람 판 266→275px, 320px 자석 231→221px). 같은 길이를
+// 끌어도 힘이 3~5% 달랐다. 줄이 바뀌는 폭은 글꼴마다 달라서 CSS 로 폭을 정해 두지 않고 실제로 재 본다.
+// 판과 힌트 폭이 그대로면 다시 안 잰다(창 크기가 바뀔 때마다 불려도 한 번만 잰다).
+var hintFor = null, hintFitW = -1;
+function fitHint() {
+  if (!stage.def) { hintFor = null; hint.style.minHeight = ""; return; }
+  var w = hint.clientWidth;
+  if (hintFor === stage.def && hintFitW === w) return;
+  var keep = hint.textContent, h = 0;
+  hint.style.minHeight = "";
+  [stage.def.hint].concat(ITEM_KEYS.filter(function (k) { return k !== "plus"; }).map(armedHint))
+    .forEach(function (t) {
+      hint.textContent = t;
+      // 소수 px 로 잰 높이를 올림해 둬야 가장 긴 문구도 이 높이를 넘지 않는다(넘으면 코트가 1px 씩 흔들린다)
+      h = Math.max(h, Math.ceil(hint.getBoundingClientRect().height));
+    });
+  hint.textContent = keep;
+  hint.style.minHeight = h + "px";
+  hintFor = stage.def; hintFitW = w;
+}
+// 창 크기 이벤트는 ResizeObserver 보다 먼저 돈다. 여기서 힌트 줄을 잡아 두면 코트는 바뀐 크기로 한 번만 다시 잡힌다
+window.addEventListener("resize", fitHint);
 
 function useItem(k) {
   tapped = true;
@@ -2156,6 +2186,7 @@ function beginStage(def, idx) {
   paintTimer();
   paintItems();
   paintHint();
+  fitHint();
   // 아이템을 처음 쥔 사람에게 한 번만 알려 준다. 그사이 다른 알림(샀어요,
   // 공이 돌아오면…)이 떠 있으면 덮어쓰지 않고 다음 판으로 미룬다.
   if (store.get("itemTip", "0") !== "1" && ITEM_KEYS.some(function (k) { return inv[k] > 0; })) {
@@ -2371,6 +2402,7 @@ function doExit() {
   stName.textContent = "스테이지를 골라 시작하세요";
   hint.textContent = "골대 쪽으로 스와이프하면 공이 날아가요";
   hint.classList.remove("armed");
+  fitHint();
   paintGoals(); paintBalls(); paintTimer(); paintItems();
   paintStages();
   veil("vStart", true);
