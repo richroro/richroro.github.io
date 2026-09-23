@@ -724,6 +724,17 @@ const HOOK3 = [
 // 드롭(포스트코러스)은 한 마디짜리 짧은 리프를 되풀이한다 — 가사 없이 귀에 박히는 자리
 const DROP4 = ["x-x-x---x-x-....", "x--x--x-x-------", "x-x-..x-x-x-....", "..x-x-x-x---....", "x-x-x-x---x-...."];
 const DROP3 = ["x-x-x-----..", "x---x---....", "..x-x-x-...."];
+// 후크 장르(4/4) 후렴 전용: 한 마디 세포를 두 번 — 둘째 마디는 앞을 되풀이하고 끝만 바꾼다.
+// 16분 당김음(.x / 마디 넘는 붙임줄)으로 밀고, 마디마다 숨 쉴 자리를 남긴다(2마디에 9~10음).
+// 예전엔 신나는 곡이면 후렴이 '8비트·록' 표(8분음표 13개 연타)로 가서 쉴 틈이 없었다.
+const HOOKB4 = [
+  "..x-x-x---x-......x-x-x---x-x---",
+  "x-x-x--x--x-....x-x-x--x--x-----",
+  "x--x--x-x-x-....x--x--x-x-------",
+  "x-x-x-..x-x-x-x---x-x---........",   // 마디 끝 음이 다음 마디로 붙는다(밀어붙이기)
+  ".x-x-x--x-x-.....x-x-x--x-------",   // 1박 뒤 16분에서 들어간다
+  "x-x-..x-x-x-....x-x-..x-x-------"
+];
 
 // "x-x-.." 문자열 → [{bar,pos,len}]
 function parseHook(str, tpb) {
@@ -765,6 +776,18 @@ function compose(P) {
     s.build = !!(nx && nx.type === "B" &&
       ((G.cut && (s.type === "P" || s.type === "C")) || (G.drums === "edm" && s.type !== "B" && s.type !== "intro")));
   });
+
+  /* 멜로디 음역의 기준 높이 — 조와 상관없이 MIDI 로 정한다.
+     leadRange 가운데를 다장조로 읽은 높이(kpop [0,14] → 72 = C5)가 기준이다. 예전엔 도 단위라
+     키에 따라 후렴이 11반음까지 떠서 바장조 K팝 후렴이 F6~A6(벨소리)까지 올라갔다.
+     화성 쪽(보이싱 천장)도 이 값을 쓰므로 5-2 앞에 둔다. */
+  const degNear = midi => {                 // 이 키에서 midi 에 가장 가까운 스케일 도
+    let best = 0;
+    for (let d = -10; d <= 30; d++) if (Math.abs(degToMidi(P, d) - midi) < Math.abs(degToMidi(P, best) - midi)) best = d;
+    return best;
+  };
+  const midR = Math.round((G.leadRange[0] + G.leadRange[1]) / 2);
+  const midC = 60 + SCALES.major[mod(midR, 7)] + 12 * Math.floor(midR / 7);
 
   /* ---- 5-2. 화성 ---- */
   const progCache = {};
@@ -854,17 +877,38 @@ function compose(P) {
     return deg;
   };
   const fit = (deg, lo, hi) => { while (deg < lo) deg += 7; while (deg > hi) deg -= 7; return deg; };
+  // snap 이 음역 밖(최대 3도)으로 밀어내면 창 안의 가장 가까운 코드음으로 되돌린다.
+  // 창을 좁힌 뒤로 후렴 꼭대기가 이것 때문에 한 음씩 삐져나왔다. 난수 소비는 snap 과 같다.
+  const snapIn = (deg, chord, lo, hi) => {
+    const s = snap(deg, chord);
+    if (s >= lo && s <= hi) return s;
+    const cls = chord.chord.classes;
+    for (let k = 1; k <= 6; k++) for (const c of s > hi ? [s - k, s + k] : [s + k, s - k])
+      if (c >= lo && c <= hi && cls.includes(mod(c, 7)) && allowed(c)) return c;
+    return fit(s, lo, hi);
+  };
 
-  // 섹션별 성격: 음역 오프셋, 음역 안 위치, 세기, 밀도 가감
+  /* 섹션별 성격: m = 기준 높이(midC)에서 반음 오프셋, dn/up = 가운데에서 아래·위로 도 몇 개,
+     세기, 밀도 가감. 절은 4도쯤 아래, 프리코러스는 그보다 조금 위에서 한 도씩 올라가고,
+     후렴은 단3도 위. 창을 8~9도로 좁혀서 한 섹션 안에서 멜로디가 계단처럼 기어오르지 않는다. */
   const SECP = {
-    A: { lo:0, hi:-2, c:.30, vel:.70, dens:0 },
-    P: { lo:1, hi:0,  c:.48, vel:.78, dens:0, shape:"rise", open:true, rise:true },
-    B: { lo:3, hi:1,  c:.68, vel:.94, dens:1 },
-    D: { lo:3, hi:1,  c:.72, vel:.88, dens:0, riff:true },
-    C: { lo:0, hi:0,  c:.45, vel:.66, dens:-1 }
+    A: { m:-5, dn:4, up:4, vel:.70, dens:0 },
+    P: { m:-3, dn:3, up:4, vel:.78, dens:0, shape:"rise", open:true, rise:true },
+    B: { m: 3, dn:4, up:4, vel:.94, dens:1 },
+    D: { m: 2, dn:3, up:3, vel:.88, dens:0, riff:true },
+    C: { m:-2, dn:4, up:4, vel:.66, dens:-1 }
   };
   const makeRhythm = density => parseHook(rand.pick(hooks[clamp(density, 0, 3)]), tpb);
   const makeRiff = () => parseHook(rand.pick(riffs), tpb);
+  // 섹션 역할에 맞춘 리듬. 후크 장르(4/4)만: 후렴은 한 마디 세포 전용표, 절은 후렴보다 성기게,
+  // 프리코러스는 한 단계 길게(단 0단계는 플럭 리드가 사라지므로 막는다). 왈츠·재즈 등은 그대로.
+  const rhythmFor = (type, dens) => {
+    if (!G.hook || bpb !== 4) return makeRhythm(dens);
+    if (type === "B") return parseHook(rand.pick(HOOKB4), tpb);
+    if (type === "A") return makeRhythm(Math.min(dens, 2));
+    if (type === "P") return makeRhythm(clamp(dens - 1, 1, 2));
+    return makeRhythm(dens);
+  };
 
   let lastDeg = null;   // 직전 음(구절을 넘어서도 이어진다)
   function assignPitches(rhythm, startBar, lo, hi, center, opts) {
@@ -902,8 +946,8 @@ function compose(P) {
         if (last && opts.open) w *= (mod(d, 7) === 4 ? 4 : mod(d, 7) === 6 ? 2 : mod(d, 7) === 1 ? 1.5 : .4);
         cands.push(d); ws.push(w);
       }
-      let d = cands.length ? rand.weighted(cands, ws) : snap(fit(cur, lo, hi), ch);
-      if (last && opts.resolve && mod(d, 7) !== 0 && mod(d, 7) !== 2) d = snap(d, ch);
+      let d = cands.length ? rand.weighted(cands, ws) : snapIn(fit(cur, lo, hi), ch, lo, hi);
+      if (last && opts.resolve && mod(d, 7) !== 0 && mod(d, 7) !== 2) d = snapIn(d, ch, lo, hi);
       lastIv = d - cur; h2 = h1; h1 = d; cur = d; lastDeg = d; if (anchor == null) anchor = d;
       notes.push({ bar: r.bar, pos: r.pos, len: r.len, deg: d, strong });
     });
@@ -914,12 +958,13 @@ function compose(P) {
     opts = opts || {};
     const out = [];
     let transpose = tr0, oct = 0;
-    if (!opts.exact && lastDeg != null && motif.length) {
-      // 직전 음에 가장 가까운 옥타브를 고른다. 예전엔 동기가 음역을 꽉 채우면
-      // 보정이 통째로 막혀서 구절 시작마다 19반음씩 튀었다.
-      const d0 = motif[0].deg + transpose;
-      let bestGap = Math.abs(d0 - lastDeg);
-      for (const o of [-7, 7]) { const gap = Math.abs(d0 + o - lastDeg); if (gap < bestGap) { bestGap = gap; oct = o; } }
+    // 옥타브는 섹션의 제자리(home)에 동기 평균이 가장 가까운 쪽으로 고른다.
+    // 예전엔 직전 음(lastDeg)을 따라가서 구절마다 조금씩 올라가는 계단이 생겼다.
+    const ref = opts.home != null ? opts.home : lastDeg;
+    if (!opts.exact && ref != null && motif.length) {
+      const mean = motif.reduce((s, n) => s + n.deg, 0) / motif.length + transpose;
+      let bestGap = Math.abs(mean - ref);
+      for (const o of [-7, 7]) { const gap = Math.abs(mean + o - ref); if (gap < bestGap) { bestGap = gap; oct = o; } }
     }
     // 음역을 넘으면 낱음만 옥타브로 튀어(fit) 12반음 도약이 생긴다. 구절째로 끌어당긴다.
     if (motif.length) {
@@ -931,7 +976,7 @@ function compose(P) {
       const beat = (startBar + n.bar) * bpb + n.pos / 4;
       const ch = chordAt(beat);
       let d = fit(n.deg + transpose + oct, lo, hi);
-      if (n.strong || transpose !== 0) d = n.strong ? snap(d, ch) : (allowed(d) ? d : snap(d, ch));
+      if (n.strong || transpose !== 0) d = n.strong ? snapIn(d, ch, lo, hi) : (allowed(d) ? d : snapIn(d, ch, lo, hi));
       lastDeg = d;
       const last = i === motif.length - 1;
       if (last && (opts.resolve || opts.open)) {
@@ -960,11 +1005,13 @@ function compose(P) {
     }
   }
   const motifs = {};
-  const pickTranspose = (firstDeg, opts) => {
-    const c = (opts || [1, -1, 2, -2, 3]).slice();
-    if (lastDeg == null) return rand.pick(c);
-    c.sort((a, b) => Math.abs(firstDeg + a - lastDeg) - Math.abs(firstDeg + b - lastDeg));
-    return rand.pick(c.slice(0, 2));
+  // 동기를 옮겨 부를 때도 제자리에서 2.5도 안쪽으로만 옮긴다(직전 음을 쫓아 올라가지 않게).
+  // 후보가 없어도 난수는 한 번 뽑는다 — 뒤따르는 리듬 선택이 흔들리지 않게.
+  const pickTranspose = (motif, home, opts) => {
+    const mean = motif.reduce((s, n) => s + n.deg, 0) / motif.length;
+    const c = (opts || [1, -1, 2, -2]).filter(a => Math.abs(mean + a - home) <= 2.5);
+    const r = rand.f();
+    return c.length ? c[Math.floor(r * c.length)] : 0;
   };
   const legato = G.chip ? .75 : ["piano","epiano","pluck","xylophone","bell","kpluck"].includes(P.lead) ? .95 : .92;
   for (const sec of song.sections) {
@@ -986,25 +1033,29 @@ function compose(P) {
     }
     const sp = SECP[type] || SECP.A;
     const dens = clamp(G.density + sp.dens + (P.en > .5 ? 1 : 0) - (P.en < -.5 ? 1 : 0), 0, 3);
-    const lo = rLo + sp.lo, hi = rHi + sp.hi;
-    const center = lo + Math.round((hi - lo) * sp.c);
+    const center = degNear(midC + sp.m), lo = center - sp.dn, hi = center + sp.up;
     const repeatNo = (sec.repeat = (motifs[type] = motifs[type] || {}, motifs[type].count = (motifs[type].count || 0) + 1));
     const vel = sp.vel + (repeatNo >= 2 ? .03 : 0);
 
     if (sp.riff) {                       // 드롭: 한 마디 리프를 통째로 되풀이한다
       const M = motifs[type];
-      if (!M.pitches) { const keep = lastDeg; M.rhythm = makeRiff(); M.pitches = assignPitches(M.rhythm, sec.bar, lo, hi, center, { shape: "wave" }); lastDeg = keep; }
+      // 컷 뒤라 음역을 새로 잡는다 — 직전 음을 물려받지 않는다
+      if (!M.pitches) { const keep = lastDeg; lastDeg = null; M.rhythm = makeRiff(); M.pitches = assignPitches(M.rhythm, sec.bar, lo, hi, center, { shape: "wave" }); lastDeg = keep; }
       for (let b = 0; b < sec.bars; b++) pushNotes(realize(M.pitches, sec.bar + b, 0, lo, hi, { exact: true }), sec.bar + b, vel, legato);
       continue;
     }
     const M = motifs[type];
-    if (!M.rhythm) M.rhythm = makeRhythm(dens);
-    if (!M.pitches) { const keep = lastDeg; M.pitches = assignPitches(M.rhythm, sec.bar, lo, hi, center, { shape: sp.shape }); lastDeg = keep; }
+    if (!M.rhythm) M.rhythm = rhythmFor(type, dens);
+    if (!M.pitches) {                  // 후렴 동기는 컷 뒤라 직전 음을 물려받지 않는다
+      const keep = lastDeg; if (type === "B") lastDeg = null;
+      M.pitches = assignPitches(M.rhythm, sec.bar, lo, hi, center, { shape: sp.shape }); lastDeg = keep;
+    }
     const nPhr = Math.floor(sec.bars / 2);
     if (sp.rise) {                     // 프리코러스: 같은 동기를 한 도씩 올리며 조인다
+      // 창도 같이 올린다. 안 그러면 realize 의 음역 당김이 +1/+2/+3 을 도로 깎아 먹는다.
       for (let ph = 0; ph < nPhr; ph++) {
-        const startBar = sec.bar + ph * 2, last = ph === nPhr - 1;
-        pushNotes(realize(M.pitches, startBar, Math.min(ph, 3), lo, hi, last ? { open: true } : {}),
+        const startBar = sec.bar + ph * 2, last = ph === nPhr - 1, step = Math.min(ph, 3);
+        pushNotes(realize(M.pitches, startBar, step, lo + step, hi + step, { home: center + step, open: last }),
                   startBar, vel + ph * .04, legato);
       }
       continue;
@@ -1013,16 +1064,16 @@ function compose(P) {
       const startBar = sec.bar + ph * 2;
       const last = ph === nPhr - 1;
       let notes;
-      if (ph === 0) notes = realize(M.pitches, startBar, 0, lo, hi, {});
+      if (ph === 0) notes = realize(M.pitches, startBar, 0, lo, hi, { home: center });
       else if (last) {
         const next = song.sections[song.sections.indexOf(sec) + 1];
         const nm = next && motifs[next.type] && motifs[next.type].pitches;
-        notes = realize(M.pitches, startBar, rand.chance(.6) ? 0 : pickTranspose(M.pitches[0].deg, [1, -1]), lo, hi,
-                        sp.open ? { open: true } : { resolve: true, toward: nm ? nm[0].deg : null });
+        notes = realize(M.pitches, startBar, rand.chance(.6) ? 0 : pickTranspose(M.pitches, center, [1, -1]), lo, hi,
+                        sp.open ? { open: true, home: center } : { resolve: true, home: center, toward: nm ? nm[0].deg : null });
       }
-      else if (ph % 2 === 1) notes = rand.chance(.6) ? realize(M.pitches, startBar, pickTranspose(M.pitches[0].deg), lo, hi, {})
+      else if (ph % 2 === 1) notes = rand.chance(.6) ? realize(M.pitches, startBar, pickTranspose(M.pitches, center), lo, hi, { home: center })
                                                      : assignPitches(M.rhythm, startBar, lo, hi, center, { startDeg: lastDeg != null ? lastDeg : M.pitches[0].deg });
-      else notes = realize(M.pitches, startBar, 0, lo, hi, {});
+      else notes = realize(M.pitches, startBar, 0, lo, hi, { home: center });
       pushNotes(notes, startBar, vel, legato);
     }
   }
