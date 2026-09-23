@@ -344,7 +344,6 @@ function mixTableHtml() {
 
 function render() {
   const FWD = forwardHtml();   // 세 군데서 쓰므로 한 번만 만듭니다
-  document.title = CO.ko + " 지표 · 매출 구성과 한국 공급망 | M7";
   document.body.innerHTML =
 '<header><div class="wrap hbar">' +
   '<a class="brand" href="' + (CO.hubHref || "/m7/") + '"><span class="mk">' + esc(CO.hubMark || "M7") + '</span><span><b>' + esc(CO.ko) + ' 지표</b>' +

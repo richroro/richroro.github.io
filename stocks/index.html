@@ -339,6 +339,7 @@ const FACETS = {
 };
 const state = { q: "", sector: "전체", kr: "전체", pl: "전체", div: "전체", sortKey: "rev", sortDir: -1, cmp: [] };
 const CMP_MAX = 4;
+const CMP_COL = ["var(--s1)", "var(--s2)", "var(--s3)", "var(--s4)"]; // 나란히 보기: 고른 순서대로 한 색씩
 
 function readHash() {
   const h = new URLSearchParams(location.hash.replace(/^#/, ""));
@@ -490,8 +491,8 @@ function renderCmp() {
     const vals = list.map((r) => m.v(r)).filter((x) => x != null);
     if (vals.length >= 2) bestOf[m.k] = Math.max.apply(null, vals);
   });
-  box.innerHTML = list.map((r) =>
-    "<div class='cmpcard'><button class='rm' type='button' data-rm='" + r.slug + "' aria-label='" + r.ko + " 빼기'>×</button>" +
+  box.innerHTML = list.map((r, i) =>
+    "<div class='cmpcard' style='border-top:3px solid " + CMP_COL[i] + "'><button class='rm' type='button' data-rm='" + r.slug + "' aria-label='" + r.ko + " 빼기'>×</button>" +
     "<div class='hd'><span class='av' style='background:" + r.c + "'>" + r.ab + "</span><span><b>" + r.ko +
     "</b><small>" + r.tk + " · " + r.sector + "</small></span></div>" +
     CMP_ROWS.map((m) => {
@@ -534,10 +535,11 @@ function drawCmp(list) {
   const X = (v) => L + ((v + negMax) / (posMax + negMax)) * pw;
   svg.setAttribute("width", W); svg.setAttribute("height", H); svg.setAttribute("viewBox", "0 0 " + W + " " + H);
   while (svg.firstChild) svg.removeChild(svg.firstChild);
-  // 범례: 색 = 회사. 막대마다 값이 직접 붙으므로 색만으로 뜻을 전하지 않습니다
+  // 범례: 색 = 고른 순서(--s1~--s4). 브랜드색은 겹칠 수 있어(엔비디아·TSMC 둘 다 파랑) 쓰지 않습니다.
+  // 막대마다 값이 직접 붙으므로 색만으로 뜻을 전하지 않습니다
   let lx = L;
-  list.forEach((r) => {
-    svg.appendChild(el("rect", { x: lx, y: 6, width: 10, height: 10, rx: 2 }, "fill:" + r.c));
+  list.forEach((r, i) => {
+    svg.appendChild(el("rect", { x: lx, y: 6, width: 10, height: 10, rx: 2 }, "fill:" + CMP_COL[i]));
     const t = txt(el("text", { x: lx + 14, y: 15, class: "axis" }), r.ko); svg.appendChild(t);
     lx += 14 + (t.getComputedTextLength ? t.getComputedTextLength() : r.ko.length * 12) + 14;
   });
@@ -556,7 +558,9 @@ function drawCmp(list) {
         return;
       }
       const x0 = X(Math.min(0, v)), x1 = X(Math.max(0, v));
-      svg.appendChild(el("rect", { x: x0, y: y, width: Math.max(2, x1 - x0), height: bh, rx: 3 }, "fill:" + (v < 0 ? "var(--down)" : r.c)));
+      // 적자는 같은 회사색을 반투명 + 테두리로 그리고 라벨에 −를 붙입니다 (회사 구분은 유지, 부호는 라벨이 전달)
+      svg.appendChild(el("rect", { x: x0, y: y, width: Math.max(2, x1 - x0), height: bh, rx: 3 },
+        "fill:" + CMP_COL[i] + (v < 0 ? ";fill-opacity:.35;stroke:" + CMP_COL[i] + ";stroke-width:1.5" : "")));
       svg.appendChild(txt(el("text", { x: v < 0 ? x0 - 6 : x1 + 6, y: y + bh / 2 + 4, "text-anchor": v < 0 ? "end" : "start", class: "dlabel" + (v < 0 ? " down" : "") }),
         (v < 0 ? "−" : "") + Math.abs(v).toFixed(1) + "%"));
       const hit = el("rect", { x: L, y: y, width: pw + R - 8, height: bh + gap, class: "hit" });
