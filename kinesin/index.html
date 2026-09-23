@@ -150,6 +150,13 @@
   #meter span{display:block;font-size:10px;font-weight:700;color:var(--dim);letter-spacing:.2px}
   #meter i{font-style:normal;display:block;font-size:17px;font-weight:800;font-variant-numeric:tabular-nums;margin-top:2px}
   #meter i b{font-size:10.5px;font-weight:700;color:var(--dim);margin-left:2px}
+  #phase{right:max(var(--pad),env(safe-area-inset-right));bottom:calc(max(var(--pad),env(safe-area-inset-bottom)) + 62px);
+    display:flex;align-items:center;gap:8px;padding:8px 14px;border-radius:999px;border:1px solid var(--line);
+    background:var(--glass);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);max-width:min(64vw,420px)}
+  #phase em{font-style:normal;font-size:12px;font-weight:700;color:#c8d2e2;letter-spacing:-.2px}
+  #phase .dotA{width:7px;height:7px;border-radius:50%;flex:none;background:var(--cyan);
+    box-shadow:0 0 10px var(--cyan);animation:pulse 1.6s ease-in-out infinite}
+  @keyframes pulse{0%,100%{opacity:.35}50%{opacity:1}}
   .btn{width:100%;margin-top:11px;padding:10px;border-radius:10px;border:1px solid var(--line);
     background:rgba(255,255,255,.06);color:var(--ink);font-family:inherit;font-size:12px;font-weight:800;cursor:pointer;transition:.15s}
   .btn:hover{background:rgba(255,255,255,.13)}
@@ -182,6 +189,8 @@
   <div><span>쓴 ATP</span><i id="mAtp">0</i></div>
 </div>
 
+<div class="ui" id="phase"><span class="dotA"></span><em id="mPhase">두 머리가 다 붙어 있다</em></div>
+
 <div class="ui" id="panel">
   <div class="head" id="panelHead"><b>조작</b><span class="fold">▾</span></div>
   <div class="body">
@@ -203,9 +212,11 @@
     </div>
     <div class="toggles">
       <button class="tg on" id="tSites"><span class="dot"></span>발판 표시</button>
+      <button class="tg on" id="tRuler"><span class="dot"></span>8 nm 눈금</button>
       <button class="tg on" id="tAtp"><span class="dot"></span>ATP</button>
       <button class="tg on" id="tCargo"><span class="dot"></span>짐</button>
       <button class="tg" id="tPause"><span class="dot"></span>정지</button>
+      <button class="tg" id="tSpin"><span class="dot"></span>자동 회전</button>
     </div>
     <button class="btn" id="btnStep">한 걸음만 (→)</button>
   </div>
@@ -223,7 +234,8 @@
       <li><b>손잡이 넘기기</b>뒤에 있던 머리가 떨어져 앞머리를 옆으로 지나쳐 두 칸 앞에 내려앉습니다. 머리는 16 nm 를 가지만 몸의 한가운데는 8 nm 만 나아갑니다. 이게 한 걸음입니다.</li>
       <li><b>180° 회전</b>머리는 한 걸음마다 반 바퀴 돌아갑니다. 자벌레처럼 기는 게 아니라 정말로 번갈아 딛는다는 증거였습니다.</li>
       <li><b>연료</b>걸음마다 ATP 한 개가 앞머리에 붙고, 뒷머리에서 ADP 와 인산이 하나씩 빠져나옵니다. 화면의 계기판이 세고 있는 게 그것입니다.</li>
-      <li><b>목줄</b>머리와 자루를 잇는 짧고 무른 끈입니다. ATP 가 붙으면 이 끈이 머리에 달라붙으면서 뒷머리를 앞으로 던집니다 — 걸음을 만드는 건 사실 이 끈입니다.</li>
+      <li><b>목줄</b>머리와 자루를 잇는 짧고 무른 끈입니다. ATP 가 붙으면 이 끈이 머리에 달라붙으면서(docking) 뒷머리를 앞으로 던집니다 — 걸음을 만드는 건 사실 이 끈입니다. 화면에서 끈이 머리 앞쪽 골로 눕는 순간, 자루가 앞으로 한 번 끌리는 게 그것입니다.</li>
+      <li><b>주머니의 불</b>머리마다 뉴클레오타이드 주머니에 불이 하나 있습니다. <b>파란 불</b>이면 ATP 를 물고 있는 것이고, <b>주황 불</b>이면 쪼개고 남은 ADP, <b>꺼져 있으면</b> 빈 자리입니다. 불빛만 따라가도 화학이 걸음을 어떻게 끌고 가는지 보입니다.</li>
     </ul>
 
     <h3>걸어가는 길</h3>
@@ -308,7 +320,7 @@ if (!app) {
   }));
 
   /* ── 계기판 — 초당 열 번만 고쳐 쓴다 ── */
-  const mStep = $('#mStep'), mNm = $('#mNm'), mAtp = $('#mAtp');
+  const mStep = $('#mStep'), mNm = $('#mNm'), mAtp = $('#mAtp'), mPhase = $('#mPhase');
   let lastPaint = 0;
   const tick = () => {
     const now = performance.now();
@@ -318,6 +330,7 @@ if (!app) {
     mStep.textContent = NF.format(r.steps);
     mNm.innerHTML = NF.format(Math.round(r.nm)) + '<b>nm</b>';
     mAtp.textContent = NF.format(r.atp);
+    if (mPhase.textContent !== r.phase) mPhase.textContent = r.phase;
   };
   setInterval(tick, 100);
 
@@ -374,9 +387,11 @@ if (!app) {
     });
   };
   toggle('#tSites', 'sites');
+  toggle('#tRuler', 'ruler');
   toggle('#tAtp', 'atp');
   toggle('#tCargo', 'cargo');
   toggle('#tPause', 'paused');
+  toggle('#tSpin', 'spin');
   const stepOnce = () => {
     app.stepOnce();
     $('#tPause').classList.add('on');

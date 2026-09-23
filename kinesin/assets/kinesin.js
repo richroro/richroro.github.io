@@ -162,55 +162,128 @@ const SITE0_K = 2 * Math.floor(MONO_COUNT / 4) + 1;       // 걷는 자리를 �
 const SITE_Z = (n) => (SITE0_K + 2 * n) * MONO;           // n 번째 발판(β)의 z, nm
 
 function buildMicrotubule(preset, roughMap, detail) {
-  const mat = new THREE.MeshStandardMaterial({
-    color: 0xffffff, metalness: 0.06, roughness: preset.tubeRough,
-    roughnessMap: roughMap, envMapIntensity: 0.55,
-  });
-  mat.userData.roughK = 2;                  // 거칠기 지도의 평균이 0.5라 값이 절반으로 준다
-  const geo = lumpy(new THREE.IcosahedronGeometry(nm(2.62), detail), 7, 0.13);
-  geo.scale(1, 1, 0.78);                    // z 로 4.1 nm, 옆으로 5.2 nm — 서로 살짝 겹쳐 벽이 된다
-  const count = PF * MONO_COUNT;
-  const mesh = new THREE.InstancedMesh(geo, mat, count);
-  mesh.instanceMatrix.setUsage(THREE.StaticDrawUsage);
-  mesh.frustumCulled = false;
+  // α 와 β 는 서로 다른 단백질이다. 덩어리를 따로 깎고 재질도 따로 준다.
+  const HALF = MONO_COUNT >> 1;
+  const shell = (rough) => {
+    const m = new THREE.MeshStandardMaterial({
+      color: 0xffffff, metalness: 0.04, roughness: rough,
+      roughnessMap: roughMap, envMapIntensity: 0.5,
+    });
+    m.userData.roughK = 2;                  // 거칠기 지도의 평균이 0.5라 값이 절반으로 준다
+    return m;
+  };
+  const matA = shell(preset.tubeRough), matB = shell(preset.tubeRough * 0.92);
+  const geoA = lumpy(new THREE.IcosahedronGeometry(nm(2.58), detail), 11, 0.12);
+  geoA.scale(1.02, 0.98, 0.8);
+  const geoB = lumpy(new THREE.IcosahedronGeometry(nm(2.66), detail), 31, 0.17);
+  geoB.scale(0.98, 1.03, 0.78);
 
-  const m = new THREE.Matrix4(), q = new THREE.Quaternion(), e = new THREE.Euler();
+  const group = new THREE.Group();
+  const meshA = new THREE.InstancedMesh(geoA, matA, PF * HALF);
+  const meshB = new THREE.InstancedMesh(geoB, matB, PF * HALF);
+  for (const mm of [meshA, meshB]) {
+    mm.instanceMatrix.setUsage(THREE.StaticDrawUsage);
+    mm.frustumCulled = false;
+    group.add(mm);
+  }
+
+  const m4 = new THREE.Matrix4(), q = new THREE.Quaternion(), e = new THREE.Euler();
   const pos = new THREE.Vector3(), scl = new THREE.Vector3(1, 1, 1);
-  const index = (p, k) => p * MONO_COUNT + k;
+  const rand = rng(515);
+  const index = (p, d) => p * HALF + d;
   for (let p = 0; p < PF; p++) {
     const th = p * TAU / PF;                // 0 번 가닥이 관의 꼭대기(+Y)
-    for (let k = 0; k < MONO_COUNT; k++) {
-      pos.set(-Math.sin(th) * nm(R_WALL), Math.cos(th) * nm(R_WALL),
-              nm(k * MONO + p * FACTS.latticeRise));
-      e.set(0, 0, -th);                     // 낱개를 관의 바깥쪽으로 세운다
-      q.setFromEuler(e);
-      m.compose(pos, q, scl);
-      mesh.setMatrixAt(index(p, k), m);
+    for (let d = 0; d < HALF; d++) {
+      for (let half = 0; half < 2; half++) {
+        const k = d * 2 + half;             // 짝수 = α, 홀수 = β
+        pos.set(-Math.sin(th) * nm(R_WALL), Math.cos(th) * nm(R_WALL),
+                nm(k * MONO + p * FACTS.latticeRise));
+        // 낱개를 바깥으로 세우고, 조금씩 비틀어 자로 잰 듯한 느낌을 없앤다
+        e.set((rand() - 0.5) * 0.22, (rand() - 0.5) * 0.22, -th + (rand() - 0.5) * 0.18);
+        q.setFromEuler(e);
+        m4.compose(pos, q, scl);
+        (half ? meshB : meshA).setMatrixAt(index(p, d), m4);
+      }
     }
   }
-  mesh.instanceMatrix.needsUpdate = true;
-  mesh.userData = { index, z0: 0, mat };
-  return mesh;
+  meshA.instanceMatrix.needsUpdate = true;
+  meshB.instanceMatrix.needsUpdate = true;
+  group.userData = { index, meshA, meshB, matA, matB, HALF, z0: 0 };
+  return group;
 }
 
 /* 색칠은 따로 — α·β 구분과 '발판 표시' 를 껐다 켤 수 있게 한다.
    발판은 0 번 가닥의 β 낱개들, 즉 키네신이 실제로 딛는 자리다. */
-function paintMicrotubule(mesh, preset, showSites) {
+function paintMicrotubule(group, preset, showSites) {
+  const { index, meshA, meshB, HALF } = group.userData;
   const a = new THREE.Color(preset.tubeA), b = new THREE.Color(preset.tubeB);
   const lit = new THREE.Color(preset.tubeA).lerp(new THREE.Color(0xffffff), 0.62);
-  const { index } = mesh.userData;
   const c = new THREE.Color();
   const rand = rng(303);
   for (let p = 0; p < PF; p++) {
-    for (let k = 0; k < MONO_COUNT; k++) {
-      const isBeta = k % 2 === 1;
-      c.copy(isBeta ? b : a);
-      if (showSites && p === 0 && isBeta) c.copy(lit);
-      c.multiplyScalar(0.9 + rand() * 0.2);          // 낱개마다 밝기를 조금씩 달리한다
-      mesh.setColorAt(index(p, k), c);
+    for (let d = 0; d < HALF; d++) {
+      const j = index(p, d), jitter = 0.9 + rand() * 0.2;
+      c.copy(a).multiplyScalar(jitter);
+      meshA.setColorAt(j, c);
+      c.copy(showSites && p === 0 ? lit : b).multiplyScalar(jitter);
+      meshB.setColorAt(j, c);
     }
   }
-  mesh.instanceColor.needsUpdate = true;
+  meshA.instanceColor.needsUpdate = true;
+  meshB.instanceColor.needsUpdate = true;
+}
+
+/* ── 눈금 — 발판 두 칸 사이가 곧 한 걸음이라는 걸 화면에 대 놓고 보인다 ── */
+function makeLabel(text, color) {
+  const [c, x] = canvas2d(256, 96);
+  x.clearRect(0, 0, 256, 96);
+  x.font = '700 54px "Pretendard","Apple SD Gothic Neo","Malgun Gothic",system-ui,sans-serif';
+  x.textAlign = 'center'; x.textBaseline = 'middle';
+  x.shadowColor = 'rgba(0,0,0,0.85)'; x.shadowBlur = 14;
+  x.fillStyle = color;
+  x.fillText(text, 128, 50);
+  const t = new THREE.CanvasTexture(c);
+  t.colorSpace = THREE.SRGBColorSpace;
+  return t;
+}
+
+function buildScaleBar(preset) {
+  const g = new THREE.Group();
+  g.rotation.z = -1.02;                     // 키네신이 걷는 꼭대기를 비켜 관의 옆구리에 댄다
+  const line = new THREE.MeshBasicMaterial({ color: new THREE.Color(preset.mote), transparent: true, opacity: 1, fog: false });
+  const y = FACTS.tubeOuter / 2 + 2.4;
+  const bar = new THREE.Mesh(new THREE.BoxGeometry(nm(0.4), nm(0.4), nm(FACTS.step)), line);
+  bar.position.y = nm(y);
+  g.add(bar);
+  for (const sgn of [-0.5, 0.5]) {          // 양 끝을 관 표면까지 내려 긋는다
+    const post = new THREE.Mesh(new THREE.BoxGeometry(nm(0.4), nm(3.6), nm(0.4)), line);
+    post.position.set(0, nm(y - 1.8), nm(sgn * FACTS.step));
+    g.add(post);
+  }
+  const label = new THREE.Sprite(new THREE.SpriteMaterial({
+    map: makeLabel('8 nm', '#ffffff'), transparent: true, opacity: 0.88, depthTest: false, fog: false,
+  }));
+  label.scale.set(nm(9.5), nm(3.56), 1);
+  label.position.y = nm(y + 3.1);
+  label.renderOrder = 6;
+  g.add(label);
+  return { g, line, label };
+}
+
+/* 머리 밑에 까는 옅은 그림자 — 붙어 있다는 게 보이게 한다 */
+function contactShadow() {
+  const [c, x] = canvas2d(128, 128);
+  const gr = x.createRadialGradient(64, 64, 0, 64, 64, 64);
+  gr.addColorStop(0, 'rgba(0,0,0,0.85)');
+  gr.addColorStop(0.55, 'rgba(0,0,0,0.35)');
+  gr.addColorStop(1, 'rgba(0,0,0,0)');
+  x.fillStyle = gr; x.fillRect(0, 0, 128, 128);
+  const tex = new THREE.CanvasTexture(c);
+  tex.colorSpace = THREE.SRGBColorSpace;
+  const mat = new THREE.MeshBasicMaterial({ map: tex, transparent: true, opacity: 0.55, depthWrite: false, fog: false });
+  const mesh = new THREE.Mesh(new THREE.PlaneGeometry(nm(11), nm(15)).rotateX(-Math.PI / 2), mat);
+  mesh.renderOrder = 1;
+  return mesh;
 }
 
 /* ══ 키네신 ════════════════════════════════════════════════════════════════
@@ -219,7 +292,7 @@ function paintMicrotubule(mesh, preset, showSites) {
    자루는 두 가닥이 서로 꼬인 밧줄이다. 짐은 자루 끝에 매달려 끌려간다.
    ═════════════════════════════════════════════════════════════════════════ */
 
-const Y_BIND = FACTS.tubeOuter / 2 + 2.0;       // 머리 중심이 앉는 높이(관 축에서, nm)
+const Y_BIND = FACTS.tubeOuter / 2 + 1.35;      // 머리 중심이 앉는 높이(관 축에서, nm)
 const STALK_LEN = 45;                           // 자루 길이
 const TAIL_LEN = 12;                            // 짐에 붙는 꼬리
 const COIL_PITCH = 14;                          // 코일드코일이 한 바퀴 꼬이는 길이
@@ -236,29 +309,38 @@ function helixTube(len, coilR, phase, tubeR) {
   return new THREE.TubeGeometry(new THREE.CatmullRomCurve3(pts), n, nm(tubeR), 6, false);
 }
 
-function buildHead(mats, which, dark) {
+function buildHead(mats, which, dark, lampMat, footKey) {
   const g = new THREE.Group();
-  const core = new THREE.Mesh(lumpy(new THREE.IcosahedronGeometry(nm(2.6), 4), 23, 0.17), mats[which]);
-  core.scale.set(0.95, 0.88, 1.4);               // 4.9 × 4.6 × 7.3 nm 쯤
+  // 몸통 — 앞이 두껍고 뒤로 좁아지는 쐐기
+  const core = new THREE.Mesh(lumpy(new THREE.IcosahedronGeometry(nm(2.62), 4), 23, 0.26, 11), mats[which]);
+  core.scale.set(0.95, 0.86, 1.42);              // 4.9 × 4.5 × 7.4 nm 쯤
   g.add(core);
-  // 미세소관에 닿는 바닥면 — 여기가 붙고 떨어진다
-  const foot = new THREE.Mesh(new THREE.SphereGeometry(nm(1.9), 12, 8), mats[dark]);
-  foot.scale.set(1.0, 0.42, 1.3);
-  foot.position.y = nm(-1.55);
-  g.add(foot);
-  // 뉴클레오타이드 주머니 — ATP 가 여기로 들어간다
-  const pocket = new THREE.Mesh(new THREE.TorusGeometry(nm(1.05), nm(0.3), 6, 14), mats[dark]);
-  pocket.position.set(nm(1.6), nm(1.5), nm(0.6));
-  pocket.rotation.set(0.5, 0.9, 0);
-  g.add(pocket);
+  // 옆으로 솟은 덩어리 — 좌우 대칭을 깨야 어느 쪽이 앞인지 보인다
+  const lobe = new THREE.Mesh(lumpy(new THREE.IcosahedronGeometry(nm(1.45), 3), 47, 0.22), mats[which]);
+  lobe.position.set(nm(1.45), nm(0.45), nm(-1.1));
+  lobe.scale.set(1, 0.85, 1.25);
+  g.add(lobe);
+  // 관에 닿는 바닥은 따로 붙이지 않는다. 어두운 판을 얹으면 입처럼 보인다.
+  // 붙어 있다는 느낌은 밑에 까는 그림자가 낸다.
+  // 뉴클레오타이드 주머니 — 윗면에 팬 자리와 그 안에 든 불. 불빛이 곧 이 머리의 상태다.
+  const rim = new THREE.Mesh(new THREE.TorusGeometry(nm(0.95), nm(0.26), 6, 16), mats[dark]);
+  rim.position.set(nm(0.95), nm(1.95), nm(0.9));
+  rim.rotation.set(1.25, 0.5, 0);
+  g.add(rim);
+  const lamp = new THREE.Mesh(new THREE.SphereGeometry(nm(0.62), 12, 9), lampMat);
+  lamp.position.copy(rim.position);
+  g.add(lamp);
   const slot = new THREE.Object3D();             // ATP 가 도착할 자리
-  slot.position.copy(pocket.position);
+  slot.position.copy(rim.position);
   g.add(slot);
-  // 목줄이 나오는 뒤쪽 꼭지
+  // 목줄이 나오는 뒤쪽 꼭지, 그리고 목줄이 달라붙는 앞쪽 골
   const neck = new THREE.Object3D();
-  neck.position.set(0, nm(1.4), nm(-3.0));
+  neck.position.set(0, nm(1.15), nm(-3.05));
   g.add(neck);
-  return { g, slot, neck };
+  const dockPt = new THREE.Object3D();
+  dockPt.position.set(nm(-0.5), nm(2.15), nm(2.1));
+  g.add(dockPt);
+  return { g, slot, neck, dockPt, lamp };
 }
 
 export function buildKinesin(preset, roughMap) {
@@ -269,9 +351,17 @@ export function buildKinesin(preset, roughMap) {
   const darkMat = (c) => new THREE.MeshStandardMaterial({
     color: new THREE.Color(c).multiplyScalar(0.4), metalness: 0.3, roughness: 0.5, envMapIntensity: 0.9,
   });
+  const footMat = (c) => new THREE.MeshStandardMaterial({   // 관에 닿는 바닥 — 구멍이 아니라 그늘로 보이게
+    color: new THREE.Color(c).multiplyScalar(0.62), metalness: 0.2, roughness: 0.62, envMapIntensity: 0.8,
+  });
+  const lampMat = () => new THREE.MeshStandardMaterial({   // 주머니 안의 불 — 상태에 따라 색이 바뀐다
+    color: 0x05080c, emissive: new THREE.Color(0x000000), emissiveIntensity: 1, roughness: 0.32, metalness: 0.1,
+  });
   const mats = {
     head: headMat(preset.head), head2: headMat(preset.head2),
     headDark: darkMat(preset.head), head2Dark: darkMat(preset.head2),
+    headFoot: footMat(preset.head), head2Foot: footMat(preset.head2),
+    lamp: [lampMat(), lampMat()],
     coil: new THREE.MeshPhysicalMaterial({
       color: preset.coil, metalness: 0.55, roughness: preset.coilRough * 2, roughnessMap: roughMap,
       clearcoat: 0.4, envMapIntensity: 1.25,
@@ -296,7 +386,8 @@ export function buildKinesin(preset, roughMap) {
   mats.coil.userData.roughK = 2;
 
   const root = new THREE.Group();
-  const heads = [buildHead(mats, 'head', 'headDark'), buildHead(mats, 'head2', 'head2Dark')];
+  const heads = [buildHead(mats, 'head', 'headDark', mats.lamp[0], 'headFoot'),
+                 buildHead(mats, 'head2', 'head2Dark', mats.lamp[1], 'head2Foot')];
   for (const h of heads) root.add(h.g);
 
   /* 자루 — 코일드코일 두 가닥이 서로 꼬인다 */
@@ -320,6 +411,9 @@ export function buildKinesin(preset, roughMap) {
   const vesicle = new THREE.Mesh(new THREE.SphereGeometry(nm(CARGO_R), 40, 28), mats.cargo);
   vesicle.renderOrder = 2;
   cargo.add(vesicle);
+  const inner = new THREE.Mesh(new THREE.SphereGeometry(nm(CARGO_R * 0.94), 32, 22), mats.cargo);
+  inner.renderOrder = 2;                         // 두 겹이라 실루엣에서 막 두께가 보인다
+  cargo.add(inner);
   const rand = rng(51);
   for (let i = 0; i < 14; i++) {                 // 막에 박힌 단백질 혹
     const a = rand() * TAU, b = Math.acos(2 * rand() - 1);
@@ -350,7 +444,15 @@ export function buildKinesin(preset, roughMap) {
     pool.push({ mesh: m, live: false, t: 0, kind: 'atp' });
   }
 
-  return { root, heads, stalk, tail, cargo, vesicle, links, pool, mats, BEADS };
+  const shadows = [contactShadow(), contactShadow()];
+  for (const sh of shadows) root.add(sh);
+  const scale = buildScaleBar(preset);
+  root.add(scale.g);
+
+  const nucColors = {
+    atp: new THREE.Color(preset.atp), adp: new THREE.Color(preset.adp), empty: new THREE.Color(0x0a1018),
+  };
+  return { root, heads, stalk, tail, cargo, vesicle, links, pool, mats, BEADS, shadows, scale, nucColors };
 }
 
 /* ══ 걸음 ══════════════════════════════════════════════════════════════════
@@ -360,13 +462,32 @@ export function buildKinesin(preset, roughMap) {
    머리는 한 걸음마다 180° 돌아간다. 자벌레처럼 기는 게 아니라는 증거였다.
    ═════════════════════════════════════════════════════════════════════════ */
 
-export function createGait() {
-  return { site: [0, 1], moving: 0, u: 0, lastU: 0, steps: 0, side: 1, yaw0: [0, 0], atp: 0 };
+export const NUC = { EMPTY: 0, ATP: 1, ADP: 2 };
+
+/* 머리가 무엇을 들고 있는지는 걸음의 진행도에서 그대로 나온다.
+   사건을 받아 적지 않고 매번 계산하면 프레임을 건너뛰어도 어긋나지 않는다.
+     앞머리(붙어 있는 쪽) : 빈 자리 → ATP 가 붙음 → 걸음 끝에 쪼개져 ADP
+     뒷머리(움직이는 쪽)  : ADP 를 들고 떠났다가 내려앉으며 버린다
+   걸음이 끝나 역할이 바뀌면 그대로 이어진다 — 앞머리의 ADP 가 다음 걸음의 뒷머리다. */
+export function nucOf(g, i) {
+  if (i === g.moving) return g.u < 0.9 ? NUC.ADP : NUC.EMPTY;
+  return g.u < 0.05 ? NUC.EMPTY : (g.u < 0.97 ? NUC.ATP : NUC.ADP);
 }
 
-export function advanceGait(g, du) {
+export function phaseOf(g) {
+  if (g.u < 0.05) return '두 머리가 다 붙어 있다';
+  if (g.u < 0.3) return '앞머리에 ATP 가 붙고, 목줄이 달라붙는다';
+  if (g.u < 0.88) return '뒷머리가 떨어져 앞으로 날아간다';
+  return '새 발판에 내려앉고 ADP 를 버린다';
+}
+
+export function createGait() {
+  return { site: [0, 1], moving: 0, u: 0, lastU: 0, steps: 0, side: 1, yaw0: [0, 0], rate: 1 };
+}
+
+export function advanceGait(g, du, rand) {
   g.lastU = g.u;
-  g.u += du;
+  g.u += du * g.rate;
   while (g.u >= 1) {
     g.u -= 1;
     g.lastU = 0;
@@ -376,11 +497,11 @@ export function advanceGait(g, du) {
     g.moving = 1 - g.moving;               // 다음엔 반대쪽 머리가 움직인다
     g.side = -g.side;
     g.steps++;
-    g.atp++;
+    g.rate = 0.84 + (rand ? rand() : 0.5) * 0.32;   // 걸음마다 속도가 조금씩 다르다
   }
 }
 
-const _a = new THREE.Vector3(), _b = new THREE.Vector3(), _c = new THREE.Vector3();
+const _a = new THREE.Vector3(), _b = new THREE.Vector3(), _c = new THREE.Vector3(), _d = new THREE.Vector3();
 
 function bezier(out, p0, p1, p2, t) {
   const s = 1 - t;
@@ -393,43 +514,78 @@ function bezier(out, p0, p1, p2, t) {
 /* 한 프레임의 자세를 잡는다. 돌려주는 comZ 는 두 머리의 한가운데(nm, 관 좌표). */
 export function poseKinesin(k, g, z0, t) {
   const u = g.u;
-  const ez = smooth(0.12, 0.92, u);                       // 앞뒤로 뜸을 들이고 가운데서 빠르게
-  const lift = Math.sin(Math.PI * clamp((u - 0.06) / 0.88, 0, 1));
+  const ez = smooth(0.2, 0.93, u);                        // 목줄이 달라붙은 뒤에 날아간다
+  const lift = Math.sin(Math.PI * clamp((u - 0.17) / 0.8, 0, 1));
+  const dock = smooth(0.07, 0.28, u);                     // 앞머리 목줄이 달라붙는 정도
   const mv = g.moving, fx = 1 - mv;
   const zFix = SITE_Z(g.site[fx]);
   const zFrom = SITE_Z(g.site[mv]), zMov = zFrom + FACTS.swing * ez;
 
   const bound = k.heads[fx].g;
   bound.position.set(0, nm(Y_BIND), nm(z0 + zFix));
-  bound.rotation.set(0.04 * Math.sin(t * 2.1), g.yaw0[fx], 0);
+  bound.rotation.set(0.04 * Math.sin(t * 2.1) - 0.06 * dock, g.yaw0[fx], 0);
 
   const free = k.heads[mv].g;
-  free.position.set(nm(g.side * 4.6 * lift), nm(Y_BIND + 5.6 * lift), nm(z0 + zMov));
-  free.rotation.set(-0.5 * lift, g.yaw0[mv] + Math.PI * ez, g.side * 0.35 * lift);
+  free.position.set(nm(g.side * 6.8 * lift), nm(Y_BIND + 7.8 * lift), nm(z0 + zMov));
+  free.rotation.set(-0.55 * lift, g.yaw0[mv] + Math.PI * ez, g.side * 0.5 * lift);
 
   const comZ = (zMov + zFix) / 2;
-  const comX = g.side * 1.5 * lift;
+  const comX = g.side * 2.1 * lift;
 
-  /* 자루는 두 머리의 한가운데에서 뒤로 누워 짐을 끌고 간다 */
-  k.stalk.position.set(nm(comX), nm(Y_BIND + 4.2), nm(z0 + comZ));
-  k.stalk.rotation.set(-0.55 + 0.05 * Math.sin(t * 1.3), g.side * 0.12 * lift + 0.08 * Math.sin(t * 0.7), 0);
+  /* 자루는 두 머리의 한가운데에서 뒤로 누워 짐을 끌고 간다.
+     목줄이 달라붙는 순간 앞으로 한 번 끌린다 — 걸음을 만드는 건 이 당김이다. */
+  k.stalk.position.set(nm(comX), nm(Y_BIND + 4.2), nm(z0 + comZ + 1.7 * dock));
+  k.stalk.rotation.set(-0.55 + 0.05 * Math.sin(t * 1.3) + 0.1 * dock,
+                       g.side * 0.12 * lift + 0.08 * Math.sin(t * 0.7), 0);
   k.cargo.rotation.set(0.12 * Math.sin(t * 0.5), t * 0.06, 0.1 * Math.sin(t * 0.43 + 1.1));
+  k.cargo.position.set(                          // 붐비는 세포질에 밀려 조금씩 떨린다
+    nm(1.2 * Math.sin(t * 1.7) + 0.7 * Math.sin(t * 4.3 + 2.1)),
+    nm(TAIL_LEN + CARGO_R * 0.82 + 0.9 * Math.sin(t * 1.3 + 0.7)),
+    nm(1.1 * Math.cos(t * 1.9 + 1.4)));
 
-  /* 목줄 — 붙어 있는 쪽은 늘어지고, 움직이는 쪽은 팽팽하다 */
+  /* 주머니의 불 — 이 머리가 무엇을 들고 있는지 */
+  for (let i = 0; i < 2; i++) {
+    const st = nucOf(g, i), m = k.mats.lamp[i];
+    if (st === NUC.ATP) {
+      m.emissive.copy(k.nucColors.atp);
+      m.emissiveIntensity = 0.85 + 0.25 * Math.sin(t * 7);
+    } else if (st === NUC.ADP) {
+      m.emissive.copy(k.nucColors.adp);
+      m.emissiveIntensity = 0.32;
+    } else {
+      m.emissive.copy(k.nucColors.empty);
+      m.emissiveIntensity = 0.05;
+    }
+  }
+
+  /* 목줄 — 붙어 있는 쪽은 ATP 가 붙으면 머리 앞쪽 골에 달라붙고, 뜬 쪽은 늘어진다 */
   k.root.updateMatrixWorld(true);
   const knob = _c.set(0, 0, 0);
   k.stalk.localToWorld(knob); k.root.worldToLocal(knob);
   for (let i = 0; i < 2; i++) {
     const beads = k.links[i];
     k.heads[i].neck.getWorldPosition(_a); k.root.worldToLocal(_a);
-    const slack = i === mv ? 0.8 : 2.6;
+    k.heads[i].dockPt.getWorldPosition(_d); k.root.worldToLocal(_d);
+    const dk = i === fx ? dock : 0;
     _b.lerpVectors(_a, knob, 0.5);
-    _b.y += nm(slack);
-    _b.z -= nm(slack * 0.6);
+    _b.y += nm(2.9); _b.z -= nm(1.7);                     // 느슨할 때는 위로 불룩하다
+    _b.lerp(_d, dk);                                      // 달라붙으면 골을 따라 앞으로 눕는다
     for (let j = 0; j < beads.length; j++) {
       bezier(beads[j].position, _a, _b, knob, j / (beads.length - 1));
     }
   }
+
+  /* 머리 밑 그림자 — 붙어 있을 때만 짙다 */
+  for (let i = 0; i < 2; i++) {
+    const h = k.heads[i].g, sh = k.shadows[i];
+    const up = clamp(1 - (h.position.y / NM - Y_BIND) / 5.5, 0, 1);
+    sh.position.set(h.position.x, nm(FACTS.tubeOuter / 2 + 0.5), h.position.z);
+    sh.material.opacity = 0.5 * up * up;
+    sh.visible = up > 0.03;
+  }
+
+  /* 눈금은 지나온 발판 두 칸에 댄다 */
+  if (k.scale) k.scale.g.position.z = nm(z0 + SITE_Z(g.site[fx]) - FACTS.step * 1.8);
   return comZ;
 }
 
@@ -464,21 +620,23 @@ export function updateParticles(k, dt) {
 
 /* 걸음의 어느 대목에서 무엇이 오가는지 — 한 걸음에 ATP 하나가 들어가고
    ADP 와 인산이 하나씩 나온다. */
-export function stepChemistry(k, g, z0, rand) {
+export function stepChemistry(k, g, rand) {
   const crossed = (x) => g.lastU < x && g.u >= x;
-  if (crossed(0.06)) {                               // 앞머리에 ATP 가 붙는다
-    const head = k.heads[1 - g.moving];
+  const away = (head) => {
     head.slot.getWorldPosition(_a); k.root.worldToLocal(_a);
-    _b.copy(_a).add(new THREE.Vector3(nm(14 * (rand() - 0.5)), nm(16 + rand() * 10), nm(12 * (rand() - 0.5))));
-    spawn(k, 'atp', _b, _a, 0.42, rand);
+    _b.copy(_a).add(_d.set(nm(18 * (rand() - 0.5)), nm(15 + rand() * 11), nm(15 * (rand() - 0.5))));
+  };
+  if (crossed(0.05)) {                               // 앞머리에 ATP 가 붙는다
+    away(k.heads[1 - g.moving]);
+    spawn(k, 'atp', _b, _a, 0.4, rand);
   }
-  if (crossed(0.72)) {                               // 뒷머리에서 ADP 와 인산이 나온다
-    const head = k.heads[g.moving];
-    head.slot.getWorldPosition(_a); k.root.worldToLocal(_a);
-    for (let i = 0; i < 2; i++) {
-      _b.copy(_a).add(new THREE.Vector3(nm(20 * (rand() - 0.5)), nm(14 + rand() * 12), nm(16 * (rand() - 0.5))));
-      spawn(k, 'adp', _a, _b, 0.6 + rand() * 0.3, rand);
-    }
+  if (crossed(0.9)) {                                // 내려앉으며 ADP 를 버린다
+    away(k.heads[g.moving]);
+    spawn(k, 'adp', _a, _b, 0.65 + rand() * 0.3, rand);
+  }
+  if (crossed(0.97)) {                               // 앞머리가 ATP 를 쪼개고 인산을 뱉는다
+    away(k.heads[1 - g.moving]);
+    spawn(k, 'adp', _a, _b, 0.6 + rand() * 0.3, rand);
   }
 }
 
@@ -542,13 +700,14 @@ export function createKinesin(canvas, opts = {}) {
   const z0 = tube.userData.z0;
 
   const state = {
-    stepsPerSec: 1.5, bloom: 1, sites: true, atp: true, cargo: true,
+    stepsPerSec: 1.5, bloom: 1, sites: true, atp: true, cargo: true, ruler: true,
     paused: reduceMotion, spin: false, quality: 'auto',
   };
   Object.assign(state, opts.state || {});
   paintMicrotubule(tube, preset, state.sites);
   k.cargo.visible = state.cargo;
   k.tail.visible = state.cargo;
+  k.scale.g.visible = state.ruler;
 
   const gait = createGait();
   const rand = rng(2026);
@@ -556,13 +715,13 @@ export function createKinesin(canvas, opts = {}) {
 
   /* ── 시점 ── */
   const VIEWS = {
-    walk: { theta: 1.42, phi: 1.40, dist: 5.2, focus: 5 },     // 기본 — 걸음과 자루가 함께
-    feet: { theta: 1.34, phi: 1.46, dist: 3.0, focus: 1.2 },   // 발만 크게
+    walk: { theta: 1.34, phi: 1.38, dist: 5.8, focus: 5.5 },   // 기본 — 걸음과 자루가 함께
+    feet: { theta: 1.22, phi: 1.42, dist: 3.7, focus: 2.4 },   // 발만 크게
     all:  { theta: 1.40, phi: 1.33, dist: 15.5, focus: 20 },   // 짐까지 분자 전체
   };
   let viewKey = VIEWS[opts.view] ? opts.view : 'walk';
   const focus = new THREE.Vector3();
-  const view = { theta: 1.42, phi: 1.40, dist: 5.2, focus: 5 };
+  const view = { theta: 1.34, phi: 1.38, dist: 5.8, focus: 5.5 };
   const want = { ...view };
   function applyView(name, instant = false) {
     const v = VIEWS[name] || VIEWS.walk;
@@ -637,19 +796,25 @@ export function createKinesin(canvas, opts = {}) {
   function applyPreset(nextKey) {
     if (!PRESETS[nextKey]) return;
     presetKey = nextKey; preset = PRESETS[nextKey];
-    paint(tube.userData.mat, preset.tubeRough);
+    paint(tube.userData.matA, preset.tubeRough);
+    paint(tube.userData.matB, preset.tubeRough * 0.92);
     paintMicrotubule(tube, preset, state.sites);
     const m = k.mats;
     m.head.color.set(preset.head); paint(m.head, preset.headRough);
     m.head2.color.set(preset.head2); paint(m.head2, preset.headRough);
     m.headDark.color.set(preset.head).multiplyScalar(0.4);
     m.head2Dark.color.set(preset.head2).multiplyScalar(0.4);
+    m.headFoot.color.set(preset.head).multiplyScalar(0.62);
+    m.head2Foot.color.set(preset.head2).multiplyScalar(0.62);
     m.coil.color.set(preset.coil); paint(m.coil, preset.coilRough);
     m.cargo.color.set(preset.cargo);
     m.cargo.iridescenceThicknessRange = preset.iridRange.slice();
     m.cargo.needsUpdate = true;
     m.atp.emissive.set(preset.atp);
     m.adp.emissive.set(preset.adp);
+    k.nucColors.atp.set(preset.atp);
+    k.nucColors.adp.set(preset.adp);
+    k.scale.line.color.set(preset.mote);
     backdrop.mat.uniforms.uTop.value.set(preset.bgTop);
     backdrop.mat.uniforms.uBot.value.set(preset.bgBot);
     backdrop.mat.uniforms.uHalo.value.set(preset.halo);
@@ -714,8 +879,8 @@ export function createKinesin(canvas, opts = {}) {
     t += real;
     if (!state.paused || stepOnce) {
       const before = gait.steps;
-      advanceGait(gait, real * state.stepsPerSec);
-      if (state.atp) stepChemistry(k, gait, z0, rand);
+      advanceGait(gait, real * state.stepsPerSec, rand);
+      if (state.atp) stepChemistry(k, gait, rand);
       if (stepOnce && gait.steps !== before) { stepOnce = false; state.paused = true; gait.u = 0; }
     }
     updateParticles(k, real);
@@ -734,11 +899,11 @@ export function createKinesin(canvas, opts = {}) {
   raf = requestAnimationFrame(frame);
 
   function readout() {
-    const walked = gait.steps * FACTS.step + gait.u * FACTS.step;
     return {
       steps: gait.steps,
-      nm: walked,
-      atp: gait.atp,
+      nm: (gait.steps + gait.u) * FACTS.step,
+      atp: gait.steps + (gait.u >= 0.05 ? 1 : 0),   // 걸음마다 하나, 붙는 순간부터 센다
+      phase: phaseOf(gait),
       slow: Math.max(1, Math.round((FACTS.speed / FACTS.step) / Math.max(0.01, state.stepsPerSec))),
     };
   }
@@ -754,9 +919,11 @@ export function createKinesin(canvas, opts = {}) {
       state[kk] = v;
       if (kk === 'sites') paintMicrotubule(tube, preset, v);
       if (kk === 'cargo') { k.cargo.visible = v; k.tail.visible = v; }
+      if (kk === 'ruler') k.scale.g.visible = v;
       if (kk === 'atp' && !v) for (const p of k.pool) { p.live = false; p.mesh.visible = false; }
     },
     stepOnce() { stepOnce = true; state.paused = false; },
+    setPhase(v) { gait.lastU = gait.u = clamp(v, 0, 0.999); },   // 걸음의 한 대목을 고정한다
     reset() { Object.assign(gait, createGait()); },
     readout,
     setTime(v) { t = v; },
