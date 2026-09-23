@@ -99,6 +99,8 @@
   .track i.low{background:var(--red)}
   .timer span{flex:0 0 auto;font-size:12px;font-weight:700;color:var(--ink-3);
     font-variant-numeric:tabular-nums;min-width:38px;text-align:right}
+  /* 반복 횟수를 정해 둔다. infinite 면 '모션 줄이기'의 .01ms 규칙 아래서 매 프레임 크기가 튄다 */
+  .timer.buzz span{color:var(--red);font-weight:800;animation:bump .4s 3}
 
   /* ── 코트 ─────────────────────────────── */
   #court{flex:1 1 auto;position:relative;min-height:0;width:calc(100% - 24px);max-width:460px;margin:0 auto;
@@ -228,6 +230,9 @@
     transform:translate(-50%,10px);z-index:30;pointer-events:none;
     background:rgba(25,31,40,.92);color:#fff;font-size:13px;font-weight:600;
     padding:11px 18px;border-radius:12px;opacity:0;transition:opacity .2s, transform .2s;
+    /* left:50% 에 폭을 안 주면 화면의 절반(390에서 195px)에 갇혀 열두 글자만 넘어도
+       두 줄이 되고 '돌려드렸 / 어요'처럼 낱말 가운데서 끊겼다 */
+    width:max-content;max-width:calc(100vw - 32px);word-break:keep-all;text-align:center;
   }
   #toast.show{opacity:1;transform:translate(-50%,0)}
   @media (prefers-reduced-motion:reduce){ *{animation-duration:.01ms!important} }
@@ -408,7 +413,7 @@
 <div class="veil" id="vError">
   <div class="sheet">
     <h2 id="hError">문제가 생겼어요</h2>
-    <p>게임을 잠깐 멈췄어요.<br>이 판을 다시 하거나 처음으로 돌아갈 수 있어요.</p>
+    <p id="errMsg">게임을 멈췄어요.<br>이 판을 다시 하거나<br>처음으로 돌아갈 수 있어요.</p>
     <div class="btns">
       <div class="row">
         <button class="btn ghost" id="btnErrHome">처음으로</button>
@@ -884,7 +889,7 @@ function step() {
         shots = Math.max(0, shots - 1);
         nextBall();
         paintBalls();
-        toast("공이 튀어서 하나 돌려드렸어요");
+        toast("공이 이상하게 튀어서 하나 돌려드렸어요");
       } else {
         // 이미 득점·바닥으로 끝난 슛: 결과는 그대로 두고 공만 치운다.
         // 여기서 nextBall 을 부르면 afterShot 의 목표 판정을 건너뛴다.
@@ -1175,8 +1180,12 @@ function afterShot() {
 }
 
 // 시간이 다 됐을 때의 결론. 목표를 채웠으면 시간이 끝났어도 클리어가 먼저다.
+// 판마다 딱 한 번만 난다. 끝난 판에서 스텝이 더 돌아도(테스트의 H.step 등) 보상을 또 주지 않는다.
 function timeUp() {
+  if (state !== "playing") return;
+  // NaN 환불로 공이 손에 돌아오면 afterShot 을 안 거쳐서 '버저!'가 결과 시트 뒤에 남는다
   buzzer = false;
+  paintTimer();
   if (stage.def.endless) endTimeAttack();
   else if (goalMet()) clearStage();
   else failStage("시간이 끝났어요");
@@ -1755,6 +1764,8 @@ function paintBalls() {
 
 function paintTimer() {
   timerBox.classList.toggle("off", !hasTime);
+  // 버저 중엔 빨갛게. 회색 작은 글씨로는 안 보이고, 소리를 끄면(🔇) 다른 신호가 없다.
+  timerBox.classList.toggle("buzz", hasTime && buzzer);
   if (!hasTime) return;
   var t = Math.max(0, timeLeft);
   timerFill.style.transform = "scaleX(" + (t / GAME_TIME) + ")";
@@ -1884,7 +1895,7 @@ function openShop(from) {
   paintShop();
   closeAllVeils();
   veil("vShop", true);
-  if (state === "playing") state = "paused";
+  if (state === "playing") { state = "paused"; dropAim(); }
 }
 
 /* ══════════════════════════════════════════════════════════════
@@ -1918,7 +1929,9 @@ function openStages() {
   paintStages();
   closeAllVeils();
   veil("vStages", true);
-  if (state === "playing") state = "paused";
+  // 일시정지와 같이 조준도 놓는다. 조준 중에 다른 손가락으로 ☰ 을 누르면 목록 밑에
+  // 조준점이 남아 있다가, 목록을 닫고 첫 손가락을 떼는 순간 예전 조준대로 날아갔다.
+  if (state === "playing") { state = "paused"; dropAim(); }
 }
 
 // 시작 안내는 어느 스테이지를, 어디서 열었는지만 따로 기억한다. 예전엔 여기서
@@ -2025,9 +2038,8 @@ function clearStage() {
     inv[gift] = (inv[gift] || 0) + 1;
     saveInv();
   }
-  document.getElementById("clearReward").textContent =
-    "🪙 +" + coinReward + (gift ? "  ·  " + ITEMS[gift].icon + " " + ITEMS[gift].name + " 선물" : "") +
-    "  ·  지갑 " + comma(wallet);
+  clearGot = { coins: coinReward, gift: gift };
+  paintClearReward();
 
   var isFinal = stage.idx >= STAGE_N - 1;
   document.getElementById("clearTitle").textContent =
@@ -2056,6 +2068,20 @@ function failStage(why) {
   dropAim();
   sfx.fail();
   document.getElementById("failTitle").textContent = why || "공을 다 썼어요";
+  paintFailSub();
+  veil("vFail", true);
+}
+
+// 결과 시트에서 지갑·아이템에 따라 바뀌는 줄. 목록 → 상점에서 사고 돌아오면 지갑과
+// 가진 아이템이 달라져 있으니, 시트를 다시 띄울 때마다 새로 쓴다(btnStagesClose).
+var clearGot = { coins: 0, gift: null };
+function paintClearReward() {
+  var gift = clearGot.gift;
+  document.getElementById("clearReward").textContent =
+    "🪙 +" + clearGot.coins + (gift ? "  ·  " + ITEMS[gift].icon + " " + ITEMS[gift].name + " 선물" : "") +
+    "  ·  지갑 " + comma(wallet);
+}
+function paintFailSub() {
   var g = stage.def.goal;
   var txt = [];
   if (g.makes) txt.push("골 " + stage.made + "/" + g.makes);
@@ -2065,7 +2091,6 @@ function failStage(why) {
   document.getElementById("failSub").innerHTML = txt.join(" · ") +
     (has ? "<br><span style=\"color:var(--blue)\">아래 아이템을 켜고 던지면 훨씬 쉬워져요</span>"
          : "<br><span style=\"color:var(--ink-3)\">상점에서 아이템을 살 수 있어요 · 지갑 🪙 " + comma(wallet) + "</span>");
-  veil("vFail", true);
 }
 
 function endTimeAttack() {
@@ -2143,8 +2168,9 @@ document.getElementById("btnShopClose").addEventListener("click", function () {
 document.getElementById("btnStagesClose").addEventListener("click", function () {
   veil("vStages", false);
   if (state === "paused") { if (!anyVeilOpen()) resume(); }
-  else if (state === "clear") veil("vClear", true);
-  else if (state === "fail") veil(stage.def && stage.def.endless ? "vOver" : "vFail", true);
+  else if (state === "clear") { paintClearReward(); veil("vClear", true); }
+  else if (state === "fail" && stage.def && stage.def.endless) veil("vOver", true);
+  else if (state === "fail" && stage.def) { paintFailSub(); veil("vFail", true); }
   else veil("vStart", true);
 });
 document.getElementById("btnHow").addEventListener("click", function () { veil("vHow", true); });
@@ -2240,7 +2266,10 @@ function frame(now) {
     try {
       acc += dt;
       var guard = 0;
-      while (acc >= FIXED && guard < 5) { step(); acc -= FIXED; guard++; }
+      // 판이 끝나면 이 프레임의 남은 스텝도 돌리지 않는다. 늦은 프레임(30fps 절전, GC 멈춤)은
+      // 스텝을 2~5번 몰아 도는데, 예전엔 끝난 뒤에도 계속 돌아서 공을 든 채 0초가 되면
+      // 결론(타임어택 코인 보상·실패음)이 남은 스텝 수만큼 겹쳐 났다(67ms 프레임에 코인 4배).
+      while (state === "playing" && acc >= FIXED && guard < 5) { step(); acc -= FIXED; guard++; }
       if (acc > FIXED) acc = 0;
       if (++tick % 4 === 0 && hasTime) paintTimer();
     } catch (e) { acc = 0; loopError(e); }
@@ -2265,9 +2294,15 @@ function loopError(e) {
     ctx.setLineDash([]);
   } catch (_) {}
   if (errTimes.length > 5) {
+    // 시작 화면에서 난 거면 다시 할 판이 없다. 같은 일을 하는 버튼 두 개를 두지 않는다.
+    var inStage = !!stage.def;
     state = "fail";
     dropAim();
     closeAllVeils();
+    document.getElementById("btnErrRetry").hidden = !inStage;
+    document.getElementById("errMsg").innerHTML = inStage
+      ? "게임을 멈췄어요.<br>이 판을 다시 하거나<br>처음으로 돌아갈 수 있어요."
+      : "게임을 멈췄어요.<br>처음으로 돌아가서<br>다시 시작해 주세요.";
     veil("vError", true);
     return;
   }
