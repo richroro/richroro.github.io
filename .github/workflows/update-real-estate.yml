@@ -3,7 +3,8 @@ name: 실거래가 자동 수집
 # 국토교통부 실거래가 API 로 아파트 매매 자료를 받아 real-estate/data/latest.json 으로 커밋한다.
 # 페이지(https://richroro.github.io/real-estate/)는 열릴 때 이 파일을 자동으로 읽는다.
 #
-# 준비물: 공공데이터포털(data.go.kr)에서 "국토교통부_아파트 매매 실거래가 상세 자료" 활용신청 후
+# 준비물: 공공데이터포털(data.go.kr)에서 "국토교통부_아파트 매매 실거래가 상세 자료" 와
+#         (전세가율을 보려면) "국토교통부_아파트 전월세 자료" 를 활용신청 후
 #         발급받은 인증키를 저장소 Settings → Secrets and variables → Actions 에
 #         DATA_GO_KR_KEY 라는 이름으로 등록.
 # 수집 지역·기간은 real-estate/regions.json 에서 바꾼다.
