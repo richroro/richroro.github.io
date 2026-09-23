@@ -10,11 +10,12 @@
 브라우저에서 이 API 를 직접 부를 수 없어서(CORS 미허용 + 키 노출) 이 스크립트를 깃허브 액션에서
 돌리고 결과 파일만 배포한다. 표준 라이브러리만 쓴다.
 """
-import argparse, csv, json, os, sys, time, urllib.error, urllib.parse, urllib.request
+import argparse, csv, json, os, statistics, sys, time, urllib.error, urllib.parse, urllib.request
 import xml.etree.ElementTree as ET
 from datetime import date, datetime, timedelta, timezone
 
 DEFAULT_ENDPOINT = "https://apis.data.go.kr/1613000/RTMSDataSvcAptTradeDev/getRTMSDataSvcAptTradeDev"
+RENT_ENDPOINT = "https://apis.data.go.kr/1613000/RTMSDataSvcAptRent/getRTMSDataSvcAptRent"
 KST = timezone(timedelta(hours=9))
 CSV_HEAD = ["NO", "시군구", "번지", "본번", "부번", "단지명", "전용면적(㎡)", "계약년월", "계약일",
             "거래금액(만원)", "동", "층", "매수자", "매도자", "건축년도", "도로명", "해제사유발생일",
@@ -96,6 +97,25 @@ def txt(item, tag):
     return (item.findtext(tag) or "").strip()
 
 
+def to_rent(item, region):
+    """전월세 item → (그룹키, 보증금, 월세, 계약년월). 전세만 쓰려면 월세가 0인 것만 고른다."""
+    apt = txt(item, "aptNm")
+    dep = txt(item, "deposit").replace(",", "").replace(" ", "")
+    mon = txt(item, "monthlyRent").replace(",", "").replace(" ", "") or "0"
+    area = txt(item, "excluUseAr")
+    y, m = txt(item, "dealYear"), txt(item, "dealMonth")
+    if not (apt and dep and area and y and m):
+        return None
+    try:
+        deposit, monthly, area_f = int(dep), int(mon), float(area)
+    except ValueError:
+        return None
+    if deposit <= 0:
+        return None
+    key = (region or "", txt(item, "umdNm"), apt, int(round(area_f)))
+    return key, deposit, monthly, f"{int(y):04d}-{int(m):02d}"
+
+
 def to_deal(item, region):
     """API item → 내부 거래 dict. 필수값이 없으면 None."""
     apt = txt(item, "aptNm")
@@ -140,7 +160,25 @@ def load_regions(args):
     return [(c, names[i] if i < len(names) and names[i] else c) for i, c in enumerate(codes)]
 
 
-def pack(deals, meta):
+def rent_summary(records, months):
+    """그룹별 전세 요약. months 는 오래된 달부터 정렬된 'YYYY-MM' 목록."""
+    last12 = set(months[-12:])
+    last6 = set(months[-6:])
+    prev6 = set(months[-12:-6])
+    out = {}
+    for key, rows in records.items():
+        j12 = [d for d, ym in rows if ym in last12]
+        if not j12:
+            continue
+        j6 = [d for d, ym in rows if ym in last6]
+        p6 = [d for d, ym in rows if ym in prev6]
+        out[key] = (int(statistics.median(j12)), len(j12),
+                    int(statistics.median(j6)) if j6 else 0,
+                    int(statistics.median(p6)) if p6 else 0)
+    return out
+
+
+def pack(deals, meta, rents=None, rent_months=None):
     """사전 압축 JSON. 같은 문자열을 반복해서 싣지 않는다."""
     dicts = {"sgg": {}, "dong": {}, "apt": {}, "bdong": {}, "type": {}}
 
@@ -154,7 +192,10 @@ def pack(deals, meta):
              d["price"], d["floor"], d["built"], idx("bdong", d["bdong"]), idx("type", d["type"]),
              d["cancel"] or 0] for d in deals]
     rows.sort(key=lambda r: (r[4], r[0], r[1], r[2]))
-    return {
+    rent_rows = []
+    for (sgg, dong, apt, ak), (j12, n12, j6, p6) in sorted((rents or {}).items()):
+        rent_rows.append([idx("sgg", sgg), idx("dong", dong), idx("apt", apt), ak, j12, n12, j6, p6])
+    out = {
         "v": 1,
         "kind": "singoga-packed",
         "cols": ["sgg", "dong", "apt", "area", "ymd", "price", "floor", "built", "bdong", "type", "cancel"],
@@ -162,6 +203,13 @@ def pack(deals, meta):
         "rows": rows,
         **meta,
     }
+    if rent_rows:
+        out["rentCols"] = ["sgg", "dong", "apt", "areaKey", "j12", "n12", "j6", "j6p"]
+        out["rent"] = rent_rows
+        if rent_months:
+            out["rentRange"] = {"from": rent_months[0][:4] + "-" + rent_months[0][4:],
+                                "to": rent_months[-1][:4] + "-" + rent_months[-1][4:]}
+    return out
 
 
 def unchanged(path, packed):
@@ -171,7 +219,7 @@ def unchanged(path, packed):
             old = json.load(f)
     except (OSError, ValueError):
         return False
-    return all(old.get(k) == packed.get(k) for k in ("rows", "dict", "cols", "regions", "range"))
+    return all(old.get(k) == packed.get(k) for k in ("rows", "dict", "cols", "regions", "range", "rent"))
 
 
 def write_csv(path, deals):
@@ -201,6 +249,8 @@ def main():
     ap.add_argument("--timeout", type=float, default=60)
     ap.add_argument("--tries", type=int, default=3, help="실패 시 재시도 횟수")
     ap.add_argument("--max-fail", type=int, default=0, help="허용할 실패 (시군구×월) 수. 넘으면 종료코드 1")
+    ap.add_argument("--rent-months", type=int, default=12, help="전세가율용 전월세 자료를 몇 개월치 받을지 (0이면 안 받음)")
+    ap.add_argument("--rent-endpoint", default=os.environ.get("MOLIT_RENT_ENDPOINT", RENT_ENDPOINT))
     a = ap.parse_args()
     a.months_set = any(x.startswith("--months") for x in sys.argv)
 
@@ -243,6 +293,36 @@ def main():
         log("받은 거래가 없습니다. 인증키 승인 상태와 지역 코드를 확인하세요.")
         return 1
 
+    rents, rent_months = None, None
+    if a.format == "json" and a.rent_months > 0:
+        rent_months = months[-a.rent_months:]
+        log(f"전월세(전세가율용) {len(regions)}개 지역 × {len(rent_months)}개월 = {len(regions) * len(rent_months)}회 호출")
+        records, seen_rent, got = {}, set(), 0
+        for code, name in regions:
+            for ymd in rent_months:
+                try:
+                    items = fetch_month(a.rent_endpoint, a.key, code, ymd, a.rows, a.timeout, a.tries, a.sleep)
+                except Exception as e:
+                    failures.append(f"[전월세] {name}({code}) {ymd}: {e}")
+                    log(f"  [실패·전월세] {name} {ymd}: {e}")
+                    continue
+                for it in items:
+                    parsed = to_rent(it, name)
+                    if not parsed:
+                        continue
+                    key, deposit, monthly, ym = parsed
+                    if monthly:  # 월세·반전세는 전세가율 계산에서 뺀다
+                        continue
+                    sig = (key, deposit, ym, txt(it, "floor"))
+                    if sig in seen_rent:
+                        continue
+                    seen_rent.add(sig)
+                    records.setdefault(key, []).append((deposit, ym))
+                    got += 1
+                time.sleep(a.sleep)
+        rents = rent_summary(records, [f"{m[:4]}-{m[4:]}" for m in rent_months])
+        log(f"전세 {got:,}건 → 전세가율 낼 수 있는 묶음 {len(rents):,}개")
+
     os.makedirs(os.path.dirname(a.out) or ".", exist_ok=True)
     if a.format == "csv":
         deals.sort(key=lambda d: (d["ymd"], d["sgg"], d["dong"], d["apt"]))
@@ -254,7 +334,7 @@ def main():
             "range": {"from": f"{months[0][:4]}-{months[0][4:]}", "to": f"{months[-1][:4]}-{months[-1][4:]}"},
             "regions": [n for _, n in regions],
         }
-        packed = pack(deals, meta)
+        packed = pack(deals, meta, rents, rent_months)
         if unchanged(a.out, packed):
             log(f"{a.out}: 내용 동일 — 파일을 그대로 둡니다 ({len(deals):,}건)")
             return 0

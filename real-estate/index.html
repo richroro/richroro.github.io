@@ -173,7 +173,13 @@ table.ledger{width:100%;border-collapse:collapse;font-size:13px}
 .ledger tbody tr{cursor:pointer}
 .ledger tbody tr:hover{background:var(--surface-2)}
 .ledger tbody tr.rec{box-shadow:inset 3px 0 0 var(--up)}
-.ledger .apt{font-weight:600;font-size:13.5px;max-width:230px;overflow:hidden;text-overflow:ellipsis}
+.ledger .apt{font-weight:600;font-size:13.5px;max-width:250px;display:flex;align-items:center;gap:5px}
+.ledger .apt span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.star{border:0;background:none;padding:0 1px;font-size:14px;line-height:1;color:var(--ink-3);flex:none;border-radius:3px;cursor:pointer}
+.star:hover{color:#c9932c}
+.star.on{color:#e0a92a}
+.favn{font-size:11px;color:var(--ink-3);font-weight:600}
+.drawer-h .star{font-size:20px;padding:3px 2px}
 .ledger .sub{font-size:11.5px;color:var(--ink-3);font-weight:400}
 .ledger .price{font-weight:600;font-size:13.5px}
 .ledger .when{font-size:11.5px;color:var(--ink-3)}
@@ -223,6 +229,28 @@ table.ledger{width:100%;border-collapse:collapse;font-size:13px}
 .barwrap{display:flex;align-items:center;gap:8px}
 .bar{height:10px;border-radius:0 3px 3px 0;background:var(--series-record);min-width:2px}
 .bar.deal{background:var(--series-deal)}
+
+/* 시장 개요 */
+.mk-head{display:grid;grid-template-columns:minmax(260px,1.1fr) minmax(0,2fr);gap:18px 24px;padding:20px 16px 16px;border-bottom:1px solid var(--line);align-items:center}
+@media (max-width:820px){.mk-head{grid-template-columns:minmax(0,1fr);gap:16px}}
+.mk-hero .l{font-size:12.5px;color:var(--ink-3);font-weight:500}
+.mk-hero .v{font-size:clamp(38px,7vw,54px);font-weight:600;line-height:1.05;letter-spacing:-.02em;margin:2px 0 4px}
+.mk-hero .v.up{color:var(--up-ink)} .mk-hero .v.down{color:var(--down-ink)}
+.mk-hero .d{font-size:13px;color:var(--ink-2);line-height:1.6}
+.mk-hero .d b{font-weight:600;color:var(--ink)}
+.mk-tiles{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+@media (max-width:560px){.mk-tiles{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.mk-t{background:var(--paper);border:1px solid var(--line-soft);border-radius:4px;padding:10px 12px;min-width:0}
+.mk-t .l{font-size:11.5px;color:var(--ink-3)}
+.mk-t .v{font-size:17px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.mk-t .v.up{color:var(--up-ink)} .mk-t .v.down{color:var(--down-ink)}
+.mk-t .s{font-size:11.5px;color:var(--ink-3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.mk-charts{padding:16px;position:relative}
+.mk-cap{display:flex;flex-wrap:wrap;gap:4px 12px;align-items:baseline;font-size:12px;color:var(--ink-3);margin:0 0 6px}
+.mk-cap b{font-size:12.5px;font-weight:600;color:var(--ink-2)}
+.mk-svg{width:100%;display:block;overflow:visible}
+.mk-note{padding:12px 16px;border-top:1px solid var(--line);font-size:12px;color:var(--ink-3);line-height:1.7;background:var(--paper)}
+.mk-note b{color:var(--ink-2)}
 
 /* 비슷한 단지 비교 */
 .peer-note{font-size:12.5px;color:var(--ink-2);margin:-2px 0 10px;line-height:1.6}
@@ -332,7 +360,10 @@ table.deals{width:100%;border-collapse:collapse;font-size:12.5px}
     </div>
     <div class="masthead-right">
       <p class="masthead-note">국토교통부 실거래가 파일을 넣으면 단지·면적별 최근 시세와 신고가, 경신 이력을 한 표로 정리합니다. 파일은 브라우저 밖으로 나가지 않습니다.</p>
-      <button class="theme-btn" id="themeBtn" type="button">테마: 자동</button>
+      <div style="display:flex;gap:6px;align-items:center">
+        <button class="theme-btn" id="shareBtn" type="button">링크 복사</button>
+        <button class="theme-btn" id="themeBtn" type="button">테마: 자동</button>
+      </div>
     </div>
   </div>
 </header>
@@ -399,19 +430,26 @@ table.deals{width:100%;border-collapse:collapse;font-size:12.5px}
       <select id="fPrice"><option value="3" selected>3개월 중위</option><option value="6">6개월 중위</option><option value="12">12개월 중위</option><option value="0">마지막 거래가</option></select>
     </div>
     <label class="toggle"><input type="checkbox" id="fRecOnly"> 신고가 경신만</label>
+    <label class="toggle"><input type="checkbox" id="fFavOnly"> 관심만 <span class="favn" id="favN"></span></label>
     <label class="toggle"><input type="checkbox" id="fExCancel" checked> 해제 거래 제외</label>
     <div class="spacer"></div>
     <div class="count" id="count"></div>
   </section>
 
   <div class="tabs" role="tablist">
-    <button class="tab" type="button" role="tab" aria-selected="true" data-view="ledger">정리표<span class="n" id="nLedger"></span></button>
+    <button class="tab" type="button" role="tab" aria-selected="true" data-view="market">시장 개요</button>
+    <button class="tab" type="button" role="tab" aria-selected="false" data-view="ledger">정리표<span class="n" id="nLedger"></span></button>
     <button class="tab" type="button" role="tab" aria-selected="false" data-view="timeline">신고가 타임라인<span class="n" id="nTimeline"></span></button>
     <button class="tab" type="button" role="tab" aria-selected="false" data-view="region">지역 요약</button>
     <button class="tab" type="button" role="tab" aria-selected="false" data-view="recommend">내게 맞는 단지<span class="n" id="nRec"></span></button>
   </div>
 
-  <section class="view panel" id="viewLedger" role="tabpanel">
+  <section class="view panel" id="viewMarket" role="tabpanel">
+    <div class="panel-h"><div class="panel-t">지금이 고점인가</div><div class="count" id="marketScope"></div></div>
+    <div id="marketBody"></div>
+  </section>
+
+  <section class="view panel" id="viewLedger" role="tabpanel" hidden>
     <div class="panel-h">
       <div class="panel-t">단지 · 면적별 정리표</div>
       <div class="load-row">
@@ -452,6 +490,8 @@ table.deals{width:100%;border-collapse:collapse;font-size:12.5px}
         <select id="rMinDeals"><option value="0">상관없음</option><option value="2">2건 이상</option><option value="5" selected>5건 이상</option><option value="10">10건 이상</option></select></div>
       <div class="f"><label id="rCostLabel">부대비용</label>
         <label class="toggle" style="min-height:34px"><input type="checkbox" id="rCost" checked> 취득세·중개보수 빼고 계산</label></div>
+      <div class="f" id="rGapWrap" hidden><label id="rGapLabel">매수 방식</label>
+        <label class="toggle" style="min-height:34px"><input type="checkbox" id="rGapBuy"> 전세 끼고 사기 (갭만 내 돈)</label></div>
     </div>
     <div class="rec-sum" id="recSum"></div>
     <div class="rec-list2" id="recList"></div>
@@ -475,6 +515,8 @@ table.deals{width:100%;border-collapse:collapse;font-size:12.5px}
 <aside class="drawer" id="drawer" aria-hidden="true" aria-label="단지 상세">
   <div class="drawer-h">
     <div class="t"><h2 id="dTitle"></h2><div class="s" id="dSub"></div></div>
+    <button class="star" id="dFav" type="button" aria-label="관심 단지">☆</button>
+    <button class="btn sm" id="dLink" type="button" title="이 화면 링크 복사">링크</button>
     <button class="close" id="dClose" type="button" aria-label="닫기">×</button>
   </div>
   <div class="drawer-b">
@@ -631,7 +673,16 @@ function packedToDeals(o,src){
       cancel:!!cancel&&cancel!=='-',cancelDate:cancel?String(cancel):'',
       type:C.type!=null?g('type',r[C.type]):'',src});
   }
-  out.meta={updated:o.updated||'',range:o.range||null,regions:o.regions||[],note:o.source||''};
+  out.meta={updated:o.updated||'',range:o.range||null,regions:o.regions||[],note:o.source||'',rentRange:o.rentRange||null};
+  if(Array.isArray(o.rent)&&o.rent.length){
+    const RC={}; (o.rentCols||[]).forEach((c,i)=>RC[c]=i);
+    const map=new Map();
+    for(const q of o.rent){
+      const key=`${g('sgg',q[RC.sgg])}|${g('dong',q[RC.dong])}|${g('apt',q[RC.apt])}|${q[RC.areaKey]}`;
+      map.set(key,{j12:+q[RC.j12]||0,n12:+q[RC.n12]||0,j6:+q[RC.j6]||0,j6p:+q[RC.j6p]||0});
+    }
+    out.rentMap=map;
+  }
   return out;
 }
 function textToDeals(text,src){
@@ -670,29 +721,36 @@ async function fileToDeals(file){
 function mulberry(a){return function(){a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296;}}
 function sampleDeals(){
   const rnd=mulberry(20260919);
-  const now=new Date(); const endY=now.getFullYear(), endM=now.getMonth()+1; // 이번 달까지
+  const now=new Date(); const endY=now.getFullYear(), endM=now.getMonth()+1;
+  const N=72;
+  /* 올랐다가 꺾이고 한동안 눌린 뒤 조금 되돌아오는 모양. 한 방향으로만 가는 자료를 쓰면
+     최근 거래가 전부 신고가로 잡혀서 "지금이 고점"이라는 잘못된 인상을 준다. */
+  const shape=(t,ph)=>{ const peak=44+ph;
+    const up=1+0.46*Math.sin(Math.min(t,peak)/peak*Math.PI/2);
+    const down=t<=peak?0:0.0085*Math.min(t-peak,22);
+    const back=t<=peak+22?0:0.0035*Math.min(t-peak-22,10);
+    return up-down+back; };
   const complexes=[
-    ['한빛동','한빛마을 1단지',2004,[[59,95000],[84,128000],[114,168000]],0.010],
-    ['한빛동','달빛 센트럴',2019,[[59,118000],[84,162000]],0.014],
-    ['한빛동','청솔 그린빌',1998,[[49,62000],[59,74000],[84,99000]],0.003],
-    ['은행동','은하수 타워',2016,[[74,142000],[84,158000],[110,205000]],0.012],
-    ['은행동','느티나무 파크',2008,[[59,88000],[84,121000]],0.006],
-    ['은행동','샘터마을 3단지',1992,[[42,48000],[59,66000],[76,84000]],-0.002],
-    ['강변동','강변 리버뷰',2021,[[84,189000],[101,232000],[134,318000]],0.016],
-    ['강변동','새들 하이츠',2001,[[59,72000],[84,103000]],0.001],
+    ['한빛동','한빛마을 1단지',2004,[[59,62000],[84,84000],[114,110000]],1,.58],
+    ['한빛동','달빛 센트럴',2019,[[59,78000],[84,107000]],-3,.52],
+    ['한빛동','청솔 그린빌',1998,[[49,41000],[59,49000],[84,66000]],4,.64],
+    ['은행동','은하수 타워',2016,[[74,94000],[84,105000],[110,136000]],-2,.55],
+    ['은행동','느티나무 파크',2008,[[59,58000],[84,80000]],2,.61],
+    ['은행동','샘터마을 3단지',1992,[[42,32000],[59,44000],[76,56000]],6,.67],
+    ['강변동','강변 리버뷰',2021,[[84,125000],[101,154000],[134,211000]],-4,.49],
+    ['강변동','새들 하이츠',2001,[[59,48000],[84,68000]],3,.63],
   ];
-  const out=[];
-  complexes.forEach(([dong,apt,built,types,drift],ci)=>{
+  const out=[], rentMap=new Map();
+  complexes.forEach(([dong,apt,built,types,ph,jr])=>{
     types.forEach(([area,base])=>{
-      const a=area+(rnd()*0.9).toFixed(2)*1; // 84.xx
-      let lvl=base*0.86;
-      for(let k=23;k>=0;k--){
+      const a=Math.round((area+rnd()*0.9)*100)/100;
+      for(let k=N-1;k>=0;k--){
         let y=endY, m=endM-k; while(m<=0){m+=12;y--;}
-        lvl*=1+drift+(rnd()-0.5)*0.03; if(k===7||k===8)lvl*=1+(ci%3===0?0.035:0.01);
-        const n=rnd()<0.18?0:1+Math.floor(rnd()*3);
+        const lvl=base*shape(N-1-k,ph)*(1+(rnd()-0.5)*0.02);
+        const n=rnd()<0.22?0:1+Math.floor(rnd()*3);
         for(let j=0;j<n;j++){
           const floor=1+Math.floor(rnd()*(built<2000?15:25));
-          const price=Math.round(lvl*(1+(rnd()-0.5)*0.06+(floor<4?-0.03:0))/500)*500;
+          const price=Math.round(lvl*(1+(rnd()-0.5)*0.05+(floor<4?-0.03:0))/250)*250;
           const day=1+Math.floor(rnd()*28);
           const cancel=rnd()<0.03;
           out.push({sido:'예시시',gu:'가상구',dong,sgg:'예시시 가상구',apt,area:a,price,date:`${y}-${pad2(m)}-${pad2(day)}`,
@@ -700,15 +758,22 @@ function sampleDeals(){
             type:rnd()<0.85?'중개거래':'직거래',src:'샘플'});
         }
       }
+      if(rnd()<0.85){
+        const cur=base*shape(N-1,ph), j12=Math.round(cur*jr/250)*250;
+        rentMap.set(`예시시 가상구|${dong}|${apt}|${Math.round(a)}`,
+          {j12,n12:4+Math.floor(rnd()*30),j6:Math.round(j12*(0.98+rnd()*0.06)/250)*250,j6p:Math.round(j12*(0.95+rnd()*0.06)/250)*250});
+      }
     });
   });
+  out.rentMap=rentMap;
   return out;
 }
 
 /* ---------- state & analysis ---------- */
-const S={deals:[],source:'',sample:false,ref:'',groups:[],shown:[],tl:[],view:'ledger',sort:'rec',dir:-1,page:0,per:50,open:null,
-  r:{budget:8,minArea:70,maxAge:0,profile:'balanced',minDeals:5,useCost:true},
-  f:{sgg:'',dong:'',q:'',area:'all',recent:0,win:3,priceWin:3,recOnly:false,exCancel:true}};
+const S={deals:[],source:'',sample:false,ref:'',rent:null,groups:[],shown:[],tl:[],view:'market',mk:null,mkGeo:null,sort:'rec',dir:-1,page:0,per:50,open:null,
+  r:{budget:8,minArea:70,maxAge:0,profile:'balanced',minDeals:5,useCost:true,gapBuy:false},
+  fav:new Set(), hasRent:false,
+  f:{sgg:'',dong:'',q:'',area:'all',recent:0,win:3,priceWin:3,recOnly:false,exCancel:true,favOnly:false}};
 function median(arr){ if(!arr.length)return null; const a=[...arr].sort((x,y)=>x-y); const m=a.length>>1; return a.length%2?a[m]:(a[m-1]+a[m])/2; }
 function mode(arr){ const c=new Map(); let best=arr[0],bn=0; for(const v of arr){ const n=(c.get(v)||0)+1; c.set(v,n); if(n>bn){bn=n;best=v;} } return best; }
 
@@ -747,9 +812,15 @@ function analyze(){
     if(in12.length>=3){ const v=in12.map(d=>d.price), mean=v.reduce((a,b)=>a+b,0)/v.length;
       g.cv=Math.sqrt(v.reduce((t,x)=>t+(x-mean)*(x-mean),0)/v.length)/mean; }
     g.ppy=g.price/(g.area/3.305785);
+    const rt=S.rent?S.rent.get(g.key):null;
+    g.jeonse=rt&&rt.j12?rt.j12:null; g.jeonseN=rt?rt.n12:0;
+    g.jRatio=g.jeonse?g.jeonse/g.price:null;
+    g.gap=g.jeonse?g.price-g.jeonse:null;
+    g.jMom=(rt&&rt.j6&&rt.j6p)?rt.j6/rt.j6p-1:null;
     groups.push(g);
   }
   S.groups=groups;
+  S.hasRent=groups.some(g=>g.jRatio!=null);
   computePeers(groups);
 }
 
@@ -771,14 +842,15 @@ function computePeers(groups){
 const SORTS={
   rec:{v:g=>g.lastRec?g.lastRec.date:''}, recPct:{v:g=>g.recRecent?g.lastRec.pct:-Infinity},
   max:{v:g=>g.max.price}, price:{v:g=>g.price}, vsPeak:{v:g=>g.vsPeak}, count:{v:g=>g.count},
-  last:{v:g=>g.last.date}, apt:{v:g=>g.apt+'|'+String(g.areaKey).padStart(4,'0')}
+  last:{v:g=>g.last.date}, apt:{v:g=>g.apt+'|'+String(g.areaKey).padStart(4,'0')},
+  jr:{v:g=>g.jRatio==null?-1:g.jRatio}
 };
 function applyFilters(){
   const f=S.f, q=f.q.trim().toLowerCase();
   const [lo,hi]=f.area==='all'?[0,1e9]:f.area.split('-').map(Number);
   const rFrom=f.recent&&S.ref?monthsAgo(S.ref,f.recent):null;
   S.shown=S.groups.filter(g=>(!f.sgg||g.sgg===f.sgg)&&(!f.dong||g.dong===f.dong)&&(!q||g.apt.toLowerCase().includes(q))
-    &&g.area>=lo&&g.area<hi&&(!rFrom||g.last.date>=rFrom)&&(!f.recOnly||g.recRecent));
+    &&g.area>=lo&&g.area<hi&&(!rFrom||g.last.date>=rFrom)&&(!f.recOnly||g.recRecent)&&(!f.favOnly||S.fav.has(g.key)));
   const s=SORTS[S.sort]||SORTS.rec;
   S.shown.sort((a,b)=>{ const x=s.v(a),y=s.v(b); if(x===y)return a.apt<b.apt?-1:a.apt>b.apt?1:a.areaKey-b.areaKey; return (x<y?-1:1)*S.dir; });
 }
@@ -809,7 +881,11 @@ function renderKpis(){
 }
 
 /* ---------- render: ledger ---------- */
-const HEADS=[['apt','단지',''],['','전용',''],['last','최근 거래','r'],['price','시세','r'],['max','신고가','r'],['rec','경신',''],['vsPeak','고점 대비','r'],['count','거래','r'],['','12개월 추이','c']];
+function heads(){
+  const h=[['apt','단지',''],['','전용',''],['last','최근 거래','r'],['price','시세','r']];
+  if(S.hasRent)h.push(['jr','전세가율','r']);
+  return h.concat([['max','신고가','r'],['rec','경신',''],['vsPeak','고점 대비','r'],['count','거래','r'],['','12개월 추이','c']]);
+}
 function sparkSVG(vals,hot){
   const v=vals.filter(x=>x!=null); const W=96,H=26,p=4;
   if(v.length<2)return `<svg class="spark" viewBox="0 0 ${W} ${H}"><line x1="${p}" x2="${W-p}" y1="${H/2}" y2="${H/2}" stroke="var(--line)" stroke-width="1"/></svg>`;
@@ -828,10 +904,11 @@ function rowHTML(g){
     :r?`<span class="badge old">마지막 경신 ${fmtYM(r.date)}</span>`:`<span class="badge old">경신 이력 없음</span>`;
   const vp=dir(g.vsPeak);
   return `<tr data-key="${esc(g.key)}" class="${g.recRecent?'rec':''}">
-<td class="full"><div class="apt" title="${esc(g.apt)}">${esc(g.apt)}</div><div class="sub">${esc([g.gu||g.sgg,g.dong].filter(Boolean).join(' '))}${g.built?` · ${g.built}년`:''}</div></td>
+<td class="full"><div class="apt"><button class="star${S.fav.has(g.key)?' on':''}" type="button" data-fav="${esc(g.key)}" aria-label="관심 단지" title="관심 단지">${S.fav.has(g.key)?'★':'☆'}</button><span title="${esc(g.apt)}">${esc(g.apt)}</span></div><div class="sub">${esc([g.gu||g.sgg,g.dong].filter(Boolean).join(' '))}${g.built?` · ${g.built}년`:''}</div></td>
 <td data-l="전용"><span class="num">${g.areaKey}㎡</span><div class="sub">${pyeong(g.area)}평</div></td>
 <td class="r" data-l="최근 거래"><div class="price num">${fmtMan(g.last.price)}</div><div class="when">${fmtDate(g.last.date)}${g.last.floor!=null?` · ${g.last.floor}층`:''}</div></td>
 <td class="r" data-l="시세"><div class="price num">${fmtMan(g.price)}</div><div class="when">${pw?`${pw}개월 중위 · ${g.priceN}건`:'마지막 거래가'}</div></td>
+${S.hasRent?`<td class="r" data-l="전세가율"><div class="price num">${g.jRatio!=null?Math.round(g.jRatio*100)+'%':'-'}</div><div class="when">${g.jeonse?`갭 ${fmtManShort(g.gap)}`:'전세 자료 없음'}</div></td>`:''}
 <td class="r" data-l="신고가"><div class="price num">${fmtMan(g.max.price)}</div><div class="when">${fmtDate(g.max.date)}${g.max.floor!=null?` · ${g.max.floor}층`:''}</div></td>
 <td data-l="경신">${badge}</td>
 <td class="r" data-l="고점 대비"><span class="delta num ${vp}">${vp==='flat'?'고점':fmtPct(g.vsPeak)}</span></td>
@@ -839,11 +916,11 @@ function rowHTML(g){
 <td class="c full">${sparkSVG(g.spark,g.recRecent)}</td></tr>`;
 }
 function renderLedger(){
-  const th=$('#ledger thead'), tb=$('#ledger tbody');
-  th.innerHTML='<tr>'+HEADS.map(([k,l,c])=>`<th class="${c}">${k?`<button type="button" data-sort="${k}">${l}${S.sort===k?`<span class="arr">${S.dir<0?'▼':'▲'}</span>`:''}</button>`:l}</th>`).join('')+'</tr>';
+  const th=$('#ledger thead'), tb=$('#ledger tbody'), H=heads();
+  th.innerHTML='<tr>'+H.map(([k,l,c])=>`<th class="${c}">${k?`<button type="button" data-sort="${k}">${l}${S.sort===k?`<span class="arr">${S.dir<0?'▼':'▲'}</span>`:''}</button>`:l}</th>`).join('')+'</tr>';
   const n=S.shown.length, pages=Math.max(1,Math.ceil(n/S.per)); S.page=Math.min(S.page,pages-1);
   const slice=S.shown.slice(S.page*S.per,(S.page+1)*S.per);
-  tb.innerHTML=slice.length?slice.map(rowHTML).join(''):`<tr><td colspan="9" class="empty">${S.deals.length?'조건에 맞는 단지가 없습니다.':'데이터를 불러오면 여기에 정리됩니다.'}</td></tr>`;
+  tb.innerHTML=slice.length?slice.map(rowHTML).join(''):`<tr><td colspan="${H.length}" class="empty">${S.deals.length?'조건에 맞는 단지가 없습니다.':'데이터를 불러오면 여기에 정리됩니다.'}</td></tr>`;
   $('#nLedger').textContent=n?n.toLocaleString():'';
   $('#ledgerInfo').textContent=n?`${(S.page*S.per+1).toLocaleString()}–${Math.min(n,(S.page+1)*S.per).toLocaleString()} / ${n.toLocaleString()}개 · 행을 누르면 상세`:'';
   $('#pager').innerHTML=pages>1?`<button class="btn sm" type="button" data-pg="-1" ${S.page===0?'disabled':''}>‹</button><span class="num">${S.page+1} / ${pages}</span><button class="btn sm" type="button" data-pg="1" ${S.page>=pages-1?'disabled':''}>›</button>`:'';
@@ -884,13 +961,14 @@ function renderRegion(){
     :'<tr><td colspan="8" class="empty">표시할 지역이 없습니다.</td></tr>';
 }
 /* ---------- 추천 ---------- */
-const FACTORS={liq:'거래 활발',disc:'고점 낙폭',mom:'6개월 흐름',stab:'가격 안정',val:'동네 대비',age:'연식'};
+const FACTORS={liq:'거래 활발',disc:'고점 낙폭',mom:'6개월 흐름',stab:'가격 안정',val:'동네 대비',jr:'전세가율',age:'연식'};
 const PROFILES={
-  balanced:{n:'균형 있게',w:{liq:.25,disc:.2,mom:.15,stab:.15,val:.2,age:.05}},
-  live:{n:'실거주 · 안정 우선',w:{liq:.2,disc:0,mom:.05,stab:.3,val:.2,age:.25}},
-  value:{n:'저평가 · 낙폭 큰 곳',w:{liq:.15,disc:.35,mom:0,stab:.1,val:.4,age:0}},
-  trend:{n:'반등 · 상승 흐름',w:{liq:.25,disc:.1,mom:.45,stab:.05,val:.15,age:0}},
-  liquid:{n:'환금성 · 팔기 쉬운 곳',w:{liq:.5,disc:.05,mom:.1,stab:.2,val:.1,age:.05}},
+  balanced:{n:'균형 있게',w:{liq:.22,disc:.18,mom:.15,stab:.13,val:.2,jr:.07,age:.05}},
+  live:{n:'실거주 · 안정 우선',w:{liq:.18,disc:0,mom:.05,stab:.27,val:.18,jr:.1,age:.22}},
+  value:{n:'저평가 · 낙폭 큰 곳',w:{liq:.15,disc:.32,mom:0,stab:.08,val:.35,jr:.1,age:0}},
+  trend:{n:'반등 · 상승 흐름',w:{liq:.25,disc:.1,mom:.45,stab:.05,val:.15,jr:0,age:0}},
+  liquid:{n:'환금성 · 팔기 쉬운 곳',w:{liq:.5,disc:.05,mom:.1,stab:.2,val:.1,jr:0,age:.05}},
+  gap:{n:'갭 작은 곳 · 전세 끼고',w:{jr:.45,liq:.2,val:.2,stab:.1,disc:.05,mom:0,age:0},rent:true},
 };
 /* 1주택·개략 기준 부대비용. 취득세 + 지방교육세(취득세의 10%) + 85㎡ 초과 농특세 0.2% + 중개보수 상한 */
 function acqRate(price,area){
@@ -926,35 +1004,44 @@ function recommend(){
   const base=S.shown.filter(g=>
     g.area>=r.minArea && g.count12>=r.minDeals && g.last.date>=(S.ref?monthsAgo(S.ref,12):'') &&
     (!r.maxAge||(g.built&&(+S.ref.slice(0,4))-g.built<=r.maxAge)));
-  const fits=[]; let cheapest=null;
+  const gapMode=r.gapBuy&&S.hasRent;
+  const fits=[]; let cheapest=null, noRent=0;
   for(const g of base){
+    if(gapMode&&g.jRatio==null){ noRent++; continue; }
     const cost=r.useCost?buyCost(g.price,g.area):{acq:0,br:0,total:0};
-    const need=g.price+cost.total;
+    const need=(gapMode?g.gap:g.price)+cost.total;
     if(!cheapest||need<cheapest.need)cheapest={g,need};
     if(budget>0&&need>budget)continue;
-    fits.push({g,cost,need,left:budget-need});
+    fits.push({g,cost,need,left:budget-need,gapMode});
   }
-  if(!fits.length)return {list:[],base:base.length,fit:0,budget,cheapest};
+  if(!fits.length)return {list:[],base:base.length,fit:0,budget,cheapest,gapMode,noRent};
   const gs=fits.map(x=>x.g);
   const medMom=medianOf(gs.filter(g=>g.mom!=null).map(g=>g.mom));
   const medCv=medianOf(gs.filter(g=>g.cv!=null).map(g=>g.cv));
   const medAge=medianOf(gs.filter(g=>g.built).map(g=>g.built));
+  const medJr=medianOf(gs.filter(g=>g.jRatio!=null).map(g=>g.jRatio));
   const R={
     liq:rankMap(gs,g=>g.count12),
     disc:rankMap(gs,g=>-g.vsPeak),
     mom:rankMap(gs,g=>g.mom==null?medMom:g.mom),
     stab:rankMap(gs,g=>-(g.cv==null?medCv:g.cv)),
     val:rankMap(gs,g=>-(g.valueGap==null?0:g.valueGap)),
+    jr:rankMap(gs,g=>g.jRatio==null?medJr:g.jRatio),
     age:rankMap(gs,g=>g.built||medAge),
   };
-  const w=PROFILES[r.profile].w;
+  const w={...PROFILES[r.profile].w};
+  if(!gs.some(g=>g.jRatio!=null)&&w.jr){
+    const spare=w.jr; w.jr=0;
+    const rest=Object.keys(w).filter(k=>w[k]>0), tot=rest.reduce((t,k)=>t+w[k],0);
+    for(const k of rest)w[k]+=spare*w[k]/tot;
+  }
   fits.forEach((x,i)=>{
     x.parts={}; let sum=0;
     for(const k in FACTORS){ const v=R[k][i]; x.parts[k]={rank:v,w:w[k],pts:v*w[k]}; sum+=v*w[k]; }
     x.score=Math.round(sum*1000)/10;
   });
   fits.sort((a,b)=>b.score-a.score||b.g.count12-a.g.count12);
-  return {list:fits.slice(0,30),base:base.length,fit:fits.length,budget};
+  return {list:fits.slice(0,30),base:base.length,fit:fits.length,budget,gapMode,weights:w,noRent};
 }
 function whyChips(x){
   const g=x.g, out=[];
@@ -965,6 +1052,7 @@ function whyChips(x){
   if(g.mom!=null&&Math.abs(g.mom)>=.02)out.push([g.mom>0?'up':'dn',`6개월 ${fmtPct(g.mom)}`]);
   if(g.valueGap!=null&&Math.abs(g.valueGap)>=.05)
     out.push([g.valueGap<0?'dn':'', `${esc(g.dong)} ${BAND_NAMES[bandOf(g.area)]} 평단가보다 ${pctAbs(g.valueGap)} ${g.valueGap<0?'싼 편':'비싼 편'}`]);
+  if(g.jRatio!=null)out.push([g.jRatio>=0.6?'dn':'',`전세가율 ${Math.round(g.jRatio*100)}%`]);
   if(g.built)out.push(['',`${(+S.ref.slice(0,4))-g.built}년차`]);
   return out.map(([c,t])=>`<i class="${c}">${t}</i>`).join('');
 }
@@ -972,22 +1060,26 @@ function renderRecommend(){
   const el=$('#recList'), sum=$('#recSum'), r=S.r;
   if(!S.deals.length){ sum.textContent=''; $('#nRec').textContent='';
     el.innerHTML='<div class="empty">데이터를 불러오면 여기에 정리됩니다.</div>'; return; }
+  $('#rGapWrap').hidden=!S.hasRent;
+  if(!S.hasRent&&r.gapBuy){ r.gapBuy=false; $('#rGapBuy').checked=false; }
   const res=recommend(), budget=res.budget;
   $('#nRec').textContent=res.list.length?res.list.length.toLocaleString():'';
   sum.innerHTML=`면적·연식·거래 조건에 맞는 <b>${res.base.toLocaleString()}</b>개 가운데 예산 안에 드는 <b>${(res.fit||0).toLocaleString()}</b>개`
     +` <span>·</span> 예산 <b>${fmtMan(budget)}</b>${r.useCost?' <span>취득세·중개보수 포함</span>':''}`
+    +(res.gapMode?` <span>·</span> <b>전세 끼고</b> <span>갭만 내 돈으로 봄${res.noRent?`, 전세 자료 없는 ${res.noRent}개 제외`:''}</span>`:'')
     +` <span>·</span> 기준 <b>${PROFILES[r.profile].n}</b>`;
   if(!res.list.length){
     let msg;
     if(!res.base)msg='면적·연식·거래 건수 조건에 맞는 단지가 없습니다. 조건을 풀어 보세요.';
     else if(res.cheapest){ const c=res.cheapest;
-      msg=`예산 안에 드는 단지가 없습니다. 가장 싼 후보는 <b>${esc(c.g.apt)} ${c.g.areaKey}㎡</b> 로 ${fmtMan(c.need)}${r.useCost?' (부대비용 포함)':''} 필요합니다 — 예산을 <b>${(Math.ceil(c.need/1000)/10).toFixed(1)}억</b> 으로 올리면 잡힙니다.`; }
+      msg=`예산 안에 드는 단지가 없습니다. 가장 적게 드는 후보는 <b>${esc(c.g.apt)} ${c.g.areaKey}㎡</b> 로 ${fmtMan(c.need)}${res.gapMode?' (갭 + 부대비용)':r.useCost?' (부대비용 포함)':''} 필요합니다 — 예산을 <b>${(Math.ceil(c.need/1000)/10).toFixed(1)}억</b> 으로 올리면 잡힙니다.`; }
+    else if(res.gapMode&&res.noRent)msg=`전세 실거래가 있는 단지가 조건 안에 없습니다. 전세 끼고 사기를 끄거나 조건을 풀어 보세요.`;
     else msg='예산 안에 드는 단지가 없습니다.';
     el.innerHTML=`<div class="empty">${msg}</div>`;
     return;
   }
-  const w=PROFILES[r.profile].w;
-  const keys=Object.keys(FACTORS).filter(k=>w[k]>0).sort((a,b)=>w[b]-w[a]);
+  const w=res.weights||PROFILES[r.profile].w;
+  const keys=Object.keys(FACTORS).filter(k=>w[k]>0.001).sort((a,b)=>w[b]-w[a]);
   el.innerHTML=res.list.map((x,i)=>{
     const g=x.g;
     const bars=keys.map(k=>`<div class="bar-row"><span>${FACTORS[k]}</span><div class="bar-track"><div class="bar-fill" style="width:${Math.max(2,Math.round(x.parts[k].rank*100))}%"></div></div></div>`).join('');
@@ -995,11 +1087,197 @@ function renderRecommend(){
 <div class="rank num">${i+1}</div>
 <div class="who"><h4>${esc(g.apt)} <span class="num" style="font-weight:600;color:var(--ink-3)">${g.areaKey}㎡</span></h4>
   <div class="meta">${esc([g.gu||g.sgg,g.dong].filter(Boolean).join(' '))} · ${pyeong(g.area)}평${g.built?` · ${g.built}년 준공`:''}</div>
-  <div class="nums"><span>시세 <b>${fmtMan(g.price)}</b></span>${r.useCost?`<span>부대비용 <b>${fmtMan(x.cost.total)}</b></span><span>합계 <b>${fmtMan(x.need)}</b></span>`:''}<span>예산 여유 <b>${fmtMan(x.left)}</b></span></div>
+  <div class="nums"><span>시세 <b>${fmtMan(g.price)}</b></span>${x.gapMode?`<span>전세 <b>${fmtMan(g.jeonse)}</b></span><span>갭 <b>${fmtMan(g.gap)}</b></span>`:''}${r.useCost?`<span>부대비용 <b>${fmtMan(x.cost.total)}</b></span>`:''}<span>${x.gapMode?'필요 자금':'합계'} <b>${fmtMan(x.need)}</b></span><span>예산 여유 <b>${fmtMan(x.left)}</b></span></div>
   <div class="why">${whyChips(x)}</div></div>
 <div class="bars"><div class="score"><b>${x.score.toFixed(0)}</b><span>/ 100점</span></div>${bars}</div></div>`;
   }).join('');
 }
+
+/* ---------- 관심 단지 · 링크 ---------- */
+function loadFav(){ try{ const a=JSON.parse(localStorage.getItem('sgj.fav')||'[]'); if(Array.isArray(a))S.fav=new Set(a); }catch(e){} }
+function saveFav(){ try{ localStorage.setItem('sgj.fav',JSON.stringify([...S.fav])); }catch(e){} }
+function toggleFav(key){
+  if(S.fav.has(key))S.fav.delete(key); else S.fav.add(key);
+  saveFav(); applyFilters(); renderLedger(); renderFavCount(); renderRecommend();
+  if(S.open&&S.open.key===key)paintDrawerFav();
+  writeHash();
+}
+function renderFavCount(){ const n=$('#favN'); if(n)n.textContent=S.fav.size?String(S.fav.size):''; }
+function paintDrawerFav(){ const b=$('#dFav'); if(!b||!S.open)return;
+  const on=S.fav.has(S.open.key); b.textContent=on?'★':'☆'; b.classList.toggle('on',on); }
+
+const HASH_KEYS=['sgg','dong','q','area','recent','win','priceWin'];
+function writeHash(){
+  const f=S.f, p=new URLSearchParams();
+  if(S.view!=='market')p.set('v',S.view);
+  for(const k of HASH_KEYS){ const v=f[k]; if(v&&v!=='all')p.set(k,String(v)); }
+  if(f.recOnly)p.set('rec','1');
+  if(f.favOnly)p.set('fav','1');
+  if(!f.exCancel)p.set('cx','1');
+  if(S.open)p.set('at',S.open.key);
+  const h=p.toString();
+  history.replaceState(null,'',h?'#'+h:location.pathname+location.search);
+}
+function readHash(){
+  const raw=location.hash.replace(/^#/,''); if(!raw)return null;
+  const p=new URLSearchParams(raw), f=S.f;
+  for(const k of HASH_KEYS)if(p.has(k))f[k]=(k==='recent'||k==='win'||k==='priceWin')?+p.get(k):p.get(k);
+  f.recOnly=p.get('rec')==='1'; f.favOnly=p.get('fav')==='1'; f.exCancel=p.get('cx')!=='1';
+  const v=p.get('v'); if(['market','ledger','timeline','region','recommend'].includes(v))S.view=v;
+  return p.get('at')||null;
+}
+function syncControls(){
+  const f=S.f;
+  $('#fQ').value=f.q; $('#fRecent').value=String(f.recent); $('#fWin').value=String(f.win);
+  $('#fPrice').value=String(f.priceWin); $('#fRecOnly').checked=f.recOnly; $('#fExCancel').checked=f.exCancel;
+  $('#fFavOnly').checked=f.favOnly;
+  $('#fArea').querySelectorAll('.chip').forEach(c=>c.setAttribute('aria-pressed',c.dataset.v===f.area?'true':'false'));
+  document.querySelectorAll('.tab').forEach(t=>t.setAttribute('aria-selected',t.dataset.view===S.view?'true':'false'));
+  ['market','ledger','timeline','region','recommend'].forEach(v=>$('#view'+v[0].toUpperCase()+v.slice(1)).hidden=v!==S.view);
+}
+function shareLink(){ writeHash(); copyText(location.href,'이 화면 링크를 복사했습니다'); }
+
+/* ---------- 시장 개요 ----------
+   달마다 그냥 중위값을 내면 그 달에 어떤 단지가 거래됐는지에 따라 값이 튄다(구성 편향).
+   그래서 단지·면적별로 제 평단가 중앙값 대비 몇 배인지를 먼저 구하고, 그 배수들의 중앙값을 지수로 쓴다. */
+function marketSeries(){
+  const gs=S.shown; if(!gs.length||!S.ref)return null;
+  const perG=[];
+  let first='';
+  for(const g of gs){
+    const m=new Map();
+    for(const d of g.deals){ const ym=d.date.slice(0,7); (m.get(ym)||m.set(ym,[]).get(ym)).push(d.price/(g.area/3.305785)); }
+    if(!m.size)continue;
+    const monthly=new Map(); for(const [ym,v] of m)monthly.set(ym,median(v));
+    const base=median([...monthly.values()]); if(!base)continue;
+    perG.push({monthly,base});
+    for(const ym of monthly.keys())if(!first||ym<first)first=ym;
+  }
+  if(!perG.length)return null;
+  const months=[]; { let ym=first; const end=S.ref.slice(0,7);
+    while(ym<=end){ months.push(ym); let y=+ym.slice(0,4),mo=+ym.slice(5)+1; if(mo>12){mo=1;y++;} ym=`${y}-${pad2(mo)}`; } }
+  const vol=new Map();
+  for(const g of gs)for(const d of g.deals){ const ym=d.date.slice(0,7); vol.set(ym,(vol.get(ym)||0)+1); }
+  const minG=Math.max(2,Math.min(5,Math.round(perG.length*0.05)));
+  const raw=months.map(ym=>{
+    const r=[]; for(const p of perG){ const v=p.monthly.get(ym); if(v!=null)r.push(v/p.base); }
+    return r.length>=minG?median(r):null;
+  });
+  const firstIdx=raw.findIndex(v=>v!=null); if(firstIdx<0)return null;
+  const b=raw[firstIdx];
+  const idx=raw.map(v=>v==null?null:v/b*100);
+  let peak=-1,trough=-1;
+  idx.forEach((v,i)=>{ if(v==null)return; if(peak<0||v>idx[peak])peak=i; });
+  idx.forEach((v,i)=>{ if(v==null||i<peak)return; if(trough<0||v<idx[trough])trough=i; });
+  let cur=idx.length-1; while(cur>=0&&idx[cur]==null)cur--;
+  const at=i=>i>=0?{ym:months[i],v:idx[i]}:null;
+  const prior=cur>=3?[...Array(cur-2).keys()].map(i=>i+0).slice(-1):[];
+  let p3=null; for(let i=cur-1;i>=0;i--){ if(idx[i]!=null&&months[i]<=ymShift(months[cur]+'-01',3).slice(0,7)){ p3=i; break; } }
+  return {months,idx,vol:months.map(ym=>vol.get(ym)||0),peak:at(peak),trough:at(trough),cur:at(cur),
+    p3:at(p3),groups:perG.length,minG,
+    vsPeak:(cur>=0&&peak>=0)?idx[cur]/idx[peak]-1:null,
+    vsTrough:(cur>=0&&trough>=0&&idx[trough])?idx[cur]/idx[trough]-1:null,
+    mom3:(cur>=0&&p3!=null&&idx[p3])?idx[cur]/idx[p3]-1:null};
+}
+function niceMax(v){ if(v<=0)return 1; const p=Math.pow(10,Math.floor(Math.log10(v))); return Math.ceil(v/p*2)/2*p; }
+function drawMarket(m,W){
+  const L=48,R=58,gap=10;
+  const H1=210,T1=14,B1=22, H2=96,T2=8,B2=24;
+  const n=m.months.length, iw=W-L-R;
+  const x=i=>L+(n<=1?iw/2:i*iw/(n-1));
+  const vals=m.idx.filter(v=>v!=null);
+  let lo=Math.min(...vals), hi=Math.max(...vals); const pad=Math.max(2,(hi-lo)*0.14); lo-=pad; hi+=pad;
+  const y1=v=>T1+(hi-v)/(hi-lo)*(H1-T1-B1);
+  const vmax=niceMax(Math.max(1,...m.vol));
+  const y2=v=>T2+(1-v/vmax)*(H2-T2-B2);
+  const tick=(mn,mx,k)=>{ const raw=(mx-mn)/k,p=Math.pow(10,Math.floor(Math.log10(raw)));
+    const st=[1,2,2.5,5,10].map(z=>z*p).find(z=>z>=raw)||raw; const o=[]; for(let v=Math.ceil(mn/st)*st;v<=mx;v+=st)o.push(v); return o; };
+  let a='';
+  for(const t of tick(lo,hi,4))a+=`<line x1="${L}" x2="${W-R}" y1="${y1(t).toFixed(1)}" y2="${y1(t).toFixed(1)}" stroke="var(--grid)"/>`
+    +`<text x="${L-7}" y="${(y1(t)+3.5).toFixed(1)}" text-anchor="end" font-size="10.5" fill="var(--ink-3)" font-family="IBM Plex Mono,monospace">${Math.round(t)}</text>`;
+  let d='',area='',pen=false,firstX=null,lastX=null;
+  m.idx.forEach((v,i)=>{ if(v==null){pen=false;return;} const X=x(i).toFixed(1),Y=y1(v).toFixed(1);
+    d+=(pen?'L':'M')+X+' '+Y; area+=(pen?'L':`M${X} ${y1(lo).toFixed(1)}L`)+X+' '+Y; pen=true;
+    if(firstX==null)firstX=X; lastX=X; });
+  if(area)area+=`L${lastX} ${y1(lo).toFixed(1)}Z`;
+  a+=`<path d="${area}" fill="var(--series-deal)" opacity=".10"/><path d="${d}" fill="none" stroke="var(--series-deal)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>`;
+  const mark=(pt,i,color,label,anchor)=>{ if(!pt)return '';
+    const X=x(i),Y=y1(pt.v);
+    return `<circle cx="${X.toFixed(1)}" cy="${Y.toFixed(1)}" r="4.5" fill="${color}" stroke="var(--surface)" stroke-width="2"/>`
+      +`<text x="${(X+(anchor==='end'?-8:8)).toFixed(1)}" y="${(Y-9).toFixed(1)}" text-anchor="${anchor}" font-size="11" font-weight="600" fill="var(--ink-2)">${label}</text>`;
+  };
+  const pi=m.months.indexOf(m.peak?m.peak.ym:''), ci=m.months.indexOf(m.cur?m.cur.ym:'');
+  a+=mark(m.peak,pi,'var(--series-record)',`고점 ${m.peak?m.peak.ym.replace('-','.'):''}`,pi>n*0.7?'end':'start');
+  a+=mark(m.cur,ci,'var(--series-deal)',`${m.cur?Math.round(m.cur.v):''}`,'end');
+  a+=`<line x1="${L}" x2="${W-R}" y1="${(H1-B1).toFixed(1)}" y2="${(H1-B1).toFixed(1)}" stroke="var(--axis)"/>`;
+  let b=`<line x1="${L}" x2="${W-R}" y1="${(H2-B2).toFixed(1)}" y2="${(H2-B2).toFixed(1)}" stroke="var(--axis)"/>`
+    +`<text x="${L-7}" y="${(y2(vmax)+3.5).toFixed(1)}" text-anchor="end" font-size="10.5" fill="var(--ink-3)" font-family="IBM Plex Mono,monospace">${vmax}</text>`;
+  const bw=Math.max(1.5,Math.min(24,iw/n-2));
+  m.vol.forEach((v,i)=>{ if(!v)return; const h=(H2-B2)-y2(v); if(h<=0)return;
+    const r=Math.min(3,bw/2,h);
+    b+=`<rect x="${(x(i)-bw/2).toFixed(1)}" y="${y2(v).toFixed(1)}" width="${bw.toFixed(1)}" height="${h.toFixed(1)}" rx="${r.toFixed(1)}" ry="${r.toFixed(1)}" fill="var(--series-deal)" opacity=".55"/>`
+      +`<rect x="${(x(i)-bw/2).toFixed(1)}" y="${(H2-B2-Math.min(r,h)).toFixed(1)}" width="${bw.toFixed(1)}" height="${Math.min(r,h).toFixed(1)}" fill="var(--series-deal)" opacity=".55"/>`; });
+  let xs='';
+  const step=Math.max(1,Math.ceil(n/Math.max(2,Math.floor(iw/62))));
+  for(let i=0;i<n;i+=step){ const ym=m.months[i];
+    xs+=`<text x="${x(i).toFixed(1)}" y="${(H2-B2+16).toFixed(1)}" text-anchor="middle" font-size="10.5" fill="var(--ink-3)" font-family="IBM Plex Mono,monospace">${ym.slice(2).replace('-','.')}</text>`; }
+  return {
+    line:`<svg class="mk-svg" id="mkLine" viewBox="0 0 ${W} ${H1}" height="${H1}" role="img" aria-label="월별 시세 지수"><g id="mkHairA"></g>${a}</svg>`,
+    vol:`<svg class="mk-svg" id="mkVol" viewBox="0 0 ${W} ${H2}" height="${H2}" role="img" aria-label="월별 거래량"><g id="mkHairB"></g>${b}${xs}</svg>`,
+    geo:{L,R,W,n,H1,H2,B1,B2,x}
+  };
+}
+function renderMarket(){
+  const box=$('#marketBody'), scope=$('#marketScope');
+  if(!S.deals.length){ scope.textContent=''; box.innerHTML='<div class="empty">데이터를 불러오면 여기에 정리됩니다.</div>'; S.mk=null; return; }
+  const m=marketSeries();
+  if(!m){ scope.textContent=''; box.innerHTML='<div class="empty">지수를 낼 만큼 거래가 모이지 않았습니다. 필터를 풀어 보세요.</div>'; S.mk=null; return; }
+  S.mk=m;
+  const f=S.f, where=[f.sgg||'전체',f.dong].filter(Boolean).join(' ');
+  scope.textContent=`${where} · 단지·면적 ${m.groups.toLocaleString()}개 · ${m.months[0].replace('-','.')}~${m.months[m.months.length-1].replace('-','.')}`;
+  const vp=m.vsPeak, near=vp!=null&&vp>-0.02;
+  const headline=vp==null?'-':near?'고점 부근':fmtPct(vp);
+  const w=Math.max(360,Math.round(box.clientWidth||900)-32);
+  const c=drawMarket(m,w);
+  const t3=m.mom3;
+  box.innerHTML=`<div class="mk-head">
+  <div class="mk-hero"><div class="l">지금 시세는 고점 대비</div>
+    <div class="v ${vp==null?'':near?'up':'down'} num">${headline}</div>
+    <div class="d">${m.peak?`고점은 <b>${m.peak.ym.replace('-','.')}</b>`:''}${m.cur?`, 가장 최근 달은 <b>${m.cur.ym.replace('-','.')}</b>`:''}입니다.
+      ${near?'지금 값이 기간 내 최고 수준입니다.':'그때 이후로 아직 회복하지 못했습니다.'}</div></div>
+  <div class="mk-tiles">
+    <div class="mk-t"><div class="l">저점 이후</div><div class="v num ${dir(m.vsTrough)}">${m.vsTrough==null?'-':fmtPct(m.vsTrough)}</div><div class="s">저점 ${m.trough?m.trough.ym.replace('-','.'):'-'}</div></div>
+    <div class="mk-t"><div class="l">최근 3개월</div><div class="v num ${dir(t3)}">${t3==null?'-':fmtPct(t3)}</div><div class="s">${t3==null?'-':t3>0.005?'오르는 중':t3<-0.005?'내리는 중':'횡보'}</div></div>
+    <div class="mk-t"><div class="l">최근 12개월 거래</div><div class="v num">${m.vol.slice(-12).reduce((a,b)=>a+b,0).toLocaleString()}</div><div class="s">직전 12개월 ${m.vol.slice(-24,-12).reduce((a,b)=>a+b,0).toLocaleString()}건</div></div>
+  </div></div>
+<div class="mk-charts" id="mkCharts">
+  <p class="mk-cap"><b>시세 지수</b><span>${m.months[0].replace('-','.')} = 100 · 단지 구성이 달라지는 영향을 뺀 값</span></p>
+  ${c.line}
+  <p class="mk-cap" style="margin-top:10px"><b>월별 거래량</b><span>건</span></p>
+  ${c.vol}
+  <div class="tip" id="mkTip"></div>
+</div>
+<div class="mk-note"><b>지수를 만드는 법</b> — 달마다 거래된 단지가 다르면 중위값이 단지 구성 때문에 튑니다.
+그래서 단지·면적별로 그 달 평단가가 <b>자기 자신의 기간 중앙값 대비 몇 배</b>인지를 먼저 구하고, 그 배수들의 중앙값을 지수로 씁니다.
+한 달에 최소 ${m.minG}개 단지가 거래된 달만 점을 찍습니다. 위 필터(시군구·읍면동·면적)를 바꾸면 그 범위로 다시 계산합니다.
+표본이 적은 지역·면적에서는 지수가 거칠게 흔들릴 수 있습니다.</div>`;
+  S.mkGeo=c.geo;
+}
+function marketHover(ev){
+  const g=S.mkGeo, m=S.mk; if(!g||!m)return;
+  const svg=$('#mkLine'), box=$('#mkCharts'), tip=$('#mkTip'); if(!svg)return;
+  const b=svg.getBoundingClientRect(), sx=g.W/b.width;
+  const mx=(ev.clientX-b.left)*sx;
+  let i=Math.round((mx-g.L)/((g.W-g.L-g.R)/Math.max(1,g.n-1)));
+  i=Math.max(0,Math.min(g.n-1,i));
+  const X=g.x(i);
+  $('#mkHairA').innerHTML=`<line x1="${X.toFixed(1)}" x2="${X.toFixed(1)}" y1="0" y2="${g.H1-g.B1}" stroke="var(--axis)" stroke-width="1"/>`;
+  $('#mkHairB').innerHTML=`<line x1="${X.toFixed(1)}" x2="${X.toFixed(1)}" y1="0" y2="${g.H2-g.B2}" stroke="var(--axis)" stroke-width="1"/>`;
+  const v=m.idx[i], bb=box.getBoundingClientRect();
+  tip.innerHTML=`<b>${m.months[i].replace('-','.')}</b> · 지수 ${v==null?'-':Math.round(v)}${v!=null&&m.peak?` · 고점 대비 ${fmtPct(v/m.peak.v-1)}`:''} · 거래 ${m.vol[i]}건`;
+  tip.style.left=(X/sx)+'px'; tip.style.top=(b.top-bb.top+16)+'px'; tip.classList.add('on');
+}
+function marketHoverOff(){ const a=$('#mkHairA'),b=$('#mkHairB'),t=$('#mkTip'); if(a)a.innerHTML=''; if(b)b.innerHTML=''; if(t)t.classList.remove('on'); }
 
 /* ---------- 비슷한 단지 ---------- */
 function similarGroups(g,limit){
@@ -1040,10 +1318,12 @@ function renderPeers(g){
 <td class="r num">${fmtManShort(x.price)}</td>
 <td><div class="ppybar"><div class="t"><div class="f" style="width:${Math.max(3,Math.round(x.ppy/maxPpy*100))}%"></div></div><span class="num">${Math.round(x.ppy).toLocaleString()}</span></div></td>
 <td class="r">${self?'<span class="vs eq">기준</span>':`<span class="vs ${cls}">${d>0?'+':''}${(d*100).toFixed(0)}%</span>`}</td>
+${S.hasRent?`<td class="r num">${x.jRatio!=null?Math.round(x.jRatio*100)+'%':'-'}</td>`:''}
 <td class="r num">${fmtPct(x.vsPeak,0)}</td>
 <td class="r num">${x.count12}</td></tr>`;
   };
-  tb.innerHTML='<thead><tr><th>단지</th><th class="r">시세</th><th>평단가(만원)</th><th class="r">이 단지 대비</th><th class="r">고점 대비</th><th class="r">1년 거래</th></tr></thead><tbody>'
+  const jr=S.hasRent;
+  tb.innerHTML=`<thead><tr><th>단지</th><th class="r">시세</th><th>평단가(만원)</th><th class="r">이 단지 대비</th>${jr?'<th class="r">전세가율</th>':''}<th class="r">고점 대비</th><th class="r">1년 거래</th></tr></thead><tbody>`
     +row(g,true)+peers.map(x=>row(x,false)).join('')+'</tbody>';
 }
 
@@ -1086,16 +1366,20 @@ function openDrawer(key){
     {l:S.f.priceWin?`시세 · ${S.f.priceWin}개월 중위`:'시세 · 마지막 거래',v:fmtMan(g.price),d:`최근 거래 ${fmtMan(g.last.price)} (${fmtYM(g.last.date)})`},
     {l:'고점 대비',v:`<span class="delta ${vp}">${vp==='flat'?'고점':fmtPct(g.vsPeak)}</span>`,d:`최저 ${fmtMan(g.min)}`},
     {l:'신고가 경신',v:r?fmtPct(r.pct):'-',d:r?`${fmtDate(r.date)} · 직전 ${fmtManShort(r.prev)}`:'경신 이력 없음'},
-  ].map(t=>`<div class="dk"><div class="l">${t.l}</div><div class="v num">${t.v}</div><div class="d">${esc(t.d)}</div></div>`).join('');
+  ].concat(g.jRatio!=null?[
+    {l:'전세가율',v:`${Math.round(g.jRatio*100)}%`,d:`전세 중위 ${fmtMan(g.jeonse)} · 최근 1년 ${g.jeonseN}건`},
+    {l:'갭 (매매−전세)',v:fmtMan(g.gap),d:g.jMom!=null?`전세 6개월 ${fmtPct(g.jMom)}`:'전세 흐름 자료 부족'},
+  ]:[]).map(t=>`<div class="dk"><div class="l">${t.l}</div><div class="v num">${t.v}</div><div class="d">${esc(t.d)}</div></div>`).join('');
   drawChart(g);
   $('#dRecs').innerHTML=g.recs.length?[...g.recs].reverse().map(r=>`<li><span class="d num">${fmtDate(r.date)}</span><span><span class="p num">${fmtMan(r.price)}</span><span class="f">${r.floor!=null?r.floor+'층':''}</span></span><span class="delta up num">${fmtPct(r.pct)}</span></li>`).join(''):'<li><span class="d">-</span><span>경신 이력이 없습니다 (첫 거래가 곧 최고가)</span></li>';
   const recSet=new Set(g.recs.map(r=>r.deal));
   $('#dDeals').innerHTML='<thead><tr><th>계약일</th><th class="r">거래금액</th><th class="r">층</th><th>동</th><th>유형</th><th>비고</th></tr></thead><tbody>'+
     [...g.deals].reverse().map(d=>`<tr class="${d.cancel?'cancel':''} ${recSet.has(d)?'rec':''}"><td class="num">${fmtDate(d.date)}</td><td class="r num p">${fmtMan(d.price)}</td><td class="r num">${d.floor??'-'}</td><td>${esc(d.bdong||'-')}</td><td>${esc(d.type||'-')}</td><td>${d.cancel?'해제 '+esc(d.cancelDate):recSet.has(d)?'신고가':''}</td></tr>`).join('')+'</tbody>';
   renderPeers(g);
+  paintDrawerFav(); writeHash();
   $('#drawer').classList.add('on'); $('#drawer').setAttribute('aria-hidden','false'); $('#scrim').classList.add('on'); document.body.style.overflow='hidden';
 }
-function closeDrawer(){ $('#drawer').classList.remove('on'); $('#drawer').setAttribute('aria-hidden','true'); $('#scrim').classList.remove('on'); document.body.style.overflow=''; $('#dTip').classList.remove('on'); }
+function closeDrawer(){ S.open=null; writeHash(); $('#drawer').classList.remove('on'); $('#drawer').setAttribute('aria-hidden','true'); $('#scrim').classList.remove('on'); document.body.style.overflow=''; $('#dTip').classList.remove('on'); }
 
 /* ---------- export ---------- */
 const HEAD=['시군구','읍면동','단지','전용면적(㎡)','건축년도','최근거래가(만원)','최근거래일','최근거래층','시세(만원)','신고가(만원)','신고가일','신고가층','최근경신여부','경신일','직전신고가(만원)','경신폭(%)','고점대비(%)','거래건수'];
@@ -1115,6 +1399,7 @@ const dealKey=d=>[d.sgg,d.dong,d.apt,d.area,d.date,d.price,d.floor??'',d.bdong||
 function setDeals(deals,source,sample,append,opts){
   const o=opts||{};
   S.auto=!!o.auto; S.meta=o.auto?(deals.meta||null):null;
+  if(!(append&&!S.sample&&!S.auto&&S.deals.length>0))S.rent=deals.rentMap||null;
   // 샘플·자동 수집 자료 위에 파일을 올리면 합치지 않고 교체한다
   const merge=append&&!S.sample&&!S.auto&&S.deals.length>0;
   const base=merge?S.deals:[]; const seen=new Set(base.map(dealKey)); let dup=0;
@@ -1145,6 +1430,7 @@ function loadR(){
   try{ const o=JSON.parse(localStorage.getItem('sgj.r')||'null'); if(o&&PROFILES[o.profile])Object.assign(S.r,o); }catch(e){}
   $('#rBudget').value=S.r.budget; $('#rArea').value=S.r.minArea; $('#rBuilt').value=S.r.maxAge;
   $('#rProfile').value=S.r.profile; $('#rMinDeals').value=S.r.minDeals; $('#rCost').checked=S.r.useCost;
+  $('#rGapBuy').checked=!!S.r.gapBuy;
 }
 function loadF(){ try{ const o=JSON.parse(localStorage.getItem('sgj.f')||'null'); if(o){ Object.assign(S.f,o); $('#fWin').value=S.f.win; $('#fPrice').value=S.f.priceWin; $('#fExCancel').checked=S.f.exCancel; } }catch(e){} }
 function setStatus(msg,err){ const s=$('#status'); s.textContent=msg; s.classList.toggle('err',!!err); }
@@ -1173,8 +1459,8 @@ async function loadURL(url,quiet,auto){
 }
 
 /* ---------- render all ---------- */
-function render(){ analyze(); fillFilters(); applyFilters(); renderDataset(); renderKpis(); renderLedger(); renderTimeline(); renderRegion(); renderRecommend();
-  $('#count').textContent=S.groups.length?`${S.shown.length.toLocaleString()} / ${S.groups.length.toLocaleString()}개 표시`:''; }
+function render(){ analyze(); fillFilters(); applyFilters(); renderDataset(); renderKpis(); renderMarket(); renderLedger(); renderTimeline(); renderRegion(); renderRecommend();
+  $('#count').textContent=S.groups.length?`${S.shown.length.toLocaleString()} / ${S.groups.length.toLocaleString()}개 표시`:''; renderFavCount(); }
 
 /* ---------- theme ---------- */
 const TH={auto:'자동',light:'밝게',dark:'어둡게'}; let theme='auto';
@@ -1194,7 +1480,7 @@ function bind(){
   $('#pasteCancel').onclick=()=>{ $('#pasteBox').hidden=true; };
   $('#pasteGo').onclick=()=>{ const d=textToDeals($('#pasteArea').value,'붙여넣기'); if(!d||!d.length){setStatus('붙여넣은 내용에서 실거래가 표를 찾지 못했습니다. 헤더(단지명·거래금액…)까지 포함해 주세요.',true);return;} const r=setDeals(d,'붙여넣기',false,true); $('#pasteBox').hidden=true; $('#pasteArea').value=''; setStatus(`${r.added}건 불러왔습니다${r.dup?` (중복 ${r.dup}건 제외)`:''}.`); };
   $('#sampleBtn').onclick=()=>{ setDeals(sampleDeals(),'샘플 데이터 (가상 단지 · 실제 거래 아님)',true,false); setStatus('가상의 샘플 데이터입니다. 실제 단지·가격이 아닙니다.'); };
-  const F=k=>{ S.page=0; render(); if(k)saveF(); };
+  const F=k=>{ S.page=0; render(); if(k)saveF(); writeHash(); };
   $('#fSgg').onchange=e=>{ S.f.sgg=e.target.value; S.f.dong=''; F(); };
   $('#fDong').onchange=e=>{ S.f.dong=e.target.value; F(); };
   $('#fQ').oninput=e=>{ S.f.q=e.target.value; F(); };
@@ -1203,13 +1489,21 @@ function bind(){
   $('#fWin').onchange=e=>{ S.f.win=+e.target.value; F(1); };
   $('#fPrice').onchange=e=>{ S.f.priceWin=+e.target.value; F(1); };
   $('#fRecOnly').onchange=e=>{ S.f.recOnly=e.target.checked; F(); };
+  $('#fFavOnly').onchange=e=>{ S.f.favOnly=e.target.checked; F(); };
+  $('#dFav').onclick=()=>{ if(S.open)toggleFav(S.open.key); };
+  $('#dLink').onclick=shareLink; $('#shareBtn').onclick=shareLink;
   $('#fExCancel').onchange=e=>{ S.f.exCancel=e.target.checked; F(1); };
-  document.querySelectorAll('.tab').forEach(t=>t.onclick=()=>{ S.view=t.dataset.view; document.querySelectorAll('.tab').forEach(x=>x.setAttribute('aria-selected',x===t?'true':'false')); ['ledger','timeline','region','recommend'].forEach(v=>$('#view'+v[0].toUpperCase()+v.slice(1)).hidden=v!==S.view); });
-  $('#ledger').addEventListener('click',e=>{ const sb=e.target.closest('[data-sort]'); if(sb){ const k=sb.dataset.sort; if(S.sort===k)S.dir=-S.dir; else {S.sort=k;S.dir=k==='apt'||k==='vsPeak'?1:-1;} S.page=0; applyFilters(); renderLedger(); return; } const tr=e.target.closest('tr[data-key]'); if(tr)openDrawer(tr.dataset.key); });
+  document.querySelectorAll('.tab').forEach(t=>t.onclick=()=>{ S.view=t.dataset.view; document.querySelectorAll('.tab').forEach(x=>x.setAttribute('aria-selected',x===t?'true':'false')); ['market','ledger','timeline','region','recommend'].forEach(v=>$('#view'+v[0].toUpperCase()+v.slice(1)).hidden=v!==S.view);
+    if(S.view==='market')renderMarket(); writeHash(); });
+  $('#ledger').addEventListener('click',e=>{ const fv=e.target.closest('[data-fav]'); if(fv){ e.stopPropagation(); toggleFav(fv.dataset.fav); return; }
+    const sb=e.target.closest('[data-sort]'); if(sb){ const k=sb.dataset.sort; if(S.sort===k)S.dir=-S.dir; else {S.sort=k;S.dir=k==='apt'||k==='vsPeak'?1:-1;} S.page=0; applyFilters(); renderLedger(); return; } const tr=e.target.closest('tr[data-key]'); if(tr)openDrawer(tr.dataset.key); });
   $('#pager').onclick=e=>{ const b=e.target.closest('[data-pg]'); if(!b)return; S.page+=+b.dataset.pg; renderLedger(); $('#viewLedger').scrollIntoView({block:'start',behavior:'smooth'}); };
   $('#timeline').addEventListener('click',e=>{ const r=e.target.closest('[data-key]'); if(r)openDrawer(r.dataset.key); });
   $('#timeline').addEventListener('keydown',e=>{ const r=e.target.closest('[data-key]'); if(r&&(e.key==='Enter'||e.key===' ')){e.preventDefault();openDrawer(r.dataset.key);} });
   $('#dPeers').addEventListener('click',e=>{ const tr=e.target.closest('tr[data-key]'); if(tr){ openDrawer(tr.dataset.key); $('#drawer').scrollTop=0; } });
+  document.addEventListener('mousemove',e=>{ if(S.view==='market'&&e.target.closest('#mkCharts'))marketHover(e); });
+  document.addEventListener('mouseleave',e=>{ if(e.target.closest&&e.target.closest('#mkCharts'))marketHoverOff(); },true);
+  let rt; addEventListener('resize',()=>{ clearTimeout(rt); rt=setTimeout(()=>{ if(S.view==='market')renderMarket(); },200); });
   $('#dClose').onclick=closeDrawer; $('#scrim').onclick=closeDrawer;
   document.addEventListener('keydown',e=>{ if(e.key==='Escape')closeDrawer(); });
   $('#dChart').addEventListener('mousemove',chartHover); $('#dChart').addEventListener('mouseleave',()=>$('#dTip').classList.remove('on'));
@@ -1224,6 +1518,7 @@ function bind(){
   $('#rProfile').onchange=e=>{ S.r.profile=e.target.value; R(); };
   $('#rMinDeals').onchange=e=>{ S.r.minDeals=+e.target.value; R(); };
   $('#rCost').onchange=e=>{ S.r.useCost=e.target.checked; R(); };
+  $('#rGapBuy').onchange=e=>{ S.r.gapBuy=e.target.checked; R(); };
   $('#recList').addEventListener('click',e=>{ const c=e.target.closest('[data-key]'); if(c)openDrawer(c.dataset.key); });
   $('#recList').addEventListener('keydown',e=>{ const c=e.target.closest('[data-key]'); if(c&&(e.key==='Enter'||e.key===' ')){e.preventDefault();openDrawer(c.dataset.key);} });
   $('#expRec').onclick=()=>{ const res=recommend(); if(!res.list.length)return toast('복사할 추천이 없습니다');
@@ -1236,13 +1531,16 @@ function bind(){
 /* ---------- init ---------- */
 (async function init(){
   try{ applyTheme(localStorage.getItem('sgj.theme')||'auto'); }catch(e){ applyTheme('auto'); }
-  bind(); loadF(); loadR();
+  bind(); loadFav(); loadF(); loadR();
+  const at=readHash(); syncControls();
+  const openAt=()=>{ if(at&&S.groups.some(g=>g.key===at))openDrawer(at); };
   const src=new URLSearchParams(location.search).get('src');
-  if(src){ $('#urlInput').value=src; if(await loadURL(src))return; }
-  if(restore())return;
-  if(await loadURL('data/latest.json',true,true))return;
-  if(await loadURL('data/latest.csv',true,true))return;
+  if(src){ $('#urlInput').value=src; if(await loadURL(src)){ syncControls(); openAt(); return; } }
+  if(restore()){ syncControls(); openAt(); return; }
+  if(await loadURL('data/latest.json',true,true)){ syncControls(); openAt(); return; }
+  if(await loadURL('data/latest.csv',true,true)){ syncControls(); openAt(); return; }
   setDeals(sampleDeals(),'샘플 데이터 (가상 단지 · 실제 거래 아님)',true,false);
+  syncControls(); openAt();
   setStatus('지금 보이는 것은 가상의 샘플 데이터입니다. 실거래가 파일을 넣으면 바뀝니다.');
 })();
 })();

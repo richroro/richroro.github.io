@@ -1,0 +1,1705 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="theme-color" content="#F2F4F6">
+<meta name="description" content="바람과 가로막을 넘어 골대에 넣는 스테이지 농구 게임. 12개 스테이지와 타임어택.">
+<title>한 손 농구</title>
+<link rel="canonical" href="https://richroro.github.io/games/basketball/">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='46' fill='%23FF6B2C'/><g stroke='%235A2A08' stroke-width='5' fill='none'><circle cx='50' cy='50' r='46'/><path d='M50 4v92M4 50h92M18 18q32 32 0 64M82 18q-32 32 0 64'/></g></svg>">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="한 손 농구">
+<meta property="og:title" content="한 손 농구">
+<meta property="og:description" content="바람·가로막·동전까지, 스테이지 12개를 넘는 한 손 농구.">
+<meta property="og:url" content="https://richroro.github.io/games/basketball/">
+<meta property="og:image" content="https://richroro.github.io/games/basketball/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="한 손 농구">
+<meta name="twitter:description" content="바람·가로막·동전까지, 스테이지 12개를 넘는 한 손 농구.">
+<meta name="twitter:image" content="https://richroro.github.io/games/basketball/og.png">
+<style>
+  :root{
+    --bg:#F2F4F6;
+    --card:#FFFFFF;
+    --ink:#191F28;
+    --ink-2:#4E5968;
+    --ink-3:#8B95A1;
+    --line:#E5E8EB;
+    --blue:#3182F6;
+    --blue-weak:#E8F3FF;
+    --red:#F04452;
+    --green:#00B26D;
+    --green-weak:#E5F8F0;
+    --gold:#FFB020;
+    --orange:#FF6B2C;
+    --orange-weak:#FFEFE6;
+    --shadow:0 2px 12px rgba(25,31,40,.08);
+    --field-top:#F7FAFF;
+    --field-bottom:#FFE7C7;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+  html,body{height:100%;overflow:hidden;overscroll-behavior:none}
+  /* iOS 사파리는 주소창 높이까지 100%에 포함시켜 화면 아래가 잘린다 */
+  @supports (height:100dvh){ html,body{height:100dvh} }
+  body{
+    font-family:'Pretendard','Apple SD Gothic Neo','Malgun Gothic',system-ui,-apple-system,sans-serif;
+    background:var(--bg);color:var(--ink);
+    display:flex;flex-direction:column;
+    touch-action:none;user-select:none;-webkit-user-select:none;
+    padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+  }
+  .bar{max-width:484px;width:100%;margin:0 auto}
+
+  /* ── 헤더 ─────────────────────────────── */
+  header{flex:0 0 auto;display:flex;align-items:center;gap:8px;padding:10px 16px 6px}
+  .brand{flex:1;min-width:0;line-height:1.2}
+  .brand b{display:block;font-size:15px;font-weight:800;letter-spacing:-.03em;
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .brand span{display:block;font-size:11px;font-weight:600;color:var(--ink-3);
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .icon-btn{
+    width:34px;height:34px;flex:0 0 auto;border:0;border-radius:11px;
+    background:var(--card);box-shadow:var(--shadow);color:var(--ink-2);
+    display:grid;place-items:center;cursor:pointer;font-size:15px;line-height:1;
+  }
+  .icon-btn:active{transform:scale(.94)}
+
+  /* ── 목표 · 남은 공 ────────────────────── */
+  .status{flex:0 0 auto;display:flex;align-items:center;gap:7px;padding:0 16px 7px;flex-wrap:wrap}
+  .chip{
+    display:flex;align-items:center;gap:5px;background:var(--card);box-shadow:var(--shadow);
+    border-radius:10px;padding:6px 10px;font-size:12.5px;font-weight:700;letter-spacing:-.02em;
+    color:var(--ink-2);transition:background .2s,color .2s;
+  }
+  .chip i{font-style:normal;font-size:12px}
+  .chip b{font-variant-numeric:tabular-nums;color:var(--ink)}
+  .chip.done{background:var(--green-weak);color:var(--green)}
+  .chip.done b{color:var(--green)}
+  .chip.pop{animation:bump .22s}
+  @keyframes bump{50%{transform:scale(1.13)}}
+  .chip.score{margin-left:auto;background:transparent;box-shadow:none;padding-right:0}
+
+  .balls{display:flex;align-items:center;gap:3px;padding:0 16px 8px;min-height:14px}
+  .balls i{
+    display:block;width:9px;height:9px;border-radius:50%;
+    background:linear-gradient(160deg,#FF9B5E,#E9520F);transition:opacity .2s,transform .2s;
+  }
+  .balls i.used{opacity:.2;transform:scale(.7)}
+  .balls u{font-size:10.5px;color:var(--ink-3);font-weight:700;text-decoration:none;margin-left:5px}
+
+  /* ── 남은 시간 ─────────────────────────── */
+  .timer{flex:0 0 auto;display:flex;align-items:center;gap:9px;padding:0 16px 8px}
+  .timer.off{display:none}
+  .track{flex:1 1 auto;height:6px;border-radius:99px;background:var(--line);overflow:hidden}
+  .track i{display:block;height:100%;border-radius:99px;background:var(--blue);
+    transform-origin:left center;transform:scaleX(1)}
+  .track i.low{background:var(--red)}
+  .timer span{flex:0 0 auto;font-size:12px;font-weight:700;color:var(--ink-3);
+    font-variant-numeric:tabular-nums;min-width:38px;text-align:right}
+
+  /* ── 코트 ─────────────────────────────── */
+  #court{flex:1 1 auto;position:relative;min-height:0;width:calc(100% - 24px);max-width:460px;margin:0 auto}
+  #field{
+    position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
+    border-radius:20px;display:block;
+    background:linear-gradient(180deg,var(--field-top),var(--field-bottom));
+    box-shadow:inset 0 0 0 1px rgba(25,31,40,.06), var(--shadow);
+  }
+  .hint{flex:0 0 auto;text-align:center;font-size:11.5px;color:var(--ink-3);
+    font-weight:600;padding:8px 16px calc(8px + env(safe-area-inset-bottom))}
+
+  /* ── 오버레이 공통 ─────────────────────── */
+  .veil{
+    position:fixed;inset:0;z-index:20;display:none;
+    align-items:center;justify-content:center;padding:24px;
+    background:rgba(25,31,40,.45);backdrop-filter:blur(3px);
+  }
+  .veil.show{display:flex}
+  .sheet{
+    width:100%;max-width:340px;background:var(--card);border-radius:22px;
+    padding:26px 22px 18px;text-align:center;
+    box-shadow:0 12px 40px rgba(25,31,40,.25);
+    animation:rise .22s cubic-bezier(.2,.8,.3,1);
+    max-height:calc(100% - 20px);overflow-y:auto;
+  }
+  @keyframes rise{from{opacity:0;transform:translateY(14px) scale(.97)}to{opacity:1;transform:none}}
+  .sheet h2{font-size:21px;font-weight:800;letter-spacing:-.04em;margin-bottom:8px}
+  .sheet p{font-size:13.5px;color:var(--ink-2);line-height:1.65;font-weight:500}
+  .sheet .big{font-size:40px;font-weight:800;letter-spacing:-.05em;margin:10px 0 2px;
+    font-variant-numeric:tabular-nums;color:var(--blue)}
+  .sheet .sub{font-size:12.5px;color:var(--ink-3);font-weight:600;margin-bottom:18px}
+  .btns{display:flex;flex-direction:column;gap:8px;margin-top:18px}
+  .btn{
+    width:100%;border:0;border-radius:14px;padding:14px;cursor:pointer;
+    font-size:15px;font-weight:700;letter-spacing:-.02em;font-family:inherit;
+  }
+  .btn:active{transform:scale(.98)}
+  .btn.primary{background:var(--blue);color:#fff}
+  .btn.ghost{background:var(--bg);color:var(--ink-2)}
+  .btn:disabled{opacity:.45;cursor:default}
+  .row{display:flex;gap:8px}
+  .row .btn{flex:1}
+
+  .rules{text-align:left;margin-top:16px;display:flex;flex-direction:column;gap:9px}
+  .rule{display:flex;gap:10px;align-items:flex-start}
+  .rule b{flex:0 0 auto;width:20px;height:20px;border-radius:7px;background:var(--blue-weak);
+    color:var(--blue);font-size:11px;font-weight:800;display:grid;place-items:center;margin-top:1px}
+  .rule span{font-size:13px;color:var(--ink-2);line-height:1.55;font-weight:500}
+
+  .pts{display:flex;flex-direction:column;gap:6px;margin-top:14px;text-align:left}
+  .pt{display:flex;align-items:center;gap:8px;font-size:12.5px;font-weight:600;color:var(--ink-2)}
+  .pt em{flex:0 0 auto;font-style:normal;font-weight:800;color:var(--orange);
+    background:var(--orange-weak);border-radius:8px;padding:3px 7px;font-size:11.5px;
+    min-width:38px;text-align:center}
+
+  /* 스테이지 목록 */
+  .grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:6px}
+  .cell{
+    aspect-ratio:1;border:0;border-radius:14px;background:var(--bg);cursor:pointer;
+    display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;
+    font-family:inherit;color:var(--ink);padding:0;
+  }
+  .cell:active{transform:scale(.95)}
+  .cell b{font-size:17px;font-weight:800;letter-spacing:-.03em}
+  .cell u{font-size:9px;letter-spacing:.5px;color:var(--gold);text-decoration:none;line-height:1}
+  .cell.done{background:var(--blue-weak)}
+  .cell.lock{opacity:.4;cursor:default}
+  .cell.lock b{color:var(--ink-3)}
+
+  /* 클리어 별 */
+  .stars{display:flex;justify-content:center;gap:8px;margin:14px 0 4px}
+  .stars i{font-style:normal;font-size:34px;line-height:1;color:var(--line);
+    transform:scale(.4);opacity:0}
+  .stars i.on{color:var(--gold);animation:star .4s cubic-bezier(.2,1.5,.4,1) forwards}
+  .stars i.off{animation:starOff .3s forwards}
+  @keyframes star{to{transform:scale(1);opacity:1}}
+  @keyframes starOff{to{transform:scale(1);opacity:1}}
+
+  #toast{
+    position:fixed;left:50%;bottom:calc(28px + env(safe-area-inset-bottom));
+    transform:translate(-50%,10px);z-index:30;pointer-events:none;
+    background:rgba(25,31,40,.92);color:#fff;font-size:13px;font-weight:600;
+    padding:11px 18px;border-radius:12px;opacity:0;transition:opacity .2s, transform .2s;
+  }
+  #toast.show{opacity:1;transform:translate(-50%,0)}
+  @media (prefers-reduced-motion:reduce){ *{animation-duration:.01ms!important} }
+</style>
+</head>
+<body>
+
+<header class="bar">
+  <div class="brand"><b id="stTitle">한 손 농구</b><span id="stName">스테이지를 골라 시작하세요</span></div>
+  <button class="icon-btn" id="btnSound" aria-label="소리 켜기 끄기">🔊</button>
+  <button class="icon-btn" id="btnList" aria-label="스테이지 목록">☰</button>
+  <button class="icon-btn" id="btnExit" aria-label="게임 나가기">✕</button>
+</header>
+
+<div class="status bar" id="goalChips"></div>
+<div class="balls bar" id="ballDots"></div>
+
+<div class="timer bar off" id="timerBox">
+  <div class="track"><i id="timerFill"></i></div>
+  <span id="timerVal">45초</span>
+</div>
+
+<div id="court">
+  <canvas id="field"></canvas>
+</div>
+
+<div class="hint" id="hint">골대 쪽으로 스와이프하면 공이 날아가요</div>
+<div id="toast"></div>
+
+<!-- 시작 -->
+<div class="veil show" id="vStart">
+  <div class="sheet">
+    <h2>한 손 농구</h2>
+    <p>공을 골대 쪽으로 스와이프하면 던져져요.<br>바람과 가로막을 넘어 12개 스테이지를 깨 보세요.</p>
+    <div class="pts">
+      <div class="pt"><em>2점</em><span>림이나 백보드를 맞고 들어가면</span></div>
+      <div class="pt"><em>3점</em><span>아무것도 안 닿고 깨끗하게 들어가면</span></div>
+      <div class="pt"><em>별 3개</em><span>공을 절반만 쓰고 목표를 채우면</span></div>
+    </div>
+    <div class="btns">
+      <button class="btn primary" id="btnPlay">스테이지 시작</button>
+      <button class="btn ghost" id="btnTimeAttack" disabled>타임어택 (전부 깨면 열려요)</button>
+      <button class="btn ghost" id="btnHow">게임 방법</button>
+    </div>
+  </div>
+</div>
+
+<!-- 스테이지 목록 -->
+<div class="veil" id="vStages">
+  <div class="sheet">
+    <h2>스테이지</h2>
+    <p id="stagesSub">별 0개 / 36개</p>
+    <div class="grid" id="stageGrid"></div>
+    <div class="btns">
+      <button class="btn ghost" id="btnStagesClose">닫기</button>
+    </div>
+  </div>
+</div>
+
+<!-- 스테이지 시작 안내 -->
+<div class="veil" id="vIntro">
+  <div class="sheet">
+    <h2 id="introTitle">스테이지 1</h2>
+    <p id="introHint">골대 쪽으로 스와이프!</p>
+    <div class="pts" id="introGoals"></div>
+    <div class="btns"><button class="btn primary" id="btnGo">시작</button></div>
+  </div>
+</div>
+
+<!-- 게임 방법 -->
+<div class="veil" id="vHow">
+  <div class="sheet">
+    <h2>게임 방법</h2>
+    <div class="rules">
+      <div class="rule"><b>1</b><span>화면을 누른 채 던질 방향으로 끌면 예상 궤적이 점으로 보여요. 손을 떼면 그대로 날아가요.</span></div>
+      <div class="rule"><b>2</b><span>스테이지마다 목표와 공 개수가 정해져 있어요. 공을 다 쓰기 전에 목표를 채우면 클리어예요.</span></div>
+      <div class="rule"><b>3</b><span>림에 안 닿고 그물만 흔들면 스윔, 3점이에요.</span></div>
+      <div class="rule"><b>4</b><span>바람은 공을 옆으로 밀어요. 궤적 점선에 이미 반영돼 있어요.</span></div>
+      <div class="rule"><b>5</b><span>3연속으로 넣으면 공에 불이 붙고 점수가 더 붙어요.</span></div>
+    </div>
+    <div class="btns"><button class="btn primary" id="btnHowClose">알겠어요</button></div>
+  </div>
+</div>
+
+<!-- 일시정지 -->
+<div class="veil" id="vPause">
+  <div class="sheet">
+    <h2>잠시 멈췄어요</h2>
+    <p>다른 화면에 다녀오셨네요.<br>이어서 계속할 수 있어요.</p>
+    <div class="btns"><button class="btn primary" id="btnResume">이어하기</button></div>
+  </div>
+</div>
+
+<!-- 클리어 -->
+<div class="veil" id="vClear">
+  <div class="sheet">
+    <h2 id="clearTitle">클리어!</h2>
+    <div class="stars" id="clearStars"><i>★</i><i>★</i><i>★</i></div>
+    <div class="big" id="clearScore">0</div>
+    <div class="sub" id="clearSub">점</div>
+    <div class="btns">
+      <button class="btn primary" id="btnNext">다음 스테이지</button>
+      <div class="row">
+        <button class="btn ghost" id="btnClearRetry">다시</button>
+        <button class="btn ghost" id="btnClearList">목록</button>
+        <button class="btn ghost" id="btnShare">공유</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 실패 -->
+<div class="veil" id="vFail">
+  <div class="sheet">
+    <h2 id="failTitle">공이 다 떨어졌어요</h2>
+    <p id="failSub">목표 3골 중 1골</p>
+    <div class="btns">
+      <button class="btn primary" id="btnRetry">다시하기</button>
+      <button class="btn ghost" id="btnFailList">스테이지 목록</button>
+    </div>
+  </div>
+</div>
+
+<!-- 타임어택 결과 -->
+<div class="veil" id="vOver">
+  <div class="sheet">
+    <h2 id="overTitle">경기 끝!</h2>
+    <div class="big" id="overScore">0</div>
+    <div class="sub" id="overSub">최고 기록 0점</div>
+    <div class="btns">
+      <button class="btn primary" id="btnOverRetry">다시하기</button>
+      <div class="row">
+        <button class="btn ghost" id="btnOverShare">공유</button>
+        <button class="btn ghost" id="btnOverList">목록</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 종료 확인 -->
+<div class="veil" id="vExit">
+  <div class="sheet">
+    <h2>게임을 나갈까요?</h2>
+    <p>진행 중인 스테이지는 저장되지 않아요.<br>깬 스테이지와 별은 그대로 남아요.</p>
+    <div class="btns">
+      <div class="row">
+        <button class="btn ghost" id="btnExitNo">계속하기</button>
+        <button class="btn primary" id="btnExitYes">나가기</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+"use strict";
+(function () {
+
+/* ══════════════════════════════════════════════════════════════
+   1. 저장소 (깬 스테이지 · 별 · 최고 기록)
+   ══════════════════════════════════════════════════════════════ */
+var store = {
+  get: function (k, d) {
+    try { var v = localStorage.getItem("hoop." + k); return v === null ? d : v; }
+    catch (e) { return d; }
+  },
+  set: function (k, v) {
+    try { localStorage.setItem("hoop." + k, String(v)); } catch (e) {}
+  }
+};
+
+/* ══════════════════════════════════════════════════════════════
+   2. 사운드 (파일 없이 WebAudio로 생성)
+   ══════════════════════════════════════════════════════════════ */
+var tapped = false;   // 실제 사용자 입력이 한 번이라도 있었는지
+
+var sfx = (function () {
+  var ac = null;
+  var muted = store.get("muted", "0") === "1";
+
+  function ensure() {
+    if (!ac) {
+      var AC = window.AudioContext || window.webkitAudioContext;
+      if (!AC) return null;
+      try { ac = new AC(); } catch (e) { return null; }
+    }
+    if (ac.state === "suspended") ac.resume();
+    return ac;
+  }
+  function tone(freq, dur, type, vol, slideTo) {
+    if (muted) return;
+    var a = ensure();
+    if (!a) return;
+    var o = a.createOscillator(), g = a.createGain();
+    o.type = type || "sine";
+    o.frequency.setValueAtTime(freq, a.currentTime);
+    if (slideTo) o.frequency.exponentialRampToValueAtTime(slideTo, a.currentTime + dur);
+    g.gain.setValueAtTime(0.0001, a.currentTime);
+    g.gain.exponentialRampToValueAtTime(vol || 0.14, a.currentTime + 0.012);
+    g.gain.exponentialRampToValueAtTime(0.0001, a.currentTime + dur);
+    o.connect(g); g.connect(a.destination);
+    o.start(); o.stop(a.currentTime + dur + 0.02);
+  }
+  // 그물 스치는 소리처럼 들리게 만든 짧은 화이트 노이즈
+  function noise(dur, vol, hz) {
+    if (muted) return;
+    var a = ensure();
+    if (!a) return;
+    var n = Math.floor(a.sampleRate * dur);
+    var buf = a.createBuffer(1, n, a.sampleRate);
+    var d = buf.getChannelData(0);
+    for (var i = 0; i < n; i++) d[i] = (Math.random() * 2 - 1) * (1 - i / n);
+    var src = a.createBufferSource(); src.buffer = buf;
+    var f = a.createBiquadFilter(); f.type = "bandpass"; f.frequency.value = hz || 2600;
+    var g = a.createGain(); g.gain.value = vol || 0.12;
+    src.connect(f); f.connect(g); g.connect(a.destination);
+    src.start();
+  }
+  function buzz(ms) {
+    // 사용자가 화면을 한 번도 건드리지 않은 상태에서 부르면
+    // 브라우저가 막으면서 콘솔에 에러를 남긴다
+    if (muted || !tapped || !navigator.vibrate) return;
+    try { navigator.vibrate(ms); } catch (e) {}
+  }
+  function melody(notes, gap) {
+    notes.forEach(function (n, i) {
+      setTimeout(function () { tone(n, 0.16, "triangle", 0.12); }, i * (gap || 110));
+    });
+  }
+  return {
+    isMuted: function () { return muted; },
+    toggle: function () {
+      muted = !muted;
+      store.set("muted", muted ? "1" : "0");
+      if (!muted) { ensure(); tone(660, 0.08, "triangle", 0.1); }
+      return muted;
+    },
+    unlock: function () { ensure(); },
+    stopAll: function () { if (ac && ac.state === "running") ac.suspend(); },
+    wake: function () { if (ac && ac.state === "suspended" && !muted) ac.resume(); },
+    shoot: function () { tone(420, 0.09, "triangle", 0.07, 700); buzz(8); },
+    bounce: function () { tone(150, 0.07, "sine", 0.07); },
+    rim: function () { tone(1150, 0.07, "square", 0.05, 820); buzz(10); },
+    board: function () { tone(230, 0.08, "square", 0.05); buzz(10); },
+    bar: function () { tone(180, 0.09, "sawtooth", 0.05); buzz(10); },
+    swish: function () { noise(0.22, 0.1, 3200); },
+    coin: function (n) { tone(880 * Math.pow(1.12, Math.min(n, 8)), 0.09, "square", 0.07); buzz(6); },
+    fire: function () { tone(520, 0.2, "sawtooth", 0.07, 1300); buzz(20); },
+    made: function (combo) {
+      var base = 620 * Math.pow(1.06, Math.min(combo, 8));
+      tone(base, 0.1, "triangle", 0.12);
+      setTimeout(function () { tone(base * 1.5, 0.14, "sine", 0.1); }, 60);
+      buzz(14 + Math.min(combo, 6) * 3);
+    },
+    clear: function (stars) {
+      melody([660, 830, 990, 1320].slice(0, 1 + stars));
+      buzz([14, 50, 14, 50, 22]);
+    },
+    fail: function () { tone(300, 0.35, "sawtooth", 0.09, 150); buzz(50); },
+    end: function () { tone(300, 0.5, "sawtooth", 0.1); buzz([18, 60, 18]); }
+  };
+})();
+
+/* ══════════════════════════════════════════════════════════════
+   3. 코트 좌표계
+   코트는 420×680 으로 '고정'이다. 화면에 맞춰 늘리지 않고 비율을 지킨
+   채 가운데에 놓는다. 세로를 화면 비율대로 늘렸더니 긴 폰에서는 골대가
+   너무 멀어져(필요한 힘이 상한의 86%) 1스테이지부터 거의 최대 힘으로
+   던져야 했다. 고정하면 어느 기기에서나 같은 난이도가 된다.
+   ══════════════════════════════════════════════════════════════ */
+var FW = 420, FH = 680;
+var FLOOR = 0, HOOP_Y = 0, RAIL_Y = 0, HX_MIN = 0, HX_MAX = 0, HOLD_Y = 0;
+
+var canvas = document.getElementById("field");
+var ctx = canvas.getContext("2d");
+var courtEl = document.getElementById("court");
+var dpr = 1;
+
+function layout() {
+  FLOOR  = FH - 26;                       // 코트 바닥선
+  // 골대는 코트 오른쪽, 던지는 자리는 왼쪽. 둘을 가깝게 두면 가로 거리보다
+  // 높이가 훨씬 커져서 거의 수직으로 띄우는 슛만 들어간다(1스테이지가 제일
+  // 어려웠던 이유). 가로로 벌리고 림을 낮춰 자연스러운 포물선이 되게 했다.
+  HOOP_Y = Math.round(FH * 0.42);         // 림 높이(위에서부터)
+  RAIL_Y = Math.max(22, HOOP_Y - 130);    // 백보드를 매단 레일
+  HOLD_Y = FLOOR - 46;                    // 공을 들고 있는 높이
+  HX_MIN = 205;
+  HX_MAX = FW - 54;
+  if (hoop.x < HX_MIN) hoop.x = HX_MIN;
+  if (hoop.x > HX_MAX) hoop.x = HX_MAX;
+  if (!ball.live) ball.y = HOLD_Y;
+}
+
+function resize() {
+  var rect = courtEl.getBoundingClientRect();
+  if (rect.width < 2 || rect.height < 2) return false;
+  dpr = Math.min(window.devicePixelRatio || 1, 2.5);
+  // 코트 비율을 지키면서 들어갈 수 있는 가장 큰 크기
+  var fit = Math.min(rect.width / FW, rect.height / FH);
+  var cssW = Math.floor(FW * fit), cssH = Math.floor(FH * fit);
+  canvas.style.width = cssW + "px";
+  canvas.style.height = cssH + "px";
+  var w = Math.round(cssW * dpr), h = Math.round(cssH * dpr);
+  if (canvas.width === w && canvas.height === h) return true;
+  canvas.width = w;
+  canvas.height = h;
+  return true;
+}
+// 첫 레이아웃 타이밍은 환경마다 달라서 관찰자로 붙잡는다 (초기 0px 방지)
+if (window.ResizeObserver) {
+  new ResizeObserver(resize).observe(courtEl);
+} else {
+  window.addEventListener("resize", resize);
+}
+window.addEventListener("orientationchange", function () { setTimeout(resize, 120); });
+
+function scaleOf() {
+  var rect = canvas.getBoundingClientRect();
+  return rect.width > 0 ? FW / rect.width : 1;
+}
+
+/* ══════════════════════════════════════════════════════════════
+   4. 물리 상수
+   전부 '코트 단위 / 60분의 1초' 기준이다. 루프가 고정 스텝이라
+   프레임률이 달라져도 같은 궤적이 나온다.
+   ══════════════════════════════════════════════════════════════ */
+var R = 17;             // 공 반지름
+var GRAV = 0.48;        // 프레임당 중력
+var AIR = 0.997;        // 공기 저항
+var MAXV = 40;          // 프레임당 최대 이동 거리
+var POWER = 0.145;      // 드래그 길이 → 속도 환산
+var MAXPOW = 29;        // 발사 속도 상한
+var MINDRAG = 18;       // 이보다 짧게 끌면 던지지 않는다(오터치 방지)
+var WALL_E = 0.6;       // 옆벽 반발
+var FLOOR_E = 0.5;      // 바닥 반발
+var FLOOR_FRICTION = 0.84;
+var RIM_BASE = 31;      // 기본 림 반지름(중심 → 양 끝)
+var RIM = RIM_BASE;     // 스테이지에 따라 좁아진다
+var KNOB = 5;           // 림 끝 충돌 반지름
+var RIM_E = 0.5;
+var BOARD_E = 0.45;
+var BAR_E = 0.4;        // 가로막 반발
+var BOARD_W = 9, BOARD_H = 78;
+var BOARD_DROP = 20;    // 림보다 아래로 내려오는 길이
+var RESET_DELAY = 0.5;  // 공이 죽고 다음 공이 올 때까지
+var FIRE_COMBO = 3;     // 이 연속부터 공에 불이 붙는다
+
+/* ══════════════════════════════════════════════════════════════
+   5. 스테이지
+   goal 에 적힌 항목을 '전부' 채우면 클리어. 공을 다 쓰거나
+   제한 시간이 끝나면 실패한다.
+     hoop.sp  골대 좌우 속도 (코트단위/프레임)
+     hoop.bob 골대 위아래 진폭
+     wind     프레임당 가로 가속도 (+면 오른쪽)
+     bars     가로막 개수, coins 동전 개수
+     rim      림 반지름(기본 31), spread 던지는 자리가 흩어지는 폭
+   ══════════════════════════════════════════════════════════════ */
+var STAGES = [
+  { name: "첫 슛",        goal: { makes: 3 }, balls: 8,  hoop: { sp: 0,    bob: 0 },  spread: 0,
+    hint: "골대 쪽으로 스와이프하면 공이 날아가요." },
+  { name: "거리 감각",     goal: { makes: 4 }, balls: 9,  hoop: { sp: 0,    bob: 0 },  spread: 1,
+    hint: "던지는 자리가 매번 달라져요. 힘을 다시 재 보세요." },
+  { name: "움직이는 골대",  goal: { makes: 4 }, balls: 10,  hoop: { sp: 0.85, bob: 0 },  spread: 1,
+    hint: "골대가 레일을 타고 좌우로 움직여요." },
+  { name: "바람",         goal: { makes: 4 }, balls: 10,  hoop: { sp: 0.6,  bob: 0 },  spread: 1,
+    wind: 0.015, hint: "바람이 공을 오른쪽으로 밀어요. 궤적 점선에 이미 반영돼 있어요." },
+  { name: "동전 줍기",     goal: { makes: 3, coins: 4 }, balls: 10, hoop: { sp: 0.7, bob: 0 }, spread: 1,
+    coins: 8, hint: "공이 지나가면 동전을 먹어요. 동전 4개도 목표예요." },
+  { name: "가로막",       goal: { makes: 4 }, balls: 9,  hoop: { sp: 0.8,  bob: 0 },  spread: 1,
+    bars: 1, hint: "막대가 앞을 가려요. 더 높이 띄워 넘기세요." },
+  { name: "좁은 림",      goal: { makes: 4 }, balls: 10, hoop: { sp: 0.85, bob: 0 },  spread: 1,
+    rim: 27, hint: "림이 좁아졌어요. 가운데로 정확히." },
+  { name: "출렁이는 골대",  goal: { makes: 4 }, balls: 10, hoop: { sp: 0.8, bob: 17 }, spread: 1,
+    hint: "골대가 위아래로도 흔들려요." },
+  { name: "맞바람",       goal: { makes: 5 }, balls: 13, hoop: { sp: 1.0,  bob: 0 },  spread: 1,
+    wind: -0.026, hint: "바람이 반대로, 더 세게 불어요." },
+  { name: "이중 가로막",   goal: { makes: 5 }, balls: 11, hoop: { sp: 1.0,  bob: 12 }, spread: 1,
+    bars: 2, hint: "막대가 두 개. 사이로 넣거나 전부 넘기세요." },
+  { name: "스윔만 인정",   goal: { swish: 3 }, balls: 14, hoop: { sp: 0.9, bob: 0 },  spread: 1,
+    hint: "림이나 백보드에 닿으면 인정되지 않아요. 깨끗하게만." },
+  { name: "결승",         goal: { makes: 5, coins: 3 }, balls: 14, hoop: { sp: 1.25, bob: 18 }, spread: 2,
+    wind: 0.018, bars: 1, coins: 6, time: 90, hint: "전부 한 번에 나옵니다. 90초 안에." }
+];
+var STAGE_N = STAGES.length;
+// 타임어택: 전 스테이지를 깨면 열린다. 골대가 넣을수록 빨라지는 45초 무한판.
+var TIME_ATTACK = { name: "타임어택", endless: true, goal: {}, balls: 0,
+                    hoop: { sp: 0, bob: 0 }, spread: 2, time: 45,
+                    hint: "45초 동안 최대한 많이. 넣으면 시간이 조금 늘어요." };
+
+/* ══════════════════════════════════════════════════════════════
+   6. 게임 상태
+   ══════════════════════════════════════════════════════════════ */
+var hoop = { x: 260, y: 240, dir: 1 };
+var ball = { x: 90, y: 400, px: 90, py: 400, vx: 0, vy: 0, spin: 0, live: false };
+var state = "ready";     // ready | playing | paused | clear | fail
+var stage = { idx: -1, def: null, ballsLeft: 0, made: 0, swish: 0, coins: 0 };
+var bars = [], coins = [];
+var wind = 0;
+var hasTime = false, timeLeft = 0, GAME_TIME = 45;
+var score = 0, combo = 0, bestCombo = 0, makes = 0, shots = 0;
+var best = parseInt(store.get("best", "0"), 10) || 0;
+var scored = false;      // 이번 슛이 이미 득점 처리됐는지
+var touched = false;     // 이번 슛이 림·백보드에 닿았는지(스윔 판정용)
+var deadTimer = -1;      // 0 이상이면 다음 공까지 남은 시간
+var bobT = 0;
+var netSway = 0, flash = 0, shake = 0;
+var pops = [], sparks = [], trail = [], gusts = [];
+
+// 조준
+var aiming = false;
+var aimX = 0, aimY = 0, curX = 0, curY = 0;
+
+// 별 기록: 스테이지마다 한 글자 ('0' = 못 깸)
+function starsAll() {
+  var s = store.get("stars", "");
+  var out = [];
+  for (var i = 0; i < STAGE_N; i++) out.push(parseInt(s.charAt(i), 10) || 0);
+  return out;
+}
+function saveStar(i, n) {
+  var a = starsAll();
+  if (n > a[i]) { a[i] = n; store.set("stars", a.join("")); }
+}
+function totalStars() {
+  return starsAll().reduce(function (a, b) { return a + b; }, 0);
+}
+function allClear() {
+  return starsAll().every(function (n) { return n > 0; });
+}
+
+/* ══════════════════════════════════════════════════════════════
+   7. 스테이지 소품 배치
+   화면 높이가 기기마다 달라서 전부 비율로 잡는다.
+   ══════════════════════════════════════════════════════════════ */
+function placeProps(def) {
+  bars.length = 0;
+  for (var i = 0; i < (def.bars || 0); i++) {
+    // 막대는 림보다 아래에 둔다. 위로 넘기는 길이 항상 열려 있어야 한다.
+    var y = HOOP_Y + (i === 0 ? 118 : 226);
+    bars.push({
+      x: i === 0 ? 96 : 210, y: y, w: 84, h: 11,
+      min: 70, max: FW - 150, dir: i === 0 ? 1 : -1,
+      sp: 0.75 + i * 0.35
+    });
+  }
+  coins.length = 0;
+  var n = def.coins || 0;
+  // 코트에 아무렇게나 뿌리면 골 넣는 길과 따로 놀아서, 동전만 주우려고
+  // 공을 버리게 된다. 던지는 자리에서 골대까지 그리는 포물선 위에 올린다.
+  var x0 = 76, y0 = HOLD_Y, x1 = (HX_MIN + HX_MAX) / 2, y1 = HOOP_Y;
+  for (var k = 0; k < n; k++) {
+    // 골대 바로 앞까지 깔면 림·그물과 겹쳐 지저분하고, 골 넣을 때마다
+    // 공짜로 딸려 온다. 길의 80% 지점에서 끊는다.
+    var t = (k + 1) / (n + 1) * 0.8;
+    coins.push({
+      x: x0 + (x1 - x0) * t,
+      y: y0 + (y1 - y0) * t - 150 * Math.sin(Math.PI * t) + (k % 2 ? 24 : -24),
+      got: false, spin: k * 0.7
+    });
+  }
+}
+
+/* ══════════════════════════════════════════════════════════════
+   8. 한 스텝 진행
+   ══════════════════════════════════════════════════════════════ */
+var FIXED = 1 / 60;
+
+function step() {
+  var def = stage.def;
+  if (!def) return;
+
+  if (hasTime) {
+    timeLeft -= FIXED;
+    if (timeLeft <= 0) {
+      timeLeft = 0; paintTimer();
+      if (def.endless) { endTimeAttack(); } else { failStage("시간이 끝났어요"); }
+      return;
+    }
+  }
+
+  // 골대 이동 (타임어택은 넣은 골 수에 따라 점점 빨라진다)
+  var sp = def.endless ? Math.min(0.5 + Math.max(0, makes - 2) * 0.085, 1.55) : def.hoop.sp;
+  var bob = def.endless ? Math.min(Math.max(0, makes - 7) * 2.4, 26) : def.hoop.bob;
+  hoop.x += hoop.dir * sp;
+  if (hoop.x <= HX_MIN) { hoop.x = HX_MIN; hoop.dir = 1; }
+  if (hoop.x >= HX_MAX) { hoop.x = HX_MAX; hoop.dir = -1; }
+  bobT += FIXED;
+  hoop.y = HOOP_Y + Math.sin(bobT * 2.4) * bob;
+
+  // 가로막
+  for (var b = 0; b < bars.length; b++) {
+    var bar = bars[b];
+    bar.x += bar.dir * bar.sp;
+    if (bar.x <= bar.min) { bar.x = bar.min; bar.dir = 1; }
+    if (bar.x >= bar.max) { bar.x = bar.max; bar.dir = -1; }
+  }
+
+  if (ball.live) {
+    move();
+    collide();
+    grabCoins();
+    checkScore();
+    if (combo >= FIRE_COMBO) {
+      trail.push({ x: ball.x, y: ball.y, life: 0.3, r: R * (0.5 + Math.random() * 0.4) });
+    }
+  }
+
+  if (deadTimer >= 0) {
+    deadTimer -= FIXED;
+    if (deadTimer <= 0) afterShot();
+  }
+
+  // 바람 표시용 흐르는 선
+  if (wind !== 0 && Math.random() < 0.18) {
+    gusts.push({ x: wind > 0 ? -20 : FW + 20, y: 40 + Math.random() * (FLOOR - 80),
+                 life: 1.1, len: 18 + Math.random() * 26 });
+  }
+  for (var g = gusts.length - 1; g >= 0; g--) {
+    var gu = gusts[g];
+    gu.x += wind > 0 ? 3.2 : -3.2;
+    gu.life -= FIXED;
+    if (gu.life <= 0) gusts.splice(g, 1);
+  }
+
+  if (netSway > 0) netSway = Math.max(0, netSway - FIXED * 2.2);
+  if (flash > 0) flash = Math.max(0, flash - FIXED * 2.5);
+  if (shake > 0) shake = Math.max(0, shake - FIXED * 6);
+
+  for (var i = pops.length - 1; i >= 0; i--) {
+    var p = pops[i];
+    p.life -= FIXED; p.y -= 0.7;
+    if (p.life <= 0) pops.splice(i, 1);
+  }
+  for (var j = sparks.length - 1; j >= 0; j--) {
+    var s = sparks[j];
+    s.vy += 0.22; s.x += s.vx; s.y += s.vy; s.life -= FIXED;
+    if (s.life <= 0) sparks.splice(j, 1);
+  }
+  for (var t = trail.length - 1; t >= 0; t--) {
+    trail[t].life -= FIXED;
+    if (trail[t].life <= 0) trail.splice(t, 1);
+  }
+  for (var c = 0; c < coins.length; c++) coins[c].spin += 0.05;
+}
+
+function move() {
+  ball.vy += GRAV;
+  ball.vx += wind;
+  ball.vx *= AIR;
+  ball.vy *= AIR;
+  var sp = Math.sqrt(ball.vx * ball.vx + ball.vy * ball.vy);
+  if (sp > MAXV) { ball.vx = ball.vx / sp * MAXV; ball.vy = ball.vy / sp * MAXV; }
+  ball.px = ball.x; ball.py = ball.y;
+  ball.x += ball.vx;
+  ball.y += ball.vy;
+  ball.spin += ball.vx * 0.017;
+}
+
+/* 원과 부딪혔을 때 밀어내고 속도를 반사한다 */
+function hitCircle(cx, cy, cr, e) {
+  var dx = ball.x - cx, dy = ball.y - cy;
+  var d2 = dx * dx + dy * dy;
+  var rr = cr + R;
+  if (d2 >= rr * rr) return false;
+  var d = Math.sqrt(d2);
+  var nx, ny;
+  if (d < 0.0001) { nx = 0; ny = -1; }        // 정확히 겹치면 위로 뺀다
+  else { nx = dx / d; ny = dy / d; }
+  ball.x = cx + nx * rr;
+  ball.y = cy + ny * rr;
+  var vn = ball.vx * nx + ball.vy * ny;
+  if (vn < 0) {
+    ball.vx -= (1 + e) * vn * nx;
+    ball.vy -= (1 + e) * vn * ny;
+    ball.vx *= 0.92; ball.vy *= 0.92;          // 림에 닿으면 기운이 빠진다
+  }
+  return true;
+}
+
+/* 사각형과 부딪혔을 때. 가장 가까운 점을 찾아 그 방향으로 밀어낸다 */
+function hitRect(rx, ry, rw, rh, e) {
+  var cx = Math.max(rx, Math.min(ball.x, rx + rw));
+  var cy = Math.max(ry, Math.min(ball.y, ry + rh));
+  var dx = ball.x - cx, dy = ball.y - cy;
+  var d2 = dx * dx + dy * dy;
+  if (d2 >= R * R) return false;
+  var nx, ny, d = Math.sqrt(d2);
+  if (d < 0.0001) { nx = -1; ny = 0; }         // 중심이 판 안이면 코트 쪽으로
+  else { nx = dx / d; ny = dy / d; }
+  ball.x = cx + nx * R;
+  ball.y = cy + ny * R;
+  var vn = ball.vx * nx + ball.vy * ny;
+  if (vn < 0) {
+    ball.vx -= (1 + e) * vn * nx;
+    ball.vy -= (1 + e) * vn * ny;
+  }
+  return true;
+}
+
+function collide() {
+  // 옆벽
+  if (ball.x < R) { ball.x = R; ball.vx = -ball.vx * WALL_E; }
+  if (ball.x > FW - R) { ball.x = FW - R; ball.vx = -ball.vx * WALL_E; }
+  // 천장
+  if (ball.y < R) { ball.y = R; if (ball.vy < 0) ball.vy = -ball.vy * 0.45; }
+
+  // 가로막
+  for (var b = 0; b < bars.length; b++) {
+    var bar = bars[b];
+    if (hitRect(bar.x, bar.y, bar.w, bar.h, BAR_E)) { sfx.bar(); bar.hit = 1; }
+  }
+
+  // 백보드 (림 오른쪽에 매달린 판)
+  var bx = hoop.x + RIM + 5;
+  if (hitRect(bx, hoop.y - BOARD_H + BOARD_DROP, BOARD_W, BOARD_H, BOARD_E)) {
+    if (!touched) { touched = true; sfx.board(); }
+  }
+  // 림 양 끝
+  var hitL = hitCircle(hoop.x - RIM, hoop.y, KNOB, RIM_E);
+  var hitR = hitCircle(hoop.x + RIM, hoop.y, KNOB, RIM_E);
+  if (hitL || hitR) {
+    if (!touched) { touched = true; sfx.rim(); }
+  }
+
+  // 바닥
+  if (ball.y > FLOOR - R) {
+    ball.y = FLOOR - R;
+    ball.vy = -ball.vy * FLOOR_E;
+    ball.vx *= FLOOR_FRICTION;
+    if (Math.abs(ball.vy) < 0.9) ball.vy = 0;
+    // 바닥에 닿은 순간 이 슛은 끝난 것으로 본다. 튕기는 모습은 그대로 보여 주고
+    // 잠깐 뒤에 다음 공을 준다.
+    if (deadTimer < 0) {
+      if (!scored) sfx.bounce();
+      endShot();
+    }
+  }
+}
+
+function grabCoins() {
+  for (var i = 0; i < coins.length; i++) {
+    var c = coins[i];
+    if (c.got) continue;
+    var dx = ball.x - c.x, dy = ball.y - c.y;
+    if (dx * dx + dy * dy > (R + 16) * (R + 16)) continue;   // 살짝 스쳐도 먹히게
+    c.got = true;
+    stage.coins++;
+    score += 2;
+    sfx.coin(stage.coins);
+    for (var k = 0; k < 7; k++) {
+      sparks.push({ x: c.x, y: c.y, vx: (Math.random() * 2 - 1) * 2, vy: -Math.random() * 2 - 0.3,
+                    life: 0.4 + Math.random() * 0.25, c: "#FFB020" });
+    }
+    paintGoals();
+  }
+}
+
+/* 림 평면을 위에서 아래로 통과하면 득점 */
+function checkScore() {
+  if (scored || deadTimer >= 0) return;
+  if (ball.vy <= 0) return;
+  if (ball.py > hoop.y || ball.y <= hoop.y) return;
+  if (Math.abs(ball.x - hoop.x) > RIM - KNOB - 8) return;
+  made();
+}
+
+function made() {
+  scored = true;
+  makes++;
+  combo++;
+  if (combo > bestCombo) bestCombo = combo;
+
+  var swish = !touched;
+  stage.made++;
+  if (swish) stage.swish++;
+
+  var bonus = combo >= 6 ? 3 : combo >= 4 ? 2 : combo >= 2 ? 1 : 0;
+  var pts = (swish ? 3 : 2) + bonus;
+  score += pts;
+  if (stage.def.endless) {
+    timeLeft = Math.min(GAME_TIME, timeLeft + (swish ? 3 : 2));
+    paintTimer();
+  }
+
+  netSway = 1; flash = 1; shake = swish ? 5 : 3;
+  if (combo === FIRE_COMBO) sfx.fire();
+
+  pops.push({ x: hoop.x, y: hoop.y + 84, life: 0.95, txt: "+" + pts,
+              sub: swish ? "스윔!" : (bonus ? "연속 " + combo : ""), swish: swish });
+  for (var i = 0; i < (swish ? 16 : 10); i++) {
+    sparks.push({
+      x: hoop.x + (Math.random() * 2 - 1) * RIM,
+      y: hoop.y + 10,
+      vx: (Math.random() * 2 - 1) * 2.2,
+      vy: -Math.random() * 2.4 - 0.4,
+      life: 0.5 + Math.random() * 0.3,
+      c: swish ? "#FFB020" : "#FF6B2C"
+    });
+  }
+  if (swish) sfx.swish();
+  sfx.made(combo);
+
+  paintGoals();
+  endShot();
+}
+
+/* 이번 슛을 끝내고 다음 공을 예약한다 */
+function endShot() {
+  if (deadTimer >= 0) return;
+  deadTimer = RESET_DELAY;
+  if (!scored && combo !== 0) { combo = 0; paintGoals(); }
+}
+
+function goalMet() {
+  var g = stage.def.goal;
+  if (g.makes && stage.made < g.makes) return false;
+  if (g.swish && stage.swish < g.swish) return false;
+  if (g.coins && stage.coins < g.coins) return false;
+  return !!(g.makes || g.swish || g.coins);
+}
+
+function afterShot() {
+  deadTimer = -1;
+  if (state !== "playing") return;
+  if (goalMet()) { clearStage(); return; }
+  if (!stage.def.endless && stage.ballsLeft <= 0) { failStage("공을 다 썼어요"); return; }
+  nextBall();
+}
+
+function nextBall() {
+  deadTimer = -1;
+  scored = false;
+  touched = false;
+  ball.live = false;
+  ball.vx = 0; ball.vy = 0; ball.spin = 0;
+  // 던지는 자리를 매번 조금씩 바꿔 같은 슛만 반복하지 않게 한다
+  var sp = stage.def ? (stage.def.spread || 0) : 1;
+  ball.x = sp === 0 ? 76 : (sp === 1 ? 50 + Math.random() * 80 : 46 + Math.random() * 120);
+  ball.y = HOLD_Y;
+  ball.px = ball.x; ball.py = ball.y;
+}
+
+/* ══════════════════════════════════════════════════════════════
+   9. 조준과 슛
+   ══════════════════════════════════════════════════════════════ */
+function canAim() {
+  return state === "playing" && !ball.live && deadTimer < 0 && !anyVeilOpen();
+}
+
+// 던졌을 때 공이 그릴 길. 손을 떼기 전에 점으로 보여 준다.
+// 골대까지 전부 그려 주면 너무 쉬워져서 앞부분만 보여 주고
+// 마지막 한 뼘은 눈으로 재게 남겨 둔다. 바람은 반영한다(안 그러면 속이는 셈).
+var DOTS = 14;
+function trace(vx, vy) {
+  var px = ball.x, py = ball.y, out = [];
+  for (var i = 0; i < 120 && out.length < DOTS * 2; i++) {
+    vy += GRAV; vx += wind; vx *= AIR; vy *= AIR;
+    px += vx; py += vy;
+    if (px < R) { px = R; vx = -vx * WALL_E; }
+    if (px > FW - R) { px = FW - R; vx = -vx * WALL_E; }
+    if (py < R) { py = R; vy = -vy * 0.45; }
+    if (py > FLOOR - R) break;
+    if (i % 4 === 0) out.push(px, py);
+  }
+  return out;
+}
+
+function aimVec() {
+  var k = scaleOf();
+  var dx = (curX - aimX) * k, dy = (curY - aimY) * k;
+  var d = Math.sqrt(dx * dx + dy * dy);
+  if (d < 0.0001) return { vx: 0, vy: 0, d: 0 };
+  var vx = dx * POWER, vy = dy * POWER;
+  var sp = Math.sqrt(vx * vx + vy * vy);
+  if (sp > MAXPOW) { vx = vx / sp * MAXPOW; vy = vy / sp * MAXPOW; }
+  return { vx: vx, vy: vy, d: d };
+}
+
+function onDown(e) {
+  tapped = true;
+  sfx.unlock();
+  if (!canAim()) return;
+  aiming = true;
+  aimX = curX = e.clientX;
+  aimY = curY = e.clientY;
+  if (courtEl.setPointerCapture && e.pointerId !== undefined) {
+    try { courtEl.setPointerCapture(e.pointerId); } catch (err) {}
+  }
+}
+function onMove(e) {
+  if (!aiming) return;
+  curX = e.clientX; curY = e.clientY;
+  if (e.cancelable) e.preventDefault();
+}
+function onUp() {
+  if (!aiming) return;
+  aiming = false;
+  if (!canAim()) return;
+  var v = aimVec();
+  if (v.d < MINDRAG) return;     // 살짝 건드린 건 슛으로 치지 않는다
+  ball.vx = v.vx; ball.vy = v.vy;
+  ball.live = true;
+  shots++;
+  if (!stage.def.endless) { stage.ballsLeft--; paintBalls(); }
+  sfx.shoot();
+}
+
+courtEl.addEventListener("pointerdown", onDown);
+courtEl.addEventListener("pointermove", onMove, { passive: false });
+courtEl.addEventListener("pointerup", onUp);
+courtEl.addEventListener("pointercancel", function () { aiming = false; });
+window.addEventListener("pointerup", onUp);
+
+/* ══════════════════════════════════════════════════════════════
+   10. 그리기
+   ══════════════════════════════════════════════════════════════ */
+function roundRect(x, y, w, h, r) {
+  ctx.beginPath();
+  ctx.moveTo(x + r, y);
+  ctx.arcTo(x + w, y, x + w, y + h, r);
+  ctx.arcTo(x + w, y + h, x, y + h, r);
+  ctx.arcTo(x, y + h, x, y, r);
+  ctx.arcTo(x, y, x + w, y, r);
+  ctx.closePath();
+}
+
+function drawCourt() {
+  ctx.fillStyle = "#EFCB9B";
+  ctx.fillRect(0, FLOOR, FW, FH - FLOOR);
+  ctx.strokeStyle = "rgba(150,100,50,.45)";
+  ctx.lineWidth = 2;
+  ctx.beginPath(); ctx.moveTo(0, FLOOR); ctx.lineTo(FW, FLOOR); ctx.stroke();
+
+  ctx.strokeStyle = "rgba(150,100,50,.16)";
+  ctx.lineWidth = 1;
+  ctx.beginPath();
+  for (var g = 1; g < 4; g++) {
+    var gy = FLOOR + (FH - FLOOR) * (g / 4);
+    ctx.moveTo(0, gy); ctx.lineTo(FW, gy);
+  }
+  ctx.stroke();
+
+  ctx.strokeStyle = "rgba(150,100,50,.2)";
+  ctx.lineWidth = 2;
+  ctx.beginPath(); ctx.arc(FW / 2, FLOOR, 128, Math.PI, Math.PI * 2); ctx.stroke();
+
+  // 백보드를 매단 레일 (골대가 좌우로 움직이는 이유를 눈에 보이게)
+  ctx.strokeStyle = "rgba(139,149,161,.4)";
+  ctx.lineWidth = 3;
+  ctx.setLineDash([7, 6]);
+  ctx.beginPath(); ctx.moveTo(0, RAIL_Y); ctx.lineTo(FW, RAIL_Y); ctx.stroke();
+  ctx.setLineDash([]);
+}
+
+function drawWind() {
+  if (!wind) return;
+  ctx.strokeStyle = "rgba(49,130,246,.22)";
+  ctx.lineWidth = 2;
+  ctx.lineCap = "round";
+  ctx.beginPath();
+  for (var i = 0; i < gusts.length; i++) {
+    var g = gusts[i];
+    ctx.moveTo(g.x, g.y);
+    ctx.lineTo(g.x + (wind > 0 ? g.len : -g.len), g.y);
+  }
+  ctx.stroke();
+  ctx.lineCap = "butt";
+  // 바람 세기 표시
+  var ax = wind > 0 ? 26 : FW - 26, dir = wind > 0 ? 1 : -1;
+  var n = Math.min(3, Math.ceil(Math.abs(wind) / 0.012));
+  ctx.strokeStyle = "rgba(49,130,246,.5)";
+  ctx.lineWidth = 2.4;
+  ctx.beginPath();
+  for (var k = 0; k < n; k++) {
+    var x = ax + dir * k * 7;
+    ctx.moveTo(x, 22); ctx.lineTo(x + dir * 6, 28); ctx.lineTo(x, 34);
+  }
+  ctx.stroke();
+}
+
+function drawBars() {
+  for (var i = 0; i < bars.length; i++) {
+    var b = bars[i];
+    ctx.fillStyle = "#7C8A9B";
+    roundRect(b.x, b.y, b.w, b.h, 5);
+    ctx.fill();
+    ctx.fillStyle = "rgba(255,255,255,.35)";
+    roundRect(b.x + 4, b.y + 2.5, b.w - 8, 3, 1.5);
+    ctx.fill();
+  }
+}
+
+function drawCoins() {
+  for (var i = 0; i < coins.length; i++) {
+    var c = coins[i];
+    if (c.got) continue;
+    var w = Math.abs(Math.cos(c.spin));           // 돌아가는 느낌
+    ctx.save();
+    ctx.translate(c.x, c.y);
+    ctx.scale(Math.max(0.22, w), 1);
+    var g = ctx.createRadialGradient(-3, -4, 2, 0, 0, 11);
+    g.addColorStop(0, "#FFE9A8"); g.addColorStop(1, "#E5A100");
+    ctx.fillStyle = g;
+    ctx.beginPath(); ctx.arc(0, 0, 11, 0, Math.PI * 2); ctx.fill();
+    ctx.strokeStyle = "rgba(140,90,0,.45)"; ctx.lineWidth = 1.6;
+    ctx.beginPath(); ctx.arc(0, 0, 7.5, 0, Math.PI * 2); ctx.stroke();
+    ctx.restore();
+  }
+}
+
+function drawHoop() {
+  var hx = hoop.x, hy = hoop.y;
+  var bx = hx + RIM + 5;
+  var btop = hy - BOARD_H + BOARD_DROP;
+
+  ctx.strokeStyle = "#C3CCD6";
+  ctx.lineWidth = 4;
+  ctx.beginPath();
+  ctx.moveTo(bx + BOARD_W / 2, btop);
+  ctx.lineTo(bx + BOARD_W / 2, RAIL_Y);
+  ctx.stroke();
+
+  ctx.fillStyle = "#EDF1F6";
+  ctx.strokeStyle = "#A9B6C4";
+  ctx.lineWidth = 2;
+  roundRect(bx, btop, BOARD_W, BOARD_H, 3);
+  ctx.fill();
+  ctx.stroke();
+
+  ctx.strokeStyle = "rgba(49,130,246,.6)";
+  ctx.lineWidth = 2.5;
+  ctx.beginPath();
+  ctx.moveTo(bx + 1.6, hy - 30);
+  ctx.lineTo(bx + 1.6, hy + 2);
+  ctx.stroke();
+
+  ctx.strokeStyle = "#B9C3CE";
+  ctx.lineWidth = 2.5;
+  ctx.beginPath();
+  ctx.moveTo(bx, hy); ctx.lineTo(hx + RIM - 2, hy);
+  ctx.moveTo(bx, hy + 9); ctx.lineTo(hx + RIM - 4, hy + 1);
+  ctx.stroke();
+
+  drawNet(hx, hy);
+
+  ctx.strokeStyle = flash > 0
+    ? "rgba(255,176,32," + (0.55 + flash * 0.45) + ")"
+    : "#FF6B2C";
+  ctx.lineWidth = 6 + flash * 2;
+  ctx.lineCap = "round";
+  ctx.beginPath();
+  ctx.moveTo(hx - RIM, hy);
+  ctx.lineTo(hx + RIM, hy);
+  ctx.stroke();
+  ctx.lineCap = "butt";
+}
+
+function drawNet(hx, hy) {
+  var depth = 40 + netSway * 12;
+  var sway = Math.sin(netSway * 14) * netSway * 5;
+  var n = 6;
+  ctx.strokeStyle = "rgba(110,122,138,.5)";
+  ctx.lineWidth = 1.3;
+  ctx.beginPath();
+  for (var i = 0; i <= n; i++) {
+    var t = i / n;
+    var topX = hx - RIM + t * RIM * 2;
+    var botX = hx + (topX - hx) * 0.45 + sway;
+    ctx.moveTo(topX, hy);
+    ctx.lineTo(botX, hy + depth);
+  }
+  for (var k = 1; k <= 2; k++) {
+    var f = k / 3;
+    var y = hy + depth * f;
+    var half = RIM * (1 - f * 0.55);
+    ctx.moveTo(hx - half + sway * f, y);
+    ctx.lineTo(hx + half + sway * f, y);
+  }
+  ctx.stroke();
+}
+
+function drawTrail() {
+  for (var i = 0; i < trail.length; i++) {
+    var t = trail[i];
+    var a = t.life / 0.3;
+    ctx.fillStyle = "rgba(255," + Math.round(120 + 110 * a) + ",30," + (a * 0.5) + ")";
+    ctx.beginPath();
+    ctx.arc(t.x, t.y, t.r * a, 0, Math.PI * 2);
+    ctx.fill();
+  }
+}
+
+function drawBall() {
+  var x = ball.x, y = ball.y;
+
+  var h = Math.max(0, Math.min(1, (FLOOR - y) / (FH * 0.8)));
+  ctx.fillStyle = "rgba(120,80,40," + (0.22 * (1 - h) + 0.05) + ")";
+  ctx.beginPath();
+  ctx.ellipse(x, FLOOR + 3, R * (1 - h * 0.45), R * 0.32 * (1 - h * 0.4), 0, 0, Math.PI * 2);
+  ctx.fill();
+
+  if (combo >= FIRE_COMBO) {
+    ctx.fillStyle = "rgba(255,176,32,.28)";
+    ctx.beginPath(); ctx.arc(x, y, R + 7, 0, Math.PI * 2); ctx.fill();
+  }
+
+  ctx.save();
+  ctx.translate(x, y);
+  ctx.rotate(ball.spin);
+
+  var g = ctx.createRadialGradient(-R * 0.35, -R * 0.4, R * 0.2, 0, 0, R);
+  g.addColorStop(0, "#FF9B5E");
+  g.addColorStop(1, "#E9520F");
+  ctx.fillStyle = g;
+  ctx.beginPath();
+  ctx.arc(0, 0, R, 0, Math.PI * 2);
+  ctx.fill();
+
+  ctx.strokeStyle = "rgba(90,42,8,.75)";
+  ctx.lineWidth = 1.6;
+  ctx.beginPath();
+  ctx.arc(0, 0, R, 0, Math.PI * 2);
+  ctx.moveTo(-R, 0); ctx.lineTo(R, 0);
+  ctx.moveTo(0, -R); ctx.lineTo(0, R);
+  ctx.stroke();
+  ctx.beginPath();
+  ctx.ellipse(0, 0, R * 0.42, R, 0, 0, Math.PI * 2);
+  ctx.stroke();
+  ctx.restore();
+}
+
+function drawAim() {
+  if (!aiming) return;
+  var v = aimVec();
+  if (v.d < MINDRAG) return;
+  var pts = trace(v.vx, v.vy);
+  for (var i = 0; i < pts.length; i += 2) {
+    var t = i / pts.length;
+    ctx.fillStyle = "rgba(25,31,40," + (0.42 * (1 - t) + 0.1) + ")";
+    ctx.beginPath();
+    ctx.arc(pts[i], pts[i + 1], 3.8 * (1 - t * 0.45), 0, Math.PI * 2);
+    ctx.fill();
+  }
+  var sp = Math.sqrt(v.vx * v.vx + v.vy * v.vy) / MAXPOW;
+  ctx.strokeStyle = "rgba(255,107,44,.75)";
+  ctx.lineWidth = 3;
+  ctx.beginPath();
+  ctx.arc(ball.x, ball.y, R + 7, -Math.PI / 2, -Math.PI / 2 + Math.PI * 2 * sp);
+  ctx.stroke();
+}
+
+function drawPops() {
+  for (var i = 0; i < pops.length; i++) {
+    var p = pops[i];
+    var a = Math.min(1, p.life * 1.6);
+    ctx.textAlign = "center";
+    ctx.lineJoin = "round";
+    ctx.strokeStyle = "rgba(255,255,255," + (a * 0.9) + ")";
+    ctx.font = "800 25px 'Pretendard',system-ui,sans-serif";
+    ctx.lineWidth = 4;
+    ctx.strokeText(p.txt, p.x, p.y);
+    ctx.fillStyle = (p.swish ? "rgba(233,120,0," : "rgba(25,31,40,") + a + ")";
+    ctx.fillText(p.txt, p.x, p.y);
+    if (p.sub) {
+      ctx.font = "800 13px 'Pretendard',system-ui,sans-serif";
+      ctx.lineWidth = 3.5;
+      ctx.strokeText(p.sub, p.x, p.y + 18);
+      ctx.fillStyle = "rgba(255,107,44," + a + ")";
+      ctx.fillText(p.sub, p.x, p.y + 18);
+    }
+  }
+  for (var j = 0; j < sparks.length; j++) {
+    var s = sparks[j];
+    ctx.fillStyle = s.c;
+    ctx.globalAlpha = Math.min(1, s.life * 2.4);
+    ctx.beginPath();
+    ctx.arc(s.x, s.y, 2.6, 0, Math.PI * 2);
+    ctx.fill();
+  }
+  ctx.globalAlpha = 1;
+}
+
+function render() {
+  if (!canvas.width) return;
+  var s = canvas.width / FW;
+  var sx = shake ? (Math.random() * 2 - 1) * shake : 0;
+  var sy = shake ? (Math.random() * 2 - 1) * shake : 0;
+  ctx.setTransform(s, 0, 0, s, sx * s, sy * s);
+  ctx.clearRect(-20, -20, FW + 40, FH + 40);
+  drawCourt();
+  drawWind();
+  drawCoins();
+  drawBars();
+  drawHoop();
+  if (state !== "ready") {
+    drawAim();
+    drawTrail();
+    drawBall();
+    drawPops();
+  }
+}
+
+/* ══════════════════════════════════════════════════════════════
+   11. 화면 표시
+   ══════════════════════════════════════════════════════════════ */
+var goalChips = document.getElementById("goalChips");
+var ballDots = document.getElementById("ballDots");
+var timerBox = document.getElementById("timerBox");
+var timerFill = document.getElementById("timerFill");
+var timerVal = document.getElementById("timerVal");
+var stTitle = document.getElementById("stTitle");
+var stName = document.getElementById("stName");
+var hint = document.getElementById("hint");
+
+function comma(n) { return String(n).replace(/\B(?=(\d{3})+(?!\d))/g, ","); }
+
+function chip(icon, label, now, need, cls) {
+  var el = document.createElement("div");
+  el.className = "chip" + (cls ? " " + cls : "");
+  el.innerHTML = '<i>' + icon + '</i>' + label + ' <b>' + now + '</b>' +
+                 (need ? '<span style="color:var(--ink-3)">/' + need + '</span>' : '');
+  return el;
+}
+
+function paintGoals() {
+  if (!stage.def) { goalChips.innerHTML = ""; return; }
+  var g = stage.def.goal;
+  goalChips.innerHTML = "";
+  if (g.makes) goalChips.appendChild(chip("🏀", "골", Math.min(stage.made, g.makes), g.makes,
+                                          stage.made >= g.makes ? "done" : ""));
+  if (g.swish) goalChips.appendChild(chip("✨", "스윔", Math.min(stage.swish, g.swish), g.swish,
+                                          stage.swish >= g.swish ? "done" : ""));
+  if (g.coins) goalChips.appendChild(chip("🪙", "동전", Math.min(stage.coins, g.coins), g.coins,
+                                          stage.coins >= g.coins ? "done" : ""));
+  if (combo >= 2) goalChips.appendChild(chip("🔥", "연속", combo, 0, ""));
+  var sc = chip("", "점수", comma(score), 0, "score");
+  goalChips.appendChild(sc);
+}
+
+function paintBalls() {
+  ballDots.innerHTML = "";
+  if (!stage.def || stage.def.endless) {
+    var u = document.createElement("u");
+    u.textContent = "공 제한 없음";
+    ballDots.appendChild(u);
+    return;
+  }
+  var total = stage.def.balls;
+  var cap = Math.min(total, 16);
+  for (var i = 0; i < cap; i++) {
+    var d = document.createElement("i");
+    if (i >= stage.ballsLeft) d.className = "used";
+    ballDots.appendChild(d);
+  }
+  var lab = document.createElement("u");
+  lab.textContent = "남은 공 " + stage.ballsLeft;
+  ballDots.appendChild(lab);
+}
+
+function paintTimer() {
+  timerBox.classList.toggle("off", !hasTime);
+  if (!hasTime) return;
+  var t = Math.max(0, timeLeft);
+  timerFill.style.transform = "scaleX(" + (t / GAME_TIME) + ")";
+  timerFill.classList.toggle("low", t <= 10);
+  // 1/60씩 빼다 보면 44가 44.0000000001 로 남아 ceil 이 45를 내놓는다
+  timerVal.textContent = Math.ceil(t - 1e-6) + "초";
+}
+
+function veil(id, on) {
+  document.getElementById(id).classList.toggle("show", !!on);
+}
+function anyVeilOpen() {
+  var v = document.getElementsByClassName("veil");
+  for (var i = 0; i < v.length; i++) if (v[i].classList.contains("show")) return true;
+  return false;
+}
+function closeAllVeils() {
+  var v = document.getElementsByClassName("veil");
+  for (var i = 0; i < v.length; i++) v[i].classList.remove("show");
+}
+
+var toastEl = document.getElementById("toast");
+var toastTimer = 0;
+function toast(msg) {
+  toastEl.textContent = msg;
+  toastEl.classList.add("show");
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(function () { toastEl.classList.remove("show"); }, 1800);
+}
+
+/* ══════════════════════════════════════════════════════════════
+   12. 스테이지 목록
+   ══════════════════════════════════════════════════════════════ */
+var stageGrid = document.getElementById("stageGrid");
+
+function paintStages() {
+  var st = starsAll();
+  stageGrid.innerHTML = "";
+  for (var i = 0; i < STAGE_N; i++) {
+    (function (i) {
+      var locked = i > 0 && st[i - 1] === 0;
+      var b = document.createElement("button");
+      b.className = "cell" + (st[i] ? " done" : "") + (locked ? " lock" : "");
+      b.innerHTML = "<b>" + (locked ? "🔒" : (i + 1)) + "</b><u>" +
+                    (st[i] ? "★★★".slice(0, st[i]) + "☆☆☆".slice(0, 3 - st[i]) : "") + "</u>";
+      if (!locked) b.addEventListener("click", function () { openIntro(i); });
+      stageGrid.appendChild(b);
+    })(i);
+  }
+  document.getElementById("stagesSub").textContent =
+    "별 " + totalStars() + "개 / " + (STAGE_N * 3) + "개";
+  document.getElementById("btnTimeAttack").disabled = !allClear();
+  document.getElementById("btnTimeAttack").textContent =
+    allClear() ? "타임어택 (최고 " + comma(best) + "점)" : "타임어택 (전부 깨면 열려요)";
+}
+
+function openStages() {
+  paintStages();
+  closeAllVeils();
+  veil("vStages", true);
+  if (state === "playing") state = "paused";
+}
+
+function openIntro(i) {
+  closeAllVeils();
+  var d = STAGES[i];
+  stage.idx = i;
+  document.getElementById("introTitle").textContent = "스테이지 " + (i + 1) + " · " + d.name;
+  document.getElementById("introHint").textContent = d.hint;
+  var box = document.getElementById("introGoals");
+  box.innerHTML = "";
+  function line(em, txt) {
+    var r = document.createElement("div");
+    r.className = "pt";
+    r.innerHTML = "<em>" + em + "</em><span>" + txt + "</span>";
+    box.appendChild(r);
+  }
+  if (d.goal.makes) line(d.goal.makes + "골", "골대에 넣기");
+  if (d.goal.swish) line("스윔 " + d.goal.swish, "림에 안 닿고 넣기");
+  if (d.goal.coins) line("동전 " + d.goal.coins, "날아가는 길에 줍기");
+  line("공 " + d.balls, d.time ? d.time + "초 안에" : "이 안에 목표 채우기");
+  veil("vIntro", true);
+}
+
+/* ══════════════════════════════════════════════════════════════
+   13. 흐름
+   ══════════════════════════════════════════════════════════════ */
+function beginStage(def, idx) {
+  closeAllVeils();
+  stage.def = def;
+  stage.idx = idx;
+  stage.ballsLeft = def.balls;
+  stage.made = 0; stage.swish = 0; stage.coins = 0;
+  score = 0; combo = 0; makes = 0; shots = 0; bestCombo = 0;
+  RIM = def.rim || RIM_BASE;
+  wind = def.wind || 0;
+  hasTime = !!def.time;
+  GAME_TIME = def.time || 45;
+  timeLeft = def.time || 0;
+  hoop.x = (HX_MIN + HX_MAX) / 2; hoop.dir = 1; hoop.y = HOOP_Y;
+  bobT = 0; deadTimer = -1;
+  netSway = 0; flash = 0; shake = 0;
+  pops.length = 0; sparks.length = 0; trail.length = 0; gusts.length = 0;
+  placeProps(def);
+  nextBall();
+  stTitle.textContent = def.endless ? "타임어택" : ("스테이지 " + (idx + 1));
+  stName.textContent = def.name;
+  hint.textContent = def.hint;
+  state = "playing";
+  last = performance.now();
+  acc = 0;
+  sfx.unlock();
+  paintGoals();
+  paintBalls();
+  paintTimer();
+}
+
+function starsFor() {
+  if (stage.def.endless) return 0;
+  var used = stage.def.balls - stage.ballsLeft;
+  if (used <= Math.ceil(stage.def.balls * 0.5)) return 3;
+  if (used <= Math.ceil(stage.def.balls * 0.75)) return 2;
+  return 1;
+}
+
+function clearStage() {
+  state = "clear";
+  aiming = false;
+  var n = starsFor();
+  saveStar(stage.idx, n);
+  sfx.clear(n);
+
+  var last = stage.idx >= STAGE_N - 1;
+  document.getElementById("clearTitle").textContent =
+    last ? "전부 깼어요!" : "스테이지 " + (stage.idx + 1) + " 클리어!";
+  document.getElementById("clearScore").textContent = comma(score);
+  document.getElementById("clearSub").textContent =
+    "점 · 공 " + stage.ballsLeft + "개 남김" + (bestCombo >= 2 ? " · 최다 연속 " + bestCombo : "");
+  var starEls = document.getElementById("clearStars").children;
+  for (var i = 0; i < 3; i++) {
+    starEls[i].className = "";
+    (function (i) {
+      setTimeout(function () { starEls[i].className = i < n ? "on" : "off"; }, 120 + i * 160);
+    })(i);
+  }
+  var btnNext = document.getElementById("btnNext");
+  if (last) {
+    btnNext.textContent = allClear() ? "타임어택 열기" : "스테이지 목록";
+  } else {
+    btnNext.textContent = "다음 스테이지";
+  }
+  veil("vClear", true);
+}
+
+function failStage(why) {
+  state = "fail";
+  aiming = false;
+  sfx.fail();
+  document.getElementById("failTitle").textContent = why || "공을 다 썼어요";
+  var g = stage.def.goal;
+  var txt = [];
+  if (g.makes) txt.push("골 " + stage.made + "/" + g.makes);
+  if (g.swish) txt.push("스윔 " + stage.swish + "/" + g.swish);
+  if (g.coins) txt.push("동전 " + stage.coins + "/" + g.coins);
+  document.getElementById("failSub").textContent = txt.join(" · ");
+  veil("vFail", true);
+}
+
+function endTimeAttack() {
+  state = "fail";
+  aiming = false;
+  if (score > best) { best = score; store.set("best", best); }
+  sfx.end();
+  document.getElementById("overTitle").textContent =
+    score >= best && score > 0 ? "최고 기록!" : "경기 끝!";
+  document.getElementById("overScore").textContent = comma(score);
+  document.getElementById("overSub").textContent =
+    "최고 기록 " + comma(best) + "점 · " + makes + "/" + shots + "골";
+  veil("vOver", true);
+}
+
+function pause() {
+  if (state !== "playing") return;
+  state = "paused";
+  aiming = false;
+  veil("vPause", true);
+}
+function resume() {
+  veil("vPause", false);
+  if (state === "paused") {
+    state = "playing";
+    last = performance.now();
+    acc = 0;
+    sfx.wake();
+  }
+}
+
+document.addEventListener("visibilitychange", function () {
+  if (document.hidden) { sfx.stopAll(); pause(); }
+});
+
+/* ── 버튼 ─────────────────────────────── */
+var btnSound = document.getElementById("btnSound");
+btnSound.textContent = sfx.isMuted() ? "🔇" : "🔊";
+btnSound.addEventListener("click", function () {
+  btnSound.textContent = sfx.toggle() ? "🔇" : "🔊";
+});
+
+document.getElementById("btnPlay").addEventListener("click", function () {
+  // 아직 안 깬 첫 스테이지로 바로 들어간다
+  var st = starsAll(), i = 0;
+  while (i < STAGE_N - 1 && st[i] > 0) i++;
+  openIntro(i);
+});
+document.getElementById("btnTimeAttack").addEventListener("click", function () {
+  if (!allClear()) return;
+  beginStage(TIME_ATTACK, -1);
+});
+document.getElementById("btnGo").addEventListener("click", function () {
+  beginStage(STAGES[stage.idx], stage.idx);
+});
+document.getElementById("btnList").addEventListener("click", openStages);
+document.getElementById("btnStagesClose").addEventListener("click", function () {
+  veil("vStages", false);
+  if (state === "paused" && !anyVeilOpen()) resume();
+  else if (!stage.def) veil("vStart", true);
+});
+document.getElementById("btnHow").addEventListener("click", function () { veil("vHow", true); });
+document.getElementById("btnHowClose").addEventListener("click", function () { veil("vHow", false); });
+document.getElementById("btnResume").addEventListener("click", resume);
+
+document.getElementById("btnNext").addEventListener("click", function () {
+  if (stage.idx >= STAGE_N - 1) {
+    if (allClear()) { beginStage(TIME_ATTACK, -1); } else { openStages(); }
+    return;
+  }
+  openIntro(stage.idx + 1);
+});
+document.getElementById("btnClearRetry").addEventListener("click", function () {
+  beginStage(STAGES[stage.idx], stage.idx);
+});
+document.getElementById("btnClearList").addEventListener("click", openStages);
+document.getElementById("btnRetry").addEventListener("click", function () {
+  if (stage.def && stage.def.endless) { beginStage(TIME_ATTACK, -1); return; }
+  beginStage(STAGES[stage.idx], stage.idx);
+});
+document.getElementById("btnFailList").addEventListener("click", openStages);
+document.getElementById("btnOverRetry").addEventListener("click", function () { beginStage(TIME_ATTACK, -1); });
+document.getElementById("btnOverList").addEventListener("click", openStages);
+
+// 종료: 어떤 화면에서도 나갈 수 있고, 나가기 전에 확인 모달을 띄운다
+function askExit() {
+  if (state === "playing") { state = "paused"; aiming = false; sfx.stopAll(); }
+  veil("vExit", true);
+}
+function doExit() {
+  // 히스토리를 건드리지 않고 시작 화면으로 되돌린다
+  closeAllVeils();
+  state = "ready";
+  stage.def = null;
+  score = 0; combo = 0;
+  hasTime = false;
+  bars.length = 0; coins.length = 0; wind = 0; RIM = RIM_BASE;
+  pops.length = 0; sparks.length = 0; trail.length = 0; gusts.length = 0;
+  stTitle.textContent = "한 손 농구";
+  stName.textContent = "스테이지를 골라 시작하세요";
+  hint.textContent = "골대 쪽으로 스와이프하면 공이 날아가요";
+  paintGoals(); paintBalls(); paintTimer();
+  paintStages();
+  veil("vStart", true);
+}
+document.getElementById("btnExit").addEventListener("click", askExit);
+document.getElementById("btnExitNo").addEventListener("click", function () {
+  veil("vExit", false);
+  if (state === "paused" && !anyVeilOpen()) resume();
+});
+document.getElementById("btnExitYes").addEventListener("click", doExit);
+
+/* ── 공유 ─────────────────────────────── */
+var SHARE_URL = "https://richroro.github.io/games/basketball/";
+function shareScore() {
+  var text = "한 손 농구에서 별 " + totalStars() + "개 모았어요. 바람이랑 가로막까지 넘어야 해요!";
+  if (navigator.share) {
+    navigator.share({ title: "한 손 농구", text: text, url: SHARE_URL })
+      .catch(function () { /* 사용자가 공유를 취소한 경우 */ });
+    return;
+  }
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(text + " " + SHARE_URL).then(
+      function () { toast("링크를 복사했어요"); },
+      function () { toast("복사에 실패했어요"); }
+    );
+    return;
+  }
+  toast(SHARE_URL);
+}
+document.getElementById("btnShare").addEventListener("click", shareScore);
+document.getElementById("btnOverShare").addEventListener("click", shareScore);
+
+/* ══════════════════════════════════════════════════════════════
+   14. 루프
+   ══════════════════════════════════════════════════════════════ */
+var acc = 0;
+var last = performance.now();
+var tick = 0;
+
+function frame(now) {
+  var dt = (now - last) / 1000;
+  last = now;
+  if (dt > 0.25) dt = 0.25;
+  if (state === "playing") {
+    acc += dt;
+    var guard = 0;
+    while (acc >= FIXED && guard < 5) { step(); acc -= FIXED; guard++; }
+    if (acc > FIXED) acc = 0;
+    if (++tick % 4 === 0 && hasTime) paintTimer();
+  }
+  render();
+  requestAnimationFrame(frame);
+}
+
+layout();
+resize();
+hoop.y = HOOP_Y;
+ball.y = HOLD_Y;
+state = "ready";
+paintStages();
+paintGoals();
+paintBalls();
+paintTimer();
+requestAnimationFrame(frame);
+
+// 테스트용 훅: 브라우저에서 물리를 직접 돌려 검증할 때 쓴다
+window.__hoop = {
+  state: function () {
+    return { score: score, shots: shots, makes: makes, combo: combo, timeLeft: timeLeft,
+             ball: ball, hoop: hoop, bars: bars, coins: coins, wind: wind, RIM: RIM,
+             stage: stage, gameState: state, hasTime: hasTime,
+             FH: FH, FLOOR: FLOOR, HOLD_Y: HOLD_Y, HOOP_Y: HOOP_Y };
+  },
+  stages: function () { return STAGES; },
+  beginStage: function (i) { beginStage(i < 0 ? TIME_ATTACK : STAGES[i], i); },
+  pause: pause,
+  shoot: function (vx, vy) {
+    ball.vx = vx; ball.vy = vy; ball.live = true; shots++;
+    if (!stage.def.endless) { stage.ballsLeft--; paintBalls(); }
+  },
+  step: step,
+  setTime: function (t) { timeLeft = t; },
+  starsAll: starsAll,
+  consts: function () {
+    return { FW: FW, R: R, GRAV: GRAV, AIR: AIR, KNOB: KNOB, MAXPOW: MAXPOW,
+             HX_MIN: HX_MIN, HX_MAX: HX_MAX, WALL_E: WALL_E, STAGE_N: STAGE_N };
+  }
+};
+
+})();
+</script>
+</body>
+</html>
