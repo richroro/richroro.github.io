@@ -877,6 +877,20 @@ function compose(P) {
     return deg;
   };
   const fit = (deg, lo, hi) => { while (deg < lo) deg += 7; while (deg > hi) deg -= 7; return deg; };
+  // 코드음 바로 반음 위(♭9)에 앉는 음만 부딪힌다고 본다. 9도·6도·maj7·11도는 후크 색이라 둔다.
+  // 코드음 자신은 부딪히지 않는다(maj7 코드의 근음은 7음 반음 위지만 코드음이다).
+  const clashes = (d, ch) => { if (ch.chord.classes.includes(mod(d, 7))) return false;
+    const m = degToMidi(P, d, ch.chord);
+    return ch.chord.tones.some(t => mod(m - (P.root + t), 12) === 1); };
+  // 부딪힌 음을 가장 가까운 코드음으로 — 아래(해결 방향)를 먼저 본다. 난수를 쓰지 않아서
+  // 같은 코드 위의 같은 음은 언제나 같게 고쳐진다(후렴 두 번이 똑같이 들린다).
+  const unclash = (d, ch, lo, hi) => {
+    const cls = ch.chord.classes;
+    for (const k of [-1, 1, -2, 2, -3, 3]) { const c = d + k; if (c >= lo && c <= hi && cls.includes(mod(c, 7)) && allowed(c)) return c; }
+    return snapIn(d, ch, lo, hi);
+  };
+  // 5음 음계 위에서 k 칸(부호가 방향) 옮긴 도
+  const pentStep = (d, k) => { let x = d; for (let s = 0; s < Math.abs(k); s++) { do x += Math.sign(k); while (!pentSet.has(mod(x, 7))); } return x; };
   // snap 이 음역 밖(최대 3도)으로 밀어내면 창 안의 가장 가까운 코드음으로 되돌린다.
   // 창을 좁힌 뒤로 후렴 꼭대기가 이것 때문에 한 음씩 삐져나왔다. 난수 소비는 snap 과 같다.
   const snapIn = (deg, chord, lo, hi) => {
@@ -926,7 +940,7 @@ function compose(P) {
       const strong = r.pos % 4 === 0;
       const frac = total > 1 ? i / (total - 1) : 0;
       const target = center + (shape === "arch" ? amp * Math.sin(Math.PI * frac) : shape === "rise" ? amp * (frac - .3) : shape === "fall" ? amp * (.5 - frac) : amp * Math.sin(2 * Math.PI * frac) * .8);
-      const cands = [], ws = [];
+      const cands = [], ws = [], clashC = [], clashW = [];
       const span = strong ? 5 : 3;
       const last = i === total - 1;
       for (let d = cur - span; d <= cur + span; d++) {
@@ -944,8 +958,11 @@ function compose(P) {
         if (Math.abs(lastIv) > 3 && Math.sign(d - cur) === Math.sign(lastIv)) w *= .3;
         if (last && opts.resolve) w *= (mod(d, 7) === 0 ? 4 : mod(d, 7) === 2 ? 1.6 : .35);
         if (last && opts.open) w *= (mod(d, 7) === 4 ? 4 : mod(d, 7) === 6 ? 2 : mod(d, 7) === 1 ? 1.5 : .4);
+        // 되풀이될 자리(avoid: 박 오프셋들)의 코드와 부딪히는 음은 뺀다 — 그래야 고치지 않고 그대로 되풀이된다
+        if (opts.avoid && opts.avoid.some(off => clashes(d, chordAt(beat + off)))) { clashC.push(d); clashW.push(w); continue; }
         cands.push(d); ws.push(w);
       }
+      if (!cands.length) { cands.push(...clashC); ws.push(...clashW); }   // 다 부딪히면 원래 후보로 돌아간다
       let d = cands.length ? rand.weighted(cands, ws) : snapIn(fit(cur, lo, hi), ch, lo, hi);
       if (last && opts.resolve && mod(d, 7) !== 0 && mod(d, 7) !== 2) d = snapIn(d, ch, lo, hi);
       lastIv = d - cur; h2 = h1; h1 = d; cur = d; lastDeg = d; if (anchor == null) anchor = d;
@@ -976,15 +993,19 @@ function compose(P) {
       const beat = (startBar + n.bar) * bpb + n.pos / 4;
       const ch = chordAt(beat);
       let d = fit(n.deg + transpose + oct, lo, hi);
-      if (n.strong || transpose !== 0) d = n.strong ? snapIn(d, ch, lo, hi) : (allowed(d) ? d : snapIn(d, ch, lo, hi));
+      // keep: 후크는 코드가 바뀌어도 그대로 둔다. 코드음 반음 위로 부딪힐 때만 붙인다.
+      if (opts.keep) { if (clashes(d, ch)) d = unclash(d, ch, lo, hi); }
+      else if (n.strong || transpose !== 0) d = n.strong ? snapIn(d, ch, lo, hi) : (allowed(d) ? d : snapIn(d, ch, lo, hi));
       lastDeg = d;
       const last = i === motif.length - 1;
       if (last && (opts.resolve || opts.open)) {
         const want = opts.open ? [4, 6, 1] : [0, 2];
+        const chTail = chordAt(beat + Math.max(n.len, opts.resolve ? 6 : 0) / 4 - .05);
         let best = null, bestCost = Infinity;
         for (let c = d - 7; c <= d + 7; c++) {
           if (c < lo || c > hi) continue;
-          const rank = want.indexOf(mod(c, 7)); if (rank < 0) continue;
+          // V 의 이끔음 위에 으뜸음을 끌지 않는다. 늘여 끄는 동안 바뀌는 다음 코드(마디에 코드 둘)도 본다.
+          const rank = want.indexOf(mod(c, 7)); if (rank < 0 || clashes(c, ch) || clashes(c, chTail)) continue;
           const cost = Math.abs(c - d) + rank * .6 + (opts.toward != null ? 1.2 * Math.abs(c - opts.toward) : 0);
           if (cost < bestCost) { bestCost = cost; best = c; }
         }
@@ -1040,23 +1061,57 @@ function compose(P) {
     if (sp.riff) {                       // 드롭: 한 마디 리프를 통째로 되풀이한다
       const M = motifs[type];
       // 컷 뒤라 음역을 새로 잡는다 — 직전 음을 물려받지 않는다
-      if (!M.pitches) { const keep = lastDeg; lastDeg = null; M.rhythm = makeRiff(); M.pitches = assignPitches(M.rhythm, sec.bar, lo, hi, center, { shape: "wave" }); lastDeg = keep; }
-      for (let b = 0; b < sec.bars; b++) pushNotes(realize(M.pitches, sec.bar + b, 0, lo, hi, { exact: true }), sec.bar + b, vel, legato);
+      // 음이 두 개뿐인 리프는 단조로우니 세 음 이상 나올 때까지 몇 번 다시 뽑는다.
+      if (!M.pitches) {
+        const keep = lastDeg;
+        for (let tries = 0; tries < 4; tries++) {
+          lastDeg = null; M.rhythm = makeRiff();
+          M.pitches = assignPitches(M.rhythm, sec.bar, lo, hi, center,
+                                    { shape: "wave", avoid: Array.from({ length: sec.bars }, (_, b) => b * bpb) });
+          if (new Set(M.pitches.map(n => n.deg)).size >= 3) break;
+        }
+        lastDeg = keep;
+      }
+      // 코드가 바뀌어도 리프는 그대로(keep) — 매 마디 똑같이 들려야 리프다
+      for (let b = 0; b < sec.bars; b++) {
+        const bar = sec.bar + b;
+        pushNotes(realize(M.pitches, bar, 0, lo, hi, { exact: true, keep: true }), bar, vel, legato);
+      }
       continue;
     }
     const M = motifs[type];
     if (!M.rhythm) M.rhythm = rhythmFor(type, dens);
+    const nPhr = Math.floor(sec.bars / 2);
     if (!M.pitches) {                  // 후렴 동기는 컷 뒤라 직전 음을 물려받지 않는다
       const keep = lastDeg; if (type === "B") lastDeg = null;
-      M.pitches = assignPitches(M.rhythm, sec.bar, lo, hi, center, { shape: sp.shape }); lastDeg = keep;
+      // 후크 후렴은 네 구절 모두에 그대로 얹히므로 각 구절 자리의 코드와 부딪히지 않게 짓는다
+      const avoid = G.hook && type === "B" ? Array.from({ length: Math.max(1, nPhr) }, (_, k) => k * 2 * bpb) : null;
+      M.pitches = assignPitches(M.rhythm, sec.bar, lo, hi, center, { shape: sp.shape, avoid }); lastDeg = keep;
     }
-    const nPhr = Math.floor(sec.bars / 2);
     if (sp.rise) {                     // 프리코러스: 같은 동기를 한 도씩 올리며 조인다
       // 창도 같이 올린다. 안 그러면 realize 의 음역 당김이 +1/+2/+3 을 도로 깎아 먹는다.
       for (let ph = 0; ph < nPhr; ph++) {
         const startBar = sec.bar + ph * 2, last = ph === nPhr - 1, step = Math.min(ph, 3);
         pushNotes(realize(M.pitches, startBar, step, lo + step, hi + step, { home: center + step, open: last }),
                   startBar, vel + ph * .04, legato);
+      }
+      continue;
+    }
+    if (G.hook && type === "B") {        // 후렴: 후크 세 번 + 대답 한 번 (AAAB)
+      // 대답은 후크 첫 마디를 그대로 두고 둘째 마디만 새로 지어 으뜸음으로 닫는다.
+      // 한 번 지어 두고 다음 후렴에서도 똑같이 쓴다.
+      if (!M.answer && nPhr > 1) {
+        const hb = sec.bar + (nPhr - 1) * 2;                      // 대답이 놓일 마디의 코드로 짓는다
+        const head = M.pitches.filter(n => n.bar === 0);
+        const keep = lastDeg; lastDeg = head.length ? head[head.length - 1].deg : null;
+        const tail = assignPitches(M.rhythm.filter(r => r.bar === 1), hb, lo, hi, center,
+                                   { startDeg: lastDeg, resolve: true, shape: "fall" });
+        M.answer = [...head, ...tail]; lastDeg = keep;
+      }
+      for (let ph = 0; ph < nPhr; ph++) {
+        const startBar = sec.bar + ph * 2, last = ph === nPhr - 1 && nPhr > 1;
+        pushNotes(realize(last ? M.answer : M.pitches, startBar, 0, lo, hi, { keep: true, exact: true, resolve: last }),
+                  startBar, vel, legato);
       }
       continue;
     }
@@ -1080,6 +1135,24 @@ function compose(P) {
 
   /* 안전장치: 쉼표 없이 12반음 넘게 튀면 옥타브를 당겨 붙인다. 화음은 그대로고 음역만 좁아진다.
      충분히 쉰 뒤(한 박 이상)의 큰 도약은 후렴 리프트라서 그냥 둔다. */
+  /* 컷 픽업: 후렴 직전 두 박은 반주가 빠진다(5-8). 그 자리에 멜로디만 남겨
+     후렴 첫 음으로 16분 세 음을 치고 들어가게 한다 — "하나-둘-셋-쾅" */
+  if (G.hook && G.cut) song.sections.forEach((sec, i) => {
+    const next = song.sections[i + 1];
+    if (sec.type !== "P" || !next || next.type !== "B") return;
+    const end = next.bar * bpb, cutAt = end - 2;
+    const first = song.lead.filter(n => n.t >= end - 1e-6).sort((a, b) => a.t - b.t)[0];
+    if (!first) return;
+    song.lead = song.lead.filter(n => !(n.t >= cutAt - 1e-6 && n.t < end - 1e-6));   // 컷 안은 비운다
+    for (const n of song.lead) if (n.t < cutAt && n.t + n.d > cutAt) n.d = Math.max(.1, cutAt - n.t);
+    const before = song.lead.filter(n => n.t < cutAt).sort((a, b) => b.t - a.t)[0];
+    let d0 = null; for (let d = -10; d <= 30 && d0 == null; d++) if (degToMidi(P, d) === first.p) d0 = d;
+    if (d0 == null) return;
+    const dir = before && before.p > first.p ? 1 : -1;               // 위에서 내려오거나 아래에서 치고 오른다
+    const ch = chordAt(end - .01);
+    [3, 2, 1].forEach((k, j) => song.lead.push({ t: end - .75 + j * .25, d: .22,
+      p: degToMidi(P, pentStep(d0, k * dir), ch.chord), v: .7 + j * .08, tr: "lead" }));
+  });
   song.lead.sort((a, b) => a.t - b.t);
   for (let i = 1; i < song.lead.length; i++) {
     const a = song.lead[i - 1], c = song.lead[i];
