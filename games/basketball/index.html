@@ -4,21 +4,21 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <meta name="theme-color" content="#F2F4F6">
-<meta name="description" content="바람과 가로막을 넘어 골대에 넣는 스테이지 농구 게임. 12개 스테이지와 타임어택.">
+<meta name="description" content="바람과 가로막을 넘어 골대에 넣는 스테이지 농구 게임. 스테이지 12개, 아이템 5종과 상점, 타임어택.">
 <title>한 손 농구</title>
 <link rel="canonical" href="https://richroro.github.io/games/basketball/">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='46' fill='%23FF6B2C'/><g stroke='%235A2A08' stroke-width='5' fill='none'><circle cx='50' cy='50' r='46'/><path d='M50 4v92M4 50h92M18 18q32 32 0 64M82 18q-32 32 0 64'/></g></svg>">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="한 손 농구">
 <meta property="og:title" content="한 손 농구">
-<meta property="og:description" content="바람·가로막·동전까지, 스테이지 12개를 넘는 한 손 농구.">
+<meta property="og:description" content="자석·얼음·불공 아이템으로 스테이지 12개를 넘는 한 손 농구.">
 <meta property="og:url" content="https://richroro.github.io/games/basketball/">
 <meta property="og:image" content="https://richroro.github.io/games/basketball/og.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="한 손 농구">
-<meta name="twitter:description" content="바람·가로막·동전까지, 스테이지 12개를 넘는 한 손 농구.">
+<meta name="twitter:description" content="자석·얼음·불공 아이템으로 스테이지 12개를 넘는 한 손 농구.">
 <meta name="twitter:image" content="https://richroro.github.io/games/basketball/og.png">
 <style>
   :root{
@@ -110,6 +110,47 @@
   }
   .hint{flex:0 0 auto;text-align:center;font-size:11.5px;color:var(--ink-3);
     font-weight:600;padding:8px 16px calc(8px + env(safe-area-inset-bottom))}
+  .hint.armed{color:var(--blue)}
+
+  /* ── 아이템 ─────────────────────────────── */
+  .items{flex:0 0 auto;display:flex;justify-content:center;gap:8px;padding:9px 16px 0}
+  .items.off{display:none}
+  .item{
+    position:relative;width:46px;height:46px;border:0;border-radius:14px;cursor:pointer;
+    background:var(--card);box-shadow:var(--shadow);font-size:21px;line-height:1;padding:0;
+    display:grid;place-items:center;font-family:inherit;
+    transition:transform .12s, box-shadow .12s, opacity .2s, background .12s;
+  }
+  .item:active{transform:scale(.93)}
+  .item b{
+    position:absolute;right:-5px;top:-5px;min-width:19px;height:19px;padding:0 5px;border-radius:10px;
+    background:var(--ink);color:#fff;font-size:10.5px;font-weight:800;display:grid;place-items:center;
+    font-variant-numeric:tabular-nums;
+  }
+  .item.empty{opacity:.35}
+  .item.empty b{background:var(--ink-3)}
+  .item.on{background:var(--blue-weak);box-shadow:0 0 0 2.5px var(--blue), var(--shadow);transform:translateY(-3px)}
+  .items.busy .item{opacity:.4}
+  .item:focus-visible,.btn:focus-visible,.buy:focus-visible,.cell:focus-visible,.icon-btn:focus-visible{
+    outline:2.5px solid var(--blue);outline-offset:2px}
+
+  /* 지갑 · 상점 */
+  .wallet{display:inline-flex;align-items:center;gap:5px;background:#FFF4D6;color:#8A5A00;
+    font-weight:800;font-size:13px;border-radius:99px;padding:6px 12px;font-variant-numeric:tabular-nums}
+  .shop{display:flex;flex-direction:column;gap:8px;margin-top:14px;text-align:left}
+  .ware{display:flex;align-items:center;gap:10px;background:var(--bg);border-radius:14px;padding:10px 10px 10px 12px}
+  .ware i{font-style:normal;font-size:24px;flex:0 0 auto;width:30px;text-align:center}
+  .ware .what{flex:1;min-width:0}
+  .ware .what b{display:block;font-size:14px;font-weight:800;letter-spacing:-.02em}
+  .ware .what span{display:block;font-size:11.5px;color:var(--ink-3);font-weight:600;line-height:1.4}
+  .ware .own{font-size:11px;color:var(--ink-2);font-weight:700;white-space:nowrap}
+  .buy{flex:0 0 auto;border:0;border-radius:10px;background:var(--blue);color:#fff;font-family:inherit;
+    font-weight:800;font-size:12.5px;padding:8px 10px;cursor:pointer;white-space:nowrap;
+    font-variant-numeric:tabular-nums}
+  .buy:disabled{background:var(--line);color:var(--ink-3);cursor:default}
+  .buy:active:not(:disabled){transform:scale(.95)}
+  .reward{font-size:13px;font-weight:800;color:#8A5A00;margin:-8px 0 14px}
+  .reward:empty{display:none}
 
   /* ── 오버레이 공통 ─────────────────────── */
   .veil{
@@ -209,6 +250,7 @@
   <canvas id="field"></canvas>
 </div>
 
+<div class="items bar off" id="itemBar" aria-label="아이템"></div>
 <div class="hint" id="hint">골대 쪽으로 스와이프하면 공이 날아가요</div>
 <div id="toast"></div>
 
@@ -216,16 +258,20 @@
 <div class="veil show" id="vStart">
   <div class="sheet">
     <h2>한 손 농구</h2>
-    <p>공을 골대 쪽으로 스와이프하면 던져져요.<br>바람과 가로막을 넘어 12개 스테이지를 깨 보세요.</p>
+    <p>공을 골대 쪽으로 스와이프하면 던져져요.<br>아이템을 모아 12개 스테이지를 깨 보세요.</p>
     <div class="pts">
       <div class="pt"><em>2점</em><span>림이나 백보드를 맞고 들어가면</span></div>
       <div class="pt"><em>3점</em><span>아무것도 안 닿고 깨끗하게 들어가면</span></div>
       <div class="pt"><em>별 3개</em><span>공을 절반만 쓰고 목표를 채우면</span></div>
+      <div class="pt"><em>🧲🎯❄️</em><span>아이템은 방울을 맞히거나 상점에서 사요</span></div>
     </div>
     <div class="btns">
       <button class="btn primary" id="btnPlay">스테이지 시작</button>
       <button class="btn ghost" id="btnTimeAttack" disabled>타임어택 (전부 깨면 열려요)</button>
-      <button class="btn ghost" id="btnHow">게임 방법</button>
+      <div class="row">
+        <button class="btn ghost" id="btnShopStart">상점</button>
+        <button class="btn ghost" id="btnHow">게임 방법</button>
+      </div>
     </div>
   </div>
 </div>
@@ -237,7 +283,10 @@
     <p id="stagesSub">별 0개 / 36개</p>
     <div class="grid" id="stageGrid"></div>
     <div class="btns">
-      <button class="btn ghost" id="btnStagesClose">닫기</button>
+      <div class="row">
+        <button class="btn ghost" id="btnShopList">상점 · <span id="listWallet">🪙 0</span></button>
+        <button class="btn ghost" id="btnStagesClose">닫기</button>
+      </div>
     </div>
   </div>
 </div>
@@ -252,6 +301,17 @@
   </div>
 </div>
 
+<!-- 상점 -->
+<div class="veil" id="vShop">
+  <div class="sheet">
+    <h2>상점</h2>
+    <div class="wallet" id="shopWallet">🪙 0</div>
+    <div class="shop" id="shopList"></div>
+    <p style="margin-top:12px;font-size:12px;color:var(--ink-3)">코인은 동전을 줍거나 스테이지를 깨면 모여요.</p>
+    <div class="btns"><button class="btn ghost" id="btnShopClose">닫기</button></div>
+  </div>
+</div>
+
 <!-- 게임 방법 -->
 <div class="veil" id="vHow">
   <div class="sheet">
@@ -262,6 +322,8 @@
       <div class="rule"><b>3</b><span>림에 안 닿고 그물만 흔들면 스윔, 3점이에요.</span></div>
       <div class="rule"><b>4</b><span>바람은 공을 옆으로 밀어요. 궤적 점선에 이미 반영돼 있어요.</span></div>
       <div class="rule"><b>5</b><span>3연속으로 넣으면 공에 불이 붙고 점수가 더 붙어요.</span></div>
+      <div class="rule"><b>6</b><span>아래 아이템을 눌러 켜고 던지면 그 슛에 적용돼요. 코트에 뜬 방울을 공으로 맞혀도 얻어요.</span></div>
+      <div class="rule"><b>7</b><span>가끔 황금 공이 나와요. 넣으면 점수가 3배예요.</span></div>
     </div>
     <div class="btns"><button class="btn primary" id="btnHowClose">알겠어요</button></div>
   </div>
@@ -283,6 +345,7 @@
     <div class="stars" id="clearStars"><i>★</i><i>★</i><i>★</i></div>
     <div class="big" id="clearScore">0</div>
     <div class="sub" id="clearSub">점</div>
+    <div class="reward" id="clearReward"></div>
     <div class="btns">
       <button class="btn primary" id="btnNext">다음 스테이지</button>
       <div class="row">
@@ -430,6 +493,9 @@ var sfx = (function () {
     swish: function () { noise(0.22, 0.1, 3200); },
     coin: function (n) { tone(880 * Math.pow(1.12, Math.min(n, 8)), 0.09, "square", 0.07); buzz(6); },
     fire: function () { tone(520, 0.2, "sawtooth", 0.07, 1300); buzz(20); },
+    arm: function () { tone(740, 0.07, "triangle", 0.08, 1100); buzz(8); },
+    item: function () { melody([990, 1320, 1760], 70); buzz([10, 30, 10]); },
+    gold: function () { tone(1320, 0.12, "sine", 0.08); setTimeout(function () { tone(1760, 0.16, "sine", 0.07); }, 80); },
     made: function (combo) {
       var base = 620 * Math.pow(1.06, Math.min(combo, 8));
       tone(base, 0.1, "triangle", 0.12);
@@ -528,6 +594,10 @@ var BOARD_W = 9, BOARD_H = 78;
 var BOARD_DROP = 20;    // 림보다 아래로 내려오는 길이
 var RESET_DELAY = 0.5;  // 공이 죽고 다음 공이 올 때까지
 var FIRE_COMBO = 3;     // 이 연속부터 공에 불이 붙는다
+var MAG_R = 92;         // 자석이 공을 붙잡는 거리(림 위쪽 반원)
+var MAG_K = 0.02;       // 자석이 당기는 세기
+var GOLD_P = 0.12;      // 황금 공이 나올 확률(3스테이지부터)
+var BUBBLE_R = 17;      // 아이템 방울 반지름
 
 /* ══════════════════════════════════════════════════════════════
    5. 스테이지
@@ -543,27 +613,27 @@ var STAGES = [
   { name: "첫 슛",        goal: { makes: 3 }, balls: 8,  hoop: { sp: 0,    bob: 0 },  spread: 0,
     hint: "골대 쪽으로 스와이프하면 공이 날아가요." },
   { name: "거리 감각",     goal: { makes: 4 }, balls: 9,  hoop: { sp: 0,    bob: 0 },  spread: 1,
-    hint: "던지는 자리가 매번 달라져요. 힘을 다시 재 보세요." },
+    coins: 3, hint: "던지는 자리가 매번 달라져요. 힘을 다시 재 보세요." },
   { name: "움직이는 골대",  goal: { makes: 4 }, balls: 10,  hoop: { sp: 0.85, bob: 0 },  spread: 1,
-    hint: "골대가 레일을 타고 좌우로 움직여요." },
+    bubbles: 1, hint: "골대가 레일을 타고 좌우로 움직여요." },
   { name: "바람",         goal: { makes: 4 }, balls: 10,  hoop: { sp: 0.6,  bob: 0 },  spread: 1,
-    wind: 0.015, hint: "바람이 공을 오른쪽으로 밀어요. 궤적 점선에 이미 반영돼 있어요." },
+    wind: 0.015, coins: 3, hint: "바람이 공을 오른쪽으로 밀어요. 궤적 점선에 이미 반영돼 있어요." },
   { name: "동전 줍기",     goal: { makes: 3, coins: 4 }, balls: 10, hoop: { sp: 0.7, bob: 0 }, spread: 1,
-    coins: 8, hint: "공이 지나가면 동전을 먹어요. 동전 4개도 목표예요." },
+    coins: 8, bubbles: 1, hint: "공이 지나가면 동전을 먹어요. 동전 4개도 목표예요." },
   { name: "가로막",       goal: { makes: 4 }, balls: 9,  hoop: { sp: 0.8,  bob: 0 },  spread: 1,
-    bars: 1, hint: "막대가 앞을 가려요. 더 높이 띄워 넘기세요." },
+    bars: 1, bubbles: 1, hint: "막대가 앞을 가려요. 더 높이 띄워 넘기세요." },
   { name: "좁은 림",      goal: { makes: 4 }, balls: 10, hoop: { sp: 0.85, bob: 0 },  spread: 1,
-    rim: 27, hint: "림이 좁아졌어요. 가운데로 정확히." },
+    rim: 27, coins: 3, hint: "림이 좁아졌어요. 가운데로 정확히." },
   { name: "출렁이는 골대",  goal: { makes: 4 }, balls: 10, hoop: { sp: 0.8, bob: 17 }, spread: 1,
-    hint: "골대가 위아래로도 흔들려요." },
+    bubbles: 1, hint: "골대가 위아래로도 흔들려요." },
   { name: "맞바람",       goal: { makes: 5 }, balls: 13, hoop: { sp: 1.0,  bob: 0 },  spread: 1,
-    wind: -0.026, hint: "바람이 반대로, 더 세게 불어요." },
+    wind: -0.026, coins: 3, bubbles: 1, hint: "바람이 반대로, 더 세게 불어요." },
   { name: "이중 가로막",   goal: { makes: 5 }, balls: 11, hoop: { sp: 1.0,  bob: 12 }, spread: 1,
-    bars: 2, hint: "막대가 두 개. 사이로 넣거나 전부 넘기세요." },
+    bars: 2, bubbles: 1, hint: "막대가 두 개. 사이로 넣거나 전부 넘기세요." },
   { name: "스윔만 인정",   goal: { swish: 3 }, balls: 14, hoop: { sp: 0.9, bob: 0 },  spread: 1,
-    hint: "림이나 백보드에 닿으면 인정되지 않아요. 깨끗하게만." },
+    coins: 3, hint: "림이나 백보드에 닿으면 인정되지 않아요. 깨끗하게만." },
   { name: "결승",         goal: { makes: 5, coins: 3 }, balls: 14, hoop: { sp: 1.25, bob: 18 }, spread: 2,
-    wind: 0.018, bars: 1, coins: 6, time: 90, hint: "전부 한 번에 나옵니다. 90초 안에." }
+    wind: 0.018, bars: 1, coins: 6, time: 90, bubbles: 2, hint: "전부 한 번에 나옵니다. 90초 안에." }
 ];
 var STAGE_N = STAGES.length;
 // 타임어택: 전 스테이지를 깨면 열린다. 골대가 넣을수록 빨라지는 45초 무한판.
@@ -577,8 +647,8 @@ var TIME_ATTACK = { name: "타임어택", endless: true, goal: {}, balls: 0,
 var hoop = { x: 260, y: 240, dir: 1 };
 var ball = { x: 90, y: 400, px: 90, py: 400, vx: 0, vy: 0, spin: 0, live: false };
 var state = "ready";     // ready | playing | paused | clear | fail
-var stage = { idx: -1, def: null, ballsLeft: 0, made: 0, swish: 0, coins: 0 };
-var bars = [], coins = [];
+var stage = { idx: -1, def: null, ballsLeft: 0, thrown: 0, made: 0, swish: 0, coins: 0 };
+var bars = [], coins = [], bubbles = [];
 var wind = 0;
 var hasTime = false, timeLeft = 0, GAME_TIME = 45;
 var score = 0, combo = 0, bestCombo = 0, makes = 0, shots = 0;
@@ -593,6 +663,44 @@ var pops = [], sparks = [], trail = [], gusts = [];
 // 조준
 var aiming = false;
 var aimX = 0, aimY = 0, curX = 0, curY = 0;
+
+/* ── 아이템 ───────────────────────────────────────────────
+   켜 두면 '다음 슛 한 번'에 적용되고 던지는 순간 하나 쓴다.
+   공 +2 만 누르는 즉시 쓴다. */
+var ITEMS = {
+  magnet: { icon: "🧲", name: "자석",  price: 20, desc: "림 근처까지 온 공을 가운데로 끌어당겨요", w: 26 },
+  scope:  { icon: "🎯", name: "조준선", price: 12, desc: "이번 슛은 궤적을 끝까지 보여 줘요",      w: 26 },
+  ice:    { icon: "❄️", name: "얼음",  price: 20, desc: "골대·가로막·바람이 멈춰요",             w: 20 },
+  fire:   { icon: "☄️", name: "불공",  price: 25, desc: "가로막을 뚫고 지나가고, 점수가 2배",     w: 14 },
+  plus:   { icon: "➕", name: "공 +2", price: 15, desc: "누르는 즉시 공 2개를 더 받아요",        w: 14 }
+};
+var ITEM_KEYS = ["magnet", "scope", "ice", "fire", "plus"];
+var armed = null;        // 켜 둔 아이템 (다음 슛에 쓴다)
+var shotItem = null;     // 지금 날아가는 공에 걸린 아이템
+
+function loadInv() {
+  var raw = store.get("inv", null), o = {};
+  if (raw === null) return { magnet: 1, scope: 1, ice: 0, fire: 0, plus: 0 };  // 처음 온 사람 선물
+  try { o = JSON.parse(raw) || {}; } catch (e) { o = {}; }
+  var out = {};
+  ITEM_KEYS.forEach(function (k) { out[k] = Math.max(0, parseInt(o[k], 10) || 0); });
+  return out;
+}
+var inv = loadInv();
+function saveInv() { store.set("inv", JSON.stringify(inv)); }
+var wallet = Math.max(0, parseInt(store.get("wallet", "0"), 10) || 0);
+function addWallet(n) { wallet = Math.max(0, wallet + n); store.set("wallet", wallet); }
+
+function frozen() { return armed === "ice" || shotItem === "ice"; }
+function curWind() { return frozen() ? 0 : wind; }
+
+function pickItem(noPlus) {
+  var pool = ITEM_KEYS.filter(function (k) { return !(noPlus && k === "plus"); });
+  var sum = pool.reduce(function (a, k) { return a + ITEMS[k].w; }, 0);
+  var r = Math.random() * sum;
+  for (var i = 0; i < pool.length; i++) { r -= ITEMS[pool[i]].w; if (r <= 0) return pool[i]; }
+  return pool[0];
+}
 
 // 별 기록: 스테이지마다 한 글자 ('0' = 못 깸)
 function starsAll() {
@@ -642,6 +750,18 @@ function placeProps(def) {
       got: false, spin: k * 0.7
     });
   }
+  // 아이템 방울은 보통 포물선보다 한참 위에 띄운다. 얻으려면 높이 띄워야 해서
+  // '골을 노릴지, 방울을 노릴지' 한 번 고민하게 된다.
+  bubbles.length = 0;
+  var nb = def.bubbles || 0;
+  for (var q = 0; q < nb; q++) {
+    var tb = 0.5 + q * 0.2;
+    bubbles.push({
+      x: x0 + (x1 - x0) * tb,
+      y: y0 + (y1 - y0) * tb - 150 * Math.sin(Math.PI * tb) - 72,
+      item: pickItem(!!def.endless), got: false, t: q * 1.7
+    });
+  }
 }
 
 /* ══════════════════════════════════════════════════════════════
@@ -665,14 +785,18 @@ function step() {
   // 골대 이동 (타임어택은 넣은 골 수에 따라 점점 빨라진다)
   var sp = def.endless ? Math.min(0.5 + Math.max(0, makes - 2) * 0.085, 1.55) : def.hoop.sp;
   var bob = def.endless ? Math.min(Math.max(0, makes - 7) * 2.4, 26) : def.hoop.bob;
-  hoop.x += hoop.dir * sp;
-  if (hoop.x <= HX_MIN) { hoop.x = HX_MIN; hoop.dir = 1; }
-  if (hoop.x >= HX_MAX) { hoop.x = HX_MAX; hoop.dir = -1; }
-  bobT += FIXED;
+  // 얼음을 켜 두면 골대·가로막이 그 자리에 선다
+  var fz = frozen();
+  if (!fz) {
+    hoop.x += hoop.dir * sp;
+    if (hoop.x <= HX_MIN) { hoop.x = HX_MIN; hoop.dir = 1; }
+    if (hoop.x >= HX_MAX) { hoop.x = HX_MAX; hoop.dir = -1; }
+    bobT += FIXED;
+  }
   hoop.y = HOOP_Y + Math.sin(bobT * 2.4) * bob;
 
   // 가로막
-  for (var b = 0; b < bars.length; b++) {
+  for (var b = 0; b < bars.length && !fz; b++) {
     var bar = bars[b];
     bar.x += bar.dir * bar.sp;
     if (bar.x <= bar.min) { bar.x = bar.min; bar.dir = 1; }
@@ -681,21 +805,24 @@ function step() {
 
   if (ball.live) {
     move();
+    if (shotItem === "magnet") magnetPull();
     collide();
     grabCoins();
+    grabBubbles();
     checkScore();
-    if (combo >= FIRE_COMBO) {
+    if (combo >= FIRE_COMBO || shotItem === "fire") {
       trail.push({ x: ball.x, y: ball.y, life: 0.3, r: R * (0.5 + Math.random() * 0.4) });
     }
   }
+  for (var bq = 0; bq < bubbles.length; bq++) bubbles[bq].t += FIXED * 2.2;
 
   if (deadTimer >= 0) {
     deadTimer -= FIXED;
     if (deadTimer <= 0) afterShot();
   }
 
-  // 바람 표시용 흐르는 선
-  if (wind !== 0 && Math.random() < 0.18) {
+  // 바람 표시용 흐르는 선 (얼음이면 멈춘다)
+  if (curWind() !== 0 && Math.random() < 0.18) {
     gusts.push({ x: wind > 0 ? -20 : FW + 20, y: 40 + Math.random() * (FLOOR - 80),
                  life: 1.1, len: 18 + Math.random() * 26 });
   }
@@ -729,7 +856,7 @@ function step() {
 
 function move() {
   ball.vy += GRAV;
-  ball.vx += wind;
+  ball.vx += curWind();
   ball.vx *= AIR;
   ball.vy *= AIR;
   var sp = Math.sqrt(ball.vx * ball.vx + ball.vy * ball.vy);
@@ -788,8 +915,8 @@ function collide() {
   // 천장
   if (ball.y < R) { ball.y = R; if (ball.vy < 0) ball.vy = -ball.vy * 0.45; }
 
-  // 가로막
-  for (var b = 0; b < bars.length; b++) {
+  // 가로막 (불공은 뚫고 지나간다)
+  for (var b = 0; b < bars.length && shotItem !== "fire"; b++) {
     var bar = bars[b];
     if (hitRect(bar.x, bar.y, bar.w, bar.h, BAR_E)) { sfx.bar(); bar.hit = 1; }
   }
@@ -821,6 +948,38 @@ function collide() {
   }
 }
 
+/* 자석: 림 위쪽 반원 안에 들어온 공을 골대 가운데로 끌어당긴다.
+   가로로만 당긴다. 세로까지 당기면 림 끝을 옆에서 파고드는 이상한
+   궤적이 나온다. 힘차게 올라가는 공은 건드리지 않는다. */
+function magnetPull() {
+  var dx = hoop.x - ball.x, above = hoop.y - ball.y;
+  if (above < -4 || above > MAG_R) return;
+  if (Math.abs(dx) > MAG_R) return;
+  if (ball.vy < -3) return;
+  ball.vx += dx * MAG_K;
+  ball.vx *= 0.93;
+}
+
+function grabBubbles() {
+  for (var i = 0; i < bubbles.length; i++) {
+    var b = bubbles[i];
+    if (b.got) continue;
+    var dx = ball.x - b.x, dy = ball.y - (b.y + Math.sin(b.t) * 4);
+    if (dx * dx + dy * dy > (R + BUBBLE_R) * (R + BUBBLE_R)) continue;
+    b.got = true;
+    inv[b.item] = (inv[b.item] || 0) + 1;
+    saveInv();
+    sfx.item();
+    var it = ITEMS[b.item];
+    pops.push({ x: b.x, y: b.y - 8, life: 1.1, txt: it.icon, sub: it.name + " 획득!", swish: true });
+    for (var k = 0; k < 12; k++) {
+      sparks.push({ x: b.x, y: b.y, vx: (Math.random() * 2 - 1) * 2.4, vy: -Math.random() * 2.2 - 0.4,
+                    life: 0.45 + Math.random() * 0.3, c: "#6FB4FF" });
+    }
+    paintItems();
+  }
+}
+
 function grabCoins() {
   for (var i = 0; i < coins.length; i++) {
     var c = coins[i];
@@ -830,6 +989,7 @@ function grabCoins() {
     c.got = true;
     stage.coins++;
     score += 2;
+    addWallet(1);
     sfx.coin(stage.coins);
     for (var k = 0; k < 7; k++) {
       sparks.push({ x: c.x, y: c.y, vx: (Math.random() * 2 - 1) * 2, vy: -Math.random() * 2 - 0.3,
@@ -860,6 +1020,8 @@ function made() {
 
   var bonus = combo >= 6 ? 3 : combo >= 4 ? 2 : combo >= 2 ? 1 : 0;
   var pts = (swish ? 3 : 2) + bonus;
+  var mult = (shotItem === "fire" ? 2 : 1) * (ball.gold ? 3 : 1);
+  pts *= mult;
   score += pts;
   if (stage.def.endless) {
     timeLeft = Math.min(GAME_TIME, timeLeft + (swish ? 3 : 2));
@@ -869,8 +1031,9 @@ function made() {
   netSway = 1; flash = 1; shake = swish ? 5 : 3;
   if (combo === FIRE_COMBO) sfx.fire();
 
+  var tag = ball.gold ? "황금 공 ×3" : (shotItem === "fire" ? "불공 ×2" : "");
   pops.push({ x: hoop.x, y: hoop.y + 84, life: 0.95, txt: "+" + pts,
-              sub: swish ? "스윔!" : (bonus ? "연속 " + combo : ""), swish: swish });
+              sub: tag || (swish ? "스윔!" : (bonus ? "연속 " + combo : "")), swish: swish || mult > 1 });
   for (var i = 0; i < (swish ? 16 : 10); i++) {
     sparks.push({
       x: hoop.x + (Math.random() * 2 - 1) * RIM,
@@ -915,13 +1078,18 @@ function nextBall() {
   deadTimer = -1;
   scored = false;
   touched = false;
+  shotItem = null;
   ball.live = false;
+  // 3스테이지부터(타임어택 포함) 가끔 황금 공이 나온다
+  ball.gold = !!stage.def && (stage.def.endless || stage.idx >= 2) && Math.random() < GOLD_P;
+  if (ball.gold && state === "playing") sfx.gold();
   ball.vx = 0; ball.vy = 0; ball.spin = 0;
   // 던지는 자리를 매번 조금씩 바꿔 같은 슛만 반복하지 않게 한다
   var sp = stage.def ? (stage.def.spread || 0) : 1;
   ball.x = sp === 0 ? 76 : (sp === 1 ? 50 + Math.random() * 80 : 46 + Math.random() * 120);
   ball.y = HOLD_Y;
   ball.px = ball.x; ball.py = ball.y;
+  paintItems();
 }
 
 /* ══════════════════════════════════════════════════════════════
@@ -934,11 +1102,12 @@ function canAim() {
 // 던졌을 때 공이 그릴 길. 손을 떼기 전에 점으로 보여 준다.
 // 골대까지 전부 그려 주면 너무 쉬워져서 앞부분만 보여 주고
 // 마지막 한 뼘은 눈으로 재게 남겨 둔다. 바람은 반영한다(안 그러면 속이는 셈).
-var DOTS = 14;
+var DOTS = 14, DOTS_SCOPE = 60;
 function trace(vx, vy) {
   var px = ball.x, py = ball.y, out = [];
-  for (var i = 0; i < 120 && out.length < DOTS * 2; i++) {
-    vy += GRAV; vx += wind; vx *= AIR; vy *= AIR;
+  var limit = (armed === "scope" ? DOTS_SCOPE : DOTS) * 2, w = curWind();
+  for (var i = 0; i < 240 && out.length < limit; i++) {
+    vy += GRAV; vx += w; vx *= AIR; vy *= AIR;
     px += vx; py += vy;
     if (px < R) { px = R; vx = -vx * WALL_E; }
     if (px > FW - R) { px = FW - R; vx = -vx * WALL_E; }
@@ -983,10 +1152,24 @@ function onUp() {
   var v = aimVec();
   if (v.d < MINDRAG) return;     // 살짝 건드린 건 슛으로 치지 않는다
   ball.vx = v.vx; ball.vy = v.vy;
+  launch();
+}
+
+// 슛이 나가는 순간: 켜 둔 아이템을 이 공에 걸고 하나 쓴다
+function launch() {
   ball.live = true;
   shots++;
+  stage.thrown++;
+  if (armed) {
+    shotItem = armed;
+    inv[armed] = Math.max(0, (inv[armed] || 0) - 1);
+    saveInv();
+    armed = null;
+  }
   if (!stage.def.endless) { stage.ballsLeft--; paintBalls(); }
   sfx.shoot();
+  paintItems();
+  paintHint();
 }
 
 courtEl.addEventListener("pointerdown", onDown);
@@ -1037,7 +1220,7 @@ function drawCourt() {
 }
 
 function drawWind() {
-  if (!wind) return;
+  if (!curWind()) return;
   ctx.strokeStyle = "rgba(49,130,246,.22)";
   ctx.lineWidth = 2;
   ctx.lineCap = "round";
@@ -1060,6 +1243,46 @@ function drawWind() {
     ctx.moveTo(x, 22); ctx.lineTo(x + dir * 6, 28); ctx.lineTo(x, 34);
   }
   ctx.stroke();
+}
+
+function drawBubbles() {
+  ctx.textAlign = "center";
+  ctx.textBaseline = "middle";
+  for (var i = 0; i < bubbles.length; i++) {
+    var b = bubbles[i];
+    if (b.got) continue;
+    var y = b.y + Math.sin(b.t) * 4;
+    var g = ctx.createRadialGradient(b.x - 5, y - 6, 2, b.x, y, BUBBLE_R);
+    g.addColorStop(0, "rgba(255,255,255,.95)");
+    g.addColorStop(1, "rgba(160,205,255,.55)");
+    ctx.fillStyle = g;
+    ctx.beginPath(); ctx.arc(b.x, y, BUBBLE_R, 0, Math.PI * 2); ctx.fill();
+    ctx.strokeStyle = "rgba(49,130,246,.55)"; ctx.lineWidth = 1.6; ctx.stroke();
+    ctx.font = "17px 'Apple Color Emoji','Segoe UI Emoji','Noto Color Emoji',sans-serif";
+    ctx.fillStyle = "#191F28";
+    ctx.fillText(ITEMS[b.item].icon, b.x, y + 1);
+  }
+  ctx.textBaseline = "alphabetic";
+}
+
+// 자석이 걸린 슛: 림 위쪽 반원(끌어당기는 범위)을 보여 준다
+function drawMagnet() {
+  if (armed !== "magnet" && shotItem !== "magnet") return;
+  var a = 0.28 + Math.sin(Date.now() / 180) * 0.12;
+  ctx.strokeStyle = "rgba(49,130,246," + a + ")";
+  ctx.lineWidth = 2;
+  ctx.setLineDash([5, 5]);
+  ctx.beginPath(); ctx.arc(hoop.x, hoop.y, MAG_R, Math.PI, Math.PI * 2); ctx.stroke();
+  ctx.setLineDash([]);
+}
+
+function drawFrost() {
+  if (!frozen()) return;
+  ctx.fillStyle = "rgba(170,215,255,.16)";
+  ctx.fillRect(0, 0, FW, FH);
+  ctx.strokeStyle = "rgba(120,185,255,.7)";
+  ctx.lineWidth = 2;
+  ctx.beginPath(); ctx.moveTo(hoop.x - RIM, hoop.y - 2); ctx.lineTo(hoop.x + RIM, hoop.y - 2); ctx.stroke();
 }
 
 function drawBars() {
@@ -1183,9 +1406,13 @@ function drawBall() {
   ctx.ellipse(x, FLOOR + 3, R * (1 - h * 0.45), R * 0.32 * (1 - h * 0.4), 0, 0, Math.PI * 2);
   ctx.fill();
 
-  if (combo >= FIRE_COMBO) {
-    ctx.fillStyle = "rgba(255,176,32,.28)";
+  if (combo >= FIRE_COMBO || shotItem === "fire" || armed === "fire") {
+    ctx.fillStyle = "rgba(255,120,32,.3)";
     ctx.beginPath(); ctx.arc(x, y, R + 7, 0, Math.PI * 2); ctx.fill();
+  }
+  if (ball.gold) {
+    ctx.fillStyle = "rgba(255,200,40," + (0.22 + Math.sin(Date.now() / 160) * 0.1) + ")";
+    ctx.beginPath(); ctx.arc(x, y, R + 9, 0, Math.PI * 2); ctx.fill();
   }
 
   ctx.save();
@@ -1193,8 +1420,8 @@ function drawBall() {
   ctx.rotate(ball.spin);
 
   var g = ctx.createRadialGradient(-R * 0.35, -R * 0.4, R * 0.2, 0, 0, R);
-  g.addColorStop(0, "#FF9B5E");
-  g.addColorStop(1, "#E9520F");
+  if (ball.gold) { g.addColorStop(0, "#FFF0B0"); g.addColorStop(1, "#D99A00"); }
+  else { g.addColorStop(0, "#FF9B5E"); g.addColorStop(1, "#E9520F"); }
   ctx.fillStyle = g;
   ctx.beginPath();
   ctx.arc(0, 0, R, 0, Math.PI * 2);
@@ -1211,6 +1438,17 @@ function drawBall() {
   ctx.ellipse(0, 0, R * 0.42, R, 0, 0, Math.PI * 2);
   ctx.stroke();
   ctx.restore();
+
+  // 기다리는 황금 공에는 배수를 적어 둔다
+  if (ball.gold && !ball.live) {
+    ctx.textAlign = "center";
+    ctx.font = "800 12px 'Pretendard',system-ui,sans-serif";
+    ctx.lineWidth = 3; ctx.lineJoin = "round";
+    ctx.strokeStyle = "rgba(255,255,255,.9)";
+    ctx.strokeText("황금 공 ×3", x, y - R - 12);
+    ctx.fillStyle = "#B07800";
+    ctx.fillText("황금 공 ×3", x, y - R - 12);
+  }
 }
 
 function drawAim() {
@@ -1220,7 +1458,9 @@ function drawAim() {
   var pts = trace(v.vx, v.vy);
   for (var i = 0; i < pts.length; i += 2) {
     var t = i / pts.length;
-    ctx.fillStyle = "rgba(25,31,40," + (0.42 * (1 - t) + 0.1) + ")";
+    ctx.fillStyle = armed === "scope"
+      ? "rgba(49,130,246," + (0.7 * (1 - t) + 0.2) + ")"
+      : "rgba(25,31,40," + (0.42 * (1 - t) + 0.1) + ")";
     ctx.beginPath();
     ctx.arc(pts[i], pts[i + 1], 3.8 * (1 - t * 0.45), 0, Math.PI * 2);
     ctx.fill();
@@ -1274,8 +1514,11 @@ function render() {
   drawCourt();
   drawWind();
   drawCoins();
+  drawBubbles();
   drawBars();
+  drawMagnet();
   drawHoop();
+  drawFrost();
   if (state !== "ready") {
     drawAim();
     drawTrail();
@@ -1329,11 +1572,11 @@ function paintBalls() {
     ballDots.appendChild(u);
     return;
   }
-  var total = stage.def.balls;
-  var cap = Math.min(total, 16);
+  var total = stage.thrown + stage.ballsLeft;
+  var cap = Math.min(total, 18), live = Math.min(stage.ballsLeft, cap);
   for (var i = 0; i < cap; i++) {
     var d = document.createElement("i");
-    if (i >= stage.ballsLeft) d.className = "used";
+    if (i >= live) d.className = "used";
     ballDots.appendChild(d);
   }
   var lab = document.createElement("u");
@@ -1373,6 +1616,108 @@ function toast(msg) {
   toastTimer = setTimeout(function () { toastEl.classList.remove("show"); }, 1800);
 }
 
+/* ── 아이템 막대 ─────────────────────── */
+var itemBar = document.getElementById("itemBar");
+
+function paintItems() {
+  var show = !!stage.def && state !== "ready";
+  itemBar.classList.toggle("off", !show);
+  if (!show) return;
+  itemBar.classList.toggle("busy", ball.live || deadTimer >= 0);
+  itemBar.innerHTML = "";
+  ITEM_KEYS.forEach(function (k) {
+    var it = ITEMS[k], n = inv[k] || 0;
+    var b = document.createElement("button");
+    b.type = "button";
+    b.className = "item" + (n ? "" : " empty") + (armed === k ? " on" : "");
+    b.setAttribute("aria-label", it.name + " " + n + "개" + (armed === k ? ", 켜짐" : ""));
+    b.setAttribute("aria-pressed", armed === k ? "true" : "false");
+    b.innerHTML = it.icon + "<b>" + n + "</b>";
+    b.addEventListener("click", function () { useItem(k); });
+    itemBar.appendChild(b);
+  });
+}
+
+function paintHint() {
+  if (!stage.def) return;
+  if (armed) {
+    var it = ITEMS[armed];
+    hint.textContent = it.icon + " " + it.name + " 켜짐 · " + it.desc;
+    hint.classList.add("armed");
+  } else {
+    hint.textContent = stage.def.hint;
+    hint.classList.remove("armed");
+  }
+}
+
+function useItem(k) {
+  tapped = true;
+  sfx.unlock();
+  if (state !== "playing") return;
+  // 날아가는 중에 켜면 지금 공에 얼음이 걸리는 식으로 새어 나가서 막는다
+  if (ball.live || deadTimer >= 0) { toast("공이 돌아오면 쓸 수 있어요"); return; }
+  if (armed === k) { armed = null; paintItems(); paintHint(); return; }   // 다시 누르면 끈다
+  var it = ITEMS[k];
+  if (!(inv[k] > 0)) { toast(it.icon + " " + it.name + " 0개 · 상점에서 살 수 있어요"); return; }
+  if (k === "plus") {
+    if (stage.def.endless) { toast("타임어택은 공이 무제한이에요"); return; }
+    inv.plus--; saveInv();
+    stage.ballsLeft += 2;
+    sfx.item();
+    toast("➕ 공 2개를 더 받았어요");
+    paintBalls(); paintItems();
+    return;
+  }
+  armed = k;
+  sfx.arm();
+  paintItems(); paintHint();
+}
+
+/* ── 상점 ─────────────────────────────── */
+var shopList = document.getElementById("shopList");
+var shopFrom = "start";
+
+function paintShop() {
+  document.getElementById("shopWallet").textContent = "🪙 " + comma(wallet);
+  shopList.innerHTML = "";
+  ITEM_KEYS.forEach(function (k) {
+    var it = ITEMS[k];
+    var row = document.createElement("div");
+    row.className = "ware";
+    row.innerHTML = "<i>" + it.icon + "</i><div class=\"what\"><b>" + it.name + "</b><span>" + it.desc +
+                    "</span></div><span class=\"own\">" + (inv[k] || 0) + "개</span>";
+    var b = document.createElement("button");
+    b.type = "button";
+    b.className = "buy";
+    b.textContent = "🪙 " + it.price;
+    b.disabled = wallet < it.price;
+    b.setAttribute("aria-label", it.name + " " + it.price + "코인에 사기");
+    b.addEventListener("click", function () { buy(k); });
+    row.appendChild(b);
+    shopList.appendChild(row);
+  });
+}
+
+function buy(k) {
+  var it = ITEMS[k];
+  if (wallet < it.price) return;
+  addWallet(-it.price);
+  inv[k] = (inv[k] || 0) + 1;
+  saveInv();
+  sfx.coin(4);
+  toast(it.icon + " " + it.name + " 샀어요");
+  paintShop();
+  paintItems();
+}
+
+function openShop(from) {
+  shopFrom = from;
+  paintShop();
+  closeAllVeils();
+  veil("vShop", true);
+  if (state === "playing") state = "paused";
+}
+
 /* ══════════════════════════════════════════════════════════════
    12. 스테이지 목록
    ══════════════════════════════════════════════════════════════ */
@@ -1394,6 +1739,7 @@ function paintStages() {
   }
   document.getElementById("stagesSub").textContent =
     "별 " + totalStars() + "개 / " + (STAGE_N * 3) + "개";
+  document.getElementById("listWallet").textContent = "🪙 " + comma(wallet);
   document.getElementById("btnTimeAttack").disabled = !allClear();
   document.getElementById("btnTimeAttack").textContent =
     allClear() ? "타임어택 (최고 " + comma(best) + "점)" : "타임어택 (전부 깨면 열려요)";
@@ -1435,7 +1781,9 @@ function beginStage(def, idx) {
   stage.def = def;
   stage.idx = idx;
   stage.ballsLeft = def.balls;
+  stage.thrown = 0;
   stage.made = 0; stage.swish = 0; stage.coins = 0;
+  armed = null; shotItem = null;
   score = 0; combo = 0; makes = 0; shots = 0; bestCombo = 0;
   RIM = def.rim || RIM_BASE;
   wind = def.wind || 0;
@@ -1450,7 +1798,6 @@ function beginStage(def, idx) {
   nextBall();
   stTitle.textContent = def.endless ? "타임어택" : ("스테이지 " + (idx + 1));
   stName.textContent = def.name;
-  hint.textContent = def.hint;
   state = "playing";
   last = performance.now();
   acc = 0;
@@ -1458,11 +1805,23 @@ function beginStage(def, idx) {
   paintGoals();
   paintBalls();
   paintTimer();
+  paintItems();
+  paintHint();
+  // 아이템을 처음 쥔 사람에게 한 번만 알려 준다. 그사이 다른 알림(샀어요,
+  // 공이 돌아오면…)이 떠 있으면 덮어쓰지 않고 다음 판으로 미룬다.
+  if (store.get("itemTip", "0") !== "1" && ITEM_KEYS.some(function (k) { return inv[k] > 0; })) {
+    setTimeout(function () {
+      if (toastEl.classList.contains("show") || state !== "playing") return;
+      store.set("itemTip", "1");
+      toast("아래 아이템을 눌러 켜고 던져 보세요");
+    }, 600);
+  }
 }
 
 function starsFor() {
   if (stage.def.endless) return 0;
-  var used = stage.def.balls - stage.ballsLeft;
+  // 남은 공으로 세면 공 +2 로 별을 살 수 있게 된다. 실제로 던진 개수로 센다.
+  var used = stage.thrown;
   if (used <= Math.ceil(stage.def.balls * 0.5)) return 3;
   if (used <= Math.ceil(stage.def.balls * 0.75)) return 2;
   return 1;
@@ -1472,15 +1831,30 @@ function clearStage() {
   state = "clear";
   aiming = false;
   var n = starsFor();
+  var before = starsAll()[stage.idx];
   saveStar(stage.idx, n);
   sfx.clear(n);
 
-  var last = stage.idx >= STAGE_N - 1;
+  // 보상: 별마다 3코인. 별 3개를 '처음' 받으면 아이템도 하나.
+  // 매번 아이템을 주면 1스테이지만 돌려서 무한히 모을 수 있다.
+  var coinReward = n * 3;
+  addWallet(coinReward);
+  var gift = null;
+  if (n === 3 && before < 3) {
+    gift = pickItem(false);
+    inv[gift] = (inv[gift] || 0) + 1;
+    saveInv();
+  }
+  document.getElementById("clearReward").textContent =
+    "🪙 +" + coinReward + (gift ? "  ·  " + ITEMS[gift].icon + " " + ITEMS[gift].name + " 선물" : "") +
+    "  ·  지갑 " + comma(wallet);
+
+  var isFinal = stage.idx >= STAGE_N - 1;
   document.getElementById("clearTitle").textContent =
-    last ? "전부 깼어요!" : "스테이지 " + (stage.idx + 1) + " 클리어!";
+    isFinal ? "전부 깼어요!" : "스테이지 " + (stage.idx + 1) + " 클리어!";
   document.getElementById("clearScore").textContent = comma(score);
   document.getElementById("clearSub").textContent =
-    "점 · 공 " + stage.ballsLeft + "개 남김" + (bestCombo >= 2 ? " · 최다 연속 " + bestCombo : "");
+    "점 · 공 " + stage.thrown + "개로 클리어" + (bestCombo >= 2 ? " · 최다 연속 " + bestCombo : "");
   var starEls = document.getElementById("clearStars").children;
   for (var i = 0; i < 3; i++) {
     starEls[i].className = "";
@@ -1489,7 +1863,7 @@ function clearStage() {
     })(i);
   }
   var btnNext = document.getElementById("btnNext");
-  if (last) {
+  if (isFinal) {
     btnNext.textContent = allClear() ? "타임어택 열기" : "스테이지 목록";
   } else {
     btnNext.textContent = "다음 스테이지";
@@ -1507,7 +1881,10 @@ function failStage(why) {
   if (g.makes) txt.push("골 " + stage.made + "/" + g.makes);
   if (g.swish) txt.push("스윔 " + stage.swish + "/" + g.swish);
   if (g.coins) txt.push("동전 " + stage.coins + "/" + g.coins);
-  document.getElementById("failSub").textContent = txt.join(" · ");
+  var has = ITEM_KEYS.some(function (k) { return inv[k] > 0; });
+  document.getElementById("failSub").innerHTML = txt.join(" · ") +
+    (has ? "<br><span style=\"color:var(--blue)\">아래 아이템을 켜고 던지면 훨씬 쉬워져요</span>"
+         : "<br><span style=\"color:var(--ink-3)\">상점에서 아이템을 살 수 있어요 · 지갑 🪙 " + comma(wallet) + "</span>");
   veil("vFail", true);
 }
 
@@ -1519,8 +1896,10 @@ function endTimeAttack() {
   document.getElementById("overTitle").textContent =
     score >= best && score > 0 ? "최고 기록!" : "경기 끝!";
   document.getElementById("overScore").textContent = comma(score);
+  var taReward = Math.floor(score / 10);
+  addWallet(taReward);
   document.getElementById("overSub").textContent =
-    "최고 기록 " + comma(best) + "점 · " + makes + "/" + shots + "골";
+    "최고 기록 " + comma(best) + "점 · " + makes + "/" + shots + "골 · 🪙 +" + taReward;
   veil("vOver", true);
 }
 
@@ -1565,6 +1944,13 @@ document.getElementById("btnGo").addEventListener("click", function () {
   beginStage(STAGES[stage.idx], stage.idx);
 });
 document.getElementById("btnList").addEventListener("click", openStages);
+document.getElementById("btnShopStart").addEventListener("click", function () { openShop("start"); });
+document.getElementById("btnShopList").addEventListener("click", function () { openShop("stages"); });
+document.getElementById("btnShopClose").addEventListener("click", function () {
+  veil("vShop", false);
+  if (shopFrom === "stages") openStages();
+  else veil("vStart", true);
+});
 document.getElementById("btnStagesClose").addEventListener("click", function () {
   veil("vStages", false);
   if (state === "paused" && !anyVeilOpen()) resume();
@@ -1605,12 +1991,14 @@ function doExit() {
   stage.def = null;
   score = 0; combo = 0;
   hasTime = false;
-  bars.length = 0; coins.length = 0; wind = 0; RIM = RIM_BASE;
+  bars.length = 0; coins.length = 0; bubbles.length = 0; wind = 0; RIM = RIM_BASE;
   pops.length = 0; sparks.length = 0; trail.length = 0; gusts.length = 0;
+  armed = null; shotItem = null; ball.gold = false;
   stTitle.textContent = "한 손 농구";
   stName.textContent = "스테이지를 골라 시작하세요";
   hint.textContent = "골대 쪽으로 스와이프하면 공이 날아가요";
-  paintGoals(); paintBalls(); paintTimer();
+  hint.classList.remove("armed");
+  paintGoals(); paintBalls(); paintTimer(); paintItems();
   paintStages();
   veil("vStart", true);
 }
@@ -1679,23 +2067,28 @@ requestAnimationFrame(frame);
 window.__hoop = {
   state: function () {
     return { score: score, shots: shots, makes: makes, combo: combo, timeLeft: timeLeft,
-             ball: ball, hoop: hoop, bars: bars, coins: coins, wind: wind, RIM: RIM,
+             ball: ball, hoop: hoop, bars: bars, coins: coins, bubbles: bubbles,
+             wind: wind, curWind: curWind(), RIM: RIM,
              stage: stage, gameState: state, hasTime: hasTime,
+             inv: inv, wallet: wallet, armed: armed, shotItem: shotItem,
              FH: FH, FLOOR: FLOOR, HOLD_Y: HOLD_Y, HOOP_Y: HOOP_Y };
   },
   stages: function () { return STAGES; },
   beginStage: function (i) { beginStage(i < 0 ? TIME_ATTACK : STAGES[i], i); },
   pause: pause,
-  shoot: function (vx, vy) {
-    ball.vx = vx; ball.vy = vy; ball.live = true; shots++;
-    if (!stage.def.endless) { stage.ballsLeft--; paintBalls(); }
-  },
+  shoot: function (vx, vy) { ball.vx = vx; ball.vy = vy; launch(); },
+  useItem: useItem,
+  setInv: function (o) { inv = o; saveInv(); paintItems(); },
+  setWallet: function (n) { wallet = n; store.set("wallet", n); },
+  setGold: function (g) { ball.gold = g; },
+  buy: buy,
   step: step,
   setTime: function (t) { timeLeft = t; },
   starsAll: starsAll,
   consts: function () {
     return { FW: FW, R: R, GRAV: GRAV, AIR: AIR, KNOB: KNOB, MAXPOW: MAXPOW,
-             HX_MIN: HX_MIN, HX_MAX: HX_MAX, WALL_E: WALL_E, STAGE_N: STAGE_N };
+             HX_MIN: HX_MIN, HX_MAX: HX_MAX, WALL_E: WALL_E, STAGE_N: STAGE_N,
+             MAG_R: MAG_R, ITEMS: ITEMS };
   }
 };
 
