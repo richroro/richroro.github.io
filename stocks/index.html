@@ -11,7 +11,11 @@
 <meta property="og:url" content="https://richroro.github.io/stocks/">
 <meta property="og:title" content="종목 노트 — 미국 주요 종목 스크리너">
 <meta property="og:description" content="매출·마진을 한 표에서 정렬하고, 한국 기업과 공급·경쟁·고객 중 어떤 관계인지 표시했습니다.">
-<meta name="twitter:card" content="summary">
+<meta property="og:image" content="https://richroro.github.io/stocks/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="종목 노트 — 미국 주요 종목 37곳을 같은 틀로">
+<meta name="twitter:card" content="summary_large_image">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%2314161C'/><path d='M22 70V46h12v24zm22 0V30h12v40zm22 0V54h12v16z' fill='white'/></svg>">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -30,6 +34,34 @@
 .krtag.경쟁{background:color-mix(in srgb,var(--s2) 16%,transparent);color:var(--s2)}
 .krtag.간접{background:var(--surface-2);color:var(--ink-3)}
 .ktag{display:inline-block;width:8px;height:8px;border-radius:2px;margin-right:6px;vertical-align:1px}
+/* 검색 · 다면 필터 · 도구 줄 */
+.toolbar{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.search{flex:1 1 220px;display:flex;align-items:center;gap:8px;background:var(--surface);border:1px solid var(--line);
+  border-radius:10px;padding:0 12px;height:38px}
+.search input{flex:1;border:0;background:transparent;color:var(--ink);font:inherit;font-size:14px;min-width:0;outline:none}
+.search input::placeholder{color:var(--ink-3)}
+.search kbd{font:11px "IBM Plex Mono",monospace;color:var(--ink-3);border:1px solid var(--line);border-radius:5px;padding:1px 5px}
+.facets{display:flex;flex-direction:column;gap:6px}
+.facet{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.facet .fl{font-size:11.5px;color:var(--ink-3);min-width:36px;font-family:"IBM Plex Mono",monospace}
+.count{font-size:12.5px;color:var(--ink-3);font-family:"IBM Plex Mono",monospace}
+th.sortable{outline-offset:-2px}
+th.sortable:focus-visible{outline:2px solid var(--s1)}
+td.ck,th.ck{width:34px;text-align:center;padding-left:6px;padding-right:6px}
+td.ck input{width:15px;height:15px;accent-color:var(--s1);cursor:pointer}
+/* 비교 패널 */
+.cmp{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px}
+.cmpcard{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:14px 15px;position:relative}
+.cmpcard .hd{display:flex;align-items:center;gap:8px;margin-bottom:8px}
+.cmpcard .hd .av{width:26px;height:26px;border-radius:7px;display:grid;place-items:center;font:600 11px "IBM Plex Mono",monospace;color:#fff}
+.cmpcard .hd b{font-size:14px}.cmpcard .hd small{display:block;font-size:11px;color:var(--ink-3)}
+.cmpcard .rm{position:absolute;top:10px;right:10px;background:transparent;border:0;color:var(--ink-3);cursor:pointer;font-size:15px;line-height:1}
+.cmpcard .rm:hover{color:var(--ink)}
+.cmprow{display:flex;justify-content:space-between;gap:8px;font-size:12.5px;padding:5px 0;border-top:1px solid var(--line-soft)}
+.cmprow .k{color:var(--ink-3)}.cmprow b{font-family:"IBM Plex Mono",monospace;font-variant-numeric:tabular-nums;font-weight:500}
+.cmprow b.best{color:var(--up)}
+.cmpempty{border:1px dashed var(--line);border-radius:12px;padding:22px;text-align:center;color:var(--ink-3);font-size:13px}
+.dl{display:flex;gap:6px;flex-wrap:wrap}
 </style>
 </head>
 <body>
@@ -52,11 +84,23 @@
     <h2 class="title">한 표에서 정렬해 보기</h2>
     <p class="lead">서학개미가 많이 보는 종목을 같은 틀로 정리했습니다. 열 제목을 누르면 정렬되고,
       아래 칩으로 분야를 걸러 볼 수 있습니다. <b>검증된 수치가 있는 회사만 싣습니다</b> — 빈칸은 회사가 그 값을 공개하지 않거나 확인하지 못한 것입니다.</p>
-    <div class="filt mt16" id="filters"></div>
+    <div class="toolbar mt16">
+      <label class="search"><span aria-hidden="true">🔍</span>
+        <input id="q" type="search" placeholder="회사 이름이나 티커 — 예: 엔비디아, NVDA, 반도체" autocomplete="off" aria-label="종목 검색">
+        <kbd>/</kbd></label>
+      <span class="count" id="count" aria-live="polite">—</span>
+      <div class="dl">
+        <button class="ghost" type="button" id="dlCsv" title="지금 보이는 표를 CSV로">CSV</button>
+        <button class="ghost" type="button" id="dlJson" title="레지스트리 전체를 JSON으로">JSON</button>
+        <button class="ghost" type="button" id="share" title="지금 상태(검색·필터·정렬·비교)를 주소로">링크 복사</button>
+      </div>
+    </div>
+    <div class="facets mt12" id="facets"></div>
     <div class="card mt12">
       <div class="tscroll">
         <table id="tbl">
           <thead><tr>
+            <th class="ck"><span title="비교할 회사를 고르세요 (최대 4)">비교</span></th>
             <th class="sortable" data-k="ko" data-t="s">회사</th>
             <th class="sortable" data-k="sector" data-t="s">분야</th>
             <th>회계연도</th>
@@ -73,6 +117,13 @@
           <tbody id="rows"></tbody>
         </table>
       </div>
+    </div>
+    <div class="card pad mt12" id="cmpWrap">
+      <div class="rowsplit"><h3>나란히 보기</h3><span class="fybadge" id="cmpBadge">표에서 최대 4곳을 고르세요</span></div>
+      <div class="cmp mt12" id="cmp"><div class="cmpempty">표 왼쪽 체크박스로 회사를 고르면 여기에 나란히 놓입니다 —
+        예: 넷플릭스와 디즈니, 릴리와 노보, 아마존과 월마트.</div></div>
+      <div class="figwrap mt12" id="wrapCmp" hidden><svg class="fig" id="figCmp" role="img" aria-label="고른 회사의 마진 비교 막대"></svg><div class="tip" id="tipCmp"></div></div>
+      <div class="note mt12" id="cmpNote" hidden></div>
     </div>
     <div class="note mt12"><span class="ic">📏</span><div><b>영업이익률·순이익률·최대 부문 비중은 계산한 값입니다.</b>
       매출과 영업이익·순이익, 부문 금액에서 직접 나눴습니다 — 하드코딩하지 않았습니다.
@@ -108,6 +159,16 @@
       </div>
     </div>
     <div class="note mt12" id="pNote"></div>
+    <div class="card pad mt12">
+      <div class="chart-head"><div>
+        <div class="ct">'FY'에 적힌 해가 실제로 가리키는 12개월</div>
+        <div class="cs">회계연도가 끝나는 달로 묶었습니다 · 왼쪽 반이 '전년', 오른쪽 반이 'FY에 적힌 해'</div>
+      </div></div>
+      <div class="legend mt8"><span class="lg"><span class="sw" style="background:var(--s2);opacity:.45"></span>전년에 속한 달</span>
+        <span class="lg"><span class="sw" style="background:var(--s1)"></span>FY에 적힌 해에 속한 달</span></div>
+      <div class="figwrap mt8" id="wrapFy"><svg class="fig" id="figFy" role="img" aria-label="회사별 회계연도 기간 타임라인"></svg><div class="tip" id="tipFy"></div></div>
+      <div class="note mt12" id="fyNote"></div>
+    </div>
     <div class="note warn mt12"><span class="ic">🗓️</span><div><b>회계연도 종료일이 회사마다 다릅니다.</b>
       엔비디아 FY2026은 <b>2026년 1월</b>에 끝난 해이고, 마이크로소프트 FY2026은 <b>2026년 6월</b>,
       애플 FY2025는 <b>2025년 9월</b>에 끝난 해입니다. 같은 'FY2026'이라도 가리키는 기간이 다르니
@@ -269,14 +330,50 @@ const ROWS = REGISTRY.filter((r) => r.data).map((r) => {
     topK: d.top ? d.top.k : null
   });
 });
-const SECTORS = ["전체"].concat([...new Set(ROWS.map((r) => r.sector))]);
-let filt = "전체", sortKey = "rev", sortDir = -1;
+/* ───────── 상태 · 검색 · 다면 필터 · 정렬 · 비교 — 전부 주소(hash)에 실립니다 ───────── */
+const FACETS = {
+  sector: { label: "분야", values: [...new Set(ROWS.map((r) => r.sector))], test: (r, v) => r.sector === v },
+  kr:     { label: "관계", values: ["공급", "경쟁", "고객", "간접"],          test: (r, v) => r.kr === v },
+  pl:     { label: "손익", values: ["흑자", "적자"],                          test: (r, v) => v === "흑자" ? r.ni > 0 : r.ni < 0 },
+  div:    { label: "배당", values: ["지급", "없음"],                          test: (r, v) => r.div === v }
+};
+const state = { q: "", sector: "전체", kr: "전체", pl: "전체", div: "전체", sortKey: "rev", sortDir: -1, cmp: [] };
+const CMP_MAX = 4;
+const CMP_COL = ["var(--s1)", "var(--s2)", "var(--s3)", "var(--s4)"]; // 나란히 보기: 고른 순서대로 한 색씩
 
-document.getElementById("filters").innerHTML = SECTORS.map((s) =>
-  '<button type="button" data-s="' + s + '" aria-pressed="' + (s === filt) + '">' + s + "</button>").join("");
+function readHash() {
+  const h = new URLSearchParams(location.hash.replace(/^#/, ""));
+  state.q = h.get("q") || "";
+  for (const k of Object.keys(FACETS)) {
+    const v = h.get(k); state[k] = v && FACETS[k].values.includes(v) ? v : "전체";
+  }
+  const so = (h.get("sort") || "").split(":");
+  if (so[0] && document.querySelector('#tbl th.sortable[data-k="' + so[0] + '"]')) {
+    state.sortKey = so[0]; state.sortDir = so[1] === "asc" ? 1 : -1;
+  }
+  state.cmp = (h.get("cmp") || "").split(",").filter((x) => ROWS.some((r) => r.slug === x)).slice(0, CMP_MAX);
+}
+function writeHash() {
+  const h = new URLSearchParams();
+  if (state.q) h.set("q", state.q);
+  for (const k of Object.keys(FACETS)) if (state[k] !== "전체") h.set(k, state[k]);
+  if (!(state.sortKey === "rev" && state.sortDir === -1)) h.set("sort", state.sortKey + ":" + (state.sortDir === 1 ? "asc" : "desc"));
+  if (state.cmp.length) h.set("cmp", state.cmp.join(","));
+  const str = h.toString();
+  // 뒤로가기 목록을 어지럽히지 않도록 replaceState 로 바꿉니다
+  history.replaceState(null, "", location.pathname + (str ? "#" + str : ""));
+}
 
+const norm = (x) => String(x || "").toLowerCase().replace(/\s+/g, "");
+function matchQ(r) {
+  if (!state.q) return true;
+  const q = norm(state.q);
+  return [r.ko, r.tk, r.slug, r.sector, r.kr, r.p && r.p.ceo, r.p && r.p.hq].some((f) => norm(f).includes(q));
+}
 function view() {
-  const list = ROWS.filter((r) => filt === "전체" || r.sector === filt);
+  const list = ROWS.filter((r) => matchQ(r) &&
+    Object.keys(FACETS).every((k) => state[k] === "전체" || FACETS[k].test(r, state[k])));
+  const { sortKey, sortDir } = state;
   return list.sort((a, b) => {
     const av = a[sortKey], bv = b[sortKey];
     if (typeof av === "string") return av.localeCompare(bv, "ko") * sortDir;
@@ -285,10 +382,27 @@ function view() {
     return (av - bv) * sortDir;
   });
 }
+
+document.getElementById("facets").innerHTML = Object.keys(FACETS).map((k) =>
+  '<div class="facet filt" data-f="' + k + '"><span class="fl">' + FACETS[k].label + '</span>' +
+  ["전체"].concat(FACETS[k].values).map((v) =>
+    '<button type="button" data-v="' + v + '" aria-pressed="false">' + v + "</button>").join("") + "</div>").join("");
+function paintFacets() {
+  document.querySelectorAll("#facets .facet").forEach((f) => {
+    const k = f.dataset.f;
+    f.querySelectorAll("button").forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.v === state[k])));
+  });
+  document.getElementById("q").value = state.q;
+}
+
 function render() {
-  document.getElementById("rows").innerHTML = view().map((r) => {
+  const list = view(), full = state.cmp.length >= CMP_MAX;
+  document.getElementById("rows").innerHTML = list.map((r) => {
     const href = r.href || ((r.base || "/m7/") + r.slug + "/");
-    return "<tr><td class='tx'><div class='co'><span class='av' style='background:" + r.c +
+    const on = state.cmp.includes(r.slug);
+    return "<tr><td class='ck'><input type='checkbox' data-slug='" + r.slug + "'" + (on ? " checked" : "") +
+      (full && !on ? " disabled" : "") + " aria-label='" + r.ko + " 비교에 넣기'></td>" +
+      "<td class='tx'><div class='co'><span class='av' style='background:" + r.c +
       ";color:#fff'>" + r.ab + "</span><span><b><a href='" + href +
       "' style='border-bottom:1px solid var(--line)'>" + r.ko + "</a></b><small>" + r.tk +
       "</small></span></div></td>" +
@@ -297,39 +411,204 @@ function render() {
       "<td class='" + (r.growth == null ? "" : (r.growth > 0 ? "up" : "down")) + "'>" +
         (r.growth == null ? "—" : (r.growth > 0 ? "+" : "−") + Math.abs(r.growth).toFixed(1) + "%") + "</td>" +
       "<td>" + (r.gm == null ? "—" : r.gm.toFixed(1) + "%") + "</td>" +
-      "<td>" + (r.om == null ? "—" : r.om.toFixed(1) + "%") + "</td>" +
-      "<td>" + (r.nm == null ? "—" : r.nm.toFixed(1) + "%") + "</td>" +
+      "<td class='" + cls(r.om) + "'>" + (r.om == null ? "—" : r.om.toFixed(1) + "%") + "</td>" +
+      "<td class='" + cls(r.nm) + "'>" + (r.nm == null ? "—" : r.nm.toFixed(1) + "%") + "</td>" +
       "<td>" + (r.topShare == null ? "—" : r.topShare.toFixed(1) + "%") + "</td>" +
       "<td>" + (r.emp == null ? "—" : r.emp.toLocaleString("ko-KR")) + "</td>" +
       "<td>" + (r.revPer == null ? "—" : r.cur + (r.revPer / 1e6).toFixed(2) + "M") + "</td>" +
       "<td><span class='krtag " + r.kr + "'>" + r.kr + "</span></td></tr>";
-  }).join("");
+  }).join("") || "<tr><td colspan='13' class='tx' style='color:var(--ink-3);padding:22px'>조건에 맞는 회사가 없습니다 — 검색어나 필터를 지워 보세요.</td></tr>";
+  document.getElementById("count").textContent = ROWS.length + "곳 중 " + list.length + "곳";
   document.querySelectorAll("#tbl th.sortable").forEach((th) =>
-    th.setAttribute("aria-sort", th.dataset.k === sortKey ? (sortDir === -1 ? "descending" : "ascending") : "none"));
+    th.setAttribute("aria-sort", th.dataset.k === state.sortKey ? (state.sortDir === -1 ? "descending" : "ascending") : "none"));
+  paintFacets();
+  writeHash();
+  renderCmp();
   drawAll();
 }
+
+// 열 제목: 클릭과 키보드(Enter · Space) 둘 다
+document.querySelectorAll("#tbl th.sortable, #ptbl th.sortable").forEach((th) => {
+  th.setAttribute("tabindex", "0"); th.setAttribute("role", "button");
+  th.addEventListener("keydown", (e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); th.click(); } });
+});
 document.querySelectorAll("#tbl th.sortable").forEach((th) => {
   th.addEventListener("click", () => {
     const k = th.dataset.k;
-    if (k === sortKey) sortDir = -sortDir;
-    else { sortKey = k; sortDir = th.dataset.t === "s" ? 1 : -1; }
+    if (k === state.sortKey) state.sortDir = -state.sortDir;
+    else { state.sortKey = k; state.sortDir = th.dataset.t === "s" ? 1 : -1; }
     render();
   });
 });
-document.getElementById("filters").addEventListener("click", (e) => {
+document.getElementById("facets").addEventListener("click", (e) => {
   const b = e.target.closest("button"); if (!b) return;
-  filt = b.dataset.s;
-  document.querySelectorAll("#filters button").forEach((x) =>
-    x.setAttribute("aria-pressed", String(x.dataset.s === filt)));
+  state[b.closest(".facet").dataset.f] = b.dataset.v;
   render();
 });
+document.getElementById("q").addEventListener("input", (e) => { state.q = e.target.value.trim(); render(); });
+document.addEventListener("keydown", (e) => {
+  const tag = (e.target.tagName || "").toLowerCase();
+  if (e.key === "/" && tag !== "input" && tag !== "textarea" && tag !== "select") {
+    e.preventDefault(); document.getElementById("q").focus();
+  }
+  if (e.key === "Escape" && tag === "input" && e.target.id === "q") { state.q = ""; e.target.value = ""; render(); }
+});
+document.getElementById("rows").addEventListener("change", (e) => {
+  const c = e.target; if (!c.matches("input[type=checkbox]")) return;
+  const s = c.dataset.slug;
+  if (c.checked) { if (!state.cmp.includes(s) && state.cmp.length < CMP_MAX) state.cmp.push(s); }
+  else state.cmp = state.cmp.filter((x) => x !== s);
+  render();
+});
+
+/* ───────── 나란히 보기 ───────── */
+const CMP_ROWS = [
+  { k: "매출",        f: (r) => fmtAmt(r.rev, r.cur),                                  v: (r) => r.rev,      best: false },
+  { k: "전년 대비",   f: (r) => r.growth == null ? "—" : pctTxt(r.growth),                v: (r) => r.growth },
+  { k: "총마진",      f: (r) => r.gm == null ? "—" : r.gm.toFixed(1) + "%",              v: (r) => r.gm },
+  { k: "영업이익률",  f: (r) => r.om == null ? "—" : r.om.toFixed(1) + "%",              v: (r) => r.om },
+  { k: "순이익률",    f: (r) => r.nm == null ? "—" : r.nm.toFixed(1) + "%",              v: (r) => r.nm },
+  { k: "임직원",      f: (r) => r.emp == null ? "—" : r.emp.toLocaleString("ko-KR"),     v: (r) => r.emp,      best: false },
+  { k: "1인당 매출",  f: (r) => r.revPer == null ? "—" : r.cur + (r.revPer / 1e6).toFixed(2) + "M", v: (r) => r.revPer },
+  { k: "회계연도",    f: (r) => r.fy,                                                     v: () => null },
+  { k: "관계",        f: (r) => r.kr,                                                     v: () => null },
+  { k: "설립",        f: (r) => r.p ? r.p.est + "년" : "—",                              v: () => null }
+];
+function cmpList() { return state.cmp.map((s) => ROWS.find((r) => r.slug === s)).filter(Boolean); }
+function renderCmp() {
+  const list = cmpList(), box = document.getElementById("cmp");
+  document.getElementById("cmpBadge").textContent = list.length ? list.length + "곳 · 최대 " + CMP_MAX + "곳" : "표에서 최대 " + CMP_MAX + "곳을 고르세요";
+  document.getElementById("wrapCmp").hidden = list.length < 2;
+  document.getElementById("cmpNote").hidden = list.length < 2;
+  if (!list.length) {
+    box.innerHTML = "<div class='cmpempty'>표 왼쪽 체크박스로 회사를 고르면 여기에 나란히 놓입니다 — 예: 넷플릭스와 디즈니, 릴리와 노보, 아마존과 월마트.</div>";
+    return;
+  }
+  // 같은 지표에서 가장 높은 값을 표시합니다 (수치가 두 곳 이상일 때만)
+  const bestOf = {};
+  CMP_ROWS.forEach((m) => {
+    if (m.best === false) return;
+    const vals = list.map((r) => m.v(r)).filter((x) => x != null);
+    if (vals.length >= 2) bestOf[m.k] = Math.max.apply(null, vals);
+  });
+  box.innerHTML = list.map((r, i) =>
+    "<div class='cmpcard' style='border-top:3px solid " + CMP_COL[i] + "'><button class='rm' type='button' data-rm='" + r.slug + "' aria-label='" + r.ko + " 빼기'>×</button>" +
+    "<div class='hd'><span class='av' style='background:" + r.c + "'>" + r.ab + "</span><span><b>" + r.ko +
+    "</b><small>" + r.tk + " · " + r.sector + "</small></span></div>" +
+    CMP_ROWS.map((m) => {
+      const v = m.v(r), isBest = bestOf[m.k] != null && v != null && v === bestOf[m.k];
+      return "<div class='cmprow'><span class='k'>" + m.k + "</span><b class='" + (isBest ? "best" : "") + "'>" + m.f(r) + "</b></div>";
+    }).join("") +
+    "<div class='mt8'><a href='" + (r.href || ((r.base || "/m7/") + r.slug + "/")) +
+    "' class='hint' style='border-bottom:1px solid var(--line)'>페이지 열기 →</a></div></div>").join("");
+  box.querySelectorAll("[data-rm]").forEach((b) => b.addEventListener("click", () => {
+    state.cmp = state.cmp.filter((x) => x !== b.dataset.rm); render();
+  }));
+  if (list.length >= 2) { drawCmp(list); cmpNote(list, bestOf); }
+}
+function cmpNote(list, bestOf) {
+  const who = (k) => { const b = list.find((r) => r[k] != null && r[k] === bestOf[{ gm: "총마진", om: "영업이익률", nm: "순이익률", growth: "전년 대비" }[k]]); return b ? b.ko : null; };
+  const parts = [];
+  if (who("growth")) parts.push("가장 빨리 크는 곳은 <b>" + who("growth") + "</b>");
+  if (who("gm")) parts.push("총마진은 <b>" + who("gm") + "</b>");
+  if (who("nm")) parts.push("순이익률은 <b>" + who("nm") + "</b>");
+  const off = list.filter((r) => r.nm != null && Math.abs(r.nm) > MARG_CAP).map((r) => r.ko);
+  document.getElementById("cmpNote").innerHTML = '<span class="ic">🔍</span><div>' +
+    (parts.length ? parts.join(", ") + "가 가장 높습니다. " : "") +
+    (off.length ? "<b>" + off.join(" · ") + josa(off.join(" · "), "은", "는") + " 이익률이 ±" + MARG_CAP +
+      "%를 넘어 막대에서 뺐습니다</b> — 위 카드에 실제 값이 있습니다. " : "") +
+    "회계연도가 다르면 같은 기간이 아닙니다 — 카드의 회계연도 줄을 먼저 보세요.</div>";
+}
+/* 고른 회사의 총마진 · 영업이익률 · 순이익률을 묶음 막대로 — 색은 회사, 묶음은 지표 */
+function drawCmp(list) {
+  const svg = document.getElementById("figCmp"), wrap = svg.parentElement, tip = document.getElementById("tipCmp");
+  const METS = [["gm", "총마진"], ["om", "영업이익률"], ["nm", "순이익률"]];
+  const W = Math.max(280, wrap.clientWidth || 320), small = W < 560;
+  const L = small ? 78 : 96, R = small ? 54 : 70, T = 28, B = 24;
+  const bh = small ? 14 : 16, gap = 2, ggap = small ? 14 : 18;
+  const H = T + METS.length * (list.length * (bh + gap) - gap + ggap) - ggap + B;
+  const pw = Math.max(40, W - L - R);
+  const vals = []; METS.forEach(([k]) => list.forEach((r) => { if (r[k] != null && Math.abs(r[k]) <= MARG_CAP) vals.push(r[k]); }));
+  const hi = Math.max.apply(null, vals.concat([1])), lo = Math.min.apply(null, vals.concat([0]));
+  const step = niceScale(Math.max(hi, -lo), small ? 3 : 5).step;
+  const posMax = Math.max(step, Math.ceil(hi / step - 1e-9) * step), negMax = Math.ceil(-lo / step - 1e-9) * step;
+  const X = (v) => L + ((v + negMax) / (posMax + negMax)) * pw;
+  svg.setAttribute("width", W); svg.setAttribute("height", H); svg.setAttribute("viewBox", "0 0 " + W + " " + H);
+  while (svg.firstChild) svg.removeChild(svg.firstChild);
+  // 범례: 색 = 고른 순서(--s1~--s4). 브랜드색은 겹칠 수 있어(엔비디아·TSMC 둘 다 파랑) 쓰지 않습니다.
+  // 막대마다 값이 직접 붙으므로 색만으로 뜻을 전하지 않습니다
+  let lx = L;
+  list.forEach((r, i) => {
+    svg.appendChild(el("rect", { x: lx, y: 6, width: 10, height: 10, rx: 2 }, "fill:" + CMP_COL[i]));
+    const t = txt(el("text", { x: lx + 14, y: 15, class: "axis" }), r.ko); svg.appendChild(t);
+    lx += 14 + (t.getComputedTextLength ? t.getComputedTextLength() : r.ko.length * 12) + 14;
+  });
+  for (let v = -negMax; v <= posMax + 1e-9; v += step) {
+    const x = X(v), zero = Math.abs(v) < 1e-9;
+    svg.appendChild(el("line", { x1: x, x2: x, y1: T, y2: H - B + 3, class: zero ? "baseline" : "gridline" }));
+    svg.appendChild(txt(el("text", { x: x, y: H - B + 16, "text-anchor": "middle", class: "axis" }), (v < 0 ? "−" : "") + Math.abs(v)));
+  }
+  METS.forEach(([k, name], gi) => {
+    const gy = T + gi * (list.length * (bh + gap) - gap + ggap);
+    svg.appendChild(txt(el("text", { x: L - 8, y: gy + (list.length * (bh + gap) - gap) / 2 + 4, "text-anchor": "end", class: "name" }), name));
+    list.forEach((r, i) => {
+      const v = r[k], y = gy + i * (bh + gap);
+      if (v == null || Math.abs(v) > MARG_CAP) {
+        svg.appendChild(txt(el("text", { x: X(0) + 6, y: y + bh / 2 + 4, class: "dlabel" }, "fill:var(--ink-3)"), v == null ? r.ko + " —" : r.ko + " (축 밖)"));
+        return;
+      }
+      const x0 = X(Math.min(0, v)), x1 = X(Math.max(0, v));
+      // 적자는 같은 회사색을 반투명 + 테두리로 그리고 라벨에 −를 붙입니다 (회사 구분은 유지, 부호는 라벨이 전달)
+      svg.appendChild(el("rect", { x: x0, y: y, width: Math.max(2, x1 - x0), height: bh, rx: 3 },
+        "fill:" + CMP_COL[i] + (v < 0 ? ";fill-opacity:.35;stroke:" + CMP_COL[i] + ";stroke-width:1.5" : "")));
+      svg.appendChild(txt(el("text", { x: v < 0 ? x0 - 6 : x1 + 6, y: y + bh / 2 + 4, "text-anchor": v < 0 ? "end" : "start", class: "dlabel" + (v < 0 ? " down" : "") }),
+        (v < 0 ? "−" : "") + Math.abs(v).toFixed(1) + "%"));
+      const hit = el("rect", { x: L, y: y, width: pw + R - 8, height: bh + gap, class: "hit" });
+      hit.addEventListener("mouseenter", () => showTip(tip, wrap, '<div class="th">' + r.ko + " · " + name + '</div><div class="tr"><span class="nm">' + r.fy + "</span><b>" + (v < 0 ? "−" : "") + Math.abs(v).toFixed(1) + "%</b></div>", (x0 + x1) / 2, y));
+      hit.addEventListener("mouseleave", () => tip.classList.remove("on"));
+      svg.appendChild(hit);
+    });
+  });
+}
+
+/* ───────── 내려받기 · 링크 복사 ───────── */
+function download(name, text, type) {
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(new Blob([text], { type: type })); a.download = name;
+  document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(() => URL.revokeObjectURL(a.href), 2000);
+}
+const today = () => new Date().toISOString().slice(0, 10);
+function csvOf(list) {
+  const cols = ["회사", "티커", "분야", "회계연도", "통화", "매출(10억)", "전년 대비(%)", "총마진(%)", "영업이익률(%)", "순이익률(%)",
+    "최대 부문", "최대 부문 비중(%)", "임직원", "임직원 기준", "1인당 매출(100만)", "한국과의 관계", "설립", "본사", "거래소", "CEO", "배당"];
+  const num = (v, d) => v == null ? "" : (+v).toFixed(d);
+  const esc = (v) => { const t = String(v == null ? "" : v); return /[",\n]/.test(t) ? '"' + t.replace(/"/g, '""') + '"' : t; };
+  const rows = list.map((r) => [r.ko, r.tk, r.sector, r.fy, r.cur, num(r.rev, 3), num(r.growth, 1), num(r.gm, 1), num(r.om, 1), num(r.nm, 1),
+    r.topK || "", num(r.topShare, 1), r.emp == null ? "" : r.emp, r.empAsOf || "", r.revPer == null ? "" : (r.revPer / 1e6).toFixed(3),
+    r.kr, r.p ? r.p.est : "", r.p ? r.p.hq : "", r.p ? r.p.ex + (r.p.ex2 ? " · " + r.p.ex2 : "") : "", r.p ? r.p.ceo : "", r.div || ""]);
+  return "﻿" + [cols].concat(rows).map((row) => row.map(esc).join(",")).join("\r\n");
+}
+document.getElementById("dlCsv").addEventListener("click", () =>
+  download("종목노트-" + today() + ".csv", csvOf(view()), "text/csv;charset=utf-8"));
+document.getElementById("dlJson").addEventListener("click", () =>
+  download("registry-" + today() + ".json", JSON.stringify({ asOf: today(), count: REGISTRY.length, companies: REGISTRY }, null, 2), "application/json"));
+document.getElementById("share").addEventListener("click", () => {
+  const b = document.getElementById("share"), url = location.href;
+  const done = () => { b.textContent = "복사됨 ✓"; setTimeout(() => { b.textContent = "링크 복사"; }, 1600); };
+  (navigator.clipboard ? navigator.clipboard.writeText(url) : Promise.reject()).then(done).catch(() => {
+    const ta = document.createElement("textarea"); ta.value = url; document.body.appendChild(ta); ta.select();
+    try { document.execCommand("copy"); done(); } catch (e) {} ta.remove();
+  });
+});
+window.addEventListener("hashchange", () => { readHash(); render(); });
 
 let margKey = "om";
 const MARG = {
   om: { t: "회사별 영업이익률", s: "영업이익 ÷ 매출 · 공개하지 않는 회사는 빠집니다", w: "연간 영업이익" },
   nm: { t: "회사별 순이익률", s: "순이익 ÷ 매출 · 세금과 영업 외 손익까지 반영한 값", w: "연간 순이익" }
 };
-function drawAll() { drawMarg(); drawPer(); drawScat(); }
+function drawAll() { drawMarg(); drawPer(); drawScat(); drawFy(); }
 const MARG_CAP = 200;   // |이익률| 이 이 값을 넘으면 축에서 뺍니다 (아직 매출이 거의 없는 회사)
 function drawMarg() {
   const svg = document.getElementById("figOm"), wrap = svg.parentElement, tip = document.getElementById("tipOm");
@@ -560,6 +839,53 @@ document.querySelectorAll("#ptbl th.sortable").forEach((th) => {
     prender();
   });
 });
+/* 회계연도 타임라인 — 끝나는 달을 fye 문자열의 첫 'N월' 에서 읽습니다 */
+function fyEndMonth(r) { const m = /(\d{1,2})월/.exec(r.p.fye); return m ? +m[1] : 12; }
+function drawFy() {
+  const svg = document.getElementById("figFy"); if (!svg) return;
+  const wrap = svg.parentElement, tip = document.getElementById("tipFy");
+  const byM = {};
+  PROF.forEach((r) => { const m = fyEndMonth(r); (byM[m] = byM[m] || []).push(r); });
+  const months = Object.keys(byM).map(Number).sort((a, b) => a - b);
+  const W = Math.max(280, wrap.clientWidth || 320), small = W < 560;
+  const L = small ? 44 : 60, R = 12, T = 26, B = 22, rowH = small ? 26 : 30, gap = 8;
+  const H = T + months.length * (rowH + gap) - gap + B;
+  const pw = W - L - R, slot = pw / 24;
+  const X = (i) => L + i * slot;        // i: 0..24 (0 = 전년 1월 시작, 12 = 그 해 1월 시작)
+  svg.setAttribute("width", W); svg.setAttribute("height", H); svg.setAttribute("viewBox", "0 0 " + W + " " + H);
+  while (svg.firstChild) svg.removeChild(svg.firstChild);
+  // 전년 반쪽을 옅게 깔고 경계에 세로선
+  svg.appendChild(el("rect", { x: X(0), y: T - 4, width: slot * 12, height: H - T - B + 8 }, "fill:var(--surface-2)"));
+  svg.appendChild(el("line", { x1: X(12), x2: X(12), y1: T - 8, y2: H - B + 4, class: "baseline" }));
+  svg.appendChild(txt(el("text", { x: X(6), y: 14, "text-anchor": "middle", class: "axis" }), "전년"));
+  svg.appendChild(txt(el("text", { x: X(18), y: 14, "text-anchor": "middle", class: "axis" }), "FY에 적힌 해"));
+  for (let i = 0; i < 24; i += (small ? 3 : 1)) {
+    svg.appendChild(txt(el("text", { x: X(i) + slot / 2, y: H - B + 15, "text-anchor": "middle", class: "axis" }), ((i % 12) + 1) + (small ? "월" : "")));
+  }
+  months.forEach((m, ri) => {
+    const y = T + ri * (rowH + gap), list = byM[m];
+    const s0 = m, s1 = m + 12;                      // 전년 (m+1)월부터 그 해 m월까지 → 슬롯 m .. m+12
+    const prevW = Math.max(0, 12 - m) * slot;       // 전년에 속한 달 수 = 12 − m
+    if (prevW > 0) svg.appendChild(el("rect", { x: X(s0), y: y, width: prevW, height: rowH, rx: 4 }, "fill:var(--s2);fill-opacity:.45"));
+    svg.appendChild(el("rect", { x: X(12), y: y, width: m * slot, height: rowH, rx: 4 }, "fill:var(--s1)"));
+    svg.appendChild(txt(el("text", { x: L - 8, y: y + rowH / 2 + 4, "text-anchor": "end", class: "name" }), m + "월 말"));
+    const names = list.map((r) => r.ko), shown = names.slice(0, small ? 2 : 4);
+    const label = shown.join(" · ") + (names.length > shown.length ? " 외 " + (names.length - shown.length) + "곳" : "");
+    svg.appendChild(txt(el("text", { x: X(s0) + 8, y: y + rowH / 2 + 4, class: "dlabel" }, "fill:" + (12 - m >= 6 ? "var(--ink)" : "#fff")), label));
+    const hit = el("rect", { x: X(s0), y: y, width: 12 * slot, height: rowH, class: "hit" });
+    hit.addEventListener("mouseenter", () => showTip(tip, wrap, '<div class="th">' + m + "월에 끝나는 회계연도 · " + names.length + "곳</div>" +
+      '<div class="tr"><span class="nm">전년에 속한 달</span><b>' + (12 - m) + "개월</b></div>" +
+      '<div class="tr" style="white-space:normal;max-width:240px"><span class="nm"></span><b style="font-weight:400">' + names.join(" · ") + "</b></div>", X(s0) + 6 * slot, y));
+    hit.addEventListener("mouseleave", () => tip.classList.remove("on"));
+    svg.appendChild(hit);
+  });
+  const dec = (byM[12] || []).length, off = PROF.length - dec;
+  const worst = months[0], worstList = byM[worst] || [];
+  document.getElementById("fyNote").innerHTML = '<span class="ic">🧭</span><div>' + PROF.length + "곳 중 <b>" + dec +
+    "곳</b>은 12월에 끝나 달력 연도와 같고, <b>" + off + "곳</b>은 어긋납니다. 가장 많이 어긋나는 곳은 <b>" +
+    worstList.map((r) => r.ko).join(" · ") + "</b>(" + worst + "월 말) — 'FY2026'이라 적혀도 <b>" + (12 - worst) +
+    "개월이 2025년</b>입니다. 같은 해 실적을 나란히 놓기 전에 이 그림을 먼저 보세요.</div>";
+}
 (function pNote() {
   if (!PROF.length) return;
   const byAge = PROF.slice().sort((a, b) => a.est - b.est);
@@ -644,17 +970,37 @@ const KR_DESC = {
   "고객": ["한국 기업이 돈을 내는 쪽", "국내 기업의 설비투자가 이 회사 매출입니다. 한국 증설 사이클을 다른 각도에서 보는 창구입니다."],
   "간접": ["계약이 아니라 수요 경로", "부품 공급사를 공시하지 않습니다. 설비투자 → AI 서버 → 메모리 수요로 이어지는 간접 연결이라 느슨합니다."]
 };
+/* 돈이 어느 쪽으로 흐르는지 한 줄 그림. 색만으로 뜻을 두지 않고 화살표와 글자로 씁니다. */
+function flowSvg(k) {
+  const box = (x, label) => '<rect x="' + x + '" y="10" width="86" height="30" rx="8" fill="var(--surface-2)" stroke="var(--line)"/>' +
+    '<text x="' + (x + 43) + '" y="29" text-anchor="middle" font-size="12" fill="var(--ink)">' + label + "</text>";
+  const mid = 'font-size="11" fill="var(--ink-3)" text-anchor="middle"';
+  let arrow = "";
+  if (k === "공급")      arrow = '<line x1="100" y1="25" x2="200" y2="25" stroke="var(--up)" stroke-width="2" marker-end="url(#ah-up)"/><text x="150" y="20" ' + mid + '>부품·콘텐츠 →</text><text x="150" y="52" ' + mid + '>← 돈</text>';
+  else if (k === "고객") arrow = '<line x1="200" y1="25" x2="100" y2="25" stroke="var(--down)" stroke-width="2" marker-end="url(#ah-down)"/><text x="150" y="20" ' + mid + '>← 제품·라이선스</text><text x="150" y="52" ' + mid + '>돈 →</text>';
+  else if (k === "경쟁") arrow = '<line x1="100" y1="25" x2="200" y2="25" stroke="var(--s2)" stroke-width="2" stroke-dasharray="1 0" marker-start="url(#ah-s2b)" marker-end="url(#ah-s2)"/><text x="150" y="20" ' + mid + '>같은 고객을 놓고</text><text x="150" y="52" ' + mid + '>같은 업황을 탄다</text>';
+  else                  arrow = '<line x1="100" y1="25" x2="200" y2="25" stroke="var(--ink-3)" stroke-width="1.5" stroke-dasharray="4 4"/><text x="150" y="20" ' + mid + '>계약 없음</text><text x="150" y="52" ' + mid + '>수요 경로만</text>';
+  const mk = (id, color, back) => '<marker id="' + id + '" markerWidth="8" markerHeight="8" refX="' + (back ? 1 : 7) +
+    '" refY="4" orient="auto"><path d="' + (back ? "M8,0 L0,4 L8,8 z" : "M0,0 L8,4 L0,8 z") + '" fill="' + color + '"/></marker>';
+  const defs = k === "공급" ? mk("ah-up", "var(--up)") : k === "고객" ? mk("ah-down", "var(--down)")
+    : k === "경쟁" ? mk("ah-s2", "var(--s2)") + mk("ah-s2b", "var(--s2)", true) : "";
+  return '<svg class="flow" viewBox="0 0 300 58" width="300" height="58" role="img" aria-label="' + k + ': ' + KR_DESC[k][0] + '">' +
+    "<defs>" + defs + "</defs>" + box(6, "한국 기업") + box(208, "이 회사") + arrow + "</svg>";
+}
 document.getElementById("krCards").innerHTML = ["공급", "경쟁", "고객", "간접"].map((k) => {
   const list = ROWS.filter((r) => r.kr === k);
   if (!list.length) return "";
   return '<div class="card pad"><div class="rowsplit"><h3><span class="krtag ' + k + '">' + k + "</span> " +
-    KR_DESC[k][0] + "</h3></div><p class='hint mt8'>" + KR_DESC[k][1] + "</p>" +
+    KR_DESC[k][0] + "</h3><span class='fybadge'>" + list.length + "곳</span></div>" +
+    "<div class='mt8' style='overflow-x:auto'>" + flowSvg(k) + "</div>" +
+    "<p class='hint mt8'>" + KR_DESC[k][1] + "</p>" +
     "<p class='mt12' style='font-size:13.5px;line-height:1.9'>" + list.map((r) =>
       "<a href='" + (r.href || ((r.base || "/m7/") + r.slug + "/")) +
       "' style='border-bottom:1px solid var(--line)'>" + r.ko + "</a>").join(" · ") + "</p></div>";
 }).join("");
 
 initTheme();
+readHash();
 render();
 prender();
 frender();
