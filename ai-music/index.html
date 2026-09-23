@@ -1113,8 +1113,9 @@ function compose(P) {
 
   /* ---- 5-5. 베이스 ---- */
   // 킥 루프는 베이스보다 먼저 정해 둔다 — 808 이 따라 치고, makeDrums 가 그대로 친다
+  // 드럼을 꺼도 늘 채운다(자기 난수라 P.rand 를 건드리지 않음) — 드럼 체크박스가 베이스 라인을 바꾸면 안 된다
   song.kickLoops = {};
-  if (P.drums) for (const sec of song.sections) if (!(sec.type in song.kickLoops)) song.kickLoops[sec.type] = kickLoopFor(P, sec.type);
+  for (const sec of song.sections) if (!(sec.type in song.kickLoops)) song.kickLoops[sec.type] = kickLoopFor(P, sec.type);
   const ROLE = (ch, role, nextCh) => {
     const r = ch.bassRoot;
     switch (role) {
