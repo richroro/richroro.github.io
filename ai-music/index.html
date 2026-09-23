@@ -1590,6 +1590,110 @@ const INST = {
   }
 };
 
+/* ---- 드럼 키트: 소리를 JS로 한 번 합성해 AudioBuffer로 굽는다 — 타격마다 BufferSource 1 + Gain 1 ---- */
+const KIT_CACHE = {};
+const HAT_F = [205.3, 304.4, 369.6, 522.7, 540, 800];               // TR-808 금속성: 사각파 여섯 개
+function kitDSP(ctx, seed) {
+  const sr = ctx.sampleRate, TAU = 2 * Math.PI, rand = new Rand(seed), nz = () => rand.f() * 2 - 1;
+  const biq = (type, f, q) => {                                       // RBJ 바이쿼드 = Web Audio BiquadFilter와 같은 공식
+    const w = TAU * Math.min(f, sr * .45) / sr, cs = Math.cos(w), al = Math.sin(w) / (2 * q), a0 = 1 + al;
+    const b = type === "lp" ? [(1 - cs) / 2, 1 - cs, (1 - cs) / 2] : type === "hp" ? [(1 + cs) / 2, -(1 + cs), (1 + cs) / 2] : [al, 0, -al];
+    const b0 = b[0] / a0, b1 = b[1] / a0, b2 = b[2] / a0, a1 = -2 * cs / a0, a2 = (1 - al) / a0;
+    let x1 = 0, x2 = 0, y1 = 0, y2 = 0;
+    return x => { const y = b0 * x + b1 * x1 + b2 * x2 - a1 * y1 - a2 * y2; x2 = x1; x1 = x; y2 = y1; y1 = y; return y; };
+  };
+  const dec = tau => { const m = Math.exp(-1 / (tau * sr)); let e = 1 / m; return () => (e *= m); };   // 지수 감쇠(곱셈만)
+  const metal = k => { const ph = new Float64Array(6), inc = HAT_F.map(f => f * k / sr);
+    return () => { let s = 0; for (let j = 0; j < 6; j++) { let p = ph[j] + inc[j]; if (p >= 1) p -= 1; ph[j] = p; s += p < .5 ? 1 : -1; } return s / 6; }; };
+  const mk = (sec, ch, voice) => {                                    // voice(c) → 샘플 함수(t). 채널마다 노이즈가 달라 스테레오
+    const n = Math.ceil(sec * sr), b = ctx.createBuffer(ch, n, sr);
+    for (let c = 0; c < ch; c++) { const d = b.getChannelData(c), s = voice(c);
+      for (let i = 0; i < n; i++) { const t = i / sr; d[i] = s(t) * Math.min(1, t * 6000, (sec - t) * 50); } }
+    return b;
+  };
+  return { sr, TAU, nz, biq, dec, metal, mk };
+}
+const KIT = {
+  // 킥: 두 단계 피치(260→51Hz) + 1ms 틱 + tanh 포화(폰 스피커에서도 들리는 배음) + 3.8k 비터 클릭
+  kick(D, o) { const { sr, TAU, nz, biq, dec, mk } = D;
+    return mk(o.len, 1, () => { let ph = 0; const cf = biq("bp", 3800, .8), ce = dec(.005), pe = dec(o.pt), te = dec(.0012), ae = dec(o.dec);
+      return t => { const f = o.f1 + (o.f0 - o.f1) * pe() + 700 * te(); ph += TAU * f / sr;
+        const env = t < o.hold ? 1 : ae();
+        return Math.tanh(Math.sin(ph) * env * o.drive) / Math.tanh(o.drive) + cf(nz()) * ce() * o.click; }; }); },
+  // 탐: 두 모드(f, 1.5f) + 약한 드라이브 + 스틱 노이즈
+  tom(D, o) { const { sr, TAU, nz, biq, dec, mk } = D;
+    return mk(.55, 1, () => { let a = 0, b2 = 0; const n = biq("bp", 1200, .8), pe = dec(.07), e1 = dec(.05), e2 = dec(.16), e3 = dec(.01);
+      return () => { const f = o.f2 + (o.f1 - o.f2) * pe(); a += TAU * f / sr; b2 += TAU * f * 1.5 / sr;
+        return Math.tanh((Math.sin(a) + .3 * Math.sin(b2) * e1()) * e2() * 1.6) / 1.1 + n(nz()) * .5 * e3(); }; }); },
+  // 림: 짧은 두 모드 나무 소리(820Hz 사각파 대신)
+  rim(D) { const { sr, TAU, nz, biq, dec, mk } = D;
+    return mk(.09, 1, () => { let a = 0, b2 = 0; const h = biq("hp", 2000, .7), e1 = dec(.012), e2 = dec(.006);
+      return () => { a += TAU * 1700 / sr; b2 += TAU * 520 / sr; return (Math.sin(a) * .6 + Math.sin(b2) * .5) * e1() + h(nz()) * .5 * e2(); }; }); },
+  // 셰이커: 느린 어택 + 대역 노이즈, L/R 따로
+  shaker(D) { const { nz, biq, dec, mk } = D;
+    return mk(.14, 2, () => { const b = biq("bp", 7200, 1.3), e = dec(.03); return t => b(nz()) * 2 * Math.min(1, t / .014) * e(); }); },
+  // 스네어: 막 모드 두 개(f, 1.63f) + 와이어(HP→LP 노이즈) + 크랙(BP 4.5k) + 짧은 룸 꼬리. L/R 노이즈가 달라 넓다
+  snare(D, o) { const { sr, TAU, nz, biq, dec, mk } = D;
+    return mk(o.len, 2, () => { let p1 = 0, p2 = 0; const hN = biq("hp", o.nh, .7), lN = biq("lp", 12000, .7), bN = biq("bp", 4500, 1.2), rN = biq("lp", 6500, .7);
+      const e1 = dec(.01), eT = dec(o.td), eN = dec(o.nd), eC = dec(.012), eR = dec(.12), eRa = dec(.015);
+      return () => { p1 += TAU * o.f * (1 + .6 * e1()) / sr; p2 += TAU * o.f * 1.63 / sr;
+        const n = nz(), s = (Math.sin(p1) + .45 * Math.sin(p2)) * eT() * o.tone + lN(hN(n)) * eN() * o.wire
+          + bN(n) * 2.2 * eC() * o.crack + rN(nz()) * eR() * (1 - eRa()) * o.room;
+        return Math.tanh(s * 1.5) / 1.3; }; }); },
+  // 클랩: 불규칙 간격 4연타(서로 다른 노이즈) + 꼬리. 채널마다 간격이 달라 퍼진다 — 콤 필터 없음
+  clap(D, o) { const { nz, biq, mk } = D;
+    return mk(.55, 2, c => { const b = biq("bp", 1250, 1.1), h = biq("hp", 3000, .7), offs = c ? [0, .0095, .0215, .031] : [0, .0115, .019, .0285];
+      return t => { let e = 0; for (let k = 0; k < 4; k++) { const u = t - offs[k]; if (u >= 0) e += Math.exp(-u / (k < 3 ? .0038 : o.tail)); }
+        const n = nz(); return (b(n) * 1.6 + h(n) * .45) * e; }; }); },
+  // 햇: 금속 클러스터(BP→HP) + 약간의 노이즈, L/R 0.4% 디튠으로 폭
+  hat(D, o) { const { nz, biq, dec, metal, mk } = D;
+    return mk(o.dec * 5 + .02, 2, c => { const b = biq("bp", o.bp, 1.1), h = biq("hp", 7000, .7), h2 = biq("hp", 8000, .7), m = metal(c ? 1.004 : .996), e = dec(o.dec);
+      return () => (h(b(m())) * o.mix + h2(nz()) * (1 - o.mix)) * e() * 2.2; }); },
+  // 크래시: 높은 금속 비율 + 노이즈, 두 단계 감쇠(때림 60ms + 워시 550ms), L/R 따로
+  crash(D) { const { nz, biq, dec, metal, mk } = D;
+    return mk(2, 2, c => { const b = biq("bp", 7000, .6), h = biq("hp", 4500, .7), m = metal(c ? 1.87 : 1.83), e1 = dec(.06), e2 = dec(.55);
+      return () => (b(m()) * .9 + h(nz()) * .7) * (.55 * e1() + .45 * e2()) * 1.4; }); },
+  // 라이드: 종 배음 6개 + 금속 워시 + 스틱 노이즈
+  ride(D) { const { sr, TAU, nz, biq, dec, metal, mk } = D, RF = [510, 737, 1033, 1560, 2380, 3610], RA = [1, .7, .55, .4, .3, .25];
+    return mk(1.4, 2, c => { const ph = new Float64Array(6), inc = RF.map(f => TAU * f * (c ? 1.002 : 1) / sr), b = biq("bp", 6500, .7), b2 = biq("bp", 6500, .7), m = metal(1.4), e1 = dec(.35), e2 = dec(.45), e3 = dec(.05);
+      return () => { let s = 0; for (let j = 0; j < 6; j++) { ph[j] += inc[j]; s += Math.sin(ph[j]) * RA[j]; }
+        return s * .12 * e1() + b(m()) * .7 * e2() + b2(nz()) * .15 * e3(); }; }); }
+};
+function kitParams(P) {
+  const g = P.genre, soft = ["jazz","bossa","ballad","waltz","kids","lofi"].includes(g), rock = g === "rock" || g === "citypop", has808 = P.bassInst === "bass808";
+  return {
+    // 808이 서브를 맡으면 킥은 짧고 단단하게. tanh 뒤라 실제 꼬리는 dec보다 길다 → 팝/EDM도 다음 박 전에 -18dB 아래로
+    kick: soft ? { f0: 150, f1: 56, pt: .03, hold: .01, dec: .12, drive: 1.2, click: .12, len: .45 }
+        : rock ? { f0: 190, f1: 58, pt: .025, hold: .015, dec: .13, drive: 1.8, click: .45, len: .5 }
+        : { f0: 260, f1: g === "edm" ? 47 : 51, pt: .028, hold: has808 ? .02 : .03, dec: has808 ? .11 : .12, drive: 2.6, click: .3, len: has808 ? .7 : .55 },
+    snare: soft ? { f: 190, td: .05, tone: .5, nh: 1800, nd: .09, wire: .7, crack: .2, room: .08, len: .45 }
+         : rock ? { f: 185, td: .09, tone: .75, nh: 1400, nd: .16, wire: .8, crack: .5, room: .15, len: .6 }
+         : { f: 200, td: .045, tone: .6, nh: 2200, nd: .11, wire: .85, crack: .55, room: .22, len: .6 },
+    clap: { tail: soft ? .06 : .11 },
+    hat: { dec: soft ? .022 : .028, bp: soft ? 9000 : 10500, mix: .6 }, hatS: { dec: .017, bp: 9000, mix: .5 }, ohat: { dec: .16, bp: 10000, mix: .55 },
+    tomH: { f1: 230, f2: 150 }, tomL: { f1: 150, f2: 95 }
+  };
+}
+const KIT_OF = { hatS: "hat", ohat: "hat", tomH: "tom", tomL: "tom" };
+function kitBuf(g, name) {                                            // 샘플레이트·실제 파라미터가 같으면 한 번만 굽는다(시드 고정 = 결정적)
+  const o = kitParams(g.P)[name], key = `${g.ctx.sampleRate}|${name}|${JSON.stringify(o)}`;
+  if (!KIT_CACHE[key]) KIT_CACHE[key] = KIT[KIT_OF[name] || name](kitDSP(g.ctx, hashStr(name) ^ 0x5eed), o);
+  return KIT_CACHE[key];
+}
+function hit(g, out, name, t, v, rate) {                              // 잔향은 드럼 트랙 센드로(드럼별 레인은 나중에)
+  const s = g.ctx.createBufferSource(), a = g.ctx.createGain();
+  s.buffer = kitBuf(g, name); if (rate) s.playbackRate.value = rate; a.gain.value = v;
+  s.connect(a).connect(out);
+  s.start(t); s.onended = () => { try { a.disconnect(); } catch (e) {} };
+  return { a, t, v };
+}
+function prewarmKit(g, song) {                                       // 재생 전에 구워 둔다(첫 박이 늦지 않게)
+  if (g.chip) return;
+  const names = new Set(song.events.filter(e => e.tr === "drum" && KIT[KIT_OF[e.p] || e.p]).map(e => e.p));
+  if (names.has("hat")) names.add("hatS");
+  for (const n of names) kitBuf(g, n);
+}
+
 /* ---- 드럼 ---- */
 function drumNoise(g, out, t, v, filt, decay, atk) {
   const n = noiseSrc(g, g.chip); const amp = g.ctx.createGain();
@@ -1597,7 +1701,8 @@ function drumNoise(g, out, t, v, filt, decay, atk) {
   amp.gain.setValueAtTime(1e-4, t); amp.gain.linearRampToValueAtTime(v, t + (atk || .002)); amp.gain.setTargetAtTime(1e-4, t + (atk || .002), decay / 4);
   n.start(t); n.stop(t + decay * 1.3 + .05); n.onended = () => amp.disconnect();
 }
-const DRUM = {
+// 예전 오실레이터 드럼 — 칩튠(NES 소리)과 시네마틱 boom/timp는 이것을 그대로 쓴다
+const DRUM_OSC = {
   kick(g, out, t, v) {
     const o = g.ctx.createOscillator(); o.type = g.chip ? "triangle" : "sine"; const amp = g.ctx.createGain();
     const big = g.P.genre === "edm" || g.P.genre === "hiphop";
@@ -1645,8 +1750,8 @@ const DRUM = {
     amp.connect(hp(g, 3000)).connect(out); os[0].onended = () => amp.disconnect();
   },
   crash(g, out, t, v) { drumNoise(g, out, t, v * .28, hp(g, 4200), 1.3, .004); },
-  tomH(g, out, t, v) { DRUM._tom(g, out, t, v, 210, 120); },
-  tomL(g, out, t, v) { DRUM._tom(g, out, t, v, 140, 80); },
+  tomH(g, out, t, v) { DRUM_OSC._tom(g, out, t, v, 210, 120); },
+  tomL(g, out, t, v) { DRUM_OSC._tom(g, out, t, v, 140, 80); },
   _tom(g, out, t, v, f1, f2) {
     const o = g.ctx.createOscillator(); o.type = "sine"; const amp = g.ctx.createGain();
     o.frequency.setValueAtTime(f1, t); o.frequency.exponentialRampToValueAtTime(f2, t + .18);
@@ -1655,6 +1760,27 @@ const DRUM = {
     drumNoise(g, out, t, v * .2, bp(g, 900, .7), .06);
   },
   shaker(g, out, t, v) { drumNoise(g, out, t, v * .22, bp(g, 6800, 1.5), .05, .012); }
+};
+// 구운 키트 — 타격마다 노드 두 개. 칩튠은 예전 NES 드럼을 그대로
+const DRUM = {
+  kick(g, out, t, v)   { g.chip ? DRUM_OSC.kick(g, out, t, v) : hit(g, out, "kick", t, v * .45); },
+  tomH(g, out, t, v)   { g.chip ? DRUM_OSC.tomH(g, out, t, v) : hit(g, out, "tomH", t, v * .4); },   // 칩튠 필에도 탐이 나온다
+  tomL(g, out, t, v)   { g.chip ? DRUM_OSC.tomL(g, out, t, v) : hit(g, out, "tomL", t, v * .4); },
+  rim(g, out, t, v)    { hit(g, out, "rim", t, v * .22); },
+  shaker(g, out, t, v) { hit(g, out, "shaker", t, v * .14); },
+  // 스네어: 고스트(v<.5)는 살짝 느리게 = 조금 어둡게
+  snare(g, out, t, v)  { g.chip ? DRUM_OSC.snare(g, out, t, v) : hit(g, out, "snare", t, v * .3, v < .5 ? .96 : 1); },
+  clap(g, out, t, v)   { hit(g, out, "clap", t, v * .22); },
+  // 햇: 여린 16분은 짧고 어두운 hatS. 같은 스텝(휴먼라이즈 ±3.5ms)의 닫힌 햇은 열린 햇을 끊지 않고, 다음 스텝 햇이 끊는다(페달)
+  hat(g, out, t, v) {
+    if (g.chip) return DRUM_OSC.hat(g, out, t, v);
+    if (g.oh && t - g.oh.t > .03) { const p = g.oh.a.gain; p.setValueAtTime(g.oh.v, t); p.setTargetAtTime(0, t, .012); g.oh = null; }
+    hit(g, out, v < .45 ? "hatS" : "hat", t, v * .2);
+  },
+  ohat(g, out, t, v)   { g.oh = hit(g, out, "ohat", t, v * .14); },
+  ride(g, out, t, v)   { hit(g, out, "ride", t, v * .25); },
+  crash(g, out, t, v)  { g.chip ? DRUM_OSC.crash(g, out, t, v) : hit(g, out, "crash", t, v * .22); },   // 칩튠 후렴에도 크래시가 나온다
+  boom: DRUM_OSC.boom, timp: DRUM_OSC.timp
 };
 /* ---- 전환 효과음: 후렴을 끌어올리는 라이저와 내리꽂는 임팩트 ---- */
 const FX = {
@@ -1822,6 +1948,7 @@ function startPlayback(song, fromSec) {
   stopPlayback(true);
   const ctx = new (window.AudioContext || window.webkitAudioContext)();
   const g = buildGraph(ctx, song);
+  prewarmKit(g, song);                                     // t0보다 먼저 — 굽는 시간이 첫 박을 먹지 않게
   player.ctx = ctx; player.g = g; player.song = song; player.playing = true; player.paused = false;
   player.offset = fromSec || 0;
   const t0 = ctx.currentTime + .12;
@@ -1862,6 +1989,7 @@ async function renderWav(song, onProgress) {
   const sr = 44100, len = Math.ceil(sr * song.duration);
   const ctx = new OfflineAudioContext(2, len, sr);
   const g = buildGraph(ctx, song);
+  prewarmKit(g, song);
   startAmbience(g, 0, song.duration);
   const OFF = .05, CH = .5, evs = song.events;
   let i = 0, err = null;
