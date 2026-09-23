@@ -27,6 +27,9 @@
     --ink:#191F28;
     --ink-2:#4E5968;
     --ink-3:#8B95A1;
+    /* 작은 안내 글씨용 회색. --ink-3 은 회색 바탕 2.8:1·흰 바탕 3.0:1 이라 11~12px 로는 흐리다.
+       이건 회색(--bg) 바탕 4.2:1, 흰 바탕 4.6:1. 장식·비활성(잠긴 칸, 못 사는 버튼)은 그대로 --ink-3 */
+    --ink-3s:#6B7684;
     --line:#E5E8EB;
     --blue:#3182F6;
     --blue-weak:#E8F3FF;
@@ -61,7 +64,7 @@
   .brand{flex:1;min-width:0;line-height:1.2}
   .brand b{display:block;font-size:15px;font-weight:800;letter-spacing:-.03em;
     white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-  .brand span{display:block;font-size:11px;font-weight:600;color:var(--ink-3);
+  .brand span{display:block;font-size:11px;font-weight:600;color:var(--ink-3s);
     white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
   .icon-btn{
     width:34px;height:34px;flex:0 0 auto;border:0;border-radius:11px;
@@ -71,19 +74,35 @@
   .icon-btn:active{transform:scale(.94)}
 
   /* ── 목표 · 남은 공 ────────────────────── */
-  .status{flex:0 0 auto;display:flex;align-items:center;gap:7px;padding:0 16px 7px;flex-wrap:wrap}
+  /* 한 줄 고정. 예전엔 줄바꿈을 허용해서 360px 폰에서 🔥연속 칩이 뜨는 순간 두 줄이 되고,
+     그만큼 코트가 줄어 판 전체가 슛 사이에 확대·축소됐다(같은 길이를 끌어도 힘이 10% 안팎 달라짐).
+     높이는 칩(글줄 17 + 위아래 6) 29 + 아래 여백 7. 예전 한 줄 높이 그대로라 넓은 폰에선 코트가 안 바뀐다 */
+  .status{flex:0 0 auto;display:flex;align-items:center;gap:7px;padding:0 16px 7px;
+    flex-wrap:nowrap;height:36px;overflow:hidden}
+  /* 넘치는 칩은 가로로만 자른다. hidden 은 세로로도 잘라 칩 그림자 위아래가 끊긴다 */
+  @supports (overflow:clip){ .status{overflow:visible;overflow-x:clip} }
   .chip{
     display:flex;align-items:center;gap:5px;background:var(--card);box-shadow:var(--shadow);
     border-radius:10px;padding:6px 10px;font-size:12.5px;font-weight:700;letter-spacing:-.02em;
     color:var(--ink-2);transition:background .2s,color .2s;
+    flex:0 0 auto;white-space:nowrap;line-height:17px;
   }
   .chip i{font-style:normal;font-size:12px}
   .chip b{font-variant-numeric:tabular-nums;color:var(--ink)}
+  .chip .need{color:var(--ink-3s)}
   .chip.done{background:var(--green-weak);color:var(--green)}
   .chip.done b{color:var(--green)}
   .chip.pop{animation:bump .22s}
   @keyframes bump{50%{transform:scale(1.13)}}
-  .chip.score{margin-left:auto;background:transparent;box-shadow:none;padding-right:0}
+  /* 자리가 모자라면 점수 칩만 줄어든다 */
+  .chip.score{margin-left:auto;background:transparent;box-shadow:none;padding-right:0;
+    flex:0 1 auto;min-width:0;overflow:hidden}
+  /* 375px 미만(360·320 폰)은 글자 이름을 빼고 아이콘과 숫자만. 글자는 DOM 에 남아 화면 읽기는 그대로 */
+  @media (max-width:374px){
+    .chip .lab{display:none}
+    .chip{padding:6px 8px;gap:4px}
+    .status{gap:5px}
+  }
 
   .balls{display:flex;align-items:center;gap:3px;padding:0 16px 8px;min-height:14px}
   .balls i{
@@ -91,7 +110,7 @@
     background:linear-gradient(160deg,#FF9B5E,#E9520F);transition:opacity .2s,transform .2s;
   }
   .balls i.used{opacity:.2;transform:scale(.7)}
-  .balls u{font-size:10.5px;color:var(--ink-3);font-weight:700;text-decoration:none;margin-left:5px}
+  .balls u{font-size:10.5px;color:var(--ink-3s);font-weight:700;text-decoration:none;margin-left:5px}
 
   /* ── 남은 시간 ─────────────────────────── */
   .timer{flex:0 0 auto;display:flex;align-items:center;gap:9px;padding:0 16px 8px}
@@ -100,7 +119,7 @@
   .track i{display:block;height:100%;border-radius:99px;background:var(--blue);
     transform-origin:left center;transform:scaleX(1)}
   .track i.low{background:var(--red)}
-  .timer span{flex:0 0 auto;font-size:12px;font-weight:700;color:var(--ink-3);
+  .timer span{flex:0 0 auto;font-size:12px;font-weight:700;color:var(--ink-3s);
     font-variant-numeric:tabular-nums;min-width:38px;text-align:right}
   /* 반복 횟수를 정해 둔다. infinite 면 '모션 줄이기'의 .01ms 규칙 아래서 매 프레임 크기가 튄다 */
   .timer.buzz span{color:var(--red-ink);font-weight:800;animation:bump .4s 3}
@@ -115,7 +134,7 @@
     background:linear-gradient(180deg,var(--field-top),var(--field-bottom));
     box-shadow:inset 0 0 0 1px rgba(25,31,40,.06), var(--shadow);
   }
-  .hint{flex:0 0 auto;text-align:center;font-size:11.5px;color:var(--ink-3);
+  .hint{flex:0 0 auto;text-align:center;font-size:11.5px;color:var(--ink-3s);
     font-weight:600;padding:8px 16px calc(8px + env(safe-area-inset-bottom))}
   .hint.armed{color:var(--blue)}
 
@@ -149,7 +168,7 @@
   .ware i{font-style:normal;font-size:24px;flex:0 0 auto;width:30px;text-align:center}
   .ware .what{flex:1;min-width:0}
   .ware .what b{display:block;font-size:14px;font-weight:800;letter-spacing:-.02em}
-  .ware .what span{display:block;font-size:11.5px;color:var(--ink-3);font-weight:600;line-height:1.4}
+  .ware .what span{display:block;font-size:11.5px;color:var(--ink-3s);font-weight:600;line-height:1.4}
   .ware .own{font-size:11px;color:var(--ink-2);font-weight:700;white-space:nowrap}
   .buy{flex:0 0 auto;border:0;border-radius:10px;background:var(--blue);color:#fff;font-family:inherit;
     font-weight:800;font-size:12.5px;padding:8px 10px;cursor:pointer;white-space:nowrap;
@@ -178,7 +197,7 @@
   .sheet p{font-size:13.5px;color:var(--ink-2);line-height:1.65;font-weight:500}
   .sheet .big{font-size:40px;font-weight:800;letter-spacing:-.05em;margin:10px 0 2px;
     font-variant-numeric:tabular-nums;color:var(--blue)}
-  .sheet .sub{font-size:12.5px;color:var(--ink-3);font-weight:600;margin-bottom:18px}
+  .sheet .sub{font-size:12.5px;color:var(--ink-3s);font-weight:600;margin-bottom:18px}
   .btns{display:flex;flex-direction:column;gap:8px;margin-top:18px}
   .btn{
     width:100%;border:0;border-radius:14px;padding:14px;cursor:pointer;
@@ -262,17 +281,19 @@
 </div>
 
 <div id="court">
-  <canvas id="field"></canvas>
+  <canvas id="field" role="img" aria-label="농구 코트"></canvas>
 </div>
 
 <div class="items bar off" id="itemBar" aria-label="아이템"></div>
 <div class="hint" id="hint">골대 쪽으로 스와이프하면 공이 날아가요</div>
-<div id="toast"></div>
+<div id="toast" role="status" aria-live="polite"></div>
 
+<!-- 시트는 전부 role=dialog + aria-labelledby(시트의 h2). 화면 읽기가 시트가 뜬 걸 알고 제목으로 부른다.
+     뒤쪽(헤더·코트·아이템 막대)은 시트가 떠 있는 동안 syncBehind 가 inert 로 둔다 -->
 <!-- 시작 -->
 <div class="veil show" id="vStart">
-  <div class="sheet">
-    <h2>한 손 농구</h2>
+  <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="hStart">
+    <h2 id="hStart">한 손 농구</h2>
     <p>공을 골대 쪽으로 스와이프하면 던져져요.<br>아이템을 모아 12개 스테이지를 깨 보세요.</p>
     <div class="pts">
       <div class="pt"><em>2점</em><span>림이나 백보드를 맞고 들어가면</span></div>
@@ -294,8 +315,8 @@
 
 <!-- 스테이지 목록 -->
 <div class="veil" id="vStages">
-  <div class="sheet">
-    <h2>스테이지</h2>
+  <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="hStages">
+    <h2 id="hStages">스테이지</h2>
     <p id="stagesSub">별 0개 / 36개</p>
     <div class="grid" id="stageGrid"></div>
     <div class="btns">
@@ -309,7 +330,7 @@
 
 <!-- 스테이지 시작 안내 -->
 <div class="veil" id="vIntro">
-  <div class="sheet">
+  <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="introTitle">
     <h2 id="introTitle">스테이지 1</h2>
     <p id="introHint">골대 쪽으로 스와이프!</p>
     <div class="pts" id="introGoals"></div>
@@ -319,19 +340,19 @@
 
 <!-- 상점 -->
 <div class="veil" id="vShop">
-  <div class="sheet">
-    <h2>상점</h2>
+  <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="hShop">
+    <h2 id="hShop">상점</h2>
     <div class="wallet" id="shopWallet">🪙 0</div>
     <div class="shop" id="shopList"></div>
-    <p style="margin-top:12px;font-size:12px;color:var(--ink-3)">코인은 동전을 줍거나 스테이지를 깨면 모여요.</p>
+    <p style="margin-top:12px;font-size:12px;color:var(--ink-3s)">코인은 동전을 줍거나 스테이지를 깨면 모여요.</p>
     <div class="btns"><button class="btn ghost" id="btnShopClose">닫기</button></div>
   </div>
 </div>
 
 <!-- 게임 방법 -->
 <div class="veil" id="vHow">
-  <div class="sheet">
-    <h2>게임 방법</h2>
+  <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="hHow">
+    <h2 id="hHow">게임 방법</h2>
     <div class="rules">
       <div class="rule"><b>1</b><span>화면을 누른 채 던질 방향으로 끌면 예상 궤적이 점으로 보여요. 손을 떼면 그대로 날아가요.</span></div>
       <div class="rule"><b>2</b><span>스테이지마다 목표와 공 개수가 정해져 있어요. 공을 다 쓰기 전에 목표를 채우면 클리어예요.</span></div>
@@ -347,8 +368,8 @@
 
 <!-- 일시정지 -->
 <div class="veil" id="vPause">
-  <div class="sheet">
-    <h2>잠시 멈췄어요</h2>
+  <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="hPause">
+    <h2 id="hPause">잠시 멈췄어요</h2>
     <p>다른 화면에 다녀오셨네요.<br>이어서 계속할 수 있어요.</p>
     <div class="btns"><button class="btn primary" id="btnResume">이어하기</button></div>
   </div>
@@ -356,7 +377,7 @@
 
 <!-- 클리어 -->
 <div class="veil" id="vClear">
-  <div class="sheet">
+  <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="clearTitle">
     <h2 id="clearTitle">클리어!</h2>
     <div class="stars" id="clearStars"><i>★</i><i>★</i><i>★</i></div>
     <div class="big" id="clearScore">0</div>
@@ -375,7 +396,7 @@
 
 <!-- 실패 -->
 <div class="veil" id="vFail">
-  <div class="sheet">
+  <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="failTitle">
     <h2 id="failTitle">공이 다 떨어졌어요</h2>
     <p id="failSub">목표 3골 중 1골</p>
     <div class="btns">
@@ -387,7 +408,7 @@
 
 <!-- 타임어택 결과 -->
 <div class="veil" id="vOver">
-  <div class="sheet">
+  <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="overTitle">
     <h2 id="overTitle">경기 끝!</h2>
     <div class="big" id="overScore">0</div>
     <div class="sub" id="overSub">최고 기록 0점</div>
@@ -403,8 +424,8 @@
 
 <!-- 종료 확인 -->
 <div class="veil" id="vExit">
-  <div class="sheet">
-    <h2>게임을 나갈까요?</h2>
+  <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="hExit">
+    <h2 id="hExit">게임을 나갈까요?</h2>
     <p>진행 중인 스테이지는 저장되지 않아요.<br>깬 스테이지와 별은 그대로 남아요.</p>
     <div class="btns">
       <div class="row">
@@ -417,7 +438,7 @@
 
 <!-- 루프가 계속 예외를 낼 때 -->
 <div class="veil" id="vError">
-  <div class="sheet">
+  <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="hError">
     <h2 id="hError">문제가 생겼어요</h2>
     <p id="errMsg">게임을 멈췄어요.<br>이 판을 다시 하거나<br>처음으로 돌아갈 수 있어요.</p>
     <div class="btns">
@@ -583,7 +604,11 @@ function layout() {
 function resize() {
   var rect = courtEl.getBoundingClientRect();
   if (rect.width < 2 || rect.height < 2) return false;
-  dpr = Math.min(window.devicePixelRatio || 1, 2.5);
+  // 크기가 바뀌면(캔버스를 새로 잡으면 그림이 지워진다) 시트가 떠 있어도 한 번은 다시 그린다
+  veilDrawn = false;
+  // 2배까지만. 3배 폰에서 2.5배 대신 2배로 그리면 픽셀이 36% 줄고, 선·글자 차이는 거의 안 보인다.
+  // 매 프레임 전체를 다시 그리는 캔버스라 픽셀 수가 곧 배터리다.
+  dpr = Math.min(window.devicePixelRatio || 1, 2);
   // 코트 비율을 지키면서 들어갈 수 있는 가장 큰 크기
   var fit = Math.min(rect.width / FW, rect.height / FH);
   var cssW = Math.floor(FW * fit), cssH = Math.floor(FH * fit);
@@ -705,6 +730,23 @@ var deadTimer = -1;      // 0 이상이면 다음 공까지 남은 시간
 var bobT = 0;
 var netSway = 0, flash = 0, shake = 0;
 var pops = [], sparks = [], trail = [], gusts = [];
+// 효과 입자는 반드시 spark()·pushPop() 으로만 넣는다. 상한이 있어야 효과를 얹는 패키지가 늘어도
+// 한 프레임에 그리는 양이 묶인다(폰에서 입자 수백 개면 그리기만으로 프레임이 밀린다).
+// 꽉 차면 가장 오래된 것(곧 사라질 것)부터 버린다.
+var MAX_SPARKS = 140, MAX_POPS = 8;
+function spark(x, y, vx, vy, life, c) {
+  if (sparks.length >= MAX_SPARKS) sparks.shift();
+  sparks.push({ x: x, y: y, vx: vx, vy: vy, life: life, c: c });
+}
+function pushPop(p) {
+  if (pops.length >= MAX_POPS) pops.shift();
+  pops.push(p);
+}
+// 연속 골 배지(코트 위 가운데). 예전엔 목표 칩 줄에 '🔥 연속' 칩을 붙였다 뗐다 해서 좁은 폰에서
+// 줄이 두 줄이 되고 코트 크기가 바뀌었다. 연속이 바뀌는 순간 comboPop 만큼 커졌다 돌아온다.
+var comboShown = 0, comboPop = 0;
+// 목표 칩의 지난 값. 바뀐 칩만 통 튀게(.pop) 한다
+var chipPrev = {};
 // 시간이 0초가 됐을 때 이미 날아가던 공이 있으면 끝까지 지켜본다(버저비터)
 var buzzer = false;
 // 루프가 멈추지 않게 지키는 장치들의 기록 (페이지를 새로 열 때까지 누적)
@@ -890,6 +932,7 @@ function step() {
       checkScore();
       if (combo >= FIRE_COMBO || shotItem === "fire") {
         trail.push({ x: ball.x, y: ball.y, life: 0.3, r: R * (0.5 + Math.random() * 0.4) });
+        if (trail.length > 30) trail.shift();   // 평소엔 수명 0.3초라 18개 안팎. 상한은 보험
       }
     }
     if (!ballOk()) {
@@ -939,8 +982,8 @@ function step() {
     if (deadTimer <= 0) afterShot();
   }
 
-  // 바람 표시용 흐르는 선 (얼음이면 멈춘다)
-  if (curWind() !== 0 && Math.random() < 0.18) {
+  // 바람 표시용 흐르는 선 (얼음이면 멈춘다). 평소 12개 안팎이라 24개면 넉넉하다
+  if (curWind() !== 0 && Math.random() < 0.18 && gusts.length < 24) {
     gusts.push({ x: wind > 0 ? -20 : FW + 20, y: 40 + Math.random() * (FLOOR - 80),
                  life: 1.1, len: 18 + Math.random() * 26 });
   }
@@ -954,6 +997,9 @@ function step() {
   if (netSway > 0) netSway = Math.max(0, netSway - FIXED * 2.2);
   if (flash > 0) flash = Math.max(0, flash - FIXED * 2.5);
   if (shake > 0) shake = Math.max(0, shake - FIXED * 6);
+  if (comboPop > 0) comboPop = Math.max(0, comboPop - FIXED);
+  // 연속이 바뀐 스텝(골·빗나감)에 배지를 한 번 튀긴다. 판이 바뀔 때는 beginStage 가 지운다
+  if (combo !== comboShown) { comboShown = combo; comboPop = 0.18; }
 
   for (var i = pops.length - 1; i >= 0; i--) {
     var p = pops[i];
@@ -1094,10 +1140,10 @@ function grabBubbles() {
     saveInv();
     sfx.item();
     var it = ITEMS[b.item];
-    pops.push({ x: b.x, y: b.y - 8, life: 1.1, txt: it.icon, sub: it.name + " 획득!", swish: true });
+    pushPop({ x: b.x, y: b.y - 8, life: 1.1, txt: it.icon, sub: it.name + " 획득!", swish: true });
     for (var k = 0; k < 12; k++) {
-      sparks.push({ x: b.x, y: b.y, vx: (Math.random() * 2 - 1) * 2.4, vy: -Math.random() * 2.2 - 0.4,
-                    life: 0.45 + Math.random() * 0.3, c: "#6FB4FF" });
+      spark(b.x, b.y, (Math.random() * 2 - 1) * 2.4, -Math.random() * 2.2 - 0.4,
+            0.45 + Math.random() * 0.3, "#6FB4FF");
     }
     paintItems();
   }
@@ -1115,8 +1161,8 @@ function grabCoins() {
     addWallet(1);
     sfx.coin(stage.coins);
     for (var k = 0; k < 7; k++) {
-      sparks.push({ x: c.x, y: c.y, vx: (Math.random() * 2 - 1) * 2, vy: -Math.random() * 2 - 0.3,
-                    life: 0.4 + Math.random() * 0.25, c: "#FFB020" });
+      spark(c.x, c.y, (Math.random() * 2 - 1) * 2, -Math.random() * 2 - 0.3,
+            0.4 + Math.random() * 0.25, "#FFB020");
     }
     paintGoals();
   }
@@ -1156,18 +1202,14 @@ function made() {
   if (combo === FIRE_COMBO || buzzer) sfx.fire();
 
   var tag = ball.gold ? "황금 공 ×3" : (shotItem === "fire" ? "불공 ×2" : "");
-  pops.push({ x: hoop.x, y: hoop.y + 84, life: 0.95, txt: "+" + pts,
-              sub: buzzer ? "버저비터!" : (tag || (swish ? "스윔!" : (bonus ? "연속 " + combo : ""))),
-              swish: swish || mult > 1 || buzzer });
+  pushPop({ x: hoop.x, y: hoop.y + 84, life: 0.95, txt: "+" + pts,
+            sub: buzzer ? "버저비터!" : (tag || (swish ? "스윔!" : (bonus ? "연속 " + combo : ""))),
+            swish: swish || mult > 1 || buzzer });
   for (var i = 0; i < (swish ? 16 : 10); i++) {
-    sparks.push({
-      x: hoop.x + (Math.random() * 2 - 1) * RIM,
-      y: hoop.y + 10,
-      vx: (Math.random() * 2 - 1) * 2.2,
-      vy: -Math.random() * 2.4 - 0.4,
-      life: 0.5 + Math.random() * 0.3,
-      c: swish ? "#FFB020" : "#FF6B2C"
-    });
+    // 인자는 앞에서부터 계산되니 난수를 뽑는 순서(x, y, vx, vy, life)는 예전 그대로다
+    spark(hoop.x + (Math.random() * 2 - 1) * RIM, hoop.y + 10,
+          (Math.random() * 2 - 1) * 2.2, -Math.random() * 2.4 - 0.4,
+          0.5 + Math.random() * 0.3, swish ? "#FFB020" : "#FF6B2C");
   }
   if (swish) sfx.swish();
   sfx.made(combo);
@@ -1180,7 +1222,9 @@ function made() {
 function endShot() {
   if (deadTimer >= 0) return;
   deadTimer = RESET_DELAY;
-  if (!scored && combo !== 0) { combo = 0; paintGoals(); }
+  // 연속은 이제 칩이 아니라 코트 위 배지(drawCombo)라 칩을 다시 쓸 일이 없다. 다시 쓰면 방금
+  // 동전을 먹고 튀던 칩의 애니메이션이 새 칩으로 갈리면서 끊긴다.
+  if (!scored) combo = 0;
 }
 
 function goalMet() {
@@ -1393,6 +1437,12 @@ window.addEventListener("pointerup", onUp);
 /* ══════════════════════════════════════════════════════════════
    10. 그리기
    ══════════════════════════════════════════════════════════════ */
+// 캔버스 글자 크기(코트 단위). 코트는 화면에 맞춰 줄어드니 320px 폰에선 12단위 글자가 5.5px 까지
+// 작아졌다. 화면에서 10px 밑으로는 안 내려가게 코트 단위로 되돌려 키운다.
+function fontPx(px) {
+  return Math.max(px, 10 * FW / (parseFloat(canvas.style.width) || FW));
+}
+
 function roundRect(x, y, w, h, r) {
   ctx.beginPath();
   ctx.moveTo(x + r, y);
@@ -1470,7 +1520,7 @@ function drawBubbles() {
     ctx.fillStyle = g;
     ctx.beginPath(); ctx.arc(b.x, y, BUBBLE_R, 0, Math.PI * 2); ctx.fill();
     ctx.strokeStyle = "rgba(49,130,246,.55)"; ctx.lineWidth = 1.6; ctx.stroke();
-    ctx.font = "17px 'Apple Color Emoji','Segoe UI Emoji','Noto Color Emoji',sans-serif";
+    ctx.font = fontPx(17) + "px 'Apple Color Emoji','Segoe UI Emoji','Noto Color Emoji',sans-serif";
     ctx.fillStyle = "#191F28";
     ctx.fillText(ITEMS[b.item].icon, b.x, y + 1);
   }
@@ -1661,12 +1711,15 @@ function drawBall() {
   // 기다리는 황금 공에는 배수를 적어 둔다
   if (ball.gold && !ball.live) {
     ctx.textAlign = "center";
-    ctx.font = "800 12px 'Pretendard',system-ui,sans-serif";
+    ctx.font = "800 " + fontPx(12) + "px 'Pretendard',system-ui,sans-serif";
     ctx.lineWidth = 3; ctx.lineJoin = "round";
+    // 글자를 키운 좁은 폰에선 왼쪽 끝(46)에 선 공 위 글자가 코트 밖으로 나간다
+    var gw = ctx.measureText("황금 공 ×3").width / 2 + 4;
+    var gx = Math.max(gw, Math.min(FW - gw, x));
     ctx.strokeStyle = "rgba(255,255,255,.9)";
-    ctx.strokeText("황금 공 ×3", x, y - R - 12);
+    ctx.strokeText("황금 공 ×3", gx, y - R - 12);
     ctx.fillStyle = "#B07800";
-    ctx.fillText("황금 공 ×3", x, y - R - 12);
+    ctx.fillText("황금 공 ×3", gx, y - R - 12);
   }
 }
 
@@ -1693,23 +1746,31 @@ function drawAim() {
 }
 
 function drawPops() {
+  var big = "800 " + fontPx(25) + "px 'Pretendard',system-ui,sans-serif";
+  var small = "800 " + fontPx(13) + "px 'Pretendard',system-ui,sans-serif";
+  var subDy = fontPx(13) + 5;          // 작은 줄이 커지면 큰 줄과 겹치지 않게 같이 내린다(보통 18)
   for (var i = 0; i < pops.length; i++) {
     var p = pops[i];
     var a = Math.min(1, p.life * 1.6);
     ctx.textAlign = "center";
     ctx.lineJoin = "round";
+    // 오른쪽 끝(366)에 선 골대의 '버저비터!'처럼 긴 줄이 코트 밖으로 잘리지 않게 안쪽으로 민다
+    ctx.font = big;
+    var w = ctx.measureText(p.txt).width;
+    if (p.sub) { ctx.font = small; w = Math.max(w, ctx.measureText(p.sub).width); }
+    var x = Math.max(w / 2 + 4, Math.min(FW - w / 2 - 4, p.x));
+    ctx.font = big;
     ctx.strokeStyle = "rgba(255,255,255," + (a * 0.9) + ")";
-    ctx.font = "800 25px 'Pretendard',system-ui,sans-serif";
     ctx.lineWidth = 4;
-    ctx.strokeText(p.txt, p.x, p.y);
+    ctx.strokeText(p.txt, x, p.y);
     ctx.fillStyle = (p.swish ? "rgba(233,120,0," : "rgba(25,31,40,") + a + ")";
-    ctx.fillText(p.txt, p.x, p.y);
+    ctx.fillText(p.txt, x, p.y);
     if (p.sub) {
-      ctx.font = "800 13px 'Pretendard',system-ui,sans-serif";
+      ctx.font = small;
       ctx.lineWidth = 3.5;
-      ctx.strokeText(p.sub, p.x, p.y + 18);
+      ctx.strokeText(p.sub, x, p.y + subDy);
       ctx.fillStyle = "rgba(255,107,44," + a + ")";
-      ctx.fillText(p.sub, p.x, p.y + 18);
+      ctx.fillText(p.sub, x, p.y + subDy);
     }
   }
   for (var j = 0; j < sparks.length; j++) {
@@ -1721,6 +1782,29 @@ function drawPops() {
     ctx.fill();
   }
   ctx.globalAlpha = 1;
+}
+
+// 연속 골 배지. 코트 위 가운데 띠(y 18~42)는 비어 있다(바람 화살표는 x 26~40·380~394).
+// 연속을 그리는 건 여기 한 곳뿐이다. 나중에 연속 단계별로 색을 바꿀 때도 여기만 고친다.
+function drawCombo() {
+  var fs = fontPx(14), h = fs + 12;
+  var txt = "🔥 " + combo + "연속";
+  ctx.save();
+  ctx.font = "800 " + fs + "px 'Pretendard',system-ui,sans-serif";
+  var w = ctx.measureText(txt).width + 24;
+  var k = 1 + comboPop;
+  ctx.translate(FW / 2, 30);
+  ctx.scale(k, k);
+  ctx.globalAlpha = 0.95;
+  ctx.fillStyle = "#FF6B2C";
+  roundRect(-w / 2, -h / 2, w, h, h / 2);
+  ctx.fill();
+  ctx.globalAlpha = 1;
+  ctx.fillStyle = "#FFFFFF";
+  ctx.textAlign = "center";
+  ctx.textBaseline = "middle";
+  ctx.fillText(txt, 0, 1);
+  ctx.restore();
 }
 
 function render() {
@@ -1747,6 +1831,7 @@ function render() {
     drawTrail();
     drawBall();
     drawPops();
+    if (stage.def && combo >= 2) drawCombo();
   }
 }
 
@@ -1764,27 +1849,34 @@ var hint = document.getElementById("hint");
 
 function comma(n) { return String(n).replace(/\B(?=(\d{3})+(?!\d))/g, ","); }
 
+// 이름(.lab)은 좁은 폰에서 CSS 로 숨긴다. 글자는 남겨서 화면 읽기와 textContent 는 그대로
 function chip(icon, label, now, need, cls) {
   var el = document.createElement("div");
   el.className = "chip" + (cls ? " " + cls : "");
-  el.innerHTML = '<i>' + icon + '</i>' + label + ' <b>' + now + '</b>' +
-                 (need ? '<span style="color:var(--ink-3)">/' + need + '</span>' : '');
+  el.innerHTML = '<i>' + icon + '</i><span class="lab">' + label + '</span> <b>' + now + '</b>' +
+                 (need ? '<span class="need">/' + need + '</span>' : '');
   return el;
 }
 
+// 칩은 매번 새로 만든다. 값이 바뀐 칩만 .pop 으로 한 번 튀긴다(바뀐 게 없이 다시 그리면 안 튄다).
+// chipPrev 는 beginStage 가 비운다. 안 비우면 새 판의 첫 칠에서 모든 칩이 튄다.
 function paintGoals() {
-  if (!stage.def) { goalChips.innerHTML = ""; return; }
+  if (!stage.def) { goalChips.innerHTML = ""; chipPrev = {}; return; }
   var g = stage.def.goal;
+  var now = { makes: stage.made, swish: stage.swish, coins: stage.coins, score: score };
+  function add(key, el) {
+    if (chipPrev[key] !== undefined && chipPrev[key] !== now[key]) el.classList.add("pop");
+    goalChips.appendChild(el);
+  }
   goalChips.innerHTML = "";
-  if (g.makes) goalChips.appendChild(chip("🏀", "골", Math.min(stage.made, g.makes), g.makes,
-                                          stage.made >= g.makes ? "done" : ""));
-  if (g.swish) goalChips.appendChild(chip("✨", "스윔", Math.min(stage.swish, g.swish), g.swish,
-                                          stage.swish >= g.swish ? "done" : ""));
-  if (g.coins) goalChips.appendChild(chip("🪙", "동전", Math.min(stage.coins, g.coins), g.coins,
-                                          stage.coins >= g.coins ? "done" : ""));
-  if (combo >= 2) goalChips.appendChild(chip("🔥", "연속", combo, 0, ""));
-  var sc = chip("", "점수", comma(score), 0, "score");
-  goalChips.appendChild(sc);
+  if (g.makes) add("makes", chip("🏀", "골", Math.min(stage.made, g.makes), g.makes,
+                                  stage.made >= g.makes ? "done" : ""));
+  if (g.swish) add("swish", chip("✨", "스윔", Math.min(stage.swish, g.swish), g.swish,
+                                  stage.swish >= g.swish ? "done" : ""));
+  if (g.coins) add("coins", chip("🪙", "동전", Math.min(stage.coins, g.coins), g.coins,
+                                  stage.coins >= g.coins ? "done" : ""));
+  add("score", chip("", "점수", comma(score), 0, "score"));
+  chipPrev = now;
 }
 
 function paintBalls() {
@@ -1821,6 +1913,7 @@ function paintTimer() {
 
 function veil(id, on) {
   document.getElementById(id).classList.toggle("show", !!on);
+  veilDrawn = false;                  // 시트 뒤 코트를 지금 상태로 한 번 다시 그린다
   syncBehind();
 }
 // 시트가 떠 있으면 그 뒤(헤더·코트·아이템 막대)를 inert 로 둔다. 손가락·마우스는 시트의 막(.veil)에
@@ -1844,6 +1937,7 @@ function anyVeilOpen() {
 function closeAllVeils() {
   var v = document.getElementsByClassName("veil");
   for (var i = 0; i < v.length; i++) v[i].classList.remove("show");
+  veilDrawn = false;
   syncBehind();
 }
 
@@ -2048,6 +2142,7 @@ function beginStage(def, idx) {
   bobT = 0; deadTimer = -1;
   netSway = 0; flash = 0; shake = 0;
   pops.length = 0; sparks.length = 0; trail.length = 0; gusts.length = 0;
+  comboShown = 0; comboPop = 0; chipPrev = {};
   placeProps(def);
   nextBall();
   stTitle.textContent = def.endless ? "타임어택" : ("스테이지 " + (idx + 1));
@@ -2153,7 +2248,7 @@ function paintFailSub() {
   var has = ITEM_KEYS.some(function (k) { return inv[k] > 0; });
   document.getElementById("failSub").innerHTML = txt.join(" · ") +
     (has ? "<br><span style=\"color:var(--blue)\">아래 아이템을 켜고 던지면 훨씬 쉬워져요</span>"
-         : "<br><span style=\"color:var(--ink-3)\">상점에서 아이템을 살 수 있어요 · 지갑 🪙 " + comma(wallet) + "</span>");
+         : "<br><span style=\"color:var(--ink-3s)\">상점에서 아이템을 살 수 있어요 · 지갑 🪙 " + comma(wallet) + "</span>");
 }
 
 function endTimeAttack() {
@@ -2267,6 +2362,7 @@ function doExit() {
   state = "ready";
   stage.def = null;
   score = 0; combo = 0; buzzer = false;
+  comboShown = 0; comboPop = 0;
   hasTime = false;
   bars.length = 0; coins.length = 0; bubbles.length = 0; wind = 0; RIM = RIM_BASE;
   pops.length = 0; sparks.length = 0; trail.length = 0; gusts.length = 0;
@@ -2326,6 +2422,11 @@ document.getElementById("btnOverShare").addEventListener("click", shareScore);
 var acc = 0;
 var last = performance.now();
 var tick = 0;
+// 시트 뒤 코트는 한 번만 그린다. 시트가 떠 있고 판이 진행 중이 아니면 step() 이 안 돌아 코트가
+// 그대로인데, 예전엔 흐린 막 뒤에서 초당 60번씩 같은 그림을 다시 그렸다(시작 화면에 켜 두기만 해도).
+// 시트를 열고 닫거나(veil) 크기가 바뀌면(resize) false 로 돌려 한 번 다시 그린다.
+var veilDrawn = false;
+var renders = 0;                      // 실제로 그린 횟수 (테스트용)
 
 function frame(now) {
   // 다음 프레임부터 예약한다. 예전엔 맨 끝에서 예약해서, 한 번이라도 예외가 나면
@@ -2346,7 +2447,12 @@ function frame(now) {
       if (++tick % 4 === 0 && hasTime) paintTimer();
     } catch (e) { acc = 0; loopError(e); }
   }
-  try { render(); } catch (e) { loopError(e); }
+  var covered = state !== "playing" && anyVeilOpen();
+  if (!covered || !veilDrawn) {
+    // 그리다 터지면 다 그린 것으로 치지 않는다. 반쯤 그린 코트가 시트 뒤에 남지 않게 다음
+    // 프레임에 다시 그리고, 매번 터지면 예전처럼 loopError 가 세다가 오류 시트를 띄운다.
+    try { render(); renders++; veilDrawn = covered; } catch (e) { loopError(e); }
+  }
 }
 
 // 루프 안에서 난 예외를 삼키고 게임을 이어 간다. 한두 번은 조용히 넘기되
@@ -2433,9 +2539,22 @@ window.__hoop = {
   step: step,
   setTime: function (t) { timeLeft = t; },
   setFlyT: function (n) { ball.flyT = n; },
-  // 'step' / 'render' 는 한 번만, 'stepAlways' / 'renderAlways' 는 끌 때까지 매번 예외를 낸다
-  fault: function (k) { faultMode = k || null; },
+  // 'step' / 'render' 는 한 번만, 'stepAlways' / 'renderAlways' 는 끌 때까지 매번 예외를 낸다.
+  // 시트 뒤에선 코트를 다시 안 그리니, 다음 프레임에 그리게 해야 'render' 가 실제로 터진다.
+  fault: function (k) { faultMode = k || null; veilDrawn = false; },
   starsAll: starsAll,
+  fontPx: fontPx,
+  perf: function () {
+    return { sparks: sparks.length, pops: pops.length, dpr: dpr, renders: renders };
+  },
+  paintGoals: paintGoals,
+  // 상한 검사용: 코트 가운데에 불꽃·점수 글자를 n개 넣는다
+  sparkTest: function (n) {
+    for (var i = 0; i < n; i++) spark(FW / 2, FH / 2, (Math.random() * 2 - 1) * 2, -Math.random() * 2, 0.6, "#FFB020");
+  },
+  popTest: function (n) {
+    for (var i = 0; i < n; i++) pushPop({ x: FW / 2, y: FH / 2, life: 0.9, txt: "+" + (i + 1), sub: "", swish: false });
+  },
   consts: function () {
     return { FW: FW, R: R, GRAV: GRAV, AIR: AIR, KNOB: KNOB, MAXPOW: MAXPOW,
              HX_MIN: HX_MIN, HX_MAX: HX_MAX, WALL_E: WALL_E, STAGE_N: STAGE_N,
