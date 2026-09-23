@@ -5,6 +5,7 @@
 
 - 배포: https://richroro.github.io/shorts-remix/
 - 소스: `index.html` 한 파일 (외부 스크립트는 유튜브 공식 IFrame Player API 하나, 그 밖에 구글 폰트 링크)
+- 딸린 도구: [`maker/`](maker/) — 컷 시트의 "내 촬영·해설" 구간을 대본만 고쳐 세로 영상으로 뽑는 렌더러
 
 ## 왜 편집기가 아니라 기획 도구인가
 

@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>쇼츠 렌더러 · 대본을 세로 영상으로</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&family=Black+Han+Sans&display=swap">
+<style>
+  html,body{margin:0;background:#07080b;color:#aeb6c6;font-family:'Noto Sans KR',sans-serif}
+  .wrap{display:flex;gap:18px;padding:18px;align-items:flex-start;flex-wrap:wrap}
+  canvas{width:min(340px,42vw);height:auto;background:#000;border-radius:14px;box-shadow:0 18px 40px -20px #000}
+  .side{flex:1;min-width:260px;font-size:13px;line-height:1.7}
+  .side h1{font-size:16px;color:#eef0f6;margin:0 0 8px}
+  .side code{background:#15161d;padding:2px 6px;border-radius:5px;font-size:12px}
+  .bar{display:flex;align-items:center;gap:10px;margin:12px 0}
+  .bar input[type=range]{flex:1;accent-color:#7c5cff}
+  .bar button{background:#20232e;color:#eef0f6;border:1px solid #353a4a;border-radius:8px;padding:6px 12px;font:inherit;font-weight:700;cursor:pointer}
+  .cues{margin-top:10px;border-top:1px solid #262936;padding-top:10px}
+  .cue{display:flex;gap:8px;padding:3px 0;cursor:pointer}
+  .cue:hover{color:#eef0f6}
+  .cue b{color:#7c5cff;font-variant-numeric:tabular-nums;min-width:54px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <canvas id="cv" width="1080" height="1920"></canvas>
+  <div class="side">
+    <h1>쇼츠 렌더러</h1>
+    <p>아래 <code>SCRIPT</code> 만 고치면 영상이 바뀝니다. 장면 길이를 바꾸면 전체 타임라인이 알아서 밀립니다.
+       미리 보고 마음에 들면 <code>node render.cjs</code> 로 MP4를 뽑습니다.</p>
+    <div class="bar">
+      <button id="play">재생</button>
+      <input id="seek" type="range" min="0" max="1000" value="0">
+      <span id="clock">0.0s</span>
+    </div>
+    <div class="cues" id="cues"></div>
+  </div>
+</div>
+<script>
+/* ============================================================
+   쇼츠 렌더러 — 대본(SCRIPT)을 1080×1920 세로 영상으로 그린다.
+   · 모든 화면을 코드로 그린다. 외부 이미지·영상·폰트 파일을 쓰지 않는다.
+   · 브라우저로 열면 미리보기, node render.cjs 로 열면 프레임 렌더링.
+   ============================================================ */
+
+/* ────────────────────────────────────────────────────────────
+   대본 — 여기만 고치면 된다
+   type 별로 필요한 칸이 다르다. 아래 주석 참고.
+   ──────────────────────────────────────────────────────────── */
+const SCRIPT = {
+  watermark: 'richroro.github.io/shorts-remix',
+  scenes: [
+    /* hook — 큰 글씨 세 줄 + 작은 한 줄 */
+    { id:'hook', type:'hook', dur:3.4,
+      lines:['남의 쇼츠','가져다 쓰면','채널 날아갈까?'],
+      sub:'규칙 세 개만 알면 됩니다' },
+
+    /* mark — 동그라미 안에 X 또는 체크 + 제목 + 항목들 */
+    { id:'warning', type:'mark', dur:5.2, mark:'x',
+      title:['내려받아 붙이기'],
+      items:['유튜브 약관 위반','Content ID 클레임 대상','수익화 거절 · 경고 누적'] },
+
+    { id:'remix', type:'mark', dur:5.2, mark:'check',
+      title:['리믹스 버튼으로','가져오기'],
+      items:['유튜브가 허용한 방식','원본 링크가 자동으로 붙는다'] },
+
+    /* list — 번호 붙은 카드 목록 [제목, 설명] */
+    { id:'ways', type:'list', dur:6.6, title:'리믹스 4가지',
+      items:[
+        ['사운드','소리만 가져와 내 화면으로'],
+        ['그린 스크린','원본을 배경에 깔고 앞에서'],
+        ['잘라내기','원본 화면을 최대 5초'],
+        ['콜라보','원본과 분할 화면'],
+      ] },
+
+    /* verdict — 윗줄 + X + 결론 + 각주 + 항목들 */
+    { id:'money', type:'verdict', dur:5.2,
+      top:'가져오기만 하면', verdict:'수익화 탈락',
+      note:'재사용 · 비진정 콘텐츠로 분류',
+      items:['내 해설 · 자막 · 재구성을 얹어야','비로소 내 콘텐츠가 됩니다'] },
+
+    /* two — 제목 + 빨간 카드 + 민트 카드 */
+    { id:'publicdomain', type:'two', dur:4.8,
+      title:['저작권 풀린','영상이라면?'],
+      bad:['유튜브에서 내려받으면','그래도 약관 위반'],
+      good:['아카이브 · 커먼즈처럼','내려받기를 허용한 곳에서 받기'] },
+
+    /* wrap — 제목 + 항목들 + 마지막 안내 카드 */
+    { id:'wrap', type:'wrap', dur:4.6, title:'정리하면',
+      items:['가져오기는 리믹스 버튼으로','내 해설을 반드시 얹고','출처는 설명란에도 남긴다'],
+      cta:{ label:'컷 시트 만드는 도구', lines:['richroro.github.io','/shorts-remix'] } },
+  ],
+};
+
+/* 장면 길이를 더해 시작·끝 시각을 만든다 */
+let _acc = 0;
+for(const s of SCRIPT.scenes){ s.t0 = _acc; _acc += s.dur; s.t1 = _acc; }
+const DUR = _acc;
+
+/* ────────────────────────────────────────────────────────────
+   그리기 도구
+   ──────────────────────────────────────────────────────────── */
+const cv = document.getElementById('cv'), g = cv.getContext('2d');
+const W = 1080, H = 1920;
+const INK='#f2f4fa', INK2='#a8b0c2', INK3='#6d768a';
+const VIO='#7c5cff', VIO2='#b78bff', MINT='#2fd6a6', RED='#ff5470';
+
+const clamp=(v,a,b)=>v<a?a:v>b?b:v;
+const easeOut = t => 1-Math.pow(1-clamp(t,0,1),3);
+const easeInOut = t => (t=clamp(t,0,1)) < .5 ? 4*t*t*t : 1-Math.pow(-2*t+2,3)/2;
+
+function rr(x,y,w,h,r){
+  g.beginPath();
+  g.moveTo(x+r,y); g.arcTo(x+w,y,x+w,y+h,r); g.arcTo(x+w,y+h,x,y+h,r);
+  g.arcTo(x,y+h,x,y,r); g.arcTo(x,y,x+w,y,r); g.closePath();
+}
+function font(size, w){ g.font = `${w||900} ${size}px 'Noto Sans KR','WenQuanYi Zen Hei',sans-serif`; }
+function head(size){ g.font = `${size}px 'Black Han Sans','Noto Sans KR','WenQuanYi Zen Hei',sans-serif`; }
+function line(text, x, y, color, alpha){
+  g.globalAlpha = alpha==null?1:alpha; g.fillStyle = color; g.fillText(text, x, y); g.globalAlpha = 1;
+}
+/* 순서대로 밀려 올라오며 나타난다 */
+function stagger(local, i, delay){
+  const t = easeOut((local - (delay==null?0.13:delay)*i) / 0.5);
+  return { a:t, dy:(1-t)*46 };
+}
+function card(y, h, a, accent){
+  g.globalAlpha = a*.9; g.fillStyle = 'rgba(16,18,26,.82)';
+  rr(70, y, W-140, h, 40); g.fill();
+  g.strokeStyle = (accent||VIO)+'55'; g.lineWidth = 3; rr(70, y, W-140, h, 40); g.stroke();
+  g.globalAlpha = 1;
+}
+function bullets(items, x, y, lh, local, fo, opt){
+  opt = opt || {};
+  items.forEach((s,i) => {
+    const k = stagger(local, i, opt.delay || 0.16);
+    const a = k.a * fo;
+    if(a <= 0.01) return;
+    const yy = y + i*lh + k.dy;
+    g.globalAlpha = a; g.fillStyle = opt.dotColor || VIO;
+    g.beginPath(); g.arc(x+11, yy-14, 9, 0, Math.PI*2); g.fill(); g.globalAlpha = 1;
+    font(opt.size || 46, opt.weight || 700); g.textAlign = 'left';
+    line(s, x+44, yy, opt.color || INK2, a);
+  });
+}
+function markX(cx, cy, r, a){
+  g.strokeStyle=RED; g.lineWidth=14; g.lineCap='round';
+  g.globalAlpha=a*.35; g.beginPath(); g.arc(cx,cy,r,0,Math.PI*2); g.stroke();
+  g.globalAlpha=a; g.beginPath();
+  g.moveTo(cx-r*.42,cy-r*.42); g.lineTo(cx+r*.42,cy+r*.42);
+  g.moveTo(cx+r*.42,cy-r*.42); g.lineTo(cx-r*.42,cy+r*.42); g.stroke();
+  g.globalAlpha=1;
+}
+function markCheck(cx, cy, r, a, prog){
+  g.strokeStyle=MINT; g.lineWidth=14; g.lineCap='round'; g.lineJoin='round';
+  g.globalAlpha=a*.35; g.beginPath(); g.arc(cx,cy,r,0,Math.PI*2); g.stroke();
+  g.globalAlpha=a;
+  const p = easeOut(prog);
+  const pts=[[cx-r*.44,cy+r*.02],[cx-r*.10,cy+r*.36],[cx+r*.46,cy-r*.34]];
+  g.beginPath(); g.moveTo(pts[0][0],pts[0][1]);
+  if(p<.5){ const k=p/.5; g.lineTo(pts[0][0]+(pts[1][0]-pts[0][0])*k, pts[0][1]+(pts[1][1]-pts[0][1])*k); }
+  else{ const k=(p-.5)/.5; g.lineTo(pts[1][0],pts[1][1]);
+        g.lineTo(pts[1][0]+(pts[2][0]-pts[1][0])*k, pts[1][1]+(pts[2][1]-pts[1][1])*k); }
+  g.stroke(); g.globalAlpha=1;
+}
+function bg(t){
+  g.fillStyle = '#0c0d12'; g.fillRect(0,0,W,H);
+  const blobs = [
+    {x:.18,y:.18,r:.62,c:'124,92,255', s:.30, sp:.11},
+    {x:.86,y:.42,r:.55,c:'47,214,166', s:.16, sp:-.08},
+    {x:.42,y:.88,r:.70,c:'183,139,255', s:.20, sp:.06},
+  ];
+  for(const b of blobs){
+    const px = (b.x + Math.sin(t*b.sp*2.2)*0.05)*W;
+    const py = (b.y + Math.cos(t*b.sp*1.7)*0.04)*H;
+    const grd = g.createRadialGradient(px,py,0,px,py,b.r*W);
+    grd.addColorStop(0, `rgba(${b.c},${b.s})`); grd.addColorStop(1, `rgba(${b.c},0)`);
+    g.fillStyle = grd; g.fillRect(0,0,W,H);
+  }
+  g.strokeStyle = 'rgba(255,255,255,.028)'; g.lineWidth = 2;
+  for(let x=0;x<W;x+=90){ g.beginPath(); g.moveTo(x,0); g.lineTo(x,H); g.stroke(); }
+  for(let y=0;y<H;y+=90){ g.beginPath(); g.moveTo(0,y); g.lineTo(W,y); g.stroke(); }
+}
+function chrome(t){
+  g.fillStyle = 'rgba(255,255,255,.10)'; rr(70, 250, W-140, 8, 4); g.fill();
+  g.fillStyle = VIO; rr(70, 250, (W-140)*clamp(t/DUR,0,1), 8, 4); g.fill();
+  g.textAlign = 'left'; font(30, 700);
+  line(SCRIPT.watermark, 70, 1760, 'rgba(255,255,255,.34)');
+}
+
+/* ────────────────────────────────────────────────────────────
+   장면 종류별 그리기 — SCRIPT 의 type 과 이름이 맞는다
+   (local: 장면이 시작한 뒤 흐른 시간, fo: 장면 끝 페이드아웃 계수)
+   ──────────────────────────────────────────────────────────── */
+const SCENE = {
+  hook(s, local, fo){
+    g.textAlign = 'left';
+    const n = s.lines.length;
+    let y = 760 - n*70;
+    s.lines.forEach((text,i) => {
+      const last = i === n-1, size = last ? 116 : 104;
+      const k = stagger(local, i, 0.18);
+      head(size);
+      line(text, 92, y + k.dy, last ? VIO2 : INK, k.a*fo);
+      y += size + 34;
+    });
+    if(s.sub){
+      const k = stagger(local, n+0.4, 0.16);
+      font(44, 500);
+      line(s.sub, 96, y + 60 + k.dy, INK3, k.a*fo);
+    }
+  },
+
+  mark(s, local, fo){
+    const k0 = stagger(local, 0, 0);
+    if(s.mark === 'check') markCheck(W/2, 640, 130, k0.a*fo, (local-0.25)/0.6);
+    else markX(W/2, 640, 130, k0.a*fo);
+
+    g.textAlign = 'center';
+    let y = 890;
+    s.title.forEach((text,i) => {
+      const k = stagger(local, 1+i*0.7, 0.14);
+      head(86);
+      line(text, W/2, y + k.dy, i === s.title.length-1 && s.mark === 'check' ? MINT : INK, k.a*fo);
+      y += 95;
+    });
+    const top = y + 15, h = 80 + s.items.length*116;
+    card(top, h, stagger(local, 2.4, 0.14).a*fo, s.mark === 'check' ? MINT : RED);
+    g.textAlign = 'left';
+    bullets(s.items, 140, top + 120, 116, local - 0.6, fo,
+            { dotColor: s.mark === 'check' ? MINT : RED, color: INK2, size: 48 });
+  },
+
+  list(s, local, fo){
+    g.textAlign = 'left'; head(82);
+    const k = stagger(local, 0, 0);
+    line(s.title, 92, 560 + k.dy, INK, k.a*fo);
+    const n = s.items.length, gap = n > 4 ? 190 : 230;
+    s.items.forEach((it,i) => {
+      const st = stagger(local, i+1, 0.2), a = st.a*fo;
+      if(a <= 0.01) return;
+      const y = 680 + i*gap + st.dy;
+      g.globalAlpha = a*.85; g.fillStyle = 'rgba(18,20,30,.8)';
+      rr(80, y, W-160, gap-40, 34); g.fill();
+      g.strokeStyle = VIO+'44'; g.lineWidth = 3; rr(80, y, W-160, gap-40, 34); g.stroke();
+      g.globalAlpha = a;
+      g.fillStyle = VIO; rr(118, y+52, 86, 86, 26); g.fill();
+      g.textAlign='center'; font(46, 900); g.fillStyle = '#fff';
+      g.fillText(String(i+1), 161, y+112);
+      g.globalAlpha = 1; g.textAlign='left';
+      font(54, 900); line(it[0], 236, y+86, INK, a);
+      font(40, 500); line(it[1], 236, y+146, INK3, a);
+    });
+  },
+
+  verdict(s, local, fo){
+    g.textAlign='center'; head(84);
+    const k0 = stagger(local,0,0);
+    line(s.top, W/2, 600 + k0.dy, INK, k0.a*fo);
+    markX(W/2, 800, 92, stagger(local,1,.16).a*fo);
+    head(92);
+    const k2 = stagger(local,1.8,.16);
+    line(s.verdict, W/2, 1010 + k2.dy, RED, k2.a*fo);
+    if(s.note){
+      font(44, 500);
+      const k3 = stagger(local,2.6,.16);
+      line(s.note, W/2, 1085 + k3.dy, INK3, k3.a*fo);
+    }
+    const h = 120 + (s.items.length-1)*104;
+    card(1190, h, stagger(local,3.2,.16).a*fo, MINT);
+    g.textAlign='left';
+    bullets(s.items, 140, 1300, 104, local - 1.0, fo, {dotColor:MINT, color:INK, size:46});
+  },
+
+  two(s, local, fo){
+    g.textAlign='left';
+    let y = 600;
+    s.title.forEach((text,i) => {
+      const k = stagger(local, i*0.8, 0.16);
+      head(80);
+      line(text, 92, y + k.dy, i ? VIO2 : INK, k.a*fo);
+      y += 92;
+    });
+    const h1 = 120 + (s.bad.length-1)*96;
+    card(y+98, h1, stagger(local,1.6,.16).a*fo, RED);
+    bullets(s.bad, 140, y+198, 96, local - 0.5, fo, {dotColor:RED, color:INK, size:48});
+    const y2 = y + 98 + h1 + 50;
+    const h2 = 130 + (s.good.length-1)*96;
+    card(y2, h2, stagger(local,2.6,.16).a*fo, MINT);
+    bullets(s.good, 140, y2+105, 96, local - 0.9, fo, {dotColor:MINT, color:INK, size:46});
+  },
+
+  wrap(s, local, fo){
+    g.textAlign='left'; head(88);
+    const k0 = stagger(local,0,0);
+    line(s.title, 92, 560 + k0.dy, INK, k0.a*fo);
+    bullets(s.items, 100, 740, 132, local - 0.2, fo, {dotColor:VIO, color:INK, size:52});
+    if(!s.cta) return;
+    const k = stagger(local, 3.4, 0.16), a = k.a*fo;
+    if(a <= 0.01) return;
+    const top = 740 + s.items.length*132 + 60;
+    card(top, 330, a, VIO);
+    g.textAlign='center';
+    font(42, 700); line(s.cta.label, W/2, top+100 + k.dy, INK3, a);
+    s.cta.lines.forEach((t,i) => {
+      font(46, 900);
+      line(t, W/2, top+180 + i*65 + k.dy, i ? VIO2 : INK, a);
+    });
+  },
+};
+
+/* ────────────────────────────────────────────────────────────
+   한 프레임 그리기
+   ──────────────────────────────────────────────────────────── */
+function draw(t){
+  t = clamp(t, 0, DUR);
+  bg(t);
+  for(const s of SCRIPT.scenes){
+    if(t < s.t0 || t >= s.t1) continue;
+    const fo = easeOut(clamp((s.t1 - t)/0.4, 0, 1));
+    const fn = SCENE[s.type];
+    if(!fn){ console.warn('모르는 장면 종류:', s.type); continue; }
+    g.save(); fn(s, t - s.t0, fo); g.restore();
+  }
+  chrome(t);
+  const fade = Math.min(easeInOut(t/0.35), easeInOut((DUR-t)/0.5));
+  if(fade < 1){ g.globalAlpha = 1-clamp(fade,0,1); g.fillStyle='#000'; g.fillRect(0,0,W,H); g.globalAlpha=1; }
+}
+
+/* 렌더링 스크립트가 쓰는 창구 */
+window.__draw = t => { preview.stop(); draw(t); };
+window.__dur = () => DUR;
+window.__scenes = () => SCRIPT.scenes.map(s => ({id:s.id, t0:s.t0, t1:s.t1, dur:s.dur}));
+window.__ready = (async () => { try{ await document.fonts.ready; }catch(e){} return true; })();
+
+/* ────────────────────────────────────────────────────────────
+   브라우저로 열었을 때의 미리보기
+   ──────────────────────────────────────────────────────────── */
+const preview = (() => {
+  const seek = document.getElementById('seek'), clock = document.getElementById('clock');
+  const btn = document.getElementById('play');
+  let playing = false, t = 0, last = 0, raf = 0;
+  function paint(){
+    draw(t);
+    seek.value = String(Math.round(t/DUR*1000));
+    clock.textContent = t.toFixed(1) + 's / ' + DUR.toFixed(1) + 's';
+  }
+  function loop(now){
+    if(!playing) return;
+    if(!last) last = now;
+    t += (now-last)/1000; last = now;
+    if(t >= DUR){ t = 0; }
+    paint();
+    raf = requestAnimationFrame(loop);
+  }
+  function stop(){ playing = false; last = 0; cancelAnimationFrame(raf); btn.textContent = '재생'; }
+  btn.addEventListener('click', () => {
+    playing = !playing; last = 0; btn.textContent = playing ? '멈춤' : '재생';
+    if(playing) raf = requestAnimationFrame(loop);
+  });
+  seek.addEventListener('input', e => { stop(); t = +e.target.value/1000*DUR; paint(); });
+  document.getElementById('cues').innerHTML = SCRIPT.scenes.map(s =>
+    `<div class="cue" data-t="${s.t0}"><b>${s.t0.toFixed(1)}s</b><span>${s.id} · ${s.dur}초</span></div>`).join('');
+  document.getElementById('cues').addEventListener('click', e => {
+    const row = e.target.closest('[data-t]');
+    if(!row) return;
+    stop(); t = +row.dataset.t + 0.35; paint();
+  });
+  paint();
+  return { stop };
+})();
+</script>
+</body>
+</html>
