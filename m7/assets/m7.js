@@ -268,6 +268,19 @@ function navList() {
   }
   return M7;
 }
+const GROUP_KO = { m7: "M7", semi: "반도체", soft: "소프트웨어", frontier: "양자·우주", fin: "금융", consumer: "소비·미디어", health: "헬스케어" };
+/* 섹션 내비 오른쪽 끝의 '다른 종목으로' 메뉴 — 레지스트리 전체를 그룹별로 묶습니다 */
+function jumpHtml(cur) {
+  if (typeof REGISTRY === "undefined") return "";
+  const groups = [...new Set(REGISTRY.map((r) => r.group))];
+  return '<select class="jump" id="jump" aria-label="다른 종목으로 이동">' +
+    '<option value="">다른 종목으로 … (' + REGISTRY.length + ')</option>' +
+    groups.map((g) => '<optgroup label="' + esc(GROUP_KO[g] || g) + '">' +
+      REGISTRY.filter((r) => r.group === g).map((r) =>
+        '<option value="' + (r.href || ((r.base || "/m7/") + r.slug + "/")) + '"' + (r.slug === cur ? " selected disabled" : "") + ">" +
+        esc(r.ko) + " · " + esc(r.tk) + "</option>").join("") + "</optgroup>").join("") +
+    '<optgroup label="전체"><option value="/stocks/">종목 노트 스크리너 (전체 표)</option></optgroup></select>';
+}
 function navHtml(cur) {
   return navList().map((c) => {
     const href = c.href || ((c.base || "/m7/") + c.slug + "/");
@@ -346,6 +359,7 @@ function render() {
   '<a href="#korea">한국 공급망</a>' + (FWD ? '<a href="#forward">앞으로</a>' : '') +
   '<a href="#watch">체크포인트</a><a href="#sources">출처</a>' +
   '<a href="' + (CO.hubHref || "/m7/") + '">← ' + (CO.hubName || "M7 전체") + '</a>' +
+  jumpHtml(CO.slug) +
 '</div></nav>' +
 
 '<main><section id="top" style="padding-top:24px"><div class="wrap">' +
@@ -439,6 +453,8 @@ function render() {
   '투자 전에 각 사 공시를 확인하세요. 판단과 책임은 이용자 본인에게 있습니다.</p></div></footer>';
 
   CUR = CO.cur || "$";
+  const jump = $("jump");
+  if (jump) jump.addEventListener("change", () => { if (jump.value) location.href = jump.value; });
   initTheme();
   drawAll();
   document.querySelectorAll(".seg button").forEach((b) => {
