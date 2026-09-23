@@ -478,12 +478,16 @@
 /* ══════════════════════════════════════════════════════════════
    1. 저장소 (깬 스테이지 · 별 · 최고 기록)
    ══════════════════════════════════════════════════════════════ */
+// 테스트가 슛 수천 개를 훑을 때(H.quiet) 켠다. 소리·진동·알림·저장을 전부 건너뛴다.
+// 안 끄면 훑는 동안 소리가 수천 번 겹치고, 테스트 판의 지갑·아이템이 실제 기록에 남는다.
+var quiet = false;
 var store = {
   get: function (k, d) {
     try { var v = localStorage.getItem("hoop." + k); return v === null ? d : v; }
     catch (e) { return d; }
   },
   set: function (k, v) {
+    if (quiet) return;
     try { localStorage.setItem("hoop." + k, String(v)); } catch (e) {}
   }
 };
@@ -513,7 +517,7 @@ var sfx = (function () {
     return ac;
   }
   function tone(freq, dur, type, vol, slideTo) {
-    if (muted) return;
+    if (muted || quiet) return;
     var a = ensure();
     if (!a) return;
     var o = a.createOscillator(), g = a.createGain();
@@ -528,7 +532,7 @@ var sfx = (function () {
   }
   // 그물 스치는 소리처럼 들리게 만든 짧은 화이트 노이즈
   function noise(dur, vol, hz) {
-    if (muted) return;
+    if (muted || quiet) return;
     var a = ensure();
     if (!a) return;
     var n = Math.floor(a.sampleRate * dur);
@@ -544,10 +548,11 @@ var sfx = (function () {
   function buzz(ms) {
     // 사용자가 화면을 한 번도 건드리지 않은 상태에서 부르면
     // 브라우저가 막으면서 콘솔에 에러를 남긴다
-    if (muted || !tapped || !navigator.vibrate) return;
+    if (muted || quiet || !tapped || !navigator.vibrate) return;
     try { navigator.vibrate(ms); } catch (e) {}
   }
   function melody(notes, gap) {
+    if (quiet) return;
     notes.forEach(function (n, i) {
       setTimeout(function () { tone(n, 0.16, "triangle", 0.12); }, i * (gap || 110));
     });
@@ -568,6 +573,10 @@ var sfx = (function () {
     rim: function () { tone(1150, 0.07, "square", 0.05, 820); buzz(10); },
     board: function () { tone(230, 0.08, "square", 0.05); buzz(10); },
     bar: function () { tone(180, 0.09, "sawtooth", 0.05); buzz(10); },
+    // 범퍼: 높은 음이 뚝 떨어지는 '팅'. 림(1150)보다 낮고 가로막(180)보다 높아 셋이 안 섞인다
+    bump: function () { tone(520, 0.08, "square", 0.06, 260); buzz(12); },
+    // 트램펄린: 낮은 음이 위로 휘는 '뾰잉'. 바닥 소리(150)와 달리 올라가서 튕겼다는 게 들린다
+    boing: function () { tone(180, 0.14, "sine", 0.1, 520); },
     swish: function () { noise(0.22, 0.1, 3200); },
     coin: function (n) { tone(880 * Math.pow(1.12, Math.min(n, 8)), 0.09, "square", 0.07); buzz(6); },
     fire: function () { tone(520, 0.2, "sawtooth", 0.07, 1300); buzz(20); },
@@ -689,6 +698,12 @@ var MAG_R = 92;         // 자석이 공을 붙잡는 거리(림 위쪽 반원)
 var MAG_K = 0.02;       // 자석이 당기는 세기
 var GOLD_P = 0.12;      // 황금 공이 나올 확률(3스테이지부터)
 var BUBBLE_R = 17;      // 아이템 방울 반지름
+// 범퍼가 튕겨 내는 최소 속도(법선 방향). 살짝 스쳐도 이만큼은 튄다. 림처럼 부딪힐 때마다 기운을
+// 빼면 범퍼가 공을 받아 주는 기둥이 돼서, 핀볼 범퍼처럼 '맞으면 튄다'가 안 된다.
+var BUMP_KICK = 8;
+// 트램펄린이 올려 보내는 최소 속도. 19.5 로 두면 공기 저항(0.997) 때문에 공 중심이 y 280
+// 안팎까지만 올라 림(286)에 거의 못 닿았다. 22 면 y 186 안팎까지 올라 림 위에서 떨어져 들어갈 수 있다.
+var PAD_MIN = 22;
 
 /* ══════════════════════════════════════════════════════════════
    5. 스테이지
@@ -696,9 +711,21 @@ var BUBBLE_R = 17;      // 아이템 방울 반지름
    제한 시간이 끝나면 실패한다.
      hoop.sp  골대 좌우 속도 (코트단위/프레임)
      hoop.bob 골대 위아래 진폭
+     hoop.x / hoop.min / hoop.max  골대 출발 위치와 좌우 끝 (없으면 가운데, 205~366)
      wind     프레임당 가로 가속도 (+면 오른쪽)
      bars     가로막 개수, coins 동전 개수
      rim      림 반지름(기본 31), spread 던지는 자리가 흩어지는 폭
+     bumpers  [{x,y,r}] 핀볼 범퍼(r 18~22). 맞으면 법선 방향으로 8 이상 튕긴다
+     pads     [{x0,x1}] 바닥 트램펄린. 공을 22 이상으로 올려 보낸다(한 슛에 세 번까지)
+     grav     중력 배율(없으면 1)
+   범퍼·트램펄린 판을 만들 때 지킬 것:
+     · 범퍼 표면과 다른 단단한 것(벽·천장·바닥·림 끝·백보드는 골대가 갈 수 있는 모든 x 에서,
+       가로막은 움직이는 모든 자리에서, 다른 범퍼) 사이는 38(공 지름 + 4) 이상. 좁으면 공이 끼어
+       둘 사이를 오가며 떤다. 범퍼는 y 520 위에만 둔다(던지는 자리 바로 위를 막지 않게).
+     · 공 지름(34)보다 넓은 '서 있는' 평평한 면을 두지 않는다. 공이 그 위에 얹혀 멈춘다(얼음으로 선
+       막대 위에서 실제로 난다). 워치독이 1.5초 뒤에 끊긴 하지만, 그동안 화면이 멎은 것처럼 보인다.
+     · 트램펄린은 x0 176 이상(던지는 자리 46~166 을 덮지 않게), 림은 트램펄린 위에 두지 않는다
+       (hoop.min 을 x1 + 40 이상으로). 림 바로 아래서 튀면 공이 림을 밑에서 뚫고 올라간다.
    ══════════════════════════════════════════════════════════════ */
 var STAGES = [
   { name: "첫 슛",        goal: { makes: 3 }, balls: 8,  hoop: { sp: 0,    bob: 0 },  spread: 0,
@@ -736,10 +763,15 @@ var TIME_ATTACK = { name: "타임어택", endless: true, goal: {}, balls: 0,
    6. 게임 상태
    ══════════════════════════════════════════════════════════════ */
 var hoop = { x: 260, y: 240, dir: 1 };
-var ball = { x: 90, y: 400, px: 90, py: 400, vx: 0, vy: 0, spin: 0, live: false, flyT: 0, slowT: 0, sx: 0, sy: 0 };
+// 슛마다 새로 세는 것(nextBall 이 지운다): bumps 범퍼에 튕긴 수, padHits 트램펄린에 튄 수,
+// underRim 림을 밑에서 뚫고 올라간 중인지, hits 물체(가로막·범퍼·백보드·림 끝)에 닿은 수,
+// trick 들어갈 때 붙은 묘기 이름
+var ball = { x: 90, y: 400, px: 90, py: 400, vx: 0, vy: 0, spin: 0, live: false, flyT: 0, slowT: 0, sx: 0, sy: 0,
+             bumps: 0, padHits: 0, underRim: false, hits: 0, trick: "" };
 var state = "ready";     // ready | playing | paused | clear | fail
 var stage = { idx: -1, def: null, ballsLeft: 0, thrown: 0, made: 0, swish: 0, coins: 0 };
 var bars = [], coins = [], bubbles = [];
+var bumpers = [], pads = [];   // placeProps 가 판 정의에서 옮겨 담는다(fl·sq 는 맞았을 때 번쩍·눌림)
 var wind = 0;
 var hasTime = false, timeLeft = 0, GAME_TIME = 45;
 var score = 0, combo = 0, bestCombo = 0, makes = 0, shots = 0;
@@ -898,6 +930,11 @@ function placeProps(def) {
       item: pickItem(!!def.endless), got: false, t: q * 1.7
     });
   }
+  // 범퍼·트램펄린은 정의를 그대로 옮긴다(정의 객체를 바로 쓰면 번쩍임 값이 다음 판까지 남는다)
+  bumpers.length = 0;
+  (def.bumpers || []).forEach(function (b) { bumpers.push({ x: b.x, y: b.y, r: b.r, fl: 0 }); });
+  pads.length = 0;
+  (def.pads || []).forEach(function (p) { pads.push({ x0: p.x0, x1: p.x1, sq: 0 }); });
 }
 
 /* ══════════════════════════════════════════════════════════════
@@ -936,12 +973,14 @@ function step() {
   // 골대 이동 (타임어택은 넣은 골 수에 따라 점점 빨라진다)
   var sp = def.endless ? Math.min(0.5 + Math.max(0, makes - 2) * 0.085, 1.55) : def.hoop.sp;
   var bob = def.endless ? Math.min(Math.max(0, makes - 7) * 2.4, 26) : def.hoop.bob;
-  // 얼음을 켜 두면 골대·가로막이 그 자리에 선다
+  // 얼음을 켜 두면 골대·가로막이 그 자리에 선다.
+  // 좌우 끝은 판이 정할 수 있다(트램펄린 판은 림이 트램펄린 위로 못 오게 min 을 올린다). 타임어택은 기본 폭
   var fz = frozen();
+  var hmin = def.hoop.min || HX_MIN, hmax = def.hoop.max || HX_MAX;
   if (!fz) {
     hoop.x += hoop.dir * sp;
-    if (hoop.x <= HX_MIN) { hoop.x = HX_MIN; hoop.dir = 1; }
-    if (hoop.x >= HX_MAX) { hoop.x = HX_MAX; hoop.dir = -1; }
+    if (hoop.x <= hmin) { hoop.x = hmin; hoop.dir = 1; }
+    if (hoop.x >= hmax) { hoop.x = hmax; hoop.dir = -1; }
     bobT += FIXED;
   }
   hoop.y = HOOP_Y + Math.sin(bobT * 2.4) * bob;
@@ -1009,6 +1048,8 @@ function step() {
     }
   }
   for (var bq = 0; bq < bubbles.length; bq++) bubbles[bq].t += FIXED * 2.2;
+  for (var bm = 0; bm < bumpers.length; bm++) if (bumpers[bm].fl > 0) bumpers[bm].fl = Math.max(0, bumpers[bm].fl - FIXED * 3);
+  for (var pd = 0; pd < pads.length; pd++) if (pads[pd].sq > 0) pads[pd].sq = Math.max(0, pads[pd].sq - FIXED * 5);
   if (readyPulse > 0) readyPulse = Math.max(0, readyPulse - FIXED);
 
   if (deadTimer >= 0) {
@@ -1053,16 +1094,49 @@ function step() {
   for (var c = 0; c < coins.length; c++) coins[c].spin += 0.05;
 }
 
+/* ── 공과 조준 점선이 같이 쓰는 적분기 ─────────────────────────
+   예전엔 조준 점선(trace)이 중력·바람·벽을 따로 한 벌 더 적어 두고 있었다. 코트 규칙을 하나
+   붙일 때마다 두 군데를 고쳐야 했고, 한 군데만 고치면 점선이 거짓말을 한다(속도 상한 40 은
+   실제로 점선에 빠져 있었다). 이제 공(move·collide)과 점선(trace)이 아래 세 함수를 그대로 부른다.
+   '코트 규칙'(중력·바람·벽·천장·트램펄린)은 여기에, '부딪히는 물체'(림·백보드·가로막·범퍼)는
+   collide 에만 둔다. 점선은 코트 규칙만 보여 준다.
+   계산 순서를 바꾸면 안 된다. 1~12스테이지 궤적이 예전 코드와 비트 단위로 같아야 한다(parity 검사). */
+function gravAt(x, y) {
+  var g = GRAV, d = stage.def;
+  if (d && d.grav) g *= d.grav;
+  return g;
+}
+function fieldStep(o, w) {
+  o.vy += gravAt(o.x, o.y);
+  o.vx += w;
+  o.vx *= AIR;
+  o.vy *= AIR;
+  var sp = Math.sqrt(o.vx * o.vx + o.vy * o.vy);
+  if (sp > MAXV) { o.vx = o.vx / sp * MAXV; o.vy = o.vy / sp * MAXV; }
+  o.px = o.x; o.py = o.y;
+  o.x += o.vx;
+  o.y += o.vy;
+}
+// 옆벽과 천장
+function bounds(o) {
+  if (o.x < R) { o.x = R; o.vx = -o.vx * WALL_E; }
+  if (o.x > FW - R) { o.x = FW - R; o.vx = -o.vx * WALL_E; }
+  if (o.y < R) { o.y = R; if (o.vy < 0) o.vy = -o.vy * 0.45; }
+}
+function padAt(x) {
+  for (var i = 0; i < pads.length; i++) if (pads[i].x0 <= x && x <= pads[i].x1) return pads[i];
+  return null;
+}
+// 트램펄린: 떨어진 세기의 90% 로, 아무리 살살 떨어져도 PAD_MIN 으로 올려 보낸다
+function padBounce(o) {
+  o.y = FLOOR - R;
+  o.vy = -Math.max(Math.abs(o.vy) * 0.9, PAD_MIN);
+  o.vx *= 0.96;
+  o.padHits++;
+}
+
 function move() {
-  ball.vy += GRAV;
-  ball.vx += curWind();
-  ball.vx *= AIR;
-  ball.vy *= AIR;
-  var sp = Math.sqrt(ball.vx * ball.vx + ball.vy * ball.vy);
-  if (sp > MAXV) { ball.vx = ball.vx / sp * MAXV; ball.vy = ball.vy / sp * MAXV; }
-  ball.px = ball.x; ball.py = ball.y;
-  ball.x += ball.vx;
-  ball.y += ball.vy;
+  fieldStep(ball, curWind());
   ball.spin += ball.vx * 0.017;
 }
 
@@ -1111,34 +1185,79 @@ function hitRect(rx, ry, rw, rh, e) {
   return true;
 }
 
+/* 범퍼: 맞은 쪽(법선)으로 최소 BUMP_KICK 만큼 튕겨 낸다. 들어온 세기가 더 크면 그대로 돌려준다
+   (법선 속도를 잃지 않는다). hitCircle 을 안 쓰는 건 그게 림처럼 기운을 0.92 로 빼서다.
+   touched(스윔 판정)는 건드리지 않는다. 범퍼를 맞고 림에 안 닿고 들어가면 여전히 스윔이다.
+   o 는 공이거나 조준 점선의 가상 공이다. 점선일 때(isBall=false)는 소리·번쩍임 없이 궤적만 바꾼다. */
+function hitBumper(o, b, isBall) {
+  var dx = o.x - b.x, dy = o.y - b.y, rr = b.r + R;
+  var d2 = dx * dx + dy * dy;
+  if (d2 >= rr * rr) return false;
+  var d = Math.sqrt(d2), nx, ny;
+  if (d < 0.0001) { nx = 0; ny = -1; }
+  else { nx = dx / d; ny = dy / d; }
+  o.x = b.x + nx * rr;
+  o.y = b.y + ny * rr;
+  var vn = o.vx * nx + o.vy * ny;
+  if (vn < 0) {
+    o.vx -= vn * nx; o.vy -= vn * ny;          // 법선 성분을 지우고
+    var out = Math.max(-vn, BUMP_KICK);          // 들어온 세기와 킥 중 큰 쪽으로 내보낸다
+    o.vx += out * nx; o.vy += out * ny;
+    var sp = Math.sqrt(o.vx * o.vx + o.vy * o.vy);
+    if (sp > MAXV) { o.vx = o.vx / sp * MAXV; o.vy = o.vy / sp * MAXV; }
+    if (isBall) {
+      ball.bumps++;
+      b.fl = 1;
+      sfx.bump();
+      for (var k = 0; k < 8; k++) {
+        spark(b.x + nx * b.r, b.y + ny * b.r, nx * 2 + (Math.random() * 2 - 1) * 1.6,
+              ny * 2 + (Math.random() * 2 - 1) * 1.6 - 0.5, 0.35 + Math.random() * 0.2, "#FFB020");
+      }
+    }
+  }
+  return true;
+}
+
 function collide() {
-  // 옆벽
-  if (ball.x < R) { ball.x = R; ball.vx = -ball.vx * WALL_E; }
-  if (ball.x > FW - R) { ball.x = FW - R; ball.vx = -ball.vx * WALL_E; }
-  // 천장
-  if (ball.y < R) { ball.y = R; if (ball.vy < 0) ball.vy = -ball.vy * 0.45; }
+  bounds(ball);                     // 옆벽·천장 (조준 점선과 같은 함수)
 
   // 가로막 (불공은 뚫고 지나간다)
+  // ball.hits 는 물체에 닿은 수. 점선이 물체를 예측하지 않으니, 점선과 실제 궤적을 맞대 보는
+  // 검사가 '첫 물체에 닿기 전까지'를 여기로 가른다
   onBar = false;
   for (var b = 0; b < bars.length && shotItem !== "fire"; b++) {
     var bar = bars[b];
-    if (hitRect(bar.x, bar.y, bar.w, bar.h, BAR_E)) { sfx.bar(); bar.hit = 1; onBar = true; }
+    if (hitRect(bar.x, bar.y, bar.w, bar.h, BAR_E)) { sfx.bar(); bar.hit = 1; onBar = true; ball.hits++; }
+  }
+  // 범퍼 (불공은 가로막처럼 뚫고 지나간다. 그래서 불공은 범퍼 뱅크 +1 을 못 받는다)
+  for (var q = 0; q < bumpers.length && shotItem !== "fire"; q++) {
+    if (hitBumper(ball, bumpers[q], true)) ball.hits++;
   }
 
   // 백보드 (림 오른쪽에 매달린 판)
   var bx = hoop.x + RIM + 5;
   if (hitRect(bx, hoop.y - BOARD_H + BOARD_DROP, BOARD_W, BOARD_H, BOARD_E)) {
+    ball.hits++;
     if (!touched) { touched = true; sfx.board(); }
   }
   // 림 양 끝
   var hitL = hitCircle(hoop.x - RIM, hoop.y, KNOB, RIM_E);
   var hitR = hitCircle(hoop.x + RIM, hoop.y, KNOB, RIM_E);
   if (hitL || hitR) {
+    ball.hits += (hitL ? 1 : 0) + (hitR ? 1 : 0);
     if (!touched) { touched = true; sfx.rim(); }
   }
 
-  // 바닥
-  if (ball.y > FLOOR - R) {
+  // 트램펄린. 코트 바닥의 일부라 점선도 튕긴다(trace). 세 번 튄 뒤 네 번째는 그냥 바닥이다.
+  // 슛 결과가 난 뒤(득점·바닥·워치독)엔 바닥처럼 둔다. 결과가 난 공이 굴러 와서 튀어 오르면
+  // 다음 공을 기다리는 0.5초 동안 22 로 올라가 동전·방울을 주워 버린다.
+  var pad = ball.y > FLOOR - R && deadTimer < 0 && ball.padHits < 3 ? padAt(ball.x) : null;
+  if (pad) {
+    padBounce(ball);
+    pad.sq = 1;
+    sfx.boing();
+  } else if (ball.y > FLOOR - R) {
+    // 바닥
     ball.y = FLOOR - R;
     ball.vy = -ball.vy * FLOOR_E;
     ball.vx *= FLOOR_FRICTION;
@@ -1206,6 +1325,15 @@ function grabCoins() {
 /* 림 평면을 위에서 아래로 통과하면 득점 */
 function checkScore() {
   if (scored || deadTimer >= 0) return;
+  // 림 밑에서 고리 안을 뚫고 올라간 공은 다시 떨어지며 고리를 지나도 골이 아니다. 골대 바로 밑에서
+  // 수직으로 올려 찬 공이 예전엔 내려오며 들어갔다(트램펄린이 생기면 이런 공이 흔해진다).
+  // 1~12스테이지에서 흔한 건 낮게 깔려 아직 올라가는 중에 앞쪽 림 끝 밑을 지나 고리 안으로 들어가, 뒤쪽
+  // 림 끝에 맞고 떨어져 들어가던 공이다(무작위 20,000샷 중 37개, 예전엔 림 맞고 2점). 그물을 밑에서 뚫은
+  // 셈이라 이제 골이 아니다. 고리 바깥(림 반지름 + 공 반지름)으로 벗어났다가 위에서 다시 오면 그땐 골이다.
+  // 궤적은 안 건드린다.
+  if (ball.vy < 0 && ball.py >= hoop.y && ball.y < hoop.y && Math.abs(ball.x - hoop.x) < RIM) ball.underRim = true;
+  if (ball.underRim && Math.abs(ball.x - hoop.x) > RIM + R) ball.underRim = false;
+  if (ball.underRim) return;
   if (ball.vy <= 0) return;
   if (ball.py > hoop.y || ball.y <= hoop.y) return;
   if (Math.abs(ball.x - hoop.x) > RIM - KNOB - 8) return;
@@ -1223,7 +1351,11 @@ function made() {
   if (swish) stage.swish++;
 
   var bonus = combo >= 6 ? 3 : combo >= 4 ? 2 : combo >= 2 ? 1 : 0;
-  var pts = (swish ? 3 : 2) + bonus;
+  // 묘기 +1: 트램펄린이나 범퍼를 거쳐 들어가면. 둘 다 거쳐도 한 슛에 +1 한 번이다.
+  // 불공·황금 공 배수는 이것까지 곱한다(불공은 범퍼를 뚫고 가서 범퍼 뱅크는 못 받는다)
+  var trick = ball.padHits > 0 ? "원바운드!" : (ball.bumps > 0 ? "범퍼 뱅크!" : "");
+  ball.trick = trick;
+  var pts = (swish ? 3 : 2) + bonus + (trick ? 1 : 0);
   var mult = (shotItem === "fire" ? 2 : 1) * (ball.gold ? 3 : 1);
   pts *= mult;
   score += pts;
@@ -1238,7 +1370,7 @@ function made() {
 
   var tag = ball.gold ? "황금 공 ×3" : (shotItem === "fire" ? "불공 ×2" : "");
   pushPop({ x: hoop.x, y: hoop.y + 84, life: 0.95, txt: "+" + pts,
-            sub: buzzer ? "버저비터!" : (tag || (swish ? "스윔!" : (bonus ? combo + "연속!" : ""))),
+            sub: buzzer ? "버저비터!" : (tag || trick || (swish ? "스윔!" : (bonus ? combo + "연속!" : ""))),
             swish: swish || mult > 1 || buzzer });
   for (var i = 0; i < (swish ? 16 : 10); i++) {
     // 인자는 앞에서부터 계산되니 난수를 뽑는 순서(x, y, vx, vy, life)는 예전 그대로다
@@ -1300,6 +1432,7 @@ function nextBall(keepGold) {
   shotItem = null;
   buzzer = false;
   ball.live = false;
+  ball.bumps = 0; ball.padHits = 0; ball.underRim = false; ball.hits = 0; ball.trick = "";
   // 3스테이지부터(타임어택 포함) 가끔 황금 공이 나온다
   ball.gold = keepGold !== undefined ? keepGold :
     !!stage.def && (stage.def.endless || stage.idx >= 2) && Math.random() < GOLD_P;
@@ -1332,19 +1465,26 @@ function canAim() {
 
 // 던졌을 때 공이 그릴 길. 손을 떼기 전에 점으로 보여 준다.
 // 골대까지 전부 그려 주면 너무 쉬워져서 앞부분만 보여 주고
-// 마지막 한 뼘은 눈으로 재게 남겨 둔다. 바람은 반영한다(안 그러면 속이는 셈).
+// 마지막 한 뼘은 눈으로 재게 남겨 둔다.
+// 공과 같은 적분기(fieldStep·bounds)를 돌리니 코트 규칙(바람·벽·천장·트램펄린)은 저절로 반영된다
+// (안 그러면 속이는 셈). 부딪히는 물체(림·백보드·가로막·범퍼)는 일부러 안 넣는다. 다만 🎯 조준선을
+// 켜면 움직이지 않는 범퍼에서 튕기는 것까지 보여 준다. 범퍼 판에서 조준선을 사는 이유가 된다.
+// all: 스텝마다 전부(개수 제한 없이 600스텝까지) 돌려준다. 테스트(H.trace)가 실제 궤적과 맞대 본다.
 var DOTS = 14, DOTS_SCOPE = 60;
-function trace(vx, vy) {
-  var px = ball.x, py = ball.y, out = [];
-  var limit = (armed === "scope" ? DOTS_SCOPE : DOTS) * 2, w = curWind();
-  for (var i = 0; i < 240 && out.length < limit; i++) {
-    vy += GRAV; vx += w; vx *= AIR; vy *= AIR;
-    px += vx; py += vy;
-    if (px < R) { px = R; vx = -vx * WALL_E; }
-    if (px > FW - R) { px = FW - R; vx = -vx * WALL_E; }
-    if (py < R) { py = R; vy = -vy * 0.45; }
-    if (py > FLOOR - R) break;
-    if (i % 4 === 0) out.push(px, py);
+function trace(vx, vy, all, opts) {
+  var o = { x: ball.x, y: ball.y, vx: vx, vy: vy, px: 0, py: 0, padHits: 0 }, out = [];
+  var limit = all ? Infinity : (armed === "scope" ? DOTS_SCOPE : DOTS) * 2, w = curWind();
+  var scope = armed === "scope" || !!(opts && opts.scope);
+  for (var i = 0; i < (all ? 600 : 240) && out.length < limit; i++) {
+    fieldStep(o, w);
+    bounds(o);
+    // 궤도를 도는 범퍼는 던질 때와 닿을 때 자리가 달라 예측하지 않는다
+    if (scope) for (var b = 0; b < bumpers.length; b++) if (!bumpers[b].orbit) hitBumper(o, bumpers[b], false);
+    if (o.y > FLOOR - R) {
+      if (padAt(o.x) && o.padHits < 3) padBounce(o);
+      else break;
+    }
+    if (all || i % 4 === 0) out.push(o.x, o.y);
   }
   return out;
 }
@@ -1508,12 +1648,69 @@ function drawCourt() {
   ctx.lineWidth = 2;
   ctx.beginPath(); ctx.arc(FW / 2, FLOOR, 128, Math.PI, Math.PI * 2); ctx.stroke();
 
+  drawPads();
+
   // 백보드를 매단 레일 (골대가 좌우로 움직이는 이유를 눈에 보이게)
   ctx.strokeStyle = "rgba(139,149,161,.4)";
   ctx.lineWidth = 3;
   ctx.setLineDash([7, 6]);
   ctx.beginPath(); ctx.moveTo(0, RAIL_Y); ctx.lineTo(FW, RAIL_Y); ctx.stroke();
   ctx.setLineDash([]);
+}
+
+// 트램펄린: 바닥선에 걸친 파란 매트(y FLOOR-4, 두께 8)와 양 끝 스프링. 공이 튀면 3만큼 눌렸다 올라온다.
+// 바닥선과 같은 높이에 그려야 '바닥의 일부'로 읽힌다(점선도 바닥처럼 여기서 튕긴다)
+function drawPads() {
+  for (var i = 0; i < pads.length; i++) {
+    var p = pads[i], y = FLOOR - 4 + 3 * p.sq, w = p.x1 - p.x0;
+    ctx.strokeStyle = "rgba(49,130,246,.55)";
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    [p.x0 + 7, p.x1 - 7].forEach(function (sx) {
+      ctx.moveTo(sx, y + 8);
+      for (var k = 1; k <= 4; k++) ctx.lineTo(sx + (k % 2 ? 4 : -4), y + 8 + k * (FLOOR + 18 - (y + 8)) / 4);
+    });
+    ctx.stroke();
+    ctx.fillStyle = "#3182F6";
+    roundRect(p.x0, y, w, 8, 4);
+    ctx.fill();
+    // 흰 빗금은 매트 안에서만 보이게 자른다
+    ctx.save();
+    roundRect(p.x0, y, w, 8, 4);
+    ctx.clip();
+    ctx.strokeStyle = "rgba(255,255,255,.5)";
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    for (var x = p.x0 - 8; x < p.x1 + 8; x += 10) { ctx.moveTo(x, y + 8); ctx.lineTo(x + 8, y); }
+    ctx.stroke();
+    ctx.restore();
+  }
+}
+
+// 범퍼: 흰 원판에 주황 테, 가운데 주황 심과 흰 별. 맞으면 테가 금색이 되고 1.25배까지 커졌다 돌아온다
+function drawBumpers() {
+  for (var i = 0; i < bumpers.length; i++) {
+    var b = bumpers[i], k = 1 + 0.25 * b.fl;
+    ctx.save();
+    ctx.translate(b.x, b.y);
+    ctx.scale(k, k);
+    ctx.fillStyle = "#FFFFFF";
+    ctx.beginPath(); ctx.arc(0, 0, b.r, 0, Math.PI * 2); ctx.fill();
+    ctx.strokeStyle = b.fl > 0 ? "#FFB020" : "rgba(255,107,44,.9)";
+    ctx.lineWidth = 3;
+    ctx.beginPath(); ctx.arc(0, 0, b.r - 1.5, 0, Math.PI * 2); ctx.stroke();
+    ctx.fillStyle = "#FF6B2C";
+    ctx.beginPath(); ctx.arc(0, 0, b.r * 0.55, 0, Math.PI * 2); ctx.fill();
+    ctx.fillStyle = "#FFFFFF";
+    ctx.beginPath();
+    for (var s = 0; s < 10; s++) {
+      var a = -Math.PI / 2 + s * Math.PI / 5, rs = s % 2 ? b.r * 0.13 : b.r * 0.3;
+      ctx.lineTo(Math.cos(a) * rs, Math.sin(a) * rs);
+    }
+    ctx.closePath();
+    ctx.fill();
+    ctx.restore();
+  }
 }
 
 function drawWind() {
@@ -1862,6 +2059,7 @@ function render() {
   drawCoins();
   drawBubbles();
   drawBars();
+  drawBumpers();
   drawMagnet();
   drawHoop();
   drawFrost();
@@ -1998,6 +2196,7 @@ function closeAllVeils() {
 var toastEl = document.getElementById("toast");
 var toastTimer = 0;
 function toast(msg) {
+  if (quiet) return;
   toastEl.textContent = msg;
   toastEl.classList.add("show");
   clearTimeout(toastTimer);
@@ -2218,14 +2417,15 @@ function beginStage(def, idx) {
   hasTime = !!def.time;
   GAME_TIME = def.time || 45;
   timeLeft = def.time || 0;
-  hoop.x = (HX_MIN + HX_MAX) / 2; hoop.dir = 1; hoop.y = HOOP_Y;
+  hoop.x = def.hoop.x != null ? def.hoop.x : (HX_MIN + HX_MAX) / 2; hoop.dir = 1; hoop.y = HOOP_Y;
   bobT = 0; deadTimer = -1;
   netSway = 0; flash = 0; shake = 0;
   pops.length = 0; sparks.length = 0; trail.length = 0; gusts.length = 0;
   comboReset(); chipPrev = {};
   placeProps(def);
   nextBall();
-  stTitle.textContent = def.endless ? "타임어택" : ("스테이지 " + (idx + 1));
+  // 번호가 음수인 판은 타임어택(-1)이거나 테스트가 넣은 판(H.beginDef, -9)이다
+  stTitle.textContent = def.endless ? "타임어택" : idx < 0 ? "테스트" : ("스테이지 " + (idx + 1));
   stName.textContent = def.name;
   state = "playing";
   last = performance.now();
@@ -2263,8 +2463,11 @@ function clearStage() {
   state = "clear";
   dropAim();
   var n = starsFor();
-  var before = starsAll()[stage.idx];
-  saveStar(stage.idx, n);
+  // 테스트 판(번호 음수)은 별 기록에 안 남긴다. saveStar(-9) 는 없는 칸에 써서 별 문자열을 망가뜨린다.
+  // 선물도 없다(before 를 3으로 둔다)
+  var test = stage.idx < 0;
+  var before = test ? 3 : starsAll()[stage.idx];
+  if (!test) saveStar(stage.idx, n);
   sfx.clear(n);
 
   // 보상: 별마다 3코인. 별 3개를 '처음' 받으면 아이템도 하나.
@@ -2282,7 +2485,7 @@ function clearStage() {
 
   var isFinal = stage.idx >= STAGE_N - 1;
   document.getElementById("clearTitle").textContent =
-    isFinal ? "전부 깼어요!" : "스테이지 " + (stage.idx + 1) + " 클리어!";
+    test ? "테스트 클리어!" : isFinal ? "전부 깼어요!" : "스테이지 " + (stage.idx + 1) + " 클리어!";
   document.getElementById("clearScore").textContent = comma(score);
   document.getElementById("clearSub").textContent =
     "점 · 공 " + stage.thrown + "개로 클리어" + (bestCombo >= 2 ? " · 최다 연속 " + bestCombo : "");
@@ -2294,7 +2497,9 @@ function clearStage() {
     })(i);
   }
   var btnNext = document.getElementById("btnNext");
-  if (isFinal) {
+  if (test) {
+    btnNext.textContent = "스테이지 목록";
+  } else if (isFinal) {
     btnNext.textContent = allClear() ? "타임어택 열기" : "스테이지 목록";
   } else {
     btnNext.textContent = "다음 스테이지";
@@ -2417,6 +2622,7 @@ document.getElementById("btnHowClose").addEventListener("click", function () { v
 document.getElementById("btnResume").addEventListener("click", resume);
 
 document.getElementById("btnNext").addEventListener("click", function () {
+  if (stage.idx < 0) { openStages(); return; }       // 테스트 판엔 다음 판이 없다
   if (stage.idx >= STAGE_N - 1) {
     if (allClear()) { beginStage(TIME_ATTACK, -1); } else { openStages(); }
     return;
@@ -2445,7 +2651,9 @@ function doExit() {
   score = 0; combo = 0; buzzer = false;
   comboReset();
   hasTime = false;
-  bars.length = 0; coins.length = 0; bubbles.length = 0; wind = 0; RIM = RIM_BASE;
+  // render 는 시작 화면(ready) 뒤에도 소품을 그린다. 범퍼·트램펄린을 안 비우면 지난 판 것이 남는다
+  bars.length = 0; coins.length = 0; bubbles.length = 0; bumpers.length = 0; pads.length = 0;
+  wind = 0; RIM = RIM_BASE;
   pops.length = 0; sparks.length = 0; trail.length = 0; gusts.length = 0;
   armed = null; shotItem = null; ball.gold = false;
   stTitle.textContent = "한 손 농구";
@@ -2607,10 +2815,56 @@ window.__hoop = {
              inv: inv, wallet: wallet, armed: armed, shotItem: shotItem,
              FH: FH, FLOOR: FLOOR, HOLD_Y: HOLD_Y, HOOP_Y: HOOP_Y,
              deadTimer: deadTimer, aiming: aiming, buzzer: buzzer,
-             errCount: errCount, wdHits: wdHits, nanCount: nanCount };
+             errCount: errCount, wdHits: wdHits, nanCount: nanCount,
+             bumpers: bumpers, pads: pads, pops: pops };
   },
   stages: function () { return STAGES; },
   beginStage: function (i) { beginStage(i < 0 ? TIME_ATTACK : STAGES[i], i); },
+  // 목록에 없는 판을 넣어 돌린다(범퍼·트램펄린 같은 장치를 판을 만들기 전에 따로 검사). 별은 안 남는다
+  beginDef: function (def) { beginStage(def, -9); },
+  quiet: function (on) { quiet = !!on; },
+  trace: function (vx, vy, opts) { return trace(vx, vy, true, opts); },
+  gravAt: gravAt,
+  // 판 전체를 떠 두고 되돌린다. 테스트가 같은 자리에서 슛 수천 개를 훑을 때 쓴다.
+  // 되돌릴 때 객체를 새로 만들지 않고 '같은 객체'에 값을 써 넣는다. 테스트와 게임 코드가
+  // H.state().ball 같은 참조를 들고 있어서, 새 객체로 바꾸면 그쪽은 옛 값을 계속 본다.
+  // 물리에 영향을 주는 상태를 새로 만드는 패키지는 여기 두 곳에 같이 넣어야 한다.
+  snapshot: function () {
+    function pick(a, keys) {
+      return a.map(function (o) { var r = {}; keys.forEach(function (k) { r[k] = o[k] === undefined ? 0 : o[k]; }); return r; });
+    }
+    return JSON.parse(JSON.stringify({
+      ball: ball, hoop: hoop,
+      bars: pick(bars, ["x", "dir", "hit"]), coins: pick(coins, ["got", "spin"]),
+      bubbles: pick(bubbles, ["got", "t"]), bumpers: pick(bumpers, ["x", "y", "fl"]), pads: pick(pads, ["sq"]),
+      stage: { ballsLeft: stage.ballsLeft, thrown: stage.thrown, made: stage.made, swish: stage.swish, coins: stage.coins },
+      score: score, combo: combo, bestCombo: bestCombo, makes: makes, shots: shots,
+      scored: scored, touched: touched, deadTimer: deadTimer, bobT: bobT, timeLeft: timeLeft, buzzer: buzzer,
+      armed: armed, shotItem: shotItem, state: state, wallet: wallet, inv: inv,
+      n: { pops: pops.length, sparks: sparks.length, trail: trail.length, gusts: gusts.length }
+    }));
+  },
+  restore: function (s) {
+    Object.assign(ball, s.ball);
+    Object.assign(hoop, s.hoop);
+    Object.assign(stage, s.stage);
+    [[bars, s.bars], [coins, s.coins], [bubbles, s.bubbles], [bumpers, s.bumpers], [pads, s.pads]]
+      .forEach(function (p) { p[1].forEach(function (v, i) { if (p[0][i]) Object.assign(p[0][i], v); }); });
+    score = s.score; combo = s.combo; bestCombo = s.bestCombo; makes = s.makes; shots = s.shots;
+    scored = s.scored; touched = s.touched; deadTimer = s.deadTimer; bobT = s.bobT;
+    timeLeft = s.timeLeft; buzzer = s.buzzer; armed = s.armed; shotItem = s.shotItem;
+    wallet = s.wallet; store.set("wallet", wallet);
+    Object.assign(inv, s.inv); saveInv();
+    // 효과 입자는 줄이기만 한다(없던 입자를 만들 수는 없다)
+    if (pops.length > s.n.pops) pops.length = s.n.pops;
+    if (sparks.length > s.n.sparks) sparks.length = s.n.sparks;
+    if (trail.length > s.n.trail) trail.length = s.n.trail;
+    if (gusts.length > s.n.gusts) gusts.length = s.n.gusts;
+    state = s.state;
+    // 슛이 끝나 클리어·실패 시트가 떴다가 되돌아온 경우. 시트를 닫고 루프 시계도 새로 잡는다
+    if (state === "playing") { closeAllVeils(); last = performance.now(); acc = 0; }
+    paintGoals(); paintBalls(); paintTimer(); paintItems(); paintHint();
+  },
   pause: pause,
   shoot: function (vx, vy) { ball.vx = vx; ball.vy = vy; launch(); },
   useItem: useItem,
@@ -2639,9 +2893,10 @@ window.__hoop = {
     for (var i = 0; i < n; i++) pushPop({ x: FW / 2, y: FH / 2, life: 0.9, txt: "+" + (i + 1), sub: "", swish: false });
   },
   consts: function () {
-    return { FW: FW, R: R, GRAV: GRAV, AIR: AIR, KNOB: KNOB, MAXPOW: MAXPOW,
+    return { FW: FW, R: R, GRAV: GRAV, AIR: AIR, KNOB: KNOB, MAXPOW: MAXPOW, MAXV: MAXV,
              HX_MIN: HX_MIN, HX_MAX: HX_MAX, WALL_E: WALL_E, STAGE_N: STAGE_N,
-             MAG_R: MAG_R, ITEMS: ITEMS };
+             MAG_R: MAG_R, ITEMS: ITEMS, PAD_MIN: PAD_MIN, BUMP_KICK: BUMP_KICK,
+             FLOOR: FLOOR, HOLD_Y: HOLD_Y, HOOP_Y: HOOP_Y, POWER: POWER };
   }
 };
 
