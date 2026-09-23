@@ -1911,6 +1911,16 @@ function makeIR(ctx, seconds, rand) {
   for (let c = 0; c < 2; c++) { const d = buf.getChannelData(c); for (let i = 0; i < len; i++) d[i] = (rand.f() * 2 - 1) * Math.exp(-i / (sr * seconds / 6.9)) * (i < 40 ? i / 40 : 1); }
   return buf;
 }
+// DynamicsCompressor 는 스스로 메이크업 이득((1/전체이득)^0.6)을 더한다 — 그만큼 되돌려서 봉우리만 깎게 한다
+function mkComp(ctx, thr, ratio, atk, rel, knee) {
+  const c = ctx.createDynamicsCompressor();
+  c.threshold.value = thr; c.ratio.value = ratio; c.attack.value = atk; c.release.value = rel; c.knee.value = knee || 0;
+  const t = ctx.createGain(); t.gain.value = Math.pow(10, -.6 * -thr * (1 - 1 / ratio) / 20);
+  c.connect(t); return { in: c, out: t };
+}
+// 마스터 드라이브(클리퍼에 얼마나 밀어 넣나) — 어쿠스틱 장르는 클리퍼를 거의 안 건드리게 낮게
+const LOUD = { kpop:3.4, edm:3.3, hiphop:3, pop:3.2, citypop:3, rock:3.4, lofi:3.2, chiptune:4, kids:2.8,
+  cinematic:2.4, ambient:2.4, ballad:1.9, jazz:1.8, bossa:1.9, waltz:1.9 };
 function buildGraph(ctx, song) {
   const P = song.P, G = P.G, rand = new Rand(P.seed ^ 0xA5A5A5A5);
   const g = { ctx, P, chip: !!G.chip, tracks: {} };
@@ -1925,7 +1935,19 @@ function buildGraph(ctx, song) {
 
   const master = ctx.createGain(); master.gain.value = .6;
   const dcBlock = hp(g, 24, .5);
-  const comp = ctx.createDynamicsCompressor(); comp.threshold.value = -16; comp.knee.value = 10; comp.ratio.value = 6; comp.attack.value = .003; comp.release.value = .16;
+  // 마스터: 글루(2:1, 메이크업 상쇄) → 드라이브 → 소프트 클리퍼 → 리미터 → 구간 볼륨(ride)
+  const glue = mkComp(ctx, -18, 2, .03, .25, 8);
+  const drive = ctx.createGain(); drive.gain.value = LOUD[P.genre] || 3;
+  const pre = ctx.createGain(); pre.gain.value = .5;          // 곡선 입력 [-1,1] = 실제 신호 [-2,2]
+  const clip = ctx.createWaveShaper(); clip.oversample = "2x";
+  { const c = new Float32Array(4096);
+    for (let i = 0; i < 4096; i++) { const u = 2 * (i / 2047.5 - 1), a = Math.abs(u);
+      c[i] = a <= .8 ? u : Math.sign(u) * (.8 + .2 * Math.tanh((a - .8) / .2)); }   // -1.9dBFS 까지는 그대로, 그 위만 부드럽게
+    clip.curve = c; }
+  const lim = mkComp(ctx, -2, 20, .001, .08, 0);
+  const ride = ctx.createGain(); ride.gain.value = 1;         // 구간별 볼륨 — 리미터 뒤라서 섹션 강약이 그대로 남는다
+  glue.out.connect(drive).connect(pre).connect(clip).connect(lim.in); lim.out.connect(ride).connect(ctx.destination);
+  g.ride = ride;
   let colorIn = master;
   if (G.lofi) {
     const l = lp(g, 3400, .7); const sh = ctx.createWaveShaper();
@@ -1935,9 +1957,8 @@ function buildGraph(ctx, song) {
   if (G.bright) {                       // 요즘 팝 특유의 밝기
     const sh = ctx.createBiquadFilter(); sh.type = "highshelf"; sh.frequency.value = 4200; sh.gain.value = 3.5;
     const pr = ctx.createBiquadFilter(); pr.type = "peaking"; pr.frequency.value = 220; pr.Q.value = .9; pr.gain.value = -2;
-    dcBlock.connect(pr).connect(sh).connect(comp);
-  } else dcBlock.connect(comp);
-  comp.connect(ctx.destination);
+    dcBlock.connect(pr).connect(sh).connect(glue.in);
+  } else dcBlock.connect(glue.in);
   g.master = master;
 
   // 잔향
@@ -1950,6 +1971,8 @@ function buildGraph(ctx, song) {
   dly.connect(dl).connect(fb).connect(dly); dly.connect(dlyOut).connect(master); g.dly = dly;
   // 사이드체인
   const sc = ctx.createGain(); sc.gain.value = 1; sc.connect(master); g.sc = sc;
+  const scB = ctx.createGain(); scB.gain.value = 1; scB.connect(master); g.scBass = scB;   // 베이스만 따로, 더 짧게 비킨다
+  g.bassDuck = G.sidechain ? .6 : P.bassInst === "bass808" ? .4 : 0;
 
   const MIX = { lead:1.15, chords:.6, bass:.72, pad:.55, arp:.6, drum:.8, amb:1, fx:.7 };
   const SEND = { lead:.35, chords:.28, bass:.04, pad:.55, arp:.3, drum:.14, amb:.3, fx:.4 };
@@ -1957,7 +1980,7 @@ function buildGraph(ctx, song) {
   for (const name of Object.keys(MIX)) {
     const gn = ctx.createGain(); gn.gain.value = MIX[name];
     const toSC = G.sidechain && ["pad","arp","chords"].includes(name);
-    gn.connect(toSC ? sc : master);
+    gn.connect(name === "bass" ? scB : toSC ? sc : master);
     const s = ctx.createGain(); s.gain.value = SEND[name]; gn.connect(s).connect(rev);
     if (DSEND[name]) { const ds = ctx.createGain(); ds.gain.value = DSEND[name]; gn.connect(ds).connect(dly); }
     g.tracks[name] = gn;
@@ -2019,12 +2042,19 @@ function renderEvents(song) {
   song.duration = song.totalBeats * spb + 3;
   return evs;
 }
+// 킥이 치면 코드·패드·아르페지오(sc)와 베이스(scBass)를 잠깐 낮춘다.
+// setTargetAtTime 은 지금 값에서 출발하므로 킥이 8분음표 간격으로 붙어도 튀지 않고, 회복은 템포를 따른다.
+function duckOn(g, when, v) {
+  const spb = 60 / g.P.bpm; v = clamp(v, 0, 1);
+  if (g.P.G.sidechain) { const p = g.sc.gain; p.setTargetAtTime(1 - .7 * v, when, .004); p.setTargetAtTime(1, when + .025, spb * .16); }
+  if (g.bassDuck) { const p = g.scBass.gain; p.setTargetAtTime(1 - g.bassDuck * v, when, .002); p.setTargetAtTime(1, when + .02, spb * .08); }
+}
 function playEvent(g, ev, when) {
   const out = g.tracks[ev.tr === "drum" ? "drum" : ev.tr];
   if (ev.tr === "fx") { const fn = FX[ev.p]; if (fn) fn(g, out, when, ev.v, ev.d); return; }
   if (ev.tr === "drum") {
     const fn = DRUM[ev.p]; if (fn) fn(g, out, when, ev.v);
-    if (g.P.G.sidechain && ev.p === "kick") { const p = g.sc.gain; p.setValueAtTime(1, when - .003); p.linearRampToValueAtTime(.22, when + .012); p.linearRampToValueAtTime(1, when + .3); }
+    if (ev.p === "kick" || ev.p === "boom") duckOn(g, when, ev.v);
     return;
   }
   const fn = INST[ev.inst] || INST.piano;
