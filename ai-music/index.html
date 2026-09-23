@@ -446,7 +446,7 @@ const GENRES = {
               drums:"waltz", bass:"waltz", chords:"oompah", lead:"strings", chordInst:"piano", bassInst:"fingerbass",
               pad:"strings", padIn:["B"], reverb:.6, delay:0, intro:["chords","bass"], leadRange:[2,15],
               prog:{ major:[[0,4,0,4],[0,3,4,0],[0,5,3,4]], minor:[[0,4,0,4],[0,5,3,4],[0,3,4,0]] } },
-  citypop:  { ko:"시티팝",   bpm:[100,118], minor:.3, swing:.5, sevenths:.7, raiseV:.6, hook:true, pentLead:.5, density:2,
+  citypop:  { ko:"시티팝",   bpm:[100,118], minor:.3, swing:.52, swingGrid:.25, sevenths:.7, raiseV:.6, hook:true, pentLead:.5, density:2,
               drums:"citypop", bass:"funk", chords:"block", lead:"synthlead", chordInst:"epiano", bassInst:"slapbass",
               pad:"strings", padIn:["B"], reverb:.45, delay:.15, filterClose:true, intro:["chords","bass","drums"], leadRange:[0,13],
               prog:{ major:[[3,4,2,5],[1,4,0,5],[0,3,1,4]], minor:[[0,5,1,4],[3,4,0,0]] } },
@@ -498,7 +498,7 @@ const LEX = [
   { w:["공부","study","집중","focus","작업용","work"], g:{lofi:3,ambient:1}, en:-.3, why:"집중용 로파이로" },
   { w:["chill","느긋","여유"],                     g:{lofi:2,bossa:1}, en:-.3, why:"느긋한 로파이 쪽으로" },
   { w:["힙합","hiphop","hip-hop","hip hop","랩","rap","붐뱁","boom bap"], g:{hiphop:3}, why:"힙합 비트로" },
-  { w:["트랩","trap"],                            g:{hiphop:3}, val:-.3, mode:"minor", why:"트랩 풍 힙합으로" },
+  { w:["트랩","trap"],                            g:{hiphop:3}, val:-.3, mode:"minor", flags:{trap:1}, why:"트랩 풍 힙합으로" },
   { w:["edm","이디엠","클럽","club","페스티벌","festival","레이브","rave"], g:{edm:3}, en:.5, why:"클럽 EDM으로" },
   { w:["댄스","dance","하우스","house","테크노","techno","트랜스","trance"], g:{edm:3}, en:.4, why:"댄스 음악으로" },
   { w:["운동","workout","러닝","running","헬스","gym","달리"], g:{edm:3,rock:1}, en:.5, tempo:8, why:"운동용으로 빠르고 힘있게" },
@@ -674,7 +674,7 @@ function interpret(promptRaw, seedNum, over) {
     drums: !solo && G.drums !== "none",
     solo, lead, chordInst, bassInst: G.bassInst, pad, arp: solo ? null : G.arp,
     pent: !!acc.flags.pent, amb: acc.flags.rain ? "rain" : acc.flags.waves ? "waves" : null,
-    dreamy: !!acc.flags.dreamy, reasons: acc.reasons
+    dreamy: !!acc.flags.dreamy, trap: !!acc.flags.trap, reasons: acc.reasons
   };
   // 사용자가 손본 값
   if (over.bpm) P.bpm = clamp(over.bpm, 48, 200);
@@ -1723,6 +1723,7 @@ function makeDrums(song, P) {
       const fill = next && next.type !== "outro" && b === sec.bars - 1 && !["waltz","bossa","ambient"].includes(G.drums) && rand.chance(.8);
       if (mode === "off" && !fill) continue;
       const crash = (isB && b === 0) || (sec.type === "A" && b === 0 && si > 0 && sp.crashB);
+      const barStart = song.drums.length;                          // 이 마디부터 쌓인 드럼(햇 롤이 갈아 끼울 범위)
       for (let s = 0; s < steps; s++) {
         const t = barBeat + s / 4;
         const p = arr => arr && s < arr.length ? arr[s] : 0;
@@ -1796,6 +1797,20 @@ function makeDrums(song, P) {
         play(sp.ohat, "ohat", .5);
         play(sp.ride, "ride", .8);
         play(sp.shaker, "shaker", .6);
+      }
+      // 햇 롤: 힙합(트랩이라 하면 K-pop 1절도)에서 한 박의 햇을 16분 셋잇단·32분·8분 셋잇단으로 바꾼다.
+      // 보통 힙합은 네 마디째 넘김으로만, 트랩은 두 마디마다(박 가운데서도). 롤은 스윙을 타지 않는다(straight)
+      const rollable = !fill && mode !== "build" && !light && (G.drums === "hiphop" || (P.trap && G.drums === "kpop" && sec.type === "A"));
+      if (rollable && (P.trap ? b % 2 === 1 : b % 4 === 3) && rand.chance(P.trap ? .85 : .6)) {
+        const beat = P.trap ? rand.pick([1, bpb - 1]) : bpb - 1;
+        const div = rand.pick(P.trap ? [6, 6, 8, 3] : [6, 8]);        // 6 = 16분 셋잇단, 8 = 32분, 3 = 8분 셋잇단
+        const t0 = barBeat + beat;
+        const kept = song.drums.slice(barStart).filter(e => !(e.p === "hat" && e.t >= t0 - 1e-6 && e.t < t0 + 1 - 1e-6));
+        song.drums.length = barStart; song.drums.push(...kept);
+        for (let i = 0; i < div; i++) {
+          const v = div === 8 ? .25 + .4 * i / div : (i % 3 === 0 ? .55 : .3);   // 32분은 점점 세게, 셋잇단은 묶음 첫 음에 힘
+          song.drums.push({ t: t0 + i / div, d: .1, p: "hat", v: clamp(v * soft, .05, 1), tr: "drum", straight: true });
+        }
       }
     }
   });
@@ -2594,17 +2609,36 @@ function startAmbience(g, t0, dur) {
    7. 악보 → 이벤트(초 단위) — 스윙·휴먼라이즈는 여기서
    ========================================================================= */
 function renderEvents(song) {
-  const P = song.P, spb = 60 / P.bpm, swing = P.swing, rand = new Rand(P.seed ^ 0x1234);
-  const human = P.G.chip || P.genre === "edm" ? 0 : .007;
-  const beatToSec = beat => {
-    const fl = Math.floor(beat), frac = beat - fl;
-    const f2 = Math.abs(frac - .5) < .01 ? swing : frac;
-    return (fl + f2) * spb;
+  const P = song.P, G = P.G, spb = 60 / P.bpm, swing = P.swing, rand = new Rand(P.seed ^ 0x1234);
+  // 스윙은 한 점만 옮기지 않고 박 안을 이어진 꺾은선으로 휜다: 뒷박(grid)이 swing 자리로 가고 그 사이 음도 따라간다.
+  // 그래서 뒷박에서 조금씩 어긋나 치는 코드(스태거)도 한 덩어리로 움직인다 — 예전엔 앞 두 음만 밀려 순서가 뒤집혔다.
+  // grid .5 = 8분 스윙(재즈·로파이·힙합), .25 = 16분 스윙(시티팝). swing .5 면 그대로(항등).
+  const grid = G.swingGrid || .5;
+  const warp = x => {
+    const pr = 2 * grid, base = Math.floor(x / pr + 1e-9) * pr, y = x - base;
+    return base + (y < grid ? y * swing / .5 : pr * swing + (y - grid) * (1 - swing) / .5);
+  };
+  const beatToSec = beat => { const fl = Math.floor(beat + 1e-9); return (fl + warp(beat - fl)) * spb; };
+  // 장르다운 밀고 당김(초, + = 박보다 늦게). 드럼은 이름, 나머지는 트랙으로 찾는다. 10ms 가 안 되는 건 들리지 않아 뺐다
+  const FEEL = {
+    lofi:   { snare: .016, clap: .016, hat: .006, bass: .012, chords: .01 },
+    hiphop: { snare: .010, clap: .012, bass: .004 },
+    jazz:   { ride: -.004, bass: -.003, snare: .006 },
+    bossa:  { rim: .004, shaker: -.003 }
+  }[P.genre] || {};
+  // 사람 손 흔들림: 8비트는 없음, 신스 스탭이 앞서는 EDM·K-pop 은 아주 조금
+  const human = G.chip ? 0 : ["edm", "kpop"].includes(P.genre) ? .002 : .007;
+  const chordJit = new Map();                       // 코드 한 번 칠 때 한 값 — 음마다 따로 흔들면 스탭이 번진다
+  const jitter = n => {
+    if (n.straight) return 0;                       // 박에 딱 맞춘 트랩 햇 롤
+    if (n.tr === "chords") { const k = Math.round(n.t * 8); if (!chordJit.has(k)) chordJit.set(k, rand.range(-human, human)); return chordJit.get(k); }
+    return rand.range(-human, human) * (n.tr === "drum" ? .5 : 1);
   };
   const evs = [];
   const push = (list, inst) => { for (const n of list) {
-    const t = beatToSec(n.t) + (n.tr === "drum" ? rand.range(-human, human) * .5 : rand.range(-human, human));
-    const d = Math.max(.05, beatToSec(n.t + n.d) - beatToSec(n.t));
+    const on = n.straight ? n.t * spb : beatToSec(n.t);   // straight: 스윙을 타지 않는 음(셋잇단 롤)
+    const t = on + (FEEL[n.tr === "drum" ? n.p : n.tr] || 0) + jitter(n);
+    const d = Math.max(.05, n.straight ? n.d * spb : beatToSec(n.t + n.d) - beatToSec(n.t));
     const e = { time: Math.max(0, t), d, p: n.p, v: n.v, tr: n.tr, inst: n.inst || inst, beat: n.t, beats: n.d };   // 음마다 악기를 바꿀 수 있다(드롭 찹)
     if (n.slideIn) e.slideIn = true; if (n.tight) e.tight = true;   // 808 글라이드·짧은 노크 표시
     if (n.vowel != null) e.vowel = n.vowel;                         // 보컬 찹 모음
