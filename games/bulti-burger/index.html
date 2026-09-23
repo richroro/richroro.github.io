@@ -116,7 +116,9 @@
   .card.rush{border-color:var(--orange)}
   .card.vip{border-color:var(--gold)}
   .card.hot{border-color:var(--red)}
-  .card.ghost{background:rgba(255,255,255,.45);box-shadow:none;opacity:.35}
+  /* 도착 예고. 흰 반투명이었을 땐 배경(#F2F4F6)과 1단계밖에 차이가 없어 사실상 안 보였다 */
+  .card.ghost{background:rgba(107,118,132,.16);border:2px dashed rgba(107,118,132,.55);box-shadow:none;opacity:.35}
+  .card.ghost > *{visibility:hidden}
   .card.hide{visibility:hidden}
   /* 빨간불 손님은 카드가 흔들린다. 소리를 꺼도 급한 게 보여야 한다. */
   .card.urgent{animation:cardShake .62s linear infinite}
@@ -276,10 +278,10 @@
 
   #rotate{display:none;position:fixed;inset:0;z-index:60;background:var(--bg);
     align-items:center;justify-content:center;text-align:center;padding:24px}
-  #rotate .rotIco{font-size:40px;margin-bottom:8px;transform:rotate(90deg)}
+  #rotate .rotIco{font-size:40px;margin-bottom:8px}
+  #rotate .rotIco.turn{transform:rotate(90deg)}
   #rotate b{font-size:18px;font-weight:800;display:block;margin-bottom:6px}
   #rotate p{font-size:13px;color:var(--ink-2);line-height:1.6}
-  @media (orientation:landscape) and (max-height:500px) and (pointer:coarse){ #rotate{display:flex} }
 
   /* 튜토리얼 */
   #coach{position:absolute;left:12px;right:12px;top:12px;z-index:4;display:none;
@@ -420,7 +422,7 @@
 <div class="hint">주문 순서대로 쌓고 윗빵을 덮어 내보내세요<span class="kbhint"> · 1~8 / Space / ⌫</span></div>
 <div id="toast" role="status" aria-live="polite"></div>
 <div id="rotate" role="alert">
-  <div><div class="rotIco">📱</div><b>세로로 돌려 주세요</b><p>한 손으로 세로 화면에서 즐기는 게임이에요.<br>돌리면 멈춘 곳에서 이어서 할 수 있어요.</p></div>
+  <div><div class="rotIco" id="rotIco">📱</div><b id="rotTitle">세로로 돌려 주세요</b><p id="rotMsg"></p></div>
 </div>
 <div id="tutPtr" aria-hidden="true"></div>
 <div id="hurt"></div>
@@ -635,9 +637,10 @@ var THICK = { patty: 1, egg: 1, lettuce: 1, tomato: 1 };
 var THICK_MAX = 3;
 // 같은 재료는 한 레시피에 최대 2장 (더블패티 허용)
 var SAME_MAX = 2;
-// 최악 스택 높이(아래빵+재료6+윗빵)를 고정 상수로 두고 축소배율을 계산한다.
-// 쌓을 때마다 배율이 바뀌면 화면이 출렁여서 조준이 어려워진다.
-var MAX_STACK_H = 163;
+// 최악 스택 높이를 고정 상수로 두고 축소배율을 계산한다. 쌓을 때마다 배율이 바뀌면
+// 화면이 출렁여서 조준이 어려워진다. VIP 는 재료가 한 장 더라 최악은 7장이다:
+// 아래빵 22 + 패티 26×2 + 계란 20 + 치즈 14×2 + 베이컨 13×2 + 윗빵 30 = 178.
+var MAX_STACK_H = 178;
 
 /* ══════════════════════════════════════════════════════════════
    4. 그리기 헬퍼
@@ -987,6 +990,7 @@ function resize() {
   cardsDirty = true;
   if (typeof render === "function") render();
   redrawShots();
+  if (typeof checkFit === "function" && rotEl) checkFit();
   return true;
 }
 
@@ -1474,7 +1478,7 @@ function burst(x, y, n, col) {
   }
 }
 function pop(x, y, txt, col, big) {
-  pops.push({ x: x, y: Math.max(big ? 30 : 22, y), txt: txt, life: 0.65, col: col, big: !!big });
+  pops.push({ x: x, y: Math.max(big ? 40 : 34, y), txt: txt, life: 0.65, col: col, big: !!big });
 }
 // 재료가 착지할 때 튀는 부스러기
 function crumbs(x, y, col) {
@@ -1638,7 +1642,8 @@ function doServe(c, isRush) {
         var h = mostUrgent(c);
         if (h) {
           h.left = Math.min(h.max, h.left + h.max * HEAL_AMT);
-          h.healFlash = 0.3;
+          h.healFlash = 0.3;                // 막대 초록 번쩍임
+          h.healAt = performance.now();     // '+5%' 떠오름(0.6초) 기준 시각
           sfx.heal();
         }
       }
@@ -1897,7 +1902,7 @@ function paintMini(cv, order, done) {
   var capH = 6;
   var budget = r.height - capH - 1;
   var n = order.length;
-  // 실제 두께비가 아니라 균등 분할. 최소 8px 를 보장해야 마커가 살아남는다.
+  // 실제 두께비가 아니라 균등 분할.
   // 보통은 8~16px. 7재료 VIP 처럼 예산을 넘으면 5px 까지 줄여서라도 다 보이게 한다.
   var lh = Math.max(5, Math.min(16, Math.floor(budget / n)));
   var w = Math.min(r.width - 6, 54);
@@ -1957,7 +1962,7 @@ function resetCardFx(el) {
   el.style.transition = "none";
   el.style.transform = "";
   el.style.opacity = "";
-  var he = el.children[3]; if (he) he.classList.remove("go");
+  var he = el.children[3]; if (he) { he.classList.remove("go"); } el.__healId = "";
 }
 
 var prevSlot = {};           // 손님 id → 지난 프레임의 칸. 칸을 옮긴 카드만 미끄러뜨린다.
@@ -1980,14 +1985,32 @@ function paintCards() {
     ghostSlot = queue.length;
   }
   var focus = state === "playing" ? focusCustomer() : null;
+  // 주황 테두리는 '지금 버튼을 누르면 급하게 나갈 손님' 딱 한 명에게만 켠다.
+  // 조건만 맞으면 켜던 방식은, 스택이 다른 손님 주문과 정확히 같을 때(버튼은 그 손님에게
+  // 정상 서빙)나 급송 대상이 둘일 때(버튼은 더 급한 쪽만) 카드와 버튼이 어긋났다.
+  var rushTarget = state === "playing" && serveMode() === "rush" ? findRush() : null;
   var nowSlot = {};
+  var nowMs = performance.now();
   for (var i = 0; i < cardEls.length; i++) {
     var el = cardEls[i], c = queue[i];
+    // '+5%' 는 칸이 아니라 회복된 손님에게 붙는다. 칸을 옮겨 오면 음수 delay 로 이어서 재생하고,
+    // 초록 번쩍임(0.3초)이 끝나도 0.6초 애니메이션은 끝까지 둔다.
+    var healEl = el.children[3];
+    var healId = c && c.healAt && nowMs - c.healAt < 600 ? c.id + ":" + c.healAt : "";
+    if (el.__healId !== healId) {
+      el.__healId = healId;
+      healEl.classList.remove("go");
+      if (healId) {
+        healEl.style.animationDelay = (-(nowMs - c.healAt) / 1000).toFixed(3) + "s";
+        void healEl.offsetWidth;
+        healEl.classList.add("go");
+      }
+    }
     if (!c) {
       if (el.__cid) { resetCardFx(el); blankCard(el); el.__cid = 0; }
       if (i === ghostSlot) {
         el.className = "card ghost";
-        el.style.opacity = String(0.35 * (1 - spawnTimer / GHOST_LEAD));
+        el.style.opacity = String(0.9 * (1 - spawnTimer / GHOST_LEAD));
       } else {
         el.className = "card hide";
         el.style.opacity = "";
@@ -2002,7 +2025,6 @@ function paintCards() {
       var from = prevSlot[c.id];
       el.__cid = c.id;
       c.key = "";
-      c.hf = 0;               // 칸을 옮겨 왔으면 회복 표시는 새 칸에서 다시 시작한다
       if (!reduceMotion) {
         var fresh = from == null;
         var dx = fresh ? 26 : Math.max(0, from - i) * (cardW + 6);
@@ -2026,7 +2048,7 @@ function paintCards() {
 
     var ratio = Math.max(0, Math.min(1, c.left / c.max));
     var alive = stack.length > 0 && isPrefix(stack, c.order);
-    var rushable = alive && stack.length < c.order.length && stack.length * 2 >= c.order.length && ratio < RUSH_AT;
+    var rushable = c === rushTarget;
 
     // 테두리 색(급송 > 빨간불 > 맞게 쌓는 중), 흔들림(빨간불), VIP 금테는 서로 다른 채널이다.
     // 한 줄 else-if 로 두었더니 빨간불 손님 버거를 쌓는 중에 흔들림이 꺼지고 VIP 금테가 사라졌다.
@@ -2064,14 +2086,7 @@ function paintCards() {
     bar.style.backgroundColor = c.healFlash > 0 ? "#00C471"
       : (ratio > 0.5 ? "#3182F6" : (ratio > 0.25 ? "#FFB020" : "#F04452"));
 
-    var healEl = el.children[3];
-    if (c.healFlash > 0 && !c.hf) {
-      c.hf = 1; healEl.classList.remove("go");
-      void healEl.offsetWidth;                 // 애니메이션 재시작을 강제한다
-      healEl.classList.add("go");
-    } else if (c.healFlash <= 0 && c.hf) {
-      c.hf = 0; healEl.classList.remove("go");
-    }
+
   }
   prevSlot = nowSlot;
   cardsDirty = false;
@@ -2455,17 +2470,31 @@ function pause(why) {
   if (state !== "playing") return;
   state = "paused";
   sfx.stopAll();
-  pauseMsg.innerHTML = (why === "rotate" ? "화면을 가로로 돌리셨네요." :
+  pauseMsg.innerHTML = (why === "rotate" ? "화면 크기가 바뀌어서 멈췄어요." :
     (why ? "숨 좀 돌리세요." : "다른 화면에 다녀오셨네요.")) +
     "<br>이어하면 1초 동안 손님들이 기다려 줘요.";
   veil("vPause", true);
 }
-try {
-  var landMQ = window.matchMedia("(orientation:landscape) and (max-height:500px) and (pointer:coarse)");
-  var onLand = function () { if (landMQ.matches) pause("rotate"); };
-  if (landMQ.addEventListener) landMQ.addEventListener("change", onLand);
-  else if (landMQ.addListener) landMQ.addListener(onLand);
-} catch (e) {}
+/* 조작 버튼이 화면 안에 들어오는지 직접 잰다. 방향으로 추측하면 낮은 데스크톱 창을 놓치고,
+   가로 휴대폰도 기기마다 높이가 달라 경계가 어긋난다. 서빙 버튼이 잘리면 판을 멈추고 안내한다. */
+var rotEl = document.getElementById("rotate");
+function checkFit() {
+  var tooShort = btnServe.getBoundingClientRect().bottom > window.innerHeight + 1;
+  if (tooShort === !!rotEl.__on) return;
+  rotEl.__on = tooShort;
+  if (tooShort) {
+    var turn = window.innerWidth > window.innerHeight && !(window.matchMedia && window.matchMedia("(pointer:fine)").matches);
+    document.getElementById("rotIco").className = "rotIco" + (turn ? " turn" : "");
+    document.getElementById("rotIco").textContent = turn ? "📱" : "↕️";
+    document.getElementById("rotTitle").textContent = turn ? "세로로 돌려 주세요" : "화면이 조금 낮아요";
+    document.getElementById("rotMsg").innerHTML = turn
+      ? "한 손으로 세로 화면에서 즐기는 게임이에요.<br>돌리면 멈춘 곳에서 이어서 할 수 있어요."
+      : "서빙 버튼이 화면 밖으로 나가서 멈췄어요.<br>창을 조금 더 키우면 이어서 할 수 있어요.";
+    pause("rotate");
+  }
+  rotEl.style.display = tooShort ? "flex" : "";
+}
+window.addEventListener("resize", checkFit);
 function isShown(id) { return document.getElementById(id).classList.contains("show"); }
 // 여러 모달이 겹쳐 떠 있을 때(일시정지 위에 기록 등) 맨 위에 있는 것
 function topVeil() {
@@ -2728,7 +2757,7 @@ function openRank() {
 
   var sg = document.getElementById("rankStats"); sg.innerHTML = "";
   [[comma(stats.games), "판"], [comma(stats.served), "누적 버거"],
-   [String(stats.bestCombo), "최고 콤보"], [String(Math.max(bestServed, served)), "최다 서빙"]]
+   [String(stats.bestCombo), "최고 콤보"], [String(bestServed), "최다 서빙"]]
     .forEach(function (x) { var d = mk("div"); d.appendChild(mk("b", "", x[0])); d.appendChild(mk("span", "", x[1])); sg.appendChild(d); });
 
   var tp = document.getElementById("rankTop"); tp.innerHTML = "";
@@ -2897,6 +2926,7 @@ reset();
 state = "ready";
 veil("vStart", true);   // 마크업에 이미 떠 있지만, 키보드 사용자를 위해 시작 버튼에 포커스를 준다
 paintStartMeta();
+checkFit();
 Toss.userKey();
 bestEl.textContent = comma(best);
 
