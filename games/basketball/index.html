@@ -31,6 +31,9 @@
     --blue:#3182F6;
     --blue-weak:#E8F3FF;
     --red:#F04452;
+    /* 12px 빨간 글씨용. --red 는 흰 바탕 3.7:1·회색 바탕 3.4:1 이라 작은 글씨로는 흐리다(4.5:1 미만).
+       이건 흰 바탕 5.3:1, 회색(--bg) 바탕 4.8:1. 막대·점 같은 칠은 그대로 --red */
+    --red-ink:#D22030;
     --green:#00B26D;
     --green-weak:#E5F8F0;
     --gold:#FFB020;
@@ -100,7 +103,7 @@
   .timer span{flex:0 0 auto;font-size:12px;font-weight:700;color:var(--ink-3);
     font-variant-numeric:tabular-nums;min-width:38px;text-align:right}
   /* 반복 횟수를 정해 둔다. infinite 면 '모션 줄이기'의 .01ms 규칙 아래서 매 프레임 크기가 튄다 */
-  .timer.buzz span{color:var(--red);font-weight:800;animation:bump .4s 3}
+  .timer.buzz span{color:var(--red-ink);font-weight:800;animation:bump .4s 3}
 
   /* ── 코트 ─────────────────────────────── */
   #court{flex:1 1 auto;position:relative;min-height:0;width:calc(100% - 24px);max-width:460px;margin:0 auto;
@@ -200,7 +203,7 @@
     background:var(--orange-weak);border-radius:8px;padding:3px 7px;font-size:11.5px;
     min-width:38px;text-align:center}
   /* .sheet p 보다 구체적으로 써야 크기·색이 먹는다 */
-  .sheet .note{font-size:12px;color:var(--red);font-weight:700;margin-top:10px}
+  .sheet .note{font-size:12px;color:var(--red-ink);font-weight:700;margin-top:10px}
 
   /* 스테이지 목록 */
   .grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:6px}
@@ -233,6 +236,9 @@
     /* left:50% 에 폭을 안 주면 화면의 절반(390에서 195px)에 갇혀 열두 글자만 넘어도
        두 줄이 되고 '돌려드렸 / 어요'처럼 낱말 가운데서 끊겼다 */
     width:max-content;max-width:calc(100vw - 32px);word-break:keep-all;text-align:center;
+    /* 공유 실패 때 띄우는 주소처럼 띄어쓰기 없는 긴 줄은 keep-all 만으론 못 끊어서 상자 밖으로
+       삐져나갔다(320px). 낱말이 한 줄에 안 들어갈 때만 가운데서 끊는다 */
+    overflow-wrap:anywhere;
   }
   #toast.show{opacity:1;transform:translate(-50%,0)}
   @media (prefers-reduced-motion:reduce){ *{animation-duration:.01ms!important} }
@@ -685,7 +691,7 @@ var TIME_ATTACK = { name: "타임어택", endless: true, goal: {}, balls: 0,
    6. 게임 상태
    ══════════════════════════════════════════════════════════════ */
 var hoop = { x: 260, y: 240, dir: 1 };
-var ball = { x: 90, y: 400, px: 90, py: 400, vx: 0, vy: 0, spin: 0, live: false, flyT: 0, slowT: 0 };
+var ball = { x: 90, y: 400, px: 90, py: 400, vx: 0, vy: 0, spin: 0, live: false, flyT: 0, slowT: 0, sx: 0, sy: 0 };
 var state = "ready";     // ready | playing | paused | clear | fail
 var stage = { idx: -1, def: null, ballsLeft: 0, thrown: 0, made: 0, swish: 0, coins: 0 };
 var bars = [], coins = [], bubbles = [];
@@ -895,8 +901,9 @@ function step() {
         shots = Math.max(0, shots - 1);
         // 던질 때 쓴 아이템도 돌려주고 켜 둔 채로 둔다. 공만 돌려주면 '돌려드렸어요'라면서
         // 아이템은 사라진다. nextBall 이 shotItem 을 지우니 먼저 잡아 둔다.
+        // 황금 공도 같다. nextBall 이 새로 뽑아서, 돌려준 황금 공이 대개 보통 공으로 돌아왔다.
         var back = shotItem;
-        nextBall();
+        nextBall(ball.gold);
         if (back) { inv[back] = (inv[back] || 0) + 1; saveInv(); armed = back; paintItems(); paintHint(); }
         paintBalls();
         toast("공이 이상하게 튀어서 하나 돌려드렸어요");
@@ -915,6 +922,11 @@ function step() {
       ball.flyT++;
       var spd = Math.sqrt(ball.vx * ball.vx + ball.vy * ball.vy);
       var still = spd < 0.6 && ball.y < FLOOR - R - 2 && !(onBar && !frozen());
+      // 느려도 굴러가고 있으면 멈춘 게 아니다. 속도만 봤을 땐 1스테이지 백보드 윗면을 스텝당
+      // 0.07씩 굴러 림으로 떨어져 들어갈 슛을 1.5초에서 빗나감으로 끊었다. 세기 시작한 자리에서
+      // 2 넘게 벗어나면 처음부터 다시 센다. 그 자리에서 떨기만 하는 공은 그대로 1.5초에 끊긴다.
+      if (still && ball.slowT > 0 && (Math.abs(ball.x - ball.sx) > 2 || Math.abs(ball.y - ball.sy) > 2)) still = false;
+      if (!still || ball.slowT === 0) { ball.sx = ball.x; ball.sy = ball.y; }
       ball.slowT = still ? ball.slowT + 1 : 0;
       if (ball.flyT >= 480 || ball.slowT >= 90) { wdHits++; endShot(); }
     }
@@ -1201,7 +1213,8 @@ function timeUp() {
   else failStage("시간이 끝났어요");
 }
 
-function nextBall() {
+// keepGold: 돌려주는 공(NaN 환불)은 새로 뽑지 않고 같은 공으로 준다
+function nextBall(keepGold) {
   deadTimer = -1;
   scored = false;
   touched = false;
@@ -1209,7 +1222,8 @@ function nextBall() {
   buzzer = false;
   ball.live = false;
   // 3스테이지부터(타임어택 포함) 가끔 황금 공이 나온다
-  ball.gold = !!stage.def && (stage.def.endless || stage.idx >= 2) && Math.random() < GOLD_P;
+  ball.gold = keepGold !== undefined ? keepGold :
+    !!stage.def && (stage.def.endless || stage.idx >= 2) && Math.random() < GOLD_P;
   if (ball.gold && state === "playing") sfx.gold();
   ball.vx = 0; ball.vy = 0; ball.spin = 0;
   // 던지는 자리를 매번 조금씩 바꿔 같은 슛만 반복하지 않게 한다
@@ -1305,15 +1319,30 @@ function onDown(e) {
   capture(e.pointerId);
   courtEl.classList.add("aiming");
 }
+// 마우스 왼쪽을 누른 채 오른쪽도 누르면, 왼쪽을 뗄 때 pointerup 이 아니라 pointermove(button 0,
+// buttons 에서 왼쪽이 빠짐)가 온다. pointerup 은 마지막 버튼을 뗄 때 한 번이라, 그걸 기다리면
+// 오른쪽을 뗄 때 던져졌다. 이 pointermove 를 왼쪽 떼기로 본다.
+function leftUp(e) {
+  return e.pointerType === "mouse" && e.button === 0 && !(e.buttons & 1);
+}
 function onMove(e) {
-  if (e.pointerId === pendId) { pendX = e.clientX; pendY = e.clientY; }
+  if (e.pointerId === pendId) {
+    pendX = e.clientX; pendY = e.clientY;
+    if (leftUp(e)) pendId = null;      // 미리 누른 왼쪽을 뗐으니 조준으로 이어 줄 게 없다
+  }
   if (!aiming || e.pointerId !== aimId) return;
   curX = e.clientX; curY = e.clientY;
   if (e.cancelable) e.preventDefault();
+  // 뒤따르는 pointerup 은 onUp 이 거른다(조준이 이미 풀림)
+  if (leftUp(e)) releaseAim();
 }
 function onUp(e) {
   if (e.pointerId === pendId) pendId = null;
   if (!aiming || e.pointerId !== aimId) return;
+  releaseAim();
+}
+// 조준 손가락을 뗀 순간: 조준을 풀고, 충분히 끌었으면 던진다
+function releaseAim() {
   aiming = false; aimId = null;
   courtEl.classList.remove("aiming");
   if (!canAim()) return;
@@ -1792,6 +1821,20 @@ function paintTimer() {
 
 function veil(id, on) {
   document.getElementById(id).classList.toggle("show", !!on);
+  syncBehind();
+}
+// 시트가 떠 있으면 그 뒤(헤더·코트·아이템 막대)를 inert 로 둔다. 손가락·마우스는 시트의 막(.veil)에
+// 가려 못 누르는데 키보드 Tab 으로는 닿았다. 오류 시트 뒤의 ☰ → 닫기로 지난 판의 실패 시트가 떴다.
+// 알림(#toast)은 시트 위에도 떠야 하니 뺀다.
+var behindEls = [].filter.call(document.body.children, function (el) {
+  return !el.classList.contains("veil") && el.id !== "toast" && el.tagName !== "SCRIPT";
+});
+function syncBehind() {
+  var on = anyVeilOpen();
+  behindEls.forEach(function (el) {
+    el.inert = on;
+    if (on) el.setAttribute("aria-hidden", "true"); else el.removeAttribute("aria-hidden");
+  });
 }
 function anyVeilOpen() {
   var v = document.getElementsByClassName("veil");
@@ -1801,6 +1844,7 @@ function anyVeilOpen() {
 function closeAllVeils() {
   var v = document.getElementsByClassName("veil");
   for (var i = 0; i < v.length; i++) v[i].classList.remove("show");
+  syncBehind();
 }
 
 var toastEl = document.getElementById("toast");
@@ -1850,6 +1894,8 @@ function useItem(k) {
   tapped = true;
   sfx.unlock();
   if (state !== "playing") return;
+  // 0초 뒤(버저 중)엔 공이 다시 안 온다. 아래 '돌아오면 쓸 수 있어요'는 지킬 수 없는 약속이다.
+  if (hasTime && timeLeft <= 0) { toast("시간이 끝나서 더 못 써요"); return; }
   // 날아가는 중에 켜면 지금 공에 얼음이 걸리는 식으로 새어 나가서 막는다
   if (ball.live || deadTimer >= 0) { toast("공이 돌아오면 쓸 수 있어요"); return; }
   if (armed === k) { armed = null; paintItems(); paintHint(); return; }   // 다시 누르면 끈다
@@ -2333,7 +2379,7 @@ function loopError(e) {
     document.getElementById("btnErrRetry").hidden = reload;
     document.getElementById("btnErrReload").hidden = !reload;
     document.getElementById("errMsg").innerHTML = reload
-      ? "게임을 멈췄어요.<br>새로고침하면 대부분 다시 돼요." +
+      ? "게임을 멈췄어요.<br>새로고침하면 보통 다시 할 수 있어요." +
         (store.ok ? "<br>깬 스테이지와 별은 그대로 남아요." : "")
       : "게임을 멈췄어요.<br>이 판을 다시 하거나<br>처음으로 돌아갈 수 있어요.";
     veil("vError", true);
@@ -2344,8 +2390,9 @@ function loopError(e) {
     var flying = ball.live && deadTimer < 0;
     try { afterShot(); } catch (_) {}
     // 공중의 공이 말없이 없어지면 화면이 깨진 줄 안다. 판이 이어질 때만 알린다
-    // (공을 다 써서 끝났으면 실패 시트가 말한다).
-    if (flying && state === "playing") toast("공이 사라져서 다음 공을 드려요");
+    // (공을 다 써서 끝났으면 실패 시트가 말한다). 이 공은 쓴 것으로 치니 '다음 공을 드려요'처럼
+    // 돌려주는 말투는 안 쓴다(NaN 환불의 '돌려드렸어요'와 헷갈린다).
+    if (flying && state === "playing") toast("공이 사라졌어요. 다음 공으로 이어 가요");
   }
 }
 
@@ -2355,6 +2402,7 @@ hoop.y = HOOP_Y;
 ball.y = HOLD_Y;
 state = "ready";
 document.getElementById("saveNote").hidden = store.ok;
+syncBehind();                       // 시작 시트는 HTML 에서 이미 떠 있다
 paintStages();
 paintGoals();
 paintBalls();
