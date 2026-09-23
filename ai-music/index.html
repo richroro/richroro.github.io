@@ -361,6 +361,10 @@ const MARKOV = {
 
 /* =========================================================================
    2. 장르 프로필 — 작곡기는 여기 적힌 스타일 키만 보고 분기한다
+   편곡 꼬리표: cut 후렴 직전 두 박 끊기(K-pop 전용), cutBeats 끊는 박 수(cut 이 없을 때),
+   filterIntro 먹먹한 인트로가 열린다, filterClose 끝에서 다시 먹먹해진다,
+   button 아웃트로를 한 방에 끊는다, dropInst 드롭 리프를 맡는 악기.
+   끊는 길이는 어디서든 G.cut ? 2 : (G.cutBeats || 0) 로 읽는다.
    ========================================================================= */
 const GENRES = {
   // 2020년대 중반 K-pop: 이지리스닝 댄스팝 + 프로그레시브 하우스, 후렴 직전 비트 드롭,
@@ -370,6 +374,7 @@ const GENRES = {
               drums:"kpop", bass:"kpop808", chords:"kpopstab", lead:"kpluck", chordInst:"synthpluck", bassInst:"bass808",
               pad:"supersaw", padIn:["P","B","D","outro"], arp:"chopvox", arpIn:["D","B"],
               reverb:.4, delay:.18, sidechain:true, bright:true, cut:true,
+              filterIntro:true, button:true, dropInst:"chopvox",
               intro:["chords","pad"], leadRange:[0,14],
               prog:{ major:[[3,4,2,5],[0,4,5,3],[5,3,0,4],[3,4,5,5]],
                      minor:[[0,5,2,6],[5,6,0,0],[0,6,5,4],[3,4,0,0]] } },
@@ -379,7 +384,7 @@ const GENRES = {
               prog:{ major:[[0,4,5,3],[0,2,3,4],[0,5,3,4],[0,3,5,4]], minor:[[0,5,2,6],[0,3,4,0],[0,6,5,4],[0,5,3,4]] } },
   pop:      { ko:"팝",       bpm:[100,124], minor:.35, swing:.5, sevenths:.1, raiseV:.5, hook:true, pentLead:.45, density:2,
               drums:"pop", bass:"eighths", chords:"block", lead:"synthlead", chordInst:"piano", bassInst:"synthbass",
-              pad:"pad", padIn:["B","outro"], reverb:.5, delay:.2, intro:["chords","pad"], leadRange:[0,13],
+              pad:"pad", padIn:["B","outro"], reverb:.5, delay:.2, button:true, intro:["chords","pad"], leadRange:[0,13],
               prog:{ major:[[0,4,5,3],[0,5,3,4],[5,3,0,4],[0,3,5,4],[3,4,2,5]], minor:[[0,5,2,6],[0,3,5,4],[0,6,5,6]] } },
   rock:     { ko:"록",       bpm:[118,150], minor:.5, swing:.5, sevenths:0, raiseV:.1, density:2,
               drums:"rock", bass:"eighths", chords:"power", lead:"distguitar", chordInst:"distguitar", bassInst:"pickbass",
@@ -391,7 +396,7 @@ const GENRES = {
               prog:{ major:[[1,4,0,0],[0,5,1,4],[2,5,1,4],[0,1,2,3]], minor:[[1,4,0,0],[0,3,1,4],[0,5,1,4]] } },
   lofi:     { ko:"로파이",   bpm:[68,88],   minor:.6, swing:.57, sevenths:.9, raiseV:.3, density:1,
               drums:"lofi", bass:"sparse", chords:"lofi", lead:"epiano", chordInst:"epiano", bassInst:"subbass",
-              pad:null, reverb:.5, delay:.1, lofi:true, intro:["chords","drums"], leadRange:[0,12],
+              pad:null, reverb:.5, delay:.1, lofi:true, filterClose:true, intro:["chords","drums"], leadRange:[0,12],
               prog:{ major:[[1,4,0,5],[3,4,2,5],[0,5,3,4]], minor:[[0,3,5,4],[0,5,3,6],[1,4,0,0]] } },
   hiphop:   { ko:"힙합",     bpm:[84,98],   minor:.7, swing:.53, sevenths:.4, raiseV:.2, hook:true, pentLead:.5, density:1,
               drums:"hiphop", bass:"sparse808", chords:"lofi", lead:"piano", chordInst:"piano", bassInst:"bass808",
@@ -400,6 +405,7 @@ const GENRES = {
   edm:      { ko:"EDM",      bpm:[124,132], minor:.6, swing:.5, sevenths:.1, raiseV:.3, hook:true, pentLead:.45, density:2,
               drums:"edm", bass:"edm", chords:"stab", lead:"supersaw", chordInst:"synthpluck", bassInst:"synthbass",
               pad:"pad", padIn:["intro","B","C","outro"], arp:"synthpluck", arpIn:["B"], reverb:.5, delay:.3, sidechain:true,
+              cutBeats:1, filterIntro:true, button:true,
               intro:["chords","pad","drums-light"], leadRange:[0,13],
               prog:{ major:[[5,3,0,4],[0,4,5,3],[0,3,5,4]], minor:[[0,5,2,6],[0,6,5,6],[0,3,5,4]] } },
   chiptune: { ko:"8비트",    bpm:[130,160], minor:.45, swing:.5, sevenths:0, raiseV:.5, density:2,
@@ -425,7 +431,7 @@ const GENRES = {
               prog:{ major:[[0,4,0,4],[0,3,4,0],[0,5,3,4]], minor:[[0,4,0,4],[0,5,3,4],[0,3,4,0]] } },
   citypop:  { ko:"시티팝",   bpm:[100,118], minor:.3, swing:.5, sevenths:.7, raiseV:.6, hook:true, pentLead:.5, density:2,
               drums:"citypop", bass:"funk", chords:"block", lead:"synthlead", chordInst:"epiano", bassInst:"slapbass",
-              pad:"strings", padIn:["B"], reverb:.45, delay:.15, intro:["chords","bass","drums"], leadRange:[0,13],
+              pad:"strings", padIn:["B"], reverb:.45, delay:.15, filterClose:true, intro:["chords","bass","drums"], leadRange:[0,13],
               prog:{ major:[[3,4,2,5],[1,4,0,5],[0,3,1,4]], minor:[[0,5,1,4],[3,4,0,0]] } },
   kids:     { ko:"동요",     bpm:[104,126], minor:.08, swing:.5, sevenths:0, raiseV:.9, density:1,
               drums:"kids", bass:"roots", chords:"block", lead:"xylophone", chordInst:"piano", bassInst:"fingerbass",
@@ -658,9 +664,10 @@ const STRUCT = TARGET_SEC;   // 키 확인용
 // 일반 구성과 K-pop 구성. K-pop 은 프리코러스(P)로 조이고 후렴(B) 뒤에 드롭(D)을 붙인다.
 const BODY = { 2:["A","B"], 3:["A","B","B"], 4:["A","B","A","B"], 5:["A","B","A","B","B"],
                6:["A","B","A","B","C","B"], 7:["A","A","B","A","B","C","B"], 8:["A","A","B","A","B","C","B","B"] };
-const BODY_KPOP = { 2:["A","B"], 3:["A","P","B"], 4:["A","P","B","D"], 5:["A","P","B","D","A"],
-                    6:["A","P","B","D","A","B"], 7:["A","P","B","D","A","P","B"],
-                    8:["A","P","B","D","A","P","B","D"], 9:["A","P","B","D","A","P","B","C","B"],
+// 긴 곡은 2절을 되풀이하는 대신 브리지(C, 댄스 브레이크)를 거쳐 마지막 후렴으로 간다
+const BODY_KPOP = { 2:["A","B"], 3:["A","P","B"], 4:["A","P","B","D"], 5:["A","P","B","D","B"],
+                    6:["A","P","B","D","C","B"], 7:["A","P","B","D","C","B","D"],
+                    8:["A","P","B","D","C","P","B","D"], 9:["A","P","B","D","A","P","B","C","B"],
                     10:["A","P","B","D","A","P","B","C","B","D"] };
 // 템포·박자에 맞춰 목표 길이(초)에 가장 가까운 구조를 짠다. 섹션은 8마디(짧을 땐 4마디)
 function buildStructure(P) {
@@ -742,6 +749,22 @@ function compose(P) {
   for (const [type, bars] of struct) { song.sections.push({ type, bar, bars }); bar += bars; }
   song.totalBars = bar;
   song.totalBeats = bar * bpb;
+  /* 섹션 꼬리표 — 드럼·베이스·컷·버스 자동화가 모두 같은 값을 읽는다 (난수는 쓰지 않는다)
+     i: 몇 번째 섹션, nth: 같은 종류 중 몇 번째, final: 후렴이 둘 이상일 때 마지막 후렴,
+     E: 에너지 0..4, build: 다음이 후렴이라 빌드업(스네어 롤·컷)으로 몰아 줄 섹션 */
+  const nthOf = {};
+  song.sections.forEach((s, i) => { s.i = i; s.nth = nthOf[s.type] = (nthOf[s.type] || 0) + 1; });
+  const Bs = song.sections.filter(s => s.type === "B");
+  if (Bs.length > 1) Bs[Bs.length - 1].final = true;
+  const E0 = { intro: 0, A: 1, P: 2, B: 3, D: 3, C: 1, outro: 0 };
+  song.sections.forEach((s, i) => {
+    s.final = !!s.final;
+    s.E = E0[s.type] + (s.type === "A" && s.nth > 1 ? 1 : 0) + (s.final ? 1 : 0);
+    if (s.type === "outro" && G.button) s.E = 3;           // 버튼 엔딩: 아웃트로도 세게 끊는다
+    const nx = song.sections[i + 1];
+    s.build = !!(nx && nx.type === "B" &&
+      ((G.cut && (s.type === "P" || s.type === "C")) || (G.drums === "edm" && s.type !== "B" && s.type !== "intro")));
+  });
 
   /* ---- 5-2. 화성 ---- */
   const progCache = {};
@@ -778,6 +801,8 @@ function compose(P) {
     progCache[key] = chords;
     return chords;
   }
+  // 캐시된 진행을 섹션 길이에 맞춘다 — 길면 자르고 짧으면 되풀이한다
+  const fitLen = (arr, k) => Array.from({ length: k }, (_, i) => arr[i % arr.length]);
   let t = 0; let prevVoicing = null;
   for (const sec of song.sections) {
     const nChords = Math.max(1, Math.round(sec.bars * harm));
@@ -785,8 +810,10 @@ function compose(P) {
     let chords;
     if (sec.type === "outro") chords = [buildChord(P, 0, G.sevenths > .5, false)];
     else if (sec.type === "intro") chords = progFor("A", Math.max(1, Math.round(8 * harm))).slice(0, nChords);
-    else chords = progFor(sec.type, nChords);
-    const n = sec.type === "outro" ? 1 : chords.length;
+    else chords = fitLen(progFor(sec.type, nChords), nChords);
+    // 코드 수는 캐시 길이가 아니라 섹션 길이로 정한다. 인트로가 "A" 를 8개로 먼저 캐시해 두면
+    // 4마디 절이 8개를 다 깔아 뒤 섹션 화성이 전부 밀리고 곡이 으뜸화음이 아닌 곳에서 끝났다
+    const n = sec.type === "outro" ? 1 : nChords;
     for (let i = 0; i < n; i++) {
       const d = sec.type === "outro" ? sec.bars * bpb : chordBeats;
       const c = chords[i];
