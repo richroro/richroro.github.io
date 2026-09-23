@@ -1443,9 +1443,19 @@ function mkPan(ctx, p) {                       // 모노 입력 → 스테레오
   return { in: k, out: n };
 }
 // 레인(코드 음역·드럼 종류)용: √2 를 레인 게인에 합쳐 노드 하나를 아낀다. l.k = 합친 값(센드 보정용)
-function laneTo(ctx, gain, p, dst) {
-  const l = ctx.createGain(), pan = !!(p && ctx.createStereoPanner);
-  l.k = pan ? Math.SQRT2 : 1; l.gain.value = gain * l.k;
+// √2 는 모노 입력일 때만. 스테레오 입력이면 패너는 좌우 균형 조절이다: 먼 쪽은 cos, 가까운 쪽엔 먼 쪽 소리가 sin(|p|·π/2)만큼 더해진다.
+// 그래서 출력 파워 = 입력 파워 × (1 + 2·sin·ρ), ρ = ΣLR/(ΣL²+ΣR²). 2채널 버퍼(buf)를 주면 이 값으로 정확히 되돌린다
+function stereoRho(buf) {
+  if (buf._rho === undefined) { const L = buf.getChannelData(0), R = buf.getChannelData(1); let lr = 0, e = 0;
+    for (let i = 0; i < L.length; i++) { lr += L[i] * R[i]; e += L[i] * L[i] + R[i] * R[i]; } buf._rho = e ? lr / e : 0; }
+  return buf._rho;
+}
+// bufs: 그 레인에 들어갈 버퍼들(햇 레인 = hat + 여린 hatS) — ρ 는 평균
+function laneTo(ctx, gain, p, dst, bufs) {
+  const l = ctx.createGain(), pan = !!(p && ctx.createStereoPanner), st = bufs && bufs.length && bufs[0].numberOfChannels > 1;
+  const rho = st ? bufs.reduce((a, b) => a + stereoRho(b), 0) / bufs.length : 0;
+  l.k = !pan ? 1 : st ? 1 / Math.sqrt(1 + 2 * Math.sin(Math.abs(p) * Math.PI / 2) * rho) : Math.SQRT2;
+  l.gain.value = gain * l.k;
   if (!pan) { l.connect(dst); return l; }
   const n = ctx.createStereoPanner(); n.pan.value = p; l.connect(n).connect(dst); return l;
 }
@@ -2096,7 +2106,9 @@ function buildGraph(ctx, song) {
                shaker:[-.28, 1.15], ride:[.35, 1], crash:[-.3, 1], tomH:[.25, 1], tomL:[-.25, 1] };
   for (const [k, [pan, gain]] of Object.entries(DK)) {
     if (!used.has(k)) continue;
-    g.drumOut[k] = laneTo(ctx, gain, g.chip ? 0 : pan, g.tracks.drum);
+    // 구운 키트 버퍼를 넘겨 팬 보정을 정한다: 2채널(햇·라이드·크래시·셰이커 …)은 좌우 상관으로, 모노(림·탐)는 √2
+    const bufs = !g.chip && KIT[KIT_OF[k] || k] ? (k === "hat" ? ["hat", "hatS"] : [k]).map(n => kitBuf(g, n)) : null;
+    g.drumOut[k] = laneTo(ctx, gain, g.chip ? 0 : pan, g.tracks.drum, bufs);
   }
   if (!g.chip && g.drumOut.clap) widener(g, g.drumOut.clap, g.tracks.drum, .25 / g.drumOut.clap.k);
   // 드럼 잔향은 레인별로: 백비트는 플레이트, 팀파니·붐·라이드(영화·재즈)는 홀
