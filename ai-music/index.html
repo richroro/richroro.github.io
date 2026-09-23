@@ -1831,14 +1831,32 @@ function togglePlay() {
 /* =========================================================================
    9. 저장 — WAV(오프라인 렌더), MIDI(SMF 1), 링크
    ========================================================================= */
-async function renderWav(song, onStatus) {
+async function renderWav(song, onProgress) {
   const sr = 44100, len = Math.ceil(sr * song.duration);
   const ctx = new OfflineAudioContext(2, len, sr);
   const g = buildGraph(ctx, song);
   startAmbience(g, 0, song.duration);
-  for (const ev of song.events) playEvent(g, ev, ev.time + .05);
-  onStatus && onStatus("렌더링 중…");
+  const OFF = .05, CH = .5, evs = song.events;
+  let i = 0, err = null;
+  // 전부 미리 꽂으면 크롬은 128샘플마다 아직 안 울린 노드까지 훑는다 → 곡 길이의 제곱으로 느려진다.
+  // 앞으로 1초 안에 울릴 음만 붙이고, 0.5초마다 멈춰서 다음 음을 붙인다 — 끝난 음은 onended 로 빠진다.
+  const feed = until => {
+    while (i < evs.length && evs[i].time + OFF < until) { const ev = evs[i++]; playEvent(g, ev, ev.time + OFF); }
+  };
+  const canSuspend = typeof ctx.suspend === "function" && ctx.suspend.length >= 1;
+  const step = at => ctx.suspend(at).then(() => {
+    try {
+      feed(at + CH * 2);
+      if (onProgress) onProgress(at / song.duration);
+      if (at + CH < song.duration) step(at + CH);            // 멈춘 상태에서 다음 정지점을 예약
+    } catch (e) { err = err || e; }
+    return ctx.resume();                                    // 예외가 나도 반드시 재개 — 안 그러면 렌더가 영원히 멈춘다
+  }, () => { try { feed(Infinity); } catch (e) { err = err || e; } });   // 거절되면 남은 음을 한꺼번에(예전 방식)
+  if (canSuspend) { feed(CH * 2); step(CH); } else feed(Infinity);
+  await null;                                               // 첫 suspend 가 거절됐다면 렌더 시작 전에 나머지를 꽂는다
   const buf = await ctx.startRendering();
+  if (err) throw err;
+  if (onProgress) onProgress(1);
   return encodeWav(buf);
 }
 function encodeWav(buf) {
@@ -2111,11 +2129,11 @@ function init() {
     const song = state.song; if (!song) return;
     const btn = $("#wav"); btn.disabled = true;
     const t0 = Date.now();
-    const tick = setInterval(() => setStatus(`렌더링 중… ${((Date.now() - t0) / 1000).toFixed(0)}초 (곡이 길고 촘촘할수록 오래 걸립니다)`), 250);
-    setStatus("렌더링 중… 0초");
-    try { const blob = await renderWav(song); download(blob, fileStem(song.P) + ".wav");
-          clearInterval(tick); setStatus(`WAV 저장 완료 · ${(blob.size / 1048576).toFixed(1)} MB · ${((Date.now() - t0) / 1000).toFixed(0)}초 걸림`); }
-    catch (err) { clearInterval(tick); console.error(err); setStatus("렌더링에 실패했어요: " + (err && err.message || err), true); }
+    setStatus("렌더링 중… 0%");
+    try { const blob = await renderWav(song, p => setStatus(`렌더링 중… ${Math.round(p * 100)}%`));
+          download(blob, fileStem(song.P) + ".wav");
+          setStatus(`WAV 저장 완료 · ${(blob.size / 1048576).toFixed(1)} MB · ${((Date.now() - t0) / 1000).toFixed(0)}초 걸림`); }
+    catch (err) { console.error(err); setStatus("렌더링에 실패했어요: " + (err && err.message || err), true); }
     btn.disabled = false;
   });
   $("#midi").addEventListener("click", () => { const song = state.song; if (!song) return; download(encodeMidi(song), fileStem(song.P) + ".mid"); setStatus("MIDI 저장 완료"); });
