@@ -1434,6 +1434,45 @@ function osc(g, type, f, detune) { const o = g.ctx.createOscillator(); if (typeo
 function lp(g, f, q) { const b = g.ctx.createBiquadFilter(); b.type = "lowpass"; b.frequency.value = f; b.Q.value = q || .7; return b; }
 function bp(g, f, q) { const b = g.ctx.createBiquadFilter(); b.type = "bandpass"; b.frequency.value = f; b.Q.value = q || 1; return b; }
 function hp(g, f, q) { const b = g.ctx.createBiquadFilter(); b.type = "highpass"; b.frequency.value = f; b.Q.value = q || .7; return b; }
+// 팬: StereoPanner 는 가운데 모노 입력을 채널당 -3dB 로 내보낸다 → √2 를 먼저 곱해 가운데 = 지금 레벨(L=R=1)로 맞춘다
+function mkPan(ctx, p) {                       // 모노 입력 → 스테레오 출력, {in, out}
+  const k = ctx.createGain();
+  if (!ctx.createStereoPanner) return { in: k, out: k };   // 옛 사파리는 가운데로
+  k.gain.value = Math.SQRT2;
+  const n = ctx.createStereoPanner(); n.pan.value = p; k.connect(n);
+  return { in: k, out: n };
+}
+// 레인(코드 음역·드럼 종류)용: √2 를 레인 게인에 합쳐 노드 하나를 아낀다. l.k = 합친 값(센드 보정용)
+function laneTo(ctx, gain, p, dst) {
+  const l = ctx.createGain(), pan = !!(p && ctx.createStereoPanner);
+  l.k = pan ? Math.SQRT2 : 1; l.gain.value = gain * l.k;
+  if (!pan) { l.connect(dst); return l; }
+  const n = ctx.createStereoPanner(); n.pan.value = p; l.connect(n).connect(dst); return l;
+}
+function panTo(ctx, src, p, dst) { if (!p) { src.connect(dst); return; } const pn = mkPan(ctx, p); src.connect(pn.in); pn.out.connect(dst); }
+// 스테레오 코러스: 7.1ms / 11.7ms 짧은 딜레이를 느리게(0.23/0.31Hz, ±0.8ms) 흔들어 머저로 왼쪽·오른쪽 끝에 둔다.
+// 선형이라 같은 목적지로 가는 트랙들은 딜레이 한 벌을 나눠 쓴다(트랙마다 양 조절 게인 하나). 음마다 늘지 않는다.
+// 흔들기는 오실레이터 대신 곡 길이만큼의 곡선 자동화로 — 오실레이터는 0.2Hz 라도 샘플마다 돌아 렌더가 느려진다.
+// 300Hz 아래는 안 넣는다 — 짧은 딜레이가 저음을 빗살처럼 지우지 않게
+function widener(g, src, dst, amt) {
+  const ctx = g.ctx; g.wideBus = g.wideBus || new Map();
+  let h = g.wideBus.get(dst);
+  if (!h) {
+    h = hp(g, 300, .7); h.channelCount = 1; h.channelCountMode = "explicit";   // 머저 입력이 어차피 모노 — 미리 모노로
+    const mg = ctx.createChannelMerger(2); mg.connect(dst);
+    const n = Math.ceil((g.dur || 600) * 10) + 2;              // 0.1초마다 한 점
+    [[0, .0071, .23], [1, .0117, .31]].forEach(([ch, base, rate]) => {
+      const d = ctx.createDelay(.05), c = new Float32Array(n);
+      for (let i = 0; i < n; i++) c[i] = base + .0008 * Math.sin(2 * Math.PI * rate * i / 10);
+      try { d.delayTime.automationRate = "k-rate"; } catch (e) {}   // 이렇게 느리면 128샘플마다 바꿔도 같다
+      d.delayTime.setValueCurveAtTime(c, ctx.currentTime, (n - 1) / 10);
+      h.connect(d).connect(mg, 0, ch);
+    });
+    g.wideBus.set(dst, h);
+  }
+  const a = ctx.createGain(); a.gain.value = amt; a.base = amt; g.wideAmps.push(a);   // 8단계 폭 자동화용
+  src.connect(a).connect(h);
+}
 function noiseSrc(g, sh) { const s = g.ctx.createBufferSource(); s.buffer = sh ? g.noiseSH : g.noise; s.loop = true; s.loopStart = 0; s.loopEnd = s.buffer.duration; return s; }
 function vibrato(g, oscs, t, rate, cents, delay) {
   const l = g.ctx.createOscillator(); l.frequency.value = rate; const lg = g.ctx.createGain();
@@ -1770,7 +1809,7 @@ function kitBuf(g, name) {                                            // 샘플�
   if (!KIT_CACHE[key]) KIT_CACHE[key] = KIT[KIT_OF[name] || name](kitDSP(g.ctx, hashStr(name) ^ 0x5eed), o);
   return KIT_CACHE[key];
 }
-function hit(g, out, name, t, v, rate) {                              // 잔향은 드럼 트랙 센드로(드럼별 레인은 나중에)
+function hit(g, out, name, t, v, rate) {                              // 잔향은 드럼별 레인(g.drumOut)의 센드로
   const s = g.ctx.createBufferSource(), a = g.ctx.createGain();
   s.buffer = kitBuf(g, name); if (rate) s.playbackRate.value = rate; a.gain.value = v;
   s.connect(a).connect(out);
@@ -1906,10 +1945,34 @@ const FX = {
 const DRUM_MIDI = { kick:36, boom:35, timp:41, snare:38, rim:37, clap:39, hat:42, ohat:46, ride:51, crash:49, tomH:50, tomL:45, shaker:70, snap:37 };
 
 /* ---- 오디오 그래프: 마스터·잔향·딜레이·트랙 ---- */
-function makeIR(ctx, seconds, rand) {
-  const sr = ctx.sampleRate, len = Math.floor(sr * seconds), buf = ctx.createBuffer(2, len, sr);
-  for (let c = 0; c < 2; c++) { const d = buf.getChannelData(c); for (let i = 0; i < len; i++) d[i] = (rand.f() * 2 - 1) * Math.exp(-i / (sr * seconds / 6.9)) * (i < 40 ? i / 40 : 1); }
+// 잔향 IR: 프리딜레이 + 초기 반사 6개 + 갈수록 어두워지는 노이즈 꼬리(고음이 먼저 죽는다). o.ch 채널(기본 2)
+function makeIR(ctx, seconds, rand, o) {
+  o = o || {};
+  const sr = ctx.sampleRate, pre = Math.floor(sr * (o.pre || .012)), n = Math.floor(sr * seconds);
+  const buf = ctx.createBuffer(o.ch || 2, pre + n, sr), dec = Math.exp(-6.9 / n), a0 = o.bright || .7, a1 = o.dark || .08;
+  for (let c = 0; c < buf.numberOfChannels; c++) {
+    const d = buf.getChannelData(c); let y = 0, env = 1;
+    for (let i = 0; i < n; i++) {
+      const a = a0 + (a1 - a0) * Math.min(1, i / (n * .5));      // 1극 로우패스 계수가 시간에 따라 줄어든다
+      y += a * ((rand.f() * 2 - 1) - y);
+      d[pre + i] = y * Math.pow(a / (2 - a), -.25) * env * (i < 64 ? i / 64 : 1);
+      env *= dec;
+    }
+    for (let k = 0; k < 6; k++) {                                 // 초기 반사: 채널마다 다른 자리
+      const i = pre + Math.floor(sr * (.002 + rand.f() * .03));
+      d[i] += (rand.f() < .5 ? -1 : 1) * (1 - k * .12) * 3;
+    }
+  }
   return buf;
+}
+// ConvolverNode 의 정규화(웹 오디오 규격: 0.00125 / IR 의 RMS, 44.1kHz 기준)를 직접 계산한다 — IR 두 개를 한 노드에 담을 때 각자 따로
+function irNorm(d, sr) { let s = 0; for (let i = 0; i < d.length; i++) s += d[i] * d[i]; return .00125 / Math.max(Math.sqrt(s / d.length), .000125) * 44100 / sr; }
+// BiquadFilterNode(lowpass/highpass, Q 는 dB)와 같은 식으로 버퍼를 제자리에서 거른다
+function biqBake(d, sr, type, f, qdb) {
+  const w = 2 * Math.PI * f / sr, cw = Math.cos(w), al = Math.sin(w) / (2 * Math.pow(10, qdb / 20)), a0 = 1 + al;
+  const b0 = (type === "lowpass" ? 1 - cw : 1 + cw) / 2 / a0, b1 = (type === "lowpass" ? 1 - cw : -1 - cw) / a0, a1 = -2 * cw / a0, a2 = (1 - al) / a0;
+  let x1 = 0, x2 = 0, y1 = 0, y2 = 0;
+  for (let i = 0; i < d.length; i++) { const x = d[i], y = b0 * x + b1 * x1 + b0 * x2 - a1 * y1 - a2 * y2; x2 = x1; x1 = x; y2 = y1; y1 = y; d[i] = y; }
 }
 // DynamicsCompressor 는 스스로 메이크업 이득((1/전체이득)^0.6)을 더한다 — 그만큼 되돌려서 봉우리만 깎게 한다
 function mkComp(ctx, thr, ratio, atk, rel, knee) {
@@ -1923,7 +1986,7 @@ const LOUD = { kpop:3.4, edm:3.3, hiphop:3, pop:3.2, citypop:3, rock:3.4, lofi:3
   cinematic:2.4, ambient:2.4, ballad:1.9, jazz:1.8, bossa:1.9, waltz:1.9 };
 function buildGraph(ctx, song) {
   const P = song.P, G = P.G, rand = new Rand(P.seed ^ 0xA5A5A5A5);
-  const g = { ctx, P, chip: !!G.chip, tracks: {} };
+  const g = { ctx, P, chip: !!G.chip, tracks: {}, dur: (song.duration || 0) + 5 };
   const sr = ctx.sampleRate;
   g.noise = ctx.createBuffer(1, sr * 2, sr); { const d = g.noise.getChannelData(0); for (let i = 0; i < d.length; i++) d[i] = rand.f() * 2 - 1; }
   g.noiseSH = ctx.createBuffer(1, sr * 2, sr); { const d = g.noiseSH.getChannelData(0); let v = 0; for (let i = 0; i < d.length; i++) { if (i % 6 === 0) v = rand.f() * 2 - 1; d[i] = v; } }
@@ -1961,30 +2024,86 @@ function buildGraph(ctx, song) {
   } else dcBlock.connect(glue.in);
   g.master = master;
 
-  // 잔향
-  const rev = ctx.createConvolver(); rev.buffer = makeIR(ctx, G.reverb >= 1 ? 4 : G.reverb >= .6 ? 2.6 : 1.6, rand);
-  const revOut = ctx.createGain(); revOut.gain.value = .55 * (G.reverb || 0);
-  rev.connect(revOut).connect(master); g.rev = rev;
-  // 딜레이
-  const dly = ctx.createDelay(2); dly.delayTime.value = 60 / P.bpm * .75; const fb = ctx.createGain(); fb.gain.value = .32; const dl = lp(g, 2600);
-  const dlyOut = ctx.createGain(); dlyOut.gain.value = .5 * (G.delay || 0);
-  dly.connect(dl).connect(fb).connect(dly); dly.connect(dlyOut).connect(master); g.dly = dly;
   // 사이드체인
   const sc = ctx.createGain(); sc.gain.value = 1; sc.connect(master); g.sc = sc;
   const scB = ctx.createGain(); scB.gain.value = 1; scB.connect(master); g.scBass = scB;   // 베이스만 따로, 더 짧게 비킨다
   g.bassDuck = G.sidechain ? .6 : P.bassInst === "bass808" ? .4 : 0;
+  const retTo = G.sidechain ? sc : master;
+
+  // 잔향: 짧은 플레이트(스네어·클랩·코드) + 긴 홀(리드·패드·효과음). 센드는 300~400Hz 아래·8~10kHz 위를 잘라 킥·베이스가 안 섞인다.
+  // 오프라인 렌더에서는 컨볼버 채널 하나와 노드 하나하나가 다 비용이라 이렇게 줄인다:
+  //  - 모노 IR 두 개를 컨볼버 하나에 담는다(입력 L=홀 센드, R=플레이트 센드 → 출력 L=홀, R=플레이트)
+  //  - 센드의 하이패스·로우패스는 선형이라 IR 에 미리 구워 넣는다(BiquadFilter 와 같은 식)
+  //  - 두 잔향의 합 w 를 L = w + w(t-D), R = w - w(t-D) 로 펼친다: 꼬리끼리는 상관이 없어 좌우가 갈리고, L+R 은 정확히 w(모노 호환)
+  // 정규화는 규격 식으로 IR 마다 따로 구워 넣는다(×2 머저 다운믹스, ×1/√2 펼침 = ×√2) → 채널당 레벨은 스테레오 IR 컨볼버와 같다
+  const hallLen = G.reverb >= 1 ? 3.6 : G.reverb >= .6 ? 2.4 : 1.8;
+  const hIR = makeIR(ctx, hallLen, rand, { pre: .028, bright: .5, dark: .05, ch: 1 }).getChannelData(0);
+  const pIR = makeIR(ctx, .9, rand, { pre: .006, bright: .85, dark: .25, ch: 1 }).getChannelData(0);
+  const ir = ctx.createBuffer(2, hIR.length, sr);
+  [[hIR, 300, 8000], [pIR, 400, 10000]].forEach(([s, lo, hi], c) => {
+    const d = ir.getChannelData(c), k = irNorm(s, sr) * Math.SQRT2;
+    for (let i = 0; i < s.length; i++) d[i] = s[i] * k;
+    biqBake(d, sr, "highpass", lo, .7); biqBake(d, sr, "lowpass", hi, .7);
+  });
+  const rev = ctx.createConvolver(); rev.normalize = false; rev.buffer = ir;
+  const rin = ctx.createChannelMerger(2); rin.connect(rev);
+  // 리턴 레벨은 컨볼버 앞(센드 버스)에 둔다 — 선형이라 소리는 같고, 자동화하면 꼬리는 자연스럽게 남는다
+  const hallRet = ctx.createGain(); hallRet.gain.value = Math.pow(G.reverb || 0, .7);
+  const plateRet = ctx.createGain(); plateRet.gain.value = G.chip ? .25 : .5 + .4 * Math.min(1, G.reverb || 0);
+  for (const r of [hallRet, plateRet]) { r.channelCount = 1; r.channelCountMode = "explicit"; }
+  hallRet.connect(rin, 0, 0); plateRet.connect(rin, 0, 1);
+  g.hallIn = hallRet; g.plateIn = plateRet;
+  const rout = ctx.createChannelMerger(2), wd = ctx.createDelay(.05), neg = ctx.createGain();
+  wd.delayTime.value = .0131; wd.channelCount = 1; wd.channelCountMode = "explicit"; neg.gain.value = -1;
+  rev.connect(rout, 0, 0); rev.connect(rout, 0, 1); rev.connect(wd); wd.connect(rout, 0, 0); wd.connect(neg).connect(rout, 0, 1);
+  rout.connect(retTo);
+  // 핑퐁 딜레이: 왼쪽 → 오른쪽 → 왼쪽 … 루프 안 로우패스로 되풀이될수록 어두워진다. 500Hz 아래는 안 보낸다(레벨도 루프 앞에서)
+  const dIn = hp(g, 500), dlyRet = ctx.createGain(), dL = ctx.createDelay(2), dR = ctx.createDelay(2), fb = ctx.createGain(), dlp = lp(g, 4200);
+  dIn.channelCount = 1; dIn.channelCountMode = "explicit";
+  dL.delayTime.value = dR.delayTime.value = 60 / P.bpm * .75; fb.gain.value = .4; dlyRet.gain.value = .8 * (G.delay || 0);
+  dIn.connect(dlyRet).connect(dL); dL.connect(dR); dR.connect(dlp).connect(fb).connect(dL);
+  if (G.delay) { dL.connect(rout, 0, 0); dR.connect(rout, 0, 1); }
+  g.rev = rev; g.dly = dIn; g.returns = [hallRet, plateRet, dlyRet];
 
   const MIX = { lead:1.15, chords:.6, bass:.72, pad:.55, arp:.6, drum:.8, amb:1, fx:.7 };
-  const SEND = { lead:.35, chords:.28, bass:.04, pad:.55, arp:.3, drum:.14, amb:.3, fx:.4 };
-  const DSEND = { lead:1, chords:0, bass:0, pad:0, arp:.6, drum:0, amb:0, fx:0 };
+  // 트랙별 센드 [홀, 플레이트, 딜레이] — 킥·베이스는 0. K팝·EDM 리드는 홀을 줄이고 딜레이로 공간을 만든다(앞에 붙은 훅)
+  const dryLead = P.genre === "kpop" || P.genre === "edm";
+  const FXS = { lead:[dryLead ? .22 : .45, .12, 1], chords:[.18, .45, 0], pad:[.55, 0, 0], arp:[.22, .15, .7],
+                bass:[0, 0, 0], drum:[0, 0, 0], amb:[.3, 0, 0], fx:[.5, 0, 0] };
+  const send = (src, amt, dst) => { if (!amt) return; if (amt === 1) { src.connect(dst); return; } const s = ctx.createGain(); s.gain.value = amt; src.connect(s).connect(dst); };
+  // 스테레오 무대: 리드·베이스·패드는 가운데, 아르페지오는 오른쪽. 코드·드럼은 아래 레인에서 따로 팬
+  // 넓히기(코러스)는 신스 코드·패드·아르페지오·환경음만 — 피아노·일렉피아노에 코러스를 걸면 싸구려 건반 소리가 난다. 효과음(임팩트 저음)도 제외
+  g.wideAmps = []; g.drumOut = {};
+  // 곡에 실제로 나오는 트랙·드럼만 레인/넓히기를 만든다(없는 레인은 드럼 트랙으로 바로 간다) — 노드마다 렌더 비용이 든다
+  const used = new Set(song.events.map(e => e.tr === "drum" ? e.p : e.tr));
+  if (P.amb || G.lofi) used.add("amb");
+  const PAN = { arp: .28 };
+  const SYNTH = ["synthpluck", "supersaw", "pad", "kpluck"];
+  const WIDE = { chords: SYNTH.includes(P.chordInst) ? .3 : 0, pad: .45, arp: .25, amb: .35 };
   for (const name of Object.keys(MIX)) {
     const gn = ctx.createGain(); gn.gain.value = MIX[name];
-    const toSC = G.sidechain && ["pad","arp","chords"].includes(name);
-    gn.connect(name === "bass" ? scB : toSC ? sc : master);
-    const s = ctx.createGain(); s.gain.value = SEND[name]; gn.connect(s).connect(rev);
-    if (DSEND[name]) { const ds = ctx.createGain(); ds.gain.value = DSEND[name]; gn.connect(ds).connect(dly); }
+    const toSC = G.sidechain && ["pad","arp","chords"].includes(name), dst = name === "bass" ? scB : toSC ? sc : master;
+    panTo(ctx, gn, P.solo ? 0 : (PAN[name] || 0), dst);           // 피아노 독주는 팬·넓히기 없이
+    if (WIDE[name] && !P.solo && used.has(name)) widener(g, gn, dst, WIDE[name]);
+    const [hs, ps, ds] = used.has(name) ? FXS[name] : [0, 0, 0];
+    send(gn, hs, g.hallIn); send(gn, ps, g.plateIn); if (G.delay) send(gn, ds, dIn);
     g.tracks[name] = gn;
   }
+  // 코드는 음역별 레인 세 개: 낮은 음은 왼쪽, 높은 음은 오른쪽(피아노 독주면 건반 앞에 앉은 느낌)
+  g.chordLanes = [-.4, -.1, .25].map(p => laneTo(ctx, 1, p, g.tracks.chords));
+  // 드럼 키트 이미지 [팬, 레벨]: 킥·스네어는 가운데, 햇은 오른쪽, 셰이커는 왼쪽 … 칩튠은 전부 가운데
+  const DK = { kick:[0, .95], boom:[0, 1], timp:[0, .9], snare:[0, 1.5], clap:[0, 1.7], snap:[0, 1.2], rim:[-.15, 1.1], hat:[.25, 1.15], ohat:[.3, 1.05],
+               shaker:[-.28, 1.15], ride:[.35, 1], crash:[-.3, 1], tomH:[.25, 1], tomL:[-.25, 1] };
+  for (const [k, [pan, gain]] of Object.entries(DK)) {
+    if (!used.has(k)) continue;
+    g.drumOut[k] = laneTo(ctx, gain, g.chip ? 0 : pan, g.tracks.drum);
+  }
+  if (!g.chip && g.drumOut.clap) widener(g, g.drumOut.clap, g.tracks.drum, .25 / g.drumOut.clap.k);
+  // 드럼 잔향은 레인별로: 백비트는 플레이트, 팀파니·붐·라이드(영화·재즈)는 홀
+  for (const [k, v] of [["snare", .3], ["clap", .35], ["snap", .25], ["rim", .2], ["tomH", .1], ["tomL", .1], ["crash", .05]])
+    if (g.drumOut[k]) send(g.drumOut[k], v / g.drumOut[k].k, g.plateIn);
+  for (const [k, v] of [["timp", .35], ["boom", .15], ["ride", .12], ["tomH", .15], ["tomL", .15]])
+    if (g.drumOut[k]) send(g.drumOut[k], v / g.drumOut[k].k, g.hallIn);
   if (P.solo) { g.tracks.chords.gain.value = .6; g.tracks.lead.gain.value = 1; }
   return g;
 }
@@ -2050,7 +2169,8 @@ function duckOn(g, when, v) {
   if (g.bassDuck) { const p = g.scBass.gain; p.setTargetAtTime(1 - g.bassDuck * v, when, .002); p.setTargetAtTime(1, when + .02, spb * .08); }
 }
 function playEvent(g, ev, when) {
-  const out = g.tracks[ev.tr === "drum" ? "drum" : ev.tr];
+  const out = ev.tr === "drum" ? (g.drumOut[ev.p] || g.tracks.drum)
+            : ev.tr === "chords" ? g.chordLanes[ev.p < 60 ? 0 : ev.p < 68 ? 1 : 2] : g.tracks[ev.tr];
   if (ev.tr === "fx") { const fn = FX[ev.p]; if (fn) fn(g, out, when, ev.v, ev.d); return; }
   if (ev.tr === "drum") {
     const fn = DRUM[ev.p]; if (fn) fn(g, out, when, ev.v);
