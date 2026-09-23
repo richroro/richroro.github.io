@@ -316,28 +316,43 @@ function keyName(P) {
   return (flats ? FLAT : SHARP)[P.root];
 }
 
+// 구성음(근음 기준 반음)으로 코드 이름 꼬리를 붙인다 — 어떤 선법·색채에서도 '?' 가 나오지 않는다
+function chordSuffix(tones) {
+  const r = tones[0], h = i => tones.some(x => mod(x - r, 12) === i);
+  const ninth = tones.some(x => x - r > 12 && mod(x - r, 12) === 2);
+  const third = h(4) ? "M" : h(3) ? "m" : h(5) ? "sus4" : h(2) ? "sus2" : "";
+  const sev = h(11) ? "maj7" : h(10) ? "7" : "";
+  if (third === "m" && h(6) && !h(7)) return sev ? "m7♭5" : "dim";
+  if (third === "M" && h(8) && !h(7)) return "+";
+  const m = third === "m" ? "m" : "", sus = third.startsWith("sus") ? third : "";
+  if (sev && ninth) return m + (sev === "maj7" ? "maj9" : "9") + sus;
+  if (sev) return (m && sev === "maj7" ? "m(maj7)" : m + sev) + sus;
+  return m + sus + (ninth ? "add9" : "");
+}
+
 // 스케일 위에 3도씩 쌓아 코드를 만든다. raise: 단조의 V 를 장3화음으로(화성단음계)
-function buildChord(P, deg, seventh, raise) {
+// ext: "" 3화음, "7" 음계 안의 7화음, "add9", "9"(7+9), "sus4", "sus2". 없으면 seventh 로 정한다(예전 호출 그대로)
+function buildChord(P, deg, seventh, raise, ext) {
   const s = SCALES[P.mode];
-  const n = seventh ? 4 : 3;
-  const tones = [];
-  for (let k = 0; k < n; k++) {
-    const d = deg + 2 * k;
-    tones.push(s[mod(d, 7)] + 12 * Math.floor(d / 7));
-  }
-  if (raise) tones[1] += 1;
-  const third = tones[1] - tones[0], fifth = tones[2] - tones[0], sev = seventh ? tones[3] - tones[0] : null;
-  let q = "";
-  if (third === 4 && fifth === 7) q = sev === 11 ? "maj7" : sev === 10 ? "7" : "";
-  else if (third === 3 && fifth === 7) q = sev === 10 ? "m7" : sev === 11 ? "m(maj7)" : "m";
-  else if (third === 3 && fifth === 6) q = sev === 10 ? "m7♭5" : "dim";
-  else if (third === 4 && fifth === 8) q = "+";
-  else q = "?";
+  const at = d => s[mod(d, 7)] + 12 * Math.floor(d / 7);
+  ext = ext != null ? ext : (seventh ? "7" : "");
+  let steps = ext === "sus4" ? [0, 3, 4] : ext === "sus2" ? [0, 1, 4] : [0, 2, 4];
+  if (ext === "7" || ext === "9") steps.push(6);
+  if (ext === "add9" || ext === "9") steps.push(8);
+  // 선법 때문에 ♭9·#4 가 되는 색은 버린다 (iii 의 add9, 프리지안 i 의 add9, 리디안 I 의 sus4)
+  steps = steps.filter(k => { const iv = mod(at(deg + k) - at(deg), 12); return k === 8 || k === 1 ? iv === 2 : k === 3 ? iv === 5 : true; });
+  if (!steps.includes(2) && steps.length < 3) steps.splice(1, 0, 2);      // sus 가 걸러졌으면 3음 복구
+  const tones = steps.map(k => at(deg + k));
+  const raised = !!raise && steps[1] === 2;                              // sus 코드엔 올릴 3음이 없다
+  if (raised) tones[1] += 1;
+  // 실제로 남은 색 — 걸러진 색은 이름·ext 에서도 빠진다
+  const e = steps.includes(3) ? "sus4" : steps.includes(1) ? "sus2" : "";
+  const eff = e || (steps.includes(6) && steps.includes(8) ? "9" : steps.includes(6) ? "7" : steps.includes(8) ? "add9" : "");
   const flats = isMinorish(P.mode) ? FLAT_MIN.has(P.root) : FLAT_MAJ.has(P.root);
   const rootPc = mod(P.root + tones[0], 12);
-  return { deg, seventh: !!seventh, raise: !!raise, tones, rootPc,
-           name: (flats ? FLAT : SHARP)[rootPc] + q,
-           classes: Array.from({ length: n }, (_, k) => mod(deg + 2 * k, 7)) };
+  return { deg, ext: eff, seventh: steps.includes(6), raise: raised, tones, rootPc,
+           name: (flats ? FLAT : SHARP)[rootPc] + chordSuffix(tones),
+           classes: steps.map(k => mod(deg + k, 7)) };
 }
 
 // 스케일 도(정수, 0 = 으뜸음, 7 = 한 옥타브 위) → MIDI. chord 가 있으면 올린 7음을 반영
@@ -438,6 +453,27 @@ const GENRES = {
               pad:null, reverb:.35, delay:0, intro:["chords"], leadRange:[7,19],
               prog:{ major:[[0,4,0,4],[0,3,4,0],[0,3,0,4],[0,5,3,4]], minor:[[0,4,0,4]] } }
 };
+
+/* 도(0~6)별 코드 색채 후보 — 곡마다 도 하나에 한 번만 골라 고정한다(루프가 돌 때마다 색이 바뀌지 않게).
+   "7" 은 음계 안의 7화음(IV→maj7, ii·vi→m7, V→7), "9" 는 7+9, "add9" 는 3화음+9, sus4 는 구절 끝 V 에만 걸린다.
+   표에 없는 장르·도는 예전처럼 G.sevenths 확률로 7화음(역시 곡마다 고정). K팝·팝·EDM 의 V 는 딸림7 대신 sus4·add9 */
+const COLOR = {
+  kpop:     { major:{0:["add9","7"],1:["7","9"],2:["7"],3:["7","9"],4:["sus4","add9",""],5:["7","9","add9"]},
+              minor:{0:["7","9"],2:["7"],3:["7","9"],4:["7"],5:["7","9"],6:["add9",""]} },
+  pop:      { major:{0:["add9",""],1:["7"],3:["add9","7"],4:["sus4","add9"],5:["7","add9",""]},
+              minor:{0:["add9","7"],2:["add9",""],3:["7","add9"],5:["7","add9"],6:["add9",""]} },
+  edm:      { major:{0:["add9"],3:["add9"],4:["sus4",""],5:["7"]}, minor:{0:["add9","7"],5:["add9"],6:["sus2",""]} },
+  ballad:   { major:{0:["add9",""],1:["7"],2:["7"],3:["7","add9"],4:["sus4",""],5:["7"]}, minor:{0:["7","add9"],3:["7"],5:["7"]} },
+  citypop:  { major:{0:["9","7"],1:["9"],2:["7"],3:["9","7"],4:["9","7"],5:["9"]}, minor:{0:["9"],3:["9"],4:["7"],5:["7"],6:["7"]} },
+  lofi:     { major:{0:["9"],1:["9"],2:["7"],3:["9"],4:["9"],5:["9"]}, minor:{0:["9"],3:["9"],4:["7"],5:["7"],6:["7"]} },
+  jazz:     { major:{0:["9","7"],1:["9"],2:["7"],3:["9"],4:["9"],5:["7"]}, minor:{0:["9"],1:["7"],3:["9"],4:["7"],5:["7"]} },
+  bossa:    { major:{0:["9","7"],1:["9"],4:["9","7"],5:["7"]}, minor:{0:["9"],3:["7"],4:["7"]} },
+  cinematic:{ major:{0:["add9",""],3:["add9",""],4:["sus4",""]}, minor:{0:["","add9"],5:["add9"],6:[""]} },
+  ambient:  { major:{0:["9","add9"],3:["9"],5:["9"]}, minor:{0:["9"],5:["7"]} }
+};
+// 루프 장르의 프리코러스·브리지 전용 진행(도 번호) — 팝 계열에서 vii°/ii° 가 나오지 않게 손으로 골랐다
+const PRE_LOOP    = { major:[[3,4,2,5],[1,2,3,4],[5,3,1,4],[3,3,4,4]], minor:[[5,6,2,2],[3,4,5,6],[5,6,3,4]] };
+const BRIDGE_LOOP = { major:[[5,2,3,0],[5,3,0,4],[1,2,3,3]],          minor:[[2,6,5,5],[5,2,6,6],[3,2,5,6]] };
 
 /* =========================================================================
    3. 단서 사전 — 문장 안에 단어(어간)가 들어 있으면 값을 밀고 당긴다
@@ -801,26 +837,51 @@ function compose(P) {
     }
     return out;
   }
+  // 도별 색채는 곡마다 한 번 골라 고정한다 — 루프가 돌 때마다 3화음↔7화음이 바뀌지 않는다
+  const colorTbl = (COLOR[P.genre] || {})[modeKey] || null, colorOf = {};
+  const extFor = d => {
+    if (!(d in colorOf)) {
+      const opts = colorTbl && colorTbl[d];
+      colorOf[d] = opts ? rand.pick(opts) : (rand.chance(G.sevenths) ? "7" : "");
+    }
+    return colorOf[d];
+  };
+  const noSus = e => e === "sus4" ? "" : e;
+  // 루프 장르: 후크 장르·발라드·로파이는 마르코프 없이 정해진 루프만 돈다
+  const loopy = !!G.hook || ["ballad","lofi"].includes(P.genre);
   function progFor(type, nChords) {
     const key = type === "D" ? "B" : type;        // 드롭은 후렴과 같은 코드 위에서 돈다
     if (progCache[key]) return progCache[key];
-    let degs;
-    const useMarkov = type === "C" ? rand.chance(.6) : rand.chance(.25);
-    if (useMarkov) degs = markovProg(nChords, type === "C" ? rand.pick([3,5,1]) : type === "P" ? rand.pick([3,5]) : 0);
-    else {
-      const loop = rand.pick(G.prog[modeKey]);
-      degs = []; for (let i = 0; i < nChords; i++) degs.push(loop[i % loop.length]);
-      if (type === "C") degs = degs.map(d => mod(d + rand.pick([3,5]), 7)); // 브리지는 다른 자리에서 시작
+    let degs, loop = null;
+    if (loopy) {
+      if (type === "P") loop = rand.pick(PRE_LOOP[modeKey]);
+      else if (type === "C") loop = rand.pick(BRIDGE_LOOP[modeKey]);
+      else if (type === "B" && progCache.A && progCache.A.loop && rand.chance(P.genre === "kpop" ? .45 : .3)) loop = progCache.A.loop;   // 후렴이 절 루프를 그대로 쓴다
+      else loop = rand.pick(G.prog[modeKey]);
+      degs = Array.from({ length: nChords }, (_, i) => loop[i % loop.length]);
+      // 후렴·드롭은 루프를 끝까지 지킨다. 절 끝만 가끔 V(단조 ♭VII)로 돌려 다음 섹션에 넘긴다
+      if (type === "A" && nChords >= 4 && rand.chance(.5)) degs[nChords - 1] = modeKey === "minor" ? 6 : 4;
+      if (type === "C") degs[nChords - 1] = modeKey === "minor" ? 6 : 4;
+    } else {
+      const useMarkov = type === "C" ? rand.chance(.6) : rand.chance(.25);
+      if (useMarkov) degs = markovProg(nChords, type === "C" ? rand.pick([3,5,1]) : type === "P" ? rand.pick([3,5]) : 0);
+      else {
+        const lp = rand.pick(G.prog[modeKey]);
+        degs = []; for (let i = 0; i < nChords; i++) degs.push(lp[i % lp.length]);
+        if (type === "C") degs = degs.map(d => mod(d + rand.pick([3,5]), 7)); // 브리지는 다른 자리에서 시작
+      }
+      // 종지: 섹션 끝은 딸림화음(또는 단조의 VII)으로 되돌아갈 힘을 준다
+      if (nChords >= 4 && type !== "C" && type !== "P" && rand.chance(.55)) degs[nChords - 1] = modeKey === "minor" && ["rock","edm","hiphop"].includes(P.genre) ? 6 : 4;
+      if (type === "C") degs[nChords - 1] = 4;
+      if (type === "P") { degs[nChords - 1] = 4; if (nChords >= 2) degs[nChords - 2] = 3; }   // IV → V 로 조인다
     }
-    // 종지: 섹션 끝은 딸림화음(또는 단조의 VII)으로 되돌아갈 힘을 준다
-    if (nChords >= 4 && type !== "C" && type !== "P" && rand.chance(.55)) degs[nChords - 1] = modeKey === "minor" && ["rock","edm","hiphop"].includes(P.genre) ? 6 : 4;
-    if (type === "C") degs[nChords - 1] = 4;
-    if (type === "P") { degs[nChords - 1] = 4; if (nChords >= 2) degs[nChords - 2] = 3; }   // IV → V 로 조인다
-    const chords = degs.map(d => {
-      const sev = rand.chance(G.sevenths);
+    const chords = degs.map((d, i) => {
       const raise = modeKey === "minor" && d === 4 && rand.chance(G.raiseV);
-      return buildChord(P, d, sev, raise);
+      let ext = extFor(d);
+      if (ext === "sus4" && (i % 4 !== 3 || type === "P")) ext = "";   // sus4 는 4마디 구절 끝에서만(프리코러스 끝 선율과 부딪힌다)
+      return buildChord(P, d, false, raise, ext);
     });
+    chords.loop = loop;
     progCache[key] = chords;
     return chords;
   }
@@ -841,12 +902,16 @@ function compose(P) {
     song.chords.push({ t: tt, d: dd, chord: cc, voicing: prevVoicing, padVoicing: prevPad,
                        bassRoot: bassRootOf(P, cc), sec: sec.type });
   };
+  // 후크 장르는 절(A) 진행을 먼저 캐시해 둔다 — 후렴이 절 루프를 빌려 쓰려면 A 가 먼저 있어야 한다(인트로가 없어도)
+  if (G.hook) progFor("A", Math.max(1, Math.round(8 * harm)));
+  // 프리코러스 끝 계단: ii–iii | IV–V (단조 iv–v | ♭VI–♭VII)
+  const CLIMB = modeKey === "minor" ? [3, 4, 5, 6] : [1, 2, 3, 4];
   let t = 0;
   for (const sec of song.sections) {
     const nChords = Math.max(1, Math.round(sec.bars * harm));
     const chordBeats = sec.bars * bpb / nChords;
     let chords;
-    if (sec.type === "outro") chords = [buildChord(P, 0, G.sevenths > .5, false)];
+    if (sec.type === "outro") chords = [buildChord(P, 0, false, false, extFor(0))];
     else if (sec.type === "intro") chords = progFor("A", Math.max(1, Math.round(8 * harm))).slice(0, nChords);
     else chords = fitLen(progFor(sec.type, nChords), nChords);
     // 코드 수는 캐시 길이가 아니라 섹션 길이로 정한다. 인트로가 "A" 를 8개로 먼저 캐시해 두면
@@ -855,9 +920,22 @@ function compose(P) {
     for (let i = 0; i < n; i++) {
       const d = sec.type === "outro" ? sec.bars * bpb : chordBeats;
       const c = chords[i];
+      /* 프리코러스 끝 세 마디는 반 마디씩 한 계단씩 올라 비트 드롭 컷으로 들어간다.
+         …원래 코드 | ii,  iii | IV,  V(한 마디 — 뒤 두 박은 컷에 먹힌다). 컷 직전에 들리는 마지막 코드가 V(♭VII) */
+      if (sec.type === "P" && G.cut && harm === 1 && bpb === 4 && n >= 4 && i >= n - 3) {
+        const k = i - (n - 3);
+        const parts = k === 0 ? [[c, 0, d / 2], [CLIMB[0], d / 2, d / 2]]
+                    : k === 1 ? [[CLIMB[1], 0, d / 2], [CLIMB[2], d / 2, d / 2]]
+                    :           [[CLIMB[3], 0, d]];
+        for (const [x, off, dd] of parts) {
+          const cc = typeof x === "number" ? buildChord(P, x, false, false, noSus(extFor(x))) : x;
+          place(t + off, dd, cc, sec);
+        }
+        t += d; continue;
+      }
       // 종지 쪼개기: 절·후렴 마지막 마디를 IV→V 두 코드로 (팝·발라드·동요·왈츠)
       if (i === n - 1 && harm === 1 && ["A","B"].includes(sec.type) && ["ballad","pop","kids","waltz","citypop"].includes(P.genre) && rand.chance(.4)) {
-        const sub = buildChord(P, 3, false, false), dom = buildChord(P, 4, false, modeKey === "minor" && rand.chance(G.raiseV));
+        const sub = buildChord(P, 3, false, false, noSus(extFor(3))), dom = buildChord(P, 4, false, modeKey === "minor" && rand.chance(G.raiseV), extFor(4));
         for (const [cc, off] of [[sub, 0], [dom, d / 2]]) place(t + off, d / 2, cc, sec);
       } else place(t, d, c, sec);
       t += d;
@@ -1229,7 +1307,8 @@ function compose(P) {
         for (let beat = 1; beat < bpb; beat++) hit(beat, .8, chordAt(barBeat + beat).voicing, vel - .08, .006);
       } else if (style === "lofi") {
         const pat = rand.pick(LOFI);
-        for (const [off, dur] of pat) { const vc = chordAt(barBeat + off).voicing; const add = rand.chance(.35) ? [...vc, vc[vc.length - 1] + 3 + (isMinorish(P.mode) ? 0 : 1)] : vc; hit(off, dur, add, vel, .01); }
+        // 9도가 이미 든 코드 위엔 3도를 더 얹지 않는다(G9 위의 A+4 = C# 같은 충돌)
+        for (const [off, dur] of pat) { const ch = chordAt(barBeat + off), vc = ch.voicing; const add = !/9/.test(ch.chord.ext || "") && rand.chance(.35) ? [...vc, vc[vc.length - 1] + 3 + (isMinorish(P.mode) ? 0 : 1)] : vc; hit(off, dur, add, vel, .01); }
       } else if (style === "kpopstab") {
         // 이지리스닝 댄스팝: 뒷박 플럭. 후렴·드롭은 8분 뒷박을 채우고 절은 성기게.
         const big = isB || sec.type === "D";
