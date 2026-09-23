@@ -126,19 +126,18 @@
     return rows && rows[0] ? rows[0] : null;
   }
 
-  async function saveProfile(name, hoodCode) {
-    const uid = await whoami();
-    if (!uid) throw new Error("로그인이 필요합니다");
-    return call(rest + "/correspondents", {
+  /* 프로필은 함수로만 쓴다(policies.sql 의 save_profile 설명). 누구의 것인지는 서버가 토큰에서 정한다. */
+  function saveProfile(name, hoodCode) {
+    if (!session) return Promise.reject(new Error("로그인이 필요합니다"));
+    return call(rest + "/rpc/save_profile", {
       method: "POST",
-      headers: { Prefer: "resolution=merge-duplicates,return=representation" },
-      body: JSON.stringify({ id: uid, name, hood_code: hoodCode || null })
+      body: JSON.stringify({ p_name: name, p_hood: hoodCode || null })
     });
   }
 
   /* 동네 속보를 받아 온다. since 를 주면 그 뒤로 들어온 것만. */
   function pull(hood, since, limit) {
-    let q = rest + "/reports?select=id,by_name,t,cat,place,area,wait,crowd,park,rate,tags,note,mine" +
+    let q = rest + "/reports?select=id,by_name,t,cat,place,area,wait,crowd,park,rate,tags,note,mine,hidden" +
       "&hood_code=eq." + encodeURIComponent(hood) + "&order=t.desc&limit=" + (limit || 200);
     if (since) q += "&t=gt." + encodeURIComponent(since);
     return call(q);
@@ -160,7 +159,21 @@
   const flag = (id, reason) =>
     call(rest + "/flags", { method: "POST", body: JSON.stringify({ report_id: id, reporter: null, reason }) });
 
-  const removeMine = (id) => call(rest + "/reports?id=eq." + encodeURIComponent(id), { method: "DELETE" });
+  /* 지운 행을 돌려받는다. 0건이면 이미 없거나, 지금 로그인한 계정의 글이 아니다 —
+     PostgREST 는 권한 때문에 0건이 지워져도 성공으로 답하므로 여기서 가려야 한다. */
+  const removeMine = (id) => call(rest + "/reports?id=eq." + encodeURIComponent(id),
+    { method: "DELETE", headers: { Prefer: "return=representation" } });
+  const exists = async (id) => {
+    const rows = await call(rest + "/reports?select=id&id=eq." + encodeURIComponent(id));
+    return !!(rows && rows.length);
+  };
+
+  /* 계정을 지운다. 로그인 계정 → 프로필 → 내 리포트 → 내 신고가 서버에서 함께 사라진다.
+     지운 뒤의 토큰은 쓸모가 없으니 logout 을 부르지 않고 세션만 버린다. */
+  async function deleteAccount() {
+    await call(rest + "/rpc/delete_my_account", { method: "POST", body: "{}" });
+    saveSession(null);
+  }
 
   /* 서버 행 → 앱의 리포트 모양. 검사는 앱의 sane() 이 한 번 더 한다. */
   const toReport = (row) => ({
@@ -174,6 +187,6 @@
     hasSession: () => !!(session && session.access_token),
     uid: () => session && session.uid,
     consumeAuthHash, whoami, signInKakao, signInEmail, signOut,
-    listHoods, myProfile, saveProfile, pull, push, flag, removeMine, toReport
+    listHoods, myProfile, saveProfile, pull, push, flag, removeMine, exists, deleteAccount, toReport
   };
 })(window);

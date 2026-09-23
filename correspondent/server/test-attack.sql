@@ -1,4 +1,3 @@
-\set ON_ERROR_STOP off
 \set QUIET on
 \pset tuples_only on
 \pset format unaligned
@@ -7,6 +6,11 @@
 insert into hoods (code, sido, sigungu, dong) values
   ('4117110100','경기도','안양시 만안구','안양동'),
   ('4117310100','경기도','안양시 동안구','비산동') on conflict do nothing;
+delete from auth.users;   -- 처음부터. 프로필·리포트·신고가 따라 지워진다
+insert into auth.users (id) values
+  ('11111111-1111-1111-1111-111111111111'), ('22222222-2222-2222-2222-222222222222'),
+  ('33333333-3333-3333-3333-333333333333'), ('44444444-4444-4444-4444-444444444444')
+  on conflict do nothing;
 insert into correspondents (id, name, hood_code) values
   ('11111111-1111-1111-1111-111111111111','민지','4117110100'),
   ('22222222-2222-2222-2222-222222222222','준호','4117110100'),
@@ -68,7 +72,7 @@ reset role; set role authenticated; set app.uid='11111111-1111-1111-1111-1111111
 insert into flags (report_id, reporter, reason) values ('aaaa0004','11111111-1111-1111-1111-111111111111','광고');
 \echo '   (같은 사람 두 번째 신고는 위에서 막힘)'
 reset role; set role postgres;
-insert into correspondents (id,name,hood_code) values ('44444444-4444-4444-4444-444444444444','태오','4117110100') on conflict do nothing;
+insert into correspondents (id,name,hood_code) values ('44444444-4444-4444-4444-444444444444','태오','4117110100') on conflict do nothing;  -- 계정은 위에서 만들어 둠
 set role authenticated; set app.uid='44444444-4444-4444-4444-444444444444';
 insert into flags (report_id, reporter, reason) values ('aaaa0004','44444444-4444-4444-4444-444444444444','광고');
 reset role; set role anon; set app.uid='';
@@ -89,7 +93,7 @@ select '   정지 상태: '||coalesce(banned_until::text,'풀림 ← 구멍!') f
 
 \echo '── 13. 이름은 바꿀 수 있어야 한다'
 set role authenticated; set app.uid='22222222-2222-2222-2222-222222222222';
-update correspondents set name='준호2' where id = auth.uid();
+select public.save_profile('준호2', '4117110100');
 reset role;
 select '   이름: '||name from correspondents where id='22222222-2222-2222-2222-222222222222';
 update correspondents set banned_until=null, name='준호' where id='22222222-2222-2222-2222-222222222222';
@@ -126,3 +130,30 @@ begin
 end $$;
 reset role;
 select '   민지의 총 리포트: '||count(*)::text from reports where author='11111111-1111-1111-1111-111111111111';
+
+\echo '── 18. 남의 이름으로 신고하기 (reporter 에 남의 uuid)'
+reset role; delete from flags;
+set role authenticated; set app.uid='33333333-3333-3333-3333-333333333333';
+insert into flags (report_id, reporter, reason) values ('aaaa0001', '44444444-4444-4444-4444-444444444444', '광고');
+reset role;
+select '   기록된 신고자: '||reporter from flags where report_id='aaaa0001';
+
+\echo '── 19. 신고할 때 reporter 를 비워 보낸다 (앱이 실제로 이렇게 보낸다)'
+reset role; set role authenticated; set app.uid='44444444-4444-4444-4444-444444444444';
+insert into flags (report_id, reporter, reason) values ('aaaa0001', null, '거짓');
+reset role;
+select '   들어감: '||count(*)::text||'건, 신고자 태오' from flags where report_id='aaaa0001' and reporter='44444444-4444-4444-4444-444444444444';
+
+\echo '── 20. 프로필 함수로 정지를 풀 수 있나'
+reset role;
+update correspondents set banned_until = now() + interval '7 days' where id='33333333-3333-3333-3333-333333333333';
+set role authenticated; set app.uid='33333333-3333-3333-3333-333333333333';
+select public.save_profile('서연', '4117110100');
+reset role;
+select '   정지 상태: '||coalesce(banned_until::text,'풀림 ← 구멍!') from correspondents where id='33333333-3333-3333-3333-333333333333';
+
+\echo '── 21. 프로필 표에 직접 쓰기'
+set role authenticated; set app.uid='33333333-3333-3333-3333-333333333333';
+insert into correspondents (id, name) values (auth.uid(), '직접');
+update correspondents set name = '직접' where id = auth.uid();
+reset role;

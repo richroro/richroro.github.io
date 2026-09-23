@@ -1,0 +1,330 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>개인정보처리방침 · 동네 특파원</title>
+<meta name="description" content="동네 특파원이 받는 개인정보, 보관 기간, 지우는 방법. 서버 없이 쓰면 아무것도 받지 않고, 공용 보드에 로그인했을 때만 최소한을 받습니다.">
+<meta name="robots" content="noindex">
+<link rel="canonical" href="https://richroro.github.io/correspondent/privacy.html">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%230F6E63'/><circle cx='50' cy='62' r='9' fill='white'/><path d='M34 47 A22 22 0 0 1 66 47' fill='none' stroke='white' stroke-width='7' stroke-linecap='round'/><path d='M23 34 A38 38 0 0 1 77 34' fill='none' stroke='white' stroke-width='7' stroke-linecap='round'/></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans+KR:wght@400;500;600;700&display=swap">
+<style>
+:root{
+  color-scheme:light;
+  --paper:#F5F3EE; --surface:#FFFFFF; --surface-2:#F1EEE8;
+  --ink:#15171A; --ink-2:#474B50; --ink-3:#787D84;
+  --line:#DFDAD1; --line-soft:#ECE8E1;
+  --accent:#0F6E63; --accent-wash:#E2F0ED;
+  --fill-bg:#FFF1B8; --fill-ink:#5C4400;
+  --warn-bg:#F3BE8A; --warn-ink:#6B3300;
+}
+@media (prefers-color-scheme:dark){ :root:not([data-theme="light"]){
+  color-scheme:dark;
+  --paper:#0E1013; --surface:#181B1E; --surface-2:#202428;
+  --ink:#E9E7E1; --ink-2:#B3B0A8; --ink-3:#868B92;
+  --line:#2C3137; --line-soft:#23282E;
+  --accent:#5FC9B8; --accent-wash:#11302C;
+  --fill-bg:#4A3B08; --fill-ink:#FFE08A;
+  --warn-bg:#6B3A16; --warn-ink:#FBD9BC;
+}}
+:root[data-theme="dark"]{
+  color-scheme:dark;
+  --paper:#0E1013; --surface:#181B1E; --surface-2:#202428;
+  --ink:#E9E7E1; --ink-2:#B3B0A8; --ink-3:#868B92;
+  --line:#2C3137; --line-soft:#23282E;
+  --accent:#5FC9B8; --accent-wash:#11302C;
+  --fill-bg:#4A3B08; --fill-ink:#FFE08A;
+  --warn-bg:#6B3A16; --warn-ink:#FBD9BC;
+}
+*{box-sizing:border-box}
+[hidden]{display:none !important}
+html,body{margin:0;padding:0}
+body{background:var(--paper);color:var(--ink);
+  font-family:"IBM Plex Sans KR","Apple SD Gothic Neo","Malgun Gothic",system-ui,sans-serif;
+  font-size:15px;line-height:1.75;letter-spacing:-.2px;-webkit-font-smoothing:antialiased;overflow-wrap:anywhere}
+a{color:var(--accent)}
+.wrap{max-width:720px;margin:0 auto;padding:0 16px 64px}
+.top{display:flex;align-items:center;gap:10px;padding:16px 0 10px;font-size:13px}
+.top a{text-decoration:none;font-weight:600}
+h1{font-size:26px;font-weight:700;letter-spacing:-.8px;line-height:1.3;margin:14px 0 6px;text-wrap:balance}
+.lede{color:var(--ink-2);margin:0 0 20px}
+h2{font-size:17.5px;font-weight:700;letter-spacing:-.5px;margin:34px 0 10px;padding-top:14px;
+  border-top:1px solid var(--line);scroll-margin-top:16px}
+h2 .no{font-family:"IBM Plex Mono",monospace;font-size:13px;font-weight:500;color:var(--accent);
+  margin-right:8px;letter-spacing:0}
+h3{font-size:14.5px;font-weight:600;margin:18px 0 6px}
+p{margin:0 0 10px}
+ol,ul{margin:0 0 10px;padding-left:22px}
+li{margin:3px 0}
+b,strong{font-weight:600}
+mark.fill{background:var(--fill-bg);color:var(--fill-ink);padding:1px 5px;border-radius:4px;font-weight:600}
+
+.draft{background:var(--fill-bg);color:var(--fill-ink);border-radius:12px;padding:14px 16px;margin:6px 0 22px;font-size:13.5px;line-height:1.65}
+.draft b{display:block;font-size:14.5px;margin-bottom:4px}
+.draft ol{margin:6px 0 0}
+
+.glance{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:0 0 8px}
+@media (max-width:560px){.glance{grid-template-columns:1fr}}
+.gl{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:14px 15px}
+.gl h3{margin:0 0 8px;font-size:14px}
+.gl dl{margin:0;display:grid;grid-template-columns:auto 1fr;gap:4px 12px;font-size:13px;line-height:1.55}
+.gl dt{color:var(--ink-3)}
+.gl dd{margin:0}
+
+.tbl{overflow-x:auto;margin:6px 0 12px;border:1px solid var(--line);border-radius:10px;background:var(--surface)}
+table{border-collapse:collapse;width:100%;font-size:13.5px;line-height:1.6}
+th,td{text-align:left;vertical-align:top;padding:9px 12px;border-bottom:1px solid var(--line-soft)}
+th{font-weight:600;color:var(--ink-3);font-size:12.5px;background:var(--surface-2);white-space:nowrap}
+tr:last-child td{border-bottom:none}
+td:first-child{font-weight:600;white-space:nowrap}
+
+.card{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:13px 15px;margin:8px 0}
+.card h3{margin:0 0 6px}
+.card dl{margin:0;display:grid;grid-template-columns:5.5em 1fr;gap:3px 12px;font-size:13.5px;line-height:1.6}
+.card dt{color:var(--ink-3)}
+.card dd{margin:0}
+
+.warn{background:var(--warn-bg);color:var(--warn-ink);border-radius:10px;padding:11px 13px;font-size:14px;margin:10px 0}
+.toc{columns:2;column-gap:20px;font-size:13.5px;padding-left:20px;margin:6px 0 0}
+@media (max-width:560px){.toc{columns:1}}
+.toc a{text-decoration:none}
+.foot{margin-top:40px;padding-top:14px;border-top:1px solid var(--line);font-size:12.5px;color:var(--ink-3)}
+.mono{font-family:"IBM Plex Mono",monospace;font-size:.92em}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top"><a href="./">← 동네 특파원</a></div>
+
+  <!-- 초안 표시: 아래 노란 칸을 다 채우고 검토를 받은 뒤 이 상자를 지운다 -->
+  <div class="draft" id="draftNote">
+    <b>초안입니다 — 게시 전에 채우고 확인할 것</b>
+    이 문서는 앱이 실제로 하는 일에 맞춰 썼지만, 운영자만 알 수 있는 사실이 비어 있습니다.
+    노란 칸을 채우고, 게시 전에 개인정보 전문가의 검토를 받으세요. 법률 자문이 아닙니다.
+    <ol>
+      <li>운영자 이름과 개인정보 보호책임자 연락처 (14조)</li>
+      <li>카카오 로그인 동의항목에서 실제로 받기로 설정한 항목 (2조)</li>
+      <li>Supabase 프로젝트 지역과 백업 보관 기간 (4조, 8조)</li>
+      <li>시행일 (16조)</li>
+      <li><span class="mono">server/retention.sql</span> 을 돌렸는지 — 안 돌리면 4조의 "1년"이 거짓이 됩니다</li>
+    </ol>
+  </div>
+
+  <h1>개인정보처리방침</h1>
+  <p class="lede"><mark class="fill">[운영자 이름]</mark>(이하 "운영자")는 「개인정보 보호법」 제30조에 따라,
+    동네 특파원(이하 "서비스")을 쓰는 분의 개인정보를 어떻게 다루는지 아래와 같이 알립니다.</p>
+
+  <div class="glance" aria-label="한눈에 보기">
+    <div class="gl">
+      <h3>서버 없이 쓸 때</h3>
+      <dl>
+        <dt>받는 것</dt><dd><b>없음</b></dd>
+        <dt>저장 위치</dt><dd>이 기기의 브라우저</dd>
+        <dt>지우는 법</dt><dd>주고받기 → 전부 비우기</dd>
+      </dl>
+    </div>
+    <div class="gl">
+      <h3>공용 보드에 로그인했을 때</h3>
+      <dl>
+        <dt>받는 것</dt><dd>로그인 식별자, 특파원 이름, 고른 동네, 올린 리포트, 한 신고</dd>
+        <dt>보관</dt><dd>탈퇴하면 바로 삭제. 리포트는 최대 1년</dd>
+        <dt>지우는 법</dt><dd>공용 보드 → 계정 삭제</dd>
+      </dl>
+    </div>
+  </div>
+  <p style="font-size:13.5px;color:var(--ink-2)">어느 쪽이든 <b>위치(GPS)는 받지 않습니다.</b> 동네는 목록에서 직접 고르는 값입니다.
+    광고·마케팅에 쓰지 않고, 분석 도구를 붙이지 않았습니다.</p>
+
+  <ol class="toc">
+    <li><a href="#a1">처리 목적</a></li>
+    <li><a href="#a2">처리하는 항목</a></li>
+    <li><a href="#a3">공개되는 정보</a></li>
+    <li><a href="#a4">보유 기간</a></li>
+    <li><a href="#a5">파기 절차와 방법</a></li>
+    <li><a href="#a6">제3자 제공</a></li>
+    <li><a href="#a7">계정 삭제와 링크로 퍼진 리포트</a></li>
+    <li><a href="#a8">처리 위탁과 국외 이전</a></li>
+    <li><a href="#a9">이용자의 권리와 행사 방법</a></li>
+    <li><a href="#a10">만 14세 미만</a></li>
+    <li><a href="#a11">민감정보 공개 가능성</a></li>
+    <li><a href="#a12">안전성 확보 조치</a></li>
+    <li><a href="#a13">자동 수집 장치</a></li>
+    <li><a href="#a14">개인정보 보호책임자</a></li>
+    <li><a href="#a15">권익침해 구제방법</a></li>
+    <li><a href="#a16">처리방침의 변경</a></li>
+  </ol>
+
+  <h2 id="a1"><span class="no">제1조</span>처리 목적</h2>
+  <p>운영자는 다음 목적으로만 개인정보를 처리합니다. 이 밖의 용도로 쓰지 않으며, 목적이 바뀌면 미리 알리고 필요한 경우 동의를 받습니다.</p>
+  <ol>
+    <li><b>로그인과 본인 확인</b> — 누가 쓴 리포트인지 남겨 사칭을 막기 위해</li>
+    <li><b>리포트 게시</b> — 같은 동네 사람들에게 현장 속보를 보여 주기 위해</li>
+    <li><b>신고 처리와 이용 제한</b> — 거짓·광고·욕설 게시물을 가리고, 도배와 반복 위반을 막기 위해</li>
+  </ol>
+
+  <h2 id="a2"><span class="no">제2조</span>처리하는 개인정보 항목</h2>
+  <h3>① 서버 없이 쓸 때</h3>
+  <p>운영자는 개인정보를 <b>받지 않습니다.</b> 리포트, 특파원 이름, 화면 설정은 이 기기의 브라우저 저장소에만 있고 운영자에게 전송되지 않습니다.
+    리포트를 링크로 공유하면 그 내용이 링크 안에 담겨 받는 사람에게 갑니다(7조 ②).</p>
+
+  <h3>② 공용 보드에 로그인했을 때</h3>
+  <div class="tbl"><table>
+    <thead><tr><th>구분</th><th>항목</th><th>받는 때</th></tr></thead>
+    <tbody>
+      <tr><td>로그인</td><td>로그인 식별자(내부 번호).<br>
+        카카오 로그인: 카카오 회원번호와 <mark class="fill">[카카오 동의항목에서 받기로 설정한 항목 — 예: 닉네임]</mark><br>
+        메일 로그인: 메일 주소</td><td>로그인할 때</td></tr>
+      <tr><td>특파원</td><td>특파원 이름(닉네임), 고른 동네(법정동)</td><td>이름을 저장하거나 동네를 고를 때</td></tr>
+      <tr><td>리포트</td><td>장소 이름, 동네, 웨이팅·혼잡·주차, 별점, 태그, 메모, 작성 시각</td><td>공용 보드에 올리기로 한 리포트를 쓸 때</td></tr>
+      <tr><td>신고</td><td>신고한 리포트, 사유, 시각</td><td>신고할 때</td></tr>
+      <tr><td>이용 제한</td><td>이용 정지 기한</td><td>운영자가 제한할 때</td></tr>
+    </tbody>
+  </table></div>
+
+  <h3>③ 이용 과정에서 자동으로 생기는 정보</h3>
+  <p>접속 IP 주소, 접속 시각, 브라우저 정보가 사이트를 제공하는 GitHub과 공용 보드 서버를 제공하는 Supabase의 기록(로그)에 남을 수 있습니다.
+    운영자는 이를 따로 모으거나 분석하지 않습니다.</p>
+
+  <h3>④ 받지 않는 정보</h3>
+  <p>위치(GPS 좌표), 전화번호, 주소록, 사진, 실명, 생년월일은 받지 않습니다.</p>
+
+  <h2 id="a3"><span class="no">제3조</span>공개되는 정보</h2>
+  <p>공용 보드에 올린 리포트는 <b>공개 게시물</b>입니다. 로그인하지 않은 사람을 포함해 누구나 볼 수 있고, <b>특파원 이름과 작성 시각이 함께 보입니다.</b></p>
+  <p>로그인 식별자, 카카오 회원번호, 메일 주소, 고른 동네, 신고 기록은 공개되지 않습니다. 누가 어떤 글을 신고했는지는 신고한 본인과 운영자만 압니다.</p>
+  <p>리포트를 쓸 때 <b>공용 보드에 올리기</b>를 끄면 그 리포트는 이 기기에만 남고 공개되지 않습니다.</p>
+
+  <h2 id="a4"><span class="no">제4조</span>보유 기간</h2>
+  <div class="tbl"><table>
+    <thead><tr><th>항목</th><th>보유 기간</th></tr></thead>
+    <tbody>
+      <tr><td>로그인 정보, 특파원 이름, 동네</td><td>탈퇴할 때까지</td></tr>
+      <tr><td>리포트</td><td>쓴 지 <b>1년</b>, 작성자가 지울 때, 탈퇴할 때 중 먼저 오는 때까지</td></tr>
+      <tr><td>신고 기록</td><td>신고한 사람이 탈퇴하거나, 신고된 리포트가 지워질 때까지</td></tr>
+      <tr><td>이용 정지 기한</td><td>탈퇴할 때까지 (기한이 지나면 효력은 없습니다)</td></tr>
+    </tbody>
+  </table></div>
+  <p>지운 정보는 서버 백업에 최대 <mark class="fill">[N]일</mark> 남았다가 사라집니다. 백업은 장애 복구에만 쓰고 다른 용도로 열어 보지 않습니다.</p>
+
+  <h2 id="a5"><span class="no">제5조</span>파기 절차와 방법</h2>
+  <p>보유 기간이 끝나거나 탈퇴하면 지체 없이 파기합니다. 모든 정보가 전자 파일이므로 복구할 수 없도록 데이터베이스에서 삭제합니다.
+    쓴 지 1년이 지난 리포트는 매일 자동으로 삭제합니다.</p>
+
+  <h2 id="a6"><span class="no">제6조</span>제3자 제공</h2>
+  <p>운영자는 개인정보를 제3자에게 제공하지 않습니다. 다만 법령에 따라 수사기관 등이 적법한 절차로 요구하는 경우는 예외입니다.</p>
+
+  <h2 id="a7"><span class="no">제7조</span>계정 삭제와 링크로 퍼진 리포트</h2>
+  <h3>① 계정 삭제</h3>
+  <p>앱의 <b>🏘 공용 보드 → 계정 삭제</b>에서 직접 지울 수 있습니다. 지우면 바로 다음이 삭제됩니다.</p>
+  <ul>
+    <li>서버: 로그인 계정, 특파원 이름, 동네, <b>내가 쓴 리포트 전부</b>(다른 기기에서 쓴 것 포함), 내가 한 신고</li>
+    <li>이 기기: 내가 쓴 리포트와 특파원 이름. 남에게 받은 리포트는 남습니다(주고받기 → 전부 비우기로 지울 수 있습니다)</li>
+  </ul>
+  <p>리포트 하나만 지우려면 카드의 <b>×</b>를 누르세요. 내가 올린 리포트면 공용 보드에서도 지워집니다.</p>
+
+  <h3>② 링크로 공유한 리포트</h3>
+  <div class="warn"><b>링크로 이미 보낸 리포트는 운영자가 회수할 수 없습니다.</b>
+    공유 링크에는 리포트 내용이 통째로 담겨 있어 서버를 거치지 않습니다. 받은 사람의 대화방과 브라우저에 사본이 남으며,
+    계정을 지워도 그 사본은 지워지지 않습니다. 보내기 전에 한 번 더 확인해 주세요.</div>
+
+  <h3>③ 앱에서 지우기 어려울 때</h3>
+  <p>14조의 연락처로 요청하시면 <b>10일 안에</b> 처리하고 결과를 알려 드립니다.</p>
+
+  <h2 id="a8"><span class="no">제8조</span>처리 위탁과 국외 이전</h2>
+  <p>서비스를 운영하기 위해 아래 회사에 처리를 맡깁니다. 이 회사들이 국외에 있거나 국외에서 접근할 수 있으므로 국외 이전에 해당합니다.
+    이전은 서비스를 쓰는 동안 네트워크를 통해 수시로 이루어집니다.</p>
+
+  <div class="card">
+    <h3>Supabase, Inc.</h3>
+    <dl>
+      <dt>맡기는 일</dt><dd>공용 보드의 데이터베이스와 로그인 운영</dd>
+      <dt>국가</dt><dd>저장 위치 <mark class="fill">[대한민국 서울 (AWS ap-northeast-2) — 프로젝트 설정에서 확인]</mark>, 회사 소재지 미국</dd>
+      <dt>항목</dt><dd>2조 ②의 전부, 접속 기록</dd>
+      <dt>보유 기간</dt><dd>4조와 같음</dd>
+      <dt>연락처</dt><dd><a href="https://supabase.com/privacy" rel="noopener">supabase.com/privacy</a></dd>
+      <dt>거부 방법</dt><dd>공용 보드에 로그인하지 않으면 리포트·이름 등은 이전되지 않습니다. 서버 없이 쓰는 기능은 그대로 쓸 수 있습니다.
+        다만 공용 보드를 읽기만 해도 접속 기록은 남습니다.</dd>
+    </dl>
+  </div>
+  <div class="card">
+    <h3>GitHub, Inc.</h3>
+    <dl>
+      <dt>맡기는 일</dt><dd>사이트 제공(호스팅)</dd>
+      <dt>국가</dt><dd>미국</dd>
+      <dt>항목</dt><dd>접속 IP, 접속 시각, 브라우저 정보</dd>
+      <dt>보유 기간</dt><dd>GitHub의 정책에 따름</dd>
+      <dt>연락처</dt><dd><a href="https://docs.github.com/site-policy/privacy-policies/github-general-privacy-statement" rel="noopener">GitHub 개인정보 처리방침</a></dd>
+      <dt>거부 방법</dt><dd>사이트에 접속하지 않는 방법 외에는 거부할 수 없습니다.</dd>
+    </dl>
+  </div>
+  <p>또 이 사이트는 글꼴을 <b>Google Fonts</b>(Google LLC, 미국)에서 불러옵니다. 이때 브라우저가 Google 서버에 직접 접속하므로 접속 IP와 브라우저 정보가 Google에 전달될 수 있습니다.</p>
+  <p>카카오 로그인을 쓰면 (주)카카오가 카카오 동의 화면에서 동의한 범위의 정보를 운영자에게 제공합니다.</p>
+
+  <h2 id="a9"><span class="no">제9조</span>이용자의 권리와 행사 방법</h2>
+  <p>언제든 자기 개인정보의 열람, 정정, 삭제, 처리정지를 요구할 수 있습니다.</p>
+  <ul>
+    <li><b>열람</b> — 내가 쓴 리포트는 앱에서 볼 수 있습니다. 서버에 있는 내 정보 전체는 14조 연락처로 요청하세요.</li>
+    <li><b>정정</b> — 특파원 이름은 특파원 탭에서 바꿀 수 있습니다. 리포트는 현장 기록이라 고치는 기능이 없습니다. 지우고 다시 쓰면 됩니다.</li>
+    <li><b>삭제</b> — 7조의 방법으로 직접 지울 수 있습니다.</li>
+    <li><b>처리정지</b> — 로그아웃하면 새로 처리되는 정보는 없습니다. 완전히 멈추려면 계정을 삭제하세요.</li>
+  </ul>
+  <p>법정대리인이나 위임을 받은 사람을 통해서도 요구할 수 있으며, 이 경우 위임장을 내야 합니다. 요구를 받으면 10일 안에 처리합니다.</p>
+
+  <h2 id="a10"><span class="no">제10조</span>만 14세 미만</h2>
+  <p>공용 보드 로그인은 <b>만 14세 이상</b>만 할 수 있으며, 로그인하기 전에 이를 확인합니다.
+    만 14세 미만의 개인정보가 처리된 것을 알게 되면 지체 없이 파기합니다.
+    서버 없이 쓰는 기능은 개인정보를 받지 않으므로 나이 제한이 없습니다.</p>
+
+  <h2 id="a11"><span class="no">제11조</span>민감정보 공개 가능성</h2>
+  <p>리포트의 메모는 공개됩니다. 건강, 정치적 견해, 종교 같은 민감한 내용이나, 다른 사람을 알아볼 수 있는 내용(이름, 전화번호, 차량번호, 특정되는 인상착의)은 쓰지 마세요.</p>
+  <p><b>공개하지 않으려면</b> 리포트를 쓸 때 <b>공용 보드에 올리기</b>를 끄세요. 그 리포트는 이 기기에만 남습니다.
+    이미 올린 것은 7조의 방법으로 지울 수 있고, 다른 사람의 사생활이 담긴 리포트는 <b>사생활</b> 사유로 신고할 수 있습니다.</p>
+
+  <h2 id="a12"><span class="no">제12조</span>안전성 확보 조치</h2>
+  <ul>
+    <li><b>최소 수집</b> — 위치, 전화번호, 실명을 받지 않습니다. 공개 화면에는 로그인 식별자를 내보내지 않습니다.</li>
+    <li><b>비밀번호를 받지 않습니다</b> — 카카오 로그인과 메일 링크 로그인만 씁니다.</li>
+    <li><b>행 단위 접근 통제</b> — 데이터베이스가 요청마다 로그인한 사람을 확인해, 자기 정보만 쓰고 지울 수 있게 합니다.
+      글쓴이 이름은 서버가 로그인 정보에서 다시 채워 사칭을 막습니다.</li>
+    <li><b>관리 키 비공개</b> — 모든 권한을 가진 관리 키는 사이트에 두지 않습니다.</li>
+    <li><b>도배 제한</b> — 리포트는 한 시간에 20건, 하루 60건까지 올릴 수 있습니다.</li>
+    <li><b>전송 암호화</b> — 모든 통신은 HTTPS로 암호화합니다.</li>
+    <li><b>접근 제한</b> — 개인정보를 다루는 사람을 운영자로 한정합니다.</li>
+  </ul>
+
+  <h2 id="a13"><span class="no">제13조</span>자동 수집 장치</h2>
+  <p>운영자는 <b>쿠키를 쓰지 않고</b>, 광고·분석 도구를 붙이지 않았습니다.</p>
+  <p>앱이 동작하려고 이 기기의 브라우저 저장소(localStorage)에 리포트 보드, 특파원 이름, 테마, 그리고 공용 보드에 로그인했다면 로그인 토큰을 둡니다.
+    이 중 로그인 토큰과, 공용 보드에 올리기로 한 리포트만 서버로 보냅니다.</p>
+  <p>브라우저 설정에서 이 사이트의 데이터를 지우면 모두 사라집니다. 그 경우 이 기기의 보드도 비워집니다.</p>
+
+  <h2 id="a14"><span class="no">제14조</span>개인정보 보호책임자</h2>
+  <p>개인정보 관련 문의, 불만, 피해 구제는 아래로 연락해 주세요. 지체 없이 답합니다.</p>
+  <div class="card">
+    <dl>
+      <dt>책임자</dt><dd><mark class="fill">[이름]</mark></dd>
+      <dt>연락처</dt><dd><mark class="fill">[메일 주소]</mark></dd>
+    </dl>
+  </div>
+
+  <h2 id="a15"><span class="no">제15조</span>권익침해 구제방법</h2>
+  <p>개인정보 침해에 대한 상담이나 분쟁 해결이 필요하면 아래 기관에 문의할 수 있습니다.</p>
+  <div class="tbl"><table>
+    <thead><tr><th>기관</th><th>전화</th><th>누리집</th></tr></thead>
+    <tbody>
+      <tr><td>개인정보분쟁조정위원회</td><td>1833-6972</td><td><a href="https://www.kopico.go.kr" rel="noopener">www.kopico.go.kr</a></td></tr>
+      <tr><td>개인정보침해신고센터</td><td>118</td><td><a href="https://privacy.kisa.or.kr" rel="noopener">privacy.kisa.or.kr</a></td></tr>
+      <tr><td>대검찰청</td><td>1301</td><td><a href="https://www.spo.go.kr" rel="noopener">www.spo.go.kr</a></td></tr>
+      <tr><td>경찰청</td><td>182</td><td><a href="https://ecrm.police.go.kr" rel="noopener">ecrm.police.go.kr</a></td></tr>
+    </tbody>
+  </table></div>
+
+  <h2 id="a16"><span class="no">제16조</span>처리방침의 변경</h2>
+  <p>이 방침은 <mark class="fill">[YYYY년 M월 D일]</mark>부터 적용합니다. 바뀔 때는 적용 7일 전에(이용자에게 불리하게 바뀔 때는 30일 전에) 서비스 안에 알립니다.</p>
+
+  <p class="foot">동네 특파원 · <a href="./">앱으로 돌아가기</a></p>
+</div>
+</body>
+</html>

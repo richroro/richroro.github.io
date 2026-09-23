@@ -27,8 +27,11 @@ create index if not exists hoods_active_idx on hoods (active) where active;
 -- ─────────────────────────── 특파원 ───────────────────────────
 -- auth.users 를 그대로 쓰지 않고 표시용 프로필을 따로 둔다.
 -- 이름은 바뀔 수 있지만 리포트에 박힌 이름은 그때 그대로 남아야 한다.
+--
+-- 로그인 계정이 지워지면 프로필 → 리포트 → 신고가 줄줄이 지워진다(on delete cascade).
+-- 앱의 "계정 삭제"로 지우든 Supabase 관리 화면에서 지우든 결과가 같아야 한다.
 create table if not exists correspondents (
-  id          uuid primary key,
+  id          uuid primary key references auth.users (id) on delete cascade,
   name        text not null check (length(name) between 1 and 20),
   hood_code   text references hoods (code),
   banned_until timestamptz,                 -- 도배·악성으로 묶인 상태

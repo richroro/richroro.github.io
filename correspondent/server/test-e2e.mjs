@@ -1,124 +1,205 @@
-import { createRequire } from 'node:module';
-const require = createRequire(import.meta.url);
-import { chromium } from '/opt/node22/lib/node_modules/playwright/index.mjs';
-const URL = 'http://127.0.0.1:8197/correspondent/';
-const MINJI = '11111111-1111-1111-1111-111111111111';
-const JUNHO = '22222222-2222-2222-2222-222222222222';
-const SEOYEON = '33333333-3333-3333-3333-333333333333';
+/* ============================================================================
+   공용 보드 끝에서 끝까지 — 브라우저 → fetch → 모의 PostgREST → 진짜 Postgres 의 진짜 RLS.
+
+   띄워 둘 것
+     · Postgres (test-auth-stub → schema → policies → seed-hoods → retention 함수 부분)
+     · node test-mock-rest.mjs                         (54330)
+     · config.js 에 모의 서버를 넣은 앱 사본을 정적 서버로 (8197)
+   토큰은 시험용 Bearer test-<uuid>. 로그인 화면은 건너뛰고 세션을 직접 심는다.
+   ========================================================================== */
+import { chromium } from 'playwright';
+import { execFileSync } from 'node:child_process';
+
+const URL = process.env.APP_URL || 'http://127.0.0.1:8197/correspondent/';
+const HOOD = '4117110100';
+const U = {
+  민지: '11111111-1111-1111-1111-111111111111',
+  준호: '22222222-2222-2222-2222-222222222222',
+  서연: '33333333-3333-3333-3333-333333333333',
+  태오: '44444444-4444-4444-4444-444444444444',
+  하린: '55555555-5555-5555-5555-555555555555'
+};
+const PSQL = ['-h', process.env.PGHOST || '/home/pgtest/run', '-p', process.env.PGPORT || '54329',
+              '-U', 'postgres', '-d', process.env.PGDATABASE || 'tpw', '-tAc'];
+const sql = (q) => execFileSync('psql', [...PSQL, q], { encoding: 'utf8' }).trim();
+
 let pass = 0, fail = 0;
 const ok = (c, m) => { if (c) { pass++; console.log('  ok  ' + m); } else { fail++; console.log('  FAIL ' + m); } };
+const errs = [];
+
+// 처음부터 — DB 와 모의 서버의 기억(탈퇴한 계정 목록)을 함께 비운다
+sql(`delete from auth.users;`);
+await fetch((process.env.API_URL || 'http://127.0.0.1:54330') + '/__reset', { method: 'POST' });
 
 const b = await chromium.launch();
-const errs = [];
-async function phone(uid, name) {
-  const c = await b.newContext({ locale:'ko-KR', timezoneId:'Asia/Seoul', viewport:{width:390,height:844} });
+
+async function phone(name, opts = {}) {
+  const c = await b.newContext({ locale: 'ko-KR', timezoneId: 'Asia/Seoul', viewport: { width: 390, height: 844 } });
   const p = await c.newPage();
-  p.on('pageerror', e => errs.push(name + ': ' + e.message));
-  p.on('console', m => { const t = m.text(); if (m.type()==='error' && !/ERR_CERT|fonts.googleapis/.test(t)) errs.push(name + ' console: ' + t); });
-  await p.goto(URL, { waitUntil:'networkidle' });
-  if (uid) await p.evaluate(u => localStorage.setItem('tpw.session', JSON.stringify(
-    { access_token:'test-'+u, refresh_token:'r', expires_at: Math.floor(Date.now()/1000)+9999, uid:u })), uid);
-  await p.evaluate(n => { const b = JSON.parse(localStorage.getItem('tpw.v1')||'{}');
-    localStorage.setItem('tpw.v1', JSON.stringify(Object.assign({reports:[],seeded:true,hood:'4117110100'}, b, {me:n, seeded:true, hood:'4117110100'}))); }, name);
-  await p.reload({ waitUntil:'networkidle' });
+  p.on('dialog', (d) => d.accept());          // 지우기 확인창은 "예"
+  p.on('pageerror', (e) => errs.push(name + ': ' + e.message));
+  p.on('console', (m) => { const t = m.text();
+    if (m.type() === 'error' && !/ERR_CERT|fonts\.g/.test(t)) errs.push(name + ' console: ' + t); });
+  await p.goto(URL, { waitUntil: 'networkidle' });
+  await p.evaluate(({ uid, me, hood, login }) => {
+    if (login) localStorage.setItem('tpw.session', JSON.stringify(
+      { access_token: 'test-' + uid, refresh_token: 'r', expires_at: Math.floor(Date.now() / 1000) + 9999, uid }));
+    localStorage.setItem('tpw.v1', JSON.stringify({ reports: [], me, seeded: true, hood }));
+  }, { uid: U[name], me: opts.noName ? '' : name, hood: HOOD, login: opts.login !== false });
+  await p.reload({ waitUntil: 'networkidle' });
   await p.waitForTimeout(700);
   return { c, p };
 }
-
-console.log('\n== 1. 동기화 켜짐 ==');
-const A = await phone(MINJI, '민지');
-ok(await A.p.locator('#boardBtn').isVisible(), '머리에 공용 보드 단추가 뜬다');
-ok((await A.p.locator('#boardLbl').innerText()) === '안양동', '동네 이름 표시: ' + await A.p.locator('#boardLbl').innerText());
-
-console.log('\n== 2. 민지가 쓰면 서버로 올라간다 ==');
-await A.p.locator('#writeBtn').click();
-await A.p.waitForSelector('#composeBack.open');
-await A.p.fill('#fPlace', '중앙공원 놀이터');
-await A.p.fill('#fArea', '평촌 범계동');
-await A.p.locator('#fWait [data-v="0"]').click();
-await A.p.locator('#fCrowd [data-v="1"]').click();
-await A.p.fill('#fNote', '그늘막 두 자리 남았어요');
-await A.p.locator('#composeGo').click();
-await A.p.waitForSelector('#shareBack.open');
-await A.p.locator('#shareBack [data-close]').last().click();
-await A.p.waitForTimeout(900);
-const row = JSON.parse(require_psql(`select json_agg(t)::text from (select id, by_name, place, hood_code from reports) t`));
-ok(row && row.length === 1, '서버에 1건 들어감');
-ok(row && row[0].by_name === '민지' && row[0].place === '중앙공원 놀이터', '내용 일치: ' + JSON.stringify(row && row[0]));
-const up = await A.p.evaluate(() => JSON.parse(localStorage.getItem('tpw.v1')).reports[0]);
-ok(up.mine === true && up.up === true, '로컬에 mine/up 표시');
-
-console.log('\n== 3. 준호 폰에 그대로 내려온다 ==');
-const B = await phone(JUNHO, '준호');
-ok((await B.p.locator('#feed .card').count()) === 1, '받아온 카드 1건');
-ok((await B.p.locator('#feed .place').first().innerText()).includes('중앙공원 놀이터'), '장소 일치');
-ok((await B.p.locator('#feed .by').first().innerText()).includes('민지'), '작성자 민지');
-ok((await B.p.locator('#feed [data-flag]').count()) === 1, '남의 글이라 신고 단추가 있다');
-ok((await A.p.locator('#feed [data-flag]').count()) === 0, '내 글에는 신고 단추가 없다');
-
-console.log('\n== 4. 받은 남의 글은 다시 안 올라간다 ==');
-const mineOnB = await B.p.evaluate(() => JSON.parse(localStorage.getItem('tpw.v1')).reports.map(r => ({id:r.id, mine:r.mine, up:r.up})));
-ok(mineOnB.every(r => r.mine === false), '준호 폰에서 mine=false (' + JSON.stringify(mineOnB) + ')');
-const cnt1 = Number(require_psql(`select count(*)::text from reports`));
-await B.p.evaluate(() => window.boardRefresh ? window.boardRefresh(true) : null);
-await B.p.waitForTimeout(600);
-ok(Number(require_psql(`select count(*)::text from reports`)) === cnt1, '동기화를 돌려도 서버 건수 그대로: ' + cnt1);
-
-console.log('\n== 5. 로그아웃 상태에서 쓰면 로컬에만 ==');
-const C = await phone(null, '서연');
-await C.p.locator('#writeBtn').click();
-await C.p.waitForSelector('#composeBack.open');
-await C.p.fill('#fPlace', '로그아웃 테스트');
-await C.p.locator('#composeGo').click();
-await C.p.waitForSelector('#shareBack.open');
-await C.p.locator('#shareBack [data-close]').last().click();
-await C.p.waitForTimeout(700);
-ok(Number(require_psql(`select count(*)::text from reports where place='로그아웃 테스트'`)) === 0, '서버에 안 올라감');
-const pend = await C.p.evaluate(() => JSON.parse(localStorage.getItem('tpw.v1')).reports.filter(r => r.mine && !r.up).length);
-ok(pend === 1, '올리지 못한 채 1건 남아 대기: ' + pend);
-
-console.log('\n== 6. 로그인하면 밀린 것이 올라간다 ==');
-await C.p.evaluate(u => localStorage.setItem('tpw.session', JSON.stringify(
-  { access_token:'test-'+u, refresh_token:'r', expires_at: Math.floor(Date.now()/1000)+9999, uid:u })), SEOYEON);
-await C.p.reload({ waitUntil:'networkidle' });
-await C.p.waitForTimeout(1200);
-ok(Number(require_psql(`select count(*)::text from reports where place='로그아웃 테스트'`)) === 1, '다음 접속에 밀린 리포트가 올라감');
-ok((require_psql(`select by_name from reports where place='로그아웃 테스트'`) || '').trim() === '서연', '서버가 이름을 프로필에서 채움');
-
-console.log('\n== 7. 신고 세 번이면 가려진다 ==');
-const rid = (require_psql(`select id from reports where place='중앙공원 놀이터'`) || '').trim();
-const flagOn = (page) => page.locator('#feed .card', { hasText: '중앙공원 놀이터' }).locator('[data-flag]');
-await flagOn(B.p).click();
-await B.p.waitForSelector('#flagBack.open');
-await B.p.locator('#flagReasons [data-reason="광고"]').click();
-await B.p.waitForTimeout(600);
-ok((await B.p.locator('#flagStatus').innerText()).includes('신고했습니다'), '준호 신고 접수');
-for (const [uid, nm] of [[SEOYEON,'서연'], ['44444444-4444-4444-4444-444444444444','태오']]) {
-  const D = await phone(uid, nm);
-  const fb = flagOn(D.p);
-  ok(await fb.count() === 1, nm + ' 폰에서 중앙공원 리포트에 신고 단추 있음');
-  await fb.click(); await D.p.waitForSelector('#flagBack.open');
-  await D.p.locator('#flagReasons [data-reason="거짓"]').click(); await D.p.waitForTimeout(600);
-  ok((await D.p.locator('#flagStatus').innerText()).includes('신고했습니다'), nm + ' 신고 접수');
-  await D.c.close();
+async function write(p, place, opts = {}) {
+  await p.locator('#writeBtn').click();
+  await p.waitForSelector('#composeBack.open');
+  await p.fill('#fPlace', place);
+  if (opts.crowd != null) await p.locator(`#fCrowd [data-v="${opts.crowd}"]`).click();
+  if (opts.priv) await p.locator('#fPub').uncheck();
+  await p.locator('#composeGo').click();
+  await p.waitForSelector('#shareBack.open');
+  await p.locator('#shareBack [data-close]').last().click();
+  await p.waitForTimeout(900);
 }
-console.log('   신고 기록:', require_psql(`select count(*)::text||'건 / flag_count='||max(r.flag_count)::text from flags f join reports r on r.id=f.report_id where f.report_id='${rid}'`));
-const hid = require_psql(`select hidden::text from reports where id='${rid}'`).trim();
-ok(hid === 'true', '서버에서 가려짐 (rid=' + rid + ' hidden=' + JSON.stringify(hid) + ')');
-const E = await phone(null, '새사람');
-const seen = await E.p.locator('#feed .place').allInnerTexts();
-ok(!seen.join(' ').includes('중앙공원'), '새로 온 사람에게 가려진 글은 안 보인다');
-ok(seen.join(' ').includes('로그아웃 테스트'), '가려지지 않은 글은 그대로 보인다 (' + seen.length + '건)');
-await E.c.close();
+const refresh = async (p) => { await p.evaluate(() => boardRefresh(true)); await p.waitForTimeout(500); };
+const card = (p, place) => p.locator('#feed .card', { hasText: place });
+const local = (p) => p.evaluate(() => JSON.parse(localStorage.getItem('tpw.v1')).reports);
 
-console.log('\n== 8. 오류 ==');
-ok(errs.length === 0, '콘솔 오류 없음' + (errs.length ? ': ' + errs.slice(0,3).join(' | ') : ''));
+console.log('\n== 1. 로그인 전 ==');
+{
+  const { c, p } = await phone('민지', { login: false });
+  await p.locator('#boardBtn').click();
+  await p.waitForSelector('#boardBack.open');
+  ok(await p.locator('#inKakao').isDisabled(), '만 14세 확인 전에는 카카오 로그인 단추가 꺼져 있다');
+  ok(await p.locator('#inEmailGo').isDisabled(), '메일 로그인 단추도 꺼져 있다');
+  await p.locator('#ageOk').check();
+  ok(await p.locator('#inKakao').isEnabled(), '확인하면 켜진다');
+  ok(await p.locator('#authBox a[href="privacy.html"]').count() === 1, '처리방침 링크가 옆에 있다');
+  await c.close();
+}
+
+console.log('\n== 2. 이름을 한 번도 저장 안 한 사람의 첫 글 ==');
+const A = await phone('민지', { noName: true });
+await write(A.p, '중앙공원 놀이터', { crowd: 1 });
+ok(sql(`select count(*) from reports where place='중앙공원 놀이터'`) === '1', '프로필을 먼저 만들고 올라간다 (예전엔 여기서 실패)');
+ok(sql(`select by_name from reports where place='중앙공원 놀이터'`) === '이름 없는 특파원', '이름 없이 쓰면 그 이름으로');
+
+console.log('\n== 3. 준호 폰으로 내려오고, 남의 글은 다시 안 올라간다 ==');
+const B = await phone('준호');
+ok(await card(B.p, '중앙공원 놀이터').count() === 1, '받아옴');
+ok(await card(B.p, '중앙공원 놀이터').locator('[data-flag]').count() === 1, '남의 글엔 신고 단추');
+ok(await card(A.p, '중앙공원 놀이터').locator('[data-flag]').count() === 0, '내 글엔 신고 단추 없음');
+await refresh(B.p);
+ok(sql(`select count(*) from reports`) === '1', '받아오기를 돌려도 서버 건수 그대로');
+
+console.log('\n== 4. 비공개로 쓴 글 ==');
+await write(B.p, '준호 혼자 보는 메모', { priv: true });
+ok(sql(`select count(*) from reports where place='준호 혼자 보는 메모'`) === '0', '공용 보드에 안 올라간다');
+ok(await card(B.p, '준호 혼자 보는 메모').locator('.badge', { hasText: '이 기기에만' }).count() === 1, '"이 기기에만" 딱지');
+await refresh(B.p);
+ok(sql(`select count(*) from reports where place='준호 혼자 보는 메모'`) === '0', '받아오기를 돌려도 안 올라간다');
+
+console.log('\n== 5. 로그아웃 상태로 쓴 글은 로그인하면 올라간다 ==');
+const C = await phone('서연', { login: false });
+await write(C.p, '서연의 카페');
+ok(sql(`select count(*) from reports where place='서연의 카페'`) === '0', '로그인 전엔 안 올라감');
+await C.p.evaluate((uid) => localStorage.setItem('tpw.session', JSON.stringify(
+  { access_token: 'test-' + uid, refresh_token: 'r', expires_at: Math.floor(Date.now() / 1000) + 9999, uid })), U.서연);
+await C.p.reload({ waitUntil: 'networkidle' });
+await C.p.waitForTimeout(1200);
+ok(sql(`select count(*) from reports where place='서연의 카페'`) === '1', '로그인하고 다시 열면 올라감');
+
+console.log('\n== 6. 내 글 지우기 → 서버에서도 ==');
+await write(A.p, '민지가 지울 글');
+ok(sql(`select count(*) from reports where place='민지가 지울 글'`) === '1', '올라감');
+await card(A.p, '민지가 지울 글').locator('[data-del]').click();
+await A.p.waitForTimeout(800);
+ok(sql(`select count(*) from reports where place='민지가 지울 글'`) === '0', '서버에서 지워짐');
+ok(await card(A.p, '민지가 지울 글').count() === 0, '화면에서도 사라짐');
+
+console.log('\n== 7. 남의 글 치우기 → 이 기기에서만, 다시 안 들어온다 ==');
+await refresh(B.p);
+ok(await card(B.p, '서연의 카페').count() === 1, '준호 폰에 서연 글이 있다');
+await card(B.p, '서연의 카페').locator('[data-del]').click();
+await B.p.waitForTimeout(500);
+ok(sql(`select count(*) from reports where place='서연의 카페'`) === '1', '서버엔 그대로 (남의 글이라)');
+await refresh(B.p);
+ok(await card(B.p, '서연의 카페').count() === 0, '다시 받아와도 안 돌아온다');
+
+console.log('\n== 8. 신고로 가려진 내 글 ==');
+await write(C.p, '가려질 서연 글');
+const rid = sql(`select id from reports where place='가려질 서연 글'`);
+for (const who of ['민지', '준호', '태오']) {
+  const D = who === '민지' ? A : who === '준호' ? B : await phone('태오');
+  await refresh(D.p);
+  await card(D.p, '가려질 서연 글').locator('[data-flag]').click();
+  await D.p.waitForSelector('#flagBack.open');
+  await D.p.locator('#flagReasons [data-reason="거짓"]').click();
+  await D.p.waitForTimeout(700);
+  if (who === '태오') await D.c.close();
+  else { await D.p.keyboard.press('Escape'); }
+}
+ok(sql(`select hidden from reports where id='${rid}'`) === 't', '서버에서 가려짐');
+await refresh(A.p);
+ok(await card(A.p, '가려질 서연 글').count() === 0, '받아 둔 이웃 폰(민지)에서도 빠진다');
+await refresh(C.p);
+ok(await card(C.p, '가려질 서연 글').locator('.badge', { hasText: '신고로 가려짐' }).count() === 1, '쓴 사람에게는 "신고로 가려짐" 딱지와 함께 보인다');
+// 로그아웃하고 받아오면 가려진 내 글은 응답에 없다 — 그래도 이 기기에서 지우면 안 된다
+const sess = await C.p.evaluate(() => localStorage.getItem('tpw.session'));
+await C.p.evaluate(() => localStorage.removeItem('tpw.session'));
+await C.p.reload({ waitUntil: 'networkidle' }); await C.p.waitForTimeout(600);
+await refresh(C.p);
+ok(await card(C.p, '가려질 서연 글').count() === 1, '로그아웃하고 받아와도 가려진 내 글은 이 기기에 남는다');
+await C.p.evaluate((v) => localStorage.setItem('tpw.session', v), sess);
+await C.p.reload({ waitUntil: 'networkidle' }); await C.p.waitForTimeout(600);
+await refresh(C.p);
+await card(C.p, '가려질 서연 글').locator('[data-del]').click();
+await C.p.waitForTimeout(800);
+ok(sql(`select count(*) from reports where id='${rid}'`) === '0', '가려진 내 글도 내가 지울 수 있다 (예전엔 0건 삭제로 남았다)');
+
+console.log('\n== 9. 계정 삭제 ==');
+// 서연도 남의 글을 하나 신고해 둔다 — 탈퇴하면 이 신고도 지워지고 수가 다시 세어져야 한다
+await refresh(C.p);
+await card(C.p, '중앙공원 놀이터').locator('[data-flag]').click();
+await C.p.waitForSelector('#flagBack.open');
+await C.p.locator('#flagReasons [data-reason="기타"]').click();
+await C.p.waitForTimeout(700);
+await C.p.keyboard.press('Escape');
+const cpId = sql(`select id from reports where place='중앙공원 놀이터'`);
+ok(sql(`select flag_count from reports where id='${cpId}'`) === '1', '서연이 중앙공원 글을 신고해 둠 (신고 1)');
+await refresh(B.p);
+ok(await card(B.p, '서연').count() + await card(B.p, '중앙공원').count() >= 1, '준호 폰에 받아 둔 글이 있다');
+await write(C.p, '서연 마지막 글');
+await refresh(B.p);
+ok(await card(B.p, '서연 마지막 글').count() === 1, '준호 폰에 서연 마지막 글');
+await C.p.locator('#boardBtn').click();
+await C.p.waitForSelector('#boardBack.open');
+await C.p.locator('#delOpen').click();
+await C.p.waitForSelector('#delBack.open');
+ok(await C.p.locator('#delGo').isDisabled(), '처음엔 삭제 단추가 꺼져 있다');
+await C.p.fill('#delConfirm', '탈퇴함');
+ok(await C.p.locator('#delGo').isDisabled(), '"탈퇴" 가 아니면 안 켜진다');
+await C.p.fill('#delConfirm', '탈퇴');
+ok(await C.p.locator('#delGo').isEnabled(), '"탈퇴" 라고 적으면 켜진다');
+await C.p.locator('#delGo').click();
+await C.p.waitForTimeout(1000);
+ok(sql(`select count(*) from auth.users where id='${U.서연}'`) === '0', '서버: 로그인 계정 삭제');
+ok(sql(`select count(*) from correspondents where id='${U.서연}'`) === '0', '서버: 프로필 삭제');
+ok(sql(`select count(*) from reports where place like '서연%'`) === '0', '서버: 서연이 쓴 글 전부 삭제');
+ok(sql(`select count(*) from flags where reporter='${U.서연}'`) === '0', '서버: 서연이 한 신고 삭제');
+const cl = await local(C.p);
+ok(cl.filter((r) => r.mine).length === 0, '이 기기: 내 글 지움');
+ok(!(await C.p.evaluate(() => localStorage.getItem('tpw.session'))), '이 기기: 로그아웃');
+ok((await C.p.evaluate(() => JSON.parse(localStorage.getItem('tpw.v1')).me)) === '', '이 기기: 이름 지움');
+ok(await card(C.p, '중앙공원 놀이터').count() === 1, '이 기기: 남에게 받은 글은 남는다');
+await refresh(B.p);
+ok(await card(B.p, '서연 마지막 글').count() === 0, '준호 폰에서도 다음 받아오기 때 서연 글이 빠진다');
+ok(sql(`select flag_count from reports where id='${cpId}'`) === '0', '서연이 한 신고가 빠지고 수가 다시 세어짐 (1 → 0)');
+ok(sql(`select count(*) from correspondents`) === '3', '다른 사람들은 그대로 (민지·준호·태오)');
+
+console.log('\n== 10. 오류 ==');
+ok(errs.length === 0, '콘솔 오류 없음' + (errs.length ? ': ' + errs.slice(0, 3).join(' | ') : ''));
 
 await b.close();
 console.log('\n==== ' + pass + ' 통과 / ' + fail + ' 실패 ====');
 process.exit(fail ? 1 : 0);
-
-function require_psql(sql) {
-  const { execFileSync } = require('node:child_process');
-  return execFileSync('psql', ['-h','/home/pgtest/run','-p','54329','-U','postgres','-tAc', sql], { encoding:'utf8' }).trim();
-}
