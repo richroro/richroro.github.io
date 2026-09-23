@@ -2021,12 +2021,19 @@ function buildGraph(ctx, song) {
   const ride = ctx.createGain(); ride.gain.value = 1;         // 구간별 볼륨 — 리미터 뒤라서 섹션 강약이 그대로 남는다
   glue.out.connect(drive).connect(pre).connect(clip).connect(lim.in); lim.out.connect(ride).connect(ctx.destination);
   g.ride = ride;
-  let colorIn = master;
+  // 편곡 필터(평소엔 활짝 열려 있다. Q 는 dB — -3 이면 봉우리 없이 평평하다)
+  //  busLP: 믹스 전체(먹먹한 인트로가 열리고, 끝에서 다시 먹먹해진다)
+  //  busHP: 리드·효과음을 뺀 반주 버스(band)만 — 빌드에서 저음이 빠져도 멜로디와 임팩트 저음은 그대로
+  const top = Math.min(20000, sr / 2 - 100);
+  const busLP = lp(g, top, -3), busHP = hp(g, 20, -3), band = ctx.createGain();
+  band.connect(busHP).connect(master);
+  g.busLP = busLP; g.busHP = busHP; g.busTop = top; g.band = band;
+  master.connect(busLP);
   if (G.lofi) {
     const l = lp(g, 3400, .7); const sh = ctx.createWaveShaper();
     const c = new Float32Array(4096); for (let i = 0; i < 4096; i++) { const x = i / 2047.5 - 1; c[i] = Math.round(x * 48) / 48; } sh.curve = c;
-    master.connect(l).connect(sh).connect(dcBlock);
-  } else master.connect(dcBlock);
+    busLP.connect(l).connect(sh).connect(dcBlock);
+  } else busLP.connect(dcBlock);
   if (G.bright) {                       // 요즘 팝 특유의 밝기
     const sh = ctx.createBiquadFilter(); sh.type = "highshelf"; sh.frequency.value = 4200; sh.gain.value = 3.5;
     const pr = ctx.createBiquadFilter(); pr.type = "peaking"; pr.frequency.value = 220; pr.Q.value = .9; pr.gain.value = -2;
@@ -2035,10 +2042,12 @@ function buildGraph(ctx, song) {
   g.master = master;
 
   // 사이드체인
-  const sc = ctx.createGain(); sc.gain.value = 1; sc.connect(master); g.sc = sc;
-  const scB = ctx.createGain(); scB.gain.value = 1; scB.connect(master); g.scBass = scB;   // 베이스만 따로, 더 짧게 비킨다
+  const sc = ctx.createGain(); sc.gain.value = 1; sc.connect(band); g.sc = sc;
+  const scB = ctx.createGain(); scB.gain.value = 1; scB.connect(band); g.scBass = scB;   // 베이스만 따로, 더 짧게 비킨다
   g.bassDuck = G.sidechain ? .6 : P.bassInst === "bass808" ? .4 : 0;
-  const retTo = G.sidechain ? sc : master;
+  const retTo = G.sidechain ? sc : band;
+  // 드럼 페이더: 벌스 .9, 후렴·드롭 1.06 (automateMix 가 움직인다)
+  const drumLift = ctx.createGain(); drumLift.gain.value = .9; drumLift.connect(band); g.drumLift = drumLift;
 
   // 잔향: 짧은 플레이트(스네어·클랩·코드) + 긴 홀(리드·패드·효과음). 센드는 300~400Hz 아래·8~10kHz 위를 잘라 킥·베이스가 안 섞인다.
   // 오프라인 렌더에서는 컨볼버 채널 하나와 노드 하나하나가 다 비용이라 이렇게 줄인다:
@@ -2092,7 +2101,8 @@ function buildGraph(ctx, song) {
   const WIDE = { chords: SYNTH.includes(P.chordInst) ? .3 : 0, pad: .45, arp: .25, amb: .35 };
   for (const name of Object.keys(MIX)) {
     const gn = ctx.createGain(); gn.gain.value = MIX[name];
-    const toSC = G.sidechain && ["pad","arp","chords"].includes(name), dst = name === "bass" ? scB : toSC ? sc : master;
+    const toSC = G.sidechain && ["pad","arp","chords"].includes(name);
+    const dst = name === "bass" ? scB : toSC ? sc : name === "lead" || name === "fx" ? master : name === "drum" ? drumLift : band;
     panTo(ctx, gn, P.solo ? 0 : (PAN[name] || 0), dst);           // 피아노 독주는 팬·넓히기 없이
     if (WIDE[name] && !P.solo && used.has(name)) widener(g, gn, dst, WIDE[name]);
     const [hs, ps, ds] = used.has(name) ? FXS[name] : [0, 0, 0];
@@ -2193,6 +2203,62 @@ function playEvent(g, ev, when) {
   fn(g, out, mtof(ev.p), when, ev.d, ev.v, ev);
 }
 
+// 편곡을 따라가는 믹스 자동화 — 섹션 꼬리표(E, build)와 장르 꼬리표만 읽는다(난수 없음).
+// t0 = 곡 0초의 컨텍스트 시각. 지금(currentTime)보다 지난 구간은 건너뛰고, 구간 한가운데서 시작하면
+// 그 지점 값에서 이어 간다 → 되감기·건너뛰기로 새로 틀어도, 오프라인 렌더에서도 같은 소리가 난다.
+const RIDE = [.8, .8, .9, 1, 1];                 // 에너지 0..4 → 리미터 뒤 구간 볼륨
+function automateMix(g, song, t0) {
+  const P = song.P, G = P.G, spb = 60 / P.bpm, bpb = P.beats, now = g.ctx.currentTime, secs = song.sections;
+  if (!secs || !secs.length || !g.busLP) return;
+  const at = beat => t0 + beat * spb;
+  const ramp = (param, a, b, v0, v1, lin) => {   // a→b 초 동안 v0→v1 (기본은 지수, lin 이면 직선)
+    if (b <= now || b <= a) return;
+    const s = Math.max(a, now), k = (s - a) / (b - a);
+    param.setValueAtTime(lin ? v0 + (v1 - v0) * k : v0 * Math.pow(v1 / v0, k), s);
+    if (lin) param.linearRampToValueAtTime(v1, b); else param.exponentialRampToValueAtTime(v1, b);
+  };
+  const lpf = g.busLP.frequency, top = g.busTop, first = secs[0], last = secs[secs.length - 1];
+  // 1) 먹먹한 라디오 인트로 → 마지막 한 박에 활짝
+  if (G.filterIntro && first.type === "intro") {
+    const e = at(first.bars * bpb);
+    ramp(lpf, at(0), e - spb, 420, 1100);
+    ramp(lpf, e - spb, e, 1100, top);
+  }
+  // 2) 아웃트로 동안 다시 먹먹하게 닫힌다(테이프가 멀어지듯)
+  if (G.filterClose && last.type === "outro") {
+    const a = at(last.bar * bpb), b = at((last.bar + last.bars) * bpb);
+    ramp(lpf, a, b, top, 500);
+    if (b <= now) lpf.setValueAtTime(500, now);
+  }
+  // 3) 빌드: 후렴 전 두 마디 동안 반주 버스의 저음이 빠지고(25→700Hz, 컷이 없으면 380Hz) 공진이 솟는다.
+  //    컷(정적) 동안은 그대로 버티다가 후렴 첫 박에 한꺼번에 돌아온다
+  const cutB = G.cut ? 2 : G.cutBeats || 0, hf = g.busHP.frequency, hq = g.busHP.Q;
+  for (const sec of secs) {
+    if (!sec.build) continue;
+    const end = (sec.bar + sec.bars) * bpb, hi = cutB ? 700 : 380;
+    const rel = at(end) - .008;                  // 휴먼라이즈가 후렴 첫 킥을 3.5ms 당길 수 있다 → 조금 먼저 연다
+    if (rel <= now) continue;
+    const a = at(end - Math.min(2, sec.bars) * bpb), c = Math.min(at(end - cutB), rel);
+    ramp(hf, a, c, 25, hi); ramp(hq, a, c, -3, 7, true);
+    if (c <= now) { hf.setValueAtTime(hi, now); hq.setValueAtTime(7, now); }   // 컷 한가운데로 건너뛰었을 때
+    hf.setValueAtTime(20, rel); hq.setValueAtTime(-3, rel);
+  }
+  // 4) 섹션마다: 구간 볼륨(리미터 뒤), 드럼 페이더, 넓히기 폭 — 벌스는 좁고 후렴·드롭은 넓고 드럼이 앞으로
+  let firstSec = true;
+  for (const sec of secs) {
+    const s0 = at(sec.bar * bpb), s1 = at((sec.bar + sec.bars) * bpb);
+    if (s1 <= now) continue;
+    const t = Math.max(s0, now), hot = sec.type === "B" || sec.type === "D";
+    // 첫 구간은 바로 그 값으로, 그다음부터는 짧게 미끄러지며(지속음 위에서 딸깍 안 나게)
+    const set = (prm, v, tc) => { if (firstSec) prm.setValueAtTime(v, now); else prm.setTargetAtTime(v, t, tc); };
+    set(g.ride.gain, RIDE[sec.E] || 1, .03);
+    set(g.drumLift.gain, hot ? 1.06 : .9, .015);
+    const w = hot ? 1 : sec.type === "A" ? .6 : .8;
+    for (const a of g.wideAmps || []) set(a.gain, a.base * w, .015);
+    firstSec = false;
+  }
+}
+
 /* =========================================================================
    8. 재생기 — 미리 보기(lookahead) 스케줄러
    ========================================================================= */
@@ -2213,6 +2279,7 @@ function startPlayback(song, fromSec) {
   player.offset = fromSec || 0;
   const t0 = ctx.currentTime + .12;
   player.start = t0 - player.offset;
+  automateMix(g, song, player.start);
   player.idx = song.events.findIndex(e => e.time >= player.offset); if (player.idx < 0) player.idx = song.events.length;
   startAmbience(g, t0, song.duration - player.offset);
   const tick = () => {
@@ -2252,6 +2319,7 @@ async function renderWav(song, onProgress) {
   prewarmKit(g, song);
   startAmbience(g, 0, song.duration);
   const OFF = .05, CH = .5, evs = song.events;
+  automateMix(g, song, OFF);
   let i = 0, err = null;
   // 전부 미리 꽂으면 크롬은 128샘플마다 아직 안 울린 노드까지 훑는다 → 곡 길이의 제곱으로 느려진다.
   // 앞으로 1초 안에 울릴 음만 붙이고, 0.5초마다 멈춰서 다음 음을 붙인다 — 끝난 음은 onended 로 빠진다.
