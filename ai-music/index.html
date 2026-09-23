@@ -1922,15 +1922,30 @@ const UNI_RHO = { strings: .26, pad: .28, supersaw: .25, kpluck: .2 };
 const SSAW = [[0, -1, 1.35], [-17, 0], [18, 1], [-7, 1], [8, 0]];
 // 각 악기: (g, out, f, t, d, v) — 주파수 f 를 t 초에 d 초 동안 세기 v 로
 const INST = {
+  // 피아노: 세기별 파형(여림·보통·셈) 두 줄. 둘째 줄은 .4배·다른 센트로 — 맥놀이로 번지되 기음이 꺼지지 않는다.
+  // 소리 모양: 치자마자 45%로 뚝(프롬프트) → 음높이에 맞춘 긴 여운 → 건반을 떼면 댐퍼로 멈춤. 망치 소리는 센 음에만
   piano(g, out, f, t, d, v) {
-    const amp = g.ctx.createGain(), fl = lp(g, clamp(f * 9, 900, 9000), .4);
-    const o1 = osc(g, "triangle", f), o2 = osc(g, "sine", f * 2), o3 = osc(g, "sawtooth", f, 3);
-    const g2 = g.ctx.createGain(); g2.gain.value = .32; const g3 = g.ctx.createGain(); g3.gain.value = .13;
-    o1.connect(fl); o2.connect(g2).connect(fl); o3.connect(g3).connect(fl); fl.connect(amp);
-    fl.frequency.setTargetAtTime(clamp(f * 2.5, 400, 4000), t, .35);
-    const dcy = clamp(3.4 * Math.sqrt(220 / f), .5, 3.8);
-    const stop = adsr(amp, t, d, .004, dcy, 0, .18, v * .5);
-    for (const o of [o1, o2, o3]) { o.start(t); o.stop(stop); } amp.connect(out); o1.onended = () => amp.disconnect();
+    const ctx = g.ctx, amp = ctx.createGain(), fl = kLp(g, 1000, -3);
+    const w = v > .8 ? g.waves.pianoHard : v > .55 ? g.waves.pianoMid : g.waves.pianoSoft;
+    const o1 = osc(g, w, f, -.5), o2 = osc(g, w, f, .7), g2 = ctx.createGain(); g2.gain.value = .4;
+    o1.connect(fl); o2.connect(g2).connect(fl); fl.connect(amp);
+    fl.frequency.setValueAtTime(clamp(f * (3 + 10 * v), 800, 12000), t);        // 세게 칠수록 밝게 → 천천히 어두워진다
+    fl.frequency.setTargetAtTime(clamp(f * 3, 600, 5000), t + .01, .4);
+    const p = amp.gain, pk = v * .5, off = Math.max(t + d, t + .05);
+    const tail = clamp(3.4 * Math.sqrt(220 / f), .6, 4.5);
+    p.setValueAtTime(1e-4, t); p.linearRampToValueAtTime(pk, t + .003);
+    p.setTargetAtTime(pk * .45, t + .003, .07);                    // 프롬프트: 첫 순간만 크다
+    if (off > t + .2) p.setTargetAtTime(1e-4, t + .2, tail / 3);   // 여운
+    p.setTargetAtTime(1e-4, off, .09);                             // 댐퍼
+    const stop = Math.min(off + .5, t + .2 + tail * 2.5);
+    if (v > .7) {                                  // 망치 소리 — amp 를 거치면 들리지 않으므로 out 으로 바로.
+      // 구워 둔 버퍼를 재생 속도로 음높이(f×5)에 맞춘다. 노이즈+밴드패스를 음마다 만들면 렌더가 30% 넘게 느려진다
+      const h = ctx.createBufferSource(), hg = ctx.createGain();
+      h.buffer = g.hammer; h.playbackRate.value = clamp(f * 5, 1500, 6000) / 3000; hg.gain.value = v * v * .05;
+      h.connect(hg).connect(out); h.start(t);
+      h.onended = () => { try { hg.disconnect(); } catch (e) {} };
+    }
+    finish(g, out, amp, t, [o1, o2], stop);
   },
   epiano(g, out, f, t, d, v) {
     const amp = g.ctx.createGain();
@@ -2458,6 +2473,16 @@ function buildGraph(ctx, song) {
   const real = new Float32Array(32), imag = new Float32Array(32);
   for (let n = 1; n < 32; n++) real[n] = (2 / (n * Math.PI)) * Math.sin(n * Math.PI * .25);
   g.waves = { p25: ctx.createPeriodicWave(real, imag) };
+  // 피아노 파형 3단(세기별): n번째 배음 = 1/n · e^(-(n-1)/roll). roll 이 클수록 배음이 많아 밝다
+  const pw = roll => { const N = 40, re = new Float32Array(N), im = new Float32Array(N);
+    for (let n = 1; n < N; n++) im[n] = Math.exp(-(n - 1) / roll) / n;
+    return ctx.createPeriodicWave(re, im); };
+  g.waves.pianoSoft = pw(2); g.waves.pianoMid = pw(4.5); g.waves.pianoHard = pw(10);
+  // 피아노 망치 소리: 3kHz 밴드패스(Q .9) 노이즈에 6ms 감쇠를 입힌 40ms 버퍼(난수는 위 노이즈를 그대로 쓴다)
+  { const n = Math.round(sr * .04), d = (g.hammer = ctx.createBuffer(1, n, sr)).getChannelData(0), x = g.noise.getChannelData(0);
+    const w0 = 2 * Math.PI * 3000 / sr, al = Math.sin(w0) / (2 * .9), a0 = 1 + al, c = -2 * Math.cos(w0) / a0, e = (1 - al) / a0, k = al / a0;
+    let x1 = 0, x2 = 0, y1 = 0, y2 = 0;
+    for (let i = 0; i < n; i++) { const y = k * (x[i] - x2) - c * y1 - e * y2; x2 = x1; x1 = x[i]; y2 = y1; y1 = y; d[i] = y * Math.exp(-i / sr / .006); } }
 
   const master = ctx.createGain(); master.gain.value = .6;
   const dcBlock = hp(g, 24, .5);
