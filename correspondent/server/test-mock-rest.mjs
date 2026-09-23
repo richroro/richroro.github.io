@@ -110,4 +110,5 @@ createServer(async (req, res) => {
     const m = String(e.stderr || e.message).split('\n').find((l) => /ERROR|오류/.test(l)) || String(e.message);
     send(res, 400, { message: m.replace(/^psql.*?ERROR:\s*/, '').trim() });
   }
-}).listen(54330, () => console.log('mock PostgREST on 54330'));
+}).listen(Number(process.env.MOCK_PORT || 54330), '127.0.0.1',
+  () => console.log('mock PostgREST on ' + (process.env.MOCK_PORT || 54330)));

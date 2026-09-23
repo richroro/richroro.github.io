@@ -1,16 +1,28 @@
 /* ============================================================================
    공용 보드 끝에서 끝까지 — 브라우저 → fetch → 모의 PostgREST → 진짜 Postgres 의 진짜 RLS.
 
-   띄워 둘 것
-     · Postgres (test-auth-stub → schema → policies → seed-hoods → retention 함수 부분)
-     · node test-mock-rest.mjs                         (54330)
-     · config.js 에 모의 서버를 넣은 앱 사본을 정적 서버로 (8197)
+     PGHOST=… PGUSER=postgres node test-e2e.mjs
+
+   혼자 다 띄우고 혼자 치운다:
+     · 임시 DB tpw_e2e_<pid> — schema·policies·seed·retention 설치, 끝나면 지움
+     · 모의 PostgREST (test-mock-rest.mjs) — 앱이 보낸 값을 그대로 넣는다
+     · 앱 사본 + 모의 서버를 가리키는 config.js 를 정적 서버로
    토큰은 시험용 Bearer test-<uuid>. 로그인 화면은 건너뛰고 세션을 직접 심는다.
    ========================================================================== */
 import { chromium } from 'playwright';
-import { execFileSync } from 'node:child_process';
+import { execFileSync, spawn, spawnSync } from 'node:child_process';
+import { readFileSync, mkdtempSync, cpSync, writeFileSync, rmSync } from 'node:fs';
+import { tmpdir } from 'node:os';
+import { dirname, resolve, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 
-const URL = process.env.APP_URL || 'http://127.0.0.1:8197/correspondent/';
+const HERE = dirname(fileURLToPath(import.meta.url));
+const APP_DIR = resolve(HERE, '..');
+const DB = 'tpw_e2e_' + process.pid;
+const MOCK_PORT = 54000 + (process.pid % 900);
+const WEB_PORT = MOCK_PORT + 1000;
+const API = 'http://127.0.0.1:' + MOCK_PORT;
+const URL = 'http://127.0.0.1:' + WEB_PORT + '/correspondent/';
 const HOOD = '4117110100';
 const U = {
   민지: '11111111-1111-1111-1111-111111111111',
@@ -19,17 +31,49 @@ const U = {
   태오: '44444444-4444-4444-4444-444444444444',
   하린: '55555555-5555-5555-5555-555555555555'
 };
-const PSQL = ['-h', process.env.PGHOST || '/home/pgtest/run', '-p', process.env.PGPORT || '54329',
-              '-U', 'postgres', '-d', process.env.PGDATABASE || 'tpw', '-tAc'];
-const sql = (q) => execFileSync('psql', [...PSQL, q], { encoding: 'utf8' }).trim();
+const PSQL = ['-X', '-tA', '-d', DB];
+const sql = (q) => execFileSync('psql', [...PSQL, '-c', q], { encoding: 'utf8' }).trim();
+
+/* ─────────────────────────── 띄우기 ─────────────────────────── */
+const kids = [];
+const web = mkdtempSync(join(tmpdir(), 'tpw-e2e-'));
+function teardown() {
+  for (const k of kids) { try { k.kill(); } catch (e) {} }
+  spawnSync('dropdb', ['--if-exists', DB]);
+  rmSync(web, { recursive: true, force: true });
+}
+process.on('exit', teardown);
+process.on('SIGINT', () => process.exit(130));
+
+execFileSync('createdb', [DB]);
+const base = ['-X', '-q', '-v', 'ON_ERROR_STOP=1', '-d', DB];
+for (const f of ['test-auth-stub.sql', 'schema.sql', 'policies.sql', 'seed-hoods.sql'])
+  execFileSync('psql', [...base, '-f', resolve(HERE, f)], { stdio: ['ignore', 'ignore', 'pipe'] });
+const ret = readFileSync(resolve(HERE, 'retention.sql'), 'utf8').split('여기부터는 Supabase 에서만')[0];
+execFileSync('psql', base, { input: ret.slice(0, ret.lastIndexOf('\n')) });
+
+cpSync(APP_DIR, join(web, 'correspondent'), { recursive: true,
+  filter: (src) => !/node_modules|[\\/]server[\\/]|[\\/]test[\\/]|[\\/]tools[\\/]/.test(src) });
+writeFileSync(join(web, 'correspondent', 'config.js'),
+  `window.TPW_CONFIG = { url: "${API}", anonKey: "test-anon-key", hood: "" };\n`);
+
+kids.push(spawn(process.execPath, [resolve(HERE, 'test-mock-rest.mjs')],
+  { env: { ...process.env, PGDATABASE: DB, MOCK_PORT: String(MOCK_PORT) }, stdio: 'ignore' }));
+kids.push(spawn('python3', ['-m', 'http.server', String(WEB_PORT), '--bind', '127.0.0.1'], { cwd: web, stdio: 'ignore' }));
+for (const u of [API + '/rest/v1/hoods', URL]) {
+  let up = false;
+  for (let i = 0; i < 50 && !up; i++) {
+    try { up = (await fetch(u)).ok; } catch (e) {}
+    if (!up) await new Promise((r) => setTimeout(r, 200));
+  }
+  if (!up) { console.error('못 띄웠습니다: ' + u); process.exit(1); }
+}
 
 let pass = 0, fail = 0;
 const ok = (c, m) => { if (c) { pass++; console.log('  ok  ' + m); } else { fail++; console.log('  FAIL ' + m); } };
 const errs = [];
 
-// 처음부터 — DB 와 모의 서버의 기억(탈퇴한 계정 목록)을 함께 비운다
-sql(`delete from auth.users;`);
-await fetch((process.env.API_URL || 'http://127.0.0.1:54330') + '/__reset', { method: 'POST' });
+// 새로 만든 DB 라 비어 있다. 모의 서버의 기억도 새것이다.
 
 const b = await chromium.launch();
 

@@ -1,0 +1,68 @@
+name: 동네 특파원 검사
+
+# correspondent/ 가 바뀔 때만 돈다(실거래가 자동 수집 커밋에는 안 돈다).
+# 브라우저 여섯 묶음(Chromium)과 서버 두 묶음(Postgres 16)을 한 번에 돌린다.
+# 로컬에서도 같은 명령이다:  node correspondent/test/run-all.mjs
+#
+# 서버 묶음은 스스로 임시 DB 를 만들고 끝나면 지운다. 여기서는 빈 Postgres 컨테이너를 쓴다.
+
+on:
+  pull_request:
+    paths:
+      - 'correspondent/**'
+      - '.github/workflows/correspondent-tests.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'correspondent/**'
+      - '.github/workflows/correspondent-tests.yml'
+  workflow_dispatch:
+
+concurrency:
+  group: correspondent-tests-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_PASSWORD: postgres
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 20
+
+    env:
+      PGHOST: localhost
+      PGPORT: '5432'
+      PGUSER: postgres
+      PGPASSWORD: postgres
+      TPW_REQUIRE_DB: '1'   # Postgres 가 없어서 서버 묶음을 건너뛰면 실패로 친다
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: 검사 도구
+        run: |
+          npm install --no-save --no-audit --no-fund playwright@1.56.1 axe-core@4
+          npx playwright install --with-deps chromium
+          command -v psql >/dev/null || sudo apt-get install -y --no-install-recommends postgresql-client
+          psql --version
+
+      - name: 검사
+        run: node correspondent/test/run-all.mjs

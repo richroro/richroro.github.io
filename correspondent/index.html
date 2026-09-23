@@ -10,7 +10,21 @@
 <meta property="og:description" content="웨이팅·혼잡·주차처럼 금방 상하는 정보를 시간과 함께 보여 줍니다. 리포트는 링크로 주고받고, 서버 없이 브라우저에서만 돌아갑니다.">
 <meta property="og:url" content="https://richroro.github.io/correspondent/">
 <meta property="og:locale" content="ko_KR">
+<meta property="og:site_name" content="동네 특파원">
+<meta property="og:image" content="https://richroro.github.io/correspondent/og.png?v=1">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="동네 특파원 — 같은 키즈카페 소식이 14분 전엔 또렷하고 4시간 전엔 흐려진 두 장의 카드">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://richroro.github.io/correspondent/og.png?v=1">
 <link rel="canonical" href="https://richroro.github.io/correspondent/">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-title" content="특파원">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#FFFFFF" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#181B1E" media="(prefers-color-scheme: dark)">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%230F6E63'/><circle cx='50' cy='62' r='9' fill='white'/><path d='M34 47 A22 22 0 0 1 66 47' fill='none' stroke='white' stroke-width='7' stroke-linecap='round'/><path d='M23 34 A38 38 0 0 1 77 34' fill='none' stroke='white' stroke-width='7' stroke-linecap='round'/></svg>">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -19,7 +33,7 @@
 :root{
   color-scheme:light;
   --paper:#F5F3EE; --surface:#FFFFFF; --surface-2:#F1EEE8; --surface-3:#E4E0D8;
-  --ink:#15171A; --ink-2:#474B50; --ink-3:#787D84;
+  --ink:#15171A; --ink-2:#474B50; --ink-3:#676C73;
   --line:#DFDAD1; --line-soft:#ECE8E1;
   --accent:#0F6E63; --accent-deep:#0A554C; --accent-wash:#E2F0ED; --on-accent:#FFFFFF;
   --live:#B8430C; --live-dot:#E2600F; --live-wash:#FCEADD;
@@ -37,7 +51,7 @@
 @media (prefers-color-scheme:dark){ :root:not([data-theme="light"]){
   color-scheme:dark;
   --paper:#0E1013; --surface:#181B1E; --surface-2:#202428; --surface-3:#2A2F35;
-  --ink:#E9E7E1; --ink-2:#B3B0A8; --ink-3:#868B92;
+  --ink:#E9E7E1; --ink-2:#B3B0A8; --ink-3:#90959C;
   --line:#2C3137; --line-soft:#23282E;
   --accent:#5FC9B8; --accent-deep:#8FDDD0; --accent-wash:#11302C; --on-accent:#0E1013;
   --live:#F0965C; --live-dot:#EE7434; --live-wash:#2E1A0E;
@@ -51,7 +65,7 @@
 :root[data-theme="dark"]{
   color-scheme:dark;
   --paper:#0E1013; --surface:#181B1E; --surface-2:#202428; --surface-3:#2A2F35;
-  --ink:#E9E7E1; --ink-2:#B3B0A8; --ink-3:#868B92;
+  --ink:#E9E7E1; --ink-2:#B3B0A8; --ink-3:#90959C;
   --line:#2C3137; --line-soft:#23282E;
   --accent:#5FC9B8; --accent-deep:#8FDDD0; --accent-wash:#11302C; --on-accent:#0E1013;
   --live:#F0965C; --live-dot:#EE7434; --live-wash:#2E1A0E;
@@ -80,6 +94,8 @@ button{font:inherit;color:inherit}
 .wrap{max-width:860px;margin:0 auto;padding:0 16px}
 .mono{font-family:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,monospace;font-variant-numeric:tabular-nums}
 .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.input:focus-visible,.code-box:focus-visible{outline-offset:-1px}
 
 /* ════════ 머리띠 — 얇게, 늘 붙어 있게 ════════ */
 .bar{position:sticky;top:0;z-index:60;background:var(--surface);border-bottom:1px solid var(--line)}
@@ -109,7 +125,7 @@ button{font:inherit;color:inherit}
   font-size:14.5px;font-weight:500;color:var(--ink-3);white-space:nowrap}
 .tab:hover{color:var(--ink)}
 .tab[aria-selected="true"]{color:var(--accent);border-bottom-color:var(--accent);font-weight:600}
-.tab .n{font-size:11.5px;margin-left:5px;font-family:"IBM Plex Mono",monospace;opacity:.75}
+.tab .n{font-size:11.5px;margin-left:5px;font-family:"IBM Plex Mono",monospace}
 
 /* 소개 한 줄 + 숫자 줄 */
 .intro{font-size:12.5px;color:var(--ink-3);line-height:1.6;padding:12px 0 0}
@@ -255,7 +271,10 @@ textarea.input{min-height:76px;resize:vertical;line-height:1.55}
 .stat.bad  {background:var(--s2-bg);color:var(--s2-ink)}
 .stat.worst{background:var(--s3-bg);color:var(--s3-ink)}
 .stat.none {background:var(--surface-2);color:var(--ink-3);font-weight:500}
-.live-row.faded{opacity:.48}
+/* 3시간이 지난 현장 정보. 예전엔 줄 전체를 반투명하게 했는데 그러면 글자 대비가 기준 밑으로 떨어진다.
+   색을 빼서 회색으로 둔다 — 살아 있는 건 색, 지난 건 회색. 글자는 끝까지 읽힌다. */
+.live-row.faded .stat{background:var(--surface-2);color:var(--ink-3);font-weight:500;
+  box-shadow:inset 0 0 0 1px var(--line)}
 
 /* 신선도 — 3시간 창이 줄어드는 폭. 칩 줄 끝에 붙는 짧은 게이지라 구분선으로 안 읽힌다. */
 .meter{width:38px;height:3px;border-radius:3px;background:var(--surface-3);overflow:hidden;flex:none;margin-left:3px}
@@ -384,6 +403,13 @@ fieldset legend{font-size:13px;font-weight:600;color:var(--ink-2);padding:0;marg
   cursor:pointer;padding:2px 3px;min-height:44px}
 .star-pick button.on{color:var(--star)}
 .star-pick button:hover{color:var(--star)}
+.ref{border:1px solid var(--accent);background:var(--accent-wash);border-radius:10px;padding:11px 13px;margin-bottom:15px;
+  display:grid;grid-template-columns:1fr auto;gap:6px 10px;align-items:center}
+.ref-t{font-size:12.5px;color:var(--ink-2);grid-column:1}
+.ref-s{grid-column:1;display:flex;gap:5px;flex-wrap:wrap}
+.ref .btn{grid-column:2;grid-row:1 / span 2;white-space:nowrap}
+.ref .btn[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--on-accent)}
+.ref-n{grid-column:1 / -1;font-size:11.5px;color:var(--ink-3);line-height:1.6;margin:2px 0 0}
 .form-note{font-size:12px;color:var(--ink-3);background:var(--surface-2);border-radius:9px;
   padding:10px 12px;line-height:1.65;margin-bottom:15px}
 
@@ -422,10 +448,10 @@ body:has(.backdrop.open) .toast{top:calc(14px + env(safe-area-inset-top));bottom
     <button class="icon-btn" id="themeBtn" type="button" title="테마 바꾸기"><span aria-hidden="true">◐</span><span class="lbl">테마</span></button>
   </div>
   <nav class="tabs" role="tablist" aria-label="화면 전환">
-    <button class="tab" type="button" role="tab" aria-selected="true"  data-view="feed">속보<span class="n" id="nFeed"></span></button>
-    <button class="tab" type="button" role="tab" aria-selected="false" data-view="places">장소<span class="n" id="nPlaces"></span></button>
-    <button class="tab" type="button" role="tab" aria-selected="false" data-view="people">특파원<span class="n" id="nPeople"></span></button>
-    <button class="tab" type="button" role="tab" aria-selected="false" data-view="sync">주고받기</button>
+    <button class="tab" type="button" role="tab" aria-selected="true"  data-view="feed" id="tab-feed" aria-controls="view-feed">속보<span class="n" id="nFeed"></span></button>
+    <button class="tab" type="button" role="tab" aria-selected="false" data-view="places" id="tab-places" aria-controls="view-places">장소<span class="n" id="nPlaces"></span></button>
+    <button class="tab" type="button" role="tab" aria-selected="false" data-view="people" id="tab-people" aria-controls="view-people">특파원<span class="n" id="nPeople"></span></button>
+    <button class="tab" type="button" role="tab" aria-selected="false" data-view="sync" id="tab-sync" aria-controls="view-sync">주고받기</button>
   </nav>
 </header>
 
@@ -436,12 +462,12 @@ body:has(.backdrop.open) .toast{top:calc(14px + env(safe-area-inset-top));bottom
   <div id="inbox"></div>
 
   <div class="actions">
-    <button class="btn primary" id="writeBtn" type="button">📡 리포트 보내기</button>
-    <button class="btn" id="recvBtn" type="button"><span class="ic" aria-hidden="true">📥</span><span class="lbl">📥 받은 링크 붙여넣기</span></button>
+    <button class="btn primary" id="writeBtn" type="button"><span aria-hidden="true">📡</span> 리포트 보내기</button>
+    <button class="btn" id="recvBtn" type="button" aria-label="받은 링크 붙여넣기"><span class="ic" aria-hidden="true">📥</span><span class="lbl"><span aria-hidden="true">📥</span> 받은 링크 붙여넣기</span></button>
   </div>
 
   <!-- ===== 속보 ===== -->
-  <section class="view" id="view-feed" role="tabpanel" aria-label="속보">
+  <section class="view" id="view-feed" role="tabpanel" aria-labelledby="tab-feed">
     <div id="pick"></div>
     <div class="filters">
       <div class="chipbar" id="catFilter" role="group" aria-label="분야 거르개"></div>
@@ -461,7 +487,7 @@ body:has(.backdrop.open) .toast{top:calc(14px + env(safe-area-inset-top));bottom
   </section>
 
   <!-- ===== 장소 ===== -->
-  <section class="view" id="view-places" role="tabpanel" aria-label="장소" hidden>
+  <section class="view" id="view-places" role="tabpanel" aria-labelledby="tab-places" hidden>
     <div class="filters">
       <div class="filter-row">
         <input class="input grow" id="pq" type="search" placeholder="장소·동네 검색" autocomplete="off" aria-label="장소 검색">
@@ -478,7 +504,7 @@ body:has(.backdrop.open) .toast{top:calc(14px + env(safe-area-inset-top));bottom
   </section>
 
   <!-- ===== 특파원 ===== -->
-  <section class="view" id="view-people" role="tabpanel" aria-label="특파원" hidden>
+  <section class="view" id="view-people" role="tabpanel" aria-labelledby="tab-people" hidden>
     <div class="panel me-panel" style="margin-bottom:12px">
       <div class="me-set" id="meSet" hidden>
         <span class="av" id="meAv" aria-hidden="true"></span>
@@ -499,7 +525,7 @@ body:has(.backdrop.open) .toast{top:calc(14px + env(safe-area-inset-top));bottom
   </section>
 
   <!-- ===== 주고받기 ===== -->
-  <section class="view" id="view-sync" role="tabpanel" aria-label="주고받기" hidden>
+  <section class="view" id="view-sync" role="tabpanel" aria-labelledby="tab-sync" hidden>
     <div class="panel">
       <div class="panel-t">받기</div>
       <p class="note" style="margin-bottom:9px">카톡으로 받은 내용을 통째로 붙여 넣으세요. 링크만 넣어도 되고, 앞뒤 글이 섞여 있어도 알아서 찾습니다.</p>
@@ -554,7 +580,7 @@ body:has(.backdrop.open) .toast{top:calc(14px + env(safe-area-inset-top));bottom
 <div class="backdrop" id="composeBack">
   <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="composeTitle">
     <div class="sheet-head">
-      <h2 id="composeTitle">📡 리포트 보내기</h2>
+      <h2><span aria-hidden="true">📡</span> <span id="composeTitle">리포트 보내기</span></h2>
       <button class="x" type="button" data-close aria-label="닫기">&times;</button>
     </div>
     <form class="sheet-body" id="composeForm" novalidate>
@@ -578,6 +604,12 @@ body:has(.backdrop.open) .toast{top:calc(14px + env(safe-area-inset-top));bottom
       <div class="form-note" style="margin-bottom:16px">
         아래 세 가지는 <b>몇 시간이면 쓸모가 없어지는 정보</b>입니다. 시간이 지나면 흐려지고,
         하루가 지나면 속보 화면에서 접어 둡니다. 모르면 <b>모름</b>으로 두세요 — 빈칸이 틀린 정보보다 낫습니다.
+      </div>
+      <div class="ref" id="fRef" hidden>
+        <div class="ref-t">앞 리포트 · <span id="fRefWho"></span></div>
+        <div class="ref-s" id="fRefStats"></div>
+        <button class="btn sm" type="button" id="fRefSame" aria-pressed="false">그대로예요</button>
+        <p class="ref-n">지금 보이는 대로 골라 주세요. 똑같으면 <b>그대로예요</b> — 안 보고 옮겨 적은 옛 정보가 새 시각을 달고 퍼지지 않게, 저절로 채우지 않습니다.</p>
       </div>
       <fieldset><legend>웨이팅</legend><div class="seg" id="fWait" role="group" aria-label="웨이팅"></div></fieldset>
       <fieldset><legend>사람</legend><div class="seg" id="fCrowd" role="group" aria-label="혼잡도"></div></fieldset>
@@ -640,7 +672,7 @@ body:has(.backdrop.open) .toast{top:calc(14px + env(safe-area-inset-top));bottom
 <div class="backdrop" id="boardBack">
   <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="boardTitle">
     <div class="sheet-head">
-      <h2 id="boardTitle">🏘 공용 보드</h2>
+      <h2><span aria-hidden="true">🏘</span> <span id="boardTitle">공용 보드</span></h2>
       <button class="x" type="button" data-close aria-label="닫기">&times;</button>
     </div>
     <div class="sheet-body">
@@ -727,7 +759,8 @@ body:has(.backdrop.open) .toast{top:calc(14px + env(safe-area-inset-top));bottom
     </div>
     <div class="sheet-body" id="placeBody"></div>
     <div class="sheet-foot">
-      <button class="btn" type="button" id="placeShare">이 장소 소식 묶어서 공유</button>
+      <button class="btn primary" type="button" id="placeAgain">여기 지금 상황 알리기</button>
+      <button class="btn" type="button" id="placeShare">묶어서 공유</button>
       <button class="btn ghost" type="button" data-close>닫기</button>
     </div>
   </div>
@@ -969,7 +1002,8 @@ function liveRowHtml(r){
   if (d < DEAD) return inner;
   return '<details class="expired"><summary>' + esc(ago(r.t)) + " 현장 정보 — 펼치기</summary>" + inner + "</details>";
 }
-const starsHtml = (n) => n ? '<span class="stars" title="별 ' + n + '개">' + "★".repeat(n) + "☆".repeat(5 - n) + "</span>" : "";
+const starsHtml = (n) => n ? '<span class="stars" role="img" aria-label="별 ' + n + '개" title="별 ' + n + '개">' +
+  "★".repeat(n) + "☆".repeat(5 - n) + "</span>" : "";
 
 /** 현장 정보가 얼마나 남았는지 — 칩 줄 끝에 붙는 게이지. 기록만 있는 리포트엔 안 붙인다. */
 function meterHtml(r){
@@ -988,7 +1022,7 @@ function cardHtml(r, o){
   const sample = isSample();
   return '<article class="card age-' + ageClass(r.t) + '">' +
     '<div class="card-top">' +
-      '<span class="cat">' + cat.ic + " " + esc(cat.nm) + "</span>" +
+      '<span class="cat"><span aria-hidden="true">' + cat.ic + "</span> " + esc(cat.nm) + "</span>" +
       '<span class="age mono" title="' + esc(fmtTime(r.t)) + '">' + esc(ago(r.t)) + "</span>" +
       (sample ? '<span class="badge">예시</span>' : "") +
       (r.priv ? '<span class="badge" title="공용 보드에 올리지 않은 글">이 기기에만</span>' : "") +
@@ -1007,6 +1041,7 @@ function cardHtml(r, o){
       (r.tags.length ? '<span class="tags">' + r.tags.map((t) => "#" + esc(t)).join(" ") + "</span>" : "") +
       '<span class="by">— ' + esc(r.by) + " 특파원</span>" +
       '<span class="spacer"></span>' +
+      (sample ? "" : '<button class="link-btn" type="button" data-again="' + esc(r.id) + '" title="같은 장소의 지금 상황을 알립니다">나도 여기</button>') +
       (sample ? "" : '<button class="link-btn" type="button" data-share="' + esc(r.id) + '">공유</button>') +
       (!sample && SY.enabled && !r.mine ?
         '<button class="link-btn flagbtn" type="button" data-flag="' + esc(r.id) + '">신고</button>' : "") +
@@ -1215,6 +1250,8 @@ function renderTicker(){
   ];
   if (last) parts.push("마지막 <b>" + esc(ago(last)) + "</b>");
   let html = parts.map((x) => "<span>" + x + "</span>").join("");
+  if (!navigator.onLine) html = '<span class="warn">오프라인 — ' +
+    (SY.enabled ? "쓰면 이 기기에 저장되고, 연결되면 올라갑니다" : "이 기기에서 그대로 쓸 수 있습니다") + "</span>" + html;
   if (isSample()) html += '<span class="warn">지금 보이는 건 예시입니다</span>' +
     '<button class="link-btn" type="button" id="dropSample">예시 치우기</button>';
   $("#statline").innerHTML = html;
@@ -1309,7 +1346,7 @@ function renderPlaces(){
     const d = Date.now() - g.last.t;
     return '<button class="pl age-' + ageClass(g.last.t) + '" type="button" data-openkey="' + esc(g.key) + '">' +
       '<div class="pl-top">' +
-        '<span class="cat">' + cat.ic + " " + esc(cat.nm) + "</span>" +
+        '<span class="cat"><span aria-hidden="true">' + cat.ic + "</span> " + esc(cat.nm) + "</span>" +
         '<span class="pl-name">' + esc(g.place) + "</span>" +
         (g.area ? '<span class="age">' + esc(g.area) + "</span>" : "") +
       "</div>" +
@@ -1368,7 +1405,7 @@ function renderPeople(){
     const cat = CATS.find((c) => c.k === catK);
     const sub = [];
     if (area) sub.push("주로 " + esc(area));
-    if (cat) sub.push(cat.ic + " " + esc(cat.nm));
+    if (cat) sub.push('<span aria-hidden="true">' + cat.ic + "</span> " + esc(cat.nm));
     if (p.day) sub.push("하루 안 " + p.day + "건");
     out.push('<div class="pr' + (p.by === board.me ? " me" : "") + '">' +
       '<span class="av" aria-hidden="true">' + esc(p.by.slice(0, 2)) + "</span>" +
@@ -1689,8 +1726,11 @@ function openFlagSheet(r){
 /* =========================================================================
    시트(모달)
    ========================================================================= */
+const BEHIND = () => [$(".bar"), $("main"), $("footer")];
 function openSheet(sel){
   if (!lastFocus) lastFocus = document.activeElement;
+  $$(".backdrop.open").forEach((b) => b.classList.remove("open"));   // 시트는 한 번에 하나
+  BEHIND().forEach((el) => el && (el.inert = true));
   $(sel).classList.add("open");
   document.body.style.overflow = "hidden";
   const f = $(sel).querySelector("[data-autofocus]") ||
@@ -1699,6 +1739,7 @@ function openSheet(sel){
 }
 function closeSheets(keepFocus){
   $$(".backdrop.open").forEach((b) => b.classList.remove("open"));
+  BEHIND().forEach((el) => el && (el.inert = false));
   document.body.style.overflow = "";
   openPlaceKey = null;
   if (!keepFocus && lastFocus && lastFocus.focus) { try { lastFocus.focus(); } catch(e){} }
@@ -1735,7 +1776,7 @@ function segHtml(table, sel, field){
 }
 function paintCompose(){
   $("#fCat").innerHTML = CATS.map((c) => '<button class="chip" type="button" data-f="cat" data-v="' + c.k +
-    '" aria-pressed="' + (c.k === draft.cat) + '">' + c.ic + " " + esc(c.nm) + "</button>").join("");
+    '" aria-pressed="' + (c.k === draft.cat) + '"><span aria-hidden="true">' + c.ic + "</span> " + esc(c.nm) + "</button>").join("");
   $("#fWait").innerHTML  = segHtml(WAIT,  draft.wait,  "wait");
   $("#fCrowd").innerHTML = segHtml(CROWD, draft.crowd, "crowd");
   $("#fPark").innerHTML  = segHtml(PARK,  draft.park,  "park");
@@ -1745,12 +1786,25 @@ function paintCompose(){
     '" class="' + (n <= draft.rate ? "on" : "") + '" aria-label="별 ' + n + '개" aria-pressed="' +
     (n === draft.rate) + '">★</button>').join("");
 }
-function openCompose(){
+/** ref 를 주면 "나도 여기" — 같은 장소의 새 리포트.
+    장소·동네·분야·태그처럼 오래 가는 것만 채운다. 웨이팅·사람·주차는 채우지 않고
+    참고로만 보여 준다. 안 보고 눌러도 옛 정보가 새 시각을 달고 나가지 않게. */
+let composeRef = null;
+function openCompose(ref){
+  composeRef = ref && ref.place ? ref : null;
   const mine = board.reports.filter((r) => r.by === board.me);
-  draft = { cat:"play", wait:-1, crowd:-1, park:-1, rate:0, tags:[] };
-  $("#fPlace").value = "";
-  $("#fArea").value = mine.length ? mine[0].area : "";
+  draft = { cat: composeRef ? composeRef.cat : "play", wait:-1, crowd:-1, park:-1, rate:0,
+            tags: composeRef ? composeRef.tags.slice() : [] };
+  $("#fPlace").value = composeRef ? composeRef.place : "";
+  $("#fArea").value = composeRef ? composeRef.area : (mine.length ? mine[0].area : "");
   $("#fNote").value = "";
+  $("#fNote").placeholder = composeRef ? "달라진 게 있으면 적어 주세요."
+    : "예: 2시 넘으니 자리 났어요. 주차는 골목 유료로 대는 게 빠릅니다.";
+  $("#composeTitle").textContent = composeRef ? "여기 지금 상황" : "리포트 보내기";
+  paintRef();
+  const refChips = composeRef && statChips(composeRef).length;
+  $("#fPlace").toggleAttribute("data-autofocus", !refChips);
+  $("#fRefSame").toggleAttribute("data-autofocus", !!refChips);
   $("#fBy").value = board.me;
   $("#noteCnt").textContent = "0/200";
   $("#composeErr").textContent = "";
@@ -1758,6 +1812,26 @@ function openCompose(){
   $("#fPub").checked = true;
   paintCompose();
   openSheet("#composeBack");
+}
+
+function paintRef(){
+  const box = $("#fRef");
+  box.hidden = !composeRef;
+  if (!composeRef) return;
+  const r = composeRef, chips = statChips(r);
+  $("#fRefWho").textContent = r.by + " 특파원 · " + ago(r.t);
+  $("#fRefStats").innerHTML = chips.length
+    ? chips.map((c) => '<span class="stat ' + c.tone + '">' + esc(c.s) + "</span>").join("")
+    : '<span class="note">현장 정보 없이 메모만 남긴 리포트입니다.</span>';
+  $("#fRefSame").hidden = !chips.length;
+  syncSame();
+}
+/** "그대로예요" 는 지금 고른 값이 앞 리포트와 같은지를 그대로 보여 준다 — 누른 뒤 칩을 바꾸면 풀린다. */
+function syncSame(){
+  if (!composeRef) return;
+  const same = draft.wait === composeRef.wait && draft.crowd === composeRef.crowd && draft.park === composeRef.park;
+  $("#fRefSame").setAttribute("aria-pressed", String(same));
+  $("#fRefSame").textContent = same ? "✓ 그대로" : "그대로예요";
 }
 
 let shareCache = "";
@@ -1790,7 +1864,7 @@ function fillPlaceSheet(g){
   $("#placeTitle").textContent = g.place;
   $("#placeBody").innerHTML =
     '<div class="det-head">' +
-      '<div class="pl-top"><span class="cat">' + cat.ic + " " + esc(cat.nm) + "</span>" +
+      '<div class="pl-top"><span class="cat"><span aria-hidden="true">' + cat.ic + "</span> " + esc(cat.nm) + "</span>" +
         (g.area ? '<span class="age mono">' + esc(g.area) + "</span>" : "") + "</div>" +
       '<div class="det-stats">' +
         "<span>리포트 <b>" + g.n + "</b>건</span>" +
@@ -1809,6 +1883,7 @@ function fillPlaceSheet(g){
 }
 function openPlaceSheet(g){
   openPlaceKey = g.key;
+  $("#placeAgain").hidden = isSample();
   fillPlaceSheet(g);
   openSheet("#placeBack");
 }
@@ -1905,10 +1980,16 @@ async function packCapped(list, cap){
    ========================================================================= */
 const TH = { auto:"자동", light:"밝게", dark:"어둡게" };
 let theme = store.get("tpw.theme", "auto");
+const BAR = { light:"#FFFFFF", dark:"#181B1E" };
 function applyTheme(t){
   theme = TH[t] ? t : "auto";
   if (theme === "auto") document.documentElement.removeAttribute("data-theme");
   else document.documentElement.dataset.theme = theme;
+  /* 주소창·홈 화면 앱의 윗줄 색. 자동이면 기기 설정을 따르고, 고르면 고른 쪽으로 둘 다 맞춘다. */
+  $$('meta[name="theme-color"]').forEach((m) => {
+    const scheme = /dark/.test(m.media) ? "dark" : "light";
+    m.content = theme === "auto" ? BAR[scheme] : BAR[theme];
+  });
   $("#themeBtn").title = "테마: " + TH[theme] + " (눌러서 바꾸기)";
   store.set("tpw.theme", theme);
 }
@@ -1918,7 +1999,11 @@ function applyTheme(t){
    ========================================================================= */
 function switchView(name){
   view = name;
-  $$(".tab").forEach((b) => b.setAttribute("aria-selected", String(b.dataset.view === name)));
+  $$(".tab").forEach((b) => {
+    const on = b.dataset.view === name;
+    b.setAttribute("aria-selected", String(on));
+    b.tabIndex = on ? 0 : -1;               // 탭 키로는 고른 탭 하나만, 나머지는 화살표로
+  });
   $$(".view").forEach((s) => { s.hidden = s.id !== "view-" + name; });
 }
 
@@ -1928,9 +2013,19 @@ function switchView(name){
 function bind(){
   /* 탭 */
   $$(".tab").forEach((b) => b.addEventListener("click", () => switchView(b.dataset.view)));
+  $(".tabs").addEventListener("keydown", (e) => {
+    const tabs = $$(".tab"), i = tabs.indexOf(document.activeElement);
+    if (i === -1) return;
+    const j = e.key === "ArrowRight" ? (i + 1) % tabs.length : e.key === "ArrowLeft" ? (i - 1 + tabs.length) % tabs.length
+            : e.key === "Home" ? 0 : e.key === "End" ? tabs.length - 1 : -1;
+    if (j === -1) return;
+    e.preventDefault();
+    switchView(tabs[j].dataset.view);
+    tabs[j].focus();
+  });
 
   /* 큰 버튼 */
-  $("#writeBtn").addEventListener("click", openCompose);
+  $("#writeBtn").addEventListener("click", () => openCompose());
   $("#recvBtn").addEventListener("click", () => {
     switchView("sync");
     $("#view-sync").scrollIntoView({ behavior:"smooth", block:"start" });
@@ -1950,7 +2045,7 @@ function bind(){
   /* 속보 거르개 */
   $("#catFilter").innerHTML = [{ k:"", ic:"", nm:"전체" }].concat(CATS).map((c) =>
     '<button class="chip" type="button" data-cat="' + c.k + '" aria-pressed="' + (c.k === flt.cat) + '">' +
-    (c.ic ? c.ic + " " : "") + esc(c.nm) + "</button>").join("");
+    (c.ic ? '<span aria-hidden="true">' + c.ic + "</span> " : "") + esc(c.nm) + "</button>").join("");
   $("#catFilter").addEventListener("click", (e) => {
     const b = e.target.closest("[data-cat]");
     if (!b) return;
@@ -2003,6 +2098,12 @@ function bind(){
       if (g) openPlaceSheet(g);
       return;
     }
+    const ag = e.target.closest("[data-again]");
+    if (ag) {
+      const r = reports().find((x) => x.id === ag.dataset.again);
+      if (r) { closeSheets(true); openCompose(r); }
+      return;
+    }
     const sh = e.target.closest("[data-share]");
     if (sh) {
       const r = reports().find((x) => x.id === sh.dataset.share);
@@ -2031,6 +2132,7 @@ function bind(){
       const f = seg.dataset.f;
       draft[f] = f === "cat" ? seg.dataset.v : Number(seg.dataset.v);
       paintCompose();
+      syncSame();
       return;
     }
     const tag = e.target.closest("[data-tag]");
@@ -2057,6 +2159,14 @@ function bind(){
     if (!place) {
       $("#composeErr").textContent = "어디에 계신지 적어 주세요.";
       $("#fPlace").focus();
+      return;
+    }
+    /* "나도 여기" 인데 아무것도 안 골랐으면 새 시각만 달린 빈 카드가 된다 — 막는다. */
+    if (composeRef && draft.wait === -1 && draft.crowd === -1 && draft.park === -1 && !draft.rate &&
+        !clip($("#fNote").value, 200)) {
+      $("#composeErr").textContent = "지금 상황을 하나라도 고르거나 한 줄 남겨 주세요." +
+        (statChips(composeRef).length ? " 똑같으면 “그대로예요”." : "");
+      (statChips(composeRef).length ? $("#fRefSame") : $("#fNote")).focus();
       return;
     }
     const by = clip($("#fBy").value, 20) || board.me || "이름 없는 특파원";
@@ -2099,6 +2209,18 @@ function bind(){
   });
   $("#shareNative").addEventListener("click", () => {
     if (navigator.share && shareCache) navigator.share({ text: shareCache }).catch(() => {});
+  });
+  $("#placeAgain").addEventListener("click", () => {
+    const g = groups().find((x) => x.key === openPlaceKey);
+    if (!g) return;
+    closeSheets(true);
+    openCompose(g.last);
+  });
+  $("#fRefSame").addEventListener("click", () => {
+    if (!composeRef) return;
+    draft.wait = composeRef.wait; draft.crowd = composeRef.crowd; draft.park = composeRef.park;
+    paintCompose();
+    syncSame();
   });
   $("#placeShare").addEventListener("click", async () => {
     const g = groups().find((x) => x.key === openPlaceKey);
@@ -2281,6 +2403,7 @@ function bind(){
 /* ---------------------------- 시작 ---------------------------- */
 applyTheme(theme);
 bind();
+switchView("feed");
 $("#meInput").value = board.me;
 
 /* 로그인하고 돌아오면 토큰이 해시에 실려 온다. #r= 공유 링크와 같은 자리라
@@ -2291,6 +2414,21 @@ if (SY.enabled) {
 paintBoardBtn();
 renderAll();
 checkHash();
+
+/* 홈 화면 아이콘을 길게 눌러 "리포트 보내기"로 들어오면 바로 쓰기 창을 연다 (manifest 의 shortcuts). */
+if (new URLSearchParams(location.search).get("write") === "1") {
+  history.replaceState(null, "", location.pathname + location.hash);
+  setTimeout(() => openCompose(), 50);
+}
+
+window.addEventListener("offline", renderTicker);
+window.addEventListener("online", () => { renderTicker(); if (SY.enabled) boardRefresh(true); });
+
+/* 오프라인에서도 열리게. 보안 출처(https·localhost)에서만 등록된다. */
+if ("serviceWorker" in navigator &&
+    (location.protocol === "https:" || location.hostname === "localhost" || location.hostname === "127.0.0.1")) {
+  navigator.serviceWorker.register("sw.js").catch(() => {});
+}
 
 if (SY.enabled) {
   SY.listHoods().then((h) => { hoods = h || []; paintBoardBtn(); }).catch(() => {});
