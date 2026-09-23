@@ -25,7 +25,7 @@
     --card:#FFFFFF;
     --ink:#191F28;
     --ink-2:#4E5968;
-    --ink-3:#8B95A1;
+    --ink-3:#6B7684;   /* 흰 배경 4.6:1. #8B95A1 은 작은 글씨에 3.3:1 이었다 */
     --line:#E5E8EB;
     --blue:#3182F6;
     --blue-weak:#E8F3FF;
@@ -41,13 +41,23 @@
   html,body{height:100%;overflow:hidden;overscroll-behavior:none}
   /* iOS 사파리는 주소창 높이까지 100%에 포함시켜 화면 아래가 잘린다 */
   @supports (height:100dvh){ html,body{height:100dvh} }
+  html{background:#E4E8EC}
   body{
     font-family:'Pretendard','Apple SD Gothic Neo','Malgun Gothic',system-ui,-apple-system,sans-serif;
     background:var(--bg);color:var(--ink);
     display:flex;flex-direction:column;
     touch-action:none;user-select:none;-webkit-user-select:none;
+    word-break:keep-all;overflow-wrap:break-word;   /* 한국어는 어절 단위로 줄바꿈 ("쌓 / 아" 방지) */
     padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+    /* 데스크톱에서는 폰 폭 프레임으로 가운데 모은다. 랜딩 페이지 방문자는 대부분
+       PC 라서, 전폭으로 늘리면 재료 버튼이 한 칸에 350px 짜리가 된다. */
+    max-width:460px;margin:0 auto;position:relative;
   }
+  @media (min-width:520px){
+    body{box-shadow:0 0 0 1px rgba(25,31,40,.05), 0 12px 48px rgba(25,31,40,.12)}
+  }
+  button:focus{outline:none}
+  button:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
 
   /* ── 헤더 ─────────────────────────────── */
   header{
@@ -69,21 +79,30 @@
     flex:0 0 auto;display:flex;align-items:flex-end;gap:10px;padding:0 14px 6px;
   }
   .score-now{font-size:28px;font-weight:800;letter-spacing:-.045em;line-height:1;
-    font-variant-numeric:tabular-nums}
+    font-variant-numeric:tabular-nums;transform-origin:left bottom;transition:transform .12s ease-out}
+  .score-now.bump{transform:scale(1.08)}
   .score-now small{font-size:13px;font-weight:700;color:var(--ink-3);margin-left:3px}
   .combo{font-size:11px;font-weight:700;color:var(--blue);letter-spacing:-.02em;
     height:13px;line-height:13px;opacity:0;transition:opacity .15s}
   .combo.on{opacity:1}
   .right{margin-left:auto;text-align:right;line-height:1.2}
   .hearts{font-size:15px;letter-spacing:1px;line-height:1.1}
-  .hearts i{font-style:normal;transition:opacity .25s, transform .25s}
+  .hearts i{font-style:normal;display:inline-block;transition:opacity .25s, transform .25s}
   .hearts i.gone{opacity:.22;transform:scale(.8)}
+  .hearts i.crack{animation:crack .56s ease-in forwards}
+  @keyframes crack{0%{transform:scale(1)}18%{transform:scale(1.5) rotate(-14deg)}
+    36%{transform:scale(1.35) rotate(11deg)}56%{transform:scale(1.2) rotate(-6deg)}
+    100%{transform:scale(.8);opacity:.22}}
+  .hearts i.regain{animation:regain .5s cubic-bezier(.2,.9,.3,1.35)}
+  @keyframes regain{0%{transform:scale(.2)}60%{transform:scale(1.45)}100%{transform:scale(1)}}
   .best{font-size:11px;color:var(--ink-3);font-weight:600;
     font-variant-numeric:tabular-nums}
+  .best.beat{color:#B77900}
+  .best.beat::after{content:" · 신기록 중!";font-weight:800}
 
   /* ── 주문 카드 줄 ─────────────────────── */
   #queue{
-    flex:0 0 auto;height:96px;display:flex;gap:6px;padding:0 14px 6px;
+    flex:0 0 auto;height:96px;display:flex;gap:6px;padding:0 14px 6px;position:relative;
   }
   .card{
     flex:1 1 0;min-width:0;height:90px;border-radius:14px;background:var(--card);
@@ -100,11 +119,21 @@
   .card.ghost{background:rgba(255,255,255,.45);box-shadow:none;opacity:.35}
   .card.hide{visibility:hidden}
   /* 빨간불 손님은 카드가 흔들린다. 소리를 꺼도 급한 게 보여야 한다. */
-  .card.hot{animation:cardShake .62s linear infinite}
+  .card.urgent{animation:cardShake .62s linear infinite}
+  .card.hot{animation:cardShake .62s linear infinite, hotPulse .62s ease-in-out infinite}
+  @keyframes hotPulse{0%,100%{border-color:var(--red)}50%{border-color:#FF9AA2}}
+  .card.vipc{box-shadow:0 0 0 2px var(--gold), var(--shadow)}
   @keyframes cardShake{0%,100%{transform:translateX(-2px)}50%{transform:translateX(2px)}}
   .crow{height:15px;display:flex;align-items:center;gap:2px;font-size:12px;line-height:1}
   .crow .num{margin-left:auto;font-size:9px;font-weight:700;color:var(--ink-3);
-    font-variant-numeric:tabular-nums}
+    font-variant-numeric:tabular-nums;white-space:nowrap}
+  .crow .num.next{color:var(--blue);font-weight:800}
+  /* 서빙된 카드의 복제본: ✓ 로 튕기며 사라진다 */
+  .card.served{z-index:3;pointer-events:none;animation:served .46s ease-out forwards}
+  @keyframes served{0%{transform:scale(1)}28%{transform:scale(1.12)}100%{transform:translateY(-12px) scale(.9);opacity:0}}
+  .card .check{position:absolute;inset:0;display:grid;place-items:center;border-radius:12px;
+    font-size:36px;font-weight:900;color:var(--blue);background:rgba(255,255,255,.74)}
+  .card.rushd .check{color:var(--orange)}
   .mini{flex:1 1 auto;width:100%;min-height:0;display:block}
   .pbar{height:4px;border-radius:2px;background:var(--line);overflow:hidden;flex:0 0 auto}
   .pbar i{display:block;height:100%;width:100%;background:var(--blue);
@@ -148,7 +177,7 @@
   .ing canvas{display:block;width:46px;height:22px}
   .ing span{font-size:9.5px;font-weight:700;color:var(--ink-2);letter-spacing:-.04em;
     white-space:nowrap}
-  .ing:active{transform:scale(.94)}
+  .ing:active, .ing.key{transform:scale(.94)}
   .ing.locked{opacity:.3;pointer-events:none}
   .ing.locked canvas{opacity:.25}
   .ing .lk{position:absolute;inset:0;display:none;place-items:center;font-size:14px;font-style:normal}
@@ -157,6 +186,20 @@
   .ing.pop{animation:ingPop .5s cubic-bezier(.2,.9,.3,1.2)}
   @keyframes ingPop{0%{transform:scale(.2)}55%{transform:scale(1.15)}100%{transform:scale(1)}}
   .ing.glow{box-shadow:0 0 0 2px var(--blue), var(--shadow)}
+  .ing.glow::after{content:"";position:absolute;inset:0;border-radius:13px;border:2px solid var(--blue);
+    animation:ripple .8s ease-out forwards;pointer-events:none}
+  @keyframes ripple{from{transform:scale(1);opacity:.9}to{transform:scale(1.35);opacity:0}}
+  /* 키보드 힌트는 마우스가 있는 기기에서만 보인다 */
+  .ing kbd, #btnServe kbd{
+    display:none;position:absolute;top:4px;left:5px;font-family:inherit;
+    font-size:9px;font-weight:800;color:var(--ink-3);line-height:1;
+  }
+  #btnServe{position:relative}
+  #btnServe kbd{top:auto;left:auto;right:12px;bottom:16px;color:rgba(255,255,255,.7);
+    font-size:10px;border:1px solid rgba(255,255,255,.45);border-radius:5px;padding:2px 5px}
+  #btnServe.off kbd{color:var(--ink-3);border-color:var(--ink-3)}
+  .kbhint{display:none}
+  @media (hover:hover) and (pointer:fine){ .ing kbd, #btnServe kbd{display:block} .kbhint{display:inline} }
 
   /* ── 서빙 버튼 ────────────────────────── */
   #serveBlock{flex:0 0 auto;height:60px;padding:10px 14px 0}
@@ -167,8 +210,11 @@
     transition:background-color .15s, color .15s;
   }
   #btnServe:active{transform:scale(.99)}
-  #btnServe.rush{background:var(--orange)}
-  #btnServe.off{background:var(--line);color:var(--ink-3)}
+  #btnServe.rush{background:var(--orange);color:#191F28}
+  #btnServe.rush kbd{color:rgba(25,31,40,.65);border-color:rgba(25,31,40,.35)}
+  #btnServe.off{background:var(--line);color:var(--ink-3);cursor:default}
+  #btnServe.under{background:var(--blue-weak);color:var(--blue)}
+  #btnServe.under kbd{color:var(--blue);border-color:rgba(49,130,246,.45)}
 
   .hint{
     flex:0 0 auto;text-align:center;font-size:11.5px;color:var(--ink-3);
@@ -224,6 +270,77 @@
   .shot.miss canvas{border-radius:10px;outline:1px dashed var(--red);outline-offset:-3px}
 
   /* 토스트는 조립대 위쪽에 띄운다. 아래에 두면 서빙 버튼을 가린다. */
+  .shareImg{display:block;width:100%;max-width:260px;margin:4px auto 0;border-radius:14px;
+    box-shadow:0 4px 18px rgba(25,31,40,.14)}
+  a.btn{display:block;text-align:center;text-decoration:none;box-sizing:border-box}
+
+  #rotate{display:none;position:fixed;inset:0;z-index:60;background:var(--bg);
+    align-items:center;justify-content:center;text-align:center;padding:24px}
+  #rotate .rotIco{font-size:40px;margin-bottom:8px;transform:rotate(90deg)}
+  #rotate b{font-size:18px;font-weight:800;display:block;margin-bottom:6px}
+  #rotate p{font-size:13px;color:var(--ink-2);line-height:1.6}
+  @media (orientation:landscape) and (max-height:500px) and (pointer:coarse){ #rotate{display:flex} }
+
+  /* 튜토리얼 */
+  #coach{position:absolute;left:12px;right:12px;top:12px;z-index:4;display:none;
+    background:rgba(25,31,40,.92);color:#fff;border-radius:16px;padding:13px 14px 11px;
+    font-size:14px;line-height:1.55;font-weight:600;letter-spacing:-.02em;
+    box-shadow:0 8px 24px rgba(25,31,40,.25)}
+  #coach.on{display:block;animation:rise .22s cubic-bezier(.2,.8,.3,1)}
+  #coach b{color:#FFD66B;font-weight:800}
+  .coachRow{display:flex;justify-content:flex-end;gap:8px;margin-top:8px}
+  .coachGo{display:none;border:0;border-radius:10px;background:var(--blue);color:#fff;
+    font:inherit;font-size:13.5px;font-weight:800;padding:9px 14px;cursor:pointer}
+  #coach.done .coachGo{display:block}
+  .coachSkip{border:0;background:none;color:rgba(255,255,255,.6);font:inherit;font-size:12px;
+    font-weight:700;padding:6px 4px;cursor:pointer}
+  #tutPtr{position:fixed;z-index:12;width:54px;height:54px;margin:-27px 0 0 -27px;border-radius:50%;
+    border:3px solid var(--blue);pointer-events:none;display:none;
+    box-shadow:0 0 0 6px rgba(49,130,246,.18);animation:ptr 1s ease-in-out infinite}
+  #tutPtr.on{display:block}
+  @keyframes ptr{0%,100%{transform:scale(.85);opacity:1}50%{transform:scale(1.15);opacity:.55}}
+  @media (prefers-reduced-motion:reduce){ #tutPtr{animation:none} #coach.on{animation:none} }
+
+  /* 등급 배지 · 기록 화면 */
+  .scoreLine{display:flex;align-items:center;justify-content:center;gap:10px;margin:10px 0 2px}
+  .scoreLine .big{margin:0}
+  .grade{width:44px;height:44px;border-radius:14px;display:grid;place-items:center;flex:0 0 auto;
+    font-size:26px;font-weight:900;color:#fff;background:var(--ink-3);letter-spacing:0}
+  .grade.S{background:linear-gradient(135deg,#F7C948,#E8A317);box-shadow:0 4px 14px rgba(232,163,23,.45)}
+  .grade.A{background:var(--blue)} .grade.B{background:#00B386} .grade.C{background:var(--orange)}
+  .newAch{display:flex;flex-wrap:wrap;gap:5px;justify-content:center;margin:-6px 0 8px}
+  .newAch span{font-size:11.5px;font-weight:700;color:#8A5A00;background:#FFF4D6;border-radius:8px;padding:5px 8px}
+  .startMeta{font-size:12px;color:var(--ink-3);font-weight:600;margin-top:2px;min-height:16px}
+  .statGrid{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin:4px 0 14px}
+  .statGrid div{background:var(--bg);border-radius:12px;padding:9px 2px 8px}
+  .statGrid b{display:block;font-size:15px;font-weight:800;font-variant-numeric:tabular-nums;letter-spacing:-.03em}
+  .statGrid span{font-size:10.5px;color:var(--ink-3);font-weight:600}
+  .secTitle{text-align:left;font-size:12.5px;font-weight:800;color:var(--ink-2);margin:4px 2px 7px}
+  .secTitle span{color:var(--blue)}
+  .top5{list-style:none;margin:0 0 14px;padding:0;text-align:left}
+  .top5 li{display:flex;align-items:center;gap:8px;padding:7px 4px;border-bottom:1px solid var(--line);font-size:13px}
+  .top5 li:last-child{border-bottom:0}
+  .top5 .g{width:22px;height:22px;border-radius:7px;font-size:12px;font-weight:900;color:#fff;
+    display:grid;place-items:center;background:var(--ink-3)}
+  .top5 .g.S{background:#E8A317} .top5 .g.A{background:var(--blue)} .top5 .g.B{background:#00B386} .top5 .g.C{background:var(--orange)}
+  .top5 b{font-variant-numeric:tabular-nums;font-weight:800;flex:1}
+  .top5 em{font-style:normal;color:var(--ink-3);font-size:11.5px}
+  .top5 .none{color:var(--ink-3);justify-content:center}
+  .achGrid{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-bottom:10px}
+  .ach{background:var(--bg);border-radius:12px;padding:8px 3px 7px;text-align:center}
+  .ach i{display:block;font-style:normal;font-size:20px;line-height:1.2}
+  .ach b{display:block;font-size:10px;font-weight:700;color:var(--ink-2);letter-spacing:-.04em;line-height:1.25;margin-top:2px}
+  .ach.off i{filter:grayscale(1);opacity:.3}
+  .ach.off b{color:var(--ink-3)}
+  .sheet p.fine{font-size:11px;color:var(--ink-3);line-height:1.5}
+
+  /* 피버: 조립대 테두리가 금빛으로 달아오른다 */
+  #stage.fever #board{box-shadow:inset 0 0 0 3px var(--gold), 0 0 26px rgba(245,193,75,.55)}
+  .combo.fever{color:#C98A00}
+  @media (prefers-reduced-motion:reduce){ #stage.fever #board{box-shadow:inset 0 0 0 3px var(--gold)} }
+
+  #hurt{position:fixed;inset:0;z-index:15;pointer-events:none;opacity:0;
+    background:radial-gradient(ellipse at center, rgba(240,68,82,0) 42%, rgba(240,68,82,.55) 100%)}
   #toast{
     position:fixed;left:50%;top:calc(196px + env(safe-area-inset-top));
     transform:translate(-50%,-6px);z-index:30;pointer-events:none;
@@ -236,11 +353,25 @@
 
   /* 아주 낮은 화면(SE1 등)에서 크롬을 조금씩 깎는다 */
   @media (max-height:600px){
-    #queue{height:88px}
-    .card{height:82px}
     #grid{height:110px;grid-template-rows:repeat(2,51px)}
     .score-now{font-size:24px}
     .hint{display:none}
+  }
+
+  @media (max-height:520px){
+    header{padding:6px 14px 2px}
+    .scores{padding-bottom:4px}
+    #queue{height:88px}
+    .card{height:82px}
+    #stage{min-height:110px}
+  }
+
+  /* 움직임 줄이기 설정을 켠 사람에게는 흔들림·반복 애니메이션을 끈다.
+     정보는 색·테두리·표정으로 그대로 전달된다. */
+  @media (prefers-reduced-motion:reduce){
+    .card.hot, .card.urgent{animation:none}
+    .ing.pop, .sheet, .heal.go, .ing.glow::after{animation:none}
+    .hearts i, .card, #toast{transition:none}
   }
 </style>
 </head>
@@ -248,6 +379,7 @@
 
 <header>
   <div class="brand">불티나 버거</div>
+  <button class="icon-btn" id="btnPause" aria-label="일시정지">⏸</button>
   <button class="icon-btn" id="btnSound" aria-label="소리 켜기 끄기">🔊</button>
   <button class="icon-btn" id="btnRank" aria-label="내 기록">🏆</button>
   <button class="icon-btn" id="btnExit" aria-label="게임 나가기">✕</button>
@@ -259,37 +391,47 @@
     <div class="combo" id="comboVal">콤보 ×1.0</div>
   </div>
   <div class="right">
-    <div class="hearts" id="hearts"><i>❤️</i><i>❤️</i><i>❤️</i></div>
+    <div class="hearts" id="hearts" role="img" aria-label="하트 3개 중 3개 남음"><i aria-hidden="true">❤️</i><i aria-hidden="true">❤️</i><i aria-hidden="true">❤️</i></div>
     <div class="best">최고 <span id="bestVal">0</span></div>
   </div>
 </div>
 
-<div id="queue">
-  <div class="card hide"><div class="crow"><span class="face">🙂</span><span class="crown"></span><span class="num"></span></div><canvas class="mini"></canvas><div class="pbar"><i></i></div><div class="heal">+5%</div></div>
-  <div class="card hide"><div class="crow"><span class="face">🙂</span><span class="crown"></span><span class="num"></span></div><canvas class="mini"></canvas><div class="pbar"><i></i></div><div class="heal">+5%</div></div>
-  <div class="card hide"><div class="crow"><span class="face">🙂</span><span class="crown"></span><span class="num"></span></div><canvas class="mini"></canvas><div class="pbar"><i></i></div><div class="heal">+5%</div></div>
+<div id="queue" role="list" aria-label="대기 중인 주문">
+  <div class="card hide" role="listitem"><div class="crow"><span class="face">🙂</span><span class="crown"></span><span class="num"></span></div><canvas class="mini"></canvas><div class="pbar"><i></i></div><div class="heal">+5%</div></div>
+  <div class="card hide" role="listitem"><div class="crow"><span class="face">🙂</span><span class="crown"></span><span class="num"></span></div><canvas class="mini"></canvas><div class="pbar"><i></i></div><div class="heal">+5%</div></div>
+  <div class="card hide" role="listitem"><div class="crow"><span class="face">🙂</span><span class="crown"></span><span class="num"></span></div><canvas class="mini"></canvas><div class="pbar"><i></i></div><div class="heal">+5%</div></div>
 </div>
 
 <div id="stage">
-  <canvas id="board"></canvas>
+  <canvas id="board" role="img" aria-label="조립대: 아래빵"></canvas>
   <button id="btnTrash" aria-label="만들던 버거 버리기">✕</button>
+  <div id="coach" role="status" aria-live="polite">
+    <div id="coachText"></div>
+    <div class="coachRow"><button id="coachGo" class="coachGo">영업 시작</button><button id="coachSkip" class="coachSkip">건너뛰기</button></div>
+  </div>
 </div>
 
 <div id="grid"></div>
 
 <div id="serveBlock">
-  <button id="btnServe" class="off">윗빵 덮어 내보내기</button>
+  <button id="btnServe" class="off"><span id="serveLabel">윗빵 덮어 내보내기</span><kbd>Space</kbd></button>
 </div>
 
-<div class="hint">주문 순서대로 재료를 누르고, 윗빵을 덮어 내보내세요</div>
-<div id="toast"></div>
+<div class="hint">주문 순서대로 쌓고 윗빵을 덮어 내보내세요<span class="kbhint"> · 1~8 / Space / ⌫</span></div>
+<div id="toast" role="status" aria-live="polite"></div>
+<div id="rotate" role="alert">
+  <div><div class="rotIco">📱</div><b>세로로 돌려 주세요</b><p>한 손으로 세로 화면에서 즐기는 게임이에요.<br>돌리면 멈춘 곳에서 이어서 할 수 있어요.</p></div>
+</div>
+<div id="tutPtr" aria-hidden="true"></div>
+<div id="hurt"></div>
 
 <!-- 시작 -->
-<div class="veil show" id="vStart">
+<div class="veil show" id="vStart" role="dialog" aria-modal="true" aria-labelledby="vStartT">
   <div class="sheet">
-    <h2>불티나 버거</h2>
+    <h2 id="vStartT">불티나 버거</h2>
     <p>손님이 시킨 순서 그대로 재료를 쌓아<br>윗빵을 덮어 내보내면 돼요.</p>
     <div class="shots" id="startShot"><div class="shot"><canvas></canvas></div></div>
+    <div class="startMeta" id="startMeta"></div>
     <div class="btns">
       <button class="btn primary" id="btnStart">시작하기</button>
       <button class="btn ghost" id="btnHow">게임 방법</button>
@@ -298,9 +440,9 @@
 </div>
 
 <!-- 게임 방법 -->
-<div class="veil" id="vHow">
+<div class="veil" id="vHow" role="dialog" aria-modal="true" aria-labelledby="vHowT">
   <div class="sheet">
-    <h2>게임 방법</h2>
+    <h2 id="vHowT">게임 방법</h2>
     <div class="rules">
       <div class="rule"><b>1</b><span>아래빵은 자동으로 깔려요. 주문서에 그려진 <b style="display:inline;background:none;color:inherit;width:auto;height:auto">아래에서 위 순서</b>대로 재료 버튼을 누르세요.</span></div>
       <div class="rule"><b>2</b><span>파란 테두리는 <b style="display:inline;background:none;color:inherit;width:auto;height:auto">지금 쌓는 게 아직 맞다</b>는 표시예요. 손님을 미리 고를 필요는 없어요.</span></div>
@@ -308,25 +450,29 @@
       <div class="rule"><b>4</b><span>손님이 급해지면 버튼이 주황색으로 바뀌어요. 덜 쌓았어도 <b style="display:inline;background:none;color:inherit;width:auto;height:auto">급하게 내보내</b> 하트를 지킬 수 있어요.</span></div>
       <div class="rule"><b>5</b><span>엉뚱한 재료는 저절로 치워지고 0.4초 멈춰요. 손님이 그냥 나가면 하트가 깨지고, 셋 다 잃으면 끝이에요.</span></div>
     </div>
-    <div class="btns"><button class="btn primary" id="btnHowClose">알겠어요</button></div>
+    <div class="btns">
+      <button class="btn primary" id="btnHowClose">알겠어요</button>
+      <button class="btn ghost" id="btnTutorial">직접 해보며 배우기</button>
+    </div>
   </div>
 </div>
 
 <!-- 일시정지 -->
-<div class="veil" id="vPause">
+<div class="veil" id="vPause" role="dialog" aria-modal="true" aria-labelledby="vPauseT">
   <div class="sheet">
-    <h2>잠시 멈췄어요</h2>
-    <p>다른 화면에 다녀오셨네요.<br>이어하면 1초 동안 손님들이 기다려 줘요.</p>
+    <h2 id="vPauseT">잠시 멈췄어요</h2>
+    <p id="pauseMsg">다른 화면에 다녀오셨네요.<br>이어하면 1초 동안 손님들이 기다려 줘요.</p>
     <div class="btns"><button class="btn primary" id="btnResume">이어하기</button></div>
   </div>
 </div>
 
 <!-- 게임 오버 -->
-<div class="veil" id="vOver">
+<div class="veil" id="vOver" role="dialog" aria-modal="true" aria-labelledby="overTitle">
   <div class="sheet">
     <h2 id="overTitle">영업 끝!</h2>
-    <div class="big" id="overScore">0</div>
+    <div class="scoreLine"><span class="grade" id="overGrade">B</span><span class="big" id="overScore">0</span></div>
     <div class="sub" id="overSub">최고 기록 0점</div>
+    <div class="newAch" id="overAch"></div>
     <div class="shots">
       <div class="shot"><canvas id="shotBest"></canvas><em>가장 잘 만든 버거</em></div>
       <div class="shot miss"><canvas id="shotMiss"></canvas><em>이걸 만들다 놓쳤어요</em></div>
@@ -342,10 +488,25 @@
   </div>
 </div>
 
-<!-- 종료 확인 -->
-<div class="veil" id="vExit">
+<!-- 결과 카드 공유 (파일 공유를 못 하는 환경) -->
+<div class="veil" id="vShare" role="dialog" aria-modal="true" aria-labelledby="vShareT">
   <div class="sheet">
-    <h2>게임을 나갈까요?</h2>
+    <h2 id="vShareT">결과 카드</h2>
+    <img id="shareImg" class="shareImg" alt="이번 판 결과 카드">
+    <div class="btns">
+      <a class="btn primary" id="shareSave" download="bulti-burger.png" href="#">이미지 저장</a>
+      <div class="row">
+        <button class="btn ghost" id="shareCopy">링크 복사</button>
+        <button class="btn ghost" id="shareClose">닫기</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 종료 확인 -->
+<div class="veil" id="vExit" role="dialog" aria-modal="true" aria-labelledby="vExitT">
+  <div class="sheet">
+    <h2 id="vExitT">게임을 나갈까요?</h2>
     <p>진행 중인 판은 저장되지 않아요.<br>최고 기록은 그대로 남아요.</p>
     <div class="btns">
       <div class="row">
@@ -357,12 +518,17 @@
 </div>
 
 <!-- 기록(로컬 대체) -->
-<div class="veil" id="vRank">
+<div class="veil" id="vRank" role="dialog" aria-modal="true" aria-labelledby="vRankT">
   <div class="sheet">
-    <h2>내 기록</h2>
-    <div class="big" id="rankBest">0</div>
+    <h2 id="vRankT">내 기록</h2>
+    <div class="scoreLine"><span class="grade" id="rankGrade">–</span><span class="big" id="rankBest">0</span></div>
     <div class="sub">최고 점수</div>
-    <p id="rankNote">최다 서빙 0개<br>토스 게임센터 리더보드는 앱인토스에 등록한 뒤 연결돼요.</p>
+    <div class="statGrid" id="rankStats"></div>
+    <div class="secTitle">최고 기록 5판</div>
+    <ol class="top5" id="rankTop"></ol>
+    <div class="secTitle">도전 과제 <span id="achCount">0/12</span></div>
+    <div class="achGrid" id="achGrid"></div>
+    <p class="fine">토스 게임센터 리더보드는 앱인토스에 등록한 뒤 연결돼요.</p>
     <div class="btns"><button class="btn primary" id="btnRankClose">닫기</button></div>
   </div>
 </div>
@@ -468,7 +634,6 @@ var UNLOCK_AT = [0, 0, 0, 0, 40, 80, 120, 160];
 var THICK = { patty: 1, egg: 1, lettuce: 1, tomato: 1 };
 var THICK_MAX = 3;
 // 같은 재료는 한 레시피에 최대 2장 (더블패티 허용)
-var SAME_MAX = 2;
 var SAME_MAX = 2;
 // 최악 스택 높이(아래빵+재료6+윗빵)를 고정 상수로 두고 축소배율을 계산한다.
 // 쌓을 때마다 배율이 바뀌면 화면이 출렁여서 조준이 어려워진다.
@@ -591,7 +756,7 @@ function drawIngredient(c, id, cx, cy, w, h, opt) {
       c.fillStyle = "#FFF6E4";
       for (var s = 0; s < seeds; s++) {
         var sx = x + w * (0.18 + 0.64 * (s / Math.max(1, seeds - 1)));
-        var sy = y + h * (0.30 + 0.20 * rnd(s + 7));
+        var sy = y + h * (0.30 + 0.20 * rnd(s + 7)) - (opt.seedHop || 0) * (0.4 + 0.9 * rnd(s + 13));
         ell(c, sx, sy, Math.max(1, w * 0.032), Math.max(0.7, h * 0.052)); c.fill();
       }
       c.restore();
@@ -737,7 +902,7 @@ function drawIngredient(c, id, cx, cy, w, h, opt) {
     }
   }
 
-  marker(c, g.mk, x, y, w, h);
+  if (!opt.noMark) marker(c, g.mk, x, y, w, h);   // 식별용 마커. 크게 그리는 공유 카드에선 잡티로 보여 뺀다
   c.restore();
 }
 
@@ -749,18 +914,24 @@ function drawStack(c, items, cx, baseY, w, sc, opt) {
   var y = baseY;
   function ox(n) { return jit ? (rnd(seed + n * 1.7) * 2 - 1) * jit : 0; }
 
+  // lastSq: 방금 착지한 맨 위 한 장만 따로 눌렸다 튀어 오른다 (나머지는 squash 로 살짝만)
+  var lastSq = opt.lastSq == null ? sq : opt.lastSq;
   var hb = ING.bunB.h * sc * sq;
   drawIngredient(c, "bunB", cx, y - hb / 2, w + 8 * sc, hb, {});
   y -= hb;
   for (i = 0; i < items.length; i++) {
-    var hh = ING[items[i]].h * sc * sq;
-    drawIngredient(c, items[i], cx + ox(i), y - hh / 2, w, hh, {});
+    var k = (i === items.length - 1 && !opt.cap) ? lastSq : sq;
+    var hh = ING[items[i]].h * sc * k;
+    // 가로는 세로가 눌린 만큼 살짝 퍼진다 — 부피가 보존되는 것처럼 보여야 말랑하다
+    var ww = w * (1 + (1 - k) * 0.35);
+    drawIngredient(c, items[i], cx + ox(i), y - hh / 2, ww, hh, { noMark: opt.noMark });
     y -= hh;
   }
   if (opt.cap) {
-    var ht = ING.bunT.h * sc * sq;
-    drawIngredient(c, "bunT", cx + ox(90), y - ht / 2 + (opt.capGap || 0), w + 10 * sc, ht,
-      { tilt: opt.tilt || 0, seeds: opt.seeds });
+    var ht = ING.bunT.h * sc * lastSq;
+    drawIngredient(c, "bunT", cx + ox(90), y - ht / 2 + (opt.capGap || 0) + (opt.capY || 0),
+      (w + 10 * sc) * (1 + (1 - lastSq) * 0.35), ht,
+      { tilt: opt.tilt || 0, seeds: opt.seeds, seedHop: opt.seedHop || 0 });
   }
   return y;
 }
@@ -812,7 +983,10 @@ function resize() {
            Math.min(bh - 22, bh * 0.5 + typical * 0.5));
 
   paintIcons();
+  cardW = Math.round(cardEls[0].clientWidth) || cardW;
   cardsDirty = true;
+  if (typeof render === "function") render();
+  redrawShots();
   return true;
 }
 
@@ -828,8 +1002,13 @@ var tapped = false;   // 사용자가 화면을 한 번이라도 건드렸는지
 var sfx = (function () {
   var ac = null;
   var muted = store.get("muted", "0") === "1";
+  // 백그라운드 전환·일시정지로 멈춘 상태. 서빙 아르페지오처럼 setTimeout 으로 몇십 ms 뒤에
+  // 울리게 예약된 소리가 ensure() 의 resume() 으로 컨텍스트를 다시 켜서, 앱이 뒤로 간
+  // 상태에서 소리가 나고 있었다. 멈춘 동안에는 ensure() 가 아무것도 켜지 않는다.
+  var halted = false;
 
   function ensure() {
+    if (halted || document.hidden) return null;
     if (!ac) {
       var AC = window.AudioContext || window.webkitAudioContext;
       if (!AC) return null;
@@ -880,17 +1059,90 @@ var sfx = (function () {
   // 5단 버거를 쌓으면 상승 아르페지오가 연주된다.
   var PENTA = [262, 294, 330, 392, 440, 523, 587];
 
+  /* ── 배경음악 ─────────────────────────────────────────────
+     파일 없이 합성한다. C–Am–F–G 네 마디를 8분음표로 돌리는 가벼운 그루브:
+     1·4·7번째 8분음표에 베이스, 뒷박에 코드 뜯기, 압박이 오르면 하이햇.
+     템포는 경과 시간을 따라 96 → 130 BPM 까지 오르고 피버 때 조금 더 빨라진다.
+     setInterval 로 0.15초 앞을 내다보며 AudioContext 시각에 예약한다
+     (타이머 지터가 박자에 섞이지 않게). 효과음을 덮지 않도록 아주 작게 깐다. */
+  var musicOn = store.get("music", "1") === "1";
+  var mTimer = 0, mNext = 0, mStep = 0, mTempo = 96, mHat = false, hatBuf = null;
+  var CHORD = [[262, 330, 392], [220, 262, 330], [175, 220, 262], [196, 247, 294]];
+  var BASS  = [65.4, 55.0, 43.7, 49.0];
+  function toneAt(a, freq, when, dur, type, vol) {
+    var o = a.createOscillator(), g = a.createGain();
+    o.type = type; o.frequency.setValueAtTime(freq, when);
+    g.gain.setValueAtTime(0.0001, when);
+    g.gain.exponentialRampToValueAtTime(vol, when + 0.01);
+    g.gain.exponentialRampToValueAtTime(0.0001, when + dur);
+    o.connect(g); g.connect(a.destination);
+    o.start(when); o.stop(when + dur + 0.02);
+  }
+  function hatAt(a, when, vol) {
+    if (!hatBuf) {
+      var n = Math.floor(a.sampleRate * 0.04);
+      hatBuf = a.createBuffer(1, n, a.sampleRate);
+      var d = hatBuf.getChannelData(0);
+      for (var i = 0; i < n; i++) d[i] = (Math.random() * 2 - 1) * (1 - i / n);
+    }
+    var src = a.createBufferSource(); src.buffer = hatBuf;
+    var f = a.createBiquadFilter(); f.type = "highpass"; f.frequency.value = 7000;
+    var g = a.createGain(); g.gain.value = vol;
+    src.connect(f); f.connect(g); g.connect(a.destination); src.start(when);
+  }
+  function mSchedule() {
+    if (muted || !musicOn) return;
+    var a = ensure(); if (!a) return;
+    try {
+      var e8 = 60 / mTempo / 2;
+      if (mNext < a.currentTime) mNext = a.currentTime + 0.02;   // 멈췄다 돌아오면 박을 새로 잡는다
+      while (mNext < a.currentTime + 0.15) {
+        var bar = (mStep >> 3) & 3, k = mStep & 7;
+        if (k === 0 || k === 3 || k === 6) toneAt(a, BASS[bar] * (k === 6 ? 2 : 1), mNext, e8 * 1.6, "triangle", 0.055);
+        if (k === 2 || k === 6) for (var j = 0; j < 3; j++) toneAt(a, CHORD[bar][j] * 2, mNext, e8 * 0.9, "sine", 0.014);
+        if (mHat) hatAt(a, mNext, k % 2 ? 0.02 : 0.012);
+        mNext += e8; mStep = (mStep + 1) % 32;
+      }
+    } catch (e) {}
+  }
+  function musicStop() { if (mTimer) { clearInterval(mTimer); mTimer = 0; } }
+  function musicStart() {
+    if (muted || !musicOn || mTimer) return;
+    var a = ensure(); if (!a) return;
+    mNext = a.currentTime + 0.06; mStep = 0;
+    mTimer = setInterval(mSchedule, 30);
+    mSchedule();
+  }
+
   return {
     isMuted: function () { return muted; },
-    toggle: function () {
-      muted = !muted;
+    musicOn: function () { return musicOn && !muted; },
+    // 🔊 전부 → 🔉 효과음만 → 🔇 전부 끔 → 🔊
+    cycle: function () {
+      if (!muted && musicOn) { musicOn = false; musicStop(); }
+      else if (!muted) { muted = true; musicStop(); }
+      else { muted = false; musicOn = true; }
       store.set("muted", muted ? "1" : "0");
+      store.set("music", musicOn ? "1" : "0");
       if (!muted) { ensure(); tone(660, 0.08, "triangle", 0.1); }
-      return muted;
+      return muted ? 0 : (musicOn ? 2 : 1);
+    },
+    musicStart: musicStart,
+    musicStop: musicStop,
+    setTempo: function (sec, fev) {
+      mTempo = 96 + Math.min(34, sec * 0.19) + (fev ? 6 : 0);
+      mHat = fev || sec > 70;
     },
     unlockAudio: function () { ensure(); },
-    stopAll: function () { if (ac && ac.state === "running") { try { ac.suspend(); } catch (e) {} } },
-    wake:    function () { if (ac && ac.state === "suspended" && !muted) { try { ac.resume(); } catch (e) {} } },
+    stopAll: function () {
+      halted = true;
+      musicStop();
+      if (ac && ac.state === "running") { try { ac.suspend(); } catch (e) {} }
+    },
+    wake: function () {
+      halted = false;
+      if (ac && ac.state === "suspended" && !muted) { try { ac.resume(); } catch (e) {} }
+    },
 
     place: function (i) { tone(PENTA[Math.min(i, PENTA.length - 1)], 0.07, "triangle", 0.10); buzz(8); },
     sizzle: function () { noise(0.15, 2000, 0.07); },
@@ -910,6 +1162,11 @@ var sfx = (function () {
     waste:  function () { tone(220, 0.30, "sawtooth", 0.09, 110); buzz(40); },
     tick:   function () { tone(1200, 0.03, "sine", 0.04); },
     heal:   function () { tone(880, 0.06, "sine", 0.06); },
+    // 손님이 들어올 때 문 종. VIP 는 한 음 더.
+    arrive: function (vip) {
+      tone(1319, 0.07, "sine", 0.035);
+      if (vip) setTimeout(function () { tone(1760, 0.09, "sine", 0.04); }, 70);
+    },
     unlock: function () {
       tone(659, 0.10, "triangle", 0.11);
       setTimeout(function () { tone(880, 0.10, "triangle", 0.10); }, 70);
@@ -917,6 +1174,20 @@ var sfx = (function () {
       buzz([15, 25]);
     },
     heartLost: function () { tone(300, 0.35, "sawtooth", 0.13, 100); buzz([30, 60, 30]); },
+    fever: function () {
+      [523, 659, 784, 1047, 1319].forEach(function (f, i) {
+        setTimeout(function () { tone(f, 0.09, "triangle", 0.11); }, i * 55);
+      });
+      buzz([20, 40, 20]);
+    },
+    feverEnd: function () {
+      tone(784, 0.09, "triangle", 0.08);
+      setTimeout(function () { tone(523, 0.14, "triangle", 0.07); }, 80);
+    },
+    achieve: function () {
+      tone(988, 0.08, "sine", 0.08);
+      setTimeout(function () { tone(1319, 0.14, "sine", 0.08); }, 75);
+    },
     over:      function () { tone(420, 0.50, "sawtooth", 0.14, 110); buzz(180); }
   };
 })();
@@ -943,6 +1214,9 @@ var UNLOCK_BUFFER = 8, UNLOCK_BUFFER_ADD = 0.8;
 // 손님 도착 간격. 바닥값이 가장 빠른 플레이어의 처리 시간보다 낮아야
 // 대기줄이 차고, 그래야 인내심이 실제로 압박이 된다.
 var ARRIVE_0 = 4.2, ARRIVE_SLOPE = 0.030, ARRIVE_MIN = 1.25;
+// 피버: 콤보가 10의 배수에 닿으면 8초 동안 점수 ×1.5. 콤보가 끊기면 즉시 꺼진다.
+// 점수에만 붙고 인내심·도착에는 손대지 않으므로 판 길이 밸런스는 그대로다.
+var FEVER_DUR = 8, FEVER_MUL = 1.5;
 
 /* ══════════════════════════════════════════════════════════════
    8. 게임 상태
@@ -959,10 +1233,79 @@ var tickTimer = 0;
 var best = parseInt(store.get("best", "0"), 10) || 0;
 var bestServed = parseInt(store.get("bestServed", "0"), 10) || 0;
 var bestBurger = null, missedOrder = null, bestGain = -1;
+var fever = 0, feverCount = 0;              // 이번 판 피버
+var vipServed = 0, rushSaves = 0, maxCombo = 0, bestStreak = 0, noHitMark = false;
+
+/* ── 누적 기록 · 도전 과제 (재접속해도 남는다) ─────────────── */
+function loadJSON(k, d) { try { var v = JSON.parse(store.get(k, "")); return v == null ? d : v; } catch (e) { return d; } }
+var stats = loadJSON("stats", null) || { games: 0, served: 0, bestCombo: 0, top: [] };
+if (!stats.top) stats.top = [];
+var achDone = loadJSON("ach", []);
+if (!Array.isArray(achDone)) achDone = [];
+var newAchThisGame = [];
+
+// 쉬운 것 → 어려운 것 순. 첫 판에 우르르 다 풀리면 목표가 못 되므로, 실력별 봇으로
+// 한 판에 몇 개가 풀리는지 재 보고 경계를 잡았다 (README 표 참고).
+var ACH = [
+  { id: "first",   ico: "🍔", name: "첫 손님",       desc: "첫 버거 내보내기" },
+  { id: "rush3",   ico: "🏃", name: "급할수록 침착", desc: "한 판에 급하게 내보내기 3번" },
+  { id: "combo10", ico: "⚡", name: "콤보 장인",     desc: "10연속 콤보로 피버" },
+  { id: "full",    ico: "🥒", name: "풀 메뉴",       desc: "피클까지 모두 해금" },
+  { id: "vip12",   ico: "👑", name: "VIP 대접",      desc: "한 판에 VIP 12명" },
+  { id: "t180",    ico: "⏱️", name: "3분 영업",      desc: "3분 버티기" },
+  { id: "gradeA",  ico: "🅰️", name: "A 등급",        desc: "한 판 45,000점" },
+  { id: "life300", ico: "🧾", name: "단골 가게",     desc: "누적 버거 300개" },
+  { id: "clean20", ico: "✨", name: "무결점",        desc: "실수 없이 20개 연속" },
+  { id: "fever4",  ico: "🌶️", name: "뜨거운 주방",   desc: "한 판에 피버 4번" },
+  { id: "nohit",   ico: "🛡️", name: "흔들림 없이",   desc: "하트 3개로 2분 45초" },
+  { id: "gradeS",  ico: "💎", name: "전설의 셰프",   desc: "S 등급 (70,000점)" }
+];
+function hasAch(id) { return achDone.indexOf(id) >= 0; }
+function grant(id) {
+  if (hasAch(id)) return;
+  achDone.push(id); newAchThisGame.push(id);
+  store.set("ach", JSON.stringify(achDone));
+  var a = null;
+  for (var i = 0; i < ACH.length; i++) if (ACH[i].id === id) a = ACH[i];
+  if (a && state === "playing") { sfx.achieve(); toast(a.ico + " 도전 과제 — " + a.name); }
+}
+function checkAch() {
+  if (tut) return;
+  if (served >= 1) grant("first");
+  if (rushSaves >= 3) grant("rush3");
+  if (feverCount >= 1) grant("combo10");
+  if (unlockIdx >= SLOTS.length) grant("full");
+  if (vipServed >= 12) grant("vip12");
+  if (t >= 180) grant("t180");
+  if (score >= 45000) grant("gradeA");
+  if (stats.served + served >= 300) grant("life300");     // 누적: 이번 판 것까지 합쳐서
+  if (bestStreak >= 20) grant("clean20");
+  if (feverCount >= 4) grant("fever4");
+  if (noHitMark) grant("nohit");
+  if (score >= 70000) grant("gradeS");
+}
+
+// 등급 경계는 실력별 봇 측정 분포(각 80판)에 맞췄다 — 초보 C, 보통 B, 숙련 A.
+// S 는 숙련 봇 상위 10%(6만)보다 위라서 손이 정말 빨라야 나온다.
+var GRADES = [["S", 70000], ["A", 45000], ["B", 25000], ["C", 14000], ["D", 0]];
+function gradeOf(sc) {
+  for (var i = 0; i < GRADES.length; i++) if (sc >= GRADES[i][1]) return GRADES[i][0];
+  return "D";
+}
 
 // 연출용
 var flying = null, particles = [], pops = [], serveAnim = null;
+var reject = null;           // 틀린 재료가 스택에 부딪혀 튕겨 나가는 연출
+var drop = null;             // 버린 버거가 쓰레기통으로 떨어지는 연출
+var glow = 0, glowCol = "rgba(49,130,246,.55)";
+var shownScore = 0, paintedScore = -1;   // 점수는 굴러 올라간다
+var lastGrade = "";
+var tut = null;               // 튜토리얼 진행 중이면 { stage }. 시계·인내심·도착이 멈춘다.
 var shake = 0, vignette = 0, squash = 0, cardsDirty = true;
+// 움직임 줄이기 설정이면 화면 흔들림과 착지 출렁임을 끈다. 정보(빨간 ✕, 비네트)는 남긴다.
+var reduceMotion = false;
+try { reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches; } catch (e) {}
+function kick(v) { if (!reduceMotion) shake = Math.max(shake, v); }
 
 function isPrefix(a, b) {
   if (a.length > b.length) return false;
@@ -1069,6 +1412,7 @@ function spawn() {
     vip: vip, leaving: 0, healFlash: 0, face: -1, key: ""
   });
   cardsDirty = true;
+  sfx.arrive(vip);
 }
 
 /* ══════════════════════════════════════════════════════════════
@@ -1130,18 +1474,70 @@ function burst(x, y, n, col) {
   }
 }
 function pop(x, y, txt, col, big) {
-  pops.push({ x: x, y: y, txt: txt, life: 0.65, col: col, big: !!big });
+  pops.push({ x: x, y: Math.max(big ? 30 : 22, y), txt: txt, life: 0.65, col: col, big: !!big });
+}
+// 재료가 착지할 때 튀는 부스러기
+function crumbs(x, y, col) {
+  if (reduceMotion) return;
+  for (var i = 0; i < 4; i++) {
+    var a = -Math.PI * (0.15 + 0.7 * Math.random()), sp = 40 + Math.random() * 60;
+    particles.push({ x: x + (Math.random() * 2 - 1) * LAYER_W * 0.35, y: y,
+                     vx: Math.cos(a) * sp, vy: Math.sin(a) * sp, life: 0.35, max: 0.35,
+                     col: col, r: 1 + Math.random() * 1.2 });
+  }
+}
+// 빨갛게 물든 재료 한 장을 오프스크린에 그려 둔다. 같은 캔버스에서 source-atop 을
+// 쓰면 밑에 깔린 스택까지 물들어서, 따로 그려서 붙인다.
+function tintedIngredient(id, w, h) {
+  var pad = 4, W = w + pad * 2, H = h + pad * 2;
+  var cv = document.createElement("canvas");
+  cv.width = Math.max(1, Math.ceil(W * dpr)); cv.height = Math.max(1, Math.ceil(H * dpr));
+  var c = cv.getContext("2d");
+  c.setTransform(dpr, 0, 0, dpr, 0, 0);
+  drawIngredient(c, id, W / 2, H / 2, w, h, {});
+  c.globalCompositeOperation = "source-atop";
+  c.fillStyle = "rgba(240,68,82,.55)";
+  c.fillRect(0, 0, W, H);
+  return { cv: cv, w: W, h: H };
+}
+function drawTrash(c, x, y, a) {
+  c.save();
+  c.globalAlpha = a;
+  c.fillStyle = "#6B7684";
+  rr(c, x - 4, y - 19, 8, 4, 2); c.fill();                 // 손잡이
+  rr(c, x - 13, y - 16, 26, 5, 2.5); c.fill();             // 뚜껑
+  c.beginPath();                                            // 몸통
+  c.moveTo(x - 11, y - 9); c.lineTo(x + 11, y - 9);
+  c.lineTo(x + 9, y + 14); c.lineTo(x - 9, y + 14); c.closePath(); c.fill();
+  c.fillStyle = "rgba(255,255,255,.45)";
+  for (var i = -1; i <= 1; i++) c.fillRect(x + i * 5.5 - 1, y - 5, 2, 15);
+  c.restore();
+}
+function dropStack(items) {
+  if (!items.length) return;
+  drop = { items: items.slice(), p: 0, dur: 0.55, side: Math.random() < 0.5 ? -1 : 1 };
 }
 function updateFx(dt) {
   var i;
   if (flying) {
     flying.p += dt / flying.dur;
-    if (flying.p >= 1) { flying = null; squash = 0.22; }
+    if (flying.p >= 1) {
+      crumbs(flying.x1, flying.y1 + flying.h / 2, ING[flying.id].b);
+      flying = null;
+      if (!reduceMotion) squash = 0.22;
+    }
   }
   if (serveAnim) {
     serveAnim.p += dt / serveAnim.dur;
     if (serveAnim.p >= 1) serveAnim = null;
   }
+  if (reject) { reject.p += dt / reject.dur; if (reject.p >= 1) reject = null; }
+  if (drop)   { drop.p   += dt / drop.dur;   if (drop.p   >= 1) drop   = null; }
+  if (glow > 0) glow = Math.max(0, glow - dt);
+  // 판이 끝난 뒤에도 가라앉아야 해서 tick 이 아니라 여기서 줄인다.
+  // (tick 에 두었더니 마지막 하트를 잃는 순간 멈춰, 결과 화면 뒤에서 영원히 흔들렸다)
+  if (shake > 0) shake = Math.max(0, shake - dt * 26);
+  if (vignette > 0) vignette = Math.max(0, vignette - dt * 1.4);   // 약 0.3초
   for (i = particles.length - 1; i >= 0; i--) {
     var p = particles[i];
     p.life -= dt;
@@ -1172,9 +1568,12 @@ function tapIng(id, btn) {
   var hh = ING[id].h * SC;
   var sr = stage.getBoundingClientRect(), br = btn.getBoundingClientRect();
   stack.push(id);
+  // 이 탭으로 서빙 가능해졌다면 지금 유예를 건다. tick 에서만 걸면, 바로 다음 틱에 그 손님이
+  // 떠날 때 유예가 한 번도 켜지지 않아 서빙이 −150 으로 떨어졌다.
+  if (findExact() || findRush()) graceT = SERVE_GRACE;
   flying = {
     id: id, p: 0, dur: 0.18, h: hh,
-    x0: br.left + br.width / 2 - sr.left, y0: br.top + br.height / 2 - sr.top,
+    x0: br.left + br.width / 2 - sr.left, y0: Math.min(br.top + br.height / 2 - sr.top, bh + hh / 2),
     x1: bw / 2, y1: BASE_Y - below - hh / 2
   };
   sfx.place(stack.length - 1);
@@ -1183,14 +1582,25 @@ function tapIng(id, btn) {
 }
 
 function wrongTap(id, btn) {
+  if (tut) tut.wrong = 1;
   lock = LOCK_WRONG;
-  combo = 0; perfectStreak = 0;
+  combo = 0; perfectStreak = 0; endFever(true);
   mistake = true;
-  shake = 6;
+  kick(6);
   sfx.wrong();
   var below = stackH(stack, false, SC);
   pops.push({ x: bw / 2, y: BASE_Y - below - 14, txt: "✕", life: 0.45, col: "#F04452", big: false });
-  if (btn) { btn.classList.add("bad"); setTimeout(function () { btn.classList.remove("bad"); }, 220); }
+  if (btn) {
+    btn.classList.add("bad"); setTimeout(function () { btn.classList.remove("bad"); }, 220);
+    var hh = ING[id].h * SC;
+    var sr = stage.getBoundingClientRect(), br = btn.getBoundingClientRect();
+    reject = {
+      p: 0, dur: 0.5, side: Math.random() < 0.5 ? -1 : 1,
+      img: tintedIngredient(id, LAYER_W, hh),
+      x0: br.left + br.width / 2 - sr.left, y0: br.top + br.height / 2 - sr.top,
+      x1: bw / 2, y1: BASE_Y - below - hh / 2
+    };
+  }
   paintScore();
 }
 
@@ -1228,12 +1638,13 @@ function doServe(c, isRush) {
         var h = mostUrgent(c);
         if (h) {
           h.left = Math.min(h.max, h.left + h.max * HEAL_AMT);
-          h.healFlash = 0.45;
+          h.healFlash = 0.3;
           sfx.heal();
         }
       }
       if (perfectStreak >= PERFECT_FOR_HEART && heartHeals < HEART_HEAL_MAX && hearts < HEART_MAX) {
         hearts++; heartHeals++; perfectStreak = 0;
+        regainHeart(hearts - 1);
         paintHearts(); toast("무실수 10연속 — 하트 하나 돌아왔어요");
       }
     }
@@ -1241,8 +1652,15 @@ function doServe(c, isRush) {
     setTimeout(function () { sfx.serve(); }, 90);
   }
 
+  if (fever > 0) gain = Math.round(gain * FEVER_MUL);
   score += gain;
   served++;
+  if (c.vip) vipServed++;
+  if (isRush) rushSaves++;
+  if (combo > maxCombo) maxCombo = combo;
+  if (perfectStreak > bestStreak) bestStreak = perfectStreak;
+  if (!isRush && combo > 0 && combo % 10 === 0) startFever();
+  else if (fever > 0 && !reduceMotion) burst(bw / 2, BASE_Y - stackH(stack, true, SC), 10, "#F5C14B");
 
   // 이번 판 최고의 한 개를 결과 화면에 그대로 재현한다
   if (gain > bestGain) {
@@ -1253,8 +1671,9 @@ function doServe(c, isRush) {
   // 서빙 애니메이션 — 손님 카드 방향으로 날아가며 작아진다
   var slot = queue.indexOf(c);
   var tx = bw * ((slot < 0 ? 1 : slot) + 0.5) / QUEUE_MAX;
+  servedCardFx(slot, isRush);
   serveAnim = {
-    items: stack.slice(), p: 0, dur: 0.30, tx: tx,
+    items: stack.slice(), p: 0, dur: 0.40, tx: tx,
     jit: ratio > 0.5 && !mistake ? 0 : (ratio < 0.25 ? 3 : 1.5),
     tilt: ratio < 0.25 ? 0.052 : 0,
     seeds: ratio < 0.25 ? 3 : 5,
@@ -1264,32 +1683,40 @@ function doServe(c, isRush) {
 
   var col = isRush ? "#FFB020" : "#3182F6";
   pop(bw / 2, BASE_Y - stackH(stack, true, SC) - 6, "+" + comma(gain), col, combo >= 5 && !isRush);
-  if (combo >= 5 && !isRush) burst(bw / 2, BASE_Y - stackH(stack, true, SC), 12, "#3182F6");
+  if (combo >= 5 && !isRush) {
+    burst(bw / 2, Math.max(24, BASE_Y - stackH(stack, true, SC)), 12, "#3182F6");
+    glow = 0.4; glowCol = "rgba(49,130,246,.55)";
+  }
+  bumpScore();
 
   if (slot >= 0) queue.splice(slot, 1);
-  stack = []; mistake = false;
+  stack = []; mistake = false; flying = null;
   cardsDirty = true;
   paintScore();
+  checkAch();
+  if (tut) tutAfterServe();
 }
 
 function shortServe() {
   score = Math.max(0, score - 150);
-  combo = 0; perfectStreak = 0;
+  combo = 0; perfectStreak = 0; endFever(true);
   lock = LOCK_SHORT;
-  shake = 7;
+  kick(7);
   sfx.waste();
   pop(bw / 2, BASE_Y - stackH(stack, false, SC) - 6, "−150", "#F04452", false);
-  stack = []; mistake = false;
+  dropStack(stack);
+  stack = []; mistake = false; flying = null;
   cardsDirty = true;
   paintScore();
 }
 
 function trashTap() {
   if (state !== "playing" || lock > 0 || !stack.length) return;
-  combo = 0; perfectStreak = 0;
+  combo = 0; perfectStreak = 0; endFever(true);
   lock = LOCK_TRASH;
   sfx.waste();
-  stack = []; mistake = false;
+  dropStack(stack);
+  stack = []; mistake = false; flying = null;
   cardsDirty = true;
   paintScore();
 }
@@ -1299,7 +1726,8 @@ function trashTap() {
 function orphanDiscard() {
   lock = LOCK_ORPHAN;
   sfx.waste();
-  stack = []; mistake = false;
+  dropStack(stack);
+  stack = []; mistake = false; flying = null;
   cardsDirty = true;
   toast("주문이 사라져서 정리했어요");
 }
@@ -1307,21 +1735,50 @@ function orphanDiscard() {
 function loseCustomer(c) {
   c.leaving = 0.35;
   score = Math.max(0, score - 300);
-  combo = 0; perfectStreak = 0;
+  combo = 0; perfectStreak = 0; endFever(true);
   hearts--;
-  vignette = 0.42;
-  shake = 8;
+  vignette = reduceMotion ? 0.30 : 0.42;
+  kick(8);
   missedOrder = c.order.slice();
   sfx.heartLost();
+  crackHeart(hearts);
   paintHearts(); paintScore(); cardsDirty = true;
   if (hearts <= 0) gameOver();
 }
 
+function startFever() {
+  fever = FEVER_DUR; feverCount++;
+  stage.classList.add("fever");
+  sfx.fever();
+  pop(bw / 2, bh * 0.3, "🔥 피버!", "#E8A317", true);
+  if (!reduceMotion) burst(bw / 2, bh * 0.3, 22, "#F5C14B");
+  toast("🔥 피버! 8초 동안 점수 ×1.5");
+  paintScore();
+}
+// 콤보가 끊겨서 끝날 때
+function endFever(broken) {
+  if (fever > 0) { fever = 0; feverOff(broken); }
+}
+function feverOff(broken) {
+  stage.classList.remove("fever");
+  if (broken) toast("콤보가 끊겨 피버가 꺼졌어요");
+  sfx.feverEnd();
+  paintScore();
+}
+
+function setLocked(i, on) {
+  var b = ingBtns[i];
+  b.className = on ? "ing locked" : "ing";
+  b.disabled = on;
+  b.setAttribute("aria-label", ING[SLOTS[i]].name + (on ? " (" + UNLOCK_AT[i] + "초에 열림)" : "") + " · 단축키 " + (i + 1));
+}
 function doUnlock(i) {
   var b = ingBtns[i];
+  setLocked(i, false);
   b.className = "ing pop glow";
   lastUnlockT = t;
   sfx.unlock();
+  if (i === SLOTS.length - 1) grant("full");
   toast("새 재료: " + ING[SLOTS[i]].name);
   setTimeout(function () { b.classList.remove("glow"); }, 900);
   setTimeout(function () { b.classList.remove("pop"); }, 600);
@@ -1333,6 +1790,7 @@ function doUnlock(i) {
 var gridEl   = document.getElementById("grid");
 var btnServe = document.getElementById("btnServe");
 var btnTrash = document.getElementById("btnTrash");
+var serveLabel = document.getElementById("serveLabel");
 var cardEls  = [].slice.call(document.querySelectorAll("#queue .card"));
 var ingBtns  = [];
 
@@ -1346,7 +1804,8 @@ var ingBtns  = [];
     var cv = document.createElement("canvas");
     var sp = document.createElement("span"); sp.textContent = ING[id].name;
     var lk = document.createElement("i"); lk.className = "lk"; lk.textContent = "🔒";
-    b.appendChild(cv); b.appendChild(sp); b.appendChild(lk);
+    var kb = document.createElement("kbd"); kb.textContent = String(i + 1);
+    b.appendChild(cv); b.appendChild(sp); b.appendChild(lk); b.appendChild(kb);
     gridEl.appendChild(b);
     ingBtns.push(b);
   }
@@ -1375,25 +1834,61 @@ var comboEl = document.getElementById("comboVal");
 var bestEl  = document.getElementById("bestVal");
 var heartEl = document.getElementById("hearts");
 
+var scoreWrap = document.querySelector(".score-now");
+var bestLine = document.querySelector(".best");
+var queueEl = document.getElementById("queue");
+var hurtEl = document.getElementById("hurt");
+
+// 숫자 자체는 frame() 에서 굴려 올린다. 여기서는 콤보·최고기록만.
+var feverShown = -1;
 function paintScore() {
-  scoreEl.textContent = comma(score);
-  bestEl.textContent = comma(Math.max(best, score));
-  if (combo >= 2) {
-    comboEl.textContent = "콤보 " + combo + "연속 ×" + (1 + Math.min(combo, 10) * 0.1).toFixed(1);
+  // 저장은 게임 오버 때 한다. 판 중간에 나가면 남지 않으니, 헤더에도 저장된 기록만 보인다.
+  bestEl.textContent = comma(best);
+  var beat = !tut && best > 0 && score > best;
+  if (bestLine.__beat !== beat) { bestLine.__beat = beat; bestLine.classList.toggle("beat", beat); }
+  if (fever > 0) {
+    feverShown = Math.ceil(fever);
+    comboEl.textContent = "🔥 피버 " + feverShown + "초 · 콤보 " + combo;
+    comboEl.className = "combo on fever";
+  } else if (combo >= 2) {
+    comboEl.textContent = "콤보 " + combo + "연속 ×" + (1 + Math.min(combo, 10) * 0.1).toFixed(1) +
+      (combo % 10 >= 7 ? " · 피버까지 " + (10 - combo % 10) : "");
     comboEl.className = "combo on";
   } else {
     comboEl.className = "combo";
   }
 }
+function bumpScore() {
+  scoreWrap.classList.remove("bump"); void scoreWrap.offsetWidth; scoreWrap.classList.add("bump");
+  setTimeout(function () { scoreWrap.classList.remove("bump"); }, 160);
+}
 function paintHearts() {
+  heartEl.setAttribute("aria-label", "하트 3개 중 " + Math.max(0, hearts) + "개 남음");
   var h = heartEl.children;
-  for (var i = 0; i < h.length; i++) h[i].className = i < hearts ? "" : "gone";
+  for (var i = 0; i < h.length; i++) {
+    if (h[i].__fx) continue;                 // 깨지는/돌아오는 애니메이션 중에는 건드리지 않는다
+    h[i].className = i < hearts ? "" : "gone";
+  }
+}
+function crackHeart(i) {
+  var el = heartEl.children[i]; if (!el) return;
+  el.__fx = 1; el.textContent = "💔"; el.className = "crack";
+  setTimeout(function () {
+    el.__fx = 0; el.textContent = "❤️";
+    el.className = i < hearts ? "" : "gone";
+  }, 560);
+}
+function regainHeart(i) {
+  var el = heartEl.children[i]; if (!el) return;
+  el.__fx = 1; el.textContent = "❤️"; el.className = "regain";
+  setTimeout(function () { el.__fx = 0; el.className = i < hearts ? "" : "gone"; }, 520);
 }
 
 var FACES = ["🙂", "😐", "😠"];
 
-function paintMini(cv, order) {
-  var r = cv.getBoundingClientRect();
+function paintMini(cv, order, done) {
+  // getBoundingClientRect 는 카드가 기울거나 미끄러지는 중이면 변환된 상자를 준다
+  var r = { width: cv.clientWidth, height: cv.clientHeight };
   if (r.width < 6 || r.height < 10) return false;
   sizeCanvas(cv, r.width, r.height);
   var c = cv.getContext("2d");
@@ -1403,16 +1898,80 @@ function paintMini(cv, order) {
   var budget = r.height - capH - 1;
   var n = order.length;
   // 실제 두께비가 아니라 균등 분할. 최소 8px 를 보장해야 마커가 살아남는다.
-  var lh = Math.max(8, Math.min(16, Math.floor(budget / n)));
+  // 보통은 8~16px. 7재료 VIP 처럼 예산을 넘으면 5px 까지 줄여서라도 다 보이게 한다.
+  var lh = Math.max(5, Math.min(16, Math.floor(budget / n)));
   var w = Math.min(r.width - 6, 54);
   var y = r.height - 1;
   // 아래빵은 자동으로 깔리므로 정보량이 0이다. 한 층을 아껴 6재료 주문을 예산에 넣는다.
+  // done: 이 주문 기준으로 이미 쌓은 층 수. -1 이면 지금 스택과 무관한 주문.
+  var cx = r.width / 2;
   for (var i = 0; i < n; i++) {
-    drawIngredient(c, order[i], r.width / 2, y - lh / 2, w, lh, {});
+    drawIngredient(c, order[i], cx, y - lh / 2, w, lh, { alpha: done > 0 && i < done ? 0.38 : 1 });
+    if (i === done) {
+      c.save();
+      c.strokeStyle = "#3182F6"; c.lineWidth = 1.5;
+      rr(c, cx - w / 2 - 3, y - lh - 1.5, w + 6, lh + 3, 4); c.stroke();
+      var ax = Math.min(r.width - 2, cx + w / 2 + 10), ay = y - lh / 2;
+      c.fillStyle = "#3182F6";
+      c.beginPath(); c.moveTo(ax, ay - 4); c.lineTo(ax - 5, ay); c.lineTo(ax, ay + 4); c.closePath(); c.fill();
+      c.restore();
+    }
     y -= lh;
   }
-  drawIngredient(c, "bunT", r.width / 2, y - capH / 2, w + 3, capH, {});
+  drawIngredient(c, "bunT", cx, y - capH / 2, w + 3, capH, { alpha: done === n ? 1 : 0.9 });
+  if (done === n) {                            // 다 쌓았으면 윗빵 자리에 파란 테두리
+    c.save(); c.strokeStyle = "#3182F6"; c.lineWidth = 1.5;
+    rr(c, cx - w / 2 - 4, y - capH - 2, w + 8, capH + 3, 3); c.stroke(); c.restore();
+  }
   return true;
+}
+
+// 서빙된 카드는 복제본을 띄워 ✓ 로 튕겨 없애고, 실제 칸은 곧바로 다음 손님에게 넘긴다.
+// 게임 규칙(자리가 비는 시점)은 그대로이고 보이는 것만 남는다.
+function servedCardFx(slot, isRush) {
+  var el = cardEls[slot];
+  if (!el || el.classList.contains("hide")) return;
+  var clone = el.cloneNode(true);
+  var src = el.children[1], dst = clone.children[1];
+  dst.width = src.width; dst.height = src.height;
+  try { dst.getContext("2d").drawImage(src, 0, 0); } catch (e) {}   // 캔버스 내용은 복제되지 않는다
+  clone.firstChild.children[0].textContent = "😊";
+  clone.className = "card served" + (isRush ? " rushd" : "");
+  clone.style.cssText = "position:absolute;left:" + el.offsetLeft + "px;top:" + el.offsetTop +
+    "px;width:" + el.offsetWidth + "px;";
+  var ck = document.createElement("div"); ck.className = "check"; ck.textContent = "✓";
+  clone.appendChild(ck);
+  queueEl.appendChild(clone);
+  setTimeout(function () { if (clone.parentNode) clone.parentNode.removeChild(clone); }, 480);
+}
+
+function blankCard(el) {
+  var crow = el.firstChild;
+  crow.children[0].textContent = "·"; crow.children[1].textContent = ""; crow.children[2].textContent = "";
+  var cv = el.children[1];
+  try { cv.getContext("2d").clearRect(0, 0, cv.width, cv.height); } catch (e) {}
+  el.children[2].firstChild.style.transform = "scaleX(0)";
+}
+function resetCardFx(el) {
+  el.__leave = 0;
+  el.style.transition = "none";
+  el.style.transform = "";
+  el.style.opacity = "";
+  var he = el.children[3]; if (he) he.classList.remove("go");
+}
+
+var prevSlot = {};           // 손님 id → 지난 프레임의 칸. 칸을 옮긴 카드만 미끄러뜨린다.
+var cardW = 100;             // 카드 폭. resize 때만 잰다.
+
+function focusCustomer() {
+  // 지금 스택으로 만들 수 있는 주문 중 가장 급한 손님. 플레이어가 봐야 할 카드다.
+  var b = null;
+  for (var i = 0; i < queue.length; i++) {
+    var c = queue[i];
+    if (c.leaving || !isPrefix(stack, c.order)) continue;
+    if (!b || c.left < b.left) b = c;
+  }
+  return b;
 }
 
 function paintCards() {
@@ -1420,9 +1979,12 @@ function paintCards() {
   if (state === "playing" && queue.length < QUEUE_MAX && spawnTimer > 0 && spawnTimer < GHOST_LEAD) {
     ghostSlot = queue.length;
   }
+  var focus = state === "playing" ? focusCustomer() : null;
+  var nowSlot = {};
   for (var i = 0; i < cardEls.length; i++) {
     var el = cardEls[i], c = queue[i];
     if (!c) {
+      if (el.__cid) { resetCardFx(el); blankCard(el); el.__cid = 0; }
       if (i === ghostSlot) {
         el.className = "card ghost";
         el.style.opacity = String(0.35 * (1 - spawnTimer / GHOST_LEAD));
@@ -1432,28 +1994,69 @@ function paintCards() {
       }
       continue;
     }
-    el.style.opacity = "";
+    nowSlot[c.id] = i;
+
+    // 칸 주인이 바뀌었다: 옆 칸에서 왔으면 미끄러져 오고, 새 손님이면 오른쪽에서 들어온다
+    if (el.__cid !== c.id) {
+      resetCardFx(el);
+      var from = prevSlot[c.id];
+      el.__cid = c.id;
+      c.key = "";
+      c.hf = 0;               // 칸을 옮겨 왔으면 회복 표시는 새 칸에서 다시 시작한다
+      if (!reduceMotion) {
+        var fresh = from == null;
+        var dx = fresh ? 26 : Math.max(0, from - i) * (cardW + 6);
+        if (dx) {
+          el.style.transform = "translateX(" + dx + "px)";
+          if (fresh) el.style.opacity = "0";
+          void el.offsetWidth;
+          el.style.transition = "transform .24s cubic-bezier(.2,.8,.3,1), opacity .2s ease-out";
+          el.style.transform = "";
+          if (fresh) el.style.opacity = "";
+        }
+      }
+    }
+    // 떠나는 손님: 카드가 기울며 아래로 떨어진다
+    if (c.leaving && !el.__leave) {
+      el.__leave = 1;
+      el.style.transition = "transform .35s ease-in, opacity .35s ease-in";
+      if (!reduceMotion) el.style.transform = "translateY(22px) rotate(-5deg)";
+      el.style.opacity = "0";
+    }
+
     var ratio = Math.max(0, Math.min(1, c.left / c.max));
     var alive = stack.length > 0 && isPrefix(stack, c.order);
-    var rushable = alive && stack.length < c.order.length && ratio < RUSH_AT;
+    var rushable = alive && stack.length < c.order.length && stack.length * 2 >= c.order.length && ratio < RUSH_AT;
 
+    // 테두리 색(급송 > 빨간불 > 맞게 쌓는 중), 흔들림(빨간불), VIP 금테는 서로 다른 채널이다.
+    // 한 줄 else-if 로 두었더니 빨간불 손님 버거를 쌓는 중에 흔들림이 꺼지고 VIP 금테가 사라졌다.
     var cls = "card";
-    if (c.leaving) cls += " dim";
-    else if (rushable) cls += " rush";
-    else if (ratio < 0.25) cls += " hot";
-    else if (alive) cls += " live";
-    else if (c.vip) cls += " vip";
-    if (stack.length && !alive && !c.leaving) cls += " dim";
+    if (!c.leaving) {
+      if (rushable) cls += " rush";
+      else if (ratio < 0.25) cls += " hot";
+      else if (alive) cls += " live";
+      if (ratio < 0.25) cls += " urgent";
+      if (c.vip) cls += " vipc";
+      if (stack.length && !alive) cls += " dim";
+    }
     if (el.className !== cls) el.className = cls;
 
     var fs = ratio > 0.5 ? 0 : (ratio > 0.25 ? 1 : 2);
-    var key = c.order.join(",") + "|" + fs + "|" + c.vip + "|" + Math.round(el.clientWidth);
+    var isFocus = c === focus;
+    // 이 주문 기준 진행도. 스택이 비었으면 가장 급한 카드에만 첫 층을 짚어 준다.
+    var done = alive ? stack.length : (stack.length === 0 && isFocus ? 0 : -1);
+    var key = c.order.join(",") + "|" + fs + "|" + c.vip + "|" + done + "|" + isFocus + "|" + cardW;
     if (cardsDirty || c.key !== key) {
-      var crow = el.firstChild;
+      var crow = el.firstChild, num = crow.children[2];
       crow.children[0].textContent = FACES[fs];
       crow.children[1].textContent = c.vip ? "👑" : "";
-      crow.children[2].textContent = c.order.length + "개";
-      if (paintMini(el.children[1], c.order)) c.key = key;
+      if (done === c.order.length) { num.textContent = "완성!"; num.className = "num next"; }
+      else if (isFocus && done >= 0) { num.textContent = "다음 " + ING[c.order[done]].name; num.className = "num next"; }
+      else { num.textContent = c.order.length + "개"; num.className = "num"; }
+      if (paintMini(el.children[1], c.order, done)) c.key = key;
+      el.setAttribute("aria-label", (c.vip ? "VIP 손님" : "손님") + " 주문, 아래부터: " +
+        c.order.map(function (id) { return ING[id].name; }).join(", ") +
+        (fs === 2 ? " (매우 급함)" : fs === 1 ? " (급함)" : ""));
     }
 
     var bar = el.children[2].firstChild;
@@ -1470,17 +2073,32 @@ function paintCards() {
       c.hf = 0; healEl.classList.remove("go");
     }
   }
+  prevSlot = nowSlot;
   cardsDirty = false;
 }
 
 var lastServeMode = "";
+function needMore() {
+  // 지금 스택으로 이어 갈 수 있는 주문 중 가장 짧게 남은 것
+  var need = 99;
+  for (var i = 0; i < queue.length; i++) {
+    var c = queue[i];
+    if (c.leaving || !isPrefix(stack, c.order)) continue;
+    need = Math.min(need, c.order.length - stack.length);
+  }
+  return need === 99 ? 0 : need;
+}
 function paintServeBtn() {
   var m = state === "playing" ? serveMode() : "off";
-  if (m === lastServeMode) return;
-  lastServeMode = m;
-  if (m === "rush") { btnServe.className = "rush"; btnServe.textContent = "급하게 내보내기"; }
-  else if (m === "off") { btnServe.className = "off"; btnServe.textContent = "윗빵 덮어 내보내기"; }
-  else { btnServe.className = ""; btnServe.textContent = "윗빵 덮어 내보내기"; }
+  // 덜 쌓았을 때 버튼이 완성 상태와 똑같이 파랬다. 누르면 −150 이라 함정이었다.
+  var need = m === "under" ? needMore() : 0;
+  var key = m + need;
+  if (key === lastServeMode) return;
+  lastServeMode = key;
+  btnServe.className = m === "rush" ? "rush" : (m === "off" ? "off" : (m === "under" ? "under" : ""));
+  btnServe.disabled = m === "off";
+  serveLabel.textContent = m === "rush" ? "급하게 내보내기"
+    : (m === "under" && need ? need + "장 더 쌓아야 해요" : "윗빵 덮어 내보내기");
   btnTrash.className = (stack.length && state === "playing") ? "on" : "";
 }
 
@@ -1488,6 +2106,7 @@ function paintServeBtn() {
    14. 진행
    ══════════════════════════════════════════════════════════════ */
 function tick(dt) {
+  if (tut) { tutTick(dt); return; }
   t += dt;
 
   while (unlockIdx < SLOTS.length && t >= UNLOCK_AT[unlockIdx]) doUnlock(unlockIdx++);
@@ -1522,6 +2141,13 @@ function tick(dt) {
 
   if (lock > 0) lock -= dt;
   if (graceT > 0) graceT -= dt;
+  if (fever > 0) {
+    fever = Math.max(0, fever - dt);
+    if (fever === 0) feverOff(false);                  // 시간이 다 돼서 끝날 때
+    else if (Math.ceil(fever) !== feverShown) paintScore();
+  }
+  if (!noHitMark && t >= 165 && hearts === HEART_MAX && heartHeals === 0) noHitMark = true;
+  if ((t | 0) !== ((t - dt) | 0)) checkAch();       // 1초에 한 번
 
   if (lock <= 0 && stack.length && !anyAlive()) orphanDiscard();
 
@@ -1535,8 +2161,6 @@ function tick(dt) {
     if (tickTimer <= 0) { sfx.tick(); tickTimer = 0.5; }
   } else tickTimer = 0;
 
-  if (shake > 0) shake = Math.max(0, shake - dt * 26);
-  if (vignette > 0) vignette = Math.max(0, vignette - dt * 3);
 }
 
 function render() {
@@ -1550,31 +2174,77 @@ function render() {
   c.fillStyle = "rgba(25,31,40,.06)";
   ell(c, bw / 2, BASE_Y + 5, LAYER_W * 0.62, 6); c.fill();
 
-  var sq = squash > 0 ? 1 - 0.10 * Math.sin((squash / 0.22) * Math.PI) : 1;
+  var sqRest = 1, sqLast = 1;
+  if (squash > 0) {
+    var u = 1 - squash / 0.22;
+    sqLast = u < 0.45 ? 0.70 + 0.38 * (u / 0.45) : 1.08 - 0.08 * ((u - 0.45) / 0.55);
+    sqRest = 1 - 0.04 * Math.sin(u * Math.PI);
+  }
 
   if (state === "playing" || state === "paused" || state === "over") {
     var items = flying ? stack.slice(0, stack.length - 1) : stack;
-    drawStack(c, items, bw / 2, BASE_Y, LAYER_W, SC, { squash: sq });
+    drawStack(c, items, bw / 2, BASE_Y, LAYER_W, SC, { squash: sqRest, lastSq: sqLast });
     if (flying) {
       var p = flying.p, e = p * p * (3 - 2 * p);
       drawIngredient(c, flying.id,
         flying.x0 + (flying.x1 - flying.x0) * e,
         flying.y0 + (flying.y1 - flying.y0) * e - Math.sin(p * Math.PI) * 42,
-        LAYER_W, flying.h, {});
+        38 + (LAYER_W - 38) * e, flying.h * (0.55 + 0.45 * e), {});
     }
   }
 
   if (serveAnim) {
-    var se = serveAnim.p * serveAnim.p;
-    c.save();
-    c.globalAlpha = Math.max(0, 1 - se * 0.85);
-    drawStack(c, serveAnim.items,
-      bw / 2 + (serveAnim.tx - bw / 2) * se,
-      BASE_Y - se * (BASE_Y + 40),
-      LAYER_W * (1 - 0.6 * se), SC * (1 - 0.6 * se),
-      { cap: true, jit: serveAnim.jit, tilt: serveAnim.tilt, seeds: serveAnim.seeds,
-        capGap: serveAnim.capGap, seed: serveAnim.seed });
+    var SA = serveAnim, A = 0.30, look = { cap: true, jit: SA.jit, tilt: SA.tilt, seeds: SA.seeds,
+      capGap: SA.capGap, seed: SA.seed };
+    if (SA.p < A && !reduceMotion) {
+      // 1막: 윗빵이 떨어져 덮이고, 버거가 눌렸다 펴지며 참깨가 톡 튄다
+      var v = SA.p / A;
+      var fall = Math.min(1, v / 0.5);
+      var land = v < 0.5 ? 0 : (v - 0.5) / 0.5;
+      look.capY = -34 * SC * (1 - fall * fall);
+      look.lastSq = land ? 1 - 0.20 * Math.sin(land * Math.PI) : 1;
+      look.squash = land ? 1 - 0.035 * Math.sin(land * Math.PI) : 1;
+      look.seedHop = land ? Math.sin(land * Math.PI) * ING.bunT.h * SC * 0.13 : 0;
+      drawStack(c, SA.items, bw / 2, BASE_Y, LAYER_W, SC, look);
+    } else {
+      // 2막: 손님 카드 쪽으로 날아가며 작아진다
+      var se = Math.max(0, (SA.p - A) / (1 - A)); se *= se;
+      c.save();
+      c.globalAlpha = Math.max(0, 1 - se * 0.85);
+      drawStack(c, SA.items,
+        bw / 2 + (SA.tx - bw / 2) * se, BASE_Y - se * (BASE_Y + 40),
+        LAYER_W * (1 - 0.6 * se), SC * (1 - 0.6 * se), look);
+      c.restore();
+    }
+  }
+
+  if (reject) {
+    var R = reject, x, y, rot = 0, ra = 1;
+    if (R.p < 0.32) {
+      var e2 = R.p / 0.32; e2 = e2 * e2 * (3 - 2 * e2);
+      x = R.x0 + (R.x1 - R.x0) * e2;
+      y = R.y0 + (R.y1 - R.y0) * e2 - Math.sin(e2 * Math.PI) * 36;
+    } else {
+      var w2 = (R.p - 0.32) / 0.68;
+      x = R.x1 + R.side * w2 * 110; y = R.y1 - 70 * w2 + 190 * w2 * w2;
+      rot = reduceMotion ? 0 : R.side * w2 * 1.4; ra = 1 - w2;
+    }
+    c.save(); c.globalAlpha = Math.max(0, ra); c.translate(x, y); c.rotate(rot);
+    c.drawImage(R.img.cv, -R.img.w / 2, -R.img.h / 2, R.img.w, R.img.h);
     c.restore();
+  }
+
+  if (drop) {
+    // 버린 버거는 기울며 떨어지고, 바닥에 쓰레기통이 잠깐 보인다
+    var D = drop, H = stackH(D.items, false, SC), fy = (bh - BASE_Y + 90) * D.p * D.p;
+    c.save();
+    c.globalAlpha = 1 - D.p * 0.35;
+    c.translate(bw / 2, BASE_Y - H / 2 + fy);
+    if (!reduceMotion) c.rotate(D.side * D.p * 0.55);
+    drawStack(c, D.items, 0, H / 2, LAYER_W, SC, {});
+    c.restore();
+    var ta = Math.sin(Math.min(1, D.p * 1.25) * Math.PI);
+    if (ta > 0.02) drawTrash(c, bw / 2, bh - 26, ta);
   }
 
   var i;
@@ -1597,13 +2267,13 @@ function render() {
   c.globalAlpha = 1;
   c.restore();
 
-  if (vignette > 0.01) {
+  if (glow > 0.01) {
     c.save();
-    c.globalAlpha = Math.min(0.55, vignette);
-    var g = c.createRadialGradient(bw / 2, bh / 2, Math.min(bw, bh) * 0.28,
-                                   bw / 2, bh / 2, Math.max(bw, bh) * 0.78);
-    g.addColorStop(0, "rgba(240,68,82,0)");
-    g.addColorStop(1, "rgba(240,68,82,.9)");
+    c.globalAlpha = Math.min(1, glow / 0.4) * 0.85;
+    var g = c.createRadialGradient(bw / 2, bh / 2, Math.min(bw, bh) * 0.36,
+                                   bw / 2, bh / 2, Math.max(bw, bh) * 0.74);
+    g.addColorStop(0, "rgba(255,255,255,0)");
+    g.addColorStop(1, glowCol);
     c.fillStyle = g; c.fillRect(0, 0, bw, bh);
     c.restore();
   }
@@ -1612,20 +2282,48 @@ function render() {
 /* ══════════════════════════════════════════════════════════════
    15. 판 흐름
    ══════════════════════════════════════════════════════════════ */
-function veil(id, on) { document.getElementById(id).classList[on ? "add" : "remove"]("show"); }
+var gameParts = [].slice.call(document.querySelectorAll("header, .scores, #queue, #stage, #grid, #serveBlock, .hint"));
+var kbMode = false;           // 마지막 입력이 키보드였는지. 터치 사용자에게 포커스 링을 띄우지 않는다.
+function veil(id, on) {
+  var el = document.getElementById(id);
+  el.classList[on ? "add" : "remove"]("show");
+  // 모달이 떠 있는 동안 뒤쪽 게임 화면은 탭 순서·스크린리더에서 빠진다
+  var blocked = anyVeilOpen();
+  for (var gi = 0; gi < gameParts.length; gi++) gameParts[gi].inert = blocked;
+  if (on && kbMode) {
+    var b = el.querySelector(".btn.primary");
+    if (b) { try { b.focus({ preventScroll: true }); } catch (e) { try { b.focus(); } catch (e2) {} } }
+  } else if (document.activeElement && el.contains(document.activeElement)) {
+    try { document.activeElement.blur(); } catch (e) {}
+  }
+}
 function anyVeilOpen() {
   var v = document.querySelectorAll(".veil");
   for (var i = 0; i < v.length; i++) if (v[i].classList.contains("show")) return true;
   return false;
 }
 
-var toastTimer = 0;
+var toastQ = [], toastBusy = false;
 function toast(msg) {
-  var el = document.getElementById("toast");
-  el.textContent = msg;
-  el.classList.add("show");
-  clearTimeout(toastTimer);
-  toastTimer = setTimeout(function () { el.classList.remove("show"); }, 1500);
+  if (toastQ.length && toastQ[toastQ.length - 1] === msg) return;
+  toastQ.push(msg);
+  if (toastQ.length > 3) toastQ.splice(0, toastQ.length - 3);   // 밀리면 오래된 것부터 버린다
+  if (!toastBusy) nextToast();
+}
+function clearToasts() {
+  toastQ.length = 0;
+  document.getElementById("toast").classList.remove("show");
+}
+function nextToast() {
+  var tEl = document.getElementById("toast");
+  if (!toastQ.length) { toastBusy = false; tEl.classList.remove("show"); return; }
+  toastBusy = true;
+  tEl.textContent = toastQ.shift();
+  tEl.classList.add("show");
+  setTimeout(function () {
+    tEl.classList.remove("show");
+    setTimeout(nextToast, 180);
+  }, toastQ.length ? 1100 : 1500);
 }
 
 function reset() {
@@ -1636,10 +2334,22 @@ function reset() {
   queue.length = 0; arrivals = 0; spawnTimer = 1.2;
   lastUnlockT = -99; tickTimer = 0;
   bestBurger = null; missedOrder = null; bestGain = -1;
-  flying = null; serveAnim = null;
+  fever = 0; feverCount = 0; feverShown = -1; stage.classList.remove("fever");
+  vipServed = 0; rushSaves = 0; maxCombo = 0; bestStreak = 0; noHitMark = false;
+  newAchThisGame = [];
+  clearToasts();
+  flying = null; serveAnim = null; reject = null; drop = null;
   particles.length = 0; pops.length = 0;
-  shake = 0; vignette = 0; squash = 0;
-  for (var i = 0; i < ingBtns.length; i++) ingBtns[i].className = i < 4 ? "ing" : "ing locked";
+  shake = 0; vignette = 0; squash = 0; glow = 0;
+  shownScore = 0; paintedScore = -1;
+  prevSlot = {};
+  for (var ci = 0; ci < cardEls.length; ci++) { resetCardFx(cardEls[ci]); blankCard(cardEls[ci]); cardEls[ci].__cid = 0; }
+  var olds = queueEl.querySelectorAll(".served");
+  for (var oi = 0; oi < olds.length; oi++) olds[oi].parentNode.removeChild(olds[oi]);
+  for (var hi = 0; hi < heartEl.children.length; hi++) {
+    heartEl.children[hi].__fx = 0; heartEl.children[hi].textContent = "❤️";
+  }
+  for (var i = 0; i < ingBtns.length; i++) setLocked(i, i >= 4);
   unlockIdx = 4;
   cardsDirty = true; lastServeMode = "";
   paintScore(); paintHearts(); paintCards(); paintServeBtn();
@@ -1647,18 +2357,121 @@ function reset() {
 
 function start() {
   veil("vStart", false); veil("vOver", false); veil("vHow", false);
-  veil("vPause", false); veil("vRank", false); veil("vExit", false);
+  veil("vPause", false); veil("vRank", false); veil("vExit", false); veil("vShare", false);
+  tut = null; coachEl.className = ""; coachShown = ""; tutPtr.className = "";
   reset();
+  sfx.wake();
   sfx.unlockAudio();
   state = "playing";
+  sfx.setTempo(0, false);
+  sfx.musicStart();
   lastT = performance.now();
 }
 
-function pause() {
+/* ══ 튜토리얼 ═════════════════════════════════════════════════
+   처음 시작하는 사람에게 주문 세 개를 대본대로 낸다. 시계와 인내심이 멈춰 있어서
+   급할 게 없다. ① 손가락 링을 따라 한 개 ② 첫 재료가 같은 주문 두 개 — 파란
+   테두리와 자동 배달을 보여 준다 ③ 혼자서 한 개. 건너뛸 수 있고, 게임 방법에서
+   다시 할 수 있다. */
+var coachEl = document.getElementById("coach");
+var coachText = document.getElementById("coachText");
+var tutPtr = document.getElementById("tutPtr");
+var coachShown = "";
+
+function tutCustomer(order) {
+  queue.push({ id: ++cid, order: order, max: 60, left: 60, vip: false,
+               leaving: 0, healFlash: 0, face: -1, key: "" });
+  cardsDirty = true;
+}
+function startTutorial() {
+  veil("vStart", false); veil("vHow", false); veil("vOver", false);
+  reset();
+  sfx.wake();
+  sfx.unlockAudio();
+  sfx.setTempo(0, false);
+  sfx.musicStart();
+  tut = { stage: 0, wrong: 0 };
+  tutCustomer(["patty", "cheese"]);
+  state = "playing";
+  lastT = performance.now();
+  coachEl.className = "on";
+}
+function finishTutorial() {
+  store.set("tut", "1");
+  tut = null;
+  coachEl.className = ""; coachShown = "";
+  tutPtr.className = "";
+  start();
+}
+function tutAfterServe() {
+  tut.stage++;
+  if (tut.stage === 1) { tutCustomer(["lettuce", "tomato"]); tutCustomer(["lettuce", "patty", "cheese"]); }
+}
+function tutTick(dt) {
+  // 튜토리얼에서는 잠금·유예·고아 스택 처리만 돈다
+  if (lock > 0) { lock -= dt; if (lock <= 0) tut.wrong = 0; }
+  if (graceT > 0) graceT -= dt;
+  if (lock <= 0 && stack.length && !anyAlive()) orphanDiscard();
+  var m = serveMode();
+  if (m === "normal" || m === "rush") graceT = SERVE_GRACE;
+}
+function tutTarget() {
+  // 지금 눌러야 할 버튼과 할 말
+  var st = tut.stage, n = stack.length, NM = function (id) { return "<b>" + ING[id].name + "</b>"; };
+  if (tut.stage >= 3) return { say: "준비 끝! 이제 진짜 영업이에요.<br>손님이 기다릴수록 <b>막대가 줄고</b>, 다 줄면 하트가 깨져요. 하트 3개를 다 잃으면 끝.", done: true };
+  if (lock > 0 && tut.wrong) return { say: "주문에 없는 재료는 <b>튕겨 나가고 0.4초 멈춰요</b>. 급할 때 치명적이니 조심!" };
+  if (st === 0) {
+    if (n === 0) return { say: "주문 카드는 <b>아래에서 위로</b> 읽어요. 아래빵은 자동이니 먼저 " + NM("patty") + "!", btn: "patty" };
+    if (n === 1) return { say: "좋아요. 다음은 " + NM("cheese") + ".", btn: "cheese" };
+    return { say: "다 쌓았으면 <b>윗빵을 덮어</b> 내보내요.", btn: "serve" };
+  }
+  if (st === 1) {
+    if (n === 0) return { say: "주문이 둘이에요. 둘 다 " + NM("lettuce") + "로 시작하죠? 손님을 미리 고를 필요 없어요.", btn: "lettuce" };
+    if (n === 1) return { say: "<b>파란 테두리</b> = 아직 맞게 쌓는 중. 이제 " + NM("tomato") + "를 올리면 왼쪽 주문 완성!", btn: "tomato" };
+    return { say: "내보내면 이 버거와 <b>똑같은 주문</b>을 한 손님에게 알아서 가요.", btn: "serve" };
+  }
+  return { say: n === 0 ? "남은 주문은 혼자 해 보세요. 카드에 <b>다음 ○○</b>이 보여요."
+                        : (n < 3 ? "잘하고 있어요. 카드의 파란 화살표를 따라가요." : "이제 내보내면 끝!") };
+}
+function paintTutorial() {
+  if (!tut) { if (tutPtr.className) tutPtr.className = ""; return; }
+  var g = tutTarget();
+  if (g.say !== coachShown) {
+    coachShown = g.say; coachText.innerHTML = g.say;
+    coachEl.className = "on" + (g.done ? " done" : "");
+  }
+  var target = g.btn === "serve" ? btnServe : (g.btn ? ingBtns[SLOTS.indexOf(g.btn)] : null);
+  if (target && lock <= 0) {
+    var r = target.getBoundingClientRect();
+    tutPtr.style.left = (r.left + r.width / 2) + "px";
+    tutPtr.style.top = (r.top + r.height / 2) + "px";
+    if (!tutPtr.className) tutPtr.className = "on";
+  } else if (tutPtr.className) tutPtr.className = "";
+}
+
+var pauseMsg = document.getElementById("pauseMsg");
+// why: true(직접 멈춤) | "rotate"(가로로 돌림) | 없음(다른 화면에 다녀옴)
+function pause(why) {
   if (state !== "playing") return;
   state = "paused";
   sfx.stopAll();
+  pauseMsg.innerHTML = (why === "rotate" ? "화면을 가로로 돌리셨네요." :
+    (why ? "숨 좀 돌리세요." : "다른 화면에 다녀오셨네요.")) +
+    "<br>이어하면 1초 동안 손님들이 기다려 줘요.";
   veil("vPause", true);
+}
+try {
+  var landMQ = window.matchMedia("(orientation:landscape) and (max-height:500px) and (pointer:coarse)");
+  var onLand = function () { if (landMQ.matches) pause("rotate"); };
+  if (landMQ.addEventListener) landMQ.addEventListener("change", onLand);
+  else if (landMQ.addListener) landMQ.addListener(onLand);
+} catch (e) {}
+function isShown(id) { return document.getElementById(id).classList.contains("show"); }
+// 여러 모달이 겹쳐 떠 있을 때(일시정지 위에 기록 등) 맨 위에 있는 것
+function topVeil() {
+  var order = ["vShare", "vExit", "vRank", "vHow", "vOver", "vPause", "vStart"];
+  for (var i = 0; i < order.length; i++) if (isShown(order[i])) return document.getElementById(order[i]);
+  return null;
 }
 function resumeGame() {
   veil("vPause", false);
@@ -1667,55 +2480,107 @@ function resumeGame() {
     lastT = performance.now();
     resumeGrace = RESUME_GRACE;   // 일시정지 경계에서 손님이 나가는 건 플레이어 잘못이 아니다
     sfx.wake();
+    sfx.musicStart();
   }
 }
 
 // 결과 화면의 버거 두 개. 점수 숫자만 있는 것보다 재도전 훅이 강하다.
-function drawBurgerFit(cv, items, cap, opt) {
-  var r = cv.getBoundingClientRect();
+var lastShots = [];           // 크기가 바뀌면 결과·시작 화면 버거를 다시 그리려고 기억해 둔다
+function redrawShots() {
+  for (var i = 0; i < lastShots.length; i++) {
+    var L = lastShots[i];
+    if (L.cv.offsetParent) drawBurgerFit(L.cv, L.items, L.cap, L.opt, true);
+  }
+}
+function drawBurgerFit(cv, items, cap, opt, again) {
+  if (!again) {
+    lastShots = lastShots.filter(function (L) { return L.cv !== cv; });
+    lastShots.push({ cv: cv, items: items, cap: cap, opt: opt });
+  }
+  // 모달 등장 애니메이션(scale .97) 중에 재면 3% 작게 잡혀 흐려진다
+  var r = { width: cv.clientWidth, height: cv.clientHeight };
   if (r.width < 6 || r.height < 10) return;
   sizeCanvas(cv, r.width, r.height);
   var c = cv.getContext("2d");
   c.setTransform(dpr, 0, 0, dpr, 0, 0);
   c.clearRect(0, 0, r.width, r.height);
   var w = Math.min(r.width - 16, 92);
-  var s = Math.min(1.05, (r.height - 8) / Math.max(1, stackH(items, cap, 1)));
+  // 놓친 주문 캔버스에는 3px 안쪽에 점선 틀이 있다. 여백이 4px 이면 평평한
+  // 윗면(치즈 등)이 틀에 붙어 보여서 위아래로 넉넉히 둔다.
+  var s = Math.min(1.05, (r.height - 20) / Math.max(1, stackH(items, cap, 1)));
   var o = {}, kk;
   for (kk in (opt || {})) o[kk] = opt[kk];
   o.cap = cap;
-  drawStack(c, items, r.width / 2, r.height - 4, w, s, o);
+  drawStack(c, items, r.width / 2, r.height - 9, w, s, o);
 }
 
 function gameOver() {
   state = "over";
-  sfx.stopAll();
+  sfx.musicStop();
   sfx.over();
-  if (score > best) { best = score; store.set("best", best); }
+  endFever(false);
+  clearToasts();                    // 판 중에 밀린 알림이 결과 화면을 덮지 않게
+  var isBest = score > best;
+  if (isBest) { best = score; store.set("best", best); }
   if (served > bestServed) { bestServed = served; store.set("bestServed", bestServed); }
   Toss.submitScore(score);          // 토스 게임센터 리더보드 (웹에선 무시된다)
+  checkAch();
 
-  document.getElementById("overTitle").textContent =
-    score >= best && score > 0 ? "최고 기록!" : "영업 끝!";
+  var g = gradeOf(score);
+  stats.games++;
+  stats.served += served;
+  if (maxCombo > stats.bestCombo) stats.bestCombo = maxCombo;
+  var d = new Date();
+  stats.top.push({ s: score, g: g, n: served,
+    d: d.getFullYear() + "." + (d.getMonth() + 1) + "." + d.getDate() });
+  stats.top.sort(function (a, b) { return b.s - a.s; });
+  stats.top = stats.top.slice(0, 5);
+  store.set("stats", JSON.stringify(stats));
+
+  document.getElementById("overTitle").textContent = isBest && score > 0 ? "최고 기록!" : "영업 끝!";
+  var ge = document.getElementById("overGrade");
+  ge.textContent = g; ge.className = "grade " + g;
   document.getElementById("overScore").textContent = comma(score) + "점";
   document.getElementById("overSub").textContent =
-    served + "개 서빙 · 최고 기록 " + comma(best) + "점";
+    served + "개 서빙 · 최고 콤보 " + maxCombo + " · 최고 기록 " + comma(best) + "점";
+  var oa = document.getElementById("overAch");
+  oa.innerHTML = "";
+  for (var i = 0; i < newAchThisGame.length; i++) {
+    for (var j = 0; j < ACH.length; j++) if (ACH[j].id === newAchThisGame[i]) {
+      var sp = document.createElement("span"); sp.textContent = ACH[j].ico + " " + ACH[j].name;
+      oa.appendChild(sp);
+    }
+  }
+  lastGrade = g;
   paintScore();
   veil("vOver", true);
 
   // 모달이 레이아웃을 잡은 다음에 그려야 캔버스 크기가 0이 아니다
   requestAnimationFrame(function () {
-    var bb = bestBurger || { items: ["patty", "cheese"], ratio: 1, mistake: false };
-    drawBurgerFit(document.getElementById("shotBest"), bb.items, true, {
-      jit: bb.ratio > 0.5 && !bb.mistake ? 0 : (bb.ratio < 0.25 ? 3 : 1.5),
-      tilt: bb.ratio < 0.25 ? 0.052 : 0,
-      seeds: bb.ratio < 0.25 ? 3 : 5,
-      seed: 3
-    });
+    var bb = bestBurger, sb = document.getElementById("shotBest");
+    if (bb) {
+      drawBurgerFit(sb, bb.items, true, {
+        jit: bb.ratio > 0.5 && !bb.mistake ? 0 : (bb.ratio < 0.25 ? 3 : 1.5),
+        tilt: bb.ratio < 0.25 ? 0.052 : 0,
+        seeds: bb.ratio < 0.25 ? 3 : 5,
+        capGap: bb.rush ? 2 : 0,
+        seed: 3
+      });
+    } else {
+      var rb = { width: sb.clientWidth, height: sb.clientHeight };
+      lastShots = lastShots.filter(function (L) { return L.cv !== sb; });
+      sizeCanvas(sb, rb.width, rb.height);
+      var cb = sb.getContext("2d");
+      cb.setTransform(dpr, 0, 0, dpr, 0, 0); cb.clearRect(0, 0, rb.width, rb.height);
+      cb.fillStyle = "#8B95A1"; cb.font = "700 12px 'Pretendard','Apple SD Gothic Neo',system-ui,sans-serif";
+      cb.textAlign = "center"; cb.textBaseline = "middle";
+      cb.fillText("아직 내보낸 버거가 없어요", rb.width / 2, rb.height / 2);
+    }
     var miss = document.getElementById("shotMiss");
     if (missedOrder) drawBurgerFit(miss, missedOrder, false, { seed: 9 });
     else {
-      var r = miss.getBoundingClientRect();
-      sizeCanvas(miss, r.width, r.height);
+      lastShots = lastShots.filter(function (L) { return L.cv !== miss; });
+      sizeCanvas(miss, miss.clientWidth, miss.clientHeight);
       miss.getContext("2d").clearRect(0, 0, miss.width, miss.height);
     }
   });
@@ -1736,6 +2601,7 @@ function closestIng(el) {
 }
 
 window.addEventListener("pointerdown", function () {
+  kbMode = false;
   tapped = true;
   sfx.unlockAudio();
 }, true);
@@ -1757,6 +2623,60 @@ window.addEventListener("pointerup", releaseAll);
 window.addEventListener("pointercancel", releaseAll);
 document.addEventListener("gesturestart", function (e) { e.preventDefault(); });
 
+/* 키보드 — 데스크톱 방문자용. 숫자 1~8 또는 자판 왼쪽 QWER/ASDF 가 그리드 2×4 와
+   같은 모양이다. e.key 가 아니라 e.code 를 봐야 한글 자판에서도 같은 자리가 먹는다. */
+var CODE_ING = {
+  Digit1: 0, Digit2: 1, Digit3: 2, Digit4: 3, Digit5: 4, Digit6: 5, Digit7: 6, Digit8: 7,
+  Numpad1: 0, Numpad2: 1, Numpad3: 2, Numpad4: 3, Numpad5: 4, Numpad6: 5, Numpad7: 6, Numpad8: 7,
+  KeyQ: 0, KeyW: 1, KeyE: 2, KeyR: 3, KeyA: 4, KeyS: 5, KeyD: 6, KeyF: 7
+};
+function keyFlash(b) {
+  b.classList.add("key");
+  setTimeout(function () { b.classList.remove("key"); }, 90);
+}
+document.addEventListener("keydown", function (e) {
+  if (e.ctrlKey || e.metaKey || e.altKey) return;
+  var code = e.code || "";
+  kbMode = true;
+  tapped = true;
+  sfx.unlockAudio();
+  if (anyVeilOpen()) {
+    // Enter/Space: 모달 안에 포커스된 버튼이 있으면 그 버튼이 받고,
+    // 아무것도 포커스돼 있지 않으면 맨 위 모달의 주 버튼을 누른다.
+    if (code === "Enter" || code === "Space" || code === "NumpadEnter") {
+      var top = topVeil();
+      if (top && !top.contains(document.activeElement)) {
+        var pb = top.querySelector(".btn.primary");
+        if (pb) { e.preventDefault(); pb.click(); }
+      }
+      return;
+    }
+    if (code === "Escape" || code === "KeyP") {
+      if (isShown("vShare")) veil("vShare", false);
+      else if (isShown("vHow")) veil("vHow", false);
+      else if (isShown("vRank")) veil("vRank", false);
+      else if (isShown("vExit")) veil("vExit", false);
+      else if (isShown("vPause")) resumeGame();
+      else return;
+      e.preventDefault();
+    }
+    return;
+  }
+  if (state !== "playing") return;
+  var serveKey = code === "Space" || code === "Enter" || code === "NumpadEnter";
+  if (tut && tut.stage >= 3 && serveKey && !e.repeat) { e.preventDefault(); finishTutorial(); return; }
+  if (e.repeat) { if (serveKey || CODE_ING[code] != null) e.preventDefault(); return; }  // 꾹 누르기 연타 방지
+  var i = CODE_ING[code];
+  if (i != null) {
+    e.preventDefault();
+    if (!ingBtns[i].classList.contains("locked")) { tapIng(SLOTS[i], ingBtns[i]); keyFlash(ingBtns[i]); }
+    return;
+  }
+  if (serveKey) { e.preventDefault(); serveTap(); return; }
+  if (code === "Backspace" || code === "Delete" || code === "KeyX") { e.preventDefault(); trashTap(); return; }
+  if (code === "KeyP" || code === "Escape") { e.preventDefault(); pause(true); }
+});
+
 // 백그라운드 전환 → 즉시 소리 종료 + 일시정지
 document.addEventListener("visibilitychange", function () {
   if (document.hidden) { sfx.stopAll(); pause(); }
@@ -1765,33 +2685,87 @@ document.addEventListener("visibilitychange", function () {
 // 앱 전환·탭 전환은 위의 visibilitychange 가 잡아 준다.
 
 var btnSound = document.getElementById("btnSound");
-btnSound.textContent = sfx.isMuted() ? "🔇" : "🔊";
+var SOUND_UI = [["🔇", "소리 꺼짐"], ["🔉", "효과음만 켜짐"], ["🔊", "배경음악과 효과음 켜짐"]];
+function paintSoundBtn(lv) {
+  btnSound.textContent = SOUND_UI[lv][0];
+  btnSound.setAttribute("aria-label", "소리 설정: " + SOUND_UI[lv][1] + ". 눌러서 바꾸기");
+}
+paintSoundBtn(sfx.isMuted() ? 0 : (sfx.musicOn() ? 2 : 1));
 btnSound.addEventListener("click", function () {
-  btnSound.textContent = sfx.toggle() ? "🔇" : "🔊";
+  var lv = sfx.cycle();
+  paintSoundBtn(lv);
+  toast(lv === 2 ? "🔊 배경음악과 효과음을 켰어요" : lv === 1 ? "🔉 배경음악을 껐어요 · 효과음만" : "🔇 소리를 모두 껐어요");
+  if (lv === 2 && state === "playing") sfx.musicStart();
 });
 
-document.getElementById("btnStart").addEventListener("click", start);
+document.getElementById("btnStart").addEventListener("click", function () {
+  if (store.get("tut", "0") === "1") start(); else startTutorial();
+});
+document.getElementById("btnTutorial").addEventListener("click", startTutorial);
+document.getElementById("coachGo").addEventListener("click", finishTutorial);
+document.getElementById("coachSkip").addEventListener("click", finishTutorial);
 document.getElementById("btnRetry").addEventListener("click", start);
 document.getElementById("btnHow").addEventListener("click", function () { veil("vHow", true); });
 document.getElementById("btnHowClose").addEventListener("click", function () { veil("vHow", false); });
 document.getElementById("btnResume").addEventListener("click", resumeGame);
+document.getElementById("btnPause").addEventListener("click", function () {
+  if (state === "playing") pause(true);
+  else if (state === "paused" && isShown("vPause")) resumeGame();
+});
 
+function mk(tag, cls, txt) {
+  var e = document.createElement(tag);
+  if (cls) e.className = cls;
+  if (txt != null) e.textContent = txt;
+  return e;
+}
 function openRank() {
   if (Toss.openBoard()) return;               // 토스 게임센터 리더보드
-  document.getElementById("rankBest").textContent = comma(Math.max(best, score)) + "점";
-  document.getElementById("rankNote").innerHTML =
-    "최다 서빙 " + Math.max(bestServed, served) + "개<br>" +
-    "토스 게임센터 리더보드는 앱인토스에 등록한 뒤 연결돼요.";
+  var b = best;
+  document.getElementById("rankBest").textContent = comma(b) + "점";
+  var rg = document.getElementById("rankGrade");
+  rg.textContent = b > 0 ? gradeOf(b) : "–"; rg.className = "grade " + (b > 0 ? gradeOf(b) : "");
+
+  var sg = document.getElementById("rankStats"); sg.innerHTML = "";
+  [[comma(stats.games), "판"], [comma(stats.served), "누적 버거"],
+   [String(stats.bestCombo), "최고 콤보"], [String(Math.max(bestServed, served)), "최다 서빙"]]
+    .forEach(function (x) { var d = mk("div"); d.appendChild(mk("b", "", x[0])); d.appendChild(mk("span", "", x[1])); sg.appendChild(d); });
+
+  var tp = document.getElementById("rankTop"); tp.innerHTML = "";
+  if (!stats.top.length) tp.appendChild(mk("li", "none", "아직 기록이 없어요"));
+  stats.top.forEach(function (r) {
+    var li = mk("li");
+    li.appendChild(mk("span", "g " + r.g, r.g));
+    li.appendChild(mk("b", "", comma(r.s) + "점"));
+    li.appendChild(mk("em", "", r.n + "개 · " + r.d));
+    tp.appendChild(li);
+  });
+
+  var ag = document.getElementById("achGrid"); ag.innerHTML = "";
+  ACH.forEach(function (a) {
+    var on = hasAch(a.id);
+    var d = mk("div", "ach" + (on ? "" : " off"));
+    d.title = a.desc;
+    d.appendChild(mk("i", "", a.ico));
+    d.appendChild(mk("b", "", on ? a.name : a.desc));
+    ag.appendChild(d);
+  });
+  document.getElementById("achCount").textContent = achDone.length + "/" + ACH.length;
   veil("vRank", true);
 }
+function paintStartMeta() {
+  var m = document.getElementById("startMeta");
+  if (!stats.games) { m.textContent = ""; return; }
+  m.textContent = "최고 " + comma(best) + "점 · 도전 과제 " + achDone.length + "/" + ACH.length;
+}
 document.getElementById("btnRank").addEventListener("click", function () {
-  if (state === "playing") pause();
+  if (state === "playing") pause(true);
   openRank();
 });
 document.getElementById("btnOverRank").addEventListener("click", openRank);
 document.getElementById("btnRankClose").addEventListener("click", function () { veil("vRank", false); });
 
-function askExit() { if (state === "playing") pause(); veil("vExit", true); }
+function askExit() { if (state === "playing") pause(true); veil("vExit", true); }
 document.getElementById("btnExit").addEventListener("click", askExit);
 document.getElementById("btnOverExit").addEventListener("click", askExit);
 document.getElementById("btnExitNo").addEventListener("click", function () { veil("vExit", false); });
@@ -1802,22 +2776,80 @@ document.getElementById("btnExitYes").addEventListener("click", function () {
   location.href = "/";                        // 웹에서는 랜딩으로 돌아간다
 });
 
+/* 결과 카드 이미지 — 1080×1350(4:5). 가장 잘 만든 버거를 게임과 같은 그리기 함수로 그린다. */
+function makeShareCard() {
+  var W = 1080, H = 1350, F = "'Pretendard','Apple SD Gothic Neo','Malgun Gothic',system-ui,sans-serif";
+  var cv = document.createElement("canvas"); cv.width = W; cv.height = H;
+  var c = cv.getContext("2d");
+  var g = gradeOf(score), GC = { S: "#E8A317", A: "#3182F6", B: "#00B386", C: "#FFB020", D: "#8B95A1" };
+  c.fillStyle = "#F2F4F6"; c.fillRect(0, 0, W, H);
+  c.fillStyle = "#FFFFFF"; rr(c, 60, 60, W - 120, H - 120, 56); c.fill();
+
+  c.textBaseline = "alphabetic"; c.textAlign = "left";
+  c.fillStyle = "#191F28"; c.font = "800 62px " + F; c.fillText("불티나 버거", 120, 170);
+  c.fillStyle = "#8B95A1"; c.font = "600 33px " + F;
+  c.fillText(served + "개 서빙 · 최고 콤보 " + maxCombo, 120, 224);
+  c.fillStyle = "#3182F6"; c.font = "800 116px " + F; c.fillText(comma(score) + "점", 112, 352);
+
+  c.fillStyle = GC[g]; rr(c, W - 260, 104, 140, 140, 38); c.fill();
+  c.fillStyle = "#FFFFFF"; c.font = "900 92px " + F; c.textAlign = "center"; c.textBaseline = "middle";
+  c.fillText(g, W - 190, 178);
+
+  var bg = c.createLinearGradient(0, 400, 0, 1040);
+  bg.addColorStop(0, "#FFFDF8"); bg.addColorStop(1, "#FFF3DE");
+  c.fillStyle = bg; rr(c, 110, 400, W - 220, 640, 40); c.fill();
+  var items = (bestBurger && bestBurger.items) || ["patty", "cheese", "lettuce", "tomato"];
+  var sc = Math.min(3.1, 500 / stackH(items, true, 1));
+  var base = 400 + 640 - 70;
+  c.fillStyle = "rgba(25,31,40,.07)"; ell(c, W / 2, base + 10, 150 * sc * 0.62, 16); c.fill();
+  drawStack(c, items, W / 2, base, 150 * sc, sc, { cap: true, seeds: 5, seed: 3, noMark: true });
+  c.fillStyle = "#8B95A1"; c.font = "700 28px " + F; c.textAlign = "center"; c.textBaseline = "alphabetic";
+  c.fillText("이번 판 가장 잘 만든 버거", W / 2, 456);
+
+  c.textAlign = "left";
+  c.fillStyle = "#191F28"; c.font = "800 44px " + F; c.fillText("나도 영업해 보기 →", 120, 1150);
+  c.fillStyle = "#8B95A1"; c.font = "600 32px " + F; c.fillText("richroro.github.io/games/bulti-burger", 120, 1205);
+  return cv;
+}
+function dataURLtoFile(url, name) {
+  var parts = url.split(","), bin = atob(parts[1]), n = bin.length, u8 = new Uint8Array(n);
+  while (n--) u8[n] = bin.charCodeAt(n);
+  return new File([u8], name, { type: "image/png" });
+}
+function shareText() {
+  return "불티나 버거 " + gradeOf(score) + "등급 " + comma(score) + "점, " + served + "개 서빙! 나도 해보기 →";
+}
 function shareScore() {
-  var text = "불티나 버거에서 " + comma(Math.max(best, score)) + "점 찍었어요!";
-  if (navigator.share) {
-    navigator.share({ title: "불티나 버거", text: text, url: SHARE_URL })
-      .catch(function () {});
+  var url = null, file = null;
+  // 공유 시트는 사용자 입력 직후에만 열린다. toBlob 처럼 비동기로 가면 사파리가 막으므로
+  // toDataURL 로 동기에 파일을 만든다.
+  try { url = makeShareCard().toDataURL("image/png"); file = dataURLtoFile(url, "bulti-burger.png"); } catch (e) {}
+  try {
+    if (file && navigator.canShare && navigator.canShare({ files: [file] })) {
+      navigator.share({ files: [file], title: "불티나 버거", text: shareText() + " " + SHARE_URL })
+        .catch(function () {});
+      return;
+    }
+  } catch (e) {}
+  if (url) {
+    document.getElementById("shareImg").src = url;
+    document.getElementById("shareSave").href = url;
+    veil("vShare", true);
     return;
   }
-  if (navigator.clipboard) {
-    navigator.clipboard.writeText(text + " " + SHARE_URL)
-      .then(function () { toast("결과를 복사했어요"); })
+  copyLink();
+}
+function copyLink() {
+  var txt = shareText() + " " + SHARE_URL;
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(txt)
+      .then(function () { toast("결과와 링크를 복사했어요"); })
       .catch(function () { toast(SHARE_URL); });
-    return;
-  }
-  toast(SHARE_URL);
+  } else toast(SHARE_URL);
 }
 document.getElementById("btnShare").addEventListener("click", shareScore);
+document.getElementById("shareCopy").addEventListener("click", copyLink);
+document.getElementById("shareClose").addEventListener("click", function () { veil("vShare", false); });
 
 /* ══════════════════════════════════════════════════════════════
    17. 루프
@@ -1829,15 +2861,30 @@ document.getElementById("btnShare").addEventListener("click", shareScore);
    물리가 없으니 고정 타임스텝 누산도 필요 없다.
    ══════════════════════════════════════════════════════════════ */
 var lastT = performance.now();
+var boardLabel = "";
 
 function frame(now) {
   var dt = (now - lastT) / 1000;
   lastT = now;
   if (dt > 0.25) dt = 0.25;        // 백그라운드 복귀 점프 방지
-  if (state === "playing") tick(dt);
+  if (state === "playing") { tick(dt); sfx.setTempo(tut ? 0 : t, fever > 0); }
   if (state !== "paused") updateFx(dt);
+  if (shownScore !== score) {
+    var ds = score - shownScore;
+    shownScore = Math.abs(ds) < 1 ? score : shownScore + ds * Math.min(1, dt * 14);
+  }
+  var rs = Math.round(shownScore);
+  if (rs !== paintedScore) { scoreEl.textContent = comma(rs); paintedScore = rs; }
+  var hv = vignette > 0.01 ? Math.min(0.9, vignette * 2) : 0;
+  if (hurtEl.__v !== hv) { hurtEl.style.opacity = hv.toFixed(3); hurtEl.__v = hv; }
   paintCards();
   paintServeBtn();
+  paintTutorial();
+  var sk = stack.join(",");
+  if (sk !== boardLabel) {
+    boardLabel = sk;
+    canvas.setAttribute("aria-label", "조립대: 아래빵" + (stack.length ? ", " + stack.map(function (id) { return ING[id].name; }).join(", ") : ""));
+  }
   render();
   requestAnimationFrame(frame);
 }
@@ -1848,6 +2895,8 @@ function frame(now) {
 resize();
 reset();
 state = "ready";
+veil("vStart", true);   // 마크업에 이미 떠 있지만, 키보드 사용자를 위해 시작 버튼에 포커스를 준다
+paintStartMeta();
 Toss.userKey();
 bestEl.textContent = comma(best);
 
