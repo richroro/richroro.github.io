@@ -6,7 +6,7 @@ name: 전 종목 데이터 자동 갱신
 # 인증키가 필요 없다. 출처는 finder/README.md 에 있다.
 #   미국 목록·시총·업종  rreichel3/US-Stock-Symbols (GitHub)
 #   미국 1년 일봉        Yahoo Finance (yfinance) — 막히면 이전 지표를 유지
-#   재무 지표 · 미국     Yahoo 일괄 시세 → SEC EDGAR(연락처: 저장소 변수 SEC_CONTACT) — 막히면 이전 값
+#   재무 지표 · 미국     Yahoo 일괄 시세 → 나스닥 종목 요약 → TradingView 스크리너 → SEC EDGAR(연락처: 저장소 변수 SEC_CONTACT) — 막히면 이전 값
 #   재무 지표 · 한국     한국거래소 PER/PBR 표 → 네이버 증권 종목 요약 — 막히면 이전 값
 #   한국 1년 일봉·시총   FinanceData/marcap (GitHub, KRX 전종목 시세)
 #   한국 업종·주요제품   KIND 상장법인목록 — 막히면 finder/data/kr_meta.json 캐시
@@ -32,7 +32,7 @@ permissions:
 jobs:
   build:
     runs-on: ubuntu-latest
-    timeout-minutes: 60
+    timeout-minutes: 80
     steps:
       - uses: actions/checkout@v4
 

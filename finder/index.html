@@ -46,7 +46,7 @@
 </div></nav>
 
 <main>
-<div class="wrap"><div class="banner" id="stale" hidden></div></div>
+<div class="wrap"><div class="banner" id="stale" hidden></div><div class="banner alert" id="alertBanner" hidden></div></div>
 <section class="hero" id="top"><div class="wrap">
   <p class="eyebrow">ALL STOCKS · US + KR</p>
   <h1>어떤 종목이든,<br>이름 한 글자로 찾고 바로 봅니다.</h1>
@@ -108,7 +108,7 @@
   <div class="chart-head">
     <p class="lead">앞으로 3주 동안 실적을 발표하는 종목입니다. 발표 전후로 주가가 크게 움직이는 경우가 많습니다. <b>★ 관심 · 보유</b> 종목은 표시해 둡니다.</p>
     <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
-      <div class="seg" id="ernMkt" role="group" aria-label="시장"><button type="button" data-v="ALL" aria-pressed="true">전체</button><button type="button" data-v="US" aria-pressed="false">미국</button><button type="button" data-v="KR" aria-pressed="false">한국</button><button type="button" data-v="MINE" aria-pressed="false">내 종목</button></div>
+      <div class="seg" id="ernMkt" role="group" aria-label="시장"><button type="button" data-v="ALL" aria-pressed="true">전체</button><button type="button" data-v="US" aria-pressed="false">미국</button><button type="button" data-v="KR" aria-pressed="false">한국</button><button type="button" data-v="MINE" aria-pressed="false">내 종목</button><button type="button" data-v="EXD" aria-pressed="false">배당락</button></div>
     </div>
   </div>
   <div class="ern mt12" id="ernBox"></div>
@@ -151,8 +151,8 @@
       </div>
     </div>
   </div>
-  <div class="tbar"><span class="count" id="count" aria-live="polite"></span>
-    <div class="btns"><button class="ghost" id="share" type="button">조건 링크 복사</button><button class="ghost" id="reset" type="button">초기화</button><button class="ghost" id="csv" type="button">CSV</button></div>
+  <div class="tbar"><span class="count" id="count" aria-live="polite"></span><span class="count ressum" id="resSum"></span>
+    <div class="btns"><select class="sel" id="savedSel" aria-label="저장한 조건"></select><button class="ghost sm" id="savedDel" type="button" hidden>지우기</button><button class="ghost" id="saveScreen" type="button">조건 저장</button><button class="ghost" id="share" type="button">조건 링크 복사</button><button class="ghost" id="reset" type="button">초기화</button><button class="ghost" id="csv" type="button">CSV</button></div>
   </div>
   <div class="card mt8"><div class="tscroll"><table class="scr" id="tbl"><caption class="sr">스크리너 결과</caption><thead></thead><tbody></tbody></table></div></div>
   <div class="more"><button class="ghost" id="moreBtn" type="button" hidden>50개 더 보기</button></div>
@@ -175,6 +175,7 @@
     <p class="hint mt8" id="pfHint">종목을 고르면 단가 통화(원·달러)가 표시됩니다.</p>
   </div>
   <div id="pfView" class="mt16"></div>
+  <div id="alertView" class="mt16"></div>
   <div class="trow mt12">
     <button class="ghost" id="pfExport" type="button">백업 파일 내려받기</button>
     <label class="ghost" for="pfImport" style="cursor:pointer">백업 불러오기</label><input id="pfImport" type="file" accept="application/json" hidden>
@@ -195,6 +196,7 @@
     <div><b>정배열 · 역배열</b><p>50일선이 200일선 위에 있고 주가가 그 위에 있으면 정배열(중기 상승), 반대면 역배열입니다. 골든·데드크로스는 두 선이 최근 20거래일 안에 교차한 경우만 표시합니다.</p></div>
     <div><b>베타</b><p>지난 1년 하루 수익률로 잰 시장(미국 S&amp;P 500, 한국 코스피·코스닥) 대비 민감도. 1.5면 시장이 1% 움직일 때 평균 1.5% 움직였다는 뜻이고, 1보다 작으면 덜 흔들렸습니다.</p></div>
     <div><b>목표가 여력</b><p>애널리스트 1년 목표주가 평균이 지금 주가보다 몇 % 위에 있는지. 목표가는 자주 늦게 바뀌고 낙관적으로 치우치는 경향이 있어 참고만 하세요.</p></div>
+    <div><b>배당락일</b><p>이 날부터 산 주식은 이번 배당을 받지 못합니다. 미국은 배당락일 전 거래일까지 사서 보유해야 하고, 배당락일에는 보통 배당금만큼 주가가 내려갑니다.</p></div>
     <div><b>RSI(14) · 거래 급증</b><p>RSI 70 이상은 단기 과열, 30 이하는 단기 과매도로 흔히 읽습니다. 거래 배수는 최근 5거래일 평균 거래량 ÷ 60거래일 평균이며 2배를 넘으면 관심이 몰린 상태입니다.</p></div>
   </div>
   <div class="note mt16"><span class="ic">ⓘ</span><div>이 페이지는 공개 데이터를 정리해 보여줄 뿐 <b>투자 권유가 아닙니다.</b> 가격은 실시간이 아니라 전 거래일 종가 기준이며, 원천 데이터의 오류나 지연이 있을 수 있습니다. 거래 전 증권사 시세와 공시를 확인하세요.</div></div>

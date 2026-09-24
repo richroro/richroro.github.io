@@ -402,7 +402,14 @@ def scores(rows: list[dict]):
 
 # --------------------------------------------------------------------------- 재무
 QUOTE_URL = "https://query1.finance.yahoo.com/v7/finance/quote"
-FUND = ("pe", "fpe", "pb", "dy", "eps", "roe", "ern", "ar", "fs", "tgt")
+FUND = ("pe", "fpe", "pb", "dy", "eps", "roe", "ern", "ar", "fs", "tgt", "exd")
+
+
+def plausible_target(tgt, price) -> bool:
+    """목표가가 현재가의 1/4 ~ 4배 밖이면 버린다. 액면 병합·분할 뒤 고치지 않은 목표가가 흔하다."""
+    if tgt is None or not price:
+        return True
+    return 0.25 <= tgt / price <= 4
 
 
 def yahoo_symbol(r: dict) -> str | None:
@@ -790,7 +797,19 @@ def parse_nasdaq_summary(j: dict, price: float | None) -> dict:
         ann = _num(find("annualized dividend") or find("dividend", "!date"))
         dy = ann / price * 100 if ann is not None and price else None
     f["dy"] = _ok(dy, -0.001, 25)
+    f["exd"] = _date(find("ex", "dividend", "date") or find("exdividend"))
     return f
+
+
+def _date(v) -> str | None:
+    """'Sep 5, 2026' · '09/05/2026' · '2026-09-05' → ISO. 못 읽으면 None."""
+    t = str(v or "").strip()
+    for fmt in ("%b %d, %Y", "%m/%d/%Y", "%Y-%m-%d", "%B %d, %Y"):
+        try:
+            return dt.datetime.strptime(t, fmt).date().isoformat()
+        except ValueError:
+            pass
+    return None
 
 
 def nasdaq_fields(j: dict) -> str:
@@ -853,22 +872,119 @@ def nasdaq_earnings(today: dt.date, days: int = 21) -> dict[str, str]:
     return out
 
 
+# ---- 트레이딩뷰 스크리너 — 시장마다 요청 한 번에 전 종목의 PER·EPS·PBR·ROE·배당·다음 실적일
+TV_URL = "https://scanner.tradingview.com/{market}/scan"
+# 열 이름은 바뀔 수 있어 후보를 여럿 두고, 서버가 받아 주는 첫 이름을 쓴다
+TV_CANDIDATES = {
+    "pe": ["price_earnings_ttm"], "fpe": ["price_earnings_forward_fy", "non_gaap_price_to_earnings_per_share_forecast_next_fy"],
+    "eps": ["earnings_per_share_diluted_ttm", "earnings_per_share_basic_ttm"], "pb": ["price_book_fq", "price_book_ratio"],
+    "roe": ["return_on_equity", "return_on_equity_fq"], "dy": ["dividends_yield_current", "dividend_yield_recent", "dividends_yield"],
+    "ern": ["earnings_release_next_date"], "exd": ["ex_dividend_date_upcoming"],
+    # 애널리스트 평균 의견(1 강력 매수 … 5 강력 매도, Yahoo 와 같은 눈금)과 평균 목표가(상장 통화)
+    "ar": ["recommendation_mark"], "tgt": ["price_target_average", "price_target_1y"],
+}
+TV_EX = {"NASDAQ": "NASDAQ", "NYSE": "NYSE", "AMEX": "AMEX", "KOSPI": "KRX", "KOSDAQ": "KRX", "KONEX": "KRX"}
+
+
+def tv_post(market: str, body: dict):
+    req = urllib.request.Request(TV_URL.format(market=market), data=json.dumps(body).encode(),
+                                 headers={"User-Agent": UA, "Content-Type": "application/json",
+                                          "Origin": "https://www.tradingview.com", "Referer": "https://www.tradingview.com/"})
+    with urllib.request.urlopen(req, timeout=90) as r:
+        return json.loads(r.read())
+
+
+def tv_columns(market: str) -> dict[str, str]:
+    """후보 열을 시총 상위 50종목 요청으로 하나씩 시험한다(배당락일처럼 대부분 빈 열도 잡히게). 이름은 받아 줘도 값이 비는 열이 있어
+    값이 하나라도 온 열만 고른다."""
+    ok = {}
+    for key, cands in TV_CANDIDATES.items():
+        for c in cands:
+            try:
+                j = tv_post(market, {"columns": ["name", c], "range": [0, 50],
+                                     "sort": {"sortBy": "market_cap_basic", "sortOrder": "desc"}})
+            except Exception:
+                continue
+            if any(len(row.get("d") or []) > 1 and row["d"][1] is not None for row in j.get("data") or []):
+                ok[key] = c
+                break
+    return ok
+
+
+def _tv_date(v) -> str | None:
+    if isinstance(v, (int, float)) and v > 1e8:
+        return dt.datetime.fromtimestamp(v, dt.timezone.utc).date().isoformat()
+    return None
+
+
+def parse_tv(j: dict, cols: dict[str, str], today: dt.date) -> dict[str, dict]:
+    """{"data":[{"s":"NASDAQ:AAPL","d":[name, …]}]} → 종목 id → 재무 지표"""
+    keys = list(cols)
+    out = {}
+    for row in (j or {}).get("data") or []:
+        ex, _, sym = str(row.get("s", "")).partition(":")
+        d = row.get("d") or []
+        if not sym or len(d) < 1 + len(keys):
+            continue
+        v = dict(zip(keys, d[1:]))
+        f = {"pe": _ok(v.get("pe"), 0.5, 3000), "fpe": _ok(v.get("fpe"), 0.5, 3000), "pb": _ok(v.get("pb"), 0, 500),
+             "ar": _ok(v.get("ar"), 0.99, 5.01), "tgt": _ok(v.get("tgt"), 0, 1e8),
+             "roe": _ok(v.get("roe"), -300, 300), "dy": _ok(v.get("dy"), -0.001, 25),
+             "eps": v.get("eps") if isinstance(v.get("eps"), (int, float)) and math.isfinite(v["eps"]) else None}
+        e = _tv_date(v.get("ern"))
+        f["ern"] = e if e and e >= today.isoformat() else None
+        f["exd"] = _tv_date(v.get("exd"))
+        sid = sym.replace("/", ".") if ex != "KRX" else sym.zfill(6)
+        if any(x is not None for x in f.values()):
+            out[sid] = dict(f, fs="T")
+    return out
+
+
+def tv_fund(rows: list[dict], today: dt.date) -> dict[str, dict]:
+    out = {}
+    for market, g in (("america", "US"), ("korea", "KR")):
+        cols = tv_columns(market)
+        log(f"  트레이딩뷰 {market} 열: {cols or '없음'}")
+        if not cols:
+            continue
+        n = sum(1 for r in rows if r["g"] == g)
+        try:
+            j = tv_post(market, {"columns": ["name"] + list(cols.values()), "range": [0, max(4000, n * 3)],
+                                 "options": {"lang": "en"}})
+        except Exception as e:
+            log(f"  트레이딩뷰 {market}: {str(e)[:100]}")
+            continue
+        ids = {r["id"] for r in rows if r["g"] == g}
+        got = {k: v for k, v in parse_tv(j, cols, today).items() if k in ids}
+        log(f"  트레이딩뷰 {market}: {len(got)}/{len(ids)}종목")
+        for sid in ("AAPL", "NVDA", "005930", "000660"):  # 눈금·통화가 맞는지 로그로 바로 확인한다
+            if sid in got:
+                log(f"    {sid}: {got[sid]}")
+        out.update(got)
+    return out
+
+
 def fundamentals(rows: list[dict], today: dt.date, kr_asof: dt.date | None) -> tuple[dict[str, dict], dict]:
-    """출처를 겹쳐 쓴다. 한국은 거래소 값을 우선하고, 미국은 Yahoo(최근 4분기)가 되면 그것을,
-    안 되면 SEC(최근 회계연도)를 쓴다. 실적일·애널리스트 의견은 Yahoo 에서만 나온다."""
+    """출처를 겹쳐 쓴다. 한국은 거래소·네이버 값을 우선하고 트레이딩뷰로 빈 칸을 채운다.
+    미국은 Yahoo > 트레이딩뷰 > 나스닥(목표가·배당락) > SEC > 네이버 순으로, 앞 출처에 없는 칸만 뒤에서 채운다."""
+    kr_ids = {r["id"] for r in rows if r["g"] == "KR"}
     y = yahoo_fund(rows, today)
     log(f"  Yahoo {len(y)}종목")
-    q = {} if len(y) >= 1000 else nasdaq_fund(rows)
+    t = tv_fund(rows, today)
+    # 나스닥 요약은 종목마다 요청이라 20분 가까이 걸린다. 트레이딩뷰에 목표가가 없는 종목만 묻는다
+    need = [r for r in rows if r["g"] == "US" and (t.get(r["id"]) or {}).get("tgt") is None]
+    q = {} if len(y) >= 1000 else nasdaq_fund(need)
     s = sec_fund(rows, today)
     log(f"  SEC {len(s)}종목")
     if not y and not q and len(s) < 1000:  # 미국 쪽이 다 막히면 네이버 해외주식으로 채운다
         for sid, f in naver_us_fund(rows).items():
             s.setdefault(sid, f)
     n_sec = sum(1 for f in s.values() if f.get("fs") == "S")
-    # 미국 우선순위: Yahoo > 나스닥 > SEC/네이버. 앞 출처에 없는 칸만 뒤 출처로 채운다
-    for sid, f in q.items():
-        base = s.get(sid, {})
-        s[sid] = dict(base, **{kk: v for kk, v in f.items() if v is not None})
+    # 미국 우선순위: Yahoo > 트레이딩뷰 > 나스닥 > SEC/네이버. 뒤 출처는 앞 출처에 없는 칸만 채운다
+    for src in (q, {k: v for k, v in t.items() if k not in kr_ids}):
+        for sid, f in src.items():
+            base = s.get(sid, {})
+            s[sid] = dict(base, **{kk: v for kk, v in f.items() if v is not None})
     ern = nasdaq_earnings(today)
     k = krx_fund(kr_asof) or naver_fund(rows)
     out: dict[str, dict] = {}
@@ -882,9 +998,19 @@ def fundamentals(rows: list[dict], today: dt.date, kr_asof: dt.date | None) -> t
             cur.update({kk: v for kk, v in f.items() if v is not None})
     for sid, f in k.items():
         out.setdefault(sid, {}).update({kk: v for kk, v in f.items() if v is not None})
+    for sid, f in t.items():  # 한국: 거래소·네이버 값이 우선, 트레이딩뷰는 빈 칸(실적일·ROE 등)만
+        if sid in kr_ids:
+            cur = out.setdefault(sid, {})
+            for kk, v in f.items():
+                if v is not None and cur.get(kk) is None:
+                    cur[kk] = v
     for sid, d in ern.items():  # 실적일은 나스닥 캘린더가 더 정확하다(Yahoo 가 막힌 날에도 나온다)
         out.setdefault(sid, {})["ern"] = d
-    counts = {"Y": len(y), "Q": len(q), "E": len(ern), "S": n_sec,
+    for f in out.values():  # 반올림하면 0.0 이 되는 PER 은 뜻이 없다
+        for kk in ("pe", "fpe"):
+            if f.get(kk) is not None and f[kk] < 0.5:
+                f[kk] = None
+    counts = {"Y": len(y), "T": len(t), "Q": len(q), "E": len(ern), "S": n_sec,
               "K": sum(1 for f in k.values() if f.get("fs") == "K"),
               "N": sum(1 for f in list(k.values()) + list(s.values()) if f.get("fs") == "N")}
     return out, counts
@@ -955,6 +1081,87 @@ def bench_for(r: dict) -> str:
     return "^GSPC" if r["g"] == "US" else "^KS11" if r["m"] == "KOSPI" else "^KQ11"
 
 
+# --------------------------------------------------------------------------- 일봉 파일(상세 차트용)
+B64 = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_"
+
+
+def enc12(vals, lo: float, hi: float) -> str:
+    """값마다 두 글자(12비트, 4096단계). 빈 날은 '..'."""
+    span = (hi - lo) or 1.0
+    out = []
+    for v in vals:
+        if v is None or not math.isfinite(v):
+            out.append("..")
+            continue
+        q = max(0, min(4095, int(round((v - lo) / span * 4095))))
+        out.append(B64[q >> 6] + B64[q & 63])
+    return "".join(out)
+
+
+def enc6(vals, hi: float) -> str:
+    """거래량은 한 글자(64단계, 최댓값 기준)."""
+    return "".join("." if v is None else B64[max(0, min(63, int(round(v / (hi or 1) * 63))))] for v in vals)
+
+
+def align(h: dict, cal: list) -> tuple[list, list]:
+    """종목 일봉을 시장 달력에 맞춘다. 거래가 없던 날은 전날 종가, 상장 전은 비움."""
+    m = dict(zip(h["dates"], zip(h["close"], h["vol"])))
+    c_out, v_out, last = [], [], None
+    for d in cal:
+        if d in m:
+            last = float(m[d][0])
+            c_out.append(last); v_out.append(float(m[d][1]))
+        else:
+            c_out.append(last); v_out.append(None if last is None else 0.0)
+    return c_out, v_out
+
+
+def hist_market(hists: dict[str, dict], ids: list[str], cal: list, bench: dict[str, dict]) -> dict:
+    out = {"cal": [d.strftime("%y%m%d") for d in cal], "s": {}, "ix": {}}
+    for sym, h in bench.items():
+        c, _ = align(h, cal)
+        vv = [x for x in c if x is not None]
+        if vv:
+            out["ix"][sym] = [round(min(vv), 4), round(max(vv), 4), enc12(c, min(vv), max(vv))]
+    for i in ids:
+        h = hists.get(i)
+        if h is None:
+            continue
+        c, v = align(h, cal)
+        cv = [x for x in c if x is not None]
+        if len(cv) < 20:
+            continue
+        lo, hi = min(cv), max(cv)
+        vmax = max((x for x in v if x), default=0.0)
+        out["s"][i] = [round(lo, 4), round(hi, 4), enc12(c, lo, hi), enc6(v, vmax)]
+    return out
+
+
+def write_hist(path: str, rows: list[dict], us_hist: dict, kr_hist: dict, idx: dict, n_us=500, n_kr=300):
+    """시총 상위 종목(종목 페이지 대상과 같은 기준)의 1년 일봉. 한쪽 시장을 못 받았으면 이전 파일의 그 시장을 그대로 둔다."""
+    prev = {}
+    if os.path.exists(path):
+        with open(path, encoding="utf-8") as f:
+            prev = json.load(f)
+    pages_path = os.path.join(DATA, "pages.json")
+    keep = set(json.load(open(pages_path, encoding="utf-8"))) if os.path.exists(pages_path) else set()
+    out = {"built": dt.datetime.now(dt.timezone.utc).strftime("%Y-%m-%dT%H:%MZ")}
+    for g, hists, n, benches in (("US", us_hist, n_us, ("^GSPC",)), ("KR", kr_hist, n_kr, ("^KS11", "^KQ11"))):
+        cal_src = idx.get(benches[0])
+        if not hists or not cal_src:
+            if g in prev:
+                out[g] = prev[g]
+            continue
+        rs = sorted([r for r in rows if r["g"] == g and r.get("mc")], key=lambda r: -r["mc"])
+        ids = [r["id"] for r in rs[:n]] + [r["id"] for r in rs[n:] if r["id"] in keep]
+        cal = cal_src["dates"][-252:]
+        out[g] = hist_market(hists, ids, cal, {b: idx[b] for b in benches if b in idx})
+    with open(path, "w", encoding="utf-8") as f:
+        json.dump(out, f, ensure_ascii=False, separators=(",", ":"))
+    log(f"일봉 파일: 미국 {len(out.get('US', {}).get('s', {}))} · 한국 {len(out.get('KR', {}).get('s', {}))}종목 "
+        f"({os.path.getsize(path) / 1e6:.2f} MB)")
+
+
 # --------------------------------------------------------------------------- 환율
 def fx_rate(us_rows, kr_rows, prev_meta, today: dt.date) -> tuple[float | None, str, str | None]:
     """원/달러와 그 출처, 실측 날짜."""
@@ -984,7 +1191,7 @@ COLS = ["id", "m", "n", "ko", "sec", "ind", "cty", "ipo", "p", "d1", "mc", "mcu"
         "r5", "r21", "r63", "r126", "r252", "ytd", "fh", "fl", "h52", "l52", "pm50", "pm200",
         "x", "up", "rsi", "vol", "mdd", "tv", "vs", "sm", "st", "ss", "sl",
         "sp", "spl", "sph", "nd", "asof", "warn", "prod",
-        "pe", "fpe", "pb", "dy", "eps", "roe", "ern", "ar", "fs", "tgt", "beta"]
+        "pe", "fpe", "pb", "dy", "eps", "roe", "ern", "ar", "fs", "tgt", "beta", "exd"]
 
 
 def rnd(v, k):
@@ -1036,6 +1243,7 @@ def to_row(r: dict) -> list:
     out["fs"] = r.get("fs") or ""
     out["tgt"] = price_round(r.get("tgt"), g)
     out["beta"] = rnd(r.get("beta"), 2)
+    out["exd"] = r.get("exd") or ""
     return [out[c] for c in COLS]
 
 
@@ -1055,6 +1263,7 @@ def main():
     ap.add_argument("--no-us-history", action="store_true")
     ap.add_argument("--no-kind", action="store_true")
     ap.add_argument("--no-fund", action="store_true", help="재무 지표 생략(이전 값 유지)")
+    ap.add_argument("--no-hist-file", action="store_true", help="상세 차트용 일봉 파일(data/hist.json)을 쓰지 않는다")
     ap.add_argument("--us-limit", type=int, default=0, help="시총 상위 N개만 일봉을 받는다(0=전부)")
     ap.add_argument("--min-rows", type=int, default=0,
                     help="종목 수가 이보다 적으면 저장하지 않고 실패한다(원천 데이터가 깨졌을 때 좋은 파일을 덮지 않도록)")
@@ -1150,6 +1359,10 @@ def main():
         f.update(fund.get(r["id"], {}))
         if f.get("ern") and f["ern"] < today.isoformat():
             f["ern"] = None
+        if f.get("exd") and f["exd"] < (today - dt.timedelta(days=30)).isoformat():
+            f["exd"] = None
+        if not plausible_target(f.get("tgt"), r.get("p")):
+            f["tgt"] = None
         for k in FUND:
             if f.get(k) is not None and f.get(k) != "":
                 r[k] = f[k]
@@ -1181,6 +1394,8 @@ def main():
         "cols": COLS,
     }
     os.makedirs(os.path.dirname(a.out), exist_ok=True)
+    if not a.no_hist_file:
+        write_hist(os.path.join(os.path.dirname(a.out), "hist.json"), rows, us_hist, kr_hist, idx)
     with open(a.out, "w", encoding="utf-8") as f:
         f.write('{"meta":' + json.dumps(meta, ensure_ascii=False, separators=(",", ":")) + ',"rows":[\n')
         f.write(",\n".join(json.dumps(v, ensure_ascii=False, separators=(",", ":")) for v in out_rows))
