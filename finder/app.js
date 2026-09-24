@@ -395,8 +395,9 @@ const PRESETS = [
   { id: "lose", t: "오늘 급락", sort: ["d1", 1], f: (r) => r.d1 != null },
   { id: "high", t: "52주 신고가권", sort: ["fh", -1], f: (r) => r.fh != null && r.fh >= -3 },
   { id: "low", t: "52주 저점권", sort: ["fl", 1], f: (r) => r.fl != null && r.fl <= 5 },
-  { id: "value", t: "저PER·고ROE", sort: ["pe", 1], view: "value", f: (r) => r.pe != null && r.pe < 12 && r.roe != null && r.roe >= 12 },
-  { id: "div", t: "고배당 4%+", sort: ["dy", -1], view: "value", f: (r) => r.dy != null && r.dy >= 4 && (r.mcu || 0) >= 300 },
+  // 일회성 이익·아주 작은 자본에서 나오는 극단값(PER 0.x, ROE 200%)과 관리종목은 뺀다
+  { id: "value", t: "저PER·고ROE", sort: ["pe", 1], view: "value", f: (r) => r.pe >= 3 && r.pe < 12 && r.roe >= 12 && r.roe <= 60 && (r.mcu || 0) >= 300 && !r.warn },
+  { id: "div", t: "고배당 4%+", sort: ["dy", -1], view: "value", f: (r) => r.dy != null && r.dy >= 4 && r.dy <= 15 && (r.mcu || 0) >= 300 && !r.warn },
   { id: "earn", t: "2주 안 실적 발표", sort: ["ern", 1], view: "value", f: (r) => soon(r, 14) },
   { id: "buy", t: "애널리스트 매수", sort: ["ar", 1], view: "value", f: (r) => r.ar != null && r.ar <= 2 && (r.mcu || 0) >= 2000 },
   { id: "gc", t: "골든크로스", sort: ["mcu", -1], view: "tech", f: (r) => r.x === "G" },
@@ -624,6 +625,9 @@ function readUrl() {
   S.preset = PRESETS.some((x) => x.id === p.get("p")) ? p.get("p") : null;
   S.flt = (p.get("q") || "").toLowerCase();
   S.rules = (p.get("r") || "").split(",").map((s) => s.split(":")).filter(([k]) => MET[k]).map(([k, a, b]) => ({ k, min: n(a), max: n(b) }));
+  // 빠른 조건만 담긴 링크는 그 조건의 정렬·열 묶음을 따른다(버튼을 누른 것과 같게)
+  const pre = PRESETS.find((x) => x.id === S.preset);
+  if (pre) { S.sort = [...pre.sort]; if (pre.view) S.view = pre.view; }
   const s = (p.get("s") || "").split(":");
   if (SORT_KEYS.has(s[0])) S.sort = [s[0], +s[1] === 1 ? 1 : -1];
   if (VIEWS[p.get("v")]) S.view = p.get("v");
