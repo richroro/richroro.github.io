@@ -60,6 +60,9 @@ DETAIL = page("""
 <tr><td>업종</td><td>의약품 제조업</td><td>대표자</td><td>홍길동</td></tr>
 <tr><td>총공모주식수</td><td>1,500,000 주</td><td>액면가</td><td>500 원</td></tr>
 <tr><td>환불일</td><td>2026.09.30</td><td>상장일</td><td>2026.10.06</td></tr>
+<tr><td>상장공모</td><td colspan=3>신주모집 : 1,200,000 주 (80%)<br>구주매출 : 300,000 주 (20%)</td></tr>
+<tr><td>상장후주식수</td><td>6,000,000 주</td><td>유통가능물량</td><td>1,650,000주 (27.5%)</td></tr>
+<tr><td>주간사</td><td colspan=3>NH투자증권 : 1,050,000 주<br>삼성증권 : 450,000 주</td></tr>
 </table>""")
 
 
@@ -118,7 +121,17 @@ class Tables(unittest.TestCase):
     def test_detail(self):
         d = build.parse_detail(DETAIL, TODAY)
         self.assertEqual(d, {"market": "KOSDAQ", "code": "456780", "sector": "의약품 제조업", "shares": 1500000,
-                             "refund": "2026-09-30", "list": "2026-10-06"})
+                             "refund": "2026-09-30", "list": "2026-10-06", "post_shares": 6000000,
+                             "old_shares": 300000, "float_pct": 27.5,
+                             "uw_alloc": [["NH투자증권", 1050000], ["삼성증권", 450000]]})
+
+    def test_detail_drops_nonsense(self):
+        # 배정 합이 총공모주식수보다 훨씬 크면(다른 표의 숫자) 버린다
+        t = page("<table><tr><td>총공모주식수</td><td>100,000 주</td></tr>"
+                 "<tr><td>기타</td><td>KB증권 : 9,000,000 주 유통가능 물량 250%</td></tr></table>")
+        d = build.parse_detail(t, TODAY)
+        self.assertNotIn("uw_alloc", d)
+        self.assertNotIn("float_pct", d)
 
     def test_header_needs_most_columns(self):
         # '종목명' 한 칸만 있는 레이아웃 행은 머리글이 아니다
@@ -141,15 +154,20 @@ class Merge(unittest.TestCase):
         self.assertEqual(d["uw"], ["한국투자증권"])  # 짧은 '한국투자' 대신 청약 표 이름
         g = by["가나바이오"]
         self.assertEqual((g["market"], g["list_date"], g["refund"], g["code"]), ("KOSDAQ", "2026-10-06", "2026-09-30", "456780"))
+        self.assertEqual((g["float_pct"], g["old_shares"], g["post_shares"]), (27.5, 300000, 6000000))
         self.assertTrue(by["마바스팩7호"]["spac"])
         self.assertFalse(g["spac"])
         self.assertEqual(items[0]["name"], "마바스팩7호")  # 최근 청약이 앞
 
     def test_need_detail(self):
         it = {"no": "9", "sub_end": "2026-09-25"}
-        self.assertTrue(build.need_detail(it, TODAY, {}))
-        self.assertFalse(build.need_detail(it, TODAY, {"9": {"market": "KOSDAQ", "list_date": "x", "refund": "y"}}))
-        self.assertFalse(build.need_detail({"no": "9", "sub_end": "2026-01-01"}, TODAY, {}))
+        full = {"market": "KOSDAQ", "list_date": "x", "refund": "y", "float_pct": 20.0}
+        self.assertEqual(build.need_detail(it, TODAY, {}), 1)
+        self.assertEqual(build.need_detail(it, TODAY, {"9": full}), 0)
+        # 반년 안 지난 종목은 한 번도 못 읽었으면 여유 있을 때 채운다
+        self.assertEqual(build.need_detail({"no": "9", "sub_end": "2026-06-01"}, TODAY, {}), 2)
+        self.assertEqual(build.need_detail({"no": "9", "sub_end": "2026-06-01"}, TODAY, {"9": full}), 0)
+        self.assertEqual(build.need_detail({"no": "9", "sub_end": "2025-12-01"}, TODAY, {}), 0)
 
 
 class EndToEnd(unittest.TestCase):

@@ -52,6 +52,13 @@ def check(path: str, min_items: int = 5, stale_days: int = 3, today: dt.date | N
                 errors.append(f"{tag} {k} 값 이상: {v!r}")
         if it.get("lockup") is not None and not 0 <= it["lockup"] <= 100:
             errors.append(f"{tag} 확약 비율 이상: {it['lockup']}")
+        if it.get("float_pct") is not None and not 0 < it["float_pct"] <= 100:
+            errors.append(f"{tag} 유통가능 비율 이상: {it['float_pct']}")
+        if it.get("old_shares") and it.get("shares") and it["old_shares"] > it["shares"]:
+            errors.append(f"{tag} 구주매출이 총공모주식수보다 많음")
+        ua = it.get("uw_alloc")
+        if ua is not None and not (isinstance(ua, list) and all(isinstance(x, list) and len(x) == 2 and isinstance(x[1], int) for x in ua)):
+            errors.append(f"{tag} uw_alloc 형식: {ua!r}")
     up = d.get("updated")
     if up:
         try:

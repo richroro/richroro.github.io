@@ -25,6 +25,8 @@ jobs:
       - name: 단위 테스트
         run: python -m unittest discover -s ipo/tests -v
       - name: 자바스크립트 문법
-        run: node --check ipo/app.js && node --check ipo/sw.js
+        run: node --check ipo/app.js && node --check ipo/sw.js && node --check ipo/score.js
+      - name: 점수 테스트
+        run: node --test ipo/tests/score.test.js
       - name: 데이터 파일 검사
         run: python ipo/validate.py

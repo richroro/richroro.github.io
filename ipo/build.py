@@ -49,7 +49,12 @@ LISTING_COLS = {"name": ("기업명", "종목명"), "list": ("신규상장일", 
                 "price": ("공모가(원)", "공모가"), "open": ("시초가(원)", "시초가"), "close1": ("첫날종가",)}
 # 상세 페이지의 "이름표 | 값" 칸
 DETAIL_LABELS = {"market": ("시장구분",), "sector": ("업종",), "shares": ("총공모주식수",),
-                 "refund": ("환불일",), "list": ("상장일",), "code": ("종목코드",)}
+                 "refund": ("환불일",), "list": ("상장일",), "code": ("종목코드",),
+                 "post_shares": ("상장후주식수", "공모후상장주식수", "상장예정주식수", "공모후주식수", "상장주식수")}
+# 상세 페이지 글 전체에서 찾는 값 — 칸 위치가 종목마다 달라 이름표 옆 칸으로 못 잡는다
+OLD_RE = re.compile(r"구주\s*매출\s*[:：]?\s*([\d,]+)\s*주")
+FLOAT_RE = re.compile(r"유통\s*가능[^%]{0,60}?(?<![\d.,])(\d{1,3}(?:\.\d+)?)\s*%")
+UW_ALLOC_RE = re.compile(r"([가-힣A-Za-z]{1,12}증권)\s*[:：]?\s*([\d,]{3,})\s*주")
 
 
 def log(*a):
@@ -344,18 +349,44 @@ def parse_detail(text: str, today: dt.date) -> dict:
                         "KONEX" if re.search(r"코넥스|KONEX", v, re.I) else None
                 elif key == "sector":
                     got[key] = v[:40] or None
-                elif key == "shares":
+                elif key in ("shares", "post_shares"):
                     got[key] = to_int(v)
                 elif key in ("refund", "list"):
                     got[key] = one_date(v, today)
                 elif key == "code":
                     m = re.search(r"\b(\d{5}[0-9A-Z])\b", v)
                     got[key] = m.group(1) if m else None
+    got.update(detail_extras(text, got.get("shares")))
     return {k: v for k, v in got.items() if v is not None}
 
 
+def detail_extras(text: str, shares: int | None) -> dict:
+    """구주매출 주식 수, 상장일 유통가능 물량 비율, 주간사별 배정 주식 수 — 못 찾거나 말이 안 되면 뺀다."""
+    flat = " ".join(c["t"] for r in html_rows(text) for c in r)
+    out: dict = {}
+    m = OLD_RE.search(flat)
+    if m:
+        v = to_int(m.group(1))
+        if v is not None and (not shares or v <= shares):
+            out["old_shares"] = v
+    m = FLOAT_RE.search(flat)
+    if m:
+        v = float(m.group(1))
+        if 1 <= v <= 100:
+            out["float_pct"] = v
+    alloc: dict[str, int] = {}
+    for name, n in UW_ALLOC_RE.findall(flat):
+        n = to_int(n)
+        if n and name not in alloc:
+            alloc[name] = n
+    if alloc and (not shares or sum(alloc.values()) <= shares * 1.05):
+        out["uw_alloc"] = [[k, v] for k, v in alloc.items()]
+    return out
+
+
 # ---------------------------------------------------------------- 합치기
-FIELDS = ["id", "name", "no", "market", "sector", "code", "uw", "band_lo", "band_hi", "price", "amount", "shares",
+FIELDS = ["id", "name", "no", "market", "sector", "code", "uw", "uw_alloc", "band_lo", "band_hi", "price", "amount",
+          "shares", "post_shares", "old_shares", "float_pct",
           "fc_start", "fc_end", "inst_comp", "lockup", "sub_start", "sub_end", "sub_comp", "refund",
           "list_date", "open", "close1", "cur", "spac"]
 
@@ -403,16 +434,18 @@ def merge(prev: list[dict], schedule, forecast, listing, details: dict[str, dict
     return out
 
 
-def need_detail(it: dict, today: dt.date, prev_by_no: dict[str, dict]) -> bool:
-    """상세 페이지는 앞으로 일정이 남았거나 최근 2주 안에 청약한 종목만, 그리고 모르는 값이 있을 때만 다시 읽는다."""
+def need_detail(it: dict, today: dt.date, prev_by_no: dict[str, dict]) -> int:
+    """상세 페이지를 다시 읽을 차례. 0 = 안 읽음, 1 = 먼저(앞으로 일정이 있거나 최근 2주), 2 = 여유 있을 때(반년 안, 한 번도 못 읽음).
+    반년 안 종목을 채워 두면 '판정별 시초가 성적'을 더 많은 표본으로 볼 수 있다."""
     if not it.get("no"):
-        return False
-    edge = (today - dt.timedelta(days=14)).isoformat()
-    recent = max(it.get("sub_end") or "", it.get("fc_end") or "", it.get("list_date") or "") >= edge
-    if not recent:
-        return False
+        return 0
+    last = max(it.get("sub_end") or "", it.get("fc_end") or "", it.get("list_date") or "")
     p = prev_by_no.get(it["no"], {})
-    return not all(p.get(k) for k in ("market", "list_date", "refund"))
+    if last >= (today - dt.timedelta(days=14)).isoformat():
+        return 1 if not all(p.get(k) for k in ("market", "list_date", "refund")) or not p.get("float_pct") else 0
+    if last >= (today - dt.timedelta(days=180)).isoformat() and not p.get("market"):
+        return 2
+    return 0
 
 
 # ---------------------------------------------------------------- 실행
@@ -478,7 +511,8 @@ def main(argv=None) -> int:
     details: dict[str, dict] = {}
     if not a.no_detail:
         prev_by_no = {p["no"]: p for p in prev if p.get("no")}
-        todo = [it["no"] for it in items if need_detail(it, today, prev_by_no)]
+        rank = [(need_detail(it, today, prev_by_no), it["no"]) for it in items if it.get("no")]
+        todo = [no for r, no in sorted(x for x in rank if x[0])]
         log(f"상세 페이지 {len(todo)}곳")
         for no in todo[:40]:
             try:
