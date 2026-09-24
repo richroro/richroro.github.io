@@ -313,6 +313,8 @@ class Sources(unittest.TestCase):
         build.krx_fund = lambda asof: {"005930": {"pe": 42.0, "fs": "K"}}
         naver = build.naver_fund
         build.naver_fund = lambda rows: self.fail("KRX 가 되면 네이버는 부르지 않는다")
+        tvf = build.tv_fund
+        build.tv_fund = lambda rows, today: {"AAPL": {"pe": 99.0, "roe": 150.0, "fs": "T"}, "005930": {"pe": 1.0, "ern": "2026-10-28", "fs": "T"}}
         nq = (build.nasdaq_fund, build.nasdaq_earnings)
         build.nasdaq_fund = lambda rows: {"AAPL": {"pe": 34.0, "tgt": 260.0, "fs": "Q"}}
         build.nasdaq_earnings = lambda today: {"AAPL": "2026-10-29", "MSFT": "2026-10-28"}
@@ -322,13 +324,15 @@ class Sources(unittest.TestCase):
             build.yahoo_fund, build.sec_fund, build.krx_fund = orig
             build.naver_fund = naver
             build.nasdaq_fund, build.nasdaq_earnings = nq
-        self.assertEqual(out["005930"]["pe"], 42.0)       # 거래소 값
+            build.tv_fund = tvf
+        self.assertEqual(out["005930"]["pe"], 42.0)       # 거래소 값(트레이딩뷰 1.0 보다 우선)
         self.assertEqual(out["005930"]["ern"], "2026-10-30")  # 실적일은 Yahoo
         self.assertEqual(out["AAPL"]["pe"], 35.0)          # 미국은 Yahoo(최근 4분기) 우선
         self.assertEqual(out["AAPL"]["pb"], 50.0)          # 빈 값은 SEC 로 채움
+        self.assertEqual(out["AAPL"]["roe"], 150.0)        # Yahoo 에 없는 칸은 트레이딩뷰
         self.assertEqual(out["AAPL"]["tgt"], 260.0)        # Yahoo 에 없는 칸은 나스닥
         self.assertEqual(out["MSFT"], {"ern": "2026-10-28"})  # 실적일만 있는 종목
-        self.assertEqual(n, {"Y": 2, "Q": 1, "E": 2, "S": 1, "K": 1, "N": 0})
+        self.assertEqual(n, {"Y": 2, "T": 2, "Q": 1, "E": 2, "S": 1, "K": 1, "N": 0})
 
     def test_nasdaq_summary(self):
         j = {"data": {"summaryData": {
@@ -374,6 +378,58 @@ class Sources(unittest.TestCase):
         self.assertEqual(out["XOM"]["pe"], 12.0)
         self.assertEqual(out["XOM"]["fs"], "Q")
 
+    def test_plausible_target(self):
+        self.assertTrue(build.plausible_target(None, 10))
+        self.assertTrue(build.plausible_target(15, 10))
+        self.assertFalse(build.plausible_target(45, 10))   # 병합 전 목표가
+        self.assertFalse(build.plausible_target(2, 10))
+
+    def test_tv_parse_and_probe(self):
+        cols = {"pe": "price_earnings_ttm", "eps": "earnings_per_share_diluted_ttm", "roe": "return_on_equity",
+                "ern": "earnings_release_next_date"}
+        ts = int(dt.datetime(2026, 10, 29, tzinfo=dt.timezone.utc).timestamp())
+        j = {"data": [{"s": "NASDAQ:AAPL", "d": ["AAPL", 41.2, 7.9, 150.3, ts]},
+                      {"s": "KRX:5930", "d": ["005930", 12.8, 22292, 25.9, None]},
+                      {"s": "NYSE:BRK/B", "d": ["BRK/B", None, None, None, None]},
+                      {"s": "NYSE:XX", "d": ["XX", -5, -1.0, 400, 1000]}]}
+        out = build.parse_tv(j, cols, dt.date(2026, 9, 24))
+        self.assertEqual(out["AAPL"]["pe"], 41.2)
+        self.assertEqual(out["AAPL"]["ern"], "2026-10-29")
+        self.assertEqual(out["005930"]["roe"], 25.9)
+        self.assertNotIn("BRK.B", out)          # 전부 비면 넣지 않는다
+        self.assertIsNone(out["XX"]["pe"])      # 음수 PER·과한 ROE·지난 날짜는 버린다
+        self.assertIsNone(out["XX"]["roe"])
+        self.assertIsNone(out["XX"]["ern"])
+
+        cols2 = {"pe": "price_earnings_ttm", "ar": "recommendation_mark", "tgt": "price_target_average"}
+        out2 = build.parse_tv({"data": [{"s": "NASDAQ:NVDA", "d": ["NVDA", 0.03, 1.4, 250.0]},
+                                        {"s": "NYSE:YY", "d": ["YY", 20, 7, -1]}]}, cols2, dt.date(2026, 9, 24))
+        self.assertIsNone(out2["NVDA"]["pe"])   # 0 에 가까운 PER 은 버린다
+        self.assertEqual(out2["NVDA"]["ar"], 1.4)
+        self.assertEqual(out2["NVDA"]["tgt"], 250.0)
+        self.assertIsNone(out2["YY"]["ar"])     # 1~5 밖 의견·음수 목표가는 버린다
+        self.assertIsNone(out2["YY"]["tgt"])
+
+        seen = []
+
+        def fake(market, body):
+            c = body["columns"][1]
+            seen.append(c)
+            if c in ("price_earnings_ttm", "return_on_equity_fq"):
+                return {"data": [{"s": "NASDAQ:AAPL", "d": ["AAPL", None]}, {"s": "NASDAQ:NVDA", "d": ["NVDA", 1.2]}]}
+            if c == "price_earnings_forward_fy":  # 이름은 받지만 값이 비는 열은 건너뛴다
+                return {"data": [{"s": "NASDAQ:AAPL", "d": ["AAPL", None]}]}
+            raise Exception("400 Unknown field")
+
+        orig = build.tv_post
+        build.tv_post = fake
+        try:
+            got = build.tv_columns("america")
+        finally:
+            build.tv_post = orig
+        self.assertEqual(got, {"pe": "price_earnings_ttm", "roe": "return_on_equity_fq"})
+        self.assertIn("non_gaap_price_to_earnings_per_share_forecast_next_fy", seen)
+
     def test_nasdaq_earnings(self):
         seen = []
 
@@ -416,6 +472,59 @@ class Beta(unittest.TestCase):
         names = [x["s"] for x in out]
         self.assertEqual(names, ["^KS11", "^GSPC"])
         self.assertEqual(out[0]["p"], 2600.0)
+
+
+class HistFile(unittest.TestCase):
+    def dec12(self, s, lo, hi):
+        B = build.B64
+        out = []
+        for i in range(0, len(s), 2):
+            c = s[i:i + 2]
+            out.append(None if c == ".." else lo + (B.index(c[0]) * 64 + B.index(c[1])) / 4095 * (hi - lo))
+        return out
+
+    def test_enc12_roundtrip(self):
+        vals = [100.0, 101.5, None, 150.25, 99.0]
+        e = build.enc12(vals, 99.0, 150.25)
+        back = self.dec12(e, 99.0, 150.25)
+        self.assertIsNone(back[2])
+        for a, b in zip(vals, back):
+            if a is not None:
+                self.assertLess(abs(a - b), (150.25 - 99) / 4095 + 1e-9)  # 4096단계 오차 안
+        self.assertEqual(len(build.enc6([0, 5, 10, None], 10)), 4)
+
+    def test_align_fills_gaps_and_prelisting(self):
+        h = hist([10, 11, 12], start=dt.date(2026, 9, 2))  # 9/2 9/3 9/4
+        cal = [dt.date(2026, 9, 1), dt.date(2026, 9, 2), dt.date(2026, 9, 3), dt.date(2026, 9, 4), dt.date(2026, 9, 7)]
+        del h["dates"][1]; h["close"] = np.array([10.0, 12.0]); h["vol"] = np.array([5.0, 6.0])  # 9/3 거래정지
+        c, v = build.align(h, cal)
+        self.assertEqual(c, [None, 10.0, 10.0, 12.0, 12.0])
+        self.assertEqual(v, [None, 5.0, 0.0, 6.0, 0.0])
+
+    def test_write_hist_keeps_missing_market(self):
+        import tempfile
+        d = tempfile.mkdtemp()
+        path = os.path.join(d, "hist.json")
+        with open(path, "w") as f:
+            json.dump({"US": {"cal": ["260901"], "s": {"OLD": [1, 2, "AA", "A"]}, "ix": {}}}, f)
+        ix = hist(np.linspace(2500, 2600, 300))
+        kr = {"005930": hist(np.linspace(70000, 270000, 300))}
+        rows = [{"g": "KR", "id": "005930", "mc": 1e15, "m": "KOSPI"}]
+        build.write_hist(path, rows, {}, kr, {"^KS11": ix, "^KQ11": ix})
+        out = json.load(open(path))
+        self.assertIn("OLD", out["US"]["s"])            # 미국 일봉이 없으면 이전 것
+        self.assertEqual(len(out["KR"]["cal"]), 252)
+        lo, hi, c, v = out["KR"]["s"]["005930"]
+        self.assertEqual(len(c), 2 * 252)
+        self.assertEqual(len(v), 252)
+        self.assertIn("^KS11", out["KR"]["ix"])
+
+    def test_dates_and_exdiv(self):
+        self.assertEqual(build._date("Sep 5, 2026"), "2026-09-05")
+        self.assertEqual(build._date("09/05/2026"), "2026-09-05")
+        self.assertIsNone(build._date("N/A"))
+        j = {"data": {"summaryData": {"ExDividendDate": {"label": "Ex Dividend Date", "value": "Oct 10, 2026"}}}}
+        self.assertEqual(build.parse_nasdaq_summary(j, 10.0)["exd"], "2026-10-10")
 
 
 if __name__ == "__main__":

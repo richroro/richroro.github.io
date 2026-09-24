@@ -276,3 +276,25 @@ table.pf-t{min-width:820px}
 .erow .mine{font-size:10px;font-weight:600;color:var(--s4)}
 .erow span.num{font-size:11.5px;color:var(--ink-3)}
 .eday .more{justify-content:flex-start;margin-top:4px}
+/* ---------- 차트 머리·범례 ---------- */
+.chhead{display:flex;flex-wrap:wrap;gap:8px 14px;align-items:center;margin-bottom:8px}
+.chfoot{display:flex;flex-wrap:wrap;gap:6px 14px;justify-content:space-between;align-items:center;margin-top:4px;padding-bottom:4px}
+.chlegend{display:flex;flex-wrap:wrap;gap:4px 12px;font-size:11.5px;color:var(--ink-2)}
+.chlegend span{display:inline-flex;align-items:center;gap:5px}
+.chlegend i{width:12px;height:3px;border-radius:2px}
+/* ---------- 가격 알림 ---------- */
+.alertbox{display:flex;flex-wrap:wrap;gap:6px 8px;align-items:center;margin-top:10px;padding:10px 12px;background:var(--surface);
+  border:1px solid var(--line);border-radius:12px;font-size:13px}
+.alertbox input.flt{flex:0 1 120px;height:30px;min-width:90px}
+.alertbox .hint{flex-basis:100%}
+.banner.alert{background:color-mix(in srgb,var(--s4) 14%,var(--surface));border-color:color-mix(in srgb,var(--s4) 40%,transparent)}
+.banner.alert a{border-bottom:1px solid var(--line)}
+h3.subh{font-size:14px;font-weight:600;margin-bottom:8px}
+#savedSel{max-width:170px}
+table.cmp-t.corr{min-width:0}
+table.cmp-t.corr td{text-align:center;font-variant-numeric:tabular-nums}
+table.cmp-t td.muted{color:var(--ink-3)}
+#cmpCorr:empty{display:none}
+.ressum{margin-left:12px}
+.ressum:empty{display:none}
+@media (max-width:560px){.ressum{display:block;margin:2px 0 0}}
