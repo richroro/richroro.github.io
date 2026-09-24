@@ -865,11 +865,97 @@ def nasdaq_earnings(today: dt.date, days: int = 21) -> dict[str, str]:
     return out
 
 
+# ---- 트레이딩뷰 스크리너 — 시장마다 요청 한 번에 전 종목의 PER·EPS·PBR·ROE·배당·다음 실적일
+TV_URL = "https://scanner.tradingview.com/{market}/scan"
+# 열 이름은 바뀔 수 있어 후보를 여럿 두고, 서버가 받아 주는 첫 이름을 쓴다
+TV_CANDIDATES = {
+    "pe": ["price_earnings_ttm"], "fpe": ["price_earnings_forward_fy", "non_gaap_price_to_earnings_per_share_forecast_next_fy"],
+    "eps": ["earnings_per_share_diluted_ttm", "earnings_per_share_basic_ttm"], "pb": ["price_book_fq", "price_book_ratio"],
+    "roe": ["return_on_equity", "return_on_equity_fq"], "dy": ["dividends_yield_current", "dividend_yield_recent", "dividends_yield"],
+    "ern": ["earnings_release_next_date"], "exd": ["ex_dividend_date_upcoming"],
+}
+TV_EX = {"NASDAQ": "NASDAQ", "NYSE": "NYSE", "AMEX": "AMEX", "KOSPI": "KRX", "KOSDAQ": "KRX", "KONEX": "KRX"}
+
+
+def tv_post(market: str, body: dict):
+    req = urllib.request.Request(TV_URL.format(market=market), data=json.dumps(body).encode(),
+                                 headers={"User-Agent": UA, "Content-Type": "application/json",
+                                          "Origin": "https://www.tradingview.com", "Referer": "https://www.tradingview.com/"})
+    with urllib.request.urlopen(req, timeout=90) as r:
+        return json.loads(r.read())
+
+
+def tv_columns(market: str) -> dict[str, str]:
+    """후보 열을 한 줄짜리 요청으로 하나씩 시험해 받아 주는 이름만 고른다."""
+    ok = {}
+    for key, cands in TV_CANDIDATES.items():
+        for c in cands:
+            try:
+                j = tv_post(market, {"columns": ["name", c], "range": [0, 1]})
+                if "data" in j:
+                    ok[key] = c
+                    break
+            except Exception:
+                continue
+    return ok
+
+
+def _tv_date(v) -> str | None:
+    if isinstance(v, (int, float)) and v > 1e8:
+        return dt.datetime.fromtimestamp(v, dt.timezone.utc).date().isoformat()
+    return None
+
+
+def parse_tv(j: dict, cols: dict[str, str], today: dt.date) -> dict[str, dict]:
+    """{"data":[{"s":"NASDAQ:AAPL","d":[name, …]}]} → 종목 id → 재무 지표"""
+    keys = list(cols)
+    out = {}
+    for row in (j or {}).get("data") or []:
+        ex, _, sym = str(row.get("s", "")).partition(":")
+        d = row.get("d") or []
+        if not sym or len(d) < 1 + len(keys):
+            continue
+        v = dict(zip(keys, d[1:]))
+        f = {"pe": _ok(v.get("pe"), 0, 3000), "fpe": _ok(v.get("fpe"), 0, 3000), "pb": _ok(v.get("pb"), 0, 500),
+             "roe": _ok(v.get("roe"), -300, 300), "dy": _ok(v.get("dy"), -0.001, 25),
+             "eps": v.get("eps") if isinstance(v.get("eps"), (int, float)) and math.isfinite(v["eps"]) else None}
+        e = _tv_date(v.get("ern"))
+        f["ern"] = e if e and e >= today.isoformat() else None
+        f["exd"] = _tv_date(v.get("exd"))
+        sid = sym.replace("/", ".") if ex != "KRX" else sym.zfill(6)
+        if any(x is not None for x in f.values()):
+            out[sid] = dict(f, fs="T")
+    return out
+
+
+def tv_fund(rows: list[dict], today: dt.date) -> dict[str, dict]:
+    out = {}
+    for market, g in (("america", "US"), ("korea", "KR")):
+        cols = tv_columns(market)
+        log(f"  트레이딩뷰 {market} 열: {cols or '없음'}")
+        if not cols:
+            continue
+        n = sum(1 for r in rows if r["g"] == g)
+        try:
+            j = tv_post(market, {"columns": ["name"] + list(cols.values()), "range": [0, max(4000, n * 3)],
+                                 "options": {"lang": "en"}})
+        except Exception as e:
+            log(f"  트레이딩뷰 {market}: {str(e)[:100]}")
+            continue
+        ids = {r["id"] for r in rows if r["g"] == g}
+        got = {k: v for k, v in parse_tv(j, cols, today).items() if k in ids}
+        log(f"  트레이딩뷰 {market}: {len(got)}/{len(ids)}종목")
+        out.update(got)
+    return out
+
+
 def fundamentals(rows: list[dict], today: dt.date, kr_asof: dt.date | None) -> tuple[dict[str, dict], dict]:
-    """출처를 겹쳐 쓴다. 한국은 거래소 값을 우선하고, 미국은 Yahoo(최근 4분기)가 되면 그것을,
-    안 되면 SEC(최근 회계연도)를 쓴다. 실적일·애널리스트 의견은 Yahoo 에서만 나온다."""
+    """출처를 겹쳐 쓴다. 한국은 거래소·네이버 값을 우선하고 트레이딩뷰로 빈 칸을 채운다.
+    미국은 Yahoo > 트레이딩뷰 > 나스닥(목표가·배당락) > SEC > 네이버 순으로, 앞 출처에 없는 칸만 뒤에서 채운다."""
+    kr_ids = {r["id"] for r in rows if r["g"] == "KR"}
     y = yahoo_fund(rows, today)
     log(f"  Yahoo {len(y)}종목")
+    t = tv_fund(rows, today)
     q = {} if len(y) >= 1000 else nasdaq_fund(rows)
     s = sec_fund(rows, today)
     log(f"  SEC {len(s)}종목")
@@ -877,10 +963,11 @@ def fundamentals(rows: list[dict], today: dt.date, kr_asof: dt.date | None) -> t
         for sid, f in naver_us_fund(rows).items():
             s.setdefault(sid, f)
     n_sec = sum(1 for f in s.values() if f.get("fs") == "S")
-    # 미국 우선순위: Yahoo > 나스닥 > SEC/네이버. 앞 출처에 없는 칸만 뒤 출처로 채운다
-    for sid, f in q.items():
-        base = s.get(sid, {})
-        s[sid] = dict(base, **{kk: v for kk, v in f.items() if v is not None})
+    # 미국 우선순위: Yahoo > 트레이딩뷰 > 나스닥 > SEC/네이버. 뒤 출처는 앞 출처에 없는 칸만 채운다
+    for src in (q, {k: v for k, v in t.items() if k not in kr_ids}):
+        for sid, f in src.items():
+            base = s.get(sid, {})
+            s[sid] = dict(base, **{kk: v for kk, v in f.items() if v is not None})
     ern = nasdaq_earnings(today)
     k = krx_fund(kr_asof) or naver_fund(rows)
     out: dict[str, dict] = {}
@@ -894,9 +981,15 @@ def fundamentals(rows: list[dict], today: dt.date, kr_asof: dt.date | None) -> t
             cur.update({kk: v for kk, v in f.items() if v is not None})
     for sid, f in k.items():
         out.setdefault(sid, {}).update({kk: v for kk, v in f.items() if v is not None})
+    for sid, f in t.items():  # 한국: 거래소·네이버 값이 우선, 트레이딩뷰는 빈 칸(실적일·ROE 등)만
+        if sid in kr_ids:
+            cur = out.setdefault(sid, {})
+            for kk, v in f.items():
+                if v is not None and cur.get(kk) is None:
+                    cur[kk] = v
     for sid, d in ern.items():  # 실적일은 나스닥 캘린더가 더 정확하다(Yahoo 가 막힌 날에도 나온다)
         out.setdefault(sid, {})["ern"] = d
-    counts = {"Y": len(y), "Q": len(q), "E": len(ern), "S": n_sec,
+    counts = {"Y": len(y), "T": len(t), "Q": len(q), "E": len(ern), "S": n_sec,
               "K": sum(1 for f in k.values() if f.get("fs") == "K"),
               "N": sum(1 for f in list(k.values()) + list(s.values()) if f.get("fs") == "N")}
     return out, counts
