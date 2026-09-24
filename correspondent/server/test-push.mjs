@@ -154,7 +154,7 @@ try {
   section('서버 — 구독 저장과 권한');
   const S = { 민지: await newSub('mj'), 준호: await newSub('jh'), 서연: await newSub('sy') };
   let r = savePush('민지', S.민지, ['별빛 키즈카페', '별빛키즈카페', ' 만안  손칼국수 ']);
-  ok(r.ok && JSON.parse(r.out).places.join(',') === '만안손칼국수,별빛키즈카페', '저장 — 장소 이름은 서버의 place_key 규칙으로(띄어쓰기 빼고), 겹친 것은 하나로');
+  ok(r.ok && JSON.parse(r.out).places.slice().sort().join(',') === '만안손칼국수,별빛키즈카페', '저장 — 장소 이름은 서버의 place_key 규칙으로(띄어쓰기 빼고), 겹친 것은 하나로');
   r = anon(`select public.save_push('https://push.test/a', ${lit(S.민지.p256dh)}, ${lit(S.민지.auth)}, '${HOOD}', '{}');`);
   ok(!r.ok && /permission denied/.test(r.err), '로그인 없이 → 실행 권한 없음');
   r = as('민지', `select count(*) from push_subs;`);

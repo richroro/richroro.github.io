@@ -492,7 +492,9 @@ console.log('\n== 12. 폰 알림 — 켜고, 지켜보는 곳을 바꾸고, 끄�
     await X.p.keyboard.press('Escape');
     await X.p.locator('.tab[data-view="feed"]').click();
   };
-  const subs = () => sql(`select coalesce(string_agg(array_to_string(places, '+'), ' / '), '') from push_subs where owner='${U.태오}'`);
+  /* 장소 목록은 순서 없이 본다 — 서버의 정렬(데이터베이스 기본 정렬)에 검사가 기대면 설치마다 결과가 달라진다(CI 에서 그렇게 떨어졌다) */
+  const subs = () => sql(`select coalesce(string_agg(array_to_string(places, '+'), ' / '), '') from push_subs where owner='${U.태오}'`)
+    .split(' / ').map((row) => row.split('+').filter(Boolean).sort().join('+')).join(' / ');
   await openAndWatch(P, '중앙공원 놀이터');
   ok((await P.p.locator('#watchBox .w-push').innerText()).includes('폰으로 알려 드릴까요') && await P.p.locator('[data-push="on"]').count() === 1,
      '지켜보는 곳에 "폰 알림 켜기"');

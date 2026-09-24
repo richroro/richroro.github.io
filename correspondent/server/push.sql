@@ -49,8 +49,10 @@ begin
   if not exists (select 1 from correspondents where id = me) then
     raise exception '특파원 등록이 먼저입니다' using errcode = '42501';
   end if;
-  select coalesce(array_agg(distinct k order by k), '{}') into keys
-    from (select lower(regexp_replace(left(btrim(x), 40), '\s', '', 'g')) as k
+  -- 순서는 바이트 순(collate "C")으로 못 박는다. 데이터베이스 기본 정렬을 따르면 설치마다 달라진다 —
+  -- CI 의 Postgres(en_US.utf8)는 "중앙…" 을 "깔아…" 앞에 두었고, 로컬(C)은 뒤에 두었다.
+  select coalesce(array_agg(k order by k collate "C"), '{}') into keys
+    from (select distinct lower(regexp_replace(left(btrim(x), 40), '\s', '', 'g')) as k
             from unnest(coalesce(p_places, '{}')) x) q
    where k <> '';
   if coalesce(array_length(keys, 1), 0) > 30 then
