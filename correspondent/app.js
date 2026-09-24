@@ -988,6 +988,12 @@ async function ensureProfile(){
   catch (e) { return false; }
 }
 
+/** 운영정책으로 글쓰기가 정지된 상태인가 — 서버가 올리기를 거부하면 안다.
+    정지를 모르고 "다음에 다시 올립니다"만 보이면 사용자는 앱이 고장 난 줄 안다. */
+let suspended = false;
+const SUSPENDED_MSG = "운영정책에 따라 글쓰기가 정지된 상태입니다. 쓴 글은 이 기기에 남고, 정지가 풀리면 올라갑니다. " +
+  "이의가 있으면 이용약관의 운영정책 5조로 신청하세요.";
+
 /** 아직 못 올린 내 리포트를 올린다. 남의 글(mine=false)은 절대 올리지 않는다. */
 async function syncPushPending(){
   if (!SY.enabled || !board.hood || !SY.hasSession()) return 0;
@@ -996,11 +1002,11 @@ async function syncPushPending(){
   if (!(await ensureProfile())) return 0;
   let n = 0;
   for (const r of pending) {
-    try { await SY.push(r, board.hood); r.up = true; r.sv = true; r.hd = board.hood; n++; }
+    try { await SY.push(r, board.hood); r.up = true; r.sv = true; r.hd = board.hood; n++; suspended = false; }
     catch (e) {
       /* 이미 올라가 있으면(같은 id) 올린 것으로 친다. 그 밖의 실패는 다음 기회에. */
       if (/duplicate|already exists|23505/i.test(e.message)) { r.up = true; r.sv = true; r.hd = board.hood; }
-      else break;
+      else { if (/보낼 수 없습니다/.test(e.message)) suspended = true; break; }
     }
   }
   if (n) save();
@@ -1101,7 +1107,10 @@ function paintBoardKv(){
   $("#boardKv").innerHTML =
     "<dt>동네</dt><dd>" + (board.hood ? esc(hoodLabel(board.hood)) : "아직 안 골랐습니다") + "</dd>" +
     "<dt>마지막 받아오기</dt><dd>" + (board.pulledAt ? esc(ago(board.pulledAt)) : "—") + "</dd>" +
-    "<dt>내가 쓴 리포트</dt><dd>" + mine + "건 (올라간 것 " + up + "건)</dd>";
+    "<dt>내가 쓴 리포트</dt><dd>" + mine + "건 (올라간 것 " + up + "건)</dd>" +
+    /* 문의·정지 이의 신청 때 운영자가 사람을 찾는 번호. 이름은 겹칠 수 있고 바뀐다. */
+    (SY.hasSession() && SY.uid && SY.uid() ? '<dt>계정 번호</dt><dd><span class="mono">' + esc(SY.uid()) +
+      '</span><br><span class="note">문의나 이의 신청 때 알려 주세요.</span></dd>' : "");
 }
 
 async function openBoardSheet(){
@@ -1113,6 +1122,7 @@ async function openBoardSheet(){
     hoods.map((h) => '<option value="' + esc(h.code) + '"' + (h.code === board.hood ? " selected" : "") +
       ">" + esc(h.label) + "</option>").join("");
   paintAuthBox();
+  if (SY.hasSession()) { try { await SY.whoami(); } catch (e) {} }
   paintBoardKv();
   openSheet("#boardBack");
 }
@@ -1192,7 +1202,8 @@ function toast(msg){
   t.textContent = msg;
   t.hidden = false;
   clearTimeout(toastTimer);
-  toastTimer = setTimeout(() => { t.hidden = true; }, 2600);
+  /* 긴 알림(정지 안내 같은 것)은 읽을 시간만큼 둔다 — 한 글자에 60ms, 적어도 2.6초 */
+  toastTimer = setTimeout(() => { t.hidden = true; }, Math.max(2600, String(msg).length * 60));
 }
 async function copyText(text){
   try { await navigator.clipboard.writeText(text); return true; } catch(e){}
@@ -1692,6 +1703,7 @@ function bind(){
       syncPushPending().then((n) => {
         if (n) { renderAll(); toast("공용 보드에 올렸습니다."); }
         else if (!SY.hasSession()) toast("내 보드에만 저장했습니다. 로그인하면 동네에 올라갑니다.");
+        else if (suspended) toast(SUSPENDED_MSG);
         else toast("아직 못 올렸습니다. 내 보드에는 있고, 다음에 다시 올립니다.");
       });
     }

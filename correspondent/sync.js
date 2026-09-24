@@ -2,8 +2,8 @@
    공용 보드 — PostgREST + GoTrue 에 fetch 로 직접 붙는다.
 
    라이브러리를 안 쓰는 이유: 이 저장소의 앱들은 외부 스크립트 없이 도는 게 원칙이다.
-   supabase-js 는 120KB 인데 여기서 쓰는 건 표 네 개에 대한 GET/POST/DELETE 와
-   토큰 갱신뿐이라 직접 부르는 편이 짧고 읽기 쉽다.
+   supabase-js 는 120KB 인데 여기서 쓰는 건 표 몇 개에 대한 GET/POST/DELETE, 서버 함수 부르기,
+   토큰 갱신뿐이라 직접 부르는 편이 짧고 읽기 쉽다. 앱(app.js)과 운영 화면(admin.js)이 함께 쓴다.
 
    지키는 규칙 하나: 링크로 받은 리포트는 서버에 올리지 않는다.
    남이 쓴 글을 내 계정으로 올리면 작성자가 세탁된다. 내가 쓴 것(mine)만 올라간다.
@@ -168,6 +168,9 @@
     return !!(rows && rows.length);
   };
 
+  /* 서버 함수 부르기. 운영 화면(admin.js)이 쓴다 — 운영자인지는 함수가 토큰으로 가린다. */
+  const rpc = (name, args) => call(rest + "/rpc/" + name, { method: "POST", body: JSON.stringify(args || {}) });
+
   /* 계정을 지운다. 로그인 계정 → 프로필 → 내 리포트 → 내 신고가 서버에서 함께 사라진다.
      지운 뒤의 토큰은 쓸모가 없으니 logout 을 부르지 않고 세션만 버린다. */
   async function deleteAccount() {
@@ -187,6 +190,6 @@
     hasSession: () => !!(session && session.access_token),
     uid: () => session && session.uid,
     consumeAuthHash, whoami, signInKakao, signInEmail, signOut,
-    listHoods, myProfile, saveProfile, pull, push, flag, removeMine, exists, deleteAccount, toReport
+    listHoods, myProfile, saveProfile, pull, push, flag, removeMine, exists, deleteAccount, toReport, rpc
   };
 })(window);

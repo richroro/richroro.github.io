@@ -10,6 +10,7 @@
    토큰은 시험용 Bearer test-<uuid>. 로그인 화면은 건너뛰고 세션을 직접 심는다.
    ========================================================================== */
 import { chromium } from 'playwright';
+import { createRequire } from 'node:module';
 import { execFileSync, spawn, spawnSync } from 'node:child_process';
 import { readFileSync, mkdtempSync, cpSync, writeFileSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
@@ -47,7 +48,7 @@ process.on('SIGINT', () => process.exit(130));
 
 execFileSync('createdb', [DB]);
 const base = ['-X', '-q', '-v', 'ON_ERROR_STOP=1', '-d', DB];
-for (const f of ['test-auth-stub.sql', 'schema.sql', 'policies.sql', 'seed-hoods.sql'])
+for (const f of ['test-auth-stub.sql', 'schema.sql', 'policies.sql', 'admin.sql', 'seed-hoods.sql'])
   execFileSync('psql', [...base, '-f', resolve(HERE, f)], { stdio: ['ignore', 'ignore', 'pipe'] });
 const ret = readFileSync(resolve(HERE, 'retention.sql'), 'utf8').split('여기부터는 Supabase 에서만')[0];
 execFileSync('psql', base, { input: ret.slice(0, ret.lastIndexOf('\n')) });
@@ -58,7 +59,7 @@ writeFileSync(join(web, 'correspondent', 'config.js'),
   `window.TPW_CONFIG = { url: "${API}", anonKey: "test-anon-key", hood: "" };\n`);
 /* 앱의 CSP 는 Supabase(https://*.supabase.co)에만 연결을 허락한다. 사본에만 모의 서버 주소를 더한다 —
    운영에서 다른 주소(자체 도메인)를 쓰면 똑같이 connect-src 에 더해야 한다(SETUP.md). */
-for (const f of ['index.html']) {
+for (const f of ['index.html', 'admin.html']) {
   const file = join(web, 'correspondent', f);
   const html = readFileSync(file, 'utf8');
   if (!html.includes('https://*.supabase.co')) { console.error(f + ' 에 CSP connect-src 가 없습니다'); process.exit(1); }
@@ -80,6 +81,9 @@ for (const u of [API + '/rest/v1/hoods', URL]) {
 let pass = 0, fail = 0;
 const ok = (c, m) => { if (c) { pass++; console.log('  ok  ' + m); } else { fail++; console.log('  FAIL ' + m); } };
 const errs = [];
+/* 서버가 일부러 거부한 요청(400)은 브라우저가 콘솔 오류로 찍는다 — 재신고, 정지 중 쓰기·신고.
+   오류로 치지 않고 어느 주소였는지 모아서, 그 셋 말고는 없었는지 마지막에 본다. */
+const rejected = [];
 
 // 새로 만든 DB 라 비어 있다. 모의 서버의 기억도 새것이다.
 
@@ -91,7 +95,9 @@ async function phone(name, opts = {}) {
   p.on('dialog', (d) => d.accept());          // 지우기 확인창은 "예"
   p.on('pageerror', (e) => errs.push(name + ': ' + e.message));
   p.on('console', (m) => { const t = m.text();
-    if (m.type() === 'error' && !/ERR_CERT|fonts\.g/.test(t)) errs.push(name + ' console: ' + t); });
+    if (m.type() !== 'error' || /ERR_CERT|fonts\.g/.test(t)) return;
+    if (/status of 400/.test(t)) rejected.push(name + ' ' + m.location().url.replace(/^https?:\/\/[^/]+/, '').split('?')[0]);
+    else errs.push(name + ' console: ' + t); });
   await p.goto(URL, { waitUntil: 'networkidle' });
   await p.evaluate(({ uid, me, hood, login }) => {
     if (login) localStorage.setItem('tpw.session', JSON.stringify(
@@ -249,8 +255,162 @@ ok(await card(B.p, '서연 마지막 글').count() === 0, '준호 폰에서도 �
 ok(sql(`select flag_count from reports where id='${cpId}'`) === '0', '서연이 한 신고가 빠지고 수가 다시 세어짐 (1 → 0)');
 ok(sql(`select count(*) from correspondents`) === '3', '다른 사람들은 그대로 (민지·준호·태오)');
 
-console.log('\n== 10. 오류 ==');
+console.log('\n== 10. 운영 화면 ==');
+const AXE = readFileSync(createRequire(import.meta.url).resolve('axe-core/axe.min.js'), 'utf8');
+async function axe(p, where) {
+  await p.evaluate(AXE);
+  const v = await p.evaluate(async () => (await window.axe.run(document, { runOnly: { type: 'tag',
+    values: ['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa', 'best-practice'] } })).violations
+    .map((x) => x.id + '(' + x.nodes.length + '): ' + x.nodes[0].target.join(' ')));
+  ok(v.length === 0, 'axe 위반 0 — ' + where + (v.length ? ' — ' + v.join(' | ') : ''));
+}
+async function console_(name, scheme = 'light') {
+  const c = await b.newContext({ locale: 'ko-KR', timezoneId: 'Asia/Seoul', viewport: { width: 390, height: 844 }, colorScheme: scheme });
+  if (name) await c.addInitScript((uid) => localStorage.setItem('tpw.session', JSON.stringify(
+    { access_token: 'test-' + uid, refresh_token: 'r', expires_at: Math.floor(Date.now() / 1000) + 9999, uid })), U[name]);
+  const p = await c.newPage();
+  p.on('pageerror', (e) => errs.push('운영 ' + (name || '') + ': ' + e.message));
+  p.on('console', (m) => { const t = m.text();
+    if (m.type() === 'error' && !/ERR_CERT|fonts\.g|status of 400/.test(t)) errs.push('운영 console: ' + t); });
+  await p.goto(URL + 'admin.html', { waitUntil: 'networkidle' });
+  return { c, p };
+}
+const item = (p, place) => p.locator('.item', { hasText: place });
+{
+  const { c, p } = await console_(null);
+  ok((await p.locator('#gate').innerText()).includes('로그인이 필요합니다'), '로그인 안 했으면 로그인하라고만 한다');
+  ok(await p.locator('#tabs').isHidden(), '  └ 탭도 안 보인다');
+  await c.close();
+}
+{
+  const { c, p } = await console_('준호');
+  const g = await p.locator('#gate').innerText();
+  ok(g.includes('운영자가 아닙니다') && g.includes(U.준호), '운영자가 아니면 막고, 운영자로 넣는 SQL 에 자기 계정 번호를 채워 보인다');
+  await c.close();
+}
+sql(`insert into admins (id, note) values ('${U.민지}', '시험 운영자');`);
+await write(B.p, '준호 신고될 글', { crowd: 3 });
+const qid = sql(`select id from reports where place='준호 신고될 글'`);
+const T = await phone('태오'), H = await phone('하린');
+for (const X of [A, T, H]) {
+  await refresh(X.p);
+  await card(X.p, '준호 신고될 글').locator('[data-flag]').click();
+  await X.p.waitForSelector('#flagBack.open');
+  await X.p.locator('#flagReasons [data-reason="거짓"]').click();
+  await X.p.waitForTimeout(700);
+  await X.p.keyboard.press('Escape');
+}
+ok(sql(`select hidden from reports where id='${qid}'`) === 't', '신고 셋 — 가려짐');
+const M = await console_('민지');
+await M.p.waitForSelector('#queue .item');
+let it = item(M.p, '준호 신고될 글');
+ok(await it.count() === 1, '운영자 대기열에 올라온다');
+ok((await it.locator('.why').innerText()) === '신고로 가려짐' && (await it.locator('.flags').innerText()).includes('신고 3건 — 거짓 3'),
+   '  └ 왜 올라왔는지, 무슨 신고인지');
+ok((await M.p.locator('#nQueue').innerText()) === '1', '  └ 탭에 건수');
+await axe(M.p, '대기열');
+await it.locator('[data-act="restore"]').click();
+await M.p.waitForFunction(() => !document.querySelector('#queue .item'));
+ok(sql(`select hidden || '/' || flag_count from reports where id='${qid}'`) === 'false/0', '되살리기 → 서버에서 다시 보이고 신고 수 0');
+ok(sql(`select count(*) from flags where report_id='${qid}' and dismissed`) === '3', '  └ 신고는 기각으로 남는다');
+ok((await M.p.locator('#queue').innerText()).includes('대기열이 비었습니다'), '  └ 대기열이 빈다');
+ok(await M.p.evaluate(() => document.activeElement && document.activeElement.classList.contains('done')), '  └ 초점이 빈 목록 안내로 옮겨 간다');
+await refresh(T.p);
+ok(await card(T.p, '준호 신고될 글').count() === 1, '신고했던 이웃 폰에도 다시 나타난다');
+await card(T.p, '준호 신고될 글').locator('[data-flag]').click();
+await T.p.waitForSelector('#flagBack.open');
+await T.p.locator('#flagReasons [data-reason="거짓"]').click();
+await T.p.waitForTimeout(700);
+ok((await T.p.locator('#flagStatus').innerText()).includes('이미 신고한'), '기각된 신고자가 다시 신고하면 "이미 신고한 리포트"');
+await T.p.keyboard.press('Escape');
+
+await M.p.locator('#tab-find').click();
+await M.p.fill('#q', '준호 신고될');
+await M.p.locator('#findForm button').click();
+await M.p.waitForSelector('#found .item');
+it = item(M.p, '준호 신고될 글');
+ok(await it.count() === 1, '찾기: 장소 글자로 찾는다');
+await it.locator('[data-user]').click();
+await M.p.waitForSelector('#userBack.open');
+ok((await M.p.locator('#userTitle').innerText()) === '준호 특파원', '작성자 보기');
+ok(await M.p.evaluate(() => document.querySelector('main').inert), '  └ 창이 열리면 뒤는 inert');
+await axe(M.p, '작성자 창');
+await M.p.locator('[data-ban="7"]').click();
+ok((await M.p.locator('#banStatus').innerText()).includes('사유를 남겨야'), '정지는 사유 없이 안 눌린다');
+await M.p.fill('#banNote', '시험 — 허위 혼잡 정보');
+await M.p.locator('[data-ban="7"]').click();
+await M.p.waitForFunction(() => /정지 —/.test(document.querySelector('#userBody').innerText));
+ok(sql(`select round(extract(epoch from banned_until - now()) / 86400) from correspondents where id='${U.준호}'`) === '7', '정지 7일 → 서버');
+await M.p.keyboard.press('Escape');
+ok(await M.p.evaluate(() => document.activeElement && document.activeElement.matches('[data-user]')), '  └ 닫으면 초점이 "작성자 보기" 로');
+
+await write(B.p, '정지 중에 쓴 글');
+ok((await B.p.locator('#toast').innerText()).includes('글쓰기가 정지된 상태'), '정지된 사람이 쓰면 앱이 정지라고 알린다 (예전엔 "다음에 다시 올립니다")');
+ok(sql(`select count(*) from reports where place='정지 중에 쓴 글'`) === '0', '  └ 서버에는 안 올라간다');
+ok(await card(B.p, '정지 중에 쓴 글').count() === 1, '  └ 이 기기에는 남는다');
+await refresh(B.p);
+await card(B.p, '중앙공원 놀이터').locator('[data-flag]').click();
+await B.p.waitForSelector('#flagBack.open');
+await B.p.locator('#flagReasons [data-reason="광고"]').click();
+await B.p.waitForTimeout(700);
+ok((await B.p.locator('#flagStatus').innerText()).includes('신고할 수 없습니다'), '  └ 신고도 막힌다');
+await B.p.keyboard.press('Escape');
+
+await M.p.locator('#found [data-act="hold"]').click();
+ok((await M.p.locator('#found .status').first().innerText()).includes('메모로 남겨야'), '임시조치는 메모 없이 안 된다');
+await M.p.fill('#found .item input', '가게 주인 메일 — 사생활 침해 주장');
+await M.p.locator('#found [data-act="hold"]').click();
+await M.p.waitForFunction(() => /임시조치 ~/.test(document.querySelector('#found').innerText));   // 걸려 있는 임시조치 딱지
+ok(sql(`select hidden || '/' || round(extract(epoch from held_until - now()) / 86400) from reports where id='${qid}'`) === 'true/30', '임시조치 → 서버에서 가려지고 30일');
+await M.p.locator('#found [data-act="delete"]').click();
+ok((await M.p.locator('#found .status').first().innerText()).includes('사유를 남겨야'), '지우기는 사유 없이 안 된다');
+await M.p.fill('#found .item input', '30일 동안 재게시 요청 없음');
+await M.p.locator('#found [data-act="delete"]').click();
+ok(await M.p.locator('#found .confirm').isVisible(), '지우기는 한 번 더 묻는다');
+ok(sql(`select count(*) from reports where id='${qid}'`) === '1', '  └ 묻는 동안은 그대로');
+await M.p.locator('#found [data-act="delete-yes"]').click();
+await M.p.waitForFunction(() => !/준호 신고될 글/.test(document.querySelector('#found').innerText));
+ok(sql(`select count(*) from reports where id='${qid}'`) === '0', '  └ 확인하면 서버에서 지워진다');
+
+await M.p.locator('#tab-log').click();
+await M.p.waitForSelector('#log .loglist');
+const logText = await M.p.locator('#log').innerText();
+ok(['되살림', '정지', '임시조치', '지움'].every((w) => logText.includes(w)) && logText.includes('30일 동안 재게시 요청 없음'), '처리 기록 탭: 네 가지 처리와 사유');
+await axe(M.p, '처리 기록');
+await M.p.locator('#tab-stats').click();
+await M.p.waitForSelector('#stats .tile');
+ok((await M.p.locator('#stats tbody tr').count()) >= 14, '숫자 탭: 14일 표와 동네 표');
+await axe(M.p, '숫자');
+await M.p.locator('#tab-stats').focus();
+await M.p.keyboard.press('ArrowRight');
+ok((await M.p.getAttribute('#tab-log', 'aria-selected')) === 'true', '탭은 화살표로 옮긴다');
+await M.c.close();
+
+const Md = await console_('민지', 'dark');
+await Md.p.waitForSelector('#queue .done, #queue .item');
+await axe(Md.p, '대기열(어둡게)');
+await Md.p.locator('#tab-find').click();
+await Md.p.fill('#q', U.준호);           // 서버에 남은 글이 없어도 계정 번호로 찾는다 (정지 이의 신청)
+await Md.p.locator('#findForm button').click();
+await Md.p.waitForSelector('#found .item');
+ok((await Md.p.locator('#found .item').first().innerText()).includes('준호') && (await Md.p.locator('#found .warn').count()) === 1,
+   '계정 번호로 찾으면 글이 없어도 그 사람이 나온다 (정지 표시와 함께)');
+await Md.p.locator('#found [data-user]').first().click();
+await Md.p.waitForSelector('#userBack.open');
+await axe(Md.p, '작성자 창(어둡게)');
+await Md.p.locator('[data-ban="0"]').click();
+await Md.p.waitForFunction(() => !/정지 —/.test(document.querySelector('#userBody').innerText));
+ok(sql(`select banned_until is null from correspondents where id='${U.준호}'`) === 't', '정지 풀기 → 서버');
+await Md.c.close();
+await refresh(B.p);
+await B.p.waitForTimeout(600);
+ok(sql(`select count(*) from reports where place='정지 중에 쓴 글'`) === '1', '풀리면 정지 중에 쓴 글이 올라간다');
+await T.c.close(); await H.c.close();
+
+console.log('\n== 11. 오류 ==');
 ok(errs.length === 0, '콘솔 오류 없음' + (errs.length ? ': ' + errs.slice(0, 3).join(' | ') : ''));
+ok(rejected.length >= 3 && rejected.every((x) => /^(태오 \/rest\/v1\/flags|준호 \/rest\/v1\/(flags|reports))$/.test(x)),
+   '서버가 거부한 요청은 예상한 것뿐 — 재신고·정지 중 쓰기·정지 중 신고 (' + rejected.length + '건: ' + [...new Set(rejected)].join(', ') + ')');
 
 await b.close();
 console.log('\n==== ' + pass + ' 통과 / ' + fail + ' 실패 ====');

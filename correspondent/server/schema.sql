@@ -60,7 +60,9 @@ create table if not exists reports (
   place_key text generated always as (lower(regexp_replace(place, '\s', '', 'g'))) stored,
 
   hidden     boolean not null default false,  -- 신고 누적으로 가려짐
-  flag_count smallint not null default 0,
+  flag_count smallint not null default 0,      -- 기각되지 않은 신고 수
+  reviewed_at timestamptz,                     -- 운영자가 마지막으로 보고 정한 때 (admin.sql)
+  held_until  timestamptz,                     -- 임시조치(권리침해 신고)가 끝나는 때 — 최대 30일
   created_at timestamptz not null default now()
 );
 
@@ -68,12 +70,16 @@ create table if not exists reports (
 create index if not exists reports_feed_idx on reports (hood_code, t desc) where not hidden;
 create index if not exists reports_author_idx on reports (author, t desc);
 create index if not exists reports_place_idx on reports (hood_code, place_key, t desc) where not hidden;
+-- 운영자 대기열: 신고가 있거나 가려졌거나 임시조치 중인 것만
+create index if not exists reports_mod_idx on reports (t desc) where flag_count > 0 or hidden or held_until is not null;
 
 -- ─────────────────────────── 신고 ───────────────────────────
 create table if not exists flags (
   report_id  text not null references reports (id) on delete cascade,
   reporter   uuid not null references correspondents (id) on delete cascade,
   reason     text not null check (reason in ('거짓','광고','욕설','사생활','기타')),
+  dismissed  boolean not null default false,  -- 운영자가 기각한 신고. 수에는 안 들지만 행은 남아서
+                                             -- 같은 사람이 같은 글을 다시 신고하지 못한다 (괴롭힘 되풀이 막기)
   created_at timestamptz not null default now(),
   primary key (report_id, reporter)          -- 한 사람이 한 번만
 );

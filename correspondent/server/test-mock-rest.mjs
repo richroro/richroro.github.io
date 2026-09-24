@@ -98,6 +98,18 @@ createServer(async (req, res) => {
       deleted.add(uid);
       return send(res, 204);
     }
+    /* 그 밖의 서버 함수(운영자 함수 등). PostgREST 처럼 이름 붙은 인자로 부르고 돌려준 값을 그대로 보낸다.
+       함수 이름과 인자 이름은 글자만 받는다 — 시험용이라도 SQL 에 그대로 이어 붙이는 자리다. */
+    const fn = u.pathname.match(/^\/rest\/v1\/rpc\/([a-z_]+)$/);
+    if (fn && req.method === 'POST') {
+      const args = Object.entries(json || {}).map(([k, v]) => {
+        if (!/^p_[a-z_]+$/.test(k)) throw new Error('bad arg ' + k);
+        const val = v === null ? 'null' : typeof v === 'number' ? String(Number(v)) : typeof v === 'boolean' ? String(v) : lit(v);
+        return k + ' => ' + val;
+      }).join(', ');
+      const out = exec(`select coalesce(to_jsonb(public.${fn[1]}(${args}))::text, 'null');`, uid);
+      return send(res, 200, JSON.parse(out.trim().split('\n').filter(Boolean).pop()));
+    }
     if (u.pathname === '/rest/v1/flags') {
       /* 클라이언트가 보낸 reporter 를 그대로 넣는다(앱은 null). 예전엔 여기서 토큰 주인을 채워 넣어서
          서버에 도장 트리거가 없다는 걸 가렸다 — 진짜 PostgREST 는 보낸 값을 그대로 넣는다. */

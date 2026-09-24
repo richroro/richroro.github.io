@@ -4,13 +4,14 @@
 
 | 파일 | |
 | --- | --- |
-| `schema.sql` | 표 네 개 — hoods / correspondents / reports / flags |
+| `schema.sql` | 표 네 개 — hoods / correspondents / reports / flags (운영자 표 둘은 `admin.sql`) |
 | `policies.sql` | RLS·트리거·한도. **이걸 빼면 아무나 아무 글이나 지운다** |
+| `admin.sql` | 운영자 — 대기열·되살리기·가림·임시조치·지우기·정지·처리 기록·숫자. 전부 함수로만, 함수마다 기록 |
 | `seed-hoods.sql` | 동네. 한 번에 전국을 열지 않는다 |
-| `retention.sql` | 1년 지난 리포트를 매일 지운다(pg_cron). 처리방침 4조가 이걸 약속한다 |
-| `test-sql.mjs` | 서버 규칙 공격 48가지 — 판정형, 임시 DB 에서만 돈다 |
-| `test-e2e.mjs` | 브라우저 → fetch → 모의 PostgREST → 진짜 RLS, 44가지 |
-| `test-mock-rest.mjs` | PostgREST 흉내. 앱이 보낸 값을 **그대로** 넣는다 |
+| `retention.sql` | 1년 지난 리포트와 처리 기록을 매일 지운다(pg_cron). 처리방침 4조가 이걸 약속한다 |
+| `test-sql.mjs` | 서버 규칙 공격 99가지 — 판정형, 임시 DB 에서만 돈다 |
+| `test-e2e.mjs` | 브라우저 → fetch → 모의 PostgREST → 진짜 RLS, 86가지 (운영 화면 포함) |
+| `test-mock-rest.mjs` | PostgREST 흉내. 앱이 보낸 값을 **그대로** 넣고, 서버 함수는 이름 붙은 인자로 부른다 |
 | `test-auth-stub.sql` | 로컬 검증용. Supabase 에 있는 `auth.users`·`auth.uid()`·역할을 흉내 낸다 |
 
 ## 돌려 보기
@@ -19,7 +20,7 @@ Postgres 16 이 있으면 된다. 두 묶음 모두 **스스로 임시 DB 를 �
 이미 있는 DB 는 건드리지 않는다.
 
 ```bash
-PGHOST=… PGUSER=postgres node test-sql.mjs    # 사칭·덮어쓰기·도배·정지·탈퇴·보관 기한
+PGHOST=… PGUSER=postgres node test-sql.mjs    # 사칭·덮어쓰기·도배·정지·탈퇴·보관 기한·운영자
 PGHOST=… PGUSER=postgres node test-e2e.mjs    # 모의 서버·앱 사본까지 혼자 띄우고 치운다
 ```
 

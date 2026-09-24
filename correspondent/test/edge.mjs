@@ -276,6 +276,10 @@ console.log('\n== J. CSP — 새어 들어온 스크립트는 안 돈다 ==');
   await p.goto(URL + 'privacy.html', { waitUntil: 'networkidle' });
   const pcsp = await p.evaluate(() => (document.querySelector('meta[http-equiv="Content-Security-Policy"]') || {}).content || '');
   ok(/script-src 'none'/.test(pcsp), "처리방침: 스크립트가 없는 문서라 script-src 'none'");
+  await p.goto(URL + 'admin.html', { waitUntil: 'networkidle' });
+  const acsp = await p.evaluate(() => [(document.querySelector('meta[http-equiv="Content-Security-Policy"]') || {}).content || '',
+    (document.querySelector('meta[name="robots"]') || {}).content || '']);
+  ok(/(^|;)\s*script-src 'self'\s*(;|$)/.test(acsp[0]) && /noindex/.test(acsp[1]), "운영 화면: script-src 'self', 검색엔진에 안 올림(noindex)");
   await p.context().close();
 }
 

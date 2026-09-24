@@ -39,6 +39,9 @@ for (const scheme of ['light', 'dark']) {
   await p.keyboard.press('Escape');
   await p.goto(new URL('privacy.html', BASE).href, { waitUntil: 'networkidle' });
   await axe(p, '개인정보처리방침');
+  await p.goto(new URL('admin.html', BASE).href, { waitUntil: 'networkidle' });
+  ok((await p.locator('#gate').innerText()).includes('공용 보드가 꺼져 있습니다'), '운영 화면: 설정이 없으면 그렇다고만 한다');
+  await axe(p, '운영 화면(설정 없음)');
   await c.close();
 
   // 실제 보드 — 공유 창, "나도 여기" 창

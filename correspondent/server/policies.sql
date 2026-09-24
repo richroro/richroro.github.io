@@ -59,12 +59,14 @@ language sql security definer stable set search_path = public, auth as $$
 $$;
 
 -- ─────────────────── 신고가 쌓이면 가린다 ───────────────────
+-- 운영자가 기각한 신고(dismissed)는 세지 않는다. 그리고 신고로는 가리기만 하고 **풀지는 않는다** —
+-- 운영자가 신고 하나짜리 글을 가려 두었는데 새 신고가 들어오며 (n >= 3) 이 거짓이 되어 되살아나면 안 된다.
 create or replace function public.apply_flag() returns trigger
 language plpgsql security definer set search_path = public as $$
 declare n int;
 begin
-  select count(*) into n from flags where report_id = new.report_id;
-  update reports set flag_count = n, hidden = (n >= 3) where id = new.report_id;
+  select count(*) into n from flags where report_id = new.report_id and not dismissed;
+  update reports set flag_count = n, hidden = (hidden or n >= 3) where id = new.report_id;
   return new;
 end $$;
 
@@ -79,7 +81,7 @@ create or replace function public.recount_flags() returns trigger
 language plpgsql security definer set search_path = public as $$
 declare n int;
 begin
-  select count(*) into n from flags where report_id = old.report_id;
+  select count(*) into n from flags where report_id = old.report_id and not dismissed;
   update reports set flag_count = n where id = old.report_id;
   return old;
 end $$;
@@ -128,6 +130,10 @@ language plpgsql security definer set search_path = public, auth as $$
 begin
   if auth.uid() is null then
     raise exception '로그인이 필요합니다' using errcode = '42501';
+  end if;
+  -- 정지된 사람은 신고도 못 한다. 글쓰기만 막으면 신고로 남의 글을 가리는 쪽으로 옮겨 간다.
+  if exists (select 1 from correspondents where id = auth.uid() and banned_until > now()) then
+    raise exception '지금은 신고할 수 없습니다' using errcode = '42501';
   end if;
   new.reporter := auth.uid();
   return new;

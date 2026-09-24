@@ -15,12 +15,13 @@
 ## 1. Supabase 프로젝트 (10분)
 
 1. [supabase.com](https://supabase.com) → New project. 지역은 **Northeast Asia (Seoul)** 로.
-2. **Database → Extensions** 에서 `pg_cron` 을 켠다. (4번 파일이 쓴다)
+2. **Database → Extensions** 에서 `pg_cron` 을 켠다. (5번 파일이 쓴다)
 3. **SQL Editor** 에서 순서대로 붙여 넣고 실행:
    1. `server/schema.sql` — 표 네 개
    2. `server/policies.sql` — 권한. **이걸 빼먹으면 아무나 아무 글이나 지울 수 있다**
-   3. `server/seed-hoods.sql` — 동네. 열 동네만 `active = true`
-   4. `server/retention.sql` — 1년 지난 리포트를 매일 지운다. **처리방침 4조가 이걸 약속한다 — 빼먹으면 방침이 거짓이 된다**
+   3. `server/admin.sql` — 운영자 함수와 처리 기록. 운영 화면(`admin.html`)이 이걸 부른다
+   4. `server/seed-hoods.sql` — 동네. 열 동네만 `active = true`
+   5. `server/retention.sql` — 1년 지난 리포트와 처리 기록을 매일 지운다. **처리방침 4조가 이걸 약속한다 — 빼먹으면 방침이 거짓이 된다**
 4. **Settings → API** 에서 두 값을 복사해 `config.js` 에 넣는다.
 
 ```js
@@ -72,7 +73,22 @@ http://127.0.0.1:8080/correspondent/     ← 로컬에서 시험할 때
 
 게시 전에 개인정보 전문가의 검토를 받는다. 이 문서는 법률 자문이 아니다.
 
-## 4. 배포
+## 4. 운영자 넣기 (2분)
+
+1. 앱에서 로그인한다(운영자도 보통 계정이다).
+2. `https://richroro.github.io/correspondent/admin.html` 을 연다. "운영자가 아닙니다" 와 함께
+   **내 계정 번호가 채워진 SQL** 이 보인다. 복사한다.
+3. Supabase **SQL Editor** 에 붙여 넣고 실행한다.
+
+```sql
+insert into admins (id, note) values ('<계정 번호>', '운영자 이름');
+-- 빼기: delete from admins where id = '<계정 번호>';
+```
+
+운영자를 API 로 넣는 길은 일부러 없다. `admins` 표에는 정책이 하나도 없어서 앱의 키로는 읽지도 못한다.
+운영 화면에서 하는 일은 [RUNBOOK.md](RUNBOOK.md) 에 있다.
+
+## 5. 배포
 
 깃허브 페이지스는 `main` 에 올라가면 알아서 뜬다. `config.js` 도 같이 올라간다.
 
@@ -119,20 +135,20 @@ http://127.0.0.1:8080/correspondent/     ← 로컬에서 시험할 때
 > `id` 를 빼고, 신고자를 토큰에서 채워 넣었기 때문이다. 지금 모의 서버는 **앱이 보낸 값을 그대로** 넣고,
 > 커밋된 옛 정책에 PostgREST 가 만들 SQL 을 그대로 던져 두 실패를 재현한 뒤 고쳤다.
 
-**세 사람이 신고하면 가려진다.** 지우지는 않는다. 관리자가 보고 판단할 수 있어야 한다.
+**세 사람이 신고하면 가려진다.** 지우지는 않는다. 운영자가 **운영 화면**(`admin.html`)에서 보고 정한다 —
+되살리기(신고는 기각으로 남음), 가린 채 두기, 임시조치 30일, 지우기, 쓴 사람 정지. 모든 처리는 처리 기록에 남는다.
+표를 SQL 로 직접 고치지 않는다. 그러면 기록이 안 남고, 운영자가 가린 글이 다음 신고에 풀리는 식의 어긋남도 생긴다.
 
-```sql
--- 신고 쌓인 것 보기
-select r.id, r.place, r.by_name, r.flag_count, r.hidden,
-       (select array_agg(reason) from flags where report_id = r.id) as 사유
-  from reports r where r.flag_count > 0 order by r.flag_count desc;
-
--- 오해였으면 되살리기
-update reports set hidden = false where id = '...';
-
--- 악성 사용자 일주일 정지
-update correspondents set banned_until = now() + interval '7 days' where id = '...';
-```
+| 해 본 것 (운영자) | 결과 |
+| --- | --- |
+| 스스로 운영자 되기 | `admins` 에 쓸 권한 없음 |
+| 운영자가 아닌데 운영 함수 부르기 | 함수 첫 줄에서 거부 (로그인 안 했으면 실행 권한부터 없음) |
+| 처리 기록 들여다보기 | 표 권한 없음 — 운영 함수로만 |
+| 운영자가 가린 글에 새 신고 둘 | 안 풀린다 (옛 규칙이면 풀렸다) |
+| 되살린 글을 같은 사람이 또 신고 | 기각된 신고가 남아 있어 한 번만 |
+| 정지된 사람이 신고로 옮겨 가기 | 신고도 막힌다 |
+| 사유 없이 지우기·정지·임시조치 | 거부 |
+| 운영자 정지 | 거부 |
 
 ---
 
@@ -169,8 +185,6 @@ update correspondents set banned_until = now() + interval '7 days' where id = '.
 
 ## 남아 있는 것
 
-- **관리자 화면** — 지금은 SQL 로 본다. 신고가 하루 몇 건이면 그걸로 충분하고,
-  그보다 많아지면 그때 만드는 게 맞다
 - **알림** — "우리 동네에 속보" 웹 푸시. 지금은 앱이 열려 있는 동안 3분마다 조용히 받아오고,
   **지켜보는 곳**에 새 소식이 오면 화면 안에서 알린다. 앱이 꺼져 있을 때 폰으로 알리려면 보내는 쪽
   (구독을 모아 두는 표 + VAPID 키로 보내는 Edge Function)을 따로 두어야 한다
