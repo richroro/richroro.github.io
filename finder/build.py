@@ -402,7 +402,7 @@ def scores(rows: list[dict]):
 
 # --------------------------------------------------------------------------- 재무
 QUOTE_URL = "https://query1.finance.yahoo.com/v7/finance/quote"
-FUND = ("pe", "fpe", "pb", "dy", "eps", "roe", "ern", "ar", "fs", "tgt")
+FUND = ("pe", "fpe", "pb", "dy", "eps", "roe", "ern", "ar", "fs", "tgt", "exd")
 
 
 def yahoo_symbol(r: dict) -> str | None:
@@ -790,7 +790,19 @@ def parse_nasdaq_summary(j: dict, price: float | None) -> dict:
         ann = _num(find("annualized dividend") or find("dividend", "!date"))
         dy = ann / price * 100 if ann is not None and price else None
     f["dy"] = _ok(dy, -0.001, 25)
+    f["exd"] = _date(find("ex", "dividend", "date") or find("exdividend"))
     return f
+
+
+def _date(v) -> str | None:
+    """'Sep 5, 2026' · '09/05/2026' · '2026-09-05' → ISO. 못 읽으면 None."""
+    t = str(v or "").strip()
+    for fmt in ("%b %d, %Y", "%m/%d/%Y", "%Y-%m-%d", "%B %d, %Y"):
+        try:
+            return dt.datetime.strptime(t, fmt).date().isoformat()
+        except ValueError:
+            pass
+    return None
 
 
 def nasdaq_fields(j: dict) -> str:
@@ -955,6 +967,87 @@ def bench_for(r: dict) -> str:
     return "^GSPC" if r["g"] == "US" else "^KS11" if r["m"] == "KOSPI" else "^KQ11"
 
 
+# --------------------------------------------------------------------------- 일봉 파일(상세 차트용)
+B64 = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_"
+
+
+def enc12(vals, lo: float, hi: float) -> str:
+    """값마다 두 글자(12비트, 4096단계). 빈 날은 '..'."""
+    span = (hi - lo) or 1.0
+    out = []
+    for v in vals:
+        if v is None or not math.isfinite(v):
+            out.append("..")
+            continue
+        q = max(0, min(4095, int(round((v - lo) / span * 4095))))
+        out.append(B64[q >> 6] + B64[q & 63])
+    return "".join(out)
+
+
+def enc6(vals, hi: float) -> str:
+    """거래량은 한 글자(64단계, 최댓값 기준)."""
+    return "".join("." if v is None else B64[max(0, min(63, int(round(v / (hi or 1) * 63))))] for v in vals)
+
+
+def align(h: dict, cal: list) -> tuple[list, list]:
+    """종목 일봉을 시장 달력에 맞춘다. 거래가 없던 날은 전날 종가, 상장 전은 비움."""
+    m = dict(zip(h["dates"], zip(h["close"], h["vol"])))
+    c_out, v_out, last = [], [], None
+    for d in cal:
+        if d in m:
+            last = float(m[d][0])
+            c_out.append(last); v_out.append(float(m[d][1]))
+        else:
+            c_out.append(last); v_out.append(None if last is None else 0.0)
+    return c_out, v_out
+
+
+def hist_market(hists: dict[str, dict], ids: list[str], cal: list, bench: dict[str, dict]) -> dict:
+    out = {"cal": [d.strftime("%y%m%d") for d in cal], "s": {}, "ix": {}}
+    for sym, h in bench.items():
+        c, _ = align(h, cal)
+        vv = [x for x in c if x is not None]
+        if vv:
+            out["ix"][sym] = [round(min(vv), 4), round(max(vv), 4), enc12(c, min(vv), max(vv))]
+    for i in ids:
+        h = hists.get(i)
+        if h is None:
+            continue
+        c, v = align(h, cal)
+        cv = [x for x in c if x is not None]
+        if len(cv) < 20:
+            continue
+        lo, hi = min(cv), max(cv)
+        vmax = max((x for x in v if x), default=0.0)
+        out["s"][i] = [round(lo, 4), round(hi, 4), enc12(c, lo, hi), enc6(v, vmax)]
+    return out
+
+
+def write_hist(path: str, rows: list[dict], us_hist: dict, kr_hist: dict, idx: dict, n_us=500, n_kr=300):
+    """시총 상위 종목(종목 페이지 대상과 같은 기준)의 1년 일봉. 한쪽 시장을 못 받았으면 이전 파일의 그 시장을 그대로 둔다."""
+    prev = {}
+    if os.path.exists(path):
+        with open(path, encoding="utf-8") as f:
+            prev = json.load(f)
+    pages_path = os.path.join(DATA, "pages.json")
+    keep = set(json.load(open(pages_path, encoding="utf-8"))) if os.path.exists(pages_path) else set()
+    out = {"built": dt.datetime.now(dt.timezone.utc).strftime("%Y-%m-%dT%H:%MZ")}
+    for g, hists, n, benches in (("US", us_hist, n_us, ("^GSPC",)), ("KR", kr_hist, n_kr, ("^KS11", "^KQ11"))):
+        cal_src = idx.get(benches[0])
+        if not hists or not cal_src:
+            if g in prev:
+                out[g] = prev[g]
+            continue
+        rs = sorted([r for r in rows if r["g"] == g and r.get("mc")], key=lambda r: -r["mc"])
+        ids = [r["id"] for r in rs[:n]] + [r["id"] for r in rs[n:] if r["id"] in keep]
+        cal = cal_src["dates"][-252:]
+        out[g] = hist_market(hists, ids, cal, {b: idx[b] for b in benches if b in idx})
+    with open(path, "w", encoding="utf-8") as f:
+        json.dump(out, f, ensure_ascii=False, separators=(",", ":"))
+    log(f"일봉 파일: 미국 {len(out.get('US', {}).get('s', {}))} · 한국 {len(out.get('KR', {}).get('s', {}))}종목 "
+        f"({os.path.getsize(path) / 1e6:.2f} MB)")
+
+
 # --------------------------------------------------------------------------- 환율
 def fx_rate(us_rows, kr_rows, prev_meta, today: dt.date) -> tuple[float | None, str, str | None]:
     """원/달러와 그 출처, 실측 날짜."""
@@ -984,7 +1077,7 @@ COLS = ["id", "m", "n", "ko", "sec", "ind", "cty", "ipo", "p", "d1", "mc", "mcu"
         "r5", "r21", "r63", "r126", "r252", "ytd", "fh", "fl", "h52", "l52", "pm50", "pm200",
         "x", "up", "rsi", "vol", "mdd", "tv", "vs", "sm", "st", "ss", "sl",
         "sp", "spl", "sph", "nd", "asof", "warn", "prod",
-        "pe", "fpe", "pb", "dy", "eps", "roe", "ern", "ar", "fs", "tgt", "beta"]
+        "pe", "fpe", "pb", "dy", "eps", "roe", "ern", "ar", "fs", "tgt", "beta", "exd"]
 
 
 def rnd(v, k):
@@ -1036,6 +1129,7 @@ def to_row(r: dict) -> list:
     out["fs"] = r.get("fs") or ""
     out["tgt"] = price_round(r.get("tgt"), g)
     out["beta"] = rnd(r.get("beta"), 2)
+    out["exd"] = r.get("exd") or ""
     return [out[c] for c in COLS]
 
 
@@ -1055,6 +1149,7 @@ def main():
     ap.add_argument("--no-us-history", action="store_true")
     ap.add_argument("--no-kind", action="store_true")
     ap.add_argument("--no-fund", action="store_true", help="재무 지표 생략(이전 값 유지)")
+    ap.add_argument("--no-hist-file", action="store_true", help="상세 차트용 일봉 파일(data/hist.json)을 쓰지 않는다")
     ap.add_argument("--us-limit", type=int, default=0, help="시총 상위 N개만 일봉을 받는다(0=전부)")
     ap.add_argument("--min-rows", type=int, default=0,
                     help="종목 수가 이보다 적으면 저장하지 않고 실패한다(원천 데이터가 깨졌을 때 좋은 파일을 덮지 않도록)")
@@ -1150,6 +1245,8 @@ def main():
         f.update(fund.get(r["id"], {}))
         if f.get("ern") and f["ern"] < today.isoformat():
             f["ern"] = None
+        if f.get("exd") and f["exd"] < (today - dt.timedelta(days=30)).isoformat():
+            f["exd"] = None
         for k in FUND:
             if f.get(k) is not None and f.get(k) != "":
                 r[k] = f[k]
@@ -1181,6 +1278,8 @@ def main():
         "cols": COLS,
     }
     os.makedirs(os.path.dirname(a.out), exist_ok=True)
+    if not a.no_hist_file:
+        write_hist(os.path.join(os.path.dirname(a.out), "hist.json"), rows, us_hist, kr_hist, idx)
     with open(a.out, "w", encoding="utf-8") as f:
         f.write('{"meta":' + json.dumps(meta, ensure_ascii=False, separators=(",", ":")) + ',"rows":[\n')
         f.write(",\n".join(json.dumps(v, ensure_ascii=False, separators=(",", ":")) for v in out_rows))

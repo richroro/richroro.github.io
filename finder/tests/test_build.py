@@ -418,5 +418,58 @@ class Beta(unittest.TestCase):
         self.assertEqual(out[0]["p"], 2600.0)
 
 
+class HistFile(unittest.TestCase):
+    def dec12(self, s, lo, hi):
+        B = build.B64
+        out = []
+        for i in range(0, len(s), 2):
+            c = s[i:i + 2]
+            out.append(None if c == ".." else lo + (B.index(c[0]) * 64 + B.index(c[1])) / 4095 * (hi - lo))
+        return out
+
+    def test_enc12_roundtrip(self):
+        vals = [100.0, 101.5, None, 150.25, 99.0]
+        e = build.enc12(vals, 99.0, 150.25)
+        back = self.dec12(e, 99.0, 150.25)
+        self.assertIsNone(back[2])
+        for a, b in zip(vals, back):
+            if a is not None:
+                self.assertLess(abs(a - b), (150.25 - 99) / 4095 + 1e-9)  # 4096단계 오차 안
+        self.assertEqual(len(build.enc6([0, 5, 10, None], 10)), 4)
+
+    def test_align_fills_gaps_and_prelisting(self):
+        h = hist([10, 11, 12], start=dt.date(2026, 9, 2))  # 9/2 9/3 9/4
+        cal = [dt.date(2026, 9, 1), dt.date(2026, 9, 2), dt.date(2026, 9, 3), dt.date(2026, 9, 4), dt.date(2026, 9, 7)]
+        del h["dates"][1]; h["close"] = np.array([10.0, 12.0]); h["vol"] = np.array([5.0, 6.0])  # 9/3 거래정지
+        c, v = build.align(h, cal)
+        self.assertEqual(c, [None, 10.0, 10.0, 12.0, 12.0])
+        self.assertEqual(v, [None, 5.0, 0.0, 6.0, 0.0])
+
+    def test_write_hist_keeps_missing_market(self):
+        import tempfile
+        d = tempfile.mkdtemp()
+        path = os.path.join(d, "hist.json")
+        with open(path, "w") as f:
+            json.dump({"US": {"cal": ["260901"], "s": {"OLD": [1, 2, "AA", "A"]}, "ix": {}}}, f)
+        ix = hist(np.linspace(2500, 2600, 300))
+        kr = {"005930": hist(np.linspace(70000, 270000, 300))}
+        rows = [{"g": "KR", "id": "005930", "mc": 1e15, "m": "KOSPI"}]
+        build.write_hist(path, rows, {}, kr, {"^KS11": ix, "^KQ11": ix})
+        out = json.load(open(path))
+        self.assertIn("OLD", out["US"]["s"])            # 미국 일봉이 없으면 이전 것
+        self.assertEqual(len(out["KR"]["cal"]), 252)
+        lo, hi, c, v = out["KR"]["s"]["005930"]
+        self.assertEqual(len(c), 2 * 252)
+        self.assertEqual(len(v), 252)
+        self.assertIn("^KS11", out["KR"]["ix"])
+
+    def test_dates_and_exdiv(self):
+        self.assertEqual(build._date("Sep 5, 2026"), "2026-09-05")
+        self.assertEqual(build._date("09/05/2026"), "2026-09-05")
+        self.assertIsNone(build._date("N/A"))
+        j = {"data": {"summaryData": {"ExDividendDate": {"label": "Ex Dividend Date", "value": "Oct 10, 2026"}}}}
+        self.assertEqual(build.parse_nasdaq_summary(j, 10.0)["exd"], "2026-10-10")
+
+
 if __name__ == "__main__":
     unittest.main()

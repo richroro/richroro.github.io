@@ -23,6 +23,8 @@ let FAV = new Set(store.get("finder.fav", []));
 let CMP = store.get("finder.cmp", []).slice(0, 4);
 let PF = store.get("finder.pf", []);
 let RECENT = store.get("finder.recent", []);
+let ALERTS = store.get("finder.alerts", {});   // { id: { hi, lo } } — 전 거래일 종가 기준
+let SAVED = store.get("finder.screens", []);   // [{ name, qs }]
 
 /* ---------------------------------------------------------------- 형식 */
 function sgn(v) { return v > 0 ? "+" : v < 0 ? "−" : ""; }
@@ -399,6 +401,7 @@ const PRESETS = [
   // 일회성 이익·아주 작은 자본에서 나오는 극단값(PER 0.x, ROE 200%)과 관리종목은 뺀다
   { id: "value", t: "저PER·고ROE", sort: ["pe", 1], view: "value", f: (r) => r.pe >= 3 && r.pe < 12 && r.roe >= 12 && r.roe <= 60 && (r.mcu || 0) >= 300 && !r.warn },
   { id: "div", t: "고배당 4%+", sort: ["dy", -1], view: "value", f: (r) => r.dy != null && r.dy >= 4 && r.dy <= 15 && (r.mcu || 0) >= 300 && !r.warn },
+  { id: "exdiv", t: "2주 안 배당락", sort: ["exd", 1], view: "value", f: (r) => r.dy > 0 && daysTo(r.exd) != null && daysTo(r.exd) >= 0 && daysTo(r.exd) <= 14 },
   { id: "earn", t: "2주 안 실적 발표", sort: ["ern", 1], view: "value", f: (r) => soon(r, 14) },
   { id: "upside", t: "목표가 여력 30%+", sort: ["tu", -1], view: "value", f: (r) => r.tu != null && r.tu >= 30 && r.tu < 300 && (r.mcu || 0) >= 10000 },
   { id: "lowbeta", t: "저베타 대형주", sort: ["beta", 1], view: "tech", f: (r) => r.beta != null && r.beta < 0.7 && (r.mcu || 0) >= 10000 },
@@ -480,6 +483,7 @@ const COLS = {
   dy: { t: "배당", k: "dy", r: (r) => r.dy == null ? "—" : r.dy ? r.dy.toFixed(2) + "%" : '<span class="hint">0</span>' },
   roe: { t: "ROE", k: "roe", r: (r) => r.roe == null ? "—" : `<span class="${r.roe < 0 ? "down" : ""}">${r.roe.toFixed(1)}%</span>` },
   ern: { t: "다음 실적", k: "ern", r: (r) => ernTxt(r) },
+  exd: { t: "배당락일", k: "exd", r: (r) => { const d = daysTo(r.exd); return d == null || d < 0 ? "—" : `${r.exd.slice(5).replace("-", "/")} <span class="hint">D-${d}</span>`; } },
   tu: { t: "목표가 여력", k: "tu", r: (r) => r.tu == null ? "—" : `<span class="${cls(r.tu)}">${pct(r.tu, 0)}</span>` },
   beta: { t: "베타", k: "beta", r: (r) => r.beta == null ? "—" : `<span class="${r.beta >= 1.5 ? "up" : r.beta <= 0.5 ? "down" : ""}">${r.beta.toFixed(2)}</span>` },
   ar: { t: "애널리스트", k: "ar", r: (r) => r.ar == null ? "—" : `${AR_TXT(r.ar)} <span class="hint">${r.ar.toFixed(1)}</span>` },
@@ -497,11 +501,11 @@ const COLS = {
 };
 const VIEWS = {
   basic: ["name", "p", "d1", "mc", "r21", "r252", "fh", "sp"],
-  value: ["name", "p", "d1", "mc", "pe", "fpe", "pb", "dy", "roe", "tu", "ern"],
+  value: ["name", "p", "d1", "mc", "pe", "fpe", "pb", "dy", "exd", "roe", "tu", "ern"],
   tech: ["name", "p", "d1", "rsi", "pm50", "pm200", "tr", "vol", "beta", "mdd", "vs"],
   score: ["name", "d1", "r252", "sm", "st", "ss", "sl"],
 };
-const LOW_FIRST = new Set(["name", "pe", "fpe", "pb", "vol", "ar", "ern", "fl", "beta"]);
+const LOW_FIRST = new Set(["name", "pe", "fpe", "pb", "vol", "ar", "ern", "exd", "fl", "beta"]);
 const SORT_KEYS = new Set([...Object.values(COLS).map((c) => c.k).filter(Boolean), "fl"]);
 
 function ruleOk(r) {
@@ -528,7 +532,7 @@ function filtered() {
   const pre = PRESETS.find((p) => p.id === S.preset);
   const rs = ROWS.filter((r) => baseFilter(r) && (!pre || !pre.f || pre.f(r)));
   const [k, dir] = S.sort;
-  const val = (r) => k === "name" ? r.name : k === "ern" ? (daysTo(r.ern) >= 0 ? r.ern : null) : r[k];
+  const val = (r) => k === "name" ? r.name : (k === "ern" || k === "exd") ? (daysTo(r[k]) >= 0 ? r[k] : null) : r[k];
   rs.sort((a, b) => {
     const x = val(a), y = val(b);
     if (x == null && y == null) return a.rk - b.rk;
@@ -718,12 +722,12 @@ function exportCsv() {
   const rs = filtered();
   const H = ["시장", "티커/코드", "이름", "영문·한글 병기", "업종", "산업", "통화", "가격", "1일(%)", "시총(백만, 현지통화)", "시총(백만 달러)",
     "1주(%)", "1개월(%)", "3개월(%)", "6개월(%)", "연초이후(%)", "1년(%)", "52주고점대비(%)", "RSI14", "50일선대비(%)", "200일선대비(%)",
-    "변동성(%)", "1년최대낙폭(%)", "거래배수", "베타", "PER", "선행PER", "PBR", "배당수익률(%)", "ROE(%)", "EPS", "목표가", "목표가여력(%)", "다음실적일", "애널리스트(1~5)",
+    "변동성(%)", "1년최대낙폭(%)", "거래배수", "베타", "PER", "선행PER", "PBR", "배당수익률(%)", "ROE(%)", "EPS", "목표가", "목표가여력(%)", "배당락일", "다음실적일", "애널리스트(1~5)",
     "모멘텀", "추세", "안정성", "유동성"];
   const q = (v) => v == null ? "" : /[",\n]/.test(String(v)) ? '"' + String(v).replace(/"/g, '""') + '"' : v;
   const lines = [H.join(",")].concat(rs.map((r) => [r.m, r.id, r.name, r.sub, r.sec, r.ind, r.g === "KR" ? "KRW" : "USD", r.p, r.d1, r.mc, r.mcu,
     r.r5, r.r21, r.r63, r.r126, r.ytd, r.r252, r.fh, r.rsi, r.pm50, r.pm200, r.vol, r.mdd, r.vs, r.beta,
-    r.pe, r.fpe, r.pb, r.dy, r.roe, r.eps, r.tgt, r.tu == null ? null : +r.tu.toFixed(1), r.ern, r.ar, r.sm, r.st, r.ss, r.sl].map(q).join(",")));
+    r.pe, r.fpe, r.pb, r.dy, r.roe, r.eps, r.tgt, r.tu == null ? null : +r.tu.toFixed(1), r.exd, r.ern, r.ar, r.sm, r.st, r.ss, r.sl].map(q).join(",")));
   download(`stocks-${new Date().toISOString().slice(0, 10)}.csv`, "﻿" + lines.join("\n"), "text/csv;charset=utf-8");
 }
 function download(name, text, type) {
@@ -763,6 +767,7 @@ function insights(r) {
     if (k <= -30) add("pos", `PER ${num(r.pe)}배 — 같은 업종 중위(${num(sm.pe)}배)보다 <b>${Math.abs(k).toFixed(0)}% 낮습니다</b>. 싼 이유(실적 둔화 등)가 있는지 함께 보세요.`);
     else if (k >= 50) add("neu", `PER ${num(r.pe)}배 — 같은 업종 중위(${num(sm.pe)}배)보다 <b>${k.toFixed(0)}% 높습니다</b>. 시장이 높은 성장을 기대하고 있다는 뜻입니다.`);
   } else if (r.pe == null && r.eps != null && r.eps < 0) add("neg", "최근 4분기 순이익이 <b>적자</b>라 PER을 계산할 수 없습니다.");
+  { const d = daysTo(r.exd); if (d != null && d >= 0 && d <= 21 && r.dy > 0) add("neu", `<b>배당락일 ${r.exd.slice(5).replace("-", "/")}</b>(D-${d}) — ${r.g === "US" ? "이 날 전 거래일까지 사서 보유해야" : "배당 기준일에 보유해야"} 이번 배당(수익률 ${r.dy.toFixed(2)}%)을 받습니다. 배당락일에는 대개 배당만큼 주가가 내려갑니다.`); }
   if (r.dy != null && r.dy >= 4) add("pos", `배당수익률 <b>${r.dy.toFixed(2)}%</b> — 고배당 종목입니다. 배당이 지속 가능한지(배당성향) 확인하세요.`);
   if (r.roe != null && r.roe >= 20) add("pos", `ROE <b>${r.roe.toFixed(1)}%</b> — 자기자본 대비 이익을 많이 냅니다.`);
   if (r.rsi != null) {
@@ -875,8 +880,58 @@ function profileBlock(r) {
   return `<div class="prof">${f("거래소", exName)}${f(r.g === "KR" ? "종목코드" : "티커", r.id)}${f("업종", r.sec)}${f("산업", r.ind)}${f("국가", r.cty)}${f(r.g === "KR" ? "상장연도" : "상장(IPO)연도", r.ipo ? String(r.ipo) : "")}${f("주요 제품", r.prod)}</div>`;
 }
 function chartBlock(r) {
-  if (!r.sp) return `<div class="chartbox"><div class="nochart">1년 차트 데이터가 아직 없습니다. 아래 <b>인터랙티브 차트 열기</b>로 바로 볼 수 있습니다.</div></div>`;
-  return `<div class="chartbox"><div class="cap"><span>1년 주간 종가(5거래일 간격)</span><span id="chTip">&nbsp;</span></div><div id="chart"></div></div>`;
+  if (!r.sp && !PAGES.has(r.id)) return `<div class="chartbox"><div class="nochart">1년 차트 데이터가 아직 없습니다. 아래 <b>인터랙티브 차트 열기</b>로 바로 볼 수 있습니다.</div></div>`;
+  return `<div class="chartbox">
+    <div class="chhead">
+      <div class="seg" id="chRange" role="group" aria-label="기간" hidden>${[[21, "1개월"], [63, "3개월"], [126, "6개월"], [252, "1년"]].map(([n, t]) => `<button type="button" data-v="${n}" aria-pressed="${CH.n === n}">${t}</button>`).join("")}</div>
+      <label class="tg" id="chMaL" hidden><input type="checkbox" id="chMa" ${CH.ma ? "checked" : ""}> 이동평균</label>
+      <label class="tg"><input type="checkbox" id="chBench" ${CH.bench ? "checked" : ""}> ${benchName(r)} 비교</label>
+    </div>
+    <div class="cap"><span id="chCap"></span><span id="chTip">&nbsp;</span></div><div id="chart"></div>
+    <div class="chfoot"><div class="chlegend" id="chLeg"></div><div class="hint" id="chSum"></div></div></div>`;
+}
+/* ---- 일봉 파일(시총 상위 종목) — 상세를 처음 열 때 한 번만 받는다 */
+const CH = { n: 252, ma: true, bench: false };
+let HIST = null, HIST_P = null;
+function loadHist() {
+  if (!HIST_P) HIST_P = fetch("/finder/data/hist.json", { cache: "no-cache" }).then((r) => r.ok ? r.json() : null).catch(() => null).then((j) => (HIST = j));
+  return HIST_P;
+}
+const B64 = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_";
+function dec12(s, lo, hi) {
+  const out = [];
+  for (let i = 0; i < s.length; i += 2) {
+    const c = s.substr(i, 2);
+    out.push(c === ".." ? null : lo + (B64.indexOf(c[0]) * 64 + B64.indexOf(c[1])) / 4095 * (hi - lo));
+  }
+  return out;
+}
+function dec6(s) { return [...s].map((c) => c === "." ? null : B64.indexOf(c) / 63); }
+function benchSym(r) { return r.g === "US" ? "^GSPC" : r.m === "KOSPI" ? "^KS11" : "^KQ11"; }
+function benchName(r) { return r.g === "US" ? "S&P 500" : r.m === "KOSPI" ? "코스피" : "코스닥"; }
+function seriesOf(r) {
+  const sec = HIST && HIST[r.g], e = sec && sec.s && sec.s[r.id];
+  if (e) {
+    const dates = sec.cal.map((d) => new Date(2000 + +d.slice(0, 2), +d.slice(2, 4) - 1, +d.slice(4, 6)));
+    const bx = sec.ix && sec.ix[benchSym(r)];
+    return { daily: true, dates, close: dec12(e[2], e[0], e[1]), vol: dec6(e[3]), bench: bx ? dec12(bx[2], bx[0], bx[1]) : null };
+  }
+  if (!r.sp) return null;
+  const v = sparkVals(r), n = v.length, dateAt = weekDates(r, n);
+  const ix = (META.idx || []).find((x) => x.s === benchSym(r));
+  let bench = null;
+  if (ix && ix.sp) { const bv = decodeSpark(ix.sp).map((x) => ix.spl + x * (ix.sph - ix.spl)); bench = v.map((_, i) => bv[bv.length - n + i] ?? null); }
+  return { daily: false, dates: v.map((_, i) => dateAt(i)), close: v, vol: null, bench };
+}
+function rollMean(a, k) {
+  const out = new Array(a.length).fill(null);
+  let sum = 0, cnt = 0;
+  for (let i = 0; i < a.length; i++) {
+    if (a[i] != null) { sum += a[i]; cnt++; }
+    if (i >= k && a[i - k] != null) { sum -= a[i - k]; cnt--; }
+    if (i >= k - 1 && cnt === k) out[i] = sum / k;
+  }
+  return out;
 }
 function weekDates(r, n) {
   const asof = new Date((r.asof || (r.g === "KR" ? META.krAsof : META.usAsof) || new Date().toISOString().slice(0, 10)) + "T00:00:00");
@@ -906,39 +961,88 @@ function monthTicks(n, dateAt, X, H, every = 2) {
   }
   return s;
 }
+function pathOf(vals, X, Y) {
+  let d = "", pen = false;
+  vals.forEach((v, i) => { if (v == null) { pen = false; return; } d += (pen ? "L" : "M") + X(i).toFixed(1) + " " + Y(v).toFixed(1); pen = true; });
+  return d;
+}
 function drawChart(r) {
-  const el = $("chart"); if (!el || !r.sp) return;
-  const W = chartW(el), H = W < 560 ? 210 : 250, P = { l: 4, r: W < 560 ? 52 : 64, t: 12, b: 26 };
-  const v = sparkVals(r), n = v.length;
-  const lo = Math.min(...v), hi = Math.max(...v), pad = (hi - lo) * 0.08 || hi * 0.05 || 1;
+  const el = $("chart"); if (!el) return;
+  const S0 = seriesOf(r);
+  if (!S0) { el.innerHTML = `<div class="nochart">1년 차트 데이터가 아직 없습니다.</div>`; return; }
+  $("chRange").hidden = !S0.daily; $("chMaL").hidden = !S0.daily;
+  const N = S0.close.length, n = S0.daily ? Math.min(CH.n, N) : N, st = N - n;
+  const vis = (a) => a ? a.slice(st) : null;
+  const c = vis(S0.close), dates = vis(S0.dates), vol = vis(S0.vol);
+  const MAS = S0.daily && CH.ma ? [[20, "var(--s4)"], [60, "var(--s3)"], [120, "#7c3aed"]].map(([k, col]) => ({ k, col, v: vis(rollMean(S0.close, k)) })) : [];
+  let bb = null;
+  if (CH.bench && S0.bench) {
+    const b = vis(S0.bench), j = c.findIndex((x, i) => x != null && b[i] != null);
+    if (j >= 0) bb = b.map((x) => x == null ? null : x * c[j] / b[j]);
+  }
+  const W = chartW(el), VH = S0.daily ? 46 : 0, H = (W < 560 ? 220 : 270) + VH;
+  const P = { l: 4, r: W < 560 ? 52 : 64, t: 12, b: 26 };
+  const pBot = H - P.b - VH - (VH ? 8 : 0);
+  const pool = [...c, ...MAS.flatMap((m) => m.v), ...(bb || [])].filter((x) => x != null);
+  const lo = Math.min(...pool), hi = Math.max(...pool), pad = (hi - lo) * 0.08 || hi * 0.05 || 1;
   const y0 = lo - pad, y1 = hi + pad;
-  const X = (i) => P.l + i * (W - P.l - P.r) / (n - 1), Y = (x) => P.t + (1 - (x - y0) / (y1 - y0)) * (H - P.t - P.b);
-  const dateAt = weekDates(r, n);
-  const up = v[n - 1] >= v[0], col = up ? "var(--up)" : "var(--down)";
-  const line = v.map((x, i) => (i ? "L" : "M") + X(i).toFixed(1) + " " + Y(x).toFixed(1)).join("");
-  const area = line + `L${X(n - 1)} ${H - P.b}L${X(0)} ${H - P.b}Z`;
+  const X = (i) => P.l + i * (W - P.l - P.r) / Math.max(1, n - 1), Y = (x) => P.t + (1 - (x - y0) / (y1 - y0)) * (pBot - P.t);
+  const first = c.find((x) => x != null), last = c[c.length - 1];
+  const up = last >= first, col = up ? "var(--up)" : "var(--down)";
+  const line = pathOf(c, X, Y);
+  const i0 = c.findIndex((x) => x != null);
+  const area = line + `L${X(n - 1)} ${pBot}L${X(i0)} ${pBot}Z`;
   const ticks = niceTicks(y0, y1, W < 560 ? 3 : 4);
   const fmtAx = (x) => r.g === "KR" ? (x >= 1e6 ? (x / 1e4).toLocaleString("ko-KR") + "만" : nf.format(Math.round(x))) : x >= 100 ? nf.format(Math.round(x)) : x.toFixed(x >= 10 ? 0 : 2);
-  el.innerHTML = `<svg class="fig" viewBox="0 0 ${W} ${H}" role="img" aria-label="${esc(r.name)} 1년 주가 흐름: ${price(r, v[0])}에서 ${price(r, v[n - 1])}">
-    <defs><linearGradient id="ga" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="${up ? "var(--fill-up)" : "var(--fill-down)"}" stop-opacity=".22"/><stop offset="1" stop-color="${up ? "var(--fill-up)" : "var(--fill-down)"}" stop-opacity="0"/></linearGradient></defs>
+  // 가로 눈금: 짧은 기간은 날짜, 긴 기간은 달
+  let xt = "";
+  if (n <= 70) { const every = Math.ceil(n / (W < 560 ? 4 : 6)); for (let i = every; i < n - 1; i += every) xt += `<text class="axis" x="${X(i)}" y="${H - 8}" text-anchor="middle">${dates[i].getMonth() + 1}/${dates[i].getDate()}</text>`; }
+  else xt = monthTicks(n, (i) => dates[i], X, H, n > 150 ? (W < 560 ? 3 : 2) : 1);
+  const bw = Math.max(1, (W - P.l - P.r) / n * 0.72);
+  const bars = vol ? vol.map((v, i) => v == null || !v ? "" : `<rect x="${(X(i) - bw / 2).toFixed(1)}" y="${(H - P.b - v * VH).toFixed(1)}" width="${bw.toFixed(1)}" height="${(v * VH).toFixed(1)}" fill="${i && c[i] != null && c[i - 1] != null && c[i] < c[i - 1] ? "var(--fill-down)" : "var(--fill-up)"}" opacity=".45"/>`).join("") : "";
+  el.innerHTML = `<svg class="fig" viewBox="0 0 ${W} ${H}" role="img" aria-label="${esc(r.name)} ${S0.daily ? "일봉" : "주간"} 주가 흐름: ${price(r, first)}에서 ${price(r, last)}">
+    <defs><linearGradient id="ga" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="${up ? "var(--fill-up)" : "var(--fill-down)"}" stop-opacity=".2"/><stop offset="1" stop-color="${up ? "var(--fill-up)" : "var(--fill-down)"}" stop-opacity="0"/></linearGradient></defs>
     ${ticks.map((t) => `<line class="gridline" x1="${P.l}" x2="${W - P.r}" y1="${Y(t)}" y2="${Y(t)}"/><text class="axis" x="${W - P.r + 6}" y="${Y(t) + 4}">${fmtAx(t)}</text>`).join("")}
-    ${monthTicks(n, dateAt, X, H, W < 560 ? 3 : 2)}
-    <path d="${area}" fill="url(#ga)"/><path d="${line}" fill="none" stroke="${col}" stroke-width="2" stroke-linejoin="round"/>
+    ${xt}${bars}
+    <path d="${area}" fill="url(#ga)"/>
+    ${bb ? `<path d="${pathOf(bb, X, Y)}" fill="none" stroke="var(--ink-3)" stroke-width="1.5" stroke-dasharray="4 3"/>` : ""}
+    ${MAS.map((m) => `<path d="${pathOf(m.v, X, Y)}" fill="none" stroke="${m.col}" stroke-width="1.3" opacity=".9"/>`).join("")}
+    <path d="${line}" fill="none" stroke="${col}" stroke-width="2" stroke-linejoin="round"/>
     <line id="chX" x1="0" x2="0" y1="${P.t}" y2="${H - P.b}" stroke="var(--ink-3)" stroke-dasharray="3 3" opacity="0"/>
     <circle id="chD" r="4.5" fill="${col}" stroke="var(--surface)" stroke-width="2" opacity="0"/>
     <rect class="hit" x="${P.l}" y="0" width="${W - P.l - P.r}" height="${H}"/></svg>`;
+  const rng = { 21: "최근 1개월", 63: "최근 3개월", 126: "최근 6개월", 252: "최근 1년" }[n] || "최근 1년";
+  $("chCap").textContent = S0.daily ? `일봉 · ${rng}${vol ? " · 아래 막대는 거래량" : ""}` : "1년 주간 종가(5거래일 간격)";
+  $("chLeg").innerHTML = [[col, "종가"], ...MAS.map((m) => [m.col, m.k + "일선"]), ...(bb ? [["var(--ink-3)", benchName(r) + "(같은 출발점)"]] : [])]
+    .map(([cc, t]) => `<span><i style="background:${cc}"></i>${t}</span>`).join("");
+  const ret = (last / first - 1) * 100;
+  let sum = `이 기간 <b class="${cls(ret)}">${pct(ret)}</b>`;
+  if (S0.bench) {
+    const b = vis(S0.bench), j = c.findIndex((x, i) => x != null && b[i] != null), bl = b[b.length - 1];
+    if (j >= 0 && bl != null) { const br = (bl / b[j] - 1) * 100, ex = ret - br; sum += ` · ${benchName(r)} ${pct(br)} → 초과 수익 <b class="${cls(ex)}">${ex >= 0 ? "+" : "−"}${Math.abs(ex).toFixed(1)}%p</b>`; }
+  }
+  $("chSum").innerHTML = sum;
   const svg = el.firstElementChild, tip = $("chTip"), cx = $("chX"), cd = $("chD");
   const move = (e) => {
-    const b = svg.getBoundingClientRect();
-    const x = (e.clientX - b.left) / b.width * W;
-    const i = Math.max(0, Math.min(n - 1, Math.round((x - P.l) / ((W - P.l - P.r) / (n - 1)))));
+    const bx = svg.getBoundingClientRect();
+    const x = (e.clientX - bx.left) / bx.width * W;
+    let i = Math.max(0, Math.min(n - 1, Math.round((x - P.l) / ((W - P.l - P.r) / Math.max(1, n - 1)))));
+    if (c[i] == null) return;
     cx.setAttribute("x1", X(i)); cx.setAttribute("x2", X(i)); cx.setAttribute("opacity", 1);
-    cd.setAttribute("cx", X(i)); cd.setAttribute("cy", Y(v[i])); cd.setAttribute("opacity", 1);
-    const d = dateAt(i), chg = (v[n - 1] / v[i] - 1) * 100;
-    tip.innerHTML = `${i === n - 1 ? "최근" : `약 ${n - 1 - i}주 전(${d.getMonth() + 1}/${d.getDate()}경)`} · <b>${price(r, v[i])}</b>` + (i < n - 1 ? ` · 지금까지 <span class="${cls(chg)}">${pct(chg)}</span>` : "");
+    cd.setAttribute("cx", X(i)); cd.setAttribute("cy", Y(c[i])); cd.setAttribute("opacity", 1);
+    const d = dates[i], dd = S0.daily ? `${d.getFullYear() % 100}.${d.getMonth() + 1}.${d.getDate()}` : `${d.getMonth() + 1}/${d.getDate()}경`;
+    const prev = i > 0 && c[i - 1] != null ? (c[i] / c[i - 1] - 1) * 100 : null;
+    tip.innerHTML = `${dd} · <b>${price(r, c[i])}</b>` + (S0.daily && prev != null ? ` <span class="${cls(prev)}">${pct(prev, 2)}</span>` : "") + (i < n - 1 ? ` · 지금까지 <span class="${cls(last / c[i] - 1)}">${pct((last / c[i] - 1) * 100)}</span>` : "");
   };
   svg.addEventListener("pointermove", move);
   svg.addEventListener("pointerleave", () => { cx.setAttribute("opacity", 0); cd.setAttribute("opacity", 0); tip.innerHTML = "&nbsp;"; });
+}
+function wireChart(r) {
+  $("chRange")?.addEventListener("click", (e) => { const b = e.target.closest("[data-v]"); if (!b) return; CH.n = +b.dataset.v; setSeg($("chRange"), b.dataset.v); drawChart(r); });
+  $("chMa")?.addEventListener("change", (e) => { CH.ma = e.target.checked; drawChart(r); });
+  $("chBench")?.addEventListener("change", (e) => { CH.bench = e.target.checked; drawChart(r); });
+  drawChart(r);
+  if (!HIST) loadHist().then(() => { if (CUR === r && $("chart")) drawChart(r); });
 }
 function isDark() {
   const t = document.documentElement.dataset.theme;
@@ -971,6 +1075,7 @@ function renderDetail(host, r) {
     <div class="pxrow"><span class="big">${price(r)}</span><span class="chg ${cls(r.d1)}">${pct(r.d1, 2)}</span>
       <span class="asof">${asof ? asof + " 종가" : "전 거래일 종가"} ${statusPill(r.g)} · 시가총액 ${cap(r)} ${capOther(r) ? `<span class="hint">(${capOther(r)})</span>` : ""}</span></div>
     <div id="acts">${actionsHtml(r)}</div>
+    <div id="alertSlot">${alertBlock(r)}</div>
     <div class="dsec">${chartBlock(r)}</div>
     <div class="dsec"><h3>한눈에 보기 <small>규칙에 따라 자동으로 쓴 문장 · 투자 권유 아님</small></h3>
       <ul class="insights">${ins.length ? ins.map((x) => `<li><span class="ic ${x.kind}" aria-hidden="true">${ic[x.kind]}</span><span>${x.html}</span></li>`).join("") : '<li><span class="ic neu">·</span><span>눈에 띄는 신호가 없습니다.</span></li>'}</ul></div>
@@ -992,7 +1097,8 @@ function renderDetail(host, r) {
       <div id="tvChart"></div><div id="tvFin"></div>
       <p class="hint mt8">인터랙티브 차트와 재무제표는 TradingView 위젯으로, 누를 때만 불러옵니다.</p></div>
     <div class="note mt24"><span class="ic">ⓘ</span><div>지표는 전 거래일까지의 공개 데이터로 계산했습니다. <b>투자 권유가 아니며</b>, 거래 전 증권사 시세와 공시를 확인하세요.</div></div>`;
-  drawChart(r);
+  wireChart(r);
+  wireAlert(r);
   host.querySelectorAll(".peer").forEach((p) => p.addEventListener("click", (e) => {
     if (MODE === "stock" || e.metaKey || e.ctrlKey) return;
     e.preventDefault(); if (p.dataset.id !== r.id) openDetail(p.dataset.id);
@@ -1225,20 +1331,23 @@ const ernState = { m: "ALL", open: new Set() };
 function renderEarnings() {
   const box = $("ernBox"); if (!box) return;
   const mine = new Set([...FAV, ...PF.map((h) => h.id)]);
-  const rs = ROWS.filter((r) => soon(r, 21) && (ernState.m === "MINE" ? mine.has(r.id) : (ernState.m === "ALL" || r.g === ernState.m) && liquid(r)));
+  const exMode = ernState.m === "EXD";
+  const key = exMode ? "exd" : "ern";
+  const within = (r) => { const d = daysTo(r[key]); return d != null && d >= 0 && d <= 21 && (!exMode || r.dy > 0); };
+  const rs = ROWS.filter((r) => within(r) && (ernState.m === "MINE" ? mine.has(r.id) : (ernState.m === "ALL" || exMode || r.g === ernState.m) && liquid(r)));
   if (!rs.length) {
-    box.innerHTML = `<div class="cmpempty">${ernState.m === "MINE" ? "관심·보유 종목 중 3주 안에 실적을 발표하는 종목이 없습니다." : ernState.m === "KR" ? "한국 종목의 실적 발표일은 아직 출처에서 받지 못했습니다." : "3주 안의 실적 발표 일정이 없습니다(데이터가 다음 갱신 때 채워질 수 있습니다)."}</div>`;
+    box.innerHTML = `<div class="cmpempty">${exMode ? "3주 안의 배당락 일정이 없습니다(미국 종목만, 다음 갱신 때 채워질 수 있습니다)." : ernState.m === "MINE" ? "관심·보유 종목 중 3주 안에 실적을 발표하는 종목이 없습니다." : ernState.m === "KR" ? "한국 종목의 실적 발표일은 아직 출처에서 받지 못했습니다." : "3주 안의 실적 발표 일정이 없습니다(데이터가 다음 갱신 때 채워질 수 있습니다)."}</div>`;
     return;
   }
   const days = new Map();
-  for (const r of rs) { if (!days.has(r.ern)) days.set(r.ern, []); days.get(r.ern).push(r); }
+  for (const r of rs) { if (!days.has(r[key])) days.set(r[key], []); days.get(r[key]).push(r); }
   const wd = "일월화수목금토";
   const today = new Date().toISOString().slice(0, 10);
   box.innerHTML = [...days].sort((a, b) => a[0].localeCompare(b[0])).map(([d, list]) => {
     list.sort((a, b) => (mine.has(b.id) - mine.has(a.id)) || (b.mcu || 0) - (a.mcu || 0));
     const dt = new Date(d + "T00:00:00"), open = ernState.open.has(d), shown = open ? list : list.slice(0, 8);
     return `<div class="eday${d === today ? " today" : ""}"><h4><span>${dt.getMonth() + 1}월 ${dt.getDate()}일 (${wd[dt.getDay()]})</span><small>${daysTo(d) === 0 ? "오늘" : "D-" + daysTo(d)} · ${list.length}종목</small></h4>
-      ${shown.map((r) => `<a class="erow" href="${stockHref(r.id)}" data-id="${esc(r.id)}">${avatar(r, 20)}<b>${esc(r.name)}</b>${mine.has(r.id) ? '<span class="mine">★</span>' : ""}<span class="num">${cap(r)}</span></a>`).join("")}
+      ${shown.map((r) => `<a class="erow" href="${stockHref(r.id)}" data-id="${esc(r.id)}">${avatar(r, 20)}<b>${esc(r.name)}</b>${mine.has(r.id) ? '<span class="mine">★</span>' : ""}<span class="num">${exMode ? "배당 " + r.dy.toFixed(1) + "%" : cap(r)}</span></a>`).join("")}
       ${list.length > 8 ? `<div class="more"><button class="ghost sm" type="button" data-more="${d}">${open ? "접기" : `${list.length - 8}개 더`}</button></div>` : ""}</div>`;
   }).join("");
 }
@@ -1252,6 +1361,94 @@ function initEarnings() {
     if (a && !e.metaKey && !e.ctrlKey) { e.preventDefault(); openDetail(a.dataset.id); }
   });
   renderEarnings();
+}
+
+/* ---------------------------------------------------------------- 가격 알림 */
+function alertHits() {
+  return Object.entries(ALERTS).map(([id, a]) => ({ r: BY_ID.get(id), a })).filter((x) => x.r && x.r.p != null)
+    .map((x) => ({ ...x, hitHi: x.a.hi != null && x.r.p >= x.a.hi, hitLo: x.a.lo != null && x.r.p <= x.a.lo }));
+}
+function alertBlock(r) {
+  const a = ALERTS[r.id] || {};
+  return `<div class="alertbox"><b>🔔 가격 알림</b>
+    <input class="flt num" id="alHi" type="number" step="any" min="0" placeholder="${r.g === "KR" ? "원" : "$"} 이상" value="${a.hi ?? ""}" aria-label="이 가격 이상이면 알림">
+    <input class="flt num" id="alLo" type="number" step="any" min="0" placeholder="${r.g === "KR" ? "원" : "$"} 이하" value="${a.lo ?? ""}" aria-label="이 가격 이하면 알림">
+    <button class="ghost sm" type="button" id="alSave">저장</button>${ALERTS[r.id] ? '<button class="ghost sm" type="button" id="alDel">지우기</button>' : ""}
+    <span class="hint">전 거래일 종가가 닿으면 이 사이트를 열 때 알려드립니다(이 브라우저에만 저장).</span></div>`;
+}
+function wireAlert(r) {
+  $("alSave")?.addEventListener("click", () => {
+    const hi = $("alHi").value === "" ? null : +$("alHi").value, lo = $("alLo").value === "" ? null : +$("alLo").value;
+    if (hi == null && lo == null) { toast("가격을 하나 이상 넣어 주세요"); return; }
+    ALERTS[r.id] = { hi, lo }; store.set("finder.alerts", ALERTS);
+    toast("알림을 저장했습니다");
+    if ("Notification" in window && Notification.permission === "default") Notification.requestPermission().catch(() => {});
+    renderAlerts(); $("alertSlot").innerHTML = alertBlock(r); wireAlert(r);
+  });
+  $("alDel")?.addEventListener("click", () => { delete ALERTS[r.id]; store.set("finder.alerts", ALERTS); renderAlerts(); $("alertSlot").innerHTML = alertBlock(r); wireAlert(r); });
+}
+function renderAlerts() {
+  const hits = alertHits().filter((x) => x.hitHi || x.hitLo);
+  const bn = $("alertBanner");
+  if (bn) {
+    bn.hidden = !hits.length;
+    bn.innerHTML = hits.length ? `🔔 <b>가격 알림 ${hits.length}건</b> · ` + hits.map((x) => `<a href="${stockHref(x.r.id)}" data-id="${esc(x.r.id)}">${esc(x.r.name)} ${price(x.r)}${x.hitHi ? ` ≥ ${price(x.r, x.a.hi)}` : ` ≤ ${price(x.r, x.a.lo)}`}</a>`).join(" · ") : "";
+  }
+  const el = $("alertView"); if (!el) return;
+  const all = alertHits();
+  el.innerHTML = all.length ? `<h3 class="subh">🔔 내 가격 알림</h3><div class="card"><div class="tscroll"><table class="scr narrow"><thead><tr><th style="text-align:left">종목</th><th>현재가</th><th>이상</th><th>이하</th><th>상태</th><th></th></tr></thead><tbody>
+    ${all.map((x) => `<tr data-id="${esc(x.r.id)}"><td class="tx" style="text-align:left">${esc(x.r.name)} <small class="hint">${esc(x.r.id)}</small></td><td>${price(x.r)}</td>
+      <td>${x.a.hi == null ? "—" : price(x.r, x.a.hi)}</td><td>${x.a.lo == null ? "—" : price(x.r, x.a.lo)}</td>
+      <td>${x.hitHi ? '<span class="up">▲ 도달</span>' : x.hitLo ? '<span class="down">▼ 도달</span>' : '<span class="hint">대기</span>'}</td>
+      <td><button class="ghost sm" type="button" data-alert-del="${esc(x.r.id)}" aria-label="${esc(x.r.name)} 알림 지우기">✕</button></td></tr>`).join("")}</tbody></table></div></div>` : "";
+}
+function notifyAlerts() {
+  if (!("Notification" in window) || Notification.permission !== "granted") return;
+  const today = new Date().toISOString().slice(0, 10), sent = store.get("finder.alertSent", {});
+  for (const x of alertHits()) {
+    if (!(x.hitHi || x.hitLo) || sent[x.r.id] === today) continue;
+    try { new Notification(`${x.r.name} ${price(x.r)}`, { body: x.hitHi ? `알림가 ${price(x.r, x.a.hi)} 이상에 닿았습니다` : `알림가 ${price(x.r, x.a.lo)} 이하로 내려갔습니다`, icon: "/finder/icon-192.png" }); } catch (e) {}
+    sent[x.r.id] = today;
+  }
+  store.set("finder.alertSent", sent);
+}
+function initAlerts() {
+  renderAlerts(); notifyAlerts();
+  $("alertBanner")?.addEventListener("click", (e) => { const a = e.target.closest("[data-id]"); if (a && !e.metaKey && !e.ctrlKey) { e.preventDefault(); openDetail(a.dataset.id); } });
+  $("alertView")?.addEventListener("click", (e) => {
+    const d = e.target.closest("[data-alert-del]");
+    if (d) { delete ALERTS[d.dataset.alertDel]; store.set("finder.alerts", ALERTS); renderAlerts(); return; }
+    const tr = e.target.closest("tr[data-id]"); if (tr) openDetail(tr.dataset.id);
+  });
+}
+
+/* ---------------------------------------------------------------- 저장한 조건 */
+function renderSaved() {
+  const sel = $("savedSel"); if (!sel) return;
+  sel.innerHTML = `<option value="">저장한 조건 (${SAVED.length})</option>` + SAVED.map((x, i) => `<option value="${i}">${esc(x.name)}</option>`).join("");
+  $("savedDel").hidden = true;
+}
+function initSaved() {
+  if (!$("savedSel")) return;
+  renderSaved();
+  $("saveScreen").addEventListener("click", () => {
+    const pre = PRESETS.find((p) => p.id === S.preset);
+    const name = prompt("이 조건의 이름", pre ? pre.t : `내 조건 ${SAVED.length + 1}`);
+    if (!name) return;
+    SAVED = [{ name: name.slice(0, 40), qs: location.search }, ...SAVED.filter((x) => x.name !== name)].slice(0, 20);
+    store.set("finder.screens", SAVED); renderSaved(); toast("조건을 저장했습니다");
+  });
+  $("savedSel").addEventListener("change", (e) => {
+    const x = SAVED[+e.target.value]; if (!x) { $("savedDel").hidden = true; return; }
+    history.replaceState(history.state, "", location.pathname + x.qs + location.hash);
+    Object.assign(S, { ...DEFAULT, rules: [], sort: [...DEFAULT.sort] });
+    readUrl(); rulesOpen = S.rules.length > 0; syncControls(); renderTable(true);
+    $("savedDel").hidden = false;
+  });
+  $("savedDel").addEventListener("click", () => {
+    const i = +$("savedSel").value; if (isNaN(i)) return;
+    SAVED.splice(i, 1); store.set("finder.screens", SAVED); renderSaved(); toast("저장한 조건을 지웠습니다");
+  });
 }
 
 /* ---------------------------------------------------------------- 포트폴리오 */
@@ -1410,6 +1607,8 @@ function initPwa() {
   initSectors(); renderSectors();
   initEarnings();
   initScreener();
+  initSaved();
+  initAlerts();
   initDetail();
   initCompare();
   initPortfolio();
