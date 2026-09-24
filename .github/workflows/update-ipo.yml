@@ -9,6 +9,15 @@ on:
     - cron: '10 22 * * 0-4'
     - cron: '10 8 * * 1-5'
   workflow_dispatch:
+    inputs:
+      pages:
+        description: '표마다 몇 쪽까지 읽을지 (쪽당 약 20종목, 비우면 3)'
+        required: false
+        type: string
+      detail_limit:
+        description: '상세 페이지를 몇 곳까지 읽을지 (비우면 40)'
+        required: false
+        type: string
 
 concurrency:
   group: ipo-build
@@ -20,7 +29,7 @@ permissions:
 jobs:
   build:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 25
     steps:
       - uses: actions/checkout@v4
 
@@ -29,9 +38,15 @@ jobs:
           python-version: '3.12'
 
       - name: 데이터 만들기
+        env:
+          PAGES: ${{ inputs.pages }}
+          DETAIL_LIMIT: ${{ inputs.detail_limit }}
         run: |
           set -o pipefail
-          python ipo/build.py 2>&1 | tee "$RUNNER_TEMP/build.log"
+          args=()
+          if [ -n "$PAGES" ]; then args+=(--pages "$PAGES"); fi
+          if [ -n "$DETAIL_LIMIT" ]; then args+=(--detail-limit "$DETAIL_LIMIT"); fi
+          python ipo/build.py "${args[@]}" 2>&1 | tee "$RUNNER_TEMP/build.log"
           { echo "### 공모주 일정"; echo '```'; tail -n 12 "$RUNNER_TEMP/build.log"; echo '```'; } >> "$GITHUB_STEP_SUMMARY"
 
       - name: 데이터 검사

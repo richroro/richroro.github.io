@@ -467,14 +467,14 @@ def merge(prev: list[dict], schedule, forecast, listing, details: dict[str, dict
 
 def need_detail(it: dict, today: dt.date, prev_by_no: dict[str, dict]) -> int:
     """상세 페이지를 다시 읽을 차례. 0 = 안 읽음, 1 = 먼저(앞으로 일정이 있거나 최근 2주), 2 = 여유 있을 때(반년 안, 한 번도 못 읽음).
-    반년 안 종목을 채워 두면 '판정별 시초가 성적'을 더 많은 표본으로 볼 수 있다."""
+    지난 종목을 채워 두면 '판정별 시초가 성적'을 더 많은 표본으로 볼 수 있다."""
     if not it.get("no"):
         return 0
     last = max(it.get("sub_end") or "", it.get("fc_end") or "", it.get("list_date") or "")
     p = prev_by_no.get(it["no"], {})
     if last >= (today - dt.timedelta(days=14)).isoformat():
         return 1 if not all(p.get(k) for k in ("market", "list_date", "refund")) or not p.get("float_pct") else 0
-    if last >= (today - dt.timedelta(days=180)).isoformat() and not p.get("market"):
+    if last >= (today - dt.timedelta(days=400)).isoformat() and not p.get("market"):
         return 2
     return 0
 
@@ -511,6 +511,7 @@ def main(argv=None) -> int:
     ap.add_argument("--html-dir", help="받아 둔 HTML 폴더(k.html, r1.html, nw.html, v-<no>.html)")
     ap.add_argument("--pages", type=int, default=3, help="표마다 몇 쪽까지 읽을지(쪽당 약 20종목)")
     ap.add_argument("--no-detail", action="store_true", help="상세 페이지를 읽지 않는다")
+    ap.add_argument("--detail-limit", type=int, default=40, help="한 번에 읽을 상세 페이지 수(빈 값 채우기는 여러 번에 나눠 한다)")
     ap.add_argument("--min-schedule", type=int, default=5, help="청약 일정 표에서 최소 몇 종목을 읽어야 성공으로 볼지")
     ap.add_argument("--out", default=OUT)
     ap.add_argument("--today", help="YYYY-MM-DD (테스트용)")
@@ -546,7 +547,7 @@ def main(argv=None) -> int:
         rank = [(need_detail(it, today, prev_by_no), it["no"]) for it in items if it.get("no")]
         todo = [no for r, no in sorted(x for x in rank if x[0])]
         log(f"상세 페이지 {len(todo)}곳")
-        for no in todo[:40]:
+        for no in todo[:max(0, a.detail_limit)]:
             try:
                 if a.html_dir:
                     path = os.path.join(a.html_dir, f"v-{no}.html")

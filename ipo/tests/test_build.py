@@ -164,10 +164,11 @@ class Merge(unittest.TestCase):
         full = {"market": "KOSDAQ", "list_date": "x", "refund": "y", "float_pct": 20.0}
         self.assertEqual(build.need_detail(it, TODAY, {}), 1)
         self.assertEqual(build.need_detail(it, TODAY, {"9": full}), 0)
-        # 반년 안 지난 종목은 한 번도 못 읽었으면 여유 있을 때 채운다
+        # 400일 안 지난 종목은 한 번도 못 읽었으면 여유 있을 때 채운다
         self.assertEqual(build.need_detail({"no": "9", "sub_end": "2026-06-01"}, TODAY, {}), 2)
         self.assertEqual(build.need_detail({"no": "9", "sub_end": "2026-06-01"}, TODAY, {"9": full}), 0)
-        self.assertEqual(build.need_detail({"no": "9", "sub_end": "2025-12-01"}, TODAY, {}), 0)
+        self.assertEqual(build.need_detail({"no": "9", "sub_end": "2025-12-01"}, TODAY, {}), 2)
+        self.assertEqual(build.need_detail({"no": "9", "sub_end": "2025-06-01"}, TODAY, {}), 0)
 
 
 class Fetch(unittest.TestCase):
