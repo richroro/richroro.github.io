@@ -1,4 +1,4 @@
-/* 접근성 — axe-core 로 재고, 키보드로 직접 눌러 본다. */
+/* 접근성 — axe-core 로 재고, 키보드로 직접 눌러 본다. (지켜보는 곳·같게 봤다·보통은 표 포함) */
 import { createRequire } from 'node:module';
 import { readFileSync } from 'node:fs';
 import { BASE, ok, section, launch, context, watch, openWith, report, finish, MIN } from './lib.mjs';
@@ -49,6 +49,27 @@ for (const scheme of ['light', 'dark']) {
   await p2.locator('#feed [data-again]').first().click(); await p2.waitForSelector('#composeBack.open');
   await axe(p2, '"나도 여기" 창');
   await c2.close();
+
+  // 지켜보는 곳 · 같게 봤다 · 보통은 표 — 요일·시간대가 흔들리지 않게 시계를 토요일 점심에 멈춘다
+  const c3 = await context(b, { colorScheme: scheme, viewport: { width: 390, height: 844 } });
+  const T = new Date('2026-09-26T12:30:00+09:00').getTime();
+  await c3.clock.setFixedTime(T);
+  const past = (iso, o) => report(Object.assign({ t: new Date(iso + '+09:00').getTime(), cat: 'play',
+    place: '별빛 키즈카페', area: '안양 안양동' }, o));
+  const p3 = await openWith(c3, [
+    report({ t: T - 20 * MIN, by: '민지', place: '만안 손칼국수', wait: 10, crowd: 1 }),
+    report({ t: T - 70 * MIN, by: '준호', place: '만안 손칼국수', wait: 10, crowd: 1 }),
+    past('2026-09-19T12:10:00', { by: '민지', crowd: 2 }),
+    past('2026-09-20T12:40:00', { by: '준호', crowd: 3 }),
+    past('2026-09-22T09:00:00', { by: '서연', crowd: 0 }),
+    past('2026-09-23T10:00:00', { by: '태오', crowd: 0 })
+  ], { watch: [{ k: '별빛키즈카페|안양동', nm: '별빛 키즈카페', ar: '안양 안양동', seen: 0 }] });
+  await axe(p3, '속보 · 지켜보는 곳');
+  await p3.locator('.tab[data-view="places"]').click();
+  await axe(p3, '장소 · 같게 봤다 · 보통은');
+  await p3.locator('#places .pl', { hasText: '별빛 키즈카페' }).click(); await p3.waitForSelector('#placeBack.open');
+  await axe(p3, '장소 창 · 보통은 표');
+  await c3.close();
 }
 
 section('버튼 이름 (좁은 화면)');

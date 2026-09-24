@@ -203,6 +203,34 @@ section[hidden]{display:none}
 .pick .why{grid-column:2;font-size:12px;color:var(--ink-3);margin-top:-2px}
 .pick.empty{border-left-color:var(--line)}
 .pick.empty h2{color:var(--ink-2)}
+.pick h2 .tagcat{font-size:11px;font-weight:600;background:var(--surface-2);color:var(--ink-2);
+  border-radius:999px;padding:2px 8px;letter-spacing:0}
+.pick-usual{margin-top:12px;padding-top:11px;border-top:1px dashed var(--line);font-size:12.5px;color:var(--ink-2)}
+.pick-usual .u-src{font-size:11.5px;color:var(--ink-3);margin-left:4px}
+.pick-usual ul{list-style:none;padding:0;margin:6px 0 0;display:grid;gap:3px}
+.pick-usual li{display:flex;gap:8px;align-items:baseline;flex-wrap:wrap}
+.pick-usual .nm{font-size:14px}
+.pick-usual li > span{font-size:11.5px;color:var(--ink-3)}
+
+/* ════════ 지켜보는 곳 ════════ */
+.watch{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:11px 14px 6px;margin-bottom:12px}
+.watch h2{font-size:13px;font-weight:700;color:var(--ink-2);display:flex;align-items:center;gap:6px}
+.watch h2 .n{font-family:"IBM Plex Mono",monospace;font-size:11.5px;color:var(--ink-3);font-weight:500}
+.watch ul{list-style:none;padding:0;margin:4px 0 0}
+.watch li + li{border-top:1px solid var(--line-soft)}
+.w-row{display:grid;gap:5px;width:100%;text-align:left;background:none;border:none;padding:9px 0;
+  cursor:pointer;font:inherit;color:inherit}
+.w-row:hover .w-name{color:var(--accent);text-decoration:underline}
+.w-head{display:flex;gap:3px 8px;align-items:baseline;flex-wrap:wrap}
+.w-name{font-size:15px;font-weight:600;letter-spacing:-.3px}
+.w-area{font-size:12px;color:var(--ink-3)}
+.w-stat{display:flex;gap:5px;flex-wrap:wrap;align-items:center}
+.w-age{font-size:11.5px;color:var(--ink-3);font-family:"IBM Plex Mono",monospace;margin-right:2px}
+.w-empty{font-size:12.5px;color:var(--ink-3)}
+.w-row .usual-hint{margin-top:0}
+.w-gone{display:flex;gap:3px 8px;align-items:center;flex-wrap:wrap;padding:7px 0}
+.w-gone .link-btn{margin-left:auto}
+.det-head .pl-top .wbtn{margin-left:auto;min-height:34px;padding:4px 12px;font-size:13px}
 
 /* ════════ 거르개 ════════ */
 .filters{display:grid;gap:9px;margin-bottom:16px}
@@ -328,6 +356,36 @@ textarea.input{min-height:76px;resize:vertical;line-height:1.55}
 .pl-meta b{color:var(--ink-2);font-weight:600}
 .conflict{margin-top:9px;font-size:12.5px;color:var(--s2-ink);background:var(--s2-bg);
   padding:7px 10px;border-radius:8px;line-height:1.5}
+/* 엇갈림의 반대편 — 서로 다른 사람이 같게 봤다 */
+.confirm{margin-top:9px;font-size:12.5px;color:var(--s0-ink);background:var(--s0-bg);
+  padding:7px 10px;border-radius:8px;line-height:1.5}
+.wmark{color:var(--star);font-size:13px}
+.w-new{font-size:11px;font-weight:700;background:var(--live-wash);color:var(--live);border-radius:999px;
+  padding:1px 8px;white-space:nowrap;letter-spacing:0}
+
+/* ════════ 보통은 — 지난 기록 ════════ */
+.usual-hint{margin-top:9px;font-size:12.5px;color:var(--ink-2);display:flex;align-items:center;gap:4px 7px;flex-wrap:wrap}
+.usual-hint b{font-weight:700;color:var(--ink)}
+.usual-hint .u-src{font-size:11.5px;color:var(--ink-3)}
+.sw{width:10px;height:10px;border-radius:3px;flex:none;display:inline-block}
+.sw.good{background:var(--s0-bg);box-shadow:inset 0 0 0 1px var(--s0-ink)}
+.sw.mid{background:var(--s1-bg);box-shadow:inset 0 0 0 1px var(--s1-ink)}
+.sw.bad{background:var(--s2-bg);box-shadow:inset 0 0 0 1px var(--s2-ink)}
+.sw.worst{background:var(--s3-bg)}
+.usual{width:100%;border-collapse:separate;border-spacing:3px;table-layout:fixed;font-size:12px;margin:0 -3px 4px}
+.usual th{font-size:11.5px;font-weight:600;color:var(--ink-3);text-align:center;padding:2px 0}
+.usual th[scope="row"]{text-align:left}
+.usual col.rh{width:38px}
+.usual td{text-align:center;border-radius:7px;padding:6px 1px;font-weight:600;line-height:1.3;
+  background:var(--surface-2);color:var(--ink-3)}
+.usual thead td{background:none}
+.usual td small{display:block;font-size:10.5px;font-weight:500}
+.usual td.good{background:var(--s0-bg);color:var(--s0-ink)}
+.usual td.mid{background:var(--s1-bg);color:var(--s1-ink)}
+.usual td.bad{background:var(--s2-bg);color:var(--s2-ink)}
+.usual td.worst{background:var(--s3-bg);color:var(--s3-ink)}
+.usual td.now{box-shadow:inset 0 0 0 2px var(--ink)}
+.usual td .u-now{font-size:10px;font-weight:700}
 
 /* ════════ 특파원 ════════ */
 .people{display:grid;gap:8px}
@@ -468,6 +526,7 @@ body:has(.backdrop.open) .toast{top:calc(14px + env(safe-area-inset-top));bottom
 
   <!-- ===== 속보 ===== -->
   <section class="view" id="view-feed" role="tabpanel" aria-labelledby="tab-feed">
+    <div id="watchBox"></div>
     <div id="pick"></div>
     <div class="filters">
       <div class="chipbar" id="catFilter" role="group" aria-label="분야 거르개"></div>
@@ -795,6 +854,7 @@ const MAX_CODE = 40000;   // 받아들일 코드 길이 상한
 const MAX_BYTES = 500000; // 풀었을 때 크기 상한
 const MAX_REPORTS = 400;  // 한 번에 받아들일 리포트 수 상한
 const BUNDLE_CAP = 1600;  // 묶음 링크 payload 목표 길이(카톡에서 안 깨지는 선)
+const WATCH_MAX = 30;     // 지켜보는 곳 상한
 
 const CATS = [
   { k:"play", ic:"🛝", nm:"놀이공간" },
@@ -915,9 +975,23 @@ function sane(o, local){
   };
 }
 
+/** 지켜보는 곳 목록. 이 기기에만 있는 내 설정이라 링크에는 실리지 않는다.
+    k 는 장소 묶음 열쇠(이름|동네), nm·ar 은 보여 줄 이름, seen 은 마지막으로 본 리포트 시각. */
+function saneWatch(list){
+  if (!Array.isArray(list)) return [];
+  const keys = new Set();
+  return list.map((w) => w && typeof w === "object" && typeof w.k === "string" &&
+        w.k.length <= 80 && w.k.lastIndexOf("|") > 0
+      ? { k: w.k, nm: clip(w.nm, 40) || w.k.slice(0, w.k.lastIndexOf("|")), ar: clip(w.ar, 30),
+          seen: Math.max(0, Number(w.seen) || 0) }
+      : null)
+    .filter((w) => w && !keys.has(w.k) && keys.add(w.k))
+    .slice(0, WATCH_MAX);
+}
+
 const board = (function load(){
   const raw = store.get(KEY, null);
-  const b = { reports: [], me: "", seeded: false, hood: "", pulledAt: 0, gone: [] };
+  const b = { reports: [], me: "", seeded: false, hood: "", pulledAt: 0, gone: [], watch: [] };
   if (raw && typeof raw === "object") {
     /* 내 저장소에서 읽는 것이므로 mine/up 을 살린다. 링크·서버에서 오는 것은 살리지 않는다. */
     if (Array.isArray(raw.reports)) b.reports = raw.reports.map((r) => sane(r, true)).filter(Boolean);
@@ -926,6 +1000,7 @@ const board = (function load(){
     b.hood = clip(raw.hood, 12);
     b.pulledAt = Number(raw.pulledAt) || 0;
     if (Array.isArray(raw.gone)) b.gone = raw.gone.filter((x) => typeof x === "string").slice(-500);
+    b.watch = saneWatch(raw.watch);
   }
   b.reports.sort((a, c) => c.t - a.t);
   return b;
@@ -1120,6 +1195,12 @@ function groups(){
     g.tags = Array.from(new Set([].concat.apply([], g.rs.map((r) => r.tags)))).slice(0, 8);
     g.cat = g.last.cat;
     g.conflicts = conflicts(g.rs);
+    g.confirm = confirms(g.rs);
+    g.usual = usual(g.rs);
+    /* 가장 최근 현장 정보(웨이팅·사람·주차가 하나라도 있는 리포트). 메모만 남긴 리포트가
+       더 새것이어도 상황판은 이걸로 그린다. 3시간 안쪽이면 그게 지금 상황(g.now)이다. */
+    g.stat = g.rs.find((r) => statChips(r).length) || null;
+    g.now = g.stat && Date.now() - g.stat.t < SOFT ? g.stat : null;
     return g;
   });
 }
@@ -1137,6 +1218,92 @@ function conflicts(rs){
       .map((r) => opt(f[1], r[f[0]]).nm + "(" + r.by + " · " + ago(r.t) + ")").join(" / "));
   });
   return out;
+}
+/** 엇갈림의 반대편 — 최근 3시간 안에 서로 다른 특파원이 가장 최근 현장 정보와 같게 봤는지.
+    둘 다 아는 칸이 하나 이상 있고 그 칸이 모두 같아야 같게 본 것이다. 모름은 어느 쪽도 아니다.
+    같은 사람이 여러 번 쓴 것은 한 사람이다 — 혼자 두 번 말한다고 확인이 되지는 않는다. */
+function confirms(rs){
+  const recent = rs.filter((r) => Date.now() - r.t < SOFT && statChips(r).length);
+  if (recent.length < 2) return null;
+  const top = recent[0];
+  const same = recent.filter((r) => {
+    let shared = 0;
+    for (const f of ["wait", "crowd", "park"]) {
+      if (r[f] === -1 || top[f] === -1) continue;
+      if (r[f] !== top[f]) return false;
+      shared++;
+    }
+    return shared > 0;
+  });
+  const names = Array.from(new Set(same.map((r) => r.by)));
+  return names.length < 2 ? null : { n: names.length, names };
+}
+const confirmHtml = (c) => '<div class="confirm"><span aria-hidden="true">✓ </span>' + c.n + "명이 같게 봤습니다 · " +
+  esc(c.names.slice(0, 3).join(", ") + (c.names.length > 3 ? " 외 " + (c.names.length - 3) + "명" : "")) + "</div>";
+
+/* =========================================================================
+   보통은 — 지난 기록
+   3시간이 지나면 속보는 "지금"을 말하지 못한다. 대신 쌓이면 "보통 이 시간엔"을 말할 수 있다.
+   평일·주말 × 다섯 시간대로 나누고, 서로 다른 날 두 번 이상 본 칸만 말한다 —
+   하루에 몰린 여러 건은 그날 사정이지 "보통"이 아니다. 지금 소식과 섞이지 않게 3시간 안쪽은 뺀다.
+   ========================================================================= */
+const SLOTS = [
+  { nm:"아침", from:6,  to:11 },
+  { nm:"점심", from:11, to:14 },
+  { nm:"오후", from:14, to:17 },
+  { nm:"저녁", from:17, to:21 },
+  { nm:"밤",   from:21, to:30 }     // 21시 ~ 다음 날 6시
+];
+const DAYTYPES = ["평일", "주말"];
+/** 평균 여유도(cond) → 말. 칩 네 단계의 한가운데로 끊는다. */
+const VERDICT = [
+  { min:.78, nm:"여유", tone:"good"  },
+  { min:.38, nm:"보통", tone:"mid"   },
+  { min:.1,  nm:"붐빔", tone:"bad"   },
+  { min:-1,  nm:"터짐", tone:"worst" }
+];
+/** 어느 칸에 드는지. 새벽 0~6시는 전날 밤이다 — 토요일 새벽 1시는 금요일 밤의 끝이다. */
+function slotOf(t){
+  const d = new Date(t);
+  let h = d.getHours();
+  if (h < 6) { d.setDate(d.getDate() - 1); h += 24; }
+  const day = d.getDay();
+  return {
+    d: day === 0 || day === 6 ? 1 : 0,
+    s: SLOTS.findIndex((x) => h >= x.from && h < x.to),
+    date: d.getFullYear() + "-" + (d.getMonth() + 1) + "-" + d.getDate()
+  };
+}
+function usual(rs){
+  const cells = {};
+  rs.forEach((r) => {
+    if (Date.now() - r.t < SOFT || !statChips(r).length) return;
+    const k = slotOf(r.t), key = k.d + ":" + k.s;
+    const c = cells[key] || (cells[key] = { sum:0, n:0, dates:new Set() });
+    c.sum += cond(r); c.n++; c.dates.add(k.date);
+  });
+  const out = {};
+  Object.keys(cells).forEach((key) => {
+    const c = cells[key];
+    if (c.dates.size < 2) return;
+    const avg = c.sum / c.n;
+    const v = VERDICT.find((x) => avg >= x.min);
+    out[key] = { nm:v.nm, tone:v.tone, days:c.dates.size, n:c.n, avg };
+  });
+  return out;
+}
+const slotName = (k) => DAYTYPES[k.d] + " " + SLOTS[k.s].nm;
+/** 지금 시간대 칸 — 없으면 null */
+function usualNow(g){
+  const k = slotOf(Date.now());
+  return g.usual[k.d + ":" + k.s] || null;
+}
+/** "주말 점심엔 보통 붐빔 · 지난 기록 3일" — 속보가 아니라는 걸 늘 붙여서 말한다. tag 는 div 나 span. */
+function usualHintHtml(u, tag){
+  tag = tag || "div";
+  return "<" + tag + ' class="usual-hint"><span class="sw ' + u.tone + '" aria-hidden="true"></span>' +
+    "<span>" + esc(slotName(slotOf(Date.now()))) + "엔 보통 <b>" + esc(u.nm) + "</b></span>" +
+    '<span class="u-src">지난 기록 ' + u.days + "일</span></" + tag + ">";
 }
 
 /* =========================================================================
@@ -1259,38 +1426,53 @@ function renderTicker(){
   if (drop) drop.addEventListener("click", () => { board.seeded = true; save(); renderAll(); toast("예시를 치웠습니다."); });
 }
 
+/** 속보 거르개에서 분야를 골랐으면 "지금 갈 만한 곳"도 그 분야만 본다. */
 function renderPick(){
-  const now = reports().filter((r) => Date.now() - r.t < SOFT);
-  if (!now.length) {
-    $("#pick").innerHTML = '<div class="pick empty"><h2>지금 들어온 소식이 없습니다</h2>' +
-      '<p class="sub" style="margin-bottom:0">3시간 안쪽 리포트가 있어야 “지금”을 말할 수 있습니다. ' +
-      '밖에 계신 분이 첫 소식을 보내 주세요.</p></div>';
+  const cat = flt.cat ? CATS.find((c) => c.k === flt.cat) : null;
+  const tag = cat ? '<span class="tagcat">' + esc(cat.nm) + "만</span>" : "";
+  const gs = groups().filter((g) => !cat || g.cat === cat.k);
+  /* 장소마다 지금 상황은 가장 최근 현장 정보 하나다(g.now) — 두 시간 전의 "한산"이
+     방금 들어온 "붐빔"을 이기면 안 된다. 메모만 남긴 리포트는 지금을 말하지 못하므로 뺀다. */
+  const cur = gs.filter((g) => g.now).map((g) => ({ g, r: g.now, s: cond(g.now) * freshness(g.now.t) }));
+  if (!cur.length) {
+    $("#pick").innerHTML = '<div class="pick empty"><h2>지금 들어온 소식이 없습니다' + tag + "</h2>" +
+      '<p class="sub" style="margin-bottom:0">웨이팅·사람·주차가 담긴 3시간 안쪽 리포트가 있어야 “지금”을 말할 수 있습니다. ' +
+      '밖에 계신 분이 첫 소식을 보내 주세요.</p>' + usualPickHtml(gs) + "</div>";
     return;
   }
-  const best = new Map();
-  now.forEach((r) => {
-    const k = norm(r.place) + "|" + areaKey(r.area);
-    const s = cond(r) * freshness(r.t);
-    const cur = best.get(k);
-    if (!cur || s > cur.s) best.set(k, { r, s });
-  });
-  const top = Array.from(best.values()).filter((x) => cond(x.r) >= .5).sort((a, b) => b.s - a.s).slice(0, 3);
+  const top = cur.filter((x) => cond(x.r) >= .5).sort((a, b) => b.s - a.s).slice(0, 3);
   if (!top.length) {
-    $("#pick").innerHTML = '<div class="pick empty"><h2>지금은 다들 붐빈다고 합니다</h2>' +
-      '<p class="sub" style="margin-bottom:0">3시간 안쪽 리포트 ' + now.length + '건 가운데 ' +
+    $("#pick").innerHTML = '<div class="pick empty"><h2>지금은 다들 붐빈다고 합니다' + tag + "</h2>" +
+      '<p class="sub" style="margin-bottom:0">3시간 안쪽 소식이 들어온 ' + cur.length + '곳 가운데 ' +
       '“여유 있다”는 곳이 없습니다.</p></div>';
     return;
   }
-  $("#pick").innerHTML = '<div class="pick"><h2>지금 갈 만한 곳<span class="tagnow">3시간 안쪽</span></h2>' +
-    '<p class="sub">대기·혼잡·주차가 여유롭다는 리포트가 방금 들어온 순서입니다.</p><ol>' +
+  $("#pick").innerHTML = '<div class="pick"><h2>지금 갈 만한 곳<span class="tagnow">3시간 안쪽</span>' + tag + "</h2>" +
+    '<p class="sub">장소마다 가장 최근 소식으로 봐서, 대기·혼잡·주차가 여유로운 곳을 신선한 순서로 세웠습니다.</p><ol>' +
     top.map((x, i) => {
       const chips = statChips(x.r).map((c) => c.s).join(" · ");
       return "<li>" +
         '<span class="rank">' + (i + 1) + "</span>" +
-        '<button class="nm" type="button" data-open="' + esc(x.r.id) + '">' + esc(x.r.place) + "</button>" +
-        '<span class="why">' + esc(ago(x.r.t)) + (chips ? " · " + esc(chips) : "") + " · " + esc(x.r.by) + " 특파원</span>" +
+        '<button class="nm" type="button" data-open="' + esc(x.r.id) + '">' + esc(x.g.place) + "</button>" +
+        '<span class="why">' + esc(ago(x.r.t)) + (chips ? " · " + esc(chips) : "") + " · " + esc(x.r.by) + " 특파원" +
+          (x.g.confirm ? " · " + x.g.confirm.n + "명 확인" : "") +
+          (x.g.conflicts.length ? " · 엇갈림 있음" : "") + "</span>" +   // 추천하면서 다른 말이 있다는 걸 감추지 않는다
       "</li>";
     }).join("") + "</ol></div>";
+}
+/** 지금 소식이 하나도 없을 때만 — 지난 기록으로 이 시간대에 보통 여유로웠던 곳. 지금 소식이 아니라고 붙여 말한다. */
+function usualPickHtml(gs){
+  const k = slotOf(Date.now());
+  const good = gs.map((g) => ({ g, u: g.usual[k.d + ":" + k.s] }))
+    .filter((x) => x.u && x.u.tone === "good")
+    .sort((a, b) => (b.u.avg - a.u.avg) || (b.u.days - a.u.days))
+    .slice(0, 3);
+  if (!good.length) return "";
+  return '<div class="pick-usual"><b>' + esc(slotName(k)) + "엔 보통 여유로운 곳</b>" +
+    '<span class="u-src">지난 기록 · 지금 소식이 아닙니다</span><ul>' +
+    good.map((x) => '<li><button class="nm" type="button" data-openkey="' + esc(x.g.key) + '">' + esc(x.g.place) + "</button>" +
+      "<span>" + (x.g.area ? esc(x.g.area) + " · " : "") + x.u.days + "일 기록</span></li>").join("") +
+    "</ul></div>";
 }
 
 /** 속보를 시간대로 나눈다 — 오늘·어제는 달력 기준이라 "5시간 전"이 어제가 되기도 한다. */
@@ -1325,7 +1507,94 @@ function renderFeed(){
     });
     $("#feed").innerHTML = html;
   }
+  renderWatch();
   renderPick();
+}
+
+/* =========================================================================
+   지켜보는 곳 — 자주 가는 곳을 속보 맨 위에 붙여 둔다
+   목록은 이 기기에만 있다. 새 소식은 "마지막으로 본 뒤에 남이 쓴 것"이다 — 내가 쓴 건 이미 안다.
+   ========================================================================= */
+/** 장소 묶음에 해당하는 지켜보기 항목. 동네 없이 담았던 곳에 나중에 동네가 붙으면 이름으로 따라간다. */
+function watchEntry(g){
+  return board.watch.find((w) => w.k === g.key) ||
+         board.watch.find((w) => w.k.charAt(w.k.length - 1) === "|" && g.key.indexOf(w.k) === 0) || null;
+}
+/** 지켜보는 순서대로 [{w, g}]. 예시 보드일 때는 진짜 장소가 아니므로 g 를 붙이지 않는다. */
+function watchedGroups(gs){
+  gs = gs || groups();
+  let moved = false;
+  const out = board.watch.map((w) => {
+    if (isSample()) return { w, g:null };
+    let g = gs.find((x) => x.key === w.k);
+    if (!g && w.k.charAt(w.k.length - 1) === "|") {
+      g = gs.find((x) => x.key.indexOf(w.k) === 0) || null;
+      if (g) { w.k = g.key; moved = true; }        // 동네가 붙었다 — 열쇠를 옮긴다
+    }
+    return { w, g: g || null };
+  });
+  if (moved) save();
+  return out;
+}
+const unseen = (w, g) => g ? g.rs.filter((r) => r.t > w.seen && !r.mine).length : 0;
+/** 장소 창을 열었거나 열려 있는 동안 들어온 것은 본 것이다. */
+function markSeen(g){
+  if (isSample()) return false;
+  const w = watchEntry(g);
+  if (!w || g.last.t <= w.seen) return false;
+  w.seen = g.last.t;
+  save();
+  return true;
+}
+function toggleWatch(g){
+  const w = watchEntry(g);
+  if (w) {
+    board.watch = board.watch.filter((x) => x !== w);
+    save();
+    toast("그만 지켜봅니다 — " + g.place);
+    return;
+  }
+  if (board.watch.length >= WATCH_MAX) { toast("지켜보는 곳은 " + WATCH_MAX + "곳까지입니다."); return; }
+  board.watch.push({ k: g.key, nm: g.place, ar: g.area, seen: g.last.t });
+  save();
+  toast("지켜보는 곳에 넣었습니다 — 새 소식이 오면 속보 맨 위에 표시합니다.");
+}
+/** 새로 들어온 리포트 가운데 지켜보는 곳 것이 있으면 알릴 말. 내가 쓴 것은 빼고, 이미 본 것보다 옛것도 뺀다. */
+function watchNews(fresh){
+  if (!fresh || !fresh.length || !board.watch.length) return "";
+  const ids = new Set(fresh.filter((r) => !r.mine).map((r) => r.id));
+  const hit = watchedGroups()
+    .filter((x) => x.g && x.g.rs.some((r) => ids.has(r.id) && r.t > x.w.seen))
+    .map((x) => x.g.place);
+  if (!hit.length) return "";
+  return "지켜보는 곳에 새 소식 — " + hit.slice(0, 2).join(", ") + (hit.length > 2 ? " 외 " + (hit.length - 2) + "곳" : "");
+}
+function renderWatch(){
+  const box = $("#watchBox");
+  if (!board.watch.length) { box.innerHTML = ""; return; }
+  const items = watchedGroups();
+  box.innerHTML = '<div class="watch"><h2><span aria-hidden="true">★</span> 지켜보는 곳<span class="n">' + items.length + "</span></h2><ul>" +
+    items.map((x) => {
+      const w = x.w, g = x.g;
+      if (!g) {
+        return '<li class="w-gone"><span class="w-name">' + esc(w.nm) + "</span>" +
+          (w.ar ? '<span class="w-area">' + esc(w.ar) + "</span>" : "") +
+          '<span class="w-empty">아직 소식이 없습니다</span>' +
+          '<button class="link-btn" type="button" data-unwatch="' + esc(w.k) + '">그만 보기</button></li>';
+      }
+      const n = unseen(w, g), u = usualNow(g);
+      const body = g.now
+        ? '<span class="w-stat"><span class="w-age">' + esc(ago(g.now.t)) + "</span>" +
+            statChips(g.now).map((c) => '<span class="stat ' + c.tone + '">' + esc(c.s) + "</span>").join("") +
+            (g.confirm ? '<span class="w-age">' + g.confirm.n + "명 확인</span>" : "") + "</span>"
+        : u ? usualHintHtml(u, "span")
+        : '<span class="w-empty">지금 소식 없음 · 마지막 ' + esc(ago(g.last.t)) + "</span>";
+      return '<li><button class="w-row" type="button" data-openkey="' + esc(g.key) + '">' +
+        '<span class="w-head"><span class="w-name">' + esc(g.place) + "</span>" +
+          (g.area ? '<span class="w-area">' + esc(g.area) + "</span>" : "") +
+          (n ? '<span class="w-new">새 소식 ' + n + "</span>" : "") +
+        "</span>" + body + "</button></li>";
+    }).join("") + "</ul></div>";
 }
 
 function renderPlaces(){
@@ -1342,18 +1611,21 @@ function renderPlaces(){
   $("#nPlaces").textContent = gs.length ? gs.length : "";
   $("#places").innerHTML = gs.length ? gs.map((g) => {
     const cat = CATS.find((c) => c.k === g.cat) || CATS[CATS.length - 1];
-    const chips = statChips(g.last);
-    const d = Date.now() - g.last.t;
+    const st = g.stat, w = isSample() ? null : watchEntry(g), n = w ? unseen(w, g) : 0, u = g.now ? null : usualNow(g);
     return '<button class="pl age-' + ageClass(g.last.t) + '" type="button" data-openkey="' + esc(g.key) + '">' +
       '<div class="pl-top">' +
         '<span class="cat"><span aria-hidden="true">' + cat.ic + "</span> " + esc(cat.nm) + "</span>" +
         '<span class="pl-name">' + esc(g.place) + "</span>" +
         (g.area ? '<span class="age">' + esc(g.area) + "</span>" : "") +
+        (w ? '<span class="wmark"><span aria-hidden="true">★</span><span class="sr">지켜보는 곳</span></span>' : "") +
+        (n ? '<span class="w-new">새 소식 ' + n + "</span>" : "") +
       "</div>" +
-      (chips.length ? '<div class="live-row' + (d >= SOFT ? " faded" : "") + '">' +
-        '<span class="live-label">' + esc(liveLabel(g.last.t)) + "</span>" +
-        chips.map((c) => '<span class="stat ' + c.tone + '">' + esc(c.s) + "</span>").join("") +
-        meterHtml(g.last) + "</div>" : "") +
+      (st ? '<div class="live-row' + (g.now ? "" : " faded") + '">' +
+        '<span class="live-label">' + esc(liveLabel(st.t)) + "</span>" +
+        statChips(st).map((c) => '<span class="stat ' + c.tone + '">' + esc(c.s) + "</span>").join("") +
+        meterHtml(st) + "</div>" : "") +
+      (u ? usualHintHtml(u) : "") +
+      (g.confirm ? confirmHtml(g.confirm) : "") +
       (g.conflicts.length ? '<div class="conflict">엇갈립니다 · ' + esc(g.conflicts[0]) + "</div>" : "") +
       '<div class="pl-meta">' +
         avsHtml(g.people) +
@@ -1449,12 +1721,12 @@ function paintMe(){
   $("#meBtn").title = board.me ? "특파원: " + board.me : "특파원 이름 정하기";
 }
 function renderAll(){
+  /* 장소 창이 열려 있는 동안 들어온 새 소식은 본 것이다 — 뒤의 목록보다 먼저 표시해 둔다. */
+  const open = openPlaceKey ? groups().find((x) => x.key === openPlaceKey) : null;
+  if (open) markSeen(open);
   paintMe();
   renderTicker(); renderFeed(); renderPlaces(); renderPeople(); renderSync(); renderDatalists();
-  if (openPlaceKey) {
-    const g = groups().find((x) => x.key === openPlaceKey);
-    if (g) fillPlaceSheet(g);
-  }
+  if (open) fillPlaceSheet(open);
 }
 
 /* =========================================================================
@@ -1524,10 +1796,11 @@ async function syncPull(quiet){
     const res = mergeRows(rows);
     res.removed = reconcile(rows, LIMIT);
     board.pulledAt = Date.now();
+    const wn = watchNews(res.fresh);   // 조용히 받아올 때도 지켜보는 곳 소식은 알린다
     save();
     renderAll();
-    if (!quiet && res.added) toast(res.added + "건을 받아왔습니다.");
-    else if (!quiet) toast("새 소식이 없습니다.");
+    if (!quiet) toast(res.added ? res.added + "건을 받아왔습니다." + (wn ? " " + wn : "") : "새 소식이 없습니다.");
+    else if (wn) toast(wn);
     return res;
   } catch (e) {
     if (!quiet) toast("받아오지 못했습니다: " + e.message);
@@ -1861,11 +2134,16 @@ async function openShare(list){
    ========================================================================= */
 function fillPlaceSheet(g){
   const cat = CATS.find((c) => c.k === g.cat) || CATS[CATS.length - 1];
+  const w = watchEntry(g), st = g.stat, u = g.now ? null : usualNow(g);
   $("#placeTitle").textContent = g.place;
   $("#placeBody").innerHTML =
     '<div class="det-head">' +
       '<div class="pl-top"><span class="cat"><span aria-hidden="true">' + cat.ic + "</span> " + esc(cat.nm) + "</span>" +
-        (g.area ? '<span class="age mono">' + esc(g.area) + "</span>" : "") + "</div>" +
+        (g.area ? '<span class="age mono">' + esc(g.area) + "</span>" : "") +
+        /* 이름은 그대로 두고 눌림 상태로 말한다 — 읽는 프로그램에는 "지켜보기, 눌림" */
+        (isSample() ? "" : '<button class="chip wbtn" type="button" data-watch="' + esc(g.key) + '" aria-pressed="' + !!w + '">' +
+          '<span aria-hidden="true">' + (w ? "★" : "☆") + "</span> 지켜보기</button>") +
+      "</div>" +
       '<div class="det-stats">' +
         "<span>리포트 <b>" + g.n + "</b>건</span>" +
         "<span>특파원 <b>" + g.people.length + "</b>명</span>" +
@@ -1873,17 +2151,43 @@ function fillPlaceSheet(g){
         "<span>마지막 <b>" + esc(ago(g.last.t)) + "</b></span>" +
       "</div>" +
       (g.tags.length ? '<div class="tags">' + g.tags.map((t) => "#" + esc(t)).join(" ") + "</div>" : "") +
-      '<div class="note">가장 최근 현장 정보 — ' + esc(liveLabel(g.last.t)) + " 기준</div>" +
-      (liveRowHtml(g.last) || '<div class="note">현장 정보 없이 메모만 남은 곳입니다.</div>') +
+      (st ? '<div class="note">가장 최근 현장 정보 — ' + esc(liveLabel(st.t)) + " 기준</div>" + liveRowHtml(st)
+          : '<div class="note">현장 정보 없이 메모만 남은 곳입니다.</div>') +
+      (u ? usualHintHtml(u) : "") +
+      (g.confirm ? confirmHtml(g.confirm) : "") +
       (g.conflicts.length ? g.conflicts.map((c) => '<div class="conflict">엇갈립니다 · ' + esc(c) + "</div>").join("") : "") +
       (g.people.length > 1 ? '<div class="note">' + esc(g.people.join(", ")) + " 특파원이 다녀갔습니다.</div>" : "") +
     "</div>" +
+    usualTableHtml(g) +
     '<div class="panel-t">들어온 순서대로</div>' +
     '<div class="tl">' + g.rs.map((r) => cardHtml(r, { plain:true, noDelete:true })).join("") + "</div>";
+}
+/** 요일·시간대 표. 지금 칸에 테를 두르고, 기록이 모자란 칸은 비워 둔다 — 없는 걸 지어내지 않는다. */
+function usualTableHtml(g){
+  if (!Object.keys(g.usual).length) {
+    const past = g.rs.some((r) => Date.now() - r.t >= SOFT && statChips(r).length);
+    return past ? '<p class="note" style="margin:-4px 0 16px">보통 어떤지는 서로 다른 날 두 번 이상 들어온 시간대부터 ' +
+      "보여 드립니다. 기록이 더 쌓이면 여기에 요일·시간대별로 나옵니다.</p>" : "";
+  }
+  const k = slotOf(Date.now());
+  return '<div class="panel-t">보통은<span class="note">지난 기록 · 지금 소식이 아닙니다</span></div>' +
+    '<table class="usual"><caption class="sr">요일·시간대별로 지난 리포트가 보통 어땠는지</caption>' +
+    '<colgroup><col class="rh"><col span="5"></colgroup>' +
+    "<thead><tr><td></td>" + SLOTS.map((s) => '<th scope="col">' + s.nm + "</th>").join("") + "</tr></thead><tbody>" +
+    DAYTYPES.map((dn, d) => '<tr><th scope="row">' + dn + "</th>" + SLOTS.map((s, i) => {
+      const c = g.usual[d + ":" + i], now = d === k.d && i === k.s;
+      return '<td class="' + (c ? c.tone : "none") + (now ? " now" : "") + '"' + (now ? ' aria-current="time"' : "") + ">" +
+        (now ? '<small class="u-now">지금</small>' : "") +
+        (c ? esc(c.nm) + "<small>" + c.days + "일</small>" : '<span aria-hidden="true">·</span><span class="sr">기록 모자람</span>') +
+      "</td>";
+    }).join("") + "</tr>").join("") + "</tbody></table>" +
+    '<p class="note" style="margin-bottom:16px">3시간이 지난 리포트만 셉니다. 서로 다른 날 두 번 이상 본 칸만 채우고, ' +
+    "새벽(0~6시)은 전날 밤으로, 공휴일은 평일로 칩니다.</p>";
 }
 function openPlaceSheet(g){
   openPlaceKey = g.key;
   $("#placeAgain").hidden = isSample();
+  if (markSeen(g)) { renderWatch(); renderPlaces(); }
   fillPlaceSheet(g);
   openSheet("#placeBack");
 }
@@ -1901,6 +2205,7 @@ function findCode(text){
 function merge(list){
   const have = new Set(board.reports.map((r) => r.id));
   let added = 0, dup = 0;
+  const fresh = [];                                  // 새로 들어온 것 — 지켜보는 곳 알림에 쓴다
   list.forEach((r) => {
     if (have.has(r.id)) {
       dup++;
@@ -1914,6 +2219,7 @@ function merge(list){
     if (!r.sv) board.gone = board.gone.filter((x) => x !== r.id);   // 링크로 일부러 다시 받은 것
     have.add(r.id);
     board.reports.push(r);
+    fresh.push(r);
     added++;
   });
   if (added) {
@@ -1921,7 +2227,12 @@ function merge(list){
     board.reports.sort((a, b) => b.t - a.t);
     if (!save()) toast("저장 공간이 부족합니다. 오래된 리포트를 지워 보세요.");
   }
-  return { added, dup };
+  return { added, dup, fresh };
+}
+/** 받은 결과를 한 줄로 — 지켜보는 곳에 새 소식이 있으면 그걸 붙인다. */
+function mergeNote(res, head){
+  const wn = watchNews(res.fresh);
+  return head + (wn ? " " + wn : "");
 }
 function clearHash(){
   if (location.hash) history.replaceState(null, "", location.pathname + location.search);
@@ -1954,10 +2265,11 @@ async function checkHash(){
   const yes = $("#inboxYes"), no = $("#inboxNo");
   if (yes) yes.addEventListener("click", () => {
     const res = merge(inboxCache || []);
+    const msg = mergeNote(res, res.added + "건을 받았습니다." + (res.dup ? " (" + res.dup + "건은 이미 있었음)" : ""));
     box.innerHTML = "";
     clearHash();
     renderAll();
-    toast(res.added + "건을 받았습니다." + (res.dup ? " (" + res.dup + "건은 이미 있었음)" : ""));
+    toast(msg);
   });
   if (no) no.addEventListener("click", () => { box.innerHTML = ""; clearHash(); });
 }
@@ -2086,6 +2398,24 @@ function bind(){
 
   /* 카드·장소·지금갈만한곳 — 위임 */
   document.addEventListener("click", (e) => {
+    const wt = e.target.closest("[data-watch]");
+    if (wt) {
+      const g = groups().find((x) => x.key === wt.dataset.watch);
+      if (!g) return;
+      toggleWatch(g);
+      renderAll();
+      const again = $("#placeBody [data-watch]");   // 다시 그렸으니 초점을 새 단추로 돌려 놓는다
+      if (again) again.focus();
+      return;
+    }
+    const uw = e.target.closest("[data-unwatch]");
+    if (uw) {
+      board.watch = board.watch.filter((w) => w.k !== uw.dataset.unwatch);
+      save();
+      renderAll();
+      toast("그만 지켜봅니다.");
+      return;
+    }
     const open = e.target.closest("[data-open]");
     if (open) {
       const g = groups().find((x) => x.rs.some((r) => r.id === open.dataset.open));
@@ -2245,10 +2575,12 @@ function bind(){
     try {
       const list = await unpack(code);
       const res = merge(list);
+      const wn = watchNews(res.fresh);
       renderAll();
       st.textContent = res.added + "건을 받았습니다." + (res.dup ? " " + res.dup + "건은 이미 갖고 있어서 건너뛰었습니다." : "");
       st.className = "status ok";
       if (res.added) { $("#recvBox").value = ""; switchView("feed"); }
+      if (wn) toast(wn);
     } catch(err) {
       st.textContent = "받지 못했습니다: " + err.message;
       st.className = "status err";
@@ -2300,8 +2632,8 @@ function bind(){
     if (!board.reports.length) { toast("저장할 리포트가 없습니다."); return; }
     const d = new Date();
     const stamp = d.getFullYear() + String(d.getMonth() + 1).padStart(2, "0") + String(d.getDate()).padStart(2, "0");
-    const blob = new Blob([JSON.stringify({ app:"동네 특파원", v:1, savedAt:d.toISOString(), reports:board.reports }, null, 1)],
-      { type:"application/json" });
+    const blob = new Blob([JSON.stringify({ app:"동네 특파원", v:1, savedAt:d.toISOString(), reports:board.reports,
+      watch:board.watch }, null, 1)], { type:"application/json" });
     const a = document.createElement("a");
     a.href = URL.createObjectURL(blob);
     a.download = "teukpawon-" + stamp + ".json";
@@ -2320,10 +2652,18 @@ function bind(){
       const raw = JSON.parse(await f.text());
       const arr = Array.isArray(raw) ? raw : (raw && Array.isArray(raw.reports) ? raw.reports : null);
       if (!arr) throw new Error("리포트가 들어 있지 않습니다.");
-      const res = merge(arr.slice(0, MAX_REPORTS).map(sane).filter(Boolean));
+      /* 파일은 남이 건넨 것일 수도 있다 — 링크와 똑같이 믿지 않는다(mine·up 을 살리지 않는다).
+         map(sane) 으로 넘기면 배열 번호가 두 번째 인자(local)로 들어가 첫 줄 말고는 전부 믿어 버린다. */
+      const res = merge(arr.slice(0, MAX_REPORTS).map((r) => sane(r)).filter(Boolean));
+      /* 지켜보는 곳은 내 설정이라 합친다 — 이미 있는 곳은 그대로 두고 없는 곳만 더한다. */
+      const addW = raw && !Array.isArray(raw) ? saneWatch(raw.watch).filter((w) => !board.watch.some((x) => x.k === w.k)) : [];
+      if (addW.length) { board.watch = board.watch.concat(addW).slice(0, WATCH_MAX); save(); }
+      const wn = watchNews(res.fresh);
       renderAll();
-      st.textContent = res.added + "건을 불러왔습니다." + (res.dup ? " " + res.dup + "건은 이미 있었습니다." : "");
+      st.textContent = res.added + "건을 불러왔습니다." + (res.dup ? " " + res.dup + "건은 이미 있었습니다." : "") +
+        (addW.length ? " 지켜보는 곳 " + addW.length + "곳도 더했습니다." : "");
       st.className = "status ok";
+      if (wn) toast(wn);
     } catch(err) {
       st.textContent = "파일을 읽지 못했습니다: " + err.message;
       st.className = "status err";
