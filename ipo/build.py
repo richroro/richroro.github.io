@@ -25,9 +25,11 @@ import html.parser
 import json
 import os
 import re
+import ssl
 import sys
 import time
 import urllib.parse
+import urllib.error
 import urllib.request
 
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -61,12 +63,41 @@ def log(*a):
     print(*a, file=sys.stderr, flush=True)
 
 
+def legacy_tls() -> ssl.SSLContext:
+    """38 서버는 오래된 TLS·암호 방식만 받아 기본 설정(OpenSSL 3)으로는 악수가 거절된다.
+    인증서 검증은 그대로 두고, 받을 수 있는 버전·암호만 넓힌다. 이 사이트에만 쓴다."""
+    c = ssl.create_default_context()
+    c.set_ciphers("DEFAULT:@SECLEVEL=0")
+    c.minimum_version = ssl.TLSVersion.TLSv1
+    c.options |= getattr(ssl, "OP_LEGACY_SERVER_CONNECT", 0x4)
+    return c
+
+
+_WAYS: list[str] = []  # 한 번 통한 방법을 먼저 쓴다
+
+
 def fetch(url: str, timeout: int = 30) -> str:
-    req = urllib.request.Request(url, headers={"User-Agent": UA, "Referer": BASE + "/"})
-    with urllib.request.urlopen(req, timeout=timeout) as r:
-        raw = r.read()
-        ctype = r.headers.get("Content-Type", "")
-    return decode(raw, ctype)
+    """기본 TLS → 넓힌 TLS → http 순서로 시도한다. 공개 표만 읽으므로 http 로 떨어져도 된다."""
+    ways = _WAYS or ["default", "legacy", "http"]
+    last = None
+    for way in ways:
+        u = url.replace("https://", "http://", 1) if way == "http" else url
+        req = urllib.request.Request(u, headers={"User-Agent": UA, "Referer": BASE + "/"})
+        try:
+            ctx = legacy_tls() if way == "legacy" else None
+            with urllib.request.urlopen(req, timeout=timeout, context=ctx) as r:
+                raw = r.read()
+                ctype = r.headers.get("Content-Type", "")
+            if not _WAYS:
+                _WAYS.append(way)
+                if way != "default":
+                    log(f"  38 연결: {'넓힌 TLS' if way == 'legacy' else 'http'} 로 읽음")
+            return decode(raw, ctype)
+        except (ssl.SSLError, urllib.error.URLError, ConnectionError, TimeoutError) as e:
+            last = e
+            if isinstance(e, urllib.error.HTTPError):
+                raise  # 서버가 답은 했다 — 다른 방법으로 바꿔도 같다
+    raise last
 
 
 def decode(raw: bytes, ctype: str = "") -> str:
@@ -504,7 +535,8 @@ def main(argv=None) -> int:
         parsed[o] = rows
 
     if len(parsed["k"]) < a.min_schedule:
-        log(f"청약 일정이 {len(parsed['k'])}종목뿐 — 38 페이지 모양이 바뀌었을 수 있습니다. 기존 파일을 그대로 둡니다.")
+        why = "38 에 접속하지 못했습니다" if not _WAYS and not a.html_dir else "38 페이지 모양이 바뀌었을 수 있습니다"
+        log(f"청약 일정이 {len(parsed['k'])}종목뿐 — {why}. 기존 파일을 그대로 둡니다.")
         return 1
 
     items = merge(prev, parsed["k"], parsed["r1"], parsed["nw"], {}, today)

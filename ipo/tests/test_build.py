@@ -170,6 +170,35 @@ class Merge(unittest.TestCase):
         self.assertEqual(build.need_detail({"no": "9", "sub_end": "2025-12-01"}, TODAY, {}), 0)
 
 
+class Fetch(unittest.TestCase):
+    def test_falls_back_to_legacy_tls_then_remembers(self):
+        import ssl
+        from unittest import mock
+
+        class Resp:
+            headers = {"Content-Type": "text/html; charset=euc-kr"}
+            def read(self): return "<td>가나</td>".encode("cp949")
+            def __enter__(self): return self
+            def __exit__(self, *a): return False
+
+        calls = []
+        def fake(req, timeout, context=None):
+            calls.append((req.full_url[:5], context is not None))
+            if context is None and req.full_url.startswith("https"):
+                raise urllib.error.URLError(ssl.SSLError("sslv3 alert handshake failure"))
+            return Resp()
+
+        import urllib.error
+        build._WAYS.clear()
+        with mock.patch.object(build.urllib.request, "urlopen", fake):
+            self.assertIn("가나", build.fetch("https://www.38.co.kr/x"))
+            self.assertEqual(calls, [("https", False), ("https", True)])
+            calls.clear()
+            build.fetch("https://www.38.co.kr/y")
+            self.assertEqual(calls, [("https", True)])  # 통한 방법을 바로 쓴다
+        build._WAYS.clear()
+
+
 class EndToEnd(unittest.TestCase):
     def test_main_writes_valid_file(self):
         with tempfile.TemporaryDirectory() as d:
