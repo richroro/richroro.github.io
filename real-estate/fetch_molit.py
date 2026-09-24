@@ -298,12 +298,14 @@ def main():
         rent_months = months[-a.rent_months:]
         log(f"전월세(전세가율용) {len(regions)}개 지역 × {len(rent_months)}개월 = {len(regions) * len(rent_months)}회 호출")
         records, seen_rent, got = {}, set(), 0
+        rent_failures, rent_calls = [], 0
         for code, name in regions:
             for ymd in rent_months:
+                rent_calls += 1
                 try:
                     items = fetch_month(a.rent_endpoint, a.key, code, ymd, a.rows, a.timeout, a.tries, a.sleep)
                 except Exception as e:
-                    failures.append(f"[전월세] {name}({code}) {ymd}: {e}")
+                    rent_failures.append(f"{name}({code}) {ymd}: {e}")
                     log(f"  [실패·전월세] {name} {ymd}: {e}")
                     continue
                 for it in items:
@@ -321,7 +323,13 @@ def main():
                     got += 1
                 time.sleep(a.sleep)
         rents = rent_summary(records, [f"{m[:4]}-{m[4:]}" for m in rent_months])
-        log(f"전세 {got:,}건 → 전세가율 낼 수 있는 묶음 {len(rents):,}개")
+        log(f"전세 {got:,}건 → 전세가율 낼 수 있는 묶음 {len(rents):,}개"
+            + (f" · 전월세 호출 실패 {len(rent_failures)}/{rent_calls}" if rent_failures else ""))
+        if rent_failures and len(rent_failures) == rent_calls:
+            log("전월세를 한 건도 받지 못했습니다. 매매 자료만으로 계속합니다.")
+            log("  → 공공데이터포털에서 '국토교통부_아파트 전월세 자료' 도 활용신청했는지 확인하세요"
+                " (매매와 별개 신청입니다). 신청 전에는 전세가율·갭이 비어 있을 뿐, 나머지는 정상입니다.")
+            rents = None
 
     os.makedirs(os.path.dirname(a.out) or ".", exist_ok=True)
     if a.format == "csv":
