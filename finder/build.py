@@ -405,6 +405,13 @@ QUOTE_URL = "https://query1.finance.yahoo.com/v7/finance/quote"
 FUND = ("pe", "fpe", "pb", "dy", "eps", "roe", "ern", "ar", "fs", "tgt", "exd")
 
 
+def plausible_target(tgt, price) -> bool:
+    """목표가가 현재가의 1/4 ~ 4배 밖이면 버린다. 액면 병합·분할 뒤 고치지 않은 목표가가 흔하다."""
+    if tgt is None or not price:
+        return True
+    return 0.25 <= tgt / price <= 4
+
+
 def yahoo_symbol(r: dict) -> str | None:
     if r["g"] == "US":
         return r["id"].replace(".", "-")
@@ -888,13 +895,13 @@ def tv_post(market: str, body: dict):
 
 
 def tv_columns(market: str) -> dict[str, str]:
-    """후보 열을 시총 상위 5종목 요청으로 하나씩 시험한다. 이름은 받아 줘도 값이 비는 열이 있어
+    """후보 열을 시총 상위 50종목 요청으로 하나씩 시험한다(배당락일처럼 대부분 빈 열도 잡히게). 이름은 받아 줘도 값이 비는 열이 있어
     값이 하나라도 온 열만 고른다."""
     ok = {}
     for key, cands in TV_CANDIDATES.items():
         for c in cands:
             try:
-                j = tv_post(market, {"columns": ["name", c], "range": [0, 5],
+                j = tv_post(market, {"columns": ["name", c], "range": [0, 50],
                                      "sort": {"sortBy": "market_cap_basic", "sortOrder": "desc"}})
             except Exception:
                 continue
@@ -1354,6 +1361,8 @@ def main():
             f["ern"] = None
         if f.get("exd") and f["exd"] < (today - dt.timedelta(days=30)).isoformat():
             f["exd"] = None
+        if not plausible_target(f.get("tgt"), r.get("p")):
+            f["tgt"] = None
         for k in FUND:
             if f.get(k) is not None and f.get(k) != "":
                 r[k] = f[k]

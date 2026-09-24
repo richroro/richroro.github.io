@@ -378,6 +378,12 @@ class Sources(unittest.TestCase):
         self.assertEqual(out["XOM"]["pe"], 12.0)
         self.assertEqual(out["XOM"]["fs"], "Q")
 
+    def test_plausible_target(self):
+        self.assertTrue(build.plausible_target(None, 10))
+        self.assertTrue(build.plausible_target(15, 10))
+        self.assertFalse(build.plausible_target(45, 10))   # 병합 전 목표가
+        self.assertFalse(build.plausible_target(2, 10))
+
     def test_tv_parse_and_probe(self):
         cols = {"pe": "price_earnings_ttm", "eps": "earnings_per_share_diluted_ttm", "roe": "return_on_equity",
                 "ern": "earnings_release_next_date"}

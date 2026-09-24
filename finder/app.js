@@ -113,6 +113,7 @@ async function load() {
     r.name = r.g === "KR" ? r.n : (kos[0] || r.n);
     r.sub = r.g === "KR" ? r.id : (kos[0] ? r.n : "");
     r.rk = i; // 시총 순위(파일이 시총 순으로 정렬돼 있다)
+    if (r.tgt && r.p && (r.tgt / r.p > 4 || r.tgt / r.p < 0.25)) r.tgt = null; // 병합·분할 뒤 안 고친 목표가(데이터 단계와 같은 규칙)
     r.tu = r.tgt && r.p ? (r.tgt / r.p - 1) * 100 : null; // 목표가 여력(%)
     const names = [r.n, ...kos];
     r._k = names.map(norm);
