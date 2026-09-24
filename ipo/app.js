@@ -14,6 +14,10 @@ const isDark = () => {
   return t ? t === "dark" : matchMedia("(prefers-color-scheme:dark)").matches;
 };
 
+/** 다른 스크립트(extra.js)에 알리는 작은 이벤트 버스 */
+const emit = (name, detail) => document.dispatchEvent(new CustomEvent(name, { detail }));
+const CMP = new Set(); // 비교에 담은 종목 id (최대 3)
+
 /* ---------------------------------------------------------------- 날짜 */
 const kstToday = () => new Date(Date.now() + 9 * 3600e3).toISOString().slice(0, 10);
 let TODAY = kstToday();
@@ -311,6 +315,7 @@ function card(it) {
       <button class="star" type="button" data-id="${esc(it.id)}" aria-pressed="${stars.has(it.id)}" aria-label="관심 종목">★</button>
       <div class="nm"><b>${esc(it.name)}</b><small>${tags}</small></div>
       <span class="stat ${s.key}"><span class="dot"></span>${esc(s.label)}</span>
+      <button class="cmp" type="button" data-id="${esc(it.id)}" aria-pressed="${CMP.has(it.id)}" aria-label="비교에 담기" title="비교에 담기">⇄</button>
     </div>
     <div class="vrow">${verdictChip(r)}${it.spac ? "" : `<span class="bars" aria-hidden="true">${bars}</span>`}${r.flags.length ? `<span class="flag" title="${esc(r.flags.join(" · "))}">⚠ ${r.flags.length}</span>` : ""}</div>
     <div class="when num">${when.join("")}</div>
@@ -351,6 +356,8 @@ function initList() {
   const open = (e) => {
     const star = e.target.closest(".star");
     if (star) { e.stopPropagation(); toggleStar(star.dataset.id); return; }
+    const cmp = e.target.closest(".cmp");
+    if (cmp) { e.stopPropagation(); emit("ipo:cmp", cmp.dataset.id); return; }
     const c = e.target.closest(".ipo");
     if (c) openDetail(c.dataset.id);
   };
@@ -493,6 +500,8 @@ function openDetail(id) {
         <button class="ghost sm" type="button" data-act="ics">달력에 추가 (.ics)</button>
         <button class="ghost sm" type="button" data-act="rec">기록 추가</button>
         <button class="ghost sm" type="button" data-act="share">링크 복사</button>
+        <button class="ghost sm" type="button" data-act="card">공유 카드 이미지</button>
+        <button class="ghost sm" type="button" data-act="cmp">${CMP.has(it.id) ? "비교에서 빼기" : "비교에 담기"}</button>
       </div>
       <div class="btnrow">${links}</div>
       <p class="hint">점수와 판정은 참고용입니다. 일정과 숫자는 늦거나 바뀔 수 있으니 청약 전 증권사 공지와 투자설명서를 확인하세요.</p>
@@ -522,6 +531,8 @@ function openDetail(id) {
     if (act === "calc") { dlg.close(); fillCalc(it); $("calc").scrollIntoView({ behavior: "smooth" }); }
     else if (act === "ics") downloadIcs([it], `${it.name}-공모주.ics`);
     else if (act === "rec") { dlg.close(); fillRecord(it); $("my").scrollIntoView({ behavior: "smooth" }); }
+    else if (act === "card") emit("ipo:sharecard", it.id);
+    else if (act === "cmp") { emit("ipo:cmp", it.id); b.textContent = CMP.has(it.id) ? "비교에서 빼기" : "비교에 담기"; }
     else if (act === "share") {
       const url = `${location.origin}/ipo/#i=${encodeURIComponent(it.id)}`;
       (navigator.clipboard ? navigator.clipboard.writeText(url) : Promise.reject()).then(() => toast("링크를 복사했습니다"), () => prompt("링크", url));
@@ -671,14 +682,24 @@ function renderGloss() {
 function icsEvents(it) {
   const ev = [];
   const day = (s) => s.replace(/-/g, "");
+  const price = offerPrice(it) ? ` · 공모가 ${won(offerPrice(it))}원${it.price ? "" : "(밴드 상단)"}` : "";
+  const uw = it.uw.length ? ` · 주간사 ${it.uw.join(", ")}` : "";
+  const r = scoreOf(it);
+  const verdict = r.pending || it.spac ? "" : ` · 판정 ${r.verdict.label} ${r.total}점`;
+  // alarm: 그날 0시부터의 시간 — 종일 일정은 기기 시간대의 자정 기준이라 한국에서 쓰면 그대로 맞습니다
   if (it.sub_start) ev.push({ uid: `sub-${it.id}`, s: it.sub_start, e: addDays(it.sub_end || it.sub_start, 1), t: `[청약] ${it.name}`,
-    d: `청약 ${it.sub_start}~${it.sub_end || it.sub_start}${it.uw.length ? ` · 주간사 ${it.uw.join(", ")}` : ""}${offerPrice(it) ? ` · 공모가 ${won(offerPrice(it))}원${it.price ? "" : "(밴드 상단)"}` : ""}` });
-  if (it.refund) ev.push({ uid: `refund-${it.id}`, s: it.refund, e: addDays(it.refund, 1), t: `[환불] ${it.name}`, d: "청약 증거금 환불일" });
-  if (it.list_date) ev.push({ uid: `list-${it.id}`, s: it.list_date, e: addDays(it.list_date, 1), t: `[상장] ${it.name}`, d: "신규 상장일" });
+    d: `청약 ${it.sub_start}~${it.sub_end || it.sub_start} (10:00~16:00)${uw}${price}${verdict}`, alarm: ["PT9H30M", "청약 시작 30분 전"] });
+  if (it.sub_end && it.sub_end !== it.sub_start) ev.push({ uid: `subend-${it.id}`, s: it.sub_end, e: addDays(it.sub_end, 1), t: `[청약 마감] ${it.name} 16시까지`,
+    d: `오늘 16시 청약 마감${uw} — 증권사별 청약 건수를 보고 고르세요`, alarm: ["PT13H", "마감 3시간 전"] });
+  if (it.refund) ev.push({ uid: `refund-${it.id}`, s: it.refund, e: addDays(it.refund, 1), t: `[환불] ${it.name}`, d: "증거금 환불 · 배정 결과 확인" });
+  if (it.list_date) ev.push({ uid: `list-${it.id}`, s: it.list_date, e: addDays(it.list_date, 1), t: `[상장] ${it.name}`,
+    d: `09:00 시초가${it.price ? ` · 공모가 ${won(it.price)}원` : ""} · 매도 전략을 미리 정해 두세요`, alarm: ["PT8H20M", "장전 주문 10분 전"] });
   const stamp = new Date().toISOString().replace(/[-:]/g, "").slice(0, 15) + "Z";
   const txt = (s) => s.replace(/\\/g, "\\\\").replace(/[,;]/g, (c) => "\\" + c).replace(/\n/g, "\\n");
   return ev.map((e) => ["BEGIN:VEVENT", `UID:${e.uid}@richroro.github.io`, `DTSTAMP:${stamp}`, `DTSTART;VALUE=DATE:${day(e.s)}`,
-    `DTEND;VALUE=DATE:${day(e.e)}`, `SUMMARY:${txt(e.t)}`, `DESCRIPTION:${txt(e.d)}`, "END:VEVENT"].join("\r\n"));
+    `DTEND;VALUE=DATE:${day(e.e)}`, `SUMMARY:${txt(e.t)}`, `DESCRIPTION:${txt(e.d)}`,
+    ...(e.alarm ? ["BEGIN:VALARM", "ACTION:DISPLAY", `TRIGGER;RELATED=START:${e.alarm[0]}`, `DESCRIPTION:${txt(`${e.t} · ${e.alarm[1]}`)}`, "END:VALARM"] : []),
+    "END:VEVENT"].join("\r\n"));
 }
 function downloadIcs(items, filename) {
   const body = items.flatMap(icsEvents);
@@ -855,6 +876,7 @@ function recPnl(r) {
 }
 
 function renderMy() {
+  queueMicrotask(() => emit("ipo:records"));
   const yr = TODAY.slice(0, 4);
   let real = 0, realYr = 0, evalP = 0, got = 0;
   for (const r of RECS) {
@@ -1014,9 +1036,10 @@ function initPwa() {
   initCal();
   initMy();
   initDetail();
+  emit("ipo:ready");
   // 자정을 넘겨 열어 둔 탭에서도 D-day 가 맞게
   setInterval(() => {
     const t = kstToday();
-    if (t !== TODAY) { TODAY = t; scoreCache.clear(); renderSummary(); renderToday(); renderFeature(); renderList(); renderMarket(); renderCal(); }
+    if (t !== TODAY) { TODAY = t; scoreCache.clear(); renderSummary(); renderToday(); renderFeature(); renderList(); renderMarket(); renderCal(); emit("ipo:ready"); }
   }, 60e3);
 })();

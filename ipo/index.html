@@ -42,7 +42,7 @@
 </div></header>
 
 <nav class="snav" aria-label="섹션 바로가기"><div class="wrap snav-in">
-  <a href="#top">오늘</a><a href="#schedule">청약 일정</a><a href="#market">시장 온도</a><a href="#calendar">달력</a><a href="#calc">계산기</a><a href="#my">내 청약 기록</a><a href="#method">분석법</a><a href="#guide">공모주린이</a>
+  <a href="#top">오늘</a><a href="#schedule">청약 일정</a><a href="#market">시장 온도</a><a href="#calendar">달력</a><a href="#plan">자금 플래너</a><a href="#calc">계산기</a><a href="#my">내 청약 기록</a><a href="#method">분석법</a><a href="#guide">공모주린이</a>
 </div></nav>
 
 <main>
@@ -58,7 +58,7 @@
       <div class="fresh" id="fresh"><span><span class="spin"></span>데이터를 불러오는 중…</span></div>
       <div class="today mt16" id="today" aria-live="polite"></div>
     </div>
-    <div class="feature" id="feature" aria-label="이번 주 주목 공모주"></div>
+    <div class="feature" id="feature" aria-label="이번 주 주목 공모주"><div class="feat sk" aria-hidden="true"><i></i><i></i><i></i><i></i></div></div>
   </div>
   <div class="stats c4 mt24" id="summary"></div>
 </div></section>
@@ -85,7 +85,7 @@
     <label class="chk"><input type="checkbox" id="hideSpac" checked> 스팩 숨기기</label>
     <button class="ghost sm" type="button" id="icsStars" hidden>관심 종목 전부 달력에</button>
   </div>
-  <div class="cards mt16" id="list"></div>
+  <div class="cards mt16" id="list" aria-busy="true"><div class="ipo sk" aria-hidden="true"><i></i><i></i><i></i><i></i></div><div class="ipo sk" aria-hidden="true"><i></i><i></i><i></i><i></i></div><div class="ipo sk" aria-hidden="true"><i></i><i></i><i></i><i></i></div></div>
   <p class="hint mt12" id="listNote"></p>
 </div></section>
 
@@ -128,6 +128,26 @@
     <div class="cal mt12" id="cal" role="grid"></div>
     <div class="agenda mt12" id="agenda"></div>
   </div>
+</div></section>
+
+<section id="plan"><div class="wrap">
+  <p class="eyebrow">Cash planner</p>
+  <h2 class="title">자금 플래너</h2>
+  <p class="lead">다가오는 청약에 넣을 증거금이 <b>언제 나가서 언제 돌아오는지</b> 날짜별로 계산합니다. 청약이 몰리는 주에 돈이 얼마나 묶이는지,
+    가족 계좌까지 쓰면 얼마가 필요한지 미리 봅니다. 기본 전략은 판정대로(관망은 건너뛰기) 잡았고, 줄마다 바꿀 수 있습니다.</p>
+  <div class="toolbar mt16 planbar">
+    <label class="field"><span>계좌 수 (나 + 가족)</span><input id="pAcc" type="number" inputmode="numeric" min="1" max="10" value="1"></label>
+    <label class="field"><span>청약하는 날</span>
+      <select id="pDay"><option value="end">마감일 (보통 이날 경쟁률 보고 넣음)</option><option value="start">첫날</option></select></label>
+    <button class="ghost sm" type="button" id="pIcs">플래너 일정 달력에 (알림 포함)</button>
+  </div>
+  <div class="stats c4 mt16" id="pStats"></div>
+  <div class="grid2 mt16 plan-grid">
+    <div class="card pad"><div class="chart-head"><div><div class="ct">날짜별 묶인 증거금</div><div class="cs">청약일에 나가고 환불일에 돌아옵니다(배정 금액은 빼고)</div></div></div>
+      <div class="figwrap" id="pFig"></div></div>
+    <div class="card"><div class="tscroll"><table class="narrow" id="pTable"></table></div></div>
+  </div>
+  <p class="hint mt8">증거금 = 공모가(없으면 밴드 상단) × 주수 × 증거금률, 배정 예상 = 계산기의 '균등 예상 배정' 주수 × 계좌 수. 환불일을 모르면 청약 마감 2영업일 뒤로 잡았습니다.</p>
 </div></section>
 
 <section id="calc"><div class="wrap">
@@ -191,6 +211,11 @@
   <div class="card mt16">
     <div class="tscroll"><table id="myTable"></table></div>
     <p class="empty" id="myEmpty">아직 기록이 없습니다. 위에서 추가하거나, 일정 카드에서 <b>기록 추가</b>를 누르세요.</p>
+  </div>
+  <div class="grid2 mt16" id="myDash" hidden>
+    <div class="card pad"><div class="chart-head"><div><div class="ct">월별 실현 손익</div><div class="cs">최근 12개월 · 청약일 기준 · 매도가를 적은 기록</div></div></div>
+      <div class="figwrap" id="myFig"></div></div>
+    <div class="card"><div class="tscroll"><table class="narrow" id="myBroker"></table></div></div>
   </div>
   <div class="btnrow mt12">
     <button class="ghost" type="button" id="myCsv">CSV 내려받기</button>
@@ -279,6 +304,20 @@
 </div></section>
 </main>
 
+<div class="tray" id="cmpTray" hidden><div class="wrap tray-in">
+  <div class="tray-chips" id="cmpChips"></div>
+  <div class="btnrow"><button class="ghost sm" type="button" id="cmpClear">비우기</button><button class="ghost primary sm" type="button" id="cmpGo">나란히 비교</button></div>
+</div></div>
+<dialog id="cmpDlg" aria-labelledby="cmpTitle"><div id="cmpBody"></div></dialog>
+
+<nav class="tabbar" id="tabbar" aria-label="앱 메뉴">
+  <a href="#top" data-s="top"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 11l8-7 8 7v9a1 1 0 0 1-1 1h-5v-6h-4v6H5a1 1 0 0 1-1-1z"/></svg>오늘</a>
+  <a href="#schedule" data-s="schedule"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="4" width="16" height="7" rx="2"/><rect x="4" y="13" width="16" height="7" rx="2"/></svg>일정</a>
+  <a href="#calendar" data-s="calendar"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15" rx="2"/><path d="M3.5 10h17M8 3v4M16 3v4"/></svg>달력</a>
+  <a href="#plan" data-s="plan"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 19V9M10 19V5M16 19v-7M22 19H2"/></svg>플래너</a>
+  <a href="#my" data-s="my"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21c1-4 4.5-6 8-6s7 2 8 6"/></svg>내 기록</a>
+</nav>
+
 <dialog id="dlg" aria-labelledby="dTitle"><div class="dlg-in" id="dBody"></div></dialog>
 <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
 
@@ -289,5 +328,6 @@
 
 <script src="/ipo/score.js" defer></script>
 <script src="/ipo/app.js" defer></script>
+<script src="/ipo/extra.js" defer></script>
 </body>
 </html>
