@@ -137,6 +137,16 @@ class Rows(unittest.TestCase):
         self.assertEqual(build.NAME_TAIL.sub("", "Apple Inc. Common Stock").strip(" ,"), "Apple Inc.")
         self.assertEqual(build.NAME_TAIL.sub("", "Alphabet Inc. Class C Capital Stock").strip(" ,"), "Alphabet Inc. Class C")
 
+    def test_instruments_are_not_stocks(self):
+        for n in ["AT&T Inc. 5.350% Global Notes due 2066", "Comcast Holdings ZONES",
+                  "Alphabet Inc. Depositary Shares representing a 1/20th Interest in a Share of Series A",
+                  "Strategy Inc 10.00% Series A Perpetual Strife Preferred Stock",
+                  "Brighthouse Financial Inc. 6.25% Junior Subordinated Debentures due 2058"]:
+            self.assertTrue(build.is_instrument(n), n)
+        for n in ["Apple Inc. Common Stock", "Itau Unibanco Banco Holding SA American Depositary Shares (Each repstg 500 Preferred Shares)",
+                  "Berkshire Hathaway Inc.", "Senior Connect Acquisition Corp", "Noted Inc. Common Stock"]:
+            self.assertFalse(build.is_instrument(n), n)
+
     def test_alias_file(self):
         with open(os.path.join(os.path.dirname(HERE), "ko_alias.json"), encoding="utf-8") as f:
             a = json.load(f)
@@ -302,16 +312,81 @@ class Sources(unittest.TestCase):
         build.krx_fund = lambda asof: {"005930": {"pe": 42.0, "fs": "K"}}
         naver = build.naver_fund
         build.naver_fund = lambda rows: self.fail("KRX 가 되면 네이버는 부르지 않는다")
+        nq = (build.nasdaq_fund, build.nasdaq_earnings)
+        build.nasdaq_fund = lambda rows: {"AAPL": {"pe": 34.0, "tgt": 260.0, "fs": "Q"}}
+        build.nasdaq_earnings = lambda today: {"AAPL": "2026-10-29", "MSFT": "2026-10-28"}
         try:
             out, n = build.fundamentals([], self.today, dt.date(2026, 9, 22))
         finally:
             build.yahoo_fund, build.sec_fund, build.krx_fund = orig
             build.naver_fund = naver
+            build.nasdaq_fund, build.nasdaq_earnings = nq
         self.assertEqual(out["005930"]["pe"], 42.0)       # 거래소 값
         self.assertEqual(out["005930"]["ern"], "2026-10-30")  # 실적일은 Yahoo
         self.assertEqual(out["AAPL"]["pe"], 35.0)          # 미국은 Yahoo(최근 4분기) 우선
         self.assertEqual(out["AAPL"]["pb"], 50.0)          # 빈 값은 SEC 로 채움
-        self.assertEqual(n, {"Y": 2, "S": 1, "K": 1, "N": 0})
+        self.assertEqual(out["AAPL"]["tgt"], 260.0)        # Yahoo 에 없는 칸은 나스닥
+        self.assertEqual(out["MSFT"], {"ern": "2026-10-28"})  # 실적일만 있는 종목
+        self.assertEqual(n, {"Y": 2, "Q": 1, "E": 2, "S": 1, "K": 1, "N": 0})
+
+    def test_nasdaq_summary(self):
+        j = {"data": {"summaryData": {
+            "PERatio": {"label": "P/E Ratio", "value": 33.12}, "ForwardPE1Yr": {"value": "29.80"},
+            "EarningsPerShare": {"value": "$6.43"}, "OneYrTarget": {"value": "$255.00"},
+            "Yield": {"value": "0.45%"}, "AnnualizedDividend": {"value": "$1.04"}}}}
+        f = build.parse_nasdaq_summary(j, 230.0)
+        self.assertEqual((f["pe"], f["fpe"], f["eps"], f["tgt"], f["dy"]), (33.12, 29.8, 6.43, 255.0, 0.45))
+        j["data"]["summaryData"]["Yield"] = {"value": "N/A"}
+        j["data"]["summaryData"]["PERatio"] = {"value": "NE"}
+        f = build.parse_nasdaq_summary(j, 208.0)
+        self.assertIsNone(f["pe"])
+        self.assertAlmostEqual(f["dy"], 0.5)  # 연간 배당 ÷ 주가
+        self.assertEqual(build.parse_nasdaq_summary({"data": None}, 1.0)["pe"], None)
+        self.assertAlmostEqual(build._num("-$1,234.5"), -1234.5)
+        self.assertAlmostEqual(build._num("($0.45)"), -0.45)
+
+    def test_nasdaq_earnings(self):
+        seen = []
+
+        def fake(url):
+            seen.append(url)
+            d = url.split("date=")[1]
+            return {"data": {"rows": [{"symbol": "NKE"}, {"symbol": "BRK/B"}] if d == "2026-09-29" else None}}
+
+        orig = build.nasdaq_json
+        build.nasdaq_json = fake
+        try:
+            out = build.nasdaq_earnings(dt.date(2026, 9, 26), days=5)  # 토요일부터
+        finally:
+            build.nasdaq_json = orig
+        self.assertEqual(out, {"NKE": "2026-09-29", "BRK.B": "2026-09-29"})
+        self.assertEqual(len(seen), 3)  # 주말은 건너뛴다(월·화·수)
+
+
+class Beta(unittest.TestCase):
+    def test_beta_of_scaled_series(self):
+        rng = np.random.default_rng(1)
+        ri = rng.normal(0, 0.01, 300)
+        idx = hist(100 * np.exp(np.cumsum(ri)))
+        stock = hist(50 * np.exp(np.cumsum(1.5 * ri)))
+        self.assertAlmostEqual(build.beta(stock, idx), 1.5, places=6)
+
+    def test_beta_needs_overlap(self):
+        idx = hist(np.linspace(100, 110, 300))
+        late = hist(np.linspace(10, 11, 30), start=dt.date(2026, 8, 1))
+        self.assertIsNone(build.beta(late, idx))
+        self.assertIsNone(build.beta(idx, None))
+
+    def test_bench(self):
+        self.assertEqual(build.bench_for({"g": "US", "m": "NYSE"}), "^GSPC")
+        self.assertEqual(build.bench_for({"g": "KR", "m": "KOSDAQ"}), "^KQ11")
+
+    def test_index_meta_keeps_old(self):
+        h = hist(np.linspace(2500, 2600, 300))
+        out = build.index_meta({"^KS11": h}, [{"s": "^GSPC", "n": "S&P 500", "p": 1.0}])
+        names = [x["s"] for x in out]
+        self.assertEqual(names, ["^KS11", "^GSPC"])
+        self.assertEqual(out[0]["p"], 2600.0)
 
 
 if __name__ == "__main__":

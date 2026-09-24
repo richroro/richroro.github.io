@@ -42,7 +42,7 @@
 </div></header>
 
 <nav class="snav" aria-label="섹션 바로가기"><div class="wrap snav-in">
-  <a href="#top">검색</a><a href="#pulse">오늘 시장</a><a href="#sectors">업종 흐름</a><a href="#screener">스크리너</a><a href="#portfolio">내 포트폴리오</a><a href="#how">지표 읽는 법</a>
+  <a href="#top">검색</a><a href="#pulse">오늘 시장</a><a href="#map">시장 지도</a><a href="#sectors">업종 흐름</a><a href="#earnings">실적 캘린더</a><a href="#screener">스크리너</a><a href="#portfolio">내 포트폴리오</a><a href="#how">지표 읽는 법</a>
 </div></nav>
 
 <main>
@@ -63,6 +63,7 @@
   <div class="shint" id="shint"><span>많이 찾는 종목</span></div>
   <div class="shint" id="recent" hidden></div>
   <div class="fresh" id="fresh"><span><span class="spin"></span>데이터를 불러오는 중…</span></div>
+  <div class="idxgrid" id="idxBox" aria-label="주요 지수"></div>
 </div></section>
 
 <section id="pulse"><div class="wrap">
@@ -70,6 +71,21 @@
   <h2 class="title">오늘 시장</h2>
   <p class="lead">상승·하락 종목 수와 중위 등락률, 52주 신고가권 종목 수. 급등락 목록은 거래가 거의 없는 종목을 빼고 시총 상위 절반에서 골랐습니다.</p>
   <div class="pulse mt16" id="pulseBox"></div>
+</div></section>
+
+<section id="map"><div class="wrap">
+  <p class="eyebrow">Market map</p>
+  <h2 class="title">시장 지도</h2>
+  <div class="chart-head">
+    <p class="lead">시가총액이 큰 종목일수록 칸이 넓고, 색은 수익률입니다(빨강 상승 · 파랑 하락). 칸을 누르면 그 종목 분석이 열립니다.</p>
+    <div style="display:flex;gap:8px;flex-wrap:wrap">
+      <div class="seg" id="mapMkt" role="group" aria-label="시장"><button type="button" data-v="KR" aria-pressed="true">한국</button><button type="button" data-v="US" aria-pressed="false">미국</button></div>
+      <div class="seg" id="mapPer" role="group" aria-label="기간"><button type="button" data-v="d1" aria-pressed="true">1일</button><button type="button" data-v="r5" aria-pressed="false">1주</button><button type="button" data-v="r21" aria-pressed="false">1개월</button><button type="button" data-v="r252" aria-pressed="false">1년</button></div>
+      <div class="seg" id="mapN" role="group" aria-label="종목 수"><button type="button" data-v="50" aria-pressed="true">50</button><button type="button" data-v="100" aria-pressed="false">100</button></div>
+    </div>
+  </div>
+  <div class="mapbox mt12" id="mapBox"></div>
+  <div class="maplegend" id="mapLegend"></div>
 </div></section>
 
 <section id="sectors"><div class="wrap">
@@ -84,6 +100,18 @@
   </div>
   <div class="secgrid" id="secGrid"></div>
   <p class="hint mt8" id="secNote"></p>
+</div></section>
+
+<section id="earnings"><div class="wrap">
+  <p class="eyebrow">Earnings calendar</p>
+  <h2 class="title">실적 캘린더</h2>
+  <div class="chart-head">
+    <p class="lead">앞으로 3주 동안 실적을 발표하는 종목입니다. 발표 전후로 주가가 크게 움직이는 경우가 많습니다. <b>★ 관심 · 보유</b> 종목은 표시해 둡니다.</p>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+      <div class="seg" id="ernMkt" role="group" aria-label="시장"><button type="button" data-v="ALL" aria-pressed="true">전체</button><button type="button" data-v="US" aria-pressed="false">미국</button><button type="button" data-v="KR" aria-pressed="false">한국</button><button type="button" data-v="MINE" aria-pressed="false">내 종목</button></div>
+    </div>
+  </div>
+  <div class="ern mt12" id="ernBox"></div>
 </div></section>
 
 <section id="screener"><div class="wrap">
@@ -165,6 +193,8 @@
     <div><b>PER · 선행 PER</b><p>주가 ÷ 주당순이익. 최근 4분기 실적 기준이 PER, 애널리스트 예상 실적 기준이 선행 PER입니다. 적자면 비워 둡니다. 업종마다 정상 범위가 달라 <b>같은 업종 중위값</b>과 함께 봐야 합니다.</p></div>
     <div><b>PBR · ROE</b><p>PBR은 주가 ÷ 주당순자산, ROE는 순이익 ÷ 자기자본(여기서는 주당순이익 ÷ 주당순자산)입니다. ADR처럼 장부 통화가 달라 앞뒤가 맞지 않으면 ROE를 비워 둡니다.</p></div>
     <div><b>정배열 · 역배열</b><p>50일선이 200일선 위에 있고 주가가 그 위에 있으면 정배열(중기 상승), 반대면 역배열입니다. 골든·데드크로스는 두 선이 최근 20거래일 안에 교차한 경우만 표시합니다.</p></div>
+    <div><b>베타</b><p>지난 1년 하루 수익률로 잰 시장(미국 S&amp;P 500, 한국 코스피·코스닥) 대비 민감도. 1.5면 시장이 1% 움직일 때 평균 1.5% 움직였다는 뜻이고, 1보다 작으면 덜 흔들렸습니다.</p></div>
+    <div><b>목표가 여력</b><p>애널리스트 1년 목표주가 평균이 지금 주가보다 몇 % 위에 있는지. 목표가는 자주 늦게 바뀌고 낙관적으로 치우치는 경향이 있어 참고만 하세요.</p></div>
     <div><b>RSI(14) · 거래 급증</b><p>RSI 70 이상은 단기 과열, 30 이하는 단기 과매도로 흔히 읽습니다. 거래 배수는 최근 5거래일 평균 거래량 ÷ 60거래일 평균이며 2배를 넘으면 관심이 몰린 상태입니다.</p></div>
   </div>
   <div class="note mt16"><span class="ic">ⓘ</span><div>이 페이지는 공개 데이터를 정리해 보여줄 뿐 <b>투자 권유가 아닙니다.</b> 가격은 실시간이 아니라 전 거래일 종가 기준이며, 원천 데이터의 오류나 지연이 있을 수 있습니다. 거래 전 증권사 시세와 공시를 확인하세요.</div></div>

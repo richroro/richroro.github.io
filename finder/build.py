@@ -51,6 +51,15 @@ US_SECTOR_KO = {
     "Miscellaneous": "기타",
 }
 DROP_NAME = re.compile(r"\b(warrants?|rights?|units?)\b", re.I)
+# 거래소에 주식처럼 올라와 있지만 채권·우선주 상품인 것(AT&T 5.35% Notes, 컴캐스트 ZONES, 알파벳 우선주 예탁증권 …).
+# 모회사 시가총액이 그대로 붙어 있어 시총 순위를 흐린다. 우선주가 본주인 ADR(이타우 ITUB 등)은 남긴다.
+DROP_INSTRUMENT = re.compile(
+    r"\d+(\.\d+)?\s?%|\bNotes?\b|\bDebentures?\b|\bZONES\b|\bPreferred\s+(Stock|Securities|Shares|Units)\b|"
+    r"\bTrust Preferred\b|\bFixed[- ]to[- ]Floating\b|Interest in a (Share|Preferred)", re.I)
+
+
+def is_instrument(name: str) -> bool:
+    return bool(DROP_INSTRUMENT.search(name)) and "american depositary" not in name.lower()
 NAME_TAIL = re.compile(
     r"\s*(,)?\s*(Common Stock|Common Shares|Ordinary Shares?|American Depositary Shares?|"
     r"American Depository Shares?|Depositary Shares?|ADS|Class [A-C] (Common Stock|Ordinary Shares?)|"
@@ -80,7 +89,7 @@ def load_us_universe(us_dir: str | None) -> list[dict]:
             rows = json.loads(fetch(US_RAW.format(ex=ex)))
         for r in rows:
             sym = r["symbol"].strip()
-            if "^" in sym or not sym or DROP_NAME.search(r["name"]):
+            if "^" in sym or not sym or DROP_NAME.search(r["name"]) or is_instrument(r["name"]):
                 continue
             sym = sym.replace("/", ".")
             name = r["name"].strip()
@@ -393,7 +402,7 @@ def scores(rows: list[dict]):
 
 # --------------------------------------------------------------------------- 재무
 QUOTE_URL = "https://query1.finance.yahoo.com/v7/finance/quote"
-FUND = ("pe", "fpe", "pb", "dy", "eps", "roe", "ern", "ar", "fs")
+FUND = ("pe", "fpe", "pb", "dy", "eps", "roe", "ern", "ar", "fs", "tgt")
 
 
 def yahoo_symbol(r: dict) -> str | None:
@@ -732,16 +741,114 @@ def naver_us_fund(rows: list[dict], limit: int = 3000, workers: int = 6) -> dict
     return out
 
 
+# ---- 미국: 나스닥 웹사이트 API — 종목 목록을 주는 저장소가 GitHub Actions 에서 매일 긁는 곳이라 막힐 가능성이 가장 낮다
+NASDAQ_HDR = {"User-Agent": UA, "Accept": "application/json, text/plain, */*", "Accept-Language": "en-US,en;q=0.9",
+              "Origin": "https://www.nasdaq.com", "Referer": "https://www.nasdaq.com/"}
+
+
+def nasdaq_json(url: str):
+    req = urllib.request.Request(url, headers=NASDAQ_HDR)
+    with urllib.request.urlopen(req, timeout=25) as r:
+        return json.loads(r.read())
+
+
+def _num(v):
+    """'$1,234.50' · '0.44%' · 33.1 · 'N/A' → 숫자 또는 None"""
+    if isinstance(v, (int, float)):
+        return float(v) if math.isfinite(v) else None
+    t = str(v or "").replace("\u2212", "-").replace("$", "").replace(" ", "")
+    m = re.search(r"-?[\d,]*\.?\d+", t)
+    if not m:
+        return None
+    try:
+        x = float(m.group(0).replace(",", ""))
+    except ValueError:
+        return None
+    return -abs(x) if t.startswith("(") and t.endswith(")") else x  # 회계식 음수 ($0.45)
+
+
+def parse_nasdaq_summary(j: dict, price: float | None) -> dict:
+    sd = ((j or {}).get("data") or {}).get("summaryData") or {}
+    val = lambda k: (sd.get(k) or {}).get("value")
+    f = {"pe": _ok(_num(val("PERatio")), 0, 3000), "fpe": _ok(_num(val("ForwardPE1Yr")), 0, 3000),
+         "eps": _num(val("EarningsPerShare")), "tgt": _ok(_num(val("OneYrTarget")), 0, 1e7)}
+    dy = _num(val("Yield"))
+    if dy is None:
+        ann = _num(val("AnnualizedDividend"))
+        dy = ann / price * 100 if ann is not None and price else None
+    f["dy"] = _ok(dy, -0.001, 25)
+    return f
+
+
+def nasdaq_fund(rows: list[dict], limit: int = 3000, workers: int = 6) -> dict[str, dict]:
+    """종목마다 나스닥 요약(PER·선행 PER·EPS·배당수익률·1년 목표가). 시총 상위 limit 곳만."""
+    from concurrent.futures import ThreadPoolExecutor
+    us = sorted([r for r in rows if r["g"] == "US" and r.get("mcu")], key=lambda r: -r["mcu"])[:limit]
+    url = "https://api.nasdaq.com/api/quote/{sym}/summary?assetclass=stocks"
+    try:
+        probe = parse_nasdaq_summary(nasdaq_json(url.format(sym="AAPL")), None)
+    except Exception as e:
+        log(f"  나스닥 요약: 확인 실패({str(e)[:100]}) — 건너뜀")
+        return {}
+    if all(v is None for v in probe.values()):
+        log("  나스닥 요약: 응답은 오지만 값이 비었습니다 — 건너뜀")
+        return {}
+    fails = []
+
+    def one(r):
+        try:
+            return r["id"], parse_nasdaq_summary(nasdaq_json(url.format(sym=r["id"].replace(".", "%5E"))), r.get("p"))
+        except Exception as e:
+            fails.append(str(e)[:60])
+            return r["id"], None
+
+    out = {}
+    with ThreadPoolExecutor(workers) as ex:
+        for sid, f in ex.map(one, us):
+            if f and any(v is not None for v in f.values()):
+                out[sid] = dict(f, fs="Q")
+    log(f"  나스닥 요약: {len(out)}/{len(us)}종목 (실패 {len(fails)}{', 예: ' + fails[0] if fails else ''})")
+    return out
+
+
+def nasdaq_earnings(today: dt.date, days: int = 21) -> dict[str, str]:
+    """나스닥 실적 캘린더 — 날짜 하나에 그날 발표하는 미국 회사 전부가 온다."""
+    out: dict[str, str] = {}
+    for k in range(days):
+        d = today + dt.timedelta(days=k)
+        if d.weekday() >= 5:
+            continue
+        try:
+            j = nasdaq_json(f"https://api.nasdaq.com/api/calendar/earnings?date={d.isoformat()}")
+        except Exception as e:
+            log(f"  나스닥 실적 캘린더 {d}: {str(e)[:80]} — 중단")
+            break
+        for row in ((j.get("data") or {}).get("rows") or []):
+            sym = str(row.get("symbol", "")).strip().upper().replace("/", ".").replace("^", ".")
+            if sym and sym not in out:
+                out[sym] = d.isoformat()
+        time.sleep(0.3)
+    log(f"  나스닥 실적 캘린더: {len(out)}종목")
+    return out
+
+
 def fundamentals(rows: list[dict], today: dt.date, kr_asof: dt.date | None) -> tuple[dict[str, dict], dict]:
     """출처를 겹쳐 쓴다. 한국은 거래소 값을 우선하고, 미국은 Yahoo(최근 4분기)가 되면 그것을,
     안 되면 SEC(최근 회계연도)를 쓴다. 실적일·애널리스트 의견은 Yahoo 에서만 나온다."""
     y = yahoo_fund(rows, today)
     log(f"  Yahoo {len(y)}종목")
+    q = {} if len(y) >= 1000 else nasdaq_fund(rows)
     s = sec_fund(rows, today)
     log(f"  SEC {len(s)}종목")
-    if not y and len(s) < 1000:  # 미국 쪽이 둘 다 막히면 네이버 해외주식으로 채운다
+    if not y and not q and len(s) < 1000:  # 미국 쪽이 다 막히면 네이버 해외주식으로 채운다
         for sid, f in naver_us_fund(rows).items():
             s.setdefault(sid, f)
+    n_sec = sum(1 for f in s.values() if f.get("fs") == "S")
+    # 미국 우선순위: Yahoo > 나스닥 > SEC/네이버. 앞 출처에 없는 칸만 뒤 출처로 채운다
+    for sid, f in q.items():
+        base = s.get(sid, {})
+        s[sid] = dict(base, **{kk: v for kk, v in f.items() if v is not None})
+    ern = nasdaq_earnings(today)
     k = krx_fund(kr_asof) or naver_fund(rows)
     out: dict[str, dict] = {}
     for sid, f in s.items():
@@ -754,10 +861,78 @@ def fundamentals(rows: list[dict], today: dt.date, kr_asof: dt.date | None) -> t
             cur.update({kk: v for kk, v in f.items() if v is not None})
     for sid, f in k.items():
         out.setdefault(sid, {}).update({kk: v for kk, v in f.items() if v is not None})
-    counts = {"Y": len(y), "S": sum(1 for f in s.values() if f.get("fs") == "S"),
+    for sid, d in ern.items():  # 실적일은 나스닥 캘린더가 더 정확하다(Yahoo 가 막힌 날에도 나온다)
+        out.setdefault(sid, {})["ern"] = d
+    counts = {"Y": len(y), "Q": len(q), "E": len(ern), "S": n_sec,
               "K": sum(1 for f in k.values() if f.get("fs") == "K"),
               "N": sum(1 for f in list(k.values()) + list(s.values()) if f.get("fs") == "N")}
     return out, counts
+
+
+# --------------------------------------------------------------------------- 지수 · 베타
+INDICES = [("^KS11", "코스피", "KR"), ("^KQ11", "코스닥", "KR"), ("^GSPC", "S&P 500", "US"),
+           ("^IXIC", "나스닥 종합", "US"), ("^DJI", "다우존스", "US"), ("^VIX", "VIX 공포지수", "US")]
+
+
+def index_history() -> dict[str, dict]:
+    try:
+        import yfinance as yf
+        df = yf.download([s for s, _, _ in INDICES], period="14mo", interval="1d", auto_adjust=True,
+                         group_by="ticker", threads=True, progress=False)
+    except Exception as e:
+        log(f"  지수 실패: {str(e)[:100]}")
+        return {}
+    out = {}
+    for sym, _, _ in INDICES:
+        try:
+            sub = df[sym].dropna(subset=["Close"])
+        except Exception:
+            continue
+        if len(sub) > 20:
+            c = sub["Close"].to_numpy(dtype=float)
+            v = sub["Volume"].fillna(0).to_numpy(dtype=float)
+            out[sym] = {"dates": [d.date() for d in sub.index], "close": c, "vol": v, "val": c * v}
+    return out
+
+
+def index_meta(idx: dict[str, dict], prev: list) -> list:
+    """첫 화면 지수 칸. 못 받은 지수는 이전 값을 그대로 둔다."""
+    old = {x["s"]: x for x in prev or []}
+    out = []
+    for sym, name, g in INDICES:
+        h = idx.get(sym)
+        if h is None:
+            if sym in old:
+                out.append(old[sym])
+            continue
+        m = metrics(h)
+        out.append({"s": sym, "n": name, "g": g, "p": rnd(float(h["close"][-1]), 2),
+                    **{k: rnd(m.get(k), 2 if k == "d1h" else 1) for k in ("d1h", "r5", "r21", "r252", "ytd", "fh")},
+                    "sp": m.get("sp", ""), "spl": rnd(m.get("spl"), 2), "sph": rnd(m.get("sph"), 2), "asof": m.get("asof")})
+    return out
+
+
+def beta(h: dict, ih: dict | None, days: int = 252) -> float | None:
+    """1년 일간 수익률로 본 베타 = 공분산(종목, 지수) ÷ 분산(지수). 날짜가 겹치는 날만 쓴다."""
+    if not ih:
+        return None
+    ix = dict(zip(ih["dates"], ih["close"]))
+    pairs = [(c, ix[d]) for d, c in zip(h["dates"][-days - 1:], h["close"][-days - 1:]) if d in ix]
+    if len(pairs) < 60:
+        return None
+    a = np.array(pairs, dtype=float)
+    if (a <= 0).any():
+        return None
+    rs, ri = np.diff(np.log(a[:, 0])), np.diff(np.log(a[:, 1]))
+    var = ri.var()
+    if var <= 0:
+        return None
+    b = float(np.cov(rs, ri, bias=True)[0, 1] / var)
+    return b if -3 < b < 6 else None
+
+
+def bench_for(r: dict) -> str:
+    return "^GSPC" if r["g"] == "US" else "^KS11" if r["m"] == "KOSPI" else "^KQ11"
 
 
 # --------------------------------------------------------------------------- 환율
@@ -789,7 +964,7 @@ COLS = ["id", "m", "n", "ko", "sec", "ind", "cty", "ipo", "p", "d1", "mc", "mcu"
         "r5", "r21", "r63", "r126", "r252", "ytd", "fh", "fl", "h52", "l52", "pm50", "pm200",
         "x", "up", "rsi", "vol", "mdd", "tv", "vs", "sm", "st", "ss", "sl",
         "sp", "spl", "sph", "nd", "asof", "warn", "prod",
-        "pe", "fpe", "pb", "dy", "eps", "roe", "ern", "ar", "fs"]
+        "pe", "fpe", "pb", "dy", "eps", "roe", "ern", "ar", "fs", "tgt", "beta"]
 
 
 def rnd(v, k):
@@ -839,6 +1014,8 @@ def to_row(r: dict) -> list:
     out["ern"] = r.get("ern") or ""
     out["ar"] = rnd(r.get("ar"), 1)
     out["fs"] = r.get("fs") or ""
+    out["tgt"] = price_round(r.get("tgt"), g)
+    out["beta"] = rnd(r.get("beta"), 2)
     return [out[c] for c in COLS]
 
 
@@ -898,10 +1075,13 @@ def main():
         # 한국 쪽을 못 받았으면 이전 행을 그대로 쓴다
         kr = [dict(from_prev(v), g="KR") for v in prev_rows.values() if v.get("m") in ("KOSPI", "KOSDAQ", "KONEX")]
 
+    idx = {} if a.no_us_history else index_history()
+    log(f"지수 {len(idx)}개")
     for r in kr:
         h = kr_hist.get(r["id"])
         if h is not None and len(h["close"]) >= 2:
             r.update(metrics(h))
+            r["beta"] = beta(h, idx.get(bench_for(r)))
 
     us_hist = {}
     if not a.no_us_history:
@@ -912,12 +1092,13 @@ def main():
         us_hist = us_history(syms)
     us_asof = None
     carry = ("r5", "r21", "r63", "r126", "r252", "ytd", "fh", "fl", "h52", "l52", "pm50", "pm200",
-             "x", "up", "rsi", "vol", "mdd", "tv", "vs", "sp", "spl", "sph", "nd", "asof")
+             "x", "up", "rsi", "vol", "mdd", "tv", "vs", "sp", "spl", "sph", "nd", "asof", "beta")
     for r in us:
         h = us_hist.get(r["id"])
         if h is not None and len(h["close"]) >= 2:
             snap_p = r.get("p")
             r.update(metrics(h))
+            r["beta"] = beta(h, idx.get("^GSPC"))
             last = float(h["close"][-1])
             if snap_p and r.get("mc"):
                 r["mc"] *= last / snap_p  # 스냅샷 시총을 최신 종가로 맞춘다
@@ -937,14 +1118,18 @@ def main():
     if not us_asof and prev_meta.get("usAsof"):
         us_asof = prev_meta["usAsof"]
 
+    for r in kr:  # 지수를 못 받은 날은 한국 베타도 이전 값
+        if r.get("beta") is None and prev_rows.get(r["id"], {}).get("beta") is not None:
+            r["beta"] = prev_rows[r["id"]]["beta"]
     fund, fund_n = ({}, {}) if a.no_fund else (log("재무 지표") or fundamentals(us + kr, today, kr_asof))
     log(f"  재무 확보 {len(fund)}종목 {fund_n}")
     for r in us + kr:
-        f = fund.get(r["id"])
-        if f is None:
-            f = {k: prev_rows.get(r["id"], {}).get(k) for k in FUND}  # 못 받은 종목은 이전 값
-            if f.get("ern") and f["ern"] < today.isoformat():
-                f["ern"] = None
+        # 이번에 받은 칸은 새 값(없다고 온 None 포함), 아예 안 온 칸은 이전 값
+        old = prev_rows.get(r["id"], {})
+        f = {k: old.get(k) for k in FUND}
+        f.update(fund.get(r["id"], {}))
+        if f.get("ern") and f["ern"] < today.isoformat():
+            f["ern"] = None
         for k in FUND:
             if f.get(k) is not None and f.get(k) != "":
                 r[k] = f[k]
@@ -972,6 +1157,7 @@ def main():
         "counts": {"US": len(us), "KR": len(kr)},
         "fundN": len(fund) or prev_meta.get("fundN", 0), "fundSrc": fund_n or prev_meta.get("fundSrc", {}),
         "fundAt": (dt.date.today().isoformat() if fund else prev_meta.get("fundAt")),
+        "idx": index_meta(idx, prev_meta.get("idx")),
         "cols": COLS,
     }
     os.makedirs(os.path.dirname(a.out), exist_ok=True)
