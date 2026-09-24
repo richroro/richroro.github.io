@@ -102,7 +102,16 @@
   .res b{display:block;margin-top:4px;font-size:22px;font-weight:900;color:var(--ink)}
   .h2{font-size:30px;font-weight:900;letter-spacing:-.03em}
   .new{color:var(--gold-2);font-weight:800;font-size:14px;margin-top:6px;min-height:20px}
-  @media (max-height:440px){ .logo{font-size:34px} .sub{font-size:13px;margin-top:4px} .btn{padding:11px 12px;margin-top:8px} .keys{margin-top:10px} .home{margin-top:8px} .res{margin:10px 0 4px} .res div{padding:8px} }
+  body.short .logo{font-size:34px} body.short .sub{font-size:13px;margin-top:4px} body.short .btn{padding:10px 12px;margin-top:7px}
+  body.short .keys{margin-top:8px} body.short .home{margin-top:6px} body.short .res{margin:10px 0 4px} body.short .res div{padding:8px} body.short .best{margin:8px 0 2px}
+  body.short .card{max-width:520px} body.short #title .btns2{display:grid;grid-template-columns:1fr 1fr;gap:8px} body.short #title .btns2 .btn{margin-top:0}
+  body.short #title .btns2 .rotb{grid-column:1 / -1}
+  /* 가로 모드: 세로로 든 폰에서도 화면을 90도 돌려서 가로로 플레이 */
+  body.rot #app{left:100%;top:0;right:auto;bottom:auto;transform-origin:0 0;transform:rotate(90deg);
+    padding:env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left) env(safe-area-inset-top)}
+  #bRot{display:none} body.touch #bRot{display:flex}
+  .rotb{display:none} body.touch .rotb{display:block}
+  #bRot.on{background:rgba(242,185,75,.35)}
   body.touch .keys .kb{display:none}
   body:not(.touch) .keys .tc{display:none}
 </style>
@@ -114,6 +123,7 @@
       <canvas id="cv"></canvas>
       <div class="tb">
         <button class="ib" id="bMute" aria-label="소리 켜기 끄기">🔊</button>
+        <button class="ib" id="bRot" aria-label="가로 모드 켜기 끄기">⟳</button>
         <button class="ib" id="bPause" aria-label="일시정지">Ⅱ</button>
       </div>
     </div>
@@ -129,15 +139,17 @@
       <button class="b" id="bAtk" data-k="attack"><span>공격</span></button>
     </div>
   </div>
-</div>
 
 <div class="ov show" id="title">
   <div class="card">
     <div class="logo">격파 메이드</div>
     <p class="sub">달밤의 저택에 저주받은 인형들이 깨어났다.<br>건틀릿 하나로 전부 격파하라.</p>
     <p class="best" id="bestLine"></p>
-    <button class="btn primary" id="bStart">저택의 밤<small>끝없이 몰려오는 인형 · 5웨이브마다 보스</small></button>
-    <button class="btn ghost" id="bTrain">훈련장<small>오뚝이 샌드백 마음껏 두들기기</small></button>
+    <div class="btns2">
+      <button class="btn primary" id="bStart">저택의 밤<small>끝없이 몰려오는 인형 · 5웨이브마다 보스</small></button>
+      <button class="btn ghost" id="bTrain">훈련장<small>오뚝이 샌드백 마음껏 두들기기</small></button>
+      <button class="btn ghost rotb" id="bRotT">가로 모드로 하기<small>폰을 옆으로 눕혀서 넓은 화면으로</small></button>
+    </div>
     <div class="keys">
       <div class="kb"><b>이동</b> <kbd>←</kbd><kbd>→</kbd> · <b>공격</b> <kbd>J</kbd>/<kbd>Z</kbd> · <b>점프</b> <kbd>K</kbd>/<kbd>Space</kbd><br>
       <b>대시</b> <kbd>L</kbd>/<kbd>Shift</kbd> · <b>회전차기</b> <kbd>I</kbd>/<kbd>X</kbd> · <b>격파</b> <kbd>O</kbd>/<kbd>V</kbd> · <b>정지</b> <kbd>Esc</kbd></div>
@@ -168,6 +180,7 @@
     <button class="btn primary" id="bRetry">다시 도전</button>
     <button class="btn ghost" id="bHome">타이틀로</button>
   </div>
+</div>
 </div>
 
 <script>
@@ -256,12 +269,39 @@ function setMuted(m) {
 /* ════════════════ 화면 배치 ════════════════ */
 let W = 960, scale = 1, cssW = 960, cssH = 540, camX = 0, hudPadR = 90;
 let isTouch = matchMedia('(pointer: coarse)').matches;
+let wantRot = store.get('rot', false);
+function applyRot() {
+  const need = isTouch && wantRot && innerHeight > innerWidth, app = $('app');
+  document.body.classList.toggle('rot', need);
+  app.style.width = need ? innerHeight + 'px' : '';
+  app.style.height = need ? innerWidth + 'px' : '';
+  $('bRot').classList.toggle('on', wantRot);
+  $('bRotT').firstChild.textContent = wantRot ? '세로 모드로 하기' : '가로 모드로 하기';
+  $('bRotT').querySelector('small').textContent = wantRot ? '위는 게임, 아래는 버튼' : '폰을 옆으로 눕혀서 넓은 화면으로';
+}
+async function toggleRot() {
+  ensureAudio();
+  wantRot = !wantRot; store.set('rot', wantRot);
+  // 되는 브라우저(안드로이드 크롬 등)에서는 전체화면 + 실제 가로 고정, 안 되면 화면을 돌려서 보여준다
+  try {
+    if (wantRot) {
+      if (!document.fullscreenElement && document.documentElement.requestFullscreen) await document.documentElement.requestFullscreen();
+      if (screen.orientation && screen.orientation.lock) await screen.orientation.lock('landscape');
+    } else {
+      if (screen.orientation && screen.orientation.unlock) screen.orientation.unlock();
+      if (document.fullscreenElement && document.exitFullscreen) await document.exitFullscreen();
+    }
+  } catch (e) {}
+  layout();
+}
 function layout() {
   document.body.classList.toggle('touch', isTouch);
+  applyRot();
   const app = $('app'), cs = getComputedStyle(app);
   const aw = app.clientWidth - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight);
   const ah = app.clientHeight - parseFloat(cs.paddingTop) - parseFloat(cs.paddingBottom);
   const portrait = isTouch && ah > aw;
+  document.body.classList.toggle('short', ah < 470);
   document.body.classList.toggle('portrait', portrait);
   document.body.classList.toggle('landscape', !portrait);
   const stage = $('stage');
@@ -278,7 +318,7 @@ function layout() {
   cv.style.width = cssW + 'px'; cv.style.height = cssH + 'px';
   cv.width = Math.round(cssW * dpr); cv.height = Math.round(cssH * dpr);
   scale = cv.width / W;
-  hudPadR = 88 / (cssW / W);
+  hudPadR = (isTouch ? 128 : 88) / (cssW / W);
   // 패드 크기
   const s = portrait ? Math.min(1.2, aw / 420) : Math.min(1, ah / 430, aw / 720);
   $('dpad').style.transform = `scale(${s})`;
@@ -525,7 +565,12 @@ document.querySelectorAll('#btns .b').forEach(b => {
     input.left = l; input.right = r;
     $('dl').classList.toggle('on', l); $('dr').classList.toggle('on', r);
   };
-  const side = e => { const rc = dp.getBoundingClientRect(); return e.clientX < rc.left + rc.width / 2 ? -1 : 1; };
+  const side = e => {
+    const rc = dp.getBoundingClientRect();
+    // 가로 모드에서는 화면이 90도 돌아가 있어서 패드의 왼쪽이 화면 위쪽이다
+    if (document.body.classList.contains('rot')) return e.clientY < rc.top + rc.height / 2 ? -1 : 1;
+    return e.clientX < rc.left + rc.width / 2 ? -1 : 1;
+  };
   dp.addEventListener('pointerdown', e => { e.preventDefault(); ensureAudio(); try { dp.setPointerCapture(e.pointerId); } catch (_) {} ptrs.set(e.pointerId, side(e)); sync(); });
   dp.addEventListener('pointermove', e => { if (ptrs.has(e.pointerId)) { ptrs.set(e.pointerId, side(e)); sync(); } });
   const up = e => { ptrs.delete(e.pointerId); sync(); };
@@ -2101,7 +2146,7 @@ function drawHUD(g) {
 let last = performance.now();
 function frame(now) {
   requestAnimationFrame(frame);
-  const rdt = Math.min(0.05, (now - last) / 1000); last = now;
+  const rdt = clamp((now - last) / 1000, 0, 0.05); last = now;
   if (state !== 'paused') {
     let ts = 1;
     if (slowT > 0) { slowT -= rdt; ts = slowScale; }
@@ -2163,6 +2208,9 @@ $('bHome').onclick = toTitle;
 $('bPause').onclick = () => { if (state === 'play') pauseGame(); else if (state === 'paused') resumeGame(); else if (state === 'over') toTitle(); };
 $('bMute').onclick = () => { ensureAudio(); setMuted(!muted); };
 addEventListener('resize', layout);
+document.addEventListener('fullscreenchange', () => setTimeout(layout, 50));
+$('bRot').onclick = toggleRot;
+$('bRotT').onclick = toggleRot;
 addEventListener('orientationchange', () => setTimeout(layout, 120));
 
 setMuted(muted);
