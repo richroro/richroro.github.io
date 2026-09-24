@@ -391,32 +391,405 @@ def scores(rows: list[dict]):
             r["sl"] = ptv[i]
 
 
+# --------------------------------------------------------------------------- 재무
+QUOTE_URL = "https://query1.finance.yahoo.com/v7/finance/quote"
+FUND = ("pe", "fpe", "pb", "dy", "eps", "roe", "ern", "ar", "fs")
+
+
+def yahoo_symbol(r: dict) -> str | None:
+    if r["g"] == "US":
+        return r["id"].replace(".", "-")
+    suffix = {"KOSPI": ".KS", "KOSDAQ": ".KQ"}.get(r["m"])  # 코넥스는 Yahoo 에 없다
+    return r["id"] + suffix if suffix else None
+
+
+def _ok(v, lo, hi):
+    return v if isinstance(v, (int, float)) and math.isfinite(v) and lo < v < hi else None
+
+
+def parse_quote(q: dict, today: dt.date) -> dict:
+    """Yahoo v7 quote 한 건 → 재무 지표. 통화가 섞인 ADR 처럼 앞뒤가 안 맞는 값은 버린다."""
+    price = q.get("regularMarketPrice")
+    out = {"pe": _ok(q.get("trailingPE"), 0, 3000), "fpe": _ok(q.get("forwardPE"), 0, 3000),
+           "pb": _ok(q.get("priceToBook"), 0, 500), "eps": _ok(q.get("epsTrailingTwelveMonths"), -1e7, 1e7)}
+    rate = q.get("dividendRate") or q.get("trailingAnnualDividendRate")
+    out["dy"] = _ok(rate / price * 100, 0, 25) if rate and price else (0.0 if price else None)
+    # ROE ≈ 주당순이익 ÷ 주당순자산. 장부가 통화가 주가와 같은지(PBR 이 price/bookValue 와 맞는지) 확인한다
+    bv = q.get("bookValue")
+    if out["eps"] is not None and bv and bv > 0 and price and out["pb"] and abs(price / bv / out["pb"] - 1) < 0.2:
+        out["roe"] = _ok(out["eps"] / bv * 100, -300, 300)
+    ern = None
+    for k in ("earningsTimestampStart", "earningsTimestamp"):
+        ts = q.get(k)
+        if ts:
+            d = dt.datetime.fromtimestamp(ts, dt.timezone.utc).date()
+            if d >= today:
+                ern = d.isoformat(); break
+    out["ern"] = ern
+    m = re.match(r"\s*([\d.]+)", str(q.get("averageAnalystRating") or ""))
+    out["ar"] = _ok(float(m.group(1)), 0.9, 5.1) if m else None
+    return out
+
+
+def yahoo_fund(rows: list[dict], today: dt.date, batch: int = 150) -> dict[str, dict]:
+    """Yahoo 일괄 시세(v7 quote). 실적일·애널리스트 의견은 여기서만 나온다.
+    Yahoo 는 데이터센터 IP 에 인증 토큰(crumb)을 잘 주지 않는다 — 401/403 이면 바로 그만둔다."""
+    try:
+        from yfinance.data import YfData
+    except ImportError:
+        log("  yfinance 없음 — Yahoo 재무 생략")
+        return {}
+    yd = YfData()
+    ymap = {yahoo_symbol(r): r["id"] for r in rows if yahoo_symbol(r)}
+    keys, out, fails = list(ymap), {}, 0
+    for i in range(0, len(keys), batch):
+        chunk = keys[i:i + batch]
+        j = None
+        for attempt in range(3):
+            try:
+                j = yd.get_raw_json(QUOTE_URL, params={"symbols": ",".join(chunk), "formatted": "false",
+                                                       "lang": "en-US", "region": "US"})
+                break
+            except Exception as e:
+                msg = str(e)[:120]
+                if re.search(r"\b40[13]\b", msg):
+                    log(f"  Yahoo 재무: 인증 거부({msg}) — 건너뜀")
+                    return out
+                log(f"  Yahoo 재무 실패({attempt + 1}/3): {msg}")
+                time.sleep(8 * (attempt + 1))
+        if j is None:
+            fails += 1
+            if fails >= 3 and not out:
+                log("  Yahoo 재무: 연속 실패 — 건너뜀")
+                return out
+            continue
+        for q in (j.get("quoteResponse") or {}).get("result") or []:
+            sid = ymap.get(q.get("symbol"))
+            if sid:
+                out[sid] = dict(parse_quote(q, today), fs="Y")
+        time.sleep(0.6)
+    return out
+
+
+# ---- 미국: SEC EDGAR — 미국 정부 공시 데이터(퍼블릭 도메인). frames API 는 한 지표를 전 회사에 대해 한 번에 준다
+def sec_user_agent() -> str | None:
+    """SEC 는 요청마다 '이름 연락처이메일' 형식의 User-Agent 를 요구한다(없으면 403).
+    SEC_USER_AGENT(전체 문자열) 또는 SEC_CONTACT(이메일) 환경변수로 받는다."""
+    ua = os.environ.get("SEC_USER_AGENT", "").strip()
+    if ua:
+        return ua
+    mail = os.environ.get("SEC_CONTACT", "").strip()
+    return f"richroro-finder {mail}" if "@" in mail else None
+
+
+def sec_json(url: str):
+    import gzip
+    req = urllib.request.Request(url, headers={"User-Agent": sec_user_agent() or "", "Accept-Encoding": "gzip"})
+    with urllib.request.urlopen(req, timeout=90) as r:
+        raw = r.read()
+        if r.headers.get("Content-Encoding") == "gzip":
+            raw = gzip.decompress(raw)
+    time.sleep(0.15)  # SEC 는 초당 10건까지
+    return json.loads(raw)
+
+
+def sec_latest(tag: str, unit: str, periods: list[str]) -> dict[int, dict]:
+    """여러 기간의 frame 을 받아 회사(CIK)마다 가장 최근 값을 고른다."""
+    best: dict[int, dict] = {}
+    for per in periods:
+        try:
+            data = sec_json(f"https://data.sec.gov/api/xbrl/frames/us-gaap/{tag}/{unit}/{per}.json").get("data", [])
+        except Exception as e:
+            if "404" not in str(e):
+                log(f"  SEC {tag} {per}: {str(e)[:80]}")
+            continue
+        for d in data:
+            c = d.get("cik")
+            if c is not None and (c not in best or d["end"] > best[c]["end"]):
+                best[c] = d
+    return best
+
+
+def sec_fund(rows: list[dict], today: dt.date) -> dict[str, dict]:
+    """PER = 시총 ÷ 순이익, PBR = 시총 ÷ 자기자본, ROE = 순이익 ÷ 자기자본, 배당 = 배당 지급액 ÷ 시총.
+    주당 값 대신 총액으로 계산해 결산 뒤 액면분할이 있어도 틀어지지 않게 한다. 최근 회계연도(연간) 기준."""
+    if not sec_user_agent():
+        log("  SEC: 연락처(SEC_CONTACT)가 없어 건너뜀 — SEC 는 User-Agent 에 이메일을 요구한다")
+        return {}
+    try:
+        tick = sec_json("https://www.sec.gov/files/company_tickers.json")
+    except Exception as e:
+        body = re.sub(rb"<[^>]+>|\s+", b" ", getattr(e, "read", lambda: b"")()[:400])[:160]
+        log(f"  SEC 티커 목록 실패: {str(e)[:100]} {body!r} — 건너뜀")
+        return {}
+    cik_of = {v["ticker"].upper().replace("-", "."): int(v["cik_str"]) for v in tick.values()}
+    Y = today.year
+    annual = [f"CY{Y}", f"CY{Y - 1}", f"CY{Y - 2}"]
+    q0 = (today.month - 1) // 3 + 1
+    instants = []
+    for k in range(1, 6):  # 지난 다섯 분기 말
+        y, q = Y, q0 - k
+        while q <= 0:
+            y, q = y - 1, q + 4
+        instants.append(f"CY{y}Q{q}I")
+    ni = sec_latest("NetIncomeLoss", "USD", annual)
+    eq = sec_latest("StockholdersEquity", "USD", instants)
+    dv = sec_latest("PaymentsOfDividendsCommonStock", "USD", annual)
+    for c, d in sec_latest("PaymentsOfDividends", "USD", annual).items():
+        dv.setdefault(c, d)
+    stale = (today - dt.timedelta(days=550)).isoformat()
+    out = {}
+    for r in rows:
+        if r["g"] != "US" or not r.get("mc"):
+            continue
+        c = cik_of.get(r["id"])
+        if c is None:
+            continue
+        f, mc = {}, r["mc"]
+        n = ni.get(c)
+        e = eq.get(c)
+        if n and n["end"] >= stale:
+            f["pe"] = _ok(mc / n["val"], 0, 3000) if n["val"] > 0 else None
+            if r.get("p"):
+                f["eps"] = r["p"] * n["val"] / mc  # 주가 × 순이익/시총 = 주당순이익(분할 반영)
+        if e and e["end"] >= stale and e["val"] > 0:
+            f["pb"] = _ok(mc / e["val"], 0, 500)
+            if n and n["end"] >= stale:
+                f["roe"] = _ok(n["val"] / e["val"] * 100, -300, 300)
+        d = dv.get(c)
+        if n and n["end"] >= stale:  # 배당 기록이 없으면 무배당으로 본다
+            f["dy"] = _ok(abs(d["val"]) / mc * 100, 0, 25) if d and d["end"] >= stale else 0.0
+        if any(v is not None for v in f.values()):
+            out[r["id"]] = dict(f, fs="S")
+    return out
+
+
+# ---- 한국: 한국거래소 PER/PBR/배당수익률(전종목) 표 한 장
+def _krx_num(s):
+    s = str(s or "").replace(",", "").strip()
+    try:
+        v = float(s)
+    except ValueError:
+        return None
+    return v if math.isfinite(v) else None
+
+
+def krx_fund(asof: dt.date | None) -> dict[str, dict]:
+    """한국거래소 정보데이터시스템의 PER/PBR/배당수익률 전종목 표. 먼저 화면을 열어 세션 쿠키를 받는다."""
+    import http.cookiejar
+    import urllib.parse
+    if not asof:
+        return {}
+    jar = http.cookiejar.CookieJar()
+    opener = urllib.request.build_opener(urllib.request.HTTPCookieProcessor(jar))
+    page = "http://data.krx.co.kr/contents/MDC/MDI/mdiLoader/index.cmd?menuId=MDC0201020502"
+    try:
+        opener.open(urllib.request.Request(page, headers={"User-Agent": UA}), timeout=30).read()
+    except Exception as e:
+        log(f"  KRX 세션: {str(e)[:100]}")
+    url = "http://data.krx.co.kr/comm/bldAttendant/getJsonData.cmd"
+    for back in range(0, 7):
+        d = asof - dt.timedelta(days=back)
+        if d.weekday() >= 5:
+            continue
+        body = urllib.parse.urlencode({"bld": "dbms/MDC/STAT/standard/MDCSTAT03501", "locale": "ko_KR",
+                                       "searchType": "1", "mktId": "ALL", "trdDd": d.strftime("%Y%m%d"),
+                                       "csvxls_isNo": "false"}).encode()
+        req = urllib.request.Request(url, data=body, headers={
+            "User-Agent": UA, "X-Requested-With": "XMLHttpRequest", "Origin": "http://data.krx.co.kr",
+            "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8", "Referer": page})
+        try:
+            with opener.open(req, timeout=60) as r:
+                text = r.read().decode("utf-8", errors="replace")
+            j = json.loads(text)
+        except Exception as e:
+            body_txt = getattr(e, "read", lambda: b"")()[:160]
+            log(f"  KRX 재무 {d}: {str(e)[:80]} {body_txt!r}")
+            return {}
+        rows = j.get("output") or j.get("OutBlock_1") or []
+        if len(rows) < 500:
+            continue
+        out = {}
+        for x in rows:
+            code = str(x.get("ISU_SRT_CD", "")).zfill(6)
+            eps, bps = _krx_num(x.get("EPS")), _krx_num(x.get("BPS"))
+            f = {"pe": _ok(_krx_num(x.get("PER")), 0, 3000), "pb": _ok(_krx_num(x.get("PBR")), 0, 500),
+                 "dy": _ok(_krx_num(x.get("DVD_YLD")), -0.001, 25), "eps": eps}
+            if eps is not None and bps and bps > 0:
+                f["roe"] = _ok(eps / bps * 100, -300, 300)
+            out[code] = dict(f, fs="K")
+        log(f"  KRX 재무 {d}: {len(out)}종목")
+        return out
+    log("  KRX 재무: 응답이 비었습니다")
+    return {}
+
+
+NAVER_API = "https://m.stock.naver.com/api/stock/{code}/integration"
+# 네이버 증권 종목 요약의 항목 이름 → 우리 열
+NAVER_KEYS = {"per": "pe", "pbr": "pb", "eps": "eps", "bps": "bps", "dividendyieldratio": "dy", "cnsper": "fpe",
+              "PER": "pe", "PBR": "pb", "EPS": "eps", "BPS": "bps", "배당수익률": "dy", "추정PER": "fpe"}
+
+
+def parse_naver(j: dict) -> dict:
+    """{"totalInfos":[{"code":"per","key":"PER","value":"13.21배"}, ...]} → 재무 지표. 모르는 항목은 무시한다."""
+    got = {}
+    infos = j.get("totalInfos") or j.get("stockItemTotalInfos") or []
+    for it in infos:
+        k = NAVER_KEYS.get(str(it.get("code", "")).lower()) or NAVER_KEYS.get(str(it.get("key", "")))
+        if not k or k in got:
+            continue
+        m = re.search(r"-?[\d,]+(?:\.\d+)?", str(it.get("value", "")))
+        if m:
+            got[k] = float(m.group(0).replace(",", ""))
+    f = {"pe": _ok(got.get("pe"), 0, 3000), "fpe": _ok(got.get("fpe"), 0, 3000), "pb": _ok(got.get("pb"), 0, 500),
+         "dy": _ok(got.get("dy"), -0.001, 25), "eps": got.get("eps")}
+    if got.get("eps") is not None and got.get("bps", 0) > 0:
+        f["roe"] = _ok(got["eps"] / got["bps"] * 100, -300, 300)
+    return f
+
+
+def naver_fund(rows: list[dict], workers: int = 6) -> dict[str, dict]:
+    """KRX 가 막혔을 때: 네이버 증권 종목 요약을 종목마다 받는다(코스피·코스닥, 동시 6개)."""
+    from concurrent.futures import ThreadPoolExecutor
+    codes = [r["id"] for r in rows if r["g"] == "KR" and r["m"] in ("KOSPI", "KOSDAQ")]
+    errs = []
+
+    def one(code):
+        req = urllib.request.Request(NAVER_API.format(code=code), headers={"User-Agent": UA, "Referer": "https://m.stock.naver.com/"})
+        try:
+            with urllib.request.urlopen(req, timeout=20) as r:
+                return code, parse_naver(json.loads(r.read()))
+        except Exception as e:
+            errs.append(str(e)[:80])
+            return code, None
+
+    out = {}
+    # 처음 몇 개로 통하는지 본다 — 전부 막히면 2천여 번 두드리지 않는다
+    for code, f in map(one, codes[:5]):
+        if f and any(v is not None for v in f.values()):
+            out[code] = dict(f, fs="N")
+    if not out:
+        log(f"  네이버 재무: 첫 5종목 실패({errs[:1]}) — 건너뜀")
+        return {}
+    with ThreadPoolExecutor(workers) as ex:
+        for code, f in ex.map(one, codes[5:]):
+            if f and any(v is not None for v in f.values()):
+                out[code] = dict(f, fs="N")
+    log(f"  네이버 재무: {len(out)}/{len(codes)}종목 (실패 {len(errs)})")
+    return out
+
+
+# 미국 종목도 네이버 증권(해외주식)에 요약이 있다. 심볼 형식(로이터 코드)과 주소를 몇 종목으로 먼저 확인한다.
+NAVER_US_URLS = ["https://api.stock.naver.com/stock/{sym}/integration", "https://api.stock.naver.com/stock/{sym}/basic",
+                 "https://m.stock.naver.com/api/stock/{sym}/integration"]
+NAVER_RIC = {"NASDAQ": [".O", ""], "NYSE": ["", ".N", ".K"], "AMEX": [".A", "", ".K"]}
+
+
+def _naver_get(url: str):
+    req = urllib.request.Request(url, headers={"User-Agent": UA, "Referer": "https://m.stock.naver.com/"})
+    with urllib.request.urlopen(req, timeout=20) as r:
+        return json.loads(r.read())
+
+
+def naver_us_fund(rows: list[dict], limit: int = 3000, workers: int = 6) -> dict[str, dict]:
+    from concurrent.futures import ThreadPoolExecutor
+    us = sorted([r for r in rows if r["g"] == "US" and r.get("mcu")], key=lambda r: -r["mcu"])[:limit]
+    # 형식 확인에는 점이 없는 티커를 쓴다(BRK.B 같은 건 따로 표기법이 있을 수 있다)
+    by_m = {m: next((r for r in us if r["m"] == m and "." not in r["id"]), None) for m in NAVER_RIC}
+    plan: dict[str, tuple[str, str]] = {}  # 거래소 → (주소 형식, 접미사)
+    for m, r in by_m.items():
+        if not r:
+            continue
+        for url in NAVER_US_URLS:
+            for suf in NAVER_RIC[m]:
+                try:
+                    f = parse_naver(_naver_get(url.format(sym=r["id"] + suf)))
+                except Exception:
+                    continue
+                if f.get("pe") is not None or f.get("pb") is not None:
+                    plan[m] = (url, suf); break
+            if m in plan:
+                break
+    log(f"  네이버(미국) 형식: {plan or '찾지 못함'}")
+    if not plan:
+        return {}
+
+    def one(r):
+        url, suf = plan.get(r["m"], (None, None))
+        if url is None:
+            return r["id"], None
+        try:
+            return r["id"], parse_naver(_naver_get(url.format(sym=r["id"] + suf)))
+        except Exception:
+            return r["id"], None
+
+    out = {}
+    with ThreadPoolExecutor(workers) as ex:
+        for sid, f in ex.map(one, us):
+            if f and any(v is not None for v in f.values()):
+                out[sid] = dict(f, fs="N")
+    log(f"  네이버(미국) 재무: {len(out)}/{len(us)}종목")
+    return out
+
+
+def fundamentals(rows: list[dict], today: dt.date, kr_asof: dt.date | None) -> tuple[dict[str, dict], dict]:
+    """출처를 겹쳐 쓴다. 한국은 거래소 값을 우선하고, 미국은 Yahoo(최근 4분기)가 되면 그것을,
+    안 되면 SEC(최근 회계연도)를 쓴다. 실적일·애널리스트 의견은 Yahoo 에서만 나온다."""
+    y = yahoo_fund(rows, today)
+    log(f"  Yahoo {len(y)}종목")
+    s = sec_fund(rows, today)
+    log(f"  SEC {len(s)}종목")
+    if not y and len(s) < 1000:  # 미국 쪽이 둘 다 막히면 네이버 해외주식으로 채운다
+        for sid, f in naver_us_fund(rows).items():
+            s.setdefault(sid, f)
+    k = krx_fund(kr_asof) or naver_fund(rows)
+    out: dict[str, dict] = {}
+    for sid, f in s.items():
+        out[sid] = dict(f)
+    for sid, f in y.items():
+        cur = out.setdefault(sid, {})
+        if sid in k:  # 한국: 가격 지표는 거래소 값, Yahoo 는 실적일·의견만
+            cur.update({kk: f[kk] for kk in ("ern", "ar", "fpe") if f.get(kk) is not None})
+        else:
+            cur.update({kk: v for kk, v in f.items() if v is not None})
+    for sid, f in k.items():
+        out.setdefault(sid, {}).update({kk: v for kk, v in f.items() if v is not None})
+    counts = {"Y": len(y), "S": sum(1 for f in s.values() if f.get("fs") == "S"),
+              "K": sum(1 for f in k.values() if f.get("fs") == "K"),
+              "N": sum(1 for f in list(k.values()) + list(s.values()) if f.get("fs") == "N")}
+    return out, counts
+
+
 # --------------------------------------------------------------------------- 환율
-def fx_rate(us_rows, kr_rows, prev_meta) -> tuple[float | None, str]:
+def fx_rate(us_rows, kr_rows, prev_meta, today: dt.date) -> tuple[float | None, str, str | None]:
+    """원/달러와 그 출처, 실측 날짜."""
     try:
         import yfinance as yf
         h = yf.Ticker("KRW=X").history(period="5d")
         if len(h):
-            return float(h["Close"].iloc[-1]), "Yahoo KRW=X"
+            return float(h["Close"].iloc[-1]), "Yahoo KRW=X", today.isoformat()
     except Exception as e:
-        log(f"  환율(Yahoo) 실패: {e}")
+        log(f"  환율(Yahoo) 실패: {str(e)[:120]}")
+    # 일주일 안의 실측값이 있으면 그것을 쓴다 — ADR 은 원주보다 프리미엄이 붙어 추정이 몇 % 빗나간다
+    at = prev_meta.get("fxAt")
+    if prev_meta.get("fx") and at and (today - dt.date.fromisoformat(at)).days <= 7:
+        return prev_meta["fx"], f"Yahoo KRW=X({at} 값)", at
     us = {r["id"]: r for r in us_rows}
     kr = {r["id"]: r for r in kr_rows}
     pairs = [("KB", "105560", 1), ("SHG", "055550", 1)]  # ADR 1주 = 원주 1주
     est = [kr[c]["p"] * k / us[a]["p"] for a, c, k in pairs
            if a in us and c in kr and us[a].get("p") and kr[c].get("p")]
     if est:
-        return float(np.median(est)), "KB금융·신한지주 ADR/원주 종가 비율(추정)"
-    if prev_meta.get("fx"):
-        return prev_meta["fx"], prev_meta.get("fxSrc", "이전 값")
-    return None, ""
+        return float(np.median(est)), "KB금융·신한지주 ADR/원주 종가 비율(추정)", None
+    return prev_meta.get("fx"), prev_meta.get("fxSrc", ""), at
 
 
 # --------------------------------------------------------------------------- 출력
 COLS = ["id", "m", "n", "ko", "sec", "ind", "cty", "ipo", "p", "d1", "mc", "mcu",
         "r5", "r21", "r63", "r126", "r252", "ytd", "fh", "fl", "h52", "l52", "pm50", "pm200",
         "x", "up", "rsi", "vol", "mdd", "tv", "vs", "sm", "st", "ss", "sl",
-        "sp", "spl", "sph", "nd", "asof", "warn", "prod"]
+        "sp", "spl", "sph", "nd", "asof", "warn", "prod",
+        "pe", "fpe", "pb", "dy", "eps", "roe", "ern", "ar", "fs"]
 
 
 def rnd(v, k):
@@ -460,7 +833,22 @@ def to_row(r: dict) -> list:
     out["asof"] = r.get("asof") or ""
     out["warn"] = r.get("warn") or 0
     out["prod"] = r.get("prod") or ""
+    for k in ("pe", "fpe", "pb", "dy", "roe"):
+        out[k] = rnd(r.get(k), 1 if k != "pb" else 2)
+    out["eps"] = rnd(r.get("eps"), 2 if g == "US" else 0)
+    out["ern"] = r.get("ern") or ""
+    out["ar"] = rnd(r.get("ar"), 1)
+    out["fs"] = r.get("fs") or ""
     return [out[c] for c in COLS]
+
+
+def from_prev(v: dict) -> dict:
+    """이전 파일의 행(출력 단위)을 계산 단위로 되돌린다 — 시총·거래대금은 백만 단위로 저장돼 있다."""
+    r = dict(v)
+    for k in ("mc", "tv"):
+        if r.get(k) is not None:
+            r[k] = r[k] * 1e6
+    return r
 
 
 def main():
@@ -469,6 +857,7 @@ def main():
     ap.add_argument("--us-dir"); ap.add_argument("--kr-dir")
     ap.add_argument("--no-us-history", action="store_true")
     ap.add_argument("--no-kind", action="store_true")
+    ap.add_argument("--no-fund", action="store_true", help="재무 지표 생략(이전 값 유지)")
     ap.add_argument("--us-limit", type=int, default=0, help="시총 상위 N개만 일봉을 받는다(0=전부)")
     ap.add_argument("--min-rows", type=int, default=0,
                     help="종목 수가 이보다 적으면 저장하지 않고 실패한다(원천 데이터가 깨졌을 때 좋은 파일을 덮지 않도록)")
@@ -507,7 +896,7 @@ def main():
     log(f"  {len(kr)}종목 · 기준일 {kr_asof}")
     if not kr and prev_rows:
         # 한국 쪽을 못 받았으면 이전 행을 그대로 쓴다
-        kr = [dict(v, g="KR") for v in prev_rows.values() if v.get("m") in ("KOSPI", "KOSDAQ", "KONEX")]
+        kr = [dict(from_prev(v), g="KR") for v in prev_rows.values() if v.get("m") in ("KOSPI", "KOSDAQ", "KONEX")]
 
     for r in kr:
         h = kr_hist.get(r["id"])
@@ -548,7 +937,19 @@ def main():
     if not us_asof and prev_meta.get("usAsof"):
         us_asof = prev_meta["usAsof"]
 
-    fx, fx_src = fx_rate(us, kr, prev_meta)
+    fund, fund_n = ({}, {}) if a.no_fund else (log("재무 지표") or fundamentals(us + kr, today, kr_asof))
+    log(f"  재무 확보 {len(fund)}종목 {fund_n}")
+    for r in us + kr:
+        f = fund.get(r["id"])
+        if f is None:
+            f = {k: prev_rows.get(r["id"], {}).get(k) for k in FUND}  # 못 받은 종목은 이전 값
+            if f.get("ern") and f["ern"] < today.isoformat():
+                f["ern"] = None
+        for k in FUND:
+            if f.get(k) is not None and f.get(k) != "":
+                r[k] = f[k]
+
+    fx, fx_src, fx_at = fx_rate(us, kr, prev_meta, today)
     log(f"환율 {fx} ({fx_src})")
     rows = us + kr
     for r in rows:
@@ -567,8 +968,10 @@ def main():
         "built": dt.datetime.now(dt.timezone.utc).strftime("%Y-%m-%dT%H:%MZ"),
         "usAsof": us_asof.isoformat() if isinstance(us_asof, dt.date) else us_asof,
         "krAsof": kr_asof.isoformat() if kr_asof else prev_meta.get("krAsof"),
-        "fx": rnd(fx, 2) if fx else None, "fxSrc": fx_src,
+        "fx": rnd(fx, 2) if fx else None, "fxSrc": fx_src, "fxAt": fx_at,
         "counts": {"US": len(us), "KR": len(kr)},
+        "fundN": len(fund) or prev_meta.get("fundN", 0), "fundSrc": fund_n or prev_meta.get("fundSrc", {}),
+        "fundAt": (dt.date.today().isoformat() if fund else prev_meta.get("fundAt")),
         "cols": COLS,
     }
     os.makedirs(os.path.dirname(a.out), exist_ok=True)

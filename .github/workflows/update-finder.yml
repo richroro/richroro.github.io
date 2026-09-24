@@ -6,6 +6,8 @@ name: 전 종목 데이터 자동 갱신
 # 인증키가 필요 없다. 출처는 finder/README.md 에 있다.
 #   미국 목록·시총·업종  rreichel3/US-Stock-Symbols (GitHub)
 #   미국 1년 일봉        Yahoo Finance (yfinance) — 막히면 이전 지표를 유지
+#   재무 지표 · 미국     Yahoo 일괄 시세 → SEC EDGAR(연락처: 저장소 변수 SEC_CONTACT) — 막히면 이전 값
+#   재무 지표 · 한국     한국거래소 PER/PBR 표 → 네이버 증권 종목 요약 — 막히면 이전 값
 #   한국 1년 일봉·시총   FinanceData/marcap (GitHub, KRX 전종목 시세)
 #   한국 업종·주요제품   KIND 상장법인목록 — 막히면 finder/data/kr_meta.json 캐시
 
@@ -44,6 +46,9 @@ jobs:
       - name: 데이터 만들기
         env:
           US_LIMIT: ${{ inputs.us_limit }}
+          # SEC 는 요청에 연락처 이메일을 요구한다. 저장소 변수 SEC_CONTACT 가 있으면 그것을,
+          # 없으면 실행한 계정의 GitHub no-reply 주소를 쓴다(개인 이메일이 아님).
+          SEC_CONTACT: ${{ vars.SEC_CONTACT || format('{0}+{1}@users.noreply.github.com', github.actor_id, github.actor) }}
         run: |
           set -o pipefail
           args=(--min-rows 5000)
@@ -52,19 +57,29 @@ jobs:
           {
             echo "### 전 종목 데이터"
             echo '```'
-            grep -v '미국 일봉 .*/' "$RUNNER_TEMP/build.log" | tail -n 14
+            grep -v '미국 일봉 .*/\|재무 [0-9]' "$RUNNER_TEMP/build.log" | tail -n 16
             echo '```'
           } >> "$GITHUB_STEP_SUMMARY"
 
+      - name: 종목 페이지 · 사이트맵
+        run: |
+          set -o pipefail
+          python finder/pages.py | tee -a "$GITHUB_STEP_SUMMARY"
+
+      - name: 데이터 검사
+        run: |
+          set -o pipefail
+          python finder/validate.py | tee -a "$GITHUB_STEP_SUMMARY"
+
       - name: 바뀐 게 있으면 커밋
         run: |
-          if [ -z "$(git status --porcelain -- finder/data)" ]; then
+          if [ -z "$(git status --porcelain -- finder/data finder/s finder/sitemap.xml)" ]; then
             echo "변경 없음 — 커밋하지 않습니다." >> "$GITHUB_STEP_SUMMARY"
             exit 0
           fi
           git config user.name  "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add -A finder/data
+          git add -A finder/data finder/s finder/sitemap.xml
           git commit -m "전 종목 데이터 자동 갱신 $(TZ=Asia/Seoul date '+%Y-%m-%d %H:%M KST')"
           pushed=0
           for i in 1 2 3 4; do
