@@ -266,8 +266,9 @@ class Sources(unittest.TestCase):
         orig = build._naver_get
         build._naver_get = fake
         try:
-            rows = [{"g": "US", "id": "AAA", "m": "NASDAQ", "mcu": 100}, {"g": "US", "id": "BBB", "m": "NYSE", "mcu": 90},
-                    {"g": "US", "id": "CCC", "m": "AMEX", "mcu": 1}]
+            # 파이프라인 중간의 행에는 mcu(달러 시총)가 아직 없다 — mc 만 있다
+            rows = [{"g": "US", "id": "AAA", "m": "NASDAQ", "mc": 100e9}, {"g": "US", "id": "BBB", "m": "NYSE", "mc": 90e9},
+                    {"g": "US", "id": "CCC", "m": "AMEX", "mc": 1e9}]
             out = build.naver_us_fund(rows, workers=1)
         finally:
             build._naver_get = orig
@@ -344,6 +345,24 @@ class Sources(unittest.TestCase):
         self.assertEqual(build.parse_nasdaq_summary({"data": None}, 1.0)["pe"], None)
         self.assertAlmostEqual(build._num("-$1,234.5"), -1234.5)
         self.assertAlmostEqual(build._num("($0.45)"), -0.45)
+
+    def test_nasdaq_fund_uses_raw_market_cap(self):
+        def fake(url):
+            sym = url.split("/quote/")[1].split("/")[0]
+            return {"data": {"summaryData": {"PERatio": {"value": {"AAPL": 30, "XOM": 12}.get(sym, 20)}}}}
+
+        orig = build.nasdaq_json
+        build.nasdaq_json = fake
+        try:
+            rows = [{"g": "US", "id": "XOM", "m": "NYSE", "mc": 500e9, "p": 110.0},
+                    {"g": "US", "id": "TINY", "m": "NASDAQ", "mc": 1e6, "p": 1.0},
+                    {"g": "KR", "id": "005930", "m": "KOSPI", "mc": 1e15}]
+            out = build.nasdaq_fund(rows, limit=1, workers=1)
+        finally:
+            build.nasdaq_json = orig
+        self.assertEqual(list(out), ["XOM"])  # 시총 상위 limit 곳만, 한국 제외
+        self.assertEqual(out["XOM"]["pe"], 12.0)
+        self.assertEqual(out["XOM"]["fs"], "Q")
 
     def test_nasdaq_earnings(self):
         seen = []

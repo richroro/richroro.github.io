@@ -702,7 +702,7 @@ def _naver_get(url: str):
 
 def naver_us_fund(rows: list[dict], limit: int = 3000, workers: int = 6) -> dict[str, dict]:
     from concurrent.futures import ThreadPoolExecutor
-    us = sorted([r for r in rows if r["g"] == "US" and r.get("mcu")], key=lambda r: -r["mcu"])[:limit]
+    us = sorted([r for r in rows if r["g"] == "US" and r.get("mc")], key=lambda r: -r["mc"])[:limit]  # mcu 는 출력 때 생긴다
     # 형식 확인에는 점이 없는 티커를 쓴다(BRK.B 같은 건 따로 표기법이 있을 수 있다)
     by_m = {m: next((r for r in us if r["m"] == m and "." not in r["id"]), None) for m in NAVER_RIC}
     plan: dict[str, tuple[str, str]] = {}  # 거래소 → (주소 형식, 접미사)
@@ -783,7 +783,7 @@ def parse_nasdaq_summary(j: dict, price: float | None) -> dict:
 def nasdaq_fund(rows: list[dict], limit: int = 3000, workers: int = 6) -> dict[str, dict]:
     """종목마다 나스닥 요약(PER·선행 PER·EPS·배당수익률·1년 목표가). 시총 상위 limit 곳만."""
     from concurrent.futures import ThreadPoolExecutor
-    us = sorted([r for r in rows if r["g"] == "US" and r.get("mcu")], key=lambda r: -r["mcu"])[:limit]
+    us = sorted([r for r in rows if r["g"] == "US" and r.get("mc")], key=lambda r: -r["mc"])[:limit]  # mcu 는 출력 때 생긴다
     url = "https://api.nasdaq.com/api/quote/{sym}/summary?assetclass=stocks"
     try:
         probe = parse_nasdaq_summary(nasdaq_json(url.format(sym="AAPL")), None)
@@ -875,18 +875,17 @@ INDICES = [("^KS11", "코스피", "KR"), ("^KQ11", "코스닥", "KR"), ("^GSPC",
 
 
 def index_history() -> dict[str, dict]:
+    """지수마다 따로 받는다 — 한국·미국 지수를 한 번에 받으면 시간대가 합쳐지며 한국 날짜가 하루 밀릴 수 있다."""
     try:
         import yfinance as yf
-        df = yf.download([s for s, _, _ in INDICES], period="14mo", interval="1d", auto_adjust=True,
-                         group_by="ticker", threads=True, progress=False)
-    except Exception as e:
-        log(f"  지수 실패: {str(e)[:100]}")
+    except ImportError:
         return {}
     out = {}
     for sym, _, _ in INDICES:
         try:
-            sub = df[sym].dropna(subset=["Close"])
-        except Exception:
+            sub = yf.Ticker(sym).history(period="14mo", interval="1d", auto_adjust=True).dropna(subset=["Close"])
+        except Exception as e:
+            log(f"  지수 {sym} 실패: {str(e)[:80]}")
             continue
         if len(sub) > 20:
             c = sub["Close"].to_numpy(dtype=float)
