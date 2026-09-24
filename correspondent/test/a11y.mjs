@@ -8,7 +8,10 @@ const AXE = readFileSync(require.resolve('axe-core/axe.min.js'), 'utf8');
 const TAGS = ['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa', 'best-practice'];
 
 async function axe(p, where) {
-  await p.addScriptTag({ content: AXE });
+  /* 앱은 CSP 로 인라인 스크립트를 막는다(script-src 'self'). addScriptTag 는 인라인 <script> 를 꽂아서
+     막히고, evaluate 는 개발자 도구 쪽 길이라 CSP 를 거치지 않는다. axe 가 글꼴 CSS 를 읽으려다
+     connect-src 에 막히는 건 axe 사정이다 — 앱은 그 CSS 를 <link> 로 받고, 그건 허용돼 있다. */
+  await p.evaluate(AXE);
   const v = await p.evaluate(async (tags) => (await window.axe.run(document, { runOnly: { type: 'tag', values: tags } }))
     .violations.map((x) => x.id + '(' + x.nodes.length + '): ' + x.nodes[0].target.join(' ')), TAGS);
   ok(v.length === 0, where + (v.length ? ' — ' + v.join(' | ') : ''));

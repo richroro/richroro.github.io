@@ -56,6 +56,14 @@ cpSync(APP_DIR, join(web, 'correspondent'), { recursive: true,
   filter: (src) => !/node_modules|[\\/]server[\\/]|[\\/]test[\\/]|[\\/]tools[\\/]/.test(src) });
 writeFileSync(join(web, 'correspondent', 'config.js'),
   `window.TPW_CONFIG = { url: "${API}", anonKey: "test-anon-key", hood: "" };\n`);
+/* 앱의 CSP 는 Supabase(https://*.supabase.co)에만 연결을 허락한다. 사본에만 모의 서버 주소를 더한다 —
+   운영에서 다른 주소(자체 도메인)를 쓰면 똑같이 connect-src 에 더해야 한다(SETUP.md). */
+for (const f of ['index.html']) {
+  const file = join(web, 'correspondent', f);
+  const html = readFileSync(file, 'utf8');
+  if (!html.includes('https://*.supabase.co')) { console.error(f + ' 에 CSP connect-src 가 없습니다'); process.exit(1); }
+  writeFileSync(file, html.replace('https://*.supabase.co', 'https://*.supabase.co ' + API));
+}
 
 kids.push(spawn(process.execPath, [resolve(HERE, 'test-mock-rest.mjs')],
   { env: { ...process.env, PGDATABASE: DB, MOCK_PORT: String(MOCK_PORT) }, stdio: 'ignore' }));

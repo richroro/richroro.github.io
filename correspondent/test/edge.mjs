@@ -1,4 +1,4 @@
-/* 가장자리 — 엇갈림, 동네 표기, 지금 갈 만한 곳, 묶음 길이 제한, 정리, 375px, 어두운 테마, 이상한 값, 늦게 만들어지는 공유 글 */
+/* 가장자리 — 엇갈림, 동네 표기, 지금 갈 만한 곳, 묶음 길이 제한, 정리, 375px, 어두운 테마, 이상한 값, 늦게 만들어지는 공유 글, CSP */
 import { BASE, ok, launch, watch, finish, shareReady, bundleReady } from './lib.mjs';
 
 const URL = BASE;
@@ -245,6 +245,37 @@ console.log('\n== I. 공유 창 — 압축이 늦게 끝날 때 ==');
   ok(box.includes('뒤 장소') && !box.includes('앞 장소'), '늦게 끝난 앞 장소 글이 지금 열린 창을 덮지 않는다');
   await p.locator('#shareCopy').click();
   ok((await lastCopy()).includes('뒤 장소'), '  └ 복사도 지금 열린 창의 글');
+  await p.context().close();
+}
+
+console.log('\n== J. CSP — 새어 들어온 스크립트는 안 돈다 ==');
+{
+  /* 여기서는 일부러 CSP 위반을 일으킨다 — 콘솔 오류를 모으는 watch() 없이 연다 */
+  const ctx = await browser.newContext({ locale: 'ko-KR', timezoneId: 'Asia/Seoul' });
+  const p = await ctx.newPage();
+  const refused = [];
+  p.on('console', (m) => { if (m.type() === 'error' && /Content Security Policy/.test(m.text())) refused.push(m.text()); });
+  await p.goto(URL, { waitUntil: 'networkidle' });
+  const csp = await p.evaluate(() => (document.querySelector('meta[http-equiv="Content-Security-Policy"]') || {}).content || '');
+  ok(/(^|;)\s*script-src 'self'\s*(;|$)/.test(csp), "앱: script-src 'self' 하나뿐 (인라인·eval 없음)");
+  ok(/object-src 'none'/.test(csp) && /base-uri 'none'/.test(csp), '  └ object·base 막음');
+  /* 이스케이프가 한 번 새도 — 속성 처리기와 인라인 스크립트는 돌지 않는다 */
+  await p.evaluate(() => {
+    const d = document.createElement('div');
+    d.innerHTML = '<img src="data:," onerror="window.__pwn = 1">';
+    document.body.appendChild(d);
+    const s = document.createElement('script');
+    s.textContent = 'window.__pwn2 = 1';
+    document.body.appendChild(s);
+  });
+  await p.waitForTimeout(200);
+  ok(await p.evaluate(() => window.__pwn === undefined), '끼워 넣은 onerror 처리기가 안 돈다');
+  ok(await p.evaluate(() => window.__pwn2 === undefined), '끼워 넣은 <script> 가 안 돈다');
+  ok(await p.evaluate(() => typeof renderAll === 'function'), '  └ 앱 자체(app.js)는 돈다');
+  ok(refused.length === 2, '  └ 브라우저가 둘 다 CSP 위반으로 막았다고 알린다 (' + refused.length + '건)');
+  await p.goto(URL + 'privacy.html', { waitUntil: 'networkidle' });
+  const pcsp = await p.evaluate(() => (document.querySelector('meta[http-equiv="Content-Security-Policy"]') || {}).content || '');
+  ok(/script-src 'none'/.test(pcsp), "처리방침: 스크립트가 없는 문서라 script-src 'none'");
   await p.context().close();
 }
 
