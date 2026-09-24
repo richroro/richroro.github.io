@@ -60,7 +60,8 @@ def check(path: str, min_rows: int = 5000, stale_days: int = 5, today: dt.date |
         hist = sum(1 for v in rs if v[ix["nd"]]) / len(rs)
         if hist < 0.8:
             warns.append(f"{g} 일봉 보유 비율 {hist:.0%}")
-        fund = sum(1 for v in rs if v[ix["pe"]] is not None or v[ix["pb"]] is not None) / len(rs)
+        fk = [ix[k] for k in ("pe", "pb", "dy", "tgt") if k in ix]
+        fund = sum(1 for v in rs if any(v[i] is not None for i in fk)) / len(rs)
         if fund < 0.3:
             warns.append(f"{g} 재무 지표 보유 비율 {fund:.0%}")
     today = today or dt.date.today()

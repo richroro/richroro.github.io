@@ -400,7 +400,7 @@ const PRESETS = [
   { id: "value", t: "저PER·고ROE", sort: ["pe", 1], view: "value", f: (r) => r.pe >= 3 && r.pe < 12 && r.roe >= 12 && r.roe <= 60 && (r.mcu || 0) >= 300 && !r.warn },
   { id: "div", t: "고배당 4%+", sort: ["dy", -1], view: "value", f: (r) => r.dy != null && r.dy >= 4 && r.dy <= 15 && (r.mcu || 0) >= 300 && !r.warn },
   { id: "earn", t: "2주 안 실적 발표", sort: ["ern", 1], view: "value", f: (r) => soon(r, 14) },
-  { id: "upside", t: "목표가 여력 30%+", sort: ["tu", -1], view: "value", f: (r) => r.tu != null && r.tu >= 30 && r.tu < 300 && (r.mcu || 0) >= 2000 },
+  { id: "upside", t: "목표가 여력 30%+", sort: ["tu", -1], view: "value", f: (r) => r.tu != null && r.tu >= 30 && r.tu < 300 && (r.mcu || 0) >= 10000 },
   { id: "lowbeta", t: "저베타 대형주", sort: ["beta", 1], view: "tech", f: (r) => r.beta != null && r.beta < 0.7 && (r.mcu || 0) >= 10000 },
   { id: "buy", t: "애널리스트 매수", sort: ["ar", 1], view: "value", f: (r) => r.ar != null && r.ar <= 2 && (r.mcu || 0) >= 2000 },
   { id: "gc", t: "골든크로스", sort: ["mcu", -1], view: "tech", f: (r) => r.x === "G" },
@@ -1203,7 +1203,7 @@ function renderMap() {
     const v = t.r[k], fs = Math.max(9, Math.min(22, Math.sqrt(t.w * t.h) / 6));
     const showName = t.w > 42 && t.h > 24, showPct = t.h > fs * 2.6 && t.w > 38;
     const label = t.r.g === "KR" ? t.r.name : (t.w > 90 ? t.r.name : t.r.id);
-    const maxChars = Math.floor(t.w / (fs * (t.r.g === "KR" ? 1 : 0.62)));
+    const maxChars = Math.floor(t.w / (fs * (/[가-힣]/.test(label) ? 1 : 0.62)));  // 한글은 영문보다 넓다
     return `<g data-id="${esc(t.r.id)}"><rect class="tile" x="${t.x.toFixed(1)}" y="${t.y.toFixed(1)}" width="${Math.max(0, t.w).toFixed(1)}" height="${Math.max(0, t.h).toFixed(1)}" style="fill:${heat(v, span)}"><title>${esc(t.r.name)} ${pct(v, k === "d1" ? 2 : 1)} · ${cap(t.r)}</title></rect>
       ${showName ? `<text x="${(t.x + t.w / 2).toFixed(1)}" y="${(t.y + t.h / 2 - (showPct ? fs * 0.35 : -fs * 0.35)).toFixed(1)}" text-anchor="middle" font-size="${fs.toFixed(1)}" font-weight="600">${esc(label.length > maxChars ? label.slice(0, Math.max(1, maxChars - 1)) + "…" : label)}</text>` : ""}
       ${showPct ? `<text class="p" x="${(t.x + t.w / 2).toFixed(1)}" y="${(t.y + t.h / 2 + fs * 0.95).toFixed(1)}" text-anchor="middle" font-size="${(fs * 0.8).toFixed(1)}">${pct(v, k === "d1" ? 2 : 1)}</text>` : ""}</g>`;

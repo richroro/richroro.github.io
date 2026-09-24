@@ -768,16 +768,34 @@ def _num(v):
 
 
 def parse_nasdaq_summary(j: dict, price: float | None) -> dict:
+    """나스닥 종목 요약. 키 이름이 바뀌어도 되도록 키와 라벨('P/E Ratio', 'Forward P/E 1 Yr.', 'Earnings Per Share(EPS)',
+    '1 Year Target', 'Current Yield', 'Annualized Dividend')을 함께 본다."""
     sd = ((j or {}).get("data") or {}).get("summaryData") or {}
-    val = lambda k: (sd.get(k) or {}).get("value")
-    f = {"pe": _ok(_num(val("PERatio")), 0, 3000), "fpe": _ok(_num(val("ForwardPE1Yr")), 0, 3000),
-         "eps": _num(val("EarningsPerShare")), "tgt": _ok(_num(val("OneYrTarget")), 0, 1e7)}
-    dy = _num(val("Yield"))
+    items = [(str(k).lower(), str((v or {}).get("label", "")).lower(), (v or {}).get("value")) for k, v in sd.items()
+             if isinstance(v, dict)]
+
+    def find(*tests):
+        for k, lab, val in items:
+            t = k + " | " + lab
+            if all((x in t) if not x.startswith("!") else (x[1:] not in t) for x in tests):
+                return val
+        return None
+
+    f = {"pe": _ok(_num(find("p/e", "!forward") or find("peratio")), 0, 3000),
+         "fpe": _ok(_num(find("forward", "p")), 0, 3000),
+         "eps": _num(find("earnings per share") or find("earningspershare") or find("eps", "!forward")),
+         "tgt": _ok(_num(find("target")), 0, 1e7)}
+    dy = _num(find("yield"))
     if dy is None:
-        ann = _num(val("AnnualizedDividend"))
+        ann = _num(find("annualized dividend") or find("dividend", "!date"))
         dy = ann / price * 100 if ann is not None and price else None
     f["dy"] = _ok(dy, -0.001, 25)
     return f
+
+
+def nasdaq_fields(j: dict) -> str:
+    sd = ((j or {}).get("data") or {}).get("summaryData") or {}
+    return ", ".join(f"{k}={str((v or {}).get('value'))[:14]}" for k, v in sd.items() if isinstance(v, dict))[:600]
 
 
 def nasdaq_fund(rows: list[dict], limit: int = 3000, workers: int = 6) -> dict[str, dict]:
@@ -786,7 +804,10 @@ def nasdaq_fund(rows: list[dict], limit: int = 3000, workers: int = 6) -> dict[s
     us = sorted([r for r in rows if r["g"] == "US" and r.get("mc")], key=lambda r: -r["mc"])[:limit]  # mcu 는 출력 때 생긴다
     url = "https://api.nasdaq.com/api/quote/{sym}/summary?assetclass=stocks"
     try:
-        probe = parse_nasdaq_summary(nasdaq_json(url.format(sym="AAPL")), None)
+        pj = nasdaq_json(url.format(sym="AAPL"))
+        log(f"  나스닥 요약 항목(AAPL): {nasdaq_fields(pj)}")  # 형식이 바뀌면 여기서 바로 보인다
+        probe = parse_nasdaq_summary(pj, None)
+        log(f"  나스닥 요약 해석(AAPL): {probe}")
     except Exception as e:
         log(f"  나스닥 요약: 확인 실패({str(e)[:100]}) — 건너뜀")
         return {}

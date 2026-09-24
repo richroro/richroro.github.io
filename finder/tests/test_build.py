@@ -343,6 +343,16 @@ class Sources(unittest.TestCase):
         self.assertIsNone(f["pe"])
         self.assertAlmostEqual(f["dy"], 0.5)  # 연간 배당 ÷ 주가
         self.assertEqual(build.parse_nasdaq_summary({"data": None}, 1.0)["pe"], None)
+        # 키 이름이 달라도 라벨로 찾는다
+        j2 = {"data": {"summaryData": {"PeRatioTTM": {"label": "P/E Ratio", "value": "41.2"},
+                                       "FwdPE": {"label": "Forward P/E 1 Yr.", "value": "35.0"},
+                                       "Eps": {"label": "Earnings Per Share(EPS)", "value": "$5.47"},
+                                       "Tgt": {"label": "1 Year Target", "value": "$315.00"},
+                                       "ExDividendDate": {"label": "Ex Dividend Date", "value": "Sep 5, 2026"}}}}
+        f = build.parse_nasdaq_summary(j2, 225.0)
+        self.assertEqual((f["pe"], f["fpe"], f["eps"], f["tgt"]), (41.2, 35.0, 5.47, 315.0))
+        self.assertIsNone(f["dy"])  # 배당 기준일은 배당금이 아니다
+        self.assertIn("PeRatioTTM=41.2", build.nasdaq_fields(j2))
         self.assertAlmostEqual(build._num("-$1,234.5"), -1234.5)
         self.assertAlmostEqual(build._num("($0.45)"), -0.45)
 
