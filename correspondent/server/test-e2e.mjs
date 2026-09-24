@@ -133,6 +133,8 @@ console.log('\n== 1. 로그인 전 ==');
   await p.locator('#ageOk').check();
   ok(await p.locator('#inKakao').isEnabled(), '확인하면 켜진다');
   ok(await p.locator('#authBox a[href="privacy.html"]').count() === 1, '처리방침 링크가 옆에 있다');
+  ok(await p.locator('#authBox a[href="terms.html"]').count() === 1 && (await p.locator('#authBox .agree').innerText()).includes('이용약관에 동의'),
+     '  └ 이용약관 동의도 같은 확인란에 (로그인이 곧 이용 계약)');
   await c.close();
 }
 

@@ -1044,6 +1044,7 @@ function paintAuthBox(){
        동의를 받는 절차를 두지 않았으므로 14세 미만은 로그인하지 않게 한다. */
     box.innerHTML =
       '<label class="agree"><input type="checkbox" id="ageOk"> <span>만 14세 이상이며, ' +
+        '<a href="terms.html" target="_blank" rel="noopener">이용약관</a>에 동의하고 ' +
         '<a href="privacy.html" target="_blank" rel="noopener">개인정보처리방침</a>을 확인했습니다.</span></label>' +
       '<div class="row"><button class="btn sm primary" id="inKakao" type="button" disabled>카카오로 로그인</button></div>' +
       '<div class="row"><input class="input grow" id="inEmail" type="email" placeholder="메일 주소 (시험용)" autocomplete="email">' +

@@ -15,7 +15,7 @@ const ROOT = resolve(HERE, '..', '..');
 const PORT = Number(process.env.PORT || 8199);
 const APP_URL = `http://127.0.0.1:${PORT}/correspondent/`;
 
-const BROWSER = ['feed', 'edge', 'rereport', 'insight', 'pwa', 'privacy', 'a11y'];
+const BROWSER = ['feed', 'edge', 'rereport', 'insight', 'pwa', 'privacy', 'terms', 'a11y'];
 const SERVER = ['test-sql', 'test-e2e'];
 
 function run(file, env) {

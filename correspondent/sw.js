@@ -14,7 +14,7 @@
    ========================================================================== */
 const CACHE = "tpw-v2";
 const SCOPE = new URL("./", self.location).pathname;          // /correspondent/
-const SHELL = ["./", "app.js", "sync.js", "config.js", "privacy.html", "manifest.webmanifest", "icons/icon-192.png"];
+const SHELL = ["./", "app.js", "sync.js", "config.js", "privacy.html", "terms.html", "manifest.webmanifest", "icons/icon-192.png"];
 const WAIT_MS = 3000;
 
 self.addEventListener("install", (e) => {
