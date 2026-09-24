@@ -15,6 +15,8 @@ const $ = (s, el) => (el || document).querySelector(s);
 const $$ = (s, el) => Array.prototype.slice.call((el || document).querySelectorAll(s));
 const esc = (s) => String(s == null ? "" : s).replace(/[&<>"']/g, (c) =>
   ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+/** 이름 뒤에 붙일 " 특파원". 이름을 안 정한 사람("이름 없는 특파원")에게는 한 번 더 붙이지 않는다 — 앱의 byline 과 같다. */
+const suffix = (name) => /특파원$/.test(name || "") ? "" : " 특파원";
 
 /* 앱(app.js)의 표와 같은 값. 운영자는 앱이 보여 주는 말로 읽어야 한다. */
 const CAT = { play: "놀이공간", food: "맛집", cafe: "카페", trip: "나들이", etc: "그 밖에" };
@@ -134,7 +136,7 @@ function itemHtml(r){
     '<h2 class="place" id="pl-' + id + '">' + esc(r.place) + (r.area ? "<small>" + esc(r.area) + "</small>" : "") + "</h2>" +
     chipsHtml(r) +
     (r.note ? '<p class="note-line">' + esc(r.note) + "</p>" : "") +
-    '<div class="author">— <b>' + esc(r.by_name) + "</b> 특파원" +
+    '<div class="author">— <b>' + esc(r.by_name) + "</b>" + suffix(r.by_name) +
       (r.author_reports != null ? " · 글 " + r.author_reports + " · 가려진 글 " + r.author_hidden : "") +
       (banned ? ' · <span class="warn">정지 ' + esc(day(r.author_banned_until)) + "까지</span>" : "") +
       ' <button class="link-btn" type="button" data-user="' + esc(r.author) + '">작성자 보기</button></div>' +
@@ -314,7 +316,7 @@ async function openUser(uid){
   try { u = await SY.rpc("admin_user", { p_user: uid }); }
   catch (e) { toast("불러오지 못했습니다: " + e.message); return; }
   userOpen = uid;
-  $("#userTitle").textContent = u.name + " 특파원";
+  $("#userTitle").textContent = u.name + suffix(u.name);
   const banned = u.banned_until && new Date(u.banned_until) > new Date();
   $("#userBody").innerHTML =
     '<dl class="kv">' +

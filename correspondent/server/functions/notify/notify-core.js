@@ -9,13 +9,16 @@ const WAIT = { 0: "대기 없음", 10: "대기 10분", 30: "대기 30분", 60: "
 const CROWD = { 0: "한산", 1: "보통", 2: "붐빔", 3: "터짐" };
 const PARK = { 0: "주차 넉넉", 1: "주차 보통", 2: "주차 만석", 3: "주차 불가" };
 
+/** "준호" → "준호 특파원". 이름을 안 정한 사람("이름 없는 특파원")에게는 한 번 더 붙이지 않는다 — 앱의 byline 과 같다. */
+const byline = (name) => /특파원$/.test(name) ? name : name + " 특파원";
+
 /** 잠금 화면에 뜰 알림. 제목은 장소, 본문은 현장 정보 한 줄과 누가. 같은 장소 알림은 tag 로 하나로 덮는다. */
 export function payloadFor(r){
   const s = [WAIT[r.wait], CROWD[r.crowd], PARK[r.park]].filter(Boolean);
   const what = s.length ? s.join(" · ") : (r.note ? String(r.note).slice(0, 60) : "새 리포트");
   return {
     title: r.place,
-    body: what + " — " + r.by_name + " 특파원",
+    body: what + " — " + byline(String(r.by_name || "")),
     tag: "tpw-" + r.place_key,
     url: "./?place=" + encodeURIComponent(r.place_key)
   };

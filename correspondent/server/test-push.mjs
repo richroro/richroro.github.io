@@ -17,7 +17,7 @@ import { readFileSync } from 'node:fs';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { b64d, b64e, ecdhKeys, encrypt, decrypt, vapidAuth, sendPush } from './functions/notify/webpush.js';
-import { handleReport } from './functions/notify/notify-core.js';
+import { handleReport, payloadFor } from './functions/notify/notify-core.js';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const { subtle } = globalThis.crypto;
@@ -108,6 +108,14 @@ const opened = async (g, sub) => JSON.parse(td.decode(await decrypt(g.body, sub.
   status.set('/gone', 410);
   const r2 = await sendPush(await newSub('gone'), { title: 'x' }, VAPID, { fetch: viaMock });
   ok(r2.gone && !r2.ok, '410 이면 끝난 구독 (지워야 한다)');
+}
+
+section('알림 문구');
+{
+  const base = { place: '별빛 키즈카페', place_key: '별빛키즈카페', wait: -1, crowd: 0, park: -1, note: '' };
+  ok(payloadFor({ ...base, by_name: '준호' }).body === '한산 — 준호 특파원', '"한산 — 준호 특파원"');
+  ok(payloadFor({ ...base, by_name: '이름 없는 특파원' }).body === '한산 — 이름 없는 특파원',
+     '이름을 안 정한 사람은 "— 이름 없는 특파원" ("특파원 특파원"이 아니라)');
 }
 
 /* ─────────────────────────── 4. 서버 ─────────────────────────── */

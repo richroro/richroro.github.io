@@ -12,7 +12,7 @@
 | `seed-hoods.sql` | 동네. 한 번에 전국을 열지 않는다 |
 | `retention.sql` | 1년 지난 리포트와 처리 기록을 매일 지운다(pg_cron). 처리방침 4조가 이걸 약속한다 |
 | `test-sql.mjs` | 서버 규칙 공격 99가지 — 판정형, 임시 DB 에서만 돈다 |
-| `test-push.mjs` | 폰 알림 43가지 — RFC 8291 예제와 한 바이트까지, VAPID 검증, 받을 기기, 끝난 구독, `index.ts` 를 가짜 Deno 로 |
+| `test-push.mjs` | 폰 알림 45가지 — RFC 8291 예제와 한 바이트까지, VAPID 검증, 받을 기기, 끝난 구독, `index.ts` 를 가짜 Deno 로 |
 | `test-e2e.mjs` | 브라우저 → fetch → 모의 PostgREST → 진짜 RLS, 107가지 (운영 화면·받아오기·폰 알림 켜기 포함) |
 | `test-mock-rest.mjs` | PostgREST 흉내. 앱이 보낸 값을 **그대로** 넣고, 서버 함수는 이름 붙은 인자로 부른다 |
 | `test-auth-stub.sql` | 로컬 검증용. Supabase 에 있는 `auth.users`·`auth.uid()`·역할을 흉내 낸다 |

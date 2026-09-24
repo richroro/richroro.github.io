@@ -72,6 +72,8 @@ const newId = () => Math.random().toString(36).slice(2, 10);
 function clip(s, n){
   return String(s == null ? "" : s).replace(/[\u0000-\u001F\u007F]/g, " ").replace(/\s+/g, " ").trim().slice(0, n);
 }
+/** "민지" → "민지 특파원". 이름을 안 정한 사람("이름 없는 특파원")처럼 이미 특파원으로 끝나면 한 번 더 붙이지 않는다. */
+const byline = (name) => /특파원$/.test(name) ? name : name + " 특파원";
 /** 장소 묶음 열쇠 — 공백과 대소문자를 무시한다. */
 const norm = (s) => String(s == null ? "" : s).replace(/\s+/g, "").toLowerCase();
 /** "안양 안양동" 도 "안양동" 도 같은 동네로 본다 — 마지막 토막만 본다. */
@@ -285,7 +287,7 @@ function cardHtml(r, o){
     '<div class="card-bot">' +
       starsHtml(r.rate) +
       (r.tags.length ? '<span class="tags">' + r.tags.map((t) => "#" + esc(t)).join(" ") + "</span>" : "") +
-      '<span class="by">— ' + esc(r.by) + " 특파원</span>" +
+      '<span class="by">— ' + esc(byline(r.by)) + "</span>" +
       '<span class="spacer"></span>' +
       (sample ? "" : '<button class="link-btn" type="button" data-again="' + esc(r.id) + '" title="같은 장소의 지금 상황을 알립니다">나도 여기</button>') +
       (sample ? "" : '<button class="link-btn" type="button" data-share="' + esc(r.id) + '">공유</button>') +
@@ -554,7 +556,7 @@ function shareText(list, code){
     if (r.rate) tail.push("★".repeat(r.rate));
     if (r.tags.length) tail.push(r.tags.map((t) => "#" + t).join(" "));
     if (tail.length) lines.push(tail.join("  "));
-    lines.push("— " + r.by + " 특파원");
+    lines.push("— " + byline(r.by));
     lines.push("받기 → " + url);
     return lines.join("\n");
   }
@@ -625,7 +627,7 @@ function renderPick(){
       return "<li>" +
         '<span class="rank">' + (i + 1) + "</span>" +
         '<button class="nm" type="button" data-open="' + esc(x.r.id) + '">' + esc(x.g.place) + "</button>" +
-        '<span class="why">' + esc(ago(x.r.t)) + (chips ? " · " + esc(chips) : "") + " · " + esc(x.r.by) + " 특파원" +
+        '<span class="why">' + esc(ago(x.r.t)) + (chips ? " · " + esc(chips) : "") + " · " + esc(byline(x.r.by)) +
           (x.g.confirm ? " · " + x.g.confirm.n + "명 확인" : "") +
           (x.g.conflicts.length ? " · 엇갈림 있음" : "") + "</span>" +   // 추천하면서 다른 말이 있다는 걸 감추지 않는다
       "</li>";
@@ -985,7 +987,12 @@ function paintMe(){
   const named = !!board.me && !meEditing;
   $("#meSet").hidden = !named;
   $("#meForm").hidden = named;
-  if (named) { $("#meName").textContent = board.me; $("#meAv").textContent = board.me.slice(0, 2); }
+  if (named) {
+    $("#meName").textContent = board.me;
+    const suf = $("#meSuffix");   // 옛 index.html 사본과 섞여 떠도 멈추지 않게
+    if (suf) suf.hidden = byline(board.me) === board.me;   // "이름 없는 특파원 특파원으로" 가 되지 않게
+    $("#meAv").textContent = board.me.slice(0, 2);
+  }
   $("#meLbl").textContent = board.me || "이름";
   $("#meBtn").title = board.me ? "특파원: " + board.me : "특파원 이름 정하기";
 }
@@ -1316,7 +1323,7 @@ let flagTarget = null;
 
 function openFlagSheet(r){
   flagTarget = r;
-  $("#flagWhat").innerHTML = "“" + esc(r.place) + "” · " + esc(r.by) + " 특파원 · " + esc(ago(r.t));
+  $("#flagWhat").innerHTML = "“" + esc(r.place) + "” · " + esc(byline(r.by)) + " · " + esc(ago(r.t));
   $("#flagStatus").textContent = ""; $("#flagStatus").className = "status";
   $("#flagReasons").innerHTML = FLAG_REASONS.map((x) =>
     '<button class="chip" type="button" data-reason="' + esc(x) + '">' + esc(x) + "</button>").join("");
@@ -1420,7 +1427,7 @@ function paintRef(){
   box.hidden = !composeRef;
   if (!composeRef) return;
   const r = composeRef, chips = statChips(r);
-  $("#fRefWho").textContent = r.by + " 특파원 · " + ago(r.t);
+  $("#fRefWho").textContent = byline(r.by) + " · " + ago(r.t);
   $("#fRefStats").innerHTML = chips.length
     ? chips.map((c) => '<span class="stat ' + c.tone + '">' + esc(c.s) + "</span>").join("")
     : '<span class="note">현장 정보 없이 메모만 남긴 리포트입니다.</span>';
@@ -1489,7 +1496,7 @@ function fillPlaceSheet(g){
       (u ? usualHintHtml(u) : "") +
       (g.confirm ? confirmHtml(g.confirm) : "") +
       (g.conflicts.length ? g.conflicts.map((c) => '<div class="conflict">엇갈립니다 · ' + esc(c) + "</div>").join("") : "") +
-      (g.people.length > 1 ? '<div class="note">' + esc(g.people.join(", ")) + " 특파원이 다녀갔습니다.</div>" : "") +
+      (g.people.length > 1 ? '<div class="note">' + esc(byline(g.people.join(", "))) + "이 다녀갔습니다.</div>" : "") +
     "</div>" +
     usualTableHtml(g) +
     '<div class="panel-t">들어온 순서대로</div>' +
@@ -1725,7 +1732,7 @@ function bind(){
       ensureProfile();
     }
     renderPeople();
-    toast(board.me ? board.me + " 특파원으로 저장했습니다." : "이름을 비웠습니다.");
+    toast(board.me ? byline(board.me) + "으로 저장했습니다." : "이름을 비웠습니다.");
   });
   $("#meInput").addEventListener("keydown", (e) => { if (e.key === "Enter") { e.preventDefault(); $("#meSave").click(); } });
 

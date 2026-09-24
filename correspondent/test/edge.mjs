@@ -1,4 +1,4 @@
-/* 가장자리 — 엇갈림, 동네 표기, 지금 갈 만한 곳, 묶음 길이 제한, 정리, 375px, 어두운 테마, 이상한 값, 늦게 만들어지는 공유 글, CSP */
+/* 가장자리 — 엇갈림, 동네 표기, 지금 갈 만한 곳, 묶음 길이 제한, 정리, 375px, 어두운 테마, 이상한 값, 늦게 만들어지는 공유 글, CSP, 이름 없는 특파원 */
 import { BASE, ok, launch, watch, finish, shareReady, bundleReady } from './lib.mjs';
 
 const URL = BASE;
@@ -281,6 +281,57 @@ console.log('\n== J. CSP — 새어 들어온 스크립트는 안 돈다 ==');
     (document.querySelector('meta[name="robots"]') || {}).content || '']);
   ok(/(^|;)\s*script-src 'self'\s*(;|$)/.test(acsp[0]) && /noindex/.test(acsp[1]), "운영 화면: script-src 'self', 검색엔진에 안 올림(noindex)");
   await p.context().close();
+}
+
+console.log('\n== K. 이름 없는 특파원 — "특파원"을 두 번 붙이지 않는다 ==');
+{
+  /* 이름을 안 정하고 쓰면 이름이 "이름 없는 특파원"이 된다. 이름 뒤에 " 특파원"을 붙이는 자리마다
+     "이름 없는 특파원 특파원"이 되던 것 — 공유 글, 카드, 지금 갈 만한 곳, 장소 창, 나도 여기, 신고 창, 내 이름 칸. */
+  const ctx = await browser.newContext({ locale: 'ko-KR', timezoneId: 'Asia/Seoul' });
+  const p = watch(await ctx.newPage());
+  await p.goto(URL, { waitUntil: 'networkidle' });
+  await p.locator('#writeBtn').click();
+  await p.waitForSelector('#composeBack.open');
+  await p.fill('#fPlace', '이름 없이 쓴 곳');
+  await p.locator('#fCrowd [data-v="0"]').click();
+  await p.locator('#composeGo').click();
+  const share = await shareReady(p);
+  ok(share.split('\n').includes('— 이름 없는 특파원'), '공유 글: "— 이름 없는 특파원"');
+  await p.keyboard.press('Escape');
+  ok((await p.locator('#feed .card .by').first().innerText()) === '— 이름 없는 특파원', '카드: "— 이름 없는 특파원"');
+  ok((await p.locator('#pick .why').first().innerText()).endsWith('· 이름 없는 특파원'), '지금 갈 만한 곳: "… · 이름 없는 특파원"');
+  /* 이름 있는 사람이 같은 곳에 뒤이어 쓴 걸 받는다 — 이름 있는 쪽에는 그대로 붙는다.
+     민지가 더 새것이라 장소 창의 이름 줄에서 "이름 없는 특파원"이 맨 뒤(= "특파원이" 앞)에 온다. */
+  await p.evaluate(() => { merge([sane({ t: Date.now(), by: '민지', cat: 'food', place: '이름 없이 쓴 곳', crowd: 0 })]); renderAll(); });
+  ok((await p.locator('#feed .card .by').allInnerTexts()).join(' / ') === '— 민지 특파원 / — 이름 없는 특파원', '  └ 이름 있는 사람은 "— 민지 특파원"');
+  await p.locator('.tab[data-view="places"]').click();
+  await p.locator('#places .pl', { hasText: '이름 없이 쓴 곳' }).click();
+  await p.waitForSelector('#placeBack.open');
+  ok((await p.locator('#placeBody .det-head').innerText()).includes('민지, 이름 없는 특파원이 다녀갔습니다.'), '장소 창: "민지, 이름 없는 특파원이 다녀갔습니다."');
+  let seen = await p.evaluate(() => document.body.innerText);
+  await p.evaluate(() => { closeSheets(true); openCompose(board.reports.find((r) => r.mine)); });   // 내 카드의 "나도 여기"
+  await p.waitForSelector('#composeBack.open');
+  ok((await p.locator('#fRefWho').innerText()).startsWith('이름 없는 특파원 · '), '나도 여기: "이름 없는 특파원 · 방금"');
+  seen += await p.evaluate(() => document.body.innerText);
+  await p.evaluate(() => openFlagSheet(board.reports.find((r) => r.mine)));
+  ok((await p.locator('#flagWhat').innerText()).includes('” · 이름 없는 특파원 · '), '신고 창: "… · 이름 없는 특파원 · …"');
+  seen += await p.evaluate(() => document.body.innerText);
+  await p.keyboard.press('Escape');
+  await p.locator('.tab[data-view="people"]').click();
+  ok((await p.locator('.me-txt').innerText()) === '이름 없는 특파원으로 씁니다', '내 이름 칸: "이름 없는 특파원으로 씁니다"');
+  seen += await p.evaluate(() => document.body.innerText);
+  ok(!/특파원\s+특파원/.test(seen), '  └ 어느 화면에도 "특파원 특파원"이 없다');
+  /* 운영 화면도 같은 규칙 */
+  await p.goto(URL + 'admin.html', { waitUntil: 'networkidle' });
+  const author = await p.evaluate(() => {
+    const row = { id: 'x1', t: new Date().toISOString(), cat: 'food', hood_code: 'anyang', place: '어디', by_name: '', author: 'u1', flags: [] };
+    const txt = (name) => { const d = document.createElement('div'); d.innerHTML = itemHtml(Object.assign({}, row, { by_name: name }));
+      const b = d.querySelector('.author b');   // "— " + <b>이름</b> + " 특파원" 까지만 (뒤는 작성자 보기 단추)
+      return (b.previousSibling.textContent + b.textContent + b.nextSibling.textContent).trim(); };
+    return [txt('이름 없는 특파원'), txt('준호')];
+  });
+  ok(author[0] === '— 이름 없는 특파원' && author[1] === '— 준호 특파원', '운영 화면 작성자 줄: ' + author.join(' / '));
+  await ctx.close();
 }
 
 
