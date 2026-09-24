@@ -1,0 +1,20 @@
+{
+  "name": "전 종목 탐색기",
+  "short_name": "종목탐색",
+  "description": "미국·한국 상장 주식 전 종목 검색과 분석",
+  "lang": "ko",
+  "start_url": "/finder/",
+  "scope": "/finder/",
+  "display": "standalone",
+  "background_color": "#F5F6F8",
+  "theme_color": "#14161C",
+  "icons": [
+    { "src": "/finder/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "/finder/icon-512.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "/finder/icon.svg", "sizes": "any", "type": "image/svg+xml" }
+  ],
+  "shortcuts": [
+    { "name": "스크리너", "url": "/finder/#screener" },
+    { "name": "내 포트폴리오", "url": "/finder/#portfolio" }
+  ]
+}

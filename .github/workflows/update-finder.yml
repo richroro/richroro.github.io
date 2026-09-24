@@ -1,0 +1,94 @@
+name: 전 종목 데이터 자동 갱신
+
+# 미국·한국 전 종목의 가격·시총·1년 지표를 다시 계산해 finder/data/stocks.json 으로 커밋한다.
+# 페이지(https://richroro.github.io/finder/)는 열릴 때 이 파일 하나를 읽는다.
+#
+# 인증키가 필요 없다. 출처는 finder/README.md 에 있다.
+#   미국 목록·시총·업종  rreichel3/US-Stock-Symbols (GitHub)
+#   미국 1년 일봉        Yahoo Finance (yfinance) — 막히면 이전 지표를 유지
+#   재무 지표 · 미국     Yahoo 일괄 시세 → 나스닥 종목 요약 → TradingView 스크리너 → SEC EDGAR(연락처: 저장소 변수 SEC_CONTACT) — 막히면 이전 값
+#   재무 지표 · 한국     한국거래소 PER/PBR 표 → 네이버 증권 종목 요약 — 막히면 이전 값
+#   한국 1년 일봉·시총   FinanceData/marcap (GitHub, KRX 전종목 시세)
+#   한국 업종·주요제품   KIND 상장법인목록 — 막히면 finder/data/kr_meta.json 캐시
+
+on:
+  schedule:
+    # 화~토 07:30 KST. 미국 장 마감(05:00~06:00 KST)과 marcap 의 한국 종가 반영(전날 23시대 KST) 뒤.
+    - cron: '30 22 * * 1-5'
+  workflow_dispatch:
+    inputs:
+      us_limit:
+        description: '미국 일봉을 시총 상위 몇 종목만 받을지 (비우면 전부)'
+        required: false
+        type: string
+
+concurrency:
+  group: finder-build
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 80
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: 의존성
+        run: pip install --quiet pandas pyarrow numpy yfinance
+
+      - name: 데이터 만들기
+        env:
+          US_LIMIT: ${{ inputs.us_limit }}
+          # SEC 는 요청에 연락처 이메일을 요구한다. 저장소 변수 SEC_CONTACT 가 있으면 그것을,
+          # 없으면 실행한 계정의 GitHub no-reply 주소를 쓴다(개인 이메일이 아님).
+          SEC_CONTACT: ${{ vars.SEC_CONTACT || format('{0}+{1}@users.noreply.github.com', github.actor_id, github.actor) }}
+        run: |
+          set -o pipefail
+          args=(--min-rows 5000)
+          if [ -n "$US_LIMIT" ]; then args+=(--us-limit "$US_LIMIT"); fi
+          python finder/build.py "${args[@]}" 2>&1 | tee "$RUNNER_TEMP/build.log"
+          {
+            echo "### 전 종목 데이터"
+            echo '```'
+            grep -v '미국 일봉 .*/\|재무 [0-9]' "$RUNNER_TEMP/build.log" | tail -n 16
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: 종목 페이지 · 사이트맵
+        run: |
+          set -o pipefail
+          python finder/pages.py | tee -a "$GITHUB_STEP_SUMMARY"
+
+      - name: 데이터 검사
+        run: |
+          set -o pipefail
+          python finder/validate.py | tee -a "$GITHUB_STEP_SUMMARY"
+
+      - name: 바뀐 게 있으면 커밋
+        run: |
+          if [ -z "$(git status --porcelain -- finder/data finder/s finder/sitemap.xml)" ]; then
+            echo "변경 없음 — 커밋하지 않습니다." >> "$GITHUB_STEP_SUMMARY"
+            exit 0
+          fi
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A finder/data finder/s finder/sitemap.xml
+          git commit -m "전 종목 데이터 자동 갱신 $(TZ=Asia/Seoul date '+%Y-%m-%d %H:%M KST')"
+          pushed=0
+          for i in 1 2 3 4; do
+            if git push; then pushed=1; break; fi
+            echo "푸시 실패, 재시도 $i"
+            git pull --rebase --autostash origin "${GITHUB_REF_NAME}" || true
+            sleep $((2 ** i))
+          done
+          if [ "$pushed" -ne 1 ]; then
+            echo "::error::커밋은 만들었지만 푸시하지 못했습니다. 다음 실행에서 다시 시도합니다."
+            exit 1
+          fi

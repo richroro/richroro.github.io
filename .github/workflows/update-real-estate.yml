@@ -98,17 +98,25 @@ jobs:
       - name: 바뀐 게 있으면 커밋
         if: steps.key.outputs.ok == 'true'
         run: |
-          if git diff --quiet -- real-estate/data; then
+          # git diff 는 추적되지 않는 새 파일을 못 본다. 첫 실행에서 data/latest.json 이
+          # 막 생겼을 때도 커밋되도록 status 로 본다.
+          if [ -z "$(git status --porcelain -- real-estate/data)" ]; then
             echo "변경 없음 — 커밋하지 않습니다." >> "$GITHUB_STEP_SUMMARY"
             exit 0
           fi
           git config user.name  "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add real-estate/data
+          git add -A real-estate/data
           git commit -m "실거래가 자동 갱신 $(TZ=Asia/Seoul date '+%Y-%m-%d %H:%M KST')"
+          pushed=0
           for i in 1 2 3 4; do
-            git push && break
+            if git push; then pushed=1; break; fi
             echo "푸시 실패, 재시도 $i"
             git pull --rebase --autostash origin "${GITHUB_REF_NAME}" || true
             sleep $((2 ** i))
           done
+          if [ "$pushed" -ne 1 ]; then
+            echo "::error::커밋은 만들었지만 푸시하지 못했습니다. 다음 실행에서 다시 시도합니다."
+            echo "커밋은 됐지만 푸시 실패 — 다음 실행에서 재시도합니다." >> "$GITHUB_STEP_SUMMARY"
+            exit 1
+          fi

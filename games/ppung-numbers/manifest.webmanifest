@@ -1,0 +1,17 @@
+{
+  "name": "뿡빵뿡 한글 숫자",
+  "short_name": "뿡빵뿡 숫자",
+  "description": "하나·둘·셋, 일·이·삼을 맞히면 고구마 뿡이가 뿡! 7살 한글 숫자 놀이",
+  "lang": "ko",
+  "start_url": "/games/ppung-numbers/",
+  "scope": "/games/ppung-numbers/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#FFF6E9",
+  "theme_color": "#FFF6E9",
+  "icons": [
+    { "src": "/games/ppung-numbers/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "/games/ppung-numbers/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" },
+    { "src": "/games/ppung-numbers/icon.svg", "sizes": "any", "type": "image/svg+xml" }
+  ]
+}
