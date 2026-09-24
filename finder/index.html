@@ -1,0 +1,327 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>전 종목 탐색기 · 미국·한국 주식 검색과 분석</title>
+<meta name="description" content="미국(나스닥·뉴욕·아메리칸)과 한국(코스피·코스닥·코넥스) 상장 주식 전 종목을 한글·티커·초성으로 찾고, 수익률·추세·RSI·변동성·최대낙폭과 같은 시장 안 순위로 분석합니다.">
+<link rel="canonical" href="https://richroro.github.io/finder/">
+<meta property="og:type" content="website"><meta property="og:locale" content="ko_KR">
+<meta property="og:site_name" content="Cadence">
+<meta property="og:url" content="https://richroro.github.io/finder/">
+<meta property="og:title" content="전 종목 탐색기 — 미국·한국 주식을 한 곳에서">
+<meta property="og:description" content="이름 한 글자, 초성, 티커로 전 종목을 찾고 추세·모멘텀·변동성을 같은 시장 안 순위로 봅니다.">
+<meta property="og:image" content="https://richroro.github.io/stocks/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%2314161C'/><circle cx='44' cy='44' r='20' fill='none' stroke='white' stroke-width='9'/><path d='M59 59l18 18' stroke='white' stroke-width='10' stroke-linecap='round'/></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans+KR:wght@300;400;500;600;700&display=swap">
+<link rel="stylesheet" href="/m7/assets/m7.css">
+<script>
+  /* 첫 페인트 전에 저장된 테마를 적용해 깜빡임을 막습니다(다른 페이지와 같은 키) */
+  try { const t = JSON.parse(localStorage.getItem("m7.theme")); if (t === "dark" || t === "light") document.documentElement.dataset.theme = t; } catch (e) {}
+</script>
+<style>
+.wrap{max-width:1180px}
+.brand .mk{background:var(--ink);color:var(--paper)}
+@media(max-width:520px){.hactions .notes{display:none}}
+/* ---------- hero / search ---------- */
+.hero{padding:34px 0 8px}
+.hero h1{font-size:clamp(25px,4.6vw,38px);font-weight:600;letter-spacing:-1.3px;line-height:1.2}
+.hero p.lead{margin-top:8px}
+.sbox{position:relative;margin-top:20px;max-width:760px}
+.sfield{display:flex;align-items:center;gap:10px;background:var(--surface);border:1.5px solid var(--line);border-radius:14px;
+  padding:0 14px;height:56px;box-shadow:var(--shadow);transition:border-color .15s}
+.sfield:focus-within{border-color:var(--ink-2)}
+.sfield svg{flex:none;color:var(--ink-3)}
+.sfield input{flex:1;min-width:0;border:0;background:transparent;color:var(--ink);font:inherit;font-size:17px;outline:none}
+.sfield input::placeholder{color:var(--ink-3);font-weight:300}
+.sfield kbd{font:11px "IBM Plex Mono",monospace;color:var(--ink-3);border:1px solid var(--line);border-radius:5px;padding:2px 6px;flex:none}
+.sres{position:absolute;left:0;right:0;top:62px;z-index:60;background:var(--surface);border:1px solid var(--line);border-radius:14px;
+  box-shadow:0 18px 50px -18px rgba(0,0,0,.35);overflow:hidden;max-height:min(70vh,520px);overflow-y:auto}
+.sres .it{display:flex;align-items:center;gap:11px;padding:10px 14px;cursor:pointer;border-top:1px solid var(--line-soft)}
+.sres .it:first-child{border-top:0}
+.sres .it[aria-selected="true"],.sres .it:hover{background:var(--surface-2)}
+.sres .nm{flex:1;min-width:0}
+.sres .nm b{display:block;font-size:14.5px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sres .nm small{display:block;font-size:11.5px;color:var(--ink-3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sres .px{text-align:right;font-family:"IBM Plex Mono",monospace;font-variant-numeric:tabular-nums;font-size:13px;flex:none}
+.sres .px small{display:block;font-size:11.5px}
+.sres .empty{padding:18px 14px;color:var(--ink-3);font-size:13px}
+.sres mark{background:color-mix(in srgb,var(--s4) 30%,transparent);color:inherit;border-radius:3px;padding:0 1px}
+.mbadge{font:600 10px "IBM Plex Mono",monospace;letter-spacing:.2px;border-radius:5px;padding:2px 5px;flex:none;
+  background:var(--surface-2);color:var(--ink-3);border:1px solid var(--line)}
+.mbadge.KR{background:var(--up-wash);color:var(--up);border-color:transparent}
+.mbadge.US{background:var(--down-wash);color:var(--down);border-color:transparent}
+.av{width:30px;height:30px;border-radius:8px;flex:none;display:grid;place-items:center;font:600 10.5px "IBM Plex Mono",monospace;color:#fff;letter-spacing:-.3px}
+.shint{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px;align-items:center}
+.shint span{font-size:12px;color:var(--ink-3)}
+.chip{background:var(--surface);border:1px solid var(--line);color:var(--ink-2);border-radius:999px;padding:5px 12px;
+  font:inherit;font-size:12.5px;font-weight:500;cursor:pointer;transition:.15s;white-space:nowrap}
+.chip:hover{border-color:var(--ink-3);color:var(--ink)}
+.chip[aria-pressed="true"]{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+.chip .c{font:500 11px "IBM Plex Mono",monospace;opacity:.6;margin-left:4px}
+.fresh{margin-top:14px;font-size:12px;color:var(--ink-3);font-family:"IBM Plex Mono",monospace;display:flex;flex-wrap:wrap;gap:4px 14px}
+.fresh b{color:var(--ink-2);font-weight:500}
+/* ---------- market pulse ---------- */
+.pulse{display:grid;grid-template-columns:1fr;gap:14px}
+@media(min-width:860px){.pulse{grid-template-columns:1fr 1fr}}
+.pulse>*,.movers>*,.scores>*,.glossary>*{min-width:0}
+.pcard{padding:18px}
+.pcard .hd{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.pcard .hd b{font-size:15px;font-weight:600}
+.pcard .hd small{font-size:11.5px;color:var(--ink-3);font-family:"IBM Plex Mono",monospace}
+.breadth{display:flex;height:10px;border-radius:99px;overflow:hidden;margin-top:12px;background:var(--surface-2)}
+.breadth i{display:block;height:100%}
+.bleg{display:flex;justify-content:space-between;font-size:12px;margin-top:6px;font-family:"IBM Plex Mono",monospace;color:var(--ink-3)}
+.pstats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:14px}
+.pstats div{background:var(--surface-2);border-radius:10px;padding:9px 11px}
+.pstats .k{font-size:11px;color:var(--ink-3)}
+.pstats .v{font:600 16px "IBM Plex Mono",monospace;letter-spacing:-.5px;margin-top:2px;font-variant-numeric:tabular-nums}
+.movers{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:14px}
+.movers h4{font-size:12px;font-weight:500;color:var(--ink-3);margin-bottom:4px}
+.mv{display:flex;justify-content:space-between;gap:8px;padding:5px 0;border-top:1px solid var(--line-soft);font-size:12.5px;cursor:pointer}
+.mv:hover b{text-decoration:underline}
+.mv b{font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
+.mv span{font-family:"IBM Plex Mono",monospace;font-variant-numeric:tabular-nums;flex:none}
+/* ---------- sector tiles ---------- */
+.secgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px;margin-top:14px}
+.sec{border-radius:11px;padding:11px 12px;cursor:pointer;border:1px solid transparent;text-align:left;font:inherit;color:var(--ink);
+  transition:transform .12s,border-color .12s}
+.sec:hover{transform:translateY(-1px);border-color:var(--ink-3)}
+.sec b{display:block;font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sec .v{font:600 17px "IBM Plex Mono",monospace;letter-spacing:-.5px;margin-top:2px}
+.sec small{display:block;font-size:11px;color:var(--ink-2);opacity:.8;font-family:"IBM Plex Mono",monospace}
+/* ---------- screener ---------- */
+.tools{display:flex;flex-direction:column;gap:10px;margin-top:16px}
+.trow{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.trow .lbl{font-size:11.5px;color:var(--ink-3);min-width:44px;font-family:"IBM Plex Mono",monospace}
+.presets{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;padding-bottom:2px}
+.presets::-webkit-scrollbar{display:none}
+select.sel,input.flt{height:34px;background:var(--surface);border:1px solid var(--line);border-radius:9px;color:var(--ink);
+  font:inherit;font-size:13px;padding:0 10px;max-width:100%}
+input.flt{flex:1 1 180px;min-width:0}
+label.tg{display:inline-flex;align-items:center;gap:6px;font-size:12.5px;color:var(--ink-2);cursor:pointer;user-select:none}
+label.tg input{accent-color:var(--s1);width:15px;height:15px}
+.tbar{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between;margin-top:14px}
+.count{font-size:12.5px;color:var(--ink-3);font-family:"IBM Plex Mono",monospace}
+table.scr{min-width:760px}
+table.scr td,table.scr th{padding:9px 10px}
+table.scr tbody tr{cursor:pointer}
+table.scr td.nmc{max-width:260px}
+table.scr .co b{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:210px}
+table.scr .co small{display:flex;gap:5px;align-items:center;white-space:nowrap}
+td.st,th.st{width:30px;padding-left:4px!important;padding-right:4px!important;text-align:center}
+.star{background:none;border:0;cursor:pointer;font-size:15px;color:var(--ink-3);line-height:1;padding:4px}
+.star[aria-pressed="true"]{color:var(--s4)}
+.rank{font-size:11px;color:var(--ink-3);width:34px}
+.bar100{display:inline-block;width:46px;height:6px;border-radius:9px;background:var(--surface-3);vertical-align:middle;margin-left:6px;overflow:hidden}
+.bar100 i{display:block;height:100%;background:var(--s1);border-radius:9px}
+.more{display:flex;justify-content:center;margin-top:12px}
+.empty-t{padding:30px;text-align:center;color:var(--ink-3);font-size:13px}
+.xtag{font:600 10.5px "IBM Plex Mono",monospace;border-radius:5px;padding:2px 6px}
+.xtag.G{background:var(--up-wash);color:var(--up)}.xtag.D{background:var(--down-wash);color:var(--down)}
+.wtag{font-size:10px;font-weight:600;color:var(--brand-deep);background:var(--brand-wash);border-radius:4px;padding:1px 4px}
+/* ---------- detail ---------- */
+dialog.dt{border:0;padding:0;background:var(--paper);color:var(--ink);width:100%;max-width:100%;height:100%;max-height:100%;margin:0}
+@media(min-width:900px){dialog.dt{width:min(960px,94vw);height:auto;max-height:92vh;margin:4vh auto;border-radius:18px;border:1px solid var(--line)}}
+dialog.dt::backdrop{background:rgba(10,12,16,.55);backdrop-filter:blur(3px)}
+.dt-top{position:sticky;top:0;z-index:5;background:color-mix(in srgb,var(--paper) 92%,transparent);backdrop-filter:blur(10px);
+  border-bottom:1px solid var(--line);display:flex;align-items:center;gap:12px;padding:12px 16px}
+.dt-top .ttl{flex:1;min-width:0}
+.dt-top .ttl b{display:block;font-size:17px;font-weight:600;letter-spacing:-.4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.dt-top .ttl small{display:flex;gap:6px;align-items:center;font-size:12px;color:var(--ink-3);flex-wrap:wrap}
+.dt-body{padding:18px 16px 40px}
+@media(min-width:720px){.dt-body{padding:22px 24px 44px}}
+.pxrow{display:flex;flex-wrap:wrap;align-items:baseline;gap:6px 14px}
+.pxrow .big{font:600 clamp(28px,5vw,36px) "IBM Plex Mono",monospace;letter-spacing:-1.2px;font-variant-numeric:tabular-nums}
+.pxrow .chg{font:500 16px "IBM Plex Mono",monospace}
+.pxrow .asof{font-size:12px;color:var(--ink-3)}
+.dsec{margin-top:22px}
+.dsec>h3{font-size:14px;font-weight:600;letter-spacing:-.3px;margin-bottom:10px;display:flex;justify-content:space-between;gap:10px;align-items:baseline}
+.dsec>h3 small{font-size:11.5px;color:var(--ink-3);font-weight:400}
+.insights{list-style:none;display:flex;flex-direction:column;gap:7px}
+.insights li{display:flex;gap:10px;font-size:13.5px;line-height:1.6;background:var(--surface);border:1px solid var(--line);border-radius:11px;padding:10px 12px}
+.insights li .ic{flex:none;width:22px;height:22px;border-radius:7px;display:grid;place-items:center;font-size:12px;font-weight:700}
+.insights li .ic.pos{background:var(--up-wash);color:var(--up)}
+.insights li .ic.neg{background:var(--down-wash);color:var(--down)}
+.insights li .ic.neu{background:var(--surface-2);color:var(--ink-3)}
+.insights li .ic.warn{background:var(--brand-wash);color:var(--brand-deep)}
+.insights b{font-weight:600}
+.scores{display:grid;grid-template-columns:1fr;gap:10px}
+@media(min-width:620px){.scores{grid-template-columns:1fr 1fr}}
+.sc{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:12px 14px}
+.sc .top{display:flex;justify-content:space-between;align-items:baseline;gap:8px}
+.sc .top b{font-size:13.5px;font-weight:600}
+.sc .top span{font:600 18px "IBM Plex Mono",monospace;letter-spacing:-.5px}
+.sc .trk{height:8px;border-radius:9px;background:var(--surface-3);margin-top:8px;position:relative;overflow:hidden}
+.sc .trk i{position:absolute;left:0;top:0;bottom:0;border-radius:9px}
+.sc p{font-size:11.5px;color:var(--ink-3);margin-top:6px;line-height:1.5}
+.range{margin-top:6px}
+.range .tr{position:relative;height:8px;border-radius:9px;background:linear-gradient(90deg,var(--down-wash),var(--surface-3),var(--up-wash));border:1px solid var(--line)}
+.range .tr i{position:absolute;top:50%;width:14px;height:14px;border-radius:50%;background:var(--ink);border:2px solid var(--paper);transform:translate(-50%,-50%)}
+.range .lb{display:flex;justify-content:space-between;font:11.5px "IBM Plex Mono",monospace;color:var(--ink-3);margin-top:6px}
+.peer{display:flex;align-items:center;gap:10px;padding:8px 0;border-top:1px solid var(--line-soft);cursor:pointer;font-size:13px}
+.peer:first-child{border-top:0}
+.peer:hover .pn{text-decoration:underline}
+.peer .pn{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-weight:500}
+.peer .pv{font:12.5px "IBM Plex Mono",monospace;font-variant-numeric:tabular-nums;width:72px;text-align:right;flex:none}
+.peer.me{background:var(--surface-2);border-radius:8px;padding-left:8px;padding-right:8px}
+.links{display:flex;flex-wrap:wrap;gap:8px}
+.links a{display:inline-flex;align-items:center;gap:6px;font-size:13px;border:1px solid var(--line);background:var(--surface);
+  border-radius:9px;padding:7px 12px;color:var(--ink-2)}
+.links a:hover{border-color:var(--ink-3);color:var(--ink)}
+.links a.deep{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+.tvbox{margin-top:10px;height:480px;border:1px solid var(--line);border-radius:12px;overflow:hidden;background:var(--surface)}
+.tvbox.fin{height:560px}
+.chartbox{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:14px 14px 8px}
+.chartbox svg{display:block;width:100%;height:auto}
+.chartbox .cap{display:flex;justify-content:space-between;gap:8px;font-size:11.5px;color:var(--ink-3);flex-wrap:wrap}
+.nochart{padding:28px 10px;text-align:center;color:var(--ink-3);font-size:13px}
+.loading{padding:60px 0;text-align:center;color:var(--ink-3);font-size:14px}
+.spin{display:inline-block;width:18px;height:18px;border:2px solid var(--line);border-top-color:var(--ink-2);border-radius:50%;
+  animation:sp 0.8s linear infinite;vertical-align:-4px;margin-right:8px}
+@keyframes sp{to{transform:rotate(360deg)}}
+.glossary{display:grid;grid-template-columns:1fr;gap:10px}
+@media(min-width:720px){.glossary{grid-template-columns:1fr 1fr}}
+.glossary div{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:12px 14px}
+.glossary b{font-size:13.5px}
+.glossary p{font-size:12.5px;color:var(--ink-2);font-weight:300;line-height:1.65;margin-top:4px}
+</style>
+</head>
+<body>
+<header><div class="wrap hbar">
+  <a class="brand" href="/finder/"><span class="mk">⌕</span>
+    <span><b>전 종목 탐색기</b><small>미국·한국 상장 주식 검색과 분석</small></span></a>
+  <div class="hactions">
+    <a class="ghost notes" href="/stocks/" title="37개 종목 심층 노트">종목 노트</a>
+    <button class="ghost" id="themeBtn" type="button" aria-label="화면 테마 전환"><span id="themeIco">◐</span><span id="themeTxt">테마</span></button>
+  </div>
+</div></header>
+
+<nav class="snav" aria-label="섹션 바로가기"><div class="wrap snav-in">
+  <a href="#top">검색</a><a href="#pulse">오늘 시장</a><a href="#sectors">업종 흐름</a><a href="#screener">스크리너</a><a href="#how">지표 읽는 법</a>
+</div></nav>
+
+<main>
+<section class="hero" id="top"><div class="wrap">
+  <p class="eyebrow">ALL STOCKS · US + KR</p>
+  <h1>어떤 종목이든,<br>이름 한 글자로 찾고 바로 봅니다.</h1>
+  <p class="lead" id="heroLead">미국과 한국에 상장된 주식 전 종목을 한글·영문·티커·종목코드·초성(ㅅㅅㅈㅈ)으로 찾고,
+    수익률·추세·과열·변동성을 <b>같은 시장 안의 순위</b>로 읽습니다.</p>
+  <div class="sbox" role="combobox" aria-haspopup="listbox" aria-owns="sres" aria-expanded="false" id="sbox">
+    <label class="sfield">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+      <input id="q" type="search" autocomplete="off" spellcheck="false" placeholder="삼성전자, 엔비디아, TSLA, 005930, ㅎㄷㅊ…" aria-label="종목 검색" aria-controls="sres" aria-autocomplete="list">
+      <kbd>/</kbd>
+    </label>
+    <div class="sres" id="sres" role="listbox" hidden></div>
+  </div>
+  <div class="shint" id="shint"><span>많이 찾는 종목</span></div>
+  <div class="fresh" id="fresh"><span><span class="spin"></span>데이터를 불러오는 중…</span></div>
+</div></section>
+
+<section id="pulse"><div class="wrap">
+  <p class="eyebrow">Market pulse</p>
+  <h2 class="title">오늘 시장</h2>
+  <p class="lead">상승·하락 종목 수와 중위 등락률, 52주 신고가권 종목 수. 급등락 목록은 거래가 거의 없는 종목을 빼고 시총 상위 절반에서 골랐습니다.</p>
+  <div class="pulse mt16" id="pulseBox"></div>
+</div></section>
+
+<section id="sectors"><div class="wrap">
+  <p class="eyebrow">Sector flow</p>
+  <h2 class="title">업종 흐름</h2>
+  <div class="chart-head">
+    <p class="lead">업종마다 소속 종목 등락률의 <b>중위값</b>입니다(대형주 몇 개에 끌려가지 않도록). 칸을 누르면 아래 스크리너가 그 업종으로 걸러집니다.</p>
+    <div style="display:flex;gap:8px;flex-wrap:wrap">
+      <div class="seg" id="secMkt" role="group" aria-label="시장"><button type="button" data-v="KR" aria-pressed="true">한국</button><button type="button" data-v="US" aria-pressed="false">미국</button></div>
+      <div class="seg" id="secPer" role="group" aria-label="기간"><button type="button" data-v="d1" aria-pressed="true">1일</button><button type="button" data-v="r5" aria-pressed="false">1주</button><button type="button" data-v="r21" aria-pressed="false">1개월</button><button type="button" data-v="r63" aria-pressed="false">3개월</button><button type="button" data-v="r252" aria-pressed="false">1년</button></div>
+    </div>
+  </div>
+  <div class="secgrid" id="secGrid"></div>
+  <p class="hint mt8" id="secNote"></p>
+</div></section>
+
+<section id="screener"><div class="wrap">
+  <p class="eyebrow">Screener</p>
+  <h2 class="title">스크리너</h2>
+  <p class="lead">전략 버튼 하나로 조건을 걸고, 열 머리를 눌러 정렬합니다. 행을 누르면 그 종목의 분석이 열립니다.</p>
+  <div class="tools">
+    <div class="presets" id="presets" role="group" aria-label="빠른 조건"></div>
+    <div class="trow">
+      <div class="seg" id="mkt" role="group" aria-label="시장">
+        <button type="button" data-v="ALL" aria-pressed="true">전체</button><button type="button" data-v="US" aria-pressed="false">미국</button><button type="button" data-v="KR" aria-pressed="false">한국</button><button type="button" data-v="FAV" aria-pressed="false">★ 관심</button>
+      </div>
+      <select class="sel" id="exch" aria-label="거래소"></select>
+      <select class="sel" id="sector" aria-label="업종"><option value="">업종 전체</option></select>
+      <select class="sel" id="size" aria-label="시가총액 규모">
+        <option value="">시총 전체</option>
+        <option value="mega">초대형 · $200B 이상</option>
+        <option value="large">대형 · $10B~200B</option>
+        <option value="mid">중형 · $2B~10B</option>
+        <option value="small">소형 · $300M~2B</option>
+        <option value="micro">초소형 · $300M 미만</option>
+      </select>
+    </div>
+    <div class="trow">
+      <input class="flt" id="flt" type="search" placeholder="표 안에서 이름·티커·산업으로 거르기" aria-label="표 안 필터">
+      <label class="tg"><input type="checkbox" id="liq" checked> 거래가 거의 없는 종목 숨기기</label>
+      <div class="seg" id="view" role="group" aria-label="열 묶음">
+        <button type="button" data-v="basic" aria-pressed="true">기본</button><button type="button" data-v="tech" aria-pressed="false">기술적</button><button type="button" data-v="score" aria-pressed="false">점수</button>
+      </div>
+    </div>
+  </div>
+  <div class="tbar"><span class="count" id="count"></span>
+    <div style="display:flex;gap:6px"><button class="ghost" id="reset" type="button">조건 초기화</button><button class="ghost" id="csv" type="button">CSV 내려받기</button></div>
+  </div>
+  <div class="card mt8"><div class="tscroll"><table class="scr" id="tbl"><thead></thead><tbody></tbody></table></div></div>
+  <div class="more"><button class="ghost" id="moreBtn" type="button" hidden>50개 더 보기</button></div>
+</div></section>
+
+<section id="how"><div class="wrap">
+  <p class="eyebrow">How to read</p>
+  <h2 class="title">지표 읽는 법</h2>
+  <p class="lead">모든 지표는 수정 종가 1년치에서 계산합니다. 점수는 좋고 나쁨이 아니라 <b>같은 시장 종목 사이의 위치(백분위)</b>입니다. 미국은 미국끼리, 한국은 한국끼리 비교합니다.</p>
+  <div class="glossary mt16">
+    <div><b>모멘텀 점수</b><p>3개월·6개월·1년 수익률 백분위의 평균. 80이면 같은 시장 종목의 80%보다 많이 올랐다는 뜻입니다.</p></div>
+    <div><b>추세 점수</b><p>주가가 50일·200일 이동평균선보다 얼마나 위에 있는지의 백분위 평균. 높을수록 이동평균선 위에서 움직입니다.</p></div>
+    <div><b>안정성 점수</b><p>최근 3개월 변동성(낮을수록)과 1년 최대낙폭(얕을수록)의 백분위 평균. 높을수록 덜 흔들렸습니다.</p></div>
+    <div><b>유동성 점수</b><p>최근 20거래일 평균 거래대금의 백분위. 낮으면 사고팔 때 원하는 가격을 받기 어렵습니다.</p></div>
+    <div><b>정배열 · 역배열</b><p>50일선이 200일선 위에 있고 주가가 그 위에 있으면 정배열(중기 상승), 반대면 역배열입니다. 골든·데드크로스는 두 선이 최근 20거래일 안에 교차한 경우만 표시합니다.</p></div>
+    <div><b>RSI(14)</b><p>최근 14거래일 상승폭과 하락폭의 비율을 0~100으로. 70 이상은 단기 과열, 30 이하는 단기 과매도로 흔히 읽습니다.</p></div>
+    <div><b>52주 고점 대비</b><p>지난 1년 최고 종가에서 몇 % 아래에 있는지. −3% 이내면 신고가권으로 표시합니다.</p></div>
+    <div><b>거래 급증</b><p>최근 5거래일 평균 거래량 ÷ 60거래일 평균. 2배를 넘으면 평소보다 관심이 몰린 상태입니다.</p></div>
+  </div>
+  <div class="note mt16"><span class="ic">ⓘ</span><div>이 페이지는 공개 데이터를 정리해 보여줄 뿐 <b>투자 권유가 아닙니다.</b> 가격은 실시간이 아니라 전 거래일 종가 기준이며, 원천 데이터의 오류나 지연이 있을 수 있습니다. 거래 전 증권사 시세와 공시를 확인하세요.</div></div>
+</div></section>
+</main>
+
+<dialog class="dt" id="dt" aria-labelledby="dtName">
+  <div class="dt-top">
+    <span class="av" id="dtAv"></span>
+    <div class="ttl"><b id="dtName"></b><small id="dtSub"></small></div>
+    <button class="star" id="dtStar" type="button" aria-pressed="false" aria-label="관심 종목">☆</button>
+    <button class="ghost" id="dtClose" type="button" aria-label="닫기" autofocus>닫기 ✕</button>
+  </div>
+  <div class="dt-body" id="dtBody"></div>
+</dialog>
+
+<footer><div class="wrap">
+  <div class="fgrid">
+    <div><h4>데이터 출처</h4>
+      <ul>
+        <li>미국 종목 목록·시가총액·업종: <a href="https://github.com/rreichel3/US-Stock-Symbols" target="_blank" rel="noopener">US-Stock-Symbols</a>(나스닥 스크리너 일별 사본)</li>
+        <li>미국 일봉: Yahoo Finance · 한국 일봉·시가총액: <a href="https://github.com/FinanceData/marcap" target="_blank" rel="noopener">FinanceData/marcap</a>(한국거래소 전종목 시세)</li>
+        <li>한국 업종·주요제품: 한국거래소 KIND 상장법인목록 · 인터랙티브 차트: TradingView</li>
+      </ul></div>
+    <div><h4>갱신</h4><p>GitHub Actions 가 매일 한 번 데이터를 새로 만들어 커밋합니다. 만드는 방법은 <a href="https://github.com/richroro/richroro.github.io/tree/main/finder" target="_blank" rel="noopener">finder/README.md</a>에 있습니다.</p>
+      <p class="mt8"><a href="/stocks/">종목 노트</a> · <a href="/m7/">M7 지표 노트</a> · <a href="/">처음으로</a></p></div>
+  </div>
+  <p class="disc">투자 판단의 책임은 투자자 본인에게 있습니다. 이 페이지의 수치는 참고용이며 정확성을 보장하지 않습니다.</p>
+</div></footer>
+
+<script src="/stocks/assets/registry.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
