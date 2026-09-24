@@ -1023,11 +1023,14 @@ ETF_RULES = [
     ("레버리지·인버스", r"레버리지|인버스|곱버스|\b[23]X\b|\bUltra(Pro)?\b|UltraShort|Leveraged|Inverse|\bBear\b|\bBull\b|Daily .*(Short|Long)|\bShort\b(?![- ](Term|Duration|Maturity))"),
     ("커버드콜", r"커버드콜|Covered Call|Premium Income|Option Income|BuyWrite|Buy-Write|YieldMax|Enhanced Income"),
     ("가상자산", r"비트코인|이더리움|Bitcoin|Ether(eum)?\b|Crypto|Solana|XRP"),
-    ("원자재", r"골드|금현물|금선물|KRX금|은선물|원유|구리|농산물|\bGold\b|Silver|\bOil\b|Crude|Commodit|Natural Gas|Copper|Uranium|Platinum|Palladium|Agricultur"),
-    ("채권", r"채권|국채|국고채|회사채|통안채|Bond|Treasury|Treasuries|Aggregate|Municipal|\bMuni\b|Corporate|Credit|Fixed Income|\bTIPS\b|Mortgage|High Yield|Loan"),
+    ("버퍼·옵션 전략", r"Buffer|Defined (Protection|Outcome)|Structured Outcome|Accelerat|Dual Directional|Hedged Equity|Barrier|Uncapped|\bFloor\b|\bSwan\b|WeeklyPay|Weekly Pay"),
+    ("변동성(VIX)", r"\bVIX\b|Volatility (Futures|Index)"),
+    ("원자재", r"골드|금현물|금선물|KRX금|은선물|원유|구리|농산물|\bGold\b|Silver|\bOil\b|Crude|Commodit|Natural Gas|Copper|Uranium|Platinum|Palladium|Agricultur|\bCorn\b|Wheat|Soybean|Sugar|Shipping|Carbon|Hard Assets|Real Asset"),
+    ("채권", r"채권|국채|국고채|회사채|통안채|Bond|Treasury|Treasuries|Aggregate|Municipal|\bMuni\b|Corporate|Credit|Fixed Income|\bTIPS\b|Mortgage|High Yield|Loan|\bCLO\b|\bMBS\b|Inflation[- ]Protected|Convertible|Securitized"),
     ("리츠·부동산", r"리츠|부동산|\bREITs?\b|Real Estate"),
     ("배당", r"배당|Dividend|Dividends|Div\b|Income"),
-    ("해외 주식", r"미국|중국|일본|인도|베트남|유럽|대만|글로벌|선진국|신흥국|나스닥|S&P|다우|필라델피아|Emerging|International|Developed|Europe|Japan|China|India|Korea|Taiwan|Brazil|Latin|World|Global|ex-US|ex US|EAFE|\bIntl\b|Asia|Pacific|Frontier"),
+    ("자산배분", r"TDF|자산배분|혼합|TRF|Allocation|Balanced|Multi[- ]Asset|Risk Parity|Portfolio|Tactical|Rotation|All Asset|Target (Date|Risk|20\d\d)|Moderate|Conservative|Aggressive|Managed Risk"),
+    ("해외 주식", r"미국|중국|일본|인도|베트남|유럽|대만|글로벌|선진국|신흥국|나스닥|S&P|다우|필라델피아|Emerging|International|Developed|Europe|Japan|China|India|Korea|Taiwan|Brazil|Latin|World|Global|ex-US|ex US|ex-U\.S\.|EAFE|\bIntl\b|Asia|Pacific|Frontier|Germany|Canada|Mexico|United Kingdom|\bU\.?K\.?\b|France|Australia|Switzerland|Italy|Spain|Saudi|Israel|Vietnam|Indonesia|Singapore|Hong Kong|All Country|\bACWI\b|Geography|Foreign|All Equity Markets"),
 ]
 ETF_US_RULES = [  # 미국 ETF 는 '해외 주식'이 아니라 미국 지수·업종으로 본다
     ("미국 지수", r"\bQQQ\b|Nasdaq|\bDow\b|S&P 500|S&P500|Total (Stock )?Market|Nasdaq[- ]100|Nasdaq Composite|Russell|Dow Jones Industrial|Large[- ]Cap|Mid[- ]Cap|Small[- ]Cap|Micro[- ]Cap|Extended Market|Growth|Value|Equal Weight|Momentum|Quality|Minimum Volatility|Low Volatility|Core"),
@@ -1039,31 +1042,42 @@ ETF_ISSUERS = ["iShares", "Vanguard", "SPDR", "Invesco", "Schwab", "ProShares", 
                "Xtrackers", "YieldMax", "GraniteShares", "Roundhill", "Defiance", "Simplify", "Avantis", "Capital Group",
                "Janus Henderson", "PIMCO", "Nuveen", "Sprott", "American Century", "BlackRock", "Grayscale", "Bitwise",
                "Franklin Templeton", "Neos", "NEOS", "KraneShares", "Tema", "T. Rowe Price", "Harbor", "Alpha Architect",
-               "Main", "AdvisorShares", "Hartford", "Principal", "Columbia", "Putnam", "Eaton Vance", "Texas Capital", "Cambria"]
+               "Main", "AdvisorShares", "Hartford", "Principal", "Columbia", "Putnam", "Eaton Vance", "Texas Capital", "Cambria",
+               "Innovator", "AllianzIM", "Calamos", "Aptus", "Teucrium", "PGIM", "TrueShares", "Matthews", "Federated Hermes",
+               "Virtus", "Strive", "Motley Fool", "Hashdex", "Franklin"]
 US_ETF_EX = {"NASDAQ", "NYSE", "AMEX", "CBOE"}
 ETF_KNOWN_US = {"SPY", "IVV", "VOO", "QQQ", "VTI"}
 BIG_STOCKS_US = {"AAPL", "NVDA", "MSFT", "AMZN", "TSLA", "META", "GOOGL"}
 
 
 def etf_category(name: str, us: bool, base: str = "") -> str:
-    for cat, pat in ETF_RULES[:8]:
+    """이름 규칙(지역 규칙 제외)을 먼저 보고, 미국은 해외 → 미국 지수 → 업종·테마 → 미국 주식 순, 한국은 네이버 분류 탭."""
+    region = ETF_RULES[-1][1]
+    for cat, pat in ETF_RULES[:-1]:
         if re.search(pat, name, re.I):
             return cat
     if us:
+        # 'MSCI Germany' 같은 나라 ETF 가 이름의 'Index' 때문에 미국 지수로 가지 않게 해외를 먼저 본다
+        # (단 S&P·나스닥·다우는 한국어 규칙용이라 미국에서는 해외로 치지 않는다)
+        probe = re.sub(re.escape(etf_issuer(name, True)), "", name, count=1, flags=re.I)  # 'Global X' 같은 운용사 이름은 빼고
+        if re.search(region, re.sub(r"S&P|Nasdaq|Dow", "", probe, flags=re.I), re.I):
+            return "해외 주식"
         for cat, pat in ETF_US_RULES:
             if re.search(pat, name, re.I):
                 return cat
-        if re.search(ETF_RULES[8][1], name, re.I):
-            return "해외 주식"
+        if re.search(r"Equity|Stock|Shares|U\.?S\.?|America|Moat|RAFI|Factor|Opportunit|Leaders|Select|Focus|Quality|Fundamental", name, re.I):
+            return "미국 주식"
         return "기타"
     if base:
         return base
-    return "해외 주식" if re.search(ETF_RULES[8][1], name, re.I) else "국내 주식"
+    return "해외 주식" if re.search(region, name, re.I) else "국내 주식"
 
 
 def etf_issuer(name: str, us: bool) -> str:
     if not us:
         return name.split()[0] if name.split() else ""
+    if re.match(r"FT (Vest|Cboe)", name, re.I):
+        return "First Trust"
     for iss in ETF_ISSUERS:
         if re.search(r"(^|\W)" + re.escape(iss) + r"(\W|$)", name, re.I):
             return "SPDR" if iss == "SPDR" else iss

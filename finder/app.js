@@ -65,7 +65,11 @@ function capOther(r) {
 }
 const PALETTE = ["#2a78d6", "#eb6834", "#1baf7a", "#c98500", "#7c3aed", "#db2777", "#0891b2", "#65a30d", "#475569", "#b45309"];
 function avColor(id) { let h = 0; for (const c of id) h = (h * 31 + c.charCodeAt(0)) >>> 0; return PALETTE[h % PALETTE.length]; }
-function avText(r) { return r.g === "KR" ? r.name.replace(/[^가-힣A-Za-z0-9]/g, "").slice(0, 2) : r.id.replace(".", "").slice(0, 4); }
+function avText(r) {
+  if (r.g !== "KR") return r.id.replace(".", "").slice(0, 4);
+  const nm = r.ty === "E" ? r.name.split(" ").slice(1).join("") || r.name : r.name; // ETF 는 'KODEX' 같은 브랜드 뒤 이름으로
+  return nm.replace(/[^가-힣A-Za-z0-9]/g, "").slice(0, 2);
+}
 function avatar(r, size) {
   const s = size ? `width:${size}px;height:${size}px;font-size:${Math.round(size / 3)}px;` : "";
   return `<span class="av" aria-hidden="true" style="${s}background:${avColor(r.id)}">${esc(avText(r))}</span>`;
@@ -698,6 +702,7 @@ function readUrl() {
   if (VIEWS[p.get("v")]) S.view = p.get("v");
   if (p.get("liq") === "0") S.liq = false;
   if (S.ty === "S" && S.view === "etf") S.view = "basic";
+  if (S.ty === "E" && !p.get("v") && !(pre && pre.view)) S.view = "etf";
   return ["t", "m", "x", "sec", "size", "p", "q", "r", "s", "v", "liq"].some((k) => p.has(k));
 }
 function initScreener() {

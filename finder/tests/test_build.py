@@ -447,6 +447,11 @@ class Sources(unittest.TestCase):
         self.assertEqual(build.etf_category("KODEX 200", False, "국내 지수"), "국내 지수")
         self.assertEqual(build.etf_category("TIGER 미국채10년선물", False, "해외 주식"), "채권")
         self.assertEqual(build.etf_category("KODEX 200타겟위클리커버드콜", False, "국내 지수"), "커버드콜")
+        self.assertEqual(build.etf_category("Global X Russell 2000 ETF", True), "미국 지수")   # 운용사 이름의 Global
+        self.assertEqual(build.etf_category("iShares MSCI EAFE Value ETF", True), "해외 주식")
+        self.assertEqual(build.etf_category("Innovator U.S. Equity Power Buffer ETF - January", True), "버퍼·옵션 전략")
+        self.assertEqual(build.etf_category("KODEX TDF2050액티브", False, "해외 주식"), "자산배분")
+        self.assertEqual(build.etf_issuer("FT Vest U.S. Equity Deep Buffer ETF - March", True), "First Trust")
         self.assertEqual(build.etf_issuer("SPDR S&P 500 ETF TRUST", True), "SPDR")
         self.assertEqual(build.etf_issuer("iShares Core S&P 500 ETF", True), "iShares")
         self.assertEqual(build.etf_issuer("TIGER 반도체", False), "TIGER")
