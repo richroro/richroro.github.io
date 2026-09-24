@@ -111,6 +111,7 @@ async function load() {
     r.name = r.g === "KR" ? r.n : (kos[0] || r.n);
     r.sub = r.g === "KR" ? r.id : (kos[0] ? r.n : "");
     r.rk = i; // 시총 순위(파일이 시총 순으로 정렬돼 있다)
+    r.tu = r.tgt && r.p ? (r.tgt / r.p - 1) * 100 : null; // 목표가 여력(%)
     const names = [r.n, ...kos];
     r._k = names.map(norm);
     r._id = r.id.toLowerCase();
@@ -399,6 +400,8 @@ const PRESETS = [
   { id: "value", t: "저PER·고ROE", sort: ["pe", 1], view: "value", f: (r) => r.pe >= 3 && r.pe < 12 && r.roe >= 12 && r.roe <= 60 && (r.mcu || 0) >= 300 && !r.warn },
   { id: "div", t: "고배당 4%+", sort: ["dy", -1], view: "value", f: (r) => r.dy != null && r.dy >= 4 && r.dy <= 15 && (r.mcu || 0) >= 300 && !r.warn },
   { id: "earn", t: "2주 안 실적 발표", sort: ["ern", 1], view: "value", f: (r) => soon(r, 14) },
+  { id: "upside", t: "목표가 여력 30%+", sort: ["tu", -1], view: "value", f: (r) => r.tu != null && r.tu >= 30 && r.tu < 300 && (r.mcu || 0) >= 10000 },
+  { id: "lowbeta", t: "저베타 대형주", sort: ["beta", 1], view: "tech", f: (r) => r.beta != null && r.beta < 0.7 && (r.mcu || 0) >= 10000 },
   { id: "buy", t: "애널리스트 매수", sort: ["ar", 1], view: "value", f: (r) => r.ar != null && r.ar <= 2 && (r.mcu || 0) >= 2000 },
   { id: "gc", t: "골든크로스", sort: ["mcu", -1], view: "tech", f: (r) => r.x === "G" },
   { id: "dc", t: "데드크로스", sort: ["mcu", -1], view: "tech", f: (r) => r.x === "D" },
@@ -418,7 +421,8 @@ const METRICS = [
   { k: "r63", t: "3개월 수익률", u: "%" }, { k: "r126", t: "6개월 수익률", u: "%" }, { k: "r252", t: "1년 수익률", u: "%" },
   { k: "ytd", t: "연초 이후", u: "%" }, { k: "fh", t: "52주 고점 대비", u: "%" }, { k: "rsi", t: "RSI(14)", u: "" },
   { k: "pm50", t: "50일선 대비", u: "%" }, { k: "pm200", t: "200일선 대비", u: "%" }, { k: "vol", t: "변동성(연환산)", u: "%" },
-  { k: "mdd", t: "1년 최대낙폭", u: "%" }, { k: "vs", t: "거래 배수", u: "배" }, { k: "ar", t: "애널리스트 의견(1=강력매수)", u: "" },
+  { k: "mdd", t: "1년 최대낙폭", u: "%" }, { k: "vs", t: "거래 배수", u: "배" }, { k: "beta", t: "베타(1년)", u: "" },
+  { k: "tu", t: "목표가 여력", u: "%" }, { k: "ar", t: "애널리스트 의견(1=강력매수)", u: "" },
   { k: "sm", t: "모멘텀 점수", u: "" }, { k: "st", t: "추세 점수", u: "" }, { k: "ss", t: "안정성 점수", u: "" }, { k: "sl", t: "유동성 점수", u: "" },
 ];
 const MET = Object.fromEntries(METRICS.map((m) => [m.k, m]));
@@ -476,6 +480,8 @@ const COLS = {
   dy: { t: "배당", k: "dy", r: (r) => r.dy == null ? "—" : r.dy ? r.dy.toFixed(2) + "%" : '<span class="hint">0</span>' },
   roe: { t: "ROE", k: "roe", r: (r) => r.roe == null ? "—" : `<span class="${r.roe < 0 ? "down" : ""}">${r.roe.toFixed(1)}%</span>` },
   ern: { t: "다음 실적", k: "ern", r: (r) => ernTxt(r) },
+  tu: { t: "목표가 여력", k: "tu", r: (r) => r.tu == null ? "—" : `<span class="${cls(r.tu)}">${pct(r.tu, 0)}</span>` },
+  beta: { t: "베타", k: "beta", r: (r) => r.beta == null ? "—" : `<span class="${r.beta >= 1.5 ? "up" : r.beta <= 0.5 ? "down" : ""}">${r.beta.toFixed(2)}</span>` },
   ar: { t: "애널리스트", k: "ar", r: (r) => r.ar == null ? "—" : `${AR_TXT(r.ar)} <span class="hint">${r.ar.toFixed(1)}</span>` },
   rsi: { t: "RSI", k: "rsi", r: (r) => r.rsi == null ? "—" : `<span class="${r.rsi >= 70 ? "up" : r.rsi <= 30 ? "down" : ""}">${r.rsi}</span>` },
   pm50: { t: "50일선 대비", k: "pm50", r: (r) => `<span class="${cls(r.pm50)}">${pct(r.pm50)}</span>` },
@@ -491,11 +497,11 @@ const COLS = {
 };
 const VIEWS = {
   basic: ["name", "p", "d1", "mc", "r21", "r252", "fh", "sp"],
-  value: ["name", "p", "d1", "mc", "pe", "fpe", "pb", "dy", "roe", "ern", "ar"],
-  tech: ["name", "p", "d1", "rsi", "pm50", "pm200", "tr", "vol", "mdd", "vs"],
+  value: ["name", "p", "d1", "mc", "pe", "fpe", "pb", "dy", "roe", "tu", "ern"],
+  tech: ["name", "p", "d1", "rsi", "pm50", "pm200", "tr", "vol", "beta", "mdd", "vs"],
   score: ["name", "d1", "r252", "sm", "st", "ss", "sl"],
 };
-const LOW_FIRST = new Set(["name", "pe", "fpe", "pb", "vol", "ar", "ern", "fl"]);
+const LOW_FIRST = new Set(["name", "pe", "fpe", "pb", "vol", "ar", "ern", "fl", "beta"]);
 const SORT_KEYS = new Set([...Object.values(COLS).map((c) => c.k).filter(Boolean), "fl"]);
 
 function ruleOk(r) {
@@ -705,19 +711,19 @@ function toggleFav(id) {
   FAV.has(id) ? FAV.delete(id) : FAV.add(id);
   store.set("finder.fav", [...FAV]);
   toast(FAV.has(id) ? "관심 종목에 담았습니다" : "관심 종목에서 뺐습니다");
-  if (MODE === "list") renderTable();
+  if (MODE === "list") { renderTable(); renderEarnings(); }
   if (CUR && CUR.id === id) paintActions();
 }
 function exportCsv() {
   const rs = filtered();
   const H = ["시장", "티커/코드", "이름", "영문·한글 병기", "업종", "산업", "통화", "가격", "1일(%)", "시총(백만, 현지통화)", "시총(백만 달러)",
     "1주(%)", "1개월(%)", "3개월(%)", "6개월(%)", "연초이후(%)", "1년(%)", "52주고점대비(%)", "RSI14", "50일선대비(%)", "200일선대비(%)",
-    "변동성(%)", "1년최대낙폭(%)", "거래배수", "PER", "선행PER", "PBR", "배당수익률(%)", "ROE(%)", "EPS", "다음실적일", "애널리스트(1~5)",
+    "변동성(%)", "1년최대낙폭(%)", "거래배수", "베타", "PER", "선행PER", "PBR", "배당수익률(%)", "ROE(%)", "EPS", "목표가", "목표가여력(%)", "다음실적일", "애널리스트(1~5)",
     "모멘텀", "추세", "안정성", "유동성"];
   const q = (v) => v == null ? "" : /[",\n]/.test(String(v)) ? '"' + String(v).replace(/"/g, '""') + '"' : v;
   const lines = [H.join(",")].concat(rs.map((r) => [r.m, r.id, r.name, r.sub, r.sec, r.ind, r.g === "KR" ? "KRW" : "USD", r.p, r.d1, r.mc, r.mcu,
-    r.r5, r.r21, r.r63, r.r126, r.ytd, r.r252, r.fh, r.rsi, r.pm50, r.pm200, r.vol, r.mdd, r.vs,
-    r.pe, r.fpe, r.pb, r.dy, r.roe, r.eps, r.ern, r.ar, r.sm, r.st, r.ss, r.sl].map(q).join(",")));
+    r.r5, r.r21, r.r63, r.r126, r.ytd, r.r252, r.fh, r.rsi, r.pm50, r.pm200, r.vol, r.mdd, r.vs, r.beta,
+    r.pe, r.fpe, r.pb, r.dy, r.roe, r.eps, r.tgt, r.tu == null ? null : +r.tu.toFixed(1), r.ern, r.ar, r.sm, r.st, r.ss, r.sl].map(q).join(",")));
   download(`stocks-${new Date().toISOString().slice(0, 10)}.csv`, "﻿" + lines.join("\n"), "text/csv;charset=utf-8");
 }
 function download(name, text, type) {
@@ -771,6 +777,12 @@ function insights(r) {
     const k = r.vol / MED[r.g].vol;
     add(k >= 1.5 ? "warn" : "neu", `연환산 변동성 <b>${r.vol.toFixed(0)}%</b> — ${nm} 중위(${MED[r.g].vol.toFixed(0)}%)의 ${k.toFixed(1)}배입니다.` + (r.mdd != null ? ` 지난 1년 최대 낙폭은 ${pct(r.mdd)}.` : ""));
   }
+  if (r.beta != null) {
+    const bn = r.g === "US" ? "S&P 500" : r.m === "KOSPI" ? "코스피" : "코스닥";
+    if (r.beta >= 1.5) add("warn", `베타 <b>${r.beta.toFixed(2)}</b> — ${bn}가 1% 움직일 때 평균 ${r.beta.toFixed(1)}% 움직였습니다. 시장보다 크게 흔들립니다.`);
+    else if (r.beta <= 0.5) add("neu", `베타 <b>${r.beta.toFixed(2)}</b> — ${bn}와 따로 움직이거나 덜 흔들렸습니다.`);
+  }
+  if (r.tu != null && Math.abs(r.tu) < 300) add(r.tu >= 0 ? "pos" : "neg", `애널리스트 1년 목표가 ${price(r, r.tgt)} — 지금보다 <b>${pct(r.tu, 0)}</b>. 목표가는 늦게 바뀌고 낙관적인 편이라 참고만 하세요.`);
   if (r.nd != null && r.nd < 252) add("neu", `데이터가 ${r.nd}거래일치라 1년 지표 일부가 비어 있습니다(최근 상장이거나 거래정지 기간이 있었을 수 있습니다).`);
   if (r.nd == null && r.g === "US") add("neu", "이 종목의 1년 일봉은 아직 없습니다. 아래 인터랙티브 차트는 바로 볼 수 있습니다.");
   return L;
@@ -808,9 +820,9 @@ function kpis(r) {
   const ret = [["1주", r.r5], ["1개월", r.r21], ["3개월", r.r63], ["6개월", r.r126], ["연초 이후", r.ytd], ["1년", r.r252]];
   return `<div class="stats c3 fix3">${ret.map(([k, v]) => cell(k, pct(v), "", cls(v), true)).join("")}</div>`;
 }
-const FS_TXT = { Y: "Yahoo Finance · 최근 4분기", S: "미국 SEC 공시(EDGAR) · 최근 회계연도", K: "한국거래소 · 최근 결산", N: "네이버 증권 · 최근 결산" };
+const FS_TXT = { Q: "나스닥 · 최근 4분기", Y: "Yahoo Finance · 최근 4분기", S: "미국 SEC 공시(EDGAR) · 최근 회계연도", K: "한국거래소 · 최근 결산", N: "네이버 증권 · 최근 결산" };
 function valuationBlock(r) {
-  const has = ["pe", "fpe", "pb", "dy", "roe", "eps", "ern", "ar"].some((k) => r[k] != null && r[k] !== "");
+  const has = ["pe", "fpe", "pb", "dy", "roe", "eps", "tgt", "ar"].some((k) => r[k] != null && r[k] !== "");
   if (!has) return `<div class="note"><span class="ic">ⓘ</span><div>${r.g === "US"
     ? "미국 종목의 PER·PBR·배당은 지금 자동 수집 출처(Yahoo·SEC)가 데이터 수집 서버의 접속을 막고 있어 비어 있습니다. 아래 <b>📊 재무제표 보기</b>로 TradingView 재무 데이터를 바로 볼 수 있습니다."
     : `이 종목은 재무 지표가 아직 없습니다${r.m === "KONEX" ? "(코넥스는 출처에서 제공하지 않습니다)" : ""}. 다음 자동 갱신 때 채워질 수 있습니다.`}</div></div>`;
@@ -824,7 +836,8 @@ function valuationBlock(r) {
     ${cell("ROE", r.roe == null ? "—" : r.roe.toFixed(1) + "%", sm.roe != null ? "업종 중위 " + sm.roe.toFixed(1) + "%" : "", r.roe < 0 ? "down" : "")}
     ${cell("EPS(최근 4분기)", eps, "", r.eps < 0 ? "down" : "")}
     ${cell("다음 실적 발표", ernTxt(r), r.ern && daysTo(r.ern) >= 0 ? "회사·거래소 예정일" : "")}
-    ${cell("애널리스트 평균", AR_TXT(r.ar), r.ar == null ? "" : r.ar.toFixed(1) + " / 5 (1=강력 매수)")}
+    ${r.tgt != null ? cell("1년 목표가", price(r, r.tgt), `여력 ${pct(r.tu, 0)}${r.ar != null ? " · " + AR_TXT(r.ar) : ""}`, cls(r.tu))
+      : cell("애널리스트 평균", AR_TXT(r.ar), r.ar == null ? "" : r.ar.toFixed(1) + " / 5 (1=강력 매수)")}
   </div>
   <p class="hint mt8">재무 지표 출처: ${FS_TXT[r.fs] || "—"}(${META.fundAt || "—"} 수집)${r.fs === "S" ? ". 결산 뒤 실적 변화는 반영되지 않습니다" : ""}. 업종 중위는 같은 시장·같은 업종에서 거래가 있는 종목 기준입니다.</p>`;
 }
@@ -853,7 +866,7 @@ function techBlock(r) {
     ${cell("1년 최대낙폭", pct(r.mdd), "", "down")}
     ${cell("20일 평균 거래대금", r.tv == null ? "—" : money(r, r.tv), "하루 평균")}
     ${cell("거래량 배수", r.vs == null ? "—" : r.vs.toFixed(2) + "×", "5일 ÷ 60일 평균")}
-    ${cell("시가총액", cap(r), capOther(r))}
+    ${cell("베타(1년)", r.beta == null ? "—" : r.beta.toFixed(2), r.g === "US" ? "S&P 500 대비" : r.m === "KOSPI" ? "코스피 대비" : "코스닥 대비")}
   </div>`;
 }
 function profileBlock(r) {
@@ -1108,7 +1121,9 @@ function renderCompare() {
     ["1개월", (r) => pct(r.r21), (r) => r.r21, 1], ["3개월", (r) => pct(r.r63), (r) => r.r63, 1], ["1년", (r) => pct(r.r252), (r) => r.r252, 1],
     ["52주 고점 대비", (r) => pct(r.fh), (r) => r.fh, 1], ["PER", (r) => num(r.pe), (r) => r.pe, -1], ["PBR", (r) => num(r.pb, 2), (r) => r.pb, -1],
     ["배당수익률", (r) => r.dy == null ? "—" : r.dy.toFixed(2) + "%", (r) => r.dy, 1], ["ROE", (r) => r.roe == null ? "—" : r.roe.toFixed(1) + "%", (r) => r.roe, 1],
-    ["RSI", (r) => r.rsi ?? "—"], ["변동성", (r) => r.vol == null ? "—" : r.vol.toFixed(0) + "%", (r) => r.vol, -1],
+    ["목표가 여력", (r) => pct(r.tu, 0), (r) => r.tu, 1], ["RSI", (r) => r.rsi ?? "—"],
+    ["베타", (r) => r.beta == null ? "—" : r.beta.toFixed(2), (r) => r.beta, -1],
+    ["변동성", (r) => r.vol == null ? "—" : r.vol.toFixed(0) + "%", (r) => r.vol, -1],
     ["1년 최대낙폭", (r) => pct(r.mdd), (r) => r.mdd, 1], ["모멘텀", (r) => r.sm ?? "—", (r) => r.sm, 1], ["안정성", (r) => r.ss ?? "—", (r) => r.ss, 1],
     ["애널리스트", (r) => AR_TXT(r.ar), (r) => r.ar, -1],
   ];
@@ -1138,9 +1153,110 @@ function initCompare() {
   renderTray();
 }
 
+/* ---------------------------------------------------------------- 지수 */
+function renderIndices() {
+  const box = $("idxBox"); if (!box) return;
+  const L = META.idx || [];
+  box.hidden = !L.length;
+  box.innerHTML = L.map((x) => {
+    const pts = x.sp ? decodeSpark(x.sp) : [];
+    const d = pts.map((v, i) => (i ? "L" : "M") + (i * 100 / (pts.length - 1)).toFixed(1) + " " + (20 - v * 18).toFixed(1)).join("");
+    const inv = x.s === "^VIX"; // 공포지수는 오르면 나쁜 신호라 색을 뒤집지 않고 그대로 두되 설명을 붙인다
+    return `<div class="ix" title="${esc(x.n)} · 1년 ${pct(x.r252)} · 연초 이후 ${pct(x.ytd)}${inv ? " · 높을수록 시장 불안" : ""}">
+      <div class="n"><span>${x.g === "KR" ? "🇰🇷" : "🇺🇸"} ${esc(x.n)}</span><span>${pct(x.r252, 0)} <small>1년</small></span></div>
+      <div class="v">${x.p == null ? "—" : x.p.toLocaleString("en-US", { maximumFractionDigits: 2 })}</div>
+      <div class="c ${cls(x.d1h)}">${pct(x.d1h, 2)}</div>
+      ${d ? `<svg viewBox="0 0 100 22" preserveAspectRatio="none" aria-hidden="true"><path d="${d}" fill="none" stroke="${(pts[pts.length - 1] >= pts[0]) ? "var(--up)" : "var(--down)"}" stroke-width="1.4" vector-effect="non-scaling-stroke"/></svg>` : ""}
+    </div>`;
+  }).join("");
+}
+
+/* ---------------------------------------------------------------- 시장 지도(트리맵) */
+const mapState = { g: "KR", k: "d1", n: 50 };
+function squarify(items, x, y, w, h) {
+  const out = [], total = items.reduce((s, i) => s + i.v, 0);
+  if (!total) return out;
+  let rest = items.map((i) => ({ ...i, a: i.v * w * h / total }));
+  while (rest.length) {
+    const short = Math.min(w, h);
+    const worst = (row) => {
+      const sum = row.reduce((a, b) => a + b.a, 0), mx = Math.max(...row.map((z) => z.a)), mn = Math.min(...row.map((z) => z.a));
+      return Math.max(short * short * mx / (sum * sum), (sum * sum) / (short * short * mn));
+    };
+    let row = [rest[0]], i = 1;
+    while (i < rest.length && worst([...row, rest[i]]) <= worst(row)) row.push(rest[i++]);
+    const sum = row.reduce((a, b) => a + b.a, 0);
+    if (w >= h) { const cw = sum / h; let cy = y; for (const r of row) { const ch = r.a / cw; out.push({ ...r, x, y: cy, w: cw, h: ch }); cy += ch; } x += cw; w -= cw; }
+    else { const rh = sum / w; let cx = x; for (const r of row) { const rw = r.a / rh; out.push({ ...r, x: cx, y, w: rw, h: rh }); cx += rw; } y += rh; h -= rh; }
+    rest = rest.slice(i);
+  }
+  return out;
+}
+function renderMap() {
+  const box = $("mapBox"); if (!box) return;
+  const { g, k, n } = mapState;
+  const rs = ROWS.filter((r) => r.g === g && r.mcu && liquid(r)).sort((a, b) => b.mcu - a.mcu).slice(0, n);
+  const W = Math.max(300, box.clientWidth), H = Math.max(280, box.clientHeight);
+  const span = { d1: 3, r5: 6, r21: 12, r252: 60 }[k];
+  const tiles = squarify(rs.map((r) => ({ r, v: r.mcu })), 0, 0, W, H);
+  box.innerHTML = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="${g === "KR" ? "한국" : "미국"} 시가총액 상위 ${rs.length}종목 지도">${tiles.map((t) => {
+    const v = t.r[k], fs = Math.max(9, Math.min(22, Math.sqrt(t.w * t.h) / 6));
+    const showName = t.w > 42 && t.h > 24, showPct = t.h > fs * 2.6 && t.w > 38;
+    const label = t.r.g === "KR" ? t.r.name : (t.w > 90 ? t.r.name : t.r.id);
+    const maxChars = Math.floor(t.w / (fs * (/[가-힣]/.test(label) ? 1 : 0.62)));  // 한글은 영문보다 넓다
+    return `<g data-id="${esc(t.r.id)}"><rect class="tile" x="${t.x.toFixed(1)}" y="${t.y.toFixed(1)}" width="${Math.max(0, t.w).toFixed(1)}" height="${Math.max(0, t.h).toFixed(1)}" style="fill:${heat(v, span)}"><title>${esc(t.r.name)} ${pct(v, k === "d1" ? 2 : 1)} · ${cap(t.r)}</title></rect>
+      ${showName ? `<text x="${(t.x + t.w / 2).toFixed(1)}" y="${(t.y + t.h / 2 - (showPct ? fs * 0.35 : -fs * 0.35)).toFixed(1)}" text-anchor="middle" font-size="${fs.toFixed(1)}" font-weight="600">${esc(label.length > maxChars ? label.slice(0, Math.max(1, maxChars - 1)) + "…" : label)}</text>` : ""}
+      ${showPct ? `<text class="p" x="${(t.x + t.w / 2).toFixed(1)}" y="${(t.y + t.h / 2 + fs * 0.95).toFixed(1)}" text-anchor="middle" font-size="${(fs * 0.8).toFixed(1)}">${pct(v, k === "d1" ? 2 : 1)}</text>` : ""}</g>`;
+  }).join("")}</svg>`;
+  $("mapLegend").innerHTML = `<span>−${span}%</span>${[-1, -0.5, -0.15, 0, 0.15, 0.5, 1].map((f) => `<i style="background:${heat(f * span, span)}"></i>`).join("")}<span>+${span}%</span>`;
+}
+function initMap() {
+  if (!$("mapBox")) return;
+  seg($("mapMkt"), (v) => { mapState.g = v; renderMap(); });
+  seg($("mapPer"), (v) => { mapState.k = v; renderMap(); });
+  seg($("mapN"), (v) => { mapState.n = +v; renderMap(); });
+  $("mapBox").addEventListener("click", (e) => { const t = e.target.closest("[data-id]"); if (t) openDetail(t.dataset.id); });
+  let rt; window.addEventListener("resize", () => { clearTimeout(rt); rt = setTimeout(renderMap, 150); });
+  renderMap();
+}
+
+/* ---------------------------------------------------------------- 실적 캘린더 */
+const ernState = { m: "ALL", open: new Set() };
+function renderEarnings() {
+  const box = $("ernBox"); if (!box) return;
+  const mine = new Set([...FAV, ...PF.map((h) => h.id)]);
+  const rs = ROWS.filter((r) => soon(r, 21) && (ernState.m === "MINE" ? mine.has(r.id) : (ernState.m === "ALL" || r.g === ernState.m) && liquid(r)));
+  if (!rs.length) {
+    box.innerHTML = `<div class="cmpempty">${ernState.m === "MINE" ? "관심·보유 종목 중 3주 안에 실적을 발표하는 종목이 없습니다." : ernState.m === "KR" ? "한국 종목의 실적 발표일은 아직 출처에서 받지 못했습니다." : "3주 안의 실적 발표 일정이 없습니다(데이터가 다음 갱신 때 채워질 수 있습니다)."}</div>`;
+    return;
+  }
+  const days = new Map();
+  for (const r of rs) { if (!days.has(r.ern)) days.set(r.ern, []); days.get(r.ern).push(r); }
+  const wd = "일월화수목금토";
+  const today = new Date().toISOString().slice(0, 10);
+  box.innerHTML = [...days].sort((a, b) => a[0].localeCompare(b[0])).map(([d, list]) => {
+    list.sort((a, b) => (mine.has(b.id) - mine.has(a.id)) || (b.mcu || 0) - (a.mcu || 0));
+    const dt = new Date(d + "T00:00:00"), open = ernState.open.has(d), shown = open ? list : list.slice(0, 8);
+    return `<div class="eday${d === today ? " today" : ""}"><h4><span>${dt.getMonth() + 1}월 ${dt.getDate()}일 (${wd[dt.getDay()]})</span><small>${daysTo(d) === 0 ? "오늘" : "D-" + daysTo(d)} · ${list.length}종목</small></h4>
+      ${shown.map((r) => `<a class="erow" href="${stockHref(r.id)}" data-id="${esc(r.id)}">${avatar(r, 20)}<b>${esc(r.name)}</b>${mine.has(r.id) ? '<span class="mine">★</span>' : ""}<span class="num">${cap(r)}</span></a>`).join("")}
+      ${list.length > 8 ? `<div class="more"><button class="ghost sm" type="button" data-more="${d}">${open ? "접기" : `${list.length - 8}개 더`}</button></div>` : ""}</div>`;
+  }).join("");
+}
+function initEarnings() {
+  if (!$("ernBox")) return;
+  seg($("ernMkt"), (v) => { ernState.m = v; renderEarnings(); });
+  $("ernBox").addEventListener("click", (e) => {
+    const m = e.target.closest("[data-more]");
+    if (m) { const d = m.dataset.more; ernState.open.has(d) ? ernState.open.delete(d) : ernState.open.add(d); renderEarnings(); return; }
+    const a = e.target.closest("[data-id]");
+    if (a && !e.metaKey && !e.ctrlKey) { e.preventDefault(); openDetail(a.dataset.id); }
+  });
+  renderEarnings();
+}
+
 /* ---------------------------------------------------------------- 포트폴리오 */
 let pfPick = null;
-function savePf() { store.set("finder.pf", PF); }
+function savePf() { store.set("finder.pf", PF); renderEarnings(); }
 function pfPrefill(r) {
   pfPick = r; $("pfQ").value = `${r.name} (${r.id})`;
   $("pfHint").textContent = `${r.name} · 현재가 ${price(r)} · 평균 단가는 ${r.g === "KR" ? "원" : "달러"}로 넣습니다.`;
@@ -1162,16 +1278,23 @@ function renderPf() {
     return { h, r, val, cost, pl: cost != null && val != null ? val - cost : null, plp: h.c ? (r.p / h.c - 1) * 100 : null, day };
   });
   const tcv = items.filter((x) => x.cost != null).reduce((s, x) => s + (x.val || 0), 0); // 원금이 있는 종목의 평가액
+  const divY = items.reduce((s, x) => s + (x.val && x.r.dy ? x.val * x.r.dy / 100 : 0), 0);
+  const bItems = items.filter((x) => x.val && x.r.beta != null), bw = bItems.reduce((s, x) => s + x.val, 0);
+  const pBeta = bw ? bItems.reduce((s, x) => s + x.val * x.r.beta, 0) / bw : null;
+  const upcoming = items.filter((x) => soon(x.r, 21)).sort((a, b) => a.r.ern.localeCompare(b.r.ern));
   const tpl = tc ? tcv - tc : null;
   const bySec = new Map();
   for (const x of items) { const k = (x.r.g === "KR" ? "🇰🇷 " : "🇺🇸 ") + (x.r.sec || "기타"); bySec.set(k, (bySec.get(k) || 0) + (x.val || 0)); }
   const alloc = [...bySec].sort((a, b) => b[1] - a[1]);
-  el.innerHTML = `<div class="stats c4">
+  el.innerHTML = `<div class="stats c3">
       ${cell("평가금액", krw(tv), fx ? `환율 ${nf.format(fx)}원/$ 적용` : "", "", true)}
       ${cell("평가손익", tpl == null ? "—" : (tpl >= 0 ? "+" : "") + krw(tpl), tc ? pct(tpl / tc * 100, 2) + " · 원금 " + krw(tc) : "평균 단가를 넣으면 계산합니다", cls(tpl), true)}
       ${cell("전일 대비", (td >= 0 ? "+" : "") + krw(td), tv - td ? pct(td / (tv - td) * 100, 2) : "", cls(td), true)}
       ${cell("종목 수", rows.length + "개", `한국 ${items.filter((x) => x.r.g === "KR").length} · 미국 ${items.filter((x) => x.r.g === "US").length}`, "", true)}
+      ${cell("예상 연 배당", divY ? krw(divY) : "—", tv && divY ? `평가금액의 ${(divY / tv * 100).toFixed(2)}% · 세전` : "배당 정보가 있는 종목 기준", "", true)}
+      ${cell("포트폴리오 베타", pBeta == null ? "—" : pBeta.toFixed(2), pBeta == null ? "" : pBeta >= 1.2 ? "시장보다 크게 흔들리는 구성" : pBeta <= 0.8 ? "시장보다 덜 흔들리는 구성" : "시장과 비슷하게 움직이는 구성", "", true)}
     </div>
+    ${upcoming.length ? `<p class="hint mt8">📅 3주 안 실적 발표: ${upcoming.map((x) => `<b>${esc(x.r.name)}</b> ${x.r.ern.slice(5).replace("-", "/")}`).join(" · ")}</p>` : ""}
     ${tv ? `<div class="alloc mt12" role="img" aria-label="업종별 비중">${alloc.map(([k, v], i) => `<i style="width:${v / tv * 100}%;background:${PALETTE[i % PALETTE.length]}" title="${esc(k)} ${(v / tv * 100).toFixed(1)}%"></i>`).join("")}</div>
     <div class="alloc-lg">${alloc.slice(0, 8).map(([k, v], i) => `<span><i style="background:${PALETTE[i % PALETTE.length]}"></i>${esc(k)} ${(v / tv * 100).toFixed(1)}%</span>`).join("")}</div>` : ""}
     <div class="card mt12"><div class="tscroll"><table class="scr pf-t"><thead><tr><th style="text-align:left">종목</th><th>수량</th><th>평균 단가</th><th>현재가</th><th>평가금액</th><th>손익</th><th>오늘</th><th>비중</th><th><span class="sr">삭제</span></th></tr></thead><tbody>
@@ -1279,10 +1402,13 @@ function initPwa() {
   $("heroLead").innerHTML = `미국 <b>${nf.format(c.US || 0)}</b>종목과 한국 <b>${nf.format(c.KR || 0)}</b>종목, 전부를 한글·영문·티커·종목코드·초성(ㅅㅅㅈㅈ)으로 찾고
     수익률·추세·밸류에이션을 <b>같은 시장 안의 순위</b>로 읽습니다.`;
   renderFresh();
+  renderIndices();
   initSearch();
   renderPulse();
+  initMap();
   if (!ROWS.some((r) => r.g === "KR" && r.sec)) { secState.g = "US"; setSeg($("secMkt"), "US"); }
   initSectors(); renderSectors();
+  initEarnings();
   initScreener();
   initDetail();
   initCompare();
