@@ -224,7 +224,7 @@ function renderPulse() {
 /* ---------------------------------------------------------------- 업종 흐름 */
 const secState = { g: "KR", k: "d1" };
 function heat(v, span) {
-  if (v == null) return "var(--surface-2)";
+  if (v == null || Math.abs(v) < 0.005) return "var(--surface-2)";
   const t = Math.min(1, Math.abs(v) / span);
   const c = v >= 0 ? "var(--fill-up)" : "var(--fill-down)";
   return `color-mix(in srgb, ${c} ${Math.round(8 + t * 52)}%, var(--surface))`;
@@ -247,12 +247,13 @@ function renderSectors() {
       : "이 기간의 수익률은 일봉 데이터가 채워진 뒤 계산됩니다. 지금은 1일 등락만 볼 수 있습니다.";
     return;
   }
+  // 한국은 업종이 잘게 나뉘어 있어 종목 수가 많은 40개만 고른 뒤 등락 순으로 놓는다
+  if (g === "KR" && list.length > 40) list = list.filter((x) => x.n >= 8).sort((a, b) => b.n - a.n).slice(0, 40);
   list.sort((a, b) => b.v - a.v);
-  if (g === "KR" && list.length > 40) list = list.filter((x) => x.n >= 8).slice(0, 40);
   const span = Math.max(...list.map((x) => Math.abs(x.v)), k === "d1" ? 2 : 8);
   $("secGrid").innerHTML = list.map((x) => `<button class="sec" type="button" data-sec="${esc(x.sec)}" style="background:${heat(x.v, span)}">
       <b title="${esc(x.sec)}">${esc(x.sec)}</b><div class="v">${pct(x.v, k === "d1" ? 2 : 1)}</div><small>${x.n}종목</small></button>`).join("");
-  note.textContent = g === "KR" && groups.size > list.length ? "한국은 업종이 세분돼 있어 종목이 8개 이상인 업종만 보여줍니다." : "";
+  note.textContent = g === "KR" && groups.size > list.length ? "한국은 업종이 잘게 나뉘어 있어 종목 수가 많은 40개 업종만 보여줍니다. 나머지는 스크리너의 업종 목록에 있습니다." : "";
 }
 function initSectors() {
   seg($("secMkt"), (v) => { secState.g = v; renderSectors(); });
