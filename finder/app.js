@@ -811,7 +811,9 @@ function kpis(r) {
 const FS_TXT = { Y: "Yahoo Finance · 최근 4분기", S: "미국 SEC 공시(EDGAR) · 최근 회계연도", K: "한국거래소 · 최근 결산", N: "네이버 증권 · 최근 결산" };
 function valuationBlock(r) {
   const has = ["pe", "fpe", "pb", "dy", "roe", "eps", "ern", "ar"].some((k) => r[k] != null && r[k] !== "");
-  if (!has) return `<div class="note"><span class="ic">ⓘ</span><div>이 종목은 재무 지표가 아직 없습니다${r.m === "KONEX" ? "(코넥스는 출처에서 제공하지 않습니다)" : ""}. 다음 자동 갱신 때 채워질 수 있습니다.</div></div>`;
+  if (!has) return `<div class="note"><span class="ic">ⓘ</span><div>${r.g === "US"
+    ? "미국 종목의 PER·PBR·배당은 지금 자동 수집 출처(Yahoo·SEC)가 데이터 수집 서버의 접속을 막고 있어 비어 있습니다. 아래 <b>📊 재무제표 보기</b>로 TradingView 재무 데이터를 바로 볼 수 있습니다."
+    : `이 종목은 재무 지표가 아직 없습니다${r.m === "KONEX" ? "(코넥스는 출처에서 제공하지 않습니다)" : ""}. 다음 자동 갱신 때 채워질 수 있습니다.`}</div></div>`;
   const sm = secMed(r) || {};
   const eps = r.eps == null ? "—" : r.g === "KR" ? nf.format(Math.round(r.eps)) + "원" : "$" + r.eps.toFixed(2);
   return `<div class="stats c4">
