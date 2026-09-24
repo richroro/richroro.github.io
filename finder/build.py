@@ -873,6 +873,8 @@ TV_CANDIDATES = {
     "eps": ["earnings_per_share_diluted_ttm", "earnings_per_share_basic_ttm"], "pb": ["price_book_fq", "price_book_ratio"],
     "roe": ["return_on_equity", "return_on_equity_fq"], "dy": ["dividends_yield_current", "dividend_yield_recent", "dividends_yield"],
     "ern": ["earnings_release_next_date"], "exd": ["ex_dividend_date_upcoming"],
+    # 애널리스트 평균 의견(1 강력 매수 … 5 강력 매도, Yahoo 와 같은 눈금)과 평균 목표가(상장 통화)
+    "ar": ["recommendation_mark"], "tgt": ["price_target_average", "price_target_1y"],
 }
 TV_EX = {"NASDAQ": "NASDAQ", "NYSE": "NYSE", "AMEX": "AMEX", "KOSPI": "KRX", "KOSDAQ": "KRX", "KONEX": "KRX"}
 
@@ -886,17 +888,19 @@ def tv_post(market: str, body: dict):
 
 
 def tv_columns(market: str) -> dict[str, str]:
-    """후보 열을 한 줄짜리 요청으로 하나씩 시험해 받아 주는 이름만 고른다."""
+    """후보 열을 시총 상위 5종목 요청으로 하나씩 시험한다. 이름은 받아 줘도 값이 비는 열이 있어
+    값이 하나라도 온 열만 고른다."""
     ok = {}
     for key, cands in TV_CANDIDATES.items():
         for c in cands:
             try:
-                j = tv_post(market, {"columns": ["name", c], "range": [0, 1]})
-                if "data" in j:
-                    ok[key] = c
-                    break
+                j = tv_post(market, {"columns": ["name", c], "range": [0, 5],
+                                     "sort": {"sortBy": "market_cap_basic", "sortOrder": "desc"}})
             except Exception:
                 continue
+            if any(len(row.get("d") or []) > 1 and row["d"][1] is not None for row in j.get("data") or []):
+                ok[key] = c
+                break
     return ok
 
 
@@ -916,7 +920,8 @@ def parse_tv(j: dict, cols: dict[str, str], today: dt.date) -> dict[str, dict]:
         if not sym or len(d) < 1 + len(keys):
             continue
         v = dict(zip(keys, d[1:]))
-        f = {"pe": _ok(v.get("pe"), 0, 3000), "fpe": _ok(v.get("fpe"), 0, 3000), "pb": _ok(v.get("pb"), 0, 500),
+        f = {"pe": _ok(v.get("pe"), 0.5, 3000), "fpe": _ok(v.get("fpe"), 0.5, 3000), "pb": _ok(v.get("pb"), 0, 500),
+             "ar": _ok(v.get("ar"), 0.99, 5.01), "tgt": _ok(v.get("tgt"), 0, 1e8),
              "roe": _ok(v.get("roe"), -300, 300), "dy": _ok(v.get("dy"), -0.001, 25),
              "eps": v.get("eps") if isinstance(v.get("eps"), (int, float)) and math.isfinite(v["eps"]) else None}
         e = _tv_date(v.get("ern"))
@@ -945,6 +950,9 @@ def tv_fund(rows: list[dict], today: dt.date) -> dict[str, dict]:
         ids = {r["id"] for r in rows if r["g"] == g}
         got = {k: v for k, v in parse_tv(j, cols, today).items() if k in ids}
         log(f"  트레이딩뷰 {market}: {len(got)}/{len(ids)}종목")
+        for sid in ("AAPL", "NVDA", "005930", "000660"):  # 눈금·통화가 맞는지 로그로 바로 확인한다
+            if sid in got:
+                log(f"    {sid}: {got[sid]}")
         out.update(got)
     return out
 
@@ -956,7 +964,9 @@ def fundamentals(rows: list[dict], today: dt.date, kr_asof: dt.date | None) -> t
     y = yahoo_fund(rows, today)
     log(f"  Yahoo {len(y)}종목")
     t = tv_fund(rows, today)
-    q = {} if len(y) >= 1000 else nasdaq_fund(rows)
+    # 나스닥 요약은 종목마다 요청이라 20분 가까이 걸린다. 트레이딩뷰에 목표가가 없는 종목만 묻는다
+    need = [r for r in rows if r["g"] == "US" and (t.get(r["id"]) or {}).get("tgt") is None]
+    q = {} if len(y) >= 1000 else nasdaq_fund(need)
     s = sec_fund(rows, today)
     log(f"  SEC {len(s)}종목")
     if not y and not q and len(s) < 1000:  # 미국 쪽이 다 막히면 네이버 해외주식으로 채운다
@@ -989,6 +999,10 @@ def fundamentals(rows: list[dict], today: dt.date, kr_asof: dt.date | None) -> t
                     cur[kk] = v
     for sid, d in ern.items():  # 실적일은 나스닥 캘린더가 더 정확하다(Yahoo 가 막힌 날에도 나온다)
         out.setdefault(sid, {})["ern"] = d
+    for f in out.values():  # 반올림하면 0.0 이 되는 PER 은 뜻이 없다
+        for kk in ("pe", "fpe"):
+            if f.get(kk) is not None and f[kk] < 0.5:
+                f[kk] = None
     counts = {"Y": len(y), "T": len(t), "Q": len(q), "E": len(ern), "S": n_sec,
               "K": sum(1 for f in k.values() if f.get("fs") == "K"),
               "N": sum(1 for f in list(k.values()) + list(s.values()) if f.get("fs") == "N")}

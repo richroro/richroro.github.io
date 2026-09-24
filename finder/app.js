@@ -28,7 +28,7 @@ let SAVED = store.get("finder.screens", []);   // [{ name, qs }]
 
 /* ---------------------------------------------------------------- 형식 */
 function sgn(v) { return v > 0 ? "+" : v < 0 ? "−" : ""; }
-function pct(v, d = 1) { return v == null ? "—" : sgn(v) + Math.abs(v).toFixed(d) + "%"; }
+function pct(v, d = 1) { if (v == null) return "—"; const a = Math.abs(v).toFixed(d); return (+a ? sgn(v) : "") + a + "%"; }
 function cls(v) { return v == null ? "" : v > 0 ? "up" : v < 0 ? "down" : ""; }
 function num(v, d = 1) { return v == null ? "—" : v.toLocaleString("ko-KR", { minimumFractionDigits: d, maximumFractionDigits: d }); }
 function price(r, v = r.p) {
@@ -138,7 +138,7 @@ async function load() {
   }
   for (const [k, rs] of bySec) {
     SECMED.set(k, { n: rs.length, pe: median(rs.map((r) => r.pe)), pb: median(rs.map((r) => r.pb)),
-                    dy: median(rs.map((r) => r.dy)), roe: median(rs.map((r) => r.roe)), r252: median(rs.map((r) => r.r252)) });
+                    dy: median(rs.map((r) => r.dy > 0 ? r.dy : null)), roe: median(rs.map((r) => r.roe)), r252: median(rs.map((r) => r.r252)) });
   }
   if (typeof REGISTRY !== "undefined") {
     for (const e of REGISTRY) DEEP.set(e.tk, { href: e.href || e.base + e.slug + "/", hint: e.hint });
@@ -851,7 +851,7 @@ function valuationBlock(r) {
     ${cell("PER", r.pe == null ? (r.eps != null && r.eps < 0 ? "적자" : "—") : num(r.pe) + '<span class="u">배</span>', vsMed(r.pe, sm.pe))}
     ${cell("선행 PER", r.fpe == null ? "—" : num(r.fpe) + '<span class="u">배</span>', r.fpe != null && r.pe != null ? (r.fpe < r.pe ? "이익 증가 예상" : "이익 감소 예상") : "")}
     ${cell("PBR", r.pb == null ? "—" : num(r.pb, 2) + '<span class="u">배</span>', vsMed(r.pb, sm.pb))}
-    ${cell("배당수익률", r.dy == null ? "—" : r.dy.toFixed(2) + "%", sm.dy != null ? "업종 중위 " + sm.dy.toFixed(2) + "%" : "")}
+    ${cell("배당수익률", r.dy == null ? "—" : r.dy.toFixed(2) + "%", sm.dy != null ? "업종 배당주 중위 " + sm.dy.toFixed(2) + "%" : "")}
     ${cell("ROE", r.roe == null ? "—" : r.roe.toFixed(1) + "%", sm.roe != null ? "업종 중위 " + sm.roe.toFixed(1) + "%" : "", r.roe < 0 ? "down" : "")}
     ${cell("EPS(최근 4분기)", eps, "", r.eps < 0 ? "down" : "")}
     ${cell("다음 실적 발표", ernTxt(r), r.ern && daysTo(r.ern) >= 0 ? "회사·거래소 예정일" : "")}
@@ -1595,6 +1595,8 @@ function drawPf() {
   if (!A) { el.innerHTML = `<div class="nochart">1년 흐름을 그릴 데이터가 없습니다.</div>`; return; }
   // 모든 종목의 값이 있는 첫날부터(늦게 상장한 종목이 있으면 그날부터)
   const st = Math.max(0, ...A.cols.map((v) => v.findIndex((x) => x != null)));
+  // 달력 차이(한국·미국 휴장일)로 생기는 며칠은 무시하고, 자기 달력에서 늦게 시작한 종목이 있을 때만 알린다
+  const late = A.daily ? hs.some((x) => histOf(x.r).close.findIndex((v) => v != null) > 5) : A.cols.some((v) => v.findIndex((x) => x != null) > 1);
   const dates = A.dates.slice(st);
   const val = dates.map((_, i) => hs.reduce((sum, x, k) => sum + A.cols[k][st + i] * x.h.q * (x.r.g === "KR" ? 1 : fx), 0));
   if (val.length < 2 || !(val[0] > 0)) { el.innerHTML = `<div class="nochart">1년 흐름을 그릴 데이터가 없습니다.</div>`; return; }
@@ -1637,7 +1639,7 @@ function drawPf() {
   }
   $("pfSum").innerHTML = sum;
   $("pfLeg").innerHTML = [[col, "평가금액"], ...(bench ? [["var(--ink-3)", bname + "(같은 출발점)"]] : [])].map(([c, t]) => `<span><i style="background:${c}"></i>${t}</span>`).join("")
-    + (dates[0] - A.dates[0] > 7 * 864e5 ? `<span class="hint">늦게 상장한 종목이 있어 ${fmtDay(dates[0], A.daily)}부터</span>` : "")
+    + (late ? `<span class="hint">늦게 상장한 종목이 있어 ${fmtDay(dates[0], A.daily)}부터</span>` : "")
     + (skip ? `<span class="hint">1년 시세가 없는 ${skip}종목 제외</span>` : "");
 }
 function initPortfolio() {

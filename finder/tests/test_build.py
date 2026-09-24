@@ -395,12 +395,24 @@ class Sources(unittest.TestCase):
         self.assertIsNone(out["XX"]["roe"])
         self.assertIsNone(out["XX"]["ern"])
 
+        cols2 = {"pe": "price_earnings_ttm", "ar": "recommendation_mark", "tgt": "price_target_average"}
+        out2 = build.parse_tv({"data": [{"s": "NASDAQ:NVDA", "d": ["NVDA", 0.03, 1.4, 250.0]},
+                                        {"s": "NYSE:YY", "d": ["YY", 20, 7, -1]}]}, cols2, dt.date(2026, 9, 24))
+        self.assertIsNone(out2["NVDA"]["pe"])   # 0 에 가까운 PER 은 버린다
+        self.assertEqual(out2["NVDA"]["ar"], 1.4)
+        self.assertEqual(out2["NVDA"]["tgt"], 250.0)
+        self.assertIsNone(out2["YY"]["ar"])     # 1~5 밖 의견·음수 목표가는 버린다
+        self.assertIsNone(out2["YY"]["tgt"])
+
         seen = []
 
         def fake(market, body):
-            seen.append(body["columns"][1])
-            if body["columns"][1] in ("price_earnings_ttm", "return_on_equity_fq"):
-                return {"data": []}
+            c = body["columns"][1]
+            seen.append(c)
+            if c in ("price_earnings_ttm", "return_on_equity_fq"):
+                return {"data": [{"s": "NASDAQ:AAPL", "d": ["AAPL", None]}, {"s": "NASDAQ:NVDA", "d": ["NVDA", 1.2]}]}
+            if c == "price_earnings_forward_fy":  # 이름은 받지만 값이 비는 열은 건너뛴다
+                return {"data": [{"s": "NASDAQ:AAPL", "d": ["AAPL", None]}]}
             raise Exception("400 Unknown field")
 
         orig = build.tv_post
@@ -410,6 +422,7 @@ class Sources(unittest.TestCase):
         finally:
             build.tv_post = orig
         self.assertEqual(got, {"pe": "price_earnings_ttm", "roe": "return_on_equity_fq"})
+        self.assertIn("non_gaap_price_to_earnings_per_share_forecast_next_fy", seen)
 
     def test_nasdaq_earnings(self):
         seen = []
