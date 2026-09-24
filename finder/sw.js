@@ -1,7 +1,7 @@
 /* 전 종목 탐색기 서비스 워커 — 오프라인에서도 마지막으로 본 데이터로 열리게 합니다.
    같은 출처 요청만 다룹니다. 항상 네트워크를 먼저 시도하고(배포 직후 옛 파일이 남지 않게),
    실패할 때만 캐시를 씁니다. 글꼴·TradingView 같은 외부 요청은 건드리지 않습니다. */
-const CACHE = "finder-v3";
+const CACHE = "finder-v4";
 const SHELL = ["/finder/", "/finder/app.js", "/finder/finder.css", "/m7/assets/m7.css", "/stocks/assets/registry.js",
   "/finder/icon.svg", "/finder/manifest.webmanifest"];
 

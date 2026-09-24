@@ -291,3 +291,10 @@ table.pf-t{min-width:820px}
 .banner.alert a{border-bottom:1px solid var(--line)}
 h3.subh{font-size:14px;font-weight:600;margin-bottom:8px}
 #savedSel{max-width:170px}
+table.cmp-t.corr{min-width:0}
+table.cmp-t.corr td{text-align:center;font-variant-numeric:tabular-nums}
+table.cmp-t td.muted{color:var(--ink-3)}
+#cmpCorr:empty{display:none}
+.ressum{margin-left:12px}
+.ressum:empty{display:none}
+@media (max-width:560px){.ressum{display:block;margin:2px 0 0}}
