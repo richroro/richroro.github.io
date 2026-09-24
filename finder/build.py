@@ -391,32 +391,116 @@ def scores(rows: list[dict]):
             r["sl"] = ptv[i]
 
 
+# --------------------------------------------------------------------------- 재무
+QUOTE_URL = "https://query1.finance.yahoo.com/v7/finance/quote"
+FUND = ("pe", "fpe", "pb", "dy", "eps", "roe", "ern", "ar")
+
+
+def yahoo_symbol(r: dict) -> str | None:
+    if r["g"] == "US":
+        return r["id"].replace(".", "-")
+    suffix = {"KOSPI": ".KS", "KOSDAQ": ".KQ"}.get(r["m"])  # 코넥스는 Yahoo 에 없다
+    return r["id"] + suffix if suffix else None
+
+
+def _ok(v, lo, hi):
+    return v if isinstance(v, (int, float)) and math.isfinite(v) and lo < v < hi else None
+
+
+def parse_quote(q: dict, today: dt.date) -> dict:
+    """Yahoo v7 quote 한 건 → 재무 지표. 통화가 섞인 ADR 처럼 앞뒤가 안 맞는 값은 버린다."""
+    price = q.get("regularMarketPrice")
+    out = {"pe": _ok(q.get("trailingPE"), 0, 3000), "fpe": _ok(q.get("forwardPE"), 0, 3000),
+           "pb": _ok(q.get("priceToBook"), 0, 500), "eps": _ok(q.get("epsTrailingTwelveMonths"), -1e7, 1e7)}
+    rate = q.get("dividendRate") or q.get("trailingAnnualDividendRate")
+    out["dy"] = _ok(rate / price * 100, 0, 25) if rate and price else (0.0 if price else None)
+    # ROE ≈ 주당순이익 ÷ 주당순자산. 장부가 통화가 주가와 같은지(PBR 이 price/bookValue 와 맞는지) 확인한다
+    bv = q.get("bookValue")
+    if out["eps"] is not None and bv and bv > 0 and price and out["pb"] and abs(price / bv / out["pb"] - 1) < 0.2:
+        out["roe"] = _ok(out["eps"] / bv * 100, -300, 300)
+    ern = None
+    for k in ("earningsTimestampStart", "earningsTimestamp"):
+        ts = q.get(k)
+        if ts:
+            d = dt.datetime.fromtimestamp(ts, dt.timezone.utc).date()
+            if d >= today:
+                ern = d.isoformat(); break
+    out["ern"] = ern
+    m = re.match(r"\s*([\d.]+)", str(q.get("averageAnalystRating") or ""))
+    out["ar"] = _ok(float(m.group(1)), 0.9, 5.1) if m else None
+    return out
+
+
+def fundamentals(rows: list[dict], today: dt.date, batch: int = 150) -> dict[str, dict]:
+    """Yahoo 일괄 시세(v7 quote)로 PER·PBR·배당·EPS·ROE·실적일·애널리스트 의견을 받는다."""
+    try:
+        from yfinance.data import YfData
+    except ImportError:
+        log("yfinance 없음 — 재무 지표 생략")
+        return {}
+    yd = YfData()
+    ymap = {}
+    for r in rows:
+        y = yahoo_symbol(r)
+        if y:
+            ymap[y] = r["id"]
+    keys, out, fails = list(ymap), {}, 0
+    for i in range(0, len(keys), batch):
+        chunk = keys[i:i + batch]
+        for attempt in range(3):
+            try:
+                j = yd.get_raw_json(QUOTE_URL, params={"symbols": ",".join(chunk), "formatted": "false",
+                                                       "lang": "en-US", "region": "US"})
+                break
+            except Exception as e:
+                log(f"  재무 실패({attempt + 1}/3): {str(e)[:120]}")
+                time.sleep(8 * (attempt + 1))
+        else:
+            fails += 1
+            if fails >= 5 and not out:
+                log("  재무: 연속 실패 — 중단(이전 값 유지)")
+                break
+            continue
+        for q in (j.get("quoteResponse") or {}).get("result") or []:
+            sid = ymap.get(q.get("symbol"))
+            if sid:
+                out[sid] = parse_quote(q, today)
+        if (i // batch) % 10 == 0:
+            log(f"  재무 {min(i + batch, len(keys))}/{len(keys)} (확보 {len(out)})")
+        time.sleep(0.6)
+    return out
+
+
 # --------------------------------------------------------------------------- 환율
-def fx_rate(us_rows, kr_rows, prev_meta) -> tuple[float | None, str]:
+def fx_rate(us_rows, kr_rows, prev_meta, today: dt.date) -> tuple[float | None, str, str | None]:
+    """원/달러와 그 출처, 실측 날짜."""
     try:
         import yfinance as yf
         h = yf.Ticker("KRW=X").history(period="5d")
         if len(h):
-            return float(h["Close"].iloc[-1]), "Yahoo KRW=X"
+            return float(h["Close"].iloc[-1]), "Yahoo KRW=X", today.isoformat()
     except Exception as e:
-        log(f"  환율(Yahoo) 실패: {e}")
+        log(f"  환율(Yahoo) 실패: {str(e)[:120]}")
+    # 일주일 안의 실측값이 있으면 그것을 쓴다 — ADR 은 원주보다 프리미엄이 붙어 추정이 몇 % 빗나간다
+    at = prev_meta.get("fxAt")
+    if prev_meta.get("fx") and at and (today - dt.date.fromisoformat(at)).days <= 7:
+        return prev_meta["fx"], f"Yahoo KRW=X({at} 값)", at
     us = {r["id"]: r for r in us_rows}
     kr = {r["id"]: r for r in kr_rows}
     pairs = [("KB", "105560", 1), ("SHG", "055550", 1)]  # ADR 1주 = 원주 1주
     est = [kr[c]["p"] * k / us[a]["p"] for a, c, k in pairs
            if a in us and c in kr and us[a].get("p") and kr[c].get("p")]
     if est:
-        return float(np.median(est)), "KB금융·신한지주 ADR/원주 종가 비율(추정)"
-    if prev_meta.get("fx"):
-        return prev_meta["fx"], prev_meta.get("fxSrc", "이전 값")
-    return None, ""
+        return float(np.median(est)), "KB금융·신한지주 ADR/원주 종가 비율(추정)", None
+    return prev_meta.get("fx"), prev_meta.get("fxSrc", ""), at
 
 
 # --------------------------------------------------------------------------- 출력
 COLS = ["id", "m", "n", "ko", "sec", "ind", "cty", "ipo", "p", "d1", "mc", "mcu",
         "r5", "r21", "r63", "r126", "r252", "ytd", "fh", "fl", "h52", "l52", "pm50", "pm200",
         "x", "up", "rsi", "vol", "mdd", "tv", "vs", "sm", "st", "ss", "sl",
-        "sp", "spl", "sph", "nd", "asof", "warn", "prod"]
+        "sp", "spl", "sph", "nd", "asof", "warn", "prod",
+        "pe", "fpe", "pb", "dy", "eps", "roe", "ern", "ar"]
 
 
 def rnd(v, k):
@@ -460,7 +544,21 @@ def to_row(r: dict) -> list:
     out["asof"] = r.get("asof") or ""
     out["warn"] = r.get("warn") or 0
     out["prod"] = r.get("prod") or ""
+    for k in ("pe", "fpe", "pb", "dy", "roe"):
+        out[k] = rnd(r.get(k), 1 if k != "pb" else 2)
+    out["eps"] = rnd(r.get("eps"), 2 if g == "US" else 0)
+    out["ern"] = r.get("ern") or ""
+    out["ar"] = rnd(r.get("ar"), 1)
     return [out[c] for c in COLS]
+
+
+def from_prev(v: dict) -> dict:
+    """이전 파일의 행(출력 단위)을 계산 단위로 되돌린다 — 시총·거래대금은 백만 단위로 저장돼 있다."""
+    r = dict(v)
+    for k in ("mc", "tv"):
+        if r.get(k) is not None:
+            r[k] = r[k] * 1e6
+    return r
 
 
 def main():
@@ -469,6 +567,7 @@ def main():
     ap.add_argument("--us-dir"); ap.add_argument("--kr-dir")
     ap.add_argument("--no-us-history", action="store_true")
     ap.add_argument("--no-kind", action="store_true")
+    ap.add_argument("--no-fund", action="store_true", help="재무 지표 생략(이전 값 유지)")
     ap.add_argument("--us-limit", type=int, default=0, help="시총 상위 N개만 일봉을 받는다(0=전부)")
     ap.add_argument("--min-rows", type=int, default=0,
                     help="종목 수가 이보다 적으면 저장하지 않고 실패한다(원천 데이터가 깨졌을 때 좋은 파일을 덮지 않도록)")
@@ -507,7 +606,7 @@ def main():
     log(f"  {len(kr)}종목 · 기준일 {kr_asof}")
     if not kr and prev_rows:
         # 한국 쪽을 못 받았으면 이전 행을 그대로 쓴다
-        kr = [dict(v, g="KR") for v in prev_rows.values() if v.get("m") in ("KOSPI", "KOSDAQ", "KONEX")]
+        kr = [dict(from_prev(v), g="KR") for v in prev_rows.values() if v.get("m") in ("KOSPI", "KOSDAQ", "KONEX")]
 
     for r in kr:
         h = kr_hist.get(r["id"])
@@ -548,7 +647,19 @@ def main():
     if not us_asof and prev_meta.get("usAsof"):
         us_asof = prev_meta["usAsof"]
 
-    fx, fx_src = fx_rate(us, kr, prev_meta)
+    fund = {} if a.no_fund else (log("재무 지표") or fundamentals(us + kr, today))
+    log(f"  재무 확보 {len(fund)}종목")
+    for r in us + kr:
+        f = fund.get(r["id"])
+        if f is None:
+            f = {k: prev_rows.get(r["id"], {}).get(k) for k in FUND}  # 못 받은 종목은 이전 값
+            if f.get("ern") and f["ern"] < today.isoformat():
+                f["ern"] = None
+        for k in FUND:
+            if f.get(k) is not None and f.get(k) != "":
+                r[k] = f[k]
+
+    fx, fx_src, fx_at = fx_rate(us, kr, prev_meta, today)
     log(f"환율 {fx} ({fx_src})")
     rows = us + kr
     for r in rows:
@@ -567,8 +678,10 @@ def main():
         "built": dt.datetime.now(dt.timezone.utc).strftime("%Y-%m-%dT%H:%MZ"),
         "usAsof": us_asof.isoformat() if isinstance(us_asof, dt.date) else us_asof,
         "krAsof": kr_asof.isoformat() if kr_asof else prev_meta.get("krAsof"),
-        "fx": rnd(fx, 2) if fx else None, "fxSrc": fx_src,
+        "fx": rnd(fx, 2) if fx else None, "fxSrc": fx_src, "fxAt": fx_at,
         "counts": {"US": len(us), "KR": len(kr)},
+        "fundN": len(fund) or prev_meta.get("fundN", 0),
+        "fundAt": (dt.date.today().isoformat() if fund else prev_meta.get("fundAt")),
         "cols": COLS,
     }
     os.makedirs(os.path.dirname(a.out), exist_ok=True)

@@ -1,0 +1,39 @@
+name: 전 종목 탐색기 검사
+
+# finder/ 를 바꾸는 PR 마다 데이터 빌드 단위 테스트, 자바스크립트 문법, 데이터 파일 검사를 돌린다.
+# 네트워크가 필요 없는 검사만 한다(원천 데이터 수집은 update-finder.yml 이 한다).
+
+on:
+  pull_request:
+    paths: ['finder/**', '.github/workflows/finder-tests.yml', '.github/workflows/update-finder.yml']
+  push:
+    branches: [main]
+    paths: ['finder/**.py', 'finder/**.js', 'finder/tests/**']
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: pip install --quiet numpy
+      - name: 단위 테스트
+        run: python -m unittest discover -s finder/tests -v
+      - name: 자바스크립트 문법
+        run: node --check finder/app.js && node --check finder/sw.js
+      - name: 데이터 파일 검사
+        run: python finder/validate.py
+      - name: 종목 페이지가 데이터와 맞는지
+        run: |
+          python finder/pages.py
+          if [ -n "$(git status --porcelain -- finder/s finder/sitemap.xml finder/data/pages.json)" ]; then
+            git status --short -- finder/s finder/sitemap.xml finder/data/pages.json | head
+            echo "::error::finder/pages.py 결과가 커밋된 파일과 다릅니다. 로컬에서 python finder/pages.py 를 돌려 커밋하세요."
+            exit 1
+          fi
