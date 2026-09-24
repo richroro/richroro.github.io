@@ -16,6 +16,10 @@
 <meta property="og:image" content="https://richroro.github.io/games/ppung-numbers/og.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icon-192.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="뿡빵뿡 숫자">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="뿡빵뿡 한글 숫자">
 <meta name="twitter:description" content="하나·둘·셋, 일·이·삼을 맞히면 고구마 뿡이가 뿡! 7살 한글 숫자 놀이.">
@@ -73,15 +77,17 @@
   /* ── 뿡이 ────────────────────────────── */
   .mascot{position:relative;flex:0 0 auto}
   .mascot svg{display:block;width:100%;height:100%;overflow:visible}
-  .mascot .body{transform-origin:60px 110px}
+  .mascot{font-size:100px}
+  .mascot .bw{position:relative;width:100%;height:100%;transform-origin:50% 92%}
+  .mascot .acc{position:absolute;line-height:1;pointer-events:none;white-space:nowrap}
   .mascot .m-happy,.mascot .m-oops{display:none}
   .mascot.happy .m-idle,.mascot.oops .m-idle{display:none}
   .mascot.happy .m-happy{display:inline}
   .mascot.oops .m-oops{display:inline}
-  .mascot.happy .body{animation:hop .55s cubic-bezier(.3,1.6,.5,1)}
-  .mascot.oops .body{animation:wobble .5s ease-in-out}
+  .mascot.happy .bw{animation:hop .55s cubic-bezier(.3,1.6,.5,1)}
+  .mascot.oops .bw{animation:wobble .5s ease-in-out}
   .mascot .lid{transform-origin:center;transform-box:fill-box;animation:blink 4.2s infinite}
-  .mascot.idle .body{animation:breathe 2.6s ease-in-out infinite}
+  .mascot.idle .bw{animation:breathe 2.6s ease-in-out infinite}
   @keyframes hop{0%{transform:scale(1,1)}25%{transform:translateY(0) scale(1.12,.86)}55%{transform:translateY(-18px) scale(.94,1.08)}80%{transform:translateY(0) scale(1.06,.95)}100%{transform:none}}
   @keyframes wobble{0%,100%{transform:rotate(0)}25%{transform:rotate(-8deg)}60%{transform:rotate(6deg)}}
   @keyframes breathe{0%,100%{transform:scale(1,1)}50%{transform:scale(1.025,.975)}}
@@ -95,8 +101,8 @@
   @keyframes puff{0%{opacity:0;transform:translate(40%,0) scale(.2)}18%{opacity:1;transform:translate(0,0) scale(1.08)}70%{opacity:1;transform:translate(-8%,-10%) scale(1)}100%{opacity:0;transform:translate(-14%,-26%) scale(1.14)}}
 
   /* ── 홈 ──────────────────────────────── */
-  .hero{display:flex;align-items:center;gap:14px;padding:6px 0 14px}
-  .hero .mascot{width:112px;height:112px;margin-left:30px}
+  .hero{display:flex;align-items:center;gap:14px;padding:24px 0 14px}
+  .hero .mascot{width:112px;height:112px;font-size:112px;margin-left:30px;cursor:pointer}
   .bubble{position:relative;flex:1;background:var(--card);border-radius:20px;padding:14px 16px;
     box-shadow:var(--shadow);font-size:17px;font-weight:700;line-height:1.45;letter-spacing:-.02em;word-break:keep-all}
   .bubble::before{content:"";position:absolute;left:-9px;top:50%;margin-top:-9px;border:9px solid transparent;border-left:0;border-right-color:var(--card)}
@@ -167,7 +173,7 @@
     display:flex;align-items:center;justify-content:center;gap:3px;font-weight:900;font-size:17px;padding:0 10px}
 
   .ask{display:flex;align-items:center;gap:12px;padding:6px 16px 8px}
-  .ask .mascot{width:76px;height:76px;margin-left:26px}
+  .ask .mascot{width:76px;height:76px;font-size:76px;margin-left:26px}
   .ask .bubble{font-size:18px;padding:12px 14px;display:flex;align-items:center;gap:8px}
   .ask .bubble p{flex:1}
   .say{flex:0 0 auto;width:40px;height:40px;border-radius:12px;background:var(--sky-weak);font-size:20px;display:grid;place-items:center}
@@ -246,7 +252,7 @@
 
   /* ── 결과 ─────────────────────────────── */
   .result{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:6px}
-  .result .mascot{width:150px;height:150px;margin-left:40px}
+  .result .mascot{width:150px;height:150px;font-size:150px;margin-left:40px}
   .result h2{font-size:28px;font-weight:900;letter-spacing:-.05em;margin-top:10px}
   .result p{font-size:17px;font-weight:700;color:var(--ink-2)}
   .stars{font-size:52px;letter-spacing:4px;line-height:1.1;margin:6px 0}
@@ -260,8 +266,81 @@
   .result-btns .big{font-size:19px;padding:16px 8px}
   .result-btns .home{background:var(--card);color:var(--ink);box-shadow:0 5px 0 var(--line)}
 
+  /* ── 설정 스위치 · 뿡이 꾸미기 ─────────── */
+  .switch-row{display:flex;align-items:center;gap:12px}
+  .switch-row p{flex:1;font-size:15px;font-weight:800;color:var(--ink-2);letter-spacing:-.02em;line-height:1.35}
+  .switch-row p small{display:block;font-size:12px;font-weight:700;color:var(--ink-3)}
+  .switch{flex:0 0 auto;width:60px;height:36px;border-radius:999px;background:var(--line);position:relative;transition:background .2s}
+  .switch::after{content:"";position:absolute;left:4px;top:4px;width:28px;height:28px;border-radius:50%;background:#fff;
+    box-shadow:0 1px 3px rgba(0,0,0,.2);transition:transform .2s}
+  .switch[aria-checked="true"]{background:var(--green)}
+  .switch[aria-checked="true"]::after{transform:translateX(24px)}
+  .dress{display:grid;grid-template-columns:repeat(7,1fr);gap:6px}
+  .dress-btn{display:flex;flex-direction:column;align-items:center;gap:3px;padding:8px 0 6px;border-radius:14px;background:var(--bg);border:2px solid transparent}
+  .dress-btn .de{font-size:clamp(20px,6vw,26px);line-height:1.1}
+  .dress-btn small{font-size:10px;font-weight:800;color:var(--ink-3);white-space:nowrap}
+  .dress-btn[aria-pressed="true"]{border-color:var(--potato);background:var(--potato-weak)}
+  .dress-btn:disabled{cursor:default}
+  .dress-btn:disabled .de{filter:grayscale(1);opacity:.45}
+  .dress-note{font-size:12px;font-weight:700;color:var(--ink-3);margin-top:8px}
+
+  /* ── 부모님 기록 ─────────────────────── */
+  .report{background:var(--card);border-radius:16px;padding:10px 14px 12px;margin:8px 0 4px}
+  .report h3{font-size:14px;font-weight:800;margin:8px 0 4px;color:var(--ink)}
+  .report h3:first-child{margin-top:0}
+  .report .bar{height:10px;border-radius:999px;background:var(--line);overflow:hidden;margin:4px 0 6px}
+  .report .bar i{display:block;height:100%;border-radius:999px}
+  .report .nums{display:flex;flex-wrap:wrap;gap:4px;margin-top:2px}
+  .report .nums span{background:var(--red-weak);color:#C0392B;border-radius:8px;padding:1px 7px;font-weight:800;font-size:13px}
+  .report .none{font-size:13px;color:var(--ink-3)}
+  .report .reset{margin-top:10px;font-size:13px;font-weight:800;color:var(--red);text-decoration:underline}
+
+  /* ── 새 문제 유형 ────────────────────── */
+  .retry{display:inline-block;font-size:12px;font-weight:800;background:var(--sun-weak);color:#9A6200;padding:1px 8px;border-radius:999px;margin-bottom:3px}
+  .stones{display:flex;flex-wrap:wrap;justify-content:center;align-items:center;gap:10px 4px;max-width:100%}
+  .stone{min-width:62px;padding:12px 12px;border-radius:18px;background:var(--sun-weak);font-size:clamp(20px,6.2vw,28px);font-weight:900;
+    letter-spacing:-.05em;text-align:center;animation:pop .4s cubic-bezier(.3,1.6,.5,1) backwards;word-break:keep-all}
+  .stone.blank{background:var(--potato-weak);color:var(--potato);outline:3px dashed var(--potato);outline-offset:-3px}
+  .stone.blank.ok{background:var(--green);color:#fff;outline:0}
+  .stones .arrow{color:var(--ink-3);font-weight:900;font-size:16px}
+  .vs{text-align:center}
+  .vs .e{display:block;font-size:clamp(72px,24vw,112px);line-height:1;animation:pop .45s cubic-bezier(.3,1.6,.5,1)}
+  .vs b{display:block;margin-top:12px;font-size:clamp(22px,6.6vw,30px);font-weight:900;letter-spacing:-.04em}
+  .vs b em{font-style:normal;color:var(--potato)}
+  .opts.two .opt{min-height:clamp(96px,17vh,140px);font-size:clamp(30px,9vw,42px)}
+  .build{display:flex;flex-direction:column;align-items:center;gap:16px}
+  .build .bnum{font-size:clamp(72px,24vw,120px);font-weight:900;letter-spacing:-.06em;line-height:1;animation:pop .45s cubic-bezier(.3,1.6,.5,1)}
+  .slots{display:flex;gap:8px}
+  .slot{width:clamp(52px,15vw,68px);height:clamp(58px,17vw,76px);border-radius:16px;border:3px dashed var(--line);display:grid;place-items:center;
+    font-size:clamp(28px,8.4vw,38px);font-weight:900;color:var(--potato-dark)}
+  .slot.next{border-color:var(--potato)}
+  .slot.fill{border-style:solid;border-color:var(--potato);background:var(--potato-weak);animation:pop .3s cubic-bezier(.3,1.7,.5,1)}
+  .opts.tiles{grid-template-columns:repeat(3,1fr)}
+  .opts.tiles .opt{min-height:clamp(58px,9vh,76px)}
+  .opt.used{opacity:.2;box-shadow:none}
+
+  /* ── 배우기 표시 ─────────────────────── */
+  .gcell{position:relative}
+  .gcell .bd{position:absolute;top:4px;width:7px;height:7px;border-radius:50%}
+  .gcell .bd.nat{left:5px;background:var(--green)}
+  .gcell .bd.sino{right:5px;background:var(--sky)}
+  .grid.g10 .gcell .bd{width:5px;height:5px;top:2px}
+  .grid.g10 .gcell .bd.nat{left:2px}
+  .grid.g10 .gcell .bd.sino{right:2px}
+  .gcell.sel .bd{box-shadow:0 0 0 1.5px #fff}
+  .legend{display:flex;flex-wrap:wrap;gap:4px 14px;justify-content:center;font-size:12px;font-weight:700;color:var(--ink-3);margin:-2px 0 10px}
+  .legend i{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:4px;vertical-align:1px}
+
+  /* ── 반짝이 ───────────────────────────── */
+  .spark{position:fixed;z-index:30;pointer-events:none;font-size:22px;line-height:1;transform:translate(-50%,-50%);animation:spark .9s ease-out forwards}
+  @keyframes spark{to{transform:translate(calc(-50% + var(--dx)),calc(-50% + var(--dy))) scale(.5) rotate(220deg);opacity:0}}
+  .rain{position:fixed;z-index:30;top:-40px;pointer-events:none;font-size:26px;line-height:1;animation:rain 2.4s linear forwards}
+  @keyframes rain{to{transform:translate(var(--dx),110vh) rotate(540deg)}}
+  #r-dress{display:none}
+  #r-dress.show{display:flex}
+
   @media (max-height:640px){
-    .ask .mascot{width:60px;height:60px}
+    .ask .mascot{width:60px;height:60px;font-size:60px}
     .stage .num{font-size:clamp(80px,26vw,120px)}
     .opts{gap:8px;padding:10px 0}
   }
@@ -281,6 +360,7 @@
       </g><g fill="#EDE3F7"><circle cx="38" cy="58" r="23"/><circle cx="66" cy="40" r="25"/><circle cx="94" cy="58" r="21"/><circle cx="66" cy="66" r="23"/></g></svg>
       <b>뿡!</b>
     </div>
+    <div class="bw">
     <svg viewBox="0 0 120 120">
       <ellipse cx="60" cy="114" rx="34" ry="5" fill="rgba(46,34,48,.1)"/>
       <g class="body">
@@ -307,6 +387,8 @@
         <ellipse cx="88" cy="76" rx="7.5" ry="4.5" fill="#FF8FA3" opacity=".75"/>
       </g>
     </svg>
+    <span class="acc"></span>
+    </div>
   </div>
 </template>
 
@@ -342,6 +424,13 @@
         </div>
       </div>
 
+      <div class="panel">
+        <div class="switch-row">
+          <p>문제 읽어 주기<small>아직 글자가 어려우면 켜 두세요</small></p>
+          <button class="switch" id="auto" role="switch" aria-checked="true" aria-label="문제 읽어 주기"></button>
+        </div>
+      </div>
+
       <div class="big-btns">
         <button class="big learn" id="go-learn"><span class="e">📖</span>배우기<small>눌러서 듣고 세어 봐요</small></button>
         <button class="big play" id="go-play"><span class="e">💨</span>퀴즈 놀이<small>10문제 맞히기</small></button>
@@ -352,15 +441,25 @@
         <div class="stickers" id="stickers"></div>
       </div>
 
-      <details class="parent">
+      <div class="panel">
+        <h2>뿡이 꾸미기</h2>
+        <div class="dress" id="dress"></div>
+        <p class="dress-note" id="dress-note"></p>
+      </div>
+
+      <details class="parent" id="parent">
         <summary>부모님께</summary>
         <ul>
           <li><b>하나·둘·셋</b>(우리말)은 개수를 셀 때, <b>일·이·삼</b>(한자말)은 숫자를 읽을 때 주로 써요. 처음엔 한 가지만 고르고 익숙해지면 ‘둘 다’로 바꿔 보세요.</li>
-          <li>퀴즈는 숫자 보고 읽기, 글자 보고 숫자 찾기, 그림 세기, 듣고 고르기 네 가지가 섞여 나와요. 듣기 문제는 기기에 한국어 음성이 있을 때만 나와요.</li>
+          <li>퀴즈는 여덟 가지가 섞여 나와요: 숫자 읽기, 글자 보고 숫자 찾기, 그림 세기, 듣고 고르기, 다음 수, 더 큰 수·작은 수, 글자 만들기, 단위 붙여 세기(세 마리·두 개). 듣기 문제는 기기에 한국어 음성이 있을 때만 나와요.</li>
+          <li>‘세 마리’처럼 단위를 붙이면 하나→한, 둘→두, 셋→세, 넷→네, 스물→스무로 바뀌어요. 단위 문제는 하나·둘·셋을 고른 때만 나와요.</li>
           <li>20이 넘는 수는 10개 묶음 막대와 낱개로 보여 줘서 자릿값 감각도 같이 익혀요.</li>
-          <li>틀려도 벌점 없이 다시 고를 수 있고, 두 번 틀리면 정답이 반짝여요. 한 판을 끝내면 스티커를 하나 받아요.</li>
+          <li>틀려도 벌점 없이 다시 고를 수 있고, 두 번 틀리면 정답이 반짝여요. 한 판을 끝내면 스티커를 하나 받고, 스티커가 모이면 뿡이 옷이 열려요.</li>
+          <li>틀렸던 숫자는 기억해 뒀다가 다음 판에 더 자주 물어봐요(‘다시 도전!’ 표시).</li>
+          <li>휴대폰·태블릿에서 ‘홈 화면에 추가’를 하면 앱처럼 열리고, 인터넷이 없어도 돼요.</li>
           <li>기록은 이 기기의 브라우저에만 저장되고 어디로도 보내지 않아요.</li>
         </ul>
+        <div class="report" id="report"></div>
       </details>
       <div class="foot"><a href="/">← 다른 작품 보기</a></div>
     </div>
@@ -389,6 +488,7 @@
         <div class="viz" id="lc-viz"></div>
       </div>
       <div class="count-along"><button id="along">▶ 같이 세어 보자</button></div>
+      <div class="legend"><span><i style="background:var(--green)"></i>하나·둘·셋 잘 알아요</span><span><i style="background:var(--sky)"></i>일·이·삼 잘 알아요</span></div>
       <div class="grid" id="grid"></div>
     </div>
   </div>
@@ -419,6 +519,7 @@
     <p id="r-sub">10문제 중 10개 맞혔어</p>
     <div class="stars" id="r-stars"><span>★</span><span>★</span><span>★</span></div>
     <div class="prize" id="r-prize"><div class="stk got new">🦖</div><p><b>새 스티커!</b>스티커 책에 붙였어</p></div>
+    <div class="prize" id="r-dress"></div>
     <div class="result-btns">
       <button class="big home" data-home>🏠 처음으로</button>
       <button class="big play" id="again">💨 한 판 더</button>
@@ -441,24 +542,49 @@
   const STICKERS = ['🦖','🐶','🐱','🐰','🐻','🐼','🦊','🐸','🐯','🦁','🐷','🐵','🐧','🐥','🦄','🐙','🐳','🦋',
                     '🍓','🍉','🍩','🍦','🍪','🚀','🚒','🚂','🎈','🌈','⭐','👑'];
   const COUNT_EMOJI = ['🍎','🍓','🐥','🍩','🚗','⭐','🐟','🍪','🎈','🐞','🍌','🌷'];
+  // 단위 세기: 이름에 붙는 조사까지 같이 적어 둔다
+  const THINGS = [
+    { e: '🍎', name: '사과가', c: '개' },   { e: '🍪', name: '쿠키가', c: '개' },   { e: '🎈', name: '풍선이', c: '개' },
+    { e: '🐶', name: '강아지가', c: '마리' }, { e: '🐟', name: '물고기가', c: '마리' }, { e: '🐥', name: '병아리가', c: '마리' },
+    { e: '🚗', name: '자동차가', c: '대' },  { e: '🌷', name: '꽃이', c: '송이' },   { e: '✏️', name: '연필이', c: '자루' }
+  ];
+  // 뿡이 옷: 스티커가 need 개 모이면 열린다. top/left 는 뿡이 크기 대비 위치
+  const DRESS = [
+    { id: 'none',    e: '',   icon: '🍠', name: '그대로', need: 0 },
+    { id: 'ribbon',  e: '🎀', name: '리본',   need: 2,  top: '4%',   left: '70%', size: .34, rot: 18 },
+    { id: 'cap',     e: '🧢', name: '모자',   need: 5,  top: '-8%',  size: .5,  rot: -12 },
+    { id: 'crown',   e: '👑', name: '왕관',   need: 9,  top: '-14%', size: .44 },
+    { id: 'glasses', e: '🕶️', name: '선글라스', need: 13, top: '32%',  size: .5 },
+    { id: 'tophat',  e: '🎩', name: '신사 모자', need: 18, top: '-24%', size: .5 },
+    { id: 'flower',  e: '🌼', name: '꽃',     need: 24, top: '2%',   left: '28%', size: .32, rot: -14 }
+  ];
 
   const S = {
     sys: store.get('sys', 'nat'),
     max: store.get('max', 10),
     muted: store.get('muted', false),
-    stickers: store.get('stickers', [])
+    auto: store.get('auto', true),
+    dress: store.get('dress', 'none'),
+    stickers: store.get('stickers', []),
+    stats: store.get('stats', null)
   };
   if (!['nat','sino','mix'].includes(S.sys)) S.sys = 'nat';
   if (![10,20,50,100].includes(S.max)) S.max = 10;
+  if (typeof S.auto !== 'boolean') S.auto = true;
   if (!Array.isArray(S.stickers)) S.stickers = [];
   S.stickers = S.stickers.filter(s => STICKERS.includes(s));
+  if (!DRESS.some(d => d.id === S.dress)) S.dress = 'none';
+  if (!S.stats || typeof S.stats !== 'object' || typeof S.stats.nat !== 'object' || typeof S.stats.sino !== 'object') S.stats = { nat: {}, sino: {} };
 
   /* ── 한글 숫자 ─────────────────────────── */
   const NAT_ONES = ['', '하나','둘','셋','넷','다섯','여섯','일곱','여덟','아홉'];
+  const NAT_MOD  = ['', '한','두','세','네','다섯','여섯','일곱','여덟','아홉'];
   const NAT_TENS = ['', '열','스물','서른','마흔','쉰','예순','일흔','여든','아흔'];
   const SINO = ['', '일','이','삼','사','오','육','칠','팔','구'];
   // 우리말은 아흔아홉까지다. 100은 우리말로도 ‘백’이라 부른다.
   const native = n => n >= 100 ? '백' : NAT_TENS[Math.floor(n / 10)] + NAT_ONES[n % 10];
+  // 단위 앞에서는 하나→한, 둘→두, 셋→세, 넷→네, 스물→스무 (세 마리, 스무 개, 스물한 개)
+  const nativeMod = n => n === 20 ? '스무' : NAT_TENS[Math.floor(n / 10)] + NAT_MOD[n % 10];
   const sino = n => {
     if (n >= 100) return '백';
     const t = Math.floor(n / 10), o = n % 10;
@@ -466,12 +592,33 @@
   };
   const word = (n, sys) => sys === 'sino' ? sino(n) : native(n);
   const SYS_NAME = { nat: '하나·둘·셋', sino: '일·이·삼' };
+  // 받침이 있으면 a(이), 없으면 b(가)
+  const josa = (w, a, b) => { const c = w.charCodeAt(w.length - 1) - 0xAC00; return c >= 0 && c < 11172 && c % 28 ? a : b; };
 
   /* ── 도우미 ───────────────────────────── */
   const $ = s => document.querySelector(s);
   const rnd = n => Math.floor(Math.random() * n);
   const shuffle = a => { for (let i = a.length - 1; i > 0; i--) { const j = rnd(i + 1); [a[i], a[j]] = [a[j], a[i]]; } return a; };
   const el = (tag, cls, txt) => { const e = document.createElement(tag); if (cls) e.className = cls; if (txt != null) e.textContent = txt; return e; };
+  const buzz = p => { if (S.muted) return; try { navigator.vibrate && navigator.vibrate(p); } catch (e) {} };
+
+  /* ── 숫자별 기록: 틀린 수는 더 자주, 잘 아는 수는 덜 묻는다 ── */
+  const stat = (sys, n) => S.stats[sys][n];
+  const mastered = (sys, n) => { const s = stat(sys, n); return !!s && s.k >= 2; };
+  const weak = (sys, n) => { const s = stat(sys, n); return !!s && s.w > 0 && s.k < 2; };
+  function record(sys, n, first){
+    const s = S.stats[sys][n] || { r: 0, w: 0, k: 0 };
+    if (first) { s.r++; s.k++; } else { s.w++; s.k = 0; }
+    S.stats[sys][n] = s; store.set('stats', S.stats);
+  }
+  const weight = (sys, n) => weak(sys, n) ? 4 : !stat(sys, n) ? 2 : mastered(sys, n) ? .5 : 1;
+  function pickNum(sys, lo, hi, used){
+    const ws = []; let tot = 0;
+    for (let v = lo; v <= hi; v++) { const w = used && used.has(v) ? .03 : weight(sys, v); ws.push(w); tot += w; }
+    let r = Math.random() * tot;
+    for (let i = 0; i < ws.length; i++) { r -= ws[i]; if (r <= 0) return lo + i; }
+    return hi;
+  }
 
   /* ── 소리: 방귀도 전부 Web Audio 로 합성 ── */
   let AC = null, master = null;
@@ -519,6 +666,7 @@
     },
     oops(){ if (S.muted || !ac()) return; const t = AC.currentTime + .01; tone(t, 520, 240, .38, .22, 'triangle'); },
     tap(){ if (S.muted || !ac()) return; tone(AC.currentTime + .005, 700, 900, .07, .12); },
+    click(step){ if (S.muted || !ac()) return; const f = 520 * Math.pow(1.122, step); tone(AC.currentTime + .005, f, f * 1.05, .12, .16, 'triangle'); },
     fanfare(){
       if (S.muted || !ac()) return; const t = AC.currentTime + .02;
       [523, 659, 784, 1047].forEach((f, i) => tone(t + i * .13, f, f, i === 3 ? .5 : .16, .2, 'triangle'));
@@ -569,29 +717,69 @@
     p.classList.remove('go'); void p.offsetWidth; p.classList.add('go');
     mood(m, 'happy');
   }
+  function applyDress(){
+    const d = DRESS.find(x => x.id === S.dress) || DRESS[0];
+    Object.values(mascots).forEach(m => {
+      const a = m.querySelector('.acc');
+      a.textContent = d.e;
+      a.style.top = d.top || '0';
+      a.style.left = d.left || '50%';
+      a.style.fontSize = (d.size || .4) + 'em';
+      a.style.transform = `translateX(-50%) rotate(${d.rot || 0}deg)`;
+    });
+  }
   function banner(big, small){
     const b = $('#banner');
     b.innerHTML = ''; b.append(big); if (small) b.append(el('small', '', small));
     b.classList.remove('go'); void b.offsetWidth; b.classList.add('go');
   }
+  // 정답 버튼에서 반짝이가 톡톡 튄다
+  function burst(from, n, set){
+    const r = from.getBoundingClientRect(), cx = r.left + r.width / 2, cy = r.top + r.height / 2;
+    for (let i = 0; i < n; i++) {
+      const s = el('span', 'spark', set[rnd(set.length)]);
+      const a = Math.random() * Math.PI * 2, d = 50 + Math.random() * 90;
+      s.style.left = cx + 'px'; s.style.top = cy + 'px';
+      s.style.setProperty('--dx', Math.cos(a) * d + 'px');
+      s.style.setProperty('--dy', Math.sin(a) * d - 30 + 'px');
+      document.body.appendChild(s);
+      setTimeout(() => s.remove(), 1000);
+    }
+  }
+  function rain(n, set){
+    for (let i = 0; i < n; i++) {
+      const s = el('span', 'rain', set[rnd(set.length)]);
+      s.style.left = Math.random() * 100 + 'vw';
+      s.style.setProperty('--dx', (Math.random() * 80 - 40) + 'px');
+      s.style.animationDelay = Math.random() * 900 + 'ms';
+      s.style.animationDuration = 1.8 + Math.random() * 1.2 + 's';
+      document.body.appendChild(s);
+      setTimeout(() => s.remove(), 4200);
+    }
+  }
 
-  /* ── 소리 켜기/끄기 ─────────────────────── */
+  /* ── 소리·읽어 주기 켜기/끄기 ───────────── */
   function paintSound(){
     ['#sound-home', '#sound-learn'].forEach(id => {
       const b = $(id); b.textContent = S.muted ? '🔇' : '🔊';
       b.setAttribute('aria-label', S.muted ? '소리 켜기' : '소리 끄기');
     });
+    $('#auto').setAttribute('aria-checked', S.auto);
   }
   ['#sound-home', '#sound-learn'].forEach(id => $(id).addEventListener('click', () => {
     S.muted = !S.muted; store.set('muted', S.muted); paintSound();
     if (S.muted) hush(); else sfx.ppung();
   }));
+  $('#auto').addEventListener('click', () => {
+    S.auto = !S.auto; store.set('auto', S.auto); paintSound(); sfx.tap();
+    if (S.auto) speak('문제를 읽어 줄게');
+  });
 
   /* ── 화면 전환 ─────────────────────────── */
   function show(id){
     document.querySelectorAll('.screen').forEach(s => s.classList.toggle('on', s.id === id));
     if (id !== 'learn') stopAlong();
-    if (id !== 'quiz') { clearTimeout(Q.timer); }
+    if (id !== 'quiz') { clearTimeout(Q.timer); clearTimeout(Q.sayTimer); }
     hush();
   }
   document.querySelectorAll('[data-home]').forEach(b => b.addEventListener('click', () => {
@@ -626,9 +814,52 @@
     });
     $('#stk-count').textContent = S.stickers.length + ' / ' + STICKERS.length;
   }
-  function paintHome(fresh){ paintChips(); paintStickers(fresh); paintSound(); }
-  mascots.hero.addEventListener('click', () => { fart(mascots.hero); sfx.ppung(); });
-  mascots.hero.style.cursor = 'pointer';
+  function paintDress(){
+    const box = $('#dress'); box.innerHTML = '';
+    const have = S.stickers.length;
+    DRESS.forEach(d => {
+      const open = have >= d.need;
+      const b = el('button', 'dress-btn');
+      b.setAttribute('aria-pressed', S.dress === d.id);
+      b.setAttribute('aria-label', open ? d.name : `${d.name}, 스티커 ${d.need}개 모으면 열려요`);
+      b.disabled = !open;
+      b.append(el('span', 'de', d.e || d.icon), el('small', '', open ? d.name.split(' ')[0] : '🔒' + d.need));
+      b.addEventListener('click', () => {
+        S.dress = d.id; store.set('dress', S.dress); applyDress(); paintDress();
+        fart(mascots.hero, d.id === 'none' ? '뿡!' : '짠!'); sfx.ppung();
+      });
+      box.appendChild(b);
+    });
+    const next = DRESS.find(d => d.need > have);
+    $('#dress-note').textContent = next
+      ? `스티커 ${next.need - have}개 더 모으면 ${next.e} ${next.name}${josa(next.name, '이', '가')} 열려요`
+      : '옷을 전부 열었어요!';
+  }
+  function paintReport(){
+    const box = $('#report'); box.innerHTML = '';
+    ['nat', 'sino'].forEach(sys => {
+      const all = Object.keys(S.stats[sys]).map(Number);
+      const good = all.filter(n => mastered(sys, n)).length;
+      const bad = all.filter(n => weak(sys, n)).sort((a, b) => S.stats[sys][b].w - S.stats[sys][a].w || a - b);
+      box.append(el('h3', '', `${SYS_NAME[sys]} — 잘 아는 수 ${good}개`));
+      const bar = el('div', 'bar'), fill = el('i');
+      fill.style.width = good + '%'; fill.style.background = sys === 'nat' ? 'var(--green)' : 'var(--sky)';
+      bar.appendChild(fill); box.appendChild(bar);
+      if (bad.length) {
+        const nums = el('div', 'nums');
+        bad.slice(0, 16).forEach(n => nums.appendChild(el('span', '', n)));
+        box.append(el('div', 'none', '아직 헷갈리는 수:'), nums);
+      } else box.append(el('div', 'none', all.length ? '헷갈리는 수가 없어요.' : '아직 기록이 없어요.'));
+    });
+    const reset = el('button', 'reset', '숫자 기록 지우기');
+    reset.addEventListener('click', () => {
+      if (!confirm('맞히고 틀린 숫자 기록을 지울까요? 스티커와 옷은 그대로예요.')) return;
+      S.stats = { nat: {}, sino: {} }; store.set('stats', S.stats); paintReport();
+    });
+    box.appendChild(reset);
+  }
+  function paintHome(fresh){ paintChips(); paintStickers(fresh); paintSound(); paintDress(); paintReport(); applyDress(); }
+  mascots.hero.addEventListener('click', () => { fart(mascots.hero); sfx.ppung(); buzz(30); });
   mascots.hero.removeAttribute('aria-hidden');
   mascots.hero.setAttribute('role', 'button');
   mascots.hero.setAttribute('aria-label', '뿡이 누르기');
@@ -674,7 +905,11 @@
     g.classList.toggle('g10', S.max > 20);
     for (let i = 1; i <= S.max; i++) {
       const b = el('button', 'gcell' + (i % 10 === 0 ? ' tens' : ''), String(i));
-      b.dataset.n = i; b.setAttribute('aria-label', String(i));
+      b.dataset.n = i;
+      const nat = mastered('nat', i), sn = mastered('sino', i);
+      if (nat) b.appendChild(el('i', 'bd nat'));
+      if (sn) b.appendChild(el('i', 'bd sino'));
+      b.setAttribute('aria-label', i + (nat || sn ? ', 잘 아는 수' : ''));
       g.appendChild(b);
     }
   }
@@ -748,12 +983,11 @@
 
   /* ── 퀴즈 ─────────────────────────────── */
   const ROUND = 10;
-  const Q = { list: [], i: 0, score: 0, streak: 0, locked: false, timer: 0 };
+  const Q = { list: [], i: 0, score: 0, streak: 0, locked: false, timer: 0, sayTimer: 0, lastWon: null };
 
-  function pickNumber(){ return 1 + rnd(S.max); }
   // 헷갈리기 쉬운 수를 먼저 보기로 쓴다: 이웃 수, 10 차이, 자리 바꾼 수
-  function choices(n){
-    const max = S.max, set = new Set([n]);
+  function choices(n, hi){
+    const max = hi || S.max, set = new Set([n]);
     const ok = v => v >= 1 && v <= max && !set.has(v);
     const t = Math.floor(n / 10), o = n % 10;
     const near = shuffle([n - 1, n + 1, n - 2, n + 2]);
@@ -761,11 +995,27 @@
     const pool = [...near.slice(0, 2), ...far, ...near.slice(2)];
     for (const v of pool) { if (set.size >= 4) break; if (ok(v)) set.add(v); }
     let guard = 0;
-    while (set.size < 4 && guard++ < 200) { const v = pickNumber(); if (ok(v)) set.add(v); }
+    while (set.size < 4 && guard++ < 200) { const v = 1 + rnd(max); if (ok(v)) set.add(v); }
     return shuffle([...set]);
   }
+  // 글자 만들기 보기: 정답 글자 + 이웃 수에서 온 헷갈리는 글자
+  function tilesFor(n, sys){
+    const ans = Array.from(word(n, sys));
+    const extra = Math.min(3, 6 - ans.length);
+    const bad = new Set();
+    const from = shuffle([n - 1, n + 1, n + 10, n - 10, n + 2, n - 2, 1 + rnd(99), 1 + rnd(99), 1 + rnd(99)]);
+    for (const v of from) {
+      if (v < 1 || v > 99) continue;
+      for (const c of word(v, sys)) if (!ans.includes(c)) bad.add(c);
+      if (bad.size >= extra) break;
+    }
+    const pool = sys === 'sino' ? SINO.slice(1).concat('십') : ['하','나','둘','셋','넷','다','섯','여','일','곱','덟','아','홉','열','스','물','서','른','마','흔','쉰','예','순','든'];
+    shuffle(pool).forEach(c => { if (bad.size < extra && !ans.includes(c)) bad.add(c); });
+    return shuffle(ans.concat([...bad].slice(0, extra)));
+  }
   function makeRound(){
-    const types = ['read', 'pick', 'count'];
+    const types = ['read', 'pick', 'count', 'next', 'bigger', 'build'];
+    if (S.sys !== 'sino') types.push('unit');
     if (canListen()) types.push('listen');
     const list = [], used = new Set();
     let bag = [];
@@ -773,12 +1023,39 @@
       if (!bag.length) bag = shuffle(types.slice());
       const type = bag.pop();
       let sys = S.sys === 'mix' ? (Math.random() < .5 ? 'nat' : 'sino') : S.sys;
-      let n, g = 0;
-      do { n = pickNumber(); } while (used.has(n) && g++ < 30);
-      used.add(n);
+      const q = { type, sys, miss: 0, emo: COUNT_EMOJI[rnd(COUNT_EMOJI.length)] };
+      if (type === 'unit') {
+        q.sys = 'nat';
+        q.n = pickNum('nat', 1, Math.min(S.max, 20), used);
+        q.thing = THINGS[rnd(THINGS.length)];
+        q.opts = choices(q.n, Math.min(S.max, 20));
+      } else if (type === 'next') {
+        // 네 칸짜리 줄에서 한 칸이 빈다
+        q.n = pickNum(sys, 1, S.max, used);
+        const ks = [0, 1, 2, 3].filter(k => q.n - k >= 1 && q.n - k + 3 <= S.max);
+        q.start = q.n - ks[rnd(ks.length)];
+        q.opts = choices(q.n);
+      } else if (type === 'bigger') {
+        const a = pickNum(sys, 1, S.max, used);
+        let b, g = 0;
+        const span = S.max <= 10 ? 4 : 12;
+        do { b = a + (rnd(2) ? 1 : -1) * (1 + rnd(span)); } while ((b < 1 || b > S.max || b === a) && g++ < 50);
+        if (b < 1 || b > S.max || b === a) b = a === 1 ? 2 : a - 1;
+        q.big = Math.random() < .6;
+        q.pair = shuffle([a, b]);
+        q.n = q.big ? Math.max(a, b) : Math.min(a, b);
+        q.opts = q.pair;
+        q.noStat = true;
+      } else {
+        q.n = pickNum(sys, 1, S.max, used);
+        q.opts = choices(q.n);
+      }
       // 100은 우리말 이름이 없으니 한자말로 묻는다
-      if (n >= 100) sys = 'sino';
-      list.push({ type, sys, n, opts: choices(n), miss: 0, emo: COUNT_EMOJI[rnd(COUNT_EMOJI.length)] });
+      if (q.n >= 100 || (type === 'next' && q.start + 3 >= 100)) q.sys = 'sino';
+      if (type === 'build') { q.tiles = tilesFor(q.n, q.sys); q.pos = 0; }
+      q.review = !q.noStat && weak(q.sys, q.n);
+      used.add(q.n);
+      list.push(q);
     }
     return list;
   }
@@ -794,13 +1071,26 @@
   $('#go-play').addEventListener('click', () => { sfx.tap(); startQuiz(); });
   $('#again').addEventListener('click', () => { sfx.tap(); startQuiz(); });
 
+  const optLabel = (q, v) =>
+    q.type === 'unit' ? nativeMod(v) + ' ' + q.thing.c :
+    ['read', 'count', 'next', 'bigger'].includes(q.type) ? word(v, q.sys) : String(v);
+
+  // html: 말풍선, auto: 자동으로 읽어 줄 말(정답을 흘리지 않음), hint: 🔊 버튼을 눌렀을 때(힌트 포함)
   function promptFor(q){
     const tag = `<span class="sys-tag ${q.sys}">${SYS_NAME[q.sys]}</span>`;
+    const seq = () => [0, 1, 2, 3].map(k => q.start + k === q.n ? '음~' : word(q.start + k, q.sys)).join(', ');
     switch (q.type) {
-      case 'read':   return { html: `${tag} 말로<br>어떻게 읽을까?`, say: '이 숫자를 어떻게 읽을까?' };
-      case 'pick':   return { html: `이 글자는<br>어떤 숫자일까?`, say: word(q.n, q.sys) + ' 는, 어떤 숫자일까?' };
-      case 'count':  return { html: `모두 몇 개일까?<br>${tag} 말로 골라 봐`, say: '모두 몇 개일까?' };
-      case 'listen': return { html: `잘 듣고<br>숫자를 골라 봐!`, say: word(q.n, q.sys) };
+      case 'read':   return { html: `${tag} 말로<br>어떻게 읽을까?`, auto: '이 숫자를 어떻게 읽을까?' };
+      case 'pick':   return { html: `이 글자는<br>어떤 숫자일까?`, auto: '이 글자는 어떤 숫자일까?', hint: word(q.n, q.sys) + ' 는, 어떤 숫자일까?' };
+      case 'count':  return { html: `모두 몇 개일까?<br>${tag} 말로 골라 봐`, auto: '모두 몇 개일까?' };
+      case 'unit':   return { html: `${q.thing.name}<br>몇 ${q.thing.c}일까?`, auto: `${q.thing.name} 몇 ${q.thing.c}일까?` };
+      case 'listen': return { html: `잘 듣고<br>숫자를 골라 봐!`, auto: word(q.n, q.sys) };
+      case 'next':   return { html: `빈 칸에 들어갈<br>${tag} 말은?`, auto: '빈 칸에 들어갈 말은 뭘까?', hint: seq() };
+      case 'bigger': return {
+        html: `둘 중에 <b style="color:var(--potato)">더 ${q.big ? '큰' : '작은'}</b><br>수는 뭘까?`,
+        auto: `둘 중에 더 ${q.big ? '큰' : '작은'} 수는 뭘까?`,
+        hint: `${word(q.pair[0], q.sys)}, ${word(q.pair[1], q.sys)}. 더 ${q.big ? '큰' : '작은'} 수는?` };
+      case 'build':  return { html: `${tag} 말로<br>글자를 만들어 봐!`, auto: '이 숫자를 글자로 만들어 봐' };
     }
   }
   function ask(){
@@ -808,49 +1098,114 @@
     Q.locked = false;
     document.querySelectorAll('#dots i').forEach((d, i) => d.classList.toggle('now', i === Q.i));
     const p = promptFor(q);
-    $('#prompt').innerHTML = p.html;
-    $('#say').onclick = () => speak(p.say);
+    $('#prompt').innerHTML = (q.review ? '<span class="retry">🔁 다시 도전!</span><br>' : '') + p.html;
+    $('#say').onclick = () => speak(p.hint || p.auto);
 
     const st = $('#stage'); st.innerHTML = '';
+    let autoSay = S.auto && q.type !== 'listen';
     if (q.type === 'read') st.appendChild(el('div', 'num', String(q.n)));
     else if (q.type === 'pick') st.appendChild(el('div', 'word', word(q.n, q.sys)));
     else if (q.type === 'count') { const v = el('div', 'viz'); st.appendChild(v); renderViz(v, q.n, q.emo); }
-    else {
+    else if (q.type === 'unit') { const v = el('div', 'viz'); st.appendChild(v); renderViz(v, q.n, q.thing.e); }
+    else if (q.type === 'next') {
+      const row = el('div', 'stones');
+      for (let k = 0; k < 4; k++) {
+        const v = q.start + k;
+        if (k) row.appendChild(el('span', 'arrow', '›'));
+        const s = el('span', 'stone' + (v === q.n ? ' blank' : ''), v === q.n ? '?' : word(v, q.sys));
+        s.style.animationDelay = k * 90 + 'ms';
+        row.appendChild(s);
+      }
+      st.appendChild(row);
+    } else if (q.type === 'bigger') {
+      const v = el('div', 'vs');
+      v.append(el('span', 'e', q.big ? '🐘' : '🐭'));
+      const b = el('b'); b.innerHTML = `더 <em>${q.big ? '큰' : '작은'}</em> 수를 콕!`;
+      v.append(b); st.appendChild(v);
+    } else if (q.type === 'build') {
+      const v = el('div', 'build');
+      v.append(el('div', 'bnum', String(q.n)));
+      const slots = el('div', 'slots');
+      Array.from(word(q.n, q.sys)).forEach((_, i) => slots.appendChild(el('span', 'slot' + (i ? '' : ' next'))));
+      v.append(slots); st.appendChild(v);
+    } else {
       const b = el('button', 'ear', '👂'); b.setAttribute('aria-label', '다시 듣기');
       const sayIt = () => { b.classList.add('talk'); speak(word(q.n, q.sys), () => b.classList.remove('talk')); };
       b.onclick = sayIt;
       st.appendChild(b); st.appendChild(el('div', 'ear-hint', '귀를 누르면 다시 들려줘'));
-      setTimeout(sayIt, 350);
+      clearTimeout(Q.sayTimer); Q.sayTimer = setTimeout(sayIt, 350);
     }
     const rv = el('div', 'reveal'); st.appendChild(rv);
+    if (autoSay) { clearTimeout(Q.sayTimer); Q.sayTimer = setTimeout(() => speak(p.auto), 350); }
 
-    // 보기: 읽기·세기는 글자, 찾기·듣기는 숫자
-    const wordOpts = q.type === 'read' || q.type === 'count';
     const box = $('#opts'); box.innerHTML = '';
+    box.className = 'opts' + (q.type === 'bigger' ? ' two' : q.type === 'build' ? ' tiles' : '');
+    if (q.type === 'build') {
+      q.tiles.forEach(c => {
+        const b = el('button', 'opt', c);
+        b.addEventListener('click', () => tile(b));
+        box.appendChild(b);
+      });
+      return;
+    }
+    const wordOpts = !['pick', 'listen'].includes(q.type);
     q.opts.forEach(v => {
-      const b = el('button', 'opt' + (wordOpts ? '' : ' digit'), wordOpts ? word(v, q.sys) : String(v));
+      const b = el('button', 'opt' + (wordOpts ? '' : ' digit'), optLabel(q, v));
       b.dataset.v = v;
       b.addEventListener('click', () => answer(b, v));
       box.appendChild(b);
     });
   }
+  function miss(btn, hintEl){
+    const q = Q.list[Q.i];
+    q.miss++; Q.streak = 0;
+    btn.classList.remove('no'); void btn.offsetWidth; btn.classList.add('no');
+    // 글자 조각은 나중에 다시 쓸 수도 있으니 빨간색을 잠깐만 보여 준다
+    if (!btn.disabled) setTimeout(() => btn.classList.remove('no'), 600);
+    sfx.oops(); mood(mascots.ask, 'oops'); buzz([40, 60, 40]);
+    if (q.miss >= 2 && hintEl) hintEl.classList.add('hint');
+  }
   function answer(btn, v){
     if (Q.locked || btn.disabled) return;
     const q = Q.list[Q.i];
     if (v !== q.n) {
-      q.miss++; Q.streak = 0;
-      btn.classList.add('no'); btn.disabled = true;
-      sfx.oops(); mood(mascots.ask, 'oops');
-      if (q.miss >= 2) document.querySelector(`#opts .opt[data-v="${q.n}"]`).classList.add('hint');
+      btn.disabled = true;
+      miss(btn, document.querySelector(`#opts .opt[data-v="${q.n}"]`));
       return;
     }
+    win(btn);
+  }
+  // 글자 만들기: 앞 글자부터 차례로 누른다
+  function tile(btn){
+    if (Q.locked || btn.disabled) return;
+    const q = Q.list[Q.i];
+    const ans = Array.from(word(q.n, q.sys));
+    const slots = document.querySelectorAll('#stage .slot');
+    if (btn.textContent !== ans[q.pos]) {
+      const need = [...document.querySelectorAll('#opts .opt')].find(b => !b.disabled && b.textContent === ans[q.pos]);
+      miss(btn, need);
+      return;
+    }
+    document.querySelectorAll('#opts .opt.hint').forEach(b => b.classList.remove('hint'));
+    btn.disabled = true; btn.classList.add('used');
+    slots[q.pos].textContent = ans[q.pos];
+    slots[q.pos].classList.remove('next'); slots[q.pos].classList.add('fill');
+    sfx.click(q.pos * 2);
+    q.pos++;
+    if (q.pos < ans.length) { slots[q.pos].classList.add('next'); return; }
+    win(null, $('#stage .slots'));
+  }
+  function win(btn, burstFrom){
+    const q = Q.list[Q.i];
     Q.locked = true;
-    btn.classList.remove('hint'); btn.classList.add('ok');
+    if (btn) { btn.classList.remove('hint'); btn.classList.add('ok'); }
     document.querySelectorAll('#opts .opt').forEach(b => { b.disabled = true; });
+    const first = q.miss === 0;
     const dot = $('#dots').children[Q.i];
     dot.classList.remove('now');
-    if (q.miss === 0) { Q.score++; Q.streak++; dot.classList.add('ok'); } else dot.classList.add('miss');
+    if (first) { Q.score++; Q.streak++; dot.classList.add('ok'); } else dot.classList.add('miss');
     $('#score').textContent = Q.score;
+    if (!q.noStat) record(q.sys, q.n, first);
 
     if (Q.streak > 0 && Q.streak % 3 === 0) {
       fart(mascots.ask, '뿡빵뿡!'); sfx.ppungbbang();
@@ -858,22 +1213,38 @@
     } else {
       fart(mascots.ask, ['뿡!', '뿌웅!', '뽕!', '부웅!'][rnd(4)]); sfx.ppung();
     }
+    buzz(first ? 25 : 15);
+    burst(btn || burstFrom || $('#stage'), first ? 12 : 6, first ? ['⭐', '✨', '💨', '🌟'] : ['✨', '💨']);
+    if (q.type === 'next') { const b = $('#stage .stone.blank'); b.textContent = word(q.n, q.sys); b.classList.add('ok'); }
 
-    // 정답이면 세 가지 이름을 한 줄로 보여 주고 읽어 준다
+    // 정답이면 이름을 한 줄로 보여 주고 읽어 준다
     const rv = $('#stage .reveal');
     rv.innerHTML = '';
-    const parts = [String(q.n)];
-    if (q.n < 100) parts.push(native(q.n));
-    parts.push(sino(q.n));
-    parts.forEach((t, i) => { if (i) rv.appendChild(el('span', 'eq', '=')); rv.appendChild(el('span', '', t)); });
+    let parts, say;
+    if (q.type === 'bigger') {
+      const [a, b] = q.pair, sign = a < b ? '<' : '>';
+      parts = [`${word(a, q.sys)}(${a})`, sign, `${word(b, q.sys)}(${b})`];
+      const w = word(q.n, q.sys);
+      say = `${w}${josa(w, '이', '가')} 더 ${q.big ? '커' : '작아'}`;
+    } else if (q.type === 'unit') {
+      parts = [String(q.n), '=', `${nativeMod(q.n)} ${q.thing.c}`];
+      say = `${nativeMod(q.n)} ${q.thing.c}`;
+    } else {
+      parts = [String(q.n)];
+      if (q.n < 100) parts.push('=', native(q.n));
+      parts.push('=', sino(q.n));
+      say = word(q.n, q.sys);
+    }
+    parts.forEach(t => rv.appendChild(el('span', t === '=' || t === '<' || t === '>' ? 'eq' : '', t)));
     rv.classList.add('show');
-    setTimeout(() => speak(word(q.n, q.sys)), 420);
+    clearTimeout(Q.sayTimer);
+    Q.sayTimer = setTimeout(() => speak(say), 420);
 
     clearTimeout(Q.timer);
     Q.timer = setTimeout(() => {
       Q.i++;
       if (Q.i < ROUND) ask(); else finish();
-    }, 1900);
+    }, 2000);
   }
 
   /* ── 결과 ─────────────────────────────── */
@@ -886,6 +1257,7 @@
     for (let i = 0; i < 3; i++) { st[i].className = i < stars ? 'on' : ''; st[i].style.animationDelay = (300 + i * 220) + 'ms'; }
 
     // 한 판 끝낼 때마다 스티커 하나, 다 맞히면 하나 더
+    const before = S.stickers.length;
     const left = STICKERS.filter(s => !S.stickers.includes(s));
     const won = shuffle(left).slice(0, sc === ROUND ? 2 : 1);
     S.stickers.push(...won); store.set('stickers', S.stickers);
@@ -893,24 +1265,40 @@
     prize.innerHTML = '';
     if (won.length) {
       won.forEach(s => prize.appendChild(el('div', 'stk got new', s)));
-      const p = el('p'); p.append(el('b', '', won.length > 1 ? '새 스티커 두 개!' : '새 스티커!'), '스티커 책에 붙였어');
+      const p = el('p'); p.append(el('b', '', won.length > 1 ? '새 스티커 두 개!' : '새 스티커!'), `스티커 ${S.stickers.length}개 모았어`);
       prize.appendChild(p);
     } else {
       prize.appendChild(el('div', 'stk got', '👑'));
       const p = el('p'); p.append(el('b', '', '스티커 30개 다 모았어!'), '스티커 왕이야');
       prize.appendChild(p);
     }
-    prize.dataset.won = won.join('');
+    // 새로 열린 옷은 바로 입혀 준다
+    const opened = DRESS.filter(d => d.need > before && d.need <= S.stickers.length).pop();
+    const rd = $('#r-dress');
+    rd.innerHTML = ''; rd.classList.toggle('show', !!opened);
+    if (opened) {
+      S.dress = opened.id; store.set('dress', S.dress);
+      rd.append(el('div', 'stk got new', opened.e));
+      const p = el('p'); p.append(el('b', '', `뿡이 새 옷: ${opened.name}!`), '벌써 입었어');
+      rd.appendChild(p);
+    }
+    applyDress();
+    Q.lastWon = won;
     show('done');
     sfx.fanfare();
     setTimeout(() => fart(mascots.result, sc === ROUND ? '뿡빵뿡!' : '뿡!'), 750);
-    Q.lastWon = won;
+    if (stars === 3) rain(28, ['⭐', '🌟', '💨', '🎉', '🍠']);
   }
   mascots.result.addEventListener('click', () => { fart(mascots.result); sfx.ppung(); });
 
   // 첫 터치에서 오디오를 깨운다(iOS 사파리는 사용자 동작 없이는 소리를 막는다)
   window.addEventListener('pointerdown', () => ac(), { once: true });
   window.addEventListener('resize', () => { if ($('#learn').classList.contains('on')) renderViz($('#lc-viz'), L.n, L.emo, 'small'); });
+
+  // 홈 화면에 추가하면 인터넷 없이도 열린다
+  if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.hostname === 'localhost')) {
+    window.addEventListener('load', () => navigator.serviceWorker.register('sw.js').catch(() => {}));
+  }
 
   paintHome();
 })();
