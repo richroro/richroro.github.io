@@ -197,6 +197,12 @@
   .lb li{display:grid;grid-template-columns:1fr 1.4fr 1fr .9fr;gap:6px;padding:5px 10px;border-radius:8px;background:rgba(255,240,220,.04);font-variant-numeric:tabular-nums}
   .lb li.me{background:rgba(242,185,75,.18);color:var(--ink)}
   body.short .keys{display:none}
+  .shopl li{display:flex;align-items:center;justify-content:space-between;gap:10px;opacity:1}
+  .shopl small{font-size:11px;color:var(--ink-3);font-weight:700}
+  .buy{flex:0 0 auto;padding:8px 12px;border-radius:10px;border:none;background:linear-gradient(180deg,#ffd97a,#eb9d2e);color:#2a1206;font:800 12px/1 var(--font);cursor:pointer}
+  .buy:disabled{background:rgba(255,240,220,.08);color:var(--ink-3);cursor:default}
+  #shop .card{max-width:520px} body.wide .shopl{grid-template-columns:1fr}
+  .coinline{margin-top:8px;font-size:14px;font-weight:800;color:var(--gold-2);min-height:18px}
   body.touch .keys .kb{display:none}
   body:not(.touch) .keys .tc{display:none}
 </style>
@@ -231,11 +237,12 @@
     <div class="logo">격파 메이드</div>
     <p class="sub">달밤의 저택에 저주받은 인형들이 깨어났다.<br>건틀릿 하나로 전부 격파하라.</p>
     <p class="best" id="bestLine"></p>
-    <div class="wardrobe"><span class="wl">의상</span><div class="sw" id="swatches"></div><button class="achb" id="bAch">업적 0/12</button></div>
+    <div class="wardrobe"><span class="wl">의상</span><div class="sw" id="swatches"></div><button class="achb" id="bAch">업적 0/12</button><button class="achb" id="bShop">상점</button></div>
     <div class="diffs" id="diffRow"><span class="wl">난이도</span><button data-d="0">쉬움</button><button data-d="1">보통</button><button data-d="2">어려움</button></div>
     <div class="btns2">
       <button class="btn primary" id="bStart">저택의 밤<small>끝없이 몰려오는 인형 · 5웨이브마다 보스</small></button>
       <button class="btn ghost" id="bRush">보스 러시<small>보스 셋 연속 · 클리어 시간 기록</small></button>
+      <button class="btn ghost" id="bDaily">오늘의 도전<small></small></button>
       <button class="btn ghost" id="bTrain">훈련장<small>미션을 따라 기술 익히기</small></button>
       <button class="btn ghost rotb" id="bRotT">가로 모드로 하기<small>폰을 옆으로 눕혀서 넓은 화면으로</small></button>
     </div>
@@ -244,7 +251,7 @@
       <b>대시</b> <kbd>L</kbd>/<kbd>Shift</kbd> · <b>회전차기</b> <kbd>I</kbd>/<kbd>X</kbd> · <b>격파</b> <kbd>O</kbd>/<kbd>V</kbd> · <b>정지</b> <kbd>Esc</kbd></div>
       <div class="tc">공격 버튼을 누르고 있으면 콤보가 이어집니다.<br>게이지가 차면 <b>격파</b> 버튼으로 화면 전체를 쓸어버리세요.</div>
     </div>
-    <div class="opts"><button class="opt oBgm">배경음 켬</button><button class="opt oSfx">효과음 켬</button><button class="opt oFx">빛 번짐 켬</button><button class="opt oFlip">방향 뒤집기</button></div>
+    <div class="opts"><button class="opt oBgm">배경음 켬</button><button class="opt oSfx">효과음 켬</button><button class="opt oFx">빛 번짐 켬</button><button class="opt oStory">대사 켬</button><button class="opt oFlip">방향 뒤집기</button></div>
     <a class="home" href="/">← richroro 홈</a>
   </div>
 </div>
@@ -255,7 +262,7 @@
     <div class="plist" id="pausePerks"></div>
     <button class="btn primary" id="bResume">계속하기</button>
     <button class="btn ghost" id="bQuit">타이틀로</button>
-    <div class="opts"><button class="opt oBgm">배경음 켬</button><button class="opt oSfx">효과음 켬</button><button class="opt oFx">빛 번짐 켬</button><button class="opt oFlip">방향 뒤집기</button></div>
+    <div class="opts"><button class="opt oBgm">배경음 켬</button><button class="opt oSfx">효과음 켬</button><button class="opt oFx">빛 번짐 켬</button><button class="opt oStory">대사 켬</button><button class="opt oFlip">방향 뒤집기</button></div>
   </div>
 </div>
 
@@ -266,6 +273,15 @@
     <ul class="achl" id="achList"></ul>
     <p class="sub">업적 3·6·9·13개마다 새 의상이 열립니다</p>
     <button class="btn ghost" id="bAchClose">닫기</button>
+  </div>
+</div>
+
+<div class="ov" id="shop">
+  <div class="card">
+    <div class="h2">상점</div>
+    <p class="sub" id="shopSub"></p>
+    <ul class="achl shopl" id="shopList"></ul>
+    <button class="btn ghost" id="bShopClose">닫기</button>
   </div>
 </div>
 
@@ -291,6 +307,7 @@
       <div><span>최고 스타일</span><b id="rRank">-</b></div>
       <div><span>고른 강화</span><b id="rPerks">0</b></div>
     </div>
+    <div class="coinline" id="coinLine"></div>
     <div class="plist" id="overPerks"></div>
     <div class="lb" id="lbBox"></div>
     <button class="btn primary" id="bRetry">다시 도전</button>
@@ -600,6 +617,20 @@ function renderWardrobe() {
   });
   $('bAch').textContent = `업적 ${n}/${ACHS.length}`;
 }
+function openShop() {
+  $('shopSub').textContent = `보유 은화 ${coins} · 인형을 격파하면 은화가 떨어집니다(난이도·오늘의 도전 보너스)`;
+  $('shopList').innerHTML = SHOP.map(it => {
+    const lv = shopLv[it.id] || 0, max = lv >= it.max, cost = it.cost[lv];
+    return `<li class="${lv ? 'done' : ''}"><div><b>${it.name} <small>Lv ${lv}/${it.max}</small></b><span>${it.desc}</span></div>` +
+      `<button class="buy" data-id="${it.id}" ${max || coins < cost ? 'disabled' : ''}>${max ? '완료' : '은화 ' + cost}</button></li>`;
+  }).join('');
+  $('shopList').querySelectorAll('.buy').forEach(b => b.onclick = () => {
+    const it = SHOP.find(q => q.id === b.dataset.id), lv = shopLv[it.id] || 0, cost = it.cost[lv];
+    if (lv >= it.max || coins < cost) return;
+    coins -= cost; shopLv[it.id] = lv + 1; store.set('coins', coins); store.set('shop', shopLv); sfx.pickup(); openShop();
+  });
+  showOv('shop');
+}
 function openAch() {
   $('achList').innerHTML = ACHS.map(a => `<li class="${ach[a[0]] ? 'done' : ''}"><b>${a[1]}</b><span>${a[2]}</span></li>`).join('');
   $('achSub').textContent = `${achCount()}/${ACHS.length} 달성 · 누적 완벽한 회피 ${life.dodge}번 · 벽꽝 ${life.wall}번`;
@@ -610,6 +641,7 @@ function setSfx(on) { sfxOn = on; store.set('sfx', on); if (sfxBus) sfxBus.gain.
 function syncOpts() {
   document.querySelectorAll('.oBgm').forEach(b => { b.textContent = bgmOn ? '배경음 켬' : '배경음 끔'; b.classList.toggle('off', !bgmOn); });
   document.querySelectorAll('.oSfx').forEach(b => { b.textContent = sfxOn ? '효과음 켬' : '효과음 끔'; b.classList.toggle('off', !sfxOn); });
+  document.querySelectorAll('.oStory').forEach(b => { b.textContent = story ? '대사 켬' : '대사 끔'; b.classList.toggle('off', !story); });
   document.querySelectorAll('.oFx').forEach(b => { b.textContent = fancy ? '빛 번짐 켬' : '빛 번짐 끔'; b.classList.toggle('off', !fancy); });
 }
 function setMuted(m) {
@@ -892,6 +924,7 @@ const KEYMAP = { ArrowLeft: 'left', KeyA: 'left', ArrowRight: 'right', KeyD: 'ri
 addEventListener('keydown', e => {
   ensureAudio();
   if (state === 'perk') { const n = { Digit1: 0, Digit2: 1, Digit3: 2, Numpad1: 0, Numpad2: 1, Numpad3: 2 }[e.code]; if (n != null) choosePerk(n); return; }
+  if (state === 'talk') { if (e.code === 'Escape') advanceTalk(true); else if (['Space', 'Enter', 'KeyJ', 'KeyZ', 'KeyK'].includes(e.code) && !e.repeat) { e.preventDefault(); advanceTalk(); } return; }
   if (e.code === 'Escape' || e.code === 'KeyP') { if (state === 'play') pauseGame(); else if (state === 'paused') resumeGame(); return; }
   if (state === 'title' && e.code === 'Enter') { startGame('wave'); return; }
   const k = KEYMAP[e.code];
@@ -1420,6 +1453,7 @@ function updateFx(dt) {
         if (o.x < 10 || o.x > ARENA - 10) { o.vx *= -0.5; o.x = clamp(o.x, 10, ARENA - 10); }
         break;
       case 'bolt': break;
+      case 'coin': o.vy += 1500 * dt; o.x += o.vx * dt; o.y += o.vy * dt; o.fp += dt * 14; if (o.y > o.floor) { o.y = o.floor; o.vy *= -0.45; o.vx *= 0.6; } break;
       case 'petal': o.fp += dt * 3; o.x += (o.vx + Math.sin(o.fp) * 30) * dt; o.y += o.vy * dt; o.rot += o.vr * dt; if (o.y > GROUND + 60) o.t = o.life; break;
       case 'straw': o.vy += 900 * dt; o.x += o.vx * dt; o.y += o.vy * dt; o.rot += o.vr * dt; if (o.y > o.floor) { o.y = o.floor; o.vx = 0; o.vy = 0; o.vr = 0; } break;
     }
@@ -1429,6 +1463,12 @@ function drawFxLayer(g, layer) {
   for (const o of fx) {
     const k = o.t / o.life, a = 1 - k;
     switch (o.k) {
+      case 'coin':
+        if (layer !== 'front') break;
+        { const w = Math.abs(Math.cos(o.fp)) * 5 + 1; g.globalAlpha = k > 0.7 ? (1 - k) / 0.3 : 1;
+          g.fillStyle = '#e8b54a'; g.beginPath(); g.ellipse(o.x, o.y, w, 6, 0, 0, TAU); g.fill();
+          g.fillStyle = '#fff2b0'; g.beginPath(); g.ellipse(o.x - w * 0.3, o.y - 1.5, w * 0.35, 2.4, 0, 0, TAU); g.fill(); g.globalAlpha = 1; }
+        break;
       case 'petal':
         if (layer !== 'front') break;
         g.save(); g.translate(o.x, o.y); g.rotate(o.rot); g.scale(1, Math.abs(Math.cos(o.fp)) * 0.7 + 0.3);
@@ -1590,6 +1630,43 @@ let totalDmg = 0, kills = 0, combo = 0, comboT = 0, maxCombo = 0, comboPop = 0;
 let wave = 0, waveState = 'none', waveT = 0, spawnQ = [], spawnT = 0, maxAlive = 2, bossRef = null;
 let hitstop = 0, trauma = 0, shX = 0, shY = 0, slowT = 0, slowScale = 1, flashT = 0, hurtV = 0, darkA = 0, zoom = 1;
 let zKick = 0, zfX = 0, zfY = 0, finish = null, cine = null, fancy = store.get('fancy', true);
+let talk = null, story = store.get('story', true), coins = store.get('coins', 0), runCoins = 0, shopLv = store.get('shop', {});
+let daily = false, MOD = {}, endingPending = false, pendingPerkStart = false;
+// ── 오늘의 도전: 날짜로 정해지는 규칙 두 개 ──
+const MODS = [
+  { id: 'giant', name: '거인의 밤', desc: '인형이 1.3배 크고 체력 1.6배' },
+  { id: 'glass', name: '유리 대포', desc: '주는 피해·받는 피해 모두 2배' },
+  { id: 'bomb', name: '폭탄 파티', desc: '1웨이브부터 폭탄 곰인형이 잔뜩' },
+  { id: 'moon', name: '달빛 충만', desc: '격파 게이지가 3배로 참' },
+  { id: 'wisp', name: '도깨비불 무리', desc: '1웨이브부터 도깨비불이 절반' },
+  { id: 'fast', name: '속도전', desc: '인형의 준비 동작이 30% 빠름' },
+  { id: 'elite', name: '정예의 밤', desc: '1웨이브부터 정예가 30% 섞임' }
+];
+const todayKey = () => { const d = new Date(); return `${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()}`; };
+function dailyMods() {
+  const d = new Date(); let seed = d.getFullYear() * 10000 + (d.getMonth() + 1) * 100 + d.getDate();
+  const r = () => (seed = (seed * 16807) % 2147483647) / 2147483647; r(); r(); r();
+  const a = Math.floor(r() * MODS.length); let b = Math.floor(r() * (MODS.length - 1)); if (b >= a) b++;
+  return [MODS[a], MODS[b]];
+}
+// ── 상점: 은화로 사는 영구 강화 ──
+const SHOP = [
+  { id: 'hp', name: '단련된 체력', desc: '시작 최대 체력 +10', max: 5, cost: [30, 60, 100, 150, 220] },
+  { id: 'atk', name: '강철 너클', desc: '공격력 +5%', max: 5, cost: [40, 80, 130, 190, 260] },
+  { id: 'ult', name: '달빛 저장', desc: '격파 게이지 20을 채운 채 시작', max: 3, cost: [50, 110, 180] },
+  { id: 'luck', name: '행운의 앞치마', desc: '하트가 떨어질 확률 +5%', max: 3, cost: [40, 90, 150] },
+  { id: 'perk', name: '준비된 메이드', desc: '시작하기 전에 강화 하나를 고른다', max: 1, cost: [300] }
+];
+// ── 이야기 ──
+const LINES = {
+  intro: [['rin', '…또 인형들이 움직이네. 주인님이 잠드신 밤마다.'], ['rin', '청소는 메이드의 일. 부서진 건 전부 치워 드리죠.']],
+  boss: [['boss', '오뚝… 넘어져도… 다시 일어난다…!'], ['rin', '그럼 일어날 때마다 넘어뜨려 드리죠.']],
+  kboss: [['kboss', '이 저택의 문은 내가 지킨다. 메이드 따위가 지나갈 곳이 아니다.'], ['rin', '문지기는 오늘부로 해고입니다.']],
+  pboss: [['pboss', '훌륭해… 네 춤은 내 실보다 아름답구나.'], ['pboss', '너도 내 인형이 되어라. 영원히 춤추게 해 주마.'], ['rin', '사양하겠습니다. 저는 이 집의 메이드니까요.']],
+  ending: [['pboss', '…실이… 끊어지다니. 이 저택의 밤도 여기까지인가…'], ['rin', '주인님이 깨시기 전에 바닥부터 닦아야겠네요.'], ['rin', '…그런데 저건 또 뭐지? 아직 인형이 남았잖아.']],
+  endingR: [['pboss', '…실이… 끊어지다니. 이 저택의 밤도 여기까지인가…'], ['rin', '주인님이 깨시기 전에 바닥부터 닦아야겠네요.']]
+};
+const SPEAKER = { rin: '린', boss: '대왕 오뚝이', kboss: '기사단장 인형', pboss: '인형술사' };
 let wt = 0, hintT = 0, dmgLog = [], bannerT = 0, bannerMain = '', bannerSub = '';
 let witchT = 0, rankIdx = -1, rankPop = 0, maxRank = -1, impactT = 0, waveHit = false;
 const RANKS = [[10, 'C', '#9fc2ff'], [20, 'B', '#8fe3a8'], [35, 'A', '#ffd24a'], [50, 'S', '#ff9a3a'], [80, 'SS', '#ff5a6a'], [120, 'SSS', '#ff5ad8']];
@@ -1642,7 +1719,7 @@ const bestKey = () => diff === 1 ? 'best' : 'best' + diff;
 const fmtTime = t => `${Math.floor(t / 60)}:${(t % 60).toFixed(1).padStart(4, '0')}`;
 function makeEnemy(type, x, opt = {}) {
   const T = ET[type], m = mode === 'wave' ? 1 + (wave - 1) * 0.13 : 1;
-  const bossN = Math.floor(wave / 5), D = mode === 'wave' ? DIFF[diff] : DIFF[1];
+  const bossN = Math.floor(wave / 5), D = mode === 'wave' && !daily ? DIFF[diff] : DIFF[1];
   const hp = (BOSSES.includes(type) ? T.hp * (1 + 0.25 * Math.max(0, bossN - (BOSSES.indexOf(type) + 1))) : T.hp * m) * D.hp;
   const e = { type, x, y: type === 'wisp' ? GROUND - 110 : type === 'pboss' ? GROUND - 150 : GROUND, vx: 0, vy: 0, face: x < P.x ? 1 : -1, hp, maxHp: hp, w: T.w, h: T.h,
     state: 'walk', st: 0, cd: rand(.6, 1.4), flash: 0, tilt: 0, tiltV: 0, tiltT: 0, air: false, launched: false, dead: false, hitDone: false,
@@ -1653,6 +1730,8 @@ function makeEnemy(type, x, opt = {}) {
     // 정예: 크고 단단하고 아프다. 격파하면 달빛 구슬을 떨군다
     e.hp *= 2.3; e.maxHp = e.hp; e.dmgMul *= 1.3; e.ek = 1.25; e.w *= 1.25; e.h *= 1.25; e.guard *= 1.5; e.maxGuard = e.guard;
   }
+  if (MOD.giant && !BOSSES.includes(type) && !e.immortal) { const k = 1.3; e.hp *= 1.6; e.maxHp = e.hp; e.ek = (e.ek || 1) * k; e.w *= k; e.h *= k; }
+  if (MOD.fast) e.windup *= 0.7;
   if (type === 'kboss') { e.anim = null; e.animT = 0; e.combo = 0; }
   if (type === 'pboss') { e.fade = 1; e.p2 = false; e.bob = 0; }
   enemies.push(e);
@@ -1676,7 +1755,7 @@ function resetGame(m, isDemo = false) {
   totalDmg = 0; kills = 0; combo = 0; comboT = 0; maxCombo = 0; wave = 0; bossRef = null; dmgLog = [];
   hitstop = 0; trauma = 0; slowT = 0; flashT = 0; hurtV = 0; darkA = 0; zoom = 1; hintT = 0; bannerT = 0; zKick = 0; finish = null; cine = null;
   witchT = 0; rankIdx = -1; rankPop = 0; maxRank = -1; S = newStats(); perkLv = {}; echoes = []; hitCount = 0; runT = 0;
-  if (isDemo) rush = false;
+  if (isDemo) { rush = false; daily = false; MOD = {}; }
   clearInput();
   if (m === 'train') {
     P.x = isDemo ? 380 : 300;
@@ -1699,9 +1778,9 @@ function waveList(n) {
   const count = Math.min(3 + Math.floor(n * 1.25), 16), l = [];
   for (let i = 0; i < count; i++) {
     const r = Math.random();
-    if (n >= 4 && r < 0.12) l.push('bomb');
+    if ((n >= 4 || MOD.bomb) && r < (MOD.bomb ? 0.35 : 0.12)) l.push('bomb');
     else if (n >= 3 && r < 0.26 + n * 0.012) l.push('knight');
-    else if (n >= 2 && r < 0.5) l.push('wisp');
+    else if ((n >= 2 || MOD.wisp) && r < (MOD.wisp ? 0.75 : 0.5)) l.push('wisp');
     else l.push('dummy');
   }
   return l;
@@ -1759,7 +1838,7 @@ function hurtPlayer(dmg, dir, kb = 260) {
   // 대시 시작 직후에 맞을 뻔하면 완벽한 회피
   if (P.state === 'dash' && P.st < 0.13 * S.dodgeWin && !P.dodged) { perfectDodge(); return false; }
   if (P.inv > 0 || P.state === 'ult' || P.state === 'skill') return false;
-  dmg = Math.round(dmg * S.taken);
+  dmg = Math.round(dmg * S.taken * (MOD.glass ? 2 : 1));
   rankIdx = -1; waveHit = true;
   P.hp -= dmg; P.inv = 1.0; P.flash = 0.2; P.state = 'hurt'; P.st = 0; P.vx = dir * kb; P.vy = -220; P.onGround = false;
   combo = 0; comboT = 0; hurtV = 0.6;
@@ -2028,7 +2107,7 @@ function doHits(a, face) {
     }
   }
 }
-function gainUlt(v) { P.ult = Math.min(100, P.ult + v * (mode === 'train' ? 2.2 : S.ult)); }
+function gainUlt(v) { P.ult = Math.min(100, P.ult + v * (mode === 'train' ? 2.2 : S.ult * (MOD.moon ? 3 : 1))); }
 
 function hitEnemy(e, a, dir, ix, iy, silent) {
   if (e.type === 'pboss' && e.fade < 0.4) return false;
@@ -2045,7 +2124,16 @@ function hitEnemy(e, a, dir, ix, iy, silent) {
     } else if (Math.random() < 0.35) bigText(e.x, e.y - e.h - 20, '막힘', 22, 0.5, 'blue');
     return false;
   }
-  let dmg = a.dmg * S.dmg * rand(0.9, 1.1) * (1 + Math.min(combo, 40) * 0.012 * S.comboMul), crit = false;
+  let dmg = a.dmg * S.dmg * rand(0.9, 1.1) * (1 + Math.min(combo, 40) * 0.012 * S.comboMul) * (MOD.glass ? 2 : 1), crit = false;
+  // 카운터: 상대가 공격하는 중(또는 느낌표 막바지)에 때리면 1.8배
+  const counter = !silent && !a.echo && !a.bolt && !a.ult && (
+    (e.state === 'attack' && !e.hitDone) || e.state === 'slash' || e.state === 'charge' ||
+    ((e.state === 'windup' || e.state === 'needlePrep') && e.st > e.windup * 0.7 && (a.heavy || a.lift)));
+  if (counter) {
+    dmg *= 1.8; hitstop = Math.max(hitstop, 0.12); zKick = Math.max(zKick, 0.05);
+    bigText(ix, iy - 70, '카운터!', 40, .8, 'blue'); ring(ix, iy, 20, 120, 1, .35, '160,210,255', 6); sfx.dodge();
+    if (mode === 'train' && !demo) trainMark('counter');
+  }
   const kGuard = e.type === 'kboss' && !a.heavy && e.face === -dir && e.state !== 'stun' && e.state !== 'charge';
   if (kGuard) { dmg *= 0.4; e.anim = 'guard'; e.animT = 0; sparks(ix, iy, -dir, 4, '#cfe2ff'); }
   if (!a.noCrit && Math.random() < S.crit) { crit = true; dmg *= S.critMul; }
@@ -2141,11 +2229,11 @@ function thunderStrike(e) {
 function trainMark(k) {
   if (trainDone[k]) return;
   trainDone[k] = true; sfx.rank();
-  bigText(P.x, P.y - 160, '미션 완료!', 26, .8, 'blue');
+  bigText(P.x, P.y - 215, '미션 완료!', 26, .8, 'blue');
   if (TRAIN.every(m => trainDone[m[0]])) toast('훈련 완료', '모든 기술을 익혔습니다. 이제 저택의 밤으로!');
 }
 const TRAIN = [['kick', '4단 콤보 (회축)'], ['air', '공중 콤보 (내려꽂기)'], ['dive', '점프 공격 (내려찍기)'], ['dpunch', '대시 공격 (돌진 펀치)'],
-  ['spin', '회전차기 마무리'], ['ult', '격파'], ['c30', '30연타'], ['crit', '치명타']];
+  ['spin', '회전차기 마무리'], ['ult', '격파'], ['c30', '30연타'], ['crit', '치명타'], ['counter', '카운터 (공격 중인 적 치기)']];
 function finisher(e) {
   // 웨이브의 마지막 한 방: 초슬로우 + 줌 + 방사선 + 큰 글자
   const y = e.type === 'wisp' || e.type === 'pboss' ? e.y : e.y - e.h * 0.5;
@@ -2173,6 +2261,12 @@ function explode(x, y, src) {
 }
 function killEnemy(e, dir, big) {
   e.dead = true; kills++; gainUlt(6);
+  if (mode === 'wave' && !demo && !e.puppet) {
+    const c = isBoss(e) ? 40 : e.elite ? 8 : 1 + (Math.random() < 0.35 ? 1 : 0);
+    runCoins += c;
+    for (let i = 0; i < Math.min(c, 12); i++) addFx({ k: 'coin', x: e.x + rand(-10, 10), y: e.y - 50, vx: rand(-160, 160), vy: -rand(300, 520), life: 1.1, fp: rand(0, TAU), floor: GROUND + rand(0, 20) });
+  }
+  if (e.type === 'pboss' && mode === 'wave' && !demo) endingPending = true;
   if (S.drain && mode === 'wave' && P.state !== 'dead') { P.hp = Math.min(P.maxHp, P.hp + S.drain); num(P.x, P.y - 130, '+' + S.drain, false, '#7dff9a'); }
   const boss = isBoss(e), s = e.scale;
   const cy = e.type === 'wisp' ? e.y : e.y - e.h * 0.5;
@@ -2214,7 +2308,7 @@ function killEnemy(e, dir, big) {
   } else {
     sparks(e.x, e.y, dir, 18, '#c6d8ff', 1.2); glow(e.x, e.y, 120, .5, '160,200,255');
   }
-  if (!boss && !e.elite && mode === 'wave' && Math.random() < 0.14) pickups.push({ x: e.x, y: e.y - 40, vy: -300, t: 0 });
+  if (!boss && !e.elite && mode === 'wave' && Math.random() < 0.14 + 0.05 * (shopLv.luck || 0)) pickups.push({ x: e.x, y: e.y - 40, vy: -300, t: 0 });
   if (boss && mode === 'wave') pickups.push({ x: e.x, y: e.y - 60, vy: -400, t: 0, big: true });
 }
 
@@ -2270,13 +2364,16 @@ function updateEnemy(e, dt) {
   }
 
   if (e.immortal) {
-    // 훈련용 오뚝이: 제자리로 돌아온다
+    // 훈련용 오뚝이: 제자리로 돌아오고, 가끔 (아프지 않은) 박치기로 카운터 연습을 시켜 준다
     if (!e.air && e.state !== 'air') {
-      e.vx = approach(e.vx, (e.home - e.x) * 3, 1600 * dt);
+      if (e.state !== 'attack') e.vx = approach(e.vx, (e.home - e.x) * 3, 1600 * dt);
       if (e.state === 'hurt' && e.st > e.stun) e.state = 'walk';
       if (e.state === 'down' && e.st > 0.5) e.state = 'walk';
+      if (e.state === 'walk' && !demo && adx < 130 && e.cd <= 0) { e.state = 'windup'; e.st = 0; }
+      if (e.state === 'windup') { e.tiltT = -0.4 * e.face; if (e.st > 0.7) { e.state = 'attack'; e.st = 0; e.vx = e.face * 300; e.tiltT = 0.5 * e.face; e.hitDone = false; } }
+      if (e.state === 'attack') { e.vx = approach(e.vx, 0, 1200 * dt); if (e.st > 0.35) { e.state = 'walk'; e.tiltT = 0; e.cd = rand(2.5, 4); } }
     }
-    e.face = dx > 0 ? 1 : -1;
+    if (e.state !== 'attack' && e.state !== 'windup') e.face = dx > 0 ? 1 : -1;
     return;
   }
   if (e.type === 'kboss') { updateKBoss(e, dt, dx, adx); return; }
@@ -2753,13 +2850,21 @@ function update(dt) {
   if (mode === 'wave' && state === 'play') updateWaves(dt);
 }
 function updateWaves(dt) {
-  if (waveState === 'pre') { waveT -= dt; if (waveT <= 0) startWave(); return; }
+  if (waveState === 'pre') {
+    waveT -= dt;
+    if (waveT <= 0) {
+      if (pendingPerkStart) { pendingPerkStart = false; openPerks(); return; }
+      if (wave === 0 && !rush && !store.get('introSeen', false) && story) { store.set('introSeen', true); waveT = 0.3; startTalk('intro'); return; }
+      startWave();
+    }
+    return;
+  }
   if (waveState === 'fight') {
     spawnT -= dt;
     if (spawnQ.length && spawnT <= 0 && enemies.length < maxAlive) {
       const type = spawnQ.shift(), boss = BOSSES.includes(type);
       const side = boss ? (P.x < ARENA / 2 ? 1 : -1) : (Math.random() < 0.5 ? -1 : 1);
-      const elite = !boss && wave >= 6 && Math.random() < Math.min(0.3, 0.1 + wave * 0.01);
+      const elite = !boss && (MOD.elite ? Math.random() < 0.3 : wave >= 6 && Math.random() < Math.min(0.3, 0.1 + wave * 0.01));
       const e = makeEnemy(type, side < 0 ? -60 : ARENA + 60, elite ? { elite: true } : {});
       if (boss) {
         bossRef = e;
@@ -2783,16 +2888,28 @@ function updateWaves(dt) {
     }
     return;
   }
-  if (waveState === 'clear') { waveT -= dt; if (waveT <= 0 && state === 'play' && P.state !== 'dead') { if (rush && wave >= 15) rushWin(); else openPerks(); } }
+  if (waveState === 'clear') {
+    waveT -= dt;
+    if (waveT <= 0 && state === 'play' && P.state !== 'dead') {
+      const next = () => { if (rush && wave >= 15) rushWin(); else openPerks(); };
+      if (endingPending) {
+        endingPending = false;
+        startTalk(rush ? 'endingR' : 'ending', () => {
+          if (!store.get('ended', false)) { store.set('ended', true); toast('엔딩 · 달이 지고', '저택의 밤은 계속됩니다. 어디까지 갈 수 있을까요?'); }
+          next();
+        });
+      } else next();
+    }
+  }
 }
 function openPerks() {
   const ok = k => (perkLv[k.id] || 0) < k.max && (!k.cond || k.cond());
   const pool = PERKS.filter(k => ok(k) && !k.rare), legend = PERKS.filter(k => ok(k) && k.rare);
   perkChoices = [];
-  if (wave % 5 === 0 && legend.length) perkChoices.push(pick(legend));
+  if (wave > 0 && wave % 5 === 0 && legend.length) perkChoices.push(pick(legend));
   while (perkChoices.length < 3 && pool.length) perkChoices.push(pool.splice(Math.random() * pool.length | 0, 1)[0]);
   if (!perkChoices.length) { waveState = 'pre'; waveT = 0.6; return; }
-  $('perkTitle').textContent = rush ? `보스 ${wave / 5}/3 격파` : `웨이브 ${wave} 클리어`;
+  $('perkTitle').textContent = wave === 0 ? '출발 준비' : rush ? `보스 ${wave / 5}/3 격파` : `웨이브 ${wave} 클리어`;
   $('perkList').innerHTML = perkChoices.map((k, i) => {
     const lv = perkLv[k.id] || 0;
     return `<button class="pk${k.rare ? ' rare' : ''}" data-i="${i}" data-tag="${k.tag}"><span class="pt">${k.tag}</span><b>${k.name}</b>` +
@@ -3051,6 +3168,51 @@ function render() {
   if (impactT > 0) { ctx.save(); ctx.globalCompositeOperation = 'difference'; ctx.fillStyle = '#fff'; ctx.fillRect(0, 0, W, VH); ctx.restore(); }
   if (cine) drawCine(ctx);
   else if (!demo) drawHUD(ctx);
+  if (talk) drawTalk(ctx);
+}
+function startTalk(key, done) {
+  if (!story || demo || !LINES[key]) { if (done) done(); return; }
+  talk = { lines: LINES[key], i: 0, t: 0, done }; state = 'talk'; clearInput(); bannerT = 0; hintT = 0;
+}
+function advanceTalk(skipAll) {
+  if (!talk) return;
+  const L = talk.lines[talk.i][1];
+  if (!skipAll && talk.t * 40 < L.length) { talk.t = 99; return; }
+  talk.i = skipAll ? talk.lines.length : talk.i + 1; talk.t = 0;
+  tone('triangle', 880, 880, 0.05, 0.04);
+  if (talk.i >= talk.lines.length) {
+    const d = talk.done; talk = null; state = 'play'; last = performance.now(); clearInput();
+    if (d) d();
+  }
+}
+function portrait(g, who, x, y) {
+  // 대화창 초상화: 실제 게임 속 그림을 크게 그려 쓴다
+  g.save();
+  if (who === 'rin') { g.translate(x - 8, y + 330); g.scale(2.4, 2.4); drawMaid(g, { ...snap(P), x: 0, y: 0, face: 1, rot: 0, spin: 0, state: 'idle', flash: 0, shout: 0, hair: -0.2, sway: 0, pose: { ...POSE.idle, lean: 0.05, head: -0.05 } }); }
+  else if (who === 'boss') { g.translate(x, y + 245); g.scale(2, 2); drawDummy(g, { type: 'boss', x: 0, y: 0, face: 1, tilt: 0, flash: 0, hop: 0, squash: 1, scale: 1 }); }
+  else if (who === 'kboss') { g.translate(x, y + 245); drawKnight(g, { type: 'kboss', x: 0, y: 0, face: 1, tilt: 0, flash: 0, walkPh: 0, anim: null, animT: 0, state: 'walk', st: 0, brokenT: 0, guard: 0, maxGuard: 0, blockT: 0, vx: 0, scale: 2 }); }
+  else if (who === 'pboss') { g.translate(x, y + 212); g.scale(1.9, 1.9); drawPuppeteer(g, { type: 'pboss', x: 0, y: 0, face: 1, tilt: 0, flash: 0, fade: 1, p2: false, state: 'walk' }); }
+  g.restore();
+}
+function drawTalk(g) {
+  const L = talk.lines[talk.i], who = L[0], text = L[1], n = Math.min(text.length, Math.floor(talk.t * 40));
+  g.fillStyle = 'rgba(8,3,6,.38)'; g.fillRect(0, 0, W, VH);
+  const bw = Math.min(W - 32, 780), bx = (W - bw) / 2, bh = 116, by = VH - bh - 16, pw = 132, ph = 150, px = bx + 14, py = by + bh - ph - 10;
+  rrect(g, bx, by, bw, bh, 14); g.fillStyle = 'rgba(22,9,14,.94)'; g.fill(); g.lineWidth = 2; g.strokeStyle = '#c9954a'; g.stroke();
+  g.save(); rrect(g, px, py, pw, ph, 12); g.clip();
+  const pg = g.createLinearGradient(0, py, 0, py + ph); pg.addColorStop(0, who === 'rin' ? '#5a1a26' : '#2a1640'); pg.addColorStop(1, '#12060c');
+  g.fillStyle = pg; g.fillRect(px, py, pw, ph);
+  portrait(g, who, px + pw / 2, py);
+  g.restore();
+  rrect(g, px, py, pw, ph, 12); g.lineWidth = 2; g.strokeStyle = '#f2c14e'; g.stroke();
+  const tx = px + pw + 18, tw = bx + bw - tx - 18;
+  g.textAlign = 'left'; g.textBaseline = 'middle';
+  g.font = `900 18px ${FONT}`; g.fillStyle = who === 'rin' ? '#ffd46e' : '#e0a8ff'; g.fillText(SPEAKER[who], tx, by + 24);
+  g.font = `700 17px ${FONT}`; g.fillStyle = '#f8ecd9';
+  let line = '', ly = by + 54;
+  for (const ch of text.slice(0, n)) { if (g.measureText(line + ch).width > tw) { g.fillText(line, tx, ly); line = ''; ly += 26; } line += ch; }
+  g.fillText(line, tx, ly);
+  if (n >= text.length && ((wt * 3) | 0) % 2 === 0) { g.textAlign = 'right'; g.font = `700 12px ${FONT}`; g.fillStyle = '#c9b6a0'; g.fillText(isTouch ? '▶ 화면을 누르세요' : '▶ J / Space · Esc 건너뛰기', bx + bw - 16, by + bh - 16); }
 }
 function updateCine(dt) {
   const c = cine, e = c.e; c.t += dt; wt += dt;
@@ -3064,7 +3226,7 @@ function updateCine(dt) {
     }
   }
   if (c.t > 0.6 && !c.named) { c.named = true; sfx.roar(); }
-  if (c.t >= c.dur) { cine = null; e.state = 'walk'; e.st = 0; e.cd = 0.8; last = performance.now(); }
+  if (c.t >= c.dur) { cine = null; e.state = 'walk'; e.st = 0; e.cd = 0.8; last = performance.now(); startTalk(e.type); }
 }
 function drawCine(g) {
   const c = cine, t = c.t, inK = easeOut(Math.min(1, t / 0.35)), outK = t > c.dur - 0.35 ? (t - (c.dur - 0.35)) / 0.35 : 0, k = inK * (1 - outK);
@@ -3109,13 +3271,13 @@ function drawVignette(g) {
   g.drawImage(vigC, 0, 0, W, VH);
 }
 function drawEnemyBody(g, e) {
-  if (e.elite) { g.save(); g.translate(e.x, e.y); g.scale(e.ek, e.ek); g.translate(-e.x, -e.y); }
+  if (e.ek) { g.save(); g.translate(e.x, e.y); g.scale(e.ek, e.ek); g.translate(-e.x, -e.y); }
   if (e.type === 'knight' || e.type === 'kboss') drawKnight(g, e);
   else if (e.type === 'wisp') drawWisp(g, e, wt);
   else if (e.type === 'bomb') drawBomb(g, e);
   else if (e.type === 'pboss') drawPuppeteer(g, e);
   else drawDummy(g, e);
-  if (e.elite) g.restore();
+  if (e.ek) g.restore();
 }
 function drawSpeedLines(g, k) {
   g.save(); g.globalCompositeOperation = 'lighter';
@@ -3277,13 +3439,14 @@ function drawHUDIn(g, W, H) {
     t2 = `DPS ${fmt(dps)} · 최대 ${maxCombo}연타`;
   } else {
     const left = spawnQ.length + enemies.length;
-    t2 = rush ? `보스 러시 ${Math.max(1, wave / 5)}/3 · ${fmtTime(runT)}` : `WAVE ${Math.max(1, wave)} · 남은 인형 ${left}` + (diff !== 1 ? ` · ${DIFF[diff].name}` : '');
+    t2 = rush ? `보스 러시 ${Math.max(1, wave / 5)}/3 · ${fmtTime(runT)}` : (daily ? '오늘의 도전 · ' : '') + `WAVE ${Math.max(1, wave)} · 남은 인형 ${left}` + (diff !== 1 && !daily ? ` · ${DIFF[diff].name}` : '');
   }
   g.strokeText(t2, rx, 48); g.fillStyle = '#e8c890'; g.fillText(t2, rx, 48);
+  if (mode === 'wave' && runCoins) { const t3 = `은화 ${runCoins}`; g.font = `800 12px ${FONT}`; g.strokeText(t3, rx, 68); g.fillStyle = '#ffd46e'; g.fillText(t3, rx, 68); }
   // 훈련 미션
   if (mode === 'train') {
     const done = TRAIN.filter(m => trainDone[m[0]]).length;
-    rrect(g, 12, 98, 262, 96, 12); g.fillStyle = 'rgba(14,6,10,.6)'; g.fill();
+    rrect(g, 12, 98, 262, 114, 12); g.fillStyle = 'rgba(14,6,10,.6)'; g.fill();
     g.textAlign = 'left'; g.font = `900 12px ${FONT}`; g.fillStyle = done === TRAIN.length ? '#8fe3a8' : '#ffd46e';
     g.fillText(`훈련 미션 ${done}/${TRAIN.length}`, 24, 114);
     g.font = `700 11px ${FONT}`;
@@ -3370,7 +3533,8 @@ function frame(now) {
   requestAnimationFrame(frame);
   const rdt = clamp((now - last) / 1000, 0, 0.05); last = now;
   Music.calm = state === 'perk' || state === 'over' || (mode === 'wave' && waveState !== 'fight');
-  if (state !== 'paused' && state !== 'perk') {
+  if (state === 'talk' && talk) { talk.t += rdt; wt += rdt; updateFx(rdt * 0.3); }
+  if (state !== 'paused' && state !== 'perk' && state !== 'talk') {
     let ts = 1;
     if (slowT > 0) { slowT -= rdt; ts = slowScale; }
     const dt = rdt * ts;
@@ -3400,23 +3564,36 @@ function updatePadUI() {
   $('bUlt').classList.toggle('ready', P.ult >= 100);
 }
 function showOv(id) {
-  ['title', 'pause', 'over', 'perk', 'achov'].forEach(k => $(k).classList.toggle('show', k === id));
-  document.body.classList.toggle('menu', id === 'title' || id === 'over' || id === 'perk' || id === 'achov');
+  ['title', 'pause', 'over', 'perk', 'achov', 'shop'].forEach(k => $(k).classList.toggle('show', k === id));
+  document.body.classList.toggle('menu', ['title', 'over', 'perk', 'achov', 'shop'].includes(id));
 }
 function refreshBest() {
   const b = store.get(bestKey(), { wave: 0, dmg: 0 }), rt = store.get('rush' + diff, 0);
   const parts = [];
   if (b.wave) parts.push(`최고 WAVE ${b.wave} · 누적 ${fmt(b.dmg)}`);
   if (rt) parts.push(`보스 러시 ${fmtTime(rt)}`);
+  const dm = dailyMods(), dd = store.get('daily', {});
+  $('bDaily').innerHTML = `오늘의 도전<small>${dm.map(x => x.name).join(' + ')}${dd.date === todayKey() ? ` · 오늘 최고 WAVE ${dd.wave}` : ' · 은화 1.5배'}</small>`;
+  $('bShop').textContent = `상점 · 은화 ${coins}`;
   $('bestLine').textContent = parts.length ? `${DIFF[diff].name} · ` + parts.join(' · ') : '';
+  $('bDaily').title = dailyMods().map(x => `${x.name}: ${x.desc}`).join('\n');
   document.querySelectorAll('#diffRow button').forEach(b => b.classList.toggle('on', +b.dataset.d === diff));
 }
 function startGame(m) {
   ensureAudio();
   if (document.activeElement && document.activeElement.blur) document.activeElement.blur();
-  lastMode = m; rush = m === 'rush';
-  resetGame(rush ? 'wave' : m, false);
+  lastMode = m; rush = m === 'rush'; daily = m === 'daily'; MOD = {};
+  if (daily) dailyMods().forEach(x => { MOD[x.id] = true; });
+  resetGame(m === 'train' ? 'train' : 'wave', false);
+  runCoins = 0; endingPending = false; pendingPerkStart = false;
   if (rush) { waveT = 1.0; }
+  if (m !== 'train') {
+    // 상점 강화 적용
+    P.maxHp += 10 * (shopLv.hp || 0); P.hp = P.maxHp; P.hpLag = P.hp;
+    S.dmg += 0.05 * (shopLv.atk || 0); P.ult = 20 * (shopLv.ult || 0);
+    if (shopLv.perk) pendingPerkStart = true;
+    if (daily) banner('오늘의 도전', dailyMods().map(x => x.name).join(' + '));
+  }
   state = 'play'; showOv(null);
   Music.play('battle'); Music.setDuck(1);
 }
@@ -3434,9 +3611,15 @@ function showResults(title, msg, first, firstLabel) {
   $('overNew').textContent = msg;
   showOv('over');
 }
+function payCoins() {
+  const award = Math.round(runCoins * [0.7, 1, 1.5][daily ? 1 : diff] * (daily ? 1.5 : 1));
+  coins += award; store.set('coins', coins); runCoins = 0;
+  $('coinLine').textContent = award ? `은화 +${award} · 보유 ${coins}` : '';
+}
 function gameOver() {
   state = 'over';
   let msg = '';
+  payCoins();
   if (rush) {
     showResults('쓰러졌다…', `보스 ${Math.max(0, wave / 5 - 1)}마리 격파`, fmtTime(runT), '버틴 시간');
     $('lbBox').innerHTML = '';
@@ -3447,12 +3630,18 @@ function gameOver() {
     const runs = store.get('runs', []), me = { w: reached, d: Math.round(totalDmg), c: maxCombo, df: diff, at: Date.now() };
     runs.push(me); runs.sort((a, b) => b.w - a.w || b.d - a.d); const top = runs.slice(0, 5); store.set('runs', top);
     $('lbBox').innerHTML = '<b>내 기록 TOP 5</b><ol>' + top.map(r => `<li class="${r.at === me.at ? 'me' : ''}"><span>WAVE ${r.w}</span><span>누적 ${fmt(r.d)}</span><span>${r.c}연타</span><span>${DIFF[r.df ?? 1].name}</span></li>`).join('') + '</ol>';
-    showResults('쓰러졌다…', msg, reached, '도달 웨이브');
+    if (daily) {
+      const d = store.get('daily', {});
+      if (d.date !== todayKey() || reached > d.wave) { store.set('daily', { date: todayKey(), wave: reached }); msg = `오늘의 도전 최고 기록 · WAVE ${reached}`; }
+      else msg = `오늘의 도전 최고 WAVE ${d.wave}`;
+    }
+    showResults('쓰러졌다…', msg, reached, daily ? '오늘의 도전' : '도달 웨이브');
   }
   Music.play(null); if (AC) Music.over();
 }
 function rushWin() {
   state = 'over';
+  payCoins();
   const best = store.get('rush' + diff, 0);
   let msg = '보스 셋을 모두 쓰러뜨렸다';
   if (!best || runT < best) { store.set('rush' + diff, runT); msg = best ? `신기록! (이전 ${fmtTime(best)})` : '첫 클리어 기록'; }
@@ -3472,10 +3661,12 @@ $('bPause').onclick = () => { if (state === 'play') pauseGame(); else if (state 
 $('bMute').onclick = () => { ensureAudio(); setMuted(!muted); };
 document.querySelectorAll('.oBgm').forEach(b => b.onclick = () => { ensureAudio(); setBgm(!bgmOn); });
 document.querySelectorAll('.oSfx').forEach(b => b.onclick = () => { ensureAudio(); setSfx(!sfxOn); });
+document.querySelectorAll('.oStory').forEach(b => b.onclick = () => { story = !story; store.set('story', story); syncOpts(); });
 document.querySelectorAll('.oFx').forEach(b => b.onclick = () => { fancy = !fancy; store.set('fancy', fancy); syncOpts(); });
 document.querySelectorAll('.oFlip').forEach(b => b.onclick = () => { rotDir = -rotDir; store.set('rotDir', rotDir); layout(); });
 // 브라우저는 사용자가 한 번 누른 뒤에만 소리를 허락한다
 addEventListener('pointerdown', ensureAudio, { passive: true });
+addEventListener('pointerdown', () => { if (state === 'talk') advanceTalk(); });
 document.addEventListener('visibilitychange', () => { if (!AC) return; if (document.hidden) AC.suspend(); else AC.resume(); });
 addEventListener('resize', layout);
 document.addEventListener('fullscreenchange', () => setTimeout(layout, 50));
@@ -3487,12 +3678,15 @@ setMuted(muted);
 syncOpts();
 renderWardrobe();
 $('bAch').onclick = openAch;
+$('bShop').onclick = openShop;
+$('bShopClose').onclick = () => { refreshBest(); showOv('title'); };
+$('bDaily').onclick = () => startGame('daily');
 $('bAchClose').onclick = () => { renderWardrobe(); showOv('title'); };
 layout();
 resetGame('train', true);
 refreshBest();
 requestAnimationFrame(frame);
-window.__mb = { get stage() { return stageOf(wave); }, get ach() { return ach; }, get music() { return Music.cur ? Music.cur.name : null; }, get witch() { return witchT; }, get rank() { return rankIdx; }, spawn: (t, x) => makeEnemy(t, x), clearWave: () => { enemies = []; spawnQ = []; }, get S() { return S; }, get state() { return state; }, choosePerk, get P() { return P; }, get wave() { return wave; }, get kills() { return kills; }, get enemies() { return enemies; }, startGame, press, release, input, buf, forceUlt: () => { P.ult = 100; }, skipTo: n => { wave = n - 1; enemies = []; bossRef = null; spawnQ = []; waveState = 'pre'; waveT = 0.1; } };
+window.__mb = { get coins() { return coins; }, get talk() { return talk; }, advanceTalk, get MOD() { return MOD; }, get stage() { return stageOf(wave); }, get ach() { return ach; }, get music() { return Music.cur ? Music.cur.name : null; }, get witch() { return witchT; }, get rank() { return rankIdx; }, spawn: (t, x) => makeEnemy(t, x), clearWave: () => { enemies = []; spawnQ = []; }, get S() { return S; }, get state() { return state; }, choosePerk, get P() { return P; }, get wave() { return wave; }, get kills() { return kills; }, get enemies() { return enemies; }, startGame, press, release, input, buf, forceUlt: () => { P.ult = 100; }, skipTo: n => { wave = n - 1; enemies = []; bossRef = null; spawnQ = []; waveState = 'pre'; waveT = 0.1; } };
 })();
 </script>
 </body>
