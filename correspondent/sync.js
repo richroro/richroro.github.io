@@ -135,12 +135,16 @@
     });
   }
 
-  /* 동네 속보를 받아 온다. since 를 주면 그 뒤로 들어온 것만. */
-  function pull(hood, since, limit) {
-    let q = rest + "/reports?select=id,by_name,t,cat,place,area,wait,crowd,park,rate,tags,note,mine,hidden" +
-      "&hood_code=eq." + encodeURIComponent(hood) + "&order=t.desc&limit=" + (limit || 200);
-    if (since) q += "&t=gt." + encodeURIComponent(since);
-    return call(q);
+  /* 동네 속보를 받아 온다.
+       opts.after 가 있으면 그 서버 시각(created_at) 뒤에 들어온 것만, 들어온 순서대로 — 평소 3분마다 이쪽.
+       없으면 쓴 시각(t) 최신순으로 limit 건 — 서버에서 사라진 글을 가려내는 전체 대조용.
+     쓴 시각(t)으로 자르면 안 된다: 오프라인에서 쓰고 나중에 올린 글은 t 가 과거라 놓친다. */
+  function pull(hood, opts) {
+    opts = opts || {};
+    let q = rest + "/reports?select=id,by_name,t,cat,place,area,wait,crowd,park,rate,tags,note,mine,hidden,created_at" +
+      "&hood_code=eq." + encodeURIComponent(hood);
+    q += opts.after ? "&created_at=gt." + encodeURIComponent(opts.after) + "&order=created_at.asc" : "&order=t.desc";
+    return call(q + "&limit=" + (opts.limit || 200));
   }
 
   /* 내가 쓴 것만 올라간다. 서버가 author 와 이름을 토큰에서 다시 채운다. */

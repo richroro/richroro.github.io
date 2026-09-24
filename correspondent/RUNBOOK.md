@@ -101,8 +101,9 @@ select at, action, report_id, note from mod_log where target = '<번호>' order 
 
 Supabase → Reports/Usage.
 
-- **보내는 양(egress)** — 앱은 열려 있는 동안 3분마다 동네의 최근 200건을 받는다.
-  갑자기 늘면 어느 동네에서 도배가 있는지 운영 화면 → 숫자에서 본다.
+- **보내는 양(egress)** — 앱은 열려 있는 동안 3분마다 새로 들어온 글만 받고, 최근 200건 전체 대조는
+  앱을 열 때와 30분마다 한다. 한 시간 열어 둔 폰 하나가 100KB 안팎이다. 갑자기 늘면 어느 동네에서 도배가 있는지
+  운영 화면 → 숫자에서 본다.
 - **DB 크기** — 1년 지난 리포트와 처리 기록은 매일 지워진다(`retention.sql`, 13:10 KST).
   `select jobname, last_run_status from cron.job_run_details order by start_time desc limit 5;` 로 돌았는지 본다.
 - **새 동네 열기** — 숫자 탭의 "동네 (최근 7일)" 에서 한 동네에 쓰는 사람이 스무 명쯤 모이면 옆 동네를 연다.

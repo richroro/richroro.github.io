@@ -70,13 +70,14 @@ createServer(async (req, res) => {
     if (u.pathname === '/rest/v1/reports') {
       if (req.method === 'GET') {
         if (eq('id')) return send(res, 200, q(`select id from reports where id = ${lit(eq('id'))}`, uid));
-        const since = u.searchParams.get('t');
+        const after = u.searchParams.get('created_at');
         const lim = Number(u.searchParams.get('limit')) || 200;
+        const order = u.searchParams.get('order') === 'created_at.asc' ? 'created_at asc' : 't desc';
         return send(res, 200, q(`select id, by_name, t, cat, place, area, wait, crowd, park, rate, tags, note,
-          public.mine(reports) as mine, hidden
+          public.mine(reports) as mine, hidden, created_at
           from reports where hood_code = ${lit(eq('hood_code'))}
-          ${since && since.startsWith('gt.') ? `and t > ${lit(since.slice(3))}` : ''}
-          order by t desc limit ${lim}`, uid));
+          ${after && after.startsWith('gt.') ? `and created_at > ${lit(after.slice(3))}` : ''}
+          order by ${order} limit ${lim}`, uid));
       }
       if (req.method === 'DELETE') {
         /* 데이터를 바꾸는 WITH 는 하위 질의에 못 넣는다 — q() 를 거치지 않고 최상위에서 돌린다 */

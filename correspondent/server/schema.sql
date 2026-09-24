@@ -70,6 +70,8 @@ create table if not exists reports (
 create index if not exists reports_feed_idx on reports (hood_code, t desc) where not hidden;
 create index if not exists reports_author_idx on reports (author, t desc);
 create index if not exists reports_place_idx on reports (hood_code, place_key, t desc) where not hidden;
+-- 평소 받아오기: 동네 + 서버에 들어온 시각. 3분마다 "이 뒤로 새로 들어온 것"만 묻는다
+create index if not exists reports_new_idx on reports (hood_code, created_at);
 -- 운영자 대기열: 신고가 있거나 가려졌거나 임시조치 중인 것만
 create index if not exists reports_mod_idx on reports (t desc) where flag_count > 0 or hidden or held_until is not null;
 

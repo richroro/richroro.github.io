@@ -922,9 +922,11 @@ function hoodLabel(code){
     링크로 받는 쪽은 이 표시가 없으므로 여전히 mine 이 붙지 않는다. */
 function mergeRows(rows){
   const gone = new Set(board.gone);
+  const old = Date.now() - KEEP_OTHERS;
   const list = [];
   (rows || []).forEach((row) => {
     if (gone.has(row.id)) return;                  // 내가 이 기기에서 치운 남의 글
+    if (!row.mine && new Date(row.t).getTime() < old) return;   // prune() 이 치울 것을 도로 들이지 않는다
     const r = sane(SY.toReport(row));
     if (!r) return;
     r.sv = true; r.hd = board.hood;
@@ -955,14 +957,53 @@ function rememberGone(id){
   if (board.gone.length > 500) board.gone = board.gone.slice(-500);
 }
 
-async function syncPull(quiet){
+/* ── 받아오기는 가볍게 ──
+   앱이 열려 있으면 3분마다 받아온다. 그때마다 최근 200건을 통째로 받으면 쓰는 사람이 늘수록
+   서버가 내보내는 양이 그대로 요금이 된다(Supabase 는 내보낸 양에 값을 매긴다). 그래서 둘로 나눈다.
+     · 평소 — 서버에 새로 들어온 글만(created_at 이 마지막으로 본 것 뒤). 대개 몇 건, 대개 0건.
+     · 전체 대조 — 최근 200건을 받아 서버에서 사라진 글(지움·가림·탈퇴)을 이 기기에서도 뺀다.
+       앱을 열 때, 손으로 받아올 때, 30분마다, 그리고 새 글이 한꺼번에 200건 넘게 들어왔을 때.
+   그래서 이웃 폰에서 가려진 글이 빠지는 데 길면 30분이 걸린다. 새 글은 3분 안에 온다. */
+const FULL_EVERY = 30 * MIN;
+const PULL_LIMIT = 200;
+const OVERLAP = 2 * MIN;    // 늦게 커밋된 글을 놓치지 않게 조금 겹쳐 묻는다 — 겹친 것은 id 로 걸러진다
+let lastFull = 0;           // 이번에 연 뒤 마지막 전체 대조. 처음 받아올 때는 늘 전체
+let cursorMs = 0;           // 서버에 들어온 시각(created_at) — 여기까지는 받았다
+
+/* 이 기기에 쌓이는 양을 묶어 둔다. 공용 보드에서 받은 남의 글은 60일이 지나면 치운다
+   ("보통은" 표에 여덟 주면 넉넉하다). 그래도 많으면 오래된 것부터 덜어 LOCAL_CAP 건에 맞춘다.
+   내가 쓴 글과 링크로 일부러 받은 글은 건드리지 않는다 — 그건 "주고받기 → 30일 넘은 리포트 지우기" 로. */
+const KEEP_OTHERS = 60 * DAY;
+const LOCAL_CAP = 3000;
+function prune(){
+  const before = board.reports.length;
+  const cut = Date.now() - KEEP_OTHERS;
+  const auto = (r) => r.sv && !r.mine;
+  board.reports = board.reports.filter((r) => !auto(r) || r.t >= cut);
+  let over = board.reports.length - LOCAL_CAP;
+  for (let i = board.reports.length - 1; i >= 0 && over > 0; i--) {   // t 내림차순 — 뒤가 오래된 것
+    if (auto(board.reports[i])) { board.reports.splice(i, 1); over--; }
+  }
+  return before - board.reports.length;
+}
+
+async function syncPull(quiet, full){
   if (!SY.enabled || !board.hood || syncing) return;
   syncing = true;
   try {
-    const LIMIT = 200;
-    const rows = await SY.pull(board.hood, null, LIMIT);
+    let whole = !!full || !cursorMs || Date.now() - lastFull > FULL_EVERY;
+    let rows = null;
+    if (!whole) {
+      rows = await SY.pull(board.hood, { after: new Date(cursorMs - OVERLAP).toISOString(), limit: PULL_LIMIT });
+      if (rows.length >= PULL_LIMIT) whole = true;   // 한꺼번에 많이 들어왔다 — 빠짐없이 전체로
+    }
+    if (whole) rows = await SY.pull(board.hood, { limit: PULL_LIMIT });
     const res = mergeRows(rows);
-    res.removed = reconcile(rows, LIMIT);
+    res.removed = whole ? reconcile(rows, PULL_LIMIT) : 0;
+    res.full = whole;
+    if (whole) lastFull = Date.now();
+    rows.forEach((row) => { const c = Date.parse(row.created_at); if (c > cursorMs) cursorMs = c; });
+    res.pruned = prune();
     board.pulledAt = Date.now();
     const wn = watchNews(res.fresh);   // 조용히 받아올 때도 지켜보는 곳 소식은 알린다
     save();
@@ -1013,9 +1054,11 @@ async function syncPushPending(){
   return n;
 }
 
-async function boardRefresh(quiet){
+/** full 이면 전체 대조(손으로 받아올 때). 결과를 돌려준다 — 예전엔 안 돌려줘서 "지금 받아오기" 가
+    잘 받아 와도 늘 "받아오지 못했습니다" 라고 했다. */
+async function boardRefresh(quiet, full){
   await syncPushPending();
-  await syncPull(quiet);
+  return syncPull(quiet, full);
 }
 
 function paintBoardBtn(){
@@ -1882,6 +1925,7 @@ function bind(){
   $("#boardBtn").addEventListener("click", openBoardSheet);
   $("#hoodSel").addEventListener("change", async (e) => {
     board.hood = clip(e.target.value, 12);
+    cursorMs = 0;                                    // 다른 동네 — 처음부터 전체로
     save();
     paintBoardBtn(); paintBoardKv();
     if (board.hood) { await boardRefresh(false); paintBoardKv(); }
@@ -1889,7 +1933,7 @@ function bind(){
   $("#pullNow").addEventListener("click", async () => {
     if (!board.hood) { $("#boardStatus").textContent = "동네를 먼저 고르세요."; $("#boardStatus").className = "status err"; return; }
     $("#boardStatus").textContent = "받아오는 중…"; $("#boardStatus").className = "status";
-    const res = await boardRefresh(true);
+    const res = await boardRefresh(true, true);
     paintBoardKv();
     $("#boardStatus").textContent = res ? (res.added + "건 새로 받았습니다." + (res.dup ? " (" + res.dup + "건은 이미 있음)" : ""))
                                         : "받아오지 못했습니다.";
@@ -1959,7 +2003,7 @@ if ("serviceWorker" in navigator &&
 if (SY.enabled) {
   SY.listHoods().then((h) => { hoods = h || []; paintBoardBtn(); }).catch(() => {});
   if (board.hood) boardRefresh(true);   // 올리기 전에 ensureProfile 이 프로필을 챙긴다
-  /* 속보는 금방 상한다. 3분마다 조용히 받아온다. */
+  /* 속보는 금방 상한다. 3분마다 조용히 받아온다 — 평소엔 새 글만, 30분마다 전체 대조(syncPull). */
   setInterval(() => { if (!document.hidden) boardRefresh(true); }, 3 * 60e3);
   document.addEventListener("visibilitychange", () => { if (!document.hidden) boardRefresh(true); });
 }

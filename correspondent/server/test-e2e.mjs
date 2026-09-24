@@ -119,7 +119,8 @@ async function write(p, place, opts = {}) {
   await p.locator('#shareBack [data-close]').last().click();
   await p.waitForTimeout(900);
 }
-const refresh = async (p) => { await p.evaluate(() => boardRefresh(true)); await p.waitForTimeout(500); };
+/* 앱의 3분 타이머가 부르는 그대로. full 이면 전체 대조 — 서버에서 사라진 글은 그때 빠진다(평소엔 새 글만). */
+const refresh = async (p, full) => { await p.evaluate((f) => boardRefresh(true, f), !!full); await p.waitForTimeout(500); };
 const card = (p, place) => p.locator('#feed .card', { hasText: place });
 const local = (p) => p.evaluate(() => JSON.parse(localStorage.getItem('tpw.v1')).reports);
 
@@ -200,9 +201,9 @@ for (const who of ['민지', '준호', '태오']) {
   else { await D.p.keyboard.press('Escape'); }
 }
 ok(sql(`select hidden from reports where id='${rid}'`) === 't', '서버에서 가려짐');
-await refresh(A.p);
-ok(await card(A.p, '가려질 서연 글').count() === 0, '받아 둔 이웃 폰(민지)에서도 빠진다');
-await refresh(C.p);
+await refresh(A.p, 'full');
+ok(await card(A.p, '가려질 서연 글').count() === 0, '받아 둔 이웃 폰(민지)에서도 전체 대조 때 빠진다');
+await refresh(C.p, 'full');
 ok(await card(C.p, '가려질 서연 글').locator('.badge', { hasText: '신고로 가려짐' }).count() === 1, '쓴 사람에게는 "신고로 가려짐" 딱지와 함께 보인다');
 // 로그아웃하고 받아오면 가려진 내 글은 응답에 없다 — 그래도 이 기기에서 지우면 안 된다
 const sess = await C.p.evaluate(() => localStorage.getItem('tpw.session'));
@@ -252,8 +253,8 @@ ok(cl.filter((r) => r.mine).length === 0, '이 기기: 내 글 지움');
 ok(!(await C.p.evaluate(() => localStorage.getItem('tpw.session'))), '이 기기: 로그아웃');
 ok((await C.p.evaluate(() => JSON.parse(localStorage.getItem('tpw.v1')).me)) === '', '이 기기: 이름 지움');
 ok(await card(C.p, '중앙공원 놀이터').count() === 1, '이 기기: 남에게 받은 글은 남는다');
-await refresh(B.p);
-ok(await card(B.p, '서연 마지막 글').count() === 0, '준호 폰에서도 다음 받아오기 때 서연 글이 빠진다');
+await refresh(B.p, 'full');
+ok(await card(B.p, '서연 마지막 글').count() === 0, '준호 폰에서도 다음 전체 대조 때 서연 글이 빠진다');
 ok(sql(`select flag_count from reports where id='${cpId}'`) === '0', '서연이 한 신고가 빠지고 수가 다시 세어짐 (1 → 0)');
 ok(sql(`select count(*) from correspondents`) === '3', '다른 사람들은 그대로 (민지·준호·태오)');
 
@@ -409,7 +410,59 @@ await B.p.waitForTimeout(600);
 ok(sql(`select count(*) from reports where place='정지 중에 쓴 글'`) === '1', '풀리면 정지 중에 쓴 글이 올라간다');
 await T.c.close(); await H.c.close();
 
-console.log('\n== 11. 오류 ==');
+console.log('\n== 11. 받아오기 — 평소엔 새 글만 ==');
+/* 동네에 150건을 깔아 둔다. 서버 도장(stamp_report)이 붙게 app.uid 를 세우고 넣은 뒤, 들어온 시각을 한 시간 앞으로 민다. */
+sql(`set app.uid = '${U.민지}'; insert into reports (id, author, by_name, t, hood_code, cat, place, crowd)
+     select 'bulk' || lpad(g::text, 4, '0'), null, '', now() - (g || ' minutes')::interval, '${HOOD}', 'food',
+            '깔아 둔 가게 ' || lpad(g::text, 3, '0'), g % 4 from generate_series(1, 150) g;
+     update reports set created_at = created_at - interval '1 hour' where id like 'bulk%';`);
+const pulls = [];
+A.p.on('response', async (res) => {
+  if (!/\/rest\/v1\/reports\?select=/.test(res.url())) return;
+  try { pulls.push({ url: res.url(), bytes: (await res.body()).length }); } catch (e) {}
+});
+await refresh(A.p, 'full');
+const whole = pulls.filter((x) => !/created_at=gt/.test(x.url)).pop();
+ok(whole && whole.bytes > 10000 && await card(A.p, '깔아 둔 가게 150').count() === 1, '전체 대조: 최근 200건 (' + (whole && whole.bytes) + '바이트)');
+await write(B.p, '새로 하나');
+pulls.length = 0;
+await refresh(A.p);
+const inc = pulls.pop();
+ok(inc && /created_at=gt\./.test(inc.url) && /order=created_at\.asc/.test(inc.url), '평소: 서버에 새로 들어온 것만 묻는다 (created_at 뒤, 들어온 순서로)');
+ok(await card(A.p, '새로 하나').count() === 1, '  └ 새 글은 그대로 온다');
+ok(inc && inc.bytes * 10 < whole.bytes, '  └ 주고받는 양 ' + (inc && inc.bytes) + '바이트 — 전체 대조의 1/' + (inc ? Math.round(whole.bytes / inc.bytes) : '?'));
+sql(`delete from reports where id = 'bulk0001'`);
+await refresh(A.p);
+ok(await card(A.p, '깔아 둔 가게 001').count() === 1, '평소 받아오기로는 서버에서 지워진 글을 아직 모른다');
+await A.p.evaluate(() => { lastFull = Date.now() - 31 * 60e3; });      // 30분이 지났다고 치고
+await refresh(A.p);
+ok(await card(A.p, '깔아 둔 가게 001').count() === 0 && !/created_at=gt/.test(pulls.at(-1).url), '30분이 지나면 저절로 전체 대조 — 빠진다');
+
+await A.p.locator('#boardBtn').click(); await A.p.waitForSelector('#boardBack.open');
+pulls.length = 0;
+await A.p.locator('#pullNow').click();
+await A.p.waitForFunction(() => /받았습니다|못했습니다/.test(document.querySelector('#boardStatus').textContent));
+ok(/새로 받았습니다/.test(await A.p.locator('#boardStatus').innerText()), '"지금 받아오기" 가 결과를 말한다 (예전엔 잘 받아도 "받아오지 못했습니다")');
+ok(pulls.length && !/created_at=gt/.test(pulls.at(-1).url), '  └ 손으로 받아오면 전체 대조');
+await A.p.keyboard.press('Escape');
+
+/* 이 기기에 쌓이는 양 — 공용 보드에서 받은 남의 글만 치운다 */
+await A.p.evaluate(() => {
+  const d = 86400e3, now = Date.now(), add = (o) => board.reports.push(sane(Object.assign({ by: '누군가', place: '어디' }, o), true));
+  add({ id: 'oldsv001', t: now - 61 * d, place: '두 달 넘은 남의 글', sv: true });
+  add({ id: 'oldmine1', t: now - 61 * d, place: '두 달 넘은 내 글', mine: true, up: true, sv: true });
+  add({ id: 'oldlink1', t: now - 61 * d, place: '두 달 넘은 링크 글' });
+  for (let i = 0; i < 3100; i++) add({ id: 'many' + i, t: now - (i + 1) * 20 * 60e3, place: '많은 글 ' + i, sv: true });
+  board.reports.sort((a, b) => b.t - a.t);
+});
+await refresh(A.p);
+const kept = await local(A.p);
+const has = (id) => kept.some((r) => r.id === id);
+ok(!has('oldsv001') && has('oldmine1') && has('oldlink1'), '60일 넘은 남의 글(공용 보드)은 치우고, 내 글과 링크로 받은 글은 둔다');
+ok(kept.length === 3000 && has('many0') && !has('many3099'), '3000건이 넘으면 오래된 남의 글부터 덜어 3000건에 맞춘다 (' + kept.length + '건)');
+await refresh(A.p, 'full');
+
+console.log('\n== 12. 오류 ==');
 ok(errs.length === 0, '콘솔 오류 없음' + (errs.length ? ': ' + errs.slice(0, 3).join(' | ') : ''));
 ok(rejected.length >= 3 && rejected.every((x) => /^(태오 \/rest\/v1\/flags|준호 \/rest\/v1\/(flags|reports))$/.test(x)),
    '서버가 거부한 요청은 예상한 것뿐 — 재신고·정지 중 쓰기·정지 중 신고 (' + rejected.length + '건: ' + [...new Set(rejected)].join(', ') + ')');
