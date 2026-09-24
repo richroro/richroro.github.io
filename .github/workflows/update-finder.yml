@@ -13,6 +13,10 @@ on:
   schedule:
     # 화~토 07:30 KST. 미국 장 마감(05:00~06:00 KST)과 marcap 의 한국 종가 반영(전날 23시대 KST) 뒤.
     - cron: '30 22 * * 1-5'
+  # 임시: main 에 합치기 전 작업 브랜치에서 첫 데이터를 만들기 위한 트리거. 합치기 전에 뺀다.
+  push:
+    branches: ['claude/stock-search-analysis-site-ak6iq6']
+    paths: ['.github/workflows/update-finder.yml']
   workflow_dispatch:
     inputs:
       us_limit:
