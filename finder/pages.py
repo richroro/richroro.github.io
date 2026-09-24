@@ -20,7 +20,7 @@ import shutil
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 SITE = "https://richroro.github.io"
-EX_KO = {"NASDAQ": "나스닥", "NYSE": "뉴욕증권거래소", "AMEX": "NYSE 아메리칸",
+EX_KO = {"NASDAQ": "나스닥", "NYSE": "뉴욕증권거래소", "AMEX": "NYSE 아메리칸", "CBOE": "Cboe BZX",
          "KOSPI": "코스피", "KOSDAQ": "코스닥", "KONEX": "코넥스"}
 
 TEMPLATE = """<!doctype html>
@@ -57,7 +57,7 @@ TEMPLATE = """<!doctype html>
   <div class="hactions"><button class="ghost" id="themeBtn" type="button" aria-label="화면 테마 전환"><span id="themeIco">◐</span><span id="themeTxt">테마</span></button></div>
 </div></header>
 <main><div class="wrap">
-  <nav class="crumbs" aria-label="위치"><a href="/finder/">전 종목 탐색기</a> › <a href="/finder/?m={grp}&amp;x={m}">{ex_ko}</a>{sec_crumb} › <span>{name}</span></nav>
+  <nav class="crumbs" aria-label="위치"><a href="/finder/">전 종목 탐색기</a> › <a href="/finder/?{tq}m={grp}&amp;x={m}">{ex_ko}</a>{sec_crumb} › <span>{name}</span></nav>
   <div class="sbox mini" id="sbox" role="combobox" aria-haspopup="listbox" aria-owns="sres" aria-expanded="false">
     <label class="sfield"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
       <input id="q" type="search" autocomplete="off" spellcheck="false" placeholder="다른 종목 찾기" aria-label="종목 검색" aria-controls="sres"></label>
@@ -84,26 +84,32 @@ def page_html(r: dict) -> str:
     grp = "KR" if r["m"] in ("KOSPI", "KOSDAQ", "KONEX") else "US"
     name = r["n"] if grp == "KR" else (kos[0] if kos else r["n"])
     also = "" if grp == "KR" else (f" · {r['n']}" if kos else "")
-    ex_ko = EX_KO.get(r["m"], r["m"])
+    etf = r.get("ty") == "E"
+    ex_ko = "NYSE Arca" if etf and r["m"] == "AMEX" else EX_KO.get(r["m"], r["m"])
     bits = [x for x in (r.get("sec"), r.get("ind")) if x]
-    desc = (f"{name}({ex_ko} {r['id']}{also}) 주가 흐름, 1년 수익률, 추세·RSI·변동성, PER·PBR·배당, "
-            f"같은 업종 비교를 한 화면에서.{' 업종: ' + ' · '.join(bits) + '.' if bits else ''}")
+    if etf:
+        desc = (f"{name}({ex_ko} {r['id']}) ETF 가격 흐름, 1년 수익률, 순자산·총보수·분배율, 추세·변동성, "
+                f"같은 분류 ETF 비교를 한 화면에서.{' 분류: ' + ' · '.join(bits) + '.' if bits else ''}")
+    else:
+        desc = (f"{name}({ex_ko} {r['id']}{also}) 주가 흐름, 1년 수익률, 추세·RSI·변동성, PER·PBR·배당, "
+                f"같은 업종 비교를 한 화면에서.{' 업종: ' + ' · '.join(bits) + '.' if bits else ''}")
     url = f"{SITE}/finder/s/{r['id']}/"
-    ld = {"@context": "https://schema.org", "@type": "WebPage", "name": f"{name} 주가 분석", "url": url,
-          "about": {"@type": "Corporation", "name": r["n"], "tickerSymbol": f"{r['m']}:{r['id']}"},
+    ld = {"@context": "https://schema.org", "@type": "WebPage", "name": f"{name} {'ETF' if etf else '주가'} 분석", "url": url,
+          "about": {"@type": "InvestmentFund" if etf else "Corporation", "name": r["n"], "tickerSymbol": f"{r['m']}:{r['id']}"},
           "breadcrumb": {"@type": "BreadcrumbList", "itemListElement": [
               {"@type": "ListItem", "position": 1, "name": "전 종목 탐색기", "item": f"{SITE}/finder/"},
               {"@type": "ListItem", "position": 2, "name": name, "item": url}]}}
     e = html.escape
-    sec_crumb = (f' › <a href="/finder/?m={grp}&amp;sec={e(r["sec"], quote=True)}">{e(r["sec"])}</a>'
+    tq = "t=E&amp;" if etf else ""
+    sec_crumb = (f' › <a href="/finder/?{tq}m={grp}&amp;sec={e(r["sec"], quote=True)}">{e(r["sec"])}</a>'
                  if r.get("sec") else "")
     return TEMPLATE.format(
-        title=e(f"{name} ({r['id']}) 주가·차트·분석 | 전 종목 탐색기"), desc=e(desc), url=url, site=SITE,
+        title=e(f"{name} ({r['id']}) {'ETF 시세·보수·분석' if etf else '주가·차트·분석'} | 전 종목 탐색기"), desc=e(desc), url=url, site=SITE,
         og_title=e(f"{name} ({r['id']}) — 전 종목 탐색기"),
         ld=json.dumps(ld, ensure_ascii=False).replace("<", "\\u003c"),  # 이름에 </script> 가 있어도 안전하게
         id_attr=e(r["id"], quote=True), grp=grp, m=r["m"], id=e(r["id"]), ex_ko=e(ex_ko),
-        sec_crumb=sec_crumb, name=e(name),
-        summary=e(f"{ex_ko} 상장{' · ' + ' · '.join(bits) if bits else ''}{also}"),
+        sec_crumb=sec_crumb, name=e(name), tq=tq,
+        summary=e(f"{ex_ko} 상장{' ETF' if etf else ''}{' · ' + ' · '.join(bits) if bits else ''}{also}"),
     )
 
 
@@ -123,6 +129,8 @@ def main():
     ap.add_argument("--data", default=os.path.join(HERE, "data", "stocks.json"))
     ap.add_argument("--us", type=int, default=500, help="미국 시총 상위 몇 곳")
     ap.add_argument("--kr", type=int, default=300, help="한국 시총 상위 몇 곳")
+    ap.add_argument("--etf-us", type=int, default=100, help="미국 ETF 순자산 상위 몇 곳")
+    ap.add_argument("--etf-kr", type=int, default=60, help="한국 ETF 순자산 상위 몇 곳")
     a = ap.parse_args()
 
     with open(a.data, encoding="utf-8") as f:
@@ -135,8 +143,9 @@ def main():
 
     # 새로 들이는 기준은 시총 순위, 한 번 생긴 페이지는 상장폐지 전까지 유지한다(순위 경계에서 들락날락하지 않게)
     pick = []
-    for grp, n in (("US", a.us), ("KR", a.kr)):
-        rs = [r for r in rows if (r["m"] in ("KOSPI", "KOSDAQ", "KONEX")) == (grp == "KR") and r.get("mcu")]
+    for grp, etf, n in (("US", False, a.us), ("KR", False, a.kr), ("US", True, a.etf_us), ("KR", True, a.etf_kr)):
+        rs = [r for r in rows if (r["m"] in ("KOSPI", "KOSDAQ", "KONEX")) == (grp == "KR")
+              and (r.get("ty") == "E") == etf and r.get("mcu")]
         rs.sort(key=lambda r: -r["mcu"])
         pick += [r["id"] for r in rs[:n]]
     ids = sorted(set(pick) | {i for i in existing if i in by_id})

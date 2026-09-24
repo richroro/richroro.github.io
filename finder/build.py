@@ -383,9 +383,9 @@ def mean_ok(*xs):
 
 
 def scores(rows: list[dict]):
-    """모멘텀·추세·안정성·유동성 네 점수. 미국은 미국끼리, 한국은 한국끼리 비교한다."""
-    for grp in ("US", "KR"):
-        rs = [r for r in rows if r["g"] == grp and (r.get("nd") or 0) >= 60]
+    """모멘텀·추세·안정성·유동성 네 점수. 미국은 미국끼리, 한국은 한국끼리, ETF 는 같은 시장 ETF 끼리 비교한다."""
+    for grp, etf in (("US", False), ("KR", False), ("US", True), ("KR", True)):  # ETF 는 ETF 끼리
+        rs = [r for r in rows if r["g"] == grp and bool(r.get("ty")) == etf and (r.get("nd") or 0) >= 60]
         if not rs:
             continue
         col = lambda k: [r.get(k) for r in rs]
@@ -894,15 +894,15 @@ def tv_post(market: str, body: dict):
         return json.loads(r.read())
 
 
-def tv_columns(market: str) -> dict[str, str]:
-    """후보 열을 시총 상위 50종목 요청으로 하나씩 시험한다(배당락일처럼 대부분 빈 열도 잡히게). 이름은 받아 줘도 값이 비는 열이 있어
-    값이 하나라도 온 열만 고른다."""
+def tv_columns(market: str, candidates: dict | None = None, extra: dict | None = None) -> dict[str, str]:
+    """후보 열을 시총 상위 50종목 요청으로 하나씩 시험한다(배당락일처럼 대부분 빈 열도 잡히게).
+    이름은 받아 줘도 값이 비는 열이 있어 값이 하나라도 온 열만 고른다. extra 는 요청에 더할 조건(ETF 필터·정렬)."""
     ok = {}
-    for key, cands in TV_CANDIDATES.items():
+    for key, cands in (candidates or TV_CANDIDATES).items():
         for c in cands:
             try:
                 j = tv_post(market, {"columns": ["name", c], "range": [0, 50],
-                                     "sort": {"sortBy": "market_cap_basic", "sortOrder": "desc"}})
+                                     "sort": {"sortBy": "market_cap_basic", "sortOrder": "desc"}, **(extra or {})})
             except Exception:
                 continue
             if any(len(row.get("d") or []) > 1 and row["d"][1] is not None for row in j.get("data") or []):
@@ -1014,6 +1014,224 @@ def fundamentals(rows: list[dict], today: dt.date, kr_asof: dt.date | None) -> t
               "K": sum(1 for f in k.values() if f.get("fs") == "K"),
               "N": sum(1 for f in list(k.values()) + list(s.values()) if f.get("fs") == "N")}
     return out, counts
+
+
+# --------------------------------------------------------------------------- ETF
+# 분류는 이름으로 정한다. 위에서부터 먼저 맞는 것 하나(레버리지 S&P500 은 '레버리지·인버스').
+ETF_RULES = [
+    ("단기금리", r"CD금리|KOFR|SOFR|머니마켓|단기채|단기통안|Money Market|Treasury Bill|T-Bill|0-3 Month|0-1 Year|Ultra[- ]?Short[- ](Term|Duration|Income|Bond|Muni|Treasury|Government)|Floating Rate"),
+    ("레버리지·인버스", r"레버리지|인버스|곱버스|\b[23]X\b|\bUltra(Pro)?\b|UltraShort|Leveraged|Inverse|\bBear\b|\bBull\b|Daily .*(Short|Long)|\bShort\b(?![- ](Term|Duration|Maturity))"),
+    ("커버드콜", r"커버드콜|Covered Call|Premium Income|Option Income|BuyWrite|Buy-Write|YieldMax|Enhanced Income"),
+    ("가상자산", r"비트코인|이더리움|Bitcoin|Ether(eum)?\b|Crypto|Solana|XRP"),
+    ("원자재", r"골드|금현물|금선물|KRX금|은선물|원유|구리|농산물|\bGold\b|Silver|\bOil\b|Crude|Commodit|Natural Gas|Copper|Uranium|Platinum|Palladium|Agricultur"),
+    ("채권", r"채권|국채|국고채|회사채|통안채|Bond|Treasury|Treasuries|Aggregate|Municipal|\bMuni\b|Corporate|Credit|Fixed Income|\bTIPS\b|Mortgage|High Yield|Loan"),
+    ("리츠·부동산", r"리츠|부동산|\bREITs?\b|Real Estate"),
+    ("배당", r"배당|Dividend|Dividends|Div\b|Income"),
+    ("해외 주식", r"미국|중국|일본|인도|베트남|유럽|대만|글로벌|선진국|신흥국|나스닥|S&P|다우|필라델피아|Emerging|International|Developed|Europe|Japan|China|India|Korea|Taiwan|Brazil|Latin|World|Global|ex-US|ex US|EAFE|\bIntl\b|Asia|Pacific|Frontier"),
+]
+ETF_US_RULES = [  # 미국 ETF 는 '해외 주식'이 아니라 미국 지수·업종으로 본다
+    ("미국 지수", r"\bQQQ\b|Nasdaq|\bDow\b|S&P 500|S&P500|Total (Stock )?Market|Nasdaq[- ]100|Nasdaq Composite|Russell|Dow Jones Industrial|Large[- ]Cap|Mid[- ]Cap|Small[- ]Cap|Micro[- ]Cap|Extended Market|Growth|Value|Equal Weight|Momentum|Quality|Minimum Volatility|Low Volatility|Core"),
+    ("업종·테마", r"Technology|Tech\b|Semiconductor|Health|Biotech|Pharma|Financial|Bank|Energy|Utilities|Industrial|Materials|Consumer|Communication|Software|Cyber|Robot|\bAI\b|Artificial|Innovation|Clean|Solar|Lithium|Battery|Defense|Aerospace|Infrastructure|Cloud|Internet|Gaming|Homebuilder|Retail|Transport|Insurance|Metals|Mining|Gold Miners|Water|Cannabis|Space|Genomic|Blockchain|Sector"),
+]
+KR_ETF_TAB = {1: "국내 지수", 2: "국내 업종·테마", 3: "레버리지·인버스", 4: "해외 주식", 5: "원자재", 6: "채권", 7: "기타"}
+ETF_ISSUERS = ["iShares", "Vanguard", "SPDR", "Invesco", "Schwab", "ProShares", "Direxion", "First Trust", "Global X", "ARK",
+               "JPMorgan", "Fidelity", "WisdomTree", "VanEck", "Dimensional", "Pacer", "Amplify", "Franklin", "Goldman Sachs",
+               "Xtrackers", "YieldMax", "GraniteShares", "Roundhill", "Defiance", "Simplify", "Avantis", "Capital Group",
+               "Janus Henderson", "PIMCO", "Nuveen", "Sprott", "American Century", "BlackRock", "Grayscale", "Bitwise",
+               "Franklin Templeton", "Neos", "NEOS", "KraneShares", "Tema", "T. Rowe Price", "Harbor", "Alpha Architect",
+               "Main", "AdvisorShares", "Hartford", "Principal", "Columbia", "Putnam", "Eaton Vance", "Texas Capital", "Cambria"]
+US_ETF_EX = {"NASDAQ", "NYSE", "AMEX", "CBOE"}
+ETF_KNOWN_US = {"SPY", "IVV", "VOO", "QQQ", "VTI"}
+BIG_STOCKS_US = {"AAPL", "NVDA", "MSFT", "AMZN", "TSLA", "META", "GOOGL"}
+
+
+def etf_category(name: str, us: bool, base: str = "") -> str:
+    for cat, pat in ETF_RULES[:8]:
+        if re.search(pat, name, re.I):
+            return cat
+    if us:
+        for cat, pat in ETF_US_RULES:
+            if re.search(pat, name, re.I):
+                return cat
+        if re.search(ETF_RULES[8][1], name, re.I):
+            return "해외 주식"
+        return "기타"
+    if base:
+        return base
+    return "해외 주식" if re.search(ETF_RULES[8][1], name, re.I) else "국내 주식"
+
+
+def etf_issuer(name: str, us: bool) -> str:
+    if not us:
+        return name.split()[0] if name.split() else ""
+    for iss in ETF_ISSUERS:
+        if re.search(r"(^|\W)" + re.escape(iss) + r"(\W|$)", name, re.I):
+            return "SPDR" if iss == "SPDR" else iss
+    return name.split()[0].title() if name.split() else ""
+
+
+TV_ETF_FILTERS = [
+    {"filter": [{"left": "typespecs", "operation": "has", "right": ["etf"]}]},
+    {"filter": [{"left": "type", "operation": "equal", "right": "fund"}]},
+    {"symbols": {"query": {"types": ["fund"]}}},
+]
+TV_ETF_CANDIDATES = {
+    "aum": ["aum", "assets_under_management", "market_cap_basic"],
+    "er": ["expense_ratio", "expense_ratio_fy", "total_expense_ratio"],
+    "dy": ["dividends_yield_current", "dividend_yield_recent", "dividends_yield"],
+    "desc": ["description"], "close": ["close"], "chg": ["change"], "vol": ["volume"],
+}
+
+
+def tv_etf_filter(market: str) -> dict | None:
+    """ETF 만 걸러 주는 조건을 찾는다. 거래량 상위에 SPY·QQQ 같은 ETF 가 있고 대형주가 없어야 통과."""
+    for flt in TV_ETF_FILTERS:
+        try:
+            j = tv_post(market, {"columns": ["name"], "range": [0, 40],
+                                 "sort": {"sortBy": "volume", "sortOrder": "desc"}, **flt})
+        except Exception:
+            continue
+        syms = {str(r.get("s", "")).partition(":")[2] for r in j.get("data") or []}
+        if not syms:
+            continue
+        if market == "america" and (not syms & ETF_KNOWN_US or syms & BIG_STOCKS_US):
+            continue
+        if market == "korea" and "005930" in syms:
+            continue
+        return flt
+    return None
+
+
+def parse_tv_etfs(j: dict, cols: dict[str, str], us: bool) -> list[dict]:
+    keys = list(cols)
+    out = []
+    for row in (j or {}).get("data") or []:
+        ex, _, sym = str(row.get("s", "")).partition(":")
+        d = row.get("d") or []
+        if not sym or len(d) < 1 + len(keys):
+            continue
+        v = dict(zip(keys, d[1:]))
+        if us and ex not in US_ETF_EX:
+            continue
+        name = str(v.get("desc") or d[0] or sym).strip()
+        out.append({
+            "id": sym.replace("/", ".") if us else sym.zfill(6), "m": ex if us else "KOSPI", "n": name,
+            "p": _ok(v.get("close"), 0, 1e9), "d1": _ok(v.get("chg"), -100, 1000),
+            "mc": _ok(v.get("aum"), 0, 1e16), "er": _ok(v.get("er"), 0, 20), "dy": _ok(v.get("dy"), -0.001, 60),
+            "vol0": _ok(v.get("vol"), -1, 1e13),
+        })
+    return out
+
+
+def tv_etfs(market: str) -> list[dict]:
+    flt = tv_etf_filter(market)
+    log(f"  트레이딩뷰 {market} ETF 필터: {flt or '없음'}")
+    if not flt:
+        return []
+    extra = dict(flt, sort={"sortBy": "volume", "sortOrder": "desc"})
+    cols = tv_columns(market, TV_ETF_CANDIDATES, extra)
+    log(f"  트레이딩뷰 {market} ETF 열: {cols}")
+    if "close" not in cols:
+        return []
+    try:
+        j = tv_post(market, {"columns": ["name"] + list(cols.values()), "range": [0, 6000],
+                             "options": {"lang": "en"}, **extra})
+    except Exception as e:
+        log(f"  트레이딩뷰 {market} ETF: {str(e)[:100]}")
+        return []
+    return parse_tv_etfs(j, cols, market == "america")
+
+
+def load_us_etfs(min_aum: float = 20e6) -> list[dict]:
+    """미국 ETF: 트레이딩뷰 스크리너(거래소·순자산·보수·분배율). 순자산이 min_aum 달러 미만인 소형은 뺀다."""
+    rows = tv_etfs("america")
+    if rows and sum(1 for r in rows if r.get("mc")) > len(rows) * 0.5:
+        rows = [r for r in rows if (r.get("mc") or 0) >= min_aum]
+    for r in rows:
+        r["sec"] = etf_category(r["n"], True)
+        r["ind"] = etf_issuer(r["n"], True)
+    return rows
+
+
+NAVER_ETF_LIST = "https://finance.naver.com/api/sise/etfItemList.nhn?etfType=0&targetColumn=market_sum&sortOrder=desc"
+NAVER_CHART = "https://fchart.stock.naver.com/sise.nhn?symbol={code}&timeframe=day&count={n}&requestType=0"
+
+
+def _decode(b: bytes) -> str:
+    for enc in ("utf-8", "euc-kr", "cp949"):
+        try:
+            return b.decode(enc)
+        except UnicodeDecodeError:
+            continue
+    return b.decode("utf-8", "replace")
+
+
+def parse_naver_etfs(j: dict) -> list[dict]:
+    items = ((j or {}).get("result") or {}).get("etfItemList") or []
+    out = []
+    for it in items:
+        code = str(it.get("itemcode") or "").strip()
+        name = str(it.get("itemname") or "").strip()
+        p = num(it.get("nowVal"))
+        if not code or not name or not p:
+            continue
+        ms = num(it.get("marketSum"))  # 억 원
+        tab = int(it["etfTabCode"]) if str(it.get("etfTabCode") or "").isdigit() else 0
+        out.append({"id": code.zfill(6), "m": "KOSPI", "n": name, "p": p, "d1": num(it.get("changeRate")),
+                    "mc": ms * 1e8 if ms else None, "nav": num(it.get("nav")),
+                    "sec": etf_category(name, False, KR_ETF_TAB.get(tab, "")), "ind": etf_issuer(name, False)})
+    return out
+
+
+def load_kr_etfs() -> list[dict]:
+    try:
+        j = json.loads(_decode(fetch(NAVER_ETF_LIST)))
+    except Exception as e:
+        log(f"  네이버 ETF 목록 실패: {str(e)[:120]}")
+        return []
+    rows = parse_naver_etfs(j)
+    try:  # 보수는 트레이딩뷰 한국 ETF 에서 받는다(없으면 빈 칸)
+        tv = {r["id"]: r for r in tv_etfs("korea")}
+        for r in rows:
+            t = tv.get(r["id"])
+            if t:
+                r["er"], r["dy"] = t.get("er"), t.get("dy")
+    except Exception as e:
+        log(f"  트레이딩뷰 한국 ETF 보수 실패: {str(e)[:100]}")
+    return rows
+
+
+def parse_naver_chart(text: str) -> dict | None:
+    rows = re.findall(r'data="(\d{8})\|([^|]*)\|([^|]*)\|([^|]*)\|([^|]*)\|([^"]*)"', text)
+    dates, close, vol = [], [], []
+    for d, _o, _h, _l, c, v in rows:
+        cv = num(c)
+        if not cv:
+            continue
+        dates.append(dt.date(int(d[:4]), int(d[4:6]), int(d[6:])))
+        close.append(cv); vol.append(num(v) or 0.0)
+    if len(close) < 2:
+        return None
+    c, v = np.array(close, dtype=float), np.array(vol, dtype=float)
+    return {"dates": dates, "close": c, "vol": v, "val": c * v}
+
+
+def kr_etf_history(codes: list[str], workers: int = 8, n: int = 300) -> dict[str, dict]:
+    from concurrent.futures import ThreadPoolExecutor
+
+    def one(code):
+        try:
+            return code, parse_naver_chart(_decode(fetch(NAVER_CHART.format(code=code, n=n), timeout=30)))
+        except Exception:
+            return code, None
+
+    out = {}
+    with ThreadPoolExecutor(workers) as ex:
+        for code, h in ex.map(one, codes):
+            if h:
+                out[code] = h
+    log(f"  한국 ETF 일봉 {len(out)}/{len(codes)}")
+    return out
 
 
 # --------------------------------------------------------------------------- 지수 · 베타
@@ -1137,7 +1355,8 @@ def hist_market(hists: dict[str, dict], ids: list[str], cal: list, bench: dict[s
     return out
 
 
-def write_hist(path: str, rows: list[dict], us_hist: dict, kr_hist: dict, idx: dict, n_us=500, n_kr=300):
+def write_hist(path: str, rows: list[dict], us_hist: dict, kr_hist: dict, idx: dict, n_us=500, n_kr=300,
+               etf_us=150, etf_kr=80, kr_etf_hist: dict | None = None):
     """시총 상위 종목(종목 페이지 대상과 같은 기준)의 1년 일봉. 한쪽 시장을 못 받았으면 이전 파일의 그 시장을 그대로 둔다."""
     prev = {}
     if os.path.exists(path):
@@ -1152,8 +1371,13 @@ def write_hist(path: str, rows: list[dict], us_hist: dict, kr_hist: dict, idx: d
             if g in prev:
                 out[g] = prev[g]
             continue
-        rs = sorted([r for r in rows if r["g"] == g and r.get("mc")], key=lambda r: -r["mc"])
-        ids = [r["id"] for r in rs[:n]] + [r["id"] for r in rs[n:] if r["id"] in keep]
+        if g == "KR" and kr_etf_hist:  # 주식 일봉이 있을 때만 이 시장을 새로 쓴다(ETF 만으로 덮지 않게)
+            hists = {**hists, **kr_etf_hist}
+        rs = sorted([r for r in rows if r["g"] == g and r.get("mc") and not r.get("ty")], key=lambda r: -r["mc"])
+        es = sorted([r for r in rows if r["g"] == g and r.get("mc") and r.get("ty")], key=lambda r: -r["mc"])
+        ne = etf_us if g == "US" else etf_kr
+        ids = ([r["id"] for r in rs[:n]] + [r["id"] for r in es[:ne]]
+               + [r["id"] for r in rs[n:] + es[ne:] if r["id"] in keep])
         cal = cal_src["dates"][-252:]
         out[g] = hist_market(hists, ids, cal, {b: idx[b] for b in benches if b in idx})
     with open(path, "w", encoding="utf-8") as f:
@@ -1191,7 +1415,7 @@ COLS = ["id", "m", "n", "ko", "sec", "ind", "cty", "ipo", "p", "d1", "mc", "mcu"
         "r5", "r21", "r63", "r126", "r252", "ytd", "fh", "fl", "h52", "l52", "pm50", "pm200",
         "x", "up", "rsi", "vol", "mdd", "tv", "vs", "sm", "st", "ss", "sl",
         "sp", "spl", "sph", "nd", "asof", "warn", "prod",
-        "pe", "fpe", "pb", "dy", "eps", "roe", "ern", "ar", "fs", "tgt", "beta", "exd"]
+        "pe", "fpe", "pb", "dy", "eps", "roe", "ern", "ar", "fs", "tgt", "beta", "exd", "ty", "er"]
 
 
 def rnd(v, k):
@@ -1244,6 +1468,8 @@ def to_row(r: dict) -> list:
     out["tgt"] = price_round(r.get("tgt"), g)
     out["beta"] = rnd(r.get("beta"), 2)
     out["exd"] = r.get("exd") or ""
+    out["ty"] = r.get("ty") or ""          # "E" = ETF
+    out["er"] = rnd(r.get("er"), 2)       # 총보수(연 %)
     return [out[c] for c in COLS]
 
 
@@ -1265,6 +1491,8 @@ def main():
     ap.add_argument("--no-fund", action="store_true", help="재무 지표 생략(이전 값 유지)")
     ap.add_argument("--no-hist-file", action="store_true", help="상세 차트용 일봉 파일(data/hist.json)을 쓰지 않는다")
     ap.add_argument("--us-limit", type=int, default=0, help="시총 상위 N개만 일봉을 받는다(0=전부)")
+    ap.add_argument("--no-etf", action="store_true", help="ETF 를 새로 받지 않는다(이전 파일의 ETF 행 유지)")
+    ap.add_argument("--etf-hist", type=int, default=2500, help="미국 ETF 는 순자산 상위 N개만 일봉을 받는다")
     ap.add_argument("--min-rows", type=int, default=0,
                     help="종목 수가 이보다 적으면 저장하지 않고 실패한다(원천 데이터가 깨졌을 때 좋은 파일을 덮지 않도록)")
     a = ap.parse_args()
@@ -1302,7 +1530,25 @@ def main():
     log(f"  {len(kr)}종목 · 기준일 {kr_asof}")
     if not kr and prev_rows:
         # 한국 쪽을 못 받았으면 이전 행을 그대로 쓴다
-        kr = [dict(from_prev(v), g="KR") for v in prev_rows.values() if v.get("m") in ("KOSPI", "KOSDAQ", "KONEX")]
+        kr = [dict(from_prev(v), g="KR") for v in prev_rows.values()
+              if v.get("m") in ("KOSPI", "KOSDAQ", "KONEX") and not v.get("ty")]
+
+    log("ETF 목록")
+    etf_us = [] if a.no_etf else load_us_etfs()
+    etf_kr = [] if a.no_etf else load_kr_etfs()
+    for g, lst, stocks in (("US", etf_us, us), ("KR", etf_kr, kr)):
+        taken = {r["id"] for r in stocks}
+        lst[:] = [r for r in lst if r["id"] not in taken]  # 주식 목록에 이미 있으면 주식 쪽을 쓴다
+        if not lst and prev_rows:  # 못 받았으면 이전 ETF 행 유지
+            lst[:] = [from_prev(v) for v in prev_rows.values() if v.get("ty") == "E"
+                      and (v.get("m") in ("KOSPI", "KOSDAQ", "KONEX")) == (g == "KR") and v["id"] not in taken]
+        for r in lst:
+            r["g"], r["ty"] = g, "E"
+            old = prev_rows.get(r["id"], {})
+            for k in ("er", "dy"):  # 이번에 비어 온 보수·분배율은 이전 값
+                if r.get(k) is None and old.get(k) is not None:
+                    r[k] = old[k]
+    log(f"  ETF 미국 {len(etf_us)} · 한국 {len(etf_kr)}")
 
     idx = {} if a.no_us_history else index_history()
     log(f"지수 {len(idx)}개")
@@ -1311,18 +1557,42 @@ def main():
         if h is not None and len(h["close"]) >= 2:
             r.update(metrics(h))
             r["beta"] = beta(h, idx.get(bench_for(r)))
+    carry = ("r5", "r21", "r63", "r126", "r252", "ytd", "fh", "fl", "h52", "l52", "pm50", "pm200",
+             "x", "up", "rsi", "vol", "mdd", "tv", "vs", "sp", "spl", "sph", "nd", "asof", "beta")
+
+    def keep_old(r):
+        """이번에 일봉을 못 받은 행은 이전 지표를 유지한다(목록의 가격·등락·시총은 새 값)."""
+        old = prev_rows.get(r["id"])
+        if old:
+            for k in carry:
+                if r.get(k) is None and old.get(k) not in (None, ""):
+                    r[k] = old[k] * 1e6 if k == "tv" else old[k]
+        if r.get("tv") is None and r.get("vol0") and r.get("p"):
+            r["tv"] = r["vol0"] * r["p"]  # 일봉이 없으면 당일 거래대금으로 대신한다
+
+    kr_etf_hist = kr_etf_history([r["id"] for r in etf_kr if r.get("p")]) if etf_kr and not a.no_etf else {}
+    for r in etf_kr:
+        h = kr_etf_hist.get(r["id"])
+        if h is not None and len(h["close"]) >= 2:
+            r.update(metrics(h))
+            r["beta"] = beta(h, idx.get("^KS11"))
+            r["p"] = float(h["close"][-1])
+            if r.get("d1h") is not None:
+                r["d1"] = r["d1h"]
+        else:
+            keep_old(r)
 
     us_hist = {}
     if not a.no_us_history:
         syms = [r["id"] for r in sorted(us, key=lambda r: -(r.get("mc") or 0))]
         if a.us_limit:
             syms = syms[:a.us_limit]
-        log(f"미국 일봉 {len(syms)}종목")
+        if not a.no_etf:
+            syms += [r["id"] for r in sorted(etf_us, key=lambda r: -(r.get("mc") or 0))[:a.etf_hist]]
+        log(f"미국 일봉 {len(syms)}종목(ETF 포함)")
         us_hist = us_history(syms)
     us_asof = None
-    carry = ("r5", "r21", "r63", "r126", "r252", "ytd", "fh", "fl", "h52", "l52", "pm50", "pm200",
-             "x", "up", "rsi", "vol", "mdd", "tv", "vs", "sp", "spl", "sph", "nd", "asof", "beta")
-    for r in us:
+    for r in us + etf_us:
         h = us_hist.get(r["id"])
         if h is not None and len(h["close"]) >= 2:
             snap_p = r.get("p")
@@ -1336,14 +1606,7 @@ def main():
                 r["d1"] = r["d1h"]
             us_asof = max(us_asof or h["dates"][-1], h["dates"][-1])
         else:
-            # 이번에 못 받은 종목은 이전 지표를 유지한다(스냅샷 가격·등락·시총은 새 값)
-            old = prev_rows.get(r["id"])
-            if old:
-                for k in carry:
-                    if r.get(k) is None and old.get(k) not in (None, ""):
-                        r[k] = old[k] * 1e6 if k == "tv" else old[k]
-            if r.get("tv") is None and r.get("vol0") and r.get("p"):
-                r["tv"] = r["vol0"] * r["p"]  # 일봉이 없으면 당일 거래대금으로 대신한다
+            keep_old(r)
     if not us_asof and prev_meta.get("usAsof"):
         us_asof = prev_meta["usAsof"]
 
@@ -1369,7 +1632,7 @@ def main():
 
     fx, fx_src, fx_at = fx_rate(us, kr, prev_meta, today)
     log(f"환율 {fx} ({fx_src})")
-    rows = us + kr
+    rows = us + kr + etf_us + etf_kr
     for r in rows:
         r["_fx"] = fx
     scores(rows)
@@ -1387,7 +1650,7 @@ def main():
         "usAsof": us_asof.isoformat() if isinstance(us_asof, dt.date) else us_asof,
         "krAsof": kr_asof.isoformat() if kr_asof else prev_meta.get("krAsof"),
         "fx": rnd(fx, 2) if fx else None, "fxSrc": fx_src, "fxAt": fx_at,
-        "counts": {"US": len(us), "KR": len(kr)},
+        "counts": {"US": len(us), "KR": len(kr), "ETF_US": len(etf_us), "ETF_KR": len(etf_kr)},
         "fundN": len(fund) or prev_meta.get("fundN", 0), "fundSrc": fund_n or prev_meta.get("fundSrc", {}),
         "fundAt": (dt.date.today().isoformat() if fund else prev_meta.get("fundAt")),
         "idx": index_meta(idx, prev_meta.get("idx")),
@@ -1395,7 +1658,8 @@ def main():
     }
     os.makedirs(os.path.dirname(a.out), exist_ok=True)
     if not a.no_hist_file:
-        write_hist(os.path.join(os.path.dirname(a.out), "hist.json"), rows, us_hist, kr_hist, idx)
+        write_hist(os.path.join(os.path.dirname(a.out), "hist.json"), rows, us_hist, kr_hist, idx,
+                   kr_etf_hist=kr_etf_hist)
     with open(a.out, "w", encoding="utf-8") as f:
         f.write('{"meta":' + json.dumps(meta, ensure_ascii=False, separators=(",", ":")) + ',"rows":[\n')
         f.write(",\n".join(json.dumps(v, ensure_ascii=False, separators=(",", ":")) for v in out_rows))
