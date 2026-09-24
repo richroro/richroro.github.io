@@ -33,7 +33,7 @@
 | 미국 1년 일봉(수정 종가) | Yahoo Finance (`yfinance`) | 종목별로 **이전 지표를 그대로 유지** |
 | 한국 1년 일봉 · 시총 · 관리종목 여부 | [FinanceData/marcap](https://github.com/FinanceData/marcap) (KRX 전종목 시세) | 실패로 끝나고 기존 파일 유지 |
 | 한국 업종 · 주요제품 · 상장연도 | KIND 상장법인목록 | `data/kr_meta.json` 캐시 |
-| 재무 지표 · 한국 | 한국거래소 PER/PBR/배당수익률 전종목 표(한 번 요청) | 종목별로 **이전 값 유지** |
+| 재무 지표 · 한국 | ① 한국거래소 PER/PBR/배당수익률 전종목 표(세션을 연 뒤 한 번 요청) ② 안 되면 네이버 증권 종목 요약(종목마다, 동시 6개) | 종목별로 **이전 값 유지** |
 | 재무 지표 · 미국 | ① Yahoo 일괄 시세(최근 4분기) ② 안 되면 **SEC EDGAR frames**(최근 회계연도, 퍼블릭 도메인) | 종목별로 **이전 값 유지** |
 | 실적 발표일 · 애널리스트 의견 | Yahoo 일괄 시세 | 이전 값 유지(지난 날짜는 지움) |
 | 원/달러 | Yahoo `KRW=X` | 일주일 안의 직전 실측값 → KB금융·신한지주 ADR 과 원주 종가 비율(1 ADR = 1주, 프리미엄만큼 빗나간다) |
@@ -44,7 +44,11 @@
 
 ### 재무 지표
 
-출처가 셋이라 행마다 `fs` 열(`K` 한국거래소 · `S` SEC · `Y` Yahoo)에 어디서 왔는지 적고, 상세 화면에도 표시한다.
+출처가 여럿이라 행마다 `fs` 열(`K` 한국거래소 · `N` 네이버 · `S` SEC · `Y` Yahoo)에 어디서 왔는지 적고, 상세 화면에도 표시한다.
+
+**SEC 는 요청마다 연락처 이메일이 든 User-Agent 를 요구한다**(없으면 403). 워크플로는 저장소 변수 `SEC_CONTACT` 를 쓰고,
+없으면 실행한 GitHub 계정의 no-reply 주소(`<id>+<아이디>@users.noreply.github.com`)를 쓴다.
+실제로 연락받을 주소를 쓰려면 Settings → Secrets and variables → Actions → Variables 에 `SEC_CONTACT` 를 만든다.
 한국은 거래소 값을 우선하고 Yahoo 는 실적일·의견에만 쓴다. 미국은 Yahoo 가 되면 최근 4분기 값을, 안 되면 SEC 값을 쓴다.
 
 Yahoo 일괄 시세는 인증 토큰(crumb)이 필요한데 **GitHub Actions 같은 데이터센터 IP 에는 잘 내주지 않는다**(HTTP 401).
@@ -93,7 +97,7 @@ marcap 의 종가는 수정 전 가격이다. 액면분할·병합이 있으면 
 | `sp` `spl` `sph` | 1년 주간 종가 스파크라인(64단계 문자) · 그 최저 · 최고 | |
 | `nd` `asof` `warn` | 일봉 개수 · 마지막 일봉 날짜 · 관리종목/투자주의환기 | |
 | `pe` `fpe` `pb` `dy` `roe` `eps` | PER · 선행 PER · PBR · 배당수익률 · ROE · EPS(최근 4분기) | 배 · % · 현지 통화 |
-| `ern` `ar` `fs` | 다음 실적 발표일 · 애널리스트 평균 의견 · 재무 출처(K/S/Y) | 날짜 · 1~5 · |
+| `ern` `ar` `fs` | 다음 실적 발표일 · 애널리스트 평균 의견 · 재무 출처(K/N/S/Y) | 날짜 · 1~5 · |
 
 ### 점수
 
@@ -154,8 +158,8 @@ Actions 탭에서 이 워크플로를 **Run workflow** 로 바로 돌릴 수도 
 | Yahoo Finance (일봉·재무·환율) | 비공식 API. 개인·비상업 용도 | Polygon.io, Financial Modeling Prep, Twelve Data, Intrinio 등 유료 API |
 | SEC EDGAR (미국 재무) | 미국 정부 저작물, 퍼블릭 도메인 | **그대로 가능**(요청 속도 제한·User-Agent 규칙 준수) |
 | 나스닥 스크리너 사본 | 나스닥 웹사이트 데이터 | Nasdaq Data Link 또는 위 유료 API |
-| 한국거래소 시세(marcap)·KIND | KRX 데이터 이용 조건 적용 | KRX 정보데이터시스템 유료 데이터 상품, 또는 증권사 Open API(한국투자증권 KIS 등) · DART Open API(공시·재무, 무료 키) |
+| 한국거래소 시세(marcap)·KIND·네이버 증권 | KRX·네이버 이용 조건 적용 | KRX 정보데이터시스템 유료 데이터 상품, 또는 증권사 Open API(한국투자증권 KIS 등) · DART Open API(공시·재무, 무료 키) |
 | TradingView 위젯 | 무료 위젯, 출처 표기 조건 | 그대로 가능(위젯 약관 준수) |
 
-`build.py` 는 출처마다 함수 하나(`load_us_universe`, `us_history`, `load_kr`, `yahoo_fund`, `sec_fund`, `krx_fund`, `fx_rate`)로 나뉘어 있고
+`build.py` 는 출처마다 함수 하나(`load_us_universe`, `us_history`, `load_kr`, `yahoo_fund`, `sec_fund`, `krx_fund`, `naver_fund`, `fx_rate`)로 나뉘어 있고
 나머지(지표 계산·점수·파일 형식)는 출처와 무관하다. 출처를 바꿀 때는 그 함수만 같은 모양의 값을 돌려주도록 바꾸면 된다.

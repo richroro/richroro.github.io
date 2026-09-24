@@ -206,12 +206,14 @@ class Sources(unittest.TestCase):
 
         orig = build.sec_json
         build.sec_json = fake
+        os.environ["SEC_CONTACT"] = "test@example.com"
         try:
             rows = [{"g": "US", "id": "AAA", "mc": 3000e9, "p": 300.0}, {"g": "US", "id": "BRK.B", "mc": 500e9, "p": 10.0},
                     {"g": "KR", "id": "005930", "mc": 1e15}]
             out = build.sec_fund(rows, self.today)
         finally:
             build.sec_json = orig
+            del os.environ["SEC_CONTACT"]
         a = out["AAA"]
         self.assertAlmostEqual(a["pe"], 30.0)
         self.assertAlmostEqual(a["pb"], 7.5)
@@ -225,6 +227,23 @@ class Sources(unittest.TestCase):
         self.assertEqual(b["dy"], 0.0)
         self.assertNotIn("005930", out)
 
+    def test_sec_skips_without_contact(self):
+        os.environ.pop("SEC_CONTACT", None); os.environ.pop("SEC_USER_AGENT", None)
+        self.assertEqual(build.sec_fund([{"g": "US", "id": "A", "mc": 1e9}], self.today), {})
+
+    def test_naver_parse(self):
+        j = {"totalInfos": [{"code": "per", "key": "PER", "value": "13.21배"}, {"code": "eps", "key": "EPS", "value": "4,950원"},
+                            {"code": "cnsPer", "key": "추정PER", "value": "9.80배"}, {"code": "pbr", "key": "PBR", "value": "1.52배"},
+                            {"code": "bps", "key": "BPS", "value": "57,951원"}, {"code": "dividendYieldRatio", "key": "배당수익률", "value": "1.51%"},
+                            {"code": "marketValue", "key": "시총", "value": "1,616조"}]}
+        f = build.parse_naver(j)
+        self.assertEqual(f["pe"], 13.21)
+        self.assertEqual(f["fpe"], 9.8)
+        self.assertEqual(f["pb"], 1.52)
+        self.assertEqual(f["dy"], 1.51)
+        self.assertAlmostEqual(f["roe"], 4950 / 57951 * 100)
+        self.assertIsNone(build.parse_naver({"totalInfos": [{"code": "per", "value": "N/A"}]})["pe"])
+
     def test_krx_parse(self):
         import io
         payload = {"output": [{"ISU_SRT_CD": "005930", "EPS": "6,564", "PER": "42.12", "BPS": "57,951", "PBR": "4.77",
@@ -236,12 +255,16 @@ class Sources(unittest.TestCase):
             def __enter__(self): return self
             def __exit__(self, *a): return False
 
-        orig = build.urllib.request.urlopen
-        build.urllib.request.urlopen = lambda req, timeout=0: Resp(json.dumps(payload).encode())
+        class Opener:
+            def open(self, req, timeout=0):
+                return Resp(json.dumps(payload).encode() if req.data else b"<html>")
+
+        orig = build.urllib.request.build_opener
+        build.urllib.request.build_opener = lambda *a: Opener()
         try:
             out = build.krx_fund(dt.date(2026, 9, 22))
         finally:
-            build.urllib.request.urlopen = orig
+            build.urllib.request.build_opener = orig
         s = out["005930"]
         self.assertEqual(s["pe"], 42.12)
         self.assertEqual(s["eps"], 6564)
@@ -256,15 +279,18 @@ class Sources(unittest.TestCase):
                                                "AAPL": {"pe": 35.0, "ern": "2026-10-29", "fs": "Y"}}
         build.sec_fund = lambda rows, today: {"AAPL": {"pe": 33.0, "pb": 50.0, "fs": "S"}}
         build.krx_fund = lambda asof: {"005930": {"pe": 42.0, "fs": "K"}}
+        naver = build.naver_fund
+        build.naver_fund = lambda rows: self.fail("KRX 가 되면 네이버는 부르지 않는다")
         try:
             out, n = build.fundamentals([], self.today, dt.date(2026, 9, 22))
         finally:
             build.yahoo_fund, build.sec_fund, build.krx_fund = orig
+            build.naver_fund = naver
         self.assertEqual(out["005930"]["pe"], 42.0)       # 거래소 값
         self.assertEqual(out["005930"]["ern"], "2026-10-30")  # 실적일은 Yahoo
         self.assertEqual(out["AAPL"]["pe"], 35.0)          # 미국은 Yahoo(최근 4분기) 우선
         self.assertEqual(out["AAPL"]["pb"], 50.0)          # 빈 값은 SEC 로 채움
-        self.assertEqual(n, {"Y": 2, "S": 1, "K": 1})
+        self.assertEqual(n, {"Y": 2, "S": 1, "K": 1, "N": 0})
 
 
 if __name__ == "__main__":

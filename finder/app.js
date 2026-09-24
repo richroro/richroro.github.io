@@ -804,7 +804,7 @@ function kpis(r) {
   const ret = [["1주", r.r5], ["1개월", r.r21], ["3개월", r.r63], ["6개월", r.r126], ["연초 이후", r.ytd], ["1년", r.r252]];
   return `<div class="stats c3 fix3">${ret.map(([k, v]) => cell(k, pct(v), "", cls(v), true)).join("")}</div>`;
 }
-const FS_TXT = { Y: "Yahoo Finance · 최근 4분기", S: "미국 SEC 공시(EDGAR) · 최근 회계연도", K: "한국거래소 · 최근 결산" };
+const FS_TXT = { Y: "Yahoo Finance · 최근 4분기", S: "미국 SEC 공시(EDGAR) · 최근 회계연도", K: "한국거래소 · 최근 결산", N: "네이버 증권 · 최근 결산" };
 function valuationBlock(r) {
   const has = ["pe", "fpe", "pb", "dy", "roe", "eps", "ern", "ar"].some((k) => r[k] != null && r[k] !== "");
   if (!has) return `<div class="note"><span class="ic">ⓘ</span><div>이 종목은 재무 지표가 아직 없습니다${r.m === "KONEX" ? "(코넥스는 출처에서 제공하지 않습니다)" : ""}. 다음 자동 갱신 때 채워질 수 있습니다.</div></div>`;

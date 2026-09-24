@@ -472,12 +472,19 @@ def yahoo_fund(rows: list[dict], today: dt.date, batch: int = 150) -> dict[str, 
 
 
 # ---- 미국: SEC EDGAR — 미국 정부 공시 데이터(퍼블릭 도메인). frames API 는 한 지표를 전 회사에 대해 한 번에 준다
-SEC_UA = "richroro-finder/1.0 (+https://github.com/richroro/richroro.github.io)"
+def sec_user_agent() -> str | None:
+    """SEC 는 요청마다 '이름 연락처이메일' 형식의 User-Agent 를 요구한다(없으면 403).
+    SEC_USER_AGENT(전체 문자열) 또는 SEC_CONTACT(이메일) 환경변수로 받는다."""
+    ua = os.environ.get("SEC_USER_AGENT", "").strip()
+    if ua:
+        return ua
+    mail = os.environ.get("SEC_CONTACT", "").strip()
+    return f"richroro-finder {mail}" if "@" in mail else None
 
 
 def sec_json(url: str):
     import gzip
-    req = urllib.request.Request(url, headers={"User-Agent": SEC_UA, "Accept-Encoding": "gzip"})
+    req = urllib.request.Request(url, headers={"User-Agent": sec_user_agent() or "", "Accept-Encoding": "gzip"})
     with urllib.request.urlopen(req, timeout=90) as r:
         raw = r.read()
         if r.headers.get("Content-Encoding") == "gzip":
@@ -506,6 +513,9 @@ def sec_latest(tag: str, unit: str, periods: list[str]) -> dict[int, dict]:
 def sec_fund(rows: list[dict], today: dt.date) -> dict[str, dict]:
     """PER = 시총 ÷ 순이익, PBR = 시총 ÷ 자기자본, ROE = 순이익 ÷ 자기자본, 배당 = 배당 지급액 ÷ 시총.
     주당 값 대신 총액으로 계산해 결산 뒤 액면분할이 있어도 틀어지지 않게 한다. 최근 회계연도(연간) 기준."""
+    if not sec_user_agent():
+        log("  SEC: 연락처(SEC_CONTACT)가 없어 건너뜀 — SEC 는 User-Agent 에 이메일을 요구한다")
+        return {}
     try:
         tick = sec_json("https://www.sec.gov/files/company_tickers.json")
     except Exception as e:
@@ -564,9 +574,18 @@ def _krx_num(s):
 
 
 def krx_fund(asof: dt.date | None) -> dict[str, dict]:
+    """한국거래소 정보데이터시스템의 PER/PBR/배당수익률 전종목 표. 먼저 화면을 열어 세션 쿠키를 받는다."""
+    import http.cookiejar
     import urllib.parse
     if not asof:
         return {}
+    jar = http.cookiejar.CookieJar()
+    opener = urllib.request.build_opener(urllib.request.HTTPCookieProcessor(jar))
+    page = "http://data.krx.co.kr/contents/MDC/MDI/mdiLoader/index.cmd?menuId=MDC0201020502"
+    try:
+        opener.open(urllib.request.Request(page, headers={"User-Agent": UA}), timeout=30).read()
+    except Exception as e:
+        log(f"  KRX 세션: {str(e)[:100]}")
     url = "http://data.krx.co.kr/comm/bldAttendant/getJsonData.cmd"
     for back in range(0, 7):
         d = asof - dt.timedelta(days=back)
@@ -576,14 +595,15 @@ def krx_fund(asof: dt.date | None) -> dict[str, dict]:
                                        "searchType": "1", "mktId": "ALL", "trdDd": d.strftime("%Y%m%d"),
                                        "csvxls_isNo": "false"}).encode()
         req = urllib.request.Request(url, data=body, headers={
-            "User-Agent": UA, "X-Requested-With": "XMLHttpRequest",
-            "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
-            "Referer": "http://data.krx.co.kr/contents/MDC/MDI/mdiLoader/index.cmd?menuId=MDC0201020502"})
+            "User-Agent": UA, "X-Requested-With": "XMLHttpRequest", "Origin": "http://data.krx.co.kr",
+            "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8", "Referer": page})
         try:
-            with urllib.request.urlopen(req, timeout=60) as r:
-                j = json.loads(r.read().decode("utf-8", errors="replace"))
+            with opener.open(req, timeout=60) as r:
+                text = r.read().decode("utf-8", errors="replace")
+            j = json.loads(text)
         except Exception as e:
-            log(f"  KRX 재무 {d}: {str(e)[:100]}")
+            body_txt = getattr(e, "read", lambda: b"")()[:160]
+            log(f"  KRX 재무 {d}: {str(e)[:80]} {body_txt!r}")
             return {}
         rows = j.get("output") or j.get("OutBlock_1") or []
         if len(rows) < 500:
@@ -599,8 +619,62 @@ def krx_fund(asof: dt.date | None) -> dict[str, dict]:
             out[code] = dict(f, fs="K")
         log(f"  KRX 재무 {d}: {len(out)}종목")
         return out
-    log("  KRX 재무: 응답이 비었습니다(로그인 필요 등)")
+    log("  KRX 재무: 응답이 비었습니다")
     return {}
+
+
+NAVER_API = "https://m.stock.naver.com/api/stock/{code}/integration"
+# 네이버 증권 종목 요약의 항목 이름 → 우리 열
+NAVER_KEYS = {"per": "pe", "pbr": "pb", "eps": "eps", "bps": "bps", "dividendyieldratio": "dy", "cnsper": "fpe",
+              "PER": "pe", "PBR": "pb", "EPS": "eps", "BPS": "bps", "배당수익률": "dy", "추정PER": "fpe"}
+
+
+def parse_naver(j: dict) -> dict:
+    """{"totalInfos":[{"code":"per","key":"PER","value":"13.21배"}, ...]} → 재무 지표. 모르는 항목은 무시한다."""
+    got = {}
+    for it in j.get("totalInfos") or []:
+        k = NAVER_KEYS.get(str(it.get("code", "")).lower()) or NAVER_KEYS.get(str(it.get("key", "")))
+        if not k or k in got:
+            continue
+        m = re.search(r"-?[\d,]+(?:\.\d+)?", str(it.get("value", "")))
+        if m:
+            got[k] = float(m.group(0).replace(",", ""))
+    f = {"pe": _ok(got.get("pe"), 0, 3000), "fpe": _ok(got.get("fpe"), 0, 3000), "pb": _ok(got.get("pb"), 0, 500),
+         "dy": _ok(got.get("dy"), -0.001, 25), "eps": got.get("eps")}
+    if got.get("eps") is not None and got.get("bps", 0) > 0:
+        f["roe"] = _ok(got["eps"] / got["bps"] * 100, -300, 300)
+    return f
+
+
+def naver_fund(rows: list[dict], workers: int = 6) -> dict[str, dict]:
+    """KRX 가 막혔을 때: 네이버 증권 종목 요약을 종목마다 받는다(코스피·코스닥, 동시 6개)."""
+    from concurrent.futures import ThreadPoolExecutor
+    codes = [r["id"] for r in rows if r["g"] == "KR" and r["m"] in ("KOSPI", "KOSDAQ")]
+    errs = []
+
+    def one(code):
+        req = urllib.request.Request(NAVER_API.format(code=code), headers={"User-Agent": UA, "Referer": "https://m.stock.naver.com/"})
+        try:
+            with urllib.request.urlopen(req, timeout=20) as r:
+                return code, parse_naver(json.loads(r.read()))
+        except Exception as e:
+            errs.append(str(e)[:80])
+            return code, None
+
+    out = {}
+    # 처음 몇 개로 통하는지 본다 — 전부 막히면 2천여 번 두드리지 않는다
+    for code, f in map(one, codes[:5]):
+        if f and any(v is not None for v in f.values()):
+            out[code] = dict(f, fs="N")
+    if not out:
+        log(f"  네이버 재무: 첫 5종목 실패({errs[:1]}) — 건너뜀")
+        return {}
+    with ThreadPoolExecutor(workers) as ex:
+        for code, f in ex.map(one, codes[5:]):
+            if f and any(v is not None for v in f.values()):
+                out[code] = dict(f, fs="N")
+    log(f"  네이버 재무: {len(out)}/{len(codes)}종목 (실패 {len(errs)})")
+    return out
 
 
 def fundamentals(rows: list[dict], today: dt.date, kr_asof: dt.date | None) -> tuple[dict[str, dict], dict]:
@@ -610,7 +684,7 @@ def fundamentals(rows: list[dict], today: dt.date, kr_asof: dt.date | None) -> t
     log(f"  Yahoo {len(y)}종목")
     s = sec_fund(rows, today)
     log(f"  SEC {len(s)}종목")
-    k = krx_fund(kr_asof)
+    k = krx_fund(kr_asof) or naver_fund(rows)
     out: dict[str, dict] = {}
     for sid, f in s.items():
         out[sid] = dict(f)
@@ -622,7 +696,8 @@ def fundamentals(rows: list[dict], today: dt.date, kr_asof: dt.date | None) -> t
             cur.update({kk: v for kk, v in f.items() if v is not None})
     for sid, f in k.items():
         out.setdefault(sid, {}).update({kk: v for kk, v in f.items() if v is not None})
-    counts = {"Y": len(y), "S": len(s), "K": len(k)}
+    counts = {"Y": len(y), "S": len(s), "K": sum(1 for f in k.values() if f.get("fs") == "K"),
+              "N": sum(1 for f in k.values() if f.get("fs") == "N")}
     return out, counts
 
 
