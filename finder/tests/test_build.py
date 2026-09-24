@@ -186,5 +186,86 @@ class Validate(unittest.TestCase):
         self.assertEqual(errors, [])
 
 
+class Sources(unittest.TestCase):
+    today = dt.date(2026, 9, 24)
+
+    def test_sec_totals_not_per_share(self):
+        frames = {
+            "NetIncomeLoss": [{"cik": 1, "end": "2025-12-31", "val": 100e9}, {"cik": 2, "end": "2025-12-31", "val": -5e9}],
+            "StockholdersEquity": [{"cik": 1, "end": "2026-06-30", "val": 400e9}, {"cik": 2, "end": "2026-06-30", "val": 50e9}],
+            "PaymentsOfDividendsCommonStock": [{"cik": 1, "end": "2025-12-31", "val": -30e9}],
+        }
+
+        def fake(url):
+            if url.endswith("company_tickers.json"):
+                return {"0": {"cik_str": 1, "ticker": "AAA"}, "1": {"cik_str": 2, "ticker": "BRK-B"}}
+            tag = url.split("/us-gaap/")[1].split("/")[0]
+            if "CY2025" in url or "Q2I" in url:
+                return {"data": frames.get(tag, [])}
+            raise Exception("HTTP Error 404")
+
+        orig = build.sec_json
+        build.sec_json = fake
+        try:
+            rows = [{"g": "US", "id": "AAA", "mc": 3000e9, "p": 300.0}, {"g": "US", "id": "BRK.B", "mc": 500e9, "p": 10.0},
+                    {"g": "KR", "id": "005930", "mc": 1e15}]
+            out = build.sec_fund(rows, self.today)
+        finally:
+            build.sec_json = orig
+        a = out["AAA"]
+        self.assertAlmostEqual(a["pe"], 30.0)
+        self.assertAlmostEqual(a["pb"], 7.5)
+        self.assertAlmostEqual(a["roe"], 25.0)
+        self.assertAlmostEqual(a["dy"], 1.0)
+        self.assertAlmostEqual(a["eps"], 10.0)
+        self.assertEqual(a["fs"], "S")
+        b = out["BRK.B"]  # 적자: PER 없음, EPS 음수, 배당 기록 없음 → 0
+        self.assertIsNone(b["pe"])
+        self.assertLess(b["eps"], 0)
+        self.assertEqual(b["dy"], 0.0)
+        self.assertNotIn("005930", out)
+
+    def test_krx_parse(self):
+        import io
+        payload = {"output": [{"ISU_SRT_CD": "005930", "EPS": "6,564", "PER": "42.12", "BPS": "57,951", "PBR": "4.77",
+                               "DPS": "1,446", "DVD_YLD": "0.52"}]
+                   + [{"ISU_SRT_CD": f"{i:06d}", "EPS": "-", "PER": "-", "BPS": "1,000", "PBR": "0.5", "DVD_YLD": "0.00"}
+                      for i in range(1, 600)]}
+
+        class Resp(io.BytesIO):
+            def __enter__(self): return self
+            def __exit__(self, *a): return False
+
+        orig = build.urllib.request.urlopen
+        build.urllib.request.urlopen = lambda req, timeout=0: Resp(json.dumps(payload).encode())
+        try:
+            out = build.krx_fund(dt.date(2026, 9, 22))
+        finally:
+            build.urllib.request.urlopen = orig
+        s = out["005930"]
+        self.assertEqual(s["pe"], 42.12)
+        self.assertEqual(s["eps"], 6564)
+        self.assertAlmostEqual(s["roe"], 6564 / 57951 * 100)
+        self.assertEqual(s["fs"], "K")
+        self.assertIsNone(out["000001"]["pe"])
+        self.assertEqual(out["000001"]["dy"], 0.0)
+
+    def test_merge_prefers_exchange_for_korea(self):
+        orig = (build.yahoo_fund, build.sec_fund, build.krx_fund)
+        build.yahoo_fund = lambda rows, today: {"005930": {"pe": 99.0, "ern": "2026-10-30", "ar": 1.8, "fs": "Y"},
+                                               "AAPL": {"pe": 35.0, "ern": "2026-10-29", "fs": "Y"}}
+        build.sec_fund = lambda rows, today: {"AAPL": {"pe": 33.0, "pb": 50.0, "fs": "S"}}
+        build.krx_fund = lambda asof: {"005930": {"pe": 42.0, "fs": "K"}}
+        try:
+            out, n = build.fundamentals([], self.today, dt.date(2026, 9, 22))
+        finally:
+            build.yahoo_fund, build.sec_fund, build.krx_fund = orig
+        self.assertEqual(out["005930"]["pe"], 42.0)       # 거래소 값
+        self.assertEqual(out["005930"]["ern"], "2026-10-30")  # 실적일은 Yahoo
+        self.assertEqual(out["AAPL"]["pe"], 35.0)          # 미국은 Yahoo(최근 4분기) 우선
+        self.assertEqual(out["AAPL"]["pb"], 50.0)          # 빈 값은 SEC 로 채움
+        self.assertEqual(n, {"Y": 2, "S": 1, "K": 1})
+
+
 if __name__ == "__main__":
     unittest.main()

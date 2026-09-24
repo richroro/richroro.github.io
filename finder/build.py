@@ -393,7 +393,7 @@ def scores(rows: list[dict]):
 
 # --------------------------------------------------------------------------- 재무
 QUOTE_URL = "https://query1.finance.yahoo.com/v7/finance/quote"
-FUND = ("pe", "fpe", "pb", "dy", "eps", "roe", "ern", "ar")
+FUND = ("pe", "fpe", "pb", "dy", "eps", "roe", "ern", "ar", "fs")
 
 
 def yahoo_symbol(r: dict) -> str | None:
@@ -431,44 +431,199 @@ def parse_quote(q: dict, today: dt.date) -> dict:
     return out
 
 
-def fundamentals(rows: list[dict], today: dt.date, batch: int = 150) -> dict[str, dict]:
-    """Yahoo 일괄 시세(v7 quote)로 PER·PBR·배당·EPS·ROE·실적일·애널리스트 의견을 받는다."""
+def yahoo_fund(rows: list[dict], today: dt.date, batch: int = 150) -> dict[str, dict]:
+    """Yahoo 일괄 시세(v7 quote). 실적일·애널리스트 의견은 여기서만 나온다.
+    Yahoo 는 데이터센터 IP 에 인증 토큰(crumb)을 잘 주지 않는다 — 401/403 이면 바로 그만둔다."""
     try:
         from yfinance.data import YfData
     except ImportError:
-        log("yfinance 없음 — 재무 지표 생략")
+        log("  yfinance 없음 — Yahoo 재무 생략")
         return {}
     yd = YfData()
-    ymap = {}
-    for r in rows:
-        y = yahoo_symbol(r)
-        if y:
-            ymap[y] = r["id"]
+    ymap = {yahoo_symbol(r): r["id"] for r in rows if yahoo_symbol(r)}
     keys, out, fails = list(ymap), {}, 0
     for i in range(0, len(keys), batch):
         chunk = keys[i:i + batch]
+        j = None
         for attempt in range(3):
             try:
                 j = yd.get_raw_json(QUOTE_URL, params={"symbols": ",".join(chunk), "formatted": "false",
                                                        "lang": "en-US", "region": "US"})
                 break
             except Exception as e:
-                log(f"  재무 실패({attempt + 1}/3): {str(e)[:120]}")
+                msg = str(e)[:120]
+                if re.search(r"\b40[13]\b", msg):
+                    log(f"  Yahoo 재무: 인증 거부({msg}) — 건너뜀")
+                    return out
+                log(f"  Yahoo 재무 실패({attempt + 1}/3): {msg}")
                 time.sleep(8 * (attempt + 1))
-        else:
+        if j is None:
             fails += 1
-            if fails >= 5 and not out:
-                log("  재무: 연속 실패 — 중단(이전 값 유지)")
-                break
+            if fails >= 3 and not out:
+                log("  Yahoo 재무: 연속 실패 — 건너뜀")
+                return out
             continue
         for q in (j.get("quoteResponse") or {}).get("result") or []:
             sid = ymap.get(q.get("symbol"))
             if sid:
-                out[sid] = parse_quote(q, today)
-        if (i // batch) % 10 == 0:
-            log(f"  재무 {min(i + batch, len(keys))}/{len(keys)} (확보 {len(out)})")
+                out[sid] = dict(parse_quote(q, today), fs="Y")
         time.sleep(0.6)
     return out
+
+
+# ---- 미국: SEC EDGAR — 미국 정부 공시 데이터(퍼블릭 도메인). frames API 는 한 지표를 전 회사에 대해 한 번에 준다
+SEC_UA = "richroro-finder/1.0 (+https://github.com/richroro/richroro.github.io)"
+
+
+def sec_json(url: str):
+    import gzip
+    req = urllib.request.Request(url, headers={"User-Agent": SEC_UA, "Accept-Encoding": "gzip"})
+    with urllib.request.urlopen(req, timeout=90) as r:
+        raw = r.read()
+        if r.headers.get("Content-Encoding") == "gzip":
+            raw = gzip.decompress(raw)
+    time.sleep(0.15)  # SEC 는 초당 10건까지
+    return json.loads(raw)
+
+
+def sec_latest(tag: str, unit: str, periods: list[str]) -> dict[int, dict]:
+    """여러 기간의 frame 을 받아 회사(CIK)마다 가장 최근 값을 고른다."""
+    best: dict[int, dict] = {}
+    for per in periods:
+        try:
+            data = sec_json(f"https://data.sec.gov/api/xbrl/frames/us-gaap/{tag}/{unit}/{per}.json").get("data", [])
+        except Exception as e:
+            if "404" not in str(e):
+                log(f"  SEC {tag} {per}: {str(e)[:80]}")
+            continue
+        for d in data:
+            c = d.get("cik")
+            if c is not None and (c not in best or d["end"] > best[c]["end"]):
+                best[c] = d
+    return best
+
+
+def sec_fund(rows: list[dict], today: dt.date) -> dict[str, dict]:
+    """PER = 시총 ÷ 순이익, PBR = 시총 ÷ 자기자본, ROE = 순이익 ÷ 자기자본, 배당 = 배당 지급액 ÷ 시총.
+    주당 값 대신 총액으로 계산해 결산 뒤 액면분할이 있어도 틀어지지 않게 한다. 최근 회계연도(연간) 기준."""
+    try:
+        tick = sec_json("https://www.sec.gov/files/company_tickers.json")
+    except Exception as e:
+        log(f"  SEC 티커 목록 실패: {str(e)[:100]} — 건너뜀")
+        return {}
+    cik_of = {v["ticker"].upper().replace("-", "."): int(v["cik_str"]) for v in tick.values()}
+    Y = today.year
+    annual = [f"CY{Y}", f"CY{Y - 1}", f"CY{Y - 2}"]
+    q0 = (today.month - 1) // 3 + 1
+    instants = []
+    for k in range(1, 6):  # 지난 다섯 분기 말
+        y, q = Y, q0 - k
+        while q <= 0:
+            y, q = y - 1, q + 4
+        instants.append(f"CY{y}Q{q}I")
+    ni = sec_latest("NetIncomeLoss", "USD", annual)
+    eq = sec_latest("StockholdersEquity", "USD", instants)
+    dv = sec_latest("PaymentsOfDividendsCommonStock", "USD", annual)
+    for c, d in sec_latest("PaymentsOfDividends", "USD", annual).items():
+        dv.setdefault(c, d)
+    stale = (today - dt.timedelta(days=550)).isoformat()
+    out = {}
+    for r in rows:
+        if r["g"] != "US" or not r.get("mc"):
+            continue
+        c = cik_of.get(r["id"])
+        if c is None:
+            continue
+        f, mc = {}, r["mc"]
+        n = ni.get(c)
+        e = eq.get(c)
+        if n and n["end"] >= stale:
+            f["pe"] = _ok(mc / n["val"], 0, 3000) if n["val"] > 0 else None
+            if r.get("p"):
+                f["eps"] = r["p"] * n["val"] / mc  # 주가 × 순이익/시총 = 주당순이익(분할 반영)
+        if e and e["end"] >= stale and e["val"] > 0:
+            f["pb"] = _ok(mc / e["val"], 0, 500)
+            if n and n["end"] >= stale:
+                f["roe"] = _ok(n["val"] / e["val"] * 100, -300, 300)
+        d = dv.get(c)
+        if n and n["end"] >= stale:  # 배당 기록이 없으면 무배당으로 본다
+            f["dy"] = _ok(abs(d["val"]) / mc * 100, 0, 25) if d and d["end"] >= stale else 0.0
+        if any(v is not None for v in f.values()):
+            out[r["id"]] = dict(f, fs="S")
+    return out
+
+
+# ---- 한국: 한국거래소 PER/PBR/배당수익률(전종목) 표 한 장
+def _krx_num(s):
+    s = str(s or "").replace(",", "").strip()
+    try:
+        v = float(s)
+    except ValueError:
+        return None
+    return v if math.isfinite(v) else None
+
+
+def krx_fund(asof: dt.date | None) -> dict[str, dict]:
+    import urllib.parse
+    if not asof:
+        return {}
+    url = "http://data.krx.co.kr/comm/bldAttendant/getJsonData.cmd"
+    for back in range(0, 7):
+        d = asof - dt.timedelta(days=back)
+        if d.weekday() >= 5:
+            continue
+        body = urllib.parse.urlencode({"bld": "dbms/MDC/STAT/standard/MDCSTAT03501", "locale": "ko_KR",
+                                       "searchType": "1", "mktId": "ALL", "trdDd": d.strftime("%Y%m%d"),
+                                       "csvxls_isNo": "false"}).encode()
+        req = urllib.request.Request(url, data=body, headers={
+            "User-Agent": UA, "X-Requested-With": "XMLHttpRequest",
+            "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
+            "Referer": "http://data.krx.co.kr/contents/MDC/MDI/mdiLoader/index.cmd?menuId=MDC0201020502"})
+        try:
+            with urllib.request.urlopen(req, timeout=60) as r:
+                j = json.loads(r.read().decode("utf-8", errors="replace"))
+        except Exception as e:
+            log(f"  KRX 재무 {d}: {str(e)[:100]}")
+            return {}
+        rows = j.get("output") or j.get("OutBlock_1") or []
+        if len(rows) < 500:
+            continue
+        out = {}
+        for x in rows:
+            code = str(x.get("ISU_SRT_CD", "")).zfill(6)
+            eps, bps = _krx_num(x.get("EPS")), _krx_num(x.get("BPS"))
+            f = {"pe": _ok(_krx_num(x.get("PER")), 0, 3000), "pb": _ok(_krx_num(x.get("PBR")), 0, 500),
+                 "dy": _ok(_krx_num(x.get("DVD_YLD")), -0.001, 25), "eps": eps}
+            if eps is not None and bps and bps > 0:
+                f["roe"] = _ok(eps / bps * 100, -300, 300)
+            out[code] = dict(f, fs="K")
+        log(f"  KRX 재무 {d}: {len(out)}종목")
+        return out
+    log("  KRX 재무: 응답이 비었습니다(로그인 필요 등)")
+    return {}
+
+
+def fundamentals(rows: list[dict], today: dt.date, kr_asof: dt.date | None) -> tuple[dict[str, dict], dict]:
+    """출처를 겹쳐 쓴다. 한국은 거래소 값을 우선하고, 미국은 Yahoo(최근 4분기)가 되면 그것을,
+    안 되면 SEC(최근 회계연도)를 쓴다. 실적일·애널리스트 의견은 Yahoo 에서만 나온다."""
+    y = yahoo_fund(rows, today)
+    log(f"  Yahoo {len(y)}종목")
+    s = sec_fund(rows, today)
+    log(f"  SEC {len(s)}종목")
+    k = krx_fund(kr_asof)
+    out: dict[str, dict] = {}
+    for sid, f in s.items():
+        out[sid] = dict(f)
+    for sid, f in y.items():
+        cur = out.setdefault(sid, {})
+        if sid in k:  # 한국: 가격 지표는 거래소 값, Yahoo 는 실적일·의견만
+            cur.update({kk: f[kk] for kk in ("ern", "ar", "fpe") if f.get(kk) is not None})
+        else:
+            cur.update({kk: v for kk, v in f.items() if v is not None})
+    for sid, f in k.items():
+        out.setdefault(sid, {}).update({kk: v for kk, v in f.items() if v is not None})
+    counts = {"Y": len(y), "S": len(s), "K": len(k)}
+    return out, counts
 
 
 # --------------------------------------------------------------------------- 환율
@@ -500,7 +655,7 @@ COLS = ["id", "m", "n", "ko", "sec", "ind", "cty", "ipo", "p", "d1", "mc", "mcu"
         "r5", "r21", "r63", "r126", "r252", "ytd", "fh", "fl", "h52", "l52", "pm50", "pm200",
         "x", "up", "rsi", "vol", "mdd", "tv", "vs", "sm", "st", "ss", "sl",
         "sp", "spl", "sph", "nd", "asof", "warn", "prod",
-        "pe", "fpe", "pb", "dy", "eps", "roe", "ern", "ar"]
+        "pe", "fpe", "pb", "dy", "eps", "roe", "ern", "ar", "fs"]
 
 
 def rnd(v, k):
@@ -549,6 +704,7 @@ def to_row(r: dict) -> list:
     out["eps"] = rnd(r.get("eps"), 2 if g == "US" else 0)
     out["ern"] = r.get("ern") or ""
     out["ar"] = rnd(r.get("ar"), 1)
+    out["fs"] = r.get("fs") or ""
     return [out[c] for c in COLS]
 
 
@@ -647,8 +803,8 @@ def main():
     if not us_asof and prev_meta.get("usAsof"):
         us_asof = prev_meta["usAsof"]
 
-    fund = {} if a.no_fund else (log("재무 지표") or fundamentals(us + kr, today))
-    log(f"  재무 확보 {len(fund)}종목")
+    fund, fund_n = ({}, {}) if a.no_fund else (log("재무 지표") or fundamentals(us + kr, today, kr_asof))
+    log(f"  재무 확보 {len(fund)}종목 {fund_n}")
     for r in us + kr:
         f = fund.get(r["id"])
         if f is None:
@@ -680,7 +836,7 @@ def main():
         "krAsof": kr_asof.isoformat() if kr_asof else prev_meta.get("krAsof"),
         "fx": rnd(fx, 2) if fx else None, "fxSrc": fx_src, "fxAt": fx_at,
         "counts": {"US": len(us), "KR": len(kr)},
-        "fundN": len(fund) or prev_meta.get("fundN", 0),
+        "fundN": len(fund) or prev_meta.get("fundN", 0), "fundSrc": fund_n or prev_meta.get("fundSrc", {}),
         "fundAt": (dt.date.today().isoformat() if fund else prev_meta.get("fundAt")),
         "cols": COLS,
     }
