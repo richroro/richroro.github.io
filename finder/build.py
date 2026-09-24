@@ -519,7 +519,8 @@ def sec_fund(rows: list[dict], today: dt.date) -> dict[str, dict]:
     try:
         tick = sec_json("https://www.sec.gov/files/company_tickers.json")
     except Exception as e:
-        log(f"  SEC 티커 목록 실패: {str(e)[:100]} — 건너뜀")
+        body = re.sub(rb"<[^>]+>|\s+", b" ", getattr(e, "read", lambda: b"")()[:400])[:160]
+        log(f"  SEC 티커 목록 실패: {str(e)[:100]} {body!r} — 건너뜀")
         return {}
     cik_of = {v["ticker"].upper().replace("-", "."): int(v["cik_str"]) for v in tick.values()}
     Y = today.year
@@ -632,7 +633,8 @@ NAVER_KEYS = {"per": "pe", "pbr": "pb", "eps": "eps", "bps": "bps", "dividendyie
 def parse_naver(j: dict) -> dict:
     """{"totalInfos":[{"code":"per","key":"PER","value":"13.21배"}, ...]} → 재무 지표. 모르는 항목은 무시한다."""
     got = {}
-    for it in j.get("totalInfos") or []:
+    infos = j.get("totalInfos") or j.get("stockItemTotalInfos") or []
+    for it in infos:
         k = NAVER_KEYS.get(str(it.get("code", "")).lower()) or NAVER_KEYS.get(str(it.get("key", "")))
         if not k or k in got:
             continue
@@ -677,6 +679,59 @@ def naver_fund(rows: list[dict], workers: int = 6) -> dict[str, dict]:
     return out
 
 
+# 미국 종목도 네이버 증권(해외주식)에 요약이 있다. 심볼 형식(로이터 코드)과 주소를 몇 종목으로 먼저 확인한다.
+NAVER_US_URLS = ["https://api.stock.naver.com/stock/{sym}/integration", "https://api.stock.naver.com/stock/{sym}/basic",
+                 "https://m.stock.naver.com/api/stock/{sym}/integration"]
+NAVER_RIC = {"NASDAQ": [".O", ""], "NYSE": ["", ".N", ".K"], "AMEX": [".A", "", ".K"]}
+
+
+def _naver_get(url: str):
+    req = urllib.request.Request(url, headers={"User-Agent": UA, "Referer": "https://m.stock.naver.com/"})
+    with urllib.request.urlopen(req, timeout=20) as r:
+        return json.loads(r.read())
+
+
+def naver_us_fund(rows: list[dict], limit: int = 3000, workers: int = 6) -> dict[str, dict]:
+    from concurrent.futures import ThreadPoolExecutor
+    us = sorted([r for r in rows if r["g"] == "US" and r.get("mcu")], key=lambda r: -r["mcu"])[:limit]
+    # 형식 확인에는 점이 없는 티커를 쓴다(BRK.B 같은 건 따로 표기법이 있을 수 있다)
+    by_m = {m: next((r for r in us if r["m"] == m and "." not in r["id"]), None) for m in NAVER_RIC}
+    plan: dict[str, tuple[str, str]] = {}  # 거래소 → (주소 형식, 접미사)
+    for m, r in by_m.items():
+        if not r:
+            continue
+        for url in NAVER_US_URLS:
+            for suf in NAVER_RIC[m]:
+                try:
+                    f = parse_naver(_naver_get(url.format(sym=r["id"] + suf)))
+                except Exception:
+                    continue
+                if f.get("pe") is not None or f.get("pb") is not None:
+                    plan[m] = (url, suf); break
+            if m in plan:
+                break
+    log(f"  네이버(미국) 형식: {plan or '찾지 못함'}")
+    if not plan:
+        return {}
+
+    def one(r):
+        url, suf = plan.get(r["m"], (None, None))
+        if url is None:
+            return r["id"], None
+        try:
+            return r["id"], parse_naver(_naver_get(url.format(sym=r["id"] + suf)))
+        except Exception:
+            return r["id"], None
+
+    out = {}
+    with ThreadPoolExecutor(workers) as ex:
+        for sid, f in ex.map(one, us):
+            if f and any(v is not None for v in f.values()):
+                out[sid] = dict(f, fs="N")
+    log(f"  네이버(미국) 재무: {len(out)}/{len(us)}종목")
+    return out
+
+
 def fundamentals(rows: list[dict], today: dt.date, kr_asof: dt.date | None) -> tuple[dict[str, dict], dict]:
     """출처를 겹쳐 쓴다. 한국은 거래소 값을 우선하고, 미국은 Yahoo(최근 4분기)가 되면 그것을,
     안 되면 SEC(최근 회계연도)를 쓴다. 실적일·애널리스트 의견은 Yahoo 에서만 나온다."""
@@ -684,6 +739,9 @@ def fundamentals(rows: list[dict], today: dt.date, kr_asof: dt.date | None) -> t
     log(f"  Yahoo {len(y)}종목")
     s = sec_fund(rows, today)
     log(f"  SEC {len(s)}종목")
+    if not y and len(s) < 1000:  # 미국 쪽이 둘 다 막히면 네이버 해외주식으로 채운다
+        for sid, f in naver_us_fund(rows).items():
+            s.setdefault(sid, f)
     k = krx_fund(kr_asof) or naver_fund(rows)
     out: dict[str, dict] = {}
     for sid, f in s.items():
@@ -696,8 +754,9 @@ def fundamentals(rows: list[dict], today: dt.date, kr_asof: dt.date | None) -> t
             cur.update({kk: v for kk, v in f.items() if v is not None})
     for sid, f in k.items():
         out.setdefault(sid, {}).update({kk: v for kk, v in f.items() if v is not None})
-    counts = {"Y": len(y), "S": len(s), "K": sum(1 for f in k.values() if f.get("fs") == "K"),
-              "N": sum(1 for f in k.values() if f.get("fs") == "N")}
+    counts = {"Y": len(y), "S": sum(1 for f in s.values() if f.get("fs") == "S"),
+              "K": sum(1 for f in k.values() if f.get("fs") == "K"),
+              "N": sum(1 for f in list(k.values()) + list(s.values()) if f.get("fs") == "N")}
     return out, counts
 
 

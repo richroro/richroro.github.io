@@ -244,6 +244,27 @@ class Sources(unittest.TestCase):
         self.assertAlmostEqual(f["roe"], 4950 / 57951 * 100)
         self.assertIsNone(build.parse_naver({"totalInfos": [{"code": "per", "value": "N/A"}]})["pe"])
 
+    def test_naver_us_probe_and_fill(self):
+        calls = []
+
+        def fake(url):
+            calls.append(url)
+            if "/basic" in url and (url.split("/stock/")[1].split("/")[0] in ("AAA.O", "BBB")):
+                return {"stockItemTotalInfos": [{"code": "per", "key": "PER", "value": "20.5배"}]}
+            raise Exception("404")
+
+        orig = build._naver_get
+        build._naver_get = fake
+        try:
+            rows = [{"g": "US", "id": "AAA", "m": "NASDAQ", "mcu": 100}, {"g": "US", "id": "BBB", "m": "NYSE", "mcu": 90},
+                    {"g": "US", "id": "CCC", "m": "AMEX", "mcu": 1}]
+            out = build.naver_us_fund(rows, workers=1)
+        finally:
+            build._naver_get = orig
+        self.assertEqual(out["AAA"]["pe"], 20.5)
+        self.assertEqual(out["BBB"]["fs"], "N")
+        self.assertNotIn("CCC", out)  # 형식을 못 찾은 거래소는 건너뛴다
+
     def test_krx_parse(self):
         import io
         payload = {"output": [{"ISU_SRT_CD": "005930", "EPS": "6,564", "PER": "42.12", "BPS": "57,951", "PBR": "4.77",
