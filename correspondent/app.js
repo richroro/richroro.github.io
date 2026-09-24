@@ -159,7 +159,7 @@ function saneWatch(list){
 
 const board = (function load(){
   const raw = store.get(KEY, null);
-  const b = { reports: [], me: "", seeded: false, hood: "", pulledAt: 0, gone: [], watch: [] };
+  const b = { reports: [], me: "", seeded: false, hood: "", pulledAt: 0, gone: [], watch: [], push: null };
   if (raw && typeof raw === "object") {
     /* 내 저장소에서 읽는 것이므로 mine/up 을 살린다. 링크·서버에서 오는 것은 살리지 않는다. */
     if (Array.isArray(raw.reports)) b.reports = raw.reports.map((r) => sane(r, true)).filter(Boolean);
@@ -169,6 +169,9 @@ const board = (function load(){
     b.pulledAt = Number(raw.pulledAt) || 0;
     if (Array.isArray(raw.gone)) b.gone = raw.gone.filter((x) => typeof x === "string").slice(-500);
     b.watch = saneWatch(raw.watch);
+    /* 폰 알림을 켠 기기 — 서버에 걸어 둔 구독 주소. 끄거나 로그아웃하면 지운다. */
+    if (raw.push && typeof raw.push.endpoint === "string" && /^https:\/\//.test(raw.push.endpoint))
+      b.push = { endpoint: raw.push.endpoint.slice(0, 1000) };
   }
   b.reports.sort((a, c) => c.t - a.t);
   return b;
@@ -719,13 +722,15 @@ function toggleWatch(g){
   if (w) {
     board.watch = board.watch.filter((x) => x !== w);
     save();
+    pushSyncPlaces();
     toast("그만 지켜봅니다 — " + g.place);
     return;
   }
   if (board.watch.length >= WATCH_MAX) { toast("지켜보는 곳은 " + WATCH_MAX + "곳까지입니다."); return; }
   board.watch.push({ k: g.key, nm: g.place, ar: g.area, seen: g.last.t });
   save();
-  toast("지켜보는 곳에 넣었습니다 — 새 소식이 오면 속보 맨 위에 표시합니다.");
+  pushSyncPlaces();
+  toast("지켜보는 곳에 넣었습니다 — 새 소식이 오면 속보 맨 위에 표시합니다." + (board.push ? " 폰으로도 알립니다." : ""));
 }
 /** 새로 들어온 리포트 가운데 지켜보는 곳 것이 있으면 알릴 말. 내가 쓴 것은 빼고, 이미 본 것보다 옛것도 뺀다. */
 function watchNews(fresh){
@@ -762,7 +767,103 @@ function renderWatch(){
           (g.area ? '<span class="w-area">' + esc(g.area) + "</span>" : "") +
           (n ? '<span class="w-new">새 소식 ' + n + "</span>" : "") +
         "</span>" + body + "</button></li>";
-    }).join("") + "</ul></div>";
+    }).join("") + "</ul>" + pushRowHtml() + "</div>";
+}
+
+/* =========================================================================
+   폰 알림 — 지켜보는 곳에 남이 새 소식을 올리면 앱이 꺼져 있어도 알린다 (공용 보드 + 운영자가 켰을 때)
+   서버에는 이 기기의 알림 주소와 지켜보는 장소 이름만 간다(server/push.sql). 알림 내용은 암호화되어
+   푸시 서비스(구글·애플·모질라)도 못 읽는다. 끄거나 로그아웃하면 서버에서 지운다.
+   ========================================================================= */
+const CFG = window.TPW_CONFIG || {};
+const iosBrowser = () => /iPhone|iPad|iPod/.test(navigator.userAgent) && !navigator.standalone &&
+  !(window.matchMedia && matchMedia("(display-mode: standalone)").matches);
+function pushState(){
+  if (!SY.enabled || !CFG.vapidPublicKey || isSample()) return "off";          // 운영자가 알림을 안 붙였다
+  if (!("serviceWorker" in navigator) || !("PushManager" in window) || !("Notification" in window))
+    return iosBrowser() ? "ios" : "none";                                        // 아이폰은 홈 화면에 둬야 된다
+  if (!SY.hasSession()) return "login";
+  if (Notification.permission === "denied") return "denied";
+  return board.push ? "on" : "ready";
+}
+function pushRowHtml(){
+  const s = pushState();
+  const row = (inner) => '<div class="w-push">' + inner + "</div>";
+  if (s === "off" || s === "none") return "";
+  if (s === "ios") return row('<span class="w-push-note">폰 알림은 홈 화면에 추가한 뒤에 켤 수 있습니다 — 공유 → 홈 화면에 추가.</span>');
+  if (s === "login") return row('<span class="w-push-note">로그인하면 앱이 꺼져 있어도 폰으로 알려 드립니다.</span>' +
+    '<button class="link-btn" type="button" data-push="login">로그인</button>');
+  if (s === "denied") return row('<span class="w-push-note">이 브라우저에서 알림이 막혀 있습니다. 브라우저 설정에서 이 사이트의 알림을 허용하세요.</span>');
+  if (s === "on") return row('<span class="w-push-note">남이 새 소식을 올리면 폰으로 알립니다 (한 곳에 30분에 한 번).</span>' +
+    '<button class="link-btn" type="button" data-push="off" aria-pressed="true">폰 알림 켜짐</button>');
+  return row('<span class="w-push-note">앱이 꺼져 있어도 폰으로 알려 드릴까요?</span>' +
+    '<button class="btn sm" type="button" data-push="on" aria-pressed="false">폰 알림 켜기</button>');
+}
+const watchPlaceKeys = () => Array.from(new Set(board.watch.map((w) => w.k.slice(0, w.k.lastIndexOf("|")))));
+/* 서비스 워커가 없으면(보안 출처가 아니면) ready 는 영영 안 온다 — 기다리다 멈추지 않게 */
+const swReady = () => Promise.race([navigator.serviceWorker.ready,
+  new Promise((_, no) => setTimeout(() => no(new Error("서비스 워커가 없습니다")), 5000))]);
+async function pushSave(sub){
+  const j = sub.toJSON();
+  await SY.rpc("save_push", { p_endpoint: j.endpoint, p_p256dh: j.keys.p256dh, p_auth: j.keys.auth,
+                              p_hood: board.hood || null, p_places: watchPlaceKeys() });
+  board.push = { endpoint: j.endpoint };
+  save();
+}
+async function pushOn(){
+  let perm = Notification.permission;
+  if (perm === "default") perm = await Notification.requestPermission();
+  if (perm !== "granted") {
+    toast(perm === "denied" ? "알림이 막혀 있습니다. 브라우저 설정에서 허용해 주세요." : "알림을 켜지 않았습니다.");
+    renderWatch();
+    return;
+  }
+  try {
+    if (!board.hood) throw new Error("동네를 먼저 고르세요");
+    if (!(await ensureProfile())) throw new Error("특파원 등록을 하지 못했습니다");
+    const reg = await swReady();
+    const sub = (await reg.pushManager.getSubscription()) ||
+      await reg.pushManager.subscribe({ userVisibleOnly: true, applicationServerKey: b64d(CFG.vapidPublicKey) });
+    await pushSave(sub);
+    toast("폰 알림을 켰습니다 — 지켜보는 곳에 남이 새 소식을 올리면 알립니다.");
+  } catch (e) {
+    toast("폰 알림을 켜지 못했습니다: " + e.message);
+  }
+  renderWatch();
+}
+/** 끈다. server=false 면 서버는 건드리지 않는다(탈퇴로 이미 지워졌을 때). */
+async function pushOff(quiet, server){
+  const ep = board.push && board.push.endpoint;
+  board.push = null;
+  save();
+  if (ep && server !== false) { try { await SY.rpc("drop_push", { p_endpoint: ep }); } catch (e) {} }
+  try { const sub = await (await swReady()).pushManager.getSubscription(); if (sub) await sub.unsubscribe(); } catch (e) {}
+  if (!quiet) toast("폰 알림을 껐습니다.");
+  renderWatch();
+}
+/* 지켜보는 곳·동네가 바뀌면 서버의 목록도 바꾼다 — 잠깐 모았다가 한 번에 */
+let pushTimer = null;
+function pushSyncPlaces(){
+  if (!board.push || !SY.hasSession()) return;
+  clearTimeout(pushTimer);
+  pushTimer = setTimeout(async () => {
+    try {
+      const sub = await (await swReady()).pushManager.getSubscription();
+      if (!sub) { board.push = null; save(); renderWatch(); return; }   // 브라우저가 구독을 버렸다
+      await pushSave(sub);
+    } catch (e) {}
+  }, 800);
+}
+/* 알림을 눌러 들어오면 그 장소 창을 연다. 아직 이 기기에 없는 글이면 받아온 뒤에 다시 본다. */
+let pendingPlace = "";
+function openPlaceByKey(key){
+  if (!key) return false;
+  const g = groups().find((x) => norm(x.place) === key);
+  if (!g) { pendingPlace = key; return false; }
+  pendingPlace = "";
+  closeSheets(true);
+  openPlaceSheet(g);
+  return true;
 }
 
 function renderPlaces(){
@@ -1005,6 +1106,7 @@ async function syncPull(quiet, full){
     rows.forEach((row) => { const c = Date.parse(row.created_at); if (c > cursorMs) cursorMs = c; });
     res.pruned = prune();
     board.pulledAt = Date.now();
+    if (pendingPlace) setTimeout(() => openPlaceByKey(pendingPlace), 0);
     const wn = watchNews(res.fresh);   // 조용히 받아올 때도 지켜보는 곳 소식은 알린다
     save();
     renderAll();
@@ -1075,7 +1177,9 @@ function paintAuthBox(){
     box.innerHTML = '<div class="row" style="margin-top:0"><span class="note">로그인되어 있습니다.</span>' +
       '<button class="btn sm ghost" id="signOut" type="button">로그아웃</button>' +
       '<button class="btn sm ghost danger-text" id="delOpen" type="button">계정 삭제</button></div>';
-    $("#signOut").addEventListener("click", () => {
+    $("#signOut").addEventListener("click", async () => {
+      /* 알림은 이 계정으로 걸어 둔 것이다 — 로그아웃하면 끈다(서버에서 지우려면 아직 로그인해 있어야 한다) */
+      if (board.push) await pushOff(true);
       SY.signOut();
       profileOk = false;
       paintAuthBox(); paintBoardBtn(); renderAll();
@@ -1139,6 +1243,7 @@ async function doDeleteAccount(){
   board.me = "";
   profileOk = false;
   meEditing = false;
+  if (board.push) pushOff(true, false);   // 서버의 구독은 탈퇴로 이미 지워졌다
   save();
   closeSheets();
   paintBoardBtn(); renderAll();
@@ -1640,8 +1745,17 @@ function bind(){
     if (uw) {
       board.watch = board.watch.filter((w) => w.k !== uw.dataset.unwatch);
       save();
+      pushSyncPlaces();
       renderAll();
       toast("그만 지켜봅니다.");
+      return;
+    }
+    const pb = e.target.closest("[data-push]");
+    if (pb) {
+      const a = pb.dataset.push;
+      if (a === "login") openBoardSheet();
+      else if (a === "on") pushOn();
+      else pushOff();
       return;
     }
     const open = e.target.closest("[data-open]");
@@ -1927,6 +2041,7 @@ function bind(){
     board.hood = clip(e.target.value, 12);
     cursorMs = 0;                                    // 다른 동네 — 처음부터 전체로
     save();
+    pushSyncPlaces();
     paintBoardBtn(); paintBoardKv();
     if (board.hood) { await boardRefresh(false); paintBoardKv(); }
   });
@@ -1984,6 +2099,20 @@ if (SY.enabled) {
 paintBoardBtn();
 renderAll();
 checkHash();
+
+/* 폰 알림을 누르고 들어오면(?place=장소열쇠) 그 장소 창을 연다. 앱이 이미 열려 있으면 서비스 워커가 알려 준다. */
+{
+  const pk = new URLSearchParams(location.search).get("place");
+  if (pk) {
+    history.replaceState(null, "", location.pathname + location.hash);
+    setTimeout(() => openPlaceByKey(norm(pk).slice(0, 40)), 60);
+  }
+  if ("serviceWorker" in navigator) navigator.serviceWorker.addEventListener("message", (e) => {
+    if (!e.data || e.data.type !== "open-place") return;
+    const key = norm(e.data.key).slice(0, 40);
+    if (!openPlaceByKey(key) && SY.enabled) boardRefresh(true).then(() => openPlaceByKey(key));
+  });
+}
 
 /* 홈 화면 아이콘을 길게 눌러 "리포트 보내기"로 들어오면 바로 쓰기 창을 연다 (manifest 의 shortcuts). */
 if (new URLSearchParams(location.search).get("write") === "1") {

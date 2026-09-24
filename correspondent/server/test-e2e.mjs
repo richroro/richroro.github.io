@@ -48,15 +48,18 @@ process.on('SIGINT', () => process.exit(130));
 
 execFileSync('createdb', [DB]);
 const base = ['-X', '-q', '-v', 'ON_ERROR_STOP=1', '-d', DB];
-for (const f of ['test-auth-stub.sql', 'schema.sql', 'policies.sql', 'admin.sql', 'seed-hoods.sql'])
+for (const f of ['test-auth-stub.sql', 'schema.sql', 'policies.sql', 'admin.sql', 'push.sql', 'seed-hoods.sql'])
   execFileSync('psql', [...base, '-f', resolve(HERE, f)], { stdio: ['ignore', 'ignore', 'pipe'] });
 const ret = readFileSync(resolve(HERE, 'retention.sql'), 'utf8').split('여기부터는 Supabase 에서만')[0];
 execFileSync('psql', base, { input: ret.slice(0, ret.lastIndexOf('\n')) });
 
 cpSync(APP_DIR, join(web, 'correspondent'), { recursive: true,
   filter: (src) => !/node_modules|[\\/]server[\\/]|[\\/]test[\\/]|[\\/]tools[\\/]/.test(src) });
+/* 폰 알림도 켠 설정 — 공개 키는 진짜 P-256 키(모양만 맞으면 된다. 구독은 아래에서 흉내 낸다) */
+const vk = await globalThis.crypto.subtle.generateKey({ name: 'ECDSA', namedCurve: 'P-256' }, true, ['sign']);
+const VAPID_PUB = Buffer.from(await globalThis.crypto.subtle.exportKey('raw', vk.publicKey)).toString('base64url');
 writeFileSync(join(web, 'correspondent', 'config.js'),
-  `window.TPW_CONFIG = { url: "${API}", anonKey: "test-anon-key", hood: "" };\n`);
+  `window.TPW_CONFIG = { url: "${API}", anonKey: "test-anon-key", hood: "", vapidPublicKey: "${VAPID_PUB}" };\n`);
 /* 앱의 CSP 는 Supabase(https://*.supabase.co)에만 연결을 허락한다. 사본에만 모의 서버 주소를 더한다 —
    운영에서 다른 주소(자체 도메인)를 쓰면 똑같이 connect-src 에 더해야 한다(SETUP.md). */
 for (const f of ['index.html', 'admin.html']) {
@@ -89,8 +92,24 @@ const rejected = [];
 
 const b = await chromium.launch();
 
+/* 헤드리스 크로미엄은 진짜 푸시 서비스(FCM)에 구독할 수 없고 알림 권한도 늘 거부한다. 브라우저 경계만 흉내 내고
+   그 안쪽(앱 → 모의 PostgREST → 진짜 push.sql)은 그대로 돈다. 알림을 띄우는 쪽은 test/pwa, 암호화는 server/test-push. */
+const PUSH_STUB = () => {
+  let perm = 'default', sub = null;
+  Object.defineProperty(Notification, 'permission', { get: () => perm, configurable: true });
+  Notification.requestPermission = async () => (perm = 'granted');
+  const keys = { p256dh: 'B' + 'A'.repeat(86), auth: 'A'.repeat(22) };
+  PushManager.prototype.getSubscription = async function () { return sub; };
+  PushManager.prototype.subscribe = async function (o) {
+    window.__subscribeKey = o && o.applicationServerKey && o.applicationServerKey.length;
+    sub = { endpoint: 'https://push.test/' + Math.random().toString(36).slice(2), toJSON() { return { endpoint: this.endpoint, keys }; },
+            unsubscribe: async () => { sub = null; window.__unsubscribed = true; return true; } };
+    return sub;
+  };
+};
 async function phone(name, opts = {}) {
   const c = await b.newContext({ locale: 'ko-KR', timezoneId: 'Asia/Seoul', viewport: { width: 390, height: 844 } });
+  if (opts.push) await c.addInitScript(PUSH_STUB);
   const p = await c.newPage();
   p.on('dialog', (d) => d.accept());          // 지우기 확인창은 "예"
   p.on('pageerror', (e) => errs.push(name + ': ' + e.message));
@@ -462,7 +481,54 @@ ok(!has('oldsv001') && has('oldmine1') && has('oldlink1'), '60일 넘은 남의 
 ok(kept.length === 3000 && has('many0') && !has('many3099'), '3000건이 넘으면 오래된 남의 글부터 덜어 3000건에 맞춘다 (' + kept.length + '건)');
 await refresh(A.p, 'full');
 
-console.log('\n== 12. 오류 ==');
+console.log('\n== 12. 폰 알림 — 켜고, 지켜보는 곳을 바꾸고, 끄기 ==');
+{
+  const P = await phone('태오', { push: true });
+  const openAndWatch = async (X, place) => {
+    await X.p.locator('.tab[data-view="places"]').click();
+    await X.p.locator('#places .pl', { hasText: place }).first().click();
+    await X.p.waitForSelector('#placeBack.open');
+    await X.p.locator('#placeBody [data-watch]').click();
+    await X.p.keyboard.press('Escape');
+    await X.p.locator('.tab[data-view="feed"]').click();
+  };
+  const subs = () => sql(`select coalesce(string_agg(array_to_string(places, '+'), ' / '), '') from push_subs where owner='${U.태오}'`);
+  await openAndWatch(P, '중앙공원 놀이터');
+  ok((await P.p.locator('#watchBox .w-push').innerText()).includes('폰으로 알려 드릴까요') && await P.p.locator('[data-push="on"]').count() === 1,
+     '지켜보는 곳에 "폰 알림 켜기"');
+  await axe(P.p, '지켜보는 곳 + 폰 알림 줄');
+  await P.p.locator('[data-push="on"]').click();
+  await P.p.waitForSelector('[data-push="off"]');
+  ok(subs() === '중앙공원놀이터', '켜면 서버에 이 기기 구독과 지켜보는 장소 (' + subs() + ')');
+  ok(await P.p.evaluate(() => window.__subscribeKey) === 65 && await P.p.getAttribute('[data-push="off"]', 'aria-pressed') === 'true',
+     '  └ config.js 의 VAPID 공개 키(65바이트)로 구독, 단추는 눌린 상태');
+  await openAndWatch(P, '깔아 둔 가게 150');
+  await P.p.waitForTimeout(1200);
+  ok(subs() === '깔아둔가게150+중앙공원놀이터', '지켜보는 곳을 더하면 서버 목록도 (' + subs() + ')');
+  await P.p.locator('#watchBox [data-openkey]').first().click();
+  await P.p.waitForSelector('#placeBack.open');
+  await P.p.locator('#placeBody [data-watch]').click();
+  await P.p.keyboard.press('Escape');
+  await P.p.waitForTimeout(1200);
+  ok(subs().split('+').length === 1, '빼면 서버 목록에서도 빠진다 (' + subs() + ')');
+  await P.p.locator('[data-push="off"]').click();
+  await P.p.waitForSelector('[data-push="on"]');
+  ok(subs() === '' && await P.p.evaluate(() => window.__unsubscribed === true), '끄면 서버에서 지우고 브라우저 구독도 푼다');
+  await P.p.locator('[data-push="on"]').click();
+  await P.p.waitForSelector('[data-push="off"]');
+  await P.p.locator('#boardBtn').click(); await P.p.waitForSelector('#boardBack.open');
+  await P.p.locator('#signOut').click();
+  await P.p.waitForTimeout(600);
+  ok(subs() === '', '로그아웃하면 알림도 꺼진다 — 이 계정으로 걸어 둔 것이라');
+  await P.p.keyboard.press('Escape');
+  ok((await P.p.locator('#watchBox .w-push').innerText()).includes('로그인하면'), '  └ 로그아웃 상태에선 "로그인하면 폰으로 알려 드립니다"');
+  await P.c.close();
+
+  await openAndWatch(A, '중앙공원 놀이터');
+  ok((await A.p.locator('#watchBox .w-push').innerText()).includes('알림이 막혀 있습니다'), '브라우저가 알림을 막았으면 그렇게 말한다 (헤드리스는 늘 막힘)');
+}
+
+console.log('\n== 13. 오류 ==');
 ok(errs.length === 0, '콘솔 오류 없음' + (errs.length ? ': ' + errs.slice(0, 3).join(' | ') : ''));
 ok(rejected.length >= 3 && rejected.every((x) => /^(태오 \/rest\/v1\/flags|준호 \/rest\/v1\/(flags|reports))$/.test(x)),
    '서버가 거부한 요청은 예상한 것뿐 — 재신고·정지 중 쓰기·정지 중 신고 (' + rejected.length + '건: ' + [...new Set(rejected)].join(', ') + ')');

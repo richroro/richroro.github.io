@@ -8,5 +8,8 @@
 window.TPW_CONFIG = {
   url: "",        // 예: https://abcdefgh.supabase.co
   anonKey: "",    // 예: eyJhbGciOi...
-  hood: ""        // 기본 동네 법정동코드. 비우면 처음 열 때 고르게 한다
+  hood: "",       // 기본 동네 법정동코드. 비우면 처음 열 때 고르게 한다
+  /* 폰 알림(선택). VAPID 공개 키 — 공개해도 되는 값이다. 비워 두면 알림 단추가 안 나온다.
+     키는 node correspondent/tools/vapid-keys.mjs 로 만들고, 짝이 되는 비공개 키는 Edge Function 비밀에만 둔다(SETUP.md 6단계). */
+  vapidPublicKey: ""
 };

@@ -3,7 +3,7 @@
 
    준비물: 저장소 뿌리에서  npm install --no-save playwright axe-core  와
            npx playwright install chromium.
-   Postgres(psql·createdb)가 있으면 서버 쪽 두 묶음도 돈다. 없으면 건너뛰고 그렇다고 적는다 —
+   Postgres(psql·createdb)가 있으면 서버 쪽 세 묶음도 돈다. 없으면 건너뛰고 그렇다고 적는다 —
    조용히 통과한 척하지 않는다. CI 에서는 TPW_REQUIRE_DB=1 로 건너뛰기를 실패로 친다.
    ========================================================================== */
 import { spawn, spawnSync } from 'node:child_process';
@@ -16,7 +16,7 @@ const PORT = Number(process.env.PORT || 8199);
 const APP_URL = `http://127.0.0.1:${PORT}/correspondent/`;
 
 const BROWSER = ['feed', 'edge', 'rereport', 'insight', 'pwa', 'privacy', 'terms', 'a11y'];
-const SERVER = ['test-sql', 'test-e2e'];
+const SERVER = ['test-sql', 'test-push', 'test-e2e'];
 
 function run(file, env) {
   return new Promise((done) => {

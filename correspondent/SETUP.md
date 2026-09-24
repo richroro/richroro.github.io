@@ -104,6 +104,40 @@ insert into admins (id, note) values ('<계정 번호>', '운영자 이름');
 
 ---
 
+## 6. 폰 알림 (선택, 20분)
+
+**지켜보는 곳**에 남이 새 소식을 올리면 앱이 꺼져 있어도 폰으로 알린다. 안 켜면 지금처럼 앱이 열려 있는 동안만
+화면 안에서 알린다. 켜려면 알림을 보내는 쪽(Edge Function)을 하나 올린다.
+
+1. **SQL** — SQL Editor 에서 `server/push.sql` 을 실행한다(구독 표와 받을 기기를 고르는 함수).
+2. **열쇠** — `node correspondent/tools/vapid-keys.mjs` 를 돌린다. 공개 키를 `config.js` 의 `vapidPublicKey` 에 넣는다.
+   출력의 `supabase secrets set …` 줄은 다음 단계에 쓴다. **비공개 키는 저장소에 올리지 않는다** — 새면 누구든
+   이 앱 이름으로 알림을 보낼 수 있다.
+3. **함수 올리기** — [Supabase CLI](https://supabase.com/docs/guides/cli) 로:
+   ```bash
+   mkdir -p supabase/functions && cp -r correspondent/server/functions/notify supabase/functions/
+   supabase login && supabase link --project-ref <프로젝트 ref>
+   supabase functions deploy notify --no-verify-jwt
+   supabase secrets set VAPID_PUBLIC_KEY=… VAPID_PRIVATE_KEY=… VAPID_SUBJECT=mailto:<운영자 메일> PUSH_WEBHOOK_SECRET=…
+   ```
+   `--no-verify-jwt` 인 대신 함수가 `x-tpw-secret` 머리를 맞춰 본다. 틀리면 아무것도 안 한다.
+4. **웹훅** — Database → Webhooks → Create: 표 `reports`, 이벤트 **Insert**, 종류 **Supabase Edge Functions** → `notify`,
+   HTTP Headers 에 `x-tpw-secret: <PUSH_WEBHOOK_SECRET 과 같은 값>`.
+5. **확인** — 폰 두 대로 로그인한다. 한 대에서 장소를 지켜보고 **폰 알림 켜기**, 앱을 닫는다. 다른 한 대에서 그 장소에
+   리포트를 쓴다. Edge Functions → notify → Logs 에 `{"sent":1,…}` 이 찍히고 첫 폰이 울린다.
+
+어떻게 보내는지:
+
+| | |
+| --- | --- |
+| 누구에게 | 같은 동네에서 그 장소를 지켜보는 기기. **쓴 사람 자신은 뺀다** |
+| 얼마나 자주 | 같은 기기·같은 장소로 **30분에 한 번** — 한 가게에 리포트가 몰려도 폰이 울려 대지 않게 |
+| 안 보내는 것 | 가려진 글, 쓴 지 **세 시간** 넘은 글(오프라인에서 쓰고 늦게 올린 것) — 상한 소식이다 |
+| 내용 | 장소 이름, 현장 정보 한 줄, 누가. 받는 기기만 풀 수 있게 **암호화**(RFC 8291) — 푸시 서비스도 못 읽는다 |
+| 늦으면 | 3시간 안에 못 닿은 알림은 버리라고 푸시 서비스에 요청한다(TTL) |
+| 끝난 구독 | 푸시 서비스가 410 이면 바로, 다섯 번 연달아 실패하면 지운다. 알림을 끄거나 로그아웃·탈퇴해도 지운다 |
+| 아이폰 | 사파리는 **홈 화면에 추가한 뒤에만** 웹 푸시를 받는다. 앱이 그렇게 안내한다 |
+
 ## 서버가 막는 것 (실제로 돌려서 확인한 것들)
 
 `policies.sql` 은 클라이언트를 믿지 않는다. 아래는 전부 로컬 Postgres 16 에서 공격해 보고 확인했다.
@@ -198,9 +232,8 @@ insert into admins (id, note) values ('<계정 번호>', '운영자 이름');
 
 ## 남아 있는 것
 
-- **알림** — "우리 동네에 속보" 웹 푸시. 지금은 앱이 열려 있는 동안 3분마다 조용히 받아오고,
-  **지켜보는 곳**에 새 소식이 오면 화면 안에서 알린다. 앱이 꺼져 있을 때 폰으로 알리려면 보내는 쪽
-  (구독을 모아 두는 표 + VAPID 키로 보내는 Edge Function)을 따로 두어야 한다
+- **동네 전체 알림** — 폰 알림은 지켜보는 곳에만 온다. "우리 동네에 새 속보" 처럼 넓게 알리면 금방 끄게 된다 —
+  필요해지면 동네별 하루 요약 정도가 맞다
 - **동네 인증** — 지금은 고르면 그만이라 아무 동네나 고를 수 있다.
   당근마켓식 인증은 위치를 받아야 해서 위 규제 줄을 넘는다
 - **탈퇴 후 재가입으로 정지 피하기** — 탈퇴하면 정지 기록도 함께 지워진다. 막으려면

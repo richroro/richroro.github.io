@@ -52,6 +52,7 @@ createServer(async (req, res) => {
       deleted.clear();
       return send(res, 204);
     }
+    if (u.pathname === '/auth/v1/logout') return send(res, 204);   // 진짜 GoTrue 처럼 — 토큰을 버린다는 뜻만
     if (u.pathname === '/auth/v1/user') {
       if (!uid) return send(res, 401, { message: 'no session' });
       return send(res, 200, { id: uid });
@@ -104,8 +105,9 @@ createServer(async (req, res) => {
     const fn = u.pathname.match(/^\/rest\/v1\/rpc\/([a-z_]+)$/);
     if (fn && req.method === 'POST') {
       const args = Object.entries(json || {}).map(([k, v]) => {
-        if (!/^p_[a-z_]+$/.test(k)) throw new Error('bad arg ' + k);
-        const val = v === null ? 'null' : typeof v === 'number' ? String(Number(v)) : typeof v === 'boolean' ? String(v) : lit(v);
+        if (!/^p_[a-z0-9_]+$/.test(k)) throw new Error('bad arg ' + k);
+        const val = v === null ? 'null' : typeof v === 'number' ? String(Number(v)) : typeof v === 'boolean' ? String(v)
+          : Array.isArray(v) ? (v.length ? 'array[' + v.map(lit).join(',') + ']::text[]' : "'{}'::text[]") : lit(v);
         return k + ' => ' + val;
       }).join(', ');
       const out = exec(`select coalesce(to_jsonb(public.${fn[1]}(${args}))::text, 'null');`, uid);

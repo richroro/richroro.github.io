@@ -29,7 +29,7 @@ export function watch(page, name = '') {
   return page;
 }
 
-export async function launch() { return chromium.launch(); }
+export async function launch(opts) { return chromium.launch(opts); }
 
 /* 공유 창의 글은 압축(pack)이 끝나야 채워진다. 창이 열린 것만 보고 읽으면 "만드는 중…"을 읽는다 —
    글꼴을 받아 오느라 바쁜 CI 러너에서 실제로 그렇게 떨어졌다. 끝날 때까지 기다렸다가 읽는다. */

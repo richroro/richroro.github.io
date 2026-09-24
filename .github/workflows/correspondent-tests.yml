@@ -1,7 +1,7 @@
 name: 동네 특파원 검사
 
 # correspondent/ 가 바뀔 때만 돈다(실거래가 자동 수집 커밋에는 안 돈다).
-# 브라우저 여덟 묶음(Chromium)과 서버 두 묶음(Postgres 16)을 한 번에 돌린다.
+# 브라우저 여덟 묶음(Chromium)과 서버 세 묶음(Postgres 16)을 한 번에 돌린다.
 # 로컬에서도 같은 명령이다:  node correspondent/test/run-all.mjs
 #
 # 서버 묶음은 스스로 임시 DB 를 만들고 끝나면 지운다. 여기서는 빈 Postgres 컨테이너를 쓴다.

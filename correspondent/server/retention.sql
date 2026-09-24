@@ -19,6 +19,10 @@ begin
   if to_regclass('public.mod_log') is not null then
     execute 'delete from mod_log where at < now() - interval ''1 year''';
   end if;
+  -- 폰 알림을 30분에 한 번으로 묶는 기록은 하루면 쓸모가 없다 (push.sql 을 설치했을 때만)
+  if to_regclass('public.push_sent') is not null then
+    execute 'delete from push_sent where at < now() - interval ''1 day''';
+  end if;
   return n;
 end $$;
 
