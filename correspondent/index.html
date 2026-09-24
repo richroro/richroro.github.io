@@ -2107,8 +2107,12 @@ function syncSame(){
   $("#fRefSame").textContent = same ? "✓ 그대로" : "그대로예요";
 }
 
-let shareCache = "";
+let shareCache = "", shareSeq = 0;
 async function openShare(list){
+  /* 글은 압축이 끝나야 생긴다. 그 전에 누른 "복사"가 앞서 만든 남의 글을 복사하지 않게 비워 두고,
+     그사이 다른 공유 창이 열렸으면 늦게 끝난 이 글로 그 창을 덮지 않는다. */
+  const seq = ++shareSeq;
+  shareCache = "";
   $("#shareBox").value = "만드는 중…";
   const st = $("#shareStatus");
   st.textContent = ""; st.className = "status";
@@ -2116,13 +2120,14 @@ async function openShare(list){
   openSheet("#shareBack");
   try {
     const code = await pack(list);
+    if (seq !== shareSeq) return;
     shareCache = shareText(list, code);
     const box = $("#shareBox");
     box.value = shareCache;
     box.scrollTop = 0;
     try { box.setSelectionRange(0, 0); } catch(e){}
   } catch(e) {
-    shareCache = "";
+    if (seq !== shareSeq) return;
     $("#shareBox").value = "";
     st.textContent = "공유글을 만들지 못했습니다: " + e.message;
     st.className = "status err";

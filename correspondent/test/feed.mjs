@@ -1,5 +1,5 @@
 /* 기본 흐름 — 예시 보드, 신선도, 거르개, 장소, 쓰기, 링크로 받기·중복·깨진 링크, 묶음, hidden */
-import { BASE, ok, launch, context, watch, finish } from './lib.mjs';
+import { BASE, ok, launch, context, watch, finish, shareReady, bundleReady } from './lib.mjs';
 
 const URL = BASE;
 const browser = await launch();
@@ -83,8 +83,7 @@ await page.locator('#fTags [data-tag="그늘"]').click();
 await page.fill('#fNote', '<script>alert(1)<\/script> 지금 텅 비었어요');
 await page.fill('#fBy', '리처드');
 await page.locator('#composeGo').click();
-await page.waitForSelector('#shareBack.open');
-const shareText = await page.inputValue('#shareBox');
+const shareText = await shareReady(page);
 ok(shareText.includes('테스트 놀이터'), '공유글에 장소');
 ok(/받기 → http.*#r=/.test(shareText), '공유글에 링크');
 ok(shareText.includes('대기 없음 · 한산 · 주차 만석'), '공유글에 현장 정보');
@@ -138,8 +137,7 @@ ok((await page2.locator('#recvStatus').textContent()).includes('찾지 못했습
 console.log('\n== 12. 묶음 ==');
 await page.locator('.tab[data-view="sync"]').click();
 await page.locator('#bundleBtn').click();
-await page.waitForTimeout(300);
-const bst = await page.locator('#bundleStatus').textContent();
+const bst = await bundleReady(page);
 ok(bst.includes('최근 1건'), '묶음 생성: ' + bst);
 ok((await page.inputValue('#bundleBox')).includes('#r='), '묶음 링크');
 

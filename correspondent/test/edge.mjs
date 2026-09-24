@@ -1,5 +1,5 @@
-/* 가장자리 — 엇갈림, 동네 표기, 지금 갈 만한 곳, 묶음 길이 제한, 정리, 375px, 어두운 테마, 이상한 값 */
-import { BASE, ok, launch, watch, finish } from './lib.mjs';
+/* 가장자리 — 엇갈림, 동네 표기, 지금 갈 만한 곳, 묶음 길이 제한, 정리, 375px, 어두운 테마, 이상한 값, 늦게 만들어지는 공유 글 */
+import { BASE, ok, launch, watch, finish, shareReady, bundleReady } from './lib.mjs';
 
 const URL = BASE;
 const browser = await launch();
@@ -96,8 +96,7 @@ console.log('\n== D. 묶음 길이 제한 ==');
   const p = await boardPage(many);
   await p.locator('.tab[data-view="sync"]').click();
   await p.locator('#bundleBtn').click();
-  await p.waitForTimeout(600);
-  const st = await p.locator('#bundleStatus').innerText();
+  const st = await bundleReady(p);
   const len = Number(st.match(/링크 길이 (\d+)자/)[1]);
   const used = Number(st.match(/최근 (\d+)건/)[1]);
   ok(len <= 1600, '링크 길이 ' + len + '자 ≤ 1600');
@@ -192,6 +191,60 @@ console.log('\n== H. 이상한 값 막기 ==');
   ok(c.stats === 0, '범위 밖 값은 모름 처리');
   ok(c.stars === '★★★★★', '별점 5개로 깎임');
   ok(c.tags.split('#').length - 1 === 6, '태그 6개로 깎임');
+  await p.context().close();
+}
+
+console.log('\n== I. 공유 창 — 압축이 늦게 끝날 때 ==');
+{
+  const p = await boardPage([
+    r({ place: '앞 장소', by: '민지', crowd: 0, t: N - 5 * 60e3 }),
+    r({ place: '뒤 장소', by: '준호', crowd: 2, t: N - 10 * 60e3 })
+  ]);
+  /* 복사한 글을 모으고, 압축을 붙잡아 둘 수 있게 한다 — 느린 폰에서 벌어지는 일을 시간에 기대지 않고 만든다. */
+  await p.evaluate(() => {
+    window.__copied = [];
+    window.copyText = async (t) => { window.__copied.push(t); return true; };
+    window.__hold = 0; window.__held = []; window.__done = 0;
+    const orig = window.pack;
+    window.pack = async (l) => {
+      if (window.__hold > 0) { window.__hold--; await new Promise((go) => window.__held.push(go)); }
+      const out = await orig(l);
+      window.__done++;
+      return out;
+    };
+  });
+  const share = (place) => p.locator('#feed .card', { hasText: place }).locator('[data-share]').click();
+  const lastCopy = async () => (await p.evaluate(() => window.__copied.slice())).pop() || '';
+
+  await share('앞 장소');
+  ok((await shareReady(p)).includes('앞 장소'), '앞 장소 공유글');
+  await p.keyboard.press('Escape');
+
+  await p.evaluate(() => { window.__hold = 1; });
+  await share('뒤 장소');
+  ok(await p.inputValue('#shareBox') === '만드는 중…', '뒤 장소 공유글은 아직 만드는 중');
+  await p.locator('#shareCopy').click();
+  ok(!(await p.evaluate(() => window.__copied.some((t) => t.includes('앞 장소')))),
+    '  └ 그때 누른 복사가 앞서 만든 앞 장소 글을 복사하지 않는다');
+  await p.evaluate(() => window.__held.shift()());
+  ok((await shareReady(p)).includes('뒤 장소'), '  └ 다 되면 뒤 장소 글');
+  await p.locator('#shareCopy').click();
+  ok((await lastCopy()).includes('뒤 장소'), '  └ 그때 누르면 뒤 장소 글이 복사된다');
+  await p.keyboard.press('Escape');
+
+  /* 먼저 연 창의 압축이 나중에 끝나는 경우 */
+  await p.evaluate(() => { window.__hold = 1; });
+  await share('앞 장소');
+  await p.keyboard.press('Escape');
+  await share('뒤 장소');
+  ok((await shareReady(p)).includes('뒤 장소'), '앞 장소를 열었다 닫고 뒤 장소를 열면 뒤 장소 글');
+  const done = await p.evaluate(() => window.__done);
+  await p.evaluate(() => window.__held.shift()());
+  await p.waitForFunction((d) => window.__done > d, done);
+  const box = await p.inputValue('#shareBox');
+  ok(box.includes('뒤 장소') && !box.includes('앞 장소'), '늦게 끝난 앞 장소 글이 지금 열린 창을 덮지 않는다');
+  await p.locator('#shareCopy').click();
+  ok((await lastCopy()).includes('뒤 장소'), '  └ 복사도 지금 열린 창의 글');
   await p.context().close();
 }
 

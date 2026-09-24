@@ -31,6 +31,19 @@ export function watch(page, name = '') {
 
 export async function launch() { return chromium.launch(); }
 
+/* 공유 창의 글은 압축(pack)이 끝나야 채워진다. 창이 열린 것만 보고 읽으면 "만드는 중…"을 읽는다 —
+   글꼴을 받아 오느라 바쁜 CI 러너에서 실제로 그렇게 떨어졌다. 끝날 때까지 기다렸다가 읽는다. */
+export async function shareReady(p) {
+  await p.waitForSelector('#shareBack.open');
+  await p.waitForFunction(() => !document.querySelector('#shareBox').value.includes('만드는 중'));
+  return p.inputValue('#shareBox');
+}
+/* 묶음도 같다. 정해 둔 시간만큼 자지 않고, 상태 줄이 됐다(ok)거나 안 됐다(err)고 할 때까지 기다린다. */
+export async function bundleReady(p) {
+  await p.waitForSelector('#bundleStatus.ok, #bundleStatus.err');
+  return p.locator('#bundleStatus').innerText();
+}
+
 export async function context(browser, opts = {}) {
   return browser.newContext(Object.assign({ locale: 'ko-KR', timezoneId: 'Asia/Seoul', viewport: { width: 1000, height: 900 } }, opts));
 }

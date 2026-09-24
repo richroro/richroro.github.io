@@ -1,7 +1,7 @@
 /* 접근성 — axe-core 로 재고, 키보드로 직접 눌러 본다. (지켜보는 곳·같게 봤다·보통은 표 포함) */
 import { createRequire } from 'node:module';
 import { readFileSync } from 'node:fs';
-import { BASE, ok, section, launch, context, watch, openWith, report, finish, MIN } from './lib.mjs';
+import { BASE, ok, section, launch, context, watch, openWith, report, finish, MIN, shareReady } from './lib.mjs';
 
 const require = createRequire(import.meta.url);
 const AXE = readFileSync(require.resolve('axe-core/axe.min.js'), 'utf8');
@@ -42,8 +42,7 @@ for (const scheme of ['light', 'dark']) {
   const c2 = await context(b, { colorScheme: scheme, viewport: { width: 390, height: 844 } });
   const p2 = await openWith(c2, [report({ id: 'a11y0001', t: Date.now() - 20 * MIN, by: '민지', cat: 'play',
     place: '별빛 키즈카페', wait: 0, crowd: 2, park: 3, rate: 4, tags: ['실내'], note: '붐벼요' })]);
-  await p2.locator('#feed [data-share]').first().click(); await p2.waitForSelector('#shareBack.open');
-  await p2.waitForFunction(() => !document.querySelector('#shareBox').value.includes('만드는 중'));
+  await p2.locator('#feed [data-share]').first().click(); await shareReady(p2);
   await axe(p2, '공유 창');
   await p2.keyboard.press('Escape');
   await p2.locator('#feed [data-again]').first().click(); await p2.waitForSelector('#composeBack.open');
