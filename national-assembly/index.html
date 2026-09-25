@@ -1,0 +1,1306 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>국회의사당 3D 모델 · 코드로 지은 여의도 본관과 캠퍼스</title>
+<meta name="description" content="여의도 국회의사당 본관과 캠퍼스를 Blender 파이썬 스크립트 한 파일로 지은 3D 모델. 열주 24개, 밑지름 64 m 돔, 높이 69.19 m를 자료대로 넣었고 낮·밤·캠퍼스 모델을 브라우저에서 돌려 볼 수 있습니다.">
+<link rel="canonical" href="https://richroro.github.io/national-assembly/">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="ko_KR">
+<meta property="og:site_name" content="Cadence">
+<meta property="og:url" content="https://richroro.github.io/national-assembly/">
+<meta property="og:title" content="국회의사당 3D 모델">
+<meta property="og:description" content="Blender 스크립트 한 파일로 지은 여의도 국회의사당과 캠퍼스. 낮·밤·캠퍼스 3D 모델과 렌더 11장.">
+<meta property="og:image" content="https://richroro.github.io/national-assembly/renders/render_day_hero.jpg">
+<meta property="og:image:type" content="image/jpeg">
+<meta property="og:image:width" content="1920">
+<meta property="og:image:height" content="1080">
+<meta property="og:image:alt" content="앞 왼쪽 위에서 본 국회의사당 본관 3D 렌더. 열주 24개와 녹청 돔, 뒤로 한강.">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="국회의사당 3D 모델">
+<meta name="twitter:description" content="Blender 스크립트 한 파일로 지은 여의도 국회의사당과 캠퍼스. 낮·밤·캠퍼스 3D 모델과 렌더 11장.">
+<meta name="twitter:image" content="https://richroro.github.io/national-assembly/renders/render_day_hero.jpg">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%23FC1C49'/><path d='M50 22a22 22 0 0 1 22 22v4H28v-4a22 22 0 0 1 22-22zM24 54h52v6H24zM30 62h6v18h-6zm12 0h6v18h-6zm12 0h6v18h-6zm12 0h6v18h-6z' fill='white'/></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans+KR:wght@300;400;500;600;700&display=swap">
+<script>
+  /* model-viewer가 읽는 전역 설정: Draco 디코더를 같은 폴더(draco/)에서 불러옵니다. */
+  self.ModelViewerElement = self.ModelViewerElement || {};
+  self.ModelViewerElement.dracoDecoderLocation = new URL('draco/', location.href).href;
+</script>
+<script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.5.0/model-viewer.min.js" onerror="document.documentElement.dataset.mvfail='1'"></script>
+<style>
+:root{
+  color-scheme:light;
+  --paper:#F5F6F8; --surface:#FFFFFF; --surface-2:#EEF0F4; --surface-3:#E6EAF0;
+  --ink:#14161C; --ink-2:#4A5260; --ink-3:#5F6774;
+  --line:#E3E7ED; --line-soft:#EDF0F4;
+  --brand:#FC1C49; --brand-ink:#D0103A; --brand-wash:#FDECEF;
+  --dome:#3E8E80; --dome-wash:#E2F1EE;
+  --src:#1D7552; --src-wash:#E3F3EA;
+  --osm:#1D5FB8; --osm-wash:#E8F0FC;
+  --est:#8F5600; --est-wash:#FBEFD9;
+  --sky:linear-gradient(180deg,#C6D6EA 0%,#DFE8F2 55%,#EEF1F5 100%);
+  --night:radial-gradient(120% 90% at 50% 30%,#1C2B47 0%,#0D1528 55%,#070A13 100%);
+  --shadow:0 1px 2px rgba(20,22,28,.05), 0 10px 28px -16px rgba(20,22,28,.22);
+  --radius:14px;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    color-scheme:dark;
+    --paper:#0F1218; --surface:#161A21; --surface-2:#1D2229; --surface-3:#242A33;
+    --ink:#E9EDF3; --ink-2:#AEB7C4; --ink-3:#8B95A3;
+    --line:#252B34; --line-soft:#1E242C;
+    --brand:#FF4C52; --brand-ink:#FF6B7A; --brand-wash:#2A1A1E;
+    --dome:#6FBFB0; --dome-wash:#132624;
+    --src:#5CC79B; --src-wash:#12261D;
+    --osm:#77B0F7; --osm-wash:#141F2E;
+    --est:#E5A84B; --est-wash:#2A2012;
+    --sky:linear-gradient(180deg,#223247 0%,#1A2533 60%,#151B24 100%);
+    --shadow:0 1px 2px rgba(0,0,0,.4), 0 10px 28px -16px rgba(0,0,0,.7);
+  }
+}
+:root[data-theme="dark"]{
+  color-scheme:dark;
+  --paper:#0F1218; --surface:#161A21; --surface-2:#1D2229; --surface-3:#242A33;
+  --ink:#E9EDF3; --ink-2:#AEB7C4; --ink-3:#8B95A3;
+  --line:#252B34; --line-soft:#1E242C;
+  --brand:#FF4C52; --brand-ink:#FF6B7A; --brand-wash:#2A1A1E;
+  --dome:#6FBFB0; --dome-wash:#132624;
+  --src:#5CC79B; --src-wash:#12261D;
+  --osm:#77B0F7; --osm-wash:#141F2E;
+  --est:#E5A84B; --est-wash:#2A2012;
+  --sky:linear-gradient(180deg,#223247 0%,#1A2533 60%,#151B24 100%);
+  --shadow:0 1px 2px rgba(0,0,0,.4), 0 10px 28px -16px rgba(0,0,0,.7);
+}
+
+*{box-sizing:border-box;margin:0;padding:0}
+[hidden]{display:none !important}
+html{-webkit-text-size-adjust:100%;scroll-behavior:smooth}
+html:has(dialog[open]){overflow:hidden}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+body{font-family:"IBM Plex Sans KR","Pretendard","Apple SD Gothic Neo","Malgun Gothic",system-ui,sans-serif;
+  background:var(--paper);color:var(--ink);line-height:1.65;letter-spacing:-.2px;
+  -webkit-font-smoothing:antialiased;word-break:keep-all;overflow-wrap:break-word}
+a{color:inherit}
+img{max-width:100%}
+button{font:inherit;color:inherit}
+code,pre,.mono{font-family:"IBM Plex Mono","IBM Plex Sans KR",ui-monospace,SFMono-Regular,Menlo,monospace}
+code{font-size:.9em}
+:focus-visible{outline:2px solid var(--brand);outline-offset:2px}
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
+.wrap{max-width:1040px;margin:0 auto;padding:0 16px}
+
+/* 머리 */
+.top{padding:24px 16px 4px}
+.crumbs{font-size:13px;color:var(--ink-3);margin-bottom:14px}
+.crumbs a{color:var(--ink-2);text-decoration:none}
+.crumbs a:hover{color:var(--ink);text-decoration:underline}
+.eyebrow{font-size:13px;font-weight:600;color:var(--brand-ink);letter-spacing:.02em}
+h1{font-size:clamp(28px,4.4vw,40px);font-weight:700;line-height:1.2;letter-spacing:-.6px;margin:6px 0 12px}
+.lead{color:var(--ink-2);font-size:16px;max-width:720px}
+.jump{display:flex;flex-wrap:wrap;gap:6px 6px;margin-top:18px;list-style:none}
+.jump a{display:inline-block;font-size:13px;font-weight:500;color:var(--ink-2);text-decoration:none;
+  padding:5px 11px;border:1px solid var(--line);border-radius:999px;background:var(--surface)}
+.jump a:hover{color:var(--ink);border-color:var(--ink-3)}
+
+/* 뷰어 */
+.viewer{margin-top:18px;background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);
+  box-shadow:var(--shadow);overflow:hidden}
+.vbar{display:flex;flex-wrap:wrap;align-items:center;gap:10px 12px;padding:10px 12px}
+.vbar-top{border-bottom:1px solid var(--line)}
+.vbar-bottom{border-top:1px solid var(--line);justify-content:space-between}
+.vbar-top .toggle{margin-left:auto}
+@media (max-width:420px){.vbar{gap:8px;padding:10px}.seg button{padding:6px 10px}.toggle{padding:6px 9px;gap:6px}}
+@media (max-width:380px){.xs-hide{display:none}}
+.seg{display:inline-flex;padding:3px;gap:2px;background:var(--surface-2);border:1px solid var(--line);border-radius:10px}
+.seg button{appearance:none;border:0;background:transparent;border-radius:7px;padding:6px 12px;min-height:32px;
+  font-size:14px;font-weight:600;color:var(--ink-2);cursor:pointer;white-space:nowrap}
+.seg button:hover{color:var(--ink)}
+.seg button[aria-pressed="true"]{background:var(--surface);color:var(--ink);box-shadow:0 1px 2px rgba(20,22,28,.12),0 0 0 1px var(--line)}
+.seg button:disabled{opacity:.4;cursor:not-allowed}
+.toggle{appearance:none;display:inline-flex;align-items:center;gap:7px;border:1px solid var(--line);background:var(--surface);
+  border-radius:10px;padding:6px 11px;min-height:38px;font-size:13px;font-weight:600;color:var(--ink-2);cursor:pointer;white-space:nowrap}
+.toggle .box{width:14px;height:14px;border-radius:4px;border:1.5px solid var(--ink-3);display:grid;place-items:center}
+.toggle[aria-pressed="true"]{color:var(--ink)}
+.toggle.is-empty{visibility:hidden}
+.toggle[aria-pressed="true"] .box{background:var(--ink);border-color:var(--ink)}
+.toggle[aria-pressed="true"] .box::after{content:"";width:6px;height:3px;border:solid var(--surface);border-width:0 0 2px 2px;transform:translateY(-1px) rotate(-45deg)}
+.presets{display:flex;flex-wrap:wrap;align-items:center;gap:6px}
+.presets .lbl{font-size:12px;font-weight:600;color:var(--ink-3);margin-right:2px}
+.pbtn{appearance:none;border:1px solid var(--line);background:var(--surface-2);border-radius:999px;padding:5px 12px;min-height:32px;
+  font-size:13px;font-weight:600;color:var(--ink-2);cursor:pointer;white-space:nowrap}
+.pbtn:hover{color:var(--ink);border-color:var(--ink-3)}
+.pbtn[aria-pressed="true"]{background:var(--ink);border-color:var(--ink);color:var(--surface)}
+.vinfo{font-size:13px;color:var(--ink-3);min-height:1.65em;flex:1 1 260px;text-align:right}
+@media (max-width:720px){.vinfo{text-align:left}}
+.vinfo b{color:var(--ink);font-weight:600}
+
+.stage{position:relative;height:clamp(340px,calc(100vh - 370px),620px);height:clamp(340px,calc(100svh - 370px),620px);background:var(--sky);transition:background .4s}
+.stage[data-tod="night"]{background:var(--night)}
+.stage model-viewer{width:100%;height:100%;display:block;background:transparent;--poster-color:transparent;--progress-bar-height:0px}
+.stage model-viewer:focus-visible{outline:2px solid var(--brand);outline-offset:-2px}
+.progress{position:absolute;left:0;top:0;right:0;height:3px;pointer-events:none;opacity:0;transition:opacity .4s}
+.progress span{display:block;height:100%;width:100%;background:var(--brand);transform-origin:0 50%;transform:scaleX(0);transition:transform .25s}
+.stage.is-loading .progress{opacity:1}
+.loading{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);padding:8px 14px;border-radius:999px;
+  background:rgba(255,255,255,.82);color:#14161C;font-size:13px;font-weight:500;pointer-events:none;opacity:0;transition:opacity .3s;
+  box-shadow:0 4px 18px -8px rgba(0,0,0,.35);white-space:nowrap}
+.stage.is-loading .loading{opacity:1}
+.stage-hint{position:absolute;left:12px;bottom:10px;font-size:12px;color:rgba(20,22,28,.62);pointer-events:none;
+  background:rgba(255,255,255,.55);padding:2px 8px;border-radius:6px}
+.stage[data-tod="night"] .stage-hint{color:rgba(233,237,243,.7);background:rgba(10,14,24,.45)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .stage-hint{color:rgba(233,237,243,.7);background:rgba(10,14,24,.45)}}
+:root[data-theme="dark"] .stage-hint{color:rgba(233,237,243,.7);background:rgba(10,14,24,.45)}
+.stage-fs{position:absolute;top:10px;right:10px;width:36px;height:36px;display:grid;place-items:center;border-radius:9px;cursor:pointer;
+  border:1px solid rgba(20,22,28,.12);background:rgba(255,255,255,.78);color:#14161C;box-shadow:0 2px 8px -3px rgba(0,0,0,.3)}
+.stage-fs:hover{background:#fff}
+.stage-fs svg{width:18px;height:18px}
+.stage-fs .fs-off,.stage-fs[aria-pressed="true"] .fs-on{display:none}
+.stage-fs[aria-pressed="true"] .fs-off{display:block}
+.viewer:fullscreen{display:flex;flex-direction:column;width:100%;height:100%;margin:0;border:0;border-radius:0}
+.viewer:fullscreen .stage{flex:1 1 auto;height:auto}
+.viewer:-webkit-full-screen{display:flex;flex-direction:column;width:100%;height:100%;margin:0;border:0;border-radius:0}
+.viewer:-webkit-full-screen .stage{flex:1 1 auto;height:auto}
+.hint-touch{display:none}
+@media (hover:none){.hint-mouse{display:none}.hint-touch{display:inline}}
+.stage-msg{position:absolute;inset:0;display:grid;place-items:center;padding:24px;text-align:center;
+  background:rgba(245,246,248,.92);background:color-mix(in srgb,var(--paper) 92%,transparent);color:var(--ink)}
+.stage-msg p{max-width:420px;font-size:14px;margin-bottom:12px}
+.stage-msg .btn{margin:0 4px}
+.stage-msg.has-fallback{background:linear-gradient(rgba(12,15,22,.55),rgba(12,15,22,.72)),url("renders/thumb/render_day_hero.jpg") center/cover;color:#fff}
+
+/* 핫스팟 */
+.hs{appearance:none;display:block;width:30px;height:30px;padding:0;border:0;background:transparent;cursor:pointer;position:relative;
+  --dot:#14161C;transition:opacity .25s}
+.hs::before{content:"";position:absolute;left:50%;top:50%;width:13px;height:13px;margin:-6.5px 0 0 -6.5px;border-radius:50%;
+  background:var(--dot);box-shadow:0 0 0 2.5px #fff,0 2px 8px rgba(0,0,0,.45);transition:transform .15s,background .15s}
+.hs:hover::before,.hs:focus-visible::before{transform:scale(1.25)}
+.hs.is-active::before{background:#FC1C49}
+.hs:focus-visible{outline:none}
+.hs:focus-visible::before{box-shadow:0 0 0 2.5px #fff,0 0 0 5px #FC1C49}
+.hs-label{position:absolute;left:calc(50% + 13px);top:50%;transform:translateY(-50%);white-space:nowrap;
+  background:rgba(255,255,255,.95);color:#14161C;font-size:12.5px;font-weight:600;line-height:1.2;padding:5px 9px;border-radius:7px;
+  box-shadow:0 4px 14px -6px rgba(0,0,0,.45);opacity:0;pointer-events:none;transition:opacity .15s}
+.hs:hover .hs-label,.hs:focus-visible .hs-label,.hs.is-active .hs-label{opacity:1}
+.hs:not([data-visible]){opacity:.28;pointer-events:none}
+.hs:not([data-visible]) .hs-label{opacity:0}
+/* 카메라가 도착하면 선택한 점은 흐려져 그 부분을 가리지 않습니다(마우스를 올리거나 키보드 초점이면 다시 보임). */
+.hs.is-active.arrived{opacity:0}
+.hs.is-active.arrived .hs-label{opacity:0}
+.hs.is-active.arrived:focus-visible{opacity:1}
+.hs.is-active.arrived:focus-visible::before{background:transparent}
+@media (hover:hover){.hs.is-active.arrived:hover{opacity:1}.hs.is-active.arrived:hover .hs-label{opacity:1}}
+.stage.hs-off .hs{display:none}
+.stage[data-tod="night"] .hs{--dot:#F3F5F8}
+.stage[data-tod="night"] .hs::before{box-shadow:0 0 0 2.5px #10151f,0 2px 8px rgba(0,0,0,.6)}
+
+/* 숫자 */
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:14px}
+.stat{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:12px 14px}
+.stat dt{font-size:12.5px;color:var(--ink-3)}
+.stat dd{font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:20px;font-weight:500;letter-spacing:-.4px;color:var(--ink);line-height:1.35}
+.stat dd small{font-size:13px;color:var(--ink-3);font-weight:400;letter-spacing:0}
+@media (max-width:720px){.stats{grid-template-columns:repeat(2,1fr)}}
+
+/* 공통 섹션 */
+section.sec{padding-top:48px;scroll-margin-top:12px}
+h2{font-size:22px;font-weight:700;letter-spacing:-.4px;line-height:1.3}
+.sec-lead{color:var(--ink-2);font-size:15px;margin:8px 0 16px;max-width:760px}
+h3{font-size:16px;font-weight:700;margin:24px 0 10px}
+.note{font-size:13px;color:var(--ink-3);margin-top:10px}
+.btn{display:inline-flex;align-items:center;gap:6px;padding:8px 14px;border-radius:10px;border:1px solid var(--line);background:var(--surface-2);
+  font-size:13px;font-weight:600;text-decoration:none;color:var(--ink);cursor:pointer}
+.btn.primary{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+
+/* 비교 */
+.ba{position:relative;aspect-ratio:16/9;border-radius:var(--radius);overflow:hidden;border:1px solid var(--line);box-shadow:var(--shadow);
+  background:var(--surface-2);touch-action:pan-y;user-select:none;-webkit-user-select:none;cursor:ew-resize;--pos:50%}
+.ba img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;pointer-events:none}
+.ba .ba-before{clip-path:inset(0 calc(100% - var(--pos)) 0 0)}
+.ba-line{position:absolute;top:0;bottom:0;left:var(--pos);width:2px;margin-left:-1px;background:#fff;box-shadow:0 0 0 1px rgba(0,0,0,.18);pointer-events:none}
+.ba-knob{position:absolute;top:50%;left:var(--pos);width:40px;height:40px;margin:-20px 0 0 -20px;border-radius:50%;background:#fff;
+  box-shadow:0 2px 10px rgba(0,0,0,.35);display:grid;place-items:center;pointer-events:none;color:#14161C}
+.ba-knob svg{width:22px;height:22px}
+.ba-range{position:absolute;inset:0;width:100%;height:100%;opacity:0;margin:0;pointer-events:none}
+.ba:has(.ba-range:focus-visible) .ba-knob{box-shadow:0 0 0 3px var(--brand),0 2px 10px rgba(0,0,0,.35)}
+.ba-tag{position:absolute;top:12px;font-size:12.5px;font-weight:600;padding:4px 10px;border-radius:999px;pointer-events:none;transition:opacity .2s}
+.ba-tag.before{left:12px;background:rgba(20,22,28,.72);color:#fff}
+.ba-tag.after{right:12px;background:rgba(255,255,255,.9);color:#14161C}
+
+/* 갤러리 */
+.gallery{display:grid;grid-template-columns:repeat(6,1fr);gap:14px;list-style:none}
+.gallery li{grid-column:span 2;min-width:0}
+.gallery li.wide{grid-column:span 3}
+.gallery figure{height:100%;background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow);display:flex;flex-direction:column}
+.gallery a{display:block;position:relative;aspect-ratio:16/9;background:var(--surface-2);overflow:hidden}
+.gallery img{display:block;width:100%;height:100%;object-fit:cover;transition:transform .35s}
+.gallery a:hover img{transform:scale(1.025)}
+.gallery a:focus-visible{outline-offset:-3px}
+.gallery figcaption{padding:10px 14px 12px;font-size:13px;color:var(--ink-2);line-height:1.55}
+.gallery figcaption b{display:block;color:var(--ink);font-size:14px;font-weight:600;margin-bottom:2px}
+@media (max-width:760px){.gallery{grid-template-columns:repeat(2,1fr);gap:10px}.gallery li,.gallery li.wide{grid-column:span 1}.gallery li.wide,.gallery li.full-sm{grid-column:span 2}}
+@media (max-width:480px){.gallery li{grid-column:span 2}.gallery figcaption{padding:9px 12px 11px}}
+
+/* 라이트박스 */
+dialog.lb{position:fixed;inset:0;width:100%;height:100%;max-width:none;max-height:none;margin:0;padding:0;border:0;
+  background:rgba(9,11,16,.97);color:#E9EDF3;overscroll-behavior:contain}
+dialog.lb::backdrop{background:rgba(9,11,16,.7)}
+.lb-inner{position:relative;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:64px 72px 24px}
+.lb-top{position:absolute;top:12px;left:16px;right:16px;display:flex;align-items:center;justify-content:space-between;gap:12px}
+.lb-count{font-family:"IBM Plex Mono",monospace;font-size:13px;color:#AEB7C4}
+.lb-stage{display:flex;justify-content:center;max-width:100%;touch-action:pan-y}
+.lb-stage img{display:block;max-width:100%;max-height:calc(100vh - 190px);max-height:calc(100dvh - 190px);width:auto;height:auto;border-radius:6px;
+  box-shadow:0 20px 60px -20px rgba(0,0,0,.8);user-select:none;-webkit-user-drag:none}
+.lb-cap{max-width:860px;margin:14px auto 0;text-align:center;font-size:14px;color:#C9D0DA;line-height:1.6}
+.lb-cap b{color:#fff;font-weight:600;margin-right:6px}
+.lb-nav{display:contents}
+.icon-btn{appearance:none;display:inline-grid;place-items:center;width:44px;height:44px;border-radius:50%;border:1px solid rgba(255,255,255,.2);
+  background:rgba(255,255,255,.08);color:#fff;cursor:pointer}
+.icon-btn:hover{background:rgba(255,255,255,.18)}
+.icon-btn svg{width:20px;height:20px}
+.lb-prev,.lb-next{position:absolute;top:50%;margin-top:-22px}
+.lb-prev{left:16px}.lb-next{right:16px}
+@media (max-width:640px){
+  .lb-inner{padding:64px 16px 24px}
+  .lb-nav{display:flex;gap:12px;justify-content:center;margin-top:16px}
+  .lb-prev,.lb-next{position:static;margin:0}
+}
+
+/* 표 */
+.table-wrap{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow)}
+table{width:100%;border-collapse:collapse;font-size:14px}
+th,td{padding:11px 14px;text-align:left;border-top:1px solid var(--line);vertical-align:top}
+thead th{border-top:0;background:var(--surface-2);font-weight:600;color:var(--ink-2);font-size:13px}
+td.item{font-weight:600;white-space:nowrap}
+td.val{white-space:nowrap;font-weight:500;font-variant-numeric:tabular-nums;color:var(--ink)}
+td.how{color:var(--ink-2)}
+td.srcs{font-size:13px;color:var(--ink-2);min-width:170px}
+.tag{display:inline-block;font-size:11.5px;font-weight:600;line-height:1.5;padding:0 7px;border-radius:999px;margin:0 4px 3px 0;white-space:nowrap}
+.tag.src{color:var(--src);background:var(--src-wash)}
+.tag.osm{color:var(--osm);background:var(--osm-wash)}
+.tag.est{color:var(--est);background:var(--est-wash)}
+.legend{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:13px;color:var(--ink-2);margin:0 0 12px}
+@media (max-width:720px){
+  .facts thead{display:none}
+  .facts tr{display:block;padding:12px 14px;border-top:1px solid var(--line)}
+  .facts tr:first-child{border-top:0}
+  .facts td{display:block;border:0;padding:0;white-space:normal}
+  .facts td.item{font-size:15px}
+  .facts td.val{margin:2px 0 4px;color:var(--ink)}
+  .facts td.srcs{margin-top:6px;min-width:0}
+}
+
+/* 평면 */
+.plan{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:20px;align-items:start;margin-top:16px}
+.plan-fig{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:12px;box-shadow:var(--shadow)}
+.plan-fig svg{display:block;width:100%;height:auto}
+.plan-fig figcaption{font-size:12.5px;color:var(--ink-3);padding:6px 4px 0}
+.plan-text p{color:var(--ink-2);margin-bottom:12px}
+.plan-text p strong{color:var(--ink)}
+.keys{list-style:none;display:grid;gap:6px;margin:4px 0 14px;font-size:14px}
+.keys li{display:flex;gap:10px;align-items:baseline}
+.keys .sw{flex:0 0 auto;width:14px;height:10px;border-radius:2px;transform:translateY(1px)}
+.keys .mono{font-size:13px;color:var(--ink);margin-left:auto;white-space:nowrap}
+@media (max-width:820px){.plan{grid-template-columns:1fr}}
+.p-podium{fill:var(--surface-3);stroke:var(--ink-3);stroke-width:.5}
+.p-stair{fill:var(--surface-2);stroke:var(--ink-3);stroke-width:.4}
+.p-steps{stroke:var(--ink-3);stroke-width:.25;opacity:.7}
+.p-eave{fill:none;stroke:var(--ink-2);stroke-width:.6;stroke-dasharray:3 2}
+.p-body{fill:var(--brand-wash);stroke:var(--brand);stroke-width:.9}
+.p-col{fill:var(--ink)}
+.p-colline{fill:none;stroke:var(--ink-3);stroke-width:.3;stroke-dasharray:1 1.5}
+.p-dome{fill:var(--dome-wash);stroke:var(--dome);stroke-width:.9}
+.p-txt{fill:var(--ink-2);font-family:"IBM Plex Sans KR",system-ui,sans-serif;font-size:6.5px}
+.p-txt.strong{fill:var(--ink);font-weight:600}
+@media (max-width:640px){.p-txt{font-size:8.5px}.p-body-lbl{display:none}}
+.p-arrow{stroke:var(--ink-2);stroke-width:.7;fill:none}
+.elev{margin-top:20px}
+.elev-box{display:flex;gap:16px;padding:8px 6px 4px}
+.plan-fig .elev-svg{flex:0 0 auto;width:322px;height:260px;overflow:visible}
+.e-axis{stroke:var(--ink-3);stroke-width:.3;stroke-dasharray:1.5 1.2}
+.e-ground{stroke:var(--ink-2);stroke-width:.5}
+.e-podium{fill:var(--surface-3);stroke:var(--ink-3);stroke-width:.3}
+.e-body{fill:var(--brand-wash);stroke:var(--brand);stroke-width:.35}
+.e-floor{stroke:var(--brand);stroke-width:.2;opacity:.55}
+.e-col{fill:var(--surface);stroke:var(--ink-2);stroke-width:.3}
+.e-est{fill:var(--est-wash);stroke:var(--est);stroke-width:.3}
+.e-dome{fill:var(--dome-wash);stroke:var(--dome);stroke-width:.45}
+.ladder{list-style:none;display:flex;flex-direction:column;flex:1 1 auto;min-width:0;height:260px;font-size:13px;line-height:1.25;color:var(--ink-2)}
+.ladder li{position:relative;flex-basis:0;border-left:2px solid var(--ink-3);display:flex;align-items:center;padding-left:10px;min-height:0}
+.ladder li:not(.sp)::before{content:"";position:absolute;left:-6px;top:-1px;width:10px;border-top:2px solid var(--ink-3)}
+.ladder li:nth-last-child(2)::after{content:"";position:absolute;left:-6px;bottom:-1px;width:10px;border-top:2px solid var(--ink-3)}
+.ladder li.sp{border-left-color:transparent}
+.ladder li.est{border-left:2px dashed var(--est);color:var(--est)}
+.ladder b{display:block;color:var(--ink);font-weight:600;font-variant-numeric:tabular-nums}
+.ladder li.est b{color:var(--est)}
+@media (max-width:640px){.elev-box{gap:12px;padding:6px 2px 2px}.plan-fig .elev-svg{width:198px;height:160px}.ladder{height:160px;font-size:12px}}
+
+/* 코드 */
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:18px 20px;box-shadow:var(--shadow)}
+pre{background:var(--surface-2);border:1px solid var(--line);border-radius:10px;padding:14px 16px;overflow:auto;font-size:13px;line-height:1.6;tab-size:2}
+pre .c{color:var(--ink-3)}
+.opts td:first-child{white-space:nowrap;font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:13px;color:var(--ink)}
+.opts td{color:var(--ink-2)}
+@media (max-width:640px){
+  .opts thead{display:none}
+  .opts tr{display:block;padding:10px 14px;border-top:1px solid var(--line)}
+  .opts tr:first-child{border-top:0}
+  table.opts,.opts tbody{display:block;width:100%}
+  .opts td{display:block;border:0;padding:0;white-space:normal !important;overflow-wrap:anywhere}
+  .opts td:first-child{margin-bottom:2px}
+}
+:not(pre) > code{white-space:nowrap}
+.opts .list{display:inline-flex;flex-wrap:wrap;gap:3px 5px;vertical-align:top}
+.sections{list-style:none;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px 18px;font-size:14px;color:var(--ink-2)}
+.sections li{display:flex;gap:10px;align-items:baseline;padding:6px 0;border-bottom:1px solid var(--line-soft)}
+.sections code{flex:0 0 108px;color:var(--ink);font-size:12.5px}
+@media (max-width:640px){.sections{grid-template-columns:1fr}.sections code{flex-basis:96px}}
+
+/* 내려받기 */
+.dl{list-style:none;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.dl a{display:flex;flex-direction:column;gap:2px;height:100%;padding:14px 16px;background:var(--surface);border:1px solid var(--line);
+  border-radius:12px;text-decoration:none;box-shadow:var(--shadow);transition:border-color .15s}
+.dl a:hover{border-color:var(--ink-3)}
+.dl .fn{font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:13px;font-weight:500;color:var(--ink);overflow-wrap:anywhere}
+.dl .ds{font-size:13px;color:var(--ink-2)}
+.dl .sz{font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:12px;color:var(--ink-3);margin-top:auto;padding-top:6px}
+@media (max-width:820px){.dl{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:480px){.dl{grid-template-columns:1fr}}
+
+/* 변경점 */
+.changes{list-style:none;background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden}
+.changes li{display:grid;grid-template-columns:120px minmax(0,1fr) minmax(0,1.35fr);gap:14px;padding:11px 16px;border-top:1px solid var(--line);font-size:14px}
+.changes li:first-child{border-top:0}
+.changes li.head{background:var(--surface-2);font-size:12.5px;font-weight:600;color:var(--ink-3)}
+.changes .k{font-weight:600}
+.changes .was{color:var(--ink-3)}
+.changes .now{color:var(--ink)}
+@media (max-width:640px){
+  .changes li{grid-template-columns:1fr;gap:2px}
+  .changes li.head{display:none}
+  .changes .lab{position:static;width:auto;height:auto;margin:0 .45em 0 0;overflow:visible;clip:auto;white-space:nowrap;
+    font-size:12px;font-weight:600;color:var(--ink-3)}
+  .changes .now .lab{color:var(--brand-ink)}
+}
+
+footer.wrap{padding-top:56px;padding-bottom:64px;font-size:13px;color:var(--ink-3)}
+footer p + p{margin-top:6px}
+footer a{color:var(--ink-2)}
+</style>
+</head>
+<body>
+<header class="wrap top">
+  <nav class="crumbs" aria-label="위치"><a href="/">Cadence</a> <span aria-hidden="true">/</span> 3D 모델</nav>
+  <p class="eyebrow">Blender · 프로시저럴 모델 · v2</p>
+  <h1>국회의사당 3D 모델</h1>
+  <p class="lead">여의도 국회의사당 본관과 둘레 캠퍼스를 Blender 파이썬 스크립트 한 파일로 지었습니다.
+    손으로 놓은 것 없이, 실행하면 기단과 대계단, 열주 24개, 돔부터 잔디광장과 해태상까지 만들어집니다.
+    치수는 자료에 나온 값을 쓰고, 자료가 없는 곳은 사진을 보고 정했습니다.</p>
+</header>
+
+<main class="wrap" id="main">
+  <section class="viewer" aria-labelledby="viewer-title">
+    <h2 id="viewer-title" class="sr-only">3D 뷰어</h2>
+    <div class="vbar vbar-top">
+      <div class="seg" role="group" aria-label="모델 범위">
+        <button type="button" data-scope="building" aria-pressed="true">본관</button>
+        <button type="button" data-scope="campus" aria-pressed="false">캠퍼스</button>
+      </div>
+      <div class="seg" role="group" aria-label="시간대">
+        <button type="button" data-tod="day" aria-pressed="true">낮</button>
+        <button type="button" data-tod="night" aria-pressed="false" title="본관 모델만 밤 버전이 있습니다">밤</button>
+      </div>
+      <button type="button" class="toggle" id="hs-toggle" aria-pressed="true" aria-label="지점 표시"><span class="box" aria-hidden="true"></span>지점<span class="xs-hide"> 표시</span></button>
+    </div>
+    <div class="stage is-loading" id="stage" data-tod="day">
+      <model-viewer id="mv" alt="국회의사당 본관 3D 모델. 기단 위 열주 24개가 처마를 받치고 가운데에 녹청 돔이 있습니다."
+        camera-controls touch-action="pan-y" interaction-prompt="none" loading="eager" reveal="auto"
+        camera-orbit="-28deg 70deg 42%" camera-target="0m 16m 6m"
+        min-camera-orbit="auto 10deg 40m" max-camera-orbit="auto 88deg 700m"
+        environment-image="legacy" exposure="0.85" shadow-intensity="1">
+        <div slot="progress-bar"></div>
+      </model-viewer>
+      <div class="progress" aria-hidden="true"><span id="progress-fill"></span></div>
+      <p class="loading" id="loading" aria-hidden="true">모델 불러오는 중</p>
+      <button type="button" class="stage-fs" id="fs-btn" aria-label="전체 화면으로 보기" aria-pressed="false" hidden>
+        <svg class="fs-on" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg>
+        <svg class="fs-off" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 4v5H4M15 4v5h5M9 20v-5H4M15 20v-5h5"/></svg>
+      </button>
+      <p class="stage-hint" aria-hidden="true"><span class="hint-mouse">드래그 회전 · 휠 확대 · 오른쪽 드래그 이동</span><span class="hint-touch">한 손가락 회전 · 두 손가락 확대·이동</span></p>
+      <div class="stage-msg" id="mv-msg" role="alert" hidden>
+        <div>
+          <p id="mv-msg-text">3D 모델을 불러오지 못했습니다.</p>
+          <button type="button" class="btn primary" id="mv-retry">다시 시도</button>
+          <a class="btn" href="#renders">렌더 보기</a>
+        </div>
+      </div>
+    </div>
+    <div class="vbar vbar-bottom">
+      <div class="presets" role="group" aria-label="시점" id="presets" data-scope="building"><span class="lbl" aria-hidden="true">시점</span><button type="button" class="pbtn" data-preset="q" aria-pressed="true">3/4</button><button type="button" class="pbtn" data-preset="front" aria-pressed="false">정면</button><button type="button" class="pbtn" data-preset="air" aria-pressed="false">항공</button><button type="button" class="pbtn" data-preset="under" aria-pressed="false">회랑 아래</button></div>
+      <p class="vinfo" id="vinfo" aria-live="polite"><b>본관 · 낮</b> 받침판 위의 본관과 앞마당. 점을 누르면 그 부위로 갑니다.</p>
+    </div>
+  </section>
+
+  <dl class="stats" aria-label="주요 치수">
+    <div class="stat"><dt>지면에서 돔 꼭대기</dt><dd>69.19 <small>m</small></dd></div>
+    <div class="stat"><dt>돔 밑지름 · 높이</dt><dd>64 · 20 <small>m</small></dd></div>
+    <div class="stat"><dt>열주 (높이 32.5&nbsp;m)</dt><dd>24 <small>개</small></dd></div>
+    <div class="stat"><dt>본체 평면</dt><dd>122&nbsp;×&nbsp;81 <small>m</small></dd></div>
+  </dl>
+  <ul class="jump" aria-label="바로 가기">
+    <li><a href="#compare">첫 버전과 비교</a></li>
+    <li><a href="#renders">렌더 11장</a></li>
+    <li><a href="#facts">실제 건물과 맞춘 것</a></li>
+    <li><a href="#plan">평면·높이 해석</a></li>
+    <li><a href="#code">코드로 짓기</a></li>
+    <li><a href="#downloads">내려받기</a></li>
+    <li><a href="#changes">바뀐 점</a></li>
+  </ul>
+
+  <section class="sec" id="compare" aria-labelledby="compare-title">
+    <h2 id="compare-title">첫 버전과 비교</h2>
+    <p class="sec-lead">같은 방향에서 본 첫 버전(왼쪽)과 지금 버전(오른쪽)입니다. 손잡이를 좌우로 끌거나, 슬라이더에 초점을 두고 화살표 키로 움직입니다.</p>
+    <div class="ba" id="ba">
+      <img class="ba-after" src="renders/render_day_hero.jpg" srcset="renders/thumb/render_day_hero.jpg 960w, renders/render_day_hero.jpg 1920w"
+        sizes="(max-width: 1040px) calc(100vw - 32px), 1008px" width="1920" height="1080" loading="lazy" decoding="async"
+        alt="업그레이드한 모델: 촘촘한 화강석 핀 입면, 녹청 돔, 잔디광장과 한강이 보이는 3/4 뷰">
+      <img class="ba-before" src="renders/v1_hero.jpg" srcset="renders/thumb/v1_hero.jpg 960w, renders/v1_hero.jpg 1920w"
+        sizes="(max-width: 1040px) calc(100vw - 32px), 1008px" width="1920" height="1080" loading="lazy" decoding="async"
+        alt="첫 버전 모델: 단순한 창 띠와 리브 돔, 회색 바닥 위의 3/4 뷰">
+      <span class="ba-tag before" id="ba-tag-before">첫 버전</span>
+      <span class="ba-tag after" id="ba-tag-after">업그레이드</span>
+      <span class="ba-line" aria-hidden="true"></span>
+      <span class="ba-knob" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l-6 6 6 6M15 6l6 6-6 6"/></svg></span>
+      <input class="ba-range" id="ba-range" type="range" min="0" max="100" step="1" value="50"
+        aria-label="비교 위치. 왼쪽은 첫 버전, 오른쪽은 업그레이드" aria-valuetext="첫 버전 50%, 업그레이드 50%">
+    </div>
+  </section>
+
+  <section class="sec" id="renders" aria-labelledby="renders-title">
+    <h2 id="renders-title">렌더 11장</h2>
+    <p class="sec-lead">스크립트의 기본 샷 목록을 Cycles로 렌더했습니다. 누르면 크게 봅니다(화살표 키로 넘기기, Esc로 닫기).</p>
+    <ul class="gallery" id="gallery">
+      <li class="wide"><figure>
+        <a href="renders/render_day_hero.jpg"><img src="renders/thumb/render_day_hero.jpg" width="960" height="540" loading="lazy" decoding="async"
+          alt="앞 왼쪽 위에서 본 낮의 본관과 앞마당"></a>
+        <figcaption><b>3/4 뷰 · 낮</b>앞 왼쪽 위에서 본 본관. 열주 뒤 11&nbsp;m 회랑과 처마 그림자, 녹청 돔. 뒤로 한강.</figcaption>
+      </figure></li>
+      <li class="wide"><figure>
+        <a href="renders/render_night_hero.jpg"><img src="renders/thumb/render_night_hero.jpg" width="960" height="540" loading="lazy" decoding="async"
+          alt="같은 자리에서 본 블루아워의 본관. 정면 가운데에 태극기가 빛남"></a>
+        <figcaption><b>3/4 뷰 · 밤</b>같은 자리의 블루아워. 2007년 경관조명(열주 업라이트, 처마 워시, 돔 투광)과 LED 그릴의 태극기.</figcaption>
+      </figure></li>
+      <li class="wide"><figure>
+        <a href="renders/render_day_axis.jpg"><img src="renders/thumb/render_day_axis.jpg" width="960" height="540" loading="lazy" decoding="async"
+          alt="분수 너머 중심축에서 본 본관 정면"></a>
+        <figcaption><b>중심축 · 낮</b>분수 너머에서 축을 따라 본 정면. 분수 가운데 ‘평화와 번영의 상’, 계단 발치 양쪽에 청동 군상.</figcaption>
+      </figure></li>
+      <li class="wide"><figure>
+        <a href="renders/render_night_axis.jpg"><img src="renders/thumb/render_night_axis.jpg" width="960" height="540" loading="lazy" decoding="async"
+          alt="같은 축에서 본 밤의 본관과 분수 조명"></a>
+        <figcaption><b>중심축 · 밤</b>같은 축의 밤. 켜진 창과 가로등, 분수 조명, 정면 위층 가운데의 태극기.</figcaption>
+      </figure></li>
+      <li><figure>
+        <a href="renders/render_day_front.jpg"><img src="renders/thumb/render_day_front.jpg" width="960" height="540" loading="lazy" decoding="async"
+          alt="정면 입면 직교 투영"></a>
+        <figcaption><b>정면 입면</b>직교 투영. 전면 열주 8개, 기단 위 6개 층, 지면에서 돔 꼭대기까지 69.19&nbsp;m.</figcaption>
+      </figure></li>
+      <li><figure>
+        <a href="renders/render_day_aerial.jpg"><img src="renders/thumb/render_day_aerial.jpg" width="960" height="540" loading="lazy" decoding="async"
+          alt="캠퍼스 항공 뷰"></a>
+        <figcaption><b>캠퍼스 항공</b>잔디광장 네 칸과 분수, 국회도서관·의정관·의원회관, 뒤로 국회운동장과 한강.</figcaption>
+      </figure></li>
+      <li class="full-sm"><figure>
+        <a href="renders/render_day_colonnade.jpg"><img src="renders/thumb/render_day_colonnade.jpg" width="960" height="540" loading="lazy" decoding="async"
+          alt="모서리 열주 아래에서 올려다본 처마와 회랑 천장"></a>
+        <figcaption><b>회랑 아래</b>모서리에서 올려다본 열주와 처마. 사각에서 팔각으로 넓어지는 기둥, 회랑 천장 격자.</figcaption>
+      </figure></li>
+      <li class="wide"><figure>
+        <a href="renders/render_golden_golden.jpg"><img src="renders/thumb/render_golden_golden.jpg" width="960" height="540" loading="lazy" decoding="async"
+          alt="이른 아침 낮은 햇빛을 받은 본관"></a>
+        <figcaption><b>이른 아침</b>동쪽의 낮은 해(고도 7.5°)가 정면을 비스듬히 비춥니다. 해 위치는 서울 기준.</figcaption>
+      </figure></li>
+      <li class="wide"><figure>
+        <a href="renders/render_night_corner.jpg"><img src="renders/thumb/render_night_corner.jpg" width="960" height="540" loading="lazy" decoding="async"
+          alt="밤에 앞 왼쪽 모서리 가까이에서 본 열주와 처마 조명"></a>
+        <figcaption><b>모서리 · 밤</b>앞 왼쪽 모서리 가까이. 열주를 비추는 업라이트, 처마 끝 LED 띠와 회랑 천장 다운라이트.</figcaption>
+      </figure></li>
+      <li class="wide"><figure>
+        <a href="renders/render_day_dome.jpg"><img src="renders/thumb/render_day_dome.jpg" width="960" height="540" loading="lazy" decoding="async"
+          alt="망원으로 당긴 녹청 돔"></a>
+        <figcaption><b>돔</b>망원으로 당긴 돔. 높이 20&nbsp;m의 낮은 구면 캡, 동판 스탠딩 심과 녹청.</figcaption>
+      </figure></li>
+      <li class="wide"><figure>
+        <a href="renders/render_day_haetae.jpg"><img src="renders/thumb/render_day_haetae.jpg" width="960" height="540" loading="lazy" decoding="async"
+          alt="정문 안쪽 해태상 너머로 보이는 본관"></a>
+        <figcaption><b>해태상</b>정문 안쪽 왼쪽 해태상 너머로 멀리 보이는 본관.</figcaption>
+      </figure></li>
+    </ul>
+  </section>
+
+  <section class="sec" id="facts" aria-labelledby="facts-title">
+    <h2 id="facts-title">실제 건물과 맞춘 것</h2>
+    <p class="sec-lead">자료에 나오는 치수는 그대로 넣었고, 자료가 없는 부분은 사진을 보고 정한 추정값입니다. 근거 칸에서 구분합니다.</p>
+    <p class="legend"><span><span class="tag src">자료</span>문헌·기록에 나온 값</span><span><span class="tag osm">지도</span>OpenStreetMap 윤곽에서 잰 값</span><span><span class="tag est">추정</span>사진을 보고 정한 값</span></p>
+    <div class="table-wrap">
+      <table class="facts">
+        <thead><tr><th scope="col">항목</th><th scope="col">값</th><th scope="col">모델에서</th><th scope="col">근거</th></tr></thead>
+        <tbody>
+          <tr><td class="item">전체 높이</td><td class="val">69.19&nbsp;m</td>
+            <td class="how">지면 → 기단면 5.44&nbsp;m, 기단면 → 돔 꼭대기 63.75&nbsp;m. 흔히 말하는 ‘70&nbsp;m’.</td>
+            <td class="srcs"><span class="tag src">자료</span>한국민족문화대백과</td></tr>
+          <tr><td class="item">본체 평면</td><td class="val">122&nbsp;×&nbsp;81&nbsp;m</td>
+            <td class="how">열주 뒤 본체 외벽의 크기로 읽었습니다. 아래 ‘평면과 높이’ 참고.</td>
+            <td class="srcs"><span class="tag src">자료</span>국가기록원·언론 <span class="tag osm">지도</span>해석 근거</td></tr>
+          <tr><td class="item">열주</td><td class="val">24개 · 32.5&nbsp;m</td>
+            <td class="how">전면 8개는 팔도, 모두 24개는 24절기. 밑은 모서리를 깎은 사각(2.8&nbsp;m), 위로 갈수록 넓어져 꼭대기는 정팔각(3.3&nbsp;m).</td>
+            <td class="srcs"><span class="tag src">자료</span>개수·높이 <span class="tag est">추정</span>단면 폭</td></tr>
+          <tr><td class="item">회랑</td><td class="val">깊이 11&nbsp;m</td>
+            <td class="how">본체 외벽에서 열주 중심선까지. 열주 칸은 약 20.6&nbsp;m로 거의 정사각형.</td>
+            <td class="srcs"><span class="tag osm">지도</span>윤곽에서 역산</td></tr>
+          <tr><td class="item">처마</td><td class="val">156&nbsp;×&nbsp;115&nbsp;m</td>
+            <td class="how">몰딩 없는 평평한 석재 슬래브. 밑면 높이 37.94&nbsp;m, 두께 3.2&nbsp;m.</td>
+            <td class="srcs"><span class="tag osm">지도</span>평면 <span class="tag est">추정</span>두께</td></tr>
+          <tr><td class="item">기단</td><td class="val">5.44&nbsp;m · 164&nbsp;×&nbsp;123&nbsp;m</td>
+            <td class="how">화강석 받침. 안에 지상 1층이 들어 있고 둘레에 창 띠.</td>
+            <td class="srcs"><span class="tag src">자료</span>높이 <span class="tag osm">지도</span>평면</td></tr>
+          <tr><td class="item">대계단</td><td class="val">너비 50&nbsp;m</td>
+            <td class="how">기단면까지 34단(챌면 0.16&nbsp;m), 넓은 참 두 곳.</td>
+            <td class="srcs"><span class="tag src">자료</span>너비 <span class="tag est">추정</span>단수·참</td></tr>
+          <tr><td class="item">돔</td><td class="val">밑지름 64&nbsp;m · 높이 20&nbsp;m</td>
+            <td class="how">반구가 아닌 낮은 구면 캡(높이/지름 0.31). 무게 약 1,000&nbsp;t, 철골 위 동판 마감.</td>
+            <td class="srcs"><span class="tag src">자료</span>국가기록원·언론</td></tr>
+          <tr><td class="item">돔 마감</td><td class="val">동판 · 녹청</td>
+            <td class="how">자오선 방향 스탠딩 심 128줄, 민트빛 녹청과 빗물 얼룩.</td>
+            <td class="srcs"><span class="tag est">추정</span>심 수·색</td></tr>
+          <tr><td class="item">층</td><td class="val">기단 위 6개 층</td>
+            <td class="how">층고 6.5&nbsp;m 한 층과 5.2&nbsp;m 다섯 층, 합 32.5&nbsp;m = 열주 높이.</td>
+            <td class="srcs"><span class="tag src">자료</span>층고 5.2~6.5&nbsp;m <span class="tag est">추정</span>배분</td></tr>
+          <tr><td class="item">입면</td><td class="val">화강석 핀 · 청동빛 유리</td>
+            <td class="how">열주 한 칸을 10모듈(약 2.06&nbsp;m)로 나눈 촘촘한 세로 핀, 층마다 얇은 석재 띠.</td>
+            <td class="srcs"><span class="tag est">추정</span>창 리듬</td></tr>
+          <tr><td class="item">LED 그릴</td><td class="val">2007년</td>
+            <td class="how">정면 위층 가운데 격자. 낮에는 짙은 청동, 밤에는 태극기를 띄웁니다(약 18.4&nbsp;×&nbsp;12.4&nbsp;m).</td>
+            <td class="srcs"><span class="tag est">추정</span>크기</td></tr>
+          <tr><td class="item">방위</td><td class="val">정면 142° (남동)</td>
+            <td class="how">물리 하늘과 서울의 실제 해 위치로 낮(오전), 이른 아침, 블루아워를 비춥니다.</td>
+            <td class="srcs"><span class="tag osm">지도</span>건물 윤곽·축</td></tr>
+          <tr><td class="item">캠퍼스</td><td class="val">지도대로 배치</td>
+            <td class="how">잔디광장 네 칸, 분수, 해태 한 쌍, 청동 군상, 도서관·의원회관·의정관·박물관·소통관, 사랑재, 한강.</td>
+            <td class="srcs"><span class="tag osm">지도</span>배치 <span class="tag est">추정</span>분수·해태 크기, 이웃 건물 매스</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="sec" id="plan" aria-labelledby="plan-title">
+    <h2 id="plan-title">평면과 높이를 어떻게 읽었나</h2>
+    <div class="plan">
+      <figure class="plan-fig">
+        <svg viewBox="-104 -70 208 176" role="img" aria-labelledby="plan-svg-title">
+          <title id="plan-svg-title">평면도: 바깥부터 기단 164&nbsp;×&nbsp;123&nbsp;m, 처마 156&nbsp;×&nbsp;115&nbsp;m, 열주 중심선 144&nbsp;×&nbsp;103&nbsp;m와 열주 24개, 본체 122&nbsp;×&nbsp;81&nbsp;m, 돔 밑지름 64&nbsp;m. 아래쪽이 정면이고 대계단이 앞으로 나와 있습니다.</title>
+          <rect class="p-podium" x="-98.8" y="-12" width="16.6" height="25.5"/>
+          <rect class="p-podium" x="82.2" y="-6" width="12.8" height="12"/>
+          <rect class="p-podium" x="-82.2" y="-61.7" width="164.4" height="123.4"/>
+          <rect class="p-stair" x="-25" y="61.7" width="50" height="32.3"/>
+          <g class="p-steps" id="plan-steps"></g>
+          <rect class="p-eave" x="-78" y="-57.5" width="156" height="115"/>
+          <rect class="p-colline" x="-72" y="-51.5" width="144" height="103"/>
+          <rect class="p-body" x="-61" y="-40.5" width="122" height="81"/>
+          <circle class="p-dome" cx="0" cy="0" r="32"/>
+          <g id="plan-cols"></g>
+          <text class="p-txt strong" x="0" y="2.3" text-anchor="middle">돔 64</text>
+          <text class="p-txt strong p-body-lbl" x="-58" y="-33">본체 122&nbsp;×&nbsp;81</text>
+          <path class="p-arrow" d="M0 97v7M-3 101l3 3 3-3"/>
+          <text class="p-txt" x="6" y="103">정면 (남동)</text>
+        </svg>
+        <figcaption>단위 m, 축척대로. 아래쪽이 정면이고 가운데 대계단이 앞으로 32&nbsp;m 나와 있습니다.</figcaption>
+      </figure>
+      <div class="plan-text">
+        <ul class="keys">
+          <li><span class="sw" style="background:var(--surface-3);outline:1px solid var(--ink-3)"></span>기단<span class="mono">164&nbsp;×&nbsp;123</span></li>
+          <li><span class="sw" style="border:1.5px dashed var(--ink-2)"></span>처마<span class="mono">156&nbsp;×&nbsp;115</span></li>
+          <li><span class="sw" style="background:var(--ink);width:8px;height:8px;margin:0 3px"></span>열주 중심선 · 24개<span class="mono">144&nbsp;×&nbsp;103</span></li>
+          <li><span class="sw" style="background:var(--brand-wash);outline:1.5px solid var(--brand)"></span>본체 외벽<span class="mono">122&nbsp;×&nbsp;81</span></li>
+          <li><span class="sw" style="background:var(--dome-wash);outline:1.5px solid var(--dome);border-radius:50%"></span>돔 밑지름<span class="mono">64</span></li>
+        </ul>
+        <p>자료마다 ‘122&nbsp;×&nbsp;81&nbsp;m’가 나오지만 무엇을 잰 값인지는 적혀 있지 않습니다. 첫 버전은 이것을 열주 중심선으로 읽었고,
+          이번에는 <strong>열주 뒤 본체 외벽</strong>으로 읽었습니다.</p>
+        <p>OpenStreetMap의 건물 윤곽(처마 약 156&nbsp;×&nbsp;115&nbsp;m, 기단 약 164&nbsp;×&nbsp;123&nbsp;m, 돔 66&nbsp;m)과 공개된 연면적 81,444&nbsp;m²가
+          모두 이 해석과 맞습니다. 그러면 회랑 깊이는 11&nbsp;m, 열주 칸은 약 20.6&nbsp;m로 거의 정사각형이 됩니다.</p>
+        <p>확정된 도면을 본 것은 아니므로 해석입니다. 스크립트 맨 위의 <code>PLAN_BASIS = 'colonnade'</code>로 바꾸면 예전 해석으로 다시 짓습니다.</p>
+      </div>
+    </div>
+    <div class="plan elev">
+      <figure class="plan-fig">
+        <div class="elev-box">
+          <svg class="elev-svg" viewBox="-3 -69.6 87 70.2" role="img" aria-labelledby="elev-svg-title">
+            <title id="elev-svg-title">정면 입면 오른쪽 절반. 아래부터 기단 5.44&nbsp;m, 열주 32.5&nbsp;m, 처마·파라펫·돔 받침 11.25&nbsp;m, 돔 20&nbsp;m, 합계 69.19&nbsp;m.</title>
+            <path class="e-axis" d="M0 -69.6V0.6"/>
+            <rect class="e-podium" x="0" y="-5.44" width="82.2" height="5.44"/>
+            <rect class="e-body" x="0" y="-37.94" width="61" height="32.5"/>
+            <path class="e-floor" d="M0 -11.94H61"/><path class="e-floor" d="M0 -17.14H61"/><path class="e-floor" d="M0 -22.34H61"/><path class="e-floor" d="M0 -27.54H61"/><path class="e-floor" d="M0 -32.74H61"/>
+            <path class="e-col" d="M8.89 -5.44H11.69L11.94 -37.94H8.64Z"/><path class="e-col" d="M29.46 -5.44H32.26L32.51 -37.94H29.21Z"/><path class="e-col" d="M50.03 -5.44H52.83L53.08 -37.94H49.78Z"/><path class="e-col" d="M70.60 -5.44H73.40L73.65 -37.94H70.35Z"/>
+            <rect class="e-est" x="0" y="-43.94" width="77.6" height="2.8"/>
+            <rect class="e-est" x="0" y="-41.14" width="78" height="3.2"/>
+            <rect class="e-est" x="0" y="-49.19" width="33" height="5.25"/>
+            <path class="e-dome" d="M0 -69.19A35.6 35.6 0 0 1 32 -49.19H0Z"/>
+            <path class="e-ground" d="M0 0H84"/>
+          </svg>
+          <ol class="ladder" aria-hidden="true">
+            <li style="flex-grow:.41" class="sp"></li>
+            <li style="flex-grow:20"><span><b>20&nbsp;m</b> 돔</span></li>
+            <li style="flex-grow:11.25" class="est"><span><b>11.25&nbsp;m</b> 처마·<wbr>파라펫·<wbr>받침</span></li>
+            <li style="flex-grow:32.5"><span><b>32.5&nbsp;m</b> 열주 · 6개 층</span></li>
+            <li style="flex-grow:5.44"><span><b>5.44&nbsp;m</b> 기단</span></li>
+            <li style="flex-grow:.6" class="sp"></li>
+          </ol>
+        </div>
+        <figcaption>정면 입면 오른쪽 절반, 축척대로. 점선이 건물 중심축입니다.</figcaption>
+      </figure>
+      <div class="plan-text">
+        <p>높이 자료는 두 값입니다. 지면에서 기단면까지 <strong>5.44&nbsp;m</strong>, 기단면에서 돔 꼭대기까지 <strong>63.75&nbsp;m</strong>.
+          합이 69.19&nbsp;m이고, 흔히 말하는 ‘70&nbsp;m’가 이것입니다.</p>
+        <p>열주 32.5&nbsp;m와 돔 높이 20&nbsp;m도 자료에 있으니 그 사이에 남는 것은 11.25&nbsp;m입니다. 이것을 처마 슬래브 3.2&nbsp;m,
+          파라펫 2.8&nbsp;m, 돔 받침 5.25&nbsp;m로 나눴습니다. <span class="tag est">추정</span> 이 배분은 사진을 보고 정했습니다.</p>
+        <p>열주 뒤 6개 층은 층고 6.5&nbsp;m 한 층과 5.2&nbsp;m 다섯 층으로 열주 높이를 그대로 채웁니다.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec" id="code" aria-labelledby="code-title">
+    <h2 id="code-title">코드로 짓기</h2>
+    <p class="sec-lead">모든 형상은 <code>build_national_assembly.py</code> 한 파일이 만듭니다. Blender 4.2 이상, 또는 pip의 <code>bpy</code> 5.x로 돌아갑니다.</p>
+    <pre><code><span class="c"># 1) Blender GUI: Scripting 탭에서 파일을 열고 ▶ 실행 (현재 씬을 비우고 낮 장면을 만듭니다)</span>
+
+<span class="c"># 2) Blender 헤드리스</span>
+blender -b -P build_national_assembly.py -- --out ./out --blend --glb --render
+
+<span class="c"># 3) Blender 없이 (pip의 bpy 휠)</span>
+pip install bpy
+python build_national_assembly.py --out ./out --blend --glb --render</code></pre>
+
+    <h3>자주 쓰는 조합</h3>
+    <pre><code><span class="c"># 치수 검사만 (높이·돔·열주 수 등, 어긋나면 종료 코드 1)</span>
+python build_national_assembly.py --validate
+
+<span class="c"># 밤 장면 두 컷만 JPEG로, 빠르게</span>
+python build_national_assembly.py --render --shots night:hero,night:axis --format jpg --samples 64
+
+<span class="c"># 주변 부지 없이 건물만, 이른 아침 장면을 .blend로</span>
+python build_national_assembly.py --blend --tod golden --no-site
+
+<span class="c"># 임시 카메라로 대계단 클로즈업 (좌표는 Blender 기준, 정면이 -Y)</span>
+python build_national_assembly.py --render --cam stair=0,-130,6/0,-80,4/35 --shots day:stair</code></pre>
+
+    <h3>옵션</h3>
+    <div class="table-wrap">
+      <table class="opts">
+        <thead><tr><th scope="col">옵션</th><th scope="col">하는 일</th></tr></thead>
+        <tbody>
+          <tr><td>--out DIR</td><td>결과물 폴더 (기본 <code>./out</code>)</td></tr>
+          <tr><td>--blend</td><td><code>national_assembly.blend</code> 저장</td></tr>
+          <tr><td>--glb</td><td>웹용 GLB 세 개(본관 낮·밤, 캠퍼스)와 <code>hotspots.json</code>, <code>env_night.hdr</code>. Draco 압축 (<code>--glb-scopes</code>, <code>--no-draco</code>)</td></tr>
+          <tr><td>--render</td><td>기본 샷 11장을 Cycles로 렌더 (<code>--samples</code> 기본 128, <code>--size</code> 기본 1920x1080, <code>--format png|jpg</code>)</td></tr>
+          <tr><td>--shots LIST</td><td>렌더할 샷. <code>시간대:카메라</code>를 쉼표로 잇습니다.<br>
+            시간대 <span class="list"><code>day</code> <code>golden</code> <code>night</code></span><br>
+            카메라 <span class="list"><code>hero</code> <code>front</code> <code>aerial</code> <code>axis</code> <code>colonnade</code> <code>dome</code> <code>haetae</code> <code>golden</code></span></td></tr>
+          <tr><td>--tod day|golden|night</td><td>GUI와 <code>--blend</code> 장면의 시간대 (기본 day)</td></tr>
+          <tr><td>--no-site</td><td>잔디·광장·나무·이웃 건물 같은 주변 부지를 빼고 건물만</td></tr>
+          <tr><td>--validate</td><td>높이 69.19&nbsp;m, 돔 64&nbsp;m, 열주 24개, 기단 5.44&nbsp;m 등을 검사하고 실패하면 종료 코드 1</td></tr>
+          <tr><td>--cam name=x,y,z/tx,ty,tz[/lens]</td><td>임시 카메라 추가 (여러 번 가능). <code>--shots day:name</code>으로 렌더</td></tr>
+          <tr><td>--flat</td><td>렌더 전에 재질을 GLB 대표색으로 바꿔 웹에서 보일 모습을 미리 봅니다</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>12개 섹션</h3>
+    <p class="note" style="margin:-4px 0 12px">스크립트는 섹션 12개를 번호 순서로 이어 붙인 한 파일입니다. 파일 안에서 섹션마다 머리 주석으로 나뉩니다.</p>
+    <ol class="sections">
+      <li><code>00_header</code>공유 치수, 좌표계와 방위, 평면 해석</li>
+      <li><code>10_core</code>장면 초기화, 재질 노드·bmesh 도우미</li>
+      <li><code>20_materials</code>화강석·유리·금속·청동 절차적 재질</li>
+      <li><code>30_site</code>지형과 한강, 차로, 잔디광장, 분수, 나무</li>
+      <li><code>35_landmarks</code>해태, 정문, 청동 군상, 이웃 건물, 사랑재</li>
+      <li><code>40_podium</code>기단, 대계단, 옆 계단, 기단 파라펫</li>
+      <li><code>50_body</code>본체 외벽, 화강석 핀, 출입구, LED 그릴</li>
+      <li><code>60_colonnade</code>열주 24개, 처마, 회랑 천장, 옥상</li>
+      <li><code>70_dome</code>돔 받침, 셸, 동판 심, 녹청</li>
+      <li><code>80_lighting</code>물리 하늘, 해 위치, 밤 조명, 카메라</li>
+      <li><code>85_export</code>웹용 GLB 세 개와 핫스팟 앵커</li>
+      <li><code>90_main</code>빌드 순서, 치수 검사, 렌더, 명령줄</li>
+    </ol>
+  </section>
+
+  <section class="sec" id="downloads" aria-labelledby="downloads-title">
+    <h2 id="downloads-title">내려받기</h2>
+    <p class="sec-lead">GLB는 Draco로 압축되어 있습니다. Blender와 대부분의 glTF 뷰어에서 바로 열립니다.</p>
+    <ul class="dl">
+      <li><a href="national_assembly.blend" download data-size><span class="fn">national_assembly.blend</span><span class="ds">낮 장면. 절차적 재질, 조명, 카메라 포함</span><span class="sz"></span></a></li>
+      <li><a href="national_assembly.glb" download data-size><span class="fn">national_assembly.glb</span><span class="ds">본관 · 낮. 위 뷰어의 기본 모델</span><span class="sz"></span></a></li>
+      <li><a href="national_assembly_night.glb" download data-size><span class="fn">national_assembly_night.glb</span><span class="ds">본관 · 밤. 창·LED·조명이 발광 재질</span><span class="sz"></span></a></li>
+      <li><a href="national_assembly_campus.glb" download data-size><span class="fn">national_assembly_campus.glb</span><span class="ds">캠퍼스 전체 · 낮</span><span class="sz"></span></a></li>
+      <li><a href="build_national_assembly.py" download><span class="fn">build_national_assembly.py</span><span class="ds">모델을 만드는 스크립트 한 파일</span><span class="sz">약 7,900줄</span></a></li>
+      <li><a href="hotspots.json" download><span class="fn">hotspots.json</span><span class="ds">뷰어 지점 앵커 (위치·법선·카메라)</span><span class="sz">앵커 13개</span></a></li>
+    </ul>
+    <p class="note">소스와 이력은 <a href="https://github.com/richroro/richroro.github.io/tree/main/national-assembly" target="_blank" rel="noopener">GitHub</a>에 있습니다.</p>
+  </section>
+
+  <section class="sec" id="changes" aria-labelledby="changes-title">
+    <h2 id="changes-title">무엇이 바뀌었나</h2>
+    <p class="sec-lead">첫 버전(v1)은 치수만 맞춘 단순한 덩어리였습니다. 이번 버전에서 달라진 점입니다.</p>
+    <ul class="changes">
+      <li class="head" aria-hidden="true"><span>부분</span><span>첫 버전</span><span>지금</span></li>
+      <li><span class="k">평면</span><span class="was"><span class="lab sr-only">첫 버전:</span>122&nbsp;×&nbsp;81&nbsp;m = 열주 중심선</span><span class="now"><span class="lab sr-only">지금:</span>122&nbsp;×&nbsp;81&nbsp;m = 본체 외벽, 회랑 11&nbsp;m (지도 윤곽과 맞춤)</span></li>
+      <li><span class="k">높이</span><span class="was"><span class="lab sr-only">첫 버전:</span>어림 배분으로 70&nbsp;m</span><span class="now"><span class="lab sr-only">지금:</span>기단 5.44&nbsp;m + 63.75&nbsp;m = 69.19&nbsp;m</span></li>
+      <li><span class="k">열주</span><span class="was"><span class="lab sr-only">첫 버전:</span>위로 가늘어지는 팔각 기둥과 주두</span><span class="now"><span class="lab sr-only">지금:</span>사각에서 팔각으로 넓어지는 기둥, 주두 없음, 돌 드럼 줄눈</span></li>
+      <li><span class="k">본체</span><span class="was"><span class="lab sr-only">첫 버전:</span>기단 위 5개 층, 창 띠</span><span class="now"><span class="lab sr-only">지금:</span>기단 위 6개 층, 촘촘한 화강석 핀과 청동빛 유리</span></li>
+      <li><span class="k">돔</span><span class="was"><span class="lab sr-only">첫 버전:</span>높이 22&nbsp;m 캡, 리브 24개</span><span class="now"><span class="lab sr-only">지금:</span>높이 20&nbsp;m 낮은 캡, 스탠딩 심 128줄, 녹청</span></li>
+      <li><span class="k">대계단</span><span class="was"><span class="lab sr-only">첫 버전:</span>46&nbsp;m, 단면을 밀어낸 한 덩어리</span><span class="now"><span class="lab sr-only">지금:</span>50&nbsp;m, 34단과 참 두 곳</span></li>
+      <li><span class="k">빛</span><span class="was"><span class="lab sr-only">첫 버전:</span>그라데이션 하늘과 태양광 하나</span><span class="now"><span class="lab sr-only">지금:</span>물리 하늘, 정면 142°, 서울의 실제 해 위치. 이른 아침과 블루아워</span></li>
+      <li><span class="k">밤</span><span class="was"><span class="lab sr-only">첫 버전:</span>없음</span><span class="now"><span class="lab sr-only">지금:</span>2007년 경관조명과 LED 그릴 태극기</span></li>
+      <li><span class="k">부지</span><span class="was"><span class="lab sr-only">첫 버전:</span>잔디, 광장, 분수, 가로수</span><span class="now"><span class="lab sr-only">지금:</span>캠퍼스 전체: 분수와 평화와 번영의 상, 해태, 애국애족의 군상, 이웃 건물, 사랑재, 한강</span></li>
+      <li><span class="k">코드</span><span class="was"><span class="lab sr-only">첫 버전:</span>한 파일 약 650줄, 함수 25개</span><span class="now"><span class="lab sr-only">지금:</span>약 7,900줄, 12개 섹션, 치수 검사(<code>--validate</code>), 샷 목록 렌더</span></li>
+      <li><span class="k">웹</span><span class="was"><span class="lab sr-only">첫 버전:</span>GLB 한 개, 자동 회전</span><span class="now"><span class="lab sr-only">지금:</span>낮·밤·캠퍼스 GLB, 지점 13곳, 시점 버튼, Draco 자체 호스팅</span></li>
+    </ul>
+  </section>
+</main>
+
+<footer class="wrap">
+  <p><a href="/">← Cadence 홈</a></p>
+  <p>국회의사당 본관(1975년 준공)을 참고한 학습용 모델입니다. 공개 자료와 사진을 바탕으로 했고 실제 건물과 다른 부분이 있습니다.</p>
+  <p>3D 뷰어: Google model-viewer · Draco 디코더: Google Draco (Apache-2.0) · 지도 윤곽: © OpenStreetMap 기여자</p>
+</footer>
+
+<dialog class="lb" id="lb" aria-label="렌더 크게 보기">
+  <div class="lb-inner">
+    <div class="lb-top">
+      <span class="lb-count" id="lb-count" aria-live="polite"></span>
+      <button type="button" class="icon-btn" id="lb-close" aria-label="닫기" autofocus>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>
+      </button>
+    </div>
+    <div class="lb-stage" id="lb-stage">
+      <img id="lb-img" alt="" width="1920" height="1080">
+    </div>
+    <p class="lb-cap" id="lb-cap"></p>
+    <div class="lb-nav">
+      <button type="button" class="icon-btn lb-prev" id="lb-prev" aria-label="이전 렌더">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg>
+      </button>
+      <button type="button" class="icon-btn lb-next" id="lb-next" aria-label="다음 렌더">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"/></svg>
+      </button>
+    </div>
+  </div>
+</dialog>
+
+<script>
+(function () {
+  'use strict';
+  var $ = function (s, r) { return (r || document).querySelector(s); };
+  var $$ = function (s, r) { return Array.prototype.slice.call((r || document).querySelectorAll(s)); };
+  var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var narrowMQ = window.matchMedia('(max-width: 600px)');
+
+  /* ---------------- 3D 뷰어 ---------------- */
+  var mv = $('#mv'), stage = $('#stage'), vinfo = $('#vinfo'), presetBox = $('#presets');
+  var SRC = {
+    'building:day': 'national_assembly.glb',
+    'building:night': 'national_assembly_night.glb',
+    'campus:day': 'national_assembly_campus.glb'
+  };
+  var LOOK = {
+    day:   { env: 'legacy', exposure: 0.85, shadow: 1 },
+    night: { env: 'env_night.hdr', exposure: 1.1, shadow: 0 }
+  };
+  var LIMITS = {
+    building: { min: 'auto 10deg 40m', max: 'auto 88deg 700m', fov: 'auto', maxFov: 'auto' },
+    campus:   { min: 'auto 10deg 60m', max: 'auto 88deg 1500m', fov: 'auto', maxFov: 'auto' },
+    under:    { min: 'auto 60deg 10m', max: 'auto 136deg 44m', fov: '62deg', maxFov: '70deg' }
+  };
+  /* 시점: orbit(넓은 화면) / phone(세로 화면) / target. 그 사이 비율의 화면은 둘을 섞습니다. */
+  var PRESETS = {
+    building: [
+      { id: 'q', label: '3/4', orbit: '-28deg 70deg 42%', phone: '-28deg 64deg 68%', target: '0m 16m 6m' },
+      { id: 'front', label: '정면', orbit: '0deg 87deg 42%', phone: '0deg 86deg 78%', target: '0m 30m 0m' },
+      { id: 'air', label: '항공', orbit: '-35deg 30deg 55%', phone: '-35deg 32deg 85%', target: '0m 6m 0m' },
+      { id: 'under', label: '회랑 아래', orbit: '-57deg 133deg 42m', phone: '-57deg 128deg 42m', target: '-52m 36m 42m', limits: 'under' }
+    ],
+    campus: [
+      { id: 'q', label: '3/4', orbit: '-30deg 46deg 25%', phone: '-26deg 36deg 30%', target: '0m 0m 150m' },
+      { id: 'gate', label: '정문에서', orbit: '0deg 84deg 420m', phone: '0deg 83deg 560m', target: '0m 22m 0m' },
+      { id: 'air', label: '항공', orbit: '-12deg 16deg 38%', phone: '-12deg 16deg 52%', target: '0m 0m 100m' },
+      { id: 'river', label: '한강 쪽', orbit: '155deg 62deg 35%', phone: '155deg 60deg 46%', target: '0m 0m 0m' }
+    ]
+  };
+  /* 작은 조각상 지점은 내보낸 orbit이 멀고 높아 길바닥이 많이 보이므로 페이지에서 시점을 덮어씁니다.
+     (hotspots.json을 다시 내보내도 유지됩니다) */
+  var HS_VIEW = {
+    bronze: { orbit: '-20deg 78deg 27m', phone: '-20deg 76deg 38m', target: '-29.5m 5m 90m' },
+    haetae: { orbit: '-10deg 86deg 17m', phone: '-10deg 86deg 20m', target: '-30m 4.5m 372m' }
+  };
+  var INFO = {
+    'building:day': '<b>본관 · 낮</b> 받침판 위의 본관과 앞마당. 점을 누르면 그 부위로 갑니다.',
+    'building:night': '<b>본관 · 밤</b> 2007년 경관조명과 LED 그릴의 태극기. 켜진 창은 발광 재질입니다.',
+    'campus:day': '<b>캠퍼스 · 낮</b> 잔디광장, 분수, 해태상, 이웃 건물, 사랑재, 한강까지. 캠퍼스는 낮 모델만 있습니다.'
+  };
+  var ALT = {
+    'building:day': '국회의사당 본관 3D 모델, 낮. 기단 위 열주 24개가 처마를 받치고 가운데에 녹청 돔이 있습니다.',
+    'building:night': '국회의사당 본관 3D 모델, 밤. 열주와 처마, 돔에 조명이 들어오고 정면에 태극기가 빛납니다.',
+    'campus:day': '국회 캠퍼스 3D 모델, 낮. 본관 앞 잔디광장과 분수, 둘레의 국회 건물들과 한강.'
+  };
+  var state = { scope: 'building', tod: 'day', wantNight: false, preset: 'q', limits: 'building', showHs: true, hotspots: [], active: null };
+  var ready = false, loadedOnce = false;
+
+  function key() { return state.scope + ':' + state.tod; }
+
+  /* 0 = 가로로 넓은 뷰어, 1 = 세로로 긴 뷰어(휴대폰). 화면 폭이 아니라 뷰어의 가로세로 비율로 정합니다. */
+  function compactness() {
+    var w = stage.clientWidth, h = stage.clientHeight;
+    if (!w || !h) return narrowMQ.matches ? 1 : 0;
+    return Math.max(0, Math.min(1, (2 - w / h) / 1.2));
+  }
+  function blendOrbit(a, b, t) {
+    if (!b || t <= 0) return a;
+    if (t >= 1) return b;
+    var A = a.trim().split(/\s+/), B = b.trim().split(/\s+/), out = [], re = /^(-?[\d.]+)([a-z%]*)$/;
+    if (A.length !== 3 || B.length !== 3) return t < 0.5 ? a : b;
+    for (var i = 0; i < 3; i++) {
+      var ma = re.exec(A[i]), mb = re.exec(B[i]);
+      if (!ma || !mb || ma[2] !== mb[2]) return t < 0.5 ? a : b;
+      out.push((+ma[1] + (+mb[1] - +ma[1]) * t).toFixed(2) + ma[2]);
+    }
+    return out.join(' ');
+  }
+
+  function setPressed(sel, attr, val) {
+    $$(sel).forEach(function (b) { b.setAttribute('aria-pressed', String(b.dataset[attr] === val)); });
+  }
+
+  function applyLimits(name) {
+    var l = LIMITS[name];
+    state.limits = name;
+    mv.minCameraOrbit = l.min;
+    mv.maxCameraOrbit = l.max;
+    mv.maxFieldOfView = l.maxFov;
+    mv.fieldOfView = l.fov;
+  }
+
+  function presetList() { return PRESETS[state.scope]; }
+
+  function applyPreset(id, jump) {
+    var p = presetList().filter(function (x) { return x.id === id; })[0] || presetList()[0];
+    state.preset = p.id;
+    clearActiveHotspot();
+    applyLimits(p.limits || state.scope);
+    lastCompact = compactness();
+    mv.cameraTarget = p.target;
+    mv.cameraOrbit = blendOrbit(p.orbit, p.phone, lastCompact);
+    if (jump || reduceMotion) mv.jumpCameraToGoal();
+    $$('.pbtn', presetBox).forEach(function (b) { b.setAttribute('aria-pressed', String(b.dataset.preset === p.id)); });
+    showInfo();
+  }
+
+  /* 본관 시점 버튼은 HTML에 미리 있어 자리가 바뀌지 않습니다. 범위가 바뀔 때만 다시 만듭니다. */
+  function renderPresets() {
+    if (presetBox.dataset.scope !== state.scope) {
+      $$('.pbtn', presetBox).forEach(function (b) { b.remove(); });
+      presetList().forEach(function (p) {
+        var b = document.createElement('button');
+        b.type = 'button'; b.className = 'pbtn'; b.dataset.preset = p.id; b.textContent = p.label;
+        presetBox.appendChild(b);
+      });
+      presetBox.dataset.scope = state.scope;
+    }
+    $$('.pbtn', presetBox).forEach(function (b) { b.setAttribute('aria-pressed', String(b.dataset.preset === state.preset)); });
+  }
+  presetBox.addEventListener('click', function (e) {
+    var b = e.target.closest('.pbtn');
+    if (b && ready && !b.disabled) applyPreset(b.dataset.preset);
+  });
+
+  function showInfo(h) {
+    if (h) vinfo.innerHTML = '<b></b> ';
+    if (h) { vinfo.firstChild.textContent = h.label; vinfo.appendChild(document.createTextNode(h.desc)); }
+    else vinfo.innerHTML = INFO[key()];
+  }
+
+  /* 모델 바꾸기. keepCamera: 같은 건물의 낮↔밤이면 카메라를 그대로 둡니다. */
+  function loadModel(keepCamera) {
+    var look = LOOK[state.tod];
+    if (keepCamera && loadedOnce) {
+      var o = mv.getCameraOrbit(), t = mv.getCameraTarget();
+      mv.cameraOrbit = o.theta + 'rad ' + o.phi + 'rad ' + o.radius + 'm';
+      mv.cameraTarget = t.x + 'm ' + t.y + 'm ' + t.z + 'm';
+    } else {
+      state.preset = 'q';
+      applyPreset('q', true);
+    }
+    mv.environmentImage = look.env;
+    mv.exposure = look.exposure;
+    mv.shadowIntensity = look.shadow;
+    mv.alt = ALT[key()];
+    stage.dataset.tod = state.tod;
+    setPressed('button[data-scope]', 'scope', state.scope);
+    setPressed('button[data-tod]', 'tod', state.tod);
+    $('button[data-tod="night"]').disabled = state.scope === 'campus';
+    hideMsg();
+    setProgress(0);
+    stage.classList.add('is-loading');
+    mv.src = SRC[key()];
+    renderPresets();
+    renderHotspots();
+    showInfo();
+  }
+
+  function setProgress(p) {
+    $('#progress-fill').style.transform = 'scaleX(' + p + ')';
+    $('#loading').textContent = '모델 불러오는 중 ' + Math.round(p * 100) + '%';
+  }
+
+  function showMsg(text, withFallback) {
+    var m = $('#mv-msg');
+    $('#mv-msg-text').textContent = text;
+    m.classList.toggle('has-fallback', !!withFallback);
+    $('#mv-retry').hidden = !!withFallback;
+    m.hidden = false;
+    stage.classList.remove('is-loading');
+  }
+  function hideMsg() { $('#mv-msg').hidden = true; }
+
+  /* 핫스팟 */
+  var arrivalRaf = 0;
+  function clearActiveHotspot() {
+    state.active = null;
+    cancelAnimationFrame(arrivalRaf);
+    $$('.hs', mv).forEach(function (b) { b.classList.remove('is-active', 'arrived'); });
+  }
+  /* 카메라가 멈추면(몇 프레임 연속 그대로면) 선택한 점을 흐리게 해 그 점이 가리키는 부분을 가리지 않게 합니다. */
+  function watchArrival() {
+    cancelAnimationFrame(arrivalRaf);
+    var prev = null, calm = 0, t0 = performance.now(), id = state.active;
+    (function tick() {
+      if (state.active !== id) return;
+      var o = mv.getCameraOrbit(), g = mv.getCameraTarget(), now = performance.now();
+      var cur = [o.theta, o.phi, o.radius, g.x, g.y, g.z];
+      if (prev) {
+        var d = Math.abs(cur[0] - prev[0]) + Math.abs(cur[1] - prev[1]) +
+          (Math.abs(cur[2] - prev[2]) + Math.abs(cur[3] - prev[3]) + Math.abs(cur[4] - prev[4]) + Math.abs(cur[5] - prev[5])) / Math.max(1, o.radius);
+        calm = d < 1e-4 ? calm + 1 : 0;
+      }
+      prev = cur;
+      if ((calm >= 4 && now - t0 > 250) || now - t0 > 6000) {
+        var b = $('.hs.is-active', mv);
+        if (b) b.classList.add('arrived');
+        return;
+      }
+      arrivalRaf = requestAnimationFrame(tick);
+    })();
+  }
+
+  function flyTo(h, btn) {
+    var v = HS_VIEW[h.id] || {};
+    applyLimits(state.scope);
+    mv.minCameraOrbit = 'auto 10deg 12m';   /* 지점 보기에서는 더 가까이 갈 수 있게 */
+    state.preset = null;
+    $$('.pbtn', presetBox).forEach(function (b) { b.setAttribute('aria-pressed', 'false'); });
+    mv.cameraTarget = v.target || h.data_position;
+    var t = compactness();
+    mv.cameraOrbit = v.orbit ? blendOrbit(v.orbit, v.phone || v.orbit, t) : scaleOrbit(h.orbit, 1 + 0.7 * t);
+    if (reduceMotion) mv.jumpCameraToGoal();
+    $$('.hs', mv).forEach(function (b) { b.classList.remove('arrived'); b.classList.toggle('is-active', b === btn); });
+    state.active = h.id;
+    watchArrival();
+    showInfo(h);
+  }
+
+  /* 세로로 긴 화면은 가로로 보이는 폭이 좁으므로 지점 카메라를 조금 뒤로 뺍니다. */
+  function scaleOrbit(orbit, k) {
+    var m = /^(\S+)\s+(\S+)\s+([\d.]+)m$/.exec(orbit.trim());
+    return m && k !== 1 ? m[1] + ' ' + m[2] + ' ' + (parseFloat(m[3]) * k).toFixed(1) + 'm' : orbit;
+  }
+
+  /* 내보낸 설명 문자열 다듬기: 122 x 81 → 122 × 81, '5.44 m 까지' → '5.44 m까지', 숫자와 단위는 붙여 둡니다. */
+  function tidy(t) {
+    return String(t || '')
+      .replace(/(\d)\s*[xX]\s*(\d)/g, '$1 × $2')
+      .replace(/(\d) (m|t) (까지|에서|로|으로|의|를|을|이|가)(?=\s|$|[,.·)])/g, '$1 $2$3')
+      .replace(/(\d) (m²|m|t|km)(?![A-Za-z0-9])/g, '$1\u00A0$2')
+      .replace(/(\d) × (\d)/g, '$1\u00A0×\u00A0$2');
+  }
+
+  function renderHotspots() {
+    $$('.hs', mv).forEach(function (b) { b.remove(); });
+    var list = state.hotspots.filter(function (h) { return (h.scopes || []).indexOf(state.scope) >= 0; });
+    list.forEach(function (h) {
+      var b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'hs';
+      b.slot = 'hotspot-' + h.id;
+      b.dataset.position = h.data_position;
+      b.dataset.normal = h.data_normal;
+      b.dataset.visibilityAttribute = 'visible';
+      b.setAttribute('aria-label', h.label + ': ' + h.desc);
+      var s = document.createElement('span');
+      s.className = 'hs-label'; s.textContent = h.label; s.setAttribute('aria-hidden', 'true');
+      b.appendChild(s);
+      b.addEventListener('click', function () { flyTo(h, b); });
+      mv.appendChild(b);
+    });
+    $('#hs-toggle').classList.toggle('is-empty', list.length === 0);
+    $('#hs-toggle').disabled = list.length === 0;
+  }
+
+  function loadHotspots() {
+    return fetch('hotspots.json', { cache: 'no-cache' })
+      .then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); })
+      .then(function (list) {
+        state.hotspots = (Array.isArray(list) ? list : []).filter(function (h) {
+          return h && h.id && h.data_position && h.orbit;
+        }).map(function (h) {
+          return { id: String(h.id), label: tidy(h.label || h.id), desc: tidy(h.desc), scopes: h.scopes || ['building'],
+                   data_position: h.data_position, data_normal: h.data_normal || '0m 1m 0m', orbit: h.orbit };
+        });
+        renderHotspots();
+      })
+      .catch(function () { state.hotspots = []; renderHotspots(); });
+  }
+
+  $('#hs-toggle').addEventListener('click', function () {
+    state.showHs = !state.showHs;
+    this.setAttribute('aria-pressed', String(state.showHs));
+    stage.classList.toggle('hs-off', !state.showHs);
+  });
+
+  $$('button[data-scope]').forEach(function (b) {
+    b.addEventListener('click', function () {
+      if (!ready || b.dataset.scope === state.scope) return;
+      state.scope = b.dataset.scope;
+      if (state.scope === 'campus') { state.wantNight = state.tod === 'night'; state.tod = 'day'; }
+      else if (state.wantNight) { state.tod = 'night'; }
+      loadModel(false);
+    });
+  });
+  $$('button[data-tod]').forEach(function (b) {
+    b.addEventListener('click', function () {
+      if (!ready || b.disabled || b.dataset.tod === state.tod) return;
+      state.tod = b.dataset.tod;
+      state.wantNight = state.tod === 'night';
+      loadModel(true);
+    });
+  });
+
+  mv.addEventListener('progress', function (e) { setProgress(e.detail.totalProgress || 0); });
+  mv.addEventListener('load', function () {
+    loadedOnce = true;
+    setProgress(1);
+    stage.classList.remove('is-loading');
+    document.body.dataset.loaded = key();
+  });
+  mv.addEventListener('error', function (e) {
+    if (e.detail && e.detail.type && e.detail.type !== 'loadfailure') return;
+    showMsg('3D 모델(' + SRC[key()] + ')을 불러오지 못했습니다. 연결을 확인하고 다시 시도해 주세요.');
+    document.body.dataset.err = 'load';
+  });
+  mv.addEventListener('camera-change', function (e) {
+    var user = e.detail && e.detail.source === 'user-interaction';
+    if (user && state.preset) {
+      state.preset = null;
+      $$('.pbtn', presetBox).forEach(function (b) { b.setAttribute('aria-pressed', 'false'); });
+    }
+    if (user && state.active) clearActiveHotspot();
+  });
+  $('#mv-retry').addEventListener('click', function () {
+    hideMsg(); delete document.body.dataset.err;
+    var s = SRC[key()];
+    mv.src = null;
+    setTimeout(function () { stage.classList.add('is-loading'); mv.src = s; }, 50);
+  });
+
+  var mvTimer = setTimeout(function () {
+    if (!window.customElements || !customElements.get('model-viewer')) failViewer();
+  }, 20000);
+  function failViewer() {
+    showMsg('3D 뷰어 스크립트를 불러오지 못했습니다. 아래 렌더와 내려받기는 그대로 볼 수 있습니다.', true);
+    $$('.vbar button').forEach(function (b) { b.disabled = true; });
+    document.body.dataset.err = 'script';
+  }
+  if (document.documentElement.dataset.mvfail) failViewer();
+  var mvScript = $('script[src*="model-viewer"]');
+  if (mvScript) mvScript.addEventListener('error', failViewer);
+
+  if (window.customElements) {
+    customElements.whenDefined('model-viewer').then(function (MV) {
+      clearTimeout(mvTimer);
+      MV.dracoDecoderLocation = new URL('draco/', location.href).href;
+      /* 스크립트가 늦게 도착해 이미 실패 안내를 띄웠다면 되돌립니다. */
+      $$('.vbar button').forEach(function (b) { b.disabled = false; });
+      delete document.body.dataset.err;
+      ready = true;
+      loadModel(false);
+      loadHotspots();
+    });
+  }
+  /* 뷰어 비율이 바뀌면(회전, 창 크기) 사용자가 카메라를 움직이지 않은 경우에만 시점을 다시 맞춥니다. */
+  var lastCompact = compactness(), roTimer = 0;
+  function onStageResize() {
+    clearTimeout(roTimer);
+    roTimer = setTimeout(function () {
+      var t = compactness();
+      if (ready && state.preset && Math.abs(t - lastCompact) > 0.04) applyPreset(state.preset);
+    }, 150);
+  }
+  if (window.ResizeObserver) new ResizeObserver(onStageResize).observe(stage);
+  else window.addEventListener('resize', onStageResize);
+
+  /* 전체 화면 (지원하는 브라우저만) */
+  var card = $('.viewer'), fsBtn = $('#fs-btn');
+  var fsElement = function () { return document.fullscreenElement || document.webkitFullscreenElement || null; };
+  var reqFs = card.requestFullscreen || card.webkitRequestFullscreen;
+  var exitFs = document.exitFullscreen || document.webkitExitFullscreen;
+  if (reqFs && exitFs) {
+    fsBtn.hidden = false;
+    fsBtn.addEventListener('click', function () {
+      if (fsElement()) exitFs.call(document);
+      else { var r = reqFs.call(card); if (r && r.catch) r.catch(function () {}); }
+    });
+    var onFs = function () {
+      var on = fsElement() === card;
+      fsBtn.setAttribute('aria-pressed', String(on));
+      fsBtn.setAttribute('aria-label', on ? '전체 화면 끝내기' : '전체 화면으로 보기');
+    };
+    document.addEventListener('fullscreenchange', onFs);
+    document.addEventListener('webkitfullscreenchange', onFs);
+  }
+
+  /* ---------------- 비교 슬라이더 ---------------- */
+  var ba = $('#ba'), range = $('#ba-range');
+  function setBa(v) {
+    v = Math.max(0, Math.min(100, v));
+    ba.style.setProperty('--pos', v + '%');
+    range.value = Math.round(v);
+    range.setAttribute('aria-valuetext', '첫 버전 ' + Math.round(v) + '%, 업그레이드 ' + (100 - Math.round(v)) + '%');
+    $('#ba-tag-before').style.opacity = v < 14 ? 0 : 1;
+    $('#ba-tag-after').style.opacity = v > 86 ? 0 : 1;
+  }
+  range.addEventListener('input', function () { setBa(+range.value); });
+  /* 마우스는 누르는 곳으로 바로, 터치는 가로로 끌거나 톡 칠 때만 움직입니다(세로로 끌면 페이지 스크롤). */
+  var drag = null;
+  function fromEvent(e) { var r = ba.getBoundingClientRect(); setBa((e.clientX - r.left) / r.width * 100); }
+  function capture(e) { try { ba.setPointerCapture(e.pointerId); } catch (_) {} }
+  ba.addEventListener('pointerdown', function (e) {
+    if (e.pointerType === 'touch') { drag = { x: e.clientX, y: e.clientY, on: false }; return; }
+    if (e.button !== 0) return;
+    drag = { on: true }; capture(e); fromEvent(e);
+    range.focus({ preventScroll: true });
+  });
+  ba.addEventListener('pointermove', function (e) {
+    if (!drag) return;
+    if (!drag.on) {
+      var dx = Math.abs(e.clientX - drag.x), dy = Math.abs(e.clientY - drag.y);
+      if (dx < 8 && dy < 8) return;
+      if (dy >= dx) { drag = null; return; }
+      drag.on = true; capture(e);
+    }
+    fromEvent(e);
+  });
+  ba.addEventListener('pointerup', function (e) { if (drag && !drag.on) fromEvent(e); drag = null; });
+  ['pointercancel', 'lostpointercapture'].forEach(function (t) { ba.addEventListener(t, function () { drag = null; }); });
+  setBa(50);
+
+  /* ---------------- 갤러리 · 라이트박스 ---------------- */
+  var lb = $('#lb'), lbImg = $('#lb-img'), links = $$('#gallery a'), idx = 0, opener = null;
+  var items = links.map(function (a) {
+    var fig = a.closest('figure');
+    return { href: a.getAttribute('href'), alt: a.querySelector('img').alt, cap: fig.querySelector('figcaption') };
+  });
+  function show(i) {
+    idx = (i + items.length) % items.length;
+    var it = items[idx];
+    lbImg.src = it.href;
+    lbImg.alt = it.alt;
+    var cap = $('#lb-cap');
+    cap.textContent = '';
+    var b = document.createElement('b'); b.textContent = it.cap.querySelector('b').textContent;
+    cap.appendChild(b);
+    cap.appendChild(document.createTextNode(it.cap.textContent.replace(b.textContent, '')));
+    $('#lb-count').textContent = (idx + 1) + ' / ' + items.length;
+    [idx + 1, idx - 1].forEach(function (j) { var im = new Image(); im.src = items[(j + items.length) % items.length].href; });
+  }
+  if (lb && typeof lb.showModal === 'function') {
+    links.forEach(function (a, i) {
+      a.addEventListener('click', function (e) {
+        if (e.metaKey || e.ctrlKey || e.shiftKey || e.button !== 0) return;
+        e.preventDefault();
+        opener = a;
+        show(i);
+        lb.showModal();
+        $('#lb-close').focus();
+      });
+    });
+    $('#lb-prev').addEventListener('click', function () { show(idx - 1); });
+    $('#lb-next').addEventListener('click', function () { show(idx + 1); });
+    $('#lb-close').addEventListener('click', function () { lb.close(); });
+    lb.addEventListener('keydown', function (e) {
+      if (e.key === 'ArrowLeft') { e.preventDefault(); show(idx - 1); }
+      else if (e.key === 'ArrowRight') { e.preventDefault(); show(idx + 1); }
+    });
+    var swiped = false;
+    lb.addEventListener('click', function (e) {
+      if (swiped) { swiped = false; return; }
+      if (e.target === lb || e.target.classList.contains('lb-inner') || e.target.id === 'lb-stage') lb.close();
+    });
+    lb.addEventListener('close', function () { if (opener) opener.focus({ preventScroll: true }); });
+    var sx = null;
+    $('#lb-stage').addEventListener('pointerdown', function (e) { sx = e.clientX; });
+    $('#lb-stage').addEventListener('pointerup', function (e) {
+      if (sx === null) return;
+      var dx = e.clientX - sx; sx = null;
+      if (Math.abs(dx) > 50) { swiped = true; show(idx + (dx < 0 ? 1 : -1)); setTimeout(function () { swiped = false; }, 400); }
+    });
+  }
+
+  /* ---------------- 평면도: 열주 24개와 계단 줄 ---------------- */
+  (function () {
+    var ns = 'http://www.w3.org/2000/svg', g = $('#plan-cols'), st = $('#plan-steps');
+    if (!g) return;
+    var L = 144, W = 103, pts = [];
+    for (var i = 0; i < 8; i++) { var x = -L / 2 + L * i / 7; pts.push([x, -W / 2], [x, W / 2]); }
+    for (var j = 1; j < 5; j++) { var y = -W / 2 + W * j / 5; pts.push([-L / 2, y], [L / 2, y]); }
+    pts.forEach(function (p) {
+      var r = document.createElementNS(ns, 'rect');
+      r.setAttribute('class', 'p-col');
+      r.setAttribute('x', (p[0] - 1.6).toFixed(2)); r.setAttribute('y', (p[1] - 1.6).toFixed(2));
+      r.setAttribute('width', '3.2'); r.setAttribute('height', '3.2');
+      g.appendChild(r);
+    });
+    for (var k = 1; k < 16; k++) {
+      var l = document.createElementNS(ns, 'line');
+      var yy = 61.7 + 32.3 * k / 16;
+      l.setAttribute('x1', '-23.5'); l.setAttribute('x2', '23.5');
+      l.setAttribute('y1', yy.toFixed(2)); l.setAttribute('y2', yy.toFixed(2));
+      st.appendChild(l);
+    }
+  })();
+
+  /* ---------------- 내려받기 크기 (한가할 때) ---------------- */
+  function fmtSize(n) { return n >= 1048576 ? (n / 1048576).toFixed(1) + ' MB' : Math.max(1, Math.round(n / 1024)) + ' KB'; }
+  function fillSizes() {
+    $$('.dl a[data-size]').forEach(function (a) {
+      fetch(a.getAttribute('href'), { method: 'HEAD' }).then(function (r) {
+        var n = +r.headers.get('content-length');
+        if (r.ok && n > 0) a.querySelector('.sz').textContent = fmtSize(n);
+      }).catch(function () {});
+    });
+  }
+  window.addEventListener('load', function () {
+    (window.requestIdleCallback || function (f) { setTimeout(f, 1500); })(fillSizes);
+  });
+})();
+</script>
+</body>
+</html>

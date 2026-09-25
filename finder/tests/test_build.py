@@ -165,6 +165,14 @@ class Pages(unittest.TestCase):
         self.assertIn("/finder/s/AAPL/", h)
         self.assertNotIn("337", h)  # 가격이 들어가면 매일 파일이 바뀐다
 
+    def test_etf_page(self):
+        r = {"id": "SPY", "m": "AMEX", "n": "SPDR S&P 500 ETF TRUST", "ko": "", "sec": "미국 지수", "ind": "SPDR", "ty": "E"}
+        h = pages.page_html(r)
+        self.assertIn("ETF 시세·보수·분석", h)
+        self.assertIn("NYSE Arca", h)
+        self.assertIn('"InvestmentFund"', h)
+        self.assertIn("/finder/?t=E&amp;m=US", h)
+
     def test_escaping(self):
         r = {"id": "X", "m": "NYSE", "n": 'A&B "<Co>"', "ko": "", "sec": "", "ind": ""}
         h = pages.page_html(r)
@@ -429,6 +437,78 @@ class Sources(unittest.TestCase):
             build.tv_post = orig
         self.assertEqual(got, {"pe": "price_earnings_ttm", "roe": "return_on_equity_fq"})
         self.assertIn("non_gaap_price_to_earnings_per_share_forecast_next_fy", seen)
+
+    def test_etf_category_and_issuer(self):
+        self.assertEqual(build.etf_category("ProShares UltraPro QQQ", True), "레버리지·인버스")
+        self.assertEqual(build.etf_category("JPMorgan Ultra-Short Income ETF", True), "단기금리")
+        self.assertEqual(build.etf_category("Vanguard Short-Term Bond ETF", True), "채권")
+        self.assertEqual(build.etf_category("Invesco QQQ Trust, Series 1", True), "미국 지수")
+        self.assertEqual(build.etf_category("iShares MSCI Emerging Markets ETF", True), "해외 주식")
+        self.assertEqual(build.etf_category("KODEX 200", False, "국내 지수"), "국내 지수")
+        self.assertEqual(build.etf_category("TIGER 미국채10년선물", False, "해외 주식"), "채권")
+        self.assertEqual(build.etf_category("KODEX 200타겟위클리커버드콜", False, "국내 지수"), "커버드콜")
+        self.assertEqual(build.etf_category("Global X Russell 2000 ETF", True), "미국 지수")   # 운용사 이름의 Global
+        self.assertEqual(build.etf_category("iShares MSCI EAFE Value ETF", True), "해외 주식")
+        self.assertEqual(build.etf_category("Innovator U.S. Equity Power Buffer ETF - January", True), "버퍼·옵션 전략")
+        self.assertEqual(build.etf_category("KODEX TDF2050액티브", False, "해외 주식"), "자산배분")
+        self.assertEqual(build.etf_issuer("FT Vest U.S. Equity Deep Buffer ETF - March", True), "First Trust")
+        self.assertEqual(build.etf_issuer("SPDR S&P 500 ETF TRUST", True), "SPDR")
+        self.assertEqual(build.etf_issuer("iShares Core S&P 500 ETF", True), "iShares")
+        self.assertEqual(build.etf_issuer("TIGER 반도체", False), "TIGER")
+
+    def test_naver_etf_list_and_chart(self):
+        j = {"result": {"etfItemList": [
+            {"itemcode": "069500", "etfTabCode": 1, "itemname": "KODEX 200", "nowVal": 45210, "changeRate": 1.23,
+             "nav": 45250.1, "marketSum": 91234},
+            {"itemcode": "122630", "etfTabCode": 3, "itemname": "KODEX 레버리지", "nowVal": 30000, "changeRate": -0.5,
+             "marketSum": 20000},
+            {"itemcode": "", "itemname": "빈 줄", "nowVal": 1}]}}
+        rows = build.parse_naver_etfs(j)
+        self.assertEqual([r["id"] for r in rows], ["069500", "122630"])
+        self.assertEqual(rows[0]["mc"], 91234 * 1e8)      # 억 원 → 원
+        self.assertEqual(rows[0]["sec"], "국내 지수")
+        self.assertEqual(rows[1]["sec"], "레버리지·인버스")
+        self.assertEqual(rows[0]["ind"], "KODEX")
+        xml = ('<chartdata symbol="069500"><item data="20260922|44000|44500|43900|44200|1000" />'
+               '<item data="20260923|44300|45300|44200|45210|2000" /></chartdata>')
+        h = build.parse_naver_chart(xml)
+        self.assertEqual(h["dates"][-1], dt.date(2026, 9, 23))
+        self.assertEqual(list(h["close"]), [44200.0, 45210.0])
+        self.assertEqual(h["val"][-1], 45210.0 * 2000)
+        self.assertIsNone(build.parse_naver_chart("<chartdata/>"))
+
+    def test_tv_etfs(self):
+        calls = []
+
+        def fake(market, body):
+            calls.append(body)
+            cols = body["columns"]
+            if "filter" in body and body["filter"][0]["left"] == "typespecs":
+                if cols == ["name"]:
+                    return {"data": [{"s": "AMEX:SPY", "d": ["SPY"]}, {"s": "NASDAQ:QQQ", "d": ["QQQ"]}]}
+                if len(cols) == 2:  # 열 시험
+                    ok = {"aum", "expense_ratio", "dividends_yield_current", "description", "close", "change", "volume"}
+                    return {"data": [{"s": "AMEX:SPY", "d": ["SPY", 1 if cols[1] in ok else None]}]}
+                return {"data": [
+                    {"s": "AMEX:SPY", "d": ["SPY", 6.5e11, 0.0945, 1.1, "SPDR S&P 500 ETF TRUST", 660.1, 0.4, 7e7]},
+                    {"s": "NASDAQ:TQQQ", "d": ["TQQQ", 2.8e10, 0.82, 0.9, "ProShares UltraPro QQQ", 90.0, -1.2, 5e7]},
+                    {"s": "OTC:ZZZ", "d": ["ZZZ", 1e9, 0.5, 0, "Some OTC Fund", 10, 0, 1]},
+                    {"s": "AMEX:TINY", "d": ["TINY", 1e6, 0.5, 0, "Tiny ETF", 10, 0, 1]}]}
+            # 첫 필터 전에는 주식이 섞여 나온다고 가정
+            return {"data": [{"s": "NASDAQ:NVDA", "d": ["NVDA"]}, {"s": "AMEX:SPY", "d": ["SPY"]}]}
+
+        orig = build.tv_post
+        build.tv_post = fake
+        try:
+            rows = build.load_us_etfs()
+        finally:
+            build.tv_post = orig
+        ids = [r["id"] for r in rows]
+        self.assertEqual(ids, ["SPY", "TQQQ"])           # 장외(OTC)·순자산 2천만 달러 미만은 뺀다
+        spy = rows[0]
+        self.assertEqual((spy["m"], spy["er"], spy["mc"], spy["sec"], spy["ind"]),
+                         ("AMEX", 0.0945, 6.5e11, "미국 지수", "SPDR"))
+        self.assertEqual(rows[1]["sec"], "레버리지·인버스")
 
     def test_nasdaq_earnings(self):
         seen = []

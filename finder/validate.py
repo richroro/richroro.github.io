@@ -14,7 +14,7 @@ import sys
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 REQUIRED = ["id", "m", "n", "p", "d1", "mc", "mcu", "r252", "rsi", "sp", "spl", "sph", "nd", "pe", "pb", "dy"]
-MARKETS = {"NASDAQ", "NYSE", "AMEX", "KOSPI", "KOSDAQ", "KONEX"}
+MARKETS = {"NASDAQ", "NYSE", "AMEX", "CBOE", "KOSPI", "KOSDAQ", "KONEX"}
 
 
 def check(path: str, min_rows: int = 5000, stale_days: int = 5, today: dt.date | None = None):
@@ -52,8 +52,17 @@ def check(path: str, min_rows: int = 5000, stale_days: int = 5, today: dt.date |
     if bad > len(rows) * 0.01:
         errors.append(f"가격이 이상한 종목 {bad}개")
     by_g = {"US": [], "KR": []}
+    etfs = {"US": 0, "KR": 0}
     for v in rows:
-        by_g["KR" if v[ix["m"]] in ("KOSPI", "KOSDAQ", "KONEX") else "US"].append(v)
+        g = "KR" if v[ix["m"]] in ("KOSPI", "KOSDAQ", "KONEX") else "US"
+        if "ty" in ix and v[ix["ty"]] == "E":  # ETF 는 재무 지표가 없어 주식 비율 검사에서 뺀다
+            etfs[g] += 1
+        else:
+            by_g[g].append(v)
+    if "ty" in ix:
+        for g, n in etfs.items():
+            if n < 100:
+                warns.append(f"{g} ETF {n}개 — 목록을 못 받았을 수 있습니다")
     for g, rs in by_g.items():
         if not rs:
             errors.append(f"{g} 종목이 없음"); continue

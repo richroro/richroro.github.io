@@ -1,0 +1,276 @@
+[
+ {
+  "id": "dome",
+  "label": "돔",
+  "desc": "밑지름 64 m · 높이 20 m · 동판 녹청 (지면에서 꼭대기 69.2 m)",
+  "scopes": [
+   "building",
+   "campus"
+  ],
+  "position": [
+   0.0,
+   67.57,
+   11.04
+  ],
+  "normal": [
+   0.0,
+   0.951,
+   0.309
+  ],
+  "data_position": "0.00m 67.57m 11.04m",
+  "data_normal": "0.000m 0.951m 0.309m",
+  "orbit": "0deg 40deg 120m"
+ },
+ {
+  "id": "columns",
+  "label": "열주 24개",
+  "desc": "높이 32.5 m · 24절기를 뜻하고 전면 8개는 팔도",
+  "scopes": [
+   "building"
+  ],
+  "position": [
+   30.86,
+   21.69,
+   53.05
+  ],
+  "normal": [
+   0.0,
+   0.0,
+   1.0
+  ],
+  "data_position": "30.86m 21.69m 53.05m",
+  "data_normal": "0.000m 0.000m 1.000m",
+  "orbit": "0deg 75deg 90m"
+ },
+ {
+  "id": "eaves",
+  "label": "처마",
+  "desc": "156 x 115 m 평지붕 슬래브, 밑면 37.9 m",
+  "scopes": [
+   "building"
+  ],
+  "position": [
+   -74.0,
+   39.54,
+   57.55
+  ],
+  "normal": [
+   0.0,
+   0.0,
+   1.0
+  ],
+  "data_position": "-74.00m 39.54m 57.55m",
+  "data_normal": "0.000m 0.000m 1.000m",
+  "orbit": "0deg 75deg 110m"
+ },
+ {
+  "id": "stair",
+  "label": "대계단",
+  "desc": "너비 50 m · 기단면 5.44 m 까지 오르는 정면 계단",
+  "scopes": [
+   "building"
+  ],
+  "position": [
+   0.0,
+   3.25,
+   77.94
+  ],
+  "normal": [
+   0.0,
+   0.986,
+   0.166
+  ],
+  "data_position": "0.00m 3.25m 77.94m",
+  "data_normal": "0.000m 0.986m 0.166m",
+  "orbit": "-30deg 40deg 90m"
+ },
+ {
+  "id": "podium",
+  "label": "기단",
+  "desc": "높이 5.44 m · 164 x 123 m 화강석, 안에 지상 1층",
+  "scopes": [
+   "building"
+  ],
+  "position": [
+   53.6,
+   2.72,
+   61.53
+  ],
+  "normal": [
+   0.0,
+   0.0,
+   1.0
+  ],
+  "data_position": "53.60m 2.72m 61.53m",
+  "data_normal": "0.000m 0.000m 1.000m",
+  "orbit": "0deg 75deg 100m"
+ },
+ {
+  "id": "led",
+  "label": "LED 그릴",
+  "desc": "정면 위층 격자형 LED 패널 — 밤엔 태극기를 띄웁니다",
+  "scopes": [
+   "building"
+  ],
+  "position": [
+   0.0,
+   27.54,
+   41.4
+  ],
+  "normal": [
+   0.0,
+   0.0,
+   1.0
+  ],
+  "data_position": "0.00m 27.54m 41.40m",
+  "data_normal": "0.000m 0.000m 1.000m",
+  "orbit": "0deg 75deg 80m"
+ },
+ {
+  "id": "body",
+  "label": "본체",
+  "desc": "122 x 81 m · 기단 위 6개 층, 열주 뒤 11 m 회랑",
+  "scopes": [
+   "building"
+  ],
+  "position": [
+   -41.14,
+   14.54,
+   41.05
+  ],
+  "normal": [
+   0.0,
+   0.0,
+   1.0
+  ],
+  "data_position": "-41.14m 14.54m 41.05m",
+  "data_normal": "0.000m 0.000m 1.000m",
+  "orbit": "0deg 75deg 90m"
+ },
+ {
+  "id": "bronze",
+  "label": "애국애족의 군상",
+  "desc": "대계단 발치 양쪽 받침 위 청동 군상 (김세중, 1976)",
+  "scopes": [
+   "building"
+  ],
+  "position": [
+   -32.3,
+   3.06,
+   90.0
+  ],
+  "normal": [
+   0.0,
+   1.0,
+   0.0
+  ],
+  "data_position": "-32.30m 3.06m 90.00m",
+  "data_normal": "0.000m 1.000m 0.000m",
+  "orbit": "-25deg 72deg 32m"
+ },
+ {
+  "id": "fountain",
+  "label": "분수",
+  "desc": "잔디광장 가운데 · 평화와 번영의 상 (김세중, 1978)",
+  "scopes": [
+   "campus"
+  ],
+  "position": [
+   0.0,
+   14.9,
+   223.0
+  ],
+  "normal": [
+   0.0,
+   1.0,
+   0.0
+  ],
+  "data_position": "0.00m 14.90m 223.00m",
+  "data_normal": "0.000m 1.000m 0.000m",
+  "orbit": "0deg 62deg 75m"
+ },
+ {
+  "id": "haetae",
+  "label": "해태상",
+  "desc": "정문 안쪽 좌우 한 쌍, 밖을 바라봄 (이순석, 1975)",
+  "scopes": [
+   "campus"
+  ],
+  "position": [
+   -30.0,
+   3.65,
+   372.0
+  ],
+  "normal": [
+   0.0,
+   1.0,
+   0.0
+  ],
+  "data_position": "-30.00m 3.65m 372.00m",
+  "data_normal": "0.000m 1.000m 0.000m",
+  "orbit": "-20deg 78deg 16m"
+ },
+ {
+  "id": "library",
+  "label": "국회도서관",
+  "desc": "잔디광장 오른쪽 · 지하 1층 / 지상 5층 화강석 건물",
+  "scopes": [
+   "campus"
+  ],
+  "position": [
+   164.0,
+   29.0,
+   222.5
+  ],
+  "normal": [
+   0.0,
+   1.0,
+   0.0
+  ],
+  "data_position": "164.00m 29.00m 222.50m",
+  "data_normal": "0.000m 1.000m 0.000m",
+  "orbit": "-35deg 62deg 190m"
+ },
+ {
+  "id": "members",
+  "label": "의원회관",
+  "desc": "잔디광장 왼쪽 · 10층 (약 40 m) 국회의원 사무실",
+  "scopes": [
+   "campus"
+  ],
+  "position": [
+   -168.0,
+   39.05,
+   223.0
+  ],
+  "normal": [
+   0.0,
+   1.0,
+   0.0
+  ],
+  "data_position": "-168.00m 39.05m 223.00m",
+  "data_normal": "0.000m 1.000m 0.000m",
+  "orbit": "35deg 62deg 210m"
+ },
+ {
+  "id": "mound",
+  "label": "의원동산",
+  "desc": "옛 양말산 자리의 낮은 언덕 (약 7 m) · 한옥 사랑재",
+  "scopes": [
+   "campus"
+  ],
+  "position": [
+   190.0,
+   14.22,
+   -15.0
+  ],
+  "normal": [
+   0.0,
+   1.0,
+   0.0
+  ],
+  "data_position": "190.00m 14.22m -15.00m",
+  "data_normal": "0.000m 1.000m 0.000m",
+  "orbit": "-40deg 55deg 230m"
+ }
+]

@@ -181,7 +181,7 @@ function openCompare() {
     return `<tr><th scope="row">${label}</th>${cells.map((c, i) => `<td class="${vals && vals[i] === b ? "best" : ""}">${c}</td>`).join("")}</tr>`;
   };
   const totals = rs.map((r) => (r.pending || r.total == null ? null : r.total));
-  let body = row("판정", rs.map((r, i) => `${ring(r, 64)}${verdictChip(r)}`), totals);
+  let body = row("판정", rs.map((r, i) => `${ring(r, 64, xs[i])}${verdictChip(r)}`), totals);
   SC.FACTORS.forEach((f, k) => {
     const pts = rs.map((r) => r.rows[k].pts);
     body += row(`${esc(f.label)}<small>${f.w}점</small>`, rs.map((r, i) => {
@@ -196,7 +196,7 @@ function openCompare() {
   body += row("주간사", xs.map((it) => esc(it.uw.join(", ") || "–")));
   body += row("주의", rs.map((r) => (r.flags.length ? r.flags.map((f) => `<small class="warnl">${esc(f)}</small>`).join("") : `<span class="hint">없음</span>`)));
   const win = totals.some((t) => t != null) ? xs[totals.indexOf(Math.max(...totals.filter((t) => t != null)))] : null;
-  $("cmpBody").innerHTML = `<div class="dlg-top"><div class="ttl"><b id="cmpTitle">나란히 비교</b><small>${win ? `점수로는 <b>${esc(win.name)}</b> 우세 · 칸마다 더 좋은 쪽을 색칠했습니다` : "숫자가 모이면 더 좋은 쪽을 색칠합니다"}</small></div>
+  $("cmpBody").innerHTML = `<div class="grab" aria-hidden="true"></div><div class="dlg-top"><div class="ttl"><b id="cmpTitle">나란히 비교</b><small>${win ? `점수로는 <b>${esc(win.name)}</b> 우세 · 칸마다 더 좋은 쪽을 색칠했습니다` : "숫자가 모이면 더 좋은 쪽을 색칠합니다"}</small></div>
     <button class="ghost" type="button" id="cmpClose" aria-label="닫기">✕</button></div>
     <div class="dlg-body"><div class="tscroll"><table class="cmp-t">
       <thead><tr><th></th>${xs.map((it) => `<th scope="col"><button type="button" class="linkish" data-open="${esc(it.id)}">${esc(it.name)}</button><small>${esc(stage(it).label)}</small></th>`).join("")}</tr></thead>
@@ -309,7 +309,7 @@ function renderMyDash() {
   const box = $("myFig");
   if (!val.some((v) => v)) box.innerHTML = `<p class="empty">매도가를 적은 기록이 생기면 월별 손익을 그립니다.</p>`;
   else {
-    const W = 560, H = 200, L = 50, R = 8, T = 16, B = 24;
+    const W = Math.max(320, Math.round(box.clientWidth || 560)), H = 200, L = 50, R = 8, T = 16, B = 24;
     const lo = Math.min(0, ...val), hi = Math.max(0, ...val), st = niceStep(hi - lo || 1);
     const a = Math.floor(lo / st) * st, b = Math.ceil(hi / st) * st || st;
     const y = (v) => T + (b - v) / (b - a) * (H - T - B), bw = (W - L - R) / 12, gap = 6;
@@ -348,33 +348,126 @@ function renderMyDash() {
 }
 
 /* ---------------------------------------------------------------- 휴대폰 아래 탭 · 단축키 */
-function initTabbar() {
-  const links = [...document.querySelectorAll("#tabbar a")];
-  const secs = links.map((a) => document.getElementById(a.dataset.s)).filter(Boolean);
-  if (!("IntersectionObserver" in window)) return;
-  const seen = new Map();
-  const io = new IntersectionObserver((ents) => {
-    ents.forEach((e) => seen.set(e.target.id, e.isIntersecting ? e.intersectionRatio : 0));
-    // 화면에 가장 많이 걸친 섹션; 없으면 그대로
-    let best = null, bv = 0;
-    for (const [id, v] of seen) if (v > bv) { bv = v; best = id; }
-    if (best) links.forEach((a) => a.toggleAttribute("aria-current", a.dataset.s === best));
-  }, { threshold: [0, 0.15, 0.4, 0.7] });
-  secs.forEach((s) => io.observe(s));
+/* 화면 전환: 홈·일정·분석·도구·내 청약·가이드를 한 번에 하나씩 보여 준다. 주소 끝(#schedule, #calc …)으로 바로 열린다 */
+const SCREENS = { home: ["top"], schedule: ["schedule", "calendar"], analysis: ["market", "method"], tools: ["plan", "calc"], my: ["my"], guide: ["guide"] };
+const screenOf = (id) => Object.keys(SCREENS).find((k) => k === id || SCREENS[k].includes(id)) || null;
+let CUR_SCREEN = "home";
+const SCROLL = {};
+function showScreen(name, target) {
+  if (!SCREENS[name]) name = "home";
+  const changed = name !== CUR_SCREEN;
+  if (changed) SCROLL[CUR_SCREEN] = window.scrollY;
+  CUR_SCREEN = name;
+  document.querySelectorAll(".screen").forEach((el) => { el.hidden = el.dataset.screen !== name; });
+  document.querySelectorAll("[data-go]").forEach((a) => a.toggleAttribute("aria-current", a.dataset.go === name));
+  // 숨어 있을 때 잰 너비로 그린 그래프를 화면 너비로 다시
+  if (name === "tools") renderPlan();
+  if (name === "analysis" && ITEMS.length) renderMarket();
+  if (name === "my") renderMyDash();
+  const el = target && target !== name ? document.getElementById(target) : null;
+  if (el) nativeScroll.call(el, { block: "start" });
+  else if (changed) window.scrollTo(0, SCROLL[name] || 0); // 앱처럼 탭마다 보던 자리로
+  if (changed && navigator.vibrate) try { navigator.vibrate(8); } catch (e) { /* 진동 없는 기기 */ }
 }
+// 다른 코드가 숨은 화면의 섹션으로 scrollIntoView 하면, 그 화면을 먼저 연다
+const nativeScroll = Element.prototype.scrollIntoView;
+Element.prototype.scrollIntoView = function (opt) {
+  const scr = this.closest && this.closest(".screen");
+  if (scr && scr.hidden) showScreen(scr.dataset.screen);
+  return nativeScroll.call(this, opt);
+};
+function initScreens() {
+  const fromHash = () => {
+    const h = decodeURIComponent(location.hash.slice(1));
+    if (!h || h.startsWith("i=")) return showScreen(CUR_SCREEN);
+    const s = screenOf(h);
+    if (s) showScreen(s, h);
+  };
+  document.addEventListener("click", (e) => {
+    const a = e.target.closest('a[href^="#"]');
+    if (!a) return;
+    const id = decodeURIComponent(a.getAttribute("href").slice(1));
+    const s = screenOf(id);
+    if (!s) return;
+    e.preventDefault();
+    if (a.dataset.go && a.dataset.go === CUR_SCREEN) { window.scrollTo({ top: 0, behavior: "smooth" }); return; }
+    history.pushState(null, "", `#${s === id ? s : id}`);
+    showScreen(s, id);
+  });
+  window.addEventListener("popstate", fromHash);
+  fromHash();
+}
+
+/* 홈: 다가오는 청약을 옆으로 넘겨 보는 줄 */
+function renderRail() {
+  const box = $("rail");
+  const xs = ITEMS.filter((it) => !it.spac && it.sub_start && (it.sub_end || it.sub_start) >= TODAY)
+    .sort((a, b) => a.sub_start.localeCompare(b.sub_start)).slice(0, 10);
+  if (!xs.length) { box.innerHTML = `<p class="empty">예정된 청약이 없습니다.</p>`; return; }
+  box.innerHTML = xs.map((it) => {
+    const s = stage(it), r = scoreOf(it), u = uwRecord(it), e = expectOf(it);
+    const d = diffDays(TODAY, it.sub_start);
+    const sub = e ? `균등 1주 기대 <b class="${cls(e.won)}">${e.won >= 0 ? "+" : "−"}${won(Math.abs(e.won))}원</b>`
+      : u ? `${esc(u.name.replace(/증권$/, ""))} 1년 평균 <b class="${cls(u.avg)}">${pct(u.avg, 0)}</b>` : esc(it.uw.join(", "));
+    return `<button type="button" class="rc" data-id="${esc(it.id)}">
+      <span class="rc-top"><span class="dd ${s.key === "sub" ? "on" : ""}">${s.key === "sub" ? "청약 중" : `D-${d}`}</span>${verdictChip(r)}</span>
+      <b class="rc-nm">${esc(it.name)}</b>
+      <span class="rc-dt">${mdw(it.sub_start)} 청약 · ${it.price ? `${won(it.price)}원` : it.band_hi ? `~${won(it.band_hi)}원` : ""}</span>
+      <span class="rc-sub">${sub}</span></button>`;
+  }).join("");
+  box.onclick = (ev) => { const b = ev.target.closest(".rc"); if (b) openDetail(b.dataset.id); };
+}
+
 function initKeys() {
   document.addEventListener("keydown", (e) => {
     if (e.key === "/" && !/INPUT|TEXTAREA|SELECT/.test(document.activeElement.tagName)) {
-      e.preventDefault(); $("schedule").scrollIntoView({ behavior: "smooth" }); $("q").focus({ preventScroll: true });
+      e.preventDefault(); showScreen("schedule", "schedule"); $("q").focus({ preventScroll: true });
     }
   });
 }
 
+/* 휴대폰 바텀 시트: 맨 위에서 아래로 끌면 닫힌다 */
+function sheetDrag(dlg) {
+  let y0 = null, dy = 0;
+  const panel = () => dlg.firstElementChild;
+  dlg.addEventListener("pointerdown", (e) => {
+    if (!isPhone() || !e.target.closest(".grab, .dlg-top") || e.target.closest("button, a, input")) return;
+    if (dlg.scrollTop > 0) return;
+    y0 = e.clientY; dy = 0; panel().style.transition = "none";
+  });
+  window.addEventListener("pointermove", (e) => {
+    if (y0 == null) return;
+    dy = Math.max(0, e.clientY - y0);
+    panel().style.transform = `translateY(${dy}px)`;
+  });
+  const end = () => {
+    if (y0 == null) return;
+    y0 = null;
+    const p = panel();
+    p.style.transition = "";
+    if (dy > 110) { p.style.transform = "translateY(100%)"; setTimeout(() => { dlg.close(); p.style.transform = ""; }, 180); }
+    else p.style.transform = "";
+  };
+  window.addEventListener("pointerup", end);
+  window.addEventListener("pointercancel", end);
+}
+function initSteppers() {
+  document.querySelectorAll("[data-step]").forEach((b) => b.addEventListener("click", () => {
+    const inp = document.getElementById(b.dataset.for);
+    const v = Math.max(+inp.min || 0, (parseFloat(inp.value) || 0) + +b.dataset.step);
+    inp.value = v;
+    inp.dispatchEvent(new Event("input", { bubbles: true }));
+  }));
+}
+
 /* ---------------------------------------------------------------- 시작 */
-document.addEventListener("ipo:ready", () => { renderPlan(); renderTray(); });
+document.addEventListener("ipo:ready", () => { renderPlan(); renderTray(); renderRail(); });
 document.addEventListener("ipo:records", renderMyDash);
 document.addEventListener("ipo:sharecard", (e) => shareCard(e.detail));
 initPlan();
 initCompare();
-initTabbar();
+initScreens();
+sheetDrag($("dlg"));
+sheetDrag($("cmpDlg"));
+initSteppers();
 initKeys();
