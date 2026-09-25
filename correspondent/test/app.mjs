@@ -204,6 +204,7 @@ section('쓰고 나면 속보 맨 위 — 방금 쓴 리포트가 보이게');
   await p.locator('#writeBtn').click();
   await p.waitForSelector('#composeBack.open');
   await p.fill('#fPlace', '방금 쓴 곳');
+  await p.locator('#fCrowd [data-v="0"]').click();   // 장소 이름만으로는 안 보내진다(빈 카드) — 하나는 고른다
   await p.locator('#composeGo').click();
   await p.waitForSelector('#shareBack.open');
   await p.keyboard.press('Escape');

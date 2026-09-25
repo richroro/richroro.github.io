@@ -81,6 +81,7 @@ section('오프라인');
   await p.locator('#writeBtn').click();
   await p.waitForSelector('#composeBack.open');
   await p.fill('#fPlace', '지하 주차장 옆 놀이터');
+  await p.locator('#fCrowd [data-v="0"]').click();   // 장소 이름만으로는 안 보내진다(빈 카드) — 하나는 고른다
   await p.locator('#composeGo').click();
   await p.waitForSelector('#shareBack.open');
   await p.locator('#shareBack [data-close]').last().click();

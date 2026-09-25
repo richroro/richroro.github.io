@@ -520,6 +520,14 @@ fieldset{border:none;padding:0;margin:0 0 16px;min-width:0}
 fieldset legend{font-size:15px;font-weight:700;color:var(--ink);padding:0;margin-bottom:8px}
 .seg{display:flex;gap:6px;flex-wrap:wrap}
 .seg.cats{margin-top:10px}
+/* 쓰기 창 — 빈 장소 칸 밑의 아는 곳(한 줄, 옆으로 밀기)과 같은 이름이 여러 동네에 있을 때 묻는 줄 */
+#composeBack .place-sug,#composeBack .place-pick{display:flex;gap:6px;align-items:center;margin-top:8px}
+#composeBack .place-sug{overflow-x:auto;scrollbar-width:none;padding-bottom:2px}
+#composeBack .place-sug::-webkit-scrollbar{display:none}
+#composeBack .place-pick{flex-wrap:wrap}
+#composeBack .place-sug .chip,#composeBack .place-pick .chip{max-width:100%;white-space:normal;text-align:left}   /* 링크로 온 긴 이름도 시트 밖으로 안 나가게 */
+#composeBack .pick-l{font-size:13.5px;font-weight:600;color:var(--ink-2);margin-right:2px}
+#composeBack .sug-a{font-size:12.5px;font-weight:400;color:var(--ink-3)}
 /* 지금 어때요? — 이름표 한 칸 + 칩. 아무것도 안 고르면 모름 */
 .now-row{display:grid;grid-template-columns:52px minmax(0,1fr);align-items:center;gap:10px}
 .now-row + .now-row{margin-top:8px}
@@ -534,9 +542,13 @@ fieldset legend{font-size:15px;font-weight:700;color:var(--ink);padding:0;margin
 .more[open] summary::after{transform:rotate(-135deg) translate(-2px,-2px)}
 .more-in{padding:4px 0 2px}
 .sheet-foot .btn.primary{min-height:50px;font-size:16px}
+/* 쓰기 창의 오류는 바닥줄 안, 보내기 바로 위에 한 줄 가득 */
+#composeBack .sheet-foot{flex-wrap:wrap}
+#composeBack #composeErr{flex:1 1 100%;margin:0;text-align:center}
 .field .cnt{float:right;font-size:11.5px;color:var(--ink-3);font-family:var(--mono);font-weight:400}
+/* 안 고른 별은 ☆ — 바탕과 3:1 넘게 보이게(예전 연회색은 1.24:1이라 별이 있는 줄도 몰랐다) */
 .star-pick{display:flex;gap:2px}
-.star-pick button{background:none;border:none;font-size:28px;line-height:1;color:var(--surface-3);
+.star-pick button{background:none;border:none;font-size:28px;line-height:1;color:var(--ink-3);
   cursor:pointer;padding:2px 3px;min-height:44px}
 .star-pick button.on{color:var(--star)}
 @media (hover:hover){ .star-pick button:hover{color:var(--star)} }
@@ -862,17 +874,20 @@ button,.chip,.pl,.w-row{touch-action:manipulation}
         <input class="input" id="fPlace" type="text" maxlength="40" required autocomplete="off"
                list="placeList" placeholder="예: 별빛 키즈카페" data-autofocus>
         <datalist id="placeList"></datalist>
+        <!-- 빈 칸이면 아는 곳을 한 번에 고르게(치기 시작하면 숨는다). 같은 이름이 여러 동네에 있으면 어느 동네인지 묻는다(app.js) -->
+        <div class="place-sug" id="fSug" role="group" aria-label="아는 곳" hidden></div>
+        <div class="place-pick" id="fPick" role="group" aria-labelledby="fPickL" hidden><span class="pick-l" id="fPickL">어느 동네예요?</span></div>
         <div class="seg cats" id="fCat" role="group" aria-label="분야"></div>
       </div>
       <div class="ref" id="fRef" hidden>
         <div class="ref-t">앞 리포트 · <span id="fRefWho"></span></div>
         <div class="ref-s" id="fRefStats"></div>
         <button class="btn sm" type="button" id="fRefSame" aria-pressed="false">그대로예요</button>
-        <p class="ref-n">지금 보이는 대로 골라 주세요. 똑같으면 <b>그대로예요</b> — 옛 정보가 새 시각을 달고 퍼지지 않게 저절로 채우지 않습니다.</p>
+        <p class="ref-n">지금 보이는 대로 골라 주세요.<span id="fRefHint"> 똑같으면 <b>그대로예요</b> — 옛 정보가 새 시각을 달고 퍼지지 않게 저절로 채우지 않습니다.</span></p>
       </div>
       <!-- 웨이팅·사람·주차는 몇 시간이면 상하는 정보다. 모르면 비워 둔다(= 모름) — 빈칸이 틀린 정보보다 낫다.
            고른 칩을 한 번 더 누르면 비워진다 -->
-      <fieldset class="now">
+      <fieldset class="now" id="fNow">
         <legend>지금 어때요? <span class="hint">모르는 건 비워 두세요</span></legend>
         <div class="now-row"><span class="now-l" id="lWait">웨이팅</span><div class="seg" id="fWait" role="group" aria-labelledby="lWait"></div></div>
         <div class="now-row"><span class="now-l" id="lCrowd">사람</span><div class="seg" id="fCrowd" role="group" aria-labelledby="lCrowd"></div></div>
@@ -912,9 +927,10 @@ button,.chip,.pl,.w-row{touch-action:manipulation}
           <span><b>공용 보드에 올리기</b> — 끄면 이 기기에만 남고 아무에게도 공개되지 않습니다.
             링크로 보내는 건 그대로 됩니다.</span></label>
       </div>
-      <div class="status err" id="composeErr" aria-live="polite"></div>
     </form>
+    <!-- 막힌 까닭은 보내기 바로 위에 — 폼 끝에 두면 떠 있는 바닥줄 밑에 깔려 안 보였다 -->
     <div class="sheet-foot">
+      <div class="status err" id="composeErr" aria-live="polite"></div>
       <button class="btn primary" type="submit" form="composeForm" id="composeGo">보내기</button>
     </div>
   </div>

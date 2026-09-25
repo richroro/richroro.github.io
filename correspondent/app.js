@@ -1012,8 +1012,12 @@ function renderSync(){
 
 function renderDatalists(){
   const gs = groups();
-  $("#placeList").innerHTML = Array.from(new Set(gs.map((g) => g.place)))
-    .map((p) => '<option value="' + esc(p) + '"></option>').join("");
+  /* 장소마다 하나씩, "안양 안양동 · 맛집" 을 붙여서 — 같은 이름이 여러 동네에 있어도 가려 보이게.
+     예시(지어낸 곳)는 권하지 않는다 — 진짜 리포트가 지어낸 장소에 붙지 않게 */
+  $("#placeList").innerHTML = isSample() ? "" : gs.map((g) => {
+    const cat = CATS.find((c) => c.k === g.cat) || CATS[CATS.length - 1];
+    return '<option value="' + esc(g.place) + '" label="' + esc((g.area ? g.area + " · " : "") + cat.nm) + '"></option>';
+  }).join("");
   $("#areaList").innerHTML = Array.from(new Set(gs.map((g) => g.area).filter(Boolean)))
     .map((a) => '<option value="' + esc(a) + '"></option>').join("");
 }
@@ -1509,6 +1513,8 @@ function segHtml(table, sel, field){
   return table.filter((o) => o.v !== -1).map((o) => '<button class="chip" type="button" data-f="' + field + '" data-v="' + o.v +
     '" aria-pressed="' + (o.v === sel) + '">' + esc(o.nm) + "</button>").join("");
 }
+/** 창을 열 때 한 번만 그린다. 누를 때마다 다시 그리면 누른 단추가 새것으로 바뀌어 초점이 <body> 로 떨어지고
+    읽는 프로그램은 "눌림"을 못 읽는다 — 누른 뒤에는 syncCompose() 가 있는 단추의 상태만 바꾼다. */
 function paintCompose(){
   $("#fCat").innerHTML = CATS.map((c) => '<button class="chip" type="button" data-f="cat" data-v="' + c.k +
     '" aria-pressed="' + (c.k === draft.cat) + '"><span aria-hidden="true">' + c.ic + "</span> " + esc(c.nm) + "</button>").join("");
@@ -1519,42 +1525,176 @@ function paintCompose(){
     '" aria-pressed="' + (draft.tags.indexOf(t) !== -1) + '">#' + esc(t) + "</button>").join("");
   $("#fRate").innerHTML = [1, 2, 3, 4, 5].map((n) => '<button type="button" data-star="' + n +
     '" class="' + (n <= draft.rate ? "on" : "") + '" aria-label="별 ' + n + '개" aria-pressed="' +
-    (n === draft.rate) + '">★</button>').join("");
+    (n === draft.rate) + '">' + (n <= draft.rate ? "★" : "☆") + "</button>").join("");
+}
+/** 고른 것을 있는 단추에 옮긴다 — aria-pressed·class·별 모양(고른 데까지 ★, 나머지 ☆)만 바꾼다. */
+function syncCompose(){
+  $$("#composeForm [data-f]").forEach((b) => {
+    const f = b.dataset.f;
+    b.setAttribute("aria-pressed", String(draft[f] === (f === "cat" ? b.dataset.v : Number(b.dataset.v))));
+  });
+  $$("#fTags [data-tag]").forEach((b) => b.setAttribute("aria-pressed", String(draft.tags.indexOf(b.dataset.tag) !== -1)));
+  $$("#fRate [data-star]").forEach((b) => {
+    const n = Number(b.dataset.star);
+    b.classList.toggle("on", n <= draft.rate);
+    b.textContent = n <= draft.rate ? "★" : "☆";
+    b.setAttribute("aria-pressed", String(n === draft.rate));
+  });
+  syncSame();
 }
 /** ref 를 주면 "나도 여기" — 같은 장소의 새 리포트.
     장소·동네·분야·태그처럼 오래 가는 것만 채운다. 웨이팅·사람·주차는 채우지 않고
-    참고로만 보여 준다. 안 보고 눌러도 옛 정보가 새 시각을 달고 나가지 않게. */
+    참고로만 보여 준다. 안 보고 눌러도 옛 정보가 새 시각을 달고 나가지 않게.
+    "리포트 보내기"로 열었어도 아는 장소 이름을 치면 같은 차림으로 바뀐다(syncPlace). */
 let composeRef = null;
+/* refAuto — 이름을 쳐서 아는 곳을 찾아 들어왔다(카드·장소 창에서 연 게 아니다). refKey·refArea — 그 장소 묶음.
+   refUndo — 그때 바꾼 분야·동네·태그. 이름을 고쳐 다른 곳이 되면 그사이 손대지 않은 것만 되돌린다.
+   byHand — 이 창에서 손으로 고른 것. 아는 곳을 찾아도 덮어쓰지 않는다. */
+let refAuto = false, refKey = "", refArea = "", refUndo = null;
+let byHand = { cat:false, area:false, tags:false };
+let areaPick = "", pickFor = "", placeTimer = null, byInit = "";
+const NONAME = "이름 없는 특파원";
+/** 이름을 정했나 — 이름 없이 한 번 보내면 board.me 가 "이름 없는 특파원"이 되지만 그건 정한 게 아니다. */
+const hasName = () => !!board.me && board.me !== NONAME;
+/** 내가 쓴 것, 최근 것부터(board.reports 는 늘 최신순). */
+const myReports = () => board.reports.filter((r) => r.mine || (hasName() && r.by === board.me));
+/** 링크로 온 태그는 아무 글자나 될 수 있다(전화번호·광고). 쓰기 창에 있는 태그만 옮긴다 —
+    안 보이고 뺄 수도 없는 태그가 내 이름을 달고 나가지 않게. */
+const knownTags = (a) => (Array.isArray(a) ? a : []).filter((t, i, all) => TAGS.indexOf(t) !== -1 && all.indexOf(t) === i).slice(0, 6);
+/** 그 리포트가 든 장소 묶음. all 을 주면 이미 묶어 둔 것에서 찾는다(여는 동안 한 번만 묶게). */
+const groupOf = (r, all) => (all || groups()).find((g) => g.rs.some((x) => x.id === r.id)) || null;
+const keyArea = (k) => k.slice(k.lastIndexOf("|") + 1);
+
 function openCompose(ref){
-  composeRef = ref && ref.place ? ref : null;
-  const mine = board.reports.filter((r) => r.by === board.me);
-  draft = { cat: composeRef ? composeRef.cat : "play", wait:-1, crowd:-1, park:-1, rate:0,
-            tags: composeRef ? composeRef.tags.slice() : [] };
-  $("#fPlace").value = composeRef ? composeRef.place : "";
-  $("#fArea").value = composeRef ? composeRef.area : (mine.length ? mine[0].area : "");
+  ref = ref && ref.place ? ref : null;
+  clearTimeout(placeTimer); placeTimer = null;
+  const all = groups(), g0 = ref ? groupOf(ref, all) : null, d = loadDraft();
+  /* 쓰던 글은 새로 쓸 때, 또는 같은 장소의 "나도 여기"일 때만 되살린다 — 다른 장소에 옮겨 붙지 않게 */
+  keptMine = !!d && (!ref || (!!g0 && d.rk === g0.key));
+  const mine = myReports();
+  /* 새 장소의 분야·동네는 내가 마지막으로 쓴 것 — 매번 놀이공간이 아니라 */
+  draft = { cat: ref ? ref.cat : (mine.length ? mine[0].cat : "play"), wait:-1, crowd:-1, park:-1, rate:0,
+            tags: ref ? knownTags(ref.tags) : [] };
+  byHand = { cat:false, area:false, tags:false };
+  composeRef = null; refAuto = false; refKey = ""; refArea = ""; refUndo = null; areaPick = ""; pickFor = "";
+  $("#fPlace").value = ref ? ref.place : "";
+  $("#fArea").value = ref ? ref.area : (mine.length ? mine[0].area : "");
   $("#fNote").value = "";
+  byInit = hasName() ? board.me : "";
+  $("#fBy").value = byInit;
+  paintCompose();
+  if (ref) enterRef(ref, g0, false);
+  if (keptMine) applyDraft(d, ref, all);
+  syncPlace(all);
+  paintMode();
+  paintSug(all);
+  const refChips = composeRef && statChips(composeRef).length;
+  $("#fPlace").toggleAttribute("data-autofocus", !refChips);
+  $("#fRefSame").toggleAttribute("data-autofocus", !!refChips);
+  /* 이름을 아직 안 정했으면 눈에 띄게 위에 두고, 정했으면 "더 적기" 안으로 — 매번 물을 것은 아니다.
+     "이름 없는 특파원"은 정한 이름이 아니다 — 칸을 비워 두고(예시 글자만) 계속 위에서 묻는다 */
+  const byRow = $("#fByRow"), more = $("#fMore");
+  if (byRow && more) {
+    if (hasName()) more.querySelector(".more-in").appendChild(byRow);
+    else more.parentNode.insertBefore(byRow, more);
+    more.open = false;
+    $("#fMoreHint").textContent = hasName() ? "동네 · 별점 · 태그 · 이름" : "동네 · 별점 · 태그";
+  }
+  $("#noteCnt").textContent = $("#fNote").value.length + "/200";
+  clearErr();
+  $("#fPubRow").hidden = !SY.enabled;
+  $("#fPub").checked = true;
+  openSheet("#composeBack");
+}
+/** 제목·한 줄 예시·참고 상자·단추 상태를 지금 차림(새 리포트 / 나도 여기)에 맞춘다. */
+function paintMode(){
   $("#fNote").placeholder = composeRef ? "달라진 게 있으면 적어 주세요."
     : "예: 2시 넘으니 자리 났어요.";
   $("#composeTitle").textContent = composeRef ? "여기 지금 상황" : "리포트 보내기";
   paintRef();
-  const refChips = composeRef && statChips(composeRef).length;
-  $("#fPlace").toggleAttribute("data-autofocus", !refChips);
-  $("#fRefSame").toggleAttribute("data-autofocus", !!refChips);
-  $("#fBy").value = board.me;
-  /* 이름을 아직 안 정했으면 눈에 띄게 위에 두고, 정했으면 "더 적기" 안으로 — 매번 물을 것은 아니다 */
-  const byRow = $("#fByRow"), more = $("#fMore");
-  if (byRow && more) {
-    if (board.me) more.querySelector(".more-in").appendChild(byRow);
-    else more.parentNode.insertBefore(byRow, more);
-    more.open = false;
-    $("#fMoreHint").textContent = board.me ? "동네 · 별점 · 태그 · 이름" : "동네 · 별점 · 태그";
+  syncCompose();
+}
+/** "나도 여기" 차림으로. auto 면 이름으로 찾아 들어온 것 — 손대지 않은 분야·동네·태그만 그 장소 것으로 채운다.
+    웨이팅·사람·주차는 여기서도 채우지 않는다. */
+function enterRef(ref, g, auto){
+  composeRef = ref; refAuto = auto; refKey = g ? g.key : ""; refArea = g ? g.area : ref.area;
+  /* 카드에서 열었으면 채워 준 태그만 적어 둔다(분야·동네는 이름을 고쳐도 그대로 둔다) — 태그는 그곳 이야기다 */
+  const u = refUndo = { cat:null, area:null, tags: auto ? [] : draft.tags.slice() };
+  if (auto && g) {
+    const a = $("#fArea").value;
+    if (!byHand.cat && draft.cat !== ref.cat) { u.cat = [draft.cat, ref.cat]; draft.cat = ref.cat; }
+    if (!byHand.area && a !== g.area) { u.area = [a, g.area]; $("#fArea").value = g.area; }
+    if (!byHand.tags) knownTags(ref.tags).forEach((t) => {
+      if (draft.tags.indexOf(t) === -1 && draft.tags.length < 6) { draft.tags.push(t); u.tags.push(t); }
+    });
   }
-  $("#noteCnt").textContent = "0/200";
-  $("#composeErr").textContent = "";
-  $("#fPubRow").hidden = !SY.enabled;
-  $("#fPub").checked = true;
-  paintCompose();
-  openSheet("#composeBack");
+  paintMode();
+}
+/** "나도 여기" 차림을 푼다 — 이름을 고쳐 다른 곳이 됐다. 채워 줬던 것 가운데 그대로인 것만 원래대로. */
+function leaveRef(){
+  if (!composeRef) return;
+  /* "그대로예요"로 옮긴 값은 그 장소 이야기였다 — 다른 곳으로 바뀌면 비운다 */
+  if (statChips(composeRef).length && draft.wait === composeRef.wait && draft.crowd === composeRef.crowd &&
+      draft.park === composeRef.park) draft.wait = draft.crowd = draft.park = -1;
+  const u = refUndo;
+  if (u) {
+    if (u.cat && draft.cat === u.cat[1]) draft.cat = u.cat[0];
+    if (u.area && $("#fArea").value === u.area[1]) $("#fArea").value = u.area[0];
+    draft.tags = draft.tags.filter((t) => u.tags.indexOf(t) === -1);
+  }
+  composeRef = null; refAuto = false; refKey = ""; refArea = ""; refUndo = null;
+  paintMode();
+}
+/** 적은 이름이 아는 장소면 그 장소로 — 분야·동네를 가져오고 "나도 여기"가 된다. 그러지 않으면 장소 묶음이
+    둘로 갈라지고(동네가 지난번 것이라) 엇갈림도 숨는다. 같은 이름이 여러 동네에 있으면 어느 동네인지 묻는다. */
+function syncPlace(all){
+  clearTimeout(placeTimer); placeTimer = null;
+  const n = norm($("#fPlace").value);
+  if (n !== pickFor) { pickFor = n; areaPick = ""; }
+  const typed = byHand.area ? areaKey($("#fArea").value) : "";
+  let ask = [];
+  /* 카드·장소 창에서 연 곳은 이미 어디인지 안다 — 이름이나 동네를 바꾸지 않았으면 그대로 */
+  if (!(composeRef && !refAuto && norm(composeRef.place) === n && (!typed || keyArea(refKey) === typed))) {
+    const gs = n && !isSample() ? (all || groups()).filter((g) => norm(g.place) === n) : [];
+    let g = null;
+    if (typed) g = gs.find((x) => keyArea(x.key) === typed) || null;   // 손으로 적은 동네가 가려 준다
+    else {
+      if (gs.length > 1) ask = gs;
+      g = areaPick === "other" ? null : gs.find((x) => x.key === areaPick) || (gs.length === 1 ? gs[0] : null);
+    }
+    if (!g) leaveRef();
+    else if (!composeRef || g.key !== refKey) { leaveRef(); enterRef(g.stat || g.last, g, true); }
+  }
+  paintPick(ask);
+}
+/** "어느 동네예요?" — 동네마다 칩 하나와 "다른 곳". 고른 것은 눌림으로 보인다. 목록이 같으면 다시 그리지 않는다(초점). */
+function paintPick(gs){
+  const box = $("#fPick"), sig = gs.map((g) => g.key).join("\n");
+  if (box.dataset.sig !== sig) {
+    box.dataset.sig = sig;
+    $$("#fPick [data-pick]").forEach((b) => b.remove());
+    box.insertAdjacentHTML("beforeend", gs.map((g) => '<button class="chip" type="button" data-pick="' + esc(g.key) + '">' +
+      esc(g.area || "동네 모름") + "</button>").join("") + (gs.length ? '<button class="chip" type="button" data-pick="">다른 곳</button>' : ""));
+  }
+  box.hidden = !gs.length;
+  $$("#fPick [data-pick]").forEach((b) => b.setAttribute("aria-pressed",
+    String(b.dataset.pick ? !!composeRef && b.dataset.pick === refKey : areaPick === "other")));
+}
+/** 빈 장소 칸 밑의 아는 곳 — 지켜보는 곳, 지금 소식이 있는 곳, 내가 최근에 쓴 곳 순으로 넷까지. 누르면 그 이름을 친 것과 같다. */
+function paintSug(all){
+  const gs = [];
+  if (!isSample()) {
+    all = all || groups();
+    const add = (g) => { if (g && gs.indexOf(g) === -1 && gs.length < 4) gs.push(g); };
+    watchedGroups(all).forEach((x) => add(x.g));
+    all.filter((g) => g.now).sort((a, b) => b.now.t - a.now.t).forEach(add);
+    myReports().some((r) => { add(all.find((g) => g.rs.indexOf(r) !== -1)); return gs.length >= 4; });
+  }
+  const twice = (g) => gs.filter((x) => norm(x.place) === norm(g.place)).length > 1;
+  const box = $("#fSug");
+  box.innerHTML = gs.map((g) => '<button class="chip" type="button" data-sug="' + esc(g.key) + '">' + esc(g.place) +
+    (twice(g) && g.area ? ' <span class="sug-a">' + esc(g.area.split(" ").pop()) + "</span>" : "") + "</button>").join("");
+  box.hidden = !gs.length || !!$("#fPlace").value;
 }
 
 function paintRef(){
@@ -1562,11 +1702,13 @@ function paintRef(){
   box.hidden = !composeRef;
   if (!composeRef) return;
   const r = composeRef, chips = statChips(r);
-  $("#fRefWho").textContent = byline(r.by) + " · " + ago(r.t);
+  /* 어느 동네의 그곳인지도 — 이름으로 찾아 들어오면 동네는 접힌 "더 적기" 안이라 여기서만 보인다 */
+  $("#fRefWho").textContent = byline(r.by) + " · " + ago(r.t) + (refArea ? " · " + refArea : "");
   $("#fRefStats").innerHTML = chips.length
     ? chips.map((c) => '<span class="stat ' + c.tone + '">' + esc(c.s) + "</span>").join("")
     : '<span class="note">현장 정보 없이 메모만 남긴 리포트입니다.</span>';
   $("#fRefSame").hidden = !chips.length;
+  $("#fRefHint").hidden = !chips.length;   // 옮길 값이 없으면 "똑같으면 그대로예요"도 말하지 않는다
   syncSame();
 }
 /** "그대로예요" 는 지금 고른 값이 앞 리포트와 같은지를 그대로 보여 준다 — 누른 뒤 칩을 바꾸면 풀린다. */
@@ -1575,6 +1717,92 @@ function syncSame(){
   const same = draft.wait === composeRef.wait && draft.crowd === composeRef.crowd && draft.park === composeRef.park;
   $("#fRefSame").setAttribute("aria-pressed", String(same));
   $("#fRefSame").textContent = same ? "✓ 그대로" : "그대로예요";
+}
+/** 보내기가 막힌 까닭 — 글은 보내기 바로 위(#composeErr)에, 걸린 칸에는 aria-invalid 와 그 글을 단다. */
+let errEl = null;
+function showErr(msg, el, to){
+  clearErr();
+  $("#composeErr").textContent = msg;
+  errEl = el;
+  el.setAttribute("aria-invalid", "true");
+  el.setAttribute("aria-describedby", "composeErr");
+  (to || el).focus();
+}
+function clearErr(){
+  $("#composeErr").textContent = "";
+  if (!errEl) return;
+  errEl.removeAttribute("aria-invalid");
+  errEl.removeAttribute("aria-describedby");
+  errEl = null;
+}
+/** 손으로 고친 뒤 — 걸렸던 칸을 고쳤으면 오류를 걷고, 쓰던 글을 붙잡아 둔다. */
+function edited(kind){
+  if (errEl && (errEl.id === "fPlace" ? kind === "place" : /^(live|note|rate|tags)$/.test(kind))) clearErr();
+  keepDraft();
+}
+
+/* 쓰던 리포트 — 뒤로 가기·바깥 누르기·끌어 내리기·Esc·새로 고침으로 창이 닫혀도 날아가지 않게, 고칠 때마다 붙잡아 둔다.
+   이 탭에만 남고(sessionStorage, 막혀 있으면 메모리에만) 보내면 지운다. */
+const DRAFT_KEY = "tpw.draft";
+const DRAFT_LIVE = 30 * MIN;   // 이보다 묵은 웨이팅·사람·주차는 되살리지 않는다 — 옛 정보가 새 시각을 달고 나가지 않게
+let kept = null, keptMine = false;   // keptMine — 지금 창이 그 글을 이어 쓰는 중이다
+function loadDraft(){
+  if (!kept) { try { kept = JSON.parse(sessionStorage.getItem(DRAFT_KEY)); } catch (e) {} }
+  return kept && typeof kept === "object" ? kept : null;
+}
+function dropDraft(){
+  kept = null; keptMine = false;
+  try { sessionStorage.removeItem(DRAFT_KEY); } catch (e) {}
+}
+/** 손으로 쓴 게 있나 — 카드에서 채워 준 것뿐이면 붙잡을 것이 없다. */
+function drafted(){
+  const place = $("#fPlace").value.trim();
+  return !!($("#fNote").value.trim() || draft.wait !== -1 || draft.crowd !== -1 || draft.park !== -1 || draft.rate ||
+    byHand.cat || byHand.area || byHand.tags || $("#fBy").value !== byInit ||
+    (place && !(composeRef && !refAuto && place === composeRef.place)));
+}
+function keepDraft(){
+  if (!$("#composeBack").classList.contains("open")) return;   // 보내고 닫힌 뒤의 늦은 이벤트가 다시 붙잡지 않게
+  if (!drafted()) { if (keptMine) dropDraft(); return; }
+  /* 이름은 이 창에서 손으로 적었을 때만 — 그사이 특파원 탭에서 바꾼 이름을 옛 이름으로 덮지 않게 */
+  kept = { at: Date.now(), place: $("#fPlace").value, area: $("#fArea").value, note: $("#fNote").value,
+    by: $("#fBy").value !== byInit ? $("#fBy").value : null,
+    cat: draft.cat, wait: draft.wait, crowd: draft.crowd, park: draft.park, rate: draft.rate, tags: draft.tags.slice(),
+    ref: composeRef ? composeRef.id : "", rk: composeRef ? refKey : "", auto: refAuto, undo: refUndo,
+    hand: Object.assign({}, byHand), pick: areaPick, pickFor };
+  keptMine = true;
+  try { sessionStorage.setItem(DRAFT_KEY, JSON.stringify(kept)); } catch (e) {}
+}
+/** 붙잡아 둔 글을 되살린다. 저장소에서 온 것이라 값마다 다시 본다. */
+function applyDraft(d, ref, all){
+  const s = (v, n) => String(v == null ? "" : v).slice(0, n);
+  const isCat = (k) => CATS.some((c) => c.k === k);
+  $("#fPlace").value = s(d.place, 40);
+  $("#fArea").value = s(d.area, 30);
+  $("#fNote").value = s(d.note, 200);
+  if (typeof d.by === "string") $("#fBy").value = s(d.by, 20);
+  if (isCat(d.cat)) draft.cat = d.cat;
+  const fresh = Date.now() - (Number(d.at) || 0) < DRAFT_LIVE;
+  [["wait", WAIT], ["crowd", CROWD], ["park", PARK]].forEach((x) => {
+    draft[x[0]] = fresh && x[1].some((o) => o.v !== -1 && o.v === d[x[0]]) ? d[x[0]] : -1;
+  });
+  draft.rate = clamp(Math.round(Number(d.rate) || 0), 0, 5);
+  draft.tags = knownTags(d.tags);
+  const h = d.hand || {};
+  byHand = { cat: !!h.cat, area: !!h.area, tags: !!h.tags };
+  /* 새로 쓰던 글이 "나도 여기"였으면 그때 참고하던 리포트를 다시 찾는다(지워졌으면 그 장소의 최근 것) */
+  if (!ref && d.ref && !isSample()) {
+    const r = reports().find((x) => x.id === d.ref) || null;
+    const g = r ? groupOf(r, all) : (all || groups()).find((x) => x.key === d.rk) || null;
+    if (g) {
+      composeRef = r || g.stat || g.last; refAuto = !!d.auto; refKey = g.key; refArea = g.area;
+      const u = d.undo && typeof d.undo === "object" ? d.undo : null;
+      refUndo = u ? { cat: Array.isArray(u.cat) && u.cat.every(isCat) ? u.cat.slice(0, 2) : null,
+        area: Array.isArray(u.area) ? u.area.slice(0, 2).map((x) => s(x, 30)) : null, tags: knownTags(u.tags) } : null;
+    }
+  }
+  areaPick = typeof d.pick === "string" ? d.pick : "";
+  pickFor = typeof d.pickFor === "string" ? d.pickFor : "";
 }
 
 let shareCache = "", shareSeq = 0, shareList = [], shareFresh = null;
@@ -2165,7 +2393,9 @@ function bind(){
     const ag = e.target.closest("[data-again]");
     if (ag) {
       const r = reports().find((x) => x.id === ag.dataset.again);
-      if (r) { closeSheets(true); openCompose(r); }
+      /* 메모뿐인 카드면 그 장소의 가장 최근 현장 정보를 참고로 — 장소 창처럼 칩과 "그대로예요"가 보이게 */
+      const g = r && !statChips(r).length ? groupOf(r) : null;
+      if (r) { closeSheets(true); openCompose(g && g.stat ? g.stat : r); }
       return;
     }
     const sh = e.target.closest("[data-share]");
@@ -2196,8 +2426,9 @@ function bind(){
       const f = seg.dataset.f, v = f === "cat" ? seg.dataset.v : Number(seg.dataset.v);
       /* 분야는 늘 하나. 웨이팅·사람·주차는 고른 걸 다시 누르면 비운다(= 모름) */
       draft[f] = f !== "cat" && draft[f] === v ? -1 : v;
-      paintCompose();
-      syncSame();
+      if (f === "cat") byHand.cat = true;
+      syncCompose();
+      edited(f === "cat" ? "cat" : "live");
       return;
     }
     const tag = e.target.closest("[data-tag]");
@@ -2207,31 +2438,76 @@ function bind(){
         if (draft.tags.length >= 6) { toast("태그는 6개까지입니다."); return; }
         draft.tags.push(t);
       } else draft.tags.splice(i, 1);
-      paintCompose();
+      byHand.tags = true;
+      syncCompose();
+      edited("tags");
       return;
     }
     const st = e.target.closest("[data-star]");
     if (st) {
       const n = Number(st.dataset.star);
       draft.rate = draft.rate === n ? 0 : n;
-      paintCompose();
-    }
-  });
-  $("#fNote").addEventListener("input", (e) => { $("#noteCnt").textContent = e.target.value.length + "/200"; });
-  $("#composeForm").addEventListener("submit", (e) => {
-    e.preventDefault();
-    const place = clip($("#fPlace").value, 40);
-    if (!place) {
-      $("#composeErr").textContent = "어디에 계신지 적어 주세요.";
-      $("#fPlace").focus();
+      syncCompose();
+      edited("rate");
       return;
     }
-    /* "나도 여기" 인데 아무것도 안 골랐으면 새 시각만 달린 빈 카드가 된다 — 막는다. */
-    if (composeRef && draft.wait === -1 && draft.crowd === -1 && draft.park === -1 && !draft.rate &&
-        !clip($("#fNote").value, 200)) {
-      $("#composeErr").textContent = "지금 상황을 하나라도 고르거나 한 줄 남겨 주세요." +
-        (statChips(composeRef).length ? " 똑같으면 “그대로예요”." : "");
-      (statChips(composeRef).length ? $("#fRefSame") : $("#fNote")).focus();
+    /* 빈 칸 밑의 아는 곳 — 그 이름을 친 것과 같다(같은 이름이 여러 동네에 있어도 누른 그곳) */
+    const sg = e.target.closest("[data-sug]");
+    if (sg) {
+      const g = groups().find((x) => x.key === sg.dataset.sug);
+      if (!g) return;
+      $("#fPlace").value = g.place;
+      pickFor = norm(g.place); areaPick = g.key;
+      $("#fSug").hidden = true;
+      syncPlace();
+      /* 누른 칩은 숨었다 — 초점을 다음 할 일로: 그대로예요, 옮길 값이 없으면 웨이팅 */
+      (composeRef && statChips(composeRef).length ? $("#fRefSame") : $("#fWait [data-v]")).focus();
+      edited("place");
+      return;
+    }
+    /* "어느 동네예요?" — 고른 동네의 그곳으로. "다른 곳"이면 동네를 직접 적게 한다 */
+    const pk = e.target.closest("[data-pick]");
+    if (pk) {
+      areaPick = pk.dataset.pick || "other";
+      pickFor = norm($("#fPlace").value);
+      syncPlace();
+      if (areaPick === "other") { $("#fMore").open = true; $("#fArea").focus(); $("#fArea").select(); }
+      edited("place");
+    }
+  });
+  $("#fNote").addEventListener("input", (e) => { $("#noteCnt").textContent = e.target.value.length + "/200"; edited("note"); });
+  /* 장소 이름을 치면 아는 곳인지 맞춰 본다 — 치는 동안(한글 조합 중에도)은 잠깐 기다렸다가, 칸을 떠나면 곧바로 */
+  const placeSoon = () => { clearTimeout(placeTimer); placeTimer = setTimeout(() => { syncPlace(); keepDraft(); }, 250); };
+  $("#fPlace").addEventListener("input", () => {
+    const sug = $("#fSug");
+    sug.hidden = !!$("#fPlace").value || !sug.childElementCount;   // 치기 시작하면 아는 곳 줄은 숨는다
+    placeSoon();
+    edited("place");
+  });
+  $("#fPlace").addEventListener("compositionend", placeSoon);
+  $("#fPlace").addEventListener("change", () => { syncPlace(); keepDraft(); });
+  /* 동네를 손으로 적으면 그 동네의 그곳만 찾는다 — 같은 이름이라도 다른 동네면 다른 장소다 */
+  $("#fArea").addEventListener("input", () => { byHand.area = true; placeSoon(); edited("area"); });
+  $("#fBy").addEventListener("input", () => edited("by"));
+  $("#composeForm").addEventListener("submit", (e) => {
+    e.preventDefault();
+    if (placeTimer) syncPlace();   // 치던 이름을 아직 안 맞춰 봤으면 지금 — 아는 곳이면 그 장소로 간다
+    const place = clip($("#fPlace").value, 40);
+    if (!place) {
+      showErr("어디에 계신지 적어 주세요.", $("#fPlace"));
+      return;
+    }
+    /* 아무것도 안 고르고 한 줄도 없으면 새 시각만 달린 빈 카드가 된다 — 막는다.
+       "나도 여기"의 태그는 앞 리포트에서 옮겨 온 것이라 치지 않는다. */
+    const said = draft.wait !== -1 || draft.crowd !== -1 || draft.park !== -1 || draft.rate || clip($("#fNote").value, 200);
+    if (composeRef && !said) {
+      const same = statChips(composeRef).length;
+      showErr("지금 상황을 하나라도 고르거나 한 줄 남겨 주세요." + (same ? " 똑같으면 “그대로예요”." : ""),
+        $("#fNow"), same ? $("#fRefSame") : $("#fNote"));
+      return;
+    }
+    if (!composeRef && !said && !draft.tags.length) {
+      showErr("지금 어떤지 하나라도 고르거나 한 줄 남겨 주세요.", $("#fNow"), $("#fWait [data-v]"));
       return;
     }
     const by = clip($("#fBy").value, 20) || board.me || "이름 없는 특파원";
@@ -2247,6 +2523,7 @@ function bind(){
     board.reports.unshift(r);
     board.seeded = true;
     board.me = by;
+    dropDraft();                   // 보냈다 — 붙잡아 둔 글은 이제 없다
     if (!save()) toast("저장 공간이 부족합니다. 오래된 리포트를 지워 보세요.");
     if (SY.enabled && r.priv) {
       setTimeout(() => toast("이 기기에만 저장했습니다. 공용 보드에는 올리지 않습니다."), 400);
@@ -2290,13 +2567,14 @@ function bind(){
     const g = groups().find((x) => x.key === openPlaceKey);
     if (!g) return;
     closeSheets(true);
-    openCompose(g.last);
+    /* 가장 최근 것이 메모뿐이면 그 앞의 현장 정보를 참고로 — 장소 창에 보이던 칩과 같게 */
+    openCompose(g.stat || g.last);
   });
   $("#fRefSame").addEventListener("click", () => {
     if (!composeRef) return;
     draft.wait = composeRef.wait; draft.crowd = composeRef.crowd; draft.park = composeRef.park;
-    paintCompose();
-    syncSame();
+    syncCompose();
+    edited("live");
   });
   $("#placeShare").addEventListener("click", async () => {
     const g = groups().find((x) => x.key === openPlaceKey);
