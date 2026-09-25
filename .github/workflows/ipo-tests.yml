@@ -1,0 +1,32 @@
+name: 공모주 캘린더 검사
+
+# ipo/ 를 바꾸는 PR 마다 파서 단위 테스트, 자바스크립트 문법, 데이터 파일 검사를 돌린다.
+# 네트워크가 필요 없는 검사만 한다(원천 데이터 수집은 update-ipo.yml 이 한다).
+
+on:
+  pull_request:
+    paths: ['ipo/**', '.github/workflows/ipo-tests.yml', '.github/workflows/update-ipo.yml']
+  push:
+    branches: [main]
+    paths: ['ipo/**.py', 'ipo/**.js', 'ipo/tests/**']
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: 단위 테스트
+        run: python -m unittest discover -s ipo/tests -v
+      - name: 자바스크립트 문법
+        run: node --check ipo/app.js && node --check ipo/sw.js && node --check ipo/score.js && node --check ipo/extra.js
+      - name: 점수 테스트
+        run: node --test ipo/tests/score.test.js
+      - name: 데이터 파일 검사
+        run: python ipo/validate.py
