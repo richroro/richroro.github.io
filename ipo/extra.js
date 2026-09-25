@@ -32,7 +32,7 @@ const niceStep = (span, n = 4) => {
   return [1, 2, 2.5, 5, 10].map((m) => m * p).find((s) => s >= raw) || p * 10;
 };
 const manwon = (v) => (Math.abs(v) >= 1e8 ? `${(v / 1e8).toFixed(v >= 1e9 ? 0 : 1)}억` : `${nf.format(Math.round(v / 1e4))}만`);
-const bizAdd = (s, n) => { let d = s; while (n > 0) { d = addDays(d, 1); if (![0, 6].includes(toD(d).getUTCDay())) n--; } return d; };
+const bizAdd = (s, n) => { let d = s; while (n > 0) { d = addDays(d, 1); if (isBizDay(d)) n--; } return d; };
 
 /* ---------------------------------------------------------------- 자금 플래너 */
 let PLAN = store.get("ipo.plan", {}); // {id: {mode: "skip"|"min"|"custom", qty}}
@@ -93,11 +93,11 @@ function renderPlan() {
   drawPlan(series);
   const mOpt = (x, v, t) => `<option value="${v}" ${x.mode === v ? "selected" : ""}>${t}</option>`;
   $("pTable").innerHTML = rows.length ? `<thead><tr><th>종목</th><th>전략</th><th>주수</th><th>청약일</th><th>증거금</th><th>환불</th></tr></thead><tbody>${rows.map((x) => `
-    <tr class="${x.mode === "skip" ? "skip" : ""}" data-id="${esc(x.it.id)}"><td class="tx"><b>${esc(x.it.name)}</b>${verdictChip(x.r)}</td>
-      <td><select class="pm" aria-label="${esc(x.it.name)} 전략">${mOpt(x, "min", "균등(최소)")}${mOpt(x, "custom", "주수 지정")}${mOpt(x, "skip", "건너뛰기")}</select></td>
-      <td>${x.mode === "custom" ? `<input class="pq" type="number" inputmode="numeric" min="1" step="10" value="${x.qty}" aria-label="청약 주수">` : x.mode === "skip" ? "–" : nf.format(x.qty)}</td>
-      <td>${mdw(x.out)}</td><td>${x.dep ? manwon(x.dep) : "–"}</td>
-      <td>${mdw(x.back)}${x.it.refund ? "" : '<small class="hint">추정</small>'}<br><small class="hint">${x.refundAmt ? `+${manwon(x.refundAmt)}` : ""}</small></td></tr>`).join("")}</tbody>`
+    <tr class="${x.mode === "skip" ? "skip" : ""}" data-id="${esc(x.it.id)}"><td class="tx nm"><b>${esc(x.it.name)}</b>${verdictChip(x.r)}</td>
+      <td data-l="전략"><select class="pm" aria-label="${esc(x.it.name)} 전략">${mOpt(x, "min", "균등(최소)")}${mOpt(x, "custom", "주수 지정")}${mOpt(x, "skip", "건너뛰기")}</select></td>
+      <td data-l="주수">${x.mode === "custom" ? `<input class="pq" type="number" inputmode="numeric" min="1" step="10" value="${x.qty}" aria-label="청약 주수">` : x.mode === "skip" ? "–" : nf.format(x.qty)}</td>
+      <td data-l="청약일">${mdw(x.out)}</td><td data-l="증거금">${x.dep ? manwon(x.dep) : "–"}</td>
+      <td data-l="환불">${mdw(x.back)}${x.it.refund ? "" : '<small class="hint">추정</small>'}<br><small class="hint">${x.refundAmt ? `+${manwon(x.refundAmt)}` : ""}</small></td></tr>`).join("")}</tbody>`
     : `<tbody><tr><td class="empty">다가오는 청약이 없습니다. 일정이 잡히면 여기에 채워집니다.</td></tr></tbody>`;
 }
 
@@ -149,7 +149,7 @@ function initPlan() {
     downloadIcs(xs, "공모주-청약플랜.ics");
   };
   let rt;
-  window.addEventListener("resize", () => { clearTimeout(rt); rt = setTimeout(renderPlan, 200); });
+  window.addEventListener("resize", () => { clearTimeout(rt); rt = setTimeout(() => { if (CUR_SCREEN === "tools") renderPlan(); }, 200); });
   // 계산기의 최소 주수·증거금률·균등 예상이 바뀌면 플래너도 다시
   ["cMin", "cMargin", "cEq"].forEach((id) => $(id).addEventListener("input", renderPlan));
 }
@@ -181,7 +181,7 @@ function openCompare() {
     return `<tr><th scope="row">${label}</th>${cells.map((c, i) => `<td class="${vals && vals[i] === b ? "best" : ""}">${c}</td>`).join("")}</tr>`;
   };
   const totals = rs.map((r) => (r.pending || r.total == null ? null : r.total));
-  let body = row("판정", rs.map((r, i) => `${ring(r, 64, xs[i])}${verdictChip(r)}`), totals);
+  let body = row("판정", rs.map((r, i) => `${ring(r, isPhone() ? 44 : 64, xs[i])}${verdictChip(r)}`), totals);
   SC.FACTORS.forEach((f, k) => {
     const pts = rs.map((r) => r.rows[k].pts);
     body += row(`${esc(f.label)}<small>${f.w}점</small>`, rs.map((r, i) => {
@@ -359,15 +359,22 @@ function showScreen(name, target) {
   if (changed) SCROLL[CUR_SCREEN] = window.scrollY;
   CUR_SCREEN = name;
   document.querySelectorAll(".screen").forEach((el) => { el.hidden = el.dataset.screen !== name; });
-  document.querySelectorAll("[data-go]").forEach((a) => a.toggleAttribute("aria-current", a.dataset.go === name));
+  const tab = name === "guide" && isPhone() ? "home" : name; // 아래 탭엔 가이드가 없다 — 홈을 켜 둔다
+  document.querySelectorAll("[data-go]").forEach((a) => {
+    const on = a.dataset.go === name || (a.closest("#tabbar") && a.dataset.go === tab);
+    if (on) a.setAttribute("aria-current", "page"); else a.removeAttribute("aria-current");
+  });
+  document.body.dataset.screen = name;
   // 숨어 있을 때 잰 너비로 그린 그래프를 화면 너비로 다시
-  if (name === "tools") renderPlan();
-  if (name === "analysis" && ITEMS.length) renderMarket();
+  const stamp = `${Math.round(innerWidth)}|${scoreCache.size}|${TODAY}|${ITEMS.length}`;
+  if (name === "tools" && showScreen.plan !== stamp) { showScreen.plan = stamp; renderPlan(); }
+  if (name === "analysis" && ITEMS.length && showScreen.market !== stamp) { showScreen.market = stamp; renderMarket(); }
   if (name === "my") renderMyDash();
   const el = target && target !== name ? document.getElementById(target) : null;
   if (el) nativeScroll.call(el, { block: "start" });
   else if (changed) window.scrollTo(0, SCROLL[name] || 0); // 앱처럼 탭마다 보던 자리로
-  if (changed && navigator.vibrate) try { navigator.vibrate(8); } catch (e) { /* 진동 없는 기기 */ }
+  if (changed && showScreen.byUser && navigator.vibrate) try { navigator.vibrate(8); } catch (e) { /* 진동 없는 기기 */ }
+  showScreen.byUser = false;
 }
 // 다른 코드가 숨은 화면의 섹션으로 scrollIntoView 하면, 그 화면을 먼저 연다
 const nativeScroll = Element.prototype.scrollIntoView;
@@ -378,8 +385,9 @@ Element.prototype.scrollIntoView = function (opt) {
 };
 function initScreens() {
   const fromHash = () => {
-    const h = decodeURIComponent(location.hash.slice(1));
-    if (!h || h.startsWith("i=")) return showScreen(CUR_SCREEN);
+    const h = dec(location.hash.slice(1));
+    if (!h) return showScreen("home");  // 뒤로 가기로 맨 처음 주소에 오면 홈
+    if (h.startsWith("i=")) return showScreen(CUR_SCREEN);
     const s = screenOf(h);
     if (s) showScreen(s, h);
   };
@@ -390,12 +398,14 @@ function initScreens() {
     const s = screenOf(id);
     if (!s) return;
     e.preventDefault();
-    if (a.dataset.go && a.dataset.go === CUR_SCREEN) { window.scrollTo({ top: 0, behavior: "smooth" }); return; }
+    if (a.dataset.go && a.dataset.go === CUR_SCREEN) { window.scrollTo({ top: 0, behavior: motion() }); return; }
+    showScreen.byUser = true;
     history.pushState(null, "", `#${s === id ? s : id}`);
     showScreen(s, id);
   });
   window.addEventListener("popstate", fromHash);
   fromHash();
+  initScreens.fromHash = fromHash;
 }
 
 /* 홈: 다가오는 청약을 옆으로 넘겨 보는 줄 */
@@ -461,7 +471,16 @@ function initSteppers() {
 }
 
 /* ---------------------------------------------------------------- 시작 */
-document.addEventListener("ipo:ready", () => { renderPlan(); renderTray(); renderRail(); });
+document.addEventListener("ipo:ready", () => {
+  if (CUR_SCREEN === "tools") renderPlan(); else showScreen.plan = null;
+  renderTray(); renderRail();
+  // 첫 로드: 목록·그래프가 그려진 뒤에야 #calendar 같은 섹션 위치가 맞다
+  if (!initScreens.done) { initScreens.done = true; if (!location.hash.startsWith("#i=")) initScreens.fromHash?.(); }
+});
+// role="button" 인 줄·타일도 키보드(Enter·Space)로 누를 수 있게
+document.addEventListener("keydown", (e) => {
+  if ((e.key === "Enter" || e.key === " ") && e.target.matches?.('[role="button"]:not(button)')) { e.preventDefault(); e.target.click(); }
+});
 document.addEventListener("ipo:records", renderMyDash);
 document.addEventListener("ipo:sharecard", (e) => shareCard(e.detail));
 initPlan();

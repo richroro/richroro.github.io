@@ -698,3 +698,133 @@ body{-webkit-tap-highlight-color:transparent}
   .dlg-top .ttl small{margin-top:6px}
 }
 @media(max-width:759px){.actbar .ghost:not(.primary){background:var(--surface);box-shadow:var(--shadow)}}
+
+/* ================================================================ v7: 에이전트 점검 반영 — 대비·접근성·휴대폰 표·터치 크기 */
+/* 대비: 옅은 회색 글자를 WCAG AA(4.5:1)까지. 판정 칩은 밝은 화면 전용 진한 색 */
+:root{--ink-3:#606A76;--v-go:#B8491C;--v-light:#8A6100;--v-pass:#646E7A}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--ink-3:#949DA8;--v-go:var(--s2);--v-light:var(--s4);--v-pass:#949DA8}}
+:root[data-theme="dark"]{--ink-3:#949DA8;--v-go:var(--s2);--v-light:var(--s4);--v-pass:#949DA8}
+.ghost.primary,.card .ghost.primary,.dlg-body .ghost.primary,.feat .ghost.primary,.tray .ghost.primary,.btn{background:var(--brand-deep)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) :is(.ghost.primary,.btn){background:var(--brand);color:#101012}}
+:root[data-theme="dark"] :is(.ghost.primary,.btn){background:var(--brand);color:#101012}
+.k.list{background:#127A55}.k.refund{background:#8A6100}
+input.ovr:focus,input.bk:focus{box-shadow:0 0 0 2px var(--brand)}
+:focus-visible{outline:2px solid var(--brand);outline-offset:2px}
+.star:focus:not(:focus-visible),#dClose:focus:not(:focus-visible){outline:0}
+.sig li.weak::before{content:"!";color:var(--s2);font-weight:800;font-size:12px}
+
+/* 한국어는 낱말 중간에서 줄을 바꾸지 않는다 */
+body{word-break:keep-all;overflow-wrap:anywhere}
+
+/* 숫자 칸이 좁은 화면에서 밖으로 나가지 않게 */
+.stats{grid-template-columns:repeat(2,minmax(0,1fr))}
+@media(min-width:720px){.stats.c4{grid-template-columns:repeat(4,minmax(0,1fr))}.stats.c3{grid-template-columns:repeat(3,minmax(0,1fr))}}
+.st{min-width:0}
+.st .v{overflow:hidden;text-overflow:ellipsis}
+.feat-main{flex-wrap:wrap}
+
+/* 알림: popover 로 열린 시트 위에 */
+.toast[popover]{inset:auto auto 24px 50%;margin:0;border:0;transform:translateX(-50%);color:var(--paper);background:var(--ink);opacity:0;transition:opacity .15s}
+.toast.on{opacity:1}
+.toast:not([popover]):not(.on){display:none}
+
+/* 내 청약: 기록 추가는 접었다 펴기 */
+.addrec{padding:0}
+.addrec summary{list-style:none;display:flex;align-items:center;justify-content:space-between;padding:16px 18px;cursor:pointer;font-weight:700;font-size:15px;color:var(--brand-deep)}
+.addrec summary::-webkit-details-marker{display:none}
+.addrec summary i{font-style:normal;font-size:20px;color:var(--ink-3);transition:transform .15s}
+.addrec[open] summary i{transform:rotate(90deg)}
+.addrec .pad{padding-top:0}
+
+/* 자주 묻는 것: 기본 ▶ 대신 오른쪽 꺾쇠 */
+.guide summary{list-style:none;display:flex;align-items:center;justify-content:space-between;gap:10px}
+.guide summary::-webkit-details-marker{display:none}
+.guide summary::after{content:"›";font-size:20px;color:var(--ink-3);transition:transform .15s}
+.guide details[open] summary::after{transform:rotate(90deg)}
+.back{display:inline-flex;align-items:center;gap:4px;font-size:15px;font-weight:600;color:var(--ink-2);padding:10px 0;min-height:44px}
+
+/* 휴대폰 행의 비교 버튼 */
+.rr{display:flex;align-items:center;gap:8px}
+.rr .cmp{width:36px;height:36px;border-radius:10px;font-size:14px}
+
+/* 상세 더보기 */
+.more-acts{padding:12px;background:var(--surface);border-radius:16px;box-shadow:var(--shadow)}
+.ghost.icon{font-size:18px;letter-spacing:1px}
+
+@media(max-width:759px){
+  /* 설명 문단은 줄이고 핵심만 */
+  #market > .wrap > p.lead,#method > .wrap > p.lead,#plan > .wrap > p.lead,#calc > .wrap > p.lead{display:none}
+  .planbar .field{flex:1 1 100%}
+
+  /* 손가락 크기: 44px */
+  .star,#dClose,#cmpClose,#calPrev,#calNext,.tchip button,.more-link{min-width:44px;min-height:44px;display:inline-flex;align-items:center;justify-content:center}
+  .ghost.sm{height:40px;padding:0 14px}
+  .rr .cmp{width:40px;height:40px}
+  .dlg-top .tag{background:var(--surface)}
+
+  /* 비교 트레이: 한 줄, 아래 탭 위에 */
+  .tray{bottom:calc(74px + env(safe-area-inset-bottom,0px))}
+  .tray-in{flex-wrap:nowrap}
+  .tray-chips{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;flex:1}
+  .tray-chips::-webkit-scrollbar{display:none}
+  .tchip{flex:none}
+
+  /* 비교 표: 두세 칸이 한 화면에, 종목 이름 줄은 위에 붙인다 */
+  table.cmp-t{min-width:0;table-layout:fixed}
+  .cmp-t th[scope=row]{width:76px;min-width:0;font-size:11.5px}
+  .cmp-t thead th{position:sticky;top:0;z-index:2;background:var(--paper);font-size:13px}
+  .cmp-t td{font-size:12.5px;padding:8px 4px}
+  .cmp-t td .vd{font-size:11px;padding:3px 7px}
+
+  /* 넓은 표는 칸 이름을 붙여 한 줄씩 쌓는다 */
+  #pTable,#myTable{min-width:0}
+  #pTable thead,#myTable thead{display:none}
+  #pTable tr,#myTable tr{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px 12px;padding:14px 16px;border-bottom:1px solid var(--line-soft)}
+  #pTable td,#myTable td{border:0;padding:0;text-align:left;white-space:normal;display:flex;justify-content:space-between;gap:8px;align-items:center;min-width:0}
+  #pTable td[data-l]::before,#myTable td[data-l]::before{content:attr(data-l);font-size:12px;color:var(--ink-3);font-weight:500;font-family:var(--font)}
+  #pTable td.nm,#myTable td.nm{grid-column:1/-1;display:flex;justify-content:flex-start;gap:8px}
+  #pTable td.nm b,#myTable td.nm b{font-size:16px}
+  #pTable td[data-l="전략"]{grid-column:1/-1}
+  #myTable td:last-child{grid-column:1/-1;justify-content:flex-end}
+  #myTable tbody tr:hover,#pTable tbody tr:hover{background:transparent}
+  #myTable tfoot{display:none}
+
+  /* 분석법 표: 기준마다 한 덩어리 */
+  #methodTable{min-width:0}
+  #methodTable thead{display:none}
+  #methodTable tr{display:grid;grid-template-columns:1fr auto;gap:4px 12px;padding:14px 16px;border-bottom:1px solid var(--line-soft)}
+  #methodTable td{border:0;padding:0;text-align:left;white-space:normal}
+  #methodTable td:nth-child(2)::after{content:"점"}
+  #methodTable td:nth-child(3),#methodTable td:nth-child(4){grid-column:1/-1}
+  #methodTable td.why{max-width:none}
+
+  /* 주관사 표·계산 표: 덜 중요한 칸은 숨김 */
+  #uwTable{min-width:0}
+  #uwTable :is(th,td):nth-child(4),#uwTable :is(th,td):nth-child(5),#uwTable :is(th,td):nth-child(7){display:none}
+  #uwTable td:last-child{min-width:0;max-width:34vw}
+  #calcTable :is(th,td):nth-child(4){display:none}
+  #calcTable{min-width:0}
+}
+/* 짧은 화면(가로·확대)에서는 거르개를 붙이지 않는다 — 내용이 가려지지 않게 */
+@media(max-height:560px){#schedule .toolbar{position:static !important}}
+body:has(dialog[open]) .toast[popover]{bottom:calc(96px + env(safe-area-inset-bottom,0px))}
+
+/* ================================================================ v8: 만약에 · 매도 코치 · 비슷한 종목 */
+.whatif h3,.coach h3,.sim h3{font-size:16px;font-weight:800}
+table.wi-t{min-width:0;width:100%;table-layout:fixed;border-collapse:separate;border-spacing:3px}
+.wi-t th{font-size:11px;color:var(--ink-3);font-weight:600;text-align:center;padding:2px;border:0;background:transparent;white-space:nowrap}
+.wi-t th[scope=row]{text-align:left;width:52px}
+.wi-t td.wi{text-align:center;border-radius:8px;padding:6px 2px;border:0;background:color-mix(in srgb,var(--vc,var(--ink-3)) 13%,transparent);white-space:normal}
+.wi-t td.wi b{display:block;font-size:12.5px;font-weight:800;color:var(--vc,var(--ink-3))}
+.wi-t td.wi small{display:block;font-size:10.5px;color:var(--ink-2);line-height:1.25;margin-top:1px}
+.wi-t td.wi small i{display:block;font-style:normal;color:var(--ink-3);font-size:10px}
+.wi-t tbody tr:hover{background:transparent}
+.coach .lead{font-size:14px}
+.simlist{list-style:none;display:flex;flex-direction:column;gap:6px}
+.simlist li{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:10px 12px;border-radius:12px;background:var(--surface-2);cursor:pointer}
+.simlist li span{display:flex;flex-direction:column;min-width:0}
+.simlist li b{font-size:14.5px;font-weight:700}
+.simlist li small{font-size:12px;color:var(--ink-3)}
+.simlist .r3{align-items:flex-end;text-align:right;flex:none}
+.simlist .r3 b{font-size:16px}
+@media(hover:none){.simlist li:active{transform:scale(.98)}}

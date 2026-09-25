@@ -90,7 +90,8 @@
     if (it.spac) {
       return { rows, total: null, wKnown, verdict: { key: "spac", label: "스팩", tip: "합병 전까지 원금 보존형에 가까움 — 점수를 매기지 않음" }, flags: [], pending: false };
     }
-    if (wKnown < 40) {
+    // 기관경쟁률·확약을 둘 다 모르면(= 수요예측 전) 나머지 값이 채워져도 판정하지 않는다
+    if (wKnown < 40 || (val("inst") == null && val("lock") == null)) {
       return { rows, total, wKnown, verdict: { key: "wait", label: "판단 보류", tip: "수요예측 결과(기관경쟁률·확약)가 나오면 판정합니다" }, flags, pending: true };
     }
     let v = VERDICTS.find((x) => total >= x.min);

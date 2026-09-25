@@ -27,7 +27,6 @@
   /* 첫 페인트 전에 저장된 테마를 적용해 깜빡임을 막습니다(다른 페이지와 같은 키) */
   try { const t = JSON.parse(localStorage.getItem("m7.theme")); if (t === "dark" || t === "light") document.documentElement.dataset.theme = t; } catch (e) {}
 </script>
-<link rel="preload" href="/ipo/data/ipo.json" as="fetch" crossorigin>
 <link rel="stylesheet" href="/ipo/ipo.css">
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"공모주 캘린더","url":"https://richroro.github.io/ipo/","applicationCategory":"FinanceApplication","inLanguage":"ko","operatingSystem":"Web","offers":{"@type":"Offer","price":"0","priceCurrency":"KRW"}}</script>
 </head>
@@ -78,7 +77,7 @@
       <button type="button" data-v="all" aria-pressed="false">전체</button>
     </div>
     <label class="field grow"><span class="sr">종목·주간사 검색</span>
-      <input id="q" type="search" placeholder="종목명·주간사 검색" autocomplete="off"></label>
+      <input id="q" type="search" placeholder="종목·증권사 검색" autocomplete="off"></label>
     <div class="seg" id="sortSeg" role="group" aria-label="정렬">
       <button type="button" data-v="date" aria-pressed="true">일정순</button>
       <button type="button" data-v="score" aria-pressed="false">점수순</button>
@@ -104,7 +103,7 @@
         <span class="lg"><span class="sw ev-list"></span>상장</span>
       </div>
     </div>
-    <div class="cal mt12" id="cal" role="grid"></div>
+    <div class="cal mt12" id="cal"></div>
     <div class="agenda mt12" id="agenda"></div>
   </div>
 </div></section>
@@ -117,7 +116,7 @@
   <div class="stats c4 mt16" id="tempStats"></div>
   <div class="card pad mt16">
     <div class="chart-head">
-      <div><div class="ct">최근 상장 종목의 시초가 수익률</div><div class="cs">공모가 대비 · 스팩 제외 · 막대에 마우스를 올리거나 눌러 보세요</div></div>
+      <div><div class="ct">최근 상장 종목의 시초가 수익률</div><div class="cs">공모가 대비 · 스팩 제외 · 막대를 누르면 그 종목이 열립니다</div></div>
       <div class="legend" style="margin-top:0"><span class="lg"><span class="sw" style="background:var(--fill-up)"></span>공모가 위</span><span class="lg"><span class="sw" style="background:var(--fill-down)"></span>공모가 아래</span></div>
     </div>
     <div class="figwrap" id="tempFig"></div>
@@ -171,7 +170,7 @@
   <div class="toolbar mt16 planbar">
     <label class="field"><span>계좌 수 (나 + 가족)</span><input id="pAcc" type="number" inputmode="numeric" min="1" max="10" value="1"></label>
     <label class="field"><span>청약하는 날</span>
-      <select id="pDay"><option value="end">마감일 (보통 이날 경쟁률 보고 넣음)</option><option value="start">첫날</option></select></label>
+      <select id="pDay"><option value="end">마감일에 청약</option><option value="start">첫날에 청약</option></select></label>
     <button class="ghost sm" type="button" id="pIcs">플래너 일정 달력에 (알림 포함)</button>
   </div>
   <div class="stats c4 mt16" id="pStats"></div>
@@ -191,7 +190,7 @@
       <h3 id="calcFor">직접 입력</h3>
       <div class="form mt12">
         <label class="field"><span>공모가 (원)</span><input id="cPrice" type="number" inputmode="numeric" min="0" step="100" value="20000"></label>
-        <label class="field"><span>청약 주수</span><span class="stepper"><button type="button" data-step="-10" data-for="cQty" aria-label="10주 빼기">−</button><input id="cQty" type="number" inputmode="numeric" min="0" step="10" value="10"><button type="button" data-step="10" data-for="cQty" aria-label="10주 더하기">+</button></span></label>
+        <label class="field"><span>청약 주수</span><span class="stepper"><button type="button" data-step="-10" data-for="cQty" aria-label="10주 빼기">−</button><input id="cQty" type="number" inputmode="numeric" min="0" step="10" value="10" aria-label="청약 주수"><button type="button" data-step="10" data-for="cQty" aria-label="10주 더하기">+</button></span></label>
         <label class="field"><span>증거금률 (%)</span><input id="cMargin" type="number" inputmode="decimal" min="0" max="100" value="50"></label>
         <label class="field"><span>청약 수수료 (원)</span><input id="cFee" type="number" inputmode="numeric" min="0" step="500" value="2000"></label>
         <label class="field"><span>균등 예상 배정 (주)</span><input id="cEq" type="number" inputmode="decimal" min="0" step="1" value="1"></label>
@@ -222,7 +221,9 @@
   <h2 class="title">내 청약 기록</h2>
   <p class="lead">청약한 종목과 배정·매도 결과를 적어 두면 손익을 모아 봅니다. 이 브라우저에만 저장됩니다.</p>
   <div class="stats c4 mt16" id="mySum"></div>
-  <div class="card pad mt16">
+  <details class="card addrec mt16" id="myAdd">
+    <summary><span>＋ 청약 기록 추가</span><i aria-hidden="true">›</i></summary>
+    <div class="pad">
     <form id="myForm" class="form myform" autocomplete="off">
       <input type="hidden" id="mId">
       <label class="field"><span>종목</span><input id="mName" list="nameList" required placeholder="종목명"></label>
@@ -239,10 +240,11 @@
       </div>
     </form>
     <datalist id="nameList"></datalist><datalist id="brokerList"></datalist>
-  </div>
+    </div>
+  </details>
   <div class="card mt16">
     <div class="tscroll"><table id="myTable"></table></div>
-    <p class="empty" id="myEmpty">아직 기록이 없습니다. 위에서 추가하거나, 일정 카드에서 <b>기록 추가</b>를 누르세요.</p>
+    <p class="empty" id="myEmpty">아직 기록이 없습니다. 위의 <b>＋ 청약 기록 추가</b>를 누르거나, 종목 상세에서 <b>기록 추가</b>를 누르세요.</p>
   </div>
   <div class="grid2 mt16" id="myDash" hidden>
     <div class="card pad"><div class="chart-head"><div><div class="ct">월별 실현 손익</div><div class="cs">최근 12개월 · 청약일 기준 · 매도가를 적은 기록</div></div></div>
@@ -252,7 +254,7 @@
   <div class="btnrow mt12">
     <button class="ghost" type="button" id="myCsv">CSV 내려받기</button>
     <button class="ghost" type="button" id="myBackup">백업(JSON)</button>
-    <label class="ghost filebtn">복원<input type="file" id="myRestore" accept="application/json,.json" hidden></label>
+    <label class="ghost filebtn">복원<input type="file" id="myRestore" class="sr" accept="application/json,.json"></label>
   </div>
   <p class="hint mt8">손익 = 배정 주수 × (매도가 − 공모가) − 청약 수수료 − 매도 비용(계산기의 매도 비용 %). 보유 중인 종목은 데이터에 현재가가 있으면 평가 손익으로 셉니다.</p>
 </div></section>
@@ -260,6 +262,7 @@
 
 <div class="screen" data-screen="guide" hidden>
 <section id="guide"><div class="wrap">
+  <a class="back" href="#home">‹ 홈으로</a>
   <h2 class="title">공모주린이 가이드</h2>
   <p class="lead">처음 청약하는 사람을 위한 순서표입니다. 한 번 해 보면 다음부터는 10분이면 끝납니다.</p>
   <ol class="steps mt16">
@@ -329,7 +332,7 @@
 </nav>
 
 <dialog id="dlg" aria-labelledby="dTitle"><div class="dlg-in" id="dBody"></div></dialog>
-<div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+<div class="toast" id="toast" role="status" aria-live="polite" popover="manual"></div>
 
 <footer><div class="wrap foot">
   <span>공모주 캘린더 · 데이터: 38커뮤니케이션 공개 표(매일 자동 갱신)</span>

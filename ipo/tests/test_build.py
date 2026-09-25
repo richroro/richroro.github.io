@@ -178,6 +178,73 @@ class DetailFill(unittest.TestCase):
         self.assertEqual(build.need_detail(it, TODAY, {"9": {**full, "inst_comp": 800.0}}), 0)
 
 
+class ReviewFixes(unittest.TestCase):
+    """데이터 검토에서 나온 문제들 — 고친 뒤 다시 생기지 않게"""
+
+    def test_name_variants_match(self):
+        for v in ("(주)가나", "㈜가나", "가나(코스닥)", "가나（코스닥）", "가나[코스닥]", "주식회사 가나"):
+            self.assertEqual(build.norm_name(v), build.norm_name("가나"), v)
+
+    def test_day_only_range_end(self):
+        self.assertEqual(build.date_range("2026.09.24~25", TODAY), ("2026-09-24", "2026-09-25"))
+
+    def test_kospi_written_as_exchange(self):
+        t = page("<table><tr><td>시장구분</td><td>거래소</td></tr><tr><td>업종</td><td>2025-08-07</td></tr></table>")
+        d = build.parse_detail(t, TODAY)
+        self.assertEqual(d.get("market"), "KOSPI")
+        self.assertNotIn("sector", d)  # 날짜는 업종이 아니다
+
+    def test_zero_ratio_after_forecast_is_placeholder(self):
+        t = page("""<table><tr><td>수요예측일</td><td>2026.09.10 ~ 2026.09.11</td></tr>
+          <tr><td>기관경쟁률</td><td>0:1</td></tr><tr><td>의무보유확약</td><td>0.00%</td></tr></table>""")
+        d = build.parse_detail(t, TODAY)
+        self.assertNotIn("inst_comp", d)
+        self.assertNotIn("lockup", d)
+        items = build.merge([{"id": "1", "no": "1", "name": "가", "inst_comp": 0.0, "sub_start": "2026-09-20"}], [], [], [], {}, TODAY)
+        self.assertNotIn("inst_comp", items[0])
+
+    def test_future_list_date_can_change(self):
+        prev = [{"id": "7", "no": "7", "name": "가", "sub_start": "2026-09-24", "list_date": "2026-09-30"}]
+        t = page("<table><tr><td>상장일</td><td>2026.10.07</td></tr></table>")
+        items = build.merge(prev, [], [], [], {"7": build.parse_detail(t, TODAY)}, TODAY)
+        self.assertEqual(items[0]["list_date"], "2026-10-07")
+        # 이미 상장한 날짜는 지킨다
+        prev[0]["list_date"] = "2026-09-20"
+        items = build.merge(prev, [], [], [], {"7": build.parse_detail(t, TODAY)}, TODAY)
+        self.assertEqual(items[0]["list_date"], "2026-09-20")
+
+    def test_refiled_company_does_not_inherit_old_numbers(self):
+        prev = [{"id": "100", "no": "100", "name": "가나", "sub_start": "2025-11-01", "sub_end": "2025-11-02",
+                 "inst_comp": 50.0, "refund": "2025-11-04"}]
+        new = [{"name": "가나", "no": "200", "sub_start": "2026-10-01", "sub_end": "2026-10-02"}]
+        items = build.merge(prev, new, [], [], {}, TODAY)
+        by = {i["id"]: i for i in items}
+        self.assertEqual(set(by), {"100", "200"})
+        self.assertNotIn("inst_comp", by["200"])
+        self.assertNotIn("refund", by["200"])
+
+    def test_amount_follows_final_price_and_no_prices_before_listing(self):
+        prev = [{"id": "3", "no": "3", "name": "다", "price": 20000, "shares": 1_000_000, "amount": 150.0,
+                 "sub_start": "2026-09-20", "list_date": "2026-09-30", "cur": 23000}]
+        it = build.merge(prev, [], [], [], {}, TODAY)[0]
+        self.assertEqual(it["amount"], 200.0)
+        self.assertNotIn("cur", it)
+
+    def test_forecast_table_keeps_range_start(self):
+        prev = [{"id": "4", "no": "4", "name": "라", "fc_start": "2026-09-10", "fc_end": "2026-09-16", "sub_start": "2026-09-22"}]
+        fc = [{"name": "라", "no": "4", "fc_start": "2026-09-16", "fc_end": "2026-09-16", "inst_comp": 800.0}]
+        it = build.merge(prev, [], fc, [], {}, TODAY)[0]
+        self.assertEqual((it["fc_start"], it["fc_end"]), ("2026-09-10", "2026-09-16"))
+
+    def test_withdrawn_row_marks_status(self):
+        t = page("""<table><tr><td>종목명</td><td>공모주일정</td><td>확정공모가</td><td>희망공모가</td><td>청약경쟁률</td><td>주간사</td></tr>
+          <tr><td><a href="/html/fund/?o=v&no=55">마바</a></td><td>공모철회</td><td>-</td><td>10,000~12,000</td><td></td><td>KB증권</td></tr></table>""")
+        rows = build.parse_schedule(t, TODAY)
+        self.assertEqual(rows, [{"name": "마바", "no": "55", "status": "철회"}])
+        prev = [{"id": "55", "no": "55", "name": "마바", "sub_start": "2026-10-05"}]
+        self.assertEqual(build.merge(prev, rows, [], [], {}, TODAY)[0]["status"], "철회")
+
+
 class Merge(unittest.TestCase):
     def test_merge_joins_by_name_and_keeps_history(self):
         prev = [{"id": "1500", "no": "1500", "name": "옛날상장", "list_date": "2026-03-02", "price": 10000},
@@ -278,6 +345,30 @@ class Validate(unittest.TestCase):
             self.assertTrue(any("중복" in e for e in errors))
             self.assertTrue(any("청약 끝" in e for e in errors))
             self.assertTrue(any("밴드" in e for e in errors))
+
+    def test_catches_order_types_and_shrink(self):
+        with tempfile.TemporaryDirectory() as d:
+            p, q = os.path.join(d, "ipo.json"), os.path.join(d, "prev.json")
+            bad = [
+                {"id": "1", "name": "가", "sub_start": "2026-09-20", "sub_end": "2026-09-21", "list_date": "2026-09-19", "refund": "2026-09-18"},
+                {"id": "2", "name": "나", "fc_end": "2026-09-25", "sub_start": "2026-09-20", "sub_end": "2026-09-21"},
+                {"id": "3", "name": "다", "price": 10000, "open": 45000, "market": "???", "sector": "2025-08-07"},
+                {"id": "4", "name": "라", "inst_comp": -1, "sub_comp": "12", "spac": "yes"},
+            ]
+            with open(p, "w", encoding="utf-8") as f:
+                json.dump({"updated": None, "items": bad}, f)
+            with open(q, "w", encoding="utf-8") as f:
+                json.dump({"items": [{"id": str(i), "name": "x"} for i in range(50)]}, f)
+            errors, _ = validate.check(p, min_items=1, today=TODAY, prev_path=q)
+            text = " ".join(errors)
+            for needle in ("상장이 청약 끝보다 앞", "환불이 청약 끝보다 앞", "수요예측이 청약보다 늦음", "공모가의 4.50배",
+                           "시장 값 이상", "업종 값 이상", "inst_comp 숫자가 아님", "sub_comp 숫자가 아님",
+                           "spac 가 참/거짓이 아님", "updated 가 없음", "20% 넘게 줄었음"):
+                self.assertIn(needle, text)
+
+    def test_real_file_passes(self):
+        errors, _ = validate.check(os.path.join(os.path.dirname(HERE), "data", "ipo.json"), min_items=0, today=TODAY)
+        self.assertEqual(errors, [])
 
     def test_empty_placeholder_is_allowed(self):
         with tempfile.TemporaryDirectory() as d:
