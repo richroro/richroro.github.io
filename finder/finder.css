@@ -298,3 +298,4 @@ table.cmp-t td.muted{color:var(--ink-3)}
 .ressum{margin-left:12px}
 .ressum:empty{display:none}
 @media (max-width:560px){.ressum{display:block;margin:2px 0 0}}
+.etag{font:600 10px "IBM Plex Mono",monospace;border-radius:5px;padding:2px 5px;margin-left:4px;flex:none;background:color-mix(in srgb,var(--s5,#7c3aed) 14%,transparent);color:var(--s5,#7c3aed)}
