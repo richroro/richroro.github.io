@@ -79,12 +79,12 @@ console.log('\n== C. 지금 갈 만한 곳 ==');
 }
 {
   const p = await boardPage([r({ place: '터진 곳', wait: 60, crowd: 3, park: 3, t: N - 10 * 60e3 })]);
-  ok((await p.locator('.pick.empty h2').innerText()).includes('붐빈다'), '다 붐비면 그렇게 말함');
+  ok((await p.locator('.pick-empty h2').innerText()).includes('붐빈다'), '다 붐비면 그렇게 말함');
   await p.context().close();
 }
 {
   const p = await boardPage([r({ place: '오래된 곳', t: N - 20 * 3600e3 })]);
-  ok((await p.locator('.pick.empty h2').innerText()).includes('지금 들어온 소식이 없습니다'), '3시간 안쪽이 없으면 그렇게 말함');
+  ok((await p.locator('.pick-empty h2').innerText()).includes('지금 들어온 소식이 없습니다'), '3시간 안쪽이 없으면 그렇게 말함');
   await p.context().close();
 }
 

@@ -1,6 +1,6 @@
 /* 쌓인 리포트를 읽는 눈 — 같게 봤다(교차 확인), 보통은(지난 기록), 지켜보는 곳, 지금 갈 만한 곳 고침.
    시계를 토요일 12:30(서울)에 멈춰 두고 본다 — 요일·시간대 칸이 날마다 달라지면 검사가 흔들린다. */
-import { ok, section, launch, context, openWith, report, finish, MIN } from './lib.mjs';
+import { ok, section, launch, context, openWith, report, finish, MIN, settle } from './lib.mjs';
 
 const NOW = new Date('2026-09-26T12:30:00+09:00').getTime();   // 토요일 점심
 const at = (iso) => new Date(iso + '+09:00').getTime();
@@ -331,6 +331,128 @@ section('파일로 저장·불러오기');
   const w = await p.evaluate(() => JSON.parse(localStorage.getItem('tpw.v1')).watch.map((x) => x.k + '/' + x.nm));
   ok(w.join() === '우리가게|/우리 가게,남의가게1|/남의 가게 1', '지켜보는 곳은 합친다 (있던 건 그대로): ' + w.join());
   ok((await p.locator('#bundleStatus').innerText()).includes('지켜보는 곳 1곳도 더했습니다'), '  └ 몇 곳 더했는지 알린다');
+  await p.context().close();
+}
+
+/* ─────────────────────────── 빈 보드 ─────────────────────────── */
+section('빈 보드 — 리포트가 어디서 오는지 알리는 카드 하나');
+{
+  const p = await page(null);                 // 예시 보드에서 시작해 "예시 치우기"
+  await p.locator('#dropSample').click();
+  ok(await p.locator('#feed .guide').count() === 1 && await p.locator('#view-feed .empty, #view-feed .pick').count() === 0,
+    '예시를 치우면 빈 상자 둘 대신 안내 카드 하나');
+  const g = flat(await p.locator('#feed .guide').innerText({ timeout: 3000 }).catch(() => ''));
+  ok(g.includes('아직 리포트가 없습니다') && g.includes('카톡으로 받은 링크를 눌러 보세요'), '  └ 리포트가 어디서 오는지 말한다: ' + g);
+  const btns = (await p.locator('#feed .guide button').allInnerTexts()).map(flat);
+  ok(btns.join() === '리포트 보내기,받은 글 붙여 넣기', '  └ 단추 둘: ' + btns.join(' · '));
+  ok(await p.locator('#q').isHidden() && await p.locator('#liveOnly').isHidden() && await p.locator('#catFilter').isHidden(),
+    '  └ 거를 것이 없으니 검색 칸과 분야 칩 줄은 숨는다');
+  await p.locator('#feed [data-go="recv"]').click({ timeout: 3000 }).catch(() => {});
+  ok(await p.evaluate(() => document.body.dataset.view) === 'sync' && await p.evaluate(() => document.activeElement.id) === 'recvBox',
+    '"받은 글 붙여 넣기" — 주고받기의 받기 칸에 바로 초점');
+  await p.locator('.tab[data-view="feed"]').click();
+  await p.locator('#feed [data-go="write"]').click({ timeout: 3000 }).catch(() => {});
+  ok(await p.locator('#composeBack.open').count() === 1, '"리포트 보내기" — 쓰기 창이 열린다');
+  await p.keyboard.press('Escape');
+  await receive(p, [report({ t: NOW - 5 * MIN, by: '가', place: '첫 소식', crowd: 0 })]);
+  ok(await p.locator('#feed .guide').count() === 0 && await p.locator('#q').isVisible() && await p.locator('#catFilter').isVisible(),
+    '링크로 한 건이 들어오면 안내 카드는 빠지고 검색·분야 칩이 돌아온다');
+  await p.context().close();
+}
+{
+  const p = await page([report({ t: NOW - 30 * MIN, by: '가', place: '국숫집', crowd: 0 })]);
+  await p.fill('#q', '없는말');
+  ok((await text(p.locator('#feed'))).includes('거르개를 풀어 보세요') && await p.locator('#feed .guide').count() === 0,
+    '거르개에 걸린 것만 없으면 "거르개를 풀어 보세요" — 안내 카드가 아니다');
+  ok(await p.locator('#q').isVisible() && await p.locator('#catFilter').isVisible(), '  └ 검색 칸·분야 칩은 그대로 (풀 수 있게)');
+  await p.context().close();
+}
+
+/* ─────────────────────────── 지금 가기 좋은 곳 — 붐비는 곳 ─────────────────────────── */
+section('지금 가기 좋은 곳 — 줄 서거나 붐비는 곳은 추천하지 않는다');
+{
+  const p = await page([
+    report({ t: NOW - 5 * MIN, by: '가', cat: 'food', place: '줄 선 칼국수', wait: 10, crowd: 2, park: 0 }),   // 여유도 평균 0.73 — 예전엔 1위
+    report({ t: NOW - 8 * MIN, by: '나', cat: 'food', place: '한 시간 대기', wait: 60, crowd: 0, park: 0 }),
+    report({ t: NOW - 40 * MIN, by: '다', cat: 'cafe', place: '조용한 카페', wait: 0, crowd: 0, park: 2 })
+  ]);
+  const li = (await p.locator('#pick ol li').allInnerTexts()).map(flat);
+  ok(li.length === 1 && li[0].includes('조용한 카페'), '붐빔·대기 1시간+ 인 곳은 여유도 평균이 높아도 빼고: ' + li.join(' / '));
+  ok(!(await text(p.locator('#pick ol'))).includes('줄 선 칼국수'), '  └ "대기 10분 · 붐빔"이 1위에 오르지 않는다');
+  ok(li[0].includes('주차 만석'), '  └ 주차는 덜 결정적 — 만석이어도 한산하면 추천한다');
+  await p.context().close();
+}
+{
+  const p = await page([report({ t: NOW - 5 * MIN, by: '가', place: '줄 선 칼국수', wait: 10, crowd: 2, park: 0 })]);
+  const pk = await text(p.locator('#pick'));
+  ok(pk.includes('지금은 다들 붐빈다고 합니다') && pk.includes('1곳 모두'), '다 빠지면 "지금은 다들 붐빈다고 합니다": ' + pk);
+  await p.context().close();
+}
+
+/* ─────────────────────────── 지금 가기 좋은 곳 — 빈 상자 ─────────────────────────── */
+section('지금 가기 좋은 곳 — 빈 상자 (분야를 골랐을 때)');
+{
+  const { createRequire } = await import('node:module');
+  const { readFileSync } = await import('node:fs');
+  const AXE = readFileSync(createRequire(import.meta.url).resolve('axe-core/axe.min.js'), 'utf8');
+  for (const scheme of ['light', 'dark']) {
+    const p = await page([report({ t: NOW - 20 * MIN, by: '가', cat: 'food', place: '국숫집', crowd: 0 })], null, { colorScheme: scheme });
+    await p.locator('#catFilter [data-cat="etc"]').click();
+    const box = p.locator('#pick .pick');
+    const st = await box.evaluate((el) => { const s = getComputedStyle(el); return s.borderTopStyle + ' / ' + s.paddingTop; });
+    ok(st === 'none / 0px', scheme + ': 빈 추천 상자에 점선 테두리·40px 여백이 붙지 않는다 (' + st + ')');
+    ok((await text(box.locator('h2'))).includes('그 밖에만'), '  └ 제목에 분야 딱지 "그 밖에만"');
+    await settle(p);
+    await p.evaluate(AXE);
+    const v = await p.evaluate(async () => (await window.axe.run(document, { runOnly: { type: 'tag',
+      values: ['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa', 'best-practice'] } }))
+      .violations.map((x) => x.id + '(' + x.nodes.length + '): ' + x.nodes[0].target.join(' ')));
+    ok(v.length === 0, '  └ axe 위반 0 — 딱지 글자가 남색이 아닌 제목띠에서도 읽힌다' + (v.length ? ': ' + v.join(' | ') : ''));
+    await p.context().close();
+  }
+}
+
+/* ─────────────────────────── "지금" ─────────────────────────── */
+section('"지금"은 한 뜻 — 머리 알약 = 속보의 "지금" 칸 (1시간)');
+{
+  const p = await page([10, 50, 90, 150, 200, 300, 400, 500, 600, 700].map((m, i) =>
+    report({ t: NOW - m * MIN, by: '가나다라마바사아자차'[i], place: '곳 ' + i, crowd: 1, note: '메모 '.repeat(15) })));
+  const pill = await text(p.locator('#livePill'));
+  const band = await text(p.locator('#feed .tgroup').first());
+  ok(pill === '지금 2건' && band === '지금 2건', '머리 알약과 속보의 "지금" 칸이 같은 수 — 90·150분 전은 "최근 3시간"이지 "지금"이 아니다: ' +
+    pill + ' / ' + band);
+  ok(await p.locator('#livePill').evaluate((el) => el.tagName === 'BUTTON' && el.type === 'button'), '  └ 알약은 단추다');
+  await p.evaluate(() => window.scrollTo(0, 600));
+  await places(p);
+  await p.locator('#livePill').click();
+  await p.waitForFunction(() => window.scrollY === 0, null, { timeout: 3000 }).catch(() => {});
+  ok(await p.evaluate(() => document.body.dataset.view) === 'feed' && await p.evaluate(() => window.scrollY) === 0,
+    '  └ 누르면 속보 맨 위로 (장소에서 눌러도, 읽던 자리 600 이 아니라)');
+  await p.context().close();
+}
+
+/* ─────────────────────────── 끊겼을 때 한 줄 ─────────────────────────── */
+section('끊겼을 때 한 줄 — 늘 그려 둔 알림 칸');
+{
+  const p = await page([report({ t: NOW - 10 * MIN, by: '가', place: '하나', crowd: 0 })]);
+  const s = p.locator('#statline');
+  ok(await s.count() === 1 && await s.getAttribute('aria-live') === 'polite' && !(await s.evaluate((el) => el.hidden)),
+    '#statline 은 늘 문서에 있고 숨겨 두지 않는다 — 읽는 프로그램이 바뀐 글을 알린다');
+  ok(await s.isHidden() && await s.evaluate((el) => el.getBoundingClientRect().height) === 0, '  └ 연결돼 있으면 비어 있고 높이 0');
+  await p.context().setOffline(true);
+  await p.evaluate(() => window.dispatchEvent(new Event('offline')));
+  ok((await s.innerText()).includes('오프라인') && await s.isVisible(), '끊기면 "오프라인" 한 줄이 보인다');
+  const muts = await p.evaluate(() => new Promise((res) => {
+    let n = 0;
+    const mo = new MutationObserver((m) => { n += m.length; });
+    mo.observe(document.querySelector('#statline'), { childList: true, subtree: true, characterData: true });
+    renderTicker(); renderTicker();
+    setTimeout(() => { mo.disconnect(); res(n); }, 50);
+  }));
+  ok(muts === 0, '  └ 1분마다 다시 그려도 글이 같으면 건드리지 않는다 — 같은 말을 되풀이해 읽지 않게 (바뀐 곳 ' + muts + ')');
+  await p.context().setOffline(false);
+  await p.evaluate(() => window.dispatchEvent(new Event('online')));
+  ok(await s.isHidden() && (await s.innerText()) === '', '다시 연결되면 비고 높이 0');
   await p.context().close();
 }
 

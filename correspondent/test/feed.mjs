@@ -14,7 +14,7 @@ ok((await page.locator('#feed .badge').first().textContent()).includes('예시')
 ok(await page.locator('#dropSample').isVisible(), '예시 치우기 버튼');
 ok((await page.locator('.pick ol li').count()) > 0, '지금 갈 만한 곳 노출');
 const pill = await page.locator('#livePill').innerText();
-ok(/지금 4건/.test(pill), '머리 알약 "지금 4건" (14·38·95·170분): ' + pill);
+ok(/지금 2건/.test(pill), '머리 알약 "지금 2건" (14·38분 — 속보의 "지금" 칸과 같은 1시간): ' + pill);
 ok(await page.locator('#statline').isHidden(), '첫 화면은 소식부터 — 숫자 줄은 없다(끊겼을 때만 한 줄)');
 ok((await page.locator('.tgroup').count()) >= 2, '시간대 머리 ' + (await page.locator('.tgroup').allInnerTexts()).join(' / '));
 ok((await page.locator('#feed .meter').count()) === 0, '카드에 신선도 막대가 없다 — 몇 분 전 알약 하나로 읽는다');

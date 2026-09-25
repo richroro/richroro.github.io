@@ -617,34 +617,48 @@ function shareText(list, code){
 /* =========================================================================
    그리기
    ========================================================================= */
+let statHtml = "";   // #statline 에 마지막으로 쓴 것
 function renderTicker(){
-  const live = reports().filter((r) => Date.now() - r.t < SOFT).length;
-  $("#livePill").innerHTML = '<span class="livepill' + (live ? "" : " off") + '">' +
-    '<span class="dot' + (live ? " on" : "") + '"></span>지금 ' + live + "건</span>";
+  /* "지금"은 한 뜻이다 — 속보의 "지금" 칸·빨간 시각 알약과 같은 1시간. 3시간 창은 "최근 3시간"이라고 따로 부른다.
+     알약은 단추다 — 누르면 그 소식들이 있는 속보 맨 위로(bind). */
+  const live = reports().filter((r) => Date.now() - r.t < LIVE).length;
+  const pill = $("#livePill");
+  pill.className = "livepill" + (live ? "" : " off");
+  pill.innerHTML = '<span class="dot' + (live ? " on" : "") + '"></span>지금 ' + live + "건";
   /* 속보 머리에는 끊겼을 때만 한 줄 띄운다. 리포트·장소·특파원 수는 주고받기의 "보드 정리"에 있다 —
-     첫 화면은 소식부터 보이게. "예시입니다"는 처음 안내 카드(#intro)에 있다. */
-  const st = $("#statline");
-  st.innerHTML = navigator.onLine ? "" : '<span class="warn">오프라인 — ' +
+     첫 화면은 소식부터 보이게. "예시입니다"는 처음 안내 카드(#intro)에 있다.
+     이 줄은 읽는 프로그램이 알려 주는 칸(aria-live)이라 늘 그려 둔다(비면 높이 0) — 숨겼다가 글과 함께 드러내면
+     안 알려 준다. 1분마다 같은 글을 다시 쓰면 또 읽으니, 글이 바뀔 때만 쓴다. */
+  const html = navigator.onLine ? "" : '<span class="warn">오프라인 — ' +
     (SY.enabled ? "쓰면 이 기기에 저장되고, 연결되면 올라갑니다" : "이 기기에서 그대로 쓸 수 있습니다") + "</span>";
-  st.hidden = navigator.onLine;
+  if (html !== statHtml) $("#statline").innerHTML = statHtml = html;
 }
+
+/** 지금 줄을 서거나 붐빈다는 소식 — 웨이팅·사람 가운데 하나라도 붐빔·1시간+·터짐이면 추천하지 않는다.
+    여유도 평균(cond)만 보면 "대기 10분 · 붐빔"이 0.5를 넘어 1위에 오른다. 주차는 덜 결정적이라 여기선 안 본다. */
+const busy = (r) => [opt(WAIT, r.wait).tone, opt(CROWD, r.crowd).tone].some((t) => t === "bad" || t === "worst");
 
 /** 속보 거르개에서 분야를 골랐으면 "지금 가기 좋은 곳"도 그 분야만 본다. */
 function renderPick(){
+  /* 보드가 정말 비었으면(예시도 리포트도 없다) 빈 상자·검색·분야 칩을 거두고, 속보 자리의 안내 카드 하나가 말한다(renderFeed) */
+  const bare = !reports().length;
+  [$("#view-feed > .filters"), $("#view-feed > .chiprow")].forEach((el) => { if (el) el.hidden = bare; });   // 옛 사본엔 칩 줄이 거르개 안에 있다
+  if (bare) { $("#pick").innerHTML = ""; return; }
   const cat = flt.cat ? CATS.find((c) => c.k === flt.cat) : null;
   const tag = cat ? '<span class="tagcat">' + esc(cat.nm) + "만</span>" : "";
   const gs = groups().filter((g) => !cat || g.cat === cat.k);
   /* 장소마다 지금 상황은 가장 최근 현장 정보 하나다(g.now) — 두 시간 전의 "한산"이
      방금 들어온 "붐빔"을 이기면 안 된다. 메모만 남긴 리포트는 지금을 말하지 못하므로 뺀다. */
   const cur = gs.filter((g) => g.now).map((g) => ({ g, r: g.now, s: cond(g.now) * freshness(g.now.t) }));
+  /* 빈 상자는 .empty(속보·장소의 점선 빈 칸)와 다른 이름이다 — 섞이면 제목띠 둘레에 점선과 40px 여백이 붙는다 */
   if (!cur.length) {
-    $("#pick").innerHTML = '<div class="pick empty"><h2>지금 들어온 소식이 없습니다' + tag + "</h2>" +
+    $("#pick").innerHTML = '<div class="pick pick-empty"><h2>지금 들어온 소식이 없습니다' + tag + "</h2>" +
       '<p class="sub">밖에 계시면 첫 소식을 보내 주세요.</p>' + usualPickHtml(gs) + "</div>";
     return;
   }
-  const top = cur.filter((x) => cond(x.r) >= .5).sort((a, b) => b.s - a.s).slice(0, 3);
+  const top = cur.filter((x) => cond(x.r) >= .5 && !busy(x.r)).sort((a, b) => b.s - a.s).slice(0, 3);
   if (!top.length) {
-    $("#pick").innerHTML = '<div class="pick empty"><h2>지금은 다들 붐빈다고 합니다' + tag + "</h2>" +
+    $("#pick").innerHTML = '<div class="pick pick-empty"><h2>지금은 다들 붐빈다고 합니다' + tag + "</h2>" +
       '<p class="sub">최근 3시간 안에 소식이 들어온 ' + cur.length + "곳 모두 여유가 없습니다.</p></div>";
     return;
   }
@@ -696,8 +710,14 @@ function renderFeed(listOnly){
   $("#nFeed").textContent = list.length ? list.length : "";
   if (!list.length) {
     $("#feed").className = "feed bare";
-    $("#feed").innerHTML = '<div class="empty"><b>보여 줄 리포트가 없습니다</b>' +
-      "<p>" + (reports().length ? "거르개를 풀어 보세요." : "첫 리포트를 남기면 여기에 쌓입니다.") + "</p></div>";
+    /* 거르개에 걸린 것만 없으면 거르개를 풀라고 한다. 보드가 정말 비었으면 안내 카드 하나 —
+       공용 보드가 없으면 남의 소식은 링크로만 온다. 그걸 말해 주고 두 길(쓰기·받은 글 붙여넣기)을 바로 연다. */
+    $("#feed").innerHTML = reports().length
+      ? '<div class="empty"><b>보여 줄 리포트가 없습니다</b><p>거르개를 풀어 보세요.</p></div>'
+      : '<div class="guide"><h2>아직 리포트가 없습니다</h2>' +
+        "<p>지금 있는 곳을 알리거나, 카톡으로 받은 링크를 눌러 보세요.</p>" +
+        '<div class="row"><button class="btn primary" type="button" data-go="write">리포트 보내기</button>' +
+        '<button class="btn" type="button" data-go="recv">받은 글 붙여 넣기</button></div></div>';
   } else {
     $("#feed").className = "feed";
     /* 시간대 머리의 건수는 거른 목록 전체로 센다(한 번 훑어서). 카드는 앞의 feedShown 건만 그린다. */
@@ -1437,16 +1457,39 @@ let lastSel = "";   // 시트를 연 단추가 그사이 다시 그려졌을 때
 /* 뒤로 가기(안드로이드의 뒤로 단추·몸짓, 브라우저의 ←) — 시트가 열려 있으면 앱을 떠나지 않고 시트만 닫는다.
    쓰던 리포트가 뒤로 한 번에 날아가지 않게. 시트를 열 때 같은 주소로 기록을 하나 쌓는다.
    닫기·Esc·끌어 내리기로 닫으면 그 기록은 그대로 두고(스스로 history.back() 을 부르면 바로 뒤의 이동과 엉킨다),
-   그 뒤에 사람이 뒤로를 누르면 한 번 더 물러나 준다 — 누른 뒤로가 헛돌지 않게. */
+   그 뒤에 사람이 뒤로를 누르면 한 번 더 물러나 준다 — 누른 뒤로가 헛돌지 않게.
+   폰에선 속보 밖의 탭(장소·특파원·주고받기)도 기록을 한 칸 쌓는다(switchView) — 뒤로는 먼저 속보로, 그다음에 앱을 떠난다.
+   탭바 앱이 다 그렇다. 안 그러면 장소를 보다 뒤로를 누른 사람이 카톡으로 튕겨 나간다. */
 const onSheetEntry = () => !!(history.state && history.state.tpwSheet);
+const onTabEntry = () => !!(history.state && history.state.tpwTab);
 let staleSheet = false, sheetUrl = "";
-/* 새로 고침 전에 쌓였던 시트 기록 위에서 열렸으면 평범한 기록으로 돌려 둔다 */
-if (onSheetEntry()) { try { history.replaceState(null, ""); } catch (e) {} }
+let owe = false;   // 뒤로를 눌렀는데 빈 칸만 걷혔다 — 아직 아무 일도 안 일어났으니 한 번 더 물러난다
+/* 읽던 자리는 탭마다 앱이 기억한다(scrollAt). 뒤로 갈 때 브라우저가 그 칸의 옛 자리로 덮어쓰면
+   방금 쓴 리포트를 보이려고 맨 위로 올린 속보가 공유 창을 닫는 순간 도로 내려간다. */
+try { history.scrollRestoration = "manual"; } catch (e) {}
+/* 새로 고침 전에 쌓였던 시트·탭 기록 위에서 열렸으면 그 칸은 빈 칸이다(시트는 닫혀 있고 화면은 속보).
+   평범한 기록으로 돌려 두면 첫 뒤로가 헛돈다 — 닫힌 시트처럼 표시해 두고, 뒤로를 누르면 한 번 더 물러난다. */
+if (onSheetEntry() || onTabEntry()) { staleSheet = true; sheetUrl = location.href; }
 function sheetBack(){
-  /* 앞으로 가기로 시트 기록에 다시 올라왔거나, 링크(#r=)가 들어와 주소가 바뀐 것은 뒤로 가기가 아니다 */
-  if (onSheetEntry() || location.href !== sheetUrl) return;
-  if ($(".backdrop.open")) { staleSheet = false; closeSheets(false, true); return; }
-  if (staleSheet) { staleSheet = false; history.back(); }
+  /* 링크(#r=)가 들어와 주소가 바뀐 것은 뒤로 가기가 아니다 */
+  if (location.href !== sheetUrl) { owe = false; return; }
+  /* 시트 기록에 올라섰는데 시트는 닫혀 있다(앞으로 가기 등) — 빈 칸이니 다음 뒤로는 한 번 더 물러난다 */
+  if (onSheetEntry()) { owe = false; if (!$(".backdrop.open")) staleSheet = true; return; }
+  if ($(".backdrop.open")) {
+    staleSheet = owe = false;
+    closeSheets(false, true);
+    /* 다른 탭에서 쓰고 나면 속보로 넘어온다 — 그 밑에 남은 탭 칸은 조용히 걷는다 */
+    if (onTabEntry() && view === "feed") history.back();
+    return;
+  }
+  /* 방금 떠난 칸이 빈 칸(닫힌 시트)이었으면 이번 뒤로는 아직 아무것도 안 했다 */
+  const skip = owe || staleSheet;
+  owe = staleSheet = false;
+  /* 탭 칸에 내려앉았는데 시트가 없다 — 그 위의 빈 칸이 걷힌 것이다. 속보 밖이면 한 칸 더 물러나 속보로,
+     속보면(앞으로 가기로 올라온 칸이거나 쓰고 나서 남은 칸) 조용히 걷는다. */
+  if (onTabEntry()) { owe = skip || view !== "feed"; history.back(); return; }
+  if (view !== "feed" && phoneNow()) { switchView("feed"); return; }   // 폰의 탭 — 먼저 속보로
+  if (skip) { owe = true; history.back(); }
 }
 
 function openSheet(sel){
@@ -2119,7 +2162,30 @@ function switchView(name){
   if (moved) {
     window.scrollTo(0, scrollAt[name] || 0);
     $("#writeBtn").classList.remove("mini");
+    tabEntry(prev, name);
   }
+}
+const phoneNow = () => !!(window.matchMedia && matchMedia(PHONE).matches);
+/* 폰에선 속보 밖의 탭이 기록을 한 칸 쌓는다 — 안드로이드 뒤로가 앱을 떠나지 않고 속보로 온다(sheetBack).
+   탭끼리 옮겨 다니면 그 칸을 고쳐 쓰고(몇 번을 옮겨도 한 칸), 속보 탭을 누르면 걷는다 — 기록이 깨끗하게.
+   넓은 화면은 그대로다(머리띠 탭은 기록을 안 쌓는다). */
+function tabEntry(prev, name){
+  if (!phoneNow()) return;
+  try {
+    if (name === "feed") {
+      if (onTabEntry()) { staleSheet = owe = false; history.back(); }
+      return;
+    }
+    if (onTabEntry()) history.replaceState({ tpwTab: name }, "");
+    else if (prev !== "feed") return;   // 탭 칸 위의 닫힌 시트 칸(뒤로가 한 칸 더 물러난다)이거나 넓은 화면에서 넘어왔다
+    /* 받은 링크(#r=)를 아직 안 받았다 — 받거나 안 받으면 clearHash 가 지금 칸을 갈아 끼워 탭 표시가 지워지고,
+       뒤로 내려간 칸의 #r= 가 받은 링크를 도로 띄운다. 그동안은 쌓지 않는다(예전처럼) */
+    else if (/^#r=/.test(location.hash)) return;
+    else if (onSheetEntry()) history.replaceState({ tpwTab: name }, "");   // 닫힌 시트의 빈 칸을 탭 칸으로 고쳐 쓴다
+    else history.pushState({ tpwTab: name }, "");
+    staleSheet = owe = false;
+    sheetUrl = location.href;
+  } catch (e) {}
 }
 const reducedMotion = () => !!(window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches);
 /** 탭을 손가락으로 눌렀을 때만 아주 짧게 떤다(되는 폰에서만). 마우스·키보드로는 떨지 않는다. */
@@ -2274,6 +2340,22 @@ function bind(){
     switchView("sync");
     window.scrollTo({ top: 0, behavior: reducedMotion() ? "auto" : "smooth" });   // "받기"가 주고받기 맨 위에 있다
     setTimeout(() => $("#recvBox").focus(), 250);
+  });
+  /* 빈 보드의 안내 카드 — 쓰기, 또는 카톡에서 받은 글 붙여넣기(주고받기 맨 위 "받기" 칸).
+     초점은 누른 그 자리에서 바로 준다 — 아이폰은 그래야 자판이 올라온다. */
+  $("#feed").addEventListener("click", (e) => {
+    const go = e.target.closest("[data-go]");
+    if (!go) return;
+    if (go.dataset.go === "write") { openCompose(); return; }
+    switchView("sync");
+    window.scrollTo(0, 0);
+    $("#recvBox").focus();
+  });
+  /* 머리의 "지금 N건" — 1시간 안에 들어온 소식이 모인 속보 맨 위로 */
+  $("#livePill").addEventListener("click", () => {
+    const moved = view !== "feed";
+    if (moved) switchView("feed");
+    window.scrollTo({ top: 0, behavior: moved || reducedMotion() ? "auto" : "smooth" });
   });
   $("#themeBtn").addEventListener("click", () => {
     applyTheme(theme === "auto" ? "light" : theme === "light" ? "dark" : "auto");

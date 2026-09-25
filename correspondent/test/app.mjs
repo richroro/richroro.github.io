@@ -169,8 +169,7 @@ section('뒤로 가기 — 시트만 닫고 앱은 그대로');
   await p.waitForSelector('#composeBack.open', { state: 'detached', timeout: 3000 }).catch(() => {});
   ok(await p.locator('#composeBack.open').count() === 0 && p.url() === url, '쓰는 중에 뒤로 가기(안드로이드 뒤로 단추)는 시트만 닫는다');
   ok(await p.locator('#writeBtn').isVisible(), '  └ 앱은 그대로 — 속보 화면');
-  await tab(p, 'places');
-  await p.locator('#places .pl').first().click();
+  await p.locator('#feed [data-open]').first().click();   // 속보에서 연 시트 — 장소 탭에선 뒤로가 먼저 속보로 간다(아래 "폰의 탭")
   await p.waitForSelector('#placeBack.open');
   await p.keyboard.press('Escape');
   await p.goBack().catch(() => {});
@@ -192,6 +191,190 @@ section('뒤로 가기 — 시트만 닫고 앱은 그대로');
   const st = await p.evaluate(() => JSON.stringify(history.state));
   ok(p.url().startsWith(BASE) && !/tpwSheet/.test(st), '시트를 닫은 뒤 링크가 들어와도 뒤로 물러나지 않는다 (지금 기록 ' + st + ')');
   await c.close();
+}
+
+section('뒤로 가기 — 폰의 탭은 먼저 속보로, 그다음에 앱을 떠난다');
+{
+  /* 뒤로 한 번 = 안드로이드 뒤로 단추 한 번. 앱이 빈 칸을 건너며 몇 걸음 더 물러날 수 있어서, 정해 둔 시간만 자지 않고
+     닿을 곳에 닿기를 기다린 뒤 조금 더 지켜본다 — 느린 CI 러너에서도 같게. */
+  const back = (p) => p.goBack().catch(() => {});
+  const left = (p) => !p.url().startsWith(BASE);
+  const at = async (p) => left(p) ? '떠남' : p.evaluate(() =>
+    document.body.dataset.view + (document.querySelector('.backdrop.open') ? '+시트' : '')).catch(() => '떠남');
+  /** 이 화면에 머무는가 — 닿기를 기다리고, 그 뒤로 더 물러나 앱을 떠나지 않는지 잠깐 본다 */
+  const stays = async (p, want) => {
+    await p.waitForFunction((w) => document.body.dataset.view + (document.querySelector('.backdrop.open') ? '+시트' : '') === w,
+      want, { timeout: 3000 }).catch(() => {});
+    await p.waitForTimeout(300);
+    return await at(p) === want;
+  };
+  const leaves = async (p) => { await p.waitForURL((u) => !u.href.startsWith(BASE), { timeout: 3000 }).catch(() => {}); return left(p); };
+  const scrollY = (p) => p.evaluate(() => window.scrollY).catch(() => -1);
+  const fresh = async (opts, name) => {
+    const c = await context(b, opts || PHONE);
+    const p = watch(await c.newPage(), name);
+    await p.goto(BASE, { waitUntil: 'networkidle' });
+    return p;
+  };
+  {
+    const p = await fresh(null, '탭 뒤로');
+    await p.evaluate(() => window.scrollTo(0, 700));
+    await tab(p, 'places');
+    await back(p);
+    ok(await stays(p, 'feed'), '장소에서 뒤로 — 앱을 떠나지 않고 속보로 (' + await at(p) + ')');
+    ok(await scrollY(p) === 700, '  └ 속보는 읽던 자리 그대로 (700) — 브라우저가 옛 자리로 덮어쓰지 않는다');
+    await back(p);
+    ok(await leaves(p), '  └ 한 번 더 뒤로 — 그때 앱을 떠난다 (' + p.url() + ')');
+    await p.context().close();
+  }
+  {
+    const p = await fresh(null, '탭 여럿');
+    const len0 = await p.evaluate(() => history.length);
+    await tab(p, 'places'); await tab(p, 'people'); await tab(p, 'sync');
+    const len1 = await p.evaluate(() => history.length);
+    ok(len1 === len0 + 1, '탭을 여러 번 옮겨도 쌓이는 기록은 한 칸 (' + len0 + ' → ' + len1 + ')');
+    await back(p);
+    ok(await stays(p, 'feed'), '  └ 주고받기에서 뒤로 한 번 — 속보');
+    await back(p);
+    ok(await leaves(p), '  └ 그다음 뒤로 — 앱을 떠난다');
+    await p.context().close();
+  }
+  {
+    const p = await fresh(null, '속보 탭');
+    await tab(p, 'places');
+    await tab(p, 'feed');
+    await p.waitForFunction(() => !history.state, null, { timeout: 3000 }).catch(() => {});
+    ok(await p.evaluate(() => !history.state), '속보 탭을 누르면 쌓아 둔 칸을 걷는다 (지금 기록 ' + await p.evaluate(() => JSON.stringify(history.state)) + ')');
+    await back(p);
+    ok(await leaves(p), '  └ 그래서 속보에서 뒤로 한 번이면 앱을 떠난다 — 헛돌지 않는다');
+    await p.context().close();
+  }
+  {
+    const p = await fresh(null, '장소 창 뒤로');
+    await tab(p, 'places');
+    await p.locator('#places .pl').first().click();
+    await p.waitForSelector('#placeBack.open');
+    await back(p);
+    ok(await stays(p, 'places'), '장소 탭에서 창을 연 채 뒤로 — 창만 닫히고 장소 그대로 (' + await at(p) + ')');
+    await back(p);
+    ok(await stays(p, 'feed'), '  └ 뒤로 — 속보');
+    await back(p);
+    ok(await leaves(p), '  └ 뒤로 — 앱을 떠난다');
+    await p.context().close();
+  }
+  {
+    const p = await fresh(null, '장소 창 닫기 뒤로');
+    await tab(p, 'places');
+    await p.locator('#places .pl').first().click();
+    await p.waitForSelector('#placeBack.open');
+    await p.keyboard.press('Escape');
+    await back(p);
+    ok(await stays(p, 'feed'), '장소 탭에서 창을 닫기로 닫은 뒤의 뒤로 — 헛돌지 않고 속보로 (' + await at(p) + ')');
+    await back(p);
+    ok(await leaves(p), '  └ 뒤로 — 앱을 떠난다');
+    await p.context().close();
+  }
+  {
+    const p = await fresh(null, '탭·링크');
+    await tab(p, 'places');
+    await p.evaluate(() => { location.hash = 'r=zz'; });
+    await p.waitForTimeout(400);
+    ok(await at(p) === 'places' && p.url() === BASE + '#r=zz', '장소에서 링크(#r=)가 들어와도 뒤로 가기로 오해하지 않는다 — 장소 그대로 (' + await at(p) + ')');
+    await p.context().close();
+  }
+  {
+    /* 카톡에서 링크로 새로 열고, 받기 전에 장소로 옮겨 가서 받은 뒤 속보로 — 받은 링크가 다시 뜨거나 뒤로가 헛돌지 않는다 */
+    const p0 = await fresh(null, '링크 만들기');
+    const code = await p0.evaluate(async () => pack([sane({ id: 'lk000001', t: Date.now() - 60e3, by: '하늘', cat: 'play', place: '받은 곳', crowd: 0 })]));
+    await p0.context().close();
+    const c = await context(b, PHONE);
+    const p = watch(await c.newPage(), '링크 받고 뒤로');
+    await p.goto(BASE + '#r=' + code, { waitUntil: 'networkidle' });
+    await p.waitForSelector('#inboxYes');
+    await tab(p, 'places');
+    await p.locator('#inboxYes').click();
+    await tab(p, 'feed');
+    await back(p);
+    ok(await leaves(p), '링크로 열어 받기 전에 장소로 옮겼다가 받고 속보로 — 뒤로 한 번이면 앱을 떠난다 (' +
+      (left(p) ? p.url() : '남은 칸: ' + await p.locator('#inbox').innerText()) + ')');
+    await c.close();
+  }
+  {
+    /* 앞으로 가기로 빈 칸(닫힌 시트·걷힌 탭)에 다시 올라서도 그다음 뒤로가 헛돌지 않는다 */
+    const p = await fresh(null, '앞으로');
+    await p.locator('#feed [data-open]').first().click();
+    await p.waitForSelector('#placeBack.open');
+    await back(p);
+    await stays(p, 'feed');
+    await p.goForward().catch(() => {});
+    ok(await stays(p, 'feed'), '시트를 뒤로로 닫고 앞으로 가기 — 시트는 다시 안 열린다 (' + await at(p) + ')');
+    await back(p);
+    ok(await leaves(p), '  └ 그다음 뒤로 — 헛돌지 않고 앱을 떠난다');
+    await p.goto(BASE, { waitUntil: 'networkidle' });
+    await tab(p, 'places');
+    await back(p);
+    await stays(p, 'feed');
+    await p.goForward().catch(() => {});
+    ok(await stays(p, 'feed'), '장소에서 뒤로(속보) 뒤 앞으로 가기 — 속보 그대로 (' + await at(p) + ')');
+    await back(p);
+    ok(await leaves(p), '  └ 그다음 뒤로 — 헛돌지 않고 앱을 떠난다');
+    await p.context().close();
+  }
+  {
+    const p = await fresh({ viewport: { width: 1000, height: 900 } }, '넓은 화면 뒤로');
+    const len0 = await p.evaluate(() => history.length);
+    await tab(p, 'places');
+    ok(await p.evaluate(() => history.length) === len0 && await p.evaluate(() => !history.state), '넓은 화면의 머리띠 탭은 기록을 쌓지 않는다 — 예전 그대로');
+    await back(p);
+    ok(await leaves(p), '  └ 뒤로 — 앱을 떠난다 (예전 그대로)');
+    await p.context().close();
+  }
+  {
+    /* 쓰고 나면 속보 맨 위(방금 쓴 리포트). 공유 창을 뒤로로 닫아도 거기 그대로, 다른 탭에서 썼어도 뒤로가 헛돌지 않는다 */
+    const board = Array.from({ length: 12 }, (_, i) =>
+      report({ t: Date.now() - (i + 1) * 20 * MIN, by: '민지', place: '장소 ' + (i + 1), note: '메모 '.repeat(20) }));
+    const write = async (p) => {
+      await p.locator('#writeBtn').click();
+      await p.waitForSelector('#composeBack.open');
+      await p.fill('#fPlace', '방금 쓴 곳');
+      await p.locator('#composeGo').click();
+      await p.waitForSelector('#shareBack.open');
+    };
+    let p = await openWith(await context(b, PHONE), board);
+    await p.evaluate(() => window.scrollTo(0, 900));
+    await write(p);
+    await back(p);
+    ok(await stays(p, 'feed') && await scrollY(p) === 0,
+      '속보에서 쓰고 공유 창을 뒤로로 닫아도 맨 위 그대로 — 방금 쓴 리포트가 보인다 (' + await scrollY(p) + ')');
+    await p.context().close();
+    for (const how of ['뒤로', '닫기']) {
+      p = await openWith(await context(b, PHONE), board);
+      await tab(p, 'places');
+      await write(p);
+      if (how === '뒤로') {
+        await back(p);
+        ok(await stays(p, 'feed'), '장소에서 쓰고 공유 창을 뒤로로 닫으면 — 속보');
+      } else await p.keyboard.press('Escape');
+      await back(p);
+      ok(await leaves(p), '  └ (' + how + '로 닫음) 속보에서 뒤로 — 남은 탭 칸이 헛돌지 않고 앱을 떠난다');
+      await p.context().close();
+    }
+  }
+  {
+    /* 시트를 연 채 새로 고치면 시트는 닫혀 있다 — 그 뒤의 첫 뒤로가 헛돌면 안 된다 */
+    for (const where of ['feed', 'places']) {
+      const p = await fresh(null, '새로 고침 ' + where);
+      if (where === 'feed') await p.locator('#feed [data-open]').first().click();
+      else { await tab(p, 'places'); await p.locator('#places .pl').first().click(); }
+      await p.waitForSelector('#placeBack.open');
+      await p.reload({ waitUntil: 'networkidle' });
+      const shut = await p.locator('.backdrop.open').count() === 0;
+      await back(p);
+      ok(shut && await leaves(p), (where === 'feed' ? '속보' : '장소') +
+        '에서 시트를 연 채 새로 고친 뒤 — 뒤로 한 번에 앱을 떠난다, 헛돌지 않는다 (' + p.url() + ')');
+      await p.context().close();
+    }
+  }
 }
 
 section('쓰고 나면 속보 맨 위 — 방금 쓴 리포트가 보이게');
