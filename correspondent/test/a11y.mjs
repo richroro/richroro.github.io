@@ -1,7 +1,7 @@
 /* 접근성 — axe-core 로 재고, 키보드로 직접 눌러 본다. (지켜보는 곳·같게 봤다·보통은 표 포함) */
 import { createRequire } from 'node:module';
 import { readFileSync } from 'node:fs';
-import { BASE, ok, section, launch, context, watch, openWith, report, finish, MIN, shareReady } from './lib.mjs';
+import { BASE, ok, section, launch, context, watch, openWith, report, finish, MIN, shareReady, settle } from './lib.mjs';
 
 const require = createRequire(import.meta.url);
 const AXE = readFileSync(require.resolve('axe-core/axe.min.js'), 'utf8');
@@ -11,6 +11,7 @@ async function axe(p, where) {
   /* 앱은 CSP 로 인라인 스크립트를 막는다(script-src 'self'). addScriptTag 는 인라인 <script> 를 꽂아서
      막히고, evaluate 는 개발자 도구 쪽 길이라 CSP 를 거치지 않는다. axe 가 글꼴 CSS 를 읽으려다
      connect-src 에 막히는 건 axe 사정이다 — 앱은 그 CSS 를 <link> 로 받고, 그건 허용돼 있다. */
+  await settle(p);
   await p.evaluate(AXE);
   const v = await p.evaluate(async (tags) => (await window.axe.run(document, { runOnly: { type: 'tag', values: tags } }))
     .violations.map((x) => x.id + '(' + x.nodes.length + '): ' + x.nodes[0].target.join(' ')), TAGS);

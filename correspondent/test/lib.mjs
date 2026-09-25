@@ -44,6 +44,14 @@ export async function bundleReady(p) {
   return p.locator('#bundleStatus').innerText();
 }
 
+/* 화면이 바뀌면 살짝 떠오르고 시트는 바닥에서 올라온다. 그 사이(0.3초)에 색을 재면 반투명한 글자를 잰다 —
+   끝이 있는 움직임이 다 끝날 때까지 기다린다. (깜빡이는 "지금" 점처럼 끝없는 것은 빼고) */
+export async function settle(p) {
+  await p.evaluate(() => Promise.all(document.getAnimations()
+    .filter((a) => a.effect && a.effect.getComputedTiming().iterations !== Infinity)
+    .map((a) => a.finished.catch(() => {}))));
+}
+
 export async function context(browser, opts = {}) {
   return browser.newContext(Object.assign({ locale: 'ko-KR', timezoneId: 'Asia/Seoul', viewport: { width: 1000, height: 900 } }, opts));
 }

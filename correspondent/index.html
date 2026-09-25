@@ -2,7 +2,7 @@
 <html lang="ko">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self' https://*.supabase.co; manifest-src 'self'; worker-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'">
 <title>동네 특파원</title>
 <meta name="description" content="놀이공간·맛집·카페… 지금 거기 나가 있는 사람이 보내는 현장 속보를 모으는 게시판. 리포트는 링크 한 줄로 오가고 서버에 올라가지 않습니다.">
@@ -24,6 +24,8 @@
 <meta name="apple-mobile-web-app-title" content="특파원">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
+<!-- 홈 화면 앱에선 상태 표시줄 밑까지 남색 머리띠가 깔린다 — 머리띠가 safe-area 만큼 내려 앉는다 -->
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="theme-color" content="#0E1E3D" media="(prefers-color-scheme: light)">
 <meta name="theme-color" content="#0E1E3D" media="(prefers-color-scheme: dark)">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%230F6E63'/><circle cx='50' cy='62' r='9' fill='white'/><path d='M34 47 A22 22 0 0 1 66 47' fill='none' stroke='white' stroke-width='7' stroke-linecap='round'/><path d='M23 34 A38 38 0 0 1 77 34' fill='none' stroke='white' stroke-width='7' stroke-linecap='round'/></svg>">
@@ -45,6 +47,7 @@
   --accent:#1F47B8; --accent-deep:#16358C; --accent-wash:#E7EDFA; --on-accent:#FFFFFF;
   --live:#C4261B; --live-dot:#E8372A; --live-wash:#FDE9E7;
   --tag:#C8261A;   /* 흰 글씨를 얹는 빨강 — 속보·새 소식 딱지. 두 테마 모두 5.6:1 */
+  --sel-wash:#E1E7F3; --sel-ink:#0E1E3D;   /* 폰 탭바에서 고른 탭의 아이콘 알약 */
 
   /* 혼잡 척도 — 칠의 농도로 단계를 읽는다. 글자색은 읽히는 값으로 따로 잡는다. */
   --s0-bg:#DDF1E4; --s0-ink:#145C38;   /* 여유 */
@@ -68,6 +71,7 @@
   --line:#243049; --line-soft:#1A2336;
   --accent:#8FB1FF; --accent-deep:#B7CCFF; --accent-wash:#152550; --on-accent:#081022;
   --live:#FF7B6F; --live-dot:#FF5446; --live-wash:#3A1512;
+  --sel-wash:#22335A; --sel-ink:#E8EDF5;
   --s0-bg:#16351F; --s0-ink:#74CFA0;
   --s1-bg:#3A2C14; --s1-ink:#E8C58A;
   --s2-bg:#6B3A16; --s2-ink:#FBD9BC;
@@ -84,6 +88,7 @@
   --line:#243049; --line-soft:#1A2336;
   --accent:#8FB1FF; --accent-deep:#B7CCFF; --accent-wash:#152550; --on-accent:#081022;
   --live:#FF7B6F; --live-dot:#FF5446; --live-wash:#3A1512;
+  --sel-wash:#22335A; --sel-ink:#E8EDF5;
   --s0-bg:#16351F; --s0-ink:#74CFA0;
   --s1-bg:#3A2C14; --s1-ink:#E8C58A;
   --s2-bg:#6B3A16; --s2-ink:#FBD9BC;
@@ -103,10 +108,10 @@ body{
   overflow-wrap:anywhere;
 }
 a{color:var(--accent);text-decoration:none}
-a:hover{text-decoration:underline}
+@media (hover:hover){ a:hover{text-decoration:underline} }
 h1,h2,h3,p,ul,ol,dl{margin:0}
 button{font:inherit;color:inherit}
-.wrap{max-width:720px;margin:0 auto;padding:0 16px}
+.wrap{max-width:720px;margin:0 auto;padding:0 max(16px,env(safe-area-inset-right,0px)) 0 max(16px,env(safe-area-inset-left,0px))}
 .mono{font-family:var(--mono);font-variant-numeric:tabular-nums}
 .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
 :focus-visible{outline:2px solid var(--accent);outline-offset:2px}
@@ -115,8 +120,10 @@ button{font:inherit;color:inherit}
 .i{width:1.15em;height:1.15em;flex:none;vertical-align:-.2em;display:inline-block}
 
 /* ════════ 머리띠 — 방송국 남색, 늘 붙어 있게 ════════ */
-.bar{position:sticky;top:0;z-index:60;background:var(--band);color:var(--on-band)}
-.bar-in{max-width:720px;margin:0 auto;padding:0 12px 0 16px;height:56px;display:flex;align-items:center;gap:10px}
+/* 홈 화면 앱에선 상태 표시줄 밑까지 깔린다(viewport-fit=cover) — 그만큼 내려 앉는다 */
+.bar{position:sticky;top:0;z-index:60;background:var(--band);color:var(--on-band);padding-top:env(safe-area-inset-top,0px)}
+.bar-in{max-width:720px;margin:0 auto;height:56px;display:flex;align-items:center;gap:10px;
+  padding:0 max(12px,env(safe-area-inset-right,0px)) 0 max(16px,env(safe-area-inset-left,0px))}
 .brand{display:flex;align-items:center;gap:10px;min-width:0}
 /* 방송 중 표시 — 빨간 네모 안의 전파 */
 .brand .mk{width:30px;height:30px;border-radius:7px;background:var(--tag);flex:none;display:grid;place-items:center;color:#fff}
@@ -133,7 +140,7 @@ button{font:inherit;color:inherit}
   font-size:13px;font-weight:500;color:var(--on-band-2);white-space:nowrap;min-height:40px;min-width:40px;
   display:inline-flex;align-items:center;justify-content:center;gap:6px}
 .icon-btn .i{width:21px;height:21px}
-.icon-btn:hover{background:rgba(255,255,255,.1);color:var(--on-band)}
+@media (hover:hover){ .icon-btn:hover{background:rgba(255,255,255,.1);color:var(--on-band)} }
 .icon-btn:focus-visible{outline-color:#fff}
 @media (max-width:560px){ .icon-btn .lbl{display:none} .icon-btn{padding:6px} }
 
@@ -147,14 +154,25 @@ button{font:inherit;color:inherit}
 .tabs::-webkit-scrollbar{display:none}
 .tab{background:none;border:none;border-bottom:3px solid transparent;padding:8px 10px 9px;cursor:pointer;
   font-size:15px;font-weight:500;color:var(--on-band-2);white-space:nowrap}
-.tab:hover{color:var(--on-band)}
+@media (hover:hover){ .tab:hover{color:var(--on-band)} }
 .tab[aria-selected="true"]{color:var(--on-band);border-bottom-color:var(--live-dot);font-weight:700}
 .tab:focus-visible{outline-color:#fff;outline-offset:-3px}
 .tab .n{font-size:12px;margin-left:5px;font-family:var(--mono);font-weight:500;opacity:.85}
+.tab .ti{display:none}   /* 탭 아이콘은 폰의 탭바에서만 */
+/* 지켜보는 곳의 새 소식 — 속보 탭에 빨간 숫자. 속보를 보고 있을 땐 숨긴다(거기 이미 보인다) */
+.tab{position:relative}
+.tb{display:inline-flex;align-items:center;justify-content:center;min-width:18px;height:18px;padding:0 5px;margin-left:6px;
+  border-radius:9px;background:var(--tag);color:#fff;font-size:11px;font-weight:700;font-family:var(--mono);line-height:1}
+.tab[aria-selected="true"] .tb{display:none}
 
-/* 소개 한 줄 + 숫자 줄 */
-.intro{font-size:14px;color:var(--ink-2);line-height:1.6;padding:16px 0 0}
-.intro b{color:var(--ink)}
+/* 처음 여는 사람에게 — 무슨 앱인지 한 번. 예시 보드일 때만 보인다 */
+.tip{margin-top:16px;background:var(--surface);border-radius:var(--r);padding:14px 16px;box-shadow:var(--shadow);
+  font-size:14px;color:var(--ink-2);line-height:1.6;border-left:4px solid var(--live-dot)}
+.tip b{color:var(--ink)}
+.tip-foot{display:flex;align-items:center;gap:4px 10px;flex-wrap:wrap;margin-top:6px;font-size:12.5px}
+.tip-foot .warn{color:var(--live);font-weight:600;display:inline-flex;align-items:center;gap:6px}
+.tip-foot .warn::before{content:"";width:6px;height:6px;border-radius:50%;background:currentColor}
+.tip-foot .link-btn{margin-left:-4px}
 .statline{display:flex;gap:4px 12px;flex-wrap:wrap;align-items:center;font-size:12.5px;color:var(--ink-3);padding:10px 0 0;
   font-variant-numeric:tabular-nums}
 .statline b{color:var(--ink);font-weight:600}
@@ -170,17 +188,17 @@ section[hidden]{display:none}
 .btn{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:10px 16px;
   font-size:15px;font-weight:600;color:var(--ink);cursor:pointer;transition:background .15s,border-color .15s,color .15s;min-height:44px;
   display:inline-flex;align-items:center;justify-content:center;gap:8px}
-.btn:hover{border-color:var(--ink-3)}
+@media (hover:hover){ .btn:hover{border-color:var(--ink-3)} }
 .btn .i{width:20px;height:20px}
 .btn.primary{background:var(--navy);border-color:var(--navy);color:#fff}
-.btn.primary:hover{background:var(--navy-2);border-color:var(--navy-2);color:#fff}
+@media (hover:hover){ .btn.primary:hover{background:var(--navy-2);border-color:var(--navy-2);color:#fff} }
 .btn.primary .i{color:var(--live-dot)}
 .btn.sm{padding:6px 12px;font-size:13.5px;min-height:36px;border-radius:10px}
 .btn.ghost{background:transparent}
 .btn.danger{background:var(--s3-bg);border-color:var(--s3-bg);color:var(--s3-ink);font-weight:700}
-.btn.danger:hover{filter:brightness(.92);color:var(--s3-ink);border-color:var(--s3-bg)}
+@media (hover:hover){ .btn.danger:hover{filter:brightness(.92);color:var(--s3-ink);border-color:var(--s3-bg)} }
 .btn.danger-text{color:var(--ink-3)}
-.btn.danger-text:hover{color:var(--s2-ink);border-color:var(--s2-bg);background:var(--s2-bg)}
+@media (hover:hover){ .btn.danger-text:hover{color:var(--s2-ink);border-color:var(--s2-bg);background:var(--s2-bg)} }
 .agree,.field > label.agree{display:flex;gap:8px;align-items:flex-start;font-size:13px;font-weight:400;
   color:var(--ink-2);line-height:1.55;cursor:pointer;margin:0}
 .agree input{width:18px;height:18px;margin:1px 0 0;flex:none;accent-color:var(--accent)}
@@ -192,23 +210,14 @@ section[hidden]{display:none}
 .btn[disabled]{opacity:.45;cursor:not-allowed}
 .link-btn{background:none;border:none;color:var(--accent);font-size:13px;font-weight:600;
   cursor:pointer;padding:4px 6px;border-radius:8px;min-height:32px}
-.link-btn:hover{background:var(--accent-wash)}
+@media (hover:hover){ .link-btn:hover{background:var(--accent-wash)} }
 .link-btn.flagbtn{color:var(--ink-3);font-weight:500}
-.link-btn.flagbtn:hover{background:var(--s2-bg);color:var(--s2-ink)}
+@media (hover:hover){ .link-btn.flagbtn:hover{background:var(--s2-bg);color:var(--s2-ink)} }
 
-/* 큰 두 단추 — 좁은 화면에선 바닥에 고정 */
+/* 큰 두 단추 — 넓은 화면. 폰에선 맨 아래 "앱" 묶음이 "리포트 보내기"를 떠 있는 단추로 바꾼다 */
 .actions{display:flex;gap:8px;margin:16px 0 4px}
 .actions .btn{flex:1 1 auto;min-height:50px;font-size:16px}
 .actions #recvBtn{flex:0 1 auto}
-@media (max-width:700px){
-  .actions{position:fixed;left:0;right:0;bottom:0;z-index:70;margin:0;background:var(--surface);
-    padding:10px 16px calc(10px + env(safe-area-inset-bottom));
-    box-shadow:0 -1px 0 var(--line-soft),0 -12px 28px -20px rgba(13,22,40,.45)}
-  .actions #recvBtn{flex:0 0 54px;padding:10px 0}
-  .actions #recvBtn .lbl{display:none}
-  body{padding-bottom:82px}
-}
-@media (min-width:701px){ .actions #recvBtn .ic{display:none} }
 
 /* ════════ 패널 ════════ */
 .panel{background:var(--surface);border-radius:var(--r);padding:16px;box-shadow:var(--shadow)}
@@ -234,7 +243,7 @@ section[hidden]{display:none}
 .pick li:first-child .rank{color:var(--live)}
 .pick .nm{font-family:var(--display);font-weight:400;font-size:20px;line-height:1.25;background:none;border:none;padding:0;cursor:pointer;
   text-align:left;color:var(--ink);letter-spacing:0}
-.pick .nm:hover{color:var(--accent)}
+@media (hover:hover){ .pick .nm:hover{color:var(--accent)} }
 .pick .why{grid-column:2;font-size:13px;color:var(--ink-2);margin-top:2px;line-height:1.5}
 .pick.empty h2{background:var(--surface-2);color:var(--ink)}
 .pick.empty .sub{padding-bottom:14px}
@@ -254,7 +263,7 @@ section[hidden]{display:none}
 .watch li + li{border-top:1px solid var(--line-soft)}
 .w-row{display:grid;gap:5px;width:100%;text-align:left;background:none;border:none;padding:10px 0;
   cursor:pointer;font:inherit;color:inherit}
-.w-row:hover .w-name{color:var(--accent)}
+@media (hover:hover){ .w-row:hover .w-name{color:var(--accent)} }
 .w-head{display:flex;gap:3px 8px;align-items:baseline;flex-wrap:wrap}
 .w-name{font-family:var(--display);font-weight:400;font-size:18px;letter-spacing:0;line-height:1.25}
 .w-area{font-size:12px;color:var(--ink-3)}
@@ -275,6 +284,8 @@ section[hidden]{display:none}
 
 /* ════════ 거르개 ════════ */
 .filters{display:grid;grid-template-columns:minmax(0,1fr);gap:10px;margin-bottom:16px}
+#view-feed > .filters{margin-bottom:10px}
+#view-feed > .chiprow{margin-bottom:16px}
 .chips{display:flex;gap:6px;flex-wrap:wrap}
 .chiprow{display:flex;gap:6px;align-items:center;min-width:0}
 .chiprow > .chip{flex:none}
@@ -283,7 +294,7 @@ section[hidden]{display:none}
 .chip{background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:6px 13px;
   font-size:14px;color:var(--ink-2);cursor:pointer;transition:background .15s,border-color .15s,color .15s;min-height:38px;white-space:nowrap;
   display:inline-flex;align-items:center;gap:6px;flex:none;font-weight:500}
-.chip:hover{border-color:var(--ink-3)}
+@media (hover:hover){ .chip:hover{border-color:var(--ink-3)} }
 .chip .i{width:17px;height:17px}
 .chip[aria-pressed="true"]{background:var(--navy);border-color:var(--navy);color:#fff;font-weight:600}
 #liveOnly::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--live-dot);flex:none}
@@ -331,12 +342,12 @@ textarea.input{min-height:76px;resize:vertical;line-height:1.55}
 .badge.warn{background:var(--s2-bg);color:var(--s2-ink)}
 .card .del{margin-left:auto;background:none;border:none;color:var(--ink-3);cursor:pointer;
   font-size:18px;line-height:1;padding:4px 6px;border-radius:8px;min-width:32px;min-height:32px}
-.card .del:hover{color:var(--s3-ink);background:var(--s3-bg)}
+@media (hover:hover){ .card .del:hover{color:var(--s3-ink);background:var(--s3-bg)} }
 
 .place{font-family:var(--display);font-weight:400;font-size:21px;letter-spacing:0;line-height:1.3}
 .place .area{font-family:var(--sans);font-size:13px;font-weight:400;color:var(--ink-3);margin-left:7px;letter-spacing:-.2px}
 .place button{background:none;border:none;padding:0;font:inherit;color:inherit;cursor:pointer;text-align:left}
-.place button:hover{color:var(--accent)}
+@media (hover:hover){ .place button:hover{color:var(--accent)} }
 
 .live-row{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px;align-items:center}
 .live-label{font-size:12px;color:var(--ink-3);font-family:var(--mono);margin-right:2px}
@@ -377,7 +388,7 @@ textarea.input{min-height:76px;resize:vertical;line-height:1.55}
 .expired summary::-webkit-details-marker{display:none}
 .expired summary::before{content:"▸"}
 .expired[open] summary::before{content:"▾"}
-.expired summary:hover{color:var(--ink-2)}
+@media (hover:hover){ .expired summary:hover{color:var(--ink-2)} }
 .expired[open] summary{margin-bottom:7px}
 
 /* ════════ 빈 화면 ════════ */
@@ -390,7 +401,7 @@ textarea.input{min-height:76px;resize:vertical;line-height:1.55}
 .places{display:grid;gap:10px}
 .pl{background:var(--surface);border:0;border-radius:var(--r);padding:14px 16px;width:100%;text-align:left;cursor:pointer;font:inherit;
   color:inherit;transition:box-shadow .15s;box-shadow:var(--shadow);display:block}
-.pl:hover{box-shadow:0 0 0 2px var(--accent-wash),var(--shadow)}
+@media (hover:hover){ .pl:hover{box-shadow:0 0 0 2px var(--accent-wash),var(--shadow)} }
 .pl.age-old{background:var(--surface-2);box-shadow:none;border:1px solid var(--line-soft)}
 
 /* 특파원 얼굴 겹치기 — 몇 명이 봤는지가 장소의 무게다 */
@@ -486,10 +497,10 @@ textarea.input{min-height:76px;resize:vertical;line-height:1.55}
 .backdrop{position:fixed;inset:0;background:rgba(6,12,26,.55);z-index:90;display:none;
   align-items:flex-end;justify-content:center}
 .backdrop.open{display:flex}
-@media (min-width:700px){.backdrop{align-items:center;padding:24px}}
-.sheet{background:var(--surface);width:100%;max-width:620px;max-height:92vh;overflow-y:auto;
-  border-radius:20px 20px 0 0;box-shadow:0 -10px 40px -10px rgba(0,0,0,.4)}
-@media (min-width:700px){.sheet{border-radius:18px;max-height:88vh}}
+@media (min-width:760px){.backdrop{align-items:center;padding:24px}}
+.sheet{background:var(--surface);width:100%;max-width:620px;max-height:92vh;max-height:92dvh;overflow-y:auto;
+  overscroll-behavior:contain;border-radius:20px 20px 0 0;box-shadow:0 -10px 40px -10px rgba(0,0,0,.4)}
+@media (min-width:760px){.sheet{border-radius:18px;max-height:88vh}}
 .sheet-head{position:sticky;top:0;background:var(--surface);border-bottom:1px solid var(--line-soft);
   padding:14px 12px 12px 18px;display:flex;align-items:center;justify-content:space-between;gap:12px;z-index:2}
 .sheet-head h2{font-family:var(--display);font-weight:400;font-size:21px;letter-spacing:0;line-height:1.25;
@@ -497,7 +508,7 @@ textarea.input{min-height:76px;resize:vertical;line-height:1.55}
 .sheet-head h2 .i{color:var(--live-dot);width:22px;height:22px}
 .sheet-head .x{background:none;border:none;font-size:24px;line-height:1;color:var(--ink-3);
   cursor:pointer;padding:6px 10px;border-radius:10px;min-width:40px;min-height:40px}
-.sheet-head .x:hover{background:var(--surface-2);color:var(--ink)}
+@media (hover:hover){ .sheet-head .x:hover{background:var(--surface-2);color:var(--ink)} }
 .sheet-body{padding:16px 18px 22px}
 .sheet-foot{position:sticky;bottom:0;background:var(--surface);border-top:1px solid var(--line-soft);
   padding:12px 18px calc(12px + env(safe-area-inset-bottom));display:flex;gap:8px}
@@ -515,7 +526,7 @@ fieldset legend{font-size:13.5px;font-weight:700;color:var(--ink);padding:0;marg
 .star-pick button{background:none;border:none;font-size:28px;line-height:1;color:var(--surface-3);
   cursor:pointer;padding:2px 3px;min-height:44px}
 .star-pick button.on{color:var(--star)}
-.star-pick button:hover{color:var(--star)}
+@media (hover:hover){ .star-pick button:hover{color:var(--star)} }
 .ref{border-radius:12px;background:var(--accent-wash);padding:12px 14px;margin-bottom:16px;
   display:grid;grid-template-columns:1fr auto;gap:6px 10px;align-items:center}
 .ref-t{font-size:12.5px;color:var(--ink-2);grid-column:1}
@@ -544,10 +555,124 @@ footer{margin-top:36px;background:var(--band);color:var(--on-band-2)}
 .toast{position:fixed;left:50%;bottom:96px;transform:translateX(-50%);background:var(--navy);
   color:#fff;padding:11px 18px;border-radius:12px;font-size:14px;font-weight:500;
   z-index:120;box-shadow:0 10px 30px -10px rgba(0,0,0,.5);max-width:calc(100vw - 32px);text-align:center}
-@media (min-width:701px){.toast{bottom:24px}}
+@media (min-width:760px){.toast{bottom:24px}}
 /* 시트가 떠 있으면 바닥 쪽은 시트 내용이다 — 알림은 위로 */
 body:has(.backdrop.open) .toast{top:calc(14px + env(safe-area-inset-top));bottom:auto}
 .toast[hidden]{display:none}
+
+/* ════════════════════════════════════════════════════════════════════════════
+   앱 — 폰에선 앱처럼 쓴다. 탭은 바닥 탭바, "리포트 보내기"는 떠 있는 단추,
+   분야 칩과 시간대 머리는 머리띠 밑에 붙어 따라오고, 시트는 손잡이를 끌어 내려 닫는다.
+   넓은 화면(760px~)은 위의 차림 그대로다.
+   ════════════════════════════════════════════════════════════════════════════ */
+body{-webkit-tap-highlight-color:transparent}
+.bar,.tabs,.btn,.chip,.icon-btn,.link-btn,.sheet-head{-webkit-user-select:none;user-select:none}
+button,.chip,.pl,.w-row{touch-action:manipulation}
+
+/* 화면이 바뀌면 살짝 떠오르고, 시트는 바닥에서 올라온다(넓은 화면에선 제자리에서 살짝) */
+.view:not([hidden]){animation:view-in .2s ease-out}
+@keyframes view-in{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.backdrop.open .sheet{animation:sheet-up .3s cubic-bezier(.2,.8,.2,1)}
+@keyframes sheet-up{from{transform:translateY(100%)}to{transform:none}}
+@media (min-width:760px){ .backdrop.open .sheet{animation:sheet-pop .2s ease-out} }
+@keyframes sheet-pop{from{transform:translateY(12px) scale(.98)}to{transform:none}}
+
+/* 장소 목록은 누르면 창이 열린다 — 오른쪽 꺾쇠 */
+.pl{position:relative;padding-right:38px}
+.pl::after{content:"";position:absolute;right:18px;top:50%;width:8px;height:8px;margin-top:-4px;
+  border-right:2px solid var(--ink-3);border-top:2px solid var(--ink-3);transform:rotate(45deg)}
+
+@media (max-width:759px){
+  :root{--bar-h:54px;--tabbar-h:64px;--chip-h:54px;--stick:calc(var(--bar-h) + env(safe-area-inset-top,0px))}
+  .bar-in{height:var(--bar-h)}
+  .brand h1{font-size:20px}
+  .bar.lifted{box-shadow:0 6px 18px -10px rgba(6,12,26,.6)}
+
+  /* ── 바닥 탭바 — 아이콘 알약 + 이름, 고른 탭 위엔 빨간 방송 줄 ── */
+  .tabs{position:fixed;left:0;right:0;bottom:0;z-index:70;margin:0;max-width:none;overflow:visible;
+    display:grid;grid-template-columns:repeat(4,1fr);gap:0;
+    background:var(--surface);border-top:1px solid var(--line-soft);box-shadow:0 -8px 24px -20px rgba(13,22,40,.5);
+    padding:4px max(6px,env(safe-area-inset-right,0px)) calc(5px + env(safe-area-inset-bottom,0px)) max(6px,env(safe-area-inset-left,0px))}
+  /* 1 + 4 + 54 + 5 = 64px(--tabbar-h). 떠 있는 단추와 알림이 이 높이를 딛고 선다 */
+  .tab{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;height:54px;
+    border:0;border-radius:14px;padding:3px 0 4px;font-size:11.5px;line-height:1.3;font-weight:600;letter-spacing:-.1px;color:var(--ink-3)}
+  .tab .ti{display:grid;place-items:center;width:54px;height:30px;border-radius:15px;transition:background .18s,color .18s,transform .12s}
+  .tab .ti svg{width:23px;height:23px}
+  .tab .n{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;margin:0}
+  .tab[aria-selected="true"]{color:var(--ink);font-weight:700}
+  .tab[aria-selected="true"] .ti{background:var(--sel-wash);color:var(--sel-ink)}
+  .tab[aria-selected="true"]::before{content:"";position:absolute;top:-5px;left:32%;right:32%;height:3px;
+    border-radius:0 0 3px 3px;background:var(--live-dot)}
+  .tab:focus-visible{outline-color:var(--accent);outline-offset:-2px}
+  .tb{position:absolute;top:1px;left:calc(50% + 8px);margin:0;height:20px;min-width:20px;border:2px solid var(--surface)}
+
+  body{padding-bottom:calc(var(--tabbar-h) + 84px + env(safe-area-inset-bottom,0px))}
+
+  /* ── 속보 머리: 숫자 줄 옆에 "받은 링크" ── */
+  .head-row{display:flex;align-items:center;gap:10px;padding-top:12px}
+  .head-row .statline{flex:1;min-width:0;padding:0}
+  .actions{display:contents}
+  .head-row #recvBtn{flex:none;min-height:38px;padding:6px 13px 6px 11px;font-size:13.5px;border-radius:999px;gap:6px}
+  .head-row #recvBtn .i{width:18px;height:18px}
+  #recvBtn .rl-more{display:none}
+
+  /* ── 떠 있는 "리포트 보내기" — 내려 읽는 동안엔 아이콘만 남는다 ── */
+  #writeBtn{position:fixed;z-index:65;right:max(16px,env(safe-area-inset-right,0px));
+    bottom:calc(var(--tabbar-h) + 14px + env(safe-area-inset-bottom,0px));
+    height:56px;min-height:56px;padding:0 21px 0 17px;border-radius:18px;font-size:16px;gap:9px;
+    box-shadow:0 10px 24px -8px rgba(14,30,61,.55),0 2px 6px rgba(14,30,61,.25);
+    transition:padding .22s ease,gap .22s ease,transform .12s ease,background .15s}
+  #writeBtn .i{width:22px;height:22px}
+  .fab-l{display:inline-block;max-width:9em;overflow:hidden;white-space:nowrap;transition:max-width .22s ease,opacity .18s ease}
+  #writeBtn.mini{padding:0 17px;gap:0}
+  #writeBtn.mini .fab-l{max-width:0;opacity:0}
+
+  /* 화면마다 제 것만 — 숫자 줄·받은 링크·처음 안내는 속보에, 보내기 단추는 속보·장소에, 앱 정보는 주고받기에 */
+  body:not([data-view="feed"]) .head-row .statline,
+  body:not([data-view="feed"]) #recvBtn,
+  body:not([data-view="feed"]) #intro{display:none}
+  body:not([data-view="feed"]) .head-row{padding-top:0}
+  body[data-view="people"] #writeBtn,body[data-view="sync"] #writeBtn{display:none}
+  body:not([data-view="sync"]) footer{display:none}
+  footer{margin-top:0;background:none;color:var(--ink-3)}
+  .foot-in{padding:4px 16px 20px}
+  .foot-in b{color:var(--ink)}
+  .foot-in a{color:var(--accent)}
+  .tip{margin-top:12px}
+
+  /* ── 분야 칩은 머리띠 밑에 붙어 따라오고, 시간대 머리("지금·오늘·어제")는 그 밑에 붙는다 ── */
+  #view-feed > .filters{margin-bottom:4px}
+  #view-feed > .chiprow{position:sticky;top:var(--stick);z-index:20;background:var(--paper);
+    height:var(--chip-h);margin:0 -16px 6px;padding:8px 16px}
+  #view-feed > .chiprow .chipbar{margin-right:-16px;padding-right:16px}
+  #feed .tgroup{position:sticky;top:calc(var(--stick) + var(--chip-h));z-index:10;background:var(--paper);
+    margin:0 -16px;padding:6px 16px}
+  #people .tgroup{position:sticky;top:var(--stick);z-index:10;background:var(--paper);margin:0 -16px;padding:8px 16px}
+
+  /* ── 입력칸은 16px — 그보다 작으면 아이폰이 눌렀을 때 화면을 확대한다 ── */
+  .input,select.input,textarea.input,.code-box:not([readonly]){font-size:16px}
+
+  /* ── 시트: 폭 가득, 손잡이. 머리를 끌어 내리면 닫힌다(app.js) ── */
+  .sheet{border-radius:22px 22px 0 0}
+  .sheet-head{padding-top:22px;touch-action:none}
+  .sheet-head::before{content:"";position:absolute;top:8px;left:50%;width:40px;height:5px;margin-left:-20px;
+    border-radius:3px;background:var(--surface-3)}
+
+  .toast{bottom:calc(var(--tabbar-h) + 84px + env(safe-area-inset-bottom,0px));border-radius:14px}
+}
+
+/* 손가락 — 누르면 살짝 눌린다(마우스 올림 효과는 위에서 hover:hover 로만 켠다) */
+@media (hover:none){
+  .btn,.chip,.icon-btn,.link-btn,.pl,.w-row{transition:transform .12s ease,background .15s,color .15s,border-color .15s}
+  .btn:active,.chip:active,.icon-btn:active,.link-btn:active{transform:scale(.95)}
+  .pl:active,.w-row:active{transform:scale(.98)}
+  .pl:active{background:var(--surface-2)}
+  .tab:active .ti{transform:scale(.9)}
+}
+@media (prefers-reduced-motion:reduce){
+  .view:not([hidden]),.backdrop.open .sheet{animation:none}
+  #writeBtn,.fab-l,.tab .ti{transition:none}
+}
 </style>
 </head>
 <body>
@@ -563,24 +688,32 @@ body:has(.backdrop.open) .toast{top:calc(14px + env(safe-area-inset-top));bottom
     <button class="icon-btn" id="meBtn" type="button" title="특파원 이름"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true" focusable="false"><circle cx="12" cy="8.5" r="3.6"/><path d="M4.8 19.5c1.5-3.3 4.1-5 7.2-5s5.7 1.7 7.2 5"/></svg><span class="lbl" id="meLbl">이름</span></button>
     <button class="icon-btn" id="themeBtn" type="button" title="테마 바꾸기"><svg class="i" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="8" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 4a8 8 0 0 1 0 16z" fill="currentColor"/></svg><span class="lbl">테마</span></button>
   </div>
+  <!-- 넓은 화면에선 머리띠 안의 탭, 폰에선 화면 바닥의 탭바(아이콘 + 이름) -->
   <nav class="tabs" role="tablist" aria-label="화면 전환">
-    <button class="tab" type="button" role="tab" aria-selected="true"  data-view="feed" id="tab-feed" aria-controls="view-feed">속보<span class="n" id="nFeed"></span></button>
-    <button class="tab" type="button" role="tab" aria-selected="false" data-view="places" id="tab-places" aria-controls="view-places">장소<span class="n" id="nPlaces"></span></button>
-    <button class="tab" type="button" role="tab" aria-selected="false" data-view="people" id="tab-people" aria-controls="view-people">특파원<span class="n" id="nPeople"></span></button>
-    <button class="tab" type="button" role="tab" aria-selected="false" data-view="sync" id="tab-sync" aria-controls="view-sync">주고받기</button>
+    <button class="tab" type="button" role="tab" aria-selected="true"  data-view="feed" id="tab-feed" aria-controls="view-feed"><span class="ti" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" focusable="false"><path d="M4 5.5h11.5v12.2A1.8 1.8 0 0 0 17.3 19.5H5.8A1.8 1.8 0 0 1 4 17.7z"/><path d="M15.5 9h3v8.7a1.8 1.8 0 0 1-3.6 0"/><path d="M7.2 9.2h5M7.2 12.4h5M7.2 15.6h3.2"/></svg></span><span class="tab-l">속보</span><span class="n" id="nFeed"></span><span class="tb" id="tbFeed" hidden></span></button>
+    <button class="tab" type="button" role="tab" aria-selected="false" data-view="places" id="tab-places" aria-controls="view-places"><span class="ti" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" focusable="false"><path d="M9 4.8 3.8 6.7v12.5L9 17.3l6 1.9 5.2-1.9V4.8L15 6.7z"/><path d="M9 4.8v12.5M15 6.7v12.5"/></svg></span><span class="tab-l">장소</span><span class="n" id="nPlaces"></span></button>
+    <button class="tab" type="button" role="tab" aria-selected="false" data-view="people" id="tab-people" aria-controls="view-people"><span class="ti" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" focusable="false"><circle cx="9" cy="8.6" r="3.2"/><path d="M3.4 19.2c.9-3.1 3-4.8 5.6-4.8s4.7 1.7 5.6 4.8"/><circle cx="16.6" cy="9.6" r="2.5"/><path d="M16.1 14.4c2.3-.1 3.9 1.3 4.6 3.9"/></svg></span><span class="tab-l">특파원</span><span class="n" id="nPeople"></span></button>
+    <button class="tab" type="button" role="tab" aria-selected="false" data-view="sync" id="tab-sync" aria-controls="view-sync"><span class="ti" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" focusable="false"><path d="M4.5 8.5h14.5l-3.6-3.6"/><path d="M19.5 15.5H5l3.6 3.6"/></svg></span><span class="tab-l">주고받기</span></button>
   </nav>
 </header>
 
 <main class="wrap">
-  <p class="intro" id="intro"><b>지금 거기 있는 사람</b>이 남긴 속보를 모읍니다.
-    웨이팅처럼 금방 상하는 정보는 시간과 함께 흐려집니다.</p>
-  <div class="statline" id="statline" aria-live="polite"></div>
-  <div id="inbox"></div>
-
-  <div class="actions">
-    <button class="btn primary" id="writeBtn" type="button"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true" focusable="false"><circle cx="12" cy="16.5" r="2.3" fill="currentColor" stroke="none"/><path d="M7.7 12.3a6.1 6.1 0 0 1 8.6 0"/><path d="M4.5 9.1a10.6 10.6 0 0 1 15 0"/></svg> 리포트 보내기</button>
-    <button class="btn" id="recvBtn" type="button" aria-label="받은 링크 붙여넣기"><span class="ic"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M12 3.5v9m-3.6-3.6L12 12.5l3.6-3.6"/><path d="M4 13.5h4.4l1.6 2.6h4l1.6-2.6H20V20H4z"/></svg></span><span class="lbl"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M12 3.5v9m-3.6-3.6L12 12.5l3.6-3.6"/><path d="M4 13.5h4.4l1.6 2.6h4l1.6-2.6H20V20H4z"/></svg> 받은 링크 붙여넣기</span></button>
+  <!-- 처음 여는 사람에게만(예시 보드일 때) — 무슨 앱인지, 지금 보이는 게 예시라는 것 -->
+  <div class="tip" id="intro">
+    <p><b>지금 거기 있는 사람</b>이 남긴 속보를 모읍니다.
+      웨이팅처럼 금방 상하는 정보는 시간과 함께 흐려집니다.</p>
+    <p class="tip-foot"><span class="warn">지금 보이는 건 예시입니다</span>
+      <button class="link-btn" type="button" id="dropSample">예시 치우기</button></p>
   </div>
+  <div class="head-row">
+    <div class="statline" id="statline" aria-live="polite"></div>
+    <!-- 넓은 화면에선 큰 단추 둘, 폰에선 "리포트 보내기"가 탭바 위에 떠 있는 단추가 된다 -->
+    <div class="actions">
+      <button class="btn primary fab" id="writeBtn" type="button"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true" focusable="false"><circle cx="12" cy="16.5" r="2.3" fill="currentColor" stroke="none"/><path d="M7.7 12.3a6.1 6.1 0 0 1 8.6 0"/><path d="M4.5 9.1a10.6 10.6 0 0 1 15 0"/></svg><span class="fab-l">리포트 보내기</span></button>
+      <button class="btn" id="recvBtn" type="button" aria-label="받은 링크 붙여넣기"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M12 3.5v9m-3.6-3.6L12 12.5l3.6-3.6"/><path d="M4 13.5h4.4l1.6 2.6h4l1.6-2.6H20V20H4z"/></svg><span class="rl">받은 링크<span class="rl-more"> 붙여넣기</span></span></button>
+    </div>
+  </div>
+  <div id="inbox"></div>
 
   <!-- ===== 속보 ===== -->
   <section class="view" id="view-feed" role="tabpanel" aria-labelledby="tab-feed">
@@ -588,7 +721,7 @@ body:has(.backdrop.open) .toast{top:calc(14px + env(safe-area-inset-top));bottom
     <div id="pick"></div>
     <div class="filters">
       <div class="filter-row">
-        <input class="input grow" id="q" type="search" placeholder="장소·동네·특파원·메모 검색" autocomplete="off" aria-label="검색">
+        <input class="input grow" id="q" type="search" placeholder="장소·동네·메모 검색" autocomplete="off" aria-label="검색">
         <label class="sr" for="sort">정렬</label>
         <select class="input" id="sort">
           <option value="new">최신순</option>
@@ -597,10 +730,11 @@ body:has(.backdrop.open) .toast{top:calc(14px + env(safe-area-inset-top));bottom
           <option value="place">장소 이름순</option>
         </select>
       </div>
-      <div class="chiprow">
-        <button class="chip" id="liveOnly" type="button" aria-pressed="false">3시간 안쪽만</button>
-        <div class="chipbar" id="catFilter" role="group" aria-label="분야 거르개"></div>
-      </div>
+    </div>
+    <!-- 분야 칩 줄은 폰에서 머리띠 밑에 붙어 따라온다 — 그래서 거르개 상자 밖, 속보 화면 바로 아래에 둔다 -->
+    <div class="chiprow">
+      <button class="chip" id="liveOnly" type="button" aria-pressed="false">3시간 안쪽만</button>
+      <div class="chipbar" id="catFilter" role="group" aria-label="분야 거르개"></div>
     </div>
     <div class="feed" id="feed"></div>
   </section>
@@ -683,6 +817,15 @@ body:has(.backdrop.open) .toast{top:calc(14px + env(safe-area-inset-top));bottom
       </div>
       <p class="note" style="margin-top:10px">리포트는 이 브라우저(<span class="mono">localStorage</span>)에만 있습니다.
         브라우저 기록을 지우면 같이 사라지니, 오래 남길 것은 파일로 저장해 두세요.</p>
+    </div>
+
+    <!-- 홈 화면에 추가 — 이미 앱으로 열었거나 브라우저가 못 하면 숨는다 -->
+    <div class="panel" id="installPanel" hidden>
+      <div class="panel-t">홈 화면에 추가</div>
+      <p class="note" id="installNote"></p>
+      <div class="row" id="installRow" hidden>
+        <button class="btn primary sm" id="installBtn" type="button">홈 화면에 추가</button>
+      </div>
     </div>
   </section>
 </main>

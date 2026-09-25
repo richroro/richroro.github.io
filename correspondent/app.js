@@ -595,11 +595,8 @@ function renderTicker(){
   let html = parts.map((x) => "<span>" + x + "</span>").join("");
   if (!navigator.onLine) html = '<span class="warn">오프라인 — ' +
     (SY.enabled ? "쓰면 이 기기에 저장되고, 연결되면 올라갑니다" : "이 기기에서 그대로 쓸 수 있습니다") + "</span>" + html;
-  if (isSample()) html += '<span class="warn">지금 보이는 건 예시입니다</span>' +
-    '<button class="link-btn" type="button" id="dropSample">예시 치우기</button>';
+  /* "지금 보이는 건 예시입니다"와 "예시 치우기"는 처음 안내 카드(#intro)에 있다 */
   $("#statline").innerHTML = html;
-  const drop = $("#dropSample");
-  if (drop) drop.addEventListener("click", () => { board.seeded = true; save(); renderAll(); toast("예시를 치웠습니다."); });
 }
 
 /** 속보 거르개에서 분야를 골랐으면 "지금 갈 만한 곳"도 그 분야만 본다. */
@@ -747,10 +744,18 @@ function watchNews(fresh){
   if (!hit.length) return "";
   return "지켜보는 곳에 새 소식 — " + hit.slice(0, 2).join(", ") + (hit.length > 2 ? " 외 " + (hit.length - 2) + "곳" : "");
 }
+/** 속보 탭의 빨간 숫자 — 지켜보는 곳에 남이 올린, 아직 안 본 소식 수. 다른 탭에 있을 때 보인다. */
+function paintTabBadge(n){
+  const tb = $("#tbFeed");
+  if (!tb) return;   // 옛 index.html 사본과 섞여 떠도 멈추지 않게
+  tb.hidden = !n;
+  tb.innerHTML = n ? '<span class="sr">지켜보는 곳 새 소식 </span>' + (n > 99 ? "99+" : n) : "";
+}
 function renderWatch(){
   const box = $("#watchBox");
-  if (!board.watch.length) { box.innerHTML = ""; return; }
+  if (!board.watch.length) { box.innerHTML = ""; paintTabBadge(0); return; }
   const items = watchedGroups();
+  paintTabBadge(items.reduce((s, x) => s + unseen(x.w, x.g), 0));
   box.innerHTML = '<div class="watch"><h2><span aria-hidden="true">★</span> 지켜보는 곳<span class="n">' + items.length + "</span></h2><ul>" +
     items.map((x) => {
       const w = x.w, g = x.g;
@@ -1337,21 +1342,43 @@ function openFlagSheet(r){
    시트(모달)
    ========================================================================= */
 const BEHIND = () => [$(".bar"), $("main"), $("footer")];
+
+/* 뒤로 가기(안드로이드의 뒤로 단추·몸짓, 브라우저의 ←) — 시트가 열려 있으면 앱을 떠나지 않고 시트만 닫는다.
+   쓰던 리포트가 뒤로 한 번에 날아가지 않게. 시트를 열 때 같은 주소로 기록을 하나 쌓는다.
+   닫기·Esc·끌어 내리기로 닫으면 그 기록은 그대로 두고(스스로 history.back() 을 부르면 바로 뒤의 이동과 엉킨다),
+   그 뒤에 사람이 뒤로를 누르면 한 번 더 물러나 준다 — 누른 뒤로가 헛돌지 않게. */
+const onSheetEntry = () => !!(history.state && history.state.tpwSheet);
+let staleSheet = false, sheetUrl = "";
+/* 새로 고침 전에 쌓였던 시트 기록 위에서 열렸으면 평범한 기록으로 돌려 둔다 */
+if (onSheetEntry()) { try { history.replaceState(null, ""); } catch (e) {} }
+function sheetBack(){
+  /* 앞으로 가기로 시트 기록에 다시 올라왔거나, 링크(#r=)가 들어와 주소가 바뀐 것은 뒤로 가기가 아니다 */
+  if (onSheetEntry() || location.href !== sheetUrl) return;
+  if ($(".backdrop.open")) { staleSheet = false; closeSheets(false, true); return; }
+  if (staleSheet) { staleSheet = false; history.back(); }
+}
+
 function openSheet(sel){
   if (!lastFocus) lastFocus = document.activeElement;
   $$(".backdrop.open").forEach((b) => b.classList.remove("open"));   // 시트는 한 번에 하나
   BEHIND().forEach((el) => el && (el.inert = true));
   $(sel).classList.add("open");
   document.body.style.overflow = "hidden";
+  if (!onSheetEntry()) { try { history.pushState({ tpwSheet: 1 }, ""); } catch (e) {} }
+  sheetUrl = location.href;
+  staleSheet = false;
   const f = $(sel).querySelector("[data-autofocus]") ||
             $(sel).querySelector("input:not([hidden]),textarea,button:not(.x)");
   if (f) setTimeout(() => f.focus(), 30);
 }
-function closeSheets(keepFocus){
+/** fromBack: 뒤로 가기로 닫는 중이다(기록은 이미 한 칸 물러났다). */
+function closeSheets(keepFocus, fromBack){
+  const was = !!$(".backdrop.open");
   $$(".backdrop.open").forEach((b) => b.classList.remove("open"));
   BEHIND().forEach((el) => el && (el.inert = false));
   document.body.style.overflow = "";
   openPlaceKey = null;
+  if (was && !fromBack && onSheetEntry()) staleSheet = true;
   if (!keepFocus && lastFocus && lastFocus.focus) { try { lastFocus.focus(); } catch(e){} }
   if (!keepFocus) lastFocus = null;
 }
@@ -1652,22 +1679,115 @@ function applyTheme(t){
 /* =========================================================================
    화면 전환
    ========================================================================= */
+/* 탭마다 읽던 자리를 기억한다 — 장소를 보다 속보로 돌아와도 보던 카드 그대로. */
+const scrollAt = {};
 function switchView(name){
+  const prev = view, moved = prev !== name;
+  if (moved) scrollAt[prev] = window.scrollY;
   view = name;
+  document.body.dataset.view = name;        // 폰 차림이 화면마다 보일 것을 고른다(index.html 의 "앱" 묶음)
   $$(".tab").forEach((b) => {
     const on = b.dataset.view === name;
     b.setAttribute("aria-selected", String(on));
     b.tabIndex = on ? 0 : -1;               // 탭 키로는 고른 탭 하나만, 나머지는 화살표로
   });
   $$(".view").forEach((s) => { s.hidden = s.id !== "view-" + name; });
+  if (moved) {
+    window.scrollTo(0, scrollAt[name] || 0);
+    $("#writeBtn").classList.remove("mini");
+  }
+}
+const reducedMotion = () => !!(window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches);
+/** 탭을 손가락으로 눌렀을 때만 아주 짧게 떤다(되는 폰에서만). 마우스·키보드로는 떨지 않는다. */
+function tapFeedback(){
+  try {
+    if (navigator.vibrate && window.matchMedia && matchMedia("(pointer: coarse)").matches) navigator.vibrate(8);
+  } catch (e) {}
+}
+
+/* 내려 읽는 동안엔 "리포트 보내기"가 아이콘만 남고, 올리면 다시 펼친다. 머리띠는 글이 밑으로 지나가면 그림자를 단다. */
+function watchScroll(){
+  let lastY = window.scrollY, ticking = false;
+  window.addEventListener("scroll", () => {
+    if (ticking) return;
+    ticking = true;
+    requestAnimationFrame(() => {
+      const y = window.scrollY, fab = $("#writeBtn");
+      if (y > lastY + 6 && y > 120) fab.classList.add("mini");
+      else if (y < lastY - 6 || y < 60) fab.classList.remove("mini");
+      $(".bar").classList.toggle("lifted", y > 2);
+      lastY = y;
+      ticking = false;
+    });
+  }, { passive: true });
+}
+
+/* 폰의 시트는 머리(손잡이)를 끌어 내리면 닫힌다. 조금만 끌었다 놓으면 제자리로 돌아간다. */
+const PHONE = "(max-width: 759px)";
+function sheetDrag(){
+  $$(".sheet").forEach((sh) => {
+    const head = sh.querySelector(".sheet-head");
+    if (!head) return;
+    let y0 = null, dy = 0, t0 = 0;
+    head.addEventListener("pointerdown", (e) => {
+      if (e.button !== 0 || e.target.closest("button,a,input,select,textarea,label")) return;
+      if (!(window.matchMedia && matchMedia(PHONE).matches)) return;
+      y0 = e.clientY; dy = 0; t0 = e.timeStamp;
+      try { head.setPointerCapture(e.pointerId); } catch (err) {}
+      sh.style.transition = "none";
+    });
+    head.addEventListener("pointermove", (e) => {
+      if (y0 === null) return;
+      dy = Math.max(0, e.clientY - y0);
+      sh.style.transform = dy ? "translateY(" + dy + "px)" : "";
+    });
+    const end = (e) => {
+      if (y0 === null) return;
+      const speed = dy / Math.max(1, e.timeStamp - t0);   // px/ms
+      y0 = null;
+      const close = e.type === "pointerup" && (dy > 110 || (dy > 40 && speed > .5));
+      sh.style.transition = reducedMotion() ? "none" : "transform .2s cubic-bezier(.2,.8,.2,1)";
+      sh.style.transform = close ? "translateY(100%)" : "";
+      setTimeout(() => {
+        sh.style.transition = "";
+        if (close) { sh.style.transform = ""; closeSheets(); }
+      }, reducedMotion() ? 0 : 200);
+    };
+    head.addEventListener("pointerup", end);
+    head.addEventListener("pointercancel", end);
+  });
+}
+
+/* 홈 화면에 추가 — 안드로이드 크롬은 버튼 하나로, 아이폰은 사파리 공유 단추에서.
+   링크는 카톡으로 오가니 카톡 안의 브라우저로 여는 사람이 많다 — 거기선 추가가 안 되니 밖으로 나가라고 한다.
+   이미 홈 화면 앱으로 열었으면 숨긴다. */
+let installEvt = null;
+const standalone = () => !!((window.matchMedia && matchMedia("(display-mode: standalone)").matches) || navigator.standalone);
+const inAppBrowser = () => /KAKAOTALK|NAVER\(inapp|DaumApps|Instagram|FBAN|FBAV|Line\//i.test(navigator.userAgent);
+function paintInstall(){
+  const panel = $("#installPanel");
+  if (!panel) return;   // 옛 index.html 사본과 섞여 떠도 멈추지 않게
+  const ios = /iPhone|iPad|iPod/.test(navigator.userAgent);
+  const note = standalone() ? ""
+    : installEvt ? "홈 화면에 아이콘을 두면 주소창 없이 앱처럼 열리고, 인터넷이 끊겨도 열립니다."
+    : inAppBrowser() ? "카톡 같은 앱 안의 브라우저로 열었습니다. 메뉴에서 '다른 브라우저로 열기'를 누른 뒤 홈 화면에 추가하세요."
+    : ios ? "사파리 아래쪽의 공유 단추를 누르고 '홈 화면에 추가'를 고르면 앱처럼 열립니다."
+    : "";
+  panel.hidden = !note;
+  $("#installRow").hidden = !installEvt || standalone();
+  $("#installNote").textContent = note;
 }
 
 /* =========================================================================
    이벤트
    ========================================================================= */
 function bind(){
-  /* 탭 */
-  $$(".tab").forEach((b) => b.addEventListener("click", () => switchView(b.dataset.view)));
+  /* 탭 — 이미 보고 있는 탭을 다시 누르면 맨 위로 */
+  $$(".tab").forEach((b) => b.addEventListener("click", () => {
+    tapFeedback();
+    if (b.dataset.view === view) window.scrollTo({ top: 0, behavior: reducedMotion() ? "auto" : "smooth" });
+    else switchView(b.dataset.view);
+  }));
   $(".tabs").addEventListener("keydown", (e) => {
     const tabs = $$(".tab"), i = tabs.indexOf(document.activeElement);
     if (i === -1) return;
@@ -1679,11 +1799,27 @@ function bind(){
     tabs[j].focus();
   });
 
+  /* 처음 안내 카드의 "예시 치우기". 새 단추들은 옛 index.html 사본과 섞여 떠도 멈추지 않게 있을 때만 잇는다 */
+  const drop = $("#dropSample");
+  if (drop) drop.addEventListener("click", () => { board.seeded = true; save(); renderAll(); toast("예시를 치웠습니다."); });
+
+  /* 홈 화면에 추가. 크롬이 스스로 띄우는 설치 안내는 막지 않는다 — 그걸 놓친 사람을 위한 단추다. */
+  window.addEventListener("beforeinstallprompt", (e) => { installEvt = e; paintInstall(); });
+  window.addEventListener("appinstalled", () => { installEvt = null; paintInstall(); toast("홈 화면에 추가했습니다."); });
+  const inst = $("#installBtn");
+  if (inst) inst.addEventListener("click", async () => {
+    if (!installEvt) return;
+    const ev = installEvt;
+    installEvt = null;                      // 한 번 띄운 안내는 다시 못 쓴다
+    try { await ev.prompt(); } catch (e) {}
+    paintInstall();
+  });
+
   /* 큰 버튼 */
   $("#writeBtn").addEventListener("click", () => openCompose());
   $("#recvBtn").addEventListener("click", () => {
     switchView("sync");
-    $("#view-sync").scrollIntoView({ behavior:"smooth", block:"start" });
+    window.scrollTo({ top: 0, behavior: reducedMotion() ? "auto" : "smooth" });   // "받기"가 주고받기 맨 위에 있다
     setTimeout(() => $("#recvBox").focus(), 250);
   });
   $("#themeBtn").addEventListener("click", () => {
@@ -1876,6 +2012,7 @@ function bind(){
       });
     }
     switchView("feed");
+    window.scrollTo(0, 0);                  // 방금 쓴 리포트는 속보 맨 위에 있다
     renderAll();
     closeSheets(true);
     openShare([r]);
@@ -2093,11 +2230,15 @@ function bind(){
   });
 
   window.addEventListener("hashchange", checkHash);
+  window.addEventListener("popstate", sheetBack);
 }
 
 /* ---------------------------- 시작 ---------------------------- */
 applyTheme(theme);
 bind();
+watchScroll();
+sheetDrag();
+paintInstall();
 switchView("feed");
 $("#meInput").value = board.me;
 
