@@ -1,0 +1,333 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>공모주 캘린더 · 청약 점수와 일정</title>
+<meta name="description" content="이번 주 공모주, 청약할까 말까? 기관경쟁률·의무보유확약·유통물량·공모가 위치를 블로거식으로 채점해 적극 참여·균등만·관망으로 판정. 청약 일정 달력, 증권사 고르기, 증거금·배정 계산기, 공모주린이 가이드. 매일 자동 갱신.">
+<link rel="canonical" href="https://richroro.github.io/ipo/">
+<meta property="og:type" content="website"><meta property="og:locale" content="ko_KR">
+<meta property="og:site_name" content="공모주 캘린더">
+<meta property="og:url" content="https://richroro.github.io/ipo/">
+<meta property="og:title" content="공모주 캘린더 — 청약 일정·경쟁률·수익 계산">
+<meta property="og:description" content="청약 중인 공모주, 다가오는 상장, 기관경쟁률과 확약 비율, 증거금과 예상 배정까지 한 화면에서.">
+<meta property="og:image" content="https://richroro.github.io/stocks/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#14161C">
+<link rel="manifest" href="/ipo/manifest.webmanifest">
+<link rel="icon" href="/ipo/icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="/finder/icon-192.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans+KR:wght@300;400;500;600;700&display=swap">
+<link rel="stylesheet" href="/m7/assets/m7.css">
+<script>
+  /* 첫 페인트 전에 저장된 테마를 적용해 깜빡임을 막습니다(다른 페이지와 같은 키) */
+  try { const t = JSON.parse(localStorage.getItem("m7.theme")); if (t === "dark" || t === "light") document.documentElement.dataset.theme = t; } catch (e) {}
+</script>
+<link rel="preload" href="/ipo/data/ipo.json" as="fetch" crossorigin>
+<link rel="stylesheet" href="/ipo/ipo.css">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"공모주 캘린더","url":"https://richroro.github.io/ipo/","applicationCategory":"FinanceApplication","inLanguage":"ko","operatingSystem":"Web","offers":{"@type":"Offer","price":"0","priceCurrency":"KRW"}}</script>
+</head>
+<body>
+<a class="skip" href="#schedule">청약 일정으로 건너뛰기</a>
+<header><div class="wrap hbar">
+  <a class="brand" href="/ipo/"><span class="mk">IPO</span>
+    <span><b>공모주 캘린더</b><small>청약 일정 · 경쟁률 · 수익 계산</small></span></a>
+  <div class="hactions">
+    <a class="ghost notes" href="/finder/" title="상장 종목 검색과 분석">전 종목 탐색기</a>
+    <button class="ghost" id="installBtn" type="button" hidden>앱 설치</button>
+    <button class="ghost" id="themeBtn" type="button" aria-label="화면 테마 전환"><span id="themeIco">◐</span><span id="themeTxt">테마</span></button>
+  </div>
+</div></header>
+
+<nav class="snav" aria-label="섹션 바로가기"><div class="wrap snav-in">
+  <a href="#top">오늘</a><a href="#schedule">청약 일정</a><a href="#market">시장 온도</a><a href="#calendar">달력</a><a href="#plan">자금 플래너</a><a href="#calc">계산기</a><a href="#my">내 청약 기록</a><a href="#method">분석법</a><a href="#guide">공모주린이</a>
+</div></nav>
+
+<main>
+<div class="wrap"><div class="banner" id="stale" hidden></div></div>
+
+<section class="hero" id="top"><div class="wrap">
+  <div class="hero-grid">
+    <div class="hero-copy">
+      <p class="eyebrow">KOREA IPO · 공모주</p>
+      <h1>청약할까, 말까.<br><span class="grad">숫자로 3초 만에.</span></h1>
+      <p class="lead">공모주 블로거들이 청약 전에 꼭 보는 <b>기관경쟁률 · 의무보유확약 · 유통물량 · 공모가 위치</b>를
+        자동으로 채점하고, 일정·증거금·예상 배정·상장일 손익까지 한 화면에서. 처음이라면 <a class="ul" href="#guide">공모주린이 가이드</a>부터.</p>
+      <div class="fresh" id="fresh"><span><span class="spin"></span>데이터를 불러오는 중…</span></div>
+      <div class="today mt16" id="today" aria-live="polite"></div>
+    </div>
+    <div class="feature" id="feature" aria-label="이번 주 주목 공모주"><div class="feat sk" aria-hidden="true"><i></i><i></i><i></i><i></i></div></div>
+  </div>
+  <div class="stats c4 mt24" id="summary"></div>
+</div></section>
+
+<section id="schedule"><div class="wrap">
+  <p class="eyebrow">Schedule</p>
+  <h2 class="title">청약 일정</h2>
+  <p class="lead">카드마다 <b>블로거식 점수와 판정</b>(적극 참여 · 참여 · 균등만 · 관망)을 붙였습니다. 누르면 채점표, 증권사 고르기,
+    확약 해제 일정이 열립니다. ★ 는 관심 종목.</p>
+  <div class="toolbar mt16">
+    <div class="seg" id="tabs" role="group" aria-label="보기">
+      <button type="button" data-v="now" aria-pressed="true">진행·예정</button>
+      <button type="button" data-v="wait" aria-pressed="false">상장 예정</button>
+      <button type="button" data-v="listed" aria-pressed="false">최근 상장</button>
+      <button type="button" data-v="star" aria-pressed="false">관심</button>
+      <button type="button" data-v="all" aria-pressed="false">전체</button>
+    </div>
+    <label class="field grow"><span class="sr">종목·주간사 검색</span>
+      <input id="q" type="search" placeholder="종목명·주간사 검색" autocomplete="off"></label>
+    <div class="seg" id="sortSeg" role="group" aria-label="정렬">
+      <button type="button" data-v="date" aria-pressed="true">일정순</button>
+      <button type="button" data-v="score" aria-pressed="false">점수순</button>
+    </div>
+    <label class="chk"><input type="checkbox" id="hideSpac" checked> 스팩 숨기기</label>
+    <button class="ghost sm" type="button" id="icsStars" hidden>관심 종목 전부 달력에</button>
+  </div>
+  <div class="cards mt16" id="list" aria-busy="true"><div class="ipo sk" aria-hidden="true"><i></i><i></i><i></i><i></i></div><div class="ipo sk" aria-hidden="true"><i></i><i></i><i></i><i></i></div><div class="ipo sk" aria-hidden="true"><i></i><i></i><i></i><i></i></div></div>
+  <p class="hint mt12" id="listNote"></p>
+</div></section>
+
+<section id="market"><div class="wrap">
+  <p class="eyebrow">Market temperature</p>
+  <h2 class="title">공모주 시장 온도</h2>
+  <p class="lead">최근 상장한 공모주가 첫날 얼마에 시작했는지 봅니다. 시장이 뜨거울 때는 평범한 종목도 잘 오르고, 식으면 좋은 종목도 힘이 빠집니다.</p>
+  <div class="stats c4 mt16" id="tempStats"></div>
+  <div class="card pad mt16">
+    <div class="chart-head">
+      <div><div class="ct">최근 상장 종목의 시초가 수익률</div><div class="cs">공모가 대비 · 스팩 제외 · 막대에 마우스를 올리거나 눌러 보세요</div></div>
+      <div class="legend" style="margin-top:0"><span class="lg"><span class="sw" style="background:var(--fill-up)"></span>공모가 위</span><span class="lg"><span class="sw" style="background:var(--fill-down)"></span>공모가 아래</span></div>
+    </div>
+    <div class="figwrap" id="tempFig"></div>
+  </div>
+  <div class="card pad mt16">
+    <h3>판정별 실제 성적 — 점수가 맞았을까?</h3>
+    <p class="hint mt8">이미 상장한 종목을 청약 당시 숫자로 다시 채점해, 판정마다 평균 시초가 수익률을 냈습니다.
+      시장 온도는 그 종목 청약일 이전 90일만 써서, 미래 정보를 섞지 않았습니다.</p>
+    <div class="tscroll mt12"><table class="narrow" id="backtest"></table></div>
+  </div>
+</div></section>
+
+<section id="calendar"><div class="wrap">
+  <p class="eyebrow">Calendar</p>
+  <h2 class="title">달력</h2>
+  <p class="lead">청약 기간, 환불일, 상장일을 날짜별로 봅니다. 날짜를 누르면 그날 일정이 아래에 나옵니다.</p>
+  <div class="card pad mt16">
+    <div class="calhead">
+      <button class="ghost" type="button" id="calPrev" aria-label="이전 달">‹</button>
+      <b id="calTitle" class="num"></b>
+      <button class="ghost" type="button" id="calNext" aria-label="다음 달">›</button>
+      <button class="ghost" type="button" id="calToday">오늘</button>
+      <div class="legend calleg">
+        <span class="lg"><span class="sw ev-sub"></span>청약</span>
+        <span class="lg"><span class="sw ev-refund"></span>환불</span>
+        <span class="lg"><span class="sw ev-list"></span>상장</span>
+      </div>
+    </div>
+    <div class="cal mt12" id="cal" role="grid"></div>
+    <div class="agenda mt12" id="agenda"></div>
+  </div>
+</div></section>
+
+<section id="plan"><div class="wrap">
+  <p class="eyebrow">Cash planner</p>
+  <h2 class="title">자금 플래너</h2>
+  <p class="lead">다가오는 청약에 넣을 증거금이 <b>언제 나가서 언제 돌아오는지</b> 날짜별로 계산합니다. 청약이 몰리는 주에 돈이 얼마나 묶이는지,
+    가족 계좌까지 쓰면 얼마가 필요한지 미리 봅니다. 기본 전략은 판정대로(관망은 건너뛰기) 잡았고, 줄마다 바꿀 수 있습니다.</p>
+  <div class="toolbar mt16 planbar">
+    <label class="field"><span>계좌 수 (나 + 가족)</span><input id="pAcc" type="number" inputmode="numeric" min="1" max="10" value="1"></label>
+    <label class="field"><span>청약하는 날</span>
+      <select id="pDay"><option value="end">마감일 (보통 이날 경쟁률 보고 넣음)</option><option value="start">첫날</option></select></label>
+    <button class="ghost sm" type="button" id="pIcs">플래너 일정 달력에 (알림 포함)</button>
+  </div>
+  <div class="stats c4 mt16" id="pStats"></div>
+  <div class="grid2 mt16 plan-grid">
+    <div class="card pad"><div class="chart-head"><div><div class="ct">날짜별 묶인 증거금</div><div class="cs">청약일에 나가고 환불일에 돌아옵니다(배정 금액은 빼고)</div></div></div>
+      <div class="figwrap" id="pFig"></div></div>
+    <div class="card"><div class="tscroll"><table class="narrow" id="pTable"></table></div></div>
+  </div>
+  <p class="hint mt8">증거금 = 공모가(없으면 밴드 상단) × 주수 × 증거금률, 배정 예상 = 계산기의 '균등 예상 배정' 주수 × 계좌 수. 환불일을 모르면 청약 마감 2영업일 뒤로 잡았습니다.</p>
+</div></section>
+
+<section id="calc"><div class="wrap">
+  <p class="eyebrow">Calculator</p>
+  <h2 class="title">청약 계산기</h2>
+  <p class="lead">공모가와 청약 주수로 증거금을, 경쟁률로 예상 배정 주수를, 상장일 가격별로 손익을 봅니다.
+    일정 카드의 <b>계산기로</b> 버튼을 누르면 그 종목 값이 채워집니다.</p>
+  <div class="grid2 mt16">
+    <div class="card pad">
+      <h3 id="calcFor">직접 입력</h3>
+      <div class="form mt12">
+        <label class="field"><span>공모가 (원)</span><input id="cPrice" type="number" inputmode="numeric" min="0" step="100" value="20000"></label>
+        <label class="field"><span>청약 주수</span><input id="cQty" type="number" inputmode="numeric" min="0" step="10" value="10"></label>
+        <label class="field"><span>증거금률 (%)</span><input id="cMargin" type="number" inputmode="decimal" min="0" max="100" value="50"></label>
+        <label class="field"><span>청약 수수료 (원)</span><input id="cFee" type="number" inputmode="numeric" min="0" step="500" value="2000"></label>
+        <label class="field"><span>균등 예상 배정 (주)</span><input id="cEq" type="number" inputmode="decimal" min="0" step="1" value="1"></label>
+        <label class="field"><span>통합 청약경쟁률 (:1)</span><input id="cComp" type="number" inputmode="decimal" min="0" step="1" placeholder="모르면 비움"></label>
+        <label class="field"><span>매도 비용 (%)</span><input id="cSell" type="number" inputmode="decimal" min="0" step="0.01" value="0.2"></label>
+        <label class="field"><span>최소 청약 주수</span><input id="cMin" type="number" inputmode="numeric" min="1" step="1" value="10"></label>
+      </div>
+      <div class="btnrow mt12">
+        <button class="ghost" type="button" id="cMinBtn">최소 주수로 (균등만)</button>
+        <button class="ghost" type="button" id="cReset">초기화</button>
+      </div>
+      <p class="hint mt12">균등 배정은 최소 주수 이상 청약한 사람에게 똑같이 나눕니다(청약자가 많으면 추첨으로 0주도 됩니다).
+        비례 배정은 대략 <span class="num">청약 주수 ÷ (통합 경쟁률 × 2)</span> 로 잡았습니다 — 일반 물량의 절반이 비례라서입니다.
+        매도 비용은 증권거래세와 매도 수수료를 합친 값으로, 증권사와 해마다 다릅니다.</p>
+    </div>
+    <div class="card pad">
+      <h3>결과</h3>
+      <div class="stats mt12" id="calcOut"></div>
+      <div class="tscroll mt16"><table class="narrow" id="calcTable"></table></div>
+      <p class="hint mt8">상장 첫날 가격은 공모가의 60%~400% 사이에서 정해집니다(2023년 6월부터). 표의 손익은 예상 배정 주수를 모두 판다고 본 값입니다.</p>
+    </div>
+  </div>
+</div></section>
+
+<section id="my"><div class="wrap">
+  <p class="eyebrow">My record</p>
+  <h2 class="title">내 청약 기록</h2>
+  <p class="lead">청약한 종목과 배정·매도 결과를 적어 두면 손익을 모아 봅니다. 이 브라우저에만 저장됩니다.</p>
+  <div class="stats c4 mt16" id="mySum"></div>
+  <div class="card pad mt16">
+    <form id="myForm" class="form myform" autocomplete="off">
+      <input type="hidden" id="mId">
+      <label class="field"><span>종목</span><input id="mName" list="nameList" required placeholder="종목명"></label>
+      <label class="field"><span>증권사</span><input id="mBroker" list="brokerList" placeholder="예: NH투자증권"></label>
+      <label class="field"><span>청약일</span><input id="mDate" type="date"></label>
+      <label class="field"><span>청약 주수</span><input id="mApplied" type="number" inputmode="numeric" min="0"></label>
+      <label class="field"><span>배정 주수</span><input id="mAlloc" type="number" inputmode="numeric" min="0"></label>
+      <label class="field"><span>공모가 (원)</span><input id="mPrice" type="number" inputmode="numeric" min="0" step="100"></label>
+      <label class="field"><span>매도가 (원)</span><input id="mSell" type="number" inputmode="numeric" min="0" placeholder="보유 중이면 비움"></label>
+      <label class="field"><span>청약 수수료 (원)</span><input id="mFee" type="number" inputmode="numeric" min="0" step="500" value="2000"></label>
+      <div class="btnrow span">
+        <button class="btn" type="submit" id="mSave">기록 추가</button>
+        <button class="ghost" type="button" id="mCancel" hidden>수정 취소</button>
+      </div>
+    </form>
+    <datalist id="nameList"></datalist><datalist id="brokerList"></datalist>
+  </div>
+  <div class="card mt16">
+    <div class="tscroll"><table id="myTable"></table></div>
+    <p class="empty" id="myEmpty">아직 기록이 없습니다. 위에서 추가하거나, 일정 카드에서 <b>기록 추가</b>를 누르세요.</p>
+  </div>
+  <div class="grid2 mt16" id="myDash" hidden>
+    <div class="card pad"><div class="chart-head"><div><div class="ct">월별 실현 손익</div><div class="cs">최근 12개월 · 청약일 기준 · 매도가를 적은 기록</div></div></div>
+      <div class="figwrap" id="myFig"></div></div>
+    <div class="card"><div class="tscroll"><table class="narrow" id="myBroker"></table></div></div>
+  </div>
+  <div class="btnrow mt12">
+    <button class="ghost" type="button" id="myCsv">CSV 내려받기</button>
+    <button class="ghost" type="button" id="myBackup">백업(JSON)</button>
+    <label class="ghost filebtn">복원<input type="file" id="myRestore" accept="application/json,.json" hidden></label>
+  </div>
+  <p class="hint mt8">손익 = 배정 주수 × (매도가 − 공모가) − 청약 수수료 − 매도 비용(계산기의 매도 비용 %). 보유 중인 종목은 데이터에 현재가가 있으면 평가 손익으로 셉니다.</p>
+</div></section>
+
+<section id="method"><div class="wrap">
+  <p class="eyebrow">How we score</p>
+  <h2 class="title">블로거식 공모주 분석법</h2>
+  <p class="lead">공모주 블로그와 커뮤니티에서 청약 전에 공통으로 확인하는 기준을 7개로 추렸습니다. 항목마다 기준을 넘으면 점수를 주고,
+    모르는 항목은 빼고 100점 만점으로 다시 맞춥니다. 데이터에 없는 값(유통물량·구주매출 등)은 종목 상세에서 <b>직접 입력</b>할 수 있습니다.</p>
+  <div class="card mt16"><div class="tscroll"><table id="methodTable"></table></div></div>
+  <div class="verdicts mt16" id="verdictBox"></div>
+  <div class="grid2 mt16">
+    <div class="card pad"><h3>이럴 땐 점수와 상관없이 조심</h3>
+      <ul class="sig mt8">
+        <li class="weak">기관경쟁률 100:1 미만 → 최대 '관망'</li>
+        <li class="weak">공모가를 희망 밴드 하단 아래로 확정 → 최대 '균등만'</li>
+        <li class="weak">상장일 유통가능물량 45% 초과 → 최대 '균등만'</li>
+        <li class="weak">확약 3% 미만이면서 기관경쟁률 500:1 미만 → 최대 '균등만'</li>
+      </ul></div>
+    <div class="card pad"><h3>숫자 밖에서 블로거들이 더 보는 것</h3>
+      <ul class="sig mt8">
+        <li>비교 기업 PER 과 할인율 — 증권신고서 '공모가 산정 근거'에서 확인</li>
+        <li>최근 실적 추세와 적자 여부(기술특례 상장인지)</li>
+        <li>업종 테마 — AI·반도체·방산처럼 시장이 좋아하는 업종인지</li>
+        <li>우리사주 청약 미달 여부, 벤처캐피탈 보유 물량과 확약</li>
+        <li>청약 마지막 날 증권사별 경쟁률 — 균등 물량 ÷ 청약 건수로 증권사 고르기</li>
+      </ul></div>
+  </div>
+</div></section>
+
+<section id="guide"><div class="wrap">
+  <p class="eyebrow">For beginners</p>
+  <h2 class="title">공모주린이 가이드</h2>
+  <p class="lead">처음 청약하는 사람을 위한 순서표입니다. 한 번 해 보면 다음부터는 10분이면 끝납니다.</p>
+  <ol class="steps mt16">
+    <li><b>증권 계좌 만들기</b><p>주간사(카드에 적힌 증권사) 계좌가 있어야 청약할 수 있습니다. 비대면으로 10분이면 만들지만,
+      계좌를 새로 만들면 <b>20영업일 동안 다른 증권사 계좌를 만들 수 없는</b> 제한이 있으니 미리 여러 곳을 천천히 만들어 두세요.
+      증권사에 따라 계좌를 만든 뒤 일정 기간이 지나야 청약할 수 있는 곳도 있습니다.</p></li>
+    <li><b>일정과 점수 확인</b><p>이 페이지 '청약 일정'에서 청약 중인 종목의 판정과 기관경쟁률·확약을 봅니다.
+      ★ 를 누르고 '달력에 추가'를 하면 청약·환불·상장일을 놓치지 않습니다.</p></li>
+    <li><b>청약하기</b><p>청약은 보통 이틀, 오전 10시부터 오후 4시까지입니다. 증권사 앱 '공모주 청약' 메뉴에서 수량을 넣고
+      증거금(청약 금액의 50%)을 계좌에 넣어 둡니다. 처음이라면 <b>최소 주수(보통 10주)만 넣는 균등 청약</b>이 가장 쉽습니다.</p></li>
+    <li><b>배정 확인</b><p>청약 마감 이틀쯤 뒤(환불일) 앱에서 몇 주 받았는지 확인합니다. 인기 종목은 균등도 추첨이라 0주일 수 있습니다.</p></li>
+    <li><b>환불 받기</b><p>배정받지 못한 증거금은 환불일에 계좌로 돌아옵니다. 청약 수수료는 배정받은 경우에만 내는 곳이 많습니다.</p></li>
+    <li><b>상장일에 팔기(또는 보유)</b><p>상장일 오전 8시 30분~9시에 주문을 넣을 수 있고 9시에 시초가가 정해집니다.
+      첫날 가격은 공모가의 60%~400% 사이. 블로거들은 보통 <b>시초가 매도</b>, <b>절반 매도 후 나머지 보유</b>, <b>목표가 지정</b> 중 하나를 정해 두고 들어갑니다.</p></li>
+  </ol>
+
+  <h3 class="subttl mt24">용어 사전</h3>
+  <div class="gloss mt12" id="gloss"></div>
+
+  <h3 class="subttl mt24">자주 묻는 것</h3>
+  <div class="guide mt12">
+    <details><summary>균등 배정과 비례 배정</summary>
+      <p>일반 청약 물량의 절반 이상은 <b>균등</b>으로, 최소 청약 주수(보통 10주) 이상 넣은 모든 사람에게 똑같이 나눕니다.
+        청약자가 물량보다 많으면 추첨이라 0주일 수도 있습니다. 나머지는 <b>비례</b>로, 넣은 증거금만큼 나눕니다.
+        적은 돈으로는 균등, 큰돈을 넣을수록 비례에서 더 받습니다.</p></details>
+    <details><summary>한 종목을 여러 증권사에서 청약할 수 있나요?</summary>
+      <p>안 됩니다. 2021년 6월부터 중복 청약이 금지돼, 주간사가 여럿이면 한 곳만 골라야 합니다.
+        증권사마다 균등 물량과 청약자 수가 달라서, 마지막 날 경쟁률을 보고 고르는 사람이 많습니다(종목 상세의 '증권사 고르기').
+        가족 명의 계좌로 각자 청약하는 것은 됩니다.</p></details>
+    <details><summary>증거금이 모자라면?</summary>
+      <p>일반 투자자는 보통 청약 금액의 <b>50%</b>를 증거금으로 냅니다. 청약할 때 계좌에 있어야 하고, 배정 금액이 증거금보다 크면
+        모자란 만큼을 납입일까지 넣어야 할 수 있습니다(증권사 안내 확인).</p></details>
+    <details><summary>상장일 가격은 어디까지 움직이나요?</summary>
+      <p>2023년 6월부터 상장 첫날은 공모가를 기준으로 <b>60%~400%</b> 안에서 시초가와 그날 가격이 정해집니다.
+        공모가의 4배까지 오를 수 있다는 뜻입니다(흔히 '따따블'). 둘째 날부터는 보통 종목처럼 ±30% 입니다.</p></details>
+    <details><summary>확약 해제일이 왜 중요한가요?</summary>
+      <p>의무보유확약을 건 기관은 15일·1개월·3개월·6개월 뒤부터 팔 수 있습니다. 해제일 전후로 매도 물량(오버행)이 나와 주가가
+        흔들리는 경우가 많아, 보유 중이라면 종목 상세의 '확약 해제 일정'을 확인해 두세요.</p></details>
+    <details><summary>스팩(SPAC)은 뭔가요?</summary>
+      <p>기업인수목적회사로, 공모가가 보통 2,000원으로 정해져 있고 합병 전까지는 가격 변동이 작습니다.
+        점수를 매기지 않고, 일정 목록에서는 기본으로 숨깁니다.</p></details>
+    <details><summary>세금이 있나요?</summary>
+      <p>국내 상장 주식을 팔 때는 증권거래세가 붙고(계산기의 '매도 비용'), 대주주가 아닌 개인의 매매 차익에는 보통 양도소득세가 없습니다.
+        세율과 제도는 해마다 바뀔 수 있으니 증권사 안내를 확인하세요.</p></details>
+  </div>
+  <div class="note mt16"><span class="ic">ⓘ</span><span>데이터는 <b>38커뮤니케이션</b> 공개 표를 매일 모아 만든 것으로, 늦거나 틀릴 수 있습니다.
+    점수와 판정은 블로거들이 흔히 쓰는 기준을 옮긴 <b>참고용</b>이며 수익을 보장하지 않습니다.
+    청약 전에는 반드시 증권사와 금융감독원 전자공시(DART)의 증권신고서·투자설명서를 확인하세요. 투자 권유가 아닙니다.</span></div>
+</div></section>
+</main>
+
+<div class="tray" id="cmpTray" hidden><div class="wrap tray-in">
+  <div class="tray-chips" id="cmpChips"></div>
+  <div class="btnrow"><button class="ghost sm" type="button" id="cmpClear">비우기</button><button class="ghost primary sm" type="button" id="cmpGo">나란히 비교</button></div>
+</div></div>
+<dialog id="cmpDlg" aria-labelledby="cmpTitle"><div id="cmpBody"></div></dialog>
+
+<nav class="tabbar" id="tabbar" aria-label="앱 메뉴">
+  <a href="#top" data-s="top"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 11l8-7 8 7v9a1 1 0 0 1-1 1h-5v-6h-4v6H5a1 1 0 0 1-1-1z"/></svg>오늘</a>
+  <a href="#schedule" data-s="schedule"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="4" width="16" height="7" rx="2"/><rect x="4" y="13" width="16" height="7" rx="2"/></svg>일정</a>
+  <a href="#calendar" data-s="calendar"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15" rx="2"/><path d="M3.5 10h17M8 3v4M16 3v4"/></svg>달력</a>
+  <a href="#plan" data-s="plan"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 19V9M10 19V5M16 19v-7M22 19H2"/></svg>플래너</a>
+  <a href="#my" data-s="my"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21c1-4 4.5-6 8-6s7 2 8 6"/></svg>내 기록</a>
+</nav>
+
+<dialog id="dlg" aria-labelledby="dTitle"><div class="dlg-in" id="dBody"></div></dialog>
+<div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+
+<footer><div class="wrap foot">
+  <span>공모주 캘린더 · 데이터: 38커뮤니케이션 공개 표(매일 자동 갱신)</span>
+  <a href="/">richroro.github.io</a>
+</div></footer>
+
+<script src="/ipo/score.js" defer></script>
+<script src="/ipo/app.js" defer></script>
+<script src="/ipo/extra.js" defer></script>
+</body>
+</html>
