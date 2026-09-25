@@ -1,0 +1,2183 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="theme-color" content="#14171c">
+<meta name="description" content="탑다운 오픈월드 범죄 액션. 차를 훔치고, 임무를 받고, 경찰 수배를 따돌려 도시를 손에 넣어라.">
+<title>무법 도시</title>
+<link rel="canonical" href="https://richroro.github.io/games/lawless-city/">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%2314171c'/><path d='M50 14l10 22 24 3-18 16 5 24-21-12-21 12 5-24-18-16 24-3z' fill='%23FFC53D'/></svg>">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="무법 도시">
+<meta property="og:title" content="무법 도시">
+<meta property="og:description" content="차를 훔치고, 임무를 받고, 별 다섯 개 수배를 따돌려라. 브라우저에서 바로 하는 탑다운 오픈월드.">
+<meta property="og:url" content="https://richroro.github.io/games/lawless-city/">
+<meta property="og:image" content="https://richroro.github.io/games/lawless-city/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="무법 도시">
+<meta name="twitter:description" content="차를 훔치고, 임무를 받고, 별 다섯 개 수배를 따돌려라.">
+<meta name="twitter:image" content="https://richroro.github.io/games/lawless-city/og.png">
+<style>
+  :root{
+    --bg:#14171c;
+    --panel:rgba(18,21,26,.82);
+    --ink:#F4F6F8;
+    --ink-2:#B7C0CA;
+    --ink-3:#7D8894;
+    --gold:#FFC53D;
+    --red:#F04452;
+    --green:#3DDC84;
+    --blue:#4DA3FF;
+    --sat:env(safe-area-inset-top,0px);
+    --sab:env(safe-area-inset-bottom,0px);
+    --sal:env(safe-area-inset-left,0px);
+    --sar:env(safe-area-inset-right,0px);
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  html,body{margin:0;height:100%;background:var(--bg);color:var(--ink);overflow:hidden;
+    font-family:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Pretendard","Noto Sans KR","Malgun Gothic",sans-serif;
+    -webkit-user-select:none;user-select:none;touch-action:none;overscroll-behavior:none}
+  canvas#cv{position:fixed;inset:0;display:block}
+  button{font:inherit;color:inherit;border:0;cursor:pointer}
+
+  /* HUD */
+  #hud{position:fixed;inset:0;pointer-events:none}
+  #hud[hidden]{display:none}
+  #topR{position:absolute;top:calc(10px + var(--sat));right:calc(12px + var(--sar));text-align:right;
+    display:flex;flex-direction:column;align-items:flex-end;gap:5px}
+  #money{font-size:26px;font-weight:800;color:var(--green);letter-spacing:.5px;
+    text-shadow:0 2px 0 #000,0 0 8px rgba(0,0,0,.6);font-variant-numeric:tabular-nums}
+  #stars{font-size:22px;letter-spacing:1px;text-shadow:0 2px 0 #000;line-height:1}
+  #stars i{font-style:normal;color:rgba(255,255,255,.18)}
+  #stars i.on{color:var(--gold)}
+  #stars.flash i.on{animation:blink .5s steps(2) infinite}
+  @keyframes blink{50%{opacity:.25}}
+  #hpbar{width:120px;height:9px;border-radius:5px;background:rgba(0,0,0,.55);overflow:hidden;box-shadow:0 0 0 1px rgba(255,255,255,.15)}
+  #hpbar b{display:block;height:100%;width:100%;background:linear-gradient(90deg,#F04452,#FF7A59);transition:width .15s}
+  #carbar{width:120px;height:6px;border-radius:4px;background:rgba(0,0,0,.55);overflow:hidden}
+  #carbar[hidden]{display:none}
+  #carbar b{display:block;height:100%;width:100%;background:#9AA7B4}
+  #weapon{font-size:14px;font-weight:700;color:var(--ink-2);text-shadow:0 1px 0 #000}
+  #radar{position:absolute;top:calc(10px + var(--sat));left:calc(12px + var(--sal));width:112px;height:112px;
+    border-radius:50%;box-shadow:0 0 0 3px rgba(0,0,0,.6),0 4px 14px rgba(0,0,0,.5)}
+  #pauseBtn{position:absolute;top:calc(128px + var(--sat));left:calc(12px + var(--sal));pointer-events:auto;
+    width:40px;height:40px;border-radius:12px;background:var(--panel);font-weight:800;font-size:15px;letter-spacing:-1px}
+  #mission{position:absolute;left:50%;transform:translateX(-50%);top:calc(10px + var(--sat));max-width:min(560px,calc(100vw - 290px));
+    background:var(--panel);border-radius:12px;padding:8px 14px;font-size:14px;font-weight:600;line-height:1.35;text-align:center;
+    box-shadow:0 0 0 1px rgba(255,197,61,.35)}
+  #mission[hidden]{display:none}
+  #mission b{color:var(--gold)}
+  #mTime{display:block;font-size:18px;font-weight:800;color:var(--gold);font-variant-numeric:tabular-nums}
+  #mTime.low{color:var(--red)}
+  #toast{position:absolute;left:50%;top:32%;transform:translate(-50%,-50%);text-align:center;
+    font-size:20px;font-weight:800;text-shadow:0 2px 0 #000,0 0 12px rgba(0,0,0,.8);opacity:0;transition:opacity .25s;
+    width:min(92vw,560px);line-height:1.35}
+  #toast.show{opacity:1}
+  #toast small{display:block;font-size:14px;font-weight:600;color:var(--ink-2);margin-top:4px}
+  #big{position:absolute;left:0;right:0;top:40%;text-align:center;font-size:64px;font-weight:900;letter-spacing:4px;
+    text-shadow:0 4px 0 #000,0 0 24px rgba(0,0,0,.9);opacity:0;transition:opacity .4s}
+  #big.show{opacity:1}
+  #big small{display:block;font-size:17px;letter-spacing:0;font-weight:700;color:var(--ink-2);margin-top:8px}
+  #bust{position:absolute;left:50%;bottom:calc(30% + var(--sab));transform:translateX(-50%);width:160px;text-align:center;
+    font-size:13px;font-weight:800;color:#9cc8ff;text-shadow:0 1px 0 #000}
+  #bust[hidden]{display:none}
+  #bust div{height:6px;border-radius:3px;background:rgba(0,0,0,.6);margin-top:4px;overflow:hidden}
+  #bust div b{display:block;height:100%;background:var(--blue);width:0}
+  #hint{position:absolute;left:50%;bottom:calc(18px + var(--sab));transform:translateX(-50%);font-size:13px;font-weight:700;
+    background:var(--panel);padding:6px 12px;border-radius:10px;color:var(--ink-2);white-space:nowrap}
+  #hint[hidden]{display:none}
+  #flash{position:absolute;inset:0;background:radial-gradient(ellipse at center,rgba(240,68,82,0) 40%,rgba(240,68,82,.55));opacity:0;transition:opacity .3s}
+
+  /* touch */
+  #touch{position:fixed;inset:0;pointer-events:none}
+  #touch[hidden]{display:none}
+  #zone{position:absolute;left:0;bottom:0;width:55%;height:62%;pointer-events:auto}
+  #stick{position:absolute;width:120px;height:120px;margin:-60px 0 0 -60px;border-radius:50%;
+    background:rgba(255,255,255,.08);box-shadow:inset 0 0 0 2px rgba(255,255,255,.22);opacity:.0;transition:opacity .15s}
+  #stick.on{opacity:1}
+  #knob{position:absolute;left:50%;top:50%;width:52px;height:52px;margin:-26px 0 0 -26px;border-radius:50%;background:rgba(255,255,255,.35)}
+  #stickHint{position:absolute;left:calc(28px + var(--sal));bottom:calc(40px + var(--sab));font-size:12px;font-weight:700;color:rgba(255,255,255,.35)}
+  .tb{position:absolute;pointer-events:auto;border-radius:50%;background:rgba(18,21,26,.72);
+    box-shadow:0 0 0 2px rgba(255,255,255,.2);font-weight:800;display:flex;align-items:center;justify-content:center;text-align:center;line-height:1.1}
+  .tb.down{background:rgba(255,255,255,.3)}
+  #bAttack{right:calc(22px + var(--sar));bottom:calc(34px + var(--sab));width:86px;height:86px;font-size:16px}
+  #bEnter{right:calc(122px + var(--sar));bottom:calc(30px + var(--sab));width:66px;height:66px;font-size:15px}
+  #bEnter.ready{background:rgba(255,197,61,.85);color:#1a1a1a;box-shadow:0 0 0 2px #fff}
+  #bWeapon{right:calc(34px + var(--sar));bottom:calc(136px + var(--sab));width:56px;height:56px;font-size:13px}
+
+  /* sheets */
+  .sheet{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(10,12,15,.78);
+    padding:calc(16px + var(--sat)) 16px calc(16px + var(--sab))}
+  .sheet[hidden]{display:none}
+  .card{width:min(420px,100%);max-height:100%;overflow:auto;background:#1c2027;border-radius:20px;padding:26px 22px;
+    box-shadow:0 20px 60px rgba(0,0,0,.6),0 0 0 1px rgba(255,255,255,.06);text-align:center}
+  .logo{font-size:44px;font-weight:900;letter-spacing:2px;line-height:1;
+    background:linear-gradient(180deg,#FFE08A,#FFB020 60%,#E08600);-webkit-background-clip:text;background-clip:text;color:transparent;
+    filter:drop-shadow(0 3px 0 #000)}
+  .sub{color:var(--ink-2);font-size:14px;margin:10px 0 20px}
+  .btn{display:block;width:100%;padding:14px;border-radius:14px;background:#2b313b;font-size:16px;font-weight:800;margin-top:10px}
+  .btn.pri{background:var(--gold);color:#1a1a1a}
+  .btn:active{transform:scale(.98)}
+  .btn[hidden]{display:none}
+  .stat{font-size:13px;color:var(--ink-3);margin-top:16px;line-height:1.6}
+  .help{text-align:left;font-size:14px;line-height:1.6;color:var(--ink-2)}
+  .help h3{color:var(--ink);font-size:15px;margin:16px 0 6px}
+  .help h3:first-child{margin-top:0}
+  .help kbd{display:inline-block;min-width:22px;padding:1px 6px;border-radius:5px;background:#2b313b;color:var(--ink);font:700 12px/1.6 ui-monospace,monospace;text-align:center}
+  .help ul{margin:0;padding-left:18px}
+  .row{display:flex;gap:8px}
+  .row .btn{flex:1}
+  .back{position:fixed;top:calc(12px + var(--sat));left:calc(12px + var(--sal));font-size:13px;color:var(--ink-3);text-decoration:none;pointer-events:auto}
+  @media (max-width:560px){
+    #mission{top:calc(172px + var(--sat));max-width:calc(100vw - 24px);font-size:13px}
+    #money{font-size:22px}
+    #stars{font-size:19px}
+    #hpbar,#carbar{width:100px}
+    #big{font-size:48px}
+    #toast{font-size:17px;top:44%}
+  }
+</style>
+</head>
+<body>
+<canvas id="cv"></canvas>
+
+<div id="hud" hidden>
+  <canvas id="radar"></canvas>
+  <button id="pauseBtn" aria-label="일시정지">II</button>
+  <div id="topR">
+    <div id="money">$0</div>
+    <div id="stars"><i>★</i><i>★</i><i>★</i><i>★</i><i>★</i></div>
+    <div id="hpbar"><b></b></div>
+    <div id="carbar" hidden><b></b></div>
+    <div id="weapon">주먹</div>
+  </div>
+  <div id="mission" hidden><span id="mText"></span><span id="mTime"></span></div>
+  <div id="bust" hidden>체포되는 중<div><b></b></div></div>
+  <div id="toast"></div>
+  <div id="big"></div>
+  <div id="hint" hidden></div>
+  <div id="flash"></div>
+</div>
+
+<div id="touch" hidden>
+  <div id="zone"><div id="stick"><div id="knob"></div></div></div>
+  <div id="stickHint">왼쪽을 눌러 이동</div>
+  <button class="tb" id="bAttack">공격</button>
+  <button class="tb" id="bEnter">탑승</button>
+  <button class="tb" id="bWeapon">무기</button>
+</div>
+
+<div class="sheet" id="title">
+  <a class="back" href="/">&larr; richroro</a>
+  <div class="card">
+    <div class="logo">무법 도시</div>
+    <div class="sub">훔치고, 달리고, 따돌려라.<br>전화박스에서 일을 받아 $25,000을 모으면 도시는 네 것.</div>
+    <button class="btn pri" id="bContinue" hidden>이어하기</button>
+    <button class="btn pri" id="bNew">새로 시작</button>
+    <button class="btn" id="bHelp">조작법</button>
+    <div class="row"><button class="btn" id="bSound">소리 켜짐</button></div>
+    <div class="stat" id="saveInfo"></div>
+  </div>
+</div>
+
+<div class="sheet" id="helpSheet" hidden>
+  <div class="card help">
+    <h3>키보드</h3>
+    <ul>
+      <li>걷기 / 운전: <kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> 또는 방향키</li>
+      <li>차 타기·내리기: <kbd>F</kbd> 또는 <kbd>E</kbd></li>
+      <li>공격 (걸을 때) · 핸드브레이크 (운전 중): <kbd>Space</kbd></li>
+      <li>무기 바꾸기: <kbd>Q</kbd> · 일시정지: <kbd>Esc</kbd> · 소리: <kbd>M</kbd></li>
+    </ul>
+    <h3>터치</h3>
+    <ul>
+      <li>화면 왼쪽을 누르고 끌면 그 방향으로 걷고, 운전 중엔 그 방향으로 차가 꺾입니다. 뒤로 당기면 후진.</li>
+      <li>오른쪽 버튼으로 공격·탑승. 조준은 가까운 상대를 자동으로 잡습니다.</li>
+    </ul>
+    <h3>도시</h3>
+    <ul>
+      <li><b style="color:#3DDC84">전화박스</b> — 임무: 배달, 차량 탈취, 표적 제거</li>
+      <li><b style="color:#4DA3FF">도색소</b> — $300에 차 수리 + 색 바꾸기 + 수배 해제</li>
+      <li><b style="color:#FFC53D">총포상</b> — $200에 권총 탄 40발</li>
+      <li>사람을 치거나 쏘면 수배 별이 붙습니다. 경찰 눈에 띄지 않고 버티면 별이 하나씩 떨어집니다.</li>
+      <li>죽으면 병원, 잡히면 경찰서에서 다시 시작하고 탄약과 돈 일부를 잃습니다.</li>
+    </ul>
+    <button class="btn pri" id="bHelpClose">알겠어</button>
+  </div>
+</div>
+
+<div class="sheet" id="pauseSheet" hidden>
+  <div class="card">
+    <div class="logo" style="font-size:32px">일시정지</div>
+    <div class="stat" id="pauseStat"></div>
+    <button class="btn pri" id="bResume">계속하기</button>
+    <button class="btn" id="bPauseHelp">조작법</button>
+    <button class="btn" id="bPauseSound">소리 켜짐</button>
+    <button class="btn" id="bQuit">처음 화면으로</button>
+  </div>
+</div>
+
+<script>
+'use strict';
+(() => {
+// ================================================================
+//  기본
+// ================================================================
+const cv = document.getElementById('cv'), ctx = cv.getContext('2d');
+const rcv = document.getElementById('radar'), rctx = rcv.getContext('2d');
+const $ = id => document.getElementById(id);
+let W = 0, H = 0, DPR = 1;
+function resize() {
+  DPR = Math.min(2, window.devicePixelRatio || 1);
+  W = innerWidth; H = innerHeight;
+  cv.width = Math.round(W * DPR); cv.height = Math.round(H * DPR);
+  cv.style.width = W + 'px'; cv.style.height = H + 'px';
+  const rs = rcv.clientWidth || 112;
+  rcv.width = Math.round(rs * DPR); rcv.height = Math.round(rs * DPR);
+}
+addEventListener('resize', resize);
+
+const clamp = (v, a, b) => v < a ? a : v > b ? b : v;
+const hyp = Math.hypot;
+const R = Math.random;
+const pick = a => a[(R() * a.length) | 0];
+function angDiff(a, b) { let d = (b - a) % (Math.PI * 2); if (d > Math.PI) d -= Math.PI * 2; if (d < -Math.PI) d += Math.PI * 2; return d; }
+function mulberry32(a) { return function () { a |= 0; a = a + 0x6D2B79F5 | 0; let t = Math.imul(a ^ a >>> 15, 1 | a); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
+function shade(hex, f) {
+  const n = parseInt(hex.slice(1), 16);
+  let r = n >> 16, g = (n >> 8) & 255, b = n & 255;
+  if (f < 0) { r *= 1 + f; g *= 1 + f; b *= 1 + f; } else { r += (255 - r) * f; g += (255 - g) * f; b += (255 - b) * f; }
+  return 'rgb(' + (r | 0) + ',' + (g | 0) + ',' + (b | 0) + ')';
+}
+const money = n => '$' + Math.round(n).toLocaleString('en-US');
+
+// ================================================================
+//  도시 생성 (고정 시드 — 매번 같은 도시)
+// ================================================================
+const T = 48, BP = 10, NB = 8, N = NB * BP + 2, NN = NB + 1, WORLD = N * T;
+const ROAD = 0, WALK = 1, BLD = 2, GRASS = 3, TREE = 4, WATER = 5;
+const DIRS = [[1, 0], [0, 1], [-1, 0], [0, -1]];
+const tiles = new Uint8Array(N * N);
+const tileAt = (tx, ty) => (tx < 0 || ty < 0 || tx >= N || ty >= N) ? WATER : tiles[ty * N + tx];
+const tileAtW = (x, y) => tileAt(Math.floor(x / T), Math.floor(y / T));
+const solid = t => t === BLD || t === TREE || t === WATER;
+const nodeP = i => (i * BP + 1) * T;
+const nearNode = v => clamp(Math.round((v / T - 1) / BP), 0, NB);
+const validNode = (i, j) => i >= 0 && j >= 0 && i < NN && j < NN;
+
+const buildings = [], trees = [], blocks = [];
+const places = {};
+const phones = [];
+const staticPickups = [];
+(function genCity() {
+  const rnd = mulberry32(20260925);
+  for (let ty = 0; ty < N; ty++) for (let tx = 0; tx < N; tx++) {
+    const mx = tx % BP, my = ty % BP;
+    tiles[ty * N + tx] = (mx < 2 || my < 2) ? ROAD : (mx === 2 || mx === 9 || my === 2 || my === 9) ? WALK : BLD;
+  }
+  const SPEC = {
+    hospital: { b: [1, 6], roof: '#eef1f4', label: '병원' },
+    police: { b: [6, 1], roof: '#34568b', label: '경찰서' },
+    spray: { b: [3, 3], roof: '#d9674a', label: '도색소' },
+    gun: { b: [4, 6], roof: '#5f6b4e', label: '총포상' },
+    garage: { b: [6, 5], roof: '#8a6a55', label: '차고' },
+  };
+  const specAt = {};
+  for (const k in SPEC) specAt[SPEC[k].b.join()] = k;
+  const parkSet = new Set();
+  while (parkSet.size < 7) {
+    const k = ((rnd() * 8) | 0) + ',' + ((rnd() * 8) | 0);
+    if (!specAt[k]) parkSet.add(k);
+  }
+  const ROOFS = ['#8d99ae', '#b08968', '#9c6644', '#6d6875', '#a3b18a', '#b5838d', '#7f8c8d', '#c9ada7', '#6c757d', '#8e9aaf', '#9a8c98', '#a68a64'];
+  for (let bj = 0; bj < NB; bj++) for (let bi = 0; bi < NB; bi++) {
+    const tx0 = bi * BP + 3, ty0 = bj * BP + 3, key = bi + ',' + bj;
+    const blk = { bi, bj, x: (bi * BP + 2) * T, y: (bj * BP + 2) * T, s: 8 * T, kind: 'city' };
+    blocks.push(blk);
+    if (parkSet.has(key)) {
+      blk.kind = 'park';
+      for (let ly = 0; ly < 6; ly++) for (let lx = 0; lx < 6; lx++) {
+        const tx = tx0 + lx, ty = ty0 + ly;
+        const path = lx === 2 || lx === 3 || ly === 2 || ly === 3;
+        if (!path && rnd() < 0.42) {
+          tiles[ty * N + tx] = TREE;
+          trees.push({ x: (tx + 0.5) * T + (rnd() - 0.5) * 8, y: (ty + 0.5) * T + (rnd() - 0.5) * 8, r: 19 + rnd() * 7, c: rnd() < 0.5 ? '#2f6b34' : '#3b7a3a' });
+        } else tiles[ty * N + tx] = GRASS;
+      }
+      continue;
+    }
+    const sp = specAt[key];
+    if (sp) {
+      const S = SPEC[sp];
+      blk.kind = sp;
+      buildings.push({ x: tx0 * T, y: ty0 * T, w: 6 * T, h: 6 * T, ht: sp === 'hospital' ? 0.55 : 0.32, roof: S.roof, wall: shade(S.roof, -0.35), wall2: shade(S.roof, -0.5), label: S.label, kind: sp, det: [] });
+      const cx = (bi * BP + 6) * T;
+      places[sp] = {
+        x: cx,
+        y: (sp === 'spray' || sp === 'garage') ? ((bj + 1) * BP + 0.5) * T : (bj * BP + 9.5) * T,
+        label: S.label,
+      };
+      continue;
+    }
+    const r = rnd();
+    const rects = r < 0.18 ? [[0, 0, 6, 6]]
+      : r < 0.36 ? [[0, 0, 3, 6], [3, 0, 3, 6]]
+      : r < 0.54 ? [[0, 0, 6, 3], [0, 3, 6, 3]]
+      : r < 0.78 ? [[0, 0, 3, 3], [3, 0, 3, 3], [0, 3, 3, 3], [3, 3, 3, 3]]
+      : [[0, 0, 4, 6], [4, 0, 2, 3], [4, 3, 2, 3]];
+    for (const [rx, ry, rw, rh] of rects) {
+      const roof = ROOFS[(rnd() * ROOFS.length) | 0];
+      const det = [];
+      const nd = (rnd() * 3) | 0;
+      for (let i = 0; i < nd; i++) det.push([0.15 + rnd() * 0.55, 0.15 + rnd() * 0.55, 0.1 + rnd() * 0.1]);
+      buildings.push({ x: (tx0 + rx) * T, y: (ty0 + ry) * T, w: rw * T, h: rh * T, ht: 0.14 + rnd() * 0.42, roof, wall: shade(roof, -0.38), wall2: shade(roof, -0.52), det });
+    }
+    if (phones.length < 5 && rnd() < 0.3 && bi > 0 && bj > 0 && bi < 7 && bj < 7) {
+      phones.push({ x: (bi * BP + 6) * T, y: (bj * BP + 2.5) * T, lock: false });
+    }
+  }
+  // 전화박스는 최소 4개
+  for (let k = 0; phones.length < 4 && k < 64; k++) {
+    const b = blocks[(k * 23) % blocks.length];
+    if (b.kind !== 'city') continue;
+    const p = { x: (b.bi * BP + 6) * T, y: (b.bj * BP + 2.5) * T, lock: false };
+    if (!phones.some(q => hyp(q.x - p.x, q.y - p.y) < 600)) phones.push(p);
+  }
+  buildings.sort((a, b) => a.ht - b.ht);
+  for (let i = 0; i < 22; i++) {
+    const p = sidewalkPoint(rnd);
+    staticPickups.push({ x: p.x, y: p.y, type: i < 12 ? 'ammo' : 'health', t: 0 });
+  }
+})();
+
+function sidewalkPoint(rnd) {
+  for (let tries = 0; tries < 40; tries++) {
+    const bi = (rnd() * NB) | 0, bj = (rnd() * NB) | 0, side = (rnd() * 4) | 0, k = 3 + ((rnd() * 6) | 0);
+    let tx, ty;
+    if (side === 0) { tx = bi * BP + k; ty = bj * BP + 2; }
+    else if (side === 1) { tx = bi * BP + k; ty = bj * BP + 9; }
+    else if (side === 2) { tx = bi * BP + 2; ty = bj * BP + k; }
+    else { tx = bi * BP + 9; ty = bj * BP + k; }
+    if (tileAt(tx, ty) === WALK) return { x: (tx + 0.5) * T, y: (ty + 0.5) * T };
+  }
+  return { x: (2.5) * T, y: (2.5) * T };
+}
+// 차선 위의 한 점: 교차점 (i,j)에서 방향 d로 frac 타일만큼
+function lanePt(ti, tj, d, off) { return [nodeP(ti) - d[1] * off, nodeP(tj) + d[0] * off]; }
+function roadPoint() {
+  for (let tries = 0; tries < 30; tries++) {
+    const i = (R() * NN) | 0, j = (R() * NN) | 0, d = pick(DIRS);
+    if (!validNode(i + d[0], j + d[1])) continue;
+    const f = (2.5 + R() * 5) * T;
+    const [lx, ly] = lanePt(i, j, d, T / 2);
+    return { x: lx + d[0] * f, y: ly + d[1] * f, a: Math.atan2(d[1], d[0]), ti: i + d[0], tj: j + d[1], d };
+  }
+  return null;
+}
+function roadPointAround(x, y, minD, maxD) {
+  let best = null;
+  for (let t = 0; t < 60; t++) {
+    const p = roadPoint(); if (!p) continue;
+    const d = hyp(p.x - x, p.y - y);
+    if (d >= minD && d <= maxD) return p;
+    if (!best || Math.abs(d - (minD + maxD) / 2) < Math.abs(best.dd - (minD + maxD) / 2)) { best = p; best.dd = d; }
+  }
+  return best;
+}
+function los(ax, ay, bx, by) {
+  const d = hyp(bx - ax, by - ay), n = Math.ceil(d / 16);
+  for (let i = 1; i < n; i++) { const t = i / n; if (tileAtW(ax + (bx - ax) * t, ay + (by - ay) * t) === BLD) return false; }
+  return true;
+}
+
+// ================================================================
+//  차종
+// ================================================================
+const CT = {
+  compact: { L: 34, W: 18, max: 235, acc: 270, grip: 9, turn: 3.0, hp: 80, mass: 0.8 },
+  sedan: { L: 40, W: 20, max: 265, acc: 255, grip: 8.5, turn: 2.7, hp: 100, mass: 1 },
+  sports: { L: 40, W: 20, max: 345, acc: 390, grip: 9.5, turn: 3.0, hp: 90, mass: 0.95 },
+  van: { L: 50, W: 23, max: 205, acc: 185, grip: 7, turn: 2.2, hp: 170, mass: 1.6 },
+  taxi: { L: 40, W: 20, max: 255, acc: 255, grip: 8.5, turn: 2.7, hp: 100, mass: 1, color: '#F2C230' },
+  police: { L: 42, W: 20, max: 300, acc: 330, grip: 9, turn: 2.9, hp: 150, mass: 1.2, color: '#f4f5f7' },
+  gang: { L: 50, W: 23, max: 250, acc: 240, grip: 7.5, turn: 2.4, hp: 230, mass: 1.7, color: '#1d1f24' },
+};
+const PAL = ['#d62828', '#f77f00', '#277da1', '#4d908e', '#577590', '#e9c46a', '#e5e5e5', '#6a4c93', '#2a9d8f', '#e76f51', '#adb5bd', '#1d3557', '#8d0801', '#3a86ff'];
+const SHIRTS = ['#e63946', '#457b9d', '#2a9d8f', '#e9c46a', '#f4a261', '#8338ec', '#6c757d', '#ff006e', '#3a5a40', '#f1faee', '#bc6c25'];
+const HAIRS = ['#1b1b1b', '#3b2416', '#6b4423', '#9c9c9c', '#2b2b2b'];
+
+// ================================================================
+//  상태
+// ================================================================
+let cars = [], peds = [], tracers = [], parts = [], decals = [], floats = [], drops = [];
+let player, wanted, mission, stats, bustT = 0, simT = 0;
+let gameState = 'title', deathT = 0, deathKind = '', policeSpawnT = 0, lastMissionType = '';
+let sprayLock = false, gunLock = false;
+const cam = { x: 0, y: 0, z: 1, shake: 0 };
+let sound = true;
+const SKEY = 'lawless-city-v1';
+function loadSave() { try { return JSON.parse(localStorage.getItem(SKEY)) || null; } catch (e) { return null; } }
+function save() {
+  try {
+    const old = loadSave() || {};
+    localStorage.setItem(SKEY, JSON.stringify({
+      ...old, sound,
+      ...(player ? { money: Math.round(player.money), ammo: player.ammo, missions: stats.missions, kills: stats.kills, won: stats.won, playing: true } : {}),
+    }));
+  } catch (e) {}
+}
+{ const s = loadSave(); if (s && s.sound === false) sound = false; }
+
+let carId = 0;
+function makeCar(type, x, y, a, driver, color) {
+  const s = CT[type];
+  const c = { id: ++carId, type, s, x, y, a, vx: 0, vy: 0, hp: s.hp, driver, color: color || s.color || pick(PAL), ai: null,
+    fireT: 0, dead: false, stuckT: 0, revT: 0, waitT: 0, flash: R() * 6, copsOut: 0, keep: false, byPlayer: -99, flee: false, burnT: 0, sk: null };
+  cars.push(c);
+  return c;
+}
+function setAI(c, ti, tj, d, cruise) {
+  c.ai = { ti, tj, d, nd: null, cruise: cruise || (95 + R() * 45) };
+  c.ai.nd = planNext(c, ti, tj, d);
+}
+function attachAI(c, cruise) {
+  // 지금 위치·방향에서 가장 가까운 교차점을 목표로
+  let best = null, bd = 1e9;
+  const ca = Math.cos(c.a), sa = Math.sin(c.a);
+  const ni = nearNode(c.x), nj = nearNode(c.y);
+  for (let di = -1; di <= 1; di++) for (let dj = -1; dj <= 1; dj++) {
+    const i = ni + di, j = nj + dj;
+    if (!validNode(i, j)) continue;
+    const dx = nodeP(i) - c.x, dy = nodeP(j) - c.y, d = hyp(dx, dy);
+    const ahead = (dx * ca + dy * sa) / (d || 1);
+    const score = d * (ahead > 0.3 ? 1 : 3);
+    if (score < bd) { bd = score; best = [i, j, dx, dy]; }
+  }
+  const [i, j, dx, dy] = best;
+  const d = Math.abs(dx) > Math.abs(dy) ? [Math.sign(dx) || 1, 0] : [0, Math.sign(dy) || 1];
+  setAI(c, i, j, d, cruise);
+}
+function planNext(c, ti, tj, d) {
+  const opts = DIRS.filter(n => !(n[0] === -d[0] && n[1] === -d[1]) && validNode(ti + n[0], tj + n[1]));
+  if (!opts.length) return [-d[0], -d[1]];
+  if (c && (c.driver === 'cop' || (c.flee && player))) {
+    const pi = nearNode(player.x), pj = nearNode(player.y);
+    const sc = n => {
+      const m = Math.abs(ti + n[0] - pi) + Math.abs(tj + n[1] - pj);
+      return (c.driver === 'cop' ? m : -m) + R() * 0.5;
+    };
+    opts.sort((a, b) => sc(a) - sc(b));
+    return opts[0];
+  }
+  const straight = opts.find(n => n[0] === d[0] && n[1] === d[1]);
+  if (straight && R() < 0.5) return straight;
+  return pick(opts);
+}
+function makePed(x, y, kind) {
+  const p = { x, y, a: R() * 6.28, vx: 0, vy: 0, kind, hp: kind === 'cop' ? 50 : 30, dead: false, deadT: 0,
+    shirt: kind === 'cop' ? '#1f3b73' : pick(SHIRTS), hair: pick(HAIRS), dir: pick(DIRS), speed: 34 + R() * 20,
+    panic: 0, tx: 0, ty: 0, walk: R() * 6, crossT: 0, turnT: 2 + R() * 5, cool: 1, car: null, gone: false, armed: kind === 'cop' };
+  peds.push(p);
+  return p;
+}
+
+// ================================================================
+//  사운드 (Web Audio 합성)
+// ================================================================
+let AC = null, master, engOsc, engGain, engFilt, sirOsc, sirGain, noiseBuf;
+function audioInit() {
+  if (AC) return;
+  try {
+    AC = new (window.AudioContext || window.webkitAudioContext)();
+    master = AC.createGain(); master.gain.value = sound ? 0.55 : 0; master.connect(AC.destination);
+    noiseBuf = AC.createBuffer(1, AC.sampleRate, AC.sampleRate);
+    const d = noiseBuf.getChannelData(0); for (let i = 0; i < d.length; i++) d[i] = R() * 2 - 1;
+    engOsc = AC.createOscillator(); engOsc.type = 'sawtooth'; engOsc.frequency.value = 50;
+    engFilt = AC.createBiquadFilter(); engFilt.type = 'lowpass'; engFilt.frequency.value = 380;
+    engGain = AC.createGain(); engGain.gain.value = 0;
+    engOsc.connect(engFilt).connect(engGain).connect(master); engOsc.start();
+    sirOsc = AC.createOscillator(); sirOsc.type = 'triangle'; sirOsc.frequency.value = 700;
+    sirGain = AC.createGain(); sirGain.gain.value = 0;
+    sirOsc.connect(sirGain).connect(master); sirOsc.start();
+  } catch (e) { AC = null; }
+}
+function noise(dur, freq, vol, type) {
+  if (!AC || !sound) return;
+  const t = AC.currentTime;
+  const src = AC.createBufferSource(); src.buffer = noiseBuf;
+  const f = AC.createBiquadFilter(); f.type = type || 'lowpass'; f.frequency.value = freq;
+  const g = AC.createGain(); g.gain.setValueAtTime(vol, t); g.gain.exponentialRampToValueAtTime(0.001, t + dur);
+  src.connect(f).connect(g).connect(master); src.start(t, R() * 0.5); src.stop(t + dur);
+}
+function tone(freq, dur, vol, type, when, slide) {
+  if (!AC || !sound) return;
+  const t = AC.currentTime + (when || 0);
+  const o = AC.createOscillator(); o.type = type || 'square'; o.frequency.setValueAtTime(freq, t);
+  if (slide) o.frequency.exponentialRampToValueAtTime(slide, t + dur);
+  const g = AC.createGain(); g.gain.setValueAtTime(vol, t); g.gain.exponentialRampToValueAtTime(0.001, t + dur);
+  o.connect(g).connect(master); o.start(t); o.stop(t + dur + 0.02);
+}
+const sfx = {
+  gun: () => { noise(0.14, 2600, 0.45); tone(160, 0.08, 0.2, 'square', 0, 60); },
+  copgun: () => noise(0.12, 1800, 0.25),
+  punch: () => noise(0.07, 700, 0.5),
+  crash: v => noise(0.25, 700, Math.min(0.7, 0.2 + v / 400)),
+  boom: () => { noise(1.4, 380, 1.0); tone(90, 0.8, 0.5, 'sine', 0, 30); },
+  cash: () => { tone(988, 0.08, 0.15, 'square'); tone(1318, 0.18, 0.15, 'square', 0.08); },
+  pick: () => tone(660, 0.1, 0.12, 'triangle', 0, 990),
+  win: () => { [523, 659, 784, 1047].forEach((f, i) => tone(f, 0.18, 0.14, 'square', i * 0.1)); },
+  fail: () => { tone(392, 0.25, 0.14, 'square', 0, 196); tone(262, 0.4, 0.14, 'square', 0.22, 130); },
+  door: () => noise(0.06, 1200, 0.3),
+  star: () => { tone(880, 0.08, 0.1, 'square'); tone(880, 0.08, 0.1, 'square', 0.12); },
+  splat: () => noise(0.12, 500, 0.45),
+};
+function setSound(on) {
+  sound = on;
+  if (master) master.gain.value = on ? 0.55 : 0;
+  $('bSound').textContent = $('bPauseSound').textContent = on ? '소리 켜짐' : '소리 꺼짐';
+  save();
+}
+function updAudio() {
+  if (!AC) return;
+  const t = AC.currentTime;
+  const c = player && player.car;
+  if (c && gameState === 'play') {
+    const sp = Math.abs(fwdSpeed(c)) / c.s.max;
+    engOsc.frequency.setTargetAtTime(42 + sp * 120 + (c.hp <= 0 ? -15 : 0), t, 0.05);
+    engGain.gain.setTargetAtTime(0.055, t, 0.1);
+  } else engGain.gain.setTargetAtTime(0, t, 0.1);
+  let sir = 0;
+  if (gameState === 'play' && wanted.stars > 0) {
+    for (const k of cars) if (k.driver === 'cop' && !k.dead) { const d = hyp(k.x - player.x, k.y - player.y); if (d < 700) sir = Math.max(sir, 1 - d / 700); }
+  }
+  sirGain.gain.setTargetAtTime(sir * 0.035, t, 0.1);
+  sirOsc.frequency.setTargetAtTime((simT % 1) < 0.5 ? 640 : 900, t, 0.03);
+}
+document.addEventListener('visibilitychange', () => {
+  if (document.hidden) {
+    if (gameState === 'play') pause(true);
+    if (AC) AC.suspend();
+  } else if (AC && gameState === 'play') AC.resume();
+});
+
+// ================================================================
+//  입력
+// ================================================================
+const keys = {};
+const press = { enter: false, weapon: false };
+const touch = { attack: false };
+const stick = { id: null, ox: 0, oy: 0, x: 0, y: 0, on: false };
+let usingTouch = matchMedia('(pointer:coarse)').matches;
+addEventListener('keydown', e => {
+  if (['Space', 'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(e.code)) e.preventDefault();
+  if (e.repeat) return;
+  keys[e.code] = true;
+  if (gameState === 'play') {
+    if (e.code === 'KeyF' || e.code === 'KeyE' || e.code === 'Enter') press.enter = true;
+    if (e.code === 'KeyQ') press.weapon = true;
+  }
+  if (e.code === 'Escape' || e.code === 'KeyP') { if (gameState === 'play') pause(true); else if (gameState === 'pause') pause(false); }
+  if (e.code === 'KeyM') setSound(!sound);
+  if (usingTouch && !e.code.startsWith('Mouse')) { usingTouch = false; syncTouchUI(); }
+});
+addEventListener('keyup', e => { keys[e.code] = false; });
+addEventListener('blur', () => { for (const k in keys) keys[k] = false; });
+
+const zone = $('zone'), stickEl = $('stick'), knob = $('knob');
+zone.addEventListener('pointerdown', e => {
+  if (stick.id !== null) return;
+  stick.id = e.pointerId; stick.ox = e.clientX; stick.oy = e.clientY; stick.x = stick.y = 0; stick.on = true;
+  const r = zone.getBoundingClientRect();
+  stickEl.style.left = (e.clientX - r.left) + 'px'; stickEl.style.top = (e.clientY - r.top) + 'px';
+  stickEl.classList.add('on'); knob.style.transform = '';
+  $('stickHint').style.display = 'none';
+  try { zone.setPointerCapture(e.pointerId); } catch (err) {}
+});
+zone.addEventListener('pointermove', e => {
+  if (e.pointerId !== stick.id) return;
+  let dx = e.clientX - stick.ox, dy = e.clientY - stick.oy;
+  const d = hyp(dx, dy), m = 48;
+  if (d > m) { dx *= m / d; dy *= m / d; }
+  stick.x = dx / m; stick.y = dy / m;
+  knob.style.transform = `translate(${dx}px,${dy}px)`;
+});
+const stickEnd = e => { if (e.pointerId !== stick.id) return; stick.id = null; stick.on = false; stick.x = stick.y = 0; stickEl.classList.remove('on'); };
+zone.addEventListener('pointerup', stickEnd); zone.addEventListener('pointercancel', stickEnd);
+function holdBtn(el, on, off) {
+  el.addEventListener('pointerdown', e => { e.preventDefault(); el.classList.add('down'); on(); try { el.setPointerCapture(e.pointerId); } catch (err) {} });
+  const up = () => { el.classList.remove('down'); if (off) off(); };
+  el.addEventListener('pointerup', up); el.addEventListener('pointercancel', up);
+}
+holdBtn($('bAttack'), () => { touch.attack = true; }, () => { touch.attack = false; });
+holdBtn($('bEnter'), () => { press.enter = true; });
+holdBtn($('bWeapon'), () => { press.weapon = true; });
+addEventListener('pointerdown', e => { if (e.pointerType === 'touch' && !usingTouch) { usingTouch = true; syncTouchUI(); } }, true);
+function syncTouchUI() { $('touch').hidden = !(usingTouch && (gameState === 'play' || gameState === 'dead')); }
+
+function readInput() {
+  let mx = 0, my = 0;
+  if (keys.KeyA || keys.ArrowLeft) mx -= 1;
+  if (keys.KeyD || keys.ArrowRight) mx += 1;
+  if (keys.KeyW || keys.ArrowUp) my -= 1;
+  if (keys.KeyS || keys.ArrowDown) my += 1;
+  const kb = mx || my;
+  let joy = false;
+  if (stick.on && hyp(stick.x, stick.y) > 0.18) { mx = stick.x; my = stick.y; joy = true; }
+  return { mx, my, kb, joy, attack: !!(keys.Space || keys.KeyJ || touch.attack) };
+}
+
+// ================================================================
+//  물리: 차
+// ================================================================
+function fwdSpeed(c) { return c.vx * Math.cos(c.a) + c.vy * Math.sin(c.a); }
+function driveCar(c, thr, steer, hb, brake, dt) {
+  const s = c.s, ca = Math.cos(c.a), sa = Math.sin(c.a);
+  let vf = c.vx * ca + c.vy * sa, vr = -c.vx * sa + c.vy * ca;
+  if (c.hp <= 0 || c.dead) { thr = 0; brake = true; }
+  const t = tileAtW(c.x, c.y);
+  const slow = t === GRASS ? 0.55 : 1;
+  if (thr > 0) vf += (vf < -5 ? s.acc * 2.4 : s.acc * slow) * thr * dt;
+  else if (thr < 0) vf += (vf > 5 ? s.acc * 2.4 : s.acc * 0.7) * thr * dt;
+  else vf -= Math.sign(vf) * Math.min(Math.abs(vf), (t === GRASS ? 220 : 70) * dt);
+  if (brake) vf -= Math.sign(vf) * Math.min(Math.abs(vf), 420 * dt);
+  if (hb) vf -= Math.sign(vf) * Math.min(Math.abs(vf), 150 * dt);
+  const maxF = s.max * (c.hp < s.hp * 0.3 ? 0.72 : 1) * slow;
+  vf = clamp(vf, -s.max * 0.38, Math.max(maxF, Math.min(vf, maxF + 200)));
+  if (vf > maxF) vf -= (vf - maxF) * Math.min(1, 3 * dt);
+  vr *= Math.exp(-(hb ? 1.4 : s.grip) * dt);
+  c.vx = ca * vf - sa * vr; c.vy = sa * vf + ca * vr;
+  const sp = Math.abs(vf);
+  const tf = Math.min(1, sp / 80) * (1 - Math.min(0.3, sp / 1200));
+  c.a += clamp(steer, -1, 1) * s.turn * tf * (vf < 0 ? -1 : 1) * dt * (hb ? 1.45 : 1);
+  c.x += c.vx * dt; c.y += c.vy * dt;
+  // 스키드 자국
+  const skid = Math.abs(vr) > 75 || (hb && sp > 70) || (brake && sp > 160 && c.driver === 'player');
+  if (skid && t !== GRASS) {
+    const hl = s.L / 2 - 6, hw = s.W / 2 - 3;
+    const lx = c.x - ca * hl + sa * hw, ly = c.y - sa * hl - ca * hw;
+    const rx = c.x - ca * hl - sa * hw, ry = c.y - sa * hl + ca * hw;
+    if (c.sk) {
+      decals.push({ k: 'skid', x: c.sk[0], y: c.sk[1], x2: lx, y2: ly, life: 14 });
+      decals.push({ k: 'skid', x: c.sk[2], y: c.sk[3], x2: rx, y2: ry, life: 14 });
+    }
+    c.sk = [lx, ly, rx, ry];
+  } else c.sk = null;
+}
+const CPTS = [[1, 1], [1, -1], [-1, 1], [-1, -1], [1, 0], [-1, 0], [0, 1], [0, -1], [0.5, 1], [0.5, -1], [-0.5, 1], [-0.5, -1]];
+function carWorld(c) {
+  const ca = Math.cos(c.a), sa = Math.sin(c.a), hl = c.s.L / 2, hw = c.s.W / 2;
+  let hit = 0;
+  for (const [pf, pr] of CPTS) {
+    const f = pf * hl, r = pr * hw;
+    const px = c.x + ca * f - sa * r, py = c.y + sa * f + ca * r;
+    const tx = Math.floor(px / T), ty = Math.floor(py / T);
+    if (!solid(tileAt(tx, ty))) continue;
+    let best = Infinity, nx = 0, ny = 0;
+    const l = px - tx * T, rr = (tx + 1) * T - px, u = py - ty * T, dd = (ty + 1) * T - py;
+    if (!solid(tileAt(tx - 1, ty)) && l < best) { best = l; nx = -1; ny = 0; }
+    if (!solid(tileAt(tx + 1, ty)) && rr < best) { best = rr; nx = 1; ny = 0; }
+    if (!solid(tileAt(tx, ty - 1)) && u < best) { best = u; nx = 0; ny = -1; }
+    if (!solid(tileAt(tx, ty + 1)) && dd < best) { best = dd; nx = 0; ny = 1; }
+    if (best === Infinity || best > 30) continue;
+    c.x += nx * (best + 0.05); c.y += ny * (best + 0.05);
+    const vn = c.vx * nx + c.vy * ny;
+    if (vn < 0) { c.vx -= vn * nx * 1.35; c.vy -= vn * ny * 1.35; hit = Math.max(hit, -vn); c.vx *= 0.92; c.vy *= 0.92; }
+  }
+  // 월드 밖으로 못 나가게
+  c.x = clamp(c.x, 10, WORLD - 10); c.y = clamp(c.y, 10, WORLD - 10);
+  if (hit > 80) {
+    damageCar(c, (hit - 80) * 0.16, c.driver === 'player');
+    if (onScreen(c.x, c.y)) { sfx.crash(hit); sparks(c.x + Math.cos(c.a) * c.s.L / 2, c.y + Math.sin(c.a) * c.s.L / 2, 6); }
+    if (c === (player && player.car)) cam.shake = Math.max(cam.shake, Math.min(10, hit / 40));
+  }
+}
+function carCircles(c) {
+  const o = c.s.L / 2 - c.s.W / 2, r = c.s.W / 2 + 1, ca = Math.cos(c.a), sa = Math.sin(c.a);
+  return [[c.x + ca * o, c.y + sa * o, r], [c.x, c.y, r], [c.x - ca * o, c.y - sa * o, r]];
+}
+function collideCars(a, b) {
+  const lim = (a.s.L + b.s.L) / 2 + 2;
+  if (Math.abs(a.x - b.x) > lim || Math.abs(a.y - b.y) > lim) return;
+  const A = carCircles(a), B = carCircles(b);
+  let pen = 0, nx = 0, ny = 0;
+  for (const p of A) for (const q of B) {
+    const dx = q[0] - p[0], dy = q[1] - p[1], d = hyp(dx, dy), m = p[2] + q[2] - d;
+    if (m > pen) { pen = m; nx = d ? dx / d : 1; ny = d ? dy / d : 0; }
+  }
+  if (pen <= 0) return;
+  const ma = a.dead ? 3 : a.s.mass, mb = b.dead ? 3 : b.s.mass, tot = ma + mb;
+  a.x -= nx * pen * mb / tot; a.y -= ny * pen * mb / tot;
+  b.x += nx * pen * ma / tot; b.y += ny * pen * ma / tot;
+  const vn = (b.vx - a.vx) * nx + (b.vy - a.vy) * ny;
+  if (vn < 0) {
+    const j = -(1.25) * vn / (1 / ma + 1 / mb);
+    a.vx -= j * nx / ma; a.vy -= j * ny / ma; b.vx += j * nx / mb; b.vy += j * ny / mb;
+    const imp = -vn;
+    if (imp > 55) {
+      const dmg = (imp - 55) * 0.15;
+      const pa = a.driver === 'player', pb = b.driver === 'player';
+      damageCar(a, dmg * mb / ma, pb); damageCar(b, dmg * ma / mb, pa);
+      if (onScreen(a.x, a.y)) { sfx.crash(imp); sparks((a.x + b.x) / 2, (a.y + b.y) / 2, 8); }
+      if (pa || pb) {
+        const other = pa ? b : a;
+        cam.shake = Math.max(cam.shake, Math.min(12, imp / 35));
+        if ((other.driver === 'cop' || other.driver === 'copIdle' || other.type === 'police') && imp > 90) crime(0.25, 1);
+        if (other.driver === 'ai' && other.ai) { other.ai.cruise = Math.min(210, other.ai.cruise + 40); }
+      }
+    }
+  }
+}
+function damageCar(c, d, byPlayer) {
+  if (c.dead || d <= 0) return;
+  c.hp -= d;
+  if (byPlayer) c.byPlayer = simT;
+  if (c.hp <= 0 && !c.fireT) {
+    c.fireT = 0.001;
+    // 불붙은 차에서 운전자가 뛰어내림
+    if (c.driver === 'ai' || c.driver === 'gang' || c.driver === 'cop') {
+      const p = makePed(c.x + Math.sin(c.a) * 20, c.y - Math.cos(c.a) * 20, c.driver === 'cop' ? 'cop' : 'civ');
+      p.panic = 8; p.tx = c.x; p.ty = c.y;
+      if (c.driver === 'gang') p.gang = true;
+      c.driver = null;
+    }
+  }
+}
+function explode(c) {
+  if (c.dead) return;
+  c.dead = true; c.hp = 0; c.burnT = 10; c.vx *= 0.2; c.vy *= 0.2;
+  const byP = simT - c.byPlayer < 10 || c === player.car;
+  if (onScreen(c.x, c.y, 200)) { sfx.boom(); cam.shake = Math.max(cam.shake, 16); }
+  for (let i = 0; i < 26; i++) { const a = R() * 6.28, v = 40 + R() * 180; parts.push({ k: 'fire', x: c.x, y: c.y, vx: Math.cos(a) * v, vy: Math.sin(a) * v, life: 0.5 + R() * 0.6, max: 1.1, s: 10 + R() * 14 }); }
+  for (let i = 0; i < 14; i++) { const a = R() * 6.28, v = 20 + R() * 60; parts.push({ k: 'smoke', x: c.x, y: c.y, vx: Math.cos(a) * v, vy: Math.sin(a) * v, life: 1.5 + R() * 1.5, max: 3, s: 14 + R() * 12 }); }
+  for (let i = 0; i < 10; i++) { const a = R() * 6.28, v = 80 + R() * 200; parts.push({ k: 'debris', x: c.x, y: c.y, vx: Math.cos(a) * v, vy: Math.sin(a) * v, life: 0.8 + R() * 0.6, max: 1.4, s: 3 + R() * 3 }); }
+  parts.push({ k: 'flash', x: c.x, y: c.y, vx: 0, vy: 0, life: 0.18, max: 0.18, s: 110 });
+  decals.push({ k: 'scorch', x: c.x, y: c.y, r: 38, life: 40 });
+  if (player.car === c) { exitCar(true); killPlayer('explosion'); }
+  for (const p of peds) {
+    if (p.dead) continue;
+    const d = hyp(p.x - c.x, p.y - c.y);
+    if (d < 85) killPed(p, byP, c.x, c.y);
+    else if (d < 260) { p.panic = 7; p.tx = c.x; p.ty = c.y; }
+  }
+  if (!player.car && !player.dead) {
+    const d = hyp(player.x - c.x, player.y - c.y);
+    if (d < 90) hurtPlayer((90 - d) * 1.3);
+  }
+  for (const o of cars) {
+    if (o === c || o.dead) continue;
+    const d = hyp(o.x - c.x, o.y - c.y);
+    if (d < 95) {
+      damageCar(o, (95 - d) * 1.4, byP);
+      const f = (95 - d) * 3 / o.s.mass; o.vx += (o.x - c.x) / (d || 1) * f; o.vy += (o.y - c.y) / (d || 1) * f;
+    }
+  }
+  if (byP) {
+    stats.wrecks = (stats.wrecks || 0) + 1;
+    if (c.type === 'police') crime(1, 2); else crime(0.4, 1);
+  }
+  if (c.driver === 'copIdle') c.copsOut = 0;
+  c.driver = null;
+}
+function sparks(x, y, n) { for (let i = 0; i < n; i++) { const a = R() * 6.28, v = 60 + R() * 160; parts.push({ k: 'spark', x, y, vx: Math.cos(a) * v, vy: Math.sin(a) * v, life: 0.2 + R() * 0.25, max: 0.45, s: 2 }); } }
+function localIn(c, px, py) {
+  const dx = px - c.x, dy = py - c.y, ca = Math.cos(c.a), sa = Math.sin(c.a);
+  return [dx * ca + dy * sa, -dx * sa + dy * ca];
+}
+function pointInCar(c, px, py, pad) {
+  const [f, r] = localIn(c, px, py);
+  return Math.abs(f) < c.s.L / 2 + (pad || 0) && Math.abs(r) < c.s.W / 2 + (pad || 0);
+}
+// 원(사람) 과 차 박스 충돌: 겹치면 밀어낼 벡터 반환
+function circleCar(c, x, y, rad) {
+  const [f, r] = localIn(c, x, y);
+  const hl = c.s.L / 2, hw = c.s.W / 2;
+  const cf = clamp(f, -hl, hl), cr = clamp(r, -hw, hw);
+  let df = f - cf, dr = r - cr, d = hyp(df, dr);
+  if (d >= rad) return null;
+  let push;
+  if (d === 0) { // 중심이 박스 안
+    const ef = hl - Math.abs(f), er = hw - Math.abs(r);
+    if (ef < er) { df = Math.sign(f) || 1; dr = 0; push = ef + rad; } else { df = 0; dr = Math.sign(r) || 1; push = er + rad; }
+  } else { df /= d; dr /= d; push = rad - d; }
+  const ca = Math.cos(c.a), sa = Math.sin(c.a);
+  return [(ca * df - sa * dr) * push, (sa * df + ca * dr) * push];
+}
+
+// ================================================================
+//  사람
+// ================================================================
+function hitsSolid(x, y, r) {
+  return solid(tileAtW(x - r, y - r)) || solid(tileAtW(x + r, y - r)) || solid(tileAtW(x - r, y + r)) || solid(tileAtW(x + r, y + r));
+}
+function moveCircle(o, dx, dy, r) {
+  let moved = true;
+  o.x += dx; if (hitsSolid(o.x, o.y, r)) { o.x -= dx; moved = false; }
+  o.y += dy; if (hitsSolid(o.x, o.y, r)) { o.y -= dy; moved = false; }
+  return moved;
+}
+const pedWalkable = t => t === WALK || t === GRASS;
+function hurtPed(p, dmg, byPlayer, fx, fy) {
+  if (p.dead) return;
+  p.hp -= dmg; p.panic = 7; p.tx = fx; p.ty = fy;
+  for (let i = 0; i < 4; i++) { const a = R() * 6.28; parts.push({ k: 'blood', x: p.x, y: p.y, vx: Math.cos(a) * 50, vy: Math.sin(a) * 50, life: 0.3, max: 0.3, s: 2 }); }
+  if (byPlayer && p.kind === 'cop') crime(0.4, 2);
+  if (byPlayer && p.kind === 'civ' && !p.gang) { p.angry = p.hp > 0 && R() < 0.15; }
+  if (p.hp <= 0) killPed(p, byPlayer, fx, fy);
+}
+function killPed(p, byPlayer, fx, fy) {
+  if (p.dead) return;
+  p.dead = true; p.deadT = 0; p.hp = 0;
+  if (fx !== undefined) p.a = Math.atan2(p.y - fy, p.x - fx);
+  decals.push({ k: 'blood', x: p.x + Math.cos(p.a) * 4, y: p.y + Math.sin(p.a) * 4, r: 7 + R() * 5, life: 30 });
+  if (onScreen(p.x, p.y)) sfx.splat();
+  const amt = p.kind === 'cop' ? 40 + ((R() * 30) | 0) : 5 + ((R() * 30) | 0);
+  drops.push({ x: p.x + (R() - 0.5) * 10, y: p.y + (R() - 0.5) * 10, type: 'cash', amt, life: 25 });
+  if (p.kind === 'cop') drops.push({ x: p.x + 8, y: p.y, type: 'ammo', amt: 12, life: 25 });
+  if (p.car) { p.car.copsOut = Math.max(0, p.car.copsOut - 1); p.car = null; }
+  if (byPlayer) {
+    stats.kills++;
+    if (p.kind === 'cop') crime(1, 2); else crime(0.35, 1);
+  }
+  for (const q of peds) if (!q.dead && q.kind === 'civ' && hyp(q.x - p.x, q.y - p.y) < 220) { q.panic = 6; q.tx = p.x; q.ty = p.y; }
+}
+function civAI(p, dt) {
+  let sp = p.speed;
+  if (p.panic > 0) {
+    p.panic -= dt;
+    let dx = p.x - p.tx, dy = p.y - p.ty, d = hyp(dx, dy) || 1;
+    if (p.angry && !player.dead) { // 가끔 대드는 사람
+      const tx = player.x - p.x, ty = player.y - p.y, dd = hyp(tx, ty) || 1;
+      if (!player.car && dd < 200) {
+        dx = tx; dy = ty; d = dd;
+        if (dd < 16 && p.cool <= 0) { hurtPlayer(6); sfx.punch(); p.cool = 0.9; }
+        if (dd < 16) { dx = dy = 0; }
+      } else p.angry = false;
+    }
+    sp = 105;
+    p.a = Math.atan2(dy, dx);
+    if (d > 0.1 && (dx || dy)) {
+      if (!moveCircle(p, dx / d * sp * dt, dy / d * sp * dt, 6)) {
+        // 벽에 막히면 옆으로
+        p.tx += (R() - 0.5) * 80; p.ty += (R() - 0.5) * 80;
+      }
+    }
+    p.walk += dt * 14;
+    if (p.panic <= 0) { p.angry = false; p.dir = Math.abs(Math.cos(p.a)) > Math.abs(Math.sin(p.a)) ? [Math.sign(Math.cos(p.a)), 0] : [0, Math.sign(Math.sin(p.a))]; }
+    return;
+  }
+  // 인도를 따라 걷기
+  const d = p.dir;
+  if (p.crossT > 0) p.crossT -= dt;
+  else {
+    const ahead = tileAtW(p.x + d[0] * T * 0.55, p.y + d[1] * T * 0.55);
+    p.turnT -= dt;
+    if (!pedWalkable(ahead) || p.turnT < 0) {
+      p.turnT = 3 + R() * 6;
+      const across = tileAtW(p.x + d[0] * T * 2.6, p.y + d[1] * T * 2.6);
+      if (ahead === ROAD && pedWalkable(across) && R() < 0.3) { p.crossT = (T * 2.6) / p.speed; }
+      else {
+        const opts = DIRS.filter(n => !(n[0] === -d[0] && n[1] === -d[1]) && pedWalkable(tileAtW(p.x + n[0] * T * 0.6, p.y + n[1] * T * 0.6)));
+        if (opts.length) p.dir = pick(opts);
+        else if (!pedWalkable(ahead)) p.dir = [-d[0], -d[1]];
+      }
+    }
+  }
+  const dd = p.dir;
+  // 타일 가운데로 살짝 끌어당겨서 인도 안쪽을 걷게
+  const cx = (Math.floor(p.x / T) + 0.5) * T, cy = (Math.floor(p.y / T) + 0.5) * T;
+  const pull = p.crossT > 0 ? 0 : 0.8;
+  const vx = dd[0] * sp + (dd[0] === 0 ? (cx - p.x) * pull : 0), vy = dd[1] * sp + (dd[1] === 0 ? (cy - p.y) * pull : 0);
+  if (!moveCircle(p, vx * dt, vy * dt, 6)) { p.dir = [-dd[0], -dd[1]]; p.crossT = 0; }
+  p.a = Math.atan2(dd[1], dd[0]);
+  p.walk += dt * 9;
+}
+function copAI(p, dt) {
+  p.cool -= dt;
+  const tgt = player.car || player;
+  const dx = tgt.x - p.x, dy = tgt.y - p.y, d = hyp(dx, dy);
+  const back = p.car && !p.car.dead && ((player.car && d > 220) || wanted.stars === 0 || player.dead);
+  if (back) {
+    const c = p.car, ex = c.x - p.x, ey = c.y - p.y, ed = hyp(ex, ey);
+    if (ed < 28) {
+      p.gone = true; c.copsOut = Math.max(0, c.copsOut - 1);
+      if (c.copsOut === 0 && c.driver === 'copIdle') {
+        if (wanted.stars > 0) { c.driver = 'cop'; c.ai = null; } else { c.driver = 'ai'; attachAI(c); }
+      }
+      return;
+    }
+    p.a = Math.atan2(ey, ex);
+    moveCircle(p, ex / ed * 120 * dt, ey / ed * 120 * dt, 6);
+    p.walk += dt * 14;
+    return;
+  }
+  if (wanted.stars === 0 || player.dead) { // 차가 없으면 순찰로 돌아감
+    p.kind = 'civ'; p.armed = false; p.shirt = '#1f3b73'; p.copLook = true; p.panic = 0; return;
+  }
+  p.a = Math.atan2(dy, dx);
+  const see = d < 300 && los(p.x, p.y, tgt.x, tgt.y);
+  const stop = player.car ? 70 : 12;
+  if (d > stop) {
+    if (!moveCircle(p, dx / d * 128 * dt, dy / d * 128 * dt, 6)) {
+      // 모서리에 걸렸으면 한 축으로만
+      if (Math.abs(dx) > Math.abs(dy)) moveCircle(p, 0, Math.sign(dy || 1) * 128 * dt, 6); else moveCircle(p, Math.sign(dx || 1) * 128 * dt, 0, 6);
+    }
+    p.walk += dt * 14;
+  }
+  if (wanted.stars >= 2 && see && d < 280 && p.cool <= 0) {
+    p.cool = 0.75 + R() * 0.6 - wanted.stars * 0.06;
+    const spread = 0.28 - wanted.stars * 0.03;
+    shoot(p, p.a + (R() - 0.5) * 2 * spread, 7 + wanted.stars, 300, false);
+  }
+}
+
+// ================================================================
+//  사격
+// ================================================================
+function shoot(sh, ang, dmg, range, byPlayer) {
+  const ca = Math.cos(ang), sa = Math.sin(ang);
+  const ox = sh.x + ca * 12, oy = sh.y + sa * 12;
+  let hit = null, hx = ox + ca * range, hy = oy + sa * range;
+  outer:
+  for (let d = 0; d < range; d += 5) {
+    const px = ox + ca * d, py = oy + sa * d;
+    if (solid(tileAtW(px, py))) { hx = px; hy = py; sparks(px, py, 3); break; }
+    for (const p of peds) {
+      if (p.dead || p === sh) continue;
+      if (Math.abs(p.x - px) < 9 && Math.abs(p.y - py) < 9 && hyp(p.x - px, p.y - py) < 8.5) { hit = p; hx = px; hy = py; break outer; }
+    }
+    if (!byPlayer && !player.car && !player.dead && hyp(player.x - px, player.y - py) < 9) { hit = player; hx = px; hy = py; break; }
+    for (const c of cars) {
+      if (byPlayer && c === player.car) continue;
+      if (Math.abs(c.x - px) > 30 || Math.abs(c.y - py) > 30) continue;
+      if (pointInCar(c, px, py)) { hit = c; hx = px; hy = py; break outer; }
+    }
+  }
+  tracers.push({ x1: ox, y1: oy, x2: hx, y2: hy, life: 0.08 });
+  parts.push({ k: 'flash', x: ox, y: oy, vx: 0, vy: 0, life: 0.05, max: 0.05, s: 12 });
+  if (byPlayer) sfx.gun(); else if (onScreen(sh.x, sh.y)) sfx.copgun();
+  if (hit === player) hurtPlayer(dmg);
+  else if (hit && hit.s) {
+    sparks(hx, hy, 4);
+    damageCar(hit, dmg * 0.9, byPlayer);
+    if (hit === player.car) hurtPlayer(dmg * 0.12);
+    if (byPlayer && hit.driver === 'gang') hit.flee = true;
+    if (byPlayer && (hit.driver === 'cop' || hit.driver === 'copIdle')) crime(0.3, 2);
+  } else if (hit) hurtPed(hit, dmg, byPlayer, sh.x, sh.y);
+  // 총소리에 놀람
+  for (const p of peds) if (!p.dead && p.kind === 'civ' && hyp(p.x - sh.x, p.y - sh.y) < 260) { p.panic = 5; p.tx = sh.x; p.ty = sh.y; }
+  if (byPlayer && copSees(260)) crime(0, 1);
+}
+
+// ================================================================
+//  플레이어
+// ================================================================
+function newPlayer(sv) {
+  const h = places.hospital;
+  player = { x: h.x, y: h.y, a: Math.PI / 2, vx: 0, vy: 0, hp: 100, car: null, weapon: 0, ammo: sv ? (sv.ammo || 0) : 0,
+    money: sv ? (sv.money || 0) : 150, dead: false, walk: 0, cool: 0, hurtT: 0 };
+  if (player.ammo > 0) player.weapon = 1;
+}
+function hurtPlayer(d) {
+  if (player.dead || gameState !== 'play') return;
+  player.hp -= d; player.hurtT = 0.35;
+  if (player.hp <= 0) { player.hp = 0; killPlayer('shot'); }
+}
+function killPlayer() {
+  if (player.dead) return;
+  player.dead = true;
+  if (player.car) { player.car.driver = null; player.car = null; }
+  deathKind = 'wasted'; deathT = 0; gameState = 'dead';
+  showBig('사망', '병원으로 실려 간다...');
+  sfx.fail();
+}
+function busted() {
+  if (player.dead) return;
+  player.dead = true;
+  if (player.car) { player.car.driver = null; player.car.vx = player.car.vy = 0; player.car = null; }
+  deathKind = 'busted'; deathT = 0; gameState = 'dead';
+  showBig('체포', '경찰서로 끌려간다...');
+  sfx.fail();
+}
+function respawn() {
+  const busted = deathKind === 'busted';
+  const fine = Math.min(player.money, Math.round(player.money * 0.1) + (busted ? 100 : 50));
+  player.money -= fine;
+  player.ammo = 0; player.weapon = 0;
+  const pl = busted ? places.police : places.hospital;
+  player.x = pl.x; player.y = pl.y; player.hp = 100; player.dead = false; player.car = null; player.vx = player.vy = 0;
+  if (mission) failMission(null);
+  wanted.level = 0; wanted.stars = 0; wanted.evade = 0; bustT = 0;
+  cars = cars.filter(c => !(c.driver === 'cop' || c.driver === 'copIdle') && hyp(c.x - player.x, c.y - player.y) > 150);
+  peds = peds.filter(p => p.kind !== 'cop');
+  showBig('', '');
+  toast(busted ? '벌금 ' + money(fine) : '병원비 ' + money(fine), '탄약도 모두 잃었다');
+  gameState = 'play';
+  snapCam();
+  save();
+}
+function nearestEnterable() {
+  let best = null, bd = 1e9;
+  for (const c of cars) {
+    if (c.dead || c.hp <= 0) continue;
+    const d = hyp(c.x - player.x, c.y - player.y);
+    if (d > c.s.L / 2 + 30) continue;
+    if (d < bd) { bd = d; best = c; }
+  }
+  return best;
+}
+function enterCar(c) {
+  const ca = Math.cos(c.a), sa = Math.sin(c.a);
+  const ex = c.x + sa * (c.s.W / 2 + 10), ey = c.y - ca * (c.s.W / 2 + 10);
+  if (c.driver === 'ai' || c.driver === 'gang') {
+    const p = makePed(ex, ey, 'civ'); p.panic = 7; p.tx = player.x; p.ty = player.y; if (c.driver === 'gang') p.gang = true;
+    if (c.driver === 'ai' && c.type === 'police') { p.kind = 'cop'; p.shirt = '#1f3b73'; p.armed = true; p.hp = 50; crime(0.5, 2); }
+    else crime(0, 1, true);
+    stats.jacks = (stats.jacks || 0) + 1;
+  } else if (c.driver === 'cop' || c.driver === 'copIdle') {
+    const p = makePed(ex, ey, 'cop'); p.car = null;
+    crime(0.6, 2);
+  }
+  if (c.type === 'police' && c.driver === null) crime(0.3, 1);
+  c.driver = 'player'; c.ai = null; c.copsOut = 0; c.flee = false;
+  player.car = c;
+  sfx.door();
+}
+function exitCar(force) {
+  const c = player.car; if (!c) return;
+  const ca = Math.cos(c.a), sa = Math.sin(c.a), off = c.s.W / 2 + 10;
+  const spots = [[sa * off, -ca * off], [-sa * off, ca * off], [ca * (c.s.L / 2 + 10), sa * (c.s.L / 2 + 10)], [-ca * (c.s.L / 2 + 10), -sa * (c.s.L / 2 + 10)]];
+  let ok = null;
+  for (const [dx, dy] of spots) if (!hitsSolid(c.x + dx, c.y + dy, 6)) { ok = [dx, dy]; break; }
+  if (!ok) { if (!force) return; ok = [0, 0]; }
+  player.x = c.x + ok[0]; player.y = c.y + ok[1];
+  player.vx = c.vx * 0.3; player.vy = c.vy * 0.3;
+  player.a = c.a;
+  c.driver = null; player.car = null;
+  sfx.door();
+}
+function autoAim(range, moving) {
+  let best = null, bs = 1e9;
+  const tryT = (x, y, w) => {
+    const d = hyp(x - player.x, y - player.y);
+    if (d > range) return;
+    const ang = Math.atan2(y - player.y, x - player.x);
+    if (moving && Math.abs(angDiff(player.a, ang)) > 0.55) return;
+    const s = d * w;
+    if (s < bs && los(player.x, player.y, x, y)) { bs = s; best = ang; }
+  };
+  for (const p of peds) if (!p.dead) tryT(p.x, p.y, p.kind === 'cop' ? 0.5 : p.angry ? 0.6 : 1.2);
+  for (const c of cars) {
+    if (c.dead || c === player.car) continue;
+    if (mission && mission.car === c) tryT(c.x, c.y, 0.35);
+    else if (c.driver === 'cop' || c.driver === 'copIdle') tryT(c.x, c.y, 0.9);
+  }
+  return best;
+}
+function playerUpdate(dt, inp) {
+  player.hurtT = Math.max(0, player.hurtT - dt);
+  player.cool -= dt;
+  if (press.weapon) { press.weapon = false; if (!player.car) { player.weapon = player.weapon === 1 || player.ammo <= 0 ? 0 : 1; } }
+  if (press.enter) {
+    press.enter = false;
+    if (player.car) exitCar(false);
+    else { const c = nearestEnterable(); if (c) enterCar(c); }
+  }
+  const c = player.car;
+  if (c) {
+    let thr = 0, steer = 0, hb = inp.attack, brake = false;
+    if (inp.joy) {
+      const m = Math.min(1, hyp(inp.mx, inp.my));
+      const want = Math.atan2(inp.my, inp.mx);
+      const d = angDiff(c.a, want);
+      const vf = fwdSpeed(c);
+      if (Math.abs(d) < 1.95) { thr = m; steer = clamp(d * 2.6, -1, 1); }
+      else if (vf > 60) { brake = true; steer = clamp(d * 2.6, -1, 1); }
+      else { thr = -m; steer = -clamp(angDiff(c.a + Math.PI, want) * 2.6, -1, 1); }
+    } else {
+      thr = inp.my < 0 ? 1 : inp.my > 0 ? -1 : 0;
+      steer = inp.mx;
+    }
+    if (c.hp <= 0) { thr = 0; }
+    driveCar(c, thr, steer, hb, brake, dt);
+    player.x = c.x; player.y = c.y; player.vx = c.vx; player.vy = c.vy; player.a = c.a;
+    return;
+  }
+  // 걷기
+  let mx = inp.mx, my = inp.my;
+  const m = hyp(mx, my);
+  const moving = m > 0.15;
+  if (m > 1) { mx /= m; my /= m; }
+  const sp = 128;
+  player.vx = mx * sp; player.vy = my * sp;
+  if (moving) {
+    player.a = Math.atan2(my, mx);
+    moveCircle(player, mx * sp * dt, my * sp * dt, 7);
+    player.walk += dt * 14 * Math.min(1, m);
+  }
+  if (inp.attack && player.cool <= 0) {
+    if (player.weapon === 1 && player.ammo > 0) {
+      const aim = autoAim(310, moving);
+      if (aim !== null) player.a = aim;
+      shoot(player, player.a + (R() - 0.5) * 0.06, 25, 330, true);
+      player.ammo--; player.cool = 0.26;
+      if (player.ammo <= 0) player.weapon = 0;
+    } else {
+      const aim = autoAim(40, moving);
+      if (aim !== null) player.a = aim;
+      player.cool = 0.38; player.punchT = 0.15;
+      let hitAny = false;
+      for (const p of peds) {
+        if (p.dead) continue;
+        const dx = p.x - player.x, dy = p.y - player.y, d = hyp(dx, dy);
+        if (d < 28 && Math.abs(angDiff(player.a, Math.atan2(dy, dx))) < 1.1) {
+          hurtPed(p, 16, true, player.x, player.y);
+          moveCircle(p, dx / (d || 1) * 10, dy / (d || 1) * 10, 6);
+          hitAny = true;
+          if (p.kind === 'civ' && !p.dead) { p.panic = 6; p.tx = player.x; p.ty = player.y; }
+          break;
+        }
+      }
+      if (hitAny) sfx.punch();
+    }
+  }
+  player.punchT = Math.max(0, (player.punchT || 0) - dt);
+}
+
+// ================================================================
+//  수배
+// ================================================================
+function copSees(r) {
+  const px = player.x, py = player.y;
+  for (const c of cars) {
+    if (c.dead) continue;
+    if ((c.driver === 'cop' || c.driver === 'copIdle' || (c.driver === 'ai' && c.type === 'police')) && hyp(c.x - px, c.y - py) < r && los(c.x, c.y, px, py)) return true;
+  }
+  for (const p of peds) if (!p.dead && p.kind === 'cop' && hyp(p.x - px, p.y - py) < r * 0.8 && los(p.x, p.y, px, py)) return true;
+  return false;
+}
+function crime(add, min, needWitness) {
+  if (!player || player.dead || gameState !== 'play') return;
+  if (needWitness && !copSees(380)) return;
+  const before = Math.floor(wanted.level);
+  wanted.level = Math.min(5.99, Math.max(wanted.level + add, min));
+  wanted.evade = 0;
+  const after = Math.floor(wanted.level);
+  if (after > before) sfx.star();
+}
+function updWanted(dt) {
+  wanted.stars = Math.floor(wanted.level);
+  if (wanted.stars <= 0) { wanted.level = 0; wanted.evade = 0; return; }
+  if (copSees(430)) wanted.evade = 0;
+  else {
+    wanted.evade += dt;
+    if (wanted.evade > 5 + wanted.stars * 2.5) {
+      wanted.level = wanted.stars - 1; wanted.evade = 0;
+      if (wanted.level < 1) {
+        wanted.level = 0;
+        for (const c of cars) if (c.driver === 'cop') { c.driver = 'ai'; attachAI(c); }
+        toast('수배 해제', '경찰이 추적을 포기했다');
+      }
+    }
+  }
+  wanted.stars = Math.floor(wanted.level);
+  // 순찰차가 가까이 있으면 추격 시작
+  for (const c of cars) if (c.driver === 'ai' && c.type === 'police' && !c.dead && hyp(c.x - player.x, c.y - player.y) < 600) { c.driver = 'cop'; c.ai = null; }
+  // 추격 중인 순찰차가 가까우면 경찰 내림
+  bustCheck(dt);
+}
+function bustCheck(dt) {
+  let near = false;
+  if (!player.dead && wanted.stars > 0) {
+    if (!player.car) {
+      for (const p of peds) if (!p.dead && p.kind === 'cop' && hyp(p.x - player.x, p.y - player.y) < 20) { near = true; break; }
+    } else if (hyp(player.car.vx, player.car.vy) < 30) {
+      for (const c of cars) if ((c.driver === 'cop' || c.driver === 'copIdle') && hyp(c.x - player.x, c.y - player.y) < 62) { near = true; break; }
+      if (!near) for (const p of peds) if (!p.dead && p.kind === 'cop' && hyp(p.x - player.x, p.y - player.y) < 42) { near = true; break; }
+    }
+  }
+  bustT = near ? bustT + dt : Math.max(0, bustT - dt * 2);
+  if (bustT > (wanted.stars === 1 ? 1.4 : 1.9)) { bustT = 0; busted(); }
+}
+
+// ================================================================
+//  AI 운전
+// ================================================================
+function obstacleAhead(c) {
+  const ca = Math.cos(c.a), sa = Math.sin(c.a);
+  const vf = Math.max(0, fwdSpeed(c));
+  const look = c.s.L / 2 + 14 + vf * 0.45;
+  for (const o of cars) {
+    if (o === c) continue;
+    const dx = o.x - c.x, dy = o.y - c.y;
+    if (Math.abs(dx) > look + 30 || Math.abs(dy) > look + 30) continue;
+    const f = dx * ca + dy * sa; if (f <= 0) continue;
+    const rel = o.a - c.a;
+    const ext = Math.abs(Math.sin(rel)) * o.s.L / 2 + Math.abs(Math.cos(rel)) * o.s.W / 2;
+    const extF = Math.abs(Math.cos(rel)) * o.s.L / 2 + Math.abs(Math.sin(rel)) * o.s.W / 2;
+    if (f - extF > look) continue;
+    const r = -dx * sa + dy * ca;
+    if (Math.abs(r) < c.s.W / 2 + ext - 3) return true;
+  }
+  const chk = (x, y) => {
+    const dx = x - c.x, dy = y - c.y;
+    const f = dx * ca + dy * sa; if (f <= 0 || f > look) return false;
+    return Math.abs(-dx * sa + dy * ca) < c.s.W / 2 + 8;
+  };
+  for (const p of peds) if (!p.dead && Math.abs(p.x - c.x) < look + 10 && Math.abs(p.y - c.y) < look + 10 && chk(p.x, p.y)) return true;
+  if (!player.car && !player.dead && chk(player.x, player.y)) return true;
+  return false;
+}
+function aiSteer(c, tx, ty) { return clamp(angDiff(c.a, Math.atan2(ty - c.y, tx - c.x)) * 2.4, -1, 1); }
+function control(c, want, steer, dt) {
+  const vf = fwdSpeed(c);
+  if (c.revT > 0) { c.revT -= dt; driveCar(c, -0.8, -steer, false, false, dt); return; }
+  let thr = 0, brake = false;
+  if (want <= 1) brake = true;
+  else if (vf < want) thr = Math.min(1, (want - vf) / 40 + 0.35);
+  else if (vf > want + 15) brake = true;
+  if (thr > 0.3 && Math.abs(vf) < 12) { c.stuckT += dt; if (c.stuckT > 1.2) { c.stuckT = 0; c.revT = 0.8 + R() * 0.4; } }
+  else c.stuckT = Math.max(0, c.stuckT - dt * 0.5);
+  driveCar(c, thr, steer, false, brake, dt);
+}
+function followGraph(c, dt, off, careful) {
+  const ai = c.ai;
+  let [lx, ly] = lanePt(ai.ti, ai.tj, ai.d, off);
+  const past = (c.x - lx) * ai.d[0] + (c.y - ly) * ai.d[1];
+  if (hyp(lx - c.x, ly - c.y) < 34 || past > 0) {
+    ai.d = ai.nd;
+    if (!validNode(ai.ti + ai.d[0], ai.tj + ai.d[1])) ai.d = [-ai.d[0], -ai.d[1]];
+    ai.ti += ai.d[0]; ai.tj += ai.d[1];
+    ai.nd = planNext(c, ai.ti, ai.tj, ai.d);
+    [lx, ly] = lanePt(ai.ti, ai.tj, ai.d, off);
+  }
+  const dist = hyp(lx - c.x, ly - c.y);
+  let want = ai.cruise;
+  const turning = ai.nd[0] !== ai.d[0] || ai.nd[1] !== ai.d[1];
+  if (turning && dist < 130) want = Math.min(want, careful ? 60 : 110);
+  const steer = aiSteer(c, lx, ly);
+  if (Math.abs(steer) > 0.7) want = Math.min(want, careful ? 60 : 120);
+  if (careful) {
+    if (obstacleAhead(c)) { c.waitT += dt; if (c.waitT < 3) want = 0; else if (c.waitT > 4.5) c.waitT = 0; }
+    else c.waitT = Math.max(0, c.waitT - dt);
+  }
+  control(c, want, steer, dt);
+}
+function trafficAI(c, dt) {
+  if (!c.ai) attachAI(c);
+  if (c.flee) { c.ai.cruise = c.driver === 'gang' ? 215 : 190; }
+  followGraph(c, dt, T / 2, !c.flee);
+}
+function copCarAI(c, dt) {
+  const tgt = player.car || player;
+  const dx = tgt.x - c.x, dy = tgt.y - c.y, d = hyp(dx, dy);
+  const see = d < 340 && !player.dead && los(c.x, c.y, tgt.x, tgt.y);
+  c.flash += dt;
+  if (see) {
+    c.ai = null;
+    const lead = player.car ? 0.4 : 0;
+    const steer = aiSteer(c, tgt.x + (player.vx || 0) * lead, tgt.y + (player.vy || 0) * lead);
+    let want = player.car ? 330 : (d > 140 ? 210 : 0);
+    if (!player.car && d < 150 && Math.abs(fwdSpeed(c)) < 60) {
+      // 차에서 내려 쫓아감
+      const n = wanted.stars >= 3 ? 2 : 1;
+      const ca = Math.cos(c.a), sa = Math.sin(c.a);
+      for (let i = 0; i < n; i++) {
+        const side = i === 0 ? 1 : -1;
+        const px = c.x + sa * side * (c.s.W / 2 + 9), py = c.y - ca * side * (c.s.W / 2 + 9);
+        const p = makePed(hitsSolid(px, py, 6) ? c.x : px, hitsSolid(px, py, 6) ? c.y : py, 'cop');
+        p.car = c;
+      }
+      c.copsOut = n; c.driver = 'copIdle';
+      return;
+    }
+    control(c, want, steer, dt);
+    return;
+  }
+  if (!c.ai) attachAI(c, 250);
+  c.ai.cruise = 250;
+  followGraph(c, dt, T * 0.25, false);
+}
+
+// ================================================================
+//  생성·정리
+// ================================================================
+function viewR() { return hyp(W, H) / 2 / cam.z; }
+function onScreen(x, y, pad) {
+  pad = pad || 60;
+  return Math.abs(x - cam.x) < W / 2 / cam.z + pad && Math.abs(y - cam.y) < H / 2 / cam.z + pad;
+}
+function spawnTraffic(allowVisible) {
+  const vr = viewR();
+  for (let t = 0; t < 12; t++) {
+    const pi = nearNode(player.x), pj = nearNode(player.y);
+    const i = clamp(pi + ((R() * 7) | 0) - 3, 0, NB), j = clamp(pj + ((R() * 7) | 0) - 3, 0, NB);
+    const d = pick(DIRS);
+    if (!validNode(i + d[0], j + d[1])) continue;
+    const [lx, ly] = lanePt(i, j, d, T / 2);
+    const f = (2.2 + R() * 5.6) * T;
+    const x = lx + d[0] * f, y = ly + d[1] * f;
+    const dist = hyp(x - player.x, y - player.y);
+    if (!allowVisible && (onScreen(x, y, 40) || dist > vr + 700)) continue;
+    if (dist < 90) continue;
+    if (cars.some(o => hyp(o.x - x, o.y - y) < 70)) continue;
+    const r = R();
+    const type = r < 0.08 ? 'police' : r < 0.2 ? 'taxi' : r < 0.36 ? 'compact' : r < 0.46 ? 'van' : r < 0.52 ? 'sports' : 'sedan';
+    const c = makeCar(type, x, y, Math.atan2(d[1], d[0]), 'ai');
+    setAI(c, i + d[0], j + d[1], d);
+    const v = c.ai.cruise * 0.6; c.vx = d[0] * v; c.vy = d[1] * v;
+    return c;
+  }
+  return null;
+}
+function spawnPed(allowVisible) {
+  const vr = viewR();
+  for (let t = 0; t < 12; t++) {
+    const a = R() * 6.28, dist = allowVisible ? 60 + R() * (vr + 300) : vr + 20 + R() * 300;
+    const x = player.x + Math.cos(a) * dist, y = player.y + Math.sin(a) * dist;
+    const tt = tileAtW(x, y);
+    if (tt !== WALK && !(tt === GRASS && R() < 0.5)) continue;
+    if (!allowVisible && onScreen(x, y, 30)) continue;
+    const p = makePed((Math.floor(x / T) + 0.5) * T, (Math.floor(y / T) + 0.5) * T, 'civ');
+    return p;
+  }
+  return null;
+}
+function spawnPolice() {
+  const vr = viewR();
+  const p = roadPointAround(player.x, player.y, vr + 80, vr + 520);
+  if (!p || onScreen(p.x, p.y, 40)) return;
+  if (cars.some(o => hyp(o.x - p.x, o.y - p.y) < 70)) return;
+  const c = makeCar('police', p.x, p.y, p.a, 'cop');
+  c.vx = Math.cos(p.a) * 120; c.vy = Math.sin(p.a) * 120;
+}
+function population(dt) {
+  const vr = viewR();
+  const nTraffic = cars.filter(c => c.driver === 'ai').length;
+  if (nTraffic < 22) spawnTraffic(false);
+  const nPed = peds.filter(p => !p.dead && p.kind === 'civ').length;
+  if (nPed < 34) spawnPed(false);
+  policeSpawnT -= dt;
+  const wantCops = [0, 1, 2, 3, 4, 6][wanted.stars];
+  const nCops = cars.filter(c => (c.driver === 'cop' || c.driver === 'copIdle') && !c.dead).length;
+  if (nCops < wantCops && policeSpawnT <= 0) { spawnPolice(); policeSpawnT = 2.2 - wanted.stars * 0.25; }
+  // 멀리 간 것 정리
+  cars = cars.filter(c => {
+    if (c === player.car || c.keep) return true;
+    const d = hyp(c.x - player.x, c.y - player.y);
+    if (c.driver === 'cop' && wanted.stars > 0) return d < vr + 1500;
+    if (c.dead && d > vr + 150) return false;
+    return d < vr + 750;
+  });
+  peds = peds.filter(p => {
+    if (p.gone) return false;
+    if (p.dead && p.deadT > 30) return false;
+    const d = hyp(p.x - player.x, p.y - player.y);
+    return d < vr + (p.kind === 'cop' ? 900 : 450);
+  });
+  for (const p of peds) if (p.car && !cars.includes(p.car)) p.car = null;
+}
+
+// ================================================================
+//  아이템·장소
+// ================================================================
+function touchR(x, y, r) { return hyp(player.x - x, player.y - y) < r; }
+function updPickups(dt) {
+  for (const k of staticPickups) {
+    if (k.t > 0) { k.t -= dt; continue; }
+    if (!player.dead && touchR(k.x, k.y, player.car ? 30 : 20)) {
+      if (k.type === 'ammo') { player.ammo += 24; player.weapon = player.car ? player.weapon || 1 : 1; floatText(k.x, k.y, '권총 +24', '#FFC53D'); }
+      else { if (player.hp >= 100) continue; player.hp = Math.min(100, player.hp + 50); floatText(k.x, k.y, '체력 +50', '#ff8a8a'); }
+      sfx.pick(); k.t = 45;
+    }
+  }
+  drops = drops.filter(k => {
+    k.life -= dt;
+    if (!player.dead && touchR(k.x, k.y, player.car ? 30 : 18)) {
+      if (k.type === 'cash') { player.money += k.amt; floatText(k.x, k.y, '+' + money(k.amt), '#3DDC84'); sfx.cash(); }
+      else { player.ammo += k.amt; if (!player.car) player.weapon = 1; floatText(k.x, k.y, '권총 +' + k.amt, '#FFC53D'); sfx.pick(); }
+      return false;
+    }
+    return k.life > 0;
+  });
+  // 도색소
+  const sp = places.spray;
+  if (player.car && touchR(sp.x, sp.y, 44)) {
+    if (!sprayLock) {
+      sprayLock = true;
+      if (player.money >= 300) {
+        player.money -= 300;
+        const c = player.car;
+        c.hp = c.s.hp; c.fireT = 0;
+        let col; do { col = pick(PAL); } while (col === c.color);
+        if (c.type !== 'police') c.color = col;
+        const had = wanted.stars > 0;
+        wanted.level = 0; wanted.stars = 0; wanted.evade = 0;
+        for (const k of cars) if (k.driver === 'cop') { k.driver = 'ai'; attachAI(k); }
+        toast('새 차처럼!', had ? '수리 + 도색 완료, 수배가 풀렸다 (-$300)' : '수리 + 도색 완료 (-$300)');
+        sfx.cash(); save();
+      } else toast('도색소', '$300이 필요하다');
+    }
+  } else if (!touchR(sp.x, sp.y, 90)) sprayLock = false;
+  // 총포상
+  const g = places.gun;
+  if (!player.car && touchR(g.x, g.y, 24)) {
+    if (!gunLock) {
+      gunLock = true;
+      if (player.money >= 200) { player.money -= 200; player.ammo += 40; player.weapon = 1; toast('권총 탄 40발', '-$200'); sfx.cash(); save(); }
+      else toast('총포상', '$200이 필요하다');
+    }
+  } else if (!touchR(g.x, g.y, 60)) gunLock = false;
+  // 전화박스
+  for (const ph of phones) {
+    if (!player.car && touchR(ph.x, ph.y, 22)) {
+      if (!ph.lock) { ph.lock = true; if (!mission) startMission(ph); else toast('이미 일하는 중이다', mission.title); }
+    } else if (!touchR(ph.x, ph.y, 70)) ph.lock = false;
+  }
+}
+function floatText(x, y, text, color) { floats.push({ x, y, text, color, life: 1.4 }); }
+
+// ================================================================
+//  임무
+// ================================================================
+function startMission(ph) {
+  const types = ['delivery', 'steal', 'hit'].filter(t => t !== lastMissionType);
+  const type = pick(types);
+  lastMissionType = type;
+  sfx.pick();
+  if (type === 'delivery') {
+    const p = roadPointAround(ph.x, ph.y, 600, 1300);
+    mission = { type, title: '급한 택배', stage: 0, mx: p.x, my: p.y, t: null, reward: 0 };
+    toast('임무: 급한 택배', '차를 구해 노란 표시로 가서 짐을 실어라');
+  } else if (type === 'steal') {
+    const p = roadPointAround(ph.x, ph.y, 900, 1700);
+    const c = makeCar('sports', p.x, p.y, p.a, null, '#D4AF37');
+    c.keep = true; c.gold = true;
+    mission = { type, title: '금색 스포츠카', stage: 0, car: c, t: 200, reward: 2400 };
+    toast('임무: 금색 스포츠카', '주차된 금색 스포츠카를 훔쳐 차고로. 흠집만큼 보수가 깎인다');
+  } else {
+    const p = roadPointAround(ph.x, ph.y, 1000, 1700);
+    const c = makeCar('gang', p.x, p.y, p.a, 'gang');
+    c.keep = true;
+    setAI(c, p.ti, p.tj, p.d, 115);
+    mission = { type, title: '검은 밴 제거', stage: 0, car: c, t: 160, reward: 3000 };
+    toast('임무: 검은 밴 제거', '조직의 검은 밴을 찾아 박살 내라. 들이받거나 쏴라');
+  }
+}
+function missionTarget() {
+  const m = mission; if (!m) return null;
+  if (m.type === 'delivery') return { x: m.mx, y: m.my, r: 44 };
+  if (m.type === 'steal') return (player.car === m.car) ? { x: places.garage.x, y: places.garage.y, r: 44 } : { x: m.car.x, y: m.car.y, car: m.car };
+  if (m.type === 'hit') return { x: m.car.x, y: m.car.y, car: m.car };
+  return null;
+}
+function missionText() {
+  const m = mission; if (!m) return '';
+  if (m.type === 'delivery') return m.stage === 0 ? (player.car ? '<b>택배</b> 노란 표시로 가서 짐을 실어라' : '<b>택배</b> 먼저 차를 구해라') : '<b>택배</b> 제한 시간 안에 목적지로!';
+  if (m.type === 'steal') return player.car === m.car ? '<b>금색 스포츠카</b> 차고로 가져와라 · 차 상태 ' + Math.max(0, Math.round(m.car.hp / m.car.s.hp * 100)) + '%' : '<b>금색 스포츠카</b> 차를 찾아 훔쳐라';
+  if (m.type === 'hit') return '<b>검은 밴</b> 박살 내라 · 내구도 ' + Math.max(0, Math.round(m.car.hp / m.car.s.hp * 100)) + '%';
+  return '';
+}
+function updMission(dt) {
+  const m = mission; if (!m) return;
+  if (m.t !== null) { m.t -= dt; if (m.t <= 0) return failMission('시간 초과'); }
+  if (m.type === 'delivery') {
+    if (player.car && touchR(m.mx, m.my, 46)) {
+      if (m.stage === 0) {
+        const p = roadPointAround(player.x, player.y, 1300, 2300);
+        const dist = hyp(p.x - player.x, p.y - player.y);
+        m.stage = 1; m.mx = p.x; m.my = p.y;
+        m.t = Math.round(dist / 125 + 14);
+        m.reward = Math.round((dist * 0.7 + 300) / 50) * 50;
+        toast('짐을 실었다!', m.t + '초 안에 목적지로 · 보수 ' + money(m.reward));
+        sfx.pick();
+      } else completeMission(m.reward);
+    }
+  } else if (m.type === 'steal') {
+    if (m.car.hp <= 0 || m.car.dead) return failMission('차가 망가졌다');
+    if (player.car === m.car && m.stage === 0) { m.stage = 1; toast('훔쳤다!', '차고로 가져가라'); }
+    if (player.car === m.car && touchR(places.garage.x, places.garage.y, 46)) {
+      const frac = Math.max(0.2, m.car.hp / m.car.s.hp);
+      exitCar(true);
+      m.car.keep = false; m.car.driver = null;
+      cars = cars.filter(c => c !== m.car);
+      completeMission(Math.round(m.reward * frac / 50) * 50);
+    }
+  } else if (m.type === 'hit') {
+    if (m.car.hp <= 0) completeMission(m.reward);
+    else if (m.car.driver === 'gang' && hyp(m.car.x - player.x, m.car.y - player.y) < 260) m.car.flee = true;
+  }
+}
+function completeMission(reward) {
+  const m = mission;
+  if (m.car) m.car.keep = false;
+  mission = null;
+  player.money += reward;
+  stats.missions++;
+  toast('임무 완료! +' + money(reward), '전화박스에서 다음 일을 받아라');
+  sfx.win();
+  if (!stats.won && player.money >= 25000) {
+    stats.won = true;
+    setTimeout(() => toast('도시는 이제 네 것이다', '$25,000 달성 — 계속 놀아도 된다'), 2600);
+  }
+  save();
+}
+function failMission(why) {
+  const m = mission;
+  if (m && m.car) { m.car.keep = false; if (m.car.driver === 'gang') m.car.flee = false; }
+  mission = null;
+  if (why) { toast('임무 실패', why); sfx.fail(); }
+}
+
+// ================================================================
+//  갱신
+// ================================================================
+function update(dt) {
+  simT += dt;
+  const inp = readInput();
+  if (!player.dead) playerUpdate(dt, inp);
+  // 차
+  for (const c of cars) {
+    if (c.dead) {
+      c.vx *= 0.9; c.vy *= 0.9; c.x += c.vx * dt; c.y += c.vy * dt;
+      c.burnT -= dt;
+      if (c.burnT > 0 && R() < 0.2 && onScreen(c.x, c.y)) parts.push({ k: 'smoke', x: c.x + (R() - 0.5) * 16, y: c.y + (R() - 0.5) * 16, vx: (R() - 0.5) * 10, vy: -15, life: 2, max: 2, s: 10 + R() * 8 });
+      continue;
+    }
+    if (c.fireT > 0) {
+      c.fireT += dt;
+      if (onScreen(c.x, c.y) && R() < 0.6) parts.push({ k: 'fire', x: c.x + (R() - 0.5) * c.s.L * 0.5, y: c.y + (R() - 0.5) * c.s.W * 0.5, vx: (R() - 0.5) * 20, vy: -20 - R() * 20, life: 0.5, max: 0.5, s: 6 + R() * 6 });
+      if (c.fireT > 3.2) { explode(c); continue; }
+    } else if (c.hp < c.s.hp * 0.35 && R() < 0.12 && onScreen(c.x, c.y)) {
+      parts.push({ k: 'smoke', x: c.x + Math.cos(c.a) * c.s.L * 0.35, y: c.y + Math.sin(c.a) * c.s.L * 0.35, vx: (R() - 0.5) * 10, vy: -10, life: 1.2, max: 1.2, s: 6 + R() * 5 });
+    }
+    if (c.driver === 'player') continue;
+    if (c.driver === 'ai' || c.driver === 'gang') trafficAI(c, dt);
+    else if (c.driver === 'cop') copCarAI(c, dt);
+    else driveCar(c, 0, 0, false, true, dt);
+    if (c.driver === 'copIdle') c.flash += dt;
+  }
+  for (const c of cars) if (!c.dead || hyp(c.vx, c.vy) > 1) carWorld(c);
+  for (let i = 0; i < cars.length; i++) for (let j = i + 1; j < cars.length; j++) collideCars(cars[i], cars[j]);
+  // 차 ↔ 사람
+  for (const c of cars) {
+    const sp = hyp(c.vx, c.vy);
+    const lim = c.s.L / 2 + 10;
+    for (const p of peds) {
+      if (p.dead || Math.abs(p.x - c.x) > lim || Math.abs(p.y - c.y) > lim) continue;
+      const push = circleCar(c, p.x, p.y, 7);
+      if (!push) continue;
+      if (sp > 75 && !c.dead) {
+        killPed(p, c.driver === 'player', c.x - c.vx, c.y - c.vy);
+        if (c.driver === 'player') { cam.shake = Math.max(cam.shake, 3); }
+      } else if (sp > 40 && !c.dead) {
+        hurtPed(p, 12, c.driver === 'player', c.x, c.y);
+        moveCircle(p, push[0] * 2, push[1] * 2, 6);
+      } else moveCircle(p, push[0], push[1], 6);
+    }
+    if (!player.car && !player.dead && Math.abs(player.x - c.x) < lim && Math.abs(player.y - c.y) < lim) {
+      const push = circleCar(c, player.x, player.y, 8);
+      if (push) {
+        if (sp > 90 && !c.dead) {
+          hurtPlayer(sp * 0.09);
+          const n = hyp(push[0], push[1]) || 1;
+          moveCircle(player, push[0] / n * 16, push[1] / n * 16, 7);
+        } else moveCircle(player, push[0], push[1], 7);
+      }
+    }
+  }
+  // 사람
+  for (const p of peds) {
+    if (p.dead) { p.deadT += dt; continue; }
+    p.cool -= dt;
+    if (p.kind === 'cop') copAI(p, dt); else civAI(p, dt);
+  }
+  updPickups(dt);
+  updWanted(dt);
+  population(dt);
+  updMission(dt);
+  // 효과
+  for (const k of parts) {
+    k.life -= dt; k.x += k.vx * dt; k.y += k.vy * dt;
+    const drag = k.k === 'smoke' ? 0.97 : k.k === 'fire' ? 0.93 : 0.9;
+    k.vx *= drag; k.vy *= drag;
+    if (k.k === 'smoke') k.s += dt * 10;
+  }
+  parts = parts.filter(k => k.life > 0);
+  if (parts.length > 700) parts.splice(0, parts.length - 700);
+  for (const t of tracers) t.life -= dt;
+  tracers = tracers.filter(t => t.life > 0);
+  for (const d of decals) d.life -= dt;
+  if (decals.length > 600) decals.splice(0, decals.length - 600);
+  decals = decals.filter(d => d.life > 0);
+  for (const f of floats) { f.life -= dt; f.y -= 22 * dt; }
+  floats = floats.filter(f => f.life > 0);
+  saveT += dt; if (saveT > 10) { saveT = 0; save(); }
+}
+let saveT = 0;
+
+function updCam(dt) {
+  const t = player.car || player;
+  const sp = player.car ? hyp(player.car.vx, player.car.vy) : 0;
+  const base = Math.sqrt(W * H / 810000);
+  const z = base * (1 - Math.min(0.3, sp / 1000));
+  cam.z += (z - cam.z) * Math.min(1, dt * 1.6);
+  const lx = t.x + (player.vx || 0) * 0.45, ly = t.y + (player.vy || 0) * 0.45;
+  cam.x += (lx - cam.x) * Math.min(1, dt * 4.5);
+  cam.y += (ly - cam.y) * Math.min(1, dt * 4.5);
+  cam.shake = Math.max(0, cam.shake - dt * 30);
+}
+function snapCam() {
+  cam.z = Math.sqrt(W * H / 810000);
+  cam.x = player.x; cam.y = player.y;
+}
+
+// ================================================================
+//  그리기
+// ================================================================
+function rrect(x, y, w, h, r) {
+  ctx.beginPath();
+  if (ctx.roundRect) ctx.roundRect(x, y, w, h, r); else ctx.rect(x, y, w, h);
+}
+function drawGround(x0, y0, x1, y1) {
+  const tx0 = Math.max(-2, Math.floor(x0 / T)), ty0 = Math.max(-2, Math.floor(y0 / T));
+  const tx1 = Math.min(N + 1, Math.ceil(x1 / T)), ty1 = Math.min(N + 1, Math.ceil(y1 / T));
+  for (let ty = ty0; ty < ty1; ty++) for (let tx = tx0; tx < tx1; tx++) {
+    const t = tileAt(tx, ty), x = tx * T, y = ty * T;
+    if (t === WATER) continue;
+    const mx = tx % BP, my = ty % BP;
+    if (t === ROAD) {
+      ctx.fillStyle = '#3a3e44'; ctx.fillRect(x, y, T + 0.6, T + 0.6);
+      const hr = my < 2, vr = mx < 2;
+      if (hr && !vr) {
+        if (my === 0) { ctx.fillStyle = '#d9c35a'; if (tx % 2 === 0) ctx.fillRect(x + 6, y + T - 1.5, T - 12, 3); }
+        if (mx === 2 || mx === 9) { ctx.fillStyle = 'rgba(235,235,235,.75)'; for (let k = 0; k < 6; k++) ctx.fillRect(x + (mx === 2 ? 6 : T - 18), y + 3 + k * 8, 12, 4); }
+      } else if (vr && !hr) {
+        if (mx === 0) { ctx.fillStyle = '#d9c35a'; if (ty % 2 === 0) ctx.fillRect(x + T - 1.5, y + 6, 3, T - 12); }
+        if (my === 2 || my === 9) { ctx.fillStyle = 'rgba(235,235,235,.75)'; for (let k = 0; k < 6; k++) ctx.fillRect(x + 3 + k * 8, y + (my === 2 ? 6 : T - 18), 4, 12); }
+      }
+    } else if (t === WALK) {
+      ctx.fillStyle = '#9ba1a8'; ctx.fillRect(x, y, T + 0.6, T + 0.6);
+      ctx.fillStyle = '#8e949b'; ctx.fillRect(x, y, T, 1.5); ctx.fillRect(x, y, 1.5, T); ctx.fillRect(x + T / 2, y, 1, T); ctx.fillRect(x, y + T / 2, T, 1);
+      ctx.fillStyle = '#6f757c';
+      if (tileAt(tx, ty - 1) === ROAD) ctx.fillRect(x, y, T, 4);
+      if (tileAt(tx, ty + 1) === ROAD) ctx.fillRect(x, y + T - 4, T, 4);
+      if (tileAt(tx - 1, ty) === ROAD) ctx.fillRect(x, y, 4, T);
+      if (tileAt(tx + 1, ty) === ROAD) ctx.fillRect(x + T - 4, y, 4, T);
+    } else if (t === GRASS || t === TREE) {
+      ctx.fillStyle = '#5b8c43'; ctx.fillRect(x, y, T + 0.6, T + 0.6);
+      const lx = mx - 3, ly = my - 3;
+      const px = lx === 2 || lx === 3, py = ly === 2 || ly === 3;
+      ctx.fillStyle = '#c8b58a';
+      if (px) ctx.fillRect(x + (lx === 2 ? T - 10 : 0), y, 10, T + 0.6);
+      if (py) ctx.fillRect(x, y + (ly === 2 ? T - 10 : 0), T + 0.6, 10);
+      if (!px && !py) { ctx.fillStyle = '#548240'; const h = (tx * 73 + ty * 31) % 7; ctx.fillRect(x + h * 5, y + h * 3 + 6, 6, 4); }
+    } else if (t === BLD) {
+      ctx.fillStyle = '#2a2d31'; ctx.fillRect(x, y, T + 0.6, T + 0.6);
+    }
+  }
+}
+function drawMarker(x, y, r, color, label) {
+  const p = 0.5 + 0.5 * Math.sin(simT * 5);
+  ctx.strokeStyle = color; ctx.lineWidth = 3;
+  ctx.globalAlpha = 0.35 + p * 0.3;
+  ctx.fillStyle = color;
+  ctx.beginPath(); ctx.arc(x, y, r, 0, 6.28); ctx.fill();
+  ctx.globalAlpha = 1;
+  ctx.beginPath(); ctx.arc(x, y, r + p * 4, 0, 6.28); ctx.stroke();
+  if (label) {
+    ctx.fillStyle = '#fff'; ctx.font = '800 13px sans-serif'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    ctx.lineWidth = 3; ctx.strokeStyle = 'rgba(0,0,0,.7)'; ctx.strokeText(label, x, y); ctx.fillText(label, x, y);
+  }
+}
+function drawPhone(ph) {
+  ctx.fillStyle = 'rgba(0,0,0,.3)'; ctx.fillRect(ph.x - 7, ph.y - 5, 16, 14);
+  ctx.fillStyle = '#2f9e6a'; ctx.fillRect(ph.x - 9, ph.y - 9, 18, 16);
+  ctx.fillStyle = '#b8f5d6'; ctx.fillRect(ph.x - 6, ph.y - 6, 12, 7);
+  ctx.fillStyle = '#fff'; ctx.font = '800 9px sans-serif'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+  ctx.fillStyle = '#12492f'; ctx.fillText('☎', ph.x, ph.y - 2.5);
+  if (!mission) {
+    const b = Math.sin(simT * 4) * 3;
+    ctx.fillStyle = '#3DDC84'; ctx.beginPath(); ctx.moveTo(ph.x - 6, ph.y - 22 + b); ctx.lineTo(ph.x + 6, ph.y - 22 + b); ctx.lineTo(ph.x, ph.y - 14 + b); ctx.fill();
+  }
+}
+function drawPickup(k) {
+  const b = Math.sin(simT * 4 + k.x) * 1.5;
+  ctx.save(); ctx.translate(k.x, k.y + b);
+  ctx.fillStyle = 'rgba(0,0,0,.3)'; ctx.fillRect(-7, -5 - b, 16, 13);
+  if (k.type === 'ammo') {
+    ctx.fillStyle = '#6b5a2e'; ctx.fillRect(-8, -7, 16, 13);
+    ctx.fillStyle = '#FFC53D'; ctx.fillRect(-5, -4, 3, 7); ctx.fillRect(-1, -4, 3, 7); ctx.fillRect(3, -4, 3, 7);
+  } else if (k.type === 'health') {
+    ctx.fillStyle = '#fff'; ctx.fillRect(-8, -7, 16, 14);
+    ctx.fillStyle = '#e03131'; ctx.fillRect(-2, -5, 4, 10); ctx.fillRect(-5, -2, 10, 4);
+  } else {
+    ctx.fillStyle = '#2f9e44'; ctx.fillRect(-8, -5, 16, 10);
+    ctx.fillStyle = '#b2f2bb'; ctx.fillRect(-6, -3, 12, 6);
+    ctx.fillStyle = '#2f9e44'; ctx.font = '800 7px sans-serif'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText('$', 0, 0.5);
+  }
+  ctx.restore();
+}
+function drawPed(p) {
+  ctx.save(); ctx.translate(p.x, p.y); ctx.rotate(p.a);
+  if (p.dead) {
+    ctx.fillStyle = p.shirt; ctx.beginPath(); ctx.ellipse(-1, 0, 8, 5, 0, 0, 6.28); ctx.fill();
+    ctx.fillStyle = p.hair; ctx.beginPath(); ctx.arc(8, 0, 3.5, 0, 6.28); ctx.fill();
+    ctx.fillStyle = '#222'; ctx.fillRect(-12, -4, 5, 3); ctx.fillRect(-12, 1, 5, 3);
+    ctx.restore(); return;
+  }
+  const sw = Math.sin(p.walk) * 4;
+  ctx.fillStyle = 'rgba(0,0,0,.25)'; ctx.beginPath(); ctx.ellipse(2, 2, 6, 8, 0, 0, 6.28); ctx.fill();
+  ctx.fillStyle = '#222';
+  ctx.fillRect(sw - 2, -5, 5, 3.2); ctx.fillRect(-sw - 2, 1.8, 5, 3.2);
+  ctx.fillStyle = p.shirt; ctx.beginPath(); ctx.ellipse(0, 0, 4.5, 7.5, 0, 0, 6.28); ctx.fill();
+  if (p.armed || (p === player && player.weapon === 1)) { ctx.fillStyle = '#111'; ctx.fillRect(3, 3, 9, 2.5); }
+  else if (p === player && player.punchT > 0) { ctx.fillStyle = '#e9b98f'; ctx.beginPath(); ctx.arc(9, 3, 2.6, 0, 6.28); ctx.fill(); }
+  if (p.kind === 'cop' || p.copLook) {
+    ctx.fillStyle = '#10244d'; ctx.beginPath(); ctx.arc(0, 0, 4.6, 0, 6.28); ctx.fill();
+    ctx.fillStyle = '#0a1733'; ctx.fillRect(2.5, -3.5, 3, 7);
+  } else {
+    ctx.fillStyle = p.hair; ctx.beginPath(); ctx.arc(0, 0, 4, 0, 6.28); ctx.fill();
+  }
+  ctx.restore();
+}
+function drawPlayerFoot() {
+  const p = player;
+  // 발밑 표시
+  ctx.strokeStyle = 'rgba(255,197,61,.9)'; ctx.lineWidth = 2;
+  ctx.beginPath(); ctx.arc(p.x, p.y, 12, 0, 6.28); ctx.stroke();
+  drawPed({ x: p.x, y: p.y, a: p.a, dead: false, walk: p.walk, shirt: '#ff7a1a', hair: '#1b1b1b', kind: 'player', armed: false });
+  // drawPed 안에서 무기 표시는 player 참조로 처리
+  if (player.weapon === 1) {
+    ctx.save(); ctx.translate(p.x, p.y); ctx.rotate(p.a); ctx.fillStyle = '#111'; ctx.fillRect(3, 3, 10, 2.8); ctx.restore();
+  } else if (player.punchT > 0) {
+    ctx.save(); ctx.translate(p.x, p.y); ctx.rotate(p.a); ctx.fillStyle = '#e9b98f'; ctx.beginPath(); ctx.arc(10, 3, 2.8, 0, 6.28); ctx.fill(); ctx.restore();
+  }
+}
+function drawCar(c, hl) {
+  const L = c.s.L, Wd = c.s.W, hL = L / 2, hW = Wd / 2;
+  ctx.save(); ctx.translate(c.x, c.y); ctx.rotate(c.a);
+  ctx.fillStyle = 'rgba(0,0,0,.3)'; rrect(-hL + 3, -hW + 4, L, Wd, 5); ctx.fill();
+  const body = c.dead ? '#26282b' : c.color;
+  ctx.fillStyle = body; rrect(-hL, -hW, L, Wd, 5); ctx.fill();
+  if (hl) { ctx.strokeStyle = '#FFC53D'; ctx.lineWidth = 2.5; ctx.stroke(); }
+  else { ctx.strokeStyle = 'rgba(0,0,0,.35)'; ctx.lineWidth = 1; ctx.stroke(); }
+  if (c.type === 'police' && !c.dead) { ctx.fillStyle = '#1b1f2a'; ctx.fillRect(-hL * 0.35, -hW, L * 0.35, Wd); }
+  const glass = c.dead ? '#111' : '#1f2d3d';
+  const van = c.type === 'van' || c.type === 'gang';
+  if (van) {
+    ctx.fillStyle = glass; ctx.fillRect(hL * 0.42, -hW + 2.5, L * 0.13, Wd - 5);
+    ctx.fillStyle = c.dead ? '#1c1d1f' : shade(c.color, c.type === 'gang' ? 0.12 : -0.12); ctx.fillRect(-hL + 3, -hW + 2.5, L * 0.66, Wd - 5);
+  } else {
+    ctx.fillStyle = glass;
+    ctx.beginPath(); ctx.moveTo(hL * 0.45, -hW + 2.5); ctx.lineTo(hL * 0.12, -hW + 3.5); ctx.lineTo(hL * 0.12, hW - 3.5); ctx.lineTo(hL * 0.45, hW - 2.5); ctx.fill();
+    ctx.fillRect(-hL * 0.72, -hW + 3.5, hL * 0.22, Wd - 7);
+    ctx.fillStyle = c.dead ? '#1c1d1f' : shade(c.color, c.type === 'police' ? -0.05 : 0.14);
+    ctx.fillRect(-hL * 0.5, -hW + 3, hL * 0.62, Wd - 6);
+  }
+  if (!c.dead) {
+    ctx.fillStyle = '#fff5c2'; ctx.fillRect(hL - 3, -hW + 2, 3, 4); ctx.fillRect(hL - 3, hW - 6, 3, 4);
+    ctx.fillStyle = '#d0312d'; ctx.fillRect(-hL, -hW + 2, 2.5, 4); ctx.fillRect(-hL, hW - 6, 2.5, 4);
+  }
+  if (c.type === 'police' && !c.dead) {
+    const on = (c.driver === 'cop' || c.driver === 'copIdle') && Math.sin(c.flash * 14) > 0;
+    const chase = c.driver === 'cop' || c.driver === 'copIdle';
+    ctx.fillStyle = chase ? (on ? '#ff3b3b' : '#6b1515') : '#7a2b2b'; ctx.fillRect(-3, -hW + 2, 5, hW - 2);
+    ctx.fillStyle = chase ? (!on ? '#3b8bff' : '#15306b') : '#2b3e7a'; ctx.fillRect(-3, 0, 5, hW - 2);
+    if (chase && on) { ctx.fillStyle = 'rgba(255,60,60,.18)'; ctx.beginPath(); ctx.arc(0, -hW / 2, 22, 0, 6.28); ctx.fill(); }
+    else if (chase) { ctx.fillStyle = 'rgba(60,140,255,.18)'; ctx.beginPath(); ctx.arc(0, hW / 2, 22, 0, 6.28); ctx.fill(); }
+  }
+  if (c.type === 'taxi' && !c.dead) { ctx.fillStyle = '#222'; ctx.fillRect(-4, -4, 8, 8); ctx.fillStyle = '#ffe066'; ctx.fillRect(-3, -3, 6, 6); }
+  if (c.gold && !c.dead) { ctx.fillStyle = 'rgba(255,255,255,.35)'; ctx.fillRect(-hL + 4, -1.5, L - 8, 3); }
+  ctx.restore();
+}
+function drawBuildings(x0, y0, x1, y1) {
+  const cx = cam.x, cy = cam.y;
+  // 공원 나무 (낮은 것부터)
+  for (const t of trees) {
+    if (t.x < x0 - 60 || t.x > x1 + 60 || t.y < y0 - 60 || t.y > y1 + 60) continue;
+    const k = 1.12;
+    const tx = cx + (t.x - cx) * k, ty = cy + (t.y - cy) * k;
+    ctx.fillStyle = 'rgba(0,0,0,.25)'; ctx.beginPath(); ctx.arc(t.x + 4, t.y + 4, t.r, 0, 6.28); ctx.fill();
+    ctx.fillStyle = '#5a3d23'; ctx.beginPath(); ctx.arc(t.x, t.y, 5, 0, 6.28); ctx.fill();
+    ctx.fillStyle = t.c; ctx.beginPath(); ctx.arc(tx, ty, t.r, 0, 6.28); ctx.fill();
+    ctx.fillStyle = 'rgba(255,255,255,.08)'; ctx.beginPath(); ctx.arc(tx - t.r * 0.3, ty - t.r * 0.3, t.r * 0.55, 0, 6.28); ctx.fill();
+  }
+  for (const b of buildings) {
+    if (b.x + b.w < x0 - 200 || b.x > x1 + 200 || b.y + b.h < y0 - 200 || b.y > y1 + 200) continue;
+    const k = 1 + b.ht * 0.42;
+    const X0 = b.x, Y0 = b.y, X1 = b.x + b.w, Y1 = b.y + b.h;
+    const rx0 = cx + (X0 - cx) * k, ry0 = cy + (Y0 - cy) * k, rx1 = cx + (X1 - cx) * k, ry1 = cy + (Y1 - cy) * k;
+    const quad = (ax, ay, bx, by, qx, qy, dx, dy, col) => { ctx.fillStyle = col; ctx.beginPath(); ctx.moveTo(ax, ay); ctx.lineTo(bx, by); ctx.lineTo(qx, qy); ctx.lineTo(dx, dy); ctx.closePath(); ctx.fill(); };
+    ctx.setLineDash([5, 7]); ctx.lineWidth = 3;
+    if (Y1 < cy) {
+      quad(X0, Y1, X1, Y1, rx1, ry1, rx0, ry1, b.wall);
+      ctx.strokeStyle = 'rgba(255,230,160,.22)';
+      for (const f of [0.3, 0.62]) { ctx.beginPath(); ctx.moveTo(X0 + (rx0 - X0) * f + 5, Y1 + (ry1 - Y1) * f); ctx.lineTo(X1 + (rx1 - X1) * f - 5, Y1 + (ry1 - Y1) * f); ctx.stroke(); }
+    }
+    if (Y0 > cy) {
+      quad(X0, Y0, X1, Y0, rx1, ry0, rx0, ry0, b.wall);
+      ctx.strokeStyle = 'rgba(255,230,160,.22)';
+      for (const f of [0.3, 0.62]) { ctx.beginPath(); ctx.moveTo(X0 + (rx0 - X0) * f + 5, Y0 + (ry0 - Y0) * f); ctx.lineTo(X1 + (rx1 - X1) * f - 5, Y0 + (ry0 - Y0) * f); ctx.stroke(); }
+    }
+    ctx.setLineDash([]);
+    if (X1 < cx) quad(X1, Y0, X1, Y1, rx1, ry1, rx1, ry0, b.wall2);
+    if (X0 > cx) quad(X0, Y0, X0, Y1, rx0, ry1, rx0, ry0, b.wall2);
+    const rw = rx1 - rx0, rh = ry1 - ry0;
+    ctx.fillStyle = b.roof; ctx.fillRect(rx0, ry0, rw, rh);
+    ctx.strokeStyle = 'rgba(0,0,0,.22)'; ctx.lineWidth = 4; ctx.strokeRect(rx0 + 3, ry0 + 3, rw - 6, rh - 6);
+    for (const [u, v, s] of b.det) {
+      ctx.fillStyle = 'rgba(0,0,0,.18)'; ctx.fillRect(rx0 + u * rw + 3, ry0 + v * rh + 3, s * rw, s * rw);
+      ctx.fillStyle = 'rgba(255,255,255,.22)'; ctx.fillRect(rx0 + u * rw, ry0 + v * rh, s * rw, s * rw);
+    }
+    if (b.kind === 'hospital') {
+      ctx.fillStyle = '#e03131'; const m = rw * 0.12;
+      ctx.fillRect(rx0 + rw / 2 - m / 2, ry0 + rh / 2 - m * 1.6, m, m * 3.2); ctx.fillRect(rx0 + rw / 2 - m * 1.6, ry0 + rh / 2 - m / 2, m * 3.2, m);
+    }
+    if (b.label) {
+      ctx.font = '900 ' + Math.round(28 * k) + 'px sans-serif'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+      ctx.lineWidth = 5; ctx.strokeStyle = 'rgba(0,0,0,.55)';
+      const ly = b.kind === 'hospital' ? ry0 + rh * 0.82 : ry0 + rh / 2;
+      ctx.strokeText(b.label, rx0 + rw / 2, ly); ctx.fillStyle = b.kind === 'hospital' ? '#c92a2a' : '#fff'; ctx.fillText(b.label, rx0 + rw / 2, ly);
+    }
+  }
+}
+function drawArrowTo(x, y, color) {
+  // 화면 밖 목표를 가리키는 화살표 (화면 좌표)
+  const sx = (x - cam.x) * cam.z + W / 2, sy = (y - cam.y) * cam.z + H / 2;
+  const m = 46;
+  if (sx > m && sx < W - m && sy > m && sy < H - m) return;
+  const ang = Math.atan2(sy - H / 2, sx - W / 2);
+  const ex = clamp(sx, m, W - m), ey = clamp(sy, 140, H - m - (usingTouch ? 130 : 0));
+  ctx.save(); ctx.translate(ex, ey); ctx.rotate(ang);
+  ctx.fillStyle = color; ctx.strokeStyle = 'rgba(0,0,0,.6)'; ctx.lineWidth = 2;
+  ctx.beginPath(); ctx.moveTo(16, 0); ctx.lineTo(-8, -11); ctx.lineTo(-3, 0); ctx.lineTo(-8, 11); ctx.closePath(); ctx.fill(); ctx.stroke();
+  ctx.restore();
+  const dist = Math.round(hyp(x - player.x, y - player.y) / T * 4);
+  ctx.font = '800 12px sans-serif'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+  ctx.lineWidth = 3; ctx.strokeStyle = 'rgba(0,0,0,.8)';
+  const lx = ex - Math.cos(ang) * 26, ly = ey - Math.sin(ang) * 26;
+  ctx.strokeText(dist + 'm', lx, ly); ctx.fillStyle = '#fff'; ctx.fillText(dist + 'm', lx, ly);
+}
+function render() {
+  ctx.setTransform(1, 0, 0, 1, 0, 0);
+  ctx.fillStyle = '#1d4a63'; ctx.fillRect(0, 0, cv.width, cv.height);
+  if (!player) return;
+  const z = cam.z;
+  const shx = (R() - 0.5) * cam.shake, shy = (R() - 0.5) * cam.shake;
+  const ox = W / 2 - (cam.x + shx) * z, oy = H / 2 - (cam.y + shy) * z;
+  ctx.setTransform(DPR * z, 0, 0, DPR * z, DPR * ox, DPR * oy);
+  const x0 = cam.x - W / 2 / z - 20, y0 = cam.y - H / 2 / z - 20, x1 = cam.x + W / 2 / z + 20, y1 = cam.y + H / 2 / z + 20;
+  // 물결
+  ctx.fillStyle = 'rgba(255,255,255,.05)';
+  for (let wy = Math.floor(y0 / 60) * 60; wy < y1; wy += 60) for (let wx = Math.floor(x0 / 90) * 90; wx < x1; wx += 90) {
+    if (wx > 0 && wy > 0 && wx < WORLD && wy < WORLD) continue;
+    ctx.fillRect(wx + ((wy / 60) % 2) * 45 + Math.sin(simT + wy) * 6, wy, 26, 3);
+  }
+  drawGround(x0, y0, x1, y1);
+  // 바닥 자국
+  ctx.lineCap = 'round';
+  for (const d of decals) {
+    if (d.x < x0 - 50 || d.x > x1 + 50 || d.y < y0 - 50 || d.y > y1 + 50) continue;
+    const a = Math.min(1, d.life / 4);
+    if (d.k === 'skid') { ctx.strokeStyle = 'rgba(15,15,15,' + (0.4 * a) + ')'; ctx.lineWidth = 4; ctx.beginPath(); ctx.moveTo(d.x, d.y); ctx.lineTo(d.x2, d.y2); ctx.stroke(); }
+    else if (d.k === 'blood') { ctx.fillStyle = 'rgba(120,10,10,' + (0.55 * a) + ')'; ctx.beginPath(); ctx.arc(d.x, d.y, d.r, 0, 6.28); ctx.fill(); }
+    else if (d.k === 'scorch') { ctx.fillStyle = 'rgba(0,0,0,' + (0.45 * a) + ')'; ctx.beginPath(); ctx.arc(d.x, d.y, d.r, 0, 6.28); ctx.fill(); }
+  }
+  ctx.lineCap = 'butt';
+  // 장소 표시
+  drawMarker(places.spray.x, places.spray.y, 30, '#4DA3FF', '도색 $300');
+  drawMarker(places.gun.x, places.gun.y, 16, '#FFC53D', '총');
+  if (mission && mission.type === 'steal' && player.car === mission.car) drawMarker(places.garage.x, places.garage.y, 34, '#FFC53D', '차고');
+  for (const ph of phones) drawPhone(ph);
+  const mt = missionTarget();
+  if (mt && !mt.car) drawMarker(mt.x, mt.y, mt.r, '#FFC53D', mission.type === 'delivery' ? (mission.stage === 0 ? '픽업' : '배달') : '');
+  for (const k of staticPickups) if (k.t <= 0 && k.x > x0 && k.x < x1 && k.y > y0 && k.y < y1) drawPickup(k);
+  for (const k of drops) if (k.x > x0 && k.x < x1 && k.y > y0 && k.y < y1) drawPickup(k);
+  // 사람 (죽은 사람 먼저)
+  for (const p of peds) if (p.dead && p.x > x0 && p.x < x1 && p.y > y0 && p.y < y1) drawPed(p);
+  for (const p of peds) if (!p.dead && p.x > x0 && p.x < x1 && p.y > y0 && p.y < y1) drawPed(p);
+  if (!player.car && !player.dead) drawPlayerFoot();
+  // 차
+  const near = (!player.car && !player.dead) ? nearestEnterable() : null;
+  for (const c of cars) if (c.dead && c.x > x0 - 40 && c.x < x1 + 40 && c.y > y0 - 40 && c.y < y1 + 40) drawCar(c, false);
+  for (const c of cars) if (!c.dead && c.x > x0 - 40 && c.x < x1 + 40 && c.y > y0 - 40 && c.y < y1 + 40) drawCar(c, c === near);
+  if (player.car) { ctx.strokeStyle = 'rgba(255,197,61,.8)'; ctx.lineWidth = 2; ctx.beginPath(); ctx.arc(player.car.x, player.car.y, player.car.s.L / 2 + 8, 0, 6.28); ctx.stroke(); }
+  // 총알 궤적
+  ctx.lineWidth = 1.6;
+  for (const t of tracers) { ctx.strokeStyle = 'rgba(255,235,150,' + (t.life / 0.08) + ')'; ctx.beginPath(); ctx.moveTo(t.x1, t.y1); ctx.lineTo(t.x2, t.y2); ctx.stroke(); }
+  for (const k of parts) if (k.k === 'spark' || k.k === 'blood' || k.k === 'debris') {
+    ctx.fillStyle = k.k === 'spark' ? '#ffd76a' : k.k === 'blood' ? '#8a0f0f' : '#222';
+    ctx.fillRect(k.x - k.s / 2, k.y - k.s / 2, k.s, k.s);
+  }
+  drawBuildings(x0, y0, x1, y1);
+  // 연기·불
+  for (const k of parts) {
+    if (k.k === 'smoke') { ctx.fillStyle = 'rgba(70,70,70,' + (0.45 * k.life / k.max) + ')'; ctx.beginPath(); ctx.arc(k.x, k.y, k.s, 0, 6.28); ctx.fill(); }
+  }
+  ctx.globalCompositeOperation = 'lighter';
+  for (const k of parts) {
+    if (k.k === 'fire') { const f = k.life / k.max; ctx.fillStyle = f > 0.5 ? 'rgba(255,210,90,' + f + ')' : 'rgba(255,90,30,' + f + ')'; ctx.beginPath(); ctx.arc(k.x, k.y, k.s * (0.5 + f * 0.5), 0, 6.28); ctx.fill(); }
+    else if (k.k === 'flash') { ctx.fillStyle = 'rgba(255,240,180,' + (k.life / k.max * 0.8) + ')'; ctx.beginPath(); ctx.arc(k.x, k.y, k.s, 0, 6.28); ctx.fill(); }
+  }
+  ctx.globalCompositeOperation = 'source-over';
+  // 임무 목표 차 위 화살표
+  if (mt && mt.car) {
+    const b = Math.sin(simT * 6) * 4;
+    ctx.fillStyle = '#FFC53D'; ctx.strokeStyle = '#000'; ctx.lineWidth = 2;
+    ctx.beginPath(); ctx.moveTo(mt.x - 10, mt.y - 44 + b); ctx.lineTo(mt.x + 10, mt.y - 44 + b); ctx.lineTo(mt.x, mt.y - 30 + b); ctx.closePath(); ctx.fill(); ctx.stroke();
+  }
+  // 떠오르는 글자
+  ctx.font = '800 16px sans-serif'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+  for (const f of floats) {
+    ctx.globalAlpha = Math.min(1, f.life * 2);
+    ctx.lineWidth = 3; ctx.strokeStyle = 'rgba(0,0,0,.8)'; ctx.strokeText(f.text, f.x, f.y); ctx.fillStyle = f.color; ctx.fillText(f.text, f.x, f.y);
+  }
+  ctx.globalAlpha = 1;
+  // 화면 좌표
+  ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+  if (mt) drawArrowTo(mt.x, mt.y, '#FFC53D');
+  else if (!mission && gameState === 'play') {
+    // 가장 가까운 전화박스
+    let best = null, bd = 1e9;
+    for (const ph of phones) { const d = hyp(ph.x - player.x, ph.y - player.y); if (d < bd) { bd = d; best = ph; } }
+    if (best) drawArrowTo(best.x, best.y, '#3DDC84');
+  }
+}
+function drawRadar() {
+  const S = rcv.width; if (!S || !player) return;
+  const r = S / 2, sc = r / 900;
+  rctx.setTransform(1, 0, 0, 1, 0, 0);
+  rctx.clearRect(0, 0, S, S);
+  rctx.save();
+  rctx.beginPath(); rctx.arc(r, r, r, 0, 6.28); rctx.clip();
+  rctx.fillStyle = '#1d4a63'; rctx.fillRect(0, 0, S, S);
+  rctx.translate(r, r); rctx.scale(sc, sc); rctx.translate(-player.x, -player.y);
+  rctx.fillStyle = '#50565e'; rctx.fillRect(0, 0, WORLD, WORLD);
+  for (const b of blocks) {
+    rctx.fillStyle = b.kind === 'park' ? '#3f7a35' : b.kind === 'city' ? '#23272c' : b.kind === 'hospital' ? '#c9ccd1' : b.kind === 'police' ? '#2c4a7a' : '#3a3024';
+    rctx.fillRect(b.x + 8, b.y + 8, b.s - 16, b.s - 16);
+  }
+  rctx.restore();
+  const blip = (x, y, col, size, clampEdge, shape) => {
+    let dx = (x - player.x) * sc, dy = (y - player.y) * sc;
+    const d = hyp(dx, dy);
+    if (d > r - size - 2) { if (!clampEdge) return; dx *= (r - size - 2) / d; dy *= (r - size - 2) / d; }
+    rctx.fillStyle = col; rctx.strokeStyle = '#000'; rctx.lineWidth = 1.5 * DPR;
+    rctx.beginPath();
+    if (shape === 'sq') rctx.rect(r + dx - size, r + dy - size, size * 2, size * 2); else rctx.arc(r + dx, r + dy, size, 0, 6.28);
+    rctx.fill(); rctx.stroke();
+  };
+  const u = DPR;
+  for (const ph of phones) blip(ph.x, ph.y, '#3DDC84', 3.2 * u, !mission, 'sq');
+  blip(places.spray.x, places.spray.y, '#4DA3FF', 3.2 * u, false, 'sq');
+  blip(places.gun.x, places.gun.y, '#FFC53D', 3 * u, false, 'sq');
+  blip(places.hospital.x, places.hospital.y, '#ff6b6b', 3 * u, false, 'sq');
+  for (const c of cars) if ((c.driver === 'cop' || c.driver === 'copIdle') && !c.dead) blip(c.x, c.y, Math.sin(simT * 12) > 0 ? '#ff4d4d' : '#4d8bff', 2.6 * u, false);
+  for (const p of peds) if (p.kind === 'cop' && !p.dead) blip(p.x, p.y, '#4d8bff', 1.8 * u, false);
+  const mt = missionTarget();
+  if (mt) blip(mt.x, mt.y, '#FFC53D', 4.2 * u, true);
+  // 나
+  rctx.save(); rctx.translate(r, r); rctx.rotate(player.a);
+  rctx.fillStyle = '#fff'; rctx.strokeStyle = '#000'; rctx.lineWidth = 1.5 * u;
+  rctx.beginPath(); rctx.moveTo(7 * u, 0); rctx.lineTo(-5 * u, -5 * u); rctx.lineTo(-2 * u, 0); rctx.lineTo(-5 * u, 5 * u); rctx.closePath(); rctx.fill(); rctx.stroke();
+  rctx.restore();
+}
+
+// ================================================================
+//  HUD
+// ================================================================
+const hudCache = {};
+function setHud(key, val, fn) { if (hudCache[key] !== val) { hudCache[key] = val; fn(val); } }
+let toastTimer = 0;
+function toast(t, sub) {
+  const el = $('toast');
+  el.innerHTML = '';
+  el.append(document.createTextNode(t));
+  if (sub) { const s = document.createElement('small'); s.textContent = sub; el.append(s); }
+  el.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => el.classList.remove('show'), 3200);
+}
+function showBig(t, sub) {
+  const el = $('big');
+  el.innerHTML = '';
+  if (!t) { el.classList.remove('show'); return; }
+  el.append(document.createTextNode(t));
+  if (sub) { const s = document.createElement('small'); s.textContent = sub; el.append(s); }
+  el.style.color = t === '체포' ? '#6fb1ff' : '#ff5a5a';
+  el.classList.add('show');
+}
+function updHud() {
+  setHud('money', Math.round(player.money), v => { $('money').textContent = money(v); });
+  const flash = wanted.stars > 0 && wanted.evade > 2;
+  setHud('stars', wanted.stars + (flash ? 'f' : ''), () => {
+    const is = $('stars').children;
+    for (let i = 0; i < 5; i++) is[i].className = i < wanted.stars ? 'on' : '';
+    $('stars').classList.toggle('flash', flash);
+  });
+  setHud('hp', Math.ceil(player.hp), v => { $('hpbar').firstChild.style.width = v + '%'; });
+  const c = player.car;
+  setHud('car', c ? Math.max(0, Math.round(c.hp / c.s.hp * 100)) : -1, v => { $('carbar').hidden = v < 0; if (v >= 0) $('carbar').firstChild.style.width = v + '%'; });
+  setHud('wp', c ? '운전 중' : player.weapon === 1 ? '권총 · ' + player.ammo : '주먹' + (player.ammo > 0 ? ' (권총 ' + player.ammo + ')' : ''), v => { $('weapon').textContent = v; });
+  setHud('mt', mission ? missionText() : '', v => { $('mission').hidden = !v; $('mText').innerHTML = v; });
+  const tl = mission && mission.t !== null ? Math.ceil(mission.t - 1e-6) : -1;
+  setHud('mtime', tl, v => { const e = $('mTime'); e.textContent = v >= 0 ? Math.floor(v / 60) + ':' + String(v % 60).padStart(2, '0') : ''; e.classList.toggle('low', v >= 0 && v <= 10); });
+  setHud('bust', bustT > 0.05 ? Math.round(bustT * 20) : 0, v => { $('bust').hidden = !v; $('bust').querySelector('b').style.width = Math.min(100, bustT / (wanted.stars === 1 ? 1.4 : 1.9) * 100) + '%'; });
+  $('flash').style.opacity = player.hurtT > 0 ? 1 : (player.hp < 30 ? 0.35 + 0.2 * Math.sin(simT * 6) : 0);
+  // 탑승 힌트
+  let hint = '';
+  const near = (!player.car && !player.dead) ? nearestEnterable() : null;
+  if (usingTouch) {
+    setHud('bEnter', player.car ? '하차' : near ? '탑승!' : '탑승', v => { $('bEnter').textContent = v === '탑승!' ? '탑승' : v; $('bEnter').classList.toggle('ready', v === '탑승!'); });
+    setHud('bAttack', player.car ? '드리프트' : player.weapon === 1 ? '사격' : '주먹', v => { $('bAttack').textContent = v; });
+  } else {
+    if (near) hint = 'F 키로 탑승';
+    else if (player.car && simT < 40 && hyp(player.car.vx, player.car.vy) < 20) hint = 'W 가속 · S 브레이크 · A/D 핸들 · Space 드리프트 · F 하차';
+  }
+  setHud('hint', hint, v => { $('hint').hidden = !v; $('hint').textContent = v; });
+}
+
+// ================================================================
+//  흐름
+// ================================================================
+function newGame(cont) {
+  const sv = cont ? loadSave() : null;
+  cars = []; peds = []; tracers = []; parts = []; decals = []; floats = []; drops = [];
+  mission = null; bustT = 0; simT = 0; lastMissionType = '';
+  wanted = { level: 0, stars: 0, evade: 0 };
+  stats = { missions: sv ? sv.missions || 0 : 0, kills: sv ? sv.kills || 0 : 0, won: sv ? !!sv.won : false };
+  for (const k of staticPickups) k.t = 0;
+  newPlayer(sv);
+  // 병원 앞 도로에 빈 차 한 대
+  const h = places.hospital;
+  const c = makeCar('sedan', h.x + 12, h.y + T * 0.95, 0, null, '#2a9d8f');
+  c.vx = 0;
+  snapCam();
+  for (let i = 0; i < 20; i++) spawnTraffic(true);
+  for (let i = 0; i < 30; i++) spawnPed(true);
+  // 스폰 직후 겹친 차 정리
+  cars = cars.filter((a, i) => a === c || !cars.some((b, j) => j < i && hyp(a.x - b.x, a.y - b.y) < 60) && hyp(a.x - c.x, a.y - c.y) > 60);
+  gameState = 'play';
+  $('title').hidden = true; $('hud').hidden = false; syncTouchUI();
+  audioInit(); if (AC && AC.state === 'suspended') AC.resume();
+  hudCacheReset();
+  toast(cont ? '다시 왔군' : '무법 도시에 온 걸 환영한다', '초록 전화박스에서 일을 받아라. 앞에 있는 차를 타 봐');
+  save();
+}
+function hudCacheReset() { for (const k in hudCache) delete hudCache[k]; }
+function pause(on) {
+  if (on && gameState === 'play') {
+    gameState = 'pause';
+    $('pauseSheet').hidden = false;
+    $('pauseStat').textContent = '임무 ' + stats.missions + '개 완료 · 모은 돈 ' + money(player.money) + (stats.won ? ' · 도시 정복!' : ' · 목표 $25,000');
+    if (AC) AC.suspend();
+    touch.attack = false; stick.on = false; stick.id = null; stickEl.classList.remove('on');
+  } else if (!on && gameState === 'pause') {
+    gameState = 'play';
+    $('pauseSheet').hidden = true;
+    if (AC) AC.resume();
+  }
+}
+function toTitle() {
+  save();
+  gameState = 'title';
+  $('pauseSheet').hidden = true; $('hud').hidden = true; $('title').hidden = false; syncTouchUI();
+  showBig('', '');
+  refreshTitle();
+}
+function refreshTitle() {
+  const sv = loadSave();
+  const has = sv && sv.playing;
+  $('bContinue').hidden = !has;
+  $('bNew').classList.toggle('pri', !has);
+  $('saveInfo').textContent = has ? '저장된 돈 ' + money(sv.money || 0) + ' · 임무 ' + (sv.missions || 0) + '개' + (sv.won ? ' · 도시 정복!' : '') : '진행 상황은 이 브라우저에 저장됩니다.';
+}
+$('bNew').onclick = () => {
+  const sv = loadSave();
+  if (sv && sv.playing && !confirm('저장된 진행 상황을 지우고 새로 시작할까?')) return;
+  try { localStorage.setItem(SKEY, JSON.stringify({ sound })); } catch (e) {}
+  newGame(false);
+};
+$('bContinue').onclick = () => newGame(true);
+$('bHelp').onclick = () => { $('helpSheet').hidden = false; };
+$('bPauseHelp').onclick = () => { $('helpSheet').hidden = false; };
+$('bHelpClose').onclick = () => { $('helpSheet').hidden = true; };
+$('bSound').onclick = () => setSound(!sound);
+$('bPauseSound').onclick = () => setSound(!sound);
+$('pauseBtn').onclick = () => pause(true);
+$('bResume').onclick = () => pause(false);
+$('bQuit').onclick = () => toTitle();
+
+const STEP = 1 / 60;
+let last = performance.now(), acc = 0;
+function frame(now) {
+  requestAnimationFrame(frame);
+  const dt = Math.min(0.1, (now - last) / 1000); last = now;
+  if (gameState === 'play' || gameState === 'dead') {
+    acc += dt;
+    let n = 0;
+    while (acc >= STEP && n < 6) {
+      if (gameState === 'play') update(STEP);
+      else {
+        // 죽은 뒤에도 세상은 잠깐 움직임
+        deathT += STEP; simT += STEP;
+        for (const k of parts) { k.life -= STEP; k.x += k.vx * STEP; k.y += k.vy * STEP; }
+        parts = parts.filter(k => k.life > 0);
+        if (deathT > 2.6) respawn();
+      }
+      acc -= STEP; n++;
+    }
+    if (n === 6) acc = 0;
+    if (player) updCam(dt);
+  }
+  if (gameState !== 'title') render();
+  if (player && gameState !== 'title') { drawRadar(); updHud(); }
+  updAudio();
+}
+// 타이틀 화면 뒤에 도시가 천천히 흘러가게
+function titleBackdrop() {
+  if (player) return;
+  newPlayer(null);
+  wanted = { level: 0, stars: 0, evade: 0 };
+  stats = { missions: 0, kills: 0 };
+  player.x = nodeP(4) + 200; player.y = nodeP(4) + 150;
+  snapCam();
+  for (let i = 0; i < 18; i++) spawnTraffic(true);
+  for (let i = 0; i < 26; i++) spawnPed(true);
+}
+function titleTick(now) {
+  if (gameState === 'title' && player) {
+    const dt = STEP;
+    cam.x += 18 * dt; cam.y += 6 * dt;
+    player.x = cam.x; player.y = cam.y;
+    player.dead = true; // 타이틀에선 조작 없음
+    simT += dt;
+    for (const c of cars) if (!c.dead && c.driver === 'ai') trafficAI(c, dt);
+    for (const c of cars) carWorld(c);
+    for (let i = 0; i < cars.length; i++) for (let j = i + 1; j < cars.length; j++) collideCars(cars[i], cars[j]);
+    for (const p of peds) if (!p.dead) civAI(p, dt);
+    population(dt);
+    render();
+  }
+  requestAnimationFrame(titleTick);
+}
+
+resize();
+refreshTitle();
+setSound(sound);
+titleBackdrop();
+requestAnimationFrame(frame);
+requestAnimationFrame(titleTick);
+syncTouchUI();
+
+// 테스트용 훅
+window.__city = { get player() { return player; }, get cars() { return cars; }, get peds() { return peds; }, get wanted() { return wanted; },
+  get mission() { return mission; }, get state() { return gameState; }, places, phones, keys, press, crime, startMission, update, newGame,
+  explode, get stats() { return stats; }, set stepHook(f) {} };
+})();
+</script>
+</body>
+</html>
