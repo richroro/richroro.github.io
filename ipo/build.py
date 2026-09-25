@@ -411,6 +411,11 @@ def parse_detail(text: str, today: dt.date) -> dict:
         pair = got.pop(key, None)
         if pair and pair[0]:
             got[a], got[b] = pair
+    # 수요예측이 끝나기 전 상세 페이지는 확약·경쟁률 칸에 '0.00%' 같은 자리 표시를 둔다 — 결과로 치지 않는다
+    if got.get("fc_end") and got["fc_end"] >= today.isoformat():
+        got.pop("inst_comp", None); got.pop("lockup", None)
+    if got.get("inst_comp") is None and not got.get("lockup"):
+        got.pop("lockup", None)
     got.update(detail_extras(text, got.get("shares")))
     return {k: v for k, v in got.items() if v is not None}
 
@@ -489,6 +494,9 @@ def merge(prev: list[dict], schedule, forecast, listing, details: dict[str, dict
                     continue  # 목록 표 값이 있으면 그대로 — 상세는 빈칸만 메운다
                 it[f] = v
         it["spac"] = bool(re.search(r"스팩|SPAC|기업인수목적", it["name"], re.I))
+        # 예전 실행이 남긴 자리 표시(경쟁률 없는 0% 확약)는 지운다
+        if it.get("inst_comp") is None and it.get("lockup") == 0:
+            it.pop("lockup", None)
 
     cut = (today - dt.timedelta(days=keep_days)).isoformat()
     out = []

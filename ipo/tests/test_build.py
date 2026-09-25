@@ -159,6 +159,17 @@ class DetailFill(unittest.TestCase):
         self.assertEqual(g["inst_comp"], 999.0)
         self.assertEqual((g["fc_start"], g["fc_end"], g["lockup"]), ("2026-09-15", "2026-09-19", 32.1))
 
+    def test_placeholders_before_forecast_ends_are_ignored(self):
+        t = page("""<table><tr><td>수요예측일</td><td>2026.09.23 ~ 2026.10.01</td></tr>
+          <tr><td>기관경쟁률</td><td>0:1</td></tr><tr><td>의무보유확약</td><td>0.00%</td></tr></table>""")
+        d = build.parse_detail(t, TODAY)
+        self.assertEqual(d["fc_end"], "2026-10-01")
+        self.assertNotIn("lockup", d)
+        self.assertNotIn("inst_comp", d)
+        # 이미 저장된 자리 표시도 지운다
+        items = build.merge([{"id": "1", "no": "1", "name": "가", "lockup": 0.0, "sub_start": "2026-10-07"}], [], [], [], {}, TODAY)
+        self.assertNotIn("lockup", items[0])
+
     def test_need_detail_waits_for_forecast_result(self):
         # 수요예측이 끝났는데 결과가 없으면 다시 읽는다
         full = {"market": "KOSDAQ", "list_date": "x", "refund": "y", "float_pct": 20.0, "fc_start": "2026-09-20", "fc_end": "2026-09-21"}
