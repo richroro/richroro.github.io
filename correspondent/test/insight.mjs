@@ -362,6 +362,7 @@ section('빈 보드 — 리포트가 어디서 오는지 알리는 카드 하나
 {
   const p = await page([report({ t: NOW - 30 * MIN, by: '가', place: '국숫집', crowd: 0 })]);
   await p.fill('#q', '없는말');
+  await p.press('#q', 'Enter');             // 검색은 멈추거나 Enter 면 그린다
   ok((await text(p.locator('#feed'))).includes('거르개를 풀어 보세요') && await p.locator('#feed .guide').count() === 0,
     '거르개에 걸린 것만 없으면 "거르개를 풀어 보세요" — 안내 카드가 아니다');
   ok(await p.locator('#q').isVisible() && await p.locator('#catFilter').isVisible(), '  └ 검색 칸·분야 칩은 그대로 (풀 수 있게)');

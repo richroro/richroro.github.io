@@ -279,7 +279,8 @@ section('뒤로 가기 — 폰의 탭은 먼저 속보로, 그다음에 앱을 �
     await tab(p, 'places');
     await p.evaluate(() => { location.hash = 'r=zz'; });
     await p.waitForTimeout(400);
-    ok(await at(p) === 'places' && p.url() === BASE + '#r=zz', '장소에서 링크(#r=)가 들어와도 뒤로 가기로 오해하지 않는다 — 장소 그대로 (' + await at(p) + ')');
+    /* 링크가 들어오면 받은 것을 보여 주러 속보로 간다(받기 칸이 속보 맨 위에 있다) — 뒤로 가기로 오해해 물러나지는 않는다 */
+    ok(await at(p) === 'feed' && p.url() === BASE + '#r=zz', '장소에서 링크(#r=)가 들어와도 뒤로 가기로 오해하지 않는다 — 주소 그대로, 받은 것을 보여 주러 속보로 (' + await at(p) + ')');
     await p.context().close();
   }
   {
@@ -293,6 +294,8 @@ section('뒤로 가기 — 폰의 탭은 먼저 속보로, 그다음에 앱을 �
     await p.waitForSelector('#inboxYes');
     await tab(p, 'places');
     await p.locator('#inboxYes').click();
+    /* 한 곳 소식을 받으면 그 장소 창이 열린다 — 닫기로 닫고 간다 */
+    if (await p.locator('#placeBack.open').count()) await p.keyboard.press('Escape');
     await tab(p, 'feed');
     await back(p);
     ok(await leaves(p), '링크로 열어 받기 전에 장소로 옮겼다가 받고 속보로 — 뒤로 한 번이면 앱을 떠난다 (' +
@@ -337,6 +340,7 @@ section('뒤로 가기 — 폰의 탭은 먼저 속보로, 그다음에 앱을 �
       await p.locator('#writeBtn').click();
       await p.waitForSelector('#composeBack.open');
       await p.fill('#fPlace', '방금 쓴 곳');
+      await p.locator('#fCrowd [data-v="0"]').click();   // 장소 이름만으로는 안 나간다 — 하나는 고른다
       await p.locator('#composeGo').click();
       await p.waitForSelector('#shareBack.open');
     };
