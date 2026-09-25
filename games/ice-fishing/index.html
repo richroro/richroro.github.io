@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <meta name="theme-color" content="#0E2A47">
-<meta name="description" content="얼어붙은 강에 그물을 치고, 가득 찼을 때 끌어올리는 한 손 낚시 게임. 너무 욕심내면 그물이 찢어집니다.">
+<meta name="description" content="3D로 그린 얼어붙은 강에 그물을 치고, 가득 찼을 때 끌어올리는 한 손 낚시 게임. 너무 욕심내면 그물이 찢어집니다.">
 <title>얼음강 그물잡이</title>
 <link rel="canonical" href="https://richroro.github.io/games/ice-fishing/">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%232E7FD6'/><path d='M22 52q22-22 46 0q-24 22-46 0z' fill='%23DDE8F3'/><path d='M66 52l14-12v24z' fill='%23DDE8F3'/><circle cx='34' cy='49' r='3.5' fill='%230E2A47'/></svg>">
@@ -53,6 +53,7 @@
     position:fixed;left:0;right:0;top:0;z-index:5;pointer-events:none;
     padding:calc(10px + env(safe-area-inset-top)) calc(12px + env(safe-area-inset-right)) 0 calc(12px + env(safe-area-inset-left));
     display:flex;align-items:flex-start;gap:8px;
+    max-width:600px;margin:0 auto;
   }
   .pill{
     background:rgba(14,42,71,.78);color:#fff;border-radius:12px;padding:7px 11px;
@@ -227,8 +228,9 @@
   </div>
 </div>
 
-<script>
-'use strict';
+<script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.min.js"}}</script>
+<script type="module">
+import * as THREE from 'three';
 /* ════════════════════════════════════════════════════════════
    세계 좌표: 가로 400 고정. 강은 x 80~320, 물은 위로 흘러가지 않고
    아래로 흐른다(얼음은 떠내려오고, 물고기는 거슬러 올라온다).
@@ -302,18 +304,368 @@ const sfx = {
 };
 function haptic(ms){ if (save.sound && navigator.vibrate) try{ navigator.vibrate(ms); }catch(e){} }
 
-/* ── 화면 ─────────────────────────────── */
-const cv = document.getElementById('cv'), cx = cv.getContext('2d');
-let S = 1, OX = 0, VH = 700, DPR = 1;   // 세계→화면 배율, 가로 여백, 보이는 세계 높이
+/* ── 화면 (Three.js) ──────────────────────
+   게임 규칙은 2D 세계 좌표(x 0~400, y 아래로 증가)로 돌고, 여기서 3D로 옮겨 그린다.
+   x → X, y → Z(아래쪽 = 카메라 쪽). 1 세계 단위 = 0.05 m. */
+const K = 0.05;
+const VH = 800;                 // 물고기가 나타나는 아래쪽 끝(화면 밖)
+const TOP_Y = -240;             // 얼음이 나타나는 위쪽 끝(안개 속)
+const toX = x => (x - W/2) * K;
+const toZ = y => (y - NET_Y) * K;
+const cv = document.getElementById('cv');
+const renderer = new THREE.WebGLRenderer({ canvas: cv, antialias: true });
+renderer.setPixelRatio(Math.min(2, window.devicePixelRatio || 1));
+renderer.shadowMap.enabled = true;
+renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+renderer.outputColorSpace = THREE.SRGBColorSpace;
+const scene = new THREE.Scene();
+scene.background = new THREE.Color('#DCE9F5');
+scene.fog = new THREE.Fog('#DCE9F5', 38, 78);
+const camera = new THREE.PerspectiveCamera(46, 1, .5, 200);
+const CAM_TARGET = new THREE.Vector3(0, 0, 2.4);
+const CAM_PITCH = 50 * Math.PI/180;
+
+scene.add(new THREE.HemisphereLight('#F4F8FF', '#6D8AA8', 1.5));
+const sun = new THREE.DirectionalLight('#FFF4E2', 2.2);
+sun.position.set(-14, 26, 10);
+sun.castShadow = true;
+sun.shadow.mapSize.set(1024, 1024);
+Object.assign(sun.shadow.camera, { left:-22, right:22, top:26, bottom:-26, near:1, far:80 });
+sun.shadow.bias = -.0008;
+scene.add(sun);
+
 function resize(){
-  DPR = Math.min(2, window.devicePixelRatio || 1);
   const w = cv.clientWidth, h = cv.clientHeight;
-  cv.width = Math.round(w*DPR); cv.height = Math.round(h*DPR);
-  S = Math.min(w / W, h / 640);
-  OX = (w - W*S) / 2;
-  VH = h / S;
+  renderer.setSize(w, h, false);
+  camera.aspect = w / h;
+  // 강 폭(12.2 m)이 가로에 꼭 들어오고, 세로로도 그물 앞뒤가 충분히 보이는 거리
+  const vf = camera.fov * Math.PI/360, hf = Math.atan(Math.tan(vf) * camera.aspect);
+  const d = Math.max(6.9 / Math.tan(hf), 9.5 / Math.tan(vf));
+  camera.position.set(0, Math.sin(CAM_PITCH)*d, CAM_TARGET.z + Math.cos(CAM_PITCH)*d);
+  camera.lookAt(CAM_TARGET);
+  camera.updateProjectionMatrix();
 }
 window.addEventListener('resize', resize);
+
+/* ── 재질과 모양 ── */
+const mat = (color, o={}) => new THREE.MeshStandardMaterial(Object.assign({ color, roughness:.75, metalness:0 }, o));
+const M = {
+  snow: mat('#F6F9FC', { roughness:.95 }), snowShade: mat('#E3ECF5', { roughness:.95 }),
+  bed: mat('#123F6E', { roughness:1 }), rim: mat('#D4E6F6', { roughness:.4 }),
+  wood: mat('#B87645'), woodDark: mat('#7A4A28'), post: mat('#E3A066'),
+  tent: mat('#FFFFFF', { roughness:.9 }), door: mat('#E0573A'),
+  pine: mat('#2F5D4E'), iron: mat('#56626F', { metalness:.4, roughness:.5 }),
+  ice: mat('#F2F8FF', { roughness:.25 }), shark: mat('#4A5F74', { roughness:.5 }), sharkBelly: mat('#8FA2B5'),
+  parka: mat('#F4F6F8'), hat: mat('#E8913A'), face: mat('#E9B994'), rope: mat('#EFE8D6'),
+  float: mat('#FF6B2C', { roughness:.4 }), warn: new THREE.MeshBasicMaterial({ color:'#F04452', transparent:true, opacity:.7, depthWrite:false }),
+  foam: new THREE.MeshBasicMaterial({ color:'#FFFFFF', transparent:true, opacity:.9, depthWrite:false }),
+};
+const FM = {};
+for (const [k, f] of Object.entries(FISH)){
+  FM[k] = { back: mat(f.dark, { roughness:.35, metalness:.25 }), side: mat(f.col, { roughness:.3, metalness:.35 }) };
+}
+FM.gold.side.emissive = new THREE.Color('#6A4200');
+const G_SPHERE = new THREE.SphereGeometry(1, 16, 10);
+const G_TAIL = (() => { const g = new THREE.BufferGeometry();
+  g.setAttribute('position', new THREE.Float32BufferAttribute([0,0,0, -.5,0,1, .5,0,1], 3)); g.computeVertexNormals(); return g; })();
+const G_ICE = new THREE.DodecahedronGeometry(1, 0);
+const G_CYL = new THREE.CylinderGeometry(1, 1, 1, 14);
+const G_CONE = new THREE.ConeGeometry(1, 1, 16);
+const G_BOX = new THREE.BoxGeometry(1, 1, 1);
+
+function mesh(g, m, shadow=true){ const o = new THREE.Mesh(g, m); o.castShadow = shadow; o.receiveShadow = true; return o; }
+
+/* ── 고정 배경: 강바닥, 수면, 눈 덮인 둑, 소품 ── */
+const RIVER_W = (RIVER_R - RIVER_L) * K, LEN = 120;
+{
+  const bed = mesh(new THREE.PlaneGeometry(RIVER_W + 1, LEN), M.bed, false);
+  bed.rotation.x = -Math.PI/2; bed.position.y = -1.7; scene.add(bed);
+  for (const side of [-1, 1]){
+    const bank = mesh(new THREE.BoxGeometry(60, 2.2, LEN), M.snow, false);
+    bank.position.set(side * (RIVER_W/2 + 30), -1.0, 0); scene.add(bank);
+    // 강가 얼음 테두리
+    for (let z = -LEN/2; z < LEN/2; z += 1.6){
+      const r = mesh(G_SPHERE, M.rim, false);
+      r.scale.set(.55 + Math.random()*.3, .18, .9 + Math.random()*.4);
+      r.position.set(side * (RIVER_W/2 - .1), .02, z + Math.random()*.6); scene.add(r);
+    }
+  }
+  // 눈 더미
+  for (let i = 0; i < 40; i++){
+    const s = mesh(G_SPHERE, Math.random() < .5 ? M.snow : M.snowShade);
+    const side = Math.random() < .5 ? -1 : 1;
+    s.scale.set(1 + Math.random()*2.2, .35 + Math.random()*.5, 1 + Math.random()*2);
+    s.position.set(side * (RIVER_W/2 + 3 + Math.random()*18), .1, -45 + Math.random()*75); scene.add(s);
+  }
+}
+const WATER_TEX = (() => {
+  const c = document.createElement('canvas'); c.width = c.height = 256;
+  const g = c.getContext('2d');
+  g.fillStyle = '#FFFFFF'; g.fillRect(0, 0, 256, 256);
+  g.strokeStyle = 'rgba(60,140,215,.45)'; g.lineWidth = 2.5; g.lineCap = 'round';
+  for (let i = 0; i < 14; i++){
+    const x = Math.random()*256, y = Math.random()*256;
+    g.beginPath(); g.moveTo(x, y); g.quadraticCurveTo(x + 10, y + 14, x, y + 30); g.stroke();
+  }
+  const t = new THREE.CanvasTexture(c);
+  t.wrapS = t.wrapT = THREE.RepeatWrapping; t.repeat.set(1.4, 11); t.colorSpace = THREE.SRGBColorSpace;
+  return t;
+})();
+const water = new THREE.Mesh(new THREE.PlaneGeometry(RIVER_W, LEN),
+  new THREE.MeshStandardMaterial({ color:'#3A92E0', map: WATER_TEX, transparent:true, opacity:.5, roughness:.18, metalness:.1, depthWrite:false }));
+water.rotation.x = -Math.PI/2; water.receiveShadow = true; scene.add(water);
+
+function tent(x, z, s=1){
+  const g = new THREE.Group();
+  const c = mesh(G_CONE, M.tent); c.scale.set(1.3*s, 2.4*s, 1.3*s); c.position.y = 1.2*s; g.add(c);
+  const d = mesh(G_CONE, M.door, false); d.scale.set(.5*s, 1.1*s, .5*s); d.position.set(0, .55*s, .85*s); g.add(d);
+  g.position.set(x, .1, z); g.rotation.y = .3; scene.add(g);
+}
+function pine(x, z, s=1){
+  for (let i = 0; i < 3; i++){
+    const c = mesh(G_CONE, i === 2 ? M.snow : M.pine);
+    c.scale.set((1.4 - i*.4)*s, 1.6*s, (1.4 - i*.4)*s); c.position.set(x, (1 + i*.9)*s, z); scene.add(c);
+  }
+}
+tent(-9.6, -9, 1.1); tent(-11.4, -5.5, .85); tent(-10.2, 1.5, 1); tent(-12.5, 8, .9);
+pine(-15, -14, 1.3); pine(-17, -3, 1.1); pine(13, -16, 1.4); pine(16, -6, 1.1); pine(15.5, 10, 1.2); pine(-16, 14, 1);
+{ // 부두와 말뚝
+  const dk = mesh(G_BOX, M.wood); dk.scale.set(3.4, .35, 3.2); dk.position.set(RIVER_W/2 + 1.8, .2, -9); scene.add(dk);
+  for (let i = 0; i < 4; i++){ const b = mesh(G_BOX, M.iron); b.scale.set(.5, .6, 1.2); b.position.set(RIVER_W/2 + .9 + i*.65, .7, -9); scene.add(b); }
+  for (let z = 6; z < 30; z += .75){ const p = mesh(G_CYL, M.post); p.scale.set(.33, 1 + (z*7 % 3)*.12, .33); p.position.set(RIVER_W/2 + .45, .3, z); scene.add(p); }
+}
+// 잡은 고기를 모으는 썰매
+const SLED = new THREE.Group();
+{
+  const base = mesh(G_BOX, M.woodDark); base.scale.set(2.4, .35, 1.6); base.position.y = .3; SLED.add(base);
+  for (const s of [-1, 1]){ const w = mesh(G_BOX, M.wood); w.scale.set(2.4, .5, .12); w.position.set(0, .55, s*.75); SLED.add(w); }
+  for (const s of [-1, 1]){ const w = mesh(G_BOX, M.wood); w.scale.set(.12, .5, 1.6); w.position.set(s*1.15, .55, 0); SLED.add(w); }
+  SLED.position.set(toX(36), .1, toZ(NET_Y - 90)); scene.add(SLED);
+}
+const SLED_PILE = [];
+
+// 눈 내림
+const SNOW = (() => {
+  const n = 500, p = new Float32Array(n*3);
+  for (let i = 0; i < n; i++){ p[i*3] = (Math.random()-.5)*50; p[i*3+1] = Math.random()*30; p[i*3+2] = (Math.random()-.5)*70; }
+  const g = new THREE.BufferGeometry(); g.setAttribute('position', new THREE.BufferAttribute(p, 3));
+  const pts = new THREE.Points(g, new THREE.PointsMaterial({ color:'#FFFFFF', size:.16, transparent:true, opacity:.85, depthWrite:false }));
+  scene.add(pts); return pts;
+})();
+
+/* ── 움직이는 것들의 모양 ── */
+function makeFish(type){
+  const L = FISH[type].len * K * 1.35, g = new THREE.Group();
+  const body = mesh(G_SPHERE, FM[type].back); body.scale.set(L*.2, L*.16, L*.5); g.add(body);
+  const side = mesh(G_SPHERE, FM[type].side, false); side.scale.set(L*.21, L*.1, L*.42); side.position.y = -.02; g.add(side);
+  const tail = new THREE.Group(); tail.position.z = L*.45;
+  const tm = mesh(G_TAIL, FM[type].back); tm.material = FM[type].back; tm.scale.set(L*.55, 1, L*.38);
+  tm.material.side = THREE.DoubleSide; tail.add(tm); g.add(tail);
+  g.userData.tail = tail;
+  return g;
+}
+function makeIce(r, pts){
+  const m = mesh(G_ICE, M.ice);
+  const s = r * K; m.scale.set(s * (pts[0]/r), s*.45, s * (pts[3]/r));
+  return m;
+}
+function makeShark(){
+  const g = new THREE.Group();
+  const b = mesh(G_SPHERE, M.shark); b.scale.set(.7, .55, 2.3); g.add(b);
+  const belly = mesh(G_SPHERE, M.sharkBelly, false); belly.scale.set(.6, .4, 1.9); belly.position.y = -.15; g.add(belly);
+  const fin = mesh(G_CONE, M.shark); fin.scale.set(.16, 1.7, .9); fin.position.set(0, 1.05, -.1); fin.rotation.x = -.35; g.add(fin);
+  for (const s of [-1, 1]){ const p = mesh(G_CONE, M.shark); p.scale.set(.1, .9, .35); p.rotation.z = s*1.3; p.position.set(s*.7, -.1, -.5); g.add(p); }
+  const tail = new THREE.Group(); tail.position.z = 2.1;
+  const t = mesh(G_TAIL, M.shark); t.rotation.z = Math.PI/2; t.scale.set(1.8, 1, 1.2); tail.add(t); g.add(tail);
+  g.userData.tail = tail;
+  return g;
+}
+function makeWarn(){
+  const g = new THREE.Group();
+  const tri = new THREE.Mesh(new THREE.CircleGeometry(1.1, 3), M.warn);
+  tri.rotation.x = -Math.PI/2; tri.rotation.z = Math.PI/2; tri.position.y = .08; g.add(tri);
+  return g;
+}
+function makeDrop(){ const m = new THREE.Mesh(G_SPHERE, M.foam); m.scale.setScalar(.12); return m; }
+
+/* ── 그물 ── */
+const NU = 12, NV = 8;
+const NET_TEX = (() => {
+  const c = document.createElement('canvas'); c.width = c.height = 64;
+  const g = c.getContext('2d'); g.strokeStyle = '#FFFFFF'; g.lineWidth = 3.2;
+  g.beginPath(); g.moveTo(0, 0); g.lineTo(64, 64); g.moveTo(64, 0); g.lineTo(0, 64); g.stroke();
+  const t = new THREE.CanvasTexture(c); t.wrapS = t.wrapT = THREE.RepeatWrapping; return t;
+})();
+const netGeo = new THREE.PlaneGeometry(1, 1, NU, NV);
+const NET_COL = new THREE.Color('#E6D8B8'), NET_HOT = new THREE.Color('#FF5A3C');
+const netMat = new THREE.MeshStandardMaterial({ color:'#E6D8B8', map: NET_TEX, alphaMap: NET_TEX, transparent:true, alphaTest:.25, side:THREE.DoubleSide, roughness:.8 });
+const netMesh = new THREE.Mesh(netGeo, netMat); netMesh.castShadow = true; scene.add(netMesh);
+const NET = new THREE.Group(); scene.add(NET);
+const floats = [], poles = [];
+for (let i = 0; i <= 5; i++){ const f = mesh(G_SPHERE, M.float); f.scale.setScalar(.2); floats.push(f); NET.add(f); }
+for (let i = 0; i < 2; i++){ const p = mesh(G_CYL, M.woodDark); p.scale.set(.14, 2.2, .14); poles.push(p); NET.add(p); }
+const mouthRope = mesh(G_CYL, M.rope, false); mouthRope.rotation.z = Math.PI/2; NET.add(mouthRope);
+const ropes = [0, 1].map(() => { const r = mesh(G_CYL, M.rope, false); NET.add(r); return r; });
+const FISHER = new THREE.Group();
+{
+  const floe = mesh(G_CYL, M.ice); floe.scale.set(1.25, .3, 1.05); floe.position.y = .02; FISHER.add(floe);
+  const body = mesh(new THREE.CapsuleGeometry(.36, .55, 6, 12), M.parka); body.position.y = .85; FISHER.add(body);
+  const head = mesh(G_SPHERE, M.face); head.scale.setScalar(.25); head.position.set(0, 1.55, 0); FISHER.add(head);
+  const hat = mesh(G_SPHERE, M.hat); hat.scale.set(.29, .2, .29); hat.position.set(0, 1.68, .02); FISHER.add(hat);
+  for (const s of [-1, 1]){ const a = mesh(G_CYL, M.parka); a.scale.set(.1, .55, .1); a.position.set(s*.34, 1.0, .25); a.rotation.x = 1.1; FISHER.add(a); }
+  FISHER.userData.body = body;
+  NET.add(FISHER);
+}
+const _a = new THREE.Vector3(), _b = new THREE.Vector3(), _up = new THREE.Vector3(0, 1, 0), _q = new THREE.Quaternion();
+function rope(m, a, b, r=.04){
+  _b.subVectors(b, a); const len = _b.length();
+  m.position.copy(a).addScaledVector(_b, .5);
+  m.quaternion.setFromUnitVectors(_up, _b.normalize());
+  m.scale.set(r, len, r);
+}
+
+/* 주머니 모양: u 0~1(왼→오), v 0~1(입구→끝). 끌어올리면 물 위로 들리며 오므라든다 */
+function netShape(){
+  const n = G.net;
+  const lift = n.state === 'haul' ? Math.min(1, n.timer / n.dur) : 0;
+  const ratio = netLoadRatio(), strain = ratio > .75 ? (ratio - .75)*4 : 0;
+  const shk = (n.shake > 0 ? Math.sin(G.time*80)*.2*n.shake/.4 : 0) + (strain > 0 ? Math.sin(G.time*45)*strain*.08 : 0);
+  return { n, lift, ratio, strain, x: toX(n.x) + shk,
+    mw: n.w*K*(1 - lift*.55), bw: n.w*.72*K*(1 - lift*.4),
+    z0: 0, z1: -NET_DEPTH*K*(1 - lift*.25),
+    sag: (.28 + ratio*.3 + strain*.15) * (1 - lift), rise: lift*2.2 };
+}
+function netPoint(s, u, v, out){
+  const w = s.mw + (s.bw - s.mw)*v;
+  const bul = s.ratio * .35 * Math.sin(Math.PI*v) * (1 - s.lift);
+  out.set(s.x + (u - .5)*(w + bul*2), s.rise - s.sag*Math.sin(Math.PI*(v*.85 + .1)) * (1 - Math.pow(Math.abs(u - .5)*2, 3)*.5),
+          s.z0 + (s.z1 - s.z0)*v);
+  return out;
+}
+function drawNet3D(s){
+  const n = s.n, torn = n.state === 'torn';
+  const pos = netGeo.attributes.position;
+  for (let j = 0; j <= NV; j++) for (let i = 0; i <= NU; i++){
+    netPoint(s, i/NU, j/NV, _a);
+    if (torn){ _a.y -= .5 + Math.sin(G.time*3 + i + j)*.25; _a.x += Math.sin(i*7.3 + j)*.3; }
+    pos.setXYZ(j*(NU + 1) + i, _a.x, _a.y, _a.z);
+  }
+  pos.needsUpdate = true; netGeo.computeVertexNormals();
+  NET_TEX.repeat.set(Math.max(3, s.mw/0.45), 6);
+  netMat.color.set(torn ? '#8A7A64' : s.strain > 0 ? NET_COL.clone().lerp(NET_HOT, Math.min(1, s.strain)) : NET_COL);
+  netMat.opacity = torn ? .45 : 1;
+  // 부표, 장대, 줄
+  const my = s.rise + .05;
+  floats.forEach((f, i) => { f.position.set(s.x - s.mw/2 + s.mw*i/5, my + Math.sin(G.time*3 + i)*.04, s.z0); f.visible = !torn; });
+  poles.forEach((p, i) => { p.position.set(s.x + (i ? 1 : -1)*s.mw/2, my + .3, s.z0); });
+  mouthRope.visible = !torn;
+  mouthRope.position.set(s.x, my, s.z0); mouthRope.scale.set(.05, s.mw, .05);
+  const fz = s.z1 - 1.6;
+  const lean = s.lift > 0 && s.lift < 1 ? Math.sin(s.lift*Math.PI) : 0;
+  FISHER.position.set(s.x, 0, fz);
+  FISHER.userData.body.rotation.x = -lean*.35;
+  for (let i = 0; i < 2; i++){
+    _a.set(s.x + (i ? 1 : -1)*s.mw/2, my + .9, s.z0);
+    _b.set(s.x + (i ? .35 : -.35), 1.15 - lean*.1, fz + .45);
+    rope(ropes[i], _a, _b, .035);
+  }
+}
+
+/* ── 장면 동기화: 게임 상태의 객체마다 메시 하나 ── */
+let prevLive = new Set(), live = new Set();
+function use(obj, make){
+  if (!obj._m){ obj._m = make(); scene.add(obj._m); }
+  live.add(obj._m);
+  return obj._m;
+}
+function swim(m, x, y, z, yaw, ph, amp=.5){
+  m.position.set(x, y, z); m.rotation.set(0, yaw, 0);
+  if (m.userData.tail) m.userData.tail.rotation.y = Math.sin(ph)*amp;
+}
+function draw(){
+  live = new Set();
+  const t = G.time;
+  WATER_TEX.offset.y = -(G.flow * .05) % 1;
+  // 눈
+  const sp = SNOW.geometry.attributes.position;
+  for (let i = 0; i < sp.count; i++){
+    let y = sp.getY(i) - .03 - (i % 5)*.004; if (y < 0) y += 30;
+    sp.setY(i, y); sp.setX(i, sp.getX(i) + Math.sin(t + i)*.004);
+  }
+  sp.needsUpdate = true;
+
+  for (const f of G.fish){
+    const m = use(f, () => makeFish(f.type));
+    swim(m, toX(f.x), -.18, toZ(f.y), Math.cos(f.ph*.35)*.25, f.ph*1.6, .45);
+  }
+  for (const s of G.sharks){
+    if (s.warn > 0){
+      const m = use(s._w || (s._w = {}), makeWarn);
+      m.position.set(toX(s.x), 0, 13.5 - (1.6 - s.warn)*.5);
+      const k = .8 + .25*Math.sin(t*18); m.scale.setScalar(k);
+      continue;
+    }
+    const m = use(s, makeShark);
+    swim(m, toX(s.x + Math.sin(s.ph)*6), -.55, toZ(s.y), Math.cos(s.ph)*.12, s.ph*2, .35);
+  }
+  for (const c of G.ice){
+    const m = use(c, () => makeIce(c.r, c.pts));
+    m.position.set(toX(c.x), .05 + Math.sin(t*2 + c.r)*.03, toZ(c.y)); m.rotation.y = c.rot;
+  }
+  for (const e of G.escaped){
+    const m = use(e, () => makeFish(e.type));
+    swim(m, toX(e.x), -.35 - (1 - e.a)*.6, toZ(e.y), -Math.atan2(e.vx, -e.vy), t*14, .6);
+  }
+
+  const s = netShape();
+  drawNet3D(s);
+  for (const it of G.net.items){
+    const m = use(it, () => it.type === 'ice' ? makeIce(it.r/.8, it.pts) : makeFish(it.type));
+    const u = .5 + it.lx*.9, v = .15 + it.ly*.7;
+    netPoint(s, u, v, _a); _a.y += .12;
+    // 들어오는 순간은 입구에서 제자리로 미끄러져 간다
+    const sx = toX(G.net.x + it.ax), sz = toZ(NET_Y + it.ay);
+    m.position.set(sx + (_a.x - sx)*it.k, -.3 + (_a.y + .3)*it.k, sz + (_a.z - sz)*it.k);
+    if (it.type === 'ice') m.rotation.y = it.rot;
+    else { m.rotation.set(Math.sin(t*9 + it.lx*20)*.5, Math.sin(t*6 + it.ly*9)*.8, 0); m.userData.tail.rotation.y = Math.sin(t*20 + it.lx*9)*.7; }
+  }
+  for (const f of G.fly){
+    if (f.t < 0) continue;
+    const k = f.t / .55, m = use(f, () => makeFish(f.type));
+    const x0 = toX(f.x), z0 = toZ(f.y), x1 = SLED.position.x, z1 = SLED.position.z;
+    m.position.set(x0 + (x1 - x0)*k, 2.4 + Math.sin(k*Math.PI)*2.5 - k*1.6, z0 + (z1 - z0)*k);
+    m.rotation.set(k*9, k*4, 0);
+  }
+  for (const p of G.splash){
+    const m = use(p, makeDrop);
+    m.position.set(toX(p.x), .3 + (1 - p.life)*1.2, toZ(p.y)); m.scale.setScalar(.12*Math.max(.2, p.life*1.6));
+  }
+  // 썰매 위 고기 더미
+  const got = G.counts.smelt + G.counts.salmon + G.counts.gold, want = Math.min(12, Math.ceil(got/4));
+  while (SLED_PILE.length < want){
+    const i = SLED_PILE.length, f = makeFish(i % 3 === 0 ? 'salmon' : i % 7 === 6 ? 'gold' : 'smelt');
+    f.position.set(-.8 + (i % 4)*.52, .75 + (i/4|0)*.16, -.45 + ((i*5) % 3)*.4); f.rotation.set(0, 1.4 + i, .3);
+    SLED.add(f); SLED_PILE.push(f);
+  }
+  while (SLED_PILE.length > want) SLED.remove(SLED_PILE.pop());
+
+  for (const m of prevLive) if (!live.has(m)) scene.remove(m);
+  prevLive = live;
+  renderer.render(scene, camera);
+}
+const _p = new THREE.Vector3();
+function project(wx, wy, h=1){
+  _p.set(toX(wx), h, toZ(wy)).project(camera);
+  return { x: (_p.x + 1)/2 * cv.clientWidth, y: (1 - _p.y)/2 * cv.clientHeight };
+}
+const _ray = new THREE.Raycaster(), _ndc = new THREE.Vector2(), _plane = new THREE.Plane(new THREE.Vector3(0, 1, 0), 0);
+function screenToWorldX(cxp){
+  const r = cv.getBoundingClientRect(), cyp = r.top + project(W/2, NET_Y, 0).y;
+  _ndc.set((cxp - r.left)/r.width*2 - 1, -((cyp - r.top)/r.height*2 - 1));
+  _ray.setFromCamera(_ndc, camera);
+  if (!_ray.ray.intersectPlane(_plane, _a)) return null;
+  return _a.x / K + W/2;
+}
 
 /* ── 상태 ─────────────────────────────── */
 let G = null;
@@ -335,7 +687,7 @@ function spawnEvery(){ return Math.max(.75, 1.55 - G.day*.07) * Math.pow(.88, sa
 function rand(a,b){ return a + Math.random()*(b-a); }
 function spawnSchool(){
   const r = Math.random(), goldP = .05 + G.day*.004;
-  const bottom = Math.max(660, VH + 20);
+  const bottom = VH;
   if (r < goldP){
     const x = rand(RIVER_L+20, RIVER_R-20);
     G.fish.push(mkFish('gold', x, bottom, rand(125,150)));
@@ -357,12 +709,12 @@ function mkFish(type, x, y, sp){
 }
 function spawnIce(){
   const r = rand(11, 19);
-  G.ice.push({ x: rand(RIVER_L+r, RIVER_R-r), y: -r - 10, r, sp: rand(38,52), rot: Math.random()*6, vr: rand(-.6,.6),
+  G.ice.push({ x: rand(RIVER_L+r, RIVER_R-r), y: TOP_Y, r, sp: rand(38,52), rot: Math.random()*6, vr: rand(-.6,.6),
                pts: Array.from({length:7}, (_,i)=> r*rand(.72,1.05)) });
 }
 function spawnShark(){
   const x = rand(RIVER_L+40, RIVER_R-40);
-  G.sharks.push({ x, y: Math.max(700, VH + 40), sp: rand(46,58), ph:0, warn:1.6, gone:false });
+  G.sharks.push({ x, y: VH + 40, sp: rand(46,58), ph:0, warn:1.6, gone:false });
   sfx.warn(); haptic(40);
 }
 
@@ -461,7 +813,7 @@ function update(dt){
       if (f.type === 'gold'){ popAt(f.x, NET_Y - 30, '황금송어!', 'gold'); haptic(25); }
       if (G.net.state !== 'down') break;   // 넘쳐서 찢어짐
     }
-    if (f.y < -40) f.gone = true;
+    if (f.y < TOP_Y) f.gone = true;
   }
   G.fish = G.fish.filter(f => !f.gone);
 
@@ -477,7 +829,7 @@ function update(dt){
       sfx.ice(); haptic(20);
       popAt(c.x, back - 10, `얼음 +${ICE_W}kg`, 'bad');
     }
-    if (c.y > Math.max(700, VH) + 40) c.gone = true;
+    if (c.y > VH + 40) c.gone = true;
   }
   G.ice = G.ice.filter(c => !c.gone);
 
@@ -490,7 +842,7 @@ function update(dt){
     if (open && G.running && py > NET_Y && s.y <= NET_Y && sx + 12 > lo && sx - 12 < hi){
       rip('상어가 뚫고 갔다');
     }
-    if (s.y < -80) s.gone = true;
+    if (s.y < TOP_Y) s.gone = true;
   }
   G.sharks = G.sharks.filter(s => !s.gone);
 
@@ -503,248 +855,6 @@ function update(dt){
   for (const it of n.items) it.k = Math.min(1, it.k + dt*5);
 }
 function clampNet(x){ const h = G.net.w/2; return Math.max(RIVER_L + h - 6, Math.min(RIVER_R - h + 6, x)); }
-
-/* ── 그리기 ─────────────────────────── */
-function draw(){
-  const w = cv.width, h = cv.height;
-  cx.setTransform(1,0,0,1,0,0);
-  cx.fillStyle = '#EAF2F9'; cx.fillRect(0,0,w,h);
-  cx.setTransform(S*DPR, 0, 0, S*DPR, OX*DPR, 0);
-  const top = 0, bot = VH;
-  const leftEdge = -OX/S, rightEdge = W + OX/S;
-
-  // 눈 덮인 강둑
-  cx.fillStyle = '#F4F8FC'; cx.fillRect(leftEdge, top, RIVER_L - leftEdge, bot);
-  cx.fillRect(RIVER_R, top, rightEdge - RIVER_R, bot);
-  cx.fillStyle = 'rgba(160,190,220,.25)';
-  for (let y = -40; y < bot; y += 90){ blob(30, y + 20, 26, 8); blob(370, y + 60, 30, 9); }
-
-  // 강물
-  const g = cx.createLinearGradient(RIVER_L, 0, RIVER_R, 0);
-  g.addColorStop(0, '#2A6FB8'); g.addColorStop(.5, '#2E86D8'); g.addColorStop(1, '#2A6FB8');
-  cx.fillStyle = g; cx.fillRect(RIVER_L, top, RIVER_R - RIVER_L, bot);
-  // 강 가장자리 얼음 테두리
-  cx.fillStyle = '#CFE3F5';
-  for (let y = -20 - (G.flow*20 % 40); y < bot + 40; y += 40){
-    cx.beginPath(); cx.ellipse(RIVER_L, y, 7, 22, 0, 0, 7); cx.fill();
-    cx.beginPath(); cx.ellipse(RIVER_R, y + 20, 7, 22, 0, 0, 7); cx.fill();
-  }
-  // 흐르는 물결
-  cx.strokeStyle = 'rgba(255,255,255,.18)'; cx.lineWidth = 2; cx.lineCap = 'round';
-  const off = (G.flow * 40) % 80;
-  for (let y = -80 + off; y < bot + 80; y += 80){
-    for (let i=0;i<4;i++){
-      const x = RIVER_L + 30 + i*58 + ((y/80|0)%2)*24;
-      cx.beginPath(); cx.moveTo(x, y + i*17); cx.quadraticCurveTo(x+8, y + i*17 + 10, x, y + i*17 + 22); cx.stroke();
-    }
-  }
-
-  // 강둑 소품: 텐트, 말뚝, 부두
-  for (let y = 60; y < bot; y += 260){ tent(34, y); tent(52, y + 60, .8); }
-  cx.fillStyle = '#C9844A';
-  for (let y = NET_Y + 140; y < bot; y += 16){ post(RIVER_R + 10, y); }
-  dock(RIVER_R + 12, 120);
-
-  // 바구니(잡은 고기 모으는 썰매)
-  sled(36, NET_Y - 90);
-
-  // 상어 경고
-  for (const s of G.sharks){
-    if (s.warn > 0){
-      const a = .5 + .5*Math.sin(G.time*18);
-      cx.fillStyle = `rgba(240,68,82,${.35+.5*a})`;
-      const wy = bot - 190;
-      cx.beginPath(); cx.moveTo(s.x, wy - 26); cx.lineTo(s.x - 20, wy + 10); cx.lineTo(s.x + 20, wy + 10); cx.closePath(); cx.fill();
-      cx.fillStyle = '#fff'; cx.font = 'bold 22px system-ui'; cx.textAlign = 'center'; cx.fillText('!', s.x, wy + 6);
-    }
-  }
-
-  // 물고기, 상어, 얼음
-  for (const f of G.fish) fish(f.type, f.x, f.y, -Math.PI/2 + Math.cos(f.ph*.35)*.25, f.ph);
-  for (const s of G.sharks) if (s.warn <= 0) shark(s.x + Math.sin(s.ph)*6, s.y, s.ph);
-  for (const c of G.ice) ice(c.x, c.y, c.pts, c.rot);
-  for (const e of G.escaped){ cx.globalAlpha = Math.max(0, e.a); fish(e.type, e.x, e.y, Math.atan2(e.vy, e.vx), G.time*10); cx.globalAlpha = 1; }
-
-  drawNet();
-
-  for (const f of G.fly){
-    if (f.t < 0) continue;
-    const k = f.t / .55, x = f.x + (f.tx - f.x)*k, y = f.y + (f.ty - f.y)*k - Math.sin(k*Math.PI)*60;
-    fish(f.type, x, y, k*8, 0, .9);
-  }
-  for (const p of G.splash){ cx.globalAlpha = Math.max(0, p.life*1.6); cx.fillStyle = p.col; cx.beginPath(); cx.arc(p.x, p.y, 3, 0, 7); cx.fill(); }
-  cx.globalAlpha = 1;
-}
-function blob(x, y, rx, ry){ cx.beginPath(); cx.ellipse(x, y, rx, ry, 0, 0, 7); cx.fill(); }
-function tent(x, y, s=1){
-  cx.save(); cx.translate(x, y); cx.scale(s, s);
-  cx.fillStyle = 'rgba(80,110,140,.18)'; blob(3, 22, 26, 8);
-  cx.fillStyle = '#FFFFFF';
-  cx.beginPath(); cx.moveTo(0,-26); cx.lineTo(24,20); cx.lineTo(-24,20); cx.closePath(); cx.fill();
-  cx.strokeStyle = '#B9CCDE'; cx.lineWidth = 1.5;
-  for (let i=-2;i<=2;i++){ cx.beginPath(); cx.moveTo(0,-26); cx.lineTo(i*10, 20); cx.stroke(); }
-  cx.fillStyle = '#E0573A';
-  cx.beginPath(); cx.moveTo(0,4); cx.lineTo(8,20); cx.lineTo(-8,20); cx.closePath(); cx.fill();
-  cx.restore();
-}
-function post(x, y){
-  cx.fillStyle = '#A8683A'; cx.beginPath(); cx.ellipse(x, y+3, 7, 7, 0, 0, 7); cx.fill();
-  cx.fillStyle = '#E6A066'; cx.beginPath(); cx.ellipse(x, y, 7, 6, 0, 0, 7); cx.fill();
-}
-function dock(x, y){
-  cx.fillStyle = '#B87645'; cx.fillRect(x, y, 70, 60);
-  cx.strokeStyle = '#8A5230'; cx.lineWidth = 1.5;
-  for (let i=1;i<6;i++){ cx.beginPath(); cx.moveTo(x, y + i*10); cx.lineTo(x+70, y + i*10); cx.stroke(); }
-  cx.fillStyle = '#5A6573';
-  for (let i=0;i<4;i++){ cx.fillRect(x + 12 + i*13, y + 18, 9, 24); }
-  cx.fillStyle = '#C8D2DC';
-  for (let i=0;i<4;i++){ cx.fillRect(x + 13 + i*13, y + 20, 7, 4); }
-}
-function sled(x, y){
-  cx.fillStyle = 'rgba(80,110,140,.2)'; blob(x, y + 20, 30, 8);
-  cx.fillStyle = '#8A5230'; roundRect(x - 26, y - 14, 52, 32, 8); cx.fill();
-  cx.fillStyle = '#B87645'; roundRect(x - 22, y - 10, 44, 24, 6); cx.fill();
-  const got = G.counts.smelt + G.counts.salmon + G.counts.gold;
-  const n = Math.min(10, Math.ceil(got/4));
-  for (let i=0;i<n;i++) fish(i%3===0 ? 'salmon' : 'smelt', x - 14 + (i%4)*9, y - 4 + (i/4|0)*7, .4 + i, 0, .55);
-}
-function roundRect(x, y, w, h, r){
-  cx.beginPath(); cx.moveTo(x+r, y); cx.arcTo(x+w, y, x+w, y+h, r); cx.arcTo(x+w, y+h, x, y+h, r);
-  cx.arcTo(x, y+h, x, y, r); cx.arcTo(x, y, x+w, y, r); cx.closePath();
-}
-function fish(type, x, y, ang, ph, sc=1){
-  const F = FISH[type], L = F.len * sc, wig = Math.sin(ph) * .35;
-  cx.save(); cx.translate(x, y); cx.rotate(ang);
-  cx.fillStyle = 'rgba(10,40,80,.28)'; cx.beginPath(); cx.ellipse(3, 4, L*.5, L*.17, 0, 0, 7); cx.fill();
-  // 꼬리
-  cx.save(); cx.translate(-L*.42, 0); cx.rotate(wig);
-  cx.fillStyle = F.dark; cx.beginPath(); cx.moveTo(0,0); cx.lineTo(-L*.3, -L*.2); cx.lineTo(-L*.3, L*.2); cx.closePath(); cx.fill();
-  cx.restore();
-  cx.fillStyle = F.dark; cx.beginPath(); cx.ellipse(0, 0, L*.5, L*.17, 0, 0, 7); cx.fill();
-  cx.fillStyle = F.col; cx.beginPath(); cx.ellipse(L*.03, 0, L*.44, L*.1, 0, 0, 7); cx.fill();
-  if (type === 'gold'){ cx.fillStyle = 'rgba(255,255,255,.7)'; cx.beginPath(); cx.ellipse(L*.1, -L*.03, L*.18, L*.03, 0, 0, 7); cx.fill(); }
-  cx.fillStyle = '#0E1C2B'; cx.beginPath(); cx.arc(L*.34, -L*.06, Math.max(1, L*.035), 0, 7); cx.arc(L*.34, L*.06, Math.max(1, L*.035), 0, 7); cx.fill();
-  cx.restore();
-}
-function shark(x, y, ph){
-  cx.save(); cx.translate(x, y); cx.rotate(-Math.PI/2);
-  cx.fillStyle = 'rgba(10,30,60,.35)'; cx.beginPath(); cx.ellipse(5, 6, 44, 14, 0, 0, 7); cx.fill();
-  cx.save(); cx.translate(-36, 0); cx.rotate(Math.sin(ph)*.3);
-  cx.fillStyle = '#394B5E'; cx.beginPath(); cx.moveTo(0,0); cx.lineTo(-20,-16); cx.lineTo(-14,0); cx.lineTo(-20,16); cx.closePath(); cx.fill();
-  cx.restore();
-  cx.fillStyle = '#4A5F74'; cx.beginPath(); cx.ellipse(0, 0, 44, 13, 0, 0, 7); cx.fill();
-  cx.fillStyle = '#394B5E';
-  cx.beginPath(); cx.moveTo(10, -10); cx.lineTo(-6, -26); cx.lineTo(-4, -10); cx.fill();
-  cx.beginPath(); cx.moveTo(10, 10); cx.lineTo(-6, 26); cx.lineTo(-4, 10); cx.fill();
-  cx.fillStyle = '#6C8196'; cx.beginPath(); cx.ellipse(-4, 0, 16, 4, 0, 0, 7); cx.fill();
-  cx.fillStyle = '#111'; cx.beginPath(); cx.arc(30, -6, 1.8, 0, 7); cx.arc(30, 6, 1.8, 0, 7); cx.fill();
-  cx.restore();
-}
-function ice(x, y, pts, rot){
-  cx.save(); cx.translate(x, y); cx.rotate(rot);
-  cx.fillStyle = 'rgba(10,40,80,.25)'; poly(pts, 3, 4); cx.fill();
-  cx.fillStyle = '#F2F8FF'; poly(pts, 0, 0); cx.fill();
-  cx.strokeStyle = '#A9CBEA'; cx.lineWidth = 2; cx.stroke();
-  cx.fillStyle = 'rgba(169,203,234,.5)'; cx.beginPath(); cx.ellipse(-pts[0]*.2, pts[0]*.2, pts[0]*.35, pts[0]*.18, .5, 0, 7); cx.fill();
-  cx.restore();
-}
-function poly(pts, dx, dy){
-  cx.beginPath();
-  pts.forEach((r,i)=>{ const a = i/pts.length*Math.PI*2; const px = Math.cos(a)*r + dx, py = Math.sin(a)*r + dy; i ? cx.lineTo(px,py) : cx.moveTo(px,py); });
-  cx.closePath();
-}
-function drawNet(){
-  const n = G.net;
-  let lift = 0;                         // 0=물속, 1=다 끌어올림
-  if (n.state === 'haul') lift = Math.min(1, n.timer / n.dur);
-  const shk = n.shake > 0 ? Math.sin(G.time*80)*4*n.shake/.4 : 0;
-  const ratio = netLoadRatio(), strain = ratio > .75 ? (ratio-.75)*4 : 0;
-  const jitter = strain > 0 ? Math.sin(G.time*45)*strain*1.6 : 0;
-  const x = n.x + shk + jitter;
-  const mw = n.w * (1 - lift*.55);                       // 입구 폭
-  const bw = n.w * .72 * (1 - lift*.4);                  // 주머니 끝 폭
-  const my = NET_Y - lift*38, by = NET_Y - NET_DEPTH - lift*14;
-  const bulge = (ratio*14 + strain*6) * (1 - lift);
-
-  if (n.state === 'torn'){
-    // 찢어진 그물: 너덜너덜한 조각과 수선 게이지
-    cx.strokeStyle = 'rgba(210,170,110,.7)'; cx.lineWidth = 1.5;
-    for (let i=0;i<8;i++){
-      const px = x - n.w/2 + (i+.5)*n.w/8, sw = Math.sin(G.time*3 + i)*6;
-      cx.beginPath(); cx.moveTo(px, NET_Y - NET_DEPTH); cx.quadraticCurveTo(px + sw, NET_Y - NET_DEPTH/2, px + sw*.5, NET_Y - 10 - (i%3)*12); cx.stroke();
-    }
-    poleAndRope(x, n.w, NET_Y, NET_Y - NET_DEPTH, 0);
-    const k = 1 - n.timer / 2.4;
-    cx.fillStyle = 'rgba(14,42,71,.8)'; roundRect(x - 40, NET_Y + 16, 80, 20, 8); cx.fill();
-    cx.fillStyle = '#FFB020'; roundRect(x - 36, NET_Y + 22, 72*k, 8, 4); cx.fill();
-    cx.fillStyle = '#fff'; cx.font = 'bold 11px system-ui'; cx.textAlign = 'center'; cx.fillText('수선 중', x, NET_Y + 50);
-    return;
-  }
-
-  // 주머니 모양 경로
-  const path = () => {
-    cx.beginPath();
-    cx.moveTo(x - mw/2, my);
-    cx.quadraticCurveTo(x - mw/2 - bulge*.6, (my+by)/2, x - bw/2, by);
-    cx.quadraticCurveTo(x, by - bulge, x + bw/2, by);
-    cx.quadraticCurveTo(x + mw/2 + bulge*.6, (my+by)/2, x + mw/2, my);
-    cx.closePath();
-  };
-  // 물속 그림자
-  cx.save(); cx.translate(4, 6); path(); cx.fillStyle = 'rgba(10,40,80,.22)'; cx.fill(); cx.restore();
-
-  // 잡힌 것들
-  cx.save(); path(); cx.clip();
-  for (const it of n.items){
-    const tx = it.lx * (mw*.9), ty = -it.ly * (my - by + bulge*.5);
-    const px = x + it.ax*(1-it.k) + tx*it.k, py = my + it.ay*(1-it.k) + ty*it.k;
-    if (it.type === 'ice') ice(px, py, it.pts.map(r => r*.8), it.rot);
-    else fish(it.type, px, py, -Math.PI/2 + Math.sin(G.time*8 + it.lx*20)*.6, G.time*14 + it.ly*9, .92);
-  }
-  cx.restore();
-
-  // 그물코
-  cx.save(); path(); cx.clip();
-  cx.strokeStyle = strain > 0 ? `rgba(255,${200 - strain*140|0},${150 - strain*120|0},.85)` : 'rgba(40,60,80,.55)';
-  cx.lineWidth = 1.2;
-  const step = 11, x0 = x - n.w, x1 = x + n.w;
-  for (let s = x0 - 200; s < x1 + 200; s += step){
-    cx.beginPath(); cx.moveTo(s, by - 20); cx.lineTo(s + (my - by + 40), my + 20); cx.stroke();
-    cx.beginPath(); cx.moveTo(s, my + 20); cx.lineTo(s + (my - by + 40), by - 20); cx.stroke();
-  }
-  cx.restore();
-  path(); cx.strokeStyle = strain > 0 ? '#FF7A5C' : '#3A4E63'; cx.lineWidth = 2.2; cx.stroke();
-
-  // 입구 부표 줄
-  cx.strokeStyle = '#E8E1D0'; cx.lineWidth = 3;
-  cx.beginPath(); cx.moveTo(x - mw/2, my); cx.lineTo(x + mw/2, my); cx.stroke();
-  cx.fillStyle = '#FF6B2C';
-  for (let i=0;i<=4;i++){ cx.beginPath(); cx.arc(x - mw/2 + mw*i/4, my, 3.2, 0, 7); cx.fill(); }
-
-  poleAndRope(x, mw, my, by, lift);
-}
-function poleAndRope(x, mw, my, by, lift){
-  // 어부: 주머니 끝 위쪽 얼음 위에 서서 두 줄을 당긴다
-  const fx = x, fy = by - 30 + lift*6;
-  cx.strokeStyle = '#F2EEE4'; cx.lineWidth = 2.4;
-  cx.beginPath(); cx.moveTo(x - mw/2, my); cx.lineTo(fx - 6, fy + 4); cx.stroke();
-  cx.beginPath(); cx.moveTo(x + mw/2, my); cx.lineTo(fx + 6, fy + 4); cx.stroke();
-  for (const px of [x - mw/2, x + mw/2]){
-    cx.fillStyle = '#6B4424'; cx.beginPath(); cx.arc(px, my, 5.5, 0, 7); cx.fill();
-    cx.fillStyle = '#9C6A3F'; cx.beginPath(); cx.arc(px - 1, my - 1, 3.5, 0, 7); cx.fill();
-  }
-  // 얼음 발판
-  cx.fillStyle = 'rgba(10,40,80,.25)'; blob(fx + 3, fy + 5, 22, 14);
-  cx.fillStyle = '#F2F8FF'; blob(fx, fy + 2, 21, 13);
-  cx.strokeStyle = '#A9CBEA'; cx.lineWidth = 1.5; cx.stroke();
-  // 사람(위에서 본 모습)
-  const lean = lift > 0 && lift < 1 ? Math.sin(lift*Math.PI)*3 : 0;
-  cx.fillStyle = '#DDE3EA'; blob(fx, fy - lean, 10, 8);             // 파카
-  cx.fillStyle = '#FFFFFF'; blob(fx, fy - 1 - lean, 8.5, 6.5);
-  cx.fillStyle = '#E8913A'; cx.beginPath(); cx.arc(fx, fy - 4 - lean, 5, 0, 7); cx.fill();   // 모자
-  cx.fillStyle = '#3B2A20'; cx.beginPath(); cx.arc(fx, fy - 3 - lean, 3, 0, 7); cx.fill();
-  cx.fillStyle = '#6B4424'; cx.beginPath(); cx.arc(fx - 6, fy + 4, 2.4, 0, 7); cx.arc(fx + 6, fy + 4, 2.4, 0, 7); cx.fill();
-}
 
 /* ── HUD ─────────────────────────────── */
 const $ = id => document.getElementById(id);
@@ -773,7 +883,7 @@ function updateHUD(force){
 function popAt(wx, wy, text, cls){
   const el = document.createElement('div');
   el.className = 'pop ' + (cls||''); el.textContent = text;
-  const sx = OX + wx*S, sy = wy*S;
+  const { x: sx, y: sy } = project(wx, wy, 1.2);
   el.style.left = Math.max(70, Math.min(innerWidth - 70, sx)) + 'px'; el.style.top = sy + 'px';
   $('pops').appendChild(el); setTimeout(() => el.remove(), 1000);
 }
@@ -841,8 +951,8 @@ cv.addEventListener('pointerup', () => dragging = false);
 cv.addEventListener('pointercancel', () => dragging = false);
 function setTarget(e){
   if (!G) return;
-  const r = cv.getBoundingClientRect();
-  G.net.tx = clampNet((e.clientX - r.left - OX) / S);
+  const x = screenToWorldX(e.clientX);
+  if (x !== null) G.net.tx = clampNet(x);
 }
 $('haul').addEventListener('click', haul);
 const keys = {};
