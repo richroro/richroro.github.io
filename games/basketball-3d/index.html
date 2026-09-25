@@ -5,20 +5,20 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <meta name="theme-color" content="#0A1120">
 <title>한 손 농구 3D</title>
-<meta name="description" content="three.js로 만든 3D 농구. 공을 위로 끌어 올려 조준하고 손을 떼면 슛. 자유투부터 3점 콘테스트까지 스테이지 10개.">
+<meta name="description" content="three.js로 만든 3D 농구. 프로 리그 규격 코트와 24초 샷 클락, 중계 화면 같은 점수판. 스테이지 10개, 무한 모드, 올스타전 방식 3점슛 콘테스트.">
 <link rel="canonical" href="https://richroro.github.io/games/basketball-3d/">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='46' fill='%23FF6B2C'/><g stroke='%235A2A08' stroke-width='5' fill='none'><circle cx='50' cy='50' r='46'/><path d='M50 4v92M4 50h92M18 18q32 32 0 64M82 18q-32 32 0 64'/></g></svg>">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="한 손 농구 3D">
 <meta property="og:title" content="한 손 농구 3D">
-<meta property="og:description" content="끌어 올려 조준하고 손을 떼면 슛. 진짜 크기 코트에서 림을 맞고 굴러 들어가는 3D 농구.">
+<meta property="og:description" content="프로 리그 규격 코트, 24초 샷 클락, 중계 화면. 끌어 올려 던지는 3D 농구와 올스타전 방식 3점슛 콘테스트.">
 <meta property="og:url" content="https://richroro.github.io/games/basketball-3d/">
 <meta property="og:image" content="https://richroro.github.io/games/basketball-3d/og.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="한 손 농구 3D">
-<meta name="twitter:description" content="끌어 올려 조준하고 손을 떼면 슛. 진짜 크기 코트에서 림을 맞고 굴러 들어가는 3D 농구.">
+<meta name="twitter:description" content="프로 리그 규격 코트, 24초 샷 클락, 중계 화면. 끌어 올려 던지는 3D 농구와 올스타전 방식 3점슛 콘테스트.">
 <meta name="twitter:image" content="https://richroro.github.io/games/basketball-3d/og.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -125,6 +125,16 @@
     transition:opacity .2s,transform .2s}
   .balls i.gold{background:linear-gradient(160deg,#FFE7A0,#D99A12)}
   .balls i.used{opacity:.22;transform:scale(.7)}
+  .balls{flex-wrap:wrap;row-gap:4px}
+  /* 3점슛 콘테스트 랙 표: 랙마다 공 다섯 칸, 딥 3점은 한 칸 */
+  .balls .rk{display:flex;gap:2px;padding:2px 3px;border-radius:6px;background:rgba(255,255,255,.08)}
+  .balls .rk.deep{background:rgba(31,163,122,.22)}
+  .balls .rk i{width:9px;height:9px;opacity:.32;transform:none}
+  .balls .rk i.money{background:linear-gradient(160deg,#FFE7A0,#D99A12)}
+  .balls .rk i.deep{background:linear-gradient(160deg,#8ff0d0,#1b9c74)}
+  .balls .rk i.hit{opacity:1}
+  .balls .rk i.miss{opacity:1;background:#3a3f4a}
+  .balls .rk i.now{opacity:1;box-shadow:0 0 0 2px #fff}
   .balls u{font-size:11px;font-weight:700;color:var(--on-night-2);text-decoration:none;margin-left:6px;white-space:nowrap}
   .timer{display:flex;align-items:center;gap:9px}
   .timer[hidden]{display:none}
@@ -250,6 +260,14 @@
   .row .btn{flex:1}
   .btn:disabled{opacity:.5;cursor:default}
   .btn:disabled:active{transform:none}
+  /* 머니볼 랙 고르기 */
+  .rackpick{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin-top:14px}
+  .rackpick button{border:0;border-radius:12px;background:var(--bg);padding:10px 2px;font:inherit;font-size:12px;
+    font-weight:700;color:var(--ink-2);cursor:pointer;line-height:1.3}
+  .rackpick button.on{background:#FFF4DE;color:#9A5B00;box-shadow:inset 0 0 0 2px var(--gold)}
+  .rackpick button i{display:block;width:14px;height:14px;margin:0 auto 5px;border-radius:50%;
+    background:linear-gradient(160deg,#FF9B5E,#E9520F)}
+  .rackpick button.on i{background:linear-gradient(160deg,#FFE7A0,#D99A12)}
   /* 화질 고르기 */
   .seg{display:flex;align-items:center;gap:4px;margin-top:12px;font-size:12px;font-weight:700;color:var(--ink-3s)}
   .seg span{margin-right:auto;text-align:left}
@@ -345,7 +363,10 @@
     <div class="btns">
       <button class="btn primary" id="btnResume" hidden>계속하기</button>
       <button class="btn primary" id="btnPlay">1스테이지 시작</button>
-      <button class="btn ghost" id="btnEndless">∞ 무한 모드</button>
+      <div class="row">
+        <button class="btn ghost" id="btnEndless">∞ 무한 모드</button>
+        <button class="btn ghost" id="btnContest">🏆 3점슛 콘테스트</button>
+      </div>
     </div>
     <div class="seg" id="qualSeg" role="group" aria-label="화질"><span id="qualNow">화질</span><button data-q="auto">자동</button><button data-q="high">높음</button><button data-q="mid">보통</button><button data-q="low">절약</button></div>
     <p class="note" id="saveNote" hidden>이 브라우저는 기록을 저장하지 못해요. 창을 닫으면 별이 사라져요.</p>
@@ -367,6 +388,21 @@
         <button class="btn ghost" id="rRetry">다시 하기</button>
         <button class="btn ghost" id="rList">스테이지 목록</button>
       </div>
+    </div>
+  </div>
+</div>
+
+<div class="veil dim" id="pick">
+  <div class="sheet">
+    <h2>머니볼 랙 고르기</h2>
+    <p>60초 안에 랙 다섯 개의 공 25개와 딥 3점 2개를 던져요. 보통 공 1점, 랙 마지막 머니볼 2점, 딥 3점 공 3점.
+      고른 랙은 다섯 개가 다 머니볼이에요. 최고 40점.</p>
+    <div class="rackpick" id="rackPick">
+      <button data-r="0"><i></i>왼쪽<br>코너</button><button data-r="1"><i></i>왼쪽<br>윙</button><button data-r="2"><i></i>탑</button><button data-r="3"><i></i>오른쪽<br>윙</button><button data-r="4"><i></i>오른쪽<br>코너</button>
+    </div>
+    <div class="btns">
+      <button class="btn primary" id="pickGo">시작</button>
+      <button class="btn ghost" id="pickBack">메뉴로</button>
     </div>
   </div>
 </div>
@@ -692,7 +728,7 @@ var STAGES = [
   { name: "코너 3점", sub: "옆줄 쪽 6.71m, 가장 짧은 3점", spots: [[-6.95, 0.35]], balls: 6, goal: 3, guide: 0.5 },
   { name: "움직이는 골대", sub: "골대가 좌우로 움직여요. 올 자리를 노려요", spots: [[0, 5.4]], balls: 7, goal: 3, guide: 0.5, move: [1.0, 3.6] },
   { name: "바람", sub: "공마다 바람이 바뀌어요", spots: [[1.6, 5.8]], balls: 7, goal: 3, guide: 0.45, wind: 1.8 },
-  { name: "3점 콘테스트", sub: "다섯 자리에서 두 개씩. 금색 공은 2골", spots: [[-6.95, 0.5], [-5.25, 5.25], [0, 7.55], [5.25, 5.25], [6.95, 0.5]], per: 2, balls: 10, goal: 6, guide: 0.45 },
+  { name: "3점 다섯 자리", sub: "다섯 자리에서 두 개씩. 금색 공은 2골", spots: [[-6.95, 0.5], [-5.25, 5.25], [0, 7.55], [5.25, 5.25], [6.95, 0.5]], per: 2, balls: 10, goal: 6, guide: 0.45 },
   { name: "딥 3점", sub: "3점 라인 한 걸음 반 뒤, 8.8m", spots: [[0, 8.8]], balls: 6, goal: 2, guide: 0.42 },
   { name: "버저비터 러시", sub: "45초 안에 8골. 공이 바로바로 나와요", spots: [[0, FT_Z], [-2.45, 4.6], [2.45, 4.6], [0, 5.6]], per: 4, rapid: true, time: 45, goal: 8, guide: 0.5 }
 ];
@@ -701,7 +737,32 @@ var STAGES = [
 var ENDLESS_I = STAGES.length;
 var ENDLESS = { name: "무한 모드", sub: "세 번 놓치면 끝. 넣을수록 멀어지고 바람이 불어요", endless: true, guide: 0.5,
   goal: Infinity, balls: Infinity, spots: [[0, FT_Z]] };
-function defFor(i) { return i === ENDLESS_I ? ENDLESS : STAGES[clamp(i | 0, 0, STAGES.length - 1)]; }
+// 3점슛 콘테스트(올스타 방식): 60초. 랙 다섯 개(왼쪽 코너·왼쪽 윙·탑·오른쪽 윙·오른쪽 코너)에 공 다섯 개씩, 마지막 공은
+// 머니볼(2점)이고 고른 랙 하나는 다섯 개 모두 머니볼. 윙과 탑 사이, 3점 라인 6피트(1.83m) 뒤에 딥 3점 공(3점)이 하나씩.
+// 모두 27개, 최고 40점. 보통 공은 1점이라 스위시·불 배수는 없다
+var CONTEST_I = STAGES.length + 1;
+var DEEP_R = THREE_PT + 1.83, DEEP_A = 22.5 * Math.PI / 180;
+var CONTEST_SPOTS = [[-6.95, 0.6], [-5.3, 5.3], [-Math.sin(DEEP_A) * DEEP_R, Math.cos(DEEP_A) * DEEP_R], [0, 7.55],
+  [Math.sin(DEEP_A) * DEEP_R, Math.cos(DEEP_A) * DEEP_R], [5.3, 5.3], [6.95, 0.6]];
+var CONTEST_ORDER = [[0, 0], [1, 1], [2, -1], [3, 2], [4, -1], [5, 3], [6, 4]];   // [자리, 랙(딥이면 −1)]
+var CONTEST_SEQ = (function () {
+  var q = [];
+  CONTEST_ORDER.forEach(function (o) {
+    if (o[1] < 0) q.push([o[0], -1, 0]);
+    else for (var k = 0; k < 5; k++) q.push([o[0], o[1], k]);
+  });
+  return q;
+})();
+var CONTEST = { name: "3점슛 콘테스트", sub: "60초 · 27개 · 머니볼 2점 · 딥 3점은 3점", contest: true, rapid: true, time: 60,
+  guide: 0.42, goal: Infinity, balls: CONTEST_SEQ.length, spots: CONTEST_SPOTS };
+var moneyRack = clamp(+store.get("moneyRack", "2") || 0, 0, 4);
+function contestKind(n) {
+  var q = CONTEST_SEQ[n];
+  if (!q) return "reg";
+  if (q[1] < 0) return "deep";
+  return q[2] === 4 || q[1] === moneyRack ? "money" : "reg";
+}
+function defFor(i) { return i === ENDLESS_I ? ENDLESS : i === CONTEST_I ? CONTEST : STAGES[clamp(i | 0, 0, STAGES.length - 1)]; }
 
 var rseed = 1;
 function rng() { rseed = (rseed * 16807) % 2147483647; return rseed / 2147483647; }
@@ -1135,8 +1196,8 @@ function ledDraw() {
     g.fillStyle = "#8cc0ff"; ledFont(g, "RICHRORO HOOPS", 52, W * 0.9, LED_KO); g.fillText("RICHRORO HOOPS", W / 2, H * 0.84);
   } else {
     var d = ST.def, v = d.rapid ? Math.ceil(Math.max(0, ST.timeLeft) - 1e-6) : d.endless ? ST.made : d.balls - ST.thrown;
-    var ttl = d.endless ? "∞ · 무한 모드" : (ST.i + 1) + " · " + d.name;
-    var mid = d.endless ? "목숨 " + Math.max(0, ST.lives) : "골 " + Math.min(ST.made, d.goal) + "/" + d.goal;
+    var ttl = d.contest ? "3점슛 콘테스트" : d.endless ? "∞ · 무한 모드" : (ST.i + 1) + " · " + d.name;
+    var mid = d.contest ? "성공 " + ST.made : d.endless ? "목숨 " + Math.max(0, ST.lives) : "골 " + Math.min(ST.made, d.goal) + "/" + d.goal;
     g.textAlign = "left"; g.fillStyle = "#8b95a1"; g.font = "800 36px " + LED_KO; g.fillText("SCORE", 36, 56);
     g.fillStyle = ST.fire ? "#ff6b2c" : "#ffb020"; ledFont(g, String(ST.points), 150, 300); g.fillText(String(ST.points), 30, 184);
     g.textAlign = "center"; g.fillStyle = "#ffffff"; ledFont(g, ttl, 52, 420, LED_KO);
@@ -1432,9 +1493,9 @@ scDraw("24");
 
 /* ── 공 ── */
 // 가로세로 2:1 등장방형 그림. 적도 한 줄 + 극을 지나는 큰 원 + 양옆의 굽은 줄 두 개
-function drawBall(gold) {
+function drawBall(gold, base) {
   var W = 1024, H = 512, c = mkCanvas(W, H), g = c.getContext("2d");
-  g.fillStyle = gold ? "#E9B43C" : "#D8601E"; g.fillRect(0, 0, W, H);
+  g.fillStyle = base || (gold ? "#E9B43C" : "#D8601E"); g.fillRect(0, 0, W, H);
   for (var i = 0; i < 30000; i++) {
     g.fillStyle = vr() < 0.5 ? "rgba(0,0,0,.10)" : "rgba(255,255,255,.07)";
     g.fillRect(vr() * W, vr() * H, 2, 2);
@@ -1486,7 +1547,8 @@ var BALL_MAP = canvasTex(drawBall(false)), BALL_NRM = ballNormalMap(), NRM_S = n
 var MAT = {
   ball: new THREE.MeshStandardMaterial({ map: BALL_MAP, normalMap: BALL_NRM, normalScale: NRM_S, roughness: 0.6, metalness: 0 }),
   gold: new THREE.MeshStandardMaterial({ map: canvasTex(drawBall(true)), normalMap: BALL_NRM, normalScale: NRM_S, roughness: 0.3, metalness: 0.55, emissive: col(0x3a2400) }),
-  fire: new THREE.MeshStandardMaterial({ map: BALL_MAP, normalMap: BALL_NRM, normalScale: NRM_S, roughness: 0.55, metalness: 0, emissive: col(0xff4a10), emissiveIntensity: 0.45 })
+  fire: new THREE.MeshStandardMaterial({ map: BALL_MAP, normalMap: BALL_NRM, normalScale: NRM_S, roughness: 0.55, metalness: 0, emissive: col(0xff4a10), emissiveIntensity: 0.45 }),
+  deep: new THREE.MeshStandardMaterial({ map: canvasTex(drawBall(false, "#1FA37A")), normalMap: BALL_NRM, normalScale: NRM_S, roughness: 0.45, metalness: 0.15 })
 };
 var meshPool = [];
 function takeMesh() {
@@ -1498,6 +1560,57 @@ function takeMesh() {
   return m;
 }
 function dropMesh(m) { scene.remove(m); meshPool.push(m); }
+
+/* ── 3점슛 콘테스트 랙: 자리마다 슛하는 사람 오른쪽 앞에 공 다섯 개가 얹힌 금속 거치대, 딥 3점 자리는 받침대에 공 하나 ── */
+var RACKS = [];
+(function buildRacks() {
+  var metal = new THREE.MeshStandardMaterial({ color: col(0xb9c2d0), roughness: 0.35, metalness: 0.8 });
+  function rod(r, len, x, y, z, rx) {
+    var m = new THREE.Mesh(new THREE.CylinderGeometry(r, r, len, 10), metal);
+    m.position.set(x, y, z); if (rx) m.rotation.x = Math.PI / 2;
+    return m;
+  }
+  CONTEST_SPOTS.forEach(function (sp, r) {
+    var d = Math.hypot(sp[0], sp[1]), fx = -sp[0] / d, fz = -sp[1] / d, rx = -fz, rz = fx;
+    var grp = new THREE.Group(), deep = r === 2 || r === 4, e = { group: grp, balls: [] };
+    grp.position.set(sp[0] + rx * 0.62 + fx * 0.25, 0, sp[1] + rz * 0.62 + fz * 0.25);
+    grp.rotation.y = Math.atan2(fx, fz);            // 거치대 길이 방향이 골대 쪽
+    var n = deep ? 1 : 5;
+    if (deep) {
+      grp.add(rod(0.05, 0.84, 0, 0.42, 0));
+      var plate = new THREE.Mesh(new THREE.CylinderGeometry(0.16, 0.2, 0.05, 20), metal);
+      plate.position.y = 0.86; grp.add(plate);
+    } else {
+      [-0.075, 0.075].forEach(function (x) {
+        grp.add(rod(0.018, 1.22, x, 0.82, 0.6, true));
+        grp.add(rod(0.02, 0.82, x, 0.41, 0.04));
+        grp.add(rod(0.02, 0.82, x, 0.41, 1.16));
+      });
+    }
+    for (var k = 0; k < n; k++) {
+      var m = new THREE.Mesh(ballGeo, MAT.ball);
+      m.position.set(0, deep ? 0.89 + BALL_R : 0.82 + BALL_R * 0.72, deep ? 0 : 0.12 + 0.245 * k);
+      m.rotation.set(vr() * 6, vr() * 6, 0);
+      m.castShadow = true;
+      grp.add(m); e.balls.push(m);
+    }
+    grp.visible = false;
+    scene.add(grp);
+    RACKS.push(e);
+  });
+})();
+// 판마다 머니볼 랙에 맞춰 공 색을 다시 칠하고 다 올려 둔다
+function racksReset(show) {
+  RACKS.forEach(function (e) { e.group.visible = show; });
+  if (!show) return;
+  CONTEST_SEQ.forEach(function (q, n) {
+    var m = RACKS[q[0]].balls[q[2]], k = contestKind(n);
+    m.material = k === "deep" ? MAT.deep : k === "money" ? MAT.gold : MAT.ball;
+    m.visible = true;
+  });
+}
+// 공을 집으면 거치대에서 빠진다
+function rackTake(n) { var q = CONTEST_SEQ[n]; if (q) RACKS[q[0]].balls[q[2]].visible = false; }
 
 /* ── 그물: 매듭을 점으로 두고 줄로 잇는 천 흉내(Verlet). 마름모 짜임 ── */
 var NK = [], NL = [];
@@ -1794,7 +1907,7 @@ function newBall(gold) {
     t: 0, shot: null, scored: false, done: false, dead: false, after: 0, rim: 0, rimHits: 0, board: 0, floor: 0,
     upIn: false, still: 0, cr: 0, cb: 0, cf: 0, appear: 1, fade: 1 };
 }
-function paint(b) { b.mesh.material = b.gold ? MAT.gold : b.fire ? MAT.fire : MAT.ball; }
+function paint(b) { b.mesh.material = b.kind === "deep" ? MAT.deep : b.gold ? MAT.gold : b.fire ? MAT.fire : MAT.ball; }
 
 // 날아가는 공과 조준 점선이 함께 쓰는 한 걸음. 둘이 다른 식을 쓰면 점선이 공과 어긋난다
 function integrate(s, h) {
@@ -2291,6 +2404,10 @@ function endlessSpot(n) {
   return { x: x, z: Math.max(0.4, z), i: n };
 }
 function spotFor(n) {
+  if (ST.def.contest) {
+    var q = CONTEST_SEQ[Math.min(n, CONTEST_SEQ.length - 1)], sp = CONTEST_SPOTS[q[0]];
+    return { x: sp[0], z: sp[1], i: q[0] };
+  }
   if (ST.def.endless) { if (!ST.spots[n]) ST.spots[n] = endlessSpot(n); return ST.spots[n]; }
   var d = ST.def, i = d.per ? Math.floor(n / d.per) % d.spots.length : 0;
   return { x: d.spots[i][0], z: d.spots[i][1], i: i };
@@ -2298,9 +2415,10 @@ function spotFor(n) {
 function isGold(n) {
   var d = ST.def;
   if (d.endless) return n % 7 === 6;
+  if (d.contest) return contestKind(n) === "money";
   return d.per ? n % d.per === d.per - 1 : n === d.balls - 1;
 }
-function left() { return ST.def.endless ? (ST.lives > 0 ? Infinity : 0) : ST.def.rapid ? Infinity : ST.def.balls - ST.thrown; }
+function left() { return ST.def.contest ? CONTEST_SEQ.length - ST.thrown : ST.def.endless ? (ST.lives > 0 ? Infinity : 0) : ST.def.rapid ? Infinity : ST.def.balls - ST.thrown; }
 function potential() {
   var s = 0;
   for (var n = ST.thrown; n < ST.def.balls; n++) s += isGold(n) ? 2 : 1;
@@ -2316,7 +2434,7 @@ function clearBalls() {
 
 function startStage(i) {
   var def = defFor(i);
-  i = def === ENDLESS ? ENDLESS_I : clamp(i | 0, 0, STAGES.length - 1);
+  i = def === ENDLESS ? ENDLESS_I : def === CONTEST ? CONTEST_I : clamp(i | 0, 0, STAGES.length - 1);
   replayStop();
   clearBalls();
   rpReset();
@@ -2325,7 +2443,8 @@ function startStage(i) {
   ST = { i: i, def: def, made: 0, thrown: 0, points: 0, streak: 0, fire: false, swishes: 0,
     inFlight: 0, over: false, win: false, endT: 0, nextT: 0.55, hoopT: 0, clock: 0,
     timeLeft: def.time || 0, timeOver: false, spot: -1, buzzer: false, shotT: SHOT_CLOCK, shotOn: false,
-    lives: 3, spots: [], move: null, ew: 0, level: 0, nextLife: 10, bestStreak: 0 };
+    lives: 3, spots: [], move: null, ew: 0, level: 0, nextLife: 10, bestStreak: 0, results: [] };
+  racksReset(!!def.contest);
   hoop.x = 0; hoop.vx = 0;
   wind.x = wind.z = wind.s = 0;
   fx.slowT = 0; fx.hitStop = 0;
@@ -2340,9 +2459,10 @@ function startStage(i) {
   hud();
   if (i === 0 && !save.stars[0]) hint(true);
   lastTrail = null;
-  if (def.endless) ledFlash("무한 모드", "세 번 놓치면 끝", "#ffb020", 1.6);
+  if (def.contest) ledFlash("3점슛 콘테스트", "머니볼 랙: " + ["왼쪽 코너", "왼쪽 윙", "탑", "오른쪽 윙", "오른쪽 코너"][moneyRack], "#ffb020", 1.8);
+  else if (def.endless) ledFlash("무한 모드", "세 번 놓치면 끝", "#ffb020", 1.6);
   else ledFlash((i + 1) + "스테이지", def.name, "#ffffff", 1.6);
-  toast(def.endless ? "∞ 무한 모드" : (i + 1) + ". " + def.name, def.sub, 2200);
+  toast(def.contest ? "🏆 3점슛 콘테스트" : def.endless ? "∞ 무한 모드" : (i + 1) + ". " + def.name, def.sub, 2200);
   sfx.organ();
 }
 
@@ -2362,6 +2482,12 @@ function spawnHeld() {
   } else { wind.x = wind.z = wind.s = 0; }
   held = newBall(isGold(n));
   held.fire = ST.fire;
+  if (ST.def.contest) {
+    held.kind = contestKind(n);
+    held.fire = false;
+    rackTake(n);
+    if (held.kind === "deep") toast("딥 3점", "넣으면 3점", 900);
+  }
   paint(held);
   holdPos(0, curSpot, held.p);
   held.appear = 0;
@@ -2394,7 +2520,8 @@ function throwBall(pow, yaw) {
   cam.rate = 3;
   sfx.shoot(pow);
   hint(false);
-  if (ST.def.rapid) ST.nextT = 0.5;
+  // 콘테스트는 같은 랙이면 곧바로, 다음 랙이면 옮겨 가는 동안 조금 늦게 다음 공이 나온다
+  if (ST.def.rapid) ST.nextT = ST.def.contest ? (ST.thrown < CONTEST_SEQ.length && spotFor(ST.thrown).i === ST.spot ? 0.35 : 0.95) : 0.5;
   hud();
   return true;
 }
@@ -2402,6 +2529,7 @@ function throwBall(pow, yaw) {
 function made(b) {
   b.scored = true;
   var swish = b.rim === 0 && b.board === 0, bank = b.board > 0;
+  if (ST.def.contest) { contestMade(b, swish); return; }
   var base = b.shot.three ? 3 : 2;
   var pts = base * (b.gold ? 2 : 1) * (b.shot.fire ? 2 : 1) + (swish ? 1 : 0);
   var clinch = !ST.over && ST.made + (b.gold ? 2 : 1) >= ST.def.goal;
@@ -2428,14 +2556,32 @@ function made(b) {
   shotResult(b, true);
 }
 
+// 콘테스트 골: 보통 1 · 머니볼 2 · 딥 3점. 끝내기·배수 없음
+function contestMade(b, swish) {
+  var pts = b.kind === "deep" ? 3 : b.gold ? 2 : 1;
+  ST.points += pts;
+  if (swish) ST.swishes++;
+  goalFx(b, swish, false);
+  sfx.goal({ swish: swish, clinch: false, combo: Math.min(ST.streak, 6) });
+  var c = b.kind === "deep" ? ["DEEP THREE!", "딥 3점"] : b.gold ? ["MONEY!", "머니볼"] : swish ? ["SPLASH!", "스위시"] : ["BANG!", "3점"];
+  var gold = b.kind === "deep" || b.gold;
+  popup(c[0], c[1] + " +" + pts, gold ? "gold" : swish ? "splash" : "");
+  ribFlash(c[0], gold ? "#ffb020" : "#8cc0ff", 1.4);
+  ledFlash(c[0], c[1] + " +" + pts + "점", gold ? "#ffb020" : "#8cc0ff", 1.1);
+  crowdReact(gold ? 2 : 1);
+  if (b.kind === "deep") cameraFlashes(10, 0.8);
+  shotResult(b, true);
+}
+
 function shotResult(b, ok) {
   if (b.done) return;
   b.done = true;
   if (b.trail) lastTrail = { key: b.shot.key, pts: b.trail, ok: ok };
   if (!ST || mode !== "play") return;
   ST.inFlight = Math.max(0, ST.inFlight - 1);
+  if (ST.def.contest) ST.results[b.shot.n] = ok ? 1 : 0;
   if (ok) {
-    ST.made += b.gold ? 2 : 1;
+    ST.made += ST.def.contest ? 1 : b.gold ? 2 : 1;
     ST.streak++;
     ST.bestStreak = Math.max(ST.bestStreak, ST.streak);
     if (ST.def.endless && ST.made >= ST.nextLife) {
@@ -2445,14 +2591,14 @@ function shotResult(b, ok) {
   } else {
     if (ST.def.endless) { ST.lives--; ledFlash(ST.lives > 0 ? "목숨 " + ST.lives : "끝!", missWhere(b), "#f04452", 1.3); }
     var close = b.rimHits > 0 || b.board > 0;
-    popup(close ? "SO CLOSE" : "AIRBALL", (close ? "아깝다" : "에어볼") + " · " + missWhere(b), "soft");
+    if (!ST.def.contest) popup(close ? "SO CLOSE" : "AIRBALL", (close ? "아깝다" : "에어볼") + " · " + missWhere(b), "soft");
     sfx.nogoal();
     ST.streak = 0;
     if (ST.fire) { ST.fire = false; if (held) { held.fire = false; paint(held); } }
   }
   checkEnd(ok);
   // 판이 끝나는 골이면 불붙이기는 건너뛴다. 예전엔 결과 시트 위에 '온 파이어' 알림이 떴다
-  if (ok && !ST.over && ST.streak >= 3 && !ST.fire) {
+  if (ok && !ST.over && ST.streak >= 3 && !ST.fire && !ST.def.contest) {
     ST.fire = true;
     sfx.fire();
     toast("🔥 ON FIRE!", "3연속! 넣는 동안 점수 2배", 1600);
@@ -2492,6 +2638,14 @@ function endlessNext() {
 function checkEnd(lastOk) {
   if (ST.over) return;
   var def = ST.def;
+  if (def.contest) {
+    if ((ST.timeOver || ST.thrown >= CONTEST_SEQ.length) && ST.inFlight === 0 && !held) {
+      ST.over = true; ST.win = ST.points >= 8; ST.endT = 1.5;
+      cancelAim();
+      if (!ST.timeOver) { sfx.horn(); lampFx(1.8); }
+    }
+    return;
+  }
   if (def.endless) {
     if (ST.lives <= 0 && ST.inFlight === 0) {
       ST.over = true; ST.win = false; ST.endT = 1.3;
@@ -2601,6 +2755,7 @@ function gameTick(dt) {
 
 function starsFor() {
   var d = ST.def;
+  if (d.contest) return ST.points >= 20 ? 3 : ST.points >= 14 ? 2 : ST.points >= 8 ? 1 : 0;
   if (!ST.win || d.endless) return 0;
   if (d.rapid) return ST.timeLeft >= 15 ? 3 : ST.timeLeft >= 7 ? 2 : 1;
   var spare = d.balls - ST.thrown, extra = d.balls - d.goal;
@@ -2710,9 +2865,12 @@ var lastGoal = -1;
 function hud() {
   if (!ST) return;
   var d = ST.def;
-  $("stTitle").textContent = d.endless ? "∞ · 무한 모드" : (ST.i + 1) + " · " + d.name;
-  $("goalLab").textContent = d.endless ? "목숨" : "골";
-  if (d.endless) {
+  $("stTitle").textContent = d.contest ? "🏆 3점슛 콘테스트" : d.endless ? "∞ · 무한 모드" : (ST.i + 1) + " · " + d.name;
+  $("goalLab").textContent = d.contest ? "성공" : d.endless ? "목숨" : "골";
+  if (d.contest) {
+    $("goalNow").textContent = ST.made;
+    $("goalNeed").textContent = "/" + CONTEST_SEQ.length;
+  } else if (d.endless) {
     $("goalNow").textContent = "♥♥♥".slice(0, Math.max(0, ST.lives));
     $("goalNeed").textContent = "♡♡♡".slice(0, Math.max(0, 3 - ST.lives));
   } else {
@@ -2730,7 +2888,20 @@ function hud() {
   $("chipFire").hidden = !ST.fire;
   $("chipThree").hidden = !isThree(curSpot);
   var dots = $("ballDots");
-  if (d.endless) {
+  if (d.contest) {
+    $("timerBox").hidden = false;
+    timerHud();
+    var html = "", n = 0;
+    CONTEST_ORDER.forEach(function (o) {
+      html += '<span class="rk' + (o[1] < 0 ? " deep" : "") + '">';
+      for (var k = 0; k < (o[1] < 0 ? 1 : 5); k++, n++) {
+        var r = ST.results[n];
+        html += '<i class="' + contestKind(n) + (r === 1 ? " hit" : r === 0 ? " miss" : n === ST.thrown && held ? " now" : "") + '"></i>';
+      }
+      html += "</span>";
+    });
+    dots.innerHTML = html;
+  } else if (d.endless) {
     $("timerBox").hidden = true;
     dots.innerHTML = "<u>넣은 골 " + ST.made + " · 연속 " + ST.streak + (save.endless ? " · 최고 " + save.endless + "점" : "") + "</u>";
   } else if (d.rapid) {
@@ -2837,7 +3008,7 @@ function popup(word, sub, cls) {
 }
 
 function hideVeils() {
-  ["menu", "result"].forEach(function (id) { $(id).classList.remove("show"); });
+  ["menu", "result", "pick"].forEach(function (id) { $(id).classList.remove("show"); });
 }
 function drawGrid() {
   var g = $("grid"), html = "", sum = 0;
@@ -2866,8 +3037,9 @@ function showMenu() {
   pb.dataset.i = canResume ? ST.i : next;
   $("saveNote").hidden = store.ok;
   var eb = $("btnEndless"), openE = save.open >= 2;
-  eb.disabled = !openE;
-  eb.textContent = openE ? "∞ 무한 모드" + (save.endless ? " · 최고 " + save.endless + "점" : "") : "∞ 무한 모드 · 1스테이지를 깨면 열려요";
+  eb.disabled = false;
+  eb.textContent = "∞ 무한 모드" + (save.endless ? " · 최고 " + save.endless : "");
+  $("btnContest").textContent = "🏆 3점슛 콘테스트" + (save.contest ? " · 최고 " + save.contest : "");
   qualUi();
   $("result").classList.remove("show");
   $("menu").classList.add("show");
@@ -2884,6 +3056,24 @@ $("grid").addEventListener("click", function (e) {
 });
 $("btnPlay").onclick = function () { tapped = true; sfx.unlock(); startStage(+this.dataset.i || 0); };
 $("btnEndless").onclick = function () { if (this.disabled) return; tapped = true; sfx.unlock(); startStage(ENDLESS_I); };
+function pickUi() {
+  Array.prototype.forEach.call($("rackPick").children, function (b) { b.classList.toggle("on", +b.dataset.r === moneyRack); });
+}
+$("btnContest").onclick = function () {
+  tapped = true; sfx.unlock();
+  pickUi();
+  $("menu").classList.remove("show");
+  $("pick").classList.add("show");
+};
+$("rackPick").addEventListener("click", function (e) {
+  var b = e.target.closest("button");
+  if (!b) return;
+  moneyRack = +b.dataset.r;
+  store.set("moneyRack", moneyRack);
+  pickUi();
+});
+$("pickGo").onclick = function () { $("pick").classList.remove("show"); startStage(CONTEST_I); };
+$("pickBack").onclick = function () { $("pick").classList.remove("show"); showMenu(); };
 $("qualSeg").addEventListener("click", function (e) {
   var b = e.target.closest("button");
   if (!b) return;
@@ -2903,6 +3093,7 @@ function showResult() {
   mode = "result";
   cancelAim();
   if (d.endless) { showEndlessResult(); return; }
+  if (d.contest) { showContestResult(); return; }
   if (ST.win) {
     save.stars[i] = Math.max(save.stars[i] | 0, stars);
     if (i + 2 > save.open) save.open = Math.min(STAGES.length, i + 2);
@@ -2938,6 +3129,39 @@ function showResult() {
   $("rRetry").className = "btn " + (ST.win && !allClear ? "ghost" : "primary");
   $("result").classList.add("show");
   if (ST.win) sfx.clear(stars); else sfx.fail();
+}
+function showStars(n, show) {
+  var st = $("rStars");
+  st.hidden = !show;
+  Array.prototype.forEach.call(st.children, function (el, k) {
+    el.className = "";
+    void el.offsetWidth;
+    el.className = k < n ? "on" : "off";
+    el.style.animationDelay = (0.15 + k * 0.18) + "s";
+  });
+}
+function showContestResult() {
+  var best = save.contest | 0, nb = ST.points > best, stars = starsFor(), money = 0, deep = 0;
+  if (nb) save.contest = ST.points;
+  persist();
+  ST.results.forEach(function (r, n) {
+    if (r !== 1) return;
+    var k = contestKind(n);
+    if (k === "money") money++; else if (k === "deep") deep++;
+  });
+  $("rTitle").textContent = stars >= 3 ? "3점슛 챔피언!" : "3점슛 콘테스트 끝";
+  showStars(stars, true);
+  $("rPts").textContent = ST.points + "점";
+  $("rSub").textContent = "성공 " + ST.made + "/" + CONTEST_SEQ.length + " · 던진 공 " + ST.thrown + " · 머니볼 " + money + " · 딥 3점 " + deep +
+    (nb && ST.points ? " · 최고 기록!" : best ? " · 최고 " + best + "점" : "");
+  var tip = $("rTip");
+  tip.hidden = stars >= 3;
+  tip.textContent = "8점 ★ · 14점 ★★ · 20점 ★★★. 한 랙에서는 자리가 같으니 같은 세기로 빠르게, 머니볼 랙은 자신 있는 자리로 골라요.";
+  $("rNext").hidden = true;
+  $("rReplay").hidden = true;
+  $("rRetry").className = "btn primary";
+  $("result").classList.add("show");
+  if (stars) sfx.clear(stars); else sfx.fail();
 }
 function showEndlessResult() {
   var best = save.endless | 0, nb = ST.points > best;
@@ -3198,6 +3422,10 @@ window.H3 = {
     return { qual: qual, pref: qualPref, refl: REFL.on, shadow: keyLight.castShadow, dpr: renderer.getPixelRatio(), rt: [REFL.w, REFL.h] };
   },
   ENDLESS: ENDLESS_I,
+  CONTEST: CONTEST_I,
+  setMoneyRack: function (r) { moneyRack = r; },
+  contest: function () { return ST ? { results: ST.results.slice(), kind: CONTEST_SEQ.map(function (q, n) { return contestKind(n); }),
+    racks: RACKS.map(function (e) { return e.balls.map(function (m) { return m.visible; }); }), shown: RACKS[0].group.visible } : null; },
   tap: function () { tapped = true; },
   shotClock: function () { return ST ? { t: ST.shotT, on: ST.shotOn, lamp: lamp.t > 0, text: $("bugClock").textContent } : null; },
   lives: function () { return ST ? { lives: ST.lives, level: ST.level, move: ST.move, streak: ST.streak, best: ST.bestStreak } : null; },
