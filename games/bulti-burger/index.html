@@ -294,14 +294,20 @@
   .coachGo{display:none;border:0;border-radius:10px;background:var(--blue);color:#fff;
     font:inherit;font-size:13.5px;font-weight:800;padding:9px 14px;cursor:pointer}
   #coach.done .coachGo{display:block}
+  /* 글씨는 작게 두되 누르는 자리는 44px 높이를 채운다 */
   .coachSkip{border:0;background:none;color:rgba(255,255,255,.6);font:inherit;font-size:12px;
-    font-weight:700;padding:6px 4px;cursor:pointer}
+    font-weight:700;padding:0 10px;min-height:44px;min-width:56px;margin:-6px -6px -8px 0;cursor:pointer}
   #tutPtr{position:fixed;z-index:12;width:54px;height:54px;margin:-27px 0 0 -27px;border-radius:50%;
     border:3px solid var(--blue);pointer-events:none;display:none;
     box-shadow:0 0 0 6px rgba(49,130,246,.18);animation:ptr 1s ease-in-out infinite}
   #tutPtr.on{display:block}
+  /* 서빙 버튼은 링과 같은 파랑이라 동그라미를 버튼 위에 얹으면 안쪽이 묻히고 글자를 가린다.
+     버튼 바깥을 두르는 둥근 사각형으로 바꾸고, 크기 대신 밝기로 숨 쉬게 한다
+     (360px 폭을 15% 키우면 양옆으로 27px 씩 튄다). */
+  #tutPtr.wide{border-radius:18px;animation:ptrWide 1s ease-in-out infinite}
+  @keyframes ptrWide{0%,100%{opacity:1}50%{opacity:.45}}
   @keyframes ptr{0%,100%{transform:scale(.85);opacity:1}50%{transform:scale(1.15);opacity:.55}}
-  @media (prefers-reduced-motion:reduce){ #tutPtr{animation:none} #coach.on{animation:none} }
+  @media (prefers-reduced-motion:reduce){ #tutPtr, #tutPtr.wide{animation:none} #coach.on{animation:none} }
 
   /* 등급 배지 · 기록 화면 */
   .scoreLine{display:flex;align-items:center;justify-content:center;gap:10px;margin:10px 0 2px}
@@ -341,7 +347,9 @@
   .combo.fever{color:#C98A00}
   @media (prefers-reduced-motion:reduce){ #stage.fever #board{box-shadow:inset 0 0 0 3px var(--gold)} }
 
-  #hurt{position:fixed;inset:0;z-index:15;pointer-events:none;opacity:0;
+  /* 몸통(폰 폭 프레임) 기준. fixed 로 창 전체에 깔면 데스크톱에서 460px 프레임이 투명한
+     가운데에 다 들어가서 붉은색이 프레임 밖 회색 여백에만 번진다. */
+  #hurt{position:absolute;inset:0;z-index:15;pointer-events:none;opacity:0;
     background:radial-gradient(ellipse at center, rgba(240,68,82,0) 42%, rgba(240,68,82,.55) 100%)}
   #toast{
     position:fixed;left:50%;top:calc(196px + env(safe-area-inset-top));
@@ -590,10 +598,12 @@ var Toss = (function () {
     } catch (e) { return null; }
   }
   // SDK 함수는 전부 비동기다. 게임 흐름을 막을 이유가 없으니 호출만
-  // 걸어두고 연결 여부만 즉시 돌려준다.
+  // 걸어두고 연결 여부만 즉시 돌려준다. 호출 자체가 그 자리에서 예외를 던지면
+  // 연결 안 된 것으로 치고 웹 동작으로 넘어간다 — true 를 돌려주면 🏆 를 눌러도
+  // 아무 화면 없이 게임만 멈춘다.
   function fire(fn, arg) {
-    try { Promise.resolve(fn(arg)).catch(function () {}); } catch (e) {}
-    return true;
+    try { Promise.resolve(fn(arg)).catch(function () {}); return true; }
+    catch (e) { return false; }
   }
   return {
     inToss: function () { return !!bridge(); },
@@ -1017,6 +1027,14 @@ var sfx = (function () {
       var AC = window.AudioContext || window.webkitAudioContext;
       if (!AC) return null;
       try { ac = new AC(); } catch (e) { return null; }
+      // resume() 은 비동기다. 이어하기 직후 바로 앱을 내리면 stopAll() 이 볼 때는 아직
+      // suspended 인데, 그 뒤에 끝난 resume() 이 뒤로 간 앱에서 컨텍스트를 켜 버렸다.
+      // 켜진 순간 멈춘 상태면 다시 끈다.
+      try {
+        ac.addEventListener("statechange", function () {
+          if (ac.state === "running" && (halted || document.hidden)) { try { ac.suspend(); } catch (e) {} }
+        });
+      } catch (e) {}
     }
     if (ac.state === "suspended") { try { ac.resume(); } catch (e) {} }
     return ac;
@@ -1141,7 +1159,9 @@ var sfx = (function () {
     stopAll: function () {
       halted = true;
       musicStop();
-      if (ac && ac.state === "running") { try { ac.suspend(); } catch (e) {} }
+      // running 일 때만 끄면 resume() 이 진행 중인 컨텍스트를 놓친다. 요청은 순서대로
+      // 처리되므로 closed 가 아니면 무조건 suspend 를 뒤에 세운다.
+      if (ac && ac.state !== "closed") { try { ac.suspend(); } catch (e) {} }
     },
     wake: function () {
       halted = false;
@@ -1242,8 +1262,19 @@ var vipServed = 0, rushSaves = 0, maxCombo = 0, bestStreak = 0, noHitMark = fals
 
 /* ── 누적 기록 · 도전 과제 (재접속해도 남는다) ─────────────── */
 function loadJSON(k, d) { try { var v = JSON.parse(store.get(k, "")); return v == null ? d : v; } catch (e) { return d; } }
-var stats = loadJSON("stats", null) || { games: 0, served: 0, bestCombo: 0, top: [] };
-if (!stats.top) stats.top = [];
+// 저장값은 밖에서 바뀔 수 있다(다른 버전·확장 프로그램·손으로 고친 값). 모양이 틀리면
+// '5' 같은 원시값에 top 을 달다가 부팅이 죽거나, 게임 오버 때 top.push 가 터져 결과 화면이
+// 안 뜬다. 쓰기 전에 모양을 맞춘다.
+var stats = loadJSON("stats", null);
+if (!stats || typeof stats !== "object" || Array.isArray(stats)) stats = {};
+stats.games = Math.max(0, +stats.games || 0);
+stats.served = Math.max(0, +stats.served || 0);
+stats.bestCombo = Math.max(0, +stats.bestCombo || 0);
+stats.top = (Array.isArray(stats.top) ? stats.top : []).filter(function (r) {
+  return r && typeof r === "object" && isFinite(r.s) && r.s > 0;
+}).map(function (r) {
+  return { s: +r.s, g: /^[SABCD]$/.test(r.g) ? r.g : "D", n: Math.max(0, +r.n || 0), d: String(r.d || "") };
+}).slice(0, 5);
 var achDone = loadJSON("ach", []);
 if (!Array.isArray(achDone)) achDone = [];
 var newAchThisGame = [];
@@ -1638,7 +1669,9 @@ function doServe(c, isRush) {
     else {
       perfectStreak++;
       // 잘 만들면 그 자리에서 시간으로 환전된다 — 가장 급한 다른 손님이 조금 더 기다려 준다
-      if (ratio >= HEAL_AT) {
+      // 튜토리얼에선 인내심이 멈춰 있어 회복할 게 없다. 게다가 번쩍임을 줄이는 tick() 이
+      // 튜토리얼 동안 돌지 않아서 막대가 초록으로 굳고 설명 없는 '+5%' 가 뜬다.
+      if (ratio >= HEAL_AT && !tut) {
         var h = mostUrgent(c);
         if (h) {
           h.left = Math.min(h.max, h.left + h.max * HEAL_AMT);
@@ -1703,6 +1736,7 @@ function doServe(c, isRush) {
 }
 
 function shortServe() {
+  if (tut) tut.short = 1;           // 코치가 왜 버려졌는지 설명한다
   score = Math.max(0, score - 150);
   combo = 0; perfectStreak = 0; endFever(true);
   lock = LOCK_SHORT;
@@ -1915,7 +1949,9 @@ function paintMini(cv, order, done) {
     if (i === done) {
       c.save();
       c.strokeStyle = "#3182F6"; c.lineWidth = 1.5;
-      rr(c, cx - w / 2 - 3, y - lh - 1.5, w + 6, lh + 3, 4); c.stroke();
+      // 맨 아래 층(y = 캔버스 높이 − 1)이면 아랫변이 캔버스 밖으로 나가므로 높이를 줄인다
+      var ty = y - lh - 1.5;
+      rr(c, cx - w / 2 - 3, ty, w + 6, Math.min(lh + 3, r.height - 1 - ty), 4); c.stroke();
       var ax = Math.min(r.width - 2, cx + w / 2 + 10), ay = y - lh / 2;
       c.fillStyle = "#3182F6";
       c.beginPath(); c.moveTo(ax, ay - 4); c.lineTo(ax - 5, ay); c.lineTo(ax, ay + 4); c.closePath(); c.fill();
@@ -1925,8 +1961,11 @@ function paintMini(cv, order, done) {
   }
   drawIngredient(c, "bunT", cx, y - capH / 2, w + 3, capH, { alpha: done === n ? 1 : 0.9 });
   if (done === n) {                            // 다 쌓았으면 윗빵 자리에 파란 테두리
+    // 7재료 VIP 는 층이 예산을 꽉 채워 테두리 윗변이 y=0 에 걸린다. 1.5px 선의 절반이
+    // 캔버스 밖으로 나가 윗변만 얇아지므로, 윗변을 1px 안쪽으로 당긴다(아랫변은 그대로).
+    var fy = Math.max(1, y - capH - 2);
     c.save(); c.strokeStyle = "#3182F6"; c.lineWidth = 1.5;
-    rr(c, cx - w / 2 - 4, y - capH - 2, w + 8, capH + 3, 3); c.stroke(); c.restore();
+    rr(c, cx - w / 2 - 4, fy, w + 8, y + 1 - fy, 3); c.stroke(); c.restore();
   }
   return true;
 }
@@ -2114,7 +2153,9 @@ function paintServeBtn() {
   btnServe.disabled = m === "off";
   serveLabel.textContent = m === "rush" ? "급하게 내보내기"
     : (m === "under" && need ? need + "장 더 쌓아야 해요" : "윗빵 덮어 내보내기");
-  btnTrash.className = (stack.length && state === "playing") ? "on" : "";
+  // 튜토리얼 중에는 숨긴다: 코치 말풍선이 그 자리를 덮어 눌리지 않고, 틀린 재료는
+  // 튕겨 나가서 비울 일도 없다.
+  btnTrash.className = (stack.length && state === "playing" && !tut) ? "on" : "";
 }
 
 /* ══════════════════════════════════════════════════════════════
@@ -2424,7 +2465,7 @@ function tutAfterServe() {
 }
 function tutTick(dt) {
   // 튜토리얼에서는 잠금·유예·고아 스택 처리만 돈다
-  if (lock > 0) { lock -= dt; if (lock <= 0) tut.wrong = 0; }
+  if (lock > 0) { lock -= dt; if (lock <= 0) { tut.wrong = 0; tut.short = 0; } }
   if (graceT > 0) graceT -= dt;
   if (lock <= 0 && stack.length && !anyAlive()) orphanDiscard();
   var m = serveMode();
@@ -2435,6 +2476,7 @@ function tutTarget() {
   var st = tut.stage, n = stack.length, NM = function (id) { return "<b>" + ING[id].name + "</b>"; };
   if (tut.stage >= 3) return { say: "준비 끝! 이제 진짜 영업이에요.<br>손님이 기다릴수록 <b>막대가 줄고</b>, 다 줄면 하트가 깨져요. 하트 3개를 다 잃으면 끝.", done: true };
   if (lock > 0 && tut.wrong) return { say: "주문에 없는 재료는 <b>튕겨 나가고 0.4초 멈춰요</b>. 급할 때 치명적이니 조심!" };
+  if (lock > 0 && tut.short) return { say: "덜 쌓고 내보내면 <b>버려지고 150점이 깎여요</b>. 버튼이 연한 파랑일 땐 아직이에요." };
   if (st === 0) {
     if (n === 0) return { say: "주문 카드는 <b>아래에서 위로</b> 읽어요. 아래빵은 자동이니 먼저 " + NM("patty") + "!", btn: "patty" };
     if (n === 1) return { say: "좋아요. 다음은 " + NM("cheese") + ".", btn: "cheese" };
@@ -2457,10 +2499,15 @@ function paintTutorial() {
   }
   var target = g.btn === "serve" ? btnServe : (g.btn ? ingBtns[SLOTS.indexOf(g.btn)] : null);
   if (target && lock <= 0) {
-    var r = target.getBoundingClientRect();
+    var r = target.getBoundingClientRect(), wide = target === btnServe;
     tutPtr.style.left = (r.left + r.width / 2) + "px";
     tutPtr.style.top = (r.top + r.height / 2) + "px";
-    if (!tutPtr.className) tutPtr.className = "on";
+    // 재료 버튼은 54px 동그라미(CSS 기본값), 서빙 버튼은 바깥으로 6px 두르는 테두리
+    var pw = wide ? r.width + 12 : 54, ph = wide ? r.height + 12 : 54;
+    tutPtr.style.width = pw + "px"; tutPtr.style.height = ph + "px";
+    tutPtr.style.margin = (-ph / 2) + "px 0 0 " + (-pw / 2) + "px";
+    var cls = wide ? "on wide" : "on";
+    if (tutPtr.className !== cls) tutPtr.className = cls;
   } else if (tutPtr.className) tutPtr.className = "";
 }
 
@@ -2543,8 +2590,16 @@ function drawBurgerFit(cv, items, cap, opt, again) {
   drawStack(c, items, r.width / 2, r.height - 9, w, s, o);
 }
 
+// 게임 오버 직후 잠깐은 결과 화면 버튼이 입력을 받지 않는다. 서빙하려고 Space 나
+// 재료 버튼을 연타하던 손이 그대로 '다시하기'·'공유'·'나가기'를 눌러 점수와 등급을
+// 보지도 못하고 넘어가는 일을 막는다.
+var OVER_GUARD = 0.7;         // 초
+var overAt = -1e9;
+function overGuarded() { return state === "over" && performance.now() - overAt < OVER_GUARD * 1000; }
+
 function gameOver() {
   state = "over";
+  overAt = performance.now();
   sfx.musicStop();
   sfx.over();
   endFever(false);
@@ -2560,7 +2615,8 @@ function gameOver() {
   stats.served += served;
   if (maxCombo > stats.bestCombo) stats.bestCombo = maxCombo;
   var d = new Date();
-  stats.top.push({ s: score, g: g, n: served,
+  // 0점 판(시작하고 방치)은 '최고 기록 5판'에 올리지 않는다
+  if (score > 0) stats.top.push({ s: score, g: g, n: served,
     d: d.getFullYear() + "." + (d.getMonth() + 1) + "." + d.getDate() });
   stats.top.sort(function (a, b) { return b.s - a.s; });
   stats.top = stats.top.slice(0, 5);
@@ -2673,6 +2729,11 @@ document.addEventListener("keydown", function (e) {
     // Enter/Space: 모달 안에 포커스된 버튼이 있으면 그 버튼이 받고,
     // 아무것도 포커스돼 있지 않으면 맨 위 모달의 주 버튼을 누른다.
     if (code === "Enter" || code === "Space" || code === "NumpadEnter") {
+      // 결과 화면: 꾹 누른 자동 반복과 오버 직후 입력은 버린다. keydown 을 막으면
+      // 포커스된 '다시하기'의 Space(keyup 클릭)·Enter 기본 동작도 함께 막힌다.
+      if (isShown("vOver") && topVeil() === document.getElementById("vOver") && (e.repeat || overGuarded())) {
+        e.preventDefault(); return;
+      }
       var top = topVeil();
       if (top && !top.contains(document.activeElement)) {
         var pb = top.querySelector(".btn.primary");
@@ -2730,6 +2791,12 @@ btnSound.addEventListener("click", function () {
 document.getElementById("btnStart").addEventListener("click", function () {
   if (store.get("tut", "0") === "1") start(); else startTutorial();
 });
+// 결과 화면 버튼 전부(다시하기·공유·기록·나가기)에 오버 직후 보호 시간을 건다.
+// 재료 버튼 윗줄과 결과 창 아랫줄 버튼이 화면에서 겹쳐서, 연타하던 탭이 그대로 떨어진다.
+// 캡처 단계에서 끊어야 버튼 자신의 click 리스너까지 가지 않는다.
+document.getElementById("vOver").addEventListener("click", function (e) {
+  if (overGuarded()) { e.stopPropagation(); e.preventDefault(); }
+}, true);
 document.getElementById("btnTutorial").addEventListener("click", startTutorial);
 document.getElementById("coachGo").addEventListener("click", finishTutorial);
 document.getElementById("coachSkip").addEventListener("click", finishTutorial);
@@ -2896,6 +2963,9 @@ function frame(now) {
   var dt = (now - lastT) / 1000;
   lastT = now;
   if (dt > 0.25) dt = 0.25;        // 백그라운드 복귀 점프 방지
+  // 시작·이어하기는 입력 핸들러에서 lastT 를 찍는데, 다음 rAF 의 now(프레임 시작 시각)가
+  // 그보다 이를 수 있다. 그대로 쓰면 시계·인내심·잠금이 한 프레임 거꾸로 간다.
+  if (dt < 0) dt = 0;
   if (state === "playing") { tick(dt); sfx.setTempo(tut ? 0 : t, fever > 0); }
   if (state !== "paused") updateFx(dt);
   if (shownScore !== score) {
