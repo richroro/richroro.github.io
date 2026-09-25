@@ -245,6 +245,7 @@ section('지켜보는 곳');
   await p.locator('#writeBtn').click();
   await p.waitForSelector('#composeBack.open');
   await p.fill('#fPlace', '별빛 키즈카페');
+  await p.locator('#fMore summary').click();            // 동네는 "더 적기" 안에
   await p.fill('#fArea', '안양 안양동');
   await p.locator('#fCrowd [data-v="1"]').click();
   await p.locator('#composeGo').click();

@@ -10,6 +10,8 @@ const bare = report({ id: 'ref00002', t: Date.now() - 50 * MIN, by: '준호', ca
 const p = await openWith(c, [base, bare]);
 const board = () => p.evaluate(() => JSON.parse(localStorage.getItem('tpw.v1')).reports);
 const pressed = (grp) => p.locator(`#${grp} [aria-pressed="true"]`).innerText();
+/* 웨이팅·사람·주차는 "모름" 칩이 없다 — 아무것도 안 눌린 게 모름이다 */
+const blank = async (grp) => (await p.locator(`#${grp} [aria-pressed="true"]`).count()) === 0;
 /* 시트는 30ms 뒤에 초점을 옮긴다 — 올 때까지 기다린다 */
 const focusIs = (id) => p.waitForFunction((x) => document.activeElement && document.activeElement.id === x, id, { timeout: 2000 })
   .then(() => true, () => false);
@@ -29,10 +31,11 @@ await p.waitForSelector('#composeBack.open');
 ok(await p.locator('#composeTitle').innerText() === '여기 지금 상황', '창 제목이 바뀐다');
 ok(await p.inputValue('#fPlace') === '별빛 키즈카페' && await p.inputValue('#fArea') === '안양 안양동', '장소·동네는 채운다');
 ok((await pressed('fCat')).replace(/\s+/g, ' ').trim() === '놀이공간', '분야도 채운다');
-const tags = await p.locator('#fTags [aria-pressed="true"]').allInnerTexts();
+/* 태그는 "더 적기" 안에 접혀 있다 — 접힌 칸의 글자는 innerText 로 안 읽힌다 */
+const tags = await p.locator('#fTags [aria-pressed="true"]').evaluateAll((els) => els.map((e) => e.textContent));
 ok(tags.join() === '#아이동반,#실내', '태그도 채운다: ' + tags.join(' '));
-ok(await pressed('fWait') === '모름' && await pressed('fCrowd') === '모름' && await pressed('fPark') === '모름',
-  '웨이팅·사람·주차는 채우지 않는다 (모름)');
+ok(await blank('fWait') && await blank('fCrowd') && await blank('fPark'),
+  '웨이팅·사람·주차는 채우지 않는다 (아무것도 안 눌림 = 모름)');
 ok(await p.locator('#fRate button.on').count() === 0, '별점도 채우지 않는다 (내 평가라서)');
 ok((await p.locator('#fRef').innerText()).includes('민지 특파원'), '앞 리포트가 누구 것인지 보인다');
 ok((await p.locator('#fRefStats').innerText()).replace(/\s+/g, ' ') === '대기 없음 한산 주차 만석', '앞 리포트 값은 참고로 보인다');
@@ -63,6 +66,9 @@ await p.locator('#fCrowd [data-v="2"]').click();
 ok(await p.getAttribute('#fRefSame', 'aria-pressed') === 'false', '칩을 바꾸면 "그대로"가 풀린다');
 await p.locator('#fCrowd [data-v="0"]').click();
 ok(await p.getAttribute('#fRefSame', 'aria-pressed') === 'true', '다시 맞추면 "그대로"');
+/* 이름을 이미 정한 사람은 이름 칸이 "더 적기" 안에 있다 */
+ok(await p.locator('#fBy').isHidden(), '이름을 정했으면 이름 칸은 "더 적기" 안에 접혀 있다');
+await p.locator('#fMore summary').click();
 await p.fill('#fBy', '서연');
 await p.locator('#composeGo').click();
 await p.waitForSelector('#shareBack.open');

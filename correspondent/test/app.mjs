@@ -42,9 +42,10 @@ section('폰 뼈대 — 바닥 탭바와 떠 있는 단추');
     '  └ 탭바 위 오른쪽, 56px (오른쪽 ' + Math.round(fab.right) + ', 탭바와 ' + Math.round(bar.top - fab.bottom) + 'px 띄움, 높이 ' + fab.height + ')');
   const snap = await p.accessibility.snapshot({ root: await p.$('#writeBtn') });
   ok(snap && snap.name === '리포트 보내기', '  └ 이름은 "리포트 보내기": ' + (snap && snap.name));
-  ok(await p.locator('#recvBtn').isVisible() && (await p.locator('#recvBtn').innerText()).trim() === '받은 링크',
-    '"받은 링크"는 속보 머리의 작은 단추 (이름은 받은 링크 붙여넣기)');
-  ok(await p.locator('#recvBtn').getAttribute('aria-label') === '받은 링크 붙여넣기', '  └ 보이는 글자가 이름 안에 들어 있다');
+  ok(await p.locator('#recvBtn').count() === 0 && await p.locator('#statline').isHidden(),
+    '첫 화면엔 숫자 줄도 "받은 링크" 단추도 없다 — 붙여넣기는 주고받기 맨 위');
+  const firstCard = await rect(p, '#feed .card');
+  ok(firstCard.top < vh - 120, '  └ 내리지 않아도 첫 소식 카드가 보인다 (위에서 ' + Math.round(firstCard.top) + 'px)');
   ok(await p.locator('footer').isHidden(), '속보 화면엔 사이트 바닥글이 없다');
 
   const minW = await p.$$eval('.input', (els) => els.map((e) => parseFloat(getComputedStyle(e).fontSize)).reduce((a, x) => Math.min(a, x), 99));
@@ -86,8 +87,7 @@ section('탭마다 제 것만, 읽던 자리는 기억한다');
   await tab(p, 'places');
   ok(await p.evaluate(() => window.scrollY) === 0, '처음 여는 장소 탭은 맨 위부터');
   ok(await p.locator('#writeBtn').isVisible(), '장소에서도 "리포트 보내기"');
-  ok(await p.locator('#statline').isHidden() && await p.locator('#recvBtn').isHidden() && await p.locator('#intro').isHidden(),
-    '  └ 숫자 줄·받은 링크·처음 안내는 속보에만');
+  ok(await p.locator('#intro').isHidden(), '  └ 처음 안내는 속보에만');
   await p.evaluate(() => window.scrollTo(0, 250));
   await tab(p, 'feed');
   ok(await p.evaluate(() => window.scrollY) === 700, '속보로 돌아오면 읽던 자리 그대로 (700)');
@@ -236,7 +236,7 @@ section('배포 직후 옛 index.html 사본과 새 app.js 가 섞여도 멈추�
   await c.close();
 }
 
-section('넓은 화면은 그대로 — 머리띠 안의 탭, 큰 단추 둘');
+section('넓은 화면은 그대로 — 머리띠 안의 탭, 큰 단추');
 {
   const c = await context(b, { viewport: { width: 1000, height: 900 } });
   const p = watch(await c.newPage(), '넓은 화면');
@@ -245,7 +245,7 @@ section('넓은 화면은 그대로 — 머리띠 안의 탭, 큰 단추 둘');
   ok(await p.locator('.tab .ti').first().isHidden(), '  └ 탭 아이콘은 안 쓴다');
   ok(await p.locator('#tab-feed .n').isVisible() && (await p.locator('#tab-feed .n').innerText()) === '8', '  └ 이름 옆에 건수가 보인다');
   ok(await css(p, '#writeBtn', 'position') === 'static', '"리포트 보내기"는 제자리의 큰 단추');
-  ok((await p.locator('#recvBtn').innerText()).trim() === '받은 링크 붙여넣기', '"받은 링크 붙여넣기"도 글자까지');
+  ok(await p.locator('.actions .btn').count() === 1, '  └ 큰 단추는 하나 — 받은 링크 붙여넣기는 주고받기에');
   ok(await p.locator('footer').isVisible(), '바닥글이 보인다');
   await c.close();
 }
@@ -270,6 +270,77 @@ section('속보 탭의 빨간 숫자 — 지켜보는 곳에 남이 올린 새 �
   await p.waitForSelector('#placeBack.open');
   await p.keyboard.press('Escape');
   ok(await p.locator('#tbFeed').isHidden(), '장소 창을 열어 보면 사라진다');
+  await c.close();
+}
+
+section('쓰기 창 — 꼭 필요한 것만 위에');
+{
+  const c = await context(b, PHONE);
+  const p = watch(await c.newPage(), '쓰기');
+  await p.goto(BASE, { waitUntil: 'networkidle' });
+  await p.locator('#writeBtn').click();
+  await p.waitForSelector('#composeBack.open');
+  await settle(p);
+  const labels = await p.$$eval('#composeForm .now-l', (els) => els.map((e) => e.textContent));
+  ok(labels.join() === '웨이팅,사람,주차', '"지금 어때요?" 한 곳에 세 줄: ' + labels.join(' · '));
+  const chips = await p.$$eval('#fWait [data-v], #fCrowd [data-v], #fPark [data-v]', (els) => els.map((e) => e.textContent));
+  ok(!chips.includes('모름') && chips.length === 12, '"모름" 칩이 없다 — 안 고른 게 모름 (' + chips.length + '개)');
+  ok(await p.locator('#fWait [aria-pressed="true"]').count() === 0, '  └ 처음엔 아무것도 안 눌려 있다');
+  await p.locator('#fCrowd [data-v="2"]').click();
+  ok(await p.getAttribute('#fCrowd [data-v="2"]', 'aria-pressed') === 'true', '누르면 고른다');
+  await p.locator('#fCrowd [data-v="2"]').click();
+  ok(await p.locator('#fCrowd [aria-pressed="true"]').count() === 0, '  └ 한 번 더 누르면 비운다(= 모름)');
+  await p.locator('#fCat [data-v="food"]').click();
+  await p.locator('#fCat [data-v="food"]').click();
+  ok(await p.getAttribute('#fCat [data-v="food"]', 'aria-pressed') === 'true', '  └ 분야는 다시 눌러도 그대로 하나');
+  ok(!(await p.locator('#fMore').evaluate((d) => d.open)) && await p.locator('#fArea').isHidden() && await p.locator('#fTags').isHidden(),
+    '동네·별점·태그는 "더 적기" 안에 접혀 있다');
+  ok(await p.locator('#fBy').isVisible(), '이름을 아직 안 정했으면 이름 칸이 위에 보인다');
+  ok(await p.locator('#composeBack .sheet-foot .btn').count() === 1 &&
+     (await p.locator('#composeGo').innerText()).trim() === '보내기', '아래 단추는 "보내기" 하나');
+  ok(await p.evaluate(() => document.querySelector('#composeForm').scrollHeight) < 1000,
+    '  └ 창 길이가 짧아졌다 (' + await p.evaluate(() => document.querySelector('#composeForm').scrollHeight) + 'px)');
+  await p.fill('#fPlace', '비워 둔 칸 확인');
+  await p.fill('#fBy', '하늘');
+  await p.locator('#fWait [data-v="10"]').click();
+  await p.locator('#composeGo').click();
+  await p.waitForSelector('#shareBack.open');
+  await p.keyboard.press('Escape');
+  const saved = await p.evaluate(() => JSON.parse(localStorage.getItem('tpw.v1')).reports[0]);
+  ok(saved.wait === 10 && saved.crowd === -1 && saved.park === -1 && saved.cat === 'food', '비운 칸은 모름으로 저장된다');
+  /* 이름을 정한 뒤로는 이름 칸이 "더 적기" 안으로 들어간다 */
+  await p.locator('#writeBtn').click();
+  await p.waitForSelector('#composeBack.open');
+  ok(await p.locator('#fBy').isHidden() && await p.inputValue('#fBy') === '하늘', '이름을 정했으면 이름 칸은 "더 적기" 안에 (값은 그대로)');
+  ok((await p.locator('#fMoreHint').innerText()).includes('이름'), '  └ "더 적기" 옆에 이름도 있다고 적힌다');
+  await p.locator('#fMore summary').click();
+  ok(await p.locator('#fBy').isVisible() && await p.locator('#fArea').isVisible(), '  └ 펼치면 동네·이름이 보인다');
+  await c.close();
+}
+
+section('공유 창 — 폰에선 "공유하기"가 먼저');
+{
+  const c = await context(b, PHONE);
+  await c.addInitScript(() => { navigator.share = (d) => { window.__shared = d; return Promise.resolve(); }; });
+  const p = await openWith(c, [report({ t: Date.now() - 5 * MIN, by: '민지', cat: 'play', place: '별빛 키즈카페', crowd: 0 })]);
+  await p.locator('#feed [data-share]').first().click();
+  await p.waitForSelector('#shareBack.open');
+  await p.waitForFunction(() => !document.querySelector('#shareBox').value.includes('만드는 중'));
+  const order = await p.$$eval('#shareBack .sheet-foot .btn:not([hidden])', (els) => els.map((e) => e.textContent.trim() + (e.classList.contains('primary') ? '*' : '')));
+  ok(order[0] === '공유하기*' && order[1] === '복사', '폰에선 "공유하기"(카톡 고르기)가 앞, 복사는 뒤: ' + order.join(' · '));
+  await p.locator('#shareNative').click();
+  ok(await p.evaluate(() => window.__shared && /받기 → http/.test(window.__shared.text)), '  └ 누르면 폰의 공유 창에 글이 간다');
+  await c.close();
+}
+
+section('좁은 창에 마우스 — 탭 글자가 사라지지 않는다');
+{
+  const c = await context(b, { viewport: { width: 390, height: 844 } });
+  const p = watch(await c.newPage(), '마우스');
+  await p.goto(BASE, { waitUntil: 'networkidle' });
+  await p.locator('#tab-people').hover();
+  const col = await p.locator('#tab-people').evaluate((el) => [getComputedStyle(el).color, getComputedStyle(el.parentElement).backgroundColor]);
+  ok(col[0] !== col[1] && col[0] !== 'rgb(255, 255, 255)', '마우스를 올려도 탭 글자색이 탭바 바탕과 다르다 (' + col.join(' on ') + ')');
   await c.close();
 }
 

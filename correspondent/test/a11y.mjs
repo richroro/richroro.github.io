@@ -85,8 +85,11 @@ section('버튼 이름 (좁은 화면)');
   const c = await context(b, { viewport: { width: 390, height: 844 } });
   const p = watch(await c.newPage());
   await p.goto(BASE, { waitUntil: 'networkidle' });
-  const name = await p.locator('#recvBtn').evaluate((el) => el.getAttribute('aria-label') || el.innerText);
-  ok(name === '받은 링크 붙여넣기', '아이콘만 보이는 "받기" 단추에도 이름이 있다');
+  /* 좁은 화면의 머리띠 단추는 아이콘만 보인다 — 읽어 줄 이름은 있어야 한다 */
+  for (const id of ['meBtn', 'themeBtn']) {
+    const s = await p.accessibility.snapshot({ root: await p.$('#' + id) });
+    ok(s && s.name && s.name.length > 1, '아이콘만 보이는 #' + id + ' 에도 이름: ' + (s && s.name));
+  }
   const snap = await p.accessibility.snapshot({ root: await p.$('#writeBtn') });
   ok(snap && snap.name === '리포트 보내기', '전파 아이콘은 읽지 않는다: ' + (snap && snap.name));
   await c.close();

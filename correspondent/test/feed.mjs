@@ -14,11 +14,10 @@ ok((await page.locator('#feed .badge').first().textContent()).includes('예시')
 ok(await page.locator('#dropSample').isVisible(), '예시 치우기 버튼');
 ok((await page.locator('.pick ol li').count()) > 0, '지금 갈 만한 곳 노출');
 const pill = await page.locator('#livePill').innerText();
-const stat = (await page.locator('#statline').innerText()).replace(/\n/g,' ');
 ok(/지금 4건/.test(pill), '머리 알약 "지금 4건" (14·38·95·170분): ' + pill);
-ok(/리포트 8건/.test(stat) && /장소 7곳/.test(stat), '숫자 줄: ' + stat.slice(0,60));
+ok(await page.locator('#statline').isHidden(), '첫 화면은 소식부터 — 숫자 줄은 없다(끊겼을 때만 한 줄)');
 ok((await page.locator('.tgroup').count()) >= 2, '시간대 머리 ' + (await page.locator('.tgroup').allInnerTexts()).join(' / '));
-ok((await page.locator('#feed .meter').count()) > 0, '신선도 막대 표시');
+ok((await page.locator('#feed .meter').count()) === 0, '카드에 신선도 막대가 없다 — 몇 분 전 알약 하나로 읽는다');
 
 console.log('\n== 2. 신선도 계급 ==');
 const cls = await page.locator('#feed .card').evaluateAll(els => els.map(e => e.className));
@@ -28,8 +27,11 @@ ok(cls[4].includes('age-dim'), '260분 전 → age-dim');
 ok(cls[7].includes('age-old'), '2600분 전 → age-old');
 ok((await page.locator('#feed .live-row.faded').count()) > 0, '3시간 지난 현장정보는 흐려짐');
 ok((await page.locator('#feed details.expired').count()) >= 1, '하루 지난 현장정보는 접힘');
-const liveLabels = await page.locator('#feed .live-label').first().textContent();
-ok(/시간 전 상황|조금 전 상황/.test(liveLabels), '시점 딱지: ' + liveLabels);
+const ages = await page.locator('#feed .card .age').allInnerTexts();
+ok(ages[0] === '14분 전' && ages[4] === '4시간 전', '카드 머리의 시각: ' + ages.slice(0, 5).join(' / '));
+ok(await page.locator('#feed .card.age-live').first().locator('.card-head .age').evaluate((el) =>
+  getComputedStyle(el).backgroundColor !== 'rgba(0, 0, 0, 0)'), '  └ 막 들어온 소식의 시각은 알약');
+ok((await page.locator('#feed .live-label').count()) === 0, '  └ 칩 줄에 시각을 한 번 더 적지 않는다');
 
 console.log('\n== 3. 거르기/검색/정렬 ==');
 await page.locator('#catFilter [data-cat="food"]').click();
@@ -41,10 +43,8 @@ await page.locator('#liveOnly').click();
 await page.fill('#q', '돈까스');
 ok((await page.locator('#feed .card').count()) === 1, '검색 1건');
 await page.fill('#q', '');
-await page.selectOption('#sort', 'rate');
-const firstStars = await page.locator('#feed .card .stars').first().textContent();
-ok(firstStars.startsWith('★★★★★'), '별점순 정렬: ' + firstStars);
-await page.selectOption('#sort', 'new');
+ok(await page.locator('#sort').count() === 0, '속보에 정렬 칸이 없다 — 늘 최신순 (정렬은 장소 탭)');
+ok((await page.locator('#feed .card .age').first().innerText()) === '14분 전', '  └ 맨 위는 가장 최근 것');
 
 console.log('\n== 4. 장소 묶기 ==');
 await page.locator('.tab[data-view="places"]').click();
@@ -72,6 +72,9 @@ console.log('\n== 7. 리포트 쓰기 ==');
 await page.locator('#writeBtn').click();
 await page.waitForSelector('#composeBack.open');
 await page.fill('#fPlace', '테스트 놀이터');
+ok(!(await page.locator('#fMore').evaluate((d) => d.open)), '동네·별점·태그는 "더 적기" 안에 접혀 있다');
+ok(await page.locator('#fBy').isVisible(), '  └ 이름을 아직 안 정했으면 이름 칸은 위에 보인다');
+await page.locator('#fMore summary').click();
 await page.fill('#fArea', '안양 <b>안양동</b>');
 await page.locator('#fCat [data-v="play"]').click();
 await page.locator('#fWait [data-v="0"]').click();

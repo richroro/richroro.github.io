@@ -241,56 +241,47 @@ function statChips(r){
   if (p.v !== -1) out.push({ s:p.s, tone:p.tone });
   return out;
 }
+/** 현장 정보 칩 줄. 몇 분 전인지는 카드 머리(장소 창에선 바로 위 줄)에 있어서 여기엔 다시 적지 않는다. */
 function liveRowHtml(r){
   const chips = statChips(r);
   if (!chips.length) return "";
   const d = Date.now() - r.t;
   const faded = d >= SOFT ? " faded" : "";
-  const label = d >= LIVE ? '<span class="live-label">' + esc(liveLabel(r.t)) + " 상황</span>" : "";
-  const inner = '<div class="live-row' + faded + '">' + label +
-    chips.map((c) => '<span class="stat ' + c.tone + '">' + esc(c.s) + "</span>").join("") +
-    meterHtml(r) + "</div>";
+  const inner = '<div class="live-row' + faded + '">' +
+    chips.map((c) => '<span class="stat ' + c.tone + '">' + esc(c.s) + "</span>").join("") + "</div>";
   if (d < DEAD) return inner;
   return '<details class="expired"><summary>' + esc(ago(r.t)) + " 현장 정보 — 펼치기</summary>" + inner + "</details>";
 }
 const starsHtml = (n) => n ? '<span class="stars" role="img" aria-label="별 ' + n + '개" title="별 ' + n + '개">' +
   "★".repeat(n) + "☆".repeat(5 - n) + "</span>" : "";
 
-/** 현장 정보가 얼마나 남았는지 — 칩 줄 끝에 붙는 게이지. 기록만 있는 리포트엔 안 붙인다. */
-function meterHtml(r){
-  const d = Date.now() - r.t;
-  if (d >= DEAD || !statChips(r).length) return "";
-  const left = Math.max(0, 1 - d / SOFT);
-  const pct = Math.max(3, Math.round(left * 100));
-  return '<div class="meter' + (left < .15 ? " cold" : "") + '" role="img" aria-label="현장 정보 신선도 ' +
-    Math.round(left * 100) + '%" title="3시간을 기준으로 ' + Math.round(left * 100) + '% 남음">' +
-    '<i style="width:' + pct + '%"></i></div>';
-}
-
+/** 카드 — 한눈에 읽히는 순서로: 어디(이름)·언제(몇 분 전) → 무슨 곳·어느 동네 → 지금 어떤지(칩) → 한 줄 → 누가·별점. */
 function cardHtml(r, o){
   o = o || {};
   const cat = CATS.find((c) => c.k === r.cat) || CATS[CATS.length - 1];
   const sample = isSample();
   return '<article class="card age-' + ageClass(r.t) + '">' +
-    '<div class="card-top">' +
-      '<span class="cat"><span aria-hidden="true">' + cat.ic + "</span> " + esc(cat.nm) + "</span>" +
-      '<span class="age mono" title="' + esc(fmtTime(r.t)) + '">' + esc(ago(r.t)) + "</span>" +
-      (sample ? '<span class="badge">예시</span>' : "") +
-      (r.priv ? '<span class="badge" title="공용 보드에 올리지 않은 글">이 기기에만</span>' : "") +
-      (r.hid ? '<span class="badge warn" title="세 사람 이상이 신고해서 다른 사람에게는 안 보입니다">신고로 가려짐</span>' : "") +
+    '<div class="card-head">' +
+      '<h3 class="place">' +
+        (o.plain ? esc(r.place) : '<button type="button" data-open="' + esc(r.id) + '">' + esc(r.place) + "</button>") +
+      "</h3>" +
+      '<span class="age" title="' + esc(fmtTime(r.t)) + '">' + esc(ago(r.t)) + "</span>" +
       (sample || o.noDelete ? "" :
         '<button class="del" type="button" data-del="' + esc(r.id) + '" aria-label="이 리포트 지우기" title="지우기">&times;</button>') +
     "</div>" +
-    '<h3 class="place">' +
-      (o.plain ? esc(r.place) : '<button type="button" data-open="' + esc(r.id) + '">' + esc(r.place) + "</button>") +
+    '<div class="card-sub">' +
+      '<span class="cat"><span aria-hidden="true">' + cat.ic + "</span> " + esc(cat.nm) + "</span>" +
       (r.area ? '<span class="area">' + esc(r.area) + "</span>" : "") +
-    "</h3>" +
+      (sample ? '<span class="badge">예시</span>' : "") +
+      (r.priv ? '<span class="badge" title="공용 보드에 올리지 않은 글">이 기기에만</span>' : "") +
+      (r.hid ? '<span class="badge warn" title="세 사람 이상이 신고해서 다른 사람에게는 안 보입니다">신고로 가려짐</span>' : "") +
+    "</div>" +
     liveRowHtml(r) +
     (r.note ? '<p class="note-line">' + esc(r.note) + "</p>" : "") +
     '<div class="card-bot">' +
+      '<span class="by">' + esc(byline(r.by)) + "</span>" +
       starsHtml(r.rate) +
       (r.tags.length ? '<span class="tags">' + r.tags.map((t) => "#" + esc(t)).join(" ") + "</span>" : "") +
-      '<span class="by">' + esc(byline(r.by)) + "</span>" +
       '<span class="spacer"></span>' +
       (sample ? "" : '<button class="link-btn" type="button" data-again="' + esc(r.id) + '" title="같은 장소의 지금 상황을 알립니다">나도 여기</button>') +
       (sample ? "" : '<button class="link-btn" type="button" data-share="' + esc(r.id) + '">공유</button>') +
@@ -578,28 +569,18 @@ function shareText(list, code){
    그리기
    ========================================================================= */
 function renderTicker(){
-  const all = reports();
-  const live = all.filter((r) => Date.now() - r.t < SOFT).length;
-  const last = all.length ? Math.max.apply(null, all.map((r) => r.t)) : 0;
-  const people = new Set(all.map((r) => r.by)).size;
-
+  const live = reports().filter((r) => Date.now() - r.t < SOFT).length;
   $("#livePill").innerHTML = '<span class="livepill' + (live ? "" : " off") + '">' +
     '<span class="dot' + (live ? " on" : "") + '"></span>지금 ' + live + "건</span>";
-
-  const parts = [
-    "리포트 <b>" + all.length + "건</b>",
-    "장소 <b>" + groups().length + "곳</b>",
-    "특파원 <b>" + people + "명</b>"
-  ];
-  if (last) parts.push("마지막 <b>" + esc(ago(last)) + "</b>");
-  let html = parts.map((x) => "<span>" + x + "</span>").join("");
-  if (!navigator.onLine) html = '<span class="warn">오프라인 — ' +
-    (SY.enabled ? "쓰면 이 기기에 저장되고, 연결되면 올라갑니다" : "이 기기에서 그대로 쓸 수 있습니다") + "</span>" + html;
-  /* "지금 보이는 건 예시입니다"와 "예시 치우기"는 처음 안내 카드(#intro)에 있다 */
-  $("#statline").innerHTML = html;
+  /* 속보 머리에는 끊겼을 때만 한 줄 띄운다. 리포트·장소·특파원 수는 주고받기의 "보드 정리"에 있다 —
+     첫 화면은 소식부터 보이게. "예시입니다"는 처음 안내 카드(#intro)에 있다. */
+  const st = $("#statline");
+  st.innerHTML = navigator.onLine ? "" : '<span class="warn">오프라인 — ' +
+    (SY.enabled ? "쓰면 이 기기에 저장되고, 연결되면 올라갑니다" : "이 기기에서 그대로 쓸 수 있습니다") + "</span>";
+  st.hidden = navigator.onLine;
 }
 
-/** 속보 거르개에서 분야를 골랐으면 "지금 갈 만한 곳"도 그 분야만 본다. */
+/** 속보 거르개에서 분야를 골랐으면 "지금 가기 좋은 곳"도 그 분야만 본다. */
 function renderPick(){
   const cat = flt.cat ? CATS.find((c) => c.k === flt.cat) : null;
   const tag = cat ? '<span class="tagcat">' + esc(cat.nm) + "만</span>" : "";
@@ -609,29 +590,26 @@ function renderPick(){
   const cur = gs.filter((g) => g.now).map((g) => ({ g, r: g.now, s: cond(g.now) * freshness(g.now.t) }));
   if (!cur.length) {
     $("#pick").innerHTML = '<div class="pick empty"><h2>지금 들어온 소식이 없습니다' + tag + "</h2>" +
-      '<p class="sub" style="margin-bottom:0">웨이팅·사람·주차가 담긴 3시간 안쪽 리포트가 있어야 “지금”을 말할 수 있습니다. ' +
-      '밖에 계신 분이 첫 소식을 보내 주세요.</p>' + usualPickHtml(gs) + "</div>";
+      '<p class="sub">밖에 계시면 첫 소식을 보내 주세요.</p>' + usualPickHtml(gs) + "</div>";
     return;
   }
   const top = cur.filter((x) => cond(x.r) >= .5).sort((a, b) => b.s - a.s).slice(0, 3);
   if (!top.length) {
     $("#pick").innerHTML = '<div class="pick empty"><h2>지금은 다들 붐빈다고 합니다' + tag + "</h2>" +
-      '<p class="sub" style="margin-bottom:0">3시간 안쪽 소식이 들어온 ' + cur.length + '곳 가운데 ' +
-      '“여유 있다”는 곳이 없습니다.</p></div>';
+      '<p class="sub">최근 3시간 안에 소식이 들어온 ' + cur.length + "곳 모두 여유가 없습니다.</p></div>";
     return;
   }
-  $("#pick").innerHTML = '<div class="pick"><h2>지금 갈 만한 곳<span class="tagnow">3시간 안쪽</span>' + tag + "</h2>" +
-    '<p class="sub">장소마다 가장 최근 소식으로 봐서, 대기·혼잡·주차가 여유로운 곳을 신선한 순서로 세웠습니다.</p><ol>' +
-    top.map((x, i) => {
-      const chips = statChips(x.r).map((c) => c.s).join(" · ");
-      return "<li>" +
+  /* 설명 문장 대신 색 칩으로 — 초록이 많은 곳이 위에 온다. 누가 썼는지는 장소 창에서 본다. */
+  $("#pick").innerHTML = '<div class="pick"><h2>지금 가기 좋은 곳<span class="tagnow">최근 3시간</span>' + tag + "</h2><ol>" +
+    top.map((x, i) => "<li>" +
         '<span class="rank">' + (i + 1) + "</span>" +
         '<button class="nm" type="button" data-open="' + esc(x.r.id) + '">' + esc(x.g.place) + "</button>" +
-        '<span class="why">' + esc(ago(x.r.t)) + (chips ? " · " + esc(chips) : "") + " · " + esc(byline(x.r.by)) +
-          (x.g.confirm ? " · " + x.g.confirm.n + "명 확인" : "") +
-          (x.g.conflicts.length ? " · 엇갈림 있음" : "") + "</span>" +   // 추천하면서 다른 말이 있다는 걸 감추지 않는다
-      "</li>";
-    }).join("") + "</ol></div>";
+        '<span class="why"><span class="why-age">' + esc(ago(x.r.t)) + "</span>" +
+          statChips(x.r).map((c) => '<span class="stat sm ' + c.tone + '">' + esc(c.s) + "</span>").join("") +
+          (x.g.confirm ? '<span class="why-note">' + x.g.confirm.n + "명 확인</span>" : "") +
+          /* 추천하면서 다른 말이 있다는 걸 감추지 않는다 */
+          (x.g.conflicts.length ? '<span class="why-note warn">엇갈림 있음</span>' : "") + "</span>" +
+      "</li>").join("") + "</ol></div>";
 }
 /** 지금 소식이 하나도 없을 때만 — 지난 기록으로 이 시간대에 보통 여유로웠던 곳. 지금 소식이 아니라고 붙여 말한다. */
 function usualPickHtml(gs){
@@ -891,37 +869,28 @@ function renderPlaces(){
   $("#places").innerHTML = gs.length ? gs.map((g) => {
     const cat = CATS.find((c) => c.k === g.cat) || CATS[CATS.length - 1];
     const st = g.stat, w = isSample() ? null : watchEntry(g), n = w ? unseen(w, g) : 0, u = g.now ? null : usualNow(g);
+    /* 카드와 같은 차림 — 이름·마지막 소식 시각, 분야·동네, 가장 최근 현장 정보, 그리고 숫자 한 줄 */
     return '<button class="pl age-' + ageClass(g.last.t) + '" type="button" data-openkey="' + esc(g.key) + '">' +
-      '<div class="pl-top">' +
-        '<span class="cat"><span aria-hidden="true">' + cat.ic + "</span> " + esc(cat.nm) + "</span>" +
+      '<div class="card-head">' +
         '<span class="pl-name">' + esc(g.place) + "</span>" +
-        (g.area ? '<span class="age">' + esc(g.area) + "</span>" : "") +
         (w ? '<span class="wmark"><span aria-hidden="true">★</span><span class="sr">지켜보는 곳</span></span>' : "") +
         (n ? '<span class="w-new">새 소식 ' + n + "</span>" : "") +
+        '<span class="age">' + esc(ago(g.last.t)) + "</span>" +
+      "</div>" +
+      '<div class="card-sub">' +
+        '<span class="cat"><span aria-hidden="true">' + cat.ic + "</span> " + esc(cat.nm) + "</span>" +
+        (g.area ? '<span class="area">' + esc(g.area) + "</span>" : "") +
       "</div>" +
       (st ? '<div class="live-row' + (g.now ? "" : " faded") + '">' +
-        '<span class="live-label">' + esc(liveLabel(st.t)) + "</span>" +
-        statChips(st).map((c) => '<span class="stat ' + c.tone + '">' + esc(c.s) + "</span>").join("") +
-        meterHtml(st) + "</div>" : "") +
+        /* 가장 최근 리포트가 메모뿐이면 칩은 그 전 리포트 것이다 — 그때만 시점을 따로 적는다 */
+        (st !== g.last ? '<span class="live-label">' + esc(liveLabel(st.t)) + " 상황</span>" : "") +
+        statChips(st).map((c) => '<span class="stat ' + c.tone + '">' + esc(c.s) + "</span>").join("") + "</div>" : "") +
       (u ? usualHintHtml(u) : "") +
       (g.confirm ? confirmHtml(g.confirm) : "") +
       (g.conflicts.length ? '<div class="conflict">엇갈립니다 · ' + esc(g.conflicts[0]) + "</div>" : "") +
-      '<div class="pl-meta">' +
-        avsHtml(g.people) +
-        "<span>특파원 <b>" + g.people.length + "명</b></span>" +
-        "<span>리포트 <b>" + g.n + "건</b></span>" +
-        (g.rate ? "<span>별점 <b>" + g.rate.toFixed(1) + "</b></span>" : "") +
-        "<span>마지막 <b>" + esc(ago(g.last.t)) + "</b></span>" +
-        (g.tags.length ? '<span class="tags">' + g.tags.map((t) => "#" + esc(t)).join(" ") + "</span>" : "") +
-      "</div></button>";
+      '<div class="pl-meta">리포트 <b>' + g.n + "</b>건 · 특파원 <b>" + g.people.length + "</b>명" +
+        (g.rate ? " · 별점 <b>" + g.rate.toFixed(1) + "</b>" : "") + "</div></button>";
   }).join("") : '<div class="empty"><b>아직 장소가 없습니다</b><p>리포트가 쌓이면 같은 장소끼리 묶어서 보여 줍니다.</p></div>';
-}
-
-/** 몇 사람이 봤는지 — 얼굴을 겹쳐서 한눈에. 네 명까지 보이고 나머지는 숫자로. */
-function avsHtml(people){
-  const show = people.slice(0, 4);
-  return '<span class="avs">' + show.map((n) => '<i title="' + esc(n) + '">' + esc(n.slice(0, 1)) + "</i>").join("") +
-    (people.length > 4 ? '<i title="외 ' + (people.length - 4) + '명">+' + (people.length - 4) + "</i>" : "") + "</span>";
 }
 
 function renderPeople(){
@@ -1408,8 +1377,9 @@ async function copyText(text){
 /* =========================================================================
    리포트 쓰기
    ========================================================================= */
+/** 웨이팅·사람·주차 칩. "모름" 칩은 두지 않는다 — 아무것도 안 고른 게 모름이고, 고른 칩을 다시 누르면 비워진다. */
 function segHtml(table, sel, field){
-  return table.map((o) => '<button class="chip" type="button" data-f="' + field + '" data-v="' + o.v +
+  return table.filter((o) => o.v !== -1).map((o) => '<button class="chip" type="button" data-f="' + field + '" data-v="' + o.v +
     '" aria-pressed="' + (o.v === sel) + '">' + esc(o.nm) + "</button>").join("");
 }
 function paintCompose(){
@@ -1437,13 +1407,21 @@ function openCompose(ref){
   $("#fArea").value = composeRef ? composeRef.area : (mine.length ? mine[0].area : "");
   $("#fNote").value = "";
   $("#fNote").placeholder = composeRef ? "달라진 게 있으면 적어 주세요."
-    : "예: 2시 넘으니 자리 났어요. 주차는 골목 유료로 대는 게 빠릅니다.";
+    : "예: 2시 넘으니 자리 났어요.";
   $("#composeTitle").textContent = composeRef ? "여기 지금 상황" : "리포트 보내기";
   paintRef();
   const refChips = composeRef && statChips(composeRef).length;
   $("#fPlace").toggleAttribute("data-autofocus", !refChips);
   $("#fRefSame").toggleAttribute("data-autofocus", !!refChips);
   $("#fBy").value = board.me;
+  /* 이름을 아직 안 정했으면 눈에 띄게 위에 두고, 정했으면 "더 적기" 안으로 — 매번 물을 것은 아니다 */
+  const byRow = $("#fByRow"), more = $("#fMore");
+  if (byRow && more) {
+    if (board.me) more.querySelector(".more-in").appendChild(byRow);
+    else more.parentNode.insertBefore(byRow, more);
+    more.open = false;
+    $("#fMoreHint").textContent = board.me ? "동네 · 별점 · 태그 · 이름" : "동네 · 별점 · 태그";
+  }
   $("#noteCnt").textContent = "0/200";
   $("#composeErr").textContent = "";
   $("#fPubRow").hidden = !SY.enabled;
@@ -1481,7 +1459,11 @@ async function openShare(list){
   $("#shareBox").value = "만드는 중…";
   const st = $("#shareStatus");
   st.textContent = ""; st.className = "status";
-  $("#shareNative").hidden = !navigator.share;
+  /* 폰에는 공유 창이 있다 — 카톡을 바로 고를 수 있게 그걸 앞에 두고, 복사는 뒤로 */
+  const native = !!navigator.share;
+  $("#shareNative").hidden = !native;
+  $("#shareNative").classList.toggle("primary", native);
+  $("#shareCopy").classList.toggle("primary", !native);
   openSheet("#shareBack");
   try {
     const code = await pack(list);
@@ -1817,7 +1799,9 @@ function bind(){
 
   /* 큰 버튼 */
   $("#writeBtn").addEventListener("click", () => openCompose());
-  $("#recvBtn").addEventListener("click", () => {
+  /* 받은 링크 붙여넣기는 주고받기 탭 맨 위("받기")에 있다. 옛 index.html 사본에 남은 단추만 잇는다. */
+  const recv = $("#recvBtn");
+  if (recv) recv.addEventListener("click", () => {
     switchView("sync");
     window.scrollTo({ top: 0, behavior: reducedMotion() ? "auto" : "smooth" });   // "받기"가 주고받기 맨 위에 있다
     setTimeout(() => $("#recvBox").focus(), 250);
@@ -1850,7 +1834,9 @@ function bind(){
     e.currentTarget.setAttribute("aria-pressed", String(flt.liveOnly));
     renderFeed();
   });
-  $("#sort").addEventListener("change", (e) => { flt.sort = e.target.value; renderFeed(); });
+  /* 속보는 늘 최신순이다(정렬은 장소 탭에). 옛 사본에 남은 정렬 칸만 잇는다. */
+  const sortSel = $("#sort");
+  if (sortSel) sortSel.addEventListener("change", (e) => { flt.sort = e.target.value; renderFeed(); });
   $("#pq").addEventListener("input", (e) => { pflt.q = e.target.value; renderPlaces(); });
   $("#psort").addEventListener("change", (e) => { pflt.sort = e.target.value; renderPlaces(); });
 
@@ -1947,8 +1933,9 @@ function bind(){
   $("#composeForm").addEventListener("click", (e) => {
     const seg = e.target.closest("[data-f]");
     if (seg) {
-      const f = seg.dataset.f;
-      draft[f] = f === "cat" ? seg.dataset.v : Number(seg.dataset.v);
+      const f = seg.dataset.f, v = f === "cat" ? seg.dataset.v : Number(seg.dataset.v);
+      /* 분야는 늘 하나. 웨이팅·사람·주차는 고른 걸 다시 누르면 비운다(= 모름) */
+      draft[f] = f !== "cat" && draft[f] === v ? -1 : v;
       paintCompose();
       syncSame();
       return;
