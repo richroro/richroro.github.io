@@ -1,6 +1,6 @@
 /* 앱처럼 — 폰에선 바닥 탭바, 떠 있는 "리포트 보내기", 붙어 따라오는 칩 줄, 끌어 내려 닫는 시트.
    넓은 화면은 머리띠 안의 탭과 큰 단추 둘 그대로다. */
-import { BASE, ok, section, launch, context, watch, openWith, report, finish, MIN, settle } from './lib.mjs';
+import { BASE, ok, section, launch, context, watch, openWith, report, finish, MIN, settle, shareReady, bundleReady } from './lib.mjs';
 
 const b = await launch();
 const PHONE = { viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true, deviceScaleFactor: 2 };
@@ -329,7 +329,7 @@ section('공유 창 — 폰에선 "공유하기"가 먼저');
   const order = await p.$$eval('#shareBack .sheet-foot .btn:not([hidden])', (els) => els.map((e) => e.textContent.trim() + (e.classList.contains('primary') ? '*' : '')));
   ok(order[0] === '공유하기*' && order[1] === '복사', '폰에선 "공유하기"(카톡 고르기)가 앞, 복사는 뒤: ' + order.join(' · '));
   await p.locator('#shareNative').click();
-  ok(await p.evaluate(() => window.__shared && /받기 → http/.test(window.__shared.text)), '  └ 누르면 폰의 공유 창에 글이 간다');
+  ok(await p.evaluate(() => window.__shared && /눌러서 보기 → http/.test(window.__shared.text)), '  └ 누르면 폰의 공유 창에 글이 간다');
   await c.close();
 }
 
@@ -389,6 +389,259 @@ section('움직임을 줄이라고 한 기기');
   await p.waitForSelector('#placeBack.open');
   ok(await css(p, '#placeBack .sheet', 'animationName') === 'none', '시트도 그 자리에 바로 뜬다');
   await c.close();
+}
+
+/* ─────────── 보내기 — 저장된 것은 보낸 것이 아니다 ───────────
+   공용 보드가 없으면 리포트는 링크를 건네야 남에게 간다. 쓰고 나서 창을 닫으면 아무에게도 안 간 채로 끝나는데,
+   예전엔 그걸 알 길이 없었다. 쓴 사람이 알게 하고, 보냈는지는 이 기기에만 기억한다(링크에는 안 싣는다). */
+const ORIGIN = new URL(BASE).origin;
+/* 알림(#toast)에 뜬 글을 차례로 모은다 — 앞 알림이 아직 떠 있어도 새로 뜬 것만 가려 볼 수 있게 */
+const toastLog = (p) => p.evaluate(() => {
+  window.__toasts = [];
+  const t = document.querySelector('#toast');
+  new MutationObserver(() => { if (!t.hidden && t.textContent) window.__toasts.push(t.textContent); })
+    .observe(t, { childList: true, characterData: true, subtree: true, attributes: true });
+});
+const toasts = (p) => p.evaluate(() => window.__toasts.slice());
+/* 링크(#r=)에 실린 줄을 앱의 코드를 빌리지 않고 푼다 — 무엇이 실려 나가는지 그대로 본다 */
+const rowsOf = (p, text) => p.evaluate(async (code) => {
+  const s = atob(code.slice(1).replace(/-/g, '+').replace(/_/g, '/'));
+  let bytes = Uint8Array.from(s, (ch) => ch.charCodeAt(0));
+  if (code[0] === '2') bytes = new Uint8Array(await new Response(new Blob([bytes]).stream()
+    .pipeThrough(new DecompressionStream('deflate-raw'))).arrayBuffer());
+  return JSON.parse(new TextDecoder().decode(bytes));
+}, text.match(/#r=([A-Za-z0-9_-]+)/)[1]);
+const unsent = (p) => p.locator('#feed .card').first().locator('.badge', { hasText: '안 보냄' });
+const stored = (p) => p.evaluate(() => JSON.parse(localStorage.getItem('tpw.v1')).reports);
+async function write(p, place) {
+  await p.locator('#writeBtn').click();
+  await p.waitForSelector('#composeBack.open');
+  await p.fill('#fPlace', place);
+  await p.locator('#fCrowd [data-v="1"]').click();
+  await p.locator('#composeGo').click();
+  return shareReady(p);
+}
+async function copyAndClose(p) {
+  await p.locator('#shareCopy').click();
+  await p.waitForSelector('#shareStatus.ok, #shareStatus.err');
+  const st = await p.locator('#shareStatus').innerText();
+  await p.keyboard.press('Escape');
+  return st;
+}
+
+section('쓰고 나서 — 저장은 보낸 게 아니다');
+{
+  const c = await context(b, PHONE);
+  await c.grantPermissions(['clipboard-read', 'clipboard-write'], { origin: ORIGIN });
+  const p = watch(await c.newPage(), '보내기');
+  await p.goto(BASE, { waitUntil: 'networkidle' });   // 예시 보드 — 이게 첫 리포트다
+  await toastLog(p);
+  await p.locator('#writeBtn').click();
+  await p.waitForSelector('#composeBack.open');
+  await p.fill('#fPlace', '해피 키즈룸');
+  await p.locator('#fCrowd [data-v="1"]').click();
+  ok((await p.locator('#fCrowd [data-v="1"]').innerText()).trim() === '보통', '쓰기 창의 "사람" 줄 단추는 그대로 "보통"');
+  await p.locator('#composeGo').click();
+  const text = await shareReady(p);
+  const title = await p.locator('#shareTitle').innerText(), note = await p.locator('#shareNote').innerText();
+  ok(title === '아직 이 폰에만 있어요', '방금 쓴 글의 공유 창: "' + title + '"');
+  ok(note.startsWith('아래 글을 단톡방에 보내면'), '  └ 단톡방에 보내는 게 마지막 단계: ' + note);
+  ok(await unsent(p).count() === 1, '  └ 뒤에 깔린 내 카드엔 "안 보냄"');
+  await p.waitForFunction(() => window.__toasts.some((t) => t.includes('예시')), null, { timeout: 3000 }).catch(() => {});
+  const first = (await toasts(p)).find((t) => t.includes('예시')) || '';
+  ok(first === '예시를 치웠습니다. 이제 내 리포트와 받은 리포트만 보입니다.', '첫 리포트 알림은 "올라갔다"처럼 들리지 않는다: ' + first);
+  ok(/^사람 보통 {2}\(/m.test(text), '공유글: 사람만 고르면 "사람 보통" — "보통"만으로는 무엇이 보통인지 모른다');
+  ok(/\n눌러서 보기 → http\S+#r=[\w-]+$/.test(text) && !text.includes('받기'),
+    '  └ 끝줄은 "눌러서 보기 → 링크": ' + text.split('\n').pop().slice(0, 30) + '…');
+  const rows1 = await rowsOf(p, text);
+
+  await p.keyboard.press('Escape');
+  const closed = await p.locator('#toast').innerText();
+  ok(closed.includes('안 보냈') && closed.includes('공유'), '안 보내고 닫으면 짚어 준다: ' + closed);
+  ok(await unsent(p).isVisible(), '  └ 카드에 "안 보냄"이 남는다');
+  ok((await stored(p))[0].sh === false, '  └ 이 기기에는 안 보낸 글로 저장된다 (sh:false)');
+
+  await p.locator('#feed .card').first().locator('[data-share]').click();
+  await shareReady(p);
+  ok(await p.locator('#shareTitle').innerText() === '보낼 준비가 됐습니다' &&
+     (await p.locator('#shareNote').innerText()).startsWith('카톡 단톡방에 보내면'), '카드에서 나중에 연 공유 창은 원래 문구 그대로');
+  const n0 = (await toasts(p)).length;
+  await p.keyboard.press('Escape');
+  ok(!(await toasts(p)).slice(n0).some((t) => t.includes('안 보냈')), '  └ 거기서 그냥 닫으면 짚지 않는다 (카드의 "안 보냄"으로 충분하다)');
+
+  await p.locator('#feed .card').first().locator('[data-share]').click();
+  const again = await shareReady(p);
+  const st = await copyAndClose(p);
+  ok(st.startsWith('복사했습니다') && await p.evaluate(() => navigator.clipboard.readText()) === again, '복사하면 글이 그대로 클립보드에');
+  ok(await unsent(p).count() === 0 && (await stored(p))[0].sh === true, '  └ "안 보냄"이 사라지고, 보낸 것을 이 기기에 기억한다');
+  await p.reload({ waitUntil: 'networkidle' });
+  ok(await p.locator('#feed .card').count() === 1 && await unsent(p).count() === 0, '다시 열어도 "안 보냄"은 없다');
+  await p.locator('#feed .card').first().locator('[data-share]').click();
+  const rows2 = await rowsOf(p, await shareReady(p));
+  ok(rows1.length === 1 && rows1[0].length === 12 && JSON.stringify(rows2) === JSON.stringify(rows1),
+    '링크에 실리는 건 보낸 뒤에도 같은 12칸 — "보냈다"는 표시는 링크에 안 실린다');
+  await p.keyboard.press('Escape');
+
+  await write(p, '묶어 보낼 곳');
+  await p.keyboard.press('Escape');
+  ok(await unsent(p).count() === 1, '새로 쓰고 안 보낸 글엔 다시 "안 보냄"');
+  await tab(p, 'sync');
+  await p.locator('#bundleBtn').click();
+  await bundleReady(p);
+  const bundle = await p.inputValue('#bundleBox');
+  ok(/^📡 특파원 리포트 2건/.test(bundle) && /\n눌러서 보기 → http\S+#r=[\w-]+$/.test(bundle) && bundle.includes('— 사람 보통'),
+    '묶음 글도 "사람 보통", 끝줄 "눌러서 보기 →"');
+  await p.locator('#bundleCopy').click();
+  await p.waitForFunction(() => /복사/.test(document.querySelector('#bundleStatus').textContent), null, { timeout: 3000 }).catch(() => {});
+  await tab(p, 'feed');
+  ok(await p.locator('#feed .badge', { hasText: '안 보냄' }).count() === 0, '  └ 묶음으로 복사해도 보낸 것 — "안 보냄"이 사라진다');
+  await c.close();
+
+  /* 예전에 퍼진 글은 끝줄이 "받기 →" 다. 받는 쪽은 #r= 만 찾으니 그대로 받아져야 한다 */
+  const c2 = await context(b, PHONE);
+  const q = watch(await c2.newPage(), '예전 글');
+  await q.goto(BASE, { waitUntil: 'networkidle' });
+  await tab(q, 'sync');
+  await q.fill('#recvBox', text.replace('눌러서 보기 →', '받기 →'));
+  await q.locator('#recvGo').click();
+  await q.waitForFunction(() => /받았습니다|못했습니다/.test(document.querySelector('#recvStatus').textContent), null, { timeout: 3000 }).catch(() => {});
+  const got = await q.evaluate(() => (JSON.parse(localStorage.getItem('tpw.v1') || '{}').reports || []).map((r) => r.id));
+  ok(got.length === 1 && got[0] === rows1[0][0], '예전 글("받기 → 링크")도 주고받기 칸에 붙여 넣으면 받아진다');
+  await tab(q, 'feed');
+  ok(await q.locator('#feed .card').count() === 1 && await q.locator('#feed .badge', { hasText: '안 보냄' }).count() === 0,
+    '  └ 받은 글은 내 글이 아니라 "안 보냄"이 없다');
+  await c2.close();
+
+  /* 이 표시가 생기기 전에 쓴 내 글(sh 가 없다)은 보낸 것으로 친다 — 업데이트했다고 옛 카드마다 "안 보냄"이 붙지 않게 */
+  const c3 = await context(b, PHONE);
+  const o = await openWith(c3, [report({ t: Date.now() - 2 * 60 * MIN, by: '나', place: '예전에 쓴 곳', crowd: 0, mine: true })]);
+  ok(await o.locator('#feed .card').count() === 1 && await o.locator('#feed .badge', { hasText: '안 보냄' }).count() === 0,
+    '이 표시가 생기기 전에 쓴 내 글엔 "안 보냄"을 달지 않는다');
+  await c3.close();
+}
+
+section('폰의 공유 창으로 넘기면 — 창을 닫고, 보냈다고는 하지 않는다');
+{
+  const c = await context(b, PHONE);
+  await c.addInitScript(() => {
+    window.__shares = 0;
+    navigator.share = () => { window.__shares++; return window.__cancel ? Promise.reject(new DOMException('취소', 'AbortError')) : Promise.resolve(); };
+  });
+  const p = await openWith(c, [report({ t: Date.now() - 30 * MIN, by: '민지', place: '앞서 받은 곳', crowd: 0 })]);
+  await toastLog(p);
+  await write(p, '구름 놀이터');
+  await p.evaluate(() => { window.__cancel = true; });
+  await p.locator('#shareNative').click();
+  await p.waitForFunction(() => window.__shares === 1);
+  await p.waitForTimeout(150);
+  ok(await p.locator('#shareBack.open').count() === 1 && await unsent(p).count() === 1, '공유 창에서 취소하면 그대로 — 보낸 것으로 치지 않는다');
+  await p.evaluate(() => { window.__cancel = false; });
+  await p.locator('#shareNative').click();
+  await p.waitForSelector('#shareBack.open', { state: 'detached', timeout: 3000 }).catch(() => {});
+  const ts = await toasts(p);
+  ok(await p.locator('#shareBack.open').count() === 0 && ts[ts.length - 1] === '공유 창으로 넘겼습니다.',
+    '넘기고 나면 공유 창을 닫고 알린다: ' + ts[ts.length - 1]);
+  ok(!ts.some((t) => /안 보냈|보냈습니다/.test(t)), '  └ "보냈다"고도 "안 보냈다"고도 하지 않는다 (카톡에서 취소했을 수도 있다)');
+  ok(await unsent(p).count() === 0 && (await stored(p))[0].sh === true, '  └ 카드의 "안 보냄"은 사라지고 이 기기에 기억한다');
+  await c.close();
+}
+
+section('공용 보드를 켜면 — 쓴 글은 보드로 가니 원래 문구 그대로');
+{
+  /* 가짜 보드: 설정만 채우고 요청은 빈 목록으로 답한다. 서비스 워커가 설정 파일을 가로채지 않게 막는다 */
+  const c = await context(b, Object.assign({}, PHONE, { serviceWorkers: 'block' }));
+  await c.route(/\/correspondent\/config\.js/, (r) => r.fulfill({ contentType: 'application/javascript',
+    body: 'window.TPW_CONFIG = { url: "' + ORIGIN + '/fakeboard", anonKey: "test" };' }));
+  await c.route(/\/fakeboard\//, (r) => r.fulfill({ contentType: 'application/json', body: '[]' }));
+  const p = await openWith(c, [report({ t: Date.now() - 30 * MIN, by: '민지', place: '앞서 받은 곳', crowd: 0 })]);
+  ok(await p.evaluate(() => !!(window.TPW_SYNC && window.TPW_SYNC.enabled)), '(공용 보드를 켠 채로 연다)');
+  await toastLog(p);
+  await write(p, '보드에 쓴 곳');
+  ok(await p.locator('#shareTitle').innerText() === '보낼 준비가 됐습니다', '방금 쓴 글이어도 공유 창 제목은 원래대로');
+  ok(await unsent(p).count() === 0, '  └ 카드에 "안 보냄"을 달지 않는다');
+  await p.keyboard.press('Escape');
+  ok(!(await toasts(p)).some((t) => t.includes('안 보냈')), '  └ 닫아도 "안 보냈어요"라고 하지 않는다');
+  await c.close();
+}
+
+section('장소 창 바닥 — 카드와 같은 이름, 360px 에서도 한 줄');
+{
+  const c = await context(b, Object.assign({}, PHONE, { viewport: { width: 360, height: 780 } }));
+  const p = await openWith(c, [report({ t: Date.now() - 10 * MIN, by: '민지', cat: 'play', place: '별빛 키즈카페', crowd: 1 })]);
+  const cardAgain = (await p.locator('#feed .card [data-again]').first().innerText()).trim();
+  await tab(p, 'places');
+  await p.locator('#places .pl').first().click();
+  await p.waitForSelector('#placeBack.open');
+  await settle(p);
+  const btns = await p.$$eval('#placeBack .sheet-foot .btn', (els) => els.filter((e) => !e.hidden)
+    .map((e) => ({ t: e.textContent.trim(), h: Math.round(e.getBoundingClientRect().height), wb: getComputedStyle(e).wordBreak })));
+  ok(btns.map((x) => x.t).join(' · ') === cardAgain + ' · 공유 · 닫기', '카드와 같은 이름: ' + btns.map((x) => x.t).join(' · '));
+  ok(btns.every((x) => x.h <= 56), '  └ 셋 다 한 줄 (' + btns.map((x) => x.h).join(', ') + 'px)');
+  ok(btns.every((x) => x.wb === 'keep-all'), '  └ 넘치더라도 낱말 가운데서 꺾지 않는다 (keep-all)');
+  await c.close();
+
+  const c2 = await context(b, PHONE);
+  const q = watch(await c2.newPage(), '예시 장소 창');
+  await q.goto(BASE, { waitUntil: 'networkidle' });
+  await tab(q, 'places');
+  await q.locator('#places .pl').first().click();
+  await q.waitForSelector('#placeBack.open');
+  const shownBtns = await q.$$eval('#placeBack .sheet-foot .btn', (els) => els.filter((e) => e.offsetParent).map((e) => e.textContent.trim()));
+  ok(shownBtns.join() === '닫기', '예시 장소 창엔 "공유"도 없다 — 눌러 봐야 안 되는 단추는 두지 않는다 (' + shownBtns.join() + ')');
+  await c2.close();
+}
+
+section('처음 보낸 뒤 한 번 — 홈 화면에 추가 권하기');
+{
+  const IOS = 'Mozilla/5.0 (iPhone; CPU iPhone OS 17_5 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.5 Mobile/15E148 Safari/604.1';
+  const KAKAO = 'Mozilla/5.0 (Linux; Android 14; SM-S918N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0 Mobile Safari/537.36 KAKAOTALK 10.8.0';
+  const open = async (ua, init) => {
+    const c = await context(b, Object.assign({}, PHONE, { userAgent: ua }));
+    await c.grantPermissions(['clipboard-read', 'clipboard-write'], { origin: ORIGIN });
+    if (init) await c.addInitScript(init);
+    return openWith(c, [report({ t: Date.now() - 30 * MIN, by: '민지', place: '앞서 받은 곳', crowd: 0 })]);
+  };
+  const cardShare = async (p) => { await p.locator('#feed .card').first().locator('[data-share]').click(); await shareReady(p); return copyAndClose(p); };
+
+  const p = await open(IOS);
+  await toastLog(p);
+  ok(await p.locator('#homeTip').isHidden(), '보내기 전엔 없다');
+  await write(p, '처음 보내는 곳');
+  ok(await p.locator('#homeTip').isHidden(), '  └ 써 놓기만 해서는 안 뜬다');
+  await copyAndClose(p);
+  const tip = (await p.locator('#homeTip').innerText()).replace(/\s+/g, ' ');
+  ok(await p.locator('#homeTip').isVisible() && tip.includes('다음에도 바로 열리게 홈 화면에 추가하세요'), '처음 보내고 나면 한 번 권한다: ' + tip);
+  ok(!(await toasts(p)).some((t) => t.includes('안 보냈')) && await unsent(p).count() === 0,
+    '  └ 방금 쓴 글을 복사하고 닫으면 "안 보냈어요"도 "안 보냄"도 없다');
+  await p.locator('#homeTipX').click({ timeout: 3000 }).catch(() => {});   // 안 떴으면 위에서 이미 떨어졌다
+  ok(await p.locator('#homeTip').isHidden(), '"닫기"로 치운다');
+  await cardShare(p);
+  ok(await p.locator('#homeTip').isHidden(), '  └ 다음에 보낼 땐 다시 안 뜬다');
+  await p.reload({ waitUntil: 'networkidle' });
+  await cardShare(p);
+  ok(await p.locator('#homeTip').isHidden(), '  └ 다시 열어도 안 뜬다 (이 기기에 기억한다)');
+  await p.context().close();
+
+  const q = await open(IOS);
+  await write(q, '방법 보러 갈 곳');
+  await copyAndClose(q);
+  await q.locator('#homeTipGo').click({ timeout: 3000 }).catch(() => {});
+  const where = await q.evaluate(() => {
+    const r = document.querySelector('#installPanel').getBoundingClientRect();
+    return { view: document.body.dataset.view, inView: r.top >= 0 && r.bottom <= innerHeight, focus: document.activeElement.id };
+  });
+  ok(where.view === 'sync' && where.inView && where.focus === 'installPanel' && await q.locator('#installPanel').isVisible() &&
+     await q.locator('#homeTip').isHidden(), '"방법 보기"는 주고받기의 "홈 화면에 추가" 안내로 데려간다 (' + JSON.stringify(where) + ')');
+  await q.context().close();
+
+  for (const [nm, ua, init] of [['카톡 안의 브라우저', KAKAO, null],
+    ['이미 홈 화면 앱', IOS, () => Object.defineProperty(navigator, 'standalone', { get: () => true })]]) {
+    const r = await open(ua, init);
+    await write(r, '보내 볼 곳');
+    await copyAndClose(r);
+    ok(await r.locator('#homeTip').isHidden() && await unsent(r).count() === 0, nm + '에선 권하지 않는다 (보내기는 된다)');
+    await r.context().close();
+  }
 }
 
 await finish(b);

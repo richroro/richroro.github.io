@@ -500,7 +500,8 @@ textarea.input{min-height:76px;resize:vertical;line-height:1.55}
 .sheet-body{padding:16px 18px 22px}
 .sheet-foot{position:sticky;bottom:0;background:var(--surface);border-top:1px solid var(--line-soft);
   padding:12px 18px calc(12px + env(safe-area-inset-bottom));display:flex;gap:8px}
-.sheet-foot .btn{flex:1}
+/* 단추 셋이 나란히 서도 360px 폰에서 한 줄에 들게 옆 여백을 줄이고, 넘치더라도 낱말 가운데서 꺾이지 않게("상 / 황") */
+.sheet-foot .btn{flex:1;word-break:keep-all;padding-left:10px;padding-right:10px}
 
 /* ════════ 폼 ════════ */
 .field{margin-bottom:16px}
@@ -716,6 +717,13 @@ button,.chip,.pl,.w-row{touch-action:manipulation}
   </div>
   <div id="inbox"></div>
 
+  <!-- 처음 보낸 뒤 한 번 — 다음에도 바로 열리게(app.js homeTip). 이미 홈 화면 앱이거나 카톡 안의 브라우저면 안 뜬다 -->
+  <div class="tip" id="homeTip" hidden>
+    <p>다음에도 바로 열리게 <b>홈 화면에 추가</b>하세요.</p>
+    <p class="tip-foot"><button class="link-btn" type="button" id="homeTipGo">방법 보기</button>
+      <button class="link-btn" type="button" id="homeTipX">닫기</button></p>
+  </div>
+
   <!-- ===== 속보 ===== -->
   <section class="view" id="view-feed" role="tabpanel" aria-labelledby="tab-feed">
     <div id="watchBox"></div>
@@ -775,7 +783,7 @@ button,.chip,.pl,.w-row{touch-action:manipulation}
     <div class="panel">
       <div class="panel-t">받기</div>
       <p class="note" style="margin-bottom:9px">카톡으로 받은 내용을 통째로 붙여 넣으세요. 링크만 넣어도 되고, 앞뒤 글이 섞여 있어도 알아서 찾습니다.</p>
-      <textarea class="code-box" id="recvBox" placeholder="예: 📡 [맛집] 만안 손칼국수 … 받기 → https://richroro.github.io/correspondent/#r=…" spellcheck="false"></textarea>
+      <textarea class="code-box" id="recvBox" placeholder="예: 📡 [맛집] 만안 손칼국수 … 눌러서 보기 → https://richroro.github.io/correspondent/#r=…" spellcheck="false"></textarea>
       <div class="row">
         <button class="btn primary sm" id="recvGo" type="button">받아서 합치기</button>
         <button class="btn sm ghost" id="recvClear" type="button">지우기</button>
@@ -911,7 +919,7 @@ button,.chip,.pl,.w-row{touch-action:manipulation}
       <button class="x" type="button" data-close aria-label="닫기">&times;</button>
     </div>
     <div class="sheet-body">
-      <p class="note" style="margin-bottom:10px">카톡 단톡방에 보내면, 링크를 누른 사람의 화면에 이 리포트가 더해집니다.</p>
+      <p class="note" id="shareNote" style="margin-bottom:10px">카톡 단톡방에 보내면, 링크를 누른 사람의 화면에 이 리포트가 더해집니다.</p>
       <label class="sr" for="shareBox">공유할 내용</label>
       <textarea class="code-box" id="shareBox" style="min-height:150px" readonly spellcheck="false"></textarea>
       <div class="status" id="shareStatus" aria-live="polite"></div>
@@ -1015,8 +1023,8 @@ button,.chip,.pl,.w-row{touch-action:manipulation}
     </div>
     <div class="sheet-body" id="placeBody"></div>
     <div class="sheet-foot">
-      <button class="btn primary" type="button" id="placeAgain">여기 지금 상황 알리기</button>
-      <button class="btn" type="button" id="placeShare">묶어서 공유</button>
+      <button class="btn primary" type="button" id="placeAgain">나도 여기</button>
+      <button class="btn" type="button" id="placeShare">공유</button>
       <button class="btn ghost" type="button" data-close>닫기</button>
     </div>
   </div>

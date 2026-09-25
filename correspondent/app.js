@@ -41,9 +41,10 @@ const WAIT = [
   { v:60, nm:"1시간+",    s:"대기 1시간+", tone:"bad"  },
   { v:-1, nm:"모름",      s:"",            tone:"none" }
 ];
+/* s 는 칩·공유글에 홀로 적힌다 — "보통"만으로는 무엇이 보통인지 모르니 "사람"을 붙인다(쓰기 창 단추 nm 은 "사람" 줄 안이라 그대로) */
 const CROWD = [
   { v:0,  nm:"한산", s:"한산", tone:"good"  },
-  { v:1,  nm:"보통", s:"보통", tone:"mid"   },
+  { v:1,  nm:"보통", s:"사람 보통", tone:"mid"   },
   { v:2,  nm:"붐빔", s:"붐빔", tone:"bad"   },
   { v:3,  nm:"터짐", s:"터짐", tone:"worst" },
   { v:-1, nm:"모름", s:"",     tone:"none"  }
@@ -151,6 +152,7 @@ function sane(o, local){
        붙으면 남의 글을 내 계정으로 올리게 된다. local 은 내 저장소에서 읽을 때만 참이다. */
     mine:  local ? !!o.mine : false,
     up:    local ? !!o.up : false,
+    sh:    local ? o.sh !== false : false,        // 복사·공유로 내보낸 적 있는 내 글. 이 표시가 생기기 전에 쓴 글은 보낸 것으로 친다
     /* 아래 넷도 내 저장소에서 읽을 때만 산다. 링크로 들어온 값은 버린다. */
     priv:  local ? !!o.priv : false,              // 공용 보드에 안 올리기로 한 내 글
     sv:    local ? !!o.sv : false,                // 서버에서 본 적 있는 글 — 서버에서 사라지면 여기서도 뺀다
@@ -291,6 +293,7 @@ function cardHtml(r, o){
       (r.area ? '<span class="area">' + esc(r.area) + "</span>" : "") +
       (sample ? '<span class="badge">예시</span>' : "") +
       (r.priv ? '<span class="badge" title="공용 보드에 올리지 않은 글">이 기기에만</span>' : "") +
+      (!SY.enabled && r.mine && !r.sh ? '<span class="badge" title="아직 아무에게도 보내지 않은 내 리포트">안 보냄</span>' : "") +
       (r.hid ? '<span class="badge warn" title="세 사람 이상이 신고해서 다른 사람에게는 안 보입니다">신고로 가려짐</span>' : "") +
     "</div>" +
     liveRowHtml(r) +
@@ -566,7 +569,8 @@ function baseUrl(){
     return location.origin + location.pathname.replace(/index\.html?$/i, "");
   return "https://richroro.github.io/correspondent/";
 }
-/** 카톡에 그대로 붙여 넣을 글. 링크를 안 눌러도 읽히게 쓴다. */
+/** 카톡에 그대로 붙여 넣을 글. 링크를 안 눌러도 읽히게 쓴다.
+    끝줄은 이 앱을 모르는 사람도 알아듣게 "눌러서 보기". 예전 글의 "받기 →" 도 #r= 로 찾으니 그대로 받아진다. */
 function shareText(list, code){
   const url = baseUrl() + "#r=" + code;
   if (list.length === 1) {
@@ -581,7 +585,7 @@ function shareText(list, code){
     if (r.tags.length) tail.push(r.tags.map((t) => "#" + t).join(" "));
     if (tail.length) lines.push(tail.join("  "));
     lines.push("— " + byline(r.by));
-    lines.push("받기 → " + url);
+    lines.push("눌러서 보기 → " + url);
     return lines.join("\n");
   }
   const names = Array.from(new Set(list.map((r) => r.place)));
@@ -592,7 +596,7 @@ function shareText(list, code){
     return "· " + r.place + (chips ? " — " + chips : "") + " (" + ago(r.t) + ", " + r.by + ")";
   });
   if (list.length > 5) body.push("· … 외 " + (list.length - 5) + "건");
-  return [head].concat(body, ["받기 → " + url]).join("\n");
+  return [head].concat(body, ["눌러서 보기 → " + url]).join("\n");
 }
 
 /* =========================================================================
@@ -1442,6 +1446,7 @@ function openSheet(sel){
 /** fromBack: 뒤로 가기로 닫는 중이다(기록은 이미 한 칸 물러났다). */
 function closeSheets(keepFocus, fromBack){
   const was = !!$(".backdrop.open");
+  if (shareFresh && $("#shareBack.open")) shareClosed();   // 방금 쓴 글을 안 보내고 닫으면 짚어 준다
   $$(".backdrop.open").forEach((b) => b.classList.remove("open"));
   BEHIND().forEach((el) => el && (el.inert = false));
   document.body.style.overflow = "";
@@ -1557,12 +1562,21 @@ function syncSame(){
   $("#fRefSame").textContent = same ? "✓ 그대로" : "그대로예요";
 }
 
-let shareCache = "", shareSeq = 0;
-async function openShare(list){
+let shareCache = "", shareSeq = 0, shareList = [], shareFresh = null;
+let bundleList = [];   // 주고받기의 묶음 링크에 담긴 리포트
+/** fresh 는 방금 쓴 글이라는 뜻이다. 공용 보드가 없으면 이 글은 아직 아무에게도 안 갔다 —
+    저장된 것을 보낸 것으로 알고 닫지 않게, 보내는 게 마지막 단계라고 먼저 말해 둔다. */
+async function openShare(list, fresh){
   /* 글은 압축이 끝나야 생긴다. 그 전에 누른 "복사"가 앞서 만든 남의 글을 복사하지 않게 비워 두고,
      그사이 다른 공유 창이 열렸으면 늦게 끝난 이 글로 그 창을 덮지 않는다. */
   const seq = ++shareSeq;
   shareCache = "";
+  shareList = list;
+  shareFresh = fresh && !SY.enabled && list.length === 1 ? list[0].id : null;
+  $("#shareTitle").textContent = shareFresh ? "아직 이 폰에만 있어요" : "보낼 준비가 됐습니다";
+  const note = $("#shareNote");   // 옛 index.html 사본과 섞여 떠도 멈추지 않게
+  if (note) note.textContent = shareFresh ? "아래 글을 단톡방에 보내면, 링크를 누른 사람의 화면에 이 리포트가 더해집니다."
+    : "카톡 단톡방에 보내면, 링크를 누른 사람의 화면에 이 리포트가 더해집니다.";
   $("#shareBox").value = "만드는 중…";
   const st = $("#shareStatus");
   st.textContent = ""; st.className = "status";
@@ -1586,6 +1600,30 @@ async function openShare(list){
     st.textContent = "공유글을 만들지 못했습니다: " + e.message;
     st.className = "status err";
   }
+}
+/** 복사했거나 폰의 공유 창으로 넘긴 내 글에 sh 를 단다. 이 기기에만 두는 표시라 링크 줄(toRow)에도 서버에도 안 실린다.
+    카톡에서 취소했을 수도 있지만 거기까진 알 수 없으니, 넘긴 것까지만 센다. */
+function markSent(list){
+  const ids = new Set(list.map((r) => r.id));
+  const newly = board.reports.filter((r) => r.mine && !r.sh && ids.has(r.id));
+  newly.forEach((r) => { r.sh = true; });
+  if (newly.length) { save(); renderFeed(); }
+  homeTip();
+}
+/** 방금 쓴 글을 안 보내고 공유 창을 닫았다(closeSheets 가 부른다) — 카드에 "안 보냄"이 남아 있다고 한 번 짚어 준다. */
+function shareClosed(){
+  const r = board.reports.find((x) => x.id === shareFresh);
+  shareFresh = null;
+  if (r && !r.sh) toast("아직 안 보냈어요. 카드의 ‘공유’로 언제든 보낼 수 있어요.");
+}
+/** 처음 보낸 뒤 한 번만 — 다음에도 주소창 없이 바로 열리게 홈 화면에 두라고 권한다.
+    이미 홈 화면 앱이거나 카톡 같은 앱 안의 브라우저(거기선 추가가 안 된다)면, 또 이 브라우저에 알려 줄 방법이 없으면
+    (주고받기의 "홈 화면에 추가"가 숨어 있으면) 권하지 않는다. 띄운 걸 기억하지 못하는 곳에서는 아예 안 띄운다. */
+function homeTip(){
+  const tip = $("#homeTip"), panel = $("#installPanel");
+  if (!tip || !panel || panel.hidden || standalone() || inAppBrowser()) return;
+  if (store.get("tpw.homeTip", 0) || !store.set("tpw.homeTip", 1)) return;
+  tip.hidden = false;
 }
 
 /* =========================================================================
@@ -1646,6 +1684,7 @@ function usualTableHtml(g){
 function openPlaceSheet(g){
   openPlaceKey = g.key;
   $("#placeAgain").hidden = isSample();
+  $("#placeShare").hidden = isSample();   // 예시는 보낼 수 없다 — 눌러야 안 된다는 걸 알게 두지 않는다
   if (markSeen(g)) redraw(() => { renderWatch(); renderPlaces(); });   // 연 단추가 다시 그려져도 초점은 그 자리에 — 닫으면 거기로 돌아온다
   fillPlaceSheet(g);
   openSheet("#placeBack");
@@ -1918,6 +1957,19 @@ function bind(){
     try { await ev.prompt(); } catch (e) {}
     paintInstall();
   });
+  /* 처음 보낸 뒤 한 번 뜨는 권유(homeTip). 방법은 주고받기 끝의 "홈 화면에 추가"에 있다 — 그리로 데려간다 */
+  const tipGo = $("#homeTipGo");
+  if (tipGo) {
+    tipGo.addEventListener("click", () => {
+      $("#homeTip").hidden = true;
+      switchView("sync");
+      const panel = $("#installPanel");
+      panel.tabIndex = -1;                  // 읽는 프로그램도 그 자리로
+      panel.focus({ preventScroll: true });
+      panel.scrollIntoView({ block: "center" });
+    });
+    $("#homeTipX").addEventListener("click", () => { $("#homeTip").hidden = true; });
+  }
 
   /* 큰 버튼 */
   $("#writeBtn").addEventListener("click", () => openCompose());
@@ -2143,20 +2195,29 @@ function bind(){
     window.scrollTo(0, 0);                  // 방금 쓴 리포트는 속보 맨 위에 있다
     renderAll();
     closeSheets(true);
-    openShare([r]);
-    if (first) setTimeout(() => toast("예시는 치웠습니다. 이제 진짜 보드입니다."), 900);
+    openShare([r], true);
+    if (first) setTimeout(() => toast("예시를 치웠습니다. 이제 내 리포트와 받은 리포트만 보입니다."), 900);
   });
 
   /* 공유 */
   $("#shareCopy").addEventListener("click", async () => {
     if (!shareCache) return;
+    const list = shareList;
     const ok = await copyText(shareCache);
     const st = $("#shareStatus");
     st.textContent = ok ? "복사했습니다. 단톡방에 붙여 넣으세요." : "복사가 막혔습니다. 위 글을 직접 긁어서 복사해 주세요.";
     st.className = "status " + (ok ? "ok" : "err");
+    if (ok) markSent(list);
   });
+  /* 폰의 공유 창으로 넘기고 나면 이 창은 할 일이 없다 — 닫는다. 카톡에서 취소했을 수도 있으니 "보냈다"고는 하지 않는다 */
   $("#shareNative").addEventListener("click", () => {
-    if (navigator.share && shareCache) navigator.share({ text: shareCache }).catch(() => {});
+    if (!navigator.share || !shareCache) return;
+    const list = shareList, seq = shareSeq;
+    navigator.share({ text: shareCache }).then(() => {
+      markSent(list);
+      if (seq === shareSeq && $("#shareBack.open")) closeSheets();
+      toast("공유 창으로 넘겼습니다.");
+    }).catch(() => {});
   });
   $("#placeAgain").addEventListener("click", () => {
     const g = groups().find((x) => x.key === openPlaceKey);
@@ -2184,7 +2245,7 @@ function bind(){
     const st = $("#recvStatus");
     const code = findCode($("#recvBox").value);
     if (!code) {
-      st.textContent = "붙여 넣은 내용에서 링크를 찾지 못했습니다. 받기 → 로 시작하는 줄이 들어 있어야 합니다.";
+      st.textContent = "붙여 넣은 내용에서 링크를 찾지 못했습니다. 눌러서 보기 → 로 시작하는 줄이 들어 있어야 합니다.";
       st.className = "status err";
       return;
     }
@@ -2223,6 +2284,7 @@ function bind(){
     try {
       const r = await packCapped(board.reports, BUNDLE_CAP);
       const text = shareText(r.used, r.code);
+      bundleList = r.used;                  // 복사·공유하면 여기 담긴 내 글도 보낸 것이다
       $("#bundleBox").value = text;
       $("#bundleBox").scrollTop = 0;
       $("#bundleBox").hidden = false;
@@ -2236,13 +2298,16 @@ function bind(){
     }
   });
   $("#bundleCopy").addEventListener("click", async () => {
+    const list = bundleList;
     const ok = await copyText($("#bundleBox").value);
     const st = $("#bundleStatus");
     st.textContent = ok ? "복사했습니다." : "복사가 막혔습니다. 직접 긁어서 복사해 주세요.";
     st.className = "status " + (ok ? "ok" : "err");
+    if (ok) markSent(list);
   });
   $("#bundleShare").addEventListener("click", () => {
-    if (navigator.share) navigator.share({ text: $("#bundleBox").value }).catch(() => {});
+    const list = bundleList;
+    if (navigator.share) navigator.share({ text: $("#bundleBox").value }).then(() => markSent(list)).catch(() => {});
   });
 
   /* 파일 */

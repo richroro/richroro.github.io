@@ -92,7 +92,7 @@ await page.fill('#fBy', '리처드');
 await page.locator('#composeGo').click();
 const shareText = await shareReady(page);
 ok(shareText.includes('테스트 놀이터'), '공유글에 장소');
-ok(/받기 → http.*#r=/.test(shareText), '공유글에 링크');
+ok(/눌러서 보기 → http.*#r=/.test(shareText), '공유글에 링크');
 ok(shareText.includes('대기 없음 · 한산 · 주차 만석'), '공유글에 현장 정보');
 ok(shareText.includes('— 리처드 특파원'), '공유글에 특파원');
 const code = shareText.match(/#r=([A-Za-z0-9_-]+)/)[1];
@@ -102,7 +102,7 @@ await page.locator('#shareBack [data-close]').last().click();
 
 console.log('\n== 8. 저장/예시 사라짐 ==');
 ok((await page.locator('#feed .card').count()) === 1, '내 리포트 1건만 (예시 사라짐)');
-ok((await page.locator('#feed .badge').count()) === 0, '예시 배지 없음');
+ok((await page.locator('#feed .badge', { hasText: '예시' }).count()) === 0, '예시 배지 없음');
 const noteHtml = await page.locator('#feed .note-line').first().innerHTML();
 ok(noteHtml.includes('&lt;script&gt;'), 'XSS 이스케이프: ' + noteHtml.slice(0, 40));
 ok((await page.locator('#meBtn').textContent()).includes('리처드'), '머리 버튼에 이름');
