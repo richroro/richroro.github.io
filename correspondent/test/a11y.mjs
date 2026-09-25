@@ -275,9 +275,12 @@ section('좁은 폰(320px) 머리띠');
   const c = await context(b, { viewport: { width: 320, height: 700 } });
   const p = await openWith(c, Array.from({ length: 12 }, (_, i) => report({ t: Date.now() - (5 + i) * MIN, place: '가' + i, crowd: 1 })));
   const m = await p.evaluate(() => {
-    const pill = document.querySelector('#livePill .livepill'), pr = pill.getBoundingClientRect();
+    /* 알약은 단추 자체(#livePill.livepill)다 — 옛 차림은 감싼 칸 안의 span 이었다. 글자가 다 보이는지는 글자 폭으로 잰다
+       (단추의 ::after 는 누르는 자리를 넓히려고 밖으로 삐져나와 scrollWidth 에 잡힌다) */
+    const pill = document.querySelector('#livePill .livepill') || document.querySelector('#livePill'), pr = pill.getBoundingClientRect();
+    const rg = document.createRange(); rg.selectNodeContents(pill); const tr = rg.getBoundingClientRect();
     return { h1: document.querySelector('.brand h1').getBoundingClientRect().right, pill: pr.left, pillR: pr.right,
-      whole: pill.scrollWidth <= pr.width + 0.5, sw: document.documentElement.scrollWidth };
+      whole: tr.left >= pr.left - 0.5 && tr.right <= pr.right + 0.5, sw: document.documentElement.scrollWidth };
   });
   ok(m.h1 <= m.pill + 0.5, '제목이 "지금 12건" 밑으로 파고들지 않는다 (제목 끝 ' + Math.round(m.h1) + ' ≤ 알약 ' + Math.round(m.pill) + ')');
   ok(await p.locator('#livePill').innerText() === '지금 12건' && m.pillR > m.pill && m.whole && m.pillR <= 320 && m.sw <= 320,
