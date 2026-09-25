@@ -33,6 +33,9 @@
   header h1{font-size:clamp(24px,4.4vw,36px);margin-top:8px;letter-spacing:-1px}
   header p{color:var(--sub);font-size:15px;margin-top:2px}
 
+  .ver{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap}
+  .ver button{border:1px solid var(--line);background:var(--card);border-radius:99px;padding:8px 16px;font-size:15px;font-weight:700;cursor:pointer;color:var(--sub);min-height:42px}
+  .ver button[aria-pressed="true"]{background:var(--ink);border-color:var(--ink);color:#fff}
   .stage{position:relative;width:100%;aspect-ratio:16/9;background:#000;border-radius:16px;overflow:hidden;
     box-shadow:0 18px 40px -18px rgba(90,40,60,.45);margin-top:14px}
   .stage canvas{display:block;width:100%;height:100%}
@@ -82,9 +85,13 @@
   <header>
     <a class="back" href="/">&larr; richroro</a>
     <h1>엄마도 처음이라</h1>
-    <p>육아하는 엄마에게 바치는 노래 · 브라우저가 그 자리에서 연주하고 그리는 뮤직비디오</p>
+    <p>육아하는 엄마에게 바치는 노래 · 발라드 뮤직비디오와 K팝 무대 버전을 브라우저가 그 자리에서 연주하고 그립니다</p>
   </header>
 
+  <div class="ver" role="group" aria-label="버전">
+    <button data-ver="ballad" aria-pressed="true">🎹 발라드 뮤직비디오</button>
+    <button data-ver="kpop" aria-pressed="false">💃 K팝 스테이지 버전</button>
+  </div>
   <div class="stage" id="stage">
     <canvas id="mv" width="1280" height="720" aria-label="뮤직비디오 화면"></canvas>
     <button class="big-play" id="bigPlay" aria-label="재생"><span>▶</span></button>
@@ -116,6 +123,7 @@
     <h2>이렇게 만들었어요</h2>
     <div class="how">
       <ul>
+        <li><b>K팝 스테이지 버전</b> — 같은 가사·멜로디를 118BPM 댄스팝으로 다시 편곡했습니다. 808 베이스와 트랩 하이햇 절, 박수가 몰아치는 프리코러스, 킥에 맞춰 신스가 숨 쉬는(사이드체인) 후렴, 후렴마다 ‘엄마 엄마 파이팅!’ 구호와 보컬 찹이 들어간 댄스 브레이크. 화면은 무대 음악방송처럼 LED 월에 이야기 장면을 띄우고, 엄마가 센터에서 헤드셋 마이크를 끼고 안무(손가락 포인트·박수·머리 위 하트)를 추며, 아이와 할머니가 백업 댄서로 합류합니다. 박자마다 카메라가 컷을 바꾸고 조명과 응원봉이 킥에 맞춰 반응합니다.</li>
         <li><b>곡</b> — 80BPM, F장조 발라드. 인트로 오르골 – 1절 – 프리코러스 – 후렴 – 2절 – 후렴 – 브리지 – 마지막 후렴은 G장조로 한 음 올려서 끝냅니다. 가사와 멜로디 모두 이 페이지를 위해 새로 썼습니다.</li>
         <li><b>목소리</b> — 녹음한 목소리가 아니라 Web Audio로 합성한 목소리입니다. 음절마다 한글을 자모로 풀어서 모음(ㅏ·ㅓ·ㅗ·ㅜ·ㅡ·ㅣ·ㅔ)에 맞는 포먼트 필터를 걸고, 초성(ㅅ·ㅈ의 바람 소리, ㄱ·ㄷ·ㅂ의 터지는 소리)과 받침(ㄴ·ㅁ·ㅇ 콧소리)도 흉내 냅니다. 실제 가수만큼 또렷하지는 않아서 화면에 가사를 노래방처럼 띄웁니다.</li>
         <li><b>반주</b> — 피아노 아르페지오, 오르골, 패드, 베이스, 드럼을 전부 오실레이터와 노이즈로 즉석에서 만듭니다. 샘플 파일은 하나도 없습니다.</li>
@@ -133,7 +141,9 @@
 /* =====================================================================
    1. 곡: 섹션 · 코드 · 멜로디 · 가사
    ===================================================================== */
-const BPM = 80, SPB = 60 / BPM, BAR = SPB * 4, TAIL = 6.5;
+let VER = /kpop/.test(location.hash) ? 'kpop' : 'ballad';   // 발라드 | K팝 스테이지
+let BPM = 80, SPB = 60 / BPM, BAR = SPB * 4;
+const TAIL = 6.5;
 const BASE = 65; // F4 — 멜로디 음높이는 F4 기준 반음 수
 
 // 리듬(박) 틀
@@ -144,6 +154,7 @@ const R = {
   n11: [.5,.5,.5,.5,.5,.5,1,.5,.5,.5,2.5],
   n7:  [1,.5,.5,2,1,1,2],
   n10: [.5,.5,.5,.5,1,1,.5,.5,.5,2.5],
+  ch7: [.5,.5,.5,.5,.75,.75,1.5],
 };
 // 소절(2마디) 멜로디: [음높이 목록, 리듬]
 const PH = {
@@ -160,9 +171,11 @@ const PH = {
   BA: [[4,4,9,7,4,2,4,2,0], R.n9a],
   BB: [[0,2,4,7,9,7,7,9,11,14], R.n10],
   OT: [[9,7,5,9,7,4,0], R.n7],
+  CH1: [[12,12,12,12,14,12,16], R.ch7],
+  CH2: [[7,7,12,11,9,7,7], R.ch7],
 };
 
-const SECTIONS = [
+const SECTIONS_B = [
   { id:'intro', label:'인트로', bars:4, e:0, scene:'night',
     chords:['F','C','Dm','Am'], box:[['CA',0,12],['CB',8,12]] },
   { id:'v1', label:'1절', bars:8, e:1, scene:'room',
@@ -194,6 +207,28 @@ const SECTIONS = [
   { id:'outro', label:'아웃트로', bars:4, e:.8, key:2, scene:'sleep',
     chords:['Bb','F','Bb','F'], lines:[['고마워 내 아가야','OT']], box:[['OT',8,12]] },
 ];
+
+// K팝 스테이지 버전: 118BPM, 후렴 뒤마다 '엄마 파이팅' 댄스 브레이크
+const LB = id => SECTIONS_B.find(x => x.id === id).lines;
+const VERSE = ['F','C/E','Dm','Bb','F','C','Bb','C'], PRE = ['Bb','C','Am Dm','Gm C'], CHO = ['F','C','Dm','Am','Bb','F','Gm','Csus4'], BRK = ['Dm','Bb','F','C'];
+const CHANT = [['엄마 엄마 파이팅','CH1'],['오늘도 수고했어','CH2']];
+const SECTIONS_K = [
+  { id:'intro', role:'intro', label:'인트로', bars:4, scene:'night', chords:BRK },
+  { id:'v1', role:'verse', label:'1절', bars:8, scene:'room', chords:VERSE, lines:LB('v1') },
+  { id:'p1', role:'pre', label:'프리코러스', bars:4, scene:'mirror', chords:PRE, lines:LB('p1') },
+  { id:'c1', role:'chorus', label:'후렴', bars:8, scene:'sunny', chords:CHO, lines:LB('c1') },
+  { id:'post1', role:'post', label:'댄스 브레이크', bars:4, scene:'led', chords:BRK, lines:CHANT },
+  { id:'v2', role:'verse', label:'2절', bars:8, scene:'street', chords:VERSE, lines:LB('v2') },
+  { id:'p2', role:'pre', label:'프리코러스', bars:4, scene:'calendar', chords:PRE, lines:LB('p2') },
+  { id:'c2', role:'chorus', label:'후렴', bars:8, scene:'park', chords:CHO, lines:LB('c2') },
+  { id:'post2', role:'post', label:'댄스 브레이크', bars:4, scene:'led', chords:BRK, lines:CHANT },
+  { id:'br', role:'bridge', label:'브리지', bars:4, scene:'rain', chords:BRK, lines:LB('br') },
+  { id:'turn', role:'turn', label:'', bars:1, scene:'rain', chords:['D'] },
+  { id:'c3', role:'chorus', label:'마지막 후렴', bars:8, key:2, harm:true, scene:'golden', chords:CHO, lines:LB('c3') },
+  { id:'post3', role:'post', label:'댄스 브레이크', bars:4, key:2, harm:true, scene:'led', chords:BRK, lines:CHANT },
+  { id:'outro', role:'outro', label:'아웃트로', bars:4, key:2, scene:'sleep', chords:['Bb','F','Bb','F'], lines:LB('outro') },
+];
+let SECTIONS = SECTIONS_B;
 
 /* 코드 이름 → 음 */
 const PC = {C:0,D:2,E:4,F:5,G:7,A:9,B:11};
@@ -231,7 +266,11 @@ const KICKS = [];   // 킥 시각 (화면 박동용)
 let SONG_END = 0, DUR = 0;
 
 function ev(o){ EV.push(o); return o; }
-(function build(){
+function buildSong(){
+  const K = VER === 'kpop';
+  EV.length = 0; LINES.length = 0; VOICE.length = 0; KICKS.length = 0;
+  BPM = K ? 118 : 80; SPB = 60 / BPM; BAR = SPB * 4;
+  SECTIONS = K ? SECTIONS_K : SECTIONS_B;
   let bar = 0, prevVoice = null;
   for (const sec of SECTIONS){
     sec.b0 = bar; sec.t0 = bar*BAR; bar += sec.bars; sec.t1 = bar*BAR;
@@ -267,22 +306,30 @@ function ev(o){ EV.push(o); return o; }
       parts.forEach((pn, pi) => {
         const beats = 4/parts.length;
         const t = (sec.b0+bi)*BAR + pi*beats*SPB;
-        arrange(sec, parseChord(pn), key, t, beats, bi, pi);
+        (K ? arrangeK : arrange)(sec, parseChord(pn), key, t, beats, bi, pi);
       });
-      drums(sec, (sec.b0+bi)*BAR, bi);
+      (K ? drumsK : drums)(sec, (sec.b0+bi)*BAR, bi);
     });
   }
   SONG_END = bar*BAR;
   // 마지막 화음: G(= F + 2) 을 천천히 굴려서
   const endKey = 2, r = 53 + endKey; // G3
+  if (K){
+    ev({ t: SONG_END, d: 3.2, inst:'saw', notes:[r+12, r+16, r+19, r+24], vel:.8, cut:.55, att:.01, rel:1.4 });
+    ev({ t: SONG_END, d: 3, inst:'sub', midi: r-24, vel:.8 });
+    ev({ t: SONG_END, inst:'crash', vel:.9 }); ev({ t: SONG_END, inst:'boom', vel:.9 });
+    chopEv(SONG_END, '마', r+24, 1.4, .8);
+  } else {
   [r-12, r, r+7, r+12, r+16, r+19, r+24].forEach((m,i) => ev({ t: SONG_END + i*.09, d: 4.5, inst:'piano', midi:m, vel:.55 - i*.03 }));
   ev({ t: SONG_END, d: 5, inst:'pad', notes:[r+12, r+16, r+19, r+24], vel:.8 });
   ev({ t: SONG_END + .7, d: 3, inst:'box', midi: r+36, vel:.7 });
   ev({ t: SONG_END, d: 4, inst:'bass', midi: r-12, vel:.6 });
+  }
   DUR = SONG_END + TAIL;
   EV.sort((a,b) => a.t - b.t);
   for (const e of EV) if (e.inst==='kick') KICKS.push(e.t);
-})();
+}
+buildSong();
 
 function nearest(pc, lo){ // lo 이상에서 가장 가까운 pc
   let m = lo + ((pc - lo) % 12 + 12) % 12; return m;
@@ -329,6 +376,85 @@ function arrange(sec, ch, key, t, beats, bi, pi){
         ev({ t: t + 3.5*SPB, d: .45*SPB, inst:'bass', midi:b, vel:.55 });
       } else ev({ t: t + 1.5*SPB, d: .45*SPB, inst:'bass', midi:b, vel:.6 });
     }
+  }
+}
+function chopEv(t, ch, midi, d, vel = .9){ ev({ t, d, inst:'chop', midi, vel, ch, j: jamo(ch), prev:null }); }
+function arrangeK(sec, ch, key, t, beats, bi){
+  const role = sec.role, root = (ch.root + key) % 12, bassPc = (ch.bass + key) % 12, iv = ch.iv, B = SPB, dur = beats*B;
+  const r4 = nearest(root, 57), tri = iv.slice(0,3).map(x => r4 + x), top = [...tri, r4 + 12];
+  const sub = nearest(bassPc, 29), prog = sec.bars > 1 ? bi/(sec.bars - 1) : 1;
+  const arp = k => top[[0,1,2,3,2,1][k % 6]] + 12;
+  if (role === 'intro'){
+    for (let k=0; k<beats*2; k++) ev({ t: t + k*B/2, inst:'pluck', midi: arp(k), vel:.5, cut: .25 + .5*prog });
+    ev({ t, d: dur, inst:'saw', notes: tri, vel:.5, cut:.3, att:.4, rel:.4 });
+    if (bi < 3) [[0,'엄',.5],[.75,'마',.5],[1.5,'엄',.5],[2.25,'마',.75],[3.5,'아',.5]]
+      .forEach(([b, c, d], i) => chopEv(t + b*B, c, top[[3,2,3,2,1][i]] + 12, d*B, .8));
+    else ev({ t, d: dur, inst:'riser', vel:.8 });
+  } else if (role === 'verse'){
+    ev({ t, d: 1.3*B, inst:'sub', midi: sub, vel:.9 });
+    ev({ t: t + 1.5*B, d: .4*B, inst:'sub', midi: sub, vel:.6 });
+    ev({ t: t + 2.5*B, d: 1.3*B, inst:'sub', midi: sub + (bi % 2 ? 12 : 0), from: bi % 2 ? sub : null, vel:.8 });
+    [0,1,3,4,6].forEach(k => ev({ t: t + k*B/2, inst:'pluck', midi: arp(k), vel:.45, cut:.55 }));
+    ev({ t, d: dur, inst:'saw', notes: tri, vel:.3, cut:.25, att:.2, rel:.3 });
+  } else if (role === 'pre'){
+    ev({ t, d: dur, inst:'saw', notes: top, vel:.7, cut: .3 + .5*prog, sweep: .3 + .5*Math.min(1, prog + 1/sec.bars), att:.05, rel:.2 });
+    for (let k=0; k<beats*2; k++) ev({ t: t + k*B/2, d: .4*B, inst:'sub', midi: sub, vel:.55 });
+    if (bi >= 2) for (let k=0; k<beats*4; k++) ev({ t: t + k*B/4, inst:'pluck', midi: arp(k), vel: .35 + (k%4 ? 0 : .1), cut: .5 + .4*prog });
+  } else if (role === 'chorus' || role === 'post'){
+    ev({ t, d: dur, inst:'saw', notes: tri, vel:.35, cut:.35, att:.1, rel:.3 });
+    for (let k=1; k<beats*2; k+=2) ev({ t: t + k*B/2, d: .3*B, inst:'saw', notes: top.map(m => m + 12), vel:.8, cut:.85, att:.005, rel:.06 });
+    for (let k=0; k<beats*2; k++) ev({ t: t + k*B/2, d: .42*B, inst:'sub', midi: sub + (k % 2 ? 12 : 0), vel: k % 2 ? .6 : .9 });
+    if (role === 'chorus') for (let k=0; k<beats*4; k++) ev({ t: t + k*B/4, inst:'pluck', midi: arp(k) + 12, vel:.28, cut:.6 });
+    else if (bi % 2 === 1) [[1.5,'엄',3],[2,'마',2],[3,'엄',3],[3.5,'마',1]].forEach(([b, c, i]) => chopEv(t + b*B, c, top[i] + 12, .4*B));
+  } else if (role === 'bridge'){
+    ev({ t, d: dur, inst:'saw', notes: top, vel:.45, cut:.3, att:.5, rel:.6 });
+    ev({ t, d: dur - .05, inst:'sub', midi: sub, vel:.6 });
+    for (let k=0; k<beats*2; k++) ev({ t: t + k*B/2, d: 2*B, inst:'piano', midi: [tri[0]-12, tri[1], tri[2], tri[0]+12][k % 4], vel:.5 });
+  } else if (role === 'turn'){
+    ev({ t, d: dur, inst:'saw', notes: top, vel:.8, cut:.4, sweep:1, att:.02, rel:.1 });
+    ev({ t, d: dur, inst:'riser', vel:1 }); ev({ t, d: dur, inst:'sub', midi: sub, vel:.8 });
+  } else if (role === 'outro'){
+    for (let k=0; k<beats*2; k++) ev({ t: t + k*B/2, inst:'pluck', midi: arp(k), vel:.42, cut: .5 - .3*prog });
+    ev({ t, d: dur, inst:'saw', notes: tri, vel:.45, cut:.3, att:.3, rel:.5 });
+    ev({ t, d: dur - .05, inst:'sub', midi: sub, vel:.6 });
+    if (bi >= 2) [[0,'엄'],[.75,'마']].forEach(([b, c], i) => chopEv(t + b*B, c, top[3-i] + 12, .5*B, .6));
+  }
+}
+function drumsK(sec, t, bi){
+  const role = sec.role, B = SPB, last = bi === sec.bars - 1, id = sec.id;
+  const K = (b, v = 1) => ev({ t: t + b*B, inst:'kick', vel:v, duck:true });
+  const C = (b, v = .8) => ev({ t: t + b*B, inst:'clap', vel:v });
+  const Hh = (b, v = .5) => ev({ t: t + b*B, inst:'hat', vel:v });
+  const O = (b, v = .5) => ev({ t: t + b*B, inst:'ohat', vel:v });
+  const Sn = (b, v) => ev({ t: t + b*B, inst:'snare', vel:v });
+  if (role === 'intro'){
+    if (bi >= 2) for (let k=0;k<8;k++) Hh(k/2, .35);
+    if (bi === 3) for (let k=0;k<8;k++) Sn(2 + k/4, .2 + k*.08);
+  } else if (role === 'verse'){
+    K(0); K(2.5, .7); C(1, .5); C(3, .5);
+    for (let k=0;k<8;k++) Hh(k/2, k%2 ? .35 : .55);
+    if (bi % 2) for (let k=0;k<6;k++) Hh(3.25 + k/8, .3 + k*.05);   // 트랩 하이햇 롤
+  } else if (role === 'pre'){
+    K(0, .9); K(2, .8);
+    const div = bi < 2 ? 1 : bi === 2 ? 2 : 4;
+    for (let k=0; k<4*div; k++) C(k/div, .35 + .5*(k/(4*div))*(bi/3));
+    for (let k=0;k<8;k++) Hh(k/2, .4);
+    if (bi === sec.bars - 2) ev({ t, d: BAR*2, inst:'riser', vel:.9 });
+  } else if (role === 'chorus' || role === 'post'){
+    if (bi === 0) ev({ t, inst:'crash', vel:.9 });
+    if (bi === 0 && (id === 'c1' || id === 'c3')) ev({ t, inst:'boom', vel:.8 });
+    for (let b=0; b<4; b++) K(b, b ? .9 : 1);
+    C(1, .85); C(3, .9);
+    for (let k=0;k<4;k++) O(k + .5, .45);
+    for (let k=0;k<16;k++) if (k % 4) Hh(k/4, k % 2 ? .18 : .28);
+    if (last) for (let k=0;k<4;k++) Sn(3 + k/4, .4 + k*.15);
+  } else if (role === 'bridge'){
+    K(0, .7); C(2, .5); Hh(1, .25); Hh(3, .25);
+  } else if (role === 'turn'){
+    for (let k=0;k<16;k++) Sn(k/4, .15 + k/16*.8);
+    for (let k=0;k<4;k++) ev({ t: t + k*B, inst:'kick', vel: .6 + k*.1 });
+  } else if (role === 'outro' && bi < 2){
+    K(0, .7); C(1, .4); C(3, .4); for (let k=0;k<8;k++) Hh(k/2, .3);
   }
 }
 function drums(sec, t, bi){
@@ -384,7 +510,7 @@ function impulse(ctx, secs, decay){
 }
 const CH = { voice:[1.5,.3,1], harm:[.8,.35,1], piano:[.6,.22], box:[.8,.42], pad:[.5,.3], bass:[.9,.04],
   kick:[.95,.03], snare:[.55,.14], hat:[.35,.05], ohat:[.3,.08], rim:[.45,.12], shaker:[.35,.08], crash:[.4,.15],
-  riser:[.4,.3], boom:[.8,.25] };
+  riser:[.4,.3], boom:[.8,.25], pluck:[.8,.25], saw:[.8,.22], sub:[.85,.02], clap:[.55,.12], chop:[.9,.35] };
 function buildGraph(ctx){
   const G = { ctx, ch:{} };
   const pre = ctx.createGain(); pre.gain.value = .42;
@@ -437,10 +563,60 @@ const SIB = new Set([9,10,12,13,14]), PLO = new Set([0,1,3,4,7,8,15,16,17]), NAS
 const JNAS = new Set([4,5,6,16,21]);
 
 function play(ctx, bus, e, when){
-  const I = INST[e.inst]; if (I) I(ctx, bus[e.inst], when, e);
+  const I = INST[e.inst]; if (I) I(ctx, bus[e.inst], when, e, bus);
+}
+let satCurve = null;
+function saturation(){
+  if (satCurve) return satCurve;
+  satCurve = new Float32Array(1024);
+  for (let i=0;i<1024;i++){ const x = i/511.5 - 1; satCurve[i] = Math.tanh(x*2.4)/Math.tanh(2.4); }
+  return satCurve;
 }
 const INST = {
   voice(ctx, out, w, e){ singer(ctx, out, w, e, 1); },
+  chop(ctx, out, w, e){ singer(ctx, out, w, e, .9); },
+  pluck(ctx, out, w, e){
+    const f = mtof(e.midi), cut = e.cut == null ? 1 : e.cut;
+    const lp = ctx.createBiquadFilter(); lp.type = 'lowpass'; lp.Q.value = 2;
+    lp.frequency.setValueAtTime(900 + 4200*cut, w); lp.frequency.exponentialRampToValueAtTime(320, w + .22);
+    const g = ctx.createGain(); g.gain.setValueAtTime(0, w); g.gain.linearRampToValueAtTime(.4*e.vel, w + .003);
+    g.gain.setTargetAtTime(0, w + .006, .11);
+    lp.connect(g); g.connect(out);
+    for (const dt of [-7, 7]){ const o = ctx.createOscillator(); o.type = 'sawtooth'; o.frequency.value = f; o.detune.value = dt; o.connect(lp); o.start(w); o.stop(w + .8); }
+  },
+  saw(ctx, out, w, e){
+    const cut = e.cut == null ? 1 : e.cut, att = e.att || .006, rel = e.rel || .1;
+    const lp = ctx.createBiquadFilter(); lp.type = 'lowpass'; lp.Q.value = .8;
+    lp.frequency.setValueAtTime(500 + 3800*cut, w);
+    if (e.sweep != null) lp.frequency.linearRampToValueAtTime(500 + 3800*e.sweep, w + e.d);
+    const g = ctx.createGain(), pk = .1*e.vel;
+    g.gain.setValueAtTime(0, w); g.gain.linearRampToValueAtTime(pk, w + Math.min(att, e.d*.5));
+    g.gain.setValueAtTime(pk, w + e.d); g.gain.setTargetAtTime(0, w + e.d, rel/3);
+    lp.connect(g); g.connect(out);
+    const end = w + e.d + rel*2 + .1;
+    for (const m of e.notes) for (const dt of [-14, 0, 14]){
+      const o = ctx.createOscillator(); o.type = 'sawtooth'; o.frequency.value = mtof(m); o.detune.value = dt; o.connect(lp); o.start(w); o.stop(end);
+    }
+  },
+  sub(ctx, out, w, e){
+    const f = mtof(e.midi), o = ctx.createOscillator(); o.type = 'sine';
+    if (e.from != null){ o.frequency.setValueAtTime(mtof(e.from), w); o.frequency.exponentialRampToValueAtTime(f, w + .09); }
+    else o.frequency.value = f;
+    const ws = ctx.createWaveShaper(); ws.curve = saturation();
+    const pre = ctx.createGain(); pre.gain.value = 1.6;
+    const g = ctx.createGain(), pk = .42*e.vel;
+    g.gain.setValueAtTime(0, w); g.gain.linearRampToValueAtTime(pk, w + .006);
+    g.gain.setTargetAtTime(pk*.7, w + .01, .25); g.gain.setTargetAtTime(0, w + e.d, .04);
+    o.connect(pre); pre.connect(ws); ws.connect(g); g.connect(out);
+    o.start(w); o.stop(w + e.d + .3);
+  },
+  clap(ctx, out, w, e){
+    const n = noise(ctx, w, .35), bp = ctx.createBiquadFilter(); bp.type = 'bandpass'; bp.frequency.value = 1350; bp.Q.value = .9;
+    const g = ctx.createGain(), pk = .5*e.vel; g.gain.setValueAtTime(0, w);
+    for (let k=0;k<3;k++){ g.gain.setValueAtTime(pk, w + k*.011); g.gain.setTargetAtTime(0, w + k*.011 + .001, .005); }
+    g.gain.setValueAtTime(pk*.8, w + .034); g.gain.setTargetAtTime(0, w + .035, .06);
+    n.connect(bp); bp.connect(g); g.connect(out);
+  },
   harm(ctx, out, w, e){ singer(ctx, out, w, e, .8); },
   piano(ctx, out, w, e){
     const f = mtof(e.midi), d = Math.max(.12, e.d);
@@ -494,7 +670,8 @@ const INST = {
     o.connect(lp); s.connect(lp); lp.connect(g); g.connect(out);
     o.start(w); s.start(w); o.stop(w + e.d + .4); s.stop(w + e.d + .4);
   },
-  kick(ctx, out, w, e){
+  kick(ctx, out, w, e, bus){
+    if (e.duck && bus) for (const n of ['saw','pluck','pad']){ const gn = bus[n].gain; gn.setValueAtTime(.3, w); gn.linearRampToValueAtTime(1, w + .2); }
     const o = ctx.createOscillator(); o.type = 'sine';
     o.frequency.setValueAtTime(140, w); o.frequency.exponentialRampToValueAtTime(44, w + .13);
     const g = ctx.createGain(); g.gain.setValueAtTime(.95*e.vel, w); g.gain.setTargetAtTime(0, w + .01, .1);
@@ -508,12 +685,12 @@ const INST = {
     const og = ctx.createGain(); og.gain.setValueAtTime(.25*e.vel, w); og.gain.setTargetAtTime(0, w + .005, .04);
     o.connect(og); og.connect(out); o.start(w); o.stop(w + .25);
   },
-  hat(ctx, out, w, e, dec = .025){
+  hat(ctx, out, w, e, bus, dec = .025){
     const n = noise(ctx, w, dec*8 + .05), hp = ctx.createBiquadFilter(); hp.type = 'highpass'; hp.frequency.value = 7800;
     const g = ctx.createGain(); g.gain.setValueAtTime(.14*e.vel, w); g.gain.setTargetAtTime(0, w + .002, dec);
     n.connect(hp); hp.connect(g); g.connect(out);
   },
-  ohat(ctx, out, w, e){ INST.hat(ctx, out, w, e, .16); },
+  ohat(ctx, out, w, e){ INST.hat(ctx, out, w, e, null, .16); },
   rim(ctx, out, w, e){
     const o = ctx.createOscillator(); o.type = 'triangle'; o.frequency.value = 1150;
     const bp = ctx.createBiquadFilter(); bp.type = 'bandpass'; bp.frequency.value = 1800; bp.Q.value = 3;
@@ -729,7 +906,7 @@ $('recBtn').onclick = async () => {
     if (cancelled || !chunks.length){ note('녹화를 멈췄습니다.'); return; }
     const type = rec.mimeType || mime || 'video/webm';
     const ext = type.includes('mp4') ? 'mp4' : 'webm';
-    download(new Blob(chunks, { type }), '엄마도-처음이라-뮤직비디오.' + ext);
+    download(new Blob(chunks, { type }), '엄마도-처음이라-' + (VER === 'kpop' ? 'K팝-스테이지' : '뮤직비디오') + '.' + ext);
     note('영상을 저장했습니다 (' + ext.toUpperCase() + ').');
   };
   if (playing) pause();
@@ -760,7 +937,7 @@ $('wavBtn').onclick = async () => {
   $('wavBtn').disabled = true; note('노래를 WAV로 굽는 중… (몇 초~수십 초)');
   try {
     const buf = await renderOffline(OAC, vocalOn, f => note('노래를 WAV로 굽는 중… ' + Math.round(f*100) + '%'));
-    download(wav(buf), vocalOn ? '엄마도-처음이라.wav' : '엄마도-처음이라-MR.wav');
+    download(wav(buf), '엄마도-처음이라' + (VER === 'kpop' ? '-K팝' : '') + (vocalOn ? '' : '-MR') + '.wav');
     note('WAV를 저장했습니다' + (vocalOn ? '.' : ' (노래방 모드: 보컬 없는 MR).'));
   } catch(e){ note('WAV 만들기에 실패했습니다: ' + e.message); }
   $('wavBtn').disabled = false;
@@ -909,7 +1086,7 @@ function drawAdult(x, y, s, o = {}){
   else if (pose === 'wave'){ const a = Math.sin((o.t||0)*9)*14; arm(...sL, -44, -122, -8, armC, skin); arm(...sR, 70 + a, -300, 30, armC, skin); }
   else if (pose === 'reach'){
     const L = o.reachL ? toLocal(...o.reachL) : [-44, -122], Rr = o.reachR ? toLocal(...o.reachR) : [44, -122];
-    arm(...sL, ...L, -10, armC, skin); arm(...sR, ...Rr, 10, armC, skin);
+    arm(...sL, ...L, o.bendL == null ? -10 : o.bendL, armC, skin); arm(...sR, ...Rr, o.bendR == null ? 10 : o.bendR, armC, skin);
   }
   g.restore();
 }
@@ -1416,10 +1593,188 @@ function render(t){
   }
 }
 
+/* ---------- K팝 스테이지 ---------- */
+const SHOTS = { intro:['wide'], verse:['wide','mid','wide','close'], pre:['mid','close'], chorus:['wide','mid','close','wide'],
+  post:['wide','close','mid','wide'], bridge:['mid'], turn:['close'], outro:['wide'] };
+const ZOOM = { wide:[1,640,360], mid:[1.4,640,340], close:[2,640,300] };
+const HUE = { intro:['#140f2e','#3a1d5c'], verse:['#0f1a33','#1f3b66'], pre:['#1a0f33','#4a1f66'], chorus:['#2a0f2e','#7a1f5c'],
+  post:['#0f0f24','#5c1f7a'], bridge:['#0a1024','#1d2a4f'], turn:['#1a1a2e','#5a4a8a'], outro:['#0e0f24','#2a2350'] };
+const BEAM = { intro:['#b197fc'], verse:['#74c0fc','#ffffff'], pre:['#e599f7','#74c0fc'], chorus:['#ff6bb5','#ffd43b','#74c0fc'],
+  post:['#ff6bb5','#63e6be','#ffd43b','#b197fc'], bridge:['#91a7ff'], turn:['#ffffff'], outro:['#ffd8a8'] };
+// 안무: 어른 기준 로컬 좌표(어깨 ±32,-206 / 머리 -262)
+const MOVES = {
+  mic:   b => ({ L:[-70,-196], R:[14,-248], bL:-12, bR:22 }),
+  sway:  b => ({ L:[-46,-124], R:[46,-124], bL:-10, bR:10 }),
+  clap:  b => { const k = Math.abs(Math.cos(b*Math.PI)); return { L:[-6 - 36*(1-k), -205], R:[6 + 36*(1-k), -205], bL:-20, bR:20 }; },
+  point: b => ({ L:[-36,-140], R:[76,-334], bL:14, bR:6 }),
+  pointL:b => ({ L:[-76,-334], R:[36,-140], bL:-6, bR:-14 }),
+  heart: b => ({ L:[-4,-324], R:[4,-324], bL:-46, bR:46 }),
+  wave:  b => { const x = Math.sin(b*Math.PI)*22; return { L:[-72 + x, -312], R:[72 + x, -312], bL:-8, bR:8 }; },
+  roll:  b => { const a = b*Math.PI; return { L:[-22 + Math.cos(a)*26, -178 + Math.sin(a)*22], R:[22 - Math.cos(a)*26, -178 - Math.sin(a)*22], bL:-16, bR:16 }; },
+};
+const CHOREO = { intro:['sway'], verse:['mic','mic','sway','mic'], pre:['clap','clap','point','pointL'],
+  chorus:['point','pointL','clap','clap','heart','heart','roll','roll'], post:['wave','clap','heart','roll','pointL','point','heart','heart'],
+  bridge:['mic'], turn:['wave'], outro:['heart','sway'] };
+const STEP = { verse:4, pre:2, chorus:1, post:1 };
+function moveAt(role, beat){
+  const seq = CHOREO[role] || ['sway'], st = STEP[role] || 4;
+  return MOVES[seq[Math.floor(beat/st) % seq.length]](beat);
+}
+function dancer(kind, x, y, s, mv, o){
+  const P = (p, k) => [x + p[0]*s*k, y + p[1]*s*k];
+  if (kind === 'kid') drawKid(x, y, s, { pose:'reach', reachL: P(mv.L, .54), reachR: P(mv.R, .54), ...o });
+  else drawAdult(x, y, s, { pose:'reach', reachL: P(mv.L, 1), reachR: P(mv.R, 1), bendL: mv.bL, bendR: mv.bR, ...o });
+}
+function ledPattern(S, X, Y, Wd, Ht, t){
+  const hue = ['#ff6bb5','#ffd43b','#63e6be','#74c0fc','#b197fc'];
+  const beatI = Math.floor(S.beat);
+  g.fillStyle = '#07060d'; g.fillRect(X, Y, Wd, Ht);
+  for (let i=0;i<7;i++) for (let j=0;j<3;j++){
+    const on = (i + j + beatI) % 2 === 0;
+    g.globalAlpha = on ? .35 + S.pulse*.4 : .12;
+    heart(X + 70 + i*140, Y + 90 + j*120, 34 + (on ? S.pulse*10 : 0), hue[(i + beatI) % hue.length]);
+  }
+  g.globalAlpha = 1;
+  const msg = '엄마 FIGHTING ♥ 오늘도 수고했어 ♥ ';
+  g.font = `900 72px ${FONT}`; g.textBaseline = 'middle'; g.textAlign = 'left';
+  const w = g.measureText(msg).width, off = (t*220) % w;
+  g.fillStyle = hue[beatI % hue.length]; g.globalAlpha = .45;
+  for (let k=-1;k<3;k++) g.fillText(msg, X - off + k*w, Y + Ht*.62);
+  g.globalAlpha = 1;
+  for (let i=0;i<40;i++){
+    const h = (18 + hash(i*3.1 + beatI)*90) * (.5 + S.pulse*.6);
+    g.fillStyle = hue[i % hue.length]; g.fillRect(X + 10 + i*(Wd - 20)/40, Y + Ht - h, (Wd - 20)/40 - 4, h);
+  }
+}
+function crowd(t, beat, pulse){
+  for (let i=0;i<22;i++){
+    const x = 20 + i*60 + hash(i)*24, y = 712 + hash(i*2.3)*16 - Math.abs(Math.sin(beat*Math.PI + i))*4;
+    const a = Math.sin(beat*Math.PI + i*.4)*.45 - .2, tipX = x + 16 + Math.sin(a)*44, tipY = y - 34 - Math.cos(a)*44;
+    stroke('#2a2433', 5); g.beginPath(); g.moveTo(x + 14, y - 16); g.lineTo(tipX, tipY); g.stroke();
+    g.globalCompositeOperation = 'lighter'; glow(tipX, tipY, 26 + pulse*10, i % 3 ? '#ff6bb5' : '#ffd43b', .8); g.globalCompositeOperation = 'source-over';
+    circle(tipX, tipY, 6, '#fff0f6');
+    circle(x, y, 26, '#0b0910'); ellipse(x, y + 40, 40, 26, '#0b0910');
+  }
+}
+function stageWorld(S, sec, role, t){
+  const [c0, c1] = HUE[role] || HUE.verse, pulse = S.pulse, beat = S.beat;
+  g.fillStyle = vgrad(0, H, [[0,c0],[1,c1]]); g.fillRect(-20, -20, W + 40, H + 40);
+  // LED 월: 이야기 장면을 화면 속 화면으로
+  const LX = 150, LY = 36, LW = 980, LH = 392;
+  rr(LX - 10, LY - 10, LW + 20, LH + 20, 14, '#0b0b14');
+  g.save(); rr(LX, LY, LW, LH, 8); g.clip();
+  if (sec.scene === 'led') ledPattern(S, LX, LY, LW, LH, t);
+  else { const keep = g; g = bctx; bctx.save(); bctx.clearRect(0, 0, W, H); SCENES[sec.scene](S); bctx.restore(); g = keep; g.drawImage(buf, 0, 104, 1280, 512, LX, LY, LW, LH); }
+  g.globalAlpha = .16; g.fillStyle = '#000'; for (let y = LY; y < LY + LH; y += 4) g.fillRect(LX, y, LW, 1.5); g.globalAlpha = 1;
+  g.restore();
+  // 옆 기둥 이퀄라이저
+  for (const px of [40, 1180]) for (let k=0;k<12;k++){
+    const lit = k < 3 + (pulse*9 + hash(px + Math.floor(beat*2))*3);
+    rr(px, 420 - k*32, 60, 24, 5, lit ? (k > 9 ? '#ff6bb5' : k > 6 ? '#ffd43b' : '#63e6be') : 'rgba(255,255,255,.06)');
+  }
+  g.fillStyle = '#1b1a24'; g.fillRect(-20, -20, W + 40, 34);
+  // 무대 바닥
+  g.fillStyle = vgrad(470, H, [[0,'#231d33'],[1,'#07060c']]); g.fillRect(-20, 470, W + 40, H);
+  const cols = BEAM[role] || BEAM.verse;
+  stroke(cols[0], 3); g.globalAlpha = .7; g.beginPath(); g.moveTo(0, 470); g.lineTo(W, 470); g.stroke(); g.globalAlpha = 1;
+  g.globalCompositeOperation = 'lighter';
+  glow(640, 600, 420, cols[0], .18 + pulse*.1);
+  // 무빙 라이트
+  const inten = { chorus:.2, post:.24, pre:.15, turn:.2 }[role] || .1;
+  for (let i=0;i<6;i++){
+    const x0 = 120 + i*208, ang = Math.sin(t*(.6 + i*.07) + i*1.7)*.45 + (i < 3 ? .18 : -.18), c = cols[i % cols.length];
+    const gr = g.createLinearGradient(x0, 14, x0 + Math.sin(ang)*800, 14 + Math.cos(ang)*800);
+    gr.addColorStop(0, rgba(c, inten + pulse*.12)); gr.addColorStop(1, rgba(c, 0));
+    g.fillStyle = gr; g.beginPath(); g.moveTo(x0, 14);
+    g.lineTo(x0 + Math.sin(ang - .09)*820, 14 + Math.cos(ang - .09)*820); g.lineTo(x0 + Math.sin(ang + .09)*820, 14 + Math.cos(ang + .09)*820); g.closePath(); g.fill();
+    glow(x0, 16, 30, c, .9);
+  }
+  g.globalCompositeOperation = 'source-over';
+  // 무대 위: 엄마(센터) · 아이(백업) · 마지막엔 할머니까지
+  const mv = moveAt(role, beat), hard = role === 'chorus' || role === 'post';
+  const bounce = -Math.abs(Math.sin(beat*Math.PI))*(hard ? 10 : 4), dx = Math.sin(beat*Math.PI/2)*(hard ? 18 : 8), rot = Math.sin(beat*Math.PI/2)*.035;
+  const late = ['c3','post3','outro'].includes(sec.id), kidOn = sec.b0 >= SECTIONS.find(x => x.id === 'c1').b0 && role !== 'bridge' && sec.id !== 'turn';
+  g.fillStyle = 'rgba(0,0,0,.35)'; ellipse(640 + dx, 655, 70, 12, 'rgba(0,0,0,.35)');
+  if (late) dancer('adult', 400 - dx*.8, 652 + bounce*.6, 1.02, mv, { rot: -rot, hair:'#d5d0cc', glasses:true, eyes:'happy', mouth:.15, top:'#9c7cc4', skirt:'#3b2f55', tie:'#e599f7' });
+  if (kidOn) dancer('kid', 880 - dx*.8, 656 + bounce*.8, .95, mv, { shirt:'#74c0fc', pants:'#ff8fab', eyes:'happy', mouth:.3 });
+  const mx = 640 + dx, my = 650 + bounce, ms = 1.12;
+  dancer('adult', mx, my, ms, role === 'verse' || role === 'bridge' ? MOVES.mic(beat) : mv,
+    { rot, eyes: hard ? 'happy' : 'open', mouth: S.mouth, top:'#ff4f9a', sleeve:'#ff4f9a', skirt:'#1e1b2e', tie:'#ffd43b' });
+  // 헤드셋 마이크 · 반짝이
+  stroke('#222', 2.5); g.beginPath(); g.moveTo(mx - 36*ms, my - 262*ms); g.quadraticCurveTo(mx - 30*ms, my - 232*ms, mx - 12*ms, my - 236*ms); g.stroke();
+  circle(mx - 11*ms, my - 236*ms, 3.5, '#222');
+  for (let i=0;i<6;i++){ const a = .5 + .5*Math.sin(t*6 + i*2); g.globalAlpha = a; text('✦', mx + (hash(i)*60 - 30)*ms, my - (150 + hash(i*3)*60)*ms, 10 + a*6, '#fff'); }
+  g.globalAlpha = 1;
+  // 꽃가루
+  if (late || role === 'post') petals(t, 50, ['#ff6bb5','#ffd43b','#74c0fc','#63e6be','#ffffff'], 90, 13);
+  crowd(t, beat, pulse);
+}
+function renderStage(t){
+  const sec = sectionAt(t), S = stateFor(sec, t), role = sec.role;
+  const shots = SHOTS[role] || ['wide'], shot = shots[Math.floor(S.lt/(BAR*2)) % shots.length];
+  let [z, fx, fy] = ZOOM[shot];
+  if (role === 'intro') z = 1.3 - .3*ease(S.p);
+  if (role === 'outro') z = 1 + .25*ease(S.p);
+  z *= 1 + S.pulse*(role === 'chorus' || role === 'post' ? .025 : .008);
+  const cx = clamp(fx, W/(2*z), W - W/(2*z)), cy = clamp(fy, H/(2*z), H - H/(2*z));
+  g = main; g.save();
+  g.translate(W/2, H/2); g.scale(z, z); g.translate(-cx, -cy);
+  stageWorld(S, sec, role, t);
+  g.restore();
+  if (role === 'chorus' || role === 'post'){ g.fillStyle = `rgba(255,255,255,${S.pulse*(role === 'post' ? .1 : .05)})`; g.fillRect(0, 0, W, H); }
+  if ((sec.id === 'c1' || sec.id === 'c3') && S.lt < .6){ g.fillStyle = `rgba(255,250,240,${1 - S.lt/.6})`; g.fillRect(0, 0, W, H); }
+  const vg = g.createRadialGradient(W/2, H/2, H*.45, W/2, H/2, H*.95);
+  vg.addColorStop(0, 'rgba(0,0,0,0)'); vg.addColorStop(1, 'rgba(0,0,0,.3)'); g.fillStyle = vg; g.fillRect(0, 0, W, H);
+  // 방송 자막
+  rr(24, 22, 150, 34, 17, 'rgba(0,0,0,.45)'); circle(44, 39, 6, t % 1 < .6 ? '#ff3b5c' : '#7a1f2e');
+  text('LIVE STAGE', 58, 40, 15, '#fff', 800, 'left');
+  text('엄마도 처음이라 · K-POP ver.', W - 28, 40, 15, 'rgba(255,255,255,.8)', 700, 'right');
+  if (t < SONG_END){
+    g.fillStyle = vgrad(560, H, [[0,'rgba(10,6,20,0)'],[1,'rgba(10,6,20,.55)']]); g.fillRect(0, 560, W, 160);
+    drawLyrics(t);
+    if (sec.label && S.lt < 3 && role !== 'intro'){ g.globalAlpha = clamp((3 - S.lt)/.8); rr(28, 66, 30 + sec.label.length*17, 30, 15, 'rgba(255,79,154,.8)'); text(sec.label, 43, 81, 15, '#fff', 800, 'left'); g.globalAlpha = 1; }
+    if (role === 'post') chantPop(sec, t);
+  } else {
+    const k = ease((t - SONG_END - .6)/1.6);
+    g.fillStyle = `rgba(12,8,22,${k*.9})`; g.fillRect(0, 0, W, H);
+    g.globalAlpha = k;
+    text('세상의 모든 엄마에게', W/2, 290, 50, '#fff8f0', 800);
+    text('엄마 FIGHTING! 오늘도 정말 수고했어요', W/2, 360, 28, '#ffb3d1', 600);
+    text('♡', W/2, 430, 36, '#ff4f9a', 700);
+    g.globalAlpha = k*.7; text('엄마도 처음이라 · K-POP STAGE ver. · 브라우저에서 실시간 합성', W/2, 640, 16, '#cfc6e0', 500);
+    g.globalAlpha = 1;
+  }
+}
+// 댄스 브레이크 구호: 음절마다 크게 튀어나오게
+function chantPop(sec, t){
+  const L = LINES.filter(x => x.sec === sec && t >= x.t0 - .05 && t < x.t0 + 7*SPB).pop();
+  if (!L) return;
+  const sung = L.syl.filter(v => t >= v.t);
+  if (!sung.length) return;
+  const size = 84, chars = [...L.text];
+  g.font = `900 ${size}px ${FONT}`;
+  const widths = chars.map(c => g.measureText(c).width), total = widths.reduce((a, b) => a + b, 0);
+  let x = W/2 - total/2, k = 0;
+  const fade = clamp((L.t0 + 7*SPB - t)/.4);
+  chars.forEach((c, i) => {
+    if (c !== ' '){
+      const v = L.syl[k++];
+      if (v && t >= v.t){
+        const pop = 1 + .45*Math.exp(-(t - v.t)*9);
+        g.save(); g.globalAlpha = fade; g.translate(x + widths[i]/2, 190); g.scale(pop, pop); g.rotate((k % 2 ? -1 : 1)*.06);
+        g.lineWidth = 12; g.lineJoin = 'round'; g.strokeStyle = '#2b0d2a'; g.textAlign = 'center'; g.textBaseline = 'middle';
+        g.strokeText(c, 0, 0); g.fillStyle = k % 2 ? '#ffd43b' : '#ff6bb5'; g.fillText(c, 0, 0); g.restore();
+      }
+    }
+    x += widths[i];
+  });
+}
+function frame(t){ VER === 'kpop' ? renderStage(t) : render(t); }
+
 let raf = 0;
 function draw(){
   const t = songTime();
-  render(t);
+  frame(t);
   if (!seeking) $('seek').value = Math.round(t/DUR*1000);
   $('cur').textContent = fmt(t);
   markLyric(t);
@@ -1431,8 +1786,8 @@ function loop(){
 }
 
 /* ---------- 가사 목록 ---------- */
-(function buildLyricList(){
-  const box = $('lyrics'); const groups = [];
+function buildLyricList(){
+  const box = $('lyrics'); box.textContent = ''; marked = null; const groups = [];
   for (const L of LINES){ let gp = groups[groups.length - 1]; if (!gp || gp.sec !== L.sec) groups.push(gp = { sec: L.sec, lines: [] }); gp.lines.push(L); }
   for (const gp of groups){
     const d = document.createElement('div'); d.className = 'part';
@@ -1440,15 +1795,28 @@ function loop(){
     for (const L of gp.lines){ const b = document.createElement('button'); b.textContent = L.text; b.onclick = () => { if (!recording){ seekTo(L.t0 - .6); if (!playing) start(); } }; L.el = b; d.appendChild(b); }
     box.appendChild(d);
   }
-})();
+}
 let marked = null;
 function markLyric(t){
   let cur = null; for (const L of LINES) if (L.t0 <= t && t < L.t1 + .3) cur = L;
   if (cur !== marked){ if (marked) marked.el.classList.remove('now'); if (cur) cur.el.classList.add('now'); marked = cur; }
 }
 
-$('dur').textContent = fmt(DUR);
-render(7.2); // 포스터: 제목이 떠 있는 장면
+function applyVersion(){
+  buildSong(); buildLyricList();
+  $('dur').textContent = fmt(DUR);
+  document.querySelectorAll('.ver button').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.ver === VER)));
+  frame(VER === 'kpop' ? 4.5 : 7.2);
+  $('seek').value = 0; $('cur').textContent = fmt(0);
+}
+document.querySelectorAll('.ver button').forEach(b => b.onclick = () => {
+  if (recording || b.dataset.ver === VER) return;
+  if (playing) pause();
+  VER = b.dataset.ver; offset = 0;
+  try { history.replaceState(null, '', VER === 'kpop' ? '#kpop' : location.pathname); } catch(e){}
+  applyVersion(); ui();
+});
+applyVersion(); // 포스터: 제목이 떠 있는 장면
 </script>
 </body>
 </html>
