@@ -2,7 +2,10 @@
 <html lang="ko">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="apple-mobile-web-app-title" content="공모주">
+<meta name="format-detection" content="telephone=no">
 <title>공모주 캘린더 · 청약 점수와 일정</title>
 <meta name="description" content="이번 주 공모주, 청약할까 말까? 기관경쟁률·의무보유확약·유통물량·공모가 위치를 블로거식으로 채점해 적극 참여·균등만·관망으로 판정. 청약 일정 달력, 증권사 고르기, 증거금·배정 계산기, 공모주린이 가이드. 매일 자동 갱신.">
 <link rel="canonical" href="https://richroro.github.io/ipo/">
@@ -188,7 +191,7 @@
       <h3 id="calcFor">직접 입력</h3>
       <div class="form mt12">
         <label class="field"><span>공모가 (원)</span><input id="cPrice" type="number" inputmode="numeric" min="0" step="100" value="20000"></label>
-        <label class="field"><span>청약 주수</span><input id="cQty" type="number" inputmode="numeric" min="0" step="10" value="10"></label>
+        <label class="field"><span>청약 주수</span><span class="stepper"><button type="button" data-step="-10" data-for="cQty" aria-label="10주 빼기">−</button><input id="cQty" type="number" inputmode="numeric" min="0" step="10" value="10"><button type="button" data-step="10" data-for="cQty" aria-label="10주 더하기">+</button></span></label>
         <label class="field"><span>증거금률 (%)</span><input id="cMargin" type="number" inputmode="decimal" min="0" max="100" value="50"></label>
         <label class="field"><span>청약 수수료 (원)</span><input id="cFee" type="number" inputmode="numeric" min="0" step="500" value="2000"></label>
         <label class="field"><span>균등 예상 배정 (주)</span><input id="cEq" type="number" inputmode="decimal" min="0" step="1" value="1"></label>
@@ -315,7 +318,7 @@
   <div class="tray-chips" id="cmpChips"></div>
   <div class="btnrow"><button class="ghost sm" type="button" id="cmpClear">비우기</button><button class="ghost primary sm" type="button" id="cmpGo">나란히 비교</button></div>
 </div></div>
-<dialog id="cmpDlg" aria-labelledby="cmpTitle"><div id="cmpBody"></div></dialog>
+<dialog id="cmpDlg" aria-labelledby="cmpTitle"><div id="cmpBody" class="sheet-panel"></div></dialog>
 
 <nav class="tabbar" id="tabbar" aria-label="앱 메뉴">
   <a href="#home" data-go="home"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 11l8-7 8 7v9a1 1 0 0 1-1 1h-5v-6h-4v6H5a1 1 0 0 1-1-1z"/></svg>홈</a>
