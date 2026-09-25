@@ -653,6 +653,12 @@ var sfx = (function () {
       buzz(fin ? [30, 40, 80] : o.swish ? [14, 28, 34] : [24]);
     },
     fire: function () { tone(520, 0.2, "sawtooth", 0.07, 1300); buzz(20); },
+    // 드리블: 나무 바닥에 튀는 둥근 '퉁' + 가죽 '팍'
+    dribble: function () { tone(96, 0.12, "sine", 0.07, 64); nz({ dur: 0.04, vol: 0.03, type: "bandpass", f0: 1400, q: 0.9 }); },
+    // 패스를 받는 '팍'
+    catchBall: function () { nz({ dur: 0.05, vol: 0.06, type: "bandpass", f0: 1100, q: 0.7 }); tone(170, 0.06, "sine", 0.04, 120); },
+    // 착지: 발 '쿵' + 운동화 '끽'
+    land: function () { tone(70, 0.08, "sine", 0.05, 50); nz({ dur: 0.07, vol: 0.022, type: "bandpass", f0: 2900, f1: 3600, q: 6 }); },
     gold: function () { tone(1320, 0.12, "sine", 0.08); tone(1760, 0.16, "sine", 0.07, 0, 0.08); },
     clear: function (stars) { melody([660, 830, 990, 1320].slice(0, 1 + stars)); buzz([14, 50, 14, 50, 22]); },
     fail: function () { tone(300, 0.35, "sawtooth", 0.09, 150); buzz(50); },
@@ -693,18 +699,17 @@ var CORNER3_Z = Math.sqrt(THREE_PT * THREE_PT - CORNER3 * CORNER3);   // 코너 
 // 3점 자리인가: 코너 직선 구간에서는 옆으로 6.71m 밖, 그 위로는 림에서 7.24m 밖
 function isThree(s) { return s.z <= CORNER3_Z ? Math.abs(s.x) >= CORNER3 : Math.hypot(s.x, s.z) >= THREE_PT; }
 var NET_LEN = 0.42, NET_TAPER = 0.42, NET_C = 12, NET_ROWS = 5;
-var HOLD_Y = 1.45;                                // 공을 든 높이
-var CAM_BACK = 1.5, CAM_UP = 0.4;                 // 눈은 공 1.5m 뒤, 40cm 위
-// 던지는 각도. 공을 가슴 높이(1.45m)에서 놓으니 실제 선수(2.2m 안팎)보다 높게 떠야 림에 45도 안팎으로
-// 떨어진다. 54도로 두면 자유투가 림 위 18cm 까지밖에 안 떠서 한가운데로 가도 뒤쪽 림을 긁었다
-function launchAngle(d) { return clamp(63 - 0.6 * (d - 4), 56, 63) * Math.PI / 180; }
+var REL_Y = 2.45;                                 // 공을 놓는 높이: 뛰어오르며 머리 위로 뻗은 손 (키 1.98m 선수)
+// 던지는 각도. 림에 들어가는 각도가 예전(가슴 높이 1.45m 에서 63°로 던질 때)과 같게 맞췄다: 자유투 55.7°, 6m 부터 56.7°.
+// 들어가는 각도가 같아야 림이 받아 주는 폭, 곧 난이도가 같다
+function launchAngle(d) { return (56.7 - 0.45 * Math.pow(clamp(6 - d, 0, 4), 2)) * Math.PI / 180; }
 var DRAG = 0.010;                                 // 공기 저항 (속도² 비례)
-// 공기 저항으로 모자라는 거리만큼 속도를 미리 얹는다. 힘 0.5 가 어느 자리에서든 림 한가운데(±1cm)로 가게 맞춘 값
-var DRAG_COMP_A = 1.009, DRAG_COMP_B = 0.0044;
+var MAGNUS = 0.0034;                              // 역회전이 공을 띄우는 힘 (ω × v 에 곱한다. 3점슛에서 중력의 5% 안팎)
+// 공기 저항·역회전으로 달라지는 거리만큼 속도를 미리 곱한다. 림 거리 ±1.5m 안에서 목표 거리와 2cm 안으로 맞춘 값
+var DRAG_COMP_A = 0.9974, DRAG_COMP_B = 0.0044, DRAG_COMP_C = 0.00054;
 var E_RIM = 0.58, MU_RIM = 0.3, E_BOARD = 0.66, MU_BOARD = 0.25, E_FLOOR = 0.8, MU_FLOOR = 0.5;
 var KI = 2 / 3, KT = KI / (1 + KI);               // 속이 빈 공: 관성 모멘트 2/3·m·r²
 var SLOW = 0.35;
-var NDC_RIM = 0.24, NDC_BALL = -0.6;              // 어느 자리에서든 림과 공이 화면 같은 높이에 오게
 
 // 골대 쪽 상자 충돌체 (림 중심 기준). [x0, x1, y0, y1, z0, z1, 반발, 마찰, 이름]
 var BOXES = [
@@ -1561,7 +1566,8 @@ function takeMesh() {
 }
 function dropMesh(m) { scene.remove(m); meshPool.push(m); }
 
-/* ── 3점슛 콘테스트 랙: 자리마다 슛하는 사람 오른쪽 앞에 공 다섯 개가 얹힌 금속 거치대, 딥 3점 자리는 받침대에 공 하나 ── */
+/* ── 3점슛 콘테스트 랙: 자리마다 선수 오른쪽에 공 다섯 개가 얹힌 금속 거치대(골대 쪽으로 길게), 딥 3점 자리는 받침대에 공 하나.
+   선수는 발 가운데가 공 놓는 점에서 뒤로 0.3m, 왼쪽으로 0.16m (5-1) ── */
 var RACKS = [];
 (function buildRacks() {
   var metal = new THREE.MeshStandardMaterial({ color: col(0xb9c2d0), roughness: 0.35, metalness: 0.8 });
@@ -1573,7 +1579,9 @@ var RACKS = [];
   CONTEST_SPOTS.forEach(function (sp, r) {
     var d = Math.hypot(sp[0], sp[1]), fx = -sp[0] / d, fz = -sp[1] / d, rx = -fz, rz = fx;
     var grp = new THREE.Group(), deep = r === 2 || r === 4, e = { group: grp, balls: [] };
-    grp.position.set(sp[0] + rx * 0.62 + fx * 0.25, 0, sp[1] + rz * 0.62 + fz * 0.25);
+    var ox = sp[0] - fx * 0.3 - rx * 0.16, oz = sp[1] - fz * 0.3 - rz * 0.16;     // 선수 발 가운데
+    if (deep) grp.position.set(ox + rx * 0.5 + fx * 0.25, 0, oz + rz * 0.5 + fz * 0.25);
+    else grp.position.set(ox + rx * 0.52 - fx * 0.36, 0, oz + rz * 0.52 - fz * 0.36);
     grp.rotation.y = Math.atan2(fx, fz);            // 거치대 길이 방향이 골대 쪽
     var n = deep ? 1 : 5;
     if (deep) {
@@ -1609,8 +1617,6 @@ function racksReset(show) {
     m.visible = true;
   });
 }
-// 공을 집으면 거치대에서 빠진다
-function rackTake(n) { var q = CONTEST_SEQ[n]; if (q) RACKS[q[0]].balls[q[2]].visible = false; }
 
 /* ── 그물: 매듭을 점으로 두고 줄로 잇는 천 흉내(Verlet). 마름모 짜임 ── */
 var NK = [], NL = [];
@@ -1892,6 +1898,670 @@ function ringFx(scale, dur, hex) {
 }
 
 /* ══════════════════════════════════════════════════════════════
+   5-1. 선수
+   코드로 만든 사람 모형(키 1.98m). 관절 자리를 세계 좌표로 풀고(팔·다리는 두 마디 IK), 마디마다 길이를 맞춘 원통을
+   그 사이에 놓는다. 패스나 거치대에서 공을 받아 드리블하다가, 화면을 누르면 공을 이마 앞으로 모으고 끄는 세기만큼
+   무릎을 굽힌다. 손을 떼면 0.13초 동안 뛰어오르며 팔을 뻗어 REL_Y 높이에서 공을 놓고, 손목을 꺾은 채 내려온다.
+   자세는 관절 15개 + 방향 8개(72개 수)로 리플레이에 적는다
+   ══════════════════════════════════════════════════════════════ */
+var SHL = { ua: 0.335, fa: 0.285, th: 0.5, sh: 0.47, ank: 0.085, spine: 0.575, shw: 0.215, hipw: 0.098 };
+var SH_HIP0 = SHL.th + SHL.sh + SHL.ank - 0.012;       // 서 있을 때 골반 관절 높이
+var POSE_N = 72;
+var SHJ = ["pel", "neck", "head", "shL", "shR", "elL", "elR", "wrL", "wrR", "hpL", "hpR", "knL", "knR", "anL", "anR"];
+var SHD = ["f", "look", "hLy", "hLz", "hRy", "hRz", "ftL", "ftR"];
+// 공을 놓는 점: 발 가운데에서 골대 쪽 0.3m, 오른쪽 0.16m (오른손 슈터라 공이 오른눈 위로 올라간다)
+var REL = { f: 0.3, s: 0.16 };
+// 동작 시간: 모으기, 손 떼고 공 놓기까지, 발이 떨어지는 때, 뛰어오르는 속도(꼭대기 27cm)
+var SH_T = { gather: 0.16, rel: 0.13, off: 0.03, v0: 2.3 };
+var DRIB_T = 0.56, PASS_T = 0.42, PICK_GRAB = 0.22, PICK_T = 0.46, HOLD_DRIB = 0.45;
+var ROOM_X = 8.65;                                     // 카메라·선수가 물러날 수 있는 옆 끝 (코트사이드 관중 앞)
+
+function lathe(pts, seg) {
+  return new THREE.LatheGeometry(pts.map(function (p) { return new THREE.Vector2(p[0], p[1]); }), seg || 14);
+}
+// 꼭짓점마다 색. 몸 전체(유니폼 윗도리 빼고)를 재질 하나로 그린다
+function vcol(g, fn) {
+  var p = g.attributes.position, c = new Float32Array(p.count * 3), o = new THREE.Color();
+  for (var i = 0; i < p.count; i++) { fn(p.getX(i), p.getY(i), p.getZ(i), o); c[i * 3] = o.r; c[i * 3 + 1] = o.g; c[i * 3 + 2] = o.b; }
+  g.setAttribute("color", new THREE.BufferAttribute(c, 3));
+  return g;
+}
+function solid(g, c) { return vcol(g, function (x, y, z, o) { o.copy(c); }); }
+function indexify(g) {
+  var c = g.attributes.position.count, ix = new Uint16Array(c);
+  for (var i = 0; i < c; i++) ix[i] = i;
+  g.setIndex(new THREE.BufferAttribute(ix, 1));
+  return g;
+}
+function mergeGeos(list) {
+  var n = 0, ni = 0;
+  list = list.map(function (g) { return g.index ? g : indexify(g); });
+  list.forEach(function (g) { n += g.attributes.position.count; ni += g.index.count; });
+  var P = new Float32Array(n * 3), N = new Float32Array(n * 3), C = new Float32Array(n * 3);
+  var I = n > 65535 ? new Uint32Array(ni) : new Uint16Array(ni), o = 0, oi = 0;
+  list.forEach(function (g) {
+    P.set(g.attributes.position.array, o * 3); N.set(g.attributes.normal.array, o * 3);
+    if (g.attributes.color) C.set(g.attributes.color.array, o * 3);
+    var ix = g.index.array;
+    for (var i = 0; i < ix.length; i++) I[oi + i] = ix[i] + o;
+    o += g.attributes.position.count; oi += ix.length;
+  });
+  var m = new THREE.BufferGeometry();
+  m.setAttribute("position", new THREE.BufferAttribute(P, 3));
+  m.setAttribute("normal", new THREE.BufferAttribute(N, 3));
+  m.setAttribute("color", new THREE.BufferAttribute(C, 3));
+  m.setIndex(new THREE.BufferAttribute(I, 1));
+  return m;
+}
+// 단면이 타원인 고리를 이어 붙인 몸통·반바지. rings: [y, 가로 반지름, 앞뒤 반지름, 앞뒤 중심]
+function ringsGeo(rings, seg) {
+  var pos = [], uv = [], idx = [], n = rings.length, i, j;
+  for (i = 0; i < n; i++) {
+    var R = rings[i];
+    for (j = 0; j <= seg; j++) {
+      var a = j / seg * Math.PI * 2;
+      pos.push(Math.sin(a) * R[1], R[0], Math.cos(a) * R[2] + (R[3] || 0));
+      uv.push(j / seg, i / (n - 1));
+    }
+  }
+  for (i = 0; i < n - 1; i++) for (j = 0; j < seg; j++) {
+    var a0 = i * (seg + 1) + j, b0 = a0 + seg + 1;
+    idx.push(a0, a0 + 1, b0, a0 + 1, b0 + 1, b0);
+  }
+  var g = new THREE.BufferGeometry();
+  g.setAttribute("position", new THREE.Float32BufferAttribute(pos, 3));
+  g.setAttribute("uv", new THREE.Float32BufferAttribute(uv, 2));
+  g.setIndex(idx);
+  g.computeVertexNormals();
+  // 이음매(첫 줄과 끝 줄)의 법선을 평균해 줄무늬 없이
+  var nr = g.attributes.normal;
+  for (i = 0; i < n; i++) {
+    var p0 = i * (seg + 1), p1 = p0 + seg;
+    var x = nr.getX(p0) + nr.getX(p1), y = nr.getY(p0) + nr.getY(p1), z = nr.getZ(p0) + nr.getZ(p1), l = Math.hypot(x, y, z) || 1;
+    nr.setXYZ(p0, x / l, y / l, z / l); nr.setXYZ(p1, x / l, y / l, z / l);
+  }
+  return g;
+}
+function sph(r, sx, sy, sz, x, y, z, ws, hs) {
+  var g = new THREE.SphereGeometry(r, ws || 14, hs || 10);
+  g.scale(sx, sy, sz); g.translate(x || 0, y || 0, z || 0);
+  return g;
+}
+
+// 유니폼 그림. u: 앞 가운데 0 → 왼옆 0.25 → 등 0.5 → 오른옆 0.75, v: 아래 0 → 위 1
+function jerseyTex(o) {
+  var W = 1024, H = 512, c = mkCanvas(W, H), g = c.getContext("2d"), i;
+  g.fillStyle = o.base; g.fillRect(0, 0, W, H);
+  for (i = 0; i < 9000; i++) { g.fillStyle = vr() < 0.5 ? "rgba(0,0,0,.035)" : "rgba(255,255,255,.04)"; g.fillRect(vr() * W, vr() * H, 2, 2); }
+  [0.25, 0.75].forEach(function (u) { g.fillStyle = o.trim; g.fillRect(u * W - 16, 0, 32, H); g.fillStyle = o.trim2; g.fillRect(u * W - 5, 0, 10, H); });
+  g.fillStyle = o.trim; g.fillRect(0, 0, W, 26);
+  g.fillStyle = o.trim2; g.fillRect(0, 26, W, 7);
+  function num(txt, cx, cy, size) {
+    g.font = "900 " + size + "px 'Arial Black', Impact, sans-serif";
+    g.textAlign = "center"; g.textBaseline = "middle"; g.lineJoin = "round";
+    g.lineWidth = size * 0.16; g.strokeStyle = o.numOut; g.strokeText(txt, cx, cy);
+    g.fillStyle = o.num; g.fillText(txt, cx, cy);
+  }
+  // 등: 둥글게 휜 이름 + 큰 번호
+  g.font = "900 58px 'Arial Black', Impact, sans-serif"; g.textAlign = "center"; g.textBaseline = "middle";
+  var name = o.name, arcR = 700, step = 0.06, ang0 = -(name.length - 1) * step / 2;
+  for (i = 0; i < name.length; i++) {
+    var a = ang0 + i * step;
+    g.save(); g.translate(W * 0.5 + Math.sin(a) * arcR, 100 + arcR - Math.cos(a) * arcR); g.rotate(a);
+    g.fillStyle = o.num; g.fillText(name[i], 0, 0); g.restore();
+  }
+  num(o.no, W * 0.5, 262, 200);
+  // 앞: 가슴 글씨 + 작은 번호 (이음매에 걸치니 양 끝에 두 번)
+  [0, W].forEach(function (x0) {
+    g.font = "italic 900 46px 'Arial Black', Impact, sans-serif";
+    g.lineWidth = 7; g.strokeStyle = o.numOut; g.strokeText(o.chest, x0, 120);
+    g.fillStyle = o.num; g.fillText(o.chest, x0, 120);
+    num(o.no, x0, 235, 120);
+  });
+  return canvasTex(c);
+}
+
+function makeShooter(look) {
+  var SK = col(look.skin), WH = col(0xf4f5f7), TM = col(0x1d4fd8), SLV = col(0x14161c), SOLE = col(0xf2f2f2), HAIR = col(0x17110d);
+  var body = new THREE.MeshStandardMaterial({ vertexColors: true, roughness: 0.6, metalness: 0 });
+  var shirt = new THREE.MeshStandardMaterial({ map: jerseyTex({ base: "#f5f6f8", trim: "#1d4fd8", trim2: "#f2b632", num: "#1d4fd8", numOut: "#f2b632",
+    name: "RICHRORO", no: "7", chest: "HOOPS" }), roughness: 0.78, metalness: 0 });
+  var G = new THREE.Group(), M = {};
+  function mk(name, geo, mat) { var m = new THREE.Mesh(geo, mat || body); m.castShadow = true; m.receiveShadow = true; M[name] = m; G.add(m); return m; }
+  // 몸통(유니폼): 골반 가운데가 원점, +y 척추, +z 앞
+  mk("torso", ringsGeo([[-0.03, 0.156, 0.112], [0.08, 0.15, 0.108], [0.2, 0.164, 0.115, 0.004], [0.32, 0.188, 0.126, 0.01],
+    [0.42, 0.204, 0.128, 0.006], [0.5, 0.203, 0.118, -0.004], [0.55, 0.176, 0.098, -0.01], [0.585, 0.11, 0.072, -0.006],
+    [0.6, 0.068, 0.054, 0], [0.605, 0.001, 0.001, 0]], 32), shirt);
+  mk("hips", vcol(ringsGeo([[-0.2, 0.19, 0.13], [-0.1, 0.19, 0.132], [0, 0.172, 0.122], [0.05, 0.162, 0.114], [0.07, 0.001, 0.001]], 24),
+    function (x, y, z, o) { o.copy(y > 0.035 || (Math.abs(x) > 0.17 && y < -0.02) ? TM : WH); }));
+  mk("neck", solid(lathe([[0.068, 0], [0.064, 0.08], [0.062, 0.13]], 14), SK));
+  // 머리: 두개골에 짧은 머리카락을 색으로(이마 위·옆·목덜미), 머리카락 쪽은 4mm 부풀린다
+  var skull = vcol(sph(0.1, 0.9, 1.1, 1.0, 0, 0, 0, 30, 22), function (x, y, z, o) {
+    o.copy(y > (z > 0 ? 0.012 + 0.52 * z : 0.012 + 0.5 * z) ? HAIR : SK);
+  });
+  (function (p, c) {
+    for (var i = 0; i < p.count; i++) if (Math.abs(c.getX(i) - HAIR.r) < 1e-5) p.setXYZ(i, p.getX(i) * 1.04, p.getY(i) * 1.03 + 0.002, p.getZ(i) * 1.04);
+  })(skull.attributes.position, skull.attributes.color);
+  mk("head", mergeGeos([skull,
+    solid(sph(0.024, 0.45, 1, 0.75, 0.088, -0.008, -0.008), SK), solid(sph(0.024, 0.45, 1, 0.75, -0.088, -0.008, -0.008), SK),
+    solid(sph(0.016, 0.9, 1.1, 1.1, 0, -0.018, 0.098), SK),
+    solid(sph(0.064, 1, 0.72, 0.95, 0, -0.068, 0.03), SK)]));
+  // 팔: 어깨(삼각근) 공 + 위팔 + 팔꿈치 공 / 아래팔 + 손목. 오른팔은 슈팅 슬리브
+  function armGeos(sleeve) {
+    var c = sleeve ? SLV : SK;
+    return [mergeGeos([solid(sph(0.066, 1, 1, 1, 0, 0.01, 0), SK),
+      solid(lathe([[0.057, 0], [0.061, 0.05], [0.058, 0.13], [0.051, 0.22], [0.044, 0.3], [0.041, SHL.ua]], 16), c),
+      solid(sph(0.042, 1, 1, 1, 0, SHL.ua, 0), c)]),
+      mergeGeos([solid(lathe([[0.043, 0], [0.048, 0.05], [0.045, 0.12], [0.036, 0.21], [0.029, SHL.fa]], 16), c),
+      solid(sph(0.03, 1.1, 1, 0.8, 0, SHL.fa, 0), SK)])];
+  }
+  var aL = armGeos(false), aR = armGeos(true);
+  mk("uaL", aL[0]); mk("faL", aL[1]); mk("uaR", aR[0]); mk("faR", aR[1]);
+  // 손: +y 손가락, +z 손바닥 쪽. s=+1 오른손(엄지가 +x)
+  function handGeo(s) {
+    var parts = [solid(sph(0.05, 0.86, 1, 0.36, 0, 0.052, 0), SK)];
+    [[-0.028, 0.068, -0.1], [-0.0095, 0.08, -0.03], [0.0095, 0.077, 0.03], [0.027, 0.062, 0.1]].forEach(function (q) {
+      parts.push(solid(lathe([[0.0092, 0], [0.0088, q[1] * 0.5], [0.0078, q[1] * 0.9], [0.004, q[1]]], 7)
+        .rotateX(0.32).rotateZ(-q[2] * s).translate(q[0] * s, 0.093, 0.004), SK));
+    });
+    parts.push(solid(lathe([[0.012, 0], [0.011, 0.035], [0.0085, 0.058], [0.004, 0.064]], 7)
+      .rotateZ(-s * 0.9).rotateX(0.5).translate(s * 0.03, 0.028, 0.012), SK));
+    return mergeGeos(parts);
+  }
+  mk("hL", handGeo(-1)); mk("hR", handGeo(1));
+  // 다리: 허벅지 + 무릎 / 종아리(아래는 흰 양말) / 반바지 다리 / 신발
+  function legGeos() {
+    return [mergeGeos([solid(lathe([[0.088, 0], [0.085, 0.1], [0.074, 0.3], [0.06, 0.44], [0.054, SHL.th]], 14), SK),
+      solid(sph(0.056, 1, 1, 1, 0, SHL.th, 0.005), SK)]),
+      vcol(lathe([[0.053, 0], [0.057, 0.08], [0.06, 0.15], [0.05, 0.28], [0.038, 0.36], [0.036, 0.4], [0.037, SHL.sh]], 14),
+        function (x, y, z, o) { o.copy(y > 0.34 ? WH : SK); })];
+  }
+  var lL = legGeos(), lR = legGeos();
+  mk("thL", lL[0]); mk("shinL", lL[1]); mk("thR", lR[0]); mk("shinR", lR[1]);
+  function shortsLeg() {           // +z(u=0) 가 바깥쪽: 거기에 줄무늬
+    return vcol(lathe([[0.106, 0], [0.109, 0.12], [0.112, 0.26], [0.113, 0.325], [0.106, 0.33]], 18), function (x, y, z, o) {
+      o.copy(z / (Math.hypot(x, z) || 1) > 0.82 || y > 0.31 ? TM : WH);
+    });
+  }
+  mk("stL", shortsLeg()); mk("stR", shortsLeg());
+  function shoeGeo() {             // 옆 모습을 밀어 낸 운동화. 발목이 원점, +z 앞, 밑창은 흰색
+    var s = new THREE.Shape();
+    s.moveTo(-0.095, -0.085); s.lineTo(0.2, -0.085); s.quadraticCurveTo(0.235, -0.083, 0.232, -0.05);
+    s.quadraticCurveTo(0.228, -0.02, 0.18, -0.008); s.lineTo(0.06, 0.03); s.quadraticCurveTo(0.03, 0.06, 0.02, 0.07);
+    s.lineTo(-0.045, 0.07); s.quadraticCurveTo(-0.09, 0.06, -0.1, 0.02); s.quadraticCurveTo(-0.108, -0.06, -0.095, -0.085);
+    var g = new THREE.ExtrudeGeometry(s, { depth: 0.07, bevelEnabled: true, bevelThickness: 0.018, bevelSize: 0.014, bevelSegments: 3, curveSegments: 8 });
+    g.translate(0, 0, -0.035); g.rotateY(-Math.PI / 2); g.computeVertexNormals();
+    return vcol(g, function (x, y, z, o) { o.copy(y < -0.064 ? SOLE : Math.abs(x) > 0.04 && y < -0.03 && z > -0.02 && z < 0.14 ? WH : TM); });
+  }
+  mk("ftL", shoeGeo()); mk("ftR", shoeGeo());
+  var J = {}, D = {};
+  SHJ.forEach(function (k) { J[k] = new V3(); });
+  SHD.forEach(function (k) { D[k] = new V3(); });
+  return { group: G, M: M, J: J, D: D };
+}
+
+/* 두 마디 IK: A 에서 목표 T 까지, 윗마디 a·아랫마디 b. 가운데 마디는 pole 쪽으로 굽고, 닿는 끝을 Tout 에 */
+function ik2(A, T, a, b, pole, E, Tout) {
+  var dx = T.x - A.x, dy = T.y - A.y, dz = T.z - A.z, d = Math.sqrt(dx * dx + dy * dy + dz * dz) || 1e-6;
+  var dd = clamp(d, Math.abs(a - b) + 1e-3, (a + b) * 0.9995), ux = dx / d, uy = dy / d, uz = dz / d;
+  Tout.set(A.x + ux * dd, A.y + uy * dd, A.z + uz * dd);
+  var ca = (a * a + dd * dd - b * b) / (2 * a * dd), sa = Math.sqrt(Math.max(0, 1 - ca * ca));
+  var pd = pole.x * ux + pole.y * uy + pole.z * uz;
+  var wx = pole.x - pd * ux, wy = pole.y - pd * uy, wz = pole.z - pd * uz, wl = Math.sqrt(wx * wx + wy * wy + wz * wz) || 1;
+  E.set(A.x + a * (ca * ux + sa * wx / wl), A.y + a * (ca * uy + sa * wy / wl), A.z + a * (ca * uz + sa * wz / wl));
+}
+// 마디 m 을 A 에 두고 +y 가 B 쪽, +z 가 side 쪽을 향하게
+var _bx = new V3(), _by = new V3(), _bz = new V3(), _bm = new THREE.Matrix4();
+function place(m, A, B, side) {
+  _by.subVectors(B, A).normalize();
+  _bz.copy(side).addScaledVector(_by, -side.dot(_by));
+  if (_bz.lengthSq() < 1e-8) _bz.set(-_by.y, _by.x, 0);
+  _bz.normalize();
+  _bx.crossVectors(_by, _bz);
+  _bm.makeBasis(_bx, _by, _bz);
+  m.quaternion.setFromRotationMatrix(_bm);
+  m.position.copy(A);
+}
+function placeYZ(m, P, y, z) {
+  _by.copy(y).normalize();
+  _bz.copy(z).addScaledVector(_by, -z.dot(_by));
+  if (_bz.lengthSq() < 1e-8) _bz.set(-_by.y, _by.x, 0);
+  _bz.normalize();
+  _bx.crossVectors(_by, _bz);
+  _bm.makeBasis(_bx, _by, _bz);
+  m.quaternion.setFromRotationMatrix(_bm);
+  m.position.copy(P);
+}
+function poseRead(S, a) {
+  var o = 0;
+  SHJ.forEach(function (k) { S.J[k].set(a[o], a[o + 1], a[o + 2]); o += 3; });
+  SHD.forEach(function (k) { S.D[k].set(a[o], a[o + 1], a[o + 2]); o += 3; });
+}
+function poseWrite(S, a) {
+  var o = 0;
+  SHJ.forEach(function (k) { var v = S.J[k]; a[o] = v.x; a[o + 1] = v.y; a[o + 2] = v.z; o += 3; });
+  SHD.forEach(function (k) { var v = S.D[k]; a[o] = v.x; a[o + 1] = v.y; a[o + 2] = v.z; o += 3; });
+}
+// 관절 자리대로 마디를 놓는다
+var _p1 = new V3(), _p2 = new V3(), _p3 = new V3(), _up = new V3(0, 1, 0), _prt = new V3(), _pnl = new V3();
+function poseApply(S) {
+  var J = S.J, D = S.D, M = S.M;
+  _prt.set(-D.f.z, 0, D.f.x).normalize();
+  _pnl.copy(_prt).negate();
+  _p1.subVectors(J.neck, J.pel);
+  placeYZ(M.torso, J.pel, _p1, D.f);
+  placeYZ(M.hips, J.pel, _p1, D.f);
+  placeYZ(M.neck, J.neck, _p2.subVectors(J.head, J.neck), D.f);
+  placeYZ(M.head, J.head, _p2, D.look);
+  place(M.uaL, J.shL, J.elL, _pnl); place(M.faL, J.elL, J.wrL, _pnl);
+  place(M.uaR, J.shR, J.elR, _prt); place(M.faR, J.elR, J.wrR, _prt);
+  placeYZ(M.hL, J.wrL, D.hLy, D.hLz); placeYZ(M.hR, J.wrR, D.hRy, D.hRz);
+  place(M.thL, J.hpL, J.knL, _pnl); place(M.thR, J.hpR, J.knR, _prt);
+  // 반바지 다리는 허벅지와 수직 사이로 늘어진다
+  place(M.stL, J.hpL, _p3.copy(J.hpL).addScaledVector(_up, -SHL.th).lerp(J.knL, 0.72), _pnl);
+  place(M.stR, J.hpR, _p3.copy(J.hpR).addScaledVector(_up, -SHL.th).lerp(J.knR, 0.72), _prt);
+  place(M.shinL, J.knL, J.anL, D.f); place(M.shinR, J.knR, J.anR, D.f);
+  placeYZ(M.ftL, J.anL, _up, D.ftL); placeYZ(M.ftR, J.anR, _up, D.ftR);
+}
+
+var SHOOTER = makeShooter({ skin: 0x8e5b3a });
+scene.add(SHOOTER.group);
+var shPose = new Float32Array(POSE_N);
+// 몸 매개변수: 목표(shT)와 부드럽게 따라가는 실제 값(shC)
+function shParams() {
+  return { crouch: 0.035, lean: 0.06, jump: 0, shrug: 0, feetJ: 0, spread: 1, look: new V3(0, RIM_Y, 0),
+    pL: new V3(), pR: new V3(), hLy: new V3(0, -1, 0), hLz: new V3(1, 0, 0), hRy: new V3(0, -1, 0), hRz: new V3(-1, 0, 0),
+    aL: new V3(), aR: new V3(), fdL: new V3(0, 0, -1), fdR: new V3(0, 0, -1) };
+}
+var shT = shParams(), shC = shParams();
+// 손목 목표 = 기준점(공 또는 어깨) + 오프셋. 기준이 바뀌는 순간엔 지금 손목 자리에서 이어지도록 오프셋을 다시 잡는다
+var shHand = { L: { anc: "body", off: new V3(), want: new V3(), wrist: new V3() }, R: { anc: "body", off: new V3(), want: new V3(), wrist: new V3() } };
+var sh = {
+  st: "idle", t: 0, root: new V3(0, 0, FT_Z + REL.f), f: new V3(0, 0, -1),
+  run: null,            // { from, to, f, t, T, ph }
+  ball: new V3(), b0: new V3(), hasBall: false, dip: 0,
+  pend: null,           // 손 떼고 놓기 전 { pow, yaw }
+  want: null,           // 받을 공 ("pass" | "pick"), 달리거나 뛰는 중이면 끝나고 받는다
+  pass: null, pick: null, ph: 0, demo: false, spin: new V3()
+};
+var shDemo = new THREE.Mesh(ballGeo, MAT.ball);   // 시작 화면에서 튀기는 공
+shDemo.castShadow = true; shDemo.visible = false;
+scene.add(shDemo);
+var _rr = new V3(), _q1 = new V3(), _q2 = new V3(), _q3 = new V3();
+function shRight(o) { return o.set(-sh.f.z, 0, sh.f.x); }
+function shStand(spot, root, f) {                  // 슛 자리 → 발 가운데·앞
+  var d = spotDist(spot) || 1;
+  f.set(-spot.x / d, 0, -spot.z / d);
+  return root.set(spot.x, 0, spot.z).addScaledVector(f, -REL.f).addScaledVector(_rr.set(-f.z, 0, f.x), -REL.s);
+}
+function smooth01(k) { k = clamp(k, 0, 1); return k * k * (3 - 2 * k); }
+function jumpAt(t) { var u = t - SH_T.off; return u > 0 ? Math.max(0, SH_T.v0 * u - 4.9 * u * u) : 0; }
+var SH_AIR = SH_T.off + 2 * SH_T.v0 / G;            // 발이 다시 닿는 때 (0.5초)
+// 공 자리 (몸이 낮아지면 같이 낮아진다)
+function shBallHip(c, o) { var r = shRight(_rr); return o.copy(sh.root).addScaledVector(sh.f, 0.2).addScaledVector(r, 0.2).setY(1.02 - 0.9 * c.crouch + c.jump); }
+function shBallPocket(c, o) { var r = shRight(_rr); return o.copy(sh.root).addScaledVector(sh.f, 0.2).addScaledVector(r, 0.25).setY(1.3 - 0.9 * c.crouch + c.jump); }
+function shBallSet(c, o) { var r = shRight(_rr); return o.copy(sh.root).addScaledVector(sh.f, 0.2).addScaledVector(r, 0.11).setY(1.99 - c.crouch + c.jump); }
+function shBallCatch(o) { var r = shRight(_rr); return o.copy(sh.root).addScaledVector(sh.f, 0.42).addScaledVector(r, 0.06).setY(1.2); }
+
+// ── 밖에서 부르는 것들 ──
+// 자리에 바로 선다 (판 시작)
+function shPlace(spot) {
+  shStand(spot, sh.root, sh.f);
+  sh.run = null; sh.st = "idle"; sh.t = 0; sh.want = null; sh.pass = null; sh.pick = null; sh.pend = null; sh.hasBall = false;
+  shFeet(shT, 1, 0); shC.aL.copy(shT.aL); shC.aR.copy(shT.aR);
+  shHand.L.anc = shHand.R.anc = "none";
+}
+// 새 자리로 뛰어간다
+function shGo(spot) {
+  var root = new V3(), f = new V3();
+  shStand(spot, root, f);
+  var dist = root.distanceTo(sh.root);
+  if (dist < 0.05) { sh.f.copy(f); return; }
+  sh.run = { from: sh.root.clone(), to: root, f: f, t: 0, T: Math.max(0.45, 0.25 + dist / 4.6), ph: 0 };
+  if (sh.st !== "air" && sh.st !== "land") { sh.st = "run"; sh.t = 0; }
+}
+// 공을 받는다: 콘테스트는 거치대에서 집고, 나머지는 옆에서 패스가 온다
+function shReceive() {
+  sh.want = ST && ST.def.contest ? "pick" : "pass";
+  shTryReceive();
+}
+function shTryReceive() {
+  if (!sh.want || !held || sh.run || (sh.st !== "idle" && !(sh.st === "land" && sh.t > 0.12))) return;
+  var r = shRight(_rr);
+  if (sh.want === "pick") {
+    var q = CONTEST_SEQ[Math.min(ST.thrown, CONTEST_SEQ.length - 1)];
+    var m = RACKS[q[0]].balls[q[2]];
+    sh.pick = { pos: m.getWorldPosition(new V3()), mesh: m };
+    sh.st = "pick";
+  } else {
+    // 코트 가운데 쪽 옆에서 가슴 높이로 온다 (화면 밖에서 들어온다)
+    var side = sh.root.x * r.x + sh.root.z * r.z > 0.5 ? -1 : 1;
+    var c = shBallCatch(new V3());
+    sh.pass = { from: c.clone().addScaledVector(r, side * 5.5).addScaledVector(sh.f, 1.6).setY(1.35), to: c };
+    sh.st = "catch";
+  }
+  sh.want = null; sh.t = 0;
+  held.appear = 0;
+}
+// 화면을 누르면 공을 모은다
+function shGather() {
+  if (!held || (sh.st !== "hold" && sh.st !== "dribble")) return false;
+  sh.b0.copy(sh.ball);
+  sh.st = "set"; sh.t = 0; sh.dip = 0;
+  return true;
+}
+function shCancel() { if (sh.st === "set") { sh.b0.copy(sh.ball); sh.st = "hold"; sh.t = 0; } }
+// 손을 떼면 뛰어오르며 놓는다 (던지기는 SH_T.rel 뒤)
+function shShoot(pow, yaw) {
+  if (sh.st !== "set") return false;
+  sh.b0.copy(sh.ball);
+  sh.st = "shoot"; sh.t = 0; sh.pend = { pow: pow, yaw: yaw, c0: shC.crouch };
+  return true;
+}
+// 테스트·봇: 동작 없이 바로 놓은 것으로
+function shAirNow() { sh.st = "air"; sh.t = SH_T.rel; sh.pend = null; sh.hasBall = false; sh.want = null; }
+function shReady() { return !!held && held.appear >= 1 && (sh.st === "hold" || sh.st === "dribble"); }
+
+// 발: 어깨너비, 오른발이 조금 앞, 발끝 10° 바깥
+function shFeet(P, spread, jump) {
+  var f = sh.f, r = shRight(_rr), c = Math.cos(0.17), s = Math.sin(0.17);
+  P.aL.copy(sh.root).addScaledVector(r, -0.15 * spread).addScaledVector(f, -0.03).setY(SHL.ank + jump);
+  P.aR.copy(sh.root).addScaledVector(r, 0.15 * spread).addScaledVector(f, 0.05).setY(SHL.ank + jump);
+  P.fdL.set(f.x * c + f.z * s, jump > 0.02 ? -0.35 : 0, f.z * c - f.x * s);
+  P.fdR.set(f.x * c - f.z * s, jump > 0.02 ? -0.35 : 0, f.z * c + f.x * s);
+}
+// 손 기준·오프셋 정하기. anc: "ball" | "body"(어깨) | "none"(바로 그 자리)
+function shGrip(side, anc, x, y, z) {           // x: 오른쪽, y: 위, z: 앞 (선수 기준)
+  var h = shHand[side], r = shRight(_rr);
+  h.nanc = anc;
+  h.want.set(0, 0, 0).addScaledVector(r, x).addScaledVector(_up, y).addScaledVector(sh.f, z);
+}
+function shDir(o, x, y, z) { var r = shRight(_rr); return o.set(0, 0, 0).addScaledVector(r, x).addScaledVector(_up, y).addScaledVector(sh.f, z).normalize(); }
+
+// 상태 진행 + 이번 프레임 목표 자세
+function shThink(dt) {
+  var P = shT, f = sh.f, r = shRight(new V3()), t, k;
+  sh.t += dt;
+  t = sh.t;
+  P.jump = 0; P.shrug = 0; P.spread = 1; P.feetJ = 0;
+  P.look.set(hoop.x, RIM_Y, hoop.z);
+  // 공이 사라지면(바이얼레이션·시간 끝·판 끝) 빈손으로
+  if (!held && !sh.demo && (sh.st === "hold" || sh.st === "dribble" || sh.st === "set" || sh.st === "catch" || sh.st === "pick")) { sh.st = "idle"; sh.t = t = 0; }
+  sh.hasBall = false;
+  switch (sh.st) {
+    case "run": {
+      var R = sh.run;
+      if (!R) { sh.st = "idle"; break; }
+      R.t += dt;
+      k = clamp(R.t / R.T, 0, 1);
+      var e = k * k * (3 - 2 * k), dist = R.from.distanceTo(R.to);
+      sh.root.copy(R.from).lerp(R.to, e);
+      // 달리는 쪽을 보다가 끝 무렵 골대 쪽으로 돈다
+      _q1.subVectors(R.to, R.from).setY(0).normalize();
+      var turn = smooth01((k - 0.55) / 0.4);
+      sh.f.copy(_q1).lerp(R.f, turn).normalize();
+      if (turn >= 1) sh.f.copy(R.f);
+      var spd = dist / R.T * 6 * k * (1 - k);                  // 지금 속도 (m/s)
+      R.ph += spd * dt / 1.3 * Math.PI * 2;                    // 두 걸음에 1.3m
+      var amp = clamp(spd / 3.5, 0, 1);
+      P.crouch = 0.06 + 0.04 * amp; P.lean = 0.08 + 0.2 * amp;
+      P.jump = 0.035 * amp * Math.abs(Math.sin(R.ph));
+      var mv = _q1, rt = _q2.set(-mv.z, 0, mv.x);
+      ["L", "R"].forEach(function (s, i) {
+        var ps = R.ph + (i ? Math.PI : 0), a = s === "L" ? P.aL : P.aR;
+        a.copy(sh.root).addScaledVector(rt, (i ? 0.12 : -0.12)).addScaledVector(mv, 0.34 * amp * Math.cos(ps));
+        a.y = SHL.ank + 0.13 * amp * Math.max(0, Math.sin(ps));
+        (s === "L" ? P.fdL : P.fdR).copy(sh.f);
+      });
+      // 팔은 반대 다리와 함께 흔든다
+      shGrip("L", "body", -0.06, -0.5, 0.2 * amp * Math.cos(R.ph + Math.PI) + 0.05);
+      shGrip("R", "body", 0.06, -0.5, 0.2 * amp * Math.cos(R.ph) + 0.05);
+      P.pL.copy(f).negate(); P.pR.copy(f).negate();
+      shDir(P.hLz, 1, 0, 0); shDir(P.hLy, 0, -1, 0.3); shDir(P.hRz, -1, 0, 0); shDir(P.hRy, 0, -1, 0.3);
+      if (k >= 1) { sh.run = null; sh.root.copy(R.to); sh.f.copy(R.f); sh.st = "idle"; sh.t = 0; }
+      break;
+    }
+    case "idle":
+      // 내려오는 동안 다음 자리가 정해졌으면 이제 뛰어간다
+      if (sh.run) { sh.st = "run"; sh.t = 0; }
+      P.crouch = 0.035 + 0.004 * Math.sin(t * 2.1); P.lean = 0.06;
+      shFeet(P, 1, 0);
+      shGrip("L", "body", -0.07, -0.57, 0.08); shGrip("R", "body", 0.07, -0.57, 0.08);
+      P.pL.copy(f).negate().addScaledVector(r, -0.3); P.pR.copy(f).negate().addScaledVector(r, 0.3);
+      shDir(P.hLz, 1, 0, 0); shDir(P.hLy, 0, -1, 0.15); shDir(P.hRz, -1, 0, 0); shDir(P.hRy, 0, -1, 0.15);
+      if (sh.demo && t > 0.5) { sh.st = "dribble"; sh.t = 0; shBallHip(shC, sh.ball); sh.b0.copy(sh.ball); }
+      shTryReceive();
+      break;
+    case "catch": {
+      var ps = sh.pass;
+      k = clamp(t / PASS_T, 0, 1);
+      sh.ball.copy(ps.from).lerp(ps.to, k).y += 0.32 * 4 * k * (1 - k);
+      sh.spin.copy(r).multiplyScalar(-9);
+      sh.hasBall = true;
+      held.appear = k;
+      P.crouch = 0.07; P.lean = 0.1;
+      shFeet(P, 1.05, 0);
+      if (k < 0.8) { shGrip("L", "body", 0.08, -0.22, 0.4); shGrip("R", "body", -0.08, -0.22, 0.4); }
+      else { shGrip("L", "ball", -0.125, -0.02, -0.03); shGrip("R", "ball", 0.125, -0.02, -0.03); }
+      _q1.subVectors(ps.from, ps.to).normalize();
+      P.hLz.copy(_q1).lerp(r, k).normalize(); P.hRz.copy(_q1).lerp(_q2.copy(r).negate(), k).normalize();
+      shDir(P.hLy, 0, 0.6, 0.8); shDir(P.hRy, 0, 0.6, 0.8);
+      P.pL.copy(r).negate().addScaledVector(_up, -0.6); P.pR.copy(r).addScaledVector(_up, -0.6);
+      P.look.copy(sh.ball);
+      if (k >= 1) { sh.st = "hold"; sh.t = 0; sh.b0.copy(sh.ball); held.appear = 1; sfx.catchBall && sfx.catchBall(); }
+      break;
+    }
+    case "pick": {
+      var pk = sh.pick;
+      k = clamp(t / PICK_T, 0, 1);
+      var reach = smooth01(t / PICK_GRAB), lift = smooth01((t - PICK_GRAB) / (PICK_T - PICK_GRAB));
+      var bend = t < PICK_GRAB ? reach : 1 - lift;
+      P.crouch = 0.07 + 0.22 * bend; P.lean = 0.12 + 0.42 * bend;
+      shFeet(P, 1.15, 0);
+      if (t >= PICK_GRAB) {
+        if (pk.mesh.visible) { pk.mesh.visible = false; }
+        shBallHip(P, _q1);
+        sh.ball.copy(pk.pos).lerp(_q1, lift);
+        sh.hasBall = true;
+        shGrip("L", "ball", -0.118, 0, 0.02); shGrip("R", "ball", 0.118, 0, -0.02);
+      } else {
+        sh.ball.copy(pk.pos);
+        // 손은 거치대 공 양옆으로
+        shGrip("L", "none", 0, 0, 0); shGrip("R", "none", 0, 0, 0);
+        shHand.L.want.copy(pk.pos).addScaledVector(r, -0.118).addScaledVector(f, 0.02);
+        shHand.R.want.copy(pk.pos).addScaledVector(r, 0.118).addScaledVector(f, -0.02);
+      }
+      held.appear = k;
+      P.pL.copy(r).negate().addScaledVector(f, -0.3); P.pR.copy(r).addScaledVector(f, -0.3);
+      shDir(P.hLz, 1, 0, 0); shDir(P.hLy, 0, -0.3, 1); shDir(P.hRz, -1, 0, 0); shDir(P.hRy, 0, -0.3, 1);
+      P.look.copy(t < PICK_GRAB ? pk.pos : _q2.set(hoop.x, RIM_Y, hoop.z));
+      if (k >= 1) { sh.st = "hold"; sh.t = 0; sh.b0.copy(sh.ball); held.appear = 1; }
+      break;
+    }
+    case "hold":
+      // 오른쪽 가슴 높이(슛 포켓)에 든다. 뒤에서 몸통 오른쪽으로 공이 보인다
+      P.crouch = 0.075 + 0.01 * Math.sin(t * 2.3); P.lean = 0.12;
+      shFeet(P, 1.05, 0);
+      shBallPocket(shC, _q1);
+      sh.ball.copy(sh.b0).lerp(_q1, smooth01(t / 0.2));
+      sh.hasBall = true;
+      shGrip("L", "ball", -0.112, 0.01, 0.05); shGrip("R", "ball", 0.07, -0.03, -0.1);
+      P.pL.copy(r).negate().addScaledVector(f, -0.3).addScaledVector(_up, -0.7); P.pR.copy(r).addScaledVector(f, -0.5).addScaledVector(_up, -0.7);
+      shDir(P.hLz, 1, 0, 0.2); shDir(P.hLy, 0, 0.6, 0.8); P.hRz.subVectors(sh.ball, shHand.R.wrist).normalize(); shDir(P.hRy, 0, 1, 0.2);
+      // 시작 화면에선 드리블한다 (경기 중엔 카메라가 허리 위만 봐서 튀는 공이 화면 밖으로 나간다)
+      if (t > HOLD_DRIB && sh.demo) { sh.st = "dribble"; sh.t = 0; sh.b0.copy(sh.ball); sh.ph = 0; }
+      break;
+    case "dribble": {
+      // 오른쪽 앞에서 튀긴다. 공은 떨어질 때 빨라지고 올라올 때 느려진다(0.56초에 한 번)
+      var ph = (t % DRIB_T) / DRIB_T, top = 0.93, R0 = BALL_R;
+      var y = ph < 0.42 ? top - (top - R0) * Math.pow(ph / 0.42, 2) : R0 + (top - R0) * (1 - Math.pow(1 - (ph - 0.42) / 0.58, 2));
+      if (sh.ph < 0.42 && ph >= 0.42) { sfx.dribble && sfx.dribble(); }
+      sh.ph = ph;
+      P.crouch = 0.13; P.lean = 0.26;
+      shFeet(P, 1.15, 0);
+      _q1.copy(sh.root).addScaledVector(f, 0.26).addScaledVector(r, 0.42).setY(y);
+      // 처음 0.12초는 들고 있던 자리에서 이어 붙인다
+      sh.ball.copy(sh.b0).lerp(_q1, smooth01(t / 0.12));
+      sh.hasBall = true;
+      sh.spin.copy(r).multiplyScalar(ph < 0.42 ? -7 : 7);
+      // 오른손은 공 위에 얹혀 있다가 공이 내려가면 허리 높이에서 기다린다
+      var hy = Math.max(sh.ball.y + 0.115, 0.83 - 0.05 * Math.cos(ph * Math.PI * 2));
+      shGrip("R", "none", 0, 0, 0);
+      shHand.R.want.set(sh.ball.x, hy, sh.ball.z).addScaledVector(f, -0.04).addScaledVector(r, -0.02);
+      shGrip("L", "body", 0.05, -0.38, 0.32);
+      P.pL.copy(r).negate().addScaledVector(_up, -0.5); P.pR.copy(r).addScaledVector(f, -0.5);
+      shDir(P.hRz, 0, -1, 0.1); shDir(P.hRy, 0, -0.1, 1); shDir(P.hLz, 0.3, 0, 1); shDir(P.hLy, 0, 1, 0.2);
+      P.look.set(hoop.x, RIM_Y - 0.4, hoop.z);
+      break;
+    }
+    case "set": {
+      var tg = sh.b0.y < 0.7 ? 0.22 : SH_T.gather;
+      P.crouch = 0.07 + 0.2 * sh.dip; P.lean = 0.06 + 0.08 * sh.dip;
+      shFeet(P, 1.05, 0);
+      shBallSet(shC, _q1);
+      k = smooth01(t / tg);
+      sh.ball.copy(sh.b0).lerp(_q1, k).y += 0.12 * Math.sin(Math.PI * k) * (sh.b0.y < 0.7 ? 1 : 0);
+      sh.hasBall = true;
+      shGrip("R", "ball", 0.012, -0.085, -0.09); shGrip("L", "ball", -0.118, -0.045, -0.03);
+      P.pR.copy(_up).multiplyScalar(-0.9).addScaledVector(f, 0.45).addScaledVector(r, 0.25);
+      P.pL.copy(r).negate().addScaledVector(_up, -0.35).addScaledVector(f, 0.1);
+      P.hRz.subVectors(sh.ball, shHand.R.wrist).normalize(); shDir(P.hRy, 0, 1, -0.35);
+      P.hLz.copy(r); shDir(P.hLy, 0, 1, 0.25);
+      break;
+    }
+    case "shoot": {
+      // 0 → SH_T.rel: 다리를 펴며 뛰고, 공은 이마 앞에서 놓는 점까지 점점 빨라진다
+      var c0 = sh.pend ? sh.pend.c0 : 0.1;
+      k = clamp(t / SH_T.rel, 0, 1);
+      P.jump = jumpAt(t);
+      P.crouch = c0 * (1 - smooth01(k * 1.3)) - 0.012 * smooth01(k);
+      P.lean = 0.06 * (1 - k);
+      P.shrug = 0.03 * k;
+      shFeet(P, 1, P.jump);
+      relPos(curSpot, _q1);
+      sh.ball.copy(sh.b0).lerp(_q1, k * k);
+      sh.hasBall = !!held;
+      shGrip("R", "ball", 0.012, -0.085, -0.09); shGrip("L", "ball", -0.118 - 0.06 * smooth01((k - 0.7) / 0.3), -0.045, -0.03);
+      P.pR.copy(_up).multiplyScalar(-0.9).addScaledVector(f, 0.45).addScaledVector(r, 0.25);
+      P.pL.copy(r).negate().addScaledVector(_up, -0.35).addScaledVector(f, 0.1);
+      P.hRz.subVectors(sh.ball, shHand.R.wrist).normalize(); shDir(P.hRy, 0, 1, -0.35 + 0.35 * k);
+      P.hLz.copy(r); shDir(P.hLy, 0, 1, 0.25);
+      if (t >= SH_T.rel) {
+        var pd = sh.pend; sh.pend = null;
+        if (held && pd) throwBall(pd.pow, pd.yaw);
+        sh.st = "air";
+      }
+      break;
+    }
+    case "air":
+    case "land": {
+      // 따라가기: 오른팔은 뻗은 채 손목을 아래로 꺾고, 왼손은 옆으로 떨어진다. 떠 있는 공을 눈으로 좇는다
+      var ta = sh.st === "air" ? t : SH_AIR + t, fl = smooth01((ta - SH_T.rel) / 0.1), drop = smooth01((ta - SH_T.rel) / 0.35);
+      if (sh.st === "air") {
+        P.jump = jumpAt(ta);
+        P.crouch = -0.012 + 0.03 * smooth01((ta - SH_T.rel) / 0.3); P.lean = 0.02; P.shrug = 0.03;
+        shFeet(P, 0.95, P.jump);
+        var tuck = 0.05 * Math.sin(Math.PI * clamp((ta - SH_T.off) / (SH_AIR - SH_T.off), 0, 1));
+        P.aL.y += tuck; P.aR.y += tuck * 0.7;
+        if (ta >= SH_AIR) { sh.st = "land"; sh.t = 0; sfx.land && sfx.land(); }
+      } else {
+        // 내려와 무릎으로 받고(0.3초) 선다
+        P.crouch = 0.035 + 0.11 * Math.sin(Math.PI * clamp(t / 0.34, 0, 1)); P.lean = 0.06 + 0.06 * Math.sin(Math.PI * clamp(t / 0.34, 0, 1));
+        shFeet(P, 1, 0);
+        if (t > 0.42) { sh.st = "idle"; sh.t = 0; }
+      }
+      var relax = sh.st === "land" ? smooth01((t - 0.12) / 0.3) : 0;
+      _q3.set(0, 0, 0);
+      shGrip("R", "body", -0.08 * (1 - relax) + 0.07 * relax, 0.52 * (1 - relax) - 0.57 * relax, 0.26 * (1 - relax) + 0.08 * relax);
+      var dl = smooth01((drop - 0.25) / 0.75);
+      shGrip("L", "body", -0.12 + 0.05 * dl, 0.4 - 0.95 * dl, 0.18 - 0.1 * dl);
+      P.pR.copy(f).multiplyScalar(0.5).addScaledVector(r, 0.3).addScaledVector(_up, -0.2 - relax);
+      P.pL.copy(_up).multiplyScalar(-1).addScaledVector(r, -0.35).addScaledVector(f, -0.1);      // 팔꿈치는 아래로 접힌다
+      shDir(_q1, 0, 1, -0.2); shDir(_q2, 0, -0.85, 0.55);
+      P.hRy.copy(_q1).lerp(_q2, fl).normalize();
+      shDir(_q1, 0, 0.3, 1); shDir(_q2, 0, -1, 0.2);
+      P.hRz.copy(_q1).lerp(_q2, fl).normalize();
+      shDir(P.hLz, 1, 0, 0.2); shDir(P.hLy, 0, 1 - 2 * dl, 0.25);
+      if (focus && !focus.done) P.look.copy(focus.p);
+      shTryReceive();
+      break;
+    }
+  }
+}
+
+// 목표 자세를 부드럽게 따라가 관절을 풀고 마디를 놓는다
+var _sv = new V3(), _sS = new V3();
+function shSolve(dt) {
+  var P = shT, C = shC, S = SHOOTER, J = S.J, D = S.D, f = sh.f, r = shRight(new V3());
+  var k = 1 - Math.exp(-dt * 14), kf = 1 - Math.exp(-dt * 22);
+  var exact = sh.st === "shoot" || sh.st === "air";
+  C.crouch += (P.crouch - C.crouch) * (exact ? 1 : k);
+  C.lean += (P.lean - C.lean) * (exact ? 1 : k);
+  C.shrug += (P.shrug - C.shrug) * kf;
+  C.jump = P.jump;
+  var fastFeet = sh.st === "run" || sh.st === "air" || sh.st === "shoot";
+  C.aL.lerp(P.aL, fastFeet ? 1 : kf); C.aR.lerp(P.aR, fastFeet ? 1 : kf);
+  C.fdL.lerp(P.fdL, kf).normalize(); C.fdR.lerp(P.fdR, kf).normalize();
+  ["pL", "pR", "hLy", "hLz", "hRy", "hRz"].forEach(function (n) { C[n].lerp(P[n], kf); if (n[0] === "h") C[n].normalize(); });
+  C.look.lerp(P.look, k);
+  // 몸통
+  D.f.copy(f);
+  _sS.copy(f).multiplyScalar(Math.sin(C.lean)).addScaledVector(_up, Math.cos(C.lean));
+  J.pel.copy(sh.root).addScaledVector(_up, SH_HIP0 + 0.045 - C.crouch + C.jump).addScaledVector(f, -0.3 * C.crouch);
+  J.neck.copy(J.pel).addScaledVector(_sS, SHL.spine);
+  J.shL.copy(J.pel).addScaledVector(_sS, 0.525 + C.shrug).addScaledVector(r, -SHL.shw);
+  J.shR.copy(J.pel).addScaledVector(_sS, 0.525 + C.shrug).addScaledVector(r, SHL.shw);
+  _sv.subVectors(C.look, J.neck).normalize();
+  _p1.copy(_sS).multiplyScalar(0.85).addScaledVector(_sv, 0.25).normalize();
+  J.head.copy(J.neck).addScaledVector(_p1, 0.2);
+  D.look.subVectors(C.look, J.head);
+  // 얼굴이 뒤로 돌아가지 않게 앞쪽 성분을 남긴다
+  if (D.look.dot(f) < 0.2) D.look.addScaledVector(f, 0.2 - D.look.dot(f));
+  D.look.normalize();
+  J.hpL.copy(J.pel).addScaledVector(_sS, -0.05).addScaledVector(r, -SHL.hipw);
+  J.hpR.copy(J.pel).addScaledVector(_sS, -0.05).addScaledVector(r, SHL.hipw);
+  // 손: 기준이 바뀌면 지금 손목 자리에서 이어 붙인다
+  ["L", "R"].forEach(function (s) {
+    var h = shHand[s], sho = s === "L" ? J.shL : J.shR, anc = h.nanc || "body";
+    var base = anc === "ball" ? sh.ball : anc === "body" ? sho : null;
+    if (anc !== h.anc) {
+      h.off.copy(h.wrist);
+      if (base) h.off.sub(base);
+      h.anc = anc;
+    }
+    var kk = anc === "ball" ? 1 - Math.exp(-dt * 30) : kf;
+    h.off.lerp(h.want, kk);
+    _sv.copy(h.off);
+    if (base) _sv.add(base);
+    ik2(sho, _sv, SHL.ua, SHL.fa, s === "L" ? C.pL : C.pR, s === "L" ? J.elL : J.elR, s === "L" ? J.wrL : J.wrR);
+    h.wrist.copy(s === "L" ? J.wrL : J.wrR);
+  });
+  _p1.copy(f).addScaledVector(r, -0.3); ik2(J.hpL, C.aL, SHL.th, SHL.sh, _p1, J.knL, J.anL);
+  _p1.copy(f).addScaledVector(r, 0.3); ik2(J.hpR, C.aR, SHL.th, SHL.sh, _p1, J.knR, J.anR);
+  D.hLy.copy(C.hLy); D.hLz.copy(C.hLz); D.hRy.copy(C.hRy); D.hRz.copy(C.hRz);
+  D.ftL.copy(C.fdL); D.ftR.copy(C.fdR);
+  poseApply(S);
+  poseWrite(S, shPose);
+}
+function shStep(dt) {
+  if (dt <= 0) return;
+  shThink(dt);
+  shSolve(dt);
+  // 든 공
+  var m = held ? held.mesh : sh.demo ? shDemo : null;
+  if (m) {
+    m.visible = sh.hasBall && !RP.on;
+    if (sh.hasBall) {
+      m.position.copy(sh.ball);
+      if (sh.st === "catch" || sh.st === "dribble") {
+        var wl = sh.spin.length();
+        if (wl > 1e-4) { _q1.copy(sh.spin).divideScalar(wl); dq.setFromAxisAngle(_q1, wl * dt); m.quaternion.premultiply(dq); }
+      }
+    }
+  }
+}
+
+/* ══════════════════════════════════════════════════════════════
    6. 물리 (1/240초 고정 걸음)
    ══════════════════════════════════════════════════════════════ */
 var hoop = { x: 0, z: 0, vx: 0 };
@@ -1911,11 +2581,13 @@ function paint(b) { b.mesh.material = b.kind === "deep" ? MAT.deep : b.gold ? MA
 
 // 날아가는 공과 조준 점선이 함께 쓰는 한 걸음. 둘이 다른 식을 쓰면 점선이 공과 어긋난다
 function integrate(s, h) {
-  var v = s.v, sp = Math.sqrt(v.x * v.x + v.y * v.y + v.z * v.z), k = DRAG * sp;
-  var air = s.p.y > 0.5 ? 1 : 0;
-  v.x += (wind.x * air - k * v.x) * h;
-  v.y += (-G - k * v.y) * h;
-  v.z += (wind.z * air - k * v.z) * h;
+  var v = s.v, w = s.w, sp = Math.sqrt(v.x * v.x + v.y * v.y + v.z * v.z), k = DRAG * sp;
+  var air = s.p.y > 0.5 ? 1 : 0, mk = MAGNUS * air;
+  // 역회전(ω)이 만드는 힘 ω × v: 올라갈 땐 위·뒤로, 내려올 땐 위·앞으로 받쳐 준다
+  var mx = mk * (w.y * v.z - w.z * v.y), my = mk * (w.z * v.x - w.x * v.z), mz = mk * (w.x * v.y - w.y * v.x);
+  v.x += (wind.x * air - k * v.x + mx) * h;
+  v.y += (-G - k * v.y + my) * h;
+  v.z += (wind.z * air - k * v.z + mz) * h;
   s.p.x += v.x * h; s.p.y += v.y * h; s.p.z += v.z * h;
 }
 
@@ -2092,8 +2764,14 @@ function physStep(h) {
    손가락으로 20px 안팎 된다 */
 var POW_D0 = 2.6, POW_DR = 7, DRAG_FULL = 0.55;
 function spotDist(s) { return Math.hypot(s.x, s.z); }
-function holdPos(pow, spot, o) {
-  return o.set(spot.x, HOLD_Y - 0.06 * pow, spot.z);
+// 공을 놓는 점. 선수는 이 점이 오른손 위에 오도록 선다(5-1)
+function relPos(spot, o) {
+  return o.set(spot.x, REL_Y, spot.z);
+}
+// 손끝에서 거는 역회전: 날아가는 쪽 기준 뒤로 도는 축, 속도 × 2.4 rad/s
+function shotSpin(v, o) {
+  var hl = Math.hypot(v.x, v.z) || 1, sp = Math.sqrt(v.x * v.x + v.y * v.y + v.z * v.z);
+  return o.set(-v.z / hl, 0, v.x / hl).multiplyScalar(sp * 2.4);
 }
 function shotVel(spot, pow, yaw, from, o) {
   var d = spotDist(spot), fx0 = -spot.x / d, fz0 = -spot.z / d;
@@ -2101,7 +2779,7 @@ function shotVel(spot, pow, yaw, from, o) {
   var ux = fx0 * c - fz0 * s, uz = fz0 * c + fx0 * s;
   var D = POW_D0 + POW_DR * pow;
   var la = launchAngle(d), hh = RIM_Y - from.y, ta = Math.tan(la), ca = Math.cos(la), sa = Math.sin(la);
-  var v = Math.sqrt(G * D * D / (2 * ca * ca * Math.max(0.3, D * ta - hh))) * (DRAG_COMP_A + DRAG_COMP_B * D);
+  var v = Math.sqrt(G * D * D / (2 * ca * ca * Math.max(0.3, D * ta - hh))) * (DRAG_COMP_A + DRAG_COMP_B * D + DRAG_COMP_C * d);
   o.set(ux * v * ca, v * sa, uz * v * ca);
   return v;
 }
@@ -2165,21 +2843,30 @@ function goalFx(b, swish, clinch) {
 var cam = { pos: new V3(0, 3.3, 9), look: new V3(0, 2.6, 0), fov: 50,
   bp: new V3(0, 3.3, 9), bl: new V3(0, 2.6, 0), bf: 50, rate: 3 };
 var focus = null;
-// 슛 자리에서 공이 화면 아래쪽(NDC -0.6), 림이 위쪽(NDC +0.24)에 오도록 고개 각도와 화각을 푼다.
-// 먼 자리일수록 화각이 좁아져(망원) 림이 너무 작아지지 않는다
+// 슛하는 선수 뒤에서 본다. 뒤로 물러날 자리가 넉넉하면 6m 뒤 3m 높이에서 망원으로(중계 화면처럼) 허리부터,
+// 코너처럼 옆줄 밖 관중석이 가까우면 가까이 낮게 어깨 너머로 본다. 선수의 기준점이 화면 맨 아래(NDC −0.95),
+// 림이 위쪽(+0.36)에 오도록 고개 각도와 화각을 푼다
+var CAM = { far: 6.0, near: 1.35, hFar: 3.0, hNear: 2.35, aFar: 1.0, aNear: 1.62, ndcA: -0.95, ndcR: 0.36, roomX: 11.8, seatX: 8.6, seatY: 3.25 };
+var _fr = new V3(), _ff = new V3();
 function frameSpot(spot) {
-  var d = spotDist(spot), bx = spot.x / d, bz = spot.z / d;
-  var cx = spot.x + bx * CAM_BACK, cz = spot.z + bz * CAM_BACK, cy = HOLD_Y + CAM_UP;
-  var eB = Math.atan2(HOLD_Y - cy, CAM_BACK), eR = Math.atan2(RIM_Y - cy, d + CAM_BACK);
-  var lo = eB, hi = eR;
+  shStand(spot, _fr, _ff);
+  var room = CAM.far;
+  // 코너·베이스라인 쪽은 옆줄 밖 코트사이드 관중석 위까지 물러나되, 그러면 앉은 관중 머리 위(3.25m)로 올린다
+  if (Math.abs(_ff.x) > 1e-3) room = Math.min(room, (CAM.roomX - Math.abs(_fr.x)) / Math.abs(_ff.x));
+  var cb = clamp(room, CAM.near, CAM.far), k = (cb - CAM.near) / (CAM.far - CAM.near);
+  var cy = CAM.hNear + (CAM.hFar - CAM.hNear) * k, ah = CAM.aNear + (CAM.aFar - CAM.aNear) * k;
+  var cx = _fr.x - _ff.x * cb, cz = _fr.z - _ff.z * cb, hR = Math.hypot(cx, cz);
+  if (Math.abs(cx) > CAM.seatX) cy = Math.max(cy, CAM.seatY);
+  var eA = Math.atan2(ah - cy, cb), eR = Math.atan2(RIM_Y - cy, hR);
+  var lo = eA, hi = eR;
   for (var i = 0; i < 50; i++) {
     var m = (lo + hi) / 2;
-    if (Math.tan(eR - m) * -NDC_BALL - Math.tan(m - eB) * NDC_RIM > 0) lo = m; else hi = m;
+    if (Math.tan(eR - m) * -CAM.ndcA - Math.tan(m - eA) * CAM.ndcR > 0) lo = m; else hi = m;
   }
-  var ph = (lo + hi) / 2, L = d + CAM_BACK;
+  var ph = (lo + hi) / 2;
   cam.bp.set(cx, cy, cz);
-  cam.bl.set(cx - bx * L * Math.cos(ph), cy + L * Math.sin(ph), cz - bz * L * Math.cos(ph));
-  cam.bf = 2 * Math.atan(Math.tan(eR - ph) / NDC_RIM) * 180 / Math.PI;
+  cam.bl.set(cx * (1 - Math.cos(ph)), cy + hR * Math.sin(ph), cz * (1 - Math.cos(ph)));      // 림(원점) 쪽으로 hR 앞
+  cam.bf = 2 * Math.atan(Math.tan(eR - ph) / CAM.ndcR) * 180 / Math.PI;
   crowdFace(cx, cz);
 }
 var camTP = new V3(), camTL = new V3(), camRight = new V3(), camUpV = new V3();
@@ -2195,10 +2882,11 @@ function camStep(dt) {
     if (focus && !focus.done && ST && !ST.def.rapid) {
       // 던진 공을 따라 고개를 살짝 든다. 너무 따라가면 다음 슛 조준이 흔들린다
       var f = clamp(focus.t / 0.5, 0, 1);
-      camTL.lerp(focus.p, 0.2 * f);
+      camTL.lerp(focus.p, 0.42 * f);
       tmpA.subVectors(cam.bl, cam.bp).setY(0).normalize();
       camTP.addScaledVector(tmpA, 0.35 * f);
-      camTP.y += 0.08 * f;
+      camTP.y += 0.1 * f;
+      tf += 5 * f;
     }
   }
   var k = 1 - Math.exp(-dt * cam.rate);
@@ -2226,7 +2914,7 @@ function camStep(dt) {
 var RP_N = 330, RP_DT = 1 / 60, RP_BALLS = 8;
 var gameT = 0, rpNext = 0, rpHead = 0, rpCount = 0, rpFreeze = Infinity;
 var rpT = new Float64Array(RP_N), rpBN = new Uint8Array(RP_N), rpB = new Float32Array(RP_N * RP_BALLS * 8);
-var rpNet = null, rpMisc = new Float32Array(RP_N * 4);
+var rpNet = null, rpMisc = new Float32Array(RP_N * 4), rpPose = new Float32Array(RP_N * POSE_N), rpPoseT = new Float32Array(POSE_N);
 var RP = { on: false, ready: false, id: -1, t0: 0, ts: 0, t1: 0, tt: 0, fired: false, done: null, cut: 0, lastCut: -1, tf: 50,
   gold: false, fire: false, swish: false, label: "", spot: null, side: 1, saveNK: null, saveFx: null };
 var rpMesh = new THREE.Mesh(ballGeo, MAT.ball);
@@ -2243,7 +2931,15 @@ function rpRecord() {
     rpB[o + 4] = q.x; rpB[o + 5] = q.y; rpB[o + 6] = q.z; rpB[o + 7] = q.w;
     n++;
   }
+  // 손에 든 공도 적는다 (던지기 전 모으고 뛰는 동작이 리플레이에 나오게. 던지면 같은 공이 날아간다)
+  if (held && held.mesh.visible && n < RP_BALLS) {
+    var oh = (i * RP_BALLS + n) * 8, hp = held.mesh.position, hq = held.mesh.quaternion;
+    rpB[oh] = held.id; rpB[oh + 1] = hp.x; rpB[oh + 2] = hp.y; rpB[oh + 3] = hp.z;
+    rpB[oh + 4] = hq.x; rpB[oh + 5] = hq.y; rpB[oh + 6] = hq.z; rpB[oh + 7] = hq.w;
+    n++;
+  }
   rpBN[i] = n;
+  rpPose.set(shPose, i * POSE_N);
   var on = i * NK.length * 3;
   for (k = 0; k < NK.length; k++) { rpNet[on + k * 3] = NK[k].x; rpNet[on + k * 3 + 1] = NK[k].y; rpNet[on + k * 3 + 2] = NK[k].z; }
   var om = i * 4;
@@ -2288,6 +2984,9 @@ function rpApply(tt) {
     K.y = rpNet[n0 + o + 1] + (rpNet[n1 + o + 1] - rpNet[n0 + o + 1]) * a;
     K.z = rpNet[n0 + o + 2] + (rpNet[n1 + o + 2] - rpNet[n0 + o + 2]) * a;
   }
+  var p0 = i0 * POSE_N, p1 = i1 * POSE_N;
+  for (k = 0; k < POSE_N; k++) rpPoseT[k] = rpPose[p0 + k] + (rpPose[p1 + k] - rpPose[p0 + k]) * a;
+  poseRead(SHOOTER, rpPoseT); poseApply(SHOOTER);
   var m0 = i0 * 4, m1 = i1 * 4;
   var hx = rpMisc[m0] + (rpMisc[m1] - rpMisc[m0]) * a;
   hoopG.position.x = hx;
@@ -2330,7 +3029,7 @@ function rpCamera(dt) {
 function replayStart(done) {
   if (!RP.ready || rpCount < 2 || calm) { if (done) done(); return; }
   RP.on = true; RP.done = done; RP.fired = false;
-  RP.tt = Math.max(RP.t0, rpT[rpIdx(0)]);
+  RP.tt = Math.max(RP.t0 - 0.75, rpT[rpIdx(0)]);          // 공을 모으고 뛰어오르는 것부터
   RP.saveNK = NK.map(function (k) { return [k.x, k.y, k.z, k.ox, k.oy, k.oz]; });
   balls.forEach(function (b) { b.mesh.visible = false; });
   if (held) held.mesh.visible = false;
@@ -2430,6 +3129,7 @@ function clearBalls() {
   balls.length = 0;
   if (held) { dropMesh(held.mesh); held = null; }
   focus = null;
+  sh.pend = null;
 }
 
 function startStage(i) {
@@ -2452,6 +3152,8 @@ function startStage(i) {
   var s = spotFor(0);
   curSpot = s; ST.spot = s.i;
   frameSpot(s);
+  sh.demo = false; shDemo.visible = false;
+  shPlace(s);
   cam.rate = 3;
   mode = "play"; paused = false;
   hideVeils();
@@ -2471,6 +3173,7 @@ function spawnHeld() {
   ST.shotT = SHOT_CLOCK; ST.shotOn = true;
   if (s.i !== ST.spot) {
     ST.spot = s.i; curSpot = s; frameSpot(s); cam.rate = 3;
+    shGo(s);
     if (!ST.def.rapid && !ST.def.endless) toast((s.i + 1) + "번 자리", isThree(s) ? "3점 슛 자리" : "", 1200);
   }
   var ew = ST.def.endless ? ST.ew : 0;
@@ -2485,15 +3188,15 @@ function spawnHeld() {
   if (ST.def.contest) {
     held.kind = contestKind(n);
     held.fire = false;
-    rackTake(n);
     if (held.kind === "deep") toast("딥 3점", "넣으면 3점", 900);
   }
   paint(held);
-  holdPos(0, curSpot, held.p);
+  // 공은 패스로 오거나(거치대면 집어서) 선수 손에 들어온다. 다 들어오기 전엔 조준을 안 받는다
   held.appear = 0;
-  held.mesh.position.copy(held.p);
-  held.mesh.scale.setScalar(0.01);
+  held.mesh.visible = false;
+  held.mesh.scale.setScalar(1);
   if (held.gold) sfx.gold();
+  shReceive();
   hud();
 }
 
@@ -2501,16 +3204,18 @@ function throwBall(pow, yaw) {
   if (!held || mode !== "play" || paused || ST.over) return false;
   var b = held;
   held = null;
-  holdPos(pow, curSpot, b.p);
-  var v = shotVel(curSpot, pow, yaw, b.p, b.v);
-  var d = spotDist(curSpot), ux = b.v.x, uz = b.v.z, hl = Math.hypot(ux, uz) || 1;
-  b.w.set(-uz / hl, 0, ux / hl).multiplyScalar(v * 2.4);           // 손끝에서 거는 역회전
+  relPos(curSpot, b.p);
+  shotVel(curSpot, pow, yaw, b.p, b.v);
+  shotSpin(b.v, b.w);
+  var d = spotDist(curSpot);
   var c = crossAt(curSpot, pow, yaw);
   b.shot = { three: isThree(curSpot), fire: ST.fire, n: ST.thrown, pow: pow, yaw: yaw, sx: curSpot.x, sz: curSpot.z,
     fx: -curSpot.x / d, fz: -curSpot.z / d, key: ST.i + ":" + ST.spot, t0: gameT,
     cross: c, hx: curMove() && c ? hoopXAt(ST.hoopT + c.t) : hoop.x };
   b.trail = [];
   b.mesh.scale.setScalar(1);
+  b.mesh.visible = true;
+  b.mesh.position.copy(b.p);
   b.t = 0;
   balls.push(b);
   ST.thrown++; ST.inFlight++;
@@ -2773,12 +3478,13 @@ function aimFromDrag(dr) {
   var ang = Math.atan2(side, Math.max(up, 0.03));
   return { pow: pow, yaw: clamp(ang * 0.28, -0.42, 0.42), up: up };
 }
-var aimState = { p: new V3(), v: new V3() };
+var aimState = { p: new V3(), v: new V3(), w: new V3() };
 function aimShow(pow, yaw) {
   var pos = aimGeo.attributes.position.array, cl = aimGeo.attributes.color.array;
   var s = aimState;
-  holdPos(pow, curSpot, s.p);
+  relPos(curSpot, s.p);
   shotVel(curSpot, pow, yaw, s.p, s.v);
+  shotSpin(s.v, s.w);
   // 먼저 끝까지(림 높이로 내려올 때까지) 날려 보고 그중 앞쪽 몇 할만 점으로 찍는다
   var T = 0, t = 0, px = s.p.x, py = s.p.y, pz = s.p.z, vx = s.v.x, vy = s.v.y, vz = s.v.z;
   while (t < 3) {
@@ -2810,11 +3516,13 @@ function aimUpdate() {
   if (!drag || !held) return;
   var a = aimFromDrag(drag);
   drag.aim = a;
+  sh.dip = a.pow;
   if (a.up > 0.03) aimShow(a.pow, a.yaw); else { aimPts.visible = false; aimPathN = 0; }
   $("gauge").classList.add("on");
   $("gaugeFill").style.height = (a.pow * 100).toFixed(1) + "%";
 }
 function cancelAim() {
+  if (drag) shCancel();
   drag = null;
   aimPts.visible = false;
   aimPathN = 0;
@@ -2833,7 +3541,8 @@ cv.addEventListener("pointerdown", function (e) {
   sfx.unlock();
   if (RP.on) { replayEnd(); return; }
   if (e.pointerType === "mouse" && e.button !== 0) return;       // 마우스는 왼쪽 버튼만
-  if (mode !== "play" || paused || !held || held.appear < 0.6 || drag || ST.over) return;
+  if (mode !== "play" || paused || !shReady() || drag || ST.over) return;
+  if (!shGather()) return;
   drag = { id: e.pointerId, x0: e.clientX, y0: e.clientY, x: e.clientX, y: e.clientY, aim: null };
   $("hand").classList.remove("on");
   try { cv.setPointerCapture(e.pointerId); } catch (err) {}
@@ -2849,9 +3558,19 @@ function release(e) {
   if (!drag || e.pointerId !== drag.id) return;
   drag.x = e.clientX; drag.y = e.clientY;
   var a = aimFromDrag(drag);
-  cancelAim();
-  if (a.up < 0.05) return;                // 살짝 건드린 건 슛이 아니다
-  throwBall(a.pow, a.yaw);
+  if (a.up < 0.05) { cancelAim(); return; }        // 살짝 건드린 건 슛이 아니다
+  drag = null;
+  aimPts.visible = false; aimPathN = 0;
+  $("gauge").classList.remove("on");
+  shootStart(a.pow, a.yaw);
+}
+// 손을 떼면 선수가 뛰어오르고 SH_T.rel 뒤에 공이 손을 떠난다(5-1). 샷 클락은 여기서 멈춘다
+function shootStart(pow, yaw) {
+  if (!held || mode !== "play" || paused || ST.over || !shShoot(pow, yaw)) return false;
+  ST.shotOn = false;
+  lastAim[ST.i + ":" + ST.spot] = pow;
+  hint(false);
+  return true;
 }
 cv.addEventListener("pointerup", release);
 cv.addEventListener("pointercancel", function (e) { if (drag && e.pointerId === drag.id) cancelAim(); });
@@ -2991,7 +3710,10 @@ function trackDraw() {
     g.beginPath(); g.arc(X(u), Y(aimPath[o + 1]), 1.5, 0, Math.PI * 2); g.fill();
   }
   // 든 공
-  if (held) { g.fillStyle = held.gold ? "#FFD466" : "#FF8A3D"; g.beginPath(); g.arc(X(0), Y(HOLD_Y), 2.6, 0, Math.PI * 2); g.fill(); }
+  if (held && sh.hasBall) {
+    var hb = held.mesh.position;
+    g.fillStyle = held.gold ? "#FFD466" : "#FF8A3D"; g.beginPath(); g.arc(X((hb.x - s.x) * fx0 + (hb.z - s.z) * fz0), Y(hb.y), 2.6, 0, Math.PI * 2); g.fill();
+  }
 }
 var popV = new V3();
 function popup(word, sub, cls) {
@@ -3278,18 +4000,10 @@ function tick(dt) {
         (vr() - 0.5) * 0.6, 0.4 + vr() * 0.6, (vr() - 0.5) * 0.6, 0.32, 1, 0.42 + vr() * 0.25, 0.08, -1.5, 2);
     }
   }
-  if (held) {
-    held.appear = Math.min(1, held.appear + dt * 4.5);
-    var a = held.appear, e = 1 + 2.2 * Math.pow(a - 1, 3) + 1.2 * Math.pow(a - 1, 2);   // 살짝 넘쳤다 돌아오는 등장
-    held.mesh.scale.setScalar(Math.max(0.01, e));
-    var dip = drag && drag.aim ? drag.aim.pow : 0;
-    holdPos(dip, curSpot, tmpB);
-    tmpB.y += drag ? 0 : Math.sin(fxT * 2.4) * 0.012;
-    held.mesh.position.copy(tmpB);
-    held.w.set(0, drag ? 0 : 1.2, 0);
-    spinMesh(held, dt);
-    if (held.fire && !calm) flames.emit(tmpB.x + (vr() - 0.5) * 0.14, tmpB.y + 0.02, tmpB.z + (vr() - 0.5) * 0.14,
-      0, 0.5 + vr() * 0.4, 0, 0.3, 1, 0.45, 0.1, -1.2, 2);
+  shStep(sdt > 0 ? sdt : mode === "title" || mode === "result" ? dt : 0);
+  if (held && held.fire && !calm && sh.hasBall && sdt > 0) {
+    var hp = held.mesh.position;
+    flames.emit(hp.x + (vr() - 0.5) * 0.14, hp.y + 0.02, hp.z + (vr() - 0.5) * 0.14, 0, 0.5 + vr() * 0.4, 0, 0.3, 1, 0.45, 0.1, -1.2, 2);
   }
   hoopG.position.x = hoop.x;
   boardG.position.set(0, fx.boardY, fx.boardZ);
@@ -3337,6 +4051,8 @@ function frame(now) {
 netBuild();
 netMeshBuild();
 crowdFace(0, 8);
+shPlace({ x: 0, z: FT_Z });
+sh.demo = true;
 resize();
 applyQuality(qualPref === "auto" ? "high" : qualPref);
 camStep(1);
@@ -3349,9 +4065,10 @@ if (!TEST) raf = requestAnimationFrame(frame);
    ══════════════════════════════════════════════════════════════ */
 // 날아갈 길이 림 높이로 내려오는 곳을 목표 점에 맞추는 세기·방향을 찾는다 (충돌 없이). 테스트와 봇용
 function crossAt(spot, pow, yaw) {
-  var s = { p: new V3(), v: new V3() };
-  holdPos(pow, spot, s.p);
+  var s = { p: new V3(), v: new V3(), w: new V3() };
+  relPos(spot, s.p);
   shotVel(spot, pow, yaw, s.p, s.v);
+  shotSpin(s.v, s.w);
   for (var t = 0; t < 4; t += DT) {
     var y0 = s.p.y, x0 = s.p.x, z0 = s.p.z;
     integrate(s, DT);
@@ -3388,8 +4105,10 @@ window.H3 = {
   menu: showMenu,
   closeMenu: closeMenu,
   quiet: function (v) { quiet = !!v; },
-  shoot: function (pow, yaw) { return throwBall(pow, yaw); },
-  held: function () { return !!held && held.appear >= 0.6; },
+  // 봇·테스트: 뛰는 동작 없이 바로 놓는다 (선수는 공을 놓은 순간 자세로 건너뛴다). 손가락 입력은 shootStart 를 거친다
+  shoot: function (pow, yaw) { var ok = throwBall(pow, yaw); if (ok) shAirNow(); return ok; },
+  held: function () { return shReady(); },
+  shooter: function () { return { st: sh.st, t: sh.t, root: sh.root.clone(), hasBall: sh.hasBall, ball: sh.ball.clone(), want: sh.want, run: !!sh.run }; },
   solve: function (tx, tz) { return solveAim(curSpot, tx === undefined ? hoop.x : tx, tz === undefined ? hoop.z : tz); },
   crossAt: function (pow, yaw) { return crossAt(curSpot, pow, yaw); },
   state: function () {
