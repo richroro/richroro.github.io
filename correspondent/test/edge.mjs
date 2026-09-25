@@ -155,9 +155,9 @@ console.log('\n== G. 어두운 테마 ==');
   await p.evaluate(() => localStorage.removeItem('tpw.v1'));
   await p.reload({ waitUntil: 'networkidle' });
   const bg = await p.evaluate(() => getComputedStyle(document.body).backgroundColor);
-  ok(bg === 'rgb(14, 16, 19)', '어두운 바탕: ' + bg);
+  ok(bg === 'rgb(9, 14, 24)', '어두운 바탕: ' + bg);
   await p.locator('#themeBtn').click();
-  ok((await p.evaluate(() => getComputedStyle(document.body).backgroundColor)) === 'rgb(245, 243, 238)', '테마 단추로 밝게');
+  ok((await p.evaluate(() => getComputedStyle(document.body).backgroundColor)) === 'rgb(238, 241, 245)', '테마 단추로 밝게');
   await p.locator('#themeBtn').click();
   ok((await p.evaluate(() => document.documentElement.dataset.theme)) === 'dark', '테마 단추로 어둡게');
   await p.context().close();
@@ -298,12 +298,12 @@ console.log('\n== K. 이름 없는 특파원 — "특파원"을 두 번 붙이�
   const share = await shareReady(p);
   ok(share.split('\n').includes('— 이름 없는 특파원'), '공유 글: "— 이름 없는 특파원"');
   await p.keyboard.press('Escape');
-  ok((await p.locator('#feed .card .by').first().innerText()) === '— 이름 없는 특파원', '카드: "— 이름 없는 특파원"');
+  ok((await p.locator('#feed .card .by').first().innerText()) === '이름 없는 특파원', '카드 자막: "이름 없는 특파원"');
   ok((await p.locator('#pick .why').first().innerText()).endsWith('· 이름 없는 특파원'), '지금 갈 만한 곳: "… · 이름 없는 특파원"');
   /* 이름 있는 사람이 같은 곳에 뒤이어 쓴 걸 받는다 — 이름 있는 쪽에는 그대로 붙는다.
      민지가 더 새것이라 장소 창의 이름 줄에서 "이름 없는 특파원"이 맨 뒤(= "특파원이" 앞)에 온다. */
   await p.evaluate(() => { merge([sane({ t: Date.now(), by: '민지', cat: 'food', place: '이름 없이 쓴 곳', crowd: 0 })]); renderAll(); });
-  ok((await p.locator('#feed .card .by').allInnerTexts()).join(' / ') === '— 민지 특파원 / — 이름 없는 특파원', '  └ 이름 있는 사람은 "— 민지 특파원"');
+  ok((await p.locator('#feed .card .by').allInnerTexts()).join(' / ') === '민지 특파원 / 이름 없는 특파원', '  └ 이름 있는 사람은 "민지 특파원"');
   await p.locator('.tab[data-view="places"]').click();
   await p.locator('#places .pl', { hasText: '이름 없이 쓴 곳' }).click();
   await p.waitForSelector('#placeBack.open');

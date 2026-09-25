@@ -24,12 +24,15 @@ const MAX_REPORTS = 400;  // 한 번에 받아들일 리포트 수 상한
 const BUNDLE_CAP = 1600;  // 묶음 링크 payload 목표 길이(카톡에서 안 깨지는 선)
 const WATCH_MAX = 30;     // 지켜보는 곳 상한
 
+/** 선 아이콘 한 벌. 화면에 넣는 곳은 모두 aria-hidden 으로 감싼다 — 이름은 글자로 따로 있다. */
+const ico = (d) => '<svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" ' +
+  'stroke-linecap="round" stroke-linejoin="round" focusable="false">' + d + "</svg>";
 const CATS = [
-  { k:"play", ic:"🛝", nm:"놀이공간" },
-  { k:"food", ic:"🍚", nm:"맛집" },
-  { k:"cafe", ic:"☕", nm:"카페" },
-  { k:"trip", ic:"🧺", nm:"나들이" },
-  { k:"etc",  ic:"📍", nm:"그 밖에" }
+  { k:"play", ic:ico('<rect x="3.5" y="12.5" width="7.5" height="7.5" rx="1.2"/><rect x="13" y="12.5" width="7.5" height="7.5" rx="1.2"/><path d="M12 3.5l4.2 6.5H7.8z"/>'), nm:"놀이공간" },
+  { k:"food", ic:ico('<path d="M3.5 11.5h17a8.5 8.5 0 0 1-17 0z"/><path d="M9 4.5c-.9 1 .9 2 0 3.2M13.5 4.5c-.9 1 .9 2 0 3.2"/>'), nm:"맛집" },
+  { k:"cafe", ic:ico('<path d="M5 8.5h11v5A5.5 5.5 0 0 1 10.5 19 5.5 5.5 0 0 1 5 13.5z"/><path d="M16 10h1.4a2.6 2.6 0 0 1 0 5.2H16"/>'), nm:"카페" },
+  { k:"trip", ic:ico('<path d="M2.5 19.5 9 9l4.2 6.4L16 11.5l5.5 8z"/><circle cx="17" cy="5.5" r="1.8"/>'), nm:"나들이" },
+  { k:"etc",  ic:ico('<path d="M12 21s-6.5-5.6-6.5-11a6.5 6.5 0 0 1 13 0c0 5.4-6.5 11-6.5 11z"/><circle cx="12" cy="10" r="2.3"/>'), nm:"그 밖에" }
 ];
 const WAIT = [
   { v:0,  nm:"바로 입장", s:"대기 없음",   tone:"good" },
@@ -287,7 +290,7 @@ function cardHtml(r, o){
     '<div class="card-bot">' +
       starsHtml(r.rate) +
       (r.tags.length ? '<span class="tags">' + r.tags.map((t) => "#" + esc(t)).join(" ") + "</span>" : "") +
-      '<span class="by">— ' + esc(byline(r.by)) + "</span>" +
+      '<span class="by">' + esc(byline(r.by)) + "</span>" +
       '<span class="spacer"></span>' +
       (sample ? "" : '<button class="link-btn" type="button" data-again="' + esc(r.id) + '" title="같은 장소의 지금 상황을 알립니다">나도 여기</button>') +
       (sample ? "" : '<button class="link-btn" type="button" data-share="' + esc(r.id) + '">공유</button>') +
@@ -1592,7 +1595,7 @@ async function checkHash(){
         "<p>" + esc(names) + " · " + list.length + "건 모두 보드에 있습니다.</p>" +
         '<div class="row"><button class="btn sm ghost" id="inboxNo" type="button">닫기</button></div></div>';
     } else {
-      box.innerHTML = '<div class="inbox"><h2>📡 리포트 ' + fresh.length + "건이 도착했습니다</h2>" +
+      box.innerHTML = '<div class="inbox"><h2>리포트 ' + fresh.length + "건이 도착했습니다</h2>" +
         "<p>" + esc(names) + (list.length > fresh.length ? " · 이미 있는 " + (list.length - fresh.length) + "건은 뺐습니다" : "") + "</p>" +
         '<div class="row"><button class="btn primary sm" id="inboxYes" type="button">보드에 받기</button>' +
         '<button class="btn sm ghost" id="inboxNo" type="button">안 받기</button></div></div>';
@@ -1632,7 +1635,7 @@ async function packCapped(list, cap){
    ========================================================================= */
 const TH = { auto:"자동", light:"밝게", dark:"어둡게" };
 let theme = store.get("tpw.theme", "auto");
-const BAR = { light:"#FFFFFF", dark:"#181B1E" };
+const BAR = { light:"#0E1E3D", dark:"#0E1E3D" };   // 머리띠 남색 — 두 테마 같다
 function applyTheme(t){
   theme = TH[t] ? t : "auto";
   if (theme === "auto") document.documentElement.removeAttribute("data-theme");

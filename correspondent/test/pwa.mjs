@@ -49,16 +49,16 @@ section('홈 화면 설치');
   await c2.close();
 }
 
-section('주소창 색이 테마를 따라간다');
+section('주소창 색은 머리띠와 같은 남색 — 테마를 바꿔도');
 {
   const c = await context(b, { colorScheme: 'light' });
   const p = watch(await c.newPage());
   await p.goto(BASE, { waitUntil: 'networkidle' });
   const tc = () => p.evaluate(() => Array.from(document.querySelectorAll('meta[name="theme-color"]')).map((m) => m.content).join(','));
-  ok(await tc() === '#FFFFFF,#181B1E', '자동: 밝게·어둡게 각각 ' + await tc());
+  ok(await tc() === '#0E1E3D,#0E1E3D', '자동: 밝게·어둡게 모두 ' + await tc());
   await p.locator('#themeBtn').click();   // 자동 → 밝게
   await p.locator('#themeBtn').click();   // 밝게 → 어둡게
-  ok(await tc() === '#181B1E,#181B1E', '어둡게를 고르면 둘 다 어두운 색');
+  ok(await tc() === '#0E1E3D,#0E1E3D', '어둡게를 골라도 머리띠 남색 그대로');
   await c.close();
 }
 

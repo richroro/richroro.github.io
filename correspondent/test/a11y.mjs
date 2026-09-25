@@ -87,7 +87,7 @@ section('버튼 이름 (좁은 화면)');
   const name = await p.locator('#recvBtn').evaluate((el) => el.getAttribute('aria-label') || el.innerText);
   ok(name === '받은 링크 붙여넣기', '아이콘만 보이는 "받기" 단추에도 이름이 있다');
   const snap = await p.accessibility.snapshot({ root: await p.$('#writeBtn') });
-  ok(snap && snap.name === '리포트 보내기', '"📡" 은 읽지 않는다: ' + (snap && snap.name));
+  ok(snap && snap.name === '리포트 보내기', '전파 아이콘은 읽지 않는다: ' + (snap && snap.name));
   await c.close();
 }
 

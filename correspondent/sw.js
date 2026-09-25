@@ -12,7 +12,7 @@
    다른 출처(Supabase, Google Fonts)의 요청은 건드리지 않는다.
    범위는 /correspondent/ 뿐이다 — 이 저장소의 다른 페이지에는 손대지 않는다.
    ========================================================================== */
-const CACHE = "tpw-v2";
+const CACHE = "tpw-v3";   // 새 차림(머리띠·아이콘) — 옛 사본을 비운다
 const SCOPE = new URL("./", self.location).pathname;          // /correspondent/
 const SHELL = ["./", "app.js", "sync.js", "config.js", "privacy.html", "terms.html", "manifest.webmanifest", "icons/icon-192.png"];
 const WAIT_MS = 3000;

@@ -28,7 +28,7 @@ await p.locator('#feed .card', { hasText: '별빛 키즈카페' }).locator('[dat
 await p.waitForSelector('#composeBack.open');
 ok(await p.locator('#composeTitle').innerText() === '여기 지금 상황', '창 제목이 바뀐다');
 ok(await p.inputValue('#fPlace') === '별빛 키즈카페' && await p.inputValue('#fArea') === '안양 안양동', '장소·동네는 채운다');
-ok((await pressed('fCat')).replace(/\s+/g, ' ') === '🛝 놀이공간', '분야도 채운다');
+ok((await pressed('fCat')).replace(/\s+/g, ' ').trim() === '놀이공간', '분야도 채운다');
 const tags = await p.locator('#fTags [aria-pressed="true"]').allInnerTexts();
 ok(tags.join() === '#아이동반,#실내', '태그도 채운다: ' + tags.join(' '));
 ok(await pressed('fWait') === '모름' && await pressed('fCrowd') === '모름' && await pressed('fPark') === '모름',
