@@ -412,3 +412,5 @@ table.cmp-t{min-width:560px}
 .pastgrid>*{min-width:0}
 #uwTable td.barcell{width:20%;min-width:90px}
 @media(max-width:719px){.gloss{margin-inline:0;padding-inline:0}}
+.sc-t .auto{display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:600;color:var(--s1)}
+.sc-t .auto::before{content:"";width:6px;height:6px;border-radius:50%;background:currentColor;animation:pulse 1.8s infinite}

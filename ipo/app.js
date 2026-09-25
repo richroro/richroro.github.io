@@ -396,19 +396,33 @@ function fmtVal(row, it) {
   return `${(+row.v).toFixed(1)}${row.f.unit}`;
 }
 
+const AUTO_KEYS = new Set(["inst", "lock", "pos", "size"]);
+const MANUAL_WHY = { float: "38에 없는 값 · 투자설명서 '유통가능 주식수'", old: "38에 없는 값 · 투자설명서 '공모 방법'" };
+/** 수요예측이 끝나고 사흘이 지났는데도 결과가 없으면 자동 수집이 놓친 것 — 그때만 직접 입력을 연다 */
+const forecastLate = (it) => !!it.fc_end && diffDays(it.fc_end, TODAY) > 3;
+function autoWhen(it) {
+  if (it.fc_start && TODAY < it.fc_start) return `수요예측 ${md(it.fc_start)}${it.fc_end && it.fc_end !== it.fc_start ? `~${md(it.fc_end)}` : ""} 뒤 발표`;
+  if (it.fc_start) return "수요예측 결과 발표 대기 · 하루 세 번 확인";
+  return "수요예측 결과가 나오면 · 하루 세 번 확인";
+}
+
 function scorecard(it) {
   const r = scoreOf(it);
   const known = r.rows.filter((x) => x.pts != null).length;
   const rows = r.rows.map((x) => {
     const pctW = x.pts == null ? 0 : Math.round(x.pts / x.f.w * 100);
-    const input = x.f.input && (x.v == null || x.manual)
+    // 수요예측 결과(기관경쟁률·확약·확정가·공모금액)는 자동 수집을 기다리고, 38 에 없는 값(유통물량·구주매출)만 직접 입력
+    const auto = AUTO_KEYS.has(x.f.key) && x.v == null && !x.manual && !forecastLate(it);
+    const input = !auto && x.f.input && (x.v == null || x.manual)
       ? `<input class="ovr" type="number" inputmode="decimal" step="any" data-k="${x.f.key}" value="${x.manual ? x.v : ""}" placeholder="직접 입력" aria-label="${esc(x.f.label)} 직접 입력 (${x.f.unit})"><span class="u">${x.f.unit}</span>` : "";
+    const cell = auto ? `<span class="auto">자동으로 채워짐</span><small>${esc(autoWhen(it))}</small>`
+      : input || `<span class="num">${esc(fmtVal(x, it))}</span>`;
     return `<tr class="${x.pts == null ? "na" : ""}"><td class="tx"><b>${esc(x.f.label)}</b><small>${esc(x.f.crit)}</small></td>
-      <td class="val">${input || `<span class="num">${esc(fmtVal(x, it))}</span>`}${x.manual ? `<small class="hint">직접 입력</small>` : ""}${x.note ? `<small>${esc(x.note)}</small>` : ""}</td>
+      <td class="val">${cell}${x.manual ? `<small class="hint">직접 입력</small>` : ""}${x.note ? `<small>${esc(x.note)}</small>` : ""}${!auto && !x.manual && x.v == null && MANUAL_WHY[x.f.key] ? `<small>${MANUAL_WHY[x.f.key]}</small>` : ""}</td>
       <td class="pts"><span class="pbar"><em style="width:${pctW}%"></em></span><span class="num">${x.pts == null ? "–" : x.pts}<small>/${x.f.w}</small></span></td></tr>`;
   }).join("");
   return `<div class="sc">
-    <div class="sc-head">${ring(r, 96)}<div>${verdictChip(r, true)}<p class="hint mt8">${esc(r.verdict.tip)}</p>
+    <div class="sc-head">${ring(r, 96)}<div>${verdictChip(r, true)}<p class="hint mt8">${esc(r.pending ? `${r.verdict.tip} — ${autoWhen(it)}` : r.verdict.tip)}</p>
       <p class="hint">7개 기준 중 <b>${known}개</b>로 계산${known < 7 ? " — 빈칸을 채우면 더 정확해집니다" : ""}</p></div></div>
     ${(() => { const h = hintLine(it), u = uwRecord(it); return h || u ? `<div class="sc-past mt12">${h}${u && !h.includes("주관사") ? `<div class="exp mut">주관사 <b>${esc(u.name)}</b> 1년 시초가 평균 <b class="${cls(u.avg)}">${pct(u.avg, 0)}</b><small>${u.n}곳 · 따블 이상 ${u.dbl.toFixed(0)}%</small></div>` : ""}</div>` : ""; })()}
     ${r.flags.length ? `<ul class="sig flags mt12">${r.flags.map((f) => `<li class="weak">${esc(f)}</li>`).join("")}</ul>` : ""}

@@ -60,6 +60,9 @@ DETAIL = page("""
 <tr><td>업종</td><td>의약품 제조업</td><td>대표자</td><td>홍길동</td></tr>
 <tr><td>총공모주식수</td><td>1,500,000 주</td><td>액면가</td><td>500 원</td></tr>
 <tr><td>환불일</td><td>2026.09.30</td><td>상장일</td><td>2026.10.06</td></tr>
+<tr><td>수요예측일</td><td>2026.09.15 ~ 2026.09.19</td><td>기관경쟁률</td><td>1,234.50:1</td></tr>
+<tr><td>의무보유확약</td><td>32.10%</td><td>확정공모가</td><td>23,000 원</td></tr>
+<tr><td>희망공모가액</td><td>18,000 ~ 21,000 원</td><td>공모금액</td><td>345억원</td></tr>
 <tr><td>상장공모</td><td colspan=3>신주모집 : 1,200,000 주 (80%)<br>구주매출 : 300,000 주 (20%)</td></tr>
 <tr><td>상장후주식수</td><td>6,000,000 주</td><td>유통가능물량</td><td>1,650,000주 (27.5%)</td></tr>
 <tr><td>주간사</td><td colspan=3>NH투자증권 : 1,050,000 주<br>삼성증권 : 450,000 주</td></tr>
@@ -122,6 +125,8 @@ class Tables(unittest.TestCase):
         d = build.parse_detail(DETAIL, TODAY)
         self.assertEqual(d, {"market": "KOSDAQ", "code": "456780", "sector": "의약품 제조업", "shares": 1500000,
                              "refund": "2026-09-30", "list": "2026-10-06", "post_shares": 6000000,
+                             "fc_start": "2026-09-15", "fc_end": "2026-09-19", "inst_comp": 1234.5, "lockup": 32.1,
+                             "price": 23000, "band_lo": 18000, "band_hi": 21000, "amount": 345.0,
                              "old_shares": 300000, "float_pct": 27.5,
                              "uw_alloc": [["NH투자증권", 1050000], ["삼성증권", 450000]]})
 
@@ -137,6 +142,29 @@ class Tables(unittest.TestCase):
         # '종목명' 한 칸만 있는 레이아웃 행은 머리글이 아니다
         rows = build.html_rows("<table><tr><td>종목명</td><td>가나</td></tr></table>")
         self.assertIsNone(build.header_map(rows[0], build.SCHEDULE_COLS))
+
+
+class DetailFill(unittest.TestCase):
+    def test_amount_units(self):
+        self.assertEqual(build.eok_of("345억원"), 345.0)
+        self.assertEqual(build.eok_of("34,500 (백만원)"), 345.0)
+        self.assertEqual(build.eok_of("34,500,000,000 원"), 345.0)
+        self.assertIsNone(build.eok_of("-"))
+
+    def test_detail_only_fills_blanks(self):
+        # 수요예측 표의 기관경쟁률이 있으면 상세 값으로 덮지 않는다. 없던 수요예측일은 채운다
+        prev = [{"id": "2201", "no": "2201", "name": "가나바이오", "inst_comp": 999.0, "sub_start": "2026-09-24"}]
+        items = build.merge(prev, [], [], [], {"2201": build.parse_detail(DETAIL, TODAY)}, TODAY)
+        g = items[0]
+        self.assertEqual(g["inst_comp"], 999.0)
+        self.assertEqual((g["fc_start"], g["fc_end"], g["lockup"]), ("2026-09-15", "2026-09-19", 32.1))
+
+    def test_need_detail_waits_for_forecast_result(self):
+        # 수요예측이 끝났는데 결과가 없으면 다시 읽는다
+        full = {"market": "KOSDAQ", "list_date": "x", "refund": "y", "float_pct": 20.0, "fc_start": "2026-09-20", "fc_end": "2026-09-21"}
+        it = {"no": "9", "sub_end": "2026-09-30", "fc_end": "2026-09-21"}
+        self.assertEqual(build.need_detail(it, TODAY, {"9": full}), 1)
+        self.assertEqual(build.need_detail(it, TODAY, {"9": {**full, "inst_comp": 800.0}}), 0)
 
 
 class Merge(unittest.TestCase):
@@ -161,7 +189,7 @@ class Merge(unittest.TestCase):
 
     def test_need_detail(self):
         it = {"no": "9", "sub_end": "2026-09-25"}
-        full = {"market": "KOSDAQ", "list_date": "x", "refund": "y", "float_pct": 20.0}
+        full = {"market": "KOSDAQ", "list_date": "x", "refund": "y", "float_pct": 20.0, "fc_start": "2026-09-10"}
         self.assertEqual(build.need_detail(it, TODAY, {}), 1)
         self.assertEqual(build.need_detail(it, TODAY, {"9": full}), 0)
         # 400일 안 지난 종목은 한 번도 못 읽었으면 여유 있을 때 채운다
