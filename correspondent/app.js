@@ -85,17 +85,28 @@ function areaKey(s){
   return parts.length ? norm(parts[parts.length - 1]) : "";
 }
 
+/* 날짜 글자 틀은 한 번만 만든다 — 카드마다 새로 만들면 카드 그리는 시간의 반 넘게를 여기서 쓴다. */
+const FMT_DAY  = new Intl.DateTimeFormat("ko-KR", { month:"numeric", day:"numeric" });
+const FMT_TIME = new Intl.DateTimeFormat("ko-KR", { month:"numeric", day:"numeric", hour:"2-digit", minute:"2-digit" });
+/** 오늘 0시. 속보의 오늘·어제 묶음과 "어제"·"N일 전"이 같은 달력을 쓴다. */
+function startOfToday(){
+  const d = new Date(); d.setHours(0, 0, 0, 0);
+  return d.getTime();
+}
 function ago(ms){
   const d = Date.now() - ms;
   if (d < 2 * MIN)  return "방금";
   if (d < HOUR)     return Math.floor(d / MIN) + "분 전";
   if (d < DAY)      return Math.floor(d / HOUR) + "시간 전";
-  if (d < 2 * DAY)  return "어제";
-  if (d < 30 * DAY) return Math.floor(d / DAY) + "일 전";
-  return new Date(ms).toLocaleDateString("ko-KR", { month:"numeric", day:"numeric" });
+  /* 하루가 넘으면 달력으로 센다 — 지난 시간으로 세면 "그 전" 묶음 밑에 "어제"가 섞인다 */
+  const day = new Date(ms); day.setHours(0, 0, 0, 0);
+  const n = Math.round((startOfToday() - day.getTime()) / DAY);
+  if (n <= 1)  return "어제";
+  if (n < 30)  return n + "일 전";
+  return FMT_DAY.format(ms);
 }
 function fmtTime(ms){
-  return new Date(ms).toLocaleString("ko-KR", { month:"numeric", day:"numeric", hour:"2-digit", minute:"2-digit" });
+  return FMT_TIME.format(ms);
 }
 /** 신선도 0~1 — 3시간 반감기. */
 const freshness = (t) => Math.pow(0.5, Math.max(0, Date.now() - t) / HALF);
@@ -224,6 +235,11 @@ const reports = () => isSample() ? SAMPLES : board.reports;
 let view = "feed";
 const flt = { cat:"", q:"", liveOnly:false, sort:"new" };
 const pflt = { q:"", sort:"recent" };
+/* 속보·장소는 앞에서부터 PAGE 개만 그린다. 2천 건을 한 번에 그리면 폰이 몇 초씩 멈춘다 — 나머지는 "더 보기"로. */
+const PAGE = 60;
+let feedShown = PAGE, placesShown = PAGE;
+/* 1분마다 새로 그리기가 "보이지 않아서" 미뤄 둔 것 — 보이게 되면 그린다(freshen) */
+const stale = { ticker:false, feed:false, places:false };
 let draft = { cat:"play", wait:-1, crowd:-1, park:-1, rate:0, tags:[] };
 let openPlaceKey = null;
 let lastFocus = null;
@@ -250,7 +266,8 @@ function liveRowHtml(r){
   const inner = '<div class="live-row' + faded + '">' +
     chips.map((c) => '<span class="stat ' + c.tone + '">' + esc(c.s) + "</span>").join("") + "</div>";
   if (d < DEAD) return inner;
-  return '<details class="expired"><summary>' + esc(ago(r.t)) + " 현장 정보 — 펼치기</summary>" + inner + "</details>";
+  /* data-exp — 다시 그려도 펼쳐 둔 것을 도로 펼 수 있게(keepFocus) */
+  return '<details class="expired" data-exp="' + esc(r.id) + '"><summary>' + esc(ago(r.t)) + " 현장 정보 — 펼치기</summary>" + inner + "</details>";
 }
 const starsHtml = (n) => n ? '<span class="stars" role="img" aria-label="별 ' + n + '개" title="별 ' + n + '개">' +
   "★".repeat(n) + "☆".repeat(5 - n) + "</span>" : "";
@@ -327,7 +344,20 @@ function filtered(){
 /* =========================================================================
    장소 묶기
    ========================================================================= */
+/* 한 번 그리는 동안(renderAll · 1분마다 새로 그리기 · 속보 다시 그리기)에는 장소 묶음을 한 번만 만든다.
+   그리기가 끝나면 버린다 — board.reports 를 고치는 곳이 많아서, 오래 들고 있으면 묵은 묶음을 쓰게 된다. */
+let pass = null;
+function inPass(fn){
+  if (pass) return fn();
+  pass = {};
+  try { return fn(); } finally { pass = null; }
+}
+/** 장소 묶음. 한 번 그리는 동안에는 모두가 같은 배열을 받는다 — 제자리에서 정렬하지 말 것. */
 function groups(){
+  if (!pass) return buildGroups();
+  return pass.gs || (pass.gs = buildGroups());
+}
+function buildGroups(){
   const list = reports();
   /* 동네를 안 적은 리포트는, 같은 이름에서 가장 많이 쓰인 동네에 붙인다. */
   const areaOf = {};
@@ -626,18 +656,23 @@ function usualPickHtml(gs){
     "</ul></div>";
 }
 
-/** 속보를 시간대로 나눈다 — 오늘·어제는 달력 기준이라 "5시간 전"이 어제가 되기도 한다. */
-function timeBand(t){
+/** 속보를 시간대로 나눈다 — 오늘·어제는 달력 기준이라 "5시간 전"이 어제가 되기도 한다.
+    mid(오늘 0시)를 주면 카드마다 다시 재지 않는다. */
+function timeBand(t, mid){
   const d = Date.now() - t;
   if (d < LIVE) return 0;
-  const midnight = new Date(); midnight.setHours(0, 0, 0, 0);
-  if (t >= midnight.getTime()) return 1;
-  if (t >= midnight.getTime() - DAY) return 2;
+  if (mid == null) mid = startOfToday();
+  if (t >= mid) return 1;
+  if (t >= mid - DAY) return 2;
   return 3;
 }
 const BANDS = ["지금", "오늘", "어제", "그 전"];
+/** 목록 끝의 "N건 더 보기" — 속보(#feedMore)·장소(#placesMore). */
+const moreHtml = (id, n) => '<button class="btn" type="button" id="' + id + '">' + n + " 더 보기</button>";
 
-function renderFeed(){
+/** 속보. listOnly 면 목록만 — 검색은 목록만 다시 그린다(지켜보는 곳·지금 가기 좋은 곳은 검색과 상관없다). */
+function renderFeed(listOnly){
+  if (!pass) return inPass(() => renderFeed(listOnly));   // 지켜보는 곳·지금 가기 좋은 곳이 장소 묶음을 함께 쓴다
   const list = filtered();
   $("#nFeed").textContent = list.length ? list.length : "";
   if (!list.length) {
@@ -646,18 +681,22 @@ function renderFeed(){
       "<p>" + (reports().length ? "거르개를 풀어 보세요." : "첫 리포트를 남기면 여기에 쌓입니다.") + "</p></div>";
   } else {
     $("#feed").className = "feed";
+    /* 시간대 머리의 건수는 거른 목록 전체로 센다(한 번 훑어서). 카드는 앞의 feedShown 건만 그린다. */
+    const mid = startOfToday(), cnt = [0, 0, 0, 0];
+    list.forEach((r) => { cnt[timeBand(r.t, mid)]++; });
     let band = -1, html = "";
-    list.forEach((r) => {
-      const b = timeBand(r.t);
+    list.slice(0, feedShown).forEach((r) => {
+      const b = timeBand(r.t, mid);
       if (b !== band) {
         band = b;
-        const n = list.filter((x) => timeBand(x.t) === b).length;
-        html += '<div class="tgroup"><b>' + BANDS[b] + "</b><i></i><span>" + n + "건</span></div>";
+        html += '<div class="tgroup"><b>' + BANDS[b] + "</b><i></i><span>" + cnt[b] + "건</span></div>";
       }
       html += cardHtml(r);
     });
+    if (list.length > feedShown) html += moreHtml("feedMore", (list.length - feedShown) + "건");
     $("#feed").innerHTML = html;
   }
+  if (listOnly) return;
   renderWatch();
   renderPick();
 }
@@ -855,9 +894,9 @@ function openPlaceByKey(key){
 }
 
 function renderPlaces(){
-  let gs = groups();
   const q = pflt.q.trim().toLowerCase();
-  if (q) gs = gs.filter((g) => (g.place + " " + g.area).toLowerCase().indexOf(q) !== -1);
+  /* filter 는 사본을 준다 — groups() 는 한 번 그리는 동안 함께 쓰는 배열이라 제자리에서 정렬하면 남의 순서가 바뀐다 */
+  const gs = groups().filter((g) => !q || (g.place + " " + g.area).toLowerCase().indexOf(q) !== -1);
   const by = {
     recent: (a, b) => b.last.t - a.last.t,
     many:   (a, b) => (b.n - a.n) || (b.last.t - a.last.t),
@@ -866,7 +905,7 @@ function renderPlaces(){
   };
   gs.sort(by[pflt.sort] || by.recent);
   $("#nPlaces").textContent = gs.length ? gs.length : "";
-  $("#places").innerHTML = gs.length ? gs.map((g) => {
+  $("#places").innerHTML = gs.length ? gs.slice(0, placesShown).map((g) => {
     const cat = CATS.find((c) => c.k === g.cat) || CATS[CATS.length - 1];
     const st = g.stat, w = isSample() ? null : watchEntry(g), n = w ? unseen(w, g) : 0, u = g.now ? null : usualNow(g);
     /* 카드와 같은 차림 — 이름·마지막 소식 시각, 분야·동네, 가장 최근 현장 정보, 그리고 숫자 한 줄 */
@@ -890,7 +929,8 @@ function renderPlaces(){
       (g.conflicts.length ? '<div class="conflict">엇갈립니다 · ' + esc(g.conflicts[0]) + "</div>" : "") +
       '<div class="pl-meta">리포트 <b>' + g.n + "</b>건 · 특파원 <b>" + g.people.length + "</b>명" +
         (g.rate ? " · 별점 <b>" + g.rate.toFixed(1) + "</b>" : "") + "</div></button>";
-  }).join("") : '<div class="empty"><b>아직 장소가 없습니다</b><p>리포트가 쌓이면 같은 장소끼리 묶어서 보여 줍니다.</p></div>';
+  }).join("") + (gs.length > placesShown ? moreHtml("placesMore", (gs.length - placesShown) + "곳") : "")
+    : '<div class="empty"><b>아직 장소가 없습니다</b><p>리포트가 쌓이면 같은 장소끼리 묶어서 보여 줍니다.</p></div>';
 }
 
 function renderPeople(){
@@ -974,6 +1014,9 @@ function paintMe(){
   $("#meBtn").title = board.me ? "특파원: " + board.me : "특파원 이름 정하기";
 }
 function renderAll(){
+  /* 한 번에 그린다 — 장소 묶음은 한 번만 만들고, 초점과 펼쳐 둔 "현장 정보"는 그대로 둔다 */
+  if (!pass || !keeping) return redraw(renderAll);
+  stale.ticker = stale.feed = stale.places = false;   // 1분마다 새로 그리기가 미뤄 둔 것도 이걸로 그려진다
   /* 장소 창이 열려 있는 동안 들어온 새 소식은 본 것이다 — 뒤의 목록보다 먼저 표시해 둔다. */
   const open = openPlaceKey ? groups().find((x) => x.key === openPlaceKey) : null;
   if (open) markSeen(open);
@@ -1261,6 +1304,13 @@ async function openBoardSheet(){
 }
 
 /* ─────────────────────────── 리포트 하나 지우기 ─────────────────────────── */
+/** 속보에서 이 리포트 카드의 다음(없으면 앞) 카드 — 그 지우기 단추를 찾는 선택자. */
+function nearCardSel(id){
+  const del = $('#feed [data-del="' + CSS.escape(id) + '"]'), card = del && del.closest(".card");
+  const step = (dir) => { let x = card && card[dir]; while (x && !x.classList.contains("card")) x = x[dir]; return x; };
+  const near = step("nextElementSibling") || step("previousElementSibling");
+  return near ? focusSel(near.querySelector("[data-del]")) : "";
+}
 async function deleteOne(id){
   const r = board.reports.find((x) => x.id === id);
   if (!r) return;
@@ -1288,9 +1338,11 @@ async function deleteOne(id){
   } else if (r.sv) {
     rememberGone(r.id);   // 다음 받아오기 때 도로 들어오지 않게
   }
+  /* 지운 카드의 단추는 카드와 함께 사라진다 — 초점을 옆 카드의 지우기 단추로(없으면 고른 탭) 옮긴다 */
+  const near = nearCardSel(r.id);
   board.reports = board.reports.filter((x) => x.id !== r.id);
   save();
-  renderAll();
+  keepFocus(renderAll, () => (near && $(near)) || selectedTab());
   toast(onServer ? "공용 보드에서도 지웠습니다." : "지웠습니다.");
 }
 
@@ -1308,9 +1360,56 @@ function openFlagSheet(r){
 }
 
 /* =========================================================================
+   다시 그려도 초점과 펼친 것을 지킨다
+   목록은 innerHTML 로 통째로 다시 그린다. 그러면 초점을 가진 단추가 사라져 초점이 <body> 로 떨어지고
+   (키보드·읽는 프로그램으로 쓰는 사람은 읽던 자리를 잃는다), 펼쳐 둔 "현장 정보"도 도로 접힌다.
+   그리기 전에 찾을 길을 적어 두었다가, 그린 뒤에 다시 그려진 같은 것을 찾아 돌려놓는다.
+   ========================================================================= */
+/** 다시 그린 뒤에도 같은 것을 찾는 선택자 — id 가 있으면 그것, 없으면 가장 가까운 id 조상 + 첫 data-* 값.
+    펼치기(summary)는 그것을 담은 details 의 data-exp 로 찾는다. 찾을 길이 없으면 "". */
+function focusSel(el){
+  if (!el || !el.tagName || el === document.body || el === document.documentElement) return "";
+  if (el.id) return "#" + CSS.escape(el.id);
+  const up = el.parentElement && el.parentElement.closest("[id]:not([id=''])");
+  const pre = up ? "#" + CSS.escape(up.id) + " " : "";
+  const box = el.parentElement;
+  if (el.tagName === "SUMMARY" && box && box.dataset.exp)
+    return pre + 'details[data-exp="' + CSS.escape(box.dataset.exp) + '"] > summary';
+  const a = Array.prototype.find.call(el.attributes, (x) => x.name.indexOf("data-") === 0);
+  return a ? pre + CSS.escape(el.localName) + "[" + CSS.escape(a.name) + '="' + CSS.escape(a.value) + '"]' : "";
+}
+const shown = (el) => !!el && el.isConnected && el.getClientRects().length > 0;
+let keeping = false;
+/** fn 이 다시 그리는 동안 초점과 펼쳐 둔 details 를 지킨다. 초점 가진 것이 사라졌으면 다시 그려진 같은 것에,
+    그것도 없으면 alt() 가 주는 것에 초점을 준다. 안에서 또 불러도 바깥 한 번만 일한다. */
+function keepFocus(fn, alt){
+  if (keeping) return fn();
+  /* 같은 선택자에 여럿이 걸리면(장소 창 머리와 타임라인의 같은 리포트) 몇 번째였는지로 가린다 */
+  const at = (el) => { const s = focusSel(el); return s ? [s, Math.max(0, $$(s).indexOf(el))] : null; };
+  const back = (x) => x ? $$(x[0])[x[1]] || null : null;
+  const a = document.activeElement, fa = at(a);
+  const open = $$("details[data-exp][open]").map(at);
+  keeping = true;
+  try { return fn(); }
+  finally {
+    keeping = false;
+    open.forEach((x) => { const d = back(x); if (d) d.open = true; });
+    if (a && a !== document.body && !a.isConnected) {
+      let to = back(fa);
+      if (!shown(to) && alt) to = alt();
+      if (shown(to)) { try { to.focus({ preventScroll: true }); } catch (e) {} }
+    }
+  }
+}
+/** 다시 그리기 한 번 — 장소 묶음은 한 번만 만들고, 초점·펼친 것은 지킨다. */
+function redraw(fn, alt){ return inPass(() => keepFocus(fn, alt)); }
+const selectedTab = () => $('.tab[aria-selected="true"]');
+
+/* =========================================================================
    시트(모달)
    ========================================================================= */
 const BEHIND = () => [$(".bar"), $("main"), $("footer")];
+let lastSel = "";   // 시트를 연 단추가 그사이 다시 그려졌을 때 같은 단추를 찾을 길
 
 /* 뒤로 가기(안드로이드의 뒤로 단추·몸짓, 브라우저의 ←) — 시트가 열려 있으면 앱을 떠나지 않고 시트만 닫는다.
    쓰던 리포트가 뒤로 한 번에 날아가지 않게. 시트를 열 때 같은 주소로 기록을 하나 쌓는다.
@@ -1328,7 +1427,7 @@ function sheetBack(){
 }
 
 function openSheet(sel){
-  if (!lastFocus) lastFocus = document.activeElement;
+  if (!lastFocus) { lastFocus = document.activeElement; lastSel = focusSel(lastFocus); }
   $$(".backdrop.open").forEach((b) => b.classList.remove("open"));   // 시트는 한 번에 하나
   BEHIND().forEach((el) => el && (el.inert = true));
   $(sel).classList.add("open");
@@ -1348,8 +1447,16 @@ function closeSheets(keepFocus, fromBack){
   document.body.style.overflow = "";
   openPlaceKey = null;
   if (was && !fromBack && onSheetEntry()) staleSheet = true;
-  if (!keepFocus && lastFocus && lastFocus.focus) { try { lastFocus.focus(); } catch(e){} }
+  if (!keepFocus && was) { freshen(); returnFocus(); }   // 시트 뒤에서 미뤄 둔 것을 먼저 그리고 초점을 돌려준다
   if (!keepFocus) lastFocus = null;
+}
+/** 시트를 닫은 뒤의 초점 — 연 단추가 그대로 있으면 그것, 그사이 다시 그려졌으면 같은 단추, 둘 다 아니면 고른 탭.
+    <body> 나 닫힌 시트 안에 두지 않는다 — 키보드·읽는 프로그램으로 쓰는 사람이 자리를 잃는다. */
+function returnFocus(){
+  const ok = (el) => shown(el) && el !== document.body && !el.closest(".backdrop");
+  const to = [lastFocus, lastSel && $(lastSel), selectedTab()].find(ok);
+  lastSel = "";
+  if (to) { try { to.focus(); } catch(e){} }
 }
 let toastTimer = null;
 function toast(msg){
@@ -1539,7 +1646,7 @@ function usualTableHtml(g){
 function openPlaceSheet(g){
   openPlaceKey = g.key;
   $("#placeAgain").hidden = isSample();
-  if (markSeen(g)) { renderWatch(); renderPlaces(); }
+  if (markSeen(g)) redraw(() => { renderWatch(); renderPlaces(); });   // 연 단추가 다시 그려져도 초점은 그 자리에 — 닫으면 거기로 돌아온다
   fillPlaceSheet(g);
   openSheet("#placeBack");
 }
@@ -1674,6 +1781,7 @@ function switchView(name){
     b.tabIndex = on ? 0 : -1;               // 탭 키로는 고른 탭 하나만, 나머지는 화살표로
   });
   $$(".view").forEach((s) => { s.hidden = s.id !== "view-" + name; });
+  freshen();                                // 1분마다 새로 그리기가 미뤄 둔 화면이면 지금 그린다
   if (moved) {
     window.scrollTo(0, scrollAt[name] || 0);
     $("#writeBtn").classList.remove("mini");
@@ -1763,6 +1871,20 @@ function paintInstall(){
 /* =========================================================================
    이벤트
    ========================================================================= */
+/** 검색 칸 — 한글은 한 글자에 input 이 두세 번(자모마다) 온다. 칠 때마다 그리지 않고 멈추면(150ms) 한 번,
+    글자가 완성되거나(compositionend) Enter 면 바로 그린다. 값이 그대로면 다시 그리지 않는다. */
+function searchBox(box, apply){
+  let timer = 0, last = box.value;
+  const run = () => {
+    clearTimeout(timer);
+    if (box.value === last) return;
+    last = box.value;
+    apply(last);
+  };
+  box.addEventListener("input", () => { clearTimeout(timer); timer = setTimeout(run, 150); });
+  box.addEventListener("compositionend", run);
+  box.addEventListener("keydown", (e) => { if (e.key === "Enter" && !e.isComposing) run(); });
+}
 function bind(){
   /* 탭 — 이미 보고 있는 탭을 다시 누르면 맨 위로 */
   $$(".tab").forEach((b) => b.addEventListener("click", () => {
@@ -1825,20 +1947,39 @@ function bind(){
     const b = e.target.closest("[data-cat]");
     if (!b) return;
     flt.cat = b.dataset.cat;
+    feedShown = PAGE;                       // 거르개가 바뀌면 다시 앞의 60건부터
     $$("#catFilter [data-cat]").forEach((x) => x.setAttribute("aria-pressed", String(x.dataset.cat === flt.cat)));
-    renderFeed();
+    renderFeed();                           // 분야는 "지금 가기 좋은 곳"도 거른다
   });
-  $("#q").addEventListener("input", (e) => { flt.q = e.target.value; renderFeed(); });
+  searchBox($("#q"), (v) => { flt.q = v; feedShown = PAGE; renderFeed(true); });
   $("#liveOnly").addEventListener("click", (e) => {
     flt.liveOnly = !flt.liveOnly;
+    feedShown = PAGE;
     e.currentTarget.setAttribute("aria-pressed", String(flt.liveOnly));
     renderFeed();
+  });
+  /* 60건 더. 초점은 새로 나온 첫 카드로 — 키보드·읽는 프로그램이 거기서 이어 읽게 */
+  $("#feed").addEventListener("click", (e) => {
+    if (!e.target.closest("#feedMore")) return;
+    const from = $$("#feed .card").length;
+    feedShown = from + PAGE;
+    keepFocus(() => renderFeed(true));
+    const next = $$("#feed .card")[from], f = next && next.querySelector("[data-open]");
+    if (f) f.focus({ preventScroll: true });
   });
   /* 속보는 늘 최신순이다(정렬은 장소 탭에). 옛 사본에 남은 정렬 칸만 잇는다. */
   const sortSel = $("#sort");
   if (sortSel) sortSel.addEventListener("change", (e) => { flt.sort = e.target.value; renderFeed(); });
-  $("#pq").addEventListener("input", (e) => { pflt.q = e.target.value; renderPlaces(); });
-  $("#psort").addEventListener("change", (e) => { pflt.sort = e.target.value; renderPlaces(); });
+  searchBox($("#pq"), (v) => { pflt.q = v; placesShown = PAGE; renderPlaces(); });
+  $("#psort").addEventListener("change", (e) => { pflt.sort = e.target.value; placesShown = PAGE; renderPlaces(); });
+  $("#places").addEventListener("click", (e) => {
+    if (!e.target.closest("#placesMore")) return;
+    const from = $$("#places .pl").length;
+    placesShown = from + PAGE;
+    keepFocus(renderPlaces);
+    const next = $$("#places .pl")[from];
+    if (next) next.focus({ preventScroll: true });
+  });
 
   /* 내 이름 */
   $("#meEdit").addEventListener("click", () => {
@@ -2274,5 +2415,22 @@ if (SY.enabled) {
   setInterval(() => { if (!document.hidden) boardRefresh(true); }, 3 * 60e3);
   document.addEventListener("visibilitychange", () => { if (!document.hidden) boardRefresh(true); });
 }
-/* 시간이 흐르면 "몇 분 전"과 신선도가 달라진다 — 1분마다 다시 그린다. */
-setInterval(() => { renderTicker(); renderFeed(); renderPlaces(); }, 60e3);
+/* 시간이 흐르면 "몇 분 전"과 신선도가 달라진다 — 1분마다 다시 그린다. 그래도 헛일은 하지 않는다:
+   안 보이는 탭(다른 앱·꺼진 화면)에서는 쉬고, 시트가 열려 있으면 그 뒤는 그리지 않고, 보고 있는 화면만 그린다.
+   못 그린 것은 묵었다고 적어 두었다가 보이게 되면(탭을 옮기거나 시트를 닫거나 앱으로 돌아오면) 그린다.
+   다시 그려도 초점과 펼쳐 둔 "현장 정보"는 그대로다. */
+function minuteRefresh(){
+  stale.ticker = stale.feed = stale.places = true;
+  freshen();
+}
+/** 묵은 것 가운데 지금 보이는 것만 그린다. */
+function freshen(){
+  if (document.hidden || $(".backdrop.open")) return;
+  redraw(() => {
+    if (stale.ticker) { stale.ticker = false; renderTicker(); }
+    if (view === "feed" && stale.feed) { stale.feed = false; renderFeed(); }
+    if (view === "places" && stale.places) { stale.places = false; renderPlaces(); }
+  });
+}
+setInterval(minuteRefresh, 60e3);
+document.addEventListener("visibilitychange", freshen);
