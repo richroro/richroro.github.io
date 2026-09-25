@@ -1,0 +1,1013 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="theme-color" content="#0E2A47">
+<meta name="description" content="3D로 그린 얼어붙은 강에 그물을 치고, 가득 찼을 때 끌어올리는 한 손 낚시 게임. 너무 욕심내면 그물이 찢어집니다.">
+<title>얼음강 그물잡이</title>
+<link rel="canonical" href="https://richroro.github.io/games/ice-fishing/">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%232E7FD6'/><path d='M22 52q22-22 46 0q-24 22-46 0z' fill='%23DDE8F3'/><path d='M66 52l14-12v24z' fill='%23DDE8F3'/><circle cx='34' cy='49' r='3.5' fill='%230E2A47'/></svg>">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="얼음강 그물잡이">
+<meta property="og:title" content="얼음강 그물잡이">
+<meta property="og:description" content="그물이 찢어지기 직전에 끌어올려라. 얼음 강 한 손 낚시 게임.">
+<meta property="og:url" content="https://richroro.github.io/games/ice-fishing/">
+<meta property="og:image" content="https://richroro.github.io/games/ice-fishing/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="얼음강 그물잡이">
+<meta name="twitter:description" content="그물이 찢어지기 직전에 끌어올려라. 얼음 강 한 손 낚시 게임.">
+<meta name="twitter:image" content="https://richroro.github.io/games/ice-fishing/og.png">
+<style>
+  :root{
+    --bg:#0E2A47;
+    --card:#FFFFFF;
+    --ink:#191F28;
+    --ink-2:#4E5968;
+    --ink-3:#8B95A1;
+    --line:#E5E8EB;
+    --blue:#3182F6;
+    --blue-weak:#E8F3FF;
+    --red:#F04452;
+    --green:#00B26D;
+    --green-weak:#E5F8F0;
+    --gold:#FFB020;
+    --gold-weak:#FFF6E0;
+    --shadow:0 2px 12px rgba(0,0,0,.18);
+  }
+  *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+  html,body{height:100%;overflow:hidden;overscroll-behavior:none}
+  @supports (height:100dvh){ html,body{height:100dvh} }
+  body{
+    font-family:'Pretendard','Apple SD Gothic Neo','Malgun Gothic',system-ui,-apple-system,sans-serif;
+    background:var(--bg);color:var(--ink);
+    touch-action:none;user-select:none;-webkit-user-select:none;
+  }
+  #stage{position:fixed;inset:0}
+  canvas{display:block;width:100%;height:100%}
+
+  /* ── HUD ─────────────────────────────── */
+  .hud{
+    position:fixed;left:0;right:0;top:0;z-index:5;pointer-events:none;
+    padding:calc(10px + env(safe-area-inset-top)) calc(12px + env(safe-area-inset-right)) 0 calc(12px + env(safe-area-inset-left));
+    display:flex;align-items:flex-start;gap:8px;
+    max-width:600px;margin:0 auto;
+  }
+  .pill{
+    background:rgba(14,42,71,.78);color:#fff;border-radius:12px;padding:7px 11px;
+    font-size:12.5px;font-weight:700;letter-spacing:-.02em;backdrop-filter:blur(4px);
+    font-variant-numeric:tabular-nums;white-space:nowrap;
+  }
+  .pill small{display:block;font-size:10.5px;font-weight:600;opacity:.7;margin-bottom:1px}
+  .pill.goal{flex:1;min-width:0}
+  .goalbar{height:5px;border-radius:99px;background:rgba(255,255,255,.2);overflow:hidden;margin-top:4px}
+  .goalbar i{display:block;height:100%;width:0;background:var(--gold);border-radius:99px;transition:width .25s}
+  .goalbar i.done{background:#3DDC97}
+  .pill.time.low{background:rgba(240,68,82,.9)}
+  .icon-btn{
+    pointer-events:auto;width:38px;height:38px;flex:0 0 auto;border:0;border-radius:12px;
+    background:rgba(14,42,71,.78);color:#fff;display:grid;place-items:center;cursor:pointer;font-size:16px;
+  }
+  .icon-btn:active{transform:scale(.94)}
+
+  /* ── 끌어올리기 ─────────────────────── */
+  .dock{
+    position:fixed;left:0;right:0;bottom:0;z-index:5;pointer-events:none;
+    padding:0 16px calc(16px + env(safe-area-inset-bottom));
+    display:flex;flex-direction:column;align-items:center;gap:8px;
+  }
+  .load{
+    width:min(300px,80vw);background:rgba(14,42,71,.8);border-radius:12px;padding:7px 10px 8px;
+    color:#fff;font-size:11.5px;font-weight:700;backdrop-filter:blur(4px);
+  }
+  .load .top{display:flex;justify-content:space-between;margin-bottom:5px;font-variant-numeric:tabular-nums}
+  .load .top em{font-style:normal;color:var(--gold)}
+  .loadbar{position:relative;height:9px;border-radius:99px;background:rgba(255,255,255,.18);overflow:hidden}
+  .loadbar i{position:absolute;left:0;top:0;bottom:0;width:0;border-radius:99px;background:#3DDC97;transition:width .12s}
+  .loadbar i.mid{background:var(--gold)}
+  .loadbar i.hot{background:var(--red)}
+  .loadbar u{position:absolute;top:-2px;bottom:-2px;width:2px;background:#fff;opacity:.8;left:75%}
+  .load.shake{animation:shake .25s infinite}
+  @keyframes shake{25%{transform:translateX(-2px)}75%{transform:translateX(2px)}}
+  #haul{
+    pointer-events:auto;width:min(300px,80vw);border:0;border-radius:16px;padding:16px;
+    font-family:inherit;font-size:17px;font-weight:800;letter-spacing:-.03em;cursor:pointer;
+    background:var(--blue);color:#fff;box-shadow:0 6px 18px rgba(49,130,246,.45);
+  }
+  #haul:active{transform:scale(.97)}
+  #haul:disabled{background:#5B6B7D;box-shadow:none;cursor:default}
+  #haul.full{background:var(--gold);color:#3A2600;box-shadow:0 6px 18px rgba(255,176,32,.5);animation:pulse .6s infinite alternate}
+  @keyframes pulse{to{transform:scale(1.03)}}
+
+  #pops{position:fixed;inset:0;pointer-events:none;z-index:6;overflow:hidden}
+  .pop{
+    position:absolute;transform:translate(-50%,-50%);font-weight:800;font-size:15px;color:#fff;
+    text-shadow:0 2px 6px rgba(0,0,0,.45);letter-spacing:-.02em;white-space:nowrap;
+    animation:up 1s ease-out forwards;
+  }
+  .pop.gold{color:#FFD35C;font-size:19px}
+  .pop.bad{color:#FF8A94;font-size:18px}
+  .pop.big{font-size:24px;color:#FFD35C}
+  @keyframes up{from{opacity:1;margin-top:0}to{opacity:0;margin-top:-54px}}
+
+  /* ── 시트 ─────────────────────────────── */
+  .veil{
+    position:fixed;inset:0;z-index:20;display:none;align-items:center;justify-content:center;
+    padding:20px;background:rgba(6,18,32,.55);backdrop-filter:blur(3px);
+  }
+  .veil.show{display:flex}
+  .sheet{
+    width:100%;max-width:360px;background:var(--card);border-radius:22px;padding:24px 20px 18px;
+    text-align:center;box-shadow:0 12px 40px rgba(0,0,0,.35);
+    animation:rise .22s cubic-bezier(.2,.8,.3,1);max-height:calc(100% - 10px);overflow-y:auto;
+  }
+  @keyframes rise{from{opacity:0;transform:translateY(14px) scale(.97)}to{opacity:1;transform:none}}
+  .sheet h2{font-size:22px;font-weight:800;letter-spacing:-.04em;margin-bottom:6px}
+  .sheet p{font-size:13.5px;color:var(--ink-2);line-height:1.6;font-weight:500}
+  .sheet .big{font-size:38px;font-weight:800;letter-spacing:-.05em;margin:8px 0 0;font-variant-numeric:tabular-nums;color:var(--blue)}
+  .sheet .big.fail{color:var(--ink-3)}
+  .sheet .sub{font-size:12.5px;color:var(--ink-3);font-weight:600}
+  .btns{display:flex;flex-direction:column;gap:8px;margin-top:16px}
+  .btn{width:100%;border:0;border-radius:14px;padding:14px;cursor:pointer;font-size:15px;font-weight:700;letter-spacing:-.02em;font-family:inherit}
+  .btn:active{transform:scale(.98)}
+  .btn.primary{background:var(--blue);color:#fff}
+  .btn.ghost{background:#F2F4F6;color:var(--ink-2)}
+  .rules{text-align:left;margin-top:14px;display:flex;flex-direction:column;gap:9px}
+  .rule{display:flex;gap:10px;align-items:flex-start}
+  .rule b{flex:0 0 auto;width:20px;height:20px;border-radius:7px;background:var(--blue-weak);color:var(--blue);
+    font-size:11px;font-weight:800;display:grid;place-items:center;margin-top:1px}
+  .rule span{font-size:13px;color:var(--ink-2);line-height:1.5;font-weight:500}
+  .catch{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-top:14px}
+  .catch div{background:#F2F4F6;border-radius:12px;padding:8px 2px 7px;font-size:11px;font-weight:600;color:var(--ink-3)}
+  .catch b{display:block;font-size:17px;color:var(--ink);font-variant-numeric:tabular-nums}
+  .wallet{display:flex;justify-content:space-between;align-items:center;margin:16px 0 8px;font-size:13px;font-weight:700;color:var(--ink-2)}
+  .wallet b{color:var(--gold);font-size:16px;font-variant-numeric:tabular-nums}
+  .shop{display:flex;flex-direction:column;gap:7px;text-align:left}
+  .item{display:flex;align-items:center;gap:10px;background:#F7F8FA;border-radius:14px;padding:9px 10px}
+  .item .ic{font-size:22px;width:30px;text-align:center}
+  .item .tx{flex:1;min-width:0}
+  .item .tx b{display:block;font-size:13.5px;font-weight:800;letter-spacing:-.02em}
+  .item .tx span{display:block;font-size:11.5px;color:var(--ink-3);font-weight:600;margin-top:1px}
+  .lv{display:flex;gap:3px;margin-top:4px}
+  .lv i{width:14px;height:4px;border-radius:9px;background:var(--line)}
+  .lv i.on{background:var(--blue)}
+  .buy{border:0;border-radius:10px;padding:8px 10px;min-width:64px;font-family:inherit;font-weight:800;font-size:12.5px;
+    background:var(--gold-weak);color:#A06A00;cursor:pointer;font-variant-numeric:tabular-nums}
+  .buy:disabled{background:#EEF0F2;color:var(--ink-3);cursor:default}
+  .buy.max{background:var(--blue-weak);color:var(--blue)}
+  .toggle{display:flex;gap:6px;justify-content:center;margin-top:12px}
+  @media (prefers-reduced-motion:reduce){ *{animation-duration:.01ms!important} }
+</style>
+</head>
+<body>
+
+<div id="stage"><canvas id="cv"></canvas></div>
+<div id="pops"></div>
+
+<div class="hud">
+  <div class="pill"><small>날짜</small><span id="hDay">1일차</span></div>
+  <div class="pill goal"><small id="hGoalT">오늘 목표</small><span id="hGoal">0 / 100</span>
+    <div class="goalbar"><i id="hGoalBar"></i></div></div>
+  <div class="pill time" id="hTimeBox"><small>남은 시간</small><span id="hTime">60</span></div>
+  <button class="icon-btn" id="btnPause" aria-label="일시정지">⏸</button>
+</div>
+
+<div class="dock">
+  <div class="load" id="loadBox">
+    <div class="top"><span id="lTxt">그물 0 / 24</span><em id="lVal">0🪙</em></div>
+    <div class="loadbar"><i id="lBar"></i><u></u></div>
+  </div>
+  <button id="haul">끌어올리기</button>
+</div>
+
+<!-- 시작 -->
+<div class="veil show" id="vStart">
+  <div class="sheet">
+    <div style="font-size:44px;line-height:1">🎣</div>
+    <h2 style="margin-top:8px">얼음강 그물잡이</h2>
+    <p>물고기 떼가 강을 거슬러 올라옵니다.<br>그물을 가득 채워 끌어올리세요.</p>
+    <div class="rules">
+      <div class="rule"><b>1</b><span>화면을 <strong>좌우로 끌어</strong> 그물을 옮깁니다. 아래에서 올라오는 물고기가 그물 입구로 들어옵니다.</span></div>
+      <div class="rule"><b>2</b><span><strong>끌어올리기</strong>를 누르면 잡은 만큼 돈이 됩니다. 75% 넘게 채워서 올리면 <strong>만선 ×1.5</strong>.</span></div>
+      <div class="rule"><b>3</b><span>그물이 넘치면 <strong>찢어져서</strong> 다 놓칩니다. 떠내려오는 얼음은 무게만 차지하고, 상어가 들어오면 바로 찢어집니다.</span></div>
+    </div>
+    <div class="btns">
+      <button class="btn primary" id="btnStart">시작하기</button>
+    </div>
+    <div class="toggle"><button class="btn ghost" id="btnSound" style="padding:9px;font-size:13px;width:auto">🔊 소리 켜짐</button></div>
+  </div>
+</div>
+
+<!-- 하루 끝 -->
+<div class="veil" id="vEnd">
+  <div class="sheet">
+    <h2 id="eTitle">1일차 끝</h2>
+    <div class="big" id="eEarn">0🪙</div>
+    <div class="sub" id="eSub">목표 100</div>
+    <div class="catch" id="eCatch"></div>
+    <div class="wallet"><span>가진 돈</span><b id="eWallet">0🪙</b></div>
+    <div class="shop" id="shop"></div>
+    <div class="btns">
+      <button class="btn primary" id="btnNext">다음 날</button>
+    </div>
+  </div>
+</div>
+
+<!-- 일시정지 -->
+<div class="veil" id="vPause">
+  <div class="sheet">
+    <h2>잠깐 쉬는 중</h2>
+    <p>물고기도 기다려 줍니다.</p>
+    <div class="btns">
+      <button class="btn primary" id="btnResume">계속하기</button>
+      <button class="btn ghost" id="btnGiveUp">오늘은 여기까지</button>
+      <button class="btn ghost" id="btnSound2">🔊 소리 켜짐</button>
+    </div>
+  </div>
+</div>
+
+<script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.min.js"}}</script>
+<script type="module">
+import * as THREE from 'three';
+/* ════════════════════════════════════════════════════════════
+   세계 좌표: 가로 400 고정. 강은 x 80~320, 물은 위로 흘러가지 않고
+   아래로 흐른다(얼음은 떠내려오고, 물고기는 거슬러 올라온다).
+   ════════════════════════════════════════════════════════════ */
+const W = 400, RIVER_L = 78, RIVER_R = 322;
+const NET_Y = 330;          // 그물 입구(물고기가 들어오는 선)
+const NET_DEPTH = 64;       // 입구에서 주머니 끝까지
+const DAY_LEN = 60;
+
+const FISH = {
+  smelt:  { name:'빙어',   w:1, v:1,  len:19, col:'#9FB4C8', dark:'#56718C' },
+  salmon: { name:'연어',   w:3, v:5,  len:34, col:'#6E8CA8', dark:'#34506C' },
+  gold:   { name:'황금송어', w:2, v:25, len:28, col:'#FFC83D', dark:'#B7801A' },
+};
+const ICE_W = 5;
+
+const UPG = [
+  { id:'width', ic:'🥅', name:'넓은 그물',   desc:l=>`폭 ${netWidth(l)} → ${netWidth(l+1)}`,       cost:[80,180,340,600,950] },
+  { id:'cap',   ic:'🪢', name:'질긴 그물',   desc:l=>`버팀 ${netCap(l)} → ${netCap(l+1)}`,          cost:[100,220,400,680,1050] },
+  { id:'speed', ic:'💪', name:'빠른 손',     desc:l=>`끌기 ${Math.round(haulMul(l)*100)}% → ${Math.round(haulMul(l+1)*100)}%`, cost:[70,160,300,520,840] },
+  { id:'bait',  ic:'🪱', name:'미끼 뿌리기', desc:l=>`물고기 떼 +${l*12}% → +${(l+1)*12}%`,        cost:[120,260,460,760,1200] },
+];
+const MAXLV = 5;
+function netWidth(l){ return 88 + l*16; }
+function netCap(l){ return 24 + l*7; }
+function haulMul(l){ return Math.pow(0.8, l); }
+function dayGoal(d){ return 140 + (d-1)*65 + Math.max(0,d-4)*15; }
+
+/* ── 저장 ─────────────────────────────── */
+const SAVE_KEY = 'iceFishing.v1';
+let save = { day:1, wallet:0, best:0, lv:{width:0,cap:0,speed:0,bait:0}, sound:true };
+try{
+  const s = JSON.parse(localStorage.getItem(SAVE_KEY) || 'null');
+  if (s && typeof s === 'object') save = Object.assign(save, s, { lv:Object.assign(save.lv, s.lv||{}) });
+}catch(e){}
+function persist(){ try{ localStorage.setItem(SAVE_KEY, JSON.stringify(save)); }catch(e){} }
+
+/* ── 소리 (Web Audio 합성) ────────────── */
+let ac = null;
+function audio(){
+  if (!save.sound) return null;
+  if (!ac){ try{ ac = new (window.AudioContext||window.webkitAudioContext)(); }catch(e){ return null; } }
+  if (ac.state === 'suspended') ac.resume();
+  return ac;
+}
+function tone(f, dur, type='sine', vol=.12, slide=0, delay=0){
+  const a = audio(); if (!a) return;
+  const t = a.currentTime + delay, o = a.createOscillator(), g = a.createGain();
+  o.type = type; o.frequency.setValueAtTime(f, t);
+  if (slide) o.frequency.exponentialRampToValueAtTime(Math.max(30, f+slide), t+dur);
+  g.gain.setValueAtTime(vol, t); g.gain.exponentialRampToValueAtTime(.0001, t+dur);
+  o.connect(g).connect(a.destination); o.start(t); o.stop(t+dur+.02);
+}
+function noise(dur, vol=.15, hp=800){
+  const a = audio(); if (!a) return;
+  const n = Math.floor(a.sampleRate*dur), b = a.createBuffer(1, n, a.sampleRate), d = b.getChannelData(0);
+  for (let i=0;i<n;i++) d[i] = (Math.random()*2-1) * (1 - i/n);
+  const s = a.createBufferSource(), f = a.createBiquadFilter(), g = a.createGain();
+  f.type = 'highpass'; f.frequency.value = hp; g.gain.value = vol;
+  s.buffer = b; s.connect(f).connect(g).connect(a.destination); s.start();
+}
+const sfx = {
+  catch(){ tone(520+Math.random()*120, .07, 'triangle', .06, 200); },
+  ice(){ tone(1400, .12, 'square', .04, -600); noise(.08, .08, 3000); },
+  haul(){ noise(.35, .12, 500); tone(180, .3, 'sine', .08, 120); },
+  coin(i=0){ tone(880, .09, 'triangle', .07, 0, i*.05); tone(1320, .12, 'triangle', .06, 0, i*.05+.05); },
+  full(){ [660,880,1100,1320].forEach((f,i)=>tone(f,.14,'triangle',.07,0,i*.07)); },
+  rip(){ noise(.45, .22, 300); tone(220, .4, 'sawtooth', .07, -150); },
+  warn(){ tone(300, .18, 'square', .05, 0); tone(300, .18, 'square', .05, 0, .25); },
+  end(){ [523,659,784].forEach((f,i)=>tone(f,.2,'triangle',.08,0,i*.12)); },
+};
+function haptic(ms){ if (save.sound && navigator.vibrate) try{ navigator.vibrate(ms); }catch(e){} }
+
+/* ── 화면 (Three.js) ──────────────────────
+   게임 규칙은 2D 세계 좌표(x 0~400, y 아래로 증가)로 돌고, 여기서 3D로 옮겨 그린다.
+   x → X, y → Z(아래쪽 = 카메라 쪽). 1 세계 단위 = 0.05 m. */
+const K = 0.05;
+const VH = 800;                 // 물고기가 나타나는 아래쪽 끝(화면 밖)
+const TOP_Y = -240;             // 얼음이 나타나는 위쪽 끝(안개 속)
+const toX = x => (x - W/2) * K;
+const toZ = y => (y - NET_Y) * K;
+const cv = document.getElementById('cv');
+const renderer = new THREE.WebGLRenderer({ canvas: cv, antialias: true });
+renderer.setPixelRatio(Math.min(2, window.devicePixelRatio || 1));
+renderer.shadowMap.enabled = true;
+renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+renderer.outputColorSpace = THREE.SRGBColorSpace;
+const scene = new THREE.Scene();
+scene.background = new THREE.Color('#DCE9F5');
+scene.fog = new THREE.Fog('#DCE9F5', 38, 78);
+const camera = new THREE.PerspectiveCamera(46, 1, .5, 200);
+const CAM_TARGET = new THREE.Vector3(0, 0, 2.4);
+const CAM_PITCH = 50 * Math.PI/180;
+
+scene.add(new THREE.HemisphereLight('#F4F8FF', '#6D8AA8', 1.5));
+const sun = new THREE.DirectionalLight('#FFF4E2', 2.2);
+sun.position.set(-14, 26, 10);
+sun.castShadow = true;
+sun.shadow.mapSize.set(1024, 1024);
+Object.assign(sun.shadow.camera, { left:-22, right:22, top:26, bottom:-26, near:1, far:80 });
+sun.shadow.bias = -.0008;
+scene.add(sun);
+
+function resize(){
+  const w = cv.clientWidth, h = cv.clientHeight;
+  renderer.setSize(w, h, false);
+  camera.aspect = w / h;
+  // 강 폭(12.2 m)이 가로에 꼭 들어오고, 세로로도 그물 앞뒤가 충분히 보이는 거리
+  const vf = camera.fov * Math.PI/360, hf = Math.atan(Math.tan(vf) * camera.aspect);
+  const d = Math.max(6.9 / Math.tan(hf), 9.5 / Math.tan(vf));
+  camera.position.set(0, Math.sin(CAM_PITCH)*d, CAM_TARGET.z + Math.cos(CAM_PITCH)*d);
+  camera.lookAt(CAM_TARGET);
+  camera.updateProjectionMatrix();
+}
+window.addEventListener('resize', resize);
+
+/* ── 재질과 모양 ── */
+const mat = (color, o={}) => new THREE.MeshStandardMaterial(Object.assign({ color, roughness:.75, metalness:0 }, o));
+const M = {
+  snow: mat('#F6F9FC', { roughness:.95 }), snowShade: mat('#E3ECF5', { roughness:.95 }),
+  bed: mat('#123F6E', { roughness:1 }), rim: mat('#D4E6F6', { roughness:.4 }),
+  wood: mat('#B87645'), woodDark: mat('#7A4A28'), post: mat('#E3A066'),
+  tent: mat('#FFFFFF', { roughness:.9 }), door: mat('#E0573A'),
+  pine: mat('#2F5D4E'), iron: mat('#56626F', { metalness:.4, roughness:.5 }),
+  ice: mat('#F2F8FF', { roughness:.25 }), shark: mat('#4A5F74', { roughness:.5 }), sharkBelly: mat('#8FA2B5'),
+  parka: mat('#F4F6F8'), hat: mat('#E8913A'), face: mat('#E9B994'), rope: mat('#EFE8D6'),
+  float: mat('#FF6B2C', { roughness:.4 }), warn: new THREE.MeshBasicMaterial({ color:'#F04452', transparent:true, opacity:.7, depthWrite:false }),
+  foam: new THREE.MeshBasicMaterial({ color:'#FFFFFF', transparent:true, opacity:.9, depthWrite:false }),
+};
+const FM = {};
+for (const [k, f] of Object.entries(FISH)){
+  FM[k] = { back: mat(f.dark, { roughness:.35, metalness:.25 }), side: mat(f.col, { roughness:.3, metalness:.35 }) };
+}
+FM.gold.side.emissive = new THREE.Color('#6A4200');
+const G_SPHERE = new THREE.SphereGeometry(1, 16, 10);
+const G_TAIL = (() => { const g = new THREE.BufferGeometry();
+  g.setAttribute('position', new THREE.Float32BufferAttribute([0,0,0, -.5,0,1, .5,0,1], 3)); g.computeVertexNormals(); return g; })();
+const G_ICE = new THREE.DodecahedronGeometry(1, 0);
+const G_CYL = new THREE.CylinderGeometry(1, 1, 1, 14);
+const G_CONE = new THREE.ConeGeometry(1, 1, 16);
+const G_BOX = new THREE.BoxGeometry(1, 1, 1);
+
+function mesh(g, m, shadow=true){ const o = new THREE.Mesh(g, m); o.castShadow = shadow; o.receiveShadow = true; return o; }
+
+/* ── 고정 배경: 강바닥, 수면, 눈 덮인 둑, 소품 ── */
+const RIVER_W = (RIVER_R - RIVER_L) * K, LEN = 120;
+{
+  const bed = mesh(new THREE.PlaneGeometry(RIVER_W + 1, LEN), M.bed, false);
+  bed.rotation.x = -Math.PI/2; bed.position.y = -1.7; scene.add(bed);
+  for (const side of [-1, 1]){
+    const bank = mesh(new THREE.BoxGeometry(60, 2.2, LEN), M.snow, false);
+    bank.position.set(side * (RIVER_W/2 + 30), -1.0, 0); scene.add(bank);
+    // 강가 얼음 테두리
+    for (let z = -LEN/2; z < LEN/2; z += 1.6){
+      const r = mesh(G_SPHERE, M.rim, false);
+      r.scale.set(.55 + Math.random()*.3, .18, .9 + Math.random()*.4);
+      r.position.set(side * (RIVER_W/2 - .1), .02, z + Math.random()*.6); scene.add(r);
+    }
+  }
+  // 눈 더미
+  for (let i = 0; i < 40; i++){
+    const s = mesh(G_SPHERE, Math.random() < .5 ? M.snow : M.snowShade);
+    const side = Math.random() < .5 ? -1 : 1;
+    s.scale.set(1 + Math.random()*2.2, .35 + Math.random()*.5, 1 + Math.random()*2);
+    s.position.set(side * (RIVER_W/2 + 3 + Math.random()*18), .1, -45 + Math.random()*75); scene.add(s);
+  }
+}
+const WATER_TEX = (() => {
+  const c = document.createElement('canvas'); c.width = c.height = 256;
+  const g = c.getContext('2d');
+  g.fillStyle = '#FFFFFF'; g.fillRect(0, 0, 256, 256);
+  g.strokeStyle = 'rgba(60,140,215,.45)'; g.lineWidth = 2.5; g.lineCap = 'round';
+  for (let i = 0; i < 14; i++){
+    const x = Math.random()*256, y = Math.random()*256;
+    g.beginPath(); g.moveTo(x, y); g.quadraticCurveTo(x + 10, y + 14, x, y + 30); g.stroke();
+  }
+  const t = new THREE.CanvasTexture(c);
+  t.wrapS = t.wrapT = THREE.RepeatWrapping; t.repeat.set(1.4, 11); t.colorSpace = THREE.SRGBColorSpace;
+  return t;
+})();
+const water = new THREE.Mesh(new THREE.PlaneGeometry(RIVER_W, LEN),
+  new THREE.MeshStandardMaterial({ color:'#3A92E0', map: WATER_TEX, transparent:true, opacity:.5, roughness:.18, metalness:.1, depthWrite:false }));
+water.rotation.x = -Math.PI/2; water.receiveShadow = true; scene.add(water);
+
+function tent(x, z, s=1){
+  const g = new THREE.Group();
+  const c = mesh(G_CONE, M.tent); c.scale.set(1.3*s, 2.4*s, 1.3*s); c.position.y = 1.2*s; g.add(c);
+  const d = mesh(G_CONE, M.door, false); d.scale.set(.5*s, 1.1*s, .5*s); d.position.set(0, .55*s, .85*s); g.add(d);
+  g.position.set(x, .1, z); g.rotation.y = .3; scene.add(g);
+}
+function pine(x, z, s=1){
+  for (let i = 0; i < 3; i++){
+    const c = mesh(G_CONE, i === 2 ? M.snow : M.pine);
+    c.scale.set((1.4 - i*.4)*s, 1.6*s, (1.4 - i*.4)*s); c.position.set(x, (1 + i*.9)*s, z); scene.add(c);
+  }
+}
+tent(-9.6, -9, 1.1); tent(-11.4, -5.5, .85); tent(-10.2, 1.5, 1); tent(-12.5, 8, .9);
+pine(-15, -14, 1.3); pine(-17, -3, 1.1); pine(13, -16, 1.4); pine(16, -6, 1.1); pine(15.5, 10, 1.2); pine(-16, 14, 1);
+{ // 부두와 말뚝
+  const dk = mesh(G_BOX, M.wood); dk.scale.set(3.4, .35, 3.2); dk.position.set(RIVER_W/2 + 1.8, .2, -9); scene.add(dk);
+  for (let i = 0; i < 4; i++){ const b = mesh(G_BOX, M.iron); b.scale.set(.5, .6, 1.2); b.position.set(RIVER_W/2 + .9 + i*.65, .7, -9); scene.add(b); }
+  for (let z = 6; z < 30; z += .75){ const p = mesh(G_CYL, M.post); p.scale.set(.33, 1 + (z*7 % 3)*.12, .33); p.position.set(RIVER_W/2 + .45, .3, z); scene.add(p); }
+}
+// 잡은 고기를 모으는 썰매
+const SLED = new THREE.Group();
+{
+  const base = mesh(G_BOX, M.woodDark); base.scale.set(2.4, .35, 1.6); base.position.y = .3; SLED.add(base);
+  for (const s of [-1, 1]){ const w = mesh(G_BOX, M.wood); w.scale.set(2.4, .5, .12); w.position.set(0, .55, s*.75); SLED.add(w); }
+  for (const s of [-1, 1]){ const w = mesh(G_BOX, M.wood); w.scale.set(.12, .5, 1.6); w.position.set(s*1.15, .55, 0); SLED.add(w); }
+  SLED.position.set(toX(36), .1, toZ(NET_Y - 90)); scene.add(SLED);
+}
+const SLED_PILE = [];
+
+// 눈 내림
+const SNOW = (() => {
+  const n = 500, p = new Float32Array(n*3);
+  for (let i = 0; i < n; i++){ p[i*3] = (Math.random()-.5)*50; p[i*3+1] = Math.random()*30; p[i*3+2] = (Math.random()-.5)*70; }
+  const g = new THREE.BufferGeometry(); g.setAttribute('position', new THREE.BufferAttribute(p, 3));
+  const pts = new THREE.Points(g, new THREE.PointsMaterial({ color:'#FFFFFF', size:.16, transparent:true, opacity:.85, depthWrite:false }));
+  scene.add(pts); return pts;
+})();
+
+/* ── 움직이는 것들의 모양 ── */
+function makeFish(type){
+  const L = FISH[type].len * K * 1.35, g = new THREE.Group();
+  const body = mesh(G_SPHERE, FM[type].back); body.scale.set(L*.2, L*.16, L*.5); g.add(body);
+  const side = mesh(G_SPHERE, FM[type].side, false); side.scale.set(L*.21, L*.1, L*.42); side.position.y = -.02; g.add(side);
+  const tail = new THREE.Group(); tail.position.z = L*.45;
+  const tm = mesh(G_TAIL, FM[type].back); tm.material = FM[type].back; tm.scale.set(L*.55, 1, L*.38);
+  tm.material.side = THREE.DoubleSide; tail.add(tm); g.add(tail);
+  g.userData.tail = tail;
+  return g;
+}
+function makeIce(r, pts){
+  const m = mesh(G_ICE, M.ice);
+  const s = r * K; m.scale.set(s * (pts[0]/r), s*.45, s * (pts[3]/r));
+  return m;
+}
+function makeShark(){
+  const g = new THREE.Group();
+  const b = mesh(G_SPHERE, M.shark); b.scale.set(.7, .55, 2.3); g.add(b);
+  const belly = mesh(G_SPHERE, M.sharkBelly, false); belly.scale.set(.6, .4, 1.9); belly.position.y = -.15; g.add(belly);
+  const fin = mesh(G_CONE, M.shark); fin.scale.set(.16, 1.7, .9); fin.position.set(0, 1.05, -.1); fin.rotation.x = -.35; g.add(fin);
+  for (const s of [-1, 1]){ const p = mesh(G_CONE, M.shark); p.scale.set(.1, .9, .35); p.rotation.z = s*1.3; p.position.set(s*.7, -.1, -.5); g.add(p); }
+  const tail = new THREE.Group(); tail.position.z = 2.1;
+  const t = mesh(G_TAIL, M.shark); t.rotation.z = Math.PI/2; t.scale.set(1.8, 1, 1.2); tail.add(t); g.add(tail);
+  g.userData.tail = tail;
+  return g;
+}
+function makeWarn(){
+  const g = new THREE.Group();
+  const tri = new THREE.Mesh(new THREE.CircleGeometry(1.1, 3), M.warn);
+  tri.rotation.x = -Math.PI/2; tri.rotation.z = Math.PI/2; tri.position.y = .08; g.add(tri);
+  return g;
+}
+function makeDrop(){ const m = new THREE.Mesh(G_SPHERE, M.foam); m.scale.setScalar(.12); return m; }
+
+/* ── 그물 ── */
+const NU = 12, NV = 8;
+const NET_TEX = (() => {
+  const c = document.createElement('canvas'); c.width = c.height = 64;
+  const g = c.getContext('2d'); g.strokeStyle = '#FFFFFF'; g.lineWidth = 3.2;
+  g.beginPath(); g.moveTo(0, 0); g.lineTo(64, 64); g.moveTo(64, 0); g.lineTo(0, 64); g.stroke();
+  const t = new THREE.CanvasTexture(c); t.wrapS = t.wrapT = THREE.RepeatWrapping; return t;
+})();
+const netGeo = new THREE.PlaneGeometry(1, 1, NU, NV);
+const NET_COL = new THREE.Color('#E6D8B8'), NET_HOT = new THREE.Color('#FF5A3C');
+const netMat = new THREE.MeshStandardMaterial({ color:'#E6D8B8', map: NET_TEX, alphaMap: NET_TEX, transparent:true, alphaTest:.25, side:THREE.DoubleSide, roughness:.8 });
+const netMesh = new THREE.Mesh(netGeo, netMat); netMesh.castShadow = true; scene.add(netMesh);
+const NET = new THREE.Group(); scene.add(NET);
+const floats = [], poles = [];
+for (let i = 0; i <= 5; i++){ const f = mesh(G_SPHERE, M.float); f.scale.setScalar(.2); floats.push(f); NET.add(f); }
+for (let i = 0; i < 2; i++){ const p = mesh(G_CYL, M.woodDark); p.scale.set(.14, 2.2, .14); poles.push(p); NET.add(p); }
+const mouthRope = mesh(G_CYL, M.rope, false); mouthRope.rotation.z = Math.PI/2; NET.add(mouthRope);
+const ropes = [0, 1].map(() => { const r = mesh(G_CYL, M.rope, false); NET.add(r); return r; });
+const FISHER = new THREE.Group();
+{
+  const floe = mesh(G_CYL, M.ice); floe.scale.set(1.25, .3, 1.05); floe.position.y = .02; FISHER.add(floe);
+  const body = mesh(new THREE.CapsuleGeometry(.36, .55, 6, 12), M.parka); body.position.y = .85; FISHER.add(body);
+  const head = mesh(G_SPHERE, M.face); head.scale.setScalar(.25); head.position.set(0, 1.55, 0); FISHER.add(head);
+  const hat = mesh(G_SPHERE, M.hat); hat.scale.set(.29, .2, .29); hat.position.set(0, 1.68, .02); FISHER.add(hat);
+  for (const s of [-1, 1]){ const a = mesh(G_CYL, M.parka); a.scale.set(.1, .55, .1); a.position.set(s*.34, 1.0, .25); a.rotation.x = 1.1; FISHER.add(a); }
+  FISHER.userData.body = body;
+  NET.add(FISHER);
+}
+const _a = new THREE.Vector3(), _b = new THREE.Vector3(), _up = new THREE.Vector3(0, 1, 0), _q = new THREE.Quaternion();
+function rope(m, a, b, r=.04){
+  _b.subVectors(b, a); const len = _b.length();
+  m.position.copy(a).addScaledVector(_b, .5);
+  m.quaternion.setFromUnitVectors(_up, _b.normalize());
+  m.scale.set(r, len, r);
+}
+
+/* 주머니 모양: u 0~1(왼→오), v 0~1(입구→끝). 끌어올리면 물 위로 들리며 오므라든다 */
+function netShape(){
+  const n = G.net;
+  const lift = n.state === 'haul' ? Math.min(1, n.timer / n.dur) : 0;
+  const ratio = netLoadRatio(), strain = ratio > .75 ? (ratio - .75)*4 : 0;
+  const shk = (n.shake > 0 ? Math.sin(G.time*80)*.2*n.shake/.4 : 0) + (strain > 0 ? Math.sin(G.time*45)*strain*.08 : 0);
+  return { n, lift, ratio, strain, x: toX(n.x) + shk,
+    mw: n.w*K*(1 - lift*.55), bw: n.w*.72*K*(1 - lift*.4),
+    z0: 0, z1: -NET_DEPTH*K*(1 - lift*.25),
+    sag: (.28 + ratio*.3 + strain*.15) * (1 - lift), rise: lift*2.2 };
+}
+function netPoint(s, u, v, out){
+  const w = s.mw + (s.bw - s.mw)*v;
+  const bul = s.ratio * .35 * Math.sin(Math.PI*v) * (1 - s.lift);
+  out.set(s.x + (u - .5)*(w + bul*2), s.rise - s.sag*Math.sin(Math.PI*(v*.85 + .1)) * (1 - Math.pow(Math.abs(u - .5)*2, 3)*.5),
+          s.z0 + (s.z1 - s.z0)*v);
+  return out;
+}
+function drawNet3D(s){
+  const n = s.n, torn = n.state === 'torn';
+  const pos = netGeo.attributes.position;
+  for (let j = 0; j <= NV; j++) for (let i = 0; i <= NU; i++){
+    netPoint(s, i/NU, j/NV, _a);
+    if (torn){ _a.y -= .5 + Math.sin(G.time*3 + i + j)*.25; _a.x += Math.sin(i*7.3 + j)*.3; }
+    pos.setXYZ(j*(NU + 1) + i, _a.x, _a.y, _a.z);
+  }
+  pos.needsUpdate = true; netGeo.computeVertexNormals();
+  NET_TEX.repeat.set(Math.max(3, s.mw/0.45), 6);
+  netMat.color.set(torn ? '#8A7A64' : s.strain > 0 ? NET_COL.clone().lerp(NET_HOT, Math.min(1, s.strain)) : NET_COL);
+  netMat.opacity = torn ? .45 : 1;
+  // 부표, 장대, 줄
+  const my = s.rise + .05;
+  floats.forEach((f, i) => { f.position.set(s.x - s.mw/2 + s.mw*i/5, my + Math.sin(G.time*3 + i)*.04, s.z0); f.visible = !torn; });
+  poles.forEach((p, i) => { p.position.set(s.x + (i ? 1 : -1)*s.mw/2, my + .3, s.z0); });
+  mouthRope.visible = !torn;
+  mouthRope.position.set(s.x, my, s.z0); mouthRope.scale.set(.05, s.mw, .05);
+  const fz = s.z1 - 1.6;
+  const lean = s.lift > 0 && s.lift < 1 ? Math.sin(s.lift*Math.PI) : 0;
+  FISHER.position.set(s.x, 0, fz);
+  FISHER.userData.body.rotation.x = -lean*.35;
+  for (let i = 0; i < 2; i++){
+    _a.set(s.x + (i ? 1 : -1)*s.mw/2, my + .9, s.z0);
+    _b.set(s.x + (i ? .35 : -.35), 1.15 - lean*.1, fz + .45);
+    rope(ropes[i], _a, _b, .035);
+  }
+}
+
+/* ── 장면 동기화: 게임 상태의 객체마다 메시 하나 ── */
+let prevLive = new Set(), live = new Set();
+function use(obj, make){
+  if (!obj._m){ obj._m = make(); scene.add(obj._m); }
+  live.add(obj._m);
+  return obj._m;
+}
+function swim(m, x, y, z, yaw, ph, amp=.5){
+  m.position.set(x, y, z); m.rotation.set(0, yaw, 0);
+  if (m.userData.tail) m.userData.tail.rotation.y = Math.sin(ph)*amp;
+}
+function draw(){
+  live = new Set();
+  const t = G.time;
+  WATER_TEX.offset.y = -(G.flow * .05) % 1;
+  // 눈
+  const sp = SNOW.geometry.attributes.position;
+  for (let i = 0; i < sp.count; i++){
+    let y = sp.getY(i) - .03 - (i % 5)*.004; if (y < 0) y += 30;
+    sp.setY(i, y); sp.setX(i, sp.getX(i) + Math.sin(t + i)*.004);
+  }
+  sp.needsUpdate = true;
+
+  for (const f of G.fish){
+    const m = use(f, () => makeFish(f.type));
+    swim(m, toX(f.x), -.18, toZ(f.y), Math.cos(f.ph*.35)*.25, f.ph*1.6, .45);
+  }
+  for (const s of G.sharks){
+    if (s.warn > 0){
+      const m = use(s._w || (s._w = {}), makeWarn);
+      m.position.set(toX(s.x), 0, 13.5 - (1.6 - s.warn)*.5);
+      const k = .8 + .25*Math.sin(t*18); m.scale.setScalar(k);
+      continue;
+    }
+    const m = use(s, makeShark);
+    swim(m, toX(s.x + Math.sin(s.ph)*6), -.55, toZ(s.y), Math.cos(s.ph)*.12, s.ph*2, .35);
+  }
+  for (const c of G.ice){
+    const m = use(c, () => makeIce(c.r, c.pts));
+    m.position.set(toX(c.x), .05 + Math.sin(t*2 + c.r)*.03, toZ(c.y)); m.rotation.y = c.rot;
+  }
+  for (const e of G.escaped){
+    const m = use(e, () => makeFish(e.type));
+    swim(m, toX(e.x), -.35 - (1 - e.a)*.6, toZ(e.y), -Math.atan2(e.vx, -e.vy), t*14, .6);
+  }
+
+  const s = netShape();
+  drawNet3D(s);
+  for (const it of G.net.items){
+    const m = use(it, () => it.type === 'ice' ? makeIce(it.r/.8, it.pts) : makeFish(it.type));
+    const u = .5 + it.lx*.9, v = .15 + it.ly*.7;
+    netPoint(s, u, v, _a); _a.y += .12;
+    // 들어오는 순간은 입구에서 제자리로 미끄러져 간다
+    const sx = toX(G.net.x + it.ax), sz = toZ(NET_Y + it.ay);
+    m.position.set(sx + (_a.x - sx)*it.k, -.3 + (_a.y + .3)*it.k, sz + (_a.z - sz)*it.k);
+    if (it.type === 'ice') m.rotation.y = it.rot;
+    else { m.rotation.set(Math.sin(t*9 + it.lx*20)*.5, Math.sin(t*6 + it.ly*9)*.8, 0); m.userData.tail.rotation.y = Math.sin(t*20 + it.lx*9)*.7; }
+  }
+  for (const f of G.fly){
+    if (f.t < 0) continue;
+    const k = f.t / .55, m = use(f, () => makeFish(f.type));
+    const x0 = toX(f.x), z0 = toZ(f.y), x1 = SLED.position.x, z1 = SLED.position.z;
+    m.position.set(x0 + (x1 - x0)*k, 2.4 + Math.sin(k*Math.PI)*2.5 - k*1.6, z0 + (z1 - z0)*k);
+    m.rotation.set(k*9, k*4, 0);
+  }
+  for (const p of G.splash){
+    const m = use(p, makeDrop);
+    m.position.set(toX(p.x), .3 + (1 - p.life)*1.2, toZ(p.y)); m.scale.setScalar(.12*Math.max(.2, p.life*1.6));
+  }
+  // 썰매 위 고기 더미
+  const got = G.counts.smelt + G.counts.salmon + G.counts.gold, want = Math.min(12, Math.ceil(got/4));
+  while (SLED_PILE.length < want){
+    const i = SLED_PILE.length, f = makeFish(i % 3 === 0 ? 'salmon' : i % 7 === 6 ? 'gold' : 'smelt');
+    f.position.set(-.8 + (i % 4)*.52, .75 + (i/4|0)*.16, -.45 + ((i*5) % 3)*.4); f.rotation.set(0, 1.4 + i, .3);
+    SLED.add(f); SLED_PILE.push(f);
+  }
+  while (SLED_PILE.length > want) SLED.remove(SLED_PILE.pop());
+
+  for (const m of prevLive) if (!live.has(m)) scene.remove(m);
+  prevLive = live;
+  renderer.render(scene, camera);
+}
+const _p = new THREE.Vector3();
+function project(wx, wy, h=1){
+  _p.set(toX(wx), h, toZ(wy)).project(camera);
+  return { x: (_p.x + 1)/2 * cv.clientWidth, y: (1 - _p.y)/2 * cv.clientHeight };
+}
+const _ray = new THREE.Raycaster(), _ndc = new THREE.Vector2(), _plane = new THREE.Plane(new THREE.Vector3(0, 1, 0), 0);
+function screenToWorldX(cxp){
+  const r = cv.getBoundingClientRect(), cyp = r.top + project(W/2, NET_Y, 0).y;
+  _ndc.set((cxp - r.left)/r.width*2 - 1, -((cyp - r.top)/r.height*2 - 1));
+  _ray.setFromCamera(_ndc, camera);
+  if (!_ray.ray.intersectPlane(_plane, _a)) return null;
+  return _a.x / K + W/2;
+}
+
+/* ── 상태 ─────────────────────────────── */
+let G = null;
+function newDay(){
+  const lv = save.lv;
+  G = {
+    day: save.day, t: DAY_LEN, earned: 0, goal: dayGoal(save.day),
+    fish: [], ice: [], sharks: [], fly: [], splash: [], escaped: [],
+    net: { x: 200, tx: 200, w: netWidth(lv.width), cap: netCap(lv.cap), load: 0, items: [],
+           state:'down', timer:0, dur:0, shake:0 },
+    spawnT: .4, iceT: 3, sharkT: 9, warnSharkT: 0,
+    counts: { smelt:0, salmon:0, gold:0, full:0, rip:0 },
+    running: false, over: false, flow: 0, time: 0,
+  };
+}
+
+/* ── 스폰 ─────────────────────────────── */
+function spawnEvery(){ return Math.max(.75, 1.55 - G.day*.07) * Math.pow(.88, save.lv.bait); }
+function rand(a,b){ return a + Math.random()*(b-a); }
+function spawnSchool(){
+  const r = Math.random(), goldP = .05 + G.day*.004;
+  const bottom = VH;
+  if (r < goldP){
+    const x = rand(RIVER_L+20, RIVER_R-20);
+    G.fish.push(mkFish('gold', x, bottom, rand(125,150)));
+    return;
+  }
+  const salmonP = Math.min(.5, .3 + G.day*.025);
+  const type = r < goldP + salmonP ? 'salmon' : 'smelt';
+  const n = type === 'salmon' ? 2 + (Math.random()*3|0) : 5 + (Math.random()*5|0);
+  const cxs = rand(RIVER_L+30, RIVER_R-30);
+  const sp = (type === 'salmon' ? rand(52,66) : rand(72,92)) * (1 + G.day*.02);
+  const spread = type === 'salmon' ? 26 : 22;
+  for (let i=0;i<n;i++){
+    const x = Math.max(RIVER_L+10, Math.min(RIVER_R-10, cxs + rand(-spread, spread)));
+    G.fish.push(mkFish(type, x, bottom + i*rand(8,18), sp*rand(.94,1.06)));
+  }
+}
+function mkFish(type, x, y, sp){
+  return { type, x, y, bx:x, sp, ph:Math.random()*6.28, amp:rand(4,10), caught:false, gone:false };
+}
+function spawnIce(){
+  const r = rand(11, 19);
+  G.ice.push({ x: rand(RIVER_L+r, RIVER_R-r), y: TOP_Y, r, sp: rand(38,52), rot: Math.random()*6, vr: rand(-.6,.6),
+               pts: Array.from({length:7}, (_,i)=> r*rand(.72,1.05)) });
+}
+function spawnShark(){
+  const x = rand(RIVER_L+40, RIVER_R-40);
+  G.sharks.push({ x, y: VH + 40, sp: rand(46,58), ph:0, warn:1.6, gone:false });
+  sfx.warn(); haptic(40);
+}
+
+/* ── 그물 ─────────────────────────────── */
+function netLoadRatio(){ return G.net.load / G.net.cap; }
+function addToNet(item){
+  const n = G.net;
+  n.items.push(item); n.load += item.w;
+  // 주머니 안 자리: 입구에서 안쪽으로
+  item.lx = rand(-.38, .38); item.ly = rand(.2, .92);
+  item.ax = item.x - n.x; item.ay = item.y - NET_Y; item.k = 0;
+  if (n.load > n.cap) rip('넘쳤다!');
+}
+function rip(why){
+  const n = G.net;
+  if (n.state !== 'down') return;
+  G.counts.rip++;
+  // 잡힌 물고기는 도망간다
+  for (const it of n.items){
+    if (it.type === 'ice') continue;
+    const px = n.x + it.lx*n.w, py = NET_Y - it.ly*NET_DEPTH;
+    G.escaped.push({ type: it.type, x: px, y: py, vx: rand(-40,40), vy: -rand(120,180), a: 1 });
+  }
+  for (let i=0;i<14;i++) G.splash.push({ x: n.x + rand(-n.w/2, n.w/2), y: NET_Y - rand(0,NET_DEPTH), vx: rand(-60,60), vy: rand(-80,20), life: .6, col:'#C9A36A' });
+  n.items = []; n.load = 0;
+  n.state = 'torn'; n.timer = 2.4; n.shake = .4;
+  sfx.rip(); haptic([60,40,90]);
+  popAt(n.x, NET_Y - 40, `그물이 찢어졌다! ${why}`, 'bad');
+}
+function haul(){
+  const n = G.net;
+  if (!G.running || n.state !== 'down' || n.items.length === 0) return;
+  n.state = 'haul'; n.timer = 0;
+  n.dur = (.7 + n.items.length*.028) * haulMul(save.lv.speed);
+  sfx.haul(); haptic(20);
+}
+function finishHaul(){
+  const n = G.net;
+  const full = n.load >= n.cap*.75;
+  let sum = 0, i = 0;
+  for (const it of n.items){
+    if (it.type === 'ice') continue;
+    sum += FISH[it.type].v; G.counts[it.type]++;
+    G.fly.push({ type: it.type, x: n.x + it.lx*n.w*.3, y: NET_Y - NET_DEPTH - 10, t: -i*.035, tx: 36, ty: NET_Y - 90 });
+    i++;
+  }
+  const iceN = n.items.filter(it => it.type === 'ice').length;
+  for (let k=0;k<iceN;k++) G.splash.push({ x: n.x, y: NET_Y-NET_DEPTH, vx: rand(-90,90), vy: rand(-90,-30), life:.5, col:'#E8F3FF' });
+  if (full && sum > 0){ sum = Math.round(sum*1.5); G.counts.full++; }
+  G.earned += sum;
+  n.items = []; n.load = 0;
+  n.state = 'down';
+  if (sum > 0){
+    popAt(36, NET_Y - 120, full ? `만선! +${sum}🪙` : `+${sum}🪙`, full ? 'big' : 'gold');
+    full ? sfx.full() : sfx.coin(); haptic(full ? [30,30,30] : 15);
+  } else if (iceN){
+    popAt(n.x, NET_Y - 70, '얼음뿐이네…', 'bad');
+  }
+  updateHUD(true);
+}
+
+/* ── 업데이트 ─────────────────────────── */
+function update(dt){
+  const n = G.net;
+  G.flow += dt; G.time += dt;
+  if (G.running){
+    G.t -= dt;
+    if (G.t <= 0){ G.t = 0; endDay(); }
+  }
+  // 그물 이동 — 손가락을 곧장 따라가지 않고 속도 제한을 둔다(얼음 피하기에 판단이 필요하도록)
+  const maxV = 420 * dt, dx = n.tx - n.x;
+  n.x += Math.max(-maxV, Math.min(maxV, dx * Math.min(1, dt*14)));
+  n.x = clampNet(n.x);
+  if (n.shake > 0) n.shake -= dt;
+
+  if (n.state === 'torn'){ n.timer -= dt; if (n.timer <= 0){ n.state = 'down'; popAt(n.x, NET_Y-40, '그물 수선 끝', ''); } }
+  if (n.state === 'haul'){ n.timer += dt; if (n.timer >= n.dur) finishHaul(); }
+
+  if (G.running){
+    G.spawnT -= dt; if (G.spawnT <= 0){ spawnSchool(); G.spawnT = spawnEvery() * rand(.75, 1.25); }
+    if (G.day >= 2){ G.iceT -= dt; if (G.iceT <= 0){ spawnIce(); G.iceT = Math.max(1.6, 5.2 - G.day*.35) * rand(.7,1.3); } }
+    if (G.day >= 3){ G.sharkT -= dt; if (G.sharkT <= 0){ spawnShark(); G.sharkT = Math.max(7, 16 - G.day*.8) * rand(.8,1.2); } }
+  }
+
+  const lo = n.x - n.w/2, hi = n.x + n.w/2, open = n.state === 'down';
+  // 물고기: 아래에서 위로
+  for (const f of G.fish){
+    const py = f.y;
+    f.ph += dt * (f.type === 'smelt' ? 9 : 6);
+    f.y -= f.sp * dt;
+    f.x = f.bx + Math.sin(f.ph*.35) * f.amp;
+    if (open && G.running && py > NET_Y && f.y <= NET_Y && f.x > lo && f.x < hi){
+      f.gone = true;
+      addToNet({ type: f.type, w: FISH[f.type].w, x: f.x, y: NET_Y });
+      sfx.catch();
+      if (f.type === 'gold'){ popAt(f.x, NET_Y - 30, '황금송어!', 'gold'); haptic(25); }
+      if (G.net.state !== 'down') break;   // 넘쳐서 찢어짐
+    }
+    if (f.y < TOP_Y) f.gone = true;
+  }
+  G.fish = G.fish.filter(f => !f.gone);
+
+  // 얼음: 위에서 아래로 떠내려와 주머니 끝에 걸린다
+  const back = NET_Y - NET_DEPTH;
+  for (const c of G.ice){
+    const py = c.y;
+    c.y += c.sp * dt; c.rot += c.vr * dt;
+    const bw = n.w * .72 / 2;
+    if (open && G.running && py + c.r < back && c.y + c.r >= back && c.x > n.x - bw - c.r*.5 && c.x < n.x + bw + c.r*.5){
+      c.gone = true;
+      addToNet({ type:'ice', w: ICE_W, x: c.x, y: back, r: c.r*.8, pts: c.pts, rot: c.rot });
+      sfx.ice(); haptic(20);
+      popAt(c.x, back - 10, `얼음 +${ICE_W}kg`, 'bad');
+    }
+    if (c.y > VH + 40) c.gone = true;
+  }
+  G.ice = G.ice.filter(c => !c.gone);
+
+  // 상어
+  for (const s of G.sharks){
+    if (s.warn > 0){ s.warn -= dt; continue; }
+    const py = s.y;
+    s.ph += dt*3; s.y -= s.sp*dt;
+    const sx = s.x + Math.sin(s.ph)*6;
+    if (open && G.running && py > NET_Y && s.y <= NET_Y && sx + 12 > lo && sx - 12 < hi){
+      rip('상어가 뚫고 갔다');
+    }
+    if (s.y < TOP_Y) s.gone = true;
+  }
+  G.sharks = G.sharks.filter(s => !s.gone);
+
+  for (const e of G.escaped){ e.x += e.vx*dt; e.y += e.vy*dt; e.a -= dt*.8; }
+  G.escaped = G.escaped.filter(e => e.a > 0);
+  for (const p of G.splash){ p.x += p.vx*dt; p.y += p.vy*dt; p.vy += 200*dt; p.life -= dt; }
+  G.splash = G.splash.filter(p => p.life > 0);
+  for (const f of G.fly) f.t += dt;
+  G.fly = G.fly.filter(f => f.t < .55);
+  for (const it of n.items) it.k = Math.min(1, it.k + dt*5);
+}
+function clampNet(x){ const h = G.net.w/2; return Math.max(RIVER_L + h - 6, Math.min(RIVER_R - h + 6, x)); }
+
+/* ── HUD ─────────────────────────────── */
+const $ = id => document.getElementById(id);
+let lastHud = '';
+function updateHUD(force){
+  const n = G.net, r = netLoadRatio();
+  const key = [G.day, G.earned, Math.ceil(G.t - 1e-6), n.load, n.cap, n.state, n.items.length].join('|');
+  if (!force && key === lastHud) return; lastHud = key;
+  $('hDay').textContent = `${G.day}일차`;
+  $('hGoal').textContent = `${G.earned} / ${G.goal}🪙`;
+  const gb = $('hGoalBar'); gb.style.width = Math.min(100, G.earned/G.goal*100) + '%'; gb.classList.toggle('done', G.earned >= G.goal);
+  const sec = Math.ceil(G.t - 1e-6);
+  $('hTime').textContent = sec; $('hTimeBox').classList.toggle('low', sec <= 10 && G.running);
+  let val = 0; for (const it of n.items) if (it.type !== 'ice') val += FISH[it.type].v;
+  const full = r >= .75 && val > 0;
+  $('lTxt').textContent = n.state === 'torn' ? '그물 수선 중…' : `그물 ${n.load} / ${n.cap}kg`;
+  $('lVal').textContent = full ? `${Math.round(val*1.5)}🪙 만선` : `${val}🪙`;
+  const b = $('lBar'); b.style.width = Math.min(100, r*100) + '%';
+  b.className = r > .9 ? 'hot' : r >= .75 ? 'mid' : '';
+  $('loadBox').classList.toggle('shake', r > .9);
+  const hb = $('haul');
+  hb.disabled = !G.running || n.state !== 'down' || n.items.length === 0;
+  hb.classList.toggle('full', full && n.state === 'down');
+  hb.textContent = n.state === 'haul' ? '끌어올리는 중…' : n.state === 'torn' ? '그물 수선 중' : full ? '만선! 지금 끌어올리기' : '끌어올리기';
+}
+function popAt(wx, wy, text, cls){
+  const el = document.createElement('div');
+  el.className = 'pop ' + (cls||''); el.textContent = text;
+  const { x: sx, y: sy } = project(wx, wy, 1.2);
+  el.style.left = Math.max(70, Math.min(innerWidth - 70, sx)) + 'px'; el.style.top = sy + 'px';
+  $('pops').appendChild(el); setTimeout(() => el.remove(), 1000);
+}
+
+/* ── 하루의 시작과 끝 ─────────────────── */
+function startDay(){
+  newDay();
+  G.running = true;
+  document.querySelectorAll('.veil').forEach(v => v.classList.remove('show'));
+  audio();
+  popAt(200, 250, `${G.day}일차 · 목표 ${G.goal}🪙`, 'gold');
+  updateHUD(true);
+}
+function endDay(){
+  if (!G.running) return;
+  G.running = false;
+  // 남은 고기는 보너스 없이 거둔다
+  const n = G.net;
+  if (n.state === 'haul' || (n.state === 'down' && n.items.length)){
+    let sum = 0;
+    for (const it of n.items) if (it.type !== 'ice'){ sum += FISH[it.type].v; G.counts[it.type]++; }
+    if (n.state === 'haul' && n.load >= n.cap*.75 && sum){ sum = Math.round(sum*1.5); G.counts.full++; }
+    G.earned += sum; n.items = []; n.load = 0; n.state = 'down';
+  }
+  const ok = G.earned >= G.goal;
+  save.wallet += G.earned;
+  if (ok){ save.best = Math.max(save.best, G.day); save.day = G.day + 1; }
+  persist();
+  sfx.end();
+  $('eTitle').textContent = ok ? `${G.day}일차 성공!` : `${G.day}일차 아쉬워요`;
+  $('eEarn').textContent = `+${G.earned}🪙`;
+  $('eEarn').className = 'big' + (ok ? '' : ' fail');
+  $('eSub').textContent = ok ? `목표 ${G.goal}🪙 달성` : `목표 ${G.goal}🪙까지 ${G.goal - G.earned} 모자라요 · 번 돈은 그대로 가져가요`;
+  $('eCatch').innerHTML =
+    `<div><b>${G.counts.smelt}</b>빙어</div><div><b>${G.counts.salmon}</b>연어</div>` +
+    `<div><b>${G.counts.gold}</b>황금송어</div><div><b>${G.counts.full}</b>만선</div>`;
+  $('btnNext').textContent = ok ? `${save.day}일차 시작` : `${G.day}일차 다시 도전`;
+  renderShop();
+  $('vEnd').classList.add('show');
+  updateHUD(true);
+}
+function renderShop(){
+  $('eWallet').textContent = `${save.wallet}🪙`;
+  const box = $('shop'); box.innerHTML = '';
+  for (const u of UPG){
+    const l = save.lv[u.id], max = l >= MAXLV, cost = max ? 0 : u.cost[l];
+    const el = document.createElement('div'); el.className = 'item';
+    el.innerHTML = `<div class="ic">${u.ic}</div><div class="tx"><b>${u.name}</b><span>${max ? '최고 단계' : u.desc(l)}</span>
+      <div class="lv">${Array.from({length:MAXLV}, (_,i)=>`<i class="${i<l?'on':''}"></i>`).join('')}</div></div>`;
+    const b = document.createElement('button'); b.className = 'buy' + (max ? ' max' : '');
+    b.textContent = max ? 'MAX' : `${cost}🪙`; b.disabled = max || save.wallet < cost;
+    b.onclick = () => {
+      if (save.lv[u.id] >= MAXLV || save.wallet < cost) return;
+      save.wallet -= cost; save.lv[u.id]++; persist(); sfx.coin(); haptic(15); renderShop();
+    };
+    el.appendChild(b); box.appendChild(el);
+  }
+}
+
+/* ── 입력 ─────────────────────────────── */
+let dragging = false;
+cv.addEventListener('pointerdown', e => { dragging = true; setTarget(e); try{ cv.setPointerCapture(e.pointerId); }catch(_){} });
+cv.addEventListener('pointermove', e => { if (dragging || e.pointerType === 'mouse') setTarget(e); });
+cv.addEventListener('pointerup', () => dragging = false);
+cv.addEventListener('pointercancel', () => dragging = false);
+function setTarget(e){
+  if (!G) return;
+  const x = screenToWorldX(e.clientX);
+  if (x !== null) G.net.tx = clampNet(x);
+}
+$('haul').addEventListener('click', haul);
+const keys = {};
+window.addEventListener('keydown', e => {
+  if (e.code === 'Space' || e.code === 'ArrowUp'){ e.preventDefault(); haul(); }
+  if (e.code === 'Escape' || e.code === 'KeyP') togglePause();
+  keys[e.code] = true;
+});
+window.addEventListener('keyup', e => { keys[e.code] = false; });
+
+/* ── 일시정지 · 소리 ─────────────────── */
+let paused = false;
+function togglePause(force){
+  if (!G || !G.running) return;
+  paused = force !== undefined ? force : !paused;
+  $('vPause').classList.toggle('show', paused);
+  if (ac){ paused ? ac.suspend() : (save.sound && ac.resume()); }
+}
+$('btnPause').onclick = () => togglePause();
+$('btnResume').onclick = () => togglePause(false);
+$('btnGiveUp').onclick = () => { paused = false; $('vPause').classList.remove('show'); endDay(); };
+document.addEventListener('visibilitychange', () => {
+  if (document.hidden){ if (G && G.running) togglePause(true); if (ac) ac.suspend(); }
+});
+function soundLabel(){ const t = save.sound ? '🔊 소리 켜짐' : '🔇 소리 꺼짐'; $('btnSound').textContent = t; $('btnSound2').textContent = t; }
+function toggleSound(){ save.sound = !save.sound; persist(); soundLabel(); if (!save.sound && ac) ac.suspend(); if (save.sound) sfx.coin(); }
+$('btnSound').onclick = toggleSound; $('btnSound2').onclick = toggleSound;
+$('btnStart').onclick = startDay;
+$('btnNext').onclick = startDay;
+
+/* ── 루프 (고정 스텝) ─────────────────── */
+let last = performance.now(), acc = 0;
+const STEP = 1/60;
+function frame(now){
+  const dt = Math.min(.1, (now - last) / 1000); last = now;
+  if (!paused){
+    // 키보드로도 그물을 옮길 수 있게
+    if (keys.ArrowLeft) G.net.tx = clampNet(G.net.x - 60);
+    if (keys.ArrowRight) G.net.tx = clampNet(G.net.x + 60);
+    acc += dt;
+    while (acc >= STEP){ update(STEP); acc -= STEP; }
+  }
+  draw(); updateHUD();
+  requestAnimationFrame(frame);
+}
+
+resize(); newDay(); soundLabel();
+$('btnStart').textContent = save.day > 1 ? `${save.day}일차 이어하기` : '시작하기';
+// 시작 화면 뒤에서도 강이 흐르고 물고기가 지나가게
+for (let i=0;i<4;i++){ spawnSchool(); G.fish.forEach(f => f.y -= 140*i); }
+updateHUD(true);
+requestAnimationFrame(frame);
+
+// 테스트용 훅
+window.__game = { get G(){ return G; }, save, update, haul, startDay, endDay, spawnSchool, spawnIce, spawnShark, netLoadRatio };
+</script>
+</body>
+</html>

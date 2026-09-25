@@ -594,3 +594,107 @@ footer{background:transparent;border-top:0}
 .tday p b{color:var(--ink);font-weight:700}
 .tday p+ul{margin-top:8px}
 .planbar select,.planbar .field input,.toolbar .field input{background:var(--surface)}
+
+/* ================================================================ v6: 휴대폰 전용 — 한 줄 목록 · 바텀 시트 · 고정 필터 · 누름 반응 */
+body{-webkit-tap-highlight-color:transparent}
+.grab{display:none}
+.stepper{display:flex;align-items:center;gap:6px}
+.stepper input{text-align:center;flex:1;min-width:0}
+.stepper button{flex:none;width:44px;height:44px;border-radius:12px;border:0;background:var(--surface-2);color:var(--ink);font-size:20px;font-weight:700;cursor:pointer}
+.card .stepper button{background:var(--surface-3)}
+
+/* 한 줄 목록(휴대폰 일정) */
+.cards.rows{display:flex;flex-direction:column;gap:0;background:var(--surface);border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden}
+.row{display:grid;grid-template-columns:54px minmax(0,1fr) auto;gap:12px;align-items:center;padding:13px 14px;border-bottom:1px solid var(--line-soft);cursor:pointer;
+  animation:rise .3s ease both}
+.row:last-of-type{border-bottom:0}
+.rb{width:54px;height:54px;border-radius:15px;background:var(--surface-2);display:flex;flex-direction:column;align-items:center;justify-content:center;
+  font-size:16px;font-weight:800;line-height:1.1;letter-spacing:-.5px;color:var(--ink);text-align:center}
+.rb small{font-size:10.5px;font-weight:600;color:var(--ink-3);margin-top:2px}
+.rb b{font-size:14px;font-weight:800}
+.rb.on{background:var(--brand);color:#fff;font-size:13px}
+.rb.wt{background:color-mix(in srgb,var(--ev-list) 14%,transparent);color:var(--ev-list)}
+.rm{display:flex;flex-direction:column;gap:2px;min-width:0}
+.rm b{font-size:16px;font-weight:700;letter-spacing:-.4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.rm b .st-on{font-style:normal;color:var(--s4);font-size:13px}
+.rm small{font-size:13px;color:var(--ink-3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.rm small.l3{color:var(--ink-2)}
+.rm small b{font-size:13px;font-weight:700;display:inline}
+.rr .vd{font-size:12px;padding:4px 9px}
+.rr .vd b{font-size:11px}
+.cards.rows .more{margin:8px auto 12px}
+.cards.rows .empty{border:0;box-shadow:none}
+
+@media(max-width:759px){
+  /* 머리: 상태 표시줄 아래로, 얇게 */
+  header{padding-top:env(safe-area-inset-top,0px)}
+  .hbar{height:52px}
+  .brand .mk{height:26px;font-size:10.5px}
+  .brand b{font-size:16px}
+  h2.title{font-size:26px;letter-spacing:-1px}
+  section{padding:14px 0 12px}
+  .greet h1{font-size:28px}
+  footer{display:none}
+
+  /* 일정: 설명은 줄이고, 거르개는 위에 붙인다 */
+  #schedule > .wrap > p.lead,#calendar > .wrap > p.lead,#plan > .wrap > p.lead,#calc > .wrap > p.lead,#my > .wrap > p.lead{font-size:14px;line-height:1.6}
+  #schedule > .wrap > p.lead{display:none}
+  #schedule .toolbar{position:sticky;top:calc(52px + env(safe-area-inset-top,0px));z-index:30;background:color-mix(in srgb,var(--paper) 94%,transparent);
+    backdrop-filter:blur(12px);margin-inline:-16px;padding:8px 16px;gap:8px;margin-top:8px}
+  #schedule .toolbar .seg:first-child{width:100%;display:flex}
+  #schedule .toolbar .seg:first-child button{flex:1 0 auto}
+  #schedule .toolbar .field.grow{flex:1 1 0}
+  #schedule .toolbar .chk{font-size:13px}
+  #listNote{text-align:center}
+
+  /* 입력: 16px 이상이어야 iOS 가 확대하지 않는다 */
+  .field input,.planbar select,#pTable select,#pTable input.pq,#q,input.ovr,input.bk{font-size:16px}
+  .form{gap:12px}
+
+  /* 바텀 시트 */
+  dialog#dlg,dialog#cmpDlg{position:fixed;inset:auto 0 0 0;margin:0;width:100%;max-width:100%;height:auto;max-height:92dvh;
+    border-radius:24px 24px 0 0;overflow-y:auto;overscroll-behavior:contain;background:var(--paper);padding-bottom:env(safe-area-inset-bottom,0px)}
+  dialog#dlg[open]>div,dialog#cmpDlg[open]>div{animation:sheetup .3s cubic-bezier(.2,.8,.2,1) both;transition:transform .18s ease}
+  @keyframes sheetup{from{transform:translateY(40%);opacity:.4}to{transform:none;opacity:1}}
+  dialog#dlg::backdrop,dialog#cmpDlg::backdrop{background:rgba(0,0,0,.45);backdrop-filter:none}
+  .grab{display:block;width:40px;height:5px;border-radius:3px;background:var(--surface-3);margin:8px auto 0;position:sticky;top:8px;z-index:6}
+  .dlg-top{padding:6px 16px 10px;cursor:grab;touch-action:none}
+  .dlg-top .ttl b{font-size:22px}
+  .dlg-body{padding:4px 16px 0;gap:14px}
+  .actbar{position:sticky;bottom:0;z-index:5;margin-inline:-16px;padding:10px 16px calc(10px + env(safe-area-inset-bottom,0px));
+    background:color-mix(in srgb,var(--paper) 94%,transparent);backdrop-filter:blur(12px);flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none}
+  .actbar::-webkit-scrollbar{display:none}
+  .actbar .ghost{flex:none;height:44px;padding:0 16px;font-size:14.5px}
+  .actbar .ghost.primary{flex:1 0 auto}
+  .dlg-body .btnrow:not(.actbar) .ghost{height:38px}
+
+  /* 홈 */
+  .feat{padding:18px}
+  .feat-main{gap:14px}
+  .feat .ring{width:96px;height:96px}
+  .feat-nm h3{font-size:22px}
+  .cta{padding:15px 16px}
+
+  /* 아래 탭: 더 높게, 누른 탭 표시 */
+  .tabbar{padding:6px 6px calc(8px + env(safe-area-inset-bottom,0px))}
+  .tabbar a{padding:6px 0;border-radius:12px}
+  .tabbar a[aria-current]{background:var(--surface-2)}
+  body{padding-bottom:calc(72px + env(safe-area-inset-bottom,0px))}
+  .toast{bottom:calc(88px + env(safe-area-inset-bottom,0px));border-radius:14px}
+}
+
+/* 손가락: 누르면 살짝 눌리고, 마우스 올림 효과는 끈다 */
+@media(hover:none){
+  .ipo:hover,.rc:hover{transform:none;box-shadow:var(--shadow)}
+  .row:active,.rc:active,.ipo:active,.st.link:active,.tday li:active,.agenda li:active,.cta:active{transform:scale(.98);background:var(--surface-2)}
+  .ghost:active,.btn:active,.stepper button:active,.tabbar a:active,.seg button:active{transform:scale(.95)}
+  .row,.rc,.ipo,.ghost,.btn,.stepper button,.tabbar a,.seg button,.st.link,.cta{transition:transform .12s ease,background .12s ease}
+}
+@media(prefers-reduced-motion:reduce){.row,dialog[open]>div{animation:none !important}}
+@media(max-width:759px){
+  .dlg-top{align-items:flex-start}
+  .dlg-top .star{order:2;margin-top:6px}
+  .dlg-top #dClose,.dlg-top #cmpClose{order:3}
+  .dlg-top .ttl small{margin-top:6px}
+}
+@media(max-width:759px){.actbar .ghost:not(.primary){background:var(--surface);box-shadow:var(--shadow)}}

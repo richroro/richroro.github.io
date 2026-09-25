@@ -196,7 +196,7 @@ function openCompare() {
   body += row("주간사", xs.map((it) => esc(it.uw.join(", ") || "–")));
   body += row("주의", rs.map((r) => (r.flags.length ? r.flags.map((f) => `<small class="warnl">${esc(f)}</small>`).join("") : `<span class="hint">없음</span>`)));
   const win = totals.some((t) => t != null) ? xs[totals.indexOf(Math.max(...totals.filter((t) => t != null)))] : null;
-  $("cmpBody").innerHTML = `<div class="dlg-top"><div class="ttl"><b id="cmpTitle">나란히 비교</b><small>${win ? `점수로는 <b>${esc(win.name)}</b> 우세 · 칸마다 더 좋은 쪽을 색칠했습니다` : "숫자가 모이면 더 좋은 쪽을 색칠합니다"}</small></div>
+  $("cmpBody").innerHTML = `<div class="grab" aria-hidden="true"></div><div class="dlg-top"><div class="ttl"><b id="cmpTitle">나란히 비교</b><small>${win ? `점수로는 <b>${esc(win.name)}</b> 우세 · 칸마다 더 좋은 쪽을 색칠했습니다` : "숫자가 모이면 더 좋은 쪽을 색칠합니다"}</small></div>
     <button class="ghost" type="button" id="cmpClose" aria-label="닫기">✕</button></div>
     <div class="dlg-body"><div class="tscroll"><table class="cmp-t">
       <thead><tr><th></th>${xs.map((it) => `<th scope="col"><button type="button" class="linkish" data-open="${esc(it.id)}">${esc(it.name)}</button><small>${esc(stage(it).label)}</small></th>`).join("")}</tr></thead>
@@ -352,9 +352,11 @@ function renderMyDash() {
 const SCREENS = { home: ["top"], schedule: ["schedule", "calendar"], analysis: ["market", "method"], tools: ["plan", "calc"], my: ["my"], guide: ["guide"] };
 const screenOf = (id) => Object.keys(SCREENS).find((k) => k === id || SCREENS[k].includes(id)) || null;
 let CUR_SCREEN = "home";
+const SCROLL = {};
 function showScreen(name, target) {
   if (!SCREENS[name]) name = "home";
   const changed = name !== CUR_SCREEN;
+  if (changed) SCROLL[CUR_SCREEN] = window.scrollY;
   CUR_SCREEN = name;
   document.querySelectorAll(".screen").forEach((el) => { el.hidden = el.dataset.screen !== name; });
   document.querySelectorAll("[data-go]").forEach((a) => a.toggleAttribute("aria-current", a.dataset.go === name));
@@ -364,7 +366,8 @@ function showScreen(name, target) {
   if (name === "my") renderMyDash();
   const el = target && target !== name ? document.getElementById(target) : null;
   if (el) nativeScroll.call(el, { block: "start" });
-  else if (changed) window.scrollTo(0, 0);
+  else if (changed) window.scrollTo(0, SCROLL[name] || 0); // 앱처럼 탭마다 보던 자리로
+  if (changed && navigator.vibrate) try { navigator.vibrate(8); } catch (e) { /* 진동 없는 기기 */ }
 }
 // 다른 코드가 숨은 화면의 섹션으로 scrollIntoView 하면, 그 화면을 먼저 연다
 const nativeScroll = Element.prototype.scrollIntoView;
@@ -387,6 +390,7 @@ function initScreens() {
     const s = screenOf(id);
     if (!s) return;
     e.preventDefault();
+    if (a.dataset.go && a.dataset.go === CUR_SCREEN) { window.scrollTo({ top: 0, behavior: "smooth" }); return; }
     history.pushState(null, "", `#${s === id ? s : id}`);
     showScreen(s, id);
   });
@@ -422,6 +426,40 @@ function initKeys() {
   });
 }
 
+/* 휴대폰 바텀 시트: 맨 위에서 아래로 끌면 닫힌다 */
+function sheetDrag(dlg) {
+  let y0 = null, dy = 0;
+  const panel = () => dlg.firstElementChild;
+  dlg.addEventListener("pointerdown", (e) => {
+    if (!isPhone() || !e.target.closest(".grab, .dlg-top") || e.target.closest("button, a, input")) return;
+    if (dlg.scrollTop > 0) return;
+    y0 = e.clientY; dy = 0; panel().style.transition = "none";
+  });
+  window.addEventListener("pointermove", (e) => {
+    if (y0 == null) return;
+    dy = Math.max(0, e.clientY - y0);
+    panel().style.transform = `translateY(${dy}px)`;
+  });
+  const end = () => {
+    if (y0 == null) return;
+    y0 = null;
+    const p = panel();
+    p.style.transition = "";
+    if (dy > 110) { p.style.transform = "translateY(100%)"; setTimeout(() => { dlg.close(); p.style.transform = ""; }, 180); }
+    else p.style.transform = "";
+  };
+  window.addEventListener("pointerup", end);
+  window.addEventListener("pointercancel", end);
+}
+function initSteppers() {
+  document.querySelectorAll("[data-step]").forEach((b) => b.addEventListener("click", () => {
+    const inp = document.getElementById(b.dataset.for);
+    const v = Math.max(+inp.min || 0, (parseFloat(inp.value) || 0) + +b.dataset.step);
+    inp.value = v;
+    inp.dispatchEvent(new Event("input", { bubbles: true }));
+  }));
+}
+
 /* ---------------------------------------------------------------- 시작 */
 document.addEventListener("ipo:ready", () => { renderPlan(); renderTray(); renderRail(); });
 document.addEventListener("ipo:records", renderMyDash);
@@ -429,4 +467,7 @@ document.addEventListener("ipo:sharecard", (e) => shareCard(e.detail));
 initPlan();
 initCompare();
 initScreens();
+sheetDrag($("dlg"));
+sheetDrag($("cmpDlg"));
+initSteppers();
 initKeys();
