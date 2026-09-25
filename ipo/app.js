@@ -387,7 +387,9 @@ function row(it) {
   const priceTxt = it.price ? `${won(it.price)}원` : it.band_hi ? `~${won(it.band_hi)}원` : "";
   const when = s.key === "listed" ? `${mdw(it.list_date)} 상장` : it.sub_start ? `${mdw(it.sub_start)} 청약` : "";
   const line2 = [when, priceTxt].filter(Boolean).join(" · ");
-  const line3 = s.key === "listed" ? (it.cur ? `지금 ${pct(p.cur, 0)}` : "")
+  const step3 = (v) => `<b class="${cls(v)}">${pct(v, 0)}</b>`;
+  // 상장한 종목: 시초가는 왼쪽 배지에 있으니 첫날 종가와 지금만
+  const line3 = s.key === "listed" ? [p.close1 != null ? `종가 ${step3(p.close1)}` : "", p.cur != null ? `지금 ${step3(p.cur)}` : ""].filter(Boolean).join(" · ")
     : e ? `균등 1주 기대 <b class="${cls(e.won)}">${e.won >= 0 ? "+" : "−"}${won(Math.abs(e.won))}원</b>`
     : !r.pending && it.inst_comp ? `기관 ${comp(it.inst_comp)}${it.lockup != null ? ` · 확약 ${it.lockup.toFixed(0)}%` : ""}`
     : u ? `주관사 1년 평균 <b class="${cls(u.avg)}">${pct(u.avg, 0)}</b>` : "";
@@ -471,6 +473,93 @@ function fmtVal(row, it) {
   if (row.f.unit === ":1") return comp(row.v);
   if (row.f.unit === "억") return eok(row.v);
   return `${(+row.v).toFixed(1)}${row.f.unit}`;
+}
+
+/* ---------------------------------------------------------------- 과거 데이터로 보는 세 가지 */
+const INST_T = [[0, 100, "100↓", 60], [100, 200, "100~", 150], [200, 500, "200~", 350], [500, 1000, "500~", 750], [1000, Infinity, "1천↑", 1500]];
+const LOCK_T = [[0, 5, "5%↓", 2], [5, 15, "5~15%", 10], [15, 30, "15~30%", 20], [30, 101, "30%↑", 45]];
+const SHORT = { strong: "적극", go: "참여", light: "균등", pass: "관망" };
+const inT = (v, [lo, hi]) => v != null && v >= lo && v < hi;
+const openRet = (x) => (x.open / x.price - 1) * 100;
+
+/** 수요예측 전: 결과가 이렇게 나오면 판정은? 칸마다 지난 1년 같은 구간 종목의 시초가 중앙값 */
+function whatIf(it) {
+  if (it.spac || !scoreOf(it).pending) return "";
+  const xs = listedSample(365);
+  const head = INST_T.map((t) => `<th scope="col">${t[2]}</th>`).join("");
+  const rows = [...LOCK_T].reverse().map((lt) => `<tr><th scope="row">${lt[2]}</th>${INST_T.map((ct) => {
+    const r = SC.score(it, { ...(OVER[it.id] || {}), inst: ct[3], lock: lt[3] }, { temp: tempAt });
+    const k = r.pending ? "wait" : r.verdict.key;
+    const same = xs.filter((x) => inT(x.inst_comp, ct) && inT(x.lockup, lt)).map(openRet);
+    const m = same.length ? median(same) : null;
+    return `<td class="wi v-${k}"><b>${SHORT[k] || "–"}</b>${m != null ? `<small class="${cls(m)}">${pct(m, 0)}<i>${same.length}곳</i></small>` : "<small>표본 없음</small>"}</td>`;
+  }).join("")}</tr>`).join("");
+  const when = it.fc_end ? `수요예측 ${md(it.fc_start || it.fc_end)}~${md(it.fc_end)} · 결과는 보통 끝난 다음 날 나옵니다` : "수요예측 일정 미정";
+  return `<div class="card pad whatif"><h3>만약에 — 수요예측 결과별 판정</h3>
+    <p class="hint mt8">${esc(when)}. 세로는 의무보유확약, 가로는 기관경쟁률. 칸 아래 숫자는 지난 1년 같은 구간 종목의 시초가 중앙값입니다.</p>
+    <div class="tscroll mt12"><table class="wi-t"><thead><tr><th scope="col"><span class="sr">확약 \ 기관경쟁률</span></th>${head}</tr></thead><tbody>${rows}</tbody></table></div></div>`;
+}
+
+/** 청약이 끝나고 상장 전후: 비슷한 종목은 시초가·종가 중 언제 파는 게 나았나 */
+function sellCoach(it) {
+  const s = stage(it).key;
+  const near = s === "wait" || (s === "listed" && it.list_date && diffDays(it.list_date, TODAY) <= 2);
+  if (!near) return "";
+  const all = listedSample(365).concat(ITEMS.filter((x) => x.spac && x.list_date && x.list_date <= TODAY && x.price && x.open && x.close1));
+  if (it.spac) {
+    const sp = all.filter((x) => x.spac && x.close1);
+    if (sp.length < 5) return "";
+    return `<div class="card pad coach"><h3>상장일 매도 — 스팩</h3>
+      <p class="lead mt8">지난 스팩 ${sp.length}곳은 시초가 중앙값 <b class="${cls(median(sp.map(openRet)))}">${pct(median(sp.map(openRet)), 0)}</b>, 첫날 종가 중앙값
+      <b class="${cls(median(sp.map((x) => (x.close1 / x.price - 1) * 100)))}">${pct(median(sp.map((x) => (x.close1 / x.price - 1) * 100)), 0)}</b>였습니다.
+      시초가에 파는 쪽이 거의 늘 나았습니다.</p></div>`;
+  }
+  const band = LOCK_T.find((t) => inT(it.lockup, t));
+  const byLock = band ? all.filter((x) => !x.spac && x.close1 && inT(x.lockup, band)) : [];
+  const pool = byLock.length >= 5 ? byLock : all.filter((x) => !x.spac && x.close1);
+  if (pool.length < 5) return "";
+  const o = pool.map(openRet), c = pool.map((x) => (x.close1 / x.price - 1) * 100);
+  const closeWins = pool.filter((x) => x.close1 > x.open).length;
+  const tt = pool.filter((x) => x.open >= x.price * 3.9).length;
+  const better = median(o) >= median(c);
+  const rec = RECS.find((r) => r.name.replace(/\s+/g, "") === it.name.replace(/\s+/g, "") && (r.alloc || 0) > 0);
+  const p = it.price || offerPrice(it);
+  const mine = rec && p ? `<div class="kv kv4 mt12">${[1.6, 2, 3, 4].map((k) => `<div><i>공모가 ${k}배에 팔면</i><b class="up">+${won((k - 1) * p * rec.alloc)}원</b></div>`).join("")}</div>
+    <p class="hint mt8">내 기록: ${nf.format(rec.alloc)}주 배정 · 수수료·세금 빼기 전</p>` : "";
+  return `<div class="card pad coach"><h3>상장일 매도 코치</h3>
+    <p class="hint mt8">${byLock.length >= 5 ? `확약 ${band[2]} 구간` : "지난 1년"} 비슷한 종목 ${pool.length}곳 기준</p>
+    <div class="stats c4 mt12">
+      <div class="st"><div class="k">시초가 중앙값</div><div class="v ${cls(median(o))}">${pct(median(o), 0)}</div></div>
+      <div class="st"><div class="k">첫날 종가 중앙값</div><div class="v ${cls(median(c))}">${pct(median(c), 0)}</div></div>
+      <div class="st"><div class="k">종가가 더 높았던 곳</div><div class="v">${Math.round(closeWins / pool.length * 100)}%</div><div class="s">${closeWins}/${pool.length}곳</div></div>
+      <div class="st"><div class="k">따따블(4배)</div><div class="v">${Math.round(tt / pool.length * 100)}%</div><div class="s">${tt}곳</div></div>
+    </div>
+    <p class="lead mt12">${better ? `비슷한 종목은 <b>시초가에 파는 쪽</b>이 나았습니다. 종가까지 들고 있어 더 번 곳은 ${pool.length}곳 중 ${closeWins}곳입니다.`
+      : `비슷한 종목은 <b>첫날 종가까지 기다린 쪽</b>이 나았습니다(중앙값 기준).`} 절반은 시초가, 절반은 목표가를 걸어 두는 분할 매도도 많이 씁니다.</p>
+    ${mine}</div>`;
+}
+
+/** 판정이 난(또는 상장한) 종목: 숫자가 가장 비슷했던 지난 종목 5곳과 그 결과. 이 종목 청약 전 상장분만 쓴다 */
+function similar(it) {
+  const r = scoreOf(it);
+  if (it.spac || r.pending) return "";
+  const cut = it.sub_start || it.list_date || TODAY;
+  const pool = listedSample(730).filter((x) => x.id !== it.id && x.list_date < cut && x.inst_comp != null && x.lockup != null);
+  if (pool.length < 8) return "";
+  const pos = (x) => (x.price && x.band_hi && x.band_lo && x.band_hi > x.band_lo ? (x.price - x.band_lo) / (x.band_hi - x.band_lo) : 1);
+  const lg = (v) => Math.log10(Math.max(1, v || 1));
+  const o = OVER[it.id] || {};
+  const me = { inst: lg(o.inst ?? it.inst_comp), lock: o.lock ?? it.lockup, amt: lg(it.amount), pos: pos(it), px: lg(offerPrice(it)) };
+  if (me.inst === 0 || me.lock == null) return "";
+  const F = [["inst", 1, (x) => lg(x.inst_comp)], ["lock", 1.2, (x) => x.lockup], ["amt", 0.5, (x) => lg(x.amount)], ["pos", 0.5, pos], ["px", 0.3, (x) => lg(x.price)]];
+  const sd = Object.fromEntries(F.map(([k, , f]) => { const v = pool.map(f); const m = v.reduce((a, b) => a + b, 0) / v.length; return [k, Math.sqrt(v.reduce((a, b) => a + (b - m) ** 2, 0) / v.length) || 1]; }));
+  const near = pool.map((x) => ({ x, d: F.reduce((a, [k, w, f]) => a + w * ((f(x) - me[k]) / sd[k]) ** 2, 0) })).sort((a, b) => a.d - b.d).slice(0, 5);
+  const ret = (x, k) => (x[k] ? (x[k] / x.price - 1) * 100 : null);
+  const mo = median(near.map(({ x }) => ret(x, "open")));
+  return `<div class="card pad sim"><h3>숫자가 비슷했던 종목 5곳</h3>
+    <p class="hint mt8">기관경쟁률·확약·공모 규모·공모가 위치·가격이 가까운 순. 이 종목 청약 전에 상장한 곳만 봅니다. 시초가 중앙값 <b class="${cls(mo)}">${pct(mo, 0)}</b></p>
+    <ul class="simlist mt12">${near.map(({ x }) => `<li role="button" tabindex="0" data-open="${esc(x.id)}"><span><b>${esc(x.name)}</b><small>${md(x.list_date)} 상장 · 기관 ${comp(x.inst_comp)} · 확약 ${x.lockup.toFixed(0)}%</small></span>
+      <span class="r3"><b class="${cls(ret(x, "open"))}">${pct(ret(x, "open"), 0)}</b><small>종가 ${pct(ret(x, "close1"), 0)} · 지금 ${pct(ret(x, "cur"), 0)}</small></span></li>`).join("")}</ul></div>`;
 }
 
 const AUTO_KEYS = new Set(["inst", "lock", "pos", "size"]);
@@ -587,6 +676,9 @@ function openDetail(id) {
     <div class="dlg-body">
       ${timeline(it)}
       <div id="dScore">${scorecard(it)}</div>
+      ${whatIf(it)}
+      ${sellCoach(it)}
+      ${similar(it)}
       <div class="stats c3">
         ${st("희망 공모가", band, "원")}
         ${st("확정 공모가", won(it.price), it.price && it.band_hi ? `밴드 상단 대비 ${pct((it.price / it.band_hi - 1) * 100, 0)}` : "원")}
@@ -634,6 +726,7 @@ function openDetail(id) {
     }
   };
   body.oninput = (e) => { if (e.target.classList.contains("bk")) updateBroker(it, body); };
+  body.onclick = (e) => { const li = e.target.closest("[data-open]"); if (li && body.contains(li) && !li.closest(".linkish")) openDetail(li.dataset.open); };
   if (body.querySelector(".bp-t")) updateBroker(it, body);
   body.querySelectorAll("[data-act]").forEach((b) => b.addEventListener("click", () => {
     const act = b.dataset.act;
@@ -713,11 +806,13 @@ function expectOf(it) {
   const rs = past().vd.get(r.verdict.key) || [];
   if (rs.length < 5) return null;
   const med = median(rs);
-  return { med, n: rs.length, won: offerPrice(it) * med / 100, label: r.verdict.label };
+  const gross = offerPrice(it) * med / 100, fee = numOf("cFee") ?? 2000;
+  // 청약 수수료(배정받으면 냄)를 뺀 1주 기대 — 화면에 보이는 값은 이것
+  return { med, n: rs.length, gross, won: gross - fee, fee, label: r.verdict.label };
 }
 function hintLine(it) {
   const e = expectOf(it);
-  if (e) return `<div class="exp">균등 1주 기대 <b class="${cls(e.won)}">${e.won >= 0 ? "+" : "−"}${won(Math.abs(e.won))}원</b><small>지난 1년 '${esc(e.label)}' ${e.n}곳 시초가 중앙값 ${pct(e.med, 0)}</small></div>`;
+  if (e) return `<div class="exp">균등 1주 기대 <b class="${cls(e.won)}">${e.won >= 0 ? "+" : "−"}${won(Math.abs(e.won))}원</b><small>수수료 ${won(e.fee)}원 뺀 값 · 지난 1년 '${esc(e.label)}' ${e.n}곳 시초가 중앙값 ${pct(e.med, 0)}</small></div>`;
   const s = stage(it).key;
   if (it.spac || !["pre", "fc", "sub"].includes(s)) return "";
   const u = uwRecord(it);

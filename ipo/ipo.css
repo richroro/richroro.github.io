@@ -808,3 +808,23 @@ body{word-break:keep-all;overflow-wrap:anywhere}
 /* 짧은 화면(가로·확대)에서는 거르개를 붙이지 않는다 — 내용이 가려지지 않게 */
 @media(max-height:560px){#schedule .toolbar{position:static !important}}
 body:has(dialog[open]) .toast[popover]{bottom:calc(96px + env(safe-area-inset-bottom,0px))}
+
+/* ================================================================ v8: 만약에 · 매도 코치 · 비슷한 종목 */
+.whatif h3,.coach h3,.sim h3{font-size:16px;font-weight:800}
+table.wi-t{min-width:0;width:100%;table-layout:fixed;border-collapse:separate;border-spacing:3px}
+.wi-t th{font-size:11px;color:var(--ink-3);font-weight:600;text-align:center;padding:2px;border:0;background:transparent;white-space:nowrap}
+.wi-t th[scope=row]{text-align:left;width:52px}
+.wi-t td.wi{text-align:center;border-radius:8px;padding:6px 2px;border:0;background:color-mix(in srgb,var(--vc,var(--ink-3)) 13%,transparent);white-space:normal}
+.wi-t td.wi b{display:block;font-size:12.5px;font-weight:800;color:var(--vc,var(--ink-3))}
+.wi-t td.wi small{display:block;font-size:10.5px;color:var(--ink-2);line-height:1.25;margin-top:1px}
+.wi-t td.wi small i{display:block;font-style:normal;color:var(--ink-3);font-size:10px}
+.wi-t tbody tr:hover{background:transparent}
+.coach .lead{font-size:14px}
+.simlist{list-style:none;display:flex;flex-direction:column;gap:6px}
+.simlist li{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:10px 12px;border-radius:12px;background:var(--surface-2);cursor:pointer}
+.simlist li span{display:flex;flex-direction:column;min-width:0}
+.simlist li b{font-size:14.5px;font-weight:700}
+.simlist li small{font-size:12px;color:var(--ink-3)}
+.simlist .r3{align-items:flex-end;text-align:right;flex:none}
+.simlist .r3 b{font-size:16px}
+@media(hover:none){.simlist li:active{transform:scale(.98)}}
