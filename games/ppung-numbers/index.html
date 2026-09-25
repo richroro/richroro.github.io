@@ -319,6 +319,33 @@
   .opts.tiles .opt{min-height:clamp(58px,9vh,76px)}
   .opt.used{opacity:.2;box-shadow:none}
 
+  /* ── 더하기 빼기 ─────────────────────── */
+  .big.math{display:flex;align-items:center;justify-content:center;gap:12px;width:100%;margin-top:12px;padding:14px 12px;
+    background:var(--sun);color:var(--ink);box-shadow:0 5px 0 #E3A91C}
+  .big.math:active{box-shadow:0 1px 0 #E3A91C}
+  .big.math .e{margin:0;font-size:34px}
+  .big.math span:last-child{text-align:left}
+  .big.math small{opacity:.75}
+  .meq{font-size:clamp(44px,13vw,84px);font-weight:900;letter-spacing:-.04em;white-space:nowrap;line-height:1.1;animation:pop .45s cubic-bezier(.3,1.6,.5,1)}
+  .meq .op{color:var(--potato);margin:0 .12em}
+  .meq .q{display:inline-block;min-width:1.1em;padding:0 .12em;border-radius:14px;background:var(--potato-weak);color:var(--potato);
+    outline:3px dashed var(--potato);outline-offset:-3px;text-align:center}
+  .meq .q.ok{background:var(--green);color:#fff;outline:0}
+  .mword{font-size:clamp(34px,10.5vw,58px);font-weight:900;line-height:1.3;letter-spacing:-.05em;text-align:center;color:var(--potato-dark);
+    word-break:keep-all;animation:pop .45s cubic-bezier(.3,1.6,.5,1)}
+  .mword .op{color:var(--ink-2)}
+  .mpic{display:flex;flex-direction:column;align-items:center;gap:4px}
+  .mpic .sign{font-size:clamp(30px,9vw,42px);font-weight:900;color:var(--potato);line-height:1}
+  .mpic .note{font-size:13px;font-weight:700;color:var(--ink-3);margin-top:6px}
+  .cell.gone{position:relative;background:var(--red-weak)}
+  .cell.gone::after{content:"";position:absolute;inset:10%;background:
+    linear-gradient(45deg,transparent 44%,var(--red) 44%,var(--red) 56%,transparent 56%),
+    linear-gradient(-45deg,transparent 44%,var(--red) 44%,var(--red) 56%,transparent 56%)}
+  .story{text-align:center;font-size:clamp(19px,5.6vw,25px);font-weight:800;line-height:1.6;letter-spacing:-.03em;word-break:keep-all}
+  .story .e{display:block;font-size:clamp(44px,14vw,64px);line-height:1.1;margin-bottom:6px;animation:pop .45s cubic-bezier(.3,1.6,.5,1)}
+  .story b{color:var(--potato)}
+  .story .ask-line{display:block;margin-top:4px;color:var(--potato-dark)}
+
   /* ── 배우기 표시 ─────────────────────── */
   .gcell{position:relative}
   .gcell .bd{position:absolute;top:4px;width:7px;height:7px;border-radius:50%}
@@ -437,6 +464,16 @@
       </div>
 
       <div class="panel">
+        <h2>더하기 빼기</h2>
+        <div class="chips c3" id="pick-op">
+          <button class="chip" data-v="add">➕ 더하기<small>모두 몇 개?</small></button>
+          <button class="chip" data-v="sub">➖ 빼기<small>몇 개 남았지?</small></button>
+          <button class="chip" data-v="both">둘 다<small>섞어서</small></button>
+        </div>
+        <button class="big math" id="go-math"><span class="e">🧮</span><span>셈 놀이<small id="math-range">10까지 · 10문제</small></span></button>
+      </div>
+
+      <div class="panel">
         <div class="stk-head"><h2>내 스티커</h2><span id="stk-count">0 / 30</span></div>
         <div class="stickers" id="stickers"></div>
       </div>
@@ -453,6 +490,7 @@
           <li><b>하나·둘·셋</b>(우리말)은 개수를 셀 때, <b>일·이·삼</b>(한자말)은 숫자를 읽을 때 주로 써요. 처음엔 한 가지만 고르고 익숙해지면 ‘둘 다’로 바꿔 보세요.</li>
           <li>퀴즈는 여덟 가지가 섞여 나와요: 숫자 읽기, 글자 보고 숫자 찾기, 그림 세기, 듣고 고르기, 다음 수, 더 큰 수·작은 수, 글자 만들기, 단위 붙여 세기(세 마리·두 개). 듣기 문제는 기기에 한국어 음성이 있을 때만 나와요.</li>
           <li>‘세 마리’처럼 단위를 붙이면 하나→한, 둘→두, 셋→세, 넷→네, 스물→스무로 바뀌어요. 단위 문제는 하나·둘·셋을 고른 때만 나와요.</li>
+          <li>셈 놀이는 그림 셈, 숫자 식, 글자 식(셋 더하기 넷은?), 빈칸 채우기, 이야기 문제가 섞여 나와요. 고른 범위 안에서 내고, 20이 넘으면 받아올림·받아내림이 없는 식만 나와요. 틀린 식은 다음 판에 다시 나와요.</li>
           <li>20이 넘는 수는 10개 묶음 막대와 낱개로 보여 줘서 자릿값 감각도 같이 익혀요.</li>
           <li>틀려도 벌점 없이 다시 고를 수 있고, 두 번 틀리면 정답이 반짝여요. 한 판을 끝내면 스티커를 하나 받고, 스티커가 모이면 뿡이 옷이 열려요.</li>
           <li>틀렸던 숫자는 기억해 뒀다가 다음 판에 더 자주 물어봐요(‘다시 도전!’ 표시).</li>
@@ -549,6 +587,18 @@
     { e: '🚗', name: '자동차가', c: '대' },  { e: '🌷', name: '꽃이', c: '송이' },   { e: '✏️', name: '연필이', c: '자루' }
   ];
   // 뿡이 옷: 스티커가 need 개 모이면 열린다. top/left 는 뿡이 크기 대비 위치
+  // 이야기 문제: 단위가 모두 받침 없이 끝나서 조사는 ‘가·를’로 고정된다. {b}에 ‘두 마리’가 들어간다
+  const STORY = [
+    { e: '🍎', noun: '사과',   c: '개',   add: '{b}를 더 땄어요',     sub: '{b}를 먹었어요' },
+    { e: '🍪', noun: '쿠키',   c: '개',   add: '{b}를 더 구웠어요',   sub: '{b}를 먹었어요' },
+    { e: '🎈', noun: '풍선',   c: '개',   add: '{b}를 더 샀어요',     sub: '{b}가 날아갔어요' },
+    { e: '🐶', noun: '강아지', c: '마리', add: '{b}가 더 왔어요',     sub: '{b}가 집에 갔어요' },
+    { e: '🐟', noun: '물고기', c: '마리', add: '{b}가 더 들어왔어요', sub: '{b}가 헤엄쳐 갔어요' },
+    { e: '🐥', noun: '병아리', c: '마리', add: '{b}가 더 태어났어요', sub: '{b}가 엄마한테 갔어요' },
+    { e: '🚗', noun: '자동차', c: '대',   add: '{b}가 더 왔어요',     sub: '{b}가 떠났어요' },
+    { e: '🌷', noun: '꽃',     c: '송이', add: '{b}가 더 피었어요',   sub: '{b}를 엄마께 드렸어요' },
+    { e: '✏️', noun: '연필',   c: '자루', add: '{b}를 더 샀어요',     sub: '{b}를 친구에게 줬어요' }
+  ];
   const DRESS = [
     { id: 'none',    e: '',   icon: '🍠', name: '그대로', need: 0 },
     { id: 'ribbon',  e: '🎀', name: '리본',   need: 2,  top: '4%',   left: '70%', size: .34, rot: 18 },
@@ -566,8 +616,12 @@
     auto: store.get('auto', true),
     dress: store.get('dress', 'none'),
     stickers: store.get('stickers', []),
-    stats: store.get('stats', null)
+    stats: store.get('stats', null),
+    op: store.get('op', 'add'),
+    mathMiss: store.get('mathMiss', [])
   };
+  if (!['add','sub','both'].includes(S.op)) S.op = 'add';
+  if (!Array.isArray(S.mathMiss)) S.mathMiss = [];
   if (!['nat','sino','mix'].includes(S.sys)) S.sys = 'nat';
   if (![10,20,50,100].includes(S.max)) S.max = 10;
   if (typeof S.auto !== 'boolean') S.auto = true;
@@ -592,6 +646,7 @@
   };
   const word = (n, sys) => sys === 'sino' ? sino(n) : native(n);
   const SYS_NAME = { nat: '하나·둘·셋', sino: '일·이·삼' };
+  const ROUND = 10;
   // 받침이 있으면 a(이), 없으면 b(가)
   const josa = (w, a, b) => { const c = w.charCodeAt(w.length - 1) - 0xAC00; return c >= 0 && c < 11172 && c % 28 ? a : b; };
 
@@ -793,12 +848,19 @@
   function paintChips(){
     document.querySelectorAll('#pick-sys .chip').forEach(c => c.setAttribute('aria-pressed', c.dataset.v === S.sys));
     document.querySelectorAll('#pick-max .chip').forEach(c => c.setAttribute('aria-pressed', +c.dataset.v === S.max));
+    document.querySelectorAll('#pick-op .chip').forEach(c => c.setAttribute('aria-pressed', c.dataset.v === S.op));
+    $('#math-range').textContent = `${S.max}까지 · ${ROUND}문제`;
   }
   $('#pick-sys').addEventListener('click', e => {
     const c = e.target.closest('.chip'); if (!c) return;
     S.sys = c.dataset.v; store.set('sys', S.sys); paintChips(); sfx.tap();
     const say = { nat: '하나, 둘, 셋', sino: '일, 이, 삼', mix: '하나 둘 셋, 일 이 삼' }[S.sys];
     speak(say);
+  });
+  $('#pick-op').addEventListener('click', e => {
+    const c = e.target.closest('.chip'); if (!c) return;
+    S.op = c.dataset.v; store.set('op', S.op); paintChips(); sfx.tap();
+    speak({ add: '더하기', sub: '빼기', both: '더하기, 빼기' }[S.op]);
   });
   $('#pick-max').addEventListener('click', e => {
     const c = e.target.closest('.chip'); if (!c) return;
@@ -982,7 +1044,6 @@
   });
 
   /* ── 퀴즈 ─────────────────────────────── */
-  const ROUND = 10;
   const Q = { list: [], i: 0, score: 0, streak: 0, locked: false, timer: 0, sayTimer: 0, lastWon: null };
 
   // 헷갈리기 쉬운 수를 먼저 보기로 쓴다: 이웃 수, 10 차이, 자리 바꾼 수
@@ -1059,21 +1120,97 @@
     }
     return list;
   }
-  function startQuiz(){
+  /* ── 더하기 빼기 ─────────────────────── */
+  const OPW = { add: '더하기', sub: '빼기' }, OPS = { add: '+', sub: '−' };
+  const factKey = f => f.a + (f.op === 'add' ? '+' : '-') + f.b;
+  const factRes = f => f.op === 'add' ? f.a + f.b : f.a - f.b;
+  // 20까지는 자유롭게 내고, 그보다 크면 받아올림·받아내림이 없는 식만 낸다(7살 눈높이)
+  function makeFact(op){
+    const max = S.max, T = max / 10;
+    let a, b;
+    if (op === 'add') {
+      if (max <= 20) { a = 1 + rnd(max - 1); b = 1 + rnd(max - a); }
+      else if (rnd(3) === 0) { a = 10 * (1 + rnd(T - 1)); b = 10 * (1 + rnd(T - a / 10)); }
+      else { do { a = 10 + rnd(max - 10); b = 1 + rnd(9); } while (a % 10 + b > 9 || a + b > max); }
+    } else {
+      if (max <= 20) { a = 2 + rnd(max - 1); b = 1 + rnd(a - 1); }
+      else if (rnd(3) === 0) { a = 10 * (2 + rnd(T - 1)); b = 10 * (1 + rnd(a / 10 - 1)); }
+      else { do { a = 11 + rnd(max - 10); b = 1 + rnd(9); } while (a % 10 < b); }
+    }
+    return { op, a, b };
+  }
+  function parseFact(k){
+    const m = /^(\d+)([+-])(\d+)$/.exec(k);
+    if (!m) return null;
+    const f = { op: m[2] === '+' ? 'add' : 'sub', a: +m[1], b: +m[3] }, r = factRes(f);
+    return r >= 1 && r <= S.max && f.a <= S.max && f.b <= S.max ? f : null;
+  }
+  function makeMathRound(){
+    const ops = S.op === 'both' ? ['add', 'sub'] : [S.op];
+    const miss = S.mathMiss.slice(), seen = new Set(), list = [];
+    let prev = '';
+    for (let i = 0; i < ROUND; i++) {
+      let f = null, review = false;
+      // 지난번에 틀린 식을 가끔 다시 낸다
+      while (!f && miss.length && Math.random() < .4) {
+        const c = parseFact(miss.splice(rnd(miss.length), 1)[0]);
+        if (c && ops.includes(c.op) && !seen.has(factKey(c))) { f = c; review = true; }
+      }
+      if (!f) { let g = 0; do { f = makeFact(ops[rnd(ops.length)]); } while (seen.has(factKey(f)) && g++ < 30); }
+      seen.add(factKey(f));
+      const res = factRes(f);
+      const kinds = ['mnum', 'mword', 'mblank'];
+      if ((f.op === 'add' && f.a <= 10 && f.b <= 10) || (f.op === 'sub' && f.a <= 20)) kinds.push('mpic', 'mpic');
+      if (Math.max(f.a, f.b, res) <= 20) kinds.push('mstory', 'mstory');
+      let type, g = 0;
+      do { type = kinds[rnd(kinds.length)]; } while (type === prev && g++ < 10);
+      prev = type;
+      let sys = S.sys === 'mix' ? (Math.random() < .5 ? 'nat' : 'sino') : S.sys;
+      if (type === 'mstory') sys = 'nat';
+      if (Math.max(f.a, f.b, res) >= 100) sys = 'sino';
+      const n = type === 'mblank' ? f.b : res;
+      list.push({ type, sys, n, res, fact: f, op: f.op, a: f.a, b: f.b, review, miss: 0, noStat: true,
+        opts: choices(n), emo: COUNT_EMOJI[rnd(COUNT_EMOJI.length)], story: STORY[rnd(STORY.length)] });
+    }
+    return list;
+  }
+  function mathRecord(q, first){
+    const k = factKey(q.fact);
+    S.mathMiss = S.mathMiss.filter(x => x !== k);
+    if (!first) S.mathMiss.push(k);
+    S.mathMiss = S.mathMiss.slice(-30);
+    store.set('mathMiss', S.mathMiss);
+  }
+  // 이야기 문제 문장: [있어요, 변화, 질문]
+  function storyLines(q){
+    const t = q.story, unit = v => `${nativeMod(v)} ${t.c}`;
+    return [
+      `${t.noun} ${unit(q.a)}가 있어요.`,
+      t[q.op].replace('{b}', unit(q.b)) + '.',
+      q.op === 'add' ? `모두 몇 ${t.c}일까?` : `몇 ${t.c} 남았을까?`
+    ];
+  }
+  // “셋 더하기 넷은” 처럼 식을 말로
+  const eqWords = q => { const wb = word(q.b, q.sys); return `${word(q.a, q.sys)} ${OPW[q.op]} ${wb}${josa(wb, '은', '는')}`; };
+
+  function startQuiz(mode){
     ac();
-    Q.list = makeRound(); Q.i = 0; Q.score = 0; Q.streak = 0;
+    Q.mode = mode || Q.mode || 'quiz';
+    Q.list = Q.mode === 'math' ? makeMathRound() : makeRound(); Q.i = 0; Q.score = 0; Q.streak = 0;
     const d = $('#dots'); d.innerHTML = '';
     for (let i = 0; i < ROUND; i++) d.appendChild(el('i'));
     $('#score').textContent = '0';
     show('quiz');
     ask();
   }
-  $('#go-play').addEventListener('click', () => { sfx.tap(); startQuiz(); });
+  $('#go-play').addEventListener('click', () => { sfx.tap(); startQuiz('quiz'); });
+  $('#go-math').addEventListener('click', () => { sfx.tap(); startQuiz('math'); });
   $('#again').addEventListener('click', () => { sfx.tap(); startQuiz(); });
 
   const optLabel = (q, v) =>
     q.type === 'unit' ? nativeMod(v) + ' ' + q.thing.c :
-    ['read', 'count', 'next', 'bigger'].includes(q.type) ? word(v, q.sys) : String(v);
+    q.type === 'mstory' ? nativeMod(v) + ' ' + q.story.c :
+    ['read', 'count', 'next', 'bigger', 'mpic', 'mnum', 'mblank'].includes(q.type) ? word(v, q.sys) : String(v);
 
   // html: 말풍선, auto: 자동으로 읽어 줄 말(정답을 흘리지 않음), hint: 🔊 버튼을 눌렀을 때(힌트 포함)
   function promptFor(q){
@@ -1091,6 +1228,17 @@
         auto: `둘 중에 더 ${q.big ? '큰' : '작은'} 수는 뭘까?`,
         hint: `${word(q.pair[0], q.sys)}, ${word(q.pair[1], q.sys)}. 더 ${q.big ? '큰' : '작은'} 수는?` };
       case 'build':  return { html: `${tag} 말로<br>글자를 만들어 봐!`, auto: '이 숫자를 글자로 만들어 봐' };
+      case 'mpic':   return q.op === 'add'
+        ? { html: `모두 몇 개일까?<br>${tag} 말로 골라 봐`, auto: '합치면 모두 몇 개일까?' }
+        : { html: `빨간 가위표를 빼면<br>몇 개 남을까?`, auto: '가위표 한 것을 빼면 몇 개 남을까?' };
+      case 'mnum':   return { html: `${tag} 말로<br>답을 골라 봐!`, auto: eqWords(q) + '?' };
+      case 'mword':  return { html: `이 식의 답은<br>어떤 숫자일까?`, auto: '이 식의 답은 몇일까?', hint: eqWords(q) + '?' };
+      case 'mblank': {
+        const wa = word(q.a, q.sys), wr = word(q.res, q.sys);
+        return { html: `빈 칸에 들어갈<br>${tag} 말은?`,
+          auto: `${wa}${q.op === 'add' ? '에 뭘 더하면' : '에서 뭘 빼면'} ${wr}${josa(wr, '이', '가')} 될까?` };
+      }
+      case 'mstory': return { html: `이야기를 잘 듣고<br>풀어 봐!`, auto: storyLines(q).join(' ') };
     }
   }
   function ask(){
@@ -1122,6 +1270,34 @@
       v.append(el('span', 'e', q.big ? '🐘' : '🐭'));
       const b = el('b'); b.innerHTML = `더 <em>${q.big ? '큰' : '작은'}</em> 수를 콕!`;
       v.append(b); st.appendChild(v);
+    } else if (q.type === 'mpic') {
+      const v = el('div', 'mpic');
+      if (q.op === 'add') {
+        const x = el('div', 'viz'), y = el('div', 'viz');
+        renderViz(x, q.a, q.emo); renderViz(y, q.b, q.emo);
+        v.append(x, el('div', 'sign', '+'), y);
+      } else {
+        const x = el('div', 'viz'); renderViz(x, q.a, q.emo);
+        const on = x.querySelectorAll('.cell.on');
+        for (let i = on.length - q.b; i < on.length; i++) on[i].classList.add('gone');
+        v.append(x, el('div', 'note', `${q.b}개에 가위표`));
+      }
+      st.appendChild(v);
+    } else if (q.type === 'mnum' || q.type === 'mblank') {
+      const v = el('div', 'meq');
+      const blank = q.type === 'mblank';
+      v.append(String(q.a), el('span', 'op', OPS[q.op]), el('span', blank ? 'q' : '', blank ? '?' : String(q.b)),
+        el('span', 'op', '='), el('span', blank ? '' : 'q', blank ? String(q.res) : '?'));
+      st.appendChild(v);
+    } else if (q.type === 'mword') {
+      const v = el('div', 'mword');
+      const wb = word(q.b, q.sys);
+      v.append(word(q.a, q.sys) + ' ', el('span', 'op', OPW[q.op]), el('br'), wb + josa(wb, '은', '는') + '?');
+      st.appendChild(v);
+    } else if (q.type === 'mstory') {
+      const v = el('div', 'story'), L = storyLines(q);
+      v.append(el('span', 'e', q.story.e), L[0], el('br'), L[1], el('span', 'ask-line', L[2]));
+      st.appendChild(v);
     } else if (q.type === 'build') {
       const v = el('div', 'build');
       v.append(el('div', 'bnum', String(q.n)));
@@ -1148,7 +1324,7 @@
       });
       return;
     }
-    const wordOpts = !['pick', 'listen'].includes(q.type);
+    const wordOpts = !['pick', 'listen', 'mword'].includes(q.type);
     q.opts.forEach(v => {
       const b = el('button', 'opt' + (wordOpts ? '' : ' digit'), optLabel(q, v));
       b.dataset.v = v;
@@ -1206,6 +1382,7 @@
     if (first) { Q.score++; Q.streak++; dot.classList.add('ok'); } else dot.classList.add('miss');
     $('#score').textContent = Q.score;
     if (!q.noStat) record(q.sys, q.n, first);
+    if (q.fact) mathRecord(q, first);
 
     if (Q.streak > 0 && Q.streak % 3 === 0) {
       fart(mascots.ask, '뿡빵뿡!'); sfx.ppungbbang();
@@ -1216,6 +1393,7 @@
     buzz(first ? 25 : 15);
     burst(btn || burstFrom || $('#stage'), first ? 12 : 6, first ? ['⭐', '✨', '💨', '🌟'] : ['✨', '💨']);
     if (q.type === 'next') { const b = $('#stage .stone.blank'); b.textContent = word(q.n, q.sys); b.classList.add('ok'); }
+    if (q.type === 'mnum' || q.type === 'mblank') { const b = $('#stage .meq .q'); b.textContent = q.n; b.classList.add('ok'); }
 
     // 정답이면 이름을 한 줄로 보여 주고 읽어 준다
     const rv = $('#stage .reveal');
@@ -1226,6 +1404,17 @@
       parts = [`${word(a, q.sys)}(${a})`, sign, `${word(b, q.sys)}(${b})`];
       const w = word(q.n, q.sys);
       say = `${w}${josa(w, '이', '가')} 더 ${q.big ? '커' : '작아'}`;
+    } else if (q.fact) {
+      parts = [`${q.a} ${OPS[q.op]} ${q.b} = ${q.res}`];
+      const wr = word(q.res, q.sys);
+      if (q.type === 'mstory') {
+        parts.push('·', `${nativeMod(q.res)} ${q.story.c}`);
+        say = `${nativeMod(q.res)} ${q.story.c}`;
+      } else {
+        // 빈칸 문제의 답은 결과가 아니라 빈칸에 들어간 수다
+        parts.push('·', word(q.n, q.sys));
+        say = `${eqWords(q)} ${wr}`;
+      }
     } else if (q.type === 'unit') {
       parts = [String(q.n), '=', `${nativeMod(q.n)} ${q.thing.c}`];
       say = `${nativeMod(q.n)} ${q.thing.c}`;
@@ -1235,7 +1424,7 @@
       parts.push('=', sino(q.n));
       say = word(q.n, q.sys);
     }
-    parts.forEach(t => rv.appendChild(el('span', t === '=' || t === '<' || t === '>' ? 'eq' : '', t)));
+    parts.forEach(t => rv.appendChild(el('span', ['=', '<', '>', '·'].includes(t) ? 'eq' : '', t)));
     rv.classList.add('show');
     clearTimeout(Q.sayTimer);
     Q.sayTimer = setTimeout(() => speak(say), 420);
