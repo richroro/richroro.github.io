@@ -81,7 +81,7 @@
     white-space:nowrap;overflow:hidden;text-overflow:ellipsis;text-shadow:0 1px 8px rgba(0,0,0,.35)}
   .brand span{display:block;font-size:12px;font-weight:600;color:var(--on-night-2);
     white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-  .status{display:flex;align-items:center;gap:7px;min-height:29px}
+  .status{display:flex;align-items:center;gap:7px;row-gap:6px;flex-wrap:wrap;min-height:29px}
   .chip{
     display:flex;align-items:center;gap:5px;flex:0 0 auto;background:var(--card);color:var(--ink-2);
     border-radius:10px;padding:6px 10px;font-size:12.5px;font-weight:700;letter-spacing:-.02em;
@@ -93,6 +93,7 @@
   .chip.done{background:var(--green-weak);color:var(--green)}
   .chip.done b{color:var(--green)}
   .chip.fire{background:var(--orange-weak);color:#B8400C}
+  .chip.three{background:#FFF4DE;color:#9A5B00}
   .chip.bump{animation:bump .22s}
   @keyframes bump{50%{transform:scale(1.13)}}
   .pts{margin-left:auto;font-family:var(--display);font-weight:800;font-synthesis:none;font-size:24px;line-height:1;letter-spacing:.01em;
@@ -153,6 +154,23 @@
   #gauge em{position:absolute;right:16px;bottom:-4px;font-style:normal;font-size:10.5px;font-weight:800;
     color:var(--gold);white-space:nowrap;display:none}
   #gauge em.on{display:block}
+  /* 옆에서 본 궤적. 공 뒤에서 보면 날아갈 길이 세로 한 줄로 겹쳐 거리가 안 보여서 옆모습을 작게 따로 그린다 */
+  #track{position:absolute;left:12px;top:55%;z-index:5;width:136px;height:88px;border-radius:12px;
+    background:rgba(8,14,28,.66);box-shadow:0 4px 14px rgba(0,0,0,.28);pointer-events:none}
+  #track[hidden]{display:none}
+  #track canvas{display:block;width:100%;height:100%}
+  /* 첫 슛 손가락 안내: 공에서 위로 끌어 올리는 동작을 되풀이해 보여 준다 */
+  #hand{position:absolute;left:50%;top:80%;z-index:6;width:30px;height:30px;margin:-15px 0 0 -15px;
+    pointer-events:none;display:none}
+  #hand.on{display:block}
+  #hand i{position:absolute;inset:0;border-radius:50%;background:rgba(255,255,255,.94);
+    box-shadow:0 0 0 7px rgba(255,255,255,.22),0 4px 14px rgba(0,0,0,.4);animation:handUp 1.8s cubic-bezier(.4,.1,.3,1) infinite}
+  @keyframes handUp{
+    0%{transform:translateY(0) scale(.7);opacity:0}
+    14%{transform:translateY(0) scale(1);opacity:1}
+    68%{transform:translateY(-17vh) scale(1);opacity:1}
+    84%,100%{transform:translateY(-17vh) scale(.8);opacity:0}
+  }
 
   /* ── 오버레이 ─────────────────────────── */
   .veil{
@@ -219,7 +237,7 @@
   @keyframes star{to{transform:scale(1);opacity:1}}
 
   #toast{
-    position:absolute;left:50%;top:57%;z-index:15;pointer-events:none;
+    position:absolute;left:50%;top:calc(env(safe-area-inset-top) + 124px);z-index:15;pointer-events:none;
     transform:translate(-50%,-8px);background:rgba(10,17,32,.86);color:#fff;font-size:13px;font-weight:700;
     padding:11px 18px;border-radius:12px;opacity:0;transition:opacity .2s,transform .2s;
     width:max-content;max-width:calc(100% - 32px);word-break:keep-all;overflow-wrap:anywhere;text-align:center;
@@ -247,6 +265,7 @@
   </div>
   <div class="status">
     <div class="chip" id="chipGoal"><span class="lab">골</span> <b id="goalNow">0</b><span class="need" id="goalNeed">/3</span></div>
+    <div class="chip three" id="chipThree" hidden>3점 슛</div>
     <div class="chip" id="chipWind" hidden><span class="lab">바람</span> <b id="windVal">→ 1.2</b></div>
     <div class="chip fire" id="chipFire" hidden>🔥 점수 2배</div>
     <div class="pts" id="pts">0<small>점</small></div>
@@ -260,6 +279,8 @@
 
 <div id="hint" class="off">공을 위로 끌어 올려 조준하고, 손을 떼면 슛</div>
 <div id="gauge" aria-hidden="true"><i id="gaugeFill"></i><u id="gaugeLast"></u><em id="gaugeLastLab">지난 슛</em></div>
+<div id="track" hidden aria-hidden="true"><canvas id="trackCv"></canvas></div>
+<div id="hand" aria-hidden="true"><i></i></div>
 <div id="toast" role="status" aria-live="polite"></div>
 
 <div class="veil" id="menu">
@@ -812,6 +833,98 @@ scene.add(stands);
   }
 })();
 
+/* ── 전광판: 백보드 너머 위쪽. 점수·스테이지·남은 공(시간)을 띄우고, 골이 나면 글씨가 번쩍인다 ──
+   자유투 자리에서 백보드 윗변(눈높이에서 19°) 바로 위(20 ~ 25°)에 걸리도록 높이 11.2m, 깊이 −17m.
+   세로 화면은 옆 화각이 30° 안팎이라 폭 9m 로 두었더니 3점 자리에서 화면 위쪽을 다 덮었다. 6.4m 로 줄였다 */
+var LED_W = 1024, LED_H = 304;
+var ledCv = mkCanvas(LED_W, LED_H), ledG = ledCv.getContext("2d");
+var ledTex = canvasTex(ledCv);
+var LED_FONT = "'Black Han Sans','Apple SD Gothic Neo','Malgun Gothic',sans-serif";
+// 작은 한글은 시스템 굵은 글꼴로. Black Han Sans 는 획이 두꺼워서 LED 격자를 씌우면 '골'이 네모 덩어리가 됐다
+var LED_KO = "'Apple SD Gothic Neo','Malgun Gothic','Noto Sans KR','Noto Sans CJK KR',sans-serif";
+var led = { word: "", sub: "", color: "#fff", t: 0, dur: 0, key: "" };
+var ledMask = (function () {
+  var c = mkCanvas(4, 4), g = c.getContext("2d");
+  g.fillStyle = "rgba(0,0,0,.38)"; g.fillRect(0, 3, 4, 1); g.fillRect(3, 0, 1, 4);
+  return ledG.createPattern(c, "repeat");
+})();
+(function buildLed() {
+  var y = 11.2, z = -17;
+  var box = new THREE.Mesh(new THREE.BoxGeometry(6.8, 2.3, 0.35),
+    new THREE.MeshStandardMaterial({ color: col(0x0b1222), roughness: 0.6, metalness: 0.3 }));
+  box.position.set(0, y, z - 0.22);
+  scene.add(box);
+  var scr = new THREE.Mesh(new THREE.PlaneGeometry(6.4, 1.92), new THREE.MeshBasicMaterial({ map: ledTex, toneMapped: false, fog: false }));
+  scr.position.set(0, y, z);
+  scene.add(scr);
+  var wire = new THREE.MeshBasicMaterial({ color: col(0x121a2c) });
+  [-2.6, 2.6].forEach(function (x) {
+    var w = new THREE.Mesh(new THREE.BoxGeometry(0.05, 6, 0.05), wire);
+    w.position.set(x, y + 4.1, z - 0.2);
+    scene.add(w);
+  });
+})();
+function ledFlash(word, sub, color, dur) {
+  led.word = word; led.sub = sub || ""; led.color = color || "#ffb020"; led.t = 0; led.dur = dur || 1.8; led.key = "";
+}
+// 폭에 맞춰 글자 크기를 줄인다
+function ledFont(g, text, size, maxW, face) {
+  face = face || LED_FONT;
+  g.font = "800 " + size + "px " + face;
+  var w = g.measureText(text).width;
+  if (w > maxW) { size = Math.floor(size * maxW / w); g.font = "800 " + size + "px " + face; }
+}
+function ledStep(dt) {
+  if (led.dur > 0) { led.t += dt; if (led.t >= led.dur) { led.dur = 0; led.key = ""; } }
+  // 내용이 바뀔 때만 다시 그린다. 번쩍이는 동안만 초당 12번
+  var key;
+  if (led.dur > 0) key = "f" + Math.floor(led.t * 12);
+  else if (!ST || mode === "title") key = "title";
+  else key = [ST.i, ST.points, ST.made, ST.def.rapid ? Math.ceil(Math.max(0, ST.timeLeft) - 1e-6) : ST.def.balls - ST.thrown,
+    ST.fire ? 1 : 0, wind.s.toFixed(1)].join(",");
+  if (key === led.key) return;
+  led.key = key;
+  ledDraw();
+}
+function ledDraw() {
+  var g = ledG, W = LED_W, H = LED_H;
+  g.fillStyle = "#04060b"; g.fillRect(0, 0, W, H);
+  g.textBaseline = "middle";
+  if (led.dur > 0) {
+    var blink = led.t > 0.5 || Math.floor(led.t * 10) % 2 === 0;
+    g.textAlign = "center";
+    g.fillStyle = blink ? led.color : "#3a3a3a";
+    ledFont(g, led.word, led.sub ? 140 : 160, W * 0.92);
+    g.fillText(led.word, W / 2, led.sub ? H * 0.40 : H / 2 + 4);
+    if (led.sub) { g.fillStyle = "#ffffff"; ledFont(g, led.sub, 58, W * 0.9, LED_KO); g.fillText(led.sub, W / 2, H * 0.81); }
+    // 훑고 지나가는 빛줄기
+    var gx = -220 + ((led.t * 1.4) % 1) * (W + 440), grd = g.createLinearGradient(gx - 130, 0, gx + 130, 0);
+    grd.addColorStop(0, "rgba(255,255,255,0)"); grd.addColorStop(0.5, "rgba(255,255,255,.3)"); grd.addColorStop(1, "rgba(255,255,255,0)");
+    g.fillStyle = grd; g.fillRect(0, 0, W, H);
+  } else if (!ST || mode === "title") {
+    g.textAlign = "center";
+    g.fillStyle = "#ffb020"; ledFont(g, "한 손 농구 3D", 150, W * 0.9); g.fillText("한 손 농구 3D", W / 2, H * 0.42);
+    g.fillStyle = "#8cc0ff"; ledFont(g, "RICHRORO HOOPS", 52, W * 0.9, LED_KO); g.fillText("RICHRORO HOOPS", W / 2, H * 0.84);
+  } else {
+    var d = ST.def, v = d.rapid ? Math.ceil(Math.max(0, ST.timeLeft) - 1e-6) : d.balls - ST.thrown;
+    g.textAlign = "left"; g.fillStyle = "#8b95a1"; g.font = "800 36px " + LED_KO; g.fillText("SCORE", 36, 56);
+    g.fillStyle = ST.fire ? "#ff6b2c" : "#ffb020"; ledFont(g, String(ST.points), 150, 300); g.fillText(String(ST.points), 30, 184);
+    g.textAlign = "center"; g.fillStyle = "#ffffff"; ledFont(g, (ST.i + 1) + " · " + d.name, 52, 420, LED_KO);
+    g.fillText((ST.i + 1) + " · " + d.name, W / 2, 62);
+    g.fillStyle = ST.made >= d.goal ? "#00d084" : "#6fd3a8"; ledFont(g, "골 " + Math.min(ST.made, d.goal) + "/" + d.goal, 108, 400, LED_KO);
+    g.fillText("골 " + Math.min(ST.made, d.goal) + "/" + d.goal, W / 2, 180);
+    g.textAlign = "right"; g.fillStyle = "#8b95a1"; g.font = "800 36px " + LED_KO; g.fillText(d.rapid ? "TIME" : "BALLS", W - 36, 56);
+    g.fillStyle = d.rapid && v <= 10 ? "#f04452" : "#e8f3ff"; ledFont(g, String(v), 150, 260); g.fillText(String(v), W - 30, 184);
+    if (d.wind || ST.fire) {
+      var line = ST.fire ? "ON FIRE  점수 2배" : "바람 " + (wind.s < 0 ? "←" : "→") + " " + Math.abs(wind.s).toFixed(1);
+      g.textAlign = "center"; g.fillStyle = ST.fire ? "#ff6b2c" : "#9cc8ff"; ledFont(g, line, 42, 500, LED_KO); g.fillText(line, W / 2, 268);
+    }
+  }
+  g.fillStyle = ledMask; g.fillRect(0, 0, W, H);
+  ledTex.needsUpdate = true;
+}
+if (document.fonts && document.fonts.load) document.fonts.load("80px 'Black Han Sans'", "골0").then(function () { led.key = ""; }, function () {});
+
 /* ── 골대 ── */
 var hoopG = new THREE.Group();      // 골대 전체. 움직이는 골대 스테이지에서 좌우로 간다
 var boardG = new THREE.Group();     // 백보드 + 림. 세게 맞으면 떤다
@@ -822,8 +935,16 @@ scene.add(hoopG);
   var white = new THREE.MeshStandardMaterial({ color: col(0xffffff), roughness: 0.4 });
   var navy = new THREE.MeshStandardMaterial({ color: col(0x1d2b4f), roughness: 0.55, metalness: 0.2 });
   var blue = new THREE.MeshStandardMaterial({ color: col(0x2f5fd0), roughness: 0.7 });
-  var glass = new THREE.MeshStandardMaterial({ color: col(0xcfe3ff), roughness: 0.05, metalness: 0.1,
-    transparent: true, opacity: 0.2, depthWrite: false });
+  // 유리: 거의 투명한 바탕에 비스듬한 빛줄기 두 개. 줄기가 있어야 판이 '유리'로 읽힌다
+  var gc = mkCanvas(256, 150), gg = gc.getContext("2d");
+  gg.fillStyle = "rgba(255,255,255,.52)"; gg.fillRect(0, 0, 256, 150);
+  [[70, 34, .95], [120, 12, .8], [190, 22, .7]].forEach(function (b) {
+    var grd = gg.createLinearGradient(b[0] - b[1], 0, b[0] + b[1], 0);
+    grd.addColorStop(0, "rgba(255,255,255,0)"); grd.addColorStop(0.5, "rgba(255,255,255," + b[2] + ")"); grd.addColorStop(1, "rgba(255,255,255,0)");
+    gg.save(); gg.translate(0, 0); gg.transform(1, 0, -0.45, 1, 30, 0); gg.fillStyle = grd; gg.fillRect(0, 0, 320, 150); gg.restore();
+  });
+  var glass = new THREE.MeshStandardMaterial({ color: col(0xd6e8ff), map: canvasTex(gc), roughness: 0.05, metalness: 0.1,
+    transparent: true, opacity: 0.38, depthWrite: false });
   var board = new THREE.Mesh(new THREE.BoxGeometry(BOARD_W, BOARD_H, BOARD_D), glass);
   board.position.set(0, BOARD_Y0 + BOARD_H / 2, BOARD_FACE - BOARD_D / 2);
   boardG.add(board);
@@ -879,6 +1000,10 @@ function drawBall(gold) {
     g.fillRect(vr() * W, vr() * H, 2, 2);
   }
   g.strokeStyle = gold ? "#5a3b06" : "#231209"; g.lineCap = "round"; g.lineWidth = 7;
+  ballSeams(g, W, H);
+  return c;
+}
+function ballSeams(g, W, H) {
   g.beginPath(); g.moveTo(0, H / 2); g.lineTo(W, H / 2); g.stroke();
   g.beginPath(); g.moveTo(W * 0.25, 0); g.lineTo(W * 0.25, H); g.moveTo(W * 0.75, 0); g.lineTo(W * 0.75, H); g.stroke();
   [-0.62, 0.62].forEach(function (k) {
@@ -897,15 +1022,32 @@ function drawBall(gold) {
       g.stroke();
     });
   });
-  return c;
+}
+// 겉면 높낮이(오돌토돌한 돌기 + 파인 이음매)를 그린 뒤 소벨로 법선 지도를 만든다. 가까이 든 공에서 빛이 부서져 보인다
+function ballNormalMap() {
+  var W = 512, H = 256, c = mkCanvas(W, H), g = c.getContext("2d");
+  g.fillStyle = "#808080"; g.fillRect(0, 0, W, H);
+  g.fillStyle = "rgba(255,255,255,.28)";
+  for (var i = 0; i < 16000; i++) { g.beginPath(); g.arc(vr() * W, vr() * H, 0.8 + vr() * 0.9, 0, Math.PI * 2); g.fill(); }
+  g.strokeStyle = "#000"; g.lineCap = "round"; g.lineWidth = 4.5;
+  ballSeams(g, W, H);
+  var src = g.getImageData(0, 0, W, H).data, out = g.createImageData(W, H), o = out.data, k = 2.2 / 255;
+  function hgt(x, y) { x = (x + W) % W; y = y < 0 ? 0 : y >= H ? H - 1 : y; return src[(y * W + x) * 4]; }
+  for (var y = 0; y < H; y++) for (var x = 0; x < W; x++) {
+    var dx = (hgt(x + 1, y) - hgt(x - 1, y)) * k, dy = (hgt(x, y + 1) - hgt(x, y - 1)) * k;
+    var l = Math.sqrt(dx * dx + dy * dy + 1), j = (y * W + x) * 4;
+    o[j] = (-dx / l * 0.5 + 0.5) * 255; o[j + 1] = (dy / l * 0.5 + 0.5) * 255; o[j + 2] = (1 / l * 0.5 + 0.5) * 255; o[j + 3] = 255;
+  }
+  g.putImageData(out, 0, 0);
+  return canvasTex(c, false);
 }
 var ballGeo = new THREE.SphereGeometry(BALL_R, 40, 28);
+var BALL_MAP = canvasTex(drawBall(false)), BALL_NRM = ballNormalMap(), NRM_S = new THREE.Vector2(0.55, 0.55);
 var MAT = {
-  ball: new THREE.MeshStandardMaterial({ map: canvasTex(drawBall(false)), roughness: 0.62, metalness: 0 }),
-  gold: new THREE.MeshStandardMaterial({ map: canvasTex(drawBall(true)), roughness: 0.3, metalness: 0.55, emissive: col(0x3a2400) }),
-  fire: new THREE.MeshStandardMaterial({ map: canvasTex(drawBall(false)), roughness: 0.55, metalness: 0, emissive: col(0xff4a10), emissiveIntensity: 0.45 })
+  ball: new THREE.MeshStandardMaterial({ map: BALL_MAP, normalMap: BALL_NRM, normalScale: NRM_S, roughness: 0.6, metalness: 0 }),
+  gold: new THREE.MeshStandardMaterial({ map: canvasTex(drawBall(true)), normalMap: BALL_NRM, normalScale: NRM_S, roughness: 0.3, metalness: 0.55, emissive: col(0x3a2400) }),
+  fire: new THREE.MeshStandardMaterial({ map: BALL_MAP, normalMap: BALL_NRM, normalScale: NRM_S, roughness: 0.55, metalness: 0, emissive: col(0xff4a10), emissiveIntensity: 0.45 })
 };
-MAT.fire.map = MAT.ball.map;
 var meshPool = [];
 function takeMesh() {
   var m = meshPool.pop();
@@ -1554,9 +1696,9 @@ function startStage(i) {
   hideVeils();
   $("hud").hidden = false;
   hud();
-  var three = spotDist(s) > THREE_PT;
-  toast((i + 1) + ". " + def.name, def.sub + (three && !def.per ? " · 3점 슛" : ""), 2200);
   if (i === 0 && !save.stars[0]) hint(true);
+  lastTrail = null;
+  ledFlash((i + 1) + "스테이지", def.name, "#ffffff", 1.6);
 }
 
 function spawnHeld() {
@@ -1592,7 +1734,9 @@ function throwBall(pow, yaw) {
   b.w.set(-uz / hl, 0, ux / hl).multiplyScalar(v * 2.4);           // 손끝에서 거는 역회전
   var c = crossAt(curSpot, pow, yaw);
   b.shot = { three: d > THREE_PT, fire: ST.fire, n: ST.thrown, pow: pow, yaw: yaw, sx: curSpot.x, sz: curSpot.z,
+    fx: -curSpot.x / d, fz: -curSpot.z / d, key: ST.i + ":" + ST.spot,
     cross: c, hx: ST.def.move && c ? hoopXAt(ST.hoopT + c.t) : hoop.x };
+  b.trail = [];
   b.mesh.scale.setScalar(1);
   b.t = 0;
   balls.push(b);
@@ -1621,12 +1765,15 @@ function made(b) {
   var word = buzzer ? "버저비터!" : clinch ? "클리어!" : swish ? "스위시!" : bank ? "뱅크슛!" : b.rimHits >= 3 ? "굴러 들어갔다!" : "골!";
   var sub = "+" + pts + (b.gold ? " · 금색 공 2골" : "") + (b.shot.fire ? " · 🔥 2배" : "") + (swish && !clinch ? " · 스위시 +1" : "");
   popup(word, sub, (clinch || buzzer ? "big " : "") + (swish ? "swish" : ""));
+  ledFlash(word, "+" + pts + "점" + (b.gold ? " · 금색 공" : "") + (b.shot.fire ? " · 불 2배" : ""),
+    clinch || buzzer ? "#ffb020" : swish ? "#8cc0ff" : bank ? "#ffffff" : "#ffd48a", clinch ? 2.4 : 1.7);
   shotResult(b, true);
 }
 
 function shotResult(b, ok) {
   if (b.done) return;
   b.done = true;
+  if (b.trail) lastTrail = { key: b.shot.key, pts: b.trail, ok: ok };
   if (!ST || mode !== "play") return;
   ST.inFlight = Math.max(0, ST.inFlight - 1);
   if (ok) {
@@ -1644,6 +1791,7 @@ function shotResult(b, ok) {
     ST.fire = true;
     sfx.fire();
     toast("🔥 온 파이어!", "연속으로 넣는 동안 점수 2배", 1600);
+    if (led.dur <= 0) ledFlash("ON FIRE", "연속으로 넣는 동안 점수 2배", "#ff6b2c", 1.6);
     if (held) { held.fire = true; paint(held); }
   }
   if (!ST.over && !ST.def.rapid && !held) ST.nextT = ok ? 1.05 : 0.75;
@@ -1689,6 +1837,7 @@ function timeUp() {
   if (held) { dropMesh(held.mesh); held = null; }
   cancelAim();
   toast("버저!", ST.inFlight ? "날아가는 공이 들어가면 인정" : "", 1400);
+  ledFlash("버저!", ST.inFlight ? "날아가는 공이 들어가면 인정" : "", "#f04452", 1.6);
   checkEnd(false);
 }
 
@@ -1752,10 +1901,12 @@ function aimShow(pow, yaw) {
       var o = n * 3, f = 1 - t / show;
       pos[o] = s.p.x; pos[o + 1] = s.p.y; pos[o + 2] = s.p.z;
       cl[o] = 0.85 * f + 0.05; cl[o + 1] = 0.92 * f + 0.05; cl[o + 2] = 1 * f + 0.06;
+      aimPath[o] = s.p.x; aimPath[o + 1] = s.p.y; aimPath[o + 2] = s.p.z;
       n++; next += gap;
     }
   }
   aimGeo.setDrawRange(0, n);
+  aimPathN = n;
   aimGeo.attributes.position.needsUpdate = true;
   aimGeo.attributes.color.needsUpdate = true;
   aimPts.visible = n > 0;
@@ -1764,13 +1915,14 @@ function aimUpdate() {
   if (!drag || !held) return;
   var a = aimFromDrag(drag);
   drag.aim = a;
-  if (a.up > 0.03) aimShow(a.pow, a.yaw); else aimPts.visible = false;
+  if (a.up > 0.03) aimShow(a.pow, a.yaw); else { aimPts.visible = false; aimPathN = 0; }
   $("gauge").classList.add("on");
   $("gaugeFill").style.height = (a.pow * 100).toFixed(1) + "%";
 }
 function cancelAim() {
   drag = null;
   aimPts.visible = false;
+  aimPathN = 0;
   $("gauge").classList.remove("on");
 }
 function gaugeLast() {
@@ -1787,6 +1939,7 @@ cv.addEventListener("pointerdown", function (e) {
   if (e.pointerType === "mouse" && e.button !== 0) return;       // 마우스는 왼쪽 버튼만
   if (mode !== "play" || paused || !held || held.appear < 0.6 || drag || ST.over) return;
   drag = { id: e.pointerId, x0: e.clientX, y0: e.clientY, x: e.clientX, y: e.clientY, aim: null };
+  $("hand").classList.remove("on");
   try { cv.setPointerCapture(e.pointerId); } catch (err) {}
   gaugeLast();
   aimUpdate();
@@ -1830,6 +1983,7 @@ function hud() {
   wc.hidden = !d.wind;
   if (d.wind) $("windVal").textContent = (wind.s < 0 ? "← " : "→ ") + Math.abs(wind.s).toFixed(1);
   $("chipFire").hidden = !ST.fire;
+  $("chipThree").hidden = !(spotDist(curSpot) > THREE_PT);
   var dots = $("ballDots");
   if (d.rapid) {
     dots.innerHTML = "";
@@ -1859,7 +2013,67 @@ function toast(title, sub, ms) {
   clearTimeout(toastTimer);
   toastTimer = setTimeout(function () { el.classList.remove("show"); }, ms || 1500);
 }
-function hint(on) { $("hint").classList.toggle("off", !on); }
+function hint(on) { $("hint").classList.toggle("off", !on); $("hand").classList.toggle("on", !!on && !calm); }
+
+/* ── 옆에서 본 궤적 ──
+   가로는 슛 자리에서 림 쪽으로 간 거리, 세로는 높이. 가로세로 같은 비율이라 포물선 모양이 그대로 보인다.
+   조준하는 동안엔 점선(스테이지마다 보이는 몫이 같다), 던진 뒤엔 공이 지나간 길, 그리고 이 자리의 지난 슛이 흐리게 남는다 */
+var trackEl = $("track"), trackCv = $("trackCv"), trackG = trackCv.getContext("2d"), TRK_W = 136, TRK_H = 88;
+(function () {
+  var r = Math.min(window.devicePixelRatio || 1, 2);
+  trackCv.width = TRK_W * r; trackCv.height = TRK_H * r;
+  trackG.setTransform(r, 0, 0, r, 0, 0);
+})();
+var aimPath = new Float32Array(AIM_N * 3), aimPathN = 0;
+var lastTrail = null;
+function trackDraw() {
+  var g = trackG, s = curSpot, d = spotDist(s), fx0 = -s.x / d, fz0 = -s.z / d, key = ST.i + ":" + ST.spot;
+  var L = 8, R = 8, T = 17, B = 7, span = d + 1.25;
+  var sc = Math.min((TRK_W - L - R) / span, (TRK_H - T - B) / 4.9);
+  var ox = L + (TRK_W - L - R - span * sc) / 2 + 0.35 * sc, oy = TRK_H - B;
+  function X(u) { return ox + u * sc; }
+  function Y(v) { return oy - v * sc; }
+  g.clearRect(0, 0, TRK_W, TRK_H);
+  g.font = "700 9.5px 'Apple SD Gothic Neo','Malgun Gothic',sans-serif";
+  g.fillStyle = "rgba(255,255,255,.55)"; g.textBaseline = "top";
+  g.textAlign = "left"; g.fillText("옆에서 본 궤적", 8, 5);
+  g.textAlign = "right"; g.fillText(d.toFixed(1) + "m", TRK_W - 8, 5);
+  g.lineCap = "round";
+  g.strokeStyle = "rgba(255,255,255,.22)"; g.lineWidth = 1;
+  g.beginPath(); g.moveTo(X(-0.3), Y(0)); g.lineTo(X(d + 0.9), Y(0)); g.stroke();
+  // 백보드·림·그물
+  g.strokeStyle = "rgba(255,255,255,.75)"; g.lineWidth = 1.6;
+  g.beginPath(); g.moveTo(X(d - BOARD_FACE), Y(BOARD_Y0)); g.lineTo(X(d - BOARD_FACE), Y(BOARD_Y0 + BOARD_H)); g.stroke();
+  g.strokeStyle = "rgba(255,255,255,.4)"; g.lineWidth = 1;
+  g.beginPath(); g.moveTo(X(d - RIM_R), Y(RIM_Y)); g.lineTo(X(d - 0.14), Y(RIM_Y - NET_LEN));
+  g.lineTo(X(d + 0.14), Y(RIM_Y - NET_LEN)); g.lineTo(X(d + RIM_R), Y(RIM_Y)); g.stroke();
+  g.strokeStyle = "#FF6B2C"; g.lineWidth = 2.2;
+  g.beginPath(); g.moveTo(X(d - RIM_R), Y(RIM_Y)); g.lineTo(X(d + RIM_R), Y(RIM_Y)); g.stroke();
+  function trail(pts, color, w) {
+    if (!pts || pts.length < 4) return;
+    g.strokeStyle = color; g.lineWidth = w;
+    g.beginPath(); g.moveTo(X(pts[0]), Y(pts[1]));
+    for (var i = 2; i < pts.length; i += 2) g.lineTo(X(pts[i]), Y(pts[i + 1]));
+    g.stroke();
+  }
+  if (lastTrail && lastTrail.key === key) trail(lastTrail.pts, lastTrail.ok ? "rgba(0,208,132,.55)" : "rgba(240,68,82,.55)", 1.4);
+  for (var i = 0; i < balls.length; i++) {
+    var b = balls[i];
+    if (!b.trail || b.shot.key !== key || (b.done && b.after > 0.8)) continue;
+    trail(b.trail, "rgba(255,255,255,.9)", 1.8);
+    var n = b.trail.length;
+    g.fillStyle = b.gold ? "#FFD466" : "#FF8A3D";
+    g.beginPath(); g.arc(X(b.trail[n - 2]), Y(b.trail[n - 1]), 2.6, 0, Math.PI * 2); g.fill();
+  }
+  // 조준 점선
+  for (var k = 0; k < aimPathN; k++) {
+    var o = k * 3, u = (aimPath[o] - s.x) * fx0 + (aimPath[o + 2] - s.z) * fz0;
+    g.fillStyle = "rgba(220,235,255," + (0.95 - 0.6 * k / Math.max(1, aimPathN)).toFixed(2) + ")";
+    g.beginPath(); g.arc(X(u), Y(aimPath[o + 1]), 1.5, 0, Math.PI * 2); g.fill();
+  }
+  // 든 공
+  if (held) { g.fillStyle = held.gold ? "#FFD466" : "#FF8A3D"; g.beginPath(); g.arc(X(0), Y(HOLD_Y), 2.6, 0, Math.PI * 2); g.fill(); }
+}
 var popV = new V3();
 function popup(word, sub, cls) {
   var el = document.createElement("div");
@@ -1998,6 +2212,9 @@ function tick(dt) {
     spinMesh(b, sdt);
     b.mesh.position.copy(b.p);
     if (b.after > 3.2) b.mesh.scale.setScalar(Math.max(0.01, (3.6 - b.after) / 0.4));
+    if (b.trail && sdt > 0 && b.trail.length < 720 && (!b.done || b.after < 0.8)) {
+      b.trail.push((b.p.x - b.shot.sx) * b.shot.fx + (b.p.z - b.shot.sz) * b.shot.fz, b.p.y);
+    }
     if (b.shot && b.shot.fire && !b.done && !calm && sdt > 0) {
       for (var k = 0; k < 2; k++) flames.emit(b.p.x + (vr() - 0.5) * 0.1, b.p.y + (vr() - 0.5) * 0.1, b.p.z + (vr() - 0.5) * 0.1,
         (vr() - 0.5) * 0.6, 0.4 + vr() * 0.6, (vr() - 0.5) * 0.6, 0.32, 1, 0.42 + vr() * 0.25, 0.08, -1.5, 2);
@@ -2020,11 +2237,15 @@ function tick(dt) {
   boardG.position.set(0, fx.boardY, fx.boardZ);
   rimPivot.rotation.x = fx.rimTilt;
   fxStep(dt, sdt);
+  ledStep(dt);
   camStep(dt);
   $("flash").style.opacity = fx.flash > 0 ? (fx.flash * 0.6).toFixed(3) : "0";
 }
 function render() {
   netDraw();
+  var showTrack = mode === "play" && !!ST;
+  if (trackEl.hidden === showTrack) trackEl.hidden = !showTrack;
+  if (showTrack) trackDraw();
   renderer.render(scene, camera);
 }
 function resize() {
