@@ -105,14 +105,30 @@ function verdictChip(r, big = false) {
 }
 
 /** 점수 고리. 판정 색으로 채우고 가운데에 점수. 판단 보류·스팩이면 빈 고리. */
-function ring(r, size = 116) {
+function ring(r, size = 116, it = null) {
   const k = r.verdict.key, show = r.total != null && !r.pending && k !== "spac";
   const R = 44, C = 2 * Math.PI * R, v = show ? Math.max(0, Math.min(100, r.total)) : 0;
-  return `<svg class="ring v-${k}" width="${size}" height="${size}" viewBox="0 0 100 100" role="img" aria-label="점수 ${show ? r.total : "없음"}, 판정 ${esc(r.verdict.label)}">
+  // 판단 보류: 점수 대신 청약까지 남은 날
+  let big = show ? String(r.total) : k === "spac" ? "SPAC" : "?", sm = show ? "/ 100" : "";
+  if (!show && k !== "spac" && it && it.sub_start) {
+    const d = diffDays(TODAY, it.sub_start);
+    if (d > 0) { big = `D-${d}`; sm = "청약까지"; } else if (TODAY <= (it.sub_end || it.sub_start)) { big = "청약"; sm = "진행 중"; }
+  }
+  return `<svg class="ring v-${k}${show ? "" : " wait"}" width="${size}" height="${size}" viewBox="0 0 100 100" role="img" aria-label="${show ? `점수 ${r.total}` : big}, 판정 ${esc(r.verdict.label)}">
     <circle cx="50" cy="50" r="${R}" class="track"/>
-    <circle cx="50" cy="50" r="${R}" class="bar" stroke-dasharray="${(C * v / 100).toFixed(1)} ${C.toFixed(1)}" transform="rotate(-90 50 50)"/>
-    <text x="50" y="${show ? 52 : 55}" class="big">${show ? r.total : k === "spac" ? "SPAC" : "?"}</text>
-    ${show ? `<text x="50" y="68" class="sm">/ 100</text>` : ""}</svg>`;
+    ${v ? `<circle cx="50" cy="50" r="${R}" class="bar" stroke-dasharray="${(C * v / 100).toFixed(1)} ${C.toFixed(1)}" transform="rotate(-90 50 50)"/>` : ""}
+    <text x="50" y="${sm ? 50 : 55}" class="big">${esc(big)}</text>
+    ${sm ? `<text x="50" y="68" class="sm">${esc(sm)}</text>` : ""}</svg>`;
+}
+/** 수요예측 전에도 지금 알 수 있는 숫자: 희망가 범위 · 최소 증거금 · 수요예측 일정 · 공모 규모 */
+function preTiles(it) {
+  const p = offerPrice(it), minQ = numOf("cMin") || 10, mg = (numOf("cMargin") ?? 50) / 100;
+  return [
+    ["희망 공모가", it.band_lo && it.band_hi && it.band_lo !== it.band_hi ? `${won(it.band_lo)}~<wbr>${won(it.band_hi)}` : won(p)],
+    ["최소 증거금", p ? `${won(p * minQ * mg)}원` : "–"],
+    ["수요예측", it.fc_start ? `${md(it.fc_start)}~${md(it.fc_end || it.fc_start)}` : "미정"],
+    ["공모 규모", eok(it.amount)],
+  ];
 }
 
 /* ---------------------------------------------------------------- 관심 종목 */
@@ -200,6 +216,14 @@ function renderToday() {
   const nb = nextBizDay(TODAY);
   const a = dayEvents(TODAY), b = dayEvents(nb);
   const row = (e) => `<li data-id="${esc(e.it.id)}" class="${e.hot ? "hot" : ""}"><span class="k ${e.k}">${e.t}</span><b>${esc(e.it.name)}</b><small>${e.w}</small></li>`;
+  if (!a.length && !b.length) {
+    let nx = null;
+    for (let d = addDays(nb, 1), i = 0; i < 60 && !nx; d = addDays(d, 1), i++) { const e = dayEvents(d); if (e.length) nx = { d, e }; }
+    box.innerHTML = `<div class="tday"><h4>오늘·${diffDays(TODAY, nb) === 1 ? "내일" : "다음 영업일"}은 쉬어가요</h4>
+      ${nx ? `<p class="hint">다음 일정 <b>${mdw(nx.d)}</b> · D-${diffDays(TODAY, nx.d)}</p><ul>${nx.e.map(row).join("")}</ul>` : `<p class="hint">두 달 안에 잡힌 일정이 없습니다.</p>`}</div>`;
+    box.onclick = (e) => { const li = e.target.closest("li[data-id]"); if (li) openDetail(li.dataset.id); };
+    return;
+  }
   let html = `<div class="tday"><h4>오늘 ${mdw(TODAY)}</h4>${a.length ? `<ul>${a.map(row).join("")}</ul>` : `<p class="hint">오늘은 공모주 일정이 없습니다.</p>`}</div>`;
   html += `<div class="tday"><h4>${diffDays(TODAY, nb) === 1 ? "내일" : "다음 영업일"} ${mdw(nb)}</h4>${b.length ? `<ul>${b.map(row).join("")}</ul>` : `<p class="hint">일정 없음</p>`}</div>`;
   box.innerHTML = html;
@@ -232,13 +256,14 @@ function renderFeature() {
   const m = (k, v) => `<div><i>${k}</i><b>${v}</b></div>`;
   box.innerHTML = `<article class="feat" data-id="${esc(it.id)}">
     <div class="feat-top"><span class="eyebrow">${esc(f.why)}</span><span class="stat ${s.key}"><span class="dot"></span>${esc(s.label)}</span></div>
-    <div class="feat-main">${ring(r)}
+    <div class="feat-main">${ring(r, 116, it)}
       <div class="feat-nm"><h3>${esc(it.name)}</h3>${verdictChip(r, true)}
-        <p class="hint mt8">${esc(r.verdict.tip)}</p></div></div>
+        <p class="hint mt8">${esc(r.pending ? `수요예측 결과가 나오면 점수를 매깁니다 · ${autoWhen(it)}` : r.verdict.tip)}</p></div></div>
     <div class="kv kv4 mt12">
+      ${r.pending ? preTiles(it).map(([k, v]) => m(k, v)).join("") : `
       ${m("기관경쟁률", comp(it.inst_comp))}${m("확약", it.lockup != null ? `${it.lockup.toFixed(1)}%` : "–")}
       ${m("유통물량", it.float_pct != null ? `${it.float_pct.toFixed(1)}%` : "–")}
-      ${s.key === "listed" ? m("시초가", `<span class="${cls(p.open)}">${pct(p.open, 0)}</span>`) : m(it.price ? "확정가" : "밴드 상단", won(offerPrice(it)))}
+      ${s.key === "listed" ? m("시초가", `<span class="${cls(p.open)}">${pct(p.open, 0)}</span>`) : m(it.price ? "확정가" : "밴드 상단", won(offerPrice(it)))}`}
     </div>
     ${hintLine(it).replace('class="exp', 'class="exp mt12')}
     <div class="when num mt12">${it.sub_start ? `<span><i>청약</i>${mdw(it.sub_start)}~${mdw(it.sub_end || it.sub_start)}</span>` : ""}<span><i>상장</i>${it.list_date ? mdw(it.list_date) : "미정"}</span></div>
@@ -305,6 +330,9 @@ function card(it) {
     kv = `<div><i>공모가</i>${priceCell(it)}</div>
       <div><i>시초가</i><b class="${cls(p.open)}">${pct(p.open, 0)}</b></div>
       <div><i>${it.cur ? "현재가" : "첫날 종가"}</i><b class="${cls(it.cur ? p.cur : p.close1)}">${pct(it.cur ? p.cur : p.close1, 0)}</b></div>`;
+  } else if (r.pending) {
+    const t = preTiles(it);
+    kv = `<div><i>${t[0][0]}</i><b class="sm">${t[0][1]}</b></div><div><i>${t[2][0]}</i><b class="sm">${t[2][1]}</b></div><div><i>${t[1][0]}</i><b class="sm">${t[1][1]}</b></div>`;
   } else {
     kv = `<div><i>${it.price ? "확정 공모가" : "희망 공모가"}</i>${priceCell(it)}</div>
       <div><i>기관경쟁률</i><b>${comp(it.inst_comp)}</b></div>
@@ -422,7 +450,7 @@ function scorecard(it) {
       <td class="pts"><span class="pbar"><em style="width:${pctW}%"></em></span><span class="num">${x.pts == null ? "–" : x.pts}<small>/${x.f.w}</small></span></td></tr>`;
   }).join("");
   return `<div class="sc">
-    <div class="sc-head">${ring(r, 96)}<div>${verdictChip(r, true)}<p class="hint mt8">${esc(r.pending ? `${r.verdict.tip} — ${autoWhen(it)}` : r.verdict.tip)}</p>
+    <div class="sc-head">${ring(r, 96, it)}<div>${verdictChip(r, true)}<p class="hint mt8">${esc(r.pending ? `수요예측 결과가 나오면 점수를 매깁니다 · ${autoWhen(it)}` : r.verdict.tip)}</p>
       <p class="hint">7개 기준 중 <b>${known}개</b>로 계산${known < 7 ? " — 빈칸을 채우면 더 정확해집니다" : ""}</p></div></div>
     ${(() => { const h = hintLine(it), u = uwRecord(it); return h || u ? `<div class="sc-past mt12">${h}${u && !h.includes("주관사") ? `<div class="exp mut">주관사 <b>${esc(u.name)}</b> 1년 시초가 평균 <b class="${cls(u.avg)}">${pct(u.avg, 0)}</b><small>${u.n}곳 · 따블 이상 ${u.dbl.toFixed(0)}%</small></div>` : ""}</div>` : ""; })()}
     ${r.flags.length ? `<ul class="sig flags mt12">${r.flags.map((f) => `<li class="weak">${esc(f)}</li>`).join("")}</ul>` : ""}
@@ -679,7 +707,8 @@ function renderMarket() {
 function drawTempChart(xs) {
   const box = $("tempFig");
   if (xs.length < 2) { box.innerHTML = `<p class="empty">상장 기록이 쌓이면 여기에 그립니다.</p>`; return; }
-  const W = 720, H = 240, L = 44, Rm = 10, T = 14, B = 26;
+  // 상자 너비대로 그려 휴대폰에서도 글자가 읽히게(숨은 화면에선 0 이라 기본 720)
+  const W = Math.max(320, Math.round(box.clientWidth || 720)), H = 240, L = 44, Rm = 10, T = 14, B = 26;
   const vals = xs.map((it) => (it.open / it.price - 1) * 100);
   let lo = Math.min(0, ...vals), hi = Math.max(0, ...vals);
   const stepv = [10, 20, 25, 50, 100, 200].find((s) => (hi - lo) / s <= 5) || 100;
