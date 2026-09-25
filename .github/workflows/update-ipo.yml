@@ -52,12 +52,16 @@ jobs:
       - name: 데이터 검사
         run: |
           set -o pipefail
-          python ipo/validate.py --min-items 5 | tee -a "$GITHUB_STEP_SUMMARY"
+          git show HEAD:ipo/data/ipo.json > "$RUNNER_TEMP/prev.json" 2>/dev/null || true
+          python ipo/validate.py --min-items 5 --prev "$RUNNER_TEMP/prev.json" | tee -a "$GITHUB_STEP_SUMMARY"
 
       - name: 바뀐 게 있으면 커밋
         run: |
-          if [ -z "$(git status --porcelain -- ipo/data)" ]; then
-            echo "변경 없음 — 커밋하지 않습니다." >> "$GITHUB_STEP_SUMMARY"
+          # 갱신 시각(updated·asof)만 바뀐 경우는 커밋하지 않는다
+          strip='import json,sys; d=json.load(open(sys.argv[1])); [d.pop(k,None) for k in ("updated","asof")]; print(json.dumps(d,sort_keys=True,ensure_ascii=False))'
+          if [ -z "$(git status --porcelain -- ipo/data)" ] || \
+             [ "$(python -c "$strip" "$RUNNER_TEMP/prev.json" 2>/dev/null)" = "$(python -c "$strip" ipo/data/ipo.json)" ]; then
+            echo "내용 변경 없음 — 커밋하지 않습니다." >> "$GITHUB_STEP_SUMMARY"
             exit 0
           fi
           git config user.name  "github-actions[bot]"
@@ -68,7 +72,7 @@ jobs:
           for i in 1 2 3 4; do
             if git push; then pushed=1; break; fi
             echo "푸시 실패, 재시도 $i"
-            git pull --rebase --autostash origin "${GITHUB_REF_NAME}" || true
+            git pull --rebase --autostash origin "${GITHUB_REF_NAME}" || git rebase --abort || true
             sleep $((2 ** i))
           done
           if [ "$pushed" -ne 1 ]; then

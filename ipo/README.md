@@ -38,7 +38,7 @@
 ## 데이터
 
 페이지는 `data/ipo.json` **한 파일**만 읽는다. `build.py` 가 만들고, GitHub Actions
-(`.github/workflows/update-ipo.yml`)가 평일 07:10 · 17:10 KST 에 다시 만들어 커밋한다. 인증키는 필요 없다.
+(`.github/workflows/update-ipo.yml`)가 평일 07:10 · 12:10 · 17:10 KST 에 다시 만들어 커밋한다(갱신 시각만 바뀌면 커밋하지 않는다). 인증키는 필요 없다.
 
 | 무엇 | 출처(38커뮤니케이션) | 막히면 |
 | --- | --- | --- |

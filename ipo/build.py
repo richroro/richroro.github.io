@@ -289,6 +289,10 @@ def date_range(s, today: dt.date) -> tuple[str | None, str | None]:
             if m:
                 em, ed = int(m.group(1)), int(m.group(2))
                 end = iso(y + (1 if em < mo else 0), em, ed)
+            else:
+                m = re.fullmatch(r"\s*(\d{1,2})\s*일?\s*", parts[1])
+                if m and int(m.group(1)) >= d:
+                    end = iso(y, mo, int(m.group(1)))
     return start, end
 
 
@@ -315,13 +319,14 @@ def detail_no(href) -> str | None:
     return no if no and no.isdigit() else None
 
 
-MARK = re.compile(r"\((유가|코스닥|코넥스|유가증권|KOSPI|KOSDAQ|구\s*[^)]*)\)", re.I)
+MARK = re.compile(r"[(（\[]\s*(유가|코스닥|코넥스|유가증권|KOSPI|KOSDAQ|구\s*[^)）\]]*)\s*[)）\]]", re.I)
 
 
 def norm_name(s: str) -> str:
-    s = MARK.sub("", s or "")
-    s = re.sub(r"[\s·()\[\]]", "", s)
-    return s.replace("㈜", "").replace("(주)", "").lower()
+    s = re.sub(r"[(（]\s*주\s*[)）]|㈜|주식회사", "", s or "")  # 괄호를 지우기 전에 — '(주)가나' 가 '주가나' 가 되지 않게
+    s = MARK.sub("", s)
+    s = re.sub(r"[\s·()（）\[\]]", "", s)
+    return s.lower()
 
 
 def clean_name(s: str) -> str:
@@ -334,6 +339,10 @@ def parse_schedule(text: str, today: dt.date) -> list[dict]:
     for r in table(html_rows(text), SCHEDULE_COLS, "sub"):
         s, e = date_range(r.get("sub"), today)
         if not s:
+            st = re.search(r"철회|연기|취소", r.get("sub") or "")
+            if st:  # 일정 칸에 날짜 대신 '공모철회' 등이 적히면 상태로 남긴다
+                out.append({"name": clean_name(r["name"]), "no": detail_no(r["_href"]),
+                            "status": "철회" if st.group(0) in ("철회", "취소") else "연기"})
             continue
         lo, hi = band(r.get("band"))
         out.append({"name": clean_name(r["name"]), "no": detail_no(r["_href"]), "sub_start": s, "sub_end": e,
@@ -382,11 +391,12 @@ def parse_detail(text: str, today: dt.date) -> dict:
                     continue
                 v = r[i + 1]["t"]
                 if key == "market":
-                    got[key] = "KOSPI" if re.search(r"유가|코스피|KOSPI", v, re.I) else \
+                    got[key] = "KOSPI" if re.search(r"유가|코스피|KOSPI|거래소", v, re.I) else \
                         "KOSDAQ" if re.search(r"코스닥|KOSDAQ", v, re.I) else \
                         "KONEX" if re.search(r"코넥스|KONEX", v, re.I) else None
                 elif key == "sector":
-                    got[key] = v[:40] or None
+                    ok = re.search(r"[가-힣]", v) and not re.fullmatch(r"[\d\s./-]+", v)
+                    got[key] = v[:40] if ok else None
                 elif key in ("shares", "post_shares"):
                     got[key] = to_int(v)
                 elif key in ("refund", "list"):
@@ -414,8 +424,10 @@ def parse_detail(text: str, today: dt.date) -> dict:
     # 수요예측이 끝나기 전 상세 페이지는 확약·경쟁률 칸에 '0.00%' 같은 자리 표시를 둔다 — 결과로 치지 않는다
     if got.get("fc_end") and got["fc_end"] >= today.isoformat():
         got.pop("inst_comp", None); got.pop("lockup", None)
-    if got.get("inst_comp") is None and not got.get("lockup"):
-        got.pop("lockup", None)
+    if not got.get("inst_comp"):  # '0:1' 도 결과가 아니다
+        got.pop("inst_comp", None)
+        if not got.get("lockup"):
+            got.pop("lockup", None)
     got.update(detail_extras(text, got.get("shares")))
     return {k: v for k, v in got.items() if v is not None}
 
@@ -457,7 +469,7 @@ def detail_extras(text: str, shares: int | None) -> dict:
 
 
 # ---------------------------------------------------------------- 합치기
-FIELDS = ["id", "name", "no", "market", "sector", "code", "uw", "uw_alloc", "band_lo", "band_hi", "price", "amount",
+FIELDS = ["id", "name", "no", "status", "market", "sector", "code", "uw", "uw_alloc", "band_lo", "band_hi", "price", "amount",
           "shares", "post_shares", "old_shares", "float_pct",
           "fc_start", "fc_end", "inst_comp", "lockup", "sub_start", "sub_end", "sub_comp", "refund",
           "list_date", "open", "close1", "cur", "spac"]
@@ -466,17 +478,28 @@ FIELDS = ["id", "name", "no", "market", "sector", "code", "uw", "uw_alloc", "ban
 def merge(prev: list[dict], schedule, forecast, listing, details: dict[str, dict], today: dt.date,
           keep_days: int = 400) -> list[dict]:
     by: dict[str, dict] = {}
-    for p in prev:
-        by[norm_name(p["name"])] = dict(p)
+    recent = lambda p: p.get("sub_start") or p.get("fc_start") or p.get("list_date") or ""
+    for p in sorted(prev, key=recent, reverse=True):
+        k = norm_name(p["name"])
+        if k in by:  # 같은 회사의 예전 공모(철회 뒤 재상장 등)는 번호를 붙여 따로 둔다
+            k = f"{k}#{p.get('no') or p.get('id')}"
+        by[k] = dict(p)
 
     def put(rec: dict, weak_uw: bool):
         k = norm_name(rec["name"])
-        cur = by.setdefault(k, {"name": rec["name"]})
+        cur = by.get(k)
+        if cur is not None and rec.get("no") and cur.get("no") and cur["no"] != rec["no"]:
+            by[f"{k}#{cur['no']}"] = cur  # 다른 공모 — 예전 기록을 옆으로 치우고 새로 시작
+            cur = None
+        if cur is None:
+            cur = by[k] = {"name": rec["name"]}
         for f, v in rec.items():
             if v in (None, [], ""):
                 continue
             if f == "uw" and weak_uw and cur.get("uw"):
                 continue  # 수요예측 표는 주간사를 '한국투자'처럼 줄여 적는다 — 청약 표 이름을 둔다
+            if f == "fc_start" and rec.get("fc_end") == v and cur.get("fc_end") == v and (cur.get("fc_start") or v) < v:
+                continue  # 수요예측 표는 마지막 날만 적는다 — 상세에서 얻은 시작일을 지킨다
             cur[f] = v
 
     # 뒤에 오는 표가 이긴다 — 확정가는 청약·상장 표가 최신
@@ -488,15 +511,27 @@ def merge(prev: list[dict], schedule, forecast, listing, details: dict[str, dict
         if d:
             for f, v in d.items():
                 f = "list_date" if f == "list" else f
-                if f == "list_date" and it.get("list_date") and it["list_date"] != v:
-                    continue  # 신규상장 표의 날짜가 더 믿을 만하다
+                if f == "list_date" and it.get("list_date") and it["list_date"] != v and it["list_date"] <= today.isoformat():
+                    continue  # 이미 상장한 날짜(신규상장 표)는 지킨다. 앞으로의 상장일은 상세 값으로 바뀔 수 있다
                 if f in FILL_ONLY and it.get(f) not in (None, "", []):
                     continue  # 목록 표 값이 있으면 그대로 — 상세는 빈칸만 메운다
                 it[f] = v
         it["spac"] = bool(re.search(r"스팩|SPAC|기업인수목적", it["name"], re.I))
-        # 예전 실행이 남긴 자리 표시(경쟁률 없는 0% 확약)는 지운다
+        # 예전 실행이 남긴 자리 표시(0:1 경쟁률, 경쟁률 없는 0% 확약)는 지운다
+        if it.get("inst_comp") == 0:
+            it.pop("inst_comp", None)
         if it.get("inst_comp") is None and it.get("lockup") == 0:
             it.pop("lockup", None)
+        # 업종 칸에 날짜 같은 엉뚱한 값이 들어간 예전 기록은 지운다
+        if it.get("sector") and (not re.search(r"[가-힣]", it["sector"]) or re.fullmatch(r"[\d\s./-]+", it["sector"])):
+            it.pop("sector", None)
+        # 공모 금액은 확정가 × 주식 수로 다시 — 수요예측 전 밴드 하단 기준 값이 남지 않게
+        if it.get("price") and it.get("shares"):
+            it["amount"] = round(it["price"] * it["shares"] / 1e8, 1)
+        # 아직 상장 전이면 시세는 없다(표에 잘못 붙은 값)
+        if it.get("list_date") and it["list_date"] > today.isoformat():
+            for f in ("open", "close1", "cur"):
+                it.pop(f, None)
 
     cut = (today - dt.timedelta(days=keep_days)).isoformat()
     out = []
@@ -521,7 +556,7 @@ def need_detail(it: dict, today: dt.date, prev_by_no: dict[str, dict]) -> int:
     if last >= (today - dt.timedelta(days=14)).isoformat():
         fc_done = (p.get("fc_end") or it.get("fc_end") or "9999") < today.isoformat()
         waiting = not (p.get("fc_start") or it.get("fc_start")) or (fc_done and p.get("inst_comp") is None and it.get("inst_comp") is None)
-        return 1 if waiting or not all(p.get(k) for k in ("market", "list_date", "refund")) or not p.get("float_pct") else 0
+        return 1 if waiting or not all(p.get(k) for k in ("market", "list_date", "refund")) else 0
     if last >= (today - dt.timedelta(days=400)).isoformat() and not p.get("market"):
         return 2
     return 0
@@ -593,7 +628,7 @@ def main(argv=None) -> int:
     if not a.no_detail:
         prev_by_no = {p["no"]: p for p in prev if p.get("no")}
         rank = [(need_detail(it, today, prev_by_no), it["no"]) for it in items if it.get("no")]
-        todo = [no for r, no in sorted(x for x in rank if x[0])]
+        todo = [no for r, no in sorted((x for x in rank if x[0]), key=lambda x: (x[0], -int(x[1]) if x[1].isdigit() else 0))]
         log(f"상세 페이지 {len(todo)}곳")
         for no in todo[:max(0, a.detail_limit)]:
             try:
