@@ -52,7 +52,13 @@ LISTING_COLS = {"name": ("기업명", "종목명"), "list": ("신규상장일", 
 # 상세 페이지의 "이름표 | 값" 칸
 DETAIL_LABELS = {"market": ("시장구분",), "sector": ("업종",), "shares": ("총공모주식수",),
                  "refund": ("환불일",), "list": ("상장일",), "code": ("종목코드",),
-                 "post_shares": ("상장후주식수", "공모후상장주식수", "상장예정주식수", "공모후주식수", "상장주식수")}
+                 "post_shares": ("상장후주식수", "공모후상장주식수", "상장예정주식수", "공모후주식수", "상장주식수"),
+                 # 아래는 목록 표에 없을 때만 채운다(FILL_ONLY). 수요예측일은 청약 예정 종목의 결과 발표 시점을 알려 준다
+                 "fc": ("수요예측일", "수요예측일정", "기관수요예측일"), "inst_comp": ("기관경쟁률", "수요예측경쟁률"),
+                 "lockup": ("의무보유확약", "의무보유확약비율"), "price": ("확정공모가", "확정공모가액"),
+                 "band": ("희망공모가액", "희망공모가"), "amount": ("공모금액", "확정공모금액"),
+                 "sub_comp": ("청약경쟁률", "일반청약경쟁률"), "sub": ("공모청약일", "청약일", "일반청약일")}
+FILL_ONLY = {"fc_start", "fc_end", "inst_comp", "lockup", "price", "band_lo", "band_hi", "amount", "sub_comp", "sub_start", "sub_end"}
 # 상세 페이지 글 전체에서 찾는 값 — 칸 위치가 종목마다 달라 이름표 옆 칸으로 못 잡는다
 OLD_RE = re.compile(r"구주\s*매출\s*[:：]?\s*([\d,]+)\s*주")
 FLOAT_RE = re.compile(r"유통\s*가능[^%]{0,60}?(?<![\d.,])(\d{1,3}(?:\.\d+)?)\s*%")
@@ -371,7 +377,8 @@ def parse_detail(text: str, today: dt.date) -> dict:
         for i, c in enumerate(r[:-1]):
             lab = squash(c["t"])
             for key, names in DETAIL_LABELS.items():
-                if key in got or lab not in names:
+                # '수요예측일(기관)' 처럼 꼬리가 붙어도 잡되, 전혀 다른 긴 이름표는 거른다
+                if key in got or not any(lab == n or (lab.startswith(n) and len(lab) <= len(n) + 6) for n in names):
                     continue
                 v = r[i + 1]["t"]
                 if key == "market":
@@ -387,8 +394,42 @@ def parse_detail(text: str, today: dt.date) -> dict:
                 elif key == "code":
                     m = re.search(r"\b(\d{5}[0-9A-Z])\b", v)
                     got[key] = m.group(1) if m else None
+                elif key in ("fc", "sub"):
+                    got[key] = date_range(v, today)
+                elif key in ("inst_comp", "sub_comp"):
+                    got[key] = ratio(v)
+                elif key == "lockup":
+                    x = to_float(v) if "%" in v else None
+                    got[key] = x if x is not None and 0 <= x <= 100 else None
+                elif key == "price":
+                    got[key] = price(v)
+                elif key == "band":
+                    got[key] = band(v)
+                elif key == "amount":
+                    got[key] = eok_of(v)
+    for key, (a, b) in (("fc", ("fc_start", "fc_end")), ("sub", ("sub_start", "sub_end")), ("band", ("band_lo", "band_hi"))):
+        pair = got.pop(key, None)
+        if pair and pair[0]:
+            got[a], got[b] = pair
+    # 수요예측이 끝나기 전 상세 페이지는 확약·경쟁률 칸에 '0.00%' 같은 자리 표시를 둔다 — 결과로 치지 않는다
+    if got.get("fc_end") and got["fc_end"] >= today.isoformat():
+        got.pop("inst_comp", None); got.pop("lockup", None)
+    if got.get("inst_comp") is None and not got.get("lockup"):
+        got.pop("lockup", None)
     got.update(detail_extras(text, got.get("shares")))
     return {k: v for k, v in got.items() if v is not None}
+
+
+def eok_of(v: str) -> float | None:
+    """'300억원' · '30,000 (백만원)' · '30,000,000,000 원' → 억원"""
+    x = to_float(v)
+    if x is None or x <= 0:
+        return None
+    if "억" in v:
+        return round(x, 1)
+    if "백만" in v:
+        return round(x / 100, 1)
+    return round(x / 1e8, 1) if x >= 1e7 else None
 
 
 def detail_extras(text: str, shares: int | None) -> dict:
@@ -449,8 +490,13 @@ def merge(prev: list[dict], schedule, forecast, listing, details: dict[str, dict
                 f = "list_date" if f == "list" else f
                 if f == "list_date" and it.get("list_date") and it["list_date"] != v:
                     continue  # 신규상장 표의 날짜가 더 믿을 만하다
+                if f in FILL_ONLY and it.get(f) not in (None, "", []):
+                    continue  # 목록 표 값이 있으면 그대로 — 상세는 빈칸만 메운다
                 it[f] = v
         it["spac"] = bool(re.search(r"스팩|SPAC|기업인수목적", it["name"], re.I))
+        # 예전 실행이 남긴 자리 표시(경쟁률 없는 0% 확약)는 지운다
+        if it.get("inst_comp") is None and it.get("lockup") == 0:
+            it.pop("lockup", None)
 
     cut = (today - dt.timedelta(days=keep_days)).isoformat()
     out = []
@@ -473,7 +519,9 @@ def need_detail(it: dict, today: dt.date, prev_by_no: dict[str, dict]) -> int:
     last = max(it.get("sub_end") or "", it.get("fc_end") or "", it.get("list_date") or "")
     p = prev_by_no.get(it["no"], {})
     if last >= (today - dt.timedelta(days=14)).isoformat():
-        return 1 if not all(p.get(k) for k in ("market", "list_date", "refund")) or not p.get("float_pct") else 0
+        fc_done = (p.get("fc_end") or it.get("fc_end") or "9999") < today.isoformat()
+        waiting = not (p.get("fc_start") or it.get("fc_start")) or (fc_done and p.get("inst_comp") is None and it.get("inst_comp") is None)
+        return 1 if waiting or not all(p.get(k) for k in ("market", "list_date", "refund")) or not p.get("float_pct") else 0
     if last >= (today - dt.timedelta(days=400)).isoformat() and not p.get("market"):
         return 2
     return 0
