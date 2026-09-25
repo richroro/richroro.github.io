@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#0b0d1a">
+<title>한 줄의 프롬프트 — Opus 5.5 애니메이션 쇼츠</title>
+<meta name="description" content="Claude Opus 5.5를 주제로 만든 31초 세로 애니메이션 쇼츠. 그림 파일 없이 캔버스 코드로 한 프레임씩 그리고, 음악과 효과음도 코드로 합성했습니다.">
+<link rel="canonical" href="https://richroro.github.io/opus-shorts/">
+<meta property="og:type" content="video.other">
+<meta property="og:site_name" content="한 줄의 프롬프트">
+<meta property="og:title" content="한 줄의 프롬프트 — Opus 5.5 애니메이션 쇼츠">
+<meta property="og:description" content="프롬프트 한 줄에 깨어난 커서가 작은 세계를 짓고, 버그를 잡고, 자전거 타는 펠리컨을 만납니다. 31초, 전부 코드로.">
+<meta property="og:url" content="https://richroro.github.io/opus-shorts/">
+<meta property="og:image" content="https://richroro.github.io/opus-shorts/poster.jpg">
+<meta property="og:video" content="https://richroro.github.io/opus-shorts/opus-short.mp4">
+<meta property="og:locale" content="ko_KR">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%230b0d1a'/><circle cx='50' cy='56' r='30' fill='%23ff8a3d'/><circle cx='40' cy='52' r='5' fill='%231b1030'/><circle cx='60' cy='52' r='5' fill='%231b1030'/><path d='M50 26 L53 18 L50 10 L47 18 Z' fill='%23ffd84d'/></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Black+Han+Sans&family=Noto+Sans+KR:wght@400;700;900&family=JetBrains+Mono:wght@700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0b0d1a; --panel:#141833; --line:#262b52; --ink:#fff4e0; --sub:#aab0d6; --mute:#7c82ab;
+    --orange:#ff8a3d; --teal:#3ee6c1; --pink:#ff4f8b; --yellow:#ffd84d;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:"Pretendard","Noto Sans KR","Apple SD Gothic Neo",system-ui,sans-serif;background:var(--bg);color:var(--ink);
+    line-height:1.6;letter-spacing:-.3px;-webkit-font-smoothing:antialiased}
+  a{color:inherit}
+  .wrap{max-width:980px;margin:0 auto;padding:0 16px}
+  header{padding:22px 0 0}
+  .home{font-size:14px;color:var(--mute);text-decoration:none}
+  .home:hover{color:var(--ink)}
+  .hero{display:grid;grid-template-columns:minmax(0,380px) minmax(0,1fr);gap:48px;align-items:center;padding:28px 0 56px}
+  .eyebrow{font-family:"JetBrains Mono",monospace;font-size:13px;color:var(--teal);letter-spacing:.5px}
+  h1{font-family:"Black Han Sans",sans-serif;font-weight:400;font-size:clamp(40px,7vw,64px);line-height:1.12;margin:10px 0 16px;letter-spacing:-.5px}
+  h1 em{font-style:normal;color:var(--orange)}
+  .lead{color:var(--sub);font-size:17px;max-width:520px}
+  .phone{position:relative;width:100%;aspect-ratio:9/16;border-radius:34px;overflow:hidden;background:#000;
+    box-shadow:0 0 0 8px #1b2044,0 0 0 9px #2c3264,0 30px 80px rgba(255,138,61,.18)}
+  .phone video,.phone canvas{position:absolute;inset:0;width:100%;height:100%;display:block;object-fit:cover}
+  .tabs{display:flex;gap:6px;margin:0 0 14px;background:var(--panel);padding:5px;border-radius:12px;width:max-content}
+  .tabs button{border:0;background:transparent;color:var(--sub);font:inherit;font-size:14px;font-weight:700;padding:8px 14px;border-radius:8px;cursor:pointer}
+  .tabs button[aria-selected="true"]{background:var(--orange);color:#1b1030}
+  .actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:26px}
+  .btn{display:inline-flex;align-items:center;gap:8px;text-decoration:none;font-weight:800;font-size:15px;padding:13px 20px;border-radius:12px;border:0;cursor:pointer;font-family:inherit}
+  .btn-o{background:var(--orange);color:#1b1030}
+  .btn-g{background:var(--panel);color:var(--ink);box-shadow:inset 0 0 0 1px var(--line)}
+  .btn:hover{filter:brightness(1.08)}
+  .note{font-size:13px;color:var(--mute);margin-top:10px}
+  section{padding:40px 0;border-top:1px solid var(--line)}
+  h2{font-size:24px;font-weight:900;margin-bottom:6px}
+  .desc{color:var(--sub);margin-bottom:22px}
+  .chapters{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:10px;list-style:none}
+  .chapters button{width:100%;text-align:left;background:var(--panel);border:1px solid var(--line);color:var(--ink);border-radius:14px;padding:14px 16px;cursor:pointer;font:inherit}
+  .chapters button:hover{border-color:var(--orange)}
+  .chapters time{display:block;font-family:"JetBrains Mono",monospace;font-size:13px;color:var(--orange);margin-bottom:2px}
+  .chapters b{font-size:16px}
+  .chapters span{display:block;font-size:13px;color:var(--sub);margin-top:4px}
+  .steps{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;counter-reset:s}
+  .step{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:20px}
+  .step::before{counter-increment:s;content:"0" counter(s);font-family:"JetBrains Mono",monospace;color:var(--teal);font-size:13px}
+  .step h3{font-size:17px;margin:6px 0}
+  .step p{font-size:14px;color:var(--sub)}
+  code{font-family:"JetBrains Mono",monospace;font-size:.9em;background:#1d2247;padding:1px 6px;border-radius:6px}
+  footer{padding:30px 0 50px;color:var(--mute);font-size:13px;border-top:1px solid var(--line)}
+  @media (max-width:760px){
+    .hero{grid-template-columns:1fr;gap:28px;padding-top:18px}
+    .hero .player{max-width:340px;margin:0 auto;width:100%}
+    .steps{grid-template-columns:1fr}
+  }
+  @media (prefers-reduced-motion:reduce){ .phone{box-shadow:0 0 0 8px #1b2044} }
+</style>
+</head>
+<body>
+<header class="wrap"><a class="home" href="/">&larr; richroro.github.io</a></header>
+
+<main class="wrap">
+  <div class="hero">
+    <div class="player">
+      <div class="tabs" role="tablist" aria-label="재생 방식">
+        <button role="tab" id="tabVideo" aria-selected="true">영상 (소리 포함)</button>
+        <button role="tab" id="tabLive" aria-selected="false">코드로 실시간 그리기</button>
+      </div>
+      <div class="phone">
+        <video id="vid" src="opus-short.mp4" poster="poster.jpg" controls playsinline loop preload="metadata"></video>
+        <canvas id="live" width="1080" height="1920" hidden aria-label="anim.js 가 지금 이 브라우저에서 그리는 애니메이션"></canvas>
+      </div>
+      <p class="note" id="liveNote" hidden>지금 보이는 화면은 영상 파일이 아니라, <code>anim.js</code>가 이 브라우저에서 실시간으로 그리는 그림입니다. (소리 없음)</p>
+    </div>
+    <div>
+      <p class="eyebrow">FAN-MADE SHORTS · 31s · 1080×1920</p>
+      <h1>한 줄의 프롬프트,<br><em>하나의 세계</em></h1>
+      <p class="lead">Claude Opus 5.5 출시 기념으로 만든 세로 애니메이션입니다. 프롬프트 한 줄을 받은 커서가 깨어나 작은 마을을 짓고,
+        버그를 한 방에 잡고, 새벽녘에는 자전거 타는 펠리컨을 만납니다. 그림 파일은 한 장도 쓰지 않았고 모든 프레임과 소리를 코드로 만들었습니다.</p>
+      <div class="actions">
+        <a class="btn btn-o" href="opus-short.mp4" download="opus-5-5-short.mp4">MP4 내려받기 (5.3MB)</a>
+        <a class="btn btn-g" href="https://github.com/richroro/richroro.github.io/tree/main/opus-shorts" target="_blank" rel="noopener">소스 코드</a>
+      </div>
+      <p class="note">쇼츠·릴스에 바로 올릴 수 있는 9:16 H.264 + AAC 파일입니다.</p>
+    </div>
+  </div>
+
+  <section>
+    <h2>장면</h2>
+    <p class="desc">누르면 그 장면부터 재생합니다.</p>
+    <ol class="chapters" id="chapters">
+      <li><button data-t="0"><time>0:00</time><b>프롬프트 한 줄</b><span>“작은 세계 하나 만들어줘”를 치고 엔터</span></button></li>
+      <li><button data-t="4.3"><time>0:04</time><b>커서가 깨어난다</b><span>떨어진 커서 블록이 동그란 캐릭터로 변신</span></button></li>
+      <li><button data-t="9"><time>0:09</time><b>세계를 짓는다</b><span>한 번 튈 때마다 코드 조각이 날아가 집·탑·풍차가 됨</span></button></li>
+      <li><button data-t="16"><time>0:16</time><b>버그 등장</b><span>화면이 지직거리고, 캐릭터가 달려가 한 방에 해결</span></button></li>
+      <li><button data-t="22.4"><time>0:22</time><b>자전거 타는 펠리컨</b><span>출시 날 화제가 된 데모에 보내는 오마주</span></button></li>
+      <li><button data-t="27"><time>0:27</time><b>엔딩</b><span>Claude Opus 5.5 · 토큰 단가 20%↓ · 출력 속도 30%↑</span></button></li>
+    </ol>
+  </section>
+
+  <section>
+    <h2>어떻게 만들었나</h2>
+    <p class="desc">PDoomVideo처럼 “영상도 코드로” 만드는 방식을 그대로 써 봤습니다.</p>
+    <div class="steps">
+      <div class="step"><h3>시간 → 그림 함수</h3><p><code>anim.js</code>의 <code>draw(ctx, t)</code>는 시간 t를 받아 그 순간을 캔버스에 그립니다. 난수도 시드로만 써서 같은 t면 항상 같은 그림이 나옵니다.</p></div>
+      <div class="step"><h3>프레임 굽기</h3><p><code>tools/render.mjs</code>가 헤드리스 크롬에서 1/30초씩 930장을 그리고, PNG 그대로 ffmpeg에 넘겨 H.264로 인코딩합니다.</p></div>
+      <div class="step"><h3>소리도 합성</h3><p><code>tools/music.py</code>가 numpy로 150BPM 칩튠, 타자 소리, “쾅!”, 자전거 벨까지 장면 타이밍에 맞춰 합성합니다. 샘플 파일은 쓰지 않았습니다.</p></div>
+    </div>
+  </section>
+</main>
+
+<footer class="wrap">팬이 만든 비공식 영상이며 Anthropic과 관계가 없습니다. 모델 가격·속도 수치는 2026년 9월 22일 출시 보도를 기준으로 했습니다.</footer>
+
+<script src="anim.js"></script>
+<script>
+(() => {
+  const vid = document.getElementById('vid'), live = document.getElementById('live'), note = document.getElementById('liveNote');
+  const tabV = document.getElementById('tabVideo'), tabL = document.getElementById('tabLive');
+  const S = window.OpusShort, ctx = live.getContext('2d');
+  let raf = 0, t0 = 0, offset = 0, lastT = 0;
+
+  function loop(now) {
+    const t = (offset + (now - t0) / 1000) % S.DUR;
+    lastT = t;
+    S.draw(ctx, t);
+    raf = requestAnimationFrame(loop);
+  }
+  function setMode(liveMode, at) {
+    tabV.setAttribute('aria-selected', String(!liveMode));
+    tabL.setAttribute('aria-selected', String(liveMode));
+    vid.hidden = liveMode; live.hidden = !liveMode; note.hidden = !liveMode;
+    cancelAnimationFrame(raf);
+    if (liveMode) {
+      offset = at != null ? at : (vid.currentTime || 0);
+      vid.pause();
+      document.fonts.ready.then(() => { t0 = performance.now(); raf = requestAnimationFrame(loop); });
+    } else if (at != null) {
+      vid.currentTime = at; vid.play().catch(() => {});
+    }
+  }
+  tabV.addEventListener('click', () => setMode(false));
+  tabL.addEventListener('click', () => setMode(true));
+  document.getElementById('chapters').addEventListener('click', e => {
+    const b = e.target.closest('button[data-t]');
+    if (!b) return;
+    const at = parseFloat(b.dataset.t);
+    setMode(!live.hidden, at);
+    document.querySelector('.phone').scrollIntoView({ behavior: 'smooth', block: 'center' });
+  });
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden && !live.hidden) cancelAnimationFrame(raf);
+    else if (!live.hidden) { cancelAnimationFrame(raf); offset = lastT; t0 = performance.now(); raf = requestAnimationFrame(loop); }
+  });
+})();
+</script>
+</body>
+</html>
