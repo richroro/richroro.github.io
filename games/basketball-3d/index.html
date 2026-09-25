@@ -5,20 +5,20 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <meta name="theme-color" content="#0A1120">
 <title>한 손 농구 3D</title>
-<meta name="description" content="three.js로 만든 3D 농구. 프로 리그 규격 코트와 24초 샷 클락, 중계 화면 같은 점수판. 스테이지 10개, 무한 모드, 올스타전 방식 3점슛 콘테스트.">
+<meta name="description" content="three.js로 만든 3D 농구. 7번 선수가 점프슛을 쏘고 1만 4천 관중이 환호하는 프로 리그 경기장. 24초 샷 클락, 스테이지 10개, 무한 모드, 올스타전 방식 3점슛 콘테스트.">
 <link rel="canonical" href="https://richroro.github.io/games/basketball-3d/">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='46' fill='%23FF6B2C'/><g stroke='%235A2A08' stroke-width='5' fill='none'><circle cx='50' cy='50' r='46'/><path d='M50 4v92M4 50h92M18 18q32 32 0 64M82 18q-32 32 0 64'/></g></svg>">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="한 손 농구 3D">
 <meta property="og:title" content="한 손 농구 3D">
-<meta property="og:description" content="프로 리그 규격 코트, 24초 샷 클락, 중계 화면. 끌어 올려 던지는 3D 농구와 올스타전 방식 3점슛 콘테스트.">
+<meta property="og:description" content="끌어 올려 조준하고 놓으면 점프슛. 1만 4천 관중이 들어찬 프로 리그 경기장, 24초 샷 클락, 올스타전 방식 3점슛 콘테스트.">
 <meta property="og:url" content="https://richroro.github.io/games/basketball-3d/">
 <meta property="og:image" content="https://richroro.github.io/games/basketball-3d/og.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="한 손 농구 3D">
-<meta name="twitter:description" content="프로 리그 규격 코트, 24초 샷 클락, 중계 화면. 끌어 올려 던지는 3D 농구와 올스타전 방식 3점슛 콘테스트.">
+<meta name="twitter:description" content="끌어 올려 조준하고 놓으면 점프슛. 1만 4천 관중이 들어찬 프로 리그 경기장, 24초 샷 클락, 올스타전 방식 3점슛 콘테스트.">
 <meta name="twitter:image" content="https://richroro.github.io/games/basketball-3d/og.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -486,7 +486,7 @@ function persist() { store.set("save", JSON.stringify(save)); }
 var tapped = false;
 var sfxLog = [];
 var sfx = (function () {
-  var ac = null, comp = null, master = null, nbuf = null;
+  var ac = null, comp = null, master = null, nbuf = null, amb = null, oohV = null;
   var nseed = 7;
   var muted = store.get("muted", "0") === "1";
   function ensure() {
@@ -502,6 +502,16 @@ var sfx = (function () {
           comp.attack.value = 0.003; comp.release.value = 0.18;
           master = ac.createGain(); master.gain.value = 0.95;
           master.connect(comp); comp.connect(ac.destination);
+          // 경기장 울림: 12ms 뒤 시작해 2.3초 동안 사라지는 좌우 다른 잡음을 임펄스로 (림·바닥·함성이 천장까지 울린다)
+          try {
+            var rev = ac.createConvolver(), wet = ac.createGain(), n = Math.floor(ac.sampleRate * 2.3), ir = ac.createBuffer(2, n, ac.sampleRate);
+            for (var ch = 0; ch < 2; ch++) {
+              var d = ir.getChannelData(ch), pre = Math.floor(ac.sampleRate * 0.012);
+              for (var i = 0; i < n; i++) d[i] = i < pre ? 0 : (rnd() * 2 - 1) * Math.pow(1 - i / n, 2.6) * (i < pre * 6 && rnd() < 0.02 ? 3 : 1);
+            }
+            rev.buffer = ir; wet.gain.value = 0.26;
+            master.connect(rev); rev.connect(wet); wet.connect(comp);
+          } catch (e3) {}
         } catch (e2) { master = null; }
       } catch (e) { ac = null; return null; }
     }
@@ -608,6 +618,31 @@ var sfx = (function () {
     src.start(t, rnd() * 0.5); src.stop(t + dur + 0.05);
     lfo.start(t); lfo.stop(t + dur + 0.05);
   }
+  // 관중 목소리: 음높이가 제각각인 톱니파 열두 개를 모음 공명(포먼트) 두 개로 거르면 '오~'·'아~' 하는 사람들 소리가 된다
+  function voices(dur, peak, f1a, f1b, f2a, f2b, glide, delay) {
+    if (muted || quiet) return null;
+    var a = ensure();
+    if (!a) return null;
+    var t = a.currentTime + (delay || 0), vo = a.createGain();
+    vo.gain.setValueAtTime(0.0001, t);
+    vo.gain.exponentialRampToValueAtTime(Math.max(0.0002, peak), t + dur * 0.45);
+    vo.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+    var F1 = a.createBiquadFilter(), F2 = a.createBiquadFilter(), m2 = a.createGain();
+    F1.type = F2.type = "bandpass"; F1.Q.value = 4; F2.Q.value = 6; m2.gain.value = 0.5;
+    F1.frequency.setValueAtTime(f1a, t); F1.frequency.linearRampToValueAtTime(f1b, t + dur * 0.7);
+    F2.frequency.setValueAtTime(f2a, t); F2.frequency.linearRampToValueAtTime(f2b, t + dur * 0.7);
+    F1.connect(vo); F2.connect(m2); m2.connect(vo); vo.connect(out());
+    var oscs = [];
+    for (var k = 0; k < 12; k++) {
+      var o = a.createOscillator(), vg = a.createGain(), lf = a.createOscillator(), lg = a.createGain(), f0 = 115 + rnd() * 170;
+      o.type = "sawtooth"; o.frequency.setValueAtTime(f0, t); o.frequency.linearRampToValueAtTime(f0 * glide, t + dur);
+      lf.frequency.value = 4 + rnd() * 3; lg.gain.value = f0 * 0.015; lf.connect(lg); lg.connect(o.frequency);
+      vg.gain.value = 0.06; o.connect(vg); vg.connect(F1); vg.connect(F2);
+      o.start(t); o.stop(t + dur + 0.05); lf.start(t); lf.stop(t + dur + 0.05);
+      oscs.push(o);
+    }
+    return { g: vo, a: a, oscs: oscs };
+  }
   function buzz(ms) {
     if (muted || quiet || !tapped || !navigator.vibrate) return;
     try { navigator.vibrate(ms); } catch (e) {}
@@ -623,10 +658,11 @@ var sfx = (function () {
     toggle: function () {
       muted = !muted;
       store.set("muted", muted ? "1" : "0");
-      if (!muted) { ensure(); tone(660, 0.08, "triangle", 0.1); }
+      if (!muted) { ensure(); tone(660, 0.08, "triangle", 0.1); api.ambient(true); }
+      else api.ambient(false);
       return muted;
     },
-    unlock: function () { if (!muted) ensure(); },
+    unlock: function () { if (!muted) { ensure(); api.ambient(true); } },
     stopAll: function () { if (ac && ac.state === "running") ac.suspend(); },
     wake: function () { if (ac && ac.state === "suspended" && !muted) ac.resume(); },
     // 손을 떠나는 '휙'
@@ -641,6 +677,7 @@ var sfx = (function () {
     // 골. 스위시면 '쉬익', 림 맞고 들어가면 짧은 그물 소리. 그 위에 그물이 공을 받는 '퍽',
     // 몸으로 오는 '쿵', 관중 함성, 득점 차임을 겹친다
     goal: function (o) {
+      if (oohV) { try { oohV.g.gain.setTargetAtTime(0.0001, oohV.a.currentTime, 0.12); } catch (e) {} oohV = null; }
       var fin = !!o.clinch, p = fin ? 1 : o.swish ? 0.9 : 0.75;
       if (o.swish) swishSnd();
       else nz({ dur: 0.16, vol: 0.06, type: "bandpass", f0: 3000, f1: 1600, q: 0.8 });
@@ -653,6 +690,28 @@ var sfx = (function () {
       buzz(fin ? [30, 40, 80] : o.swish ? [14, 28, 34] : [24]);
     },
     fire: function () { tone(520, 0.2, "sawtooth", 0.07, 1300); buzz(20); },
+    // 공이 림 쪽으로 떨어질 때 관중이 숨을 들이켜는 '오~' (들어가면 함성에 묻히고, 빗나가면 '아~'로 바뀐다)
+    // (포먼트로 거르면 힘이 많이 빠져서, 함성과 비슷한 크기가 되도록 봉우리를 0.32 로. 오프라인으로 잰 RMS 0.0025)
+    ooh: function (p) { oohV = voices(1.5, 0.32 * p, 360, 420, 780, 860, 1.06); },
+    aww: function (p) {
+      if (oohV) { try { oohV.g.gain.cancelScheduledValues(oohV.a.currentTime); oohV.g.gain.setTargetAtTime(0.0001, oohV.a.currentTime, 0.05); } catch (e) {} oohV = null; }
+      voices(1.1, 0.36 * p, 720, 480, 1150, 820, 0.86);
+    },
+    // 경기장 웅성거림: 늘 낮게 깔린다 (사람 목소리 대역으로 거른 잡음이 천천히 출렁인다)
+    ambient: function (on) {
+      if (!on || muted || quiet) { if (amb) { try { amb.src.stop(); } catch (e) {} amb = null; } return; }
+      if (amb) return;
+      var a = ensure();
+      if (!a) return;
+      var src = a.createBufferSource(); src.buffer = noiseBuf(a); src.loop = true;
+      var f = a.createBiquadFilter(); f.type = "bandpass"; f.frequency.value = 650; f.Q.value = 0.45;
+      var lp = a.createBiquadFilter(); lp.type = "lowpass"; lp.frequency.value = 2400;
+      var g = a.createGain(); g.gain.setValueAtTime(0.0001, a.currentTime); g.gain.exponentialRampToValueAtTime(0.011, a.currentTime + 1.5);
+      var lf = a.createOscillator(), lg = a.createGain(); lf.frequency.value = 0.11; lg.gain.value = 0.0035; lf.connect(lg); lg.connect(g.gain);
+      src.connect(f); f.connect(lp); lp.connect(g); g.connect(out());
+      src.start(); lf.start();
+      amb = { src: src, g: g };
+    },
     // 드리블: 나무 바닥에 튀는 둥근 '퉁' + 가죽 '팍'
     dribble: function () { tone(96, 0.12, "sine", 0.07, 64); nz({ dur: 0.04, vol: 0.03, type: "bandpass", f0: 1400, q: 0.9 }); },
     // 패스를 받는 '팍'
@@ -672,7 +731,7 @@ var sfx = (function () {
     }
   };
   Object.keys(api).forEach(function (k) {
-    if (/^(isMuted|toggle|unlock|stopAll|wake)$/.test(k)) return;
+    if (/^(isMuted|toggle|unlock|stopAll|wake|ambient)$/.test(k)) return;
     var fn = api[k];
     api[k] = function () {
       sfxLog.push({ n: k, a: arguments[0] });
@@ -2170,8 +2229,28 @@ var sh = {
   ball: new V3(), b0: new V3(), hasBall: false, dip: 0,
   pend: null,           // 손 떼고 놓기 전 { pow, yaw }
   want: null,           // 받을 공 ("pass" | "pick"), 달리거나 뛰는 중이면 끝나고 받는다
-  pass: null, pick: null, ph: 0, demo: false, spin: new V3()
+  pass: null, pick: null, ph: 0, demo: false, spin: new V3(),
+  cheer: 0, cheerT: 0          // 골 세리머니: 1 주먹 한 번, 2 두 팔 번쩍(끝내기)
 };
+function shCheer(lv) { if (lv > sh.cheer || sh.cheerT > 0.9) { sh.cheer = lv; sh.cheerT = 0; } }
+// 내려와 빈손일 때 세리머니 팔 (idle·land 에서 부른다)
+function shCheerArms(P, dt) {
+  if (!sh.cheer) return;
+  var dur = sh.cheer > 1 ? 1.9 : 0.95;
+  sh.cheerT += dt;
+  if (sh.cheerT > dur) { sh.cheer = 0; return; }
+  var k = sh.cheerT;
+  if (sh.cheer > 1) {
+    shGrip("L", "body", -0.16, 0.52, 0.08); shGrip("R", "body", 0.16, 0.52, 0.08);
+    P.jump = sh.st === "idle" ? 0.07 * Math.abs(Math.sin(k * 8)) * (k < 1.2 ? 1 : 0) : 0;
+    shDir(P.hLy, -0.2, 1, 0); shDir(P.hRy, 0.2, 1, 0); shDir(P.hLz, 0, 0, 1); shDir(P.hRz, 0, 0, 1);
+    P.pL.set(0, 0, 0).addScaledVector(shRight(_q3), -1); P.pR.copy(shRight(_q3));
+  } else {
+    shGrip("R", "body", 0.03, 0.02 + 0.2 * Math.abs(Math.sin(Math.min(k, 0.6) * 9)), 0.3);
+    shDir(P.hRy, 0, 1, 0.2); shDir(P.hRz, -0.4, 0, 1);
+    P.pR.copy(shRight(_q3)).addScaledVector(_up, -1);
+  }
+}
 var shDemo = new THREE.Mesh(ballGeo, MAT.ball);   // 시작 화면에서 튀기는 공
 shDemo.castShadow = true; shDemo.visible = false;
 scene.add(shDemo);
@@ -2228,7 +2307,7 @@ function shTryReceive() {
     sh.pass = { from: c.clone().addScaledVector(r, side * 5.5).addScaledVector(sh.f, 1.6).setY(1.35), to: c };
     sh.st = "catch";
   }
-  sh.want = null; sh.t = 0;
+  sh.want = null; sh.t = 0; sh.cheer = 0;
   held.appear = 0;
 }
 // 화면을 누르면 공을 모은다
@@ -2317,6 +2396,7 @@ function shThink(dt) {
       shGrip("L", "body", -0.07, -0.57, 0.08); shGrip("R", "body", 0.07, -0.57, 0.08);
       P.pL.copy(f).negate().addScaledVector(r, -0.3); P.pR.copy(f).negate().addScaledVector(r, 0.3);
       shDir(P.hLz, 1, 0, 0); shDir(P.hLy, 0, -1, 0.15); shDir(P.hRz, -1, 0, 0); shDir(P.hRy, 0, -1, 0.15);
+      shCheerArms(P, dt);
       if (sh.demo && t > 0.5) { sh.st = "dribble"; sh.t = 0; shBallHip(shC, sh.ball); sh.b0.copy(sh.ball); }
       shTryReceive();
       break;
@@ -2471,6 +2551,7 @@ function shThink(dt) {
       P.hRz.copy(_q1).lerp(_q2, fl).normalize();
       shDir(P.hLz, 1, 0, 0.2); shDir(P.hLy, 0, 1 - 2 * dl, 0.25);
       if (focus && !focus.done) P.look.copy(focus.p);
+      if (sh.st === "land" && t > 0.2) shCheerArms(P, dt);
       shTryReceive();
       break;
     }
@@ -2885,20 +2966,21 @@ function mtxPlace(m, A, B, side, len) {
 }
 (function buildPeople() {
   var W = new THREE.Color(1, 1, 1), HR = new THREE.Color(0.07, 0.06, 0.05);
+  // 멀리서 보는 사람들이라 다각형을 아낀다 (한 사람 900개 남짓)
   var G = {
-    torso: solid(ringsGeo([[-0.03, 0.17, 0.12], [0.12, 0.168, 0.12], [0.3, 0.19, 0.128], [0.42, 0.2, 0.125], [0.49, 0.18, 0.108], [0.53, 0.11, 0.075], [0.55, 0.001, 0.001]], 16), W),
-    head: mergeGeos([vcol(sph(0.1, 0.9, 1.08, 1, 0, 0, 0, 16, 12), function (x, y, z, o) { o.copy(y > (z > 0 ? 0.03 + 0.4 * z : 0.03 + 0.5 * z) ? HR : W); }),
-      solid(sph(0.016, 0.9, 1.1, 1.1, 0, -0.018, 0.098), W)]),
-    ua: mergeGeos([solid(sph(0.068, 1, 1, 1, 0, 0.01, 0), W), solid(lathe([[0.064, 0], [0.06, 0.12], [0.05, 0.3]], 10), W)]),
-    fa: mergeGeos([solid(lathe([[0.048, 0], [0.05, 0.06], [0.036, 0.26]], 10), W), solid(sph(0.046, 0.8, 1.1, 0.45, 0, 0.3, 0), W)]),
-    th: mergeGeos([solid(lathe([[0.1, 0], [0.092, 0.2], [0.07, 0.46]], 10), W), solid(sph(0.066, 1, 1, 1, 0, 0.46, 0), W)]),
-    sh: solid(lathe([[0.064, 0], [0.066, 0.12], [0.048, 0.44]], 10), W),
-    shoe: solid(sph(0.07, 0.75, 0.55, 1.5, 0, -0.045, 0.06), W)
+    torso: solid(ringsGeo([[-0.03, 0.17, 0.12], [0.12, 0.168, 0.12], [0.3, 0.19, 0.128], [0.44, 0.198, 0.122], [0.51, 0.16, 0.1], [0.55, 0.001, 0.001]], 12), W),
+    head: vcol(sph(0.1, 0.9, 1.08, 1, 0, 0, 0, 10, 8), function (x, y, z, o) { o.copy(y > (z > 0 ? 0.03 + 0.4 * z : 0.03 + 0.5 * z) ? HR : W); }),
+    ua: mergeGeos([solid(sph(0.068, 1, 1, 1, 0, 0.01, 0, 6, 4), W), solid(lathe([[0.064, 0], [0.058, 0.15], [0.05, 0.3]], 7), W)]),
+    fa: mergeGeos([solid(lathe([[0.048, 0], [0.046, 0.1], [0.036, 0.26]], 7), W), solid(sph(0.046, 0.8, 1.1, 0.45, 0, 0.3, 0, 6, 4), W)]),
+    th: mergeGeos([solid(lathe([[0.1, 0], [0.09, 0.22], [0.07, 0.46]], 7), W), solid(sph(0.066, 1, 1, 1, 0, 0.46, 0, 6, 4), W)]),
+    sh: solid(lathe([[0.064, 0], [0.062, 0.14], [0.048, 0.44]], 7), W),
+    shoe: solid(sph(0.07, 0.75, 0.55, 1.5, 0, -0.045, 0.06, 7, 4), W)
   };
   // 누가 어디에: [x, z, 앞 x, 앞 z, 의자 높이(0=바닥), 종류]
   var spots = [];
   for (var x = -7.3; x <= 7.31; x += 0.62) { spots.push([x + (vr() - 0.5) * 0.06, -4.55, 0, 1, 0.46, "fan"]); spots.push([x + 0.31, -5.35, 0, 1, 0.76, "fan"]); }
-  for (var z = -1.2; z <= 26.5; z += 0.62) [1, -1].forEach(function (sg) {
+  // 옆줄은 코트 앞쪽 절반만 (카메라가 늘 이쪽 골대를 본다)
+  for (var z = -1.2; z <= 14.2; z += 0.62) [1, -1].forEach(function (sg) {
     if (sg > 0 && z > 10.6 && z < 14.8) return;              // 기록석
     spots.push([sg * 8.95, z, -sg, 0, 0.46, "fan"]);
     spots.push([sg * 9.75, z + 0.31, -sg, 0, 0.76, "fan"]);
@@ -3230,6 +3312,7 @@ function netCatch(b, h) {
   b.w.multiplyScalar(1 - k * 0.5);
 }
 
+var oohT = -9;
 function outOfPlay(b) { return b.p.y < -1 || Math.abs(b.p.x) > 16 || b.p.z > 20 || b.p.z < -9; }
 
 function stepBall(b, h) {
@@ -3239,6 +3322,11 @@ function stepBall(b, h) {
   collide(b, h);
   checkRim(b);
   if (b.scored) netCatch(b, h);
+  // 림 쪽으로 떨어지는 공에 관중이 '오~' (1.2초에 한 번까지)
+  if (b.shot && !b.done && !b.scored && !b.ooh && b.v.y < 0 && b.t > 0.45 && b.p.y > RIM_Y && b.p.y < RIM_Y + 1.6) {
+    var ox = b.p.x - hoop.x, oz = b.p.z - hoop.z;
+    if (ox * ox + oz * oz < 1.44) { b.ooh = true; if (gameT - oohT > 1.2) { oohT = gameT; sfx.ooh(b.shot.three ? 1 : 0.75); } }
+  }
   b.cr -= h; b.cb -= h; b.cf -= h;
   // 백보드 위나 림 위에 얹혀 멈춘 공은 살짝 밀어 떨군다
   if (b.p.y > 2.4 && b.v.lengthSq() < 0.09) {
@@ -3369,6 +3457,8 @@ function frameSpot(spot) {
   if (Math.abs(_ff.x) > 1e-3) room = Math.min(room, (CAM.roomX - Math.abs(_fr.x)) / Math.abs(_ff.x));
   var cb = clamp(room, CAM.near, CAM.far), k = (cb - CAM.near) / (CAM.far - CAM.near);
   var cy = CAM.hNear + (CAM.hFar - CAM.hNear) * k, ah = CAM.aNear + (CAM.aFar - CAM.aNear) * k;
+  // 가로 화면은 세로 화각이 좁아도 옆이 넉넉하니 기준점을 가슴께로 올려 더 당겨 본다 (림이 너무 작지 않게)
+  if (VW / Math.max(1, VH) > 1.15) ah = Math.min(1.75, ah + 0.45);
   var cx = _fr.x - _ff.x * cb, cz = _fr.z - _ff.z * cb, hR = Math.hypot(cx, cz);
   if (Math.abs(cx) > CAM.seatX) cy = Math.max(cy, CAM.seatY);
   var eA = Math.atan2(ah - cy, cb), eR = Math.atan2(RIM_Y - cy, hR);
@@ -3768,6 +3858,7 @@ function made(b) {
   popup(word, sub, (clinch || buzzer ? "big gold" : b.gold ? "gold" : swish ? "splash" : ""));
   ribFlash(word, clinch || buzzer || b.gold ? "#ffb020" : swish ? "#8cc0ff" : "#ffd48a", clinch ? 3 : 2);
   crowdReact(clinch || buzzer ? 3 : (swish && b.shot.three) || bank || b.gold ? 2 : 1);
+  if (clinch || buzzer || swish || three) shCheer(clinch || buzzer ? 2 : 1);
   if (clinch || buzzer || (swish && b.shot.three)) cameraFlashes(clinch || buzzer ? 26 : 10, clinch ? 1.4 : 0.8);
   if (clinch) rpMark(b, swish, buzzer ? "버저비터" : b.gold ? "금색 공 끝내기" : swish ? "스위시 끝내기" : "끝내기 골");
   ledFlash(word, call[1] + " +" + pts + "점" + (b.gold ? " · 금색 공" : "") + (b.shot.fire ? " · 불 2배" : ""),
@@ -3812,6 +3903,7 @@ function shotResult(b, ok) {
     var close = b.rimHits > 0 || b.board > 0;
     if (!ST.def.contest) popup(close ? "SO CLOSE" : "AIRBALL", (close ? "아깝다" : "에어볼") + " · " + missWhere(b), "soft");
     sfx.nogoal();
+    if (!ST.def.rapid) sfx.aww(close ? 1 : 0.55);
     ST.streak = 0;
     if (ST.fire) { ST.fire = false; if (held) { held.fire = false; paint(held); } }
   }
@@ -4543,7 +4635,9 @@ function render() {
 }
 function resize() {
   var w = cv.clientWidth || window.innerWidth, h = cv.clientHeight || window.innerHeight;
+  var turned = (VW / Math.max(1, VH) > 1.15) !== (w / Math.max(1, h) > 1.15);
   VW = w; VH = h;
+  if (turned && ST && mode !== "title") frameSpot(curSpot);
   renderer.setSize(w, h, false);
   camera.aspect = w / Math.max(1, h);
   camera.updateProjectionMatrix();
@@ -4690,7 +4784,7 @@ window.H3 = {
   shotClock: function () { return ST ? { t: ST.shotT, on: ST.shotOn, lamp: lamp.t > 0, text: $("bugClock").textContent } : null; },
   lives: function () { return ST ? { lives: ST.lives, level: ST.level, move: ST.move, streak: ST.streak, best: ST.bestStreak } : null; },
   frameSpot: function (x, z) { curSpot = { x: x, z: z, i: 0 }; frameSpot(curSpot); },
-  post: POST, refl: REFL
+  post: POST, refl: REFL, sfx: sfx
 };
 }
 </script>
