@@ -1525,7 +1525,7 @@ function returnFocus(){
   lastSel = "";
   if (to) { try { to.focus(); } catch(e){} }
 }
-let toastTimer = null;
+let toastTimer = null, toastSrTimer = null;
 function toast(msg){
   const t = $("#toast");
   t.textContent = msg;
@@ -1533,6 +1533,15 @@ function toast(msg){
   clearTimeout(toastTimer);
   /* 긴 알림(정지 안내 같은 것)은 읽을 시간만큼 둔다 — 한 글자에 60ms, 적어도 2.6초 */
   toastTimer = setTimeout(() => { t.hidden = true; }, Math.max(2600, String(msg).length * 60));
+  /* 읽어 주는 칸(#toastSr)은 비웠다가 조금 뒤에 채운다 — 같은 말이 또 와도 다시 읽게.
+     시트(aria-modal)가 떠 있으면 그 밖은 안 읽어 주는 기기가 있어(맥·아이폰) 시트 안으로 옮겨 둔다 */
+  const sr = $("#toastSr");
+  if (!sr) return;   // 옛 index.html 사본과 섞여 떠도 멈추지 않게
+  const host = $(".backdrop.open .sheet") || document.body;
+  if (sr.parentNode !== host) host.appendChild(sr);
+  sr.textContent = "";
+  clearTimeout(toastSrTimer);
+  toastSrTimer = setTimeout(() => { sr.textContent = msg; }, 60);
 }
 async function copyText(text){
   try { await navigator.clipboard.writeText(text); return true; } catch(e){}
