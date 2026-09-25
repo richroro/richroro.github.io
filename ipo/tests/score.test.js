@@ -63,3 +63,8 @@ test("균등 예상 주수", () => {
   assert.equal(S.equalShares(100000, 50000), 1);
   assert.equal(S.equalShares(null, 10), null);
 });
+
+test("수요예측 결과 없이 유통물량·구주매출만 채워도 판정하지 않는다", () => {
+  const r = S.score({ amount: 120, float_pct: 18, old_shares: 0, shares: 1e6 }, {}, { temp: () => 120 });
+  assert.equal(r.pending, true);
+});
