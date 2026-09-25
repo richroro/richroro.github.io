@@ -115,8 +115,9 @@ const page2 = await ctx2.newPage();
 watch(page2, 'p2');
 await page2.goto(URL + '#r=' + code, { waitUntil: 'networkidle' });
 await page2.waitForSelector('#inbox .inbox');
-ok((await page2.locator('#inbox h2').textContent()).includes('1건이 도착'), '도착 알림');
+ok((await page2.locator('#inbox h2').textContent()).includes('리처드 특파원이 보낸 현장 소식'), '도착 알림');
 await page2.locator('#inboxYes').click();
+await page2.keyboard.press('Escape');   // 한 곳 소식이면 받자마자 그 장소 창이 열린다
 await page2.waitForTimeout(150);
 ok((await page2.locator('#feed .card').count()) === 1, '받은 리포트 1건');
 ok((await page2.locator('#feed .place').first().innerText()).includes('테스트 놀이터'), '장소 일치');

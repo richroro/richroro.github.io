@@ -477,9 +477,18 @@ textarea.input{min-height:76px;resize:vertical;line-height:1.55}
 .kv dd{margin:0;font-weight:500}
 
 /* ════════ 도착 알림 ════════ */
-.inbox{background:var(--live-wash);border-radius:var(--r);padding:14px 16px;margin-top:14px}
+/* 링크로 온 소식은 파란 칠. 빨강은 속보·오류의 색이라 도착이 오류처럼 읽혔다(어두운 테마에선 밤색) — 빨강은 못 읽었을 때만 */
+.inbox{background:var(--surface);border-radius:var(--r);padding:14px 16px;margin-top:14px;box-shadow:var(--shadow)}
+.inbox.arrive{background:var(--accent-wash);box-shadow:none}
+.inbox.err{background:var(--live-wash);box-shadow:none}
 .inbox h2{font-size:16px;font-weight:700;color:var(--ink);margin-bottom:3px;letter-spacing:-.3px}
+.inbox h2:focus{outline:none}   /* 링크가 들어오면 읽는 프로그램이 제목부터 읽게 초점을 둔다 — 누르는 곳이 아니라 테는 없다 */
 .inbox p{font-size:13px;color:var(--ink-2)}
+.inbox-cards{display:grid;gap:10px;margin-top:12px}   /* 받기 전 미리 보기 — 속보 카드 그대로 */
+.inbox .inbox-more{margin-top:8px;font-weight:600}
+/* 예시 보드에 링크가 도착하면 담을지 정할 때까지 예시(와 예시를 센 "지금 N건")를 가린다(app.js inboxHush) */
+body[data-inbox] #intro,body[data-inbox] #pick,body[data-inbox] #feed,body[data-inbox] #writeBtn,body[data-inbox] #livePill,
+body[data-inbox] #view-feed > .filters,body[data-inbox] #view-feed > .chiprow{display:none}
 
 /* ════════ 시트 ════════ */
 .backdrop{position:fixed;inset:0;background:rgba(6,12,26,.55);z-index:90;display:none;

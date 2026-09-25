@@ -72,14 +72,17 @@ const store = {
 const opt = (table, v) => table.find((o) => o.v === v) || table[table.length - 1];
 const newId = () => Math.random().toString(36).slice(2, 10);
 
-/** 한 줄로 만들고 제어문자를 턴 뒤 길이를 자른다. */
+/** 안 보이는 글자 — 폭 없는 공백·잇기 표시·글 방향 표시. 끼면 똑같아 보이는 이름이 다른 장소가 된다. */
+const INVISIBLE = /[\u200B-\u200F\u202A-\u202E\u2060-\u2069\uFEFF]/g;
+/** 한 줄로 만들고 제어문자를 턴 뒤 길이를 자른다. 풀어 쓴 한글(NFD)은 모아 쓰고 안 보이는 글자는 뺀다. */
 function clip(s, n){
-  return String(s == null ? "" : s).replace(/[\u0000-\u001F\u007F]/g, " ").replace(/\s+/g, " ").trim().slice(0, n);
+  return String(s == null ? "" : s).normalize("NFC").replace(INVISIBLE, "")
+    .replace(/[\u0000-\u001F\u007F]/g, " ").replace(/\s+/g, " ").trim().slice(0, n);
 }
 /** "민지" → "민지 특파원". 이름을 안 정한 사람("이름 없는 특파원")처럼 이미 특파원으로 끝나면 한 번 더 붙이지 않는다. */
 const byline = (name) => /특파원$/.test(name) ? name : name + " 특파원";
-/** 장소 묶음 열쇠 — 공백과 대소문자를 무시한다. */
-const norm = (s) => String(s == null ? "" : s).replace(/\s+/g, "").toLowerCase();
+/** 장소 묶음 열쇠 — 공백과 대소문자, 한글 적는 방식(NFC/NFD), 안 보이는 글자를 무시한다. */
+const norm = (s) => String(s == null ? "" : s).normalize("NFC").replace(INVISIBLE, "").replace(/\s+/g, "").toLowerCase();
 /** "안양 안양동" 도 "안양동" 도 같은 동네로 본다 — 마지막 토막만 본다. */
 function areaKey(s){
   const parts = String(s == null ? "" : s).trim().split(/\s+/).filter(Boolean);
@@ -128,8 +131,10 @@ function liveLabel(t){
 /** 밖에서 들어온 것은 전부 여기를 지난다. 못 믿을 값은 버리거나 깎는다. */
 function sane(o, local){
   if (!o || typeof o !== "object") return null;
-  const t = Number(o.t);
-  if (!isFinite(t) || t < 1577836800000 || t > Date.now() + DAY) return null;  // 2020년 이전 · 하루 넘게 미래면 버린다
+  const t = Number(o.t), now = Date.now();
+  /* 2020년 이전이면 버린다. 미래 시각은 "방금"으로 보이고 지금 가기 좋은 곳 맨 위에 하루 내내 앉는다 —
+     링크·파일·서버로 온 것은 한 시간(보낸 폰 시계가 조금 틀린 것)까지만, 내 저장소는 하루까지 봐주고 지금으로 당긴다. */
+  if (!isFinite(t) || t < 1577836800000 || t > now + (local ? DAY : HOUR)) return null;
   const place = clip(o.place, 40);
   if (!place) return null;
   const inSet = (tab, v) => tab.some((x) => x.v === v) ? v : -1;
@@ -137,7 +142,7 @@ function sane(o, local){
   tags = tags.filter((x, i) => tags.indexOf(x) === i).slice(0, 6);
   return {
     id:    /^[A-Za-z0-9_-]{1,24}$/.test(o.id) ? o.id : newId(),
-    t:     Math.round(t),
+    t:     Math.min(Math.round(t), now),
     by:    clip(o.by, 20) || "이름 없는 특파원",
     cat:   CATS.some((c) => c.k === o.cat) ? o.cat : "etc",
     place,
@@ -169,7 +174,7 @@ function saneWatch(list){
   return list.map((w) => w && typeof w === "object" && typeof w.k === "string" &&
         w.k.length <= 80 && w.k.lastIndexOf("|") > 0
       ? { k: w.k, nm: clip(w.nm, 40) || w.k.slice(0, w.k.lastIndexOf("|")), ar: clip(w.ar, 30),
-          seen: Math.max(0, Number(w.seen) || 0) }
+          seen: clamp(Number(w.seen) || 0, 0, Date.now()) }   // 미래로 밀린 "본 시각"은 진짜 새 소식을 가린다
       : null)
     .filter((w) => w && !keys.has(w.k) && keys.add(w.k))
     .slice(0, WATCH_MAX);
@@ -274,18 +279,20 @@ function liveRowHtml(r){
 const starsHtml = (n) => n ? '<span class="stars" role="img" aria-label="별 ' + n + '개" title="별 ' + n + '개">' +
   "★".repeat(n) + "☆".repeat(5 - n) + "</span>" : "";
 
-/** 카드 — 한눈에 읽히는 순서로: 어디(이름)·언제(몇 분 전) → 무슨 곳·어느 동네 → 지금 어떤지(칩) → 한 줄 → 누가·별점. */
+/** 카드 — 한눈에 읽히는 순서로: 어디(이름)·언제(몇 분 전) → 무슨 곳·어느 동네 → 지금 어떤지(칩) → 한 줄 → 누가·별점.
+    o.preview — 링크로 온 걸 받기 전에 미리 보인다. 아직 보드에 없으니 단추를 달지 않고, 예시 보드 위라도 예시가 아니다. */
 function cardHtml(r, o){
   o = o || {};
   const cat = CATS.find((c) => c.k === r.cat) || CATS[CATS.length - 1];
-  const sample = isSample();
+  const sample = isSample() && !o.preview;
+  const bare = sample || !!o.preview;   // 단추 없는 카드
   return '<article class="card age-' + ageClass(r.t) + '">' +
     '<div class="card-head">' +
       '<h3 class="place">' +
-        (o.plain ? esc(r.place) : '<button type="button" data-open="' + esc(r.id) + '">' + esc(r.place) + "</button>") +
+        (o.plain || o.preview ? esc(r.place) : '<button type="button" data-open="' + esc(r.id) + '">' + esc(r.place) + "</button>") +
       "</h3>" +
       '<span class="age" title="' + esc(fmtTime(r.t)) + '">' + esc(ago(r.t)) + "</span>" +
-      (sample || o.noDelete ? "" :
+      (bare || o.noDelete ? "" :
         '<button class="del" type="button" data-del="' + esc(r.id) + '" aria-label="이 리포트 지우기" title="지우기">&times;</button>') +
     "</div>" +
     '<div class="card-sub">' +
@@ -303,9 +310,9 @@ function cardHtml(r, o){
       starsHtml(r.rate) +
       (r.tags.length ? '<span class="tags">' + r.tags.map((t) => "#" + esc(t)).join(" ") + "</span>" : "") +
       '<span class="spacer"></span>' +
-      (sample ? "" : '<button class="link-btn" type="button" data-again="' + esc(r.id) + '" title="같은 장소의 지금 상황을 알립니다">나도 여기</button>') +
-      (sample ? "" : '<button class="link-btn" type="button" data-share="' + esc(r.id) + '">공유</button>') +
-      (!sample && SY.enabled && !r.mine ?
+      (bare ? "" : '<button class="link-btn" type="button" data-again="' + esc(r.id) + '" title="같은 장소의 지금 상황을 알립니다">나도 여기</button>') +
+      (bare ? "" : '<button class="link-btn" type="button" data-share="' + esc(r.id) + '">공유</button>') +
+      (!bare && SY.enabled && !r.mine ?
         '<button class="link-btn flagbtn" type="button" data-flag="' + esc(r.id) + '">신고</button>' : "") +
     "</div>" +
   "</article>";
@@ -542,24 +549,32 @@ async function pack(list){
   }
   return plain;
 }
+/* 카톡은 긴 링크를 중간에 자른다. 잘린 링크는 base64·압축·JSON 어디선가 깨지는데, 브라우저는 그걸
+   "Failed to fetch" 같은 영어로 말한다 — 우리말로 바꾸고, 잘렸다는 표시(cut)를 달아 받는 쪽이 할 일을 안내한다. */
+const cutError = () => Object.assign(new Error("링크가 중간에 잘린 것 같습니다."), { cut: true });
 async function unpack(code){
   if (!code) throw new Error("링크를 찾지 못했습니다.");
   if (code.length > MAX_CODE) throw new Error("내용이 너무 깁니다.");
   const v = code.charAt(0), body = code.slice(1);
-  if (!/^[A-Za-z0-9_-]+$/.test(body)) throw new Error("링크가 중간에 잘린 것 같습니다.");
-  let bytes = b64d(body);
+  if (!/^[A-Za-z0-9_-]+$/.test(body)) throw cutError();
+  let bytes;
+  try { bytes = b64d(body); } catch (e) { throw cutError(); }            // 길이가 안 맞는 base64
   if (v === "2") {
     if (typeof DecompressionStream !== "function") throw new Error("이 브라우저는 압축된 링크를 풀지 못합니다.");
     const buf = await new Response(new Blob([bytes]).stream()
-      .pipeThrough(new DecompressionStream("deflate-raw"))).arrayBuffer();
+      .pipeThrough(new DecompressionStream("deflate-raw"))).arrayBuffer()
+      .catch(() => { throw cutError(); });                                // 압축이 끝나기 전에 끊겼다
     if (buf.byteLength > MAX_BYTES) throw new Error("내용이 너무 큽니다.");
     bytes = new Uint8Array(buf);
   } else if (v !== "1") {
     throw new Error("모르는 형식입니다.");
   }
-  const rows = JSON.parse(new TextDecoder().decode(bytes));
+  let rows;
+  try { rows = JSON.parse(new TextDecoder().decode(bytes)); } catch (e) { throw cutError(); }
   if (!Array.isArray(rows)) throw new Error("내용을 읽지 못했습니다.");
-  const out = rows.slice(0, MAX_REPORTS).map((a) => Array.isArray(a) ? fromRow(a) : sane(a)).filter(Boolean);
+  const ids = new Set();   // 한 링크에 같은 리포트가 두 번 실려도 한 건이다
+  const out = rows.slice(0, MAX_REPORTS).map((a) => Array.isArray(a) ? fromRow(a) : sane(a))
+    .filter((r) => r && !ids.has(r.id) && ids.add(r.id));
   if (!out.length) throw new Error("쓸 만한 리포트가 없습니다.");
   return out;
 }
@@ -734,9 +749,9 @@ const unseen = (w, g) => g ? g.rs.filter((r) => r.t > w.seen && !r.mine).length 
 /** 장소 창을 열었거나 열려 있는 동안 들어온 것은 본 것이다. */
 function markSeen(g){
   if (isSample()) return false;
-  const w = watchEntry(g);
-  if (!w || g.last.t <= w.seen) return false;
-  w.seen = g.last.t;
+  const w = watchEntry(g), t = Math.min(g.last.t, Date.now());   // 본 시각은 지금을 넘지 않는다
+  if (!w || t <= w.seen) return false;
+  w.seen = t;
   save();
   return true;
 }
@@ -750,7 +765,7 @@ function toggleWatch(g){
     return;
   }
   if (board.watch.length >= WATCH_MAX) { toast("지켜보는 곳은 " + WATCH_MAX + "곳까지입니다."); return; }
-  board.watch.push({ k: g.key, nm: g.place, ar: g.area, seen: g.last.t });
+  board.watch.push({ k: g.key, nm: g.place, ar: g.area, seen: Math.min(g.last.t, Date.now()) });
   save();
   pushSyncPlaces();
   toast("지켜보는 곳에 넣었습니다 — 새 소식이 오면 속보 맨 위에 표시합니다." + (board.push ? " 폰으로도 알립니다." : ""));
@@ -1735,41 +1750,93 @@ function mergeNote(res, head){
 function clearHash(){
   if (location.hash) history.replaceState(null, "", location.pathname + location.search);
 }
-async function checkHash(){
-  const m = location.hash.match(/^#r=([A-Za-z0-9_-]+)$/);
+/** 예시 보드에 링크가 도착하면, 담을지 정하기 전까지 예시(안내·지금 가기 좋은 곳·속보·쓰기 단추·지금 N건)를 가린다 —
+    지어낸 "지금 가기 좋은 곳"이 친구가 보낸 것처럼 읽히지 않고 친구 소식이 첫 화면이 되게. 알림이 닫히면 푼다. */
+const inboxHush = () => document.body.toggleAttribute("data-inbox", !!$("#inbox .inbox") && isSample());
+/** 알림을 닫는다. 카톡 안 브라우저에서 담았을 때만 주소(#r=)를 남긴다 — "다른 브라우저로 열기"로 나가도 거기서 또 받게. */
+function closeInbox(keepHash){
+  $("#inbox").innerHTML = "";
+  if (!keepHash) clearHash();
+  inboxHush();
+}
+/** 링크에 실린 곳 이름 — 띄어쓰기만 다른 이름은 한 번, 셋까지 적고 나머지는 "외 N곳". */
+function placeNames(list){
+  const keys = new Set(), ns = list.map((r) => r.place).filter((p) => !keys.has(norm(p)) && keys.add(norm(p)));
+  return ns.slice(0, 3).join(", ") + (ns.length > 3 ? " 외 " + (ns.length - 3) + "곳" : "");
+}
+const INBOX_CUT = "링크가 중간에 잘렸습니다. 카톡 글을 길게 눌러 통째로 복사한 뒤, 주고받기 탭의 ‘받기’ 칸에 붙여 넣어 보세요.";
+let inboxSeq = 0;
+/** arrived: 앱이 열려 있는 채로 링크가 들어왔다(hashchange — 홈 화면 앱이 링크를 받을 때). */
+async function checkHash(arrived){
+  /* 끝에 딸려 온 글자(카톡 글에서 같이 긁힌 ")" 같은 것)는 버린다 — 붙여넣기 칸의 findCode 처럼 */
+  const m = location.hash.match(/^#r=([A-Za-z0-9_-]+)/);
   if (!m) return;
-  const box = $("#inbox");
+  if (isSample()) document.body.setAttribute("data-inbox", "");   // 푸는 동안 예시가 먼저 번쩍 보이지 않게
+  const box = $("#inbox"), seq = ++inboxSeq;
+  let html, held = false;
   try {
     const list = await unpack(m[1]);
+    if (seq !== inboxSeq) return;   // 그사이 다른 링크가 들어왔다
     inboxCache = list;
     const have = new Set(board.reports.map((r) => r.id));
-    const fresh = list.filter((r) => !have.has(r.id));
-    const names = Array.from(new Set(list.map((r) => r.place))).slice(0, 4).join(", ");
+    const fresh = list.filter((r) => !have.has(r.id)).sort((a, b) => b.t - a.t);
     if (!fresh.length) {
-      box.innerHTML = '<div class="inbox"><h2>이미 갖고 있는 리포트입니다</h2>' +
-        "<p>" + esc(names) + " · " + list.length + "건 모두 보드에 있습니다.</p>" +
+      held = true;
+      html = '<div class="inbox"><h2 tabindex="-1">이미 갖고 있는 리포트입니다</h2>' +
+        "<p>" + esc(placeNames(list)) + " · " + list.length + "건 모두 보드에 있습니다.</p>" +
         '<div class="row"><button class="btn sm ghost" id="inboxNo" type="button">닫기</button></div></div>';
     } else {
-      box.innerHTML = '<div class="inbox"><h2>리포트 ' + fresh.length + "건이 도착했습니다</h2>" +
-        "<p>" + esc(names) + (list.length > fresh.length ? " · 이미 있는 " + (list.length - fresh.length) + "건은 뺐습니다" : "") + "</p>" +
-        '<div class="row"><button class="btn primary sm" id="inboxYes" type="button">보드에 받기</button>' +
-        '<button class="btn sm ghost" id="inboxNo" type="button">안 받기</button></div></div>';
+      /* 받을지 묻기 전에 무엇이 왔는지 먼저 보인다 — 새로 온 것만, 카드 그대로(단추만 빼고) */
+      const by = Array.from(new Set(fresh.map((r) => r.by)));
+      const skip = list.length - fresh.length;
+      html = '<div class="inbox arrive"><h2 tabindex="-1">' +
+          (by.length === 1 ? esc(byline(by[0])) + "이 보낸 현장 소식" : "현장 소식 " + fresh.length + "건") + "</h2>" +
+        "<p>" + (by.length === 1 ? fresh.length + "건 · " : "") + esc(placeNames(fresh)) +
+          (skip ? " · 이미 있는 " + skip + "건은 뺐습니다" : "") + "</p>" +
+        '<div class="inbox-cards">' + fresh.slice(0, 3).map((r) => cardHtml(r, { preview: true })).join("") + "</div>" +
+        (fresh.length > 3 ? '<p class="inbox-more">외 ' + (fresh.length - 3) + "건</p>" : "") +
+        '<div class="row"><button class="btn primary sm" id="inboxYes" type="button">내 보드에 담기</button>' +
+        '<button class="btn sm ghost" id="inboxNo" type="button">안 담기</button></div></div>';
     }
   } catch(e) {
-    box.innerHTML = '<div class="inbox"><h2>링크를 읽지 못했습니다</h2><p>' + esc(e.message) +
-      ' 링크가 잘렸을 수 있으니, 받은 글을 통째로 복사해서 <b>주고받기</b> 칸에 붙여 넣어 보세요.</p>' +
-      '<div class="row"><button class="btn sm ghost" id="inboxNo" type="button">닫기</button></div></div>';
+    if (seq !== inboxSeq) return;
+    html = '<div class="inbox err"><h2 tabindex="-1">링크를 읽지 못했습니다</h2><p>' + (e.cut ? INBOX_CUT : esc(e.message)) + "</p>" +
+      '<div class="row">' + (e.cut ? '<button class="btn primary sm" id="inboxPaste" type="button">붙여 넣으러 가기</button>' : "") +
+      '<button class="btn sm ghost" id="inboxNo" type="button">닫기</button></div></div>';
   }
-  const yes = $("#inboxYes"), no = $("#inboxNo");
+  box.innerHTML = html;
+  inboxHush();
+  if (arrived) {
+    /* 내려 읽던 중이거나 다른 탭에 있으면 알림이 화면 밖에 그려진다 — 속보 맨 위로 와서 알림 제목에 초점.
+       창이 떠 있으면 뒤가 막혀(inert) 있어 닫는다. 쓰던 리포트는 두고 */
+    if ($(".backdrop.open") && !$("#composeBack.open")) closeSheets();
+    switchView("feed");
+    window.scrollTo(0, 0);
+    box.querySelector("h2").focus();
+  }
+  const yes = $("#inboxYes"), no = $("#inboxNo"), paste = $("#inboxPaste");
   if (yes) yes.addEventListener("click", () => {
     const res = merge(inboxCache || []);
     const msg = mergeNote(res, res.added + "건을 받았습니다." + (res.dup ? " (" + res.dup + "건은 이미 있었음)" : ""));
-    box.innerHTML = "";
-    clearHash();
+    closeInbox(inAppBrowser());
     renderAll();
+    /* 한 곳 소식이면 그 장소 창을 연다 — 앞뒤 소식과 "지켜보기"가 거기 있다. 닫으면 속보의 그 카드로 */
+    const ids = new Set(res.fresh.map((r) => r.id));
+    const gs = ids.size ? groups().filter((g) => g.rs.some((r) => ids.has(r.id))) : [];
+    if (gs.length === 1) {
+      const card = $('#feed [data-open="' + gs[0].rs.find((r) => ids.has(r.id)).id + '"]');
+      if (card) card.focus({ preventScroll: true });
+      openPlaceSheet(gs[0]);
+    }
     toast(msg);
   });
-  if (no) no.addEventListener("click", () => { box.innerHTML = ""; clearHash(); });
+  if (no) no.addEventListener("click", () => closeInbox(held && inAppBrowser()));   // 이미 받은 링크도 다른 브라우저로 들고 나가게
+  if (paste) paste.addEventListener("click", () => {
+    closeInbox();
+    switchView("sync");
+    window.scrollTo(0, 0);   // "받기"는 주고받기 맨 위에 있다
+    $("#recvBox").focus();
+  });
 }
 
 /* =========================================================================
@@ -2256,12 +2323,15 @@ function bind(){
       const res = merge(list);
       const wn = watchNews(res.fresh);
       renderAll();
+      inboxHush();   // 링크 알림을 두고 여기서 받았으면 예시가 사라졌다 — 가려 둔 속보를 도로 편다
       st.textContent = res.added + "건을 받았습니다." + (res.dup ? " " + res.dup + "건은 이미 갖고 있어서 건너뛰었습니다." : "");
       st.className = "status ok";
       if (res.added) { $("#recvBox").value = ""; switchView("feed"); }
       if (wn) toast(wn);
     } catch(err) {
-      st.textContent = "받지 못했습니다: " + err.message;
+      /* unpack 은 우리말로 말한다. 붙여 넣은 글에서도 잘렸으면 글이 덜 복사된 것이다 */
+      st.textContent = "받지 못했습니다: " + err.message +
+        (err.cut ? " 받은 글을 끝까지 복사했는지 보고, 그래도 안 되면 보낸 사람에게 다시 보내 달라고 하세요." : "");
       st.className = "status err";
     }
   });
@@ -2422,7 +2492,7 @@ function bind(){
     }
   });
 
-  window.addEventListener("hashchange", checkHash);
+  window.addEventListener("hashchange", () => checkHash(true));
   window.addEventListener("popstate", sheetBack);
 }
 

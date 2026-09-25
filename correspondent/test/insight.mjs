@@ -28,6 +28,8 @@ async function receive(p, reps) {
   await p.evaluate((c) => { location.hash = '#r=' + c; }, code);
   await p.waitForSelector('#inboxYes');
   await p.locator('#inboxYes').click();
+  /* 한 곳 소식이면 받자마자 그 장소 창이 열린다(연 곳은 본 것이 된다) — 닫고 이어 간다 */
+  if (await p.locator('#placeBack.open').count()) await p.keyboard.press('Escape');
 }
 
 /* ─────────────────────────── 같게 봤다 ─────────────────────────── */
@@ -223,7 +225,9 @@ section('지켜보는 곳');
   ok((await text(p.locator('#watchBox'))).includes('별빛 키즈카페'), '새로고침해도 남는다');
 
   /* 남이 보낸 새 소식 */
-  await receive(p, [report({ id: 'w0000003', t: NOW - 10 * MIN, by: '서연', cat: 'play', place: '별빛 키즈카페', area: '안양 안양동', crowd: 0 })]);
+  /* 다른 곳 소식을 하나 섞는다 — 한 곳 소식만 받으면 그 장소 창이 열려 본 것이 되니 "새 소식"을 셀 수 없다 */
+  const elsewhere = (id) => report({ id, t: NOW - 30 * MIN, by: '서연', place: '만안 손칼국수', area: '안양 안양동', crowd: 1 });
+  await receive(p, [report({ id: 'w0000003', t: NOW - 10 * MIN, by: '서연', cat: 'play', place: '별빛 키즈카페', area: '안양 안양동', crowd: 0 }), elsewhere('w0000005')]);
   ok((await toastText(p)).includes('지켜보는 곳에 새 소식 — 별빛 키즈카페'), '링크로 새 소식이 오면 알린다: ' + await toastText(p));
   wb = await text(p.locator('#watchBox'));
   ok(wb.includes('새 소식 1') && wb.includes('한산'), '  └ 속보 맨 위에 "새 소식 1"과 지금 상황');
@@ -232,7 +236,7 @@ section('지켜보는 곳');
 
   /* 이미 본 것보다 옛 소식은 새 소식이 아니다 */
   await p.locator('.tab[data-view="feed"]').click();
-  await receive(p, [report({ id: 'w0000004', t: NOW - 5 * H, by: '태오', cat: 'play', place: '별빛 키즈카페', area: '안양 안양동', crowd: 2 })]);
+  await receive(p, [report({ id: 'w0000004', t: NOW - 5 * H, by: '태오', cat: 'play', place: '별빛 키즈카페', area: '안양 안양동', crowd: 2 }), elsewhere('w0000006')]);
   ok(!(await toastText(p)).includes('지켜보는 곳'), '마지막으로 본 것보다 옛 리포트는 새 소식으로 안 친다');
   ok((await text(p.locator('#watchBox'))).includes('새 소식 1'), '  └ 여전히 1');
 
