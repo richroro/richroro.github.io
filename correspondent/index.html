@@ -29,9 +29,9 @@
 <meta name="theme-color" content="#0E1E3D" media="(prefers-color-scheme: light)">
 <meta name="theme-color" content="#0E1E3D" media="(prefers-color-scheme: dark)">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%230F6E63'/><circle cx='50' cy='62' r='9' fill='white'/><path d='M34 47 A22 22 0 0 1 66 47' fill='none' stroke='white' stroke-width='7' stroke-linecap='round'/><path d='M23 34 A38 38 0 0 1 77 34' fill='none' stroke='white' stroke-width='7' stroke-linecap='round'/></svg>">
-<link rel="preconnect" href="https://fonts.googleapis.com">
+<!-- 글꼴 CSS 는 app.js 가 붙인다(crossorigin) — 여기 두면 받을 때까지 화면이 하얗다. 연결만 미리 열어 둔다 -->
+<link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Black+Han+Sans&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans+KR:wght@400;500;600;700&display=swap">
 <style>
 /* ============================================================================
    동네 방송 — 남색 머리띠와 속보 빨강. 장소 이름은 뉴스 자막체, 특파원 이름은 하단 자막.
@@ -533,6 +533,12 @@ textarea.input{min-height:76px;resize:vertical;line-height:1.55}
 body[data-inbox] #intro,body[data-inbox] #pick,body[data-inbox] #feed,body[data-inbox] #writeBtn,body[data-inbox] #livePill,
 body[data-inbox] #view-feed > .filters,body[data-inbox] #view-feed > .chiprow{display:none}
 
+/* ════════ 저장 경고 — 저장이 끝내 안 됐을 때. 토스트처럼 사라지지 않는다 ════════ */
+.store-warn{background:var(--live-wash);border-radius:var(--r);padding:12px 16px;margin-bottom:12px;
+  display:flex;gap:8px 12px;align-items:center;flex-wrap:wrap}
+.store-warn p{flex:1 1 220px;font-size:13.5px;color:var(--ink-2);word-break:keep-all}
+.store-warn b{color:var(--live)}
+
 /* ════════ 시트 ════════ */
 .backdrop{position:fixed;inset:0;background:rgba(6,12,26,.55);z-index:90;display:none;
   align-items:flex-end;justify-content:center}
@@ -826,6 +832,11 @@ button,.chip,.pl,.w-row{touch-action:manipulation}
 
   <!-- ===== 속보 ===== -->
   <section class="view" id="view-feed" role="tabpanel" aria-labelledby="tab-feed">
+    <!-- 저장이 끝내 안 됐을 때만 — 이 사이트의 다른 앱과 나눠 쓰는 저장 공간이 가득 찼다. 저장될 때까지 남는다 -->
+    <div class="store-warn" id="storeWarn" hidden>
+      <p role="alert"><b>저장 공간이 가득 찼습니다.</b> 최근 리포트를 이 기기에 저장하지 못했습니다. 새로 고치거나 창을 닫으면 사라지니 파일로 저장해 두세요.</p>
+      <button class="btn sm" id="storeWarnSave" type="button">파일로 저장</button>
+    </div>
     <div id="watchBox"></div>
     <div id="pick"></div>
     <div class="filters">
@@ -1140,8 +1151,10 @@ button,.chip,.pl,.w-row{touch-action:manipulation}
 <div class="toast" id="toast" aria-hidden="true" hidden></div>
 <div class="sr" id="toastSr" role="status"></div>
 
+<!-- ?v= 는 스크립트 내용의 해시다(배포 직후 옛 사본과 섞이지 않게). app.js·sync.js·admin.js 를 고쳤으면
+     node correspondent/tools/stamp.mjs 로 다시 적는다. config.js 는 운영자가 손으로 고치는 파일이라 버전을 붙이지 않는다 -->
 <script src="config.js"></script>
-<script src="sync.js"></script>
-<script src="app.js"></script>
+<script src="sync.js?v=cf8e095893"></script>
+<script src="app.js?v=cf8e095893"></script>
 </body>
 </html>

@@ -10,6 +10,19 @@
    리포트는 링크 한 줄(#r=…)에 통째로 실려 오간다. 서버도 계정도 없다.
    ========================================================================= */
 
+/* ---------------------------- 글꼴 ---------------------------- */
+/* 글꼴 CSS(Google Fonts, 다른 출처의 300KB)를 index.html 머리에 두면 받을 때까지 화면이 하얗다 — 신호가 약하면 몇 초.
+   스크립트가 붙인 스타일시트는 그리기를 막지 않는다. 기기 글꼴로 먼저 뜨고, 글꼴이 오면 바뀐다(display=swap).
+   받기를 일찍 시작하려고 맨 먼저 붙인다. crossorigin 은 서비스 워커가 응답을 확인하고 담아 둘 수 있게. */
+(function(){
+  if (document.querySelector('link[rel="stylesheet"][href^="https://fonts.googleapis.com/"]')) return;   // 옛 index.html 사본에는 이미 있다
+  const l = document.createElement("link");
+  l.rel = "stylesheet";
+  l.crossOrigin = "anonymous";
+  l.href = "https://fonts.googleapis.com/css2?family=Black+Han+Sans&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans+KR:wght@400;500;600;700&display=swap";
+  document.head.appendChild(l);
+})();
+
 /* ---------------------------- 상수 ---------------------------- */
 const KEY = "tpw.v1";
 const MIN = 60e3, HOUR = 3600e3, DAY = 86400e3;
@@ -23,6 +36,7 @@ const MAX_BYTES = 500000; // 풀었을 때 크기 상한
 const MAX_REPORTS = 400;  // 한 번에 받아들일 리포트 수 상한
 const BUNDLE_CAP = 1600;  // 묶음 링크 payload 목표 길이(카톡에서 안 깨지는 선)
 const WATCH_MAX = 30;     // 지켜보는 곳 상한
+const MAX_FILE = 5000;    // 파일(백업)에서 한 번에 불러올 리포트 수 상한 — 링크의 MAX_REPORTS 보다 크다
 
 /** 선 아이콘 한 벌. 화면에 넣는 곳은 모두 aria-hidden 으로 감싼다 — 이름은 글자로 따로 있다. */
 const ico = (d) => '<svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" ' +
@@ -180,7 +194,8 @@ function saneWatch(list){
     .slice(0, WATCH_MAX);
 }
 
-const board = (function load(){
+/** 이 기기에 저장된 보드를 읽는다. 처음 열 때와, 다른 탭이 저장했을 때(storage 이벤트) 부른다. */
+function readBoard(){
   const raw = store.get(KEY, null);
   const b = { reports: [], me: "", seeded: false, hood: "", pulledAt: 0, gone: [], watch: [], push: null };
   if (raw && typeof raw === "object") {
@@ -198,8 +213,35 @@ const board = (function load(){
   }
   b.reports.sort((a, c) => c.t - a.t);
   return b;
-})();
-const save = () => store.set(KEY, board);
+}
+const board = readBoard();
+
+/* 저장. localStorage(5백만 자)는 이 사이트(richroro.github.io)의 다른 앱 스무 개와 나눠 쓴다 — 남이 채워 모자랄 수 있다.
+   모자라면 prune() 으로 치울 것을 치우고, 그래도 안 되면 내가 쓰지 않은 리포트를 오래된 것부터 덜어 가며 다시 해 본다
+   (내 글은 건드리지 않는다). 끝내 안 되면 화면의 보드는 그대로 두고 속보 맨 위에 경고를 남긴다 —
+   토스트 한 번은 곧 다른 알림에 덮이고, 새로 고치면 리포트가 사라진 걸 모른 채 지나간다. */
+let unsaved = [];   // 끝내 못 담은 리포트 — 다른 탭의 저장으로 보드를 다시 읽을 때 이것만은 들고 간다(storage 이벤트)
+function save(){
+  let ok = store.set(KEY, board);
+  if (!ok) {
+    const keep = board.reports;                // 끝내 못 하면 이 탭에서는 보이던 그대로 둔다
+    prune();
+    for (let n = 8; !(ok = store.set(KEY, board)); n *= 2) {
+      const drop = new Set(board.reports.filter((r) => !r.mine).slice(-n));   // t 내림차순 — 뒤가 오래된 것
+      if (!drop.size) break;
+      board.reports = board.reports.filter((r) => !drop.has(r));
+    }
+    if (!ok) {
+      board.reports = keep;
+      const stored = new Set(((store.get(KEY, null) || {}).reports || []).map((r) => r && r.id));
+      unsaved = keep.filter((r) => !stored.has(r.id));
+    }
+  }
+  if (ok) unsaved = [];
+  const w = $("#storeWarn");                   // 옛 index.html 사본과 섞여 떠도 멈추지 않게
+  if (w) w.hidden = ok;
+  return ok;
+}
 
 /* ---------------------------- 예시 ---------------------------- */
 /* 직접 쓴 리포트가 하나라도 생기면 예시는 사라지고 다시 오지 않는다.
@@ -2015,12 +2057,13 @@ function merge(list){
     fresh.push(r);
     added++;
   });
+  let saved = true;
   if (added) {
     board.seeded = true;
     board.reports.sort((a, b) => b.t - a.t);
-    if (!save()) toast("저장 공간이 부족합니다. 오래된 리포트를 지워 보세요.");
+    saved = save();   // 모자라면 save() 가 자리를 만들고, 끝내 못 하면 속보 맨 위에 경고를 남긴다
   }
-  return { added, dup, fresh };
+  return { added, dup, fresh, saved };
 }
 /** 받은 결과를 한 줄로 — 지켜보는 곳에 새 소식이 있으면 그걸 붙인다. */
 function mergeNote(res, head){
@@ -2615,7 +2658,7 @@ function bind(){
     board.seeded = true;
     board.me = by;
     dropDraft();                   // 보냈다 — 붙잡아 둔 글은 이제 없다
-    if (!save()) toast("저장 공간이 부족합니다. 오래된 리포트를 지워 보세요.");
+    save();                        // 모자라면 save() 가 자리를 만들고, 끝내 안 되면 속보 맨 위에 경고를 남긴다
     if (SY.enabled && r.priv) {
       setTimeout(() => toast("이 기기에만 저장했습니다. 공용 보드에는 올리지 않습니다."), 400);
     } else if (SY.enabled && board.hood) {
@@ -2750,6 +2793,8 @@ function bind(){
   });
 
   /* 파일 */
+  const warnSave = $("#storeWarnSave");   // 저장 공간이 모자랄 때 속보 맨 위의 경고 — 이 기기에 못 담은 것을 파일로 건진다
+  if (warnSave) warnSave.addEventListener("click", () => $("#fileSave").click());
   $("#fileSave").addEventListener("click", () => {
     if (!board.reports.length) { toast("저장할 리포트가 없습니다."); return; }
     const d = new Date();
@@ -2775,16 +2820,24 @@ function bind(){
       const arr = Array.isArray(raw) ? raw : (raw && Array.isArray(raw.reports) ? raw.reports : null);
       if (!arr) throw new Error("리포트가 들어 있지 않습니다.");
       /* 파일은 남이 건넨 것일 수도 있다 — 링크와 똑같이 믿지 않는다(mine·up 을 살리지 않는다).
-         map(sane) 으로 넘기면 배열 번호가 두 번째 인자(local)로 들어가 첫 줄 말고는 전부 믿어 버린다. */
-      const res = merge(arr.slice(0, MAX_REPORTS).map((r) => sane(r)).filter(Boolean));
+         map(sane) 으로 넘기면 배열 번호가 두 번째 인자(local)로 들어가 첫 줄 말고는 전부 믿어 버린다.
+         백업은 링크보다 크다 — 링크 상한(MAX_REPORTS)으로 자르면 650건 백업이 400건만 돌아왔다. */
+      const list = arr.slice(0, MAX_FILE).map((r) => sane(r)).filter(Boolean);
+      const skip = arr.length - list.length;   // 상한을 넘었거나 읽을 수 없는 줄
+      const before = board.reports.length;
+      const res = merge(list);
+      const cut = res.saved ? before + res.added - board.reports.length : 0;   // 자리가 모자라 save() 가 덜어 낸 것
       /* 지켜보는 곳은 내 설정이라 합친다 — 이미 있는 곳은 그대로 두고 없는 곳만 더한다. */
       const addW = raw && !Array.isArray(raw) ? saneWatch(raw.watch).filter((w) => !board.watch.some((x) => x.k === w.k)) : [];
       if (addW.length) { board.watch = board.watch.concat(addW).slice(0, WATCH_MAX); save(); }
       const wn = watchNews(res.fresh);
       renderAll();
       st.textContent = res.added + "건을 불러왔습니다." + (res.dup ? " " + res.dup + "건은 이미 있었습니다." : "") +
-        (addW.length ? " 지켜보는 곳 " + addW.length + "곳도 더했습니다." : "");
-      st.className = "status ok";
+        (skip ? " " + skip + "건은 건너뛰었습니다" + (arr.length > MAX_FILE ? "(한 번에 " + MAX_FILE + "건까지)" : "(읽을 수 없는 줄)") + "." : "") +
+        (addW.length ? " 지켜보는 곳 " + addW.length + "곳도 더했습니다." : "") +
+        (!res.saved ? " 저장 공간이 부족해 이 기기에 저장하지 못했습니다 — 새로 고치면 사라집니다." :
+         cut > 0 ? " 저장 공간이 모자라 오래된 리포트 " + cut + "건을 덜어 냈습니다." : "");
+      st.className = "status " + (res.saved ? "ok" : "err");
       if (wn) toast(wn);
     } catch(err) {
       st.textContent = "파일을 읽지 못했습니다: " + err.message;
@@ -2906,10 +2959,33 @@ if (new URLSearchParams(location.search).get("write") === "1") {
 window.addEventListener("offline", renderTicker);
 window.addEventListener("online", () => { renderTicker(); if (SY.enabled) boardRefresh(true); });
 
-/* 오프라인에서도 열리게. 보안 출처(https·localhost)에서만 등록된다. */
-if ("serviceWorker" in navigator &&
-    (location.protocol === "https:" || location.hostname === "localhost" || location.hostname === "127.0.0.1")) {
-  navigator.serviceWorker.register("sw.js").catch(() => {});
+/* 다른 탭(홈 화면 앱과, 카톡 링크로 연 크롬 창 같은)이 보드를 저장하면 이 탭도 다시 읽는다.
+   탭마다 보드를 통째로 쥐고 있다가 통째로 쓰므로, 안 그러면 이 탭이 다음에 저장할 때 저쪽에서 쓴 리포트를 지운다.
+   합치지 않고 다시 읽기만 한다 — 저쪽에서 지운 리포트가 되살아나면 안 된다. */
+window.addEventListener("storage", (e) => {
+  if (e.key !== KEY && e.key !== null) return;   // null — 누군가 저장소를 통째로 비웠다
+  const hood = board.hood, carry = unsaved;
+  Object.assign(board, readBoard());
+  /* 저장 공간이 모자라 이 탭에서 끝내 못 담은 리포트는 들고 가서 다시 담아 본다.
+     저장소에 간 적이 없으니 저쪽에서 지운 것일 수 없다 */
+  if (carry.length) {
+    const have = new Set(board.reports.map((r) => r.id));
+    board.reports = board.reports.concat(carry.filter((r) => !have.has(r.id))).sort((a, c) => c.t - a.t);
+    save();
+  }
+  if (board.hood !== hood) { cursorMs = 0; paintBoardBtn(); }   // 저쪽에서 동네를 바꿨다 — 처음부터 받아온다
+  renderAll();
+});
+
+/* 오프라인에서도 열리게. 보안 출처(https·localhost)에서만 등록된다.
+   워커 주소에는 index.html 이 이 app.js 를 부른 버전(app.js?v=H)을 그대로 싣는다 — 워커는 H 로 캐시 이름을 짓고
+   그 판의 파일만 캐시에서 먼저 꺼낸다. 버전이 없으면(버전 없는 옛 index.html 사본에서 떴다) 등록하지 않는다. */
+{
+  const v = document.currentScript ? new URL(document.currentScript.src, location.href).searchParams.get("v") : "";
+  if (v && "serviceWorker" in navigator &&
+      (location.protocol === "https:" || location.hostname === "localhost" || location.hostname === "127.0.0.1")) {
+    navigator.serviceWorker.register("sw.js?v=" + encodeURIComponent(v)).catch(() => {});
+  }
 }
 
 if (SY.enabled) {
