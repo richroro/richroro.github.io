@@ -131,7 +131,8 @@ async function write(p, place, opts = {}) {
   await p.locator('#writeBtn').click();
   await p.waitForSelector('#composeBack.open');
   await p.fill('#fPlace', place);
-  if (opts.crowd != null) await p.locator(`#fCrowd [data-v="${opts.crowd}"]`).click();
+  /* 장소 이름만으로는 안 나간다 — 사람 칸을 하나 고른다(따로 말하지 않으면 한산) */
+  await p.locator(`#fCrowd [data-v="${opts.crowd != null ? opts.crowd : 0}"]`).click();
   if (opts.priv) await p.locator('#fPub').uncheck();
   await p.locator('#composeGo').click();
   await p.waitForSelector('#shareBack.open');
@@ -280,6 +281,10 @@ ok(sql(`select count(*) from correspondents`) === '3', '다른 사람들은 그�
 console.log('\n== 10. 운영 화면 ==');
 const AXE = readFileSync(createRequire(import.meta.url).resolve('axe-core/axe.min.js'), 'utf8');
 async function axe(p, where) {
+  /* 화면 전환은 살짝 떠오르며 들어온다 — 그 사이에 재면 반투명한 글자를 잰다. 끝이 있는 움직임이 다 끝나길 기다린다 */
+  await p.evaluate(() => Promise.all(document.getAnimations()
+    .filter((a) => a.effect && a.effect.getComputedTiming().iterations !== Infinity)
+    .map((a) => a.finished.catch(() => {}))));
   await p.evaluate(AXE);
   const v = await p.evaluate(async () => (await window.axe.run(document, { runOnly: { type: 'tag',
     values: ['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa', 'best-practice'] } })).violations
@@ -442,7 +447,8 @@ A.p.on('response', async (res) => {
 });
 await refresh(A.p, 'full');
 const whole = pulls.filter((x) => !/created_at=gt/.test(x.url)).pop();
-ok(whole && whole.bytes > 10000 && await card(A.p, '깔아 둔 가게 150').count() === 1, '전체 대조: 최근 200건 (' + (whole && whole.bytes) + '바이트)');
+/* 속보는 앞의 60건만 그린다 — 맨 끝의 150번째는 화면이 아니라 보드에서 찾는다 */
+ok(whole && whole.bytes > 10000 && (await local(A.p)).some((r) => r.place === '깔아 둔 가게 150'), '전체 대조: 최근 200건 (' + (whole && whole.bytes) + '바이트)');
 await write(B.p, '새로 하나');
 pulls.length = 0;
 await refresh(A.p);
@@ -486,6 +492,8 @@ console.log('\n== 12. 폰 알림 — 켜고, 지켜보는 곳을 바꾸고, 끄�
   const P = await phone('태오', { push: true });
   const openAndWatch = async (X, place) => {
     await X.p.locator('.tab[data-view="places"]').click();
+    /* 장소는 60곳씩 그린다 — 150곳을 깔아 둔 보드에서는 검색해서 연다 */
+    await X.p.fill('#pq', place); await X.p.press('#pq', 'Enter');
     await X.p.locator('#places .pl', { hasText: place }).first().click();
     await X.p.waitForSelector('#placeBack.open');
     await X.p.locator('#placeBody [data-watch]').click();
