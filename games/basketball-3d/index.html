@@ -223,6 +223,14 @@
   .btn.ghost{background:var(--bg);color:var(--ink-2)}
   .row{display:flex;gap:8px}
   .row .btn{flex:1}
+  .btn:disabled{opacity:.5;cursor:default}
+  .btn:disabled:active{transform:none}
+  /* 화질 고르기 */
+  .seg{display:flex;align-items:center;gap:4px;margin-top:12px;font-size:12px;font-weight:700;color:var(--ink-3s)}
+  .seg span{margin-right:auto;text-align:left}
+  .seg button{border:0;border-radius:9px;padding:7px 9px;background:var(--bg);color:var(--ink-2);font:inherit;font-weight:700;
+    cursor:pointer;flex:0 0 auto}
+  .seg button.on{background:var(--blue);color:#fff}
   .alt{display:inline-block;margin-top:14px;font-size:12.5px;font-weight:700;color:var(--ink-3s);text-decoration:none}
   .alt:hover{color:var(--blue)}
   .note{font-size:12px;color:var(--red-ink);font-weight:700;margin-top:10px}
@@ -279,7 +287,7 @@
     <button class="icon-btn" id="btnSound" aria-label="소리 켜기 끄기">🔊</button>
   </div>
   <div class="status">
-    <div class="chip" id="chipGoal"><span class="lab">골</span> <b id="goalNow">0</b><span class="need" id="goalNeed">/3</span></div>
+    <div class="chip" id="chipGoal"><span class="lab" id="goalLab">골</span> <b id="goalNow">0</b><span class="need" id="goalNeed">/3</span></div>
     <div class="chip three" id="chipThree" hidden>3점 슛</div>
     <div class="chip" id="chipWind" hidden><span class="lab">바람</span> <b id="windVal">→ 1.2</b></div>
     <div class="chip fire" id="chipFire" hidden>🔥 점수 2배</div>
@@ -310,7 +318,9 @@
     <div class="btns">
       <button class="btn primary" id="btnResume" hidden>계속하기</button>
       <button class="btn primary" id="btnPlay">1스테이지 시작</button>
+      <button class="btn ghost" id="btnEndless">∞ 무한 모드</button>
     </div>
+    <div class="seg" id="qualSeg" role="group" aria-label="화질"><span id="qualNow">화질</span><button data-q="auto">자동</button><button data-q="high">높음</button><button data-q="mid">보통</button><button data-q="low">절약</button></div>
     <p class="note" id="saveNote" hidden>이 브라우저는 기록을 저장하지 못해요. 창을 닫으면 별이 사라져요.</p>
     <a class="alt" href="https://richroro.github.io/games/basketball/">2D 한 손 농구 하기 &rarr;</a>
   </div>
@@ -648,6 +658,12 @@ var STAGES = [
   { name: "버저비터 러시", sub: "45초 안에 8골. 공이 바로바로 나와요", spots: [[0, FT_Z], [-2.45, 4.6], [2.45, 4.6], [0, 5.6]], per: 4, rapid: true, time: 45, goal: 8, guide: 0.5 }
 ];
 
+// 무한 모드: 세 번 놓치면 끝. 넣은 골 4개마다 한 단계씩 자리가 멀어지고, 2단계부터 바람, 3단계부터 움직이는 골대가 섞인다
+var ENDLESS_I = STAGES.length;
+var ENDLESS = { name: "무한 모드", sub: "세 번 놓치면 끝. 넣을수록 멀어지고 바람이 불어요", endless: true, guide: 0.5,
+  goal: Infinity, balls: Infinity, spots: [[0, FT_Z]] };
+function defFor(i) { return i === ENDLESS_I ? ENDLESS : STAGES[clamp(i | 0, 0, STAGES.length - 1)]; }
+
 var rseed = 1;
 function rng() { rseed = (rseed * 16807) % 2147483647; return rseed / 2147483647; }
 // 색종이·불꽃 같은 겉모습 전용 난수. 게임 난수(바람·자리) 순서를 밀지 않는다
@@ -791,6 +807,103 @@ apron.position.set(0, -0.004, 5);
 apron.receiveShadow = true;
 scene.add(apron);
 
+/* ── 바닥 반사: 거울 카메라로 한 번 더(반 해상도) 그려서 코트 위에 옅게 얹는다 (three.js r128 의 Reflector 방식) ──
+   밝은 것(조명·공·림·전광판·흰 백보드 테)만 비치게 밝기로 투명도를 준다. 어두운 관중석까지 비치면 바닥이 탁해진다.
+   비스듬히 볼수록 더 비치고(프레넬), 다섯 점을 섞어 살짝 번지게 해서 광택 나무 바닥처럼 보인다 */
+var REFL = { on: false, rt: null, cam: new THREE.PerspectiveCamera(), tm: new THREE.Matrix4(), plane: null, w: 0, h: 0 };
+(function buildRefl() {
+  REFL.rt = new THREE.WebGLRenderTarget(256, 256, { minFilter: THREE.LinearFilter, magFilter: THREE.LinearFilter, format: THREE.RGBFormat });
+  REFL.rt.texture.generateMipmaps = false;
+  REFL.rt.texture.encoding = renderer.outputEncoding;      // 화면과 같은 인코딩으로 그려 두면 셰이더에서 그대로 쓴다
+  var mat = new THREE.ShaderMaterial({
+    uniforms: { tDiffuse: { value: REFL.rt.texture }, textureMatrix: { value: REFL.tm }, strength: { value: 0.3 },
+      texel: { value: new THREE.Vector2(1 / 256, 1 / 256) } },
+    vertexShader: [
+      "uniform mat4 textureMatrix;",
+      "varying vec4 vUv;",
+      "varying vec3 vWorld;",
+      "void main() {",
+      "  vUv = textureMatrix * vec4(position, 1.0);",
+      "  vec4 wp = modelMatrix * vec4(position, 1.0);",
+      "  vWorld = wp.xyz;",
+      "  gl_Position = projectionMatrix * viewMatrix * wp;",
+      "}"].join("\n"),
+    fragmentShader: [
+      "uniform sampler2D tDiffuse;",
+      "uniform float strength;",
+      "uniform vec2 texel;",
+      "varying vec4 vUv;",
+      "varying vec3 vWorld;",
+      "void main() {",
+      "  vec2 uv = vUv.xy / vUv.w;",
+      "  vec3 c = texture2D(tDiffuse, uv).rgb * 0.36;",
+      "  c += texture2D(tDiffuse, uv + vec2(texel.x * 1.5, 0.0)).rgb * 0.16;",
+      "  c += texture2D(tDiffuse, uv - vec2(texel.x * 1.5, 0.0)).rgb * 0.16;",
+      "  c += texture2D(tDiffuse, uv + vec2(0.0, texel.y * 3.0)).rgb * 0.16;",
+      "  c += texture2D(tDiffuse, uv - vec2(0.0, texel.y * 3.0)).rgb * 0.16;",
+      "  vec3 v = normalize(cameraPosition - vWorld);",
+      "  float fres = pow(1.0 - clamp(v.y, 0.0, 1.0), 3.0);",
+      "  float lum = dot(c, vec3(0.299, 0.587, 0.114));",
+      "  gl_FragColor = vec4(c, strength * (0.3 + 0.7 * fres) * smoothstep(0.05, 0.45, lum));",
+      "}"].join("\n"),
+    transparent: true, depthWrite: false
+  });
+  REFL.plane = new THREE.Mesh(new THREE.PlaneGeometry(20, 20), mat);
+  REFL.plane.rotation.x = -Math.PI / 2;
+  REFL.plane.position.set(0, 0.002, 5);
+  REFL.plane.renderOrder = 1;
+  REFL.plane.visible = false;
+  scene.add(REFL.plane);
+})();
+var rN = new V3(0, 1, 0), rPos = new V3(), rCam = new V3(), rRot = new THREE.Matrix4(), rLook = new V3(), rView = new V3(), rTgt = new V3();
+var rPlane = new THREE.Plane(), rClip = new THREE.Vector4(), rQ = new THREE.Vector4();
+function reflSize() {
+  var w = Math.max(64, Math.min(1024, Math.floor(renderer.domElement.width / 2)));
+  var h = Math.max(64, Math.min(1024, Math.floor(renderer.domElement.height / 2)));
+  if (w === REFL.w && h === REFL.h) return;
+  REFL.w = w; REFL.h = h;
+  REFL.rt.setSize(w, h);
+  REFL.plane.material.uniforms.texel.value.set(1 / w, 1 / h);
+}
+function reflRender() {
+  if (!REFL.on) return;
+  var vc = REFL.cam, rp = REFL.plane;
+  camera.updateMatrixWorld();
+  rp.updateMatrixWorld();
+  rPos.setFromMatrixPosition(rp.matrixWorld);
+  rCam.setFromMatrixPosition(camera.matrixWorld);
+  rView.subVectors(rPos, rCam);
+  if (rView.dot(rN) > 0) return;
+  rView.reflect(rN).negate().add(rPos);
+  rRot.extractRotation(camera.matrixWorld);
+  rLook.set(0, 0, -1).applyMatrix4(rRot).add(rCam);
+  rTgt.subVectors(rPos, rLook).reflect(rN).negate().add(rPos);
+  vc.position.copy(rView);
+  vc.up.set(0, 1, 0).applyMatrix4(rRot).reflect(rN);
+  vc.lookAt(rTgt);
+  vc.far = camera.far;
+  vc.updateMatrixWorld();
+  vc.projectionMatrix.copy(camera.projectionMatrix);
+  REFL.tm.set(0.5, 0, 0, 0.5, 0, 0.5, 0, 0.5, 0, 0, 0.5, 0.5, 0, 0, 0, 1);
+  REFL.tm.multiply(vc.projectionMatrix).multiply(vc.matrixWorldInverse).multiply(rp.matrixWorld);
+  // 바닥 아래쪽은 잘라 낸다(비스듬한 가까운 면)
+  rPlane.setFromNormalAndCoplanarPoint(rN, rPos).applyMatrix4(vc.matrixWorldInverse);
+  rClip.set(rPlane.normal.x, rPlane.normal.y, rPlane.normal.z, rPlane.constant);
+  var pm = vc.projectionMatrix.elements;
+  rQ.set((Math.sign(rClip.x) + pm[8]) / pm[0], (Math.sign(rClip.y) + pm[9]) / pm[5], -1, (1 + pm[10]) / pm[14]);
+  rClip.multiplyScalar(2 / rClip.dot(rQ));
+  pm[2] = rClip.x; pm[6] = rClip.y; pm[10] = rClip.z + 1; pm[14] = rClip.w;
+  var av = aimPts.visible;
+  rp.visible = floor.visible = apron.visible = aimPts.visible = false;
+  renderer.shadowMap.autoUpdate = false;            // 그림자는 본 화면에서 한 번만 계산
+  renderer.setRenderTarget(REFL.rt);
+  renderer.render(scene, vc);
+  renderer.setRenderTarget(null);
+  renderer.shadowMap.autoUpdate = true;
+  rp.visible = floor.visible = apron.visible = true;
+  aimPts.visible = av;
+}
+
 /* ── 관중석: 원통 안쪽에 그린 그림 ── */
 function drawStands() {
   var W = 2048, H = 512, c = mkCanvas(W, H), g = c.getContext("2d");
@@ -899,7 +1012,7 @@ function ledStep(dt) {
   if (led.dur > 0) key = "f" + Math.floor(led.t * 12);
   else if (!ST || mode === "title") key = "title";
   else key = [ST.i, ST.points, ST.made, ST.def.rapid ? Math.ceil(Math.max(0, ST.timeLeft) - 1e-6) : ST.def.balls - ST.thrown,
-    ST.fire ? 1 : 0, wind.s.toFixed(1)].join(",");
+    ST.fire ? 1 : 0, wind.s.toFixed(1), ST.lives].join(",");
   if (key === led.key) return;
   led.key = key;
   ledDraw();
@@ -924,16 +1037,19 @@ function ledDraw() {
     g.fillStyle = "#ffb020"; ledFont(g, "한 손 농구 3D", 150, W * 0.9); g.fillText("한 손 농구 3D", W / 2, H * 0.42);
     g.fillStyle = "#8cc0ff"; ledFont(g, "RICHRORO HOOPS", 52, W * 0.9, LED_KO); g.fillText("RICHRORO HOOPS", W / 2, H * 0.84);
   } else {
-    var d = ST.def, v = d.rapid ? Math.ceil(Math.max(0, ST.timeLeft) - 1e-6) : d.balls - ST.thrown;
+    var d = ST.def, v = d.rapid ? Math.ceil(Math.max(0, ST.timeLeft) - 1e-6) : d.endless ? ST.made : d.balls - ST.thrown;
+    var ttl = d.endless ? "∞ · 무한 모드" : (ST.i + 1) + " · " + d.name;
+    var mid = d.endless ? "목숨 " + Math.max(0, ST.lives) : "골 " + Math.min(ST.made, d.goal) + "/" + d.goal;
     g.textAlign = "left"; g.fillStyle = "#8b95a1"; g.font = "800 36px " + LED_KO; g.fillText("SCORE", 36, 56);
     g.fillStyle = ST.fire ? "#ff6b2c" : "#ffb020"; ledFont(g, String(ST.points), 150, 300); g.fillText(String(ST.points), 30, 184);
-    g.textAlign = "center"; g.fillStyle = "#ffffff"; ledFont(g, (ST.i + 1) + " · " + d.name, 52, 420, LED_KO);
-    g.fillText((ST.i + 1) + " · " + d.name, W / 2, 62);
-    g.fillStyle = ST.made >= d.goal ? "#00d084" : "#6fd3a8"; ledFont(g, "골 " + Math.min(ST.made, d.goal) + "/" + d.goal, 108, 400, LED_KO);
-    g.fillText("골 " + Math.min(ST.made, d.goal) + "/" + d.goal, W / 2, 180);
-    g.textAlign = "right"; g.fillStyle = "#8b95a1"; g.font = "800 36px " + LED_KO; g.fillText(d.rapid ? "TIME" : "BALLS", W - 36, 56);
+    g.textAlign = "center"; g.fillStyle = "#ffffff"; ledFont(g, ttl, 52, 420, LED_KO);
+    g.fillText(ttl, W / 2, 62);
+    g.fillStyle = d.endless ? (ST.lives <= 1 ? "#f04452" : "#ffd48a") : ST.made >= d.goal ? "#00d084" : "#6fd3a8";
+    ledFont(g, mid, 108, 400, LED_KO);
+    g.fillText(mid, W / 2, 180);
+    g.textAlign = "right"; g.fillStyle = "#8b95a1"; g.font = "800 36px " + LED_KO; g.fillText(d.rapid ? "TIME" : d.endless ? "GOALS" : "BALLS", W - 36, 56);
     g.fillStyle = d.rapid && v <= 10 ? "#f04452" : "#e8f3ff"; ledFont(g, String(v), 150, 260); g.fillText(String(v), W - 30, 184);
-    if (d.wind || ST.fire) {
+    if (d.wind || ST.fire || (d.endless && wind.s !== 0)) {
       var line = ST.fire ? "ON FIRE  점수 2배" : "바람 " + (wind.s < 0 ? "←" : "→") + " " + Math.abs(wind.s).toFixed(1);
       g.textAlign = "center"; g.fillStyle = ST.fire ? "#ff6b2c" : "#9cc8ff"; ledFont(g, line, 42, 500, LED_KO); g.fillText(line, W / 2, 268);
     }
@@ -1668,13 +1784,19 @@ function stepBall(b, h) {
   if (outOfPlay(b) || b.after > 3.6) b.dead = true;
 }
 
+function curMove() { return ST ? ST.move || ST.def.move || null : null; }
 function physStep(h) {
-  if (ST && ST.def.move && mode === "play") {
-    var m = ST.def.move, w = 2 * Math.PI / m[1];
+  var m = curMove();
+  if (m && mode === "play") {
+    var w = 2 * Math.PI / m[1];
     ST.hoopT += h;
     hoop.x = m[0] * Math.sin(w * ST.hoopT);
     hoop.vx = m[0] * w * Math.cos(w * ST.hoopT);
-  } else { hoop.vx = 0; }
+  } else {
+    hoop.vx = 0;
+    // 무한 모드에서 움직이던 골대가 멈추면 가운데로 돌아온다
+    if (hoop.x !== 0) { hoop.x *= Math.exp(-5 * h); if (Math.abs(hoop.x) < 1e-3) hoop.x = 0; }
+  }
   for (var i = 0; i < balls.length; i++) stepBall(balls[i], h);
   for (i = balls.length - 1; i >= 0; i--) {
     if (balls[i].dead) { dropMesh(balls[i].mesh); balls.splice(i, 1); }
@@ -1992,15 +2114,24 @@ var ST = null;
 var curSpot = { x: 0, z: FT_Z };
 var lastAim = {};          // 자리마다 지난 슛 세기 (게이지의 금색 눈금)
 
+function endlessSpot(n) {
+  var L = Math.floor(ST.made / 4), dmax = Math.min(8.6, 5 + L * 0.45);
+  var d = 4.2 + rng() * (dmax - 4.2), a = (rng() - 0.5) * Math.PI * 0.72;
+  var x = Math.sin(a) * d, z = Math.cos(a) * d;
+  if (Math.abs(x) > 6.9) { x = Math.sign(x) * 6.9; z = Math.sqrt(Math.max(0, d * d - x * x)); }
+  return { x: x, z: Math.max(0.4, z), i: n };
+}
 function spotFor(n) {
+  if (ST.def.endless) { if (!ST.spots[n]) ST.spots[n] = endlessSpot(n); return ST.spots[n]; }
   var d = ST.def, i = d.per ? Math.floor(n / d.per) % d.spots.length : 0;
   return { x: d.spots[i][0], z: d.spots[i][1], i: i };
 }
 function isGold(n) {
   var d = ST.def;
+  if (d.endless) return n % 7 === 6;
   return d.per ? n % d.per === d.per - 1 : n === d.balls - 1;
 }
-function left() { return ST.def.rapid ? Infinity : ST.def.balls - ST.thrown; }
+function left() { return ST.def.endless ? (ST.lives > 0 ? Infinity : 0) : ST.def.rapid ? Infinity : ST.def.balls - ST.thrown; }
 function potential() {
   var s = 0;
   for (var n = ST.thrown; n < ST.def.balls; n++) s += isGold(n) ? 2 : 1;
@@ -2015,16 +2146,17 @@ function clearBalls() {
 }
 
 function startStage(i) {
-  i = clamp(i | 0, 0, STAGES.length - 1);
-  var def = STAGES[i];
+  var def = defFor(i);
+  i = def === ENDLESS ? ENDLESS_I : clamp(i | 0, 0, STAGES.length - 1);
   replayStop();
   clearBalls();
   rpReset();
   cancelAim();
-  rseed = 1000 + i * 7919;
+  rseed = def.endless && !TEST ? 1 + Date.now() % 2147483646 : 1000 + i * 7919;
   ST = { i: i, def: def, made: 0, thrown: 0, points: 0, streak: 0, fire: false, swishes: 0,
     inFlight: 0, over: false, win: false, endT: 0, nextT: 0.55, hoopT: 0, clock: 0,
-    timeLeft: def.time || 0, timeOver: false, spot: -1, buzzer: false };
+    timeLeft: def.time || 0, timeOver: false, spot: -1, buzzer: false,
+    lives: 3, spots: [], move: null, ew: 0, level: 0, nextLife: 10, bestStreak: 0 };
   hoop.x = 0; hoop.vx = 0;
   wind.x = wind.z = wind.s = 0;
   fx.slowT = 0; fx.hitStop = 0;
@@ -2039,17 +2171,19 @@ function startStage(i) {
   hud();
   if (i === 0 && !save.stars[0]) hint(true);
   lastTrail = null;
-  ledFlash((i + 1) + "스테이지", def.name, "#ffffff", 1.6);
+  if (def.endless) ledFlash("무한 모드", "세 번 놓치면 끝", "#ffb020", 1.6);
+  else ledFlash((i + 1) + "스테이지", def.name, "#ffffff", 1.6);
 }
 
 function spawnHeld() {
   var n = ST.thrown, s = spotFor(n);
   if (s.i !== ST.spot) {
     ST.spot = s.i; curSpot = s; frameSpot(s); cam.rate = 3;
-    if (!ST.def.rapid) toast((s.i + 1) + "번 자리", spotDist(s) > THREE_PT ? "3점 슛 자리" : "", 1200);
+    if (!ST.def.rapid && !ST.def.endless) toast((s.i + 1) + "번 자리", spotDist(s) > THREE_PT ? "3점 슛 자리" : "", 1200);
   }
-  if (ST.def.wind) {
-    var side = rng() < 0.5 ? -1 : 1, mag = ST.def.wind * (0.5 + 0.5 * rng());
+  var ew = ST.def.endless ? ST.ew : 0;
+  if (ST.def.wind || ew) {
+    var side = rng() < 0.5 ? -1 : 1, mag = (ST.def.wind || ew) * (0.5 + 0.5 * rng());
     var d = spotDist(s);
     // 슛 방향의 오른쪽 = (-fz, fx)
     wind.x = -(-s.z / d) * side * mag; wind.z = (-s.x / d) * side * mag; wind.s = side * mag;
@@ -2076,7 +2210,7 @@ function throwBall(pow, yaw) {
   var c = crossAt(curSpot, pow, yaw);
   b.shot = { three: d > THREE_PT, fire: ST.fire, n: ST.thrown, pow: pow, yaw: yaw, sx: curSpot.x, sz: curSpot.z,
     fx: -curSpot.x / d, fz: -curSpot.z / d, key: ST.i + ":" + ST.spot, t0: gameT,
-    cross: c, hx: ST.def.move && c ? hoopXAt(ST.hoopT + c.t) : hoop.x };
+    cross: c, hx: curMove() && c ? hoopXAt(ST.hoopT + c.t) : hoop.x };
   b.trail = [];
   b.mesh.scale.setScalar(1);
   b.t = 0;
@@ -2123,7 +2257,13 @@ function shotResult(b, ok) {
   if (ok) {
     ST.made += b.gold ? 2 : 1;
     ST.streak++;
+    ST.bestStreak = Math.max(ST.bestStreak, ST.streak);
+    if (ST.def.endless && ST.made >= ST.nextLife) {
+      ST.nextLife += 10;
+      if (ST.lives < 3) { ST.lives++; toast("목숨 +1", "10골마다 하나씩 돌아와요", 1300); }
+    }
   } else {
+    if (ST.def.endless) { ST.lives--; ledFlash(ST.lives > 0 ? "목숨 " + ST.lives : "끝!", missWhere(b), "#f04452", 1.3); }
     popup(b.rimHits > 0 || b.board > 0 ? "아깝다" : "에어볼", missWhere(b), "soft");
     sfx.nogoal();
     ST.streak = 0;
@@ -2138,11 +2278,12 @@ function shotResult(b, ok) {
     if (led.dur <= 0) ledFlash("ON FIRE", "연속으로 넣는 동안 점수 2배", "#ff6b2c", 1.6);
     if (held) { held.fire = true; paint(held); }
   }
+  if (!ST.over && ST.def.endless) endlessNext();
   if (!ST.over && !ST.def.rapid && !held) ST.nextT = ok ? 1.05 : 0.75;
   hud();
 }
 
-function hoopXAt(t) { var m = ST.def.move, w = 2 * Math.PI / m[1]; return m[0] * Math.sin(w * t); }
+function hoopXAt(t) { var m = curMove(), w = 2 * Math.PI / m[1]; return m[0] * Math.sin(w * t); }
 // 충돌 없이 날아갔다면 림 높이에서 어디였는지로 빗나간 쪽을 말해 준다. 실제로 튕긴 뒤의 자리로 따지면
 // 뒤쪽 림을 맞고 앞으로 튀어나온 공이 '짧았어요'가 된다
 function missWhere(b) {
@@ -2156,9 +2297,27 @@ function missWhere(b) {
   return (Math.abs(along) > 0.5 ? "많이 " : "조금 ") + (along < 0 ? "짧았어요" : "길었어요");
 }
 
+// 무한 모드의 다음 공 조건(바람 세기·움직이는 골대)을 앞 슛 판정 때 미리 정한다. 공이 나올 때 정하면
+// 멈추게 된 골대가 공이 나온 뒤에야 가운데로 미끄러져 돌아가서, 잘 조준한 슛도 빗나갔다
+function endlessNext() {
+  var L = ST.level = Math.floor(ST.made / 4);
+  ST.ew = L >= 2 && rng() < 0.55 ? Math.min(2, 0.6 + 0.22 * L) : 0;
+  var mv = L >= 3 && rng() < 0.4 ? [Math.min(1.1, 0.45 + 0.1 * L), 3.6] : null;
+  if (mv && !ST.move) ST.hoopT = 0;
+  ST.move = mv;
+}
+
 function checkEnd(lastOk) {
   if (ST.over) return;
   var def = ST.def;
+  if (def.endless) {
+    if (ST.lives <= 0 && ST.inFlight === 0) {
+      ST.over = true; ST.win = false; ST.endT = 1.3;
+      if (held) { dropMesh(held.mesh); held = null; }
+      cancelAim();
+    }
+    return;
+  }
   if (ST.made >= def.goal) {
     ST.over = true; ST.win = true; ST.endT = 1.9;
     ST.buzzer = ST.timeOver;
@@ -2208,7 +2367,7 @@ function gameTick(dt) {
 
 function starsFor() {
   var d = ST.def;
-  if (!ST.win) return 0;
+  if (!ST.win || d.endless) return 0;
   if (d.rapid) return ST.timeLeft >= 15 ? 3 : ST.timeLeft >= 7 ? 2 : 1;
   var spare = d.balls - ST.thrown, extra = d.balls - d.goal;
   return spare >= extra ? 3 : spare >= Math.ceil(extra / 2) ? 2 : 1;
@@ -2317,23 +2476,31 @@ var lastGoal = -1;
 function hud() {
   if (!ST) return;
   var d = ST.def;
-  $("stTitle").textContent = (ST.i + 1) + " · " + d.name;
+  $("stTitle").textContent = d.endless ? "∞ · 무한 모드" : (ST.i + 1) + " · " + d.name;
   $("stSub").textContent = d.sub;
-  var made = Math.min(ST.made, d.goal);
-  $("goalNow").textContent = made;
-  $("goalNeed").textContent = "/" + d.goal;
+  $("goalLab").textContent = d.endless ? "목숨" : "골";
+  if (d.endless) {
+    $("goalNow").textContent = "♥♥♥".slice(0, Math.max(0, ST.lives));
+    $("goalNeed").textContent = "♡♡♡".slice(0, Math.max(0, 3 - ST.lives));
+  } else {
+    $("goalNow").textContent = Math.min(ST.made, d.goal);
+    $("goalNeed").textContent = "/" + d.goal;
+  }
   var chip = $("chipGoal");
   chip.classList.toggle("done", ST.made >= d.goal);
   if (lastGoal !== -1 && ST.made !== lastGoal) { chip.classList.remove("bump"); void chip.offsetWidth; chip.classList.add("bump"); }
   lastGoal = ST.made;
   $("pts").firstChild.nodeValue = ST.points;
   var wc = $("chipWind");
-  wc.hidden = !d.wind;
-  if (d.wind) $("windVal").textContent = (wind.s < 0 ? "← " : "→ ") + Math.abs(wind.s).toFixed(1);
+  wc.hidden = !(d.wind || (d.endless && wind.s !== 0));
+  if (!wc.hidden) $("windVal").textContent = (wind.s < 0 ? "← " : "→ ") + Math.abs(wind.s).toFixed(1);
   $("chipFire").hidden = !ST.fire;
   $("chipThree").hidden = !(spotDist(curSpot) > THREE_PT);
   var dots = $("ballDots");
-  if (d.rapid) {
+  if (d.endless) {
+    $("timerBox").hidden = true;
+    dots.innerHTML = "<u>넣은 골 " + ST.made + " · 연속 " + ST.streak + (save.endless ? " · 최고 " + save.endless + "점" : "") + "</u>";
+  } else if (d.rapid) {
     dots.innerHTML = "";
     $("timerBox").hidden = false;
     timerHud();
@@ -2465,6 +2632,10 @@ function showMenu() {
   pb.className = "btn " + (canResume ? "ghost" : "primary");
   pb.dataset.i = canResume ? ST.i : next;
   $("saveNote").hidden = store.ok;
+  var eb = $("btnEndless"), openE = save.open >= 2;
+  eb.disabled = !openE;
+  eb.textContent = openE ? "∞ 무한 모드" + (save.endless ? " · 최고 " + save.endless + "점" : "") : "∞ 무한 모드 · 1스테이지를 깨면 열려요";
+  qualUi();
   $("result").classList.remove("show");
   $("menu").classList.add("show");
 }
@@ -2479,6 +2650,15 @@ $("grid").addEventListener("click", function (e) {
   startStage(+c.dataset.i);
 });
 $("btnPlay").onclick = function () { tapped = true; sfx.unlock(); startStage(+this.dataset.i || 0); };
+$("btnEndless").onclick = function () { if (this.disabled) return; tapped = true; sfx.unlock(); startStage(ENDLESS_I); };
+$("qualSeg").addEventListener("click", function (e) {
+  var b = e.target.closest("button");
+  if (!b) return;
+  qualPref = b.dataset.q;
+  store.set("quality", qualPref);
+  perf.cool = 3;
+  applyQuality(qualPref === "auto" ? "high" : qualPref);
+});
 $("btnResume").onclick = function () { closeMenu(); };
 $("btnMenu").onclick = function () { showMenu(); };
 $("btnSound").onclick = function () { tapped = true; var m = sfx.toggle(); this.textContent = m ? "🔇" : "🔊"; };
@@ -2489,6 +2669,7 @@ function showResult() {
   var d = ST.def, stars = starsFor(), i = ST.i;
   mode = "result";
   cancelAim();
+  if (d.endless) { showEndlessResult(); return; }
   if (ST.win) {
     save.stars[i] = Math.max(save.stars[i] | 0, stars);
     if (i + 2 > save.open) save.open = Math.min(STAGES.length, i + 2);
@@ -2525,6 +2706,24 @@ function showResult() {
   $("result").classList.add("show");
   if (ST.win) sfx.clear(stars); else sfx.fail();
 }
+function showEndlessResult() {
+  var best = save.endless | 0, nb = ST.points > best;
+  if (nb) save.endless = ST.points;
+  persist();
+  $("rTitle").textContent = "무한 모드 끝";
+  $("rStars").hidden = true;
+  $("rPts").textContent = ST.points + "점";
+  $("rSub").textContent = "넣은 골 " + ST.made + " · 던진 공 " + ST.thrown + (ST.swishes ? " · 스위시 " + ST.swishes : "") +
+    " · 최고 연속 " + ST.bestStreak + (nb && ST.points ? " · 최고 기록!" : best ? " · 최고 " + best + "점" : "");
+  var tip = $("rTip");
+  tip.hidden = false;
+  tip.textContent = "넣을수록 자리가 멀어져요. 옆에서 본 궤적의 점선 끝이 림 위를 지나가게 끌어 보세요.";
+  $("rNext").hidden = true;
+  $("rReplay").hidden = true;
+  $("rRetry").className = "btn primary";
+  $("result").classList.add("show");
+  sfx.horn();
+}
 $("rNext").onclick = function () { startStage(ST.i + 1); };
 $("rRetry").onclick = function () { startStage(ST.i); };
 $("rList").onclick = function () { showMenu(); };
@@ -2532,6 +2731,49 @@ $("rReplay").onclick = function () {
   $("result").classList.remove("show");
   replayStart(function () { $("result").classList.add("show"); });
 };
+
+/* ══════════════════════════════════════════════════════════════
+   11-1. 화질: 높음(바닥 반사·2배율) · 보통(반사 끔·1.5배율) · 절약(그림자도 끔·1배율).
+   '자동'은 높음으로 시작해 경기 중 2.5초 평균이 45fps 아래면 한 단계씩 내린다(올리지는 않는다)
+   ══════════════════════════════════════════════════════════════ */
+var QUAL_NAME = { high: "높음", mid: "보통", low: "절약" };
+var qualPref = store.get("quality", "auto");
+if (!/^(auto|high|mid|low)$/.test(qualPref)) qualPref = "auto";
+var qual = "high";
+function applyQuality(q) {
+  qual = q;
+  REFL.on = q === "high";
+  REFL.plane.visible = REFL.on;
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, q === "high" ? 2 : q === "mid" ? 1.5 : 1));
+  keyLight.castShadow = q !== "low";
+  var ms = q === "high" && !PHONE ? 2048 : 1024;
+  if (keyLight.shadow.mapSize.x !== ms) {
+    keyLight.shadow.mapSize.set(ms, ms);
+    if (keyLight.shadow.map) { keyLight.shadow.map.dispose(); keyLight.shadow.map = null; }
+  }
+  resize();
+  qualUi();
+}
+function qualUi() {
+  Array.prototype.forEach.call($("qualSeg").querySelectorAll("button"), function (b) { b.classList.toggle("on", b.dataset.q === qualPref); });
+  $("qualNow").textContent = "화질 · 지금 " + QUAL_NAME[qual];
+}
+var perf = { t: 0, n: 0, sum: 0, cool: 4 };
+function perfWatch(raw) {
+  if (qualPref !== "auto" || qual === "low" || document.hidden) return;
+  if (mode !== "play" || RP.on || paused) { perf.t = perf.n = perf.sum = 0; return; }
+  if (perf.cool > 0) { perf.cool -= Math.min(raw, 0.1); return; }
+  if (raw > 0.25) return;                     // 탭 전환 같은 긴 멈춤은 셈에서 뺀다
+  perf.sum += raw; perf.n++; perf.t += raw;
+  if (perf.t < 2.5) return;
+  var fps = perf.n / perf.sum;
+  perf.t = perf.n = perf.sum = 0;
+  if (fps < 45) {
+    applyQuality(qual === "high" ? "mid" : "low");
+    perf.cool = 3;
+    toast("화질을 " + QUAL_NAME[qual] + "(으)로 낮췄어요", "메뉴에서 바꿀 수 있어요", 1600);
+  }
+}
 
 /* ══════════════════════════════════════════════════════════════
    12. 루프
@@ -2602,6 +2844,7 @@ function tick(dt) {
 }
 function render() {
   netDraw();
+  reflRender();
   var showTrack = mode === "play" && !!ST && !RP.on;
   if (trackEl.hidden === showTrack) trackEl.hidden = !showTrack;
   if (showTrack) trackDraw();
@@ -2613,6 +2856,7 @@ function resize() {
   renderer.setSize(w, h, false);
   camera.aspect = w / Math.max(1, h);
   camera.updateProjectionMatrix();
+  reflSize();
 }
 window.addEventListener("resize", resize);
 document.addEventListener("visibilitychange", function () {
@@ -2622,8 +2866,9 @@ document.addEventListener("visibilitychange", function () {
 var last = 0, raf = 0;
 function frame(now) {
   raf = requestAnimationFrame(frame);
-  var dt = last ? Math.min(0.05, (now - last) / 1000) : 1 / 60;
+  var raw = last ? (now - last) / 1000 : 1 / 60, dt = Math.min(0.05, raw);
   last = now;
+  perfWatch(raw);
   tick(dt);
   render();
 }
@@ -2632,6 +2877,7 @@ netBuild();
 netMeshBuild();
 crowdFace(0, 8);
 resize();
+applyQuality(qualPref === "auto" ? "high" : qualPref);
 camStep(1);
 $("loading").hidden = true;
 showMenu();
@@ -2710,6 +2956,12 @@ window.H3 = {
   replay: function () { return { on: RP.on, ready: RP.ready, tt: RP.tt, ts: RP.ts, t0: RP.t0, count: rpCount, label: RP.label }; },
   skipReplay: function () { replayEnd(); },
   crowd: function () { return { n: CROWD.length, active: crowdActive }; },
+  quality: function (q) {
+    if (q) applyQuality(q);
+    return { qual: qual, pref: qualPref, refl: REFL.on, shadow: keyLight.castShadow, dpr: renderer.getPixelRatio(), rt: [REFL.w, REFL.h] };
+  },
+  ENDLESS: ENDLESS_I,
+  lives: function () { return ST ? { lives: ST.lives, level: ST.level, move: ST.move, streak: ST.streak, best: ST.bestStreak } : null; },
   frameSpot: function (x, z) { curSpot = { x: x, z: z, i: 0 }; frameSpot(curSpot); }
 };
 }
