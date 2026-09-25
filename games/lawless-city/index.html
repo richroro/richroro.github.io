@@ -2486,9 +2486,17 @@ function refreshTitle() {
   $('bNew').classList.toggle('pri', !has);
   $('saveInfo').textContent = has ? rankOf(sv.missions || 0) + ' · 저장된 돈 ' + money(sv.money || 0) + ' · 임무 ' + (sv.missions || 0) + '개' + (sv.won ? ' · 도시 정복!' : '') : '진행 상황은 이 브라우저에 저장됩니다.';
 }
+let newArmed = 0;
 $('bNew').onclick = () => {
   const sv = loadSave();
-  if (sv && sv.playing && !confirm('저장된 진행 상황을 지우고 새로 시작할까?')) return;
+  if (sv && sv.playing && performance.now() - newArmed > 3000) {
+    // 저장이 있으면 한 번 더 눌러야 지움
+    newArmed = performance.now();
+    $('bNew').textContent = '한 번 더 누르면 저장이 지워진다';
+    setTimeout(() => { $('bNew').textContent = '새로 시작'; }, 3000);
+    return;
+  }
+  $('bNew').textContent = '새로 시작';
   try { localStorage.setItem(SKEY, JSON.stringify({ sound })); } catch (e) {}
   newGame(false);
 };
