@@ -107,6 +107,14 @@
       시장 온도는 그 종목 청약일 이전 90일만 써서, 미래 정보를 섞지 않았습니다.</p>
     <div class="tscroll mt12"><table class="narrow" id="backtest"></table></div>
   </div>
+  <div class="pastgrid mt16">
+    <div class="card pad"><h3>언제 팔았으면 가장 나았을까?</h3>
+      <p class="hint mt8">지난 1년 상장한 공모주를 공모가에 받아 시초가·첫날 종가·지금 가격에 팔았다고 치고 평균을 냈습니다.</p>
+      <div id="sellBox" class="mt12"></div></div>
+    <div class="card pad"><h3>주관사 성적표</h3>
+      <p class="hint mt8">지난 1년 주관한 공모주의 시초가 성적(스팩 제외, 공동 주관 포함, 2곳 이상). 수요예측 전 종목은 이 숫자가 가장 먼저 참고할 만한 값입니다.</p>
+      <div class="tscroll mt12"><table class="narrow" id="uwTable"></table></div></div>
+  </div>
 </div></section>
 
 <section id="calendar"><div class="wrap">
@@ -266,7 +274,8 @@
     <li><b>배정 확인</b><p>청약 마감 이틀쯤 뒤(환불일) 앱에서 몇 주 받았는지 확인합니다. 인기 종목은 균등도 추첨이라 0주일 수 있습니다.</p></li>
     <li><b>환불 받기</b><p>배정받지 못한 증거금은 환불일에 계좌로 돌아옵니다. 청약 수수료는 배정받은 경우에만 내는 곳이 많습니다.</p></li>
     <li><b>상장일에 팔기(또는 보유)</b><p>상장일 오전 8시 30분~9시에 주문을 넣을 수 있고 9시에 시초가가 정해집니다.
-      첫날 가격은 공모가의 60%~400% 사이. 블로거들은 보통 <b>시초가 매도</b>, <b>절반 매도 후 나머지 보유</b>, <b>목표가 지정</b> 중 하나를 정해 두고 들어갑니다.</p></li>
+      첫날 가격은 공모가의 60%~400% 사이. 블로거들은 보통 <b>시초가 매도</b>, <b>절반 매도 후 나머지 보유</b>, <b>목표가 지정</b> 중 하나를 정해 두고 들어갑니다.
+      실제 1년 성적은 '시장 온도'의 <a class="ul" href="#market">언제 팔았으면?</a>에서 볼 수 있습니다.</p></li>
   </ol>
 
   <h3 class="subttl mt24">용어 사전</h3>

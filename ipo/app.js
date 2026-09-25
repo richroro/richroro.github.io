@@ -95,6 +95,7 @@ function setOver(id, key, val) {
   if (Object.keys(o).length) OVER[id] = o; else delete OVER[id];
   store.set("ipo.over", OVER);
   scoreCache.delete(id);
+  PAST = null;
 }
 
 function verdictChip(r, big = false) {
@@ -239,6 +240,7 @@ function renderFeature() {
       ${m("유통물량", it.float_pct != null ? `${it.float_pct.toFixed(1)}%` : "–")}
       ${s.key === "listed" ? m("시초가", `<span class="${cls(p.open)}">${pct(p.open, 0)}</span>`) : m(it.price ? "확정가" : "밴드 상단", won(offerPrice(it)))}
     </div>
+    ${hintLine(it).replace('class="exp', 'class="exp mt12')}
     <div class="when num mt12">${it.sub_start ? `<span><i>청약</i>${mdw(it.sub_start)}~${mdw(it.sub_end || it.sub_start)}</span>` : ""}<span><i>상장</i>${it.list_date ? mdw(it.list_date) : "미정"}</span></div>
     <div class="btnrow mt12"><button class="ghost primary sm" type="button" data-act="open">채점표 보기</button>
       <button class="ghost sm" type="button" data-act="calc">계산기로</button></div>
@@ -251,7 +253,7 @@ function renderFeature() {
 const listState = { v: store.get("ipo.tab", "now"), q: "", hideSpac: store.get("ipo.hideSpac", true), sort: store.get("ipo.sort", "date") };
 
 function setTab(v) {
-  listState.v = v; store.set("ipo.tab", v);
+  listState.v = v; listState.more = false; store.set("ipo.tab", v);
   $("tabs").querySelectorAll("button").forEach((b) => b.setAttribute("aria-pressed", b.dataset.v === v));
   renderList();
 }
@@ -320,6 +322,7 @@ function card(it) {
     <div class="vrow">${verdictChip(r)}${it.spac ? "" : `<span class="bars" aria-hidden="true">${bars}</span>`}${r.flags.length ? `<span class="flag" title="${esc(r.flags.join(" · "))}">⚠ ${r.flags.length}</span>` : ""}</div>
     <div class="when num">${when.join("")}</div>
     <div class="kv">${kv}</div>
+    ${hintLine(it)}
     ${it.uw.length ? `<div class="uw">${it.uw.map((u) => `<span>${esc(u)}</span>`).join("")}</div>` : ""}
   </article>`;
 }
@@ -334,7 +337,11 @@ function renderList() {
   }
   const emptyMsg = { now: "지금 청약 중이거나 예정된 공모주가 없습니다.", wait: "상장을 기다리는 종목이 없습니다.",
     listed: "최근 4개월 안에 상장한 종목이 없습니다.", star: "관심 종목이 없습니다. 카드의 ★ 를 눌러 담으세요.", all: "조건에 맞는 종목이 없습니다." };
-  box.innerHTML = xs.length ? xs.map(card).join("") : `<p class="empty">${listState.q ? "검색 결과가 없습니다." : emptyMsg[listState.v]}</p>`;
+  // 휴대폰에서는 6장까지 먼저 보여 줘 페이지가 끝없이 길어지지 않게
+  const cut = !listState.more && matchMedia("(max-width:719px)").matches && xs.length > 7 ? 6 : xs.length;
+  box.innerHTML = xs.length ? xs.slice(0, cut).map(card).join("") + (cut < xs.length ? `<button type="button" class="ghost more" id="listMore">${xs.length - cut}곳 더 보기</button>` : "")
+    : `<p class="empty">${listState.q ? "검색 결과가 없습니다." : emptyMsg[listState.v]}</p>`;
+  if (cut < xs.length) $("listMore").onclick = () => { listState.more = true; renderList(); };
   const hidden = listState.hideSpac ? ITEMS.filter((it) => it.spac).length : 0;
   $("listNote").textContent = `${xs.length}곳${hidden && listState.v !== "star" ? ` · 스팩 ${hidden}곳 숨김` : ""} · 점수 옆 막대는 7개 기준별 득점(회색은 모르는 값) · 확정 공모가 옆 %는 희망 밴드 상단 대비`;
 }
@@ -403,6 +410,7 @@ function scorecard(it) {
   return `<div class="sc">
     <div class="sc-head">${ring(r, 96)}<div>${verdictChip(r, true)}<p class="hint mt8">${esc(r.verdict.tip)}</p>
       <p class="hint">7개 기준 중 <b>${known}개</b>로 계산${known < 7 ? " — 빈칸을 채우면 더 정확해집니다" : ""}</p></div></div>
+    ${(() => { const h = hintLine(it), u = uwRecord(it); return h || u ? `<div class="sc-past mt12">${h}${u && !h.includes("주관사") ? `<div class="exp mut">주관사 <b>${esc(u.name)}</b> 1년 시초가 평균 <b class="${cls(u.avg)}">${pct(u.avg, 0)}</b><small>${u.n}곳 · 따블 이상 ${u.dbl.toFixed(0)}%</small></div>` : ""}</div>` : ""; })()}
     ${r.flags.length ? `<ul class="sig flags mt12">${r.flags.map((f) => `<li class="weak">${esc(f)}</li>`).join("")}</ul>` : ""}
     <div class="tscroll mt12"><table class="narrow sc-t"><thead><tr><th>기준</th><th>값</th><th>점수</th></tr></thead><tbody>${rows}</tbody></table></div>
     <p class="hint mt8">유통가능물량·구주매출은 DART 증권신고서(투자설명서)의 '유통가능 주식수'·'공모 방법' 표에 나옵니다. 입력값은 이 브라우저에만 저장됩니다.</p>
@@ -552,6 +560,85 @@ function initDetail() {
 }
 
 /* ---------------------------------------------------------------- 시장 온도 */
+/* ---------------------------------------------------------------- 과거 성적(주관사·판정·매도 시점) */
+/** '유진증권'·'유진투자증권'처럼 같은 증권사를 다르게 적은 것을 하나로 묶는 열쇠 */
+const uwKey = (u) => u.replace(/\s+/g, "").replace(/(금융)?투자증권$|증권$|투자$/, "");
+let PAST = null; // 날짜가 바뀌면 다시 계산
+function past() {
+  if (PAST) return PAST;
+  const xs = listedSample(365);
+  const ret = (it) => (it.open / it.price - 1) * 100;
+  const uw = new Map();
+  for (const it of xs) for (const u of it.uw) {
+    const k = uwKey(u), o = uw.get(k) || { name: u, rs: [] };
+    if (u.length > o.name.length) o.name = u;
+    o.rs.push(ret(it)); uw.set(k, o);
+  }
+  const vd = new Map();
+  for (const it of xs) { const k = scoreOf(it).verdict.key; if (!vd.has(k)) vd.set(k, []); vd.get(k).push(ret(it)); }
+  PAST = { xs, uw, vd };
+  return PAST;
+}
+const median = (a) => { if (!a.length) return null; const s = [...a].sort((x, y) => x - y), m = s.length >> 1; return s.length % 2 ? s[m] : (s[m - 1] + s[m]) / 2; };
+const mean = (a) => (a.length ? a.reduce((x, y) => x + y, 0) / a.length : null);
+
+/** 대표 주관사(첫 번째)의 1년 성적. 표본이 2곳 미만이면 공동 주관사 중 표본이 많은 쪽 */
+function uwRecord(it) {
+  const cands = it.uw.map((u) => past().uw.get(uwKey(u))).filter(Boolean);
+  const o = cands.find((c) => c.rs.length >= 2) || cands[0];
+  return o ? { name: o.name, n: o.rs.length, avg: mean(o.rs), med: median(o.rs), dbl: o.rs.filter((r) => r >= 100).length / o.rs.length * 100 } : null;
+}
+/** 같은 판정을 받은 지난 종목들의 시초가 중앙값으로 본 '균등 1주 기대 수익'. 표본 5곳 미만이면 없음 */
+function expectOf(it) {
+  const r = scoreOf(it), s = stage(it).key;
+  if (r.pending || it.spac || s === "listed" || s === "past" || !offerPrice(it)) return null;
+  const rs = past().vd.get(r.verdict.key) || [];
+  if (rs.length < 5) return null;
+  const med = median(rs);
+  return { med, n: rs.length, won: offerPrice(it) * med / 100, label: r.verdict.label };
+}
+function hintLine(it) {
+  const e = expectOf(it);
+  if (e) return `<div class="exp">균등 1주 기대 <b class="${cls(e.won)}">${e.won >= 0 ? "+" : "−"}${won(Math.abs(e.won))}원</b><small>지난 1년 '${esc(e.label)}' ${e.n}곳 시초가 중앙값 ${pct(e.med, 0)}</small></div>`;
+  const s = stage(it).key;
+  if (it.spac || !["pre", "fc", "sub"].includes(s)) return "";
+  const u = uwRecord(it);
+  if (!u) return "";
+  return `<div class="exp mut">주관사 <b>${esc(u.name)}</b> 1년 시초가 평균 <b class="${cls(u.avg)}">${pct(u.avg, 0)}</b><small>${u.n}곳${u.n < 3 ? " · 표본 적음" : ""}</small></div>`;
+}
+
+function renderPastBlocks() {
+  const { xs, uw } = past();
+  // 언제 팔았으면?
+  const r = (k) => xs.filter((it) => it[k]).map((it) => (it[k] / it.price - 1) * 100);
+  const paths = [["시초가에 팔았으면", r("open")], ["첫날 종가에 팔았으면", r("close1")], ["지금까지 들고 있었으면", r("cur")]];
+  const both = xs.filter((it) => it.close1), held = xs.filter((it) => it.cur);
+  const avgs = paths.map(([, a]) => mean(a));
+  const mx = Math.max(1, ...avgs.filter((v) => v != null).map(Math.abs));
+  const best = avgs.indexOf(Math.max(...avgs.filter((v) => v != null)));
+  $("sellBox").innerHTML = xs.length < 5 ? `<p class="empty">상장 기록이 쌓이면 계산합니다.</p>` : `
+    <div class="sellrows">${paths.map(([k, a], i) => `<div class="sellrow ${i === best ? "best" : ""}"><span class="k">${k}</span>
+      <span class="bar"><em class="${avgs[i] < 0 ? "neg" : ""}" style="width:${avgs[i] == null ? 0 : Math.round(Math.abs(avgs[i]) / mx * 100)}%"></em></span>
+      <b class="num ${cls(avgs[i])}">${pct(avgs[i], 0)}</b><small class="num">중앙값 ${pct(median(a), 0)}</small></div>`).join("")}</div>
+    <p class="lead mt12">지난 1년 스팩 뺀 ${xs.length}곳 기준, <b>${paths[best][0].replace("팔았으면", "파는 쪽").replace("들고 있었으면", "보유하는 쪽")}</b>이 평균적으로 가장 나았습니다.
+      첫날 종가가 시초가보다 높았던 곳은 <b>${both.length ? Math.round(both.filter((it) => it.close1 > it.open).length / both.length * 100) : 0}%</b>,
+      지금 가격이 시초가보다 높은 곳은 <b>${held.length ? Math.round(held.filter((it) => it.cur > it.open).length / held.length * 100) : 0}%</b>입니다.</p>
+    <p class="hint">'지금까지'는 종목마다 상장 뒤 지난 기간이 다릅니다. 평균이 그렇다는 것이고, 종목마다 다를 수 있습니다.</p>`;
+  // 주관사 성적표
+  const up = ITEMS.filter((it) => !it.spac && ["pre", "fc", "sub"].includes(stage(it).key));
+  const rows = [...uw.entries()].filter(([, o]) => o.rs.length >= 2).sort((a, b) => b[1].rs.length - a[1].rs.length || mean(b[1].rs) - mean(a[1].rs));
+  const mxu = Math.max(1, ...rows.map(([, o]) => Math.abs(mean(o.rs))));
+  $("uwTable").innerHTML = rows.length ? `<thead><tr><th>주관사</th><th>상장</th><th>평균 시초가</th><th></th><th>중앙값</th><th>따블 이상</th><th>공모가 아래</th><th>청약 예정</th></tr></thead><tbody>${rows.map(([k, o]) => {
+    const a = mean(o.rs), nxt = up.filter((it) => it.uw.some((u) => uwKey(u) === k));
+    return `<tr><td class="tx"><b>${esc(o.name)}</b></td><td>${o.rs.length}</td><td class="${cls(a)}">${pct(a, 0)}</td>
+      <td class="barcell"><span class="btbar ${a < 0 ? "neg" : ""}" style="width:${Math.round(Math.abs(a) / mxu * 100)}%"></span></td>
+      <td class="${cls(median(o.rs))}">${pct(median(o.rs), 0)}</td><td>${Math.round(o.rs.filter((x) => x >= 100).length / o.rs.length * 100)}%</td>
+      <td>${Math.round(o.rs.filter((x) => x < 0).length / o.rs.length * 100)}%</td>
+      <td class="tx">${nxt.length ? nxt.slice(0, 3).map((it) => `<button type="button" class="linkish" data-open="${esc(it.id)}">${esc(it.name)}</button>`).join(", ") + (nxt.length > 3 ? ` 외 ${nxt.length - 3}` : "") : "–"}</td></tr>`;
+  }).join("")}</tbody>` : `<tbody><tr><td class="empty">상장 기록이 쌓이면 계산합니다.</td></tr></tbody>`;
+  $("uwTable").onclick = (e) => { const b = e.target.closest("[data-open]"); if (b) openDetail(b.dataset.open); };
+}
+
 function listedSample(days = 365) {
   const from = addDays(TODAY, -days);
   return ITEMS.filter((it) => !it.spac && it.list_date && it.list_date <= TODAY && it.list_date >= from && it.price && it.open)
@@ -572,6 +659,7 @@ function renderMarket() {
     <div class="st"><div class="k">평균 기관경쟁률</div><div class="v">${comp(avg(inst, (x) => x.inst_comp))}</div><div class="s">90일 상장 ${inst.length}곳</div></div>`;
   drawTempChart(all.slice(-30));
   renderBacktest(all);
+  renderPastBlocks();
 }
 
 function drawTempChart(xs) {
@@ -1040,6 +1128,6 @@ function initPwa() {
   // 자정을 넘겨 열어 둔 탭에서도 D-day 가 맞게
   setInterval(() => {
     const t = kstToday();
-    if (t !== TODAY) { TODAY = t; scoreCache.clear(); renderSummary(); renderToday(); renderFeature(); renderList(); renderMarket(); renderCal(); emit("ipo:ready"); }
+    if (t !== TODAY) { TODAY = t; scoreCache.clear(); PAST = null; renderSummary(); renderToday(); renderFeature(); renderList(); renderMarket(); renderCal(); emit("ipo:ready"); }
   }, 60e3);
 })();
