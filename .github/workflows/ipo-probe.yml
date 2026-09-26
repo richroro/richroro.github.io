@@ -12,15 +12,14 @@ jobs:
         with: { python-version: '3.12' }
       - run: |
           python - <<'PY'
-          import sys, re, time
+          import sys, json, time, datetime as dt
           sys.path.insert(0, "ipo")
           import build
-          for no in ("2334", "2311"):
+          for no in "2334 2325 2321 2311 2306 2308 2271 2267 2266 2314".split():
               t = build.fetch(build.DETAIL_URL.format(no=no))
-              print("=====", no, len(t))
-              for r in build.html_rows(t):
-                  cells = [build.squash(c["t"])[:90] for c in r]
-                  if any(cells) and len(" ".join(cells)) < 700:
-                      print(" | ".join(cells))
+              d = build.parse_detail(t, dt.date(2026, 9, 26))
+              c = d.pop("corp", {})
+              print("=====", no, json.dumps({k: d.get(k) for k in ("sub_comp", "prop_comp", "post_shares", "float_pct")}, ensure_ascii=False))
+              print(json.dumps(c, ensure_ascii=False))
               time.sleep(1)
           PY
