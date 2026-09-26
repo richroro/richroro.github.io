@@ -67,6 +67,22 @@ async function load() {
   for (const it of ITEMS) BY_ID.set(it.id, it);
 }
 
+/** 기업 분석(corp.json)은 크다 — 일정을 먼저 그린 뒤 읽어 종목에 붙이고, 열린 상세가 있으면 그 칸만 다시 그린다 */
+async function loadCorp() {
+  try {
+    const res = await fetch("/ipo/data/corp.json", { cache: "no-cache" });
+    if (!res.ok) return;
+    const d = await res.json();
+    for (const [id, c] of Object.entries(asObj(d.items))) {
+      const it = BY_ID.get(id);
+      if (it && c && typeof c === "object" && !Array.isArray(c)) it.corp = c;
+    }
+    const slot = document.getElementById("dCorp");
+    const it = slot && BY_ID.get(slot.dataset.id);
+    if (it) { const html = corpCard(it); if (html) slot.outerHTML = html; }
+  } catch (e) { /* 기업 분석 없이도 나머지는 그대로 */ }
+}
+
 /** 확정가가 없으면 밴드 상단으로 계산하고, 그 사실을 표시합니다. */
 const offerPrice = (it) => it.price || it.band_hi || null;
 
@@ -481,7 +497,7 @@ function fmtVal(row, it) {
 
 /** 통합 청약경쟁률: 끝났으면 실제 값, 아니면 지난 1년 같은 기관경쟁률 구간 종목들의 중앙값(순위 상관 0.81) */
 function estComp(it) {
-  if (it.sub_comp) return { c: it.sub_comp, how: "actual" };
+  if (it.sub_comp) return { c: propC(it), how: it.prop_comp ? "prop" : "actual" };
   const xs = listedSample(365).filter((x) => x.sub_comp);
   const inst = OVER[it.id]?.inst ?? it.inst_comp;
   const tier = INST_T.find((t) => inT(inst, t));
@@ -492,6 +508,8 @@ function estComp(it) {
   return { c: median(cs), lo: cs[Math.floor(cs.length * 0.25)], hi: cs[Math.floor(cs.length * 0.75)], n: use.length,
     how: pool.length >= 3 ? "tier" : "all", tier: tier && tier[2] };
 }
+/** 비례 계산에 쓰는 경쟁률 — 38 이 비례 경쟁률을 따로 적으면(통합의 약 2배) 그 절반, 아니면 통합 경쟁률 */
+const propC = (x) => (x.prop_comp ? x.prop_comp / 2 : x.sub_comp);
 /** 시초가 기대 수익률(%): 상장했으면 실제, 판정이 있으면 같은 판정 중앙값, 아니면 기관경쟁률 구간 중앙값 */
 function estRet(it) {
   if (it.open && it.price) return { r: openRet(it), how: "actual" };
@@ -532,7 +550,7 @@ function propCard(it) {
   const base = { price: offerPrice(it), accounts: st.acc, eq: numOf("cEq") ?? 1, c, r, fee: numOf("cFee") ?? 2000,
     sellRate: (numOf("cSell") ?? 0.2) / 100, margin: (numOf("cMargin") ?? 50) / 100, minQ: numOf("cMin") || 10, lockDays: lockDaysOf(it) };
   const x = propCalc({ ...base, deposit: st.dep });
-  const cSrc = c0.how === "actual" ? "실제 통합 경쟁률" : `예상 — 기관 ${c0.tier || "전체"} 구간 ${c0.n}곳 중앙값 (가운데 절반 ${nf.format(Math.round(c0.lo))}~${nf.format(Math.round(c0.hi))}:1)`;
+  const cSrc = c0.how === "prop" ? `실제 비례 경쟁률 ${comp(it.prop_comp)}의 절반` : c0.how === "actual" ? "실제 통합 경쟁률" : `예상 — 기관 ${c0.tier || "전체"} 구간 ${c0.n}곳 중앙값 (가운데 절반 ${nf.format(Math.round(c0.lo))}~${nf.format(Math.round(c0.hi))}:1)`;
   const rSrc = r0.how === "actual" ? "실제 시초가" : r0.how === "verdict" ? `'${r0.label}' ${r0.n}곳 시초가 중앙값` : `기관 경쟁률 구간 ${r0.n}곳 중앙값`;
   const rows = PROP_STEPS.map((d) => { const y = propCalc({ ...base, deposit: d }); return `<tr class="${d === st.dep ? "on" : ""}"><td>${manwonTxt(d)}</td><td>${y.alloc.toFixed(y.alloc < 10 ? 2 : 0)}주</td><td class="${cls(y.pnl)}">${y.pnl >= 0 ? "+" : "−"}${won(Math.abs(y.pnl))}</td><td class="${cls(y.pnl)}">${pct(y.pnl / d * 100, 2)}</td></tr>`; }).join("");
   const weak = c < 100 ? `<p class="note warn mt12"><span class="ic">!</span><span>경쟁률이 낮으면 비례로 받는 주식이 많아져, 공모가 아래로 시작하면 손실도 커집니다.
@@ -558,6 +576,147 @@ function propCard(it) {
     <p class="hint mt8">기대값은 평균입니다. 비례 끝자리와 균등은 추첨이라 실제로는 0주일 수도 있습니다. 증권사별 청약 한도와 우대 조건은 따로 확인하세요.</p></div>`;
 }
 propCard.state = {};
+
+/* ---------------------------------------------------------------- 기업 분석 */
+/** 백만원 → '648억' · '1.2조' · '5,000만' */
+const bm = (v) => (v == null || !isFinite(v) ? "–" : Math.abs(v) >= 1e6 ? `${(v / 1e6).toFixed(1)}조` : Math.abs(v) >= 100 ? `${nf.format(Math.round(v / 100))}억` : `${nf.format(Math.round(v * 100))}만`);
+const fullYear = (y) => y && !/\s/.test(y);
+/** 가장 최근 '온전한 해'의 값 — 반기·분기는 1년치가 아니라서 건너뛴다 */
+function lastFull(series, key) {
+  if (!series || !series[key]) return null;
+  const i = series.y.findIndex(fullYear);
+  return i < 0 ? null : { v: series[key][i], y: series.y[i], prev: series[key][i + 1] ?? null, py: series.y[i + 1] };
+}
+/** 기업 숫자 한 벌: 매출·영업이익·순이익(백만원), 영업이익률, 매출 성장률, 공모가 기준 시가총액(억)·PER·PSR */
+function corpNums(it) {
+  const c = it.corp;
+  if (!c) return null;
+  const g = c.g?.sales ? c.g : null, fy = c.fy || {}; // 매출 줄이 없는 연도 표(은행 등)는 단위가 달라 쓰지 않는다
+  const S = lastFull(g, "sales"), O = lastFull(g, "op"), N = lastFull(g, "ni");
+  const sales = S?.v ?? fy.sales ?? null, ni = N?.v ?? fy.ni ?? null, op = O?.v ?? null;
+  const opm = sales && op != null ? op / sales * 100 : c.r?.opm?.v?.[0] ?? null;
+  const growth = S && S.prev ? (S.v / S.prev - 1) * 100 : c.r?.sg?.v?.[0] ?? null;
+  // 상장 후 주식 수: 알면 그대로, 모르면 공모 전 주식 수(순이익 ÷ EPS) + 새로 찍는 주식(공모 주식 − 구주매출)으로 어림
+  let shares = it.post_shares || c.own?.post || null, est = false;
+  const eps = c.v?.eps?.[0];
+  if (!shares && fy.ni && eps && Math.sign(fy.ni) === Math.sign(eps) && it.shares) {
+    const pre = fy.ni * 1e6 / eps, add = it.shares - (it.old_shares || 0);
+    if (pre > it.shares * 0.5) { shares = Math.round(pre + add); est = true; }
+  }
+  const p = offerPrice(it);
+  const cap = shares && p ? shares * p / 1e8 : null; // 억
+  const per = cap && ni > 0 ? cap * 100 / ni : null, psr = cap && sales > 0 ? cap * 100 / sales : null;
+  return { sales, op, ni, opm, growth, cap, capEst: est, per, psr, year: S?.y || c.r?.sg?.y?.[0] || c.v?.y?.[0] || (fy.sales != null ? "최근" : ""), pbr: c.v?.pbr?.[0] ?? null,
+    debt: c.r?.debt, cur: c.r?.cur, roe: c.r?.roe?.v?.[0] ?? null };
+}
+/** 지난 1년 상장 종목의 공모가 PER — 구간별 시초가 중앙값과 같이 */
+function perMarket() {
+  const xs = listedSample(365).map((x) => ({ x, n: corpNums(x) })).filter((y) => y.n && y.n.per);
+  return xs.length >= 8 ? xs : null;
+}
+
+function corpCard(it) {
+  const c = it.corp;
+  if (!c || it.spac) return "";
+  const n = corpNums(it);
+  const p = offerPrice(it);
+  const bits = [];
+  if (n.sales != null) bits.push(`매출 ${bm(n.sales)}`);
+  if (n.op != null) bits.push(`영업이익 ${n.op < 0 ? "−" : ""}${bm(Math.abs(n.op))}`);
+  else if (n.ni != null) bits.push(`순이익 ${n.ni < 0 ? "−" : ""}${bm(Math.abs(n.ni))}`);
+  if (n.ni != null) bits.push(n.ni > 0 ? "흑자" : "적자");
+  if (n.per) bits.push(`공모가 PER ${n.per.toFixed(1)}배`);
+  // 한 줄 소개 · 기본 정보
+  const kv = [["대표", c.ceo], ["기업 구분", c.kind], ["본점", c.addr], ["업종", it.sector],
+    ["홈페이지", c.web ? `<a href="https://${esc(c.web)}" target="_blank" rel="noopener">${esc(c.web)}</a>` : null, true]]
+    .filter((x) => x[1]).map(([k, v, raw]) => `<div><dt>${k}</dt><dd>${raw ? v : esc(v)}</dd></div>`).join("");
+  // 무엇으로 버나
+  const mix = c.mix?.p?.length ? `<h4>무엇으로 버나 <small>${esc(c.mix.y)}년 매출 비중</small></h4>
+    <ul class="mixbar">${c.mix.p.map(([k, v]) => `<li><span class="mk">${esc(k)}</span><span class="mb"><i style="width:${Math.max(2, Math.min(100, v))}%"></i></span><b>${v.toFixed(v < 10 ? 1 : 0)}%</b></li>`).join("")}</ul>` : "";
+  // 실적 추이 — 오래된 해가 왼쪽
+  let trend = "";
+  if (c.g?.sales) {
+    const idx = c.g.y.map((y, i) => i).reverse();
+    const mx = Math.max(...idx.map((i) => Math.abs(c.g.sales[i] || 0)), 1);
+    trend = `<h4>실적 추이 <small>매출 막대 · 아래는 영업이익(이익률)</small></h4><div class="rbars" role="img" aria-label="연도별 매출과 영업이익">${idx.map((i) => {
+      const sv = c.g.sales[i], ov = c.g.op?.[i];
+      const h = sv ? Math.max(4, sv / mx * 100) : 0;
+      return `<div class="bcol ${fullYear(c.g.y[i]) ? "" : "half"}"><span class="bv">${bm(sv)}</span><span class="bb"><i style="height:${h}%"></i></span>
+        <span class="by">${esc(c.g.y[i].replace(/^20/, "’"))}</span><span class="bo ${cls(ov)}">${ov == null ? "–" : `${ov < 0 ? "−" : ""}${bm(Math.abs(ov))}`}${ov != null && sv ? `<small>${(ov / sv * 100).toFixed(0)}%</small>` : ""}</span></div>`;
+    }).join("")}</div>`;
+  } else if (c.fy) {
+    trend = `<div class="stats c4 mt12">
+      <div class="st"><div class="k">매출</div><div class="v">${bm(c.fy.sales)}</div><div class="s">${n.year && n.year !== "최근" ? `${esc(n.year)}년` : "최근 사업연도"}</div></div>
+      <div class="st"><div class="k">세전이익</div><div class="v ${cls(c.fy.ebt)}">${c.fy.ebt < 0 ? "−" : ""}${bm(Math.abs(c.fy.ebt))}</div><div class="s">법인세 빼기 전</div></div>
+      <div class="st"><div class="k">순이익</div><div class="v ${cls(c.fy.ni)}">${c.fy.ni < 0 ? "−" : ""}${bm(Math.abs(c.fy.ni))}</div><div class="s">${c.fy.ni > 0 ? "흑자" : "적자"}</div></div>
+      <div class="st"><div class="k">매출 성장</div><div class="v ${cls(n.growth)}">${pct(n.growth, 0)}</div><div class="s">${c.r?.sg ? `${esc(c.r.sg.y[0])}년 기준` : "–"}</div></div></div>`;
+  }
+  // 몸값
+  const pm = perMarket();
+  let perNote = "";
+  if (pm && n.per) {
+    const pers = pm.map((y) => y.n.per), med = median(pers);
+    const low = pm.filter((y) => y.n.per <= med).map((y) => openRet(y.x)), high = pm.filter((y) => y.n.per > med).map((y) => openRet(y.x));
+    perNote = `지난 1년 공모주 PER 중앙값 ${med.toFixed(1)}배(${pm.length}곳) — 이보다 낮았던 곳 시초가 중앙값 ${pct(median(low), 0)}, 높았던 곳 ${pct(median(high), 0)}`;
+  }
+  const val = `<h4>몸값 <small>${it.price ? "확정" : "희망 상단"} 공모가 ${won(p)}원 기준</small></h4>
+    <div class="stats c4">
+      <div class="st"><div class="k">시가총액</div><div class="v">${eok(n.cap)}</div><div class="s">${n.cap ? (n.capEst ? "상장 후 주식 수 어림(EPS로)" : "상장 후 주식 수 × 공모가") : "상장 후 주식 수 모름"}</div></div>
+      <div class="st"><div class="k">PER</div><div class="v">${n.per ? `${n.per.toFixed(1)}<span class="u">배</span>` : n.ni != null && n.ni <= 0 ? "적자" : "–"}</div><div class="s">시가총액 ÷ ${esc(n.year || "")} 순이익</div></div>
+      <div class="st"><div class="k">PSR</div><div class="v">${n.psr ? `${n.psr.toFixed(1)}<span class="u">배</span>` : "–"}</div><div class="s">시가총액 ÷ 매출</div></div>
+      <div class="st"><div class="k">PBR</div><div class="v">${n.pbr ? `${n.pbr.toFixed(1)}<span class="u">배</span>` : "–"}</div><div class="s">38 계산(공모가 대비)</div></div>
+    </div>${perNote ? `<p class="hint mt8">${esc(perNote)}</p>` : ""}`;
+  // 재무 건전성
+  const rr = (e, lab, unit, goodLow) => {
+    if (!e) return "";
+    const v = e.v[0];
+    const tone = v == null ? "" : goodLow ? (v > 200 ? "down" : v < 100 ? "up" : "") : v < 100 ? "down" : v > 150 ? "up" : "";
+    return `<div class="st"><div class="k">${lab}</div><div class="v ${tone}">${v == null ? "–" : `${nf.format(Math.round(v))}<span class="u">${unit}</span>`}</div><div class="s">${esc(e.y[0])}${e.ind != null ? ` · 업종 ${nf.format(Math.round(e.ind))}${unit}` : ""}</div></div>`;
+  };
+  const health = n.debt || n.cur || n.roe != null ? `<h4>재무 건전성</h4><div class="stats c4">
+    ${rr(n.debt, "부채비율", "%", true)}${rr(n.cur, "유동비율", "%", false)}
+    ${n.roe != null ? `<div class="st"><div class="k">ROE</div><div class="v ${cls(n.roe)}">${pct(n.roe, 1).replace("+", "")}</div><div class="s">자기자본 대비 순이익</div></div>` : ""}
+    ${n.opm != null ? `<div class="st"><div class="k">영업이익률</div><div class="v ${cls(n.opm)}">${n.opm.toFixed(1)}<span class="u">%</span></div><div class="s">${esc(n.year || "")}</div></div>` : ""}</div>` : "";
+  // 주주·기관 수요·장외
+  const o = c.own || {}, d = c.dem || {}, x = c.otc || {};
+  const topShare = d.top != null ? (d.top || 0) + (d.over || 0) : null;
+  const lk = d.lock ? Object.entries(d.lock).sort((a, b) => parseFloat(b[0]) * (b[0].endsWith("m") ? 30 : 1) - parseFloat(a[0]) * (a[0].endsWith("m") ? 30 : 1))
+    .map(([k, v]) => `${k.replace("m", "개월").replace("d", "일")} ${v.toFixed(1)}%`).join(" · ") : "";
+  const prem = x.ask && p ? (x.ask / p - 1) * 100 : null;
+  const people = o.pct != null || topShare != null || x.ask ? `<h4>주주 · 기관 · 장외</h4><div class="stats c4">
+    ${o.pct != null ? `<div class="st"><div class="k">최대주주 지분</div><div class="v">${o.pct.toFixed(1)}<span class="u">%</span></div><div class="s">${esc(o.name || "")} · 특수관계 합 ${o.group != null ? `${o.group.toFixed(1)}%` : "–"} (공모 후)</div></div>` : ""}
+    ${topShare != null ? `<div class="st"><div class="k">상단 이상 가격 제시</div><div class="v ${topShare >= 95 ? "up" : topShare < 70 ? "down" : ""}">${topShare.toFixed(1)}<span class="u">%</span></div><div class="s">기관 신청 수량 기준${d.over ? ` · 상단 초과 ${d.over.toFixed(1)}%` : ""}</div></div>` : ""}
+    ${x.ask ? `<div class="st"><div class="k">장외 매도 호가</div><div class="v ${cls(prem)}">${won(x.ask)}<span class="u">원</span></div><div class="s">공모가 대비 ${pct(prem, 0)} · ${x.ask_n}건 중간값 · ${esc(x.d || "")}</div></div>` : ""}
+    ${x.bid ? `<div class="st"><div class="k">장외 매수 호가</div><div class="v">${won(x.bid)}<span class="u">원</span></div><div class="s">공모가 대비 ${pct((x.bid / p - 1) * 100, 0)} · ${x.bid_n}건</div></div>` : ""}
+  </div>${lk ? `<p class="hint mt8">확약 기간별(신청 수량 대비): ${esc(lk)}</p>` : ""}${x.ask ? `<p class="hint mt8">장외 호가는 몇 건 안 되는 개인 간 희망가라 참고만 하세요.</p>` : ""}` : "";
+  // 좋은 점 · 걸리는 점
+  const good = [], warn = [];
+  if (n.ni != null) (n.ni > 0 ? (n.opm != null && n.opm >= 10 ? good.push(`영업이익률 ${n.opm.toFixed(0)}% — 돈을 잘 버는 편`) : good.push("흑자 기업")) : warn.push(`적자 기업${/기술|특례|성장/.test(c.kind || "") ? " — 기술특례 상장" : ""}: 몸값의 근거가 앞으로의 추정 실적`));
+  if (n.growth != null) (n.growth >= 20 ? good.push(`매출이 ${n.growth.toFixed(0)}% 늘었음`) : n.growth <= -5 ? warn.push(`매출이 ${Math.abs(n.growth).toFixed(0)}% 줄었음`) : 0);
+  const dv = n.debt?.v[0], cv = n.cur?.v[0];
+  if (dv != null) (dv > 200 ? warn.push(`부채비율 ${Math.round(dv)}% — 빚이 자기자본의 2배 넘음`) : dv < 50 ? good.push(`부채비율 ${Math.round(dv)}% — 빚이 적음`) : 0);
+  if (cv != null && cv < 100) warn.push(`유동비율 ${Math.round(cv)}% — 1년 안에 갚을 빚이 당장 쓸 수 있는 자산보다 많음`);
+  if (n.per) (n.per <= 15 ? good.push(`공모가 PER ${n.per.toFixed(1)}배 — 이익에 비해 싸게 나온 편`) : n.per >= 40 ? warn.push(`공모가 PER ${n.per.toFixed(0)}배 — 이익에 비해 비싼 편`) : 0);
+  if (o.group != null && o.group < 30) warn.push(`최대주주 측 지분 ${o.group.toFixed(0)}% — 상장 뒤 경영권·오버행 확인`);
+  if (topShare != null) (topShare >= 95 ? good.push(`기관 ${topShare.toFixed(1)}%가 밴드 상단 이상을 써 냄`) : topShare < 70 ? warn.push(`상단 이상 가격을 써 낸 기관이 ${topShare.toFixed(0)}%뿐`) : 0);
+  if (prem != null) (prem >= 50 ? good.push(`장외 호가가 공모가보다 ${prem.toFixed(0)}% 높음`) : prem < 0 ? warn.push("장외 호가가 공모가보다 낮음") : 0);
+  const top = c.mix?.p?.[0];
+  if (top && top[1] >= 80) warn.push(`매출의 ${top[1].toFixed(0)}%가 한 품목(${top[0]})에 몰림`);
+  const check = good.length || warn.length ? `<div class="gw mt12">
+    <div><h4>좋은 점</h4>${good.length ? `<ul>${good.map((t) => `<li>${esc(t)}</li>`).join("")}</ul>` : `<p class="hint">눈에 띄는 것 없음</p>`}</div>
+    <div><h4>걸리는 점</h4>${warn.length ? `<ul>${warn.map((t) => `<li>${esc(t)}</li>`).join("")}</ul>` : `<p class="hint">눈에 띄는 것 없음</p>`}</div></div>` : "";
+  // 유사기업
+  const pe = c.peers?.list?.length ? `<h4>비교 기업 <small>${esc(c.peers.y || "")} · 회사가 공모가를 정할 때 고른 곳</small></h4>
+    <div class="tscroll"><table class="narrow peers"><thead><tr><th>회사</th><th>매출</th><th>영업이익</th><th>이익률</th></tr></thead><tbody>
+    ${[{ name: `${it.name} (이 회사)`, ...c.peers.self, me: true }, ...c.peers.list].map((y) => `<tr class="${y.me ? "on" : ""}"><td class="tx">${esc(y.name)}</td><td>${bm(y.sales)}</td>
+      <td class="${cls(y.op)}">${y.op == null ? "–" : `${y.op < 0 ? "−" : ""}${bm(Math.abs(y.op))}`}</td><td>${y.op != null && y.sales ? `${(y.op / y.sales * 100).toFixed(1)}%` : "–"}</td></tr>`).join("")}</tbody></table></div>` : "";
+  return `<div class="card pad corp" id="dCorp" data-id="${esc(it.id)}"><h3>기업 분석</h3>
+    ${bits.length ? `<p class="lead mt8"><b>${esc(bits.join(" · "))}</b></p>` : ""}
+    ${c.biz ? `<p class="biz mt8">${esc(c.biz)}</p>` : `<p class="hint mt8">사업 설명은 38 분석이 올라오면(보통 청약 즈음) 채워집니다.</p>`}
+    ${kv ? `<dl class="ckv mt12">${kv}</dl>` : ""}
+    ${mix}${trend}${val}${health}${people}${check}${pe}
+    <p class="hint mt12">출처: 38커뮤니케이션 상세 페이지(증권신고서 요약). 숫자는 회사 제출 자료이며, 투자 전 투자설명서를 꼭 확인하세요.</p></div>`;
+}
 
 /* ---------------------------------------------------------------- 과거 데이터로 보는 세 가지 */
 const INST_T = [[0, 100, "100↓", 60], [100, 200, "100~", 150], [200, 500, "200~", 350], [500, 1000, "500~", 750], [1000, Infinity, "1천↑", 1500]];
@@ -760,6 +919,7 @@ function openDetail(id) {
     <div class="dlg-body">
       ${timeline(it)}
       <div id="dScore">${scorecard(it)}</div>
+      ${corpCard(it) || `<div id="dCorp" data-id="${esc(it.id)}" hidden></div>`}
       ${whatIf(it)}
       ${sellCoach(it)}
       ${propCard(it)}
@@ -979,7 +1139,7 @@ function renderMarket() {
 function renderPropPast() {
   const xs = listedSample(365).filter((x) => x.sub_comp);
   if (xs.length < 5) { $("propPast").hidden = true; return; }
-  const per = xs.map((x) => ({ x, v: 1e8 * (openRet(x) / 100) / x.sub_comp, k: scoreOf(x).verdict.key }));
+  const per = xs.map((x) => ({ x, v: 1e8 * (openRet(x) / 100) / propC(x), k: scoreOf(x).verdict.key }));
   const sum = (a) => a.reduce((t, y) => t + y.v, 0);
   const all = sum(per), pos = per.filter((y) => y.v > 0).length;
   const best = per.filter((y) => y.k === "strong" || y.k === "go");
@@ -1476,6 +1636,7 @@ function initPwa() {
   initMy();
   initDetail();
   emit("ipo:ready");
+  loadCorp();
   // 자정을 넘겨 열어 둔 탭에서도 D-day 가 맞게
   setInterval(() => {
     const t = kstToday();

@@ -516,6 +516,15 @@ def _year(t: str) -> str | None:
     return m.group(1) + (" " + m.group(2) if m.group(2) else "")
 
 
+def _period_end(y: str) -> int:
+    """'2025' → 202512, '2026 반기' → 202606, '2025 1분기' → 202503"""
+    m = re.match(r"(20\d\d)(?: (반기|([1-3])분기))?", y)
+    if not m:
+        return 0
+    month = 12 if not m.group(2) else 6 if m.group(2) == "반기" else int(m.group(3)) * 3
+    return int(m.group(1)) * 100 + month
+
+
 def _short_addr(a: str) -> str:
     """'서울특별시 금천구 벚꽃로 244 …' → '서울 금천구'"""
     a = re.sub(r"\(.*$", "", a).strip()
@@ -528,6 +537,7 @@ def _short_addr(a: str) -> str:
 
 def _sentences(t: str, limit: int = 420) -> str:
     t = re.sub(r"^\s*\d\s*\.\s*사업\s*현황\s*[-–:]?\s*", "", t).strip()
+    t = re.split(r"\s2\s*\.\s*(?:매출|재무|주요|공모)", t)[0].strip()  # 뒤에 붙은 목차('2.매출현황 3.재무현황 …')
     if len(t) <= limit:
         return t
     cut = t[:limit]
@@ -547,6 +557,8 @@ def parse_corp(text: str) -> dict:
             for k, lab in CORP_KV.items():
                 if q[i] == lab and k not in fy and k not in out:
                     v = r[i + 1].strip()
+                    if k == "holder" and (i != 0 or not re.search(r"[가-힣A-Za-z]", v) or squash(v) in ("보통주", "우선주")):
+                        continue  # 주주 표의 '최대주주' 칸(관계)과 헷갈리지 않게
                     if k in ("sales", "ebt", "ni", "cap"):
                         n = to_int(v) if "백만" in v else None
                         if n is not None:
@@ -585,6 +597,13 @@ def parse_corp(text: str) -> dict:
                 if any(v is not None for v in vals) and key not in cur["rows"]:
                     cur["rows"][key] = vals
                 break
+    for t in tables:  # 표마다 연도 순서가 달라(오래된 해가 앞인 표도 있다) 최근이 앞이 되게 맞춘다
+        n = len(t["y"])
+        order = sorted(range(n), key=lambda i: _period_end(t["y"][i]), reverse=True)
+        if order != list(range(n)):
+            t["y"] = [t["y"][i] for i in order]
+            for k, vals in t["rows"].items():
+                t["rows"][k] = [vals[i] if i < len(vals) else None for i in order] + vals[n:]
     val_keys = ("eps", "per", "bps", "pbr", "sps", "psr")
     r: dict = {}
     for t in tables:
@@ -632,6 +651,14 @@ def parse_corp(text: str) -> dict:
             peers = [{"name": n, **{k: (got[k][j + 1] if got[k] and len(got[k]) > j + 1 else None) for k in got}}
                      for j, n in enumerate(names)]
             self_ = {k: (got[k][0] if got[k] else None) for k in got}
+            unit = 1.0
+            if self_.get("sales") and fy.get("sales"):
+                ratio_ = self_["sales"] / fy["sales"]
+                unit = next((f for f in (1.0, 1e3, 1e6) if 0.2 < ratio_ / f < 5), 0.0)
+            for d in [self_] + peers:
+                for k in ("sales", "op", "ni"):
+                    if d.get(k) is not None:
+                        d[k] = round(d[k] / unit) if unit else None  # 단위를 모르면 숫자는 버리고 이름만
             out["peers"] = {"y": (m.group(1) + (" " + m.group(2) if m.group(2) else "")) if m else "",
                             "self": self_, "list": peers[:6]}
             break
@@ -857,12 +884,35 @@ def need_detail(it: dict, today: dt.date, prev_by_no: dict[str, dict]) -> int:
 
 
 # ---------------------------------------------------------------- 실행
+def corp_path(out: str) -> str:
+    """기업 분석은 크기가 커서 따로 둔다 — 페이지는 일정(ipo.json)을 먼저 그리고 이 파일은 나중에 읽는다"""
+    return os.path.join(os.path.dirname(out), "corp.json")
+
+
 def load_prev(path: str) -> list[dict]:
     try:
         with open(path, encoding="utf-8") as f:
-            return json.load(f).get("items", [])
+            items = json.load(f).get("items", [])
     except (OSError, ValueError):
         return []
+    try:
+        with open(corp_path(path), encoding="utf-8") as f:
+            corp = json.load(f).get("items", {})
+        for it in items:
+            if it.get("id") in corp:
+                it["corp"] = corp[it["id"]]
+    except (OSError, ValueError, AttributeError):
+        pass
+    return items
+
+
+def write_json(path: str, obj) -> None:
+    os.makedirs(os.path.dirname(path), exist_ok=True)
+    tmp = path + ".tmp"
+    with open(tmp, "w", encoding="utf-8") as f:
+        json.dump(obj, f, ensure_ascii=False, separators=(",", ":"))
+        f.write("\n")
+    os.replace(tmp, path)
 
 
 def get_list(o: str, pages: int, html_dir: str | None) -> str:
@@ -942,16 +992,13 @@ def main(argv=None) -> int:
             notes.append("상세 페이지를 읽지 못해 시장·환불일·상장일은 이전 값입니다")
         items = merge(items, [], [], [], details, today)
 
+    corp = {it["id"]: it.pop("corp") for it in items if it.get("corp")}
     out = {"updated": now.isoformat(timespec="minutes"), "asof": today.isoformat(),
            "source": "38커뮤니케이션 (www.38.co.kr)", "notes": notes, "items": items}
-    os.makedirs(os.path.dirname(a.out), exist_ok=True)
-    tmp = a.out + ".tmp"
-    with open(tmp, "w", encoding="utf-8") as f:
-        json.dump(out, f, ensure_ascii=False, separators=(",", ":"))
-        f.write("\n")
-    os.replace(tmp, a.out)
+    write_json(a.out, out)
+    write_json(corp_path(a.out), {"source": "38커뮤니케이션 상세 페이지 (증권신고서 요약)", "items": corp})
     up = [i for i in items if (i.get("sub_end") or "") >= today.isoformat()]
-    log(f"저장: {len(items)}종목 (청약 예정·진행 {len(up)}) → {os.path.relpath(a.out)}")
+    log(f"저장: {len(items)}종목 (청약 예정·진행 {len(up)}, 기업 분석 {len(corp)}) → {os.path.relpath(a.out)}")
     return 0
 
 

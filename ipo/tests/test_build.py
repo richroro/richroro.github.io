@@ -283,6 +283,24 @@ class Corp(unittest.TestCase):
         items = build.merge(prev, [], [], [], {"5": {"corp": {"ceo": "나", "fy": {"sales": 1}}}}, TODAY)
         self.assertEqual(items[0]["corp"], {"ceo": "나", "biz": "예전 설명", "fy": {"sales": 1}})
 
+    def test_real_page_quirks(self):
+        # 실제 페이지에서 본 모양들: 오래된 해가 앞인 표, 주주 표의 '최대주주' 칸, 천원 단위 유사기업 표, 설명 뒤 목차
+        t = page(
+            tbl("최대주주 | 머스트벤처스 56%", "매출액 | 10,649 (백만원) | 순이익 | -6,994 (백만원)",
+                "1. 사업현황 - 당행은 국내 1호 인터넷전문은행입니다. 2.매출현황 3.재무현황 4.공모후 유통가능 물량")
+            + tbl("구분 | 2023 | 2024 | 2025 | 2025 1분기 | 2026 1분기", "매출액 | 589 | 4,091 | 7,936 | 464 | 2,105",
+                  "영업이익 | -7,800 | -11,729 | -14,725 | -3,609 | -4,489")
+            + tbl("구분 | 주주명 | 관계", "최대주주등 | 김태수 | 최대주주 | 2,885,850 | 30.1% | 2,885,850 | 23.66% | - | -")
+            + tbl("구분 | 동사 | 폴라리스오피스", "매출액 | 10,649,332 | 324,217,014"))
+        c = build.parse_corp(t)
+        self.assertEqual(c["holder"], "머스트벤처스 56%")
+        self.assertEqual(c["biz"], "당행은 국내 1호 인터넷전문은행입니다.")
+        self.assertEqual(c["g"]["y"], ["2026 1분기", "2025", "2025 1분기", "2024", "2023"])
+        self.assertEqual(c["g"]["sales"], [2105, 7936, 464, 4091, 589])
+        self.assertEqual(c["g"]["op"][1], -14725)
+        self.assertEqual(c["peers"]["self"]["sales"], 10649)
+        self.assertEqual(c["peers"]["list"][0]["sales"], 324217)
+
     def test_garbage_page_gives_nothing(self):
         self.assertEqual(build.parse_corp(page(tbl("메뉴 | 광고", "구분 | 동사"))), {})
 
@@ -435,6 +453,16 @@ class EndToEnd(unittest.TestCase):
             self.assertEqual(len(data["items"]), 4)
             errors, _ = validate.check(out, min_items=3, today=TODAY)
             self.assertEqual(errors, [])
+            # 기업 분석은 corp.json 으로 따로 — 일정 파일은 가볍게
+            self.assertFalse(any("corp" in it for it in data["items"]))
+            with open(os.path.join(d, "corp.json"), encoding="utf-8") as f:
+                self.assertEqual(json.load(f)["items"]["2201"], {"ceo": "홍길동"})
+            # 다음 실행은 두 파일을 합쳐 이어 간다
+            self.assertEqual(next(p for p in build.load_prev(out) if p["id"] == "2201")["corp"], {"ceo": "홍길동"})
+            with open(os.path.join(d, "corp.json"), "w", encoding="utf-8") as f:
+                json.dump({"items": {"2201": {"biz": 3}}}, f)
+            errors, _ = validate.check(out, min_items=3, today=TODAY)
+            self.assertTrue(any("biz" in e for e in errors))
 
     def test_too_few_rows_fails_and_keeps_file(self):
         with tempfile.TemporaryDirectory() as d:

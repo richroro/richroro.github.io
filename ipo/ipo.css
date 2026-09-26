@@ -866,3 +866,45 @@ table.wi-t{min-width:0;width:100%;table-layout:fixed;border-collapse:separate;bo
   #ppTable :is(th,td):first-child{padding-left:0}
   #ppTable .vd{font-size:12px;padding:3px 8px}
 }
+
+/* ================================================================ v10: 기업 분석 */
+.corp h3{font-size:16px;font-weight:800}
+.corp h4{font-size:14px;font-weight:800;margin:20px 0 10px}
+.corp h4 small{font-size:12px;font-weight:500;color:var(--ink-3);margin-left:4px}
+.corp .lead{font-size:15px;line-height:1.5}
+.corp .biz{font-size:14px;line-height:1.65;color:var(--ink-2)}
+.corp .ckv{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:8px 16px;margin:0}
+.corp .ckv>div{min-width:0}
+.corp .ckv dt{font-size:12px;color:var(--ink-3)}
+.corp .ckv dd{margin:2px 0 0;font-size:14px;font-weight:600;overflow-wrap:anywhere}
+.corp .ckv a{color:var(--brand-deep)}
+.mixbar{list-style:none;display:flex;flex-direction:column;gap:8px}
+.mixbar li{display:grid;grid-template-columns:minmax(64px,30%) 1fr 48px;gap:10px;align-items:center;font-size:13.5px}
+.mixbar .mk{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.mixbar .mb{height:10px;border-radius:99px;background:var(--surface-2);overflow:hidden}
+.mixbar .mb i{display:block;height:100%;border-radius:99px;background:var(--brand)}
+.mixbar b{text-align:right;font-variant-numeric:tabular-nums}
+.rbars{display:flex;gap:8px;align-items:stretch;min-height:190px}
+.bcol{flex:1 1 0;min-width:0;display:flex;flex-direction:column;align-items:center;gap:4px;text-align:center}
+.bcol .bv{font-size:12px;font-weight:700;font-variant-numeric:tabular-nums;white-space:nowrap}
+.bcol .bb{flex:1;width:100%;max-width:56px;display:flex;align-items:flex-end;min-height:90px}
+.bcol .bb i{display:block;width:100%;border-radius:8px 8px 3px 3px;background:var(--brand)}
+.bcol.half .bb i{background:color-mix(in srgb,var(--brand) 40%,transparent)}
+.bcol .by{font-size:12px;color:var(--ink-3);white-space:nowrap}
+.bcol .bo{font-size:12px;font-weight:700;font-variant-numeric:tabular-nums;white-space:nowrap}
+.bcol .bo small{display:block;font-weight:500;color:var(--ink-3);font-size:11px}
+.gw{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.gw>div{border-radius:14px;padding:12px 14px;background:color-mix(in srgb,var(--v-strong) 7%,var(--surface))}
+.gw>div+div{background:color-mix(in srgb,var(--v-light) 11%,var(--surface))}
+.gw h4{margin:0 0 6px;font-size:13.5px}
+.gw ul{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:5px;font-size:13.5px;line-height:1.45}
+.corp table.peers{min-width:0;width:100%}
+.corp .peers td,.corp .peers th{text-align:right}
+.corp .peers td:first-child,.corp .peers th:first-child{text-align:left;white-space:normal}
+.corp .peers tr.on td{background:var(--surface-2);font-weight:700}
+@media(max-width:720px){
+  .gw{grid-template-columns:1fr}
+  .rbars{gap:4px}
+  .bcol .bv,.bcol .bo{font-size:11px}
+  .corp .peers :is(th,td){padding:9px 4px;font-size:13px}
+}
