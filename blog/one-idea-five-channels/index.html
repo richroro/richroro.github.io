@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>아이디어 하나를 다섯 채널 콘텐츠로 — 1인 콘텐츠 공장 만드는 법</title>
+<meta name="description" content="메모 한 장을 올리면 블로그·뉴스레터·유튜브·쇼츠·SNS 원고가 한 번에 나오는 파이프라인을 서버 없이 만든 과정과, 사람이 꼭 잡아야 할 검증 포인트." />
+<meta property="og:type" content="article" />
+<meta property="og:title" content="아이디어 하나를 다섯 채널 콘텐츠로 — 1인 콘텐츠 공장 만드는 법" />
+<meta property="og:description" content="메모 한 장을 올리면 블로그·뉴스레터·유튜브·쇼츠·SNS 원고가 한 번에 나오는 파이프라인을 서버 없이 만든 과정과, 사람이 꼭 잡아야 할 검증 포인트." />
+<meta property="og:url" content="https://richroro.github.io/blog/one-idea-five-channels/" />
+<meta property="og:image" content="https://richroro.github.io/blog/one-idea-five-channels/og.png" />
+<meta name="twitter:card" content="summary_large_image" />
+<link rel="canonical" href="https://richroro.github.io/blog/one-idea-five-channels/" />
+<link rel="alternate" type="application/rss+xml" title="Cadence 블로그" href="https://richroro.github.io/blog/feed.xml" />
+<style>
+:root{--ink:#16161d;--sub:#5b6472;--line:#e7e9ee;--bg:#fff;--soft:#f6f7f9;--acc:#FC1C49}
+@media (prefers-color-scheme:dark){:root{--ink:#eceef3;--sub:#a3abb8;--line:#2a2e38;--bg:#111318;--soft:#1a1d24}}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);
+font-family:"Pretendard","Apple SD Gothic Neo","Malgun Gothic",system-ui,sans-serif;line-height:1.75;letter-spacing:-.2px}
+a{color:var(--acc)}.wrap{max-width:720px;margin:0 auto;padding:0 16px}
+header.top{border-bottom:1px solid var(--line)}header.top .wrap{display:flex;justify-content:space-between;align-items:center;height:56px}
+header.top a{color:var(--ink);text-decoration:none;font-weight:800}header.top nav a{font-weight:600;color:var(--sub);margin-left:16px;font-size:14px}
+article h1{font-size:clamp(26px,5vw,36px);line-height:1.3;margin:40px 0 8px}
+.meta{color:var(--sub);font-size:14px}.tags span{display:inline-block;background:var(--soft);border-radius:99px;padding:2px 10px;margin:0 6px 6px 0;font-size:13px;color:var(--sub)}
+article h2{margin:40px 0 8px;font-size:22px}article h3{margin:28px 0 6px;font-size:18px}
+blockquote{margin:16px 0;padding:8px 16px;border-left:3px solid var(--acc);background:var(--soft)}
+code{background:var(--soft);padding:1px 5px;border-radius:4px}
+.cta{margin:48px 0;padding:20px;border:1px solid var(--line);border-radius:12px;background:var(--soft)}
+.list a{display:block;padding:20px 0;border-bottom:1px solid var(--line);text-decoration:none;color:var(--ink)}
+.list h2{margin:0 0 4px;font-size:20px}.list p{margin:0;color:var(--sub)}
+footer{color:var(--sub);font-size:13px;padding:40px 0}
+</style>
+
+</head>
+<body>
+<header class="top"><div class="wrap"><a href="/">Cadence</a><nav><a href="/blog/">블로그</a><a href="/blog/feed.xml">RSS</a></nav></div></header>
+<main class="wrap">
+<article>
+<h1>아이디어 하나를 다섯 채널 콘텐츠로 — 1인 콘텐츠 공장 만드는 법</h1>
+<p class="meta">2026-09-26</p>
+<div class="tags"><span>#콘텐츠자동화</span><span>#1인미디어</span><span>#AI글쓰기</span><span>#GitHubActions</span></div>
+<p>혼자서 블로그, 뉴스레터, 유튜브를 같이 굴리다 보면 금방 알게 됩니다. 힘든 건 글을 쓰는 일이 아니라 <strong>같은 얘기를 채널마다 다시 쓰는 일</strong>이라는 걸요. 블로그에 한 번 쓴 내용을 뉴스레터용으로 줄이고, 유튜브 대본으로 말투를 바꾸고, 쇼츠용으로 30초에 맞춰 자르다 보면 하루가 갑니다.</p>
+<p>『AI로 1인 콘텐츠 공장 만들기』를 읽고, 이 반복을 기계에게 넘기는 파이프라인을 이 사이트에 직접 만들어 봤습니다. 지금 읽고 계신 이 글도 그 파이프라인에서 나왔습니다.</p>
+<h2>핵심은 '원본은 하나, 형식은 여러 개'</h2>
+<p>콘텐츠 공장의 출발점은 단순합니다.</p>
+<ul>
+<li>원본은 <strong>아이디어 메모 한 장</strong>으로 둡니다. 말하고 싶은 요지, 사례, 주의할 점 정도만 적습니다.</li>
+<li>채널별 원고는 그 메모에서 <strong>변환</strong>합니다. 블로그 글, 뉴스레터, 유튜브 대본, 쇼츠, SNS 글이 한 번에 나옵니다.</li>
+<li>사람은 세 가지만 합니다. ① 메모 쓰기 ② 결과 검토·보정 ③ 반응을 보고 다음 아이디어 고르기.</li>
+</ul>
+<p>이른바 One Source, Multi Use입니다. 달라진 점은 '변환'을 사람이 아니라 AI가 한다는 것뿐입니다.</p>
+<h2>실제로 만든 구조</h2>
+<p>이 사이트(GitHub Pages)에 붙인 흐름은 이렇습니다.</p>
+<ol>
+<li>저장소의 <code>content-factory/ideas/</code> 폴더에 마크다운 메모를 하나 올립니다.</li>
+<li>GitHub Actions가 이를 감지하고 Claude API에 메모를 보냅니다.</li>
+<li>채널별 원고가 JSON 한 벌로 돌아옵니다. 블로그 글, 뉴스레터, 유튜브 대본(장면별 화면 지시 포함), 쇼츠 대본 3개, SNS 글 3개.</li>
+<li>블로그 글은 바로 <code>/blog/</code> 아래 페이지로 만들어져 게시되고, RSS(<code>/blog/feed.xml</code>)가 갱신됩니다.</li>
+<li>뉴스레터·유튜브·쇼츠·SNS 원고는 <a href="/content-factory/">콘텐츠 공장 대시보드</a>에서 채널별로 보고 복사할 수 있습니다.</li>
+</ol>
+<p>서버는 없습니다. GitHub Pages와 Actions의 무료 범위 안에서 돌아가고, 돈이 드는 건 API 사용료뿐입니다. 아이디어 하나에 몇백 원 수준입니다.</p>
+<h2>책의 6단계 파이프라인과 이 사이트에서 맡은 부분</h2>
+<p>책은 콘텐츠 공장을 <strong>아이디어 → 리서치 → 생성 → 디자인 → 발행 → 분석</strong> 6단계로 나눕니다. 이 사이트에서는 이렇게 나눠 맡았습니다.</p>
+<ul>
+<li><strong>아이디어</strong>: 사람. 메모 한 장.</li>
+<li><strong>리서치</strong>: AI. 핵심·보조 키워드, 검색 의도, 이 글만의 각도, 제목 후보 3개. 단, 검색량 수치는 지어내지 않게 하고 네이버 데이터랩 같은 도구에서 직접 확인합니다.</li>
+<li><strong>생성</strong>: AI. 다섯 채널 원고.</li>
+<li><strong>디자인</strong>: 공유 썸네일 이미지는 코드가 자동으로 그리고, 유튜브 썸네일·본문 이미지는 이미지 생성 도구용 프롬프트로 받습니다.</li>
+<li><strong>발행</strong>: 블로그 자동 게시와 RSS. 뉴스레터는 스티비·메일리 같은 도구의 RSS 발송 기능에 연결하면 됩니다.</li>
+<li><strong>분석</strong>: 채널마다 다른 UTM 꼬리표를 붙인 링크를 넣어, 어느 채널에서 사람이 들어왔는지 GA4에서 나눠 볼 수 있게 했습니다.</li>
+</ul>
+<h2>채널마다 '다르게' 쓰게 하는 규칙</h2>
+<p>AI에게 그냥 "여러 채널용으로 바꿔 줘"라고 하면 같은 문장을 길이만 바꿔서 돌려줍니다. 그러면 어느 채널에서도 읽히지 않습니다. 그래서 채널마다 역할을 정해 줬습니다.</p>
+<ul>
+<li><strong>블로그</strong>: 검색으로 들어온 사람이 끝까지 읽는 글. 소제목으로 나누고, 바로 따라 할 수 있는 방법과 체크리스트를 넣는다.</li>
+<li><strong>뉴스레터</strong>: 구독자에게 보내는 편지. 첫 문장에서 '왜 지금 읽어야 하는지'를 말하고, 자세한 내용은 블로그로 넘긴다.</li>
+<li><strong>유튜브</strong>: 8~10분 대본. 처음 15초 훅, 그리고 장면마다 화면에 무엇을 띄울지까지 적는다.</li>
+<li><strong>쇼츠</strong>: 30~50초 대본 3개. 첫 2초 안에 손가락을 멈추게 하는 한 줄로 시작한다.</li>
+<li><strong>SNS</strong>: 스레드·인스타그램·링크드인에 맞춘 짧은 글.</li>
+</ul>
+<h2>자동화해도 사람이 잡아야 하는 것</h2>
+<p>만들어 보니 병목은 초안이 아니라 <strong>검증</strong>이었습니다.</p>
+<ul>
+<li><strong>사실 확인</strong>: AI는 그럴듯한 숫자를 잘 지어냅니다. 그래서 "메모에 없는 통계·고유명사·인용은 쓰지 말고, 숫자가 필요하면 '예를 들어'로 가정 예시를 들라"는 규칙을 넣었습니다.</li>
+<li><strong>AI 활용 표시</strong>: 인공지능기본법 시행에 맞춰, 생성형 AI로 만든 글에는 그 사실을 밝혀 둡니다. 이 블로그는 글마다 하단에 표시합니다.</li>
+<li><strong>과장 금지</strong>: "한 달 만에 월 천" 같은 제목은 클릭은 받아도 신뢰를 잃습니다. 낚시성 제목을 금지했습니다.</li>
+<li><strong>처음엔 반자동으로</strong>: 첫 몇 주는 결과를 직접 읽고, 마음에 안 드는 패턴이 보이면 규칙(프롬프트)을 고치는 편이 낫습니다. 규칙이 쌓일수록 검토 시간이 줄어듭니다.</li>
+</ul>
+<h2>이번 주에 해 볼 것</h2>
+<ul>
+<li>쓰고 싶은 주제 3개를 골라 <strong>메모 한 장씩</strong> 적어 보세요. 요지 3줄, 사례 1개, 주의할 점 1개면 충분합니다.</li>
+<li>각 메모를 채널별로 변환해 보고, 어느 채널 원고가 가장 손이 덜 가는지 확인하세요.</li>
+<li>손이 가장 많이 간 채널의 규칙부터 고치세요. 그게 공장의 첫 번째 개선입니다.</li>
+</ul>
+<p>콘텐츠를 매일 새로 '쓰는' 대신, 아이디어를 모으고 공장을 손보는 쪽으로 일의 무게중심을 옮겨 보세요. 혼자서도 여러 채널을 꾸준히 운영할 수 있게 됩니다.</p>
+<div class="cta"><strong>이 일, 매주 손으로 하고 계신가요?</strong><br>반복 업무를 코드와 AI에게 넘기는 일을 합니다. 진단·견적은 무료입니다. <a href="/#contact">상담 신청 &rarr;</a></div>
+</article>
+</main>
+<footer class="wrap"><strong>AI 활용 표시</strong> · 이 글은 사람이 쓴 아이디어 메모를 생성형 AI 파이프라인(<a href="/content-factory/">콘텐츠 공장</a>)에 넣어 작성했습니다.</footer>
+</body>
+</html>
