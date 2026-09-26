@@ -5,20 +5,20 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <meta name="theme-color" content="#0A1120">
 <title>한 손 농구 아레나</title>
-<meta name="description" content="한 손 농구 3D를 옆에서 보는 2D로. 7번 선수가 수비를 앞에 두고 점프슛을 쏘고, 빗나가면 골밑에서 리바운드를 잡아 다시 패스. 1만 4천 관중의 경기장, 24초 샷 클락과 심판 신호, 스테이지 10개, 무한 모드, 올스타전 방식 3점슛 콘테스트. 캔버스 2D라 폰에서도 가볍게 돌아갑니다.">
+<meta name="description" content="한 손 농구 3D를 늘 옆에서 보는 2D로. 골대는 늘 오른쪽, 옆모습으로 그린 7번 선수가 수비를 앞에 두고 점프슛을 쏘고, 빗나가면 골밑에서 리바운드를 잡아 다시 패스. 층층이 꽉 찬 관중석, 24초 샷 클락과 심판 신호, 스테이지 10개, 무한 모드, 올스타전 방식 3점슛 콘테스트. 캔버스 2D라 폰에서도 가볍게 돌아갑니다.">
 <link rel="canonical" href="https://richroro.github.io/games/basketball-arena/">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='46' fill='%23FF6B2C'/><g stroke='%235A2A08' stroke-width='5' fill='none'><circle cx='50' cy='50' r='46'/><path d='M50 4v92M4 50h92M18 18q32 32 0 64M82 18q-32 32 0 64'/></g></svg>">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="한 손 농구 아레나">
 <meta property="og:title" content="한 손 농구 아레나">
-<meta property="og:description" content="끌어 올려 세기를 정하고 놓으면 점프슛. 슛마다 옆에서 보는 중계 화면, 수비와 골밑 자리싸움, 1만 4천 관중과 3점슛 콘테스트까지 2D 캔버스로.">
+<meta property="og:description" content="끌어 올려 세기를 정하고 놓으면 점프슛. 늘 옆에서 보는 2D 화면에 수비와 골밑 자리싸움, 꽉 찬 관중석과 3점슛 콘테스트까지.">
 <meta property="og:url" content="https://richroro.github.io/games/basketball-arena/">
 <meta property="og:image" content="https://richroro.github.io/games/basketball-arena/og.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="한 손 농구 아레나">
-<meta name="twitter:description" content="끌어 올려 세기를 정하고 놓으면 점프슛. 슛마다 옆에서 보는 중계 화면, 수비와 골밑 자리싸움, 1만 4천 관중과 3점슛 콘테스트까지 2D 캔버스로.">
+<meta name="twitter:description" content="끌어 올려 세기를 정하고 놓으면 점프슛. 늘 옆에서 보는 2D 화면에 수비와 골밑 자리싸움, 꽉 찬 관중석과 3점슛 콘테스트까지.">
 <meta name="twitter:image" content="https://richroro.github.io/games/basketball-arena/og.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -387,7 +387,7 @@
     <p>60초 안에 랙 다섯 개의 공 25개와 딥 3점 2개를 던져요. 보통 공 1점, 랙 마지막 머니볼 2점, 딥 3점 공 3점.
       고른 랙은 다섯 개가 다 머니볼이에요. 최고 40점.</p>
     <div class="rackpick" id="rackPick">
-      <button data-r="0"><i></i>왼쪽<br>코너</button><button data-r="1"><i></i>왼쪽<br>윙</button><button data-r="2"><i></i>탑</button><button data-r="3"><i></i>오른쪽<br>윙</button><button data-r="4"><i></i>오른쪽<br>코너</button>
+      <button data-r="0"><i></i>1번<br>7.3m</button><button data-r="1"><i></i>2번<br>7.5m</button><button data-r="2"><i></i>3번<br>7.7m</button><button data-r="3"><i></i>4번<br>7.5m</button><button data-r="4"><i></i>5번<br>7.3m</button>
     </div>
     <div class="btns">
       <button class="btn primary" id="pickGo">시작</button>
@@ -791,35 +791,34 @@ var BOXES = [
 
 /* ══════════════════════════════════════════════════════════════
    4. 스테이지
-   spots: 슛 자리 [x, z]. per: 한 자리에서 던지는 공 수. 금색 공은 2골로 친다
-   guide: 점선이 날아갈 길의 몇 할까지 보이는지
-   옆에서 보는 화면이라 옆으로 빗나가는 조준은 없다. 그래서 움직이는 골대는 슛 방향(앞뒤)으로 움직이고,
-   바람도 슛 방향으로 분다(뒷바람·맞바람)
+   옆에서 보는 2D 라 슛 자리는 모두 골대 정면 줄 위(x = 0)이고, 거리만 다르다. spots: 슛 자리 [x, z].
+   per: 한 자리에서 던지는 공 수(1이면 공마다 자리를 옮긴다). 금색 공은 2골로 친다. guide: 점선이 날아갈 길의 몇 할까지 보이는지.
+   움직이는 골대는 슛 방향(화면 좌우)으로 움직이고, 바람도 슛 방향으로 분다(뒷바람·맞바람)
    ══════════════════════════════════════════════════════════════ */
 var STAGES = [
-  { name: "자유투", sub: "자유투 라인에서 공 5개로 3골", spots: [[0, FT_Z]], balls: 5, goal: 3, guide: 0.8 },
-  { name: "엘보", sub: "자유투 라인 끝에서 비스듬히", spots: [[-KEY_HW, FT_Z]], balls: 6, goal: 3, guide: 0.7 },
-  { name: "베이스라인", sub: "골대 옆. 백보드를 맞혀 넣어도 돼요", spots: [[3.3, 1.9]], balls: 6, goal: 3, guide: 0.62 },
-  { name: "탑 3점", sub: "7.24m 3점 라인 정면. 넣으면 3점", spots: [[0, 7.55]], balls: 6, goal: 3, guide: 0.55 },
-  { name: "코너 3점", sub: "옆줄 쪽 6.71m, 가장 짧은 3점", spots: [[-6.95, 0.35]], balls: 6, goal: 3, guide: 0.5 },
+  { name: "자유투", sub: "자유투 라인 4.2m. 공 5개로 3골", spots: [[0, FT_Z]], balls: 5, goal: 3, guide: 0.8 },
+  { name: "뱅크슛", sub: "골밑 3.6m에서 6개 중 4골. 백보드를 맞혀도 돼요", spots: [[0, 3.6]], balls: 6, goal: 4, guide: 0.7 },
+  { name: "미드레인지", sub: "5.5m 점프슛", spots: [[0, 5.5]], balls: 6, goal: 3, guide: 0.62 },
+  { name: "탑 3점", sub: "7.24m 3점 라인 바로 뒤. 넣으면 3점", spots: [[0, 7.55]], balls: 6, goal: 3, guide: 0.55 },
+  { name: "스텝백", sub: "공마다 30cm씩 물러나요 (7.3m → 8.8m)", spots: [[0, 7.3], [0, 7.6], [0, 7.9], [0, 8.2], [0, 8.5], [0, 8.8]], per: 1, balls: 6, goal: 3, guide: 0.5 },
   { name: "움직이는 골대", sub: "골대가 앞뒤로 움직여요. 올 자리를 노려요", spots: [[0, 5.4]], balls: 7, goal: 3, guide: 0.5, move: [0.8, 3.6] },
-  { name: "바람", sub: "공마다 뒷바람·맞바람이 바뀌어요", spots: [[1.6, 5.8]], balls: 7, goal: 3, guide: 0.45, wind: 1.8 },
-  { name: "3점 다섯 자리", sub: "다섯 자리에서 두 개씩. 금색 공은 2골", spots: [[-6.95, 0.5], [-5.25, 5.25], [0, 7.55], [5.25, 5.25], [6.95, 0.5]], per: 2, balls: 10, goal: 6, guide: 0.45 },
+  { name: "바람", sub: "공마다 뒷바람·맞바람이 바뀌어요", spots: [[0, 5.8]], balls: 7, goal: 3, guide: 0.45, wind: 1.8 },
+  { name: "다섯 자리", sub: "골밑부터 3점까지 두 개씩. 금색 공은 2골", spots: [[0, 3.2], [0, 4.6], [0, 6.0], [0, 7.4], [0, 8.1]], per: 2, balls: 10, goal: 6, guide: 0.45 },
   { name: "딥 3점", sub: "3점 라인 한 걸음 반 뒤, 8.8m", spots: [[0, 8.8]], balls: 6, goal: 2, guide: 0.42 },
-  { name: "버저비터 러시", sub: "45초 안에 8골. 공이 바로바로 나와요", spots: [[0, FT_Z], [-2.45, 4.6], [2.45, 4.6], [0, 5.6]], per: 4, rapid: true, time: 45, goal: 8, guide: 0.5 }
+  { name: "버저비터 러시", sub: "45초 안에 8골. 공이 바로바로 나와요", spots: [[0, FT_Z], [0, 5.2], [0, 3.4], [0, 6.2]], per: 4, rapid: true, time: 45, goal: 8, guide: 0.5 }
 ];
 
 // 무한 모드: 세 번 놓치면 끝. 넣은 골 4개마다 한 단계씩 자리가 멀어지고, 2단계부터 바람, 3단계부터 움직이는 골대가 섞인다
 var ENDLESS_I = STAGES.length;
 var ENDLESS = { name: "무한 모드", sub: "세 번 놓치면 끝. 넣을수록 멀어지고 바람이 불어요", endless: true, guide: 0.5,
   goal: Infinity, balls: Infinity, spots: [[0, FT_Z]] };
-// 3점슛 콘테스트(올스타 방식): 60초. 랙 다섯 개(왼쪽 코너·왼쪽 윙·탑·오른쪽 윙·오른쪽 코너)에 공 다섯 개씩, 마지막 공은
-// 머니볼(2점)이고 고른 랙 하나는 다섯 개 모두 머니볼. 윙과 탑 사이, 3점 라인 6피트(1.83m) 뒤에 딥 3점 공(3점)이 하나씩.
-// 모두 27개, 최고 40점. 보통 공은 1점이라 스위시·불 배수는 없다
+// 3점슛 콘테스트(올스타 방식): 60초. 랙 다섯 개에 공 다섯 개씩, 마지막 공은 머니볼(2점)이고 고른 랙 하나는 다섯 개 모두
+// 머니볼. 2·3번 랙과 3·4번 랙 사이에 3점 라인 6피트(1.83m) 뒤 딥 3점 공(3점)이 하나씩. 모두 27개, 최고 40점.
+// 옆에서 보는 화면이라 랙은 골대 정면 줄 위에 거리만 달리 놓는다: 1·5번 7.3m, 2·4번 7.5m, 3번 7.7m, 딥 9.07m
 var CONTEST_I = STAGES.length + 1;
-var DEEP_R = THREE_PT + 1.83, DEEP_A = 22.5 * Math.PI / 180;
-var CONTEST_SPOTS = [[-6.95, 0.6], [-5.3, 5.3], [-Math.sin(DEEP_A) * DEEP_R, Math.cos(DEEP_A) * DEEP_R], [0, 7.55],
-  [Math.sin(DEEP_A) * DEEP_R, Math.cos(DEEP_A) * DEEP_R], [5.3, 5.3], [6.95, 0.6]];
+var DEEP_R = THREE_PT + 1.83;
+var CONTEST_SPOTS = [[0, 7.3], [0, 7.5], [0, DEEP_R], [0, 7.7], [0, DEEP_R], [0, 7.5], [0, 7.3]];
+var RACK_NAMES = ["1번 랙 7.3m", "2번 랙 7.5m", "3번 랙 7.7m", "4번 랙 7.5m", "5번 랙 7.3m"];
 var CONTEST_ORDER = [[0, 0], [1, 1], [2, -1], [3, 2], [4, -1], [5, 3], [6, 4]];   // [자리, 랙(딥이면 −1)]
 var CONTEST_SEQ = (function () {
   var q = [];
@@ -848,69 +847,44 @@ function vr() { vseed = (vseed * 16807) % 2147483647; return vseed / 2147483647;
 
 
 /* ══════════════════════════════════════════════════════════════
-   5. 화면: 옆에서 보는 중계 카메라 · 캔버스 그림 도구
-   슛마다 카메라가 슛 방향과 직각으로, 코트 안쪽에 서서 선수와 골대를 옆에서 본다. 왼쪽 자리에서는 골대가
-   화면 오른쪽, 오른쪽 자리에서는 왼쪽에 온다. 카메라는 기울이지 않고 수평선 자리만 옮기는 시프트 렌즈라
-   기둥·사람이 세로로 곧게 선다. 세계는 3D판과 같은 3차원(미터)이고, 점을 화면에 던져 캔버스 2D 로 그린다
+   5. 화면: 옆에서 본 2D
+   카메라는 늘 코트 옆 같은 자리에 있다. 골대는 늘 화면 오른쪽, 슈터는 왼쪽이고, 슛 자리가 바뀌면 화면을 옆으로 밀고
+   크기만 바꾼다(돌지 않는다). 원근이 없어 멀리 있는 것도 크기가 같고, 코트 안쪽으로 1m 들어갈 때마다 화면에서
+   0.2m 위·0.1m 왼쪽으로 밀어 그린다(비스듬한 평행 투영). 그래서 바닥이 얇은 띠로 보이고 림은 납작한 타원이 된다.
+   세계는 3D판과 같은 3차원(미터): 림 중심 바닥이 원점, 슛하는 쪽이 +z, 카메라 쪽이 +x. 화면 가로 = −z
    ══════════════════════════════════════════════════════════════ */
 var cv = $("scene"), ctx = cv.getContext("2d", { alpha: false }) || cv.getContext("2d");
 var VW = 400, VH = 700, DPR = 1;
-// 지금 그리는 카메라: 자리(x,y,z), 앞(fx,fz)·오른쪽(rx,rz) 수평 단위 벡터, 초점거리 f(CSS px), 화면 가운데 cx, 수평선 hy
-var CAM = { x: 0, y: 5, z: 20, fx: 0, fz: -1, rx: 1, rz: 0, f: 700, cx: 200, hy: 300 };
-var PJ = { x: 0, y: 0, d: 1, k: 1 }, PJ2 = { x: 0, y: 0, d: 1, k: 1 }, PJ3 = { x: 0, y: 0, d: 1, k: 1 };
+var OB_X = 0.1, OB_Y = 0.2;
+// 지금 그리는 카메라: 화면 (cx, cy) 에 오는 세계의 가로 자리 X(= −z)·높이 Y, 1m 가 s px.
+// fx·fz 는 카메라가 보는 쪽(공 회전을 화면에 옮길 때 쓴다)
+var CAM = { X: -2, Y: 0, s: 40, cx: 200, cy: 500, fx: -1, fz: 0 };
+var PJ = { x: 0, y: 0, d: 0, k: 1 }, PJ2 = { x: 0, y: 0, d: 0, k: 1 }, PJ3 = { x: 0, y: 0, d: 0, k: 1 };
 function proj(x, y, z, o) {
   o = o || PJ;
-  var dx = x - CAM.x, dz = z - CAM.z, d = dx * CAM.fx + dz * CAM.fz, k = CAM.f / (d > 0.05 ? d : 0.05);
-  o.x = CAM.cx + (dx * CAM.rx + dz * CAM.rz) * k;
-  o.y = CAM.hy - (y - CAM.y) * k;
-  o.d = d; o.k = k;
+  o.x = CAM.cx + (x * OB_X - z - CAM.X) * CAM.s;
+  o.y = CAM.cy - (y - x * OB_Y - CAM.Y) * CAM.s;
+  o.d = -x; o.k = CAM.s;
   return o;
 }
 function projV(v, o) { return proj(v.x, v.y, v.z, o); }
-function camDepth(x, z) { return (x - CAM.x) * CAM.fx + (z - CAM.z) * CAM.fz; }
-
-// 다각형을 카메라 앞쪽(깊이 lo 이상, hi 이하)만 남겨 경로에 더한다. 점: 평평한 배열 [x,y,z, …]
-var NEAR = 0.35, _ca = new Float64Array(4096), _cb = new Float64Array(4096);
-function clipD(src, n, dst, lim, keepAbove) {
-  var m = 0;
+// 깊이: 카메라에서 먼 쪽(화면 안쪽)이 크다. 먼 것부터 그린다
+function camDepth(x, z) { return -x; }
+// 세계의 다각형 [x,y,z, …] 을 경로에 더한다
+function tracePoly(pts) {
+  var n = pts.length / 3;
   for (var i = 0; i < n; i++) {
-    var o0 = i * 3, o1 = ((i + 1) % n) * 3, d0 = src[o0 + 2], d1 = src[o1 + 2];
-    var in0 = keepAbove ? d0 >= lim : d0 <= lim, in1 = keepAbove ? d1 >= lim : d1 <= lim;
-    if (in0) { dst[m++] = src[o0]; dst[m++] = src[o0 + 1]; dst[m++] = d0; }
-    if (in0 !== in1) {
-      var t = (lim - d0) / (d1 - d0);
-      dst[m++] = src[o0] + (src[o1] - src[o0]) * t; dst[m++] = src[o0 + 1] + (src[o1 + 1] - src[o0 + 1]) * t; dst[m++] = lim;
-    }
-  }
-  return m / 3;
-}
-function tracePoly(pts, lo, hi) {
-  var n = pts.length / 3, a = _ca, i;
-  for (i = 0; i < n; i++) {
-    var dx = pts[i * 3] - CAM.x, dz = pts[i * 3 + 2] - CAM.z;
-    a[i * 3] = dx * CAM.rx + dz * CAM.rz; a[i * 3 + 1] = pts[i * 3 + 1] - CAM.y; a[i * 3 + 2] = dx * CAM.fx + dz * CAM.fz;
-  }
-  n = clipD(a, n, _cb, Math.max(NEAR, lo || 0), true);
-  if (n < 3) return false;
-  var src = _cb;
-  if (hi !== undefined && hi < 1e8) { n = clipD(_cb, n, _ca, hi, false); src = _ca; if (n < 3) return false; }
-  for (i = 0; i < n; i++) {
-    var k = CAM.f / src[i * 3 + 2], x = CAM.cx + src[i * 3] * k, y = CAM.hy - src[i * 3 + 1] * k;
-    if (i) ctx.lineTo(x, y); else ctx.moveTo(x, y);
+    proj(pts[i * 3], pts[i * 3 + 1], pts[i * 3 + 2], PJ);
+    if (i) ctx.lineTo(PJ.x, PJ.y); else ctx.moveTo(PJ.x, PJ.y);
   }
   ctx.closePath();
-  return true;
+  return n >= 3;
 }
-// 선분 하나 (카메라 뒤로 넘어가는 쪽은 자른다)
 function traceSeg(x0, y0, z0, x1, y1, z1) {
-  var d0 = camDepth(x0, z0), d1 = camDepth(x1, z1);
-  if (d0 < NEAR && d1 < NEAR) return;
-  if (d0 < NEAR) { var t = (NEAR - d0) / (d1 - d0); x0 += (x1 - x0) * t; y0 += (y1 - y0) * t; z0 += (z1 - z0) * t; }
-  else if (d1 < NEAR) { var u = (NEAR - d1) / (d0 - d1); x1 += (x0 - x1) * u; y1 += (y0 - y1) * u; z1 += (z0 - z1) * u; }
   proj(x0, y0, z0, PJ2); proj(x1, y1, z1, PJ3);
   ctx.moveTo(PJ2.x, PJ2.y); ctx.lineTo(PJ3.x, PJ3.y);
 }
-// 두 원을 감싼 캡슐(끝이 가늘어지는 팔다리)
+// 두 원을 감싼 캡슐 (거치대·작은 것들)
 function capsule(ax, ay, ar, bx, by, br) {
   var dx = bx - ax, dy = by - ay, L = Math.sqrt(dx * dx + dy * dy);
   ctx.beginPath();
@@ -919,6 +893,18 @@ function capsule(ax, ay, ar, bx, by, br) {
   ctx.arc(ax, ay, ar, th + 1.5708 + ph, th + 4.7124 - ph);
   ctx.arc(bx, by, br, th - 1.5708 - ph, th + 1.5708 + ph);
   ctx.closePath();
+}
+// 점들을 부드럽게 잇는 닫힌 곡선 (Catmull-Rom 을 3차 베지어로). P: [x0,y0,x1,y1,…], 점 n 개
+function smoothClosed(g, P, n) {
+  g.beginPath();
+  g.moveTo(P[0], P[1]);
+  for (var i = 0; i < n; i++) {
+    var i0 = (i - 1 + n) % n, i2 = (i + 1) % n, i3 = (i + 2) % n;
+    var x1 = P[i * 2], y1 = P[i * 2 + 1], x2 = P[i2 * 2], y2 = P[i2 * 2 + 1];
+    g.bezierCurveTo(x1 + (x2 - P[i0 * 2]) / 6, y1 + (y2 - P[i0 * 2 + 1]) / 6,
+      x2 - (P[i3 * 2] - x1) / 6, y2 - (P[i3 * 2 + 1] - y1) / 6, x2, y2);
+  }
+  g.closePath();
 }
 
 // ── 색 ──
@@ -929,14 +915,15 @@ function css(c, k, a) {
   var r = Math.round(clamp(c[0] * k, 0, 255)), g = Math.round(clamp(c[1] * k, 0, 255)), b = Math.round(clamp(c[2] * k, 0, 255));
   return a === undefined || a >= 1 ? "rgb(" + r + "," + g + "," + b + ")" : "rgba(" + r + "," + g + "," + b + "," + a.toFixed(3) + ")";
 }
-// 빛: 화면 왼쪽 위에서. 팔다리를 가로지르는 그러데이션으로 둥글게 보이게 한다
-var LIGHT_X = -0.45, LIGHT_Y = -0.89;
+function mix(c, d, t) { return [c[0] + (d[0] - c[0]) * t, c[1] + (d[1] - c[1]) * t, c[2] + (d[2] - c[2]) * t]; }
+// 빛: 경기장 조명이라 위에서, 조금 왼쪽에서. 팔다리를 가로지르는 그러데이션으로 둥글게 보이게 한다
+var LIGHT_X = -0.4, LIGHT_Y = -0.92;
 function limbFill(ax, ay, bx, by, r, c, lo, hi, a) {
   var dx = bx - ax, dy = by - ay, L = Math.sqrt(dx * dx + dy * dy) || 1, px = -dy / L, py = dx / L;
   if (px * LIGHT_X + py * LIGHT_Y < 0) { px = -px; py = -py; }
   var mx = (ax + bx) / 2, my = (ay + by) / 2;
   var gr = ctx.createLinearGradient(mx + px * r, my + py * r, mx - px * r, my - py * r);
-  gr.addColorStop(0, css(c, hi, a)); gr.addColorStop(0.45, css(c, 1, a)); gr.addColorStop(1, css(c, lo, a));
+  gr.addColorStop(0, css(c, hi, a)); gr.addColorStop(0.5, css(c, 1, a)); gr.addColorStop(1, css(c, lo, a));
   return gr;
 }
 
@@ -948,224 +935,385 @@ var GLOW = (function () {
   g.fillStyle = gr; g.fillRect(0, 0, 64, 64);
   return c;
 })();
-// 빨간 빛 (샷 클락 바이얼레이션 등)
 var GLOW_RED = (function () {
   var c = mkCanvas(64, 64), g = c.getContext("2d"), gr = g.createRadialGradient(32, 32, 0, 32, 32, 32);
   gr.addColorStop(0, "rgba(255,90,70,1)"); gr.addColorStop(0.25, "rgba(255,40,30,.6)"); gr.addColorStop(1, "rgba(255,0,0,0)");
   g.fillStyle = gr; g.fillRect(0, 0, 64, 64);
   return c;
 })();
-// 발밑 그늘 한 장
 var SHADE = (function () {
   var c = mkCanvas(64, 64), g = c.getContext("2d"), gr = g.createRadialGradient(32, 32, 0, 32, 32, 32);
   gr.addColorStop(0, "rgba(0,0,0,1)"); gr.addColorStop(0.45, "rgba(0,0,0,.6)"); gr.addColorStop(1, "rgba(0,0,0,0)");
   g.fillStyle = gr; g.fillRect(0, 0, 64, 64);
   return c;
 })();
-// 바닥 위 둥근 그늘: 세계 반지름 rx(옆)·rz(깊이) 를 화면에 눌러 그린다
-function floorShade(x, z, rxm, rzm, a) {
+// 바닥 위 둥근 그늘: 가로(코트 길이 방향) 반지름 rl, 깊이 방향 반지름 rd (미터)
+function floorShade(x, z, rl, rd, a) {
   if (a <= 0.01) return;
-  var p = proj(x, 0, z);
-  if (p.d < NEAR + 0.2) return;
-  var w = rxm * p.k * 2, h = Math.max(1, rzm * p.k * (CAM.y / p.d) * 2);
+  var p = proj(x, 0, z), w = rl * CAM.s * 2, h = Math.max(1, rd * OB_Y * CAM.s * 2 + rl * CAM.s * 0.14);
   ctx.globalAlpha = clamp(a, 0, 1);
   ctx.drawImage(SHADE, p.x - w / 2, p.y - h / 2, w, h);
   ctx.globalAlpha = 1;
 }
+// 이미지 한 장을 세계의 평평한 사각형(모서리 P0, P0→P1 이 가로, P0→P2 가 세로)에 붙인다 (평행 투영이라 딱 맞는다)
+function drawDecal(img, x0, y0, z0, x1, y1, z1, x2, y2, z2, alpha, g) {
+  g = g || ctx;
+  var a = proj(x0, y0, z0, PJ), b = proj(x1, y1, z1, PJ2), c = proj(x2, y2, z2, PJ3);
+  var W = img.width, H = img.height;
+  g.save();
+  if (alpha !== undefined) g.globalAlpha = alpha;
+  g.transform((b.x - a.x) / W, (b.y - a.y) / W, (c.x - a.x) / H, (c.y - a.y) / H, a.x, a.y);
+  g.drawImage(img, 0, 0);
+  g.restore();
+}
 
 /* ══════════════════════════════════════════════════════════════
-   5-2. 경기장
+   5-2. 경기장: 코트 건너편 관중석 · 광고판 · 코트사이드 · 천장
+   관중석은 코트 건너편에 층층이 올라간다. 멀수록 작게(아래층 0.62배, 위층 0.45배) 그리고 카메라가 옆으로 움직일 때 덜
+   움직인다(시차). 관중은 카메라 쪽(코트)을 보고 앉은 사람이고, 미리 그려 둔 그림(앉음 · 일어나 팔 들기 · 손뼉) 한 장을
+   붙인다. 사람마다 체격·피부·머리 모양·옷(티셔츠·유니폼·후드·재킷)·앉은 자세(무릎에 손·팔짱·턱 괴기·음료·휴대폰)와
+   환호하는 모습(두 팔 번쩍·주먹·응원 문구·폼 손가락·촬영·수건)이 다르다
    ══════════════════════════════════════════════════════════════ */
-/* ── 관중석 ──
-   코트 가운데를 둘러싼 타원 사발. 아래층(맨 앞줄 0.9m 높이, 11m 뒤 10m), 스위트룸 띠, 위층(12.6m → 24m 뒤 25m).
-   화면 세로줄마다 카메라에서 수평 광선을 쏴 먼 쪽 관중석과 만나는 곳을 풀고, 미리 그려 둔 관중 그림 한 줄을
-   그 높이로 늘여 붙인다(레이캐스팅). 관중 그림은 좌석 96개 폭을 되풀이하고, 여섯 자리 한 무리씩 일어나 환호한다 */
-var BOWL = { zc: HALF_Z, b: 14, a: 22.5 };
-var LO = { o0: 0, o1: 11, y0: 0.9, y1: 10 }, FAS = { o: 11.6, y0: 10, yr: 10.75, y1: 12.6 }, UP = { o0: 12.4, o1: 24, y0: 12.6, y1: 25 };
-var SEAT_W = 0.56, TEX_SEATS = 96, SPX = 18, RPX = 20, ROWS_LO = 22, ROWS_UP = 23, GRP = 6;
-function reff(off) { var b = BOWL.b + off, a = BOWL.a + off; return Math.sqrt((a * a + b * b) / 2); }
-var CRW = null;
-// 관중 그림: 앉은 그림과 같은 사람이 일어나 팔 든 그림 두 벌. 앞줄이 그림 아래. 한 자리 18×20px
-function crowdTex(rows, seed, upper) {
-  var W = TEX_SEATS * SPX, H = rows * RPX, out = [mkCanvas(W, H), mkCanvas(W, H)];
-  var rs = seed;
+var FAN_W = 0.78, FAN_H = 2.2;                    // 한 칸 (미터)
+var FAN_V = 36;                                   // 사람 가짓수 (좌우 뒤집은 것까지 72)
+var FAN = null, CSF = null;
+var FAN_SHIRT = ["#f2f4f7", "#f2f4f7", "#f2f4f7", "#e6e9ee", "#1d4fd8", "#1d4fd8", "#1d4fd8", "#2459c9", "#15285c", "#15285c", "#0f1f4a",
+  "#e9a91c", "#f2b632", "#8a93a3", "#5b6270", "#1c1f26", "#26292f", "#5aa0f2", "#b3202b", "#c7ccd4", "#d9dde3", "#2c6e4f"];
+var FAN_SKIN = ["#f1c7a1", "#e8b98f", "#e0ac7e", "#c68b5f", "#a86f48", "#8d5a3b", "#6b4029", "#f3d2b5", "#d9a57a", "#b27850"];
+var FAN_HAIR = ["#15100c", "#1f1510", "#2b1d12", "#3d2a1a", "#5a3b22", "#7a5332", "#b88b56", "#d4b27a", "#8a8580", "#c9c5bf", "#0d0a08", "#1a1410"];
+var FAN_PANTS = ["#2e4a74", "#27324a", "#1f232b", "#3b4150", "#a58e6a", "#141619", "#4d5a6e", "#6d5a45"];
+var FAN_SHOE = ["#f4f5f7", "#f4f5f7", "#15171c", "#2b2f38", "#1d4fd8", "#b3202b", "#c7ccd4", "#e9a91c"];
+function fanPeople(seed, n) {
+  var rs = seed, P = [];
   function rnd() { rs = (rs * 16807) % 2147483647; return rs / 2147483647; }
   function pick(a) { return a[(rnd() * a.length) | 0]; }
-  // 홈 관중이 많아 흰색·파랑이 대부분, 금색 응원 티, 원정 빨강 조금
-  var SHIRT = ["#eef0f3", "#eef0f3", "#dfe3e8", "#1d4fd8", "#1d4fd8", "#2459c9", "#2d70f2", "#16307a", "#0f2560", "#e9a91c",
-    "#b3202b", "#2b2f38", "#3a3f4a", "#5b6270", "#15171d", "#7d8696", "#0e7fc9", "#c9ced6"];
-  var SKIN = ["#f1c7a1", "#e0ac7e", "#c68b5f", "#8d5a3b", "#5e3a24", "#f3d2b5", "#d9a57a", "#b27850"];
-  var HAIR = ["#1a1410", "#2b1d12", "#4a2f1b", "#6b4a2a", "#c9a36b", "#8a8580", "#0e0b09", "#1a1410", "#3a2616"];
-  var seat = upper ? "#15203c" : "#1a2a57", seatHi = upper ? "#22304f" : "#2a3d78", step = upper ? "#1e2433" : "#262d3f";
-  var P = [];
-  for (var r = 0; r < rows; r++) {
-    for (var k = 0; k < TEX_SEATS; k++) {
-      var sh = pick(SHIRT);
-      P.push({ occ: rnd() < (upper ? 0.9 : 0.95), shirt: sh, two: rnd() < 0.18 ? pick(SHIRT) : null, skin: pick(SKIN), hair: pick(HAIR),
-        bald: rnd() < 0.08, cap: rnd() < 0.13, capc: pick(["#1d4fd8", "#15171d", "#eef0f3", "#e9a91c", "#b3202b"]), long: rnd() < 0.3,
-        jx: (rnd() - 0.5) * 2.4, arms: rnd() < 0.72 ? 2 : 1, sign: rnd() < 0.035, phone: rnd() < 0.08, finger: rnd() < 0.05,
-        lean: (rnd() - 0.5) * 1.8, tall: rnd() * 2.2, kid: rnd() < 0.06 });
-    }
+  for (var i = 0; i < n; i++) {
+    var kid = rnd() < 0.07, woman = rnd() < 0.42;
+    var styles = woman ? ["long", "long", "long", "bun", "short", "curly", "cap"] : ["short", "short", "short", "buzz", "bald", "cap", "curly", "beanie"];
+    var shirt = pick(FAN_SHIRT), types = ["tee", "tee", "tee", "jersey", "hoodie", "jacket"];
+    P.push({
+      kid: kid, sc: kid ? 0.74 : 0.95 + rnd() * 0.1, bw: kid ? 0.95 : (woman ? 0.86 : 0.96) + rnd() * 0.24,
+      skin: pick(FAN_SKIN), hair: pick(FAN_HAIR), style: pick(styles), shirt: shirt, type: pick(types),
+      shirt2: pick(FAN_SHIRT), trim: pick(["#ffffff", "#1d4fd8", "#e9a91c", "#15285c"]), pants: pick(FAN_PANTS), shoe: pick(FAN_SHOE),
+      cap: pick(["#1d4fd8", "#15171d", "#f2f4f7", "#e9a91c", "#b3202b", "#15285c"]), glasses: rnd() < 0.14, beard: !woman && !kid && rnd() < 0.2,
+      tilt: (rnd() - 0.5) * 0.16, sit: (rnd() * 6) | 0, cheer: (rnd() * 7) | 0, no: pick(["7", "23", "11", "3", "34", "0"])
+    });
   }
-  function body(g, cx, top, w, h, c, c2) {
-    g.fillStyle = c;
-    g.beginPath();
-    g.moveTo(cx - w * 0.36, top); g.lineTo(cx + w * 0.36, top);
-    g.quadraticCurveTo(cx + w * 0.52, top + 0.5, cx + w * 0.52, top + 3);
-    g.lineTo(cx + w * 0.5, top + h); g.lineTo(cx - w * 0.5, top + h); g.lineTo(cx - w * 0.52, top + 3);
-    g.quadraticCurveTo(cx - w * 0.52, top + 0.5, cx - w * 0.36, top);
-    g.fill();
-    if (c2) { g.fillStyle = c2; g.fillRect(cx - w * 0.14, top + 1.2, w * 0.28, h - 1.2); }
-    g.fillStyle = "rgba(0,0,0,.24)"; g.fillRect(cx + w * 0.18, top + 1, w * 0.34, h - 1);
-    g.fillStyle = "rgba(255,255,255,.1)"; g.fillRect(cx - w * 0.5, top + 1.5, w * 0.2, h - 2);
-  }
-  out.forEach(function (c, v) {
-    var g = c.getContext("2d");
-    g.fillStyle = "#090d1a"; g.fillRect(0, 0, W, H);
-    g.lineCap = "round";
-    for (var r = rows - 1; r >= 0; r--) {                  // 뒷줄부터: 앞줄 사람이 뒷줄을 가린다
-      var y0 = H - (r + 1) * RPX;
-      g.fillStyle = "#0a1020"; g.fillRect(0, y0 + RPX - 4, W, 4);
-      for (var k = 0; k < TEX_SEATS; k++) {
-        var x0 = k * SPX, q = P[r * TEX_SEATS + k];
-        if (k % 24 === 0) {                                 // 계단 통로
-          g.fillStyle = step; g.fillRect(x0, y0, SPX, RPX);
-          g.fillStyle = "rgba(255,255,255,.06)"; g.fillRect(x0, y0 + RPX - 5, SPX, 1.5);
-          g.fillStyle = "rgba(255,210,120,.18)"; g.fillRect(x0 + 2, y0 + RPX - 3, SPX - 4, 1);
-          continue;
-        }
-        // 의자 등받이
-        g.fillStyle = seat; g.fillRect(x0 + 1.5, y0 + 8, SPX - 3, RPX - 10);
-        g.fillStyle = seatHi; g.fillRect(x0 + 1.5, y0 + 8, SPX - 3, 1.5);
-        if (!q.occ) continue;
-        var sc = q.kid ? 0.8 : 1, up = v ? 4 + q.tall : 0, cx = x0 + SPX / 2 + q.jx, hy = y0 + 6.5 - up + (q.kid ? 2 : 0);
-        var hr = 3.3 * sc;
-        if (v) {                                           // 일어나 팔을 든다
-          g.strokeStyle = q.shirt; g.lineWidth = 2.4 * sc;
-          g.beginPath();
-          g.moveTo(cx - 4 * sc, hy + 5); g.lineTo(cx - 5.6 * sc - q.lean, hy - 5);
-          if (q.arms > 1) { g.moveTo(cx + 4 * sc, hy + 5); g.lineTo(cx + 5.6 * sc - q.lean, hy - 5); }
-          g.stroke();
-          g.fillStyle = q.skin;
-          g.beginPath(); g.arc(cx - 5.8 * sc - q.lean, hy - 6.2, 1.5 * sc, 0, 6.2832); g.fill();
-          if (q.arms > 1) { g.beginPath(); g.arc(cx + 5.8 * sc - q.lean, hy - 6.2, 1.5 * sc, 0, 6.2832); g.fill(); }
-          if (q.sign) { g.fillStyle = "#f5f6f8"; g.fillRect(cx - 8, hy - 13, 16, 7); g.fillStyle = "#1d4fd8"; g.fillRect(cx - 6, hy - 11, 12, 2.5); }
-          else if (q.finger) { g.fillStyle = "#e9a91c"; g.fillRect(cx + 4 - q.lean, hy - 13, 3.5, 7); g.fillRect(cx + 4.6 - q.lean, hy - 16, 1.8, 3.5); }
-          else if (q.phone) { g.fillStyle = "#dbe9ff"; g.fillRect(cx + 4.2 - q.lean, hy - 11, 3, 4.6); }
-        }
-        body(g, cx, hy + hr + 0.4, 11 * sc, RPX - 5 + up * 0.7, q.shirt, q.two);
-        // 목·머리
-        g.fillStyle = q.skin; g.fillRect(cx - 1.1, hy + hr - 1, 2.2, 2);
-        g.beginPath(); g.ellipse(cx, hy, hr * 0.88, hr, 0, 0, 6.2832); g.fill();
-        g.fillStyle = "rgba(0,0,0,.18)"; g.beginPath(); g.ellipse(cx + hr * 0.3, hy + hr * 0.2, hr * 0.5, hr * 0.8, 0, 0, 6.2832); g.fill();
-        if (q.cap) {
-          g.fillStyle = q.capc; g.beginPath(); g.arc(cx, hy - 0.4, hr * 0.95, 3.14, 6.2832); g.fill();
-          g.fillRect(cx - hr * 1.3, hy - 0.8, hr * 1.2, 1.2);
-        } else if (!q.bald) {
-          g.fillStyle = q.hair; g.beginPath(); g.arc(cx, hy - 0.3, hr * 0.98, 3.25, 6.17); g.fill();
-          if (q.long) { g.fillRect(cx - hr * 0.95, hy - 0.5, 1.4, hr * 1.6); g.fillRect(cx + hr * 0.95 - 1.4, hy - 0.5, 1.4, hr * 1.6); }
-        }
-        if (v && !q.cap) { g.fillStyle = "rgba(40,10,8,.7)"; g.fillRect(cx - 0.8, hy + hr * 0.45, 1.6, 1.2); }
-      }
-    }
-    // 코트 조명이 닿는 앞줄은 밝고 뒷줄일수록, 위층은 한 번 더 어둡게
-    var gr = g.createLinearGradient(0, H, 0, 0);
-    gr.addColorStop(0, "rgba(3,5,12," + (upper ? 0.34 : 0.1) + ")"); gr.addColorStop(1, "rgba(3,5,12," + (upper ? 0.66 : 0.46) + ")");
-    g.fillStyle = gr; g.fillRect(0, 0, W, H);
-  });
-  return out;
+  // 응원 도구는 너무 많으면 어수선하다: 문구·폼 손가락·수건은 드물게
+  P.forEach(function (q) { if ((q.cheer === 2 || q.cheer === 3 || q.cheer === 5) && rnd() < 0.45) q.cheer = 0; });
+  return P;
 }
-// 스위트룸: 어두운 벽에 따뜻한 창
-function suiteTex() {
-  var W = 512, H = 48, c = mkCanvas(W, H), g = c.getContext("2d");
-  g.fillStyle = "#0b0f1a"; g.fillRect(0, 0, W, H);
-  for (var x = 0; x < W; x += 32) {
-    var on = (x / 32) % 5 !== 2;
-    var gr = g.createLinearGradient(0, 8, 0, 40);
-    gr.addColorStop(0, on ? "#ffcf8a" : "#26324a"); gr.addColorStop(1, on ? "#a05a22" : "#141b2b");
-    g.fillStyle = gr; g.fillRect(x + 3, 9, 26, 30);
-    if (on) { g.fillStyle = "rgba(40,20,10,.55)"; g.fillRect(x + 8, 24, 5, 15); g.fillRect(x + 18, 22, 5, 17); }
-    g.fillStyle = "#1c2438"; g.fillRect(x, 0, 3, H);
+// 한 사람 그리기. 단위 미터, y 는 위로, 원점은 두 발 가운데 바닥. pose 0 앉음, 1 반쯤 일어나 환호, 2 손뼉
+function drawFan(g, q, pose) {
+  g.save();
+  g.scale(q.sc, q.sc);
+  var up = pose === 1, clap = pose === 2, rise = up ? 0.3 : clap ? 0.1 : 0;
+  var sit = pose === 0 ? q.sit : -1, lean = sit === 3 ? 1 : 0;
+  var hipY = 0.5 + rise, shY = hipY + 0.53 - lean * 0.09, headY = shY + 0.215 - lean * 0.03;
+  var shW = 0.19 * q.bw, waW = 0.152 * q.bw, hx = q.tilt * 0.4;
+  var skinC = hexRgb(q.skin), skinD = css(skinC, 0.8), skinL = css(skinC, 1.07);
+  var shirtC = hexRgb(q.shirt), pantsC = hexRgb(q.pants);
+  var full = q.type === "hoodie" || q.type === "jacket", tee = q.type === "tee";
+  g.lineJoin = "round"; g.lineCap = "round";
+  function ell(x, y, rx, ry, c) { g.fillStyle = c; g.beginPath(); g.ellipse(x, y, rx, ry, 0, 0, 6.2832); g.fill(); }
+  function seg(x0, y0, x1, y1, w, c) { g.strokeStyle = c; g.lineWidth = w; g.beginPath(); g.moveTo(x0, y0); g.lineTo(x1, y1); g.stroke(); }
+  // 긴 머리·곱슬은 머리 뒤로 먼저
+  if (q.style === "long") {
+    g.fillStyle = q.hair; g.beginPath();
+    g.moveTo(hx - 0.1, headY + 0.03); g.quadraticCurveTo(hx - 0.13, shY - 0.02, hx - 0.1, shY - 0.1);
+    g.lineTo(hx + 0.1, shY - 0.1); g.quadraticCurveTo(hx + 0.13, shY - 0.02, hx + 0.1, headY + 0.03); g.closePath(); g.fill();
+  } else if (q.style === "curly") {
+    g.fillStyle = q.hair; g.beginPath();
+    for (var a = 0; a < 12; a++) { var an = a / 12 * 6.2832; g.moveTo(hx + Math.cos(an) * 0.1 + 0.035, headY + 0.035 + Math.sin(an) * 0.1); g.arc(hx + Math.cos(an) * 0.1, headY + 0.035 + Math.sin(an) * 0.1, 0.035, 0, 6.2832); }
+    g.fill(); ell(hx, headY + 0.035, 0.11, 0.11, q.hair);
   }
-  g.fillStyle = "#1a2236"; g.fillRect(0, 40, W, 8);
-  g.fillStyle = "rgba(255,255,255,.08)"; g.fillRect(0, 40, W, 1);
+  // 다리: 앉으면 무릎이 앞으로 나와 허벅지가 짧게 보인다
+  var kY = up ? 0.46 : 0.5, pc = css(pantsC), pcD = css(pantsC, 0.8);
+  [-1, 1].forEach(function (sg) {
+    var ax = sg * 0.125, kx = sg * (up ? 0.13 : 0.125 + (sit === 3 ? 0.02 : 0));
+    // 신발
+    ell(ax + sg * 0.005, 0.045, 0.068, 0.047, q.shoe);
+    g.fillStyle = "rgba(255,255,255,.85)"; g.fillRect(ax - 0.06, 0.0, 0.12, 0.018);
+    // 정강이
+    g.fillStyle = pcD; g.beginPath();
+    g.moveTo(ax - 0.048, 0.07); g.lineTo(kx - 0.055, kY); g.lineTo(kx + 0.055, kY); g.lineTo(ax + 0.048, 0.07); g.closePath(); g.fill();
+    if (up) {   // 반쯤 서면 허벅지가 보인다
+      g.fillStyle = pc; g.beginPath();
+      g.moveTo(kx - 0.06, kY - 0.02); g.lineTo(sg * 0.1 - 0.075, hipY + 0.02); g.lineTo(sg * 0.1 + 0.075, hipY + 0.02); g.lineTo(kx + 0.06, kY - 0.02); g.closePath(); g.fill();
+      ell(kx, kY, 0.062, 0.05, pc);
+    } else ell(kx, kY, 0.1, 0.075, pc);
+  });
+  if (!up) { g.fillStyle = pc; g.fillRect(-0.12, hipY - 0.06, 0.24, 0.1); }
+  // 팔 한 쪽: 어깨→팔꿈치→손. sleeve: 윗팔 소매 길이(0~1), 전체 소매면 2
+  var armC = full ? q.shirt : q.skin, sleeveW = 0.058, armW = 0.05;
+  function arm(sx, sy, ex, ey, hxp, hyp, fist) {
+    seg(sx, sy, ex, ey, armW * 2, full ? q.shirt : q.skin);
+    seg(ex, ey, hxp, hyp, armW * 1.75, full ? q.shirt : q.skin);
+    if (tee) seg(sx, sy, sx + (ex - sx) * 0.5, sy + (ey - sy) * 0.5, sleeveW * 2, q.shirt);
+    if (full) { g.strokeStyle = "rgba(0,0,0,.14)"; g.lineWidth = 0.012; g.beginPath(); g.moveTo(ex, ey); g.lineTo(hxp, hyp); g.stroke(); }
+    ell(hxp, hyp, fist ? 0.042 : 0.045, fist ? 0.042 : 0.055, q.skin);
+    if (!fist) ell(hxp, hyp + 0.035, 0.03, 0.03, q.skin);
+  }
+  // 몸통(셔츠)
+  function torso() {
+    var top = shY + 0.05;
+    g.beginPath();
+    g.moveTo(-waW, hipY - 0.03);
+    g.bezierCurveTo(-waW - 0.012, hipY + 0.2, -shW - 0.012, shY - 0.2, -shW, shY - 0.05);
+    g.quadraticCurveTo(-shW + 0.008, shY + 0.035, -shW + 0.075, top);
+    g.lineTo(-0.058, top + 0.012);
+    g.quadraticCurveTo(0, top - 0.035, 0.058, top + 0.012);
+    g.lineTo(shW - 0.075, top);
+    g.quadraticCurveTo(shW - 0.008, shY + 0.035, shW, shY - 0.05);
+    g.bezierCurveTo(shW + 0.012, shY - 0.2, waW + 0.012, hipY + 0.2, waW, hipY - 0.03);
+    g.closePath();
+  }
+  // 민소매 유니폼이면 어깨가 맨살
+  if (q.type === "jersey") { ell(-shW + 0.02, shY - 0.03, 0.06, 0.06, q.skin); ell(shW - 0.02, shY - 0.03, 0.06, 0.06, q.skin); }
+  torso();
+  var gr = g.createLinearGradient(0, shY + 0.05, 0, hipY);
+  gr.addColorStop(0, css(shirtC, 1.06)); gr.addColorStop(1, css(shirtC, 0.84));
+  g.fillStyle = gr; g.fill();
+  g.save(); g.clip();
+  g.fillStyle = "rgba(0,0,0,.16)"; g.fillRect(shW * 0.35, hipY - 0.1, shW, 0.8);                 // 오른쪽은 그늘
+  if (q.type === "jacket") { g.fillStyle = q.shirt2; g.fillRect(-0.05, hipY - 0.1, 0.1, 0.8); g.fillStyle = "rgba(0,0,0,.25)"; g.fillRect(-0.052, hipY - 0.1, 0.008, 0.8); g.fillRect(0.044, hipY - 0.1, 0.008, 0.8); }
+  if (q.type === "jersey") {                                                                        // 가슴 번호
+    g.strokeStyle = q.trim; g.lineWidth = 0.022;
+    g.beginPath(); g.moveTo(-0.04, shY - 0.13); g.lineTo(0.04, shY - 0.13); g.lineTo(-0.01, shY - 0.29); g.stroke();
+  }
+  g.restore();
+  if (q.type === "jersey") {                                                                        // 테두리
+    g.strokeStyle = q.trim; g.lineWidth = 0.016;
+    g.beginPath(); g.moveTo(-0.058, shY + 0.06); g.quadraticCurveTo(0, shY - 0.06, 0.058, shY + 0.06); g.stroke();
+  }
+  if (q.type === "hoodie") {                                                                        // 모자 깃·끈
+    ell(0, shY + 0.04, 0.12, 0.055, css(shirtC, 0.86));
+    seg(-0.03, shY + 0.01, -0.035, shY - 0.12, 0.01, "rgba(255,255,255,.7)"); seg(0.03, shY + 0.01, 0.035, shY - 0.12, 0.01, "rgba(255,255,255,.7)");
+  }
+  // 팔
+  var L = -1, R = 1, sx = shW - 0.035, sy = shY - 0.04;
+  if (up) {
+    switch (q.cheer) {
+      case 1:   // 주먹 한 번: 오른팔만 위로
+        arm(-sx, sy, -shW - 0.05, shY - 0.3, -0.13, hipY + 0.2, true);
+        arm(sx, sy, sx + 0.13, sy + 0.25, sx + 0.08, sy + 0.55, true); break;
+      case 2:   // 두 손으로 응원 문구
+        arm(-sx, sy, -sx - 0.12, sy + 0.2, -0.22, headY + 0.36, false); arm(sx, sy, sx + 0.12, sy + 0.2, 0.22, headY + 0.36, false);
+        g.fillStyle = "#f7f8fa"; g.fillRect(-0.3, headY + 0.3, 0.6, 0.3);
+        g.strokeStyle = q.trim === "#ffffff" ? "#1d4fd8" : q.trim; g.lineWidth = 0.02; g.strokeRect(-0.29, headY + 0.31, 0.58, 0.28);
+        g.fillStyle = "#1d4fd8"; g.fillRect(-0.22, headY + 0.47, 0.44, 0.06); g.fillStyle = "#e9a91c"; g.fillRect(-0.16, headY + 0.37, 0.32, 0.05);
+        break;
+      case 3:   // 폼 손가락
+        arm(-sx, sy, -shW - 0.08, shY - 0.2, -0.15, hipY + 0.28, true);
+        arm(sx, sy, sx + 0.1, sy + 0.24, sx + 0.07, sy + 0.5, true);
+        g.fillStyle = q.cap === "#15171d" ? "#e9a91c" : q.cap;
+        g.beginPath(); g.moveTo(sx - 0.03, sy + 0.47); g.lineTo(sx + 0.17, sy + 0.47); g.lineTo(sx + 0.17, sy + 0.66); g.lineTo(sx + 0.11, sy + 0.66);
+        g.lineTo(sx + 0.11, sy + 0.9); g.quadraticCurveTo(sx + 0.075, sy + 0.95, sx + 0.04, sy + 0.9); g.lineTo(sx + 0.04, sy + 0.66); g.lineTo(sx - 0.03, sy + 0.62); g.closePath(); g.fill();
+        g.fillStyle = "rgba(0,0,0,.18)"; g.fillRect(sx + 0.075, sy + 0.66, 0.035, 0.22);
+        break;
+      case 4:   // 휴대폰으로 찍기
+        arm(-sx, sy, -shW - 0.04, shY - 0.3, -0.12, hipY + 0.22, true);
+        arm(sx, sy, sx + 0.1, sy + 0.12, 0.12, headY + 0.2, false);
+        g.fillStyle = "#1b1e25"; g.fillRect(0.07, headY + 0.17, 0.09, 0.15); g.fillStyle = "#9fd0ff"; g.fillRect(0.1, headY + 0.29, 0.02, 0.02);
+        break;
+      case 5:   // 수건 돌리기
+        arm(-sx, sy, -sx - 0.1, sy + 0.22, -sx - 0.04, sy + 0.5, false);
+        arm(sx, sy, sx + 0.12, sy + 0.24, sx + 0.1, sy + 0.55, true);
+        g.fillStyle = q.shirt === "#f2f4f7" ? "#e9a91c" : "#f7f8fa"; g.beginPath();
+        g.moveTo(sx + 0.1, sy + 0.58); g.bezierCurveTo(sx + 0.3, sy + 0.72, sx + 0.35, sy + 0.5, sx + 0.52, sy + 0.62);
+        g.lineTo(sx + 0.48, sy + 0.44); g.bezierCurveTo(sx + 0.33, sy + 0.34, sx + 0.25, sy + 0.54, sx + 0.1, sy + 0.5); g.closePath(); g.fill();
+        break;
+      default:  // 두 팔 번쩍
+        arm(-sx, sy, -sx - 0.13, sy + 0.25, -sx - 0.16, sy + 0.54, false);
+        arm(sx, sy, sx + 0.13, sy + 0.25, sx + 0.16, sy + 0.54, false);
+    }
+  } else if (clap) {
+    arm(-sx, sy, -sx - 0.06, sy - 0.2, -0.02, sy - 0.06, false);
+    arm(sx, sy, sx + 0.06, sy - 0.2, 0.02, sy - 0.06, false);
+  } else {
+    switch (sit) {
+      case 1:   // 팔짱
+        arm(-sx, sy, -sx - 0.03, sy - 0.24, 0.1, sy - 0.22, true); arm(sx, sy, sx + 0.03, sy - 0.24, -0.1, sy - 0.26, true);
+        g.fillStyle = armC; g.fillRect(-0.15, sy - 0.29, 0.3, 0.08); break;
+      case 2:   // 손을 무릎 사이에
+        arm(-sx, sy, -sx - 0.02, sy - 0.27, -0.05, hipY + 0.02, true); arm(sx, sy, sx + 0.02, sy - 0.27, 0.05, hipY + 0.02, true); break;
+      case 3:   // 무릎에 팔꿈치, 두 손을 턱 아래
+        arm(-sx, sy, -0.13, hipY + 0.05, -0.035, headY - 0.13, true); arm(sx, sy, 0.13, hipY + 0.05, 0.035, headY - 0.13, true); break;
+      case 4:   // 음료
+        arm(-sx, sy, -sx - 0.02, sy - 0.27, -0.13, hipY + 0.02, true); arm(sx, sy, sx + 0.04, sy - 0.26, 0.15, hipY + 0.16, true);
+        g.fillStyle = q.cap === "#b3202b" ? "#b3202b" : "#f2f4f7"; g.beginPath(); g.moveTo(0.11, hipY + 0.13); g.lineTo(0.19, hipY + 0.13); g.lineTo(0.18, hipY + 0.28); g.lineTo(0.12, hipY + 0.28); g.closePath(); g.fill();
+        g.fillStyle = "#1d4fd8"; g.fillRect(0.118, hipY + 0.19, 0.064, 0.03); break;
+      case 5:   // 휴대폰 보기
+        arm(-sx, sy, -sx - 0.02, sy - 0.25, -0.03, hipY + 0.15, true); arm(sx, sy, sx + 0.02, sy - 0.25, 0.03, hipY + 0.15, true);
+        g.fillStyle = "#1b1e25"; g.fillRect(-0.045, hipY + 0.14, 0.09, 0.05); break;
+      default:  // 무릎에 손
+        arm(-sx, sy, -sx - 0.03, sy - 0.26, -0.13, hipY + 0.04, true); arm(sx, sy, sx + 0.03, sy - 0.26, 0.13, hipY + 0.04, true);
+    }
+  }
+  // 목·머리
+  g.save();
+  g.translate(0, shY); g.rotate(q.tilt); g.translate(0, -shY);
+  g.fillStyle = skinD; g.fillRect(hx - 0.045, shY - 0.01, 0.09, headY - shY - 0.02);
+  ell(hx - 0.084, headY - 0.005, 0.02, 0.032, skinD); ell(hx + 0.084, headY - 0.005, 0.02, 0.032, skinD);
+  g.beginPath(); g.ellipse(hx, headY, 0.083, 0.104, 0, 0, 6.2832);
+  var hg = g.createRadialGradient(hx - 0.03, headY + 0.04, 0.01, hx, headY, 0.12);
+  hg.addColorStop(0, skinL); hg.addColorStop(1, css(skinC, 0.82));
+  g.fillStyle = hg; g.fill();
+  // 얼굴: 눈·눈썹·코·입
+  var face = sit === 5 ? -0.02 : 0;
+  ell(hx - 0.031, headY + 0.006 + face, 0.012, 0.0085, "#2a1c14"); ell(hx + 0.031, headY + 0.006 + face, 0.012, 0.0085, "#2a1c14");
+  seg(hx - 0.048, headY + 0.034, hx - 0.018, headY + 0.038, 0.011, "rgba(40,26,18,.75)");
+  seg(hx + 0.018, headY + 0.038, hx + 0.048, headY + 0.034, 0.011, "rgba(40,26,18,.75)");
+  seg(hx + 0.004, headY - 0.004, hx + 0.008, headY - 0.03, 0.01, css(skinC, 0.72));
+  if (up || clap) ell(hx, headY - 0.056, 0.022, 0.02, "#4a1612");
+  else seg(hx - 0.02, headY - 0.055, hx + 0.02, headY - 0.055, 0.009, css(skinC, 0.55));
+  if (q.glasses) {
+    g.strokeStyle = "rgba(20,20,24,.85)"; g.lineWidth = 0.008;
+    g.strokeRect(hx - 0.052, headY - 0.01, 0.042, 0.032); g.strokeRect(hx + 0.01, headY - 0.01, 0.042, 0.032);
+    seg(hx - 0.01, headY + 0.008, hx + 0.01, headY + 0.008, 0.007, "rgba(20,20,24,.85)");
+  }
+  if (q.beard) {
+    g.fillStyle = q.hair; g.globalAlpha = 0.85; g.beginPath();
+    g.moveTo(hx - 0.082, headY - 0.005); g.quadraticCurveTo(hx - 0.07, headY - 0.1, hx, headY - 0.106);
+    g.quadraticCurveTo(hx + 0.07, headY - 0.1, hx + 0.082, headY - 0.005); g.lineTo(hx + 0.06, headY - 0.03);
+    g.quadraticCurveTo(hx, headY - 0.02, hx - 0.06, headY - 0.03); g.closePath(); g.fill();
+    g.globalAlpha = 1;
+    if (up || clap) ell(hx, headY - 0.056, 0.022, 0.02, "#4a1612");
+  }
+  // 머리카락·모자
+  function crown(c, hl) {
+    g.fillStyle = c; g.beginPath();
+    g.moveTo(hx - 0.087, headY + 0.005);
+    g.bezierCurveTo(hx - 0.095, headY + 0.1, hx - 0.05, headY + 0.126, hx, headY + 0.126);
+    g.bezierCurveTo(hx + 0.05, headY + 0.126, hx + 0.095, headY + 0.1, hx + 0.087, headY + 0.005);
+    g.quadraticCurveTo(hx + 0.08, headY + hl + 0.012, hx + 0.05, headY + hl);
+    g.quadraticCurveTo(hx, headY + hl + 0.022, hx - 0.05, headY + hl);
+    g.quadraticCurveTo(hx - 0.08, headY + hl + 0.012, hx - 0.087, headY + 0.005);
+    g.closePath(); g.fill();
+  }
+  switch (q.style) {
+    case "short": crown(q.hair, 0.05); break;
+    case "buzz": g.globalAlpha = 0.7; crown(q.hair, 0.06); g.globalAlpha = 1; break;
+    case "long": crown(q.hair, 0.045); g.fillStyle = q.hair; g.fillRect(hx - 0.092, headY - 0.06, 0.025, 0.08); g.fillRect(hx + 0.067, headY - 0.06, 0.025, 0.08); break;
+    case "bun": crown(q.hair, 0.052); ell(hx, headY + 0.135, 0.042, 0.038, q.hair); break;
+    case "curly": crown(q.hair, 0.055); break;
+    case "bald": ell(hx - 0.02, headY + 0.07, 0.035, 0.018, "rgba(255,255,255,.18)"); break;
+    case "cap":
+      crown(q.cap, 0.04);
+      g.fillStyle = css(hexRgb(q.cap), 0.78); g.beginPath(); g.ellipse(hx, headY + 0.045, 0.108, 0.022, 0, 0, 6.2832); g.fill();
+      ell(hx, headY + 0.09, 0.012, 0.012, "rgba(255,255,255,.85)"); break;
+    case "beanie":
+      crown(q.cap, 0.035); g.fillStyle = css(hexRgb(q.cap), 1.15); g.fillRect(hx - 0.09, headY + 0.03, 0.18, 0.03); break;
+  }
+  g.restore();
+  g.restore();
+}
+function fanAtlas(ppm, n, seed, flips) {
+  var W = Math.ceil(FAN_W * ppm), H = Math.ceil(FAN_H * ppm), P = fanPeople(seed, n), rowsN = flips ? 6 : 3;
+  var c = mkCanvas(W * n, H * rowsN), g = c.getContext("2d");
+  for (var v = 0; v < n; v++) for (var r = 0; r < rowsN; r++) {
+    g.save();
+    g.translate(v * W + W / 2, (r + 1) * H);
+    g.scale(r >= 3 ? -ppm : ppm, -ppm);
+    drawFan(g, P[v], r % 3);
+    g.restore();
+  }
+  return { cv: c, W: W, H: H, n: n, ppm: ppm, P: P };
+}
+
+/* ── 관중석 층 ──
+   f: 크기 배율(시차도 같은 배율), pitch: 줄 사이 화면 높이(미터), seat: 좌석 폭, aisle: 몇 좌석마다 계단 */
+var BOWL_LO = { f: 0.62, rows: 19, pitch: 0.43, seat: 0.52, aisle: 23, occ: 0.96, id: 0 };
+var BOWL_UP = { f: 0.45, rows: 20, pitch: 0.4, seat: 0.52, aisle: 23, occ: 0.92, id: 1 };
+var AD_X = -10.3, AD_H = 0.9, CS_X = -9.25, CS_SEAT = 0.66, CS_F = 0.8;
+var STAND = { yLo: 0, yF0: 0, yF1: 0, yUp: 0, yTop: 0 };
+function seatHash(k, r, id) {
+  var h = (k * 374761393 + r * 668265263 + id * 2147483647) | 0;
+  h = Math.imul(h ^ (h >>> 13), 1274126177);
+  return ((h ^ (h >>> 16)) >>> 0) / 4294967296;
+}
+function cheerGroup(k, r, id) { return ((Math.floor(k / 5) * 53 + Math.floor(r / 2) * 97 + id * 31) % 256 + 256) % 256; }
+// 좌석 줄 무늬 한 칸: 등받이와 앉는 판
+function seatTile(ppm, col, hi) {
+  var w = Math.round(BOWL_LO.seat * ppm), h = Math.round(0.56 * ppm), c = mkCanvas(w, h), g = c.getContext("2d");
+  g.fillStyle = col; g.beginPath();
+  g.moveTo(w * 0.12, h); g.lineTo(w * 0.1, h * 0.28); g.quadraticCurveTo(w * 0.1, h * 0.08, w * 0.3, h * 0.07);
+  g.lineTo(w * 0.7, h * 0.07); g.quadraticCurveTo(w * 0.9, h * 0.08, w * 0.9, h * 0.28); g.lineTo(w * 0.88, h); g.closePath(); g.fill();
+  g.fillStyle = hi; g.fillRect(w * 0.16, h * 0.1, w * 0.68, Math.max(1, h * 0.05));
+  g.fillStyle = "rgba(0,0,0,.35)"; g.fillRect(w * 0.1, h * 0.72, w * 0.8, h * 0.28);
   return c;
 }
-// 코트사이드: 코트 바로 밖 바닥에 의자 두 줄. 한 칸 26px = 0.62m, 그림 높이 60px = 1.8m (앉은 사람 머리 1.3m)
-var CS_W = 26, CS_H = 60, CS_SEAT = 0.62, CS_N = 96;
-function courtsideTex(seed) {
-  var W = CS_N * CS_W, H = CS_H, out = [mkCanvas(W, H), mkCanvas(W, H)], rs = seed;
-  function rnd() { rs = (rs * 16807) % 2147483647; return rs / 2147483647; }
-  var SHIRT = ["#f5f6f8", "#1d4fd8", "#15171d", "#2d70f2", "#b3202b", "#e9ecef", "#3a3f4a", "#ffb020", "#0f2560", "#7a8391"];
-  var SKIN = ["#f1c7a1", "#e0ac7e", "#c68b5f", "#8d5a3b", "#5e3a24", "#f3d2b5"];
-  var HAIR = ["#1a1410", "#2b1d12", "#4a2f1b", "#c9a36b", "#8a8580", "#0e0b09"];
-  var P = [];
-  for (var k = 0; k < CS_N; k++) P.push({ occ: rnd() < 0.88, shirt: SHIRT[(rnd() * SHIRT.length) | 0], pants: rnd() < 0.7 ? "#1b1f2a" : "#3b4150",
-    skin: SKIN[(rnd() * SKIN.length) | 0], hair: HAIR[(rnd() * HAIR.length) | 0], bald: rnd() < 0.1, jx: (rnd() - 0.5) * 3, arms: rnd() < 0.7 ? 2 : 1,
-    phone: rnd() < 0.12 });
-  out.forEach(function (c, v) {
-    var g = c.getContext("2d");
-    for (var k = 0; k < CS_N; k++) {
-      var x0 = k * CS_W, q = P[k], cx = x0 + 13 + q.jx;
-      // 의자: 검은 등받이와 다리
-      g.fillStyle = "#15171d"; g.fillRect(x0 + 5, 22, 16, 17); g.fillRect(x0 + 6, 38, 2, 22); g.fillRect(x0 + 18, 38, 2, 22);
-      g.fillStyle = "#23262f"; g.fillRect(x0 + 4, 37, 18, 3);
-      if (!q.occ) continue;
-      var up = v ? 1 : 0, ty = up ? 8 : 20;
-      // 다리: 앉으면 무릎이 앞으로 굽어 아래로, 서면 곧게
-      g.fillStyle = q.pants;
-      if (up) { g.fillRect(cx - 5, 36, 4, 23); g.fillRect(cx + 1, 36, 4, 23); }
-      else { g.fillRect(cx - 6, 36, 12, 5); g.fillRect(cx - 6, 40, 4, 19); g.fillRect(cx + 2, 40, 4, 19); }
-      g.fillStyle = "#0b0c10"; g.fillRect(cx - 7, 58, 6, 2); g.fillRect(cx + 1, 58, 6, 2);
-      // 몸통·팔
-      g.fillStyle = q.shirt; g.fillRect(cx - 7, ty + 6, 14, 38 - ty - 6 + (up ? 0 : 0));
-      g.fillStyle = "rgba(0,0,0,.2)"; g.fillRect(cx + 3, ty + 6, 4, 38 - ty - 6);
-      g.strokeStyle = q.shirt; g.lineWidth = 3; g.lineCap = "round"; g.beginPath();
-      if (up) { g.moveTo(cx - 6, ty + 8); g.lineTo(cx - 9, ty - 6); if (q.arms > 1) { g.moveTo(cx + 6, ty + 8); g.lineTo(cx + 9, ty - 6); } }
-      else { g.moveTo(cx - 6, ty + 8); g.lineTo(cx - 4, 34); g.moveTo(cx + 6, ty + 8); g.lineTo(cx + 5, 34); }
-      g.stroke();
-      g.fillStyle = q.skin;
-      if (up) { g.fillRect(cx - 11, ty - 9, 4, 4); if (q.arms > 1) g.fillRect(cx + 7, ty - 9, 4, 4); if (q.phone) { g.fillStyle = "#e8f3ff"; g.fillRect(cx + 6, ty - 14, 5, 7); } }
-      // 머리
-      g.fillStyle = q.skin; g.beginPath(); g.arc(cx, ty + 1, 4.2, 0, 6.2832); g.fill();
-      if (!q.bald) { g.fillStyle = q.hair; g.beginPath(); g.arc(cx, ty + 0.2, 4.3, 3.3, 6.12); g.fill(); }
-    }
-  });
-  return out;
-}
-function crowdBuild() {
-  var lo = crowdTex(ROWS_LO, 1234567, false), up = crowdTex(ROWS_UP, 7654321, true);
-  CRW = { lo: lo, up: up, suite: suiteTex(), cs: [courtsideTex(424242), courtsideTex(97531)] };
-}
-// 코트사이드 두 줄 (바닥 위에 있는 사람이라 바닥 다음에 그린다). 옆줄에서 2.4m·1.6m 밖, 먼 줄부터
-var CS_ROWS = [-3.95, -4.75];
-function drawCourtside() {
-  if (!CRW) return;
-  var n = clamp(Math.round(VW / (VW > 700 ? 6 : 4)), 60, 200), cw = VW / n, f = CAM.f, hy = CAM.hy, cy = CAM.y, TW = CS_N * CS_W;
-  for (var r = 0; r < 2; r++) {
-    var off = CS_ROWS[r], R = reff(off), img = CRW.cs[r];
-    var uPrev = NaN;
-    for (var i = 0; i <= n; i++) {
-      var a = (i * cw - CAM.cx) / f, dx = CAM.fx + CAM.rx * a, dz = CAM.fz + CAM.rz * a, t = farRoot(dx, dz, off);
-      var u = NaN, hx, hz;
-      if (t > 0.5) { hx = CAM.x + dx * t; hz = CAM.z + dz * t; u = Math.atan2((hz - BOWL.zc) / (BOWL.a + off), hx / (BOWL.b + off)) * R / CS_SEAT; }
-      if (i > 0 && u === u && uPrev === uPrev && t > 0.5) {
-        var am = ((i - 0.5) * cw - CAM.cx) / f, tm = farRoot(CAM.fx + CAM.rx * am, CAM.fz + CAM.rz * am, off);
-        if (tm > 0.5) {
-          var gi = (Math.floor((uPrev + u) / 2 / GRP) % 256 + 256) % 256, cheer = CH.up[gi] > 0.5 ? 1 : 0;
-          var yt = hy - (1.8 - cy) * f / tm, yb = hy - (0 - cy) * f / tm;
-          var sx = ((uPrev * CS_W) % TW + TW) % TW, sw = clamp(Math.abs(u - uPrev) * CS_W, 1, TW - sx);
-          ctx.drawImage(img[cheer], sx, 0, sw, CS_H, (i - 1) * cw, yt - CH.j[gi] * f / tm, cw + 0.6, yb - yt);
-        }
-      }
-      uPrev = u;
+// 위층은 멀고 어두워 통째로 한 장에 구워 두고 옆으로 되풀이한다
+var UP_TILE = null, UP_PPM = 40, UP_SEATS = 42;
+function upperBake() {
+  var B = BOWL_UP, ppm = UP_PPM, W = Math.round(UP_SEATS * B.seat * ppm), Hrow = B.pitch * ppm, H = Math.round(B.rows * Hrow + FAN_H * ppm * 0.7);
+  var c = mkCanvas(W, H), g = c.getContext("2d"), sw = B.seat * ppm, tile = seatTile(ppm, "#172a5c", "#23397a");
+  g.fillStyle = "#0a0f1e"; g.fillRect(0, 0, W, H);
+  for (var r = B.rows - 1; r >= 0; r--) {
+    var yf = H - r * Hrow;
+    g.fillStyle = "#0d1426"; g.fillRect(0, yf - 0.06 * ppm, W, 0.06 * ppm);
+    for (var k = 0; k < UP_SEATS; k++) {
+      var x = k * sw;
+      if (k % B.aisle === 0) { g.fillStyle = "#1a2033"; g.fillRect(x, yf - Hrow, sw, Hrow); g.fillStyle = "rgba(255,220,150,.16)"; g.fillRect(x + sw * 0.15, yf - 2, sw * 0.7, 1.5); continue; }
+      g.drawImage(tile, x, yf - 0.9 * ppm, sw, 0.56 * ppm);
+      var h = seatHash(k, r, 9);
+      if (h > B.occ) continue;
+      var v = (seatHash(k, r, 7) * FAN.n) | 0, flip = seatHash(k, r, 5) < 0.5 ? 3 : 0, pose = seatHash(k, r, 3) < 0.05 ? 1 : 0;
+      g.drawImage(FAN.cv, v * FAN.W, (pose + flip) * FAN.H, FAN.W, FAN.H, x + sw / 2 - FAN_W * ppm / 2 + (h - 0.5) * 0.08 * ppm, yf - FAN_H * ppm, FAN_W * ppm, FAN_H * ppm);
     }
   }
+  var gr = g.createLinearGradient(0, H, 0, 0);
+  gr.addColorStop(0, "rgba(4,7,16,.5)"); gr.addColorStop(1, "rgba(4,7,16,.78)");
+  g.fillStyle = gr; g.fillRect(0, 0, W, H);
+  UP_TILE = { cv: c, W: W, H: H };
+}
+// 아래층도 앉은 모습은 한 장에 구워 두고(46좌석 = 계단 두 칸 주기라 이어 붙여도 이음새가 없다), 일어난 사람만 그 위에 따로 그린다
+var LO_TILE = null, LO_PPM = 64, LO_SEATS = 46;
+function lowerBake() {
+  var B = BOWL_LO, ppm = LO_PPM, sw = B.seat * ppm, Hrow = B.pitch * ppm;
+  var W = Math.round(LO_SEATS * sw), H = Math.round((B.rows - 1) * Hrow + (FAN_H + 0.12) * ppm), yF = H - 0.04 * ppm;
+  var c = mkCanvas(W, H), g = c.getContext("2d"), seat = seatTile(ppm, "#1c3f96", "#3158b8");
+  g.fillStyle = "#0b1122"; g.fillRect(0, 0, W, H);
+  for (var r = B.rows - 1; r >= 0; r--) {
+    var yf = yF - r * Hrow;
+    g.fillStyle = "#121a30"; g.fillRect(0, yf - 0.05 * ppm, W, 0.05 * ppm);
+    for (var k = 0; k < LO_SEATS; k++) {
+      var x = k * sw;
+      if (k % B.aisle === 0) {                                     // 계단 통로
+        g.fillStyle = "#1a2135"; g.fillRect(x, yf - 0.95 * ppm, sw, 0.95 * ppm);
+        g.fillStyle = "rgba(255,220,150,.22)"; g.fillRect(x + sw * 0.1, yf - 0.03 * ppm, sw * 0.8, 0.03 * ppm);
+        continue;
+      }
+      g.drawImage(seat, x, yf - 0.9 * ppm, sw, 0.56 * ppm);
+      var h = seatHash(k, r, 1);
+      if (h > B.occ) continue;
+      var v = (seatHash(k, r, 2) * FAN.n) | 0, flip = seatHash(k, r, 3) < 0.5 ? 3 : 0, z = 0.95 + seatHash(k, r, 6) * 0.1;
+      g.drawImage(FAN.cv, v * FAN.W, flip * FAN.H, FAN.W, FAN.H,
+        x + sw / 2 - FAN_W * ppm * z / 2 + (h - 0.5) * 0.12 * ppm, yf - FAN_H * ppm * z, FAN_W * ppm * z, FAN_H * ppm * z);
+    }
+  }
+  LO_TILE = { cv: c, W: W, H: H, yF: yF };
+}
+var CS_CHAIR = null;
+function crowdBuild() {
+  FAN = fanAtlas(72, FAN_V, 24681, true);
+  CSF = fanAtlas(150, 16, 97531, false);
+  lowerBake();
+  upperBake();
+  CS_CHAIR = (function () {
+    var ppm = 150, w = Math.round(0.56 * ppm), h = Math.round(0.95 * ppm), c = mkCanvas(w, h), g = c.getContext("2d");
+    g.fillStyle = "#16181e"; g.beginPath(); g.moveTo(w * 0.08, h * 0.55); g.lineTo(w * 0.1, h * 0.06); g.quadraticCurveTo(w * 0.5, 0, w * 0.9, h * 0.06);
+    g.lineTo(w * 0.92, h * 0.55); g.closePath(); g.fill();
+    g.fillStyle = "#23262f"; g.fillRect(w * 0.12, h * 0.1, w * 0.76, h * 0.05);
+    g.fillStyle = "#101216"; g.fillRect(w * 0.14, h * 0.55, w * 0.06, h * 0.45); g.fillRect(w * 0.8, h * 0.55, w * 0.06, h * 0.45);
+    g.fillStyle = "#1c1f27"; g.fillRect(w * 0.06, h * 0.5, w * 0.88, h * 0.08);
+    return c;
+  })();
 }
 
 // 환호: 256 무리마다 일어남(up)·뛰는 높이(j)
 var CH = { on: new Uint8Array(256), t: new Float32Array(256), n: new Uint8Array(256), h: new Float32Array(256),
-  up: new Float32Array(256), j: new Float32Array(256), arms: new Uint8Array(256), act: 0 };
+  up: new Float32Array(256), j: new Float32Array(256), act: 0 };
 // 골 크기에 따라 일어나는 무리 수와 뛰는 횟수가 다르다 (1 보통 골, 2 멋진 골, 3 끝내기)
 function crowdReact(level) {
   var share = level >= 3 ? 1 : level === 2 ? 0.75 : 0.45;
@@ -1191,32 +1339,37 @@ function crowdStep(dt) {
   }
 }
 
-// 관중석 카메라 플래시: 관중석 여기저기에서 번쩍
+// 관중석 카메라 플래시: 아래층·위층 여기저기에서 번쩍
 var flashQ = [], FLASH = [];
-function bowlPoint(th, v, o) {
-  var off = LO.o0 + (LO.o1 - LO.o0) * v, b = BOWL.b + off, a = BOWL.a + off;
-  o.x = b * Math.cos(th); o.z = BOWL.zc + a * Math.sin(th); o.y = LO.y0 + (LO.y1 - LO.y0) * v + 1.1;
-  return o;
-}
 function cameraFlashes(n, spread) {
   for (var i = 0; i < n; i++) {
-    var f = { t: vr() * spread, x: 0, y: 0, z: 0 };
-    bowlPoint(vr() * Math.PI * 2, vr(), f);
-    flashQ.push(f);
+    var up = vr() < 0.45, B = up ? BOWL_UP : BOWL_LO, span = VW / Math.max(1, CAM.s * B.f);
+    flashQ.push({ t: vr() * spread, b: up ? 1 : 0, u: CAM.X + (vr() - 0.5) * span, r: vr() * (B.rows - 1) });
   }
 }
 function flashStep(dt) {
   for (var i = flashQ.length - 1; i >= 0; i--) {
     var f = flashQ[i];
     f.t -= dt;
-    if (f.t <= 0) { FLASH.push({ x: f.x, y: f.y, z: f.z, life: 0.09 }); flashQ.splice(i, 1); }
+    if (f.t <= 0) { FLASH.push({ b: f.b, u: f.u, r: f.r, life: 0.09 }); flashQ.splice(i, 1); }
   }
   for (i = FLASH.length - 1; i >= 0; i--) { FLASH[i].life -= dt; if (FLASH[i].life <= 0) FLASH.splice(i, 1); }
 }
+function drawFlashes() {
+  if (!FLASH.length) return;
+  ctx.globalCompositeOperation = "lighter";
+  for (var i = 0; i < FLASH.length; i++) {
+    var F = FLASH[i], B = F.b ? BOWL_UP : BOWL_LO, L = CAM.s * B.f;
+    var x = CAM.cx + (F.u - CAM.X) * L, y = (F.b ? STAND.yUp : STAND.yLo) - F.r * B.pitch * L - 1.1 * L;
+    var s = Math.max(4, 0.55 * L) * (0.6 + F.life / 0.09 * 0.6);
+    ctx.globalAlpha = clamp(F.life / 0.09, 0, 1);
+    ctx.drawImage(GLOW, x - s, y - s, s * 2, s * 2);
+  }
+  ctx.globalAlpha = 1; ctx.globalCompositeOperation = "source-over";
+}
 
-/* ── LED 띠 (관중석 맨 앞 광고판, 스위트룸 아래) ── */
+/* ── LED 띠 (코트사이드 광고판·층 사이 띠) ── */
 var RIB_W = 2048, RIB_H = 64, ribCv = mkCanvas(RIB_W, RIB_H), ribG = ribCv.getContext("2d");
-var RIB_PPM = 60;             // 1m 에 60px (글씨 한 벌 512px ≈ 8.5m)
 var rib = { word: "", t: 0 };
 function ribDraw(word, color) {
   var g = ribG;
@@ -1240,8 +1393,15 @@ function ribDraw(word, color) {
 }
 function ribFlash(word, color, dur) { rib.word = word; rib.t = dur || 2; ribDraw(word, color); BG.ver++; }
 ribDraw("");
+// 띠를 화면 가로로 늘어놓는다: 세계 가로 u0(미터)에서 시작하는 무늬를, 1m 가 L px 인 배율로 x0..x1 에 높이 h
+function ribBand(u0, L, x0, x1, y, h) {
+  var ppm = RIB_H / h * L, per = RIB_W / ppm * L;          // 무늬 한 벌의 화면 폭
+  var start = CAM.cx + (u0 - CAM.X) * L;
+  var k0 = Math.floor((x0 - start) / per);
+  for (var k = k0; start + k * per < x1; k++) ctx.drawImage(ribCv, start + k * per, y, per + 0.5, h);
+}
 
-/* ── 전광판(코트 가운데 위에 매단 네 면 화면): 점수·스테이지·남은 공(시간)을 띄우고, 골이 나면 글씨가 번쩍인다 ── */
+/* ── 전광판: 점수·스테이지·남은 공(시간)을 띄우고, 골이 나면 글씨가 번쩍인다 ── */
 var LED_W = 1024, LED_H = 304;
 var ledCv = mkCanvas(LED_W, LED_H), ledG = ledCv.getContext("2d");
 var LED_FONT = "'Black Han Sans','Apple SD Gothic Neo','Malgun Gothic',sans-serif";
@@ -1261,6 +1421,7 @@ function ledFont(g, text, size, maxW, face) {
   var w = g.measureText(text).width;
   if (w > maxW) { size = Math.floor(size * maxW / w); g.font = "800 " + size + "px " + face; }
 }
+var JUMBO = { vis: false };
 function ledStep(dt) {
   if (led.dur > 0) { led.t += dt; if (led.t >= led.dur) { led.dur = 0; led.key = ""; } }
   var key;
@@ -1313,7 +1474,7 @@ function ledDraw() {
 }
 if (document.fonts && document.fonts.load) document.fonts.load("80px 'Black Han Sans'", "골0").then(function () { led.key = ""; }, function () {});
 
-/* ── 샷 클락: 백보드 위 네 면 상자. 빨간 7세그먼트 숫자(24초), 0이 되면 백보드 테두리 등이 빨갛게 켜진다 ── */
+/* ── 샷 클락: 백보드 위 상자. 빨간 7세그먼트 숫자(24초), 0이 되면 백보드 테두리 등이 빨갛게 켜진다 ── */
 var SHOT_CLOCK = 24;
 var SC_W = 256, SC_H = 144, scCv = mkCanvas(SC_W, SC_H), scG = scCv.getContext("2d"), scKey = "";
 var SEG7 = { "0": "abcdef", "1": "bc", "2": "abdeg", "3": "abcdg", "4": "bcfg", "5": "acdfg", "6": "acdefg", "7": "abc",
@@ -1353,153 +1514,176 @@ var lamp = { t: 0, on: false };
 function lampSet(on) { lamp.on = on; }
 function lampFx(dur) { lamp.t = dur; lampSet(true); }
 
-/* ── 그림 그리기: 하늘(천장) · 조명 · 관중석 · 전광판 ── */
-var LIGHTS = (function () {
-  var L = [];
-  for (var x = -10; x <= 10; x += 5) for (var z = -8; z <= 34; z += 3.5) L.push([x, 27, z]);
-  return L;
-})();
+/* ── 배경 그리기 ──
+   위에서부터: 천장(조명 줄·우승 깃발·전광판) → 위층 → 층 사이 띠(스위트룸·LED) → 아래층(뒷줄부터) → 코트 → 광고판 → 코트사이드 */
+var BANNERS = [["7", "RICHRORO"], ["2024", "CHAMPIONS"], ["23", "PARK"], ["2019", "CHAMPIONS"], ["11", "KANG"]];
 function drawBackdrop() {
-  // 천장(어둡게). 수평선 아래는 카메라 가까운 쪽 바닥 (가까운 관중석은 그리지 않는다. 관중석·바닥이 거의 다 덮는다)
-  var hy = clamp(CAM.hy, 0, VH);
-  ctx.fillStyle = "#04060e"; ctx.fillRect(0, 0, VW, hy);
-  if (hy < VH) { ctx.fillStyle = "#0f1a36"; ctx.fillRect(0, hy, VW, VH - hy); }
-  // 천장 조명: 코트 위 높이 27m 격자
-  ctx.globalCompositeOperation = "lighter";
-  for (var i = 0; i < LIGHTS.length; i++) {
-    var L = LIGHTS[i], p = proj(L[0], L[1], L[2]);
-    if (p.d < 2 || p.y < -40 || p.y > VH) continue;
-    var s = Math.max(3, 1.6 * p.k);
-    if (p.x < -s || p.x > VW + s) continue;
-    ctx.globalAlpha = 0.75;
-    ctx.drawImage(GLOW, p.x - s, p.y - s, s * 2, s * 2);
-  }
-  ctx.globalAlpha = 1;
-  ctx.globalCompositeOperation = "source-over";
+  var s = CAM.s;
+  // 줄 높이 자리 (화면 y). 광고판 윗면에 아래층 첫 줄 바닥이 걸린다
+  var yAd = proj(AD_X, 0, 0).y - AD_H * s * CS_F, Llo = s * BOWL_LO.f, Lup = s * BOWL_UP.f;
+  STAND.yLo = yAd + 0.25 * Llo;
+  var yLoTop = STAND.yLo - (BOWL_LO.rows - 1) * BOWL_LO.pitch * Llo - 0.9 * Llo;
+  STAND.yF0 = yLoTop;
+  var Lf = s * 0.5;
+  STAND.yF1 = yLoTop - 1.45 * Lf;
+  STAND.yUp = STAND.yF1 + 0.2 * Lup;
+  STAND.yTop = STAND.yUp - (BOWL_UP.rows - 1) * BOWL_UP.pitch * Lup - 1.2 * Lup;
+  // 천장
+  var gr = ctx.createLinearGradient(0, Math.min(STAND.yTop, VH), 0, Math.min(STAND.yTop, VH) - 6 * s * 0.4);
+  gr.addColorStop(0, "#0c1222"); gr.addColorStop(1, "#04060d");
+  ctx.fillStyle = gr; ctx.fillRect(0, 0, VW, clamp(STAND.yTop + 2, 0, VH));
+  if (STAND.yTop > 0) drawCeiling(STAND.yTop);
+  drawUpper();
+  drawFascia(Lf);
+  drawLower();
 }
-// 광선이 타원(가운데에서 off 만큼 커진)과 먼 쪽에서 만나는 깊이. 못 만나면 −1
-function farRoot(dx, dz, off) {
-  var b = BOWL.b + off, a = BOWL.a + off, px = CAM.x / b, pz = (CAM.z - BOWL.zc) / a, qx = dx / b, qz = dz / a;
-  var A = qx * qx + qz * qz, B = 2 * (px * qx + pz * qz), C = px * px + pz * pz - 1, disc = B * B - 4 * A * C;
-  if (disc < 0 || A < 1e-12) return -1;
-  return (-B + Math.sqrt(disc)) / (2 * A);
+var BANNER_IMG = [];
+function bannerImg(i) {
+  if (BANNER_IMG[i]) return BANNER_IMG[i];
+  var P = 60, c = mkCanvas(Math.round(1.6 * P), Math.round(2.6 * P)), g = c.getContext("2d"), w = c.width, h = c.height;
+  g.fillStyle = "#11275e"; g.beginPath(); g.moveTo(0, 0); g.lineTo(w, 0); g.lineTo(w, h); g.lineTo(w / 2, h - 0.3 * P); g.lineTo(0, h); g.closePath(); g.fill();
+  g.fillStyle = "#e9a91c"; g.fillRect(0, 0, w, 0.12 * P);
+  g.textAlign = "center"; g.textBaseline = "middle"; g.fillStyle = "#f2f4f7";
+  g.font = "900 " + Math.round(0.62 * P) + "px 'Arial Black','Helvetica Neue',sans-serif";
+  g.fillText(BANNERS[i][0], w / 2, 0.85 * P, w * 0.9);
+  g.fillStyle = "#e9a91c"; g.font = "800 " + Math.round(0.24 * P) + "px 'Arial Black','Helvetica Neue',sans-serif";
+  g.fillText(BANNERS[i][1], w / 2, 1.55 * P, w * 0.9);
+  return (BANNER_IMG[i] = c);
 }
-var COLS = { n: 0, u: new Float64Array(512), uu: new Float64Array(512), uf: new Float64Array(512), g: new Int32Array(512) };
-function drawStands() {
-  if (!CRW) return;
-  var n = clamp(Math.round(VW / (VW > 700 ? 6 : 4)), 60, 200), cw = VW / n, i;
-  var f = CAM.f, RL = reff(0), RU = reff(UP.o0), RF = reff(FAS.o);
-  // 세로줄 경계마다 맨 앞줄 타원에서의 각도 → 좌석 번호
-  for (i = 0; i <= n; i++) {
-    var a = (i * cw - CAM.cx) / f, dx = CAM.fx + CAM.rx * a, dz = CAM.fz + CAM.rz * a, t = farRoot(dx, dz, 0);
-    if (t < 0) { COLS.u[i] = NaN; continue; }
-    var hx = CAM.x + dx * t, hz = CAM.z + dz * t, th = Math.atan2((hz - BOWL.zc) / BOWL.a, hx / BOWL.b);
-    COLS.u[i] = th * RL / SEAT_W; COLS.uu[i] = th * RU / SEAT_W; COLS.uf[i] = th * RF;
+// 스위트룸 띠 한 벌(창 다섯, 하나는 불 꺼짐)
+var SUITE_IMG = null;
+function suiteImg() {
+  if (SUITE_IMG) return SUITE_IMG;
+  var P = 40, pw = 1.6 * P, c = mkCanvas(Math.round(pw * 5), Math.round(0.8 * P)), g = c.getContext("2d"), H = c.height;
+  g.fillStyle = "#0b0f1a"; g.fillRect(0, 0, c.width, H);
+  for (var k = 0; k < 5; k++) {
+    var x = k * pw, on = k !== 2, gr = g.createLinearGradient(0, 0, 0, H);
+    gr.addColorStop(0, on ? "#ffcf8a" : "#26324a"); gr.addColorStop(1, on ? "#8a4a1c" : "#141b2b");
+    g.fillStyle = gr; g.fillRect(x + 0.1 * P, 0, pw - 0.2 * P, H);
+    if (on) { g.fillStyle = "rgba(30,14,6,.55)"; g.fillRect(x + 0.4 * P, H * 0.45, 0.22 * P, H * 0.55); g.fillRect(x + 0.9 * P, H * 0.38, 0.22 * P, H * 0.62); }
   }
-  var TW = TEX_SEATS * SPX, loH = ROWS_LO * RPX, upH = ROWS_UP * RPX, hy = CAM.hy, cy = CAM.y;
-  for (i = 0; i < n; i++) {
-    if (COLS.u[i] !== COLS.u[i] || COLS.u[i + 1] !== COLS.u[i + 1]) continue;
-    var am = ((i + 0.5) * cw - CAM.cx) / f, ddx = CAM.fx + CAM.rx * am, ddz = CAM.fz + CAM.rz * am;
-    var t0 = farRoot(ddx, ddz, 0), t1 = farRoot(ddx, ddz, LO.o1), tf = farRoot(ddx, ddz, FAS.o), tu0 = farRoot(ddx, ddz, UP.o0), tu1 = farRoot(ddx, ddz, UP.o1);
-    if (t0 <= 0.5) continue;
-    var x0 = i * cw, w = cw + 0.6;
-    var uA = COLS.u[i], uB = COLS.u[i + 1], um = (uA + uB) / 2, gi = (Math.floor(um / GRP) % 256 + 256) % 256;
-    var cheer = CH.up[gi] > 0.5 ? 1 : 0, bob = CH.j[gi] * f / t0;
-    // 위층
-    if (tu1 > 0 && tu0 > 0) {
-      var ytU = hy - (UP.y1 - cy) * f / tu1, ybU = hy - (UP.y0 - cy) * f / tu0;
-      if (ybU > 0 && ytU < VH) {
-        var sxU = ((COLS.uu[i] * SPX) % TW + TW) % TW, swU = clamp(Math.abs(COLS.uu[i + 1] - COLS.uu[i]) * SPX, 1, TW - sxU);
-        ctx.drawImage(CRW.up[cheer], sxU, 0, swU, upH, x0, ytU - bob * 0.6, w, ybU - ytU + bob * 0.6);
+  return (SUITE_IMG = c);
+}
+function drawCeiling(yTop) {
+  var L = CAM.s * 0.38, i;
+  // 조명 줄(트러스)과 등
+  var ty = yTop - 5.2 * L;
+  if (ty > -20) {
+    ctx.strokeStyle = "#1b2233"; ctx.lineWidth = Math.max(1, 0.12 * L);
+    ctx.beginPath(); ctx.moveTo(0, ty); ctx.lineTo(VW, ty); ctx.moveTo(0, ty + 0.35 * L); ctx.lineTo(VW, ty + 0.35 * L); ctx.stroke();
+    ctx.globalCompositeOperation = "lighter";
+    var step = 3.2, u0 = Math.floor((CAM.X - VW / 2 / L) / step) * step;
+    for (var u = u0; CAM.cx + (u - CAM.X) * L < VW + 40; u += step) {
+      var x = CAM.cx + (u - CAM.X) * L, gs = Math.max(6, 1.4 * L);
+      ctx.globalAlpha = 0.55; ctx.drawImage(GLOW, x - gs, ty + 0.2 * L - gs * 0.7, gs * 2, gs * 1.4);
+      ctx.globalAlpha = 1; ctx.fillStyle = "#fff7e0"; ctx.fillRect(x - 0.18 * L, ty + 0.1 * L, 0.36 * L, 0.2 * L);
+    }
+    ctx.globalCompositeOperation = "source-over";
+  }
+  // 우승 깃발
+  var Lb = CAM.s * 0.42, by = yTop - 1.2 * Lb;
+  for (i = 0; i < BANNERS.length; i++) {
+    var bx = CAM.cx + (-16 + i * 5.2 - CAM.X) * Lb, bw = 1.6 * Lb, bh = 2.6 * Lb;
+    if (bx + bw < 0 || bx > VW || by < -bh) continue;
+    ctx.drawImage(bannerImg(i), bx, by - bh, bw, bh);
+  }
+  // 전광판: 먼 벽 위 큰 화면
+  var Lj = CAM.s * 0.5, jw = 8 * Lj, jh = jw * LED_H / LED_W, jx = CAM.cx + (-6.5 - CAM.X) * Lj - jw / 2, jy = yTop - 1.1 * Lj - jh;
+  JUMBO.vis = jy + jh > 0 && jx < VW && jx + jw > 0;
+  if (JUMBO.vis) {
+    ctx.fillStyle = "#0b1222"; ctx.fillRect(jx - 0.18 * Lj, jy - 0.18 * Lj, jw + 0.36 * Lj, jh + 0.36 * Lj);
+    ctx.drawImage(ledCv, jx, jy, jw, jh);
+    ctx.globalCompositeOperation = "lighter"; ctx.globalAlpha = 0.1;
+    ctx.drawImage(GLOW, jx - jw * 0.1, jy - jh * 0.4, jw * 1.2, jh * 1.8);
+    ctx.globalAlpha = 1; ctx.globalCompositeOperation = "source-over";
+  }
+}
+function drawUpper() {
+  if (!UP_TILE) return;
+  var B = BOWL_UP, L = CAM.s * B.f, sc = L / UP_PPM, w = UP_TILE.W * sc, h = UP_TILE.H * sc;
+  var y = STAND.yUp - h, x0 = CAM.cx + (0 - CAM.X) * L, k0 = Math.floor(-x0 / w);
+  if (y > VH || STAND.yUp < 0) return;
+  for (var k = k0; x0 + k * w < VW; k++) ctx.drawImage(UP_TILE.cv, x0 + k * w, y, w + 0.5, h);
+}
+function drawFascia(Lf) {
+  var y0 = STAND.yF1, y1 = STAND.yF0;
+  if (y1 < 0 || y0 > VH) return;
+  // 스위트룸: 어두운 벽에 따뜻한 창
+  ctx.fillStyle = "#0b0f1a"; ctx.fillRect(0, y0, VW, y1 - y0);
+  var hS = 0.8 * Lf, yS = y0 + 0.08 * Lf, pw = 8 * Lf, u0 = CAM.cx + (0 - CAM.X) * Lf, k0 = Math.floor(-u0 / pw), img = suiteImg();
+  for (var k = k0; u0 + k * pw < VW; k++) ctx.drawImage(img, u0 + k * pw, yS, pw + 0.5, hS);
+  // LED 띠
+  ribBand(0, Lf, 0, VW, yS + hS + 0.07 * Lf, 0.5 * Lf);
+  ctx.fillStyle = "rgba(255,255,255,.08)"; ctx.fillRect(0, yS + hS + 0.07 * Lf, VW, 1);
+}
+// 아래층: 구운 한 장을 옆으로 되풀이하고, 환호하며 일어난 사람만 뒷줄부터 그 위에 (앞줄 머리를 가리지 않게 허리 위만)
+var CUT_Y = 0.95;
+function drawLower() {
+  var B = BOWL_LO, L = CAM.s * B.f, sc = L / LO_PPM, T = LO_TILE, w = T.W * sc, h = T.H * sc;
+  var yBase = STAND.yLo, yTopRow = yBase - (B.rows - 1) * B.pitch * L, y = yBase - T.yF * sc;
+  if (y > VH || yBase < 0) return;
+  var x0 = CAM.cx + (0 - CAM.X) * L, k0 = Math.floor(-x0 / w);
+  for (var k = k0; x0 + k * w < VW; k++) ctx.drawImage(T.cv, x0 + k * w, y, w + 0.5, h);
+  if (CH.act) {
+    var sw = B.seat * L, fw = FAN_W * L, fh = FAN_H * L, srcH = FAN.H * (1 - CUT_Y / FAN_H);
+    var kmin = Math.floor((CAM.X + (0 - CAM.cx) / L) / B.seat) - 2, kmax = Math.ceil((CAM.X + (VW - CAM.cx) / L) / B.seat) + 2;
+    for (var r = B.rows - 1; r >= 0; r--) {
+      var yf = yBase - r * B.pitch * L;
+      if (yf - fh > VH || yf < -2 * L) continue;
+      for (var kk = kmin; kk <= kmax; kk++) {
+        var km = ((kk % LO_SEATS) + LO_SEATS) % LO_SEATS;
+        if (km % B.aisle === 0) continue;
+        var hh = seatHash(km, r, 1);
+        if (hh > B.occ) continue;
+        var gi = cheerGroup(kk, r, 0);
+        if (CH.up[gi] <= 0.5) continue;
+        var pose = seatHash(km, r, 4) < 0.72 ? 1 : 2, bob = CH.j[gi] * L;
+        var v = (seatHash(km, r, 2) * FAN.n) | 0, flip = seatHash(km, r, 3) < 0.5 ? 3 : 0, z = 0.95 + seatHash(km, r, 6) * 0.1;
+        var x = CAM.cx + (kk * B.seat - CAM.X) * L;
+        ctx.drawImage(FAN.cv, v * FAN.W, (pose + flip) * FAN.H, FAN.W, srcH,
+          x + sw / 2 - fw * z / 2 + (hh - 0.5) * 0.12 * L, yf - fh * z - bob, fw * z, fh * z * (1 - CUT_Y / FAN_H));
       }
     }
-    // 스위트룸 띠와 그 아래 LED 띠
-    if (tf > 0) {
-      var ys1 = hy - (FAS.y1 - cy) * f / tf, ysr = hy - (FAS.yr - cy) * f / tf, ys0 = hy - (FAS.y0 - cy) * f / tf;
-      var uf = COLS.uf[i], uf2 = COLS.uf[i + 1];
-      var sxS = ((uf * 28) % 512 + 512) % 512, swS = clamp(Math.abs(uf2 - uf) * 28, 1, 512 - sxS);
-      ctx.drawImage(CRW.suite, sxS, 0, swS, 48, x0, ys1, w, ysr - ys1);
-      var sxR = ((uf * RIB_PPM) % RIB_W + RIB_W) % RIB_W, swR = clamp(Math.abs(uf2 - uf) * RIB_PPM, 1, RIB_W - sxR);
-      ctx.drawImage(ribCv, sxR, 0, swR, RIB_H, x0, ysr, w, ys0 - ysr);
-    }
-    // 아래층
-    var ytL = hy - (LO.y1 - cy) * f / t1, ybL = hy - (LO.y0 - cy) * f / t0;
-    var sxL = ((uA * SPX) % TW + TW) % TW, swL = clamp(Math.abs(uB - uA) * SPX, 1, TW - sxL);
-    ctx.drawImage(CRW.lo[cheer], sxL, 0, swL, loH, x0, ytL - bob, w, ybL - ytL + bob);
-    // 맨 앞 광고판 LED
-    var yr0 = hy - (LO.y0 - cy) * f / t0, yr1 = hy - (0 - cy) * f / t0;
-    var ur = uA * SEAT_W, ur2 = uB * SEAT_W;
-    var sxF = ((ur * RIB_PPM) % RIB_W + RIB_W) % RIB_W, swF = clamp(Math.abs(ur2 - ur) * RIB_PPM, 1, RIB_W - sxF);
-    ctx.drawImage(ribCv, sxF, 0, swF, RIB_H, x0, yr0, w, yr1 - yr0 + 0.5);
   }
+  // 조명: 앞줄은 밝고 뒷줄일수록 어둡게
+  var gr = ctx.createLinearGradient(0, yBase, 0, yTopRow - 1.4 * L);
+  gr.addColorStop(0, "rgba(4,7,16,.24)"); gr.addColorStop(1, "rgba(4,7,16,.66)");
+  ctx.fillStyle = gr; ctx.fillRect(0, Math.max(0, y), VW, yBase - Math.max(0, y) + 2);
 }
-// 관중석 카메라 플래시 (배경을 다시 그리지 않고 위에 얹는다)
-function drawFlashes() {
-  if (!FLASH.length) return;
-  ctx.globalCompositeOperation = "lighter";
-  for (var i = 0; i < FLASH.length; i++) {
-    var F = FLASH[i], p = proj(F.x, F.y, F.z);
-    if (p.d < 1) continue;
-    var s = Math.max(4, 0.9 * p.k) * (0.6 + F.life / 0.09 * 0.6);
-    ctx.globalAlpha = clamp(F.life / 0.09, 0, 1);
-    ctx.drawImage(GLOW, p.x - s, p.y - s, s * 2, s * 2);
+// 광고판 벽과 코트사이드 한 줄 (코트 바닥 다음에 그린다). 코트보다 조금 멀어 0.8배로 작게, 옆으로도 덜 움직인다
+function drawCourtside() {
+  var s = CAM.s, L = s * CS_F;
+  // 광고판 벽
+  var yb = proj(AD_X, 0, 0).y, yt = yb - AD_H * L;
+  ctx.fillStyle = "#070b16"; ctx.fillRect(0, yt - 2, VW, yb - yt + 2);
+  ribBand(-(BASELINE - 2), L, 0, VW, yt, yb - yt);
+  ctx.fillStyle = "rgba(255,255,255,.1)"; ctx.fillRect(0, yt, VW, 1);
+  // 코트사이드 의자와 사람: 광고판 앞 바닥에 한 줄. 화면 가로 u(미터) = −z
+  var yf = proj(CS_X, 0, 0).y, fw = FAN_W * L, fh = FAN_H * L, cw = 0.56 * L, chh = 0.95 * L;
+  var u0 = CAM.X - CAM.cx / L - 1, u1 = CAM.X + (VW - CAM.cx) / L + 1;
+  for (var k = Math.floor(u0 / CS_SEAT); k <= Math.ceil(u1 / CS_SEAT); k++) {
+    var u = k * CS_SEAT;
+    if (u > -(BASELINE - 0.8)) continue;                           // 베이스라인 뒤는 비운다(사진 기자 자리)
+    var x = CAM.cx + (u - CAM.X) * L;
+    ctx.drawImage(CS_CHAIR, x - cw / 2, yf - chh, cw, chh);
+    var h = seatHash(k, 0, 11);
+    if (h > 0.9) continue;
+    var gi = cheerGroup(k, 0, 2), pose = 0, bob = 0;
+    if (CH.act && CH.up[gi] > 0.5) { pose = seatHash(k, 0, 12) < 0.6 ? 1 : 2; bob = CH.j[gi] * L * 0.6; }
+    var v = (seatHash(k, 0, 13) * CSF.n) | 0;
+    ctx.drawImage(CSF.cv, v * CSF.W, pose * CSF.H, CSF.W, CSF.H, x - fw / 2 + (h - 0.5) * 0.1 * L, yf - fh - bob, fw, fh);
   }
-  ctx.globalAlpha = 1; ctx.globalCompositeOperation = "source-over";
-}
-// 이미지 한 장을 세계의 평평한 사각형(모서리 P0, P0→P1 이 가로, P0→P2 가 세로)에 비스듬히 붙인다 (어핀 근사)
-function drawDecal(img, x0, y0, z0, x1, y1, z1, x2, y2, z2, alpha) {
-  var a = proj(x0, y0, z0, PJ), b = proj(x1, y1, z1, PJ2), c = proj(x2, y2, z2, PJ3);
-  if (a.d < NEAR + 0.5 || b.d < NEAR + 0.5 || c.d < NEAR + 0.5) return;
-  var W = img.width, H = img.height;
-  ctx.save();
-  if (alpha !== undefined) ctx.globalAlpha = alpha;
-  ctx.transform((b.x - a.x) / W, (b.y - a.y) / W, (c.x - a.x) / H, (c.y - a.y) / H, a.x, a.y);
-  ctx.drawImage(img, 0, 0);
-  ctx.restore();
-}
-// 전광판: 코트 가운데 위 네 면 화면
-var JUMBO = { x: 0, y: 13.6, z: HALF_Z, hw: 3.2, hh: 1.15, vis: false };
-function drawJumbo() {
-  var J = JUMBO, x0 = J.x - J.hw, x1 = J.x + J.hw, y0 = J.y - J.hh, y1 = J.y + J.hh, z0 = J.z - J.hw, z1 = J.z + J.hw;
-  J.vis = false;
-  if (camDepth(J.x, J.z) < 2) return;
-  var pc = proj(J.x, J.y, J.z), rr = 5 * pc.k;
-  if (pc.x + rr < 0 || pc.x - rr > VW || pc.y + rr < 0 || pc.y - rr > VH) return;
-  J.vis = true;
-  ctx.fillStyle = "#0b1222";
-  var faces = [[0, 0, 1, z1], [0, 0, -1, z0], [1, 0, 0, x1], [-1, 0, 0, x0]];
-  // 아랫면
-  if (CAM.y < y0 && tracePoly([x0, y0, z0, x1, y0, z0, x1, y0, z1, x0, y0, z1])) { ctx.fillStyle = "#0a0f1b"; ctx.fill(); }
-  for (var i = 0; i < 4; i++) {
-    var F = faces[i], nx = F[0], nz = F[2];
-    var cx = nx ? F[3] : J.x, cz = nz ? F[3] : J.z;
-    if ((CAM.x - cx) * nx + (CAM.z - cz) * nz <= 0) continue;
-    // 테두리 상자 면
-    var p;
-    if (nz) p = [x0, y0 - 0.12, F[3], x1, y0 - 0.12, F[3], x1, y1 + 0.12, F[3], x0, y1 + 0.12, F[3]];
-    else p = [F[3], y0 - 0.12, z0, F[3], y0 - 0.12, z1, F[3], y1 + 0.12, z1, F[3], y1 + 0.12, z0];
-    ctx.beginPath();
-    if (tracePoly(p)) { ctx.fillStyle = "#0b1222"; ctx.fill(); }
-    // 화면 (왼쪽 위 모서리부터, 보는 쪽에서 가로가 오른쪽으로)
-    var in_ = 0.1;
-    if (nz > 0) drawDecal(ledCv, x0 + in_, y1, F[3] + 0.01, x1 - in_, y1, F[3] + 0.01, x0 + in_, y0, F[3] + 0.01);
-    else if (nz < 0) drawDecal(ledCv, x1 - in_, y1, F[3] - 0.01, x0 + in_, y1, F[3] - 0.01, x1 - in_, y0, F[3] - 0.01);
-    else if (nx > 0) drawDecal(ledCv, F[3] + 0.01, y1, z1 - in_, F[3] + 0.01, y1, z0 + in_, F[3] + 0.01, y0, z1 - in_);
-    else drawDecal(ledCv, F[3] - 0.01, y1, z0 + in_, F[3] - 0.01, y1, z1 - in_, F[3] - 0.01, y0, z0 + in_);
-  }
-  // 매단 줄
-  ctx.strokeStyle = "#1a2236"; ctx.lineWidth = 1; ctx.beginPath();
-  [[-2.6, -2.6], [2.6, 2.6], [-2.6, 2.6], [2.6, -2.6]].forEach(function (q) { traceSeg(J.x + q[0], y1, J.z + q[1], J.x + q[0], 26, J.z + q[1]); });
-  ctx.stroke();
+  // 코트 조명 밖이라 조금 어둡게
+  ctx.fillStyle = "rgba(4,7,16,.16)"; ctx.fillRect(0, yf - fh, VW, fh);
 }
 
-/* ── 배경 한 장: 천장·관중석·전광판·바닥·코트사이드는 카메라가 멈춰 있으면 그대로라 따로 그려 두고 한 번에 붙인다.
+/* ── 배경 한 장: 천장·관중석·바닥·코트사이드는 카메라가 멈춰 있으면 그대로라 따로 그려 두고 한 번에 붙인다.
    카메라가 움직이거나, 관중이 환호하거나(초당 30번), 광고판·전광판 글씨가 바뀔 때만 다시 그린다 ── */
 var BG = { cv: null, g: null, key: "", ver: 0, redraws: 0 };
 function bgKey() {
   var R = Math.round;
-  return [R(CAM.x * 1e4), R(CAM.y * 1e4), R(CAM.z * 1e4), R(CAM.fx * 1e6), R(CAM.fz * 1e6), R(CAM.f * 10), R(CAM.cx * 10), R(CAM.hy * 10),
-    VW, VH, DPR, CH.act ? "c" + Math.floor(fxT * 30) : "q", BG.ver].join("|");
+  return [R(CAM.X * 1e3), R(CAM.Y * 1e3), R(CAM.s * 100), R(CAM.cx * 10), R(CAM.cy * 10),
+    VW, VH, DPR, CH.act ? "c" + Math.floor(fxT * 20) : "q", BG.ver].join("|");
 }
 function drawBG() {
   if (!BG.cv || BG.cv.width !== cv.width || BG.cv.height !== cv.height) {
@@ -1511,14 +1695,11 @@ function drawBG() {
     var main = ctx;
     ctx = BG.g;
     ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
-    drawBackdrop(); drawStands(); drawJumbo(); drawFloor(); drawCourtside();
-    // 위·아래 가장자리를 조금 어둡게 (위쪽 글씨가 잘 읽히게)
+    drawBackdrop(); drawFloor(); drawCourtside();
+    // 위쪽 가장자리를 조금 어둡게 (위쪽 글씨가 잘 읽히게)
     var gt = ctx.createLinearGradient(0, 0, 0, VH * 0.2);
     gt.addColorStop(0, "rgba(0,0,0,.5)"); gt.addColorStop(1, "rgba(0,0,0,0)");
     ctx.fillStyle = gt; ctx.fillRect(0, 0, VW, VH * 0.2);
-    var gb = ctx.createLinearGradient(0, VH * 0.84, 0, VH);
-    gb.addColorStop(0, "rgba(0,0,0,0)"); gb.addColorStop(1, "rgba(0,0,0,.35)");
-    ctx.fillStyle = gb; ctx.fillRect(0, VH * 0.84, VW, VH * 0.16);
     ctx = main;
   }
   ctx.drawImage(BG.cv, 0, 0, VW, VH);
@@ -1526,11 +1707,10 @@ function drawBG() {
 
 /* ── 코트 바닥 ──
    단풍나무 코트, 3점 라인 안쪽은 살짝 짙게, 페인트는 팀 파랑(안쪽 금색 줄), 코트 밖은 팀 남색. 선은 폭 5cm 짜리
-   얇은 다각형으로 두고(멀수록 가늘어진다) 한 번에 칠한다. 널 이음은 코트 길이 방향 선 */
+   얇은 다각형. 옆에서 비스듬히 보니 3점 라인·자유투 원은 납작한 타원, 널 이음은 가로줄로 보인다 */
 var FLOOR = null;
 function arcPts(cx, cz, r, a0, a1, n) { var o = []; for (var i = 0; i <= n; i++) { var a = a0 + (a1 - a0) * i / n; o.push([cx + r * Math.cos(a), cz + r * Math.sin(a)]); } return o; }
 function flat(pts2) { var o = []; pts2.forEach(function (p) { o.push(p[0], 0, p[1]); }); return o; }
-// 폴리라인을 폭 w 띠 다각형으로
 function stripe(pts2, w) {
   var n = pts2.length, L = [], R = [];
   for (var i = 0; i < n; i++) {
@@ -1540,14 +1720,11 @@ function stripe(pts2, w) {
   }
   return flat(L.concat(R.reverse()));
 }
-function ringPoly(cx, cz, r, w, a0, a1, n) {
-  return flat(arcPts(cx, cz, r + w / 2, a0, a1, n).concat(arcPts(cx, cz, r - w / 2, a1, a0, n)));
-}
+function ringPoly(cx, cz, r, w, a0, a1, n) { return flat(arcPts(cx, cz, r + w / 2, a0, a1, n).concat(arcPts(cx, cz, r - w / 2, a1, a0, n))); }
 function rectPoly(x0, z0, x1, z1) { return [x0, 0, z0, x1, 0, z0, x1, 0, z1, x0, 0, z1]; }
 function floorBuild() {
   var W = 0.05, F = { lines: [], tint: [], keys: [], gold: [] };
   var ZF = 2 * HALF_Z;
-  F.apron = flat(arcPts(0, BOWL.zc, 1, 0, Math.PI * 2, 96).map(function (p) { return [p[0] * BOWL.b, BOWL.zc + (p[1] - BOWL.zc) * BOWL.a]; }));
   F.court = rectPoly(-SIDE_X, BASELINE, SIDE_X, ZF - BASELINE);
   var L = F.lines;
   L.push(rectPoly(-SIDE_X, BASELINE, -SIDE_X + W, ZF - BASELINE), rectPoly(SIDE_X - W, BASELINE, SIDE_X, ZF - BASELINE));
@@ -1559,33 +1736,27 @@ function floorBuild() {
   [0, 1].forEach(function (e) {
     function Z(z) { return e ? ZF - z : z; }
     function P(p) { return [p[0], Z(p[1])]; }
-    // 3점 라인 (가운데 선)
     var three = [[CORNER3, BASELINE], [CORNER3, CORNER3_Z]].concat(arcPts(0, 0, THREE_PT, a0, Math.PI - a0, 40)).concat([[-CORNER3, CORNER3_Z], [-CORNER3, BASELINE]]);
     F.tint.push(flat(three.map(P)));
     L.push(stripe(three.map(P), W));
     F.keys.push(flat([[-KEY_HW, BASELINE], [KEY_HW, BASELINE], [KEY_HW, FT_Z], [-KEY_HW, FT_Z]].map(P)));
-    // 페인트 테두리
     L.push(stripe([[-KEY_HW, BASELINE], [-KEY_HW, FT_Z], [KEY_HW, FT_Z], [KEY_HW, BASELINE]].map(P), W));
-    // 안쪽 금색 줄
     F.gold.push(stripe([[-KEY_HW + 0.17, BASELINE], [-KEY_HW + 0.17, FT_Z - 0.17], [KEY_HW - 0.17, FT_Z - 0.17], [KEY_HW - 0.17, BASELINE]].map(P), 0.045));
-    // 자유투 반원(바깥쪽은 실선, 페인트 안쪽은 점선)
     L.push(stripe(arcPts(0, FT_Z, 1.829, 0, Math.PI, 24).map(P), W));
     for (var k = 0; k < 6; k++) { var s = Math.PI + k * Math.PI / 6; L.push(stripe(arcPts(0, FT_Z, 1.829, s + 0.04, s + Math.PI / 12, 4).map(P), W)); }
-    // 제한 구역 반원(반지름 4피트)
     L.push(stripe([[1.219, BOARD_FACE]].concat([[1.219, 0]]).concat(arcPts(0, 0, 1.219, 0, Math.PI, 20)).concat([[-1.219, BOARD_FACE]]).map(P), W));
-    // 페인트 옆 블록·자리 표시, 옆줄의 28피트 표시
     [-1, 1].forEach(function (sg) {
       L.push(flat([[sg * KEY_HW, BASELINE + 2.134], [sg * (KEY_HW + 0.3), BASELINE + 2.134], [sg * (KEY_HW + 0.3), BASELINE + 2.334], [sg * KEY_HW, BASELINE + 2.334]].map(P)));
       [3.353, 4.267].forEach(function (d) { L.push(stripe([[sg * KEY_HW, BASELINE + d], [sg * (KEY_HW + 0.15), BASELINE + d]].map(P), W)); });
       L.push(stripe([[sg * SIDE_X, BASELINE + 8.534], [sg * (SIDE_X - 0.91), BASELINE + 8.534]].map(P), W));
     });
   });
-  // 널 이음: 코트 길이 방향으로 45cm 마다
+  // 널 이음: 코트 길이 방향으로 45cm 마다 (옆에서 보니 가로줄)
   F.planks = [];
   for (var x = -SIDE_X + 0.45; x < SIDE_X - 0.1; x += 0.45) F.planks.push(x);
   FLOOR = F;
 }
-// 센터 로고·베이스라인 뒤 글씨
+// 센터 로고·앞쪽 바닥 글씨
 var DECAL = (function () {
   var c = mkCanvas(256, 256), g = c.getContext("2d");
   g.translate(128, 128);
@@ -1604,30 +1775,35 @@ var DECAL = (function () {
   tg.fillStyle = "#ffb020"; tg.fillText("HOOPS", 780, 50);
   return { logo: c, base: t };
 })();
+var APRON_N = 9.9;                                   // 앞쪽(카메라 쪽) 남색 바닥이 끝나는 깊이
 function drawFloor() {
   if (!FLOOR) floorBuild();
-  var F = FLOOR, i;
-  ctx.beginPath();
-  if (tracePoly(F.apron)) { ctx.fillStyle = "#13203f"; ctx.fill(); }
-  // 코트: 멀수록 조금 어둡고 따뜻하게
+  var F = FLOOR, i, s = CAM.s;
+  var yFar = proj(AD_X, 0, 0).y, yNear = proj(APRON_N, 0, 0).y;
+  // 코트 밖 남색 바닥 (광고판 벽부터 화면 아래까지)
+  ctx.fillStyle = "#13203f"; ctx.fillRect(0, yFar, VW, VH - yFar + 2);
+  var gA = ctx.createLinearGradient(0, yNear, 0, VH);
+  gA.addColorStop(0, "rgba(0,0,0,0)"); gA.addColorStop(1, "rgba(0,0,0,.35)");
+  ctx.fillStyle = gA; ctx.fillRect(0, yNear, VW, VH - yNear + 2);
+  // 코트: 먼 쪽은 조금 어둡고 따뜻하게, 가까울수록 밝게
   ctx.beginPath();
   if (tracePoly(F.court)) {
-    var gy0 = Math.max(CAM.hy, 0), gr = ctx.createLinearGradient(0, gy0, 0, VH);
-    gr.addColorStop(0, "#9a6232"); gr.addColorStop(0.35, "#c98c4c"); gr.addColorStop(1, "#dca263");
+    var gy0 = proj(-SIDE_X, 0, 0).y, gy1 = proj(SIDE_X, 0, 0).y, gr = ctx.createLinearGradient(0, gy0, 0, gy1);
+    gr.addColorStop(0, "#a8693a"); gr.addColorStop(0.5, "#cf9152"); gr.addColorStop(1, "#dca263");
     ctx.fillStyle = gr; ctx.fill();
   }
   // 널 이음
   ctx.beginPath();
   for (i = 0; i < F.planks.length; i++) traceSeg(F.planks[i], 0, BASELINE, F.planks[i], 0, 2 * HALF_Z - BASELINE);
-  ctx.strokeStyle = "rgba(95,52,18,.16)"; ctx.lineWidth = 1; ctx.stroke();
+  ctx.strokeStyle = "rgba(95,52,18,.13)"; ctx.lineWidth = 1; ctx.stroke();
   // 3점 안쪽
   ctx.beginPath();
   for (i = 0; i < F.tint.length; i++) tracePoly(F.tint[i]);
-  ctx.fillStyle = "rgba(120,58,18,.13)"; ctx.fill();
+  ctx.fillStyle = "rgba(120,58,18,.12)"; ctx.fill();
   // 페인트
   ctx.beginPath();
   for (i = 0; i < F.keys.length; i++) tracePoly(F.keys[i]);
-  ctx.fillStyle = "rgba(24,64,160,.92)"; ctx.fill();
+  ctx.fillStyle = "rgba(24,64,160,.93)"; ctx.fill();
   ctx.beginPath(); tracePoly(F.center); ctx.fillStyle = "#1e52c2"; ctx.fill();
   ctx.beginPath();
   for (i = 0; i < F.gold.length; i++) tracePoly(F.gold[i]);
@@ -1636,44 +1812,30 @@ function drawFloor() {
   ctx.beginPath();
   for (i = 0; i < F.lines.length; i++) tracePoly(F.lines[i]);
   ctx.fillStyle = "rgba(255,255,255,.93)"; ctx.fill();
-  // 센터 로고 (지름 2.6m)·베이스라인 뒤 글씨
-  // 센터 로고는 옆줄 쪽(+x) 카메라에서, 베이스라인 뒤 글씨는 코트 쪽에서 바로 읽히게
-  drawDecal(DECAL.logo, -1.3, 0.001, HALF_Z + 1.3, -1.3, 0.001, HALF_Z - 1.3, 1.3, 0.001, HALF_Z + 1.3);
-  drawDecal(DECAL.base, -5.4, 0.001, BASELINE - 1.6, 5.4, 0.001, BASELINE - 1.6, -5.4, 0.001, BASELINE - 0.6, 0.9);
-  // 광택: 화면 가운데 코트 위로 은은한 반사
-  var fl = proj(CAM.x + CAM.fx * 16, 0, CAM.z + CAM.fz * 16);
-  if (fl.y > 0 && fl.y < VH * 1.2) {
-    ctx.save();
-    ctx.globalCompositeOperation = "lighter";
-    ctx.translate(VW / 2, fl.y); ctx.scale(1, 0.16);
-    var rr = VW * 0.7, sg = ctx.createRadialGradient(0, 0, 0, 0, 0, rr);
-    sg.addColorStop(0, "rgba(255,236,210,.10)"); sg.addColorStop(1, "rgba(255,236,210,0)");
-    ctx.fillStyle = sg; ctx.fillRect(-rr, -rr, rr * 2, rr * 2);
-    ctx.restore();
-  }
+  // 센터 로고(지름 2.6m)·앞쪽 바닥 글씨(카메라에서 바로 읽히게)
+  drawDecal(DECAL.logo, -1.3, 0, HALF_Z + 1.3, -1.3, 0, HALF_Z - 1.3, 1.3, 0, HALF_Z + 1.3);
+  drawDecal(DECAL.base, SIDE_X + 0.55, 0, 7.5, SIDE_X + 0.55, 0, -3.3, SIDE_X + 1.55, 0, 7.5, 0.85);
+  // 광택: 조명이 코트에 비친 자리
+  var fl = proj(0, 0, -CAM.X - 0.5);
+  ctx.save();
+  ctx.globalCompositeOperation = "lighter";
+  ctx.translate(fl.x, fl.y); ctx.scale(1, 0.2);
+  var rr = Math.max(VW * 0.6, 9 * s), sg = ctx.createRadialGradient(0, 0, 0, 0, 0, rr);
+  sg.addColorStop(0, "rgba(255,236,210,.13)"); sg.addColorStop(1, "rgba(255,236,210,0)");
+  ctx.fillStyle = sg; ctx.fillRect(-rr, -rr, rr * 2, rr * 2);
+  ctx.restore();
+  // 골대 받침 그늘
+  floorShade(hoop.x, hoop.z - 3.4, 1.3, 1.2, 0.35);
 }
 
 /* ── 골대 ── */
-// 상자 하나: 보이는 면만 칠한다. col: 윗면·옆면·앞뒤면 색 [r,g,b]
+// 상자 하나: 보이는 면(앞 +x·위 +y·슈터 쪽 +z)만 칠한다. c: [r,g,b]
 function drawBoxAt(x0, x1, y0, y1, z0, z1, c, alpha) {
-  var faces = [
-    [1, 0, 0, x1, [x1, y0, z0, x1, y0, z1, x1, y1, z1, x1, y1, z0]],
-    [-1, 0, 0, x0, [x0, y0, z1, x0, y0, z0, x0, y1, z0, x0, y1, z1]],
-    [0, 1, 0, y1, [x0, y1, z0, x1, y1, z0, x1, y1, z1, x0, y1, z1]],
-    [0, -1, 0, y0, [x0, y0, z1, x1, y0, z1, x1, y0, z0, x0, y0, z0]],
-    [0, 0, 1, z1, [x0, y0, z1, x1, y0, z1, x1, y1, z1, x0, y1, z1]],
-    [0, 0, -1, z0, [x1, y0, z0, x0, y0, z0, x0, y1, z0, x1, y1, z0]]
-  ];
-  for (var i = 0; i < 6; i++) {
-    var F = faces[i], vis = F[0] ? (CAM.x - F[3]) * F[0] : F[1] ? (CAM.y - F[3]) * F[1] : (CAM.z - F[3]) * F[2];
-    if (vis <= 0) continue;
-    ctx.beginPath();
-    if (!tracePoly(F[4])) continue;
-    var k = F[1] > 0 ? 1.18 : F[1] < 0 ? 0.55 : 0.78 + 0.16 * (F[0] * LIGHT_X * -1 + F[2] * 0.3);
-    ctx.fillStyle = css(c, k, alpha); ctx.fill();
-  }
+  ctx.beginPath(); tracePoly([x1, y0, z1, x0, y0, z1, x0, y1, z1, x1, y1, z1]); ctx.fillStyle = css(c, 0.72, alpha); ctx.fill();   // +z
+  ctx.beginPath(); tracePoly([x0, y1, z0, x1, y1, z0, x1, y1, z1, x0, y1, z1]); ctx.fillStyle = css(c, 1.18, alpha); ctx.fill();   // 위
+  ctx.beginPath(); tracePoly([x1, y0, z0, x1, y0, z1, x1, y1, z1, x1, y1, z0]); ctx.fillStyle = css(c, 0.95, alpha); ctx.fill();   // 앞
 }
-var POST_COL = [[30, 42, 84], [38, 43, 54], [38, 43, 54], [24, 36, 72]];
+var POST_COL = [[40, 54, 98], [40, 54, 98], [34, 46, 86], [36, 54, 112]];
 function hoopBox(i) {
   var c = BOXES[i];
   return [c[0] + hoop.x, c[1] + hoop.x, c[2], c[3], c[4] + hoop.z, c[5] + hoop.z];
@@ -1681,13 +1843,31 @@ function hoopBox(i) {
 function drawPost(i) {
   var b = hoopBox(i);
   drawBoxAt(b[0], b[1], b[2], b[3], b[4], b[5], POST_COL[i - 1]);
-  if (i === 4) {                                   // 받침대 덮개 앞면의 줄과 로고 띠
-    var zf = b[5] + 0.002;
-    if (CAM.z > zf) {
-      ctx.beginPath();
-      if (tracePoly([b[0], 0.62, zf, b[1], 0.62, zf, b[1], 0.7, zf, b[0], 0.7, zf])) { ctx.fillStyle = "#ffb020"; ctx.fill(); }
-    }
+  // 앞면 위 모서리 빛·아래 모서리 그늘 (쿠션 싼 쇠기둥처럼)
+  ctx.lineWidth = Math.max(1, 0.02 * CAM.s);
+  ctx.strokeStyle = "rgba(255,255,255,.22)"; ctx.beginPath(); traceSeg(b[1], b[3], b[4], b[1], b[3], b[5]); traceSeg(b[1], b[3], b[5], b[0], b[3], b[5]); ctx.stroke();
+  ctx.strokeStyle = "rgba(0,0,0,.3)"; ctx.beginPath(); traceSeg(b[1], b[2], b[4], b[1], b[2], b[5]); ctx.stroke();
+  if (i === 4) {                                   // 받침대 덮개의 금색 띠와 글씨
+    var xf = b[1] + 0.002;
+    ctx.beginPath(); tracePoly([xf, 0.62, b[5], xf, 0.62, b[4], xf, 0.7, b[4], xf, 0.7, b[5]]); ctx.fillStyle = "#ffb020"; ctx.fill();
+    ctx.beginPath(); tracePoly([b[1], 0.62, b[5] + 0.002, b[0], 0.62, b[5] + 0.002, b[0], 0.7, b[5] + 0.002, b[1], 0.7, b[5] + 0.002]); ctx.fillStyle = "#c98a18"; ctx.fill();
   }
+}
+// 받침대: 바닥 받침 → 세운 기둥 → 기둥 위에서 백보드 뒤까지 비스듬히 올라가는 팔 (그림만. 부딪힘은 BOXES 상자)
+function drawStanchion() {
+  drawPost(4); drawPost(3);
+  var hx = hoop.x, hz = hoop.z, w = 0.15, c = POST_COL[0];
+  var zA = hz - 3.25, zB = hz + BOARD_FACE - BOARD_D, yA0 = 2.6, yA1 = 3.64, yB0 = 3.26 + fx.boardY, yB1 = 3.6 + fx.boardY;
+  ctx.beginPath(); tracePoly([hx - w, yA1, zA, hx + w, yA1, zA, hx + w, yB1, zB, hx - w, yB1, zB]); ctx.fillStyle = css(c, 1.22); ctx.fill();
+  ctx.beginPath(); tracePoly([hx + w, yA0, zA, hx + w, yB0, zB, hx + w, yB1, zB, hx + w, yA1, zA]);
+  var p0 = proj(hx + w, yA1, zA, PJ2), p1 = proj(hx + w, yA0, zA, PJ3), gr = ctx.createLinearGradient(p0.x, p0.y, p1.x, p1.y);
+  gr.addColorStop(0, css(c, 1.08)); gr.addColorStop(1, css(c, 0.78));
+  ctx.fillStyle = gr; ctx.fill();
+  ctx.lineWidth = Math.max(1, 0.02 * CAM.s); ctx.strokeStyle = "rgba(255,255,255,.2)";
+  ctx.beginPath(); traceSeg(hx + w, yA1, zA, hx + w, yB1, zB); ctx.stroke();
+  // 팔 옆 로고 띠
+  ctx.beginPath(); tracePoly([hx + w + 0.002, yA0 + 0.42, zA + 0.5, hx + w + 0.002, yB0 + 0.04, zB - 0.5, hx + w + 0.002, yB0 + 0.1, zB - 0.5, hx + w + 0.002, yA0 + 0.5, zA + 0.5]);
+  ctx.fillStyle = "#ffb020"; ctx.fill();
 }
 // 림 위 점 (림 휨·백보드 떨림 포함). th: 림 둘레 각도
 function rimPt(th, rad, o) {
@@ -1698,54 +1878,51 @@ function rimPt(th, rad, o) {
   return o;
 }
 var _rp = new V3();
-// 백보드(유리). part: -1 먼 쪽 반, +1 가까운 쪽 반 (기준 깊이 dm)
-function drawBoard(part, dm) {
+// 백보드(유리): 슈터 쪽 면은 옆에서 비스듬히 보여 좁은 평행사변형, 앞 모서리(카메라 쪽)는 두께만큼
+function drawBoard() {
   var x0 = -BOARD_W / 2 + hoop.x, x1 = BOARD_W / 2 + hoop.x, y0 = BOARD_Y0 + fx.boardY, y1 = BOARD_Y0 + BOARD_H + fx.boardY;
-  var zf = BOARD_FACE + hoop.z + fx.boardZ, zb = zf - BOARD_D;
-  var lo = part > 0 ? 0 : dm, hi = part > 0 ? dm : 1e9;
-  // 앞뒤 유리면
-  [[zf, 1], [zb, -1]].forEach(function (q) {
-    ctx.beginPath();
-    if (tracePoly([x0, y0, q[0], x1, y0, q[0], x1, y1, q[0], x0, y1, q[0]], lo, hi)) {
-      ctx.fillStyle = "rgba(190,215,255,.13)"; ctx.fill();
-    }
-  });
-  // 옆·위·아래 모서리(두께)
+  var zf = BOARD_FACE + hoop.z + fx.boardZ, zb = zf - BOARD_D, red = lamp.on;
+  // 유리 면: 옅게 비치고, 가장자리는 흰 선으로 또렷하게
+  ctx.beginPath(); tracePoly([x0, y0, zf, x1, y0, zf, x1, y1, zf, x0, y1, zf]);
+  var p0 = proj(x0, y1, zf, PJ2), p1 = proj(x1, y0, zf, PJ3), gr = ctx.createLinearGradient(p0.x, p0.y, p1.x, p1.y);
+  gr.addColorStop(0, "rgba(215,232,255,.34)"); gr.addColorStop(0.5, "rgba(185,210,245,.2)"); gr.addColorStop(1, "rgba(220,236,255,.38)");
+  ctx.fillStyle = gr; ctx.fill();
+  ctx.strokeStyle = red ? "rgba(255,90,70,.95)" : "rgba(245,248,252,.85)"; ctx.lineWidth = Math.max(1.2, 0.022 * CAM.s); ctx.lineJoin = "round"; ctx.stroke();
+  // 테두리(흰 띠)와 슈터 네모
+  var fw = 0.05, sq = [0.295, RIM_Y + fx.boardY, 0.457], zl = zf + 0.002;
   ctx.beginPath();
-  var e = [[x0, y0, zb, x0, y0, zf, x0, y1, zf, x0, y1, zb], [x1, y0, zf, x1, y0, zb, x1, y1, zb, x1, y1, zf],
-    [x0, y1, zb, x1, y1, zb, x1, y1, zf, x0, y1, zf], [x0, y0, zf, x1, y0, zf, x1, y0, zb, x0, y0, zb]];
-  for (var i = 0; i < 4; i++) tracePoly(e[i], lo, hi);
-  ctx.fillStyle = lamp.on ? "rgba(255,70,50,.95)" : "rgba(225,235,248,.8)"; ctx.fill();
-  // 앞면 흰 테두리와 슈터 네모 (코트 쪽에서 볼 때만 선명하게)
-  var zl = zf + 0.003, fw = 0.05, sq = [0.295, RIM_Y + fx.boardY, 0.457];
-  ctx.beginPath();
-  tracePoly([x0, y0, zl, x1, y0, zl, x1, y0 + fw, zl, x0, y0 + fw, zl], lo, hi);
-  tracePoly([x0, y1 - fw, zl, x1, y1 - fw, zl, x1, y1, zl, x0, y1, zl], lo, hi);
-  tracePoly([x0, y0, zl, x0 + fw, y0, zl, x0 + fw, y1, zl, x0, y1, zl], lo, hi);
-  tracePoly([x1 - fw, y0, zl, x1, y0, zl, x1, y1, zl, x1 - fw, y1, zl], lo, hi);
+  tracePoly([x0, y0, zl, x1, y0, zl, x1, y0 + fw, zl, x0, y0 + fw, zl]);
+  tracePoly([x0, y1 - fw, zl, x1, y1 - fw, zl, x1, y1, zl, x0, y1, zl]);
+  tracePoly([x0, y0, zl, x0 + fw * 2, y0, zl, x0 + fw * 2, y1, zl, x0, y1, zl]);
+  tracePoly([x1 - fw * 2, y0, zl, x1, y0, zl, x1, y1, zl, x1 - fw * 2, y1, zl]);
   var sx0 = hoop.x - sq[0], sx1 = hoop.x + sq[0], sy0 = sq[1], sy1 = sq[1] + sq[2];
-  tracePoly([sx0, sy0, zl, sx1, sy0, zl, sx1, sy0 + fw, zl, sx0, sy0 + fw, zl], lo, hi);
-  tracePoly([sx0, sy1 - fw, zl, sx1, sy1 - fw, zl, sx1, sy1, zl, sx0, sy1, zl], lo, hi);
-  tracePoly([sx0, sy0, zl, sx0 + fw, sy0, zl, sx0 + fw, sy1, zl, sx0, sy1, zl], lo, hi);
-  tracePoly([sx1 - fw, sy0, zl, sx1, sy0, zl, sx1, sy1, zl, sx1 - fw, sy1, zl], lo, hi);
-  ctx.fillStyle = lamp.on ? "rgba(255,90,70,.95)" : "rgba(255,255,255,.9)"; ctx.fill();
-  // 아래 모서리 패드
+  tracePoly([sx0, sy0, zl, sx1, sy0, zl, sx1, sy0 + fw, zl, sx0, sy0 + fw, zl]);
+  tracePoly([sx0, sy1 - fw, zl, sx1, sy1 - fw, zl, sx1, sy1, zl, sx0, sy1, zl]);
+  tracePoly([sx0, sy0, zl, sx0 + fw * 2, sy0, zl, sx0 + fw * 2, sy1, zl, sx0, sy1, zl]);
+  tracePoly([sx1 - fw * 2, sy0, zl, sx1, sy0, zl, sx1, sy1, zl, sx1 - fw * 2, sy1, zl]);
+  ctx.fillStyle = red ? "rgba(255,90,70,.95)" : "rgba(255,255,255,.88)"; ctx.fill();
+  // 두께: 앞 모서리와 윗면
   ctx.beginPath();
-  tracePoly([x0, y0 - 0.06, zf + 0.02, x1, y0 - 0.06, zf + 0.02, x1, y0, zf + 0.02, x0, y0, zf + 0.02], lo, hi);
+  tracePoly([x1, y0, zb, x1, y0, zf, x1, y1, zf, x1, y1, zb]);
+  tracePoly([x0, y1, zb, x1, y1, zb, x1, y1, zf, x0, y1, zf]);
+  ctx.fillStyle = red ? "rgba(255,70,50,.95)" : "rgba(228,238,250,.9)"; ctx.fill();
+  // 아래 모서리 패드
+  ctx.beginPath(); tracePoly([x0, y0 - 0.06, zf + 0.02, x1, y0 - 0.06, zf + 0.02, x1, y0, zf + 0.02, x0, y0, zf + 0.02]);
   ctx.fillStyle = "#1b2440"; ctx.fill();
+  ctx.beginPath(); tracePoly([x1, y0 - 0.06, zb, x1, y0 - 0.06, zf + 0.02, x1, y0, zf + 0.02, x1, y0, zb]); ctx.fillStyle = "#26325a"; ctx.fill();
 }
-// 샷 클락 상자(백보드 위): 보이는 옆면마다 숫자
+// 샷 클락 상자(백보드 위): 카메라 쪽 면에 숫자
 function drawShotClock() {
   var x0 = hoop.x - 0.3, x1 = hoop.x + 0.3, y0 = BOARD_Y0 + BOARD_H + 0.03 + fx.boardY, y1 = y0 + 0.3;
   var z1 = BOARD_FACE + hoop.z + fx.boardZ + 0.1, z0 = z1 - 0.3;
   drawBoxAt(x0, x1, y0, y1, z0, z1, [14, 16, 22]);
-  var m = 0.03;
-  if (CAM.z > z1) drawDecal(scCv, x0 + m, y1 - m, z1 + 0.002, x1 - m, y1 - m, z1 + 0.002, x0 + m, y0 + m, z1 + 0.002);
-  if (CAM.z < z0) drawDecal(scCv, x1 - m, y1 - m, z0 - 0.002, x0 + m, y1 - m, z0 - 0.002, x1 - m, y0 + m, z0 - 0.002);
-  if (CAM.x > x1) drawDecal(scCv, x1 + 0.002, y1 - m, z1 - m, x1 + 0.002, y1 - m, z0 + m, x1 + 0.002, y0 + m, z1 - m);
-  if (CAM.x < x0) drawDecal(scCv, x0 - 0.002, y1 - m, z0 + m, x0 - 0.002, y1 - m, z1 - m, x0 - 0.002, y0 + m, z0 + m);
+  var m = 0.025;
+  drawDecal(scCv, x1 + 0.002, y1 - m, z1 - m, x1 + 0.002, y1 - m, z0 + m, x1 + 0.002, y0 + m, z1 - m);
+  // 받침 기둥
+  ctx.strokeStyle = "#20252f"; ctx.lineWidth = Math.max(1, 0.035 * CAM.s);
+  ctx.beginPath(); traceSeg(hoop.x, y0, (z0 + z1) / 2, hoop.x, BOARD_Y0 + BOARD_H + fx.boardY, (z0 + z1) / 2); ctx.stroke();
   if (lamp.on) {
-    var p = proj(hoop.x, y1 + 0.03, (z0 + z1) / 2), s = Math.max(8, 1.2 * p.k);
+    var p = proj(x1, y1 + 0.03, (z0 + z1) / 2), s = Math.max(8, 1.2 * p.k);
     ctx.globalCompositeOperation = "lighter"; ctx.globalAlpha = 0.9;
     ctx.drawImage(GLOW_RED, p.x - s, p.y - s * 0.6, s * 2, s * 1.2);
     var pb = proj(hoop.x, BOARD_Y0 + BOARD_H / 2, BOARD_FACE + hoop.z), sb = Math.max(10, 1.4 * pb.k);
@@ -1754,41 +1931,39 @@ function drawShotClock() {
   }
 }
 // 림: 먼 쪽 반(part −1)·가까운 쪽 반(+1). 림을 잡는 쇠판은 먼 쪽과 같이
-var RIM_N = 28, _rimP = [];
-function drawRim(part, dm) {
-  var i, k = proj(hoop.x, RIM_Y, hoop.z).k, lw = Math.max(1.6, 0.024 * k);
+var RIM_N = 36;
+function drawRim(part) {
+  var i, lw = Math.max(1.6, 0.026 * CAM.s);
   if (part < 0) {
     ctx.beginPath();
-    tracePoly([hoop.x - 0.09, RIM_Y - 0.06, hoop.z + BOARD_FACE, hoop.x + 0.09, RIM_Y - 0.06, hoop.z + BOARD_FACE,
-      hoop.x + 0.07, RIM_Y, hoop.z - RIM_R + 0.01, hoop.x - 0.07, RIM_Y, hoop.z - RIM_R + 0.01]);
+    tracePoly([hoop.x - 0.09, RIM_Y - 0.07, hoop.z + BOARD_FACE, hoop.x + 0.09, RIM_Y - 0.07, hoop.z + BOARD_FACE,
+      hoop.x + 0.06, RIM_Y, hoop.z - RIM_R + 0.01, hoop.x - 0.06, RIM_Y, hoop.z - RIM_R + 0.01]);
     ctx.fillStyle = "#b8420f"; ctx.fill();
   }
-  ctx.lineWidth = lw; ctx.lineCap = "round"; ctx.strokeStyle = part < 0 ? "#b8420f" : "#ff6b2c";
+  ctx.lineWidth = lw; ctx.lineCap = "round"; ctx.strokeStyle = part < 0 ? "#b4400e" : "#ff6b2c";
   ctx.beginPath();
   var pen = false;
   for (i = 0; i <= RIM_N; i++) {
     rimPt(i / RIM_N * Math.PI * 2, RIM_R + RIM_T, _rp);
-    var d = camDepth(_rp.x, _rp.z), p = proj(_rp.x, _rp.y, _rp.z);
-    var mine = part < 0 ? d >= dm - 0.002 : d <= dm + 0.002;
+    var mine = part < 0 ? _rp.x <= hoop.x + 0.002 : _rp.x >= hoop.x - 0.002, p = proj(_rp.x, _rp.y, _rp.z);
     if (mine) { if (pen) ctx.lineTo(p.x, p.y); else ctx.moveTo(p.x, p.y); pen = true; }
     else pen = false;
   }
   ctx.stroke();
   if (part > 0) {                                  // 반짝이는 윗선
-    ctx.strokeStyle = "rgba(255,210,170,.55)"; ctx.lineWidth = Math.max(0.7, lw * 0.35);
+    ctx.strokeStyle = "rgba(255,214,176,.6)"; ctx.lineWidth = Math.max(0.7, lw * 0.35);
     ctx.stroke();
   }
 }
 // 그물 줄: 림 가운데보다 먼 줄(−1)·가까운 줄(+1)
-function drawNet(part, dm) {
+function drawNet(part) {
   if (!NK.length) return;
-  var k = proj(hoop.x, RIM_Y - 0.2, hoop.z).k;
-  ctx.lineWidth = Math.max(0.9, 0.007 * k); ctx.lineCap = "round";
-  ctx.strokeStyle = part < 0 ? "rgba(200,206,214,.75)" : "rgba(245,247,250,.95)";
+  ctx.lineWidth = Math.max(0.9, 0.008 * CAM.s); ctx.lineCap = "round";
+  ctx.strokeStyle = part < 0 ? "rgba(196,202,212,.72)" : "rgba(246,248,251,.95)";
   ctx.beginPath();
   for (var i = 0; i < NL.length; i++) {
-    var A = NK[NL[i][0]], B = NK[NL[i][1]], d = camDepth((A.x + B.x) / 2, (A.z + B.z) / 2);
-    if (part < 0 ? d < dm : d >= dm) continue;
+    var A = NK[NL[i][0]], B = NK[NL[i][1]], far = (A.x + B.x) / 2 < hoop.x;
+    if (part < 0 ? !far : far) continue;
     proj(A.x, A.y, A.z, PJ2); proj(B.x, B.y, B.z, PJ3);
     ctx.moveTo(PJ2.x, PJ2.y); ctx.lineTo(PJ3.x, PJ3.y);
   }
@@ -1800,17 +1975,20 @@ var BALL_COL = { ball: [[255, 170, 104], [233, 101, 28], [120, 44, 6]], gold: [[
   fire: [[255, 200, 120], [255, 90, 26], [140, 30, 4]], deep: [[160, 245, 216], [31, 174, 128], [10, 88, 64]] };
 function drawBallAt(x, y, z, rot, kind, alpha, sc) {
   var p = proj(x, y, z);
-  if (p.d < NEAR + 0.1) return;
   var r = BALL_R * p.k * (sc === undefined ? 1 : sc);
   if (r < 0.4 || p.x < -r || p.x > VW + r || p.y < -r || p.y > VH + r) return;
+  drawBall2D(p.x, p.y, r, rot, kind, alpha);
+}
+function drawBall2D(px, py, r, rot, kind, alpha) {
   var C = BALL_COL[kind] || BALL_COL.ball, a = alpha === undefined ? 1 : alpha;
   ctx.globalAlpha = a;
-  var gr = ctx.createRadialGradient(p.x - r * 0.38, p.y - r * 0.42, r * 0.1, p.x, p.y, r * 1.05);
+  var gr = ctx.createRadialGradient(px - r * 0.38, py - r * 0.42, r * 0.1, px, py, r * 1.05);
   gr.addColorStop(0, css(C[0])); gr.addColorStop(0.55, css(C[1])); gr.addColorStop(1, css(C[2]));
-  ctx.fillStyle = gr; ctx.beginPath(); ctx.arc(p.x, p.y, r, 0, 6.2832); ctx.fill();
+  ctx.fillStyle = gr; ctx.beginPath(); ctx.arc(px, py, r, 0, 6.2832); ctx.fill();
+  ctx.strokeStyle = "rgba(34,12,2,.55)"; ctx.lineWidth = Math.max(0.8, r * 0.09); ctx.stroke();
   if (r > 2.2) {
     ctx.save();
-    ctx.translate(p.x, p.y); ctx.rotate(rot);
+    ctx.translate(px, py); ctx.rotate(rot);
     ctx.strokeStyle = kind === "deep" ? "rgba(4,40,28,.8)" : "rgba(40,14,2,.82)"; ctx.lineWidth = Math.max(0.6, r * 0.085);
     ctx.beginPath();
     ctx.moveTo(-r, 0); ctx.lineTo(r, 0);
@@ -1825,245 +2003,358 @@ function drawBallAt(x, y, z, rot, kind, alpha, sc) {
 // 공 그늘: 높을수록 크고 옅게
 function ballShade(x, y, z) {
   var h = Math.max(0, y - BALL_R);
-  floorShade(x, z, 0.16 * (1 + h * 0.35), 0.16 * (1 + h * 0.35), 0.5 / (1 + h * 0.8));
+  floorShade(x, z, 0.15 * (1 + h * 0.3), 0.16 * (1 + h * 0.3), 0.5 / (1 + h * 0.8));
 }
 
-/* ── 사람 그리기: 관절(3D) 을 화면에 던져 마디마다 둥근 캡슐로. 먼 쪽 팔다리부터 가까운 쪽으로 ── */
-var TORSO_R = [[-0.03, 0.156, 0.112, 0], [0.08, 0.15, 0.108, 0], [0.2, 0.164, 0.115, 0.004], [0.32, 0.188, 0.126, 0.01],
-  [0.42, 0.204, 0.128, 0.006], [0.5, 0.203, 0.118, -0.004], [0.55, 0.176, 0.098, -0.01], [0.585, 0.11, 0.072, -0.006], [0.6, 0.068, 0.054, 0]];
-var HIPS_R = [[-0.2, 0.19, 0.13, 0], [-0.1, 0.19, 0.132, 0], [0, 0.172, 0.122, 0], [0.05, 0.162, 0.114, 0], [0.075, 0.13, 0.09, 0]];
+/* ── 사람: 옆모습 2D ──
+   관절(3D)을 골반을 축으로 돌려 몸 앞이 화면 오른쪽이나 왼쪽을 보게 누른 뒤(옆모습), 뼈마다 앞·뒤 두께가 다른 윤곽을
+   부드러운 곡선으로 이어 칠한다: 허벅지·종아리 알·팔 근육, 가슴·등, 옆얼굴(이마·코·입술·턱), 발목을 감싼 농구화.
+   먼 쪽 팔다리는 어둡게, 가까운 쪽 팔은 몸과 공 위에 그린다 */
 var FJ = ["pel", "neck", "head", "shL", "shR", "elL", "elR", "wrL", "wrR", "hpL", "hpR", "knL", "knR", "anL", "anR"];
-var _fs = new V3(), _fl = new V3(), _fv = new V3(), _fw = new V3();
-function figProj(S, mirror) {
-  if (!S.PP) { S.PP = {}; FJ.forEach(function (k) { S.PP[k] = { x: 0, y: 0, d: 0, k: 0 }; }); }
-  for (var i = 0; i < FJ.length; i++) { var v = S.J[FJ[i]]; proj(v.x, mirror ? -v.y : v.y, v.z, S.PP[FJ[i]]); }
-  return S.PP;
+// 누르는 돌림: 몸 앞 D.f 를 화면 오른쪽(−z) 또는 왼쪽(+z)으로. 골반이 축
+function figRot(S) {
+  var f = S.D.f;
+  if (!S.FP) { S.FP = {}; FJ.forEach(function (k) { S.FP[k] = { x: 0, y: 0, d: 0, k: 1 }; }); S.face = -f.z >= 0 ? 1 : -1; }
+  // 보는 쪽: 화면 오른쪽(+1)·왼쪽(−1). 정면을 볼 때 이리저리 뒤집히지 않게 조금 넘어가야 바꾼다
+  if (-f.z * S.face < -0.3) S.face = -S.face;
+  var th = (S.face > 0 ? Math.PI : 0) - Math.atan2(f.x, f.z);
+  S.fc = Math.cos(th); S.fs = Math.sin(th); S.fx = S.J.pel.x; S.fz = S.J.pel.z;
 }
-// 몸통 둘레 고리들을 화면에서 감싼 다각형. R: 고리 [높이, 옆 반폭, 앞뒤 반폭, 앞으로 밀림]
-function bodyHull(S, P, R, s, mirror, dir) {
-  var J = S.J, D = S.D;
-  _fs.subVectors(J.neck, J.pel).normalize();
-  _fl.subVectors(J.shR, J.shL); _fl.y = 0; _fl.normalize();
-  var a0 = P.pel, a1 = P.neck, ux = a1.x - a0.x, uy = a1.y - a0.y, ul = Math.sqrt(ux * ux + uy * uy) || 1;
-  ux /= ul; uy /= ul;
-  var px = -uy, py = ux;
-  var ls = _fl.x * CAM.rx + _fl.z * CAM.rz, fs = D.f.x * CAM.rx + D.f.z * CAM.rz;
-  var L = [], Rr = [];
-  for (var i = 0; i < R.length; i++) {
-    var q = R[i], h = q[0] * s * dir;
-    var cx = J.pel.x + _fs.x * h + D.f.x * q[3] * s, cy = J.pel.y + _fs.y * h, cz = J.pel.z + _fs.z * h + D.f.z * q[3] * s;
-    var p = proj(cx, mirror ? -cy : cy, cz);
-    var ax = ls * q[1] * s, bx = fs * q[2] * s;
-    var ext = Math.sqrt(ax * ax * px * px + bx * bx * px * px + (q[1] * s * _fl.y * py) * (q[1] * s * _fl.y * py)) * p.k;
-    ext = Math.max(ext, q[2] * s * 0.6 * p.k);
-    L.push(p.x + px * ext, p.y + py * ext); Rr.push(p.x - px * ext, p.y - py * ext);
+function figFlat(S, mirror) {
+  figRot(S);
+  var J = S.J, c = S.fc, sn = S.fs, px = S.fx, pz = S.fz;
+  for (var i = 0; i < FJ.length; i++) {
+    var v = J[FJ[i]], dx = v.x - px, dz = v.z - pz;
+    proj(px + dx * c + dz * sn, mirror ? -v.y : v.y, pz - dx * sn + dz * c, S.FP[FJ[i]]);
   }
-  ctx.beginPath();
-  ctx.moveTo(L[0], L[1]);
-  for (i = 2; i < L.length; i += 2) ctx.lineTo(L[i], L[i + 1]);
-  for (i = Rr.length - 2; i >= 0; i -= 2) ctx.lineTo(Rr[i], Rr[i + 1]);
-  ctx.closePath();
-  return { ax: (L[0] + Rr[0]) / 2, ay: (L[1] + Rr[1]) / 2, bx: (L[L.length - 2] + Rr[Rr.length - 2]) / 2, by: (L[L.length - 1] + Rr[Rr.length - 1]) / 2,
-    w: Math.hypot(L[8] - Rr[8], L[9] - Rr[9]) / 2 };
+  return S.FP;
 }
-var OUTLINE = "rgba(8,10,18,.38)";
-function limb(A, ar, B, br, c, flatc, a) {
-  capsule(A.x, A.y, ar * A.k, B.x, B.y, br * B.k);
-  ctx.fillStyle = flatc ? css(c, 0.9, a) : limbFill(A.x, A.y, B.x, B.y, Math.max(ar * A.k, br * B.k), c, 0.62, 1.16, a);
+// 같은 돌림으로 점 하나 (손에 든 공)
+function flatPt(S, v, o) {
+  figRot(S);
+  var dx = v.x - S.fx, dz = v.z - S.fz;
+  o.x = S.fx + dx * S.fc + dz * S.fs; o.y = v.y; o.z = S.fz - dx * S.fs + dz * S.fc;
+  return o;
+}
+// 방향 하나(발끝·손가락·시선)를 화면 방향 단위 벡터로
+function flatDir(S, d, mirror, o) {
+  var rx = d.x * S.fc + d.z * S.fs, rz = -d.x * S.fs + d.z * S.fc, ry = mirror ? -d.y : d.y;
+  var x = rx * OB_X - rz, y = -(ry - rx * OB_Y), l = Math.sqrt(x * x + y * y) || 1;
+  o.x = x / l; o.y = y / l;
+  return o;
+}
+// 두께 표 [뼈 위 자리 t, 앞 반폭, 뒤 반폭] (미터, 키 1.98m 기준). 앞 = 몸이 보는 쪽(팔은 이두근 쪽)
+var PR_THIGH = [[0, 0.088, 0.09], [0.3, 0.083, 0.078], [0.7, 0.066, 0.06], [1, 0.054, 0.05]];
+var PR_SHIN = [[0, 0.052, 0.05], [0.2, 0.046, 0.072], [0.48, 0.041, 0.06], [0.8, 0.032, 0.036], [1, 0.03, 0.032]];
+var PR_UARM = [[0, 0.058, 0.062], [0.25, 0.05, 0.055], [0.55, 0.05, 0.047], [1, 0.037, 0.04]];
+var PR_FARM = [[0, 0.04, 0.043], [0.28, 0.045, 0.04], [0.75, 0.032, 0.03], [1, 0.026, 0.027]];
+var PR_SHORTS = [[-0.14, 0.108, 0.114], [0.3, 0.106, 0.108], [0.62, 0.096, 0.1]];
+var PR_SOCK = [[0.68, 0.036, 0.046], [1, 0.034, 0.036]];
+var PR_SLEEVE = [[-0.1, 0.07, 0.074], [0.42, 0.064, 0.066]];
+var PR_TORSO_S = [[-0.17, 0.104, 0.118], [0.02, 0.112, 0.128], [0.17, 0.104, 0.112], [0.24, 0.1, 0.106]];     // 반바지 허리
+var PR_TORSO_J = [[0.1, 0.1, 0.108], [0.32, 0.098, 0.1], [0.55, 0.122, 0.108], [0.72, 0.138, 0.12], [0.86, 0.122, 0.114], [0.97, 0.084, 0.092]];
+var LB = new Float64Array(96), LBK = new Float64Array(48), _ft = { x: 0, y: 0 }, _fd = { x: 0, y: 0 };
+// 한 마디(A→B) 또는 두 마디(A→B→C)를 감싼 윤곽을 LB 에. 마디가 꺾이는 곳은 두 뼈의 앞쪽 방향을 평균낸다.
+// t 는 0 밑이나 1 위도 된다(뼈 끝 너머로 늘인다). fs: 앞쪽 부호(보는 쪽). 돌려주는 값: 점 수
+function limbOutline(A, B, C, P1, P2, k, fs) {
+  var ux = B.x - A.x, uy = B.y - A.y, l = Math.sqrt(ux * ux + uy * uy) || 1e-6, nf = 0, nb = 0, i, q, t, nx, ny, cx, cy;
+  ux /= l; uy /= l;
+  var vx = 0, vy = 0;
+  if (C) { vx = C.x - B.x; vy = C.y - B.y; var l2 = Math.sqrt(vx * vx + vy * vy) || 1e-6; vx /= l2; vy /= l2; }
+  for (i = 0; i < P1.length; i++) {
+    q = P1[i]; t = q[0];
+    nx = fs * uy; ny = -fs * ux;
+    if (C && t >= 0.999) { var ax = nx + fs * vy, ay = ny - fs * vx, al = Math.sqrt(ax * ax + ay * ay) || 1; nx = ax / al; ny = ay / al; }
+    cx = A.x + (B.x - A.x) * t; cy = A.y + (B.y - A.y) * t;
+    LB[nf * 2] = cx + nx * q[1] * k; LB[nf * 2 + 1] = cy + ny * q[1] * k; nf++;
+    LBK[nb * 2] = cx - nx * q[2] * k; LBK[nb * 2 + 1] = cy - ny * q[2] * k; nb++;
+  }
+  if (C) for (i = 0; i < P2.length; i++) {
+    q = P2[i]; t = q[0];
+    if (t <= 0.001) continue;
+    nx = fs * vy; ny = -fs * vx;
+    cx = B.x + (C.x - B.x) * t; cy = B.y + (C.y - B.y) * t;
+    LB[nf * 2] = cx + nx * q[1] * k; LB[nf * 2 + 1] = cy + ny * q[1] * k; nf++;
+    LBK[nb * 2] = cx - nx * q[2] * k; LBK[nb * 2 + 1] = cy - ny * q[2] * k; nb++;
+  }
+  for (i = nb - 1; i >= 0; i--) { LB[nf * 2] = LBK[i * 2]; LB[nf * 2 + 1] = LBK[i * 2 + 1]; nf++; }
+  return nf;
+}
+var OUTLINE = "rgba(10,12,22,.5)";
+// 윤곽을 칠한다: 빛이 오는 쪽이 밝은 그러데이션(평면이면 한 색)
+function fillShape(n, c, dark, a, ax, ay, bx, by, r, plain) {
+  smoothClosed(ctx, LB, n);
+  if (plain) ctx.fillStyle = css(c, dark, a);
+  else ctx.fillStyle = limbFill(ax, ay, bx, by, r, c, 0.74 * dark, 1.1 * dark, a);
   ctx.fill();
-  if (!flatc && A.k * ar > 1.4) { ctx.strokeStyle = OUTLINE; ctx.lineWidth = Math.max(0.5, 0.008 * A.k); ctx.stroke(); }
+  if (!plain && r > 2.5) { ctx.strokeStyle = OUTLINE; ctx.lineWidth = Math.max(0.55, r * 0.07); ctx.stroke(); }
 }
-function mid3(A, B, t, o) { o.x = A.x + (B.x - A.x) * t; o.y = A.y + (B.y - A.y) * t; o.d = A.d + (B.d - A.d) * t; o.k = A.k + (B.k - A.k) * t; return o; }
-var _m1 = { x: 0, y: 0, d: 0, k: 0 }, _m2 = { x: 0, y: 0, d: 0, k: 0 }, _m3 = { x: 0, y: 0, d: 0, k: 0 }, _m4 = { x: 0, y: 0, d: 0, k: 0 };
-// K: 옷 색 { skin, hair, bald, beard, jersey, trim, trim2, shorts, shortsTrim, socks, shoe, sole, sleeveR, sleeveL, pants, stripes, no, name }
-function drawFigure(S, K, s, opt) {
-  opt = opt || {};
-  var mirror = !!opt.mirror, a = opt.alpha === undefined ? 1 : opt.alpha, flatc = mirror;
-  var J = S.J, D = S.D, P = figProj(S, mirror);
-  if (P.pel.d < NEAR + 0.3) return;
-  var parts = S.parts || (S.parts = []);
-  parts.length = 0;
-  parts.push([ (P.hpL.d + P.knL.d + P.anL.d) / 3, 0 ], [ (P.hpR.d + P.knR.d + P.anR.d) / 3, 1 ],
-    [ (P.shL.d + P.elL.d + P.wrL.d) / 3 + 0.02, 2 ], [ (P.shR.d + P.elR.d + P.wrR.d) / 3 + 0.02, 3 ],
-    [ P.pel.d + 0.001, 4 ], [ P.head.d - 0.001, 5 ]);
-  if (opt.ball && !mirror) parts.push([ opt.ball.d, 6 ]);
-  parts.sort(function (p, q) { return q[0] - p[0]; });
-  ctx.lineJoin = "round";
-  for (var i = 0; i < parts.length; i++) {
-    switch (parts[i][1]) {
-      case 0: case 1: figLeg(S, K, s, P, parts[i][1] ? "R" : "L", flatc, a, mirror); break;
-      case 2: case 3: figArm(S, K, s, P, parts[i][1] === 3 ? "R" : "L", flatc, a, mirror); break;
-      case 4: figTorso(S, K, s, P, flatc, a, mirror); break;
-      case 5: figHead(S, K, s, P, flatc, a, mirror); break;
-      case 6: opt.ball.draw(); break;
-    }
-  }
-}
-function figLeg(S, K, s, P, side, flatc, a, mirror) {
-  var hp = P["hp" + side], kn = P["kn" + side], an = P["an" + side], J = S.J, ft = S.D["ft" + side];
-  var skin = K.pants || K.skin;
-  limb(hp, 0.086 * s, kn, 0.056 * s, skin, flatc, a);
-  limb(kn, 0.056 * s, an, 0.039 * s, skin, flatc, a);
-  // 양말 (정강이 아래쪽)
-  mid3(kn, an, 0.66, _m1);
-  if (!K.pants) limb(_m1, 0.046 * s, an, 0.04 * s, K.socks, flatc, a);
-  // 신발: 발목에서 발 방향으로
-  var A = J["an" + side], mir = mirror ? -1 : 1;
-  proj(A.x - ft.x * 0.065 * s, (A.y - 0.05 * s) * mir, A.z - ft.z * 0.065 * s, _m2);
-  proj(A.x + ft.x * 0.19 * s, (A.y - 0.066 * s + ft.y * 0.1) * mir, A.z + ft.z * 0.19 * s, _m3);
-  limb(_m2, 0.054 * s, _m3, 0.043 * s, K.shoe, flatc, a);
-  if (!flatc && _m2.k * s > 30) {
-    ctx.strokeStyle = css(K.sole || [240, 240, 240], 1, a); ctx.lineWidth = Math.max(0.8, 0.018 * _m2.k * s);
-    ctx.beginPath(); ctx.moveTo(_m2.x, _m2.y + 0.045 * s * _m2.k); ctx.lineTo(_m3.x, _m3.y + 0.036 * s * _m3.k); ctx.stroke();
-  }
-  // 반바지 다리 (허벅지 위쪽을 덮는다)
+function figLeg(S, K, s, side, fs, k, dark, a, plain) {
+  var P = S.FP, hp = P["hp" + side], kn = P["kn" + side], an = P["an" + side], r = 0.07 * k;
+  var skin = K.pants || K.skin, n;
+  // 다리 (긴바지면 바지 색)
+  n = limbOutline(hp, kn, an, PR_THIGH, PR_SHIN, k, fs);
+  fillShape(n, skin, dark, a, hp.x, hp.y, an.x, an.y, r, plain);
+  // 양말
+  if (!K.pants && K.socks) { n = limbOutline(kn, an, null, PR_SOCK, null, k, fs); fillShape(n, K.socks, dark, a, kn.x, kn.y, an.x, an.y, r * 0.6, plain); }
+  figShoe(S, K, s, side, fs, k, dark, a, plain);
+  // 반바지 다리
   if (!K.pants) {
-    mid3(hp, kn, 0.6, _m4);
-    limb(hp, 0.104 * s, _m4, 0.092 * s, K.shorts, flatc, a);
-    if (K.shortsTrim && !flatc && hp.k * s > 26) {
-      ctx.strokeStyle = css(K.shortsTrim, 1, a); ctx.lineWidth = Math.max(1, 0.02 * hp.k * s);
-      ctx.beginPath(); ctx.moveTo(hp.x, hp.y); ctx.lineTo(_m4.x, _m4.y); ctx.stroke();
+    n = limbOutline(hp, kn, null, PR_SHORTS, null, k, fs);
+    fillShape(n, K.shorts, dark, a, hp.x, hp.y, kn.x, kn.y, r * 1.2, plain);
+    if (K.shortsTrim && !plain && k > 20) {                     // 옆 줄
+      var ex = hp.x + (kn.x - hp.x) * 0.6, ey = hp.y + (kn.y - hp.y) * 0.6;
+      ctx.strokeStyle = css(K.shortsTrim, dark, a); ctx.lineWidth = Math.max(1, 0.024 * k);
+      ctx.beginPath(); ctx.moveTo(hp.x + (kn.x - hp.x) * -0.1, hp.y + (kn.y - hp.y) * -0.1); ctx.lineTo(ex, ey); ctx.stroke();
+      // 밑단
+      var ux = kn.x - hp.x, uy = kn.y - hp.y, ul = Math.sqrt(ux * ux + uy * uy) || 1;
+      ctx.lineWidth = Math.max(0.8, 0.014 * k);
+      ctx.beginPath(); ctx.moveTo(ex + uy / ul * fs * 0.094 * k, ey - ux / ul * fs * 0.094 * k); ctx.lineTo(ex - uy / ul * fs * 0.098 * k, ey + ux / ul * fs * 0.098 * k); ctx.stroke();
     }
   }
 }
-function figArm(S, K, s, P, side, flatc, a, mirror) {
-  var sh = P["sh" + side], el = P["el" + side], wr = P["wr" + side], J = S.J, hy = S.D["h" + side + "y"];
-  var sleeve = side === "R" ? K.sleeveR : K.sleeveL, arm = sleeve || K.skin;
-  // 어깨(삼각근)는 민소매 밖 맨살. 티셔츠 심판은 소매
-  ctx.beginPath(); ctx.arc(sh.x, sh.y, 0.066 * s * sh.k, 0, 6.2832);
-  ctx.fillStyle = flatc ? css(K.tee || K.skin, 0.9, a) : limbFill(sh.x, sh.y - 1, sh.x, sh.y + 1, 0.066 * s * sh.k, K.tee || K.skin, 0.66, 1.15, a); ctx.fill();
-  limb(sh, 0.06 * s, el, 0.044 * s, K.tee && !sleeve ? K.skin : arm, flatc, a);
-  if (K.tee) { mid3(sh, el, 0.42, _m1); limb(sh, 0.07 * s, _m1, 0.064 * s, K.tee, flatc, a); }
-  limb(el, 0.046 * s, wr, 0.031 * s, arm, flatc, a);
-  // 손: 손목에서 손가락 쪽으로
-  var W = J["wr" + side], m = mirror ? -1 : 1;
-  proj(W.x + hy.x * 0.15 * s, (W.y + hy.y * 0.15 * s) * m, W.z + hy.z * 0.15 * s, _m2);
-  limb(wr, 0.038 * s, _m2, 0.03 * s, K.skin, flatc, a);
+// 농구화: 발목 관절 기준 (앞으로, 아래로) 미터. 높은 목이 복사뼈를 감싼다
+var SHOE_PTS = [[-0.08, 0.086], [-0.096, 0.035], [-0.078, -0.035], [-0.068, -0.062], [0.018, -0.07], [0.048, -0.048],
+  [0.105, -0.012], [0.185, 0.026], [0.226, 0.058], [0.21, 0.088], [0.06, 0.09]];
+var SOLE_PTS = [[-0.086, 0.066], [0.224, 0.066], [0.214, 0.09], [-0.08, 0.09]];
+function shoePath(P, x0, y0, ux, uy, wx, wy, k) {
+  var n = P.length;
+  for (var i = 0; i < n; i++) { LB[i * 2] = x0 + (ux * P[i][0] + wx * P[i][1]) * k; LB[i * 2 + 1] = y0 + (uy * P[i][0] + wy * P[i][1]) * k; }
+  return n;
 }
-function figTorso(S, K, s, P, flatc, a, mirror) {
-  // 반바지 허리
-  var hb = bodyHull(S, P, HIPS_R, s, mirror, 1);
-  ctx.fillStyle = flatc ? css(K.shorts, 0.9, a) : limbFill(hb.ax, hb.ay, hb.bx, hb.by, hb.w, K.shorts, 0.64, 1.1, a); ctx.fill();
-  if (!flatc) { ctx.strokeStyle = OUTLINE; ctx.lineWidth = Math.max(0.5, 0.008 * P.pel.k); ctx.stroke(); }
-  // 유니폼
-  var tb = bodyHull(S, P, TORSO_R, s, mirror, 1);
-  if (K.stripes && !flatc) {
+function figShoe(S, K, s, side, fs, k, dark, a, plain) {
+  var an = S.FP["an" + side], mirror = plain;
+  var u = flatDir(S, S.D["ft" + side], mirror, _ft);
+  // 발끝이 뒤를 보면(몸을 누르다 생긴 것) 보는 쪽으로
+  if (u.x * S.face < -0.2) u.x = -u.x;
+  var wx = -u.y, wy = u.x;
+  if ((wy < 0) !== mirror) { wx = -wx; wy = -wy; }
+  var n = shoePath(SHOE_PTS, an.x, an.y, u.x, u.y, wx, wy, k);
+  smoothClosed(ctx, LB, n);
+  ctx.fillStyle = css(K.shoe, dark, a); ctx.fill();
+  if (plain) return;
+  // 밑창(흰 중창)과 옆 줄
+  n = shoePath(SOLE_PTS, an.x, an.y, u.x, u.y, wx, wy, k);
+  ctx.beginPath(); ctx.moveTo(LB[0], LB[1]); for (var i = 1; i < n; i++) ctx.lineTo(LB[i * 2], LB[i * 2 + 1]); ctx.closePath();
+  ctx.fillStyle = css(K.sole || [240, 240, 240], dark, a); ctx.fill();
+  if (k > 24) {
+    ctx.strokeStyle = css(K.trim2 || K.trim || [255, 255, 255], dark, a); ctx.lineWidth = Math.max(0.8, 0.014 * k);
+    ctx.beginPath();
+    ctx.moveTo(an.x + (u.x * -0.05 + wx * 0.035) * k, an.y + (u.y * -0.05 + wy * 0.035) * k);
+    ctx.quadraticCurveTo(an.x + (u.x * 0.06 + wx * 0.05) * k, an.y + (u.y * 0.06 + wy * 0.05) * k, an.x + (u.x * 0.15 + wx * 0.02) * k, an.y + (u.y * 0.15 + wy * 0.02) * k);
+    ctx.stroke();
+  }
+  n = shoePath(SHOE_PTS, an.x, an.y, u.x, u.y, wx, wy, k);
+  smoothClosed(ctx, LB, n);
+  ctx.strokeStyle = OUTLINE; ctx.lineWidth = Math.max(0.55, 0.006 * k); ctx.stroke();
+}
+// 손: 손목에서 손가락 쪽(D.h?y)으로 벙어리장갑 모양 + 엄지
+var HAND_PTS = [[-0.01, -0.03], [0.05, -0.04], [0.115, -0.036], [0.175, -0.02], [0.192, 0.004], [0.172, 0.026], [0.11, 0.034], [0.05, 0.036], [0.0, 0.03]];
+function figHand(S, K, s, side, fs, k, dark, a, plain) {
+  var wr = S.FP["wr" + side], mirror = plain, u = flatDir(S, S.D["h" + side + "y"], mirror, _fd);
+  var wx = fs * u.y, wy = -fs * u.x, n = shoePath(HAND_PTS, wr.x, wr.y, u.x, u.y, wx, wy, k);
+  smoothClosed(ctx, LB, n);
+  ctx.fillStyle = css(K.skin, dark, a); ctx.fill();
+  if (plain) return;
+  ctx.strokeStyle = OUTLINE; ctx.lineWidth = Math.max(0.5, 0.006 * k); ctx.stroke();
+  // 엄지
+  ctx.beginPath(); ctx.ellipse(wr.x + (u.x * 0.06 + wx * 0.04) * k, wr.y + (u.y * 0.06 + wy * 0.04) * k, 0.045 * k, 0.018 * k, Math.atan2(u.y, u.x) - fs * 0.5, 0, 6.2832);
+  ctx.fillStyle = css(K.skin, dark * 0.9, a); ctx.fill();
+}
+function figArm(S, K, s, side, fs, k, dark, a, plain) {
+  var P = S.FP, sh = P["sh" + side], el = P["el" + side], wr = P["wr" + side];
+  var sleeve = side === "R" ? K.sleeveR : K.sleeveL, arm = sleeve || K.skin, n = limbOutline(sh, el, wr, PR_UARM, PR_FARM, k, fs);
+  fillShape(n, arm, dark, a, sh.x, sh.y, wr.x, wr.y, 0.05 * k, plain);
+  if (K.tee) { n = limbOutline(sh, el, null, PR_SLEEVE, null, k, fs); fillShape(n, K.tee, dark, a, sh.x, sh.y, el.x, el.y, 0.07 * k, plain); }
+  figHand(S, K, s, side, fs, k, dark, a, plain);
+}
+// 몸통: 척추(골반→목)를 따라 앞(가슴)·뒤(등) 두께
+function torsoOutline(P, k, fs, prof) {
+  var A = P.pel, B = P.neck, ux = B.x - A.x, uy = B.y - A.y, l = Math.sqrt(ux * ux + uy * uy) || 1e-6, nx, ny, nf = 0, i;
+  ux /= l; uy /= l; nx = fs * uy; ny = -fs * ux;
+  for (i = 0; i < prof.length; i++) {
+    var q = prof[i], cx = A.x + (B.x - A.x) * q[0], cy = A.y + (B.y - A.y) * q[0];
+    LB[nf * 2] = cx + nx * q[1] * k; LB[nf * 2 + 1] = cy + ny * q[1] * k; nf++;
+  }
+  for (i = prof.length - 1; i >= 0; i--) {
+    q = prof[i]; cx = A.x + (B.x - A.x) * q[0]; cy = A.y + (B.y - A.y) * q[0];
+    LB[nf * 2] = cx - nx * q[2] * k; LB[nf * 2 + 1] = cy - ny * q[2] * k; nf++;
+  }
+  return nf;
+}
+function figTorso(S, K, s, fs, k, a, plain) {
+  var P = S.FP, A = P.pel, B = P.neck, n, r = 0.12 * k;
+  n = torsoOutline(P, k, fs, PR_TORSO_S);
+  fillShape(n, K.shorts, 1, a, A.x, A.y, B.x, B.y, r, plain);
+  n = torsoOutline(P, k, fs, PR_TORSO_J);
+  if (K.stripes && !plain) {
+    smoothClosed(ctx, LB, n);
     ctx.fillStyle = css(K.jersey, 1, a); ctx.fill();
     ctx.save(); ctx.clip();
-    ctx.strokeStyle = css([23, 25, 30], 1, a); ctx.lineWidth = Math.max(1, 0.03 * P.pel.k * s);
+    var ux = B.x - A.x, uy = B.y - A.y, ul = Math.sqrt(ux * ux + uy * uy) || 1, px = uy / ul, py = -ux / ul;
+    ctx.strokeStyle = css([23, 25, 30], 1, a); ctx.lineWidth = Math.max(1, 0.028 * k);
     ctx.beginPath();
-    for (var x = -0.2; x <= 0.21; x += 0.07) { var sx = (tb.ax + tb.bx) / 2 + x * P.pel.k * s; ctx.moveTo(sx, tb.by - 40); ctx.lineTo(sx, tb.ay + 40); }
+    for (var o = -0.2; o <= 0.21; o += 0.07) { ctx.moveTo(A.x + px * o * k - ux * 0.3, A.y + py * o * k - uy * 0.3); ctx.lineTo(B.x + px * o * k + ux * 0.3, B.y + py * o * k + uy * 0.3); }
     ctx.stroke();
     ctx.restore();
-    bodyHull(S, P, TORSO_R, s, mirror, 1);
-  } else {
-    ctx.fillStyle = flatc ? css(K.jersey, 0.9, a) : limbFill(tb.ax, tb.ay, tb.bx, tb.by, tb.w, K.jersey, 0.66, 1.1, a); ctx.fill();
+    smoothClosed(ctx, LB, n);
+    ctx.strokeStyle = OUTLINE; ctx.lineWidth = Math.max(0.55, 0.008 * k); ctx.stroke();
+  } else fillShape(n, K.jersey, 1, a, A.x, A.y, B.x, B.y, r, plain);
+  if (plain || k < 18) return;
+  // 옆선(유니폼 옆 판)·민소매 테두리
+  if (K.trim && !K.stripes) {
+    ctx.strokeStyle = css(K.trim, 1, a); ctx.lineWidth = Math.max(1, 0.03 * k);
+    ctx.beginPath(); ctx.moveTo(A.x + (B.x - A.x) * 0.14, A.y + (B.y - A.y) * 0.14); ctx.lineTo(A.x + (B.x - A.x) * 0.74, A.y + (B.y - A.y) * 0.74); ctx.stroke();
+    var near = S.face > 0 ? P.shR : P.shL;
+    ctx.lineWidth = Math.max(0.8, 0.018 * k);
+    ctx.beginPath(); ctx.ellipse(near.x, near.y + 0.02 * k, 0.085 * k, 0.1 * k, Math.atan2(B.y - A.y, B.x - A.x) + 1.5708, 0.2, 2.94); ctx.stroke();
   }
-  if (flatc) return;
-  ctx.strokeStyle = OUTLINE; ctx.lineWidth = Math.max(0.5, 0.008 * P.pel.k); ctx.stroke();
-  // 옆선(옆에서 볼 때)·가슴 번호(앞에서 볼 때)·등 번호(뒤에서 볼 때)
-  var D = S.D, toCam = -(D.f.x * CAM.fx + D.f.z * CAM.fz), k = P.pel.k * s;
-  if (K.trim && k > 22) {
-    var side = Math.abs(D.f.x * CAM.rx + D.f.z * CAM.rz);
-    if (side > 0.55) {
-      ctx.strokeStyle = css(K.trim, 1, a); ctx.lineWidth = Math.max(1, 0.035 * k);
-      ctx.beginPath(); mid3(P.pel, P.neck, 0.1, _m1); mid3(P.pel, P.neck, 0.86, _m2);
-      ctx.moveTo(_m1.x, _m1.y); ctx.lineTo(_m2.x, _m2.y); ctx.stroke();
-    }
-    if (Math.abs(toCam) > 0.45 && k > 40 && K.no) {
-      mid3(P.pel, P.neck, 0.55, _m1);
-      ctx.font = "900 " + Math.round(0.2 * k) + "px 'Arial Black','Helvetica Neue',sans-serif";
-      ctx.textAlign = "center"; ctx.textBaseline = "middle";
-      ctx.lineWidth = Math.max(1, 0.02 * k); ctx.strokeStyle = css(K.trim2 || K.trim, 1, a);
-      ctx.strokeText(K.no, _m1.x, _m1.y); ctx.fillStyle = css(K.num || K.trim, 1, a); ctx.fillText(K.no, _m1.x, _m1.y);
-    }
+  // 허리 밴드
+  if (K.shortsTrim) {
+    var wx0 = A.x + (B.x - A.x) * 0.2, wy0 = A.y + (B.y - A.y) * 0.2, ux2 = (B.x - A.x), uy2 = (B.y - A.y), ul2 = Math.sqrt(ux2 * ux2 + uy2 * uy2) || 1;
+    var nx = fs * uy2 / ul2, ny = -fs * ux2 / ul2;
+    ctx.strokeStyle = css(K.shortsTrim, 1, a); ctx.lineWidth = Math.max(0.8, 0.02 * k);
+    ctx.beginPath(); ctx.moveTo(wx0 + nx * 0.1 * k, wy0 + ny * 0.1 * k); ctx.lineTo(wx0 - nx * 0.106 * k, wy0 - ny * 0.106 * k); ctx.stroke();
   }
-  // 목
-  mid3(P.neck, P.head, 0.55, _m1);
-  limb(P.neck, 0.062 * s, _m1, 0.058 * s, K.skin, false, a);
 }
-// 머리: 달걀꼴 피부 + 머리카락 + 귀·눈·코·입. 얼굴이 보는 쪽(D.look)을 화면에 던져 옆얼굴·앞얼굴을 오간다
-function figHead(S, K, s, P, flatc, a, mirror) {
-  var h = P.head, rx = 0.088 * s * h.k, ry = 0.112 * s * h.k;
-  if (rx < 0.5) return;
-  var L = S.D.look, lx = L.x * CAM.rx + L.z * CAM.rz, lz = -(L.x * CAM.fx + L.z * CAM.fz), phi = Math.atan2(lx, lz);
-  var tilt = Math.atan2(P.head.x - P.neck.x, P.neck.y - P.head.y) * (mirror ? -1 : 1) * 0.6;
+// 옆얼굴 (앞 = +x, 아래 = +y, 미터, 원점 = 머리 관절). 키 1.98m 에서 머리 높이 24cm
+function headPath(g) {
+  g.beginPath();
+  g.moveTo(-0.058, 0.086);
+  g.bezierCurveTo(-0.12, 0.058, -0.132, -0.05, -0.08, -0.104);
+  g.bezierCurveTo(-0.03, -0.143, 0.06, -0.136, 0.085, -0.068);
+  g.quadraticCurveTo(0.097, -0.034, 0.094, -0.017);
+  g.quadraticCurveTo(0.09, -0.004, 0.097, 0.008);
+  g.lineTo(0.118, 0.035);
+  g.quadraticCurveTo(0.116, 0.047, 0.098, 0.049);
+  g.quadraticCurveTo(0.105, 0.059, 0.1, 0.068);
+  g.quadraticCurveTo(0.093, 0.072, 0.098, 0.08);
+  g.quadraticCurveTo(0.1, 0.088, 0.093, 0.095);
+  g.quadraticCurveTo(0.097, 0.11, 0.083, 0.118);
+  g.quadraticCurveTo(0.048, 0.126, 0.0, 0.105);
+  g.quadraticCurveTo(-0.03, 0.09, -0.058, 0.086);
+  g.closePath();
+}
+function hairPath(g, style) {
+  g.beginPath();
+  if (style === "top") {                           // 윗머리를 조금 길게
+    g.moveTo(0.08, -0.07);
+    g.bezierCurveTo(0.075, -0.165, -0.05, -0.175, -0.098, -0.105);
+    g.bezierCurveTo(-0.13, -0.05, -0.122, 0.03, -0.094, 0.056);
+  } else {
+    g.moveTo(0.078, -0.078);
+    g.bezierCurveTo(0.06, -0.152, -0.045, -0.158, -0.09, -0.108);
+    g.bezierCurveTo(-0.128, -0.058, -0.122, 0.028, -0.094, 0.056);
+  }
+  g.lineTo(-0.066, 0.05);
+  g.quadraticCurveTo(-0.05, 0.0, -0.03, -0.03);
+  g.quadraticCurveTo(0.0, -0.05, 0.028, -0.04);
+  g.lineTo(0.03, -0.006);
+  g.lineTo(0.046, -0.01);
+  g.quadraticCurveTo(0.05, -0.058, 0.078, -0.078);
+  g.closePath();
+}
+var HEAD_S = 1.0, _hl = { x: 0, y: 0 };
+function figHead(S, K, s, fs, k, a, plain) {
+  var P = S.FP, h = P.head, nk = P.neck, face = S.face, mirror = plain;
+  var L = flatDir(S, S.D.look, mirror, _hl);
+  var pitch = clamp(Math.atan2(mirror ? L.y : -L.y, Math.abs(L.x)), -0.35, 0.45), rot = -pitch * face * (mirror ? -1 : 1);
+  var hk = k * HEAD_S, cr = Math.cos(rot), sr = Math.sin(rot), sx = face * hk, sy = mirror ? -hk : hk;
+  function X(lx, ly) { return h.x + cr * lx * sx - sr * ly * sy; }
+  function Y(lx, ly) { return h.y + sr * lx * sx + cr * ly * sy; }
+  // 목: 턱 밑·뒷목에서 몸통 위(척추 92%)까지
+  var ux = nk.x - P.pel.x, uy = nk.y - P.pel.y, ul = Math.sqrt(ux * ux + uy * uy) || 1, nx = fs * uy / ul, ny = -fs * ux / ul;
+  var bx = P.pel.x + ux * 0.9, by = P.pel.y + uy * 0.9;
+  ctx.beginPath();
+  ctx.moveTo(X(0.05, 0.088), Y(0.05, 0.088));
+  ctx.lineTo(bx + nx * 0.074 * k, by + ny * 0.074 * k);
+  ctx.lineTo(bx - nx * 0.084 * k, by - ny * 0.084 * k);
+  ctx.lineTo(X(-0.07, 0.058), Y(-0.07, 0.058));
+  ctx.closePath();
+  ctx.fillStyle = css(K.skin, 0.84, a); ctx.fill();
+  if (!plain && hk > 20) { ctx.strokeStyle = OUTLINE; ctx.lineWidth = Math.max(0.5, 0.006 * k); ctx.stroke(); }
   ctx.save();
-  ctx.translate(h.x, h.y); ctx.rotate(tilt);
-  if (mirror) ctx.scale(1, -1);
-  // 피부
-  ctx.beginPath(); ctx.ellipse(0, 0, rx, ry, 0, 0, 6.2832);
-  if (flatc) { ctx.fillStyle = css(K.skin, 0.9, a); ctx.fill(); ctx.restore(); return; }
-  var gr = ctx.createRadialGradient(-rx * 0.35, -ry * 0.4, rx * 0.1, 0, 0, rx * 1.25);
-  gr.addColorStop(0, css(K.skin, 1.18, a)); gr.addColorStop(1, css(K.skin, 0.66, a));
+  ctx.translate(h.x, h.y); ctx.rotate(rot); ctx.scale(sx, sy);
+  headPath(ctx);
+  if (plain) { ctx.fillStyle = css(K.skin, 1, a); ctx.fill(); ctx.restore(); return; }
+  var gr = ctx.createRadialGradient(0.04, -0.06, 0.01, 0.0, 0.0, 0.16);
+  gr.addColorStop(0, css(K.skin, 1.14, a)); gr.addColorStop(1, css(K.skin, 0.78, a));
   ctx.fillStyle = gr; ctx.fill();
-  var big = rx > 3.2, sp = Math.sin(phi), cp = Math.cos(phi);
-  // 귀
-  [-1, 1].forEach(function (sg) {
-    var ea = phi + sg * 1.5708, c = Math.cos(ea);
-    if (c < -0.25) return;
-    ctx.beginPath(); ctx.ellipse(rx * 0.97 * Math.sin(ea), ry * 0.06, rx * 0.17 * (0.5 + 0.5 * Math.abs(Math.sin(ea))), ry * 0.24, 0, 0, 6.2832);
-    ctx.fillStyle = css(K.skin, 0.82, a); ctx.fill();
-  });
-  // 머리카락: 뒤통수·정수리. 얼굴 반대쪽으로 밀어 머리 안으로 자른다
-  if (K.hair && !K.bald) {
-    ctx.save();
-    ctx.beginPath(); ctx.ellipse(0, 0, rx * 1.04, ry * 1.04, 0, 0, 6.2832); ctx.clip();
-    ctx.beginPath();
-    var back = cp < -0.4;
-    if (back) ctx.ellipse(0, -ry * 0.05, rx * 1.1, ry * 1.0, 0, 0, 6.2832);
-    else ctx.ellipse(-sp * rx * 0.42, -ry * (0.3 + 0.12 * Math.max(0, cp)), rx * 1.04, ry * 0.86, 0, 0, 6.2832);
-    ctx.fillStyle = css(K.hair, 1, a); ctx.fill();
+  var big = hk > 26, px1 = 1 / hk;                          // 1px 의 머리 단위 길이
+  // 수염 자국
+  if (K.beard) {
+    ctx.save(); headPath(ctx); ctx.clip();
+    ctx.fillStyle = css(K.hair || [20, 14, 10], 1, a * K.beard * 0.55);
+    ctx.beginPath(); ctx.ellipse(0.045, 0.1, 0.075, 0.042, -0.25, 0, 6.2832); ctx.fill();
     ctx.restore();
-  } else if (big) {
-    ctx.beginPath(); ctx.ellipse(-rx * 0.2, -ry * 0.55, rx * 0.35, ry * 0.18, -0.3, 0, 6.2832);
-    ctx.fillStyle = "rgba(255,255,255,.14)"; ctx.fill();
   }
-  if (big && cp > -0.3) {
-    var fc = css([28, 16, 10], 1, a);
-    // 눈·눈썹
-    [-1, 1].forEach(function (sg) {
-      var ea = phi + sg * 0.38, c = Math.cos(ea);
-      if (c < 0.12) return;
-      var ex = rx * 0.9 * Math.sin(ea), ey = -ry * 0.06;
-      ctx.fillStyle = fc; ctx.beginPath(); ctx.ellipse(ex, ey, Math.max(0.5, rx * 0.1 * (0.4 + 0.6 * c)), Math.max(0.5, ry * 0.07), 0, 0, 6.2832); ctx.fill();
-      ctx.fillStyle = css(K.hair || [40, 28, 20], 0.9, a); ctx.fillRect(ex - rx * 0.16 * c, ey - ry * 0.2, rx * 0.32 * c + 0.4, Math.max(0.6, ry * 0.06));
-    });
-    // 코
-    var nx = rx * Math.sin(phi) * 0.98, pr = Math.abs(sp);
-    ctx.fillStyle = css(K.skin, 0.9, a);
-    ctx.beginPath();
-    ctx.moveTo(nx, -ry * 0.02);
-    ctx.lineTo(nx + sp * rx * 0.2 * pr + (1 - pr) * rx * 0.02, ry * 0.26);
-    ctx.lineTo(nx - sp * rx * 0.02, ry * 0.3);
-    ctx.closePath(); ctx.fill();
-    ctx.strokeStyle = css(K.skin, 0.62, a); ctx.lineWidth = Math.max(0.5, rx * 0.05); ctx.stroke();
-    // 입
-    if (cp > 0.05 || pr > 0.5) {
-      var mx = rx * 0.9 * Math.sin(phi), mw = rx * (0.14 + 0.2 * Math.max(0, cp));
-      ctx.strokeStyle = css([90, 30, 26], 1, a); ctx.lineWidth = Math.max(0.6, ry * 0.05);
-      ctx.beginPath(); ctx.moveTo(mx - mw * (sp > 0 ? 1 : 0.4), ry * 0.5); ctx.lineTo(mx + mw * (sp < 0 ? 1 : 0.4), ry * 0.5); ctx.stroke();
-    }
-    // 수염 자국
-    if (K.beard) {
-      ctx.save(); ctx.beginPath(); ctx.ellipse(0, 0, rx, ry, 0, 0, 6.2832); ctx.clip();
-      ctx.fillStyle = css(K.hair || [20, 14, 10], 1, a * K.beard * 0.5);
-      ctx.beginPath(); ctx.ellipse(sp * rx * 0.4, ry * 0.62, rx * 0.8, ry * 0.42, 0, 0, 6.2832); ctx.fill();
-      ctx.restore();
-    }
+  // 머리카락
+  if (K.hair && !K.bald) {
+    ctx.save(); ctx.beginPath(); ctx.ellipse(0, -0.012, 0.132, 0.16, 0, 0, 6.2832); ctx.clip();
+    hairPath(ctx, K.hairTop ? "top" : "short");
+    ctx.fillStyle = css(K.hair, 1, a); ctx.fill();
+    ctx.fillStyle = "rgba(255,255,255,.08)"; ctx.beginPath(); ctx.ellipse(0.01, -0.125, 0.05, 0.016, -0.2, 0, 6.2832); ctx.fill();
+    ctx.restore();
+  } else {
+    ctx.fillStyle = "rgba(255,255,255,.17)"; ctx.beginPath(); ctx.ellipse(0.0, -0.112, 0.045, 0.02, -0.3, 0, 6.2832); ctx.fill();
   }
-  ctx.strokeStyle = OUTLINE; ctx.lineWidth = Math.max(0.5, 0.008 * h.k);
-  ctx.beginPath(); ctx.ellipse(0, 0, rx, ry, 0, 0, 6.2832); ctx.stroke();
+  // 머리띠 (슈터)
+  if (K.band) {
+    ctx.save(); headPath(ctx); ctx.clip();
+    ctx.fillStyle = css(K.band, 1, a);
+    ctx.beginPath(); ctx.moveTo(-0.14, -0.035); ctx.lineTo(0.12, -0.075); ctx.lineTo(0.12, -0.045); ctx.lineTo(-0.14, -0.002); ctx.closePath(); ctx.fill();
+    ctx.fillStyle = css(K.trim || [29, 79, 216], 1, a);
+    ctx.beginPath(); ctx.moveTo(-0.14, -0.022); ctx.lineTo(0.12, -0.062); ctx.lineTo(0.12, -0.056); ctx.lineTo(-0.14, -0.015); ctx.closePath(); ctx.fill();
+    ctx.restore();
+  }
+  // 귀
+  ctx.beginPath(); ctx.ellipse(-0.014, 0.006, 0.02, 0.031, 0.12, 0, 6.2832);
+  ctx.fillStyle = css(K.skin, 0.86, a); ctx.fill();
+  if (big) { ctx.strokeStyle = css(K.skin, 0.62, a); ctx.lineWidth = Math.max(px1 * 0.7, 0.005); ctx.beginPath(); ctx.arc(-0.012, 0.006, 0.012, -1.6, 1.4); ctx.stroke(); }
+  // 눈·눈썹·콧구멍·입
+  var dark = css([26, 16, 10], 1, a);
+  if (big) {
+    ctx.fillStyle = "rgba(250,248,244," + (0.95 * a).toFixed(3) + ")";
+    ctx.beginPath(); ctx.ellipse(0.071, -0.004, 0.014, 0.0075, 0.1, 0, 6.2832); ctx.fill();
+    ctx.fillStyle = dark; ctx.beginPath(); ctx.arc(0.077, -0.004, 0.0062, 0, 6.2832); ctx.fill();
+    ctx.strokeStyle = dark; ctx.lineWidth = Math.max(px1 * 0.8, 0.004);
+    ctx.beginPath(); ctx.moveTo(0.058, -0.009); ctx.quadraticCurveTo(0.072, -0.016, 0.086, -0.008); ctx.stroke();
+    ctx.fillStyle = css(K.skin, 0.55, a); ctx.beginPath(); ctx.arc(0.103, 0.043, 0.0055, 0, 6.2832); ctx.fill();
+    ctx.strokeStyle = css([96, 36, 30], 1, a); ctx.lineWidth = Math.max(px1 * 0.8, 0.004);
+    ctx.beginPath(); ctx.moveTo(0.097, 0.08); ctx.lineTo(0.082, 0.081); ctx.stroke();
+  } else if (hk > 9) {
+    ctx.fillStyle = dark; ctx.beginPath(); ctx.arc(0.074, -0.004, Math.max(0.007, px1 * 0.7), 0, 6.2832); ctx.fill();
+  }
+  ctx.strokeStyle = css(K.hair || [40, 28, 20], 0.9, a); ctx.lineWidth = Math.max(px1 * 0.9, 0.008);
+  ctx.beginPath(); ctx.moveTo(0.054, -0.028); ctx.quadraticCurveTo(0.075, -0.034, 0.093, -0.026); ctx.stroke();
+  headPath(ctx);
+  ctx.strokeStyle = OUTLINE; ctx.lineWidth = Math.max(px1 * 0.9, 0.006); ctx.stroke();
   ctx.restore();
 }
-// 발밑 그늘: 몸 아래 길쭉한 그늘 하나 + 발 둘. 뛰면 커지고 옅어진다 (3D판과 같은 식)
-function figShade(J, s) {
-  var lift = Math.max(0, Math.min(J.anL.y, J.anR.y) - 0.09 * s), grow = 1 + lift * 1.6;
-  var mx = (J.anL.x + J.anR.x) / 2, mz = (J.anL.z + J.anR.z) / 2, spread = Math.hypot(J.anL.x - J.anR.x, J.anL.z - J.anR.z);
-  floorShade(mx * 0.6 + J.pel.x * 0.4, mz * 0.6 + J.pel.z * 0.4, (0.34 + spread * 0.4) * s * grow, 0.32 * s * grow, 0.42 / (1 + lift * 5));
+// K: 옷 색 { skin, hair, bald, beard, band, jersey, trim, trim2, shorts, shortsTrim, socks, shoe, sole, sleeveR, sleeveL, tee, pants, stripes }
+function drawFigure(S, K, s, opt) {
+  opt = opt || {};
+  var mirror = !!opt.mirror, a = opt.alpha === undefined ? 1 : opt.alpha, plain = mirror;
+  figFlat(S, mirror);
+  var face = S.face, fs = mirror ? -face : face, k = CAM.s * s;
+  var near = face > 0 ? "R" : "L", far = face > 0 ? "L" : "R";
+  ctx.lineJoin = "round"; ctx.lineCap = "round";
+  figArm(S, K, s, far, fs, k, 0.7, a, plain);
+  figLeg(S, K, s, far, fs, k, 0.76, a, plain);
+  figLeg(S, K, s, near, fs, k, 1, a, plain);
+  figTorso(S, K, s, fs, k, a, plain);
+  figHead(S, K, s, fs, k, a, plain);
+  if (opt.ball && !mirror) opt.ball.draw();
+  figArm(S, K, s, near, fs, k, 1, a, plain);
+}
+// 발밑 그늘: 몸 아래 길쭉한 그늘 하나 + 발 둘. 뛰면 커지고 옅어진다
+function figShade(S, s) {
+  var J = S.J, lift = Math.max(0, Math.min(J.anL.y, J.anR.y) - 0.09 * s), grow = 1 + lift * 1.6;
+  var mx = (J.anL.x + J.anR.x) / 2, mz = (J.anL.z + J.anR.z) / 2;
+  floorShade(mx * 0.6 + J.pel.x * 0.4, mz * 0.6 + J.pel.z * 0.4, 0.36 * s * grow, 0.3 * s * grow, 0.45 / (1 + lift * 5));
   [J.anL, J.anR].forEach(function (A) {
     var up = Math.max(0, A.y - 0.09 * s);
-    floorShade(A.x, A.z, 0.15 * s * (1 + up * 2), 0.15 * s * (1 + up * 2), 0.5 * Math.max(0, 1 - up / 0.18));
+    floorShade(A.x, A.z, 0.16 * s * (1 + up * 2), 0.12 * s * (1 + up * 2), 0.45 * Math.max(0, 1 - up / 0.18));
   });
 }
 
@@ -2107,7 +2398,6 @@ Particles.prototype.draw = function (streak) {
   for (var i = 0; i < this.n; i++) {
     if (this.life[i] <= 0) continue;
     var o = i * 3, p = proj(this.pos[o], this.pos[o + 1], this.pos[o + 2], PJ);
-    if (p.d < NEAR) continue;
     var f = Math.max(0, this.life[i] / this.max[i]), col = "rgb(" + ((this.base[o] * 255) | 0) + "," + ((this.base[o + 1] * 255) | 0) + "," + ((this.base[o + 2] * 255) | 0) + ")";
     ctx.globalAlpha = f;
     if (streak) {
@@ -2140,7 +2430,7 @@ function confetti(n, x, y, z, spread) {
     confI = (confI + 1) % CONF_N;
     var a = vr() * Math.PI * 2, sp = (1.2 + vr() * 3.2) * spread;
     c.p.set(x + (vr() - 0.5) * 0.3, y + (vr() - 0.5) * 0.2, z + (vr() - 0.5) * 0.3);
-    c.v.set(Math.cos(a) * sp, 2.5 + vr() * 4.5 * spread, Math.sin(a) * sp * 0.7);
+    c.v.set(Math.cos(a) * sp * 0.7, 2.5 + vr() * 4.5 * spread, Math.sin(a) * sp);
     c.r.set(vr() * 6, vr() * 6, vr() * 6);
     c.s.set((vr() - 0.5) * 16, (vr() - 0.5) * 16, (vr() - 0.5) * 16);
     c.life = 2.2 + vr() * 1.4;
@@ -2154,7 +2444,7 @@ function confStep(dt) {
     c.v.y -= 5.2 * dt;
     var dk = Math.exp(-2.4 * dt);
     c.v.multiplyScalar(dk);
-    c.v.x += Math.sin(c.r.y * 2 + c.life * 3) * 0.9 * dt;
+    c.v.z += Math.sin(c.r.y * 2 + c.life * 3) * 0.9 * dt;
     c.p.addScaledVector(c.v, dt);
     c.r.addScaledVector(c.s, dt);
     if (c.p.y < 0.02) { c.p.y = 0.02; c.v.set(0, 0, 0); c.s.multiplyScalar(0.9); }
@@ -2165,7 +2455,6 @@ function confDraw() {
     var c = conf[i];
     if (c.life <= 0) continue;
     var p = proj(c.p.x, c.p.y, c.p.z);
-    if (p.d < NEAR) continue;
     var sc = Math.min(1, c.life * 2), w = 0.065 * p.k * sc * Math.abs(Math.cos(c.r.x)) + 0.4, h = 0.036 * p.k * sc * (0.4 + 0.6 * Math.abs(Math.cos(c.r.y))) + 0.4;
     ctx.save(); ctx.translate(p.x, p.y); ctx.rotate(c.r.z);
     ctx.fillStyle = c.c; ctx.fillRect(-w / 2, -h / 2, w, h);
@@ -2173,7 +2462,7 @@ function confDraw() {
   }
 }
 
-/* ── 골 순간 충격파 고리 (림 높이 수평 원) ── */
+/* ── 골 순간 충격파 고리 (림 높이 수평 원, 옆에서 보니 납작한 타원) ── */
 var rings = [];
 for (var ri = 0; ri < 3; ri++) rings.push({ t: 1, dur: 0.45, s0: 1, s1: 3, c: "#ffd48a", x: 0, z: 0, on: false });
 function ringFx(scale, dur, hex) {
@@ -2188,7 +2477,7 @@ function ringsDraw() {
     if (!r.on) return;
     var k = Math.min(1, r.t / r.dur), e = 1 - Math.pow(1 - k, 3), R = r.s0 + (r.s1 - r.s0) * e;
     ctx.globalAlpha = 0.85 * (1 - k);
-    ctx.strokeStyle = r.c; ctx.lineWidth = Math.max(1.5, 0.05 * proj(r.x, RIM_Y, r.z).k);
+    ctx.strokeStyle = r.c; ctx.lineWidth = Math.max(1.5, 0.05 * CAM.s);
     ctx.beginPath();
     for (var i = 0; i <= 40; i++) {
       var a = i / 40 * Math.PI * 2, p = proj(r.x + R * Math.cos(a), RIM_Y - 0.01, r.z + R * Math.sin(a));
@@ -2209,7 +2498,7 @@ function fxClear() {
    3D판과 같은 사람 모형(키 1.98m). 관절 자리를 세계 좌표로 풀고(팔·다리는 두 마디 IK), 그리기(5)가 관절을 화면에
    던져 마디마다 캡슐로 칠한다. 패스나 거치대에서 공을 받아 들고 있다가, 화면을 누르면 공을 이마 앞으로 모으고
    끄는 세기만큼 무릎을 굽힌다. 손을 떼면 0.13초 동안 뛰어오르며 팔을 뻗어 REL_Y 높이에서 공을 놓고, 손목을 꺾은 채
-   내려온다. 옆에서 보는 화면이라 슛하는 손은 늘 카메라 쪽 손이다(골대가 왼쪽인 자리에서는 왼손 슈터).
+   내려온다. 옆에서 보는 화면이라 슛하는 손은 늘 카메라 쪽 손이다(골대가 늘 화면 오른쪽이라 오른손).
    자세는 관절 15개 + 방향 8개(72개 수)로 리플레이에 적는다
    ══════════════════════════════════════════════════════════════ */
 var SHL = { ua: 0.335, fa: 0.285, th: 0.5, sh: 0.47, ank: 0.085, spine: 0.575, shw: 0.215, hipw: 0.098 };
@@ -2251,7 +2540,7 @@ var _p1 = new V3(), _p2 = new V3(), _p3 = new V3(), _up = new V3(0, 1, 0), _prt 
 var SHOOTER = { J: {}, D: {}, vis: true };
 SHJ.forEach(function (k) { SHOOTER.J[k] = new V3(); });
 SHD.forEach(function (k) { SHOOTER.D[k] = new V3(); });
-var SH_KIT = { skin: rgb(0x8e5b3a), hair: rgb(0x17110d), beard: 0.28, jersey: hexRgb("#f5f6f8"), trim: hexRgb("#1d4fd8"), trim2: hexRgb("#f2b632"),
+var SH_KIT = { skin: rgb(0x8e5b3a), hair: rgb(0x17110d), beard: 0.28, band: hexRgb("#f5f6f8"), jersey: hexRgb("#f5f6f8"), trim: hexRgb("#1d4fd8"), trim2: hexRgb("#f2b632"),
   num: hexRgb("#1d4fd8"), no: "7", shorts: rgb(0xf4f5f7), shortsTrim: rgb(0x1d4fd8), socks: rgb(0xf4f5f7), shoe: rgb(0x1d4fd8), sole: rgb(0xf2f2f2),
   sleeveR: rgb(0x14161c) };
 var _up = new V3(0, 1, 0), _p1 = new V3();
@@ -3325,7 +3614,7 @@ function takeMesh() { return { position: new V3(), visible: true, s: 1, rot: vr(
 function dropMesh(m) { if (m) m.visible = false; }
 function paint(b) { b.mesh.kind = b.kind === "deep" ? "deep" : b.gold ? "gold" : b.fire ? "fire" : "ball"; }
 // 공이 화면 안쪽을 축으로 도는 빠르기 (카메라 쪽을 향한 회전축 성분, 반시계 +)
-function spinView(w) { return -(w.x * CAM.fx + w.z * CAM.fz); }
+function spinView(w) { return w.x; }
 
 // 날아가는 공과 조준 점선이 함께 쓰는 한 걸음. 둘이 다른 식을 쓰면 점선이 공과 어긋난다
 function integrate(s, h) {
@@ -3687,7 +3976,7 @@ function goalFx(b, swish, clinch) {
 /* ══════════════════════════════════════════════════════════════
    8-1. 리플레이
    게임 시간 1/60초마다 공(최대 8개)·그물 매듭·골대 상태·사람 자세를 5.5초 분량 고리 버퍼에 적어 두었다가, 판을 끝낸
-   골을 가까이서 공을 따라가는 화면 → 림 옆 낮은 데서 올려다보는 화면으로 느리게 다시 보여 준다. 적는 건 끝내기 골 0.8초 뒤까지
+   골을 크게 당겨 공을 따라가는 화면 → 림을 더 크게 당긴 화면으로 느리게 다시 보여 준다. 적는 건 끝내기 골 0.8초 뒤까지
    ══════════════════════════════════════════════════════════════ */
 var RP_N = 330, RP_DT = 1 / 60, RP_BALLS = 8;
 var gameT = 0, rpNext = 0, rpHead = 0, rpCount = 0, rpFreeze = Infinity;
@@ -3695,7 +3984,7 @@ var rpT = new Float64Array(RP_N), rpBN = new Uint8Array(RP_N), rpB = new Float32
 var rpNet = null, rpMisc = new Float32Array(RP_N * 5), rpPose = new Float32Array(RP_N * POSE_N), rpPoseT = new Float32Array(POSE_N);
 var RP_NPC = COURT.npcs.length, rpNpc = new Float32Array(RP_N * RP_NPC * POSE_N), rpNpcV = new Uint8Array(RP_N * RP_NPC);
 var RP = { on: false, ready: false, id: -1, t0: 0, ts: 0, t1: 0, tt: 0, fired: false, done: null, cut: 0, lastCut: -1, tf: 50,
-  gold: false, fire: false, swish: false, label: "", spot: null, side: 1, saveNK: null, saveFx: null, saveHoop: null };
+  gold: false, fire: false, swish: false, label: "", spot: null, saveNK: null, saveFx: null, saveHoop: null };
 var rpMesh = { position: new V3(), visible: false, rot: 0, kind: "ball", s: 1 };
 var RP_KIND = ["ball", "gold", "fire", "deep"];
 function kindCode(k) { var i = RP_KIND.indexOf(k); return i < 0 ? 0 : i; }
@@ -3737,7 +4026,6 @@ function rpMark(b, swish, label) {
   RP.ready = true; RP.id = b.id; RP.t0 = b.shot.t0; RP.ts = gameT; RP.t1 = gameT + 0.65; rpFreeze = gameT + 0.8;
   RP.gold = b.gold; RP.fire = !!b.shot.fire; RP.swish = swish; RP.label = label;
   RP.spot = { x: b.shot.sx, z: b.shot.sz };
-  RP.side = CAMSIDE;
 }
 
 function rpBallAt(i, o) {
@@ -3783,28 +4071,23 @@ function rpApply(tt) {
   hoop.x = hx; hoop.z = rpMisc[m0 + 4] + (rpMisc[m1 + 4] - rpMisc[m0 + 4]) * a;
   fx.rimTilt = rpMisc[m0 + 1] + (rpMisc[m1 + 1] - rpMisc[m0 + 1]) * a;
   fx.boardY = rpMisc[m0 + 2] + (rpMisc[m1 + 2] - rpMisc[m0 + 2]) * a; fx.boardZ = rpMisc[m0 + 3] + (rpMisc[m1 + 3] - rpMisc[m0 + 3]) * a;
-  // 카메라: 날아가는 동안은 옆에서 공을 가까이 따라가고(공이 화면 가운데보다 조금 슈터 쪽, 림이 다가오며 들어온다),
-  // 들어가기 0.42초 전부터는 림 옆 낮은 데서 슛 쪽으로 25° 돌아 올려다본다
-  var s = RP.spot, d = spotDist(s), ux = -s.x / d, uz = -s.z / d, sd = RP.side, bp = rpMesh.position;
-  var yaw0 = Math.atan2(sd * uz, -sd * ux);
+  // 카메라: 날아가는 동안은 크게 당겨 공을 따라가고(공이 화면 가운데보다 조금 슈터 쪽, 림이 다가오며 들어온다),
+  // 들어가기 0.42초 전부터는 림을 더 크게 당긴다
+  var s = RP.spot, bp = rpMesh.position, hx = -hoop.z;
   if (tt < RP.ts - 0.42) {
     RP.cut = 1;
     // 공이 손을 떠나기 전(패스를 받고 모으는 동안)은 슛 자리에 맞춘다
-    var along = tt < RP.t0 ? -d : (bp.x - hoop.x) * ux + (bp.z - hoop.z) * uz, lead = clamp(-along * 0.4, 0, 1.8), mid = along + lead;
-    var sc = Math.min(VW, VH) / 5.6;
-    RPC.yaw = yaw0; RPC.tx = hoop.x + ux * mid; RPC.tz = hoop.z + uz * mid;
-    RPC.f = 0.8 * Math.hypot(VW, VH); RPC.dist = RPC.f / sc; RPC.h = 4.2; RPC.cx = VW / 2;
-    RPC.hy = VH * 0.46 + ((tt < RP.t0 ? REL_Y : bp.y) - RPC.h) * sc;
+    // 바닥은 화면 아래쪽에 두고, 공이 높이 뜨면 그만큼 따라 올라간다
+    var pre = tt < RP.t0, bx = pre ? -s.z : -bp.z, lead = pre ? 1.0 : clamp((hx - bx) * 0.4, 0, 1.8), portrait = VW < VH * 0.87;
+    RPC.s = portrait ? VW / 4.4 : Math.min(VW, VH) / 5.6; RPC.X = bx + lead; RPC.cx = VW / 2; RPC.cy = VH * 0.78;
+    RPC.Y = Math.max(0, (pre ? REL_Y : bp.y) - (VH * 0.78 - VH * 0.3) / RPC.s);
   } else {
     RP.cut = 2;
-    RPC.yaw = yaw0 - sd * 0.44; RPC.tx = hoop.x - ux * 0.25; RPC.tz = hoop.z - uz * 0.25;
-    RPC.f = 0.8 * Math.hypot(VW, VH); RPC.dist = 4.6; RPC.h = 2.35; RPC.cx = VW / 2;
-    var sc2 = RPC.f / RPC.dist;
-    RPC.hy = VH * 0.46 + sc2 * (RIM_Y - RPC.h);
+    RPC.s = Math.min(VW, VH) / 3.2; RPC.X = hx - 0.35; RPC.Y = RIM_Y - 0.25; RPC.cx = VW / 2; RPC.cy = VH * 0.46;
   }
 }
 // 카메라를 목표 쪽으로 부드럽게 옮긴다. 화면이 바뀌는(컷) 순간에는 바로 옮긴다
-var RPC = { yaw: 0, tx: 0, tz: 0, dist: 8, h: 3, f: 700, cx: 200, hy: 300 };
+var RPC = { X: 0, Y: 3, s: 80, cx: 200, cy: 300 };
 function rpCamera(dt) {
   var k = RP.cut !== RP.lastCut ? 1 : 1 - Math.exp(-dt * 7);
   RP.lastCut = RP.cut;
@@ -3817,7 +4100,7 @@ function replayStart(done) {
   RP.tt = Math.max(RP.t0 - 0.75, rpT[rpIdx(0)]);          // 공을 모으고 뛰어오르는 것부터
   RP.saveNK = NK.map(function (k) { return [k.x, k.y, k.z, k.ox, k.oy, k.oz]; });
   RP.saveHoop = [hoop.x, hoop.z, fx.rimTilt, fx.boardY, fx.boardZ];
-  RP.saveCam = { yaw: CC.yaw, tx: CC.tx, tz: CC.tz, dist: CC.dist, h: CC.h, f: CC.f, cx: CC.cx, hy: CC.hy };
+  RP.saveCam = { X: CC.X, Y: CC.Y, s: CC.s, cx: CC.cx, cy: CC.cy };
   RP.saveVis = COURT.npcs.map(function (n) { return n.vis; });
   balls.forEach(function (b) { b.mesh.visible = false; });
   if (held) held.mesh.visible = false;
@@ -3889,10 +4172,9 @@ var lastAim = {};          // 자리마다 지난 슛 세기 (게이지의 금�
 
 function endlessSpot(n) {
   var L = Math.floor(ST.made / 4), dmax = Math.min(8.6, 5 + L * 0.45);
-  var d = 4.2 + rng() * (dmax - 4.2), a = (rng() - 0.5) * Math.PI * 0.72;
-  var x = Math.sin(a) * d, z = Math.cos(a) * d;
-  if (Math.abs(x) > 6.9) { x = Math.sign(x) * 6.9; z = Math.sqrt(Math.max(0, d * d - x * x)); }
-  return { x: x, z: Math.max(0.4, z), i: n };
+  var d = 4.2 + rng() * (dmax - 4.2);
+  rng();                                             // 3D판의 옆 각도 자리 (난수 순서를 같게 둔다)
+  return { x: 0, z: Math.round(d * 10) / 10, i: n };
 }
 function spotFor(n) {
   if (ST.def.contest) {
@@ -3907,7 +4189,7 @@ function isGold(n) {
   var d = ST.def;
   if (d.endless) return n % 7 === 6;
   if (d.contest) return contestKind(n) === "money";
-  return d.per ? n % d.per === d.per - 1 : n === d.balls - 1;
+  return d.per > 1 ? n % d.per === d.per - 1 : n === d.balls - 1;
 }
 function left() { return ST.def.contest ? CONTEST_SEQ.length - ST.thrown : ST.def.endless ? (ST.lives > 0 ? Infinity : 0) : ST.def.rapid ? Infinity : ST.def.balls - ST.thrown; }
 function potential() {
@@ -3945,7 +4227,6 @@ function startStage(i) {
   var s = spotFor(0);
   curSpot = s; ST.spot = s.i;
   setHU(s);
-  CAMSIDE = 1;                                       // 판을 새로 시작하면 가운데 자리는 늘 골대가 오른쪽
   frameSpot(s);
   sh.demo = false; shDemo.visible = false;
   shPlace(s);
@@ -3958,7 +4239,7 @@ function startStage(i) {
   frameSpot(s);                                      // 위쪽 글씨가 보인 뒤 그 높이로 다시 맞춘다
   if (i === 0 && !save.stars[0]) hint(true);
   lastTrail = null;
-  if (def.contest) ledFlash("3점슛 콘테스트", "머니볼 랙: " + ["왼쪽 코너", "왼쪽 윙", "탑", "오른쪽 윙", "오른쪽 코너"][moneyRack], "#ffb020", 1.8);
+  if (def.contest) ledFlash("3점슛 콘테스트", "머니볼 랙: " + RACK_NAMES[moneyRack], "#ffb020", 1.8);
   else if (def.endless) ledFlash("무한 모드", "세 번 놓치면 끝", "#ffb020", 1.6);
   else ledFlash((i + 1) + "스테이지", def.name, "#ffffff", 1.6);
   toast(def.contest ? "🏆 3점슛 콘테스트" : def.endless ? "∞ 무한 모드" : (i + 1) + ". " + def.name, def.sub, 2200);
@@ -3972,7 +4253,7 @@ function spawnHeld() {
     ST.spot = s.i; curSpot = s; setHU(s); frameSpot(s); cam.rate = 3;
     shGo(s);
     courtForm(s, false);
-    if (!ST.def.rapid && !ST.def.endless) toast((s.i + 1) + "번 자리", isThree(s) ? "3점 슛 자리" : "", 1200);
+    if (!ST.def.rapid && !ST.def.endless) toast(spotDist(s).toFixed(1) + "m", isThree(s) ? "3점 슛 자리" : "2점 슛 자리", 1100);
   }
   var ew = ST.def.endless ? ST.ew : 0;
   if (ST.def.wind || ew) {
@@ -4647,8 +4928,8 @@ $("rReplay").onclick = function () {
 };
 
 
-/* ── 3점슛 콘테스트 랙: 자리마다 선수 옆(카메라 반대쪽)에 공 다섯 개가 얹힌 금속 거치대(골대 쪽으로 길게),
-   딥 3점 자리는 받침대에 공 하나. 슈터는 발 가운데가 공 놓는 점에서 뒤로 0.3m, 카메라 반대쪽으로 0.16m ── */
+/* ── 3점슛 콘테스트 랙: 자리마다 선수 뒤(화면 안쪽)에 공 다섯 개가 얹힌 금속 거치대(골대 쪽으로 길게),
+   딥 3점 자리는 받침대에 공 하나. 옆에서 보면 자리가 한 줄에 겹치니 지금 자리 랙만 그린다 ── */
 var RACKS = [];
 function racksBuild() {
   RACKS.length = 0;
@@ -4678,8 +4959,8 @@ function racksReset(show) {
   });
 }
 function drawRack(e) {
-  var k = proj(e.x, 0.5, e.z).k, lx = e.fz, lz = -e.fx;
-  ctx.strokeStyle = "#aeb8c8"; ctx.lineCap = "round"; ctx.lineWidth = Math.max(1, 0.035 * k);
+  var lx = e.fz, lz = -e.fx;
+  ctx.strokeStyle = "#aeb8c8"; ctx.lineCap = "round"; ctx.lineWidth = Math.max(1, 0.035 * CAM.s);
   ctx.beginPath();
   if (e.deep) traceSeg(e.x, 0, e.z, e.x, 0.86, e.z);
   else [-0.075, 0.075].forEach(function (o) {
@@ -4689,29 +4970,25 @@ function drawRack(e) {
     traceSeg(x0 + e.fx * 1.16, 0, z0 + e.fz * 1.16, x0 + e.fx * 1.16, 0.82, z0 + e.fz * 1.16);
   });
   ctx.stroke();
-  if (e.deep) { ctx.lineWidth = Math.max(1.5, 0.06 * k); ctx.beginPath(); traceSeg(e.x - lx * 0.18, 0.86, e.z - lz * 0.18, e.x + lx * 0.18, 0.86, e.z + lz * 0.18); ctx.stroke(); }
-  // 먼 공부터
-  var order = e.balls.slice().sort(function (a, b) { return camDepth(b.p.x, b.p.z) - camDepth(a.p.x, a.p.z); });
-  order.forEach(function (m) { if (m.visible) drawBallAt(m.p.x, m.p.y, m.p.z, m.rot, m.kind); });
+  if (e.deep) { ctx.lineWidth = Math.max(1.5, 0.06 * CAM.s); ctx.beginPath(); traceSeg(e.x - lx * 0.18, 0.86, e.z - lz * 0.18, e.x + lx * 0.18, 0.86, e.z + lz * 0.18); ctx.stroke(); }
+  e.balls.forEach(function (m) { if (m.visible) drawBallAt(m.p.x, m.p.y, m.p.z, m.rot, m.kind); });
 }
 
 /* ══════════════════════════════════════════════════════════════
    8. 카메라
-   자리마다 슛 방향과 직각으로 선 카메라. 선수 등 뒤 0.8m 부터 백보드 너머 1.35m 까지, 바닥부터 공이 가장 높이 뜨는
-   곳까지가 위쪽 글씨 아래에 꽉 차게 거리를 푼다. 초점거리는 화면 대각선의 0.8배로 두어 원근이 늘 비슷하다.
-   세로 화면은 바닥을 화면 73% 높이에 두고 그 위를 관중석·천장이 채운다
+   늘 코트 옆에서 본다(돌지 않는다). 슛 자리마다 슈터 등 뒤 1.1m 부터 베이스라인 너머 심판까지(골대 뒤 2.4m),
+   바닥부터 공이 가장 높이 뜨는 곳까지가 위쪽 글씨 아래에 꽉 차게 옆으로 밀고 크기를 정한다.
+   세로 화면은 바닥을 화면 76% 높이에 두고 그 위를 관중석이 채운다
    ══════════════════════════════════════════════════════════════ */
-var CAMSIDE = 1;
-// 자리의 카메라 쪽: 왼쪽 자리(x<0)는 +1(골대가 화면 오른쪽), 오른쪽 자리는 −1. 가운데는 앞 자리와 같게
-function spotSide(spot) { return spot.x < -0.3 ? 1 : spot.x > 0.3 ? -1 : CAMSIDE; }
+var CAMSIDE = 1;                                     // 골대는 늘 화면 오른쪽
+function spotSide() { return 1; }
 function setHU(s) { var d = spotDist(s) || 1; HU.x = -s.x / d; HU.z = -s.z / d; }
-// 바람 화살표: 화면에서 부는 쪽
-function windArrow() { return (wind.s >= 0) === (CAMSIDE > 0) ? "→" : "←"; }
-function camRec() { return { yaw: -Math.PI / 2, tx: 0, tz: 2, dist: 14, h: 4.4, f: 700, cx: 200, hy: 300 }; }
+// 바람 화살표: 뒷바람(골대 쪽)은 →, 맞바람은 ←
+function windArrow() { return wind.s >= 0 ? "→" : "←"; }
+function camRec() { return { X: -2, Y: 0, s: 40, cx: 200, cy: 500 }; }
 var CT = camRec(), CC = camRec(), CTX = camRec();
 var cam = { rate: 3 };
 var focus = null;
-var CAM_H = 6.0;
 function hudBottom() {
   var el = $("hud");
   if (el.hidden) return 0;
@@ -4719,45 +4996,27 @@ function hudBottom() {
   return r.bottom > 0 ? r.bottom : 0;
 }
 function frameSpot(spot) {
-  var sd = CAMSIDE = spotSide(spot);
-  var d = spotDist(spot) || 1, ux = -spot.x / d, uz = -spot.z / d;
+  CAMSIDE = 1;
+  var d = spotDist(spot) || 1;
   var portrait = VW / Math.max(1, VH) < 1.15;
-  var top = Math.max(hudBottom(), portrait ? 118 : 104) + 12, left = 10, right = VW - 10, bottom = portrait ? VH * 0.77 : VH - 18;
-  var XL = -d - 1.3, XR = 1.15, YT = 2.95 + 0.4 * d;
-  var s = Math.max(4, Math.min((right - left) / (XR - XL), (bottom - top) / YT));
-  var XT = (XL + XR) / 2;
-  CT.yaw = Math.atan2(sd * uz, -sd * ux);
-  CT.tx = ux * XT; CT.tz = uz * XT;
-  CT.f = 0.8 * Math.hypot(VW, VH); CT.dist = CT.f / s; CT.h = CAM_H;
-  CT.cx = (left + right) / 2; CT.hy = bottom - s * CAM_H;
+  var top = Math.max(hudBottom(), portrait ? 118 : 104) + 12, left = 10, right = VW - 10;
+  var XL = -d - REL.f - 0.85, XR = 2.4, YT = 2.95 + 0.4 * d, FB = SIDE_X * OB_Y + 0.45, s, fy;
+  if (portrait) { fy = VH * 0.76; s = Math.min((right - left) / (XR - XL), (fy - top) / YT); }
+  else { s = Math.min((right - left) / (XR - XL), (VH - 6 - top) / (YT + FB)); fy = VH - 6 - FB * s; }
+  s = Math.max(4, s);
+  CT.s = s; CT.X = (XL + XR) / 2; CT.Y = 0; CT.cx = (left + right) / 2; CT.cy = fy;
 }
-// 카메라 값을 목표 쪽으로 k 만큼. k = 1 이면 그대로 베낀다(각도를 돌려 푸는 셈의 자투리 오차로 매 프레임 흔들리지 않게)
+// 카메라 값을 목표 쪽으로 k 만큼. k = 1 이면 그대로 베낀다
 function camLerp(a, b, k) {
-  if (k >= 1) { a.yaw = b.yaw; a.tx = b.tx; a.tz = b.tz; a.dist = b.dist; a.h = b.h; a.f = b.f; a.cx = b.cx; a.hy = b.hy; return; }
-  var dy = b.yaw - a.yaw;
-  dy = Math.atan2(Math.sin(dy), Math.cos(dy));
-  a.yaw += dy * k; a.tx += (b.tx - a.tx) * k; a.tz += (b.tz - a.tz) * k; a.dist += (b.dist - a.dist) * k;
-  a.h += (b.h - a.h) * k; a.f += (b.f - a.f) * k; a.cx += (b.cx - a.cx) * k; a.hy += (b.hy - a.hy) * k;
+  if (k >= 1) { a.X = b.X; a.Y = b.Y; a.s = b.s; a.cx = b.cx; a.cy = b.cy; return; }
+  a.X += (b.X - a.X) * k; a.Y += (b.Y - a.Y) * k; a.s += (b.s - a.s) * k; a.cx += (b.cx - a.cx) * k; a.cy += (b.cy - a.cy) * k;
 }
-function camApply() {
-  var fwx = Math.sin(CC.yaw), fwz = Math.cos(CC.yaw);
-  CAM.fx = fwx; CAM.fz = fwz; CAM.rx = -fwz; CAM.rz = fwx;
-  CAM.x = CC.tx - fwx * CC.dist; CAM.z = CC.tz - fwz * CC.dist; CAM.y = CC.h;
-  CAM.f = CC.f; CAM.cx = CC.cx; CAM.hy = CC.hy;
-}
+function camApply() { CAM.X = CC.X; CAM.Y = CC.Y; CAM.s = CC.s; CAM.cx = CC.cx; CAM.cy = CC.cy; }
 function camStep(dt) {
-  var t = CTX;
-  t.yaw = CT.yaw; t.tx = CT.tx; t.tz = CT.tz; t.dist = CT.dist; t.h = CT.h; t.f = CT.f; t.cx = CT.cx; t.hy = CT.hy;
-  if (mode === "title" || (mode === "result" && !ST)) {
-    // 시작 화면: 자유투 자리 옆을 천천히 오간다
-    t.yaw += 0.42 * Math.sin(fxT * 0.11);
-    t.dist *= 1 + 0.05 * Math.sin(fxT * 0.23);
-  }
-  camLerp(CC, t, 1 - Math.exp(-dt * cam.rate));
+  camLerp(CTX, CT, 1);
+  camLerp(CC, CTX, 1 - Math.exp(-dt * cam.rate));
   // 거의 다 왔으면 딱 맞춘다 (배경을 다시 그리지 않게)
-  var dyw = t.yaw - CC.yaw;
-  if (Math.abs(CC.tx - t.tx) + Math.abs(CC.tz - t.tz) + Math.abs(CC.dist - t.dist) * 0.1 + Math.abs(CC.hy - t.hy) * 0.01 + Math.abs(CC.f - t.f) * 0.001 < 0.002 &&
-      Math.abs(Math.atan2(Math.sin(dyw), Math.cos(dyw))) < 0.0005) camLerp(CC, t, 1);
+  if (Math.abs(CC.X - CTX.X) * CC.s + Math.abs(CC.Y - CTX.Y) * CC.s + Math.abs(CC.s - CTX.s) * 8 + Math.abs(CC.cx - CTX.cx) + Math.abs(CC.cy - CTX.cy) < 0.3) camLerp(CC, CTX, 1);
 }
 
 /* ══════════════════════════════════════════════════════════════
@@ -4816,64 +5075,90 @@ function dqPush(d, kind, a) {
   e.d = d; e.k = kind; e.a = a; DQN++;
 }
 function dqSort(p, q) { return q.d - p.d; }
-// 선수가 든 공: 선수 그림 사이에 끼워 그린다 (팔보다 앞일 수도, 뒤일 수도)
+// 선수가 든 공: 선수 그림 사이에 끼워 그린다 (먼 팔 뒤, 가까운 팔 앞). 선수를 옆모습으로 누른 만큼 같이 옮긴다
+var _hb = new V3();
 var HB = { d: 0, x: 0, y: 0, z: 0, rot: 0, kind: "ball", s: 1, draw: function () { drawBallAt(HB.x, HB.y, HB.z, HB.rot, HB.kind, 1, HB.s); } };
 function heldPart() {
   var m = held ? held.mesh : sh.demo ? shDemo : null;
   if (!m || !m.visible || RP.on) return null;
-  HB.x = m.position.x; HB.y = m.position.y; HB.z = m.position.z; HB.rot = m.rot; HB.kind = m.kind; HB.s = 1;
+  flatPt(SHOOTER, m.position, _hb);
+  HB.x = _hb.x; HB.y = _hb.y; HB.z = _hb.z; HB.rot = m.rot; HB.kind = m.kind; HB.s = 1;
   HB.d = camDepth(HB.x, HB.z);
   return HB;
 }
-var NB = { d: 0, b: null, draw: function () { var b = NB.b; drawBallAt(b.p.x, b.p.y, b.p.z, b.mesh.rot, b.mesh.kind, 1, b.mesh.s); } };
+var NB = { d: 0, b: null, p: new V3(), draw: function () { var b = NB.b; drawBallAt(NB.p.x, NB.p.y, NB.p.z, b.mesh.rot, b.mesh.kind, 1, b.mesh.s); } };
 function npcPart(n) {
-  if (!n.ball || !n.ball.mesh.visible) return null;
-  NB.b = n.ball; NB.d = camDepth(n.ball.p.x, n.ball.p.z);
+  if (!n.ball || !n.ball.mesh.visible || RP.on) return null;
+  NB.b = n.ball; flatPt(n, n.ball.p, NB.p); NB.d = camDepth(NB.p.x, NB.p.z);
   return NB;
+}
+// 바닥에 비친 사람: 작은 판에 뒤집어 그린 뒤 발밑에서 1.1m 아래로 갈수록 사라지게 지우고, 옅게 얹는다
+var RF = null, RFG = null;
+function drawReflection(S, K, s) {
+  var J = S.J, f = proj(J.pel.x, 0, J.pel.z, PJ3), k = CAM.s * s;
+  var bx = Math.floor(f.x - 1.2 * k), by = Math.floor(f.y - 0.05 * k), bw = Math.ceil(2.4 * k), bh = Math.ceil(1.2 * k);
+  if (bx > VW || bx + bw < 0 || by > VH || by + bh < 0) return;
+  var pw = Math.ceil(bw * DPR), ph = Math.ceil(bh * DPR);
+  if (!RF || RF.width < pw || RF.height < ph) { RF = mkCanvas(Math.max(pw, RF ? RF.width : 0), Math.max(ph, RF ? RF.height : 0)); RFG = RF.getContext("2d"); }
+  var main = ctx;
+  ctx = RFG;
+  ctx.setTransform(1, 0, 0, 1, 0, 0);
+  ctx.globalCompositeOperation = "source-over";
+  ctx.clearRect(0, 0, pw + 1, ph + 1);
+  ctx.setTransform(DPR, 0, 0, DPR, -bx * DPR, -by * DPR);
+  drawFigure(S, K, s, { mirror: true, alpha: 1 });
+  ctx.globalCompositeOperation = "destination-in";
+  var g = ctx.createLinearGradient(0, f.y, 0, f.y + 1.1 * k);
+  g.addColorStop(0, "rgba(0,0,0,1)"); g.addColorStop(1, "rgba(0,0,0,0)");
+  ctx.fillStyle = g; ctx.fillRect(bx, by, bw, bh);
+  ctx.globalCompositeOperation = "source-over";
+  ctx = main;
+  ctx.globalAlpha = 0.2;
+  ctx.drawImage(RF, 0, 0, pw, ph, bx, by, pw / DPR, ph / DPR);
+  ctx.globalAlpha = 1;
+  figFlat(S, false);
 }
 function drawScene() {
   var i, n, b, dm = camDepth(hoop.x, hoop.z);
   // 그늘
-  if (SHOOTER.vis) figShade(SHOOTER.J, 1);
-  for (i = 0; i < COURT.npcs.length; i++) { n = COURT.npcs[i]; if (n.vis) figShade(n.J, n.s); }
+  floorShade(hoop.x, hoop.z - 3.4, 1.2, 1.0, 0.3);
+  if (SHOOTER.vis) figShade(SHOOTER, 1);
+  for (i = 0; i < COURT.npcs.length; i++) { n = COURT.npcs[i]; if (n.vis) figShade(n, n.s); }
   for (i = 0; i < balls.length; i++) { b = balls[i]; if (b.mesh.visible && !b.caught) ballShade(b.p.x, b.p.y, b.p.z); }
   var hb = heldPart();
   if (hb) ballShade(hb.x, hb.y, hb.z);
   if (RP.on && rpMesh.visible) ballShade(rpMesh.position.x, rpMesh.position.y, rpMesh.position.z);
   // 광택 바닥에 비친 모습
   if (QUAL.refl) {
-    if (SHOOTER.vis) drawFigure(SHOOTER, SH_KIT, 1, { mirror: true, alpha: 0.11 });
-    for (i = 0; i < COURT.npcs.length; i++) { n = COURT.npcs[i]; if (n.vis) drawFigure(n, n.K, n.s, { mirror: true, alpha: 0.1 }); }
+    if (SHOOTER.vis) drawReflection(SHOOTER, SH_KIT, 1);
+    for (i = 0; i < COURT.npcs.length; i++) { n = COURT.npcs[i]; if (n.vis) drawReflection(n, n.K, n.s); }
   }
   DQN = 0;
-  for (i = 1; i <= 4; i++) { var bx = hoopBox(i); dqPush(camDepth((bx[0] + bx[1]) / 2, (bx[4] + bx[5]) / 2), 1, i); }
-  dqPush(dm + 0.36, 2, -1); dqPush(dm - 0.36, 2, 1);
-  dqPush(dm + 0.34, 5, 0);
+  dqPush(dm + 0.6, 1, 0);
+  dqPush(dm + 0.45, 2, 0);
+  dqPush(dm + 0.44, 5, 0);
   dqPush(dm + 0.13, 3, -1); dqPush(dm - 0.13, 3, 1);
   dqPush(dm + 0.1, 4, -1); dqPush(dm - 0.1, 4, 1);
   if (SHOOTER.vis) dqPush(camDepth(SHOOTER.J.pel.x, SHOOTER.J.pel.z), 6, null);
   for (i = 0; i < COURT.npcs.length; i++) { n = COURT.npcs[i]; if (n.vis) dqPush(camDepth(n.J.pel.x, n.J.pel.z), 7, n); }
   for (i = 0; i < balls.length; i++) { b = balls[i]; if (b.mesh.visible && !b.caught) dqPush(camDepth(b.p.x, b.p.z), 8, b); }
   if (RP.on && rpMesh.visible) dqPush(camDepth(rpMesh.position.x, rpMesh.position.z), 9, rpMesh);
-  // 콘테스트 랙: 슛 줄보다 1.5m 넘게 카메라 쪽에 있는 랙은 화면 앞을 크게 가려서 뺀다
-  for (i = 0; i < RACKS.length; i++) if (RACKS[i].visible) {
-    var rd = camDepth(RACKS[i].x + RACKS[i].fx * 0.6, RACKS[i].z + RACKS[i].fz * 0.6);
-    if (rd > dm - Math.abs(camDepth(curSpot.x, curSpot.z) - dm) - 1.5 || rd > camDepth(curSpot.x, curSpot.z) - 1.5) dqPush(rd, 10, RACKS[i]);
-  }
+  // 콘테스트 랙: 지금 자리 것만
+  if (ST && ST.def.contest && mode !== "title") { var e = RACKS[curSpot.i]; if (e && e.visible) dqPush(camDepth(e.x, e.z), 10, e); }
   var list = DQ.slice(0, DQN).sort(dqSort);
   for (i = 0; i < list.length; i++) {
-    var e = list[i];
-    switch (e.k) {
-      case 1: drawPost(e.a); break;
-      case 2: drawBoard(e.a, dm); break;
-      case 3: drawRim(e.a, dm); break;
-      case 4: drawNet(e.a, dm); break;
+    var q = list[i];
+    switch (q.k) {
+      case 1: drawStanchion(); break;
+      case 2: drawBoard(); break;
+      case 3: drawRim(q.a); break;
+      case 4: drawNet(q.a); break;
       case 5: drawShotClock(); break;
       case 6: drawFigure(SHOOTER, SH_KIT, 1, { ball: hb }); break;
-      case 7: drawFigure(e.a, e.a.K, e.a.s, { ball: npcPart(e.a) }); break;
-      case 8: drawBallAt(e.a.p.x, e.a.p.y, e.a.p.z, e.a.mesh.rot, e.a.mesh.kind, 1, e.a.mesh.s); break;
-      case 9: drawBallAt(e.a.position.x, e.a.position.y, e.a.position.z, e.a.rot, e.a.kind); break;
-      case 10: drawRack(e.a); break;
+      case 7: drawFigure(q.a, q.a.K, q.a.s, { ball: npcPart(q.a) }); break;
+      case 8: drawBallAt(q.a.p.x, q.a.p.y, q.a.p.z, q.a.mesh.rot, q.a.mesh.kind, 1, q.a.mesh.s); break;
+      case 9: drawBallAt(q.a.position.x, q.a.position.y, q.a.position.z, q.a.rot, q.a.kind); break;
+      case 10: drawRack(q.a); break;
     }
   }
 }
@@ -4882,7 +5167,6 @@ function drawAim() {
   if (!aimOn || !aimN) return;
   for (var i = 0; i < aimN; i++) {
     var o = i * 4, p = proj(AIM[o], AIM[o + 1], AIM[o + 2]);
-    if (p.d < NEAR) continue;
     var f = AIM[o + 3], r = Math.max(3, 0.05 * p.k) * (0.72 + 0.28 * f);
     ctx.globalAlpha = 0.35 + 0.65 * f;
     ctx.beginPath(); ctx.arc(p.x, p.y, r, 0, 6.2832);
@@ -4942,7 +5226,7 @@ function resize() {
   DPR = Math.min(window.devicePixelRatio || 1, QUAL.dpr);
   cv.width = Math.max(1, Math.round(w * DPR)); cv.height = Math.max(1, Math.round(h * DPR));
   if (ST && mode !== "title") frameSpot(curSpot); else frameSpot({ x: 0, z: FT_Z });
-  if (turned) camLerp(CC, CT, 1);
+  camLerp(CC, CT, 1);
 }
 window.addEventListener("resize", resize);
 document.addEventListener("visibilitychange", function () {
@@ -4968,8 +5252,6 @@ shPlace({ x: 0, z: FT_Z });
 sh.demo = true;
 resize();
 camLerp(CC, CT, 1);
-camStep(1);
-camLerp(CC, CTX, 1);
 showMenu();
 if (!TEST) raf = requestAnimationFrame(frame);
 
@@ -5032,7 +5314,7 @@ window.H2A = {
   aim: function () { return { visible: aimOn, n: aimN }; },
   net: function () { return NK; },
   fx: fx,
-  cam: function () { return { x: CAM.x, y: CAM.y, z: CAM.z, yaw: CC.yaw, dist: CC.dist, f: CAM.f, hy: CAM.hy, target: { yaw: CT.yaw, dist: CT.dist, hy: CT.hy } }; },
+  cam: function () { return { X: CAM.X, Y: CAM.Y, s: CAM.s, cx: CAM.cx, cy: CAM.cy, target: { X: CT.X, s: CT.s, cy: CT.cy } }; },
   settleCam: function () { camLerp(CC, CT, 1); camApply(); },
   camSet: function (o) { for (var k in o) { CT[k] = o[k]; CC[k] = o[k]; } camApply(); },
   camGet: function () { return JSON.parse(JSON.stringify(CC)); },
@@ -5070,7 +5352,8 @@ window.H2A = {
   sidePx: function () { var r = proj(hoop.x, RIM_Y, hoop.z, {}), s = proj(sh.root.x, 1, sh.root.z, {}); return { rim: r.x, shooter: s.x, w: VW }; },
   profile: function (n) {
     n = n || 20;
-    var parts = { backdrop: drawBackdrop, stands: drawStands, jumbo: drawJumbo, floor: drawFloor, courtside: drawCourtside, scene: drawScene,
+    var parts = { backdrop: drawBackdrop, ceiling: function () { drawCeiling(STAND.yTop); }, upper: drawUpper, fascia: function () { drawFascia(CAM.s * 0.5); },
+      lower: drawLower, floor: drawFloor, courtside: drawCourtside, scene: drawScene,
       fx: function () { sparks.draw(true); flames.draw(false); confDraw(); ringsDraw(); drawAim(); }, bgCached: drawBG };
     var out = {};
     camApply(); ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
