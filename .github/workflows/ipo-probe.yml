@@ -1,0 +1,26 @@
+name: ipo probe (temporary)
+on:
+  push:
+    branches: [claude/ipo-app-development-qyj9dq]
+    paths: [.github/workflows/ipo-probe.yml]
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: '3.12' }
+      - run: |
+          python - <<'PY'
+          import sys, re, time
+          sys.path.insert(0, "ipo")
+          import build
+          for no in ("2334", "2311"):
+              t = build.fetch(build.DETAIL_URL.format(no=no))
+              print("=====", no, len(t))
+              for r in build.html_rows(t):
+                  cells = [build.squash(c["t"])[:90] for c in r]
+                  if any(cells) and len(" ".join(cells)) < 700:
+                      print(" | ".join(cells))
+              time.sleep(1)
+          PY
