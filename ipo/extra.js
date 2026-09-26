@@ -368,7 +368,7 @@ function renderMyDash() {
 
 /* ---------------------------------------------------------------- 휴대폰 아래 탭 · 단축키 */
 /* 화면 전환: 홈·일정·분석·도구·내 청약·가이드를 한 번에 하나씩 보여 준다. 주소 끝(#schedule, #calc …)으로 바로 열린다 */
-const SCREENS = { home: ["top"], schedule: ["schedule", "calendar"], analysis: ["market", "method"], tools: ["plan", "calc"], my: ["my"], guide: ["guide"] };
+const SCREENS = { home: ["top"], schedule: ["schedule", "calendar"], analysis: ["market", "method"], tools: ["acct", "plan", "calc"], my: ["my"], guide: ["guide"] };
 const screenOf = (id) => Object.keys(SCREENS).find((k) => k === id || SCREENS[k].includes(id)) || null;
 let CUR_SCREEN = "home";
 const SCROLL = {};
@@ -417,6 +417,8 @@ function initScreens() {
     const s = screenOf(id);
     if (!s) return;
     e.preventDefault();
+    const dlg = a.closest("dialog[open]");
+    if (dlg) dlg.close(); // 상세 안의 링크(예: 계좌 준비)는 창을 닫고 그 화면으로
     if (a.dataset.go && a.dataset.go === CUR_SCREEN) { window.scrollTo({ top: 0, behavior: motion() }); return; }
     showScreen.byUser = true;
     history.pushState(null, "", `#${s === id ? s : id}`);

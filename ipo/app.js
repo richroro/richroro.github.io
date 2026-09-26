@@ -852,16 +852,21 @@ function brokerPicker(it) {
   if (!it.uw.length) return "";
   const alloc = new Map((it.uw_alloc || []).map(([k, v]) => [k.replace(/\s+/g, ""), v]));
   const saved = store.get("ipo.brk", {})[it.id] || {};
+  const mine = store.get("ipo.myBrokers", null);
+  const own = Array.isArray(mine) ? new Set(mine) : null;
+  const acct = (u) => (!own ? "" : own.has(uwKey(u)) ? `<small class="aok">✓ 계좌 있음</small>` : `<small class="miss">계좌 없음</small>`);
   const rows = it.uw.map((u, i) => {
     const a = alloc.get(u.replace(/\s+/g, ""));
     const gen = saved[u]?.gen ?? (a ? Math.round(a * 0.25) : "");
-    return `<tr data-u="${esc(u)}"><td class="tx"><b>${esc(u)}</b>${a ? `<small>인수 ${nf.format(a)}주</small>` : ""}</td>
+    return `<tr data-u="${esc(u)}"><td class="tx"><b>${esc(u)}</b>${acct(u)}${a ? `<small>인수 ${nf.format(a)}주</small>` : ""}</td>
       <td><input class="bk" data-f="gen" type="number" inputmode="numeric" value="${gen}" placeholder="일반 물량" aria-label="${esc(u)} 일반 청약 물량"></td>
       <td><input class="bk" data-f="app" type="number" inputmode="numeric" value="${saved[u]?.app ?? ""}" placeholder="청약 건수" aria-label="${esc(u)} 청약 건수"></td>
       <td class="eq num" data-i="${i}">–</td></tr>`;
   }).join("");
   return `<div class="bp"><h3 class="hint">증권사 고르기 — 균등 1인당 예상 주수</h3>
     <div class="tscroll mt8"><table class="narrow bp-t"><thead><tr><th>증권사</th><th>일반 물량(주)</th><th>청약 건수</th><th>균등 예상</th></tr></thead><tbody>${rows}</tbody></table></div>
+    ${own && !it.uw.some((u) => own.has(uwKey(u))) ? `<p class="note warn mt8"><span class="ic">!</span><span>주관사 계좌가 하나도 없습니다. <a href="#acct">계좌 준비</a>에서 언제까지 만들면 되는지 보세요.</span></p>` : ""}
+    ${!own ? `<p class="hint mt8"><a href="#acct">가진 증권사를 표시</a>하면 계좌가 있는 곳에 ✓ 표시가 붙습니다.</p>` : ""}
     <p class="hint mt8">청약 마지막 날 오후, 증권사 앱이나 공시에 뜨는 <b>청약 건수</b>를 넣으면 균등 물량(일반 물량의 절반) ÷ 건수로 계산합니다.
       숫자가 큰 곳이 유리합니다. 일반 물량 기본값은 인수 물량의 25%로 잡았으니, 투자설명서의 증권사별 일반 청약 물량으로 고치면 더 정확합니다.</p></div>`;
 }
