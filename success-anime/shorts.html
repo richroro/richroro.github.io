@@ -169,6 +169,7 @@
   .rewind .rw{font-family:var(--title);font-size:16cqw;line-height:1;letter-spacing:-1cqw;color:#fff;animation:rwb .5s steps(2) infinite}
   @keyframes rwb{50%{opacity:.35}}
   .rewind .ry{font-family:var(--title);font-size:22cqw;line-height:1.05;margin-top:3cqw;font-variant-numeric:tabular-nums;color:var(--yellow);text-shadow:.8cqw 0 0 rgba(255,0,80,.55),-.8cqw 0 0 rgba(0,200,255,.55)}
+  .rewind .ry.lbl{font-size:12cqw;word-break:keep-all}
   .rewind .rl{font-size:4.6cqw;font-weight:900;letter-spacing:.8cqw;margin-top:2cqw;opacity:.85}
 
   /* quiz */
@@ -272,6 +273,19 @@
   .myth .tt{font-family:var(--title);font-size:10cqw;line-height:1.15;word-break:keep-all}
   .myth .td{font-size:4.8cqw;font-weight:700;line-height:1.5;color:#e6e0ff;word-break:keep-all}
 
+  /* chapter + ending */
+  .chap{background:rgba(8,6,16,.72);backdrop-filter:blur(2px);z-index:9}
+  .chap .k{font-family:var(--title);font-size:5cqw;letter-spacing:1.4cqw;color:var(--accent)}
+  .chap .t{font-family:var(--title);font-size:11cqw;line-height:1.15;margin-top:2cqw;word-break:keep-all}
+  .chap .rule{width:0;height:.8cqw;background:var(--accent);margin-top:4cqw;transition:width .7s .1s cubic-bezier(.2,.8,.2,1)}
+  .chap.on .rule{width:36cqw}
+  .card.on.chap .t{animation:ipop .6s cubic-bezier(.2,1.2,.3,1)}
+  .ending{background:radial-gradient(circle at 50% 40%,#2a2150,#0b0916 75%)}
+  .ending .q{font-family:"Gowun Dodum",var(--body);font-weight:700;font-size:7.2cqw;line-height:1.55;word-break:keep-all;color:#fff}
+  .ending .q::before,.ending .q::after{content:'"';font-family:var(--title);color:var(--accent)}
+  .ending .who2{margin-top:5cqw;font-size:4.4cqw;font-weight:900;color:var(--sub)}
+  .card.on.ending .q{animation:fadeup 1.1s ease-out}
+  @keyframes fadeup{from{opacity:0;transform:translateY(4cqw)}}
   /* stamp */
   .stamp{position:absolute;left:50%;top:44cqh;z-index:12;width:66cqw;aspect-ratio:1;border:1.6cqw solid #e03131;border-radius:50%;display:grid;place-items:center;text-align:center;
     color:#e03131;background:rgba(255,245,240,.9);transform:translate(-50%,-50%) rotate(-14deg) scale(0);opacity:0;pointer-events:none;box-shadow:0 0 0 1.2cqw rgba(255,245,240,.9) inset}
@@ -296,7 +310,6 @@
   .chip{border:1px solid var(--line);background:transparent;color:#ddd6ff;border-radius:8px;padding:6px 10px;font-size:13px;font-weight:700}
   .chip:hover{border-color:var(--c)}
   .chip.cur{background:var(--c);border-color:var(--c);color:#fff}
-  .vstat{font-size:13px;color:var(--yellow);margin:-8px 0 16px;min-height:1.2em}
   .note{font-size:12.5px;color:var(--sub);margin-top:14px;line-height:1.6}
   .note code{background:rgba(255,255,255,.08);padding:1px 6px;border-radius:5px;color:var(--yellow)}
 </style>
@@ -332,6 +345,8 @@
       <div class="card quiz" id="quiz"></div>
       <div class="card vs" id="vs"></div>
       <div class="card myth" id="myth"></div>
+      <div class="card chap" id="chap"><div class="k"></div><div class="t"></div><div class="rule"></div></div>
+      <div class="card ending" id="ending"></div>
       <div class="card intro" id="intro"></div>
       <div class="card lesson" id="lessonCard"></div>
       <div class="card outro" id="outro"></div>
@@ -343,12 +358,9 @@
     <p class="lead">에피소드를 1분 안쪽 세로 영상으로 줄인 <b>요약 쇼츠</b>와, 교훈 하나를 그 장면과 함께 보여 주는 <b>레슨 쇼츠</b>. 유튜브 쇼츠·릴스·틱톡 규격(9:16)입니다.</p>
     <div class="ctrls">
       <button class="btn pri" id="bReplay">↺ 처음부터</button>
-      <button class="btn" id="bVoice">🗣 목소리 켜짐</button>
-      <button class="btn" id="bSound">🔇 배경음 꺼짐</button>
+      <button class="btn" id="bSound">🔇 소리 꺼짐</button>
       <button class="btn" id="bAll">연속 재생</button>
-      <button class="btn" id="bTest">🔈 목소리 테스트</button>
     </div>
-    <p class="vstat" id="vstat"></p>
     <div class="list" id="list"></div>
     <p class="note">주소 뒤에 <code>?ep=chung&amp;k=story</code> 또는 <code>?ep=chung&amp;k=1</code>을 붙이면 해당 쇼츠로 바로 갑니다.
       <code>&amp;rec=1</code>은 화면 전체를 9:16 한 장으로 채우는 녹화용 모드입니다.</p>
@@ -361,7 +373,7 @@
 (() => {
 'use strict';
 const $ = s => document.querySelector(s);
-const { clamp, esc, charSVG, bgSVG, speedSVG, Snd, Voice, castVoice, speechText, NARRATOR } = window.AnimeEngine;
+const { clamp, esc, charSVG, bgSVG, speedSVG, Snd } = window.AnimeEngine;
 const EPS = window.EPISODES;
 const params = new URLSearchParams(location.search);
 const REC = params.get('rec') === '1';
@@ -415,10 +427,19 @@ function masker(ep) {
   return t => words.reduce((acc, w) => acc.split(w).join('○'.repeat(Math.min(3, [...w].length))), String(t || ''));
 }
 const outroShot = (ep, next) => ({ kind: 'outro', dur: 2.8, ep, next });
-const recapShot = ep => ({ kind: 'recap', dur: 5.2, ep });
+const endingShot = ep => ({ kind: 'ending', dur: 4.2, ep });
+// a chapter card before the first shot of each titled scene
+function withChapters(shots) {
+  const seen = new Set(), out = [];
+  for (const s of shots) {
+    if (s.kind === 'beat' && s.first && s.sc.chapter && !seen.has(s.sc)) { seen.add(s.sc); out.push({ kind: 'chapter', dur: 1.5, sc: s.sc, past: s.past }); }
+    out.push(s);
+  }
+  return out;
+}
 
 function buildChronicle(ep, no) {
-  return [{ kind: 'intro', dur: 2.6, ep, no }, ...pickBeats(ep.scenes, 40), recapShot(ep), outroShot(ep, '레슨 쇼츠에서 공식 하나씩 자세히')];
+  return [{ kind: 'intro', dur: 2.6, ep, no }, ...withChapters(pickBeats(ep.scenes, 31)), endingShot(ep), outroShot(ep, '레슨 쇼츠에서 공식 하나씩 자세히')];
 }
 // cold open: the climax first, rewind, the story in faded film, back to the present
 function buildCold(ep) {
@@ -426,14 +447,15 @@ function buildCold(ep) {
   if (ep.climax) top = { si: ep.climax[0], b: S[ep.climax[0]].beats[ep.climax[1]] };
   else S.forEach((sc, si) => sc.beats.forEach(b => { if (si < S.length / 2) return;
     const v = (b.quote ? 20 : 0) + (b.big ? 6 : 0) + (b.who ? 2 : 0) + si / S.length * 4; if (!top || v > top.v) top = { v, si, b }; }));
-  const csc = S[top.si], y0 = firstYear(S[0].year) || firstYear(ep.timeline?.[0]?.[0]), y1 = firstYear(csc.year) || firstYear(ep.timeline?.slice(-1)[0]?.[0]);
+  const csc = S[top.si], y0 = firstYear(S[0].year), y1 = firstYear(csc.year);
+  const lab = sc => sc.kicker || sc.chapter || '';
   return [
-    ...beatShots(top.b, csc).slice(0, 2).map(s => ({ ...s, letterbox: true })),
-    { kind: 'rewind', dur: 2.3, ep, from: y1, to: y0, sc: S[0] },
-    ...pickBeats(S.slice(0, top.si), 27).map(s => ({ ...s, past: true })),
-    { kind: 'back', dur: 1.7, ep, from: y0, to: y1, sc: csc },
-    ...pickBeats(S.slice(top.si), 11).filter(s => s.b !== top.b),
-    recapShot(ep), outroShot(ep, '레슨 쇼츠에서 공식 하나씩 자세히')
+    ...beatShots(top.b, csc).slice(0, 2).map(s => ({ ...s, letterbox: true, past: false })),
+    { kind: 'rewind', dur: 2.3, ep, from: y1, to: y0, fromLabel: lab(csc), toLabel: lab(S[0]), sc: S[0], past: true },
+    ...withChapters(pickBeats(S.slice(0, top.si), 22).map(s => ({ ...s, past: true }))),
+    { kind: 'back', dur: 1.7, ep, from: y0, to: y1, fromLabel: lab(S[0]), toLabel: lab(csc), sc: csc, past: false },
+    ...pickBeats(S.slice(top.si), 9).filter(s => s.b !== top.b).map(s => ({ ...s, past: false })),
+    endingShot(ep), outroShot(ep, '레슨 쇼츠에서 공식 하나씩 자세히')
   ];
 }
 // quiz: silhouette + three hints + countdown + reveal
@@ -443,14 +465,15 @@ function buildQuiz(ep) {
     shots.push({ kind: 'hint', dur: 1.5, ep, n: h + 1, sc: S[si] });
     shots.push(...pickBeats([S[si]], 9).map(s => ({ ...s, quiz: true, text: m(s.text), bigText: s.b.big && m(s.b.big), year: m(S[si].year) })));
   });
-  return [...shots, { kind: 'count', dur: 2.6, ep }, { kind: 'reveal', dur: 3.4, ep }, recapShot(ep), outroShot(ep, '레슨 쇼츠에서 공식 하나씩 자세히')];
+  return [...shots, { kind: 'count', dur: 2.6, ep }, { kind: 'reveal', dur: 3.4, ep }, endingShot(ep), outroShot(ep, '레슨 쇼츠에서 공식 하나씩 자세히')];
 }
 // numbers: rolling counters from the timeline between the key moments
 function buildNumbers(ep, no) {
   const S = ep.scenes, sy = S.map(sc => firstYear(sc.year)), used = new Set(), out = [{ kind: 'intro', dur: 2.4, ep, no }];
   const tl = (ep.timeline || []).map(([y, t]) => ({ y: firstYear(y), t })).filter(x => x.y);
   let prev = null, last = null;
-  for (const s of pickBeats(S, 27)) {
+  for (const s of withChapters(pickBeats(S, 20))) {
+    if (s.kind === 'chapter') { out.push(s); continue; }
     if (s.sc !== last) {
       last = s.sc; const si = S.indexOf(s.sc), lo = sy[si], hi = sy.slice(si + 1).find(Boolean) || 9999;
       const e = lo && tl.find(x => !used.has(x) && x.y >= lo && x.y < hi);
@@ -460,7 +483,7 @@ function buildNumbers(ep, no) {
     const n = s.first && s.b.big && parseNum(s.b.big);
     out.push(n ? { ...s, statBig: n } : s);
   }
-  return [...out, recapShot(ep), outroShot(ep, '레슨 쇼츠에서 공식 하나씩 자세히')];
+  return [...out, endingShot(ep), outroShot(ep, '레슨 쇼츠에서 공식 하나씩 자세히')];
 }
 function parseNum(t) {
   const m = String(t).match(/^(.*?)(\d[\d,]*(?:\.\d+)?)(.*)$/); if (!m) return null;
@@ -473,7 +496,7 @@ function buildManga(ep) {
   for (const s of beats) { if (pg.length === 3 || (pg.length >= 2 && pg[pg.length - 1].sc !== s.sc)) { pages.push(pg); pg = []; } pg.push(s); }
   if (pg.length) pages.push(pg);
   pages.forEach((p, pi) => p.forEach((s, i) => Object.assign(s, { kind: 'panel', page: pi, idx: i, n: p.length, dur: s.dur + (i === 0 ? .3 : 0) })));
-  return [{ kind: 'cover', dur: 2.8, ep }, ...beats, recapShot(ep), outroShot(ep, '레슨 쇼츠에서 공식 하나씩 자세히')];
+  return [{ kind: 'cover', dur: 2.8, ep }, ...beats, endingShot(ep), outroShot(ep, '레슨 쇼츠에서 공식 하나씩 자세히')];
 }
 function buildLesson(ep, n, no) {
   const L = ep.lessons[n], sc = ep.scenes[L[2] || 0], nx = ep.lessons[n + 1], f = lessonFormat(ep, n);
@@ -486,41 +509,8 @@ function build(ep, k) {
   const no = EPS.indexOf(ep) + 1;
   const shots = k !== 'story' ? buildLesson(ep, +k - 1, no)
     : { cold: buildCold, quiz: buildQuiz, numbers: buildNumbers, manga: buildManga }[storyFormat(ep)]?.(ep, no) || buildChronicle(ep, no);
-  shots.forEach(s => { s.say = line(s); });
-  // exported shorts: stretch each shot to fit its recorded voice line
-  const vd = window.__voiceDur;
-  if (vd) shots.forEach((s, i) => { if (vd[i]) s.dur = Math.max(s.dur, vd[i] + (s.kind === 'beat' || s.kind === 'panel' ? .45 : .7)); });
   let t = 0; shots.forEach(s => { s.t = t; t += s.dur; });
   return { shots, dur: t, format: k === 'story' ? storyFormat(ep) : lessonFormat(ep, +k - 1) };
-}
-// what each shot says out loud, and in whose voice
-function line(s) {
-  const ep = s.ep, L = ep && s.n != null && ep.lessons[s.n], p = ep && ep.person;
-  switch (s.kind) {
-    case 'intro': return s.lesson == null ? { text: ep.hook || ep.title } : { text: `부자 공식 ${s.lesson + 1}번. ${ep.lessons[s.lesson][0]}.` };
-    case 'beat': case 'panel': return s.text ? { text: s.text, who: s.b.who } : s.first && s.b.big ? { text: s.bigText || s.b.big } : null;
-    case 'recap': return { text: `${p}의 부자 공식. ` + ep.lessons.map((l, k) => `${['하나', '둘', '셋', '넷', '다섯'][k]}, ${l[0]}.`).join(' ') };
-    case 'lesson': return { text: `${L[0]}. ${L[1]}` };
-    case 'outro': return { text: '더 많은 이야기는 성공 애니에서.' };
-    case 'rewind': return { text: s.to ? `시간을 되돌려, ${s.to}년.` : '시간을 되돌려 보면.' };
-    case 'back': return { text: s.to ? `그리고 다시, ${s.to}년.` : '그리고 다시, 현재.' };
-    case 'quizIntro': return { text: '이 사람은 누구일까요? 힌트는 세 개.' };
-    case 'hint': return { text: `힌트 ${s.n}.` };
-    case 'count': return { text: '정답은.' };
-    case 'reveal': return { text: `${p}. ${ep.company}.` };
-    case 'stat': return { text: `${s.num}${s.unit}. ${s.label}.` };
-    case 'cover': return { text: ep.hook || ep.title };
-    case 'vs': return s.step ? { text: `${p}${josa(p, '은', '는')} 달랐다. ${L[1]}` } : { text: `보통은, ${L[3]}.` };
-    case 'myth': return s.step ? { text: `${L[0]}. ${L[1]}` } : { text: `흔한 착각. ${L[3]}.` };
-    case 'stamp': return { text: `부자 공식 ${s.n + 1}번, ${L[0]}.` };
-  }
-  return null;
-}
-const sayVoice = (ep, say) => say.who ? ep.cast[say.who] : NARRATOR;
-function voiceJobs(ep, k) {
-  const keep = window.__voiceDur; window.__voiceDur = null;
-  const plan = build(ep, k); window.__voiceDur = keep;
-  return plan.shots.map((s, i) => s.say && { i, text: speechText(s.say.text), ...castVoice(sayVoice(ep, s.say)) }).filter(Boolean);
 }
 
 /* ---------------------------------------------------------------
@@ -575,7 +565,7 @@ function caption(who, text, quote) {
   void l.offsetWidth; if (text) l.classList.add('pop');
   $('#cap').style.visibility = text ? 'visible' : 'hidden';
 }
-function cards(on) { ['intro', 'lessonCard', 'outro', 'rewind', 'quiz', 'vs', 'myth'].forEach(id => $('#' + id).classList.toggle('on', id === on)); }
+function cards(on) { ['intro', 'lessonCard', 'outro', 'rewind', 'quiz', 'vs', 'myth', 'chap', 'ending'].forEach(id => $('#' + id).classList.toggle('on', id === on)); }
 function hookHTML(ep, lesson) {
   if (lesson != null) return `부자 공식 #${lesson + 1}<br><em>${esc(ep.lessons[lesson][0])}</em>`;
   const h = ep.hook || ep.title, cut = h.lastIndexOf(' ', Math.ceil(h.length / 2) + 2);
@@ -587,7 +577,7 @@ function hookHTML(ep, lesson) {
    --------------------------------------------------------------- */
 const P = { plan: null, i: -1, timers: [], t0: 0, raf: 0, playing: false, chain: false, run: 0, clock: 0 };
 function reset() {
-  P.timers.forEach(clearTimeout); P.timers = []; cancelAnimationFrame(P.raf); P.run++; Voice.cancel();
+  P.timers.forEach(clearTimeout); P.timers = []; cancelAnimationFrame(P.raf); P.run++;
   for (const id in st.onStage) st.onStage[id].remove(); st.onStage = {}; st.curBg = ''; st.scene = null;
   FX.clear(); FX.ambient = null; $('#fire').classList.remove('on'); $('#speed').classList.remove('on'); $('#cam').classList.remove('zoom', 'past');
   cancelAnimationFrame(P.raf2); $('#short').classList.remove('letterbox', 'past', 'manga-on'); $('#manga').innerHTML = ''; $('#manga').dataset.page = '';
@@ -626,7 +616,6 @@ function renderIntro(s) {
 }
 function play() {
   if (!P.plan) return;
-  Voice.unlock();
   reset(); load(st.ep, P.k);
   $('#play').classList.add('hide'); P.playing = true;
   Snd.startLog(); window.__t0 = Date.now() / 1000; window.__done = false;
@@ -639,7 +628,7 @@ function play() {
     P.raf = requestAnimationFrame(loop); };
   loop();
 }
-// shots start on an absolute clock (so exported audio lines up); a live voice line that runs long pushes the clock back
+// shots start on an absolute clock so exported audio and frames line up
 async function runShots(run) {
   const wait = ms => new Promise(r => P.timers.push(setTimeout(r, Math.max(0, ms))));
   P.clock = 0;
@@ -648,9 +637,7 @@ async function runShots(run) {
     await wait(P.t0 + P.clock * 1000 - performance.now()); if (run !== P.run) return;
     Snd.record('shot', [i]);
     shot(s, i);
-    const spoken = s.say && Voice.on ? Voice.speak(s.say.text, sayVoice(st.ep, s.say)) : null;
     P.clock += s.dur;
-    if (spoken) { await spoken; if (run !== P.run) return; P.clock = Math.max(P.clock, (performance.now() - P.t0) / 1000 + .25); }
   }
   await wait(P.t0 + P.clock * 1000 - performance.now()); if (run !== P.run) return;
   done();
@@ -701,15 +688,15 @@ function mangaPanel(s, i) {
   pnl.innerHTML = `<div class="pbg">${bgSVG(s.sc.bg, s.sc.time || 'day', { sign: s.sc.sign })}</div>${fxLines}
     <div class="chr${b.who ? ' talk' : ''}">${charSVG(c, b.who ? b.face || 'normal' : 'normal')}</div>${speech}${s.first && b.big ? `<div class="sfx">${esc(b.big)}</div>` : ''}`;
   void pnl.offsetWidth; pnl.classList.add('in');
-  const vd = window.__voiceDur && window.__voiceDur[i];
-  if (b.who) P.timers.push(setTimeout(() => pnl.querySelector('.chr')?.classList.remove('talk'), (vd || Math.min(s.dur * .75, .5 + [...s.text].length * .07)) * 1000));
+  if (b.who) P.timers.push(setTimeout(() => pnl.querySelector('.chr')?.classList.remove('talk'), Math.min(s.dur * .75, .5 + [...s.text].length * .07) * 1000));
   if (s.first) { if (b.fx === 'shake') fx('shake'); Snd.fx(b.big ? 'big' : 'pop'); } else Snd.fx('pop');
 }
 function shot(s, i) {
   P.i = i;
   const S = $('#short'), manga = s.kind === 'panel' || s.kind === 'cover';
   S.classList.toggle('letterbox', !!s.letterbox);
-  S.classList.toggle('past', !!s.past); $('#cam').classList.toggle('past', !!s.past);
+  const past = s.past != null ? s.past : !!(s.sc && s.sc.past);
+  S.classList.toggle('past', past); $('#cam').classList.toggle('past', past);
   S.classList.toggle('manga-on', manga);
   if (!manga) { $('#manga').innerHTML = ''; $('#manga').dataset.page = ''; }
   $('#hint').classList.remove('on'); $('#stamp').classList.remove('on');
@@ -727,11 +714,10 @@ function shot(s, i) {
       el.classList.toggle('sil', !!s.quiz && heroes.includes(id)); }
     if (b.who && st.onStage[b.who]) {
       face(b.who, b.face || 'normal'); const el = st.onStage[b.who]; el.classList.add('talk');
-      const vd = window.__voiceDur && window.__voiceDur[i];
-      P.timers.push(setTimeout(() => el.classList.remove('talk'), (vd || Math.min(s.dur * .75, .5 + [...s.text].length * .07)) * 1000));
+      P.timers.push(setTimeout(() => el.classList.remove('talk'), Math.min(s.dur * .75, .5 + [...s.text].length * .07) * 1000));
     }
     if (s.first) { fx(b.fx); if (s.statBig) showStat(s.statBig); else if (b.big) big(s.bigText || b.big); }
-    const name = b.who ? (s.quiz && heroes.includes(b.who) ? '???' : st.ep.cast[b.who].name) : '';
+    const name = b.who ? (s.quiz && heroes.includes(b.who) ? '???' : st.ep.cast[b.who].name) : (st.ep.narrator || '');
     caption(name, s.text, b.quote && s.first);
     if (s.text) Snd.fx('pop');
     return;
@@ -746,8 +732,9 @@ function shot(s, i) {
   if (s.kind === 'rewind' || s.kind === 'back') {
     stage(s.sc);
     const back = s.kind === 'back';
-    $('#rewind').innerHTML = `<div class="rw">${back ? '▶' : '◀◀'}</div><div class="ry">${s.from || ''}</div><div class="rl">${back ? '다시 현재로' : 'REWIND'}</div>`;
-    cards('rewind'); if (s.from && s.to) roll($('#rewind .ry'), s.from, s.to, s.dur * 700);
+    const years = s.from && s.to;
+    $('#rewind').innerHTML = `<div class="rw">${back ? '▶' : '◀◀'}</div><div class="ry${years ? '' : ' lbl'}">${years ? s.from : esc(s.toLabel || '')}</div><div class="rl">${back ? '다시 현재로' : 'REWIND'}</div>`;
+    cards('rewind'); if (years) roll($('#rewind .ry'), s.from, s.to, s.dur * 700);
     Snd.fx(back ? 'whoosh' : 'speed'); if (back) fx('flash');
     return;
   }
@@ -784,6 +771,15 @@ function shot(s, i) {
     $('#stamp').innerHTML = `<div><b>공식 #${s.n + 1}</b>${esc(L[0])}</div>`; void $('#stamp').offsetWidth; $('#stamp').classList.add('on');
     P.timers.push(setTimeout(() => { fx('shake'); Snd.fx('big'); }, 250)); return;
   }
+  if (s.kind === 'chapter') {
+    stage(s.sc); for (const id in st.onStage) st.onStage[id].classList.remove('talk', 'speak');
+    $('#chap .k').textContent = s.sc.kicker || ''; $('#chap .t').textContent = s.sc.chapter;
+    cards('chap'); Snd.fx('whoosh'); return;
+  }
+  if (s.kind === 'ending') {
+    $('#ending').innerHTML = `<div class="q">${esc(s.ep.ending || s.ep.logline)}</div><div class="who2">${esc(s.ep.person)} · ${esc(s.ep.company)}</div>`;
+    cards('ending'); FX.ambient = 'sparkle'; Snd.fx('ding'); return;
+  }
   if (s.kind === 'recap') {
     $('#lessonCard').innerHTML = `<div class="kicker">${esc(s.ep.person)}의 부자 공식</div>
       <ul class="recap">${s.ep.lessons.map((l, k) => `<li><b>${k + 1}</b>${esc(l[0])}</li>`).join('')}</ul>`;
@@ -819,13 +815,7 @@ $('#list').addEventListener('click', e => { const c = e.target.closest('.chip');
 $('#short').addEventListener('click', () => { if (!P.playing && !REC) play(); });
 $('#bReplay').onclick = () => play();
 $('#bSound').onclick = () => { Snd.init(); Snd.on = !Snd.on; if (Snd.ac.state === 'suspended') Snd.ac.resume();
-  $('#bSound').textContent = Snd.on ? '🔊 배경음 켜짐' : '🔇 배경음 꺼짐'; $('#bSound').classList.toggle('on', Snd.on); if (Snd.on && P.playing) Snd.startBgm(st.ep.mood); else if (!Snd.on) Snd.stopBgm(true); };
-Voice.on = Voice.supported && !REC;
-const voiceBtn = () => { $('#bVoice').textContent = !Voice.supported ? '🗣 목소리 미지원' : Voice.on ? '🗣 목소리 켜짐' : '🗣 목소리 꺼짐'; $('#bVoice').classList.toggle('on', Voice.on); };
-$('#bVoice').onclick = () => { if (!Voice.supported) return; Voice.unlock(); Voice.on = !Voice.on; if (!Voice.on) Voice.cancel(); voiceBtn(); };
-voiceBtn();
-Voice.onStatus = m => { $('#vstat').textContent = m ? '🗣 ' + m : ''; }; Voice.setStatus();
-$('#bTest').onclick = () => Voice.test();
+  $('#bSound').textContent = Snd.on ? '🔊 소리 켜짐' : '🔇 소리 꺼짐'; $('#bSound').classList.toggle('on', Snd.on); if (Snd.on && P.playing) Snd.startBgm(st.ep.mood); else if (!Snd.on) Snd.stopBgm(true); };
 $('#bAll').onclick = () => { P.chain = !P.chain; $('#bAll').classList.toggle('on', P.chain); $('#bAll').textContent = P.chain ? '⏸ 연속 재생 중' : '연속 재생'; if (P.chain && !P.playing) play(); };
 document.addEventListener('keydown', e => { if (e.key === ' ') { e.preventDefault(); if (!P.playing) play(); } });
 
@@ -834,7 +824,7 @@ const ep0 = EPS.find(e => e.id === params.get('ep')) || EPS[0];
 const k0 = params.get('k') && (params.get('k') === 'story' || ep0.lessons[+params.get('k') - 1]) ? params.get('k') : 'story';
 load(ep0, k0);
 if (REC) $('#play').classList.add('hide');
-window.Shorts = { play, load, build, allShorts, voiceJobs, get dur() { return P.plan.dur; } };
+window.Shorts = { play, load, build, allShorts, get dur() { return P.plan.dur; } };
 })();
 </script>
 </body>

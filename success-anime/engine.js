@@ -152,7 +152,8 @@ const SKY = {
 };
 const BG_KO = { 시골:'village', 쌀가게:'riceshop', 가게:'riceshop', 공장:'garage', 정비소:'garage', 은행:'bank', 회의실:'bank', 조선소:'shipyard',
   사무실:'office', 회사:'office', 도시:'city', 거리:'street', 골목:'street', 원룸:'room', 방:'room', 집:'room', 피시방:'pcbang', PC방:'pcbang',
-  연구소:'lab', 병원:'lab', 바다:'sea', 섬:'sea', 무대:'stage', 성공:'stage', 교실:'classroom', 학교:'classroom', 카페:'cafe' };
+  연구소:'lab', 병원:'lab', 바다:'sea', 섬:'sea', 무대:'stage', 성공:'stage', 교실:'classroom', 학교:'classroom', 카페:'cafe',
+  판문점:'border', 국경:'border', 포장마차:'pojang', 술집:'pojang', 물류센터:'warehouse', 창고:'warehouse' };
 const TIME_KO = { 새벽:'dawn', 아침:'dawn', 낮:'day', 오후:'day', 노을:'dusk', 저녁:'dusk', 밤:'night', 새벽녘:'dawn' };
 
 function rnd(seed) { let s = seed >>> 0 || 1; return () => (s = (s * 1664525 + 1013904223) >>> 0) / 4294967296; }
@@ -341,14 +342,61 @@ const BG = {
       `<path d="M450 100 v420" stroke="#6b4632" stroke-width="12"/>` + [0, 1, 2].map(i => `<g transform="translate(${1000 + i * 180} 140)"><path d="M0 0 v80" stroke="#333" stroke-width="3"/><path d="M-40 80 h80 l-20 50 h-40Z" fill="#ffd43b"/><ellipse cx="0" cy="170" rx="80" ry="70" fill="#ffd43b" opacity="${n ? .18 : .06}"/></g>`).join('') +
       `<rect y="640" width="1600" height="260" fill="${n ? '#3a2a22' : '#a9744c'}"/><rect x="900" y="560" width="600" height="90" fill="#6b4632"/><g transform="translate(1100 520)"><rect width="50" height="44" rx="6" fill="#fff"/><path d="M50 10 q18 0 18 14 q0 14 -18 14" stroke="#fff" stroke-width="6" fill="none"/></g>`;
   },
+  // 판문점: blue conference huts on the line, a convoy of cattle trucks on the road
+  border(t, r) {
+    const n = t === 'night';
+    let s = sun(t) + clouds(t, r) + `<path d="M0 520 L200 430 L420 490 L640 410 L900 480 L1160 400 L1400 470 L1600 430 L1600 900 L0 900Z" fill="${n ? '#1a2a24' : '#7fa37a'}"/>` +
+      `<rect y="560" width="1600" height="340" fill="${n ? '#26302a' : '#a9b58f'}"/>`;
+    for (let i = 0; i < 5; i++) {
+      const x = 180 + i * 260;
+      s += `<g transform="translate(${x} 440)"><rect width="200" height="120" fill="${i % 2 ? '#6fa8dc' : '#5b95c9'}"/><path d="M-10 0 L100 -34 L210 0Z" fill="#e9eef3"/>` +
+        `<rect x="20" y="30" width="36" height="30" fill="#dbe9f6"/><rect x="144" y="30" width="36" height="30" fill="#dbe9f6"/><rect x="84" y="60" width="34" height="60" fill="#3d6f9a"/></g>`;
+    }
+    s += `<rect x="0" y="598" width="1600" height="14" fill="#d9d4c4"/>` +
+      `<path d="M560 900 L740 600 L860 600 L1040 900Z" fill="${n ? '#3a3a3f' : '#8c8a84'}"/><path d="M800 610 V900" stroke="#f1e7b0" stroke-width="8" stroke-dasharray="40 40"/>`;
+    [[640, 720, 1], [860, 650, .7], [690, 612, .45]].forEach(([x, y, k]) => {
+      s += `<g transform="translate(${x} ${y}) scale(${k})"><rect x="-10" y="-150" width="250" height="150" fill="#e9ecef" stroke="#495057" stroke-width="6"/>` +
+        `<path d="M0 -150 v-40 M60 -150 v-40 M120 -150 v-40 M180 -150 v-40 M240 -150 v-40 M-10 -190 H250" stroke="#495057" stroke-width="6"/>` +
+        `<ellipse cx="60" cy="-172" rx="44" ry="26" fill="#8a5a3b"/><ellipse cx="160" cy="-170" rx="44" ry="26" fill="#6e4630"/><circle cx="24" cy="-180" r="14" fill="#8a5a3b"/><circle cx="198" cy="-178" r="14" fill="#6e4630"/>` +
+        `<rect x="240" y="-120" width="90" height="120" rx="8" fill="#1c7ed6"/><rect x="258" y="-104" width="54" height="40" fill="#cfe8ff"/>` +
+        `<circle cx="40" cy="8" r="26" fill="#222"/><circle cx="200" cy="8" r="26" fill="#222"/><circle cx="296" cy="8" r="26" fill="#222"/></g>`;
+    });
+    return s;
+  },
+  // 포장마차: orange tarp, one bulb, soju on the table
+  pojang(t, r) {
+    let s = `<rect width="1600" height="900" fill="#140f1c"/>` + windowGrid(0, 60, 1600, 300, 16, 4, .35, r, '#1d1830') +
+      `<rect x="0" y="0" width="1600" height="900" fill="#ff7a1a" opacity=".22"/>` +
+      `<path d="M0 0 H1600 V120 Q1200 170 800 130 Q400 170 0 120Z" fill="#e8590c"/>` +
+      [...Array(9)].map((_, i) => `<path d="M${i * 200} 120 L${i * 200 + 30} 900" stroke="#ffb27a" stroke-width="3" opacity=".35"/>`).join('') +
+      `<path d="M800 120 V250" stroke="#333" stroke-width="4"/><circle cx="800" cy="270" r="26" fill="#fff3c4"/><circle cx="800" cy="270" r="260" fill="#ffd27a" opacity=".16"/>` +
+      `<rect y="640" width="1600" height="260" fill="#2a1f1c"/><rect x="340" y="600" width="920" height="46" rx="8" fill="#e03131"/><rect x="360" y="646" width="24" height="254" fill="#8a1c1c"/><rect x="1216" y="646" width="24" height="254" fill="#8a1c1c"/>`;
+    [[520, 0], [640, 1], [1020, 0]].forEach(([x, e]) => { s += `<g transform="translate(${x} 470)"><rect x="0" y="40" width="44" height="92" rx="10" fill="#2f9e44" opacity=".85"/><rect x="12" y="10" width="20" height="36" fill="#2f9e44" opacity=".85"/><rect x="4" y="70" width="36" height="30" fill="#ebfbee"/>${e ? '' : ''}</g>`; });
+    s += `<ellipse cx="820" cy="590" rx="110" ry="22" fill="#f1f3f5"/><path d="M740 580 q80 -60 160 0" fill="#ffa94d"/><rect x="900" y="560" width="30" height="40" rx="6" fill="#f8f9fa"/><rect x="960" y="560" width="30" height="40" rx="6" fill="#f8f9fa"/>`;
+    return s;
+  },
+  // 새벽 물류센터: racks, purple boxes, conveyor, cold light
+  warehouse(t, r) {
+    let s = `<rect width="1600" height="900" fill="#1b2233"/><rect y="0" width="1600" height="90" fill="#141a28"/>` +
+      [0, 1, 2, 3, 4].map(i => `<g transform="translate(${140 + i * 320} 40)"><rect x="-60" width="120" height="10" fill="#dbe4ff"/><path d="M-60 10 L-120 260 L120 260 L60 10Z" fill="#dbe4ff" opacity=".07"/></g>`).join('');
+    for (let k = 0; k < 2; k++) { const x0 = k ? 1060 : 40;
+      s += `<g transform="translate(${x0} 150)"><rect x="0" y="0" width="16" height="480" fill="#4c6ef5"/><rect x="484" y="0" width="16" height="480" fill="#4c6ef5"/>` +
+        [0, 1, 2, 3].map(j => `<rect x="0" y="${110 + j * 120}" width="500" height="12" fill="#fd7e14"/>` +
+          [...Array(4)].map((_, q) => `<rect x="${30 + q * 115}" y="${36 + j * 120}" width="${80 + r() * 20}" height="74" fill="${r() < .6 ? '#7048e8' : '#e9ecef'}" stroke="#2b2350" stroke-width="3"/>`).join('')).join('') + `</g>`; }
+    s += `<rect y="640" width="1600" height="260" fill="#232b3d"/><path d="M0 700 H1600 M0 800 H1600" stroke="#ffd43b" stroke-width="6" stroke-dasharray="60 40" opacity=".5"/>` +
+      `<rect x="520" y="560" width="560" height="40" rx="18" fill="#495057"/><rect x="520" y="596" width="560" height="14" fill="#343a40"/>` +
+      [0, 1, 2].map(i => `<rect x="${560 + i * 170}" y="506" width="110" height="60" fill="#7048e8" stroke="#2b2350" stroke-width="4"/><path d="M${560 + i * 170} 530 h110" stroke="#b197fc" stroke-width="5"/>`).join('') +
+      `<rect width="1600" height="900" fill="#74c0fc" opacity=".06"/>`;
+    return s;
+  },
   black() { return `<rect width="1600" height="900" fill="#0b0816"/>`; }
 };
 function bgSVG(name, time, o = {}) {
   const fn = BG[name] || BG.room;
   const r = rnd([...(name + time)].reduce((a, ch) => a * 31 + ch.charCodeAt(0), 7));
   const id = uid('sk');
-  const needsSky = ['village'].includes(name);
-  const tint = time === 'night' && !['pcbang', 'garage', 'black', 'city', 'shipyard', 'sea', 'stage', 'room', 'street'].includes(name) ? `<rect width="1600" height="900" fill="#0b0a2a" opacity=".42"/>` :
+  const needsSky = ['village', 'border'].includes(name);
+  const tint = time === 'night' && !['pcbang', 'garage', 'black', 'city', 'shipyard', 'sea', 'stage', 'room', 'street', 'pojang', 'warehouse'].includes(name) ? `<rect width="1600" height="900" fill="#0b0a2a" opacity=".42"/>` :
                time === 'dusk' && ['office', 'lab', 'bank', 'riceshop', 'classroom', 'cafe'].includes(name) ? `<rect width="1600" height="900" fill="#ff8a5c" opacity=".14"/>` : '';
   return `<svg viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">` +
     (needsSky ? `<defs>${skyDefs(time, id)}</defs><rect width="1600" height="900" fill="url(#${id})"/>` + stars(time, r) : '') +
@@ -531,113 +579,8 @@ function autoChar(name) {
   return { name, style: old && r() < .5 ? 'gray' : style, outfit: /엄마|어머니/.test(name) ? 'apron' : /회장|사장|투자자|부장|팀장/.test(name) ? 'suit' : outfit,
     hair: pick(['#161616', '#2b1d14', '#4a2f1f', '#1c1f2e', '#6b3e26', '#23150f']), color: pick(['#4dabf7', '#ff6b9e', '#51cf66', '#fcc419', '#845ef7', '#ff922b', '#343a40', '#e9ecef', '#20c997']),
     tie: r() < .4 ? pick(['#c92a2a', '#1c7ed6', '#f59f00']) : undefined, eye: pick(['#3b2a1a', '#2d1f14', '#355c8a', '#3d6b47']),
-    glasses: r() < .3, age: old ? 'old' : pick(['young', 'adult']), sex: /엄마|어머니|할머니|누나|언니|딸|아내/.test(name) || (!/아버지|할아버지|아빠|형|오빠|아들/.test(name) && (style === 'long' || style === 'bun') && r() < .75) ? 'f' : 'm' };
+    glasses: r() < .3, age: old ? 'old' : pick(['young', 'adult']) };
 }
-/* =====================================================================
-   6. VOICE — who sounds like what, and live playback via Web Speech
-   The same casting drives the exported shorts (Edge neural voices) and
-   the in-browser player (the viewer's own Korean system voices).
-   ===================================================================== */
-const NARRATOR = { name: '나레이션', narrator: true };
-function isFemale(c) {
-  if (!c || c.narrator) return true;
-  if (c.sex) return c.sex === 'f';
-  return /엄마|어머니|할머니|누나|언니|딸|아내|여자|여성/.test(c.name || '');
-}
-// edge-tts voice + pitch/rate offsets; each character gets a stable, distinct offset
-function castVoice(c) {
-  if (!c || c.narrator) return { voice: 'ko-KR-SunHiNeural', rate: '+6%', pitch: '-2Hz', female: true, pitchN: 0, rateN: 0 };
-  const f = isFemale(c), r = rnd(hash(c.name || 'x')), old = c.age === 'old', young = c.age === 'young';
-  const pitchN = Math.round((old ? -9 : young ? 5 : 0) + (r() - .5) * 8);
-  const rateN = Math.round((old ? -8 : young ? 8 : 3) + (r() - .5) * 6);
-  const voice = f ? 'ko-KR-SunHiNeural' : (c.age === 'adult' || old) && r() < .5 ? 'ko-KR-HyunsuMultilingualNeural' : 'ko-KR-InJoonNeural';
-  return { voice, rate: (rateN >= 0 ? '+' : '') + rateN + '%', pitch: (pitchN >= 0 ? '+' : '') + pitchN + 'Hz', female: f, pitchN, rateN };
-}
-// what a voice should actually read
-function speechText(t) {
-  return String(t || '')
-    .replace(/^\((.*)\)$/, '$1')
-    .replace(/→/g, ', ').replace(/[·•]/g, ', ').replace(/~/g, '에서 ').replace(/…+/g, '… ')
-    .replace(/[‘’“”"]/g, '').replace(/#(\d)/g, '$1번 ').replace(/\s+/g, ' ').trim();
-}
-const FEM_RE = /female|여성|yuna|sunhi|heami|seoyeon|jimin|sora|narae|google 한국의/i, MALE_RE = /(?<!fe)male|남성|injoon|hyunsu|minsang|bong|gook/i;
-const Voice = {
-  on: false, list: [], unlocked: false, status: '', lastError: '', spoke: 0, keep: [],
-  supported: typeof window !== 'undefined' && 'speechSynthesis' in window && typeof SpeechSynthesisUtterance !== 'undefined',
-  load() {
-    if (!this.supported) { this.setStatus('이 브라우저(앱)는 음성 합성을 지원하지 않습니다'); return; }
-    const get = () => { this.list = speechSynthesis.getVoices().filter(v => /^ko/i.test(v.lang.replace('_', '-'))); this.setStatus(); };
-    get(); speechSynthesis.addEventListener ? speechSynthesis.addEventListener('voiceschanged', get) : (speechSynthesis.onvoiceschanged = get);
-    setTimeout(get, 800); setTimeout(get, 2500);
-  },
-  onStatus: null,
-  setStatus(msg) {
-    const all = this.supported ? speechSynthesis.getVoices() : [];
-    this.status = msg || (!this.supported ? '이 브라우저(앱)는 음성 합성을 지원하지 않습니다'
-      : this.lastError ? `음성 오류: ${this.lastError}`
-      : !all.length ? '음성 목록을 불러오는 중… (재생을 한 번 누르면 불러오는 기기도 있습니다)'
-      : !this.list.length ? `한국어 음성이 없습니다 (기기 음성 ${all.length}개). 설정에서 한국어 음성을 받으면 들립니다`
-      : `한국어 음성 ${this.list.length}개 · ${this.pick(NARRATOR).name}`);
-    this.onStatus && this.onStatus(this.status);
-  },
-  // best-effort gender match among the device's Korean voices
-  pick(c) {
-    if (!this.list.length) return null;
-    const want = this.list.filter(v => (isFemale(c) ? FEM_RE : MALE_RE).test(v.name));
-    const pool = want.length ? want : this.list;
-    // neural/premium voices first, then Google's online voice, then whatever the device has
-    const rank = v => (/natural|neural|premium|enhanced/i.test(v.name) ? 3 : /google/i.test(v.name) ? 2 : v.localService ? 1 : 0);
-    return [...pool].sort((a, b) => rank(b) - rank(a))[0];
-  },
-  // iOS/Safari (and in-app browsers) only allow speech that starts inside a tap; call this synchronously from the click handler
-  unlock() {
-    if (!this.supported || this.unlocked) return;
-    try {
-      const u = new SpeechSynthesisUtterance(' '); u.volume = 0; u.lang = 'ko-KR';
-      speechSynthesis.resume && speechSynthesis.resume(); speechSynthesis.speak(u);
-      this.keep.push(u); this.unlocked = true;
-      if (!this.list.length) this.load();
-    } catch (e) { this.lastError = e.message; this.setStatus(); }
-  },
-  cancel(force) {
-    if (!this.supported) return;
-    if (force || speechSynthesis.speaking || speechSynthesis.pending) { speechSynthesis.cancel(); this.cancelledAt = performance.now(); }
-  },
-  // resolves when the line finishes (or at once if voice is off/unsupported)
-  speak(text, c) {
-    if (!this.on || !this.supported) return Promise.resolve();
-    const t = speechText(text); if (!t) return Promise.resolve();
-    this.cancel();
-    c = c || NARRATOR;
-    const cv = castVoice(c), u = new SpeechSynthesisUtterance(t), v = this.pick(c);
-    u.lang = 'ko-KR'; if (v) u.voice = v; u.volume = 1;
-    // same-voice devices still get distinct characters from pitch/rate; a wrong-gender voice is pushed toward the right range
-    const fem = isFemale(c), vFem = v ? FEM_RE.test(v.name) : fem;
-    u.pitch = clamp(1 + cv.pitchN / 22 + (vFem === fem ? 0 : fem ? .3 : -.3), .6, 1.6);
-    u.rate = clamp(1.05 + cv.rateN / 100, .7, 1.4);
-    // Chrome drops utterances that get garbage-collected mid-speech
-    this.keep.push(u); if (this.keep.length > 8) this.keep.shift();
-    return new Promise(res => {
-      let done = false; const fin = () => { if (!done) { done = true; res(); } };
-      u.onstart = () => { this.spoke++; if (this.lastError) { this.lastError = ''; this.setStatus(); } };
-      u.onend = fin;
-      u.onerror = e => { if (e && e.error && !/interrupted|canceled/.test(e.error)) { this.lastError = e.error === 'not-allowed' ? '브라우저가 자동 재생을 막았습니다. 화면을 한 번 탭해 주세요' : e.error; this.setStatus(); } fin(); };
-      setTimeout(fin, 1500 + [...t].length * 260);
-      // Chrome silently drops a speak() issued in the same tick as cancel(); give it a moment
-      const go = () => { try { speechSynthesis.resume && speechSynthesis.resume(); speechSynthesis.speak(u); } catch (e) { this.lastError = e.message; this.setStatus(); fin(); } };
-      this.cancelledAt && performance.now() - this.cancelledAt < 120 ? setTimeout(go, 120) : go();
-    });
-  },
-  // speak one line right now, from inside a tap — used by the "목소리 테스트" button
-  test() {
-    if (!this.supported) { this.setStatus(); return; }
-    this.lastError = ''; this.unlocked = false; this.unlock();   // silent line inside the tap unlocks iOS
-    const was = this.on; this.on = true;
-    this.speak('안녕하세요. 성공 애니 목소리 테스트입니다.', NARRATOR).then(() => { this.on = was; setTimeout(() => this.setStatus(this.spoke ? null : '소리가 나지 않았다면 기기 볼륨과 무음 모드를 확인해 주세요'), 50); });
-  }
-};
-Voice.load();
-
-window.AnimeEngine = { Voice, castVoice, speechText, NARRATOR, isFemale, clamp, esc, uid, shade, rnd, hash, charSVG, bgSVG, speedSVG, particles, Snd, autoChar,
+window.AnimeEngine = { clamp, esc, uid, shade, rnd, hash, charSVG, bgSVG, speedSVG, particles, Snd, autoChar,
   BG, BG_KO, SKY, TIME_KO, FACE_KO, FX_KO };
 })();

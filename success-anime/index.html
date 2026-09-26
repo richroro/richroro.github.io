@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <meta name="theme-color" content="#14111f">
 <title>성공 애니 · 맨손에서 시작한 사람들</title>
-<meta name="description" content="정주영·서정진·김범수·김봉진·이승건·장병규·권혁빈·김슬아. 맨손에서 시작한 한국 창업가들의 성장기를 애니메이션으로. 대본만 쓰면 나만의 에피소드도 만들 수 있습니다.">
+<meta name="description" content="정주영·서정진·김범수·김봉진·이승건·장병규·권혁빈·김슬아. 맨손에서 시작한 한국 창업가 여덟 명의 이야기를, 편마다 다른 방식의 애니메이션으로.">
 <link rel="canonical" href="https://richroro.github.io/success-anime/">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%23ff4d6d'/><path d='M50 16l9 24h25l-20 15 8 25-22-15-22 15 8-25-20-15h25z' fill='%23fff'/></svg>">
 <meta property="og:type" content="website">
@@ -57,6 +57,22 @@
   #fxCanvas{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:6}
   .cam{position:absolute;inset:0;transition:transform .6s cubic-bezier(.2,.8,.2,1)}
   .cam.zoom{transform:scale(1.14) translateY(4%)}
+  .cam{transition:transform .6s cubic-bezier(.2,.8,.2,1),filter .8s}
+  .cam.past{filter:sepia(.8) saturate(.65) contrast(.92) brightness(.96)}
+  .pastmark{position:absolute;right:18px;bottom:calc(4% + 25% + 10px);z-index:9;font-size:12px;font-weight:900;letter-spacing:2px;color:#f3d9a4;
+    background:rgba(40,24,8,.6);padding:4px 10px;border-radius:6px;opacity:0;transition:opacity .5s}
+  .stage.past .pastmark{opacity:1}
+  .stage.past .vign{box-shadow:inset 0 0 180px rgba(40,24,8,.75)}
+  /* chapter card */
+  .chapter{position:absolute;inset:0;z-index:11;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:0 8%;
+    background:rgba(8,6,16,.78);backdrop-filter:blur(3px);opacity:0;pointer-events:none;transition:opacity .45s}
+  .chapter.on{opacity:1}
+  .chapter .k{font-family:var(--title);font-size:clamp(13px,1.8vw,20px);letter-spacing:6px;color:var(--accent)}
+  .chapter .t{font-family:var(--title);font-size:clamp(28px,5.4vw,64px);line-height:1.15;margin-top:8px;word-break:keep-all}
+  .chapter .rule{width:0;height:3px;background:var(--accent);margin-top:16px;transition:width .8s .15s cubic-bezier(.2,.8,.2,1)}
+  .chapter.on .rule{width:min(240px,40%)}
+  .chapter.on .t{animation:chin .7s cubic-bezier(.2,1.2,.3,1)}
+  @keyframes chin{from{opacity:0;transform:translateY(14px);letter-spacing:6px}}
   .shake{animation:shake .5s linear}
   @keyframes shake{0%,100%{transform:translate(0)}10%{transform:translate(-9px,4px)}20%{transform:translate(8px,-5px)}30%{transform:translate(-7px,-3px)}
     40%{transform:translate(6px,5px)}50%{transform:translate(-5px,2px)}60%{transform:translate(4px,-4px)}70%{transform:translate(-3px,3px)}80%{transform:translate(2px,-1px)}}
@@ -125,6 +141,7 @@
     transform:skewX(-8deg);transition:opacity .2s}
   .name b{display:inline-block;transform:skewX(8deg);font-weight:400}
   .name.none{opacity:0}
+  .name.narrator{background:#f3ecdc;color:#2b2233}
   .txt{font-family:var(--story);font-size:clamp(15px,2vw,22px);line-height:1.62;min-height:3.2em;white-space:pre-wrap;word-break:keep-all}
   .txt.narr{color:#e6e0ff;font-style:normal}
   .txt.narr::before{content:"";display:inline-block;width:18px;height:2px;background:var(--accent);vertical-align:middle;margin-right:10px;transform:translateY(-3px)}
@@ -152,6 +169,9 @@
   .endcard{position:absolute;inset:0;z-index:12;background:rgba(12,9,24,.9);backdrop-filter:blur(10px);display:flex;flex-direction:column;
     align-items:center;justify-content:center;padding:4% 6%;opacity:0;pointer-events:none;transition:opacity .6s;text-align:center;overflow:auto}
   .endcard.on{opacity:1;pointer-events:auto;cursor:default}
+  .endcard .ending{font-family:var(--story);font-size:clamp(16px,2.3vw,24px);line-height:1.6;max-width:760px;margin:6px 0 16px;color:#fff;word-break:keep-all}
+  .endcard .ending::before,.endcard .ending::after{content:'"';color:var(--accent);font-family:var(--title)}
+  .endcard h3.small{font-size:clamp(15px,2vw,20px);color:var(--sub);margin:0 0 10px}
   .endcard .fin{font-family:var(--title);font-size:clamp(14px,1.8vw,18px);letter-spacing:6px;color:var(--accent)}
   .endcard h3{font-family:var(--title);font-weight:400;font-size:clamp(22px,3.6vw,40px);margin:4px 0 16px}
   .lessons{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;width:100%;max-width:880px}
@@ -173,7 +193,6 @@
   .prog{flex:1;min-width:120px;height:6px;background:rgba(255,255,255,.1);border-radius:99px;overflow:hidden}
   .prog i{display:block;height:100%;width:0;background:var(--accent);transition:width .4s}
   .kbd{font-size:12px;color:var(--sub)}
-  .vstat{font-size:12.5px;color:var(--yellow);flex-basis:100%;order:9}
   @media(max-width:700px){.kbd{display:none}}
 
   /* sections */
@@ -256,6 +275,8 @@
         <div class="txt" id="txt"></div>
         <div class="next" id="nextArrow"></div>
       </div>
+      <div class="chapter" id="chapter"><div class="k"></div><div class="t"></div><div class="rule"></div></div>
+      <div class="pastmark">회상</div>
       <div class="titlecard" id="titlecard"></div>
       <div class="endcard" id="endcard"></div>
     </div>
@@ -263,12 +284,9 @@
       <button class="btn" id="bPrev" title="이전 컷 (←)">◀ 이전</button>
       <button class="btn" id="bNext" title="다음 컷 (스페이스)">다음 ▶</button>
       <button class="btn" id="bAuto" title="자동 재생 (A)">자동 재생</button>
-      <button class="btn" id="bVoice" title="목소리 (V)">🗣 목소리 켜짐</button>
-      <button class="btn" id="bSound" title="배경음 (M)">🔇 배경음 꺼짐</button>
-      <button class="btn" id="bTest">🔈 목소리 테스트</button>
+      <button class="btn" id="bSound" title="소리 (M)">🔇 소리 꺼짐</button>
       <div class="prog"><i id="prog"></i></div>
-      <span class="vstat" id="vstat"></span>
-      <span class="kbd">스페이스·클릭 다음 · ← 이전 · A 자동 · V 목소리 · M 배경음</span>
+      <span class="kbd">스페이스·클릭 다음 · ← 이전 · A 자동 · M 소리</span>
     </div>
   </div>
 
@@ -276,7 +294,7 @@
   <section id="episodes">
     <p class="eyebrow">EPISODES</p>
     <h2 class="sec">맨손에서 시작한 사람들</h2>
-    <p class="lead">물려받은 회사가 아니라 바닥에서 올라온 한국 창업가들. 연도·숫자·사건은 자서전과 인터뷰, 공시로 공개된 사실만 쓰고, 대사는 그 사실을 바탕으로 각색했습니다.</p>
+    <p class="lead">물려받은 회사가 아니라 바닥에서 올라온 한국 창업가들. 편마다 이야기 방식이 다릅니다. 액자식, 하룻밤의 술자리, 두 시간의 교차 편집, 전단지의 1인칭, 실패 일지, 게임 스테이지, 두 나라의 거울, 고객의 하룻밤. 연도·숫자·사건은 공개된 사실만 쓰고, 대사와 장면 설정은 각색했습니다.</p>
     <div class="eps" id="eps"></div>
   </section>
 
@@ -338,11 +356,11 @@
         <p class="lead" style="color:#d7d1ef">그림 파일·영상 파일이 하나도 없습니다. 캐릭터 얼굴, 배경, 불길과 집중선까지 전부 SVG와 캔버스 코드로 그리고, 배경음과 효과음도 Web Audio로 합성합니다.
         에피소드는 <b>episodes.js</b>의 대본 데이터일 뿐이라, 객체 하나를 추가하면 새 화가 생깁니다.</p>
 <pre>success-anime/
-├─ engine.js     캐릭터/배경 렌더러 · 파티클 · 사운드 · 목소리 (공용 엔진)
+├─ engine.js     캐릭터/배경 렌더러 · 파티클 · 사운드 (공용 엔진)
 ├─ index.html    가로 재생기 · 대본 편집기
 ├─ shorts.html   9:16 세로 쇼츠 (요약 · 레슨)
 ├─ episodes.js   에피소드 대본 (인물 생김새 + 장면 + 컷 + 교훈)
-├─ tools/        쇼츠 MP4 렌더러 · 대사 음성 합성
+├─ tools/        쇼츠 MP4 렌더러
 └─ README.md     새 에피소드 추가 · 쇼츠 영상 뽑는 법</pre>
         <div class="endbtns" style="justify-content:flex-start">
           <a class="btn pri" href="https://github.com/richroro/richroro.github.io/tree/main/success-anime" target="_blank" rel="noopener">GitHub에서 보기 →</a>
@@ -363,7 +381,7 @@
 (() => {
 'use strict';
 const $ = s => document.querySelector(s);
-const { clamp, esc, rnd, hash, charSVG, bgSVG, speedSVG, Snd, Voice, NARRATOR, autoChar, BG, BG_KO, SKY, TIME_KO, FACE_KO, FX_KO } = window.AnimeEngine;
+const { clamp, esc, rnd, hash, charSVG, bgSVG, speedSVG, Snd, autoChar, BG, BG_KO, SKY, TIME_KO, FACE_KO, FX_KO } = window.AnimeEngine;
 const FX = window.AnimeEngine.particles(document.querySelector('#fxCanvas'));
 
 /* =====================================================================
@@ -375,7 +393,10 @@ $('#speed').innerHTML = speedSVG();
 
 function flatten(ep) {
   const out = [];
-  ep.scenes.forEach((sc, si) => sc.beats.forEach((b, bi) => out.push({ ...b, sc, si, first: bi === 0 })));
+  ep.scenes.forEach((sc, si) => {
+    if (sc.chapter) out.push({ chapter: sc.chapter, kicker: sc.kicker, sc, si, first: true });
+    sc.beats.forEach((b, bi) => out.push({ ...b, sc, si, first: bi === 0 }));
+  });
   return out;
 }
 function setBg(name, time, sign) {
@@ -434,7 +455,7 @@ function typeText(text, who) {
   const chars = [...text];
   state.timer = setInterval(() => {
     k++; txtEl.textContent = chars.slice(0, k).join('');
-    if (k % 2 && !Voice.on) Snd.blip(chars[k - 1], who);
+    if (k % 2) Snd.blip(chars[k - 1], who);
     if (k >= chars.length) finishType();
   }, 34);
 }
@@ -443,17 +464,14 @@ function finishType() {
   const b = state.beats[state.i];
   if (b && b.quote) txtEl.insertAdjacentHTML('beforeend', '<span class="quoteMark">★실제 발언</span>');
   $('#nextArrow').classList.add('on');
-  // with a voice the mouth keeps moving until the line is spoken
-  const talking = Object.values(state.onStage).filter(el => el.classList.contains('talk')), stop = () => talking.forEach(el => el.classList.remove('talk'));
-  if (state.speech) state.speech.then(stop); else stop();
+  for (const id in state.onStage) state.onStage[id].classList.remove('talk');
   scheduleAuto();
 }
 function scheduleAuto() {
   clearTimeout(state.autoT);
   if (!state.auto || state.typing) return;
-  const b = state.beats[state.i]; const len = (b && (b.t || b.n || b.big || '').length) || 10, i = state.i;
-  if (state.speech) state.speech.then(() => { if (state.auto && state.i === i && state.phase === 'play') { clearTimeout(state.autoT); state.autoT = setTimeout(next, 650); } });
-  else state.autoT = setTimeout(next, 1400 + len * 45);
+  const b = state.beats[state.i]; const len = (b && (b.t || b.n || b.big || '').length) || 10;
+  state.autoT = setTimeout(next, 1400 + len * 45);
 }
 
 function playBeat(i, back) {
@@ -467,11 +485,22 @@ function playBeat(i, back) {
     showYear(sc.year || '');
     FX.ambient = sc.fx || null; FX.clear();
     $('#fireBg').classList.toggle('on', sc.fx === 'fire');
+    cam.classList.toggle('past', !!sc.past); stage.classList.toggle('past', !!sc.past);
     const ids = sc.cast || [...new Set(sc.beats.filter(x => x.who).map(x => x.who))];
     layoutCast(ids);
   }
   $('#speed').classList.remove('on'); cam.classList.remove('zoom');
   if (!b.big) $('#big').classList.remove('go');
+  // chapter card: the scene is set behind it, the text waits for the next step
+  $('#chapter').classList.toggle('on', !!b.chapter);
+  if (b.chapter) {
+    $('#chapter .k').textContent = b.kicker || ''; $('#chapter .t').textContent = b.chapter;
+    for (const id in state.onStage) state.onStage[id].classList.remove('talk', 'speak');
+    $('#box').classList.add('hide'); nameEl.classList.add('none'); clearInterval(state.timer); txtEl.textContent = '';
+    state.typing = false; Snd.fx('whoosh');
+    if (state.auto) { clearTimeout(state.autoT); state.autoT = setTimeout(next, 1900); }
+    return;
+  }
   // speaker
   for (const id in state.onStage) {
     const el = state.onStage[id];
@@ -487,20 +516,18 @@ function playBeat(i, back) {
   }
   if (b.faces) for (const id in b.faces) setFace(id, b.faces[id]);
   // text
-  const who = b.who ? (state.ep.cast[b.who] || autoChar(b.who)).name : '';
-  nameEl.classList.toggle('none', !who); nameEl.firstElementChild.textContent = who;
+  const narr = !b.who && state.ep.narrator, who = b.who ? (state.ep.cast[b.who] || autoChar(b.who)).name : narr ? state.ep.narrator : '';
+  nameEl.classList.toggle('none', !who); nameEl.classList.toggle('narrator', !!narr); nameEl.firstElementChild.textContent = who;
   txtEl.classList.toggle('narr', !b.who);
   const text = b.who ? b.t : (b.n || '');
   $('#box').classList.toggle('hide', !text);
   doFx(b.fx);
   if (b.big) showBig(b.big);
-  const say = text || b.big || '';
-  state.speech = say && Voice.on ? Voice.speak(say, b.who ? (state.ep.cast[b.who] || autoChar(b.who)) : NARRATOR) : null;
   if (text) typeText(text, who); else { txtEl.textContent = ''; state.typing = false; scheduleAuto(); }
 }
 
 function showTitle(ep, no) {
-  state.phase = 'title'; state.speech = null; Voice.cancel();
+  state.phase = 'title'; $('#chapter').classList.remove('on'); cam.classList.remove('past'); stage.classList.remove('past');
   const tc = $('#titlecard');
   tc.innerHTML = `<div class="ep">EPISODE ${no}</div><h2>${esc(ep.title)}</h2><p>${esc(ep.logline || '')}</p>
     <div class="who">${esc(ep.person || '')}<small>${esc(ep.company || '')}${ep.years ? ' · ' + esc(ep.years) : ''}</small></div>
@@ -511,13 +538,12 @@ function showTitle(ep, no) {
   if (state.auto) { clearTimeout(state.autoT); state.autoT = setTimeout(next, 2600); }
 }
 function showEnd() {
-  state.phase = 'end'; clearTimeout(state.autoT); state.speech = null;
-  if (Voice.on && state.ep.lessons && state.ep.lessons.length)
-    Voice.speak(`${state.ep.person ? state.ep.person + '에게 배우는 것. ' : ''}` + state.ep.lessons.map((l, k) => `${k + 1}, ${l[0]}.`).join(' '), NARRATOR);
+  state.phase = 'end'; clearTimeout(state.autoT);
   const ep = state.ep, idx = window.EPISODES.indexOf(ep), nextEp = window.EPISODES[idx + 1];
   const ls = (ep.lessons || []).map((l, k) => `<div class="lesson"><b><em>${k + 1}</em>${esc(l[0])}</b><span>${esc(l[1] || '')}</span></div>`).join('');
   const ec = $('#endcard');
-  ec.innerHTML = `<div class="fin">FIN</div><h3>${esc(ep.person ? ep.person + '에게 배우는 것' : ep.title)}</h3>${ls ? `<div class="lessons">${ls}</div>` : ''}
+  $('#chapter').classList.remove('on');
+  ec.innerHTML = `<div class="fin">FIN</div>${ep.ending ? `<p class="ending">${esc(ep.ending)}</p><h3 class="small">${esc(ep.person ? ep.person + '에게 배우는 것' : ep.title)}</h3>` : `<h3>${esc(ep.person ? ep.person + '에게 배우는 것' : ep.title)}</h3>`}${ls ? `<div class="lessons">${ls}</div>` : ''}
     <div class="endbtns"><button class="btn" data-a="replay">↺ 다시 보기</button>${nextEp ? `<button class="btn pri" data-a="next">다음 화 · ${esc(nextEp.title)} ▶</button>` : `<button class="btn pri" data-a="make">내 이야기 만들기 ✎</button>`}</div>`;
   ec.classList.add('on'); $('#box').classList.add('hide');
   FX.spawn('sparkle', 50); FX.ambient = 'sparkle';
@@ -533,7 +559,7 @@ $('#endcard').addEventListener('click', e => {
 });
 
 function next() {
-  clearTimeout(state.autoT); Voice.unlock();
+  clearTimeout(state.autoT);
   if (state.phase === 'title') { $('#titlecard').classList.remove('on'); playBeat(0); return; }
   if (state.phase === 'end') return;
   if (state.typing) { finishType(); return; }
@@ -547,10 +573,10 @@ function prev() {
 }
 function epNo(ep) { const i = window.EPISODES.indexOf(ep); return i >= 0 ? i + 1 : '★'; }
 function loadEpisode(ep, scroll) {
-  clearTimeout(state.autoT); clearInterval(state.timer); Voice.cancel(); state.speech = null;
+  clearTimeout(state.autoT); clearInterval(state.timer);
   state.ep = ep; state.beats = flatten(ep); state.i = -1; state.curBg = '';
   for (const id in state.onStage) state.onStage[id].remove(); state.onStage = {};
-  FX.clear(); FX.ambient = null; $('#fireBg').classList.remove('on');
+  FX.clear(); FX.ambient = null; $('#fireBg').classList.remove('on'); cam.classList.remove('past'); stage.classList.remove('past'); $('#chapter').classList.remove('on');
   document.documentElement.style.setProperty('--accent', ep.color || '#ff4d6d');
   $('#epTag').textContent = `EP.${epNo(ep)} ${ep.person || ep.title}`;
   $('#prog').style.width = '0';
@@ -566,22 +592,14 @@ $('#bNext').onclick = next; $('#bPrev').onclick = prev;
 $('#bAuto').onclick = () => { state.auto = !state.auto; $('#bAuto').classList.toggle('on', state.auto); $('#bAuto').textContent = state.auto ? '⏸ 자동 재생 중' : '자동 재생';
   if (state.auto) { if (state.phase === 'title') state.autoT = setTimeout(next, 1200); else scheduleAuto(); } else clearTimeout(state.autoT); };
 $('#bSound').onclick = () => { Snd.init(); Snd.on = !Snd.on; if (Snd.ac.state === 'suspended') Snd.ac.resume();
-  $('#bSound').textContent = Snd.on ? '🔊 배경음 켜짐' : '🔇 배경음 꺼짐'; $('#bSound').classList.toggle('on', Snd.on);
+  $('#bSound').textContent = Snd.on ? '🔊 소리 켜짐' : '🔇 소리 꺼짐'; $('#bSound').classList.toggle('on', Snd.on);
   if (Snd.on) Snd.startBgm(state.ep && state.ep.mood); else Snd.stopBgm(); };
-Voice.on = Voice.supported;
-const voiceBtn = () => { $('#bVoice').textContent = !Voice.supported ? '🗣 목소리 미지원' : Voice.on ? '🗣 목소리 켜짐' : '🗣 목소리 꺼짐'; $('#bVoice').classList.toggle('on', Voice.on); };
-$('#bVoice').onclick = () => { if (!Voice.supported) return; Voice.unlock(); Voice.on = !Voice.on; if (!Voice.on) { Voice.cancel(); state.speech = null; } voiceBtn(); };
-voiceBtn();
-Voice.onStatus = m => { $('#vstat').textContent = m ? '🗣 ' + m : ''; }; Voice.setStatus();
-$('#bTest').onclick = () => Voice.test();
-$('#bAuto').addEventListener('click', () => Voice.unlock());
 document.addEventListener('keydown', e => {
   if (/TEXTAREA|INPUT/.test(document.activeElement.tagName)) return;
   if (e.key === ' ' || e.key === 'Enter' || e.key === 'ArrowRight') { e.preventDefault(); next(); }
   else if (e.key === 'ArrowLeft') prev();
   else if (e.key === 'a' || e.key === 'A') $('#bAuto').click();
   else if (e.key === 'm' || e.key === 'M') $('#bSound').click();
-  else if (e.key === 'v' || e.key === 'V') $('#bVoice').click();
 });
 
 /* =====================================================================
