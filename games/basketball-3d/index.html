@@ -5,20 +5,20 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <meta name="theme-color" content="#0A1120">
 <title>한 손 농구 3D</title>
-<meta name="description" content="three.js로 만든 3D 농구. 7번 선수가 점프슛을 쏘고 1만 4천 관중이 환호하는 프로 리그 경기장. 24초 샷 클락, 스테이지 10개, 무한 모드, 올스타전 방식 3점슛 콘테스트.">
+<meta name="description" content="three.js로 만든 3D 농구. 7번 선수가 수비를 앞에 두고 점프슛을 쏘고, 빗나가면 골밑에서 리바운드. 1만 4천 관중이 환호하는 프로 리그 경기장, 24초 샷 클락과 심판 신호, 스테이지 10개, 무한 모드, 올스타전 방식 3점슛 콘테스트.">
 <link rel="canonical" href="https://richroro.github.io/games/basketball-3d/">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='46' fill='%23FF6B2C'/><g stroke='%235A2A08' stroke-width='5' fill='none'><circle cx='50' cy='50' r='46'/><path d='M50 4v92M4 50h92M18 18q32 32 0 64M82 18q-32 32 0 64'/></g></svg>">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="한 손 농구 3D">
 <meta property="og:title" content="한 손 농구 3D">
-<meta property="og:description" content="끌어 올려 조준하고 놓으면 점프슛. 1만 4천 관중이 들어찬 프로 리그 경기장, 24초 샷 클락, 올스타전 방식 3점슛 콘테스트.">
+<meta property="og:description" content="끌어 올려 조준하고 놓으면 점프슛. 수비가 달려 나와 막고 골밑에선 자리싸움, 1만 4천 관중이 들어찬 프로 리그 경기장과 올스타전 방식 3점슛 콘테스트.">
 <meta property="og:url" content="https://richroro.github.io/games/basketball-3d/">
 <meta property="og:image" content="https://richroro.github.io/games/basketball-3d/og.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="한 손 농구 3D">
-<meta name="twitter:description" content="끌어 올려 조준하고 놓으면 점프슛. 1만 4천 관중이 들어찬 프로 리그 경기장, 24초 샷 클락, 올스타전 방식 3점슛 콘테스트.">
+<meta name="twitter:description" content="끌어 올려 조준하고 놓으면 점프슛. 수비가 달려 나와 막고 골밑에선 자리싸움, 1만 4천 관중이 들어찬 프로 리그 경기장과 올스타전 방식 3점슛 콘테스트.">
 <meta name="twitter:image" content="https://richroro.github.io/games/basketball-3d/og.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -643,6 +643,26 @@ var sfx = (function () {
     }
     return { g: vo, a: a, oscs: oscs };
   }
+  // 심판 호루라기: 3kHz 언저리 두 음이 콩알이 굴러 초당 28번 떨린다
+  function whistle(dur) {
+    if (muted || quiet) return;
+    var a = ensure();
+    if (!a) return;
+    var t = a.currentTime + 0.02, g = a.createGain(), lfo = a.createOscillator(), lg = a.createGain();
+    g.gain.setValueAtTime(0.0001, t);
+    g.gain.exponentialRampToValueAtTime(0.05, t + 0.02);
+    g.gain.setValueAtTime(0.05, t + dur - 0.06);
+    g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+    lfo.frequency.value = 28; lg.gain.value = 0.03; lfo.connect(lg); lg.connect(g.gain);
+    [3000, 3350].forEach(function (fq, i) {
+      var o = a.createOscillator(), og = a.createGain();
+      o.type = "sine"; o.frequency.setValueAtTime(fq, t); og.gain.value = i ? 0.5 : 1;
+      o.connect(og); og.connect(g); o.start(t); o.stop(t + dur + 0.02);
+    });
+    g.connect(out());
+    lfo.start(t); lfo.stop(t + dur + 0.02);
+    nz({ dur: dur, vol: 0.01, type: "bandpass", f0: 3200, q: 2 });
+  }
   function buzz(ms) {
     if (muted || quiet || !tapped || !navigator.vibrate) return;
     try { navigator.vibrate(ms); } catch (e) {}
@@ -716,9 +736,14 @@ var sfx = (function () {
     dribble: function () { tone(96, 0.12, "sine", 0.07, 64); nz({ dur: 0.04, vol: 0.03, type: "bandpass", f0: 1400, q: 0.9 }); },
     // 패스를 받는 '팍'
     catchBall: function () { nz({ dur: 0.05, vol: 0.06, type: "bandpass", f0: 1100, q: 0.7 }); tone(170, 0.06, "sine", 0.04, 120); },
+    // 수비가 달려 나오다 멈출 때 운동화 '끽'
+    squeak: function (p) { nz({ dur: 0.08 + 0.05 * p, vol: 0.012 + 0.02 * p, type: "bandpass", f0: 2700 + 500 * p, f1: 3500 + 400 * p, q: 7 }); },
     // 착지: 발 '쿵' + 운동화 '끽'
     land: function () { tone(70, 0.08, "sine", 0.05, 50); nz({ dur: 0.07, vol: 0.022, type: "bandpass", f0: 2900, f1: 3600, q: 6 }); },
     gold: function () { tone(1320, 0.12, "sine", 0.08); tone(1760, 0.16, "sine", 0.07, 0, 0.08); },
+    // 공이 사람 몸에 맞는 '퍽'
+    body: function (p) { p = clamp(p, 0.1, 1); tone(150, 0.07, "sine", 0.03 + 0.05 * p, 95); nz({ dur: 0.04, vol: 0.012 + 0.025 * p, type: "lowpass", f0: 700 }); },
+    whistle: function () { whistle(0.55); },
     clear: function (stars) { melody([660, 830, 990, 1320].slice(0, 1 + stars)); buzz([14, 50, 14, 50, 22]); },
     fail: function () { tone(300, 0.35, "sawtooth", 0.09, 150); buzz(50); },
     horn: function () { tone(220, 0.6, "sawtooth", 0.06); tone(277, 0.6, "sawtooth", 0.045); buzz(60); },
@@ -1956,6 +1981,8 @@ var SH_HIP0 = SHL.th + SHL.sh + SHL.ank - 0.012;       // 서 있을 때 골반 
 var POSE_N = 72;
 var SHJ = ["pel", "neck", "head", "shL", "shR", "elL", "elR", "wrL", "wrR", "hpL", "hpR", "knL", "knR", "anL", "anR"];
 var SHD = ["f", "look", "hLy", "hLz", "hRy", "hRz", "ftL", "ftR"];
+// 몸 마디 18개. 그리는 순서이자 코트 위 사람(5-3)의 뼈 번호
+var SEG = ["torso", "hips", "neck", "head", "uaL", "faL", "uaR", "faR", "hL", "hR", "thL", "shinL", "thR", "shinR", "stL", "stR", "ftL", "ftR"];
 // 공을 놓는 점: 발 가운데에서 골대 쪽 0.3m, 오른쪽 0.16m (오른손 슈터라 공이 오른눈 위로 올라간다)
 var REL = { f: 0.3, s: 0.16 };
 // 동작 시간: 모으기, 손 떼고 공 놓기까지, 발이 떨어지는 때, 뛰어오르는 속도(꼭대기 27cm)
@@ -2065,82 +2092,104 @@ function jerseyTex(o) {
     g.fillStyle = o.num; g.fillText(o.chest, x0, 120);
     num(o.no, x0, 235, 120);
   });
+  // 멀리 서는 사람은 반 크기 그림으로 (글씨 배치는 그대로)
+  if (o.half) { var c2 = mkCanvas(W / 2, H / 2); c2.getContext("2d").drawImage(c, 0, 0, W / 2, H / 2); c = c2; }
   return canvasTex(c);
 }
 
-function makeShooter(look) {
-  var SK = col(look.skin), WH = col(0xf4f5f7), TM = col(0x1d4fd8), SLV = col(0x14161c), SOLE = col(0xf2f2f2), HAIR = col(0x17110d);
-  var body = new THREE.MeshStandardMaterial({ vertexColors: true, roughness: 0.6, metalness: 0 });
-  var shirt = new THREE.MeshStandardMaterial({ map: jerseyTex({ base: "#f5f6f8", trim: "#1d4fd8", trim2: "#f2b632", num: "#1d4fd8", numOut: "#f2b632",
-    name: "RICHRORO", no: "7", chest: "HOOPS" }), roughness: 0.78, metalness: 0 });
-  var G = new THREE.Group(), M = {};
-  function mk(name, geo, mat) { var m = new THREE.Mesh(geo, mat || body); m.castShadow = true; m.receiveShadow = true; M[name] = m; G.add(m); return m; }
+// 사람 한 명의 마디 그림(SEG 18개, 마디마다 제 관절이 원점). 선수는 곱게, k.lo 면 멀리 서는 사람이라 다각형을 줄인다.
+// k: skin 피부, hair 머리카락(bald 면 민머리), shortsBase·shortsTrim 반바지 바탕·줄, socks 양말, shoe·shoeAcc·sole 신발 몸통·옆줄·밑창,
+// sleeveR 오른팔 슈팅 슬리브, pants 긴바지·tee 반소매(심판), s 키 비율
+function bodyGeos(k) {
+  var lo = !!k.lo;
+  function q(a, b) { return lo ? b : a; }
+  var SK = col(k.skin), HAIR = col(k.bald ? k.skin : k.hair), SB = col(k.shortsBase), STR = col(k.shortsTrim), SOCK = col(k.socks);
+  var SHO = col(k.shoe), SHA = col(k.shoeAcc), SOLE = col(k.sole), SLV = k.sleeveR !== undefined ? col(k.sleeveR) : null;
+  var PNT = k.pants !== undefined ? col(k.pants) : null, TEE = k.tee !== undefined ? col(k.tee) : null;
+  var G = {};
   // 몸통(유니폼): 골반 가운데가 원점, +y 척추, +z 앞
-  mk("torso", ringsGeo([[-0.03, 0.156, 0.112], [0.08, 0.15, 0.108], [0.2, 0.164, 0.115, 0.004], [0.32, 0.188, 0.126, 0.01],
+  G.torso = ringsGeo([[-0.03, 0.156, 0.112], [0.08, 0.15, 0.108], [0.2, 0.164, 0.115, 0.004], [0.32, 0.188, 0.126, 0.01],
     [0.42, 0.204, 0.128, 0.006], [0.5, 0.203, 0.118, -0.004], [0.55, 0.176, 0.098, -0.01], [0.585, 0.11, 0.072, -0.006],
-    [0.6, 0.068, 0.054, 0], [0.605, 0.001, 0.001, 0]], 32), shirt);
-  mk("hips", vcol(ringsGeo([[-0.2, 0.19, 0.13], [-0.1, 0.19, 0.132], [0, 0.172, 0.122], [0.05, 0.162, 0.114], [0.07, 0.001, 0.001]], 24),
-    function (x, y, z, o) { o.copy(y > 0.035 || (Math.abs(x) > 0.17 && y < -0.02) ? TM : WH); }));
-  mk("neck", solid(lathe([[0.068, 0], [0.064, 0.08], [0.062, 0.13]], 14), SK));
+    [0.6, 0.068, 0.054, 0], [0.605, 0.001, 0.001, 0]], q(32, 16));
+  G.hips = vcol(ringsGeo([[-0.2, 0.19, 0.13], [-0.1, 0.19, 0.132], [0, 0.172, 0.122], [0.05, 0.162, 0.114], [0.07, 0.001, 0.001]], q(24, 12)),
+    function (x, y, z, o) { o.copy(PNT || (y > 0.035 || (Math.abs(x) > 0.17 && y < -0.02) ? STR : SB)); });
+  G.neck = solid(lathe([[0.068, 0], [0.064, 0.08], [0.062, 0.13]], q(14, 8)), SK);
   // 머리: 두개골에 짧은 머리카락을 색으로(이마 위·옆·목덜미), 머리카락 쪽은 4mm 부풀린다
-  var skull = vcol(sph(0.1, 0.9, 1.1, 1.0, 0, 0, 0, 30, 22), function (x, y, z, o) {
+  var skull = vcol(sph(0.1, 0.9, 1.1, 1.0, 0, 0, 0, q(30, 14), q(22, 10)), function (x, y, z, o) {
     o.copy(y > (z > 0 ? 0.012 + 0.52 * z : 0.012 + 0.5 * z) ? HAIR : SK);
   });
-  (function (p, c) {
+  if (!k.bald) (function (p, c) {
     for (var i = 0; i < p.count; i++) if (Math.abs(c.getX(i) - HAIR.r) < 1e-5) p.setXYZ(i, p.getX(i) * 1.04, p.getY(i) * 1.03 + 0.002, p.getZ(i) * 1.04);
   })(skull.attributes.position, skull.attributes.color);
-  mk("head", mergeGeos([skull,
-    solid(sph(0.024, 0.45, 1, 0.75, 0.088, -0.008, -0.008), SK), solid(sph(0.024, 0.45, 1, 0.75, -0.088, -0.008, -0.008), SK),
-    solid(sph(0.016, 0.9, 1.1, 1.1, 0, -0.018, 0.098), SK),
-    solid(sph(0.064, 1, 0.72, 0.95, 0, -0.068, 0.03), SK)]));
-  // 팔: 어깨(삼각근) 공 + 위팔 + 팔꿈치 공 / 아래팔 + 손목. 오른팔은 슈팅 슬리브
+  G.head = mergeGeos([skull,
+    solid(sph(0.024, 0.45, 1, 0.75, 0.088, -0.008, -0.008, q(14, 6), q(10, 4)), SK), solid(sph(0.024, 0.45, 1, 0.75, -0.088, -0.008, -0.008, q(14, 6), q(10, 4)), SK),
+    solid(sph(0.016, 0.9, 1.1, 1.1, 0, -0.018, 0.098, q(14, 6), q(10, 4)), SK),
+    solid(sph(0.064, 1, 0.72, 0.95, 0, -0.068, 0.03, q(14, 10), q(10, 6)), SK)]);
+  // 팔: 어깨(삼각근) 공 + 위팔 + 팔꿈치 공 / 아래팔 + 손목. 반소매면 위팔 윗부분이 소매
   function armGeos(sleeve) {
-    var c = sleeve ? SLV : SK;
-    return [mergeGeos([solid(sph(0.066, 1, 1, 1, 0, 0.01, 0), SK),
-      solid(lathe([[0.057, 0], [0.061, 0.05], [0.058, 0.13], [0.051, 0.22], [0.044, 0.3], [0.041, SHL.ua]], 16), c),
-      solid(sph(0.042, 1, 1, 1, 0, SHL.ua, 0), c)]),
-      mergeGeos([solid(lathe([[0.043, 0], [0.048, 0.05], [0.045, 0.12], [0.036, 0.21], [0.029, SHL.fa]], 16), c),
-      solid(sph(0.03, 1.1, 1, 0.8, 0, SHL.fa, 0), SK)])];
+    var c = sleeve || SK;
+    return [mergeGeos([solid(sph(0.066, 1, 1, 1, 0, 0.01, 0, q(14, 8), q(10, 6)), TEE || SK),
+      vcol(lathe([[0.057, 0], [0.061, 0.05], [0.058, 0.13], [0.051, 0.22], [0.044, 0.3], [0.041, SHL.ua]], q(16, 8)), function (x, y, z, o) { o.copy(TEE && y < 0.12 ? TEE : c); }),
+      solid(sph(0.042, 1, 1, 1, 0, SHL.ua, 0, q(14, 6), q(10, 4)), c)]),
+      mergeGeos([solid(lathe([[0.043, 0], [0.048, 0.05], [0.045, 0.12], [0.036, 0.21], [0.029, SHL.fa]], q(16, 8)), c),
+      solid(sph(0.03, 1.1, 1, 0.8, 0, SHL.fa, 0, q(14, 6), q(10, 4)), SK)])];
   }
-  var aL = armGeos(false), aR = armGeos(true);
-  mk("uaL", aL[0]); mk("faL", aL[1]); mk("uaR", aR[0]); mk("faR", aR[1]);
-  // 손: +y 손가락, +z 손바닥 쪽. s=+1 오른손(엄지가 +x)
+  var aL = armGeos(null), aR = armGeos(SLV);
+  G.uaL = aL[0]; G.faL = aL[1]; G.uaR = aR[0]; G.faR = aR[1];
+  // 손: +y 손가락, +z 손바닥 쪽. s=+1 오른손(엄지가 +x). 멀리 서는 사람은 네 손가락을 벙어리장갑 한 덩어리로
   function handGeo(s) {
-    var parts = [solid(sph(0.05, 0.86, 1, 0.36, 0, 0.052, 0), SK)];
-    [[-0.028, 0.068, -0.1], [-0.0095, 0.08, -0.03], [0.0095, 0.077, 0.03], [0.027, 0.062, 0.1]].forEach(function (q) {
+    var parts = [solid(sph(0.05, 0.86, 1, 0.36, 0, 0.052, 0, q(14, 8), q(10, 6)), SK)];
+    if (lo) parts.push(solid(sph(0.043, 0.88, 1, 0.34, 0, 0.122, 0.004, 8, 6), SK));
+    else [[-0.028, 0.068, -0.1], [-0.0095, 0.08, -0.03], [0.0095, 0.077, 0.03], [0.027, 0.062, 0.1]].forEach(function (q) {
       parts.push(solid(lathe([[0.0092, 0], [0.0088, q[1] * 0.5], [0.0078, q[1] * 0.9], [0.004, q[1]]], 7)
         .rotateX(0.32).rotateZ(-q[2] * s).translate(q[0] * s, 0.093, 0.004), SK));
     });
-    parts.push(solid(lathe([[0.012, 0], [0.011, 0.035], [0.0085, 0.058], [0.004, 0.064]], 7)
+    parts.push(solid(lathe([[0.012, 0], [0.011, 0.035], [0.0085, 0.058], [0.004, 0.064]], q(7, 5))
       .rotateZ(-s * 0.9).rotateX(0.5).translate(s * 0.03, 0.028, 0.012), SK));
     return mergeGeos(parts);
   }
-  mk("hL", handGeo(-1)); mk("hR", handGeo(1));
-  // 다리: 허벅지 + 무릎 / 종아리(아래는 흰 양말) / 반바지 다리 / 신발
+  G.hL = handGeo(-1); G.hR = handGeo(1);
+  // 다리: 허벅지 + 무릎 / 종아리(아래는 양말). 긴바지면 허벅지·종아리가 바지
   function legGeos() {
-    return [mergeGeos([solid(lathe([[0.088, 0], [0.085, 0.1], [0.074, 0.3], [0.06, 0.44], [0.054, SHL.th]], 14), SK),
-      solid(sph(0.056, 1, 1, 1, 0, SHL.th, 0.005), SK)]),
-      vcol(lathe([[0.053, 0], [0.057, 0.08], [0.06, 0.15], [0.05, 0.28], [0.038, 0.36], [0.036, 0.4], [0.037, SHL.sh]], 14),
-        function (x, y, z, o) { o.copy(y > 0.34 ? WH : SK); })];
+    return [mergeGeos([solid(lathe([[0.088, 0], [0.085, 0.1], [0.074, 0.3], [0.06, 0.44], [0.054, SHL.th]], q(14, 8)), PNT || SK),
+      solid(sph(0.056, 1, 1, 1, 0, SHL.th, 0.005, q(14, 8), q(10, 6)), PNT || SK)]),
+      vcol(lathe([[0.053, 0], [0.057, 0.08], [0.06, 0.15], [0.05, 0.28], [0.038, 0.36], [0.036, 0.4], [0.037, SHL.sh]], q(14, 8)),
+        function (x, y, z, o) { o.copy(y > 0.34 ? SOCK : PNT || SK); })];
   }
   var lL = legGeos(), lR = legGeos();
-  mk("thL", lL[0]); mk("shinL", lL[1]); mk("thR", lR[0]); mk("shinR", lR[1]);
-  function shortsLeg() {           // +z(u=0) 가 바깥쪽: 거기에 줄무늬
-    return vcol(lathe([[0.106, 0], [0.109, 0.12], [0.112, 0.26], [0.113, 0.325], [0.106, 0.33]], 18), function (x, y, z, o) {
-      o.copy(z / (Math.hypot(x, z) || 1) > 0.82 || y > 0.31 ? TM : WH);
+  G.thL = lL[0]; G.shinL = lL[1]; G.thR = lR[0]; G.shinR = lR[1];
+  function shortsLeg() {           // +z(u=0) 가 바깥쪽: 거기에 줄무늬. 긴바지면 허벅지를 감싸는 바짓가랑이
+    if (PNT) return solid(lathe([[0.1, 0], [0.097, 0.12], [0.09, 0.26], [0.084, 0.33]], 8), PNT);
+    return vcol(lathe([[0.106, 0], [0.109, 0.12], [0.112, 0.26], [0.113, 0.325], [0.106, 0.33]], q(18, 10)), function (x, y, z, o) {
+      o.copy(z / (Math.hypot(x, z) || 1) > 0.82 || y > 0.31 ? STR : SB);
     });
   }
-  mk("stL", shortsLeg()); mk("stR", shortsLeg());
+  G.stL = shortsLeg(); G.stR = shortsLeg();
   function shoeGeo() {             // 옆 모습을 밀어 낸 운동화. 발목이 원점, +z 앞, 밑창은 흰색
     var s = new THREE.Shape();
     s.moveTo(-0.095, -0.085); s.lineTo(0.2, -0.085); s.quadraticCurveTo(0.235, -0.083, 0.232, -0.05);
     s.quadraticCurveTo(0.228, -0.02, 0.18, -0.008); s.lineTo(0.06, 0.03); s.quadraticCurveTo(0.03, 0.06, 0.02, 0.07);
     s.lineTo(-0.045, 0.07); s.quadraticCurveTo(-0.09, 0.06, -0.1, 0.02); s.quadraticCurveTo(-0.108, -0.06, -0.095, -0.085);
-    var g = new THREE.ExtrudeGeometry(s, { depth: 0.07, bevelEnabled: true, bevelThickness: 0.018, bevelSize: 0.014, bevelSegments: 3, curveSegments: 8 });
+    var g = new THREE.ExtrudeGeometry(s, { depth: 0.07, bevelEnabled: true, bevelThickness: 0.018, bevelSize: 0.014, bevelSegments: q(3, 1), curveSegments: q(8, 3) });
     g.translate(0, 0, -0.035); g.rotateY(-Math.PI / 2); g.computeVertexNormals();
-    return vcol(g, function (x, y, z, o) { o.copy(y < -0.064 ? SOLE : Math.abs(x) > 0.04 && y < -0.03 && z > -0.02 && z < 0.14 ? WH : TM); });
+    return vcol(g, function (x, y, z, o) { o.copy(y < -0.064 ? SOLE : Math.abs(x) > 0.04 && y < -0.03 && z > -0.02 && z < 0.14 ? SHA : SHO); });
   }
-  mk("ftL", shoeGeo()); mk("ftR", shoeGeo());
+  G.ftL = shoeGeo(); G.ftR = shoeGeo();
+  if (k.s && k.s !== 1) SEG.forEach(function (nm) { G[nm].scale(k.s, k.s, k.s); });
+  return G;
+}
+
+function makeShooter(look) {
+  var body = new THREE.MeshStandardMaterial({ vertexColors: true, roughness: 0.6, metalness: 0 });
+  var shirt = new THREE.MeshStandardMaterial({ map: jerseyTex({ base: "#f5f6f8", trim: "#1d4fd8", trim2: "#f2b632", num: "#1d4fd8", numOut: "#f2b632",
+    name: "RICHRORO", no: "7", chest: "HOOPS" }), roughness: 0.78, metalness: 0 });
+  var geo = bodyGeos({ skin: look.skin, hair: 0x17110d, shortsBase: 0xf4f5f7, shortsTrim: 0x1d4fd8, socks: 0xf4f5f7,
+    shoe: 0x1d4fd8, shoeAcc: 0xf4f5f7, sole: 0xf2f2f2, sleeveR: 0x14161c });
+  var G = new THREE.Group(), M = {};
+  SEG.forEach(function (nm) {
+    var m = new THREE.Mesh(geo[nm], nm === "torso" ? shirt : body);
+    m.castShadow = true; m.receiveShadow = true; M[nm] = m; G.add(m);
+  });
   var J = {}, D = {};
   SHJ.forEach(function (k) { J[k] = new V3(); });
   SHD.forEach(function (k) { D[k] = new V3(); });
@@ -2301,10 +2350,11 @@ function shTryReceive() {
     sh.pick = { pos: m.getWorldPosition(new V3()), mesh: m };
     sh.st = "pick";
   } else {
-    // 코트 가운데 쪽 옆에서 가슴 높이로 온다 (화면 밖에서 들어온다)
+    // 코트 가운데 쪽 옆에서 가슴 높이로 온다 (화면 밖에서 들어온다). 리바운드를 잡은 사람이 있으면 그 사람이 준다(5-3)
     var side = sh.root.x * r.x + sh.root.z * r.z > 0.5 ? -1 : 1;
-    var c = shBallCatch(new V3());
-    sh.pass = { from: c.clone().addScaledVector(r, side * 5.5).addScaledVector(sh.f, 1.6).setY(1.35), to: c };
+    var c = shBallCatch(new V3()), src = courtPasser();
+    sh.pass = { from: src ? src.ball.p.clone() : c.clone().addScaledVector(r, side * 5.5).addScaledVector(sh.f, 1.6).setY(1.35), to: c };
+    if (src) courtHandOff(src);
     sh.st = "catch";
   }
   sh.want = null; sh.t = 0; sh.cheer = 0;
@@ -2998,7 +3048,8 @@ function mtxPlace(m, A, B, side, len) {
     scene.add(m);
   });
   var skins = [0xf1c7a1, 0xe0ac7e, 0xc68b5f, 0x8d5a3b, 0x5e3a24, 0xf6d5b8].map(col);
-  var shirts = [0xf5f6f8, 0x1d4fd8, 0xf2b632, 0x15181f, 0xc9302c, 0x6b7684, 0x1f7a4d, 0xf5f6f8, 0x1d4fd8, 0xe8742c, 0x2b3a67, 0xb9c2d0, 0x8a2be2].map(col);
+  // 옷: 검정·짙은 회색·남색·회색·흰색이 대부분이고 팀 파랑·금색·자주·갈색 겉옷이 가끔 (원색만 늘어놓으면 장난감처럼 보인다)
+  var shirts = [0x15181f, 0x23272f, 0x2b3a67, 0xf2f3f5, 0x3c4350, 0x1d4fd8, 0x6b7684, 0x15181f, 0xb9c2d0, 0x5a4633, 0x2250c8, 0x7a1f24, 0xf2b632].map(col);
   var pants = [0x1c2233, 0x2c3a55, 0x3b3b3b, 0x4a3b2c, 0x14161c, 0x6b6150].map(col);
   var shoes = [0xf2f2f2, 0x15181f, 0x1d4fd8, 0xc9302c].map(col);
   spots.forEach(function (s, i) {
@@ -3158,6 +3209,680 @@ function cameraFlashes(n, spread) {
 }
 
 /* ══════════════════════════════════════════════════════════════
+   5-3. 코트 위 사람들
+   같은 편 둘(흰 유니폼)·상대 둘(빨간 유니폼)·심판 하나. 선수(5-1)와 같은 마디 그림을 다각형만 줄여, 한 사람을
+   스킨 메시 하나(재질 둘: 유니폼 그림 · 꼭짓점 색)로 그린다. 마디마다 뼈 하나를 두고 선수처럼 관절을 풀어 뼈를 놓는다.
+   자유투: 레인 양옆 첫 칸에 상대, 둘째 칸에 같은 편. 공이 손을 떠나면 레인으로 들어와 자리를 잡는다.
+   점프슛: 상대 하나가 슈터 앞을 막고(패스가 오면 달려 나와 손을 들고, 쏘면 뛰어올라 막는다), 골밑에서 큰 선수 둘이
+   자리싸움, 반대편 윙에 같은 편 하나. 심판은 베이스라인에서 3점 시도·성공 신호를 준다.
+   날아가는 슛은 건드리지 않는다: 림 아래로 떨어져 더는 들어갈 수 없는 공만 잡거나(리바운드) 몸에 맞고 튄다.
+   잡은 공은 다음 패스로 슈터에게 돌려준다. 3점슛 콘테스트와 시작 화면에는 아무도 없다
+   ══════════════════════════════════════════════════════════════ */
+var HOME_KIT = { base: "#f5f6f8", trim: "#1d4fd8", trim2: "#f2b632", num: "#1d4fd8", numOut: "#f2b632", chest: "HOOPS",
+  shortsBase: 0xf4f5f7, shortsTrim: 0x1d4fd8, socks: 0xf4f5f7, shoe: 0x1d4fd8, shoeAcc: 0xf4f5f7, sole: 0xf2f2f2 };
+var AWAY_KIT = { base: "#b3202b", trim: "#15171d", trim2: "#f5f6f8", num: "#f5f6f8", numOut: "#15171d", chest: "BLAZE",
+  shortsBase: 0xb3202b, shortsTrim: 0x15171d, socks: 0x15171d, shoe: 0x15171d, shoeAcc: 0xf4f5f7, sole: 0xf2f2f2 };
+var REF_KIT = { shortsBase: 0x16181d, shortsTrim: 0x16181d, socks: 0x16181d, shoe: 0x121316, shoeAcc: 0x121316, sole: 0x2a2c31,
+  pants: 0x16181d, tee: 0xe4e6ea };
+// [이름, 편, 번호, 등 이름, 키(m), 피부, 머리카락(null 이면 민머리)]
+var CAST = [
+  ["hA", "home", "23", "PARK", 1.94, 0x5e3a24, 0x120d0a],
+  ["hB", "home", "11", "KANG", 2.08, 0xc68b5f, null],
+  ["aA", "away", "3", "JONES", 1.91, 0x8d5a3b, 0x100c09],
+  ["aB", "away", "34", "SMITH", 2.11, 0xe0ac7e, 0x4a2f1b],
+  ["ref", "ref", "24", "", 1.84, 0xf1c7a1, 0x5b5650]
+];
+var COURT = { mode: "off", npcs: [], by: {}, resT: -9, resOk: false, three: false, viol: -9, mat: null };
+var _c1 = new V3(), _c2 = new V3(), _c3 = new V3(), _c4 = new V3(), _c5 = new V3(), _c6 = new V3(), _c7 = new V3();
+
+// 심판 셔츠: 흰 바탕에 검은 세로 줄, 검은 깃, 등번호
+function refTex(no) {
+  var W = 512, H = 256, c = mkCanvas(W, H), g = c.getContext("2d");
+  g.fillStyle = "#e9ebee"; g.fillRect(0, 0, W, H);
+  g.fillStyle = "#17191e";
+  for (var i = 0; i < 28; i++) g.fillRect((i + 0.25) * W / 28, 0, W / 56, H);
+  g.fillRect(0, 0, W, 13);
+  g.fillStyle = "#e9ebee"; g.fillRect(W / 2 - 46, 58, 92, 76);
+  g.font = "900 60px 'Arial Black', Impact, sans-serif"; g.textAlign = "center"; g.textBaseline = "middle";
+  g.fillStyle = "#17191e"; g.fillText(no, W / 2, 98);
+  return canvasTex(c);
+}
+// 마디 그림을 한 덩어리로: 몸통(유니폼 그림)이 앞, 나머지(꼭짓점 색)가 뒤. 꼭짓점은 제 마디의 뼈 하나에 온전히 붙는다
+function skinGeo(G) {
+  var list = SEG.map(function (nm, bi) { var g = G[nm]; return { g: g.index ? g : indexify(g), b: bi }; });
+  var n = 0, ni = 0;
+  list.forEach(function (e) { n += e.g.attributes.position.count; ni += e.g.index.count; });
+  var P = new Float32Array(n * 3), N = new Float32Array(n * 3), C = new Float32Array(n * 3), U = new Float32Array(n * 2);
+  var SI = new Uint16Array(n * 4), SW = new Float32Array(n * 4), I = n > 65535 ? new Uint32Array(ni) : new Uint16Array(ni);
+  var o = 0, oi = 0, torsoI = 0;
+  list.forEach(function (e, k) {
+    var a = e.g.attributes, c = a.position.count, ix = e.g.index.array, i;
+    P.set(a.position.array, o * 3); N.set(a.normal.array, o * 3);
+    if (a.color) C.set(a.color.array, o * 3); else C.fill(1, o * 3, (o + c) * 3);
+    if (a.uv) U.set(a.uv.array, o * 2);
+    for (i = 0; i < c; i++) { SI[(o + i) * 4] = e.b; SW[(o + i) * 4] = 1; }
+    for (i = 0; i < ix.length; i++) I[oi + i] = ix[i] + o;
+    o += c; oi += ix.length;
+    if (k === 0) torsoI = oi;
+  });
+  var g = new THREE.BufferGeometry();
+  g.setAttribute("position", new THREE.BufferAttribute(P, 3));
+  g.setAttribute("normal", new THREE.BufferAttribute(N, 3));
+  g.setAttribute("color", new THREE.BufferAttribute(C, 3));
+  g.setAttribute("uv", new THREE.BufferAttribute(U, 2));
+  g.setAttribute("skinIndex", new THREE.BufferAttribute(SI, 4));
+  g.setAttribute("skinWeight", new THREE.BufferAttribute(SW, 4));
+  g.setIndex(new THREE.BufferAttribute(I, 1));
+  g.addGroup(0, torsoI, 0); g.addGroup(torsoI, ni - torsoI, 1);
+  return g;
+}
+function npcParams() {
+  return { crouch: 0.035, lean: 0.05, shrug: 0, look: new V3(0, RIM_Y, 0), hL: new V3(), hR: new V3(), pL: new V3(), pR: new V3(),
+    hLy: new V3(0, -1, 0), hLz: new V3(1, 0, 0), hRy: new V3(0, -1, 0), hRz: new V3(-1, 0, 0),
+    aL: new V3(), aR: new V3(), fdL: new V3(0, 0, 1), fdR: new V3(0, 0, 1) };
+}
+function makeNpc(c) {
+  var team = c[1], s = c[4] / 1.98, kit = team === "home" ? HOME_KIT : team === "away" ? AWAY_KIT : REF_KIT;
+  var k = { lo: true, s: s, skin: c[5], hair: c[6] === null ? c[5] : c[6], bald: c[6] === null };
+  ["shortsBase", "shortsTrim", "socks", "shoe", "shoeAcc", "sole", "pants", "tee"].forEach(function (nm) { if (kit[nm] !== undefined) k[nm] = kit[nm]; });
+  var tex = team === "ref" ? refTex(c[2]) : jerseyTex({ base: kit.base, trim: kit.trim, trim2: kit.trim2, num: kit.num, numOut: kit.numOut,
+    name: c[3], no: c[2], chest: kit.chest, half: true });
+  if (!COURT.mat) COURT.mat = new THREE.MeshStandardMaterial({ vertexColors: true, roughness: 0.62, metalness: 0, skinning: true });
+  var mesh = new THREE.SkinnedMesh(skinGeo(bodyGeos(k)), [new THREE.MeshStandardMaterial({ map: tex, roughness: 0.78, metalness: 0, skinning: true }), COURT.mat]);
+  var M = {}, bones = SEG.map(function (nm) { var b = new THREE.Bone(); mesh.add(b); M[nm] = b; return b; });
+  mesh.bind(new THREE.Skeleton(bones, bones.map(function () { return new THREE.Matrix4(); })), new THREE.Matrix4());
+  mesh.frustumCulled = false; mesh.castShadow = true; mesh.receiveShadow = true; mesh.visible = false;
+  scene.add(mesh);
+  var J = {}, D = {};
+  SHJ.forEach(function (nm) { J[nm] = new V3(); });
+  SHD.forEach(function (nm) { D[nm] = new V3(); });
+  var n = { id: c[0], team: team, s: s, mesh: mesh, M: M, J: J, D: D, pose: new Float32Array(POSE_N),
+    L: { ua: SHL.ua * s, fa: SHL.fa * s, th: SHL.th * s, sh: SHL.sh * s, ank: SHL.ank * s, spine: SHL.spine * s, shw: SHL.shw * s, hipw: SHL.hipw * s, hip0: SH_HIP0 * s },
+    reach: 2.63 * s,                                    // 서서 손 닿는 높이
+    pos: new V3(), f: new V3(0, 0, 1), goal: new V3(), gf: new V3(0, 0, 1), home: new V3(), hf: new V3(0, 0, 1), sag: new V3(),
+    rel: false, spdMax: 4, v: 0, ph: 0, role: "", act: "stand", at: 0, jump: 0, jv: 0, air: false, landT: 0,
+    ball: null, bp: new V3(), reb: null, cool: 0, mark: null, seed: vr() * 10, P: npcParams(), C: npcParams() };
+  COURT.npcs.push(n); COURT.by[n.id] = n;
+  return n;
+}
+CAST.forEach(makeNpc);
+
+// ── 몸 쓰는 도구 ──
+function npcRight(n, o) { return o.set(-n.f.z, 0, n.f.x); }
+// 기준점에서 몸 기준 x(오른쪽)·y(위)·z(앞)
+function npcAt(n, o, base, x, y, z) { npcRight(n, _c2); return o.copy(base).addScaledVector(_c2, x).addScaledVector(_up, y).addScaledVector(n.f, z); }
+function npcDir(n, o, x, y, z) { npcRight(n, _c2); return o.set(0, 0, 0).addScaledVector(_c2, x).addScaledVector(_up, y).addScaledVector(n.f, z).normalize(); }
+// 슈터의 공(없으면 놓는 점) 쪽으로 손을 뻗는다: 공에서 이 사람 쪽으로 gap 만큼, 위로 up 만큼. 팔 길이까지만
+function npcToBall(n, o, sho, gap, up) {
+  if (sh.hasBall) _c7.copy(sh.ball); else relPos(curSpot, _c7);
+  _c6.subVectors(sho, _c7).setY(0);
+  var l = _c6.length();
+  if (l > 1e-4) _c7.addScaledVector(_c6, Math.min(gap, l) / l);
+  _c7.y += up;
+  _c6.subVectors(_c7, sho);
+  var d = _c6.length(), reach = 0.6 * n.s;
+  return o.copy(sho).addScaledVector(_c6, d > reach ? reach / d : 1);
+}
+function npcSet(n, act) { if (n.act !== act) { n.act = act; n.at = 0; } }
+function npcJump(n, v0) { if (n.air) return; n.air = true; n.jv = v0; }
+function npcAir(n, dt) {
+  if (!n.air) return;
+  n.jv -= G * dt; n.jump += n.jv * dt;
+  if (n.jump <= 0) { n.jump = 0; n.jv = 0; n.air = false; n.landT = 0.25; }
+}
+function turnTo(f, to, k) {
+  var a = Math.atan2(f.x, f.z), b = Math.atan2(to.x, to.z), d = ((b - a) % (Math.PI * 2) + Math.PI * 3) % (Math.PI * 2) - Math.PI;
+  a += d * Math.min(1, k);
+  f.set(Math.sin(a), 0, Math.cos(a));
+}
+// 목표 자리로: 멀면 가는 쪽을 보고 뛰고, 가까우면 서야 할 쪽을 본 채 옆걸음
+function npcMove(n, dt) {
+  _c3.subVectors(n.goal, n.pos).setY(0);
+  var d = _c3.length(), want = n.air ? n.v : Math.min(n.spdMax, d * 4), v0 = n.v;
+  n.v += (want - n.v) * (1 - Math.exp(-dt * 8));
+  // 빠르게 달리다 확 서면 운동화가 '끽' (0.6초에 한 번까지)
+  n.sq = (n.sq || 0) - dt;
+  if (v0 > 2.2 && want < v0 * 0.5 && n.sq <= 0 && mode === "play") { n.sq = 0.6; sfx.squeak(clamp(v0 / 4.5, 0, 1)); }
+  if (d > 1e-4 && n.v > 1e-3) n.pos.addScaledVector(_c3, Math.min(d, n.v * dt) / d);
+  turnTo(n.f, d > 1.2 && n.v > 1.6 ? _c3.normalize() : n.gf, dt * 7);
+  if (n.v > 0.15 && !n.air) n.ph += n.v * dt / 1.25 * Math.PI * 2;
+}
+// 발: 어깨너비(spread 배), 오른발이 fwd 만큼 앞, 발끝 11° 바깥
+function npcFeet(n, spread, fwd) {
+  var P = n.P, f = n.f, s = n.s, c = Math.cos(0.2), sn = Math.sin(0.2);
+  npcRight(n, _c4);
+  P.aL.copy(n.pos).addScaledVector(_c4, -0.15 * spread * s).addScaledVector(f, -fwd * s).setY(n.L.ank + n.jump);
+  P.aR.copy(n.pos).addScaledVector(_c4, 0.15 * spread * s).addScaledVector(f, fwd * s).setY(n.L.ank + n.jump);
+  P.fdL.set(f.x * c + f.z * sn, n.air ? -0.35 : 0, f.z * c - f.x * sn);
+  P.fdR.set(f.x * c - f.z * sn, n.air ? -0.35 : 0, f.z * c + f.x * sn);
+}
+// 걷거나 뛸 때 발: 가는 쪽으로 번갈아 내딛는다 (두 걸음에 1.25m)
+function npcStep(n) {
+  var P = n.P, s = n.s, amp = clamp(n.v / 3.5, 0.2, 1);
+  _c5.subVectors(n.goal, n.pos).setY(0);
+  if (_c5.lengthSq() < 1e-6) _c5.copy(n.f);
+  _c5.normalize();
+  _c6.set(-_c5.z, 0, _c5.x);
+  for (var i = 0; i < 2; i++) {
+    var a = i ? P.aR : P.aL, ps = n.ph + (i ? Math.PI : 0);
+    a.copy(n.pos).addScaledVector(_c6, (i ? 0.13 : -0.13) * s).addScaledVector(_c5, 0.34 * amp * Math.cos(ps) * s);
+    a.y = n.L.ank + 0.12 * amp * Math.max(0, Math.sin(ps)) * s;
+  }
+  P.fdL.copy(n.f); P.fdR.copy(n.f);
+}
+// 볼 곳: 잡으러 가는 공 → 날아가는 공 → 선수 손의 공 → 림
+function courtLook(n, o) {
+  var b = n.reb ? n.reb.b : focus && !focus.dead && focus.after < 1.4 ? focus : null;
+  if (n.ball) return o.copy(sh.root).setY(1.5);
+  if (b) return o.copy(b.p);
+  if (held && held.appear > 0.2) return o.copy(held.mesh.position);
+  return o.set(hoop.x, RIM_Y, hoop.z);
+}
+
+// 동작마다 이번 프레임 목표 자세
+function npcThink(n, dt) {
+  var P = n.P, J = n.J, f = n.f, s = n.s, t = (n.at += dt), U = _up;
+  var r = npcRight(n, _c1);
+  npcAir(n, dt);
+  npcMove(n, dt);
+  var moving = n.v > 0.4 && !n.air;
+  P.crouch = (0.035 + 0.004 * Math.sin((fxT + n.seed) * 2.1)) * s; P.lean = 0.05; P.shrug = 0;
+  courtLook(n, P.look);
+  // 기본: 서서 팔을 내린다
+  npcFeet(n, 1, 0.03);
+  npcAt(n, P.hL, J.shL, -0.03, -0.56 * s, 0.07); npcAt(n, P.hR, J.shR, 0.03, -0.56 * s, 0.07);
+  P.pL.copy(f).negate().addScaledVector(r, -0.3); P.pR.copy(f).negate().addScaledVector(r, 0.3);
+  npcDir(n, P.hLz, 1, 0, 0); npcDir(n, P.hLy, 0, -1, 0.15); npcDir(n, P.hRz, -1, 0, 0); npcDir(n, P.hRy, 0, -1, 0.15);
+  var swing = true;
+  switch (n.act) {
+    case "hips":
+    case "sulk":     // 허리에 손 (진 쪽은 고개를 떨군다)
+      npcAt(n, P.hL, J.pel, -0.2 * s, 0.07 * s, -0.01); npcAt(n, P.hR, J.pel, 0.2 * s, 0.07 * s, -0.01);
+      P.pL.copy(r).negate().addScaledVector(f, -0.5); P.pR.copy(r).addScaledVector(f, -0.5);
+      npcDir(n, P.hLy, 0, -1, 0.5); npcDir(n, P.hRy, 0, -1, 0.5);
+      if (n.act === "sulk") { P.look.copy(n.pos).addScaledVector(f, 1.5); P.look.y = 0.2; P.lean = 0.1; }
+      swing = false;
+      break;
+    case "knees":    // 무릎에 손 짚고 숨 고르기 (자유투 기다리는 레인)
+      P.crouch = 0.11 * s; P.lean = 0.55;
+      npcFeet(n, 1.35, 0);
+      npcAt(n, P.hL, J.knL, 0.01, 0.08 * s, 0.05); npcAt(n, P.hR, J.knR, -0.01, 0.08 * s, 0.05);
+      P.pL.copy(r).negate().addScaledVector(U, 0.3); P.pR.copy(r).addScaledVector(U, 0.3);
+      npcDir(n, P.hLy, 0, -0.6, 1); npcDir(n, P.hRy, 0, -0.6, 1); npcDir(n, P.hLz, 0, -1, 0); npcDir(n, P.hRz, 0, -1, 0);
+      swing = false;
+      break;
+    case "ready":    // 무릎 굽혀 두 손을 가슴 앞에 (튀어나올 공을 기다린다)
+      P.crouch = 0.12 * s; P.lean = 0.18;
+      npcFeet(n, 1.35, 0.02);
+      npcAt(n, P.hL, J.shL, 0.06, -0.14 * s, 0.3 * s); npcAt(n, P.hR, J.shR, -0.06, -0.14 * s, 0.3 * s);
+      P.pL.copy(U).negate().addScaledVector(r, -0.5); P.pR.copy(U).negate().addScaledVector(r, 0.5);
+      npcDir(n, P.hLy, 0, 1, 0.3); npcDir(n, P.hRy, 0, 1, 0.3); npcDir(n, P.hLz, 0.3, 0, 1); npcDir(n, P.hRz, -0.3, 0, 1);
+      break;
+    case "stance":   // 수비 자세: 발 넓게, 무릎 굽혀 통통, 왼손은 공 쪽으로 들고 오른손은 옆으로 낮게
+      P.crouch = (0.17 + 0.012 * Math.sin(t * 10 + n.seed)) * s; P.lean = 0.22;
+      npcFeet(n, 1.65, 0.08);
+      npcToBall(n, P.hL, J.shL, 0.62, 0.1); npcAt(n, P.hR, J.shR, 0.3 * s, -0.22 * s, 0.22 * s);
+      P.pL.copy(U).negate().addScaledVector(r, -0.6); P.pR.copy(U).negate().addScaledVector(r, 0.4).addScaledVector(f, -0.3);
+      npcDir(n, P.hLy, 0, 1, 0.2); npcDir(n, P.hLz, 0, 0, 1); npcDir(n, P.hRy, 0.4, 0.3, 1); npcDir(n, P.hRz, 0, 0, 1);
+      swing = false;
+      break;
+    case "up":       // 슈터가 공을 모으면 두 손을 높이 (왼손은 공 쪽으로)
+      P.crouch = 0.08 * s; P.lean = 0.06;
+      npcFeet(n, 1.3, 0.06);
+      npcToBall(n, P.hL, J.shL, 0.5, 0.45); npcAt(n, P.hR, J.shR, -0.02, 0.5 * s, 0.14 * s);
+      P.pL.copy(r).negate().addScaledVector(U, -0.5); P.pR.copy(r).addScaledVector(U, -0.5);
+      npcDir(n, P.hLy, 0, 1, 0.1); npcDir(n, P.hRy, 0, 1, 0.1); npcDir(n, P.hLz, 0, 0, 1); npcDir(n, P.hRz, 0, 0, 1);
+      swing = false;
+      break;
+    case "contest":  // 뛰어오르며 왼손을 공 쪽으로 쭉
+      P.crouch = (n.air ? -0.01 : 0.1) * s; P.lean = 0.1;
+      npcFeet(n, 1.1, 0.04);
+      npcToBall(n, P.hL, J.shL, 0.35, 0.55); npcAt(n, P.hR, J.shR, 0.12 * s, -0.36 * s, 0.05);
+      P.pL.copy(r).negate().addScaledVector(U, -0.3); P.pR.copy(r).addScaledVector(f, -0.4);
+      npcDir(n, P.hLy, 0.1, 1, 0.35); npcDir(n, P.hLz, 0, 0, 1);
+      swing = false;
+      break;
+    case "box":      // 자리 잡기: 엉덩이를 뒤로 빼고 팔을 넓게
+      P.crouch = 0.2 * s; P.lean = 0.15;
+      npcFeet(n, 1.75, 0);
+      npcAt(n, P.hL, J.shL, -0.3 * s, 0.1 * s, 0.1 * s); npcAt(n, P.hR, J.shR, 0.3 * s, 0.1 * s, 0.1 * s);
+      P.pL.copy(U).negate().addScaledVector(r, -0.4).addScaledVector(f, -0.3); P.pR.copy(U).negate().addScaledVector(r, 0.4).addScaledVector(f, -0.3);
+      npcDir(n, P.hLy, 0, 1, 0.1); npcDir(n, P.hRy, 0, 1, 0.1); npcDir(n, P.hLz, 0, 0, 1); npcDir(n, P.hRz, 0, 0, 1);
+      swing = false;
+      break;
+    case "reb": npcRebPose(n); swing = false; break;
+    case "chin":
+    case "toss":
+    case "pass": npcBallPose(n, t); swing = false; break;
+    case "clap": {   // 손뼉 세 번
+      var a = Math.abs(Math.sin(Math.min(t, 0.75) * Math.PI / 0.25));
+      npcAt(n, P.hL, J.neck, (-0.03 - 0.13 * a) * s, -0.18 * s, 0.32 * s); npcAt(n, P.hR, J.neck, (0.03 + 0.13 * a) * s, -0.18 * s, 0.32 * s);
+      P.pL.copy(U).negate().addScaledVector(r, -0.6); P.pR.copy(U).negate().addScaledVector(r, 0.6);
+      npcDir(n, P.hLy, 0, 1, 0.4); npcDir(n, P.hRy, 0, 1, 0.4); npcDir(n, P.hLz, 1, 0, 0); npcDir(n, P.hRz, -1, 0, 0);
+      if (t > 1.1) npcSet(n, "stand");
+      swing = false;
+      break;
+    }
+    case "cheer":    // 판을 끝낸 골: 두 팔 번쩍 들고 폴짝
+      if (!n.air && t > 0.15 && t < 2.6 && (t % 0.62) < 0.05) npcJump(n, 2.1);
+      npcAt(n, P.hL, J.shL, -0.12 * s, 0.58 * s, 0.05); npcAt(n, P.hR, J.shR, 0.12 * s, 0.58 * s, 0.05);
+      P.pL.copy(r).negate(); P.pR.copy(r);
+      npcDir(n, P.hLy, -0.2, 1, 0); npcDir(n, P.hRy, 0.2, 1, 0); npcDir(n, P.hLz, 0, 0, 1); npcDir(n, P.hRz, 0, 0, 1);
+      swing = false;
+      break;
+    case "postO":    // 골밑: 슈터를 보고 등으로 버틴다. 왼손을 들어 공을 달라고, 오른팔은 뒤 수비를 민다
+      P.crouch = 0.15 * s; P.lean = 0.2;
+      npcFeet(n, 1.55, 0);
+      npcAt(n, P.hL, J.shL, -0.1 * s, 0.1 * s, 0.36 * s); npcAt(n, P.hR, J.shR, 0.08, -0.2 * s, -0.28 * s);
+      P.pL.copy(r).negate().addScaledVector(U, -0.4); P.pR.copy(r).addScaledVector(f, -0.6);
+      npcDir(n, P.hLy, -0.2, 1, 0.3); npcDir(n, P.hLz, 0, 0, 1); npcDir(n, P.hRy, 0, -0.3, -1); npcDir(n, P.hRz, -1, 0, 0);
+      swing = false;
+      break;
+    case "postD": {  // 그 뒤에 붙어서: 왼손은 상대 등에, 오른손은 들어 패스를 막는다
+      var o = n.mark;
+      if (o && o.mesh.visible) _c7.copy(o.J.neck).addScaledVector(o.f, -0.16 * o.s).addScaledVector(U, -0.22 * o.s);
+      else npcAt(n, _c7, J.shL, 0, -0.1 * s, 0.35 * s);
+      P.crouch = 0.16 * s; P.lean = 0.24;
+      npcFeet(n, 1.6, 0.05);
+      P.hL.copy(_c7); npcAt(n, P.hR, J.shR, 0.1 * s, 0.34 * s, 0.25 * s);
+      P.pL.copy(U).negate().addScaledVector(r, -0.5); P.pR.copy(r).addScaledVector(U, -0.4);
+      npcDir(n, P.hLy, 0, 0.5, 1); npcDir(n, P.hLz, 0, 0, 1); npcDir(n, P.hRy, 0, 1, 0.2); npcDir(n, P.hRz, 0, 0, 1);
+      swing = false;
+      break;
+    }
+    case "rstand":   // 심판: 뒷짐
+      npcAt(n, P.hL, J.pel, -0.05 * s, 0.03 * s, -0.17 * s); npcAt(n, P.hR, J.pel, 0.05 * s, 0.03 * s, -0.17 * s);
+      P.pL.copy(r).negate().addScaledVector(f, -0.6); P.pR.copy(r).addScaledVector(f, -0.6);
+      npcDir(n, P.hLy, 0.5, -0.4, -0.6); npcDir(n, P.hRy, -0.5, -0.4, -0.6);
+      break;
+    case "r3":       // 3점 시도: 오른팔을 쭉 (손가락 셋)
+      npcAt(n, P.hR, J.shR, 0.06 * s, 0.62 * s, 0.02);
+      P.pR.copy(r).addScaledVector(f, -0.2);
+      npcDir(n, P.hRy, 0, 1, 0); npcDir(n, P.hRz, 0, 0, 1);
+      swing = false;
+      break;
+    case "rgood":    // 3점 성공: 두 팔을 쭉
+      npcAt(n, P.hL, J.shL, -0.08 * s, 0.62 * s, 0.03); npcAt(n, P.hR, J.shR, 0.08 * s, 0.62 * s, 0.03);
+      P.pL.copy(r).negate(); P.pR.copy(r);
+      npcDir(n, P.hLy, 0, 1, 0); npcDir(n, P.hRy, 0, 1, 0); npcDir(n, P.hLz, 0, 0, 1); npcDir(n, P.hRz, 0, 0, 1);
+      swing = false;
+      break;
+    case "rwhistle": // 호루라기를 물고 주먹을 든다 (시계를 멈춘다)
+      _c7.copy(J.head).addScaledVector(n.D.look, 0.1 * s).addScaledVector(U, -0.07 * s);
+      P.hR.copy(_c7); npcAt(n, P.hL, J.shL, -0.04, 0.6 * s, 0.03);
+      P.pR.copy(U).negate().addScaledVector(r, 0.6); P.pL.copy(r).negate();
+      npcDir(n, P.hRy, 0, 0.3, 1); npcDir(n, P.hRz, -1, 0, 0); npcDir(n, P.hLy, 0, 1, 0);
+      swing = false;
+      break;
+    case "rtap":     // 샷 클락 바이얼레이션: 손바닥으로 머리를 톡톡
+      _c7.copy(J.head).addScaledVector(U, (0.16 + 0.035 * Math.abs(Math.sin(t * 12))) * s);
+      P.hR.copy(_c7);
+      P.pR.copy(r).addScaledVector(U, 0.3);
+      npcDir(n, P.hRy, -0.6, 0, 0.3); npcDir(n, P.hRz, 0, -1, 0);
+      swing = false;
+      break;
+  }
+  if (moving) {
+    npcStep(n);
+    if (swing) {      // 달릴 땐 팔을 반대 다리와 흔든다
+      var amp = clamp(n.v / 3.5, 0.2, 1);
+      npcAt(n, P.hL, J.shL, -0.03, -0.5 * s, (0.2 * amp * Math.cos(n.ph + Math.PI) + 0.05) * s);
+      npcAt(n, P.hR, J.shR, 0.03, -0.5 * s, (0.2 * amp * Math.cos(n.ph) + 0.05) * s);
+      P.crouch = (0.06 + 0.04 * amp) * s; P.lean = 0.08 + 0.2 * amp;
+    }
+  }
+  if (n.landT > 0) { n.landT -= dt; P.crouch += 0.1 * s * n.landT / 0.25; }
+}
+// 리바운드: 두 손을 공 양옆으로. 팔이 안 닿으면 공 쪽으로 쭉 뻗는다
+function npcRebPose(n) {
+  var P = n.P, J = n.J, s = n.s, U = _up, b = n.reb && n.reb.b, reach = 0.6 * s;
+  var r = npcRight(n, _c1);
+  P.crouch = (n.air ? -0.02 : 0.14) * s; P.lean = 0.04;
+  npcFeet(n, n.air ? 1 : 1.4, 0);
+  if (b) _c7.copy(b.p); else npcAt(n, _c7, J.neck, 0, 0.7 * s, 0.2 * s);
+  for (var i = 0; i < 2; i++) {
+    var h = i ? P.hR : P.hL, sho = i ? J.shR : J.shL;
+    h.copy(_c7).addScaledVector(r, (i ? 0.12 : -0.12) * s).addScaledVector(U, -0.04);
+    _c6.subVectors(h, sho);
+    var l = _c6.length();
+    if (l > reach) h.copy(sho).addScaledVector(_c6, reach / l);
+  }
+  P.pL.copy(r).negate().addScaledVector(U, -0.5); P.pR.copy(r).addScaledVector(U, -0.5);
+  npcDir(n, P.hLy, 0, 1, 0.2); npcDir(n, P.hRy, 0, 1, 0.2);
+  P.hLz.subVectors(_c7, P.hL).normalize(); P.hRz.subVectors(_c7, P.hR).normalize();
+}
+// 잡은 공: 턱 앞에 붙인다(chin). 패스는 가슴에서 앞으로 밀고, 버릴 땐(toss) 머리 위로 올렸다가 던진다
+function npcBallPose(n, t) {
+  var P = n.P, J = n.J, s = n.s, f = n.f, U = _up;
+  var r = npcRight(n, _c1);
+  P.crouch = 0.12 * s; P.lean = 0.12;
+  npcFeet(n, 1.45, 0);
+  var bp = n.bp;
+  if (n.act === "toss") { var k = clamp(t / 0.22, 0, 1); bp.copy(J.neck).addScaledVector(U, 0.28 * k * s).addScaledVector(f, (0.22 - 0.2 * k) * s); }
+  else if (n.act === "pass") { var kp = smooth01(t / 0.18); bp.copy(J.neck).addScaledVector(f, (0.24 + 0.36 * kp) * s).addScaledVector(U, -0.12 * s); }
+  else bp.copy(J.neck).addScaledVector(f, 0.24 * s).addScaledVector(U, -0.06 * s);
+  P.hL.copy(bp).addScaledVector(r, -0.125).addScaledVector(U, -0.03).addScaledVector(f, -0.02);
+  P.hR.copy(bp).addScaledVector(r, 0.125).addScaledVector(U, -0.03).addScaledVector(f, -0.02);
+  P.pL.copy(r).negate().addScaledVector(U, -0.2); P.pR.copy(r).addScaledVector(U, -0.2);
+  npcDir(n, P.hLy, 0, 0.7, 0.7); npcDir(n, P.hRy, 0, 0.7, 0.7); P.hLz.copy(r); P.hRz.copy(r).negate();
+}
+
+// 목표 자세를 부드럽게 따라가(C) 관절을 풀고 뼈를 놓는다 (5-1 shSolve 와 같은 몸)
+function npcSolve(n, dt) {
+  var P = n.P, C = n.C, J = n.J, D = n.D, L = n.L, f = n.f, s = n.s;
+  var r = npcRight(n, _c1);
+  var k = 1 - Math.exp(-dt * 10), kf = 1 - Math.exp(-dt * 16), kh = 1 - Math.exp(-dt * (n.act === "reb" || n.ball ? 30 : 14));
+  C.crouch += (P.crouch - C.crouch) * k; C.lean += (P.lean - C.lean) * k; C.shrug += (P.shrug - C.shrug) * kf;
+  var fast = n.v > 0.4 || n.air;
+  C.aL.lerp(P.aL, fast ? 1 : kf); C.aR.lerp(P.aR, fast ? 1 : kf);
+  C.fdL.lerp(P.fdL, kf).normalize(); C.fdR.lerp(P.fdR, kf).normalize();
+  C.hL.lerp(P.hL, kh); C.hR.lerp(P.hR, kh);
+  C.pL.lerp(P.pL, kf); C.pR.lerp(P.pR, kf);
+  C.hLy.lerp(P.hLy, kf).normalize(); C.hLz.lerp(P.hLz, kf).normalize(); C.hRy.lerp(P.hRy, kf).normalize(); C.hRz.lerp(P.hRz, kf).normalize();
+  C.look.lerp(P.look, k);
+  D.f.copy(f);
+  _c3.copy(f).multiplyScalar(Math.sin(C.lean)).addScaledVector(_up, Math.cos(C.lean));
+  J.pel.copy(n.pos).addScaledVector(_up, L.hip0 + 0.045 * s - C.crouch + n.jump).addScaledVector(f, -0.3 * C.crouch);
+  J.neck.copy(J.pel).addScaledVector(_c3, L.spine);
+  J.shL.copy(J.pel).addScaledVector(_c3, 0.525 * s + C.shrug).addScaledVector(r, -L.shw);
+  J.shR.copy(J.pel).addScaledVector(_c3, 0.525 * s + C.shrug).addScaledVector(r, L.shw);
+  _c4.subVectors(C.look, J.neck).normalize();
+  _c5.copy(_c3).multiplyScalar(0.85).addScaledVector(_c4, 0.25).normalize();
+  J.head.copy(J.neck).addScaledVector(_c5, 0.2 * s);
+  D.look.subVectors(C.look, J.head);
+  if (D.look.dot(f) < 0.2) D.look.addScaledVector(f, 0.2 - D.look.dot(f));
+  D.look.normalize();
+  J.hpL.copy(J.pel).addScaledVector(_c3, -0.05 * s).addScaledVector(r, -L.hipw);
+  J.hpR.copy(J.pel).addScaledVector(_c3, -0.05 * s).addScaledVector(r, L.hipw);
+  ik2(J.shL, C.hL, L.ua, L.fa, C.pL, J.elL, J.wrL);
+  ik2(J.shR, C.hR, L.ua, L.fa, C.pR, J.elR, J.wrR);
+  _c4.copy(f).addScaledVector(r, -0.3); ik2(J.hpL, C.aL, L.th, L.sh, _c4, J.knL, J.anL);
+  _c4.copy(f).addScaledVector(r, 0.3); ik2(J.hpR, C.aR, L.th, L.sh, _c4, J.knR, J.anR);
+  D.hLy.copy(C.hLy); D.hLz.copy(C.hLz); D.hRy.copy(C.hRy); D.hRz.copy(C.hRz);
+  D.ftL.copy(C.fdL); D.ftR.copy(C.fdR);
+  poseApply(n);
+  poseWrite(n, n.pose);
+}
+// 처음 세울 때: 목표 자세로 바로
+function npcSnap(n) {
+  n.v = 0; n.jump = 0; n.air = false; n.jv = 0; n.landT = 0;
+  for (var i = 0; i < 3; i++) {                       // 손 목표가 어깨 자리를 따라 자리 잡도록 몇 번
+    npcThink(n, 0);
+    var P = n.P, C = n.C;
+    C.crouch = P.crouch; C.lean = P.lean; C.shrug = P.shrug;
+    ["look", "hL", "hR", "pL", "pR", "hLy", "hLz", "hRy", "hRz", "aL", "aR", "fdL", "fdR"].forEach(function (k) { C[k].copy(P[k]); });
+    npcSolve(n, 0);
+  }
+}
+// 들고 있는 공은 두 손 사이에
+function npcHeldBall(n) {
+  var b = n.ball;
+  if (!b) return;
+  b.p.copy(n.J.wrL).add(n.J.wrR).multiplyScalar(0.5).addScaledVector(_up, 0.03).addScaledVector(n.f, 0.02);
+  b.pp.copy(b.p);
+  b.mesh.position.copy(b.p);
+}
+
+// ── 자리: 판·슛 자리마다 누가 어디에 서는가 ──
+function courtPlan(spot) {
+  if (!ST || ST.def.contest || mode !== "play") return "off";
+  return !ST.def.rapid && Math.abs(spot.x) < 0.01 && Math.abs(spot.z - FT_Z) < 0.01 ? "ft" : "jump";
+}
+function npcPlace(n, role, x, z, fx, fz, rel, now) {
+  n.role = role; n.rel = !!rel;
+  n.home.set(clamp(x, -7.25, 7.25), 0, clamp(z, BASELINE + 0.3, 12));
+  if (role === "ref") n.home.z = z;
+  n.hf.set(fx, 0, fz).normalize();
+  n.goal.copy(n.home); if (rel) n.goal.x += hoop.x;
+  n.gf.copy(n.hf);
+  if (now) { n.pos.copy(n.goal); n.f.copy(n.hf); }
+}
+function courtForm(spot, now) {
+  var md = courtPlan(spot), B = COURT.by;
+  if (md === "off") { courtOff(); return; }
+  COURT.mode = md;
+  var d = spotDist(spot) || 1, fx0 = -spot.x / d, fz0 = -spot.z / d, rx = -fz0, rz = fx0;
+  if (md === "ft") {
+    var z1 = BASELINE + 2.6, z2 = BASELINE + 3.55, lx = KEY_HW + 0.33;
+    npcPlace(B.aB, "lane", -lx, z1, 1, -0.3, true, now); npcPlace(B.aA, "lane", lx, z1, -1, -0.3, true, now);
+    npcPlace(B.hB, "lane", -lx, z2, 1, -0.3, true, now); npcPlace(B.hA, "lane", lx, z2, -1, -0.3, true, now);
+  } else {
+    // 수비: 슈터 앞 1.35m, 왼쪽으로 0.55m (뒤에서 보는 화면에서 공과 점선을 가리지 않게). 몸은 슈터의 슛하는 손 쪽을 본다.
+    // 공이 오기 전엔 0.8m 물러나 있다
+    var root = shStand(spot, _c3, _c4);
+    npcPlace(B.aA, "def", root.x + fx0 * 1.35 - rx * 0.55, root.z + fz0 * 1.35 - rz * 0.55, -fx0 + rx * 0.3, -fz0 + rz * 0.3, false, now);
+    B.aA.sag.copy(B.aA.home).addScaledVector(_c4.set(fx0, 0, fz0), d > 8 ? 1.2 : 0.8);
+    // 골밑: 같은 편 큰 선수는 슈터를 보고 서고, 상대 큰 선수가 그 뒤(골대 쪽)에 붙는다
+    npcPlace(B.hB, "bigO", -fx0 * 1.65 + rx * 0.85, -fz0 * 1.65 + rz * 0.85, -fx0, -fz0, true, now);
+    npcPlace(B.aB, "bigD", -fx0 * 1.1 + rx * 0.62, -fz0 * 1.1 + rz * 0.62, -fx0, -fz0, true, now);
+    B.aB.mark = B.hB;
+    // 반대편 윙: 슈터가 왼쪽이면 오른쪽, 가운데면 오른쪽
+    var wx = spot.x < -1 ? 5.3 : spot.x > 1 ? -5.3 : 5.1, wz = Math.abs(spot.x) > 1 ? 3.8 : 2.6;
+    npcPlace(B.hA, "wing", wx, wz, -wx, spot.z - wz, false, now);
+  }
+  // 심판: 베이스라인 밖, 슈터 반대쪽 레인 안쪽 (세로 화면에서도 받침대 옆에 보이게)
+  var side = spot.x > 0.5 ? -1 : 1;
+  npcPlace(B.ref, "ref", side * 1.5, BASELINE - 0.32, -side * 0.15, 1, true, now);
+  COURT.npcs.forEach(function (n) {
+    if (!n.mesh.visible || now) { n.mesh.visible = true; n.pos.copy(n.role === "def" ? n.sag : n.goal); n.f.copy(n.hf); npcSet(n, "stand"); npcSnap(n); }
+  });
+}
+function courtOff() {
+  COURT.mode = "off";
+  COURT.npcs.forEach(function (n) { n.mesh.visible = false; n.ball = null; n.reb = null; });
+}
+// 공·판을 새로 시작할 때 들고 있던 공·쫓던 공을 놓는다
+function courtDrop() { COURT.npcs.forEach(function (n) { n.ball = null; n.reb = null; n.cool = 0; }); }
+
+// 경기 흐름: 준비 → 슛(뛰어오름·공이 떠 있음) → 골/빗나감(1.25초)
+function courtPhase() {
+  if (!ST || mode !== "play") return "idle";
+  if (sh.st === "shoot" || (focus && !focus.done && focus.shot)) return "shot";
+  if (gameT - COURT.resT < 1.25) return COURT.resOk ? "made" : "miss";
+  return "setup";
+}
+function npcRole(n, ph) {
+  if (n.ball || n.act === "reb" || ((n.act === "pass" || n.act === "toss") && n.at < 0.45)) return;
+  var home = n.team === "home";
+  n.goal.copy(n.home); if (n.rel) n.goal.x += hoop.x;
+  n.gf.copy(n.hf); n.spdMax = 4.2;
+  if (ST && ST.over) {                                // 판이 끝나면: 이긴 판은 같은 편 환호, 상대는 허리에 손
+    if (n.team === "ref") npcSet(n, "rstand");
+    else if (ST.win) npcSet(n, home ? "cheer" : "sulk");
+    else npcSet(n, home ? "hips" : "stand");
+    return;
+  }
+  switch (n.role) {
+    case "lane":
+      if (ph === "setup") npcSet(n, home ? "knees" : "ready");
+      else if (ph === "made") npcSet(n, home ? "clap" : "stand");
+      else {                                          // 공이 손을 떠나면 레인 안으로 들어와 골대를 보고 자리 잡기
+        npcSet(n, "box");
+        n.goal.x = (n.home.x > 0 ? 1.85 : -1.85) + hoop.x; n.goal.z = n.home.z - 0.3;
+        n.gf.set(hoop.x - n.goal.x, 0, hoop.z - n.goal.z).normalize(); n.spdMax = 2.6;
+      }
+      break;
+    case "def": {
+      var st = sh.st;
+      if (ph === "made") { npcSet(n, "sulk"); break; }
+      if (st === "shoot" || (st === "air" && sh.t < 0.15)) { if (n.act !== "contest") { npcSet(n, "contest"); npcJump(n, 2.6); } break; }
+      if (n.act === "contest" && (n.air || n.at < 0.7)) break;
+      if (ph !== "setup") { npcSet(n, "stand"); n.gf.set(hoop.x - n.pos.x, 0, hoop.z - n.pos.z).normalize(); break; }
+      if (st === "set") npcSet(n, "up");
+      else npcSet(n, "stance");
+      // 공이 오기 전엔 물러나 있다가 패스가 오면 달려 나온다
+      if (!(sh.hasBall || st === "catch" || st === "pick")) n.goal.copy(n.sag);
+      n.spdMax = 3.4;
+      break;
+    }
+    case "bigO":
+    case "bigD":
+      if (ph === "setup") npcSet(n, n.role === "bigO" ? "postO" : "postD");
+      else if (ph === "made") npcSet(n, home ? "clap" : "sulk");
+      else {
+        npcSet(n, "box");
+        n.gf.set(hoop.x - n.pos.x, 0, hoop.z - n.pos.z).normalize();
+        if (n.role === "bigD") n.goal.lerp(_c7.set(hoop.x, 0, hoop.z), 0.15);
+      }
+      break;
+    case "wing":
+      npcSet(n, ph === "made" ? "clap" : ph === "setup" ? "ready" : "stand");
+      n.gf.set(sh.root.x - n.home.x, 0, sh.root.z - n.home.z).normalize();
+      break;
+    case "ref":
+      if (gameT - COURT.viol < 1.7) npcSet(n, gameT - COURT.viol < 0.65 ? "rwhistle" : "rtap");
+      else if (ph === "shot" && isThree(curSpot)) npcSet(n, "r3");
+      else if (COURT.three && ph === "made") npcSet(n, "rgood");
+      else npcSet(n, "rstand");
+      break;
+  }
+}
+
+// ── 리바운드 ──
+var _rs = { p: new V3(), v: new V3(), w: new V3() };
+// 떨어지는 공이 높이 y 로 처음 내려오는 곳·때 (림·백보드는 빼고 날려 본다)
+function rebPredict(b, y, out) {
+  _rs.p.copy(b.p); _rs.v.copy(b.v); _rs.w.copy(b.w);
+  if (_rs.v.y < 0 && _rs.p.y < y) { out.copy(_rs.p); return 0; }
+  for (var t = 0; t < 1.6; t += 1 / 60) {
+    integrate(_rs, 1 / 60);
+    if (_rs.v.y < 0 && _rs.p.y < y) { out.copy(_rs.p); return t; }
+  }
+  return -1;
+}
+// 더는 들어갈 수 없는 공인가: 판정이 끝났거나 림보다 10cm 아래로 떨어지는 중이다
+function rebFree(b) { return b.done || (b.v.y < 0 && b.p.y < RIM_Y - 0.1); }
+function courtRebound(dt) {
+  var i, n;
+  for (i = 0; i < COURT.npcs.length; i++) if (COURT.npcs[i].cool > 0) COURT.npcs[i].cool -= dt;
+  // 림·백보드를 맞고 나왔거나 림에서 먼 데로 떨어지는 공에 가장 가까운 사람이 붙는다
+  for (i = 0; i < balls.length; i++) {
+    var b = balls[i];
+    if (!b.shot || b.scored || b.caught || b.rebBy || b.floor > 0 || b.t < 0.35 || b.v.y > 0 && !b.rim && !b.board) continue;
+    var ox = b.p.x - hoop.x, oz = b.p.z - hoop.z;
+    if (!(b.rim > 0 || b.board > 0 || ox * ox + oz * oz > 0.36)) continue;
+    // 아직 아무 데도 안 맞았는데 림 높이를 림 안으로 지나갈 공(들어갈 공)이면 붙지 않는다
+    if (!b.rim && !b.board && rebPredict(b, RIM_Y, _c5) >= 0 && Math.hypot(_c5.x - hoop.x, _c5.z - hoop.z) < RIM_R + BALL_R + 0.05) continue;
+    if (rebPredict(b, 2.9, _c6) < 0 || Math.hypot(_c6.x - hoop.x, _c6.z - hoop.z) < 0.3) continue;
+    var best = null, bd = 2.1;
+    for (var k = 0; k < COURT.npcs.length; k++) {
+      n = COURT.npcs[k];
+      if (!n.mesh.visible || n.team === "ref" || n.ball || n.reb || n.cool > 0 || n.role === "def" || n.role === "wing") continue;
+      var dd = Math.hypot(n.pos.x - _c6.x, n.pos.z - _c6.z);
+      if (dd < bd) { bd = dd; best = n; }
+    }
+    if (best) { b.rebBy = best; best.reb = { b: b, t: 0, jumped: false }; npcSet(best, "reb"); }
+  }
+  for (i = 0; i < COURT.npcs.length; i++) {
+    n = COURT.npcs[i];
+    var R = n.reb;
+    if (!R) continue;
+    var bb = R.b;
+    R.t += dt;
+    if (bb.dead || bb.caught || bb.scored || bb.floor > 0 || R.t > 2.2 || (R.jumped && !n.air && R.t > 0.3)) { npcRebEnd(n); continue; }
+    // 공이 손 닿는 높이로 내려오는 곳으로 가서, 그때 손이 거기 오도록 뛴다
+    var top = Math.min(RIM_Y - 0.12, n.reach + 0.45), tc = rebPredict(bb, top, _c6);
+    if (tc >= 0) {
+      n.goal.set(clamp(_c6.x, -7.3, 7.3), 0, clamp(_c6.z, BASELINE + 0.2, 12)).addScaledVector(_c7.subVectors(n.pos, _c6).setY(0).normalize(), 0.25);
+      n.gf.set(_c6.x - n.pos.x, 0, _c6.z - n.pos.z);
+      if (n.gf.lengthSq() < 1e-4) n.gf.copy(n.f); else n.gf.normalize();
+      n.spdMax = 4.6;
+      var need = clamp(top - n.reach, 0.1, 0.45), v0 = Math.sqrt(2 * G * need);
+      if (!R.jumped && !n.air && tc <= v0 / G + 0.04) { npcJump(n, v0); R.jumped = true; }
+    }
+    if (rebFree(bb)) {
+      _c5.copy(n.J.wrL).add(n.J.wrR).multiplyScalar(0.5);
+      if (_c5.distanceTo(bb.p) < 0.26 * n.s) npcCatch(n, bb);
+    }
+  }
+}
+function npcRebEnd(n) {
+  if (n.reb && n.reb.b && n.reb.b.rebBy === n && !n.ball) n.reb.b.rebBy = null;
+  n.reb = null; n.cool = 0.5;
+  if (!n.ball) npcSet(n, "stand");
+}
+function npcCatch(n, b) {
+  if (!b.done) shotResult(b, false);          // 잡힌 공은 빗나간 공
+  b.caught = n; b.v.set(0, 0, 0); b.w.multiplyScalar(0.3);
+  n.ball = b; n.reb = null;
+  npcSet(n, "chin");
+  sfx.catchBall();
+}
+// 들고 있는 공: 다음 공이 나올 때 그 사람이 슈터에게 패스한다(5-1 shTryReceive). 1.4초 안에 안 쓰이면 베이스라인 밖으로 버린다
+function courtBallStep(n, dt) {
+  if (!n.ball) return;
+  if (n.act === "chin") {
+    n.goal.copy(n.pos); n.gf.set(sh.root.x - n.pos.x, 0, sh.root.z - n.pos.z).normalize();
+    if (n.at > 1.4 || (ST && ST.over)) npcSet(n, "toss");
+  } else if (n.act === "toss" && n.at >= 0.22) {
+    var b = n.ball, sx = n.pos.x >= hoop.x ? 1 : -1;
+    _c7.set(hoop.x + sx * 3.2, 0.3, BASELINE - 1.6);
+    var T = 0.75;
+    b.v.set((_c7.x - b.p.x) / T, (_c7.y - b.p.y) / T + 0.5 * G * T, (_c7.z - b.p.z) / T);
+    b.w.set(0, 0, 0); b.caught = null; b.noHit = 0.6; b.after = Math.min(b.after, 1.6);
+    n.ball = null;
+  }
+}
+// 슈터에게 패스할 사람: 공을 든 사람 (없으면 null)
+function courtPasser() {
+  for (var i = 0; i < COURT.npcs.length; i++) { var n = COURT.npcs[i]; if (n.ball && n.mesh.visible && n.act === "chin") return n; }
+  return null;
+}
+// 패스: 들고 있던 공은 치우고(새 공이 그 자리에서 날아간다) 가슴 패스 동작
+function courtHandOff(n) {
+  var b = n.ball;
+  n.ball = null;
+  if (b) { b.caught = null; b.dead = true; b.mesh.visible = false; }
+  npcSet(n, "pass");
+}
+
+// ── 몸에 맞는 공 (판정이 끝난 공만) ──
+function capHit(b, A, B, R, h) {
+  var abx = B.x - A.x, aby = B.y - A.y, abz = B.z - A.z, L2 = abx * abx + aby * aby + abz * abz;
+  var t = L2 > 1e-9 ? clamp(((b.p.x - A.x) * abx + (b.p.y - A.y) * aby + (b.p.z - A.z) * abz) / L2, 0, 1) : 0;
+  var dx = b.p.x - (A.x + abx * t), dy = b.p.y - (A.y + aby * t), dz = b.p.z - (A.z + abz * t), d2 = dx * dx + dy * dy + dz * dz, m = R + BALL_R;
+  if (d2 >= m * m || d2 < 1e-10) return;
+  var d = Math.sqrt(d2), sp = contact(b, dx / d, dy / d, dz / d, m - d, 0.42, 0.35, 0, 0, h);
+  if (sp > 1.2 && b.cb <= 0) { b.cb = 0.08; sfx.body(sp / 6); }
+}
+function bodyHit(b, J, s, h) {
+  capHit(b, J.pel, J.neck, 0.16 * s, h);
+  capHit(b, J.head, J.head, 0.11 * s, h);
+  capHit(b, J.hpL, J.knL, 0.085 * s, h); capHit(b, J.hpR, J.knR, 0.085 * s, h);
+  capHit(b, J.knL, J.anL, 0.06 * s, h); capHit(b, J.knR, J.anR, 0.06 * s, h);
+  capHit(b, J.shL, J.elL, 0.05 * s, h); capHit(b, J.shR, J.elR, 0.05 * s, h);
+  capHit(b, J.elL, J.wrL, 0.045 * s, h); capHit(b, J.elR, J.wrR, 0.045 * s, h);
+}
+function courtCollide(b, h) {
+  if (b.noHit > 0) { b.noHit -= h; return; }
+  for (var i = 0; i < COURT.npcs.length; i++) {
+    var n = COURT.npcs[i], dx = b.p.x - n.pos.x, dz = b.p.z - n.pos.z;
+    if (!n.mesh.visible || dx * dx + dz * dz > 1.6 || b.p.y > 2.8 * n.s + n.jump) continue;
+    bodyHit(b, n.J, n.s, h);
+  }
+  // 슈터 몸에도
+  var sx = b.p.x - sh.root.x, sz = b.p.z - sh.root.z;
+  if (sx * sx + sz * sz < 1.6 && b.p.y < 2.9) bodyHit(b, SHOOTER.J, 1, h);
+}
+
+// ── 매 프레임 ──
+function courtStep(dt) {
+  if (COURT.mode === "off" || dt <= 0) return;
+  var ph = courtPhase(), i, n;
+  for (i = 0; i < COURT.npcs.length; i++) { n = COURT.npcs[i]; if (n.mesh.visible) npcRole(n, ph); }
+  if (mode === "play") courtRebound(dt);
+  for (i = 0; i < COURT.npcs.length; i++) {
+    n = COURT.npcs[i];
+    if (!n.mesh.visible) continue;
+    courtBallStep(n, dt);
+    if (n.act === "pass" && n.at > 0.45) npcSet(n, "stand");
+    npcThink(n, dt);
+    npcSolve(n, dt);
+    npcHeldBall(n);
+  }
+}
+
+/* ══════════════════════════════════════════════════════════════
    6. 물리 (1/240초 고정 걸음)
    ══════════════════════════════════════════════════════════════ */
 var hoop = { x: 0, z: 0, vx: 0 };
@@ -3171,7 +3896,7 @@ var ballSeq = 0;
 function newBall(gold) {
   return { id: ++ballSeq, mesh: takeMesh(), p: new V3(), v: new V3(), w: new V3(), pp: new V3(), gold: !!gold, fire: false,
     t: 0, shot: null, scored: false, done: false, dead: false, after: 0, rim: 0, rimHits: 0, board: 0, floor: 0,
-    upIn: false, still: 0, cr: 0, cb: 0, cf: 0, appear: 1, fade: 1 };
+    upIn: false, still: 0, cr: 0, cb: 0, cf: 0, appear: 1, fade: 1, caught: null, rebBy: null, noHit: 0 };
 }
 function paint(b) { b.mesh.material = b.kind === "deep" ? MAT.deep : b.gold ? MAT.gold : b.fire ? MAT.fire : MAT.ball; }
 
@@ -3312,14 +4037,20 @@ function netCatch(b, h) {
   b.w.multiplyScalar(1 - k * 0.5);
 }
 
+// 공마다 정해진 난수. 얹힌 공을 떨구는 방향이 겉모습 난수(vr)를 쓰면 불꽃·색종이·코트 위 사람 유니폼을 만드느라
+// 뽑은 개수에 따라 골이 되고 안 되고가 바뀐다
+function ballRand(b) { b.nudge = (b.nudge || 0) + 1; var x = Math.sin(b.id * 12.9898 + b.nudge * 78.233) * 43758.5453; return x - Math.floor(x); }
 var oohT = -9;
 function outOfPlay(b) { return b.p.y < -1 || Math.abs(b.p.x) > 16 || b.p.z > 20 || b.p.z < -9; }
 
 function stepBall(b, h) {
+  // 코트 위 사람이 잡고 있는 공은 손을 따라간다 (5-3)
+  if (b.caught) { b.t += h; if (b.done) b.after = Math.min(b.after + h, 2); return; }
   b.t += h;
   b.pp.copy(b.p);
   integrate(b, h);
   collide(b, h);
+  if (b.done && COURT.mode !== "off") courtCollide(b, h);
   checkRim(b);
   if (b.scored) netCatch(b, h);
   // 림 쪽으로 떨어지는 공에 관중이 '오~' (1.2초에 한 번까지)
@@ -3331,7 +4062,7 @@ function stepBall(b, h) {
   // 백보드 위나 림 위에 얹혀 멈춘 공은 살짝 밀어 떨군다
   if (b.p.y > 2.4 && b.v.lengthSq() < 0.09) {
     b.still += h;
-    if (b.still > 1) { b.v.x += (vr() - 0.5) * 0.8; b.v.z += 0.7; b.v.y += 0.4; b.still = 0; }
+    if (b.still > 1) { b.v.x += (ballRand(b) - 0.5) * 0.8; b.v.z += 0.7; b.v.y += 0.4; b.still = 0; }
   } else b.still = 0;
   if (b.shot && !b.done && !b.scored) {
     if ((b.v.y < 0 && b.p.y < RIM_Y - 0.6) || outOfPlay(b) || b.t > 8) shotResult(b, false);
@@ -3519,6 +4250,7 @@ var RP_N = 330, RP_DT = 1 / 60, RP_BALLS = 8;
 var gameT = 0, rpNext = 0, rpHead = 0, rpCount = 0, rpFreeze = Infinity;
 var rpT = new Float64Array(RP_N), rpBN = new Uint8Array(RP_N), rpB = new Float32Array(RP_N * RP_BALLS * 8);
 var rpNet = null, rpMisc = new Float32Array(RP_N * 4), rpPose = new Float32Array(RP_N * POSE_N), rpPoseT = new Float32Array(POSE_N);
+var RP_NPC = COURT.npcs.length, rpNpc = new Float32Array(RP_N * RP_NPC * POSE_N), rpNpcV = new Uint8Array(RP_N * RP_NPC);
 var RP = { on: false, ready: false, id: -1, t0: 0, ts: 0, t1: 0, tt: 0, fired: false, done: null, cut: 0, lastCut: -1, tf: 50,
   gold: false, fire: false, swish: false, label: "", spot: null, side: 1, saveNK: null, saveFx: null };
 var rpMesh = new THREE.Mesh(ballGeo, MAT.ball);
@@ -3544,6 +4276,11 @@ function rpRecord() {
   }
   rpBN[i] = n;
   rpPose.set(shPose, i * POSE_N);
+  for (k = 0; k < RP_NPC; k++) {
+    var nn = COURT.npcs[k];
+    rpNpcV[i * RP_NPC + k] = nn.mesh.visible ? 1 : 0;
+    if (nn.mesh.visible) rpNpc.set(nn.pose, (i * RP_NPC + k) * POSE_N);
+  }
   var on = i * NK.length * 3;
   for (k = 0; k < NK.length; k++) { rpNet[on + k * 3] = NK[k].x; rpNet[on + k * 3 + 1] = NK[k].y; rpNet[on + k * 3 + 2] = NK[k].z; }
   var om = i * 4;
@@ -3591,6 +4328,14 @@ function rpApply(tt) {
   var p0 = i0 * POSE_N, p1 = i1 * POSE_N;
   for (k = 0; k < POSE_N; k++) rpPoseT[k] = rpPose[p0 + k] + (rpPose[p1 + k] - rpPose[p0 + k]) * a;
   poseRead(SHOOTER, rpPoseT); poseApply(SHOOTER);
+  for (k = 0; k < RP_NPC; k++) {
+    var nn = COURT.npcs[k], vis = rpNpcV[i0 * RP_NPC + k] && rpNpcV[i1 * RP_NPC + k];
+    nn.mesh.visible = !!vis;
+    if (!vis) continue;
+    var q0 = (i0 * RP_NPC + k) * POSE_N, q1 = (i1 * RP_NPC + k) * POSE_N;
+    for (var j = 0; j < POSE_N; j++) rpPoseT[j] = rpNpc[q0 + j] + (rpNpc[q1 + j] - rpNpc[q0 + j]) * a;
+    poseRead(nn, rpPoseT); poseApply(nn);
+  }
   var m0 = i0 * 4, m1 = i1 * 4;
   var hx = rpMisc[m0] + (rpMisc[m1] - rpMisc[m0]) * a;
   hoopG.position.x = hx;
@@ -3681,6 +4426,7 @@ function replayEnd() {
   balls.forEach(function (b) { b.mesh.visible = true; });
   if (held) held.mesh.visible = true;
   rpMesh.visible = false;
+  COURT.npcs.forEach(function (n) { n.mesh.visible = COURT.mode !== "off"; });
   hoopG.position.x = hoop.x;
   $("hud").hidden = false;
   $("replay").classList.remove("on");
@@ -3734,6 +4480,7 @@ function clearBalls() {
   if (held) { dropMesh(held.mesh); held = null; }
   focus = null;
   sh.pend = null;
+  courtDrop();
 }
 
 function startStage(i) {
@@ -3760,6 +4507,7 @@ function startStage(i) {
   shPlace(s);
   cam.rate = 3;
   mode = "play"; paused = false;
+  courtForm(s, true);
   hideVeils();
   $("hud").hidden = false;
   hud();
@@ -3778,6 +4526,7 @@ function spawnHeld() {
   if (s.i !== ST.spot) {
     ST.spot = s.i; curSpot = s; frameSpot(s); cam.rate = 3;
     shGo(s);
+    courtForm(s, false);
     if (!ST.def.rapid && !ST.def.endless) toast((s.i + 1) + "번 자리", isThree(s) ? "3점 슛 자리" : "", 1200);
   }
   var ew = ST.def.endless ? ST.ew : 0;
@@ -3823,6 +4572,7 @@ function throwBall(pow, yaw) {
   b.t = 0;
   balls.push(b);
   ST.thrown++; ST.inFlight++;
+  COURT.three = b.shot.three;
   lastAim[ST.i + ":" + ST.spot] = pow;
   ST.shotOn = false;
   focus = b;
@@ -3836,6 +4586,7 @@ function throwBall(pow, yaw) {
 }
 
 function made(b) {
+  if (b.done) return;
   b.scored = true;
   var swish = b.rim === 0 && b.board === 0, bank = b.board > 0;
   if (ST.def.contest) { contestMade(b, swish); return; }
@@ -3888,6 +4639,7 @@ function shotResult(b, ok) {
   b.done = true;
   if (b.trail) lastTrail = { key: b.shot.key, pts: b.trail, ok: ok };
   if (!ST || mode !== "play") return;
+  COURT.resT = gameT; COURT.resOk = ok;
   ST.inFlight = Math.max(0, ST.inFlight - 1);
   if (ST.def.contest) ST.results[b.shot.n] = ok ? 1 : 0;
   if (ok) {
@@ -3997,6 +4749,8 @@ function shotViolation() {
   ST.shotOn = false; ST.shotT = 0;
   lampFx(1.8);
   sfx.horn();
+  COURT.viol = gameT;
+  sfx.whistle();
   popup("SHOT CLOCK", "24초 안에 못 던졌어요", "red");
   ledFlash("SHOT CLOCK", "24초 바이얼레이션", "#f04452", 1.6);
   if (held) { dropMesh(held.mesh); held = null; }
@@ -4608,6 +5362,7 @@ function tick(dt) {
     }
   }
   shStep(sdt > 0 ? sdt : mode === "title" || mode === "result" ? dt : 0);
+  courtStep(sdt);
   if (held && held.fire && !calm && sh.hasBall && sdt > 0) {
     var hp = held.mesh.position;
     flames.emit(hp.x + (vr() - 0.5) * 0.14, hp.y + 0.02, hp.z + (vr() - 0.5) * 0.14, 0, 0.5 + vr() * 0.4, 0, 0.3, 1, 0.45, 0.1, -1.2, 2);
@@ -4767,6 +5522,7 @@ window.H3 = {
   consts: { RIM_Y: RIM_Y, RIM_R: RIM_R, BALL_R: BALL_R, DT: DT, THREE_PT: THREE_PT, STAGES: STAGES },
   info: function () { return renderer.info.render; },
   camera: camera,
+  renderer: renderer,
   setMode: function (m) { mode = m; },
   replay: function () { return { on: RP.on, ready: RP.ready, tt: RP.tt, ts: RP.ts, t0: RP.t0, count: rpCount, label: RP.label }; },
   skipReplay: function () { replayEnd(); },
@@ -4784,7 +5540,13 @@ window.H3 = {
   shotClock: function () { return ST ? { t: ST.shotT, on: ST.shotOn, lamp: lamp.t > 0, text: $("bugClock").textContent } : null; },
   lives: function () { return ST ? { lives: ST.lives, level: ST.level, move: ST.move, streak: ST.streak, best: ST.bestStreak } : null; },
   frameSpot: function (x, z) { curSpot = { x: x, z: z, i: 0 }; frameSpot(curSpot); },
-  post: POST, refl: REFL, sfx: sfx
+  post: POST, refl: REFL, sfx: sfx,
+  court: function () {
+    return { mode: COURT.mode, npcs: COURT.npcs.map(function (n) {
+      return { id: n.id, team: n.team, role: n.role, act: n.act, vis: n.mesh.visible, x: n.pos.x, z: n.pos.z, jump: n.jump,
+        ball: !!n.ball, reb: !!n.reb, head: n.J.head.clone(), wrL: n.J.wrL.clone(), wrR: n.J.wrR.clone(), tris: n.mesh.geometry.index.count / 3 };
+    }) };
+  }
 };
 }
 </script>
