@@ -1,0 +1,360 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'none'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; manifest-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'">
+<title>이용약관 · 동네 특파원</title>
+<meta name="description" content="동네 특파원 이용약관과 운영정책. 무엇을 쓰면 안 되는지, 신고와 권리침해 신고가 어떻게 처리되는지, 이용 제한과 이의 신청.">
+<meta name="robots" content="noindex">
+<link rel="canonical" href="https://richroro.github.io/correspondent/terms.html">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<meta name="theme-color" content="#EEF1F5" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#090E18" media="(prefers-color-scheme: dark)">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%230F6E63'/><circle cx='50' cy='62' r='9' fill='white'/><path d='M34 47 A22 22 0 0 1 66 47' fill='none' stroke='white' stroke-width='7' stroke-linecap='round'/><path d='M23 34 A38 38 0 0 1 77 34' fill='none' stroke='white' stroke-width='7' stroke-linecap='round'/></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans+KR:wght@400;500;600;700&display=swap">
+<style>
+:root{
+  color-scheme:light;
+  --paper:#EEF1F5; --surface:#FFFFFF; --surface-2:#F4F6F9;
+  --ink:#0D1628; --ink-2:#3A4659; --ink-3:#5B687C;
+  --line:#D8DEE7; --line-soft:#E8ECF2;
+  --accent:#1F47B8; --accent-wash:#E7EDFA;
+  --fill-bg:#FFF1B8; --fill-ink:#5C4400;
+  --warn-bg:#FFD2AE; --warn-ink:#7A3200;
+}
+@media (prefers-color-scheme:dark){ :root:not([data-theme="light"]){
+  color-scheme:dark;
+  --paper:#090E18; --surface:#111928; --surface-2:#172134;
+  --ink:#E8EDF5; --ink-2:#B6C0D0; --ink-3:#8C98AD;
+  --line:#243049; --line-soft:#1A2336;
+  --accent:#8FB1FF; --accent-wash:#152550;
+  --fill-bg:#4A3B08; --fill-ink:#FFE08A;
+  --warn-bg:#6B3A16; --warn-ink:#FBD9BC;
+}}
+:root[data-theme="dark"]{
+  color-scheme:dark;
+  --paper:#090E18; --surface:#111928; --surface-2:#172134;
+  --ink:#E8EDF5; --ink-2:#B6C0D0; --ink-3:#8C98AD;
+  --line:#243049; --line-soft:#1A2336;
+  --accent:#8FB1FF; --accent-wash:#152550;
+  --fill-bg:#4A3B08; --fill-ink:#FFE08A;
+  --warn-bg:#6B3A16; --warn-ink:#FBD9BC;
+}
+*{box-sizing:border-box}
+[hidden]{display:none !important}
+html,body{margin:0;padding:0}
+body{background:var(--paper);color:var(--ink);
+  font-family:"IBM Plex Sans KR","Apple SD Gothic Neo","Malgun Gothic",system-ui,sans-serif;
+  font-size:15px;line-height:1.75;letter-spacing:-.2px;-webkit-font-smoothing:antialiased;overflow-wrap:anywhere}
+a{color:var(--accent)}
+.wrap{max-width:720px;margin:0 auto;padding:0 16px}
+main.wrap{padding-bottom:24px}
+footer.wrap{padding-bottom:48px}
+.top{display:flex;align-items:center;gap:10px;padding-top:16px;padding-bottom:10px;font-size:13px}
+.top a{text-decoration:none;font-weight:600}
+h1{font-size:26px;font-weight:700;letter-spacing:-.8px;line-height:1.3;margin:14px 0 6px;text-wrap:balance}
+.lede{color:var(--ink-2);margin:0 0 20px}
+h2{font-size:17.5px;font-weight:700;letter-spacing:-.5px;margin:34px 0 10px;padding-top:14px;
+  border-top:1px solid var(--line);scroll-margin-top:16px}
+h2 .no{font-family:"IBM Plex Mono",monospace;font-size:13px;font-weight:500;color:var(--accent);
+  margin-right:8px;letter-spacing:0}
+h3{font-size:14.5px;font-weight:600;margin:18px 0 6px}
+p{margin:0 0 10px}
+ol,ul{margin:0 0 10px;padding-left:22px}
+li{margin:3px 0}
+b,strong{font-weight:600}
+mark.fill{background:var(--fill-bg);color:var(--fill-ink);padding:1px 5px;border-radius:4px;font-weight:600}
+
+.draft{background:var(--fill-bg);color:var(--fill-ink);border-radius:12px;padding:14px 16px;margin:6px 0 22px;font-size:13.5px;line-height:1.65}
+.draft b{display:block;font-size:14.5px;margin-bottom:4px}
+.draft ol{margin:6px 0 0}
+
+.glance{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:0 0 8px}
+@media (max-width:560px){.glance{grid-template-columns:1fr}}
+.gl{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:14px 15px}
+.gl h2{margin:0 0 8px;font-size:14px;border:none;padding:0;letter-spacing:-.3px}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.gl dl{margin:0;display:grid;grid-template-columns:auto 1fr;gap:4px 12px;font-size:13px;line-height:1.55}
+.gl dt{color:var(--ink-3)}
+.gl dd{margin:0}
+
+.tbl{overflow-x:auto;margin:6px 0 12px;border:1px solid var(--line);border-radius:10px;background:var(--surface)}
+table{border-collapse:collapse;width:100%;font-size:13.5px;line-height:1.6}
+th,td{text-align:left;vertical-align:top;padding:9px 12px;border-bottom:1px solid var(--line-soft)}
+th{font-weight:600;color:var(--ink-3);font-size:12.5px;background:var(--surface-2);white-space:nowrap}
+tr:last-child td{border-bottom:none}
+td:first-child{font-weight:600;white-space:nowrap}
+
+.card{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:13px 15px;margin:8px 0}
+.card h3{margin:0 0 6px}
+.card dl{margin:0;display:grid;grid-template-columns:5.5em 1fr;gap:3px 12px;font-size:13.5px;line-height:1.6}
+.card dt{color:var(--ink-3)}
+.card dd{margin:0}
+
+.warn{background:var(--warn-bg);color:var(--warn-ink);border-radius:10px;padding:11px 13px;font-size:14px;margin:10px 0}
+.toc{columns:2;column-gap:20px;font-size:13.5px;padding-left:20px;margin:6px 0 0}
+@media (max-width:560px){.toc{columns:1}}
+.toc a{text-decoration:none}
+.foot{margin-top:16px;padding-top:14px;border-top:1px solid var(--line);font-size:12.5px;color:var(--ink-3)}
+.mono{font-family:"IBM Plex Mono",monospace;font-size:.92em}
+.h1-2{font-size:23px;margin:56px 0 6px;padding-top:22px;border-top:2px solid var(--ink)}
+</style>
+</head>
+<body>
+<nav class="wrap top" aria-label="이동"><a href="./">← 동네 특파원</a></nav>
+<main class="wrap">
+
+  <!-- 초안 표시: 아래 노란 칸을 다 채우고 검토를 받은 뒤 이 상자를 지운다 -->
+  <div class="draft" id="draftNote">
+    <b>초안입니다 — 게시 전에 채우고 확인할 것</b>
+    이 약관은 앱과 서버가 실제로 하는 일(신고 셋이면 가림, 임시조치 30일, 정지 단계, 처리 기록 1년)에 맞춰 썼습니다.
+    운영자만 아는 칸이 비어 있습니다. 게시 전에 법률 전문가의 검토를 받으세요. 법률 자문이 아닙니다.
+    <ol>
+      <li>운영자 이름 (맨 위, 제2조)</li>
+      <li>권리침해 신고와 이의 신청을 받는 메일 주소 (운영정책 3조·5조) — 처리방침 14조의 연락처와 같아도 됩니다</li>
+      <li>관할 법원 (제15조)</li>
+      <li>시행일 (부칙)</li>
+    </ol>
+  </div>
+
+  <h1>이용약관</h1>
+  <p class="lede"><mark class="fill">[운영자 이름]</mark>(이하 "운영자")이 운영하는 동네 특파원(이하 "서비스")을 쓰는 규칙입니다.
+    뒤쪽의 <a href="#policy">운영정책</a>은 이 약관의 일부로, 어떤 글을 가리고 지우는지와 신고·이의 신청을 어떻게 처리하는지 적었습니다.</p>
+
+  <div class="glance" aria-label="한눈에 보기">
+    <div class="gl">
+      <h2>쓰는 사람이 지킬 것</h2>
+      <dl>
+        <dt>쓴다</dt><dd>지금 거기서 본 것</dd>
+        <dt>안 쓴다</dt><dd>일부러 틀린 정보, 광고, 욕설, 다른 사람을 알아볼 수 있는 내용</dd>
+        <dt>어기면</dt><dd>글이 가려지거나 지워지고, 되풀이하면 글쓰기가 정지됩니다</dd>
+      </dl>
+    </div>
+    <div class="gl">
+      <h2>운영자가 하는 것</h2>
+      <dl>
+        <dt>신고</dt><dd>세 사람이 신고하면 가리고, 사람이 보고 정합니다</dd>
+        <dt>권리침해</dt><dd>요청이 오면 최대 30일 가리고 판단합니다</dd>
+        <dt>기록</dt><dd>모든 처리를 사유와 함께 1년 남깁니다</dd>
+      </dl>
+    </div>
+  </div>
+  <p style="font-size:13.5px;color:var(--ink-2)">서비스는 <b>무료</b>입니다. 서버 없이 쓰는 기능은 로그인 없이 누구나 쓸 수 있고,
+    이 약관의 계약은 <b>공용 보드에 로그인할 때</b> 맺어집니다.</p>
+
+  <ol class="toc">
+    <li><a href="#t1">목적</a></li>
+    <li><a href="#t2">정의</a></li>
+    <li><a href="#t3">약관의 게시와 변경</a></li>
+    <li><a href="#t4">서비스의 내용</a></li>
+    <li><a href="#t5">이용 계약과 계정</a></li>
+    <li><a href="#t6">리포트의 권리</a></li>
+    <li><a href="#t7">이용자가 지킬 것</a></li>
+    <li><a href="#t8">게시물 관리</a></li>
+    <li><a href="#t9">이용 제한</a></li>
+    <li><a href="#t10">서비스의 변경과 중단</a></li>
+    <li><a href="#t11">정보의 정확성</a></li>
+    <li><a href="#t12">책임의 한계</a></li>
+    <li><a href="#t13">개인정보 보호</a></li>
+    <li><a href="#t14">탈퇴</a></li>
+    <li><a href="#t15">준거법과 관할</a></li>
+    <li><a href="#policy">운영정책</a></li>
+  </ol>
+
+  <h2 id="t1"><span class="no">제1조</span>목적</h2>
+  <p>이 약관은 운영자와 이용자 사이에서 서비스를 쓰는 조건과 절차, 서로의 권리와 의무를 정합니다.</p>
+
+  <h2 id="t2"><span class="no">제2조</span>정의</h2>
+  <ol>
+    <li><b>서비스</b> — https://richroro.github.io/correspondent/ 에서 제공하는 "동네 특파원" 웹 앱과 공용 보드.</li>
+    <li><b>이용자</b> — 서비스를 쓰는 모든 사람. 로그인하지 않고 읽거나 이 기기에서만 쓰는 사람도 포함합니다.</li>
+    <li><b>특파원</b> — 공용 보드에 로그인한 이용자.</li>
+    <li><b>리포트</b> — 이용자가 장소의 현장 상황(웨이팅·혼잡·주차), 별점, 태그, 메모를 적은 글.</li>
+    <li><b>공용 보드</b> — 같은 동네 특파원들의 리포트를 서버에 모아 함께 보는 기능.</li>
+    <li><b>운영자</b> — <mark class="fill">[운영자 이름]</mark>과 그가 정한 관리자.</li>
+  </ol>
+
+  <h2 id="t3"><span class="no">제3조</span>약관의 게시와 변경</h2>
+  <ol>
+    <li>운영자는 이 약관을 서비스 바닥글과 로그인 화면에서 볼 수 있게 둡니다.</li>
+    <li>약관을 바꿀 때는 적용 7일 전부터, 이용자에게 불리하게 바꿀 때는 30일 전부터 서비스 안에 바뀌는 내용과 적용일을 알립니다.</li>
+    <li>바뀐 약관에 동의하지 않으면 적용일 전까지 탈퇴할 수 있습니다(제14조). 적용일 뒤에도 공용 보드를 계속 쓰면 동의한 것으로 봅니다.</li>
+  </ol>
+
+  <h2 id="t4"><span class="no">제4조</span>서비스의 내용</h2>
+  <ol>
+    <li><b>서버 없이 쓰기</b> — 리포트를 이 기기에 쌓고 링크로 주고받습니다. 이 경우 리포트는 운영자의 서버를 거치지 않습니다.</li>
+    <li><b>공용 보드</b> — 로그인한 특파원의 리포트를 같은 동네 사람들이 함께 봅니다. 읽기는 로그인 없이 됩니다.</li>
+    <li><b>폰 알림</b>(선택) — 공용 보드에 로그인한 사람이 켜면, 지켜보는 곳에 다른 사람이 새 소식을 올릴 때 앱이 꺼져 있어도 알립니다.
+      같은 장소는 30분에 한 번, 세 시간 넘게 지난 소식은 알리지 않습니다.</li>
+    <li>신고, 지켜보는 곳, 공유 링크처럼 앱에 있는 그 밖의 기능.</li>
+  </ol>
+  <p>서비스는 무료이며 유료 기능이나 광고가 없습니다. 이 점이 바뀌면 제3조에 따라 미리 알립니다.</p>
+
+  <h2 id="t5"><span class="no">제5조</span>이용 계약과 계정</h2>
+  <ol>
+    <li>공용 보드에 로그인하면서 이 약관에 동의하면 이용 계약이 맺어집니다. 로그인 화면의 확인란이 그 동의입니다.</li>
+    <li><b>만 14세 이상</b>만 로그인할 수 있습니다.</li>
+    <li>다른 사람의 카카오 계정이나 메일로 로그인해서는 안 됩니다. 계정을 남에게 넘기거나 빌려주지 마세요.</li>
+    <li>특파원 이름은 자유롭게 정할 수 있지만, 다른 사람이나 가게·단체로 오인될 이름은 쓸 수 없습니다(운영정책 1조의 사칭).</li>
+  </ol>
+
+  <h2 id="t6"><span class="no">제6조</span>리포트의 권리</h2>
+  <ol>
+    <li>리포트의 저작권은 쓴 사람에게 있습니다.</li>
+    <li>리포트를 공용 보드에 올리거나 링크로 공유하면, 운영자가 그 리포트를 서비스 안에서 보여 주고, 보관하고, 전송하는 데 필요한 범위에서
+      무상으로 쓰는 것을 허락한 것으로 봅니다. 운영자는 이 범위를 넘어 리포트를 팔거나 광고에 쓰지 않습니다.</li>
+    <li>쓴 사람이 리포트를 지우거나 탈퇴하면 서버에서 지워집니다. 다만 운영자가 처리한 리포트의 사본은 운영정책 6조에 따라 1년 동안 남습니다.</li>
+    <li><b>링크로 공유한 리포트는 회수할 수 없습니다.</b> 링크 안에 내용이 통째로 담겨 받는 사람에게 가기 때문입니다.</li>
+  </ol>
+
+  <h2 id="t7"><span class="no">제7조</span>이용자가 지킬 것</h2>
+  <p>리포트에는 <b>지금 거기서 직접 본 것</b>을 씁니다. 다음은 하면 안 됩니다. 자세한 기준과 예는 <a href="#p1">운영정책 1조</a>에 있습니다.</p>
+  <ol>
+    <li>일부러 틀린 현장 정보를 쓰는 것 (경쟁 가게에 "대기 1시간" 을 거짓으로 적기 등)</li>
+    <li>광고·홍보 (할인 안내, 연락처, 가게 쪽이 손님인 척 쓰기)</li>
+    <li>욕설, 혐오 표현, 특정인을 깎아내리는 표현</li>
+    <li>다른 사람을 알아볼 수 있는 내용 (실명, 연락처, 차량번호, 특정되는 인상착의)</li>
+    <li>같은 내용을 되풀이해 올리는 도배 — 서버는 한 사람의 리포트를 한 시간에 20건, 하루 60건에서 끊습니다</li>
+    <li>다른 특파원이나 가게·단체를 사칭하는 것</li>
+    <li>신고 기능을 남용해 멀쩡한 글을 가리려는 것</li>
+    <li>서비스를 방해하는 것 (자동화 도구로 대량 요청, 보안 우회, 남의 계정 사용)</li>
+    <li>그 밖에 법령이 금지하는 정보를 올리는 것</li>
+  </ol>
+
+  <h2 id="t8"><span class="no">제8조</span>게시물 관리</h2>
+  <ol>
+    <li><b>세 사람이 신고하면</b> 리포트는 저절로 가려집니다. 가려진 리포트는 쓴 사람에게만 "신고로 가려짐" 표시와 함께 보입니다.</li>
+    <li>운영자는 신고되거나 가려진 리포트를 보고 되살리거나, 가린 채 두거나, 지웁니다(<a href="#p2">운영정책 2조</a>).</li>
+    <li>리포트 때문에 명예·사생활 같은 권리가 침해됐다는 요청이 오면, 운영자는 판단이 설 때까지 최대 30일 동안 리포트를 가릴 수 있습니다
+      (임시조치, 정보통신망법 제44조의2 · <a href="#p3">운영정책 3조</a>).</li>
+    <li>운영자는 법령을 어긴 정보를 알게 되면 신고가 없어도 가리거나 지울 수 있습니다.</li>
+  </ol>
+
+  <h2 id="t9"><span class="no">제9조</span>이용 제한</h2>
+  <ol>
+    <li>제7조를 어기면 운영자는 <a href="#p4">운영정책 4조</a>의 기준에 따라 글쓰기를 7일, 30일 또는 영구히 정지할 수 있습니다.</li>
+    <li>정지된 동안에는 리포트를 올리거나 신고할 수 없습니다. 읽기와 이 기기에서 쓰기는 그대로 되며, 정지 중에 쓴 리포트는 정지가 풀리면 올라갑니다.</li>
+    <li>정지할 때는 사유를 기록하고, 이용자는 <a href="#p5">운영정책 5조</a>에 따라 이의를 신청할 수 있습니다.</li>
+  </ol>
+
+  <h2 id="t10"><span class="no">제10조</span>서비스의 변경과 중단</h2>
+  <ol>
+    <li>운영자는 서비스의 기능을 바꿀 수 있습니다. 이용자에게 불리한 변경은 제3조처럼 미리 알립니다.</li>
+    <li>공용 보드를 끝낼 때는 30일 전에 알립니다. 서버 장애, 천재지변처럼 미리 알릴 수 없는 경우에는 사후에 알립니다.</li>
+    <li>공용 보드가 멈춰도 이 기기에 쌓인 리포트는 남고, <b>주고받기 → 파일로 저장</b>으로 가져갈 수 있습니다.</li>
+  </ol>
+
+  <h2 id="t11"><span class="no">제11조</span>정보의 정확성</h2>
+  <ol>
+    <li>리포트는 이용자가 보내는 제보입니다. <b>운영자는 리포트의 내용이 사실인지 확인하지 않습니다.</b></li>
+    <li>"N명이 같게 봤습니다", "보통은" 같은 표시는 올라온 리포트를 세어 보여 주는 것일 뿐, 내용이나 앞으로의 상황을 보증하지 않습니다.</li>
+    <li>현장 정보는 시간이 지나면 틀려집니다. 리포트를 보고 가기 전에 시각을 확인하고, 중요한 일정은 해당 장소에 직접 확인하세요.</li>
+  </ol>
+
+  <h2 id="t12"><span class="no">제12조</span>책임의 한계</h2>
+  <ol>
+    <li>운영자는 이용자가 쓴 리포트의 내용, 그리고 이용자끼리 생긴 분쟁에 대해 책임지지 않습니다. 다만 운영자가 법령을 어긴 글을 알고도 두었다면 그렇지 않습니다.</li>
+    <li>무료 서비스이므로, 운영자는 서비스를 쓰지 못해 생긴 손해를 배상하지 않습니다. 다만 운영자의 고의나 중대한 과실로 생긴 손해는 예외입니다.</li>
+    <li>이용자가 이 약관을 어겨 운영자나 다른 사람에게 손해를 입히면 그 손해를 배상해야 합니다.</li>
+  </ol>
+
+  <h2 id="t13"><span class="no">제13조</span>개인정보 보호</h2>
+  <p>운영자는 <a href="privacy.html">개인정보처리방침</a>에 따라 이용자의 개인정보를 다룹니다.</p>
+
+  <h2 id="t14"><span class="no">제14조</span>탈퇴</h2>
+  <p>이용자는 언제든 앱의 <b>🏘 공용 보드 → 계정 삭제</b>로 탈퇴할 수 있습니다. 탈퇴하면 서버의 계정과 내가 쓴 리포트, 내가 한 신고가 바로 지워집니다.
+    링크로 공유한 사본과 운영정책 6조의 처리 기록은 제6조에 적은 대로 남습니다.</p>
+
+  <h2 id="t15"><span class="no">제15조</span>준거법과 관할</h2>
+  <p>이 약관은 대한민국 법에 따릅니다. 서비스와 관련한 분쟁은 먼저 대화로 풀고, 소송이 필요하면 민사소송법에 따른 관할 법원
+    <mark class="fill">[예: 운영자 주소지 관할 지방법원]</mark>에서 다룹니다.</p>
+
+  <h2 id="t16"><span class="no">부칙</span>시행일</h2>
+  <p>이 약관은 <mark class="fill">[YYYY년 M월 D일]</mark>부터 적용합니다.</p>
+
+  <h1 class="h1-2" id="policy">운영정책</h1>
+  <p class="lede">이용약관 제7조~제9조를 실제로 어떻게 적용하는지 적었습니다. 이 정책도 약관의 일부입니다.</p>
+  <h2 id="p1"><span class="no">1조</span>이런 글은 가리거나 지웁니다</h2>
+  <div class="tbl"><table>
+    <thead><tr><th>유형</th><th>예</th><th>처리</th></tr></thead>
+    <tbody>
+      <tr><td>거짓 정보</td><td>가 보지 않고 쓴 웨이팅, 경쟁 가게를 깎으려 일부러 틀리게 쓴 혼잡</td><td>가림 · 지움</td></tr>
+      <tr><td>광고</td><td>할인 안내, 전화번호, 예약 유도, 가게 쪽이 손님인 척 쓴 글</td><td>지움</td></tr>
+      <tr><td>욕설</td><td>욕설, 혐오 표현, 특정인을 깎아내리는 말</td><td>지움</td></tr>
+      <tr><td>사생활</td><td>직원·손님의 실명, 연락처, 차량번호, 알아볼 수 있는 인상착의</td><td>지움</td></tr>
+      <tr><td>도배</td><td>같은 내용을 되풀이한 글</td><td>지움</td></tr>
+      <tr><td>사칭</td><td>다른 특파원이나 가게·단체인 척한 글</td><td>지움 · 정지</td></tr>
+    </tbody>
+  </table></div>
+  <p><b>장소에 대한 불리한 후기는 지우지 않습니다.</b> "붐빈다", "불친절했다", "주차가 불편하다"처럼 직접 겪은 것은
+    이 게시판이 있는 이유입니다. 다만 사람을 특정하거나(실명·인상착의) 사실처럼 단정한 주장("직원이 손님을 속인다")은
+    권리침해가 될 수 있어 3조의 요청이 오면 임시조치합니다.</p>
+
+  <h2 id="p2"><span class="no">2조</span>신고가 처리되는 순서</h2>
+  <ol>
+    <li>로그인한 특파원이 리포트의 <b>신고</b>를 누르고 사유(거짓·광고·욕설·사생활·기타)를 고릅니다. 한 리포트에 한 사람이 한 번만 신고할 수 있고, 하루 20건까지입니다.</li>
+    <li><b>세 사람</b>이 신고하면 리포트는 모두에게서 가려집니다. 쓴 사람에게는 "신고로 가려짐"으로 보입니다.</li>
+    <li>운영자가 신고되거나 가려진 리포트를 보고 정합니다. 목표는 신고가 들어온 뒤 <b>3일 안</b>입니다.
+      <ul>
+        <li><b>문제없음</b> — 되살립니다. 그때까지의 신고는 기각되며, 기각된 신고를 한 사람은 같은 리포트를 다시 신고할 수 없습니다.</li>
+        <li><b>가린 채 두기</b> — 계속 가립니다. 이후 신고가 더 들어와도 다시 드러나지 않습니다.</li>
+        <li><b>지우기</b> — 서버에서 지웁니다. 사유를 기록합니다.</li>
+      </ul>
+    </li>
+    <li>처리한 뒤 다른 사람이 새로 신고하면 운영자가 다시 봅니다.</li>
+  </ol>
+
+  <h2 id="p3"><span class="no">3조</span>권리침해 신고와 임시조치</h2>
+  <p>리포트 때문에 명예가 훼손되거나 사생활이 침해됐다면, 당사자나 대리인이 아래 메일로 삭제를 요청할 수 있습니다(정보통신망법 제44조의2).</p>
+  <div class="card">
+    <dl>
+      <dt>받는 곳</dt><dd><mark class="fill">[메일 주소]</mark></dd>
+      <dt>적을 것</dt><dd>요청하는 사람의 이름과 연락처, 대리인이면 위임 사실 · 어느 리포트인지(장소, 대략의 시각, 특파원 이름) · 무엇이 침해인지와 그 근거</dd>
+    </dl>
+  </div>
+  <ol>
+    <li>운영자는 요청을 받으면 해당 리포트를 찾아, 침해가 분명하면 지우고 판단이 어려우면 <b>최대 30일</b> 동안 가립니다(임시조치).
+      처리 결과는 요청한 사람에게 알립니다.</li>
+    <li>임시조치된 리포트는 쓴 사람에게 "신고로 가려짐"으로 보입니다.
+      쓴 사람은 기간 안에 <a href="#p5">5조</a>의 방법으로 <b>재게시를 요청</b>할 수 있고, 운영자는 양쪽의 주장을 보고 정합니다.</li>
+    <li>30일이 지나면 운영자가 되살리거나 지웁니다. 법원이나 수사기관의 판단을 기다리는 경우에는 다시 임시조치할 수 있습니다.</li>
+  </ol>
+
+  <h2 id="p4"><span class="no">4조</span>이용 제한 기준</h2>
+  <p>최근 1년 동안 운영자가 가리거나 지운 리포트의 수로 정합니다.</p>
+  <div class="tbl"><table>
+    <thead><tr><th>횟수</th><th>보통의 위반</th><th>광고 · 도배 · 사칭</th></tr></thead>
+    <tbody>
+      <tr><td>1회</td><td>글만 처리</td><td>7일 정지</td></tr>
+      <tr><td>2회</td><td>7일 정지</td><td>30일 정지</td></tr>
+      <tr><td>3회</td><td>30일 정지</td><td>영구 정지</td></tr>
+      <tr><td>4회 이상</td><td>영구 정지</td><td>영구 정지</td></tr>
+    </tbody>
+  </table></div>
+  <p>법령이 금지하는 정보(아동·청소년 성착취물, 범죄 모의 등)는 횟수와 상관없이 바로 영구 정지하고, 법에 따라 수사기관에 협조합니다.
+    정지 기간에는 글쓰기와 신고만 막히고 읽기는 됩니다.</p>
+
+  <h2 id="p5"><span class="no">5조</span>이의 신청</h2>
+  <p>리포트가 가려지거나 지워진 것, 정지된 것에 이의가 있으면 아래로 신청하세요. 임시조치된 리포트의 재게시 요청도 같습니다.</p>
+  <div class="card">
+    <dl>
+      <dt>받는 곳</dt><dd><mark class="fill">[메일 주소]</mark></dd>
+      <dt>적을 것</dt><dd><b>계정 번호</b>(앱의 🏘 공용 보드 창에 보입니다) · 대상 리포트 · 이의의 이유</dd>
+      <dt>답</dt><dd>받은 날부터 <b>7일 안에</b> 답합니다. 받아들이면 리포트를 되살리거나 정지를 풉니다.</dd>
+    </dl>
+  </div>
+
+  <h2 id="p6"><span class="no">6조</span>처리 기록</h2>
+  <p>운영자가 한 모든 처리(되살리기, 가리기, 임시조치, 지우기, 정지와 해제)는 누가 언제 무엇을 왜 했는지와,
+    처리할 때의 리포트 사본과 함께 기록합니다. 기록은 이의 신청과 분쟁에 답하는 데만 쓰고, <b>1년</b>이 지나면 자동으로 지웁니다
+    (<a href="privacy.html#a4">개인정보처리방침 4조</a>). 운영자로 지정된 사람만 볼 수 있습니다.</p>
+
+</main>
+<footer class="wrap"><p class="foot">동네 특파원 · <a href="privacy.html">개인정보처리방침</a> · <a href="./">앱으로 돌아가기</a></p></footer>
+</body>
+</html>

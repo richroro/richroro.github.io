@@ -1,0 +1,281 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self' https://*.supabase.co; object-src 'none'; base-uri 'none'; form-action 'none'">
+<meta name="robots" content="noindex, nofollow">
+<title>운영 · 동네 특파원</title>
+<meta name="theme-color" content="#FFFFFF" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#111928" media="(prefers-color-scheme: dark)">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%2315171A'/><circle cx='50' cy='62' r='9' fill='white'/><path d='M34 47 A22 22 0 0 1 66 47' fill='none' stroke='white' stroke-width='7' stroke-linecap='round'/><path d='M23 34 A38 38 0 0 1 77 34' fill='none' stroke='white' stroke-width='7' stroke-linecap='round'/></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans+KR:wght@400;500;600;700&display=swap">
+<style>
+:root{
+  color-scheme:light;
+  --paper:#EEF1F5; --surface:#FFFFFF; --surface-2:#F4F6F9; --surface-3:#E2E7EE;
+  --ink:#0D1628; --ink-2:#3A4659; --ink-3:#5B687C;
+  --line:#D8DEE7; --line-soft:#E8ECF2;
+  --accent:#1F47B8; --accent-deep:#16358C; --accent-wash:#E7EDFA; --on-accent:#FFFFFF;
+  --live:#C4261B; --live-wash:#FDE9E7;
+  --s0-bg:#DDF1E4; --s0-ink:#145C38;
+  --s1-bg:#FFF0C7; --s1-ink:#6E4B00;
+  --s2-bg:#FFD2AE; --s2-ink:#7A3200;
+  --s3-bg:#B3261E; --s3-ink:#FFFFFF;
+  --shadow:0 1px 2px rgba(13,22,40,.06),0 6px 16px -10px rgba(13,22,40,.22);
+  --r:12px;
+}
+@media (prefers-color-scheme:dark){ :root:not([data-theme="light"]){
+  color-scheme:dark;
+  --paper:#090E18; --surface:#111928; --surface-2:#172134; --surface-3:#243049;
+  --ink:#E8EDF5; --ink-2:#B6C0D0; --ink-3:#8C98AD;
+  --line:#243049; --line-soft:#1A2336;
+  --accent:#8FB1FF; --accent-deep:#B7CCFF; --accent-wash:#152550; --on-accent:#081022;
+  --live:#FF7B6F; --live-wash:#3A1512;
+  --s0-bg:#16351F; --s0-ink:#74CFA0;
+  --s1-bg:#3A2C14; --s1-ink:#E8C58A;
+  --s2-bg:#6B3A16; --s2-ink:#FBD9BC;
+  --s3-bg:#CE6038; --s3-ink:#1A0D06;
+  --shadow:0 1px 2px rgba(0,0,0,.5),0 8px 22px -12px rgba(0,0,0,.7);
+}}
+:root[data-theme="dark"]{
+  color-scheme:dark;
+  --paper:#090E18; --surface:#111928; --surface-2:#172134; --surface-3:#243049;
+  --ink:#E8EDF5; --ink-2:#B6C0D0; --ink-3:#8C98AD;
+  --line:#243049; --line-soft:#1A2336;
+  --accent:#8FB1FF; --accent-deep:#B7CCFF; --accent-wash:#152550; --on-accent:#081022;
+  --live:#FF7B6F; --live-wash:#3A1512;
+  --s0-bg:#16351F; --s0-ink:#74CFA0;
+  --s1-bg:#3A2C14; --s1-ink:#E8C58A;
+  --s2-bg:#6B3A16; --s2-ink:#FBD9BC;
+  --s3-bg:#CE6038; --s3-ink:#1A0D06;
+  --shadow:0 1px 2px rgba(0,0,0,.5),0 8px 22px -12px rgba(0,0,0,.7);
+}
+*{box-sizing:border-box}
+[hidden]{display:none !important}
+html,body{margin:0;padding:0}
+body{background:var(--paper);color:var(--ink);
+  font-family:"IBM Plex Sans KR","Apple SD Gothic Neo","Malgun Gothic",system-ui,sans-serif;
+  font-size:15px;line-height:1.6;letter-spacing:-.2px;-webkit-font-smoothing:antialiased;overflow-wrap:anywhere}
+h1,h2,h3,p,ul,ol,dl{margin:0}
+button{font:inherit;color:inherit}
+a{color:var(--accent)}
+.mono{font-family:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,monospace;font-variant-numeric:tabular-nums}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.wrap{max-width:900px;margin:0 auto;padding:0 16px 48px}
+
+/* 머리 — 앱과 같은 띠, 표시는 검은 사각으로 운영 화면임을 알린다 */
+.bar{position:sticky;top:0;z-index:60;background:var(--surface);border-bottom:1px solid var(--line)}
+.bar-in{max-width:900px;margin:0 auto;padding:0 16px;height:54px;display:flex;align-items:center;gap:10px}
+.mk{width:28px;height:28px;border-radius:8px;background:var(--ink);color:var(--paper);flex:none;display:grid;place-items:center}
+.mk svg{width:17px;height:17px;display:block}
+.bar h1{font-size:16.5px;font-weight:700;letter-spacing:-.6px;white-space:nowrap}
+.bar h1 small{font-size:12px;font-weight:700;color:var(--paper);background:var(--ink);border-radius:6px;padding:2px 7px;margin-left:6px;letter-spacing:0}
+.bar-sp{margin-left:auto}
+.who{font-size:12px;color:var(--ink-3);white-space:nowrap}
+.to-app{font-size:13px;font-weight:600;text-decoration:none;padding:6px 10px;border-radius:8px;white-space:nowrap}
+.to-app:hover{background:var(--accent-wash)}
+@media (max-width:520px){ .who{display:none} }
+.tabs{max-width:900px;margin:0 auto;padding:0 16px;display:flex;gap:2px;overflow-x:auto;scrollbar-width:none}
+.tabs::-webkit-scrollbar{display:none}
+.tab{background:none;border:none;border-bottom:2px solid transparent;padding:9px 13px 10px;cursor:pointer;
+  font-size:14.5px;font-weight:500;color:var(--ink-3);white-space:nowrap}
+.tab:hover{color:var(--ink)}
+.tab[aria-selected="true"]{color:var(--accent);border-bottom-color:var(--accent);font-weight:600}
+.tab .n{font-size:11.5px;margin-left:5px;font-family:"IBM Plex Mono",monospace}
+
+.view{padding-top:18px}
+.lead{font-size:13px;color:var(--ink-3);margin-bottom:12px;line-height:1.65}
+.note{font-size:12.5px;color:var(--ink-3);line-height:1.65}
+
+/* 문 앞 — 설정·로그인·권한 */
+.gate{margin-top:28px;background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:20px}
+.gate:empty{display:none}
+.gate h2{font-size:17px;font-weight:700;letter-spacing:-.5px;margin-bottom:6px}
+.gate p{font-size:14px;color:var(--ink-2);line-height:1.7}
+.gate p + p{margin-top:8px}
+.code{display:block;margin-top:10px;font-family:"IBM Plex Mono",monospace;font-size:12.5px;background:var(--surface-2);
+  border:1px solid var(--line);border-radius:9px;padding:10px 12px;white-space:pre-wrap;word-break:break-all;color:var(--ink)}
+
+/* 단추·입력 */
+.btn{background:var(--surface);border:1px solid var(--line);border-radius:9px;padding:7px 12px;
+  font-size:13.5px;font-weight:500;color:var(--ink);cursor:pointer;min-height:38px;
+  display:inline-flex;align-items:center;justify-content:center;gap:6px}
+.btn:hover{border-color:var(--accent);color:var(--accent)}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:var(--on-accent);font-weight:600}
+.btn.primary:hover{background:var(--accent-deep);border-color:var(--accent-deep);color:var(--on-accent)}
+.btn.danger{background:var(--s3-bg);border-color:var(--s3-bg);color:var(--s3-ink);font-weight:600}
+.btn.danger:hover{filter:brightness(.92);color:var(--s3-ink);border-color:var(--s3-bg)}
+.btn.warn-text{color:var(--s2-ink);border-color:var(--s2-bg)}
+.btn.warn-text:hover{background:var(--s2-bg);color:var(--s2-ink)}
+.btn.ghost{background:transparent}
+.btn[disabled]{opacity:.45;cursor:not-allowed}
+.link-btn{background:none;border:none;color:var(--accent);font-size:12.5px;font-weight:600;cursor:pointer;
+  padding:4px 6px;border-radius:6px;min-height:30px}
+.link-btn:hover{background:var(--accent-wash)}
+.input{background:var(--surface);border:1px solid var(--line);border-radius:9px;padding:8px 11px;
+  font-size:14px;color:var(--ink);font-family:inherit;min-height:38px;width:100%}
+.input:focus{outline:2px solid var(--accent);outline-offset:-1px;border-color:var(--accent)}
+.status{font-size:12.5px;min-height:0}
+.status:empty{display:none}
+.status.ok{color:var(--s0-ink)}
+.status.err{color:var(--s3-ink);background:var(--s3-bg);padding:6px 10px;border-radius:8px;display:inline-block}
+
+/* 대기열 한 건 */
+.list{display:grid;gap:10px}
+.item{background:var(--surface);border:1px solid var(--line);border-left:3px solid var(--line);border-radius:var(--r);padding:13px 15px}
+.item.why-hidden,.item.why-hold_over{border-left-color:var(--s3-bg)}
+.item.why-flagged,.item.why-new_flags{border-left-color:var(--s2-bg)}
+.item:focus{outline:2px solid var(--accent);outline-offset:2px}
+.item-top{display:flex;gap:5px 8px;flex-wrap:wrap;align-items:center;font-size:12px;color:var(--ink-3)}
+.why{font-size:11.5px;font-weight:700;padding:2px 8px;border-radius:999px;background:var(--s2-bg);color:var(--s2-ink)}
+.why.hidden,.why.hold_over{background:var(--s3-bg);color:var(--s3-ink)}
+.badge{font-size:11px;font-weight:600;padding:1px 7px;border-radius:999px;background:var(--surface-2);color:var(--ink-2)}
+.place{font-size:16.5px;font-weight:700;letter-spacing:-.5px;margin-top:6px;line-height:1.4}
+.place small{font-size:12.5px;font-weight:400;color:var(--ink-3);margin-left:6px}
+.chips{display:flex;gap:5px;flex-wrap:wrap;margin-top:7px}
+.stat{font-size:12px;font-weight:600;padding:3px 8px;border-radius:7px;background:var(--surface-2);color:var(--ink-2)}
+.note-line{margin-top:8px;font-size:14px;color:var(--ink);line-height:1.65;border-left:2px solid var(--line);padding-left:10px}
+.author{margin-top:9px;font-size:12.5px;color:var(--ink-3);display:flex;gap:4px 8px;flex-wrap:wrap;align-items:center}
+.author b{color:var(--ink-2)}
+.warn{color:var(--s3-ink);background:var(--s3-bg);border-radius:6px;padding:0 6px;font-weight:600}
+.flags{margin-top:6px;font-size:12.5px;color:var(--s2-ink);background:var(--s2-bg);border-radius:8px;padding:6px 10px}
+.flags.none{color:var(--ink-3);background:var(--surface-2)}
+.acts{margin-top:11px;display:grid;gap:8px;border-top:1px dashed var(--line);padding-top:11px}
+.btns{display:flex;gap:6px;flex-wrap:wrap}
+.confirm{font-size:13px;color:var(--ink);background:var(--s3-bg);background:color-mix(in srgb,var(--s3-bg) 14%,var(--surface));
+  border:1px solid var(--s3-bg);border-radius:9px;padding:9px 11px;display:flex;gap:6px 8px;flex-wrap:wrap;align-items:center}
+.done{font-size:13px;color:var(--ink-3);padding:10px 2px}
+
+/* 찾기 */
+.find-row{display:flex;gap:8px;margin-bottom:10px}
+.find-row .input{flex:1 1 auto}
+
+/* 숫자 */
+.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:8px;margin-bottom:18px}
+.tile{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:10px 12px}
+.tile b{display:block;font-size:22px;font-weight:600;font-family:"IBM Plex Mono",monospace;line-height:1.25}
+.tile span{font-size:12px;color:var(--ink-3)}
+.tile.hot b{color:var(--live)}
+.tbl-wrap{overflow-x:auto;background:var(--surface);border:1px solid var(--line);border-radius:10px;margin-bottom:18px}
+.tbl-wrap:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+table.tbl{border-collapse:collapse;width:100%;font-size:13px;font-variant-numeric:tabular-nums}
+.tbl caption{text-align:left;font-size:13px;font-weight:700;color:var(--ink-2);padding:10px 12px 4px}
+.tbl th,.tbl td{padding:7px 12px;border-bottom:1px solid var(--line-soft);text-align:right;white-space:nowrap}
+.tbl th:first-child,.tbl td:first-child{text-align:left}
+.tbl thead th{font-size:11.5px;font-weight:600;color:var(--ink-3)}
+.tbl tbody tr:last-child td,.tbl tbody tr:last-child th{border-bottom:none}
+.tbl td.txt{text-align:left;white-space:normal;min-width:160px}
+.bar-cell{display:flex;align-items:center;gap:6px;justify-content:flex-end}
+.bar-cell i{display:block;height:6px;border-radius:3px;background:var(--accent);min-width:1px}
+@media (max-width:520px){ .tbl th,.tbl td{padding:7px 6px} .tbl caption{padding:10px 8px 4px} }
+
+/* 처리 기록 */
+.loglist{list-style:none;padding:0;margin:0;background:var(--surface);border:1px solid var(--line);border-radius:10px}
+.loglist li{padding:10px 12px;border-bottom:1px solid var(--line-soft);font-size:13.5px;line-height:1.6}
+.loglist li:last-child{border-bottom:none}
+.loglist .t{font-size:12px;color:var(--ink-3)}
+.lnote{margin-top:3px;font-size:13px;color:var(--ink-2);border-left:2px solid var(--line);padding-left:8px}
+.act{font-size:11.5px;font-weight:700;padding:1px 8px;border-radius:999px;background:var(--surface-2);color:var(--ink-2);white-space:nowrap}
+.act-restore,.act-unban{background:var(--s0-bg);color:var(--s0-ink)}
+.act-hide,.act-hold{background:var(--s2-bg);color:var(--s2-ink)}
+.act-delete,.act-ban{background:var(--s3-bg);color:var(--s3-ink)}
+
+/* 작성자 창 */
+.backdrop{position:fixed;inset:0;background:rgba(8,10,12,.52);z-index:90;display:none;align-items:flex-end;justify-content:center}
+.backdrop.open{display:flex}
+@media (min-width:700px){.backdrop{align-items:center;padding:24px}}
+.sheet{background:var(--surface);width:100%;max-width:640px;max-height:92vh;overflow-y:auto;border-radius:16px 16px 0 0;
+  border:1px solid var(--line);box-shadow:var(--shadow)}
+@media (min-width:700px){.sheet{border-radius:14px;max-height:88vh}}
+.sheet-head{position:sticky;top:0;background:var(--surface);border-bottom:1px solid var(--line);padding:13px 18px;
+  display:flex;align-items:center;justify-content:space-between;gap:12px;z-index:2}
+.sheet-head h2{font-size:17px;font-weight:700;letter-spacing:-.5px}
+.x{background:none;border:none;font-size:22px;line-height:1;color:var(--ink-3);cursor:pointer;padding:4px 8px;border-radius:8px}
+.x:hover{background:var(--surface-2);color:var(--ink)}
+.sheet-body{padding:16px 18px 24px;display:grid;gap:16px}
+.sheet-body h3{font-size:13px;font-weight:700;color:var(--ink-2)}
+.kv{display:grid;grid-template-columns:auto 1fr;gap:5px 14px;font-size:13.5px}
+.kv dt{color:var(--ink-3)}
+.kv dd{margin:0;font-weight:500}
+fieldset{border:1px solid var(--line);border-radius:10px;padding:10px 12px 12px;margin:0;display:grid;gap:8px}
+legend{font-size:13px;font-weight:700;color:var(--ink-2);padding:0 4px}
+.mini{display:grid;gap:6px}
+.mini li{list-style:none;font-size:13px;display:flex;gap:4px 8px;flex-wrap:wrap;align-items:baseline;
+  border-bottom:1px solid var(--line-soft);padding-bottom:6px}
+.mini ul{padding:0;margin:0}
+.mini .t{font-size:11.5px;color:var(--ink-3)}
+
+.toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:var(--ink);color:var(--paper);
+  padding:11px 18px;border-radius:999px;font-size:13.5px;font-weight:500;z-index:120;box-shadow:var(--shadow);
+  max-width:calc(100vw - 32px);text-align:center}
+</style>
+</head>
+<body>
+<header class="bar">
+  <div class="bar-in">
+    <span class="mk" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="16" r="3" fill="currentColor"/><path d="M7 11a7 7 0 0 1 10 0" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/><path d="M3.5 7a12 12 0 0 1 17 0" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg></span>
+    <h1>동네 특파원<small>운영</small></h1>
+    <span class="bar-sp"></span>
+    <span class="who mono" id="who"></span>
+    <a class="to-app" href="./">앱으로</a>
+  </div>
+  <nav class="tabs" id="tabs" role="tablist" aria-label="운영 화면" hidden>
+    <button class="tab" type="button" role="tab" id="tab-queue" aria-controls="v-queue" data-view="queue" aria-selected="true">대기열<span class="n" id="nQueue"></span></button>
+    <button class="tab" type="button" role="tab" id="tab-find" aria-controls="v-find" data-view="find" aria-selected="false" tabindex="-1">찾기</button>
+    <button class="tab" type="button" role="tab" id="tab-stats" aria-controls="v-stats" data-view="stats" aria-selected="false" tabindex="-1">숫자</button>
+    <button class="tab" type="button" role="tab" id="tab-log" aria-controls="v-log" data-view="log" aria-selected="false" tabindex="-1">처리 기록</button>
+  </nav>
+</header>
+
+<main class="wrap">
+  <section class="gate" id="gate" aria-live="polite"></section>
+
+  <section class="view" id="v-queue" role="tabpanel" aria-labelledby="tab-queue" hidden>
+    <p class="lead">신고가 들어왔거나 가려진 글, 임시조치 30일이 끝난 글입니다. 결정이 급한 것부터 놓았습니다.
+      처리하면 목록에서 빠지고, 그 뒤에 새 신고가 오면 다시 올라옵니다.</p>
+    <div class="list" id="queue"></div>
+  </section>
+
+  <section class="view" id="v-find" role="tabpanel" aria-labelledby="tab-find" hidden>
+    <form class="find-row" id="findForm" role="search">
+      <input class="input" id="q" type="search" autocomplete="off" aria-label="찾을 말"
+             placeholder="장소 · 특파원 이름 · 메모 · 리포트 id · 계정 번호">
+      <button class="btn primary" type="submit">찾기</button>
+    </form>
+    <p class="note" style="margin-bottom:12px">권리침해 신고(명예훼손·사생활 침해)는 대개 "어느 가게에 대해 언제쯤 쓴 글"로 옵니다.
+      장소 이름으로 찾아서 <b>임시조치 30일</b>을 겁니다. 메모에 누가 무엇 때문에 요청했는지 적어야 걸립니다 — 운영정책 3조.</p>
+    <div class="list" id="found"></div>
+  </section>
+
+  <section class="view" id="v-stats" role="tabpanel" aria-labelledby="tab-stats" hidden>
+    <div id="stats"></div>
+  </section>
+
+  <section class="view" id="v-log" role="tabpanel" aria-labelledby="tab-log" hidden>
+    <p class="lead">운영자가 한 모든 처리입니다. 처리할 때의 글 사본과 함께 1년 보관한 뒤 지웁니다(처리방침 4조). 사본은 이 목록에 싣지 않습니다.</p>
+    <div id="log"></div>
+  </section>
+</main>
+
+<div class="backdrop" id="userBack">
+  <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="userTitle">
+    <div class="sheet-head">
+      <h2 id="userTitle">특파원</h2>
+      <button class="x" type="button" data-close aria-label="닫기">&times;</button>
+    </div>
+    <div class="sheet-body" id="userBody"></div>
+  </div>
+</div>
+
+<div class="toast" id="toast" role="status" hidden></div>
+
+<!-- ?v= 는 스크립트 내용의 해시 — node correspondent/tools/stamp.mjs 가 적는다. config.js 는 버전 없이 -->
+<script src="config.js"></script>
+<script src="sync.js?v=cf8e095893"></script>
+<script src="admin.js?v=cf8e095893"></script>
+</body>
+</html>
