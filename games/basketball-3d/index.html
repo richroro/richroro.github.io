@@ -880,6 +880,10 @@ renderer.toneMappingExposure = 1.0;
 renderer.shadowMap.enabled = true;
 renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 var ANISO = renderer.capabilities.getMaxAnisotropy();
+// 깊이 흐림(후처리)을 위해 불투명 재질(DEPTH_A)은 알파 칸에 카메라에서 떨어진 거리(0 ~ 100m → 0 ~ 1)를 적는다.
+// 캔버스에는 알파가 없어서 후처리를 안 쓸 땐 아무 일도 없다
+var DEPTH_A_GLSL = "clamp( 1.0 / ( gl_FragCoord.w * 100.0 ), 0.0, 1.0 )";
+THREE.ShaderChunk.dithering_fragment += "\n#ifdef DEPTH_A\n\tgl_FragColor.a = " + DEPTH_A_GLSL + ";\n#endif\n";
 
 function col(hex) { return new THREE.Color(hex).convertSRGBToLinear(); }
 function mkCanvas(w, h) { var c = document.createElement("canvas"); c.width = w; c.height = h; return c; }
@@ -1142,7 +1146,7 @@ function reflRender() {
 /* ── 후처리: 경기장을 HDR 로 그린 뒤 밝은 곳이 번지게(블룸) 하고, 필름 톤(ACES)·가장자리 어둡게·옅은 입자를 얹는다.
    WebGL2 에서 '높음' 화질일 때만(4배 MSAA). 그 밖엔 예전처럼 바로 화면에 그린다.
    three r128 은 렌더 타깃에도 톤 매핑을 걸어서, 켜 있는 동안엔 렌더러 톤 매핑을 끄고 마지막 합성에서 한 번만 건다 ── */
-var POST = { ok: false, on: false, rt: null, mips: [], ups: [], w: 0, h: 0, scene: new THREE.Scene(),
+var POST = { ok: false, on: false, rt: null, dofRT: null, mips: [], ups: [], w: 0, h: 0, scene: new THREE.Scene(),
   cam: new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1), quad: null, bright: null, down: null, up: null, comp: null };
 (function postBuild() {
   if (!renderer.capabilities.isWebGL2) return;
@@ -1199,6 +1203,34 @@ var POST = { ok: false, on: false, rt: null, mips: [], ups: [], w: 0, h: 0, scen
     "  gl_FragColor = vec4(c, 1.0);",
     "}"].join("\n"), { tScene: { value: null }, tBloom: { value: null }, bloom: { value: 0.09 }, exposure: { value: 1 },
       vig: { value: 0.62 }, grain: { value: 0.022 }, time: { value: 0 } });
+  // 깊이 흐림(반 해상도): 초점(림 언저리)보다 먼 곳만 흐린다. 흐림 반지름(CoC)은 초점 뒤 range 만큼에서 가장 커진다.
+  // 표본은 제 흐림 원이 이 픽셀까지 닿을 때만 섞는다 (또렷한 선수 색이 뒤 관중석으로 번지지 않게)
+  var cocGlsl = "uniform float focus, range, maxCoc;\nfloat coc(float a) { return clamp((a * 100.0 - focus) / range, 0.0, 1.0) * maxCoc; }\n";
+  POST.dof = mat(cocGlsl + [
+    "uniform sampler2D tSrc; uniform vec2 texel; varying vec2 vUv;",
+    "void main() {",
+    "  vec4 c0 = texture2D(tSrc, vUv);",
+    "  float r0 = coc(c0.a);",
+    "  vec3 acc = c0.rgb; float ws = 1.0;",
+    "  for (int i = 0; i < 20; i++) {",
+    "    float fi = float(i) + 0.5, rr = sqrt(fi / 20.0) * maxCoc, th = fi * 2.3999632;",
+    "    vec4 s = texture2D(tSrc, vUv + vec2(cos(th), sin(th)) * rr * texel);",
+    "    float w = clamp(min(coc(s.a), r0 + 0.5) - rr + 1.0, 0.0, 1.0);",
+    "    acc += s.rgb * w; ws += w;",
+    "  }",
+    "  gl_FragColor = vec4(acc / ws, 1.0);",
+    "}"].join("\n"), { tSrc: { value: null }, texel: { value: new THREE.Vector2() }, focus: { value: 12 }, range: { value: 8 }, maxCoc: { value: 5 } });
+  POST.comp.fragmentShader = cocGlsl + POST.comp.fragmentShader
+    .replace("uniform sampler2D tScene, tBloom;", "uniform sampler2D tScene, tBloom, tDof;")
+    .replace("  vec3 c = texture2D(tScene, vUv).rgb + texture2D(tBloom, vUv).rgb * bloom;",
+      "  vec4 s0 = texture2D(tScene, vUv);\n  vec3 c = mix(s0.rgb, texture2D(tDof, vUv).rgb, smoothstep(0.35, 1.6, coc(s0.a))) + texture2D(tBloom, vUv).rgb * bloom;")
+    .replace("  vec2 d = vUv - 0.5; c *= 1.0 - vig * dot(d, d);",
+      "  // 중계 화면 색: 채도를 조금, 밝은 곳은 따뜻하게 어두운 곳은 조금 푸르게\n" +
+      "  float lum = dot(c, vec3(0.2126, 0.7152, 0.0722));\n  c = max(mix(vec3(lum), c, 1.06), 0.0);\n" +
+      "  c *= mix(vec3(0.97, 0.99, 1.04), vec3(1.03, 1.0, 0.965), smoothstep(0.05, 0.6, lum));\n" +
+      "  vec2 d = vUv - 0.5; c *= 1.0 - vig * dot(d, d);");
+  POST.comp.uniforms.tDof = { value: null };
+  POST.comp.uniforms.focus = POST.dof.uniforms.focus; POST.comp.uniforms.range = POST.dof.uniforms.range; POST.comp.uniforms.maxCoc = POST.dof.uniforms.maxCoc;
   POST.quad = new THREE.Mesh(new THREE.PlaneGeometry(2, 2), POST.comp);
   POST.quad.frustumCulled = false;
   POST.scene.add(POST.quad);
@@ -1219,8 +1251,10 @@ function postSize() {
   if (POST.rt && w === POST.w && h === POST.h) return;
   POST.w = w; POST.h = h;
   if (POST.rt) POST.rt.dispose();
+  if (POST.dofRT) POST.dofRT.dispose();
   POST.mips.concat(POST.ups).forEach(function (r) { r.dispose(); });
   POST.rt = postRT(w, h, true); POST.rt.samples = 4;
+  POST.dofRT = postRT(Math.max(1, w >> 1), Math.max(1, h >> 1));
   POST.mips = []; POST.ups = [];
   for (var i = 0, mw = w, mh = h; i < 5; i++) {
     mw = Math.max(1, mw >> 1); mh = Math.max(1, mh >> 1);
@@ -1228,10 +1262,21 @@ function postSize() {
   }
 }
 function postPass(m, target) { POST.quad.material = m; renderer.setRenderTarget(target); renderer.render(POST.scene, POST.cam); }
+var _pf = new V3(), _pfd = new V3();
 function postRender() {
   postSize();
   renderer.setRenderTarget(POST.rt);
   renderer.render(scene, camera);
+  // 초점: 림(리플레이는 공) 까지의 거리. 그 뒤 1.5m 부터 흐려지기 시작해 거리의 60% 뒤에서 가장 흐리다.
+  // 가장 흐린 반지름은 화면 높이 844 기준 3.4 픽셀
+  var F = POST.dof.uniforms;
+  camera.getWorldDirection(_pfd);
+  _pf.set(hoopG.position.x, RIM_Y, hoop.z);
+  if (RP.on && rpMesh.visible) _pf.copy(rpMesh.position);
+  var fd = Math.max(1, _pf.sub(camera.position).dot(_pfd));
+  F.focus.value = fd + 1.5; F.range.value = Math.max(3.5, fd * 0.6); F.maxCoc.value = clamp(3.4 * POST.h / 844, 2, 9);
+  F.tSrc.value = POST.rt.texture; F.texel.value.set(1 / POST.w, 1 / POST.h);
+  postPass(POST.dof, POST.dofRT);
   POST.bright.uniforms.tSrc.value = POST.rt.texture;
   postPass(POST.bright, POST.mips[0]);
   var i, D = POST.down.uniforms, U = POST.up.uniforms;
@@ -1246,7 +1291,7 @@ function postRender() {
     src = POST.ups[i];
   }
   var C = POST.comp.uniforms;
-  C.tScene.value = POST.rt.texture; C.tBloom.value = src.texture; C.time.value = (C.time.value + 0.618) % 13;
+  C.tScene.value = POST.rt.texture; C.tBloom.value = src.texture; C.tDof.value = POST.dofRT.texture; C.time.value = (C.time.value + 0.618) % 13;
   postPass(POST.comp, null);
 }
 // 톤 매핑·인코딩이 바뀌면 이미 만들어진 셰이더를 다시 만든다 (r128 은 톤 매핑만 바뀌면 알아채지 못한다)
@@ -1266,9 +1311,10 @@ function postSet(on) {
   REFL.rt.texture.encoding = on ? THREE.LinearEncoding : renderer.outputEncoding;
   REFL.plane.material.uniforms.tDiffuse.value = REFL.rt.texture;
   if (!on && POST.rt) {
-    POST.rt.dispose(); POST.mips.concat(POST.ups).forEach(function (r) { r.dispose(); });
-    POST.rt = null; POST.mips = []; POST.ups = []; POST.w = POST.h = 0;
+    POST.rt.dispose(); POST.dofRT.dispose(); POST.mips.concat(POST.ups).forEach(function (r) { r.dispose(); });
+    POST.rt = null; POST.dofRT = null; POST.mips = []; POST.ups = []; POST.w = POST.h = 0;
   }
+  if (netDepth) netDepth.visible = on;
   mtlDirty();
 }
 
@@ -1769,6 +1815,7 @@ function cordTexture() {
   t.wrapT = THREE.RepeatWrapping;
   return t;
 }
+var netDepth = null;
 function netMeshBuild() {
   var n = NL.length;
   var pos = new Float32Array(n * 12), colr = new Float32Array(n * 12), uvs = new Float32Array(n * 8), idx = new Uint16Array(n * 6);
@@ -1785,6 +1832,17 @@ function netMeshBuild() {
   netMesh.frustumCulled = false;
   netMesh.renderOrder = 2;
   scene.add(netMesh);
+  // 깊이 흐림: 그물은 반투명이라 깊이를 못 적으니, 줄이 반 넘게 덮은 픽셀의 알파만 그물 깊이로 한 번 더 그린다(색은 그대로)
+  netDepth = new THREE.Mesh(netGeo, new THREE.ShaderMaterial({
+    uniforms: { map: { value: netMesh.material.map } },
+    vertexShader: "varying vec2 vUv;\nvoid main() { vUv = uv; gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0); }",
+    fragmentShader: "uniform sampler2D map;\nvarying vec2 vUv;\nvoid main() {\n  if (texture2D(map, vUv).a < 0.5) discard;\n  gl_FragColor = vec4(0.0, 0.0, 0.0, " + DEPTH_A_GLSL + ");\n}",
+    side: THREE.DoubleSide, depthWrite: false, blending: THREE.CustomBlending,
+    blendSrc: THREE.ZeroFactor, blendDst: THREE.OneFactor, blendSrcAlpha: THREE.OneFactor, blendDstAlpha: THREE.ZeroFactor }));
+  netDepth.frustumCulled = false;
+  netDepth.renderOrder = 3;
+  netDepth.visible = POST.on;
+  scene.add(netDepth);
 }
 // 줄 굵기는 5mm 지만 멀리서는 화면에서 1.2픽셀 밑으로 가늘어지지 않게 (안 그러면 그물이 깜빡이며 사라진다)
 function netDraw() {
@@ -1830,6 +1888,14 @@ var aimPts = new THREE.Points(aimGeo, new THREE.PointsMaterial({ size: 0.075, ma
   transparent: true, depthWrite: false, blending: THREE.AdditiveBlending, sizeAttenuation: true, fog: false }));
 aimPts.frustumCulled = false;
 aimPts.renderOrder = 10;
+// 깊이 흐림: 점은 더하기로 섞되, 점이 덮은 곳의 알파(= 깊이)는 점의 깊이로 바꾼다. 뒤 관중석이 흐려져도 점은 또렷하다
+(function (m) {
+  m.onBeforeCompile = function (sh) {
+    sh.fragmentShader = sh.fragmentShader.replace(/}\s*$/, "\tif ( diffuseColor.a < 0.15 ) discard;\n\tgl_FragColor = vec4( gl_FragColor.rgb * diffuseColor.a, " + DEPTH_A_GLSL + " );\n}");
+  };
+  m.blending = THREE.CustomBlending; m.blendEquation = THREE.AddEquation;
+  m.blendSrc = THREE.OneFactor; m.blendDst = THREE.OneFactor; m.blendSrcAlpha = THREE.OneFactor; m.blendDstAlpha = THREE.ZeroFactor;
+})(aimPts.material);
 aimPts.visible = false;
 scene.add(aimPts);
 
@@ -2094,7 +2160,203 @@ function jerseyTex(o) {
   });
   // 멀리 서는 사람은 반 크기 그림으로 (글씨 배치는 그대로)
   if (o.half) { var c2 = mkCanvas(W / 2, H / 2); c2.getContext("2d").drawImage(c, 0, 0, W / 2, H / 2); c = c2; }
-  return canvasTex(c);
+  return o.canvas ? c : canvasTex(c);
+}
+
+// 머리: 구를 빚어 눈두덩·눈·코·광대·입술·턱을 만든다. 원점이 머리 관절(눈높이 언저리), +y 위, +z 얼굴 앞.
+// uv 는 구 그대로(등장방형: u 0.25 가 얼굴 가운데, 위가 정수리)
+function headGeo(ws, hs) {
+  var g = new THREE.SphereGeometry(0.1, ws, hs), p = g.attributes.position;
+  function bump(nx, ny, cx, cy, sx, sy) { var dx = (nx - cx) / sx, dy = (ny - cy) / sy; return Math.exp(-(dx * dx + dy * dy)); }
+  for (var i = 0; i < p.count; i++) {
+    var nx = p.getX(i) / 0.1, ny = p.getY(i) / 0.1, nz = p.getZ(i) / 0.1, f = Math.max(0, nz), d = 0;
+    if (nz > 0) {
+      d += 0.0045 * bump(nx, ny, 0, 0.21, 0.5, 0.08) * f;                                        // 눈두덩
+      d -= 0.0065 * (bump(nx, ny, 0.34, 0.07, 0.14, 0.08) + bump(nx, ny, -0.34, 0.07, 0.14, 0.08)) * f;   // 눈
+      d += 0.022 * bump(nx, ny, 0, -0.08, 0.085, 0.2) * f;                                        // 콧대
+      d += 0.011 * bump(nx, ny, 0, -0.25, 0.13, 0.07) * f;                                        // 코끝·콧방울
+      d += 0.005 * (bump(nx, ny, 0.52, -0.1, 0.16, 0.12) + bump(nx, ny, -0.52, -0.1, 0.16, 0.12)); // 광대
+      d += 0.0055 * bump(nx, ny, 0, -0.45, 0.2, 0.06) * f;                                        // 입술
+      d -= 0.002 * bump(nx, ny, 0, -0.415, 0.16, 0.02) * f;                                       // 입 선
+      d += 0.007 * bump(nx, ny, 0, -0.74, 0.22, 0.12) * f;                                        // 턱끝
+    }
+    var r = 0.1 + d, x = nx * r * 0.85, y = ny * r * 1.08, z = nz * r;
+    if (nz < 0) z *= 1 + 0.07 * -nz * (ny > -0.3 ? 1 : 0.4);                                     // 뒤통수는 조금 넉넉하게
+    if (ny < -0.05) {                                                                              // 턱: 앞은 좁아지고 턱각은 남는다
+      var t = Math.min(1, (-ny - 0.05) / 0.95);
+      x *= 1 - 0.36 * t * (0.45 + 0.55 * Math.max(0, nz));
+      if (nz > 0.2) z += 0.012 * t * nz;                                                          // 턱끝을 앞으로
+      y = Math.max(y, -0.093 + 0.01 * Math.max(0, -nz));                                          // 밑은 평평하게 (목이 붙는다)
+    }
+    if (nz > 0.6) z *= 1 - 0.05 * (nz - 0.6) / 0.4;                                               // 얼굴 앞은 조금 평평하게
+    p.setXYZ(i, x, y, z);
+  }
+  g.computeVertexNormals();
+  // 이음매(u 0 = 1)·극에서 겹친 꼭짓점의 법선을 평균해 줄 없이
+  var nr = g.attributes.normal, key = {}, k, j;
+  for (j = 0; j < p.count; j++) {
+    k = Math.round(p.getX(j) * 1e5) + "," + Math.round(p.getY(j) * 1e5) + "," + Math.round(p.getZ(j) * 1e5);
+    (key[k] = key[k] || []).push(j);
+  }
+  for (k in key) {
+    var L = key[k];
+    if (L.length < 2) continue;
+    var sx = 0, sy = 0, sz = 0;
+    L.forEach(function (m) { sx += nr.getX(m); sy += nr.getY(m); sz += nr.getZ(m); });
+    var l = Math.hypot(sx, sy, sz) || 1;
+    L.forEach(function (m) { nr.setXYZ(m, sx / l, sy / l, sz / l); });
+  }
+  return g;
+}
+// 얼굴 그림(등장방형). k: skin, hair(없으면 민머리), brow, lip, beard(0~1), eye. 알파: 피부 1, 머리카락·눈·눈썹 0.5 (피부 셰이더 가림)
+function faceCanvas(k, W, H) {
+  var c = mkCanvas(W, H), g = c.getContext("2d"), m = mkCanvas(W, H), mg = m.getContext("2d"), rs = 1 + (parseInt(k.skin.slice(1), 16) % 99991);
+  function rnd() { rs = (rs * 16807) % 2147483647; return rs / 2147483647; }
+  var x0 = 0.25 * W;
+  function X(du) { return x0 + du * W; }            // 얼굴 가운데에서 u 만큼
+  function Y(th) { return th / 180 * H; }           // 정수리에서 몇 도 아래
+  mg.fillStyle = "#fff"; mg.fillRect(0, 0, W, H);
+  g.fillStyle = k.skin; g.fillRect(0, 0, W, H);
+  // 옅은 명암: 눈두덩 아래·코 밑·아랫입술 밑·턱선은 어둡게, 이마·광대는 조금 밝게 (모양이 작아서 그림으로 거든다)
+  function blob(x, y, rx, ry, col, a) {
+    g.save(); g.translate(x, y); g.scale(rx, ry);
+    var gr = g.createRadialGradient(0, 0, 0, 0, 0, 1);
+    gr.addColorStop(0, col.replace("A", a)); gr.addColorStop(1, col.replace("A", 0));
+    g.fillStyle = gr; g.beginPath(); g.arc(0, 0, 1, 0, Math.PI * 2); g.fill(); g.restore();
+  }
+  [-1, 1].forEach(function (s) {
+    blob(X(s * 0.056), Y(84), 0.05 * W, 0.07 * H, "rgba(40,20,10,A)", 0.28);            // 눈 둘레 그늘
+    blob(X(s * 0.1), Y(100), 0.05 * W, 0.08 * H, "rgba(255,235,220,A)", 0.1);            // 광대 빛
+    blob(X(s * 0.09), Y(106), 0.05 * W, 0.06 * H, "rgba(200,80,70,A)", k.blush || 0.06); // 볼 혈색
+  });
+  blob(X(0), Y(62), 0.12 * W, 0.08 * H, "rgba(255,240,225,A)", 0.1);                    // 이마 빛
+  blob(X(0), Y(106), 0.025 * W, 0.03 * H, "rgba(40,20,10,A)", 0.35);                     // 코 밑
+  blob(X(0), Y(122), 0.04 * W, 0.03 * H, "rgba(40,20,10,A)", 0.25);                      // 아랫입술 밑
+  blob(X(0), Y(140), 0.2 * W, 0.12 * H, "rgba(30,15,8,A)", 0.3);                         // 턱 밑
+  // 수염 자국
+  if (k.beard) {
+    g.globalAlpha = k.beard;
+    g.fillStyle = k.hair || "#1a1410";
+    for (var i = 0; i < 2600; i++) {
+      var du = (rnd() - 0.5) * 0.3, th = 104 + rnd() * 42;
+      if (Math.abs(du) < 0.035 && th < 118 && th > 110) continue;                          // 입술엔 없다
+      if (th < 112 && Math.abs(du) < 0.05) continue;
+      g.fillRect(X(du), Y(th), 1, 1);
+    }
+    g.globalAlpha = 1;
+  }
+  // 입술
+  g.fillStyle = k.lip; g.beginPath(); g.ellipse(X(0), Y(116.5), 0.034 * W, 0.022 * H, 0, 0, Math.PI * 2); g.fill();
+  g.strokeStyle = "rgba(40,15,12,.85)"; g.lineWidth = Math.max(1, 0.006 * W); g.beginPath();
+  g.moveTo(X(-0.036), Y(116)); g.quadraticCurveTo(X(0), Y(117.5), X(0.036), Y(116)); g.stroke();
+  // 콧구멍
+  g.fillStyle = "rgba(30,12,8,.7)";
+  [-1, 1].forEach(function (s) { g.beginPath(); g.ellipse(X(s * 0.012), Y(104.5), 0.006 * W, 0.006 * H, 0, 0, Math.PI * 2); g.fill(); });
+  // 눈: 흰자 · 눈동자 · 윗눈꺼풀 선 · 눈썹
+  [-1, 1].forEach(function (s) {
+    var ex = X(s * 0.054), ey = Y(86);
+    g.fillStyle = k.eye || "#e6ddd2"; g.beginPath(); g.ellipse(ex, ey, 0.025 * W, 0.017 * H, 0, 0, Math.PI * 2); g.fill();
+    g.fillStyle = "#2a1a10"; g.beginPath(); g.arc(ex, ey + 0.002 * H, 0.0095 * W, 0, Math.PI * 2); g.fill();
+    g.strokeStyle = "rgba(20,10,6,.9)"; g.lineWidth = Math.max(1, 0.007 * W); g.beginPath();
+    g.moveTo(ex - 0.024 * W, ey + 0.002 * H); g.quadraticCurveTo(ex, ey - 0.03 * H, ex + 0.024 * W, ey + 0.001 * H); g.stroke();
+    g.strokeStyle = k.brow; g.lineWidth = Math.max(1.2, 0.008 * W); g.lineCap = "round"; g.beginPath();
+    g.moveTo(ex - s * 0.028 * W, Y(79)); g.quadraticCurveTo(ex + s * 0.004 * W, Y(75.5), ex + s * 0.03 * W, Y(78)); g.stroke();
+    mg.fillStyle = "#000"; mg.beginPath(); mg.ellipse(ex, ey, 0.026 * W, 0.022 * H, 0, 0, Math.PI * 2); mg.fill();
+    mg.lineWidth = Math.max(1.5, 0.011 * W); mg.strokeStyle = "#000"; mg.beginPath();
+    mg.moveTo(ex - s * 0.028 * W, Y(79)); mg.quadraticCurveTo(ex + s * 0.004 * W, Y(75.5), ex + s * 0.03 * W, Y(78)); mg.stroke();
+  });
+  // 머리카락: 앞은 이마 위, 옆은 귀 높이, 뒤는 목덜미까지 (u 로 이어지는 선). 짧게 깎은 머리라 잔 점으로 결
+  if (k.hair) {
+    // 머리선(정수리에서 몇 도): 이마 50°, 귀 위 82°, 목덜미 114°, 귀 앞 구레나룻은 96° 까지 내려온다
+    var hl = function (u) {
+      var e = Math.min(Math.abs(u - 0.035), Math.abs(u - 0.465), Math.abs(u - 1.035)) / 0.03;
+      return 82 - 32 * Math.cos(2 * Math.PI * (u - 0.25)) + 14 * Math.exp(-e * e);
+    };
+    [[0.35, 1.5], [0.6, 0.6], [1, 0]].forEach(function (L) {
+      g.globalAlpha = L[0]; g.fillStyle = k.hair; g.beginPath(); g.moveTo(0, 0);
+      for (var u = 0; u <= 1.0001; u += 1 / 128) g.lineTo(u * W, Y(hl(u) + L[1]));
+      g.lineTo(W, 0); g.closePath(); g.fill();
+    });
+    g.globalAlpha = 1;
+    mg.fillStyle = "#000"; mg.beginPath(); mg.moveTo(0, 0);
+    for (var u2 = 0; u2 <= 1.0001; u2 += 1 / 128) mg.lineTo(u2 * W, Y(hl(u2) + 1));
+    mg.lineTo(W, 0); mg.closePath(); mg.fill();
+    for (var n = 0; n < W * H * 0.08; n++) {
+      var hx = rnd() * W, hy = rnd() * H;
+      if (hy / H * 180 > hl(hx / W)) continue;
+      g.fillStyle = rnd() < 0.5 ? "rgba(0,0,0,.25)" : "rgba(255,255,255,.07)";
+      g.fillRect(hx, hy, 1, 1);
+    }
+  } else {
+    blob(X(0), Y(20), 0.3 * W, 0.12 * H, "rgba(255,245,235,A)", 0.12);                   // 민머리 윤
+  }
+  // 알파 = 피부 가림
+  var cd = g.getImageData(0, 0, W, H), md = mg.getImageData(0, 0, W, H).data, d = cd.data;
+  for (var p = 0; p < d.length; p += 4) d[p + 3] = md[p] > 127 ? 255 : 128;
+  g.putImageData(cd, 0, 0);
+  return c;
+}
+
+// 피부색에서 얼굴 그림 색: 입술은 붉고 어둡게, 눈썹은 머리카락보다 조금 어둡게 (민머리면 피부를 아주 어둡게)
+function hexMix(a, b, t) { return "#" + new THREE.Color(a).lerp(new THREE.Color(b), t).getHexString(); }
+function faceLook(skin, hair, o) {
+  o = o || {};
+  return { skin: "#" + new THREE.Color(skin).getHexString(), hair: hair === null ? null : "#" + new THREE.Color(hair).getHexString(),
+    brow: hexMix(hair === null ? skin : hair, 0x0c0806, hair === null ? 0.72 : 0.3), lip: hexMix(skin, 0x6a2a24, 0.42),
+    beard: o.beard || 0, blush: o.blush };
+}
+// 옷 주름: 세로로 늘어진 결 + 허리춤에 잡힌 가로 주름 + 겨드랑이에서 뻗는 비스듬한 주름 + 잔 올. 높이를 그려 소벨로 법선.
+// 캔버스 위가 목, 아래가 허리 (몸통 uv 와 같다)
+function clothNormalCanvas(W, H) {
+  var c = mkCanvas(W, H), g = c.getContext("2d"), rs = 4242, i;
+  function rnd() { rs = (rs * 16807) % 2147483647; return rs / 2147483647; }
+  function band(x0, y0, x1, y1, w, a) {             // (x0,y0)에서 (x1,y1)로 가는 폭 2w 의 부드러운 솟은 결
+    g.save(); g.translate(x0, y0); g.rotate(-Math.atan2(x1 - x0, y1 - y0));
+    var len = Math.hypot(x1 - x0, y1 - y0), gr = g.createLinearGradient(-w, 0, w, 0);
+    gr.addColorStop(0, "rgba(255,255,255,0)"); gr.addColorStop(0.5, "rgba(255,255,255," + a + ")"); gr.addColorStop(1, "rgba(255,255,255,0)");
+    g.fillStyle = gr; g.fillRect(-w, 0, 2 * w, len); g.restore();
+  }
+  g.fillStyle = "#808080"; g.fillRect(0, 0, W, H);
+  for (i = 0; i < 28; i++) { var x = rnd() * W, y0 = H * (0.15 + rnd() * 0.35); band(x, y0, x + (rnd() - 0.5) * 20, H, 5 + rnd() * 12, 0.05 + rnd() * 0.07); }
+  for (i = 0; i < 9; i++) {                                    // 허리춤: 가로로 구겨진 주름
+    var yy = H * (0.82 + rnd() * 0.15), hh = 2 + rnd() * 4, x1 = rnd() * W, ww = W * (0.15 + rnd() * 0.3);
+    var gr2 = g.createLinearGradient(0, yy - hh, 0, yy + hh);
+    gr2.addColorStop(0, "rgba(255,255,255,0)"); gr2.addColorStop(0.5, "rgba(255,255,255,.12)"); gr2.addColorStop(1, "rgba(255,255,255,0)");
+    g.fillStyle = gr2; g.fillRect(x1, yy - hh, ww, 2 * hh);
+  }
+  [0.25, 0.75].forEach(function (u) {                          // 겨드랑이에서 아래·가운데로
+    for (var j = 0; j < 4; j++) band(u * W + (j - 1.5) * 5, H * 0.26, u * W + (u < 0.5 ? -1 : 1) * (40 + j * 18), H * (0.55 + j * 0.06), 4, 0.1);
+  });
+  for (i = 0; i < W * H * 0.25; i++) { g.fillStyle = rnd() < 0.5 ? "rgba(0,0,0,.06)" : "rgba(255,255,255,.06)"; g.fillRect(rnd() * W, rnd() * H, 1, 1); }
+  var src = g.getImageData(0, 0, W, H).data, out = g.createImageData(W, H), o = out.data, k = 2.4 / 255;
+  function hgt(x, y) { x = (x + W) % W; y = y < 0 ? 0 : y >= H ? H - 1 : y; return src[(y * W + x) * 4]; }
+  for (var y = 0; y < H; y++) for (var xx = 0; xx < W; xx++) {
+    var dx = (hgt(xx + 1, y) - hgt(xx - 1, y)) * k, dy = (hgt(xx, y + 1) - hgt(xx, y - 1)) * k;
+    var l = Math.sqrt(dx * dx + dy * dy + 1), jj = (y * W + xx) * 4;
+    o[jj] = (-dx / l * 0.5 + 0.5) * 255; o[jj + 1] = (dy / l * 0.5 + 0.5) * 255; o[jj + 2] = (1 / l * 0.5 + 0.5) * 255; o[jj + 3] = 255;
+  }
+  g.putImageData(out, 0, 0);
+  return c;
+}
+// 피부 셰이더: 살 속으로 빛이 번져 명암 경계가 부드럽고 붉게 넘어가고(감싸는 확산), 땀에 젖어 번들거린다(거칠기 0.42).
+// aSkin 이 1인 꼭짓점만, 그림이 있으면 그림 알파가 0.75 아래인 곳(머리카락·눈·눈썹)은 빼고
+var SKIN_LIGHT = THREE.ShaderChunk.lights_physical_pars_fragment.replace(
+  "reflectedLight.directDiffuse += ( 1.0 - clearcoatDHR ) * irradiance * BRDF_Diffuse_Lambert( material.diffuseColor );",
+  "float wNL = dot( geometry.normal, directLight.direction ), wr = 0.45 * skinK;\n" +
+  "\tvec3 wIrr = saturate( ( wNL + wr ) / ( 1.0 + wr ) ) * directLight.color * mix( vec3( 1.0 ), vec3( 1.0, 0.6, 0.48 ), wr * ( 1.0 - saturate( wNL ) ) );\n" +
+  "\t#ifndef PHYSICALLY_CORRECT_LIGHTS\n\t\twIrr *= PI;\n\t#endif\n" +
+  "\treflectedLight.directDiffuse += ( 1.0 - clearcoatDHR ) * wIrr * BRDF_Diffuse_Lambert( material.diffuseColor );");
+function skinMat(m) {
+  if (SKIN_LIGHT === THREE.ShaderChunk.lights_physical_pars_fragment) return m;      // three 가 바뀌어 고칠 줄을 못 찾으면 그대로
+  m.onBeforeCompile = function (sh) {
+    sh.vertexShader = sh.vertexShader.replace("#include <common>", "#include <common>\nattribute float aSkin;\nvarying float vSkin;")
+      .replace("#include <begin_vertex>", "#include <begin_vertex>\n\tvSkin = aSkin;");
+    sh.fragmentShader = sh.fragmentShader.replace("#include <common>", "#include <common>\nvarying float vSkin;\nfloat skinK;")
+      .replace("#include <roughnessmap_fragment>", "skinK = vSkin * step( 0.75, diffuseColor.a );\n#include <roughnessmap_fragment>\n\troughnessFactor = mix( roughnessFactor, 0.42, skinK );")
+      .replace("#include <lights_physical_pars_fragment>", SKIN_LIGHT);
+  };
+  m.customProgramCacheKey = function () { return "skin1"; };
+  return m;
 }
 
 // 사람 한 명의 마디 그림(SEG 18개, 마디마다 제 관절이 원점). 선수는 곱게, k.lo 면 멀리 서는 사람이라 다각형을 줄인다.
@@ -2103,7 +2365,7 @@ function jerseyTex(o) {
 function bodyGeos(k) {
   var lo = !!k.lo;
   function q(a, b) { return lo ? b : a; }
-  var SK = col(k.skin), HAIR = col(k.bald ? k.skin : k.hair), SB = col(k.shortsBase), STR = col(k.shortsTrim), SOCK = col(k.socks);
+  var SK = col(k.skin), SB = col(k.shortsBase), STR = col(k.shortsTrim), SOCK = col(k.socks), WH1 = new THREE.Color(1, 1, 1);
   var SHO = col(k.shoe), SHA = col(k.shoeAcc), SOLE = col(k.sole), SLV = k.sleeveR !== undefined ? col(k.sleeveR) : null;
   var PNT = k.pants !== undefined ? col(k.pants) : null, TEE = k.tee !== undefined ? col(k.tee) : null;
   var G = {};
@@ -2111,20 +2373,16 @@ function bodyGeos(k) {
   G.torso = ringsGeo([[-0.03, 0.156, 0.112], [0.08, 0.15, 0.108], [0.2, 0.164, 0.115, 0.004], [0.32, 0.188, 0.126, 0.01],
     [0.42, 0.204, 0.128, 0.006], [0.5, 0.203, 0.118, -0.004], [0.55, 0.176, 0.098, -0.01], [0.585, 0.11, 0.072, -0.006],
     [0.6, 0.068, 0.054, 0], [0.605, 0.001, 0.001, 0]], q(32, 16));
-  G.hips = vcol(ringsGeo([[-0.2, 0.19, 0.13], [-0.1, 0.19, 0.132], [0, 0.172, 0.122], [0.05, 0.162, 0.114], [0.07, 0.001, 0.001]], q(24, 12)),
-    function (x, y, z, o) { o.copy(PNT || (y > 0.035 || (Math.abs(x) > 0.17 && y < -0.02) ? STR : SB)); });
+  vcol(G.torso, function (x, y, z, o) { o.copy(WH1); });
+  // 반바지 윗단: 허리띠 경계에 고리를 겹쳐 색이 또렷이 갈린다 (옆줄은 가까이 보는 선수만)
+  G.hips = vcol(ringsGeo([[-0.2, 0.19, 0.13], [-0.1, 0.19, 0.132], [0, 0.172, 0.122], [0.031, 0.166, 0.117], [0.033, 0.1655, 0.1165],
+    [0.05, 0.162, 0.114], [0.07, 0.001, 0.001]], q(24, 12)),
+    function (x, y, z, o) { o.copy(PNT || (y > 0.032 || (!lo && Math.abs(x) > 0.17 && y < -0.02) ? STR : SB)); });
   G.neck = solid(lathe([[0.068, 0], [0.064, 0.08], [0.062, 0.13]], q(14, 8)), SK);
-  // 머리: 두개골에 짧은 머리카락을 색으로(이마 위·옆·목덜미), 머리카락 쪽은 4mm 부풀린다
-  var skull = vcol(sph(0.1, 0.9, 1.1, 1.0, 0, 0, 0, q(30, 14), q(22, 10)), function (x, y, z, o) {
-    o.copy(y > (z > 0 ? 0.012 + 0.52 * z : 0.012 + 0.5 * z) ? HAIR : SK);
-  });
-  if (!k.bald) (function (p, c) {
-    for (var i = 0; i < p.count; i++) if (Math.abs(c.getX(i) - HAIR.r) < 1e-5) p.setXYZ(i, p.getX(i) * 1.04, p.getY(i) * 1.03 + 0.002, p.getZ(i) * 1.04);
-  })(skull.attributes.position, skull.attributes.color);
-  G.head = mergeGeos([skull,
-    solid(sph(0.024, 0.45, 1, 0.75, 0.088, -0.008, -0.008, q(14, 6), q(10, 4)), SK), solid(sph(0.024, 0.45, 1, 0.75, -0.088, -0.008, -0.008, q(14, 6), q(10, 4)), SK),
-    solid(sph(0.016, 0.9, 1.1, 1.1, 0, -0.018, 0.098, q(14, 6), q(10, 4)), SK),
-    solid(sph(0.064, 1, 0.72, 0.95, 0, -0.068, 0.03, q(14, 10), q(10, 6)), SK)]);
+  // 머리: 빚은 구(얼굴 그림을 감는다) + 귀 둘(꼭짓점 색 재질로 따로)
+  G.head = vcol(headGeo(q(40, 22), q(30, 16)), function (x, y, z, o) { o.copy(WH1); });
+  G.ears = mergeGeos([solid(sph(0.024, 0.45, 1, 0.75, 0.084, -0.006, -0.01, q(14, 6), q(10, 4)), SK),
+    solid(sph(0.024, 0.45, 1, 0.75, -0.084, -0.006, -0.01, q(14, 6), q(10, 4)), SK)]);
   // 팔: 어깨(삼각근) 공 + 위팔 + 팔꿈치 공 / 아래팔 + 손목. 반소매면 위팔 윗부분이 소매
   function armGeos(sleeve) {
     var c = sleeve || SK;
@@ -2153,15 +2411,15 @@ function bodyGeos(k) {
   function legGeos() {
     return [mergeGeos([solid(lathe([[0.088, 0], [0.085, 0.1], [0.074, 0.3], [0.06, 0.44], [0.054, SHL.th]], q(14, 8)), PNT || SK),
       solid(sph(0.056, 1, 1, 1, 0, SHL.th, 0.005, q(14, 8), q(10, 6)), PNT || SK)]),
-      vcol(lathe([[0.053, 0], [0.057, 0.08], [0.06, 0.15], [0.05, 0.28], [0.038, 0.36], [0.036, 0.4], [0.037, SHL.sh]], q(14, 8)),
-        function (x, y, z, o) { o.copy(y > 0.34 ? SOCK : PNT || SK); })];
+      vcol(lathe([[0.053, 0], [0.057, 0.08], [0.06, 0.15], [0.05, 0.28], [0.0408, 0.338], [0.0405, 0.341], [0.038, 0.36], [0.036, 0.4], [0.037, SHL.sh]], q(14, 8)),
+        function (x, y, z, o) { o.copy(y > 0.3395 ? SOCK : PNT || SK); })];
   }
   var lL = legGeos(), lR = legGeos();
   G.thL = lL[0]; G.shinL = lL[1]; G.thR = lR[0]; G.shinR = lR[1];
-  function shortsLeg() {           // +z(u=0) 가 바깥쪽: 거기에 줄무늬. 긴바지면 허벅지를 감싸는 바짓가랑이
+  function shortsLeg() {           // +z(u=0) 가 바깥쪽: 거기에 줄무늬(가까이 보는 선수만). 밑단 띠는 고리를 겹쳐 또렷이. 긴바지면 바짓가랑이
     if (PNT) return solid(lathe([[0.1, 0], [0.097, 0.12], [0.09, 0.26], [0.084, 0.33]], 8), PNT);
-    return vcol(lathe([[0.106, 0], [0.109, 0.12], [0.112, 0.26], [0.113, 0.325], [0.106, 0.33]], q(18, 10)), function (x, y, z, o) {
-      o.copy(z / (Math.hypot(x, z) || 1) > 0.82 || y > 0.31 ? STR : SB);
+    return vcol(lathe([[0.11, 0], [0.114, 0.12], [0.118, 0.26], [0.1184, 0.296], [0.1186, 0.299], [0.119, 0.325], [0.112, 0.33]], q(18, 12)), function (x, y, z, o) {
+      o.copy((!lo && z / (Math.hypot(x, z) || 1) > 0.82) || y > 0.2975 ? STR : SB);
     });
   }
   G.stL = shortsLeg(); G.stR = shortsLeg();
@@ -2175,21 +2433,42 @@ function bodyGeos(k) {
     return vcol(g, function (x, y, z, o) { o.copy(y < -0.064 ? SOLE : Math.abs(x) > 0.04 && y < -0.03 && z > -0.02 && z < 0.14 ? SHA : SHO); });
   }
   G.ftL = shoeGeo(); G.ftR = shoeGeo();
-  if (k.s && k.s !== 1) SEG.forEach(function (nm) { G[nm].scale(k.s, k.s, k.s); });
+  // 피부 표시(aSkin): 얼굴 1, 유니폼 0, 나머지는 꼭짓점 색이 피부색인 곳
+  function skinFlag(g, v) {
+    var n = g.attributes.position.count, a = new Float32Array(n), c = g.attributes.color;
+    for (var i = 0; i < n; i++) a[i] = v !== undefined ? v : Math.abs(c.getX(i) - SK.r) + Math.abs(c.getY(i) - SK.g) + Math.abs(c.getZ(i) - SK.b) < 1e-4 ? 1 : 0;
+    g.setAttribute("aSkin", new THREE.BufferAttribute(a, 1));
+  }
+  SEG.concat("ears").forEach(function (nm) { skinFlag(G[nm], nm === "head" ? 1 : nm === "torso" ? 0 : undefined); });
+  // 그늘: 몸과 옷이 겹쳐 빛이 덜 드는 곳(겨드랑이·가랑이·턱 밑·바지에 넣은 옷자락). 팔·다리는 +z 가 바깥쪽
+  function shade(g, fn) {
+    var p = g.attributes.position, c = g.attributes.color;
+    for (var i = 0; i < p.count; i++) { var a = fn(p.getX(i), p.getY(i), p.getZ(i)); if (a > 0) c.setXYZ(i, c.getX(i) * (1 - a), c.getY(i) * (1 - a), c.getZ(i) * (1 - a)); }
+  }
+  shade(G.torso, function (x, y) { return 0.34 * smooth01((Math.abs(x) - 0.12) / 0.08) * smooth01((y - 0.36) / 0.08) * smooth01((0.57 - y) / 0.05) + 0.24 * smooth01((0.05 - y) / 0.08); });
+  shade(G.neck, function (x, y, z) { return 0.3 * smooth01((y - 0.03) / 0.09) * (z > 0 ? 1 : 0.5); });
+  ["uaL", "uaR"].forEach(function (nm) { shade(G[nm], function (x, y, z) { return 0.3 * smooth01(-z / 0.05) * smooth01((0.15 - y) / 0.1); }); });
+  ["thL", "thR"].forEach(function (nm) { shade(G[nm], function (x, y, z) { return 0.3 * smooth01(-z / 0.06) * smooth01((0.2 - y) / 0.15); }); });
+  ["stL", "stR"].forEach(function (nm) { shade(G[nm], function (x, y, z) { return 0.26 * smooth01(-z / 0.08) * smooth01((0.22 - y) / 0.2); }); });
+  shade(G.hips, function (x, y) { return 0.22 * smooth01((0.09 - Math.abs(x)) / 0.06) * smooth01((-0.1 - y) / 0.08); });
+  if (k.s && k.s !== 1) SEG.concat("ears").forEach(function (nm) { G[nm].scale(k.s, k.s, k.s); });
   return G;
 }
 
 function makeShooter(look) {
-  var body = new THREE.MeshStandardMaterial({ vertexColors: true, roughness: 0.6, metalness: 0 });
+  var body = skinMat(new THREE.MeshStandardMaterial({ vertexColors: true, roughness: 0.6, metalness: 0 }));
   var shirt = new THREE.MeshStandardMaterial({ map: jerseyTex({ base: "#f5f6f8", trim: "#1d4fd8", trim2: "#f2b632", num: "#1d4fd8", numOut: "#f2b632",
-    name: "RICHRORO", no: "7", chest: "HOOPS" }), roughness: 0.78, metalness: 0 });
+    name: "RICHRORO", no: "7", chest: "HOOPS" }), normalMap: canvasTex(clothNormalCanvas(512, 256), false), normalScale: new THREE.Vector2(0.55, 0.55),
+    vertexColors: true, roughness: 0.74, metalness: 0 });
+  var face = skinMat(new THREE.MeshStandardMaterial({ map: canvasTex(faceCanvas(faceLook(look.skin, 0x17110d, { beard: 0.28 }), 512, 256)), roughness: 0.55, metalness: 0 }));
   var geo = bodyGeos({ skin: look.skin, hair: 0x17110d, shortsBase: 0xf4f5f7, shortsTrim: 0x1d4fd8, socks: 0xf4f5f7,
     shoe: 0x1d4fd8, shoeAcc: 0xf4f5f7, sole: 0xf2f2f2, sleeveR: 0x14161c });
   var G = new THREE.Group(), M = {};
   SEG.forEach(function (nm) {
-    var m = new THREE.Mesh(geo[nm], nm === "torso" ? shirt : body);
+    var m = new THREE.Mesh(geo[nm], nm === "torso" ? shirt : nm === "head" ? face : body);
     m.castShadow = true; m.receiveShadow = true; M[nm] = m; G.add(m);
   });
+  M.ears = new THREE.Mesh(geo.ears, body); M.ears.castShadow = true; M.ears.receiveShadow = true; G.add(M.ears);
   var J = {}, D = {};
   SHJ.forEach(function (k) { J[k] = new V3(); });
   SHD.forEach(function (k) { D[k] = new V3(); });
@@ -2249,13 +2528,14 @@ function poseApply(S) {
   placeYZ(M.hips, J.pel, _p1, D.f);
   placeYZ(M.neck, J.neck, _p2.subVectors(J.head, J.neck), D.f);
   placeYZ(M.head, J.head, _p2, D.look);
+  if (M.ears) { M.ears.position.copy(M.head.position); M.ears.quaternion.copy(M.head.quaternion); }
   place(M.uaL, J.shL, J.elL, _pnl); place(M.faL, J.elL, J.wrL, _pnl);
   place(M.uaR, J.shR, J.elR, _prt); place(M.faR, J.elR, J.wrR, _prt);
   placeYZ(M.hL, J.wrL, D.hLy, D.hLz); placeYZ(M.hR, J.wrR, D.hRy, D.hRz);
   place(M.thL, J.hpL, J.knL, _pnl); place(M.thR, J.hpR, J.knR, _prt);
-  // 반바지 다리는 허벅지와 수직 사이로 늘어진다
-  place(M.stL, J.hpL, _p3.copy(J.hpL).addScaledVector(_up, -SHL.th).lerp(J.knL, 0.72), _pnl);
-  place(M.stR, J.hpR, _p3.copy(J.hpR).addScaledVector(_up, -SHL.th).lerp(J.knR, 0.72), _prt);
+  // 반바지 다리는 허벅지를 따라가되 조금 수직 쪽으로 늘어진다 (더 늘어뜨리면 무릎을 굽힐 때 허벅지가 바지 앞을 뚫고 나온다)
+  place(M.stL, J.hpL, _p3.copy(J.hpL).addScaledVector(_up, -SHL.th).lerp(J.knL, 0.88), _pnl);
+  place(M.stR, J.hpR, _p3.copy(J.hpR).addScaledVector(_up, -SHL.th).lerp(J.knR, 0.88), _prt);
   place(M.shinL, J.knL, J.anL, D.f); place(M.shinR, J.knR, J.anR, D.f);
   placeYZ(M.ftL, J.anL, _up, D.ftL); placeYZ(M.ftR, J.anR, _up, D.ftR);
 }
@@ -3015,11 +3295,11 @@ function mtxPlace(m, A, B, side, len) {
   return m.setPosition(A);
 }
 (function buildPeople() {
-  var W = new THREE.Color(1, 1, 1), HR = new THREE.Color(0.07, 0.06, 0.05);
+  var W = new THREE.Color(1, 1, 1);
   // 멀리서 보는 사람들이라 다각형을 아낀다 (한 사람 900개 남짓)
   var G = {
     torso: solid(ringsGeo([[-0.03, 0.17, 0.12], [0.12, 0.168, 0.12], [0.3, 0.19, 0.128], [0.44, 0.198, 0.122], [0.51, 0.16, 0.1], [0.55, 0.001, 0.001]], 12), W),
-    head: vcol(sph(0.1, 0.9, 1.08, 1, 0, 0, 0, 10, 8), function (x, y, z, o) { o.copy(y > (z > 0 ? 0.03 + 0.4 * z : 0.03 + 0.5 * z) ? HR : W); }),
+    head: headGeo(14, 10),
     ua: mergeGeos([solid(sph(0.068, 1, 1, 1, 0, 0.01, 0, 6, 4), W), solid(lathe([[0.064, 0], [0.058, 0.15], [0.05, 0.3]], 7), W)]),
     fa: mergeGeos([solid(lathe([[0.048, 0], [0.046, 0.1], [0.036, 0.26]], 7), W), solid(sph(0.046, 0.8, 1.1, 0.45, 0, 0.3, 0, 6, 4), W)]),
     th: mergeGeos([solid(lathe([[0.1, 0], [0.09, 0.22], [0.07, 0.46]], 7), W), solid(sph(0.066, 1, 1, 1, 0, 0.46, 0, 6, 4), W)]),
@@ -3039,8 +3319,11 @@ function mtxPlace(m, A, B, side, len) {
   [-5.6, -4.7, -3.8, 3.8, 4.7, 5.6].forEach(function (x) { spots.push([x, -2.75 - vr() * 0.15, -x * 0.04, 1, 0.3, "photo"]); });
   var n = spots.length;
   var mat = new THREE.MeshStandardMaterial({ vertexColors: true, roughness: 0.7, metalness: 0 });
+  // 얼굴: 흰 피부로 그린 그림에 사람마다 피부색(인스턴스 색)을 곱한다. 머리카락은 어두운 회색 × 피부색
+  var faceM = new THREE.MeshStandardMaterial({ map: canvasTex(faceCanvas({ skin: "#ffffff", hair: "#2e2a28", brow: "#403a36", lip: "#c9938a", beard: 0 }, 256, 128)),
+    roughness: 0.7, metalness: 0 });
   PPL.order.forEach(function (k) {
-    var m = new THREE.InstancedMesh(G[k], mat, n * PPL.per[k]);
+    var m = new THREE.InstancedMesh(G[k], k === "head" ? faceM : mat, n * PPL.per[k]);
     m.instanceMatrix.setUsage(THREE.DynamicDrawUsage);
     m.frustumCulled = false;
     m.receiveShadow = true;
@@ -3224,17 +3507,34 @@ var AWAY_KIT = { base: "#b3202b", trim: "#15171d", trim2: "#f5f6f8", num: "#f5f6
   shortsBase: 0xb3202b, shortsTrim: 0x15171d, socks: 0x15171d, shoe: 0x15171d, shoeAcc: 0xf4f5f7, sole: 0xf2f2f2 };
 var REF_KIT = { shortsBase: 0x16181d, shortsTrim: 0x16181d, socks: 0x16181d, shoe: 0x121316, shoeAcc: 0x121316, sole: 0x2a2c31,
   pants: 0x16181d, tee: 0xe4e6ea };
-// [이름, 편, 번호, 등 이름, 키(m), 피부, 머리카락(null 이면 민머리)]
+// [이름, 편, 번호, 등 이름, 키(m), 피부, 머리카락(null 이면 민머리), 수염 자국(0~1)]
 var CAST = [
-  ["hA", "home", "23", "PARK", 1.94, 0x5e3a24, 0x120d0a],
-  ["hB", "home", "11", "KANG", 2.08, 0xc68b5f, null],
-  ["aA", "away", "3", "JONES", 1.91, 0x8d5a3b, 0x100c09],
-  ["aB", "away", "34", "SMITH", 2.11, 0xe0ac7e, 0x4a2f1b],
-  ["ref", "ref", "24", "", 1.84, 0xf1c7a1, 0x5b5650]
+  ["hA", "home", "23", "PARK", 1.94, 0x5e3a24, 0x120d0a, 0.45],
+  ["hB", "home", "11", "KANG", 2.08, 0xc68b5f, null, 0],
+  ["aA", "away", "3", "JONES", 1.91, 0x8d5a3b, 0x100c09, 0.25],
+  ["aB", "away", "34", "SMITH", 2.11, 0xe0ac7e, 0x4a2f1b, 0],
+  ["ref", "ref", "24", "", 1.84, 0xf1c7a1, 0x5b5650, 0]
 ];
 var COURT = { mode: "off", npcs: [], by: {}, resT: -9, resOk: false, three: false, viol: -9, mat: null };
 var _c1 = new V3(), _c2 = new V3(), _c3 = new V3(), _c4 = new V3(), _c5 = new V3(), _c6 = new V3(), _c7 = new V3();
 
+// 한 사람 그림 한 장: 위 256줄 유니폼, 사이 4줄은 머리카락 색, 아래 124줄에 얼굴(이음매가 번지지 않게 두 번 이어 붙인다)
+var ATLAS_FACE = 124 / 384, ATLAS_TORSO = 128 / 384;
+function npcAtlas(jersey, face, hair) {
+  var c = mkCanvas(512, 384), g = c.getContext("2d");
+  g.drawImage(jersey, 0, 0, 512, 256);
+  g.fillStyle = hair; g.fillRect(0, 256, 512, 4);
+  g.drawImage(face, 0, 260, 256, 124); g.drawImage(face, 256, 260, 256, 124);
+  return canvasTex(c);
+}
+var NPC_NRM = null;
+function npcNormal() {
+  if (NPC_NRM) return NPC_NRM;
+  var c = mkCanvas(512, 384), g = c.getContext("2d");
+  g.fillStyle = "#8080ff"; g.fillRect(0, 0, 512, 384);
+  g.drawImage(clothNormalCanvas(512, 256), 0, 0);
+  return (NPC_NRM = canvasTex(c, false));
+}
 // 심판 셔츠: 흰 바탕에 검은 세로 줄, 검은 깃, 등번호
 function refTex(no) {
   var W = 512, H = 256, c = mkCanvas(W, H), g = c.getContext("2d");
@@ -3245,31 +3545,40 @@ function refTex(no) {
   g.fillStyle = "#e9ebee"; g.fillRect(W / 2 - 46, 58, 92, 76);
   g.font = "900 60px 'Arial Black', Impact, sans-serif"; g.textAlign = "center"; g.textBaseline = "middle";
   g.fillStyle = "#17191e"; g.fillText(no, W / 2, 98);
-  return canvasTex(c);
+  return c;
 }
 // 마디 그림을 한 덩어리로: 몸통(유니폼 그림)이 앞, 나머지(꼭짓점 색)가 뒤. 꼭짓점은 제 마디의 뼈 하나에 온전히 붙는다
 function skinGeo(G) {
-  var list = SEG.map(function (nm, bi) { var g = G[nm]; return { g: g.index ? g : indexify(g), b: bi }; });
+  // 그림을 쓰는 몸통·머리를 앞에(재질 0), 나머지(귀는 머리 뼈)를 뒤에(재질 1)
+  var order = ["torso", "head"].concat(SEG.filter(function (nm) { return nm !== "torso" && nm !== "head"; }), "ears");
+  var list = order.map(function (nm) { var g = G[nm]; return { g: g.index ? g : indexify(g), b: SEG.indexOf(nm === "ears" ? "head" : nm), nm: nm }; });
   var n = 0, ni = 0;
   list.forEach(function (e) { n += e.g.attributes.position.count; ni += e.g.index.count; });
-  var P = new Float32Array(n * 3), N = new Float32Array(n * 3), C = new Float32Array(n * 3), U = new Float32Array(n * 2);
+  var P = new Float32Array(n * 3), N = new Float32Array(n * 3), C = new Float32Array(n * 3), U = new Float32Array(n * 2), SK = new Float32Array(n);
   var SI = new Uint16Array(n * 4), SW = new Float32Array(n * 4), I = n > 65535 ? new Uint32Array(ni) : new Uint16Array(ni);
   var o = 0, oi = 0, torsoI = 0;
   list.forEach(function (e, k) {
     var a = e.g.attributes, c = a.position.count, ix = e.g.index.array, i;
     P.set(a.position.array, o * 3); N.set(a.normal.array, o * 3);
     if (a.color) C.set(a.color.array, o * 3); else C.fill(1, o * 3, (o + c) * 3);
-    if (a.uv) U.set(a.uv.array, o * 2);
+    if (a.aSkin) SK.set(a.aSkin.array, o);
+    // 그림 한 장 안의 자리: 몸통은 위 2/3, 머리는 아래 왼쪽
+    if (a.uv) for (i = 0; i < c; i++) {
+      var u = a.uv.getX(i), v = a.uv.getY(i);
+      if (e.nm === "torso") { U[(o + i) * 2] = u; U[(o + i) * 2 + 1] = ATLAS_TORSO + v * (1 - ATLAS_TORSO); }
+      else if (e.nm === "head") { U[(o + i) * 2] = u * 0.5; U[(o + i) * 2 + 1] = v * ATLAS_FACE; }
+    }
     for (i = 0; i < c; i++) { SI[(o + i) * 4] = e.b; SW[(o + i) * 4] = 1; }
     for (i = 0; i < ix.length; i++) I[oi + i] = ix[i] + o;
     o += c; oi += ix.length;
-    if (k === 0) torsoI = oi;
+    if (k === 1) torsoI = oi;
   });
   var g = new THREE.BufferGeometry();
   g.setAttribute("position", new THREE.BufferAttribute(P, 3));
   g.setAttribute("normal", new THREE.BufferAttribute(N, 3));
   g.setAttribute("color", new THREE.BufferAttribute(C, 3));
   g.setAttribute("uv", new THREE.BufferAttribute(U, 2));
+  g.setAttribute("aSkin", new THREE.BufferAttribute(SK, 1));
   g.setAttribute("skinIndex", new THREE.BufferAttribute(SI, 4));
   g.setAttribute("skinWeight", new THREE.BufferAttribute(SW, 4));
   g.setIndex(new THREE.BufferAttribute(I, 1));
@@ -3285,10 +3594,12 @@ function makeNpc(c) {
   var team = c[1], s = c[4] / 1.98, kit = team === "home" ? HOME_KIT : team === "away" ? AWAY_KIT : REF_KIT;
   var k = { lo: true, s: s, skin: c[5], hair: c[6] === null ? c[5] : c[6], bald: c[6] === null };
   ["shortsBase", "shortsTrim", "socks", "shoe", "shoeAcc", "sole", "pants", "tee"].forEach(function (nm) { if (kit[nm] !== undefined) k[nm] = kit[nm]; });
-  var tex = team === "ref" ? refTex(c[2]) : jerseyTex({ base: kit.base, trim: kit.trim, trim2: kit.trim2, num: kit.num, numOut: kit.numOut,
-    name: c[3], no: c[2], chest: kit.chest, half: true });
-  if (!COURT.mat) COURT.mat = new THREE.MeshStandardMaterial({ vertexColors: true, roughness: 0.62, metalness: 0, skinning: true });
-  var mesh = new THREE.SkinnedMesh(skinGeo(bodyGeos(k)), [new THREE.MeshStandardMaterial({ map: tex, roughness: 0.78, metalness: 0, skinning: true }), COURT.mat]);
+  var fl = faceLook(c[5], c[6], { beard: c[7], blush: c[5] === 0xe0ac7e || c[5] === 0xf1c7a1 ? 0.1 : 0 });
+  var tex = npcAtlas(team === "ref" ? refTex(c[2]) : jerseyTex({ base: kit.base, trim: kit.trim, trim2: kit.trim2, num: kit.num, numOut: kit.numOut,
+    name: c[3], no: c[2], chest: kit.chest, half: true, canvas: true }), faceCanvas(fl, 256, 128), fl.hair || fl.skin);
+  if (!COURT.mat) COURT.mat = skinMat(new THREE.MeshStandardMaterial({ vertexColors: true, roughness: 0.62, metalness: 0, skinning: true }));
+  var mesh = new THREE.SkinnedMesh(skinGeo(bodyGeos(k)), [skinMat(new THREE.MeshStandardMaterial({ map: tex, normalMap: npcNormal(),
+    normalScale: new THREE.Vector2(0.5, 0.5), vertexColors: true, roughness: 0.74, metalness: 0, skinning: true })), COURT.mat]);
   var M = {}, bones = SEG.map(function (nm) { var b = new THREE.Bone(); mesh.add(b); M[nm] = b; return b; });
   mesh.bind(new THREE.Skeleton(bones, bones.map(function () { return new THREE.Matrix4(); })), new THREE.Matrix4());
   mesh.frustumCulled = false; mesh.castShadow = true; mesh.receiveShadow = true; mesh.visible = false;
@@ -3863,6 +4174,49 @@ function courtCollide(b, h) {
   // 슈터 몸에도
   var sx = b.p.x - sh.root.x, sz = b.p.z - sh.root.z;
   if (sx * sx + sz * sz < 1.6 && b.p.y < 2.9) bodyHit(b, SHOOTER.J, 1, h);
+}
+
+// ── 발밑 그늘: 선수와 코트 위 사람 발밑에 부드러운 둥근 그늘 (그림자 지도는 넓고 흐려서 발이 바닥에 닿은 곳이 뜬다) ──
+// 사람마다 몸 아래 넓은 그늘 하나 + 발 둘. 뛰면 커지고 옅어진다. 인스턴스 색의 빨강 = 진하기
+var CONTACT = (function () {
+  var c = mkCanvas(64, 64), g = c.getContext("2d"), gr = g.createRadialGradient(32, 32, 0, 32, 32, 32);
+  gr.addColorStop(0, "rgba(255,255,255,1)"); gr.addColorStop(0.4, "rgba(255,255,255,.6)"); gr.addColorStop(1, "rgba(255,255,255,0)");
+  g.fillStyle = gr; g.fillRect(0, 0, 64, 64);
+  var mat = new THREE.MeshBasicMaterial({ map: canvasTex(c, false), transparent: true, depthWrite: false, fog: false });
+  mat.onBeforeCompile = function (sh) {
+    sh.fragmentShader = sh.fragmentShader.replace("#include <color_fragment>", "#include <color_fragment>\n\tdiffuseColor.a *= vColor.r;\n\tdiffuseColor.rgb = vec3( 0.0 );");
+  };
+  var N = 3 * (1 + COURT.npcs.length), mesh = new THREE.InstancedMesh(new THREE.PlaneGeometry(1, 1).rotateX(-Math.PI / 2), mat, N);
+  mesh.instanceMatrix.setUsage(THREE.DynamicDrawUsage);
+  for (var i = 0; i < N; i++) mesh.setColorAt(i, new THREE.Color(0, 0, 0));
+  mesh.frustumCulled = false;
+  mesh.position.y = 0.004;
+  scene.add(mesh);
+  return { mesh: mesh, n: N, dm: new THREE.Object3D(), col: new THREE.Color() };
+})();
+function contactPut(i, x, z, sx, sz, rot, a) {
+  var C = CONTACT, dm = C.dm;
+  dm.position.set(x, 0, z); dm.rotation.set(0, rot, 0); dm.scale.set(sx, 1, sz); dm.updateMatrix();
+  C.mesh.setMatrixAt(i, dm.matrix);
+  C.mesh.setColorAt(i, C.col.setRGB(clamp(a, 0, 1), 0, 0));
+}
+// 몸(골반)·발목 자리에서: 몸 그늘은 발 사이에 길쭉하게, 발 그늘은 발이 바닥에서 뜨면 옅어진다
+function contactBody(i, J, f, s, vis) {
+  if (!vis) { for (var k = 0; k < 3; k++) contactPut(i + k, 0, 0, 0.001, 0.001, 0, 0); return; }
+  var lift = Math.max(0, Math.min(J.anL.y, J.anR.y) - 0.09 * s), grow = 1 + lift * 1.6, rot = Math.atan2(f.x, f.z);
+  var mx = (J.anL.x + J.anR.x) / 2, mz = (J.anL.z + J.anR.z) / 2, spread = Math.hypot(J.anL.x - J.anR.x, J.anL.z - J.anR.z);
+  contactPut(i, mx * 0.6 + J.pel.x * 0.4, mz * 0.6 + J.pel.z * 0.4, (0.62 + spread * 0.8) * s * grow, 0.62 * s * grow, Math.atan2(J.anR.x - J.anL.x, J.anR.z - J.anL.z) + Math.PI / 2, 0.42 / (1 + lift * 5));
+  [J.anL, J.anR].forEach(function (a, k) {
+    var up = Math.max(0, a.y - 0.09 * s);
+    contactPut(i + 1 + k, a.x + f.x * 0.06 * s, a.z + f.z * 0.06 * s, 0.24 * s * (1 + up * 2), 0.4 * s * (1 + up * 2), rot, 0.55 * Math.max(0, 1 - up / 0.18));
+  });
+}
+function contactStep() {
+  var vis = SHOOTER.group.visible;
+  contactBody(0, SHOOTER.J, sh.f, 1, vis);
+  for (var i = 0; i < COURT.npcs.length; i++) { var n = COURT.npcs[i]; contactBody(3 + i * 3, n.J, n.f, n.s, n.mesh.visible); }
+  CONTACT.mesh.instanceMatrix.needsUpdate = true;
+  CONTACT.mesh.instanceColor.needsUpdate = true;
 }
 
 // ── 매 프레임 ──
@@ -5381,6 +5735,7 @@ function tick(dt) {
 }
 function render() {
   netDraw();
+  contactStep();
   reflRender();
   var showTrack = mode === "play" && !!ST && !RP.on;
   if (trackEl.hidden === showTrack) trackEl.hidden = !showTrack;
@@ -5427,6 +5782,27 @@ function envCapture() {
   } catch (e) { scene.environment = null; }
 }
 
+// 깊이 흐림 준비: 불투명한 재질은 알파에 거리를 적고(DEPTH_A), 반투명한 재질은 색만 섞고 알파(= 뒤에 있는 것의 거리)는 그대로 둔다
+function keepAlpha(m) {
+  var add = m.blending === THREE.AdditiveBlending;
+  m.blending = THREE.CustomBlending; m.blendEquation = THREE.AddEquation;
+  m.blendSrc = THREE.SrcAlphaFactor; m.blendDst = add ? THREE.OneFactor : THREE.OneMinusSrcAlphaFactor;
+  m.blendSrcAlpha = THREE.ZeroFactor; m.blendDstAlpha = THREE.OneFactor;
+}
+function depthAlpha() {
+  var seen = [];
+  function fix(m) {
+    if (!m || seen.indexOf(m) >= 0) return;
+    seen.push(m);
+    if (m.blending === THREE.CustomBlending) return;                 // 조준 점·그물 깊이처럼 따로 정한 것
+    if (m.transparent) keepAlpha(m);
+    else if (!m.isShaderMaterial) { var d = {}, k; for (k in m.defines) d[k] = m.defines[k]; d.DEPTH_A = ""; m.defines = d; }
+    m.needsUpdate = true;
+  }
+  scene.traverse(function (o) { var m = o.material; if (m) (Array.isArray(m) ? m : [m]).forEach(fix); });
+  Object.keys(MAT).forEach(function (k) { fix(MAT[k]); });
+}
+
 var last = 0, raf = 0;
 function frame(now) {
   raf = requestAnimationFrame(frame);
@@ -5440,6 +5816,7 @@ function frame(now) {
 netBuild();
 netMeshBuild();
 crowdFace(0, 8);
+depthAlpha();
 envCapture();
 shPlace({ x: 0, z: FT_Z });
 sh.demo = true;
