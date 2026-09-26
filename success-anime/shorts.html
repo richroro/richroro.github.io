@@ -152,6 +152,134 @@
   .play span{width:20cqw;height:20cqw;border-radius:50%;background:var(--accent);display:grid;place-items:center;box-shadow:0 2cqw 6cqw rgba(0,0,0,.5)}
   .play span::after{content:"";border-left:6cqw solid #fff;border-top:3.6cqw solid transparent;border-bottom:3.6cqw solid transparent;margin-left:1.4cqw}
 
+  /* ========= formats ========= */
+  /* cold open: cinematic bars; flashback: faded film */
+  .bars i{position:absolute;left:0;right:0;height:0;background:#000;z-index:8;transition:height .45s cubic-bezier(.2,.8,.2,1)}
+  .bars i:first-child{top:0}.bars i:last-child{bottom:0}
+  .short.letterbox .bars i{height:9cqh}
+  .short.letterbox .banner{opacity:0}
+  .banner{transition:opacity .35s}
+  .cam{transition:transform .5s cubic-bezier(.2,.8,.2,1),filter .6s}
+  .cam.past{filter:sepia(.8) saturate(.65) contrast(.92) brightness(.96)}
+  .short.past .shade{background:linear-gradient(180deg,rgba(40,24,8,.92) 0,rgba(40,24,8,.72) 15%,rgba(40,24,8,.3) 24%,transparent 32%,transparent 55%,rgba(40,24,8,.66) 72%,rgba(20,12,4,.95) 100%),radial-gradient(ellipse at center,transparent 55%,rgba(30,18,6,.6))}
+  .short.past .year{border-left-color:#d9a441;background:rgba(40,24,8,.6)}
+  .rewind{background:rgba(6,6,10,.62);backdrop-filter:blur(2px)}
+  .rewind::before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(0deg,rgba(255,255,255,.07) 0 .4cqh,transparent .4cqh 1.1cqh);animation:scan .25s linear infinite}
+  @keyframes scan{to{background-position:0 1.1cqh}}
+  .rewind .rw{font-family:var(--title);font-size:16cqw;line-height:1;letter-spacing:-1cqw;color:#fff;animation:rwb .5s steps(2) infinite}
+  @keyframes rwb{50%{opacity:.35}}
+  .rewind .ry{font-family:var(--title);font-size:22cqw;line-height:1.05;margin-top:3cqw;font-variant-numeric:tabular-nums;color:var(--yellow);text-shadow:.8cqw 0 0 rgba(255,0,80,.55),-.8cqw 0 0 rgba(0,200,255,.55)}
+  .rewind .rl{font-size:4.6cqw;font-weight:900;letter-spacing:.8cqw;margin-top:2cqw;opacity:.85}
+
+  /* quiz */
+  .chr.sil svg{filter:brightness(0) drop-shadow(0 0 1.4cqw rgba(255,255,255,.7))}
+  .hint{position:absolute;left:0;right:0;top:36cqh;z-index:11;text-align:center;pointer-events:none;opacity:0;transform:scale(1.8);transition:opacity .25s,transform .35s cubic-bezier(.2,1.4,.3,1)}
+  .hint.on{opacity:1;transform:none}
+  .hint span{display:inline-block;font-family:var(--title);font-size:13cqw;background:var(--yellow);color:#111;padding:1cqw 6cqw;border-radius:3cqw;transform:rotate(-4deg);box-shadow:0 1.4cqw 0 rgba(0,0,0,.4)}
+  .quiz{background:radial-gradient(circle at 50% 58%,#2b2450,#0b0916 72%)}
+  .quiz .q1{font-family:var(--title);font-size:10.5cqw;line-height:1.15;word-break:keep-all}
+  .quiz .q1 em{font-style:normal;color:var(--yellow)}
+  .quiz .q2{font-size:4.6cqw;font-weight:700;opacity:.85;margin-top:2cqw}
+  .quiz .fig{width:50cqw;aspect-ratio:240/360;margin-top:3cqw;position:relative}
+  .quiz .fig svg{width:100%;height:100%}
+  .quiz .fig.sil svg{filter:brightness(0) drop-shadow(0 0 2cqw rgba(255,255,255,.8))}
+  .quiz .fig b{position:absolute;left:50%;top:14%;transform:translateX(-50%);font-family:var(--title);font-size:24cqw;color:var(--yellow);text-shadow:0 1cqw 0 rgba(0,0,0,.5)}
+  .quiz .cnt{font-family:var(--title);font-size:48cqw;line-height:1;color:var(--yellow);animation:cnt .8s ease-out infinite}
+  @keyframes cnt{0%{transform:scale(1.6);opacity:0}25%{transform:scale(1);opacity:1}100%{transform:scale(.9);opacity:.2}}
+  .quiz .name{font-family:var(--title);font-size:17cqw;line-height:1.05;margin-top:1cqw;animation:ipop .7s cubic-bezier(.2,1.4,.3,1)}
+  .quiz.reveal{background:radial-gradient(circle at 50% 50%,var(--accent),#0b0916 75%)}
+
+  /* numbers */
+  .stat{position:absolute;left:0;right:0;top:25cqh;bottom:30cqh;z-index:11;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:0 6cqw;
+    opacity:0;transition:opacity .3s;pointer-events:none;background:radial-gradient(ellipse at center,rgba(8,6,18,.82) 30%,rgba(8,6,18,0) 72%)}
+  .stat.on{opacity:1}
+  .stat .pre{font-size:5.6cqw;font-weight:900;color:#fff;opacity:.9}
+  .stat .num{font-family:var(--title);font-size:27cqw;line-height:1;color:#fff;font-variant-numeric:tabular-nums;text-shadow:0 1.4cqw 0 var(--accent),0 3cqw 6cqw rgba(0,0,0,.6);white-space:nowrap}
+  .stat.small .num{font-size:20cqw}
+  .stat .num em{font-style:normal;font-size:.36em;margin-left:1cqw;color:var(--yellow);text-shadow:none}
+  .stat .lbl{margin-top:3cqw;font-size:5.6cqw;font-weight:900;line-height:1.35;word-break:keep-all;background:var(--accent);color:#fff;padding:1cqw 3.4cqw;border-radius:2cqw}
+
+  /* manga */
+  .manga{position:absolute;inset:0;z-index:9;display:none;background:#f3efe4 radial-gradient(rgba(0,0,0,.16) .28cqw,transparent .34cqw) 0 0/1.7cqw 1.7cqw}
+  .short.manga-on .manga{display:block}
+  .short.manga-on .banner{background:#111;padding-bottom:2.6cqh}
+  .short.manga-on .banner .year{display:none}
+  .short.manga-on .foot{color:#111}
+  .short.manga-on .foot .bar{background:rgba(0,0,0,.15)}
+  .mpage{position:absolute;left:4cqw;right:4cqw;top:25.5cqh;bottom:9cqh;display:grid;gap:2.2cqw;animation:pagein .45s cubic-bezier(.2,.8,.2,1)}
+  @keyframes pagein{from{transform:translateX(30%) rotate(3deg);opacity:0}}
+  .mpage.n1{grid-template-areas:"a";grid-template-rows:1fr}
+  .mpage.n2{grid-template-areas:"a" "b";grid-template-rows:1fr 1fr}
+  .mpage.n3.v0{grid-template-areas:"a a" "b c";grid-template-rows:1fr 1.15fr;grid-template-columns:1fr 1fr}
+  .mpage.n3.v1{grid-template-areas:"a b" "c c";grid-template-rows:1.15fr 1fr;grid-template-columns:1fr 1fr}
+  .mpage.n3.v2{grid-template-areas:"a" "b" "c";grid-template-rows:1fr 1fr 1fr}
+  .panel{position:relative;overflow:hidden;border:.9cqw solid #111;background:#fff;opacity:0;transform:scale(.92)}
+  .panel.in{opacity:1;transform:none;transition:opacity .25s,transform .35s cubic-bezier(.2,1.3,.4,1)}
+  .panel:nth-child(1){grid-area:a}.panel:nth-child(2){grid-area:b}.panel:nth-child(3){grid-area:c}
+  .panel .pbg{position:absolute;inset:0}
+  .panel .pbg svg{width:100%;height:100%;display:block}
+  .panel .chr{bottom:-42%;height:128%;left:50%}
+  .panel.wide .chr{left:30%;height:150%;bottom:-62%}
+  .panel .bub{position:absolute;right:4%;top:6%;max-width:64%;background:#fff;color:#111;border:.6cqw solid #111;border-radius:48% 52% 46% 54%/55% 50% 50% 45%;
+    padding:2.4cqw 3.2cqw;font-family:"Gowun Dodum",var(--body);font-weight:700;font-size:4.2cqw;line-height:1.35;word-break:keep-all;text-align:center}
+  .panel .bub::after{content:"";position:absolute;left:18%;bottom:-2.6cqw;border:1.6cqw solid transparent;border-top-color:#111;border-bottom:0}
+  .panel.wide .bub{max-width:52%}
+  .panel.narrow .bub{left:5%;right:5%;max-width:none;font-size:3.4cqw;padding:1.8cqw 2.4cqw;border-radius:40%/30%}
+  .panel.narrow .nbox{font-size:3.2cqw;max-width:100%}
+  .panel.narrow .chr{bottom:-52%;height:118%}
+  .panel .nbox{position:absolute;left:0;top:0;max-width:86%;background:#fffbe6;color:#111;border-right:.6cqw solid #111;border-bottom:.6cqw solid #111;
+    padding:1.6cqw 2.4cqw;font-size:3.7cqw;font-weight:700;line-height:1.4;word-break:keep-all}
+  .panel .sfx{position:absolute;left:4%;right:4%;bottom:8%;text-align:center;font-family:var(--title);font-size:9cqw;line-height:1.05;color:var(--accent);
+    -webkit-text-stroke:.5cqw #111;paint-order:stroke fill;transform:rotate(-7deg);word-break:keep-all}
+  .panel .speed2{position:absolute;inset:0;opacity:.55;mix-blend-mode:multiply}
+  .panel .speed2 svg{width:100%;height:100%}
+  .panel .speed2 path{fill:#111}
+  .mcover{position:absolute;left:4cqw;right:4cqw;top:25.5cqh;bottom:9cqh;border:.9cqw solid #111;background:var(--accent);overflow:hidden;animation:pagein .45s}
+  .mcover .chr{bottom:-30%;height:120%;left:56%}
+  .mcover .vt{position:absolute;left:4cqw;top:4cqw;writing-mode:vertical-rl;font-family:var(--title);font-size:12cqw;line-height:1.05;color:#fff;-webkit-text-stroke:.6cqw #111;paint-order:stroke fill;max-height:90%}
+  .mcover .vol{position:absolute;right:3cqw;top:3cqw;background:#111;color:#fff;font-weight:900;font-size:3.8cqw;padding:1cqw 2.4cqw}
+
+  /* VS */
+  .card.vs,.card.myth{z-index:9}
+  .vs{justify-content:flex-start;padding:24cqh 0 8cqh;background:#0b0916}
+  .vs .half{position:relative;width:100%;flex:1;display:flex;align-items:center;gap:3cqw;padding:0 6cqw;overflow:hidden;transition:opacity .4s,transform .45s cubic-bezier(.2,1.2,.4,1),filter .4s}
+  .vs .vsA{background:linear-gradient(135deg,#3b3f4a,#23252d);filter:saturate(.4)}
+  .vs .vsB{background:linear-gradient(135deg,var(--accent),#1a1030);flex-direction:row-reverse;text-align:right}
+  .vs.s0 .vsB{opacity:0;transform:translateY(20%)}
+  .vs.s1 .vsA{filter:saturate(0) brightness(.6)}
+  .vs .fig{flex:none;height:118%;aspect-ratio:240/360;align-self:flex-end;margin-bottom:-22%}
+  .vs .fig svg{width:100%;height:100%}
+  .vs .tx{flex:1;text-align:inherit}
+  .vs .lab{font-family:var(--title);font-size:8cqw;line-height:1.1}
+  .vs .vsA .lab{color:#c9ccd6}
+  .vs p{font-size:4.8cqw;font-weight:900;line-height:1.4;margin-top:1.4cqw;word-break:keep-all}
+  .vs .mark{position:absolute;left:50%;top:57cqh;transform:translate(-50%,-50%) rotate(-8deg);z-index:2;font-family:var(--title);font-size:15cqw;color:var(--yellow);
+    -webkit-text-stroke:.7cqw #111;paint-order:stroke fill;transition:transform .4s cubic-bezier(.2,1.6,.3,1)}
+  .vs.s0 .mark{transform:translate(-50%,-50%) rotate(-8deg) scale(0)}
+
+  /* myth */
+  .myth{background:radial-gradient(circle at 50% 50%,#2a1320,#0b0916 72%);gap:3cqw;padding-top:22cqh}
+  .myth .mk{font-family:var(--title);font-size:5cqw;letter-spacing:.8cqw;color:#ff8787}
+  .myth .x{font-family:var(--title);font-size:26cqw;line-height:1;color:#ff4d4d;text-shadow:0 1.2cqw 0 rgba(0,0,0,.4)}
+  .myth .cm{position:relative;font-size:6.2cqw;font-weight:900;line-height:1.4;word-break:keep-all;color:#f1d4d4}
+  .myth .cm::after{content:"";position:absolute;left:-2%;top:52%;height:1.2cqw;width:0;background:#ff4d4d;transform:rotate(-3deg);transition:width .5s cubic-bezier(.6,0,.2,1)}
+  .myth.s1 .cm{opacity:.55}
+  .myth.s1 .cm::after{width:104%}
+  .myth.s1 .x{font-size:14cqw}
+  .myth .tr{opacity:0;transform:translateY(8cqw);transition:opacity .35s .35s,transform .5s .35s cubic-bezier(.2,1.3,.4,1);display:flex;flex-direction:column;align-items:center;gap:2cqw}
+  .myth.s1 .tr{opacity:1;transform:none}
+  .myth .o{font-family:var(--title);font-size:7cqw;color:#69db7c}
+  .myth .tt{font-family:var(--title);font-size:10cqw;line-height:1.15;word-break:keep-all}
+  .myth .td{font-size:4.8cqw;font-weight:700;line-height:1.5;color:#e6e0ff;word-break:keep-all}
+
+  /* stamp */
+  .stamp{position:absolute;left:50%;top:44cqh;z-index:12;width:66cqw;aspect-ratio:1;border:1.6cqw solid #e03131;border-radius:50%;display:grid;place-items:center;text-align:center;
+    color:#e03131;background:rgba(255,245,240,.9);transform:translate(-50%,-50%) rotate(-14deg) scale(0);opacity:0;pointer-events:none;box-shadow:0 0 0 1.2cqw rgba(255,245,240,.9) inset}
+  .stamp.on{animation:stamp .45s cubic-bezier(.3,1.6,.5,1) forwards}
+  @keyframes stamp{0%{transform:translate(-50%,-50%) rotate(-14deg) scale(2.6);opacity:0}100%{transform:translate(-50%,-50%) rotate(-14deg) scale(1);opacity:1}}
+  .stamp div{font-family:var(--title);font-size:6cqw;line-height:1.15;padding:0 6cqw;word-break:keep-all}
+  .stamp b{display:block;font-size:13cqw;font-weight:400}
+
   /* side panel */
   .side h1{font-family:var(--title);font-weight:400;font-size:clamp(26px,4vw,36px);line-height:1.2}
   .side .lead{color:var(--sub);font-size:14.5px;margin:6px 0 16px;max-width:560px}
@@ -195,6 +323,15 @@
       <div class="big" id="big"><span></span></div>
       <div class="cap" id="cap"><div class="who" id="who"><b></b></div><div class="line" id="line"></div></div>
       <div class="foot"><span>성공 애니</span><div class="bar"><i id="bar"></i></div><span id="clock">0:00</span></div>
+      <div class="bars"><i></i><i></i></div>
+      <div class="manga" id="manga"></div>
+      <div class="hint" id="hint"><span></span></div>
+      <div class="stat" id="stat"></div>
+      <div class="stamp" id="stamp"></div>
+      <div class="card rewind" id="rewind"></div>
+      <div class="card quiz" id="quiz"></div>
+      <div class="card vs" id="vs"></div>
+      <div class="card myth" id="myth"></div>
       <div class="card intro" id="intro"></div>
       <div class="card lesson" id="lessonCard"></div>
       <div class="card outro" id="outro"></div>
@@ -262,44 +399,128 @@ function pickBeats(scenes, budget) {
   for (const c of [...cand].sort((a, b) => b.v - a.v)) if (!pick.has(c) && used + c.dur <= budget) { pick.add(c); used += c.dur; }
   return cand.filter(c => pick.has(c)).flatMap(c => c.shots);
 }
-function build(ep, k) {
-  const shots = [], no = EPS.indexOf(ep) + 1;
-  if (k === 'story') {
-    shots.push({ kind: 'intro', dur: 2.6, ep, no });
-    shots.push(...pickBeats(ep.scenes, 40));
-    shots.push({ kind: 'recap', dur: 5.2, ep });
-    shots.push({ kind: 'outro', dur: 2.8, ep, next: '레슨 쇼츠에서 공식 하나씩 자세히' });
-  } else {
-    const n = +k - 1, L = ep.lessons[n], sc = ep.scenes[L[2] || 0];
-    shots.push({ kind: 'intro', dur: 2.8, ep, no, lesson: n });
-    shots.push(...pickBeats([sc], 30));
-    shots.push({ kind: 'lesson', dur: 5.4, ep, n });
-    const nx = ep.lessons[n + 1];
-    shots.push({ kind: 'outro', dur: 2.8, ep, next: nx ? `다음 공식 #${n + 2} ${nx[0]}` : '전체 이야기는 사이트에서' });
+/* formats: every short is a different kind of video, not the same template with different words */
+const FORMATS = { chronicle: '연대기', cold: '결말부터', quiz: '누구일까?', numbers: '숫자로 보기', manga: '만화 컷' };
+const LESSON_FORMATS = { scene: '장면', vs: 'VS', myth: '착각 깨기' };
+const storyFormat = ep => (FORMATS[ep.format] ? ep.format : 'chronicle');
+const lessonFormat = (ep, n) => ['scene', 'vs', 'myth'][(n + Math.max(0, EPS.indexOf(ep))) % 3];
+const josa = (w, a, b) => { const c = w.charCodeAt(w.length - 1) - 0xAC00; return c >= 0 && c < 11172 && c % 28 ? a : b; };
+const firstYear = s => { const m = String(s || '').match(/(1[89]\d\d|20\d\d)/); return m ? +m[1] : null; };
+const heroIds = ep => Object.keys(ep.cast).filter(id => ep.cast[id].name === ep.person);
+const hero = ep => ep.cast[heroIds(ep).slice(-1)[0]] || Object.values(ep.cast)[0];
+// quiz: hide the answer everywhere it could leak (names, companies, product names)
+function masker(ep) {
+  const words = [ep.person, ...ep.company.replace(/창업자/g, '').split(/[\s·()]+/), ...(ep.quizHide || [])].filter(w => w && [...w].length >= 2)
+    .sort((a, b) => b.length - a.length);
+  return t => words.reduce((acc, w) => acc.split(w).join('○'.repeat(Math.min(3, [...w].length))), String(t || ''));
+}
+const outroShot = (ep, next) => ({ kind: 'outro', dur: 2.8, ep, next });
+const recapShot = ep => ({ kind: 'recap', dur: 5.2, ep });
+
+function buildChronicle(ep, no) {
+  return [{ kind: 'intro', dur: 2.6, ep, no }, ...pickBeats(ep.scenes, 40), recapShot(ep), outroShot(ep, '레슨 쇼츠에서 공식 하나씩 자세히')];
+}
+// cold open: the climax first, rewind, the story in faded film, back to the present
+function buildCold(ep) {
+  const S = ep.scenes; let top = null;
+  if (ep.climax) top = { si: ep.climax[0], b: S[ep.climax[0]].beats[ep.climax[1]] };
+  else S.forEach((sc, si) => sc.beats.forEach(b => { if (si < S.length / 2) return;
+    const v = (b.quote ? 20 : 0) + (b.big ? 6 : 0) + (b.who ? 2 : 0) + si / S.length * 4; if (!top || v > top.v) top = { v, si, b }; }));
+  const csc = S[top.si], y0 = firstYear(S[0].year) || firstYear(ep.timeline?.[0]?.[0]), y1 = firstYear(csc.year) || firstYear(ep.timeline?.slice(-1)[0]?.[0]);
+  return [
+    ...beatShots(top.b, csc).slice(0, 2).map(s => ({ ...s, letterbox: true })),
+    { kind: 'rewind', dur: 2.3, ep, from: y1, to: y0, sc: S[0] },
+    ...pickBeats(S.slice(0, top.si), 27).map(s => ({ ...s, past: true })),
+    { kind: 'back', dur: 1.7, ep, from: y0, to: y1, sc: csc },
+    ...pickBeats(S.slice(top.si), 11).filter(s => s.b !== top.b),
+    recapShot(ep), outroShot(ep, '레슨 쇼츠에서 공식 하나씩 자세히')
+  ];
+}
+// quiz: silhouette + three hints + countdown + reveal
+function buildQuiz(ep) {
+  const S = ep.scenes, m = masker(ep), shots = [{ kind: 'quizIntro', dur: 3.2, ep }];
+  [...new Set([0, Math.floor((S.length - 1) / 2), S.length - 2])].forEach((si, h) => {
+    shots.push({ kind: 'hint', dur: 1.5, ep, n: h + 1, sc: S[si] });
+    shots.push(...pickBeats([S[si]], 9).map(s => ({ ...s, quiz: true, text: m(s.text), bigText: s.b.big && m(s.b.big), year: m(S[si].year) })));
+  });
+  return [...shots, { kind: 'count', dur: 2.6, ep }, { kind: 'reveal', dur: 3.4, ep }, recapShot(ep), outroShot(ep, '레슨 쇼츠에서 공식 하나씩 자세히')];
+}
+// numbers: rolling counters from the timeline between the key moments
+function buildNumbers(ep, no) {
+  const S = ep.scenes, sy = S.map(sc => firstYear(sc.year)), used = new Set(), out = [{ kind: 'intro', dur: 2.4, ep, no }];
+  const tl = (ep.timeline || []).map(([y, t]) => ({ y: firstYear(y), t })).filter(x => x.y);
+  let prev = null, last = null;
+  for (const s of pickBeats(S, 27)) {
+    if (s.sc !== last) {
+      last = s.sc; const si = S.indexOf(s.sc), lo = sy[si], hi = sy.slice(si + 1).find(Boolean) || 9999;
+      const e = lo && tl.find(x => !used.has(x) && x.y >= lo && x.y < hi);
+      if (e) { used.add(e); out.push({ kind: 'stat', dur: 2.5, ep, sc: s.sc, num: e.y, from: prev || e.y - 15, unit: '년', label: e.t, year: true }); prev = e.y; }
+    }
+    // a big line with a number in it becomes a counter too
+    const n = s.first && s.b.big && parseNum(s.b.big);
+    out.push(n ? { ...s, statBig: n } : s);
   }
+  return [...out, recapShot(ep), outroShot(ep, '레슨 쇼츠에서 공식 하나씩 자세히')];
+}
+function parseNum(t) {
+  const m = String(t).match(/^(.*?)(\d[\d,]*(?:\.\d+)?)(.*)$/); if (!m) return null;
+  const num = +m[2].replace(/,/g, ''), year = num > 1800 && num < 2100 && !/,/.test(m[2]);
+  return { pre: m[1].replace(/[·\s]+$/, ''), num, unit: m[3].split('·')[0].trim(), label: year ? m[3].replace(/^[\s·]+/, '') : '', year, comma: /,/.test(m[2]) };
+}
+// manga: panels fill a page one by one; speech in bubbles
+function buildManga(ep) {
+  const beats = pickBeats(ep.scenes, 38).filter(s => s.text || s.b.big), pages = []; let pg = [];
+  for (const s of beats) { if (pg.length === 3 || (pg.length >= 2 && pg[pg.length - 1].sc !== s.sc)) { pages.push(pg); pg = []; } pg.push(s); }
+  if (pg.length) pages.push(pg);
+  pages.forEach((p, pi) => p.forEach((s, i) => Object.assign(s, { kind: 'panel', page: pi, idx: i, n: p.length, dur: s.dur + (i === 0 ? .3 : 0) })));
+  return [{ kind: 'cover', dur: 2.8, ep }, ...beats, recapShot(ep), outroShot(ep, '레슨 쇼츠에서 공식 하나씩 자세히')];
+}
+function buildLesson(ep, n, no) {
+  const L = ep.lessons[n], sc = ep.scenes[L[2] || 0], nx = ep.lessons[n + 1], f = lessonFormat(ep, n);
+  const next = outroShot(ep, nx ? `다음 공식 #${n + 2} ${nx[0]}` : '전체 이야기는 사이트에서');
+  if (f === 'vs') return [{ kind: 'vs', step: 0, dur: 3.3, ep, n }, { kind: 'vs', step: 1, dur: 4.4, ep, n }, ...pickBeats([sc], 15), next];
+  if (f === 'myth') return [{ kind: 'myth', step: 0, dur: 3.2, ep, n }, { kind: 'myth', step: 1, dur: 4.6, ep, n }, ...pickBeats([sc], 15), { kind: 'stamp', dur: 2.4, ep, n, sc }, next];
+  return [{ kind: 'intro', dur: 2.8, ep, no, lesson: n }, ...pickBeats([sc], 30), { kind: 'lesson', dur: 5.4, ep, n }, next];
+}
+function build(ep, k) {
+  const no = EPS.indexOf(ep) + 1;
+  const shots = k !== 'story' ? buildLesson(ep, +k - 1, no)
+    : { cold: buildCold, quiz: buildQuiz, numbers: buildNumbers, manga: buildManga }[storyFormat(ep)]?.(ep, no) || buildChronicle(ep, no);
   shots.forEach(s => { s.say = line(s); });
   // exported shorts: stretch each shot to fit its recorded voice line
   const vd = window.__voiceDur;
-  if (vd) shots.forEach((s, i) => { if (vd[i]) s.dur = Math.max(s.dur, vd[i] + (s.kind === 'beat' ? .45 : .7)); });
+  if (vd) shots.forEach((s, i) => { if (vd[i]) s.dur = Math.max(s.dur, vd[i] + (s.kind === 'beat' || s.kind === 'panel' ? .45 : .7)); });
   let t = 0; shots.forEach(s => { s.t = t; t += s.dur; });
-  return { shots, dur: t };
+  return { shots, dur: t, format: k === 'story' ? storyFormat(ep) : lessonFormat(ep, +k - 1) };
 }
 // what each shot says out loud, and in whose voice
 function line(s) {
-  const ep = s.ep;
+  const ep = s.ep, L = ep && s.n != null && ep.lessons[s.n], p = ep && ep.person;
   switch (s.kind) {
     case 'intro': return s.lesson == null ? { text: ep.hook || ep.title } : { text: `부자 공식 ${s.lesson + 1}번. ${ep.lessons[s.lesson][0]}.` };
-    case 'beat': return s.text ? { text: s.text, who: s.b.who } : s.first && s.b.big ? { text: s.b.big } : null;
-    case 'recap': return { text: `${ep.person}의 부자 공식. ` + ep.lessons.map((l, k) => `${['하나', '둘', '셋', '넷', '다섯'][k]}, ${l[0]}.`).join(' ') };
-    case 'lesson': return { text: `${ep.lessons[s.n][0]}. ${ep.lessons[s.n][1]}` };
+    case 'beat': case 'panel': return s.text ? { text: s.text, who: s.b.who } : s.first && s.b.big ? { text: s.bigText || s.b.big } : null;
+    case 'recap': return { text: `${p}의 부자 공식. ` + ep.lessons.map((l, k) => `${['하나', '둘', '셋', '넷', '다섯'][k]}, ${l[0]}.`).join(' ') };
+    case 'lesson': return { text: `${L[0]}. ${L[1]}` };
     case 'outro': return { text: '더 많은 이야기는 성공 애니에서.' };
+    case 'rewind': return { text: s.to ? `시간을 되돌려, ${s.to}년.` : '시간을 되돌려 보면.' };
+    case 'back': return { text: s.to ? `그리고 다시, ${s.to}년.` : '그리고 다시, 현재.' };
+    case 'quizIntro': return { text: '이 사람은 누구일까요? 힌트는 세 개.' };
+    case 'hint': return { text: `힌트 ${s.n}.` };
+    case 'count': return { text: '정답은.' };
+    case 'reveal': return { text: `${p}. ${ep.company}.` };
+    case 'stat': return { text: `${s.num}${s.unit}. ${s.label}.` };
+    case 'cover': return { text: ep.hook || ep.title };
+    case 'vs': return s.step ? { text: `${p}${josa(p, '은', '는')} 달랐다. ${L[1]}` } : { text: `보통은, ${L[3]}.` };
+    case 'myth': return s.step ? { text: `${L[0]}. ${L[1]}` } : { text: `흔한 착각. ${L[3]}.` };
+    case 'stamp': return { text: `부자 공식 ${s.n + 1}번, ${L[0]}.` };
   }
   return null;
 }
+const sayVoice = (ep, say) => say.who ? ep.cast[say.who] : NARRATOR;
 function voiceJobs(ep, k) {
   const keep = window.__voiceDur; window.__voiceDur = null;
   const plan = build(ep, k); window.__voiceDur = keep;
-  return plan.shots.map((s, i) => s.say && { i, text: speechText(s.say.text), ...castVoice(s.say.who ? ep.cast[s.say.who] : NARRATOR) }).filter(Boolean);
+  return plan.shots.map((s, i) => s.say && { i, text: speechText(s.say.text), ...castVoice(sayVoice(ep, s.say)) }).filter(Boolean);
 }
 
 /* ---------------------------------------------------------------
@@ -354,7 +575,7 @@ function caption(who, text, quote) {
   void l.offsetWidth; if (text) l.classList.add('pop');
   $('#cap').style.visibility = text ? 'visible' : 'hidden';
 }
-function cards(on) { ['intro', 'lessonCard', 'outro'].forEach(id => $('#' + id).classList.toggle('on', id === on)); }
+function cards(on) { ['intro', 'lessonCard', 'outro', 'rewind', 'quiz', 'vs', 'myth'].forEach(id => $('#' + id).classList.toggle('on', id === on)); }
 function hookHTML(ep, lesson) {
   if (lesson != null) return `부자 공식 #${lesson + 1}<br><em>${esc(ep.lessons[lesson][0])}</em>`;
   const h = ep.hook || ep.title, cut = h.lastIndexOf(' ', Math.ceil(h.length / 2) + 2);
@@ -368,7 +589,9 @@ const P = { plan: null, i: -1, timers: [], t0: 0, raf: 0, playing: false, chain:
 function reset() {
   P.timers.forEach(clearTimeout); P.timers = []; cancelAnimationFrame(P.raf); P.run++; Voice.cancel();
   for (const id in st.onStage) st.onStage[id].remove(); st.onStage = {}; st.curBg = ''; st.scene = null;
-  FX.clear(); FX.ambient = null; $('#fire').classList.remove('on'); $('#speed').classList.remove('on'); $('#cam').classList.remove('zoom');
+  FX.clear(); FX.ambient = null; $('#fire').classList.remove('on'); $('#speed').classList.remove('on'); $('#cam').classList.remove('zoom', 'past');
+  cancelAnimationFrame(P.raf2); $('#short').classList.remove('letterbox', 'past', 'manga-on'); $('#manga').innerHTML = ''; $('#manga').dataset.page = '';
+  $('#hint').classList.remove('on'); $('#stat').classList.remove('on'); $('#stamp').classList.remove('on');
   $('#big').classList.remove('go'); cards(null); caption('', ''); $('#year').classList.remove('show');
 }
 // Korean web fonts arrive in unicode-range slices; render every glyph once so no slice loads mid-video
@@ -386,10 +609,11 @@ function load(ep, k) {
   st.ep = ep; P.k = k; P.plan = build(ep, k);
   document.documentElement.style.setProperty('--accent', ep.color);
   const no = EPS.indexOf(ep) + 1, lesson = k === 'story' ? null : +k - 1;
-  $('#tag').textContent = lesson == null ? `EP.${no} ${ep.person} · ${ep.company.replace(/ 창업자$/, '')}` : `${ep.person}에게 배우는 부자 공식`;
-  $('#hook').innerHTML = hookHTML(ep, lesson);
+  const f = P.plan.format;
+  $('#tag').textContent = lesson == null ? (f === 'quiz' ? `EP.${no} · 누구일까?` : `EP.${no} ${ep.person} · ${FORMATS[f]}`) : `${ep.person}의 부자 공식 · ${LESSON_FORMATS[f]}`;
+  $('#hook').innerHTML = f === 'quiz' ? '이 사람은<br><em>누구일까?</em>' : hookHTML(ep, lesson);
   setBg(P.plan.shots.find(s => s.sc)?.sc || ep.scenes[0]);
-  renderIntro(P.plan.shots[0]); cards('intro');
+  renderIntro({ ep, no, lesson }); cards('intro');
   $('#bar').style.width = '0'; $('#clock').textContent = '0:00';
   renderList();
   history.replaceState(null, '', `?ep=${ep.id}&k=${k}` + (REC ? '&rec=1' : ''));
@@ -424,7 +648,7 @@ async function runShots(run) {
     await wait(P.t0 + P.clock * 1000 - performance.now()); if (run !== P.run) return;
     Snd.record('shot', [i]);
     shot(s, i);
-    const spoken = s.say && Voice.on ? Voice.speak(s.say.text, s.say.who ? st.ep.cast[s.say.who] : NARRATOR) : null;
+    const spoken = s.say && Voice.on ? Voice.speak(s.say.text, sayVoice(st.ep, s.say)) : null;
     P.clock += s.dur;
     if (spoken) { await spoken; if (run !== P.run) return; P.clock = Math.max(P.clock, (performance.now() - P.t0) / 1000 + .25); }
   }
@@ -439,31 +663,128 @@ function done() {
     P.timers.push(setTimeout(() => { load(nx.ep, nx.k); play(); }, 900));
   } else if (!REC) $('#play').classList.remove('hide');
 }
+// bring a scene on stage (background, weather, cast); year label can be masked for the quiz
+function stage(sc, year) {
+  if (st.scene === sc) return;
+  st.scene = sc; setBg(sc); FX.clear(); FX.ambient = sc.fx || null; $('#fire').classList.toggle('on', sc.fx === 'fire');
+  const y = $('#year'), label = year != null ? year : sc.year; y.classList.remove('show');
+  P.timers.push(setTimeout(() => { y.textContent = label || ''; if (label) y.classList.add('show'); }, 180));
+  layout(sc.cast || [...new Set(sc.beats.filter(x => x.who).map(x => x.who))]);
+}
+// count a number up (or a year across) inside an element
+function roll(el, from, to, ms, fmt) {
+  const t0 = performance.now(), f = fmt || (v => String(Math.round(v)));
+  const step = () => { const k = Math.min(1, (performance.now() - t0) / ms), e = 1 - Math.pow(1 - k, 3);
+    el.textContent = f(from + (to - from) * e); if (k < 1) P.raf2 = requestAnimationFrame(step); };
+  cancelAnimationFrame(P.raf2); step();
+}
+function showStat(o) {
+  const el = $('#stat');
+  el.className = 'stat on' + (String(o.num).length > 5 ? ' small' : '');
+  el.innerHTML = `${o.pre ? `<div class="pre">${esc(o.pre)}</div>` : ''}<div class="num"><span></span>${o.unit ? `<em>${esc(o.unit)}</em>` : ''}</div>${o.label ? `<div class="lbl">${esc(o.label)}</div>` : ''}`;
+  const fmt = o.year ? v => String(Math.round(v)) : o.comma ? v => Math.round(v).toLocaleString('en-US') : v => String(Math.round(v * 10) / 10).replace(/\.0$/, '');
+  roll(el.querySelector('.num span'), o.from != null ? o.from : o.year ? o.num - 12 : 0, o.num, o.year ? 1300 : 1100, fmt);
+  Snd.fx('money');
+}
+function speakerOf(b, sc) { return b.who || (sc.cast || [])[0] || Object.keys(st.ep.cast)[0]; }
+function mangaPanel(s, i) {
+  const M = $('#manga');
+  if (M.dataset.page !== String(s.page)) {
+    M.dataset.page = s.page;
+    M.innerHTML = `<div class="mpage n${s.n} v${s.page % 3}">${'<div class="panel"></div>'.repeat(s.n)}</div>`;
+  }
+  const pnl = M.querySelectorAll('.panel')[s.idx], b = s.b, id = speakerOf(b, s.sc), c = st.ep.cast[id];
+  const v = s.page % 3, wide = s.n < 3 || v === 2 || (v === 0 && s.idx === 0) || (v === 1 && s.idx === 2);
+  pnl.classList.toggle('wide', wide); pnl.classList.toggle('narrow', !wide);
+  const speech = b.who ? `<div class="bub">${esc(s.text)}</div>` : s.text ? `<div class="nbox">${esc(s.text)}</div>` : '';
+  const fxLines = b.fx === 'speed' || b.fx === 'flash' || b.fx === 'shake' ? `<div class="speed2">${speedSVG()}</div>` : '';
+  pnl.innerHTML = `<div class="pbg">${bgSVG(s.sc.bg, s.sc.time || 'day', { sign: s.sc.sign })}</div>${fxLines}
+    <div class="chr${b.who ? ' talk' : ''}">${charSVG(c, b.who ? b.face || 'normal' : 'normal')}</div>${speech}${s.first && b.big ? `<div class="sfx">${esc(b.big)}</div>` : ''}`;
+  void pnl.offsetWidth; pnl.classList.add('in');
+  const vd = window.__voiceDur && window.__voiceDur[i];
+  if (b.who) P.timers.push(setTimeout(() => pnl.querySelector('.chr')?.classList.remove('talk'), (vd || Math.min(s.dur * .75, .5 + [...s.text].length * .07)) * 1000));
+  if (s.first) { if (b.fx === 'shake') fx('shake'); Snd.fx(b.big ? 'big' : 'pop'); } else Snd.fx('pop');
+}
 function shot(s, i) {
   P.i = i;
+  const S = $('#short'), manga = s.kind === 'panel' || s.kind === 'cover';
+  S.classList.toggle('letterbox', !!s.letterbox);
+  S.classList.toggle('past', !!s.past); $('#cam').classList.toggle('past', !!s.past);
+  S.classList.toggle('manga-on', manga);
+  if (!manga) { $('#manga').innerHTML = ''; $('#manga').dataset.page = ''; }
+  $('#hint').classList.remove('on'); $('#stamp').classList.remove('on');
+  if (!(s.kind === 'stat' || s.statBig)) $('#stat').classList.remove('on');
+  if (s.kind !== 'beat') { $('#big').classList.remove('go'); }
+
   if (s.kind === 'intro') { cards('intro'); Snd.fx('whoosh'); return; }
   if (s.kind === 'beat') {
     cards(null);
     const b = s.b, sc = s.sc;
-    if (st.scene !== sc) {
-      st.scene = sc; setBg(sc); FX.clear(); FX.ambient = sc.fx || null; $('#fire').classList.toggle('on', sc.fx === 'fire');
-      const y = $('#year'); y.classList.remove('show'); setTimeout(() => { y.textContent = sc.year || ''; if (sc.year) y.classList.add('show'); }, 180);
-      layout(sc.cast || [...new Set(sc.beats.filter(x => x.who).map(x => x.who))]);
-    }
-    if (s.first) { $('#speed').classList.remove('on'); $('#cam').classList.remove('zoom'); if (!b.big) $('#big').classList.remove('go'); }
-    for (const id in st.onStage) { const el = st.onStage[id]; el.classList.toggle('dim', !!b.who && b.who !== id); el.classList.toggle('speak', b.who === id); el.classList.remove('talk'); }
+    stage(sc, s.quiz ? s.year : null);
+    if (s.first) { $('#speed').classList.remove('on'); $('#cam').classList.remove('zoom'); if (!b.big || s.statBig) $('#big').classList.remove('go'); }
+    const heroes = heroIds(st.ep);
+    for (const id in st.onStage) { const el = st.onStage[id]; el.classList.toggle('dim', !!b.who && b.who !== id); el.classList.toggle('speak', b.who === id); el.classList.remove('talk');
+      el.classList.toggle('sil', !!s.quiz && heroes.includes(id)); }
     if (b.who && st.onStage[b.who]) {
       face(b.who, b.face || 'normal'); const el = st.onStage[b.who]; el.classList.add('talk');
       const vd = window.__voiceDur && window.__voiceDur[i];
       P.timers.push(setTimeout(() => el.classList.remove('talk'), (vd || Math.min(s.dur * .75, .5 + [...s.text].length * .07)) * 1000));
     }
-    if (s.first) { fx(b.fx); if (b.big) big(b.big); }
-    caption(b.who ? st.ep.cast[b.who].name : '', s.text, b.quote && s.first);
+    if (s.first) { fx(b.fx); if (s.statBig) showStat(s.statBig); else if (b.big) big(s.bigText || b.big); }
+    const name = b.who ? (s.quiz && heroes.includes(b.who) ? '???' : st.ep.cast[b.who].name) : '';
+    caption(name, s.text, b.quote && s.first);
     if (s.text) Snd.fx('pop');
     return;
   }
+  cards(null); caption('', '');
+  if (s.kind === 'panel') { mangaPanel(s, i); return; }
+  if (s.kind === 'cover') {
+    const M = $('#manga'); M.dataset.page = 'cover';
+    M.innerHTML = `<div class="mcover"><div class="vol">제${EPS.indexOf(s.ep) + 1}화</div><div class="vt">${esc(s.ep.title)}</div><div class="chr">${charSVG(hero(s.ep), 'determined')}</div></div>`;
+    Snd.fx('whoosh'); return;
+  }
+  if (s.kind === 'rewind' || s.kind === 'back') {
+    stage(s.sc);
+    const back = s.kind === 'back';
+    $('#rewind').innerHTML = `<div class="rw">${back ? '▶' : '◀◀'}</div><div class="ry">${s.from || ''}</div><div class="rl">${back ? '다시 현재로' : 'REWIND'}</div>`;
+    cards('rewind'); if (s.from && s.to) roll($('#rewind .ry'), s.from, s.to, s.dur * 700);
+    Snd.fx(back ? 'whoosh' : 'speed'); if (back) fx('flash');
+    return;
+  }
+  if (s.kind === 'quizIntro' || s.kind === 'count' || s.kind === 'reveal') {
+    const q = $('#quiz'), h = hero(s.ep);
+    q.classList.toggle('reveal', s.kind === 'reveal');
+    if (s.kind === 'quizIntro') q.innerHTML = `<div class="q1">이 사람은<br><em>누구일까?</em></div><div class="q2">힌트 3개로 맞혀 보세요</div><div class="fig sil">${charSVG(h, 'smile')}<b>?</b></div>`;
+    if (s.kind === 'count') { q.innerHTML = `<div class="q2">정답은…</div><div class="cnt">3</div>`; const c = q.querySelector('.cnt');
+      [1, 2].forEach(k => P.timers.push(setTimeout(() => { c.textContent = 3 - k; Snd.fx('pop'); }, k * 800))); Snd.fx('pop'); }
+    if (s.kind === 'reveal') { q.innerHTML = `<div class="q2">정답</div><div class="name">${esc(s.ep.person)}</div><div class="q2">${esc(s.ep.company)}</div><div class="fig">${charSVG(h, 'laugh')}</div>`;
+      fx('flash'); FX.spawn('sparkle', 60); Snd.fx('ding'); }
+    cards('quiz'); return;
+  }
+  if (s.kind === 'hint') {
+    stage(s.sc, masker(s.ep)(s.sc.year));
+    const heroes = heroIds(st.ep); for (const id in st.onStage) st.onStage[id].classList.toggle('sil', heroes.includes(id));
+    $('#hint').firstElementChild.textContent = `HINT ${s.n}`; $('#hint').classList.add('on'); Snd.fx('ding'); return;
+  }
+  if (s.kind === 'stat') { stage(s.sc); for (const id in st.onStage) st.onStage[id].classList.add('dim'); showStat(s); return; }
+  if (s.kind === 'vs') {
+    const L = s.ep.lessons[s.n], p = s.ep.person, v = $('#vs');
+    if (!s.step) v.innerHTML = `<div class="half vsA"><div class="fig">${charSVG(autoCommon(), 'think')}</div><div class="tx"><div class="lab">보통은</div><p>${esc(L[3])}</p></div></div>
+      <div class="mark">VS</div><div class="half vsB"><div class="fig">${charSVG(hero(s.ep), 'determined')}</div><div class="tx"><div class="lab">${esc(p)}${josa(p, '은', '는')}</div><p>${esc(L[1])}</p></div></div>`;
+    v.className = 'card vs s' + s.step; cards('vs'); Snd.fx(s.step ? 'big' : 'whoosh'); return;
+  }
+  if (s.kind === 'myth') {
+    const L = s.ep.lessons[s.n], m = $('#myth');
+    if (!s.step) m.innerHTML = `<div class="mk">흔한 착각</div><div class="x">✕</div><div class="cm">“${esc(L[3])}”</div>
+      <div class="tr"><div class="o">${esc(s.ep.person)}의 방식</div><div class="tt">${esc(L[0])}</div><div class="td">${esc(L[1])}</div></div>`;
+    m.className = 'card myth s' + s.step; cards('myth'); Snd.fx(s.step ? 'ding' : 'shake'); if (!s.step) fx('shake'); return;
+  }
+  if (s.kind === 'stamp') {
+    const L = s.ep.lessons[s.n]; stage(s.sc);
+    $('#stamp').innerHTML = `<div><b>공식 #${s.n + 1}</b>${esc(L[0])}</div>`; void $('#stamp').offsetWidth; $('#stamp').classList.add('on');
+    P.timers.push(setTimeout(() => { fx('shake'); Snd.fx('big'); }, 250)); return;
+  }
   if (s.kind === 'recap') {
-    caption('', ''); $('#big').classList.remove('go');
     $('#lessonCard').innerHTML = `<div class="kicker">${esc(s.ep.person)}의 부자 공식</div>
       <ul class="recap">${s.ep.lessons.map((l, k) => `<li><b>${k + 1}</b>${esc(l[0])}</li>`).join('')}</ul>`;
     cards('lessonCard'); FX.ambient = 'sparkle';
@@ -471,7 +792,6 @@ function shot(s, i) {
     return;
   }
   if (s.kind === 'lesson') {
-    caption('', ''); $('#big').classList.remove('go');
     const L = s.ep.lessons[s.n];
     $('#lessonCard').innerHTML = `<div class="kicker">${esc(s.ep.person)}의 부자 공식</div><div class="no">#${s.n + 1}</div><h2>${esc(L[0])}</h2><p>${esc(L[1])}</p>`;
     cards('lessonCard'); FX.spawn('sparkle', 40); FX.ambient = 'sparkle'; Snd.fx('ding');
@@ -483,6 +803,8 @@ function shot(s, i) {
     cards('outro'); Snd.fx('sparkle');
   }
 }
+let commonGuy = null;
+function autoCommon() { return commonGuy || (commonGuy = { name: '보통 사람', hair: '#3a3a3a', style: 'short', outfit: 'shirt', color: '#adb5bd', eye: '#2a1d12', age: 'adult' }); }
 
 /* ---------------------------------------------------------------
    4. LIST & CONTROLS
@@ -490,8 +812,8 @@ function shot(s, i) {
 function allShorts() { return EPS.flatMap(ep => [{ ep, k: 'story' }, ...ep.lessons.map((_, i) => ({ ep, k: String(i + 1) }))]); }
 function renderList() {
   $('#list').innerHTML = EPS.map((ep, i) => `<div class="grp" style="--c:${ep.color}"><h3><i></i>EP.${i + 1} ${esc(ep.person)} <small>${esc(ep.title)}</small></h3><div class="chips">
-    <button class="chip ${st.ep === ep && P.k === 'story' ? 'cur' : ''}" data-ep="${ep.id}" data-k="story">요약 · ${Math.round(build(ep, 'story').dur)}초</button>
-    ${ep.lessons.map((l, k) => `<button class="chip ${st.ep === ep && P.k === String(k + 1) ? 'cur' : ''}" data-ep="${ep.id}" data-k="${k + 1}">#${k + 1} ${esc(l[0])}</button>`).join('')}</div></div>`).join('');
+    <button class="chip ${st.ep === ep && P.k === 'story' ? 'cur' : ''}" data-ep="${ep.id}" data-k="story">요약 · ${FORMATS[storyFormat(ep)]} · ${Math.round(build(ep, 'story').dur)}초</button>
+    ${ep.lessons.map((l, k) => `<button class="chip ${st.ep === ep && P.k === String(k + 1) ? 'cur' : ''}" data-ep="${ep.id}" data-k="${k + 1}">#${k + 1} ${esc(l[0])} <small>${LESSON_FORMATS[lessonFormat(ep, k)]}</small></button>`).join('')}</div></div>`).join('');
 }
 $('#list').addEventListener('click', e => { const c = e.target.closest('.chip'); if (!c) return; load(EPS.find(x => x.id === c.dataset.ep), c.dataset.k); play(); });
 $('#short').addEventListener('click', () => { if (!P.playing && !REC) play(); });
