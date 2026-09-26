@@ -8,6 +8,7 @@ ipo/data/ipo.json 한 파일로 묶는다. 페이지는 이 파일 하나만 읽
   수요예측     /html/fund/index.htm?o=r1   예측일 · 공모금액 · 기관경쟁률 · 의무보유확약
   신규상장     /html/fund/index.htm?o=nw   신규상장일 · 공모가 · 시초가 · 첫날종가 · 현재가
   상세         /html/fund/?o=v&no=…        시장구분 · 업종 · 총공모주식수 · 환불일 · 상장일
+                                           기업개요 · 재무 · 주가지표 · 사업 설명 · 품목별 매출 · 유사기업 · 주주 · 수요예측 가격 분포 · 장외 호가
 
 표 모양이 조금 바뀌어도 버티도록 열을 순서가 아니라 머리글 글자로 찾는다. 한 곳이 막히면
 그 부분만 이전 파일의 값을 쓰고, 청약 일정 표를 하나도 못 읽으면 실패로 끝나 기존 파일을 지킨다.
@@ -408,6 +409,9 @@ def parse_detail(text: str, today: dt.date) -> dict:
                     got[key] = date_range(v, today)
                 elif key in ("inst_comp", "sub_comp"):
                     got[key] = ratio(v)
+                    m = re.search(r"비례\s*([\d,.]+)\s*[:：]", v) if key == "sub_comp" else None
+                    if m:
+                        got["prop_comp"] = to_float(m.group(1))
                 elif key == "lockup":
                     x = to_float(v) if "%" in v else None
                     got[key] = x if x is not None and 0 <= x <= 100 else None
@@ -429,6 +433,18 @@ def parse_detail(text: str, today: dt.date) -> dict:
         if not got.get("lockup"):
             got.pop("lockup", None)
     got.update(detail_extras(text, got.get("shares")))
+    try:
+        corp = parse_corp(text)
+    except Exception as e:  # noqa: BLE001 — 기업 분석을 못 읽어도 일정은 살린다
+        log(f"  기업 분석 읽기 실패: {e}")
+        corp = {}
+    own = corp.get("own", {})
+    if own.get("post") and not got.get("post_shares"):
+        got["post_shares"] = own["post"]
+    if own.get("float") and not got.get("float_pct"):
+        got["float_pct"] = own["float"]
+    if corp:
+        got["corp"] = corp
     return {k: v for k, v in got.items() if v is not None}
 
 
@@ -468,11 +484,307 @@ def detail_extras(text: str, shares: int | None) -> dict:
     return out
 
 
+# ---------------------------------------------------------------- 기업 분석
+# 기업개요 칸(이름표 | 값). 돈은 백만원
+CORP_KV = {"ceo": "대표자", "kind": "기업구분", "addr": "본점소재지", "web": "홈페이지", "holder": "최대주주",
+           "sales": "매출액", "ebt": "법인세비용차감전계속사업이익", "ni": "순이익", "cap": "자본금"}
+# 연도별 표의 행 이름 → 키. 앞쪽이 먼저 맞는다
+SERIES_ROWS = [("sg", "매출액증가율"), ("ogr", "영업이익증가율"), ("nig", "당기순이익증가율"), ("opm", "영업이익률"),
+               ("nim", "당기순이익률"), ("roe", "자기자본수익률"), ("debt", "부채비율"), ("cur", "유동비율"),
+               ("dep", "차입금의존도"), ("eps", "EPS"), ("per", "PER"), ("bps", "BPS"), ("pbr", "PBR"), ("sps", "SPS"),
+               ("psr", "PSR"), ("sales", "매출액"), ("op", "영업이익"), ("ni", "당기순이익"), ("ni", "연결당기순이익")]
+MONEY = {"sales", "op", "ni"}
+YEAR_RE = re.compile(r"^(20\d\d)(?:\.\d\d\.\d\d|년도?)?(반기|[1-3]분기)?(말)?$")
+PROVINCE = {"서울": "서울", "부산": "부산", "대구": "대구", "인천": "인천", "광주": "광주", "대전": "대전", "울산": "울산",
+            "세종": "세종", "경기": "경기", "강원": "강원", "충청북": "충북", "충북": "충북", "충청남": "충남", "충남": "충남",
+            "전라북": "전북", "전북": "전북", "전라남": "전남", "전남": "전남", "경상북": "경북", "경북": "경북",
+            "경상남": "경남", "경남": "경남", "제주": "제주"}
+SKIP_NAME = {"수출", "내수", "소계", "합계", "부문", "기타부문", "구분", "사업부문", "품목"}
+
+
+def _num(t: str) -> float | None:
+    t = t.replace(",", "").replace("%", "").replace("원", "").strip()
+    if not re.fullmatch(r"-?\d+(\.\d+)?", t):
+        return None
+    return float(t)
+
+
+def _year(t: str) -> str | None:
+    m = YEAR_RE.match(squash(t).replace("년도반기말", "년반기"))
+    if not m:
+        return None
+    return m.group(1) + (" " + m.group(2) if m.group(2) else "")
+
+
+def _period_end(y: str) -> int:
+    """'2025' → 202512, '2026 반기' → 202606, '2025 1분기' → 202503"""
+    m = re.match(r"(20\d\d)(?: (반기|([1-3])분기))?", y)
+    if not m:
+        return 0
+    month = 12 if not m.group(2) else 6 if m.group(2) == "반기" else int(m.group(3)) * 3
+    return int(m.group(1)) * 100 + month
+
+
+def _short_addr(a: str) -> str:
+    """'서울특별시 금천구 벚꽃로 244 …' → '서울 금천구'"""
+    a = re.sub(r"\(.*$", "", a).strip()
+    parts = a.split()
+    if not parts:
+        return ""
+    head = next((v for k, v in PROVINCE.items() if parts[0].startswith(k)), parts[0])
+    return " ".join([head] + parts[1:2])
+
+
+def _sentences(t: str, limit: int = 420) -> str:
+    t = re.sub(r"^\s*\d\s*\.\s*사업\s*현황\s*[-–:]?\s*", "", t).strip()
+    t = re.split(r"\s2\s*\.\s*(?:매출|재무|주요|공모)", t)[0].strip()  # 뒤에 붙은 목차('2.매출현황 3.재무현황 …')
+    if len(t) <= limit:
+        return t
+    cut = t[:limit]
+    end = max(cut.rfind("다."), cut.rfind("니다."))
+    return cut[:end + 2] if end > 80 else cut.rstrip() + "…"
+
+
+def parse_corp(text: str) -> dict:
+    """상세 페이지의 기업개요·재무·주주·수요예측 분포·장외 시세·사업 설명. 못 읽은 부분은 빠진다."""
+    rows = [[c["t"] for c in r] for r in html_rows(text)]
+    sq = [[squash(t) for t in r] for r in rows]
+    out: dict = {}
+    fy: dict = {}
+    # 1) 기업개요 이름표
+    for r, q in zip(rows, sq):
+        for i in range(len(q) - 1):
+            for k, lab in CORP_KV.items():
+                if q[i] == lab and k not in fy and k not in out:
+                    v = r[i + 1].strip()
+                    if k == "holder" and (i != 0 or not re.search(r"[가-힣A-Za-z]", v) or squash(v) in ("보통주", "우선주")):
+                        continue  # 주주 표의 '최대주주' 칸(관계)과 헷갈리지 않게
+                    if k in ("sales", "ebt", "ni", "cap"):
+                        n = to_int(v) if "백만" in v else None
+                        if n is not None:
+                            fy[k] = n
+                    elif v and v not in ("-", "--"):
+                        out[k] = v[:60]
+    if out.get("addr"):
+        out["addr"] = _short_addr(out["addr"])
+    if out.get("web"):
+        out["web"] = re.sub(r"^https?://", "", out["web"]).strip("/ ")[:60]
+    if fy:
+        out["fy"] = fy
+    # 2) 연도별 표: '구분 | 2025.12.31 | …' 또는 '사업연도 | 2025년도 | …' 아래 행들
+    tables: list[dict] = []
+    cur = None
+    for i, q in enumerate(sq):
+        yrs = [_year(t) for t in q[1:]]
+        if q and q[0] in ("구분", "사업연도") and sum(1 for y in yrs if y) >= 2:
+            ys = [y for y in yrs if y]
+            nxt = sq[i + 1] if i + 1 < len(sq) else []
+            ind = "업종평균" in nxt
+            if ind and len(ys) > 2:
+                ys = ys[:-1]  # 마지막 칸은 업종 평균
+            cur = {"y": ys, "unit": 1e6 if q[0] == "사업연도" else 1, "ind": ind, "rows": {}}
+            tables.append(cur)
+            continue
+        if cur is None or not q:
+            continue
+        if q[0] == "구분":  # 다른 표의 머리글 — 연도 표가 끝났다
+            cur = None
+            continue
+        for j in range(min(2, len(q))):
+            key = next((k for k, lab in SERIES_ROWS if q[j].startswith(lab)), None)
+            if key:
+                vals = [_num(t) for t in q[j + 1:]]
+                if any(v is not None for v in vals) and key not in cur["rows"]:
+                    cur["rows"][key] = vals
+                break
+    for t in tables:  # 표마다 연도 순서가 달라(오래된 해가 앞인 표도 있다) 최근이 앞이 되게 맞춘다
+        n = len(t["y"])
+        order = sorted(range(n), key=lambda i: _period_end(t["y"][i]), reverse=True)
+        if order != list(range(n)):
+            t["y"] = [t["y"][i] for i in order]
+            for k, vals in t["rows"].items():
+                t["rows"][k] = [vals[i] if i < len(vals) else None for i in order] + vals[n:]
+    val_keys = ("eps", "per", "bps", "pbr", "sps", "psr")
+    r: dict = {}
+    for t in tables:
+        n, rows_ = len(t["y"]), t["rows"]
+        if "g" not in out and any(k in rows_ for k in MONEY):
+            g = {"y": t["y"]}
+            for k in ("sales", "op", "ni"):
+                if k in rows_:
+                    g[k] = [None if v is None else round(v / t["unit"]) for v in rows_[k][:n]]
+            out["g"] = g
+        if "v" not in out and any(k in rows_ for k in val_keys):
+            out["v"] = {"y": t["y"], **{k: rows_[k][:n] for k in val_keys if k in rows_}}
+        # 비율은 표마다 연도가 달라 항목마다 연도를 같이 둔다
+        for k in ("debt", "cur", "dep", "roe", "opm", "nim", "sg", "ogr", "nig"):
+            if k in rows_ and k not in r:
+                e = {"y": t["y"], "v": rows_[k][:n]}
+                if t["ind"] and len(rows_[k]) > n and rows_[k][n] is not None:
+                    e["ind"] = rows_[k][n]
+                r[k] = e
+    if r:
+        out["r"] = r
+    # 3) 사업 설명
+    for r, q in zip(rows, sq):
+        if q and q[0].startswith("1.사업현황"):
+            out["biz"] = _sentences(r[0])
+            break
+    # 4) 품목별 매출 — '사업부문 | 품목 | …' 표. 소계 행(품목별) 또는 이름 + 금액 행
+    try:
+        mix = _mix(rows, sq)
+        if mix:
+            out["mix"] = mix
+    except Exception:  # noqa: BLE001 — 모양이 달라도 나머지는 살린다
+        pass
+    # 5) 유사기업 — '구분 | 동사 | A사 | B사' 와 그 아래 매출액·영업이익
+    for i, q in enumerate(sq):
+        if len(q) >= 3 and q[0] == "구분" and q[1] == "동사":
+            names = [rows[i][j].strip() for j in range(2, len(q)) if q[j]]
+            got = {"sales": None, "op": None, "ni": None}
+            for q2 in sq[i + 1:i + 20]:
+                if q2 and q2[0] in ("매출액", "영업이익", "당기순이익"):
+                    k = {"매출액": "sales", "영업이익": "op", "당기순이익": "ni"}[q2[0]]
+                    got[k] = got[k] or [_num(t) for t in q2[1:]]
+            head = next((squash(rows[k][0]) for k in range(max(0, i - 3), i) if rows[k] and "유사기업" in rows[k][0]), "")
+            m = re.search(r"(20\d\d)년?(반기|[1-3]분기)?", head)
+            peers = [{"name": n, **{k: (got[k][j + 1] if got[k] and len(got[k]) > j + 1 else None) for k in got}}
+                     for j, n in enumerate(names)]
+            self_ = {k: (got[k][0] if got[k] else None) for k in got}
+            unit = 1.0
+            if self_.get("sales") and fy.get("sales"):
+                ratio_ = self_["sales"] / fy["sales"]
+                unit = next((f for f in (1.0, 1e3, 1e6) if 0.2 < ratio_ / f < 5), 0.0)
+            for d in [self_] + peers:
+                for k in ("sales", "op", "ni"):
+                    if d.get(k) is not None:
+                        d[k] = round(d[k] / unit) if unit else None  # 단위를 모르면 숫자는 버리고 이름만
+            out["peers"] = {"y": (m.group(1) + (" " + m.group(2) if m.group(2) else "")) if m else "",
+                            "self": self_, "list": peers[:6]}
+            break
+    # 6) 주주 — 최대주주등 첫 행(이름·공모 후 지분), 최대주주등 소계, 합계(공모 후 주식 수·유통가능)
+    for i, q in enumerate(sq):
+        if q and q[0] == "최대주주등" and len(q) >= 7:
+            pcts = [_num(t) for t in q if t.endswith("%")]
+            own = {"name": rows[i][1].strip()[:30]}
+            if len(pcts) >= 2:
+                own["pct"] = pcts[1]
+            for q2 in sq[i + 1:i + 40]:
+                if q2 and q2[0] == "소계":
+                    ps = [_num(t) for t in q2 if t.endswith("%")]
+                    if len(ps) >= 2:
+                        own["group"] = ps[1]
+                    break
+            for q2 in sq[i + 1:i + 80]:
+                if q2 and q2[0] == "합계":
+                    ps = [_num(t) for t in q2 if t.endswith("%")]
+                    ns = [to_int(t) for t in q2[1:] if not t.endswith("%") and _num(t) is not None]
+                    if len(ns) >= 2 and ns[1]:
+                        own["post"] = ns[1]
+                    if len(ps) >= 4 and ps[3] is not None and 0 < ps[3] <= 100:
+                        own["float"] = ps[3]
+                    break
+            out["own"] = own
+            break
+    # 7) 수요예측 가격 분포 — 상단 초과·상단 비율, 확약 기간별 수량
+    dem = {}
+    for q in sq:
+        if len(q) >= 4 and "(상단)" in q[0]:
+            v = _num(q[-1])
+            if v is not None:
+                dem["over" if q[0].endswith("초과") else "top"] = v
+        elif len(q) >= 4 and q[0] == "가격미제시":
+            v = _num(q[-1])
+            if v is not None:
+                dem["none"] = v
+    lk = {}
+    for q in sq:
+        if len(q) == 2 and re.fullmatch(r"(\d+)(개월|일)확약", q[0]):
+            m = re.fullmatch(r"(\d+)(개월|일)확약", q[0])
+            n = to_int(q[1])
+            if n is not None:
+                lk[m.group(1) + ("m" if m.group(2) == "개월" else "d")] = n
+        if len(q) == 3 and re.search(r"\d", q[0]) and q[2].endswith(":1") and "total" not in dem:
+            n = to_int(q[1])
+            if n:
+                dem["total"] = n
+    if lk and dem.get("total"):
+        dem["lock"] = {k: round(v / dem["total"] * 100, 2) for k, v in lk.items()}
+    dem.pop("total", None)
+    if dem:
+        out["dem"] = dem
+    # 8) 장외 호가 — '팝니다(가격참고) | 희망가격 | 수량 | 날짜' 아래 행들
+    otc = {}
+    for i, q in enumerate(sq):
+        for tag, key in (("팝니다", "ask"), ("삽니다", "bid")):
+            if q and q[0].startswith(tag) and len(q) >= 3:
+                ps, ds = [], []
+                for q2 in sq[i + 1:i + 12]:
+                    if len(q2) != 4 or not re.fullmatch(r"\d\d/\d\d.*", q2[3]):
+                        break
+                    v = to_int(q2[1])
+                    if v:
+                        ps.append(v); ds.append(q2[3][:5])
+                if ps:
+                    ps.sort()
+                    otc[key] = ps[len(ps) // 2]
+                    otc[key + "_n"] = len(ps)
+                    otc["d"] = max(ds + ([otc["d"]] if otc.get("d") else []))
+    if otc:
+        out["otc"] = otc
+    return out
+
+
+def _mix(rows, sq) -> list | None:
+    start = next((i for i, q in enumerate(sq) if len(q) >= 3 and q[0] == "사업부문" and q[1] == "품목"), None)
+    if start is None:
+        return None
+    ys = [y for y in (_year(t) for t in sq[start][2:]) if y]
+    col = next((j for j, y in enumerate(ys) if " " not in y), 0)  # 첫 '온전한 해'
+    items, prod, total, in_total = [], None, None, False
+    for r, q in zip(rows[start + 1:start + 60], sq[start + 1:start + 60]):
+        if q and (q[0].startswith("(") or q[0] == "사업부문"):
+            break
+        nums_at = next((j for j, t in enumerate(q) if _num(t) is not None or t == "-"), None)
+        if nums_at is None:
+            continue
+        head = q[:nums_at]
+        amounts = [_num(t) for t in q[nums_at::2]]
+        amt = amounts[col] if len(amounts) > col else None
+        split = any(x in head for x in ("수출", "내수"))  # 품목마다 수출·내수·소계로 나눈 표
+        if "합계" in head:
+            in_total = True
+        if in_total:
+            if "소계" in head or not split:
+                total = amt
+                break
+            continue
+        names = [r[j].strip() for j in range(nums_at) if q[j] and q[j] not in SKIP_NAME and not q[j].endswith("부문")]
+        if names:
+            prod = names[-1]
+        if "소계" in head:
+            if prod and amt is not None:
+                items.append([prod, amt])
+        elif not split and names and amt is not None:
+            items.append([prod, amt])
+    items = [x for x in items if x[1] and x[1] > 0]
+    if not items:
+        return None
+    total = total or sum(x[1] for x in items)
+    seen, out = set(), []
+    for name, amt in sorted(items, key=lambda x: -x[1]):
+        if name in seen:
+            continue
+        seen.add(name)
+        out.append([name[:20], round(amt / total * 100, 1)])
+    return {"y": ys[col] if ys else "", "p": out[:6]}
+
+
 # ---------------------------------------------------------------- 합치기
 FIELDS = ["id", "name", "no", "status", "market", "sector", "code", "uw", "uw_alloc", "band_lo", "band_hi", "price", "amount",
           "shares", "post_shares", "old_shares", "float_pct",
           "fc_start", "fc_end", "inst_comp", "lockup", "sub_start", "sub_end", "sub_comp", "refund",
-          "list_date", "open", "close1", "cur", "spac"]
+          "list_date", "open", "close1", "cur", "spac", "prop_comp", "corp"]
 
 
 def merge(prev: list[dict], schedule, forecast, listing, details: dict[str, dict], today: dt.date,
@@ -515,6 +827,8 @@ def merge(prev: list[dict], schedule, forecast, listing, details: dict[str, dict
                     continue  # 이미 상장한 날짜(신규상장 표)는 지킨다. 앞으로의 상장일은 상세 값으로 바뀔 수 있다
                 if f in FILL_ONLY and it.get(f) not in (None, "", []):
                     continue  # 목록 표 값이 있으면 그대로 — 상세는 빈칸만 메운다
+                if f == "corp":
+                    v = {**(it.get("corp") or {}), **v}  # 이번에 못 읽은 부분은 예전 값을 둔다
                 it[f] = v
         it["spac"] = bool(re.search(r"스팩|SPAC|기업인수목적", it["name"], re.I))
         # 예전 실행이 남긴 자리 표시(0:1 경쟁률, 경쟁률 없는 0% 확약)는 지운다
@@ -556,19 +870,49 @@ def need_detail(it: dict, today: dt.date, prev_by_no: dict[str, dict]) -> int:
     if last >= (today - dt.timedelta(days=14)).isoformat():
         fc_done = (p.get("fc_end") or it.get("fc_end") or "9999") < today.isoformat()
         waiting = not (p.get("fc_start") or it.get("fc_start")) or (fc_done and p.get("inst_comp") is None and it.get("inst_comp") is None)
-        return 1 if waiting or not all(p.get(k) for k in ("market", "list_date", "refund")) else 0
-    if last >= (today - dt.timedelta(days=400)).isoformat() and not p.get("market"):
+        if waiting or not all(p.get(k) for k in ("market", "list_date", "refund")):
+            return 1
+    elif last >= (today - dt.timedelta(days=400)).isoformat() and not p.get("market"):
+        return 2
+    # 기업 분석: 청약 전·중이면 38 분석(사업 설명·주주)이 붙을 때까지, 지난 종목은 한 번
+    corp = p.get("corp") or {}
+    if last >= today.isoformat() and not corp.get("biz"):
+        return 1
+    if last >= (today - dt.timedelta(days=400)).isoformat() and not corp:
         return 2
     return 0
 
 
 # ---------------------------------------------------------------- 실행
+def corp_path(out: str) -> str:
+    """기업 분석은 크기가 커서 따로 둔다 — 페이지는 일정(ipo.json)을 먼저 그리고 이 파일은 나중에 읽는다"""
+    return os.path.join(os.path.dirname(out), "corp.json")
+
+
 def load_prev(path: str) -> list[dict]:
     try:
         with open(path, encoding="utf-8") as f:
-            return json.load(f).get("items", [])
+            items = json.load(f).get("items", [])
     except (OSError, ValueError):
         return []
+    try:
+        with open(corp_path(path), encoding="utf-8") as f:
+            corp = json.load(f).get("items", {})
+        for it in items:
+            if it.get("id") in corp:
+                it["corp"] = corp[it["id"]]
+    except (OSError, ValueError, AttributeError):
+        pass
+    return items
+
+
+def write_json(path: str, obj) -> None:
+    os.makedirs(os.path.dirname(path), exist_ok=True)
+    tmp = path + ".tmp"
+    with open(tmp, "w", encoding="utf-8") as f:
+        json.dump(obj, f, ensure_ascii=False, separators=(",", ":"))
+        f.write("\n")
+    os.replace(tmp, path)
 
 
 def get_list(o: str, pages: int, html_dir: str | None) -> str:
@@ -648,16 +992,13 @@ def main(argv=None) -> int:
             notes.append("상세 페이지를 읽지 못해 시장·환불일·상장일은 이전 값입니다")
         items = merge(items, [], [], [], details, today)
 
+    corp = {it["id"]: it.pop("corp") for it in items if it.get("corp")}
     out = {"updated": now.isoformat(timespec="minutes"), "asof": today.isoformat(),
            "source": "38커뮤니케이션 (www.38.co.kr)", "notes": notes, "items": items}
-    os.makedirs(os.path.dirname(a.out), exist_ok=True)
-    tmp = a.out + ".tmp"
-    with open(tmp, "w", encoding="utf-8") as f:
-        json.dump(out, f, ensure_ascii=False, separators=(",", ":"))
-        f.write("\n")
-    os.replace(tmp, a.out)
+    write_json(a.out, out)
+    write_json(corp_path(a.out), {"source": "38커뮤니케이션 상세 페이지 (증권신고서 요약)", "items": corp})
     up = [i for i in items if (i.get("sub_end") or "") >= today.isoformat()]
-    log(f"저장: {len(items)}종목 (청약 예정·진행 {len(up)}) → {os.path.relpath(a.out)}")
+    log(f"저장: {len(items)}종목 (청약 예정·진행 {len(up)}, 기업 분석 {len(corp)}) → {os.path.relpath(a.out)}")
     return 0
 
 

@@ -127,7 +127,7 @@ class Tables(unittest.TestCase):
                              "refund": "2026-09-30", "list": "2026-10-06", "post_shares": 6000000,
                              "fc_start": "2026-09-15", "fc_end": "2026-09-19", "inst_comp": 1234.5, "lockup": 32.1,
                              "price": 23000, "band_lo": 18000, "band_hi": 21000, "amount": 345.0,
-                             "old_shares": 300000, "float_pct": 27.5,
+                             "old_shares": 300000, "float_pct": 27.5, "corp": {"ceo": "홍길동"},
                              "uw_alloc": [["NH투자증권", 1050000], ["삼성증권", 450000]]})
 
     def test_detail_drops_nonsense(self):
@@ -172,10 +172,137 @@ class DetailFill(unittest.TestCase):
 
     def test_need_detail_waits_for_forecast_result(self):
         # 수요예측이 끝났는데 결과가 없으면 다시 읽는다
-        full = {"market": "KOSDAQ", "list_date": "x", "refund": "y", "float_pct": 20.0, "fc_start": "2026-09-20", "fc_end": "2026-09-21"}
+        full = {"market": "KOSDAQ", "list_date": "x", "refund": "y", "float_pct": 20.0, "fc_start": "2026-09-20", "fc_end": "2026-09-21",
+                "corp": {"biz": "…"}}
         it = {"no": "9", "sub_end": "2026-09-30", "fc_end": "2026-09-21"}
         self.assertEqual(build.need_detail(it, TODAY, {"9": full}), 1)
         self.assertEqual(build.need_detail(it, TODAY, {"9": {**full, "inst_comp": 800.0}}), 0)
+
+
+def tbl(*rows: str) -> str:
+    """'a | b | c' 줄들 → <table>. 38 상세 페이지의 행을 그대로 옮겨 적기 쉽게"""
+    return "<table>" + "".join("<tr>" + "".join(f"<td>{c.strip()}</td>" for c in r.split("|")) + "</tr>" for r in rows) + "</table>"
+
+
+# 청약 전 종목(38 분석 전): 기업개요 + 재무비율 + 주가지표 + 장외 호가
+CORP_SIMPLE = page(
+    tbl("대표자 | 손창환 | 기업구분 | 중소일반", "본점소재지 | 경상남도 사천시 용현면 안점봉수대길 87 (주)하나에어로",
+        "홈페이지 | http://hanaaero.com/ | 대표전화 | 055-830-3800", "최대주주 | -",
+        "매출액 | 33,286 (백만원) | 법인세비용차감전계속사업이익 | 3,207 (백만원)", "순이익 | 2,420 (백만원) | 자본금 | 1,319 (백만원)",
+        "희망공모가액 | 4,700~5,700원 | 청약경쟁률 | ")
+    + tbl("구분 | 2025.12.31 | 2024.12.31 | 2023.12.31", "안정성 | 부채비율 | 305.24% | 228.40% | 208.50%",
+          "유동비율 | 72.32% | 39.01% | 51.77%", "수익성 | 자기자본수익률 | 15.97% | 9.32% | 2.00%",
+          "영업이익률 | 14.99% | 8.84% | 5.39%", "성장성 | 매출액증가율 | 3.03% | 121.96% | 0.78%",
+          "영업이익증가율 | 74.71% | 264.16% | -45.71%")
+    + tbl("구분 | 2025.12.31 | 2024.12.31 | 2023.12.31", "EPS(주당순이익) | 183원 | 89원 | 16원",
+          "PER(주가수익비율)공모가대비 | 31.09 | 63.70 | 366.97", "PBR(주가순자산비율) | 4.96 | 5.94 | 7.33",
+          "PSR(주가매출액비율) | 2.26 | 2.33 | 5.17")
+    + tbl("팝니다(가격참고) | 희망가격 | 수량 | 날짜", "하나에어로 | 17,000 | 5,000 | 09/22 14:42",
+          "하나에어로 | 16,000 | 35,000 | 09/21 14:30", "하나에어로 | 18,000 | 8,500 | 09/18 12:25",
+          "삽니다(가격참고) | 희망가격 | 수량 | 날짜", "하나에어로 | 13,000 | 20,000 | 09/23 11:10"))
+
+# 청약 끝난 종목(38 분석 후): 사업 설명·품목별 매출·성장성·안정성(업종 평균)·주주·유사기업·수요예측 분포
+CORP_FULL = page(
+    tbl("청약경쟁률 | 1477.65:1 (비례 2955:1)", "기관경쟁률 | 1248.47:1 | 의무보유확약 | 3.65%")
+    + tbl("구분 | 신청수량(단위:주)", "6개월확약 | 7,003,000", "3개월확약 | 1,621,000", "1개월확약 | 4,378,000",
+          "15일확약 | 41,709,000", "합계 | 54,711,000")
+    + tbl("참여건수(단위:건) | 신청주식수(단위:주) | 단순경쟁", "2,323 | 1,498,162,000 | 1,248.47:1")
+    + tbl("구분 | 참여건수(단위:건) | 신청주식수(단위:주) | 비율(%)", "가격미제시 | 4 | 2,670,000 | 0.18%",
+          "12,000원(상단)초과 | 22 | 15,064,000 | 1.01%", "12,000원(상단) | 2277 | 1,479,329,000 | 98.74%",
+          "10,000원(하단) | 4 | 1,083,000 | 0.07%")
+    + tbl("1. 사업현황 - 당사는 데이터 기반 브랜드 기획 및 운영 역량을 기반으로 브랜드 사업부문과 디지털 마케팅 사업부문을 영위하고 있습니다. 브랜드 사업은 닥터피엘 등입니다.")
+    + tbl("사업부문 | 품목 | 2026년반기 | 2025년 | 2024년", "매출액 | 비율 | 매출액 | 비율 | 매출액 | 비율",
+          "브랜드 | 닥터피엘 | 수출 | 113 | 0.54% | 152 | 0.42% | 105 | 0.31%",
+          "부문 | 내수 | 20,891 | 99.46% | 35,834 | 99.58% | 33,852 | 99.69%",
+          " | 소계 | 21,004 | 100% | 35,986 | 100% | 33,957 | 100%",
+          " | 누잠 | 수출 | - | - | - | - | - | -", " | 내수 | 8,775 | 100% | 17,299 | 100% | 23,800 | 100%",
+          " | 소계 | 8,775 | 100% | 17,299 | 100% | 23,800 | 100%",
+          "기타부문 | 마케팅대행 | 수출 | - | - | - | - | - | -", "내수 | 577 | 100% | 11,563 | 100% | 11,623 | 100%",
+          "소계 | 577 | 100% | 11,563 | 100% | 11,623 | 100%",
+          "합계 | 수출 | 312 | 0.94% | 397 | 0.61% | 447 | 0.64%", "내수 | 32,862 | 99.06% | 64,452 | 99.39% | 68,933 | 99.36%",
+          "소계 | 33,174 | 100% | 64,848 | 100% | 69,380 | 100%")
+    + tbl("(1)재무적성장성", "구분 | 2026년반기 | 2025년 | 2024년 | 2023년", "(제14기반기) | (제13기) | (제12기) | (제11기)",
+          "매출액 | 33,174 | 64,848 | 69,380 | 64,125", "매출액증가율 | 6.85% | -6.53% | 8.19% | 13.35%",
+          "영업이익 | 3,041 | 6,337 | 6,269 | 5,963", "영업이익률 | 9.17% | 9.77% | 9.04% | 9.30%",
+          "당기순이익 | 3,675 | 9,385 | 7,691 | 7,157")
+    + tbl("구분 | 2026년반기 | 2025년 | 2024년 | 2023년 | 2024년", "(제14기반기) | (제13기) | (제12기) | (제11기) | 업종평균",
+          "유동비율 | 831.2 | 681.61 | 468.1 | 389.33 | 116.47", "부채비율 | 12.52 | 14.7 | 21.56 | 29.36 | 183.01")
+    + tbl("구분 | 주주명 | 회사와의관계 | 공모전보유주식 | 공모후",
+          "최대주주등 | 주경민 | 최대주주 | 6,401,600 | 74.30% | 6,141,600 | 61.39% | 6,141,600 | 61.39% | - | - | 2년6개월",
+          "김윤영 | 등기임원 | 750,550 | 8.71% | 750,550 | 7.50% | 750,550 | 7.50% | - | - | 6개월",
+          "소계 | 7,918,230 | 91.90% | 7,658,230 | 76.55% | 7,658,230 | 76.55% | - | - | -",
+          "합계 | 8,616,030 | 100.00% | 10,004,030 | 100.00% | 7,891,380 | 78.88% | 2,112,650 | 21.12% | -")
+    + tbl("사업연도 | 2026년도반기말 | 2025년도 | 2024년도 | 2023년도", "매출액 | 33,173,987,383 | 64,848,403,992 | 69,380,084,022 | 64,125,496,771")
+    + tbl("[동사및유사기업 2026년 반기 기준 요약재무현황]", "(단위:백만원)")
+    + tbl("구분 | 동사 | 아로마티카 | 달바글로벌", "매출액 | 33,174 | 31,743 | 358,103", "영업이익 | 3,041 | 3,581 | 92,331",
+          "당기순이익 | 3,675 | 3,029 | 74,397"))
+
+
+class Corp(unittest.TestCase):
+    def test_simple_page(self):
+        c = build.parse_corp(CORP_SIMPLE)
+        self.assertEqual((c["ceo"], c["kind"], c["addr"], c["web"]), ("손창환", "중소일반", "경남 사천시", "hanaaero.com"))
+        self.assertNotIn("holder", c)  # '-' 는 값이 아니다
+        self.assertEqual(c["fy"], {"sales": 33286, "ebt": 3207, "ni": 2420, "cap": 1319})
+        self.assertEqual(c["r"]["debt"], {"y": ["2025", "2024", "2023"], "v": [305.24, 228.4, 208.5]})
+        self.assertEqual(c["r"]["ogr"]["v"][2], -45.71)
+        self.assertEqual(c["v"]["per"], [31.09, 63.7, 366.97])
+        self.assertEqual(c["v"]["eps"][0], 183)
+        self.assertNotIn("g", c)
+        self.assertEqual(c["otc"], {"ask": 17000, "ask_n": 3, "bid": 13000, "bid_n": 1, "d": "09/23"})
+
+    def test_full_page(self):
+        c = build.parse_corp(CORP_FULL)
+        self.assertTrue(c["biz"].startswith("당사는 데이터 기반"))
+        self.assertEqual(c["g"]["y"], ["2026 반기", "2025", "2024", "2023"])
+        self.assertEqual(c["g"]["sales"], [33174, 64848, 69380, 64125])  # 백만원 표가 먼저 — 원 단위 표로 덮지 않는다
+        self.assertEqual(c["g"]["op"][1], 6337)
+        self.assertEqual(c["r"]["debt"], {"y": ["2026 반기", "2025", "2024", "2023"], "v": [12.52, 14.7, 21.56, 29.36], "ind": 183.01})
+        self.assertEqual(c["r"]["sg"]["v"][1], -6.53)
+        self.assertEqual(c["mix"]["y"], "2025")
+        self.assertEqual([n for n, _ in c["mix"]["p"]], ["닥터피엘", "누잠", "마케팅대행"])
+        self.assertAlmostEqual(c["mix"]["p"][0][1], 55.5, places=1)
+        self.assertEqual(c["own"], {"name": "주경민", "pct": 61.39, "group": 76.55, "post": 10004030, "float": 21.12})
+        self.assertEqual(c["dem"]["over"], 1.01)
+        self.assertEqual(c["dem"]["top"], 98.74)
+        self.assertEqual(c["dem"]["lock"]["6m"], 0.47)
+        self.assertEqual(c["peers"]["y"], "2026 반기")
+        self.assertEqual([p["name"] for p in c["peers"]["list"]], ["아로마티카", "달바글로벌"])
+        self.assertEqual(c["peers"]["list"][0]["op"], 3581)
+        self.assertEqual(c["peers"]["self"]["sales"], 33174)
+
+    def test_detail_carries_corp_and_prop_comp(self):
+        d = build.parse_detail(CORP_FULL, TODAY)
+        self.assertEqual(d["prop_comp"], 2955)
+        self.assertEqual(d["sub_comp"], 1477.65)
+        self.assertEqual((d["post_shares"], d["float_pct"]), (10004030, 21.12))
+        self.assertIn("biz", d["corp"])
+
+    def test_merge_keeps_old_corp_parts(self):
+        prev = [{"id": "5", "no": "5", "name": "가", "sub_start": "2026-10-01", "corp": {"ceo": "가", "biz": "예전 설명"}}]
+        items = build.merge(prev, [], [], [], {"5": {"corp": {"ceo": "나", "fy": {"sales": 1}}}}, TODAY)
+        self.assertEqual(items[0]["corp"], {"ceo": "나", "biz": "예전 설명", "fy": {"sales": 1}})
+
+    def test_real_page_quirks(self):
+        # 실제 페이지에서 본 모양들: 오래된 해가 앞인 표, 주주 표의 '최대주주' 칸, 천원 단위 유사기업 표, 설명 뒤 목차
+        t = page(
+            tbl("최대주주 | 머스트벤처스 56%", "매출액 | 10,649 (백만원) | 순이익 | -6,994 (백만원)",
+                "1. 사업현황 - 당행은 국내 1호 인터넷전문은행입니다. 2.매출현황 3.재무현황 4.공모후 유통가능 물량")
+            + tbl("구분 | 2023 | 2024 | 2025 | 2025 1분기 | 2026 1분기", "매출액 | 589 | 4,091 | 7,936 | 464 | 2,105",
+                  "영업이익 | -7,800 | -11,729 | -14,725 | -3,609 | -4,489")
+            + tbl("구분 | 주주명 | 관계", "최대주주등 | 김태수 | 최대주주 | 2,885,850 | 30.1% | 2,885,850 | 23.66% | - | -")
+            + tbl("구분 | 동사 | 폴라리스오피스", "매출액 | 10,649,332 | 324,217,014"))
+        c = build.parse_corp(t)
+        self.assertEqual(c["holder"], "머스트벤처스 56%")
+        self.assertEqual(c["biz"], "당행은 국내 1호 인터넷전문은행입니다.")
+        self.assertEqual(c["g"]["y"], ["2026 1분기", "2025", "2025 1분기", "2024", "2023"])
+        self.assertEqual(c["g"]["sales"], [2105, 7936, 464, 4091, 589])
+        self.assertEqual(c["g"]["op"][1], -14725)
+        self.assertEqual(c["peers"]["self"]["sales"], 10649)
+        self.assertEqual(c["peers"]["list"][0]["sales"], 324217)
+
+    def test_garbage_page_gives_nothing(self):
+        self.assertEqual(build.parse_corp(page(tbl("메뉴 | 광고", "구분 | 동사"))), {})
 
 
 class ReviewFixes(unittest.TestCase):
@@ -267,9 +394,15 @@ class Merge(unittest.TestCase):
 
     def test_need_detail(self):
         it = {"no": "9", "sub_end": "2026-09-25"}
-        full = {"market": "KOSDAQ", "list_date": "x", "refund": "y", "float_pct": 20.0, "fc_start": "2026-09-10"}
+        full = {"market": "KOSDAQ", "list_date": "x", "refund": "y", "float_pct": 20.0, "fc_start": "2026-09-10",
+                "corp": {"biz": "…"}}
         self.assertEqual(build.need_detail(it, TODAY, {}), 1)
         self.assertEqual(build.need_detail(it, TODAY, {"9": full}), 0)
+        # 청약 전인데 사업 설명이 아직 없으면 다시 — 38 분석은 청약 즈음에 붙는다
+        self.assertEqual(build.need_detail(it, TODAY, {"9": {**full, "corp": {"ceo": "가"}}}), 1)
+        # 지난 종목은 기업 분석이 한 번이라도 있으면 그만
+        self.assertEqual(build.need_detail({"no": "9", "sub_end": "2026-06-01"}, TODAY, {"9": {**full, "corp": {"ceo": "가"}}}), 0)
+        self.assertEqual(build.need_detail({"no": "9", "sub_end": "2026-06-01"}, TODAY, {"9": {**full, "corp": None}}), 2)
         # 400일 안 지난 종목은 한 번도 못 읽었으면 여유 있을 때 채운다
         self.assertEqual(build.need_detail({"no": "9", "sub_end": "2026-06-01"}, TODAY, {}), 2)
         self.assertEqual(build.need_detail({"no": "9", "sub_end": "2026-06-01"}, TODAY, {"9": full}), 0)
@@ -320,6 +453,16 @@ class EndToEnd(unittest.TestCase):
             self.assertEqual(len(data["items"]), 4)
             errors, _ = validate.check(out, min_items=3, today=TODAY)
             self.assertEqual(errors, [])
+            # 기업 분석은 corp.json 으로 따로 — 일정 파일은 가볍게
+            self.assertFalse(any("corp" in it for it in data["items"]))
+            with open(os.path.join(d, "corp.json"), encoding="utf-8") as f:
+                self.assertEqual(json.load(f)["items"]["2201"], {"ceo": "홍길동"})
+            # 다음 실행은 두 파일을 합쳐 이어 간다
+            self.assertEqual(next(p for p in build.load_prev(out) if p["id"] == "2201")["corp"], {"ceo": "홍길동"})
+            with open(os.path.join(d, "corp.json"), "w", encoding="utf-8") as f:
+                json.dump({"items": {"2201": {"biz": 3}}}, f)
+            errors, _ = validate.check(out, min_items=3, today=TODAY)
+            self.assertTrue(any("biz" in e for e in errors))
 
     def test_too_few_rows_fails_and_keeps_file(self):
         with tempfile.TemporaryDirectory() as d:

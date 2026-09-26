@@ -202,6 +202,13 @@ function openCompare() {
     }), pts);
   });
   body += row("공모가", xs.map((it) => `<span class="num">${won(offerPrice(it))}</span><small>${it.price ? "확정" : "밴드 상단"}</small>`));
+  const cn = xs.map(corpNums);
+  if (cn.some(Boolean)) {
+    body += row("매출", cn.map((n) => (n?.sales != null ? `<span class="num">${bm(n.sales)}</span><small>${esc(n.year || "")}</small>` : "–")), cn.map((n) => n?.sales ?? null));
+    body += row("영업이익률", cn.map((n) => (n?.opm != null ? `<span class="num">${n.opm.toFixed(1)}%</span>` : n?.ni != null ? (n.ni > 0 ? "흑자" : "적자") : "–")), cn.map((n) => n?.opm ?? null));
+    // PER 은 낮을수록 좋다 — 색칠용 값은 부호를 뒤집는다
+    body += row("공모가 PER", cn.map((n) => (n?.per ? `<span class="num">${n.per.toFixed(1)}배</span>` : n?.ni != null && n.ni <= 0 ? "적자" : "–")), cn.map((n) => (n?.per ? -n.per : null)));
+  }
   body += row("청약", xs.map((it) => (it.sub_start ? `${mdw(it.sub_start)}~${md(it.sub_end || it.sub_start)}` : "–")));
   body += row("상장", xs.map((it) => (it.list_date ? mdw(it.list_date) : "미정")));
   body += row("최소 증거금", xs.map((it) => (offerPrice(it) ? `<span class="num">${won(offerPrice(it) * (numOf("cMin") || 10) * (numOf("cMargin") ?? 50) / 100)}</span>` : "–")));

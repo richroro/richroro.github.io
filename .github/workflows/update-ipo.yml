@@ -57,10 +57,12 @@ jobs:
 
       - name: 바뀐 게 있으면 커밋
         run: |
-          # 갱신 시각(updated·asof)만 바뀐 경우는 커밋하지 않는다
+          # 갱신 시각(updated·asof)만 바뀐 경우는 커밋하지 않는다. 기업 분석(corp.json)이 바뀌면 커밋한다
           strip='import json,sys; d=json.load(open(sys.argv[1])); [d.pop(k,None) for k in ("updated","asof")]; print(json.dumps(d,sort_keys=True,ensure_ascii=False))'
-          if [ -z "$(git status --porcelain -- ipo/data)" ] || \
-             [ "$(python -c "$strip" "$RUNNER_TEMP/prev.json" 2>/dev/null)" = "$(python -c "$strip" ipo/data/ipo.json)" ]; then
+          corp_same=1
+          if [ -n "$(git status --porcelain -- ipo/data/corp.json)" ]; then corp_same=0; fi
+          if [ -z "$(git status --porcelain -- ipo/data)" ] || { [ "$corp_same" = 1 ] && \
+             [ "$(python -c "$strip" "$RUNNER_TEMP/prev.json" 2>/dev/null)" = "$(python -c "$strip" ipo/data/ipo.json)" ]; }; then
             echo "내용 변경 없음 — 커밋하지 않습니다." >> "$GITHUB_STEP_SUMMARY"
             exit 0
           fi

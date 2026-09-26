@@ -20,7 +20,7 @@ ISO = re.compile(r"^\d{4}-\d{2}-\d{2}$")
 
 MARKETS = {"KOSPI", "KOSDAQ", "KONEX"}
 NUM_FIELDS = ["band_lo", "band_hi", "price", "amount", "shares", "post_shares", "old_shares", "float_pct",
-              "inst_comp", "lockup", "sub_comp", "open", "close1", "cur"]
+              "inst_comp", "lockup", "sub_comp", "prop_comp", "open", "close1", "cur"]
 HANGUL = re.compile(r"[가-힣]")
 
 
@@ -87,6 +87,31 @@ def check(path: str, min_items: int = 5, stale_days: int = 3, today: dt.date | N
         ua = it.get("uw_alloc")
         if ua is not None and not (isinstance(ua, list) and all(isinstance(x, list) and len(x) == 2 and isinstance(x[1], int) for x in ua)):
             errors.append(f"{tag} uw_alloc 형식: {ua!r}")
+    # 기업 분석(corp.json) — 없어도 된다. 있으면 모양만 본다
+    cpath = os.path.join(os.path.dirname(path), "corp.json")
+    if os.path.exists(cpath):
+        try:
+            with open(cpath, encoding="utf-8") as f:
+                corp = json.load(f).get("items")
+            if not isinstance(corp, dict):
+                errors.append("corp.json items 가 사전이 아님")
+                corp = {}
+        except ValueError as e:
+            errors.append(f"corp.json 을 읽지 못함: {e}")
+            corp = {}
+        for cid, c in corp.items():
+            tag = f"corp.json {cid}"
+            if cid not in ids:
+                warns.append(f"{tag}: ipo.json 에 없는 종목")
+            if not isinstance(c, dict):
+                errors.append(f"{tag} 형식: {type(c).__name__}")
+                continue
+            for k in ("biz", "ceo", "kind", "addr", "web", "holder"):
+                if k in c and not isinstance(c[k], str):
+                    errors.append(f"{tag} {k} 가 글자가 아님")
+            for k in ("g", "v", "fy", "r", "own", "dem", "otc", "mix", "peers"):
+                if k in c and not isinstance(c[k], dict):
+                    errors.append(f"{tag} {k} 형식")
     up = d.get("updated")
     if items and not up:
         errors.append("종목은 있는데 updated 가 없음")
