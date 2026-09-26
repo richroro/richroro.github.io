@@ -475,6 +475,90 @@ function fmtVal(row, it) {
   return `${(+row.v).toFixed(1)}${row.f.unit}`;
 }
 
+/* ---------------------------------------------------------------- 비례 청약 */
+/* 일반 청약 물량의 절반은 균등, 절반은 비례로 나눈다. 넣은 주수 q 에 대한 비례 몫은 대략 q ÷ (통합 경쟁률 × 2) 이고,
+   끝자리는 추첨이라 '기대값'으로 보면 소수 주수가 된다. 수익 = 배정 주식 × 공모가 × 시초가 수익률 − 수수료 − 매도 비용 */
+
+/** 통합 청약경쟁률: 끝났으면 실제 값, 아니면 지난 1년 같은 기관경쟁률 구간 종목들의 중앙값(순위 상관 0.81) */
+function estComp(it) {
+  if (it.sub_comp) return { c: it.sub_comp, how: "actual" };
+  const xs = listedSample(365).filter((x) => x.sub_comp);
+  const inst = OVER[it.id]?.inst ?? it.inst_comp;
+  const tier = INST_T.find((t) => inT(inst, t));
+  const pool = tier ? xs.filter((x) => inT(x.inst_comp, tier)) : [];
+  const use = pool.length >= 3 ? pool : xs;
+  if (!use.length) return null;
+  const cs = use.map((x) => x.sub_comp).sort((a, b) => a - b);
+  return { c: median(cs), lo: cs[Math.floor(cs.length * 0.25)], hi: cs[Math.floor(cs.length * 0.75)], n: use.length,
+    how: pool.length >= 3 ? "tier" : "all", tier: tier && tier[2] };
+}
+/** 시초가 기대 수익률(%): 상장했으면 실제, 판정이 있으면 같은 판정 중앙값, 아니면 기관경쟁률 구간 중앙값 */
+function estRet(it) {
+  if (it.open && it.price) return { r: openRet(it), how: "actual" };
+  const e = expectOf(it);
+  if (e) return { r: e.med, how: "verdict", n: e.n, label: e.label };
+  const xs = listedSample(365);
+  const tier = INST_T.find((t) => inT(OVER[it.id]?.inst ?? it.inst_comp, t));
+  const pool = tier ? xs.filter((x) => inT(x.inst_comp, tier)) : xs;
+  return pool.length ? { r: median(pool.map(openRet)), how: tier ? "tier" : "all", n: pool.length } : null;
+}
+/** 증거금·계좌 수·가정으로 기대 배정과 손익을 계산 */
+function propCalc({ price, deposit, accounts = 1, eq = 1, c, r, fee = 2000, sellRate = 0.002, margin = 0.5, minQ = 10, lockDays = 2 }) {
+  if (!price || !c) return null;
+  const q = Math.floor(deposit / (price * margin));       // 넣을 수 있는 청약 주수(모든 계좌 합)
+  const eqOk = q >= minQ * accounts;                       // 계좌마다 최소 주수를 넣어야 균등 대상
+  const eqShares = eqOk ? eq * accounts : 0;
+  const propShares = q / (c * 2);                          // 비례 기대 주수(소수 = 추첨 기대값)
+  const alloc = Math.min(q, eqShares + propShares);
+  const cost = alloc * price;
+  const gain = alloc * price * r / 100;
+  const sell = alloc * price * (1 + r / 100) * sellRate;
+  const pnl = gain - (alloc > 0 ? fee * Math.min(accounts, Math.max(1, Math.ceil(alloc))) : 0) - sell;
+  return { q, eqShares, propShares, alloc, cost, pnl, per1e8: deposit ? pnl / deposit * 1e8 : 0,
+    annual: deposit ? pnl / deposit * 365 / Math.max(1, lockDays) * 100 : 0, need1: c * 2 * price * margin, refund: Math.max(0, deposit - cost) };
+}
+const lockDaysOf = (it) => (it.refund && it.sub_end ? Math.max(1, diffDays(it.sub_end, it.refund)) : 2);
+const manwonTxt = (v) => (Math.abs(v) >= 1e8 ? `${+(v / 1e8).toFixed(v % 1e8 ? 1 : 0)}억` : `${nf.format(Math.round(v / 1e4))}만`);
+const PROP_STEPS = [1e6, 1e7, 5e7, 1e8, 3e8];
+
+/** 상세: 비례 청약 계산 — 증거금을 바꾸면 이 카드만 다시 그린다 */
+function propCard(it) {
+  const s = stage(it).key;
+  if (it.spac || !["pre", "fc", "sub"].includes(s) || !offerPrice(it)) return "";
+  const c0 = estComp(it), r0 = estRet(it);
+  if (!c0 || !r0) return "";
+  const st = propCard.state[it.id] || (propCard.state[it.id] = { dep: 1e7, acc: 1, c: null, r: null });
+  const c = st.c ?? c0.c, r = st.r ?? r0.r;
+  const base = { price: offerPrice(it), accounts: st.acc, eq: numOf("cEq") ?? 1, c, r, fee: numOf("cFee") ?? 2000,
+    sellRate: (numOf("cSell") ?? 0.2) / 100, margin: (numOf("cMargin") ?? 50) / 100, minQ: numOf("cMin") || 10, lockDays: lockDaysOf(it) };
+  const x = propCalc({ ...base, deposit: st.dep });
+  const cSrc = c0.how === "actual" ? "실제 통합 경쟁률" : `예상 — 기관 ${c0.tier || "전체"} 구간 ${c0.n}곳 중앙값 (가운데 절반 ${nf.format(Math.round(c0.lo))}~${nf.format(Math.round(c0.hi))}:1)`;
+  const rSrc = r0.how === "actual" ? "실제 시초가" : r0.how === "verdict" ? `'${r0.label}' ${r0.n}곳 시초가 중앙값` : `기관 경쟁률 구간 ${r0.n}곳 중앙값`;
+  const rows = PROP_STEPS.map((d) => { const y = propCalc({ ...base, deposit: d }); return `<tr class="${d === st.dep ? "on" : ""}"><td>${manwonTxt(d)}</td><td>${y.alloc.toFixed(y.alloc < 10 ? 2 : 0)}주</td><td class="${cls(y.pnl)}">${y.pnl >= 0 ? "+" : "−"}${won(Math.abs(y.pnl))}</td><td class="${cls(y.pnl)}">${pct(y.pnl / d * 100, 2)}</td></tr>`; }).join("");
+  const weak = c < 100 ? `<p class="note warn mt12"><span class="ic">!</span><span>경쟁률이 낮으면 비례로 받는 주식이 많아져, 공모가 아래로 시작하면 손실도 커집니다.
+    지난 1년 청약경쟁률 100:1 미만 종목의 시초가 중앙값은 <b>${pct(median(listedSample(365).filter((z) => z.sub_comp && z.sub_comp < 100).map(openRet)) ?? 0, 0)}</b>입니다.</span></p>` : "";
+  return `<div class="card pad prop" id="dProp" data-id="${esc(it.id)}"><h3>비례 청약 계산</h3>
+    <p class="hint mt8">균등 ${base.eq}주 × 계좌 ${st.acc}개 + 넣은 돈만큼 비례. 경쟁률·수익률은 바꿔 볼 수 있습니다.</p>
+    <div class="chips mt12" role="group" aria-label="증거금">${PROP_STEPS.map((d) => `<button type="button" class="chip" data-dep="${d}" aria-pressed="${d === st.dep}">${manwonTxt(d)}</button>`).join("")}</div>
+    <div class="form pform mt12">
+      <label class="field"><span>증거금 (만원)</span><input class="pp" data-f="dep" type="number" inputmode="numeric" min="0" step="100" value="${Math.round(st.dep / 1e4)}"></label>
+      <label class="field"><span>계좌 수 (가족 포함)</span><input class="pp" data-f="acc" type="number" inputmode="numeric" min="1" max="10" value="${st.acc}"></label>
+      <label class="field"><span>통합 경쟁률 (:1)</span><input class="pp" data-f="c" type="number" inputmode="decimal" min="1" value="${Math.round(c)}"></label>
+      <label class="field"><span>시초가 수익률 (%)</span><input class="pp" data-f="r" type="number" inputmode="decimal" value="${Math.round(r)}"></label>
+    </div>
+    <p class="hint mt8">경쟁률: ${esc(cSrc)} · 수익률: ${esc(rSrc)}</p>
+    <div class="stats c4 mt12">
+      <div class="st"><div class="k">기대 배정</div><div class="v">${x.alloc.toFixed(2)}<span class="u">주</span></div><div class="s">균등 ${x.eqShares} + 비례 ${x.propShares.toFixed(2)}</div></div>
+      <div class="st"><div class="k">기대 손익</div><div class="v ${cls(x.pnl)}">${x.pnl >= 0 ? "+" : "−"}${won(Math.abs(x.pnl))}<span class="u">원</span></div><div class="s">수수료·매도 비용 뺀 값</div></div>
+      <div class="st"><div class="k">증거금 1억당</div><div class="v ${cls(x.per1e8)}">${x.per1e8 >= 0 ? "+" : "−"}${manwonTxt(Math.abs(x.per1e8))}<span class="u">원</span></div><div class="s">${lockDaysOf(it)}일 묶임 · 연 ${pct(x.annual, 0)}</div></div>
+      <div class="st"><div class="k">비례 1주 받으려면</div><div class="v">${manwonTxt(x.need1)}<span class="u">원</span></div><div class="s">증거금 기준(청약 ${nf.format(Math.round(c * 2))}주)</div></div>
+    </div>
+    <div class="tscroll mt12"><table class="narrow pt"><thead><tr><th>증거금</th><th>기대 배정</th><th>기대 손익</th><th>증거금 대비</th></tr></thead><tbody>${rows}</tbody></table></div>
+    ${weak}
+    <p class="hint mt8">기대값은 평균입니다. 비례 끝자리와 균등은 추첨이라 실제로는 0주일 수도 있습니다. 증권사별 청약 한도와 우대 조건은 따로 확인하세요.</p></div>`;
+}
+propCard.state = {};
+
 /* ---------------------------------------------------------------- 과거 데이터로 보는 세 가지 */
 const INST_T = [[0, 100, "100↓", 60], [100, 200, "100~", 150], [200, 500, "200~", 350], [500, 1000, "500~", 750], [1000, Infinity, "1천↑", 1500]];
 const LOCK_T = [[0, 5, "5%↓", 2], [5, 15, "5~15%", 10], [15, 30, "15~30%", 20], [30, 101, "30%↑", 45]];
@@ -678,6 +762,7 @@ function openDetail(id) {
       <div id="dScore">${scorecard(it)}</div>
       ${whatIf(it)}
       ${sellCoach(it)}
+      ${propCard(it)}
       ${similar(it)}
       <div class="stats c3">
         ${st("희망 공모가", band, "원")}
@@ -725,8 +810,22 @@ function openDetail(id) {
       }, 0);
     }
   };
-  body.oninput = (e) => { if (e.target.classList.contains("bk")) updateBroker(it, body); };
-  body.onclick = (e) => { const li = e.target.closest("[data-open]"); if (li && body.contains(li) && !li.closest(".linkish")) openDetail(li.dataset.open); };
+  const redrawProp = () => { const card = $("dProp"); if (card) { const f = document.activeElement?.dataset?.f; card.outerHTML = propCard(it); if (f) $("dProp").querySelector(`[data-f="${f}"]`)?.focus(); } };
+  body.oninput = (e) => {
+    if (e.target.classList.contains("bk")) updateBroker(it, body);
+    if (e.target.classList.contains("pp")) {
+      const st = propCard.state[it.id], v = parseFloat(e.target.value);
+      const f = e.target.dataset.f;
+      if (f === "dep") st.dep = isFinite(v) ? Math.max(0, v) * 1e4 : 0;
+      else if (f === "acc") st.acc = Math.max(1, Math.min(10, v | 0 || 1));
+      else st[f] = isFinite(v) ? v : null;
+      clearTimeout(redrawProp.t); redrawProp.t = setTimeout(redrawProp, 250);
+    }
+  };
+  body.onclick = (e) => {
+    const chip = e.target.closest("[data-dep]");
+    if (chip) { propCard.state[it.id].dep = +chip.dataset.dep; redrawProp(); return; }
+    const li = e.target.closest("[data-open]"); if (li && body.contains(li) && !li.closest(".linkish")) openDetail(li.dataset.open); };
   if (body.querySelector(".bp-t")) updateBroker(it, body);
   body.querySelectorAll("[data-act]").forEach((b) => b.addEventListener("click", () => {
     const act = b.dataset.act;
@@ -873,6 +972,37 @@ function renderMarket() {
   drawTempChart(all.slice(-30));
   renderBacktest(all);
   renderPastBlocks();
+  renderPropPast();
+}
+
+/** 분석: 지난 1년 모든 종목에 1억씩 비례로 넣었다면 — 판정별로 */
+function renderPropPast() {
+  const xs = listedSample(365).filter((x) => x.sub_comp);
+  if (xs.length < 5) { $("propPast").hidden = true; return; }
+  const per = xs.map((x) => ({ x, v: 1e8 * (openRet(x) / 100) / x.sub_comp, k: scoreOf(x).verdict.key }));
+  const sum = (a) => a.reduce((t, y) => t + y.v, 0);
+  const all = sum(per), pos = per.filter((y) => y.v > 0).length;
+  const best = per.filter((y) => y.k === "strong" || y.k === "go");
+  const days = median(xs.filter((x) => x.refund && x.sub_end).map(lockDaysOf)) || 2;
+  const annual = median(per.map((y) => y.v)) / 1e8 * 365 / days * 100;
+  const sign = (v) => `${v >= 0 ? "+" : "−"}${manwonTxt(Math.abs(v))}`;
+  $("ppStats").innerHTML = `
+    <div class="st"><div class="k">1억당 중앙값</div><div class="v ${cls(median(per.map((y) => y.v)))}">${sign(median(per.map((y) => y.v)))}<span class="u">원</span></div><div class="s">${days}일 묶임 · 연 ${pct(annual, 0)}</div></div>
+    <div class="st"><div class="k">전부 넣었다면(합계)</div><div class="v ${cls(all)}">${sign(all)}<span class="u">원</span></div><div class="s">${per.length}번 · 이익 ${pos}번</div></div>
+    <div class="st"><div class="k">적극 참여·참여만</div><div class="v ${cls(sum(best))}">${sign(sum(best))}<span class="u">원</span></div><div class="s">${best.length}번 · 이익 ${best.filter((y) => y.v > 0).length}번</div></div>
+    <div class="st"><div class="k">가장 크게 잃은 한 번</div><div class="v down">${sign(Math.min(...per.map((y) => y.v)))}<span class="u">원</span></div><div class="s">${esc(per.reduce((a, y) => (y.v < a.v ? y : a)).x.name)}</div></div>`;
+  const groups = [...SC.VERDICTS.map((v) => [v.key, v.label]), ["wait", "판단 보류"]];
+  $("ppTable").innerHTML = `<thead><tr><th>판정</th><th>횟수</th><th>1억당 중앙값</th><th>합계</th><th>이익 비율</th></tr></thead><tbody>${groups.map(([k, l]) => {
+    const g = per.filter((y) => y.k === k); if (!g.length) return "";
+    return `<tr><td class="tx"><span class="vd v-${k}">${esc(l)}</span></td><td>${g.length}</td><td class="${cls(median(g.map((y) => y.v)))}">${sign(median(g.map((y) => y.v)))}</td>
+      <td class="${cls(sum(g))}">${sign(sum(g))}</td><td>${Math.round(g.filter((y) => y.v > 0).length / g.length * 100)}%</td></tr>`;
+  }).join("")}</tbody>`;
+  const top = [...per].sort((a, b) => b.v - a.v);
+  const li = (y) => `<li role="button" tabindex="0" data-open="${esc(y.x.id)}"><b>${esc(y.x.name)}</b><small>경쟁률 ${comp(y.x.sub_comp)} · 시초가 ${pct(openRet(y.x), 0)}</small><span class="${cls(y.v)}">${sign(y.v)}</span></li>`;
+  $("ppExtremes").innerHTML = `<div><h4>1억당 가장 많이 번 곳</h4><ul>${top.slice(0, 3).map(li).join("")}</ul></div>
+    <div><h4>가장 크게 잃은 곳</h4><ul>${top.slice(-3).reverse().map(li).join("")}</ul></div>
+    <p class="hint">경쟁률이 낮은(인기 없는) 종목은 비례로 받는 주식이 많아 손실이 커집니다. 비례는 판정이 좋은 종목에만 쓰는 편이 낫다는 게 지난 1년의 결과입니다.</p>`;
+  $("ppExtremes").onclick = (e) => { const el = e.target.closest("[data-open]"); if (el) openDetail(el.dataset.open); };
 }
 
 function drawTempChart(xs) {
@@ -1111,7 +1241,11 @@ function calc() {
   const lack = Math.max(0, cost - deposit);
   store.set("ipo.calc", Object.fromEntries(Object.entries(CALC_IDS).map(([k, id]) => [k, $(id).value])));
 
-  $("calcOut").innerHTML = `
+  const need1 = c && c > 0 ? c * price : null; // 비례 1주 = 청약 (경쟁률×2)주 × 공모가 × 50%
+  const calcExtra = need1 ? `
+    <div class="st"><div class="k">비례 1주 받으려면</div><div class="v">${manwonTxt(need1)}<span class="u">원</span></div><div class="s">증거금 · 청약 ${nf.format(Math.round(c * 2))}주</div></div>
+    <div class="st"><div class="k">비례 기대 주수</div><div class="v">${propShares.toFixed(2)}<span class="u">주</span></div><div class="s">추첨 포함 평균 · 지금 청약 주수 기준</div></div>` : "";
+  $("calcOut").innerHTML = calcExtra + `
     <div class="st"><div class="k">필요 증거금</div><div class="v">${won(deposit)}<span class="u">원</span></div>
       <div class="s">${won(price)}원 × ${nf.format(qty)}주 × ${Math.round(margin * 100)}%</div></div>
     <div class="st"><div class="k">예상 배정</div><div class="v">${nf.format(alloc)}<span class="u">주</span></div>
