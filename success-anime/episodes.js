@@ -9,6 +9,7 @@
             outfit suit|shirt|hanbok|hoodie|apron|coat|gown|jacket
             color  옷 색     tie    넥타이 색(없으면 생략)
             eye    눈동자색  glasses true|false   age young|adult|old
+            sex    'f' 이면 여성 목소리로 읽음 (기본 남성)
    scenes : 장면. bg 배경, time 시간대(dawn|day|dusk|night), year 자막,
             cast 무대에 세울 인물(왼쪽부터), fx 장면 내내 도는 효과,
             sign 가게(riceshop) 배경의 간판 글씨, beats 한 컷씩 넘어가는 대사.
@@ -175,9 +176,9 @@ window.EPISODES = [
     kid:  { name: '김범수', hair: '#161616', style: 'bowl', outfit: 'shirt', color: '#f2e7c9', eye: '#2a1c10', age: 'young' },
     bs:   { name: '김범수', hair: '#161616', style: 'short', outfit: 'shirt', color: '#fff3bf', tie: '#f59f00', eye: '#2a1c10', age: 'adult', glasses: true },
     bsH:  { name: '김범수', hair: '#161616', style: 'short', outfit: 'hoodie', color: '#fcc419', eye: '#2a1c10', age: 'adult', glasses: true },
-    mom:  { name: '어머니', hair: '#2b2b2b', style: 'bun', outfit: 'apron', color: '#e599a8', eye: '#2a1c10', age: 'adult' },
+    mom:  { name: '어머니', hair: '#2b2b2b', style: 'bun', outfit: 'apron', color: '#e599a8', eye: '#2a1c10', age: 'adult', sex: 'f' },
     gamer:{ name: 'PC방 손님', hair: '#5c3d2e', style: 'spiky', outfit: 'hoodie', color: '#4dabf7', eye: '#2a1c10', age: 'young' },
-    dev:  { name: '개발자', hair: '#222', style: 'long', outfit: 'hoodie', color: '#ffd43b', eye: '#2a1c10', age: 'young' }
+    dev:  { name: '개발자', hair: '#222', style: 'long', outfit: 'hoodie', color: '#ffd43b', eye: '#2a1c10', age: 'young', sex: 'f' }
   },
   scenes: [
     { bg: 'room', time: 'night', year: '1970 ~ 80년대 · 서울', cast: ['mom', 'kid'], beats: [
@@ -242,7 +243,7 @@ window.EPISODES = [
     bjJ:  { name: '김봉진', hair: '#111', style: 'spiky', outfit: 'jacket', color: '#12b886', eye: '#2a1c10', age: 'adult', glasses: true },
     bro:  { name: '형', hair: '#222', style: 'short', outfit: 'hoodie', color: '#495057', eye: '#2a1c10', age: 'adult' },
     lend: { name: '빚쟁이', hair: '#333', style: 'bald', outfit: 'coat', color: '#343a40', eye: '#111', age: 'adult' },
-    team: { name: '팀원', hair: '#7a4b2a', style: 'long', outfit: 'hoodie', color: '#63e6be', eye: '#2a1c10', age: 'young' }
+    team: { name: '팀원', hair: '#7a4b2a', style: 'long', outfit: 'hoodie', color: '#63e6be', eye: '#2a1c10', age: 'young', sex: 'f' }
   },
   scenes: [
     { bg: 'sea', time: 'day', year: '1976 · 전남 완도', cast: ['bj'], fx: 'petal', beats: [
@@ -301,7 +302,7 @@ window.EPISODES = [
     lee:  { name: '이승건', hair: '#111', style: 'part', outfit: 'gown', color: '#ffffff', eye: '#20160d', age: 'young' },
     leeH: { name: '이승건', hair: '#111', style: 'part', outfit: 'hoodie', color: '#3182f6', eye: '#20160d', age: 'young' },
     mem:  { name: '팀원', hair: '#3b2b20', style: 'bowl', outfit: 'hoodie', color: '#adb5bd', eye: '#20160d', age: 'young', glasses: true },
-    user: { name: '인터뷰한 사용자', hair: '#6b4226', style: 'long', outfit: 'jacket', color: '#f783ac', eye: '#20160d', age: 'young' },
+    user: { name: '인터뷰한 사용자', hair: '#6b4226', style: 'long', outfit: 'jacket', color: '#f783ac', eye: '#20160d', age: 'young', sex: 'f' },
     reg:  { name: '규제 담당자', hair: '#2b2b2b', style: 'part', outfit: 'suit', color: '#343a40', tie: '#495057', eye: '#111', age: 'adult', glasses: true }
   },
   scenes: [
@@ -358,7 +359,7 @@ window.EPISODES = [
     jangJ:{ name: '장병규', hair: '#151515', style: 'short', outfit: 'jacket', color: '#495057', eye: '#20160d', age: 'adult', glasses: true },
     dev:  { name: '개발 PD', hair: '#222', style: 'spiky', outfit: 'hoodie', color: '#f08c00', eye: '#20160d', age: 'adult' },
     cfo:  { name: '재무 담당', hair: '#333', style: 'part', outfit: 'suit', color: '#343a40', tie: '#868e96', eye: '#111', age: 'adult', glasses: true },
-    gamer:{ name: '스트리머', hair: '#8a5a3b', style: 'long', outfit: 'hoodie', color: '#74c0fc', eye: '#355c8a', age: 'young' }
+    gamer:{ name: '스트리머', hair: '#8a5a3b', style: 'long', outfit: 'hoodie', color: '#74c0fc', eye: '#355c8a', age: 'young', sex: 'f' }
   },
   scenes: [
     { bg: 'lab', time: 'day', year: '1997 · KAIST', cast: ['jang'], beats: [
@@ -470,10 +471,10 @@ window.EPISODES = [
   mood: 'bright',
   logline: '장 볼 시간도 없던 금융맨이, 자는 동안 문 앞에 신선식품을 가져다 놓는 새벽배송으로 새 시장을 만들기까지.',
   cast: {
-    seul: { name: '김슬아', hair: '#1a1210', style: 'long', outfit: 'suit', color: '#343a40', eye: '#2d1f14', age: 'young' },
-    seulK:{ name: '김슬아', hair: '#1a1210', style: 'long', outfit: 'jacket', color: '#7048e8', eye: '#2d1f14', age: 'adult' },
+    seul: { name: '김슬아', hair: '#1a1210', style: 'long', outfit: 'suit', color: '#343a40', eye: '#2d1f14', age: 'young', sex: 'f' },
+    seulK:{ name: '김슬아', hair: '#1a1210', style: 'long', outfit: 'jacket', color: '#7048e8', eye: '#2d1f14', age: 'adult', sex: 'f' },
     ops:  { name: '물류 담당', hair: '#222', style: 'short', outfit: 'jacket', color: '#ffd43b', eye: '#20160d', age: 'adult' },
-    mom:  { name: '고객', hair: '#3b2b20', style: 'bun', outfit: 'apron', color: '#b197fc', eye: '#20160d', age: 'adult' }
+    mom:  { name: '고객', hair: '#3b2b20', style: 'bun', outfit: 'apron', color: '#b197fc', eye: '#20160d', age: 'adult', sex: 'f' }
   },
   scenes: [
     { bg: 'office', time: 'night', year: '2000년대 · 해외 금융가', cast: ['seul'], beats: [

@@ -262,9 +262,10 @@
       <button class="btn" id="bPrev" title="이전 컷 (←)">◀ 이전</button>
       <button class="btn" id="bNext" title="다음 컷 (스페이스)">다음 ▶</button>
       <button class="btn" id="bAuto" title="자동 재생 (A)">자동 재생</button>
-      <button class="btn" id="bSound" title="소리 (M)">🔇 소리 꺼짐</button>
+      <button class="btn" id="bVoice" title="목소리 (V)">🗣 목소리 켜짐</button>
+      <button class="btn" id="bSound" title="배경음 (M)">🔇 배경음 꺼짐</button>
       <div class="prog"><i id="prog"></i></div>
-      <span class="kbd">스페이스·클릭 다음 · ← 이전 · A 자동 · M 소리</span>
+      <span class="kbd">스페이스·클릭 다음 · ← 이전 · A 자동 · V 목소리 · M 배경음</span>
     </div>
   </div>
 
@@ -334,10 +335,11 @@
         <p class="lead" style="color:#d7d1ef">그림 파일·영상 파일이 하나도 없습니다. 캐릭터 얼굴, 배경, 불길과 집중선까지 전부 SVG와 캔버스 코드로 그리고, 배경음과 효과음도 Web Audio로 합성합니다.
         에피소드는 <b>episodes.js</b>의 대본 데이터일 뿐이라, 객체 하나를 추가하면 새 화가 생깁니다.</p>
 <pre>success-anime/
-├─ engine.js     캐릭터/배경 렌더러 · 파티클 · 사운드 (공용 엔진)
+├─ engine.js     캐릭터/배경 렌더러 · 파티클 · 사운드 · 목소리 (공용 엔진)
 ├─ index.html    가로 재생기 · 대본 편집기
 ├─ shorts.html   9:16 세로 쇼츠 (요약 · 레슨)
 ├─ episodes.js   에피소드 대본 (인물 생김새 + 장면 + 컷 + 교훈)
+├─ tools/        쇼츠 MP4 렌더러 · 대사 음성 합성
 └─ README.md     새 에피소드 추가 · 쇼츠 영상 뽑는 법</pre>
         <div class="endbtns" style="justify-content:flex-start">
           <a class="btn pri" href="https://github.com/richroro/richroro.github.io/tree/main/success-anime" target="_blank" rel="noopener">GitHub에서 보기 →</a>
@@ -358,7 +360,7 @@
 (() => {
 'use strict';
 const $ = s => document.querySelector(s);
-const { clamp, esc, rnd, hash, charSVG, bgSVG, speedSVG, Snd, autoChar, BG, BG_KO, SKY, TIME_KO, FACE_KO, FX_KO } = window.AnimeEngine;
+const { clamp, esc, rnd, hash, charSVG, bgSVG, speedSVG, Snd, Voice, NARRATOR, autoChar, BG, BG_KO, SKY, TIME_KO, FACE_KO, FX_KO } = window.AnimeEngine;
 const FX = window.AnimeEngine.particles(document.querySelector('#fxCanvas'));
 
 /* =====================================================================
@@ -429,7 +431,7 @@ function typeText(text, who) {
   const chars = [...text];
   state.timer = setInterval(() => {
     k++; txtEl.textContent = chars.slice(0, k).join('');
-    if (k % 2) Snd.blip(chars[k - 1], who);
+    if (k % 2 && !Voice.on) Snd.blip(chars[k - 1], who);
     if (k >= chars.length) finishType();
   }, 34);
 }
@@ -438,14 +440,17 @@ function finishType() {
   const b = state.beats[state.i];
   if (b && b.quote) txtEl.insertAdjacentHTML('beforeend', '<span class="quoteMark">★실제 발언</span>');
   $('#nextArrow').classList.add('on');
-  for (const id in state.onStage) state.onStage[id].classList.remove('talk');
+  // with a voice the mouth keeps moving until the line is spoken
+  const talking = Object.values(state.onStage).filter(el => el.classList.contains('talk')), stop = () => talking.forEach(el => el.classList.remove('talk'));
+  if (state.speech) state.speech.then(stop); else stop();
   scheduleAuto();
 }
 function scheduleAuto() {
   clearTimeout(state.autoT);
   if (!state.auto || state.typing) return;
-  const b = state.beats[state.i]; const len = (b && (b.t || b.n || b.big || '').length) || 10;
-  state.autoT = setTimeout(next, 1400 + len * 45);
+  const b = state.beats[state.i]; const len = (b && (b.t || b.n || b.big || '').length) || 10, i = state.i;
+  if (state.speech) state.speech.then(() => { if (state.auto && state.i === i && state.phase === 'play') { clearTimeout(state.autoT); state.autoT = setTimeout(next, 650); } });
+  else state.autoT = setTimeout(next, 1400 + len * 45);
 }
 
 function playBeat(i, back) {
@@ -486,11 +491,13 @@ function playBeat(i, back) {
   $('#box').classList.toggle('hide', !text);
   doFx(b.fx);
   if (b.big) showBig(b.big);
+  const say = text || b.big || '';
+  state.speech = say && Voice.on ? Voice.speak(say, b.who ? (state.ep.cast[b.who] || autoChar(b.who)) : NARRATOR) : null;
   if (text) typeText(text, who); else { txtEl.textContent = ''; state.typing = false; scheduleAuto(); }
 }
 
 function showTitle(ep, no) {
-  state.phase = 'title';
+  state.phase = 'title'; state.speech = null; Voice.cancel();
   const tc = $('#titlecard');
   tc.innerHTML = `<div class="ep">EPISODE ${no}</div><h2>${esc(ep.title)}</h2><p>${esc(ep.logline || '')}</p>
     <div class="who">${esc(ep.person || '')}<small>${esc(ep.company || '')}${ep.years ? ' · ' + esc(ep.years) : ''}</small></div>
@@ -501,7 +508,9 @@ function showTitle(ep, no) {
   if (state.auto) { clearTimeout(state.autoT); state.autoT = setTimeout(next, 2600); }
 }
 function showEnd() {
-  state.phase = 'end'; clearTimeout(state.autoT);
+  state.phase = 'end'; clearTimeout(state.autoT); state.speech = null;
+  if (Voice.on && state.ep.lessons && state.ep.lessons.length)
+    Voice.speak(`${state.ep.person ? state.ep.person + '에게 배우는 것. ' : ''}` + state.ep.lessons.map((l, k) => `${k + 1}, ${l[0]}.`).join(' '), NARRATOR);
   const ep = state.ep, idx = window.EPISODES.indexOf(ep), nextEp = window.EPISODES[idx + 1];
   const ls = (ep.lessons || []).map((l, k) => `<div class="lesson"><b><em>${k + 1}</em>${esc(l[0])}</b><span>${esc(l[1] || '')}</span></div>`).join('');
   const ec = $('#endcard');
@@ -535,7 +544,7 @@ function prev() {
 }
 function epNo(ep) { const i = window.EPISODES.indexOf(ep); return i >= 0 ? i + 1 : '★'; }
 function loadEpisode(ep, scroll) {
-  clearTimeout(state.autoT); clearInterval(state.timer);
+  clearTimeout(state.autoT); clearInterval(state.timer); Voice.cancel(); state.speech = null;
   state.ep = ep; state.beats = flatten(ep); state.i = -1; state.curBg = '';
   for (const id in state.onStage) state.onStage[id].remove(); state.onStage = {};
   FX.clear(); FX.ambient = null; $('#fireBg').classList.remove('on');
@@ -554,14 +563,19 @@ $('#bNext').onclick = next; $('#bPrev').onclick = prev;
 $('#bAuto').onclick = () => { state.auto = !state.auto; $('#bAuto').classList.toggle('on', state.auto); $('#bAuto').textContent = state.auto ? '⏸ 자동 재생 중' : '자동 재생';
   if (state.auto) { if (state.phase === 'title') state.autoT = setTimeout(next, 1200); else scheduleAuto(); } else clearTimeout(state.autoT); };
 $('#bSound').onclick = () => { Snd.init(); Snd.on = !Snd.on; if (Snd.ac.state === 'suspended') Snd.ac.resume();
-  $('#bSound').textContent = Snd.on ? '🔊 소리 켜짐' : '🔇 소리 꺼짐'; $('#bSound').classList.toggle('on', Snd.on);
+  $('#bSound').textContent = Snd.on ? '🔊 배경음 켜짐' : '🔇 배경음 꺼짐'; $('#bSound').classList.toggle('on', Snd.on);
   if (Snd.on) Snd.startBgm(state.ep && state.ep.mood); else Snd.stopBgm(); };
+Voice.on = Voice.supported;
+const voiceBtn = () => { $('#bVoice').textContent = !Voice.supported ? '🗣 목소리 미지원' : Voice.on ? '🗣 목소리 켜짐' : '🗣 목소리 꺼짐'; $('#bVoice').classList.toggle('on', Voice.on); };
+$('#bVoice').onclick = () => { if (!Voice.supported) return; Voice.on = !Voice.on; if (!Voice.on) { Voice.cancel(); state.speech = null; } voiceBtn(); };
+voiceBtn();
 document.addEventListener('keydown', e => {
   if (/TEXTAREA|INPUT/.test(document.activeElement.tagName)) return;
   if (e.key === ' ' || e.key === 'Enter' || e.key === 'ArrowRight') { e.preventDefault(); next(); }
   else if (e.key === 'ArrowLeft') prev();
   else if (e.key === 'a' || e.key === 'A') $('#bAuto').click();
   else if (e.key === 'm' || e.key === 'M') $('#bSound').click();
+  else if (e.key === 'v' || e.key === 'V') $('#bVoice').click();
 });
 
 /* =====================================================================

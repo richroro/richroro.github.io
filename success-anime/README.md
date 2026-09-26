@@ -4,7 +4,7 @@
 
 - 배포: https://richroro.github.io/success-anime/
 - 쇼츠: https://richroro.github.io/success-anime/shorts.html
-- 빌드 없음. `engine.js`(캐릭터·배경·효과·사운드) + `index.html`(가로 재생기) + `shorts.html`(세로 쇼츠) + `episodes.js`(대본).
+- 빌드 없음. `engine.js`(캐릭터·배경·효과·사운드·목소리) + `index.html`(가로 재생기) + `shorts.html`(세로 쇼츠) + `episodes.js`(대본).
 
 ## 에피소드
 
@@ -76,13 +76,24 @@
 - 긴 나레이션은 문장 단위로 잘라 읽을 수 있는 속도(약 초당 11자)로 자막을 넘깁니다.
 - 주소: `shorts.html?ep=chung&k=story`, `shorts.html?ep=chung&k=2`. `&rec=1`은 화면 전체를 9:16으로 채우는 녹화용 모드.
 
+## 목소리
+
+모든 대사와 나레이션을 목소리로 읽습니다. 인물마다 목소리 높낮이·빠르기가 달라서, 같은 목소리라도 누가 말하는지 구분됩니다.
+
+- **사이트에서** (가로 재생기·쇼츠): 보는 사람 기기에 깔린 한국어 음성(Web Speech API)으로 읽습니다. 휴대폰·윈도·맥에는 자연스러운 한국어 음성이 기본으로 들어 있습니다. ‘🗣 목소리’ 버튼(또는 V 키)으로 끄고 켭니다. 목소리가 켜져 있으면 대사를 다 읽을 때까지 입이 움직이고, 자동 재생·쇼츠는 다 읽을 때까지 기다렸다 넘어갑니다.
+- **MP4에서**: 아래 렌더 스크립트가 Microsoft Edge 신경망 음성으로 대사마다 음성 파일을 만든 뒤, 음성 길이에 맞춰 컷을 늘려 녹화하고 목소리가 나올 때 배경음을 줄여 섞습니다. 최종 음량은 쇼츠 표준인 -14 LUFS로 맞춥니다.
+  - 나레이터는 선희(여성), 남성 인물은 인준·현수, 여성 인물은 선희 목소리에 인물별 높낮이·빠르기를 줍니다. 여성 인물은 `episodes.js`의 `sex: 'f'`로 표시합니다.
+
 ### MP4로 뽑기
 
 ```bash
 python3 -m http.server 8765                          # 저장소 루트에서
 npm i playwright
+pip install edge-tts                                 # 목소리 (인터넷 필요)
 node success-anime/tools/render-shorts.js out/ all   # 32편 전부
 node success-anime/tools/render-shorts.js out/ toss/story kurly/2
+VOICE=espeak node success-anime/tools/render-shorts.js out/ all   # 오프라인 기계음 (pip install espeakng-loader)
+VOICE=none   node success-anime/tools/render-shorts.js out/ all   # 목소리 없이
 ```
 
-1080×1920 · 30fps · H.264, 배경음·효과음(AAC)이 들어갑니다. 화면은 크롬 스크린캐스트로 실제 시간대로 뜨고, 소리는 재생 중 남긴 효과 기록을 `OfflineAudioContext`로 다시 합성해 음량을 맞춥니다. 내레이션 음성은 없으니 쇼츠 앱에서 음성이나 음악을 얹어 쓰면 됩니다.
+1080×1920 · 30fps · H.264 + AAC. 화면은 크롬 스크린캐스트로 실제 시간대로 뜨고, 배경음·효과음은 재생 중 남긴 효과 기록을 `OfflineAudioContext`로 다시 합성합니다. ffmpeg가 PATH에 있어야 합니다(`FFMPEG=/경로/ffmpeg`로 지정 가능). TLS 검사 프록시 뒤라면 `SSL_CERT_FILE`에 인증서 묶음을 지정하면 Edge 음성도 그 인증서로 접속합니다.

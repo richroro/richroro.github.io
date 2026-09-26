@@ -205,7 +205,8 @@
     <p class="lead">에피소드를 1분 안쪽 세로 영상으로 줄인 <b>요약 쇼츠</b>와, 교훈 하나를 그 장면과 함께 보여 주는 <b>레슨 쇼츠</b>. 유튜브 쇼츠·릴스·틱톡 규격(9:16)입니다.</p>
     <div class="ctrls">
       <button class="btn pri" id="bReplay">↺ 처음부터</button>
-      <button class="btn" id="bSound">🔇 소리 꺼짐</button>
+      <button class="btn" id="bVoice">🗣 목소리 켜짐</button>
+      <button class="btn" id="bSound">🔇 배경음 꺼짐</button>
       <button class="btn" id="bAll">연속 재생</button>
     </div>
     <div class="list" id="list"></div>
@@ -220,7 +221,7 @@
 (() => {
 'use strict';
 const $ = s => document.querySelector(s);
-const { clamp, esc, charSVG, bgSVG, speedSVG, Snd } = window.AnimeEngine;
+const { clamp, esc, charSVG, bgSVG, speedSVG, Snd, Voice, castVoice, speechText, NARRATOR } = window.AnimeEngine;
 const EPS = window.EPISODES;
 const params = new URLSearchParams(location.search);
 const REC = params.get('rec') === '1';
@@ -273,8 +274,29 @@ function build(ep, k) {
     const nx = ep.lessons[n + 1];
     shots.push({ kind: 'outro', dur: 2.8, ep, next: nx ? `다음 공식 #${n + 2} ${nx[0]}` : '전체 이야기는 사이트에서' });
   }
+  shots.forEach(s => { s.say = line(s); });
+  // exported shorts: stretch each shot to fit its recorded voice line
+  const vd = window.__voiceDur;
+  if (vd) shots.forEach((s, i) => { if (vd[i]) s.dur = Math.max(s.dur, vd[i] + (s.kind === 'beat' ? .45 : .7)); });
   let t = 0; shots.forEach(s => { s.t = t; t += s.dur; });
   return { shots, dur: t };
+}
+// what each shot says out loud, and in whose voice
+function line(s) {
+  const ep = s.ep;
+  switch (s.kind) {
+    case 'intro': return s.lesson == null ? { text: ep.hook || ep.title } : { text: `부자 공식 ${s.lesson + 1}번. ${ep.lessons[s.lesson][0]}.` };
+    case 'beat': return s.text ? { text: s.text, who: s.b.who } : s.first && s.b.big ? { text: s.b.big } : null;
+    case 'recap': return { text: `${ep.person}의 부자 공식. ` + ep.lessons.map((l, k) => `${['하나', '둘', '셋', '넷', '다섯'][k]}, ${l[0]}.`).join(' ') };
+    case 'lesson': return { text: `${ep.lessons[s.n][0]}. ${ep.lessons[s.n][1]}` };
+    case 'outro': return { text: '더 많은 이야기는 성공 애니에서.' };
+  }
+  return null;
+}
+function voiceJobs(ep, k) {
+  const keep = window.__voiceDur; window.__voiceDur = null;
+  const plan = build(ep, k); window.__voiceDur = keep;
+  return plan.shots.map((s, i) => s.say && { i, text: speechText(s.say.text), ...castVoice(s.say.who ? ep.cast[s.say.who] : NARRATOR) }).filter(Boolean);
 }
 
 /* ---------------------------------------------------------------
@@ -339,9 +361,9 @@ function hookHTML(ep, lesson) {
 /* ---------------------------------------------------------------
    3. PLAYER
    --------------------------------------------------------------- */
-const P = { plan: null, i: -1, timers: [], t0: 0, raf: 0, playing: false, chain: false };
+const P = { plan: null, i: -1, timers: [], t0: 0, raf: 0, playing: false, chain: false, run: 0, clock: 0 };
 function reset() {
-  P.timers.forEach(clearTimeout); P.timers = []; cancelAnimationFrame(P.raf);
+  P.timers.forEach(clearTimeout); P.timers = []; cancelAnimationFrame(P.raf); P.run++; Voice.cancel();
   for (const id in st.onStage) st.onStage[id].remove(); st.onStage = {}; st.curBg = ''; st.scene = null;
   FX.clear(); FX.ambient = null; $('#fire').classList.remove('on'); $('#speed').classList.remove('on'); $('#cam').classList.remove('zoom');
   $('#big').classList.remove('go'); cards(null); caption('', ''); $('#year').classList.remove('show');
@@ -379,16 +401,31 @@ function play() {
   if (!P.plan) return;
   reset(); load(st.ep, P.k);
   $('#play').classList.add('hide'); P.playing = true;
-  Snd.startLog(); window.__t0 = Date.now() / 1000;
+  Snd.startLog(); window.__t0 = Date.now() / 1000; window.__done = false;
   P.t0 = performance.now();
   Snd.startBgm(st.ep.mood);
-  P.plan.shots.forEach((s, i) => P.timers.push(setTimeout(() => shot(s, i), s.t * 1000)));
-  P.timers.push(setTimeout(done, P.plan.dur * 1000));
-  const loop = () => { const t = (performance.now() - P.t0) / 1000;
-    $('#bar').style.width = clamp(t / P.plan.dur * 100, 0, 100) + '%';
+  runShots(P.run);
+  const loop = () => { const t = (performance.now() - P.t0) / 1000, total = Math.max(P.plan.dur, P.clock);
+    $('#bar').style.width = clamp(t / total * 100, 0, 100) + '%';
     $('#clock').textContent = `0:${String(Math.min(59, Math.floor(t))).padStart(2, '0')}`;
     P.raf = requestAnimationFrame(loop); };
   loop();
+}
+// shots start on an absolute clock (so exported audio lines up); a live voice line that runs long pushes the clock back
+async function runShots(run) {
+  const wait = ms => new Promise(r => P.timers.push(setTimeout(r, Math.max(0, ms))));
+  P.clock = 0;
+  for (let i = 0; i < P.plan.shots.length; i++) {
+    const s = P.plan.shots[i];
+    await wait(P.t0 + P.clock * 1000 - performance.now()); if (run !== P.run) return;
+    Snd.record('shot', [i]);
+    shot(s, i);
+    const spoken = s.say && Voice.on ? Voice.speak(s.say.text, s.say.who ? st.ep.cast[s.say.who] : NARRATOR) : null;
+    P.clock += s.dur;
+    if (spoken) { await spoken; if (run !== P.run) return; P.clock = Math.max(P.clock, (performance.now() - P.t0) / 1000 + .25); }
+  }
+  await wait(P.t0 + P.clock * 1000 - performance.now()); if (run !== P.run) return;
+  done();
 }
 function done() {
   P.playing = false; cancelAnimationFrame(P.raf); Snd.stopBgm(); $('#bar').style.width = '100%';
@@ -413,7 +450,8 @@ function shot(s, i) {
     for (const id in st.onStage) { const el = st.onStage[id]; el.classList.toggle('dim', !!b.who && b.who !== id); el.classList.toggle('speak', b.who === id); el.classList.remove('talk'); }
     if (b.who && st.onStage[b.who]) {
       face(b.who, b.face || 'normal'); const el = st.onStage[b.who]; el.classList.add('talk');
-      P.timers.push(setTimeout(() => el.classList.remove('talk'), Math.min(s.dur * .75, .5 + [...s.text].length * .07) * 1000));
+      const vd = window.__voiceDur && window.__voiceDur[i];
+      P.timers.push(setTimeout(() => el.classList.remove('talk'), (vd || Math.min(s.dur * .75, .5 + [...s.text].length * .07)) * 1000));
     }
     if (s.first) { fx(b.fx); if (b.big) big(b.big); }
     caption(b.who ? st.ep.cast[b.who].name : '', s.text, b.quote && s.first);
@@ -455,7 +493,11 @@ $('#list').addEventListener('click', e => { const c = e.target.closest('.chip');
 $('#short').addEventListener('click', () => { if (!P.playing && !REC) play(); });
 $('#bReplay').onclick = () => play();
 $('#bSound').onclick = () => { Snd.init(); Snd.on = !Snd.on; if (Snd.ac.state === 'suspended') Snd.ac.resume();
-  $('#bSound').textContent = Snd.on ? '🔊 소리 켜짐' : '🔇 소리 꺼짐'; $('#bSound').classList.toggle('on', Snd.on); if (Snd.on && P.playing) Snd.startBgm(st.ep.mood); else if (!Snd.on) Snd.stopBgm(true); };
+  $('#bSound').textContent = Snd.on ? '🔊 배경음 켜짐' : '🔇 배경음 꺼짐'; $('#bSound').classList.toggle('on', Snd.on); if (Snd.on && P.playing) Snd.startBgm(st.ep.mood); else if (!Snd.on) Snd.stopBgm(true); };
+Voice.on = Voice.supported && !REC;
+const voiceBtn = () => { $('#bVoice').textContent = !Voice.supported ? '🗣 목소리 미지원' : Voice.on ? '🗣 목소리 켜짐' : '🗣 목소리 꺼짐'; $('#bVoice').classList.toggle('on', Voice.on); };
+$('#bVoice').onclick = () => { if (!Voice.supported) return; Voice.on = !Voice.on; if (!Voice.on) Voice.cancel(); voiceBtn(); };
+voiceBtn();
 $('#bAll').onclick = () => { P.chain = !P.chain; $('#bAll').classList.toggle('on', P.chain); $('#bAll').textContent = P.chain ? '⏸ 연속 재생 중' : '연속 재생'; if (P.chain && !P.playing) play(); };
 document.addEventListener('keydown', e => { if (e.key === ' ') { e.preventDefault(); if (!P.playing) play(); } });
 
@@ -464,7 +506,7 @@ const ep0 = EPS.find(e => e.id === params.get('ep')) || EPS[0];
 const k0 = params.get('k') && (params.get('k') === 'story' || ep0.lessons[+params.get('k') - 1]) ? params.get('k') : 'story';
 load(ep0, k0);
 if (REC) $('#play').classList.add('hide');
-window.Shorts = { play, load, build, allShorts, get dur() { return P.plan.dur; } };
+window.Shorts = { play, load, build, allShorts, voiceJobs, get dur() { return P.plan.dur; } };
 })();
 </script>
 </body>

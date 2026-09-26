@@ -531,8 +531,72 @@ function autoChar(name) {
   return { name, style: old && r() < .5 ? 'gray' : style, outfit: /엄마|어머니/.test(name) ? 'apron' : /회장|사장|투자자|부장|팀장/.test(name) ? 'suit' : outfit,
     hair: pick(['#161616', '#2b1d14', '#4a2f1f', '#1c1f2e', '#6b3e26', '#23150f']), color: pick(['#4dabf7', '#ff6b9e', '#51cf66', '#fcc419', '#845ef7', '#ff922b', '#343a40', '#e9ecef', '#20c997']),
     tie: r() < .4 ? pick(['#c92a2a', '#1c7ed6', '#f59f00']) : undefined, eye: pick(['#3b2a1a', '#2d1f14', '#355c8a', '#3d6b47']),
-    glasses: r() < .3, age: old ? 'old' : pick(['young', 'adult']) };
+    glasses: r() < .3, age: old ? 'old' : pick(['young', 'adult']), sex: /엄마|어머니|할머니|누나|언니|딸|아내/.test(name) || (!/아버지|할아버지|아빠|형|오빠|아들/.test(name) && (style === 'long' || style === 'bun') && r() < .75) ? 'f' : 'm' };
 }
-window.AnimeEngine = { clamp, esc, uid, shade, rnd, hash, charSVG, bgSVG, speedSVG, particles, Snd, autoChar,
+/* =====================================================================
+   6. VOICE — who sounds like what, and live playback via Web Speech
+   The same casting drives the exported shorts (Edge neural voices) and
+   the in-browser player (the viewer's own Korean system voices).
+   ===================================================================== */
+const NARRATOR = { name: '나레이션', narrator: true };
+function isFemale(c) {
+  if (!c || c.narrator) return true;
+  if (c.sex) return c.sex === 'f';
+  return /엄마|어머니|할머니|누나|언니|딸|아내|여자|여성/.test(c.name || '');
+}
+// edge-tts voice + pitch/rate offsets; each character gets a stable, distinct offset
+function castVoice(c) {
+  if (!c || c.narrator) return { voice: 'ko-KR-SunHiNeural', rate: '+6%', pitch: '-2Hz', female: true, pitchN: 0, rateN: 0 };
+  const f = isFemale(c), r = rnd(hash(c.name || 'x')), old = c.age === 'old', young = c.age === 'young';
+  const pitchN = Math.round((old ? -9 : young ? 5 : 0) + (r() - .5) * 8);
+  const rateN = Math.round((old ? -8 : young ? 8 : 3) + (r() - .5) * 6);
+  const voice = f ? 'ko-KR-SunHiNeural' : (c.age === 'adult' || old) && r() < .5 ? 'ko-KR-HyunsuMultilingualNeural' : 'ko-KR-InJoonNeural';
+  return { voice, rate: (rateN >= 0 ? '+' : '') + rateN + '%', pitch: (pitchN >= 0 ? '+' : '') + pitchN + 'Hz', female: f, pitchN, rateN };
+}
+// what a voice should actually read
+function speechText(t) {
+  return String(t || '')
+    .replace(/^\((.*)\)$/, '$1')
+    .replace(/→/g, ', ').replace(/[·•]/g, ', ').replace(/~/g, '에서 ').replace(/…+/g, '… ')
+    .replace(/[‘’“”"]/g, '').replace(/#(\d)/g, '$1번 ').replace(/\s+/g, ' ').trim();
+}
+const FEM_RE = /female|여성|yuna|sunhi|heami|seoyeon|jimin|sora|narae|google 한국의/i, MALE_RE = /(?<!fe)male|남성|injoon|hyunsu|minsang|bong|gook/i;
+const Voice = {
+  on: false, list: [],
+  supported: typeof window !== 'undefined' && 'speechSynthesis' in window,
+  load() {
+    if (!this.supported) return;
+    const get = () => { this.list = speechSynthesis.getVoices().filter(v => /^ko/i.test(v.lang)); };
+    get(); speechSynthesis.addEventListener?.('voiceschanged', get);
+  },
+  // best-effort gender match among the device's Korean voices
+  pick(c) {
+    if (!this.list.length) return null;
+    const want = this.list.filter(v => (isFemale(c) ? FEM_RE : MALE_RE).test(v.name));
+    const pool = want.length ? want : this.list;
+    // neural/premium voices first, then Google's online voice, then whatever the device has
+    const rank = v => (/natural|neural|premium|enhanced/i.test(v.name) ? 3 : /google/i.test(v.name) ? 2 : v.localService ? 1 : 0);
+    return [...pool].sort((a, b) => rank(b) - rank(a))[0];
+  },
+  cancel() { if (this.supported) speechSynthesis.cancel(); },
+  // resolves when the line finishes (or at once if voice is off/unsupported)
+  speak(text, c) {
+    if (!this.on || !this.supported) return Promise.resolve();
+    const t = speechText(text); if (!t) return Promise.resolve();
+    this.cancel();
+    c = c || NARRATOR;
+    const cv = castVoice(c), u = new SpeechSynthesisUtterance(t), v = this.pick(c);
+    u.lang = 'ko-KR'; if (v) u.voice = v;
+    // same-voice devices still get distinct characters from pitch/rate; a wrong-gender voice is pushed toward the right range
+    const fem = isFemale(c), vFem = v ? FEM_RE.test(v.name) : fem;
+    u.pitch = clamp(1 + cv.pitchN / 22 + (vFem === fem ? 0 : fem ? .3 : -.3), .6, 1.6);
+    u.rate = clamp(1.05 + cv.rateN / 100, .7, 1.4);
+    return new Promise(res => { let done = false; const fin = () => { if (!done) { done = true; res(); } };
+      u.onend = fin; u.onerror = fin; setTimeout(fin, 1500 + [...t].length * 260); speechSynthesis.speak(u); });
+  }
+};
+Voice.load();
+
+window.AnimeEngine = { Voice, castVoice, speechText, NARRATOR, isFemale, clamp, esc, uid, shade, rnd, hash, charSVG, bgSVG, speedSVG, particles, Snd, autoChar,
   BG, BG_KO, SKY, TIME_KO, FACE_KO, FX_KO };
 })();
