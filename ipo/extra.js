@@ -48,14 +48,21 @@ function planRows() {
       const saved = PLAN[it.id] || {};
       const mode = saved.mode || (r.verdict.key === "pass" ? "skip" : "min");
       const qty = mode === "custom" ? Math.max(minQ, saved.qty || minQ) : minQ;
+      const amt = Math.max(0, saved.amt ?? 1000); // 비례에 더 넣을 돈(만원)
       const price = offerPrice(it);
       const out = planState.day === "start" ? it.sub_start : (it.sub_end || it.sub_start);
       const back = it.refund || bizAdd(it.sub_end || it.sub_start, 2);
-      const prop = it.sub_comp ? Math.floor(qty / (it.sub_comp * 2)) : 0;
-      const shares = mode === "skip" ? 0 : Math.min(qty, eq + (mode === "custom" ? prop : 0)) * n;
-      const dep = mode === "skip" ? 0 : price * qty * margin * n;
+      // 증거금: 계좌마다 최소 주수(균등) + 비례 금액 또는 지정 주수
+      const dep = mode === "skip" ? 0 : mode === "prop" ? price * minQ * margin * n + amt * 1e4 : price * qty * margin * n;
+      const qTot = Math.floor(dep / (price * margin));
+      const est = estComp(it), ret = estRet(it);
+      const propS = est && qTot ? qTot / (est.c * 2) : 0; // 비례 기대 주수(추첨 포함 평균)
+      const shares = mode === "skip" ? 0 : Math.min(qTot, eq * n + propS);
       const cost = shares * price;
-      return { it, r, mode, qty, price, out, back, list: it.list_date, dep, cost, refundAmt: Math.max(0, dep - cost), extra: Math.max(0, cost - dep), shares };
+      const fee = numOf("cFee") ?? 2000;
+      const pnl = ret ? shares * price * ret.r / 100 - (shares > 0 ? fee * n : 0) : null;
+      return { it, r, mode, qty, amt, price, out, back, list: it.list_date, dep, cost, refundAmt: Math.max(0, dep - cost), extra: Math.max(0, cost - dep),
+        shares, pnl, c: est && est.c, cEst: est && est.how !== "actual", ret: ret && ret.r };
     });
 }
 
@@ -85,18 +92,22 @@ function renderPlan() {
   }
   const total = act.reduce((a, x) => a + x.dep, 0);
   const shares = act.reduce((a, x) => a + x.cost, 0);
+  const pnlSum = act.reduce((a, x) => a + (x.pnl || 0), 0);
   $("pStats").innerHTML = `
     <div class="st"><div class="k">청약할 종목</div><div class="v">${act.length}<span class="u">곳</span></div><div class="s">${rows.length - act.length ? `건너뛰기 ${rows.length - act.length}곳` : "다가오는 청약 전부"}</div></div>
     <div class="st"><div class="k">한 번에 필요한 최대 자금</div><div class="v">${peak ? manwon(peak) : "–"}<span class="u">${peak ? "원" : ""}</span></div><div class="s">${peakDay ? `${mdw(peakDay)} 기준` : "–"}</div></div>
     <div class="st"><div class="k">넣는 증거금 합계</div><div class="v">${total ? manwon(total) : "–"}<span class="u">${total ? "원" : ""}</span></div><div class="s">계좌 ${planState.acc}개 · 돌려 쓰면 위 최대 자금만 있으면 됨</div></div>
-    <div class="st"><div class="k">예상 배정 원금</div><div class="v">${shares ? manwon(shares) : "–"}<span class="u">${shares ? "원" : ""}</span></div><div class="s">상장일까지 주식으로 묶임</div></div>`;
+    <div class="st"><div class="k">기대 손익 (시초가 매도)</div><div class="v ${cls(pnlSum)}">${pnlSum ? `${pnlSum >= 0 ? "+" : "−"}${manwon(Math.abs(pnlSum))}` : "–"}<span class="u">${pnlSum ? "원" : ""}</span></div><div class="s">배정 원금 ${shares ? manwon(shares) : "–"} · 과거 중앙값 기준</div></div>`;
   drawPlan(series);
   const mOpt = (x, v, t) => `<option value="${v}" ${x.mode === v ? "selected" : ""}>${t}</option>`;
-  $("pTable").innerHTML = rows.length ? `<thead><tr><th>종목</th><th>전략</th><th>주수</th><th>청약일</th><th>증거금</th><th>환불</th></tr></thead><tbody>${rows.map((x) => `
+  $("pTable").innerHTML = rows.length ? `<thead><tr><th>종목</th><th>전략</th><th>주수·금액</th><th>청약일</th><th>증거금</th><th>기대 손익</th><th>환불</th></tr></thead><tbody>${rows.map((x) => `
     <tr class="${x.mode === "skip" ? "skip" : ""}" data-id="${esc(x.it.id)}"><td class="tx nm"><b>${esc(x.it.name)}</b>${verdictChip(x.r)}</td>
-      <td data-l="전략"><select class="pm" aria-label="${esc(x.it.name)} 전략">${mOpt(x, "min", "균등(최소)")}${mOpt(x, "custom", "주수 지정")}${mOpt(x, "skip", "건너뛰기")}</select></td>
-      <td data-l="주수">${x.mode === "custom" ? `<input class="pq" type="number" inputmode="numeric" min="1" step="10" value="${x.qty}" aria-label="청약 주수">` : x.mode === "skip" ? "–" : nf.format(x.qty)}</td>
+      <td data-l="전략"><select class="pm" aria-label="${esc(x.it.name)} 전략">${mOpt(x, "min", "균등(최소)")}${mOpt(x, "prop", "균등+비례(금액)")}${mOpt(x, "custom", "주수 지정")}${mOpt(x, "skip", "건너뛰기")}</select></td>
+      <td data-l="${x.mode === "prop" ? "비례에 넣을 돈(만원)" : "주수"}">${x.mode === "custom" ? `<input class="pq" type="number" inputmode="numeric" min="1" step="10" value="${x.qty}" aria-label="청약 주수">`
+        : x.mode === "prop" ? `<input class="pa" type="number" inputmode="numeric" min="0" step="100" value="${x.amt}" aria-label="비례에 넣을 금액(만원)">`
+        : x.mode === "skip" ? "–" : nf.format(x.qty)}</td>
       <td data-l="청약일">${mdw(x.out)}</td><td data-l="증거금">${x.dep ? manwon(x.dep) : "–"}</td>
+      <td data-l="기대 손익">${x.mode === "skip" || x.pnl == null ? "–" : `<span><span class="${cls(x.pnl)}">${x.pnl >= 0 ? "+" : "−"}${manwon(Math.abs(x.pnl))}</span><small class="hint"> ${x.shares.toFixed(x.shares < 10 ? 2 : 0)}주${x.mode === "prop" && x.cEst ? " · 경쟁률 추정" : ""}</small></span>`}</td>
       <td data-l="환불">${mdw(x.back)}${x.it.refund ? "" : '<small class="hint">추정</small>'}<br><small class="hint">${x.refundAmt ? `+${manwon(x.refundAmt)}` : ""}</small></td></tr>`).join("")}</tbody>`
     : `<tbody><tr><td class="empty">다가오는 청약이 없습니다. 일정이 잡히면 여기에 채워집니다.</td></tr></tbody>`;
 }
@@ -141,6 +152,7 @@ function initPlan() {
     const id = tr.dataset.id, cur = PLAN[id] || {};
     if (e.target.classList.contains("pm")) PLAN[id] = { ...cur, mode: e.target.value };
     if (e.target.classList.contains("pq")) PLAN[id] = { ...cur, mode: "custom", qty: +e.target.value || 10 };
+    if (e.target.classList.contains("pa")) PLAN[id] = { ...cur, mode: "prop", amt: Math.max(0, +e.target.value || 0) };
     store.set("ipo.plan", PLAN); renderPlan();
   });
   $("pIcs").onclick = () => {
