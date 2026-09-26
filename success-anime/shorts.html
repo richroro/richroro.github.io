@@ -168,6 +168,7 @@
   .chip{border:1px solid var(--line);background:transparent;color:#ddd6ff;border-radius:8px;padding:6px 10px;font-size:13px;font-weight:700}
   .chip:hover{border-color:var(--c)}
   .chip.cur{background:var(--c);border-color:var(--c);color:#fff}
+  .vstat{font-size:13px;color:var(--yellow);margin:-8px 0 16px;min-height:1.2em}
   .note{font-size:12.5px;color:var(--sub);margin-top:14px;line-height:1.6}
   .note code{background:rgba(255,255,255,.08);padding:1px 6px;border-radius:5px;color:var(--yellow)}
 </style>
@@ -208,7 +209,9 @@
       <button class="btn" id="bVoice">🗣 목소리 켜짐</button>
       <button class="btn" id="bSound">🔇 배경음 꺼짐</button>
       <button class="btn" id="bAll">연속 재생</button>
+      <button class="btn" id="bTest">🔈 목소리 테스트</button>
     </div>
+    <p class="vstat" id="vstat"></p>
     <div class="list" id="list"></div>
     <p class="note">주소 뒤에 <code>?ep=chung&amp;k=story</code> 또는 <code>?ep=chung&amp;k=1</code>을 붙이면 해당 쇼츠로 바로 갑니다.
       <code>&amp;rec=1</code>은 화면 전체를 9:16 한 장으로 채우는 녹화용 모드입니다.</p>
@@ -399,6 +402,7 @@ function renderIntro(s) {
 }
 function play() {
   if (!P.plan) return;
+  Voice.unlock();
   reset(); load(st.ep, P.k);
   $('#play').classList.add('hide'); P.playing = true;
   Snd.startLog(); window.__t0 = Date.now() / 1000; window.__done = false;
@@ -496,8 +500,10 @@ $('#bSound').onclick = () => { Snd.init(); Snd.on = !Snd.on; if (Snd.ac.state ==
   $('#bSound').textContent = Snd.on ? '🔊 배경음 켜짐' : '🔇 배경음 꺼짐'; $('#bSound').classList.toggle('on', Snd.on); if (Snd.on && P.playing) Snd.startBgm(st.ep.mood); else if (!Snd.on) Snd.stopBgm(true); };
 Voice.on = Voice.supported && !REC;
 const voiceBtn = () => { $('#bVoice').textContent = !Voice.supported ? '🗣 목소리 미지원' : Voice.on ? '🗣 목소리 켜짐' : '🗣 목소리 꺼짐'; $('#bVoice').classList.toggle('on', Voice.on); };
-$('#bVoice').onclick = () => { if (!Voice.supported) return; Voice.on = !Voice.on; if (!Voice.on) Voice.cancel(); voiceBtn(); };
+$('#bVoice').onclick = () => { if (!Voice.supported) return; Voice.unlock(); Voice.on = !Voice.on; if (!Voice.on) Voice.cancel(); voiceBtn(); };
 voiceBtn();
+Voice.onStatus = m => { $('#vstat').textContent = m ? '🗣 ' + m : ''; }; Voice.setStatus();
+$('#bTest').onclick = () => Voice.test();
 $('#bAll').onclick = () => { P.chain = !P.chain; $('#bAll').classList.toggle('on', P.chain); $('#bAll').textContent = P.chain ? '⏸ 연속 재생 중' : '연속 재생'; if (P.chain && !P.playing) play(); };
 document.addEventListener('keydown', e => { if (e.key === ' ') { e.preventDefault(); if (!P.playing) play(); } });
 

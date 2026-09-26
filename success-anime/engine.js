@@ -562,12 +562,23 @@ function speechText(t) {
 }
 const FEM_RE = /female|여성|yuna|sunhi|heami|seoyeon|jimin|sora|narae|google 한국의/i, MALE_RE = /(?<!fe)male|남성|injoon|hyunsu|minsang|bong|gook/i;
 const Voice = {
-  on: false, list: [],
-  supported: typeof window !== 'undefined' && 'speechSynthesis' in window,
+  on: false, list: [], unlocked: false, status: '', lastError: '', spoke: 0, keep: [],
+  supported: typeof window !== 'undefined' && 'speechSynthesis' in window && typeof SpeechSynthesisUtterance !== 'undefined',
   load() {
-    if (!this.supported) return;
-    const get = () => { this.list = speechSynthesis.getVoices().filter(v => /^ko/i.test(v.lang)); };
-    get(); speechSynthesis.addEventListener?.('voiceschanged', get);
+    if (!this.supported) { this.setStatus('이 브라우저(앱)는 음성 합성을 지원하지 않습니다'); return; }
+    const get = () => { this.list = speechSynthesis.getVoices().filter(v => /^ko/i.test(v.lang.replace('_', '-'))); this.setStatus(); };
+    get(); speechSynthesis.addEventListener ? speechSynthesis.addEventListener('voiceschanged', get) : (speechSynthesis.onvoiceschanged = get);
+    setTimeout(get, 800); setTimeout(get, 2500);
+  },
+  onStatus: null,
+  setStatus(msg) {
+    const all = this.supported ? speechSynthesis.getVoices() : [];
+    this.status = msg || (!this.supported ? '이 브라우저(앱)는 음성 합성을 지원하지 않습니다'
+      : this.lastError ? `음성 오류: ${this.lastError}`
+      : !all.length ? '음성 목록을 불러오는 중… (재생을 한 번 누르면 불러오는 기기도 있습니다)'
+      : !this.list.length ? `한국어 음성이 없습니다 (기기 음성 ${all.length}개). 설정에서 한국어 음성을 받으면 들립니다`
+      : `한국어 음성 ${this.list.length}개 · ${this.pick(NARRATOR).name}`);
+    this.onStatus && this.onStatus(this.status);
   },
   // best-effort gender match among the device's Korean voices
   pick(c) {
@@ -578,7 +589,20 @@ const Voice = {
     const rank = v => (/natural|neural|premium|enhanced/i.test(v.name) ? 3 : /google/i.test(v.name) ? 2 : v.localService ? 1 : 0);
     return [...pool].sort((a, b) => rank(b) - rank(a))[0];
   },
-  cancel() { if (this.supported) speechSynthesis.cancel(); },
+  // iOS/Safari (and in-app browsers) only allow speech that starts inside a tap; call this synchronously from the click handler
+  unlock() {
+    if (!this.supported || this.unlocked) return;
+    try {
+      const u = new SpeechSynthesisUtterance(' '); u.volume = 0; u.lang = 'ko-KR';
+      speechSynthesis.resume && speechSynthesis.resume(); speechSynthesis.speak(u);
+      this.keep.push(u); this.unlocked = true;
+      if (!this.list.length) this.load();
+    } catch (e) { this.lastError = e.message; this.setStatus(); }
+  },
+  cancel(force) {
+    if (!this.supported) return;
+    if (force || speechSynthesis.speaking || speechSynthesis.pending) { speechSynthesis.cancel(); this.cancelledAt = performance.now(); }
+  },
   // resolves when the line finishes (or at once if voice is off/unsupported)
   speak(text, c) {
     if (!this.on || !this.supported) return Promise.resolve();
@@ -586,13 +610,30 @@ const Voice = {
     this.cancel();
     c = c || NARRATOR;
     const cv = castVoice(c), u = new SpeechSynthesisUtterance(t), v = this.pick(c);
-    u.lang = 'ko-KR'; if (v) u.voice = v;
+    u.lang = 'ko-KR'; if (v) u.voice = v; u.volume = 1;
     // same-voice devices still get distinct characters from pitch/rate; a wrong-gender voice is pushed toward the right range
     const fem = isFemale(c), vFem = v ? FEM_RE.test(v.name) : fem;
     u.pitch = clamp(1 + cv.pitchN / 22 + (vFem === fem ? 0 : fem ? .3 : -.3), .6, 1.6);
     u.rate = clamp(1.05 + cv.rateN / 100, .7, 1.4);
-    return new Promise(res => { let done = false; const fin = () => { if (!done) { done = true; res(); } };
-      u.onend = fin; u.onerror = fin; setTimeout(fin, 1500 + [...t].length * 260); speechSynthesis.speak(u); });
+    // Chrome drops utterances that get garbage-collected mid-speech
+    this.keep.push(u); if (this.keep.length > 8) this.keep.shift();
+    return new Promise(res => {
+      let done = false; const fin = () => { if (!done) { done = true; res(); } };
+      u.onstart = () => { this.spoke++; if (this.lastError) { this.lastError = ''; this.setStatus(); } };
+      u.onend = fin;
+      u.onerror = e => { if (e && e.error && !/interrupted|canceled/.test(e.error)) { this.lastError = e.error === 'not-allowed' ? '브라우저가 자동 재생을 막았습니다. 화면을 한 번 탭해 주세요' : e.error; this.setStatus(); } fin(); };
+      setTimeout(fin, 1500 + [...t].length * 260);
+      // Chrome silently drops a speak() issued in the same tick as cancel(); give it a moment
+      const go = () => { try { speechSynthesis.resume && speechSynthesis.resume(); speechSynthesis.speak(u); } catch (e) { this.lastError = e.message; this.setStatus(); fin(); } };
+      this.cancelledAt && performance.now() - this.cancelledAt < 120 ? setTimeout(go, 120) : go();
+    });
+  },
+  // speak one line right now, from inside a tap — used by the "목소리 테스트" button
+  test() {
+    if (!this.supported) { this.setStatus(); return; }
+    this.lastError = ''; this.unlocked = false; this.unlock();   // silent line inside the tap unlocks iOS
+    const was = this.on; this.on = true;
+    this.speak('안녕하세요. 성공 애니 목소리 테스트입니다.', NARRATOR).then(() => { this.on = was; setTimeout(() => this.setStatus(this.spoke ? null : '소리가 나지 않았다면 기기 볼륨과 무음 모드를 확인해 주세요'), 50); });
   }
 };
 Voice.load();
