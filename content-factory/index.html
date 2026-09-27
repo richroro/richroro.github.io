@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>콘텐츠 공장 · 메모 한 장 → 5채널 원고</title>
+<meta name="description" content="아이디어 메모 한 장을 올리면 블로그·뉴스레터·유튜브 대본·쇼츠·SNS 원고가 자동으로 만들어지는 1인 콘텐츠 공장." />
+<meta property="og:title" content="콘텐츠 공장 · 메모 한 장 → 5채널 원고" />
+<meta property="og:description" content="블로그·뉴스레터·유튜브·쇼츠·SNS 자동 생산 파이프라인" />
+<meta property="og:url" content="https://richroro.github.io/content-factory/" />
+<meta property="og:image" content="https://richroro.github.io/og.png?v=1" />
+<link rel="canonical" href="https://richroro.github.io/content-factory/" />
+<style>
+:root{--ink:#16161d;--sub:#5b6472;--line:#e7e9ee;--bg:#fff;--soft:#f6f7f9;--acc:#FC1C49;--card:#fff}
+@media (prefers-color-scheme:dark){:root{--ink:#eceef3;--sub:#a3abb8;--line:#2a2e38;--bg:#111318;--soft:#1a1d24;--card:#161920}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Pretendard","Apple SD Gothic Neo","Malgun Gothic",system-ui,sans-serif;line-height:1.6;letter-spacing:-.2px}
+a{color:var(--acc)}
+.wrap{max-width:880px;margin:0 auto;padding:0 16px}
+header{border-bottom:1px solid var(--line)}
+header .wrap{display:flex;justify-content:space-between;align-items:center;height:56px}
+header a{color:var(--ink);text-decoration:none;font-weight:800}
+header nav a{font-weight:600;color:var(--sub);margin-left:16px;font-size:14px}
+h1{font-size:clamp(24px,5vw,34px);line-height:1.3;margin:32px 0 6px}
+.lead{color:var(--sub);margin:0 0 24px}
+.stages{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:0 0 28px}
+@media(max-width:640px){.stages{grid-template-columns:repeat(2,1fr)}}
+.stages div{border:1px solid var(--line);border-radius:10px;padding:10px 12px;background:var(--soft);position:relative}
+.stages b{display:block;font-size:14px}.stages span{display:block;font-size:12.5px;color:var(--sub);padding-right:34px}
+.stages em{position:absolute;top:10px;right:10px;font-style:normal;font-size:11px;font-weight:700;color:#fff;background:var(--acc);border-radius:99px;padding:1px 7px}
+.stages em.h{background:var(--ink);color:var(--bg)}
+.plan label{display:flex;gap:10px;align-items:flex-start;color:var(--ink);font-size:15px;margin:0;padding:10px 0;border-bottom:1px solid var(--line)}
+.plan label:last-child{border:none}.plan input{width:auto;margin-top:5px}.plan small{display:block;color:var(--sub);font-size:13px}
+.flow{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:0 0 32px;font-size:14px}
+.flow span{background:var(--soft);border:1px solid var(--line);border-radius:8px;padding:6px 10px}
+.flow i{color:var(--sub);font-style:normal}
+h2{font-size:20px;margin:36px 0 12px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px;margin-bottom:12px}
+.item{cursor:pointer}
+.item h3{margin:0 0 4px;font-size:17px}
+.item p{margin:0;color:var(--sub);font-size:14px}
+.item.on{border-color:var(--acc)}
+.tabs{display:flex;gap:6px;overflow-x:auto;margin:16px 0 12px;padding-bottom:4px}
+.tabs button{flex:none;border:1px solid var(--line);background:var(--soft);color:var(--ink);border-radius:99px;padding:7px 14px;font:inherit;font-size:14px;cursor:pointer}
+.tabs button.on{background:var(--acc);border-color:var(--acc);color:#fff}
+pre{white-space:pre-wrap;word-break:break-word;background:var(--soft);border:1px solid var(--line);border-radius:10px;padding:14px;font-family:inherit;font-size:14px;line-height:1.7;margin:0;max-height:60vh;overflow:auto}
+.row{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.btn{border:none;background:var(--ink);color:var(--bg);border-radius:8px;padding:9px 14px;font:inherit;font-size:14px;font-weight:700;cursor:pointer;text-decoration:none;display:inline-block}
+.btn.red{background:var(--acc);color:#fff}
+label{display:block;font-size:13px;color:var(--sub);margin:10px 0 4px}
+input,textarea{width:100%;border:1px solid var(--line);background:var(--bg);color:var(--ink);border-radius:8px;padding:10px;font:inherit;font-size:15px}
+textarea{min-height:140px}
+.note{font-size:13px;color:var(--sub)}
+footer{color:var(--sub);font-size:13px;padding:40px 0}
+</style>
+</head>
+<body>
+<header><div class="wrap"><a href="/">Cadence</a><nav><a href="/blog/">블로그</a><a href="/blog/feed.xml">RSS</a></nav></div></header>
+<main class="wrap">
+  <h1>콘텐츠 공장</h1>
+  <p class="lead">아이디어 메모 한 장을 올리면 리서치부터 블로그·뉴스레터·유튜브 대본·쇼츠·SNS 원고, 썸네일, 추적 링크까지 한 번에 만들어집니다.</p>
+  <div class="stages">
+    <div><b>① 아이디어</b><span>메모 한 장</span><em class="h">사람</em></div>
+    <div><b>② 리서치</b><span>키워드·검색 의도·각도·제목 후보</span><em>Claude</em></div>
+    <div><b>③ 생성</b><span>블로그·뉴스레터·유튜브·쇼츠 3·SNS 3</span><em>Claude</em></div>
+    <div><b>④ 디자인</b><span>공유 썸네일 자동 + 이미지 프롬프트</span><em>자동</em></div>
+    <div><b>⑤ 발행</b><span>블로그 게시·RSS(뉴스레터 도구 연결)</span><em>자동</em></div>
+    <div><b>⑥ 분석</b><span>채널별 UTM·GA4</span><em>자동</em></div>
+  </div>
+
+  <h2>만들어진 원고</h2>
+  <div id="list"><p class="note">불러오는 중…</p></div>
+  <div id="view" hidden>
+    <div class="tabs" id="tabs"></div>
+    <pre id="text"></pre>
+    <div class="row"><button class="btn red" id="copy">복사</button><a class="btn" id="open" target="_blank" rel="noopener">파일 열기</a></div>
+  </div>
+
+  <h2>새 아이디어 넣기</h2>
+  <div class="card">
+    <label for="t">제목</label><input id="t" placeholder="예: 엑셀 반복 업무, 자동화는 어디서부터" />
+    <label for="a">누구에게</label><input id="a" placeholder="예: 매주 같은 보고서를 만드는 직장인" />
+    <label for="n">메모 (요지 3줄, 사례, 주의할 점)</label><textarea id="n"></textarea>
+    <div class="row"><button class="btn red" id="gh">GitHub에 메모 올리기</button><button class="btn" id="dl">.md 로 받기</button></div>
+    <p class="note">GitHub 새 파일 화면이 메모가 채워진 채로 열립니다. 커밋한 뒤 Claude Code에서 <b>“콘텐츠 공장 돌려줘”</b>라고 하면 Claude가 리서치·원고를 쓰고 블로그까지 올립니다. 메모 내용을 Claude에게 바로 말해도 됩니다.</p>
+  </div>
+
+  <h2>6주 구축 계획</h2>
+  <p class="note" style="margin-top:-6px">책의 6단계를 한 주에 하나씩 붙이는 순서로 정리한 체크리스트입니다. 체크 상태는 이 브라우저에만 저장됩니다.</p>
+  <div class="card plan" id="plan">
+    <label><input type="checkbox" data-k="w1"><span><b>1주 · 아이디어</b> 주제 메모 10장 쌓기<small>요지 3줄 + 사례 1개. ideas/ 폴더가 공장의 원료 창고</small></span></label>
+    <label><input type="checkbox" data-k="w2"><span><b>2주 · 리서치</b> 리서치 결과의 키워드를 네이버 데이터랩·블랙키위로 검증<small>AI가 고른 키워드 중 실제 검색이 있는 것만 남기고 메모에 반영</small></span></label>
+    <label><input type="checkbox" data-k="w3"><span><b>3주 · 생성</b> Claude Code로 원고 5편 생성 후 직접 교정<small>자주 고친 패턴을 factory.py 의 규칙(SYSTEM)에 추가</small></span></label>
+    <label><input type="checkbox" data-k="w4"><span><b>4주 · 디자인</b> 유튜브 썸네일을 프롬프트로 만들어 보고 브랜드 색·문구 규칙 정하기</span></label>
+    <label><input type="checkbox" data-k="w5"><span><b>5주 · 발행</b> 스티비·메일리에 blog/feed.xml RSS 발송 연결, 쇼츠 3개 업로드</span></label>
+    <label><input type="checkbox" data-k="w6"><span><b>6주 · 분석</b> GA4 측정 ID를 FACTORY_GA4_ID 로 등록, UTM별 유입 비교 → 잘 된 채널·주제로 다음 메모 고르기</span></label>
+  </div>
+</main>
+<footer class="wrap">『AI로 1인 콘텐츠 공장 만들기』의 파이프라인을 이 사이트에 옮겨 만든 것입니다. 소스: <a href="https://github.com/richroro/richroro.github.io/tree/main/content-factory">content-factory/</a></footer>
+<script>
+const $ = s => document.querySelector(s);
+const TABS = [["research","② 리서치"],["blog","블로그"],["newsletter","뉴스레터"],["youtube","유튜브"],["shorts","쇼츠"],["social","SNS"],["design","④ 디자인"]];
+let cur = null, tab = "blog", files = {};
+
+function esc(s){return String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]))}
+
+async function load(){
+  try{
+    const r = await fetch("out/index.json",{cache:"no-cache"});
+    const {items} = await r.json();
+    if(!items.length){ $("#list").innerHTML = '<p class="note">아직 원고가 없습니다.</p>'; return; }
+    $("#list").innerHTML = items.map(it=>`<div class="card item" data-slug="${esc(it.slug)}">
+      <h3>${esc(it.title)}</h3><p>${esc(it.created.slice(0,10))} · 뉴스레터 “${esc(it.newsletter)}” · 쇼츠 ${it.shorts} · SNS ${it.social}</p></div>`).join("");
+    document.querySelectorAll(".item").forEach(el=>el.onclick=()=>pick(el.dataset.slug));
+    pick(items[0].slug);
+  }catch(e){ $("#list").innerHTML = '<p class="note">목록을 불러오지 못했습니다.</p>'; }
+}
+
+async function pick(slug){
+  cur = slug; files = {};
+  document.querySelectorAll(".item").forEach(el=>el.classList.toggle("on", el.dataset.slug===slug));
+  const d = await (await fetch(`out/${slug}.json`,{cache:"no-cache"})).json();
+  const b = d.blog;
+  files.blog = {text:`${b.title}\n\n${b.body_md}`, href:`/blog/${slug}/`};
+  const get = async f => (await fetch(`out/${slug}/${f}`,{cache:"no-cache"})).text();
+  [files.newsletter, files.youtube, files.shorts, files.social, files.research, files.design] = await Promise.all(
+    ["newsletter.md","youtube.md","shorts.md","social.md","research.md","design.md"].map(async f=>({text:await get(f), href:`out/${slug}/${f.replace("newsletter.md","newsletter.html")}`})));
+  $("#view").hidden = false;
+  show(tab);
+}
+
+function show(t){
+  tab = t;
+  $("#tabs").innerHTML = TABS.map(([k,l])=>`<button data-k="${k}" class="${k===t?"on":""}">${l}</button>`).join("");
+  document.querySelectorAll("#tabs button").forEach(b=>b.onclick=()=>show(b.dataset.k));
+  $("#text").textContent = files[t].text;
+  $("#open").href = files[t].href;
+  if(t==="design") $("#open").href = `/blog/${cur}/og.png`;
+  $("#open").textContent = t==="blog" ? "게시된 글 보기" : t==="newsletter" ? "메일 HTML 보기" : t==="design" ? "썸네일 보기" : "파일 열기";
+}
+
+$("#copy").onclick = async () => {
+  try{ await navigator.clipboard.writeText(files[tab].text); $("#copy").textContent="복사됨"; }
+  catch(e){ $("#copy").textContent="복사 실패"; }
+  setTimeout(()=>$("#copy").textContent="복사",1200);
+};
+
+function memo(){
+  const t = $("#t").value.trim(), a = $("#a").value.trim(), n = $("#n").value.trim();
+  const slug = (t.match(/[a-z0-9]+/gi)||[]).join("-").toLowerCase().slice(0,40) || "idea-" + new Date().toISOString().slice(0,10).replace(/-/g,"") + "-" + Math.random().toString(36).slice(2,6);
+  return {slug, text:`---\ntitle: ${t}\naudience: ${a}\n---\n${n}\n`, ok: t && n};
+}
+$("#gh").onclick = () => {
+  const m = memo(); if(!m.ok){ alert("제목과 메모를 적어 주세요."); return; }
+  location.href = `https://github.com/richroro/richroro.github.io/new/main/content-factory/ideas?filename=${encodeURIComponent(m.slug+".md")}&value=${encodeURIComponent(m.text)}`;
+};
+$("#dl").onclick = () => {
+  const m = memo(); if(!m.ok){ alert("제목과 메모를 적어 주세요."); return; }
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(new Blob([m.text],{type:"text/markdown"}));
+  a.download = m.slug + ".md"; a.click();
+};
+document.querySelectorAll("#plan input").forEach(el=>{
+  try{ el.checked = localStorage.getItem("cf-"+el.dataset.k)==="1"; }catch(e){}
+  el.onchange = () => { try{ localStorage.setItem("cf-"+el.dataset.k, el.checked?"1":"0"); }catch(e){} };
+});
+load();
+</script>
+</body>
+</html>
