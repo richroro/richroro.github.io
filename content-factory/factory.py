@@ -29,8 +29,15 @@
   ---
   자유 메모. 말하고 싶은 요지, 사례, 숫자, 반드시 넣을 링크 등.
 
+실행 방식은 두 가지
+  A. Claude Code 가 직접 쓴다 (기본, API 키 불필요) — .claude/skills/content-factory/SKILL.md
+     python content-factory/factory.py --brief            # 원고가 없는 아이디어와 작성 지침 출력
+     (Claude 가 지침대로 JSON 을 써서 /tmp/x.json 등에 저장)
+     python content-factory/factory.py --ingest /tmp/x.json --idea <이름>   # 검증 → out/ 에 넣고 렌더
+  B. API 로 자동 생성 — ANTHROPIC_API_KEY 가 있을 때 (GitHub Actions 등)
+
 사용 예
-  python content-factory/factory.py                 # 아직 원고가 없는 아이디어만 생성 + 전체 렌더
+  python content-factory/factory.py                 # (B) 아직 원고가 없는 아이디어만 생성 + 전체 렌더
   python content-factory/factory.py --only excel    # 특정 아이디어만 (다시) 생성
   python content-factory/factory.py --render-only   # API 호출 없이 out/*.json 으로 페이지만 다시 만듦
   python content-factory/factory.py --mock          # API 키 없이 가짜 원고로 파이프라인 점검
@@ -115,12 +122,30 @@ def parse_idea(path: str) -> dict:
     return meta
 
 
+def idea_prompt(idea: dict) -> str:
+    brief = "\n".join(f"{k}: {v}" for k, v in idea.items() if k not in ("notes", "id") and v)
+    return f"[아이디어]\n{brief}\n\n[메모]\n{idea['notes']}\n\n{SCHEMA_HINT}"
+
+
+def save(d: dict, idea: dict, model: str) -> dict:
+    validate(d)
+    d["slug"] = re.sub(r"[^a-z0-9-]+", "-", (d.get("slug") or idea["id"]).lower()).strip("-") or idea["id"]
+    d["idea"] = idea["id"]
+    d["created"] = dt.datetime.now(KST).isoformat(timespec="seconds")
+    d["model"] = model
+    for f in os.listdir(OUT):  # 같은 아이디어를 다시 만들면 예전 원고(다른 slug 였을 수도)를 치운다
+        if f.endswith(".json") and f != "index.json" and f != f"{d['slug']}.json":
+            if json.load(open(os.path.join(OUT, f), encoding="utf-8")).get("idea") == idea["id"]:
+                os.remove(os.path.join(OUT, f))
+    write(os.path.join(OUT, f"{d['slug']}.json"), json.dumps(d, ensure_ascii=False, indent=1) + "\n")
+    return d
+
+
 def generate(idea: dict) -> dict:
     import anthropic
 
     client = anthropic.Anthropic()
-    brief = "\n".join(f"{k}: {v}" for k, v in idea.items() if k not in ("notes", "id") and v)
-    user = f"[아이디어]\n{brief}\n\n[메모]\n{idea['notes']}\n\n{SCHEMA_HINT}"
+    user = idea_prompt(idea)
     with client.messages.stream(
         model=MODEL,
         max_tokens=64000,
@@ -159,7 +184,8 @@ def mock(idea: dict) -> dict:
 
 
 def validate(d: dict) -> None:
-    need = {"blog": ["title", "description", "body_md"], "newsletter": ["subject", "body_md"],
+    need = {"research": ["primary_keyword", "angle"], "design": ["og_headline"],
+            "blog": ["title", "description", "body_md"], "newsletter": ["subject", "body_md"],
             "youtube": ["title", "script"]}
     for k, fields in need.items():
         for f in fields:
@@ -458,6 +484,10 @@ def main() -> int:
     ap.add_argument("--only", help="이 아이디어 파일(확장자 뺀 이름)만 다시 생성")
     ap.add_argument("--render-only", action="store_true", help="API 호출 없이 렌더만")
     ap.add_argument("--mock", action="store_true", help="API 없이 가짜 원고로 점검")
+    ap.add_argument("--brief", action="store_true", help="(A) 원고가 없는 아이디어와 작성 지침 출력")
+    ap.add_argument("--ingest", metavar="JSON", help="(A) Claude Code 가 쓴 원고 JSON 을 검증해 넣고 렌더")
+    ap.add_argument("--idea", help="--ingest 와 함께: 어느 아이디어의 원고인지")
+    ap.add_argument("--by", default="claude-code", help="--ingest 와 함께: 원고 작성 주체 기록")
     a = ap.parse_args()
 
     os.makedirs(OUT, exist_ok=True)
@@ -472,19 +502,40 @@ def main() -> int:
         print(f"아이디어 '{a.only}' 를 찾지 못했습니다.", file=sys.stderr)
         return 1
 
+    if a.brief:
+        if not todo:
+            print("원고가 필요한 아이디어가 없습니다.")
+            return 0
+        print("=== 작성 지침 (모든 아이디어 공통) ===\n" + SYSTEM)
+        for idea in todo:
+            print(f"\n=== 아이디어: {idea['id']} ===\n" + idea_prompt(idea))
+        return 0
+
+    if a.ingest:
+        by_id = {i["id"]: i for i in ideas}
+        if a.idea not in by_id:
+            print(f"--idea 로 ideas/ 에 있는 이름을 주세요: {sorted(by_id)}", file=sys.stderr)
+            return 1
+        text = open(a.ingest, encoding="utf-8").read().strip()
+        text = re.sub(r"^```(?:json)?\s*|\s*```$", "", text)
+        try:
+            d = save(json.loads(text), by_id[a.idea], a.by)
+        except (ValueError, KeyError) as e:
+            print(f"원고 검증 실패: {e}", file=sys.stderr)
+            return 1
+        items = render_all()
+        print(f"넣음: out/{d['slug']}.json → /blog/{d['slug']}/ · 전체 {len(items)}건 렌더 완료")
+        return 0
+
     made = 0
     if not a.render_only:
         if todo and not a.mock and not os.environ.get("ANTHROPIC_API_KEY"):
-            print("ANTHROPIC_API_KEY 가 없어 생성을 건너뜁니다. 렌더만 합니다.")
+            print(f"ANTHROPIC_API_KEY 가 없어 생성을 건너뜁니다(대기 {len(todo)}건). "
+                  "Claude Code 에서 '콘텐츠 공장 돌려줘' 로 작성하세요. 렌더만 합니다.")
             todo = []
         for idea in todo:
             print(f"생성: {idea['id']} …", flush=True)
-            d = mock(idea) if a.mock else generate(idea)
-            d["slug"] = re.sub(r"[^a-z0-9-]+", "-", (d.get("slug") or idea["id"]).lower()).strip("-") or idea["id"]
-            d["idea"] = idea["id"]
-            d["created"] = dt.datetime.now(KST).isoformat(timespec="seconds")
-            d["model"] = "mock" if a.mock else MODEL
-            write(os.path.join(OUT, f"{d['slug']}.json"), json.dumps(d, ensure_ascii=False, indent=1) + "\n")
+            save(mock(idea) if a.mock else generate(idea), idea, "mock" if a.mock else MODEL)
             made += 1
 
     items = render_all()

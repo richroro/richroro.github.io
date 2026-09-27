@@ -4,7 +4,7 @@
 
 ## 설명란
 
-블로그·뉴스레터·유튜브·쇼츠·SNS를 혼자 운영할 때 가장 시간을 잡아먹는 '다시 쓰기'를 AI에게 넘기는 방법. 서버 없이 GitHub Pages + Actions + Claude API로 만든 실제 구조를 보여드립니다.
+블로그·뉴스레터·유튜브·쇼츠·SNS를 혼자 운영할 때 가장 시간을 잡아먹는 '다시 쓰기'를 AI에게 넘기는 방법. 서버 없이 GitHub Pages + Claude Code로 만든 실제 구조를 보여드립니다.
 
 전체 구조 정리: https://richroro.github.io/blog/one-idea-five-channels/?utm_source=youtube&utm_medium=content-factory&utm_campaign=one-idea-five-channels
 
@@ -42,9 +42,9 @@
 
 ### 실제 구조 (3:00)
 
-🎬 화면: GitHub 저장소 화면: ideas 폴더에 메모 업로드 → Actions 실행 로그 → 생성된 블로그 페이지 순서로 화면 녹화
+🎬 화면: ideas 폴더에 메모 업로드 → Claude Code에 '콘텐츠 공장 돌려줘' 입력 → 생성된 블로그 페이지 순서로 화면 녹화
 
-제 사이트에 붙인 구조입니다. ideas 폴더에 마크다운 메모를 올리면 GitHub Actions가 Claude API를 불러서 원고를 만들고, 블로그 글은 바로 게시되고 RSS도 갱신됩니다. 서버는 없고, 비용은 API 사용료뿐입니다.
+제 사이트에 붙인 구조입니다. ideas 폴더에 마크다운 메모를 올리고 Claude에게 콘텐츠 공장 돌려달라고 하면, 원고를 쓰고 검증을 거쳐 블로그 게시와 RSS 갱신까지 합니다. 서버도 API 키도 없습니다.
 
 ### 채널별 규칙 (5:00)
 

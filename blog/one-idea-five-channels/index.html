@@ -54,18 +54,18 @@ footer{color:var(--sub);font-size:13px;padding:40px 0}
 <p>이 사이트(GitHub Pages)에 붙인 흐름은 이렇습니다.</p>
 <ol>
 <li>저장소의 <code>content-factory/ideas/</code> 폴더에 마크다운 메모를 하나 올립니다.</li>
-<li>GitHub Actions가 이를 감지하고 Claude API에 메모를 보냅니다.</li>
+<li>Claude Code에게 "콘텐츠 공장 돌려줘"라고 말하면, Claude가 메모를 읽고 정해진 규칙대로 원고를 씁니다. API 키도 서버도 필요 없습니다.</li>
 <li>채널별 원고가 JSON 한 벌로 돌아옵니다. 블로그 글, 뉴스레터, 유튜브 대본(장면별 화면 지시 포함), 쇼츠 대본 3개, SNS 글 3개.</li>
-<li>블로그 글은 바로 <code>/blog/</code> 아래 페이지로 만들어져 게시되고, RSS(<code>/blog/feed.xml</code>)가 갱신됩니다.</li>
+<li>스크립트가 원고 형식을 검증한 뒤 블로그 글을 <code>/blog/</code> 아래 페이지로 만들고, RSS(<code>/blog/feed.xml</code>)를 갱신합니다.</li>
 <li>뉴스레터·유튜브·쇼츠·SNS 원고는 <a href="/content-factory/">콘텐츠 공장 대시보드</a>에서 채널별로 보고 복사할 수 있습니다.</li>
 </ol>
-<p>서버는 없습니다. GitHub Pages와 Actions의 무료 범위 안에서 돌아가고, 돈이 드는 건 API 사용료뿐입니다. 아이디어 하나에 몇백 원 수준입니다.</p>
+<p>서버는 없습니다. GitHub Pages 무료 호스팅에 올라가고, 원고는 이미 쓰고 있는 Claude 구독 안에서 만들어지니 추가 비용이 없습니다. 나중에 완전 무인으로 돌리고 싶으면 API 키를 넣어 GitHub Actions가 생성까지 하도록 바꿀 수도 있게 만들어 뒀습니다.</p>
 <h2>책의 6단계 파이프라인과 이 사이트에서 맡은 부분</h2>
 <p>책은 콘텐츠 공장을 <strong>아이디어 → 리서치 → 생성 → 디자인 → 발행 → 분석</strong> 6단계로 나눕니다. 이 사이트에서는 이렇게 나눠 맡았습니다.</p>
 <ul>
 <li><strong>아이디어</strong>: 사람. 메모 한 장.</li>
-<li><strong>리서치</strong>: AI. 핵심·보조 키워드, 검색 의도, 이 글만의 각도, 제목 후보 3개. 단, 검색량 수치는 지어내지 않게 하고 네이버 데이터랩 같은 도구에서 직접 확인합니다.</li>
-<li><strong>생성</strong>: AI. 다섯 채널 원고.</li>
+<li><strong>리서치</strong>: Claude. 핵심·보조 키워드, 검색 의도, 이 글만의 각도, 제목 후보 3개. 단, 검색량 수치는 지어내지 않게 하고 네이버 데이터랩 같은 도구에서 직접 확인합니다.</li>
+<li><strong>생성</strong>: Claude. 다섯 채널 원고.</li>
 <li><strong>디자인</strong>: 공유 썸네일 이미지는 코드가 자동으로 그리고, 유튜브 썸네일·본문 이미지는 이미지 생성 도구용 프롬프트로 받습니다.</li>
 <li><strong>발행</strong>: 블로그 자동 게시와 RSS. 뉴스레터는 스티비·메일리 같은 도구의 RSS 발송 기능에 연결하면 됩니다.</li>
 <li><strong>분석</strong>: 채널마다 다른 UTM 꼬리표를 붙인 링크를 넣어, 어느 채널에서 사람이 들어왔는지 GA4에서 나눠 볼 수 있게 했습니다.</li>

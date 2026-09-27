@@ -61,8 +61,8 @@ footer{color:var(--sub);font-size:13px;padding:40px 0}
   <p class="lead">아이디어 메모 한 장을 올리면 리서치부터 블로그·뉴스레터·유튜브 대본·쇼츠·SNS 원고, 썸네일, 추적 링크까지 한 번에 만들어집니다.</p>
   <div class="stages">
     <div><b>① 아이디어</b><span>메모 한 장</span><em class="h">사람</em></div>
-    <div><b>② 리서치</b><span>키워드·검색 의도·각도·제목 후보</span><em>AI</em></div>
-    <div><b>③ 생성</b><span>블로그·뉴스레터·유튜브·쇼츠 3·SNS 3</span><em>AI</em></div>
+    <div><b>② 리서치</b><span>키워드·검색 의도·각도·제목 후보</span><em>Claude</em></div>
+    <div><b>③ 생성</b><span>블로그·뉴스레터·유튜브·쇼츠 3·SNS 3</span><em>Claude</em></div>
     <div><b>④ 디자인</b><span>공유 썸네일 자동 + 이미지 프롬프트</span><em>자동</em></div>
     <div><b>⑤ 발행</b><span>블로그 게시·RSS(뉴스레터 도구 연결)</span><em>자동</em></div>
     <div><b>⑥ 분석</b><span>채널별 UTM·GA4</span><em>자동</em></div>
@@ -82,7 +82,7 @@ footer{color:var(--sub);font-size:13px;padding:40px 0}
     <label for="a">누구에게</label><input id="a" placeholder="예: 매주 같은 보고서를 만드는 직장인" />
     <label for="n">메모 (요지 3줄, 사례, 주의할 점)</label><textarea id="n"></textarea>
     <div class="row"><button class="btn red" id="gh">GitHub에 메모 올리기</button><button class="btn" id="dl">.md 로 받기</button></div>
-    <p class="note">GitHub 새 파일 화면이 메모가 채워진 채로 열립니다. 커밋하면 Actions가 원고를 만들어 몇 분 뒤 이 페이지와 블로그에 올라옵니다.</p>
+    <p class="note">GitHub 새 파일 화면이 메모가 채워진 채로 열립니다. 커밋한 뒤 Claude Code에서 <b>“콘텐츠 공장 돌려줘”</b>라고 하면 Claude가 리서치·원고를 쓰고 블로그까지 올립니다. 메모 내용을 Claude에게 바로 말해도 됩니다.</p>
   </div>
 
   <h2>6주 구축 계획</h2>
@@ -90,7 +90,7 @@ footer{color:var(--sub);font-size:13px;padding:40px 0}
   <div class="card plan" id="plan">
     <label><input type="checkbox" data-k="w1"><span><b>1주 · 아이디어</b> 주제 메모 10장 쌓기<small>요지 3줄 + 사례 1개. ideas/ 폴더가 공장의 원료 창고</small></span></label>
     <label><input type="checkbox" data-k="w2"><span><b>2주 · 리서치</b> 리서치 결과의 키워드를 네이버 데이터랩·블랙키위로 검증<small>AI가 고른 키워드 중 실제 검색이 있는 것만 남기고 메모에 반영</small></span></label>
-    <label><input type="checkbox" data-k="w3"><span><b>3주 · 생성</b> ANTHROPIC_API_KEY 등록, 원고 5편 생성 후 직접 교정<small>자주 고친 패턴을 factory.py 의 규칙(SYSTEM)에 추가</small></span></label>
+    <label><input type="checkbox" data-k="w3"><span><b>3주 · 생성</b> Claude Code로 원고 5편 생성 후 직접 교정<small>자주 고친 패턴을 factory.py 의 규칙(SYSTEM)에 추가</small></span></label>
     <label><input type="checkbox" data-k="w4"><span><b>4주 · 디자인</b> 유튜브 썸네일을 프롬프트로 만들어 보고 브랜드 색·문구 규칙 정하기</span></label>
     <label><input type="checkbox" data-k="w5"><span><b>5주 · 발행</b> 스티비·메일리에 blog/feed.xml RSS 발송 연결, 쇼츠 3개 업로드</span></label>
     <label><input type="checkbox" data-k="w6"><span><b>6주 · 분석</b> GA4 측정 ID를 FACTORY_GA4_ID 로 등록, UTM별 유입 비교 → 잘 된 채널·주제로 다음 메모 고르기</span></label>
