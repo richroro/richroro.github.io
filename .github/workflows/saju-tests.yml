@@ -1,0 +1,24 @@
+name: 만세력 사주 검사
+
+# saju/ 를 바꾸는 PR 마다 엔진 테스트와 자바스크립트 문법을 확인한다.
+
+on:
+  pull_request:
+    paths: ['saju/**', '.github/workflows/saju-tests.yml']
+  push:
+    branches: [main]
+    paths: ['saju/**.js']
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: 자바스크립트 문법
+        run: node --check saju/manseryeok.js && node --check saju/interpret.js && node --check saju/app.js
+      - name: 엔진·풀이 테스트
+        run: node --test saju/tests/engine.test.js

@@ -1,0 +1,40 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* 동적으로 붙는 클래스(el-0 … el-4 등)가 purge 되지 않도록 레이어 밖에 둔다 */
+  :root{
+    --paper:243 238 228; --card:251 248 242; --ink:29 27 23; --ink2:86 81 74; --ink3:128 121 110; --line:221 213 199;
+    --seal:168 50 42; --wood:62 107 74; --fire:168 50 42; --earth:150 110 36; --metal:100 104 112; --water:39 64 95;
+  }
+  @media (prefers-color-scheme: dark){
+    :root{
+      --paper:20 18 15; --card:28 25 21; --ink:237 230 216; --ink2:185 176 161; --ink3:140 132 119; --line:50 45 37;
+      --seal:214 94 80; --wood:127 176 141; --fire:224 122 107; --earth:214 174 94; --metal:169 174 182; --water:134 166 207;
+    }
+  }
+  html{-webkit-text-size-adjust:100%}
+  body{background:rgb(var(--paper));color:rgb(var(--ink));font-feature-settings:"tnum";word-break:keep-all}
+  .rule{background-image:linear-gradient(rgb(var(--line)),rgb(var(--line)));background-size:100% 1px;background-repeat:no-repeat;background-position:0 100%}
+  .el-0{--c:var(--wood)} .el-1{--c:var(--fire)} .el-2{--c:var(--earth)} .el-3{--c:var(--metal)} .el-4{--c:var(--water)}
+  .el-text{color:rgb(var(--c))}
+  .el-bg{background:rgb(var(--c) / .09)}
+  .el-border{border-color:rgb(var(--c) / .45)}
+  .el-fill{background:rgb(var(--c))}
+  .tile{border:1px solid rgb(var(--c) / .45);background:rgb(var(--c) / .08)}
+  .tile.yang .hz{font-weight:900}
+  .tile.yin .hz{font-weight:500}
+  .seg input{position:absolute;opacity:0;pointer-events:none}
+  .seg label{cursor:pointer}
+  .seg input:checked + span{background:rgb(var(--ink));color:rgb(var(--paper))}
+  .seg input:focus-visible + span{outline:2px solid rgb(var(--seal));outline-offset:2px}
+  select,input[type=text]{background:rgb(var(--card));border:1px solid rgb(var(--line));color:rgb(var(--ink))}
+  select:focus,input[type=text]:focus{outline:2px solid rgb(var(--ink) / .7);outline-offset:0;border-color:transparent}
+  select{appearance:none;-webkit-appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%23807968'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 10px center;padding-right:26px}
+  select:disabled{opacity:.45}
+  .tab[aria-selected=true]{color:rgb(var(--ink));border-color:rgb(var(--seal))}
+  .scroll-x{overflow-x:auto;scrollbar-width:thin;-webkit-overflow-scrolling:touch}
+  details>summary{list-style:none;cursor:pointer}
+  details>summary::-webkit-details-marker{display:none}
+  details[open] .chev{transform:rotate(90deg)}
+  @media print{header,#formSec,#actions,footer{display:none!important}body{background:#fff}}
