@@ -1,0 +1,1169 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>주식 숏폼 · AI가 가른 한 달</title>
+<meta name="description" content="50초 세로 영상으로 보는 요즘 주식시장. 메타 한 달 +36%와 AI 비서 뮤즈, AMD 시가총액 1조 달러, 메모리 3사의 급등, 고점 대비 반토막 난 오라클, 다가오는 실적 발표 일정까지. 브라우저에서 바로 영상으로 저장하고 업로드 문구·대본까지 복사하세요.">
+<link rel="canonical" href="https://richroro.github.io/stock-shorts/">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="ko_KR">
+<meta property="og:site_name" content="Cadence">
+<meta property="og:url" content="https://richroro.github.io/stock-shorts/">
+<meta property="og:title" content="주식 숏폼 · AI가 가른 한 달">
+<meta property="og:description" content="메타 +36%, AMD 1조 달러, 오라클 −55%. 50초 세로 영상 + 업로드 문구 + 대본.">
+<meta property="og:image" content="https://richroro.github.io/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%23E82127'/><rect x='30' y='14' width='40' height='72' rx='8' fill='none' stroke='white' stroke-width='7'/><path d='M40 62l8-10 6 6 8-14' fill='none' stroke='white' stroke-width='6' stroke-linecap='round' stroke-linejoin='round'/></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=IBM+Plex+Sans+KR:wght@400;500;600;700&display=swap">
+
+<style>
+:root{
+  color-scheme:light;
+  --paper:#F5F6F8; --surface:#FFFFFF; --surface-2:#EEF0F4;
+  --ink:#14161C; --ink-2:#4A5260; --ink-3:#6E7683;
+  --line:#E3E7ED; --line-soft:#EDF0F4;
+  --brand:#E82127; --brand-deep:#C81E3A; --brand-wash:#FDECEC;
+  --up:#C81E3A; --down:#1257B5;
+  --shadow:0 1px 2px rgba(20,22,28,.05), 0 10px 28px -16px rgba(20,22,28,.22);
+  --radius:14px;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    color-scheme:dark;
+    --paper:#0F1218; --surface:#161A21; --surface-2:#1D2229;
+    --ink:#E9EDF3; --ink-2:#AEB7C4; --ink-3:#8B95A3;
+    --line:#252B34; --line-soft:#1E242C;
+    --brand:#FF4C52; --brand-deep:#FF6B7A; --brand-wash:#2A1A1E;
+    --up:#FF6B7A; --down:#77B0F7;
+    --shadow:0 1px 2px rgba(0,0,0,.4), 0 10px 28px -16px rgba(0,0,0,.7);
+  }
+}
+:root[data-theme="dark"]{
+  color-scheme:dark;
+  --paper:#0F1218; --surface:#161A21; --surface-2:#1D2229;
+  --ink:#E9EDF3; --ink-2:#AEB7C4; --ink-3:#8B95A3;
+  --line:#252B34; --line-soft:#1E242C;
+  --brand:#FF4C52; --brand-deep:#FF6B7A; --brand-wash:#2A1A1E;
+  --up:#FF6B7A; --down:#77B0F7;
+  --shadow:0 1px 2px rgba(0,0,0,.4), 0 10px 28px -16px rgba(0,0,0,.7);
+}
+*{box-sizing:border-box}
+[hidden]{display:none !important}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--paper);color:var(--ink);
+  font-family:"IBM Plex Sans KR","Pretendard","Apple SD Gothic Neo",system-ui,sans-serif;
+  font-size:15px;line-height:1.6;word-break:keep-all;overflow-wrap:anywhere}
+a{color:inherit}
+.num{font-family:"IBM Plex Mono",ui-monospace,Menlo,monospace;font-variant-numeric:tabular-nums;letter-spacing:-.3px}
+.wrap{max-width:1100px;margin:0 auto;padding:0 16px}
+@media(min-width:720px){.wrap{padding:0 24px}}
+
+/* header */
+.top{position:sticky;top:0;z-index:20;background:color-mix(in srgb,var(--paper) 88%,transparent);
+  backdrop-filter:saturate(1.4) blur(10px);-webkit-backdrop-filter:saturate(1.4) blur(10px);border-bottom:1px solid var(--line)}
+.bar{display:flex;align-items:center;gap:12px;height:56px}
+.brand{display:flex;align-items:center;gap:10px;text-decoration:none;font-weight:700;min-width:0}
+.logo{width:28px;height:28px;border-radius:8px;background:var(--brand);color:#fff;flex:none;
+  display:grid;place-items:center;font:700 13px "IBM Plex Mono",monospace}
+.brand span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.nav{margin-left:auto;display:flex;gap:4px;flex:none}
+.nav a{text-decoration:none;font-size:13px;color:var(--ink-2);padding:6px 10px;border-radius:8px}
+.nav a:hover{background:var(--surface-2);color:var(--ink)}
+@media(max-width:520px){.nav a.hide-sm{display:none}}
+
+/* hero */
+.hero{padding:28px 0 18px}
+.eyebrow{margin:0 0 8px;font:600 12px "IBM Plex Mono",monospace;letter-spacing:.6px;color:var(--brand);text-transform:uppercase}
+h1{margin:0;font-size:clamp(26px,5vw,38px);line-height:1.2;letter-spacing:-.8px}
+.lede{margin:12px 0 0;color:var(--ink-2);max-width:62ch}
+
+/* studio */
+.studio{display:grid;gap:20px;align-items:start;margin-top:8px}
+@media(min-width:900px){.studio{grid-template-columns:minmax(0,440px) minmax(0,1fr);gap:28px}}
+.stage{display:flex;flex-direction:column;align-items:center;gap:12px;min-width:0}
+.phone{position:relative;width:min(100%,400px,calc((100svh - 190px) * 9 / 16));min-width:240px;aspect-ratio:9/16;
+  border-radius:26px;overflow:hidden;background:#0A0C10;box-shadow:0 0 0 1px var(--line), 0 24px 60px -24px rgba(0,0,0,.55)}
+.phone canvas{display:block;width:100%;height:100%;cursor:pointer}
+.bigplay{position:absolute;inset:0;margin:auto;width:84px;height:84px;border-radius:50%;border:0;cursor:pointer;
+  background:rgba(232,33,39,.92);color:#fff;display:grid;place-items:center;box-shadow:0 10px 30px rgba(0,0,0,.45);transition:transform .15s}
+.bigplay:hover{transform:scale(1.06)}
+.bigplay svg{width:34px;height:34px;margin-left:5px}
+.controls{width:min(100%,440px);display:grid;gap:10px}
+.row{display:flex;align-items:center;gap:8px}
+.btn{appearance:none;border:1px solid var(--line);background:var(--surface);color:var(--ink);font:inherit;font-size:14px;font-weight:600;
+  padding:8px 14px;border-radius:10px;cursor:pointer;display:inline-flex;align-items:center;gap:6px;min-height:40px;white-space:nowrap}
+.btn:hover{border-color:var(--ink-3)}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.btn.primary{background:var(--brand);border-color:var(--brand);color:#fff}
+.btn.primary:hover{background:var(--brand-deep);border-color:var(--brand-deep)}
+.btn.icon{padding:8px 10px}
+.btn svg{width:18px;height:18px;flex:none}
+.time{margin-left:auto;font-size:13px;color:var(--ink-2)}
+input[type=range]{width:100%;accent-color:var(--brand);margin:0;height:24px}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{appearance:none;border:1px solid var(--line);background:var(--surface);color:var(--ink-2);font:inherit;font-size:12.5px;
+  padding:4px 10px;border-radius:999px;cursor:pointer}
+.chip .num{font-size:11px;color:var(--ink-3);margin-right:4px}
+.chip[aria-current="true"]{background:var(--ink);border-color:var(--ink);color:var(--paper)}
+.chip[aria-current="true"] .num{color:inherit;opacity:.7}
+
+.side{display:grid;gap:16px;min-width:0}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:18px}
+.card h2{margin:0 0 4px;font-size:17px;letter-spacing:-.3px}
+.card .sub{margin:0 0 14px;font-size:13.5px;color:var(--ink-2)}
+.btns{display:flex;flex-wrap:wrap;gap:8px}
+.prog{margin-top:14px}
+.track{height:8px;border-radius:99px;background:var(--surface-2);overflow:hidden}
+.track i{display:block;height:100%;width:0;background:var(--brand);transition:width .2s}
+.msg{margin:8px 0 0;font-size:13px;color:var(--ink-2)}
+.warn{margin:10px 0 0;font-size:13px;color:var(--brand-deep)}
+.done{margin-top:14px;padding:12px;border-radius:10px;background:var(--brand-wash);font-size:14px}
+.done a{font-weight:700}
+
+.field{margin-top:12px}
+.field:first-of-type{margin-top:0}
+.field label{display:flex;justify-content:space-between;align-items:center;font-size:13px;font-weight:600;color:var(--ink-2);margin-bottom:6px}
+.copybox{width:100%;border:1px solid var(--line);background:var(--surface-2);color:var(--ink);border-radius:10px;padding:10px 12px;
+  font:inherit;font-size:14px;line-height:1.55;resize:vertical}
+.mini{appearance:none;border:0;background:none;color:var(--brand);font:inherit;font-size:12.5px;font-weight:700;cursor:pointer;padding:2px 4px}
+
+section.block{margin-top:24px}
+.tablewrap{overflow-x:auto;margin:0 -18px;padding:0 18px}
+table{width:100%;border-collapse:collapse;font-size:14px;min-width:560px}
+th,td{text-align:left;vertical-align:top;padding:10px 8px;border-bottom:1px solid var(--line-soft)}
+th{font-size:12px;color:var(--ink-3);font-weight:600;white-space:nowrap}
+td.t{white-space:nowrap;color:var(--ink-2);font-size:12.5px}
+td .cap{display:block}
+td .cap + .cap{margin-top:4px}
+tr.on td{background:var(--brand-wash)}
+.src{margin:0;padding-left:18px;font-size:14px;color:var(--ink-2)}
+.src li{margin:4px 0}
+.calc{margin:12px 0 0;padding:12px 14px;border-radius:10px;background:var(--surface-2);font-size:12.5px;line-height:1.7;overflow-x:auto;white-space:pre}
+.foot{margin:32px 0 40px;font-size:12.5px;color:var(--ink-3)}
+.toast{position:fixed;left:50%;bottom:22px;transform:translateX(-50%);background:var(--ink);color:var(--paper);padding:10px 16px;
+  border-radius:10px;font-size:14px;z-index:50;box-shadow:var(--shadow);max-width:calc(100% - 32px)}
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="wrap bar">
+    <a class="brand" href="/"><span class="logo">C</span><span>Cadence</span></a>
+    <nav class="nav">
+      <a href="/finder/">전 종목 탐색기</a>
+      <a class="hide-sm" href="/tesla-shorts/">테슬라 숏폼</a>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap">
+  <section class="hero">
+    <p class="eyebrow">Stock Shorts · 50초 · 9:16</p>
+    <h1>AI가 가른 한 달</h1>
+    <p class="lede">메타·AMD·메모리 3사·오라클의 최근 소식을 50초 세로 영상으로 정리했습니다.
+      주가는 <a href="/finder/">전 종목 탐색기</a>가 매일 받아 오는 종가(미국 <span class="num" id="usAsof"></span> · 한국 <span class="num" id="krAsof"></span>)를,
+      소식은 아래 출처의 보도를 썼습니다. 브라우저에서 바로 1080×1920 영상으로 저장해 쇼츠·릴스·틱톡에 올릴 수 있습니다.</p>
+  </section>
+
+  <div class="studio">
+    <div class="stage">
+      <div class="phone">
+        <canvas id="cv" width="1080" height="1920" role="img"
+          aria-label="주식 숏폼 영상 미리보기. 장면별 내용은 아래 대본 표에 텍스트로 있습니다."></canvas>
+        <button class="bigplay" id="bigPlay" type="button" aria-label="재생">
+          <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M6 4l14 8-14 8z"/></svg>
+        </button>
+      </div>
+      <div class="controls">
+        <div class="row">
+          <button class="btn icon" id="play" type="button" aria-label="재생">
+            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path id="playIcon" d="M6 4l14 8-14 8z"/></svg>
+          </button>
+          <button class="btn icon" id="restart" type="button" aria-label="처음부터">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 1 0 3-6.7"/><path d="M3 4v5h5"/></svg>
+          </button>
+          <button class="btn icon" id="mute" type="button" aria-label="소리 끄기" aria-pressed="false">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 5L6 9H3v6h3l5 4z" fill="currentColor"/><path id="waves" d="M15.5 8.5a5 5 0 0 1 0 7M18.5 5.5a9 9 0 0 1 0 13"/></svg>
+          </button>
+          <span class="time num" id="time">0:00 / 0:50</span>
+        </div>
+        <input type="range" id="seek" min="0" max="50000" step="10" value="0" aria-label="재생 위치">
+        <div class="chips" id="chips" aria-label="장면으로 이동"></div>
+      </div>
+    </div>
+
+    <aside class="side">
+      <section class="card">
+        <h2>영상으로 저장</h2>
+        <p class="sub">1080×1920 · 30fps · 배경음악 포함. 화면을 그대로 녹화하는 방식이라 영상 길이만큼(<span class="num" id="durTxt">50</span>초) 걸리고, 그동안 이 탭을 열어 두어야 합니다.</p>
+        <div class="btns">
+          <button class="btn primary" id="expStart" type="button">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12M7 10l5 5 5-5M5 21h14"/></svg>
+            <span id="expLabel">MP4로 저장</span>
+          </button>
+          <button class="btn" id="coverPng" type="button">표지 PNG</button>
+          <button class="btn" id="framePng" type="button">현재 화면 PNG</button>
+        </div>
+        <p class="warn" id="expWarn" hidden></p>
+        <div class="prog" id="expProg" hidden>
+          <div class="track"><i id="expBar"></i></div>
+          <p class="msg"><span id="expMsg">녹화 중</span> · <button class="mini" id="expCancel" type="button">중단</button></p>
+        </div>
+        <div class="done" id="expDone" hidden>
+          저장했습니다 — <span class="num" id="expSize"></span>.
+          자동으로 내려받아지지 않았다면 <a id="expLink" href="#">여기를 눌러 저장</a>하세요.
+        </div>
+      </section>
+
+      <section class="card">
+        <h2>업로드 문구</h2>
+        <p class="sub">쇼츠·릴스·틱톡에 그대로 붙여 넣을 수 있게 만들었습니다.</p>
+        <div class="field">
+          <label for="upTitle">제목 <button class="mini" type="button" data-copy="upTitle">복사</button></label>
+          <textarea class="copybox" id="upTitle" rows="2" readonly></textarea>
+        </div>
+        <div class="field">
+          <label for="upDesc">설명 <button class="mini" type="button" data-copy="upDesc">복사</button></label>
+          <textarea class="copybox" id="upDesc" rows="9" readonly></textarea>
+        </div>
+        <div class="field">
+          <label for="upTags">해시태그 <button class="mini" type="button" data-copy="upTags">복사</button></label>
+          <textarea class="copybox" id="upTags" rows="2" readonly></textarea>
+        </div>
+      </section>
+    </aside>
+  </div>
+
+  <section class="card block">
+    <h2>장면별 대본</h2>
+    <p class="sub">자막이 곧 대본입니다. 직접 목소리를 입히려면 이 순서대로 읽으면 장면 길이에 맞습니다.
+      <button class="mini" id="copyScript" type="button">대본 전체 복사</button></p>
+    <div class="tablewrap">
+      <table>
+        <thead><tr><th>시간</th><th>장면</th><th>화면</th><th>자막 · 나레이션</th></tr></thead>
+        <tbody id="scriptBody"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="card block">
+    <h2>숫자와 소식의 출처</h2>
+    <p class="sub">주가·수익률·시가총액은 전 종목 탐색기 데이터(미국 Yahoo Finance, 한국 KRX 전종목 시세)의 종가 스냅샷이고,
+      소식은 아래 보도에서 여러 곳이 같은 내용을 전한 것만 썼습니다. 한국 증시는 추석 연휴(9/24~26)로 9월 23일이 마지막 거래일입니다.</p>
+    <ul class="src" id="srcList"></ul>
+    <div class="calc num" id="calc"></div>
+  </section>
+
+  <p class="foot">투자 권유가 아닙니다. 소식과 주가는 빠르게 바뀝니다. 영상을 올릴 때는 설명란의 기준일을 지우지 말아 주세요.
+    · <a href="/">Cadence</a></p>
+</main>
+
+<div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+
+<script id="app">
+"use strict";
+/* ================================================================
+   데이터 — 주가는 finder/data/stocks.json 스냅샷(빌드 2026-09-26)에서 그대로 옮겼습니다.
+   r21 = 최근 21거래일(약 1개월) 수익률, ytd = 올해 수익률, fh = 52주 고점 대비,
+   mcu = 시가총액(백만 달러, 한국 종목은 원/달러 fx 로 환산), sp = 1년 주간 종가(0~63 단계 부호화).
+   파생 수치(배수·환산 시총 …)는 아래 D 에서 계산해서 씁니다.
+   ================================================================ */
+const DATA = {
+  usAsof: "2026-09-25", krAsof: "2026-09-23", fx: 1355.28,
+  stocks: {
+    META:   { ko: "메타", tk: "META", g: "US", p: 777.59, d1: 4.5, r21: 36.5, ytd: 18.1, fh: 0.0, h52: 777.59, mcu: 1980915,
+              sp: "t_tnojoWJHBRYQUUVNIXXXQUVPG08NcZHHIHFBD45FbMBC908DRb_", spl: 545.6, sph: 777.59, ern: "2026-10-28" },
+    AMD:    { ko: "AMD", tk: "AMD", g: "US", p: 629.26, d1: 2.38, r21: 31.3, ytd: 193.8, fh: 0.0, h52: 629.26, mcu: 1027251,
+              sp: "0012AABDBC78878889DD686666768CGQReafljqmvmorahifhekq_", spl: 155.67, sph: 629.26, ern: "2026-11-03" },
+    MU:     { ko: "마이크론", tk: "MU", g: "US", p: 1080.53, d1: 0.81, r21: 15.8, ytd: 278.8, fh: -10.9, h52: 1213.37, mcu: 1220343,
+              sp: "0102334565355679CCFIEGHHFGIDEHJMPbacuoxv_olpblmnnpqqw", spl: 150.33, sph: 1154.11, ern: "2026-09-30" },
+    "005930": { ko: "삼성전자", tk: "005930", g: "KR", p: 285500, d1: 3.25, r21: 11.1, ytd: 138.1, fh: -21.2, h52: 362500, mcu: 1231563,
+              sp: "0012366686667998BGGILMMRSQSRMSUXYjoptox_utfgXccdheifm", spl: 69500, sph: 353500, ern: "2026-10-29" },
+    "000660": { ko: "SK하이닉스", tk: "000660", g: "KR", p: 1862000, d1: 1.2, r21: 11.0, ytd: 186.0, fh: -36.2, h52: 2919000, mcu: 1003613,
+              sp: "00122456777667779BBBEFEGGGHHDFKNPXeendm_unbbUVRTYWcZc", spl: 269000, sph: 2919000, ern: "2026-10-27" },
+    ORCL:   { ko: "오라클", tk: "ORCL", g: "US", p: 139.54, d1: -3.47, r21: -3.6, ytd: -27.7, fh: -55.0, h52: 310.01, mcu: 421932,
+              sp: "zwutw_qjfWURWNOPORII9DCACDC897JIIPOOgVOF975309C9A9CB7", spl: 117.74, sph: 310.01, ern: "2026-12-14" },
+    NVDA:   { ko: "엔비디아", tk: "NVDA", g: "US", p: 224.58, r21: 5.5, ytd: 20.7, ern: "2026-11-25" },
+    AAPL:   { ko: "애플", tk: "AAPL", g: "US", p: 335.92, r21: 8.4, ytd: 23.9, ern: "2026-10-29" },
+    MSFT:   { ko: "마이크로소프트", tk: "MSFT", g: "US", p: 497.93, r21: 1.3, ytd: 3.6, ern: "2026-10-27" },
+    GOOGL:  { ko: "알파벳", tk: "GOOGL", g: "US", p: 342.36, r21: -1.3, ytd: 9.6, ern: "2026-10-27" },
+    AMZN:   { ko: "아마존", tk: "AMZN", g: "US", p: 249.38, r21: -4.5, ytd: 8.0, ern: "2026-10-29" },
+    TSLA:   { ko: "테슬라", tk: "TSLA", g: "US", p: 377.94, r21: 7.9, ytd: -16.0, ern: "2026-10-28" },
+    NFLX:   { ko: "넷플릭스", tk: "NFLX", g: "US", p: 71.72, r21: -12.8, ytd: -23.5, ern: "2026-10-20" },
+    TSM:    { ko: "TSMC", tk: "TSM", g: "US", p: 451.15, r21: 8.4, ytd: 49.6, ern: "2026-10-15" }
+  },
+  // 보도로 확인한 소식 (출처는 SOURCES)
+  news: {
+    museLaunch: "9/8", museTop1: "9/18",          // 메타 AI 비서 앱 '뮤즈' 출시 · 미국 앱스토어 무료 1위
+    amdTrillion: "9/21",                          // AMD 시가총액 1조 달러 첫 돌파(장중 최대 +10%, 5거래일 연속 상승)
+    muGuide: [49, 51],                            // 마이크론 FY26 4분기 매출 가이던스(십억 달러), 9/30 장 마감 후 발표
+    orclFcf: -23.7                                // 오라클 지난 회계연도 잉여현금흐름(십억 달러)
+  }
+};
+const STK = DATA.stocks;
+const D = (() => {
+  const mult = k => 1 + STK[k].ytd / 100;
+  return {
+    amdMult: mult("AMD"),
+    memMin: Math.min(mult("MU"), mult("005930"), mult("000660")),
+    memMax: Math.max(mult("MU"), mult("005930"), mult("000660")),
+    trillion: ["MU", "005930", "000660"].every(k => STK[k].mcu >= 1e6),
+    orclHalf: STK.ORCL.p / STK.ORCL.h52
+  };
+})();
+
+const fmtUsdT = mcu => (mcu / 1e6).toFixed(2) + "조 달러";
+const price = r => r.g === "KR" ? Math.round(r.p).toLocaleString("ko-KR") + "원" : "$" + r.p.toFixed(2);
+const sgn = (v, dp = 1) => (v >= 0 ? "+" : "−") + Math.abs(v).toFixed(dp) + "%";
+const arrow = (v, dp = 1) => (v >= 0 ? "▲" : "▼") + Math.abs(v).toFixed(dp) + "%";
+const md = s => { const [, m, d] = s.split("-"); return `${+m}/${+d}`; };
+
+const BOARD = ["META", "AMD", "MU", "005930", "000660", "AAPL", "TSM", "TSLA", "NVDA", "MSFT", "GOOGL", "ORCL", "AMZN", "NFLX"];
+const CAL = (() => {
+  const keys = ["MU", "TSM", "MSFT", "GOOGL", "000660", "META", "TSLA", "AAPL", "AMZN", "005930", "NVDA"];
+  const by = {};
+  keys.forEach(k => { (by[STK[k].ern] = by[STK[k].ern] || []).push(STK[k].ko); });
+  return Object.keys(by).sort().map(d => ({ d, names: by[d] }));
+})();
+
+/* ================================================================
+   장면 — 길이·자막·화면 설명. 대본 표와 업로드 문구도 여기서 만듭니다.
+   ================================================================ */
+const SCENES = [
+  { id: "hook", label: "도입", dur: 4.5,
+    screen: `“AI가 가른 한 달” — 메타 ${arrow(STK.META.r21)} · AMD 시총 1조 달러 · 오라클 ${arrow(STK.ORCL.fh, 0)}`,
+    cap: [[0, "요즘 주식시장, 1분 안에 정리합니다"]] },
+  { id: "board", label: "성적표", dur: 7,
+    screen: `주요 ${BOARD.length}종목 최근 1개월 수익률 막대(상승 빨강 · 하락 파랑)`,
+    cap: [[0, "최근 한 달, 주요 종목 성적표부터"], [3.4, "칩·메모리는 위로, 오라클·넷플릭스는 아래로"]] },
+  { id: "meta", label: "메타", dur: 7,
+    screen: `메타 1년 주가 · 최근 1개월 ${sgn(STK.META.r21)} · 52주 신고가 · 뮤즈 출시와 앱스토어 1위`,
+    cap: [[0, `메타, 한 달 만에 ${STK.META.r21}% 급등`], [3.3, "AI 비서 앱 ‘뮤즈’가 앱스토어 1위를 찍었어요"]] },
+  { id: "amd", label: "AMD", dur: 6.5,
+    screen: `AMD 1년 주가 · 올해 ${sgn(STK.AMD.ytd)} · 시가총액 1조 달러 첫 돌파`,
+    cap: [[0, "AMD는 시가총액 1조 달러 클럽 입성"], [3.2, `올해만 주가가 약 ${D.amdMult.toFixed(1)}배가 됐습니다`]] },
+  { id: "memory", label: "메모리", dur: 7,
+    screen: "마이크론 · SK하이닉스 · 삼성전자 올해 수익률 막대와 시가총액, 9/30 마이크론 실적",
+    cap: [[0, `메모리 3사, 올해 주가 ${D.memMin.toFixed(1)}~${D.memMax.toFixed(1)}배`], [3.5, "30일 마이크론 실적이 다음 분기점이에요"]] },
+  { id: "orcl", label: "오라클", dur: 7,
+    screen: `오라클 1년 주가 · 52주 고점 대비 ${sgn(STK.ORCL.fh)} · 데이터센터 투자 부담`,
+    cap: [[0, "반대로 오라클은 고점 대비 반토막"], [3.3, "AI 데이터센터 짓는 돈이 부담이에요"]] },
+  { id: "cal", label: "실적 일정", dur: 6,
+    screen: "9/30 마이크론부터 11/25 엔비디아까지 실적 발표 예정일",
+    cap: [[0, "다음 체크포인트는 실적 발표"], [3, "30일 마이크론부터 줄줄이 나옵니다"]] },
+  { id: "outro", label: "마무리", dur: 5,
+    screen: "“AI로 버는 게 보이면 ▲, 쓰기만 하면 ▼” 한 줄 요약 · 기준일 · 면책",
+    cap: [[0, "한 줄로 줄이면 이렇습니다"], [2.6, "여러분 종목은 어느 쪽인가요?"]] }
+];
+let acc = 0;
+for (const s of SCENES) { s.start = acc; acc += s.dur; }
+const T = acc;                 // 50초
+const COVER_T = 3.4;           // 표지로 쓸 순간 (훅 세 줄이 다 보이는 때)
+
+/* ================================================================
+   그리기
+   ================================================================ */
+const W = 1080, H = 1920;
+const cv = document.getElementById("cv");
+const ctx = cv.getContext("2d");
+const SANS = '"IBM Plex Sans KR","Apple SD Gothic Neo","Noto Sans KR","Malgun Gothic",system-ui,sans-serif';
+const MONO = '"IBM Plex Mono",ui-monospace,Menlo,Consolas,monospace';
+const C = {
+  bg: "#0A0C10", ink: "#F2F4F7", ink2: "#AEB6C3", ink3: "#6F7886", line: "#232833",
+  red: "#E82127", redSoft: "rgba(232,33,39,.18)", up: "#FF4C5A", down: "#4C9BFF", bar: "#3A414D", energy: "#1FBF86"
+};
+
+const clamp = (v, a = 0, b = 1) => Math.min(b, Math.max(a, v));
+const prog = (t, a, d) => clamp((t - a) / d);
+const eo = x => 1 - Math.pow(1 - x, 3);
+const eio = x => x < .5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2;
+const eback = x => { const c1 = 1.70158, c3 = c1 + 1; return 1 + c3 * Math.pow(x - 1, 3) + c1 * Math.pow(x - 1, 2); };
+const lerp = (a, b, k) => a + (b - a) * k;
+
+function font(size, weight = 700, mono = false) { return `${weight} ${size}px ${mono ? MONO : SANS}`; }
+function txt(s, x, y, o = {}) {
+  const a = o.a == null ? 1 : o.a;
+  if (a <= 0) return 0;
+  ctx.save();
+  ctx.globalAlpha *= a;
+  let size = o.size || 60;
+  const weight = o.weight || 700;
+  ctx.font = font(size, weight, o.mono);
+  if ("letterSpacing" in ctx) ctx.letterSpacing = (o.ls || 0) + "px";
+  if (o.max) while (ctx.measureText(s).width > o.max && size > 14) { size -= 2; ctx.font = font(size, weight, o.mono); }
+  ctx.fillStyle = o.color || C.ink;
+  ctx.textAlign = o.align || "left";
+  ctx.textBaseline = o.base || "alphabetic";
+  if (o.scale && o.scale !== 1) { ctx.translate(x, y); ctx.scale(o.scale, o.scale); ctx.fillText(s, 0, 0); }
+  else ctx.fillText(s, x, y);
+  const w = ctx.measureText(s).width;
+  ctx.restore();
+  return w;
+}
+function measure(s, size, weight = 700, mono = false) {
+  ctx.save(); ctx.font = font(size, weight, mono);
+  if ("letterSpacing" in ctx) ctx.letterSpacing = "0px";
+  const w = ctx.measureText(s).width; ctx.restore(); return w;
+}
+function rr(x, y, w, h, r) {
+  r = Math.min(r, w / 2, h / 2);
+  ctx.beginPath();
+  ctx.moveTo(x + r, y); ctx.arcTo(x + w, y, x + w, y + h, r); ctx.arcTo(x + w, y + h, x, y + h, r);
+  ctx.arcTo(x, y + h, x, y, r); ctx.arcTo(x, y, x + w, y, r); ctx.closePath();
+}
+function pill(s, x, y, o = {}) {
+  const size = o.size || 34, padX = o.padX || 22, h = size * 1.7;
+  const w = measure(s, size, o.weight || 700, o.mono) + padX * 2;
+  const x0 = o.align === "center" ? x - w / 2 : o.align === "right" ? x - w : x;
+  ctx.save();
+  ctx.globalAlpha *= o.a == null ? 1 : o.a;
+  rr(x0, y - h / 2, w, h, h / 2);
+  ctx.fillStyle = o.bg || C.red; ctx.fill();
+  if (o.stroke) { ctx.strokeStyle = o.stroke; ctx.lineWidth = 3; ctx.stroke(); }
+  ctx.restore();
+  txt(s, x0 + w / 2, y + 1, { size, weight: o.weight || 700, mono: o.mono, color: o.color || "#fff", align: "center", base: "middle", a: o.a });
+  return w;
+}
+
+// 정적 배경은 한 번만 그려 둡니다.
+const bgCanvas = document.createElement("canvas");
+bgCanvas.width = W; bgCanvas.height = H;
+(() => {
+  const b = bgCanvas.getContext("2d");
+  b.fillStyle = C.bg; b.fillRect(0, 0, W, H);
+  b.strokeStyle = "rgba(255,255,255,.035)"; b.lineWidth = 1;
+  for (let x = 0; x <= W; x += 90) { b.beginPath(); b.moveTo(x + .5, 0); b.lineTo(x + .5, H); b.stroke(); }
+  for (let y = 0; y <= H; y += 90) { b.beginPath(); b.moveTo(0, y + .5); b.lineTo(W, y + .5); b.stroke(); }
+  const v = b.createRadialGradient(W / 2, H / 2, H * .2, W / 2, H / 2, H * .75);
+  v.addColorStop(0, "rgba(0,0,0,0)"); v.addColorStop(1, "rgba(0,0,0,.55)");
+  b.fillStyle = v; b.fillRect(0, 0, W, H);
+})();
+
+function background(t) {
+  ctx.drawImage(bgCanvas, 0, 0);
+  const gx = W * (.72 + .12 * Math.sin(t * .35)), gy = H * (.2 + .08 * Math.cos(t * .27));
+  const g = ctx.createRadialGradient(gx, gy, 0, gx, gy, 900);
+  g.addColorStop(0, "rgba(232,33,39,.20)"); g.addColorStop(1, "rgba(232,33,39,0)");
+  ctx.fillStyle = g; ctx.fillRect(0, 0, W, H);
+}
+
+function chrome(t) {
+  // 상단 장면 진행 막대 (스토리 형식)
+  const x0 = 72, x1 = W - 72, gap = 8, y = 92;
+  const n = SCENES.length, w = (x1 - x0 - gap * (n - 1)) / n;
+  SCENES.forEach((s, i) => {
+    const x = x0 + i * (w + gap);
+    ctx.fillStyle = "rgba(255,255,255,.18)"; rr(x, y, w, 6, 3); ctx.fill();
+    const k = clamp((t - s.start) / s.dur);
+    if (k > 0) { ctx.fillStyle = "#fff"; rr(x, y, Math.max(6, w * k), 6, 3); ctx.fill(); }
+  });
+  txt("1분 주식 뉴스", 72, 170, { size: 34, weight: 700, color: C.ink });
+  txt("2026.09 넷째 주", W - 72, 170, { size: 28, weight: 500, mono: true, color: C.ink3, align: "right" });
+}
+
+function header(no, title, lt) {
+  const k = eo(prog(lt, .05, .45));
+  pill(`${no} · ${SCENE_TAG[no] || ""}`, 72, 300, { size: 30, a: k, bg: C.red });
+  txt(title, 72, 420, { size: 82, weight: 700, a: k, max: W - 144 });
+}
+const SCENE_TAG = { "01": "성적표", "02": "메타", "03": "AMD", "04": "메모리", "05": "오라클", "06": "실적 일정" };
+
+function caption(lt, s) {
+  let cur = null, at = 0;
+  for (const [t0, c] of s.cap) if (lt >= t0) { cur = c; at = t0; }
+  if (!cur) return;
+  const k = eback(prog(lt, at, .28));
+  const out = 1 - prog(lt, s.dur - .18, .18);
+  const size = 50, padX = 34, padY = 22;
+  let fs = size;
+  while (measure(cur, fs) > W - 144 - padX * 2 && fs > 30) fs -= 2;
+  const w = measure(cur, fs) + padX * 2, h = fs + padY * 2;
+  const cx = W / 2, cy = 1450;
+  ctx.save();
+  ctx.globalAlpha = clamp(k) * out;
+  ctx.translate(cx, cy); ctx.scale(lerp(.9, 1, k), lerp(.9, 1, k));
+  rr(-w / 2, -h / 2, w, h, 18);
+  ctx.fillStyle = "rgba(10,12,16,.82)"; ctx.fill();
+  ctx.strokeStyle = "rgba(255,255,255,.12)"; ctx.lineWidth = 2; ctx.stroke();
+  ctx.restore();
+  txt(cur, cx, cy + 2, { size: fs, weight: 700, align: "center", base: "middle", a: clamp(k) * out });
+}
+
+function wipe(t) {
+  // 장면 경계마다 빨간 사선 띠가 화면을 가로지릅니다.
+  for (let i = 1; i < SCENES.length; i++) {
+    const b = SCENES[i].start, d = .42, k = (t - (b - d / 2)) / d;
+    if (k < 0 || k > 1) continue;
+    const x = lerp(-700, W + 300, eio(k));
+    ctx.save();
+    ctx.fillStyle = C.red; ctx.globalAlpha = .9;
+    ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x + 260, 0); ctx.lineTo(x + 520, H); ctx.lineTo(x + 260, H); ctx.closePath(); ctx.fill();
+    ctx.globalAlpha = .35;
+    ctx.beginPath(); ctx.moveTo(x - 90, 0); ctx.lineTo(x - 40, 0); ctx.lineTo(x + 220, H); ctx.lineTo(x + 170, H); ctx.closePath(); ctx.fill();
+    ctx.restore();
+  }
+}
+
+/* ---------------- 장면별 그리기 (lt = 장면 안 시간) ---------------- */
+const ABC = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz-_";
+const sparkVals = r => [...r.sp].map(c => r.spl + ABC.indexOf(c) / 63 * (r.sph - r.spl));
+const upc = v => v >= 0 ? C.up : C.down;
+
+function spark(x, y, w, h, r, k, col, a) {
+  const v = sparkVals(r), lo = Math.min(...v), hi = Math.max(...v);
+  const px = i => x + i / (v.length - 1) * w, py = val => y + h - (val - lo) / (hi - lo || 1) * h;
+  const n = (v.length - 1) * k, whole = Math.floor(n);
+  if (k <= 0) return null;
+  const pts = [];
+  for (let i = 0; i <= whole; i++) pts.push([px(i), py(v[i])]);
+  if (whole < v.length - 1) { const f = n - whole; pts.push([lerp(px(whole), px(whole + 1), f), lerp(py(v[whole]), py(v[whole + 1]), f)]); }
+  ctx.save(); ctx.globalAlpha *= a;
+  // 가는 기준선
+  ctx.strokeStyle = C.line; ctx.lineWidth = 2;
+  ctx.beginPath(); ctx.moveTo(x, y + h + .5); ctx.lineTo(x + w, y + h + .5); ctx.stroke();
+  // 면
+  const g = ctx.createLinearGradient(0, y, 0, y + h);
+  g.addColorStop(0, col === C.up ? "rgba(255,76,90,.30)" : "rgba(76,155,255,.30)"); g.addColorStop(1, "rgba(0,0,0,0)");
+  ctx.beginPath(); ctx.moveTo(pts[0][0], y + h);
+  pts.forEach(p => ctx.lineTo(p[0], p[1]));
+  ctx.lineTo(pts[pts.length - 1][0], y + h); ctx.closePath(); ctx.fillStyle = g; ctx.fill();
+  // 선
+  ctx.beginPath(); pts.forEach((p, i) => i ? ctx.lineTo(p[0], p[1]) : ctx.moveTo(p[0], p[1]));
+  ctx.strokeStyle = col; ctx.lineWidth = 7; ctx.lineJoin = "round"; ctx.lineCap = "round"; ctx.stroke();
+  const e = pts[pts.length - 1];
+  ctx.fillStyle = "#fff"; ctx.beginPath(); ctx.arc(e[0], e[1], 11, 0, Math.PI * 2); ctx.fill();
+  ctx.fillStyle = col; ctx.beginPath(); ctx.arc(e[0], e[1], 7, 0, Math.PI * 2); ctx.fill();
+  ctx.restore();
+  return { end: e, top: y + h - (Math.max(...v) - lo) / (hi - lo || 1) * h };
+}
+
+// 종목 한 곳을 다루는 장면의 공통 틀: 이름·가격 → 1년 차트 → 큰 숫자 → 소식 3줄
+function stockScene(lt, o) {
+  const r = STK[o.tk];
+  header(o.no, o.title, lt);
+  const k = eo(prog(lt, .15, .4));
+  const nw = txt(r.ko, 72, 548, { size: 58, weight: 700, a: k });
+  pill(r.tk, 72 + nw + 22, 528, { size: 26, mono: true, a: k, bg: "rgba(255,255,255,.1)", color: C.ink2 });
+  txt(price(r), W - 72, 548, { size: 50, weight: 600, mono: true, align: "right", a: k });
+  txt(`전일 ${arrow(r.d1, 2)}`, W - 72, 596, { size: 28, weight: 600, mono: true, align: "right", color: upc(r.d1), a: k });
+  const col = upc(o.big);
+  const sk = spark(72, 650, W - 144, 250, r, eo(prog(lt, .4, 1.5)), col, k);
+  txt(`1년 주간 종가 · 52주 고점 ${price({ g: r.g, p: r.h52 })}`, 72, 950, { size: 26, weight: 500, color: C.ink3, a: k });
+  if (r.fh === 0 && sk) {
+    const kp = eback(prog(lt, 1.9, .4));
+    pill("52주 신고가", Math.min(sk.end[0], W - 72), sk.end[1] - 52, { size: 28, align: "right", a: clamp(kp) });
+  }
+  // 큰 숫자
+  const kb = eback(prog(lt, 1.6, .45));
+  txt(o.bigLabel, 72, 1030, { size: 34, weight: 600, color: C.ink2, a: clamp(kb) });
+  const cnt = o.big * eo(prog(lt, 1.6, 1.0));
+  txt(arrow(cnt), 60, 1150, { size: 120, weight: 700, mono: true, color: col, a: clamp(kb), scale: lerp(.85, 1, clamp(kb)) });
+  if (o.side) {
+    txt(o.side[0], W - 72, 1070, { size: 30, weight: 500, color: C.ink3, align: "right", a: clamp(kb) });
+    txt(o.side[1], W - 72, 1135, { size: 50, weight: 700, mono: true, align: "right", color: upc(o.side[2]), a: clamp(kb) });
+  }
+  // 소식
+  o.facts.forEach((f, i) => {
+    const kf = eo(prog(lt, 2.4 + i * .55, .35)), y = 1225 + i * 56;
+    ctx.save(); ctx.globalAlpha *= kf; ctx.fillStyle = C.red; rr(72, y - 26, 10, 30, 5); ctx.fill(); ctx.restore();
+    txt(f, 100, y, { size: 33, weight: 600, a: kf, max: W - 172 });
+  });
+}
+
+const DRAW = {
+  hook(lt) {
+    const k0 = eo(prog(lt, 0, .35));
+    pill("2026년 9월 넷째 주", W / 2, 400, { size: 32, a: k0, bg: "rgba(255,255,255,.1)", stroke: "rgba(255,255,255,.25)" });
+    txt("AI가 가른", W / 2, 560, { size: 110, weight: 700, align: "center", a: k0 });
+    txt("한 달", W / 2, 690, { size: 110, weight: 700, align: "center", color: C.up, a: k0 });
+    const rows = [
+      ["메타", arrow(STK.META.r21), C.up, "최근 1개월"],
+      ["AMD", "시총 1조$", C.up, "사상 처음"],
+      ["오라클", arrow(STK.ORCL.fh, 0), C.down, "52주 고점 대비"]
+    ];
+    rows.forEach(([n, v, c, sub], i) => {
+      const t0 = .7 + i * .55, kk = eback(prog(lt, t0, .4)), a = clamp(prog(lt, t0, .15));
+      const y = 880 + i * 150;
+      const shake = lt > t0 && lt < t0 + .25 ? Math.sin(lt * 90) * 8 * (1 - prog(lt, t0, .25)) : 0;
+      ctx.save(); ctx.translate(shake, 0); ctx.globalAlpha *= a;
+      rr(72, y - 62, W - 144, 124, 24); ctx.fillStyle = "rgba(255,255,255,.06)"; ctx.fill();
+      ctx.restore();
+      txt(n, 116, y + 4, { size: 50, weight: 700, a, base: "middle" });
+      txt(sub, 116 + measure(n, 50) + 20, y + 8, { size: 26, weight: 500, color: C.ink3, a, base: "middle" });
+      txt(v, W - 116 + shake, y + 4, { size: 78, weight: 700, mono: true, color: c, align: "right", base: "middle", a, scale: lerp(.7, 1, clamp(kk)) });
+    });
+  },
+
+  board(lt) {
+    header("01", "최근 한 달 성적표", lt);
+    const rows = BOARD.map(k => STK[k]);
+    const y0 = 500, rh = 60, zero = 560, maxPos = Math.max(...rows.map(r => r.r21)), scale = (W - 72 - zero - 130) / maxPos;
+    const kz = eo(prog(lt, .3, .3));
+    ctx.save(); ctx.globalAlpha *= kz; ctx.fillStyle = "rgba(255,255,255,.3)"; ctx.fillRect(zero - 1, y0 - 34, 3, rows.length * rh + 10); ctx.restore();
+    rows.forEach((r, i) => {
+      const y = y0 + i * rh, g = eo(prog(lt, .35 + i * .07, .6)), v = r.r21 * g, w = Math.abs(v) * scale;
+      txt(r.ko, 72, y + 12, { size: 32, weight: 600, a: g, max: 300 });
+      if (r.g === "KR") txt("KR", 72 + Math.min(300, measure(r.ko, 32, 600)) + 12, y + 10, { size: 20, weight: 600, mono: true, color: C.ink3, a: g });
+      ctx.save(); ctx.globalAlpha *= g;
+      rr(v >= 0 ? zero : zero - w, y - 18, Math.max(2, w), 36, 8); ctx.fillStyle = upc(r.r21); ctx.fill(); ctx.restore();
+      txt(sgn(v), v >= 0 ? zero + w + 12 : zero - w - 12, y + 12, { size: 28, weight: 700, mono: true, color: upc(r.r21), align: v >= 0 ? "left" : "right", a: clamp(g * 1.4) });
+    });
+    txt(`최근 21거래일 · 미국 ${md(DATA.usAsof)} · 한국 ${md(DATA.krAsof)} 종가`, 72, y0 + rows.length * rh + 20, { size: 26, weight: 500, color: C.ink3, a: eo(prog(lt, 1.6, .4)) });
+  },
+
+  meta(lt) {
+    stockScene(lt, { tk: "META", no: "02", title: "메타, 13년 만의 최고의 달", big: STK.META.r21, bigLabel: "최근 1개월",
+      side: ["올해 들어", sgn(STK.META.ytd), STK.META.ytd],
+      facts: [`${DATA.news.museLaunch} AI 비서 앱 ‘뮤즈(Muse)’ 출시`, `${DATA.news.museTop1} 미국 앱스토어 무료 앱 1위`, `시가총액 ${fmtUsdT(STK.META.mcu)} — 2조 달러 눈앞`] });
+  },
+
+  amd(lt) {
+    stockScene(lt, { tk: "AMD", no: "03", title: "AMD, 1조 달러 클럽 입성", big: STK.AMD.ytd, bigLabel: "올해 들어",
+      side: ["최근 1개월", sgn(STK.AMD.r21), STK.AMD.r21],
+      facts: [`${DATA.news.amdTrillion} 시가총액 1조 달러 첫 돌파`, "AI 칩 수요 기대 · 5거래일 연속 상승", `지금 시가총액 ${fmtUsdT(STK.AMD.mcu)}`] });
+  },
+
+  memory(lt) {
+    header("04", "메모리 3사, 1조 달러 삼총사", lt);
+    const ks = ["MU", "000660", "005930"], maxY = Math.max(...ks.map(k => STK[k].ytd));
+    ks.forEach((key, i) => {
+      const r = STK[key], y = 540 + i * 190, t0 = .35 + i * .3, k = eo(prog(lt, t0, .4)), g = eo(prog(lt, t0 + .1, 1.0));
+      txt(r.ko, 72, y, { size: 50, weight: 700, a: k });
+      txt(`시총 ${fmtUsdT(r.mcu)}${r.g === "KR" ? " (환산)" : ""}`, W - 72, y, { size: 30, weight: 600, color: C.ink2, align: "right", a: k });
+      const full = W - 144 - 300, w = r.ytd / maxY * full * g;
+      ctx.save(); ctx.globalAlpha *= k; rr(72, y + 30, Math.max(4, w), 70, 14); ctx.fillStyle = C.up; ctx.fill(); ctx.restore();
+      txt(`올해 ${sgn(r.ytd * g)}`, 72 + w + 18, y + 80, { size: 40, weight: 700, mono: true, color: C.up, a: clamp(g * 1.5) });
+    });
+    const k = eo(prog(lt, 3.2, .45));
+    ctx.save(); ctx.globalAlpha *= k; rr(72, 1115, W - 144, 225, 26); ctx.fillStyle = "rgba(255,255,255,.07)"; ctx.fill();
+    ctx.fillStyle = C.red; rr(72, 1115, 12, 225, 6); ctx.fill(); ctx.restore();
+    txt(`${md(STK.MU.ern)} (미국 현지) 마이크론 실적 발표`, 116, 1185, { size: 40, weight: 700, a: k, max: W - 232 });
+    txt(`회사 가이던스: 분기 매출 ${DATA.news.muGuide[0] * 10}~${DATA.news.muGuide[1] * 10}억 달러`, 116, 1245, { size: 32, weight: 500, color: C.ink2, a: k, max: W - 232 });
+    txt("HBM·D램 가격이 메모리주 방향을 가릅니다", 116, 1300, { size: 30, weight: 500, color: C.ink3, a: k, max: W - 232 });
+  },
+
+  orcl(lt) {
+    stockScene(lt, { tk: "ORCL", no: "05", title: "오라클, 고점 대비 반토막", big: STK.ORCL.fh, bigLabel: "52주 고점 대비",
+      side: ["올해 들어", sgn(STK.ORCL.ytd), STK.ORCL.ytd],
+      facts: ["데이터센터 ‘프로젝트 주피터’ 불가항력 통지", `지난 회계연도 잉여현금흐름 ${Math.round(DATA.news.orclFcf * 10).toLocaleString("ko-KR").replace("-", "−")}억 달러`, "AI 데이터센터 짓는 빚에 시장이 긴장"] });
+  },
+
+  cal(lt) {
+    header("06", "다음 체크포인트: 실적", lt);
+    const x0 = 120;
+    ctx.save(); ctx.globalAlpha *= eo(prog(lt, .3, .4)); ctx.fillStyle = "rgba(255,255,255,.2)";
+    ctx.fillRect(x0 - 2, 520, 4, (CAL.length - 1) * 128 + 10); ctx.restore();
+    CAL.forEach((c, i) => {
+      const y = 525 + i * 128, k = eo(prog(lt, .4 + i * .22, .4)), first = i === 0;
+      ctx.save(); ctx.globalAlpha *= k;
+      ctx.fillStyle = first ? C.red : C.bg; ctx.strokeStyle = first ? C.red : "rgba(255,255,255,.6)"; ctx.lineWidth = 4;
+      ctx.beginPath(); ctx.arc(x0, y, first ? 16 : 12, 0, Math.PI * 2); ctx.fill(); ctx.stroke(); ctx.restore();
+      txt(md(c.d), x0 + 50, y + 14, { size: first ? 48 : 40, weight: 700, mono: true, color: first ? C.up : C.ink, a: k });
+      txt(c.names.join(" · "), x0 + 240, y + 13, { size: first ? 44 : 38, weight: first ? 700 : 600, a: k, max: W - 72 - x0 - 240 });
+    });
+    txt("예정일 · 회사 사정으로 바뀔 수 있음 · 미국 종목은 현지 날짜", 72, 525 + CAL.length * 128 - 30, { size: 26, weight: 500, color: C.ink3, a: eo(prog(lt, 2, .4)), max: W - 144 });
+  },
+
+  outro(lt) {
+    const lines = [["AI로 버는 게 보이면", C.ink, 76, "▲", C.up], ["AI에 쓰기만 하면", C.ink, 76, "▼", C.down]];
+    lines.forEach(([s, c, size, mark, mc], i) => {
+      const k = eback(prog(lt, .2 + i * .6, .45)), y = 620 + i * 250;
+      txt(s, W / 2, y, { size, weight: 700, color: c, align: "center", a: clamp(k) });
+      txt(mark, W / 2, y + 140, { size: 120, weight: 700, color: mc, align: "center", a: clamp(k), scale: lerp(.6, 1, clamp(k)) });
+    });
+    const kq = eo(prog(lt, 1.9, .4));
+    txt(`다음 주 체크 — ${md(STK.MU.ern)} 마이크론 실적`, W / 2, 1180, { size: 44, weight: 700, align: "center", a: kq, max: W - 144 });
+    const kf = eo(prog(lt, 2.4, .4));
+    txt(`투자 권유 아님 · 미국 ${md(DATA.usAsof)} · 한국 ${md(DATA.krAsof)} 종가 기준`, W / 2, 1270, { size: 28, weight: 500, color: C.ink3, align: "center", a: kf, max: W - 144 });
+    txt("richroro.github.io/finder", W / 2, 1325, { size: 32, weight: 600, mono: true, color: C.ink2, align: "center", a: kf });
+  }
+};
+
+function sceneAt(t) {
+  for (let i = SCENES.length - 1; i >= 0; i--) if (t >= SCENES[i].start) return i;
+  return 0;
+}
+
+function draw(t) {
+  t = clamp(t, 0, T);
+  background(t);
+  chrome(t);
+  const i = sceneAt(Math.min(t, T - 1e-6)), s = SCENES[i], lt = t - s.start;
+  // 장면 전체 입장/퇴장
+  const enter = eo(prog(lt, 0, .3)), exit = 1 - prog(lt, s.dur - .2, .2);
+  ctx.save();
+  ctx.globalAlpha = i === 0 && lt < .01 ? 1 : Math.min(enter, exit);
+  ctx.translate(0, (1 - enter) * 40);
+  DRAW[s.id](lt, s.dur);
+  ctx.restore();
+  caption(lt, s);
+  wipe(t);
+}
+
+/* ================================================================
+   배경음악 — OfflineAudioContext 로 52초를 한 번 합성해 둡니다.
+   외부 음원 파일이 없어서 저작권 걱정 없이 올릴 수 있습니다.
+   ================================================================ */
+async function buildTrack() {
+  const OAC = window.OfflineAudioContext || window.webkitOfflineAudioContext;
+  if (!OAC) return null;
+  const sr = 44100, oc = new OAC(2, Math.ceil(T * sr), sr);
+  const master = oc.createGain();
+  const comp = oc.createDynamicsCompressor();
+  comp.threshold.value = -14; comp.ratio.value = 4;
+  master.connect(comp); comp.connect(oc.destination);
+  master.gain.setValueAtTime(0.0001, 0);
+  master.gain.linearRampToValueAtTime(.6, .08);
+  master.gain.setValueAtTime(.6, T - 1.8);
+  master.gain.linearRampToValueAtTime(0.0001, T - .05);
+
+  // 결정적 노이즈 (매번 같은 소리)
+  const nb = oc.createBuffer(1, sr, sr), nd = nb.getChannelData(0);
+  let seed = 7;
+  for (let i = 0; i < nd.length; i++) { seed = (seed * 16807) % 2147483647; nd[i] = seed / 1073741823.5 - 1; }
+  const noise = (t, dur) => { const s = oc.createBufferSource(); s.buffer = nb; s.start(t, 0, dur + .05); return s; };
+
+  function kick(t) {
+    const o = oc.createOscillator(), g = oc.createGain();
+    o.frequency.setValueAtTime(150, t); o.frequency.exponentialRampToValueAtTime(45, t + .12);
+    g.gain.setValueAtTime(.9, t); g.gain.exponentialRampToValueAtTime(.001, t + .32);
+    o.connect(g); g.connect(master); o.start(t); o.stop(t + .35);
+  }
+  function hat(t, v = .09) {
+    const s = noise(t, .06), f = oc.createBiquadFilter(), g = oc.createGain();
+    f.type = "highpass"; f.frequency.value = 7000;
+    g.gain.setValueAtTime(v, t); g.gain.exponentialRampToValueAtTime(.001, t + .05);
+    s.connect(f); f.connect(g); g.connect(master);
+  }
+  function bass(t, fr, dur) {
+    const o = oc.createOscillator(), f = oc.createBiquadFilter(), g = oc.createGain();
+    o.type = "sawtooth"; o.frequency.value = fr;
+    f.type = "lowpass"; f.frequency.value = 520; f.Q.value = 4;
+    g.gain.setValueAtTime(0, t); g.gain.linearRampToValueAtTime(.2, t + .01); g.gain.exponentialRampToValueAtTime(.001, t + dur);
+    o.connect(f); f.connect(g); g.connect(master); o.start(t); o.stop(t + dur + .02);
+  }
+  function pad(t, freqs, dur) {
+    const f = oc.createBiquadFilter(), g = oc.createGain();
+    f.type = "lowpass"; f.frequency.value = 1400;
+    g.gain.setValueAtTime(0, t); g.gain.linearRampToValueAtTime(.035, t + .4);
+    g.gain.setValueAtTime(.035, t + dur - .4); g.gain.linearRampToValueAtTime(0, t + dur);
+    f.connect(g); g.connect(master);
+    for (const fr of freqs) for (const det of [-7, 7]) {
+      const o = oc.createOscillator(); o.type = "sawtooth"; o.frequency.value = fr; o.detune.value = det;
+      o.connect(f); o.start(t); o.stop(t + dur + .02);
+    }
+  }
+  function whoosh(b) {
+    const t = Math.max(0, b - .5), s = noise(t, .6), f = oc.createBiquadFilter(), g = oc.createGain();
+    f.type = "bandpass"; f.Q.value = 1.2;
+    f.frequency.setValueAtTime(400, t); f.frequency.exponentialRampToValueAtTime(6000, b);
+    g.gain.setValueAtTime(0, t); g.gain.linearRampToValueAtTime(.22, b - .05); g.gain.linearRampToValueAtTime(0, b + .08);
+    s.connect(f); f.connect(g); g.connect(master);
+  }
+  function impact(t, v = .7) {
+    const o = oc.createOscillator(), g = oc.createGain();
+    o.frequency.setValueAtTime(95, t); o.frequency.exponentialRampToValueAtTime(38, t + .5);
+    g.gain.setValueAtTime(v, t); g.gain.exponentialRampToValueAtTime(.001, t + .6);
+    o.connect(g); g.connect(master); o.start(t); o.stop(t + .65);
+    const s = noise(t, .3), f = oc.createBiquadFilter(), g2 = oc.createGain();
+    f.type = "lowpass"; f.frequency.value = 1800;
+    g2.gain.setValueAtTime(.18, t); g2.gain.exponentialRampToValueAtTime(.001, t + .3);
+    s.connect(f); f.connect(g2); g2.connect(master);
+  }
+
+  const beat = 60 / 108, bar = beat * 4;
+  const prog = [
+    { root: 146.83, chord: [293.66, 349.23, 440.00] },   // Dm
+    { root: 116.54, chord: [233.08, 293.66, 349.23] },   // B♭
+    { root: 87.31, chord: [261.63, 349.23, 440.00] },    // F
+    { root: 130.81, chord: [261.63, 329.63, 392.00] }    // C
+  ];
+  const end = T - .3;
+  for (let b = 0, i = 0; b < end; b += bar, i++) {
+    const c = prog[i % 4];
+    pad(b, c.chord, Math.min(bar, end - b));
+    for (let n = 0; n < 8; n++) {
+      const t = b + n * beat / 2;
+      if (t >= end) break;
+      if (b >= bar) bass(t, c.root, beat / 2 * .9);               // 첫 마디는 패드만
+      if (n % 2 === 1 && b >= bar) hat(t);
+      if (n % 2 === 0 && b >= bar) kick(t);
+    }
+  }
+  impact(.02, .8);
+  for (let i = 0; i < 3; i++) impact(SCENES[0].start + .7 + i * .55, .55);                // 훅 세 줄
+  for (let i = 1; i < SCENES.length; i++) { whoosh(SCENES[i].start); impact(SCENES[i].start, .45); }
+  return oc.startRendering();
+}
+
+/* ================================================================
+   재생
+   ================================================================ */
+const $ = id => document.getElementById(id);
+const A = { ctx: null, buf: null, src: null, master: null, speaker: null, rec: null, muted: false };
+const S = { t: 0, fresh: true, playing: false, clk: null, c0: 0, t0: 0, dragging: false, exporting: false };
+
+function ensureCtx() {
+  if (A.ctx) return;
+  const AC = window.AudioContext || window.webkitAudioContext;
+  if (!AC) return;
+  A.ctx = new AC();
+  A.master = A.ctx.createGain();
+  A.speaker = A.ctx.createGain();
+  A.master.connect(A.speaker); A.speaker.connect(A.ctx.destination);
+  A.speaker.gain.value = A.muted ? 0 : 1;
+  // 녹화 경로는 미리보기 음소거와 상관없이 항상 소리를 받습니다.
+  try { A.rec = A.ctx.createMediaStreamDestination(); A.master.connect(A.rec); } catch (e) { A.rec = null; }
+}
+function startSource(at) {
+  stopSource();
+  if (!A.ctx || !A.buf || at >= T) return;
+  const s = A.ctx.createBufferSource();
+  s.buffer = A.buf; s.connect(A.master);
+  s.start(0, Math.max(0, at));
+  A.src = s;
+}
+function stopSource() {
+  if (A.src) { try { A.src.stop(); } catch (e) {} try { A.src.disconnect(); } catch (e) {} A.src = null; }
+}
+function clockNow() { return S.clk ? S.clk() : performance.now() / 1000; }
+
+async function play() {
+  if (S.playing) return;
+  ensureCtx();
+  if (A.ctx && A.ctx.state !== "running") { try { await A.ctx.resume(); } catch (e) {} }
+  if (S.fresh || S.t >= T - .01) S.t = 0;
+  S.fresh = false;
+  S.clk = A.ctx && A.ctx.state === "running" ? () => A.ctx.currentTime : () => performance.now() / 1000;
+  S.c0 = clockNow(); S.t0 = S.t;
+  S.playing = true;
+  startSource(S.t);
+  syncButtons();
+}
+function pause() {
+  if (!S.playing) return;
+  S.t = clamp(S.t0 + clockNow() - S.c0, 0, T);
+  S.playing = false;
+  stopSource();
+  syncButtons();
+}
+function seek(t) {
+  S.fresh = false;
+  S.t = clamp(t, 0, T);
+  if (S.playing) { S.c0 = clockNow(); S.t0 = S.t; startSource(S.t); }
+  draw(S.t); syncUI(true);
+}
+function toggle() { S.playing ? pause() : play(); }
+
+let lastUI = -1;
+function loop() {
+  if (S.playing) {
+    S.t = S.t0 + clockNow() - S.c0;
+    if (S.t >= T) {
+      S.t = T; draw(T);
+      S.playing = false; stopSource(); syncButtons();
+      if (S.exporting) finishExport();
+    }
+  }
+  if (S.playing || S.dirty) { draw(S.t); S.dirty = false; }
+  if (S.exporting) exportTick();
+  syncUI();
+  requestAnimationFrame(loop);
+}
+
+const fmt = t => `${Math.floor(t / 60)}:${String(Math.floor(t % 60)).padStart(2, "0")}`;
+function syncUI(force) {
+  const cs = Math.floor(S.t * 10);
+  if (!force && cs === lastUI) return;
+  lastUI = cs;
+  $("time").textContent = `${fmt(S.t)} / ${fmt(T)}`;
+  if (!S.dragging) $("seek").value = Math.round(S.t * 1000);
+  const i = sceneAt(Math.min(S.t, T - 1e-6));
+  document.querySelectorAll("#chips .chip").forEach((c, k) => c.setAttribute("aria-current", k === i ? "true" : "false"));
+  document.querySelectorAll("#scriptBody tr").forEach((r, k) => r.classList.toggle("on", k === i && !S.fresh));
+}
+function syncButtons() {
+  $("playIcon").setAttribute("d", S.playing ? "M6 4h4v16H6zM14 4h4v16h-4z" : "M6 4l14 8-14 8z");
+  $("play").setAttribute("aria-label", S.playing ? "일시정지" : "재생");
+  $("bigPlay").hidden = S.playing || S.exporting;
+  $("play").disabled = $("restart").disabled = $("seek").disabled = S.exporting;
+  document.querySelectorAll("#chips .chip").forEach(c => c.disabled = S.exporting);
+}
+
+/* ================================================================
+   내보내기 — canvas.captureStream + 음악을 MediaRecorder 로 실시간 녹화
+   ================================================================ */
+const EXP = { rec: null, chunks: [], mime: "", url: "", aborted: false };
+function pickMime() {
+  if (!window.MediaRecorder) return "";
+  const cands = [
+    "video/mp4;codecs=avc1.42E01E,mp4a.40.2",
+    "video/mp4;codecs=avc1,mp4a.40.2",
+    "video/mp4;codecs=h264,aac",
+    "video/webm;codecs=vp9,opus",
+    "video/webm;codecs=vp8,opus",
+    "video/mp4",
+    "video/webm"
+  ];
+  for (const c of cands) { try { if (MediaRecorder.isTypeSupported(c)) return c; } catch (e) {} }
+  return "";
+}
+const extOf = m => m.includes("mp4") ? "mp4" : "webm";
+
+function initExportUI() {
+  const mime = pickMime();
+  const ok = mime && cv.captureStream;
+  $("expStart").disabled = !ok;
+  if (!ok) { $("expWarn").hidden = false; $("expWarn").textContent = "이 브라우저는 화면 녹화를 지원하지 않습니다. PC 크롬·엣지 최신 버전을 권합니다."; }
+  else if (extOf(mime) === "webm") { $("expLabel").textContent = "WebM으로 저장"; $("expWarn").hidden = false; $("expWarn").textContent = "이 브라우저는 MP4 녹화를 지원하지 않아 WebM으로 저장됩니다. 크롬·엣지 최신 버전에서는 MP4로 저장됩니다."; }
+}
+
+async function startExport() {
+  const mime = pickMime();
+  if (!mime || S.exporting) return;
+  pause();
+  ensureCtx();
+  if (A.ctx && A.ctx.state !== "running") { try { await A.ctx.resume(); } catch (e) {} }
+  if (!A.buf && trackPromise) { try { await trackPromise; } catch (e) {} }
+  try { await document.fonts.ready; } catch (e) {}
+  S.t = 0; draw(0);
+  let stream;
+  try {
+    stream = cv.captureStream(30);
+    const at = A.rec && A.rec.stream.getAudioTracks()[0];
+    if (at) stream.addTrack(at);
+    EXP.rec = new MediaRecorder(stream, { mimeType: mime, videoBitsPerSecond: 8000000, audioBitsPerSecond: 160000 });
+  } catch (e) {
+    toast("이 브라우저에서는 녹화를 시작할 수 없습니다");
+    return;
+  }
+  EXP.mime = mime; EXP.chunks = []; EXP.aborted = false;
+  EXP.rec.ondataavailable = e => { if (e.data && e.data.size) EXP.chunks.push(e.data); };
+  EXP.rec.onstop = onRecStop;
+  S.exporting = true;
+  $("expDone").hidden = true; $("expProg").hidden = false;
+  $("expStart").disabled = true;
+  EXP.rec.start(500);
+  await new Promise(r => setTimeout(r, 120));   // 첫 프레임이 녹화에 잡히도록
+  syncButtons();
+  play();
+}
+function exportTick() {
+  const k = clamp(S.t / T);
+  $("expBar").style.width = (k * 100).toFixed(1) + "%";
+  $("expMsg").textContent = `녹화 중 ${Math.round(k * 100)}% — 약 ${Math.ceil(T - S.t)}초 남음, 탭을 그대로 두세요`;
+}
+function finishExport() {
+  if (!S.exporting) return;
+  S.exporting = false;
+  $("expMsg").textContent = "파일로 묶는 중…";
+  setTimeout(() => { try { EXP.rec && EXP.rec.state !== "inactive" && EXP.rec.stop(); } catch (e) {} }, 200);
+}
+function abortExport() {
+  if (!S.exporting) return;
+  S.exporting = false; EXP.aborted = true;
+  pause();
+  try { EXP.rec && EXP.rec.state !== "inactive" && EXP.rec.stop(); } catch (e) {}
+  $("expProg").hidden = true; $("expStart").disabled = false;
+  syncButtons();
+  toast("저장을 중단했습니다");
+}
+function onRecStop() {
+  $("expStart").disabled = false;
+  syncButtons();
+  if (EXP.aborted) { EXP.chunks = []; return; }
+  const blob = new Blob(EXP.chunks, { type: EXP.mime });
+  EXP.chunks = [];
+  if (EXP.url) URL.revokeObjectURL(EXP.url);
+  EXP.url = URL.createObjectURL(blob);
+  EXP.blob = blob;
+  const name = `stock_shorts_${DATA.usAsof.replace(/-/g, "")}.${extOf(EXP.mime)}`;
+  $("expLink").href = EXP.url; $("expLink").download = name;
+  $("expSize").textContent = `${(blob.size / 1048576).toFixed(1)}MB ${extOf(EXP.mime).toUpperCase()}`;
+  $("expProg").hidden = true; $("expDone").hidden = false;
+  download(EXP.url, name);
+}
+function download(url, name) {
+  const a = document.createElement("a");
+  a.href = url; a.download = name; document.body.appendChild(a); a.click(); a.remove();
+}
+function savePng(t, name) {
+  if (S.exporting) return;
+  const keep = S.t;
+  draw(t);
+  cv.toBlob(b => {
+    if (!b) return;
+    const u = URL.createObjectURL(b);
+    download(u, name);
+    setTimeout(() => URL.revokeObjectURL(u), 4000);
+  }, "image/png");
+  draw(keep);
+}
+
+document.addEventListener("visibilitychange", () => {
+  if (document.hidden && S.exporting) toast("탭을 벗어나면 녹화가 끊깁니다. 이 탭으로 돌아와 주세요");
+});
+
+/* ================================================================
+   페이지 채우기 — 대본 표, 업로드 문구, 계산 근거
+   ================================================================ */
+/* ================================================================
+   페이지 채우기 — 대본 표, 업로드 문구, 출처, 계산 근거
+   ================================================================ */
+const SOURCES = [
+  ["주가·수익률·시가총액 — Cadence 전 종목 탐색기 데이터(Yahoo Finance · KRX 전종목 시세)", "/finder/"],
+  ["메타 ‘뮤즈’ 출시·앱스토어 1위 — TechCrunch (2026-09-25)", "https://techcrunch.com/2026/09/25/meta-is-putting-its-muscle-behind-muse-as-the-ai-app-takes-off/"],
+  ["메타 2013년 이후 최고의 달·시총 2조 달러 근접 — Bloomberg (2026-09-24)", "https://www.bloomberg.com/news/articles/2026-09-24/meta-s-best-month-since-2013-has-it-on-cusp-of-2-trillion-level"],
+  ["AMD 시가총액 1조 달러 첫 돌파 — CNBC (2026-09-21)", "https://www.cnbc.com/2026/09/21/amd-stock-1-trillion-value.html"],
+  ["마이크론 9/30 실적·가이던스 — Investing.com 실적 프리뷰", "https://www.investing.com/news/stock-market-news/micron-earnings-outlook-what-to-watch-ahead-of-the-september-30-report-93CH-4911385"],
+  ["오라클 ‘프로젝트 주피터’ 불가항력 통지 — Vantage Markets (2026-09-25)", "https://www.vantagemarkets.com/market-news/oracle-force-majeure-project-jupiter-data-centre-september-25-2026/"],
+  ["오라클 잉여현금흐름·차입 — The Motley Fool (2026-09-01)", "https://www.fool.com/investing/2026/09/01/why-is-oracle-stock-down-today/"]
+];
+
+const UPLOAD = {
+  title: `메타 ${sgn(STK.META.r21)}, AMD 1조 달러, 오라클 반토막… AI가 가른 한 달 #shorts`,
+  desc: [
+    `최근 한 달 메타 ${sgn(STK.META.r21)} — AI 비서 앱 ‘뮤즈’가 미국 앱스토어 1위.`,
+    `AMD는 ${DATA.news.amdTrillion} 시가총액 1조 달러 첫 돌파, 올해 ${sgn(STK.AMD.ytd)}.`,
+    `메모리 3사 올해 마이크론 ${sgn(STK.MU.ytd)} · SK하이닉스 ${sgn(STK["000660"].ytd)} · 삼성전자 ${sgn(STK["005930"].ytd)}.`,
+    `오라클은 52주 고점 대비 ${sgn(STK.ORCL.fh)} — AI 데이터센터 투자 부담.`,
+    `다음 체크포인트: ${md(STK.MU.ern)} 마이크론 실적.`,
+    "",
+    `주가 기준: 미국 ${DATA.usAsof} · 한국 ${DATA.krAsof} 종가 (한국 시총은 1달러=${DATA.fx.toLocaleString("ko-KR")}원 환산)`,
+    "소식 출처: TechCrunch, Bloomberg, CNBC, Investing.com 등",
+    "투자 권유가 아닙니다.",
+    "",
+    "종목 더 보기 → https://richroro.github.io/finder/"
+  ].join("\n"),
+  tags: "#미국주식 #메타 #AMD #마이크론 #삼성전자 #SK하이닉스 #오라클 #주식뉴스 #shorts"
+};
+
+function buildPage() {
+  $("upTitle").value = UPLOAD.title;
+  $("upDesc").value = UPLOAD.desc;
+  $("upTags").value = UPLOAD.tags;
+  $("usAsof").textContent = DATA.usAsof;
+  $("krAsof").textContent = DATA.krAsof;
+  $("durTxt").textContent = String(Math.round(T));
+  $("seek").max = Math.round(T * 1000);
+
+  const chips = $("chips");
+  SCENES.forEach(s => {
+    const b = document.createElement("button");
+    b.type = "button"; b.className = "chip";
+    b.innerHTML = `<span class="num">${fmt(s.start)}</span>`;
+    b.appendChild(document.createTextNode(s.label));
+    b.addEventListener("click", () => seek(s.start + .001));
+    chips.appendChild(b);
+  });
+
+  const tb = $("scriptBody");
+  SCENES.forEach(s => {
+    const tr = document.createElement("tr");
+    const td = (cls, html) => { const d = document.createElement("td"); if (cls) d.className = cls; d.innerHTML = html; tr.appendChild(d); };
+    td("t num", `${fmt(s.start)}–${fmt(s.start + s.dur)}`);
+    td("", `<strong>${s.label}</strong>`);
+    td("", esc(s.screen));
+    td("", s.cap.map(c => `<span class="cap">${esc(c[1])}</span>`).join(""));
+    tr.addEventListener("click", () => seek(s.start + .001));
+    tr.style.cursor = "pointer";
+    tb.appendChild(tr);
+  });
+
+  $("srcList").innerHTML = SOURCES.map(([t, u]) =>
+    `<li><a href="${esc(u)}"${u.startsWith("http") ? ' target="_blank" rel="noopener"' : ""}>${esc(t)}</a></li>`).join("");
+
+  const mem = ["MU", "000660", "005930"];
+  $("calc").textContent = [
+    `AMD 올해       1 + ${STK.AMD.ytd}% = ${D.amdMult.toFixed(2)}배`,
+    `메모리 3사     ${mem.map(k => `${STK[k].ko} ${(1 + STK[k].ytd / 100).toFixed(2)}배`).join(" · ")}`,
+    `한국 시총 환산 삼성전자 ${(STK["005930"].mcu * DATA.fx / 1e6).toFixed(0)}조원 ÷ ${DATA.fx} = ${fmtUsdT(STK["005930"].mcu)}`,
+    `               SK하이닉스 ${(STK["000660"].mcu * DATA.fx / 1e6).toFixed(0)}조원 ÷ ${DATA.fx} = ${fmtUsdT(STK["000660"].mcu)}`,
+    `오라클         ${STK.ORCL.p} ÷ 52주 고점 ${STK.ORCL.h52} = ${D.orclHalf.toFixed(3)}  (${sgn(STK.ORCL.fh)})`,
+    `1개월 수익률   최근 21거래일 종가 대비 (미국 ${DATA.usAsof}, 한국 ${DATA.krAsof} 기준)`
+  ].join("\n");
+}
+
+function esc(s) { return String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c])); }
+
+async function copyText(s) {
+  try { await navigator.clipboard.writeText(s); toast("복사했습니다"); return; } catch (e) {}
+  const ta = document.createElement("textarea");
+  ta.value = s; ta.style.position = "fixed"; ta.style.opacity = "0";
+  document.body.appendChild(ta); ta.select();
+  try { document.execCommand("copy"); toast("복사했습니다"); } catch (e) { toast("복사하지 못했습니다. 직접 선택해 주세요"); }
+  ta.remove();
+}
+let toastTimer = 0;
+function toast(s) {
+  const el = $("toast"); el.textContent = s; el.hidden = false;
+  clearTimeout(toastTimer); toastTimer = setTimeout(() => { el.hidden = true; }, 2400);
+}
+
+/* ================================================================
+   연결
+   ================================================================ */
+let trackPromise = null;
+function bind() {
+  $("play").addEventListener("click", toggle);
+  $("bigPlay").addEventListener("click", play);
+  cv.addEventListener("click", () => { if (!S.exporting) toggle(); });
+  $("restart").addEventListener("click", () => { seek(0); if (!S.playing) play(); });
+  $("mute").addEventListener("click", () => {
+    A.muted = !A.muted;
+    if (A.speaker) A.speaker.gain.value = A.muted ? 0 : 1;
+    $("mute").setAttribute("aria-pressed", String(A.muted));
+    $("mute").setAttribute("aria-label", A.muted ? "소리 켜기" : "소리 끄기");
+    $("waves").style.display = A.muted ? "none" : "";
+  });
+  const sk = $("seek");
+  sk.addEventListener("pointerdown", () => { S.dragging = true; });
+  sk.addEventListener("input", () => { S.dragging = true; seek(sk.value / 1000); });
+  sk.addEventListener("change", () => { S.dragging = false; });
+  window.addEventListener("pointerup", () => { S.dragging = false; });
+  $("expStart").addEventListener("click", startExport);
+  $("expCancel").addEventListener("click", abortExport);
+  $("coverPng").addEventListener("click", () => savePng(COVER_T, "stock_shorts_cover.png"));
+  $("framePng").addEventListener("click", () => savePng(S.t, `stock_shorts_${S.t.toFixed(1)}s.png`));
+  document.querySelectorAll("[data-copy]").forEach(b => b.addEventListener("click", () => copyText($(b.dataset.copy).value)));
+  $("copyScript").addEventListener("click", () => copyText(SCENES.map(s =>
+    `[${fmt(s.start)}–${fmt(s.start + s.dur)}] ${s.label}\n화면: ${s.screen}\n` + s.cap.map(c => `  ${c[1]}`).join("\n")).join("\n\n")));
+  document.addEventListener("keydown", e => {
+    if (S.exporting || /INPUT|TEXTAREA|BUTTON/.test(e.target.tagName)) return;
+    if (e.code === "Space") { e.preventDefault(); toggle(); }
+    else if (e.key === "ArrowRight") seek(S.t + 2);
+    else if (e.key === "ArrowLeft") seek(S.t - 2);
+  });
+}
+
+async function loadFonts() {
+  // 한글 웹폰트는 글자 범위별로 쪼개져 있어서, 영상에 쓰는 글자를 실제로 요청해야 받아옵니다.
+  if (!document.fonts || !document.fonts.load) return;
+  const sample = $("app").textContent.replace(/\s+/g, "");
+  const jobs = [];
+  for (const w of [500, 600, 700]) jobs.push(document.fonts.load(`${w} 40px "IBM Plex Sans KR"`, sample));
+  for (const w of [500, 600, 700]) jobs.push(document.fonts.load(`${w} 40px "IBM Plex Mono"`, "0123456789.,%+−▲▼→$ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz/·"));
+  try { await Promise.race([Promise.all(jobs), new Promise(r => setTimeout(r, 4000))]); } catch (e) {}
+}
+
+buildPage();
+bind();
+initExportUI();
+syncButtons();
+S.t = COVER_T;             // 처음엔 표지 화면을 보여 줍니다
+draw(S.t); syncUI(true);
+loadFonts().then(() => { S.dirty = true; });
+if (document.fonts) document.fonts.addEventListener && document.fonts.addEventListener("loadingdone", () => { S.dirty = true; });
+trackPromise = buildTrack().then(buf => {
+  A.buf = buf;
+  if (S.playing) startSource(S.t);
+  return buf;
+}).catch(() => null);
+requestAnimationFrame(loop);
+
+window.__short = { T, SCENES, D, draw, seek, play, pause, state: S, audio: A, get track() { return trackPromise; } };
+</script>
+</body>
+</html>
