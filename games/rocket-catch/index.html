@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="theme-color" content="#070B16">
+<meta name="description" content="추락하는 로켓 부스터를 분사와 자세 제어로 받아 타워 젓가락 팔에 걸어 잡는 한 손 게임. 속도·기울기·위치가 모두 맞아야 캐치 성공.">
+<title>로켓 캐치</title>
+<link rel="canonical" href="https://richroro.github.io/games/rocket-catch/">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%23070B16'/><rect x='42' y='16' width='16' height='56' rx='4' fill='%23F2F4F8'/><path d='M42 72h16l6 12H36z' fill='%23FF9A3C'/><rect x='24' y='34' width='18' height='6' fill='%235C6BFF'/><rect x='58' y='34' width='18' height='6' fill='%235C6BFF'/></svg>">
+<meta property="og:type" content="website">
+<meta property="og:title" content="로켓 캐치">
+<meta property="og:description" content="떨어지는 로켓을 타워 팔로 잡아라. 분사·자세·타이밍 게임.">
+<meta property="og:url" content="https://richroro.github.io/games/rocket-catch/">
+<style>
+  :root{--bg:#070B16;--ink:#F2F4F8;--dim:#8F9BB3;--ok:#3DDC84;--bad:#FF5C5C;--warn:#FFC24A;--acc:#5C6BFF}
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;user-select:none;-webkit-user-select:none;touch-action:none}
+  html,body{margin:0;height:100%;background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Pretendard","Apple SD Gothic Neo","Malgun Gothic",sans-serif;overflow:hidden}
+  #wrap{position:fixed;inset:0;display:flex;align-items:center;justify-content:center}
+  canvas{display:block;background:#000;max-width:100%;max-height:100%}
+  .ctl{position:fixed;bottom:max(14px,env(safe-area-inset-bottom));display:none;gap:10px}
+  .ctl.l{left:14px}.ctl.r{right:14px}
+  .ctl button{width:74px;height:74px;border-radius:50%;border:2px solid rgba(255,255,255,.25);background:rgba(255,255,255,.10);color:#fff;font-size:28px;backdrop-filter:blur(4px)}
+  .ctl button.on{background:rgba(92,107,255,.55)}
+  .ctl button.fire{width:92px;height:92px;background:rgba(255,154,60,.25);border-color:rgba(255,154,60,.7)}
+  .ctl button.fire.on{background:rgba(255,154,60,.7)}
+  @media (pointer:coarse){.ctl{display:flex;align-items:flex-end}}
+  #back{position:fixed;top:max(10px,env(safe-area-inset-top));left:12px;color:var(--dim);font-size:13px;text-decoration:none;z-index:5;padding:6px 8px}
+</style>
+</head>
+<body>
+<a id="back" href="/">← 홈</a>
+<div id="wrap"><canvas id="c" width="480" height="800"></canvas></div>
+<div class="ctl l"><button id="bL">⟲</button><button id="bR">⟳</button></div>
+<div class="ctl r"><button id="bT" class="fire">🔥</button></div>
+<script>
+(()=>{
+'use strict';
+const W=480,H=800,GROUND=740,ARM_Y=430,LEN=110,HALF=13,PIN_UP=LEN/2-26;
+const cv=document.getElementById('c'),g=cv.getContext('2d');
+function fit(){const s=Math.min(innerWidth/W,innerHeight/H);cv.style.width=W*s+'px';cv.style.height=H*s+'px';}
+addEventListener('resize',fit);fit();
+
+// ---- input
+const key={l:0,r:0,t:0};
+const KM={ArrowLeft:'l',a:'l',A:'l',ArrowRight:'r',d:'r',D:'r',ArrowUp:'t',w:'t',W:'t',' ':'t'};
+addEventListener('keydown',e=>{const k=KM[e.key];if(k){key[k]=1;e.preventDefault();}
+  if(e.key==='Enter'||e.key===' ')action();});
+addEventListener('keyup',e=>{const k=KM[e.key];if(k)key[k]=0;});
+function bind(id,k){const b=document.getElementById(id);
+  const on=e=>{e.preventDefault();key[k]=1;b.classList.add('on');ensureAudio();action();};
+  const off=e=>{e.preventDefault();key[k]=0;b.classList.remove('on');};
+  b.addEventListener('pointerdown',on);b.addEventListener('pointerup',off);b.addEventListener('pointercancel',off);b.addEventListener('pointerleave',off);}
+bind('bL','l');bind('bR','r');bind('bT','t');
+cv.addEventListener('pointerdown',()=>{ensureAudio();action();});
+
+// ---- audio (thruster noise + blips)
+let ac=null,noise=null,ng=null;
+function ensureAudio(){if(ac)return;try{ac=new (window.AudioContext||window.webkitAudioContext)();
+  const len=ac.sampleRate*2,buf=ac.createBuffer(1,len,ac.sampleRate),d=buf.getChannelData(0);
+  for(let i=0;i<len;i++)d[i]=Math.random()*2-1;
+  noise=ac.createBufferSource();noise.buffer=buf;noise.loop=true;
+  const f=ac.createBiquadFilter();f.type='lowpass';f.frequency.value=700;
+  ng=ac.createGain();ng.gain.value=0;noise.connect(f);f.connect(ng);ng.connect(ac.destination);noise.start();}catch(e){ac=null;}}
+function blip(f,d,type,v){if(!ac)return;const o=ac.createOscillator(),gn=ac.createGain();o.type=type||'sine';o.frequency.value=f;
+  gn.gain.value=v||.15;gn.gain.exponentialRampToValueAtTime(.001,ac.currentTime+d);o.connect(gn);gn.connect(ac.destination);o.start();o.stop(ac.currentTime+d);}
+function boom(){if(!ac)return;blip(90,.6,'sawtooth',.25);blip(50,.8,'square',.2);}
+
+// ---- state
+let best=0;try{best=+localStorage.getItem('rocketCatchBest')||0}catch(e){}
+let state='title',level=1,score=0,t=0,shake=0;
+let R,arm,wind,windT,parts=[],msg='',msgT=0,result=null,stars=[];
+for(let i=0;i<70;i++)stars.push([Math.random()*W,Math.random()*GROUND*0.8,Math.random()*1.4+.3,Math.random()*6]);
+
+function newRound(){
+  const lv=level;
+  R={x:80+Math.random()*(W-160),y:-70,vx:(Math.random()-.5)*50,vy:70,a:(Math.random()-.5)*.5,w:0,fuel:Math.max(60,115-lv*5),fuel0:0,thr:0,alive:true};
+  R.fuel0=R.fuel;
+  arm={x:W/2,base:W/2,amp:lv>=3?Math.min(90,(lv-2)*22):0,f:.5+lv*.05,close:0,tol:Math.max(11,17-lv*.6)};
+  windT=Math.random()*10;wind=0;parts=[];result=null;shake=0;
+}
+function action(){
+  if(state==='title'){level=1;score=0;newRound();state='play';}
+  else if(state==='caught'&&t>1.2){level++;newRound();state='play';}
+  else if(state==='crashed'&&t>1.2){level=1;score=0;newRound();state='play';}
+}
+
+// ---- particles
+function puff(x,y,vx,vy,life,size,col){parts.push({x,y,vx,vy,life,max:life,size,col});}
+
+// ---- update
+const G=48,TMAX=125;
+function pinPos(){return{x:R.x+Math.sin(R.a)*PIN_UP,y:R.y-Math.cos(R.a)*PIN_UP};}
+function update(dt){
+  t+=dt;
+  arm.x=arm.base+Math.sin(t*arm.f*2)*arm.amp;
+  if(state==='play'){
+    windT+=dt;const wmax=Math.min(38,(level-1)*7);
+    wind=Math.sin(windT*.7)*wmax*.6+Math.sin(windT*1.9+2)*wmax*.4;
+    const dir=(key.r?1:0)-(key.l?1:0);
+    R.w+=dir*3.4*dt;R.w*=1-.35*dt;R.a+=R.w*dt;
+    const wantT=key.t&&R.fuel>0;
+    R.thr+=((wantT?1:0)-R.thr)*Math.min(1,dt*10);
+    const T=TMAX*R.thr;
+    if(wantT)R.fuel=Math.max(0,R.fuel-16*dt);
+    R.vx+=(Math.sin(R.a)*T+wind)*dt;
+    R.vy+=(G-Math.cos(R.a)*T)*dt;
+    const py0=pinPos().y,px0=pinPos().x;
+    R.x+=R.vx*dt;R.y+=R.vy*dt;
+    if(ng&&ac)ng.gain.value=R.thr*.22;
+    // flame particles
+    if(R.thr>.05){const bx=R.x-Math.sin(R.a)*LEN/2,by=R.y+Math.cos(R.a)*LEN/2;
+      for(let i=0;i<3;i++)puff(bx+(Math.random()-.5)*8,by,-Math.sin(R.a)*(90+R.thr*120)+(Math.random()-.5)*30+R.vx*.3,Math.cos(R.a)*(90+R.thr*160)+R.vy*.3,.35+Math.random()*.3,4+Math.random()*4,Math.random()<.5?'#FFB347':'#FFE08A');}
+    // catch / arm crossing
+    const p=pinPos();
+    if(py0<ARM_Y&&p.y>=ARM_Y){
+      const f=(ARM_Y-py0)/(p.y-py0),cx=px0+(p.x-px0)*f,dx=cx-arm.x;
+      const ok={pos:Math.abs(dx)<arm.tol,vy:R.vy<85,vx:Math.abs(R.vx)<45,ang:Math.abs(R.a)<.2,w:Math.abs(R.w)<.7};
+      if(ok.pos&&ok.vy&&ok.vx&&ok.ang&&ok.w){
+        const prec=1-Math.abs(dx)/arm.tol,soft=1-R.vy/85;
+        const pts=Math.round(500+prec*300+soft*200+R.fuel*6+level*100);
+        score+=pts;if(score>best){best=score;try{localStorage.setItem('rocketCatchBest',best)}catch(e){}}
+        result={title:'캐치 성공!',sub:`정밀도 ${Math.round(prec*100)}% · 착지속도 ${Math.round(R.vy)} · 연료 ${Math.round(R.fuel)}%`,pts};
+        state='caught';t=0;arm.close=0;R.x=arm.x-Math.sin(R.a)*PIN_UP;R.vx=R.vy=R.w=0;R.thr=0;
+        blip(660,.15,'triangle');setTimeout(()=>blip(880,.25,'triangle'),140);if(ng)ng.gain.value=0;
+        for(let i=0;i<40;i++)puff(arm.x,ARM_Y,(Math.random()-.5)*260,-Math.random()*220,1+Math.random(),3,'#5C6BFF');
+      }else{
+        let why=!ok.pos?'팔에 부딪혔다':!ok.vy?'너무 빠르다':!ok.vx?'옆으로 흐른다':'기울어졌다';
+        crash(why);
+      }
+    }else if(R.y+Math.cos(R.a)*LEN/2>=GROUND){crash('지면 충돌');}
+    else if(R.x<-90||R.x>W+90||R.y<-500){crash('궤도 이탈');}
+  }
+  if(state==='caught'){arm.close=Math.min(1,arm.close+dt*2.5);const p=Math.sin(R.a)*PIN_UP;R.x=arm.x-p;R.y=ARM_Y+Math.cos(R.a)*PIN_UP;R.a*=1-Math.min(1,dt*4);}
+  if(state==='crashed'&&ng)ng.gain.value=0;
+  for(const q of parts){q.life-=dt;q.x+=q.vx*dt;q.y+=q.vy*dt;q.vy+=(q.grav||0)*dt;}
+  parts=parts.filter(q=>q.life>0);
+  shake=Math.max(0,shake-dt*20);
+}
+function crash(why){
+  state='crashed';t=0;shake=14;boom();R.alive=false;if(ng)ng.gain.value=0;
+  result={title:'RUD · 급속 비계획 분해',sub:why};
+  for(let i=0;i<90;i++){const a=Math.random()*6.28,s=Math.random()*260;
+    const q={x:R.x,y:Math.min(R.y,GROUND-6),vx:Math.cos(a)*s+R.vx*.3,vy:Math.sin(a)*s-80,life:.8+Math.random()*1.4,max:2,size:3+Math.random()*7,col:['#FF7A2F','#FFC24A','#FFF1B0','#8F9BB3'][i%4],grav:120};
+    parts.push(q);}
+}
+
+// ---- draw
+function rr(x,y,w,h,r){g.beginPath();g.roundRect?g.roundRect(x,y,w,h,r):g.rect(x,y,w,h);}
+function drawTower(){
+  const x=arm.x;
+  g.fillStyle='#1A2238';g.fillRect(x-90,GROUND-6,180,10);
+  // lattice mast (behind, offset up)
+  g.strokeStyle='#39456B';g.lineWidth=2;
+  const top=ARM_Y-70;
+  g.strokeRect(x-12,top,24,GROUND-top-6);
+  for(let y=top;y<GROUND-30;y+=24){g.beginPath();g.moveTo(x-12,y);g.lineTo(x+12,y+24);g.moveTo(x+12,y);g.lineTo(x-12,y+24);g.stroke();}
+  g.fillStyle='#2A3556';g.fillRect(x-20,top-8,40,10);
+}
+function drawArms(){
+  const x=arm.x,gap=30-arm.close*14;
+  g.fillStyle='#39456B';g.fillRect(x-14,ARM_Y-24,28,30);           // carriage
+  g.fillStyle='#8A97C2';
+  // left/right arms extend outward from inner gap
+  rr(x-gap-70,ARM_Y-2,70,10,3);g.fill();rr(x+gap,ARM_Y-2,70,10,3);g.fill();
+  g.fillStyle='#FFC24A';g.fillRect(x-gap-8,ARM_Y-6,8,6);g.fillRect(x+gap,ARM_Y-6,8,6); // tip lights
+  // guide ticks: catch window
+  if(state==='play'){g.strokeStyle='rgba(61,220,132,.35)';g.setLineDash([4,5]);g.beginPath();g.moveTo(x-arm.tol,ARM_Y-140);g.lineTo(x-arm.tol,ARM_Y-6);g.moveTo(x+arm.tol,ARM_Y-140);g.lineTo(x+arm.tol,ARM_Y-6);g.stroke();g.setLineDash([]);}
+}
+function drawBooster(){
+  if(!R||(!R.alive&&state==='crashed'))return;
+  g.save();g.translate(R.x,R.y);g.rotate(R.a);
+  if(R.thr>.05){const fl=(30+R.thr*70)*(0.8+Math.random()*.4);
+    let gr=g.createLinearGradient(0,LEN/2,0,LEN/2+fl);gr.addColorStop(0,'#FFF6C8');gr.addColorStop(.35,'#FFAA3C');gr.addColorStop(1,'rgba(255,90,20,0)');
+    g.fillStyle=gr;g.beginPath();g.moveTo(-HALF+3,LEN/2);g.lineTo(HALF-3,LEN/2);g.lineTo(0,LEN/2+fl);g.fill();}
+  // body
+  g.fillStyle='#EEF1F7';rr(-HALF,-LEN/2,HALF*2,LEN,4);g.fill();
+  g.fillStyle='#222B45';g.fillRect(-HALF,-LEN/2+6,HALF*2,16);        // interstage band
+  g.fillStyle='#C9D0E0';g.fillRect(-HALF,-LEN/2+40,HALF*2,3);g.fillRect(-HALF,LEN/2-30,HALF*2,3);
+  // engine skirt
+  g.fillStyle='#4A5578';g.fillRect(-HALF-2,LEN/2-8,HALF*2+4,8);
+  // catch pins
+  g.fillStyle='#5C6BFF';g.fillRect(-HALF-12,-PIN_UP-3,12,6);g.fillRect(HALF,-PIN_UP-3,12,6);
+  // grid fins
+  g.fillStyle='#8F9BB3';g.fillRect(-HALF-7,-LEN/2+4,7,12);g.fillRect(HALF,-LEN/2+4,7,12);
+  g.restore();
+}
+function drawBG(){
+  let gr=g.createLinearGradient(0,0,0,GROUND);gr.addColorStop(0,'#04060E');gr.addColorStop(.7,'#101B3A');gr.addColorStop(1,'#2A3B6E');
+  g.fillStyle=gr;g.fillRect(0,0,W,H);
+  for(const s of stars){g.globalAlpha=.4+.5*Math.abs(Math.sin(t*.8+s[3]));g.fillStyle='#fff';g.fillRect(s[0],s[1],s[2],s[2]);}
+  g.globalAlpha=1;
+  g.fillStyle='#0C1530';g.fillRect(0,GROUND-4,W,H-GROUND+4);
+  g.fillStyle='rgba(120,150,255,.18)';for(let i=0;i<8;i++){g.fillRect(((i*97+t*14)%W),GROUND+8+i*6,40,2);}
+  g.fillStyle='#1A2238';g.fillRect(0,GROUND-6,W,4);
+}
+function meter(x,y,w,label,val,okc){
+  g.fillStyle='#8F9BB3';g.font='11px sans-serif';g.textAlign='left';g.fillText(label,x,y);
+  g.fillStyle=okc?'#3DDC84':'#FF5C5C';g.font='bold 15px sans-serif';g.fillText(val,x,y+17);
+}
+function hud(){
+  g.fillStyle='rgba(255,255,255,.06)';g.fillRect(0,0,W,58);
+  g.fillStyle='#F2F4F8';g.font='bold 15px sans-serif';g.textAlign='right';g.fillText('SCORE '+score,W-14,24);
+  g.fillStyle='#8F9BB3';g.font='12px sans-serif';g.fillText('BEST '+best,W-14,44);
+  g.textAlign='left';g.fillStyle='#F2F4F8';g.font='bold 15px sans-serif';g.fillText('LEVEL '+level,70,24);
+  if(state==='play'){
+    g.fillStyle='#8F9BB3';g.font='12px sans-serif';g.fillText(Math.abs(wind)>3?`바람 ${wind>0?'→':'←'} ${Math.abs(wind).toFixed(0)}`:'바람 없음',70,44);
+    const p=pinPos(),dx=p.x-arm.x;
+    const y0=H-150;
+    g.fillStyle='rgba(0,0,0,.35)';g.fillRect(8,y0-22,W-16,62);
+    meter(18,y0,80,'하강 속도',Math.round(R.vy),R.vy<85&&R.vy>-999);
+    meter(110,y0,80,'횡속도',Math.round(R.vx),Math.abs(R.vx)<45);
+    meter(200,y0,80,'기울기',(R.a*57.3).toFixed(0)+'°',Math.abs(R.a)<.2);
+    meter(290,y0,80,'정렬',(dx>=0?'+':'')+dx.toFixed(0),Math.abs(dx)<arm.tol*1.3);
+    // fuel bar
+    g.fillStyle='#8F9BB3';g.font='11px sans-serif';g.fillText('연료',384,y0);
+    g.fillStyle='#222B45';g.fillRect(384,y0+6,78,10);g.fillStyle=R.fuel>25?'#FFC24A':'#FF5C5C';g.fillRect(384,y0+6,78*R.fuel/R.fuel0,10);
+    // altitude-to-arm hint
+    const dist=Math.max(0,ARM_Y-p.y);
+    g.fillStyle='#8F9BB3';g.textAlign='center';g.fillText(dist>0?`팔까지 ${Math.round(dist)}m`:'',W/2,y0+34);
+  }
+}
+function overlay(title,sub,hint,col){
+  g.fillStyle='rgba(4,6,14,.72)';g.fillRect(0,H/2-130,W,230);
+  g.textAlign='center';g.fillStyle=col;g.font='bold 30px sans-serif';g.fillText(title,W/2,H/2-70);
+  g.fillStyle='#F2F4F8';g.font='15px sans-serif';
+  (Array.isArray(sub)?sub:[sub]).forEach((s,i)=>g.fillText(s,W/2,H/2-32+i*24));
+  if(hint&&Math.floor(t*2)%2===0){g.fillStyle='#8F9BB3';g.font='14px sans-serif';g.fillText(hint,W/2,H/2+80);}
+}
+function draw(){
+  g.save();
+  if(shake>0)g.translate((Math.random()-.5)*shake,(Math.random()-.5)*shake);
+  drawBG();
+  if(R){drawTower();}
+  else{arm={x:W/2,base:W/2,amp:0,f:0,close:0,tol:17};drawTower();}
+  drawArms();
+  if(state!=='title')drawBooster();
+  for(const q of parts){g.globalAlpha=Math.max(0,q.life/q.max);g.fillStyle=q.col;g.fillRect(q.x,q.y,q.size,q.size);}
+  g.globalAlpha=1;
+  g.restore();
+  if(state==='title'){
+    g.textAlign='center';g.fillStyle='#F2F4F8';g.font='bold 40px sans-serif';g.fillText('로켓 캐치',W/2,190);
+    g.fillStyle='#8F9BB3';g.font='15px sans-serif';
+    ['추락하는 부스터를 분사로 감속하고,','타워 팔 사이로 정확히 받아내세요.','',
+     '← → / A D  회전    ↑ / Space  분사','(모바일: 화면 하단 버튼)','',
+     '속도 85 이하 · 횡속도 45 이하','기울기 11° 이하 · 팔 사이 정렬'].forEach((s,i)=>g.fillText(s,W/2,240+i*26));
+    if(Math.floor(t*2)%2===0){g.fillStyle='#FFC24A';g.font='bold 18px sans-serif';g.fillText('화면을 탭하거나 Enter 로 시작',W/2,520);}
+    t+=0;
+  }else{
+    hud();
+    if(state==='caught')overlay(result.title,[result.sub,`+${result.pts}점`],t>1.2?'탭 / Enter : 다음 단계':'','#3DDC84');
+    if(state==='crashed')overlay(result.title,[result.sub,`최종 점수 ${score} · 도달 레벨 ${level}`],t>1.2?'탭 / Enter : 다시 도전':'','#FF5C5C');
+  }
+}
+
+let last=performance.now();
+function loop(now){
+  const dt=Math.min(.033,(now-last)/1000);last=now;
+  if(state==='title')t+=dt;
+  if(state!=='title'&&R)update(dt);
+  draw();
+  requestAnimationFrame(loop);
+}
+window.__game={get s(){return{state,R,arm,level,score}},key};
+requestAnimationFrame(loop);
+})();
+</script>
+</body>
+</html>
