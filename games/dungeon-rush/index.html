@@ -43,6 +43,9 @@
   #bDodge{right:26px;bottom:142px;width:66px;height:66px;background:rgba(74,163,223,.55)}
   #bPause{position:fixed;right:10px;top:10px;width:38px;height:38px;font-size:16px;display:none}
   body.play.touch #bPause{display:flex}
+  #joinBox{position:fixed;left:50%;top:50%;transform:translate(-50%,-10%);display:none;gap:8px;z-index:5}
+  #joinBox input{width:150px;font:32px "Black Han Sans",sans-serif;text-align:center;text-transform:uppercase;letter-spacing:6px;padding:8px;border-radius:12px;border:3px solid #1c1424;background:#fff8e6;color:#1c1424}
+  #joinBox button{font:24px "Black Han Sans",sans-serif;padding:0 20px;border-radius:12px;border:3px solid #1c1424;background:#e0453b;color:#fff}
   #rot{position:fixed;left:0;right:56px;top:14px;text-align:center;color:#f2c14e;font-size:13px;display:none;pointer-events:none}
   body.touch.portrait #rot{display:block}
 </style>
@@ -57,6 +60,7 @@
   <div class="tb" id="bDodge">구르기</div>
 </div>
 <div class="tb" id="bPause">II</div>
+<div id="joinBox"><input id="joinCode" maxlength="4" placeholder="코드" autocomplete="off" autocapitalize="characters" spellcheck="false"><button id="joinGo">접속</button></div>
 <div id="rot">폰을 가로로 돌리면 더 크게 즐길 수 있어요</div>
 
 <script>
@@ -169,15 +173,16 @@ const KEYS = {
 const down = new Set();
 const touch = { mx: 0, my: 0, atk: false, skill: false, dodge: false };
 const SRC = [
-  { id: 'kb1', label: 'P1 키보드', joined: true, slot: -1 },
-  { id: 'kb2', label: 'P2 키보드', joined: false, slot: -1 },
-  { id: 'pad0', label: '패드 1', joined: false, slot: -1 }, { id: 'pad1', label: '패드 2', joined: false, slot: -1 },
-  { id: 'pad2', label: '패드 3', joined: false, slot: -1 }, { id: 'pad3', label: '패드 4', joined: false, slot: -1 },
+  { id: 'kb1', name: 'P1 키보드', joined: true, slot: -1 },
+  { id: 'kb2', name: 'P2 키보드', joined: false, slot: -1 },
+  { id: 'pad0', name: '패드 1', joined: false, slot: -1 }, { id: 'pad1', name: '패드 2', joined: false, slot: -1 },
+  { id: 'pad2', name: '패드 3', joined: false, slot: -1 }, { id: 'pad3', name: '패드 4', joined: false, slot: -1 },
 ];
 SRC.forEach(s => { s.prev = { atk: false, skill: false, dodge: false, start: false, l: false, r: false }; s.inp = mkInp(); });
 function mkInp() { return { mx: 0, my: 0, atk: false, atkHeld: false, skill: false, dodge: false, start: false, l: false, r: false, face: 0 }; }
 
 addEventListener('keydown', e => {
+  if (e.target && e.target.tagName === 'INPUT') return;
   ac();
   if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'Space', 'Slash'].includes(e.code)) e.preventDefault();
   if (e.repeat) return;
@@ -187,7 +192,7 @@ addEventListener('keydown', e => {
   if (e.code === 'Enter' || e.code === 'Space') menuKey();
 });
 addEventListener('keyup', e => down.delete(e.code));
-addEventListener('blur', () => { down.clear(); if (G.scene === 'play') G.paused = true; });
+addEventListener('blur', () => { down.clear(); if (G.scene === 'play' && !G.net) G.paused = true; });
 
 function readSources() {
   const pads = navigator.getGamepads ? navigator.getGamepads() : [];
@@ -225,9 +230,182 @@ const G = {
   heroes: [], enemies: [], projs: [], fx: [], texts: [], items: [], hazards: [], strikes: [],
   stage: 0, ai: 0, phase: 'walk', wi: 0, score: 0, combo: 0, comboT: 0, diff: 1, slotOwner: [null, null, null, null],
   clearT: 0, goT: 0, best: 0, breath: null, ui: [],
+  net: null, mySlot: -1, lobbyLabels: ['', '', '', ''], toast: null, evq: [],
 };
+// 호스트에서 난 효과음을 게스트에게도 들려주려고 이름을 모아 둔다
+for (const k of Object.keys(SFX)) { const f = SFX[k]; SFX[k] = (...a) => { if (G.net === 'host' && G.evq.length < 14) G.evq.push(k); f(...a); }; }
 try { G.best = +localStorage.getItem('dungeonRushBest') || 0; } catch (e) {}
 const ex = e => e.x + (e.ox || 0);
+
+/* ---------------- 온라인 협동 (PeerJS 방 코드) ----------------
+   호스트가 게임 전체를 계산하고, 게스트는 입력만 보내며 호스트가 보낸 장면을 그린다. */
+const NET = { mode: null, peer: null, list: [], code: '', msg: '', conn: null, tick: 0, pend: { atk: false, skill: false, dodge: false }, n: 0 };
+const CODE_CH = 'ABCDEFGHJKMNPQRSTUVWXYZ23456789';
+let EID = 0;
+function loadPeer() {
+  return new Promise((res, rej) => {
+    if (window.Peer) return res();
+    const s = document.createElement('script'); s.src = 'https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js';
+    s.onload = res; s.onerror = () => rej(new Error('load')); document.head.appendChild(s);
+  });
+}
+function toast(s) { G.toast = { s, t: 240 }; }
+function netSend(c, d) { try { c.send(d); } catch (e) {} }
+function closeNet() {
+  try { NET.list.forEach(s => s.conn.close()); } catch (e) {}
+  try { if (NET.conn) NET.conn.close(); } catch (e) {}
+  try { if (NET.peer) NET.peer.destroy(); } catch (e) {}
+  NET.list = []; NET.peer = null; NET.conn = null; NET.mode = null; NET.code = ''; NET.msg = ''; G.net = null; G.mySlot = -1;
+  document.getElementById('joinBox').style.display = 'none';
+}
+async function hostRoom() {
+  NET.mode = 'host'; NET.msg = '방을 만드는 중…'; NET.code = '';
+  try { await loadPeer(); } catch (e) { NET.msg = '온라인 라이브러리를 불러오지 못했어요. 인터넷 연결을 확인해 주세요.'; return; }
+  const attempt = n => {
+    const code = Array.from({ length: 4 }, () => CODE_CH[Math.floor(Math.random() * CODE_CH.length)]).join('');
+    const peer = new Peer('drush-' + code);
+    peer.on('open', () => { NET.peer = peer; NET.code = code; G.net = 'host'; NET.msg = ''; });
+    peer.on('error', err => {
+      if (err.type === 'unavailable-id' && n < 5) { peer.destroy(); attempt(n + 1); }
+      else { NET.msg = '연결 오류 (' + err.type + ')'; if (!NET.code) NET.mode = 'menu'; }
+    });
+    peer.on('connection', onGuest);
+  };
+  attempt(0);
+}
+function slotLabel(i) {
+  if (G.net === 'guest') { const l = G.lobbyLabels[i]; return i === G.mySlot ? (TOUCH ? '나' : 'ME') : (l || 'COM'); }
+  const o = G.slotOwner[i];
+  return o ? (o.label || (o.id === 'kb1' ? (TOUCH ? '나' : 'P1') : o.id === 'kb2' ? 'P2' : 'PAD ' + (+o.id[3] + 1))) : 'COM';
+}
+function sendLobby() {
+  const labels = [0, 1, 2, 3].map(i => G.slotOwner[i] ? slotLabel(i) : '');
+  NET.list.forEach(s => netSend(s.conn, { t: 'lobby', labels, you: s.slot }));
+}
+function onGuest(conn) {
+  conn.on('open', () => {
+    const f = firstFree();
+    if (f < 0 || G.scene !== 'select') { netSend(conn, { t: 'full' }); setTimeout(() => { try { conn.close(); } catch (e) {} }, 400); return; }
+    const s = { id: 'net' + (++NET.n), label: 'ON' + (NET.list.length + 1), joined: true, slot: f, inp: mkInp(), conn };
+    G.slotOwner[f] = s; NET.list.push(s); SFX.ui();
+    conn.on('data', d => onHostData(s, d));
+    conn.on('close', () => dropGuest(s)); conn.on('error', () => dropGuest(s));
+    sendLobby();
+  });
+}
+function onHostData(s, d) {
+  if (!d) return;
+  if (d.t === 'in') {
+    const i = s.inp; i.mx = +d.mx || 0; i.my = +d.my || 0; i.atkHeld = !!d.ah;
+    if (d.atk) i.atk = true; if (d.skill) i.skill = true; if (d.dodge) i.dodge = true;
+  } else if (d.t === 'slot' && G.scene === 'select') {
+    if (d.to >= 0 && d.to < 4 && !G.slotOwner[d.to]) { G.slotOwner[s.slot] = null; s.slot = d.to; G.slotOwner[d.to] = s; }
+    else if (d.dir) moveSlot(s, d.dir < 0 ? -1 : 1);
+    sendLobby();
+  }
+}
+function dropGuest(s) {
+  const k = NET.list.indexOf(s); if (k < 0) return;
+  NET.list.splice(k, 1);
+  if (G.slotOwner[s.slot] === s) G.slotOwner[s.slot] = null;
+  G.heroes.forEach(h => { if (h.src === s) { h.src = null; h.bot = true; num(h.x, h.y - 90, '접속 끊김 → AI', '#ffd23c'); } });
+  if (G.scene === 'select') sendLobby();
+}
+function snapNow() {
+  const r = v => typeof v === 'number' ? Math.round(v * 10) / 10 : v;
+  const d = {
+    t: 's', sc: G.scene, stage: G.stage, ai: G.ai, phase: G.phase, cam: G.cam, lockX: G.lockX, score: G.score, combo: G.combo, comboT: G.comboT,
+    shake: G.shake, banner: G.banner, goT: G.goT, gt: G.t, breath: G.breath, clearT: G.clearT,
+    H: G.heroes.map(h => ({ slot: h.slot, type: h.type, x: h.x, y: h.y, face: h.face, hp: Math.round(h.hp), max: h.max, state: h.state, anim: h.anim, atkT: h.atkT, dur: h.dur, ci: h.ci,
+      inv: h.inv, flash: h.flash, stun: h.stun, revive: Math.round(h.revive), scd: h.scd, bot: h.bot, score: h.score, kills: h.kills, lab: labelOf(h) })),
+    E: G.enemies.map(e => ({ id: e.id, type: e.type, x: e.x, y: e.y, face: e.face, hp: Math.round(e.hp), max: Math.round(e.max), state: e.state, t: e.t, anim: e.anim,
+      flash: e.flash, vx: e.vx, w: e.w, ox: e.ox, dy: e.dy, armor: e.armor, reach: e.reach, phase2: e.phase2, atk: e.atk ? { kind: e.atk.kind, t: e.atk.t } : null })),
+    P: G.projs.map(p => ({ k: p.k, team: p.team, x: p.x, y: p.y, z: p.z, vx: p.vx, vy: p.vy })),
+    fx: G.fx.slice(-90), tx: G.texts.slice(-30), it: G.items.map(i => ({ t: i.t, x: i.x, y: i.y, life: i.life })),
+    hz: G.hazards, st: G.strikes.map(k => ({ x: k.x, y: k.y, t: k.t })), ev: G.evq,
+  };
+  G.evq = [];
+  return JSON.stringify(d, (k, v) => r(v));
+}
+function hostTick() {
+  if (G.net !== 'host' || !NET.list.length) return;
+  NET.tick++;
+  if (G.scene === 'select') { if (NET.tick % 30 === 0) sendLobby(); return; }
+  if (NET.tick % 2) return;
+  const m = snapNow(); NET.list.forEach(s => netSend(s.conn, m));
+}
+function applySnap(m) {
+  const d = typeof m === 'string' ? JSON.parse(m) : m;
+  G.scene = d.sc; G.stage = d.stage; G.ai = d.ai; G.phase = d.phase; G.lockX = d.lockX; G.score = d.score; G.combo = d.combo; G.comboT = d.comboT;
+  G.shake = d.shake; G.banner = d.banner; G.goT = d.goT; G.breath = d.breath; G.clearT = d.clearT; G.tcam = d.cam;
+  const oh = G.heroes, oe = G.enemies;
+  G.heroes = d.H.map(n => { const o = oh.find(h => h.slot === n.slot); n.tx = n.x; n.ty = n.y; if (o) { n.x = o.x; n.y = o.y; } return n; });
+  G.enemies = d.E.map(n => { const o = oe.find(e => e.id === n.id); n.tx = n.x; n.ty = n.y; if (o) { n.x = o.x; n.y = o.y; } return n; });
+  G.projs = d.P.map(p => (p.hit = null, p)); G.fx = d.fx; G.texts = d.tx; G.items = d.it; G.hazards = d.hz; G.strikes = d.st;
+  const seen = {}; d.ev.forEach(k => { if ((seen[k] = (seen[k] || 0) + 1) <= 2 && SFX[k]) SFX[k](); });
+  document.body.classList.toggle('play', d.sc !== 'title');
+}
+function guestSmooth() {
+  G.t++;
+  for (const o of G.heroes.concat(G.enemies)) {
+    const dx = o.tx - o.x, dy = o.ty - o.y;
+    if (Math.abs(dx) > 160 || Math.abs(dy) > 160) { o.x = o.tx; o.y = o.ty; } else { o.x += dx * .4; o.y += dy * .4; }
+  }
+  if (G.tcam !== undefined) { if (Math.abs(G.tcam - G.cam) > 200) G.cam = G.tcam; else G.cam += (G.tcam - G.cam) * .4; }
+  for (let i = G.fx.length - 1; i >= 0; i--) { const f = G.fx[i]; f.t++; if (f.k === 'p') { f.x += f.vx; f.y += f.vy; f.vy += f.g; } if (f.t >= f.max) G.fx.splice(i, 1); }
+  for (let i = G.texts.length - 1; i >= 0; i--) { const t = G.texts[i]; t.t++; t.y -= .7; if (t.t >= t.max) G.texts.splice(i, 1); }
+}
+function guestStep() {
+  const gi = SRC[0].inp, P = NET.pend;
+  P.atk = P.atk || gi.atk; P.skill = P.skill || gi.skill; P.dodge = P.dodge || gi.dodge;
+  if (G.scene === 'select') {
+    if (gi.l) netSend(NET.conn, { t: 'slot', dir: -1 }); if (gi.r) netSend(NET.conn, { t: 'slot', dir: 1 });
+    P.atk = P.skill = P.dodge = false; return;
+  }
+  guestSmooth();
+  if ((G.t & 1) === 0) {
+    const q = v => Math.round(v * 100) / 100;
+    netSend(NET.conn, { t: 'in', mx: q(gi.mx), my: q(gi.my), ah: gi.atkHeld, atk: P.atk, skill: P.skill, dodge: P.dodge });
+    P.atk = P.skill = P.dodge = false;
+  }
+}
+async function joinRoom(code) {
+  code = (code || '').toUpperCase().replace(/[^A-Z0-9]/g, '');
+  if (code.length !== 4) { NET.msg = '코드는 4자리예요'; return; }
+  NET.msg = '접속 중…';
+  try { await loadPeer(); } catch (e) { NET.msg = '온라인 라이브러리를 불러오지 못했어요'; return; }
+  const peer = new Peer(); NET.peer = peer;
+  let done = false;
+  const fail = m => { if (done) return; done = true; NET.msg = m; try { peer.destroy(); } catch (e) {} NET.peer = null; };
+  peer.on('error', e => fail(e.type === 'peer-unavailable' ? '그 코드의 방이 없어요' : '연결 오류 (' + e.type + ')'));
+  peer.on('open', () => {
+    const conn = peer.connect('drush-' + code, { serialization: 'json', reliable: true });
+    const to = setTimeout(() => { fail('방에 연결하지 못했어요'); try { conn.close(); } catch (e) {} }, 9000);
+    conn.on('open', () => {
+      clearTimeout(to); if (done) return; done = true;
+      NET.conn = conn; G.net = 'guest'; NET.mode = null; NET.msg = ''; G.heroes = []; G.enemies = [];
+      document.getElementById('joinBox').style.display = 'none';
+      G.scene = 'select'; G.t = 0; G.lobbyLabels = ['', '', '', '']; G.mySlot = -1;
+    });
+    conn.on('data', d => {
+      if (typeof d === 'string') applySnap(d);
+      else if (d.t === 'lobby') { G.lobbyLabels = d.labels; G.mySlot = d.you; }
+      else if (d.t === 'start') { G.stage = d.stage; G.diff = d.diff; G.scene = 'play'; G.heroes = []; G.enemies = []; G.cam = G.tcam = 0; document.body.classList.add('play'); layout(); }
+      else if (d.t === 'full') { NET.msg = '방이 가득 찼거나 이미 시작했어요'; }
+    });
+    const lost = () => {
+      if (G.net !== 'guest') return;
+      closeNet(); G.scene = 'title'; document.body.classList.remove('play'); toast('호스트와 연결이 끊겼어요');
+    };
+    conn.on('close', lost); conn.on('error', lost);
+  });
+}
+document.getElementById('joinGo').addEventListener('click', () => joinRoom(document.getElementById('joinCode').value));
+document.getElementById('joinCode').addEventListener('keydown', e => { if (e.key === 'Enter') joinRoom(e.target.value); });
+function showJoinBox() {
+  const b = document.getElementById('joinBox'); b.style.display = 'flex';
+  const inp = document.getElementById('joinCode'); inp.value = ''; setTimeout(() => inp.focus(), 50);
+}
 
 /* ---------------- 게임 시작 / 스테이지 ---------------- */
 function startGame(stage = 0) {
@@ -236,6 +414,8 @@ function startGame(stage = 0) {
   loadStage(stage);
   document.body.classList.add('play');
   layout();
+  G.evq = [];
+  if (G.net === 'host') NET.list.forEach(s => netSend(s.conn, { t: 'start', stage, diff: G.diff }));
 }
 function mkHero(slot, type, src) {
   const D = HD[type];
@@ -500,7 +680,7 @@ function botThink(h) {
 /* ---------------- 적 ---------------- */
 function spawnE(t, x, y) {
   const T = ET[t], d = DIFFS[G.diff], sm = 1 + G.stage * .22;
-  const e = { k: 'enemy', type: t, x, y: y == null ? rand(LT, LB) : y, face: -1, hp: T.hp * d.hp * sm, max: 0, state: 'walk', t: 0, cd: rand(20, 70), anim: rand(0, 20),
+  const e = { k: 'enemy', id: ++EID, type: t, x, y: y == null ? rand(LT, LB) : y, face: -1, hp: T.hp * d.hp * sm, max: 0, state: 'walk', t: 0, cd: rand(20, 70), anim: rand(0, 20),
     flash: 0, vx: 0, w: T.w, dy: T.boss ? 80 : (T.armor ? 22 : 16), armor: T.armor, reach: T.reach, side: Math.random() < .5 ? -1 : 1, off: rand(-24, 24) };
   e.max = e.hp;
   if (t === 'D') { e.ox = -74; e.y = 436; e.x = G.cam + W + 340; e.atk = null; e.cd = 90; e.sm = 0; e.phase2 = false; e.summoned = 0; }
@@ -1070,7 +1250,7 @@ function drawWorld(camx) {
   for (const t of G.texts) { const p = t.t / t.max; ctx.globalAlpha = 1 - p * p; const sc = t.big ? 1.4 : 1; txt(t.s, t.x - cx, t.y, (t.big ? 30 : 22) * (t.t < 6 ? 1 + (6 - t.t) * .06 : 1), t.col, 'center', '#1c1424', 5); ctx.globalAlpha = 1; }
   drawEmbers(theme);
 }
-function labelOf(h) { return h.src ? h.src.id === 'kb1' ? 'P1' : h.src.id === 'kb2' ? 'P2' : 'PAD' + (+h.src.id[3] + 1) : 'COM'; }
+function labelOf(h) { if (h.lab) return G.net === 'guest' && h.slot === G.mySlot ? (TOUCH ? '나' : 'ME') : h.lab; return h.src ? h.src.label ? h.src.label : h.src.id === 'kb1' ? 'P1' : h.src.id === 'kb2' ? 'P2' : 'PAD' + (+h.src.id[3] + 1) : 'COM'; }
 
 function drawHUD() {
   for (const h of G.heroes) {
@@ -1117,6 +1297,7 @@ function drawTitle() {
   txt('던전 러시 · 4인 협동 액션', W / 2, y + 108, 26, '#fff', 'center', '#000', 6);
   TYPES.forEach((t, i) => { const h = { type: t, slot: i, face: 1, state: 'idle', anim: 0, atkT: 0, dur: 1, inv: 0, flash: 0 }; drawHero(h, 300 + i * 120, 400 + Math.sin(G.t * .06 + i) * 2, true); });
   btn(W / 2 - 130, 430, 260, 64, '게임 시작', () => toSelect(), '#e0453b', 30);
+  if (G.toast && G.toast.t-- > 0) txt(G.toast.s, W / 2, 30, 20, '#ffd23c', 'center', '#000', 5);
   txt('베스트 ' + String(G.best).padStart(7, '0'), W / 2, 516, 16, '#ffd23c', 'center', '#000', 4);
 }
 function toSelect() {
@@ -1146,34 +1327,63 @@ function drawSelect() {
   drawBG('village', 200 + Math.sin(G.t * .005) * 40);
   ctx.fillStyle = 'rgba(10,4,16,.66)'; ctx.fillRect(0, 0, W, H);
   txt('파티 편성', W / 2, 40, 38, '#ffd23c');
-  txt(TOUCH ? '영웅 카드를 눌러 고르세요. 나머지는 AI 동료가 맡습니다.' : 'A / D 로 영웅 선택 · P2 는 쉼표(,) 키, 게임패드는 A 버튼으로 참가 · 나머지는 AI 동료', W / 2, 76, 15, '#fff', 'center', '#000', 4);
+  txt(G.net === 'host' ? '친구가 들어오면 자리가 채워져요 · 나머지는 AI 동료' : TOUCH ? '영웅 카드를 눌러 고르세요. 나머지는 AI 동료가 맡습니다.' : 'A / D 로 영웅 선택 · P2 는 쉼표(,) 키, 게임패드는 A 버튼으로 참가 · 나머지는 AI 동료', W / 2, 76, 15, '#fff', 'center', '#000', 4);
   TYPES.forEach((t, i) => {
-    const D = HD[t], x = 40 + i * 226, y = 100, w = 206, h = 268, owner = G.slotOwner[i];
+    const D = HD[t], x = 40 + i * 226, y = 100, w = 206, h = 268, lab = slotLabel(i), owner = lab !== 'COM';
     ctx.fillStyle = owner ? 'rgba(40,24,64,.95)' : 'rgba(24,14,38,.9)'; ctx.beginPath(); ctx.roundRect(x, y, w, h, 16); ctx.fill();
     ctx.strokeStyle = owner ? D.col : '#4a3a66'; ctx.lineWidth = owner ? 5 : 2.5; ctx.stroke();
-    G.ui.push({ x, y, w, h, cb: () => { const s = SRC[0]; if (G.slotOwner[i] && G.slotOwner[i] !== s) return; if (s.slot === i) return; G.slotOwner[s.slot] = null; s.slot = i; G.slotOwner[i] = s; SFX.ui(); } });
+    G.ui.push({ x, y, w, h, cb: () => { if (G.net === 'guest') { netSend(NET.conn, { t: 'slot', to: i }); return; } const s = SRC[0]; if (G.slotOwner[i] && G.slotOwner[i] !== s) return; if (s.slot === i) return; G.slotOwner[s.slot] = null; s.slot = i; G.slotOwner[i] = s; SFX.ui(); } });
     const h2 = { type: t, slot: i, face: 1, state: G.t % 120 < 40 && owner ? 'atk' : 'idle', atkT: (G.t % 120) % 40, dur: 40, ci: 0, anim: 0, inv: 0, flash: 0, idle: true };
     if (h2.state === 'atk') { h2.atkT = (G.t % 40); }
     drawHero(h2, x + w / 2, y + 168, true);
     txt(D.name, x + w / 2, y + 196, 26, '#fff'); txt(D.role, x + w / 2, y + 220, 14, D.col, 'center', '#000', 3); txt(D.desc, x + w / 2, y + 240, 13, '#cfc3e8', 'center', '#000', 3);
-    const lab = owner ? (owner.id === 'kb1' ? (TOUCH ? '나' : 'P1') : owner.id === 'kb2' ? 'P2' : 'PAD ' + (+owner.id[3] + 1)) : 'COM';
     ctx.fillStyle = owner ? D.col : '#3a2f52'; ctx.beginPath(); ctx.roundRect(x + w / 2 - 34, y + 12, 68, 26, 13); ctx.fill(); ctx.strokeStyle = OUT; ctx.lineWidth = 2; ctx.stroke();
     txt(lab, x + w / 2, y + 26, 15, '#fff', 'center', null);
   });
+  const guest = G.net === 'guest';
+  if (guest) {
+    txt('호스트가 출발하길 기다리는 중…', W / 2, 432, 26, '#ffd23c');
+    txt('영웅 카드를 눌러 자리를 바꿀 수 있어요', W / 2, 466, 15, '#cfc3e8', 'center', '#000', 4);
+    btn(W / 2 - 100, 480, 200, 44, '나가기', () => { closeNet(); G.scene = 'title'; document.body.classList.remove('play'); }, '#6b6170', 18);
+    return;
+  }
   btn(40, 400, 210, 54, '난이도 · ' + DIFFS[G.diff].n, () => { G.diff = (G.diff + 1) % 3; SFX.ui(); }, '#3f7fc4', 20);
   btn(W / 2 - 150, 396, 300, 72, '출발!', () => startGame(+Q.get('stage') || 0), '#e0453b', 40);
-  btn(W - 250, 400, 210, 54, '뒤로', () => { G.scene = 'title'; SFX.ui(); }, '#6b6170', 20);
-  txt(TOUCH ? '' : 'P1  WASD 이동 · J 공격 · K 스킬 · L 구르기      P2  방향키 · , 공격 · . 스킬 · / 구르기', W / 2, 496, 14, '#ffd9a0', 'center', '#000', 4);
-  txt(TOUCH ? '' : 'Enter / Space 로 출발 · P 일시정지 · M 소리', W / 2, 518, 13, '#cfc3e8', 'center', '#000', 4);
+  btn(W - 250, 400, 210, 54, '뒤로', () => { closeNet(); G.scene = 'title'; SFX.ui(); }, '#6b6170', 20);
+  btn(20, 466, 184, 44, G.net === 'host' ? '온라인 방 ' + NET.code : '온라인 협동', () => { if (!NET.mode) NET.mode = 'menu'; }, '#7c4dff', 17);
+  txt(TOUCH ? '' : 'P1  WASD 이동 · J 공격 · K 스킬 · L 구르기      P2  방향키 · , 공격 · . 스킬 · / 구르기', W / 2 + 60, 496, 14, '#ffd9a0', 'center', '#000', 4);
+  txt(TOUCH ? '' : 'Enter / Space 로 출발 · P 일시정지 · M 소리', W / 2 + 60, 518, 13, '#cfc3e8', 'center', '#000', 4);
+  if (G.net === 'host' && NET.code) {
+    ctx.fillStyle = 'rgba(124,77,255,.85)'; ctx.beginPath(); ctx.roundRect(W - 300, 8, 290, 52, 12); ctx.fill(); ctx.strokeStyle = OUT; ctx.lineWidth = 3; ctx.stroke();
+    txt('방 코드  ' + NET.code, W - 155, 26, 26, '#fff'); txt('참가 ' + NET.list.length + '명 · 친구는 "온라인 협동 → 방 참가"', W - 155, 47, 12, '#e8dcff', 'center', null);
+    btn(W - 110, 64, 100, 30, '방 닫기', () => { closeNet(); }, '#6b6170', 13);
+  }
+  if (NET.mode === 'menu' || NET.mode === 'join' || (NET.mode === 'host' && !NET.code)) {
+    G.ui.push({ x: 0, y: 0, w: W, h: H, cb: () => {} });
+    ctx.fillStyle = 'rgba(8,4,14,.82)'; ctx.fillRect(0, 0, W, H);
+    txt('온라인 협동', W / 2, 90, 46, '#ffd23c');
+    if (NET.mode === 'menu') {
+      btn(W / 2 - 150, 150, 300, 64, '방 만들기', () => hostRoom(), '#e0453b', 26);
+      btn(W / 2 - 150, 232, 300, 64, '방 참가', () => { NET.mode = 'join'; NET.msg = ''; showJoinBox(); }, '#3f7fc4', 26);
+      btn(W / 2 - 100, 330, 200, 48, '닫기', () => { NET.mode = null; NET.msg = ''; }, '#6b6170', 20);
+      txt('방장이 코드 4자리를 알려주면 친구가 입력해 참가해요 (최대 4명).', W / 2, 410, 16, '#cfc3e8', 'center', '#000', 4);
+    } else if (NET.mode === 'join') {
+      txt('방 코드 4자리를 입력하세요', W / 2, 160, 24, '#fff');
+      btn(W / 2 - 100, 360, 200, 48, '취소', () => { NET.mode = null; NET.msg = ''; document.getElementById('joinBox').style.display = 'none'; }, '#6b6170', 20);
+    } else {
+      btn(W / 2 - 100, 260, 200, 48, '취소', () => closeNet(), '#6b6170', 20);
+    }
+    if (NET.msg) txt(NET.msg, W / 2, NET.mode === 'menu' ? 450 : 320, 20, '#ff9a9a', 'center', '#000', 4);
+  }
 }
 function menuKey() {
   if (G.scene === 'title') toSelect();
-  else if (G.scene === 'select') startGame(+Q.get('stage') || 0);
+  else if (G.scene === 'select') { if (G.net !== 'guest' && !NET.mode) startGame(+Q.get('stage') || 0); }
   else if (G.scene === 'over' && G.goT > 40) { startGame(G.stage); }
-  else if (G.scene === 'victory' && G.goT > 40) { G.scene = 'title'; document.body.classList.remove('play'); }
+  else if (G.scene === 'victory' && G.goT > 40 && G.net !== 'guest') { closeNet(); G.scene = 'title'; document.body.classList.remove('play'); }
   else if (G.scene === 'play' && G.paused) G.paused = false;
 }
-function togglePause() { if (G.scene === 'play') G.paused = !G.paused; }
+function togglePause() { if (G.scene === 'play' && !G.net) G.paused = !G.paused; }
 
 function overlayBox(title, sub, col) {
   ctx.fillStyle = 'rgba(8,4,14,.7)'; ctx.fillRect(0, 0, W, H);
@@ -1202,20 +1412,21 @@ function drawScenePlay() {
     overlayBox('VICTORY!', '드래곤을 쓰러뜨렸습니다', '#ffd23c');
     drawResults(290);
     txt('최종 점수 ' + G.score, W / 2, 420, 30, '#ffd23c'); if (G.score >= G.best) txt('NEW BEST', W / 2, 452, 18, '#ff9a3c');
-    if (G.goT > 40) btn(W / 2 - 110, 468, 220, 52, '타이틀로', () => menuKey(), '#3f7fc4', 22);
+    if (G.goT > 40 && G.net !== 'guest') btn(W / 2 - 110, 468, 220, 52, '타이틀로', () => menuKey(), '#3f7fc4', 22);
   }
   if (G.scene === 'over') {
     overlayBox('GAME OVER', '파티가 전멸했습니다', '#ff6b6b');
     drawResults(290);
     txt('점수 ' + G.score, W / 2, 420, 28, '#ffd23c');
-    if (G.goT > 40) btn(W / 2 - 130, 452, 260, 60, '이 스테이지 다시', () => startGame(G.stage), '#e0453b', 24);
+    if (G.net === 'guest') txt('호스트가 다시 시작하길 기다리는 중…', W / 2, 480, 18, '#cfc3e8', 'center', '#000', 4);
+    else if (G.goT > 40) btn(W / 2 - 130, 452, 260, 60, '이 스테이지 다시', () => startGame(G.stage), '#e0453b', 24);
   }
   if (G.paused && G.scene === 'play') {
     ctx.fillStyle = 'rgba(8,4,14,.72)'; ctx.fillRect(0, 0, W, H);
     txt('일시정지', W / 2, 150, 58, '#ffd23c');
     btn(W / 2 - 120, 210, 240, 56, '계속하기', () => { G.paused = false; }, '#4fae7d', 24);
     btn(W / 2 - 120, 282, 240, 56, '다시 시작', () => startGame(G.stage), '#3f7fc4', 24);
-    btn(W / 2 - 120, 354, 240, 56, '타이틀로', () => { G.scene = 'title'; G.paused = false; document.body.classList.remove('play'); }, '#6b6170', 24);
+    btn(W / 2 - 120, 354, 240, 56, '타이틀로', () => { closeNet(); G.scene = 'title'; G.paused = false; document.body.classList.remove('play'); }, '#6b6170', 24);
     txt(TOUCH ? '' : 'P / Esc 계속 · M 소리 ' + (muted ? '켜기' : '끄기'), W / 2, 440, 15, '#cfc3e8', 'center', '#000', 4);
   }
 }
@@ -1223,6 +1434,11 @@ function drawScenePlay() {
 /* ---------------- 루프 ---------------- */
 function step() {
   readSources();
+  if (G.net === 'guest') {
+    guestStep();
+    for (const s of SRC) s.inp.atk = s.inp.skill = s.inp.dodge = s.inp.start = false;
+    return;
+  }
   if (G.scene === 'title') { G.t++; if (Q.has('auto')) { toSelect(); startGame(+Q.get('stage') || 0); } }
   else if (G.scene === 'select') { G.t++; updateSelect(); }
   else if (G.scene === 'play') { if (!G.paused) updatePlay(); }
@@ -1235,6 +1451,8 @@ function step() {
   } else if (G.scene === 'victory' || G.scene === 'over') { G.goT++; G.t++; G.heroes.forEach(h => { if (G.scene === 'victory' && h.state !== 'down') { h.state = 'idle'; } });
     for (const h of G.heroes) { if (h.flash > 0) h.flash--; } if (G.scene === 'over') { G.enemies.forEach(updEnemy); } }
   for (const s of SRC) s.inp.atk = s.inp.skill = s.inp.dodge = s.inp.start = false;
+  for (const s of NET.list) s.inp.atk = s.inp.skill = s.inp.dodge = false;
+  hostTick();
 }
 function updatePlay2() { // 클리어 연출 동안 이펙트만 굴린다
   for (let i = G.fx.length - 1; i >= 0; i--) { const f = G.fx[i]; f.t++; if (f.k === 'p') { f.x += f.vx; f.y += f.vy; f.vy += f.g; } if (f.t >= f.max) G.fx.splice(i, 1); }
@@ -1302,7 +1520,7 @@ cv.addEventListener('pointerdown', e => {
   document.getElementById('bPause').addEventListener('pointerdown', e => { togglePause(); e.preventDefault(); });
 })();
 document.addEventListener('contextmenu', e => e.preventDefault());
-document.addEventListener('visibilitychange', () => { if (document.hidden && G.scene === 'play') G.paused = true; });
+document.addEventListener('visibilitychange', () => { if (document.hidden && G.scene === 'play' && !G.net) G.paused = true; });
 
 layout();
 if (document.fonts && document.fonts.load) document.fonts.load('20px "Black Han Sans"').catch(() => {});
