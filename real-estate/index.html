@@ -1645,15 +1645,15 @@ function renderDumbbell(rs){
       +`<text class="tick" x="${X}" y="${H-B+15}" text-anchor="middle">${Math.abs(t)<1e-9?'0%':Math.round(t*100)+'%'}</text>`; }
   g+=`<text class="axis-t" x="${x(0).toFixed(1)}" y="${T-9}" text-anchor="middle">기간 최고</text>`;
   rows.forEach((r,i)=>{
-    const y=T+i*rowH, cy=y+rowH/2, xt=x(r.troughVsPeak), xc=x(r.vsPeak), near=r.vsPeak>-0.02;
-    const k=tipKey('db',r.code,`<div class="tv">${esc(ovName(r))} · 지금 ${near?'고점 부근':fmtPct(r.vsPeak)}</div>`
+    const y=T+i*rowH, cy=y+rowH/2, xt=x(r.troughVsPeak), xc=x(r.vsPeak), top=r.vsPeak>-0.0005, now=top?'고점':fmtPct(r.vsPeak);
+    const k=tipKey('db',r.code,`<div class="tv">${esc(ovName(r))} · 지금 ${top?'기간 최고':'고점 대비 '+now}</div>`
       +`<div class="tn">${ymDot(r.trough.ym)} 바닥 ${fmtPct(r.troughVsPeak)} → 그 뒤 ${fmtPct(r.vsTrough)}</div><div class="tn">고점 ${ymDot(r.peak.ym)} · 누르면 자세히</div>`);
     g+=`<rect class="hit" x="0" y="${y}" width="${W}" height="${rowH}" rx="3" tabindex="0" role="button" data-tipk="${k}" data-go="${esc(r.code)}" aria-label="${esc(ovName(r))}"/>`
       +`<text class="lbl" x="${L-10}" y="${cy+4}" text-anchor="end" pointer-events="none">${esc(ovName(r))}</text>`
       +`<line x1="${xt.toFixed(1)}" x2="${xc.toFixed(1)}" y1="${cy}" y2="${cy}" stroke="var(--series-soft)" stroke-width="2" pointer-events="none"/>`
       +`<circle cx="${xt.toFixed(1)}" cy="${cy}" r="4.5" fill="var(--series-soft)" stroke="var(--surface)" stroke-width="2" pointer-events="none"/>`
       +`<circle cx="${xc.toFixed(1)}" cy="${cy}" r="5.5" fill="var(--series-deal)" stroke="var(--surface)" stroke-width="2" pointer-events="none"/>`
-      +`<text class="lbl strong" x="${W-R+10}" y="${cy+4}" pointer-events="none">${near?'고점':fmtPct(r.vsPeak)}</text>`;
+      +`<text class="lbl strong" x="${W-R+10}" y="${cy+4}" pointer-events="none">${now}</text>`;
   });
   el.innerHTML=`<svg viewBox="0 0 ${W} ${H}" height="${H}" role="img" aria-label="지역별 2022~23 바닥과 지금 시세의 고점 대비 위치">${g}</svg>`;
 }
