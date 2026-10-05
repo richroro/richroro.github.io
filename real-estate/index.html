@@ -100,25 +100,8 @@ h1 .mark{display:inline-block;color:var(--up)}
 .btn.ghost:hover{background:var(--surface-2)}
 
 /* load area */
-.load{margin-top:22px;display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:16px;align-items:stretch}
-@media (max-width:860px){.load{grid-template-columns:minmax(0,1fr)}}
-.drop{padding:18px 18px 16px;display:flex;flex-direction:column;gap:12px;position:relative}
-.dropzone{border:1.5px dashed var(--line);border-radius:var(--radius);padding:22px 16px;text-align:center;background:var(--paper);transition:.15s;cursor:pointer}
-.dropzone:hover,.dropzone.over{border-color:var(--accent);background:var(--accent-wash)}
-.dropzone b{display:block;font-size:15px;font-weight:600}
-.dropzone span{display:block;font-size:12.5px;color:var(--ink-3);margin-top:4px}
-.load-row{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
-.load-row .grow{flex:1;min-width:160px}
-.text-input{width:100%;border:1.5px solid var(--line);border-radius:4px;background:var(--paper);padding:7px 10px;font-size:13px;outline:none}
-.text-input:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-wash)}
-textarea.text-input{min-height:74px;resize:vertical;font-family:"IBM Plex Mono",monospace;font-size:12px}
 .status{font-size:12.5px;color:var(--ink-3);min-height:1.4em}
 .status.err{color:var(--up-ink)}
-.howto{padding:18px 18px 16px;font-size:13px;color:var(--ink-2);display:flex;flex-direction:column;gap:10px}
-.howto ol{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:6px}
-.howto li b{color:var(--ink)}
-.howto .note{font-size:12px;color:var(--ink-3);border-top:1px solid var(--line-soft);padding-top:10px}
-.howto a{color:var(--accent)}
 
 /* 머리글 요약 */
 .lede{margin:20px 0 0;font-size:clamp(15px,2vw,17px);line-height:1.75;color:var(--ink-2);max-width:72ch;letter-spacing:-.2px}
@@ -126,16 +109,9 @@ textarea.text-input{min-height:74px;resize:vertical;font-family:"IBM Plex Mono",
 .lede .hi{color:var(--up-ink);font-weight:600}
 .lede .lo{color:var(--down-ink);font-weight:600}
 .lede:empty{display:none}
-.loadbox{margin-top:16px;border:1px solid var(--line);border-radius:var(--radius);background:var(--surface)}
-.loadbox>summary{list-style:none;cursor:pointer;padding:11px 16px;display:flex;flex-wrap:wrap;gap:4px 12px;align-items:baseline}
-.loadbox>summary::-webkit-details-marker{display:none}
-.loadbox>summary::before{content:'▸';color:var(--ink-3);margin-right:4px;font-size:12px}
-.loadbox[open]>summary::before{content:'▾'}
-.loadbox>summary:hover{background:var(--surface-2)}
-.loadbox .sm-t{font-size:13.5px;font-weight:600}
-.loadbox .sm-s{font-size:12.5px;color:var(--ink-3)}
-.loadbox .load{margin:0;padding:0 14px 14px}
-.loadbox .load .panel{box-shadow:none}
+
+.load-row{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.hint{font-size:11.5px;color:var(--ink-3);font-weight:400}
 
 /* dataset bar */
 .dataset{margin-top:16px;padding:10px 16px;display:flex;flex-wrap:wrap;gap:6px 18px;align-items:center;font-size:13px;color:var(--ink-2)}
@@ -404,7 +380,7 @@ table.deals{width:100%;border-collapse:collapse;font-size:12.5px}
       <h1>신고가 <span class="mark">장부</span></h1>
     </div>
     <div class="masthead-right">
-      <p class="masthead-note" id="mastNote">국토교통부 실거래가를 단지·전용면적별로 정리합니다. 계산은 모두 브라우저에서 합니다.</p>
+      <p class="masthead-note" id="mastNote">국토교통부 실거래가 API 로 매일 아침 받아 둔 자료입니다. 단지·전용면적별로 묶어 보여 주고, 계산은 모두 브라우저에서 합니다.</p>
       <div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap">
         <select class="region-pick" id="regionPick" aria-label="지역 선택" hidden></select>
         <button class="theme-btn" id="shareBtn" type="button">링크 복사</button>
@@ -416,42 +392,8 @@ table.deals{width:100%;border-collapse:collapse;font-size:12.5px}
 
 <main class="wrap">
   <p class="lede" id="lede"></p>
+  <div class="status" id="status" aria-live="polite"></div>
 
-  <details class="loadbox" id="loadBox">
-   <summary><span class="sm-t">다른 지역 보기 · 내 파일 넣기</span><span class="sm-s" id="loadSummary"></span></summary>
-   <section class="load" aria-label="데이터 불러오기">
-    <div class="panel drop">
-      <div class="dropzone" id="dropzone" tabindex="0" role="button" aria-label="파일 선택 또는 끌어다 놓기">
-        <b>실거래가 CSV · 엑셀 파일을 여기에 끌어다 놓기</b>
-        <span>또는 클릭해서 선택 · rt.molit.go.kr 내려받은 파일 그대로 (EUC-KR 자동 인식, 여러 파일 가능)</span>
-      </div>
-      <input type="file" id="fileInput" accept=".csv,.txt,.xlsx,.xls,.json" multiple hidden>
-      <div class="load-row">
-        <input class="text-input grow" id="urlInput" type="text" placeholder="또는 CSV/JSON 주소 (예: data/latest.csv)" spellcheck="false">
-        <button class="btn" id="urlBtn" type="button">주소로 불러오기</button>
-        <button class="btn" id="pasteBtn" type="button">붙여넣기</button>
-      </div>
-      <div id="pasteBox" hidden>
-        <textarea class="text-input" id="pasteArea" placeholder="CSV 내용을 붙여넣고 아래 버튼을 누르세요" spellcheck="false"></textarea>
-        <div class="load-row" style="margin-top:8px">
-          <button class="btn primary sm" id="pasteGo" type="button">붙여넣은 내용 불러오기</button>
-          <button class="btn sm ghost" id="pasteCancel" type="button">닫기</button>
-        </div>
-      </div>
-      <div class="status" id="status" aria-live="polite"></div>
-    </div>
-    <div class="panel howto">
-      <div class="panel-t">쓰는 법</div>
-      <ol>
-        <li><b>국토교통부 실거래가 공개시스템</b>(<a href="https://rt.molit.go.kr" target="_blank" rel="noopener">rt.molit.go.kr</a>) → 아파트 매매 → 지역·기간 선택 → CSV 또는 엑셀 다운로드</li>
-        <li>파일을 위에 놓으면 단지·전용면적별로 <b>최근 시세 · 신고가 · 경신 이력 · 고점 대비</b>가 표로 정리됩니다</li>
-        <li>지역·기간이 다른 파일을 여러 개 넣어도 합쳐서 봅니다. 정리표는 CSV로 내려받거나 바로 복사할 수 있습니다</li>
-      </ol>
-      <div class="note"><b>자동 수집</b> — 안양시와 서울 주요 구의 아파트 매매·전세 최근 6년치는 매일 아침 실거래가 API 로 받아 둡니다. 오른쪽 위 선택에서 지역을 바꾸면 되고, 한 번에 한 지역만 읽어서 빠릅니다. 목록에 없는 지역은 여기에 파일을 넣으세요.</div>
-      <div class="note">신고가 = 같은 단지·면적에서 이전 어떤 거래보다 높은 값에 체결된 거래. 해제(취소)된 거래는 기본으로 뺍니다. 시세는 최근 N개월 거래의 중위값이고, 거래가 없으면 마지막 거래가를 씁니다.</div>
-    </div>
-   </section>
-  </details>
 
   <section class="panel dataset" id="dataset" hidden></section>
 
@@ -646,94 +588,6 @@ const pyeong=a=>(a/3.305785).toFixed(1);
 function ymShift(dateStr,n){ let y=+dateStr.slice(0,4), m=+dateStr.slice(5,7)-n; while(m<=0){m+=12;y--;} while(m>12){m-=12;y++;} return `${y}-${pad2(m)}`; }
 function monthsAgo(dateStr,n){ const d=+dateStr.slice(8,10)||1; const ym=ymShift(dateStr,n); const last=new Date(+ym.slice(0,4),+ym.slice(5,7),0).getDate(); return `${ym}-${pad2(Math.min(d,last))}`; }
 
-/* ---------- CSV ---------- */
-function parseCSV(text){
-  const rows=[];let row=[],cell='',q=false;
-  for(let i=0;i<text.length;i++){
-    const c=text[i];
-    if(q){
-      if(c==='"'){ if(text[i+1]==='"'){cell+='"';i++;} else q=false; }
-      else cell+=c;
-    }else if(c==='"')q=true;
-    else if(c===','){row.push(cell);cell='';}
-    else if(c==='\n'||c==='\r'){ if(c==='\r'&&text[i+1]==='\n')i++; row.push(cell);rows.push(row);row=[];cell=''; }
-    else cell+=c;
-  }
-  if(cell!==''||row.length){row.push(cell);rows.push(row);}
-  return rows;
-}
-function decodeBuffer(buf){
-  const u8=new Uint8Array(buf);
-  if(u8[0]===0xEF&&u8[1]===0xBB&&u8[2]===0xBF)return new TextDecoder('utf-8').decode(u8.subarray(3));
-  try{ return new TextDecoder('utf-8',{fatal:true}).decode(u8); }
-  catch(e){ try{ return new TextDecoder('euc-kr').decode(u8); }catch(e2){ return new TextDecoder('utf-8').decode(u8); } }
-}
-
-/* ---------- header detection (rt.molit.go.kr CSV/XLSX) ---------- */
-const COLS=[
-  ['sgg',/시군구/],['jibun',/^번지/],['apt',/단지명|건물명|아파트/],['area',/전용면적/],
-  ['ym',/계약년월/],['day',/^계약일$/],['ymd',/계약일자|거래일/],['price',/거래금액/],
-  ['bdong',/^동$/],['floor',/^층$/],['built',/건축년도|건축연도/],['cancel',/해제사유/],
-  ['type',/거래유형/],['rgst',/등기일자/]
-];
-function findHeader(rows){
-  for(let i=0;i<Math.min(rows.length,60);i++){
-    const r=rows[i].map(c=>String(c??'').trim());
-    if(r.some(c=>/거래금액/.test(c))&&r.some(c=>/단지명|건물명|아파트/.test(c))){
-      const map={};
-      r.forEach((h,idx)=>{ for(const [k,re] of COLS){ if(map[k]==null&&re.test(h)){map[k]=idx;break;} } });
-      return {idx:i,map};
-    }
-  }
-  return null;
-}
-const num=s=>{ const v=parseFloat(String(s??'').replace(/[^\d.\-]/g,'')); return isNaN(v)?null:v; };
-function splitSgg(s){ // "서울특별시 강남구 개포동" → {sido, gu, dong}
-  const p=String(s||'').trim().split(/\s+/).filter(Boolean);
-  if(p.length>=3)return {sido:p[0],gu:p.slice(1,-1).join(' '),dong:p[p.length-1]};
-  if(p.length===2)return {sido:'',gu:p[0],dong:p[1]};
-  return {sido:'',gu:p[0]||'',dong:''};
-}
-function rowsToDeals(rows,src){
-  const h=findHeader(rows); if(!h)return null;
-  const m=h.map, out=[];
-  for(let i=h.idx+1;i<rows.length;i++){
-    const r=rows[i]; if(!r||!r.length)continue;
-    const g=k=>m[k]==null?'':String(r[m[k]]??'').trim();
-    const apt=g('apt'), price=num(g('price')), area=num(g('area'));
-    if(!apt||price==null||area==null)continue;
-    let y,mo,d;
-    if(m.ym!=null){ const ym=g('ym').replace(/\D/g,''); y=+ym.slice(0,4); mo=+ym.slice(4,6); d=+(g('day').replace(/\D/g,'')||1); }
-    else if(m.ymd!=null){ const s=g('ymd').replace(/\D/g,''); y=+s.slice(0,4); mo=+s.slice(4,6); d=+(s.slice(6,8)||1); }
-    if(!y||!mo)continue;
-    const date=`${y}-${pad2(mo)}-${pad2(d||1)}`;
-    const {sido,gu,dong}=splitSgg(g('sgg'));
-    const cancel=g('cancel');
-    out.push({sido,gu,dong,sgg:[sido,gu].filter(Boolean).join(' '),apt,area,price,date,
-      floor:num(g('floor')),built:num(g('built')),bdong:g('bdong'),jibun:g('jibun'),
-      cancel:!!cancel&&cancel!=='-',cancelDate:cancel,type:g('type'),src});
-  }
-  return out;
-}
-/* data.go.kr 실거래가 API 응답(JSON) */
-function apiToDeals(obj,src){
-  let items=Array.isArray(obj)?obj:(obj?.response?.body?.items?.item||obj?.items?.item||obj?.items||obj?.data||null);
-  if(items&&!Array.isArray(items))items=[items];
-  if(!items)return null;
-  const out=[];
-  for(const it of items){
-    const apt=(it.aptNm||it.aptName||it.apt||'').trim(); const price=num(it.dealAmount??it.price); const area=num(it.excluUseAr??it.area);
-    const y=+(it.dealYear??it.year), mo=+(it.dealMonth??it.month), d=+(it.dealDay??it.day??1);
-    if(!apt||price==null||area==null||!y||!mo)continue;
-    const sggName=(it.sggNm||it.sggName||it.sgg||String(it.sggCd||'')).trim();
-    const {sido,gu}=splitSgg(sggName+' x'); // 마지막 토큰은 동 자리 채움용
-    const cd=(it.cdealDay||'').trim();
-    out.push({sido,gu,dong:(it.umdNm||it.dong||'').trim(),sgg:sggName,apt,area,price,date:`${y}-${pad2(mo)}-${pad2(d)}`,
-      floor:num(it.floor),built:num(it.buildYear),bdong:(it.aptDong||'').trim(),jibun:(it.jibun||'').trim(),
-      cancel:!!cd&&cd!=='-',cancelDate:cd,type:(it.dealingGbn||'').trim(),src});
-  }
-  return out;
-}
 /* 깃허브 액션이 만든 압축 JSON (fetch_molit.py --format json) */
 function packedToDeals(o,src){
   if(!o||o.kind!=='singoga-packed'||!Array.isArray(o.rows))return null;
@@ -767,42 +621,8 @@ function packedToDeals(o,src){
   }
   return out;
 }
-function textToDeals(text,src){
-  const t=text.trim();
-  if(t[0]==='{'||t[0]==='['){
-    let o; try{ o=JSON.parse(t); }catch(e){ return null; }
-    return packedToDeals(o,src)||apiToDeals(o,src);
-  }
-  return rowsToDeals(parseCSV(t),src);
-}
-let xlsxP=null;
-function loadXLSX(){
-  if(window.XLSX)return Promise.resolve();
-  if(xlsxP)return xlsxP;
-  xlsxP=new Promise((res,rej)=>{ const s=document.createElement('script');
-    s.src='https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js'; s.onload=res; s.onerror=()=>rej(new Error('엑셀 파서를 불러오지 못했습니다. CSV로 저장해서 넣어 주세요.')); document.head.appendChild(s); });
-  return xlsxP;
-}
-async function fileToDeals(file){
-  const name=file.name||'file';
-  if(/\.xlsx?$/i.test(name)){
-    await loadXLSX();
-    const wb=XLSX.read(await file.arrayBuffer(),{type:'array'});
-    let all=[];
-    for(const sn of wb.SheetNames){
-      const rows=XLSX.utils.sheet_to_json(wb.Sheets[sn],{header:1,raw:false,defval:''});
-      const d=rowsToDeals(rows,name); if(d)all=all.concat(d);
-    }
-    return all.length?all:null;
-  }
-  const text=decodeBuffer(await file.arrayBuffer());
-  return textToDeals(text,name);
-}
-
-/* ---------- sample data (가상) ---------- */
-
 /* ---------- state & analysis ---------- */
-const S={deals:[],source:'',ref:'',index:null,region:'',hashRegion:'',rent:null,groups:[],shown:[],tl:[],view:'market',mk:null,mkGeo:null,seg:'area',sort:'rec',dir:-1,page:0,per:50,open:null,
+const S={deals:[],source:'',ref:'',index:null,region:'',hashRegion:'',hash:'',rent:null,groups:[],shown:[],tl:[],view:'market',mk:null,mkGeo:null,seg:'area',sort:'rec',dir:-1,page:0,per:50,open:null,
   r:{budget:8,minArea:70,maxAge:0,profile:'balanced',minDeals:5,useCost:true,gapBuy:false,cash:0,rate:0,years:30},
   c:{win:6,gap:.05,agentOnly:true},
   fav:new Set(), hasRent:false,
@@ -1199,7 +1019,9 @@ function writeHash(){
   if(S.region)p.set('rg',S.region);
   if(S.open)p.set('at',S.open.key);
   const h=p.toString();
-  history.replaceState(null,'',h?'#'+h:location.pathname+location.search);
+  S.hash=h;
+  try{ history.replaceState(null,'',h?'#'+h:location.pathname+location.search); }
+  catch(e){ /* 샌드박스 iframe 에서는 주소를 못 바꾼다. 링크 복사는 S.hash 로 만든다. */ }
 }
 function readHash(){
   const raw=location.hash.replace(/^#/,''); if(!raw)return null;
@@ -1219,7 +1041,8 @@ function syncControls(){
   document.querySelectorAll('.tab').forEach(t=>t.setAttribute('aria-selected',t.dataset.view===S.view?'true':'false'));
   ['market','ledger','timeline','region','deals','recommend'].forEach(v=>$('#view'+v[0].toUpperCase()+v.slice(1)).hidden=v!==S.view);
 }
-function shareLink(){ writeHash(); copyText(location.href,'이 화면 링크를 복사했습니다'); }
+function shareLink(){ writeHash();
+  copyText(location.href.split('#')[0]+(S.hash?'#'+S.hash:''),'이 화면 링크를 복사했습니다'); }
 
 /* ---------- 시장 개요 ----------
    달마다 그냥 중위값을 내면 그 달에 어떤 단지가 거래됐는지에 따라 값이 튄다(구성 편향).
@@ -1585,7 +1408,7 @@ function setDeals(deals,source,_unused,append,opts){
   const base=merge?S.deals:[]; const seen=new Set(base.map(dealKey)); let dup=0;
   for(const d of deals){ const k=dealKey(d); if(seen.has(k)){dup++;continue;} seen.add(k); base.push(d); }
   S.deals=base; S.source=merge&&S.source&&S.source!==source?`${S.source} + ${source}`:source; S.page=0;
-  render(); persist(); return {added:deals.length-dup,dup};
+  render(); return {added:deals.length-dup,dup};
 }
 function fmtStamp(iso){ const m=/^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2})/.exec(iso||''); return m?`${m[1]}.${m[2]}.${m[3]} ${m[4]}:${m[5]}`:''; }
 /* "안양시 만안구", "안양시 동안구" → "안양시 만안구·동안구" */
@@ -1599,11 +1422,10 @@ function placeName(list){
   return list.length<=3?list.join(' · '):`${list[0]} 외 ${list.length-1}곳`;
 }
 function renderLede(){
-  const el=$('#lede'), eb=$('#mastEyebrow'), note=$('#mastNote'), sm=$('#loadSummary'), box=$('#loadBox');
-  if(!S.deals.length){ el.innerHTML=''; if(box)box.open=true; if(sm)sm.textContent='데이터를 불러오세요'; return; }
+  const el=$('#lede'), eb=$('#mastEyebrow');
+  if(!S.deals.length){ el.innerHTML=''; return; }
   const place=placeName([...new Set(S.groups.map(g=>g.gu||g.sgg))].filter(Boolean));
   if(eb)eb.textContent=`${place} 아파트 실거래`;
-  if(sm)sm.textContent=`지금은 ${place} 자료를 보고 있습니다`;
   const m=S.mk, deals=S.deals.length, apts=new Set(S.groups.map(g=>g.sgg+g.dong+g.apt)).size;
   const span=`${fmtDate(S.ref).slice(0,7)}`;
   const first=S.deals.reduce((a,b)=>a.date<b.date?a:b).date.slice(0,7).replace('-','.');
@@ -1630,12 +1452,8 @@ function renderDataset(){
   const title=S.auto?(m&&m.note||'국토교통부 실거래가 API'):S.source;
   el.innerHTML=`<span class="tag ${S.auto?'auto':''}">${label}</span><b title="${esc(title)}">${esc(title.length>60?title.slice(0,58)+'…':title)}</b>${stamp?`<span>갱신 <b class="num">${stamp}</b></span>`:''}${m&&m.regions&&m.regions.length?`<span title="${esc(m.regions.join(', '))}">지역 <b class="num">${m.regions.length}</b>곳</span>`:''}
 <span>거래 <b class="num">${S.deals.length.toLocaleString()}</b>건${c?` (해제 ${c}건)`:''}</span><span>기간 <span class="num">${fmtDate(dates.reduce((a,b)=>a<b?a:b))} ~ ${fmtDate(dates.reduce((a,b)=>a>b?a:b))}</span></span><span>단지 <b class="num">${apts}</b>개</span>
-<span class="spacer"></span><button class="btn sm ghost" type="button" id="clearBtn">비우기</button>`;
-  $('#clearBtn').onclick=()=>{ try{localStorage.removeItem('sgj.data');}catch(e){}
-    location.reload(); };
+`;
 }
-function persist(){ try{ if(S.auto||!S.deals.length){if(!S.deals.length)localStorage.removeItem('sgj.data');return;} const s=JSON.stringify({source:S.source,deals:S.deals}); if(s.length<4e6)localStorage.setItem('sgj.data',s); else localStorage.removeItem('sgj.data'); }catch(e){} }
-function restore(){ try{ const o=JSON.parse(localStorage.getItem('sgj.data')||'null'); if(!o||!o.deals||!o.deals.length)return false; setDeals(o.deals,o.source||'이전 데이터',false,false); setStatus(`이전에 불러온 데이터를 다시 열었습니다 (${o.deals.length.toLocaleString()}건).`); return true; }catch(e){return false;} }
 function saveF(){ try{ localStorage.setItem('sgj.f',JSON.stringify({win:S.f.win,priceWin:S.f.priceWin,exCancel:S.f.exCancel})); }catch(e){} }
 function saveR(){ try{ localStorage.setItem('sgj.r',JSON.stringify(S.r)); }catch(e){} }
 function loadC(){
@@ -1652,28 +1470,15 @@ function loadR(){
 }
 function loadF(){ try{ const o=JSON.parse(localStorage.getItem('sgj.f')||'null'); if(o){ Object.assign(S.f,o); $('#fWin').value=S.f.win; $('#fPrice').value=S.f.priceWin; $('#fExCancel').checked=S.f.exCancel; } }catch(e){} }
 function setStatus(msg,err){ const s=$('#status'); s.textContent=msg; s.classList.toggle('err',!!err); }
-async function handleFiles(files){
-  const list=[...files]; if(!list.length)return; setStatus(`읽는 중… (${list.length}개)`);
-  let all=[], names=[], bad=[];
-  for(const f of list){ try{ const d=await fileToDeals(f); if(d&&d.length){all=all.concat(d);names.push(f.name);} else bad.push(f.name); }catch(e){ bad.push(`${f.name} (${e.message})`); } }
-  if(!all.length){ setStatus(`형식을 인식하지 못했습니다: ${bad.join(', ')} — 실거래가 공개시스템에서 받은 아파트 매매 CSV/엑셀인지 확인해 주세요.`,true); return; }
-  const r=setDeals(all,names.join(', '),false,true);
-  setStatus(`${r.added.toLocaleString()}건 불러왔습니다${r.dup?` (중복 ${r.dup}건 제외)`:''}${bad.length?` · 인식 실패: ${bad.join(', ')}`:''}.`,!!bad.length);
-}
 async function loadURL(url,quiet,auto){
   try{
     if(!quiet)setStatus('불러오는 중…');
     const res=await fetch(url,{cache:'no-store'}); if(!res.ok)throw new Error(`HTTP ${res.status}`);
-    const buf=await res.arrayBuffer(); let deals;
-    if(/\.xlsx?($|\?)/i.test(url)){ await loadXLSX(); const wb=XLSX.read(buf,{type:'array'}); deals=[]; for(const sn of wb.SheetNames){ const d=rowsToDeals(XLSX.utils.sheet_to_json(wb.Sheets[sn],{header:1,raw:false,defval:''}),url); if(d)deals=deals.concat(d); } }
-    else deals=textToDeals(decodeBuffer(buf),url);
-    if(!deals||!deals.length)throw new Error('실거래가 형식을 인식하지 못했습니다');
-    const r=setDeals(deals,url.replace(/^.*\//,'')||url,false,false,{auto:!!auto});
-    if(auto){ const m=deals.meta, rg=m&&m.range;
-      setStatus(`국토교통부 실거래가 API 로 받아 둔 자료입니다 · ${r.added.toLocaleString()}건${rg?` · ${rg.from}~${rg.to}`:''}. 다른 지역은 파일을 넣으면 됩니다.`); }
-    else setStatus(`${url} 에서 ${r.added.toLocaleString()}건 불러왔습니다.`);
+    const deals=packedToDeals(await res.json(),url);
+    if(!deals||!deals.length)throw new Error('자료 형식을 알아보지 못했습니다');
+    setDeals(deals,url.replace(/^.*\//,'')||url,false,false,{auto:!!auto});
     return true;
-  }catch(e){ if(!quiet)setStatus(`불러오지 못했습니다: ${e.message}. 같은 사이트 안의 파일이거나 CORS가 허용된 주소여야 합니다.`,true); return false; }
+  }catch(e){ if(!quiet)setStatus(`불러오지 못했습니다: ${e.message}`,true); return false; }
 }
 
 /* ---------- 지역 목록 ---------- */
@@ -1709,8 +1514,7 @@ async function loadRegion(code,quiet){
   return ok;
 }
 function showEmpty(){
-  setStatus('아직 받아 둔 자료가 없습니다. 실거래가 파일을 넣거나, 깃허브 액션의 수집 작업을 한 번 실행하세요.',true);
-  const box=$('#loadBox'); if(box)box.open=true;
+  setStatus('아직 받아 둔 자료가 없습니다. 깃허브 액션의 수집 작업이 한 번 돌면 채워집니다.',true);
 }
 
 /* ---------- render all ---------- */
@@ -1723,17 +1527,6 @@ function applyTheme(t){ theme=t; if(t==='auto')document.documentElement.removeAt
 
 /* ---------- events ---------- */
 function bind(){
-  const dz=$('#dropzone'), fi=$('#fileInput');
-  dz.onclick=()=>fi.click(); dz.onkeydown=e=>{ if(e.key==='Enter'||e.key===' '){e.preventDefault();fi.click();} };
-  fi.onchange=()=>{ handleFiles(fi.files); fi.value=''; };
-  ['dragenter','dragover'].forEach(ev=>document.addEventListener(ev,e=>{ e.preventDefault(); dz.classList.add('over'); }));
-  ['dragleave','drop'].forEach(ev=>document.addEventListener(ev,e=>{ e.preventDefault(); if(ev==='drop'||e.target===document.documentElement)dz.classList.remove('over'); }));
-  document.addEventListener('drop',e=>{ if(e.dataTransfer?.files?.length)handleFiles(e.dataTransfer.files); });
-  $('#urlBtn').onclick=()=>{ const u=$('#urlInput').value.trim(); if(u)loadURL(u); };
-  $('#urlInput').onkeydown=e=>{ if(e.key==='Enter')$('#urlBtn').click(); };
-  $('#pasteBtn').onclick=()=>{ $('#pasteBox').hidden=false; $('#pasteArea').focus(); };
-  $('#pasteCancel').onclick=()=>{ $('#pasteBox').hidden=true; };
-  $('#pasteGo').onclick=()=>{ const d=textToDeals($('#pasteArea').value,'붙여넣기'); if(!d||!d.length){setStatus('붙여넣은 내용에서 실거래가 표를 찾지 못했습니다. 헤더(단지명·거래금액…)까지 포함해 주세요.',true);return;} const r=setDeals(d,'붙여넣기',false,true); $('#pasteBox').hidden=true; $('#pasteArea').value=''; setStatus(`${r.added}건 불러왔습니다${r.dup?` (중복 ${r.dup}건 제외)`:''}.`); };
   const F=k=>{ S.page=0; render(); if(k)saveF(); writeHash(); };
   $('#fSgg').onchange=e=>{ S.f.sgg=e.target.value; S.f.dong=''; F(); };
   $('#fDong').onchange=e=>{ S.f.dong=e.target.value; F(); };
@@ -1763,7 +1556,6 @@ function bind(){
   $('#regionPick').onchange=async e=>{ const c=e.target.value;
     S.fav=S.fav; S.f.sgg=''; S.f.dong=''; S.page=0;
     await loadRegion(c); syncControls(); };
-  $('#loadBox').addEventListener('toggle',()=>{ $('#loadBox').dataset.touched='1'; });
   $('#dClose').onclick=closeDrawer; $('#scrim').onclick=closeDrawer;
   document.addEventListener('keydown',e=>{ if(e.key==='Escape')closeDrawer(); });
   $('#dChart').addEventListener('mousemove',chartHover); $('#dChart').addEventListener('mouseleave',()=>$('#dTip').classList.remove('on'));
@@ -1809,15 +1601,14 @@ function bind(){
   const openAt=()=>{ if(at&&S.groups.some(g=>g.key===at))openDrawer(at); };
   const src=new URLSearchParams(location.search).get('src');
   const hasIndex=await loadIndex();
-  if(src){ $('#urlInput').value=src; if(await loadURL(src)){ syncControls(); openAt(); return; } }
-  if(restore()){ syncControls(); openAt(); return; }
+  if(src&&await loadURL(src,false,true)){ syncControls(); openAt(); return; }
   if(hasIndex){
     let want=hashRegion;
     if(!want){ try{ want=localStorage.getItem('sgj.region')||''; }catch(e){} }
     if(await loadRegion(want,true)){ syncControls(); openAt(); return; }
   }
   if(await loadURL('data/latest.json',true,true)){ syncControls(); openAt(); return; }
-  if(await loadURL('data/latest.csv',true,true)){ syncControls(); openAt(); return; }
+
   syncControls(); showEmpty();
 })();
 })();
