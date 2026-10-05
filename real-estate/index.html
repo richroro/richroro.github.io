@@ -3,11 +3,11 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>신고가 장부</title>
-<meta name="description" content="국토교통부 실거래가 파일을 넣으면 단지·면적별 최근 시세, 신고가, 신고가 경신 이력, 고점 대비 등락을 한 표로 정리해 주는 브라우저 전용 도구.">
+<title>안양 아파트 실거래 · 신고가 장부</title>
+<meta name="description" content="안양시(만안구·동안구) 아파트 실거래가 6년치를 단지·전용면적별로 정리합니다. 시세, 신고가, 고점 대비, 전세가율, 층 보정 급매까지. 국토교통부 실거래가 API 로 매일 자동 갱신.">
 <meta property="og:type" content="website">
-<meta property="og:title" content="신고가 장부 · 아파트 시세·신고가 정리">
-<meta property="og:description" content="실거래가 CSV/엑셀을 넣으면 단지별 시세·신고가·경신 이력을 자동으로 정리합니다. 서버 없이 브라우저에서만 동작.">
+<meta property="og:title" content="안양 아파트 실거래 · 신고가 장부">
+<meta property="og:description" content="안양시 아파트 6년치 실거래를 단지·면적별로 정리. 지금이 고점인지, 어디가 덜 빠졌는지, 어떤 거래가 시세보다 쌌는지. 매일 자동 갱신.">
 <meta property="og:url" content="https://richroro.github.io/real-estate/">
 <meta property="og:locale" content="ko_KR">
 <link rel="canonical" href="https://richroro.github.io/real-estate/">
@@ -117,6 +117,23 @@ textarea.text-input{min-height:74px;resize:vertical;font-family:"IBM Plex Mono",
 .howto li b{color:var(--ink)}
 .howto .note{font-size:12px;color:var(--ink-3);border-top:1px solid var(--line-soft);padding-top:10px}
 .howto a{color:var(--accent)}
+
+/* 머리글 요약 */
+.lede{margin:20px 0 0;font-size:clamp(15px,2vw,17px);line-height:1.75;color:var(--ink-2);max-width:72ch;letter-spacing:-.2px}
+.lede b{color:var(--ink);font-weight:600}
+.lede .hi{color:var(--up-ink);font-weight:600}
+.lede .lo{color:var(--down-ink);font-weight:600}
+.lede:empty{display:none}
+.loadbox{margin-top:16px;border:1px solid var(--line);border-radius:var(--radius);background:var(--surface)}
+.loadbox>summary{list-style:none;cursor:pointer;padding:11px 16px;display:flex;flex-wrap:wrap;gap:4px 12px;align-items:baseline}
+.loadbox>summary::-webkit-details-marker{display:none}
+.loadbox>summary::before{content:'▸';color:var(--ink-3);margin-right:4px;font-size:12px}
+.loadbox[open]>summary::before{content:'▾'}
+.loadbox>summary:hover{background:var(--surface-2)}
+.loadbox .sm-t{font-size:13.5px;font-weight:600}
+.loadbox .sm-s{font-size:12.5px;color:var(--ink-3)}
+.loadbox .load{margin:0;padding:0 14px 14px}
+.loadbox .load .panel{box-shadow:none}
 
 /* dataset bar */
 .dataset{margin-top:16px;padding:10px 16px;display:flex;flex-wrap:wrap;gap:6px 18px;align-items:center;font-size:13px;color:var(--ink-2)}
@@ -270,6 +287,7 @@ table.ledger{width:100%;border-collapse:collapse;font-size:13px}
 /* 싸게 나온 거래 */
 .cheap .dev{font-weight:600;font-size:14px}
 .cheap td{white-space:nowrap}
+.cheap .odd{font-size:10.5px;font-weight:600;color:var(--up-ink);background:var(--up-wash);border-radius:999px;padding:1px 7px;display:inline-block;margin-top:3px}
 .cheap .band{display:inline-block;font-size:11px;font-weight:600;border-radius:999px;padding:2px 7px;background:var(--surface-2);color:var(--ink-2)}
 .floorprem{display:flex;flex-wrap:wrap;gap:6px;margin-top:2px}
 .floorprem i{font-style:normal;font-size:11.5px;background:var(--surface-2);color:var(--ink-2);border-radius:999px;padding:3px 9px}
@@ -380,11 +398,11 @@ table.deals{width:100%;border-collapse:collapse;font-size:12.5px}
 <header class="masthead">
   <div class="masthead-in">
     <div class="brand">
-      <span class="eyebrow">아파트 실거래 · 시세 · 신고가</span>
+      <span class="eyebrow" id="mastEyebrow">안양시 아파트 실거래</span>
       <h1>신고가 <span class="mark">장부</span></h1>
     </div>
     <div class="masthead-right">
-      <p class="masthead-note">국토교통부 실거래가 파일을 넣으면 단지·면적별 최근 시세와 신고가, 경신 이력을 한 표로 정리합니다. 파일은 브라우저 밖으로 나가지 않습니다.</p>
+      <p class="masthead-note" id="mastNote">국토교통부 실거래가를 단지·전용면적별로 정리합니다. 계산은 모두 브라우저에서 합니다.</p>
       <div style="display:flex;gap:6px;align-items:center">
         <button class="theme-btn" id="shareBtn" type="button">링크 복사</button>
         <button class="theme-btn" id="themeBtn" type="button">테마: 자동</button>
@@ -394,7 +412,11 @@ table.deals{width:100%;border-collapse:collapse;font-size:12.5px}
 </header>
 
 <main class="wrap">
-  <section class="load" aria-label="데이터 불러오기">
+  <p class="lede" id="lede"></p>
+
+  <details class="loadbox" id="loadBox">
+   <summary><span class="sm-t">다른 지역 보기 · 내 파일 넣기</span><span class="sm-s" id="loadSummary"></span></summary>
+   <section class="load" aria-label="데이터 불러오기">
     <div class="panel drop">
       <div class="dropzone" id="dropzone" tabindex="0" role="button" aria-label="파일 선택 또는 끌어다 놓기">
         <b>실거래가 CSV · 엑셀 파일을 여기에 끌어다 놓기</b>
@@ -426,7 +448,8 @@ table.deals{width:100%;border-collapse:collapse;font-size:12.5px}
       <div class="note"><b>자동 수집</b> — 안양시(만안구·동안구) 아파트 매매 최근 6년치는 매일 아침 실거래가 API 로 받아 두어서, 파일을 넣지 않아도 바로 보입니다. 위쪽 띠에 갱신 시각이 나옵니다. 다른 지역은 파일을 넣으면 됩니다.</div>
       <div class="note">신고가 = 같은 단지·면적에서 이전 어떤 거래보다 높은 값에 체결된 거래. 해제(취소)된 거래는 기본으로 뺍니다. 시세는 최근 N개월 거래의 중위값이고, 거래가 없으면 마지막 거래가를 씁니다.</div>
     </div>
-  </section>
+   </section>
+  </details>
 
   <section class="panel dataset" id="dataset" hidden></section>
 
@@ -520,6 +543,8 @@ table.deals{width:100%;border-collapse:collapse;font-size:12.5px}
       거래가 10건이 안 되는 묶음은 층 효과를 못 재서 목록에서 뺍니다.
       <br><b>싸다고 다 급매는 아닙니다</b> — 향·조망·수리 상태·소음·확장 여부는 실거래가에 안 나옵니다.
       직거래는 가족 간 거래인 경우가 많아 기본으로 빼 두었습니다. 이미 팔린 거래이지, 지금 살 수 있는 매물이 아닙니다.
+      <br><b>'확인 필요' 표시</b> — 같은 단지·같은 면적·같은 달에 체결된 거래끼리도 99%는 서로 20% 안에 들어옵니다.
+      25% 넘게 싼 거래는 급매라기보다 분양권·특수관계 거래·신고 오류인 경우가 많아 따로 표시해 두었습니다.
     </div>
   </section>
 
@@ -971,7 +996,7 @@ function renderKpis(){
     {l:'단지 · 면적',v:G.length.toLocaleString(),u:'개',d:`거래 ${deals.toLocaleString()}건 · 기준일 ${fmtDate(S.ref)}`},
     {l:`신고가 경신 · 최근 ${S.f.win}개월`,v:recs.length.toLocaleString(),u:'개',d:G.length?`전체의 ${Math.round(recs.length/G.length*100)}%`:'-',c:recs.length?'up':''},
     {l:'평균 경신폭',v:fmtPct(avgPct),d:recs.length?'직전 신고가 대비':`최근 ${S.f.win}개월 경신 없음`,c:dir(avgPct)},
-    {l:'고점 대비 시세',v:fmtPct(avgPeak),d:'단지별 단순 평균',c:dir(avgPeak)},
+    {l:'단지 평균 고점 대비',v:fmtPct(avgPeak),d:'단지마다 제 신고가와 견준 값의 평균',c:dir(avgPeak)},
     {l:'최고가 거래',v:top?fmtManShort(top.max.price):'-',d:top?`${top.apt} ${top.areaKey}㎡ · ${fmtYM(top.max.date)}`:'-'},
   ];
   $('#kpis').innerHTML=tiles.map(t=>`<div class="panel kpi"><div class="l">${t.l}</div><div class="v">${t.v}${t.u?`<small>${t.u}</small>`:''}</div><div class="d ${t.c||''}">${esc(t.d)}</div></div>`).join('');
@@ -1447,7 +1472,7 @@ function cheapDeals(){
       const exp=expectedPrice(g,d); if(!exp)continue;
       const dev=d.price/exp-1;
       if(dev>-c.gap)continue;
-      out.push({g,d,exp,dev,band:bandOfFloor(d.floor,g.fl.maxF)});
+      out.push({g,d,exp,dev,band:bandOfFloor(d.floor,g.fl.maxF),odd:dev<=-0.25});
     }
   }
   out.sort((a,b)=>a.dev-b.dev);
@@ -1469,7 +1494,7 @@ function renderCheap(){
 <td class="c" data-l="층"><span class="band">${x.d.floor!=null?x.d.floor+'층':'-'} · ${FLOOR_LABEL[x.band]}</span></td>
 <td class="r num" data-l="거래가">${fmtMan(x.d.price)}</td>
 <td class="r num" data-l="기대가">${fmtMan(x.exp)}</td>
-<td class="r" data-l="차이"><span class="dev num down">${fmtPct(x.dev)}</span></td>
+<td class="r" data-l="차이"><span class="dev num down">${fmtPct(x.dev)}</span>${x.odd?'<div class="odd">확인 필요</div>':''}</td>
 <td data-l="유형">${esc(x.d.type||'-')}</td></tr>`).join('')
     :`<tr><td colspan="7" class="empty">조건에 맞는 거래가 없습니다. 기간을 늘리거나 차이 기준을 낮춰 보세요.</td></tr>`;
 }
@@ -1609,6 +1634,42 @@ function setDeals(deals,source,sample,append,opts){
   render(); persist(); return {added:deals.length-dup,dup};
 }
 function fmtStamp(iso){ const m=/^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2})/.exec(iso||''); return m?`${m[1]}.${m[2]}.${m[3]} ${m[4]}:${m[5]}`:''; }
+/* "안양시 만안구", "안양시 동안구" → "안양시 만안구·동안구" */
+function placeName(list){
+  if(!list.length)return '';
+  if(list.length===1)return list[0];
+  const parts=list.map(x=>x.split(/\s+/));
+  const head=parts[0][0];
+  if(parts.length<=4&&parts.every(p=>p.length>1&&p[0]===head))
+    return `${head} ${parts.map(p=>p.slice(1).join(' ')).join('·')}`;
+  return list.length<=3?list.join(' · '):`${list[0]} 외 ${list.length-1}곳`;
+}
+function renderLede(){
+  const el=$('#lede'), eb=$('#mastEyebrow'), note=$('#mastNote'), sm=$('#loadSummary'), box=$('#loadBox');
+  if(!S.deals.length){ el.innerHTML=''; if(box)box.open=true; if(sm)sm.textContent='데이터를 불러오세요'; return; }
+  const place=placeName([...new Set(S.groups.map(g=>g.gu||g.sgg))].filter(Boolean));
+  if(eb)eb.textContent=S.sample?'가상 샘플 데이터':`${place} 아파트 실거래`;
+  if(sm)sm.textContent=S.sample?'지금은 가상 샘플입니다':`지금은 ${place} 자료를 보고 있습니다`;
+  if(box&&!box.dataset.touched)box.open=!!S.sample;
+  const m=S.mk, deals=S.deals.length, apts=new Set(S.groups.map(g=>g.sgg+g.dong+g.apt)).size;
+  const span=`${fmtDate(S.ref).slice(0,7)}`;
+  const first=S.deals.reduce((a,b)=>a.date<b.date?a:b).date.slice(0,7).replace('-','.');
+  let txt=`${S.sample?'<b>가상의 샘플 데이터</b>입니다. ':''}`
+    +`<b>${esc(place)}</b> 아파트 <b>${apts.toLocaleString()}개 단지</b>의 실거래 <b>${deals.toLocaleString()}건</b>을 `
+    +`${first}부터 ${span.replace('-','.')}까지 모아 단지·전용면적별로 정리했습니다. `;
+  if(m&&m.vsPeak!=null){
+    const near=m.vsPeak>-0.02;
+    txt+=near
+      ? `지금 시세는 <span class="hi">기간 내 가장 높은 수준</span>입니다. `
+      : `지금 시세는 ${m.peak?`<b>${m.peak.ym.replace('-','.')}</b> 고점 대비 `:''}<span class="lo">${fmtPct(m.vsPeak)}</span> 수준이고, `
+        +(m.vsTrough!=null&&m.vsTrough>0.01?`${m.trough?m.trough.ym.replace('-','.'):''} 저점에서는 <span class="hi">${fmtPct(m.vsTrough)}</span> 올라왔습니다. `:'아직 저점 부근입니다. ');
+    if(m.mom3!=null)txt+=`최근 3개월은 ${m.mom3>0.005?'<span class="hi">오르는 중</span>':m.mom3<-0.005?'<span class="lo">내리는 중</span>':'<b>횡보</b>'}입니다. `;
+  }
+  if(S.hasRent){ const jr=S.groups.filter(g=>g.jRatio!=null).map(g=>g.jRatio);
+    if(jr.length)txt+=`전세가율 중위는 <b>${Math.round(median(jr)*100)}%</b>입니다. `; }
+  txt+=`아래 탭에서 단지별 표, 신고가 이력, 동네별 비교, 시세보다 싸게 팔린 거래, 예산에 맞는 단지를 볼 수 있습니다.`;
+  el.innerHTML=txt;
+}
 function renderDataset(){
   const el=$('#dataset'); if(!S.deals.length){el.hidden=true;return;} el.hidden=false;
   const c=S.deals.filter(d=>d.cancel).length, dates=S.deals.map(d=>d.date), apts=new Set(S.deals.map(d=>d.sgg+d.dong+d.apt)).size;
@@ -1665,7 +1726,7 @@ async function loadURL(url,quiet,auto){
 }
 
 /* ---------- render all ---------- */
-function render(){ analyze(); fillFilters(); applyFilters(); renderDataset(); renderKpis(); renderMarket(); renderLedger(); renderTimeline(); renderRegion(); renderCheap(); renderRecommend();
+function render(){ analyze(); fillFilters(); applyFilters(); renderDataset(); renderKpis(); renderMarket(); renderLede(); renderLedger(); renderTimeline(); renderRegion(); renderCheap(); renderRecommend();
   $('#count').textContent=S.groups.length?`${S.shown.length.toLocaleString()} / ${S.groups.length.toLocaleString()}개 표시`:''; renderFavCount(); }
 
 /* ---------- theme ---------- */
@@ -1712,6 +1773,7 @@ function bind(){
   let rt; addEventListener('resize',()=>{ clearTimeout(rt); rt=setTimeout(()=>{ if(S.view==='market')renderMarket(); },200); });
   document.addEventListener('click',e=>{ const b=e.target.closest('[data-seg]'); if(!b)return;
     S.seg=b.dataset.seg; try{localStorage.setItem('sgj.seg',S.seg);}catch(err){} renderSegments(); });
+  $('#loadBox').addEventListener('toggle',()=>{ $('#loadBox').dataset.touched='1'; });
   $('#dClose').onclick=closeDrawer; $('#scrim').onclick=closeDrawer;
   document.addEventListener('keydown',e=>{ if(e.key==='Escape')closeDrawer(); });
   $('#dChart').addEventListener('mousemove',chartHover); $('#dChart').addEventListener('mouseleave',()=>$('#dTip').classList.remove('on'));
