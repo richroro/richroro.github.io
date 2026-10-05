@@ -1075,7 +1075,11 @@ function marketSeries(subset){
   const idx=raw.map(v=>v==null?null:v/b*100);
   let peak=-1,trough=-1;
   idx.forEach((v,i)=>{ if(v==null)return; if(peak<0||v>idx[peak])peak=i; });
-  idx.forEach((v,i)=>{ if(v==null||i<peak)return; if(trough<0||v<idx[trough])trough=i; });
+  /* 저점 = 가장 깊게 빠졌던 지점 (그때까지의 최고치 대비 낙폭이 가장 큰 달).
+     '고점 이후 최저점'으로 잡으면 지금이 고점인 지역은 저점이 이번 달이 되어 회복폭이 늘 0% 로 나온다. */
+  { let run=-Infinity, worst=0;
+    idx.forEach((v,i)=>{ if(v==null)return; if(v>run)run=v; const dd=v/run-1; if(dd<worst){ worst=dd; trough=i; } });
+    if(worst>-0.02)trough=-1; }
   let cur=idx.length-1; while(cur>=0&&idx[cur]==null)cur--;
   const at=i=>i>=0?{ym:months[i],v:idx[i]}:null;
   const prior=cur>=3?[...Array(cur-2).keys()].map(i=>i+0).slice(-1):[];
@@ -1153,7 +1157,7 @@ function renderMarket(){
     <div class="d">${m.peak?`고점은 <b>${m.peak.ym.replace('-','.')}</b>`:''}${m.cur?`, 가장 최근 달은 <b>${m.cur.ym.replace('-','.')}</b>`:''}입니다.
       ${near?'지금 값이 기간 내 최고 수준입니다.':'그때 이후로 아직 회복하지 못했습니다.'}</div></div>
   <div class="mk-tiles">
-    <div class="mk-t"><div class="l">저점 이후</div><div class="v num ${dir(m.vsTrough)}">${m.vsTrough==null?'-':fmtPct(m.vsTrough)}</div><div class="s">저점 ${m.trough?m.trough.ym.replace('-','.'):'-'}</div></div>
+    <div class="mk-t"><div class="l">저점 이후</div><div class="v num ${dir(m.vsTrough)}">${m.vsTrough==null?'-':fmtPct(m.vsTrough)}</div><div class="s">${m.trough?`가장 깊이 빠진 ${m.trough.ym.replace('-','.')}`:'기간 중 큰 조정 없음'}</div></div>
     <div class="mk-t"><div class="l">최근 3개월</div><div class="v num ${dir(t3)}">${t3==null?'-':fmtPct(t3)}</div><div class="s">${t3==null?'-':t3>0.005?'오르는 중':t3<-0.005?'내리는 중':'횡보'}</div></div>
     <div class="mk-t"><div class="l">최근 12개월 거래</div><div class="v num">${m.vol.slice(-12).reduce((a,b)=>a+b,0).toLocaleString()}</div><div class="s">직전 12개월 ${m.vol.slice(-24,-12).reduce((a,b)=>a+b,0).toLocaleString()}건</div></div>
   </div></div>
@@ -1435,8 +1439,9 @@ function renderLede(){
     const near=m.vsPeak>-0.02;
     txt+=near
       ? `지금 시세는 <span class="hi">기간 내 가장 높은 수준</span>입니다. `
+        +(m.vsTrough!=null&&m.vsTrough>0.01?`가장 깊이 빠졌던 ${m.trough.ym.replace('-','.')}보다 <span class="hi">${fmtPct(m.vsTrough)}</span> 높습니다. `:'')
       : `지금 시세는 ${m.peak?`<b>${m.peak.ym.replace('-','.')}</b> 고점 대비 `:''}<span class="lo">${fmtPct(m.vsPeak)}</span> 수준이고, `
-        +(m.vsTrough!=null&&m.vsTrough>0.01?`${m.trough?m.trough.ym.replace('-','.'):''} 저점에서는 <span class="hi">${fmtPct(m.vsTrough)}</span> 올라왔습니다. `:'아직 저점 부근입니다. ');
+        +(m.vsTrough!=null&&m.vsTrough>0.01?`가장 깊이 빠졌던 ${m.trough.ym.replace('-','.')}보다는 <span class="hi">${fmtPct(m.vsTrough)}</span> 올라왔습니다. `:'아직 바닥 부근입니다. ');
     if(m.mom3!=null)txt+=`최근 3개월은 ${m.mom3>0.005?'<span class="hi">오르는 중</span>':m.mom3<-0.005?'<span class="lo">내리는 중</span>':'<b>횡보</b>'}입니다. `;
   }
   if(S.hasRent){ const jr=S.groups.filter(g=>g.jRatio!=null).map(g=>g.jRatio);

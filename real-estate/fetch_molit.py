@@ -26,6 +26,18 @@ def log(msg):
     print(msg, file=sys.stderr, flush=True)
 
 
+def clean_key(key, label):
+    """시크릿 칸에 붙여넣다 보면 앞뒤에 줄바꿈·공백이 딸려 들어간다. 그대로 쓰면 주소가 만들어지지 않는다."""
+    if not key:
+        return key
+    cleaned = key.strip()
+    if cleaned != key:
+        log(f"{label} 앞뒤에 붙은 공백·줄바꿈을 지웠습니다 (시크릿에 함께 붙여넣어진 것으로 보입니다).")
+    if any(ch.isspace() or ord(ch) < 32 for ch in cleaned):
+        log(f"{label} 가운데에 공백이나 제어문자가 있습니다. 시크릿 값을 다시 확인하세요.")
+    return cleaned
+
+
 def month_range(end_ym, count):
     """end_ym('YYYY-MM') 을 포함해 과거로 count 개월치 'YYYYMM' 목록."""
     y, m = int(end_ym[:4]), int(end_ym[5:7])
@@ -305,6 +317,8 @@ def main():
                          "(환경변수 DATA_GO_KR_RENT_KEY)")
     a = ap.parse_args()
     a.months_set = any(x.startswith("--months") for x in sys.argv)
+    a.key = clean_key(a.key, "매매 인증키")
+    a.rent_key = clean_key(a.rent_key, "전월세 인증키")
 
     if not a.key:
         log("인증키가 없습니다. --key 또는 환경변수 DATA_GO_KR_KEY 를 주세요.")
