@@ -212,6 +212,52 @@ def pack(deals, meta, rents=None, rent_months=None):
     return out
 
 
+def write_json(path, obj):
+    with open(path, "w", encoding="utf-8") as f:
+        json.dump(obj, f, ensure_ascii=False, separators=(",", ":"))
+
+
+def split_write(out_dir, by_region, rents, meta_common, rent_months):
+    """시군구별 파일 + index.json. 내용이 같은 지역 파일은 다시 쓰지 않는다."""
+    os.makedirs(out_dir, exist_ok=True)
+    entries, written, kept = [], 0, 0
+    for code, name, deals in by_region:
+        if not deals:
+            log(f"  [건너뜀] {name}: 거래 0건")
+            continue
+        sub = {k: v for k, v in (rents or {}).items() if k[0] == name}
+        meta = dict(meta_common, regions=[name])
+        packed = pack(deals, meta, sub, rent_months)
+        path = os.path.join(out_dir, f"{code}.json")
+        if unchanged(path, packed):
+            kept += 1
+        else:
+            write_json(path, packed)
+            written += 1
+        dates = [d["ymd"] for d in deals]
+        entries.append({"code": code, "name": name, "file": f"{code}.json",
+                        "deals": len(deals), "rent": len(sub),
+                        "from": f"{str(min(dates))[:4]}-{str(min(dates))[4:6]}",
+                        "to": f"{str(max(dates))[:4]}-{str(max(dates))[4:6]}",
+                        "bytes": os.path.getsize(path)})
+    index = {"v": 1, "kind": "singoga-index", "updated": meta_common["updated"],
+             "source": meta_common["source"], "regions": entries}
+    old = None
+    try:
+        with open(os.path.join(out_dir, "index.json"), encoding="utf-8") as f:
+            old = json.load(f)
+    except (OSError, ValueError):
+        pass
+    if not old or [{k: v for k, v in e.items() if k != "bytes"} for e in old.get("regions", [])] != \
+                  [{k: v for k, v in e.items() if k != "bytes"} for e in entries]:
+        write_json(os.path.join(out_dir, "index.json"), index)
+    elif written:
+        write_json(os.path.join(out_dir, "index.json"), index)
+    total = sum(e["deals"] for e in entries)
+    log(f"{out_dir}/: {len(entries)}개 지역 · {total:,}건 · 새로 쓴 파일 {written}개, 그대로 둔 파일 {kept}개")
+    return 0
+
+
 def unchanged(path, packed):
     """거래 내용이 이전 파일과 같으면 True. 갱신 시각만 바뀌는 커밋을 막는다."""
     try:
@@ -243,6 +289,9 @@ def main():
     ap.add_argument("--end", default="", help="마지막 달 YYYY-MM (기본: 이번 달)")
     ap.add_argument("--format", choices=["json", "csv"], default="json")
     ap.add_argument("-o", "--out", default="data/latest.json")
+    ap.add_argument("--split-dir", default="",
+                    help="시군구마다 파일을 따로 쓰고 목록(index.json)을 만든다. 지역이 많을 때 페이지가 "
+                         "한 번에 한 지역만 읽게 하려는 것. 주면 --out 은 무시한다.")
     ap.add_argument("--endpoint", default=os.environ.get("MOLIT_ENDPOINT", DEFAULT_ENDPOINT))
     ap.add_argument("--rows", type=int, default=1000, help="한 번에 받을 건수")
     ap.add_argument("--sleep", type=float, default=0.15, help="호출 간 대기(초)")
@@ -270,8 +319,10 @@ def main():
     log(f"{len(regions)}개 지역 × {len(months)}개월 ({months[0]}~{months[-1]}) = {len(regions) * len(months)}회 호출")
 
     deals, seen, failures = [], set(), []
+    by_region = []
     for code, name in regions:
         got = 0
+        mine = []
         for ymd in months:
             try:
                 items = fetch_month(a.endpoint, a.key, code, ymd, a.rows, a.timeout, a.tries, a.sleep)
@@ -288,8 +339,10 @@ def main():
                     continue
                 seen.add(k)
                 deals.append(d)
+                mine.append(d)
                 got += 1
             time.sleep(a.sleep)
+        by_region.append((code, name, mine))
         log(f"{name}: {got}건")
 
     if not deals:
@@ -336,6 +389,18 @@ def main():
                 " DATA_GO_KR_RENT_KEY 시크릿에 넣었는지 확인하세요."
                 " 없는 동안에는 전세가율·갭만 비고 나머지는 정상입니다.")
             rents = None
+
+    if a.split_dir:
+        meta_common = {
+            "updated": datetime.now(KST).isoformat(timespec="seconds"),
+            "source": "국토교통부 아파트 매매 실거래가 상세 자료 (data.go.kr)",
+            "range": {"from": f"{months[0][:4]}-{months[0][4:]}", "to": f"{months[-1][:4]}-{months[-1][4:]}"},
+        }
+        split_write(a.split_dir, by_region, rents, meta_common, rent_months)
+        if len(failures) > a.max_fail:
+            log(f"실패가 허용치({a.max_fail})를 넘었습니다.")
+            return 1
+        return 0
 
     os.makedirs(os.path.dirname(a.out) or ".", exist_ok=True)
     if a.format == "csv":

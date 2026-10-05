@@ -3,11 +3,11 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>안양 아파트 실거래 · 신고가 장부</title>
-<meta name="description" content="안양시(만안구·동안구) 아파트 실거래가 6년치를 단지·전용면적별로 정리합니다. 시세, 신고가, 고점 대비, 전세가율, 층 보정 급매까지. 국토교통부 실거래가 API 로 매일 자동 갱신.">
+<title>아파트 실거래 · 신고가 장부</title>
+<meta name="description" content="안양시와 서울 주요 구 아파트 실거래가 6년치를 단지·전용면적별로 정리합니다. 시세, 신고가, 고점 대비, 전세가율, 층 보정 급매까지. 국토교통부 실거래가 API 로 매일 자동 갱신.">
 <meta property="og:type" content="website">
-<meta property="og:title" content="안양 아파트 실거래 · 신고가 장부">
-<meta property="og:description" content="안양시 아파트 6년치 실거래를 단지·면적별로 정리. 지금이 고점인지, 어디가 덜 빠졌는지, 어떤 거래가 시세보다 쌌는지. 매일 자동 갱신.">
+<meta property="og:title" content="아파트 실거래 · 신고가 장부">
+<meta property="og:description" content="안양시·서울 주요 구 아파트 6년치 실거래를 단지·면적별로 정리. 지금이 고점인지, 어디가 덜 빠졌는지, 어떤 거래가 시세보다 쌌는지. 매일 자동 갱신.">
 <meta property="og:url" content="https://richroro.github.io/real-estate/">
 <meta property="og:locale" content="ko_KR">
 <link rel="canonical" href="https://richroro.github.io/real-estate/">
@@ -81,6 +81,8 @@ h1 .mark{display:inline-block;color:var(--up)}
 .masthead-note{font-size:12.5px;color:var(--ink-3);max-width:40ch;line-height:1.55;border-left:2px solid var(--line);padding-left:12px}
 .masthead-right{display:flex;flex-direction:column;align-items:flex-end;gap:10px}
 @media (max-width:700px){.masthead-right{align-items:flex-start;width:100%}}
+.region-pick{border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:5px 10px;font-size:12.5px;color:var(--ink);max-width:230px}
+.region-pick:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-wash)}
 .theme-btn{border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:5px 12px;font-size:12px;color:var(--ink-2)}
 .theme-btn:hover{border-color:var(--ink-3)}
 
@@ -398,12 +400,13 @@ table.deals{width:100%;border-collapse:collapse;font-size:12.5px}
 <header class="masthead">
   <div class="masthead-in">
     <div class="brand">
-      <span class="eyebrow" id="mastEyebrow">안양시 아파트 실거래</span>
+      <span class="eyebrow" id="mastEyebrow">아파트 실거래 · 시세 · 신고가</span>
       <h1>신고가 <span class="mark">장부</span></h1>
     </div>
     <div class="masthead-right">
       <p class="masthead-note" id="mastNote">국토교통부 실거래가를 단지·전용면적별로 정리합니다. 계산은 모두 브라우저에서 합니다.</p>
-      <div style="display:flex;gap:6px;align-items:center">
+      <div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap">
+        <select class="region-pick" id="regionPick" aria-label="지역 선택" hidden></select>
         <button class="theme-btn" id="shareBtn" type="button">링크 복사</button>
         <button class="theme-btn" id="themeBtn" type="button">테마: 자동</button>
       </div>
@@ -427,7 +430,6 @@ table.deals{width:100%;border-collapse:collapse;font-size:12.5px}
         <input class="text-input grow" id="urlInput" type="text" placeholder="또는 CSV/JSON 주소 (예: data/latest.csv)" spellcheck="false">
         <button class="btn" id="urlBtn" type="button">주소로 불러오기</button>
         <button class="btn" id="pasteBtn" type="button">붙여넣기</button>
-        <button class="btn" id="sampleBtn" type="button">샘플 데이터</button>
       </div>
       <div id="pasteBox" hidden>
         <textarea class="text-input" id="pasteArea" placeholder="CSV 내용을 붙여넣고 아래 버튼을 누르세요" spellcheck="false"></textarea>
@@ -445,7 +447,7 @@ table.deals{width:100%;border-collapse:collapse;font-size:12.5px}
         <li>파일을 위에 놓으면 단지·전용면적별로 <b>최근 시세 · 신고가 · 경신 이력 · 고점 대비</b>가 표로 정리됩니다</li>
         <li>지역·기간이 다른 파일을 여러 개 넣어도 합쳐서 봅니다. 정리표는 CSV로 내려받거나 바로 복사할 수 있습니다</li>
       </ol>
-      <div class="note"><b>자동 수집</b> — 안양시(만안구·동안구) 아파트 매매 최근 6년치는 매일 아침 실거래가 API 로 받아 두어서, 파일을 넣지 않아도 바로 보입니다. 위쪽 띠에 갱신 시각이 나옵니다. 다른 지역은 파일을 넣으면 됩니다.</div>
+      <div class="note"><b>자동 수집</b> — 안양시와 서울 주요 구의 아파트 매매·전세 최근 6년치는 매일 아침 실거래가 API 로 받아 둡니다. 오른쪽 위 선택에서 지역을 바꾸면 되고, 한 번에 한 지역만 읽어서 빠릅니다. 목록에 없는 지역은 여기에 파일을 넣으세요.</div>
       <div class="note">신고가 = 같은 단지·면적에서 이전 어떤 거래보다 높은 값에 체결된 거래. 해제(취소)된 거래는 기본으로 뺍니다. 시세는 최근 N개월 거래의 중위값이고, 거래가 없으면 마지막 거래가를 씁니다.</div>
     </div>
    </section>
@@ -798,59 +800,9 @@ async function fileToDeals(file){
 }
 
 /* ---------- sample data (가상) ---------- */
-function mulberry(a){return function(){a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296;}}
-function sampleDeals(){
-  const rnd=mulberry(20260919);
-  const now=new Date(); const endY=now.getFullYear(), endM=now.getMonth()+1;
-  const N=72;
-  /* 올랐다가 꺾이고 한동안 눌린 뒤 조금 되돌아오는 모양. 한 방향으로만 가는 자료를 쓰면
-     최근 거래가 전부 신고가로 잡혀서 "지금이 고점"이라는 잘못된 인상을 준다. */
-  const shape=(t,ph)=>{ const peak=44+ph;
-    const up=1+0.46*Math.sin(Math.min(t,peak)/peak*Math.PI/2);
-    const down=t<=peak?0:0.0085*Math.min(t-peak,22);
-    const back=t<=peak+22?0:0.0035*Math.min(t-peak-22,10);
-    return up-down+back; };
-  const complexes=[
-    ['한빛동','한빛마을 1단지',2004,[[59,62000],[84,84000],[114,110000]],1,.58],
-    ['한빛동','달빛 센트럴',2019,[[59,78000],[84,107000]],-3,.52],
-    ['한빛동','청솔 그린빌',1998,[[49,41000],[59,49000],[84,66000]],4,.64],
-    ['은행동','은하수 타워',2016,[[74,94000],[84,105000],[110,136000]],-2,.55],
-    ['은행동','느티나무 파크',2008,[[59,58000],[84,80000]],2,.61],
-    ['은행동','샘터마을 3단지',1992,[[42,32000],[59,44000],[76,56000]],6,.67],
-    ['강변동','강변 리버뷰',2021,[[84,125000],[101,154000],[134,211000]],-4,.49],
-    ['강변동','새들 하이츠',2001,[[59,48000],[84,68000]],3,.63],
-  ];
-  const out=[], rentMap=new Map();
-  complexes.forEach(([dong,apt,built,types,ph,jr])=>{
-    types.forEach(([area,base])=>{
-      const a=Math.round((area+rnd()*0.9)*100)/100;
-      for(let k=N-1;k>=0;k--){
-        let y=endY, m=endM-k; while(m<=0){m+=12;y--;}
-        const lvl=base*shape(N-1-k,ph)*(1+(rnd()-0.5)*0.02);
-        const n=rnd()<0.22?0:1+Math.floor(rnd()*3);
-        for(let j=0;j<n;j++){
-          const floor=1+Math.floor(rnd()*(built<2000?15:25));
-          const price=Math.round(lvl*(1+(rnd()-0.5)*0.05+(floor<4?-0.03:0))/250)*250;
-          const day=1+Math.floor(rnd()*28);
-          const cancel=rnd()<0.03;
-          out.push({sido:'예시시',gu:'가상구',dong,sgg:'예시시 가상구',apt,area:a,price,date:`${y}-${pad2(m)}-${pad2(day)}`,
-            floor,built,bdong:String(101+Math.floor(rnd()*6)),jibun:'',cancel,cancelDate:cancel?`${y}.${pad2(m)}.${pad2(Math.min(28,day+3))}`:'',
-            type:rnd()<0.85?'중개거래':'직거래',src:'샘플'});
-        }
-      }
-      if(rnd()<0.85){
-        const cur=base*shape(N-1,ph), j12=Math.round(cur*jr/250)*250;
-        rentMap.set(`예시시 가상구|${dong}|${apt}|${Math.round(a)}`,
-          {j12,n12:4+Math.floor(rnd()*30),j6:Math.round(j12*(0.98+rnd()*0.06)/250)*250,j6p:Math.round(j12*(0.95+rnd()*0.06)/250)*250});
-      }
-    });
-  });
-  out.rentMap=rentMap;
-  return out;
-}
 
 /* ---------- state & analysis ---------- */
-const S={deals:[],source:'',sample:false,ref:'',rent:null,groups:[],shown:[],tl:[],view:'market',mk:null,mkGeo:null,seg:'area',sort:'rec',dir:-1,page:0,per:50,open:null,
+const S={deals:[],source:'',ref:'',index:null,region:'',hashRegion:'',rent:null,groups:[],shown:[],tl:[],view:'market',mk:null,mkGeo:null,seg:'area',sort:'rec',dir:-1,page:0,per:50,open:null,
   r:{budget:8,minArea:70,maxAge:0,profile:'balanced',minDeals:5,useCost:true,gapBuy:false,cash:0,rate:0,years:30},
   c:{win:6,gap:.05,agentOnly:true},
   fav:new Set(), hasRent:false,
@@ -1244,6 +1196,7 @@ function writeHash(){
   if(f.recOnly)p.set('rec','1');
   if(f.favOnly)p.set('fav','1');
   if(!f.exCancel)p.set('cx','1');
+  if(S.region)p.set('rg',S.region);
   if(S.open)p.set('at',S.open.key);
   const h=p.toString();
   history.replaceState(null,'',h?'#'+h:location.pathname+location.search);
@@ -1254,6 +1207,7 @@ function readHash(){
   for(const k of HASH_KEYS)if(p.has(k))f[k]=(k==='recent'||k==='win'||k==='priceWin')?+p.get(k):p.get(k);
   f.recOnly=p.get('rec')==='1'; f.favOnly=p.get('fav')==='1'; f.exCancel=p.get('cx')!=='1';
   const v=p.get('v'); if(['market','ledger','timeline','region','deals','recommend'].includes(v))S.view=v;
+  S.hashRegion=p.get('rg')||'';
   return p.get('at')||null;
 }
 function syncControls(){
@@ -1622,15 +1576,15 @@ function summaryText(){
 
 /* ---------- data in / persistence ---------- */
 const dealKey=d=>[d.sgg,d.dong,d.apt,d.area,d.date,d.price,d.floor??'',d.bdong||''].join('|');
-function setDeals(deals,source,sample,append,opts){
+function setDeals(deals,source,_unused,append,opts){
   const o=opts||{};
   S.auto=!!o.auto; S.meta=o.auto?(deals.meta||null):null;
-  if(!(append&&!S.sample&&!S.auto&&S.deals.length>0))S.rent=deals.rentMap||null;
+  if(!(append&&!S.auto&&S.deals.length>0))S.rent=deals.rentMap||null;
   // 샘플·자동 수집 자료 위에 파일을 올리면 합치지 않고 교체한다
-  const merge=append&&!S.sample&&!S.auto&&S.deals.length>0;
+  const merge=append&&!S.auto&&S.deals.length>0;
   const base=merge?S.deals:[]; const seen=new Set(base.map(dealKey)); let dup=0;
   for(const d of deals){ const k=dealKey(d); if(seen.has(k)){dup++;continue;} seen.add(k); base.push(d); }
-  S.deals=base; S.sample=sample; S.source=merge&&S.source&&S.source!==source?`${S.source} + ${source}`:source; S.page=0;
+  S.deals=base; S.source=merge&&S.source&&S.source!==source?`${S.source} + ${source}`:source; S.page=0;
   render(); persist(); return {added:deals.length-dup,dup};
 }
 function fmtStamp(iso){ const m=/^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2})/.exec(iso||''); return m?`${m[1]}.${m[2]}.${m[3]} ${m[4]}:${m[5]}`:''; }
@@ -1648,14 +1602,12 @@ function renderLede(){
   const el=$('#lede'), eb=$('#mastEyebrow'), note=$('#mastNote'), sm=$('#loadSummary'), box=$('#loadBox');
   if(!S.deals.length){ el.innerHTML=''; if(box)box.open=true; if(sm)sm.textContent='데이터를 불러오세요'; return; }
   const place=placeName([...new Set(S.groups.map(g=>g.gu||g.sgg))].filter(Boolean));
-  if(eb)eb.textContent=S.sample?'가상 샘플 데이터':`${place} 아파트 실거래`;
-  if(sm)sm.textContent=S.sample?'지금은 가상 샘플입니다':`지금은 ${place} 자료를 보고 있습니다`;
-  if(box&&!box.dataset.touched)box.open=!!S.sample;
+  if(eb)eb.textContent=`${place} 아파트 실거래`;
+  if(sm)sm.textContent=`지금은 ${place} 자료를 보고 있습니다`;
   const m=S.mk, deals=S.deals.length, apts=new Set(S.groups.map(g=>g.sgg+g.dong+g.apt)).size;
   const span=`${fmtDate(S.ref).slice(0,7)}`;
   const first=S.deals.reduce((a,b)=>a.date<b.date?a:b).date.slice(0,7).replace('-','.');
-  let txt=`${S.sample?'<b>가상의 샘플 데이터</b>입니다. ':''}`
-    +`<b>${esc(place)}</b> 아파트 <b>${apts.toLocaleString()}개 단지</b>의 실거래 <b>${deals.toLocaleString()}건</b>을 `
+  let txt=`<b>${esc(place)}</b> 아파트 <b>${apts.toLocaleString()}개 단지</b>의 실거래 <b>${deals.toLocaleString()}건</b>을 `
     +`${first}부터 ${span.replace('-','.')}까지 모아 단지·전용면적별로 정리했습니다. `;
   if(m&&m.vsPeak!=null){
     const near=m.vsPeak>-0.02;
@@ -1674,16 +1626,15 @@ function renderDataset(){
   const el=$('#dataset'); if(!S.deals.length){el.hidden=true;return;} el.hidden=false;
   const c=S.deals.filter(d=>d.cancel).length, dates=S.deals.map(d=>d.date), apts=new Set(S.deals.map(d=>d.sgg+d.dong+d.apt)).size;
   const m=S.meta, stamp=m&&fmtStamp(m.updated);
-  const label=S.sample?'샘플 · 가상 데이터':S.auto?'자동 수집':'불러온 데이터';
+  const label=S.auto?'자동 수집':'불러온 데이터';
   const title=S.auto?(m&&m.note||'국토교통부 실거래가 API'):S.source;
-  el.innerHTML=`<span class="tag ${S.sample?'sample':S.auto?'auto':''}">${label}</span><b title="${esc(title)}">${esc(title.length>60?title.slice(0,58)+'…':title)}</b>${stamp?`<span>갱신 <b class="num">${stamp}</b></span>`:''}${m&&m.regions&&m.regions.length?`<span title="${esc(m.regions.join(', '))}">지역 <b class="num">${m.regions.length}</b>곳</span>`:''}
+  el.innerHTML=`<span class="tag ${S.auto?'auto':''}">${label}</span><b title="${esc(title)}">${esc(title.length>60?title.slice(0,58)+'…':title)}</b>${stamp?`<span>갱신 <b class="num">${stamp}</b></span>`:''}${m&&m.regions&&m.regions.length?`<span title="${esc(m.regions.join(', '))}">지역 <b class="num">${m.regions.length}</b>곳</span>`:''}
 <span>거래 <b class="num">${S.deals.length.toLocaleString()}</b>건${c?` (해제 ${c}건)`:''}</span><span>기간 <span class="num">${fmtDate(dates.reduce((a,b)=>a<b?a:b))} ~ ${fmtDate(dates.reduce((a,b)=>a>b?a:b))}</span></span><span>단지 <b class="num">${apts}</b>개</span>
 <span class="spacer"></span><button class="btn sm ghost" type="button" id="clearBtn">비우기</button>`;
   $('#clearBtn').onclick=()=>{ try{localStorage.removeItem('sgj.data');}catch(e){}
-    if(S.auto||S.sample){ S.deals=[];S.source='';S.sample=false;S.auto=false;S.meta=null; render(); setStatus('비웠습니다. 파일을 넣거나 샘플 데이터를 눌러 주세요.'); }
-    else location.reload(); };
+    location.reload(); };
 }
-function persist(){ try{ if(S.sample||S.auto||!S.deals.length){if(S.sample||!S.deals.length)localStorage.removeItem('sgj.data');return;} const s=JSON.stringify({source:S.source,deals:S.deals}); if(s.length<4e6)localStorage.setItem('sgj.data',s); else localStorage.removeItem('sgj.data'); }catch(e){} }
+function persist(){ try{ if(S.auto||!S.deals.length){if(!S.deals.length)localStorage.removeItem('sgj.data');return;} const s=JSON.stringify({source:S.source,deals:S.deals}); if(s.length<4e6)localStorage.setItem('sgj.data',s); else localStorage.removeItem('sgj.data'); }catch(e){} }
 function restore(){ try{ const o=JSON.parse(localStorage.getItem('sgj.data')||'null'); if(!o||!o.deals||!o.deals.length)return false; setDeals(o.deals,o.source||'이전 데이터',false,false); setStatus(`이전에 불러온 데이터를 다시 열었습니다 (${o.deals.length.toLocaleString()}건).`); return true; }catch(e){return false;} }
 function saveF(){ try{ localStorage.setItem('sgj.f',JSON.stringify({win:S.f.win,priceWin:S.f.priceWin,exCancel:S.f.exCancel})); }catch(e){} }
 function saveR(){ try{ localStorage.setItem('sgj.r',JSON.stringify(S.r)); }catch(e){} }
@@ -1725,6 +1676,43 @@ async function loadURL(url,quiet,auto){
   }catch(e){ if(!quiet)setStatus(`불러오지 못했습니다: ${e.message}. 같은 사이트 안의 파일이거나 CORS가 허용된 주소여야 합니다.`,true); return false; }
 }
 
+/* ---------- 지역 목록 ---------- */
+async function loadIndex(){
+  try{
+    const res=await fetch('data/index.json',{cache:'no-store'}); if(!res.ok)return false;
+    const idx=await res.json();
+    if(idx.kind!=='singoga-index'||!Array.isArray(idx.regions)||!idx.regions.length)return false;
+    S.index=idx;
+    const sel=$('#regionPick'), groups=new Map();
+    for(const r of idx.regions){ const k=r.name.split(/\s+/)[0]; (groups.get(k)||groups.set(k,[]).get(k)).push(r); }
+    sel.innerHTML=[...groups].map(([k,rs])=>`<optgroup label="${esc(k)}">`
+      +rs.map(r=>`<option value="${esc(r.code)}">${esc(r.name.replace(k,'').trim()||r.name)} · ${r.deals.toLocaleString()}건</option>`).join('')
+      +'</optgroup>').join('');
+    sel.hidden=false;
+    return true;
+  }catch(e){ return false; }
+}
+function pickRegion(code){
+  const idx=S.index; if(!idx)return null;
+  return idx.regions.find(r=>r.code===code)||idx.regions[0];
+}
+async function loadRegion(code,quiet){
+  const r=pickRegion(code); if(!r)return false;
+  $('#regionPick').value=r.code;
+  S.region=r.code;
+  try{ localStorage.setItem('sgj.region',r.code); }catch(e){}
+  if(!quiet)setStatus(`${r.name} 자료를 여는 중…`);
+  const ok=await loadURL('data/'+r.file,true,true);
+  if(ok)setStatus(`${r.name} · 국토교통부 실거래가 API 로 받아 둔 자료입니다. 위 선택에서 다른 지역으로 바꿀 수 있습니다.`);
+  else setStatus(`${r.name} 자료를 불러오지 못했습니다.`,true);
+  writeHash();
+  return ok;
+}
+function showEmpty(){
+  setStatus('아직 받아 둔 자료가 없습니다. 실거래가 파일을 넣거나, 깃허브 액션의 수집 작업을 한 번 실행하세요.',true);
+  const box=$('#loadBox'); if(box)box.open=true;
+}
+
 /* ---------- render all ---------- */
 function render(){ analyze(); fillFilters(); applyFilters(); renderDataset(); renderKpis(); renderMarket(); renderLede(); renderLedger(); renderTimeline(); renderRegion(); renderCheap(); renderRecommend();
   $('#count').textContent=S.groups.length?`${S.shown.length.toLocaleString()} / ${S.groups.length.toLocaleString()}개 표시`:''; renderFavCount(); }
@@ -1746,7 +1734,6 @@ function bind(){
   $('#pasteBtn').onclick=()=>{ $('#pasteBox').hidden=false; $('#pasteArea').focus(); };
   $('#pasteCancel').onclick=()=>{ $('#pasteBox').hidden=true; };
   $('#pasteGo').onclick=()=>{ const d=textToDeals($('#pasteArea').value,'붙여넣기'); if(!d||!d.length){setStatus('붙여넣은 내용에서 실거래가 표를 찾지 못했습니다. 헤더(단지명·거래금액…)까지 포함해 주세요.',true);return;} const r=setDeals(d,'붙여넣기',false,true); $('#pasteBox').hidden=true; $('#pasteArea').value=''; setStatus(`${r.added}건 불러왔습니다${r.dup?` (중복 ${r.dup}건 제외)`:''}.`); };
-  $('#sampleBtn').onclick=()=>{ setDeals(sampleDeals(),'샘플 데이터 (가상 단지 · 실제 거래 아님)',true,false); setStatus('가상의 샘플 데이터입니다. 실제 단지·가격이 아닙니다.'); };
   const F=k=>{ S.page=0; render(); if(k)saveF(); writeHash(); };
   $('#fSgg').onchange=e=>{ S.f.sgg=e.target.value; S.f.dong=''; F(); };
   $('#fDong').onchange=e=>{ S.f.dong=e.target.value; F(); };
@@ -1773,6 +1760,9 @@ function bind(){
   let rt; addEventListener('resize',()=>{ clearTimeout(rt); rt=setTimeout(()=>{ if(S.view==='market')renderMarket(); },200); });
   document.addEventListener('click',e=>{ const b=e.target.closest('[data-seg]'); if(!b)return;
     S.seg=b.dataset.seg; try{localStorage.setItem('sgj.seg',S.seg);}catch(err){} renderSegments(); });
+  $('#regionPick').onchange=async e=>{ const c=e.target.value;
+    S.fav=S.fav; S.f.sgg=''; S.f.dong=''; S.page=0;
+    await loadRegion(c); syncControls(); };
   $('#loadBox').addEventListener('toggle',()=>{ $('#loadBox').dataset.touched='1'; });
   $('#dClose').onclick=closeDrawer; $('#scrim').onclick=closeDrawer;
   document.addEventListener('keydown',e=>{ if(e.key==='Escape')closeDrawer(); });
@@ -1815,16 +1805,20 @@ function bind(){
   try{ applyTheme(localStorage.getItem('sgj.theme')||'auto'); }catch(e){ applyTheme('auto'); }
   bind(); loadFav(); loadF(); loadR(); loadC();
   try{ const sg=localStorage.getItem('sgj.seg'); if(sg==='area'||sg==='dong')S.seg=sg; }catch(e){}
-  const at=readHash(); syncControls();
+  const at=readHash(); const hashRegion=S.hashRegion||''; syncControls();
   const openAt=()=>{ if(at&&S.groups.some(g=>g.key===at))openDrawer(at); };
   const src=new URLSearchParams(location.search).get('src');
+  const hasIndex=await loadIndex();
   if(src){ $('#urlInput').value=src; if(await loadURL(src)){ syncControls(); openAt(); return; } }
   if(restore()){ syncControls(); openAt(); return; }
+  if(hasIndex){
+    let want=hashRegion;
+    if(!want){ try{ want=localStorage.getItem('sgj.region')||''; }catch(e){} }
+    if(await loadRegion(want,true)){ syncControls(); openAt(); return; }
+  }
   if(await loadURL('data/latest.json',true,true)){ syncControls(); openAt(); return; }
   if(await loadURL('data/latest.csv',true,true)){ syncControls(); openAt(); return; }
-  setDeals(sampleDeals(),'샘플 데이터 (가상 단지 · 실제 거래 아님)',true,false);
-  syncControls(); openAt();
-  setStatus('지금 보이는 것은 가상의 샘플 데이터입니다. 실거래가 파일을 넣으면 바뀝니다.');
+  syncControls(); showEmpty();
 })();
 })();
 </script>

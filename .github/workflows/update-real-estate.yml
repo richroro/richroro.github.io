@@ -34,7 +34,7 @@ permissions:
 jobs:
   fetch:
     runs-on: ubuntu-latest
-    timeout-minutes: 45
+    timeout-minutes: 90
     steps:
       - uses: actions/checkout@v4
 
@@ -85,7 +85,7 @@ jobs:
           LAWD: ${{ inputs.lawd }}
         run: |
           set -o pipefail
-          args=(--out data/latest.json --max-fail 5)
+          args=(--split-dir data --max-fail 20)
           if [ -n "$LAWD" ]; then args+=(--lawd "$LAWD"); else args+=(--config regions.json); fi
           if [ -n "$MONTHS" ]; then args+=(--months "$MONTHS"); fi
           cd real-estate

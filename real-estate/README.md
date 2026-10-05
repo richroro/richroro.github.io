@@ -1,17 +1,32 @@
-# 신고가 장부 — 안양 아파트 실거래 정보
+# 신고가 장부 — 아파트 실거래 정보
 
-안양시(만안구·동안구) 아파트 실거래 6년치를 단지·전용면적별로 묶어 **시세, 신고가, 고점 대비, 전세가율,
-층을 보정한 저가 거래**까지 정리해 보여 주는 정적 사이트. 다른 지역 파일을 넣어 보는 것도 된다.
+안양시와 서울 주요 구의 아파트 실거래 6년치를 단지·전용면적별로 묶어 **시세, 신고가, 고점 대비, 전세가율,
+층을 보정한 저가 거래**까지 정리해 보여 주는 정적 사이트. 목록에 없는 지역은 파일을 넣어 볼 수 있다.
 
-자료는 국토교통부 실거래가 API 로 매일 아침 받아 저장소에 커밋하고, 페이지가 열릴 때 그 파일을 읽는다.
+## 자료는 어디에 저장되나
+
+**이 저장소 안, `real-estate/data/` 폴더다.** 서버도 데이터베이스도 없다.
+깃허브 액션이 매일 아침 국토교통부 API 로 자료를 받아 그 폴더에 커밋하고, GitHub Pages 가 그대로 정적 파일로
+내보내고, 페이지가 열릴 때 브라우저가 읽는다. 바뀐 내용이 있을 때만 커밋하므로 빈 커밋은 생기지 않는다.
+
+```
+real-estate/data/index.json   지역 목록 (이름·건수·기간·파일명)
+real-estate/data/41171.json   경기도 안양시 만안구
+real-estate/data/11680.json   서울특별시 강남구
+…                             시군구마다 파일 하나
+```
 
 - 배포: https://richroro.github.io/real-estate/
 - 소스: `index.html` 한 파일 (엑셀 파일을 넣을 때만 SheetJS 를 CDN 에서 지연 로드)
 
 ## 데이터가 들어오는 두 갈래
 
-**1. 자동 수집 (기본)** — 깃허브 액션이 매일 아침 국토교통부 실거래가 API 로 자료를 받아
-`data/latest.json` 으로 커밋하고, 페이지가 열릴 때 그 파일을 읽는다. 방문자는 아무것도 하지 않아도 된다.
+**1. 자동 수집 (기본)** — 위 파일들을 페이지가 읽는다. 방문자는 아무것도 하지 않아도 되고,
+오른쪽 위 선택에서 지역을 바꾼다. **한 번에 한 지역만** 읽는다.
+
+지역을 한 파일에 몰아 담으면 금방 못 쓰게 된다. 12개 지역 30만 건을 한 파일로 만들어 재 보니
+첫 화면까지 23.5초, 필터 한 번에 17초였다. 지역별로 쪼개니 같은 자료에서 첫 화면 0.9초,
+지역 전환 1~2초다. 그래서 지역을 더 늘려도 페이지는 느려지지 않는다.
 
 **2. 파일 넣기** — [실거래가 공개시스템](https://rt.molit.go.kr) 에서 받은 CSV·엑셀을 끌어다 놓으면
 그 자료로 바뀐다. EUC-KR/UTF-8 자동 판별, 여러 파일을 넣으면 합치면서 중복 거래는 뺀다.
@@ -62,8 +77,9 @@
 ## 직접 실행
 
 ```
-python fetch_molit.py --key "$KEY" --config regions.json --months 12 -o data/latest.json
-python fetch_molit.py --key "$KEY" --lawd 11680,11650 --months 6 --format csv -o data/latest.csv
+python fetch_molit.py --key "$KEY" --config regions.json --split-dir data
+python fetch_molit.py --key "$KEY" --lawd 11680 --months 6 -o data/latest.json
+python fetch_molit.py --key "$KEY" --lawd 11680 --months 6 --format csv -o data/latest.csv
 ```
 
 표준 라이브러리만 쓴다. 한 달치 호출이 실패해도 나머지는 계속 받고, **매매** 실패가 `--max-fail` 을 넘으면
