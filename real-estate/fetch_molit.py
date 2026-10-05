@@ -251,6 +251,9 @@ def main():
     ap.add_argument("--max-fail", type=int, default=0, help="허용할 실패 (시군구×월) 수. 넘으면 종료코드 1")
     ap.add_argument("--rent-months", type=int, default=12, help="전세가율용 전월세 자료를 몇 개월치 받을지 (0이면 안 받음)")
     ap.add_argument("--rent-endpoint", default=os.environ.get("MOLIT_RENT_ENDPOINT", RENT_ENDPOINT))
+    ap.add_argument("--rent-key", default=os.environ.get("DATA_GO_KR_RENT_KEY", ""),
+                    help="전월세 자료를 별도 인증키로 받을 때. 비우면 --key 를 그대로 쓴다 "
+                         "(환경변수 DATA_GO_KR_RENT_KEY)")
     a = ap.parse_args()
     a.months_set = any(x.startswith("--months") for x in sys.argv)
 
@@ -295,15 +298,17 @@ def main():
 
     rents, rent_months = None, None
     if a.format == "json" and a.rent_months > 0:
+        rent_key = a.rent_key or a.key
         rent_months = months[-a.rent_months:]
-        log(f"전월세(전세가율용) {len(regions)}개 지역 × {len(rent_months)}개월 = {len(regions) * len(rent_months)}회 호출")
+        log(f"전월세(전세가율용) {len(regions)}개 지역 × {len(rent_months)}개월 = {len(regions) * len(rent_months)}회 호출"
+            + (" · 전용 인증키 사용" if a.rent_key else " · 매매와 같은 인증키 사용"))
         records, seen_rent, got = {}, set(), 0
         rent_failures, rent_calls = [], 0
         for code, name in regions:
             for ymd in rent_months:
                 rent_calls += 1
                 try:
-                    items = fetch_month(a.rent_endpoint, a.key, code, ymd, a.rows, a.timeout, a.tries, a.sleep)
+                    items = fetch_month(a.rent_endpoint, rent_key, code, ymd, a.rows, a.timeout, a.tries, a.sleep)
                 except Exception as e:
                     rent_failures.append(f"{name}({code}) {ymd}: {e}")
                     log(f"  [실패·전월세] {name} {ymd}: {e}")
@@ -327,8 +332,9 @@ def main():
             + (f" · 전월세 호출 실패 {len(rent_failures)}/{rent_calls}" if rent_failures else ""))
         if rent_failures and len(rent_failures) == rent_calls:
             log("전월세를 한 건도 받지 못했습니다. 매매 자료만으로 계속합니다.")
-            log("  → 공공데이터포털에서 '국토교통부_아파트 전월세 자료' 도 활용신청했는지 확인하세요"
-                " (매매와 별개 신청입니다). 신청 전에는 전세가율·갭이 비어 있을 뿐, 나머지는 정상입니다.")
+            log("  → '국토교통부_아파트 전월세 자료' 활용신청이 승인됐는지, 그 자료의 인증키가 매매와 다르다면"
+                " DATA_GO_KR_RENT_KEY 시크릿에 넣었는지 확인하세요."
+                " 없는 동안에는 전세가율·갭만 비고 나머지는 정상입니다.")
             rents = None
 
     os.makedirs(os.path.dirname(a.out) or ".", exist_ok=True)
