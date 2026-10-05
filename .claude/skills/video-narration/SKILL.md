@@ -12,7 +12,7 @@ description: 영상에 자연스러운 AI 음성 내레이션(TTS)을 장면 길
 ## 0. 준비 (세션마다 한 번)
 
 ```bash
-pip install -q edge-tts imageio-ffmpeg        # 무료 신경망 음성 + ffmpeg
+pip install -q edge-tts sherpa-onnx imageio-ffmpeg   # 온라인 음성 + 오프라인 음성 + ffmpeg
 [ -f /root/.ccr/ca-bundle.crt ] && export SSL_CERT_FILE=/root/.ccr/ca-bundle.crt   # 클라우드 세션 프록시 인증서
 ```
 
@@ -26,13 +26,20 @@ pip install -q edge-tts imageio-ffmpeg        # 무료 신경망 음성 + ffmpeg
 | `google` | Chirp3-HD 음성이 가장 사람 같다 | `GOOGLE_TTS_API_KEY`, `texttospeech.googleapis.com` |
 | `elevenlabs` | 감정 표현이 가장 좋다 | `ELEVENLABS_API_KEY`, `api.elevenlabs.io`, `--voice <voice_id>` |
 | `openai` | `--style` 로 말투를 문장으로 지시 | `OPENAI_API_KEY`, `api.openai.com` |
+| `supertonic` | Supertone 의 오프라인 신경망 음성(Supertonic 3). 한국어 자연스러움 좋음, CPU 로 장면당 2~3초 | 처음 한 번 `github.com` 에서 모델 약 130MB (`~/.cache/video-narration`) |
 
-`--engine auto`(기본)는 edge → google → elevenlabs → openai 순서로, 키가 있고 접속되는 첫 엔진을 쓴다.
-중간에 한 엔진이 막히면 다음 엔진으로 넘어간다. 음성 목록: `narrate.py --list-voices`.
+`--engine auto`(기본)는 edge → google → elevenlabs → openai → supertonic 순서로, 키가 있고 접속되는
+첫 엔진을 쓴다. 중간에 한 엔진이 막히면 다음 엔진으로 넘어간다. `--voice` 를 주면 그 음성의 엔진을
+먼저 쓴다 (`--voice 6` → supertonic). 음성 목록: `narrate.py --list-voices`.
 
-**모든 엔진이 막히면** (클라우드 세션의 네트워크 정책이 흔한 원인) 사용자에게 막힌 호스트 이름을
-알려주고, 환경 설정의 네트워크 접근에서 그 호스트를 허용하거나 API 키를 환경변수로 넣어 달라고
-안내한다. 그동안은 4단계까지 만든 대본 파일과 `--check` 결과를 캡컷용으로 넘긴다.
+클라우드 세션은 네트워크 정책 때문에 edge·openai·elevenlabs 가 막혀 있는 경우가 많다. 그럴 땐
+**supertonic 이 키 없이 바로 동작**하므로 처음부터 `--engine supertonic` 을 줘도 된다.
+supertonic 음성: `3` 여성·또렷(기본) · `2` 여성·차분 · `6` 남성·낮고 묵직 · `8` 남성·중저음.
+목소리를 고르지 않았으면 여성 `3` 과 남성 `6` 으로 첫 장면을 만들어 들려주고 고르게 한다.
+
+**모든 엔진이 막히면** 사용자에게 막힌 호스트 이름을 알려주고, 환경 설정의 네트워크 접근에서 그
+호스트를 허용하거나 API 키를 환경변수로 넣어 달라고 안내한다. 그동안은 1~2단계까지 만든 대본
+파일과 `--check` 결과를 캡컷용으로 넘긴다.
 
 ## 1. 대본 파일 만들기
 
@@ -103,7 +110,7 @@ python3 .claude/skills/video-narration/scripts/narrate.py 대본.txt --video 영
 | `narrated.mp4` | 내레이션이 들어간 완성 영상 |
 | `narration.wav` | 영상 전체 길이의 내레이션 트랙 — 캡컷에서 0초에 올리면 바로 맞는다 |
 | `subtitles.srt` | 문장 단위 자막 (edge 는 실제 발화 시점, 다른 엔진은 글자 수 비율) |
-| `clips/scene_NN.mp3` | 장면별 음성 |
+| `clips/scene_NN.mp3` | 장면별 음성 (supertonic 은 `.wav`) |
 | `report.json` | 장면별 시작 시각·말 길이·속도·넘침 |
 
 ## 4. 확인하고 전달

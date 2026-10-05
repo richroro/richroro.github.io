@@ -8,10 +8,10 @@
     narrated.mp4        내레이션을 입힌 영상 (--video 를 줬을 때)
     narration.wav       타임라인 전체 길이의 내레이션 트랙 (캡컷 등에 그대로 올릴 수 있음)
     subtitles.srt       문장 단위 자막
-    clips/scene_NN.mp3  장면별 음성
+    clips/scene_NN.*    장면별 음성 (mp3, supertonic 은 wav)
     report.json         장면별 배치·속도·넘침 기록
 
-엔진: edge(무료, 기본) · google · openai · elevenlabs (API 키는 환경변수).
+엔진: edge(무료, 기본) · google · openai · elevenlabs (API 키는 환경변수) · supertonic(오프라인).
 """
 from __future__ import annotations
 
@@ -353,6 +353,7 @@ def _http(url: str, body: dict, headers: dict, timeout: int = 90) -> bytes:
 class Engine:
     name = ""
     default_voice = ""
+    ext = "mp3"  # synth 가 쓰는 파일 형식
 
     def __init__(self, voice: str | None, style: str | None):
         self.voice = voice or self.default_voice
@@ -402,11 +403,14 @@ class EdgeEngine(Engine):
             try:
                 audio.clear(); sents.clear()
                 asyncio.run(go())
+                last = None
                 break
             except Exception as e:  # aiohttp 오류 종류가 많아서 넓게 잡는다
                 last = e
+                if "403" in str(e):  # 네트워크 정책 차단 — 재시도해도 소용없다
+                    break
                 time.sleep(2 ** attempt)
-        else:
+        if last is not None:
             raise EngineUnavailable(f"edge 음성 서버 접속 실패 ({type(last).__name__}: {str(last)[:200]})")
         if not audio:
             raise EngineUnavailable("edge 가 오디오를 돌려주지 않음")
@@ -491,7 +495,76 @@ class ElevenLabsEngine(Engine):
         return None, applied
 
 
-ENGINES = {"edge": EdgeEngine, "google": GoogleEngine, "openai": OpenAIEngine, "elevenlabs": ElevenLabsEngine}
+class SupertonicEngine(Engine):
+    """Supertone Supertonic 3 (sherpa-onnx). 오프라인 CPU 신경망 음성 — 네트워크·키 없이 동작.
+    처음 한 번 GitHub 릴리스에서 모델(약 130MB)을 받아 ~/.cache/video-narration 에 둔다."""
+    name = "supertonic"
+    default_voice = "3"
+    ext = "wav"
+    MODEL = "sherpa-onnx-supertonic-3-tts-int8-2026-05-11"
+    URL = f"https://github.com/k2-fsa/sherpa-onnx/releases/download/tts-models/{MODEL}.tar.bz2"
+
+    def __init__(self, voice, style):
+        super().__init__(voice, style)
+        try:
+            import sherpa_onnx  # noqa: F401
+        except ImportError:
+            raise EngineUnavailable("sherpa-onnx 미설치: pip install sherpa-onnx")
+        if not str(self.voice).isdigit() or not 0 <= int(self.voice) <= 9:
+            raise EngineUnavailable(f"supertonic 음성은 0~9 번호입니다 (받은 값: {self.voice})")
+        self.tts = None
+
+    def _model_dir(self) -> str:
+        root = os.environ.get("NARRATION_MODEL_DIR") or os.path.expanduser("~/.cache/video-narration")
+        d = os.path.join(root, self.MODEL)
+        if os.path.exists(os.path.join(d, "voice.bin")):
+            return d
+        import tarfile
+        os.makedirs(root, exist_ok=True)
+        tmp = d + ".tar.bz2.part"
+        print(f"  supertonic 모델 내려받는 중 (약 130MB, 처음 한 번만)…", file=sys.stderr)
+        ctx = ssl.create_default_context(cafile=os.environ.get("SSL_CERT_FILE") or None)
+        try:
+            with urllib.request.urlopen(self.URL, timeout=600, context=ctx) as r, open(tmp, "wb") as f:
+                shutil.copyfileobj(r, f, 1 << 20)
+        except (urllib.error.URLError, TimeoutError, ConnectionError) as e:
+            raise EngineUnavailable(f"모델 다운로드 실패 (github.com): {e}")
+        with tarfile.open(tmp, "r:bz2") as t:
+            t.extractall(root, filter="data")
+        os.remove(tmp)
+        return d
+
+    def synth(self, text, rate, out):
+        import wave
+        import sherpa_onnx
+        if self.tts is None:
+            m = self._model_dir() + "/"
+            cfg = sherpa_onnx.OfflineTtsConfig(model=sherpa_onnx.OfflineTtsModelConfig(
+                supertonic=sherpa_onnx.OfflineTtsSupertonicModelConfig(
+                    duration_predictor=m + "duration_predictor.int8.onnx", text_encoder=m + "text_encoder.int8.onnx",
+                    vector_estimator=m + "vector_estimator.int8.onnx", vocoder=m + "vocoder.int8.onnx",
+                    tts_json=m + "tts.json", unicode_indexer=m + "unicode_indexer.bin", voice_style=m + "voice.bin"),
+                num_threads=min(4, os.cpu_count() or 1), provider="cpu"))
+            self.tts = sherpa_onnx.OfflineTts(cfg)
+        g = sherpa_onnx.GenerationConfig()
+        g.sid = int(self.voice)
+        g.num_steps = int(os.environ.get("SUPERTONIC_STEPS", "10"))  # 클수록 깨끗, 느림
+        g.speed = rate
+        g.extra["lang"] = os.environ.get("SUPERTONIC_LANG", "ko")
+        a = self.tts.generate(text, g)
+        if not len(a.samples):
+            raise RuntimeError("supertonic 이 오디오를 만들지 못함")
+        pcm = array.array("h", (max(-32768, min(32767, int(v * 32767))) for v in a.samples))
+        if sys.byteorder == "big":
+            pcm.byteswap()
+        with wave.open(out, "wb") as w:
+            w.setnchannels(1); w.setsampwidth(2); w.setframerate(a.sample_rate)
+            w.writeframes(pcm.tobytes())
+        return None, rate
+
+
+ENGINES = {"edge": EdgeEngine, "google": GoogleEngine, "openai": OpenAIEngine, "elevenlabs": ElevenLabsEngine,
+           "supertonic": SupertonicEngine}
 
 VOICES = """추천 한국어 음성
   edge (무료)
@@ -506,17 +579,42 @@ VOICES = """추천 한국어 음성
     nova · shimmer · coral (여) / onyx · ash · echo (남)   --style 로 말투 지시
   elevenlabs (ELEVENLABS_API_KEY)
     --voice 에 음성 라이브러리의 voice_id
+  supertonic (오프라인, 키·네트워크 불필요 — 모델만 처음 한 번 GitHub 에서 받음)
+    3  여성 · 또렷하고 경쾌함 (기본)      2  여성 · 차분하고 느긋함
+    0  여성 · 부드러움                    1  여성 · 높고 밝음
+    6  남성 · 낮고 묵직함                 8  남성 · 중저음, 또박또박
+    9  남성 · 낮고 차분함                 7  남성 · 빠른 편
+    4, 5  낮은 여성/중성적
 """
 
 
 # ─────────────────────────────── 핵심 흐름 ───────────────────────────────
 
+def voice_owner(voice: str | None) -> str | None:
+    """auto 모드에서 --voice 가 어느 엔진의 음성인지 추측한다."""
+    if not voice:
+        return None
+    if voice.isdigit():
+        return "supertonic"
+    if "Chirp" in voice or "Neural2" in voice or "Wavenet" in voice or "Standard" in voice:
+        return "google"
+    if re.fullmatch(r"[a-z]{2}-[A-Z]{2}-\w+Neural", voice):
+        return "edge"
+    if re.fullmatch(r"[A-Za-z0-9]{20}", voice):
+        return "elevenlabs"
+    return "openai"
+
+
 def make_engine(name: str, voice, style) -> list[Engine]:
-    order = ["edge", "google", "elevenlabs", "openai"] if name == "auto" else [name]
+    order = ["edge", "google", "elevenlabs", "openai", "supertonic"] if name == "auto" else [name]
+    owner = voice_owner(voice) if name == "auto" else name
+    if owner and name == "auto":
+        order.remove(owner)
+        order.insert(0, owner)  # 고른 음성의 엔진을 먼저 쓴다
     engines, errors = [], []
     for n in order:
         try:
-            engines.append(ENGINES[n](voice if name != "auto" or n == "edge" else None, style))
+            engines.append(ENGINES[n](voice if n == owner else None, style))
         except EngineUnavailable as e:
             errors.append(f"{n}: {e}")
     if not engines:
@@ -524,10 +622,11 @@ def make_engine(name: str, voice, style) -> list[Engine]:
     return engines
 
 
-def synth_scene(engines: list[Engine], s: Scene, rate: float, path: str) -> tuple[array.array, list | None, Engine]:
+def synth_scene(engines: list[Engine], s: Scene, rate: float, base: str) -> tuple[array.array, list | None, Engine]:
     while engines:
         eng = engines[0]
         try:
+            path = f"{base}.{eng.ext}"
             sents, applied = eng.synth(s.spoken, rate, path)
             rest = rate / applied
             pcm = decode_pcm(path, rest)
@@ -544,7 +643,7 @@ def synth_scene(engines: list[Engine], s: Scene, rate: float, path: str) -> tupl
 
 def fit_scene(engines, s: Scene, clips_dir: str, base_rate: float, max_speed: float, window: float | None):
     """자연 속도로 한 번 만들고, 창보다 길면 max_speed 까지 빠르게 다시 만든다."""
-    path = os.path.join(clips_dir, f"scene_{s.idx:02d}.mp3")
+    path = os.path.join(clips_dir, f"scene_{s.idx:02d}")  # 확장자는 엔진이 정한다
     rate = base_rate
     for _ in range(3):
         pcm, sents, eng = synth_scene(engines, s, rate, path)

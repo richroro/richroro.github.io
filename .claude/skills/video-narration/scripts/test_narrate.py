@@ -129,5 +129,29 @@ class EndToEndTest(unittest.TestCase):
         self.assertEqual(N.main([script, "--check"]), 1)
 
 
+class EngineChoiceTest(unittest.TestCase):
+    def test_voice_owner(self):
+        self.assertEqual(N.voice_owner("6"), "supertonic")
+        self.assertEqual(N.voice_owner("ko-KR-InJoonNeural"), "edge")
+        self.assertEqual(N.voice_owner("ko-KR-Chirp3-HD-Kore"), "google")
+        self.assertEqual(N.voice_owner("nova"), "openai")
+        self.assertIsNone(N.voice_owner(None))
+
+
+@unittest.skipUnless(
+    os.path.exists(os.path.expanduser("~/.cache/video-narration/" + N.SupertonicEngine.MODEL + "/voice.bin")),
+    "supertonic 모델이 캐시에 없음 (한 번 실행하면 받아진다)")
+class SupertonicTest(unittest.TestCase):
+    def test_real_voice_fits_scene(self):
+        d = tempfile.mkdtemp()
+        script = write(os.path.join(d, "s.txt"), "[0:00-0:04] 공모주 청약, 처음이라면 딱 세 가지만 기억하세요.\n")
+        out = os.path.join(d, "out")
+        self.assertEqual(N.main([script, "--engine", "supertonic", "--voice", "6", "--out", out]), 0)
+        with open(os.path.join(out, "report.json"), encoding="utf-8") as f:
+            sc = json.load(f)["scenes"][0]
+        self.assertTrue(1.5 < sc["speech"] <= 3.5, sc)
+        self.assertTrue(os.path.getsize(os.path.join(out, "clips", "scene_01.wav")) > 50000)
+
+
 if __name__ == "__main__":
     unittest.main()
