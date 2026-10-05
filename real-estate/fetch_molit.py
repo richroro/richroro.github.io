@@ -10,7 +10,7 @@
 브라우저에서 이 API 를 직접 부를 수 없어서(CORS 미허용 + 키 노출) 이 스크립트를 깃허브 액션에서
 돌리고 결과 파일만 배포한다. 표준 라이브러리만 쓴다.
 """
-import argparse, csv, json, os, statistics, sys, time, urllib.error, urllib.parse, urllib.request
+import argparse, calendar, csv, json, math, os, statistics, sys, time, urllib.error, urllib.parse, urllib.request
 import xml.etree.ElementTree as ET
 from datetime import date, datetime, timedelta, timezone
 
@@ -224,6 +224,175 @@ def pack(deals, meta, rents=None, rent_months=None):
     return out
 
 
+# ---------------------------------------------------------------------------
+# 지역 비교 요약. 페이지의 marketSeries() 와 같은 계산을 여기서 미리 해 둔다.
+# 12개 지역 파일(8MB)을 다 내려받지 않고도 '한눈에 보기' 를 그릴 수 있게 하려는 것.
+# 숫자가 화면과 어긋나지 않도록 JS 의 반올림·최빈값·중앙값 규칙을 그대로 따른다.
+# ---------------------------------------------------------------------------
+def _js_round(x):
+    return math.floor(x + 0.5)
+
+
+def _ym_shift(ym, n):
+    """'YYYY-MM' 에서 n 개월 앞(과거)으로."""
+    y, m = int(ym[:4]), int(ym[5:7]) - n
+    while m <= 0:
+        m += 12; y -= 1
+    while m > 12:
+        m -= 12; y += 1
+    return f"{y}-{m:02d}"
+
+
+def _months_ago(date, n):
+    """'YYYY-MM-DD' 에서 n 개월 앞, 같은 날(그 달 말일로 자름)."""
+    ym = _ym_shift(date[:7], n)
+    last = calendar.monthrange(int(ym[:4]), int(ym[5:7]))[1]
+    return f"{ym}-{min(int(date[8:10]), last):02d}"
+
+
+def unpack(packed):
+    """압축 JSON → 거래 dict 목록과 전세 맵 (페이지의 packedToDeals 와 같은 결과)."""
+    D, C = packed["dict"], {c: i for i, c in enumerate(packed["cols"])}
+    g = lambda k, i: D[k][i] if i is not None and i < len(D[k]) else ""
+    deals = []
+    for r in packed["rows"]:
+        ymd = str(r[C["ymd"]])
+        if len(ymd) != 8:
+            continue
+        cancel = r[C["cancel"]] if "cancel" in C else 0
+        deals.append({"sgg": g("sgg", r[C["sgg"]]), "dong": g("dong", r[C["dong"]]), "apt": g("apt", r[C["apt"]]),
+                      "area": float(r[C["area"]]), "price": float(r[C["price"]]),
+                      "date": f"{ymd[:4]}-{ymd[4:6]}-{ymd[6:]}",
+                      "cancel": bool(cancel) and cancel != "-"})
+    rent = {}
+    if packed.get("rent"):
+        RC = {c: i for i, c in enumerate(packed["rentCols"])}
+        for q in packed["rent"]:
+            key = f'{g("sgg", q[RC["sgg"]])}|{g("dong", q[RC["dong"]])}|{g("apt", q[RC["apt"]])}|{q[RC["areaKey"]]}'
+            rent[key] = q[RC["j12"]] or 0
+    return deals, rent
+
+
+def region_summary(packed):
+    deals, rent = unpack(packed)
+    deals = [d for d in deals if not d["cancel"]]          # 페이지 기본값: 해제 거래 제외
+    if not deals:
+        return None
+    ref = max(d["date"] for d in deals)
+    groups = {}
+    for d in deals:
+        k = f'{d["sgg"]}|{d["dong"]}|{d["apt"]}|{_js_round(d["area"])}'
+        groups.setdefault(k, []).append(d)
+    p_from = _months_ago(ref, 3)
+    per_g, first, jr = [], "", []
+    vol = {}
+    for k, ds in groups.items():
+        ds.sort(key=lambda d: (d["date"], d["price"]))
+        cnt, best, bn = {}, ds[0]["area"], 0                 # JS mode(): 처음 만난 최빈값
+        for d in ds:
+            cnt[d["area"]] = cnt.get(d["area"], 0) + 1
+            if cnt[d["area"]] > bn:
+                bn, best = cnt[d["area"]], d["area"]
+        area = best
+        by_m = {}
+        for d in ds:
+            by_m.setdefault(d["date"][:7], []).append(d["price"] / (area / 3.305785))
+            vol[d["date"][:7]] = vol.get(d["date"][:7], 0) + 1
+        monthly = {ym: statistics.median(v) for ym, v in by_m.items()}
+        base = statistics.median(list(monthly.values()))
+        if base:
+            per_g.append((monthly, base))
+            first = min([first] + list(monthly)) if first else min(monthly)
+        recent = [d["price"] for d in ds if d["date"] >= p_from]
+        price = statistics.median(recent) if recent else ds[-1]["price"]
+        if rent.get(k):
+            jr.append(rent[k] / price)
+    if not per_g:
+        return None
+    months, ym, end = [], first, ref[:7]
+    while ym <= end:
+        months.append(ym); ym = _ym_shift(ym, -1)
+    min_g = max(2, min(5, _js_round(len(per_g) * 0.05)))
+    raw = []
+    for ym in months:
+        r = [m[ym] / b for m, b in per_g if ym in m]
+        raw.append(statistics.median(r) if len(r) >= min_g else None)
+    fi = next((i for i, v in enumerate(raw) if v is not None), -1)
+    if fi < 0:
+        return None
+    idx = [None if v is None else v / raw[fi] * 100 for v in raw]
+    peak = max((i for i, v in enumerate(idx) if v is not None), key=lambda i: (idx[i], -i))
+    trough, run, worst = -1, -math.inf, 0.0
+    for i, v in enumerate(idx):
+        if v is None:
+            continue
+        run = max(run, v)
+        dd = v / run - 1
+        if dd < worst:
+            worst, trough = dd, i
+    if worst > -0.02:
+        trough = -1
+    cur = max(i for i, v in enumerate(idx) if v is not None)
+    lim = _ym_shift(months[cur], 3)
+    p3 = next((i for i in range(cur - 1, -1, -1) if idx[i] is not None and months[i] <= lim), None)
+    vs = lambda a, b: (idx[a] / idx[b] - 1) if a is not None and b is not None and a >= 0 and b >= 0 and idx[b] else None
+    v_all = [vol.get(ym, 0) for ym in months]
+    return {
+        "months": months, "idx": [None if v is None else round(v, 2) for v in idx], "vol": v_all,
+        "peak": {"ym": months[peak], "v": round(idx[peak], 2)},
+        "trough": {"ym": months[trough], "v": round(idx[trough], 2)} if trough >= 0 else None,
+        "cur": {"ym": months[cur], "v": round(idx[cur], 2)},
+        "vsPeak": vs(cur, peak), "vsTrough": vs(cur, trough) if trough >= 0 else None,
+        "troughVsPeak": vs(trough, peak) if trough >= 0 else None,
+        "mom3": vs(cur, p3) if p3 is not None else None,
+        "vol12": 0,
+        "jr": statistics.median(jr) if jr else None, "jrN": len(jr),
+        "groups": len(per_g), "deals": len(deals), "ref": ref,
+    }
+
+
+def write_summary(out_dir, entries):
+    """index.json 에 적힌 지역 파일들을 읽어 summary.json 을 만든다."""
+    regions = []
+    for e in entries:
+        try:
+            with open(os.path.join(out_dir, e["file"]), encoding="utf-8") as f:
+                packed = json.load(f)
+        except (OSError, ValueError):
+            continue
+        sm = region_summary(packed)
+        if not sm:
+            continue
+        name = e["name"]
+        parts = name.split()
+        regions.append({"code": e["code"], "name": name, "short": parts[-1] if parts else name,
+                        "group": parts[0] if parts else "", **sm})
+    # 거래량은 완결된 달끼리만 견준다. 신고 기한이 계약 후 30일이라 최근 두 달은 아직 덜 들어와 있고,
+    # 지역마다 마지막 달이 달라서 그대로 비교하면 많게는 30%p 넘게 틀어진다.
+    if regions:
+        latest = max(r["ref"][:7] for r in regions)
+        vol_end = _ym_shift(latest, 2)
+        for r in regions:
+            v = dict(zip(r["months"], r["vol"]))
+            r["volLast12"] = sum(v.get(_ym_shift(vol_end, i), 0) for i in range(12))
+            r["volPrev12"] = sum(v.get(_ym_shift(vol_end, i), 0) for i in range(12, 24))
+            r.pop("vol12", None)
+    else:
+        vol_end = None
+    out = {"v": 1, "kind": "singoga-summary", "volEnd": vol_end, "regions": regions}
+    path = os.path.join(out_dir, "summary.json")
+    old = None
+    try:
+        with open(path, encoding="utf-8") as f:
+            old = json.load(f)
+    except (OSError, ValueError):
+        pass
+    if old != out:
+        write_json(path, out)
+    log(f"{out_dir}/summary.json: {len(regions)}개 지역 요약")
+    return out
+
+
 def write_json(path, obj):
     with open(path, "w", encoding="utf-8") as f:
         json.dump(obj, f, ensure_ascii=False, separators=(",", ":"))
@@ -267,6 +436,7 @@ def split_write(out_dir, by_region, rents, meta_common, rent_months):
         write_json(os.path.join(out_dir, "index.json"), index)
     total = sum(e["deals"] for e in entries)
     log(f"{out_dir}/: {len(entries)}개 지역 · {total:,}건 · 새로 쓴 파일 {written}개, 그대로 둔 파일 {kept}개")
+    write_summary(out_dir, entries)
     return 0
 
 
@@ -301,6 +471,8 @@ def main():
     ap.add_argument("--end", default="", help="마지막 달 YYYY-MM (기본: 이번 달)")
     ap.add_argument("--format", choices=["json", "csv"], default="json")
     ap.add_argument("-o", "--out", default="data/latest.json")
+    ap.add_argument("--rebuild-summary", default="", metavar="DIR",
+                    help="API 를 부르지 않고 DIR 의 지역 파일들로 summary.json 만 다시 만든다")
     ap.add_argument("--split-dir", default="",
                     help="시군구마다 파일을 따로 쓰고 목록(index.json)을 만든다. 지역이 많을 때 페이지가 "
                          "한 번에 한 지역만 읽게 하려는 것. 주면 --out 은 무시한다.")
@@ -320,6 +492,10 @@ def main():
     a.key = clean_key(a.key, "매매 인증키")
     a.rent_key = clean_key(a.rent_key, "전월세 인증키")
 
+    if a.rebuild_summary:
+        with open(os.path.join(a.rebuild_summary, "index.json"), encoding="utf-8") as f:
+            write_summary(a.rebuild_summary, json.load(f)["regions"])
+        return 0
     if not a.key:
         log("인증키가 없습니다. --key 또는 환경변수 DATA_GO_KR_KEY 를 주세요.")
         return 2

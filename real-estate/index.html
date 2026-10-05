@@ -225,6 +225,61 @@ table.ledger{width:100%;border-collapse:collapse;font-size:13px}
 .bar{height:10px;border-radius:0 3px 3px 0;background:var(--series-record);min-width:2px}
 .bar.deal{background:var(--series-deal)}
 
+/* 12개 지역 한눈에 */
+:root{--series-soft:#86b6ef;--g1:#2a78d6;--g2:#eb6834}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--series-soft:#1c5cab;--g1:#3987e5;--g2:#d95926}}
+:root[data-theme="dark"]{--series-soft:#1c5cab;--g1:#3987e5;--g2:#d95926}
+.ov{margin-top:22px;position:relative}
+.ov-h{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 16px;margin-bottom:12px}
+.ov-h h2,.rs-h h2{margin:0;font-size:clamp(19px,2.4vw,23px);font-weight:700;letter-spacing:-.02em}
+.ov-sub{margin:0;font-size:12.5px;color:var(--ink-3)}
+.ov-cards{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+@media (max-width:960px){.ov-cards{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:480px){.ov-cards{grid-template-columns:minmax(0,1fr)}}
+.ov-card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:13px 15px 12px;box-shadow:var(--shadow);min-width:0}
+.ov-card .l{font-size:12px;color:var(--ink-3);font-weight:500}
+.ov-card .v{font-size:27px;font-weight:600;line-height:1.15;margin:3px 0 4px;letter-spacing:-.02em}
+.ov-card .v small{font-size:14px;font-weight:500;color:var(--ink-3);margin-left:3px}
+.ov-card .v .up{color:var(--up-ink)} .ov-card .v .down{color:var(--down-ink)}
+.ov-card .s{font-size:12.5px;color:var(--ink-2);line-height:1.55}
+.ov-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-top:12px}
+@media (max-width:860px){.ov-grid{grid-template-columns:minmax(0,1fr)}}
+.ov-fig{margin:0;background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:14px 16px 12px;box-shadow:var(--shadow);min-width:0}
+.ov-wide{grid-column:1/-1}
+.ov-fig figcaption{display:flex;flex-direction:column;gap:2px;margin-bottom:6px}
+.ov-fig figcaption b{font-size:14.5px;font-weight:600}
+.ov-fig figcaption span{font-size:12px;color:var(--ink-3)}
+.ov-legend{display:flex;gap:14px;font-size:12px;color:var(--ink-2);margin-bottom:4px}
+.ov-legend i{display:inline-block;vertical-align:-1px;margin-right:5px}
+.ov-legend .dot{width:10px;height:10px;border-radius:50%;background:var(--series-deal)}
+.ov-legend .dot.soft{background:var(--series-soft)}
+.ov-legend .dot.g1{background:var(--g1)} .ov-legend .dot.g2{background:var(--g2)}
+.ov-legend .bar{width:12px;height:9px;border-radius:2px}
+.ov-legend .bar.up{background:var(--up)} .ov-legend .bar.down{background:var(--down)}
+.ov-chart svg{display:block;width:100%;overflow:visible}
+.ov-chart .hit{fill:transparent;cursor:pointer}
+.ov-chart .hit:hover,.ov-chart .hit:focus{fill:var(--surface-2);outline:none}
+.ov-chart .lbl{font-size:12px;fill:var(--ink-2)}
+@media (max-width:480px){.ov-chart .lbl{font-size:11px}}
+.ov-chart .lbl.strong{fill:var(--ink);font-weight:600}
+.ov-chart .tick{font-size:10.5px;fill:var(--ink-3);font-family:"IBM Plex Mono",monospace}
+.ov-chart .axis-t{font-size:11px;fill:var(--ink-3)}
+.ov-mini{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px}
+.ov-mini .seg-c{cursor:pointer;border:1px solid var(--line-soft)}
+.ov-mini .seg-c:hover,.ov-mini .seg-c:focus{border-color:var(--accent);outline:none}
+.ov-mini .seg-c .v{font-size:17px;font-weight:600;line-height:1.25;margin-top:2px}
+.ov-mini .seg-c .v.up{color:var(--up-ink)} .ov-mini .seg-c .v.down{color:var(--down-ink)}
+.ov-mini .seg-c .s{font-size:11px;color:var(--ink-3)}
+.ov-table-wrap{margin-top:12px;background:var(--surface);border:1px solid var(--line);border-radius:var(--radius)}
+.ov-table-wrap>summary{cursor:pointer;padding:10px 16px;font-size:13px;font-weight:600;color:var(--ink-2)}
+.ov-table td,.ov-table th{white-space:nowrap}
+.ov-table tbody tr{cursor:pointer}
+.ov-tip{position:absolute;max-width:260px;white-space:normal;line-height:1.5}
+.ov-tip .tv{font-weight:600;font-size:13px}
+.ov-tip .tn{opacity:.75;font-size:11.5px}
+.rs-h{display:flex;flex-wrap:wrap;align-items:center;gap:8px 14px;margin-top:34px;padding-top:22px;border-top:1px solid var(--line)}
+.rs-h .region-pick{font-size:14px;padding:7px 12px;max-width:none}
+
 /* 구간별 비교 */
 .seg{padding:14px 16px 18px;border-top:1px solid var(--line)}
 .seg-h{display:flex;flex-wrap:wrap;gap:8px 14px;align-items:baseline;justify-content:space-between;margin-bottom:12px}
@@ -382,7 +437,6 @@ table.deals{width:100%;border-collapse:collapse;font-size:12.5px}
     <div class="masthead-right">
       <p class="masthead-note" id="mastNote">국토교통부 실거래가 API 로 매일 아침 받아 둔 자료입니다. 단지·전용면적별로 묶어 보여 주고, 계산은 모두 브라우저에서 합니다.</p>
       <div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap">
-        <select class="region-pick" id="regionPick" aria-label="지역 선택" hidden></select>
         <button class="theme-btn" id="shareBtn" type="button">링크 복사</button>
         <button class="theme-btn" id="themeBtn" type="button">테마: 자동</button>
       </div>
@@ -391,6 +445,41 @@ table.deals{width:100%;border-collapse:collapse;font-size:12.5px}
 </header>
 
 <main class="wrap">
+  <section class="ov" id="overview" aria-labelledby="ovTitle" hidden>
+    <div class="ov-h">
+      <h2 id="ovTitle">12개 지역 한눈에</h2>
+      <p class="ov-sub" id="ovSub"></p>
+    </div>
+    <div class="ov-cards" id="ovCards"></div>
+    <div class="ov-grid">
+      <figure class="ov-fig ov-wide">
+        <figcaption><b>고점까지 남은 거리</b><span>2022~23년에 가장 깊이 빠졌던 지점에서 지금까지 · 0% 는 기간 중 최고가</span></figcaption>
+        <div class="ov-legend"><span><i class="dot soft"></i>2022~23 바닥</span><span><i class="dot"></i>지금</span></div>
+        <div class="ov-chart" id="ovDumbbell"></div>
+      </figure>
+      <figure class="ov-fig">
+        <figcaption><b>많이 오른 곳일수록 전세가율이 낮다</b><span id="ovScatterSub">바닥 대비 회복폭과 전세가율</span></figcaption>
+        <div class="ov-legend"><span><i class="dot g1"></i>서울</span><span><i class="dot g2"></i>경기</span></div>
+        <div class="ov-chart" id="ovScatter"></div>
+      </figure>
+      <figure class="ov-fig">
+        <figcaption><b>거래량은 서로 반대로</b><span id="ovVolSub">완결된 12개월과 그 전 12개월</span></figcaption>
+        <div class="ov-legend"><span><i class="bar up"></i>늘었음</span><span><i class="bar down"></i>줄었음</span></div>
+        <div class="ov-chart" id="ovVolume"></div>
+      </figure>
+      <figure class="ov-fig ov-wide">
+        <figcaption><b>지역별 시세 지수</b><span>세로 눈금을 모두 같게 맞췄습니다 · 빨간 점이 고점, 파란 점이 지금 · 누르면 그 지역을 자세히 봅니다</span></figcaption>
+        <div class="ov-mini" id="ovMini"></div>
+      </figure>
+    </div>
+    <details class="ov-table-wrap"><summary>표로 보기</summary><div class="tablewrap"><table class="ledger ov-table" id="ovTable"></table></div></details>
+    <div class="tip ov-tip" id="ovTip" role="status"></div>
+  </section>
+
+  <div class="rs-h" id="regionHead">
+    <h2>지역별로 자세히</h2>
+    <select class="region-pick" id="regionPick" aria-label="지역 선택" hidden></select>
+  </div>
   <p class="lede" id="lede"></p>
   <div class="status" id="status" aria-live="polite"></div>
 
@@ -582,7 +671,8 @@ function fmtManShort(m){ // "12.3억"
 }
 const fmtDate=d=>d?d.replace(/-/g,'.'):'-';
 const fmtYM=d=>d?d.slice(2,7).replace('-','.'):'-';
-function fmtPct(x,digits=1){ if(x==null||!isFinite(x))return '-'; const v=x*100; const s=v.toFixed(digits); return (v>0?'+':'')+s+'%'; }
+function fmtPct(x,digits=1){ if(x==null||!isFinite(x))return '-'; const v=x*100; const s=v.toFixed(digits);
+  if(+s===0)return (0).toFixed(digits)+'%'; return (v>0?'+':'')+s+'%'; }
 const dir=x=>x>0.0005?'up':x<-0.0005?'down':'flat';
 const pyeong=a=>(a/3.305785).toFixed(1);
 function ymShift(dateStr,n){ let y=+dateStr.slice(0,4), m=+dateStr.slice(5,7)-n; while(m<=0){m+=12;y--;} while(m>12){m-=12;y++;} return `${y}-${pad2(m)}`; }
@@ -622,7 +712,7 @@ function packedToDeals(o,src){
   return out;
 }
 /* ---------- state & analysis ---------- */
-const S={deals:[],source:'',ref:'',index:null,region:'',hashRegion:'',hash:'',rent:null,groups:[],shown:[],tl:[],view:'market',mk:null,mkGeo:null,seg:'area',sort:'rec',dir:-1,page:0,per:50,open:null,
+const S={deals:[],source:'',ref:'',index:null,region:'',hashRegion:'',hash:'',sum:null,ovTips:null,ovR:null,rent:null,groups:[],shown:[],tl:[],view:'market',mk:null,mkGeo:null,seg:'area',sort:'rec',dir:-1,page:0,per:50,open:null,
   r:{budget:8,minArea:70,maxAge:0,profile:'balanced',minDeals:5,useCost:true,gapBuy:false,cash:0,rate:0,years:30},
   c:{win:6,gap:.05,agentOnly:true},
   fav:new Set(), hasRent:false,
@@ -1151,15 +1241,19 @@ function renderMarket(){
   const w=Math.max(360,Math.round(box.clientWidth||900)-32);
   const c=drawMarket(m,w);
   const t3=m.mom3;
+  /* 한눈에 보기와 같은 기준 달을 쓴다. 없으면 이 지역 마지막 달에서 두 달 전 (신고 기한 30일) */
+  const sum=a=>a.reduce((x,y)=>x+y,0);
+  let ei=S.sum&&S.sum.volEnd?m.months.indexOf(S.sum.volEnd):-1; if(ei<0)ei=m.months.length-3;
+  const vLast=sum(m.vol.slice(Math.max(0,ei-11),ei+1)), vPrev=sum(m.vol.slice(Math.max(0,ei-23),Math.max(0,ei-11)));
   box.innerHTML=`<div class="mk-head">
   <div class="mk-hero"><div class="l">지금 시세는 고점 대비</div>
-    <div class="v ${vp==null?'':near?'up':'down'} num">${headline}</div>
+    <div class="v ${vp==null?'':near?'up':'down'}">${headline}</div>
     <div class="d">${m.peak?`고점은 <b>${m.peak.ym.replace('-','.')}</b>`:''}${m.cur?`, 가장 최근 달은 <b>${m.cur.ym.replace('-','.')}</b>`:''}입니다.
       ${near?'지금 값이 기간 내 최고 수준입니다.':'그때 이후로 아직 회복하지 못했습니다.'}</div></div>
   <div class="mk-tiles">
-    <div class="mk-t"><div class="l">저점 이후</div><div class="v num ${dir(m.vsTrough)}">${m.vsTrough==null?'-':fmtPct(m.vsTrough)}</div><div class="s">${m.trough?`가장 깊이 빠진 ${m.trough.ym.replace('-','.')}`:'기간 중 큰 조정 없음'}</div></div>
-    <div class="mk-t"><div class="l">최근 3개월</div><div class="v num ${dir(t3)}">${t3==null?'-':fmtPct(t3)}</div><div class="s">${t3==null?'-':t3>0.005?'오르는 중':t3<-0.005?'내리는 중':'횡보'}</div></div>
-    <div class="mk-t"><div class="l">최근 12개월 거래</div><div class="v num">${m.vol.slice(-12).reduce((a,b)=>a+b,0).toLocaleString()}</div><div class="s">직전 12개월 ${m.vol.slice(-24,-12).reduce((a,b)=>a+b,0).toLocaleString()}건</div></div>
+    <div class="mk-t"><div class="l">바닥 대비</div><div class="v ${dir(m.vsTrough)}">${m.vsTrough==null?'-':fmtPct(m.vsTrough)}</div><div class="s">${m.trough?`가장 깊이 빠진 ${m.trough.ym.replace('-','.')}`:'기간 중 큰 조정 없음'}</div></div>
+    <div class="mk-t"><div class="l">최근 3개월</div><div class="v ${dir(t3)}">${t3==null?'-':fmtPct(t3)}</div><div class="s">${t3==null?'-':t3>0.005?'오르는 중':t3<-0.005?'내리는 중':'횡보'}</div></div>
+    <div class="mk-t"><div class="l">완결 12개월 거래</div><div class="v">${vLast.toLocaleString()}<small style="font-size:12px;color:var(--ink-3);font-weight:500"> ${vPrev?fmtPct(vLast/vPrev-1,0):''}</small></div><div class="s">~${ymDot(m.months[ei])} · 그 전 12개월 ${vPrev.toLocaleString()}건</div></div>
   </div></div>
 <div class="mk-charts" id="mkCharts">
   <p class="mk-cap"><b>시세 지수</b><span>${m.months[0].replace('-','.')} = 100 · 단지 구성이 달라지는 영향을 뺀 값</span></p>
@@ -1486,6 +1580,173 @@ async function loadURL(url,quiet,auto){
   }catch(e){ if(!quiet)setStatus(`불러오지 못했습니다: ${e.message}`,true); return false; }
 }
 
+/* ---------- 12개 지역 한눈에 ----------
+   data/summary.json (수집 단계에서 미리 계산한 지역별 지표) 만 읽는다. 지역 파일 8MB 를 다 받지 않는다. */
+function ovName(r){ const p=r.name.split(/\s+/);
+  return r.group==='서울특별시'||p.length<3?p[p.length-1]:`${p[1].replace(/시$/,'')} ${p[p.length-1]}`; }
+function pearson(xs,ys){ const n=xs.length; if(n<3)return null;
+  const mx=xs.reduce((a,b)=>a+b,0)/n, my=ys.reduce((a,b)=>a+b,0)/n;
+  let sxy=0,sxx=0,syy=0; for(let i=0;i<n;i++){ const a=xs[i]-mx,b=ys[i]-my; sxy+=a*b; sxx+=a*a; syy+=b*b; }
+  return sxx&&syy?sxy/Math.sqrt(sxx*syy):null; }
+const volChg=r=>r.volPrev12?r.volLast12/r.volPrev12-1:null;
+const ymDot=ym=>ym?ym.replace('-','.'):'-';
+async function loadSummary(){
+  try{
+    const res=await fetch('data/summary.json',{cache:'no-store'}); if(!res.ok)return false;
+    const d=await res.json(); if(d.kind!=='singoga-summary'||!Array.isArray(d.regions)||!d.regions.length)return false;
+    S.sum=d; $('#overview').hidden=false; renderOverview(); return true;
+  }catch(e){ return false; }
+}
+function renderOverview(){
+  const d=S.sum; if(!d)return;
+  const rs=d.regions; S.ovTips=new Map();
+  const upd=S.index&&S.index.updated?fmtStamp(S.index.updated):'';
+  $('#ovSub').textContent=`국토교통부 실거래가 · ${rs.length}개 지역 · 시세는 ${ymDot(rs.reduce((a,r)=>r.cur.ym>a?r.cur.ym:a,''))}까지, 거래량은 ${ymDot(d.volEnd)}까지 완결된 달 기준${upd?` · 갱신 ${upd}`:''}`;
+  renderOvCards(rs); renderDumbbell(rs); renderScatter(rs); renderVolume(rs); renderOvMini(rs); renderOvTable(rs);
+}
+function renderOvCards(rs){
+  const atPeak=rs.filter(r=>r.vsPeak!=null&&r.vsPeak>-0.02);
+  const below=rs.filter(r=>r.peak.ym<'2022'&&r.vsPeak!=null&&r.vsPeak<=-0.02).sort((a,b)=>a.vsPeak-b.vsPeak);
+  const jr=rs.filter(r=>r.jr!=null&&r.vsTrough!=null);
+  const rr=pearson(jr.map(r=>r.vsTrough),jr.map(r=>r.jr)); S.ovR=rr;
+  const jrMin=jr.length?Math.min(...jr.map(r=>r.jr)):null, jrMax=jr.length?Math.max(...jr.map(r=>r.jr)):null;
+  const lo=jr.find(r=>r.jr===jrMin), hi=jr.find(r=>r.jr===jrMax);
+  const vc=rs.filter(r=>volChg(r)!=null).sort((a,b)=>volChg(b)-volChg(a));
+  const up=vc[0], dn=vc[vc.length-1];
+  const card=(l,v,sub)=>`<div class="ov-card"><div class="l">${l}</div><div class="v">${v}</div><div class="s">${sub}</div></div>`;
+  $('#ovCards').innerHTML=[
+    card('기간 내 최고가 부근',`${atPeak.length}<small>/ ${rs.length}곳</small>`,
+      atPeak.length?esc(atPeak.map(ovName).join(' · ')):'없음'),
+    card('2021년 고점을 아직 못 넘은 곳',`${below.length}<small>곳</small>`,
+      below.length?esc(below.map(r=>`${ovName(r)} ${fmtPct(r.vsPeak)}`).join(' · ')):'모든 지역이 2021년 고점을 넘었습니다'),
+    card('전세가율',jrMin==null?'-':`${Math.round(jrMin*100)}~${Math.round(jrMax*100)}<small>%</small>`,
+      jrMin==null?'전세 자료 없음':`${esc(ovName(lo))} 가장 낮고 ${esc(ovName(hi))} 가장 높음${rr!=null&&rr<-0.4?` · 많이 오른 곳일수록 낮음`:''}`),
+    card('거래량 · 완결 12개월',up&&dn?`<span class="${volChg(up)>0?'up':'down'}">${fmtPct(volChg(up),0)}</span> <small>/</small> <span class="${volChg(dn)>0?'up':'down'}">${fmtPct(volChg(dn),0)}</span>`:'-',
+      up&&dn?`${esc(ovName(up))} 가장 많이 늘고 ${esc(ovName(dn))} 가장 많이 줄었습니다`:'')
+  ].join('');
+}
+/* 바깥쪽 끝만 둥근 가로 막대 (기준선 쪽은 각지게) */
+function hbar(x0,x1,y,h,r){
+  const w=Math.abs(x1-x0); r=Math.min(r,w,h/2); if(w<0.5)return '';
+  if(x1>=x0) return `M${x0},${y}H${x1-r}Q${x1},${y} ${x1},${y+r}V${y+h-r}Q${x1},${y+h} ${x1-r},${y+h}H${x0}Z`;
+  return `M${x0},${y}H${x1+r}Q${x1},${y} ${x1},${y+r}V${y+h-r}Q${x1},${y+h} ${x1+r},${y+h}H${x0}Z`;
+}
+function tipKey(kind,code,html){ const k=kind+':'+code; S.ovTips.set(k,html); return k; }
+function renderDumbbell(rs){
+  const el=$('#ovDumbbell'); const W=Math.max(320,Math.round(el.clientWidth||720));
+  const rows=rs.filter(r=>r.troughVsPeak!=null&&r.vsPeak!=null).sort((a,b)=>b.vsPeak-a.vsPeak);
+  if(!rows.length){ el.innerHTML='<div class="empty">비교할 자료가 없습니다.</div>'; return; }
+  const L=Math.min(104,Math.round(W*0.2)), R=58, T=22, rowH=27, B=24, H=T+rows.length*rowH+B;
+  const lo=Math.floor((Math.min(...rows.map(r=>r.troughVsPeak))-0.03)*20)/20, hi=0.02;
+  const x=v=>L+(v-lo)/(hi-lo)*(W-L-R);
+  let g='';
+  for(let t=Math.ceil(lo*10)/10;t<=0.0001;t+=0.1){ const X=x(t).toFixed(1);
+    g+=`<line x1="${X}" x2="${X}" y1="${T-4}" y2="${H-B}" stroke="${Math.abs(t)<1e-9?'var(--axis)':'var(--grid)'}"/>`
+      +`<text class="tick" x="${X}" y="${H-B+15}" text-anchor="middle">${Math.abs(t)<1e-9?'0%':Math.round(t*100)+'%'}</text>`; }
+  g+=`<text class="axis-t" x="${x(0).toFixed(1)}" y="${T-9}" text-anchor="middle">기간 최고</text>`;
+  rows.forEach((r,i)=>{
+    const y=T+i*rowH, cy=y+rowH/2, xt=x(r.troughVsPeak), xc=x(r.vsPeak), near=r.vsPeak>-0.02;
+    const k=tipKey('db',r.code,`<div class="tv">${esc(ovName(r))} · 지금 ${near?'고점 부근':fmtPct(r.vsPeak)}</div>`
+      +`<div class="tn">${ymDot(r.trough.ym)} 바닥 ${fmtPct(r.troughVsPeak)} → 그 뒤 ${fmtPct(r.vsTrough)}</div><div class="tn">고점 ${ymDot(r.peak.ym)} · 누르면 자세히</div>`);
+    g+=`<rect class="hit" x="0" y="${y}" width="${W}" height="${rowH}" rx="3" tabindex="0" role="button" data-tipk="${k}" data-go="${esc(r.code)}" aria-label="${esc(ovName(r))}"/>`
+      +`<text class="lbl" x="${L-10}" y="${cy+4}" text-anchor="end" pointer-events="none">${esc(ovName(r))}</text>`
+      +`<line x1="${xt.toFixed(1)}" x2="${xc.toFixed(1)}" y1="${cy}" y2="${cy}" stroke="var(--series-soft)" stroke-width="2" pointer-events="none"/>`
+      +`<circle cx="${xt.toFixed(1)}" cy="${cy}" r="4.5" fill="var(--series-soft)" stroke="var(--surface)" stroke-width="2" pointer-events="none"/>`
+      +`<circle cx="${xc.toFixed(1)}" cy="${cy}" r="5.5" fill="var(--series-deal)" stroke="var(--surface)" stroke-width="2" pointer-events="none"/>`
+      +`<text class="lbl strong" x="${W-R+10}" y="${cy+4}" pointer-events="none">${near?'고점':fmtPct(r.vsPeak)}</text>`;
+  });
+  el.innerHTML=`<svg viewBox="0 0 ${W} ${H}" height="${H}" role="img" aria-label="지역별 2022~23 바닥과 지금 시세의 고점 대비 위치">${g}</svg>`;
+}
+function renderScatter(rs){
+  const el=$('#ovScatter'); const W=Math.max(300,Math.round(el.clientWidth||460)), H=Math.round(Math.min(330,Math.max(250,W*0.7)));
+  const pts=rs.filter(r=>r.vsTrough!=null&&r.jr!=null);
+  if(pts.length<3){ el.innerHTML='<div class="empty">전세 자료가 있는 지역이 셋 미만이라 그리지 않습니다.</div>'; $('#ovScatterSub').textContent='바닥 대비 회복폭과 전세가율'; return; }
+  const L=44,R=14,T=10,B=40;
+  const xl=Math.floor(Math.min(...pts.map(r=>r.vsTrough))*10)/10, xh=Math.ceil(Math.max(...pts.map(r=>r.vsTrough))*10)/10;
+  const yl=Math.floor(Math.min(...pts.map(r=>r.jr))*20)/20, yh=Math.ceil(Math.max(...pts.map(r=>r.jr))*20)/20;
+  const x=v=>L+(v-xl)/((xh-xl)||1)*(W-L-R), y=v=>T+(yh-v)/((yh-yl)||1)*(H-T-B);
+  let g='';
+  for(let t=xl;t<=xh+1e-9;t+=0.1){ const X=x(t).toFixed(1); const first=t<xl+1e-9; /* 맨 왼쪽 눈금은 y축 눈금과 겹치지 않게 오른쪽으로 붙인다 */
+    g+=`<line x1="${X}" x2="${X}" y1="${T}" y2="${H-B}" stroke="var(--grid)"/><text class="tick" x="${first?(+X-3).toFixed(1):X}" y="${H-B+14}" text-anchor="${first?'start':'middle'}">+${Math.round(t*100)}%</text>`; }
+  for(let t=yl;t<=yh+1e-9;t+=0.05){ const Y=y(t).toFixed(1); g+=`<line x1="${L}" x2="${W-R}" y1="${Y}" y2="${Y}" stroke="var(--grid)"/><text class="tick" x="${L-6}" y="${(+Y+3.5).toFixed(1)}" text-anchor="end">${Math.round(t*100)}%</text>`; }
+  g+=`<text class="axis-t" x="${((L+W-R)/2).toFixed(0)}" y="${H-6}" text-anchor="middle">2022~23 바닥 대비 회복폭 →</text>`
+    +`<text class="axis-t" x="12" y="${((T+H-B)/2).toFixed(0)}" text-anchor="middle" transform="rotate(-90 12 ${((T+H-B)/2).toFixed(0)})">전세가율 →</text>`;
+  /* 이름표가 겹치면 반대쪽으로 넘긴다 */
+  const placed=pts.map(r=>{ const px=x(r.vsTrough), py=y(r.jr); return {x0:px-7,x1:px+7,y0:py-7,y1:py+7}; });
+  let labels='', dots='', hits='';
+  [...pts].sort((a,b)=>b.jr-a.jr).forEach(r=>{
+    const px=x(r.vsTrough), py=y(r.jr), name=ovName(r), w=name.length*11.5+4;
+    const cand=[
+      {lx:px+8, ly:py+4, a:'start', b:{x0:px+8,x1:px+8+w,y0:py-9,y1:py+5}},
+      {lx:px-8, ly:py+4, a:'end',   b:{x0:px-8-w,x1:px-8,y0:py-9,y1:py+5}},
+      {lx:px,   ly:py+19,a:'middle',b:{x0:px-w/2,x1:px+w/2,y0:py+7,y1:py+21}},
+      {lx:px,   ly:py-10,a:'middle',b:{x0:px-w/2,x1:px+w/2,y0:py-23,y1:py-9}}];
+    const clash=b=>b.x0<L||b.x1>W-R+4||b.y0<T-2||b.y1>H-B-2||placed.some(q=>b.x0<q.x1&&b.x1>q.x0&&b.y0<q.y1&&b.y1>q.y0);
+    const pick=cand.find(c=>!clash(c.b))||cand[0];
+    placed.push(pick.b);
+    const c=r.group==='서울특별시'?'var(--g1)':'var(--g2)';
+    dots+=`<circle cx="${px.toFixed(1)}" cy="${py.toFixed(1)}" r="5.5" fill="${c}" stroke="var(--surface)" stroke-width="2" pointer-events="none"/>`;
+    labels+=`<text class="lbl" x="${pick.lx.toFixed(1)}" y="${pick.ly.toFixed(1)}" text-anchor="${pick.a}" pointer-events="none">${esc(name)}</text>`;
+    const k=tipKey('sc',r.code,`<div class="tv">${esc(name)}</div><div class="tn">바닥 대비 ${fmtPct(r.vsTrough)} · 전세가율 ${Math.round(r.jr*100)}%</div><div class="tn">누르면 자세히</div>`);
+    hits+=`<circle class="hit" cx="${px.toFixed(1)}" cy="${py.toFixed(1)}" r="13" tabindex="0" role="button" data-tipk="${k}" data-go="${esc(r.code)}" aria-label="${esc(name)}"/>`;
+  });
+  el.innerHTML=`<svg viewBox="0 0 ${W} ${H}" height="${H}" role="img" aria-label="지역별 바닥 대비 회복폭과 전세가율 산점도">${g}${hits}${dots}${labels}</svg>`;
+  const rr=S.ovR;
+  $('#ovScatterSub').textContent=rr==null?'바닥 대비 회복폭과 전세가율'
+    :`${pts.length}개 지역 상관계수 r = ${rr.toFixed(2).replace('-','−')} · 서로 같이 움직인다는 뜻이지, 하나가 다른 하나의 원인이라는 뜻은 아닙니다`;
+}
+function renderVolume(rs){
+  const el=$('#ovVolume'); const W=Math.max(300,Math.round(el.clientWidth||460));
+  const rows=rs.filter(r=>volChg(r)!=null).sort((a,b)=>volChg(b)-volChg(a));
+  if(!rows.length){ el.innerHTML='<div class="empty">거래량 자료가 없습니다.</div>'; return; }
+  const L=Math.min(92,Math.round(W*0.24)), R=10, T=6, rowH=24, B=22, H=T+rows.length*rowH+B, bh=14;
+  const G=42, cs=rows.map(volChg), lo=Math.min(0,...cs), hi=Math.max(0,...cs);
+  const x=v=>L+G+(v-lo)/((hi-lo)||1)*(W-L-R-2*G), x0=x(0);
+  let g='';
+  for(let t=Math.ceil(lo*2)/2;t<=hi+1e-9;t+=0.5){ const X=x(t).toFixed(1); g+=`<line x1="${X}" x2="${X}" y1="${T}" y2="${H-B}" stroke="var(--grid)"/><text class="tick" x="${X}" y="${H-B+14}" text-anchor="middle">${t>0?'+':''}${Math.round(t*100)}%</text>`; }
+  g+=`<line x1="${x0.toFixed(1)}" x2="${x0.toFixed(1)}" y1="${T}" y2="${H-B}" stroke="var(--axis)"/>`;
+  rows.forEach((r,i)=>{
+    const c=volChg(r), y=T+i*rowH, by=y+(rowH-bh)/2, x1=x(c);
+    const k=tipKey('vo',r.code,`<div class="tv">${esc(ovName(r))} ${fmtPct(c,0)}</div><div class="tn">완결 12개월 ${r.volLast12.toLocaleString()}건 · 그 전 12개월 ${r.volPrev12.toLocaleString()}건</div><div class="tn">누르면 자세히</div>`);
+    g+=`<rect class="hit" x="0" y="${y}" width="${W}" height="${rowH}" rx="3" tabindex="0" role="button" data-tipk="${k}" data-go="${esc(r.code)}" aria-label="${esc(ovName(r))}"/>`
+      +`<text class="lbl" x="${L-10}" y="${y+rowH/2+4}" text-anchor="end" pointer-events="none">${esc(ovName(r))}</text>`
+      +`<path d="${hbar(x0,x1,by,bh,4)}" fill="${c>=0?'var(--up)':'var(--down)'}" pointer-events="none"/>`
+      +`<text class="lbl strong" x="${(c>=0?x1+6:x1-6).toFixed(1)}" y="${y+rowH/2+4}" text-anchor="${c>=0?'start':'end'}" pointer-events="none">${fmtPct(c,0)}</text>`;
+  });
+  el.innerHTML=`<svg viewBox="0 0 ${W} ${H}" height="${H}" role="img" aria-label="지역별 거래량 증감">${g}</svg>`;
+  $('#ovVolSub').textContent=`${ymDot(S.sum.volEnd)}까지 완결된 12개월과 그 전 12개월 · 신고가 덜 들어온 최근 두 달은 뺐습니다`;
+}
+function renderOvMini(rs){
+  const all=rs.flatMap(r=>r.idx.filter(v=>v!=null)); const lo=Math.min(...all), hi=Math.max(...all);
+  $('#ovMini').innerHTML=[...rs].sort((a,b)=>b.vsPeak-a.vsPeak).map(r=>{
+    const near=r.vsPeak>-0.02;
+    return `<div class="seg-c" tabindex="0" role="button" data-go="${esc(r.code)}" aria-label="${esc(ovName(r))} 자세히 보기">
+      <div class="n">${esc(ovName(r))}</div>
+      <div class="v ${near?'up':'down'}">${near?'고점 부근':fmtPct(r.vsPeak)}</div><div class="s">고점 ${ymDot(r.peak.ym)}</div>
+      ${miniLine(r.idx,lo,hi,200,56)}</div>`;
+  }).join('');
+}
+function renderOvTable(rs){
+  const rows=[...rs].sort((a,b)=>b.vsPeak-a.vsPeak);
+  $('#ovTable').innerHTML='<thead><tr><th>지역</th><th class="r">고점 대비</th><th>고점</th><th>2022~23 바닥</th><th class="r">바닥 대비</th><th class="r">최근 3개월</th><th class="r">전세가율</th><th class="r">완결 12개월 거래</th><th class="r">증감</th></tr></thead><tbody>'
+    +rows.map(r=>`<tr data-go="${esc(r.code)}"><td>${esc(ovName(r))}</td><td class="r num">${r.vsPeak>-0.02?'고점 부근':fmtPct(r.vsPeak)}</td><td class="num">${ymDot(r.peak.ym)}</td>`
+      +`<td class="num">${r.trough?`${ymDot(r.trough.ym)} (${fmtPct(r.troughVsPeak)})`:'-'}</td><td class="r num">${fmtPct(r.vsTrough)}</td><td class="r num">${fmtPct(r.mom3)}</td>`
+      +`<td class="r num">${r.jr==null?'-':Math.round(r.jr*100)+'%'}</td><td class="r num">${r.volLast12.toLocaleString()}</td><td class="r num">${fmtPct(volChg(r),0)}</td></tr>`).join('')+'</tbody>';
+}
+function ovShowTip(el){
+  const k=el.getAttribute('data-tipk'); if(!k||!S.ovTips)return;
+  const tip=$('#ovTip'), box=$('#overview').getBoundingClientRect(), b=el.getBoundingClientRect();
+  tip.innerHTML=S.ovTips.get(k)||'';
+  tip.style.left=(b.left+b.width/2-box.left)+'px'; tip.style.top=(b.top-box.top)+'px'; tip.classList.add('on');
+}
+function ovHideTip(){ $('#ovTip').classList.remove('on'); }
+async function goRegion(code){
+  if(!S.index)return;
+  S.f.sgg=''; S.f.dong=''; S.page=0; S.view='market';
+  await loadRegion(code); syncControls();
+  $('#regionHead').scrollIntoView({behavior:'smooth',block:'start'});
+}
+
 /* ---------- 지역 목록 ---------- */
 async function loadIndex(){
   try{
@@ -1555,9 +1816,16 @@ function bind(){
   $('#dPeers').addEventListener('click',e=>{ const tr=e.target.closest('tr[data-key]'); if(tr){ openDrawer(tr.dataset.key); $('#drawer').scrollTop=0; } });
   document.addEventListener('mousemove',e=>{ if(S.view==='market'&&e.target.closest('#mkCharts'))marketHover(e); });
   document.addEventListener('mouseleave',e=>{ if(e.target.closest&&e.target.closest('#mkCharts'))marketHoverOff(); },true);
-  let rt; addEventListener('resize',()=>{ clearTimeout(rt); rt=setTimeout(()=>{ if(S.view==='market')renderMarket(); },200); });
+  let rt; addEventListener('resize',()=>{ clearTimeout(rt); rt=setTimeout(()=>{ if(S.view==='market')renderMarket(); if(S.sum)renderOverview(); },200); });
   document.addEventListener('click',e=>{ const b=e.target.closest('[data-seg]'); if(!b)return;
     S.seg=b.dataset.seg; try{localStorage.setItem('sgj.seg',S.seg);}catch(err){} renderSegments(); });
+  const ov=$('#overview');
+  ov.addEventListener('pointerover',e=>{ const t=e.target.closest('[data-tipk]'); if(t)ovShowTip(t); });
+  ov.addEventListener('pointerout',e=>{ if(e.target.closest('[data-tipk]'))ovHideTip(); });
+  ov.addEventListener('focusin',e=>{ const t=e.target.closest('[data-tipk]'); if(t)ovShowTip(t); });
+  ov.addEventListener('focusout',ovHideTip);
+  ov.addEventListener('click',e=>{ const t=e.target.closest('[data-go]'); if(t){ ovHideTip(); goRegion(t.getAttribute('data-go')); } });
+  ov.addEventListener('keydown',e=>{ const t=e.target.closest('[data-go]'); if(t&&(e.key==='Enter'||e.key===' ')){ e.preventDefault(); goRegion(t.getAttribute('data-go')); } });
   $('#regionPick').onchange=async e=>{ const c=e.target.value;
     S.fav=S.fav; S.f.sgg=''; S.f.dong=''; S.page=0;
     await loadRegion(c); syncControls(); };
@@ -1605,7 +1873,7 @@ function bind(){
   const at=readHash(); const hashRegion=S.hashRegion||''; syncControls();
   const openAt=()=>{ if(at&&S.groups.some(g=>g.key===at))openDrawer(at); };
   const src=new URLSearchParams(location.search).get('src');
-  const hasIndex=await loadIndex();
+  const hasIndex=await loadIndex(); loadSummary();
   if(src&&await loadURL(src,false,true)){ syncControls(); openAt(); return; }
   if(hasIndex){
     let want=hashRegion;
