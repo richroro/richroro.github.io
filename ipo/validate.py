@@ -112,6 +112,17 @@ def check(path: str, min_items: int = 5, stale_days: int = 3, today: dt.date | N
             for k in ("g", "v", "fy", "r", "own", "dem", "otc", "mix", "peers"):
                 if k in c and not isinstance(c[k], dict):
                     errors.append(f"{tag} {k} 형식")
+    # 달력 구독 피드(ipo.ics) — 없어도 된다. 있으면 앞뒤와 줄 길이만 본다
+    ipath = os.path.join(os.path.dirname(path), "ipo.ics")
+    if os.path.exists(ipath):
+        with open(ipath, "rb") as f:
+            raw = f.read()
+        if not (raw.startswith(b"BEGIN:VCALENDAR\r\n") and raw.endswith(b"END:VCALENDAR\r\n")):
+            errors.append("ipo.ics 앞뒤가 VCALENDAR 가 아님")
+        elif raw.count(b"BEGIN:VEVENT") != raw.count(b"END:VEVENT"):
+            errors.append("ipo.ics 일정 시작·끝 수가 다름")
+        elif any(len(line) > 75 for line in raw.split(b"\r\n")):
+            errors.append("ipo.ics 에 75바이트 넘는 줄이 있음")
     up = d.get("updated")
     if items and not up:
         errors.append("종목은 있는데 updated 가 없음")
