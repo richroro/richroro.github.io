@@ -1,4 +1,4 @@
-name: 경제뉴스 검사
+name: 해외 경제뉴스 검사
 
 # news/ 를 바꾸는 PR 마다 수집기 단위 테스트와 자바스크립트 문법을 본다. 네트워크는 쓰지 않는다.
 
@@ -21,6 +21,7 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
+      - run: pip install --quiet anthropic
       - name: 단위 테스트
         run: python -m unittest discover -s news/tests -v
       - name: 자바스크립트 문법

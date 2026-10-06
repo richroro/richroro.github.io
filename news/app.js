@@ -1,11 +1,13 @@
-/* 오늘의 경제 — data/ 의 JSON 을 읽어 그린다. 수집은 fetch_news.py(깃허브 액션)가 한다. */
+/* 해외 경제 브리핑 — data/ 의 JSON 을 읽어 그린다. 수집·번역은 fetch_news.py(깃허브 액션)가 한다. */
 (function () {
   'use strict';
 
   var CATS = [
-    ['all', '전체'], ['market', '증시'], ['macro', '금리·환율'], ['estate', '부동산'],
-    ['industry', '산업·기업'], ['global', '국제'], ['crypto', '가상자산'], ['general', '경제일반'], ['saved', '저장한 기사']
+    ['all', '전체'], ['market', '증시'], ['macro', '금리·물가'], ['industry', '기업·테크'], ['global', '무역·국제'],
+    ['energy', '원자재'], ['estate', '부동산'], ['crypto', '가상자산'], ['general', '경제일반'],
+    ['kr', '한국 관련'], ['saved', '저장한 기사']
   ];
+  var SPECIAL = { all: 1, kr: 1, saved: 1 };   // 분야가 아니라 따로 거르는 탭
   var CAT_NAME = {};
   CATS.forEach(function (c) { CAT_NAME[c[0]] = c[1]; });
   var PAGE = 40;
@@ -14,6 +16,7 @@
 
   var $ = function (id) { return document.getElementById(id); };
   var state = { cat: 'all', q: '', src: '', day: '24h', limit: PAGE };
+  var lang = 'ko';   // ko: 한국어 번역(있으면) + 영어 원문 작게 · en: 영어 원문만
   var index = null, dayCache = {}, items = [], openRel = {};
 
   // ── 저장소(브라우저) ────────────────────────────────────────────────────
@@ -50,6 +53,13 @@
       i = j + q.length;
     }
     return out + esc(t.slice(i));
+  }
+
+  // ── 언어: 번역이 있으면 한국어, 없으면 영어 원문 ───────────────────────────────
+  function tTitle(it) { return lang === 'ko' && it.title_ko ? it.title_ko : it.title; }
+  function tSummary(it) { return lang === 'ko' && it.summary_ko ? it.summary_ko : (it.summary || ''); }
+  function origLine(it) {
+    return lang === 'ko' && it.title_ko ? '<div class="orig" lang="en">' + hl(it.title, state.q) + '</div>' : '';
   }
 
   // ── 시간 ───────────────────────────────────────────────────────────────
@@ -103,10 +113,12 @@
   // ── 거르기·묶기 ─────────────────────────────────────────────────────────
   function matches(it, opts) {
     if (opts.src && it.source !== opts.src) return false;
-    if (opts.cat && opts.cat !== 'all' && opts.cat !== 'saved' && it.cat !== opts.cat) return false;
+    if (opts.cat === 'kr' && !it.kr) return false;
+    if (opts.cat && !SPECIAL[opts.cat] && it.cat !== opts.cat) return false;
     if (opts.q) {
       var q = opts.q.toLowerCase();
-      if ((it.title + ' ' + (it.summary || '') + ' ' + it.source).toLowerCase().indexOf(q) === -1) return false;
+      var hay = [it.title, it.title_ko, it.summary, it.summary_ko, it.source].join(' ').toLowerCase();
+      if (hay.indexOf(q) === -1) return false;
     }
     return true;
   }
@@ -132,7 +144,8 @@
   // 대표 기사: 직접 받은 기사 > 모음 기사, [속보] 아닌 것, 요약 있는 것, 그다음 최신
   function pickRep(arr) {
     function score(it) {
-      return (it.via ? 0 : 4) + (/^\s*[\[(【]?\s*속보/.test(it.title) ? 0 : 2) + (it.summary ? 1 : 0) + (it.image ? 0.5 : 0);
+      return (it.via ? 0 : 4) + (/^\s*(breaking|update|live|watch)\b/i.test(it.title) ? 0 : 2) + (it.summary ? 1 : 0) +
+        (it.title_ko ? 1 : 0) + (it.image ? 0.5 : 0);
     }
     return arr.slice().sort(function (a, b) { return score(b) - score(a) || b.time - a.time; })[0];
   }
@@ -146,7 +159,8 @@
     return '<button class="star" type="button" data-save="' + esc(it.id) + '" aria-pressed="' + on + '" aria-label="' + (on ? '저장 취소' : '저장') + '">' + (on ? STAR : STAR_O) + '</button>';
   }
   function byline(g, it) {
-    var h = chip(it.cat) + '<span class="src">' + esc(it.source) + '</span><span>' + esc(ago(it.time)) + '</span>';
+    var h = chip(it.cat) + (it.kr ? '<span class="chip c-kr">한국</span>' : '') +
+      '<span class="src">' + esc(it.source) + '</span><span>' + esc(ago(it.time)) + '</span>';
     if (g && g.sources > 1) h += '<span class="many">' + g.sources + '개 매체</span>';
     return '<div class="byline">' + h + '</div>';
   }
@@ -155,7 +169,7 @@
     if (!others.length) return '';
     var open = openRel[g.key], show = open ? others : others.slice(0, max);
     var h = '<ul class="rel">' + show.map(function (x) {
-      return '<li><a href="' + esc(safeHref(x.url)) + '" target="_blank" rel="noopener noreferrer" data-read="' + esc(x.id) + '">' + hl(x.title, state.q) +
+      return '<li><a href="' + esc(safeHref(x.url)) + '" target="_blank" rel="noopener noreferrer" data-read="' + esc(x.id) + '">' + hl(tTitle(x), state.q) +
         '</a> <span class="s">' + esc(x.source) + ' · ' + esc(hm(x.time)) + '</span></li>';
     }).join('') + '</ul>';
     if (others.length > max) {
@@ -181,13 +195,13 @@
     var leadImg = r.image || (lead.items.filter(function (x) { return x.image; })[0] || {}).image;
     var h = '<article class="story lead' + (readIds.has(r.id) ? ' read' : '') + '">';
     if (leadImg) h += itemLink(r, '<div class="img"><img src="' + esc(safeHref(leadImg)) + '" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.parentNode.remove()"></div>');
-    h += byline(lead, r) + itemLink(r, '<h3>' + hl(r.title, state.q) + '</h3>');
-    if (r.summary) h += '<p>' + hl(r.summary, state.q) + '</p>';
+    h += byline(lead, r) + itemLink(r, '<h3>' + hl(tTitle(r), state.q) + '</h3>') + origLine(r);
+    if (tSummary(r)) h += '<p>' + hl(tSummary(r), state.q) + '</p>';
     h += relList(lead, r, 4) + '</article><div class="subs">';
     ranked.slice(1).forEach(function (g) {
       var it = g.rep;
       h += '<article class="story sub' + (readIds.has(it.id) ? ' read' : '') + '">' + byline(g, it) +
-        itemLink(it, '<h3>' + hl(it.title, state.q) + '</h3>') + relList(g, it, 2) + '</article>';
+        itemLink(it, '<h3>' + hl(tTitle(it), state.q) + '</h3>') + origLine(it) + relList(g, it, 2) + '</article>';
     });
     $('top').innerHTML = h + '</div>';
     var used = {};
@@ -212,8 +226,8 @@
       }
       h += '<article class="row story' + (readIds.has(it.id) ? ' read' : '') + '">' +
         '<div class="tm">' + esc(hm(it.time)) + '</div><div>' +
-        itemLink(it, '<div class="t">' + hl(it.title, state.q) + '</div>') +
-        (it.summary ? '<div class="d">' + hl(it.summary, state.q) + '</div>' : '') +
+        itemLink(it, '<div class="t">' + hl(tTitle(it), state.q) + '</div>') + origLine(it) +
+        (tSummary(it) ? '<div class="d">' + hl(tSummary(it), state.q) + '</div>' : '') +
         byline(g, it) + relList(g, it, 2) + '</div>' + starBtn(it) + '</article>';
     });
     $('list').innerHTML = h;
@@ -227,9 +241,9 @@
   // ── 그리기: 탭·사이드 ───────────────────────────────────────────────────
   function renderTabs() {
     var base = items.filter(function (it) { return matches(it, { q: state.q, src: state.src }); });
-    var cnt = { all: groups(base).length, saved: saved.length };
+    var cnt = { all: groups(base).length, saved: saved.length, kr: groups(base.filter(function (it) { return it.kr; })).length };
     CATS.forEach(function (c) {
-      if (c[0] !== 'all' && c[0] !== 'saved') cnt[c[0]] = groups(base.filter(function (it) { return it.cat === c[0]; })).length;
+      if (!SPECIAL[c[0]]) cnt[c[0]] = groups(base.filter(function (it) { return it.cat === c[0]; })).length;
     });
     $('tabs').innerHTML = CATS.map(function (c) {
       return '<button class="tab" role="tab" type="button" data-cat="' + c[0] + '" aria-selected="' + (state.cat === c[0]) + '">' +
@@ -250,7 +264,7 @@
     items.forEach(function (it) { cc[it.cat] = (cc[it.cat] || 0) + 1; sc[it.source] = (sc[it.source] || 0) + 1; });
     $('cat-span').textContent = period;
     $('src-span').textContent = period;
-    bars($('cats'), CATS.filter(function (c) { return cc[c[0]]; }).map(function (c) { return [c[0], cc[c[0]], c[1]]; })
+    bars($('cats'), CATS.filter(function (c) { return !SPECIAL[c[0]] && cc[c[0]]; }).map(function (c) { return [c[0], cc[c[0]], c[1]]; })
       .sort(function (a, b) { return b[1] - a[1]; }), 'cat', function (k) { return 'var(--chip-' + k + ')'; });
     bars($('srcs'), Object.keys(sc).map(function (k) { return [k, sc[k]]; }).sort(function (a, b) { return b[1] - a[1]; }).slice(0, 12),
       'src', function () { return 'var(--accent)'; });
@@ -292,16 +306,18 @@
     var ok = (index.feeds || []).filter(function (f) { return f.ok; }).length;
     var srcN = {};
     (index.feeds || []).forEach(function (f) { srcN[f.source] = 1; });
-    $('stamp').innerHTML = '업데이트 <b>' + esc(ago(index.updated)) + '</b> · ' + Object.keys(srcN).length + '개 언론사 · 피드 ' + ok + '/' + (index.feeds || []).length;
+    $('stamp').innerHTML = '업데이트 <b>' + esc(ago(index.updated)) + '</b> · ' + Object.keys(srcN).length + '개 매체 · 피드 ' + ok + '/' + (index.feeds || []).length;
   }
 
   // ── 그리기: 시장 지표 ───────────────────────────────────────────────────
   function fmtPrice(m) {
-    var p = m.price, d = Math.abs(p) >= 10000 ? 0 : 2;
+    var p = m.price, a = Math.abs(p);
+    var d = a >= 10000 ? 0 : (a < 10 && m.unit !== '%') ? 4 : 2;
     var s = p.toLocaleString('ko-KR', { minimumFractionDigits: d, maximumFractionDigits: d });
     if (m.unit === '$') return '$' + s;
     if (m.unit === '%') return s + '%';
     if (m.unit === '원') return s + '원';
+    if (m.unit === '엔') return s + '엔';
     return s;
   }
   function spark(vals, cls) {
@@ -328,7 +344,7 @@
   function render() {
     if (index && (!index.days || !index.days.length)) {
       $('top-sec').hidden = true;
-      $('list').innerHTML = '<div class="empty"><b>첫 수집을 기다리는 중입니다</b>깃허브 액션이 언론사 RSS 를 모으면 여기에 뉴스가 뜹니다. 보통 한 시간 안에 시작됩니다.</div>';
+      $('list').innerHTML = '<div class="empty"><b>첫 수집을 기다리는 중입니다</b>깃허브 액션이 해외 매체 RSS 를 모으면 여기에 뉴스가 뜹니다. 보통 한 시간 안에 시작됩니다.</div>';
     } else {
       var gs = groups(filtered());
       var used = renderTop(gs);
@@ -337,6 +353,7 @@
     renderTabs();
     renderSide();
     renderStamp();
+    renderLang();
   }
 
   // ── 주소창과 상태 맞추기 ────────────────────────────────────────────────
@@ -425,6 +442,22 @@
     readHash();
     renderDays();
     loadItems().then(function () { if (prevDay !== state.day) renderSources(); render(); });
+  });
+
+  // 제목 언어: 한국어(번역) ↔ 영어 원문
+  lang = lsGet('news.lang', 'ko') === 'en' ? 'en' : 'ko';
+  function renderLang() {
+    $('lang').textContent = lang === 'ko' ? '한국어' : 'English';
+    $('lang').setAttribute('aria-label', lang === 'ko' ? '영어 원문으로 보기' : '한국어 번역으로 보기');
+    var any = items.some(function (it) { return it.title_ko; });
+    $('lang').hidden = !any;
+    $('ai-note').hidden = !any;
+  }
+  $('lang').addEventListener('click', function () {
+    lang = lang === 'ko' ? 'en' : 'ko';
+    lsSet('news.lang', lang);
+    renderLang();
+    render();
   });
 
   // 테마: 시스템 → 밝게 → 어둡게

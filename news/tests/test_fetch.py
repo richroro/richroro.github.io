@@ -1,4 +1,4 @@
-"""fetch_news.py 단위 테스트 — 네트워크 없이 tests/fixtures 의 피드로 돌린다.
+"""fetch_news.py · translate.py 단위 테스트 — 네트워크 없이 tests/fixtures 의 피드로 돌린다.
 
   python -m unittest discover -s news/tests -v
 """
@@ -7,14 +7,21 @@ import os
 import shutil
 import sys
 import tempfile
+import types
 import unittest
 from datetime import datetime
+from unittest import mock
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 FIX = os.path.join(HERE, "fixtures")
 sys.path.insert(0, os.path.dirname(HERE))
 
 import fetch_news as fn  # noqa: E402
+
+try:
+    import translate  # noqa: E402 — anthropic 패키지가 있어야 한다
+except ImportError:  # pragma: no cover
+    translate = None
 
 NOW = "2026-10-06T12:00:00+09:00"
 
@@ -26,50 +33,64 @@ def read(name):
 
 class ParseTest(unittest.TestCase):
     def test_rss_fields(self):
-        es = fn.parse_feed(read("rss_yna.xml"))
+        es = fn.parse_feed(read("rss_cnbc.xml"))
         self.assertEqual(len(es), 4)
-        self.assertEqual(es[0]["title"], "[속보] 한은, 기준금리 연 2.50%로 동결")
-        self.assertEqual(es[0]["image"], "http://img.example.co.kr/a.jpg")
-        self.assertIn("동결했다", es[0]["desc"])
+        self.assertTrue(es[0]["title"].startswith("BREAKING: Fed holds"))
+        self.assertEqual(es[0]["image"], "http://img.example.com/fed.jpg")
+        self.assertIn("benchmark rate", es[0]["desc"])
 
     def test_atom_links_and_dates(self):
-        es = fn.parse_feed(read("atom_hk.xml"))
+        es = fn.parse_feed(read("atom_ft.xml"))
         self.assertEqual([e["link"] for e in es],
-                         ["https://news.example.com/article/1001", "https://news.example.com/article/1002"])
-        self.assertEqual(es[0]["image"], "https://img.example.com/t.jpg")
+                         ["https://news.example.org/content/1001", "https://news.example.org/content/1002"])
+        self.assertEqual(es[0]["image"], "https://img.example.org/t.jpg")
         self.assertEqual(es[1]["date"], "2026-10-06T00:30:00Z")   # updated 로 대신
 
-    def test_euc_kr(self):
-        es = fn.parse_feed(read("rss_euckr.xml"))
-        self.assertEqual(es[0]["title"], "반도체 수출 석 달 연속 증가")
+    def test_latin1(self):
+        es = fn.parse_feed(read("rss_latin1.xml"))
+        self.assertIn("Café", es[0]["desc"])
 
     def test_broken_xml_is_repaired(self):
         es = fn.parse_feed(read("rss_broken.xml"))
         self.assertEqual(len(es), 1)
-        self.assertIn("SK하이닉스", es[0]["title"])
+        self.assertIn("AT&T", es[0]["title"])
         self.assertEqual(es[0]["link"], "https://broken.example.com/1?a=1&b=2")
 
     def test_regex_fallback(self):
-        es = fn.parse_feed("<rss><item><title>깨진 <b>피드</title><link>https://z.example/1</link></item>")
+        es = fn.parse_feed("<rss><item><title>Broken <b>feed</title><link>https://z.example/1</link></item>")
         self.assertEqual(es[0]["link"], "https://z.example/1")
 
 
 class HelperTest(unittest.TestCase):
     def test_dates(self):
         kst = fn.KST
-        self.assertEqual(fn.parse_date("Tue, 06 Oct 2026 10:05:00 +0900"), datetime(2026, 10, 6, 10, 5, tzinfo=kst))
+        self.assertEqual(fn.parse_date("Tue, 06 Oct 2026 01:05:00 GMT").astimezone(kst), datetime(2026, 10, 6, 10, 5, tzinfo=kst))
         self.assertEqual(fn.parse_date("2026-10-06T01:20:00Z").astimezone(kst).hour, 10)
-        self.assertEqual(fn.parse_date("2026.10.06 09:30"), datetime(2026, 10, 6, 9, 30, tzinfo=kst))
-        self.assertEqual(fn.parse_date("2026-10-06 09:30:00+0900").hour, 9)
-        self.assertIsNone(fn.parse_date("어제"))
+        self.assertEqual(fn.parse_date("2026-10-06 09:30:00-0400").astimezone(kst).hour, 22)
+        self.assertIsNone(fn.parse_date("yesterday"))
 
     def test_classify(self):
-        self.assertEqual(fn.classify("한은, 기준금리 동결", ""), "macro")
-        self.assertEqual(fn.classify("비트코인 급등에 코인 시장 들썩", ""), "crypto")
-        self.assertEqual(fn.classify("서울 아파트 전셋값 상승", ""), "estate")
-        self.assertEqual(fn.classify("코스피 2,900선 회복", ""), "market")
-        self.assertEqual(fn.classify("오늘의 날씨", "", "industry"), "industry")
-        self.assertEqual(fn.classify("오늘의 날씨", "", "엉뚱한값"), "general")
+        cases = {
+            "Fed holds rates steady as inflation cools": "macro",
+            "Bitcoin tops $125,000 as crypto rally extends": "crypto",
+            "US mortgage rates fall to lowest level in a year": "estate",
+            "Oil prices surge after OPEC+ agrees to deeper output cuts": "energy",
+            "Trump announces 100% tariff on foreign-made chips": "global",
+            "S&P 500 closes at record as Wall Street rallies": "market",
+            "Nvidia beats revenue estimates as AI demand soars": "industry",
+        }
+        for title, cat in cases.items():
+            self.assertEqual(fn.classify(title, ""), cat, title)
+        self.assertEqual(fn.classify("Weather turns cold", "", "industry"), "industry")
+        self.assertEqual(fn.classify("Weather turns cold", "", "nonsense"), "general")
+        # 낱말 경계: "Goldman" 은 금(gold)이 아니고, "oilfield" 도 아니다
+        self.assertNotEqual(fn.classify("Goldman hires new partner", ""), "energy")
+
+    def test_korea_flag(self):
+        self.assertTrue(fn.is_korea("Samsung Electronics profit beats estimates"))
+        self.assertTrue(fn.is_korea("South Korea's exports jump"))
+        self.assertTrue(fn.is_korea("Kospi hits record"))
+        self.assertFalse(fn.is_korea("Fed won't cut rates soon"))
 
     def test_canonical_url_strips_tracking(self):
         a = fn.make_id("http://m.example.com/a/1/?utm_source=rss&id=3#top")
@@ -83,58 +104,87 @@ class HelperTest(unittest.TestCase):
         self.assertIsNone(fn.safe_url(""))
 
     def test_shorten(self):
-        s = "가" * 200
+        s = "word " * 100
         self.assertTrue(fn.shorten(s).endswith("…"))
         self.assertLessEqual(len(fn.shorten(s)), fn.SUMMARY_LEN + 1)
-        self.assertEqual(fn.shorten("짧다"), "짧다")
+        self.assertEqual(fn.shorten("short"), "short")
 
-    BACKGROUND = """코스피, 외국인 매도에 2,850선 후퇴|코스닥 바이오주 강세에 870선 회복|뉴욕증시, 기술주 반등에 나스닥 1% 상승
-한은 총재 "물가 안정세 확인되면 금리 인하 검토"|9월 소비자물가 2.1% 상승…석 달 만에 2%대|수출 9월 600억달러 돌파…반도체 역대 최대
-서울 아파트값 30주 연속 상승…상승폭은 둔화|LH, 3기 신도시 본청약 일정 공개|삼성전자, 3분기 잠정실적 발표 앞두고 주가 약세
-현대차, 미국 조지아 공장 가동률 90% 돌파|LG에너지솔루션, GM과 배터리 합작 확대|비트코인 1억5천만원대 횡보…ETF 자금 유입
-업비트, 신규 상장 심사 강화|금융위, 가계대출 관리 강화 방안 발표|국제유가, 중동 긴장에 3% 급등|엔화 약세 지속…엔·달러 150엔 돌파
-트럼프, 유럽산 자동차 관세 25% 예고|중국 9월 제조업 PMI 49.8…6개월 연속 위축|SK하이닉스, HBM4 양산 시작|네이버, AI 검색 서비스 출시
-카카오뱅크 주담대 금리 인상|공모주 청약에 증거금 10조 몰려|국민연금, 국내 주식 비중 확대|조선 3사 수주 목표 조기 달성
-포스코, 철강 감산 검토|대한항공, 아시아나 통합 마무리|쿠팡, 3분기 매출 10조 돌파|전세사기 피해자 지원 특별법 개정안 통과"""
+    def test_numbers(self):
+        self.assertEqual(fn.numbers("US adds 254,000 jobs in September 2026"), {"254000"})
+        self.assertEqual(fn.numbers("Microsoft to invest $10 billion; shares up 2.5%"), {"10b", "2.5%"})
+        self.assertEqual(fn.numbers("3 things to know before Q3 earnings"), set())
+
+    def test_proper_nouns(self):
+        self.assertEqual(fn.proper_nouns("Bank of Japan hikes interest rates"), {"boj"})
+        self.assertEqual(fn.proper_nouns("Apple shares fall on weak iPhone demand in China"), {"apple", "china"})
+        self.assertIsNone(fn.proper_nouns("Fed Holds Rates Steady As Inflation Cools"))   # Title Case 는 판단 보류
+
+    BACKGROUND = """Stocks rise as investors await key inflation data|Oil prices slip as US crude inventories climb
+Gold hits record high on safe-haven demand|Microsoft to invest $10 billion in AI data centers in Japan
+Amazon plans to cut 14,000 corporate jobs|China's exports rise more than expected in September
+ECB holds rates, Lagarde says inflation fight nearly over|Bitcoin falls below $110,000 as ETF outflows mount
+US mortgage rates fall to lowest level in a year|Boeing strike ends after workers approve new contract
+Japan's Nikkei hits record as yen weakens|Treasury yields climb ahead of Fed meeting
+Samsung Electronics profit beats estimates on chip rebound|Meta shares slide after capex forecast raised
+UK inflation unexpectedly falls to 3.4%|Home sales in US rise for third straight month
+OpenAI valued at $500 billion in share sale|Goldman Sachs profit jumps on trading boom
+EU and US reach deal on steel tariffs|Retail sales rise 0.6% in August, beating forecasts"""
 
     PAIRS = [
-        ("[속보] 한은, 기준금리 연 2.50%로 동결", "한국은행 기준금리 2.50% 동결…환율 부담 고려", True),
-        ("트럼프, 중국산 반도체에 100% 관세 부과", "트럼프 \"중국 반도체 관세 100%\"…업계 긴장", True),
-        ("원·달러 환율 1,400원 돌파", "환율 1400원 넘어…원화 약세 지속", True),
-        ("삼성전자 3분기 영업익 12조…시장 예상 웃돌아", "삼성전자, 3분기 영업이익 12조원 \"어닝 서프라이즈\"", True),
-        ("정부, 수도권 공공택지 5만가구 공급 발표", "수도권에 5만가구 공급…정부 주택공급 대책", True),
-        ("코스피 2,900선 회복", "코스닥 900선 회복", False),
-        ("서울 아파트 전셋값 23주 연속 상승", "서울 아파트 매매가 3주 연속 상승", False),
-        ("삼성전자 3분기 영업이익 10조 돌파", "SK하이닉스 3분기 영업이익 7조 돌파", False),
-        ("네이버, AI 검색 서비스 출시", "카카오, AI 비서 서비스 출시", False),
+        ("Fed holds rates steady, signals two cuts later this year",
+         "Federal Reserve keeps interest rates unchanged, still sees two cuts in 2026", True),
+        ("Nvidia shares jump 6% after record quarterly revenue", "Nvidia stock rises 6% as data center sales hit record", True),
+        ("Oil prices surge after OPEC+ agrees to deeper output cuts", "OPEC+ agrees deeper oil output cuts, crude jumps", True),
+        ("US adds 254,000 jobs in September, beating forecasts",
+         "US economy added 254,000 jobs last month, far more than expected", True),
+        ("Trump announces 100% tariff on foreign-made chips",
+         "Trump says US will impose 100% tariffs on imported semiconductors", True),
+        ("Tesla deliveries beat estimates as buyers rush ahead of tax credit expiry",
+         "Tesla third-quarter deliveries top expectations on EV tax credit rush", True),
+        ("Intel shares surge on report of Apple investment talks", "Intel stock jumps after report Apple in talks to invest", True),
+        ("Gold hits record high above $4,000 an ounce", "Gold tops $4,000 for first time as investors seek safety", True),
+        ("Amazon to cut 14,000 corporate jobs", "Amazon plans 14,000 layoffs in corporate workforce", True),
+        ("BOJ raises rates to highest since 2008", "Bank of Japan hikes interest rates to 17-year high", True),
+        ("Oracle shares soar 30% on blowout cloud forecast", "Oracle stock surges 30% after huge cloud backlog", True),
+        ("Apple shares fall 3% on weak iPhone demand in China", "Tesla shares fall 3% on weak delivery numbers", False),
+        ("Fed's Powell says rate cuts not on preset course", "ECB's Lagarde says rate cuts not on preset course", False),
+        ("US inflation rises to 2.9% in August", "UK inflation falls to 3.4% in August", False),
+        ("Dow rises 300 points as tech rallies", "Nasdaq falls 1% as tech slides", False),
+        ("Bitcoin falls below $110,000", "Ether falls below $4,000", False),
+        ("China's exports rise more than expected in September", "China's imports fall unexpectedly in September", False),
+        ("Microsoft beats earnings estimates on cloud growth", "Alphabet beats earnings estimates on cloud growth", False),
+        ("Ford recalls 1.5 million vehicles", "GM recalls 1.5 million vehicles", False),
     ]
 
     def test_cluster_pairs(self):
-        bg = [{"id": "bg%d" % i, "title": t, "time": i} for i, t in enumerate(self.BACKGROUND.replace("\n", "|").split("|"))]
+        bg = [{"id": "bg%d" % i, "title": t, "time": i}
+              for i, t in enumerate(self.BACKGROUND.replace("\n", "|").split("|"))]
         for a, b, same in self.PAIRS:
-            items = bg + [{"id": "a", "title": a, "time": 100}, {"id": "b", "title": b, "time": 200}]
+            items = [dict(x) for x in bg] + [{"id": "a", "title": a, "time": 100}, {"id": "b", "title": b, "time": 200}]
             fn.cluster(items)
-            got = items[-2]["cluster"] == items[-1]["cluster"]
-            self.assertEqual(got, same, f"{a} | {b}")
-            if same:
-                self.assertEqual(items[-1]["cluster"], "a")   # 먼저 나온 기사가 대표
+            self.assertEqual(items[-2]["cluster"] == items[-1]["cluster"], same, f"{a} | {b}")
+        fn.cluster(bg)
+        self.assertEqual(len({x["cluster"] for x in bg}), len(bg))   # 서로 다른 배경 기사는 안 묶인다
 
-    def test_numbers(self):
-        self.assertEqual(fn.numbers("코스피 2,900선 회복…외국인 5천억 순매수"), {"2900선", "5천"})
-        self.assertEqual(fn.numbers("기준금리 연 2.50%로 동결"), {"2.50%"})
+    def test_cluster_representative_is_earliest(self):
+        items = [{"id": "late", "title": "Nvidia stock rises 6% as data center sales hit record", "time": 200},
+                 {"id": "early", "title": "Nvidia shares jump 6% after record quarterly revenue", "time": 100}]
+        fn.cluster(items)
+        self.assertEqual({it["cluster"] for it in items}, {"early"})
 
     def test_keywords_count_stories_not_articles(self):
         now = datetime(2026, 10, 6, 12, tzinfo=fn.KST)
         t = int(now.timestamp())
         items = [
-            {"id": "1", "cluster": "x", "title": "반도체 수출 증가", "time": t},
-            {"id": "2", "cluster": "x", "title": "반도체 수출이 늘었다", "time": t},
-            {"id": "3", "cluster": "y", "title": "반도체 업황 회복", "time": t},
-            {"id": "4", "cluster": "z", "title": "금리 동결", "time": t - 3 * 86400},
+            {"id": "1", "cluster": "x", "title": "Nvidia shares jump on AI demand", "time": t},
+            {"id": "2", "cluster": "x", "title": "Nvidia stock rises as AI demand grows", "time": t},
+            {"id": "3", "cluster": "y", "title": "Nvidia's China sales face new limits", "time": t},
+            {"id": "4", "cluster": "z", "title": "Tariffs hit retailers", "time": t - 3 * 86400},
         ]
-        kw = dict((w, c) for w, c in fn.keywords(items, now))
-        self.assertEqual(kw.get("반도체"), 2)
-        self.assertNotIn("금리", kw)
+        kw = dict(fn.keywords(items, now))
+        self.assertEqual(kw.get("Nvidia"), 2)
+        self.assertNotIn("Tariffs", kw)
+        self.assertNotIn("shares", kw)
 
     def test_market_from_chart(self):
         day = 86400
@@ -144,12 +194,9 @@ class HelperTest(unittest.TestCase):
             "indicators": {"quote": [{"close": [90.0, 100.0, None]}]},
         }
         row = fn.market_from_chart({"symbol": "X", "name": "엑스"}, res)
-        # 오늘 봉의 종가가 아직 없으면 마지막 종가가 전일 종가
-        self.assertEqual(row["change"], 10.0)
-        self.assertEqual(row["pct"], 10.0)
+        self.assertEqual((row["change"], row["pct"]), (10.0, 10.0))
         res["indicators"]["quote"][0]["close"] = [90.0, 100.0, 108.0]
-        row = fn.market_from_chart({"symbol": "X", "name": "엑스"}, res)
-        self.assertEqual(row["change"], 10.0)
+        self.assertEqual(fn.market_from_chart({"symbol": "X", "name": "엑스"}, res)["change"], 10.0)
 
 
 class RunTest(unittest.TestCase):
@@ -157,12 +204,12 @@ class RunTest(unittest.TestCase):
         self.tmp = tempfile.mkdtemp()
         self.cfg = os.path.join(self.tmp, "feeds.json")
         feeds = [
-            {"source": "시험경제", "hint": "general", "url": "u1", "file": "rss_yna.xml"},
-            {"source": "아톰일보", "hint": "general", "url": "u2", "file": "atom_hk.xml"},
-            {"source": "옛인코딩", "hint": "industry", "url": "u3", "file": "rss_euckr.xml"},
-            {"source": "깨진신문", "hint": "general", "url": "u4", "file": "rss_broken.xml"},
-            {"source": "모음", "hint": "general", "url": "u5", "file": "gnews.xml", "aggregator": True},
-            {"source": "없는피드", "hint": "general", "url": "u6", "file": "missing.xml"},
+            {"source": "Test Wire", "hint": "general", "url": "u1", "file": "rss_cnbc.xml"},
+            {"source": "Atom Times", "hint": "general", "url": "u2", "file": "atom_ft.xml"},
+            {"source": "Latin Post", "hint": "industry", "url": "u3", "file": "rss_latin1.xml"},
+            {"source": "Broken Daily", "hint": "general", "url": "u4", "file": "rss_broken.xml"},
+            {"source": "Aggregator", "hint": "general", "url": "u5", "file": "gnews.xml", "aggregator": True},
+            {"source": "Missing", "hint": "general", "url": "u6", "file": "missing.xml"},
         ]
         with open(self.cfg, "w", encoding="utf-8") as f:
             json.dump({"feeds": feeds}, f, ensure_ascii=False)
@@ -171,8 +218,10 @@ class RunTest(unittest.TestCase):
     def tearDown(self):
         shutil.rmtree(self.tmp)
 
-    def run_once(self, now=NOW):
-        return fn.main(["--config", self.cfg, "--out", self.out, "--offline-dir", FIX, "--no-markets", "--now", now])
+    def run_once(self, now=NOW, *extra):
+        with mock.patch("builtins.print"):
+            return fn.main(["--config", self.cfg, "--out", self.out, "--offline-dir", FIX, "--no-markets",
+                            "--no-translate", "--now", now, *extra])
 
     def load(self, *p):
         with open(os.path.join(self.out, *p), encoding="utf-8") as f:
@@ -185,30 +234,33 @@ class RunTest(unittest.TestCase):
         self.assertEqual([f["ok"] for f in idx["feeds"]], [True, True, True, True, True, False])
         today = self.load("days", "2026-10-06.json")["items"]
         titles = [it["title"] for it in today]
-        # 최신순
         self.assertEqual([it["time"] for it in today], sorted((it["time"] for it in today), reverse=True))
-        # 링크 없는 기사, 매체 없는 모음 기사, 직접 피드와 겹치는 모음 기사는 버린다
-        self.assertNotIn("제목만 있고 링크가 없는 기사", titles)
-        self.assertNotIn("매체 이름이 없는 기사", titles)
-        self.assertEqual(titles.count("코스피, 외국인 순매수에 2,900선 회복"), 1)
-        china = next(it for it in today if it["title"].startswith("미국 관세"))
-        self.assertEqual((china["source"], china["via"], china["cat"]), ("다른일보", "모음", "global"))
-        # 같은 사건(금리 동결)은 매체가 달라도 한 묶음
-        rate = [it for it in today if "동결" in it["title"]]
-        self.assertEqual(len({it["source"] for it in rate}), 2)
-        self.assertEqual(len({it["cluster"] for it in rate}), 1)
+        # 링크 없는 기사, 매체 없는 모음 기사, 직접 받은 기사와 겹치는 모음 기사는 버린다
+        self.assertNotIn("A headline without a link", titles)
+        self.assertNotIn("A story with no outlet name", titles)
+        self.assertEqual(titles.count("Nvidia shares jump 6% after record quarterly revenue"), 1)
+        tariff = next(it for it in today if it["title"].startswith("Trump announces"))
+        self.assertEqual((tariff["source"], tariff["via"], tariff["cat"]), ("Reuters", "Aggregator", "global"))
+        # 같은 사건(연준 동결)은 매체가 달라도 한 묶음
+        fed = [it for it in today if "two cuts" in it["title"]]
+        self.assertEqual(len({it["source"] for it in fed}), 2)
+        self.assertEqual(len({it["cluster"] for it in fed}), 1)
+        samsung = next(it for it in today if it["title"].startswith("Samsung"))
+        self.assertEqual(samsung.get("kr"), 1)
         self.assertTrue(all(it["url"].startswith("https://") for it in today))
+        # 2026-10-05 14:10Z = 10-05 23:10 KST, 22:00Z = 10-06 07:00 KST
         yest = self.load("days", "2026-10-05.json")["items"]
-        self.assertEqual(yest[0]["cat"], "estate")
+        self.assertEqual([it["cat"] for it in yest], ["estate"])
         self.assertNotIn("&nbsp;", yest[0]["summary"])
+        self.assertTrue(idx["keywords"])
 
     def test_second_run_is_idempotent(self):
         self.run_once()
-        before = {n: os.path.getmtime(os.path.join(self.out, "days", n)) for n in os.listdir(os.path.join(self.out, "days"))}
+        days = os.path.join(self.out, "days")
+        before = {n: os.path.getmtime(os.path.join(days, n)) for n in os.listdir(days)}
         idx_before = self.load("index.json")
         self.run_once("2026-10-06T13:00:00+09:00")
-        after = {n: os.path.getmtime(os.path.join(self.out, "days", n)) for n in os.listdir(os.path.join(self.out, "days"))}
-        self.assertEqual(before, after)
+        self.assertEqual(before, {n: os.path.getmtime(os.path.join(days, n)) for n in os.listdir(days)})
         self.assertEqual(idx_before, self.load("index.json"))
 
     def test_old_days_are_pruned(self):
@@ -219,8 +271,90 @@ class RunTest(unittest.TestCase):
         self.assertFalse(os.path.exists(os.path.join(self.out, "days", "2026-08-01.json")))
 
     def test_all_feeds_failing_returns_error(self):
-        self.assertEqual(fn.main(["--config", self.cfg, "--out", self.out, "--offline-dir", self.tmp,
-                                  "--no-markets", "--now", NOW]), 1)
+        with mock.patch("builtins.print"):
+            rc = fn.main(["--config", self.cfg, "--out", self.out, "--offline-dir", self.tmp,
+                          "--no-markets", "--no-translate", "--now", NOW])
+        self.assertEqual(rc, 1)
+
+
+def fake_response(rows, stop="end_turn"):
+    text = types.SimpleNamespace(type="text", text=json.dumps({"items": rows}, ensure_ascii=False))
+    return types.SimpleNamespace(stop_reason=stop, content=[text])
+
+
+class FakeClient:
+    """client.beta.messages.create 만 흉내 낸다. 받은 요청을 calls 에 남긴다."""
+
+    def __init__(self, responder):
+        self.calls = []
+        outer = self
+
+        class _Messages:
+            def create(self, **kw):
+                outer.calls.append(kw)
+                return responder(json.loads(kw["messages"][0]["content"]))
+
+        self.beta = types.SimpleNamespace(messages=_Messages())
+
+
+@unittest.skipIf(translate is None, "anthropic 패키지가 없다")
+class TranslateTest(unittest.TestCase):
+    def items(self, n):
+        return [{"id": f"i{k}", "title": f"Headline {k}", "summary": f"Summary {k}" if k % 2 else "", "time": k}
+                for k in range(n)]
+
+    def test_fills_korean_fields_in_batches(self):
+        def respond(batch):
+            return fake_response([{"id": b["id"], "title": "제목 " + b["id"], "summary": "요약" if b["summary"] else ""}
+                                  for b in batch])
+        client = FakeClient(respond)
+        items = self.items(30)
+        self.assertEqual(translate.translate_items(items, client=client, log=lambda *_: None), 30)
+        self.assertEqual(len(client.calls), 2)                      # 25 + 5
+        self.assertEqual(items[3]["title_ko"], "제목 i3")
+        self.assertEqual(items[3]["summary_ko"], "요약")
+        self.assertNotIn("summary_ko", items[2])                     # 요약이 없던 기사
+        call = client.calls[0]
+        self.assertEqual(call["model"], translate.MODEL)
+        self.assertEqual(call["output_config"]["format"]["type"], "json_schema")
+        self.assertEqual(call["fallbacks"], "default")
+
+    def test_refusal_and_missing_rows_leave_english(self):
+        seq = iter([fake_response([], stop="refusal"),
+                    fake_response([{"id": "i25", "title": "번역", "summary": ""}])])
+        client = FakeClient(lambda batch: next(seq))
+        items = self.items(27)
+        done = translate.translate_items(items, client=client, log=lambda *_: None)
+        self.assertEqual(done, 1)
+        self.assertNotIn("title_ko", items[0])
+        self.assertEqual(items[25]["title_ko"], "번역")
+
+    def test_connection_error_stops(self):
+        import anthropic
+
+        def boom(batch):
+            raise anthropic.APIConnectionError(request=mock.Mock())
+        client = FakeClient(boom)
+        self.assertEqual(translate.translate_items(self.items(60), client=client, log=lambda *_: None), 0)
+        self.assertEqual(len(client.calls), 1)
+
+    def test_run_calls_translator_only_with_key(self):
+        tmp = tempfile.mkdtemp()
+        try:
+            cfg = os.path.join(tmp, "feeds.json")
+            with open(cfg, "w") as f:
+                json.dump({"feeds": [{"source": "W", "hint": "general", "url": "u", "file": "rss_cnbc.xml"}]}, f)
+            args = ["--config", cfg, "--out", os.path.join(tmp, "d"), "--offline-dir", FIX, "--no-markets", "--now", NOW]
+            with mock.patch.object(translate, "translate_items", return_value=0) as tr, mock.patch("builtins.print"):
+                with mock.patch.dict(os.environ, {"ANTHROPIC_API_KEY": ""}):
+                    fn.main(args)
+                tr.assert_not_called()
+                with mock.patch.dict(os.environ, {"ANTHROPIC_API_KEY": "test"}):
+                    fn.main(args)
+                tr.assert_called_once()
+                self.assertEqual(len(tr.call_args[0][0]), 3)
+        finally:
+            shutil.rmtree(tmp)
 
 
 if __name__ == "__main__":
