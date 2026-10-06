@@ -96,7 +96,9 @@ async function load() {
   if (!res.ok) throw new Error(`HTTP ${res.status}`);
   DATA = await res.json();
   ITEMS = (DATA.items || []).map((it) => ({ ...it, uw: it.uw || [] }));
+  BY_ID.clear();
   for (const it of ITEMS) BY_ID.set(it.id, it);
+  load.at = Date.now();
 }
 
 /** 기업 분석(corp.json)은 크다 — 일정을 먼저 그린 뒤 읽어 종목에 붙이고, 열린 상세가 있으면 그 칸만 다시 그린다 */
@@ -264,6 +266,23 @@ function renderHeadline() {
       : `예정된 청약이 없어요<span class="l2 muted">일정이 잡히면 여기에 알려 드려요</span>`;
   }
   $("hLine").innerHTML = line;
+  // 오늘 일정이면 남은 시간을 센다(마감 16시 · 시작 10시 · 시초가 9시)
+  renderHeadline.goal = !ITEMS.length ? null : endToday.length ? ["16:00", "청약 마감까지", "청약이 마감됐어요"]
+    : startToday.length ? ["10:00", "청약 시작까지", "지금 청약할 수 있어요 · 16시까지"]
+    : listToday.length ? ["09:00", "시초가까지", "거래가 시작됐어요"] : null;
+  tickHeadline();
+}
+/** 한국 시각 HH:MM 까지 남은 시간을 "3시간 12분"으로 */
+function tickHeadline() {
+  const g = renderHeadline.goal;
+  let el = $("hCd");
+  if (!g) { el?.remove(); return; }
+  if (!el) { el = document.createElement("p"); el.id = "hCd"; el.className = "cd"; $("hLine").after(el); }
+  const now = new Date(Date.now() + 9 * 3600e3), [h, m] = g[0].split(":").map(Number);
+  const left = (h * 60 + m) - (now.getUTCHours() * 60 + now.getUTCMinutes());
+  el.classList.toggle("over", left <= 0);
+  el.classList.toggle("soon", left > 0 && left <= 60);
+  el.innerHTML = left > 0 ? `<i aria-hidden="true"></i>${g[1]} <b class="num">${left >= 60 ? `${Math.floor(left / 60)}시간 ` : ""}${left % 60}분</b>` : `<i aria-hidden="true"></i>${g[2]}`;
 }
 
 function renderSummary() {
@@ -1047,7 +1066,7 @@ function openDetail(id, tab) {
       </div>
       <div class="btnrow mt12"><button class="ghost primary sm" type="button" data-act="ics">${ico("bell", "sm")}달력에 알림 추가</button>
         <button class="ghost sm" type="button" data-act="calc">${ico("calc", "sm")}계산기에서 자세히</button>
-        <button class="ghost sm" type="button" data-act="rec">${ico("note", "sm")}내 청약에 기록</button></div></div>` : "",
+        <button class="ghost sm" type="button" data-act="applied">${ico("check", "sm")}${self.JOURNEY ? JOURNEY.applyLabel(it) : "청약했어요"}</button></div></div>` : "",
     list: listOn ? `${sellCoach(it)}
       ${it.list_date && TODAY >= it.list_date ? `<div class="card pad"><h3>상장 결과</h3><div class="stats c3 mt12">
         ${st("시초가", won(it.open), pct(p.open, 1), cls(p.open))}
@@ -1058,7 +1077,7 @@ function openDetail(id, tab) {
         ${st("환불일", it.refund ? mdw(it.refund) : "–", "증거금 돌아옴")}
         ${st("상장일", it.list_date ? mdw(it.list_date) : "미정", "09:00 시초가")}</div></div>` : ""}
       ${lockupSchedule(it) ? `<div class="card pad">${lockupSchedule(it)}</div>` : ""}
-      <div class="btnrow"><button class="ghost sm" type="button" data-act="rec">${ico("note", "sm")}내 청약에 기록</button></div>` : "",
+      <div class="btnrow"><button class="ghost sm" type="button" data-act="applied">${ico("check", "sm")}${self.JOURNEY ? JOURNEY.applyLabel(it) : "내 청약에 기록"}</button></div>` : "",
   };
   const panes = PANES.filter(([k]) => html[k] && html[k].trim());
   let cur = tab || (sameItem && openDetail.tab) || "sum";
@@ -1077,6 +1096,7 @@ function openDetail(id, tab) {
     </div>
     <div class="dlg-body">
       ${detailHero(it)}
+      ${self.JOURNEY ? JOURNEY.detailState(it) : ""}
       ${panes.length > 1 ? `<div class="dtabs" role="tablist" aria-label="상세 보기">${panes.map(([k, t]) => `<button type="button" role="tab" id="dt-${k}" aria-controls="dp-${k}" aria-selected="${k === cur}" tabindex="${k === cur ? 0 : -1}" data-tab="${k}">${t}</button>`).join("")}</div>` : ""}
       ${panes.map(([k]) => `<div class="dpane" role="tabpanel" id="dp-${k}" aria-labelledby="dt-${k}" data-pane="${k}" ${k === cur ? "" : "hidden"}>${html[k]}</div>`).join("")}
       <p class="disc">점수와 판정은 참고용입니다. 일정과 숫자는 늦거나 바뀔 수 있으니 청약 전 증권사 공지와 투자설명서를 확인하세요.</p>
@@ -1714,7 +1734,7 @@ function initMy() {
     }
     if (!rec.name) return;
     const i = RECS.findIndex((r) => r.id === rec.id);
-    if (i >= 0) RECS[i] = rec; else RECS.push(rec);
+    if (i >= 0) RECS[i] = { ...RECS[i], ...rec }; else RECS.push(rec); // 여정 기록의 iid·보유 표시는 지키고 고친다
     saveRecs(); resetForm(); $("myAdd").open = false;
     toast(i >= 0 ? "기록을 고쳤습니다" : "기록을 추가했습니다");
   });
@@ -1808,6 +1828,21 @@ function initPwa() {
   initDetail();
   emit("ipo:ready");
   loadCorp();
+  setInterval(tickHeadline, 20e3);
+  // 다른 앱을 보다 돌아오면(15분 넘게 지났을 때) 새 일정을 받아 온다
+  document.addEventListener("visibilitychange", async () => {
+    if (document.hidden || !load.at || Date.now() - load.at < 15 * 60e3) return;
+    const was = DATA.updated;
+    try { await load(); } catch (e) { return; }
+    tickHeadline();
+    if (DATA.updated === was) return;
+    scoreCache.clear(); PAST = null;
+    renderFresh(); renderHeadline(); renderSummary(); renderToday(); renderFeature(); renderList(); renderCal(); renderMy();
+    if (shown("market")) renderMarket();
+    emit("ipo:ready");
+    loadCorp();
+    toast("새 일정을 받아 왔어요");
+  });
   // 자정을 넘겨 열어 둔 탭에서도 D-day 가 맞게
   setInterval(() => {
     const t = kstToday();
