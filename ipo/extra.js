@@ -483,15 +483,130 @@ function initFeed() {
   });
 }
 
+/* ---------------------------------------------------------------- 통합 검색: 종목 · 주관사 · 업종 · 초성(ㅈㅋㅅㅌ) · 화면 바로 가기 */
+const CHO = "ㄱㄲㄴㄷㄸㄹㅁㅂㅃㅅㅆㅇㅈㅉㅊㅋㅌㅍㅎ";
+const choOf = (s) => [...s].map((c) => { const k = c.charCodeAt(0) - 0xac00; return k >= 0 && k < 11172 ? CHO[Math.floor(k / 588)] : c; }).join("");
+const JUMPS = [["schedule", "청약 일정", "cal"], ["calendar", "달력 · 내 달력 앱에 구독", "cal"], ["acct", "계좌 준비 — 미리 만들 증권사", "wallet"],
+  ["plan", "자금 플래너", "calc"], ["calc", "청약 계산기", "calc"], ["market", "시장 온도 · 판정별 성적", "bolt"], ["method", "채점 기준", "info"],
+  ["my", "내 청약 기록", "note"], ["guide", "공모주린이 가이드", "info"]];
+const STAGE_RANK = { sub: 0, fc: 1, pre: 1, wait: 2, listed: 3, past: 4 };
+let RECENT = asArr(store.get("ipo.recent", [])).map(String).slice(0, 8);
+
+function initSearch() {
+  const dlg = document.createElement("dialog");
+  dlg.id = "sDlg";
+  dlg.setAttribute("aria-label", "검색");
+  dlg.innerHTML = `<div class="s-in"><div class="s-bar">${ico("search")}<input id="sQ" type="search" placeholder="종목 · 증권사 · 초성(ㅈㅋㅅㅌ)" autocomplete="off" enterkeyhint="search"
+      role="combobox" aria-expanded="true" aria-controls="sRes" aria-autocomplete="list"><button class="ghost sm" type="button" data-x>닫기</button></div>
+    <div class="s-res" id="sRes" role="listbox" aria-label="검색 결과"></div></div>`;
+  document.body.appendChild(dlg);
+  const inp = dlg.querySelector("#sQ"), res = dlg.querySelector("#sRes");
+  let act = 0;
+  const norm = (x) => String(x || "").replace(/\s+/g, "").toLowerCase();
+  const mark = (name, q) => {
+    if (!q) return esc(name);
+    let i = name.toLowerCase().indexOf(q);
+    if (i < 0 && /^[ㄱ-ㅎ]+$/.test(q)) i = choOf(name).indexOf(q); // 초성은 글자마다 하나라 자리가 같다
+    return i < 0 ? esc(name) : `${esc(name.slice(0, i))}<mark>${esc(name.slice(i, i + q.length))}</mark>${esc(name.slice(i + q.length))}`;
+  };
+  const row = (it, q, why = "") => {
+    const s = stage(it), d = s.key === "wait" || s.key === "listed" || s.key === "past" ? it.list_date : it.sub_start;
+    return `<li role="option" id="so-${esc(it.id)}" data-id="${esc(it.id)}">${miniRing(scoreOf(it))}<span class="s-t"><b>${mark(it.name, q)}</b>
+      <small><span class="stat ${s.key}"><span class="dot"></span>${esc(s.label)}</span>${d ? ` ${mdw(d)}` : ""}${why ? ` · ${why}` : it.uw[0] ? ` · ${esc(it.uw[0])}` : ""}</small></span></li>`;
+  };
+  const jump = ([id, t, ic]) => `<li role="option" id="so-j-${id}" data-jump="${id}"><span class="s-ic">${ico(ic)}</span><span class="s-t"><b>${esc(t)}</b></span>${ico("right", "sm")}</li>`;
+  const sec = (t, xs) => (xs.length ? `<h4>${t}</h4><ul>${xs.join("")}</ul>` : "");
+  function render() {
+    const raw = inp.value.trim(), q = norm(raw);
+    let html;
+    if (!q) {
+      const rec = RECENT.map((id) => BY_ID.get(id)).filter(Boolean).slice(0, 5);
+      const up = ITEMS.filter((it) => !it.spac && it.sub_start && (it.sub_end || it.sub_start) >= TODAY).sort((a, b) => a.sub_start.localeCompare(b.sub_start)).slice(0, 5);
+      html = sec("최근 본 종목", rec.map((it) => row(it, ""))) + sec("다가오는 청약", up.map((it) => row(it, ""))) + sec("바로 가기", JUMPS.map(jump));
+    } else {
+      const cho = /^[ㄱ-ㅎ]+$/.test(q);
+      const hits = [];
+      for (const it of ITEMS) {
+        const n = norm(it.name);
+        let w = -1, why = "";
+        if (n.startsWith(q)) w = 0; else if (n.includes(q)) w = 1;
+        else if (cho && choOf(n).includes(q)) w = choOf(n).startsWith(q) ? 0 : 1;
+        else if (it.code && it.code.includes(q)) w = 1;
+        else { const u = it.uw.find((x) => norm(x).includes(q)); if (u) { w = 2; why = `주관 ${esc(u)}`; } else if (it.sector && norm(it.sector).includes(q)) { w = 3; why = esc(it.sector); } }
+        if (w >= 0) hits.push({ it, w, why, r: STAGE_RANK[stage(it).key] ?? 5 });
+      }
+      hits.sort((a, b) => a.w - b.w || a.r - b.r || (b.it.sub_start || "").localeCompare(a.it.sub_start || ""));
+      const jm = JUMPS.filter(([, t]) => norm(t).includes(q) || (cho && choOf(norm(t)).includes(q)));
+      html = hits.length || jm.length ? sec(`종목 ${hits.length}`, hits.slice(0, 30).map((h) => row(h.it, q, h.why))) + sec("바로 가기", jm.map(jump))
+        : `<p class="empty">'${esc(raw)}'에 맞는 종목이 없어요. 이름 일부나 초성, 증권사 이름으로 찾아 보세요.</p>`;
+    }
+    res.innerHTML = html;
+    act = 0; mark1();
+  }
+  const opts = () => [...res.querySelectorAll("[role=option]")];
+  function mark1() {
+    opts().forEach((o, i) => o.setAttribute("aria-selected", i === act));
+    const o = opts()[act];
+    if (o) { inp.setAttribute("aria-activedescendant", o.id); o.scrollIntoView({ block: "nearest" }); } else inp.removeAttribute("aria-activedescendant");
+  }
+  function choose(o) {
+    if (!o) return;
+    dlg.close();
+    if (o.dataset.id) openDetail(o.dataset.id);
+    else { const id = o.dataset.jump; showScreen.byUser = true; history.pushState(null, "", `#${id}`); showScreen(screenOf(id), id, true); }
+  }
+  inp.addEventListener("input", render);
+  inp.addEventListener("keydown", (e) => {
+    const n = opts().length;
+    if (e.key === "ArrowDown" && n) { e.preventDefault(); act = (act + 1) % n; mark1(); }
+    else if (e.key === "ArrowUp" && n) { e.preventDefault(); act = (act - 1 + n) % n; mark1(); }
+    else if (e.key === "Enter") { e.preventDefault(); choose(opts()[act]); }
+  });
+  res.addEventListener("click", (e) => choose(e.target.closest("[role=option]")));
+  dlg.addEventListener("click", (e) => { if (e.target === dlg || e.target.closest("[data-x]")) dlg.close(); });
+  const open = () => { if (dlg.open) return; inp.value = ""; render(); dlg.showModal(); inp.focus(); };
+  $("searchBtn").addEventListener("click", open);
+  initSearch.open = open;
+  // 상세를 닫을 때 그 종목을 '최근 본 종목'에 넣는다
+  $("dlg").addEventListener("close", () => {
+    const id = openDetail.cur;
+    if (!id) return;
+    RECENT = [id, ...RECENT.filter((x) => x !== id)].slice(0, 8);
+    store.set("ipo.recent", RECENT);
+  });
+}
+
+/* 휴대폰 상세: 옆으로 밀어 요약 · 기업 · 청약 · 상장 탭을 넘긴다 */
+function tabSwipe(dlg) {
+  let x0 = 0, y0 = 0, ok = false;
+  dlg.addEventListener("touchstart", (e) => {
+    const t = e.touches[0];
+    ok = isPhone() && e.touches.length === 1 && !!e.target.closest(".dpane") && !e.target.closest(".tscroll, .chips, .rail, input, select, textarea, .fig, button");
+    x0 = t.clientX; y0 = t.clientY;
+  }, { passive: true });
+  dlg.addEventListener("touchend", (e) => {
+    if (!ok) return;
+    ok = false;
+    const t = e.changedTouches[0], dx = t.clientX - x0, dy = t.clientY - y0;
+    if (Math.abs(dx) < 70 || Math.abs(dx) < Math.abs(dy) * 2) return;
+    const tabs = [...dlg.querySelectorAll(".dtabs [data-tab]")];
+    const i = tabs.findIndex((b) => b.getAttribute("aria-selected") === "true");
+    const n = tabs[i + (dx < 0 ? 1 : -1)];
+    if (!n) return;
+    dlg.dataset.dir = dx < 0 ? "next" : "prev";
+    n.click();
+    try { navigator.vibrate?.(6); } catch (er) { /* 진동 없는 기기 */ }
+  }, { passive: true });
+}
+
 function initKeys() {
-  $("searchBtn").addEventListener("click", () => { showScreen.byUser = true; history.pushState(null, "", "#schedule"); showScreen("schedule", "schedule", true); $("q").focus({ preventScroll: true }); });
   // 머리 아래 그림자는 내렸을 때만
   const hdr = $("hdr");
   const onScroll = () => hdr.classList.toggle("scrolled", window.scrollY > 6);
   window.addEventListener("scroll", onScroll, { passive: true }); onScroll();
   document.addEventListener("keydown", (e) => {
     if (e.key === "/" && !/INPUT|TEXTAREA|SELECT/.test(document.activeElement.tagName)) {
-      e.preventDefault(); showScreen("schedule", "schedule", true); $("q").focus({ preventScroll: true });
+      e.preventDefault(); initSearch.open();
     }
   });
 }
@@ -549,5 +664,7 @@ initScreens();
 sheetDrag($("dlg"));
 sheetDrag($("cmpDlg"));
 initSteppers();
+initSearch();
 initKeys();
 initFeed();
+tabSwipe($("dlg"));
