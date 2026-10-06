@@ -5,7 +5,8 @@
 
 - 배포: https://richroro.github.io/human/
 - 소스: `src/main.js` → esbuild 로 묶은 `app.js` 한 파일 (three.js r186 포함)
-- 인물: [Microsoft Rocketbox](https://github.com/microsoft/Microsoft-Rocketbox) `Female_Adult_03` (MIT, `assets/LICENSE-Rocketbox.md`)
+- 인물·모션: [Microsoft Rocketbox](https://github.com/microsoft/Microsoft-Rocketbox) `Female_Adult_03` 과 같은 뼈대의 여성 모션캡처 24개 (MIT, `assets/LICENSE-Rocketbox.md`)
+- 행동 설계 참고: [met4citizen/TalkingHead](https://github.com/met4citizen/TalkingHead) (MIT) — 눈맞춤 비율, 시선을 따라가는 머리, 표정 기저 변동
 
 ## 되는 것
 
@@ -20,6 +21,19 @@
 ## 사람처럼 보이게 하는 것들
 
 움직임이 외모보다 더 많이 "사람 같음"을 좌우한다. 그래서 대부분의 코드가 행동에 있다.
+
+- **몸 = 진짜 사람의 모션캡처**: 대기 10종(체중 이동·숨·머리 넘기기), 말하기 손짓 7종, 듣기·끄덕임 6종을 상태에 따라
+  크로스페이드로 잇는다(`BODY`). 긴 클립은 매번 다른 지점에서 시작하고 9~20초마다 바꾼다.
+  글을 입력하는 동안엔 '듣기' 클립으로 귀를 기울이고, 말이 끝나면 60% 확률로 끄덕인다.
+- **층 쌓기**: 모션캡처가 정한 자세 위에 `addWorldRot`(local' = P⁻¹·R·P·local)으로 머리 보정·호흡을 덧붙이고,
+  눈 뼈와 얼굴 모프는 그 위에서 따로 계산한다. 얼굴 뼈 트랙은 변환 때 지워서 모프와 싸우지 않는다.
+- **머리 보정**: 모캡 머리가 최대 20° 돌아가므로 바라보는 지점과의 차이를 응시 중 80%, 회피 중 50%만 보정한다.
+  눈은 40ms 만에, 머리가 보는 지점은 0.5초 남짓 늦게 따라가서 '눈이 먼저, 고개가 나중'이 된다.
+- **눈맞춤 비율**: 계속 쳐다보면 오히려 부자연스럽다(TalkingHead 기본값은 대기 20%·말할 때 50%).
+  여기선 응시 1.8~5.5초 ↔ 회피 0.7~2.6초를 번갈아 하고(응시로 돌아올 확률 55%, 듣는 중 85%), 회피는 옆·아래가 흔하고 생각할 땐 위로.
+  말할 때는 구(문장 조각)를 꺼낼 때 45~60% 확률로 시선을 돌렸다가 구 끝에서 다시 맞춘다. 질문 끝에선 눈썹이 오르고 고개가 살짝 든다.
+- **표정 기저 변동**: 1~4초마다 입술 말기·다물기·입꼬리·눈가·눈썹 중 몇 개를 0~0.24 사이로 바꾼다. 가만히 있는 얼굴도 완전히 멈춰 있지 않다.
+- **카메라맨**: 몸이 움직여도 얼굴이 화면에 머물도록 머리 위치를 1초 남짓 늦게 따라가고, 앞으로 숙이면 같이 물러난다.
 
 - **깜빡임**: 평균 3초 남짓, 꼬리가 긴 분포로 간격을 뽑는다. 닫힐 때 75ms, 뜰 때 더 천천히. 14% 확률로 두 번 연속.
   시선을 크게 옮길 때 따라서 깜빡이고, 말할 때 더 자주 깜빡인다.
@@ -47,6 +61,10 @@ npm i three@0.186 esbuild playwright-core @gltf-transform/cli
 npx gltf-transform meshopt raw.glb assets/avatar.glb
 python3 tools/textures.py <tga 폴더> assets
 ```
+
+모션은 `tools/convert-anims.js` 로 만든다. 각 클립에서 회전 트랙만 남기고(얼굴 뼈·발자국 뼈 제외),
+골반 위치는 클립 평균을 아바타 쉬는 위치에 맞춘 상대값으로 바꾼다. 그다음
+`gltf-transform resample` → `meshopt` 로 13.7MB → 2.4MB. 얼굴이 먼저 뜨고 모션은 뒤이어 받는다.
 
 ## 빌드
 
