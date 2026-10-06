@@ -14,6 +14,9 @@ import { ShaderChunk } from 'three';
 import { buildStrands, HAIR_STRANDS } from './hair.js';
 
 const $ = s => document.querySelector(s);
+// 배포 버전. 파일 주소에 붙여 휴대폰 캐시가 예전 파일을 섞어 쓰지 않게 하고, 화면 위에도 보여 준다.
+const VERSION = '6';
+const asset = name => `assets/${name}?v=${VERSION}`;
 const clamp = (x, a, b) => Math.min(b, Math.max(a, x));
 const clamp01 = x => clamp(x, 0, 1);
 const lerp = (a, b, t) => a + (b - a) * t;
@@ -82,7 +85,7 @@ key.castShadow = true;
 key.shadow.mapSize.set(2048, 2048);
 Object.assign(key.shadow.camera, { left: -45, right: 45, top: 45, bottom: -45, near: 50, far: 450 });
 key.shadow.bias = -0.0008;
-key.shadow.normalBias = 0.45;
+key.shadow.normalBias = matchMedia('(pointer: coarse)').matches ? 0.8 : 0.45;
 key.shadow.radius = 7;
 key.shadow.blurSamples = 16;
 scene.add(key, key.target);
@@ -246,7 +249,7 @@ manager.onProgress = (url, loaded, total) => { $('#loadbar').style.width = (load
 const texLoader = new THREE.TextureLoader(manager);
 const maxAniso = renderer.capabilities.getMaxAnisotropy();
 const tex = (name, srgb = false) => {
-  const t = texLoader.load('assets/' + name);
+  const t = texLoader.load(asset(name));
   if (srgb) t.colorSpace = THREE.SRGBColorSpace;
   t.anisotropy = Math.min(8, maxAniso);
   return t;
@@ -294,12 +297,16 @@ hairify(M.headskin, { mask: '1.0 - smoothstep( 0.03, 0.10, hLum )', s1: 0.07, s2
 
 const rig = { ready: false };
 const gltfLoader = new GLTFLoader(manager).setMeshoptDecoder(MeshoptDecoder);
-gltfLoader.load('assets/avatar.glb', gltf => {
+gltfLoader.load(asset('avatar.glb'), gltf => {
   const root = gltf.scene;
   const faces = []; // 얼굴(피부·눈·속눈썹) 프리미티브는 같은 모프를 공유한다
   root.traverse(o => {
     if (!o.isMesh) return;
     o.castShadow = true; o.receiveShadow = true; o.frustumCulled = false;
+    // 노멀맵 접선을 메시에 미리 넣는다. 없으면 셰이더가 픽셀 미분으로 구하는데, 휴대폰 GPU 에선 이 값이
+    // 삼각형마다 어긋나 피부에 삼각형 모자이크 얼룩이 생길 수 있다.
+    const nm = (Array.isArray(o.material) ? o.material : [o.material]).some(m => (M[m.name] || m).normalMap);
+    if (nm && o.geometry.index && !o.geometry.attributes.tangent) o.geometry.computeTangents();
     o.material = Array.isArray(o.material) ? o.material.map(m => M[m.name] || m) : (M[o.material.name] || o.material);
     if (o.morphTargetDictionary && o.morphTargetDictionary.eyeBlinkLeft !== undefined) faces.push(o);
   });
@@ -395,7 +402,7 @@ gltfLoader.load('assets/avatar.glb', gltf => {
   };
   if (rig.hairMesh && scalp) waitImg();
   // 몸동작(모션캡처)은 얼굴이 뜬 다음에 이어서 받는다
-  new GLTFLoader().setMeshoptDecoder(MeshoptDecoder).load('assets/anims.glb', a => setupBody(a.animations), undefined, e => console.warn('모션을 불러오지 못했습니다', e));
+  new GLTFLoader().setMeshoptDecoder(MeshoptDecoder).load(asset('anims.glb'), a => setupBody(a.animations), undefined, e => console.warn('모션을 불러오지 못했습니다', e));
   $('#loading').classList.add('done');
   setTimeout(() => $('#loading').remove(), 900);
 }, undefined, err => {
@@ -1067,4 +1074,5 @@ $('#hide').onclick = () => document.body.classList.toggle('clean');
 addEventListener('keydown', e => { if (e.key === 'h' && e.target === document.body) document.body.classList.toggle('clean'); });
 
 // 테스트용 훅
+document.querySelector('.brand small').textContent += ` · v${VERSION}`;
 window.__human = { S, rig, say, MOODS, setQuality, camera, CAM_BASE, LOOK, body, setGaze, HAIR, HAIR_STRANDS };
