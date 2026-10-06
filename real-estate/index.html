@@ -3,11 +3,11 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>아파트 실거래 · 신고가 장부</title>
-<meta name="description" content="안양시와 서울 주요 구 아파트 실거래가 6년치를 단지·전용면적별로 정리합니다. 시세, 신고가, 고점 대비, 전세가율, 층 보정 급매까지. 국토교통부 실거래가 API 로 매일 자동 갱신.">
+<title>가성비 아파트 · 신고가 장부</title>
+<meta name="description" content="안양시와 서울 주요 구 아파트 실거래가 6년치를 단지·전용면적별로 정리합니다. '강남 30평대 20억 이하'처럼 한국어로 물어보면 바로 찾아 답하고, 매일 아침 시장 브리핑을 씁니다. 국토교통부 실거래가 API 로 매일 자동 갱신.">
 <meta property="og:type" content="website">
 <meta property="og:title" content="아파트 실거래 · 신고가 장부">
-<meta property="og:description" content="안양시·서울 주요 구 아파트 6년치 실거래를 단지·면적별로 정리. 지금이 고점인지, 어디가 덜 빠졌는지, 어떤 거래가 시세보다 쌌는지. 매일 자동 갱신.">
+<meta property="og:description" content="한국어로 물어보는 아파트 실거래 분석. 안양시·서울 주요 구 1만여 단지·면적의 시세·신고가·급매·전세가율을 바로 찾아 답합니다. 매일 자동 갱신.">
 <meta property="og:url" content="https://richroro.github.io/real-estate/">
 <meta property="og:locale" content="ko_KR">
 <link rel="canonical" href="https://richroro.github.io/real-estate/">
@@ -280,6 +280,260 @@ table.ledger{width:100%;border-collapse:collapse;font-size:13px}
 .rs-h{display:flex;flex-wrap:wrap;align-items:center;gap:8px 14px;margin-top:34px;padding-top:22px;border-top:1px solid var(--line)}
 .rs-h .region-pick{font-size:14px;padding:7px 12px;max-width:none}
 
+/* 가성비 · 물어보기 · 브리핑
+   보기 방향: 장부(원장) — 명조 제목, 종이 바탕, 빨간 여백선과 도장. 그림자는 여러 겹을 옅게, 움직임은 짧고 목적 있게. */
+:root{--s3:#1baf7a;--s4:#eda100;--ai-grid:rgba(27,26,23,.055);--rule:rgba(200,50,47,.16);
+  --ease-out:cubic-bezier(.22,1,.36,1);--ease-spring:cubic-bezier(.34,1.45,.64,1);
+  --sh-1:0 1px 1px rgba(27,26,23,.04),0 2px 4px rgba(27,26,23,.045);
+  --sh-2:0 1px 1px rgba(27,26,23,.03),0 3px 6px rgba(27,26,23,.045),0 10px 22px -8px rgba(27,26,23,.10),0 28px 48px -22px rgba(27,26,23,.18);
+  --sh-3:0 2px 2px rgba(27,26,23,.03),0 6px 12px rgba(27,26,23,.05),0 18px 34px -12px rgba(27,26,23,.15),0 42px 70px -30px rgba(27,26,23,.26)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--s3:#199e70;--s4:#c98500;--ai-grid:rgba(255,255,255,.045);--rule:rgba(230,103,103,.22);
+  --sh-1:0 1px 1px rgba(0,0,0,.35),0 2px 5px rgba(0,0,0,.30);
+  --sh-2:0 0 0 1px rgba(255,255,255,.03),0 2px 4px rgba(0,0,0,.35),0 12px 26px -10px rgba(0,0,0,.55),0 30px 54px -24px rgba(0,0,0,.65);
+  --sh-3:0 0 0 1px rgba(255,255,255,.04),0 4px 8px rgba(0,0,0,.4),0 20px 38px -12px rgba(0,0,0,.6),0 46px 76px -30px rgba(0,0,0,.7)}}
+:root[data-theme="dark"]{--s3:#199e70;--s4:#c98500;--ai-grid:rgba(255,255,255,.045);--rule:rgba(230,103,103,.22);
+  --sh-1:0 1px 1px rgba(0,0,0,.35),0 2px 5px rgba(0,0,0,.30);
+  --sh-2:0 0 0 1px rgba(255,255,255,.03),0 2px 4px rgba(0,0,0,.35),0 12px 26px -10px rgba(0,0,0,.55),0 30px 54px -24px rgba(0,0,0,.65);
+  --sh-3:0 0 0 1px rgba(255,255,255,.04),0 4px 8px rgba(0,0,0,.4),0 20px 38px -12px rgba(0,0,0,.6),0 46px 76px -30px rgba(0,0,0,.7)}
+.vh,.ans,.dread,.brief,.vtop{word-break:keep-all;overflow-wrap:anywhere}
+/* 히어로 */
+.vh{margin-top:22px;position:relative;isolation:isolate;border:1px solid var(--line);border-radius:20px;background:var(--surface);box-shadow:var(--sh-2);overflow:hidden}
+.vh::before{content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;
+  background:linear-gradient(90deg,transparent 22px,var(--rule) 22px,var(--rule) 23px,transparent 23px,transparent 26px,var(--rule) 26px,var(--rule) 27px,transparent 27px),
+    repeating-linear-gradient(180deg,transparent 0,transparent 33px,var(--ai-grid) 33px,var(--ai-grid) 34px);
+  -webkit-mask-image:linear-gradient(180deg,#000 30%,transparent 95%);mask-image:linear-gradient(180deg,#000 30%,transparent 95%)}
+.vh-in{display:grid;grid-template-columns:minmax(0,1.22fr) minmax(0,1fr);grid-template-areas:"head top" "ask top";grid-template-rows:auto 1fr;gap:0 36px;padding:clamp(22px,3.4vw,36px) clamp(16px,3.2vw,34px) clamp(20px,3vw,30px) clamp(38px,5vw,60px)}
+@media (max-width:940px){.vh-in{grid-template-columns:minmax(0,1fr);grid-template-areas:"head" "top" "ask";grid-template-rows:auto;gap:22px}}
+.vh-main{min-width:0} .vh-head{grid-area:head} .vh-ask{grid-area:ask} .vtop{grid-area:top}
+.vh-eyebrow{display:inline-flex;align-items:center;gap:8px;margin:0;font-size:12px;font-weight:600;color:var(--ink-2)}
+.live{display:inline-block;width:7px;height:7px;border-radius:50%;background:#1baf7a;animation:aiPulse 2.6s ease-out infinite}
+@keyframes aiPulse{0%{box-shadow:0 0 0 0 rgba(27,175,122,.5)}70%{box-shadow:0 0 0 7px rgba(27,175,122,0)}100%{box-shadow:0 0 0 0 rgba(27,175,122,0)}}
+.vh-title{margin:14px 0 12px;font-family:"Nanum Myeongjo","IBM Plex Sans KR",serif;font-weight:800;font-size:clamp(31px,5.2vw,52px);line-height:1.13;letter-spacing:-.035em}
+.vh-title .mark{white-space:nowrap;color:var(--up-ink);background:linear-gradient(transparent 64%,var(--up-wash) 64%) no-repeat 0 0/100% 100%;animation:markIn .9s var(--ease-out) .25s both}
+@keyframes markIn{from{background-size:0 100%}}
+.vh-sub{margin:0 0 20px;font-size:15px;line-height:1.72;color:var(--ink-2);max-width:46ch}
+.vf{display:grid;grid-template-columns:repeat(4,minmax(0,1fr)) auto;gap:10px;align-items:end;background:var(--paper);border:1px solid var(--line);border-radius:16px;padding:12px;box-shadow:var(--sh-1)}
+@media (max-width:760px),(min-width:941px) and (max-width:1120px){.vf{grid-template-columns:repeat(2,minmax(0,1fr))}.vf-go{grid-column:1/-1}}
+.vf label{display:flex;flex-direction:column;gap:5px;font-size:11.5px;font-weight:600;color:var(--ink-3);min-width:0}
+.vf .sel{position:relative;display:block}
+.vf .sel::after{content:"";position:absolute;right:13px;top:50%;width:6px;height:6px;border-right:1.6px solid var(--ink-3);border-bottom:1.6px solid var(--ink-3);transform:translateY(-70%) rotate(45deg);pointer-events:none}
+.vf select{appearance:none;-webkit-appearance:none;width:100%;min-height:44px;border:1px solid var(--line);border-radius:10px;background:var(--surface);padding:9px 30px 9px 12px;font-size:14.5px;font-weight:500;color:var(--ink);transition:border-color .15s,box-shadow .15s}
+.vf select:hover{border-color:var(--ink-3)}
+.vf select:focus-visible{outline:none;border-color:var(--ink);box-shadow:0 0 0 3px var(--accent-wash)}
+.vf-tog{grid-column:1/-1;flex-direction:row!important;align-items:center;gap:8px!important;font-size:13px!important;color:var(--ink-2)!important;font-weight:500!important;min-height:28px}
+.vf-tog input{width:17px;height:17px;margin:0;accent-color:var(--ink)}
+.vf-go{min-height:44px;border:0;border-radius:10px;background:var(--ink);color:var(--paper);font-weight:700;font-size:15px;padding:0 22px;box-shadow:var(--sh-1);transition:transform .18s var(--ease-out),box-shadow .18s var(--ease-out)}
+.vf-go:hover{transform:translateY(-1px);box-shadow:var(--sh-2)} .vf-go:active{transform:none;box-shadow:var(--sh-1)}
+.vf-go:focus-visible{outline:2px solid var(--ink);outline-offset:3px}
+.ask-lab{margin:20px 2px 8px;font-size:12px;font-weight:600;color:var(--ink-3)}
+@media (max-width:940px){.ask-lab{margin-top:0}}
+.ai-form{position:relative}
+.ai-ring{border-radius:14px}
+.ai-box{display:flex;align-items:center;gap:10px;background:var(--surface);border:1.5px solid var(--line);border-radius:14px;padding:5px 5px 5px 14px;min-height:54px;transition:border-color .15s,box-shadow .15s}
+.ai-box:focus-within{border-color:var(--ink);box-shadow:0 0 0 4px var(--accent-wash)}
+.ai-box .ai-spark{flex:none;color:var(--ink-3);width:18px;height:18px}
+.ai-box input{flex:1;min-width:0;border:0;background:transparent;font-size:16px;outline:none;padding:9px 0;color:var(--ink)}
+.ai-box input::placeholder{color:var(--ink-3)}
+.ai-go{flex:none;width:44px;height:44px;border-radius:10px;border:1px solid var(--line);background:var(--paper);color:var(--ink);display:grid;place-items:center;transition:background .15s,border-color .15s}
+.ai-go:hover{border-color:var(--ink);background:var(--surface-2)} .ai-go:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
+.sug{position:absolute;left:0;right:0;top:calc(100% + 6px);z-index:20;margin:0;padding:4px;list-style:none;background:var(--surface);border:1px solid var(--line);border-radius:12px;box-shadow:var(--sh-3)}
+.sug li{display:flex;align-items:baseline;justify-content:space-between;gap:12px;padding:9px 12px;border-radius:8px;cursor:pointer;font-size:14px;min-height:40px}
+.sug li .m{font-size:12px;color:var(--ink-3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sug li b{font-weight:700;color:var(--ink)}
+.sug li[aria-selected="true"],.sug li:hover{background:var(--surface-2)}
+.ai-privacy{margin:8px 2px 0;font-size:11.5px;color:var(--ink-3)}
+.ai-privacy kbd{font-family:"IBM Plex Mono",monospace;font-size:10.5px;border:1px solid var(--line);border-bottom-width:2px;border-radius:4px;padding:0 5px;background:var(--surface);color:var(--ink-2)}
+@media (hover:none){.ai-privacy .kb{display:none}}
+.ai-ex{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px}
+.ai-ex button{border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:6px 12px;font-size:12.5px;color:var(--ink-2);min-height:34px;transition:border-color .15s,color .15s}
+.ai-ex button:hover,.ai-ex button:focus-visible{border-color:var(--ink);color:var(--ink);outline:none}
+@media (max-width:560px){.ai-ex{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;margin-right:-16px;padding-right:16px;-webkit-mask-image:linear-gradient(90deg,#000 85%,transparent);mask-image:linear-gradient(90deg,#000 85%,transparent)}
+  .ai-ex::-webkit-scrollbar{display:none}.ai-ex button{flex:none}}
+.ai-stats{margin-top:16px;display:flex;flex-wrap:wrap;gap:4px 14px;font-size:12px;color:var(--ink-3);align-items:center;min-height:18px}
+.ai-stats b{color:var(--ink-2);font-weight:600}
+.ai-stats .live{margin-right:6px;vertical-align:1px}
+/* 오늘의 가성비 (히어로 오른쪽) */
+.vtop{background:var(--paper);border:1px solid var(--line);border-radius:18px;box-shadow:var(--sh-2);align-self:start;min-width:0;overflow:hidden}
+.vtop-h{display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:2px 10px;padding:16px 18px 6px}
+.vtop-h b{font-family:"Nanum Myeongjo",serif;font-size:18px;font-weight:800;letter-spacing:-.02em}
+.vtop-h span{font-size:11.5px;color:var(--ink-3)}
+.vtop-one{position:relative;margin:8px 12px 10px;padding:14px 14px 12px;background:var(--surface);border:1px solid var(--line-soft);border-radius:14px;box-shadow:var(--sh-1)}
+.vtop-one .no{font-family:"Nanum Myeongjo",serif;font-weight:800;font-size:12.5px;color:var(--up-ink);letter-spacing:.04em}
+.vtop-one .nm{display:block;margin:3px 74px 2px 0;padding:0;border:0;background:none;text-align:left;font-size:19px;font-weight:700;letter-spacing:-.025em;line-height:1.3;color:var(--ink);cursor:pointer}
+.vtop-one .nm:hover,.vc-name:hover{text-decoration:underline;text-underline-offset:3px}
+.vtop-one .vc-stamp{position:absolute;right:12px;top:12px;animation:stampIn .55s var(--ease-spring) .35s both}
+.vtop-one .vc-why{margin-top:9px}
+.vtop-list{list-style:none;margin:0;padding:0 0 2px}
+.vtop-list button{display:grid;grid-template-columns:22px minmax(0,1fr) auto;gap:10px;align-items:center;width:100%;border:0;border-top:1px solid var(--line-soft);background:transparent;text-align:left;padding:10px 18px;min-height:52px;color:inherit;transition:background .15s}
+.vtop-list button:hover,.vtop-list button:focus-visible{background:var(--surface-2);outline:none}
+.vtop-list .k{font-family:"Nanum Myeongjo",serif;font-weight:800;font-size:16px;color:var(--ink-3);text-align:right}
+.vtop-list .n{display:block;font-weight:600;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.vtop-list .m{display:block;font-size:11.5px;color:var(--ink-3)}
+.vtop-list .d{text-align:right;white-space:nowrap}
+.vtop-list .d b{display:block;font-weight:700;font-size:14px;color:var(--down-ink)}
+.vtop-list .d small{font-size:11px;color:var(--ink-3)}
+.vtop-all{display:block;width:calc(100% - 24px);margin:6px 12px 12px;min-height:44px;border:1px solid var(--line);border-radius:10px;background:var(--surface);font-weight:600;font-size:13.5px;color:var(--ink);transition:border-color .15s,box-shadow .15s}
+.vtop-all:hover,.vtop-all:focus-visible{border-color:var(--ink);box-shadow:var(--sh-1);outline:none}
+.vtop-empty{padding:18px;font-size:13px;color:var(--ink-3)}
+.sk{height:54px;border-top:1px solid var(--line-soft);background:linear-gradient(90deg,transparent,var(--surface-2),transparent);background-size:200% 100%;animation:sk 1.4s linear infinite}
+.sk.big{height:150px;margin:8px 12px;border:1px solid var(--line-soft);border-radius:14px}
+@keyframes sk{from{background-position:100% 0}to{background-position:-100% 0}}
+/* 도장 */
+.vc-stamp{flex:none;width:64px;height:64px;border-radius:50%;display:grid;place-content:center;justify-items:center;text-align:center;color:var(--up);border:2px solid currentColor;
+  box-shadow:inset 0 0 0 3px var(--surface),inset 0 0 0 4px currentColor;transform:rotate(-9deg);font-family:"Nanum Myeongjo",serif;line-height:1}
+.vc-stamp b{font-size:24px;font-weight:800;letter-spacing:-.03em}
+.vc-stamp span{font-family:"IBM Plex Sans KR",sans-serif;font-size:9.5px;font-weight:700;letter-spacing:.14em;margin-top:3px}
+@keyframes stampIn{0%{opacity:0;transform:rotate(-9deg) scale(1.7)}60%{opacity:1;transform:rotate(-9deg) scale(.93)}100%{opacity:1;transform:rotate(-9deg) scale(1)}}
+/* 가성비 목록 */
+.vs-fig{margin:2px 0 0}
+.vs-fig figcaption{display:flex;flex-direction:column;gap:2px;margin-bottom:6px}
+.vs-fig figcaption b{font-size:14px;font-weight:600} .vs-fig figcaption span{font-size:12px;color:var(--ink-3)}
+.vs-chart{position:relative}
+.vs-n{fill:#fff;font-size:9.5px;font-weight:700;font-family:"IBM Plex Mono",monospace;pointer-events:none}
+.vs-hit{fill:transparent;cursor:pointer} .vs-hit:focus-visible{stroke:var(--ink);stroke-width:2;outline:none}
+.vs-tip{white-space:normal;max-width:250px;line-height:1.5}
+.vlist{list-style:none;margin:16px 0 0;padding:0;display:flex;flex-direction:column;gap:10px}
+.vlist:not(.all) .vc.fold{display:none}
+.vc{position:relative;display:grid;grid-template-columns:34px minmax(0,1fr) 70px;gap:2px 14px;align-items:start;background:var(--surface);border:1px solid var(--line-soft);border-radius:14px;padding:14px 14px 12px;box-shadow:var(--sh-1);
+  transition:box-shadow .22s var(--ease-out),border-color .22s;animation:vcIn .45s var(--ease-out) both;animation-delay:calc(var(--i,0) * 45ms)}
+@keyframes vcIn{from{opacity:0;transform:translateY(6px)}}
+.vc:hover{box-shadow:var(--sh-2);border-color:var(--line)}
+.vc-rank{font-family:"Nanum Myeongjo",serif;font-weight:800;font-size:25px;line-height:1.05;color:var(--ink-3);text-align:right}
+.vc:nth-child(-n+3) .vc-rank{color:var(--up-ink)}
+.vc-main{min-width:0}
+.vc-name{border:0;background:none;padding:0;text-align:left;font-size:17px;font-weight:700;letter-spacing:-.02em;line-height:1.35;color:var(--ink);cursor:pointer}
+.vc-ak{font-weight:600;color:var(--ink-3);font-size:14px}
+.vc-meta{font-size:12.5px;color:var(--ink-3);margin-top:1px}
+.vc-price{display:flex;flex-wrap:wrap;align-items:baseline;gap:3px 6px;margin-top:10px;font-size:13px;color:var(--ink-2)}
+.vc-price b{font-size:18px;font-weight:700;color:var(--ink)}
+.vc-lab{font-size:11.5px;color:var(--ink-3)} .vc-sep{color:var(--ink-3);font-size:11.5px;margin:0 3px}
+.vc-d{margin-left:auto;font-weight:700;font-size:15px} .vc-d.lo{color:var(--down-ink)} .vc-d.hi{color:var(--up-ink)}
+.vbar{position:relative;height:30px;margin:6px 0 0;max-width:460px}
+.vbar-tick{position:absolute;top:4px;width:1px;height:8px;background:var(--line)}
+.vbar-l{position:absolute;top:16px;transform:translateX(-50%);font-size:10px;color:var(--ink-3);white-space:nowrap}
+.vbar-l.mid{color:var(--ink-2);font-weight:600}
+.vbar::before{content:"";position:absolute;left:0;right:0;top:7.5px;height:1px;background:var(--line)}
+.vbar-line{position:absolute;top:6px;height:4px;border-radius:2px;background:var(--down)} .vbar-line.hi{background:var(--up)}
+.vbar-dot{position:absolute;top:2px;width:12px;height:12px;margin-left:-6px;border-radius:50%}
+.vbar-dot.fair{background:var(--surface);border:2px solid var(--ink-3)}
+.vbar-dot.now{background:var(--down);border:2px solid var(--surface);box-shadow:0 0 0 1px var(--down)} .vbar-dot.now.hi{background:var(--up);box-shadow:0 0 0 1px var(--up)}
+.vc-why{display:flex;flex-wrap:wrap;gap:5px;margin-top:9px}
+.vc-why i{font-style:normal;font-size:11.5px;background:var(--surface-2);color:var(--ink-2);border-radius:999px;padding:3px 9px}
+.vc-why i.dn{background:var(--down-wash);color:var(--down-ink)} .vc-why i.up{background:var(--up-wash);color:var(--up-ink)}
+.vc-more{margin-top:6px}
+.vc-more summary{cursor:pointer;font-size:12.5px;color:var(--ink-2);font-weight:600;min-height:32px;display:flex;align-items:center;gap:6px;list-style:none}
+.vc-more summary::-webkit-details-marker{display:none}
+.vc-more summary::before{content:"";width:6px;height:6px;border-right:1.6px solid currentColor;border-bottom:1.6px solid currentColor;transform:rotate(-45deg);transition:transform .2s var(--ease-out)}
+.vc-more[open] summary::before{transform:rotate(45deg)}
+.vc-parts{display:grid;gap:5px;margin:4px 0 10px;max-width:380px}
+.vc-parts .bar-row{grid-template-columns:104px minmax(0,1fr) 40px}
+.vc-parts em{font-style:normal;font-size:10.5px;color:var(--ink-3);text-align:right}
+.vc .vc-stamp{margin-top:2px}
+@media (max-width:560px){.vc{grid-template-columns:26px minmax(0,1fr);padding:12px 12px 10px}.vc-rank{font-size:21px}
+  .vc .vc-stamp{position:absolute;right:10px;top:10px;width:52px;height:52px}.vc .vc-stamp b{font-size:19px}.vc-name{padding-right:58px}.vc-meta{padding-right:58px}}
+/* 브리핑 띠 */
+.brief{margin-top:14px;background:var(--surface);border:1px solid var(--line);border-radius:16px;box-shadow:var(--sh-1);overflow:hidden}
+.brief-h{display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:2px 10px;padding:12px 18px 10px}
+.brief-h b{font-family:"Nanum Myeongjo",serif;font-size:16px;font-weight:800}
+.brief-h span{font-size:11.5px;color:var(--ink-3)}
+#briefRows{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1px;background:var(--line-soft);border-top:1px solid var(--line-soft)}
+@media (max-width:900px){#briefRows{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:560px){#briefRows{grid-template-columns:minmax(0,1fr)}}
+.brief-row{display:grid;grid-template-columns:30px minmax(0,1fr) auto;gap:10px;align-items:center;width:100%;text-align:left;border:0;background:var(--surface);padding:12px 16px;min-height:64px;color:inherit;transition:background .15s}
+.brief-row:hover,.brief-row:focus-visible{background:var(--surface-2);outline:none}
+.brief-row .ic{width:30px;height:30px;border-radius:9px;display:grid;place-items:center;font-size:13px;font-weight:700;background:var(--surface-2);color:var(--ink-2)}
+.brief-row .ic.up{background:var(--up-wash);color:var(--up-ink)} .brief-row .ic.down{background:var(--down-wash);color:var(--down-ink)}
+.brief-row .t{font-size:12.5px;line-height:1.5;color:var(--ink-2);min-width:0}
+.brief-row .t b{display:block;color:var(--ink);font-weight:600;font-size:13px}
+.brief-row .n{font-size:18px;font-weight:700;letter-spacing:-.02em;white-space:nowrap}
+.brief-row .n small{font-size:11.5px;font-weight:500;color:var(--ink-3);margin-left:1px}
+.brief-empty{padding:16px;font-size:12.5px;color:var(--ink-3);background:var(--surface)}
+/* 답 */
+.ans-wrap{margin-top:14px;scroll-margin-top:12px}
+.ans{background:var(--surface);border:1px solid var(--line);border-radius:18px;box-shadow:var(--sh-2);overflow:hidden;position:relative}
+.ans::before{content:"";position:absolute;left:14px;top:0;bottom:0;width:1px;background:var(--rule)}
+.ans-wait{padding:18px 20px 18px 30px;font-size:13.5px;color:var(--ink-2);display:flex;align-items:center;gap:10px}
+.dots{display:inline-flex;gap:4px} .dots i{width:6px;height:6px;border-radius:50%;background:var(--ink-3);animation:dot 1s infinite ease-in-out}
+.dots i:nth-child(2){animation-delay:.15s} .dots i:nth-child(3){animation-delay:.3s}
+@keyframes dot{0%,80%,100%{opacity:.25;transform:scale(.8)}40%{opacity:1;transform:none}}
+.ans-h{display:flex;flex-wrap:wrap;align-items:center;gap:4px 12px;padding:14px 16px 0 30px}
+.ans-badge{display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:700;color:var(--ink)}
+.ans-badge svg{color:var(--up)}
+.ans-q{flex:1;min-width:0;font-size:13px;color:var(--ink-3);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ans-trace{font-size:11.5px;color:var(--ink-3)}
+@media (max-width:560px){.ans-q{order:5;flex-basis:100%;white-space:normal}.ans-trace{order:4;flex:1}}
+.ans-chips{display:flex;flex-wrap:wrap;align-items:center;gap:6px;padding:10px 16px 0 30px}
+.lb{font-size:11.5px;color:var(--ink-3);margin-right:2px}
+.tok{display:inline-flex;align-items:center;gap:2px;font-size:12.5px;background:var(--accent-wash);color:var(--accent);border-radius:999px;padding:1px 2px 1px 10px;line-height:1.5}
+.tok button{border:0;background:transparent;color:inherit;width:24px;height:24px;border-radius:50%;display:inline-grid;place-items:center;font-size:14px;line-height:1;opacity:.65}
+.tok button:hover,.tok button:focus-visible{opacity:1;background:var(--surface);outline:none}
+.tok.info{background:var(--surface-2);color:var(--ink-2)} .tok.warn{background:var(--up-wash);color:var(--up-ink)}
+.tok.nox{padding:3px 10px}
+.ans-body{padding:12px 22px 2px 30px}
+.ans-lead{margin:0 0 6px;font-size:clamp(16.5px,2.1vw,19px);font-weight:600;line-height:1.55;letter-spacing:-.02em;color:var(--ink)}
+.ans-text{margin:0;font-size:14.5px;line-height:1.8;color:var(--ink-2)}
+.ans-lead b,.ans-text b{color:var(--ink);font-weight:600}
+.ans .hi{color:var(--up-ink);font-weight:600} .ans .lo{color:var(--down-ink);font-weight:600}
+.ans-viz{padding:10px 22px 6px 30px}
+.ans-follow{display:flex;flex-wrap:wrap;align-items:center;gap:6px;padding:8px 22px 16px 30px}
+.ans-follow button{border:1px dashed var(--axis);background:transparent;border-radius:999px;padding:6px 12px;font-size:12.5px;color:var(--ink-2);min-height:34px;transition:border-color .15s,color .15s}
+.ans-follow button:hover,.ans-follow button:focus-visible{border-style:solid;border-color:var(--ink);color:var(--ink);outline:none}
+.ans-note{margin:0;padding:12px 22px 14px 30px;border-top:1px solid var(--line-soft);font-size:12px;color:var(--ink-3);line-height:1.7;background:var(--paper)}
+@media (max-width:560px){.ans::before{left:9px}.ans-h,.ans-chips{padding-left:20px}.ans-body,.ans-viz,.ans-follow,.ans-note{padding-left:20px;padding-right:14px}}
+.w{display:inline-block;animation:wIn .42s var(--ease-out) both;animation-delay:calc(var(--i)*12ms)}
+@keyframes wIn{from{opacity:0;transform:translateY(3px)}}
+.blist{display:flex;flex-direction:column}
+.brow{display:grid;grid-template-columns:30px minmax(0,1.3fr) minmax(70px,1fr) 118px;gap:2px 12px;align-items:center;width:100%;text-align:left;border:0;border-top:1px solid var(--line-soft);background:transparent;padding:9px 8px;min-height:48px;color:inherit;transition:background .15s}
+.brow:first-child{border-top:0}
+.brow:hover,.brow:focus-visible{background:var(--surface-2);outline:none}
+.brow.self{background:var(--accent-wash)}
+.blist:not(.all) .brow.fold{display:none}
+.brow .rk{font-family:"IBM Plex Mono",monospace;font-size:12.5px;color:var(--ink-3);text-align:right;white-space:nowrap}
+.brow .who{min-width:0;display:flex;flex-direction:column}
+.brow .nm{font-size:14px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.brow .mt{font-size:11.5px;color:var(--ink-3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.bt{position:relative;height:10px}
+.bt .bf{position:absolute;top:0;bottom:0;left:0;background:var(--series-deal);border-radius:0 4px 4px 0;min-width:2px}
+.bt.sg::before{content:"";position:absolute;left:50%;top:-4px;bottom:-4px;width:1px;background:var(--axis)}
+.bt.sg .bf{left:auto} .bt .bf.pos{background:var(--up);border-radius:0 4px 4px 0} .bt .bf.neg{background:var(--down);border-radius:4px 0 0 4px}
+.bt.ps::before,.bt.ng::before{content:"";position:absolute;top:-4px;bottom:-4px;width:1px;background:var(--axis)}
+.bt.ps::before{left:0} .bt.ng::before{right:0} .bt.ng .bf{left:auto;right:0}
+.brow .vl{font-size:13.5px;font-weight:600;text-align:right;white-space:nowrap}
+.brow .vl small{display:block;font-size:11px;font-weight:400;color:var(--ink-3)}
+.blist .more,.ans-viz>.more{display:block;margin:10px auto 2px}
+@media (max-width:640px){.brow{grid-template-columns:26px minmax(0,1fr) auto}.brow .bt{grid-column:2/-1;grid-row:2;margin-top:3px}.brow .bt.none{display:none}}
+.ans-tiles{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px;margin-bottom:12px}
+@media (max-width:700px){.ans-tiles{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media (max-width:420px){.ans-tiles{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.lc{position:relative;margin-top:2px}
+.lc .lc-hit{cursor:crosshair;outline:none}
+.lc .lc-hit:focus-visible{stroke:var(--ink);stroke-width:1.5}
+.lc-cap{margin:4px 0 0;font-size:11.5px;color:var(--ink-3)}
+.lc .lc-tip{transform:translate(-50%,0);transition:none}
+.lc-tip .tr{display:flex;align-items:center;gap:6px}
+.lc-tip i{width:8px;height:8px;border-radius:50%;display:inline-block}
+.cmp{margin-top:12px} .cmp td:first-child{color:var(--ink-3)}
+.cmp .sw{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:5px}
+.cx{border:1px solid var(--line-soft);border-radius:12px;padding:10px 12px;margin-top:10px;box-shadow:var(--sh-1)}
+.cx:first-child{margin-top:0}
+.cx-h{display:flex;flex-wrap:wrap;gap:2px 10px;align-items:baseline;margin-bottom:6px}
+.cx-h b{font-size:15px} .cx-h span{font-size:12px;color:var(--ink-3)}
+.cx-t tr.main td{background:var(--accent-wash)}
+.sub2{font-size:11px;color:var(--ink-3);font-weight:400}
+.help-g{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px}
+.help-q{display:block;width:100%;text-align:left;border:1px solid var(--line-soft);background:var(--paper);border-radius:10px;padding:8px 10px;margin-top:6px;font-size:13px;color:var(--ink);min-height:38px;transition:border-color .15s}
+.help-q:hover,.help-q:focus-visible{border-color:var(--ink);outline:none}
+.dread{border:1px solid var(--line-soft);border-radius:12px;padding:12px 14px;background:var(--paper);box-shadow:var(--sh-1)}
+.dread:empty{display:none}
+.dread .h{display:flex;align-items:center;gap:6px;font-size:11px;font-weight:700;letter-spacing:.12em;color:var(--ink-2);margin-bottom:6px}
+.dread .h svg{color:var(--up)}
+.dread p{margin:0;font-size:13.5px;line-height:1.75;color:var(--ink-2)}
+.dread p b{color:var(--ink)} .dread .lo{color:var(--down-ink);font-weight:600} .dread .hi{color:var(--up-ink);font-weight:600}
+.dread .tags{display:flex;flex-wrap:wrap;gap:5px;margin-top:9px}
+.dread .tags i{font-style:normal;font-size:11.5px;border-radius:999px;padding:3px 9px;background:var(--surface-2);color:var(--ink-2)}
+.dread .tags i.up{background:var(--up-wash);color:var(--up-ink)} .dread .tags i.dn{background:var(--down-wash);color:var(--down-ink)}
+@media (prefers-reduced-motion:reduce){.live,.w,.dots i,.sk,.vc,.vtop-one .vc-stamp,.vh-title .mark{animation:none}}
+
 /* 구간별 비교 */
 .seg{padding:14px 16px 18px;border-top:1px solid var(--line)}
 .seg-h{display:flex;flex-wrap:wrap;gap:8px 14px;align-items:baseline;justify-content:space-between;margin-bottom:12px}
@@ -435,7 +689,7 @@ table.deals{width:100%;border-collapse:collapse;font-size:12.5px}
       <h1>신고가 <span class="mark">장부</span></h1>
     </div>
     <div class="masthead-right">
-      <p class="masthead-note" id="mastNote">국토교통부 실거래가 API 로 매일 아침 받아 둔 자료입니다. 단지·전용면적별로 묶어 보여 주고, 계산은 모두 브라우저에서 합니다.</p>
+      <p class="masthead-note" id="mastNote">국토교통부 실거래가를 매일 아침 받아 다시 계산합니다. 계산은 모두 이 브라우저 안에서 하고, 어디로도 보내지 않습니다.</p>
       <div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap">
         <button class="theme-btn" id="shareBtn" type="button">링크 복사</button>
         <button class="theme-btn" id="themeBtn" type="button">테마: 자동</button>
@@ -445,6 +699,49 @@ table.deals{width:100%;border-collapse:collapse;font-size:12.5px}
 </header>
 
 <main class="wrap">
+  <section class="vh" id="ai" aria-labelledby="vhTitle">
+    <div class="vh-in">
+      <div class="vh-main vh-head">
+        <p class="vh-eyebrow"><i class="live" aria-hidden="true"></i>실거래로 학습한 가성비 모델 · 매일 아침 다시 계산</p>
+        <h2 class="vh-title" id="vhTitle">비슷한 단지보다<br><span class="mark">덜 비싼</span> 아파트</h2>
+        <p class="vh-sub">12개 지역 1만여 단지·면적을 같은 동네·연식·면적·단지 규모끼리 견줘서, 실제로 덜 비싸게 거래되는 곳을 골라 드려요.</p>
+        <form class="vf" id="vForm" aria-label="가성비 찾기">
+          <label>예산<span class="sel"><select id="vBudget"><option value="">전체</option><option value="3">3억 이하</option><option value="5">5억 이하</option><option value="7">7억 이하</option><option value="10">10억 이하</option><option value="15">15억 이하</option><option value="20">20억 이하</option><option value="30">30억 이하</option></select></span></label>
+          <label>평형<span class="sel"><select id="vSize"><option value="">전체</option><option value="20평대">20평대</option><option value="30평대">30평대</option><option value="40평 이상">40평 이상</option></select></span></label>
+          <label>지역<span class="sel"><select id="vRegion"><option value="">전체</option></select></span></label>
+          <label>연식<span class="sel"><select id="vAge"><option value="">전체</option><option value="신축">신축 · 5년</option><option value="10년 이내">10년 이내</option><option value="20년 이내">20년 이내</option></select></span></label>
+          <button class="vf-go" type="submit">가성비 찾기</button>
+          <label class="vf-tog"><input type="checkbox" id="vGap"> 전세 끼고 살 거예요 — 예산을 갭(매매−전세)으로 봐요</label>
+        </form>
+      </div>
+      <div class="vh-main vh-ask">
+        <p class="ask-lab" id="askLab">또는 편하게 물어보세요</p>
+        <form class="ai-form" id="askForm" role="search" autocomplete="off" aria-labelledby="askLab">
+          <label class="sr" for="askInput">부동산 질문</label>
+          <div class="ai-ring"><div class="ai-box">
+            <svg class="ai-spark" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><circle cx="11" cy="11" r="6.5" fill="none" stroke="currentColor" stroke-width="2"/><path d="M16 16l4.5 4.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+            <input id="askInput" type="search" enterkeyhint="search" spellcheck="false" placeholder="마포 30평대 15억 이하 가성비" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="askSug">
+            <button class="ai-go" type="submit" aria-label="물어보기"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M5 12h13M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+          </div></div>
+          <ul class="sug" id="askSug" role="listbox" aria-label="이름 추천" hidden></ul>
+        </form>
+        <p class="ai-privacy">질문은 이 브라우저 안에서만 해석해요 · 어디로도 보내지 않아요<span class="kb"> · <kbd>/</kbd> 키로 바로 입력</span></p>
+        <div class="ai-ex" id="askEx" aria-label="예시 질문"></div>
+        <div class="ai-stats" id="aiStats"></div>
+      </div>
+      <aside class="vtop" id="vTop" aria-labelledby="vTopTitle">
+        <div class="vtop-h"><b id="vTopTitle">오늘의 가성비</b><span id="vTopSub">12개 지역 전체</span></div>
+        <div id="vTopBody"><div class="sk big"></div><div class="sk"></div><div class="sk"></div><div class="sk"></div></div>
+        <button class="vtop-all" type="button" data-ask="가성비 아파트 추천">전체 순위 보기 →</button>
+      </aside>
+    </div>
+  </section>
+  <section class="ans-wrap" id="askAns" hidden></section>
+  <div class="sr" id="askLive" aria-live="polite"></div>
+  <section class="brief" id="brief" aria-labelledby="briefTitle">
+    <div class="brief-h"><b id="briefTitle">오늘의 시장 브리핑</b><span id="briefSub">실거래로 자동 작성</span></div>
+    <div id="briefRows"><div class="sk"></div><div class="sk"></div><div class="sk"></div></div>
+  </section>
   <section class="ov" id="overview" aria-labelledby="ovTitle" hidden>
     <div class="ov-h">
       <h2 id="ovTitle">12개 지역 한눈에</h2>
@@ -616,8 +913,8 @@ table.deals{width:100%;border-collapse:collapse;font-size:12.5px}
   </section>
 
   <footer class="foot">
-    데이터 출처는 사용자가 넣은 국토교통부 실거래가 파일입니다. 이 페이지는 계산·정리만 하며 어떤 파일도 서버로 보내지 않습니다.
-    실거래가는 신고 후 정정·해제될 수 있으니 참고용으로만 보세요.
+    데이터는 국토교통부 실거래가 API 에서 매일 아침 받아 둔 것입니다. 물어보기 상자의 질문 해석·답변·브리핑은 모두 이 브라우저 안에서
+    규칙과 통계로 만들고, 질문을 외부로 보내지 않습니다. 실거래가는 신고 후 정정·해제될 수 있으니 참고용으로만 보세요. 투자 권유가 아닙니다.
     <a href="https://github.com/richroro/richroro.github.io/tree/main/real-estate" target="_blank" rel="noopener">소스 · 자동 수집 스크립트</a> ·
     <a href="/">richroro.github.io</a>
   </footer>
@@ -632,6 +929,7 @@ table.deals{width:100%;border-collapse:collapse;font-size:12.5px}
     <button class="close" id="dClose" type="button" aria-label="닫기">×</button>
   </div>
   <div class="drawer-b">
+    <div class="dread" id="dRead"></div>
     <div class="dkpis" id="dKpis"></div>
     <div>
       <p class="sec-t">가격 추이</p>
@@ -712,7 +1010,7 @@ function packedToDeals(o,src){
   return out;
 }
 /* ---------- state & analysis ---------- */
-const S={deals:[],source:'',ref:'',index:null,region:'',hashRegion:'',hash:'',sum:null,ovTips:null,ovR:null,rent:null,groups:[],shown:[],tl:[],view:'market',mk:null,mkGeo:null,seg:'area',sort:'rec',dir:-1,page:0,per:50,open:null,
+const S={deals:[],source:'',ref:'',index:null,region:'',hashRegion:'',hash:'',askQ:'',sum:null,sumP:null,ovTips:null,ovR:null,rent:null,groups:[],shown:[],tl:[],view:'market',mk:null,mkGeo:null,seg:'area',sort:'rec',dir:-1,page:0,per:50,open:null,
   r:{budget:8,minArea:70,maxAge:0,profile:'balanced',minDeals:5,useCost:true,gapBuy:false,cash:0,rate:0,years:30},
   c:{win:6,gap:.05,agentOnly:true},
   fav:new Set(), hasRent:false,
@@ -945,7 +1243,9 @@ function renderRegion(){
     :'<tr><td colspan="8" class="empty">표시할 지역이 없습니다.</td></tr>';
 }
 /* ---------- 추천 ---------- */
-const FACTORS={liq:'거래 활발',disc:'고점 낙폭',mom:'6개월 흐름',stab:'가격 안정',val:'동네 대비',jr:'전세가율',age:'연식'};
+const FACTORS={liq:'거래 활발',disc:'고점 낙폭',mom:'6개월 흐름',stab:'가격 안정',val:'가성비',jr:'전세가율',age:'연식'};
+/* 가성비 할인: 물어보기의 가성비 모델 값이 있으면 그걸, 없으면 동네 평단가 대비 */
+const valD=g=>{ const r=typeof A!=='undefined'&&A.byKey?A.byKey.get(g.key):null; return r&&r.val?r.val.d:(g.valueGap==null?0:g.valueGap); };
 const PROFILES={
   balanced:{n:'균형 있게',w:{liq:.22,disc:.18,mom:.15,stab:.13,val:.2,jr:.07,age:.05}},
   live:{n:'실거주 · 안정 우선',w:{liq:.18,disc:0,mom:.05,stab:.27,val:.18,jr:.1,age:.22}},
@@ -1016,7 +1316,7 @@ function recommend(){
     disc:rankMap(gs,g=>-g.vsPeak),
     mom:rankMap(gs,g=>g.mom==null?medMom:g.mom),
     stab:rankMap(gs,g=>-(g.cv==null?medCv:g.cv)),
-    val:rankMap(gs,g=>-(g.valueGap==null?0:g.valueGap)),
+    val:rankMap(gs,g=>-valD(g)),
     jr:rankMap(gs,g=>g.jRatio==null?medJr:g.jRatio),
     age:rankMap(gs,g=>g.built||medAge),
   };
@@ -1041,7 +1341,9 @@ function whyChips(x){
   if(g.vsPeak<=-.1)out.push(['dn',`고점 대비 ${fmtPct(g.vsPeak)}`]);
   else if(g.vsPeak>=-.02)out.push(['up','고점 부근']);
   if(g.mom!=null&&Math.abs(g.mom)>=.02)out.push([g.mom>0?'up':'dn',`6개월 ${fmtPct(g.mom)}`]);
-  if(g.valueGap!=null&&Math.abs(g.valueGap)>=.05)
+  const vr=typeof A!=='undefined'&&A.byKey?A.byKey.get(g.key):null;
+  if(vr&&vr.val&&Math.abs(vr.val.d)>=.03)out.push([vr.val.d<0?'dn':'',`비슷한 단지보다 ${pctAbs(vr.val.d)} ${vr.val.d<0?'쌈':'비쌈'} · 가성비 ${vr.val.score}점`]);
+  else if(g.valueGap!=null&&Math.abs(g.valueGap)>=.05)
     out.push([g.valueGap<0?'dn':'', `${esc(g.dong)} ${BAND_NAMES[bandOf(g.area)]} 평단가보다 ${pctAbs(g.valueGap)} ${g.valueGap<0?'싼 편':'비싼 편'}`]);
   if(g.jRatio!=null)out.push([g.jRatio>=0.6?'dn':'',`전세가율 ${Math.round(g.jRatio*100)}%`]);
   if(g.built)out.push(['',`${(+S.ref.slice(0,4))-g.built}년차`]);
@@ -1108,6 +1410,7 @@ function writeHash(){
   if(!f.exCancel)p.set('cx','1');
   if(S.region)p.set('rg',S.region);
   if(S.open)p.set('at',S.open.key);
+  if(A.q)p.set('ask',A.q);
   const h=p.toString();
   S.hash=h;
   try{ history.replaceState(null,'',h?'#'+h:location.pathname+location.search); }
@@ -1120,6 +1423,7 @@ function readHash(){
   f.recOnly=p.get('rec')==='1'; f.favOnly=p.get('fav')==='1'; f.exCancel=p.get('cx')!=='1';
   const v=p.get('v'); if(['market','ledger','timeline','region','deals','recommend'].includes(v))S.view=v;
   S.hashRegion=p.get('rg')||'';
+  S.askQ=p.get('ask')||'';
   return p.get('at')||null;
 }
 function syncControls(){
@@ -1465,6 +1769,7 @@ function openDrawer(key){
     {l:'전세가율',v:`${Math.round(g.jRatio*100)}%`,d:`전세 중위 ${fmtMan(g.jeonse)} · 최근 1년 ${g.jeonseN}건`},
     {l:'갭 (매매−전세)',v:fmtMan(g.gap),d:g.jMom!=null?`전세 6개월 ${fmtPct(g.jMom)}`:'전세 흐름 자료 부족'},
   ]:[]).map(t=>`<div class="dk"><div class="l">${t.l}</div><div class="v num">${t.v}</div><div class="d">${esc(t.d)}</div></div>`).join('');
+  renderRead(g);
   drawChart(g);
   $('#dRecs').innerHTML=g.recs.length?[...g.recs].reverse().map(r=>`<li><span class="d num">${fmtDate(r.date)}</span><span><span class="p num">${fmtMan(r.price)}</span><span class="f">${r.floor!=null?r.floor+'층':''}</span></span><span class="delta up num">${fmtPct(r.pct)}</span></li>`).join(''):'<li><span class="d">-</span><span>경신 이력이 없습니다 (첫 거래가 곧 최고가)</span></li>';
   const fl=g.fl;
@@ -1520,10 +1825,9 @@ function placeName(list){
   return list.length<=3?list.join(' · '):`${list[0]} 외 ${list.length-1}곳`;
 }
 function renderLede(){
-  const el=$('#lede'), eb=$('#mastEyebrow');
+  const el=$('#lede');
   if(!S.deals.length){ el.innerHTML=''; return; }
   const place=placeName([...new Set(S.groups.map(g=>g.gu||g.sgg))].filter(Boolean));
-  if(eb)eb.textContent=`${place} 아파트 실거래`;
   const m=S.mk, deals=S.deals.length, apts=new Set(S.groups.map(g=>g.sgg+g.dong+g.apt)).size;
   const span=`${fmtDate(S.ref).slice(0,7)}`;
   const first=S.deals.reduce((a,b)=>a.date<b.date?a:b).date.slice(0,7).replace('-','.');
@@ -1591,11 +1895,13 @@ function pearson(xs,ys){ const n=xs.length; if(n<3)return null;
 const volChg=r=>r.volPrev12?r.volLast12/r.volPrev12-1:null;
 const ymDot=ym=>ym?ym.replace('-','.'):'-';
 async function loadSummary(){
-  try{
-    const res=await fetch('data/summary.json',{cache:'no-store'}); if(!res.ok)return false;
-    const d=await res.json(); if(d.kind!=='singoga-summary'||!Array.isArray(d.regions)||!d.regions.length)return false;
-    S.sum=d; $('#overview').hidden=false; renderOverview(); return true;
-  }catch(e){ return false; }
+  if(S.sum)return true;
+  if(!S.sumP)S.sumP=(async()=>{ try{
+      const res=await fetch('data/summary.json',{cache:'no-store'}); if(!res.ok)return false;
+      const d=await res.json(); if(d.kind!=='singoga-summary'||!Array.isArray(d.regions)||!d.regions.length)return false;
+      S.sum=d; $('#overview').hidden=false; renderOverview(); return true;
+    }catch(e){ return false; } })();
+  const ok=await S.sumP; if(!ok)S.sumP=null; return ok;
 }
 function renderOverview(){
   const d=S.sum; if(!d)return;
@@ -1747,6 +2053,1247 @@ async function goRegion(code){
   $('#regionHead').scrollIntoView({behavior:'smooth',block:'start'});
 }
 
+/* ---------- 물어보기 ----------
+   data/catalog.json (수집 단계에서 만든 12개 지역 단지·면적 목록) 위에서 한국어 질문을 해석해 바로 답한다.
+   해석은 이 브라우저 안에서 규칙으로만 한다. 질문을 외부 AI 서비스로 보내지 않는다.
+   parseAsk() 가 문장을 조건(cons)·정렬·의도로 바꾸고, execAsk() 가 그 조건으로 카탈로그를 거른 뒤 답을 쓴다. */
+const A={cat:null,rows:[],cheap:[],regs:[],byCode:new Map(),byKey:new Map(),cx:new Map(),dongIx:new Map(),stemIx:new Map(),promise:null,q:'',last:null,chart:null,maxRef:''};
+const PY=3.305785*0.75;   /* 공급 1평 ≈ 전용 2.48㎡ (전용률 75%로 잡음). "30평대" 같은 말을 전용면적으로 바꿀 때 쓴다 */
+const ymdStr=n=>{ const s=String(n); return `${s.slice(0,4)}-${s.slice(4,6)}-${s.slice(6,8)}`; };
+const normName=s=>String(s||'').toLowerCase().replace(/[\s·.,()[\]\-_'"]/g,'');
+const isHan=ch=>!!ch&&ch>='가'&&ch<='힣';
+const plain=s=>String(s).replace(/<[^>]*>/g,'').trim();
+/* 받침: 0 없음 · 1 있음 · 2 ㄹ받침. 숫자는 읽는 소리로 (영·일·삼·육·칠·팔에 받침) */
+function batchim(word){ const s=plain(word).replace(/\s*\([^()]*\)$/,''); const ch=s[s.length-1]; if(!ch)return 0;   /* 'e편한세상(논현동)' → 세상 기준 */
+  const c=ch.charCodeAt(0);
+  if(c>=0xAC00&&c<=0xD7A3){ const t=(c-0xAC00)%28; return t===0?0:t===8?2:1; }
+  if(ch>='0'&&ch<='9')return +'1201001220'[+ch];
+  return 0; }
+const J=(w,a,b)=>w+(batchim(w)?a:b);
+const JRO=w=>w+(batchim(w)===1?'으로':'로');
+const IEYO=w=>w+(batchim(w)?'이에요':'예요');
+const IEYOp=(w,paren)=>`${w}(${paren})${batchim(w)?'이에요':'예요'}`;   /* 괄호 뒤 조사는 괄호 앞 낱말을 따른다 */
+const ym7=d=>fmtDate(d).slice(0,7);
+const ppyTxt=v=>{ const m=Math.round(v); return m>=10000?(m%10000?`${Math.floor(m/10000)}억 ${(m%10000).toLocaleString()}만`:`${m/10000}억`):`${m.toLocaleString()}만`; };
+const round100=v=>Math.round(v/100)*100;
+const missingOf=q=>{ const m=[...new Set(q.missing)]; return m.length?J(m.join('·'),'은','는'):''; };
+const won=m=>fmtManShort(m);
+const pyg=a=>Math.round(a/PY);
+const addDays=(d,n)=>{ const t=new Date(d+'T00:00:00Z'); t.setUTCDate(t.getUTCDate()+n); return t.toISOString().slice(0,10); };
+const sumOf=code=>(S.sum&&S.sum.regions.find(r=>r.code===code))||null;
+function medianBy(arr,fn){ const v=arr.map(fn).filter(x=>x!=null&&isFinite(x)); return v.length?median(v):null; }
+function countBy(arr,fn){ const m=new Map(); for(const x of arr){ const k=fn(x); m.set(k,(m.get(k)||0)+1); } return [...m].sort((a,b)=>b[1]-a[1]); }
+
+async function loadCatalog(){
+  if(A.cat)return true;
+  if(!A.promise)A.promise=(async()=>{ try{
+      const res=await fetch('data/catalog.json',{cache:'no-cache'}); if(!res.ok)return false;
+      const c=await res.json(); if(c.kind!=='singoga-catalog'||!c.n)return false;
+      buildCatalog(c); return true;
+    }catch(e){ return false; } })();
+  const ok=await A.promise; if(!ok)A.promise=null; return ok;
+}
+function buildCatalog(c){
+  const D=c.dict, C=c.cols;
+  A.regs=c.regions.map((r,i)=>{ const p=r.name.split(/\s+/), group=p[0], short=p[p.length-1];
+    const city=group!=='서울특별시'&&p.length>2?p[1].replace(/시$/,''):'';
+    return {i,code:r.code,name:r.name,ref:r.ref,refYear:+r.ref.slice(0,4),group,short,city,
+      label:city?`${city} ${short}`:short,stem:short.replace(/(구|시|군)$/,''),
+      from1:monthsAgo(r.ref,1),from3:monthsAgo(r.ref,3),from6:monthsAgo(r.ref,6),from12:monthsAgo(r.ref,12)}; });
+  A.byCode=new Map(A.regs.map(r=>[r.code,r]));
+  A.maxRef=A.regs.reduce((m,r)=>r.ref>m?r.ref:m,'');
+  const rows=new Array(c.n);
+  for(let i=0;i<c.n;i++){
+    const reg=A.regs[C.r[i]], sgg=D.sgg[C.s[i]], dong=D.dong[C.dong[i]], apt=D.apt[C.apt[i]], ak=C.ak[i];
+    const price=C.price[i], area=C.area[i], mp=C.mp[i], j=C.j[i]||null, prev=C.prev[i]||0, built=C.built[i]||null, md=ymdStr(C.md[i]);
+    rows[i]={reg,code:reg.code,sgg,dong,apt,ak,area,built,price,pn:C.pn[i],lp:C.lp[i],ld:ymdStr(C.ld[i]),lf:C.lf[i],
+      mp,md,mf:C.mf[i],prev,n:C.n[i],n12:C.n12[i],j,jn:C.jn[i],mom:C.mom[i],vg:C.vg[i],
+      key:`${sgg}|${dong}|${apt}|${ak}`,ck:`${reg.code}|${dong}|${apt}`,an:normName(apt),
+      ppy:price/(area/3.305785),vsPeak:price/mp-1,jr:j?j/price:null,gap:j?price-j:null,
+      age:built?reg.refYear-built:null,recPct:prev?mp/prev-1:null,rec:prev>0&&md>=reg.from3,pa:C.pa?C.pa[i]||null:null,pan:C.pan?C.pan[i]:0};
+  }
+  A.rows=rows; A.byKey=new Map(rows.map(r=>[r.key,r]));
+  A.cx=new Map();
+  for(const r of rows){ let x=A.cx.get(r.ck);
+    if(!x){ x={ck:r.ck,code:r.code,reg:r.reg,dong:r.dong,apt:r.apt,an:r.an,built:r.built,rows:[],n12:0}; A.cx.set(r.ck,x); }
+    x.rows.push(r); x.n12+=r.n12; if(!x.built&&r.built)x.built=r.built; }
+  const H=c.cheap||{}; A.cheap=[];
+  for(let i=0;i<(c.cheapN||0);i++){
+    const reg=A.regs[H.r[i]], key=`${D.sgg[H.s[i]]}|${D.dong[H.dong[i]]}|${D.apt[H.apt[i]]}|${H.ak[i]}`, row=A.byKey.get(key); if(!row)continue;
+    const price=H.price[i];
+    A.cheap.push({reg,row,code:reg.code,dong:row.dong,apt:row.apt,ak:row.ak,ck:row.ck,an:row.an,area:row.area,built:row.built,age:row.age,
+      key,date:ymdStr(H.date[i]),price,floor:H.floor[i],exp:H.exp[i],band:['lo','mid','hi'][H.band[i]],dev:price/H.exp[i]-1,ppy:price/(row.area/3.305785)}); }
+  A.dongIx=new Map();
+  for(const x of A.cx.values()){ if(!x.dong)continue; const a=A.dongIx.get(x.dong)||[];
+    if(!a.some(d=>d.code===x.code))a.push({code:x.code,dong:x.dong}); A.dongIx.set(x.dong,a); }
+  const stems=new Set(A.regs.map(r=>r.stem));
+  A.stemIx=new Map();
+  for(const [dn,list] of A.dongIx){ const st=dn.replace(/\d+가$/,'').replace(/동$/,'');
+    if(st.length<2||st===dn||stems.has(st))continue;
+    const a=A.stemIx.get(st)||[]; for(const d of list)if(!a.some(z=>z.code===d.code&&z.dong===d.dong))a.push(d); A.stemIx.set(st,a); }
+  A.cat=c;
+  try{ fitValueModel(); }catch(e){ A.vm=null; }
+}
+
+/* ===== 가성비 모델 =====
+   1) 지역(구)마다 회귀: log(평당가) ~ 동 + 연식 구간 + log 면적 + log 단지 규모(6년 거래 수) + 브랜드.
+      평당가는 '지금 기준 가격'(최근 1년 중개거래를 지역 지수로 지금 수준에 맞춘 중위값, catalog 의 pa)으로 쓴다.
+      값이 동떨어진 묶음은 Tukey 가중으로 덜 보고, 거래가 적은 동은 구 평균 쪽으로 당긴다.
+   2) 후보마다 비교 사례를 고른다: 같은 동(모자라면 같은 구)에서 연식 ±6년 · 면적 ±25% · 단지 규모 1/3~3배인 다른 단지.
+      사례 가격을 회귀 계수로 후보 조건에 맞게 옮긴 뒤 가중 중앙값을 '비교 가격'으로 쓴다 (감정평가의 거래사례비교와 같은 생각).
+   3) 가성비 점수 = 비교 대비 할인 45% + 전세가율(구 중위 대비) 20% + 거래량 15% + 6개월 흐름 10% + 연식 10%. */
+const BRAND_RE=/래미안|자이|힐스테이트|디에이치|푸르지오|써밋|아이파크|e-?편한세상|이편한세상|아크로|롯데캐슬|르엘|더샵|sk뷰|포레나|꿈에그린|센트레빌|트리마제/i;
+const RENT_RE=/임대|행복주택|공공지원|토지임대/;
+const VBINS=[0,5,10,15,20,25,30,35];
+const VW={sD:.45,sJ:.2,sL:.15,sM:.1,sA:.1};
+const VLABEL={sD:'비슷한 단지 대비',sJ:'전세가율',sL:'거래량',sM:'최근 흐름',sA:'연식'};
+const vbin=a=>{ let k=0; for(let i=0;i<VBINS.length;i++)if(a>=VBINS[i])k=i; return k; };
+const clamp01=x=>x<0?0:x>1?1:x;
+function solveLin(M,b){
+  const n=b.length, A2=M.map((row,i)=>{ const r=Array.from(row); r.push(b[i]); return r; });
+  for(let c=0;c<n;c++){ let p=c; for(let r=c+1;r<n;r++)if(Math.abs(A2[r][c])>Math.abs(A2[p][c]))p=r;
+    const t=A2[c]; A2[c]=A2[p]; A2[p]=t; const d=A2[c][c]; if(Math.abs(d)<1e-12)continue;
+    for(let k=c;k<=n;k++)A2[c][k]/=d;
+    for(let r=0;r<n;r++){ if(r===c)continue; const f=A2[r][c]; if(!f)continue; for(let k=c;k<=n;k++)A2[r][k]-=f*A2[c][k]; } }
+  return A2.map(r=>r[n]);
+}
+function fitValueModel(){
+  const rows=A.rows, cxn=new Map();
+  for(const r of rows)cxn.set(r.ck,(cxn.get(r.ck)||0)+r.n);
+  for(const r of rows){ r.cxn=cxn.get(r.ck); r.brand=BRAND_RE.test(r.apt)?1:0; r.rent=RENT_RE.test(r.apt);
+    r.lpa=r.pa?Math.log(r.pa/(r.area/3.305785)):null; r.jrv=r.j&&r.pa?r.j/r.pa:null; r.val=null; }
+  const ok=r=>r.pa&&!r.rent&&r.area>=40&&r.area<=200&&r.age!=null&&r.age>=0;
+  const pool=rows.filter(r=>ok(r)&&r.pan>=2), byCode=new Map();
+  for(const r of pool)(byCode.get(r.code)||byCode.set(r.code,[]).get(r.code)).push(r);
+  A.vm={byCode:new Map(),cand:0,scored:0,fit:0};
+  for(const reg of A.regs){
+    const fit=byCode.get(reg.code)||[]; if(fit.length<30)continue;
+    const dongs=[...new Set(fit.map(r=>r.dong))], B=VBINS.length, P=B+3+dongs.length, di=new Map(dongs.map((d,i)=>[d,B+3+i]));
+    const F=fit.map(r=>{ const idx=[0], val=[1]; const b=vbin(r.age); if(b>0){ idx.push(b); val.push(1); }
+      idx.push(B,B+1); val.push(Math.log(r.area),Math.log(Math.max(5,r.cxn))); if(r.brand){ idx.push(B+2); val.push(1); }
+      idx.push(di.get(r.dong)); val.push(1); return {idx,val}; });
+    const y=fit.map(r=>r.lpa), base=fit.map(r=>Math.min(r.pan,12)); let w=base.slice(), th=new Array(P).fill(0);
+    const lam=new Array(P).fill(0); for(let k=1;k<B;k++)lam[k]=0.5; lam[B+1]=0.5; lam[B+2]=0.5; for(let k=B+3;k<P;k++)lam[k]=3;
+    const pred=f=>{ let t=0; for(let j=0;j<f.idx.length;j++)t+=th[f.idx[j]]*f.val[j]; return t; };
+    for(let it=0;it<4;it++){
+      const M=Array.from({length:P},()=>new Float64Array(P)), bb=new Float64Array(P);
+      F.forEach((f,i)=>{ const wi=w[i]; if(!wi)return; const n=f.idx.length;
+        for(let a=0;a<n;a++){ const ia=f.idx[a], va=wi*f.val[a]; bb[ia]+=va*y[i]; for(let c=0;c<n;c++)M[ia][f.idx[c]]+=va*f.val[c]; } });
+      for(let k=0;k<P;k++)M[k][k]+=lam[k]+1e-9;
+      th=solveLin(M,bb);
+      const res=F.map((f,i)=>y[i]-pred(f)), md=median(res), s=1.4826*median(res.map(r=>Math.abs(r-md)))||0.1, c=4.685*s;
+      w=base.map((b0,i)=>Math.abs(res[i])<c?b0*(1-(res[i]/c)**2)**2:0);
+    }
+    const res=F.map((f,i)=>y[i]-pred(f)), sw=w.reduce((t,v)=>t+v,0)||1, yb=y.reduce((t,v,i)=>t+v*w[i],0)/sw;
+    const R2=1-res.reduce((t,r,i)=>t+w[i]*r*r,0)/(y.reduce((t,v,i)=>t+w[i]*(v-yb)**2,0)||1);
+    const jrMed=medianBy(rows.filter(r=>r.code===reg.code&&r.jrv&&r.jn>=3&&r.pan>=1),r=>r.jrv);
+    A.vm.byCode.set(reg.code,{th,B,di,R2,n:fit.length,jrMed,brand:Math.exp(th[B+2])-1}); A.vm.fit+=fit.length;
+  }
+  const cand=rows.filter(r=>ok(r)&&r.pan>=3&&r.n12>=3&&r.cxn>=40&&A.vm.byCode.has(r.code));
+  A.vm.cand=cand.length;
+  for(const g of cand){
+    const m=A.vm.byCode.get(g.code), th=m.th, B=m.B, ag=k=>k>0?th[k]:0, dfx=d=>m.di.has(d)?th[m.di.get(d)]:0;
+    const like=r=>r.ck!==g.ck&&Math.abs(r.age-g.age)<=6&&Math.abs(r.area-g.area)/g.area<=0.25&&r.cxn>=g.cxn/3&&r.cxn<=g.cxn*3;
+    const rp=byCode.get(g.code)||[];
+    let comps=rp.filter(r=>r.dong===g.dong&&like(r)), where='같은 동';
+    if(comps.length<3){ comps=rp.filter(like); where='같은 구'; }
+    const best=new Map(); for(const r of comps){ const x=best.get(r.ck); if(!x||Math.abs(r.area-g.area)<Math.abs(x.area-g.area))best.set(r.ck,r); }
+    comps=[...best.values()]; if(comps.length<3)continue;
+    const adj=r=>r.lpa+(ag(vbin(g.age))-ag(vbin(r.age)))+th[B]*(Math.log(g.area)-Math.log(r.area))
+      +th[B+1]*(Math.log(Math.max(5,g.cxn))-Math.log(Math.max(5,r.cxn)))+th[B+2]*(g.brand-r.brand)+(r.dong===g.dong?0:dfx(g.dong)-dfx(r.dong));
+    const vals=comps.map(r=>({r,v:adj(r),w:Math.min(r.pan,12)/(1+Math.abs(r.age-g.age)/3+Math.abs(r.area-g.area)/g.area*4+(r.dong===g.dong?0:1))})).sort((a,b)=>a.v-b.v);
+    const tw=vals.reduce((t,x)=>t+x.w,0); let acc=0, mid=vals[0].v; for(const x of vals){ acc+=x.w; if(acc>=tw/2){ mid=x.v; break; } }
+    const d=Math.exp(g.lpa-mid)-1, k=comps.length/(comps.length+3);
+    const parts={sD:clamp01((-Math.max(-0.25,Math.min(0.25,d))*k+0.25)/0.5),
+      sJ:g.jrv&&g.jn>=3&&m.jrMed?clamp01((g.jrv/m.jrMed-0.85)/0.3):0.5,
+      sL:clamp01(Math.log(g.n12)/Math.log(24)),sM:g.mom==null?0.5:clamp01((g.mom+0.06)/0.12),sA:clamp01(1-g.age/35)};
+    g.val={d,where,fair:Math.exp(mid)*(g.area/3.305785),ncomp:comps.length,comps:vals.slice().sort((a,b)=>b.w-a.w).slice(0,6).map(x=>({r:x.r,ppy:Math.exp(x.v)})),
+      parts,score:Math.round(100*Object.keys(VW).reduce((t,key)=>t+VW[key]*parts[key],0)),odd:d<=-0.3,jrMed:m.jrMed};
+    A.vm.scored++;
+  }
+}
+const valRank=(a,b)=>b.val.score-a.val.score||a.val.d-b.val.d;
+function valReasons(r,max){
+  const v=r.val, out=[];
+  if(v.d<=-0.03)out.push(['dn',`비슷한 단지 ${v.ncomp}곳보다 평당 ${pctAbs(v.d)} 쌈`]);
+  else if(v.d>=0.03)out.push(['up',`비슷한 단지보다 평당 ${pctAbs(v.d)} 비쌈`]);
+  else out.push(['',`비슷한 단지 ${v.ncomp}곳과 비슷한 값`]);
+  if(r.jrv&&r.jn>=3&&v.jrMed)out.push([r.jrv>=v.jrMed*1.08?'dn':'',`전세가율 ${Math.round(r.jrv*100)}% · ${r.reg.short} ${Math.round(v.jrMed*100)}%`]);
+  if(r.mom!=null&&Math.abs(r.mom)>=0.02)out.push([r.mom>0?'up':'dn',`6개월 ${fmtPct(r.mom,0)}`]);
+  out.push(['',`1년 ${r.n12}건 거래`]);
+  if(r.built)out.push(['',`${r.built}년 준공`]);
+  return out.slice(0,max||5);
+}
+/* 값 막대: 모든 카드가 같은 눈금. 가운데 빈 점 = 비교 가격, 찬 점 = 실거래 기준가 (양끝 ±30%) */
+function valBar(r){
+  const d=r.val.d, x=Math.max(3,Math.min(97,50+d/0.3*50)), cheap=d<0;
+  return `<div class="vbar" aria-hidden="true"><span class="vbar-tick" style="left:20%"></span><span class="vbar-tick" style="left:80%"></span>`
+    +`<span class="vbar-line ${cheap?'lo':'hi'}" style="left:${Math.min(x,50).toFixed(1)}%;width:${Math.abs(x-50).toFixed(1)}%"></span>`
+    +`<span class="vbar-dot fair" style="left:50%"></span><span class="vbar-dot now ${cheap?'lo':'hi'}" style="left:${x.toFixed(1)}%"></span>`
+    +`<span class="vbar-l" style="left:20%">−18%</span><span class="vbar-l mid" style="left:50%">비교 가격</span><span class="vbar-l" style="left:80%">+18%</span></div>`;
+}
+function valCard(r,i,opt){
+  const v=r.val, o=opt||{};
+  const comps=v.comps.map(c=>`<tr><td>${esc(c.r.apt)}<span class="sub2"> ${esc(c.r.dong)}</span></td><td class="r num">${c.r.ak}㎡</td><td class="r num">${c.r.built||'-'}</td><td class="r num">${ppyTxt(c.r.pa/(c.r.area/3.305785))}</td><td class="r num">${ppyTxt(c.ppy)}</td></tr>`).join('');
+  const parts=Object.keys(VW).map(k=>`<div class="bar-row"><span>${VLABEL[k]}</span><div class="bar-track"><div class="bar-fill" style="width:${Math.max(3,Math.round(v.parts[k]*100))}%"></div></div><em>${Math.round(v.parts[k]*VW[k]*100)}/${Math.round(VW[k]*100)}</em></div>`).join('');
+  return `<li class="vc${o.fold&&i>=o.fold?' fold':''}" style="--i:${Math.min(i,9)}">
+  <div class="vc-rank" aria-hidden="true">${i+1}</div>
+  <div class="vc-main">
+    <button type="button" class="vc-name" data-code="${esc(r.code)}" data-open="${esc(r.key)}"><span class="sr">${i+1}위 </span>${esc(r.apt)} <span class="vc-ak">${r.ak}㎡</span></button>
+    <div class="vc-meta">${esc(r.reg.label)} ${esc(r.dong)} · 약 ${pyg(r.area)}평형${r.built?` · ${r.built}년`:''}</div>
+    <div class="vc-price"><b class="num">${won(r.pa)}</b><span class="vc-lab">실거래 기준</span><span class="vc-sep">vs</span><span class="num">${won(v.fair)}</span><span class="vc-lab">비교 가격</span><span class="vc-d ${v.d<0?'lo':'hi'}">${v.d<0?'−':'+'}${pctAbs(v.d)}</span></div>
+    ${valBar(r)}
+    <div class="vc-why">${valReasons(r).map(([c,t])=>`<i class="${c}">${esc(t)}</i>`).join('')}</div>
+    <details class="vc-more"><summary>왜 이 점수인가 · 비교한 단지</summary>
+      <div class="vc-parts">${parts}</div>
+      <div class="tablewrap"><table class="deals"><thead><tr><th>비교 단지 (${v.where})</th><th class="r">전용</th><th class="r">준공</th><th class="r">평당가</th><th class="r">이 단지 조건으로</th></tr></thead><tbody>${comps}</tbody></table></div>
+    </details>
+  </div>
+  <div class="vc-stamp" role="img" aria-label="가성비 점수 ${v.score}점"><b>${v.score}</b><span>가성비</span></div>
+</li>`;
+}
+/* 산점도: 비교 가격(가로) × 실거래 기준가(세로), 둘 다 로그 눈금. 대각선 아래 = 비슷한 단지보다 쌈 */
+function valScatter(pool,top,W){
+  const H=Math.round(Math.min(360,Math.max(260,W*0.56))), L=54, R=14, T=14, B=36;
+  const pts=pool.slice(0,1500), xsV=pts.map(r=>r.val.fair), ysV=pts.map(r=>r.pa);
+  let lo=Math.min(...xsV,...ysV)*0.92, hi=Math.max(...xsV,...ysV)*1.06;
+  const lx=Math.log(lo), hx=Math.log(hi), sx=v=>L+(Math.log(v)-lx)/(hx-lx)*(W-L-R), sy=v=>T+(hx-Math.log(v))/(hx-lx)*(H-T-B);
+  let ticks=[]; for(const st of [2000,5000,10000,20000,25000,50000,100000,200000,500000]){
+    ticks=[]; for(let v=Math.ceil(lo/st)*st;v<=hi;v+=st)ticks.push(v); if(ticks.length<=6)break; }
+  if(ticks.length>6)ticks=ticks.filter((_,i)=>i%2===0);
+  let g='';
+  for(const t of ticks){ const X=sx(t).toFixed(1), Y=sy(t).toFixed(1);
+    const lab=`${+(t/1e4).toFixed(1)}억`;
+    g+=`<line x1="${X}" x2="${X}" y1="${T}" y2="${H-B}" stroke="var(--grid)"/><text class="tick" x="${X}" y="${H-B+15}" text-anchor="middle">${lab}</text>`
+      +`<line x1="${L}" x2="${W-R}" y1="${Y}" y2="${Y}" stroke="var(--grid)"/><text class="tick" x="${L-6}" y="${(+Y+3.5).toFixed(1)}" text-anchor="end">${lab}</text>`; }
+  const band=(k)=>`${sx(lo).toFixed(1)},${sy(lo*k).toFixed(1)} ${sx(hi).toFixed(1)},${sy(hi*k).toFixed(1)}`;
+  g+=`<polygon points="${band(1.05)} ${sx(hi).toFixed(1)},${sy(hi*0.95).toFixed(1)} ${sx(lo).toFixed(1)},${sy(lo*0.95).toFixed(1)}" fill="var(--surface-2)" opacity=".8"/>`;
+  g+=`<line x1="${sx(lo).toFixed(1)}" y1="${sy(lo).toFixed(1)}" x2="${sx(hi).toFixed(1)}" y2="${sy(hi).toFixed(1)}" stroke="var(--axis)" stroke-width="1.5" stroke-dasharray="4 4"/>`;
+  g+=`<text class="axis-t" x="${(sx(hi)-6).toFixed(1)}" y="${(sy(hi)+14).toFixed(1)}" text-anchor="end">비교 가격과 같음</text>`;
+  g+=`<text class="axis-t" x="${((L+W-R)/2).toFixed(0)}" y="${H-4}" text-anchor="middle">비교 가격 (비슷한 단지 기준) →</text>`
+    +`<text class="axis-t" x="12" y="${((T+H-B)/2).toFixed(0)}" text-anchor="middle" transform="rotate(-90 12 ${((T+H-B)/2).toFixed(0)})">실거래 기준가 →</text>`;
+  const topSet=new Set(top);
+  A.vTips=new Map(); let dots='', hits='', hl='', labels='';
+  pts.forEach((r,i)=>{ const X=sx(r.val.fair).toFixed(1), Y=sy(r.pa).toFixed(1), t=topSet.has(r);
+    if(!t)dots+=`<circle cx="${X}" cy="${Y}" r="3" fill="var(--series-deal)" opacity=".28"/>`; });
+  top.forEach((r,i)=>{ const X=sx(r.val.fair), Y=sy(r.pa), k='v'+i;
+    A.vTips.set(k,`<b>${i+1}위 ${esc(r.apt)} ${r.ak}㎡</b><div>실거래 기준 ${won(r.pa)} · 비교 ${won(r.val.fair)} · ${fmtPct(r.val.d,0)}</div><div>가성비 ${r.val.score}점 · 누르면 자세히</div>`);
+    hl+=`<circle cx="${X.toFixed(1)}" cy="${Y.toFixed(1)}" r="7" fill="var(--up)" stroke="var(--surface)" stroke-width="2"/>`;
+    labels+=`<text class="vs-n" x="${X.toFixed(1)}" y="${(Y+3.5).toFixed(1)}" text-anchor="middle">${i+1}</text>`;
+    hits+=`<circle class="vs-hit" cx="${X.toFixed(1)}" cy="${Y.toFixed(1)}" r="14" tabindex="0" role="button" data-vtip="${k}" data-code="${esc(r.code)}" data-open="${esc(r.key)}" aria-label="${i+1}위 ${esc(r.apt)}"/>`; });
+  return `<svg viewBox="0 0 ${W} ${H}" height="${H}" role="img" aria-label="비교 가격과 실거래 기준가 산점도">${g}${dots}${hl}${labels}${hits}</svg>`;
+}
+function drawValScatter(){
+  const el=$('#vScatter'), a=A.last&&A.last.a; if(!el||!a||!a.vpool)return;
+  el.innerHTML=valScatter(a.vpool,a.vtop,Math.max(300,Math.round(el.clientWidth||640)))+'<div class="tip vs-tip"></div>';
+}
+function ansValue(q){
+  const area=q.cons.find(c=>c.kind==='area');
+  /* 가성비 답의 금액은 '실거래 기준가'(pa)로 본다 — 목록에 보이는 값과 같은 기준 */
+  const test=c=>c.kind==='money'&&c.field==='price'?(r=>r.pa>=c.lo&&r.pa<=c.hi)
+    :c.kind==='money'&&c.field==='gap'?(r=>r.jrv!=null&&r.pa-r.j>=c.lo&&r.pa-r.j<=c.hi):c.test;
+  const tests=q.cons.filter(c=>c.kind!=='recent').map(test);
+  const base=A.rows.filter(r=>r.val);
+  const all=base.filter(r=>tests.every(t=>t(r)));
+  const odd=all.filter(r=>r.val.odd).length, pool=all.filter(r=>!r.val.odd);
+  const scope=scopeOf(q), cond=condOf(q);
+  const note='가성비 점수는 실거래만으로 계산해요. 구마다 동네·연식·면적·단지 규모·브랜드가 값에 미치는 영향을 회귀로 배우고, 같은 동(모자라면 같은 구)에서 연식·면적·규모가 비슷한 단지의 최근 1년 실거래를 이 단지 조건으로 맞춰 견줬어요. '
+    +'역세권·학군·향·층·수리 상태·주상복합 여부는 모르니, 싼 데는 이유가 있을 수 있어요. 직접 확인하세요. 투자 권유가 아니에요.';
+  if(!pool.length){ const e=ansEmpty({...q,cons:q.cons.map(c=>({...c,test:test(c)}))},base.filter(r=>!r.val.odd),'가성비 후보');
+    e.lead=`${scope}에서 ${cond?`${cond} 조건으로 `:''}고를 만한 가성비 후보가 없어요.`; e.note=note; return e; }
+  const rows=q.sort&&q.sort.k!=='vg'?sortRows(pool,q.sort):pool.slice().sort(valRank);
+  const top=rows.slice(0,10), t=top[0], cheap10=pool.filter(r=>r.val.d<=-0.1).length;
+  const lead=`${scope}${cond?` · ${cond}`:''}에서 고른 가성비 단지예요. 1위는 <b>${esc(t.apt)} ${t.ak}㎡</b>(${esc(t.reg.label)} ${esc(t.dong)}) — 비슷한 단지 시세로 보면 ${won(t.val.fair)}쯤인데 ${won(t.pa)}에 거래돼 <span class="lo">${pctAbs(t.val.d)}</span> 덜 비싸요.`;
+  const T=[`후보 ${pool.length.toLocaleString()}곳 가운데 비슷한 단지보다 10% 넘게 싸게 거래되는 곳은 <b>${cheap10.toLocaleString()}곳</b>이에요.`,
+    '점수는 비슷한 단지 대비 할인 45%, 전세가율 20%, 거래량 15%, 최근 6개월 흐름 10%, 연식 10%를 합쳤어요.'];
+  if(odd)T.push(`비슷한 단지보다 30% 넘게 싼 ${odd}곳은 임대·지분·특수 거래일 수 있어 순위에서 뺐어요.`);
+  if(area&&/평/.test(area.label))T.push('평형은 공급면적 기준으로 보고 전용면적으로 바꿨어요.');
+  const lim=q.limit||30;
+  const viz=`<figure class="vs-fig"><figcaption><b>대각선보다 아래일수록 비슷한 단지보다 싸게 거래돼요</b><span>점 하나가 단지·면적 하나 · 빨간 번호가 순위 · 회색 띠는 ±5%</span></figcaption>
+<div class="ov-legend"><span><i class="dot" style="opacity:.45"></i>후보</span><span><i class="dot" style="background:var(--up)"></i>가성비 상위 10</span></div>
+<div class="vs-chart ov-chart" id="vScatter"></div></figure>
+<ol class="vlist">${rows.slice(0,lim).map((r,i)=>valCard(r,i,{fold:10})).join('')}</ol>${rows.length>10&&lim>10?`<button type="button" class="btn sm more" data-vmore>${Math.min(lim,rows.length)-10}곳 더 보기</button>`:''}`;
+  const f=[];
+  if(!q.cons.some(c=>c.kind==='age'))f.push(FL('10년 이내만',withText(q,'10년 이내')));
+  if(!area)f.push(FL('30평대만',withText(q,'30평대')));
+  if(!q.gapBuy)f.push(FL('전세 끼고 5억',`${without(q,['cond'])} 전세 끼고 5억`));
+  if(!q.regions.size)f.push(FL('서울만',`서울 ${q.raw}`),FL('안양만',`안양 ${q.raw}`));
+  f.push(FL('1위 단지 자세히',`${t.reg.short} ${t.apt}`));
+  return {lead,text:T.join(' '),viz,vpool:pool,vtop:top,follow:f.slice(0,6),count:pool.length,note};
+}
+
+/* ===== 질문 해석 ===== */
+const GROUP_ALIASES=[
+  {re:/강남\s*4\s*구/g,codes:['11680','11650','11710','11740'],label:'강남4구'},
+  {re:/강남\s*3\s*구/g,codes:['11680','11650','11710'],label:'강남3구'},
+  {re:/마용성광/g,codes:['11440','11170','11200'],label:'마용성',missing:['광진구']},
+  {re:/마용성/g,codes:['11440','11170','11200'],label:'마용성'},
+  {re:/노도강/g,codes:['11350'],label:'노도강',missing:['도봉구','강북구']},
+  {re:/평촌(?!동)/g,codes:['41173'],label:'평촌',bound:true},   /* 평촌 신도시 → 동안구. '평촌동'이라고 쓰면 동으로 본다 */
+];
+const BROAD_ALIASES=[
+  {re:/서울(?:특별시|시)?(?![대역숲])/g,group:'서울특별시',label:'서울'},
+  {re:/경기(?:도|권|\s*지역)/g,group:'경기도',label:'경기'},
+  {re:/안양(?:시)?/g,city:'안양',label:'안양시'},
+];
+const MISSING_REGIONS=['종로','중구','성북','강북','도봉','동대문','중랑','광진','은평','서대문','강서','구로','금천','동작','관악',
+  '분당','성남','판교','광명','과천','의왕','군포','수원','용인','수지','하남','위례','고양','일산','김포','부천','인천','송도',
+  '화성','동탄','평택','남양주','구리','시흥','안산','의정부','파주','부산','대구','대전','광주','세종','울산','제주'];
+/* 지역·동 이름 뒤에 와도 되는 말. "강남신축"은 강남+신축, "마포래미안"은 단지 이름으로 본다 */
+const AFTER_OK=/^(?:구|시|군|쪽|에서|에선|에|의|은|는|이랑|이나|이|가|을|를|도|만|랑|하고|와|과|대비|지역|권|일대|근처|주변|아파트|단지|신축|구축|준신축|재건축|전세|매매|시세|신고가|급매|국평|국민|소형|중형|대형|중소형|중대형|집값|부동산|최근|지금|요즘|고점|바닥|분위기|어때|비교|거래|갭|평당|가격|값|추천)/;
+function boundaryOK(w,s,e){ if(isHan(w[s-1]))return false; const a=w[e]; if(!a||!isHan(a))return true; return AFTER_OK.test(w.slice(e)); }
+const STOP=new Set(('아파트 아파트값 단지 단지들 시세 가격 값 집값 집 부동산 매매 정보 목록 리스트 순위 랭킹 순 순으로 순서 순서대로 기준 지역 동네 주변 곳 곳들 데 것 거 '
+  +'뭐 뭐가 어디 어디야 어디가 얼마 얼마야 얼마나 알려줘 알려 줘 보여줘 보여 찾아줘 찾아 추천 추천해줘 추천해 해줘 주세요 좀 요 있는 있어 있나 있을까 '
+  +'중 중에 중에서 그리고 및 또 더 제일 가장 젤 최근 지금 현재 요즘 많이 높은 낮은 수 살 사려면 사고 싶은 싶어 원해 하는 한 해 건 걸 만 정도 쯤 되는 된 될 인 '
+  +'거래된 거래 있는 고점 대비 평당 평단가 평당가 평단 매물 투자 실거주 위주 기준으로 위치 그 이 저 곳은 곳이 동 구 시 군 원 억 만원 끼고 사기 사는 살수 살 수있는 수있는 '
+  +'어떤 몇 개 이번 이번주 오늘 당장 진짜 정말 혹시 그냥 대략 대충 약 다 모든 전부 전체 알려줄래 알려주세요 보여주세요 찾아주세요 궁금해 궁금 뭐야 있니 있어요 있나요 '
+  +'해주세요 부탁 부탁해 정리해줘 정리 골라줘 골라 뽑아줘 뽑아 말해줘 말해 할까 할만한 괜찮은 좋은 나쁜 살만한 살만 어디서 어디에 어느 뭘 무엇 거기 여기 이거 그거 '
+  +'같은 대해 대해서 관련 아파트들 매수 구매 구입 사고싶어 사고싶은 원하는 찾는 중인 정도의 이하의 이상의 1주택자 무주택자 무주택 다주택자 실수요자 실수요 신혼부부 신혼 전세 월세 매매가 전세가').split(' '));
+const PARTICLE=/(?:으로|에서|에선|이랑|하고|까지|부터|처럼|보다|은|는|이|가|을|를|의|에|도|만|랑|와|과|로|야|요)$/;
+
+function editDist(a,b){ const m=a.length,n=b.length; let p=Array.from({length:n+1},(_,j)=>j);
+  for(let i=1;i<=m;i++){ const c=[i]; for(let j=1;j<=n;j++)c[j]=Math.min(p[j]+1,c[j-1]+1,p[j-1]+(a[i-1]===b[j-1]?0:1)); p=c; } return p[n]; }
+/* 오타 허용: 이름 안의 비슷한 길이 조각과 견준다 */
+function fuzzyFind(term,pool){
+  const t=normName(term), L=t.length; if(L<4||/(줘|요|까|니|래|해|자|냐|지|죠)$/.test(t))return [];
+  const lim=L<=6?1:2; let best=lim+1, out=[];
+  for(const x of pool){ const nm=x.an; let d=lim+1;
+    for(let len=Math.max(2,L-1);len<=L+1&&d>0;len++)for(let i=0;i+len<=nm.length&&d>0;i++)d=Math.min(d,editDist(t,nm.slice(i,i+len)));
+    if(d<best){ best=d; out=[x]; } else if(d===best&&d<=lim)out.push(x); }
+  return best<=lim?out.slice(0,6):[];
+}
+function removeSpans(raw,spans){
+  let t=raw; for(const [s,e] of [...spans].sort((a,b)=>b[0]-a[0]))t=t.slice(0,s)+' '+t.slice(e);
+  return t.replace(/\s{2,}/g,' ').trim();
+}
+
+function parseAsk(raw){
+  const src=String(raw||'').replace(/[０-９]/g,c=>String.fromCharCode(c.charCodeAt(0)-0xFEE0)).replace(/[～〜∼]/g,'~').replace(/％/g,'%').replace(/[A-Z]/g,c=>c.toLowerCase());
+  let w=src;
+  const q={raw:String(raw||''),src,ents:[],cons:[],regions:new Set(),units:[],dongs:[],apts:null,sort:null,win:null,
+    records:false,cheap:false,status:false,compare:false,help:false,future:false,similar:false,gapBuy:false,noRecent:false,limit:0,cheapGap:0.05,
+    missing:[],unknown:[],notes:[],fuzzy:[],outside:false,value:false,intent:''};
+  const free=(s,e)=>w.slice(s,e).indexOf('\u0001')<0;
+  const eat=(s,e)=>{ w=w.slice(0,s)+'\u0001'.repeat(e-s)+w.slice(e); };
+  const each=(re,fn)=>{ for(const m of [...w.matchAll(re)]){ const s=m.index,e=s+m[0].length; if(e<=s||!free(s,e))continue; if(fn(m,s,e)!==false)eat(s,e); } };
+  const ent=(type,s,e,label,x)=>{ const o=Object.assign({type,s,e,label},x||{}); q.ents.push(o); return o; };
+  const con=o=>{ q.cons.push(o); return o; };
+
+  each(/도움말|사용법|help|뭘\s*물어|무엇을\s*물어|뭐\s*물어|어떻게\s*(?:써|쓰|물어)|할\s*수\s*있는\s*(?:게|것|질문)|예시\s*(?:질문)?/g,(m,s,e)=>{ q.help=true; ent('help',s,e,'도움말'); });
+  const quoted=[];
+  each(/["“'‘]([^"”'’]{2,30})["”'’]/g,(m,s,e)=>{ quoted.push({t:m[1],s,e}); });
+
+  /* 기간 */
+  const setWin=(o,s,e,label)=>{ if(q.win)return; q.win=Object.assign({label},o); ent('win',s,e,label); };
+  each(/(?:최근|지난)\s*(\d{1,2})\s*(?:개월|달)(?:\s*(?:동안|간|사이|새|내|안|이내))?/g,(m,s,e)=>setWin({months:+m[1]},s,e,+m[1]===1?'최근 한 달':`최근 ${+m[1]}개월`));
+  each(/(?:최근|지난)\s*(\d)\s*년(?:\s*(?:동안|간|사이|새|내|안|이내))?/g,(m,s,e)=>setWin({months:12*m[1]},s,e,`최근 ${m[1]}년`));
+  each(/(?:최근|지난)\s*(?:한|1)\s*달(?:\s*(?:동안|간|사이|새))?|한\s*달\s*(?:동안|간|사이|새)|이번\s*달|이달/g,(m,s,e)=>setWin({months:1},s,e,'최근 한 달'));
+  each(/(?:최근|지난)\s*(?:두|2)\s*달/g,(m,s,e)=>setWin({months:2},s,e,'최근 두 달'));
+  each(/(?:최근|지난)\s*(?:석|세)\s*달/g,(m,s,e)=>setWin({months:3},s,e,'최근 3개월'));
+  each(/(?:최근\s*)?반\s*년/g,(m,s,e)=>setWin({months:6},s,e,'최근 6개월'));
+  each(/(?:최근\s*)?(?:일주일|한\s*주(?![가-힣])|1\s*주일?(?!택))(?:\s*(?:동안|간|새))?/g,(m,s,e)=>setWin({days:7},s,e,'최근 일주일'));
+  each(/(?:최근|지난)\s*(\d)\s*주(?:일)?(?!택)/g,(m,s,e)=>setWin({days:7*m[1]},s,e,`최근 ${m[1]}주`));
+  each(/(\d{1,2})\s*(?:개월|달)\s*(?:동안|간|사이|새|내|안|이내)/g,(m,s,e)=>setWin({months:+m[1]},s,e,`최근 ${+m[1]}개월`));
+  each(/올해|금년|이번\s*해/g,(m,s,e)=>setWin({ytd:true},s,e,'올해'));
+  each(/(\d{1,2})\s*년\s*전(?:보다|과|이랑|하고|대비|에\s*비해)?/g,(m,s,e)=>{ q.notes.push(`단지별로 ${m[1]}년 전 값과 견주는 건 아직 못 해요. 오르내림은 최근 6개월 흐름으로 봤어요.`); ent('info',s,e,`${m[1]}년 전 비교는 못 해요`); });
+
+  /* 지역 · 동 */
+  const addRegion=(codes,s,e,label,kind,x)=>{ const cs=codes.filter(c=>A.byCode.has(c)); if(!cs.length)return false;
+    ent('region',s,e,label,Object.assign({codes:cs,kind},x||{})); };
+  for(const r of A.regs)if(r.city)each(new RegExp(`${r.city}시?\\s*${r.stem}(?:구)?`,'g'),(m,s,e)=>addRegion([r.code],s,e,r.label,'one'));
+  for(const r of A.regs)each(new RegExp(r.short,'g'),(m,s,e)=>addRegion([r.code],s,e,r.label,'one'));
+  for(const g of GROUP_ALIASES)each(new RegExp(g.re.source,'g'),(m,s,e)=>{
+    const cs=g.codes.filter(c=>A.byCode.has(c)); if(!cs.length||(g.bound&&!boundaryOK(w,s,e)))return false;
+    if(g.missing)q.missing.push(...g.missing);
+    return addRegion(cs,s,e,`${g.label} · ${cs.map(c=>A.byCode.get(c).stem).join('·')}`,'set'); });
+  const addDong=(list,s,e,label)=>{ q.dongs.push(...list.filter(d=>!q.dongs.some(z=>z.code===d.code&&z.dong===d.dong))); ent('dong',s,e,label,{list}); };
+  for(const dn of [...A.dongIx.keys()].sort((a,b)=>b.length-a.length)){ let from=0,k;
+    while((k=w.indexOf(dn,from))>=0){ const s=k,e=k+dn.length; from=e;
+      if(!free(s,e)||isHan(w[s-1]))continue;
+      const list=A.dongIx.get(dn); addDong(list,s,e,`${dn} · ${list.map(d=>A.byCode.get(d.code).label).join('·')}`); eat(s,e); } }
+  for(const g of BROAD_ALIASES)each(new RegExp(g.re.source,'g'),(m,s,e)=>{
+    const cs=A.regs.filter(r=>g.group?r.group===g.group:r.city===g.city).map(r=>r.code);
+    if(!cs.length){ q.missing.push(m[0]); ent('missing',s,e,m[0]); return; }
+    return addRegion(cs,s,e,g.group==='서울특별시'?`서울 ${cs.length}개 구`:g.label,'broad'); });
+  for(const r of A.regs){ if(r.stem==='동안'||r.stem.length<2)continue;   /* '동안'은 "3개월 동안"과 헷갈려서 '동안구'로만 받는다 */
+    each(new RegExp(r.stem,'g'),(m,s,e)=>{ if(!boundaryOK(w,s,e))return false; return addRegion([r.code],s,e,r.label,'one'); }); }
+  for(const nm of MISSING_REGIONS)each(new RegExp(`${nm}(?:구|시|군)?`,'g'),(m,s,e)=>{
+    if(!boundaryOK(w,s,s+nm.length))return false; q.missing.push(m[0]); ent('missing',s,e,m[0]); });
+  for(const st of [...A.stemIx.keys()].sort((a,b)=>b.length-a.length)){ let from=0,k;
+    while((k=w.indexOf(st,from))>=0){ const s=k,e=k+st.length; from=e;
+      if(!free(s,e)||!boundaryOK(w,s,e))continue;
+      const list=A.stemIx.get(st);
+      addDong(list,s,e,`${list.map(d=>d.dong).join('·')} · ${[...new Set(list.map(d=>A.byCode.get(d.code).label))].join('·')}`); eat(s,e); } }
+  const regEnts=q.ents.filter(x=>x.type==='region');
+  for(const x of regEnts){
+    if(x.kind==='broad'&&regEnts.some(y=>y!==x&&y.kind!=='broad'&&y.codes.some(c=>x.codes.includes(c)))){ x.dropped=true; continue; }  /* "서울 강남" → 강남만 */
+    x.codes.forEach(c=>q.regions.add(c)); }
+  q.units=[...new Set(regEnts.filter(x=>x.kind==='one').sort((a,b)=>a.s-b.s).flatMap(x=>x.codes))];
+
+  /* 전세 끼고 → 금액을 갭으로 본다 */
+  each(/전세\s*(?:끼고|안고|낀|끼면)/g,(m,s,e)=>{ q.gapBuy=true; ent('info',s,e,'전세 끼고 사기 · 금액은 갭으로'); });
+
+  /* 금액 */
+  const MF={price:{name:'',get:r=>r.price},gap:{name:'갭 ',get:r=>r.gap},jeonse:{name:'전세 ',get:r=>r.j},ppy:{name:'평당 ',get:r=>r.ppy}};
+  const fieldAt=s=>{ const pre=src.slice(Math.max(0,s-10),s);
+    if(/갭|투자금|실투자|초기\s*(?:자금|비용)/.test(pre))return 'gap';
+    if(/평당|평단/.test(pre))return 'ppy';
+    if(/월세/.test(pre))return 'rent';
+    if(/전세(?!가율|가률)/.test(pre)&&!/전세\s*(?:끼고|안고|낀|끼면)/.test(pre))return 'jeonse';
+    return q.gapBuy?'gap':'price'; };
+  const addMoney=(field,lo,hi,s,e,label)=>{
+    if(field==='rent'){ q.notes.push('월세 자료는 아직 모으지 않아서 금액 조건을 뺐어요.'); ent('info',s,e,'월세 조건은 못 봐요'); return; }
+    const f=MF[field], L=f.name+label;
+    con({kind:'money',field,lo,hi,label:L,test:r=>{ const v=f.get(r); return v!=null&&v>=lo&&v<=hi; },ent:ent('cond',s,e,L)}); };
+  const MONEY='(\\d+(?:\\.\\d+)?)\\s*억(?:\\s*(\\d{1,2},\\d{3}|\\d{1,4})\\s*(천|만)?)?(?:\\s*만)?|(\\d{1,3}(?:,\\d{3})+|\\d+)\\s*만|(\\d+(?:\\.\\d+)?)\\s*천\\s*만?';
+  const manOf=g=>{ if(g[0]!=null){ let v=parseFloat(g[0])*10000; if(g[1]!=null){ const r=parseFloat(g[1].replace(/,/g,'')); v+=g[2]==='천'?r*1000:g[2]==='만'?r:(r<10?r*1000:r); } return Math.round(v); }
+    if(g[3]!=null)return Math.round(parseFloat(g[3].replace(/,/g,'')));
+    if(g[4]!=null)return Math.round(parseFloat(g[4])*1000);
+    return null; };
+  each(new RegExp(`(\\d+(?:\\.\\d+)?)\\s*(억|천|만)?\\s*(?:~|-|–|—|에서|부터)\\s*(?:${MONEY})(?:\\s*(?:원))?(?:\\s*(?:사이|까지|이내|정도))?`,'g'),(m,s,e)=>{
+    const B=manOf(m.slice(3,8)); if(!B)return false;
+    const unit=m[2]||(m[3]!=null?'억':m[6]!=null?'만':'천');
+    const a=parseFloat(m[1])*(unit==='억'?10000:unit==='천'?1000:1), lo=Math.min(a,B), hi=Math.max(a,B);
+    addMoney(fieldAt(s),lo,hi,s,e,`${won(lo)}~${won(hi)}`); });
+  each(/(\d+(?:\.\d+)?)\s*억\s*(?:과|와|하고|에서)\s*(\d+(?:\.\d+)?)\s*억\s*(?:원\s*)?사이/g,(m,s,e)=>{
+    const a=parseFloat(m[1])*10000, b=parseFloat(m[2])*10000, lo=Math.min(a,b), hi=Math.max(a,b);
+    addMoney(fieldAt(s),lo,hi,s,e,`${won(lo)}~${won(hi)}`); });
+  const OPS='이하|미만|아래|밑|까지|안쪽|안으로|내로|이내|이면|있으면|가지고|갖고|으로|로|안(?![가-힣])|내(?![가-힣])|이상|넘는|넘게|넘은|넘어가는|초과|부터|위로|위(?![가-힣])|정도|쯤|근처|내외|안팎|선(?![가-힣])|짜리|언저리|대(?![가-힣])|대(?=로|의|에|인|면)';
+  each(new RegExp(`(?:${MONEY})\\s*(?:원)?\\s*(${OPS})?`,'g'),(m,s,e)=>{
+    const g=m.slice(1,6), v=manOf(g); if(!v)return false;
+    const op=m[6]||'', field=fieldAt(s);
+    if(/^(이상|넘는|넘게|넘은|넘어가는|초과|부터|위로|위)$/.test(op))return addMoney(field,v,Infinity,s,e,`${won(v)} 이상`);
+    if(/^(정도|쯤|근처|내외|안팎|선|짜리|언저리)$/.test(op))return addMoney(field,v*0.9,v*1.1,s,e,`${won(v)} 안팎`);
+    if(op==='대'){ const base=parseFloat(g[0]??g[3]??g[4]); const step=g[0]!=null?(base>=10&&base%10===0?100000:10000):g[3]!=null?1000:1000;
+      return addMoney(field,v,v+step-1,s,e,`${won(v)}대`); }
+    return addMoney(field,0,v,s,e,`${won(v)} 이하`); });
+
+  /* 퍼센트 */
+  each(/(\d+(?:\.\d+)?)\s*(?:%|퍼센트|프로)\s*(이상|넘게|넘는|넘은|초과|이하|미만|아래|까지|안쪽)?/g,(m,s,e)=>{
+    const p=parseFloat(m[1])/100, op=m[2]||'', pre=src.slice(Math.max(0,s-12),s), post=src.slice(e,e+10), P=Math.round(p*100);
+    const ge=!/이하|미만|아래|까지|안쪽/.test(op);
+    if(/전세가[율률]/.test(pre)){ const lo=ge?p:0, hi=ge?9:p, L=`전세가율 ${P}% ${ge?'이상':'이하'}`;
+      con({kind:'jr',label:L,test:r=>r.jr!=null&&r.jr>=lo-1e-9&&r.jr<=hi+1e-9,ent:ent('cond',s,e,L)}); return; }
+    if(/싸게|싼|급매|저렴|기대/.test(pre+post)){ q.cheap=true; q.cheapGap=p; ent('cond',s,e,`그 층 시세보다 ${P}% 이상 싸게`); return; }
+    if(/고점|최고가|신고가\s*대비/.test(pre)||/빠진|하락|떨어진|내린|낮은/.test(post)){ const L=`고점 대비 −${P}% 이하`;
+      con({kind:'drop',label:L,test:r=>r.vsPeak!=null&&r.vsPeak<=-p+1e-9,ent:ent('cond',s,e,L)}); return; }
+    if(/오른|상승|올랐|뛴/.test(post)){
+      if(/신고가|경신/.test(src)){ const L=`직전 신고가보다 +${P}% 이상`; con({kind:'jump',label:L,test:r=>r.recPct!=null&&r.recPct>=p-1e-9,ent:ent('cond',s,e,L)}); return; }
+      const L=`6개월 +${P}% 이상 상승`; con({kind:'mom',label:L,test:r=>r.mom!=null&&r.mom>=p-1e-9,ent:ent('cond',s,e,L)}); return; }
+    return false; });
+
+  /* 면적 */
+  const addArea=(lo,hi,s,e,label)=>{ if(q.cons.some(c=>c.kind==='area')){ q.notes.push('면적 조건은 처음 것 하나만 썼어요.'); return; }
+    con({kind:'area',lo,hi,label,test:r=>r.area>=lo&&r.area<hi,ent:ent('cond',s,e,label)}); };
+  const R=Math.round;
+  each(/(\d{2,3})\s*(㎡|m2|m²|평)?\s*(?:~|-|에서)\s*(\d{2,3})\s*(㎡|m2|m²|평)/g,(m,s,e)=>{ const u=m[4], f=u==='평'?PY:1;
+    const a=+m[1]*f, b=+m[3]*f, lo=Math.min(a,b), hi=Math.max(a,b)+0.01;
+    return addArea(lo,hi,s,e,u==='평'?`${m[1]}~${m[3]}평 · 전용 ${R(lo)}~${R(hi)}㎡`:`전용 ${m[1]}~${m[3]}㎡`); });
+  each(/(\d{2})\s*평\s*[대때]/g,(m,s,e)=>{ const p=Math.floor(+m[1]/10)*10; if(p<10)return false;
+    const lo=p*PY, hi=(p+10)*PY; return addArea(lo,hi,s,e,`${p}평대 · 전용 ${R(lo)}~${R(hi)}㎡`); });
+  each(/(\d{2,3})\s*(㎡|m2|m²|평)\s*(이상|넘는|넘게|초과|부터|이하|미만|까지|아래)/g,(m,s,e)=>{
+    const f=m[2]==='평'?PY:1, v=+m[1]*f, ge=/이상|넘는|넘게|초과|부터/.test(m[3]);
+    return addArea(ge?v:0,ge?1e9:v+0.01,s,e,`${m[2]==='평'?`${m[1]}평`:`전용 ${m[1]}㎡`} ${ge?'이상':'이하'}`); });
+  each(/(\d{2,3})\s*평(?:형)?(?![대때당단])/g,(m,s,e)=>{ const p=+m[1]; if(p<8||p>120)return false;
+    const lo=(p-1.5)*PY, hi=(p+1.5)*PY; return addArea(lo,hi,s,e,`${p}평 · 전용 ${R(lo)}~${R(hi)}㎡`); });
+  each(/(\d{2,3}(?:\.\d+)?)\s*(?:㎡|m2|m²|제곱미터|제곱|타입|형(?![태식]))/g,(m,s,e)=>{ const v=parseFloat(m[1]); if(v<15||v>300)return false;
+    return addArea(v-3,v+3,s,e,`전용 ${m[1]}㎡ 안팎`); });
+  each(/국민\s*평형|국평/g,(m,s,e)=>addArea(80,90,s,e,'국민평형 · 전용 80~89㎡'));
+  each(/중소형/g,(m,s,e)=>addArea(60,85.01,s,e,'중소형 · 전용 60~85㎡'));
+  each(/중대형/g,(m,s,e)=>addArea(85.01,135,s,e,'중대형 · 전용 85~135㎡'));
+  each(/중형/g,(m,s,e)=>addArea(60,85.01,s,e,'중형 · 전용 60~85㎡'));
+  each(/소형/g,(m,s,e)=>addArea(0,60,s,e,'소형 · 전용 60㎡ 미만'));
+  each(/대형(?!\s*평수)/g,(m,s,e)=>addArea(135,1e9,s,e,'대형 · 전용 135㎡ 이상'));
+
+  /* 연식 */
+  const addAge=(lo,hi,s,e,label)=>{ if(q.cons.some(c=>c.kind==='age')){ q.notes.push('연식 조건은 처음 것 하나만 썼어요.'); return; }
+    con({kind:'age',lo,hi,label,test:r=>r.age!=null&&r.age>=lo&&r.age<=hi,ent:ent('cond',s,e,label)}); };
+  const addBuilt=(lo,hi,s,e,label)=>{ if(q.cons.some(c=>c.kind==='age')){ q.notes.push('연식 조건은 처음 것 하나만 썼어요.'); return; }
+    con({kind:'age',label,test:r=>r.built!=null&&r.built>=lo&&r.built<=hi,ent:ent('cond',s,e,label)}); };
+  each(/((?:19|20)\d{2})\s*년\s*(?:이후|부터|이상|넘어서?)\s*(?:준공|입주|건축|지어진|완공)?/g,(m,s,e)=>addBuilt(+m[1],9999,s,e,`${m[1]}년 이후 준공`));
+  each(/((?:19|20)\d{2})\s*년\s*(?:이전|전|까지|이하)\s*(?:준공|입주|건축|지어진|완공)?/g,(m,s,e)=>addBuilt(0,+m[1],s,e,`${m[1]}년 이전 준공`));
+  each(/((?:19|20)\d{2})\s*년\s*(?:식|준공|입주|건축|완공)/g,(m,s,e)=>addBuilt(+m[1],+m[1],s,e,`${m[1]}년 준공`));
+  each(/(\d{1,2})\s*년\s*(?:이내|안쪽|미만|이하|안\s*된|안된|안\s*넘은|안(?![가-힣]))/g,(m,s,e)=>addAge(0,+m[1],s,e,`${+m[1]}년 이내`));
+  each(/(\d{1,2})\s*년\s*(?:이상|넘은|넘는|초과|넘게|된|지난)/g,(m,s,e)=>addAge(+m[1],999,s,e,`${+m[1]}년 넘은`));
+  each(/(\d{1,2})\s*년\s*차/g,(m,s,e)=>addAge(Math.max(0,m[1]-1),+m[1]+1,s,e,`${+m[1]}년 차 안팎`));
+  each(/재건축/g,(m,s,e)=>{ q.notes.push('재건축은 준공 30년이 넘은 단지로만 골랐어요. 실제로 추진 중인지는 실거래 자료에 없어요.');
+    return addAge(30,999,s,e,'30년 넘은 단지 · 재건축 연한'); });
+  each(/준\s*신축/g,(m,s,e)=>addAge(0,10,s,e,'준신축 · 10년 이내'));
+  each(/신축|새\s*아파트|새\s*집|새로\s*지은|새\s*단지/g,(m,s,e)=>addAge(0,5,s,e,'신축 · 5년 이내'));
+  each(/구축|오래된\s*(?:아파트|단지)/g,(m,s,e)=>addAge(20,999,s,e,'구축 · 20년 넘은'));
+
+  /* 의도 · 정렬 */
+  const setSort=(k,dir,label,s,e)=>{ if(q.sort)return; q.sort={k,dir,label}; ent('sort',s,e,`정렬: ${label}`); };
+  each(/신고가|최고가\s*(?:경신|갱신|찍은|찍었|기록)|기록\s*(?:경신|갱신)|신기록/g,(m,s,e)=>{ q.records=true; ent('records',s,e,'신고가 경신'); });
+  each(/급매물?|싸게\s*(?:팔린|나온|거래된|거래|산|판|샀)|헐값|저가\s*거래|시세보다\s*(?:싸게|싼|낮게)/g,(m,s,e)=>{ q.cheap=true; ent('cheap',s,e,'급매 신호 · 그 층 시세보다 싸게 팔린 거래'); });
+  each(/경신\s*폭\s*(?:이\s*)?(?:큰|많은|높은)|크게\s*뛴|많이\s*뛴|급등한?/g,(m,s,e)=>setSort('recPct',-1,'경신폭 큰 순',s,e));
+  each(/전세가[율률]\s*(?:이\s*)?(?:높은|높고|높아|큰|높)/g,(m,s,e)=>setSort('jr',-1,'전세가율 높은 순',s,e));
+  each(/전세가[율률]\s*(?:이\s*)?(?:낮은|낮고|낮아|작은|낮)/g,(m,s,e)=>setSort('jr',1,'전세가율 낮은 순',s,e));
+  each(/전세가[율률]/g,(m,s,e)=>setSort('jr',-1,'전세가율 높은 순',s,e));
+  each(/갭\s*(?:이\s*)?(?:작은|적은|작고|적고|적게|작게|작|적)|소액\s*(?:갭|투자)|갭\s*투자/g,(m,s,e)=>setSort('gap',1,'갭 작은 순',s,e));
+  each(/가성비|저평가|알짜|값어치|숨은\s*보석|덜\s*비싼|살\s*만한|살만한|사도\s*될\s*만한|추천(?:해\s*줘|해\s*주세요|좀)?|골라\s*줘|어디\s*살까|뭐\s*살까|적정\s*가(?:격)?|제\s*값/g,(m,s,e)=>{ q.value=true; ent('value',s,e,'가성비 · 비슷한 단지와 견주기'); });
+  each(/동네\s*(?:대비|보다)\s*싼/g,(m,s,e)=>setSort('vg',1,'동네 평단가보다 싼 순',s,e));
+  each(/평(?:당|단)가?\s*(?:가\s*)?(?:높은|비싼)/g,(m,s,e)=>setSort('ppy',-1,'평당가 높은 순',s,e));
+  each(/평(?:당|단)가?\s*(?:가\s*)?(?:낮은|싼)/g,(m,s,e)=>setSort('ppy',1,'평당가 낮은 순',s,e));
+  each(/비싼|비싸|고가|대장|랜드마크|최고가\s*단지/g,(m,s,e)=>setSort('price',-1,'비싼 순',s,e));
+  each(/싼|싸고|싸게|저렴|값싼|가격\s*(?:이\s*)?낮은|낮은\s*가격/g,(m,s,e)=>setSort('price',1,'싼 순',s,e));
+  each(/많이\s*(?:빠진|떨어진|내린|하락한)|하락|떨어진|낙폭|폭락|빠진|덜\s*회복|반\s*토막/g,(m,s,e)=>setSort('vsPeak',1,'고점 대비 많이 빠진 순',s,e));
+  each(/많이\s*오른|오르는|상승|반등|뜨는|핫한|오름세|오른/g,(m,s,e)=>setSort('mom',-1,'최근 6개월 많이 오른 순',s,e));
+  each(/거래\s*(?:가|량)?\s*(?:이\s*)?(?:많은|많고|활발한?|잦은)|인기|환금성|잘\s*팔리는|활발한?/g,(m,s,e)=>setSort('n12',-1,'1년 거래 많은 순',s,e));
+  each(/넓은|큰\s*평수|대형\s*평수/g,(m,s,e)=>setSort('area',-1,'넓은 순',s,e));
+  each(/좁은|작은\s*평수/g,(m,s,e)=>setSort('area',1,'좁은 순',s,e));
+  each(/대단지|큰\s*단지/g,(m,s,e)=>{ q.notes.push('세대수 자료가 없어서 6년 동안 거래가 많은 순으로 대신 골랐어요.'); setSort('n',-1,'6년 거래 많은 순 · 대단지 대신',s,e); });
+  each(/최신|연식\s*(?:이\s*)?좋은|새\s*것/g,(m,s,e)=>setSort('built',-1,'새 아파트 순',s,e));
+  each(/고점\s*(?:근처|부근|수준인|인\s*(?:곳|단지)|찍은)|최고가\s*(?:근처|부근)|고점인\s*(?:곳|단지)/g,(m,s,e)=>{ const L='고점 부근 · 고점 대비 −2% 이내';
+    con({kind:'near',label:L,test:r=>r.vsPeak!=null&&r.vsPeak>=-0.02,ent:ent('cond',s,e,L)}); });
+  each(/거래\s*(?:없어도|없는\s*(?:것|곳)도)|오래된\s*거래\s*(?:도|포함)|전체\s*기간/g,(m,s,e)=>{ q.noRecent=true; ent('info',s,e,'예전 거래만 있는 곳도 포함'); });
+  each(/비슷한\s*(?:단지|곳|아파트)|근처\s*(?:단지|아파트)|주변\s*(?:단지|아파트)|대안/g,(m,s,e)=>{ q.similar=true; ent('similar',s,e,'비슷한 단지'); });
+  each(/비교|vs\.?|대결|어디가\s*(?:나아|더|좋아|낫)|차이/g,(m,s,e)=>{ q.compare=true; ent('compare',s,e,'비교'); });
+  each(/전망|오를까|오를지|떨어질까|떨어질지|내릴까|내릴지|살\s*때|사도\s*(?:돼|될까|되나)|팔아야|팔까|타이밍|사야\s*(?:해|돼|할까)/g,(m,s,e)=>{ q.future=true; q.status=true; ent('status',s,e,'지금 위치 진단'); });
+  each(/고점\s*(?:인가|이야|일까|이냐|인지|이에요|입니까|맞아|이니|인가요)|꼭지|상투|어때|어떤가|어떻|분위기|상황|흐름|추세|바닥|시장|동향/g,(m,s,e)=>{ q.status=true; ent('status',s,e,'지금 위치 진단'); });
+  each(/(?:top|탑|상위)\s*(\d{1,2})|(\d{1,2})\s*(?:개|곳|군데)(?:만)?(?![가-힣월])/g,(m,s,e)=>{ const n=+(m[1]||m[2]); if(!n||n>50)return false; q.limit=n; ent('limit',s,e,`${n}개만`); });
+
+  /* 남은 낱말 → 단지 이름 */
+  const toks=[]; let pendNum=null; const nums=[];
+  for(const m of w.matchAll(/[가-힣a-z0-9]+/g)){
+    const t=m[0], s=m.index, e=s+t.length, base=t.replace(PARTICLE,'');
+    if(!base||STOP.has(t)||STOP.has(base))continue;
+    const nm=/^(\d{1,2})(?:단지|차)$/.exec(base); if(nm){ nums.push({t,s,e,n:nm[1]}); continue; }
+    if(/^\d+$/.test(t)){ const n=+t; if(n>=20&&n<=250&&!pendNum)pendNum={n,s,e}; else q.unknown.push({t,s,e}); continue; }
+    if(t.length<2&&!quoted.length)continue;
+    toks.push({t,s,e}); }
+  const terms=[...quoted,...toks];
+  if(terms.length){
+    const inScope=x=>(!q.regions.size||q.regions.has(x.code))&&(!q.dongs.length||q.dongs.some(d=>d.code===x.code&&d.dong===x.dong));
+    const all=[...A.cx.values()], scope=all.filter(inScope);
+    const hit=(pool,ts)=>pool.filter(x=>ts.every(t=>x.an.includes(normName(t))));
+    let found=null, used=[];
+    const tryAll=pool=>{ let r=hit(pool,terms.map(x=>x.t)); if(r.length)return r;
+      r=hit(pool,[terms.map(x=>x.t).join('')]); if(r.length)return r;
+      return hit(pool,terms.map(x=>x.t.replace(PARTICLE,'')||x.t)); };
+    let r=tryAll(scope); if(r.length){ found=r; used=terms; }
+    if(!found){ const per=[];
+      for(const x of terms){ let rr=hit(scope,[x.t]); const b=x.t.replace(PARTICLE,'');
+        if(!rr.length&&b.length>=2&&b!==x.t)rr=hit(scope,[b]);
+        if(rr.length){ per.push(...rr); used.push(x); } }
+      if(per.length)found=[...new Set(per)]; }
+    if(!found&&scope.length<all.length){ r=tryAll(all); if(r.length){ found=r; used=terms; q.outside=true; } }
+    if(!found){ for(const x of terms){ const fz=fuzzyFind(x.t,scope.length?scope:all); if(fz.length){ found=(found||[]).concat(fz); used.push(x); q.fuzzy.push({t:x.t,names:[...new Set(fz.map(z=>z.apt))]}); } } }
+    if(found&&nums.length){ const re=new RegExp(`(^|[^0-9])(${nums.map(x=>x.n).join('|')})(단지|차)?$`);
+      const by=found.filter(x=>re.test(x.an.replace(/\(.*\)$/,''))); if(by.length){ found=by; used.push(...nums); nums.length=0; } }
+    if(found){
+      found=[...new Set(found)].sort((a,b)=>b.n12-a.n12);
+      const whole=normName(used.map(x=>x.t).join('')), exact=found.filter(x=>x.an===whole||x.an===whole.replace(/아파트$/,''));
+      if(exact.length&&exact.length<found.length&&used.length===terms.length)found=exact;   /* '반포자이' → 신반포자이는 빼고 */
+      const set=new Set(found.map(x=>x.ck));
+      q.apts={cx:found,set};
+      const names=[...new Set(found.map(x=>x.apt))];
+      const label=names.length<=3?names.join(' · '):`이름에 '${used.map(x=>x.t).join(' ')}' 들어간 ${found.length}개 단지`;
+      const spans=used.map(x=>[x.s,x.e]);
+      con({kind:'apt',label,test:x=>set.has(x.ck),ent:ent('apt',Math.min(...spans.map(z=>z[0])),Math.max(...spans.map(z=>z[1])),label,{spans})});
+    }
+    for(const x of terms)if(!used.includes(x))q.unknown.push(x);
+  }
+  for(const x of nums)q.unknown.push(x);
+  if(pendNum){ if(!q.cons.some(c=>c.kind==='area')){ const v=pendNum.n; addArea(v-3,v+3,pendNum.s,pendNum.e,`전용 ${v}㎡ 안팎`); }
+    else q.unknown.push({t:String(pendNum.n),s:pendNum.s,e:pendNum.e}); }
+  for(const x of q.unknown)ent('unknown',x.s,x.e,x.t);
+  if(q.outside){ q.ents.forEach(x=>{ if(x.type==='region'||x.type==='dong')x.dropped=true; }); q.regions=new Set(); q.dongs=[]; q.units=[];
+    q.notes.push('말한 지역에는 그 이름의 단지가 없어서 전체에서 찾았어요.'); }
+  if(q.regions.size){ const codes=[...q.regions], spans=q.ents.filter(x=>x.type==='region'&&!x.dropped).map(x=>[x.s,x.e]);
+    con({kind:'region',label:codes.length===A.regs.length?`${A.regs.length}개 지역`:codes.map(c=>A.byCode.get(c).label).join('·'),spans,test:x=>q.regions.has(x.code)}); }
+  if(q.dongs.length){ const spans=q.ents.filter(x=>x.type==='dong').map(x=>[x.s,x.e]);
+    con({kind:'dong',label:[...new Set(q.dongs.map(d=>d.dong))].join('·'),spans,test:x=>q.dongs.some(d=>d.code===x.code&&d.dong===x.dong)}); }
+
+  /* 의도 정하기 */
+  const filt=q.cons.filter(c=>!['region','dong'].includes(c.kind));
+  const nonApt=filt.filter(c=>c.kind!=='apt'&&c.kind!=='area');
+  if(q.help&&q.ents.length<=1)q.intent='help';
+  else if(q.missing.length&&!q.regions.size&&!q.dongs.length&&!q.apts)q.intent='missing';
+  else if(q.cheap)q.intent='cheap';
+  else if(q.value&&!q.records&&!(q.apts&&q.apts.cx.length<=3)&&A.vm)q.intent='value';
+  else if(q.records)q.intent='records';
+  else if(q.similar&&q.apts)q.intent='similar';
+  else if(q.apts&&q.apts.cx.length<=3&&!q.sort&&!nonApt.length)q.intent='complex';
+  else if(q.compare&&!q.apts&&!q.dongs.length&&q.units.length>=2&&q.units.length<=4&&nonApt.length+filt.filter(c=>c.kind==='area').length>0)q.intent='compareF';
+  else if(!filt.length&&!q.dongs.length&&q.units.length>=2&&q.units.length<=4&&(q.compare||!q.sort))q.intent='compare';
+  else if(q.compare&&!filt.length&&!q.dongs.length&&q.regions.size>=2&&q.regions.size<=4){ q.units=[...q.regions]; q.intent='compare'; }
+  else if(!filt.length&&!q.sort&&!q.dongs.length&&q.units.length===1)q.intent='status';
+  else if(!filt.length&&!q.sort&&!q.dongs.length&&q.regions.size>1)q.intent='overview';
+  else if(!filt.length&&!q.sort&&!q.dongs.length&&!q.regions.size)q.intent=(q.unknown.length&&!q.status&&!q.compare&&!q.missing.length)?'unknown':(q.missing.length&&!q.status?'missing':'overview');
+  else q.intent='list';
+  if(q.missing.length&&q.intent!=='missing')q.notes.unshift(`${missingOf(q)} 아직 모으지 않는 지역이라 빼고 봤어요.`);
+  return q;
+}
+
+/* ===== 답 만들기 ===== */
+const passAll=(q,r,skip)=>q.cons.every(c=>c===skip||c.test(r));
+const SERIES=['var(--series-deal)','var(--g2)','var(--s3)','var(--s4)'];
+function scopeOf(q,noApt){
+  const dn=q.ents.filter(x=>x.type==='dong'&&!x.dropped), re=q.ents.filter(x=>x.type==='region'&&!x.dropped);
+  let place=dn.length?[...new Set(dn.flatMap(x=>x.list.map(d=>d.dong)))].join('·'):re.length?re.map(x=>x.label.split(' · ')[0]).join('·'):'';
+  if(q.apts&&!noApt){ const names=[...new Set(q.apts.cx.map(x=>x.apt))];
+    const nm=names.length<=2?names.join('·'):`이름에 '${q.ents.filter(x=>x.type==='apt').map(x=>plain(q.raw.slice(x.s,x.e))).join(' ')}' 들어간 ${q.apts.cx.length}개 단지`;
+    return place?`${place} ${nm}`:nm; }
+  return place||`${A.regs.length}개 지역`;
+}
+const COND_ORDER=['area','money','age','jr','near','drop','mom','jump'];
+function condOf(q){ return q.cons.filter(c=>!['region','dong','apt','recent'].includes(c.kind))
+  .sort((a,b)=>(COND_ORDER.indexOf(a.kind)+1||99)-(COND_ORDER.indexOf(b.kind)+1||99)).map(c=>c.label.split(' · ')[0]).join(', '); }
+function addRecent(q){ if(q.noRecent||q.cons.some(c=>c.kind==='recent'))return;
+  q.cons.push({kind:'recent',label:'최근 1년 거래 있는 곳만',implied:true,test:r=>r.n12>0}); }
+const SORT_GET={price:r=>r.price,ppy:r=>r.ppy,vsPeak:r=>r.vsPeak,mom:r=>r.mom,n12:r=>r.n12,n:r=>r.n,jr:r=>r.jr,gap:r=>r.gap,vg:r=>r.vg,
+  area:r=>r.area,built:r=>r.built,recPct:r=>r.recPct,md:r=>r.md,dev:r=>r.dev,date:r=>r.date};
+/* 파생 지표로 줄 세울 때는 표본이 너무 적은 묶음을 뺀다 (거래 1~2건짜리가 +100% 로 맨 위에 오지 않게) */
+const SORT_FLOOR={mom:[r=>r.n12>=6,'최근 1년 거래 6건 이상'],vg:[r=>r.n12>=3,'최근 1년 거래 3건 이상'],vsPeak:[r=>r.n12>=3,'최근 1년 거래 3건 이상'],
+  jr:[r=>r.jn>=3,'최근 1년 전세 거래 3건 이상'],gap:[r=>r.jn>=3,'최근 1년 전세 거래 3건 이상']};
+function sortRows(rows,s){ const g=SORT_GET[s.k]||SORT_GET.price, fl=SORT_FLOOR[s.k]; const v=rows.filter(r=>g(r)!=null&&(!fl||r.n12==null||fl[0](r)));
+  v.sort((a,b)=>{ const x=g(a),y=g(b); return x===y?((b.n12||0)-(a.n12||0)):(x<y?-1:1)*s.dir; }); return v; }
+function listSort(q){
+  if(q.sort)return q.sort;
+  const m=q.cons.find(c=>c.kind==='money'&&c.field==='price');
+  if(m&&m.hi<Infinity&&m.lo<=0)return {k:'price',dir:-1,label:'예산에 가까운 순',auto:true};
+  if(m&&m.hi===Infinity)return {k:'price',dir:1,label:'싼 순',auto:true};
+  if(q.cons.some(c=>c.kind==='money'&&c.field==='gap'))return {k:'gap',dir:-1,label:'갭이 예산에 가까운 순',auto:true};
+  return {k:'n12',dir:-1,label:'1년 거래 많은 순',auto:true};
+}
+function rowMeta(r){ return `${r.reg.label} ${r.dong} · ${r.ak}㎡(약 ${pyg(r.area)}평형)${r.built?` · ${r.built}년`:''}`; }
+function showVal(r,k){
+  switch(k){
+    case 'vsPeak': return {v:r.vsPeak,label:r.vsPeak>-0.0005?'고점':fmtPct(r.vsPeak),sub:`신고가 ${won(r.mp)}`,signed:true};
+    case 'mom': return {v:r.mom,label:fmtPct(r.mom),sub:`시세 ${won(r.price)}`,signed:true};
+    case 'vg': return {v:r.vg,label:fmtPct(r.vg,0),sub:`평당 ${ppyTxt(r.ppy)}`,signed:true};
+    case 'jr': return {v:r.jr,label:`${Math.round(r.jr*100)}%`,sub:`전세 ${won(r.j)} · 매매 ${won(r.price)}`};
+    case 'gap': return {v:r.gap,label:won(r.gap),sub:`전세가율 ${Math.round(r.jr*100)}%`};
+    case 'n12': return {v:r.n12,label:`${r.n12}건`,sub:`시세 ${won(r.price)}`};
+    case 'n': return {v:r.n,label:`${r.n}건`,sub:`시세 ${won(r.price)}`};
+    case 'ppy': return {v:r.ppy,label:ppyTxt(r.ppy),sub:`평당 · 시세 ${won(r.price)}`};
+    case 'area': return {v:r.area,label:`${r.ak}㎡`,sub:`시세 ${won(r.price)}`};
+    case 'built': return {v:null,label:`${r.built}년`,sub:`시세 ${won(r.price)}`};
+    case 'recPct': return {v:r.recPct,label:fmtPct(r.recPct),sub:`${won(r.prev)} → ${won(r.mp)}`,signed:true};
+    default: return {v:r.price,label:won(r.price),sub:r.pn?`최근 3개월 ${r.pn}건 중위`:`${fmtYM(r.ld)} 마지막 거래`};
+  }
+}
+function barList(items,opt){
+  const o=opt||{}, fold=o.fold||12;
+  const vs=items.map(i=>i.v).filter(v=>v!=null&&isFinite(v));
+  const signed=items.some(i=>i.signed), vmax=vs.length?Math.max(...vs.map(v=>Math.abs(v)),1e-9):1;
+  const mode=!signed?'':vs.every(v=>v<=0)?'ng':vs.every(v=>v>=0)?'ps':'sg';
+  return `<div class="blist${items.length<=fold?' all':''}">${items.map((it,i)=>{
+    let bar='';
+    if(it.v!=null&&isFinite(it.v)){ const wv=Math.max(1.5,Math.abs(it.v)/vmax*100);
+      bar=mode==='sg'?`<span class="bt sg" aria-hidden="true"><span class="bf ${it.v>=0?'pos':'neg'}" style="${it.v>=0?'left':'right'}:50%;width:${(wv/2).toFixed(1)}%"></span></span>`
+         :mode?`<span class="bt ${mode}" aria-hidden="true"><span class="bf ${mode==='ps'?'pos':'neg'}" style="width:${wv.toFixed(1)}%"></span></span>`
+         :`<span class="bt" aria-hidden="true"><span class="bf" style="width:${wv.toFixed(1)}%"></span></span>`; }
+    else bar='<span class="bt none" aria-hidden="true"></span>';
+    const act=it.code&&it.key?`data-code="${esc(it.code)}" data-open="${esc(it.key)}"`:it.ask?`data-ask="${esc(it.ask)}"`:'';
+    return `<button type="button" class="brow${it.self?' self':''}${i>=fold?' fold':''}" ${act}><span class="rk">${it.rank??i+1}</span><span class="who"><span class="nm">${esc(it.name)}</span><span class="mt">${esc(it.meta||'')}</span></span>${bar}<span class="vl">${it.label}${it.sub?`<small>${esc(it.sub)}</small>`:''}</span></button>`;
+  }).join('')}${items.length>fold?`<button type="button" class="btn sm more" data-more>${items.length-fold}개 더 보기</button>`:''}</div>`;
+}
+const rowItem=(r,k)=>Object.assign({name:r.apt,meta:rowMeta(r),code:r.code,key:r.key},showVal(r,k));
+function peerRegion(code){ const s=sumOf(code); if(!s||!S.sum)return null;
+  const o=S.sum.regions.filter(x=>x.code!==code&&x.vsPeak!=null).sort((a,b)=>Math.abs(a.vsPeak-s.vsPeak)-Math.abs(b.vsPeak-s.vsPeak))[0];
+  return o?A.byCode.get(o.code):null; }
+const withText=(q,add)=>`${q.raw.trim()} ${add}`.trim();
+const without=(q,types)=>removeSpans(q.raw,q.ents.filter(x=>types.includes(x.type)).flatMap(x=>x.spans||[[x.s,x.e]]));
+const reSort=(q,phrase)=>`${without(q,['sort'])} ${phrase}`.trim();
+const reRegion=(q,name)=>`${name} ${without(q,['region','dong'])}`.trim();
+const FL=(label,text)=>({label,text});
+function regionStats(code){
+  const rs=A.rows.filter(r=>r.code===code&&r.n12>0);
+  return {act:rs.length,med84:medianBy(rs.filter(r=>r.area>=80&&r.area<90),r=>r.price),ppy:medianBy(rs,r=>r.ppy),rec:rs.filter(r=>r.rec).length}; }
+
+function ansEmpty(q,pool,what){
+  const scope=scopeOf(q), cond=condOf(q);
+  const alts=q.cons.map(c=>({c,n:pool.filter(r=>passAll(q,r,c)).length})).filter(x=>x.n>0).sort((a,b)=>b.n-a.n).slice(0,3);
+  const m=q.cons.find(c=>c.kind==='money'&&c.field==='price'&&c.hi<Infinity);
+  let raise='';
+  if(m){ const cand=pool.filter(r=>passAll(q,r,m)&&r.price>m.hi).sort((a,b)=>a.price-b.price)[0];
+    if(cand)raise=`가격만 <b>${won(cand.price)}</b>까지 올리면 ${esc(cand.apt)} ${cand.ak}㎡부터 잡혀요. `; }
+  const follow=alts.map(({c,n})=>FL(`'${c.label.split(' · ')[0]}' 빼면 ${n.toLocaleString()}개`,c.kind==='recent'?withText(q,'거래 없어도'):removeSpans(q.raw,c.spans||(c.ent?(c.ent.spans||[[c.ent.s,c.ent.e]]):[]))));
+  return {lead:`${scope}에서 ${cond?`${cond} 조건을 모두 만족하는 `:''}${J(what||'단지·면적','은','는')} 없어요.`,
+    text:`${raise}${alts.length?'조건을 하나씩 풀어 보면 아래처럼 나와요.':'다른 표현으로 물어봐 주세요.'}`,follow,count:0};
+}
+
+function ansList(q){
+  addRecent(q);
+  const s=listSort(q), all=A.rows.filter(r=>passAll(q,r));
+  if(!all.length)return ansEmpty(q,A.rows);
+  const rows=sortRows(all,s), n=rows.length;
+  const cxN=new Set(all.map(r=>r.ck)).size, scope=scopeOf(q), cond=condOf(q);
+  const pr=all.map(r=>r.price).sort((a,b)=>a-b), top=rows[0], tv=showVal(top,s.k);
+  const what=cond?`${cond} 조건에 맞는 단지·면적`:q.noRecent?'단지·면적':'최근 1년 안에 거래된 단지·면적';
+  const lead=`${scope}${q.apts?'의':'에서'} ${what}은 <b>${all.length.toLocaleString()}개</b>${cxN!==all.length&&!(q.apts&&q.apts.cx.length===cxN)?`(${cxN.toLocaleString()}개 단지)`:''}예요.`;
+  const T=[];
+  if(all.length>1)T.push(`시세는 <b>${won(pr[0])}</b>부터 <b>${won(pr[pr.length-1])}</b>까지, 가운데 값은 ${IEYO(`<b>${won(median(pr))}</b>`)}.`);
+  const who=`<b>${esc(top.apt)}</b> ${top.ak}㎡`;
+  const PH={price:s.dir<0?(s.auto?'예산에 가장 가까운 곳은':'가장 비싼 곳은'):'가장 싼 곳은',n12:'거래가 가장 많은 곳은',n:'6년 동안 거래가 가장 많은 곳은',jr:s.dir<0?'전세가율이 가장 높은 곳은':'전세가율이 가장 낮은 곳은',
+    gap:s.dir>0?'갭이 가장 작은 곳은':s.auto?'갭이 예산에 가장 가까운 곳은':'갭이 가장 큰 곳은',vsPeak:'고점에서 가장 많이 내려온 곳은',mom:'최근 6개월 가장 많이 오른 곳은',vg:'동네 평단가보다 가장 싸게 거래되는 곳은',
+    ppy:s.dir<0?'평당가가 가장 높은 곳은':'평당가가 가장 낮은 곳은',area:s.dir<0?'가장 넓은 곳은':'가장 좁은 곳은',built:'가장 새 아파트는',recPct:'직전 신고가보다 가장 크게 뛴 곳은'};
+  T.push(`${PH[s.k]||'첫 번째는'} ${IEYOp(who,plain(tv.label))}.`);
+  if(rows.length<all.length)T.push(`(줄은 ${SORT_FLOOR[s.k]?SORT_FLOOR[s.k][1]:'그 값이 있는'}인 ${rows.length.toLocaleString()}개로만 세웠어요.)`);
+  if(s.k==='gap'&&s.dir>0&&top.gap<0)T.push('갭이 마이너스면 전세가 매매 시세보다 높다는 뜻이라, 보증금을 돌려받을 수 있는지 따로 확인해야 해요.');
+  if(q.cons.some(c=>c.kind==='jr'||(c.kind==='money'&&(c.field==='gap'||c.field==='jeonse')))||['jr','gap'].includes(s.k))T.push('전세가율·갭은 최근 1년 전세 실거래가 있는 곳만 계산돼요.');
+  const recN=all.filter(r=>r.rec).length;
+  if(all.length>=4)T.push(recN?`이 중 <b>${recN}곳</b>은 최근 3개월 안에 신고가를 다시 썼어요.`:'이 중 최근 3개월 안에 신고가를 쓴 곳은 없어요.');
+  const vsMed=medianBy(all,r=>r.vsPeak);
+  if(all.length>=4&&vsMed!=null)T.push(`고점 대비로는 가운데 값이 ${vsMed>-0.02?'<span class="hi">고점 부근</span>이에요':`<span class="lo">${fmtPct(vsMed)}</span>예요`}.`);
+  const regs=countBy(all,r=>r.code);
+  if(regs.length>1)T.push(`지역별로는 ${regs.slice(0,3).map(([c,k])=>`${A.byCode.get(c).label} ${k}개`).join(', ')} 순이에요.`);
+  const lim=q.limit||50, f=[];
+  if(!q.cons.some(c=>c.kind==='age'))f.push(FL('신축만',withText(q,'신축')));
+  if(!(s.k==='price'&&s.dir===1))f.push(FL('싼 순',reSort(q,'싼 순')));
+  if(s.k!=='n12')f.push(FL('거래 많은 순',reSort(q,'거래 많은 순')));
+  if(s.k!=='jr'&&A.rows.some(r=>r.jr!=null))f.push(FL('전세가율 높은 순',reSort(q,'전세가율 높은 순')));
+  f.push(FL('이 중 신고가',withText(q,'신고가')));
+  if(q.units.length===1){ const p=peerRegion(q.units[0]); if(p)f.push(FL(`같은 조건으로 ${p.label}`,reRegion(q,p.short))); }
+  return {lead,text:T.join(' '),viz:barList(rows.slice(0,lim).map(r=>rowItem(r,s.k))),follow:f.slice(0,6),sortAuto:s.auto?s.label:'',count:all.length,
+    note:q.notes.join(' ')};
+}
+
+function sinceOf(win){ return reg=>win.ytd?`${reg.refYear}-01-01`:win.days?addDays(reg.ref,-win.days):monthsAgo(reg.ref,win.months); }
+function ansRecords(q){
+  const win=q.win||{months:3,label:'최근 3개월',auto:true}, since=sinceOf(win);
+  const all=A.rows.filter(r=>r.prev>0&&r.md>=since(r.reg)&&passAll(q,r));
+  const scope=scopeOf(q), cond=condOf(q);
+  if(!all.length){
+    if(q.apts){ const rs=A.rows.filter(r=>passAll(q,r)&&r.prev>0).sort((a,b)=>a.md<b.md?1:-1), r=rs[0];
+      const nm=q.apts.cx.length>1?`${q.apts.cx[0].apt} 등`:q.apts.cx[0].apt;
+      return {lead:`${esc(J(nm,'은','는'))} ${win.label} 안에 신고가가 없어요.`,
+        text:r?`마지막 신고가는 <b>${fmtDate(r.md)}</b> ${r.ak}㎡ ${JRO(fmtMan(r.mp))} 직전보다 ${fmtPct(r.recPct)} 올랐고, 지금 시세는 그보다 ${r.vsPeak>-0.02?'거의 같은 수준':`${pctAbs(r.vsPeak,1)} 낮은 수준`}이에요.`:'6년 동안 첫 거래가 곧 최고가였어요.',
+        follow:[FL('최근 1년으로 넓히기',`${without(q,['win'])} 최근 1년`),FL('이 단지 시세',without(q,['records','win']))],count:0}; }
+    const e=ansEmpty(q,A.rows.filter(r=>r.prev>0&&r.md>=since(r.reg)),'신고가');
+    e.lead=`${win.label} ${scope}에서 ${cond?`${cond} 조건으로 `:''}새로 나온 신고가는 없어요.`;
+    if(!win.months||win.months<12)e.follow.unshift(FL('최근 1년으로 넓히기',`${without(q,['win'])} 최근 1년`));
+    return e; }
+  const s=q.sort||{k:'md',dir:-1,label:'최근순',auto:true}, rows=sortRows(all,s);
+  const last=[...all].sort((a,b)=>a.md<b.md?1:a.md>b.md?-1:b.mp-a.mp)[0];
+  const jump=[...all].filter(r=>r.n12>=2&&r.recPct<0.5).sort((a,b)=>b.recPct-a.recPct)[0], oddN=all.filter(r=>r.recPct>=0.5).length;
+  const rich=[...all].sort((a,b)=>b.mp-a.mp)[0];
+  const lead=`${win.label} ${scope}에서 ${cond?`${cond} 조건으로 `:''}신고가를 새로 쓴 단지·면적은 <b>${all.length.toLocaleString()}개</b>예요.`;
+  const T=[`가장 최근은 <b>${fmtDate(last.md)}</b> ${esc(last.apt)} ${last.ak}㎡ ${IEYOp(fmtMan(last.mp),`직전보다 <span class="hi">${fmtPct(last.recPct)}</span>`)}.`];
+  if(jump&&jump!==last)T.push(`직전 신고가보다 가장 크게 뛴 곳은 ${esc(jump.apt)} ${jump.ak}㎡로 <span class="hi">${fmtPct(jump.recPct)}</span> 올랐고,`);
+  if(rich)T.push(`가장 비싼 신고가는 ${esc(rich.apt)} ${rich.ak}㎡ ${IEYO(fmtMan(rich.mp))}.`);
+  if(oddN)T.push(`직전보다 50% 넘게 뛴 ${oddN}건은 지분·특수 거래나 신고 오류일 수 있어 ⚠로 표시했어요.`);
+  const act=A.rows.filter(r=>r.n12>0&&passAll(q,r)).length, share=act?all.length/act:0;
+  if(act>=all.length&&share>=0.01)T.push(`같은 범위에서 최근 1년 거래가 있는 단지·면적의 ${Math.round(share*100)}%가 신고가를 쓴 셈이에요.`);
+  const regs=countBy(all,r=>r.code);
+  if(regs.length>1)T.push(`지역별로는 ${regs.slice(0,3).map(([c,k])=>`${A.byCode.get(c).label} ${k}개`).join(', ')} 순으로 많아요.`);
+  const items=rows.slice(0,q.limit||50).map(r=>({name:r.apt,meta:`${rowMeta(r)} · ${fmtDate(r.md)}`,code:r.code,key:r.key,v:r.recPct,signed:true,label:`${won(r.mp)}${r.recPct>=0.5?' ⚠':''}`,sub:`직전 ${won(r.prev)} · ${fmtPct(r.recPct)}`}));
+  const f=[];
+  if(win.months!==1)f.push(FL('최근 한 달만',`${without(q,['win'])} 최근 한 달`));
+  if(!q.sort)f.push(FL('경신폭 큰 순',`${q.raw.trim()} 경신폭 큰 순`));
+  if(!q.cons.some(c=>c.kind==='area'))f.push(FL('국민평형만',withText(q,'국평')));
+  f.push(FL('급매도 보기',`${without(q,['records','sort'])} 급매`));
+  return {lead,text:T.join(' '),viz:barList(items),follow:f,sortAuto:s.auto?s.label:'',winAuto:win.auto?win.label:'',count:all.length,note:q.notes.join(' ')};
+}
+
+function ansCheap(q){
+  const win=q.win||{months:6,label:'최근 6개월',auto:true}, since=sinceOf(win), gap=q.cheapGap||0.05;
+  const all=A.cheap.filter(x=>x.date>=since(x.reg)&&x.dev<=-gap+1e-9&&passAll(q,x));
+  const scope=scopeOf(q), cond=condOf(q), P=Math.round(gap*100);
+  const note='이미 팔린 거래예요. 지금 살 수 있는 매물이 아니에요. 같은 단지·같은 층대의 그때 시세(앞뒤 3개월)와 견줬지만 향·조망·수리 상태는 실거래가에 안 나와서, 싸게 팔린 데는 이유가 있을 수 있어요. 직거래는 뺐어요.';
+  if(!all.length){ const e=ansEmpty(q,A.cheap.filter(x=>x.date>=since(x.reg)&&x.dev<=-gap+1e-9),'거래');
+    e.lead=`${win.label} ${scope}에서 ${cond?`${cond} 조건으로 `:''}그 층 시세보다 ${P}% 넘게 싸게 팔린 거래는 없어요.`; e.note=note; return e; }
+  const rows=[...all].sort((a,b)=>a.dev-b.dev), b=rows[0], odd=all.filter(x=>x.dev<=-0.25).length;
+  const lead=`${win.label} ${scope}에서 ${cond?`${cond} 조건으로 `:''}같은 단지·같은 층대 시세보다 ${P}% 넘게 싸게 팔린 중개거래는 <b>${all.length.toLocaleString()}건</b>이에요.`;
+  const T=[`가장 크게 싼 건 ${fmtDate(b.date)} ${esc(b.apt)} ${b.ak}㎡ ${b.floor!=null?b.floor+'층 ':''}거래로, 그 층 기대가 ${fmtMan(round100(b.exp))}보다 <span class="lo">${pctAbs(b.dev)}</span> 낮은 ${fmtMan(b.price)}에 팔렸어요.`];
+  if(odd)T.push(`25% 넘게 싼 ${odd}건은 급매보다는 특수 거래·신고 오류일 수 있어 '확인 필요'로 표시했어요.`);
+  const regs=countBy(all,x=>x.code); if(regs.length>1)T.push(`지역별로는 ${regs.slice(0,3).map(([c,k])=>`${A.byCode.get(c).label} ${k}건`).join(', ')} 순이에요.`);
+  const items=rows.slice(0,q.limit||50).map(x=>({name:x.apt,meta:`${x.reg.label} ${x.dong} · ${x.ak}㎡ · ${x.floor!=null?x.floor+'층':'-'}(${FLOOR_LABEL[x.band]}) · ${fmtDate(x.date)}`,code:x.code,key:x.key,v:x.dev,signed:true,
+    label:`${fmtPct(x.dev,0)}${x.dev<=-0.25?' ⚠':''}`,sub:`${won(x.price)} · 기대 ${won(x.exp)}`}));
+  const f=[];
+  if(win.months!==3)f.push(FL('최근 3개월만',`${without(q,['win'])} 최근 3개월`));
+  if(P<10)f.push(FL('10% 넘게 싼 것만',`${without(q,['cond'])} 10% 이상 싸게`));
+  if(!q.cons.some(c=>c.kind==='area'))f.push(FL('국민평형만',withText(q,'국평')));
+  f.push(FL('신고가도 보기',`${without(q,['cheap','cond'])} 신고가`));
+  return {lead,text:T.join(' '),viz:barList(items),follow:f,winAuto:win.auto?win.label:'',count:all.length,note};
+}
+
+const cxName=(x,list)=>list.some(y=>y!==x&&y.apt===x.apt)?`${x.apt}(${x.dong})`:x.apt;
+function mainRow(cx,q){ const area=q&&q.cons.find(c=>c.kind==='area');
+  const rs=cx.rows.filter(r=>!area||area.test(r)); return (rs.length?rs:cx.rows).slice().sort((a,b)=>b.n12-a.n12||b.n-a.n)[0]; }
+function ansComplex(q){
+  const cxs=q.apts.cx.slice(0,3), area=q.cons.find(c=>c.kind==='area');
+  const mains=cxs.map(x=>mainRow(x,q));
+  let lead, T=[];
+  if(cxs.length===1){ const x=cxs[0], m=mains[0];
+    lead=`${esc(x.apt)}(${x.reg.label} ${esc(x.dong)}${x.built?`, ${x.built}년`:''}) ${m.ak}㎡ 시세는 ${IEYO(`<b>${fmtMan(m.price)}</b>`)}.`;
+    T.push(m.pn?`최근 3개월 ${m.pn}건의 중위값이고,`:`최근 3개월 거래가 없어 ${fmtDate(m.ld)} 마지막 거래가 기준이고,`);
+    T.push(m.vsPeak>-0.02?`${ym7(m.md)} 신고가 ${J(fmtMan(m.mp),'과','와')} <span class="hi">거의 같은 수준</span>이에요.`:`${ym7(m.md)} 신고가 ${fmtMan(m.mp)}보다 <span class="lo">${pctAbs(m.vsPeak,1)}</span> 낮아요.`);
+    if(m.rec)T.push(`최근 3개월 안에 신고가를 다시 썼어요(직전보다 ${fmtPct(m.recPct)}).`);
+    if(m.jr!=null)T.push(`전세가율은 ${Math.round(m.jr*100)}%로 갭이 ${IEYO(won(m.gap))}.`);
+    const act=A.rows.filter(r=>r.code===m.code&&r.n12>0);
+    if(act.length>=10&&m.n12>0){ const rk=act.filter(r=>r.n12>m.n12).length/act.length; T.push(`최근 1년 ${m.n12}건 거래돼 ${x.reg.label}에서 ${rk<=0.2?`거래가 많은 편(상위 ${Math.max(1,Math.round(rk*100))}%)`:rk>=0.7?'거래가 적은 편':'중간쯤'}이에요.`); }
+    if(m.val)T.push(`가성비 점수는 <b>${m.val.score}점</b> — 비슷한 단지 ${m.val.ncomp}곳 시세로 보면 ${won(m.val.fair)}쯤인데 실거래 기준 ${won(m.pa)}라 ${m.val.d<0?`<span class="lo">${pctAbs(m.val.d)}</span> 덜 비싸요`:`${pctAbs(m.val.d)} 더 비싸요`}.`);
+    if(x.rows.length>1)T.push(`이 단지에는 전용 ${x.rows.map(r=>r.ak+'㎡').join('·')} 거래가 있어요.`);
+    if(area&&!x.rows.some(r=>area.test(r)))T.unshift(`말한 면적은 이 단지에 없어서 거래가 가장 많은 면적으로 봤어요.`);
+  } else {
+    const by=[...mains].sort((a,b)=>b.ppy-a.ppy);
+    const nmOf=m=>esc(cxName(A.cx.get(m.ck),cxs)), names=cxs.map(x=>esc(cxName(x,cxs))).join(', ');
+    lead=`${J(names,'을','를')} 거래가 많은 면적끼리 견주면, 평당가는 ${J(`<b>${nmOf(by[0])}</b>`,'이','가')} ${cxs.length===2?'더':'가장'} 높아요.`;
+    T.push(by.map(m=>`${nmOf(m)} ${m.ak}㎡ 평당 ${ppyTxt(m.ppy)}(고점 대비 ${m.vsPeak>-0.02?'고점 부근':fmtPct(m.vsPeak)})`).join(', ')+'.');
+  }
+  const viz=cxs.map((x,ci)=>{ const rs=x.rows.slice().sort((a,b)=>a.ak-b.ak);
+    return `<div class="cx"><div class="cx-h"><b>${esc(x.apt)}</b><span>${esc(x.reg.label)} ${esc(x.dong)}${x.built?` · ${x.built}년 준공`:''} · 1년 거래 ${x.n12}건</span></div>
+<div class="tablewrap"><table class="deals cx-t"><thead><tr><th>전용</th><th class="r">시세</th><th class="r">신고가</th><th class="r">고점 대비</th><th class="r">전세가율</th><th class="r">1년 거래</th><th class="r">가성비</th><th></th></tr></thead><tbody>${rs.map(r=>`<tr${r===mains[ci]?' class="main"':''}>
+<td class="num">${r.ak}㎡ <span class="sub2">약 ${pyg(r.area)}평형</span></td><td class="r num">${won(r.price)}</td><td class="r num">${won(r.mp)} <span class="sub2">${fmtYM(r.md)}</span></td>
+<td class="r"><span class="delta ${dir(r.vsPeak)}">${r.vsPeak>-0.0005?'고점':fmtPct(r.vsPeak)}</span></td><td class="r num">${r.jr!=null?Math.round(r.jr*100)+'%':'-'}</td><td class="r num">${r.n12}</td>
+<td class="r num">${r.val?`<b>${r.val.score}</b><span class="sub2"> ${fmtPct(r.val.d,0)}</span>`:'-'}</td>
+<td class="r"><button type="button" class="btn sm" data-code="${esc(r.code)}" data-open="${esc(r.key)}">자세히</button></td></tr>`).join('')}</tbody></table></div></div>`; }).join('');
+  const x=cxs[0], nm=`${x.reg.short} ${x.apt}`, f=[FL('비슷한 단지',`${nm} 비슷한 단지`),FL('이 단지 신고가',`${nm} 신고가`),FL(`${x.reg.label} 지금은?`,`${x.reg.short} 지금 고점이야?`),FL('이 단지 급매',`${nm} 급매`)];
+  return {lead,text:T.join(' '),viz,follow:f,count:cxs.length,note:[...q.notes,q.fuzzy.length?`'${q.fuzzy.map(z=>z.t).join("', '")}'와 비슷한 이름으로 찾았어요.`:''].filter(Boolean).join(' ')};
+}
+
+function ansSimilar(q){
+  const base=mainRow(q.apts.cx[0],q), band=bandOf(base.area);
+  const pick=pool=>pool.filter(r=>r.ck!==base.ck&&bandOf(r.area)===band&&Math.abs(r.area-base.area)/base.area<=0.25&&r.n12>0);
+  let pool=pick(A.rows.filter(r=>r.code===base.code)); if(pool.length<3)pool=pick(A.rows);
+  const solid=pool.filter(r=>r.n>=10); if(solid.length>=3)pool=solid;   /* 6년 거래 10건도 안 되는 작은 단지는 비교에서 뺀다 */
+  const cost=r=>Math.abs(r.area-base.area)/base.area*2+((base.built&&r.built)?Math.abs(r.built-base.built)/40:0.25)+(r.dong===base.dong?0:r.code===base.code?0.3:0.6)+(r.n12>=3?0:0.15);
+  const peers=pool.map(r=>({r,c:cost(r)})).sort((a,b)=>a.c-b.c).slice(0,8).map(x=>x.r);
+  if(!peers.length)return {lead:`${esc(base.apt)} ${base.ak}㎡와 견줄 만한 단지를 찾지 못했어요.`,text:'',count:0};
+  const all=[base,...peers].sort((a,b)=>a.ppy-b.ppy), rank=all.indexOf(base)+1, cheapSide=rank*2<=all.length, place=cheapSide?rank:all.length-rank+1;
+  const cheaper=peers.filter(r=>r.ppy<base.ppy).sort((a,b)=>a.ppy-b.ppy);
+  const lead=`${esc(base.apt)} ${base.ak}㎡와 면적·연식·위치가 가까운 단지 <b>${peers.length}곳</b>을 골랐어요. 평당가로 보면 ${all.length}곳 중 <b>${place===1?`가장 ${cheapSide?'싼':'비싼'}`:`${place}번째로 ${cheapSide?'싼':'비싼'}`}</b> 편이에요.`;
+  const T=[]; if(cheaper.length){ const c=cheaper[0]; T.push(`가장 싼 대안은 ${esc(c.apt)} ${c.ak}㎡로, 평당가가 ${pctAbs(c.ppy/base.ppy-1)} 낮은 ${IEYO(won(c.price))}.`); }
+  T.push(`평당가는 시세 ÷ 전용 평수로 계산했고, 연식·역세권·학군은 따로 보지 않았어요.`);
+  const items=[base,...peers].map(r=>Object.assign(rowItem(r,'ppy'),{self:r===base,rank:r===base?'기준':undefined}));
+  return {lead,text:T.join(' '),viz:barList(items,{fold:12}),follow:[FL('기준 단지 자세히',`${base.reg.short} ${base.apt}`),FL('같은 동네 신고가',`${base.dong} 신고가`),FL('같은 동네 급매',`${base.dong} 급매`)],count:peers.length};
+}
+
+function seriesFor(codes){
+  const sums=codes.map(sumOf); if(sums.some(s=>!s))return null;
+  const months=[...new Set(sums.flatMap(s=>s.months))].sort();
+  return {months,series:codes.map((c,i)=>{ const s=sums[i], mp=new Map(s.months.map((m,j)=>[m,s.idx[j]]));
+    return {name:A.byCode.get(c).label,color:SERIES[i],v:months.map(m=>mp.has(m)?mp.get(m):null),peak:s.peak,trough:s.trough}; })};
+}
+function ansStatus(q){
+  const code=q.units[0], r=A.byCode.get(code), s=sumOf(code), st=regionStats(code);
+  if(!s){ q.cons=q.cons.filter(c=>c.kind==='region'); return ansList(q); }
+  const near=s.vsPeak!=null&&s.vsPeak>-0.02, vc=volChg(s);
+  const lead=near?`${J(r.label,'은','는')} 지금 <span class="hi">기간 최고가 부근</span>이에요.`
+    :`${J(r.label,'은','는')} 지금 ${ymDot(s.peak.ym)} 고점보다 <span class="lo">${pctAbs(s.vsPeak,1)}</span> 낮아요.`;
+  const T=[];
+  if(q.future)T.push('앞으로 오를지 내릴지는 실거래만으로 알 수 없어요. 대신 지금 위치를 숫자로 정리하면 이래요.');
+  T.push(s.trough?`${ymDot(s.trough.ym)}에 가장 깊이 빠졌다가 <span class="hi">${fmtPct(s.vsTrough)}</span> 올라왔고,`:'6년 동안 크게 빠진 적 없이 왔고,');
+  if(s.mom3!=null)T.push(`최근 3개월은 ${IEYOp(s.mom3>0.005?'<span class="hi">오르는 중</span>':s.mom3<-0.005?'<span class="lo">내리는 중</span>':'횡보',fmtPct(s.mom3))}.`);
+  if(vc!=null)T.push(Math.abs(vc)<0.005?'완결된 최근 12개월 거래는 그 전 12개월과 거의 같아요.'
+    :`완결된 최근 12개월 거래는 그 전 12개월보다 ${vc>0?'<span class="hi">':'<span class="lo">'}${pctAbs(vc)}</span>${vc>0?' 늘었어요':' 줄었어요'}.`);
+  if(s.jr!=null)T.push(`전세가율 가운데 값은 ${Math.round(s.jr*100)}%예요.`);
+  if(st.med84)T.push(`전용 84㎡ 안팎 시세의 가운데 값은 <b>${won(st.med84)}</b>, 평당가 가운데 값은 ${Math.round(st.ppy).toLocaleString()}만이에요.`);
+  if(S.sum){ const rs=S.sum.regions.filter(x=>x.vsPeak!=null), k=rs.filter(x=>x.vsPeak>s.vsPeak+1e-9).length+1;
+    T.push(`${rs.length}개 지역 가운데 고점에 ${k}번째로 가까워요.`); }
+  const sr=seriesFor([code]);
+  const tiles=[['고점 대비',near?'고점 부근':fmtPct(s.vsPeak),near?'up':'down'],['바닥 대비',s.vsTrough==null?'-':fmtPct(s.vsTrough),dir(s.vsTrough)],
+    ['최근 3개월',s.mom3==null?'-':fmtPct(s.mom3),dir(s.mom3)],['거래량 · 1년',vc==null?'-':fmtPct(vc,0),vc==null||Math.abs(vc)<0.005?'':dir(vc)],['전세가율',s.jr==null?'-':Math.round(s.jr*100)+'%','']];
+  const topCx=[...A.cx.values()].filter(x=>x.code===code).sort((a,b)=>b.n12-a.n12).slice(0,5);
+  const viz=`<div class="ans-tiles">${tiles.map(([l,v,c])=>`<div class="mk-t"><div class="l">${l}</div><div class="v ${c}">${v}</div></div>`).join('')}</div>
+<div class="lc ov-chart" id="askChart"></div><p class="lc-cap">${ymDot(s.months[0])} = 100 · 단지 구성이 바뀌는 영향을 뺀 시세 지수 · 빨간 점이 고점</p>
+<p class="sec-t" style="margin-top:14px">최근 1년 거래가 가장 많은 단지</p>${barList(topCx.map(x=>{ const m=mainRow(x); return {name:x.apt,meta:`${x.dong} · ${m.ak}㎡ 시세 ${won(m.price)} · 고점 대비 ${m.vsPeak>-0.02?'고점 부근':fmtPct(m.vsPeak,0)}`,code:x.code,key:m.key,v:x.n12,label:`${x.n12}건`}; }))}`;
+  const p=peerRegion(code), f=[FL('국민평형 시세',`${r.short} 국평`),FL('최근 신고가',`${r.short} 최근 신고가`),FL('급매 신호',`${r.short} 급매`)];
+  if(p)f.push(FL(`${p.label}와 비교`,`${r.short} vs ${p.short}`)); f.push(FL('전세가율 높은 단지',`${r.short} 전세가율 높은 순`));
+  return {lead,text:T.join(' '),viz,chart:sr&&{...sr,h:210,aria:`${r.label} 시세 지수`},follow:f,count:1,
+    note:q.future?'투자 권유가 아니에요. 실거래가는 신고 후 정정·해제될 수 있고, 지수는 거래된 단지만으로 만들어서 거래가 적은 달엔 흔들려요.':''};
+}
+function ansCompare(q){
+  const codes=q.units.slice(0,4), regs=codes.map(c=>A.byCode.get(c)), sums=codes.map(sumOf);
+  if(sums.some(s=>!s)){ q.intent='list'; return ansList(q); }
+  const sr=seriesFor(codes), st=codes.map(regionStats);
+  const byPeak=regs.map((r,i)=>({r,s:sums[i]})).sort((a,b)=>b.s.vsPeak-a.s.vsPeak);
+  const pk=x=>x.s.vsPeak>-0.02?'고점 부근':`고점 대비 ${fmtPct(x.s.vsPeak)}`;
+  let lead; const nearN=byPeak.filter(x=>x.s.vsPeak>-0.02).length, CNT=['','한','두','세','네'][codes.length];
+  if(nearN===codes.length)lead=`${CNT} 곳 모두 <span class="hi">기간 최고가 부근</span>이에요. 고점에 가장 붙어 있는 곳은 ${JRO(`<b>${byPeak[0].r.label}</b>`)} ${byPeak[0].s.vsPeak>-0.0005?'바로 지금이 고점이에요':`고점 대비 ${fmtPct(byPeak[0].s.vsPeak)}예요`}.`;
+  else if(codes.length===2){ const [a,b]=byPeak;
+    lead=Math.abs(a.s.vsPeak-b.s.vsPeak)<0.01?`${J(a.r.label,'과','와')} ${b.r.label} 모두 ${a.s.vsPeak>-0.02?'기간 최고가 부근':'고점에서 비슷한 거리'}에 있어요.`
+      :`${J(a.r.label,'이','가')} 고점에 더 가까워요(${pk(a)}, ${b.r.label} ${pk(b)}).`; }
+  else lead=`${codes.length}곳 가운데 고점에 가장 가까운 곳은 <b>${byPeak[0].r.label}</b>(${pk(byPeak[0])}), 가장 먼 곳은 <b>${byPeak[byPeak.length-1].r.label}</b>(${pk(byPeak[byPeak.length-1])})예요.`;
+  const rec=regs.map((r,i)=>({r,v:sums[i].vsTrough})).filter(x=>x.v!=null).sort((a,b)=>b.v-a.v);
+  const T=[];
+  if(rec.length>=2)T.push(`2022~23년 바닥 이후로는 ${J(rec[0].r.label,'이','가')} ${fmtPct(rec[0].v)}로 ${rec.length===2?'더':'가장'} 많이 올랐고, ${J(rec[rec.length-1].r.label,'은','는')} ${IEYO(fmtPct(rec[rec.length-1].v))}.`);
+  const m3=regs.map((r,i)=>({r,v:sums[i].mom3})).filter(x=>x.v!=null).sort((a,b)=>b.v-a.v);
+  if(m3.length>=2)T.push(`최근 3개월은 ${m3.map(x=>`${x.r.label} ${fmtPct(x.v)}`).join(', ')}.`);
+  const p84=regs.map((r,i)=>({r,v:st[i].med84})).filter(x=>x.v);
+  if(p84.length>=2)T.push(`전용 84㎡ 안팎 시세 가운데 값은 ${p84.map(x=>`${x.r.label} ${won(x.v)}`).join(', ')}이에요.`);
+  const rowsT=[['고점 대비',i=>sums[i].vsPeak>-0.02?'고점 부근':fmtPct(sums[i].vsPeak)],['바닥 대비',i=>fmtPct(sums[i].vsTrough)],['최근 3개월',i=>fmtPct(sums[i].mom3)],
+    ['거래량 · 1년',i=>fmtPct(volChg(sums[i]),0)],['전세가율',i=>sums[i].jr==null?'-':Math.round(sums[i].jr*100)+'%'],['84㎡ 시세',i=>st[i].med84?won(st[i].med84):'-'],
+    ['평당가',i=>st[i].ppy?Math.round(st[i].ppy).toLocaleString()+'만':'-'],['최근 3개월 신고가',i=>`${st[i].rec}개`]];
+  const legend=`<div class="ov-legend">${regs.map((r,i)=>`<span><i class="dot" style="background:${SERIES[i]}"></i>${esc(r.label)}</span>`).join('')}</div>`;
+  const viz=`${legend}<div class="lc ov-chart" id="askChart"></div><p class="lc-cap">${ymDot(sr.months[0])} = 100 · 지역마다 같은 방법으로 만든 시세 지수</p>
+<div class="tablewrap"><table class="deals cmp"><thead><tr><th></th>${regs.map((r,i)=>`<th class="r"><i class="sw" style="background:${SERIES[i]}"></i>${esc(r.label)}</th>`).join('')}</tr></thead>
+<tbody>${rowsT.map(([l,fn])=>`<tr><td>${l}</td>${codes.map((c,i)=>`<td class="r num">${fn(i)}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`;
+  const f=regs.slice(0,2).map(r=>FL(`${r.label} 자세히`,`${r.short} 지금 고점이야?`)).concat([FL(`${CNT} 곳 국평 단지`,`${regs.map(r=>r.short).join(' ')} 국평`),FL(`${CNT} 곳 최근 신고가`,`${regs.map(r=>r.short).join(' ')} 최근 신고가`)]);
+  return {lead,text:T.join(' '),viz,chart:{...sr,h:230,aria:`${regs.map(r=>r.label).join(', ')} 시세 지수 비교`},follow:f,count:codes.length};
+}
+/* 조건을 건 지역 비교: "송파 30평대 vs 강동" */
+function ansCompareF(q){
+  addRecent(q);
+  const codes=q.units.slice(0,4), regs=codes.map(c=>A.byCode.get(c)), others=q.cons.filter(c=>c.kind!=='region');
+  const per=codes.map(c=>A.rows.filter(r=>r.code===c&&others.every(k=>k.test(r))));
+  if(per.every(p=>!p.length))return ansEmpty(q,A.rows);
+  const st=per.map(p=>({n:p.length,price:medianBy(p,r=>r.price),ppy:medianBy(p,r=>r.ppy),vs:medianBy(p,r=>r.vsPeak),
+    jr:medianBy(p.filter(r=>r.jn>=3),r=>r.jr),rec:p.filter(r=>r.rec).length,n12:p.reduce((t,r)=>t+r.n12,0)}));
+  const cond=condOf(q), CNT=['','한','두','세','네'][codes.length];
+  const by=regs.map((r,i)=>({r,s:st[i]})).filter(x=>x.s.price).sort((a,b)=>b.s.price-a.s.price);
+  let lead;
+  if(by.length===2){ const [a,b]=by, d=a.s.price/b.s.price-1;
+    lead=Math.abs(d)<0.02?`${cond} 기준으로 ${J(a.r.label,'과','와')} ${b.r.label} 시세 가운데 값이 거의 같아요(${won(a.s.price)}).`
+      :`${cond} 기준으로 ${J(a.r.label,'이','가')} ${b.r.label}보다 <b>${pctAbs(d)}</b> 비싸요. 시세 가운데 값은 ${won(a.s.price)}, ${IEYO(won(b.s.price))}.`; }
+  else lead=`${cond} 기준 시세 가운데 값은 ${by.map(x=>`${x.r.label} <b>${won(x.s.price)}</b>`).join(', ')} 순이에요.`;
+  const T=[];
+  const pp=by.filter(x=>x.s.ppy); if(pp.length>=2)T.push(`평당가로는 ${pp.map(x=>`${x.r.label} ${ppyTxt(x.s.ppy)}`).join(', ')}.`);
+  const vs=regs.map((r,i)=>({r,v:st[i].vs})).filter(x=>x.v!=null).sort((a,b)=>b.v-a.v);
+  if(vs.length>=2)T.push(vs.every(x=>x.v>-0.02)?`고점 대비로는 ${CNT} 곳 모두 고점 부근이에요.`:`고점 대비 가운데 값은 ${vs.map(x=>`${x.r.label} ${x.v>-0.02?'고점 부근':fmtPct(x.v)}`).join(', ')}이에요.`);
+  const rc=regs.map((r,i)=>({r,k:st[i].rec,n:st[i].n})).filter(x=>x.n);
+  if(rc.length>=2)T.push(`최근 3개월 신고가는 ${rc.map(x=>`${x.r.label} ${x.k}곳(${Math.round(x.k/x.n*100)}%)`).join(', ')}이에요.`);
+  const empty=regs.filter((r,i)=>!st[i].n); if(empty.length)T.push(`${J(empty.map(r=>r.label).join('·'),'은','는')} 이 조건에 맞는 곳이 없어요.`);
+  const vmax=Math.max(...by.map(x=>x.s.price));
+  const rest=without(q,['region','compare']);
+  const items=regs.map((r,i)=>({r,s:st[i]})).filter(x=>x.s.price).sort((a,b)=>b.s.price-a.s.price)
+    .map(x=>({name:x.r.label,meta:`단지·면적 ${x.s.n}개 · 평당 ${ppyTxt(x.s.ppy)}`,ask:`${x.r.short} ${rest}`.trim(),v:x.s.price,label:won(x.s.price),sub:'시세 가운데 값'}));
+  const rowsT=[['단지·면적',i=>`${st[i].n}개`],['시세 가운데 값',i=>st[i].price?won(st[i].price):'-'],['평당가',i=>st[i].ppy?ppyTxt(st[i].ppy):'-'],
+    ['고점 대비',i=>st[i].vs==null?'-':st[i].vs>-0.02?'고점 부근':fmtPct(st[i].vs)],['최근 3개월 신고가',i=>`${st[i].rec}곳`],
+    ['전세가율',i=>st[i].jr==null?'-':Math.round(st[i].jr*100)+'%'],['1년 거래',i=>`${st[i].n12.toLocaleString()}건`]];
+  const viz=`${barList(items)}<div class="tablewrap"><table class="deals cmp"><thead><tr><th></th>${regs.map(r=>`<th class="r">${esc(r.label)}</th>`).join('')}</tr></thead>
+<tbody>${rowsT.map(([l,fn])=>`<tr><td>${l}</td>${codes.map((c,i)=>`<td class="r num">${fn(i)}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`;
+  const f=regs.slice(0,3).map(r=>FL(`${r.label}만 보기`,`${r.short} ${rest}`.trim())).concat([FL(`${CNT} 곳 시장 비교`,`${regs.map(r=>r.short).join(' vs ')}`)]);
+  return {lead,text:T.join(' '),viz,follow:f,count:by.length,note:'가운데 값은 조건에 맞는 단지·면적들의 시세(최근 3개월 중위)를 줄 세운 한가운데 값이에요. 단지 구성이 달라서 지역 전체 시세와는 차이가 날 수 있어요.'};
+}
+function ansOverview(q){
+  const rs=(S.sum?S.sum.regions:[]).filter(r=>!q.regions.size||q.regions.has(r.code)).filter(r=>r.vsPeak!=null).sort((a,b)=>b.vsPeak-a.vsPeak);
+  if(!rs.length)return {lead:'지역 요약 자료를 아직 불러오지 못했어요.',text:'',count:0};
+  const at=rs.filter(r=>r.vsPeak>-0.02), far=rs[rs.length-1], hot=[...rs].filter(r=>r.mom3!=null).sort((a,b)=>b.mom3-a.mom3)[0];
+  const scope=q.regions.size?scopeOf(q):`${rs.length}개 지역`;
+  const lead=`${scope} ${q.regions.size&&!/\d+개/.test(scope)?`${rs.length}곳 `:''}가운데 <b>${at.length}곳</b>이 기간 최고가 부근이에요.`;
+  const T=[];
+  if(far&&far.vsPeak<=-0.02)T.push(`고점에서 가장 먼 곳은 ${JRO(A.byCode.get(far.code).label)} ${ymDot(far.peak.ym)} 고점보다 ${pctAbs(far.vsPeak,1)} 낮고,`);
+  if(hot)T.push(`최근 3개월 가장 빨리 오른 곳은 ${IEYOp(A.byCode.get(hot.code).label,fmtPct(hot.mom3))}.`);
+  const items=rs.map(r=>{ const g=A.byCode.get(r.code); return {name:g.label,meta:`3개월 ${fmtPct(r.mom3)} · 바닥 대비 ${fmtPct(r.vsTrough)}`,ask:`${g.short} 지금 고점이야?`,v:r.vsPeak,signed:true,label:r.vsPeak>-0.02?'고점 부근':fmtPct(r.vsPeak),sub:`고점 ${ymDot(r.peak.ym)}`}; });
+  const a=rs[0]&&A.byCode.get(rs[0].code), b=far&&A.byCode.get(far.code);
+  const f=[FL('최근 한 달 신고가','최근 한 달 신고가'),FL('고점 대비 20% 넘게 빠진 단지','고점 대비 20% 이상 빠진 단지')];
+  if(a&&b&&a!==b)f.unshift(FL(`${a.label} vs ${b.label}`,`${a.short} vs ${b.short}`));
+  return {lead,text:T.join(' '),viz:barList(items,{fold:12}),follow:f,count:rs.length,
+    note:q.future?'앞으로의 방향은 실거래만으로 알 수 없어요. 투자 권유가 아니에요.':''};
+}
+function ansHelp(){
+  const G=[['조건으로 찾기',['강남 30평대 20억 이하','안양 신축 전세가율 높은 순','전세 끼고 5억으로 살 수 있는 곳','서울 갭 3억 이하 국평']],
+    ['신고가 · 급매',['최근 한 달 신고가','마포 최근 3개월 급매','고점 대비 20% 이상 빠진 단지','올해 신고가 경신폭 큰 순']],
+    ['지역 판단 · 비교',['송파 지금 고점이야?','강남 vs 서초','마용성 비교','요즘 시장 어때']],
+    ['단지',['은마','헬리오시티 84','반포자이 비슷한 단지','잠실엘스 신고가']]];
+  return {lead:'이런 것들을 물어볼 수 있어요.',text:'지역·동·단지 이름, 평형(30평대·84㎡·국평), 예산(20억 이하·10~15억·5억대), 연식(신축·10년 이내·재건축), 신고가·급매·전세가율·갭·거래량을 한 문장에 섞어 써도 돼요. 질문은 이 브라우저 안에서만 규칙으로 해석하고, 어디로도 보내지 않아요.',
+    viz:`<div class="help-g">${G.map(([t,xs])=>`<div><p class="sec-t">${t}</p>${xs.map(x=>`<button type="button" class="help-q" data-ask="${esc(x)}">${esc(x)}</button>`).join('')}</div>`).join('')}</div>`,count:0};
+}
+function ansUnknown(q){
+  return {lead:`'${esc(q.unknown.map(x=>x.t).join(' '))}'를 알아듣지 못했어요.`,text:'지역(강남·마포·안양 동안구), 단지 이름, 평형, 예산, 신고가·급매 같은 말이 들어가면 알아들어요. 아래 예시처럼 물어보세요.',
+    viz:ansHelp().viz,count:0};
+}
+function ansMissing(q){
+  const have=A.regs.map(r=>r.label).join(', ');
+  return {lead:`${missingOf(q)} 아직 모으지 않는 지역이에요.`,text:`지금 볼 수 있는 곳은 ${have}예요. 저장소의 regions.json 에 시군구 코드를 넣으면 다음 수집부터 들어와요.`,
+    follow:[FL('12개 지역 한눈에','요즘 시장 어때'),FL('최근 한 달 신고가','최근 한 달 신고가')],count:0};
+}
+function execAsk(q){
+  const t0=performance.now();
+  const fn={value:ansValue,help:ansHelp,cheap:ansCheap,records:ansRecords,similar:ansSimilar,complex:ansComplex,compare:ansCompare,compareF:ansCompareF,status:ansStatus,overview:ansOverview,unknown:ansUnknown,missing:ansMissing,list:ansList}[q.intent]||ansList;
+  const a=fn(q); a.ms=performance.now()-t0;
+  const extra=q.notes.filter(n=>!(a.note||'').includes(n)&&!(a.text||'').includes(n)); if(extra.length)a.note=[...extra,a.note].filter(Boolean).join(' ');
+  return a;
+}
+
+/* ===== 그리기 ===== */
+function chipsOf(q,a){
+  const out=[], seen=new Set();
+  for(const x of q.ents){ if(x.dropped||x.type==='help')continue;
+    const label=x.type==='missing'?`모으지 않는 지역: ${x.label}`:x.type==='unknown'?`모르는 말: ${x.label}`:x.label;
+    if(seen.has(label))continue; seen.add(label);
+    const same=q.ents.filter(y=>!y.dropped&&(y.type==='missing'?`모으지 않는 지역: ${y.label}`:y.type==='unknown'?`모르는 말: ${y.label}`:y.label)===label);
+    const rm=removeSpans(q.raw,same.flatMap(y=>y.spans||[[y.s,y.e]]));
+    const cls=x.type==='missing'||x.type==='unknown'?'warn':x.type==='info'||x.type==='status'||x.type==='compare'?'info':'';
+    out.push(`<span class="tok ${cls}">${esc(label)}<button type="button" data-ask="${esc(rm)}" aria-label="${esc(label)} 빼고 다시 묻기" title="빼고 다시 묻기">×</button></span>`); }
+  for(const c of q.cons.filter(c=>c.implied))out.push(`<span class="tok info">${esc(c.label)}<button type="button" data-ask="${esc(withText(q,'거래 없어도'))}" aria-label="${esc(c.label)} 조건 풀기" title="조건 풀기">×</button></span>`);
+  if(a.winAuto)out.push(`<span class="tok info nox">${esc(a.winAuto)}</span>`);
+  if(a.sortAuto)out.push(`<span class="tok info nox">정렬: ${esc(a.sortAuto)}</span>`);
+  for(const z of q.fuzzy)out.push(`<span class="tok info nox">'${esc(z.t)}' → ${esc(z.names.slice(0,2).join(', '))}</span>`);
+  return out.join('');
+}
+function renderAnswer(q,a){
+  const ms=a.ms<1?'1ms 미만':`${Math.round(a.ms)}ms`;
+  const chips=chipsOf(q,a);
+  return `<article class="ans" aria-labelledby="ansLead">
+  <div class="ans-h"><span class="ans-badge"><svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><path d="M12 2l2.4 6.6L21 11l-6.6 2.4L12 20l-2.4-6.6L3 11l6.6-2.4z" fill="currentColor"/></svg>답변</span>
+    <span class="ans-q">${esc(q.raw)}</span><span class="ans-trace">단지·면적 ${A.rows.length.toLocaleString()}개를 살펴봄 · ${ms}</span>
+    <button class="btn sm ghost" type="button" data-askshare>링크 복사</button></div>
+  ${chips?`<div class="ans-chips"><span class="lb">이렇게 이해했어요</span>${chips}</div>`:''}
+  <div class="ans-body"><p class="ans-lead" id="ansLead">${a.lead}</p>${a.text?`<p class="ans-text">${a.text}</p>`:''}</div>
+  ${a.viz?`<div class="ans-viz">${a.viz}</div>`:''}
+  ${a.follow&&a.follow.length?`<div class="ans-follow"><span class="lb">이어서 물어보기</span>${a.follow.map(x=>`<button type="button" data-ask="${esc(x.text)}">${esc(x.label)}</button>`).join('')}</div>`:''}
+  ${a.note?`<p class="ans-note">${a.note}</p>`:''}
+</article>`;
+}
+function revealWords(root){
+  try{ if(matchMedia('(prefers-reduced-motion: reduce)').matches)return; }catch(e){ return; }
+  let i=0;
+  root.querySelectorAll('.ans-lead,.ans-text').forEach(el=>{
+    const tw=document.createTreeWalker(el,NodeFilter.SHOW_TEXT), nodes=[]; while(tw.nextNode())nodes.push(tw.currentNode);
+    for(const n of nodes){ const frag=document.createDocumentFragment();
+      for(const p of n.nodeValue.split(/(\s+)/)){ if(!p)continue;
+        if(/^\s+$/.test(p)){ frag.appendChild(document.createTextNode(p)); continue; }
+        const s=document.createElement('span'); s.className='w'; s.style.setProperty('--i',String(Math.min(i++,80))); s.textContent=p; frag.appendChild(s); }
+      n.parentNode.replaceChild(frag,n); } });
+}
+function lineSVG(spec,W){
+  const H=spec.h||220, multi=spec.series.length>1, L=34, T=18, B=26;
+  const lastV=s=>{ let i=s.v.length-1; while(i>=0&&s.v[i]==null)i--; return i; };
+  const R=multi?Math.min(130,24+Math.max(...spec.series.map(s=>s.name.length*12+26))):48;
+  const months=spec.months, n=months.length, x=i=>L+(n<=1?0:i*(W-L-R)/(n-1));
+  const vals=spec.series.flatMap(s=>s.v.filter(v=>v!=null)); let lo=Math.min(...vals), hi=Math.max(...vals); const pad=Math.max(2,(hi-lo)*.1); lo-=pad; hi+=pad;
+  const y=v=>T+(hi-v)/(hi-lo)*(H-T-B);
+  let g='';
+  for(const t of niceTicks(lo,hi,4))g+=`<line x1="${L}" x2="${W-R}" y1="${y(t).toFixed(1)}" y2="${y(t).toFixed(1)}" stroke="var(--grid)"/><text class="tick" x="${L-6}" y="${(y(t)+3.5).toFixed(1)}" text-anchor="end">${Math.round(t)}</text>`;
+  g+=`<line x1="${L}" x2="${W-R}" y1="${H-B}" y2="${H-B}" stroke="var(--axis)"/>`;
+  const every=Math.max(1,Math.ceil(n/12/Math.max(1,Math.floor((W-L-R)/44))));
+  let yi=0; months.forEach((m,i)=>{ if(m.slice(5)!=='01')return; if(yi++%every)return; const X=x(i).toFixed(1);
+    g+=`<line x1="${X}" x2="${X}" y1="${H-B}" y2="${H-B+4}" stroke="var(--axis)"/><text class="tick" x="${X}" y="${H-B+16}" text-anchor="middle">${m.slice(2,4)}년</text>`; });
+  for(const s of spec.series){ let d='',pen=false,first=-1,last=-1;
+    s.v.forEach((v,i)=>{ if(v==null){pen=false;return;} d+=(pen?'L':'M')+x(i).toFixed(1)+' '+y(v).toFixed(1); pen=true; if(first<0)first=i; last=i; });
+    if(!multi&&first>=0)g+=`<path d="${d}L${x(last).toFixed(1)} ${(H-B).toFixed(1)}L${x(first).toFixed(1)} ${(H-B).toFixed(1)}Z" fill="${s.color}" opacity=".09"/>`;
+    g+=`<path d="${d}" fill="none" stroke="${s.color}" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>`; }
+  if(!multi){ const s=spec.series[0], mi=ym=>months.indexOf(ym);
+    const mark=(pt,color,label,below)=>{ if(!pt)return ''; const i=mi(pt.ym); if(i<0||s.v[i]==null)return ''; const X=x(i), Y=y(s.v[i]);
+      const anc=X>W-R-60?'end':X<L+60?'start':'middle';
+      return `<circle cx="${X.toFixed(1)}" cy="${Y.toFixed(1)}" r="4.5" fill="${color}" stroke="var(--surface)" stroke-width="2"/><text class="lbl" x="${X.toFixed(1)}" y="${(below?Y+17:Y-9).toFixed(1)}" text-anchor="${anc}">${label}</text>`; };
+    g+=mark(s.trough,'var(--series-soft)',`바닥 ${ymDot(s.trough&&s.trough.ym)}`,true);
+    if(s.peak&&s.peak.ym!==months[lastV(s)])g+=mark(s.peak,'var(--series-record)',`고점 ${ymDot(s.peak.ym)}`,false); }
+  const ends=spec.series.map(s=>{ const i=lastV(s); return i<0?null:{s,i,X:x(i),Y0:y(s.v[i]),Y:y(s.v[i])}; }).filter(Boolean).sort((a,b)=>a.Y-b.Y);
+  for(let k=1;k<ends.length;k++)if(ends[k].Y-ends[k-1].Y<15)ends[k].Y=ends[k-1].Y+15;
+  const over=ends.length?ends[ends.length-1].Y-(H-B-2):0; if(over>0)ends.forEach(e=>e.Y-=over);
+  for(const e of ends){
+    const pk=!multi&&e.s.peak&&e.s.peak.ym===months[e.i];
+    g+=`<circle cx="${e.X.toFixed(1)}" cy="${e.Y0.toFixed(1)}" r="4.5" fill="${pk?'var(--series-record)':e.s.color}" stroke="var(--surface)" stroke-width="2"/>`
+      +`<text class="lbl strong" x="${(e.X+8).toFixed(1)}" y="${(e.Y+4).toFixed(1)}">${multi?esc(e.s.name)+' ':''}${Math.round(e.s.v[e.i])}</text>`; }
+  g+=`<g class="lc-hair" pointer-events="none"></g><rect class="lc-hit" x="${L}" y="${T}" width="${(W-L-R).toFixed(1)}" height="${H-T-B}" fill="transparent" tabindex="0" role="img" aria-label="${esc(spec.aria)} · 좌우 화살표로 달마다 보기"/>`;
+  return {svg:`<svg viewBox="0 0 ${W} ${H}" height="${H}">${g}</svg>`,geo:{L,R,T,B,W,H,n,x,y,months,series:spec.series,multi}};
+}
+function drawAskChart(){
+  const el=$('#askChart'), a=A.last&&A.last.a; if(!el||!a||!a.chart)return;
+  const W=Math.max(300,Math.round(el.clientWidth||600)), r=lineSVG(a.chart,W);
+  el.innerHTML=r.svg+'<div class="tip lc-tip"></div>'; A.chart=r.geo;
+}
+function showAskAt(i){
+  const g=A.chart, el=$('#askChart'); if(!g||!el)return; g.cur=i;
+  const X=g.x(i), hair=el.querySelector('.lc-hair'), tip=el.querySelector('.lc-tip'), svg=el.querySelector('svg'); if(!hair||!tip||!svg)return;
+  hair.innerHTML=`<line x1="${X.toFixed(1)}" x2="${X.toFixed(1)}" y1="${g.T}" y2="${g.H-g.B}" stroke="var(--axis)"/>`
+    +g.series.map(s=>s.v[i]==null?'':`<circle cx="${X.toFixed(1)}" cy="${g.y(s.v[i]).toFixed(1)}" r="4" fill="${s.color}" stroke="var(--surface)" stroke-width="2"/>`).join('');
+  const pv=s=>{ const v=s.v.filter(z=>z!=null); return v.length?Math.max(...v):null; };
+  tip.innerHTML=`<b>${ymDot(g.months[i])}</b>`+g.series.map(s=>`<div class="tr"><i style="background:${s.color}"></i>${g.multi?esc(s.name)+' ':'지수 '}${s.v[i]==null?'-':Math.round(s.v[i])}${!g.multi&&s.v[i]!=null?` · 고점 대비 ${fmtPct(s.v[i]/pv(s)-1)}`:''}</div>`).join('');
+  const sb=svg.getBoundingClientRect(), eb=el.getBoundingClientRect();
+  const sc=sb.height/g.H, ys=g.series.filter(s=>s.v[i]!=null).map(s=>g.y(s.v[i])*sc), th=tip.offsetHeight||48;
+  let top=g.T*sc+6; if(ys.some(y=>y<top+th+10))top=(g.H-g.B)*sc-th-6;   /* 선이 위쪽에 있으면 아래로 비킨다 */
+  tip.style.left=Math.max(70,Math.min(eb.width-70,(X/g.W)*sb.width+sb.left-eb.left))+'px'; tip.style.top=(sb.top-eb.top+top)+'px'; tip.classList.add('on');
+}
+function askHover(ev,hit){ const g=A.chart; if(!g)return; const svg=hit.ownerSVGElement, b=svg.getBoundingClientRect(), sx=g.W/b.width;
+  const i=Math.round(((ev.clientX-b.left)*sx-g.L)/((g.W-g.L-g.R)/Math.max(1,g.n-1))); showAskAt(Math.max(0,Math.min(g.n-1,i))); }
+function askHoverOff(){ const el=$('#askChart'); if(!el)return; const h=el.querySelector('.lc-hair'), t=el.querySelector('.lc-tip'); if(h)h.innerHTML=''; if(t)t.classList.remove('on'); }
+
+async function ask(text,opt){
+  const o=opt||{}; text=String(text||'').replace(/\s+/g,' ').trim();
+  const input=$('#askInput'), box=$('#askAns');
+  if(input.value!==text)input.value=text;
+  A.q=text; writeHash();
+  if(!text){ box.innerHTML=''; box.hidden=true; A.last=null; return; }
+  box.hidden=false;
+  if(!A.cat||!S.sum){
+    box.innerHTML='<div class="ans ans-wait" role="status"><span class="dots" aria-hidden="true"><i></i><i></i><i></i></span>12개 지역 단지 목록을 여는 중…</div>';
+    const [ok]=await Promise.all([loadCatalog(),S.sum?true:loadSummary()]);
+    if(!ok){ box.innerHTML='<div class="ans ans-wait">단지 목록(catalog.json)을 불러오지 못했어요. 잠시 뒤 다시 물어봐 주세요.</div>'; return; }
+    if(A.q!==text)return; }
+  const q=parseAsk(text), a=execAsk(q); A.last={q,a}; A.chart=null;
+  box.innerHTML=renderAnswer(q,a);
+  if(a.chart)drawAskChart();
+  if(a.vpool)drawValScatter();
+  revealWords(box);
+  const live=$('#askLive'); if(live)live.textContent=plain(a.lead);
+  if(o.scroll!==false){ const b=box.getBoundingClientRect(); if(b.top<0||b.top>innerHeight*0.6)box.scrollIntoView({behavior:'smooth',block:'start'}); }
+}
+async function openComplex(code,key){
+  if(S.region!==code){ const r=A.byCode.get(code); toast(`${r?r.label:''} 자료를 여는 중…`);
+    S.f.sgg=''; S.f.dong=''; S.page=0;
+    const ok=await loadRegion(code); syncControls(); if(!ok){ toast('지역 자료를 열지 못했습니다'); return; } }
+  if(S.groups.some(g=>g.key===key))openDrawer(key); else toast('이 단지를 찾지 못했습니다');
+}
+
+/* ===== 오늘의 브리핑 ===== */
+function computeBrief(){
+  const rows=A.rows, out=[], L=c=>A.byCode.get(c).label;
+  const rec1=rows.filter(r=>r.prev>0&&r.md>=r.reg.from1);
+  if(rec1.length){ const top=countBy(rec1,r=>r.code)[0], mx=rec1.reduce((a,b)=>b.mp>a.mp?b:a);
+    out.push({ic:'▲',cls:'up',n:rec1.length.toLocaleString(),u:'개',t:`<b>최근 한 달 신고가</b> ${L(top[0])}에서 ${top[1]}개로 가장 많이 나왔고, 가장 비싼 건 ${esc(mx.apt)} ${mx.ak}㎡(${mx.reg.label}) ${IEYO(won(mx.mp))}`,ask:'최근 한 달 신고가'});
+    const jump=rec1.filter(r=>r.n12>=2&&r.recPct<0.5).sort((a,b)=>b.recPct-a.recPct)[0];   /* 답의 '가장 크게 뛴 곳'과 같은 기준 */
+    if(jump)out.push({ic:'↗',cls:'up',n:fmtPct(jump.recPct,0),t:`<b>가장 크게 뛴 신고가</b> ${esc(jump.apt)} ${jump.ak}㎡(${jump.reg.label}) · 직전 ${won(jump.prev)} → ${won(jump.mp)}`,ask:'최근 한 달 신고가 경신폭 큰 순'}); }
+  /* 숫자는 누르면 나오는 답과 같은 기준으로 센다 (최근 1년 거래가 있는 곳) */
+  const deep=rows.filter(r=>r.n12>0&&r.vsPeak<=-0.2+1e-9);
+  if(deep.length){ const top=countBy(deep,r=>r.code)[0];
+    out.push({ic:'↘',cls:'down',n:deep.length.toLocaleString(),u:'개',t:`<b>고점보다 20% 넘게 낮은 단지·면적</b> 최근 1년 거래가 있는 곳 가운데 ${Math.round(top[1]/deep.length*100)}%가 ${L(top[0])}에 몰려 있어요`,ask:'고점 대비 20% 이상 빠진 단지'}); }
+  const hj=rows.filter(r=>r.jr!=null&&r.jr>=0.7-1e-9&&r.n12>0);
+  if(hj.length){ const top=countBy(hj,r=>r.code)[0];
+    out.push({ic:'◆',cls:'',n:hj.length.toLocaleString(),u:'개',t:`<b>전세가율 70% 넘는 단지·면적</b> 갭이 작은 대신 집값이 빠지면 보증금이 위험해지는 구간이에요. ${L(top[0])}에 가장 많아요`,ask:'전세가율 70% 이상'}); }
+  const cxTop=[...A.cx.values()].sort((a,b)=>b.n12-a.n12)[0];
+  if(cxTop)out.push({ic:'●',cls:'',n:cxTop.n12.toLocaleString(),u:'건',t:`<b>최근 1년 가장 많이 거래된 단지</b> ${esc(cxTop.apt)} · ${cxTop.reg.label} ${esc(cxTop.dong)}`,ask:`${cxTop.reg.short} ${cxTop.apt}`});
+  const ch=A.cheap.filter(x=>x.date>=x.reg.from6&&x.dev<=-0.05+1e-9);
+  if(ch.length){ const top=countBy(ch,x=>x.code)[0];
+    out.push({ic:'%',cls:'down',n:ch.length.toLocaleString(),u:'건',t:`<b>최근 6개월 급매 신호</b> 그 층 시세보다 5% 넘게 싸게 팔린 중개거래예요. ${L(top[0])}에서 ${top[1]}건`,ask:'최근 6개월 급매'}); }
+  return out.slice(0,6);
+}
+function renderBrief(){
+  const el=$('#briefRows'); if(!el)return;
+  if(!A.cat){ el.innerHTML='<div class="brief-empty">단지 목록을 불러오지 못해 브리핑을 만들지 못했어요.</div>'; return; }
+  el.innerHTML=computeBrief().map(it=>`<button type="button" class="brief-row" data-ask="${esc(it.ask)}"><span class="ic ${it.cls}" aria-hidden="true">${it.ic}</span><span class="t">${it.t}</span><span class="n">${it.n}${it.u?`<small>${it.u}</small>`:''}</span></button>`).join('');
+  $('#briefSub').textContent=`${fmtDate(A.maxRef)} 거래까지 · 누르면 자세히`;
+  const st=$('#aiStats'); if(st){ const deals=S.index?S.index.regions.reduce((s,r)=>s+(r.deals||0),0):0;
+    st.innerHTML=`<span><i class="live" aria-hidden="true"></i><b>${A.regs.length}</b>개 지역</span><span><b>${A.cx.size.toLocaleString()}</b>개 단지</span><span><b>${A.rows.length.toLocaleString()}</b>개 단지·면적</span>${deals?`<span>실거래 <b>${deals.toLocaleString()}</b>건</span>`:''}<span>${fmtDate(A.maxRef)}까지 반영</span>`; }
+}
+
+/* ===== 단지 상세의 '한눈에 읽기' ===== */
+function renderRead(g){
+  const el=$('#dRead'); if(!el)return;
+  const act=S.groups.filter(x=>x.count12>0), place=(g.gu||g.sgg||'').split(/\s+/).pop(), pw=S.f.priceWin;
+  const s=[], tags=[];
+  const basis=pw&&g.priceN?` (최근 ${pw}개월 ${g.priceN}건 중위)`:'';
+  const ro=batchim(fmtMan(g.price))===1?'으로':'로', vr=A.byKey&&A.byKey.get(g.key);
+  if(vr&&vr.val){ const v=vr.val;
+    s.push(`<b>가성비 ${v.score}점</b> — ${v.where} 비슷한 단지 ${v.ncomp}곳 시세로 보면 ${won(v.fair)}쯤인데 최근 1년 실거래 기준 ${won(vr.pa)}라 ${v.d<0?`<span class="lo">${pctAbs(v.d)}</span> 덜 비싸요`:`${pctAbs(v.d)} 더 비싸요`}.`);
+    tags.push([v.d<0?'dn':'up',`가성비 ${v.score}점`]); }
+  if(g.vsPeak>-0.02){ s.push(`지금 시세는 <b>${fmtMan(g.price)}</b>${basis}${ro}, ${ym7(g.max.date)} 신고가 ${J(fmtMan(g.max.price),'과','와')} 거의 같은 수준이에요.`); tags.push(['up','고점 부근']); }
+  else { s.push(`지금 시세는 <b>${fmtMan(g.price)}</b>${basis}${ro}, ${ym7(g.max.date)} 신고가 ${fmtMan(g.max.price)}보다 <span class="lo">${pctAbs(g.vsPeak,1)}</span> 낮아요.`); tags.push(['dn',`고점 대비 ${fmtPct(g.vsPeak,0)}`]); }
+  if(g.valueGap!=null){ const b=BAND_NAMES[bandOf(g.area)];
+    if(Math.abs(g.valueGap)<0.05)s.push(`${esc(g.dong)} ${b} 평단가 중위값과 비슷하게 거래돼요.`);
+    else { s.push(`${esc(g.dong)} ${b} 평단가 중위값보다 <b>${pctAbs(g.valueGap)}</b> ${g.valueGap<0?'싸게':'비싸게'} 거래돼요.`); tags.push([g.valueGap<0?'dn':'up',`동네보다 ${pctAbs(g.valueGap)} ${g.valueGap<0?'쌈':'비쌈'}`]); } }
+  if(g.mom!=null){ s.push(g.mom>0.005?`최근 6개월 시세는 그 전 6개월보다 <span class="hi">${pctAbs(g.mom,1)}</span> 올랐어요.`:g.mom<-0.005?`최근 6개월 시세는 그 전 6개월보다 <span class="lo">${pctAbs(g.mom,1)}</span> 내렸어요.`:'최근 6개월 시세는 그 전 6개월과 거의 같아요.');
+    if(Math.abs(g.mom)>=0.02)tags.push([g.mom>0?'up':'dn',`6개월 ${fmtPct(g.mom,0)}`]); }
+  if(g.count12===0){ s.push('최근 1년 거래가 없어서 시세는 마지막 거래가예요.'); tags.push(['','1년 거래 없음']); }
+  else if(act.length>=10){ const rk=act.filter(x=>x.count12>g.count12).length/act.length;
+    if(rk<=0.2){ s.push(`최근 1년 ${g.count12}건 거래돼 ${esc(place)}에서 거래가 많은 편(상위 ${Math.max(1,Math.round(rk*100))}%)이에요.`); tags.push(['','거래 활발']); }
+    else if(rk>=0.7){ s.push(`최근 1년 거래가 ${g.count12}건이라 시세가 거칠 수 있어요.`); tags.push(['','거래 드묾']); } }
+  if(g.jRatio!=null){ s.push(`전세가율은 ${Math.round(g.jRatio*100)}%, 갭은 ${IEYO(fmtMan(g.gap))}.`); tags.push([g.jRatio>=0.7?'dn':'',`전세가율 ${Math.round(g.jRatio*100)}%`]); }
+  const fl=g.fl; if(fl&&fl.hi!=null&&fl.lo!=null&&fl.hi/fl.lo-1>=0.03)s.push(`같은 시기라면 고층이 저층보다 약 ${pctAbs(fl.hi/fl.lo-1)} 비싸게 팔렸어요.`);
+  if(fl){ const from=S.ref?monthsAgo(S.ref,6):''; let n=0,best=null;
+    for(const d of g.deals){ if(d.date<from||(d.type&&d.type!=='중개거래'))continue; const e=expectedPrice(g,d); if(!e)continue; const v=d.price/e-1; if(v<=-0.05){ n++; if(!best||v<best)best=v; } }
+    if(n){ s.push(`최근 6개월 그 층 시세보다 5% 넘게 싸게 팔린 거래가 ${n}건 있어요(가장 크게 ${fmtPct(best,0)}).`); tags.push(['dn',`급매 신호 ${n}건`]); } }
+  el.innerHTML=`<div class="h"><svg viewBox="0 0 24 24" width="13" height="13" aria-hidden="true"><path d="M12 2l2.4 6.6L21 11l-6.6 2.4L12 20l-2.4-6.6L3 11l6.6-2.4z" fill="currentColor"/></svg>한눈에 읽기</div><p>${s.join(' ')}</p>${tags.length?`<div class="tags">${tags.map(([c,t])=>`<i class="${c}">${esc(t)}</i>`).join('')}</div>`:''}`;
+}
+
+/* ===== 이름 추천 (입력하는 동안) ===== */
+const SG={items:[],act:-1,tok:null};
+function sugHide(){ const box=$('#askSug'), input=$('#askInput'); SG.items=[]; SG.act=-1; box.hidden=true; box.innerHTML='';
+  input.setAttribute('aria-expanded','false'); input.removeAttribute('aria-activedescendant'); }
+function sugUpdate(){
+  const input=$('#askInput'); if(!A.cat||document.activeElement!==input)return sugHide();
+  const pos=input.selectionStart??input.value.length, head=input.value.slice(0,pos), m=/([가-힣a-z0-9]+)$/i.exec(head);
+  if(!m||m[1].length<2||/^\d+$/.test(m[1]))return sugHide();
+  const raw=m[1], t=normName(raw), out=[], seen=new Set();
+  const add=(label,meta,insert)=>{ const k=label+'|'+meta; if(seen.has(k))return; seen.add(k); out.push({label,meta,insert}); };
+  for(const r of A.regs)if(r.short.startsWith(raw)||r.stem.startsWith(raw))add(r.label,'지역',r.short);
+  for(const [dn,list] of A.dongIx)if(dn.startsWith(raw))add(dn,list.map(d=>A.byCode.get(d.code).label).join('·'),dn);
+  const cxs=[...A.cx.values()].filter(x=>x.an.includes(t)).sort((a,b)=>(b.an.startsWith(t)-a.an.startsWith(t))||b.n12-a.n12).slice(0,7);
+  for(const x of cxs)add(x.apt,`${x.reg.label} ${x.dong} · 1년 ${x.n12}건`,x.apt);
+  const items=out.slice(0,7);
+  if(!items.length||(items.length===1&&normName(items[0].insert)===t))return sugHide();
+  SG.items=items; SG.act=-1; SG.tok={s:pos-raw.length,e:pos};
+  const box=$('#askSug'), hl=s=>{ const i=s.toLowerCase().indexOf(raw.toLowerCase()); return i<0?esc(s):`${esc(s.slice(0,i))}<b>${esc(s.slice(i,i+raw.length))}</b>${esc(s.slice(i+raw.length))}`; };
+  box.innerHTML=items.map((it,i)=>`<li id="sug${i}" role="option" aria-selected="false" data-i="${i}"><span>${hl(it.label)}</span><span class="m">${esc(it.meta)}</span></li>`).join('');
+  box.hidden=false; input.setAttribute('aria-expanded','true');
+}
+function sugPick(i){
+  const it=SG.items[i], input=$('#askInput'); if(!it||!SG.tok)return;
+  const v=input.value, before=v.slice(0,SG.tok.s), after=v.slice(SG.tok.e).replace(/^\s*/,'');
+  input.value=`${before}${it.insert} ${after}`.replace(/\s{2,}/g,' ');
+  const caret=(before+it.insert+' ').length; try{ input.setSelectionRange(caret,caret); }catch(e){}
+  sugHide(); input.focus();
+}
+function sugMove(d){
+  if(!SG.items.length)return false;
+  const n=SG.items.length; SG.act=((SG.act+1+d+n+1)%(n+1))-1;   /* -1 은 입력칸 그대로 */
+  const input=$('#askInput');
+  $('#askSug').querySelectorAll('li').forEach((li,i)=>li.setAttribute('aria-selected',i===SG.act?'true':'false'));
+  if(SG.act>=0)input.setAttribute('aria-activedescendant',`sug${SG.act}`); else input.removeAttribute('aria-activedescendant');
+  return true;
+}
+
+/* ===== 오늘의 가성비 (히어로 오른쪽) ===== */
+function renderVTop(){
+  const el=$('#vTopBody'); if(!el)return;
+  if(!A.cat||!A.vm||!A.vm.scored){ el.innerHTML='<p class="vtop-empty">가성비 자료를 만들지 못했어요. 잠시 뒤 새로 고쳐 주세요.</p>'; return; }
+  const top=A.rows.filter(r=>r.val&&!r.val.odd).sort(valRank).slice(0,5), t=top[0], v=t.val;
+  el.innerHTML=`<div class="vtop-one"><span class="no">오늘의 1위</span>
+  <button type="button" class="nm" data-code="${esc(t.code)}" data-open="${esc(t.key)}">${esc(t.apt)} <span class="vc-ak">${t.ak}㎡</span></button>
+  <div class="vc-meta">${esc(t.reg.label)} ${esc(t.dong)} · 약 ${pyg(t.area)}평형${t.built?` · ${t.built}년`:''}</div>
+  <div class="vc-price"><b class="num">${won(t.pa)}</b><span class="vc-lab">실거래 기준</span><span class="vc-sep">vs</span><span class="num">${won(v.fair)}</span><span class="vc-lab">비교 가격</span><span class="vc-d ${v.d<0?'lo':'hi'}">${v.d<0?'−':'+'}${pctAbs(v.d)}</span></div>
+  ${valBar(t)}
+  <div class="vc-why">${valReasons(t,3).map(([c,x])=>`<i class="${c}">${esc(x)}</i>`).join('')}</div>
+  <div class="vc-stamp" role="img" aria-label="가성비 점수 ${v.score}점"><b>${v.score}</b><span>가성비</span></div></div>
+<ol class="vtop-list" start="2">${top.slice(1).map((r,i)=>`<li><button type="button" data-code="${esc(r.code)}" data-open="${esc(r.key)}"><span class="k" aria-hidden="true">${i+2}</span><span><span class="n">${esc(r.apt)} ${r.ak}㎡</span><span class="m">${esc(r.reg.label)} ${esc(r.dong)} · 실거래 기준 ${won(r.pa)}</span></span><span class="d"><b>${fmtPct(r.val.d,0)}</b><small>가성비 ${r.val.score}점</small></span></button></li>`).join('')}</ol>`;
+  $('#vTopSub').textContent=`후보 ${A.vm.scored.toLocaleString()}곳 · ${fmtDate(A.maxRef)} 거래까지`;
+  const sel=$('#vRegion'); if(sel&&sel.options.length<=1){
+    const groups=[['서울','서울 전체'],['강남3구','강남3구'],['마용성','마용성'],['안양','안양 전체']].filter(([v])=>v!=='안양'||A.regs.some(r=>r.city==='안양'));
+    sel.innerHTML='<option value="">전체</option><optgroup label="묶음">'+groups.map(([v,l])=>`<option value="${v}">${l}</option>`).join('')+'</optgroup>'
+      +'<optgroup label="구">'+A.regs.map(r=>`<option value="${esc(r.short)}">${esc(r.label)}</option>`).join('')+'</optgroup>'; }
+}
+function vformQuery(){
+  const b=$('#vBudget').value, sz=$('#vSize').value, rg=$('#vRegion').value, ag=$('#vAge').value, gap=$('#vGap').checked;
+  return [rg,sz,b?(gap?`전세 끼고 ${b}억`:`${b}억 이하`):(gap?'전세 끼고':''),ag,'가성비'].filter(Boolean).join(' ');
+}
+
+/* ===== 묻는 상자 ===== */
+const ASK_EX=['마포 30평대 15억 이하 가성비','서울 국평 가성비','전세 끼고 5억 가성비','안양 10년 이내 가성비','송파 지금 고점이야?','최근 한 달 신고가'];
+const ASK_PH=['마포 30평대 15억 이하 가성비','강남3구 국평 가성비 추천','전세 끼고 5억으로 살 만한 곳','노원 10년 이내 가성비','헬리오시티 적정가','송파 30평대 vs 강동'];
+function bindAsk(){
+  $('#askEx').innerHTML=ASK_EX.map(t=>`<button type="button" data-ask="${esc(t)}">${esc(t)}</button>`).join('');
+  $('#askForm').addEventListener('submit',e=>{ e.preventDefault(); if(SG.act>=0){ sugPick(SG.act); return; } sugHide(); ask($('#askInput').value); });
+  const inp=$('#askInput');
+  inp.addEventListener('input',()=>{ if(!A.cat)loadCatalog().then(()=>sugUpdate()); else sugUpdate(); });
+  inp.addEventListener('keydown',e=>{
+    if(e.key==='ArrowDown'){ if(sugMove(1))e.preventDefault(); }
+    else if(e.key==='ArrowUp'){ if(sugMove(-1))e.preventDefault(); }
+    else if(e.key==='Escape'&&SG.items.length){ e.preventDefault(); e.stopPropagation(); sugHide(); }
+    else if(e.key==='Tab'&&SG.act>=0){ e.preventDefault(); sugPick(SG.act); } });
+  inp.addEventListener('blur',()=>setTimeout(sugHide,150));
+  $('#askSug').addEventListener('mousedown',e=>{ const li=e.target.closest('li[data-i]'); if(li){ e.preventDefault(); sugPick(+li.dataset.i); } });
+  const onPick=e=>{ const o=e.target.closest('[data-open]'); if(o){ openComplex(o.dataset.code,o.dataset.open); return; }
+    const b=e.target.closest('[data-ask]'); if(b)ask(b.dataset.ask); };
+  $('#ai').addEventListener('click',onPick); $('#brief').addEventListener('click',onPick);
+  $('#vForm').addEventListener('submit',e=>{ e.preventDefault(); ask(vformQuery()); });
+  const box=$('#askAns');
+  box.addEventListener('click',e=>{
+    const m=e.target.closest('[data-more]'); if(m){ m.closest('.blist').classList.add('all'); m.remove(); return; }
+    const vm2=e.target.closest('[data-vmore]'); if(vm2){ const l=box.querySelector('.vlist'); if(l)l.classList.add('all'); vm2.remove(); return; }
+    const o=e.target.closest('[data-open]'); if(o){ openComplex(o.dataset.code,o.dataset.open); return; }
+    const a=e.target.closest('[data-ask]'); if(a){ ask(a.dataset.ask); return; }
+    if(e.target.closest('[data-askshare]')){ writeHash(); copyText(location.href.split('#')[0]+(S.hash?'#'+S.hash:''),'답변 링크를 복사했습니다'); } });
+  box.addEventListener('pointermove',e=>{ const h=e.target.closest('.lc-hit'); if(h)askHover(e,h); });
+  const vtShow=el=>{ const tip=box.querySelector('.vs-tip'), k=el.getAttribute('data-vtip'); if(!tip||!A.vTips)return;
+    const host=box.querySelector('#vScatter').getBoundingClientRect(), b=el.getBoundingClientRect();
+    tip.innerHTML=A.vTips.get(k)||''; tip.style.left=(b.left+b.width/2-host.left)+'px'; tip.style.top=(b.top-host.top+2)+'px'; tip.classList.add('on'); };
+  const vtHide=()=>{ const tip=box.querySelector('.vs-tip'); if(tip)tip.classList.remove('on'); };
+  box.addEventListener('pointerover',e=>{ const h=e.target.closest('[data-vtip]'); if(h)vtShow(h); });
+  box.addEventListener('pointerout',e=>{ if(e.target.closest('[data-vtip]'))vtHide(); });
+  box.addEventListener('focusin',e=>{ const h=e.target.closest('[data-vtip]'); if(h)vtShow(h); });
+  box.addEventListener('focusout',e=>{ if(e.target.closest('[data-vtip]'))vtHide(); });
+  box.addEventListener('pointerout',e=>{ if(e.target.closest('.lc-hit'))askHoverOff(); });
+  box.addEventListener('focusin',e=>{ if(e.target.closest('.lc-hit')&&A.chart)showAskAt(A.chart.cur??A.chart.n-1); });
+  box.addEventListener('focusout',e=>{ if(e.target.closest('.lc-hit'))askHoverOff(); });
+  box.addEventListener('keydown',e=>{ if(!e.target.closest('.lc-hit')||!A.chart)return;
+    if(e.key==='ArrowLeft'||e.key==='ArrowRight'){ e.preventDefault(); showAskAt(Math.max(0,Math.min(A.chart.n-1,(A.chart.cur??A.chart.n-1)+(e.key==='ArrowLeft'?-1:1)))); } });
+  document.addEventListener('keydown',e=>{ if(e.key==='/'&&!/^(input|textarea|select)$/i.test(e.target.tagName)&&!e.target.isContentEditable){ e.preventDefault(); $('#askInput').focus(); } });
+  /* 자리표시 글자를 돌려 가며 보여 준다 (입력 중이거나 동작 줄이기를 켠 경우엔 멈춤) */
+  const input=$('#askInput'); let k=0, pos=0, hold=0, reduce=false;
+  try{ reduce=matchMedia('(prefers-reduced-motion: reduce)').matches; }catch(e){}
+  setInterval(()=>{ if(document.activeElement===input||input.value)return;
+    const t=ASK_PH[k%ASK_PH.length];
+    if(reduce){ if(++hold>=50){ hold=0; k++; input.placeholder=ASK_PH[k%ASK_PH.length]; } return; }
+    if(pos<t.length){ input.placeholder=t.slice(0,++pos); return; }
+    if(++hold>=40){ hold=0; pos=0; k++; } },60);
+}
+
 /* ---------- 지역 목록 ---------- */
 async function loadIndex(){
   try{
@@ -1816,7 +3363,7 @@ function bind(){
   $('#dPeers').addEventListener('click',e=>{ const tr=e.target.closest('tr[data-key]'); if(tr){ openDrawer(tr.dataset.key); $('#drawer').scrollTop=0; } });
   document.addEventListener('mousemove',e=>{ if(S.view==='market'&&e.target.closest('#mkCharts'))marketHover(e); });
   document.addEventListener('mouseleave',e=>{ if(e.target.closest&&e.target.closest('#mkCharts'))marketHoverOff(); },true);
-  let rt; addEventListener('resize',()=>{ clearTimeout(rt); rt=setTimeout(()=>{ if(S.view==='market')renderMarket(); if(S.sum)renderOverview(); },200); });
+  let rt; addEventListener('resize',()=>{ clearTimeout(rt); rt=setTimeout(()=>{ if(S.view==='market')renderMarket(); if(S.sum)renderOverview(); if(A.last&&A.last.a.chart)drawAskChart(); if(A.last&&A.last.a.vpool)drawValScatter(); },200); });
   document.addEventListener('click',e=>{ const b=e.target.closest('[data-seg]'); if(!b)return;
     S.seg=b.dataset.seg; try{localStorage.setItem('sgj.seg',S.seg);}catch(err){} renderSegments(); });
   const ov=$('#overview');
@@ -1863,6 +3410,7 @@ function bind(){
     copyText(head+'\n'+res.list.map((x,i)=>`${i+1}. ${x.g.apt} ${x.g.areaKey}㎡ (${x.g.dong}) 시세 ${fmtMan(x.g.price)} · ${x.score.toFixed(0)}점 · 고점대비 ${fmtPct(x.g.vsPeak)} · 최근1년 ${x.g.count12}건`).join('\n'),`${res.list.length}건을 복사했습니다`); };
   $('#expTl').onclick=()=>{ if(!S.tl.length)return toast('복사할 항목이 없습니다'); copyText(S.tl.map(({g,r})=>`${fmtDate(r.date)}\t${g.apt}\t${g.areaKey}㎡\t${r.floor??''}층\t${r.price}\t${r.prev}\t${fmtPct(r.pct)}`).join('\n'),`${S.tl.length}건을 복사했습니다`); };
   $('#themeBtn').onclick=()=>applyTheme(theme==='auto'?'light':theme==='light'?'dark':'auto');
+  bindAsk();
 }
 
 /* ---------- init ---------- */
@@ -1870,10 +3418,11 @@ function bind(){
   try{ applyTheme(localStorage.getItem('sgj.theme')||'auto'); }catch(e){ applyTheme('auto'); }
   bind(); loadFav(); loadF(); loadR(); loadC();
   try{ const sg=localStorage.getItem('sgj.seg'); if(sg==='area'||sg==='dong')S.seg=sg; }catch(e){}
-  const at=readHash(); const hashRegion=S.hashRegion||''; syncControls();
+  const at=readHash(); const hashRegion=S.hashRegion||''; A.q=S.askQ; syncControls();
   const openAt=()=>{ if(at&&S.groups.some(g=>g.key===at))openDrawer(at); };
   const src=new URLSearchParams(location.search).get('src');
   const hasIndex=await loadIndex(); loadSummary();
+  loadCatalog().then(ok=>{ renderBrief(); renderVTop(); if(ok&&S.askQ)ask(S.askQ,{scroll:false}); });
   if(src&&await loadURL(src,false,true)){ syncControls(); openAt(); return; }
   if(hasIndex){
     let want=hashRegion;

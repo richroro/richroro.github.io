@@ -250,26 +250,36 @@ def _months_ago(date, n):
     return f"{ym}-{min(int(date[8:10]), last):02d}"
 
 
-def unpack(packed):
-    """압축 JSON → 거래 dict 목록과 전세 맵 (페이지의 packedToDeals 와 같은 결과)."""
+def unpack(packed, full=False):
+    """압축 JSON → 거래 dict 목록과 전세 맵 (페이지의 packedToDeals 와 같은 결과).
+    full 이면 층·건축년도·거래유형까지 풀고, 전세 맵 값도 j12 하나가 아니라 dict 로 준다."""
     D, C = packed["dict"], {c: i for i, c in enumerate(packed["cols"])}
-    g = lambda k, i: D[k][i] if i is not None and i < len(D[k]) else ""
+    g = lambda k, i: D[k][i] if i is not None and k in D and i < len(D[k]) else ""
     deals = []
     for r in packed["rows"]:
         ymd = str(r[C["ymd"]])
         if len(ymd) != 8:
             continue
         cancel = r[C["cancel"]] if "cancel" in C else 0
-        deals.append({"sgg": g("sgg", r[C["sgg"]]), "dong": g("dong", r[C["dong"]]), "apt": g("apt", r[C["apt"]]),
-                      "area": float(r[C["area"]]), "price": float(r[C["price"]]),
-                      "date": f"{ymd[:4]}-{ymd[4:6]}-{ymd[6:]}",
-                      "cancel": bool(cancel) and cancel != "-"})
+        d = {"sgg": g("sgg", r[C["sgg"]]), "dong": g("dong", r[C["dong"]]), "apt": g("apt", r[C["apt"]]),
+             "area": float(r[C["area"]]), "price": float(r[C["price"]]),
+             "date": f"{ymd[:4]}-{ymd[4:6]}-{ymd[6:]}",
+             "cancel": bool(cancel) and cancel != "-"}
+        if full:
+            fl = r[C["floor"]] if "floor" in C else None
+            d["floor"] = fl if fl is not None else None
+            d["built"] = (r[C["built"]] or None) if "built" in C else None
+            d["type"] = g("type", r[C["type"]]) if "type" in C else ""
+        deals.append(d)
     rent = {}
     if packed.get("rent"):
         RC = {c: i for i, c in enumerate(packed["rentCols"])}
         for q in packed["rent"]:
             key = f'{g("sgg", q[RC["sgg"]])}|{g("dong", q[RC["dong"]])}|{g("apt", q[RC["apt"]])}|{q[RC["areaKey"]]}'
-            rent[key] = q[RC["j12"]] or 0
+            if full:
+                rent[key] = {c: (q[RC[c]] or 0) for c in ("j12", "n12", "j6", "j6p") if c in RC}
+            else:
+                rent[key] = q[RC["j12"]] or 0
     return deals, rent
 
 
@@ -393,6 +403,234 @@ def write_summary(out_dir, entries):
     return out
 
 
+# ---------------------------------------------------------------------------
+# 단지 카탈로그. 페이지의 analyze()·computePeers()·cheapDeals() 를 기본 설정
+# (해제 거래 제외, 시세 = 최근 3개월 중위, 경신 판단 3개월) 그대로 옮겨서,
+# 12개 지역 1만여 개 단지·면적을 한 파일에 담는다. 물어보기 상자가 지역 파일을
+# 다 받지 않고도 "강남 30평대 20억 이하" 같은 질문에 바로 답하게 하려는 것.
+# ---------------------------------------------------------------------------
+AREA_BANDS = [(0, 60), (60, 85), (85, 135), (135, 1e9)]
+
+
+def _band_of(a):
+    for i, (lo, hi) in enumerate(AREA_BANDS):
+        if lo <= a < hi:
+            return i
+    return len(AREA_BANDS) - 1
+
+
+def _floor_band(f, max_f):
+    if f is None:
+        return "mid"
+    if f <= 3:
+        return "lo"
+    return "hi" if f >= max(10, math.ceil(max_f * 0.75)) else "mid"
+
+
+def _level_at(mm, ym):
+    near = [mm[m] for m in (_ym_shift(ym, -k) for k in range(-3, 4)) if m in mm]
+    return statistics.median(near) if near else None
+
+
+def _floor_effect(ds, by_m):
+    if len(ds) < 10:
+        return None
+    mm = {ym: statistics.median(v) for ym, v in by_m.items()}
+    max_f = max((d["floor"] or 0) for d in ds)
+    if not max_f > 0:
+        return None
+    rel = {"lo": [], "mid": [], "hi": []}
+    for d in ds:
+        lv = _level_at(mm, d["date"][:7])
+        if not lv:
+            continue
+        rel[_floor_band(d["floor"], max_f)].append(d["price"] / lv)
+    every = rel["lo"] + rel["mid"] + rel["hi"]
+    base = statistics.median(rel["mid"]) if len(rel["mid"]) >= 3 else (statistics.median(every) if every else None)
+    if not base:
+        return None
+    f = lambda k: statistics.median(rel[k]) / base if len(rel[k]) >= 3 else None
+    return {"maxF": max_f, "mm": mm, "base": base, "lo": f("lo"), "mid": 1 if len(rel["mid"]) >= 3 else None,
+            "hi": f("hi")}
+
+
+def _expected(fl, d):
+    lv = _level_at(fl["mm"], d["date"][:7])
+    if not lv:
+        return None
+    adj = fl[_floor_band(d["floor"], fl["maxF"])]
+    return lv * fl["base"] * (1 if adj is None else adj)
+
+
+def _num(x, nd=None):
+    """JSON 에 싣는 숫자. 정수면 정수로, 아니면 nd 자리에서 자른다."""
+    if x is None:
+        return None
+    if nd is not None:
+        x = round(x, nd)
+    return int(x) if float(x).is_integer() else x
+
+
+def _idx_lookup(sm):
+    """요약의 월별 지수 → (그 달 지수 찾기 함수, 지금 지수). 빈 달은 가까운 달로 메운다."""
+    if not sm:
+        return None, None
+    m = {ym: v for ym, v in zip(sm["months"], sm["idx"]) if v is not None}
+    def at(ym):
+        for k in range(0, 7):
+            for cand in (_ym_shift(ym, k), _ym_shift(ym, -k)):
+                if cand in m:
+                    return m[cand]
+        return None
+    return at, sm["cur"]["v"]
+
+
+def region_catalog(packed, sm=None):
+    """지역 파일 하나 → 단지·면적 묶음 목록과 층 보정 저가 거래 목록.
+    sm(그 지역 요약)이 있으면 '지금 기준 가격'(pa)도 낸다: 최근 12개월 중개거래 값을 지역 지수로
+    지금 수준에 맞춘 뒤의 중위값. 직거래(가족 간 거래가 많다)는 뺀다. 가성비 비교에 쓴다."""
+    idx_at, idx_cur = _idx_lookup(sm)
+    deals, rent = unpack(packed, full=True)
+    deals = [d for d in deals if not d["cancel"]]
+    if not deals:
+        return None
+    ref = max(d["date"] for d in deals)
+    groups = {}
+    for d in deals:
+        groups.setdefault(f'{d["sgg"]}|{d["dong"]}|{d["apt"]}|{_js_round(d["area"])}', []).append(d)
+    p_from, from6, from12 = _months_ago(ref, 3), _months_ago(ref, 6), _months_ago(ref, 12)
+    rows, cheap = [], []
+    for key, ds in groups.items():
+        ds.sort(key=lambda d: (d["date"], d["price"]))
+        run, mx, prev = -math.inf, None, None
+        for d in ds:
+            if d["price"] > run:
+                if run > -math.inf:
+                    prev = run
+                run, mx = d["price"], d
+        last = ds[-1]
+        recent = [d["price"] for d in ds if d["date"] >= p_from]
+        price = statistics.median(recent) if recent else last["price"]
+        cnt, area, bn = {}, ds[0]["area"], 0                 # JS mode(): 처음 만난 최빈값
+        for d in ds:
+            cnt[d["area"]] = cnt.get(d["area"], 0) + 1
+            if cnt[d["area"]] > bn:
+                bn, area = cnt[d["area"]], d["area"]
+        by_m = {}
+        for d in ds:
+            by_m.setdefault(d["date"][:7], []).append(d["price"])
+        in6 = [d["price"] for d in ds if d["date"] >= from6]
+        in6p = [d["price"] for d in ds if from12 <= d["date"] < from6]
+        p6 = statistics.median(in6) if in6 else None
+        p6p = statistics.median(in6p) if in6p else None
+        rt = rent.get(key) or {}
+        pa, pan = None, 0
+        if idx_at:
+            adj = []
+            for d in ds:
+                if d["date"] < from12 or (d["type"] and d["type"] != "중개거래"):
+                    continue
+                v = idx_at(d["date"][:7])
+                if v:
+                    adj.append(d["price"] * idx_cur / v)
+            if adj:
+                pa, pan = statistics.median(adj), len(adj)
+        g = {"key": key, "sgg": ds[0]["sgg"], "dong": ds[0]["dong"], "apt": ds[0]["apt"], "pa": pa, "pan": pan,
+             "ak": _js_round(ds[0]["area"]), "area": area,
+             "built": next((d["built"] for d in ds if d["built"]), None),
+             "price": price, "pn": len(recent), "last": last, "max": mx, "prev": prev,
+             "n": len(ds), "n12": sum(1 for d in ds if d["date"] >= from12),
+             "mom": (p6 / p6p - 1) if (p6 is not None and p6p) else None,
+             "j": rt.get("j12") or None, "jn": rt.get("n12", 0) if rt else 0,
+             "ppy": price / (area / 3.305785)}
+        fl = _floor_effect(ds, by_m)
+        if fl:
+            for d in ds:
+                if d["date"] < from12 or (d["type"] and d["type"] != "중개거래"):
+                    continue
+                exp = _expected(fl, d)
+                if not exp:
+                    continue
+                if d["price"] / exp - 1 <= -0.05:
+                    cheap.append({"g": g, "d": d, "exp": exp, "band": _floor_band(d["floor"], fl["maxF"])})
+        rows.append(g)
+    # computePeers(): 같은 동·같은 면적대 평단가 중위 (3곳 이상일 때), 없으면 시군구, 그다음 전체
+    def med_map(key_fn):
+        m = {}
+        for g in rows:
+            m.setdefault(key_fn(g), []).append(g["ppy"])
+        return {k: statistics.median(v) for k, v in m.items() if len(v) >= 3}
+    dong_m = med_map(lambda g: (g["sgg"], g["dong"], _band_of(g["area"])))
+    sgg_m = med_map(lambda g: (g["sgg"], _band_of(g["area"])))
+    all_m = med_map(lambda g: _band_of(g["area"]))
+    for g in rows:
+        b = _band_of(g["area"])
+        peer = dong_m.get((g["sgg"], g["dong"], b)) or sgg_m.get((g["sgg"], b)) or all_m.get(b)
+        g["vg"] = g["ppy"] / peer - 1 if peer else None
+    return {"ref": ref, "rows": rows, "cheap": cheap}
+
+
+CAT_COLS = ["r", "s", "dong", "apt", "ak", "area", "built", "price", "pn", "lp", "ld", "lf",
+            "mp", "md", "mf", "prev", "n", "n12", "j", "jn", "mom", "vg", "pa", "pan"]
+CHEAP_COLS = ["r", "s", "dong", "apt", "ak", "date", "price", "floor", "exp", "band"]
+
+
+def write_catalog(out_dir, entries, summary=None):
+    """index.json 에 적힌 지역 파일들로 catalog.json 을 만든다 (열 단위로 담아 gzip 이 잘 먹게).
+    summary(write_summary 의 결과)를 주면 지역 지수로 '지금 기준 가격'(pa)도 계산한다."""
+    sm_by = {r["code"]: r for r in (summary or {}).get("regions", [])}
+    dicts = {"sgg": {}, "dong": {}, "apt": {}}
+    ix = lambda k, v: dicts[k].setdefault(v, len(dicts[k]))
+    ymd = lambda s: int(s.replace("-", ""))
+    regions, cols, ccols = [], {c: [] for c in CAT_COLS}, {c: [] for c in CHEAP_COLS}
+    for e in entries:
+        try:
+            with open(os.path.join(out_dir, e["file"]), encoding="utf-8") as f:
+                packed = json.load(f)
+        except (OSError, ValueError):
+            continue
+        cat = region_catalog(packed, sm_by.get(e["code"]))
+        if not cat:
+            continue
+        r = len(regions)
+        regions.append({"code": e["code"], "name": e["name"], "file": e["file"], "ref": cat["ref"]})
+        for g in sorted(cat["rows"], key=lambda g: (g["sgg"], g["dong"], g["apt"], g["ak"])):
+            vals = {"r": r, "s": ix("sgg", g["sgg"]), "dong": ix("dong", g["dong"]), "apt": ix("apt", g["apt"]),
+                    "ak": g["ak"], "area": _num(g["area"]), "built": g["built"] or 0, "price": _num(g["price"], 1),
+                    "pn": g["pn"], "lp": _num(g["last"]["price"]), "ld": ymd(g["last"]["date"]),
+                    "lf": g["last"]["floor"], "mp": _num(g["max"]["price"]), "md": ymd(g["max"]["date"]),
+                    "mf": g["max"]["floor"], "prev": _num(g["prev"]) or 0, "n": g["n"], "n12": g["n12"],
+                    "j": _num(g["j"]) or 0, "jn": g["jn"], "mom": _num(g["mom"], 3), "vg": _num(g["vg"], 3),
+                    "pa": _num(round(g["pa"])) if g["pa"] else 0, "pan": g["pan"]}
+            for c in CAT_COLS:
+                cols[c].append(vals[c])
+        for x in sorted(cat["cheap"], key=lambda x: (x["d"]["date"], x["g"]["key"], x["d"]["price"])):
+            g, d = x["g"], x["d"]
+            vals = {"r": r, "s": ix("sgg", g["sgg"]), "dong": ix("dong", g["dong"]), "apt": ix("apt", g["apt"]),
+                    "ak": g["ak"], "date": ymd(d["date"]), "price": _num(d["price"]), "floor": d["floor"],
+                    "exp": _num(x["exp"], 1), "band": {"lo": 0, "mid": 1, "hi": 2}[x["band"]]}
+            for c in CHEAP_COLS:
+                ccols[c].append(vals[c])
+    out = {"v": 1, "kind": "singoga-catalog",
+           "note": "단지·면적별 지표. 시세=최근 3개월 중위(없으면 마지막 거래가), 해제 거래 제외. "
+                   "pa=최근 12개월 중개거래를 지역 지수로 지금 수준에 맞춘 중위값(pan=그 건수). "
+                   "cheap=최근 12개월 중개거래 중 같은 단지·같은 층대 기대가보다 5% 이상 싼 거래.",
+           "regions": regions,
+           "dict": {k: [s for s, _ in sorted(v.items(), key=lambda kv: kv[1])] for k, v in dicts.items()},
+           "n": len(cols["r"]), "cols": cols, "cheapN": len(ccols["r"]), "cheap": ccols}
+    path = os.path.join(out_dir, "catalog.json")
+    old = None
+    try:
+        with open(path, encoding="utf-8") as f:
+            old = json.load(f)
+    except (OSError, ValueError):
+        pass
+    if old != out:
+        write_json(path, out)
+    log(f"{out_dir}/catalog.json: {len(regions)}개 지역 · 단지·면적 {out['n']:,}개 · 저가 거래 {out['cheapN']:,}건")
+    return out
+
+
 def write_json(path, obj):
     with open(path, "w", encoding="utf-8") as f:
         json.dump(obj, f, ensure_ascii=False, separators=(",", ":"))
@@ -436,7 +674,8 @@ def split_write(out_dir, by_region, rents, meta_common, rent_months):
         write_json(os.path.join(out_dir, "index.json"), index)
     total = sum(e["deals"] for e in entries)
     log(f"{out_dir}/: {len(entries)}개 지역 · {total:,}건 · 새로 쓴 파일 {written}개, 그대로 둔 파일 {kept}개")
-    write_summary(out_dir, entries)
+    sm = write_summary(out_dir, entries)
+    write_catalog(out_dir, entries, sm)
     return 0
 
 
@@ -472,7 +711,7 @@ def main():
     ap.add_argument("--format", choices=["json", "csv"], default="json")
     ap.add_argument("-o", "--out", default="data/latest.json")
     ap.add_argument("--rebuild-summary", default="", metavar="DIR",
-                    help="API 를 부르지 않고 DIR 의 지역 파일들로 summary.json 만 다시 만든다")
+                    help="API 를 부르지 않고 DIR 의 지역 파일들로 summary.json·catalog.json 만 다시 만든다")
     ap.add_argument("--split-dir", default="",
                     help="시군구마다 파일을 따로 쓰고 목록(index.json)을 만든다. 지역이 많을 때 페이지가 "
                          "한 번에 한 지역만 읽게 하려는 것. 주면 --out 은 무시한다.")
@@ -494,7 +733,9 @@ def main():
 
     if a.rebuild_summary:
         with open(os.path.join(a.rebuild_summary, "index.json"), encoding="utf-8") as f:
-            write_summary(a.rebuild_summary, json.load(f)["regions"])
+            entries = json.load(f)["regions"]
+        sm = write_summary(a.rebuild_summary, entries)
+        write_catalog(a.rebuild_summary, entries, sm)
         return 0
     if not a.key:
         log("인증키가 없습니다. --key 또는 환경변수 DATA_GO_KR_KEY 를 주세요.")

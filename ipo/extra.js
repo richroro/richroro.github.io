@@ -102,13 +102,13 @@ function renderPlan() {
   const mOpt = (x, v, t) => `<option value="${v}" ${x.mode === v ? "selected" : ""}>${t}</option>`;
   $("pTable").innerHTML = rows.length ? `<thead><tr><th>종목</th><th>전략</th><th>주수·금액</th><th>청약일</th><th>증거금</th><th>기대 손익</th><th>환불</th></tr></thead><tbody>${rows.map((x) => `
     <tr class="${x.mode === "skip" ? "skip" : ""}" data-id="${esc(x.it.id)}"><td class="tx nm"><b>${esc(x.it.name)}</b>${verdictChip(x.r)}</td>
-      <td data-l="전략"><select class="pm" aria-label="${esc(x.it.name)} 전략">${mOpt(x, "min", "균등(최소)")}${mOpt(x, "prop", "균등+비례(금액)")}${mOpt(x, "custom", "주수 지정")}${mOpt(x, "skip", "건너뛰기")}</select></td>
-      <td data-l="${x.mode === "prop" ? "비례에 넣을 돈(만원)" : "주수"}">${x.mode === "custom" ? `<input class="pq" type="number" inputmode="numeric" min="1" step="10" value="${x.qty}" aria-label="청약 주수">`
+      <td class="c-st" data-l="전략"><select class="pm" aria-label="${esc(x.it.name)} 전략">${mOpt(x, "min", "균등(최소)")}${mOpt(x, "prop", "균등+비례(금액)")}${mOpt(x, "custom", "주수 지정")}${mOpt(x, "skip", "건너뛰기")}</select></td>
+      <td class="c-q" data-l="${x.mode === "prop" ? "비례(만원)" : "주수"}">${x.mode === "custom" ? `<input class="pq" type="number" inputmode="numeric" min="1" step="10" value="${x.qty}" aria-label="청약 주수">`
         : x.mode === "prop" ? `<input class="pa" type="number" inputmode="numeric" min="0" step="100" value="${x.amt}" aria-label="비례에 넣을 금액(만원)">`
         : x.mode === "skip" ? "–" : nf.format(x.qty)}</td>
-      <td data-l="청약일">${mdw(x.out)}</td><td data-l="증거금">${x.dep ? manwon(x.dep) : "–"}</td>
-      <td data-l="기대 손익">${x.mode === "skip" || x.pnl == null ? "–" : `<span><span class="${cls(x.pnl)}">${x.pnl >= 0 ? "+" : "−"}${manwon(Math.abs(x.pnl))}</span><small class="hint"> ${x.shares.toFixed(x.shares < 10 ? 2 : 0)}주${x.mode === "prop" && x.cEst ? " · 경쟁률 추정" : ""}</small></span>`}</td>
-      <td data-l="환불">${mdw(x.back)}${x.it.refund ? "" : '<small class="hint">추정</small>'}<br><small class="hint">${x.refundAmt ? `+${manwon(x.refundAmt)}` : ""}</small></td></tr>`).join("")}</tbody>`
+      <td class="c-out" data-l="청약">${mdw(x.out)}</td><td class="c-dep" data-l="증거금">${x.dep ? manwon(x.dep) : "–"}</td>
+      <td class="c-pnl" data-l="기대 손익">${x.mode === "skip" || x.pnl == null ? "–" : `<span class="${cls(x.pnl)}">${x.pnl >= 0 ? "+" : "−"}${manwon(Math.abs(x.pnl))}</span><small class="hint"> ${x.shares.toFixed(x.shares < 10 ? 2 : 0)}주${x.mode === "prop" && x.cEst ? " · 경쟁률 추정" : ""}</small>`}</td>
+      <td class="c-back" data-l="환불"><span>${mdw(x.back)}${x.it.refund ? "" : '<small class="hint"> 추정</small>'}</span>${x.refundAmt ? `<small class="hint amt">+${manwon(x.refundAmt)} 돌아옴</small>` : ""}</td></tr>`).join("")}</tbody>`
     : `<tbody><tr><td class="empty">다가오는 청약이 없습니다. 일정이 잡히면 여기에 채워집니다.</td></tr></tbody>`;
 }
 
@@ -116,7 +116,7 @@ function drawPlan(series) {
   const box = $("pFig");
   if (!series.length || !series.some((p) => p.v > 0)) { box.innerHTML = `<p class="empty">청약할 종목을 고르면 그래프가 그려집니다.</p>`; return; }
   // 상자 너비대로 그려 글자 크기를 화면과 맞춥니다
-  const W = Math.max(320, Math.round(box.clientWidth || 560)), H = 230, L = 50, R = 10, T = 14, B = 26;
+  const W = Math.max(320, Math.round(box.clientWidth || 560)), H = 230, L = 50, R = 10, T = 24, B = 26;
   const mx = Math.max(...series.map((p) => p.v));
   const st = niceStep(mx), top = Math.ceil(mx / st) * st;
   const x = (i) => L + (i + 0.5) * (W - L - R) / series.length, y = (v) => T + (1 - v / top) * (H - T - B);
@@ -129,12 +129,12 @@ function drawPlan(series) {
   const line = d.slice(d.indexOf("L")).replace(/^L/, "M");
   d += `L${W - R},${y(0)}Z`;
   const pk = series.reduce((a, p, i) => (p.v > series[a].v ? i : a), 0);
-  const ticks = series.map((p, i) => (i === 0 || i === series.length - 1 || p.ev.length ? i : -1)).filter((i) => i >= 0);
+  const px = Math.min(Math.max(x(pk), L + 34), W - R - 34);
   const xl = [0, series.length - 1].map((i, k) => `<text class="axis" x="${k ? W - R : L}" y="${H - 8}" text-anchor="${k ? "end" : "start"}">${md(series[i].d)}</text>`).join("");
   box.innerHTML = `<svg class="fig" viewBox="0 0 ${W} ${H}" role="img" aria-label="날짜별 묶인 증거금 계단 그래프, 최대 ${manwon(series[pk].v)}원">
     ${grid}<path d="${d}" class="parea"/><path d="${line}" class="pline"/>
-    ${ticks.filter((i) => series[i].ev.length).map((i) => `<circle cx="${x(i) - bw / 2}" cy="${y(series[i].v)}" r="3.5" class="pdot"/>`).join("")}
-    <text class="dlabel" x="${Math.min(Math.max(x(pk), L + 40), W - R - 40)}" y="${y(series[pk].v) - 7}" text-anchor="middle">최대 ${manwon(series[pk].v)}</text>
+    <circle cx="${x(pk)}" cy="${y(series[pk].v)}" r="4.5" class="pdot"/>
+    <text class="dlabel" x="${px}" y="${y(series[pk].v) - 10}" text-anchor="middle">최대 ${manwon(series[pk].v)}</text>
     ${xl}
     ${series.map((p, i) => `<rect class="hit" x="${L + i * bw}" y="${T}" width="${bw}" height="${H - T - B}" data-i="${i}" data-x="${x(i)}"/>`).join("")}</svg>`;
   attachTip(box, box.querySelector("svg"), W, H, (i) => `<div class="th">${mdw(series[i].d)}</div>
@@ -161,7 +161,7 @@ function initPlan() {
     downloadIcs(xs, "공모주-청약플랜.ics");
   };
   let rt;
-  window.addEventListener("resize", () => { clearTimeout(rt); rt = setTimeout(() => { if (CUR_SCREEN === "tools") renderPlan(); }, 200); });
+  window.addEventListener("resize", () => { clearTimeout(rt); rt = setTimeout(() => { if (shown("plan")) renderPlan(); else showScreen.plan = null; }, 200); });
   // 계산기의 최소 주수·증거금률·균등 예상이 바뀌면 플래너도 다시
   ["cMin", "cMargin", "cEq"].forEach((id) => $(id).addEventListener("input", renderPlan));
 }
@@ -179,7 +179,7 @@ function renderTray() {
   document.body.classList.toggle("has-tray", CMP.size > 0);
   $("cmpChips").innerHTML = `<span class="hint">비교 ${CMP.size}/3</span>` + [...CMP].map((id) => {
     const it = BY_ID.get(id); if (!it) return "";
-    return `<span class="tchip">${esc(it.name)}<button type="button" data-rm="${esc(id)}" aria-label="${esc(it.name)} 빼기">✕</button></span>`;
+    return `<span class="tchip">${esc(it.name)}<button type="button" data-rm="${esc(id)}" aria-label="${esc(it.name)} 빼기">${ico("close", "sm")}</button></span>`;
   }).join("");
   $("cmpGo").disabled = CMP.size < 2;
 }
@@ -216,7 +216,7 @@ function openCompare() {
   body += row("주의", rs.map((r) => (r.flags.length ? r.flags.map((f) => `<small class="warnl">${esc(f)}</small>`).join("") : `<span class="hint">없음</span>`)));
   const win = totals.some((t) => t != null) ? xs[totals.indexOf(Math.max(...totals.filter((t) => t != null)))] : null;
   $("cmpBody").innerHTML = `<div class="grab" aria-hidden="true"></div><div class="dlg-top"><div class="ttl"><b id="cmpTitle">나란히 비교</b><small>${win ? `점수로는 <b>${esc(win.name)}</b> 우세 · 칸마다 더 좋은 쪽을 색칠했습니다` : "숫자가 모이면 더 좋은 쪽을 색칠합니다"}</small></div>
-    <button class="ghost" type="button" id="cmpClose" aria-label="닫기">✕</button></div>
+    <button class="ghost icon" type="button" id="cmpClose" aria-label="닫기">${ico("close")}</button></div>
     <div class="dlg-body"><div class="tscroll"><table class="cmp-t">
       <thead><tr><th></th>${xs.map((it) => `<th scope="col"><button type="button" class="linkish" data-open="${esc(it.id)}">${esc(it.name)}</button><small>${esc(stage(it).label)}</small></th>`).join("")}</tr></thead>
       <tbody>${body}</tbody></table></div>
@@ -331,14 +331,12 @@ function renderMyDash() {
     const W = Math.max(320, Math.round(box.clientWidth || 560)), H = 200, L = 50, R = 8, T = 16, B = 24;
     const lo = Math.min(0, ...val), hi = Math.max(0, ...val), st = niceStep(hi - lo || 1);
     const a = Math.floor(lo / st) * st, b = Math.ceil(hi / st) * st || st;
-    const y = (v) => T + (b - v) / (b - a) * (H - T - B), bw = (W - L - R) / 12, gap = 6;
+    const y = (v) => T + (b - v) / (b - a) * (H - T - B), bw = (W - L - R) / 12, w = Math.min(24, bw - 6);
     let g = "";
     for (let v = a; v <= b + 1e-6; v += st) g += `<line class="${v === 0 ? "zero" : "gridline"}" x1="${L}" x2="${W - R}" y1="${y(v)}" y2="${y(v)}"/><text class="axis" x="${L - 6}" y="${y(v) + 3.5}" text-anchor="end">${v ? manwon(v) : 0}</text>`;
     const bars = val.map((v, i) => {
-      const x0 = L + i * bw + gap / 2, w = bw - gap, y0 = y(0), y1 = y(v), h = Math.abs(y1 - y0), r = Math.min(4, w / 2, h), up = v >= 0;
-      const d = !v ? "" : up ? `M${x0},${y0}V${y1 + r}Q${x0},${y1} ${x0 + r},${y1}H${x0 + w - r}Q${x0 + w},${y1} ${x0 + w},${y1 + r}V${y0}Z`
-        : `M${x0},${y0}V${y1 - r}Q${x0},${y1} ${x0 + r},${y1}H${x0 + w - r}Q${x0 + w},${y1} ${x0 + w},${y1 - r}V${y0}Z`;
-      return `${d ? `<path d="${d}" fill="var(${up ? "--fill-up" : "--fill-down"})"/>` : ""}
+      const x0 = L + i * bw + (bw - w) / 2, d = v ? barD(x0, w, y(0), y(v)) : "";
+      return `${d ? `<path d="${d}" class="${v >= 0 ? "bar-up" : "bar-down"}"/>` : ""}
         <text class="axis" x="${x0 + w / 2}" y="${H - 8}" text-anchor="middle">${+months[i].slice(5)}월</text>
         <rect class="hit" x="${L + i * bw}" y="${T}" width="${bw}" height="${H - T - B}" data-i="${i}"/>`;
     }).join("");
@@ -369,15 +367,28 @@ function renderMyDash() {
 /* ---------------------------------------------------------------- 휴대폰 아래 탭 · 단축키 */
 /* 화면 전환: 홈·일정·분석·도구·내 청약·가이드를 한 번에 하나씩 보여 준다. 주소 끝(#schedule, #calc …)으로 바로 열린다 */
 const SCREENS = { home: ["top"], schedule: ["schedule", "calendar"], analysis: ["market", "method"], tools: ["acct", "plan", "calc"], my: ["my"], guide: ["guide"] };
+// 위쪽 하위 탭으로 한 섹션씩 보여 주는 화면(분석·도구)
+const SUBS = { schedule: ["schedule", "calendar"], analysis: ["market", "method"], tools: ["acct", "plan", "calc"] };
+const SUB = { schedule: "schedule", analysis: "market", tools: "acct" };
 const screenOf = (id) => Object.keys(SCREENS).find((k) => k === id || SCREENS[k].includes(id)) || null;
+const scrollKey = (n) => (SUBS[n] ? `${n}:${SUB[n]}` : n);
 let CUR_SCREEN = "home";
 const SCROLL = {};
-function showScreen(name, target) {
+/** force: 화면 이름과 같은 하위 탭(#schedule)도 그 탭으로 — 아래 탭(data-go)으로 올 땐 보던 하위 탭을 지킨다 */
+function showScreen(name, target, force) {
   if (!SCREENS[name]) name = "home";
-  const changed = name !== CUR_SCREEN;
-  if (changed) SCROLL[CUR_SCREEN] = window.scrollY;
+  const subs = SUBS[name], sub = subs && subs.includes(target) && (target !== name || force) ? target : null;
+  const moved = name !== CUR_SCREEN, changed = moved || (sub && sub !== SUB[name]);
+  if (changed) SCROLL[scrollKey(CUR_SCREEN)] = window.scrollY;
+  if (sub) SUB[name] = sub;
   CUR_SCREEN = name;
   document.querySelectorAll(".screen").forEach((el) => { el.hidden = el.dataset.screen !== name; });
+  if (subs) {
+    for (const id of subs) document.getElementById(id).hidden = id !== SUB[name];
+    document.querySelectorAll(`.screen[data-screen="${name}"] [data-sub]`).forEach((a) => {
+      if (a.dataset.sub === SUB[name]) a.setAttribute("aria-current", "page"); else a.removeAttribute("aria-current");
+    });
+  }
   const tab = name === "guide" && isPhone() ? "home" : name; // 아래 탭엔 가이드가 없다 — 홈을 켜 둔다
   document.querySelectorAll("[data-go]").forEach((a) => {
     const on = a.dataset.go === name || (a.closest("#tabbar") && a.dataset.go === tab);
@@ -386,20 +397,30 @@ function showScreen(name, target) {
   document.body.dataset.screen = name;
   // 숨어 있을 때 잰 너비로 그린 그래프를 화면 너비로 다시
   const stamp = `${Math.round(innerWidth)}|${scoreCache.size}|${TODAY}|${ITEMS.length}`;
-  if (name === "tools" && showScreen.plan !== stamp) { showScreen.plan = stamp; renderPlan(); }
-  if (name === "analysis" && ITEMS.length && showScreen.market !== stamp) { showScreen.market = stamp; renderMarket(); }
+  if (shown("plan") && showScreen.plan !== stamp) { showScreen.plan = stamp; renderPlan(); }
+  if (shown("market") && ITEMS.length && showScreen.market !== stamp) { showScreen.market = stamp; renderMarket(); }
   if (name === "my") renderMyDash();
-  const el = target && target !== name ? document.getElementById(target) : null;
+  const el = target && target !== name && !sub ? document.getElementById(target) : null;
   if (el) nativeScroll.call(el, { block: "start" });
-  else if (changed) window.scrollTo(0, SCROLL[name] || 0); // 앱처럼 탭마다 보던 자리로
+  // 앱처럼 탭마다 보던 자리로 — 다른 화면에서 하위 탭으로 바로 오면 맨 위부터
+  else if (changed) window.scrollTo(0, sub && moved ? 0 : SCROLL[scrollKey(name)] || 0);
   if (changed && showScreen.byUser && navigator.vibrate) try { navigator.vibrate(8); } catch (e) { /* 진동 없는 기기 */ }
   showScreen.byUser = false;
 }
-// 다른 코드가 숨은 화면의 섹션으로 scrollIntoView 하면, 그 화면을 먼저 연다
+// 다른 코드가 숨은 화면(또는 숨은 하위 탭)의 요소로 scrollIntoView 하면, 그 화면을 먼저 연다
 const nativeScroll = Element.prototype.scrollIntoView;
 Element.prototype.scrollIntoView = function (opt) {
   const scr = this.closest && this.closest(".screen");
-  if (scr && scr.hidden) showScreen(scr.dataset.screen);
+  if (scr) {
+    const subs = SUBS[scr.dataset.screen], sec = subs && subs.map((id) => document.getElementById(id)).find((s) => s.contains(this));
+    if (scr.hidden || (sec && sec.hidden)) {
+      // 주소도 그 화면으로 — 상세 창(#i=)에서 왔으면 창을 열기 전 주소를 먼저 되돌려 뒤로 가기가 원래 화면으로 가게
+      const to = sec ? sec.id : scr.dataset.screen;
+      if (location.hash.startsWith("#i=")) history.replaceState(null, "", location.pathname + location.search + (openDetail.back || ""));
+      if (location.hash !== `#${to}`) history.pushState(null, "", `#${to}`);
+      showScreen(scr.dataset.screen, sec ? sec.id : undefined, true);
+    }
+  }
   return nativeScroll.call(this, opt);
 };
 function initScreens() {
@@ -408,21 +429,25 @@ function initScreens() {
     if (!h) return showScreen("home");  // 뒤로 가기로 맨 처음 주소에 오면 홈
     if (h.startsWith("i=")) return showScreen(CUR_SCREEN);
     const s = screenOf(h);
-    if (s) showScreen(s, h);
+    if (s) showScreen(s, h, true);
   };
   document.addEventListener("click", (e) => {
     const a = e.target.closest('a[href^="#"]');
     if (!a) return;
-    const id = decodeURIComponent(a.getAttribute("href").slice(1));
+    let id = decodeURIComponent(a.getAttribute("href").slice(1));
     const s = screenOf(id);
     if (!s) return;
     e.preventDefault();
     const dlg = a.closest("dialog[open]");
-    if (dlg) dlg.close(); // 상세 안의 링크(예: 계좌 준비)는 창을 닫고 그 화면으로
+    if (dlg) { // 상세 안의 링크(예: 계좌 준비)는 창을 닫고 그 화면으로 — 창을 열기 전 주소부터 되돌린다
+      if (location.hash.startsWith("#i=")) history.replaceState(null, "", location.pathname + location.search + (openDetail.back || ""));
+      dlg.close();
+    }
     if (a.dataset.go && a.dataset.go === CUR_SCREEN) { window.scrollTo({ top: 0, behavior: motion() }); return; }
+    if (a.dataset.go && SUBS[s]) id = SUB[s]; // 아래·위 탭은 그 화면에서 보던 하위 탭으로(주소에도 남겨 뒤로 가기가 맞게)
     showScreen.byUser = true;
-    history.pushState(null, "", `#${s === id ? s : id}`);
-    showScreen(s, id);
+    history.pushState(null, "", `#${id}`);
+    showScreen(s, id, true);
   });
   window.addEventListener("popstate", fromHash);
   fromHash();
@@ -449,10 +474,139 @@ function renderRail() {
   box.onclick = (ev) => { const b = ev.target.closest(".rc"); if (b) openDetail(b.dataset.id); };
 }
 
+/* 달력 구독 주소 복사 */
+function initFeed() {
+  $("feedCopy")?.addEventListener("click", async () => {
+    const url = $("feedUrl").textContent.trim();
+    try { await navigator.clipboard.writeText(url); toast("구독 주소를 복사했어요"); }
+    catch (e) { getSelection().selectAllChildren($("feedUrl")); toast("주소를 길게 눌러 복사하세요"); }
+  });
+}
+
+/* ---------------------------------------------------------------- 통합 검색: 종목 · 주관사 · 업종 · 초성(ㅈㅋㅅㅌ) · 화면 바로 가기 */
+const CHO = "ㄱㄲㄴㄷㄸㄹㅁㅂㅃㅅㅆㅇㅈㅉㅊㅋㅌㅍㅎ";
+const choOf = (s) => [...s].map((c) => { const k = c.charCodeAt(0) - 0xac00; return k >= 0 && k < 11172 ? CHO[Math.floor(k / 588)] : c; }).join("");
+const JUMPS = [["schedule", "청약 일정", "cal"], ["calendar", "달력 · 내 달력 앱에 구독", "cal"], ["acct", "계좌 준비 — 미리 만들 증권사", "wallet"],
+  ["plan", "자금 플래너", "calc"], ["calc", "청약 계산기", "calc"], ["market", "시장 온도 · 판정별 성적", "bolt"], ["method", "채점 기준", "info"],
+  ["my", "내 청약 기록", "note"], ["guide", "공모주린이 가이드", "info"]];
+const STAGE_RANK = { sub: 0, fc: 1, pre: 1, wait: 2, listed: 3, past: 4 };
+let RECENT = asArr(store.get("ipo.recent", [])).map(String).slice(0, 8);
+
+function initSearch() {
+  const dlg = document.createElement("dialog");
+  dlg.id = "sDlg";
+  dlg.setAttribute("aria-label", "검색");
+  dlg.innerHTML = `<div class="s-in"><div class="s-bar">${ico("search")}<input id="sQ" type="search" placeholder="종목 · 증권사 · 초성(ㅈㅋㅅㅌ)" autocomplete="off" enterkeyhint="search"
+      role="combobox" aria-expanded="true" aria-controls="sRes" aria-autocomplete="list"><button class="ghost sm" type="button" data-x>닫기</button></div>
+    <div class="s-res" id="sRes" role="listbox" aria-label="검색 결과"></div></div>`;
+  document.body.appendChild(dlg);
+  const inp = dlg.querySelector("#sQ"), res = dlg.querySelector("#sRes");
+  let act = 0;
+  const norm = (x) => String(x || "").replace(/\s+/g, "").toLowerCase();
+  const mark = (name, q) => {
+    if (!q) return esc(name);
+    let i = name.toLowerCase().indexOf(q);
+    if (i < 0 && /^[ㄱ-ㅎ]+$/.test(q)) i = choOf(name).indexOf(q); // 초성은 글자마다 하나라 자리가 같다
+    return i < 0 ? esc(name) : `${esc(name.slice(0, i))}<mark>${esc(name.slice(i, i + q.length))}</mark>${esc(name.slice(i + q.length))}`;
+  };
+  const row = (it, q, why = "") => {
+    const s = stage(it), d = s.key === "wait" || s.key === "listed" || s.key === "past" ? it.list_date : it.sub_start;
+    return `<li role="option" id="so-${esc(it.id)}" data-id="${esc(it.id)}">${miniRing(scoreOf(it))}<span class="s-t"><b>${mark(it.name, q)}</b>
+      <small><span class="stat ${s.key}"><span class="dot"></span>${esc(s.label)}</span>${d ? ` ${mdw(d)}` : ""}${why ? ` · ${why}` : it.uw[0] ? ` · ${esc(it.uw[0])}` : ""}</small></span></li>`;
+  };
+  const jump = ([id, t, ic]) => `<li role="option" id="so-j-${id}" data-jump="${id}"><span class="s-ic">${ico(ic)}</span><span class="s-t"><b>${esc(t)}</b></span>${ico("right", "sm")}</li>`;
+  const sec = (t, xs) => (xs.length ? `<h4>${t}</h4><ul>${xs.join("")}</ul>` : "");
+  function render() {
+    const raw = inp.value.trim(), q = norm(raw);
+    let html;
+    if (!q) {
+      const rec = RECENT.map((id) => BY_ID.get(id)).filter(Boolean).slice(0, 5);
+      const up = ITEMS.filter((it) => !it.spac && it.sub_start && (it.sub_end || it.sub_start) >= TODAY).sort((a, b) => a.sub_start.localeCompare(b.sub_start)).slice(0, 5);
+      html = sec("최근 본 종목", rec.map((it) => row(it, ""))) + sec("다가오는 청약", up.map((it) => row(it, ""))) + sec("바로 가기", JUMPS.map(jump));
+    } else {
+      const cho = /^[ㄱ-ㅎ]+$/.test(q);
+      const hits = [];
+      for (const it of ITEMS) {
+        const n = norm(it.name);
+        let w = -1, why = "";
+        if (n.startsWith(q)) w = 0; else if (n.includes(q)) w = 1;
+        else if (cho && choOf(n).includes(q)) w = choOf(n).startsWith(q) ? 0 : 1;
+        else if (it.code && it.code.includes(q)) w = 1;
+        else { const u = it.uw.find((x) => norm(x).includes(q)); if (u) { w = 2; why = `주관 ${esc(u)}`; } else if (it.sector && norm(it.sector).includes(q)) { w = 3; why = esc(it.sector); } }
+        if (w >= 0) hits.push({ it, w, why, r: STAGE_RANK[stage(it).key] ?? 5 });
+      }
+      hits.sort((a, b) => a.w - b.w || a.r - b.r || (b.it.sub_start || "").localeCompare(a.it.sub_start || ""));
+      const jm = JUMPS.filter(([, t]) => norm(t).includes(q) || (cho && choOf(norm(t)).includes(q)));
+      html = hits.length || jm.length ? sec(`종목 ${hits.length}`, hits.slice(0, 30).map((h) => row(h.it, q, h.why))) + sec("바로 가기", jm.map(jump))
+        : `<p class="empty">'${esc(raw)}'에 맞는 종목이 없어요. 이름 일부나 초성, 증권사 이름으로 찾아 보세요.</p>`;
+    }
+    res.innerHTML = html;
+    act = 0; mark1();
+  }
+  const opts = () => [...res.querySelectorAll("[role=option]")];
+  function mark1() {
+    opts().forEach((o, i) => o.setAttribute("aria-selected", i === act));
+    const o = opts()[act];
+    if (o) { inp.setAttribute("aria-activedescendant", o.id); o.scrollIntoView({ block: "nearest" }); } else inp.removeAttribute("aria-activedescendant");
+  }
+  function choose(o) {
+    if (!o) return;
+    dlg.close();
+    if (o.dataset.id) openDetail(o.dataset.id);
+    else { const id = o.dataset.jump; showScreen.byUser = true; history.pushState(null, "", `#${id}`); showScreen(screenOf(id), id, true); }
+  }
+  inp.addEventListener("input", render);
+  inp.addEventListener("keydown", (e) => {
+    const n = opts().length;
+    if (e.key === "ArrowDown" && n) { e.preventDefault(); act = (act + 1) % n; mark1(); }
+    else if (e.key === "ArrowUp" && n) { e.preventDefault(); act = (act - 1 + n) % n; mark1(); }
+    else if (e.key === "Enter") { e.preventDefault(); choose(opts()[act]); }
+  });
+  res.addEventListener("click", (e) => choose(e.target.closest("[role=option]")));
+  dlg.addEventListener("click", (e) => { if (e.target === dlg || e.target.closest("[data-x]")) dlg.close(); });
+  const open = () => { if (dlg.open) return; inp.value = ""; render(); dlg.showModal(); inp.focus(); };
+  $("searchBtn").addEventListener("click", open);
+  initSearch.open = open;
+  // 상세를 닫을 때 그 종목을 '최근 본 종목'에 넣는다
+  $("dlg").addEventListener("close", () => {
+    const id = openDetail.cur;
+    if (!id) return;
+    RECENT = [id, ...RECENT.filter((x) => x !== id)].slice(0, 8);
+    store.set("ipo.recent", RECENT);
+  });
+}
+
+/* 휴대폰 상세: 옆으로 밀어 요약 · 기업 · 청약 · 상장 탭을 넘긴다 */
+function tabSwipe(dlg) {
+  let x0 = 0, y0 = 0, ok = false;
+  dlg.addEventListener("touchstart", (e) => {
+    const t = e.touches[0];
+    ok = isPhone() && e.touches.length === 1 && !!e.target.closest(".dpane") && !e.target.closest(".tscroll, .chips, .rail, input, select, textarea, .fig, button");
+    x0 = t.clientX; y0 = t.clientY;
+  }, { passive: true });
+  dlg.addEventListener("touchend", (e) => {
+    if (!ok) return;
+    ok = false;
+    const t = e.changedTouches[0], dx = t.clientX - x0, dy = t.clientY - y0;
+    if (Math.abs(dx) < 70 || Math.abs(dx) < Math.abs(dy) * 2) return;
+    const tabs = [...dlg.querySelectorAll(".dtabs [data-tab]")];
+    const i = tabs.findIndex((b) => b.getAttribute("aria-selected") === "true");
+    const n = tabs[i + (dx < 0 ? 1 : -1)];
+    if (!n) return;
+    dlg.dataset.dir = dx < 0 ? "next" : "prev";
+    n.click();
+    try { navigator.vibrate?.(6); } catch (er) { /* 진동 없는 기기 */ }
+  }, { passive: true });
+}
+
 function initKeys() {
+  // 머리 아래 그림자는 내렸을 때만
+  const hdr = $("hdr");
+  const onScroll = () => hdr.classList.toggle("scrolled", window.scrollY > 6);
+  window.addEventListener("scroll", onScroll, { passive: true }); onScroll();
   document.addEventListener("keydown", (e) => {
     if (e.key === "/" && !/INPUT|TEXTAREA|SELECT/.test(document.activeElement.tagName)) {
-      e.preventDefault(); showScreen("schedule", "schedule"); $("q").focus({ preventScroll: true });
+      e.preventDefault(); initSearch.open();
     }
   });
 }
@@ -493,7 +647,7 @@ function initSteppers() {
 
 /* ---------------------------------------------------------------- 시작 */
 document.addEventListener("ipo:ready", () => {
-  if (CUR_SCREEN === "tools") renderPlan(); else showScreen.plan = null;
+  if (shown("plan")) renderPlan(); else showScreen.plan = null;
   renderTray(); renderRail();
   // 첫 로드: 목록·그래프가 그려진 뒤에야 #calendar 같은 섹션 위치가 맞다
   if (!initScreens.done) { initScreens.done = true; if (!location.hash.startsWith("#i=")) initScreens.fromHash?.(); }
@@ -510,4 +664,7 @@ initScreens();
 sheetDrag($("dlg"));
 sheetDrag($("cmpDlg"));
 initSteppers();
+initSearch();
 initKeys();
+initFeed();
+tabSwipe($("dlg"));
