@@ -112,6 +112,9 @@ async function loadCorp() {
       if (it && c && typeof c === "object" && !Array.isArray(c)) it.corp = c;
     }
     CORP_LOADED = true;
+    // 열린 상세의 분석 글도 기업 숫자를 넣어 다시 쓴다
+    const rep = document.getElementById("dRep"), ri = openDetail.cur && BY_ID.get(openDetail.cur);
+    if (rep && ri && self.REPORT) rep.outerHTML = REPORT.reportCard(ri);
     const slot = document.getElementById("dCorp");
     const it = slot && BY_ID.get(slot.dataset.id);
     if (it) {
@@ -1021,7 +1024,7 @@ function lockupSchedule(it) {
 }
 
 let CORP_LOADED = false;
-const PANES = [["sum", "요약"], ["corp", "기업"], ["sub", "청약"], ["list", "상장"]];
+const PANES = [["rep", "분석"], ["sum", "요약"], ["corp", "기업"], ["sub", "청약"], ["list", "상장"]];
 function openDetail(id, tab) {
   const it = BY_ID.get(id);
   if (!it) return;
@@ -1044,6 +1047,7 @@ function openDetail(id, tab) {
   const subOn = ["pre", "fc", "sub"].includes(s.key);
   const listOn = s.key === "wait" || s.key === "listed" || (s.key === "past" && it.list_date);
   const html = {
+    rep: self.REPORT ? REPORT.reportCard(it) : "",
     sum: `<div class="card pad" id="dScore">${scorecard(it)}</div>
       ${whatIf(it)}
       ${similar(it)}
@@ -1080,8 +1084,8 @@ function openDetail(id, tab) {
       <div class="btnrow"><button class="ghost sm" type="button" data-act="applied">${ico("check", "sm")}${self.JOURNEY ? JOURNEY.applyLabel(it) : "내 청약에 기록"}</button></div>` : "",
   };
   const panes = PANES.filter(([k]) => html[k] && html[k].trim());
-  let cur = tab || (sameItem && openDetail.tab) || "sum";
-  if (!panes.some(([k]) => k === cur)) cur = "sum";
+  let cur = tab || (sameItem && openDetail.tab) || "rep";
+  if (!panes.some(([k]) => k === cur)) cur = panes[0][0];
   openDetail.tab = cur;
   $("dBody").innerHTML = `
     <div class="grab" aria-hidden="true"></div>
