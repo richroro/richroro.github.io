@@ -471,8 +471,25 @@ def _num(x, nd=None):
     return int(x) if float(x).is_integer() else x
 
 
-def region_catalog(packed):
-    """지역 파일 하나 → 단지·면적 묶음 목록과 층 보정 저가 거래 목록."""
+def _idx_lookup(sm):
+    """요약의 월별 지수 → (그 달 지수 찾기 함수, 지금 지수). 빈 달은 가까운 달로 메운다."""
+    if not sm:
+        return None, None
+    m = {ym: v for ym, v in zip(sm["months"], sm["idx"]) if v is not None}
+    def at(ym):
+        for k in range(0, 7):
+            for cand in (_ym_shift(ym, k), _ym_shift(ym, -k)):
+                if cand in m:
+                    return m[cand]
+        return None
+    return at, sm["cur"]["v"]
+
+
+def region_catalog(packed, sm=None):
+    """지역 파일 하나 → 단지·면적 묶음 목록과 층 보정 저가 거래 목록.
+    sm(그 지역 요약)이 있으면 '지금 기준 가격'(pa)도 낸다: 최근 12개월 중개거래 값을 지역 지수로
+    지금 수준에 맞춘 뒤의 중위값. 직거래(가족 간 거래가 많다)는 뺀다. 가성비 비교에 쓴다."""
+    idx_at, idx_cur = _idx_lookup(sm)
     deals, rent = unpack(packed, full=True)
     deals = [d for d in deals if not d["cancel"]]
     if not deals:
@@ -507,7 +524,18 @@ def region_catalog(packed):
         p6 = statistics.median(in6) if in6 else None
         p6p = statistics.median(in6p) if in6p else None
         rt = rent.get(key) or {}
-        g = {"key": key, "sgg": ds[0]["sgg"], "dong": ds[0]["dong"], "apt": ds[0]["apt"],
+        pa, pan = None, 0
+        if idx_at:
+            adj = []
+            for d in ds:
+                if d["date"] < from12 or (d["type"] and d["type"] != "중개거래"):
+                    continue
+                v = idx_at(d["date"][:7])
+                if v:
+                    adj.append(d["price"] * idx_cur / v)
+            if adj:
+                pa, pan = statistics.median(adj), len(adj)
+        g = {"key": key, "sgg": ds[0]["sgg"], "dong": ds[0]["dong"], "apt": ds[0]["apt"], "pa": pa, "pan": pan,
              "ak": _js_round(ds[0]["area"]), "area": area,
              "built": next((d["built"] for d in ds if d["built"]), None),
              "price": price, "pn": len(recent), "last": last, "max": mx, "prev": prev,
@@ -543,12 +571,14 @@ def region_catalog(packed):
 
 
 CAT_COLS = ["r", "s", "dong", "apt", "ak", "area", "built", "price", "pn", "lp", "ld", "lf",
-            "mp", "md", "mf", "prev", "n", "n12", "j", "jn", "mom", "vg"]
+            "mp", "md", "mf", "prev", "n", "n12", "j", "jn", "mom", "vg", "pa", "pan"]
 CHEAP_COLS = ["r", "s", "dong", "apt", "ak", "date", "price", "floor", "exp", "band"]
 
 
-def write_catalog(out_dir, entries):
-    """index.json 에 적힌 지역 파일들로 catalog.json 을 만든다 (열 단위로 담아 gzip 이 잘 먹게)."""
+def write_catalog(out_dir, entries, summary=None):
+    """index.json 에 적힌 지역 파일들로 catalog.json 을 만든다 (열 단위로 담아 gzip 이 잘 먹게).
+    summary(write_summary 의 결과)를 주면 지역 지수로 '지금 기준 가격'(pa)도 계산한다."""
+    sm_by = {r["code"]: r for r in (summary or {}).get("regions", [])}
     dicts = {"sgg": {}, "dong": {}, "apt": {}}
     ix = lambda k, v: dicts[k].setdefault(v, len(dicts[k]))
     ymd = lambda s: int(s.replace("-", ""))
@@ -559,7 +589,7 @@ def write_catalog(out_dir, entries):
                 packed = json.load(f)
         except (OSError, ValueError):
             continue
-        cat = region_catalog(packed)
+        cat = region_catalog(packed, sm_by.get(e["code"]))
         if not cat:
             continue
         r = len(regions)
@@ -570,7 +600,8 @@ def write_catalog(out_dir, entries):
                     "pn": g["pn"], "lp": _num(g["last"]["price"]), "ld": ymd(g["last"]["date"]),
                     "lf": g["last"]["floor"], "mp": _num(g["max"]["price"]), "md": ymd(g["max"]["date"]),
                     "mf": g["max"]["floor"], "prev": _num(g["prev"]) or 0, "n": g["n"], "n12": g["n12"],
-                    "j": _num(g["j"]) or 0, "jn": g["jn"], "mom": _num(g["mom"], 3), "vg": _num(g["vg"], 3)}
+                    "j": _num(g["j"]) or 0, "jn": g["jn"], "mom": _num(g["mom"], 3), "vg": _num(g["vg"], 3),
+                    "pa": _num(round(g["pa"])) if g["pa"] else 0, "pan": g["pan"]}
             for c in CAT_COLS:
                 cols[c].append(vals[c])
         for x in sorted(cat["cheap"], key=lambda x: (x["d"]["date"], x["g"]["key"], x["d"]["price"])):
@@ -582,6 +613,7 @@ def write_catalog(out_dir, entries):
                 ccols[c].append(vals[c])
     out = {"v": 1, "kind": "singoga-catalog",
            "note": "단지·면적별 지표. 시세=최근 3개월 중위(없으면 마지막 거래가), 해제 거래 제외. "
+                   "pa=최근 12개월 중개거래를 지역 지수로 지금 수준에 맞춘 중위값(pan=그 건수). "
                    "cheap=최근 12개월 중개거래 중 같은 단지·같은 층대 기대가보다 5% 이상 싼 거래.",
            "regions": regions,
            "dict": {k: [s for s, _ in sorted(v.items(), key=lambda kv: kv[1])] for k, v in dicts.items()},
@@ -642,8 +674,8 @@ def split_write(out_dir, by_region, rents, meta_common, rent_months):
         write_json(os.path.join(out_dir, "index.json"), index)
     total = sum(e["deals"] for e in entries)
     log(f"{out_dir}/: {len(entries)}개 지역 · {total:,}건 · 새로 쓴 파일 {written}개, 그대로 둔 파일 {kept}개")
-    write_summary(out_dir, entries)
-    write_catalog(out_dir, entries)
+    sm = write_summary(out_dir, entries)
+    write_catalog(out_dir, entries, sm)
     return 0
 
 
@@ -702,8 +734,8 @@ def main():
     if a.rebuild_summary:
         with open(os.path.join(a.rebuild_summary, "index.json"), encoding="utf-8") as f:
             entries = json.load(f)["regions"]
-        write_summary(a.rebuild_summary, entries)
-        write_catalog(a.rebuild_summary, entries)
+        sm = write_summary(a.rebuild_summary, entries)
+        write_catalog(a.rebuild_summary, entries, sm)
         return 0
     if not a.key:
         log("인증키가 없습니다. --key 또는 환경변수 DATA_GO_KR_KEY 를 주세요.")
