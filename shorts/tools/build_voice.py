@@ -90,7 +90,8 @@ for L in S["lines"]:
     t += L.get("gap", 0.2)
     path = f"{out}/voice/{L['id']}.wav"; write_wav(path, x, sr)
     timeline["lines"].append({"id": L["id"], "voice": L["voice"], "start": round(t, 3), "dur": round(dur, 3), "wav": f"voice/{L['id']}.wav", "chunks": chunks,
-                               "asr": text, "match": round(ratio, 3), "seed": seed})
+                               "asr": text, "match": round(ratio, 3), "seed": seed,
+                               "chars": "".join(chars(spoken.replace("<sigh>", ""))), "ct": [round(x, 3) for x in times]})
     print(f"{L['id']:10s} start={t:6.2f} dur={dur:4.2f} match={ratio:.2f} seed={seed} | {text}")
     t += dur
 timeline["end"] = round(t + S.get("tail", 1.5), 3)
