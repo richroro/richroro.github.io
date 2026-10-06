@@ -5,10 +5,13 @@ import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { MeshoptDecoder } from 'three/addons/libs/meshopt_decoder.module.js';
 import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
 import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
+import { N8AOPass } from 'n8ao'; // github.com/N8python/n8ao — 화면 공간 앰비언트 오클루전
 import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
+import { SMAAPass } from 'three/addons/postprocessing/SMAAPass.js';
 import { ShaderPass } from 'three/addons/postprocessing/ShaderPass.js';
 import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
 import { ShaderChunk } from 'three';
+import { buildStrands, HAIR_STRANDS } from './hair.js';
 
 const $ = s => document.querySelector(s);
 const clamp = (x, a, b) => Math.min(b, Math.max(a, x));
@@ -78,8 +81,8 @@ key.target.position.copy(LOOK).add(new THREE.Vector3(0, 6, 0));
 key.castShadow = true;
 key.shadow.mapSize.set(2048, 2048);
 Object.assign(key.shadow.camera, { left: -45, right: 45, top: 45, bottom: -45, near: 50, far: 450 });
-key.shadow.bias = -0.0004;
-key.shadow.normalBias = 0.25;
+key.shadow.bias = -0.0008;
+key.shadow.normalBias = 0.45;
 key.shadow.radius = 7;
 key.shadow.blurSamples = 16;
 scene.add(key, key.target);
@@ -103,8 +106,21 @@ scene.add(new THREE.HemisphereLight(0xfff4ea, 0x2a2420, 0.25));
 // ───────────────────────── 후처리 ─────────────────────────
 const rt = new THREE.WebGLRenderTarget(4, 4, { type: THREE.HalfFloatType, samples: 4 });
 const composer = new EffectComposer(renderer, rt);
-composer.addPass(new RenderPass(scene, camera));
+// 휴대폰은 깊이 정밀도·MSAA 깊이 처리 차이로 오클루전이 삼각형 얼룩으로 깨질 수 있어 일반 렌더(+MSAA)만 쓴다
+const MOBILE = matchMedia('(pointer: coarse)').matches;
+const plainPass = new RenderPass(scene, camera);
+composer.addPass(plainPass);
+// 앰비언트 오클루전: 눈가·콧구멍·입꼬리·머리카락 밑·목처럼 빛이 덜 드는 곳의 접촉 그림자.
+// 이게 없으면 얼굴이 '조명 받은 마네킹'처럼 떠 보인다. 장면을 직접 그리며 깊이를 같이 남기므로 잘라낸 머리카락도 정확하다.
+const ao = new N8AOPass(scene, camera, 4, 4);
+Object.assign(ao.configuration, { aoRadius: 5, distanceFalloff: 1.2, intensity: 2.2, aoSamples: 16, denoiseSamples: 8, denoiseRadius: 10, gammaCorrection: false, screenSpaceRadius: false, halfRes: false });
+composer.addPass(ao); // 오클루전 경로는 MSAA 없이 그리고, 가장자리는 아래 SMAA 가 맡는다
 composer.addPass(new OutputPass());
+const smaa = new SMAAPass();
+composer.addPass(smaa);
+let useAO = !MOBILE && !new URLSearchParams(location.search).has('noao');
+function applyAO() { ao.enabled = useAO; plainPass.enabled = !useAO; smaa.enabled = useAO; }
+applyAO();
 const film = new ShaderPass({
   uniforms: {
     tDiffuse: { value: null }, time: { value: 0 }, res: { value: new THREE.Vector2(1, 1) },
@@ -135,14 +151,93 @@ const SSS_TO = `{
     wrapNL *= mix( vec3( 1.0 ), vec3( 1.0, 0.86, 0.80 ), smoothstep( 0.6, 0.0, nlRaw ) );
     reflectedLight.directDiffuse += wrapNL * directLight.color * BRDF_Lambert( material.diffuseContribution ) * ( 1.0 - F );
   }`;
-function skinify(mat, wrap) {
+// 피부 모공: 작은 패임을 흩뿌린 높이맵을 노멀로 바꿔 타일로 깐다. 반사광이 매끈한 플라스틱처럼 번지지 않고 잘게 부서진다.
+function poreTexture(size = 256) {
+  const h = new Float32Array(size * size);
+  let seed = 7;
+  const rnd = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
+  for (let k = 0; k < 900; k++) { // 모공
+    const cx = rnd() * size, cy = rnd() * size, r = 0.8 + rnd() * 1.6, d = 0.6 + rnd() * 0.6;
+    for (let y = -4; y <= 4; y++) for (let x = -4; x <= 4; x++) {
+      const px = (Math.floor(cx) + x + size) % size, py = (Math.floor(cy) + y + size) % size;
+      const dd = ((px - cx + size * 1.5) % size - size / 2) ** 2 + ((py - cy + size * 1.5) % size - size / 2) ** 2;
+      h[py * size + px] -= d * Math.exp(-dd / (r * r));
+    }
+  }
+  for (let i = 0; i < h.length; i++) h[i] += (rnd() - 0.5) * 0.35; // 잔결
+  const data = new Uint8Array(size * size * 4);
+  for (let y = 0; y < size; y++) for (let x = 0; x < size; x++) {
+    const H = (xx, yy) => h[((yy + size) % size) * size + ((xx + size) % size)];
+    const dx = (H(x + 1, y) - H(x - 1, y)) * 0.5, dy = (H(x, y + 1) - H(x, y - 1)) * 0.5;
+    const l = Math.hypot(dx, dy, 1), i = 4 * (y * size + x);
+    data[i] = (-dx / l * 0.5 + 0.5) * 255; data[i + 1] = (-dy / l * 0.5 + 0.5) * 255; data[i + 2] = (1 / l * 0.5 + 0.5) * 255; data[i + 3] = 255;
+  }
+  const t = new THREE.DataTexture(data, size, size);
+  t.wrapS = t.wrapT = THREE.RepeatWrapping; t.magFilter = THREE.LinearFilter; t.minFilter = THREE.LinearMipmapLinearFilter;
+  t.generateMipmaps = true; t.needsUpdate = true;
+  return t;
+}
+const PORES = { value: poreTexture() };
+function skinify(mat, wrap, pores = 0) {
   mat.onBeforeCompile = sh => {
     const chunk = ShaderChunk.lights_physical_pars_fragment;
     if (!chunk.includes(SSS_FROM)) return; // three 버전이 바뀌면 그냥 기본 셰이딩
     sh.fragmentShader = sh.fragmentShader.replace('#include <lights_physical_pars_fragment>',
       `#define SKIN_WRAP vec3(${wrap.join(',')})\n` + chunk.replace(SSS_FROM, SSS_TO));
+    if (pores && ShaderChunk.normal_fragment_maps.includes('mapN.xy *= normalScale;')) {
+      sh.uniforms.uPores = PORES;
+      sh.fragmentShader = 'uniform sampler2D uPores;\n' + sh.fragmentShader.replace('#include <normal_fragment_maps>',
+        ShaderChunk.normal_fragment_maps.replace('mapN.xy *= normalScale;',
+          `mapN.xy *= normalScale; mapN.xy += ( texture2D( uPores, vNormalMapUv * 34.0 ).xy * 2.0 - 1.0 ) * ${pores.toFixed(3)};`));
+    }
   };
-  mat.customProgramCacheKey = () => 'skin' + wrap.join();
+  mat.customProgramCacheKey = () => 'skin' + wrap.join() + pores;
+}
+
+// ───────────────────────── 머리카락 셰이더 ─────────────────────────
+// 머리카락은 결을 따라 띠 모양으로 빛난다(Kajiya-Kay). 결 방향은 정수리에서 표면을 따라 흘러내리는 방향으로 근사한다.
+// 하이라이트를 두 겹(희고 날카로운 1차, 머리색이 섞인 넓은 2차) 두고, 가닥마다 위치를 조금씩 흩뜨린다.
+const HAIR = { crown: { value: new THREE.Vector3() }, off: { value: new THREE.Vector3() }, time: { value: 0 }, cm: { value: 1 } };
+const KK = `
+  #if NUM_DIR_LIGHTS > 0
+  {
+    vec3 hV = normalize( vViewPosition );
+    vec3 hd = -vViewPosition - uCrown;
+    vec3 hT = normalize( hd - normal * dot( hd, normal ) + 1e-4 );
+    float hLum = dot( diffuseColor.rgb, vec3( 0.2126, 0.7152, 0.0722 ) );
+    float hMask = HAIR_MASK;
+    float hN = fract( sin( dot( floor( vMapUv * vec2( 900.0, 60.0 ) ), vec2( 12.9898, 78.233 ) ) ) * 43758.5453 ) - 0.5;
+    vec3 hT1 = normalize( hT + normal * ( -0.05 + hN * 0.16 ) );
+    vec3 hT2 = normalize( hT + normal * ( 0.16 + hN * 0.16 ) );
+    for ( int i = 0; i < NUM_DIR_LIGHTS; i ++ ) {
+      vec3 hL = directionalLights[ i ].direction;
+      vec3 hH = normalize( hL + hV );
+      float d1 = dot( hT1, hH ), d2 = dot( hT2, hH );
+      float s1 = pow( sqrt( max( 0.0, 1.0 - d1 * d1 ) ), 320.0 );
+      float s2 = pow( sqrt( max( 0.0, 1.0 - d2 * d2 ) ), 70.0 );
+      float hNL = clamp( dot( normal, hL ), 0.0, 1.0 );
+      reflectedLight.directSpecular += directionalLights[ i ].color * hNL * hMask * ( s1 * HAIR_S1 + s2 * HAIR_S2 * vec3( 0.8, 0.58, 0.42 ) );
+    }
+  }
+  #endif
+`;
+// 머리 움직임에 늦게 따라오는 흔들림 + 아주 약한 바람. hairW 는 정수리에서 멀수록 커진다.
+const SWAY = `
+  transformed += uHairOff * hairW;
+  vec3 hp = position * uCmPerLocal;
+  transformed += vec3( sin( uTime * 1.3 + hp.y * 0.17 + hp.x * 0.05 ), 0.0, sin( uTime * 1.05 + hp.x * 0.21 + hp.y * 0.04 ) ) * ( 0.14 / uCmPerLocal ) * hairW;
+`;
+function hairify(mat, { mask = '1.0', sway = false, s1 = 0.09, s2 = 0.05, key }) {
+  const prev = mat.onBeforeCompile, prevKey = mat.customProgramCacheKey();
+  mat.onBeforeCompile = (sh, r) => {
+    prev.call(mat, sh, r);
+    Object.assign(sh.uniforms, { uCrown: HAIR.crown, uHairOff: HAIR.off, uTime: HAIR.time, uCmPerLocal: HAIR.cm });
+    sh.fragmentShader = 'uniform vec3 uCrown;\n' + sh.fragmentShader.replace('#include <aomap_fragment>',
+      KK.replace('HAIR_MASK', mask).replace('HAIR_S1', s1.toFixed(3)).replace('HAIR_S2', s2.toFixed(3)) + '\n#include <aomap_fragment>');
+    if (sway) sh.vertexShader = 'attribute float hairW;\nuniform vec3 uHairOff;\nuniform float uTime;\nuniform float uCmPerLocal;\n'
+      + sh.vertexShader.replace('#include <skinning_vertex>', '#include <skinning_vertex>' + SWAY);
+  };
+  mat.customProgramCacheKey = () => prevKey + '|hair:' + key;
 }
 
 // ───────────────────────── 인물 불러오기 ─────────────────────────
@@ -182,11 +277,20 @@ M.headskin = M.face.clone();
 M.headskin.sheen = 0.12;
 M.headskin.clearcoat = 0;
 M.headskin.roughness = 1.3;
-M.hair.color.setRGB(1.2, 1.15, 1.1);
-M.lashes = M.hair;
-skinify(M.face, [0.5, 0.24, 0.16]);
-skinify(M.headskin, [0.5, 0.24, 0.16]);
+M.lashes = new THREE.MeshPhysicalMaterial({ map: T.hair, alphaTest: 0.3, alphaToCoverage: true, side: THREE.DoubleSide, roughness: 0.6 });
+// 텍스처의 머리색이 거의 검정(sRGB 19,16,13)이라 그대로면 결이 안 보인다 → 기본색을 조금 올리고 하이라이트로 결을 만든다
+M.hair.color.setRGB(1.0, 0.92, 0.85); // 가닥 아래 바탕층
+M.hair.specularIntensity = 0.12; M.hair.sheen = 0; M.hair.roughness = 0.65; M.hair.alphaTest = 0.45;
+// 가장자리는 두 번째 패스에서 반투명으로 부드럽게(불투명한 속은 첫 패스가 깊이를 쓴다)
+M.hairSoft = M.hair.clone();
+Object.assign(M.hairSoft, { transparent: true, alphaTest: 0.33, alphaToCoverage: false, depthWrite: false });
+skinify(M.face, [0.5, 0.24, 0.16], 0.22);
+skinify(M.headskin, [0.5, 0.24, 0.16], 0.15);
 skinify(M.body, [0.4, 0.2, 0.14]);
+hairify(M.hair, { sway: true, key: 'core' });
+hairify(M.hairSoft, { sway: true, key: 'soft' });
+// 두피에 그려진 머리카락: 텍스처가 어두운 곳만 머리카락으로 취급
+hairify(M.headskin, { mask: '1.0 - smoothstep( 0.03, 0.10, hLum )', s1: 0.07, s2: 0.04, key: 'cap' });
 
 const rig = { ready: false };
 const gltfLoader = new GLTFLoader(manager).setMeshoptDecoder(MeshoptDecoder);
@@ -201,6 +305,29 @@ gltfLoader.load('assets/avatar.glb', gltf => {
   });
   scene.add(root);
   rig.root = root;
+  root.updateMatrixWorld(true);
+  // 머리카락: 흔들림 가중치(정수리에서 4cm 아래부터 끝으로 갈수록 1) + 반투명 가장자리 패스
+  const hairMeshes = [];
+  root.traverse(o => { if (o.isMesh && o.material === M.hair) hairMeshes.push(o); });
+  for (const m of hairMeshes) {
+    const P = m.geometry.attributes.position, v = new THREE.Vector3();
+    let top = -Infinity;
+    const ys = new Float32Array(P.count);
+    for (let i = 0; i < P.count; i++) { ys[i] = v.fromBufferAttribute(P, i).applyMatrix4(m.matrixWorld).y; top = Math.max(top, ys[i]); }
+    const w = new Float32Array(P.count);
+    for (let i = 0; i < P.count; i++) w[i] = clamp01((top - 4 - ys[i]) / 26) ** 1.4;
+    m.geometry.setAttribute('hairW', new THREE.BufferAttribute(w, 1));
+    const soft = new THREE.SkinnedMesh(m.geometry, M.hairSoft);
+    soft.position.copy(m.position); soft.quaternion.copy(m.quaternion); soft.scale.copy(m.scale);
+    soft.frustumCulled = false; soft.receiveShadow = true; soft.renderOrder = 2;
+    m.parent.add(soft);
+    soft.bind(m.skeleton, m.bindMatrix);
+    rig.hairMesh = m;
+  }
+  if (rig.hairMesh) {
+    HAIR.cm.value = rig.hairMesh.matrixWorld.getMaxScaleOnAxis();
+    rig.hairToLocal = new THREE.Matrix3().setFromMatrix4(rig.hairMesh.matrixWorld.clone().invert());
+  }
   const bone = n => root.getObjectByName('Bip01_' + n);
   Object.assign(rig, {
     spine1: bone('Spine1'), spine2: bone('Spine2'), neck: bone('Neck'), head: bone('Head'),
@@ -231,7 +358,42 @@ gltfLoader.load('assets/avatar.glb', gltf => {
   rig.headRest = rig.headPos.clone();
   rig.headSmooth = rig.headPos.clone();
   rig.headFix = rig.head.getWorldQuaternion(new THREE.Quaternion()).invert();
+  // 머리카락 기준점(머리 뼈 공간): 정수리, 그리고 흔들림 스프링이 매달릴 점
+  rig.crownLocal = rig.head.worldToLocal(rig.headPos.clone().add(new THREE.Vector3(0, 16, -4)));
+  rig.hairAnchorLocal = rig.head.worldToLocal(rig.headPos.clone().add(new THREE.Vector3(0, -12, -4)));
+  rig.hairQ = rig.headPos.clone().add(new THREE.Vector3(0, -12, -4));
+  rig.hairV = new THREE.Vector3();
   rig.ready = true;
+  // 가닥 머리카락: 쉬는 자세 기준으로 심어야 하므로 지금의 머리 뼈 행렬을 기억해 두고, 텍스처가 오면 만든다
+  rig.headBind = rig.head.matrixWorld.clone();
+  const crownW = rig.headPos.clone().add(new THREE.Vector3(0, 16, -4));
+  let scalp = null; root.traverse(o => { if (o.isMesh && o.material === M.headskin) scalp = o; });
+  // 얼굴 메시의 반투명 프리미티브에는 속눈썹과 함께, 턱 모프로 같이 움직이는 옆머리 판도 섞여 있다.
+  // 눈에서 4cm 안쪽(속눈썹)만 남기고, 나머지 판은 가닥을 심는 가이드로 넘긴다.
+  const lashMesh = faces.find(f => f.material === M.lashes);
+  const eyeW = [rig.lEye, rig.rEye].map(e => e.getWorldPosition(new THREE.Vector3()));
+  const nearEye = tri => eyeW.some(e => tri.a.distanceTo(e) < 4 || tri.b.distanceTo(e) < 4 || tri.c.distanceTo(e) < 4);
+  if (lashMesh) {
+    const g = lashMesh.geometry, I = g.index, P = g.attributes.position, v = new THREE.Vector3(), keep = [];
+    const wp = i => v.fromBufferAttribute(P, i).applyMatrix4(lashMesh.matrixWorld).clone();
+    for (let t = 0; t < I.count; t += 3) {
+      const tri = { a: wp(I.getX(t)), b: wp(I.getX(t + 1)), c: wp(I.getX(t + 2)) };
+      if (nearEye(tri)) keep.push(I.getX(t), I.getX(t + 1), I.getX(t + 2));
+    }
+    rig.lashFull = I; rig.lashKeep = new THREE.BufferAttribute(new Uint32Array(keep), 1);
+  }
+  const waitImg = () => {
+    if (!(T.hair.image && T.hair.image.width && T.headColor.image && T.headColor.image.width)) return requestAnimationFrame(waitImg);
+    const coarse = matchMedia('(pointer: coarse)').matches;
+    const info = buildStrands({ cards: [{ mesh: rig.hairMesh }, ...(lashMesh ? [{ mesh: lashMesh, filter: t => !nearEye(t) }] : [])], scalp, hairImg: T.hair.image, scalpImg: T.headColor.image, head: rig.head, headBind: rig.headBind, crown: crownW, count: coarse ? 32000 : 75000 });
+    rig.strands = info.mesh;
+    // 가닥이 생기면 원래 카드는 화면에서 숨기고(검은 판 무늬가 비친다) 이마에 지는 그림자만 남긴다
+    Object.assign(M.hair, { colorWrite: false, depthWrite: false });
+    M.hairSoft.visible = false;
+    if (lashMesh) lashMesh.geometry.setIndex(rig.lashKeep);
+    console.info('머리카락 가닥', info);
+  };
+  if (rig.hairMesh && scalp) waitImg();
   // 몸동작(모션캡처)은 얼굴이 뜬 다음에 이어서 받는다
   new GLTFLoader().setMeshoptDecoder(MeshoptDecoder).load('assets/anims.glb', a => setupBody(a.animations), undefined, e => console.warn('모션을 불러오지 못했습니다', e));
   $('#loading').classList.add('done');
@@ -658,6 +820,8 @@ function animate(now, dt) {
   }
   const mouthQuiet = S.speech ? 0.35 : 1;
   for (const k in S.base) add(k, S.base[k] * (k.startsWith('mouth') ? mouthQuiet : 1));
+  // 세분화로 입술 경계가 살짝 오므라들어 앞니가 비치므로, 말하지 않을 땐 입술을 다물어 둔다
+  add('mouthClose', 0.22 * (1 - S.talkEnv) * (S.mood === 'happy' || S.mood === 'surprise' ? 0.3 : 1));
   // 질문 끝: 눈썹이 올라간다
   add('browInnerUp', S.qEnv * 0.3); add('browOuterUpLeft', S.qEnv * 0.22); add('browOuterUpRight', S.qEnv * 0.22);
   // 눈꺼풀: 편하게 살짝 내려온 기본값 + 시선을 따라간다
@@ -711,7 +875,40 @@ function animate(now, dt) {
   S.w.eyeBlinkLeft = clamp01(blinkL + sq * 0.15);
   S.w.eyeBlinkRight = clamp01(blinkR + sq * 0.15);
   const idx = rig.morphIndex;
+  updateHair(now, dt);
   for (const f of rig.faces) { const inf = f.morphTargetInfluences; for (const k of rig.morphNames) inf[idx[k]] = S.debugW ? (S.debugW[k] || 0) : S.w[k]; }
+}
+
+// 머리카락 흔들림: 머리 아래 한 점을 스프링(약간 덜 감쇠된)으로 늦게 따라가게 하고, 그 지연을 머리카락 끝에 준다
+const _ha = new THREE.Vector3(), _hacc = new THREE.Vector3(), _hm = new THREE.Matrix3(), _hinv = new THREE.Matrix4(), _zero = new THREE.Vector3();
+const LIGHTS = [key, fill, rim, rim2];
+HAIR_STRANDS.ambient.value.setRGB(0.32, 0.29, 0.27);
+function updateHair(now, dt) {
+  HAIR.time.value = now;
+  camera.updateMatrixWorld();
+  HAIR.crown.value.copy(rig.crownLocal).applyMatrix4(rig.head.matrixWorld).applyMatrix4(camera.matrixWorldInverse);
+  if (!rig.hairToLocal) return;
+  const A = _ha.copy(rig.hairAnchorLocal).applyMatrix4(rig.head.matrixWorld);
+  const n = 3, h = Math.min(dt, 0.05) / n;
+  for (let i = 0; i < n; i++) {
+    _hacc.subVectors(A, rig.hairQ).multiplyScalar(70).addScaledVector(rig.hairV, -7.5);
+    rig.hairV.addScaledVector(_hacc, h);
+    rig.hairQ.addScaledVector(rig.hairV, h);
+  }
+  const off = HAIR.off.value.subVectors(rig.hairQ, A).multiplyScalar(1.15);
+  if (off.length() > 3.5) off.setLength(3.5);
+  if (rig.strands) {
+    // 가닥은 머리 뼈에 붙어 있으므로 흔들림을 머리 뼈 공간으로
+    _hm.setFromMatrix4(_hinv.copy(rig.head.matrixWorld).invert());
+    HAIR_STRANDS.off.value.copy(off).applyMatrix3(_hm);
+    HAIR_STRANDS.time.value = now;
+    LIGHTS.forEach((l, i) => {
+      const tgt = l.target ? l.target.position : _zero;
+      HAIR_STRANDS.lightDir.value[i].subVectors(l.position, tgt).normalize().transformDirection(camera.matrixWorldInverse);
+      HAIR_STRANDS.lightCol.value[i].copy(l.color).multiplyScalar(l.intensity);
+    });
+  }
+  off.applyMatrix3(rig.hairToLocal);
 }
 
 // 핸드헬드 카메라: 아주 작은 흔들림과 숨쉬는 듯한 줌
@@ -778,6 +975,8 @@ function setQuality(q, auto) {
   key.shadow.mapSize.set(q === 'high' ? 2048 : 1024, q === 'high' ? 2048 : 1024);
   if (key.shadow.map) { key.shadow.map.dispose(); key.shadow.map = null; }
   rt.samples = q === 'high' ? 4 : 0;
+  useAO = q === 'high' && !MOBILE;
+  applyAO();
   resize();
   $('#q').textContent = q === 'high' ? '화질: 높음' : '화질: 가볍게';
   if (auto) toast('기기 성능에 맞춰 가벼운 화질로 바꿨어요.');
@@ -868,4 +1067,4 @@ $('#hide').onclick = () => document.body.classList.toggle('clean');
 addEventListener('keydown', e => { if (e.key === 'h' && e.target === document.body) document.body.classList.toggle('clean'); });
 
 // 테스트용 훅
-window.__human = { S, rig, say, MOODS, setQuality, camera, CAM_BASE, LOOK, body, setGaze };
+window.__human = { S, rig, say, MOODS, setQuality, camera, CAM_BASE, LOOK, body, setGaze, HAIR, HAIR_STRANDS };
