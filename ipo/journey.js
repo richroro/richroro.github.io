@@ -115,6 +115,7 @@
   function setSell(rec, price) {
     rec.sell = price; delete rec.hold;
     const { pnl } = recPnl(rec);
+    if (pnl > 0) emit("ipo:celebrate", pnl);
     commit(pnl == null ? "매도가를 기록했어요" : `실현 손익 ${pnl >= 0 ? "+" : "−"}${won(Math.abs(pnl))}원`);
   }
   function commit(msg) {
