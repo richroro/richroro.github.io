@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>아파트 실거래 · 신고가 장부</title>
+<title>가성비 아파트 · 신고가 장부</title>
 <meta name="description" content="안양시와 서울 주요 구 아파트 실거래가 6년치를 단지·전용면적별로 정리합니다. '강남 30평대 20억 이하'처럼 한국어로 물어보면 바로 찾아 답하고, 매일 아침 시장 브리핑을 씁니다. 국토교통부 실거래가 API 로 매일 자동 갱신.">
 <meta property="og:type" content="website">
 <meta property="og:title" content="아파트 실거래 · 신고가 장부">
@@ -280,59 +280,166 @@ table.ledger{width:100%;border-collapse:collapse;font-size:13px}
 .rs-h{display:flex;flex-wrap:wrap;align-items:center;gap:8px 14px;margin-top:34px;padding-top:22px;border-top:1px solid var(--line)}
 .rs-h .region-pick{font-size:14px;padding:7px 12px;max-width:none}
 
-/* 물어보기 · 브리핑 */
-:root{--ai-1:#2a78d6;--ai-2:#6f55e8;--ai-3:#e34948;--s3:#1baf7a;--s4:#eda100;--ai-grid:rgba(27,26,23,.05);
-  --ai-glow1:rgba(42,120,214,.15);--ai-glow2:rgba(227,73,72,.10);--ai-glow3:rgba(111,85,232,.11)}
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--ai-1:#3987e5;--ai-2:#9085e9;--ai-3:#e66767;--s3:#199e70;--s4:#c98500;--ai-grid:rgba(255,255,255,.04);
-  --ai-glow1:rgba(57,135,229,.22);--ai-glow2:rgba(230,103,103,.13);--ai-glow3:rgba(144,133,233,.15)}}
-:root[data-theme="dark"]{--ai-1:#3987e5;--ai-2:#9085e9;--ai-3:#e66767;--s3:#199e70;--s4:#c98500;--ai-grid:rgba(255,255,255,.04);
-  --ai-glow1:rgba(57,135,229,.22);--ai-glow2:rgba(230,103,103,.13);--ai-glow3:rgba(144,133,233,.15)}
-.ai{margin-top:22px;position:relative;isolation:isolate;border:1px solid var(--line);border-radius:18px;overflow:hidden;box-shadow:var(--shadow);
-  background:radial-gradient(70% 90% at 0% 0%,var(--ai-glow1),transparent 70%),radial-gradient(60% 80% at 100% 0%,var(--ai-glow2),transparent 70%),radial-gradient(50% 70% at 60% 115%,var(--ai-glow3),transparent 70%),var(--surface)}
-.ai::before{content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;background-image:linear-gradient(var(--ai-grid) 1px,transparent 1px),linear-gradient(90deg,var(--ai-grid) 1px,transparent 1px);background-size:26px 26px;
-  -webkit-mask-image:radial-gradient(90% 80% at 30% 10%,#000 20%,transparent 75%);mask-image:radial-gradient(90% 80% at 30% 10%,#000 20%,transparent 75%)}
-.ai-in{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(0,1fr);gap:22px 30px;padding:clamp(18px,3.2vw,30px)}
-@media (max-width:920px){.ai-in{grid-template-columns:minmax(0,1fr)}}
-.ai-main{min-width:0}
-.ai,.ans,.dread,.brief{word-break:keep-all;overflow-wrap:anywhere}
-.ai-eyebrow{display:inline-flex;align-items:center;gap:8px;font-size:12px;font-weight:600;color:var(--ink-2);background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:4px 12px 4px 9px}
-.live{display:inline-block;width:7px;height:7px;border-radius:50%;background:#1baf7a;animation:aiPulse 2.2s ease-out infinite}
-@keyframes aiPulse{0%{box-shadow:0 0 0 0 rgba(27,175,122,.55)}70%{box-shadow:0 0 0 7px rgba(27,175,122,0)}100%{box-shadow:0 0 0 0 rgba(27,175,122,0)}}
-.ai-title{margin:14px 0 6px;font-size:clamp(25px,3.8vw,36px);font-weight:700;letter-spacing:-.035em;line-height:1.18}
-.ai-title .grad{background:linear-gradient(95deg,var(--ai-1),var(--ai-2) 55%,var(--ai-3));-webkit-background-clip:text;background-clip:text;color:transparent}
-.ai-sub{margin:0 0 18px;color:var(--ink-2);font-size:14px;line-height:1.65;max-width:54ch}
-@property --ang{syntax:'<angle>';inherits:false;initial-value:0deg}
-.ai-ring{border-radius:16px;padding:1.5px;background:conic-gradient(from var(--ang),var(--ai-1),var(--ai-2),var(--ai-3),var(--ai-1));animation:aiSpin 7s linear infinite;box-shadow:0 12px 30px -20px var(--ai-2)}
-@keyframes aiSpin{to{--ang:360deg}}
-.ai-ring:focus-within{box-shadow:0 0 0 4px var(--accent-wash),0 14px 34px -16px var(--ai-2)}
-.ai-box{display:flex;align-items:center;gap:10px;background:var(--surface);border-radius:14.5px;padding:6px 6px 6px 15px;min-height:58px}
-.ai-box .ai-spark{flex:none;color:var(--ai-2);width:20px;height:20px}
-.ai-box input{flex:1;min-width:0;border:0;background:transparent;font-size:16.5px;outline:none;padding:9px 0;color:var(--ink)}
-.ai-box input::placeholder{color:var(--ink-3)}
-.ai-go{flex:none;width:46px;height:46px;border-radius:12px;border:0;background:var(--ink);color:var(--paper);display:grid;place-items:center;transition:transform .15s}
-.ai-go:hover{transform:translateY(-1px)} .ai-go:focus-visible{outline:2px solid var(--ai-2);outline-offset:2px}
+/* 가성비 · 물어보기 · 브리핑
+   보기 방향: 장부(원장) — 명조 제목, 종이 바탕, 빨간 여백선과 도장. 그림자는 여러 겹을 옅게, 움직임은 짧고 목적 있게. */
+:root{--s3:#1baf7a;--s4:#eda100;--ai-grid:rgba(27,26,23,.055);--rule:rgba(200,50,47,.16);
+  --ease-out:cubic-bezier(.22,1,.36,1);--ease-spring:cubic-bezier(.34,1.45,.64,1);
+  --sh-1:0 1px 1px rgba(27,26,23,.04),0 2px 4px rgba(27,26,23,.045);
+  --sh-2:0 1px 1px rgba(27,26,23,.03),0 3px 6px rgba(27,26,23,.045),0 10px 22px -8px rgba(27,26,23,.10),0 28px 48px -22px rgba(27,26,23,.18);
+  --sh-3:0 2px 2px rgba(27,26,23,.03),0 6px 12px rgba(27,26,23,.05),0 18px 34px -12px rgba(27,26,23,.15),0 42px 70px -30px rgba(27,26,23,.26)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--s3:#199e70;--s4:#c98500;--ai-grid:rgba(255,255,255,.045);--rule:rgba(230,103,103,.22);
+  --sh-1:0 1px 1px rgba(0,0,0,.35),0 2px 5px rgba(0,0,0,.30);
+  --sh-2:0 0 0 1px rgba(255,255,255,.03),0 2px 4px rgba(0,0,0,.35),0 12px 26px -10px rgba(0,0,0,.55),0 30px 54px -24px rgba(0,0,0,.65);
+  --sh-3:0 0 0 1px rgba(255,255,255,.04),0 4px 8px rgba(0,0,0,.4),0 20px 38px -12px rgba(0,0,0,.6),0 46px 76px -30px rgba(0,0,0,.7)}}
+:root[data-theme="dark"]{--s3:#199e70;--s4:#c98500;--ai-grid:rgba(255,255,255,.045);--rule:rgba(230,103,103,.22);
+  --sh-1:0 1px 1px rgba(0,0,0,.35),0 2px 5px rgba(0,0,0,.30);
+  --sh-2:0 0 0 1px rgba(255,255,255,.03),0 2px 4px rgba(0,0,0,.35),0 12px 26px -10px rgba(0,0,0,.55),0 30px 54px -24px rgba(0,0,0,.65);
+  --sh-3:0 0 0 1px rgba(255,255,255,.04),0 4px 8px rgba(0,0,0,.4),0 20px 38px -12px rgba(0,0,0,.6),0 46px 76px -30px rgba(0,0,0,.7)}
+.vh,.ans,.dread,.brief,.vtop{word-break:keep-all;overflow-wrap:anywhere}
+/* 히어로 */
+.vh{margin-top:22px;position:relative;isolation:isolate;border:1px solid var(--line);border-radius:20px;background:var(--surface);box-shadow:var(--sh-2);overflow:hidden}
+.vh::before{content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;
+  background:linear-gradient(90deg,transparent 22px,var(--rule) 22px,var(--rule) 23px,transparent 23px,transparent 26px,var(--rule) 26px,var(--rule) 27px,transparent 27px),
+    repeating-linear-gradient(180deg,transparent 0,transparent 33px,var(--ai-grid) 33px,var(--ai-grid) 34px);
+  -webkit-mask-image:linear-gradient(180deg,#000 30%,transparent 95%);mask-image:linear-gradient(180deg,#000 30%,transparent 95%)}
+.vh-in{display:grid;grid-template-columns:minmax(0,1.22fr) minmax(0,1fr);grid-template-areas:"head top" "ask top";grid-template-rows:auto 1fr;gap:0 36px;padding:clamp(22px,3.4vw,36px) clamp(16px,3.2vw,34px) clamp(20px,3vw,30px) clamp(38px,5vw,60px)}
+@media (max-width:940px){.vh-in{grid-template-columns:minmax(0,1fr);grid-template-areas:"head" "top" "ask";grid-template-rows:auto;gap:22px}}
+.vh-main{min-width:0} .vh-head{grid-area:head} .vh-ask{grid-area:ask} .vtop{grid-area:top}
+.vh-eyebrow{display:inline-flex;align-items:center;gap:8px;margin:0;font-size:12px;font-weight:600;color:var(--ink-2)}
+.live{display:inline-block;width:7px;height:7px;border-radius:50%;background:#1baf7a;animation:aiPulse 2.6s ease-out infinite}
+@keyframes aiPulse{0%{box-shadow:0 0 0 0 rgba(27,175,122,.5)}70%{box-shadow:0 0 0 7px rgba(27,175,122,0)}100%{box-shadow:0 0 0 0 rgba(27,175,122,0)}}
+.vh-title{margin:14px 0 12px;font-family:"Nanum Myeongjo","IBM Plex Sans KR",serif;font-weight:800;font-size:clamp(31px,5.2vw,52px);line-height:1.13;letter-spacing:-.035em}
+.vh-title .mark{white-space:nowrap;color:var(--up-ink);background:linear-gradient(transparent 64%,var(--up-wash) 64%) no-repeat 0 0/100% 100%;animation:markIn .9s var(--ease-out) .25s both}
+@keyframes markIn{from{background-size:0 100%}}
+.vh-sub{margin:0 0 20px;font-size:15px;line-height:1.72;color:var(--ink-2);max-width:46ch}
+.vf{display:grid;grid-template-columns:repeat(4,minmax(0,1fr)) auto;gap:10px;align-items:end;background:var(--paper);border:1px solid var(--line);border-radius:16px;padding:12px;box-shadow:var(--sh-1)}
+@media (max-width:760px),(min-width:941px) and (max-width:1120px){.vf{grid-template-columns:repeat(2,minmax(0,1fr))}.vf-go{grid-column:1/-1}}
+.vf label{display:flex;flex-direction:column;gap:5px;font-size:11.5px;font-weight:600;color:var(--ink-3);min-width:0}
+.vf .sel{position:relative;display:block}
+.vf .sel::after{content:"";position:absolute;right:13px;top:50%;width:6px;height:6px;border-right:1.6px solid var(--ink-3);border-bottom:1.6px solid var(--ink-3);transform:translateY(-70%) rotate(45deg);pointer-events:none}
+.vf select{appearance:none;-webkit-appearance:none;width:100%;min-height:44px;border:1px solid var(--line);border-radius:10px;background:var(--surface);padding:9px 30px 9px 12px;font-size:14.5px;font-weight:500;color:var(--ink);transition:border-color .15s,box-shadow .15s}
+.vf select:hover{border-color:var(--ink-3)}
+.vf select:focus-visible{outline:none;border-color:var(--ink);box-shadow:0 0 0 3px var(--accent-wash)}
+.vf-tog{grid-column:1/-1;flex-direction:row!important;align-items:center;gap:8px!important;font-size:13px!important;color:var(--ink-2)!important;font-weight:500!important;min-height:28px}
+.vf-tog input{width:17px;height:17px;margin:0;accent-color:var(--ink)}
+.vf-go{min-height:44px;border:0;border-radius:10px;background:var(--ink);color:var(--paper);font-weight:700;font-size:15px;padding:0 22px;box-shadow:var(--sh-1);transition:transform .18s var(--ease-out),box-shadow .18s var(--ease-out)}
+.vf-go:hover{transform:translateY(-1px);box-shadow:var(--sh-2)} .vf-go:active{transform:none;box-shadow:var(--sh-1)}
+.vf-go:focus-visible{outline:2px solid var(--ink);outline-offset:3px}
+.ask-lab{margin:20px 2px 8px;font-size:12px;font-weight:600;color:var(--ink-3)}
+@media (max-width:940px){.ask-lab{margin-top:0}}
 .ai-form{position:relative}
-.sug{position:absolute;left:0;right:0;top:calc(100% + 6px);z-index:20;margin:0;padding:4px;list-style:none;background:var(--surface);border:1px solid var(--line);border-radius:12px;box-shadow:var(--shadow)}
+.ai-ring{border-radius:14px}
+.ai-box{display:flex;align-items:center;gap:10px;background:var(--surface);border:1.5px solid var(--line);border-radius:14px;padding:5px 5px 5px 14px;min-height:54px;transition:border-color .15s,box-shadow .15s}
+.ai-box:focus-within{border-color:var(--ink);box-shadow:0 0 0 4px var(--accent-wash)}
+.ai-box .ai-spark{flex:none;color:var(--ink-3);width:18px;height:18px}
+.ai-box input{flex:1;min-width:0;border:0;background:transparent;font-size:16px;outline:none;padding:9px 0;color:var(--ink)}
+.ai-box input::placeholder{color:var(--ink-3)}
+.ai-go{flex:none;width:44px;height:44px;border-radius:10px;border:1px solid var(--line);background:var(--paper);color:var(--ink);display:grid;place-items:center;transition:background .15s,border-color .15s}
+.ai-go:hover{border-color:var(--ink);background:var(--surface-2)} .ai-go:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
+.sug{position:absolute;left:0;right:0;top:calc(100% + 6px);z-index:20;margin:0;padding:4px;list-style:none;background:var(--surface);border:1px solid var(--line);border-radius:12px;box-shadow:var(--sh-3)}
 .sug li{display:flex;align-items:baseline;justify-content:space-between;gap:12px;padding:9px 12px;border-radius:8px;cursor:pointer;font-size:14px;min-height:40px}
 .sug li .m{font-size:12px;color:var(--ink-3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.sug li b{font-weight:600;color:var(--ink)}
+.sug li b{font-weight:700;color:var(--ink)}
 .sug li[aria-selected="true"],.sug li:hover{background:var(--surface-2)}
 .ai-privacy{margin:8px 2px 0;font-size:11.5px;color:var(--ink-3)}
 .ai-privacy kbd{font-family:"IBM Plex Mono",monospace;font-size:10.5px;border:1px solid var(--line);border-bottom-width:2px;border-radius:4px;padding:0 5px;background:var(--surface);color:var(--ink-2)}
 @media (hover:none){.ai-privacy .kb{display:none}}
 .ai-ex{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px}
-.ai-ex button{border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:6px 12px;font-size:12.5px;color:var(--ink-2);min-height:32px}
-.ai-ex button:hover,.ai-ex button:focus-visible{border-color:var(--ai-2);color:var(--ink);outline:none}
-@media (max-width:560px){.ai-ex{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;margin-right:-18px;padding-right:18px;-webkit-mask-image:linear-gradient(90deg,#000 85%,transparent);mask-image:linear-gradient(90deg,#000 85%,transparent)}
+.ai-ex button{border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:6px 12px;font-size:12.5px;color:var(--ink-2);min-height:34px;transition:border-color .15s,color .15s}
+.ai-ex button:hover,.ai-ex button:focus-visible{border-color:var(--ink);color:var(--ink);outline:none}
+@media (max-width:560px){.ai-ex{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;margin-right:-16px;padding-right:16px;-webkit-mask-image:linear-gradient(90deg,#000 85%,transparent);mask-image:linear-gradient(90deg,#000 85%,transparent)}
   .ai-ex::-webkit-scrollbar{display:none}.ai-ex button{flex:none}}
 .ai-stats{margin-top:16px;display:flex;flex-wrap:wrap;gap:4px 14px;font-size:12px;color:var(--ink-3);align-items:center;min-height:18px}
 .ai-stats b{color:var(--ink-2);font-weight:600}
 .ai-stats .live{margin-right:6px;vertical-align:1px}
-.brief{background:var(--surface);border:1px solid var(--line);border-radius:14px;min-width:0;align-self:start;overflow:hidden}
-.brief-h{display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:2px 10px;padding:12px 16px 9px}
-.brief-h b{font-size:13.5px;font-weight:700}
-.brief-h span{font-size:11.5px;color:var(--ink-3);text-align:right}
-.brief-row{display:grid;grid-template-columns:30px minmax(0,1fr) auto;gap:10px;align-items:center;width:100%;text-align:left;border:0;border-top:1px solid var(--line-soft);background:transparent;padding:10px 16px;min-height:54px;color:inherit}
+/* 오늘의 가성비 (히어로 오른쪽) */
+.vtop{background:var(--paper);border:1px solid var(--line);border-radius:18px;box-shadow:var(--sh-2);align-self:start;min-width:0;overflow:hidden}
+.vtop-h{display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:2px 10px;padding:16px 18px 6px}
+.vtop-h b{font-family:"Nanum Myeongjo",serif;font-size:18px;font-weight:800;letter-spacing:-.02em}
+.vtop-h span{font-size:11.5px;color:var(--ink-3)}
+.vtop-one{position:relative;margin:8px 12px 10px;padding:14px 14px 12px;background:var(--surface);border:1px solid var(--line-soft);border-radius:14px;box-shadow:var(--sh-1)}
+.vtop-one .no{font-family:"Nanum Myeongjo",serif;font-weight:800;font-size:12.5px;color:var(--up-ink);letter-spacing:.04em}
+.vtop-one .nm{display:block;margin:3px 74px 2px 0;padding:0;border:0;background:none;text-align:left;font-size:19px;font-weight:700;letter-spacing:-.025em;line-height:1.3;color:var(--ink);cursor:pointer}
+.vtop-one .nm:hover,.vc-name:hover{text-decoration:underline;text-underline-offset:3px}
+.vtop-one .vc-stamp{position:absolute;right:12px;top:12px;animation:stampIn .55s var(--ease-spring) .35s both}
+.vtop-one .vc-why{margin-top:9px}
+.vtop-list{list-style:none;margin:0;padding:0 0 2px}
+.vtop-list button{display:grid;grid-template-columns:22px minmax(0,1fr) auto;gap:10px;align-items:center;width:100%;border:0;border-top:1px solid var(--line-soft);background:transparent;text-align:left;padding:10px 18px;min-height:52px;color:inherit;transition:background .15s}
+.vtop-list button:hover,.vtop-list button:focus-visible{background:var(--surface-2);outline:none}
+.vtop-list .k{font-family:"Nanum Myeongjo",serif;font-weight:800;font-size:16px;color:var(--ink-3);text-align:right}
+.vtop-list .n{display:block;font-weight:600;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.vtop-list .m{display:block;font-size:11.5px;color:var(--ink-3)}
+.vtop-list .d{text-align:right;white-space:nowrap}
+.vtop-list .d b{display:block;font-weight:700;font-size:14px;color:var(--down-ink)}
+.vtop-list .d small{font-size:11px;color:var(--ink-3)}
+.vtop-all{display:block;width:calc(100% - 24px);margin:6px 12px 12px;min-height:44px;border:1px solid var(--line);border-radius:10px;background:var(--surface);font-weight:600;font-size:13.5px;color:var(--ink);transition:border-color .15s,box-shadow .15s}
+.vtop-all:hover,.vtop-all:focus-visible{border-color:var(--ink);box-shadow:var(--sh-1);outline:none}
+.vtop-empty{padding:18px;font-size:13px;color:var(--ink-3)}
+.sk{height:54px;border-top:1px solid var(--line-soft);background:linear-gradient(90deg,transparent,var(--surface-2),transparent);background-size:200% 100%;animation:sk 1.4s linear infinite}
+.sk.big{height:150px;margin:8px 12px;border:1px solid var(--line-soft);border-radius:14px}
+@keyframes sk{from{background-position:100% 0}to{background-position:-100% 0}}
+/* 도장 */
+.vc-stamp{flex:none;width:64px;height:64px;border-radius:50%;display:grid;place-content:center;justify-items:center;text-align:center;color:var(--up);border:2px solid currentColor;
+  box-shadow:inset 0 0 0 3px var(--surface),inset 0 0 0 4px currentColor;transform:rotate(-9deg);font-family:"Nanum Myeongjo",serif;line-height:1}
+.vc-stamp b{font-size:24px;font-weight:800;letter-spacing:-.03em}
+.vc-stamp span{font-family:"IBM Plex Sans KR",sans-serif;font-size:9.5px;font-weight:700;letter-spacing:.14em;margin-top:3px}
+@keyframes stampIn{0%{opacity:0;transform:rotate(-9deg) scale(1.7)}60%{opacity:1;transform:rotate(-9deg) scale(.93)}100%{opacity:1;transform:rotate(-9deg) scale(1)}}
+/* 가성비 목록 */
+.vs-fig{margin:2px 0 0}
+.vs-fig figcaption{display:flex;flex-direction:column;gap:2px;margin-bottom:6px}
+.vs-fig figcaption b{font-size:14px;font-weight:600} .vs-fig figcaption span{font-size:12px;color:var(--ink-3)}
+.vs-chart{position:relative}
+.vs-n{fill:#fff;font-size:9.5px;font-weight:700;font-family:"IBM Plex Mono",monospace;pointer-events:none}
+.vs-hit{fill:transparent;cursor:pointer} .vs-hit:focus-visible{stroke:var(--ink);stroke-width:2;outline:none}
+.vs-tip{white-space:normal;max-width:250px;line-height:1.5}
+.vlist{list-style:none;margin:16px 0 0;padding:0;display:flex;flex-direction:column;gap:10px}
+.vlist:not(.all) .vc.fold{display:none}
+.vc{position:relative;display:grid;grid-template-columns:34px minmax(0,1fr) 70px;gap:2px 14px;align-items:start;background:var(--surface);border:1px solid var(--line-soft);border-radius:14px;padding:14px 14px 12px;box-shadow:var(--sh-1);
+  transition:box-shadow .22s var(--ease-out),border-color .22s;animation:vcIn .45s var(--ease-out) both;animation-delay:calc(var(--i,0) * 45ms)}
+@keyframes vcIn{from{opacity:0;transform:translateY(6px)}}
+.vc:hover{box-shadow:var(--sh-2);border-color:var(--line)}
+.vc-rank{font-family:"Nanum Myeongjo",serif;font-weight:800;font-size:25px;line-height:1.05;color:var(--ink-3);text-align:right}
+.vc:nth-child(-n+3) .vc-rank{color:var(--up-ink)}
+.vc-main{min-width:0}
+.vc-name{border:0;background:none;padding:0;text-align:left;font-size:17px;font-weight:700;letter-spacing:-.02em;line-height:1.35;color:var(--ink);cursor:pointer}
+.vc-ak{font-weight:600;color:var(--ink-3);font-size:14px}
+.vc-meta{font-size:12.5px;color:var(--ink-3);margin-top:1px}
+.vc-price{display:flex;flex-wrap:wrap;align-items:baseline;gap:3px 6px;margin-top:10px;font-size:13px;color:var(--ink-2)}
+.vc-price b{font-size:18px;font-weight:700;color:var(--ink)}
+.vc-lab{font-size:11.5px;color:var(--ink-3)} .vc-sep{color:var(--ink-3);font-size:11.5px;margin:0 3px}
+.vc-d{margin-left:auto;font-weight:700;font-size:15px} .vc-d.lo{color:var(--down-ink)} .vc-d.hi{color:var(--up-ink)}
+.vbar{position:relative;height:30px;margin:6px 0 0;max-width:460px}
+.vbar-tick{position:absolute;top:4px;width:1px;height:8px;background:var(--line)}
+.vbar-l{position:absolute;top:16px;transform:translateX(-50%);font-size:10px;color:var(--ink-3);white-space:nowrap}
+.vbar-l.mid{color:var(--ink-2);font-weight:600}
+.vbar::before{content:"";position:absolute;left:0;right:0;top:7.5px;height:1px;background:var(--line)}
+.vbar-line{position:absolute;top:6px;height:4px;border-radius:2px;background:var(--down)} .vbar-line.hi{background:var(--up)}
+.vbar-dot{position:absolute;top:2px;width:12px;height:12px;margin-left:-6px;border-radius:50%}
+.vbar-dot.fair{background:var(--surface);border:2px solid var(--ink-3)}
+.vbar-dot.now{background:var(--down);border:2px solid var(--surface);box-shadow:0 0 0 1px var(--down)} .vbar-dot.now.hi{background:var(--up);box-shadow:0 0 0 1px var(--up)}
+.vc-why{display:flex;flex-wrap:wrap;gap:5px;margin-top:9px}
+.vc-why i{font-style:normal;font-size:11.5px;background:var(--surface-2);color:var(--ink-2);border-radius:999px;padding:3px 9px}
+.vc-why i.dn{background:var(--down-wash);color:var(--down-ink)} .vc-why i.up{background:var(--up-wash);color:var(--up-ink)}
+.vc-more{margin-top:6px}
+.vc-more summary{cursor:pointer;font-size:12.5px;color:var(--ink-2);font-weight:600;min-height:32px;display:flex;align-items:center;gap:6px;list-style:none}
+.vc-more summary::-webkit-details-marker{display:none}
+.vc-more summary::before{content:"";width:6px;height:6px;border-right:1.6px solid currentColor;border-bottom:1.6px solid currentColor;transform:rotate(-45deg);transition:transform .2s var(--ease-out)}
+.vc-more[open] summary::before{transform:rotate(45deg)}
+.vc-parts{display:grid;gap:5px;margin:4px 0 10px;max-width:380px}
+.vc-parts .bar-row{grid-template-columns:104px minmax(0,1fr) 40px}
+.vc-parts em{font-style:normal;font-size:10.5px;color:var(--ink-3);text-align:right}
+.vc .vc-stamp{margin-top:2px}
+@media (max-width:560px){.vc{grid-template-columns:26px minmax(0,1fr);padding:12px 12px 10px}.vc-rank{font-size:21px}
+  .vc .vc-stamp{position:absolute;right:10px;top:10px;width:52px;height:52px}.vc .vc-stamp b{font-size:19px}.vc-name{padding-right:58px}.vc-meta{padding-right:58px}}
+/* 브리핑 띠 */
+.brief{margin-top:14px;background:var(--surface);border:1px solid var(--line);border-radius:16px;box-shadow:var(--sh-1);overflow:hidden}
+.brief-h{display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:2px 10px;padding:12px 18px 10px}
+.brief-h b{font-family:"Nanum Myeongjo",serif;font-size:16px;font-weight:800}
+.brief-h span{font-size:11.5px;color:var(--ink-3)}
+#briefRows{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1px;background:var(--line-soft);border-top:1px solid var(--line-soft)}
+@media (max-width:900px){#briefRows{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:560px){#briefRows{grid-template-columns:minmax(0,1fr)}}
+.brief-row{display:grid;grid-template-columns:30px minmax(0,1fr) auto;gap:10px;align-items:center;width:100%;text-align:left;border:0;background:var(--surface);padding:12px 16px;min-height:64px;color:inherit;transition:background .15s}
 .brief-row:hover,.brief-row:focus-visible{background:var(--surface-2);outline:none}
 .brief-row .ic{width:30px;height:30px;border-radius:9px;display:grid;place-items:center;font-size:13px;font-weight:700;background:var(--surface-2);color:var(--ink-2)}
 .brief-row .ic.up{background:var(--up-wash);color:var(--up-ink)} .brief-row .ic.down{background:var(--down-wash);color:var(--down-ink)}
@@ -340,43 +447,43 @@ table.ledger{width:100%;border-collapse:collapse;font-size:13px}
 .brief-row .t b{display:block;color:var(--ink);font-weight:600;font-size:13px}
 .brief-row .n{font-size:18px;font-weight:700;letter-spacing:-.02em;white-space:nowrap}
 .brief-row .n small{font-size:11.5px;font-weight:500;color:var(--ink-3);margin-left:1px}
-.brief-empty{padding:16px;font-size:12.5px;color:var(--ink-3);border-top:1px solid var(--line-soft)}
-.sk{height:54px;border-top:1px solid var(--line-soft);background:linear-gradient(90deg,transparent,var(--surface-2),transparent);background-size:200% 100%;animation:sk 1.4s linear infinite}
-@keyframes sk{from{background-position:100% 0}to{background-position:-100% 0}}
+.brief-empty{padding:16px;font-size:12.5px;color:var(--ink-3);background:var(--surface)}
+/* 답 */
 .ans-wrap{margin-top:14px;scroll-margin-top:12px}
-.ans{background:var(--surface);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);overflow:hidden;position:relative}
-.ans::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:linear-gradient(var(--ai-1),var(--ai-2),var(--ai-3))}
-.ans-wait{padding:18px 20px;font-size:13.5px;color:var(--ink-2);display:flex;align-items:center;gap:10px}
-.dots{display:inline-flex;gap:4px} .dots i{width:6px;height:6px;border-radius:50%;background:var(--ai-2);animation:dot 1s infinite ease-in-out}
+.ans{background:var(--surface);border:1px solid var(--line);border-radius:18px;box-shadow:var(--sh-2);overflow:hidden;position:relative}
+.ans::before{content:"";position:absolute;left:14px;top:0;bottom:0;width:1px;background:var(--rule)}
+.ans-wait{padding:18px 20px 18px 30px;font-size:13.5px;color:var(--ink-2);display:flex;align-items:center;gap:10px}
+.dots{display:inline-flex;gap:4px} .dots i{width:6px;height:6px;border-radius:50%;background:var(--ink-3);animation:dot 1s infinite ease-in-out}
 .dots i:nth-child(2){animation-delay:.15s} .dots i:nth-child(3){animation-delay:.3s}
 @keyframes dot{0%,80%,100%{opacity:.25;transform:scale(.8)}40%{opacity:1;transform:none}}
-.ans-h{display:flex;flex-wrap:wrap;align-items:center;gap:4px 12px;padding:12px 16px 0 20px}
+.ans-h{display:flex;flex-wrap:wrap;align-items:center;gap:4px 12px;padding:14px 16px 0 30px}
 .ans-badge{display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:700;color:var(--ink)}
-.ans-badge svg{color:var(--ai-2)}
+.ans-badge svg{color:var(--up)}
 .ans-q{flex:1;min-width:0;font-size:13px;color:var(--ink-3);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .ans-trace{font-size:11.5px;color:var(--ink-3)}
 @media (max-width:560px){.ans-q{order:5;flex-basis:100%;white-space:normal}.ans-trace{order:4;flex:1}}
-.ans-chips{display:flex;flex-wrap:wrap;align-items:center;gap:6px;padding:10px 16px 0 20px}
+.ans-chips{display:flex;flex-wrap:wrap;align-items:center;gap:6px;padding:10px 16px 0 30px}
 .lb{font-size:11.5px;color:var(--ink-3);margin-right:2px}
 .tok{display:inline-flex;align-items:center;gap:2px;font-size:12.5px;background:var(--accent-wash);color:var(--accent);border-radius:999px;padding:1px 2px 1px 10px;line-height:1.5}
 .tok button{border:0;background:transparent;color:inherit;width:24px;height:24px;border-radius:50%;display:inline-grid;place-items:center;font-size:14px;line-height:1;opacity:.65}
 .tok button:hover,.tok button:focus-visible{opacity:1;background:var(--surface);outline:none}
 .tok.info{background:var(--surface-2);color:var(--ink-2)} .tok.warn{background:var(--up-wash);color:var(--up-ink)}
 .tok.nox{padding:3px 10px}
-.ans-body{padding:12px 20px 2px}
+.ans-body{padding:12px 22px 2px 30px}
 .ans-lead{margin:0 0 6px;font-size:clamp(16.5px,2.1vw,19px);font-weight:600;line-height:1.55;letter-spacing:-.02em;color:var(--ink)}
 .ans-text{margin:0;font-size:14.5px;line-height:1.8;color:var(--ink-2)}
 .ans-lead b,.ans-text b{color:var(--ink);font-weight:600}
 .ans .hi{color:var(--up-ink);font-weight:600} .ans .lo{color:var(--down-ink);font-weight:600}
-.ans-viz{padding:10px 20px 6px}
-.ans-follow{display:flex;flex-wrap:wrap;align-items:center;gap:6px;padding:8px 20px 16px}
-.ans-follow button{border:1px dashed var(--axis);background:transparent;border-radius:999px;padding:6px 12px;font-size:12.5px;color:var(--ink-2);min-height:32px}
-.ans-follow button:hover,.ans-follow button:focus-visible{border-style:solid;border-color:var(--ai-2);color:var(--ink);outline:none}
-.ans-note{margin:0;padding:11px 20px 14px;border-top:1px solid var(--line-soft);font-size:12px;color:var(--ink-3);line-height:1.7;background:var(--paper)}
-.w{display:inline-block;animation:wIn .45s cubic-bezier(.2,.7,.2,1) both;animation-delay:calc(var(--i)*14ms)}
-@keyframes wIn{from{opacity:0;transform:translateY(4px);filter:blur(2px)}}
+.ans-viz{padding:10px 22px 6px 30px}
+.ans-follow{display:flex;flex-wrap:wrap;align-items:center;gap:6px;padding:8px 22px 16px 30px}
+.ans-follow button{border:1px dashed var(--axis);background:transparent;border-radius:999px;padding:6px 12px;font-size:12.5px;color:var(--ink-2);min-height:34px;transition:border-color .15s,color .15s}
+.ans-follow button:hover,.ans-follow button:focus-visible{border-style:solid;border-color:var(--ink);color:var(--ink);outline:none}
+.ans-note{margin:0;padding:12px 22px 14px 30px;border-top:1px solid var(--line-soft);font-size:12px;color:var(--ink-3);line-height:1.7;background:var(--paper)}
+@media (max-width:560px){.ans::before{left:9px}.ans-h,.ans-chips{padding-left:20px}.ans-body,.ans-viz,.ans-follow,.ans-note{padding-left:20px;padding-right:14px}}
+.w{display:inline-block;animation:wIn .42s var(--ease-out) both;animation-delay:calc(var(--i)*12ms)}
+@keyframes wIn{from{opacity:0;transform:translateY(3px)}}
 .blist{display:flex;flex-direction:column}
-.brow{display:grid;grid-template-columns:30px minmax(0,1.3fr) minmax(70px,1fr) 118px;gap:2px 12px;align-items:center;width:100%;text-align:left;border:0;border-top:1px solid var(--line-soft);background:transparent;padding:9px 8px;min-height:48px;color:inherit}
+.brow{display:grid;grid-template-columns:30px minmax(0,1.3fr) minmax(70px,1fr) 118px;gap:2px 12px;align-items:center;width:100%;text-align:left;border:0;border-top:1px solid var(--line-soft);background:transparent;padding:9px 8px;min-height:48px;color:inherit;transition:background .15s}
 .brow:first-child{border-top:0}
 .brow:hover,.brow:focus-visible{background:var(--surface-2);outline:none}
 .brow.self{background:var(--accent-wash)}
@@ -393,39 +500,39 @@ table.ledger{width:100%;border-collapse:collapse;font-size:13px}
 .bt.ps::before{left:0} .bt.ng::before{right:0} .bt.ng .bf{left:auto;right:0}
 .brow .vl{font-size:13.5px;font-weight:600;text-align:right;white-space:nowrap}
 .brow .vl small{display:block;font-size:11px;font-weight:400;color:var(--ink-3)}
-.blist .more{align-self:center;margin:8px 0 2px}
+.blist .more,.ans-viz>.more{display:block;margin:10px auto 2px}
 @media (max-width:640px){.brow{grid-template-columns:26px minmax(0,1fr) auto}.brow .bt{grid-column:2/-1;grid-row:2;margin-top:3px}.brow .bt.none{display:none}}
 .ans-tiles{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px;margin-bottom:12px}
 @media (max-width:700px){.ans-tiles{grid-template-columns:repeat(3,minmax(0,1fr))}}
 @media (max-width:420px){.ans-tiles{grid-template-columns:repeat(2,minmax(0,1fr))}}
 .lc{position:relative;margin-top:2px}
 .lc .lc-hit{cursor:crosshair;outline:none}
-.lc .lc-hit:focus-visible{stroke:var(--ai-2);stroke-width:1.5}
+.lc .lc-hit:focus-visible{stroke:var(--ink);stroke-width:1.5}
 .lc-cap{margin:4px 0 0;font-size:11.5px;color:var(--ink-3)}
 .lc .lc-tip{transform:translate(-50%,0);transition:none}
 .lc-tip .tr{display:flex;align-items:center;gap:6px}
 .lc-tip i{width:8px;height:8px;border-radius:50%;display:inline-block}
 .cmp{margin-top:12px} .cmp td:first-child{color:var(--ink-3)}
 .cmp .sw{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:5px}
-.cx{border:1px solid var(--line-soft);border-radius:10px;padding:10px 12px;margin-top:10px}
+.cx{border:1px solid var(--line-soft);border-radius:12px;padding:10px 12px;margin-top:10px;box-shadow:var(--sh-1)}
 .cx:first-child{margin-top:0}
 .cx-h{display:flex;flex-wrap:wrap;gap:2px 10px;align-items:baseline;margin-bottom:6px}
 .cx-h b{font-size:15px} .cx-h span{font-size:12px;color:var(--ink-3)}
 .cx-t tr.main td{background:var(--accent-wash)}
 .sub2{font-size:11px;color:var(--ink-3);font-weight:400}
 .help-g{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px}
-.help-q{display:block;width:100%;text-align:left;border:1px solid var(--line-soft);background:var(--paper);border-radius:8px;padding:8px 10px;margin-top:6px;font-size:13px;color:var(--ink);min-height:36px}
-.help-q:hover,.help-q:focus-visible{border-color:var(--ai-2);outline:none}
-.dread{border:1px solid var(--line-soft);border-radius:10px;padding:12px 14px;background:linear-gradient(135deg,var(--accent-wash),transparent 75%)}
+.help-q{display:block;width:100%;text-align:left;border:1px solid var(--line-soft);background:var(--paper);border-radius:10px;padding:8px 10px;margin-top:6px;font-size:13px;color:var(--ink);min-height:38px;transition:border-color .15s}
+.help-q:hover,.help-q:focus-visible{border-color:var(--ink);outline:none}
+.dread{border:1px solid var(--line-soft);border-radius:12px;padding:12px 14px;background:var(--paper);box-shadow:var(--sh-1)}
 .dread:empty{display:none}
 .dread .h{display:flex;align-items:center;gap:6px;font-size:11px;font-weight:700;letter-spacing:.12em;color:var(--ink-2);margin-bottom:6px}
-.dread .h svg{color:var(--ai-2)}
+.dread .h svg{color:var(--up)}
 .dread p{margin:0;font-size:13.5px;line-height:1.75;color:var(--ink-2)}
 .dread p b{color:var(--ink)} .dread .lo{color:var(--down-ink);font-weight:600} .dread .hi{color:var(--up-ink);font-weight:600}
 .dread .tags{display:flex;flex-wrap:wrap;gap:5px;margin-top:9px}
 .dread .tags i{font-style:normal;font-size:11.5px;border-radius:999px;padding:3px 9px;background:var(--surface-2);color:var(--ink-2)}
 .dread .tags i.up{background:var(--up-wash);color:var(--up-ink)} .dread .tags i.dn{background:var(--down-wash);color:var(--down-ink)}
-@media (prefers-reduced-motion:reduce){.ai-ring,.live,.w,.dots i,.sk{animation:none}}
+@media (prefers-reduced-motion:reduce){.live,.w,.dots i,.sk,.vc,.vtop-one .vc-stamp,.vh-title .mark{animation:none}}
 
 /* 구간별 비교 */
 .seg{padding:14px 16px 18px;border-top:1px solid var(--line)}
@@ -582,7 +689,7 @@ table.deals{width:100%;border-collapse:collapse;font-size:12.5px}
       <h1>신고가 <span class="mark">장부</span></h1>
     </div>
     <div class="masthead-right">
-      <p class="masthead-note" id="mastNote">국토교통부 실거래가 API 로 매일 아침 받아 둔 자료입니다. 단지·전용면적별로 묶어 보여 주고, 계산은 모두 브라우저에서 합니다.</p>
+      <p class="masthead-note" id="mastNote">국토교통부 실거래가를 매일 아침 받아 다시 계산합니다. 계산은 모두 이 브라우저 안에서 하고, 어디로도 보내지 않습니다.</p>
       <div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap">
         <button class="theme-btn" id="shareBtn" type="button">링크 복사</button>
         <button class="theme-btn" id="themeBtn" type="button">테마: 자동</button>
@@ -592,18 +699,29 @@ table.deals{width:100%;border-collapse:collapse;font-size:12.5px}
 </header>
 
 <main class="wrap">
-  <section class="ai" id="ai" aria-labelledby="aiTitle">
-    <div class="ai-in">
-      <div class="ai-main">
-        <span class="ai-eyebrow"><i class="live" aria-hidden="true"></i>실거래 AI 애널리스트</span>
-        <h2 class="ai-title" id="aiTitle">아파트 시장, <span class="grad">무엇이든 물어보세요</span></h2>
-        <p class="ai-sub">12개 지역 단지·면적의 실거래를 바로 뒤져서 답해요. 지역·평형·예산·연식·신고가·급매·전세가율을 한 문장에 섞어 물어보세요.</p>
-        <form class="ai-form" id="askForm" role="search" autocomplete="off">
+  <section class="vh" id="ai" aria-labelledby="vhTitle">
+    <div class="vh-in">
+      <div class="vh-main vh-head">
+        <p class="vh-eyebrow"><i class="live" aria-hidden="true"></i>실거래로 학습한 가성비 모델 · 매일 아침 다시 계산</p>
+        <h2 class="vh-title" id="vhTitle">비슷한 단지보다<br><span class="mark">덜 비싼</span> 아파트</h2>
+        <p class="vh-sub">12개 지역 1만여 단지·면적을 같은 동네·연식·면적·단지 규모끼리 견줘서, 실제로 덜 비싸게 거래되는 곳을 골라 드려요.</p>
+        <form class="vf" id="vForm" aria-label="가성비 찾기">
+          <label>예산<span class="sel"><select id="vBudget"><option value="">전체</option><option value="3">3억 이하</option><option value="5">5억 이하</option><option value="7">7억 이하</option><option value="10">10억 이하</option><option value="15">15억 이하</option><option value="20">20억 이하</option><option value="30">30억 이하</option></select></span></label>
+          <label>평형<span class="sel"><select id="vSize"><option value="">전체</option><option value="20평대">20평대</option><option value="30평대">30평대</option><option value="40평 이상">40평 이상</option></select></span></label>
+          <label>지역<span class="sel"><select id="vRegion"><option value="">전체</option></select></span></label>
+          <label>연식<span class="sel"><select id="vAge"><option value="">전체</option><option value="신축">신축 · 5년</option><option value="10년 이내">10년 이내</option><option value="20년 이내">20년 이내</option></select></span></label>
+          <button class="vf-go" type="submit">가성비 찾기</button>
+          <label class="vf-tog"><input type="checkbox" id="vGap"> 전세 끼고 살 거예요 — 예산을 갭(매매−전세)으로 봐요</label>
+        </form>
+      </div>
+      <div class="vh-main vh-ask">
+        <p class="ask-lab" id="askLab">또는 편하게 물어보세요</p>
+        <form class="ai-form" id="askForm" role="search" autocomplete="off" aria-labelledby="askLab">
           <label class="sr" for="askInput">부동산 질문</label>
           <div class="ai-ring"><div class="ai-box">
-            <svg class="ai-spark" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M12 2l2.4 6.6L21 11l-6.6 2.4L12 20l-2.4-6.6L3 11l6.6-2.4z" fill="currentColor"/><path d="M19 15l.9 2.1L22 18l-2.1.9L19 21l-.9-2.1L16 18l2.1-.9z" fill="currentColor" opacity=".55"/></svg>
-            <input id="askInput" type="search" enterkeyhint="search" spellcheck="false" placeholder="강남 30평대 20억 이하 신축" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="askSug">
-            <button class="ai-go" type="submit" aria-label="물어보기"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M12 19V5M5 12l7-7 7 7" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+            <svg class="ai-spark" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><circle cx="11" cy="11" r="6.5" fill="none" stroke="currentColor" stroke-width="2"/><path d="M16 16l4.5 4.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+            <input id="askInput" type="search" enterkeyhint="search" spellcheck="false" placeholder="마포 30평대 15억 이하 가성비" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="askSug">
+            <button class="ai-go" type="submit" aria-label="물어보기"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M5 12h13M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
           </div></div>
           <ul class="sug" id="askSug" role="listbox" aria-label="이름 추천" hidden></ul>
         </form>
@@ -611,14 +729,19 @@ table.deals{width:100%;border-collapse:collapse;font-size:12.5px}
         <div class="ai-ex" id="askEx" aria-label="예시 질문"></div>
         <div class="ai-stats" id="aiStats"></div>
       </div>
-      <aside class="brief" id="brief" aria-labelledby="briefTitle">
-        <div class="brief-h"><b id="briefTitle">오늘의 브리핑</b><span id="briefSub">실거래로 자동 작성</span></div>
-        <div id="briefRows"><div class="sk"></div><div class="sk"></div><div class="sk"></div><div class="sk"></div><div class="sk"></div></div>
+      <aside class="vtop" id="vTop" aria-labelledby="vTopTitle">
+        <div class="vtop-h"><b id="vTopTitle">오늘의 가성비</b><span id="vTopSub">12개 지역 전체</span></div>
+        <div id="vTopBody"><div class="sk big"></div><div class="sk"></div><div class="sk"></div><div class="sk"></div></div>
+        <button class="vtop-all" type="button" data-ask="가성비 아파트 추천">전체 순위 보기 →</button>
       </aside>
     </div>
   </section>
   <section class="ans-wrap" id="askAns" hidden></section>
   <div class="sr" id="askLive" aria-live="polite"></div>
+  <section class="brief" id="brief" aria-labelledby="briefTitle">
+    <div class="brief-h"><b id="briefTitle">오늘의 시장 브리핑</b><span id="briefSub">실거래로 자동 작성</span></div>
+    <div id="briefRows"><div class="sk"></div><div class="sk"></div><div class="sk"></div></div>
+  </section>
   <section class="ov" id="overview" aria-labelledby="ovTitle" hidden>
     <div class="ov-h">
       <h2 id="ovTitle">12개 지역 한눈에</h2>
@@ -1120,7 +1243,9 @@ function renderRegion(){
     :'<tr><td colspan="8" class="empty">표시할 지역이 없습니다.</td></tr>';
 }
 /* ---------- 추천 ---------- */
-const FACTORS={liq:'거래 활발',disc:'고점 낙폭',mom:'6개월 흐름',stab:'가격 안정',val:'동네 대비',jr:'전세가율',age:'연식'};
+const FACTORS={liq:'거래 활발',disc:'고점 낙폭',mom:'6개월 흐름',stab:'가격 안정',val:'가성비',jr:'전세가율',age:'연식'};
+/* 가성비 할인: 물어보기의 가성비 모델 값이 있으면 그걸, 없으면 동네 평단가 대비 */
+const valD=g=>{ const r=typeof A!=='undefined'&&A.byKey?A.byKey.get(g.key):null; return r&&r.val?r.val.d:(g.valueGap==null?0:g.valueGap); };
 const PROFILES={
   balanced:{n:'균형 있게',w:{liq:.22,disc:.18,mom:.15,stab:.13,val:.2,jr:.07,age:.05}},
   live:{n:'실거주 · 안정 우선',w:{liq:.18,disc:0,mom:.05,stab:.27,val:.18,jr:.1,age:.22}},
@@ -1191,7 +1316,7 @@ function recommend(){
     disc:rankMap(gs,g=>-g.vsPeak),
     mom:rankMap(gs,g=>g.mom==null?medMom:g.mom),
     stab:rankMap(gs,g=>-(g.cv==null?medCv:g.cv)),
-    val:rankMap(gs,g=>-(g.valueGap==null?0:g.valueGap)),
+    val:rankMap(gs,g=>-valD(g)),
     jr:rankMap(gs,g=>g.jRatio==null?medJr:g.jRatio),
     age:rankMap(gs,g=>g.built||medAge),
   };
@@ -1216,7 +1341,9 @@ function whyChips(x){
   if(g.vsPeak<=-.1)out.push(['dn',`고점 대비 ${fmtPct(g.vsPeak)}`]);
   else if(g.vsPeak>=-.02)out.push(['up','고점 부근']);
   if(g.mom!=null&&Math.abs(g.mom)>=.02)out.push([g.mom>0?'up':'dn',`6개월 ${fmtPct(g.mom)}`]);
-  if(g.valueGap!=null&&Math.abs(g.valueGap)>=.05)
+  const vr=typeof A!=='undefined'&&A.byKey?A.byKey.get(g.key):null;
+  if(vr&&vr.val&&Math.abs(vr.val.d)>=.03)out.push([vr.val.d<0?'dn':'',`비슷한 단지보다 ${pctAbs(vr.val.d)} ${vr.val.d<0?'쌈':'비쌈'} · 가성비 ${vr.val.score}점`]);
+  else if(g.valueGap!=null&&Math.abs(g.valueGap)>=.05)
     out.push([g.valueGap<0?'dn':'', `${esc(g.dong)} ${BAND_NAMES[bandOf(g.area)]} 평단가보다 ${pctAbs(g.valueGap)} ${g.valueGap<0?'싼 편':'비싼 편'}`]);
   if(g.jRatio!=null)out.push([g.jRatio>=0.6?'dn':'',`전세가율 ${Math.round(g.jRatio*100)}%`]);
   if(g.built)out.push(['',`${(+S.ref.slice(0,4))-g.built}년차`]);
@@ -1983,7 +2110,7 @@ function buildCatalog(c){
       mp,md,mf:C.mf[i],prev,n:C.n[i],n12:C.n12[i],j,jn:C.jn[i],mom:C.mom[i],vg:C.vg[i],
       key:`${sgg}|${dong}|${apt}|${ak}`,ck:`${reg.code}|${dong}|${apt}`,an:normName(apt),
       ppy:price/(area/3.305785),vsPeak:price/mp-1,jr:j?j/price:null,gap:j?price-j:null,
-      age:built?reg.refYear-built:null,recPct:prev?mp/prev-1:null,rec:prev>0&&md>=reg.from3};
+      age:built?reg.refYear-built:null,recPct:prev?mp/prev-1:null,rec:prev>0&&md>=reg.from3,pa:C.pa?C.pa[i]||null:null,pan:C.pan?C.pan[i]:0};
   }
   A.rows=rows; A.byKey=new Map(rows.map(r=>[r.key,r]));
   A.cx=new Map();
@@ -2005,6 +2132,194 @@ function buildCatalog(c){
     if(st.length<2||st===dn||stems.has(st))continue;
     const a=A.stemIx.get(st)||[]; for(const d of list)if(!a.some(z=>z.code===d.code&&z.dong===d.dong))a.push(d); A.stemIx.set(st,a); }
   A.cat=c;
+  try{ fitValueModel(); }catch(e){ A.vm=null; }
+}
+
+/* ===== 가성비 모델 =====
+   1) 지역(구)마다 회귀: log(평당가) ~ 동 + 연식 구간 + log 면적 + log 단지 규모(6년 거래 수) + 브랜드.
+      평당가는 '지금 기준 가격'(최근 1년 중개거래를 지역 지수로 지금 수준에 맞춘 중위값, catalog 의 pa)으로 쓴다.
+      값이 동떨어진 묶음은 Tukey 가중으로 덜 보고, 거래가 적은 동은 구 평균 쪽으로 당긴다.
+   2) 후보마다 비교 사례를 고른다: 같은 동(모자라면 같은 구)에서 연식 ±6년 · 면적 ±25% · 단지 규모 1/3~3배인 다른 단지.
+      사례 가격을 회귀 계수로 후보 조건에 맞게 옮긴 뒤 가중 중앙값을 '비교 가격'으로 쓴다 (감정평가의 거래사례비교와 같은 생각).
+   3) 가성비 점수 = 비교 대비 할인 45% + 전세가율(구 중위 대비) 20% + 거래량 15% + 6개월 흐름 10% + 연식 10%. */
+const BRAND_RE=/래미안|자이|힐스테이트|디에이치|푸르지오|써밋|아이파크|e-?편한세상|이편한세상|아크로|롯데캐슬|르엘|더샵|sk뷰|포레나|꿈에그린|센트레빌|트리마제/i;
+const RENT_RE=/임대|행복주택|공공지원|토지임대/;
+const VBINS=[0,5,10,15,20,25,30,35];
+const VW={sD:.45,sJ:.2,sL:.15,sM:.1,sA:.1};
+const VLABEL={sD:'비슷한 단지 대비',sJ:'전세가율',sL:'거래량',sM:'최근 흐름',sA:'연식'};
+const vbin=a=>{ let k=0; for(let i=0;i<VBINS.length;i++)if(a>=VBINS[i])k=i; return k; };
+const clamp01=x=>x<0?0:x>1?1:x;
+function solveLin(M,b){
+  const n=b.length, A2=M.map((row,i)=>{ const r=Array.from(row); r.push(b[i]); return r; });
+  for(let c=0;c<n;c++){ let p=c; for(let r=c+1;r<n;r++)if(Math.abs(A2[r][c])>Math.abs(A2[p][c]))p=r;
+    const t=A2[c]; A2[c]=A2[p]; A2[p]=t; const d=A2[c][c]; if(Math.abs(d)<1e-12)continue;
+    for(let k=c;k<=n;k++)A2[c][k]/=d;
+    for(let r=0;r<n;r++){ if(r===c)continue; const f=A2[r][c]; if(!f)continue; for(let k=c;k<=n;k++)A2[r][k]-=f*A2[c][k]; } }
+  return A2.map(r=>r[n]);
+}
+function fitValueModel(){
+  const rows=A.rows, cxn=new Map();
+  for(const r of rows)cxn.set(r.ck,(cxn.get(r.ck)||0)+r.n);
+  for(const r of rows){ r.cxn=cxn.get(r.ck); r.brand=BRAND_RE.test(r.apt)?1:0; r.rent=RENT_RE.test(r.apt);
+    r.lpa=r.pa?Math.log(r.pa/(r.area/3.305785)):null; r.jrv=r.j&&r.pa?r.j/r.pa:null; r.val=null; }
+  const ok=r=>r.pa&&!r.rent&&r.area>=40&&r.area<=200&&r.age!=null&&r.age>=0;
+  const pool=rows.filter(r=>ok(r)&&r.pan>=2), byCode=new Map();
+  for(const r of pool)(byCode.get(r.code)||byCode.set(r.code,[]).get(r.code)).push(r);
+  A.vm={byCode:new Map(),cand:0,scored:0,fit:0};
+  for(const reg of A.regs){
+    const fit=byCode.get(reg.code)||[]; if(fit.length<30)continue;
+    const dongs=[...new Set(fit.map(r=>r.dong))], B=VBINS.length, P=B+3+dongs.length, di=new Map(dongs.map((d,i)=>[d,B+3+i]));
+    const F=fit.map(r=>{ const idx=[0], val=[1]; const b=vbin(r.age); if(b>0){ idx.push(b); val.push(1); }
+      idx.push(B,B+1); val.push(Math.log(r.area),Math.log(Math.max(5,r.cxn))); if(r.brand){ idx.push(B+2); val.push(1); }
+      idx.push(di.get(r.dong)); val.push(1); return {idx,val}; });
+    const y=fit.map(r=>r.lpa), base=fit.map(r=>Math.min(r.pan,12)); let w=base.slice(), th=new Array(P).fill(0);
+    const lam=new Array(P).fill(0); for(let k=1;k<B;k++)lam[k]=0.5; lam[B+1]=0.5; lam[B+2]=0.5; for(let k=B+3;k<P;k++)lam[k]=3;
+    const pred=f=>{ let t=0; for(let j=0;j<f.idx.length;j++)t+=th[f.idx[j]]*f.val[j]; return t; };
+    for(let it=0;it<4;it++){
+      const M=Array.from({length:P},()=>new Float64Array(P)), bb=new Float64Array(P);
+      F.forEach((f,i)=>{ const wi=w[i]; if(!wi)return; const n=f.idx.length;
+        for(let a=0;a<n;a++){ const ia=f.idx[a], va=wi*f.val[a]; bb[ia]+=va*y[i]; for(let c=0;c<n;c++)M[ia][f.idx[c]]+=va*f.val[c]; } });
+      for(let k=0;k<P;k++)M[k][k]+=lam[k]+1e-9;
+      th=solveLin(M,bb);
+      const res=F.map((f,i)=>y[i]-pred(f)), md=median(res), s=1.4826*median(res.map(r=>Math.abs(r-md)))||0.1, c=4.685*s;
+      w=base.map((b0,i)=>Math.abs(res[i])<c?b0*(1-(res[i]/c)**2)**2:0);
+    }
+    const res=F.map((f,i)=>y[i]-pred(f)), sw=w.reduce((t,v)=>t+v,0)||1, yb=y.reduce((t,v,i)=>t+v*w[i],0)/sw;
+    const R2=1-res.reduce((t,r,i)=>t+w[i]*r*r,0)/(y.reduce((t,v,i)=>t+w[i]*(v-yb)**2,0)||1);
+    const jrMed=medianBy(rows.filter(r=>r.code===reg.code&&r.jrv&&r.jn>=3&&r.pan>=1),r=>r.jrv);
+    A.vm.byCode.set(reg.code,{th,B,di,R2,n:fit.length,jrMed,brand:Math.exp(th[B+2])-1}); A.vm.fit+=fit.length;
+  }
+  const cand=rows.filter(r=>ok(r)&&r.pan>=3&&r.n12>=3&&r.cxn>=40&&A.vm.byCode.has(r.code));
+  A.vm.cand=cand.length;
+  for(const g of cand){
+    const m=A.vm.byCode.get(g.code), th=m.th, B=m.B, ag=k=>k>0?th[k]:0, dfx=d=>m.di.has(d)?th[m.di.get(d)]:0;
+    const like=r=>r.ck!==g.ck&&Math.abs(r.age-g.age)<=6&&Math.abs(r.area-g.area)/g.area<=0.25&&r.cxn>=g.cxn/3&&r.cxn<=g.cxn*3;
+    const rp=byCode.get(g.code)||[];
+    let comps=rp.filter(r=>r.dong===g.dong&&like(r)), where='같은 동';
+    if(comps.length<3){ comps=rp.filter(like); where='같은 구'; }
+    const best=new Map(); for(const r of comps){ const x=best.get(r.ck); if(!x||Math.abs(r.area-g.area)<Math.abs(x.area-g.area))best.set(r.ck,r); }
+    comps=[...best.values()]; if(comps.length<3)continue;
+    const adj=r=>r.lpa+(ag(vbin(g.age))-ag(vbin(r.age)))+th[B]*(Math.log(g.area)-Math.log(r.area))
+      +th[B+1]*(Math.log(Math.max(5,g.cxn))-Math.log(Math.max(5,r.cxn)))+th[B+2]*(g.brand-r.brand)+(r.dong===g.dong?0:dfx(g.dong)-dfx(r.dong));
+    const vals=comps.map(r=>({r,v:adj(r),w:Math.min(r.pan,12)/(1+Math.abs(r.age-g.age)/3+Math.abs(r.area-g.area)/g.area*4+(r.dong===g.dong?0:1))})).sort((a,b)=>a.v-b.v);
+    const tw=vals.reduce((t,x)=>t+x.w,0); let acc=0, mid=vals[0].v; for(const x of vals){ acc+=x.w; if(acc>=tw/2){ mid=x.v; break; } }
+    const d=Math.exp(g.lpa-mid)-1, k=comps.length/(comps.length+3);
+    const parts={sD:clamp01((-Math.max(-0.25,Math.min(0.25,d))*k+0.25)/0.5),
+      sJ:g.jrv&&g.jn>=3&&m.jrMed?clamp01((g.jrv/m.jrMed-0.85)/0.3):0.5,
+      sL:clamp01(Math.log(g.n12)/Math.log(24)),sM:g.mom==null?0.5:clamp01((g.mom+0.06)/0.12),sA:clamp01(1-g.age/35)};
+    g.val={d,where,fair:Math.exp(mid)*(g.area/3.305785),ncomp:comps.length,comps:vals.slice().sort((a,b)=>b.w-a.w).slice(0,6).map(x=>({r:x.r,ppy:Math.exp(x.v)})),
+      parts,score:Math.round(100*Object.keys(VW).reduce((t,key)=>t+VW[key]*parts[key],0)),odd:d<=-0.3,jrMed:m.jrMed};
+    A.vm.scored++;
+  }
+}
+const valRank=(a,b)=>b.val.score-a.val.score||a.val.d-b.val.d;
+function valReasons(r,max){
+  const v=r.val, out=[];
+  if(v.d<=-0.03)out.push(['dn',`비슷한 단지 ${v.ncomp}곳보다 평당 ${pctAbs(v.d)} 쌈`]);
+  else if(v.d>=0.03)out.push(['up',`비슷한 단지보다 평당 ${pctAbs(v.d)} 비쌈`]);
+  else out.push(['',`비슷한 단지 ${v.ncomp}곳과 비슷한 값`]);
+  if(r.jrv&&r.jn>=3&&v.jrMed)out.push([r.jrv>=v.jrMed*1.08?'dn':'',`전세가율 ${Math.round(r.jrv*100)}% · ${r.reg.short} ${Math.round(v.jrMed*100)}%`]);
+  if(r.mom!=null&&Math.abs(r.mom)>=0.02)out.push([r.mom>0?'up':'dn',`6개월 ${fmtPct(r.mom,0)}`]);
+  out.push(['',`1년 ${r.n12}건 거래`]);
+  if(r.built)out.push(['',`${r.built}년 준공`]);
+  return out.slice(0,max||5);
+}
+/* 값 막대: 모든 카드가 같은 눈금. 가운데 빈 점 = 비교 가격, 찬 점 = 실거래 기준가 (양끝 ±30%) */
+function valBar(r){
+  const d=r.val.d, x=Math.max(3,Math.min(97,50+d/0.3*50)), cheap=d<0;
+  return `<div class="vbar" aria-hidden="true"><span class="vbar-tick" style="left:20%"></span><span class="vbar-tick" style="left:80%"></span>`
+    +`<span class="vbar-line ${cheap?'lo':'hi'}" style="left:${Math.min(x,50).toFixed(1)}%;width:${Math.abs(x-50).toFixed(1)}%"></span>`
+    +`<span class="vbar-dot fair" style="left:50%"></span><span class="vbar-dot now ${cheap?'lo':'hi'}" style="left:${x.toFixed(1)}%"></span>`
+    +`<span class="vbar-l" style="left:20%">−18%</span><span class="vbar-l mid" style="left:50%">비교 가격</span><span class="vbar-l" style="left:80%">+18%</span></div>`;
+}
+function valCard(r,i,opt){
+  const v=r.val, o=opt||{};
+  const comps=v.comps.map(c=>`<tr><td>${esc(c.r.apt)}<span class="sub2"> ${esc(c.r.dong)}</span></td><td class="r num">${c.r.ak}㎡</td><td class="r num">${c.r.built||'-'}</td><td class="r num">${ppyTxt(c.r.pa/(c.r.area/3.305785))}</td><td class="r num">${ppyTxt(c.ppy)}</td></tr>`).join('');
+  const parts=Object.keys(VW).map(k=>`<div class="bar-row"><span>${VLABEL[k]}</span><div class="bar-track"><div class="bar-fill" style="width:${Math.max(3,Math.round(v.parts[k]*100))}%"></div></div><em>${Math.round(v.parts[k]*VW[k]*100)}/${Math.round(VW[k]*100)}</em></div>`).join('');
+  return `<li class="vc${o.fold&&i>=o.fold?' fold':''}" style="--i:${Math.min(i,9)}">
+  <div class="vc-rank" aria-hidden="true">${i+1}</div>
+  <div class="vc-main">
+    <button type="button" class="vc-name" data-code="${esc(r.code)}" data-open="${esc(r.key)}"><span class="sr">${i+1}위 </span>${esc(r.apt)} <span class="vc-ak">${r.ak}㎡</span></button>
+    <div class="vc-meta">${esc(r.reg.label)} ${esc(r.dong)} · 약 ${pyg(r.area)}평형${r.built?` · ${r.built}년`:''}</div>
+    <div class="vc-price"><b class="num">${won(r.pa)}</b><span class="vc-lab">실거래 기준</span><span class="vc-sep">vs</span><span class="num">${won(v.fair)}</span><span class="vc-lab">비교 가격</span><span class="vc-d ${v.d<0?'lo':'hi'}">${v.d<0?'−':'+'}${pctAbs(v.d)}</span></div>
+    ${valBar(r)}
+    <div class="vc-why">${valReasons(r).map(([c,t])=>`<i class="${c}">${esc(t)}</i>`).join('')}</div>
+    <details class="vc-more"><summary>왜 이 점수인가 · 비교한 단지</summary>
+      <div class="vc-parts">${parts}</div>
+      <div class="tablewrap"><table class="deals"><thead><tr><th>비교 단지 (${v.where})</th><th class="r">전용</th><th class="r">준공</th><th class="r">평당가</th><th class="r">이 단지 조건으로</th></tr></thead><tbody>${comps}</tbody></table></div>
+    </details>
+  </div>
+  <div class="vc-stamp" role="img" aria-label="가성비 점수 ${v.score}점"><b>${v.score}</b><span>가성비</span></div>
+</li>`;
+}
+/* 산점도: 비교 가격(가로) × 실거래 기준가(세로), 둘 다 로그 눈금. 대각선 아래 = 비슷한 단지보다 쌈 */
+function valScatter(pool,top,W){
+  const H=Math.round(Math.min(360,Math.max(260,W*0.56))), L=54, R=14, T=14, B=36;
+  const pts=pool.slice(0,1500), xsV=pts.map(r=>r.val.fair), ysV=pts.map(r=>r.pa);
+  let lo=Math.min(...xsV,...ysV)*0.92, hi=Math.max(...xsV,...ysV)*1.06;
+  const lx=Math.log(lo), hx=Math.log(hi), sx=v=>L+(Math.log(v)-lx)/(hx-lx)*(W-L-R), sy=v=>T+(hx-Math.log(v))/(hx-lx)*(H-T-B);
+  let ticks=[]; for(const st of [2000,5000,10000,20000,25000,50000,100000,200000,500000]){
+    ticks=[]; for(let v=Math.ceil(lo/st)*st;v<=hi;v+=st)ticks.push(v); if(ticks.length<=6)break; }
+  if(ticks.length>6)ticks=ticks.filter((_,i)=>i%2===0);
+  let g='';
+  for(const t of ticks){ const X=sx(t).toFixed(1), Y=sy(t).toFixed(1);
+    const lab=`${+(t/1e4).toFixed(1)}억`;
+    g+=`<line x1="${X}" x2="${X}" y1="${T}" y2="${H-B}" stroke="var(--grid)"/><text class="tick" x="${X}" y="${H-B+15}" text-anchor="middle">${lab}</text>`
+      +`<line x1="${L}" x2="${W-R}" y1="${Y}" y2="${Y}" stroke="var(--grid)"/><text class="tick" x="${L-6}" y="${(+Y+3.5).toFixed(1)}" text-anchor="end">${lab}</text>`; }
+  const band=(k)=>`${sx(lo).toFixed(1)},${sy(lo*k).toFixed(1)} ${sx(hi).toFixed(1)},${sy(hi*k).toFixed(1)}`;
+  g+=`<polygon points="${band(1.05)} ${sx(hi).toFixed(1)},${sy(hi*0.95).toFixed(1)} ${sx(lo).toFixed(1)},${sy(lo*0.95).toFixed(1)}" fill="var(--surface-2)" opacity=".8"/>`;
+  g+=`<line x1="${sx(lo).toFixed(1)}" y1="${sy(lo).toFixed(1)}" x2="${sx(hi).toFixed(1)}" y2="${sy(hi).toFixed(1)}" stroke="var(--axis)" stroke-width="1.5" stroke-dasharray="4 4"/>`;
+  g+=`<text class="axis-t" x="${(sx(hi)-6).toFixed(1)}" y="${(sy(hi)+14).toFixed(1)}" text-anchor="end">비교 가격과 같음</text>`;
+  g+=`<text class="axis-t" x="${((L+W-R)/2).toFixed(0)}" y="${H-4}" text-anchor="middle">비교 가격 (비슷한 단지 기준) →</text>`
+    +`<text class="axis-t" x="12" y="${((T+H-B)/2).toFixed(0)}" text-anchor="middle" transform="rotate(-90 12 ${((T+H-B)/2).toFixed(0)})">실거래 기준가 →</text>`;
+  const topSet=new Set(top);
+  A.vTips=new Map(); let dots='', hits='', hl='', labels='';
+  pts.forEach((r,i)=>{ const X=sx(r.val.fair).toFixed(1), Y=sy(r.pa).toFixed(1), t=topSet.has(r);
+    if(!t)dots+=`<circle cx="${X}" cy="${Y}" r="3" fill="var(--series-deal)" opacity=".28"/>`; });
+  top.forEach((r,i)=>{ const X=sx(r.val.fair), Y=sy(r.pa), k='v'+i;
+    A.vTips.set(k,`<b>${i+1}위 ${esc(r.apt)} ${r.ak}㎡</b><div>실거래 기준 ${won(r.pa)} · 비교 ${won(r.val.fair)} · ${fmtPct(r.val.d,0)}</div><div>가성비 ${r.val.score}점 · 누르면 자세히</div>`);
+    hl+=`<circle cx="${X.toFixed(1)}" cy="${Y.toFixed(1)}" r="7" fill="var(--up)" stroke="var(--surface)" stroke-width="2"/>`;
+    labels+=`<text class="vs-n" x="${X.toFixed(1)}" y="${(Y+3.5).toFixed(1)}" text-anchor="middle">${i+1}</text>`;
+    hits+=`<circle class="vs-hit" cx="${X.toFixed(1)}" cy="${Y.toFixed(1)}" r="14" tabindex="0" role="button" data-vtip="${k}" data-code="${esc(r.code)}" data-open="${esc(r.key)}" aria-label="${i+1}위 ${esc(r.apt)}"/>`; });
+  return `<svg viewBox="0 0 ${W} ${H}" height="${H}" role="img" aria-label="비교 가격과 실거래 기준가 산점도">${g}${dots}${hl}${labels}${hits}</svg>`;
+}
+function drawValScatter(){
+  const el=$('#vScatter'), a=A.last&&A.last.a; if(!el||!a||!a.vpool)return;
+  el.innerHTML=valScatter(a.vpool,a.vtop,Math.max(300,Math.round(el.clientWidth||640)))+'<div class="tip vs-tip"></div>';
+}
+function ansValue(q){
+  const area=q.cons.find(c=>c.kind==='area');
+  /* 가성비 답의 금액은 '실거래 기준가'(pa)로 본다 — 목록에 보이는 값과 같은 기준 */
+  const test=c=>c.kind==='money'&&c.field==='price'?(r=>r.pa>=c.lo&&r.pa<=c.hi)
+    :c.kind==='money'&&c.field==='gap'?(r=>r.jrv!=null&&r.pa-r.j>=c.lo&&r.pa-r.j<=c.hi):c.test;
+  const tests=q.cons.filter(c=>c.kind!=='recent').map(test);
+  const base=A.rows.filter(r=>r.val);
+  const all=base.filter(r=>tests.every(t=>t(r)));
+  const odd=all.filter(r=>r.val.odd).length, pool=all.filter(r=>!r.val.odd);
+  const scope=scopeOf(q), cond=condOf(q);
+  const note='가성비 점수는 실거래만으로 계산해요. 구마다 동네·연식·면적·단지 규모·브랜드가 값에 미치는 영향을 회귀로 배우고, 같은 동(모자라면 같은 구)에서 연식·면적·규모가 비슷한 단지의 최근 1년 실거래를 이 단지 조건으로 맞춰 견줬어요. '
+    +'역세권·학군·향·층·수리 상태·주상복합 여부는 모르니, 싼 데는 이유가 있을 수 있어요. 직접 확인하세요. 투자 권유가 아니에요.';
+  if(!pool.length){ const e=ansEmpty({...q,cons:q.cons.map(c=>({...c,test:test(c)}))},base.filter(r=>!r.val.odd),'가성비 후보');
+    e.lead=`${scope}에서 ${cond?`${cond} 조건으로 `:''}고를 만한 가성비 후보가 없어요.`; e.note=note; return e; }
+  const rows=q.sort&&q.sort.k!=='vg'?sortRows(pool,q.sort):pool.slice().sort(valRank);
+  const top=rows.slice(0,10), t=top[0], cheap10=pool.filter(r=>r.val.d<=-0.1).length;
+  const lead=`${scope}${cond?` · ${cond}`:''}에서 고른 가성비 단지예요. 1위는 <b>${esc(t.apt)} ${t.ak}㎡</b>(${esc(t.reg.label)} ${esc(t.dong)}) — 비슷한 단지 시세로 보면 ${won(t.val.fair)}쯤인데 ${won(t.pa)}에 거래돼 <span class="lo">${pctAbs(t.val.d)}</span> 덜 비싸요.`;
+  const T=[`후보 ${pool.length.toLocaleString()}곳 가운데 비슷한 단지보다 10% 넘게 싸게 거래되는 곳은 <b>${cheap10.toLocaleString()}곳</b>이에요.`,
+    '점수는 비슷한 단지 대비 할인 45%, 전세가율 20%, 거래량 15%, 최근 6개월 흐름 10%, 연식 10%를 합쳤어요.'];
+  if(odd)T.push(`비슷한 단지보다 30% 넘게 싼 ${odd}곳은 임대·지분·특수 거래일 수 있어 순위에서 뺐어요.`);
+  if(area&&/평/.test(area.label))T.push('평형은 공급면적 기준으로 보고 전용면적으로 바꿨어요.');
+  const lim=q.limit||30;
+  const viz=`<figure class="vs-fig"><figcaption><b>대각선보다 아래일수록 비슷한 단지보다 싸게 거래돼요</b><span>점 하나가 단지·면적 하나 · 빨간 번호가 순위 · 회색 띠는 ±5%</span></figcaption>
+<div class="ov-legend"><span><i class="dot" style="opacity:.45"></i>후보</span><span><i class="dot" style="background:var(--up)"></i>가성비 상위 10</span></div>
+<div class="vs-chart ov-chart" id="vScatter"></div></figure>
+<ol class="vlist">${rows.slice(0,lim).map((r,i)=>valCard(r,i,{fold:10})).join('')}</ol>${rows.length>10&&lim>10?`<button type="button" class="btn sm more" data-vmore>${Math.min(lim,rows.length)-10}곳 더 보기</button>`:''}`;
+  const f=[];
+  if(!q.cons.some(c=>c.kind==='age'))f.push(FL('10년 이내만',withText(q,'10년 이내')));
+  if(!area)f.push(FL('30평대만',withText(q,'30평대')));
+  if(!q.gapBuy)f.push(FL('전세 끼고 5억',`${without(q,['cond'])} 전세 끼고 5억`));
+  if(!q.regions.size)f.push(FL('서울만',`서울 ${q.raw}`),FL('안양만',`안양 ${q.raw}`));
+  f.push(FL('1위 단지 자세히',`${t.reg.short} ${t.apt}`));
+  return {lead,text:T.join(' '),viz,vpool:pool,vtop:top,follow:f.slice(0,6),count:pool.length,note};
 }
 
 /* ===== 질문 해석 ===== */
@@ -2057,7 +2372,7 @@ function parseAsk(raw){
   let w=src;
   const q={raw:String(raw||''),src,ents:[],cons:[],regions:new Set(),units:[],dongs:[],apts:null,sort:null,win:null,
     records:false,cheap:false,status:false,compare:false,help:false,future:false,similar:false,gapBuy:false,noRecent:false,limit:0,cheapGap:0.05,
-    missing:[],unknown:[],notes:[],fuzzy:[],outside:false,intent:''};
+    missing:[],unknown:[],notes:[],fuzzy:[],outside:false,value:false,intent:''};
   const free=(s,e)=>w.slice(s,e).indexOf('\u0001')<0;
   const eat=(s,e)=>{ w=w.slice(0,s)+'\u0001'.repeat(e-s)+w.slice(e); };
   const each=(re,fn)=>{ for(const m of [...w.matchAll(re)]){ const s=m.index,e=s+m[0].length; if(e<=s||!free(s,e))continue; if(fn(m,s,e)!==false)eat(s,e); } };
@@ -2216,7 +2531,8 @@ function parseAsk(raw){
   each(/전세가[율률]\s*(?:이\s*)?(?:낮은|낮고|낮아|작은|낮)/g,(m,s,e)=>setSort('jr',1,'전세가율 낮은 순',s,e));
   each(/전세가[율률]/g,(m,s,e)=>setSort('jr',-1,'전세가율 높은 순',s,e));
   each(/갭\s*(?:이\s*)?(?:작은|적은|작고|적고|적게|작게|작|적)|소액\s*(?:갭|투자)|갭\s*투자/g,(m,s,e)=>setSort('gap',1,'갭 작은 순',s,e));
-  each(/가성비|저평가|동네\s*(?:대비|보다)\s*싼/g,(m,s,e)=>setSort('vg',1,'동네 평단가보다 싼 순',s,e));
+  each(/가성비|저평가|알짜|값어치|숨은\s*보석|덜\s*비싼|살\s*만한|살만한|사도\s*될\s*만한|추천(?:해\s*줘|해\s*주세요|좀)?|골라\s*줘|어디\s*살까|뭐\s*살까|적정\s*가(?:격)?|제\s*값/g,(m,s,e)=>{ q.value=true; ent('value',s,e,'가성비 · 비슷한 단지와 견주기'); });
+  each(/동네\s*(?:대비|보다)\s*싼/g,(m,s,e)=>setSort('vg',1,'동네 평단가보다 싼 순',s,e));
   each(/평(?:당|단)가?\s*(?:가\s*)?(?:높은|비싼)/g,(m,s,e)=>setSort('ppy',-1,'평당가 높은 순',s,e));
   each(/평(?:당|단)가?\s*(?:가\s*)?(?:낮은|싼)/g,(m,s,e)=>setSort('ppy',1,'평당가 낮은 순',s,e));
   each(/비싼|비싸|고가|대장|랜드마크|최고가\s*단지/g,(m,s,e)=>setSort('price',-1,'비싼 순',s,e));
@@ -2295,6 +2611,7 @@ function parseAsk(raw){
   if(q.help&&q.ents.length<=1)q.intent='help';
   else if(q.missing.length&&!q.regions.size&&!q.dongs.length&&!q.apts)q.intent='missing';
   else if(q.cheap)q.intent='cheap';
+  else if(q.value&&!q.records&&!(q.apts&&q.apts.cx.length<=3)&&A.vm)q.intent='value';
   else if(q.records)q.intent='records';
   else if(q.similar&&q.apts)q.intent='similar';
   else if(q.apts&&q.apts.cx.length<=3&&!q.sort&&!nonApt.length)q.intent='complex';
@@ -2508,6 +2825,7 @@ function ansComplex(q){
     if(m.jr!=null)T.push(`전세가율은 ${Math.round(m.jr*100)}%로 갭이 ${IEYO(won(m.gap))}.`);
     const act=A.rows.filter(r=>r.code===m.code&&r.n12>0);
     if(act.length>=10&&m.n12>0){ const rk=act.filter(r=>r.n12>m.n12).length/act.length; T.push(`최근 1년 ${m.n12}건 거래돼 ${x.reg.label}에서 ${rk<=0.2?`거래가 많은 편(상위 ${Math.max(1,Math.round(rk*100))}%)`:rk>=0.7?'거래가 적은 편':'중간쯤'}이에요.`); }
+    if(m.val)T.push(`가성비 점수는 <b>${m.val.score}점</b> — 비슷한 단지 ${m.val.ncomp}곳 시세로 보면 ${won(m.val.fair)}쯤인데 실거래 기준 ${won(m.pa)}라 ${m.val.d<0?`<span class="lo">${pctAbs(m.val.d)}</span> 덜 비싸요`:`${pctAbs(m.val.d)} 더 비싸요`}.`);
     if(x.rows.length>1)T.push(`이 단지에는 전용 ${x.rows.map(r=>r.ak+'㎡').join('·')} 거래가 있어요.`);
     if(area&&!x.rows.some(r=>area.test(r)))T.unshift(`말한 면적은 이 단지에 없어서 거래가 가장 많은 면적으로 봤어요.`);
   } else {
@@ -2518,9 +2836,10 @@ function ansComplex(q){
   }
   const viz=cxs.map((x,ci)=>{ const rs=x.rows.slice().sort((a,b)=>a.ak-b.ak);
     return `<div class="cx"><div class="cx-h"><b>${esc(x.apt)}</b><span>${esc(x.reg.label)} ${esc(x.dong)}${x.built?` · ${x.built}년 준공`:''} · 1년 거래 ${x.n12}건</span></div>
-<div class="tablewrap"><table class="deals cx-t"><thead><tr><th>전용</th><th class="r">시세</th><th class="r">신고가</th><th class="r">고점 대비</th><th class="r">전세가율</th><th class="r">1년 거래</th><th></th></tr></thead><tbody>${rs.map(r=>`<tr${r===mains[ci]?' class="main"':''}>
+<div class="tablewrap"><table class="deals cx-t"><thead><tr><th>전용</th><th class="r">시세</th><th class="r">신고가</th><th class="r">고점 대비</th><th class="r">전세가율</th><th class="r">1년 거래</th><th class="r">가성비</th><th></th></tr></thead><tbody>${rs.map(r=>`<tr${r===mains[ci]?' class="main"':''}>
 <td class="num">${r.ak}㎡ <span class="sub2">약 ${pyg(r.area)}평형</span></td><td class="r num">${won(r.price)}</td><td class="r num">${won(r.mp)} <span class="sub2">${fmtYM(r.md)}</span></td>
 <td class="r"><span class="delta ${dir(r.vsPeak)}">${r.vsPeak>-0.0005?'고점':fmtPct(r.vsPeak)}</span></td><td class="r num">${r.jr!=null?Math.round(r.jr*100)+'%':'-'}</td><td class="r num">${r.n12}</td>
+<td class="r num">${r.val?`<b>${r.val.score}</b><span class="sub2"> ${fmtPct(r.val.d,0)}</span>`:'-'}</td>
 <td class="r"><button type="button" class="btn sm" data-code="${esc(r.code)}" data-open="${esc(r.key)}">자세히</button></td></tr>`).join('')}</tbody></table></div></div>`; }).join('');
   const x=cxs[0], nm=`${x.reg.short} ${x.apt}`, f=[FL('비슷한 단지',`${nm} 비슷한 단지`),FL('이 단지 신고가',`${nm} 신고가`),FL(`${x.reg.label} 지금은?`,`${x.reg.short} 지금 고점이야?`),FL('이 단지 급매',`${nm} 급매`)];
   return {lead,text:T.join(' '),viz,follow:f,count:cxs.length,note:[...q.notes,q.fuzzy.length?`'${q.fuzzy.map(z=>z.t).join("', '")}'와 비슷한 이름으로 찾았어요.`:''].filter(Boolean).join(' ')};
@@ -2675,7 +2994,7 @@ function ansMissing(q){
 }
 function execAsk(q){
   const t0=performance.now();
-  const fn={help:ansHelp,cheap:ansCheap,records:ansRecords,similar:ansSimilar,complex:ansComplex,compare:ansCompare,compareF:ansCompareF,status:ansStatus,overview:ansOverview,unknown:ansUnknown,missing:ansMissing,list:ansList}[q.intent]||ansList;
+  const fn={value:ansValue,help:ansHelp,cheap:ansCheap,records:ansRecords,similar:ansSimilar,complex:ansComplex,compare:ansCompare,compareF:ansCompareF,status:ansStatus,overview:ansOverview,unknown:ansUnknown,missing:ansMissing,list:ansList}[q.intent]||ansList;
   const a=fn(q); a.ms=performance.now()-t0;
   const extra=q.notes.filter(n=>!(a.note||'').includes(n)&&!(a.text||'').includes(n)); if(extra.length)a.note=[...extra,a.note].filter(Boolean).join(' ');
   return a;
@@ -2791,6 +3110,7 @@ async function ask(text,opt){
   const q=parseAsk(text), a=execAsk(q); A.last={q,a}; A.chart=null;
   box.innerHTML=renderAnswer(q,a);
   if(a.chart)drawAskChart();
+  if(a.vpool)drawValScatter();
   revealWords(box);
   const live=$('#askLive'); if(live)live.textContent=plain(a.lead);
   if(o.scroll!==false){ const b=box.getBoundingClientRect(); if(b.top<0||b.top>innerHeight*0.6)box.scrollIntoView({behavior:'smooth',block:'start'}); }
@@ -2839,7 +3159,10 @@ function renderRead(g){
   const act=S.groups.filter(x=>x.count12>0), place=(g.gu||g.sgg||'').split(/\s+/).pop(), pw=S.f.priceWin;
   const s=[], tags=[];
   const basis=pw&&g.priceN?` (최근 ${pw}개월 ${g.priceN}건 중위)`:'';
-  const ro=batchim(fmtMan(g.price))===1?'으로':'로';
+  const ro=batchim(fmtMan(g.price))===1?'으로':'로', vr=A.byKey&&A.byKey.get(g.key);
+  if(vr&&vr.val){ const v=vr.val;
+    s.push(`<b>가성비 ${v.score}점</b> — ${v.where} 비슷한 단지 ${v.ncomp}곳 시세로 보면 ${won(v.fair)}쯤인데 최근 1년 실거래 기준 ${won(vr.pa)}라 ${v.d<0?`<span class="lo">${pctAbs(v.d)}</span> 덜 비싸요`:`${pctAbs(v.d)} 더 비싸요`}.`);
+    tags.push([v.d<0?'dn':'up',`가성비 ${v.score}점`]); }
   if(g.vsPeak>-0.02){ s.push(`지금 시세는 <b>${fmtMan(g.price)}</b>${basis}${ro}, ${ym7(g.max.date)} 신고가 ${J(fmtMan(g.max.price),'과','와')} 거의 같은 수준이에요.`); tags.push(['up','고점 부근']); }
   else { s.push(`지금 시세는 <b>${fmtMan(g.price)}</b>${basis}${ro}, ${ym7(g.max.date)} 신고가 ${fmtMan(g.max.price)}보다 <span class="lo">${pctAbs(g.vsPeak,1)}</span> 낮아요.`); tags.push(['dn',`고점 대비 ${fmtPct(g.vsPeak,0)}`]); }
   if(g.valueGap!=null){ const b=BAND_NAMES[bandOf(g.area)];
@@ -2896,9 +3219,33 @@ function sugMove(d){
   return true;
 }
 
+/* ===== 오늘의 가성비 (히어로 오른쪽) ===== */
+function renderVTop(){
+  const el=$('#vTopBody'); if(!el)return;
+  if(!A.cat||!A.vm||!A.vm.scored){ el.innerHTML='<p class="vtop-empty">가성비 자료를 만들지 못했어요. 잠시 뒤 새로 고쳐 주세요.</p>'; return; }
+  const top=A.rows.filter(r=>r.val&&!r.val.odd).sort(valRank).slice(0,5), t=top[0], v=t.val;
+  el.innerHTML=`<div class="vtop-one"><span class="no">오늘의 1위</span>
+  <button type="button" class="nm" data-code="${esc(t.code)}" data-open="${esc(t.key)}">${esc(t.apt)} <span class="vc-ak">${t.ak}㎡</span></button>
+  <div class="vc-meta">${esc(t.reg.label)} ${esc(t.dong)} · 약 ${pyg(t.area)}평형${t.built?` · ${t.built}년`:''}</div>
+  <div class="vc-price"><b class="num">${won(t.pa)}</b><span class="vc-lab">실거래 기준</span><span class="vc-sep">vs</span><span class="num">${won(v.fair)}</span><span class="vc-lab">비교 가격</span><span class="vc-d ${v.d<0?'lo':'hi'}">${v.d<0?'−':'+'}${pctAbs(v.d)}</span></div>
+  ${valBar(t)}
+  <div class="vc-why">${valReasons(t,3).map(([c,x])=>`<i class="${c}">${esc(x)}</i>`).join('')}</div>
+  <div class="vc-stamp" role="img" aria-label="가성비 점수 ${v.score}점"><b>${v.score}</b><span>가성비</span></div></div>
+<ol class="vtop-list" start="2">${top.slice(1).map((r,i)=>`<li><button type="button" data-code="${esc(r.code)}" data-open="${esc(r.key)}"><span class="k" aria-hidden="true">${i+2}</span><span><span class="n">${esc(r.apt)} ${r.ak}㎡</span><span class="m">${esc(r.reg.label)} ${esc(r.dong)} · 실거래 기준 ${won(r.pa)}</span></span><span class="d"><b>${fmtPct(r.val.d,0)}</b><small>가성비 ${r.val.score}점</small></span></button></li>`).join('')}</ol>`;
+  $('#vTopSub').textContent=`후보 ${A.vm.scored.toLocaleString()}곳 · ${fmtDate(A.maxRef)} 거래까지`;
+  const sel=$('#vRegion'); if(sel&&sel.options.length<=1){
+    const groups=[['서울','서울 전체'],['강남3구','강남3구'],['마용성','마용성'],['안양','안양 전체']].filter(([v])=>v!=='안양'||A.regs.some(r=>r.city==='안양'));
+    sel.innerHTML='<option value="">전체</option><optgroup label="묶음">'+groups.map(([v,l])=>`<option value="${v}">${l}</option>`).join('')+'</optgroup>'
+      +'<optgroup label="구">'+A.regs.map(r=>`<option value="${esc(r.short)}">${esc(r.label)}</option>`).join('')+'</optgroup>'; }
+}
+function vformQuery(){
+  const b=$('#vBudget').value, sz=$('#vSize').value, rg=$('#vRegion').value, ag=$('#vAge').value, gap=$('#vGap').checked;
+  return [rg,sz,b?(gap?`전세 끼고 ${b}억`:`${b}억 이하`):(gap?'전세 끼고':''),ag,'가성비'].filter(Boolean).join(' ');
+}
+
 /* ===== 묻는 상자 ===== */
-const ASK_EX=['강남 30평대 20억 이하','최근 한 달 신고가','송파 지금 고점이야?','안양 신축 전세가율 높은 순','마용성 비교','은마'];
-const ASK_PH=['강남 30평대 20억 이하 신축','전세 끼고 5억으로 살 수 있는 곳','고점 대비 20% 넘게 빠진 단지','헬리오시티 84','노원 vs 양천','최근 3개월 급매'];
+const ASK_EX=['마포 30평대 15억 이하 가성비','서울 국평 가성비','전세 끼고 5억 가성비','안양 10년 이내 가성비','송파 지금 고점이야?','최근 한 달 신고가'];
+const ASK_PH=['마포 30평대 15억 이하 가성비','강남3구 국평 가성비 추천','전세 끼고 5억으로 살 만한 곳','노원 10년 이내 가성비','헬리오시티 적정가','송파 30평대 vs 강동'];
 function bindAsk(){
   $('#askEx').innerHTML=ASK_EX.map(t=>`<button type="button" data-ask="${esc(t)}">${esc(t)}</button>`).join('');
   $('#askForm').addEventListener('submit',e=>{ e.preventDefault(); if(SG.act>=0){ sugPick(SG.act); return; } sugHide(); ask($('#askInput').value); });
@@ -2911,15 +3258,26 @@ function bindAsk(){
     else if(e.key==='Tab'&&SG.act>=0){ e.preventDefault(); sugPick(SG.act); } });
   inp.addEventListener('blur',()=>setTimeout(sugHide,150));
   $('#askSug').addEventListener('mousedown',e=>{ const li=e.target.closest('li[data-i]'); if(li){ e.preventDefault(); sugPick(+li.dataset.i); } });
-  const hero=$('#ai');
-  hero.addEventListener('click',e=>{ const b=e.target.closest('[data-ask]'); if(b)ask(b.dataset.ask); });
+  const onPick=e=>{ const o=e.target.closest('[data-open]'); if(o){ openComplex(o.dataset.code,o.dataset.open); return; }
+    const b=e.target.closest('[data-ask]'); if(b)ask(b.dataset.ask); };
+  $('#ai').addEventListener('click',onPick); $('#brief').addEventListener('click',onPick);
+  $('#vForm').addEventListener('submit',e=>{ e.preventDefault(); ask(vformQuery()); });
   const box=$('#askAns');
   box.addEventListener('click',e=>{
     const m=e.target.closest('[data-more]'); if(m){ m.closest('.blist').classList.add('all'); m.remove(); return; }
+    const vm2=e.target.closest('[data-vmore]'); if(vm2){ const l=box.querySelector('.vlist'); if(l)l.classList.add('all'); vm2.remove(); return; }
     const o=e.target.closest('[data-open]'); if(o){ openComplex(o.dataset.code,o.dataset.open); return; }
     const a=e.target.closest('[data-ask]'); if(a){ ask(a.dataset.ask); return; }
     if(e.target.closest('[data-askshare]')){ writeHash(); copyText(location.href.split('#')[0]+(S.hash?'#'+S.hash:''),'답변 링크를 복사했습니다'); } });
   box.addEventListener('pointermove',e=>{ const h=e.target.closest('.lc-hit'); if(h)askHover(e,h); });
+  const vtShow=el=>{ const tip=box.querySelector('.vs-tip'), k=el.getAttribute('data-vtip'); if(!tip||!A.vTips)return;
+    const host=box.querySelector('#vScatter').getBoundingClientRect(), b=el.getBoundingClientRect();
+    tip.innerHTML=A.vTips.get(k)||''; tip.style.left=(b.left+b.width/2-host.left)+'px'; tip.style.top=(b.top-host.top+2)+'px'; tip.classList.add('on'); };
+  const vtHide=()=>{ const tip=box.querySelector('.vs-tip'); if(tip)tip.classList.remove('on'); };
+  box.addEventListener('pointerover',e=>{ const h=e.target.closest('[data-vtip]'); if(h)vtShow(h); });
+  box.addEventListener('pointerout',e=>{ if(e.target.closest('[data-vtip]'))vtHide(); });
+  box.addEventListener('focusin',e=>{ const h=e.target.closest('[data-vtip]'); if(h)vtShow(h); });
+  box.addEventListener('focusout',e=>{ if(e.target.closest('[data-vtip]'))vtHide(); });
   box.addEventListener('pointerout',e=>{ if(e.target.closest('.lc-hit'))askHoverOff(); });
   box.addEventListener('focusin',e=>{ if(e.target.closest('.lc-hit')&&A.chart)showAskAt(A.chart.cur??A.chart.n-1); });
   box.addEventListener('focusout',e=>{ if(e.target.closest('.lc-hit'))askHoverOff(); });
@@ -3005,7 +3363,7 @@ function bind(){
   $('#dPeers').addEventListener('click',e=>{ const tr=e.target.closest('tr[data-key]'); if(tr){ openDrawer(tr.dataset.key); $('#drawer').scrollTop=0; } });
   document.addEventListener('mousemove',e=>{ if(S.view==='market'&&e.target.closest('#mkCharts'))marketHover(e); });
   document.addEventListener('mouseleave',e=>{ if(e.target.closest&&e.target.closest('#mkCharts'))marketHoverOff(); },true);
-  let rt; addEventListener('resize',()=>{ clearTimeout(rt); rt=setTimeout(()=>{ if(S.view==='market')renderMarket(); if(S.sum)renderOverview(); if(A.last&&A.last.a.chart)drawAskChart(); },200); });
+  let rt; addEventListener('resize',()=>{ clearTimeout(rt); rt=setTimeout(()=>{ if(S.view==='market')renderMarket(); if(S.sum)renderOverview(); if(A.last&&A.last.a.chart)drawAskChart(); if(A.last&&A.last.a.vpool)drawValScatter(); },200); });
   document.addEventListener('click',e=>{ const b=e.target.closest('[data-seg]'); if(!b)return;
     S.seg=b.dataset.seg; try{localStorage.setItem('sgj.seg',S.seg);}catch(err){} renderSegments(); });
   const ov=$('#overview');
@@ -3064,7 +3422,7 @@ function bind(){
   const openAt=()=>{ if(at&&S.groups.some(g=>g.key===at))openDrawer(at); };
   const src=new URLSearchParams(location.search).get('src');
   const hasIndex=await loadIndex(); loadSummary();
-  loadCatalog().then(ok=>{ renderBrief(); if(ok&&S.askQ)ask(S.askQ,{scroll:false}); });
+  loadCatalog().then(ok=>{ renderBrief(); renderVTop(); if(ok&&S.askQ)ask(S.askQ,{scroll:false}); });
   if(src&&await loadURL(src,false,true)){ syncControls(); openAt(); return; }
   if(hasIndex){
     let want=hashRegion;
