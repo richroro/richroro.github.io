@@ -90,7 +90,11 @@ npx esbuild src/main.js --bundle --minify --format=esm --target=es2020 --outfile
 
 휴대폰에서 얼굴·가슴에 삼각형 모자이크 얼룩이 생기는 문제가 있었다. 모바일 GPU 의 깊이 정밀도·MSAA 깊이 처리 차이로
 깊이 기반 오클루전이 깨지는 것으로 보고, 터치 기기에선 오클루전을 끄고 일반 렌더 + MSAA 만 쓴다(`MOBILE`).
-그림자 바이어스도 키웠다(bias −0.0008, normalBias 0.45). 데스크톱의 오클루전 경로는 MSAA 없이 그리고 SMAA 로 가장자리를 다듬는다.
+그림자 바이어스도 키웠다(bias −0.0008, normalBias 0.45).
+또 노멀맵 접선을 셰이더의 픽셀 미분 대신 메시에 미리 계산해 넣는다(`computeTangents`). 휴대폰 GPU 에선 미분으로 구한
+접선이 삼각형마다 어긋나 같은 모자이크 얼룩을 만들 수 있어서다. 휴대폰은 그림자 normalBias 를 0.8 로 더 키운다.
+화면 위 부제에 배포 버전(`VERSION`)을 보여 주고, 같은 값을 `app.js`·에셋 주소에 붙여 GitHub Pages 의 10분 캐시가
+예전 파일을 섞어 쓰지 않게 한다. 배포할 때마다 `src/main.js` 의 `VERSION` 과 `index.html` 의 `?v=` 를 함께 올린다. 데스크톱의 오클루전 경로는 MSAA 없이 그리고 SMAA 로 가장자리를 다듬는다.
 
 ## 한계
 
