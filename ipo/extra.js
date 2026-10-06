@@ -236,7 +236,7 @@ function initCompare() {
 }
 
 /* ---------------------------------------------------------------- 공유 카드 이미지 */
-const VCOL = { strong: "#FF5A6A", go: "#F2894A", light: "#E7B416", pass: "#8B95A3", wait: "#8B95A3", spac: "#8B95A3" };
+const VCOL = { strong: "#E64980", go: "#F08C00", light: "#15AABF", pass: "#8F8F89", wait: "#8F8F89", spac: "#8F8F89" }; // 어두운 카드 위 판정 색
 
 function wrapText(ctx, text, maxW) {
   const out = []; let line = "";
@@ -252,67 +252,48 @@ async function shareCard(id) {
   const W = 1080, H = 1350, c = document.createElement("canvas");
   c.width = W; c.height = H;
   const x = c.getContext("2d");
-  const F = '"IBM Plex Sans KR","Apple SD Gothic Neo","Malgun Gothic",sans-serif', M = '"IBM Plex Mono",ui-monospace,monospace';
-  const col = VCOL[r.verdict.key] || "#8B95A3";
-  // 바탕
-  x.fillStyle = "#0F1218"; x.fillRect(0, 0, W, H);
-  const g1 = x.createRadialGradient(W * 0.9, 0, 0, W * 0.9, 0, 700); g1.addColorStop(0, "rgba(232,33,39,.35)"); g1.addColorStop(1, "rgba(232,33,39,0)");
-  x.fillStyle = g1; x.fillRect(0, 0, W, H);
-  const g2 = x.createRadialGradient(0, H, 0, 0, H, 700); g2.addColorStop(0, "rgba(57,135,229,.25)"); g2.addColorStop(1, "rgba(57,135,229,0)");
-  x.fillStyle = g2; x.fillRect(0, 0, W, H);
-  const bar = x.createLinearGradient(0, 0, W, 0); bar.addColorStop(0, "#E82127"); bar.addColorStop(0.5, "#F2894A"); bar.addColorStop(1, "#E7B416");
-  x.fillStyle = bar; x.fillRect(0, 0, W, 12);
-  // 머리
-  x.fillStyle = "#AEB7C4"; x.font = `500 30px ${F}`; x.textBaseline = "alphabetic";
-  x.fillText("공모주 캘린더 · 블로거식 점수", 72, 100);
-  x.textAlign = "right"; x.font = `500 28px ${M}`; x.fillText(TODAY.replace(/-/g, "."), W - 72, 100); x.textAlign = "left";
-  // 이름
-  x.fillStyle = "#E9EDF3"; x.font = `700 84px ${F}`;
-  const lines = wrapText(x, it.name, W - 144).slice(0, 2);
-  lines.forEach((l, i) => x.fillText(l, 72, 210 + i * 96));
-  let yy = 210 + (lines.length - 1) * 96 + 60;
-  x.fillStyle = "#8B95A3"; x.font = `500 32px ${F}`;
+  const F = '"Pretendard Variable",Pretendard,"Apple SD Gothic Neo","Malgun Gothic",sans-serif';
+  const col = VCOL[r.verdict.key] || "#8F8F89";
+  // 바탕: 잉크 검정 + 노란 티켓 머리(앱과 같은 모양)
+  x.fillStyle = "#111111"; x.fillRect(0, 0, W, H);
+  STORY.ticketHead(x, W, "공모주 점수표");
+  // 이름 · 단계
+  x.fillStyle = "#F4F4F2"; x.font = `800 84px ${F}`;
+  const lines = wrapText(x, it.name, W - 160).slice(0, 2);
+  lines.forEach((l, i) => x.fillText(l, 80, 360 + i * 92));
+  let yy = 360 + (lines.length - 1) * 92 + 58;
+  x.fillStyle = "#8F8F89"; x.font = `600 32px ${F}`;
   const sub = [s.label, it.sub_start ? `청약 ${md(it.sub_start)}~${md(it.sub_end || it.sub_start)}` : "", it.list_date ? `상장 ${md(it.list_date)}` : "", it.uw[0] || ""].filter(Boolean).join("  ·  ");
-  x.fillText(sub, 72, yy);
+  x.fillText(sub, 80, yy);
   // 점수 고리
-  const cx = 250, cy = yy + 250, R = 150, show = r.total != null && !r.pending && r.verdict.key !== "spac";
-  x.lineWidth = 30; x.lineCap = "round";
-  x.strokeStyle = "#242A33"; x.beginPath(); x.arc(cx, cy, R, 0, Math.PI * 2); x.stroke();
+  const cx = 236, cy = yy + 190, R = 120, show = r.total != null && !r.pending && r.verdict.key !== "spac";
+  x.lineWidth = 28; x.lineCap = "round";
+  x.strokeStyle = "#2A2A2D"; x.beginPath(); x.arc(cx, cy, R, 0, Math.PI * 2); x.stroke();
   if (show) { x.strokeStyle = col; x.beginPath(); x.arc(cx, cy, R, -Math.PI / 2, -Math.PI / 2 + Math.PI * 2 * r.total / 100); x.stroke(); }
-  x.fillStyle = "#E9EDF3"; x.textAlign = "center"; x.font = `600 ${show ? 110 : 64}px ${M}`;
-  x.fillText(show ? String(r.total) : r.verdict.key === "spac" ? "SPAC" : "?", cx, cy + (show ? 30 : 20));
-  if (show) { x.fillStyle = "#8B95A3"; x.font = `500 30px ${M}`; x.fillText("/ 100", cx, cy + 78); }
+  x.fillStyle = "#F4F4F2"; x.textAlign = "center"; x.font = `800 ${show ? 100 : 60}px ${F}`;
+  x.fillText(show ? String(r.total) : r.verdict.key === "spac" ? "SPAC" : "?", cx, cy + (show ? 26 : 18));
+  if (show) { x.fillStyle = "#8F8F89"; x.font = `600 28px ${F}`; x.fillText("/ 100", cx, cy + 68); }
   x.textAlign = "left";
   // 판정
-  const vx = 470;
-  x.font = `700 64px ${F}`; x.fillStyle = col; x.fillText(r.verdict.label, vx, cy - 40);
-  x.font = `400 30px ${F}`; x.fillStyle = "#AEB7C4";
-  wrapText(x, r.verdict.tip, W - vx - 72).slice(0, 3).forEach((l, i) => x.fillText(l, vx, cy + 10 + i * 42));
-  // 기준별 막대
-  let by = cy + R + 110;
-  x.font = `500 30px ${F}`;
+  const vx = 430;
+  x.font = `800 66px ${F}`; x.fillStyle = col; x.fillText(r.verdict.label, vx, cy - 36);
+  x.font = `500 31px ${F}`; x.fillStyle = "#BDBDB8";
+  wrapText(x, r.pending ? "수요예측 결과가 나오면 점수를 매깁니다" : r.verdict.tip, W - vx - 80).slice(0, 3).forEach((l, i) => x.fillText(l, vx, cy + 14 + i * 44));
+  // 기준별 막대: 막대는 끝만 둥글게
+  let by = cy + R + 86;
   r.rows.forEach((row) => {
-    x.fillStyle = row.pts == null ? "#6E7683" : "#E9EDF3"; x.fillText(row.f.label, 72, by);
-    x.fillStyle = "#AEB7C4"; x.font = `500 28px ${M}`; x.textAlign = "right";
-    x.fillText(row.pts == null ? "모름" : fmtVal(row, it), 660, by); x.textAlign = "left"; x.font = `500 30px ${F}`;
-    const bx = 690, bw = 200, bh = 14;
-    x.fillStyle = "#242A33"; x.fillRect(bx, by - 18, bw, bh);
-    if (row.pts != null) { x.fillStyle = col; x.fillRect(bx, by - 18, bw * row.pts / row.f.w, bh); }
-    x.fillStyle = "#8B95A3"; x.font = `500 24px ${M}`; x.textAlign = "right"; x.fillText(row.pts == null ? "–" : `${row.pts}/${row.f.w}`, W - 72, by); x.textAlign = "left"; x.font = `500 30px ${F}`;
-    by += 62;
+    x.font = `600 30px ${F}`; x.fillStyle = row.pts == null ? "#6E6E69" : "#F4F4F2"; x.fillText(row.f.label, 80, by);
+    x.fillStyle = "#BDBDB8"; x.textAlign = "right"; x.fillText(row.pts == null ? "모름" : fmtVal(row, it), 650, by); x.textAlign = "left";
+    const bx = 690, bw = 240, bh = 14;
+    x.fillStyle = "#2A2A2D"; STORY.roundRect(x, bx, by - 20, bw, bh, 7); x.fill();
+    if (row.pts) { x.fillStyle = col; STORY.roundRect(x, bx, by - 20, Math.max(bh, bw * row.pts / row.f.w), bh, 7); x.fill(); }
+    x.fillStyle = "#8F8F89"; x.font = `600 24px ${F}`; x.textAlign = "right"; x.fillText(row.pts == null ? "–" : `${row.pts}/${row.f.w}`, W - 80, by); x.textAlign = "left";
+    by += 52;
   });
-  if (r.flags.length) { x.fillStyle = "#FF6B7A"; x.font = `500 28px ${F}`; x.fillText(`⚠ ${r.flags[0]}`, 72, by + 6); }
-  // 바닥글
-  x.fillStyle = "#6E7683"; x.font = `400 26px ${F}`;
-  x.fillText("richroro.github.io/ipo  ·  참고용 점수, 투자 권유가 아닙니다", 72, H - 60);
-  const blob = await new Promise((res) => c.toBlob(res, "image/png"));
-  const file = new File([blob], `${it.name}-공모주점수.png`, { type: "image/png" });
-  if (navigator.canShare && navigator.canShare({ files: [file] })) {
-    try { await navigator.share({ files: [file], title: `${it.name} 공모주 점수`, text: `${it.name} — ${r.verdict.label}${show ? ` ${r.total}점` : ""}` }); return; }
-    catch (e) { if (e.name === "AbortError") return; }
-  }
-  download(blob, file.name);
-  toast("공유 카드 이미지를 저장했습니다");
+  if (r.flags.length) { x.fillStyle = "#FF8FB1"; x.font = `600 28px ${F}`; x.fillText(`⚠ ${r.flags[0]}`, 80, by + 6); }
+  x.fillStyle = "#6E6E69"; x.font = `500 26px ${F}`;
+  x.fillText("richroro.github.io/ipo  ·  참고용 점수, 투자 권유가 아닙니다", 80, H - 60);
+  await STORY.shareCanvas(c, `${it.name}-공모주점수.png`, `${it.name} — ${r.verdict.label}${show ? ` ${r.total}점` : ""}`);
 }
 
 /* ---------------------------------------------------------------- 내 기록 대시보드 */
