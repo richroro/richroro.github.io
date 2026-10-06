@@ -1,0 +1,31 @@
+{
+  "_comment": "수집할 RSS 목록. 한 줄 추가·삭제하면 다음 수집부터 반영된다. hint 는 제목·요약으로 분야를 못 정했을 때 쓰는 기본 분야(market·macro·estate·industry·global·crypto·general).",
+  "feeds": [
+    {"source": "연합뉴스",   "hint": "general",  "url": "https://www.yna.co.kr/rss/economy.xml"},
+    {"source": "연합뉴스",   "hint": "market",   "url": "https://www.yna.co.kr/rss/market.xml"},
+    {"source": "연합뉴스",   "hint": "industry", "url": "https://www.yna.co.kr/rss/industry.xml"},
+    {"source": "한국경제",   "hint": "general",  "url": "https://www.hankyung.com/feed/economy"},
+    {"source": "한국경제",   "hint": "market",   "url": "https://www.hankyung.com/feed/finance"},
+    {"source": "한국경제",   "hint": "estate",   "url": "https://www.hankyung.com/feed/realestate"},
+    {"source": "한국경제",   "hint": "global",   "url": "https://www.hankyung.com/feed/international"},
+    {"source": "매일경제",   "hint": "general",  "url": "https://www.mk.co.kr/rss/30100041/"},
+    {"source": "매일경제",   "hint": "market",   "url": "https://www.mk.co.kr/rss/50200011/"},
+    {"source": "매일경제",   "hint": "estate",   "url": "https://www.mk.co.kr/rss/50300009/"},
+    {"source": "동아일보",   "hint": "general",  "url": "https://rss.donga.com/economy.xml"},
+    {"source": "경향신문",   "hint": "general",  "url": "https://www.khan.co.kr/rss/rssdata/economy_news.xml"},
+    {"source": "한겨레",     "hint": "general",  "url": "https://www.hani.co.kr/rss/economy/"},
+    {"source": "SBS",       "hint": "general",  "url": "https://news.sbs.co.kr/news/SectionRssFeed.do?sectionId=02&plink=RSSREADER"},
+    {"source": "구글 뉴스",  "hint": "general",  "url": "https://news.google.com/rss/headlines/section/topic/BUSINESS?hl=ko&gl=KR&ceid=KR:ko", "aggregator": true}
+  ],
+  "markets": [
+    {"symbol": "^KS11",   "name": "코스피",     "unit": ""},
+    {"symbol": "^KQ11",   "name": "코스닥",     "unit": ""},
+    {"symbol": "KRW=X",   "name": "원/달러",    "unit": "원"},
+    {"symbol": "^GSPC",   "name": "S&P 500",   "unit": ""},
+    {"symbol": "^IXIC",   "name": "나스닥",     "unit": ""},
+    {"symbol": "^TNX",    "name": "미 국채 10년", "unit": "%"},
+    {"symbol": "CL=F",    "name": "WTI 유가",   "unit": "$"},
+    {"symbol": "GC=F",    "name": "금",        "unit": "$"},
+    {"symbol": "BTC-USD", "name": "비트코인",   "unit": "$"}
+  ]
+}

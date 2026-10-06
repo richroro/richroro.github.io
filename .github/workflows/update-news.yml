@@ -1,0 +1,65 @@
+name: 경제뉴스 자동 수집
+
+# 언론사 경제 RSS 와 시장 지표를 받아 news/data/ 에 커밋한다.
+# 페이지(https://richroro.github.io/news/)는 열릴 때 news/data/index.json 과 날짜 파일을 읽는다.
+# 인증키가 필요 없다. 수집할 피드·지표 목록은 news/feeds.json 에서 바꾼다.
+
+on:
+  schedule:
+    # 06:17 ~ 23:17 KST 매시. 밤에는 기사가 적어 쉬고, 아침 첫 실행이 밤사이 기사를 모은다.
+    - cron: '17 21-23,0-14 * * *'
+  push:
+    branches: [main]
+    paths: ['news/feeds.json', 'news/fetch_news.py', '.github/workflows/update-news.yml']
+  workflow_dispatch:
+
+concurrency:
+  group: news-fetch
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: 뉴스 받기
+        run: |
+          set -o pipefail
+          python news/fetch_news.py 2>&1 | tee "$RUNNER_TEMP/fetch.log"
+          {
+            echo "### 경제뉴스 수집"
+            echo '```'
+            cat "$RUNNER_TEMP/fetch.log"
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: 바뀐 게 있으면 커밋
+        run: |
+          if [ -z "$(git status --porcelain -- news/data)" ]; then
+            echo "변경 없음 — 커밋하지 않습니다." >> "$GITHUB_STEP_SUMMARY"
+            exit 0
+          fi
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A news/data
+          git commit -q -m "경제뉴스 자동 수집 $(TZ=Asia/Seoul date '+%Y-%m-%d %H:%M KST')"
+          pushed=0
+          for i in 1 2 3 4; do
+            if git push -q; then pushed=1; break; fi
+            echo "푸시 실패, 재시도 $i"
+            git pull -q --rebase --autostash origin "${GITHUB_REF_NAME}" || true
+            sleep $((2 ** i))
+          done
+          if [ "$pushed" -ne 1 ]; then
+            echo "::error::커밋은 만들었지만 푸시하지 못했습니다. 다음 실행에서 다시 시도합니다."
+            exit 1
+          fi
