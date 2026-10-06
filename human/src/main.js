@@ -228,8 +228,12 @@ gltfLoader.load('assets/avatar.glb', gltf => {
   rig.morphIndex = dict;
   rig.morphNames = Object.keys(dict);
   rig.headPos = rig.head.getWorldPosition(new THREE.Vector3());
+  rig.headRest = rig.headPos.clone();
+  rig.headSmooth = rig.headPos.clone();
   rig.headFix = rig.head.getWorldQuaternion(new THREE.Quaternion()).invert();
   rig.ready = true;
+  // 몸동작(모션캡처)은 얼굴이 뜬 다음에 이어서 받는다
+  new GLTFLoader().setMeshoptDecoder(MeshoptDecoder).load('assets/anims.glb', a => setupBody(a.animations), undefined, e => console.warn('모션을 불러오지 못했습니다', e));
   $('#loading').classList.add('done');
   setTimeout(() => $('#loading').remove(), 900);
 }, undefined, err => {
@@ -257,6 +261,57 @@ function poseArms(root, bone) {
   }
 }
 
+// ───────────────────────── 몸(모션캡처) ─────────────────────────
+// Rocketbox 여성 모션캡처. 상태마다 고른 클립을 크로스페이드로 잇는다.
+const BODY = {
+  idle: [['idle1', 3], ['idle2', 3], ['idle3', 3], ['idle4', 2], ['idle5', 2], ['idle8', 2], ['idle9', 2], ['breathe2', 2], ['breathe3', 2], ['hair1', 0.5]],
+  talk: [['talk1', 1], ['talk2', 1], ['talk3', 1], ['talk4', 1], ['talk5', 1], ['talk6', 1]],
+  talkHappy: [['talkx1', 1], ['talk4', 1], ['talk5', 1]],
+  listen: [['listen1', 1], ['listen2', 1], ['listen3', 1], ['nod1', 0.4], ['nod3', 0.4]],
+  nod: [['nod1', 1], ['nod2', 1], ['nod3', 1]],
+};
+const body = { mixer: null, actions: {}, cur: null, name: '', state: 'idle', until: 0 };
+const weighted = list => {
+  let r = Math.random() * list.reduce((a, [, w]) => a + w, 0);
+  for (const [n, w] of list) if ((r -= w) < 0) return n;
+  return list[0][0];
+};
+function setupBody(clips) {
+  body.mixer = new THREE.AnimationMixer(rig.root);
+  for (const c of clips) body.actions[c.name] = body.mixer.clipAction(c);
+  const st = body.state; body.state = '';
+  bodyState(st);
+}
+function playBody(name, fade = 0.8, once = false) {
+  const a = body.actions[name];
+  if (!a) return;
+  const dur = a.getClip().duration;
+  if (a === body.cur && !once) { body.until = S.t + rand(8, 16); return; }
+  a.reset();
+  a.setLoop(once ? THREE.LoopOnce : THREE.LoopRepeat, Infinity);
+  a.clampWhenFinished = once;
+  if (!once && dur > 8) a.time = Math.random() * dur * 0.6; // 긴 클립은 아무 데서나 시작해 매번 다른 몸짓
+  a.fadeIn(fade).play();
+  if (body.cur && body.cur !== a) body.cur.fadeOut(fade);
+  body.cur = a; body.name = name;
+  body.until = S.t + (once ? Math.max(0.5, dur - fade) : Math.min(dur - a.time - fade, rand(9, 20)));
+}
+const bodyList = () => body.state === 'talk' ? (S.mood === 'happy' ? BODY.talkHappy : BODY.talk) : body.state === 'listen' ? BODY.listen : BODY.idle;
+function bodyState(state) {
+  if (body.state === state) return;
+  if (state === 'afterTalk') { body.state = 'idle'; if (body.mixer) playBody(weighted(BODY.nod), 0.7, true); return; }
+  body.state = state;
+  if (body.mixer) playBody(weighted(bodyList()), state === 'talk' ? 0.6 : state === 'listen' ? 0.9 : 1.4);
+}
+function updateBody(dt) {
+  if (S.t > body.until) {
+    let n = weighted(bodyList());
+    if (n === body.name) n = weighted(bodyList());
+    playBody(n, body.state === 'talk' ? 0.8 : 1.6);
+  }
+  body.mixer.update(dt);
+}
+
 // ───────────────────────── 표정 ─────────────────────────
 const MOODS = {
   neutral: { label: '무표정', w: {} },
@@ -275,8 +330,10 @@ const S = {
   mode: 'auto', mood: 'neutral', moodNext: 6,
   follow: true, handheld: true,
   pointer: { ndc: new THREE.Vector2(), last: -99 },
-  gaze: { target: new THREE.Vector3(), cur: new THREE.Vector3(), off: new THREE.Vector2(), nextSac: 0, away: 0, awayUntil: 0, nextAway: rand(4, 8) },
+  gaze: { mode: 'contact', until: 2.5, target: new THREE.Vector3(), cur: new THREE.Vector3(), focus: new THREE.Vector3(), off: new THREE.Vector2(), aw: new THREE.Vector2(), nextSac: 0, init: false },
   head: { yaw: 0, pitch: 0, roll: 0 },
+  base: {}, baseNext: 1, // 표정의 미세한 기저 변동
+  listenUntil: 0, phrase: -1, qEnv: 0,
   blink: { next: 1.2, start: -1, dbl: false, v: 0 },
   micro: [], microNext: 2,
   w: {}, // 현재 모프 값
@@ -329,9 +386,10 @@ const LATIN = { a: 'aa', e: 'E', i: 'I', o: 'O', u: 'U', y: 'I', b: 'PP', m: 'PP
 
 function buildVisemes(text, rate) {
   const D = 0.17 / rate; // 음절 하나 길이(초)
-  const segs = []; const charTime = [];
-  let t = 0;
+  const segs = []; const charTime = []; const phrases = [];
+  let t = 0, pStart = 0;
   const push = (v, s, d) => { segs.push({ v, s, t0: t, t1: t + d }); t += d; };
+  const endPhrase = q => { if (t - pStart > 0.25) phrases.push({ t0: pStart, t1: t, q }); };
   for (let i = 0; i < text.length; i++) {
     charTime[i] = t;
     const ch = text[i], c = ch.charCodeAt(0);
@@ -340,21 +398,22 @@ function buildVisemes(text, rate) {
       const ci = CHO[cho], fi = JONG[jong];
       const vd = D * (ci ? 0.52 : 0.72) * (fi ? 0.85 : 1);
       if (ci) push(ci, ci === 'PP' ? 1 : 0.8, Math.max(ci === 'PP' ? 0.06 : 0.03, D * 0.26));
-      const vs = JUNG[jung];
-      if (vs.length === 1) push(vs[0][0], vs[0][1], vd);
-      else { push(vs[0][0], vs[0][1], vd * 0.32); push(vs[1][0], vs[1][1], vd * 0.68); }
+      const vs = JUNG[jung], st = rand(0.78, 1.04); // 음절마다 입을 벌리는 정도가 조금씩 다르다
+      if (vs.length === 1) push(vs[0][0], vs[0][1] * st, vd);
+      else { push(vs[0][0], vs[0][1] * st, vd * 0.32); push(vs[1][0], vs[1][1] * st, vd * 0.68); }
       if (fi) push(fi, fi === 'PP' ? 1 : 0.7, D * 0.22);
     } else if (/[a-z]/i.test(ch)) {
       const v = LATIN[ch.toLowerCase()];
       push(v || 'Sil', v && 'aeiou'.includes(ch.toLowerCase()) ? 0.9 : 0.75, D * 0.42);
     } else if (/[0-9]/.test(ch)) {
       push('aa', 0.8, D * 0.5); push('E', 0.8, D * 0.5); push('nn', 0.6, D * 0.3);
-    } else if (/[.!?…]/.test(ch)) push('Sil', 0, 0.42 / rate);
-    else if (/[,·;:]/.test(ch)) push('Sil', 0, 0.24 / rate);
+    } else if (/[.!?…]/.test(ch)) { endPhrase(ch === '?'); push('Sil', 0, 0.42 / rate); pStart = t; }
+    else if (/[,·;:]/.test(ch)) { endPhrase(false); push('Sil', 0, 0.24 / rate); pStart = t; }
     else if (/\s/.test(ch)) push('Sil', 0, 0.035 / rate);
   }
   charTime[text.length] = t;
-  return { segs, charTime, dur: t };
+  endPhrase(/\?\s*$/.test(text));
+  return { segs, charTime, phrases, dur: t };
 }
 
 let koVoice = null;
@@ -376,7 +435,9 @@ function say(text) {
   const plan = buildVisemes(text, rate);
   const sp = { ...plan, start: performance.now() / 1000 + 0.05, offset: 0, text, synced: false, done: false };
   S.speech = sp;
+  S.phrase = -1;
   S.blink.next = Math.min(S.blink.next, S.t + 0.3);
+  bodyState('talk');
   if ('speechSynthesis' in window && (koVoice || pickVoice())) {
     const u = new SpeechSynthesisUtterance(text);
     u.voice = koVoice; u.lang = koVoice.lang; u.rate = rate; u.pitch = 1.04;
@@ -408,6 +469,7 @@ function stopSpeech() {
   S.speech = null;
 }
 
+function speechTime(sp) { return isFinite(sp.start) ? performance.now() / 1000 - sp.start + sp.offset : -1; }
 function visemeAt(sp, now) {
   if (!isFinite(sp.start)) return null;
   const t = now - sp.start + sp.offset;
@@ -431,44 +493,59 @@ const tmpV = new THREE.Vector3(), tmpV2 = new THREE.Vector3(), tmpQ = new THREE.
 const camRight = new THREE.Vector3(), camUp = new THREE.Vector3();
 const ray = new THREE.Raycaster();
 
+// 사람은 상대를 계속 쳐다보지 않는다. 응시와 회피를 번갈아 하고, 말할 땐 문장 머리에서 시선을 돌린다.
+function setGaze(now, mode, dur, thinking) {
+  const g = S.gaze, prev = g.mode;
+  g.mode = mode;
+  if (mode === 'away') {
+    const dirs = thinking || S.mood === 'think'
+      ? [[-1, 0.9], [1, 0.9], [-0.5, 1], [0.5, 1]]
+      : [[-1, -0.35], [1, -0.35], [-0.8, 0.1], [0.8, 0.1], [0.15, -1], [-1, -0.75], [1, -0.75]];
+    const [dx, dy] = pick(dirs), amp = rand(24, 58); // 카메라 평면에서 cm (약 6~15°)
+    g.aw.set(dx * amp + rand(-6, 6), dy * amp * 0.7 + rand(-4, 4));
+    g.until = now + (dur || rand(0.7, 2.6));
+  } else {
+    g.aw.set(0, 0);
+    g.until = now + (dur || rand(1.8, 5.5));
+  }
+  if (prev !== mode && Math.random() < 0.45) scheduleBlink(now, true); // 큰 시선 이동엔 깜빡임이 자주 붙는다
+}
+
 function updateGazeTarget(now, dt) {
   const g = S.gaze;
   camera.matrixWorld.extractBasis(camRight, camUp, tmpV);
   const pointerActive = S.follow && now - S.pointer.last < 2.5;
-  // 시선을 잠깐 돌렸다 돌아오는 습관
-  if (!pointerActive && !S.speech && now > g.nextAway && g.away === 0) {
-    g.away = 1; g.awayUntil = now + rand(0.6, 1.8);
-    const think = S.mood === 'think';
-    g.awayOff = think ? new THREE.Vector2(rand(-55, -25), rand(20, 45))
-      : pick([new THREE.Vector2(rand(-60, -30), rand(-25, 5)), new THREE.Vector2(rand(30, 60), rand(-25, 5)), new THREE.Vector2(rand(-20, 20), rand(-45, -30))]);
-    if (Math.random() < 0.55) scheduleBlink(now, true);
+  const listening = now < S.listenUntil;
+  if (now > g.until && !S.speech) {
+    if (g.mode === 'away' || Math.random() < (listening ? 0.85 : 0.55)) setGaze(now, 'contact', listening ? rand(2.5, 6) : 0);
+    else setGaze(now, 'away');
   }
-  if (g.away && now > g.awayUntil) { g.away = 0; g.nextAway = now + rand(3.5, 9) * (S.mood === 'think' ? 0.5 : 1); if (Math.random() < 0.5) scheduleBlink(now, true); }
-  // 미세 도약 안구 운동: 상대의 두 눈과 입 사이를 오간다
+  if (S.speech && now > g.until && g.mode === 'away') setGaze(now, 'contact', 30);
+  // 미세 도약 안구 운동: 응시 중엔 상대의 두 눈과 입 사이를, 회피 중엔 근처를 오간다
   if (now > g.nextSac) {
-    g.nextSac = now + rand(0.35, 1.6);
-    g.off.set(pick([-3.2, 3.2, 0, -3.2, 3.2]), pick([0, 0, -4.5, 1]));
+    g.nextSac = now + rand(0.3, 1.5);
+    if (g.mode === 'contact') g.off.set(pick([-3.2, 3.2, 0, -3.2, 3.2]), pick([0, 0, -4.5, 1]));
+    else g.off.set(rand(-6, 6), rand(-4, 4));
   }
   if (pointerActive) {
     ray.setFromCamera(S.pointer.ndc, camera);
     g.target.copy(ray.ray.origin).addScaledVector(ray.ray.direction, camera.position.distanceTo(LOOK) * 0.55);
   } else {
-    g.target.copy(camera.position)
-      .addScaledVector(camRight, g.off.x + (g.away ? g.awayOff.x : 0))
-      .addScaledVector(camUp, g.off.y + (g.away ? g.awayOff.y : 0));
+    g.target.copy(camera.position).addScaledVector(camRight, g.off.x + g.aw.x).addScaledVector(camUp, g.off.y + g.aw.y);
   }
-  // 도약 운동은 빠르게(약 40ms), 드리프트는 노이즈로
-  g.cur.x = damp(g.cur.x, g.target.x, 26, dt);
-  g.cur.y = damp(g.cur.y, g.target.y, 26, dt);
-  g.cur.z = damp(g.cur.z, g.target.z, 26, dt);
+  if (!g.init) { g.cur.copy(g.target); g.focus.copy(g.target); g.init = true; }
+  // 눈은 빠르게(도약 운동 약 40ms), 머리가 바라보는 지점은 느리게 따라간다
+  g.cur.lerp(g.target, 1 - Math.exp(-26 * dt));
+  g.focus.lerp(g.target, 1 - Math.exp(-(g.mode === 'contact' ? 2.2 : 1.6) * dt));
 }
 
-function setBoneWorldRot(b, euler, amount) {
-  // 쉬는 자세 위에 월드 축 기준 회전을 얹는다
-  tmpQ.setFromEuler(new THREE.Euler(euler.x * amount, euler.y * amount, euler.z * amount, 'YXZ'));
-  const p = b.userData.parentRest;
-  tmpQ2.copy(p).invert().multiply(tmpQ).multiply(p);
-  b.quaternion.copy(tmpQ2).multiply(b.userData.rest);
+// 애니메이션이 정한 자세 위에 월드 축 회전을 덧붙인다: local' = P⁻¹·R·P·local
+const _pq = new THREE.Quaternion(), _pqi = new THREE.Quaternion(), _rq = new THREE.Quaternion(), _eu = new THREE.Euler(0, 0, 0, 'YXZ');
+function addWorldRot(b, x, y, z) {
+  b.parent.getWorldQuaternion(_pq);
+  _pqi.copy(_pq).invert();
+  _rq.setFromEuler(_eu.set(x, y, z, 'YXZ'));
+  b.quaternion.premultiply(_pq).premultiply(_rq).premultiply(_pqi);
 }
 
 function aimEye(e, target, headFwdQ) {
@@ -498,37 +575,58 @@ function animate(now, dt) {
     let r = Math.random(), m = 'neutral';
     for (const [k, p] of AUTO_FLOW) { if ((r -= p) < 0) { m = k; break; } }
     S.mood = m; S.moodNext = now + rand(4, 10);
-    if (m === 'think') { g.nextAway = now; }
+    if (m === 'think') setGaze(now, 'away', rand(1, 2.5), true);
   }
   if (now > S.microNext) { addMicro(now); S.microNext = now + rand(1.8, 5.5); }
 
+  // 말하는 중: 구(문장 조각)가 바뀔 때 시선·끄덕임
+  if (S.speech) {
+    const st = speechTime(S.speech), ph = S.speech.phrases;
+    let pi = -1;
+    for (let i = 0; i < ph.length; i++) if (st >= ph[i].t0 - 0.05) pi = i;
+    if (pi !== S.phrase && pi >= 0) {
+      S.phrase = pi;
+      const len = ph[pi].t1 - ph[pi].t0;
+      // 말을 꺼낼 때 생각하듯 시선을 돌렸다가, 구의 끝에서 다시 눈을 맞춘다
+      if (Math.random() < (pi === 0 ? 0.45 : 0.6) && len > 0.8) setGaze(now, 'away', Math.min(len * 0.45, rand(0.5, 1.3)), Math.random() < 0.5);
+      else setGaze(now, 'contact', 30);
+      if (Math.random() < 0.5) S.nodKick = 1;
+    }
+    const cur = ph[S.phrase];
+    S.qTarget = cur && cur.q && st > cur.t1 - 0.7 ? 1 : 0;
+  } else S.qTarget = 0;
+  S.qEnv = damp(S.qEnv, S.qTarget || 0, 5, dt);
+  if (!S.speech && body.state === 'listen' && now > S.listenUntil) bodyState('idle');
+
   updateGazeTarget(now, dt);
 
-  // 머리: 시선을 느리게 따라가고, 노이즈로 살아있는 흔들림
-  const hp = rig.headPos;
-  const dx = g.cur.x - hp.x, dy = g.cur.y - hp.y, dz = g.cur.z - hp.z;
-  const yawE = Math.atan2(dx, dz), pitchE = Math.atan2(dy, Math.hypot(dx, dz));
-  const talk = S.talkEnv;
-  const idle = 1 + talk * 0.8;
-  const moodTilt = S.mood === 'curious' ? 0.09 : S.mood === 'think' ? -0.05 : S.mood === 'sad' ? 0.04 : 0;
-  const tYaw = yawE * 0.42 + NZ[0](now * 0.11) * 0.07 * idle;
-  const tPitch = -pitchE * 0.3 + NZ[1](now * 0.13) * 0.045 * idle + (S.mood === 'sad' ? 0.08 : 0) + S.nod;
-  const tRoll = NZ[2](now * 0.09) * 0.05 * idle + moodTilt;
-  h.yaw = damp(h.yaw, tYaw, 3.2, dt);
-  h.pitch = damp(h.pitch, tPitch, 3.6, dt);
-  h.roll = damp(h.roll, tRoll, 2.2, dt);
-
-  // 호흡(약 4.3초 주기)
-  const br = 0.5 - 0.5 * Math.cos(now * Math.PI * 2 / (4.3 + NZ[3](now * 0.05) * 0.6));
-  setBoneWorldRot(rig.spine1, new THREE.Vector3(-br * 0.012 + NZ[4](now * 0.07) * 0.01, NZ[5](now * 0.06) * 0.015, NZ[6](now * 0.05) * 0.012), 1);
-  setBoneWorldRot(rig.spine2, new THREE.Vector3(-br * 0.016, 0, 0), 1);
-  setBoneWorldRot(rig.lClav, new THREE.Vector3(0, 0, br * 0.018), 1);
-  setBoneWorldRot(rig.rClav, new THREE.Vector3(0, 0, -br * 0.018), 1);
-  const he = new THREE.Vector3(h.pitch + br * 0.008, h.yaw, h.roll);
-  setBoneWorldRot(rig.neck, he, 0.4);
-  setBoneWorldRot(rig.head, he, 0.6);
+  // 몸: 모션캡처 클립. 아직 안 받았으면 쉬는 자세로 되돌린 뒤 덧붙인다
+  if (body.mixer) updateBody(dt);
+  else for (const b of [rig.spine2, rig.neck, rig.head]) b.quaternion.copy(b.userData.rest);
   rig.root.updateMatrixWorld(true);
 
+  // 호흡: 모션에도 들어 있지만 가슴을 조금 더
+  const br = 0.5 - 0.5 * Math.cos(now * Math.PI * 2 / (4.3 + NZ[3](now * 0.05) * 0.6));
+  addWorldRot(rig.spine2, -br * (body.mixer ? 0.006 : 0.016), 0, 0);
+
+  // 머리: 모션캡처의 움직임은 살리고, 바라보는 지점 쪽으로 일부만 보정한다(눈이 먼저, 머리는 늦게)
+  rig.head.getWorldPosition(rig.headPos);
+  const F = tmpV.set(0, 0, 1).applyQuaternion(rig.head.getWorldQuaternion(tmpQ).multiply(rig.headFix));
+  const D = tmpV2.copy(g.focus).sub(rig.headPos).normalize();
+  let eYaw = Math.atan2(D.x, D.z) - Math.atan2(F.x, F.z);
+  eYaw = Math.atan2(Math.sin(eYaw), Math.cos(eYaw));
+  const ePitch = Math.asin(clamp(D.y, -1, 1)) - Math.asin(clamp(F.y, -1, 1));
+  const pointerActive = S.follow && now - S.pointer.last < 2.5;
+  const follow = pointerActive ? 0.65 : g.mode === 'contact' ? 0.8 : 0.5;
+  const moodTilt = S.mood === 'curious' ? 0.09 : S.mood === 'think' ? -0.05 : S.mood === 'sad' ? 0.04 : 0;
+  const amp = body.mixer ? 0.35 : 1; // 모션이 있으면 노이즈는 조금만
+  h.yaw = damp(h.yaw, clamp(eYaw * follow, -0.6, 0.6) + NZ[0](now * 0.11) * 0.06 * amp, 4.0, dt);
+  h.pitch = damp(h.pitch, clamp(-ePitch * follow, -0.35, 0.35) + NZ[1](now * 0.13) * 0.04 * amp + (S.mood === 'sad' ? 0.07 : 0) + S.nod - S.qEnv * 0.05, 4.2, dt);
+  h.roll = damp(h.roll, NZ[2](now * 0.09) * 0.045 * amp + moodTilt + S.qEnv * 0.05, 2.2, dt);
+  addWorldRot(rig.neck, h.pitch * 0.4, h.yaw * 0.4, h.roll * 0.4);
+  rig.neck.updateMatrixWorld(true);
+  addWorldRot(rig.head, h.pitch * 0.6, h.yaw * 0.6, h.roll * 0.6);
+  rig.root.updateMatrixWorld(true);
   // 쉬는 자세 대비 머리 회전(정면 +Z 가 지금 어디를 향하는지)
   const headFwdQ = rig.head.getWorldQuaternion(new THREE.Quaternion()).multiply(rig.headFix);
   // 눈은 같은 점을 본다(수렴), 아주 작은 떨림 추가
@@ -550,7 +648,20 @@ function animate(now, dt) {
     for (const k in m.w) add(k, m.w[k] * e);
     return true;
   });
-  // 눈꺼풀이 시선을 따라간다
+  // 표정의 기저가 1~4초마다 아주 조금씩 바뀐다(가만히 있는 얼굴도 완전히 멈춰 있지 않다)
+  if (now > S.baseNext) {
+    S.baseNext = now + rand(1, 4);
+    const keys = ['mouthRollLower', 'mouthRollUpper', 'mouthStretchLeft', 'mouthStretchRight', 'mouthPucker', 'mouthPressLeft', 'mouthPressRight',
+      'mouthSmileLeft', 'mouthSmileRight', 'eyeSquintLeft', 'eyeSquintRight', 'browInnerUp', 'browOuterUpLeft', 'browOuterUpRight', 'cheekSquintLeft'];
+    for (const k in S.base) if (Math.random() < 0.5) S.base[k] = 0;
+    for (let i = 0; i < 3; i++) S.base[pick(keys)] = Math.random() ** 2 * 0.24;
+  }
+  const mouthQuiet = S.speech ? 0.35 : 1;
+  for (const k in S.base) add(k, S.base[k] * (k.startsWith('mouth') ? mouthQuiet : 1));
+  // 질문 끝: 눈썹이 올라간다
+  add('browInnerUp', S.qEnv * 0.3); add('browOuterUpLeft', S.qEnv * 0.22); add('browOuterUpRight', S.qEnv * 0.22);
+  // 눈꺼풀: 편하게 살짝 내려온 기본값 + 시선을 따라간다
+  add('eyeLookDownLeft', 0.08); add('eyeLookDownRight', 0.08);
   add('eyeLookUpLeft', clamp01(la.pitch / 0.32) * 0.5); add('eyeLookUpRight', clamp01(la.pitch / 0.32) * 0.5);
   add('eyeLookDownLeft', clamp01(-la.pitch / 0.38) * 0.65); add('eyeLookDownRight', clamp01(-la.pitch / 0.38) * 0.65);
   add('eyeLookOutLeft', clamp01(la.yaw / 0.5) * 0.3); add('eyeLookInRight', clamp01(la.yaw / 0.5) * 0.3);
@@ -563,14 +674,19 @@ function animate(now, dt) {
   let talking = 0;
   if (S.speech) {
     const vz = visemeAt(S.speech, performance.now() / 1000);
-    if (vz === 'end') { S.speech = null; S.blink.next = Math.min(S.blink.next, now + 0.25); }
+    if (vz === 'end') {
+      S.speech = null; S.blink.next = Math.min(S.blink.next, now + 0.25);
+      bodyState(Math.random() < 0.6 ? 'afterTalk' : 'idle');
+      if (S.mode === 'auto' && Math.random() < 0.6) S.micro.push({ w: { mouthSmileLeft: 0.3, mouthSmileRight: 0.28, cheekSquintLeft: 0.12, cheekSquintRight: 0.1 }, a: 0.3, h: 1.2, r: 0.8, t0: now });
+      setGaze(now, 'contact', rand(1.5, 3));
+    }
     else if (vz) {
       talking = 1;
       if (vz.v !== 'Sil') add('viseme_' + vz.v, vz.s * 0.95);
       // 음절 머리에서 고개·눈썹으로 강세
       if (vz.idx !== S.lastSeg) {
         S.lastSeg = vz.idx;
-        if (vz.v === 'aa' || vz.v === 'O' || vz.v === 'E') { if (Math.random() < 0.18) S.nodKick = 1; if (Math.random() < 0.08) addMicro(now); }
+        if (vz.v === 'aa' || vz.v === 'O' || vz.v === 'E') { if (Math.random() < 0.12) S.nodKick = 1; if (Math.random() < 0.06) addMicro(now); }
       }
     }
   }
@@ -599,14 +715,18 @@ function animate(now, dt) {
 }
 
 // 핸드헬드 카메라: 아주 작은 흔들림과 숨쉬는 듯한 줌
-function updateCamera(now) {
+function updateCamera(now, dt) {
   const a = S.handheld ? 1 : 0;
+  // 몸이 움직여도 얼굴이 화면에서 벗어나지 않게, 카메라맨처럼 천천히 따라간다
+  const fx = rig.ready ? (rig.headSmooth.lerp(rig.headPos, 1 - Math.exp(-1.4 * dt)), rig.headSmooth.x - rig.headRest.x) : 0;
+  const fy = rig.ready ? (rig.headSmooth.y - rig.headRest.y) * 0.9 : 0;
+  const fz = rig.ready ? rig.headSmooth.z - rig.headRest.z : 0; // 앞으로 숙이면 같이 물러나 크기를 유지
   camera.position.set(
-    CAM_BASE.x + NZ[11](now * 0.23) * 0.9 * a,
-    CAM_BASE.y + lookYOff + NZ[3](now * 0.19 + 50) * 0.6 * a,
-    CAM_BASE.z + NZ[5](now * 0.07 + 20) * 2.5 * a,
+    CAM_BASE.x + fx * 0.7 + NZ[11](now * 0.23) * 0.9 * a,
+    CAM_BASE.y + fy + lookYOff + NZ[3](now * 0.19 + 50) * 0.6 * a,
+    CAM_BASE.z + fz + NZ[5](now * 0.07 + 20) * 2.5 * a,
   );
-  camera.lookAt(LOOK.x + NZ[6](now * 0.31 + 9) * 0.25 * a, LOOK.y + lookYOff + NZ[7](now * 0.27 + 4) * 0.2 * a, LOOK.z);
+  camera.lookAt(LOOK.x + fx + NZ[6](now * 0.31 + 9) * 0.25 * a, LOOK.y + fy + lookYOff + NZ[7](now * 0.27 + 4) * 0.2 * a, LOOK.z + fz);
 }
 
 // ───────────────────────── 크기 · 품질 ─────────────────────────
@@ -638,7 +758,7 @@ function loop() {
   timer.update();
   const dt = Math.min(timer.getDelta(), 0.1);
   S.t += dt;
-  updateCamera(S.t);
+  updateCamera(S.t, dt);
   animate(S.t, dt);
   film.uniforms.time.value = S.t;
   composer.render();
@@ -732,6 +852,13 @@ LINES.forEach(l => {
   linesEl.appendChild(b);
 });
 $('#sayform').onsubmit = e => { e.preventDefault(); say($('#text').value); };
+// 글을 쓰는 동안엔 귀 기울여 듣는 몸짓과 눈 맞춤
+$('#text').addEventListener('input', () => {
+  if (S.speech) return;
+  S.listenUntil = S.t + 3.5;
+  bodyState('listen');
+  if (S.gaze.mode === 'away') setGaze(S.t, 'contact', rand(2, 4));
+});
 $('#shot').onclick = () => { shotPending = true; };
 $('#rec').onclick = toggleRecord;
 $('#q').onclick = () => setQuality(quality === 'high' ? 'low' : 'high');
@@ -741,4 +868,4 @@ $('#hide').onclick = () => document.body.classList.toggle('clean');
 addEventListener('keydown', e => { if (e.key === 'h' && e.target === document.body) document.body.classList.toggle('clean'); });
 
 // 테스트용 훅
-window.__human = { S, rig, say, MOODS, setQuality, camera, CAM_BASE, LOOK };
+window.__human = { S, rig, say, MOODS, setQuality, camera, CAM_BASE, LOOK, body, setGaze };

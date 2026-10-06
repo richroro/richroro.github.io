@@ -63,8 +63,9 @@
   .credit { font-size: 11px; color: #8d847b; margin-left: auto; align-self: center; }
   .credit a { color: inherit; }
 
-  #toast { position: fixed; left: 50%; top: 70px; transform: translate(-50%, -8px); background: rgba(20,18,16,.85); border: 1px solid var(--line); border-radius: 12px; padding: 9px 14px; font-size: 13.5px; opacity: 0; transition: .3s; pointer-events: none; max-width: calc(100% - 32px); text-align: center; }
+  #toast { position: fixed; left: 50%; bottom: 210px; transform: translate(-50%, 8px); background: rgba(20,18,16,.85); border: 1px solid var(--line); border-radius: 12px; padding: 9px 14px; font-size: 13.5px; opacity: 0; transition: .3s; pointer-events: none; max-width: calc(100% - 32px); text-align: center; }
   #toast.show { opacity: 1; transform: translate(-50%, 0); }
+  @media (max-width: 560px) { #toast { bottom: 160px; } }
 
   #loading { position: fixed; inset: 0; display: grid; place-items: center; background: var(--bg); transition: opacity .8s; z-index: 5; }
   #loading.done { opacity: 0; pointer-events: none; }
@@ -108,7 +109,7 @@
     <button class="tool toggle on tools-extra" id="hand" type="button" title="손으로 든 카메라처럼 미세하게 흔들기"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 7h13v10H3zM16 10l5-3v10l-5-3"/></svg><span>핸드헬드</span></button>
     <button class="tool tools-extra" id="q" type="button">화질: 높음</button>
     <button class="tool" id="hide" type="button" title="화면만 보기 (H)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg><span>화면만</span></button>
-    <span class="credit">인물 <a href="https://github.com/microsoft/Microsoft-Rocketbox" target="_blank" rel="noopener">Microsoft Rocketbox</a>(MIT) · <a href="https://threejs.org" target="_blank" rel="noopener">three.js</a></span>
+    <span class="credit">인물·모션 <a href="https://github.com/microsoft/Microsoft-Rocketbox" target="_blank" rel="noopener">Microsoft Rocketbox</a>(MIT) · <a href="https://threejs.org" target="_blank" rel="noopener">three.js</a></span>
   </div>
 </div>
 
