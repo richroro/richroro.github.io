@@ -915,6 +915,96 @@ def write_json(path: str, obj) -> None:
     os.replace(tmp, path)
 
 
+# ---------------------------------------------------------------- 달력 구독 피드
+SITE = "https://richroro.github.io/ipo/"
+
+
+def ics_path(out: str) -> str:
+    return os.path.join(os.path.dirname(out), "ipo.ics")
+
+
+def _ics_esc(s: str) -> str:
+    return s.replace("\\", "\\\\").replace(";", "\\;").replace(",", "\\,").replace("\n", "\\n")
+
+
+def _fold(line: str) -> list[str]:
+    """RFC 5545: 한 줄은 75바이트까지 — 넘으면 다음 줄 앞에 빈칸을 두고 잇는다(글자 중간에서 자르지 않는다)"""
+    out, cur, size = [], "", 0
+    for ch in line:
+        n = len(ch.encode("utf-8"))
+        if size + n > (75 if not out else 74):
+            out.append(cur)
+            cur, size = "", 0
+        cur += ch
+        size += n
+    out.append(cur)
+    return [out[0]] + [" " + x for x in out[1:]]
+
+
+def ics_text(items: list[dict], today: dt.date) -> str:
+    """달력 앱이 구독하는 피드: 스팩을 뺀 종목의 청약·마감·환불·상장. 지난 30일 이후 일정만 담는다.
+    종일 일정에 그날 시각 알림을 단다(구독 달력은 앱 설정에 따라 알림을 끄기도 한다)."""
+    stamp = today.strftime("%Y%m%dT000000Z")
+    since = (today - dt.timedelta(days=30)).isoformat()
+    day = lambda s: s.replace("-", "")  # noqa: E731
+    nxt = lambda s: (dt.date.fromisoformat(s) + dt.timedelta(days=1)).isoformat()  # noqa: E731
+    md = lambda s: f"{int(s[5:7])}/{int(s[8:10])}"  # noqa: E731
+    won = lambda v: f"{v:,}원"  # noqa: E731
+    lines = ["BEGIN:VCALENDAR", "VERSION:2.0", "PRODID:-//richroro//ipo feed//KO", "CALSCALE:GREGORIAN", "METHOD:PUBLISH",
+             "X-WR-CALNAME:공모주 캘린더", "X-WR-TIMEZONE:Asia/Seoul",
+             f"X-WR-CALDESC:{_ics_esc('공모주 청약·환불·상장 일정(스팩 제외). 하루 세 번 자동 갱신 — ' + SITE)}",
+             "REFRESH-INTERVAL;VALUE=DURATION:PT6H", "X-PUBLISHED-TTL:PT6H"]
+    key = lambda it: (it.get("sub_start") or it.get("list_date") or "", it.get("id", ""))  # noqa: E731
+    for it in sorted(items, key=key):
+        if it.get("spac") or not it.get("id"):
+            continue
+        name, url = it.get("name", ""), f"{SITE}#i={it['id']}"
+        uw = ", ".join(it.get("uw") or [])
+        if it.get("price"):
+            price = f"확정 공모가 {won(it['price'])}"
+        elif it.get("band_lo") and it.get("band_hi"):
+            price = f"희망 공모가 {won(it['band_lo'])}~{won(it['band_hi'])}"
+        else:
+            price = ""
+        facts = [x for x in (price, f"기관경쟁률 {it['inst_comp']:,.0f}:1" if it.get("inst_comp") else "",
+                             f"확약 {it['lockup']:g}%" if it.get("lockup") is not None and it.get("inst_comp") else "") if x]
+        ev = []
+        s0, s1 = it.get("sub_start"), it.get("sub_end") or it.get("sub_start")
+        if s0:
+            ev.append(("sub", s0, nxt(s1), f"[청약] {name}" + (f" ({it['uw'][0]})" if it.get("uw") else ""),
+                       [f"청약 {md(s0)}~{md(s1)} 10:00~16:00", f"주간사 {uw}" if uw else "", *facts], ("PT9H30M", "청약 시작 30분 전")))
+            if s1 != s0:
+                ev.append(("end", s1, nxt(s1), f"[청약 마감 16시] {name}",
+                           ["오늘 16시 청약 마감 — 증권사별 청약 건수를 보고 고르세요", f"주간사 {uw}" if uw else ""], ("PT13H", "마감 3시간 전")))
+        if it.get("refund"):
+            ev.append(("refund", it["refund"], nxt(it["refund"]), f"[환불] {name}", ["증거금 환불 · 배정 결과 확인"], None))
+        if it.get("list_date"):
+            ev.append(("list", it["list_date"], nxt(it["list_date"]), f"[상장] {name}",
+                       ["09:00 시초가 결정" + (f" · 공모가 {won(it['price'])}" if it.get("price") else ""), "매도 전략을 미리 정해 두세요"],
+                       ("PT8H20M", "장 시작 40분 전")))
+        for kind, start, end, title, desc, alarm in ev:
+            if start < since:
+                continue
+            body = [f"UID:feed-{kind}-{it['id']}@richroro.github.io", f"DTSTAMP:{stamp}", f"DTSTART;VALUE=DATE:{day(start)}",
+                    f"DTEND;VALUE=DATE:{day(end)}", f"SUMMARY:{_ics_esc(title)}",
+                    f"DESCRIPTION:{_ics_esc(chr(10).join([x for x in desc if x] + ['자세히: ' + url]))}", f"URL:{url}", "TRANSP:TRANSPARENT"]
+            if alarm:
+                body += ["BEGIN:VALARM", "ACTION:DISPLAY", f"TRIGGER;RELATED=START:{alarm[0]}",
+                         f"DESCRIPTION:{_ics_esc(f'{title} · {alarm[1]}')}", "END:VALARM"]
+            lines += ["BEGIN:VEVENT", *body, "END:VEVENT"]
+    lines.append("END:VCALENDAR")
+    return "\r\n".join(x for line in lines for x in _fold(line)) + "\r\n"
+
+
+def write_ics(path: str, items: list[dict], today: dt.date) -> int:
+    text = ics_text(items, today)
+    tmp = path + ".tmp"
+    with open(tmp, "w", encoding="utf-8", newline="") as f:
+        f.write(text)
+    os.replace(tmp, path)
+    return text.count("BEGIN:VEVENT")
+
+
 def get_list(o: str, pages: int, html_dir: str | None) -> str:
     if html_dir:
         path = os.path.join(html_dir, f"{o}.html")
@@ -942,11 +1032,16 @@ def main(argv=None) -> int:
     ap.add_argument("--min-schedule", type=int, default=5, help="청약 일정 표에서 최소 몇 종목을 읽어야 성공으로 볼지")
     ap.add_argument("--out", default=OUT)
     ap.add_argument("--today", help="YYYY-MM-DD (테스트용)")
+    ap.add_argument("--ics-only", action="store_true", help="38 을 읽지 않고 지금 ipo.json 으로 달력 피드(ipo.ics)만 다시 만든다")
     a = ap.parse_args(argv)
 
     now = dt.datetime.now(KST)
     today = dt.date.fromisoformat(a.today) if a.today else now.date()
     prev = load_prev(a.out)
+    if a.ics_only:
+        n = write_ics(ics_path(a.out), prev, today)
+        log(f"달력 피드: 일정 {n}개 → {os.path.relpath(ics_path(a.out))}")
+        return 0 if prev else 1
     notes = []
 
     parsed = {}
@@ -997,8 +1092,9 @@ def main(argv=None) -> int:
            "source": "38커뮤니케이션 (www.38.co.kr)", "notes": notes, "items": items}
     write_json(a.out, out)
     write_json(corp_path(a.out), {"source": "38커뮤니케이션 상세 페이지 (증권신고서 요약)", "items": corp})
+    n_ev = write_ics(ics_path(a.out), items, today)
     up = [i for i in items if (i.get("sub_end") or "") >= today.isoformat()]
-    log(f"저장: {len(items)}종목 (청약 예정·진행 {len(up)}, 기업 분석 {len(corp)}) → {os.path.relpath(a.out)}")
+    log(f"저장: {len(items)}종목 (청약 예정·진행 {len(up)}, 기업 분석 {len(corp)}, 달력 일정 {n_ev}) → {os.path.relpath(a.out)}")
     return 0
 
 

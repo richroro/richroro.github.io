@@ -103,6 +103,9 @@
   const vchip = (it) => (it.spac ? `<span class="vd v-pass">스팩</span>` : verdictChip(scoreOf(it)));
   const itLink = (it) => `<button type="button" class="linkish" data-open="${esc(it.id)}">${esc(it.name)}</button>`;
 
+  const LIMIT = 6;
+  let showAll = false; // 청약별 계좌 상태: 처음엔 가까운 6곳만
+
   function renderAcct() {
     const box = $("acctBody");
     if (!box) return;
@@ -118,15 +121,18 @@
       return `<li><div class="ah"><span class="an">${i + 1}</span><div><b>${esc(s.name)}</b>
           <small>${today ? "오늘 만들 수 있어요" : `${mdw(s.date)}부터 만들 수 있어요`} · 늦어도 <b>${mdw(s.by)}</b>까지</small></div>
           ${today ? `<button type="button" class="ghost sm" data-made="${esc(s.k)}">만들었어요</button>` : ""}</div>
-        <p class="ag">이 계좌로 청약할 수 있게 되는 곳 ${s.gets.length}곳: ${s.gets.map((it) => `${itLink(it)} <small>${md(it.sub_start)}</small> ${vchip(it)}`).join(" · ")}</p>
+        <p class="ag-h">이 계좌로 청약할 수 있게 되는 곳 ${s.gets.length}곳</p>
+        <ul class="ag">${s.gets.map((it) => `<li>${itLink(it)}<small>${md(it.sub_start)}</small>${vchip(it)}</li>`).join("")}</ul>
         ${s.late.length ? `<p class="hint">이번엔 늦는 곳: ${s.late.map((it) => esc(it.name)).join(", ")}</p>` : ""}</li>`;
     }).join("")}</ol>` : `<p class="empty">${rows.length ? "지금 가진 계좌로 다가오는 청약을 모두 할 수 있어요." : "다가오는 청약이 없습니다."}</p>`;
     const stateTxt = (r) => (r.state === "ok" ? `<span class="aok">청약 가능</span>`
       : r.state === "plan" ? `<span class="aplan">${esc(r.via.name)} 만들면 (${md(r.via.date)})</span>` : `<span class="alate">계좌가 늦음</span>`);
-    const table = rows.length ? `<div class="tscroll mt12"><table class="narrow" id="acctTable"><thead><tr><th>종목</th><th>청약</th><th>주관사</th><th>상태</th></tr></thead><tbody>
-      ${rows.map((r) => `<tr><td class="tx nm">${itLink(r.it)} ${vchip(r.it)}</td><td data-l="청약">${mdw(r.it.sub_start)}</td>
+    const vis = showAll ? rows : rows.slice(0, LIMIT);
+    const table = rows.length ? `<div class="card mt16"><h3 class="card-h">청약별 계좌 상태</h3><div class="tscroll"><table class="narrow" id="acctTable"><thead><tr><th>종목</th><th>청약</th><th>주관사</th><th>상태</th></tr></thead><tbody>
+      ${vis.map((r) => `<tr><td class="tx nm">${itLink(r.it)} ${vchip(r.it)}</td><td data-l="청약">${mdw(r.it.sub_start)}</td>
         <td class="tx" data-l="주관사">${r.uws.map((x) => (own.has(x.k) ? `<b class="own">✓ ${esc(x.u)}</b>` : `<span class="miss">${esc(x.u)}</span>`)).join(" ")}</td>
-        <td data-l="상태">${stateTxt(r)}</td></tr>`).join("")}</tbody></table></div>` : "";
+        <td data-l="상태">${stateTxt(r)}</td></tr>`).join("")}</tbody></table></div>
+      ${rows.length > vis.length ? `<button type="button" class="more-row" data-more>나머지 ${rows.length - vis.length}곳 더 보기${ico("chev", "sm")}</button>` : ""}</div>` : "";
     const top = list.filter((b) => b.year).sort((a, b) => b.year - a.year).slice(0, 8);
     box.innerHTML = `
       <div class="card pad"><h3>가진 증권사 계좌</h3><p class="hint mt8">누르면 '있음'으로 표시됩니다(이 기기에만 저장). 가족 계좌는 따로 세지 않습니다.</p>
@@ -141,7 +147,7 @@
       </div>
       <div class="card pad mt16"><h3>만들 순서</h3><p class="hint mt8">놓치면 아까운 청약(판정이 좋은 곳, 곧 청약하는 곳)이 먼저 오도록 골랐습니다. 한 곳을 만든 뒤 20영업일이 지나야 다음 곳을 만들 수 있어요.</p>
         ${stepHtml}</div>
-      ${table ? `<div class="card mt16">${table}</div>` : ""}
+      ${table}
       ${top.length ? `<div class="card pad mt16"><h3>자주 주관한 증권사 — 지난 1년</h3><p class="hint mt8">당장 청약이 없어도 이런 곳은 미리 만들어 두면 기회가 많습니다.</p>
         <ul class="afreq mt12">${top.map((b) => `<li><b>${esc(b.name)}</b><span class="mb"><i style="width:${Math.round(b.year / top[0].year * 100)}%"></i></span><small>${b.year}회</small>${own.has(b.k) ? `<em class="aok">있음</em>` : `<em>없음</em>`}</li>`).join("")}</ul></div>` : ""}
       <p class="hint mt12">20영업일 제한은 은행·증권사 입출금 계좌를 합쳐 셉니다(대포통장 방지). 증권사마다 비대면 개설 뒤 바로 청약되는지, 청약 전날까지 만들어야 하는지 달라서
@@ -158,8 +164,8 @@
     const s = steps[0];
     const soon = s && diffDays(TODAY, s.by) <= 21;
     if (set && !soon) { box.innerHTML = ""; return; }
-    box.innerHTML = `<a class="cta acta" href="#acct"><span><b>${set ? `${esc(s.name)} 계좌를 ${s.by <= TODAY ? "오늘" : `${mdw(s.by)}까지`} 만드세요` : "가진 증권사를 표시해 두세요"}</b>
-      <small>${set ? `${s.gets.slice(0, 2).map((it) => esc(it.name)).join(", ")}${s.gets.length > 2 ? ` 외 ${s.gets.length - 2}곳` : ""} 청약용 · 20영업일 제한 고려` : "미리 만들어야 할 증권사와 날짜를 알려 드려요"}</small></span><i aria-hidden="true">›</i></a>`;
+    box.innerHTML = `<a class="cta acta" href="#acct"><span class="ci" aria-hidden="true">${ico("wallet")}</span><span><b>${set ? `${esc(s.name)} 계좌를 ${s.by <= TODAY ? "오늘" : `${mdw(s.by)}까지`} 만드세요` : "가진 증권사를 표시해 두세요"}</b>
+      <small>${set ? `${s.gets.slice(0, 2).map((it) => esc(it.name)).join(", ")}${s.gets.length > 2 ? ` 외 ${s.gets.length - 2}곳` : ""} 청약용 · 20영업일 제한 고려` : "미리 만들어야 할 증권사와 날짜를 알려 드려요"}</small></span><i aria-hidden="true">${ico("right", "sm")}</i></a>`;
   }
 
   function initAcct() {
@@ -168,6 +174,7 @@
     box.addEventListener("click", (e) => {
       const chip = e.target.closest(".chip.ac");
       if (chip) { const own = new Set(ownKeys()); own.has(chip.dataset.k) ? own.delete(chip.dataset.k) : own.add(chip.dataset.k); setOwn([...own]); renderAcctHint(); return; }
+      if (e.target.closest("[data-more]")) { showAll = true; renderAcct(); return; }
       const made = e.target.closest("[data-made]");
       if (made) { store.set("ipo.lastOpen", TODAY); setOwn([...ownKeys(), made.dataset.made]); renderAcctHint(); toast?.(`계좌를 표시했어요. 다음 계좌는 20영업일 뒤부터`); return; }
       const open = e.target.closest("[data-open]");
