@@ -85,7 +85,7 @@ class ParseTest(unittest.TestCase):
 
     def test_normalize(self):
         t = N.normalize_for_speech("**꿀팁** 🔥 3~5개만 기억하세요\n[BGM] 이게 핵심이다")
-        self.assertEqual(t, "꿀팁 3에서 5개만 기억하세요. 이게 핵심이다.")
+        self.assertEqual(t, "꿀팁 3개에서 5개만 기억하세요. 이게 핵심이다.")  # 단위를 앞에도 붙여야 "세 개에서 다섯 개"
 
 
 class EndToEndTest(unittest.TestCase):
@@ -127,6 +127,56 @@ class EndToEndTest(unittest.TestCase):
         d = tempfile.mkdtemp()
         script = write(os.path.join(d, "s.txt"), "[0-2] 이 문장은 이초 안에 절대로 다 읽을 수가 없는 아주 긴 문장입니다.\n")
         self.assertEqual(N.main([script, "--check"]), 1)
+
+
+class HumanizeTest(unittest.TestCase):
+    """Supertonic 은 숫자를 자주 잘못 읽어서('3가지'→'설까지') 사람이 읽는 형태로 바꿔 넣는다."""
+
+    def test_numbers_read_like_people(self):
+        import humanize as H
+        cases = {
+            "3가지만 기억하세요.": "세 가지만 기억하세요.",
+            "20영업일 제한": "이십 영업일 제한",
+            "1억 원을 넣었어요.": "일억 원을 넣었어요.",
+            "50%만": "오십 퍼센트만",
+            "3.5% 올랐어요.": "삼 점 오 퍼센트 올랐어요.",
+            "2026년 10월 6일": "이천이십육 년 시월 육 일",
+            "1,000원짜리": "천 원짜리",
+            "3천만 원": "삼천만 원",
+            "1만 원": "만 원",
+            "20명": "스무 명",
+            "21살": "스물한 살",
+            "1번째": "첫 번째",
+            "1번 출구": "일 번 출구",
+            "3번 했어요": "세 번 했어요",
+            "20대 투자자": "이십 대 투자자",
+            "100개": "백 개",
+            "3~5개만": "세 개에서 다섯 개만",
+            "오후 3:30에": "오후 세 시 삼십 분에",
+            "IPO 청약이에요.": "아이피오 청약이에요.",
+            "ETF와": "이티에프와",
+            "010-1234-5678": "공일공, 일이삼사, 오육칠팔",
+        }
+        for src, want in cases.items():
+            self.assertEqual(H.ko_normalize(src), want, src)
+
+    def test_phrase_plan_is_varied_but_deterministic(self):
+        import humanize as H
+        text = "첫 문장입니다. 두 번째 문장은 조금 길게 써서 숨을 한 번 쉬고 들어가도록 만들어 봅니다. 끝?"
+        a, b = H.plan_phrases(text, seed=1), H.plan_phrases(text, seed=1)
+        self.assertEqual(a, b)
+        self.assertEqual(len(a), 3)
+        self.assertEqual(a[-1]["pause"], 0.0)
+        self.assertTrue(a[0]["breath"])  # 다음 문장이 길면 그 앞에서 숨을 쉰다
+        self.assertTrue(all(0.12 <= p["pause"] <= 0.8 for p in a[:-1]))
+
+    def test_breath_is_quiet_and_shaped(self):
+        import numpy as np
+        import humanize as H
+        b = H.breath(44100, 0.3, level_db=-30)
+        self.assertEqual(len(b), int(0.3 * 44100))
+        self.assertAlmostEqual(20 * np.log10(np.sqrt((b ** 2).mean())), -30, delta=0.5)
+        self.assertLess(abs(b[:50]).max(), abs(b).max() * 0.2)  # 부드럽게 시작
 
 
 class EngineChoiceTest(unittest.TestCase):

@@ -33,6 +33,9 @@ from dataclasses import dataclass, field
 
 SR = 48000  # 내부 작업 샘플레이트 (mono s16)
 
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from humanize import expand_ranges  # noqa: E402
+
 # ───────────────────────────── 대본 읽기 ─────────────────────────────
 
 _T = r"(?:\d{1,2}(?::\d{1,2}){1,2}(?:\.\d+)?|\d+(?:\.\d+)?)\s*(?:초|s|sec)?"
@@ -200,7 +203,7 @@ def normalize_for_speech(text: str) -> str:
     t = re.sub(r"[*_#>`]+", "", t)
     t = re.sub(r"\[[^\]]*\]|【[^】]*】", "", t)            # [BGM] 같은 지시
     t = re.sub(r"\((?:화면|자막|bgm|효과음|sfx|컷)[^)]*\)", "", t, flags=re.I)
-    t = re.sub(r"(\d)\s*[~〜]\s*(\d)", r"\1에서 \2", t)    # 3~5개 → 3에서 5개
+    t = expand_ranges(t)                                    # 3~5개 → 3개에서 5개
     t = re.sub(r"\bvs\.?\b", "대", t, flags=re.I)
     t = t.replace("&", " 앤 ").replace("→", ", ").replace("·", ", ")
     lines = [l.strip() for l in t.splitlines() if l.strip()]
@@ -546,21 +549,54 @@ class SupertonicEngine(Engine):
                     tts_json=m + "tts.json", unicode_indexer=m + "unicode_indexer.bin", voice_style=m + "voice.bin"),
                 num_threads=min(4, os.cpu_count() or 1), provider="cpu"))
             self.tts = sherpa_onnx.OfflineTts(cfg)
-        g = sherpa_onnx.GenerationConfig()
-        g.sid = int(self.voice)
-        g.num_steps = int(os.environ.get("SUPERTONIC_STEPS", "10"))  # 클수록 깨끗, 느림
-        g.speed = rate
-        g.extra["lang"] = os.environ.get("SUPERTONIC_LANG", "ko")
-        a = self.tts.generate(text, g)
-        if not len(a.samples):
-            raise RuntimeError("supertonic 이 오디오를 만들지 못함")
-        pcm = array.array("h", (max(-32768, min(32767, int(v * 32767))) for v in a.samples))
-        if sys.byteorder == "big":
-            pcm.byteswap()
-        with wave.open(out, "wb") as w:
-            w.setnchannels(1); w.setsampwidth(2); w.setframerate(a.sample_rate)
+        import zlib
+
+        import numpy as np
+
+        import humanize as H
+        sr = self.tts.sample_rate
+        human = os.environ.get("NARRATION_HUMANIZE", "1") != "0"
+        plan = H.plan_phrases(text, seed=zlib.crc32(text.encode()) % 10000)
+        pieces, sents, t = [], [], 0.0
+        for i, p in enumerate(plan):
+            g = sherpa_onnx.GenerationConfig()
+            g.sid = int(self.voice)
+            g.num_steps = int(os.environ.get("SUPERTONIC_STEPS", "10"))  # 실측: 8·16·32 단계 발음 차이 없음
+            g.speed = rate * (p["speed_jitter"] if human else 1.0)
+            g.extra["lang"] = os.environ.get("SUPERTONIC_LANG", "ko")
+            # 소리에는 사람이 읽는 형태(세 가지·이십 영업일)를, 자막에는 원래 글(3가지·20영업일)을 쓴다
+            y = np.asarray(self.tts.generate(H.ko_normalize(p["text"]) if human else p["text"], g).samples, dtype=np.float32)
+            if not len(y):
+                raise RuntimeError("supertonic 이 오디오를 만들지 못함")
+            loud = np.where(np.abs(y) > 0.006)[0]
+            if len(loud):
+                y = y[max(0, loud[0] - int(0.02 * sr)):loud[-1] + int(0.06 * sr)]
+            if human and i and plan[i - 1]["breath"] and len(pieces[-1]) > int(0.4 * sr):
+                # 앞 쉼의 끝부분을 들숨으로 바꾼다 (말 시작 0.06초 전에 끝나게)
+                rms_db = 20 * np.log10(np.sqrt((y ** 2).mean()) + 1e-9)
+                b = H.breath(sr, dur=0.3, level_db=rms_db - 17, seed=i)
+                gap = pieces[-1]
+                end_at = len(gap) - int(0.06 * sr)
+                gap[end_at - len(b):end_at] += b
+            sents.append((t, t + len(y) / sr, p["text"]))
+            pieces.append(y)
+            t += len(y) / sr
+            pause = (p["pause"] if human else (0.0 if i == len(plan) - 1 else 0.35)) / rate
+            if pause > 0:
+                n = int(pause * sr)
+                pieces.append(H.room_tone(n, sr, seed=i) if human else np.zeros(n, np.float32))
+                t += n / sr
+        y = np.concatenate(pieces)
+        raw = out + ".raw.wav" if human else out
+        pcm = (np.clip(y, -1, 1) * 32767).astype("<i2")
+        with wave.open(raw, "wb") as w:
+            w.setnchannels(1); w.setsampwidth(2); w.setframerate(sr)
             w.writeframes(pcm.tobytes())
-        return None, rate
+        if human:  # 마이크로 녹음한 듯한 음색
+            subprocess.run([ffmpeg_bin(), "-hide_banner", "-loglevel", "error", "-y", "-i", raw, "-af", H.MIC_CHAIN,
+                            "-ar", str(sr), "-c:a", "pcm_s16le", out], check=True)
+            os.remove(raw)
+        return sents, rate
 
 
 ENGINES = {"edge": EdgeEngine, "google": GoogleEngine, "openai": OpenAIEngine, "elevenlabs": ElevenLabsEngine,
@@ -755,7 +791,8 @@ def main(argv=None) -> int:
     p.add_argument("--voice", help="음성 이름 (--list-voices 참고)")
     p.add_argument("--style", help="openai 전용 말투 지시문")
     p.add_argument("--rate", type=float, default=1.0, help="기본 말 속도 배수 (1.0 = 보통)")
-    p.add_argument("--max-speed", type=float, default=1.2, help="장면에 맞추려고 올릴 수 있는 최대 속도 (자연스러움 한계 ≈1.2)")
+    p.add_argument("--max-speed", type=float, default=None,
+                   help="장면에 맞추려고 올릴 수 있는 최대 속도 (기본 1.2, supertonic 은 1.12 — 그보다 빠르면 발음이 무너진다)")
     p.add_argument("--lead", type=float, default=0.2, help="장면 시작 후 말을 꺼내기까지 쉼(초)")
     p.add_argument("--tail", type=float, default=0.3, help="장면 끝나기 전 남겨둘 쉼(초)")
     p.add_argument("--gap", type=float, default=0.25, help="앞 장면 음성이 넘쳤을 때 최소 간격(초)")
@@ -769,6 +806,8 @@ def main(argv=None) -> int:
     p.add_argument("--list-voices", action="store_true")
     a = p.parse_args(argv)
 
+    if a.max_speed is None:
+        a.max_speed = 1.12 if (a.engine == "supertonic" or (a.engine == "auto" and a.voice and a.voice.isdigit())) else 1.2
     if a.list_voices:
         print(VOICES)
         return 0
@@ -791,6 +830,8 @@ def main(argv=None) -> int:
 
     os.makedirs(os.path.join(a.out, "clips"), exist_ok=True)
     engines = make_engine(a.engine, a.voice, a.style)
+    if engines[0].name == "supertonic" and "--max-speed" not in " ".join(argv or sys.argv):
+        a.max_speed = min(a.max_speed, 1.12)
     print(f"엔진: {engines[0].name} / 음성: {engines[0].voice} / 장면 {len(scenes)}개")
 
     placed: list[tuple[float, array.array]] = []
