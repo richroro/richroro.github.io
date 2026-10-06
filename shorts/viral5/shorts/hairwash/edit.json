@@ -1,0 +1,84 @@
+{
+ "credit": "영상: NASA",
+ "sources": {
+  "wash": {
+   "file": "wash.mp4",
+   "label": "Karen Nyberg shows how to wash hair in space (NASA, 2013)"
+  },
+  "water": {
+   "file": "water.mp4",
+   "label": "ISS water recovery / drinking a water ball (NASA)"
+  }
+ },
+ "clips": [
+  {
+   "src": "wash",
+   "from": "hook",
+   "label": "우주정거장 안, 떠 있는 우주인",
+   "in": null
+  },
+  {
+   "src": "wash",
+   "from": "ball",
+   "label": "물을 짜면 공처럼 붙는 물",
+   "in": null
+  },
+  {
+   "src": "wash",
+   "from": "shampoo",
+   "label": "헹굴 필요 없는 샴푸를 바름",
+   "in": null
+  },
+  {
+   "src": "wash",
+   "from": "shampoo.빗으로",
+   "label": "빗으로 빗기",
+   "in": null
+  },
+  {
+   "src": "wash",
+   "from": "towel",
+   "label": "수건으로 닦기",
+   "in": null
+  },
+  {
+   "src": "water",
+   "from": "recycle",
+   "label": "물 재생 장치",
+   "in": null
+  },
+  {
+   "src": "water",
+   "from": "end",
+   "label": "물방울을 마시는 우주인",
+   "in": null
+  }
+ ],
+ "moments": [],
+ "stickers": [
+  {
+   "text": "NASA 우주인 캐런 나이버그",
+   "from": "hook.머리",
+   "to": "ball-0.1",
+   "y": 560
+  }
+ ],
+ "sfx": [
+  [
+   "ball.공",
+   "k_drop_002",
+   0.5
+  ],
+  [
+   "end",
+   "pop",
+   0.6
+  ]
+ ],
+ "punches": [
+  "ball.공",
+  "end"
+ ],
+ "flashes": [],
+ "music": null
+}

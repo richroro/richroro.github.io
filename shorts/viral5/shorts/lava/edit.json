@@ -1,0 +1,90 @@
+{
+ "credit": "영상: USGS",
+ "sources": {
+  "river": {
+   "file": "river.mp4",
+   "label": "July 14, 2018 Kilauea fissure 8 UAS video (USGS)"
+  },
+  "fountain": {
+   "file": "fountain.mp4",
+   "label": "Kilauea fissure 8 lava fountain (USGS)"
+  },
+  "ocean": {
+   "file": "ocean.mp4",
+   "label": "Fissure 8 flow, vent to sea (USGS)"
+  }
+ },
+ "clips": [
+  {
+   "src": "river",
+   "from": "hook",
+   "label": "위에서 내려다본 용암 강 (드론)",
+   "in": null
+  },
+  {
+   "src": "fountain",
+   "from": "where",
+   "label": "솟구치는 용암 분수",
+   "in": null
+  },
+  {
+   "src": "river",
+   "from": "where.용암",
+   "label": "빠르게 흐르는 용암 강",
+   "in": null
+  },
+  {
+   "src": "river",
+   "from": "bike",
+   "label": "용암 강 흐름 클로즈업",
+   "in": null,
+   "speed": 1.0
+  },
+  {
+   "src": "ocean",
+   "from": "far",
+   "label": "바다까지 이어진 용암 줄기 (항공)",
+   "in": null
+  },
+  {
+   "src": "ocean",
+   "from": "sea",
+   "label": "바다를 만나 끓어오르는 용암과 수증기",
+   "in": null
+  },
+  {
+   "src": "ocean",
+   "from": "end",
+   "label": "새로 생긴 해안선",
+   "in": null
+  }
+ ],
+ "moments": [],
+ "stickers": [
+  {
+   "text": "2018 · 하와이 킬라우에아",
+   "from": "where.킬라우에아",
+   "to": "bike-0.1",
+   "y": 560
+  }
+ ],
+ "sfx": [
+  [
+   "hook",
+   "whoosh",
+   0.4
+  ],
+  [
+   "sea",
+   "whoosh_dn",
+   0.4
+  ]
+ ],
+ "punches": [
+  "hook.용암",
+  "far.13",
+  "sea.새"
+ ],
+ "flashes": [],
+ "music": null
+}

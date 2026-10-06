@@ -1,0 +1,110 @@
+{
+ "credit": "영상: NASA/JPL-Caltech",
+ "sources": {
+  "edl": {
+   "file": "edl.mp4",
+   "label": "Perseverance Rover's Descent and Touchdown on Mars (NASA/JPL-Caltech)",
+   "url": "https://svs.gsfc.nasa.gov/31250"
+  }
+ },
+ "clips": [
+  {
+   "src": "edl",
+   "from": "hook",
+   "label": "낙하산 아래로 보이는 화성 (하향 카메라)",
+   "in": null
+  },
+  {
+   "src": "edl",
+   "from": "chute.낙하산",
+   "label": "낙하산이 펴지는 순간 (상향 카메라)",
+   "in": null,
+   "zoom": [
+    1.0,
+    1.1
+   ]
+  },
+  {
+   "src": "edl",
+   "from": "shield",
+   "label": "열 방패가 떨어져 나감 (하향 카메라)",
+   "in": null
+  },
+  {
+   "src": "edl",
+   "from": "shield.화성",
+   "label": "가까워지는 화성 지표",
+   "in": null
+  },
+  {
+   "src": "edl",
+   "from": "crane",
+   "label": "로켓 크레인 (로버에서 올려다본 하강단)",
+   "in": null
+  },
+  {
+   "src": "edl",
+   "from": "crane.줄에",
+   "label": "줄에 매달려 내려가는 로버, 먼지",
+   "in": null
+  },
+  {
+   "src": "edl",
+   "from": "crane@end+0.05",
+   "label": "터치다운 순간 + 관제실 'Touchdown confirmed'",
+   "in": null,
+   "audio": 0.2
+  },
+  {
+   "src": "edl",
+   "from": "auto",
+   "label": "JPL 관제실 환호",
+   "in": null
+  },
+  {
+   "src": "edl",
+   "from": "end",
+   "label": "착륙 직후 화성 지표",
+   "in": null
+  }
+ ],
+ "moments": [
+  {
+   "from": "crane@end+0.1",
+   "to": "auto-0.15",
+   "gain": 1.0
+  }
+ ],
+ "stickers": [
+  {
+   "text": "2021.2.18 · NASA 퍼서비어런스",
+   "from": "hook.화성",
+   "to": "chute-0.1",
+   "y": 560
+  }
+ ],
+ "sfx": [
+  [
+   "hook",
+   "whoosh",
+   0.4
+  ],
+  [
+   "chute.낙하산",
+   "pop",
+   0.6
+  ],
+  [
+   "crane@end",
+   "riser",
+   0.4
+  ]
+ ],
+ "punches": [
+  "chute.낙하산",
+  "shield",
+  "crane.줄에"
+ ],
+ "flashes": [],
+ "music": null
+}

@@ -1,0 +1,93 @@
+{
+ "credit": "영상: NOAA",
+ "sources": {
+  "flight": {
+   "file": "flight.mp4",
+   "label": "NOAA P-3 Hurricane Hunter flight into the eye (NOAA)"
+  }
+ },
+ "clips": [
+  {
+   "src": "flight",
+   "from": "hook",
+   "label": "조종석 창밖, 비구름 속으로 진입",
+   "in": null
+  },
+  {
+   "src": "flight",
+   "from": "shake",
+   "label": "심하게 흔들리는 기내",
+   "in": null,
+   "audio": 0.35
+  },
+  {
+   "src": "flight",
+   "from": "wall",
+   "label": "구름 벽을 뚫는 순간",
+   "in": null
+  },
+  {
+   "src": "flight",
+   "from": "wall.조용",
+   "label": "갑자기 맑아지는 창밖",
+   "in": null
+  },
+  {
+   "src": "flight",
+   "from": "eye",
+   "label": "허리케인의 눈, 사방이 구름 벽 (경기장 효과)",
+   "in": null,
+   "zoom": [
+    1.0,
+    1.15
+   ]
+  },
+  {
+   "src": "flight",
+   "from": "why",
+   "label": "드롭존데(센서) 투하",
+   "in": null
+  },
+  {
+   "src": "flight",
+   "from": "end",
+   "label": "허리케인 헌터 기체 외관",
+   "in": null
+  }
+ ],
+ "moments": [
+  {
+   "from": "shake.붕",
+   "to": "shake@end+0.4",
+   "gain": 0.9
+  }
+ ],
+ "stickers": [
+  {
+   "text": "NOAA 허리케인 헌터 P-3",
+   "from": "hook.비행기",
+   "to": "shake-0.1",
+   "y": 560
+  }
+ ],
+ "sfx": [
+  [
+   "hook",
+   "whoosh",
+   0.4
+  ],
+  [
+   "wall.조용",
+   "k_maximize_003",
+   0.4
+  ]
+ ],
+ "punches": [
+  "shake.붕",
+  "eye"
+ ],
+ "flashes": [
+  "wall.조용"
+ ],
+ "music": null
+}

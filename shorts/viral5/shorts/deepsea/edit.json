@@ -1,0 +1,98 @@
+{
+ "credit": "영상: NOAA Ocean Exploration",
+ "sources": {
+  "casper": {
+   "file": "casper.mp4",
+   "label": "Ghostlike octopod, 2016 Hohonu Moana (NOAA Ocean Exploration)"
+  },
+  "dumbo": {
+   "file": "dumbo.mp4",
+   "label": "Dumbo octopus (NOAA Ocean Exploration)"
+  },
+  "jelly": {
+   "file": "jelly.mp4",
+   "label": "Hydromedusa, 2016 Deepwater Exploration of the Marianas (NOAA Ocean Exploration)"
+  },
+  "rov": {
+   "file": "rov.mp4",
+   "label": "ROV Deep Discoverer descent (NOAA Ocean Exploration)"
+  }
+ },
+ "clips": [
+  {
+   "src": "rov",
+   "from": "hook",
+   "label": "심해로 내려가는 ROV 조명",
+   "in": null
+  },
+  {
+   "src": "casper",
+   "from": "hook.이게",
+   "label": "유령 문어 첫 등장",
+   "in": null
+  },
+  {
+   "src": "casper",
+   "from": "ghost.이름",
+   "label": "유령 문어 클로즈업",
+   "in": null
+  },
+  {
+   "src": "dumbo",
+   "from": "dumbo",
+   "label": "덤보 문어가 지느러미로 헤엄침",
+   "in": null
+  },
+  {
+   "src": "jelly",
+   "from": "ufo",
+   "label": "UFO처럼 생긴 해파리",
+   "in": null
+  },
+  {
+   "src": "rov",
+   "from": "ocean",
+   "label": "끝없이 어두운 심해",
+   "in": null
+  },
+  {
+   "src": "casper",
+   "from": "end",
+   "label": "카메라를 쳐다보는 유령 문어",
+   "in": null
+  }
+ ],
+ "moments": [],
+ "stickers": [
+  {
+   "text": "NOAA 탐사선 '오케아노스 익스플로러'",
+   "from": "hook.이게",
+   "to": "ghost-0.1",
+   "y": 560
+  }
+ ],
+ "sfx": [
+  [
+   "hook",
+   "whoosh_dn",
+   0.4
+  ],
+  [
+   "ghost",
+   "pop",
+   0.5
+  ],
+  [
+   "ufo",
+   "k_question_001",
+   0.5
+  ]
+ ],
+ "punches": [
+  "hook.이게",
+  "dumbo.덤보",
+  "ufo.해파리"
+ ],
+ "flashes": [],
+ "music": null
+}
