@@ -1,8 +1,8 @@
 /* 공모주 캘린더 서비스 워커 — 오프라인에서도 마지막으로 본 일정으로 열리게 합니다.
    같은 출처 요청만 다룹니다. 항상 네트워크를 먼저 시도하고(배포 직후 옛 파일이 남지 않게),
    실패할 때만 캐시를 씁니다. 데이터는 브라우저 HTTP 캐시도 건너뛰어 새 일정이 바로 보이게 합니다. */
-const CACHE = "ipo-v13";
-const SHELL = ["/ipo/", "/ipo/app.js", "/ipo/score.js", "/ipo/extra.js", "/ipo/acct.js", "/ipo/ipo.css", "/m7/assets/m7.css", "/ipo/icon.svg", "/ipo/manifest.webmanifest"];
+const CACHE = "ipo-v14";
+const SHELL = ["/ipo/", "/ipo/app.js", "/ipo/score.js", "/ipo/extra.js", "/ipo/acct.js", "/ipo/ipo.css", "/ipo/icon.svg", "/ipo/icon-192.png", "/ipo/manifest.webmanifest"];
 
 self.addEventListener("install", (e) => {
   e.waitUntil(caches.open(CACHE).then((c) => c.addAll(SHELL)).then(() => self.skipWaiting()));
@@ -16,7 +16,7 @@ self.addEventListener("fetch", (e) => {
   if (req.method !== "GET") return;
   const url = new URL(req.url);
   if (url.origin !== location.origin) return;
-  if (!/^\/(ipo|m7\/assets)\//.test(url.pathname)) return;
+  if (!url.pathname.startsWith("/ipo/")) return;
   const isData = url.pathname.startsWith("/ipo/data/");
   e.respondWith(fetch(req, isData ? { cache: "no-cache" } : undefined).then((res) => {
     if (res.ok) { const copy = res.clone(); e.waitUntil(caches.open(CACHE).then((c) => c.put(req, copy))); }

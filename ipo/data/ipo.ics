@@ -1,0 +1,1384 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//richroro//ipo feed//KO
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+X-WR-CALNAME:공모주 캘린더
+X-WR-TIMEZONE:Asia/Seoul
+X-WR-CALDESC:공모주 청약·환불·상장 일정(스팩 제외). 하루
+  세 번 자동 갱신 — https://richroro.github.io/ipo/
+REFRESH-INTERVAL;VALUE=DURATION:PT6H
+X-PUBLISHED-TTL:PT6H
+BEGIN:VEVENT
+UID:feed-sub-2308@richroro.github.io
+DTSTAMP:20261006T000000Z
+DTSTART;VALUE=DATE:20260910
+DTEND;VALUE=DATE:20260912
+SUMMARY:[청약] 네오사피엔스 (대신증권)
+DESCRIPTION:청약 9/10~9/11 10:00~16:00\n주간사 대신증권\n확정 
+ 공모가 10\,000원\n기관경쟁률 220:1\n확약 8.98%\n자세히: http
+ s://richroro.github.io/ipo/#i=2308
+URL:https://richroro.github.io/ipo/#i=2308
+TRANSP:TRANSPARENT
+BEGIN:VALARM
+ACTION:DISPLAY
+TRIGGER;RELATED=START:PT9H30M
+DESCRIPTION:[청약] 네오사피엔스 (대신증권) · 청약 시작 30
+ 분 전
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:feed-end-2308@richroro.github.io
+DTSTAMP:20261006T000000Z
+DTSTART;VALUE=DATE:20260911
+DTEND;VALUE=DATE:20260912
+SUMMARY:[청약 마감 16시] 네오사피엔스
+DESCRIPTION:오늘 16시 청약 마감 — 증권사별 청약 건수를 
+ 보고 고르세요\n주간사 대신증권\n자세히: https://richroro.g
+ ithub.io/ipo/#i=2308
+URL:https://richroro.github.io/ipo/#i=2308
+TRANSP:TRANSPARENT
+BEGIN:VALARM
+ACTION:DISPLAY
+TRIGGER;RELATED=START:PT13H
+DESCRIPTION:[청약 마감 16시] 네오사피엔스 · 마감 3시간 전
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:feed-refund-2308@richroro.github.io
+DTSTAMP:20261006T000000Z
+DTSTART;VALUE=DATE:20260915
+DTEND;VALUE=DATE:20260916
+SUMMARY:[환불] 네오사피엔스
+DESCRIPTION:증거금 환불 · 배정 결과 확인\n자세히: https://ri
+ chroro.github.io/ipo/#i=2308
+URL:https://richroro.github.io/ipo/#i=2308
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:feed-list-2308@richroro.github.io
+DTSTAMP:20261006T000000Z
+DTSTART;VALUE=DATE:20260921
+DTEND;VALUE=DATE:20260922
+SUMMARY:[상장] 네오사피엔스
+DESCRIPTION:09:00 시초가 결정 · 공모가 10\,000원\n매도 전략
+ 을 미리 정해 두세요\n자세히: https://richroro.github.io/ipo/#i=
+ 2308
+URL:https://richroro.github.io/ipo/#i=2308
+TRANSP:TRANSPARENT
+BEGIN:VALARM
+ACTION:DISPLAY
+TRIGGER;RELATED=START:PT8H20M
+DESCRIPTION:[상장] 네오사피엔스 · 장 시작 40분 전
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:feed-sub-2311@richroro.github.io
+DTSTAMP:20261006T000000Z
+DTSTART;VALUE=DATE:20260914
+DTEND;VALUE=DATE:20260916
+SUMMARY:[청약] 와이즈플래닛컴퍼니 (대신증권)
+DESCRIPTION:청약 9/14~9/15 10:00~16:00\n주간사 대신증권\n확정 
+ 공모가 12\,000원\n기관경쟁률 1\,248:1\n확약 3.65%\n자세히: h
+ ttps://richroro.github.io/ipo/#i=2311
+URL:https://richroro.github.io/ipo/#i=2311
+TRANSP:TRANSPARENT
+BEGIN:VALARM
+ACTION:DISPLAY
+TRIGGER;RELATED=START:PT9H30M
+DESCRIPTION:[청약] 와이즈플래닛컴퍼니 (대신증권) · 청약 
+ 시작 30분 전
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:feed-end-2311@richroro.github.io
+DTSTAMP:20261006T000000Z
+DTSTART;VALUE=DATE:20260915
+DTEND;VALUE=DATE:20260916
+SUMMARY:[청약 마감 16시] 와이즈플래닛컴퍼니
+DESCRIPTION:오늘 16시 청약 마감 — 증권사별 청약 건수를 
+ 보고 고르세요\n주간사 대신증권\n자세히: https://richroro.g
+ ithub.io/ipo/#i=2311
+URL:https://richroro.github.io/ipo/#i=2311
+TRANSP:TRANSPARENT
+BEGIN:VALARM
+ACTION:DISPLAY
+TRIGGER;RELATED=START:PT13H
+DESCRIPTION:[청약 마감 16시] 와이즈플래닛컴퍼니 · 마감 3
+ 시간 전
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:feed-refund-2311@richroro.github.io
+DTSTAMP:20261006T000000Z
+DTSTART;VALUE=DATE:20260917
+DTEND;VALUE=DATE:20260918
+SUMMARY:[환불] 와이즈플래닛컴퍼니
+DESCRIPTION:증거금 환불 · 배정 결과 확인\n자세히: https://ri
+ chroro.github.io/ipo/#i=2311
+URL:https://richroro.github.io/ipo/#i=2311
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:feed-list-2311@richroro.github.io
+DTSTAMP:20261006T000000Z
+DTSTART;VALUE=DATE:20260923
+DTEND;VALUE=DATE:20260924
+SUMMARY:[상장] 와이즈플래닛컴퍼니
+DESCRIPTION:09:00 시초가 결정 · 공모가 12\,000원\n매도 전략
+ 을 미리 정해 두세요\n자세히: https://richroro.github.io/ipo/#i=
+ 2311
+URL:https://richroro.github.io/ipo/#i=2311
+TRANSP:TRANSPARENT
+BEGIN:VALARM
+ACTION:DISPLAY
+TRIGGER;RELATED=START:PT8H20M
+DESCRIPTION:[상장] 와이즈플래닛컴퍼니 · 장 시작 40분 전
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:feed-sub-2294@richroro.github.io
+DTSTAMP:20261006T000000Z
+DTSTART;VALUE=DATE:20260915
+DTEND;VALUE=DATE:20260917
+SUMMARY:[청약] 빅웨이브로보틱스 (유진투자증권)
+DESCRIPTION:청약 9/15~9/16 10:00~16:00\n주간사 유진투자증권\, 
+ 미래에셋증권\n확정 공모가 18\,000원\n기관경쟁률 1\,109:1\
+ n확약 18.14%\n자세히: https://richroro.github.io/ipo/#i=2294
+URL:https://richroro.github.io/ipo/#i=2294
+TRANSP:TRANSPARENT
+BEGIN:VALARM
+ACTION:DISPLAY
+TRIGGER;RELATED=START:PT9H30M
+DESCRIPTION:[청약] 빅웨이브로보틱스 (유진투자증권) · 청
+ 약 시작 30분 전
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:feed-end-2294@richroro.github.io
+DTSTAMP:20261006T000000Z
+DTSTART;VALUE=DATE:20260916
+DTEND;VALUE=DATE:20260917
+SUMMARY:[청약 마감 16시] 빅웨이브로보틱스
+DESCRIPTION:오늘 16시 청약 마감 — 증권사별 청약 건수를 
+ 보고 고르세요\n주간사 유진투자증권\, 미래에셋증권\n
+ 자세히: https://richroro.github.io/ipo/#i=2294
+URL:https://richroro.github.io/ipo/#i=2294
+TRANSP:TRANSPARENT
+BEGIN:VALARM
+ACTION:DISPLAY
+TRIGGER;RELATED=START:PT13H
+DESCRIPTION:[청약 마감 16시] 빅웨이브로보틱스 · 마감 3시
+ 간 전
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:feed-refund-2294@richroro.github.io
+DTSTAMP:20261006T000000Z
+DTSTART;VALUE=DATE:20260918
+DTEND;VALUE=DATE:20260919
+SUMMARY:[환불] 빅웨이브로보틱스
+DESCRIPTION:증거금 환불 · 배정 결과 확인\n자세히: https://ri
+ chroro.github.io/ipo/#i=2294
+URL:https://richroro.github.io/ipo/#i=2294
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:feed-list-2294@richroro.github.io
+DTSTAMP:20261006T000000Z
+DTSTART;VALUE=DATE:20260929
+DTEND;VALUE=DATE:20260930
+SUMMARY:[상장] 빅웨이브로보틱스
+DESCRIPTION:09:00 시초가 결정 · 공모가 18\,000원\n매도 전략
+ 을 미리 정해 두세요\n자세히: https://richroro.github.io/ipo/#i=
+ 2294
+URL:https://richroro.github.io/ipo/#i=2294
+TRANSP:TRANSPARENT
+BEGIN:VALARM
+ACTION:DISPLAY
+TRIGGER;RELATED=START:PT8H20M
+DESCRIPTION:[상장] 빅웨이브로보틱스 · 장 시작 40분 전
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:feed-sub-2309@richroro.github.io
+DTSTAMP:20261006T000000Z
+DTSTART;VALUE=DATE:20260916
+DTEND;VALUE=DATE:20260918
+SUMMARY:[청약] 덕산넵코어스 (대신증권)
+DESCRIPTION:청약 9/16~9/17 10:00~16:00\n주간사 대신증권\n확정 
+ 공모가 14\,600원\n기관경쟁률 869:1\n확약 4.05%\n자세히: http
+ s://richroro.github.io/ipo/#i=2309
+URL:https://richroro.github.io/ipo/#i=2309
+TRANSP:TRANSPARENT
+BEGIN:VALARM
+ACTION:DISPLAY
+TRIGGER;RELATED=START:PT9H30M
+DESCRIPTION:[청약] 덕산넵코어스 (대신증권) · 청약 시작 30
+ 분 전
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:feed-end-2309@richroro.github.io
+DTSTAMP:20261006T000000Z
+DTSTART;VALUE=DATE:20260917
+DTEND;VALUE=DATE:20260918
+SUMMARY:[청약 마감 16시] 덕산넵코어스
+DESCRIPTION:오늘 16시 청약 마감 — 증권사별 청약 건수를 
+ 보고 고르세요\n주간사 대신증권\n자세히: https://richroro.g
+ ithub.io/ipo/#i=2309
+URL:https://richroro.github.io/ipo/#i=2309
+TRANSP:TRANSPARENT
+BEGIN:VALARM
+ACTION:DISPLAY
+TRIGGER;RELATED=START:PT13H
+DESCRIPTION:[청약 마감 16시] 덕산넵코어스 · 마감 3시간 전
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:feed-refund-2309@richroro.github.io
+DTSTAMP:20261006T000000Z
+DTSTART;VALUE=DATE:20260921
+DTEND;VALUE=DATE:20260922
+SUMMARY:[환불] 덕산넵코어스
+DESCRIPTION:증거금 환불 · 배정 결과 확인\n자세히: https://ri
+ chroro.github.io/ipo/#i=2309
+URL:https://richroro.github.io/ipo/#i=2309
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:feed-list-2309@richroro.github.io
+DTSTAMP:20261006T000000Z
+DTSTART;VALUE=DATE:20260930
+DTEND;VALUE=DATE:20261001
+SUMMARY:[상장] 덕산넵코어스
+DESCRIPTION:09:00 시초가 결정 · 공모가 14\,600원\n매도 전략
+ 을 미리 정해 두세요\n자세히: https://richroro.github.io/ipo/#i=
+ 2309
+URL:https://richroro.github.io/ipo/#i=2309
+TRANSP:TRANSPARENT
+BEGIN:VALARM
+ACTION:DISPLAY
+TRIGGER;RELATED=START:PT8H20M
+DESCRIPTION:[상장] 덕산넵코어스 · 장 시작 40분 전
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:feed-sub-2310@richroro.github.io
+DTSTAMP:20261006T000000Z
+DTSTART;VALUE=DATE:20260916
+DTEND;VALUE=DATE:20260918
+SUMMARY:[청약] 글로벌테크놀로지 (한국투자증권)
+DESCRIPTION:청약 9/16~9/17 10:00~16:00\n주간사 한국투자증권\n확
+ 정 공모가 10\,000원\n기관경쟁률 123:1\n확약 0.27%\n자세히: 
+ https://richroro.github.io/ipo/#i=2310
+URL:https://richroro.github.io/ipo/#i=2310
+TRANSP:TRANSPARENT
+BEGIN:VALARM
+ACTION:DISPLAY
+TRIGGER;RELATED=START:PT9H30M
+DESCRIPTION:[청약] 글로벌테크놀로지 (한국투자증권) · 청
+ 약 시작 30분 전
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:feed-end-2310@richroro.github.io
+DTSTAMP:20261006T000000Z
+DTSTART;VALUE=DATE:20260917
+DTEND;VALUE=DATE:20260918
+SUMMARY:[청약 마감 16시] 글로벌테크놀로지
+DESCRIPTION:오늘 16시 청약 마감 — 증권사별 청약 건수를 
+ 보고 고르세요\n주간사 한국투자증권\n자세히: https://rich
+ roro.github.io/ipo/#i=2310
+URL:https://richroro.github.io/ipo/#i=2310
+TRANSP:TRANSPARENT
+BEGIN:VALARM
+ACTION:DISPLAY
+TRIGGER;RELATED=START:PT13H
+DESCRIPTION:[청약 마감 16시] 글로벌테크놀로지 · 마감 3시
+ 간 전
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:feed-refund-2310@richroro.github.io
+DTSTAMP:20261006T000000Z
+DTSTART;VALUE=DATE:20260921
+DTEND;VALUE=DATE:20260922
+SUMMARY:[환불] 글로벌테크놀로지
+DESCRIPTION:증거금 환불 · 배정 결과 확인\n자세히: https://ri
+ chroro.github.io/ipo/#i=2310
+URL:https://richroro.github.io/ipo/#i=2310
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:feed-list-2310@richroro.github.io
+DTSTAMP:20261006T000000Z
+DTSTART;VALUE=DATE:20260929
+DTEND;VALUE=DATE:20260930
+SUMMARY:[상장] 글로벌테크놀로지
+DESCRIPTION:09:00 시초가 결정 · 공모가 10\,000원\n매도 전략
+ 을 미리 정해 두세요\n자세히: https://richroro.github.io/ipo/#i=
+ 2310
+URL:https://richroro.github.io/ipo/#i=2310
+TRANSP:TRANSPARENT
+BEGIN:VALARM
+ACTION:DISPLAY
+TRIGGER;RELATED=START:PT8H20M
+DESCRIPTION:[상장] 글로벌테크놀로지 · 장 시작 40분 전
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:feed-sub-2307@richroro.github.io
+DTSTAMP:20261006T000000Z
+DTSTART;VALUE=DATE:20260917
+DTEND;VALUE=DATE:20260919
+SUMMARY:[청약] 브릴스 (IBK투자증권)
+DESCRIPTION:청약 9/17~9/18 10:00~16:00\n주간사 IBK투자증권\n확정
+  공모가 19\,500원\n기관경쟁률 1\,188:1\n확약 21.75%\n자세히:
+  https://richroro.github.io/ipo/#i=2307
+URL:https://richroro.github.io/ipo/#i=2307
+TRANSP:TRANSPARENT
+BEGIN:VALARM
+ACTION:DISPLAY
+TRIGGER;RELATED=START:PT9H30M
+DESCRIPTION:[청약] 브릴스 (IBK투자증권) · 청약 시작 30분 전
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:feed-end-2307@richroro.github.io
+DTSTAMP:20261006T000000Z
+DTSTART;VALUE=DATE:20260918
+DTEND;VALUE=DATE:20260919
+SUMMARY:[청약 마감 16시] 브릴스
+DESCRIPTION:오늘 16시 청약 마감 — 증권사별 청약 건수를 
+ 보고 고르세요\n주간사 IBK투자증권\n자세히: https://richror
+ o.github.io/ipo/#i=2307
+URL:https://richroro.github.io/ipo/#i=2307
+TRANSP:TRANSPARENT
+BEGIN:VALARM
+ACTION:DISPLAY
+TRIGGER;RELATED=START:PT13H
+DESCRIPTION:[청약 마감 16시] 브릴스 · 마감 3시간 전
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:feed-refund-2307@richroro.github.io
+DTSTAMP:20261006T000000Z
+DTSTART;VALUE=DATE:20260922
+DTEND;VALUE=DATE:20260923
+SUMMARY:[환불] 브릴스
+DESCRIPTION:증거금 환불 · 배정 결과 확인\n자세히: https://ri
+ chroro.github.io/ipo/#i=2307
+URL:https://richroro.github.io/ipo/#i=2307
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:feed-list-2307@richroro.github.io
+DTSTAMP:20261006T000000Z
+DTSTART;VALUE=DATE:20261001
+DTEND;VALUE=DATE:20261002
+SUMMARY:[상장] 브릴스
+DESCRIPTION:09:00 시초가 결정 · 공모가 19\,500원\n매도 전략
+ 을 미리 정해 두세요\n자세히: https://richroro.github.io/ipo/#i=
+ 2307
+URL:https://richroro.github.io/ipo/#i=2307
+TRANSP:TRANSPARENT
+BEGIN:VALARM
+ACTION:DISPLAY
+TRIGGER;RELATED=START:PT8H20M
+DESCRIPTION:[상장] 브릴스 · 장 시작 40분 전
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:feed-sub-2315@richroro.github.io
+DTSTAMP:20261006T000000Z
+DTSTART;VALUE=DATE:20261001
+DTEND;VALUE=DATE:20261003
+SUMMARY:[청약] 멜콘 (대신증권)
+DESCRIPTION:청약 10/1~10/2 10:00~16:00\n주간사 대신증권\n확정 
+ 공모가 12\,300원\n기관경쟁률 1\,137:1\n확약 36.07%\n자세히: 
+ https://richroro.github.io/ipo/#i=2315
+URL:https://richroro.github.io/ipo/#i=2315
+TRANSP:TRANSPARENT
+BEGIN:VALARM
+ACTION:DISPLAY
+TRIGGER;RELATED=START:PT9H30M
+DESCRIPTION:[청약] 멜콘 (대신증권) · 청약 시작 30분 전
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:feed-end-2315@richroro.github.io
+DTSTAMP:20261006T000000Z
+DTSTART;VALUE=DATE:20261002
+DTEND;VALUE=DATE:20261003
+SUMMARY:[청약 마감 16시] 멜콘
+DESCRIPTION:오늘 16시 청약 마감 — 증권사별 청약 건수를 
+ 보고 고르세요\n주간사 대신증권\n자세히: https://richroro.g
+ ithub.io/ipo/#i=2315
+URL:https://richroro.github.io/ipo/#i=2315
+TRANSP:TRANSPARENT
+BEGIN:VALARM
+ACTION:DISPLAY
+TRIGGER;RELATED=START:PT13H
+DESCRIPTION:[청약 마감 16시] 멜콘 · 마감 3시간 전
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:feed-refund-2315@richroro.github.io
+DTSTAMP:20261006T000000Z
+DTSTART;VALUE=DATE:20261007
+DTEND;VALUE=DATE:20261008
+SUMMARY:[환불] 멜콘
+DESCRIPTION:증거금 환불 · 배정 결과 확인\n자세히: https://ri
+ chroro.github.io/ipo/#i=2315
+URL:https://richroro.github.io/ipo/#i=2315
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:feed-list-2315@richroro.github.io
+DTSTAMP:20261006T000000Z
+DTSTART;VALUE=DATE:20261015
+DTEND;VALUE=DATE:20261016
+SUMMARY:[상장] 멜콘
+DESCRIPTION:09:00 시초가 결정 · 공모가 12\,300원\n매도 전략
+ 을 미리 정해 두세요\n자세히: https://richroro.github.io/ipo/#i=
+ 2315
+URL:https://richroro.github.io/ipo/#i=2315
+TRANSP:TRANSPARENT
+BEGIN:VALARM
+ACTION:DISPLAY
+TRIGGER;RELATED=START:PT8H20M
+DESCRIPTION:[상장] 멜콘 · 장 시작 40분 전
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:feed-sub-2320@richroro.github.io
+DTSTAMP:20261006T000000Z
+DTSTART;VALUE=DATE:20261002
+DTEND;VALUE=DATE:20261007
+SUMMARY:[청약] 진코스텍 (하나증권)
+DESCRIPTION:청약 10/2~10/6 10:00~16:00\n주간사 하나증권\n확정 
+ 공모가 23\,500원\n기관경쟁률 1\,098:1\n확약 5.29%\n자세히: h
+ ttps://richroro.github.io/ipo/#i=2320
+URL:https://richroro.github.io/ipo/#i=2320
+TRANSP:TRANSPARENT
+BEGIN:VALARM
+ACTION:DISPLAY
+TRIGGER;RELATED=START:PT9H30M
+DESCRIPTION:[청약] 진코스텍 (하나증권) · 청약 시작 30분 전
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:feed-end-2320@richroro.github.io
+DTSTAMP:20261006T000000Z
+DTSTART;VALUE=DATE:20261006
+DTEND;VALUE=DATE:20261007
+SUMMARY:[청약 마감 16시] 진코스텍
+DESCRIPTION:오늘 16시 청약 마감 — 증권사별 청약 건수를 
+ 보고 고르세요\n주간사 하나증권\n자세히: https://richroro.g
+ ithub.io/ipo/#i=2320
+URL:https://richroro.github.io/ipo/#i=2320
+TRANSP:TRANSPARENT
+BEGIN:VALARM
+ACTION:DISPLAY
+TRIGGER;RELATED=START:PT13H
+DESCRIPTION:[청약 마감 16시] 진코스텍 · 마감 3시간 전
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:feed-refund-2320@richroro.github.io
+DTSTAMP:20261006T000000Z
+DTSTART;VALUE=DATE:20261008
+DTEND;VALUE=DATE:20261009
+SUMMARY:[환불] 진코스텍
+DESCRIPTION:증거금 환불 · 배정 결과 확인\n자세히: https://ri
+ chroro.github.io/ipo/#i=2320
+URL:https://richroro.github.io/ipo/#i=2320
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:feed-list-2320@richroro.github.io
+DTSTAMP:20261006T000000Z
+DTSTART;VALUE=DATE:20261015
+DTEND;VALUE=DATE:20261016
+SUMMARY:[상장] 진코스텍
+DESCRIPTION:09:00 시초가 결정 · 공모가 23\,500원\n매도 전략
+ 을 미리 정해 두세요\n자세히: https://richroro.github.io/ipo/#i=
+ 2320
+URL:https://richroro.github.io/ipo/#i=2320
+TRANSP:TRANSPARENT
+BEGIN:VALARM
+ACTION:DISPLAY
+TRIGGER;RELATED=START:PT8H20M
+DESCRIPTION:[상장] 진코스텍 · 장 시작 40분 전
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:feed-sub-2316@richroro.github.io
+DTSTAMP:20261006T000000Z
+DTSTART;VALUE=DATE:20261007
+DTEND;VALUE=DATE:20261009
+SUMMARY:[청약] 엘리스그룹 (미래에셋증권)
+DESCRIPTION:청약 10/7~10/8 10:00~16:00\n주간사 미래에셋증권\, 
+ 삼성증권\n희망 공모가 70\,400원~90\,500원\n자세히: https://r
+ ichroro.github.io/ipo/#i=2316
+URL:https://richroro.github.io/ipo/#i=2316
+TRANSP:TRANSPARENT
+BEGIN:VALARM
+ACTION:DISPLAY
+TRIGGER;RELATED=START:PT9H30M
+DESCRIPTION:[청약] 엘리스그룹 (미래에셋증권) · 청약 시작 
+ 30분 전
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:feed-end-2316@richroro.github.io
+DTSTAMP:20261006T000000Z
+DTSTART;VALUE=DATE:20261008
+DTEND;VALUE=DATE:20261009
+SUMMARY:[청약 마감 16시] 엘리스그룹
+DESCRIPTION:오늘 16시 청약 마감 — 증권사별 청약 건수를 
+ 보고 고르세요\n주간사 미래에셋증권\, 삼성증권\n자세
+ 히: https://richroro.github.io/ipo/#i=2316
+URL:https://richroro.github.io/ipo/#i=2316
+TRANSP:TRANSPARENT
+BEGIN:VALARM
+ACTION:DISPLAY
+TRIGGER;RELATED=START:PT13H
+DESCRIPTION:[청약 마감 16시] 엘리스그룹 · 마감 3시간 전
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:feed-refund-2316@richroro.github.io
+DTSTAMP:20261006T000000Z
+DTSTART;VALUE=DATE:20261013
+DTEND;VALUE=DATE:20261014
+SUMMARY:[환불] 엘리스그룹
+DESCRIPTION:증거금 환불 · 배정 결과 확인\n자세히: https://ri
+ chroro.github.io/ipo/#i=2316
+URL:https://richroro.github.io/ipo/#i=2316
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:feed-sub-2324@richroro.github.io
+DTSTAMP:20261006T000000Z
+DTSTART;VALUE=DATE:20261012
+DTEND;VALUE=DATE:20261014
+SUMMARY:[청약] 엠에스바이오 (KB증권)
+DESCRIPTION:청약 10/12~10/13 10:00~16:00\n주간사 KB증권\n희망 공
+ 모가 6\,800원~7\,800원\n자세히: https://richroro.github.io/ipo/#i=2
+ 324
+URL:https://richroro.github.io/ipo/#i=2324
+TRANSP:TRANSPARENT
+BEGIN:VALARM
+ACTION:DISPLAY
+TRIGGER;RELATED=START:PT9H30M
+DESCRIPTION:[청약] 엠에스바이오 (KB증권) · 청약 시작 30분 
+ 전
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:feed-end-2324@richroro.github.io
+DTSTAMP:20261006T000000Z
+DTSTART;VALUE=DATE:20261013
+DTEND;VALUE=DATE:20261014
+SUMMARY:[청약 마감 16시] 엠에스바이오
+DESCRIPTION:오늘 16시 청약 마감 — 증권사별 청약 건수를 
+ 보고 고르세요\n주간사 KB증권\n자세히: https://richroro.githu
+ b.io/ipo/#i=2324
+URL:https://richroro.github.io/ipo/#i=2324
+TRANSP:TRANSPARENT
+BEGIN:VALARM
+ACTION:DISPLAY
+TRIGGER;RELATED=START:PT13H
+DESCRIPTION:[청약 마감 16시] 엠에스바이오 · 마감 3시간 전
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:feed-refund-2324@richroro.github.io
+DTSTAMP:20261006T000000Z
+DTSTART;VALUE=DATE:20261015
+DTEND;VALUE=DATE:20261016
+SUMMARY:[환불] 엠에스바이오
+DESCRIPTION:증거금 환불 · 배정 결과 확인\n자세히: https://ri
+ chroro.github.io/ipo/#i=2324
+URL:https://richroro.github.io/ipo/#i=2324
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:feed-sub-2326@richroro.github.io
+DTSTAMP:20261006T000000Z
+DTSTART;VALUE=DATE:20261013
+DTEND;VALUE=DATE:20261015
+SUMMARY:[청약] 디티에스 (대신증권)
+DESCRIPTION:청약 10/13~10/14 10:00~16:00\n주간사 대신증권\, 유진
+ 증권\n희망 공모가 17\,000원~18\,500원\n자세히: https://richror
+ o.github.io/ipo/#i=2326
+URL:https://richroro.github.io/ipo/#i=2326
+TRANSP:TRANSPARENT
+BEGIN:VALARM
+ACTION:DISPLAY
+TRIGGER;RELATED=START:PT9H30M
+DESCRIPTION:[청약] 디티에스 (대신증권) · 청약 시작 30분 전
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:feed-end-2326@richroro.github.io
+DTSTAMP:20261006T000000Z
+DTSTART;VALUE=DATE:20261014
+DTEND;VALUE=DATE:20261015
+SUMMARY:[청약 마감 16시] 디티에스
+DESCRIPTION:오늘 16시 청약 마감 — 증권사별 청약 건수를 
+ 보고 고르세요\n주간사 대신증권\, 유진증권\n자세히: htt
+ ps://richroro.github.io/ipo/#i=2326
+URL:https://richroro.github.io/ipo/#i=2326
+TRANSP:TRANSPARENT
+BEGIN:VALARM
+ACTION:DISPLAY
+TRIGGER;RELATED=START:PT13H
+DESCRIPTION:[청약 마감 16시] 디티에스 · 마감 3시간 전
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:feed-refund-2326@richroro.github.io
+DTSTAMP:20261006T000000Z
+DTSTART;VALUE=DATE:20261016
+DTEND;VALUE=DATE:20261017
+SUMMARY:[환불] 디티에스
+DESCRIPTION:증거금 환불 · 배정 결과 확인\n자세히: https://ri
+ chroro.github.io/ipo/#i=2326
+URL:https://richroro.github.io/ipo/#i=2326
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:feed-sub-2327@richroro.github.io
+DTSTAMP:20261006T000000Z
+DTSTART;VALUE=DATE:20261019
+DTEND;VALUE=DATE:20261021
+SUMMARY:[청약] 다비오 (대신증권)
+DESCRIPTION:청약 10/19~10/20 10:00~16:00\n주간사 대신증권\n희망 
+ 공모가 12\,300원~16\,600원\n자세히: https://richroro.github.io/ipo
+ /#i=2327
+URL:https://richroro.github.io/ipo/#i=2327
+TRANSP:TRANSPARENT
+BEGIN:VALARM
+ACTION:DISPLAY
+TRIGGER;RELATED=START:PT9H30M
+DESCRIPTION:[청약] 다비오 (대신증권) · 청약 시작 30분 전
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:feed-end-2327@richroro.github.io
+DTSTAMP:20261006T000000Z
+DTSTART;VALUE=DATE:20261020
+DTEND;VALUE=DATE:20261021
+SUMMARY:[청약 마감 16시] 다비오
+DESCRIPTION:오늘 16시 청약 마감 — 증권사별 청약 건수를 
+ 보고 고르세요\n주간사 대신증권\n자세히: https://richroro.g
+ ithub.io/ipo/#i=2327
+URL:https://richroro.github.io/ipo/#i=2327
+TRANSP:TRANSPARENT
+BEGIN:VALARM
+ACTION:DISPLAY
+TRIGGER;RELATED=START:PT13H
+DESCRIPTION:[청약 마감 16시] 다비오 · 마감 3시간 전
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:feed-refund-2327@richroro.github.io
+DTSTAMP:20261006T000000Z
+DTSTART;VALUE=DATE:20261022
+DTEND;VALUE=DATE:20261023
+SUMMARY:[환불] 다비오
+DESCRIPTION:증거금 환불 · 배정 결과 확인\n자세히: https://ri
+ chroro.github.io/ipo/#i=2327
+URL:https://richroro.github.io/ipo/#i=2327
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:feed-sub-2337@richroro.github.io
+DTSTAMP:20261006T000000Z
+DTSTART;VALUE=DATE:20261019
+DTEND;VALUE=DATE:20261021
+SUMMARY:[청약] 유캐스트 (유진투자증권)
+DESCRIPTION:청약 10/19~10/20 10:00~16:00\n주간사 유진투자증권\, 
+ 신영증권\n희망 공모가 21\,000원~26\,000원\n자세히: https://r
+ ichroro.github.io/ipo/#i=2337
+URL:https://richroro.github.io/ipo/#i=2337
+TRANSP:TRANSPARENT
+BEGIN:VALARM
+ACTION:DISPLAY
+TRIGGER;RELATED=START:PT9H30M
+DESCRIPTION:[청약] 유캐스트 (유진투자증권) · 청약 시작 30
+ 분 전
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:feed-end-2337@richroro.github.io
+DTSTAMP:20261006T000000Z
+DTSTART;VALUE=DATE:20261020
+DTEND;VALUE=DATE:20261021
+SUMMARY:[청약 마감 16시] 유캐스트
+DESCRIPTION:오늘 16시 청약 마감 — 증권사별 청약 건수를 
+ 보고 고르세요\n주간사 유진투자증권\, 신영증권\n자세
+ 히: https://richroro.github.io/ipo/#i=2337
+URL:https://richroro.github.io/ipo/#i=2337
+TRANSP:TRANSPARENT
+BEGIN:VALARM
+ACTION:DISPLAY
+TRIGGER;RELATED=START:PT13H
+DESCRIPTION:[청약 마감 16시] 유캐스트 · 마감 3시간 전
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:feed-refund-2337@richroro.github.io
+DTSTAMP:20261006T000000Z
+DTSTART;VALUE=DATE:20261022
+DTEND;VALUE=DATE:20261023
+SUMMARY:[환불] 유캐스트
+DESCRIPTION:증거금 환불 · 배정 결과 확인\n자세히: https://ri
+ chroro.github.io/ipo/#i=2337
+URL:https://richroro.github.io/ipo/#i=2337
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:feed-sub-2322@richroro.github.io
+DTSTAMP:20261006T000000Z
+DTSTART;VALUE=DATE:20261020
+DTEND;VALUE=DATE:20261022
+SUMMARY:[청약] 티앤이코리아 (신한투자증권)
+DESCRIPTION:청약 10/20~10/21 10:00~16:00\n주간사 신한투자증권\n
+ 희망 공모가 12\,600원~15\,300원\n자세히: https://richroro.github
+ .io/ipo/#i=2322
+URL:https://richroro.github.io/ipo/#i=2322
+TRANSP:TRANSPARENT
+BEGIN:VALARM
+ACTION:DISPLAY
+TRIGGER;RELATED=START:PT9H30M
+DESCRIPTION:[청약] 티앤이코리아 (신한투자증권) · 청약 시
+ 작 30분 전
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:feed-end-2322@richroro.github.io
+DTSTAMP:20261006T000000Z
+DTSTART;VALUE=DATE:20261021
+DTEND;VALUE=DATE:20261022
+SUMMARY:[청약 마감 16시] 티앤이코리아
+DESCRIPTION:오늘 16시 청약 마감 — 증권사별 청약 건수를 
+ 보고 고르세요\n주간사 신한투자증권\n자세히: https://rich
+ roro.github.io/ipo/#i=2322
+URL:https://richroro.github.io/ipo/#i=2322
+TRANSP:TRANSPARENT
+BEGIN:VALARM
+ACTION:DISPLAY
+TRIGGER;RELATED=START:PT13H
+DESCRIPTION:[청약 마감 16시] 티앤이코리아 · 마감 3시간 전
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:feed-refund-2322@richroro.github.io
+DTSTAMP:20261006T000000Z
+DTSTART;VALUE=DATE:20261023
+DTEND;VALUE=DATE:20261024
+SUMMARY:[환불] 티앤이코리아
+DESCRIPTION:증거금 환불 · 배정 결과 확인\n자세히: https://ri
+ chroro.github.io/ipo/#i=2322
+URL:https://richroro.github.io/ipo/#i=2322
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:feed-sub-2323@richroro.github.io
+DTSTAMP:20261006T000000Z
+DTSTART;VALUE=DATE:20261020
+DTEND;VALUE=DATE:20261022
+SUMMARY:[청약] 크리에이츠 (삼성증권)
+DESCRIPTION:청약 10/20~10/21 10:00~16:00\n주간사 삼성증권\n희망 
+ 공모가 15\,000원~18\,000원\n자세히: https://richroro.github.io/ipo
+ /#i=2323
+URL:https://richroro.github.io/ipo/#i=2323
+TRANSP:TRANSPARENT
+BEGIN:VALARM
+ACTION:DISPLAY
+TRIGGER;RELATED=START:PT9H30M
+DESCRIPTION:[청약] 크리에이츠 (삼성증권) · 청약 시작 30분 
+ 전
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:feed-end-2323@richroro.github.io
+DTSTAMP:20261006T000000Z
+DTSTART;VALUE=DATE:20261021
+DTEND;VALUE=DATE:20261022
+SUMMARY:[청약 마감 16시] 크리에이츠
+DESCRIPTION:오늘 16시 청약 마감 — 증권사별 청약 건수를 
+ 보고 고르세요\n주간사 삼성증권\n자세히: https://richroro.g
+ ithub.io/ipo/#i=2323
+URL:https://richroro.github.io/ipo/#i=2323
+TRANSP:TRANSPARENT
+BEGIN:VALARM
+ACTION:DISPLAY
+TRIGGER;RELATED=START:PT13H
+DESCRIPTION:[청약 마감 16시] 크리에이츠 · 마감 3시간 전
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:feed-refund-2323@richroro.github.io
+DTSTAMP:20261006T000000Z
+DTSTART;VALUE=DATE:20261023
+DTEND;VALUE=DATE:20261024
+SUMMARY:[환불] 크리에이츠
+DESCRIPTION:증거금 환불 · 배정 결과 확인\n자세히: https://ri
+ chroro.github.io/ipo/#i=2323
+URL:https://richroro.github.io/ipo/#i=2323
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:feed-sub-2328@richroro.github.io
+DTSTAMP:20261006T000000Z
+DTSTART;VALUE=DATE:20261021
+DTEND;VALUE=DATE:20261023
+SUMMARY:[청약] 인텔리빅스 (미래에셋증권)
+DESCRIPTION:청약 10/21~10/22 10:00~16:00\n주간사 미래에셋증권\n
+ 희망 공모가 7\,600원~9\,000원\n자세히: https://richroro.github.i
+ o/ipo/#i=2328
+URL:https://richroro.github.io/ipo/#i=2328
+TRANSP:TRANSPARENT
+BEGIN:VALARM
+ACTION:DISPLAY
+TRIGGER;RELATED=START:PT9H30M
+DESCRIPTION:[청약] 인텔리빅스 (미래에셋증권) · 청약 시작 
+ 30분 전
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:feed-end-2328@richroro.github.io
+DTSTAMP:20261006T000000Z
+DTSTART;VALUE=DATE:20261022
+DTEND;VALUE=DATE:20261023
+SUMMARY:[청약 마감 16시] 인텔리빅스
+DESCRIPTION:오늘 16시 청약 마감 — 증권사별 청약 건수를 
+ 보고 고르세요\n주간사 미래에셋증권\n자세히: https://rich
+ roro.github.io/ipo/#i=2328
+URL:https://richroro.github.io/ipo/#i=2328
+TRANSP:TRANSPARENT
+BEGIN:VALARM
+ACTION:DISPLAY
+TRIGGER;RELATED=START:PT13H
+DESCRIPTION:[청약 마감 16시] 인텔리빅스 · 마감 3시간 전
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:feed-refund-2328@richroro.github.io
+DTSTAMP:20261006T000000Z
+DTSTART;VALUE=DATE:20261026
+DTEND;VALUE=DATE:20261027
+SUMMARY:[환불] 인텔리빅스
+DESCRIPTION:증거금 환불 · 배정 결과 확인\n자세히: https://ri
+ chroro.github.io/ipo/#i=2328
+URL:https://richroro.github.io/ipo/#i=2328
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:feed-sub-2332@richroro.github.io
+DTSTAMP:20261006T000000Z
+DTSTART;VALUE=DATE:20261022
+DTEND;VALUE=DATE:20261024
+SUMMARY:[청약] 이에스티 (대신증권)
+DESCRIPTION:청약 10/22~10/23 10:00~16:00\n주간사 대신증권\n희망 
+ 공모가 10\,600원~12\,400원\n자세히: https://richroro.github.io/ipo
+ /#i=2332
+URL:https://richroro.github.io/ipo/#i=2332
+TRANSP:TRANSPARENT
+BEGIN:VALARM
+ACTION:DISPLAY
+TRIGGER;RELATED=START:PT9H30M
+DESCRIPTION:[청약] 이에스티 (대신증권) · 청약 시작 30분 전
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:feed-end-2332@richroro.github.io
+DTSTAMP:20261006T000000Z
+DTSTART;VALUE=DATE:20261023
+DTEND;VALUE=DATE:20261024
+SUMMARY:[청약 마감 16시] 이에스티
+DESCRIPTION:오늘 16시 청약 마감 — 증권사별 청약 건수를 
+ 보고 고르세요\n주간사 대신증권\n자세히: https://richroro.g
+ ithub.io/ipo/#i=2332
+URL:https://richroro.github.io/ipo/#i=2332
+TRANSP:TRANSPARENT
+BEGIN:VALARM
+ACTION:DISPLAY
+TRIGGER;RELATED=START:PT13H
+DESCRIPTION:[청약 마감 16시] 이에스티 · 마감 3시간 전
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:feed-refund-2332@richroro.github.io
+DTSTAMP:20261006T000000Z
+DTSTART;VALUE=DATE:20261027
+DTEND;VALUE=DATE:20261028
+SUMMARY:[환불] 이에스티
+DESCRIPTION:증거금 환불 · 배정 결과 확인\n자세히: https://ri
+ chroro.github.io/ipo/#i=2332
+URL:https://richroro.github.io/ipo/#i=2332
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:feed-sub-2333@richroro.github.io
+DTSTAMP:20261006T000000Z
+DTSTART;VALUE=DATE:20261022
+DTEND;VALUE=DATE:20261024
+SUMMARY:[청약] 영광 (한국투자증권)
+DESCRIPTION:청약 10/22~10/23 10:00~16:00\n주간사 한국투자증권\n
+ 희망 공모가 14\,000원~17\,000원\n자세히: https://richroro.github
+ .io/ipo/#i=2333
+URL:https://richroro.github.io/ipo/#i=2333
+TRANSP:TRANSPARENT
+BEGIN:VALARM
+ACTION:DISPLAY
+TRIGGER;RELATED=START:PT9H30M
+DESCRIPTION:[청약] 영광 (한국투자증권) · 청약 시작 30분 전
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:feed-end-2333@richroro.github.io
+DTSTAMP:20261006T000000Z
+DTSTART;VALUE=DATE:20261023
+DTEND;VALUE=DATE:20261024
+SUMMARY:[청약 마감 16시] 영광
+DESCRIPTION:오늘 16시 청약 마감 — 증권사별 청약 건수를 
+ 보고 고르세요\n주간사 한국투자증권\n자세히: https://rich
+ roro.github.io/ipo/#i=2333
+URL:https://richroro.github.io/ipo/#i=2333
+TRANSP:TRANSPARENT
+BEGIN:VALARM
+ACTION:DISPLAY
+TRIGGER;RELATED=START:PT13H
+DESCRIPTION:[청약 마감 16시] 영광 · 마감 3시간 전
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:feed-refund-2333@richroro.github.io
+DTSTAMP:20261006T000000Z
+DTSTART;VALUE=DATE:20261027
+DTEND;VALUE=DATE:20261028
+SUMMARY:[환불] 영광
+DESCRIPTION:증거금 환불 · 배정 결과 확인\n자세히: https://ri
+ chroro.github.io/ipo/#i=2333
+URL:https://richroro.github.io/ipo/#i=2333
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:feed-sub-2335@richroro.github.io
+DTSTAMP:20261006T000000Z
+DTSTART;VALUE=DATE:20261022
+DTEND;VALUE=DATE:20261024
+SUMMARY:[청약] 래블업 (NH투자증권)
+DESCRIPTION:청약 10/22~10/23 10:00~16:00\n주간사 NH투자증권\n희
+ 망 공모가 19\,000원~22\,000원\n자세히: https://richroro.github.io
+ /ipo/#i=2335
+URL:https://richroro.github.io/ipo/#i=2335
+TRANSP:TRANSPARENT
+BEGIN:VALARM
+ACTION:DISPLAY
+TRIGGER;RELATED=START:PT9H30M
+DESCRIPTION:[청약] 래블업 (NH투자증권) · 청약 시작 30분 전
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:feed-end-2335@richroro.github.io
+DTSTAMP:20261006T000000Z
+DTSTART;VALUE=DATE:20261023
+DTEND;VALUE=DATE:20261024
+SUMMARY:[청약 마감 16시] 래블업
+DESCRIPTION:오늘 16시 청약 마감 — 증권사별 청약 건수를 
+ 보고 고르세요\n주간사 NH투자증권\n자세히: https://richroro
+ .github.io/ipo/#i=2335
+URL:https://richroro.github.io/ipo/#i=2335
+TRANSP:TRANSPARENT
+BEGIN:VALARM
+ACTION:DISPLAY
+TRIGGER;RELATED=START:PT13H
+DESCRIPTION:[청약 마감 16시] 래블업 · 마감 3시간 전
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:feed-refund-2335@richroro.github.io
+DTSTAMP:20261006T000000Z
+DTSTART;VALUE=DATE:20261027
+DTEND;VALUE=DATE:20261028
+SUMMARY:[환불] 래블업
+DESCRIPTION:증거금 환불 · 배정 결과 확인\n자세히: https://ri
+ chroro.github.io/ipo/#i=2335
+URL:https://richroro.github.io/ipo/#i=2335
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:feed-sub-2331@richroro.github.io
+DTSTAMP:20261006T000000Z
+DTSTART;VALUE=DATE:20261026
+DTEND;VALUE=DATE:20261028
+SUMMARY:[청약] 에이엘로봇 (대신증권)
+DESCRIPTION:청약 10/26~10/27 10:00~16:00\n주간사 대신증권\n희망 
+ 공모가 15\,700원~17\,600원\n자세히: https://richroro.github.io/ipo
+ /#i=2331
+URL:https://richroro.github.io/ipo/#i=2331
+TRANSP:TRANSPARENT
+BEGIN:VALARM
+ACTION:DISPLAY
+TRIGGER;RELATED=START:PT9H30M
+DESCRIPTION:[청약] 에이엘로봇 (대신증권) · 청약 시작 30분 
+ 전
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:feed-end-2331@richroro.github.io
+DTSTAMP:20261006T000000Z
+DTSTART;VALUE=DATE:20261027
+DTEND;VALUE=DATE:20261028
+SUMMARY:[청약 마감 16시] 에이엘로봇
+DESCRIPTION:오늘 16시 청약 마감 — 증권사별 청약 건수를 
+ 보고 고르세요\n주간사 대신증권\n자세히: https://richroro.g
+ ithub.io/ipo/#i=2331
+URL:https://richroro.github.io/ipo/#i=2331
+TRANSP:TRANSPARENT
+BEGIN:VALARM
+ACTION:DISPLAY
+TRIGGER;RELATED=START:PT13H
+DESCRIPTION:[청약 마감 16시] 에이엘로봇 · 마감 3시간 전
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:feed-refund-2331@richroro.github.io
+DTSTAMP:20261006T000000Z
+DTSTART;VALUE=DATE:20261029
+DTEND;VALUE=DATE:20261030
+SUMMARY:[환불] 에이엘로봇
+DESCRIPTION:증거금 환불 · 배정 결과 확인\n자세히: https://ri
+ chroro.github.io/ipo/#i=2331
+URL:https://richroro.github.io/ipo/#i=2331
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:feed-sub-2321@richroro.github.io
+DTSTAMP:20261006T000000Z
+DTSTART;VALUE=DATE:20261028
+DTEND;VALUE=DATE:20261030
+SUMMARY:[청약] 엠비디 (하나증권)
+DESCRIPTION:청약 10/28~10/29 10:00~16:00\n주간사 하나증권\n희망 
+ 공모가 9\,600원~11\,700원\n자세히: https://richroro.github.io/ipo/
+ #i=2321
+URL:https://richroro.github.io/ipo/#i=2321
+TRANSP:TRANSPARENT
+BEGIN:VALARM
+ACTION:DISPLAY
+TRIGGER;RELATED=START:PT9H30M
+DESCRIPTION:[청약] 엠비디 (하나증권) · 청약 시작 30분 전
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:feed-end-2321@richroro.github.io
+DTSTAMP:20261006T000000Z
+DTSTART;VALUE=DATE:20261029
+DTEND;VALUE=DATE:20261030
+SUMMARY:[청약 마감 16시] 엠비디
+DESCRIPTION:오늘 16시 청약 마감 — 증권사별 청약 건수를 
+ 보고 고르세요\n주간사 하나증권\n자세히: https://richroro.g
+ ithub.io/ipo/#i=2321
+URL:https://richroro.github.io/ipo/#i=2321
+TRANSP:TRANSPARENT
+BEGIN:VALARM
+ACTION:DISPLAY
+TRIGGER;RELATED=START:PT13H
+DESCRIPTION:[청약 마감 16시] 엠비디 · 마감 3시간 전
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:feed-refund-2321@richroro.github.io
+DTSTAMP:20261006T000000Z
+DTSTART;VALUE=DATE:20261102
+DTEND;VALUE=DATE:20261103
+SUMMARY:[환불] 엠비디
+DESCRIPTION:증거금 환불 · 배정 결과 확인\n자세히: https://ri
+ chroro.github.io/ipo/#i=2321
+URL:https://richroro.github.io/ipo/#i=2321
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:feed-sub-2325@richroro.github.io
+DTSTAMP:20261006T000000Z
+DTSTART;VALUE=DATE:20261102
+DTEND;VALUE=DATE:20261104
+SUMMARY:[청약] 바로팜 (미래에셋증권)
+DESCRIPTION:청약 11/2~11/3 10:00~16:00\n주간사 미래에셋증권\n희
+ 망 공모가 16\,400원~20\,200원\n자세히: https://richroro.github.io
+ /ipo/#i=2325
+URL:https://richroro.github.io/ipo/#i=2325
+TRANSP:TRANSPARENT
+BEGIN:VALARM
+ACTION:DISPLAY
+TRIGGER;RELATED=START:PT9H30M
+DESCRIPTION:[청약] 바로팜 (미래에셋증권) · 청약 시작 30분 
+ 전
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:feed-end-2325@richroro.github.io
+DTSTAMP:20261006T000000Z
+DTSTART;VALUE=DATE:20261103
+DTEND;VALUE=DATE:20261104
+SUMMARY:[청약 마감 16시] 바로팜
+DESCRIPTION:오늘 16시 청약 마감 — 증권사별 청약 건수를 
+ 보고 고르세요\n주간사 미래에셋증권\n자세히: https://rich
+ roro.github.io/ipo/#i=2325
+URL:https://richroro.github.io/ipo/#i=2325
+TRANSP:TRANSPARENT
+BEGIN:VALARM
+ACTION:DISPLAY
+TRIGGER;RELATED=START:PT13H
+DESCRIPTION:[청약 마감 16시] 바로팜 · 마감 3시간 전
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:feed-refund-2325@richroro.github.io
+DTSTAMP:20261006T000000Z
+DTSTART;VALUE=DATE:20261105
+DTEND;VALUE=DATE:20261106
+SUMMARY:[환불] 바로팜
+DESCRIPTION:증거금 환불 · 배정 결과 확인\n자세히: https://ri
+ chroro.github.io/ipo/#i=2325
+URL:https://richroro.github.io/ipo/#i=2325
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:feed-sub-2339@richroro.github.io
+DTSTAMP:20261006T000000Z
+DTSTART;VALUE=DATE:20261102
+DTEND;VALUE=DATE:20261104
+SUMMARY:[청약] 동원파츠 (삼성증권)
+DESCRIPTION:청약 11/2~11/3 10:00~16:00\n주간사 삼성증권\n희망 
+ 공모가 23\,000원~26\,500원\n자세히: https://richroro.github.io/ipo
+ /#i=2339
+URL:https://richroro.github.io/ipo/#i=2339
+TRANSP:TRANSPARENT
+BEGIN:VALARM
+ACTION:DISPLAY
+TRIGGER;RELATED=START:PT9H30M
+DESCRIPTION:[청약] 동원파츠 (삼성증권) · 청약 시작 30분 전
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:feed-end-2339@richroro.github.io
+DTSTAMP:20261006T000000Z
+DTSTART;VALUE=DATE:20261103
+DTEND;VALUE=DATE:20261104
+SUMMARY:[청약 마감 16시] 동원파츠
+DESCRIPTION:오늘 16시 청약 마감 — 증권사별 청약 건수를 
+ 보고 고르세요\n주간사 삼성증권\n자세히: https://richroro.g
+ ithub.io/ipo/#i=2339
+URL:https://richroro.github.io/ipo/#i=2339
+TRANSP:TRANSPARENT
+BEGIN:VALARM
+ACTION:DISPLAY
+TRIGGER;RELATED=START:PT13H
+DESCRIPTION:[청약 마감 16시] 동원파츠 · 마감 3시간 전
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:feed-refund-2339@richroro.github.io
+DTSTAMP:20261006T000000Z
+DTSTART;VALUE=DATE:20261105
+DTEND;VALUE=DATE:20261106
+SUMMARY:[환불] 동원파츠
+DESCRIPTION:증거금 환불 · 배정 결과 확인\n자세히: https://ri
+ chroro.github.io/ipo/#i=2339
+URL:https://richroro.github.io/ipo/#i=2339
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:feed-sub-2336@richroro.github.io
+DTSTAMP:20261006T000000Z
+DTSTART;VALUE=DATE:20261103
+DTEND;VALUE=DATE:20261105
+SUMMARY:[청약] 넥스아이 (한국투자증권)
+DESCRIPTION:청약 11/3~11/4 10:00~16:00\n주간사 한국투자증권\n희
+ 망 공모가 10\,500원~13\,000원\n자세히: https://richroro.github.io
+ /ipo/#i=2336
+URL:https://richroro.github.io/ipo/#i=2336
+TRANSP:TRANSPARENT
+BEGIN:VALARM
+ACTION:DISPLAY
+TRIGGER;RELATED=START:PT9H30M
+DESCRIPTION:[청약] 넥스아이 (한국투자증권) · 청약 시작 30
+ 분 전
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:feed-end-2336@richroro.github.io
+DTSTAMP:20261006T000000Z
+DTSTART;VALUE=DATE:20261104
+DTEND;VALUE=DATE:20261105
+SUMMARY:[청약 마감 16시] 넥스아이
+DESCRIPTION:오늘 16시 청약 마감 — 증권사별 청약 건수를 
+ 보고 고르세요\n주간사 한국투자증권\n자세히: https://rich
+ roro.github.io/ipo/#i=2336
+URL:https://richroro.github.io/ipo/#i=2336
+TRANSP:TRANSPARENT
+BEGIN:VALARM
+ACTION:DISPLAY
+TRIGGER;RELATED=START:PT13H
+DESCRIPTION:[청약 마감 16시] 넥스아이 · 마감 3시간 전
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:feed-refund-2336@richroro.github.io
+DTSTAMP:20261006T000000Z
+DTSTART;VALUE=DATE:20261106
+DTEND;VALUE=DATE:20261107
+SUMMARY:[환불] 넥스아이
+DESCRIPTION:증거금 환불 · 배정 결과 확인\n자세히: https://ri
+ chroro.github.io/ipo/#i=2336
+URL:https://richroro.github.io/ipo/#i=2336
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:feed-sub-2338@richroro.github.io
+DTSTAMP:20261006T000000Z
+DTSTART;VALUE=DATE:20261105
+DTEND;VALUE=DATE:20261107
+SUMMARY:[청약] 옵토닉스 (한국투자증권)
+DESCRIPTION:청약 11/5~11/6 10:00~16:00\n주간사 한국투자증권\n희
+ 망 공모가 10\,000원~12\,000원\n자세히: https://richroro.github.io
+ /ipo/#i=2338
+URL:https://richroro.github.io/ipo/#i=2338
+TRANSP:TRANSPARENT
+BEGIN:VALARM
+ACTION:DISPLAY
+TRIGGER;RELATED=START:PT9H30M
+DESCRIPTION:[청약] 옵토닉스 (한국투자증권) · 청약 시작 30
+ 분 전
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:feed-end-2338@richroro.github.io
+DTSTAMP:20261006T000000Z
+DTSTART;VALUE=DATE:20261106
+DTEND;VALUE=DATE:20261107
+SUMMARY:[청약 마감 16시] 옵토닉스
+DESCRIPTION:오늘 16시 청약 마감 — 증권사별 청약 건수를 
+ 보고 고르세요\n주간사 한국투자증권\n자세히: https://rich
+ roro.github.io/ipo/#i=2338
+URL:https://richroro.github.io/ipo/#i=2338
+TRANSP:TRANSPARENT
+BEGIN:VALARM
+ACTION:DISPLAY
+TRIGGER;RELATED=START:PT13H
+DESCRIPTION:[청약 마감 16시] 옵토닉스 · 마감 3시간 전
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:feed-refund-2338@richroro.github.io
+DTSTAMP:20261006T000000Z
+DTSTART;VALUE=DATE:20261110
+DTEND;VALUE=DATE:20261111
+SUMMARY:[환불] 옵토닉스
+DESCRIPTION:증거금 환불 · 배정 결과 확인\n자세히: https://ri
+ chroro.github.io/ipo/#i=2338
+URL:https://richroro.github.io/ipo/#i=2338
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:feed-sub-2334@richroro.github.io
+DTSTAMP:20261006T000000Z
+DTSTART;VALUE=DATE:20261110
+DTEND;VALUE=DATE:20261112
+SUMMARY:[청약] 하나에어로다이내믹스 (IBK투자증권)
+DESCRIPTION:청약 11/10~11/11 10:00~16:00\n주간사 IBK투자증권\n희
+ 망 공모가 4\,700원~5\,700원\n자세히: https://richroro.github.io/i
+ po/#i=2334
+URL:https://richroro.github.io/ipo/#i=2334
+TRANSP:TRANSPARENT
+BEGIN:VALARM
+ACTION:DISPLAY
+TRIGGER;RELATED=START:PT9H30M
+DESCRIPTION:[청약] 하나에어로다이내믹스 (IBK투자증권) · 
+ 청약 시작 30분 전
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:feed-end-2334@richroro.github.io
+DTSTAMP:20261006T000000Z
+DTSTART;VALUE=DATE:20261111
+DTEND;VALUE=DATE:20261112
+SUMMARY:[청약 마감 16시] 하나에어로다이내믹스
+DESCRIPTION:오늘 16시 청약 마감 — 증권사별 청약 건수를 
+ 보고 고르세요\n주간사 IBK투자증권\n자세히: https://richror
+ o.github.io/ipo/#i=2334
+URL:https://richroro.github.io/ipo/#i=2334
+TRANSP:TRANSPARENT
+BEGIN:VALARM
+ACTION:DISPLAY
+TRIGGER;RELATED=START:PT13H
+DESCRIPTION:[청약 마감 16시] 하나에어로다이내믹스 · 마감 
+ 3시간 전
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:feed-refund-2334@richroro.github.io
+DTSTAMP:20261006T000000Z
+DTSTART;VALUE=DATE:20261113
+DTEND;VALUE=DATE:20261114
+SUMMARY:[환불] 하나에어로다이내믹스
+DESCRIPTION:증거금 환불 · 배정 결과 확인\n자세히: https://ri
+ chroro.github.io/ipo/#i=2334
+URL:https://richroro.github.io/ipo/#i=2334
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:feed-sub-2340@richroro.github.io
+DTSTAMP:20261006T000000Z
+DTSTART;VALUE=DATE:20261124
+DTEND;VALUE=DATE:20261126
+SUMMARY:[청약] 케이엠에프 (IBK투자증권)
+DESCRIPTION:청약 11/24~11/25 10:00~16:00\n주간사 IBK투자증권\n희
+ 망 공모가 15\,000원~17\,800원\n자세히: https://richroro.github.io
+ /ipo/#i=2340
+URL:https://richroro.github.io/ipo/#i=2340
+TRANSP:TRANSPARENT
+BEGIN:VALARM
+ACTION:DISPLAY
+TRIGGER;RELATED=START:PT9H30M
+DESCRIPTION:[청약] 케이엠에프 (IBK투자증권) · 청약 시작 30
+ 분 전
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:feed-end-2340@richroro.github.io
+DTSTAMP:20261006T000000Z
+DTSTART;VALUE=DATE:20261125
+DTEND;VALUE=DATE:20261126
+SUMMARY:[청약 마감 16시] 케이엠에프
+DESCRIPTION:오늘 16시 청약 마감 — 증권사별 청약 건수를 
+ 보고 고르세요\n주간사 IBK투자증권\n자세히: https://richror
+ o.github.io/ipo/#i=2340
+URL:https://richroro.github.io/ipo/#i=2340
+TRANSP:TRANSPARENT
+BEGIN:VALARM
+ACTION:DISPLAY
+TRIGGER;RELATED=START:PT13H
+DESCRIPTION:[청약 마감 16시] 케이엠에프 · 마감 3시간 전
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:feed-refund-2340@richroro.github.io
+DTSTAMP:20261006T000000Z
+DTSTART;VALUE=DATE:20261127
+DTEND;VALUE=DATE:20261128
+SUMMARY:[환불] 케이엠에프
+DESCRIPTION:증거금 환불 · 배정 결과 확인\n자세히: https://ri
+ chroro.github.io/ipo/#i=2340
+URL:https://richroro.github.io/ipo/#i=2340
+TRANSP:TRANSPARENT
+END:VEVENT
+END:VCALENDAR

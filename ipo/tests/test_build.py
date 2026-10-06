@@ -475,6 +475,55 @@ class EndToEnd(unittest.TestCase):
             self.assertFalse(os.path.exists(out))
 
 
+class Feed(unittest.TestCase):
+    """달력 구독 피드(ipo.ics)"""
+    ITEMS = [
+        {"id": "1", "name": "가나다", "uw": ["한국투자증권", "KB증권"], "price": 21000, "inst_comp": 1234.5, "lockup": 12.5,
+         "sub_start": "2026-10-08", "sub_end": "2026-10-09", "refund": "2026-10-13", "list_date": "2026-10-16"},
+        {"id": "2", "name": "스팩1호", "spac": True, "uw": ["NH투자증권"], "sub_start": "2026-10-08", "sub_end": "2026-10-09"},
+        {"id": "3", "name": "오래된곳", "uw": ["삼성증권"], "sub_start": "2026-07-01", "sub_end": "2026-07-02", "refund": "2026-07-06",
+         "list_date": "2026-09-30"},
+        {"id": "4", "name": "쉼표,세미;콜론", "uw": [], "band_lo": 9000, "band_hi": 11000, "sub_start": "2026-10-20", "sub_end": "2026-10-20"},
+    ]
+
+    def unfolded(self, text):
+        return text.replace("\r\n ", "")
+
+    def test_events_window_and_spac(self):
+        text = build.ics_text(self.ITEMS, dt.date(2026, 10, 6))
+        self.assertTrue(text.startswith("BEGIN:VCALENDAR\r\n") and text.endswith("END:VCALENDAR\r\n"))
+        u = self.unfolded(text)
+        # 청약 · 마감 · 환불 · 상장 4개 + 지난 30일 안의 상장 1개 + 하루짜리 청약 1개(마감 따로 없음)
+        self.assertEqual(u.count("BEGIN:VEVENT"), 6)
+        self.assertNotIn("스팩1호", u)
+        self.assertIn("UID:feed-list-3@richroro.github.io", u)
+        self.assertNotIn("feed-sub-3@", u)
+        self.assertNotIn("feed-end-4@", u)
+        self.assertIn("SUMMARY:[청약] 가나다 (한국투자증권)", u)
+        self.assertIn("DTSTART;VALUE=DATE:20261008\r\nDTEND;VALUE=DATE:20261010", u)
+        self.assertIn("기관경쟁률 1\\,234:1\\n확약 12.5%", u)
+        self.assertIn("URL:https://richroro.github.io/ipo/#i=1", u)
+        # 글자 그대로의 쉼표·세미콜론은 이스케이프
+        self.assertIn("SUMMARY:[청약] 쉼표\\,세미\\;콜론", u)
+        self.assertIn("희망 공모가 9\\,000원~11\\,000원", u)
+
+    def test_lines_are_folded_by_bytes(self):
+        long = [{"id": "9", "name": "가" * 60, "uw": ["미래에셋증권"], "sub_start": "2026-10-08", "sub_end": "2026-10-09"}]
+        raw = build.ics_text(long, dt.date(2026, 10, 6)).encode("utf-8")
+        self.assertTrue(all(len(line) <= 75 for line in raw.split(b"\r\n")))
+        self.assertIn("가" * 60, self.unfolded(raw.decode("utf-8")))
+
+    def test_main_ics_only(self):
+        with tempfile.TemporaryDirectory() as d:
+            out = os.path.join(d, "ipo.json")
+            build.write_json(out, {"items": self.ITEMS})
+            self.assertEqual(build.main(["--out", out, "--ics-only", "--today", "2026-10-06"]), 0)
+            with open(os.path.join(d, "ipo.ics"), encoding="utf-8", newline="") as f:
+                self.assertEqual(f.read().count("BEGIN:VEVENT"), 6)
+            errors, _ = validate.check(out, min_items=1, today=dt.date(2026, 10, 6))
+            self.assertFalse([e for e in errors if "ics" in e])
+
+
 class Validate(unittest.TestCase):
     def test_catches_bad_rows(self):
         with tempfile.TemporaryDirectory() as d:
