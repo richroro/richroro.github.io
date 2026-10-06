@@ -145,6 +145,52 @@ function skinify(mat, wrap) {
   mat.customProgramCacheKey = () => 'skin' + wrap.join();
 }
 
+// ───────────────────────── 머리카락 셰이더 ─────────────────────────
+// 머리카락은 결을 따라 띠 모양으로 빛난다(Kajiya-Kay). 결 방향은 정수리에서 표면을 따라 흘러내리는 방향으로 근사한다.
+// 하이라이트를 두 겹(희고 날카로운 1차, 머리색이 섞인 넓은 2차) 두고, 가닥마다 위치를 조금씩 흩뜨린다.
+const HAIR = { crown: { value: new THREE.Vector3() }, off: { value: new THREE.Vector3() }, time: { value: 0 }, cm: { value: 1 } };
+const KK = `
+  #if NUM_DIR_LIGHTS > 0
+  {
+    vec3 hV = normalize( vViewPosition );
+    vec3 hd = -vViewPosition - uCrown;
+    vec3 hT = normalize( hd - normal * dot( hd, normal ) + 1e-4 );
+    float hLum = dot( diffuseColor.rgb, vec3( 0.2126, 0.7152, 0.0722 ) );
+    float hMask = HAIR_MASK;
+    float hN = fract( sin( dot( floor( vMapUv * vec2( 900.0, 60.0 ) ), vec2( 12.9898, 78.233 ) ) ) * 43758.5453 ) - 0.5;
+    vec3 hT1 = normalize( hT + normal * ( -0.05 + hN * 0.16 ) );
+    vec3 hT2 = normalize( hT + normal * ( 0.16 + hN * 0.16 ) );
+    for ( int i = 0; i < NUM_DIR_LIGHTS; i ++ ) {
+      vec3 hL = directionalLights[ i ].direction;
+      vec3 hH = normalize( hL + hV );
+      float d1 = dot( hT1, hH ), d2 = dot( hT2, hH );
+      float s1 = pow( sqrt( max( 0.0, 1.0 - d1 * d1 ) ), 320.0 );
+      float s2 = pow( sqrt( max( 0.0, 1.0 - d2 * d2 ) ), 70.0 );
+      float hNL = clamp( dot( normal, hL ), 0.0, 1.0 );
+      reflectedLight.directSpecular += directionalLights[ i ].color * hNL * hMask * ( s1 * HAIR_S1 + s2 * HAIR_S2 * vec3( 0.8, 0.58, 0.42 ) );
+    }
+  }
+  #endif
+`;
+// 머리 움직임에 늦게 따라오는 흔들림 + 아주 약한 바람. hairW 는 정수리에서 멀수록 커진다.
+const SWAY = `
+  transformed += uHairOff * hairW;
+  vec3 hp = position * uCmPerLocal;
+  transformed += vec3( sin( uTime * 1.3 + hp.y * 0.17 + hp.x * 0.05 ), 0.0, sin( uTime * 1.05 + hp.x * 0.21 + hp.y * 0.04 ) ) * ( 0.14 / uCmPerLocal ) * hairW;
+`;
+function hairify(mat, { mask = '1.0', sway = false, s1 = 0.09, s2 = 0.05, key }) {
+  const prev = mat.onBeforeCompile, prevKey = mat.customProgramCacheKey();
+  mat.onBeforeCompile = (sh, r) => {
+    prev.call(mat, sh, r);
+    Object.assign(sh.uniforms, { uCrown: HAIR.crown, uHairOff: HAIR.off, uTime: HAIR.time, uCmPerLocal: HAIR.cm });
+    sh.fragmentShader = 'uniform vec3 uCrown;\n' + sh.fragmentShader.replace('#include <aomap_fragment>',
+      KK.replace('HAIR_MASK', mask).replace('HAIR_S1', s1.toFixed(3)).replace('HAIR_S2', s2.toFixed(3)) + '\n#include <aomap_fragment>');
+    if (sway) sh.vertexShader = 'attribute float hairW;\nuniform vec3 uHairOff;\nuniform float uTime;\nuniform float uCmPerLocal;\n'
+      + sh.vertexShader.replace('#include <skinning_vertex>', '#include <skinning_vertex>' + SWAY);
+  };
+  mat.customProgramCacheKey = () => prevKey + '|hair:' + key;
+}
+
 // ───────────────────────── 인물 불러오기 ─────────────────────────
 const manager = new THREE.LoadingManager();
 manager.onProgress = (url, loaded, total) => { $('#loadbar').style.width = (loaded / total * 100).toFixed(0) + '%'; };
@@ -182,11 +228,20 @@ M.headskin = M.face.clone();
 M.headskin.sheen = 0.12;
 M.headskin.clearcoat = 0;
 M.headskin.roughness = 1.3;
-M.hair.color.setRGB(1.2, 1.15, 1.1);
-M.lashes = M.hair;
+M.lashes = new THREE.MeshPhysicalMaterial({ map: T.hair, alphaTest: 0.3, alphaToCoverage: true, side: THREE.DoubleSide, roughness: 0.6 });
+// 텍스처의 머리색이 거의 검정(sRGB 19,16,13)이라 그대로면 결이 안 보인다 → 기본색을 조금 올리고 하이라이트로 결을 만든다
+M.hair.color.setRGB(1.55, 1.45, 1.35);
+M.hair.specularIntensity = 0.12; M.hair.sheen = 0; M.hair.roughness = 0.65; M.hair.alphaTest = 0.45;
+// 가장자리는 두 번째 패스에서 반투명으로 부드럽게(불투명한 속은 첫 패스가 깊이를 쓴다)
+M.hairSoft = M.hair.clone();
+Object.assign(M.hairSoft, { transparent: true, alphaTest: 0.33, alphaToCoverage: false, depthWrite: false });
 skinify(M.face, [0.5, 0.24, 0.16]);
 skinify(M.headskin, [0.5, 0.24, 0.16]);
 skinify(M.body, [0.4, 0.2, 0.14]);
+hairify(M.hair, { sway: true, key: 'core' });
+hairify(M.hairSoft, { sway: true, key: 'soft' });
+// 두피에 그려진 머리카락: 텍스처가 어두운 곳만 머리카락으로 취급
+hairify(M.headskin, { mask: '1.0 - smoothstep( 0.03, 0.10, hLum )', s1: 0.07, s2: 0.04, key: 'cap' });
 
 const rig = { ready: false };
 const gltfLoader = new GLTFLoader(manager).setMeshoptDecoder(MeshoptDecoder);
@@ -201,6 +256,29 @@ gltfLoader.load('assets/avatar.glb', gltf => {
   });
   scene.add(root);
   rig.root = root;
+  root.updateMatrixWorld(true);
+  // 머리카락: 흔들림 가중치(정수리에서 4cm 아래부터 끝으로 갈수록 1) + 반투명 가장자리 패스
+  const hairMeshes = [];
+  root.traverse(o => { if (o.isMesh && o.material === M.hair) hairMeshes.push(o); });
+  for (const m of hairMeshes) {
+    const P = m.geometry.attributes.position, v = new THREE.Vector3();
+    let top = -Infinity;
+    const ys = new Float32Array(P.count);
+    for (let i = 0; i < P.count; i++) { ys[i] = v.fromBufferAttribute(P, i).applyMatrix4(m.matrixWorld).y; top = Math.max(top, ys[i]); }
+    const w = new Float32Array(P.count);
+    for (let i = 0; i < P.count; i++) w[i] = clamp01((top - 4 - ys[i]) / 26) ** 1.4;
+    m.geometry.setAttribute('hairW', new THREE.BufferAttribute(w, 1));
+    const soft = new THREE.SkinnedMesh(m.geometry, M.hairSoft);
+    soft.position.copy(m.position); soft.quaternion.copy(m.quaternion); soft.scale.copy(m.scale);
+    soft.frustumCulled = false; soft.receiveShadow = true; soft.renderOrder = 2;
+    m.parent.add(soft);
+    soft.bind(m.skeleton, m.bindMatrix);
+    rig.hairMesh = m;
+  }
+  if (rig.hairMesh) {
+    HAIR.cm.value = rig.hairMesh.matrixWorld.getMaxScaleOnAxis();
+    rig.hairToLocal = new THREE.Matrix3().setFromMatrix4(rig.hairMesh.matrixWorld.clone().invert());
+  }
   const bone = n => root.getObjectByName('Bip01_' + n);
   Object.assign(rig, {
     spine1: bone('Spine1'), spine2: bone('Spine2'), neck: bone('Neck'), head: bone('Head'),
@@ -231,6 +309,11 @@ gltfLoader.load('assets/avatar.glb', gltf => {
   rig.headRest = rig.headPos.clone();
   rig.headSmooth = rig.headPos.clone();
   rig.headFix = rig.head.getWorldQuaternion(new THREE.Quaternion()).invert();
+  // 머리카락 기준점(머리 뼈 공간): 정수리, 그리고 흔들림 스프링이 매달릴 점
+  rig.crownLocal = rig.head.worldToLocal(rig.headPos.clone().add(new THREE.Vector3(0, 16, -4)));
+  rig.hairAnchorLocal = rig.head.worldToLocal(rig.headPos.clone().add(new THREE.Vector3(0, -12, -4)));
+  rig.hairQ = rig.headPos.clone().add(new THREE.Vector3(0, -12, -4));
+  rig.hairV = new THREE.Vector3();
   rig.ready = true;
   // 몸동작(모션캡처)은 얼굴이 뜬 다음에 이어서 받는다
   new GLTFLoader().setMeshoptDecoder(MeshoptDecoder).load('assets/anims.glb', a => setupBody(a.animations), undefined, e => console.warn('모션을 불러오지 못했습니다', e));
@@ -711,7 +794,27 @@ function animate(now, dt) {
   S.w.eyeBlinkLeft = clamp01(blinkL + sq * 0.15);
   S.w.eyeBlinkRight = clamp01(blinkR + sq * 0.15);
   const idx = rig.morphIndex;
+  updateHair(now, dt);
   for (const f of rig.faces) { const inf = f.morphTargetInfluences; for (const k of rig.morphNames) inf[idx[k]] = S.debugW ? (S.debugW[k] || 0) : S.w[k]; }
+}
+
+// 머리카락 흔들림: 머리 아래 한 점을 스프링(약간 덜 감쇠된)으로 늦게 따라가게 하고, 그 지연을 머리카락 끝에 준다
+const _ha = new THREE.Vector3(), _hacc = new THREE.Vector3();
+function updateHair(now, dt) {
+  HAIR.time.value = now;
+  camera.updateMatrixWorld();
+  HAIR.crown.value.copy(rig.crownLocal).applyMatrix4(rig.head.matrixWorld).applyMatrix4(camera.matrixWorldInverse);
+  if (!rig.hairToLocal) return;
+  const A = _ha.copy(rig.hairAnchorLocal).applyMatrix4(rig.head.matrixWorld);
+  const n = 3, h = Math.min(dt, 0.05) / n;
+  for (let i = 0; i < n; i++) {
+    _hacc.subVectors(A, rig.hairQ).multiplyScalar(70).addScaledVector(rig.hairV, -7.5);
+    rig.hairV.addScaledVector(_hacc, h);
+    rig.hairQ.addScaledVector(rig.hairV, h);
+  }
+  const off = HAIR.off.value.subVectors(rig.hairQ, A).multiplyScalar(1.15);
+  if (off.length() > 3.5) off.setLength(3.5);
+  off.applyMatrix3(rig.hairToLocal);
 }
 
 // 핸드헬드 카메라: 아주 작은 흔들림과 숨쉬는 듯한 줌
@@ -868,4 +971,4 @@ $('#hide').onclick = () => document.body.classList.toggle('clean');
 addEventListener('keydown', e => { if (e.key === 'h' && e.target === document.body) document.body.classList.toggle('clean'); });
 
 // 테스트용 훅
-window.__human = { S, rig, say, MOODS, setQuality, camera, CAM_BASE, LOOK, body, setGaze };
+window.__human = { S, rig, say, MOODS, setQuality, camera, CAM_BASE, LOOK, body, setGaze, HAIR };
