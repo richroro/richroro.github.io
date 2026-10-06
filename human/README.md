@@ -59,6 +59,21 @@
 - **피부**: 직접광 디퓨즈를 채널별로 감싸는(wrap) 셰이더 패치로 명암 경계에 붉은 산란광이 번지게 했다. 시즌(sheen)과 옅은 클리어코트로 피부 기름기.
 - **카메라**: 망원(14~15°) 초상 화각, 손에 든 듯한 미세 흔들림, 필름 그레인·비네팅·약한 색수차.
 
+## 내 아바타 불러오기 (Avaturn · Ready Player Me 등)
+
+기본 인물(Rocketbox)은 게임용이라 사진처럼 보이는 데 한계가 있다. 사진으로 만든 아바타를 넣으면 같은 엔진
+(깜빡임·시선·표정·립싱크·모션캡처 몸동작)으로 그대로 움직인다.
+
+- 화면의 **내 아바타** 버튼으로 GLB 파일을 고르거나, `?avatar=GLB주소` 로 연다. 파일은 기기 안에서만 열리고 업로드되지 않는다.
+- 조건: Mixamo 이름 뼈대(`Hips`·`Spine2`·`Neck`·`Head`·`LeftEye`·`LeftArm` …, `mixamorig` 접두사 무관) + ARKit 표정(`eyeBlinkLeft` 등).
+  오큘러스 비셈(`viseme_aa` …)이 있으면 입 모양이 더 정확하다. Avaturn **Type 2** 아바타, Ready Player Me(ARKit+Oculus 옵션)가 해당한다.
+- 미터 단위 모델은 cm 로 맞추고, 카메라·조명은 머리 높이 기준으로 다시 놓는다(`frameCamera`).
+- 몸동작은 Rocketbox 모션캡처를 숨긴 원본 뼈대에서 재생한 뒤 매 프레임 옮긴다(`applyRetarget`).
+  몸통·머리는 쉬는 자세 대비 회전 차이를, 팔은 관절 방향을 맞춰서 바인드 자세가 T자·A자로 달라도 팔이 같은 곳을 가리킨다.
+- 눈알이 눈 뼈에 붙어 있으면 눈알 메시에는 eyeLook 모프를 주지 않는다(이중 회전 방지).
+- 확인용: TalkingHead 저장소의 Avaturn 샘플(비상업용, 사이트에 포함하지 않음)을 원본 위치에서 바로 열 수 있다.
+  `?avatar=https://raw.githubusercontent.com/met4citizen/TalkingHead/main/avatars/avaturn.glb`
+
 ## 에셋 다시 만들기
 
 원본 FBX 는 모프가 175개, 정점 27,624개(비인덱스)라 그대로 쓰면 무겁다. `tools/convert-fbx.js` 가 다음을 한다.

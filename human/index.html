@@ -17,7 +17,7 @@
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="https://richroro.github.io/human/og.jpg">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%23161412'/><circle cx='50' cy='42' r='18' fill='%23e8c9b0'/><path d='M22 86c4-17 15-25 28-25s24 8 28 25' fill='%23e8c9b0'/></svg>">
-<link rel="preload" href="assets/avatar.glb?v=6" as="fetch" crossorigin>
+<link rel="preload" href="assets/avatar.glb?v=7" as="fetch" crossorigin>
 <style>
   :root {
     --bg: #121110; --ink: #f4efe9; --muted: #b4aaa0; --line: rgba(255,255,255,.12);
@@ -108,6 +108,8 @@
     <button class="tool toggle on" id="follow" type="button" title="마우스·손가락을 눈으로 따라가기"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg><span>시선 따라오기</span></button>
     <button class="tool toggle on tools-extra" id="hand" type="button" title="손으로 든 카메라처럼 미세하게 흔들기"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 7h13v10H3zM16 10l5-3v10l-5-3"/></svg><span>핸드헬드</span></button>
     <button class="tool tools-extra" id="q" type="button">화질: 높음</button>
+    <button class="tool" id="avbtn" type="button" title="Avaturn·Ready Player Me 등에서 받은 GLB 아바타를 불러옵니다(기기 안에서만 열림)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 21c1-4.5 4.4-7 8-7s7 2.5 8 7"/></svg><span>내 아바타</span></button>
+    <input id="avfile" type="file" accept=".glb,model/gltf-binary" hidden>
     <button class="tool" id="hide" type="button" title="화면만 보기 (H)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg><span>화면만</span></button>
     <span class="credit">인물·모션 <a href="https://github.com/microsoft/Microsoft-Rocketbox" target="_blank" rel="noopener">Microsoft Rocketbox</a>(MIT) · <a href="https://threejs.org" target="_blank" rel="noopener">three.js</a></span>
   </div>
@@ -123,6 +125,6 @@
 </div>
 
 <noscript><p style="position:fixed;top:40%;width:100%;text-align:center">이 페이지는 자바스크립트와 WebGL이 필요합니다.</p></noscript>
-<script type="module" src="app.js?v=6"></script>
+<script type="module" src="app.js?v=7"></script>
 </body>
 </html>

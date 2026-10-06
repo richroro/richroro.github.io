@@ -15,7 +15,7 @@ import { buildStrands, HAIR_STRANDS } from './hair.js';
 
 const $ = s => document.querySelector(s);
 // 배포 버전. 파일 주소에 붙여 휴대폰 캐시가 예전 파일을 섞어 쓰지 않게 하고, 화면 위에도 보여 준다.
-const VERSION = '6';
+const VERSION = '7';
 const asset = name => `assets/${name}?v=${VERSION}`;
 const clamp = (x, a, b) => Math.min(b, Math.max(a, x));
 const clamp01 = x => clamp(x, 0, 1);
@@ -296,8 +296,46 @@ hairify(M.hairSoft, { sway: true, key: 'soft' });
 hairify(M.headskin, { mask: '1.0 - smoothstep( 0.03, 0.10, hLum )', s1: 0.07, s2: 0.04, key: 'cap' });
 
 const rig = { ready: false };
-const gltfLoader = new GLTFLoader(manager).setMeshoptDecoder(MeshoptDecoder);
-gltfLoader.load(asset('avatar.glb'), gltf => {
+// 몸동작 모션캡처는 한 번만 받아 두고 어떤 아바타에도 쓴다
+const animsP = new Promise(res => new GLTFLoader().setMeshoptDecoder(MeshoptDecoder)
+  .load(asset('anims.glb'), res, undefined, e => { console.warn('모션을 불러오지 못했습니다', e); res(null); }));
+
+// 기본 인물(Rocketbox) 또는 사용자가 넣은 아바타(Avaturn·Ready Player Me 등 Mixamo 뼈대 + ARKit 표정)
+function loadAvatar(url, kind) {
+  new GLTFLoader(manager).setMeshoptDecoder(MeshoptDecoder).load(url, gltf => {
+    clearAvatar();
+    try { kind === 'rocketbox' ? setupRocketbox(gltf) : setupGeneric(gltf); }
+    catch (e) {
+      console.error(e);
+      toast('이 아바타는 쓸 수 없는 구조예요. ARKit 표정이 있는 GLB 인지 확인해 주세요.');
+      if (kind !== 'rocketbox') loadAvatar(asset('avatar.glb'), 'rocketbox');
+      return;
+    }
+    finishAvatar();
+  }, undefined, err => {
+    console.error(err);
+    const m = $('#loadmsg');
+    if (m) m.textContent = '인물을 불러오지 못했습니다. 새로고침해 주세요.';
+    else toast('아바타 파일을 읽지 못했어요.');
+  });
+}
+function clearAvatar() {
+  if (rig.root) rig.root.removeFromParent();
+  for (const k of Object.keys(rig)) delete rig[k];
+  rig.ready = false;
+  Object.assign(body, { mixer: null, actions: {}, cur: null, name: '', until: 0, retarget: null, src: null });
+  S.w = {}; S.gaze.init = false;
+}
+function finishAvatar() {
+  rig.ready = true;
+  frameCamera();
+  animsP.then(g => { if (g && rig.root) setupBody(g); });
+  const ld = $('#loading');
+  if (ld) { ld.classList.add('done'); setTimeout(() => ld.remove(), 900); }
+}
+
+function setupRocketbox(gltf) {
+  rig.kind = 'rocketbox';
   const root = gltf.scene;
   const faces = []; // 얼굴(피부·눈·속눈썹) 프리미티브는 같은 모프를 공유한다
   root.traverse(o => {
@@ -358,9 +396,7 @@ gltfLoader.load(asset('avatar.glb'), gltf => {
     const d = f.morphTargetDictionary, ma = f.geometry.morphAttributes;
     for (const name in d) if (name.startsWith('eyeLook')) for (const key in ma) ma[key][d[name]].array.fill(0);
   }
-  const dict = faces[0].morphTargetDictionary;
-  rig.morphIndex = dict;
-  rig.morphNames = Object.keys(dict);
+  setupFaceMaps(faces, () => false);
   rig.headPos = rig.head.getWorldPosition(new THREE.Vector3());
   rig.headRest = rig.headPos.clone();
   rig.headSmooth = rig.headPos.clone();
@@ -370,7 +406,6 @@ gltfLoader.load(asset('avatar.glb'), gltf => {
   rig.hairAnchorLocal = rig.head.worldToLocal(rig.headPos.clone().add(new THREE.Vector3(0, -12, -4)));
   rig.hairQ = rig.headPos.clone().add(new THREE.Vector3(0, -12, -4));
   rig.hairV = new THREE.Vector3();
-  rig.ready = true;
   // 가닥 머리카락: 쉬는 자세 기준으로 심어야 하므로 지금의 머리 뼈 행렬을 기억해 두고, 텍스처가 오면 만든다
   rig.headBind = rig.head.matrixWorld.clone();
   const crownW = rig.headPos.clone().add(new THREE.Vector3(0, 16, -4));
@@ -401,14 +436,167 @@ gltfLoader.load(asset('avatar.glb'), gltf => {
     console.info('머리카락 가닥', info);
   };
   if (rig.hairMesh && scalp) waitImg();
-  // 몸동작(모션캡처)은 얼굴이 뜬 다음에 이어서 받는다
-  new GLTFLoader().setMeshoptDecoder(MeshoptDecoder).load(asset('anims.glb'), a => setupBody(a.animations), undefined, e => console.warn('모션을 불러오지 못했습니다', e));
-  $('#loading').classList.add('done');
-  setTimeout(() => $('#loading').remove(), 900);
-}, undefined, err => {
-  console.error(err);
-  $('#loadmsg').textContent = '인물을 불러오지 못했습니다. 새로고침해 주세요.';
-});
+}
+
+// 우리가 쓰는 표정 이름(ARKit 52 + 오큘러스 비셈 15). 아바타마다 대소문자가 달라서(viseme_sil, viseme_kk) 소문자로 맞춰 찾는다.
+const ARKIT = ['browDownLeft', 'browDownRight', 'browInnerUp', 'browOuterUpLeft', 'browOuterUpRight', 'cheekPuff', 'cheekSquintLeft', 'cheekSquintRight',
+  'eyeBlinkLeft', 'eyeBlinkRight', 'eyeLookDownLeft', 'eyeLookDownRight', 'eyeLookInLeft', 'eyeLookInRight', 'eyeLookOutLeft', 'eyeLookOutRight',
+  'eyeLookUpLeft', 'eyeLookUpRight', 'eyeSquintLeft', 'eyeSquintRight', 'eyeWideLeft', 'eyeWideRight', 'jawForward', 'jawLeft', 'jawOpen', 'jawRight',
+  'mouthClose', 'mouthDimpleLeft', 'mouthDimpleRight', 'mouthFrownLeft', 'mouthFrownRight', 'mouthFunnel', 'mouthLeft', 'mouthLowerDownLeft',
+  'mouthLowerDownRight', 'mouthPressLeft', 'mouthPressRight', 'mouthPucker', 'mouthRight', 'mouthRollLower', 'mouthRollUpper', 'mouthShrugLower',
+  'mouthShrugUpper', 'mouthSmileLeft', 'mouthSmileRight', 'mouthStretchLeft', 'mouthStretchRight', 'mouthUpperUpLeft', 'mouthUpperUpRight',
+  'noseSneerLeft', 'noseSneerRight', 'tongueOut'];
+const VISEMES = ['Sil', 'PP', 'FF', 'TH', 'DD', 'KK', 'CH', 'SS', 'nn', 'RR', 'aa', 'E', 'I', 'O', 'U'].map(v => 'viseme_' + v);
+function setupFaceMaps(faces, skipEyeLook) {
+  rig.faces = faces;
+  rig.morphNames = [...ARKIT, ...VISEMES];
+  rig.faceMaps = faces.map(f => {
+    const lower = {};
+    for (const [k, i] of Object.entries(f.morphTargetDictionary)) lower[k.toLowerCase()] = i;
+    const map = [];
+    for (const n of rig.morphNames) {
+      if (n.startsWith('eyeLook') && skipEyeLook(f)) continue;
+      const i = lower[n.toLowerCase()];
+      if (i !== undefined) map.push([n, i]);
+    }
+    return { f, map };
+  });
+}
+
+// 머리 위치를 기준으로 카메라·조명을 다시 놓는다(아바타마다 키가 다르다)
+const LOOK_OFF = new THREE.Vector3(0, -1.24, 5.61), CAM_OFF = new THREE.Vector3(0, 3.76, 220.6);
+function frameCamera() {
+  const h = rig.headRest;
+  LOOK.copy(h).add(LOOK_OFF); CAM_BASE.copy(h).add(CAM_OFF);
+  key.position.copy(LOOK).add(new THREE.Vector3(-70, 64, 130)); key.target.position.copy(LOOK).add(new THREE.Vector3(0, 6, 0));
+  fill.position.copy(LOOK).add(new THREE.Vector3(110, -1, 110));
+  rim.position.copy(LOOK).add(new THREE.Vector3(90, 49, -140)); rim.target.position.copy(LOOK);
+  rim2.position.copy(LOOK).add(new THREE.Vector3(-110, 34, -110)); rim2.target.position.copy(LOOK);
+  backdrop.position.set(LOOK.x, LOOK.y - 1, LOOK.z - 230);
+}
+
+// Mixamo 계열 뼈대(Avaturn·Ready Player Me 등). 이름 앞의 'mixamorig' 같은 접두사는 무시한다.
+function setupGeneric(gltf) {
+  rig.kind = 'generic';
+  const root = gltf.scene;
+  root.updateMatrixWorld(true);
+  const box = new THREE.Box3().setFromObject(root);
+  if (box.max.y - box.min.y < 5) root.scale.multiplyScalar(100); // 미터 → cm
+  scene.add(root);
+  rig.root = root;
+  root.updateMatrixWorld(true);
+  const bones = {};
+  root.traverse(o => { if (o.isBone) { const n = o.name.replace(/^mixamorig[:_]?/i, ''); if (!bones[n]) bones[n] = o; } });
+  rig.bones = bones;
+  const need = ['Hips', 'Spine1', 'Spine2', 'Neck', 'Head', 'LeftEye', 'RightEye', 'LeftShoulder', 'RightShoulder', 'LeftArm', 'RightArm', 'LeftForeArm', 'RightForeArm', 'LeftHand', 'RightHand'];
+  const miss = need.filter(n => !bones[n]);
+  if (miss.length) throw new Error('뼈가 없습니다: ' + miss.join(', '));
+  const faces = [], skinMats = new Set();
+  root.traverse(o => {
+    if (!o.isMesh) return;
+    o.castShadow = true; o.receiveShadow = true; o.frustumCulled = false;
+    for (const m of (Array.isArray(o.material) ? o.material : [o.material])) {
+      if (m.map) m.map.anisotropy = Math.min(8, maxAniso);
+      if (/head|body|skin/i.test(m.name) && !/hair|eye|teeth|lash/i.test(m.name)) skinMats.add(m);
+    }
+    const mat = Array.isArray(o.material) ? o.material[0] : o.material;
+    if (mat.normalMap && o.geometry.index && o.geometry.attributes.uv && !o.geometry.attributes.tangent) o.geometry.computeTangents();
+    if (o.morphTargetDictionary) faces.push(o);
+  });
+  for (const m of skinMats) skinify(m, [0.5, 0.24, 0.16], m.normalMap ? 0.12 : 0);
+  if (!faces.some(f => Object.keys(f.morphTargetDictionary).some(k => /eyeblink/i.test(k)))) throw new Error('ARKit 표정이 없습니다');
+  Object.assign(rig, {
+    spine1: bones.Spine1, spine2: bones.Spine2, neck: bones.Neck, head: bones.Head,
+    lEye: bones.LeftEye, rEye: bones.RightEye, lClav: bones.LeftShoulder, rClav: bones.RightShoulder,
+  });
+  // 리타기팅용 바인드 자세(팔을 내리기 전)
+  rig.tgtRest = {};
+  for (const [n, b] of Object.entries(bones)) rig.tgtRest[n] = { q: b.getWorldQuaternion(new THREE.Quaternion()), p: b.getWorldPosition(new THREE.Vector3()) };
+  // 모션을 받기 전까지의 기본 자세: T자 → 팔 내림
+  const aim = (b, c, dir) => {
+    const a = b.getWorldPosition(new THREE.Vector3()), cc = c.getWorldPosition(new THREE.Vector3());
+    const q = new THREE.Quaternion().setFromUnitVectors(cc.sub(a).normalize(), dir.normalize());
+    const bw = b.getWorldQuaternion(new THREE.Quaternion()), pw = b.parent.getWorldQuaternion(new THREE.Quaternion());
+    b.quaternion.copy(pw.invert().multiply(q.multiply(bw)));
+    b.updateMatrixWorld(true);
+  };
+  for (const [s, sx] of [['Left', 1], ['Right', -1]]) {
+    aim(bones[s + 'Arm'], bones[s + 'ForeArm'], new THREE.Vector3(0.2 * sx, -1, 0.04));
+    aim(bones[s + 'ForeArm'], bones[s + 'Hand'], new THREE.Vector3(0.1 * sx, -1, 0.3));
+  }
+  root.updateMatrixWorld(true);
+  for (const b of ['spine1', 'spine2', 'neck', 'head', 'lEye', 'rEye', 'lClav', 'rClav']) {
+    rig[b].userData.rest = rig[b].quaternion.clone();
+    rig[b].userData.parentRest = rig[b].parent.getWorldQuaternion(new THREE.Quaternion());
+  }
+  for (const e of [rig.lEye, rig.rEye]) {
+    const wq = e.getWorldQuaternion(new THREE.Quaternion());
+    e.userData.fwdLocal = new THREE.Vector3(0, 0, 1).applyQuaternion(wq.invert());
+  }
+  // 눈알이 눈 뼈에 붙어 있으므로 eyeLook 모프는 눈알 메시엔 주지 않는다(이중 회전 방지). 눈꺼풀 쪽 메시에만 준다.
+  setupFaceMaps(faces, f => /eye_?mesh|^eyes?$/i.test(f.name) || /^eyes?$/i.test((Array.isArray(f.material) ? f.material[0] : f.material).name || ''));
+  rig.headPos = rig.head.getWorldPosition(new THREE.Vector3());
+  rig.headRest = rig.headPos.clone();
+  rig.headSmooth = rig.headPos.clone();
+  rig.headFix = rig.head.getWorldQuaternion(new THREE.Quaternion()).invert();
+  rig.crownLocal = rig.head.worldToLocal(rig.headPos.clone().add(new THREE.Vector3(0, 16, -4)));
+  rig.hairAnchorLocal = rig.head.worldToLocal(rig.headPos.clone().add(new THREE.Vector3(0, -12, -4)));
+  rig.hairQ = rig.headPos.clone().add(new THREE.Vector3(0, -12, -4));
+  rig.hairV = new THREE.Vector3();
+}
+
+// Rocketbox 모션을 Mixamo 뼈대로 옮기기. 몸통·머리는 쉬는 자세 대비 회전 차이를, 팔은 관절 방향을 맞춘다
+// (쉬는 자세가 T자·A자로 달라도 팔이 같은 곳을 가리키게).
+const RETARGET = [
+  ['Bip01_Pelvis', 'Hips', 'rot'], ['Bip01_Spine', 'Spine', 'rot'], ['Bip01_Spine1', 'Spine1', 'rot'], ['Bip01_Spine2', 'Spine2', 'rot'],
+  ['Bip01_Neck', 'Neck', 'rot'], ['Bip01_Head', 'Head', 'rot'],
+  ...['L', 'R'].flatMap(s => {
+    const t = s === 'L' ? 'Left' : 'Right';
+    return [
+      [`Bip01_${s}_Clavicle`, `${t}Shoulder`, 'dir', `Bip01_${s}_UpperArm`, `${t}Arm`],
+      [`Bip01_${s}_UpperArm`, `${t}Arm`, 'dir', `Bip01_${s}_Forearm`, `${t}ForeArm`],
+      [`Bip01_${s}_Forearm`, `${t}ForeArm`, 'dir', `Bip01_${s}_Hand`, `${t}Hand`],
+      [`Bip01_${s}_Hand`, `${t}Hand`, 'rot'],
+    ];
+  }),
+];
+function buildRetarget(srcRoot) {
+  srcRoot.updateMatrixWorld(true);
+  const src = {};
+  srcRoot.traverse(o => { if (o.name && !src[o.name]) src[o.name] = o; });
+  const rest = {};
+  for (const n in src) rest[n] = { q: src[n].getWorldQuaternion(new THREE.Quaternion()), p: src[n].getWorldPosition(new THREE.Vector3()) };
+  const list = RETARGET.filter(r => src[r[0]] && rig.bones[r[1]] && (r[2] !== 'dir' || (src[r[3]] && rig.bones[r[4]])));
+  const hipsScale = rig.tgtRest.Hips && rest.Bip01 ? rig.tgtRest.Hips.p.y / rest.Bip01.p.y : 1;
+  return { src, rest, list, hipsScale };
+}
+const _rq1 = new THREE.Quaternion(), _rq2 = new THREE.Quaternion(), _rv1 = new THREE.Vector3(), _rv2 = new THREE.Vector3(), _rv3 = new THREE.Vector3();
+function applyRetarget() {
+  const R = body.retarget;
+  body.src.updateMatrixWorld(true);
+  for (const [sn, tn, mode, sc, tc] of R.list) {
+    const s0 = R.src[sn], t0 = rig.bones[tn], tr = rig.tgtRest[tn];
+    let want;
+    if (mode === 'rot') {
+      // 원본의 (지금 회전 × 쉬는 회전⁻¹) 를 대상의 쉬는 회전에 곱한다
+      want = s0.getWorldQuaternion(_rq1).multiply(_rq2.copy(R.rest[sn].q).invert()).multiply(tr.q);
+    } else {
+      const sd = R.src[sc].getWorldPosition(_rv1).sub(s0.getWorldPosition(_rv2)).normalize();
+      const td = _rv3.copy(rig.tgtRest[tc].p).sub(tr.p).normalize();
+      want = _rq1.setFromUnitVectors(td, sd).multiply(tr.q);
+    }
+    t0.parent.getWorldQuaternion(_rq2);
+    t0.quaternion.copy(_rq2.invert().multiply(want));
+    t0.updateMatrixWorld(true);
+  }
+  // 골반 이동(체중 이동)
+  if (R.src.Bip01 && rig.bones.Hips) {
+    const d = R.src.Bip01.getWorldPosition(_rv1).sub(R.rest.Bip01.p).multiplyScalar(R.hipsScale);
+    const hp = _rv2.copy(rig.tgtRest.Hips.p).add(d);
+    rig.bones.Hips.parent.worldToLocal(hp);
+    rig.bones.Hips.position.copy(hp);
+  }
+}
 
 // T자 → 팔을 내린 편한 자세. 위팔이 아래·살짝 앞을 향하도록 월드 기준으로 돌린다.
 function poseArms(root, bone) {
@@ -439,14 +627,16 @@ const BODY = {
   listen: [['listen1', 1], ['listen2', 1], ['listen3', 1], ['nod1', 0.4], ['nod3', 0.4]],
   nod: [['nod1', 1], ['nod2', 1], ['nod3', 1]],
 };
-const body = { mixer: null, actions: {}, cur: null, name: '', state: 'idle', until: 0 };
+const body = { mixer: null, actions: {}, cur: null, name: '', state: 'idle', until: 0, retarget: null, src: null };
 const weighted = list => {
   let r = Math.random() * list.reduce((a, [, w]) => a + w, 0);
   for (const [n, w] of list) if ((r -= w) < 0) return n;
   return list[0][0];
 };
-function setupBody(clips) {
-  body.mixer = new THREE.AnimationMixer(rig.root);
+function setupBody(g) {
+  const clips = g.animations;
+  if (rig.kind === 'rocketbox') body.mixer = new THREE.AnimationMixer(rig.root);
+  else { body.src = g.scene; body.mixer = new THREE.AnimationMixer(g.scene); body.retarget = buildRetarget(g.scene); }
   for (const c of clips) body.actions[c.name] = body.mixer.clipAction(c);
   const st = body.state; body.state = '';
   bodyState(st);
@@ -479,6 +669,7 @@ function updateBody(dt) {
     playBody(n, body.state === 'talk' ? 0.8 : 1.6);
   }
   body.mixer.update(dt);
+  if (body.retarget) applyRetarget();
 }
 
 // ───────────────────────── 표정 ─────────────────────────
@@ -828,7 +1019,7 @@ function animate(now, dt) {
   const mouthQuiet = S.speech ? 0.35 : 1;
   for (const k in S.base) add(k, S.base[k] * (k.startsWith('mouth') ? mouthQuiet : 1));
   // 세분화로 입술 경계가 살짝 오므라들어 앞니가 비치므로, 말하지 않을 땐 입술을 다물어 둔다
-  add('mouthClose', 0.22 * (1 - S.talkEnv) * (S.mood === 'happy' || S.mood === 'surprise' ? 0.3 : 1));
+  if (rig.kind === 'rocketbox') add('mouthClose', 0.22 * (1 - S.talkEnv) * (S.mood === 'happy' || S.mood === 'surprise' ? 0.3 : 1));
   // 질문 끝: 눈썹이 올라간다
   add('browInnerUp', S.qEnv * 0.3); add('browOuterUpLeft', S.qEnv * 0.22); add('browOuterUpRight', S.qEnv * 0.22);
   // 눈꺼풀: 편하게 살짝 내려온 기본값 + 시선을 따라간다
@@ -881,9 +1072,8 @@ function animate(now, dt) {
   }
   S.w.eyeBlinkLeft = clamp01(blinkL + sq * 0.15);
   S.w.eyeBlinkRight = clamp01(blinkR + sq * 0.15);
-  const idx = rig.morphIndex;
   updateHair(now, dt);
-  for (const f of rig.faces) { const inf = f.morphTargetInfluences; for (const k of rig.morphNames) inf[idx[k]] = S.debugW ? (S.debugW[k] || 0) : S.w[k]; }
+  for (const { f, map } of rig.faceMaps) { const inf = f.morphTargetInfluences; for (const [k, i] of map) inf[i] = S.debugW ? (S.debugW[k] || 0) : (S.w[k] || 0); }
 }
 
 // 머리카락 흔들림: 머리 아래 한 점을 스프링(약간 덜 감쇠된)으로 늦게 따라가게 하고, 그 지연을 머리카락 끝에 준다
@@ -1072,6 +1262,20 @@ $('#follow').onclick = e => { S.follow = !S.follow; e.currentTarget.classList.to
 $('#hand').onclick = e => { S.handheld = !S.handheld; e.currentTarget.classList.toggle('on', S.handheld); };
 $('#hide').onclick = () => document.body.classList.toggle('clean');
 addEventListener('keydown', e => { if (e.key === 'h' && e.target === document.body) document.body.classList.toggle('clean'); });
+
+// 시작: ?avatar=GLB주소 가 있으면 그 아바타, 없으면 기본 인물
+{
+  const av = new URLSearchParams(location.search).get('avatar');
+  loadAvatar(av || asset('avatar.glb'), av ? 'generic' : 'rocketbox');
+}
+// 내 아바타(GLB) 불러오기: Avaturn 등에서 내려받은 파일을 이 기기 안에서만 연다(업로드 없음)
+$('#avfile').addEventListener('change', e => {
+  const f = e.target.files[0]; if (!f) return;
+  toast('아바타를 불러오는 중…');
+  loadAvatar(URL.createObjectURL(f), 'generic');
+  e.target.value = '';
+});
+$('#avbtn').onclick = () => $('#avfile').click();
 
 // 테스트용 훅
 document.querySelector('.brand small').textContent += ` · v${VERSION}`;
