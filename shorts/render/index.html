@@ -1,0 +1,670 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<link rel="icon" href="data:,">
+<title>AI 직원 쇼츠 · renderer</title>
+<!--
+  1080x1920 frame renderer. Everything on screen is a pure function of time:
+  renderFrame(t) sets every element's style for that instant, so a headless
+  browser can step through the video frame by frame (tools/render.js).
+  Timing comes from build/timeline.json (narration lines + caption chunks).
+-->
+<style>
+@font-face{font-family:BHS;src:url(../build/fonts/BlackHanSans-400.ttf)}
+@font-face{font-family:Jua;src:url(../build/fonts/Jua-400.ttf)}
+@font-face{font-family:Gaegu;src:url(../build/fonts/Gaegu-700.ttf);font-weight:700}
+@font-face{font-family:Pre;src:url(../build/fonts/Pretendard-Black.otf);font-weight:900}
+@font-face{font-family:Pre;src:url(../build/fonts/Pretendard-ExtraBold.otf);font-weight:800}
+@font-face{font-family:Pre;src:url(../build/fonts/Pretendard-Bold.otf);font-weight:700}
+@font-face{font-family:Pre;src:url(../build/fonts/Pretendard-SemiBold.otf);font-weight:600}
+@font-face{font-family:Pre;src:url(../build/fonts/Pretendard-Medium.otf);font-weight:500}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{background:#0b0b14;overflow:hidden}
+#root{position:relative;width:1080px;height:1920px;overflow:hidden;background:#0b0b14;
+  font-family:Pre,'Noto Color Emoji',sans-serif;color:#fff;letter-spacing:-.5px}
+.L{position:absolute;left:0;top:0;transform-origin:0 0;will-change:transform,opacity}
+.st{-webkit-text-stroke:var(--sw,12px) #000;paint-order:stroke fill}
+.emoji{font-family:'Noto Color Emoji',sans-serif;-webkit-text-stroke:0}
+
+/* background */
+.blob{position:absolute;border-radius:50%}
+#grid{position:absolute;inset:-40px;background-image:radial-gradient(rgba(255,255,255,.075) 2px,transparent 2.4px);background-size:40px 40px}
+#tint{position:absolute;inset:0;background:#000;opacity:0}
+#vig{position:absolute;inset:0;background:radial-gradient(ellipse 75% 60% at 50% 52%,transparent 55%,rgba(0,0,0,.55) 100%);pointer-events:none}
+
+/* title */
+#title{width:1080px;text-align:center;font-family:BHS;font-size:98px;line-height:1.13;--sw:16px;
+  text-shadow:0 10px 0 rgba(0,0,0,.35)}
+#title .t2{color:#FFE14D}
+
+/* captions */
+.cap{width:1080px;text-align:center;font-weight:900;font-size:84px;line-height:1.18;--sw:15px;
+  word-break:keep-all;padding:0 70px;filter:drop-shadow(0 8px 14px rgba(0,0,0,.55))}
+.cap .w{display:inline-block;margin:0 .14em;transform-origin:50% 80%}
+.cap .k{color:#FFE14D}
+
+/* stickers */
+.stk{white-space:nowrap;font-family:Jua;font-size:50px;line-height:1.1;color:#111;background:#FFE14D;
+  border:5px solid #111;border-radius:20px;padding:12px 24px 8px;box-shadow:8px 8px 0 #111;transform-origin:50% 50%}
+.stk.red{background:#FF3B5C;color:#fff}
+.stk.white{background:#fff}
+.stk.purple{background:#8B5CF6;color:#fff}
+.stk.hand{background:none;border:none;box-shadow:none;font-family:Gaegu;font-weight:700;font-size:64px;color:#FF3B5C;
+  -webkit-text-stroke:12px #fff;paint-order:stroke fill;padding:0}
+
+/* phone */
+.phone{border-radius:84px;background:linear-gradient(150deg,#3a3a46,#101016 40%,#1d1d26);padding:13px;
+  box-shadow:0 60px 110px rgba(0,0,0,.65),inset 0 0 0 3px #4a4a58}
+.scr{position:relative;overflow:hidden;border-radius:72px;background:#fff}
+.scr img{position:absolute;left:0;top:0;display:block}
+.island{position:absolute;left:50%;top:28px;width:150px;height:44px;margin-left:-75px;border-radius:24px;background:#000}
+
+/* cards */
+.card{border-radius:40px;background:#fff;color:#111;box-shadow:0 40px 90px rgba(0,0,0,.55)}
+.tile{border-radius:34px;overflow:hidden;background:#222;box-shadow:0 26px 60px rgba(0,0,0,.6);border:5px solid #fff}
+.tile img{width:100%;height:100%;object-fit:cover;display:block}
+
+/* chat */
+#chat{width:900px;height:900px;border-radius:44px;overflow:hidden;background:#B2C7DA;box-shadow:0 50px 100px rgba(0,0,0,.6)}
+#chat .hd{height:118px;background:#A9BDCE;display:flex;align-items:center;padding:0 34px;gap:22px;color:#111;font-weight:800;font-size:44px}
+#chat .hd small{font-size:32px;color:#556;font-weight:600}
+#chat .in{position:absolute;left:0;right:0;bottom:0;height:126px;background:#fff;display:flex;align-items:center;padding:0 26px;gap:18px}
+#chat .field{flex:1;height:84px;border-radius:42px;background:#F2F3F5;font-size:42px;font-weight:600;color:#111;display:flex;align-items:center;padding:0 32px}
+#chat .send{width:84px;height:84px;border-radius:50%;background:#FEE500;display:grid;place-items:center;font-size:40px;color:#3c1e1e;font-weight:900}
+.bub{position:absolute;font-weight:700;font-size:46px;line-height:1.3;color:#111;padding:20px 30px;border-radius:30px;white-space:nowrap}
+.bub.me{background:#FEE500}
+.bub.ai{background:#fff}
+.who{position:absolute;font-size:30px;font-weight:700;color:#3d4a5a}
+.ava{position:absolute;width:96px;height:96px;border-radius:36px;background:#fff;display:grid;place-items:center;font-size:62px}
+.read{position:absolute;font-size:28px;font-weight:800;color:#c99f00}
+
+/* org chart */
+.node{border-radius:36px;padding:26px 30px;text-align:center;box-shadow:0 30px 70px rgba(0,0,0,.5);border:5px solid #111}
+.node .e{font-size:96px;line-height:1.05}
+.node b{display:block;font-size:56px;font-weight:900;margin-top:6px}
+.node small{display:block;font-size:32px;font-weight:700;opacity:.85;margin-top:4px}
+.wire{background:#fff;border-radius:6px}
+
+/* stat chart */
+.bar-l{font-size:46px;font-weight:800;color:#111}
+.bar-t{height:72px;border-radius:36px;background:#EEF0F4;overflow:hidden}
+.bar-f{height:100%;border-radius:36px;display:flex;align-items:center;justify-content:flex-end;padding-right:26px;font-size:44px;font-weight:900;color:#fff}
+
+/* github card */
+#gh{width:940px;border-radius:30px;background:#0D1117;border:3px solid #30363D;padding:46px 46px 54px;box-shadow:0 50px 100px rgba(0,0,0,.6)}
+#gh .pr{font-size:44px;font-weight:800;color:#E6EDF3;line-height:1.3}
+#gh .pr span{color:#7D8590;font-weight:600}
+#gh .ok{margin-top:30px;font-size:34px;font-weight:600;color:#3FB950}
+#gh .mb{margin-top:40px;display:inline-flex;align-items:center;gap:16px;height:104px;padding:0 42px;border-radius:20px;background:#238636;color:#fff;font-size:46px;font-weight:800;transform-origin:50% 50%}
+
+/* credits */
+#cred{width:880px;border-radius:40px;background:linear-gradient(160deg,#16161f,#0c0c12);border:4px solid #FFE14D;padding:54px 56px;box-shadow:0 50px 100px rgba(0,0,0,.6)}
+#cred h3{font-family:BHS;font-weight:400;font-size:84px;color:#FFE14D;text-align:center;margin-bottom:26px}
+#cred .row{display:flex;justify-content:space-between;align-items:center;font-size:48px;font-weight:800;padding:16px 0;border-bottom:2px dashed rgba(255,255,255,.18)}
+#cred .row span{color:#9aa0b4;font-weight:700}
+#cred .row.last{border:none;color:#FF3B5C;font-size:56px}
+#cred .row.last span{color:#ff8fa3}
+
+/* subscribe */
+#subBtn{width:560px;height:176px;border-radius:88px;background:#FF0033;display:flex;align-items:center;justify-content:center;gap:22px;
+  font-size:92px;font-weight:900;color:#fff;box-shadow:0 30px 70px rgba(255,0,51,.45);transform-origin:50% 50%}
+#subBtn.on{background:#3a3a44;box-shadow:0 30px 70px rgba(0,0,0,.45)}
+
+/* overlays */
+#flash{position:absolute;inset:0;background:#fff;opacity:0}
+.vf{position:absolute;width:90px;height:90px;border:0 solid #fff}
+.pill{white-space:nowrap;border-radius:999px;font-weight:800;font-size:44px;padding:16px 32px;background:rgba(17,17,24,.82);border:3px solid rgba(255,255,255,.18)}
+.ring{border:10px solid #FFE14D;border-radius:30px;box-shadow:0 0 0 6px rgba(0,0,0,.35),0 0 40px rgba(255,225,77,.8)}
+svg{overflow:visible}
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script>
+'use strict';
+/* ───────────── helpers ───────────── */
+const W = 1080, H = 1920, CAP_Y = 1392, DROP_LEAD = .35;
+const root = document.getElementById('root');
+const clamp = (x, a = 0, b = 1) => Math.max(a, Math.min(b, x));
+const lerp = (a, b, t) => a + (b - a) * t;
+const prog = (t, t0, d) => clamp((t - t0) / d);
+const eOut = x => 1 - Math.pow(1 - x, 3);
+const eIn = x => x * x * x;
+const eInOut = x => x < .5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2;
+const eBack = (x, s = 1.9) => x <= 0 ? 0 : x >= 1 ? 1 : 1 + (s + 1) * Math.pow(x - 1, 3) + s * Math.pow(x - 1, 2);
+const eElastic = x => x <= 0 ? 0 : x >= 1 ? 1 : Math.pow(2, -10 * x) * Math.sin((x * 10 - .75) * (2 * Math.PI) / 3) + 1;
+const win = (t, a, b) => t >= a && t < b;
+function el(tag, cls, parent, html) {
+  const e = document.createElement(tag); if (cls) e.className = cls;
+  if (html != null) e.innerHTML = html; (parent || root).appendChild(e); return e;
+}
+function put(e, x, y, s = 1, r = 0, o = 1, ox = 0, oy = 0) {
+  // translate to (x,y), then scale/rotate around local origin (ox,oy)
+  e.style.transform = `translate(${x}px,${y}px) translate(${ox}px,${oy}px) rotate(${r}deg) scale(${s}) translate(${-ox}px,${-oy}px)`;
+  // visibility (not display) so hidden elements keep a measurable size and their own display mode
+  e.style.opacity = o; e.style.visibility = o <= 0.001 ? 'hidden' : 'visible';
+}
+const hide = e => { e.style.visibility = 'hidden'; };
+const esc = s => s.replace(/&/g, '&amp;').replace(/</g, '&lt;');
+// wrap emoji so they never get the text stroke
+const emo = s => esc(s).replace(/(\p{Extended_Pictographic}(?:️|‍\p{Extended_Pictographic}|\p{Emoji_Modifier})*)/gu, '<span class="emoji">$1</span>');
+const fmt = n => Math.round(n).toLocaleString('en-US');
+// pop-in-then-wiggle used by every sticker
+function popAnim(t, t0, t1 = 1e9, base = 0) {
+  if (t < t0 || t > t1 + .18) return null;
+  const p = prog(t, t0, .34), q = prog(t, t1, .16);
+  return { s: eBack(p, 2.8) * (1 - eIn(q)), r: base - 16 * (1 - eOut(p)) + 1.6 * Math.sin((t - t0) * 6.5), o: clamp(p * 4) * (1 - q) };
+}
+function shakeAt(t, t0, amp = 22, dur = .45) {
+  if (t < t0 || t > t0 + dur) return [0, 0];
+  const k = 1 - (t - t0) / dur, a = amp * k * k;
+  return [a * Math.sin((t - t0) * 83), a * Math.cos((t - t0) * 61)];
+}
+
+/* ───────────── timeline ───────────── */
+let TL, LN = {}, PLAN = { sfx: [], music: {} };
+const T = id => LN[id].start, E = id => LN[id].start + LN[id].dur;
+const CH = (id, i) => LN[id].start + LN[id].chunks[i].t0;
+const sfx = (t, name, gain = 1) => PLAN.sfx.push({ t: +t.toFixed(3), name, gain });
+
+/* ───────────── layers ───────────── */
+const bg = el('div', 'L'), stage = el('div', 'L'), overlay = el('div', 'L');
+bg.style.cssText = stage.style.cssText = 'width:1080px;height:1920px';
+const blobs = [['#7C3AED', 1400, .55], ['#FC1C49', 1250, .42], ['#2563EB', 1500, .45]].map(([c, s, a]) => {
+  const b = el('div', 'blob', bg); b.style.width = b.style.height = s + 'px';
+  b.style.background = `radial-gradient(circle, ${c} 0%, transparent 68%)`; b.style.opacity = a; return b;
+});
+const grid = el('div', '', bg); grid.id = 'grid';
+const tint = el('div', '', bg); tint.id = 'tint';
+const sceneBox = el('div', 'L', stage); sceneBox.style.cssText = 'width:1080px;height:1920px';
+const flash = el('div', '', overlay); flash.id = 'flash';
+const vig = el('div', '', overlay); vig.id = 'vig';
+const titleEl = el('div', 'L st', overlay); titleEl.id = 'title';
+const capLayer = el('div', 'L', overlay);
+
+/* ───────────── shared components ───────────── */
+function Phone(parent, src, w = 560) {
+  const sw = w - 26, sh = Math.round(sw * 852 / 393);
+  const e = el('div', 'L phone', parent); e.style.width = w + 'px'; e.style.height = sh + 26 + 'px';
+  const scr = el('div', 'scr', e); scr.style.width = sw + 'px'; scr.style.height = sh + 'px';
+  const img = el('img', '', scr); img.src = src; img.style.width = sw + 'px';
+  el('div', 'island', e);
+  return { e, scr, img, w, h: sh + 26, sw, sh, k: sw / 983 };
+}
+function Sticker(parent, text, cls = '') { return el('div', 'L stk ' + cls, parent, emo(text)); }
+function drawStk(s, t, t0, x, y, rot, t1) {
+  const a = popAnim(t, t0, t1, rot); if (!a) return hide(s);
+  const w = s.offsetWidth, h = s.offsetHeight;
+  put(s, x - w / 2, y - h / 2, a.s, a.r, a.o, w / 2, h / 2);
+}
+// hand-drawn red ellipse that strokes itself on
+function Circle(parent, rx, ry, color = '#FF3B5C', sw = 12) {
+  const ns = 'http://www.w3.org/2000/svg';
+  const s = document.createElementNS(ns, 'svg'); s.setAttribute('width', 2 * rx + 60); s.setAttribute('height', 2 * ry + 60);
+  s.style.position = 'absolute'; s.style.left = s.style.top = '0'; s.style.transformOrigin = '0 0';
+  const p = document.createElementNS(ns, 'path');
+  const cx = rx + 30, cy = ry + 30, pts = [];
+  for (let i = 0; i <= 64; i++) { const a = -Math.PI * .62 + i / 64 * Math.PI * 2.18, wob = 1 + .045 * Math.sin(i * .9);
+    pts.push(`${(cx + rx * wob * Math.cos(a)).toFixed(1)},${(cy + ry * wob * Math.sin(a) * (1 + i / 640)).toFixed(1)}`); }
+  p.setAttribute('d', 'M' + pts.join(' L')); p.setAttribute('fill', 'none'); p.setAttribute('stroke', color);
+  p.setAttribute('stroke-width', sw); p.setAttribute('stroke-linecap', 'round'); p.setAttribute('stroke-linejoin', 'round');
+  s.appendChild(p); parent.appendChild(s);
+  const len = p.getTotalLength(); p.style.strokeDasharray = len;
+  return { s, p, len, rx, ry };
+}
+function drawCircle(c, t, t0, x, y, t1 = 1e9) {
+  if (t < t0 || t > t1) { c.s.style.display = 'none'; return; }
+  c.s.style.display = ''; c.p.style.strokeDashoffset = c.len * (1 - eOut(prog(t, t0, .4)));
+  c.s.style.transform = `translate(${x - c.rx - 30}px,${y - c.ry - 30}px)`;
+}
+
+/* ───────────── captions ───────────── */
+function parseCap(text) {
+  // "[키워드]" → yellow; returns words: [{runs:[{t,k}], n}]
+  const words = []; let cur = { runs: [], n: 0 }, kw = false, buf = '';
+  const flushRun = () => { if (buf) { cur.runs.push({ t: buf, k: kw }); cur.n += (buf.match(/[가-힣A-Za-z0-9%]/g) || []).length; buf = ''; } };
+  for (const ch of text) {
+    if (ch === '[' || ch === ']') { flushRun(); kw = ch === '['; continue; }
+    if (ch === ' ') { flushRun(); if (cur.runs.length) words.push(cur); cur = { runs: [], n: 0 }; continue; }
+    buf += ch;
+  }
+  flushRun(); if (cur.runs.length) words.push(cur);
+  return words;
+}
+const caps = [];
+function buildCaptions() {
+  const all = [];
+  TL.lines.forEach(L => L.chunks.forEach(c => all.push({ t0: L.start + c.t0, t1: L.start + c.t1, text: c.text })));
+  all.forEach((c, i) => {
+    const next = all[i + 1] ? all[i + 1].t0 : 1e9;
+    c.hold = Math.min(next - .03, c.t1 + .85);
+    const e = el('div', 'L cap st', capLayer);
+    const words = parseCap(c.text), total = words.reduce((a, w) => a + w.n, 0) || 1;
+    const len = words.reduce((a, w) => a + w.runs.reduce((b, r) => b + r.t.length, 0), 0);
+    if (len > 13) e.style.fontSize = '74px';
+    let acc = 0;
+    c.words = words.map(w => {
+      const span = el('span', 'w', e, w.runs.map(r => `<span class="${r.k ? 'k' : ''}">${emo(r.t)}</span>`).join(''));
+      const ts = c.t0 + (c.t1 - c.t0) * .9 * (acc / total); acc += w.n;
+      return { span, ts, emoji: w.n === 0 };
+    });
+    // emoji-only words ride along with the word before them
+    c.words.forEach((w, k) => { if (w.emoji && k > 0) w.ts = c.words[k - 1].ts + .12; });
+    c.e = e; caps.push(c);
+  });
+}
+function drawCaptions(t) {
+  for (const c of caps) {
+    if (t < c.t0 - .01 || t >= c.hold) { c.e.style.display = 'none'; continue; }
+    c.e.style.display = '';
+    const p = prog(t, c.t0, .2), out = prog(t, c.hold - .1, .1);
+    const h = c.e.offsetHeight;
+    put(c.e, 0, CAP_Y - h / 2, lerp(.78, 1, eBack(p, 2.4)) * (1 - .1 * out), 0, 1 - out, 540, h / 2);
+    for (const w of c.words) {
+      const q = prog(t, w.ts, .2);
+      if (t < w.ts) { w.span.style.opacity = 0; continue; }
+      const bump = w.emoji ? 1 + .35 * Math.sin(Math.PI * q) : 1 + .16 * Math.sin(Math.PI * q);
+      const rot = w.emoji ? 12 * Math.sin((t - w.ts) * 9) * (1 - q * .6) : 0;
+      w.span.style.opacity = clamp(q * 3);
+      w.span.style.transform = `translateY(${-14 * Math.sin(Math.PI * q)}px) scale(${bump}) rotate(${rot}deg)`;
+    }
+  }
+}
+
+/* ───────────── scenes ───────────── */
+const scenes = [];
+function scene(name, t0, t1, build, draw) {
+  const box = el('div', 'L', sceneBox); box.style.cssText = 'width:1080px;height:1920px'; box.dataset.scene = name;
+  const s = { name, t0, t1, box, draw }; build(box, s); scenes.push(s); return s;
+}
+
+const CAPS = '../build/caps/';
+function buildAll() {
+  /* ── 1. HOOK: wall of 20 apps, counters, 45 days ── */
+  const hookEnd = T('team_q') - .05;
+  scene('hook', 0, hookEnd + .3, (b, s) => {
+    const files = ['home', 'ipo', 'finder_search', 'realestate', 'salary', 'assembly', 'music_song', 'webcut_sample', 'm7', 'tesla',
+      'teslam', 'chinaev', 'stocks', 'bball3d_game', 'fishing_play', 'foldline_play', 'ppung', 'tikkeul_play', 'couple', 'realestate_regions'];
+    s.wall = el('div', 'L', b); s.wall.style.width = '1300px';
+    s.tiles = files.map((f, i) => {
+      const tl = el('div', 'L tile', s.wall); tl.style.width = '300px'; tl.style.height = '650px';
+      el('img', '', tl).src = CAPS + f + '.png';
+      put(tl, (i % 4) * 330, Math.floor(i / 4) * 680 + (i % 2) * 120); return tl;
+    });
+    s.dim = el('div', 'L', b); s.dim.style.cssText = 'width:1080px;height:1920px;background:radial-gradient(ellipse 70% 45% at 50% 50%,rgba(11,11,20,.82),rgba(11,11,20,.35))';
+    s.n1 = el('div', 'L st', b); s.n1.style.cssText = 'width:1080px;text-align:center;font-family:BHS;--sw:18px';
+    s.n2 = el('div', 'L st', b); s.n2.style.cssText = s.n1.style.cssText;
+    s.cal = el('div', 'L', b); s.cal.style.cssText = 'width:1080px;display:flex;justify-content:center;align-items:center;gap:34px';
+    const calCard = (m, d, sub) => `<div class="card" style="width:330px;padding:0 0 26px;text-align:center;overflow:hidden">
+      <div style="background:#FF3B5C;color:#fff;font:800 44px Pre;padding:16px 0">${m}</div>
+      <div style="font:400 150px BHS;line-height:1.15;color:#111">${d}</div><div style="font:700 34px Pre;color:#667">${sub}</div></div>`;
+    s.cal.innerHTML = calCard('2026년 8월', '22', '첫 커밋') + '<div class="st" style="font:400 110px BHS;color:#FFE14D;--sw:14px">→</div>' + calCard('2026년 10월', '6', '오늘');
+    s.stamp = el('div', 'L st', b, '45일'); s.stamp.style.cssText = 'font:400 290px BHS;color:#FF3B5C;--sw:22px;white-space:nowrap;transform-origin:50% 50%';
+  }, (s, t) => {
+    const p0 = eOut(prog(t, 0, .7));
+    const wy = -40 * t;
+    put(s.wall, -110, 300 + wy, lerp(1.55, 1.0, p0), -11, 1, 650, 900);
+    s.dim.style.opacity = lerp(.2, 1, prog(t, .15, .5));
+    const c0 = CH('hook1', 0), c1 = CH('hook1', 1), d0 = CH('hook2', 0), d1 = CH('hook2', 1);
+    // counters
+    const outN = eIn(prog(t, d0 - .05, .3));
+    const a1 = popAnim(t, c0, 1e9, -4);
+    if (a1) { s.n1.innerHTML = `<div style="font:900 64px Pre;--sw:12px">${emo('📱 만든 앱')}</div><div style="font-size:250px;line-height:1;color:#FFE14D">${Math.round(20 * eOut(prog(t, c0, .45)))}+</div>`;
+      put(s.n1, 0, lerp(560, 300, outN), a1.s * (1 - outN * .4), a1.r, a1.o * (1 - outN), 540, 200); } else hide(s.n1);
+    const a2 = popAnim(t, c1, 1e9, 3);
+    if (a2) { s.n2.innerHTML = `<div style="font:900 64px Pre;--sw:12px">${emo('📄 페이지')}</div><div style="font-size:210px;line-height:1;color:#7CF0FF">${fmt(1037 * eOut(prog(t, c1, .55)))}</div>`;
+      put(s.n2, 0, lerp(890, 1300, outN), a2.s * (1 - outN * .4), a2.r, a2.o * (1 - outN), 540, 200); } else hide(s.n2);
+    // calendar + 45일 stamp
+    const ca = popAnim(t, d0 + .05, 1e9, 0);
+    if (ca) put(s.cal, 0, 640, ca.s, 0, ca.o * (1 - eIn(prog(t, hookEnd - .05, .25))), 540, 200); else hide(s.cal);
+    if (t >= d1) {
+      const p = prog(t, d1, .28), w = s.stamp.offsetWidth, h = s.stamp.offsetHeight, [sx, sy] = shakeAt(t, d1 + .2, 16, .35);
+      put(s.stamp, 540 - w / 2 + sx, 1010 - h / 2 + sy, lerp(2.6, 1, eOut(p)), -9, clamp(p * 3) * (1 - eIn(prog(t, hookEnd - .05, .25))), w / 2, h / 2);
+    } else hide(s.stamp);
+    s.box.style.opacity = 1 - prog(t, hookEnd, .3);
+  });
+  sfx(0, 'whoosh', .7); sfx(CH('hook1', 0), 'pop', .9); sfx(CH('hook1', 1), 'pop', .9);
+  sfx(CH('hook2', 0) + .05, 'whoosh', .6); sfx(CH('hook2', 1) + .2, 'boom', .55);
+
+  /* ── 2. TEAM: org chart ── */
+  const teamT0 = T('team_q') - .05, teamT1 = T('job') - .05;
+  scene('team', teamT0, teamT1 + .3, (b, s) => {
+    s.q = el('div', 'L st', b, '?'); s.q.style.cssText = 'font:400 420px BHS;color:#FFE14D;--sw:24px;transform-origin:50% 50%';
+    s.head = el('div', 'L pill', b, emo('🏢 개발팀 구성'));
+    const node = (bgc, fg, e, name, sub) => { const n = el('div', 'L node', b, `<div class="e emoji">${e}</div><b>${name}</b>${sub ? `<small>${sub}</small>` : ''}`);
+      n.style.background = bgc; n.style.color = fg; n.style.width = '400px'; return n; };
+    s.boss = node('#fff', '#111', '👔', '사장님', '기획 · 결재');
+    s.ai = node('#8B5CF6', '#fff', '🤖', 'AI 직원', '코딩 · 디자인 · 글');
+    s.bot = node('#2F7BF5', '#fff', '⚙️', '자동화 봇', '데이터 자동 갱신');
+    s.w1 = el('div', 'L wire', b); s.w2 = el('div', 'L wire', b); s.w3 = el('div', 'L wire', b); s.w4 = el('div', 'L wire', b);
+    s.g1 = Sticker(b, '야근해도 불평 0', 'white'); s.g2 = Sticker(b, '매일 06:10 출근 (실화)', '');
+  }, (s, t) => {
+    const a0 = T('team_q'), c0 = CH('team_a', 0), c1 = CH('team_a', 1), c2 = CH('team_a', 2);
+    const fade = 1 - prog(t, teamT1, .3);
+    const hp = popAnim(t, teamT0 + .02, 1e9, 0);
+    if (hp) put(s.head, 540 - s.head.offsetWidth / 2, 405, hp.s, 0, hp.o * fade, s.head.offsetWidth / 2, 30); else hide(s.head);
+    const qa = popAnim(t, a0 + .1, c0 - .05, -6);
+    if (qa) { const w = s.q.offsetWidth, h = s.q.offsetHeight; put(s.q, 540 - w / 2, 860 - h / 2 + 30 * Math.sin(t * 6), qa.s, qa.r + 8 * Math.sin(t * 9), qa.o, w / 2, h / 2); } else hide(s.q);
+    const nb = (n, t0, cx, cy, rot) => { const a = popAnim(t, t0, 1e9, rot); if (!a) return hide(n); const w = n.offsetWidth, h = n.offsetHeight; put(n, cx - w / 2, cy - h / 2, a.s, a.r, a.o * fade, w / 2, h / 2); };
+    const BY = 690, CY = 1035, bh = s.boss.offsetHeight / 2, chh = s.ai.offsetHeight / 2, mid = (BY + bh + CY - chh) / 2;
+    nb(s.boss, c0, 540, BY, -2); nb(s.ai, c1 + .05, 290, CY, -3); nb(s.bot, c2 + .05, 790, CY, 3);
+    const wire = (e, t0, x, y, w, h) => { const p = eOut(prog(t, t0, .25)); if (p <= 0) return hide(e); e.style.width = (w > h ? w * p : w) + 'px'; e.style.height = (h > w ? h * p : h) + 'px'; put(e, x, y, 1, 0, fade); };
+    wire(s.w1, c1 - .1, 534, BY + bh, 12, mid - BY - bh + 6); wire(s.w2, c1, 290, mid, 500, 12); wire(s.w3, c1 + .05, 284, mid, 12, CY - chh - mid); wire(s.w4, c2, 784, mid, 12, CY - chh - mid);
+    drawStk(s.g1, t, c2 + .9, 290, CY + chh + 62, -7, teamT1 - .1); drawStk(s.g2, t, c2 + 1.5, 790, CY + chh + 50, 6, teamT1 - .1);
+  });
+  sfx(teamT0, 'whoosh', .6); sfx(T('team_q') + .12, 'boing', .7); sfx(CH('team_a', 0), 'pop', .9);
+  sfx(CH('team_a', 1) + .05, 'pop_hi', .8); sfx(CH('team_a', 2) + .05, 'pop_hi', .8); sfx(CH('team_a', 2) + .9, 'pop', .55); sfx(CH('team_a', 2) + 1.5, 'ding', .45);
+
+  /* ── 3. CHAT: "만들어 줘" ── */
+  const chatT0 = T('job') - .05, chatT1 = E('m_ipo') + .05;
+  scene('chat', chatT0, chatT1 + .05, (b, s) => {
+    s.win = el('div', 'L', b); s.win.id = 'chat';
+    s.win.innerHTML = `<div class="hd"><span style="font-size:52px">‹</span><span class="emoji" style="font-size:54px">🤖</span>AI 직원 <small>1</small></div>`;
+    s.inb = el('div', 'in', s.win, '<div class="field"></div><div class="send">↑</div>');
+    s.field = s.inb.querySelector('.field');
+    s.me = el('div', 'bub me', s.win, '만들어 줘'); s.read = el('div', 'read', s.win, '1');
+    s.ava = el('div', 'ava', s.win, '<span class="emoji">🤖</span>'); s.who = el('div', 'who', s.win, 'AI 직원');
+    s.dots = el('div', 'bub ai', s.win, '• • •'); s.ai = el('div', 'bub ai', s.win, emo('넵! 바로 만들게요 🫡'));
+    s.g = Sticker(b, '답장 속도 0.3초 ⚡', 'red');
+    s.req = el('div', 'bub me', b, ''); s.req.style.boxShadow = '0 20px 40px rgba(0,0,0,.45)';
+    s.boss = el('div', 'L', b, '<span class="emoji" style="font-size:64px">👔</span>');
+  }, (s, t) => {
+    const mk = T('make'), ys = T('yes');
+    const inP = eOut(prog(t, chatT0, .35)), outP = eIn(prog(t, chatT1 - .02, .12));
+    put(s.win, 90, lerp(1400, 525, inP) - 1300 * outP, 1, 0, 1, 450, 450);
+    const typeA = mk - .62, txt = '만들어 줘', n = Math.round(txt.length * prog(t, typeA, .5));
+    s.field.textContent = t < mk ? txt.slice(0, n) + (Math.floor(t * 3) % 2 && t > chatT0 + .3 ? '|' : '') : '';
+    const mp = popAnim(t, mk, 1e9, 0);
+    if (mp) { const w = s.me.offsetWidth; put(s.me, 900 - 36 - w, 170, mp.s, 0, mp.o, w, 40); put(s.read, 900 - 36 - w - 34, 230, 1, 0, t < mk + .55 ? 1 : 0); } else { hide(s.me); hide(s.read); }
+    const show = t >= mk + .35;
+    if (show) { put(s.ava, 32, 300, 1, 0, 1); put(s.who, 146, 296, 1, 0, 1); } else { hide(s.ava); hide(s.who); }
+    if (show && t < ys) { put(s.dots, 146, 350, 1, 0, 1); s.dots.textContent = ['•  ·  ·', '·  •  ·', '·  ·  •'][Math.floor(t * 7) % 3]; } else hide(s.dots);
+    const ap = popAnim(t, ys, 1e9, 0);
+    if (ap) put(s.ai, 146, 350, ap.s, 0, ap.o, 0, 40); else hide(s.ai);
+    drawStk(s.g, t, ys + .55, 760, 1180, 6, T('m_ipo') - .1);
+    // first montage request bubble rides on top of the chat
+    const rq = popAnim(t, T('m_ipo'), 1e9, 0);
+    if (rq) { s.req.textContent = '공모주 캘린더 만들어 줘'; const w = s.req.offsetWidth; put(s.req, 960 - w, 412, rq.s, 0, rq.o, w, 40); } else hide(s.req);
+    if (rq) put(s.boss, 978, 420, 1, 0, 1); else hide(s.boss);
+  });
+  sfx(chatT0, 'whoosh', .6); sfx(T('make') - .62, 'typing', .55); sfx(T('make'), 'bubble', .8); sfx(T('yes'), 'bubble', .8); sfx(T('yes') + .55, 'pop', .5);
+  sfx(T('m_ipo'), 'bubble', .5);
+
+  /* ── 4. MONTAGE: request → 찰칵 → screenshot ── */
+  const M = [
+    { id: 'm_ipo', kind: 'phone', src: 'ipo.png', hot: [330, 720], zoom: 1.35, circle: [205, 680, 125, 125], req: '공모주 캘린더 만들어 줘', gag: '청약 점수까지 매겨줌 ㄷㄷ', gx: 790, gy: 700, gr: 6 },
+    { id: 'm_finder', kind: 'phone', src: 'finder_search.png', hot: [490, 980], zoom: 1.3, ring: [70, 905, 845, 180], req: '주식 찾는 앱도', gag: '종목·ETF 1만 4천 개 😳', gx: 300, gy: 640, gr: -6 },
+    { id: 'm_estate', kind: 'phone', src: 'realestate_regions.png', hot: [490, 1380], zoom: 1.35, ring: [60, 1250, 870, 260], req: '아파트 실거래가까지', gag: '보다가 현타 옴 🥲', gx: 770, gy: 700, gr: 5 },
+    { id: 'm_salary', kind: 'phone', src: 'salary_result.png', hot: [420, 890], zoom: 1.5, circle: [400, 885, 340, 125], req: '내 연봉 순위도', gag: '※ 상처 주의 ※', gx: 300, gy: 650, gr: -7, gcls: 'red' },
+    { id: 'm_assembly', kind: 'render', req: '국회의사당도, 3D로', gag: '이걸 코드로 지음 (실화)', gx: 540, gy: 1170, gr: -4 },
+    { id: 'm_games', kind: 'grid', req: '게임도 몇 개', gag: '일은 안 하고 게임을…?', gx: 540, gy: 1170, gr: 4, gcls: 'white' },
+    { id: 'm_tools', kind: 'duo', req: '작곡 앱이랑 영상 편집기도', gag: '캡컷 긴장해라 ✂️', gx: 540, gy: 590, gr: -5, gcls: 'purple' },
+  ];
+  const twistT0 = T('twist') - .35;
+  M.forEach((m, i) => { m.tc = E(m.id) + .05; m.tn = i + 1 < M.length ? E(M[i + 1].id) + .05 : twistT0; });
+  scene('montage', M[0].tc - .02, twistT0 + .35, (b, s) => {
+    s.items = M.map(m => {
+      const g = el('div', 'L', b); g.style.cssText = 'width:1080px;height:1920px;clip-path:inset(392px 0 0 0)';
+      const it = { m, g };
+      if (m.kind === 'phone') { it.ph = Phone(g, CAPS + m.src, 560); if (m.circle) it.c = Circle(it.ph.scr, m.circle[2] * it.ph.k, m.circle[3] * it.ph.k);
+        if (m.ring) { it.r = el('div', 'L ring', it.ph.scr); } }
+      if (m.kind === 'render') {
+        it.card = el('div', 'L tile', g); it.card.style.cssText += ';width:1000px;height:563px';
+        it.day = el('img', '', it.card); it.day.src = '../../national-assembly/renders/render_day_hero.jpg';
+        it.night = el('img', '', it.card); it.night.src = '../../national-assembly/renders/render_night_hero.jpg'; it.night.style.cssText = 'position:absolute;inset:0';
+        it.lab = el('div', 'L pill', it.card, emo('🏛️ Blender + 파이썬 코드 한 파일')); it.lab.style.fontSize = '36px';
+        it.ph = Phone(g, CAPS + 'assembly.png', 380);
+      }
+      if (m.kind === 'grid') it.tiles = ['bball3d_game', 'fishing_play', 'foldline_play', 'ppung'].map(f => {
+        const tl = el('div', 'L tile', g); tl.style.width = '450px'; tl.style.height = '560px'; const im = el('img', '', tl); im.src = CAPS + f + '.png';
+        im.style.objectPosition = { bball3d_game: '50% 45%', fishing_play: '50% 40%', foldline_play: '50% 62%', ppung: '50% 12%' }[f]; return tl; });
+      if (m.kind === 'duo') { it.p1 = Phone(g, CAPS + 'music_song.png', 470); it.p2 = Phone(g, CAPS + 'webcut_sample.png', 470); }
+      it.gag = Sticker(g, m.gag, m.gcls || '');
+      return it;
+    });
+    s.req = el('div', 'L bub me', b, ''); s.req.style.boxShadow = '0 20px 40px rgba(0,0,0,.45)';
+    s.boss = el('div', 'L', b, '<span class="emoji" style="font-size:64px">👔</span>');
+    s.cnt = el('div', 'L pill', b, '');
+    s.vf = [0, 1, 2, 3].map(k => { const v = el('div', 'vf', b); const bw = '10px';
+      v.style[k < 2 ? 'borderTopWidth' : 'borderBottomWidth'] = bw; v.style[k % 2 ? 'borderRightWidth' : 'borderLeftWidth'] = bw; v.style.borderRadius = '14px'; return v; });
+  }, (s, t) => {
+    // request bubble (top-right), boss avatar
+    let cur = -1; M.forEach((m, i) => { if (t >= T(m.id)) cur = i; });
+    if (cur >= 0 && t < twistT0) {
+      const m = M[cur], rq = popAnim(t, T(m.id), 1e9, 0); s.req.textContent = m.req;
+      const w = s.req.offsetWidth; put(s.req, 960 - w, 412, rq ? rq.s : 1, 0, 1, w, 40); put(s.boss, 978, 420, 1, 0, 1);
+    } else { hide(s.req); hide(s.boss); }
+    // delivery counter
+    let n = 0; M.forEach(m => { if (t >= m.tc) n++; });
+    const lastTc = n ? M[n - 1].tc : 0, cb = 1 + .25 * Math.sin(Math.PI * prog(t, lastTc, .25));
+    s.cnt.innerHTML = emo(`🤖 AI 납품 ✅ ${n}건`); put(s.cnt, 36, 506, cb * .86, 0, t < twistT0 ? 1 : 0, 0, 30);
+    // viewfinder brackets on each capture
+    const lastCap = M.map(m => m.tc).filter(x => x <= t).pop();
+    const vp = lastCap != null ? prog(t, lastCap, .45) : 1;
+    s.vf.forEach((v, k) => { if (vp >= 1) return hide(v); const sc = lerp(1.18, 1, eOut(vp)), cx = 540, cy = 1130, hw = 330 * sc, hh = 540 * sc;
+      put(v, cx + (k % 2 ? hw - 90 : -hw), cy + (k < 2 ? -hh : hh - 90), 1, 0, 1 - eIn(vp)); });
+    // items
+    s.items.forEach(it => {
+      const m = it.m;
+      if (t < m.tc - .001 || t >= m.tn + .3) { it.g.style.display = 'none'; return; }
+      it.g.style.display = ''; const lt = t - m.tc;
+      const outP = eIn(prog(t, m.tn, .28)), outX = m.tn === twistT0 ? 0 : -1200 * outP;
+      it.g.style.opacity = m.tn === twistT0 ? 1 - outP : 1;
+      const inP = eOut(prog(t, m.tc, .32));
+      if (m.kind === 'phone') {
+        const ph = it.ph, base = { x: (W - ph.w) / 2, y: 600 };
+        const fz = eInOut(prog(t, m.tc + .38, .45)), sF = m.zoom;
+        const hx = 13 + m.hot[0] * ph.k, hy = 13 + m.hot[1] * ph.k;
+        const Ax = lerp(base.x, 540 - sF * hx, fz), Ay = lerp(base.y, 1000 - sF * hy, fz), sc = lerp(1, sF, fz);
+        const sIn = lerp(1.12, 1, inP), rIn = lerp(7, 0, inP);
+        ph.e.style.transform = `translate(${Ax + outX}px,${Ay + lerp(60, 0, inP)}px) scale(${sc * sIn}) translate(${ph.w / 2}px,${ph.h / 2}px) rotate(${rIn}deg) translate(${-ph.w / 2}px,${-ph.h / 2}px)`;
+        if (it.c) drawCircle(it.c, t, m.tc + .75, m.circle[0] * ph.k, m.circle[1] * ph.k);
+        if (it.r) { const rp = prog(t, m.tc + .75, .25); if (rp <= 0) hide(it.r); else { const [rx, ry, rw, rh] = m.ring.map(v => v * ph.k);
+          it.r.style.width = rw + 'px'; it.r.style.height = rh + 'px'; put(it.r, rx, ry, lerp(1.25, 1, eOut(rp)) * (1 + .03 * Math.sin(lt * 10)), 0, clamp(rp * 2), rw / 2, rh / 2); } }
+      }
+      if (m.kind === 'render') {
+        const kb = 1.04 + .05 * prog(t, m.tc, 1.6);
+        put(it.card, 40 + outX, lerp(760, 600, inP), lerp(1.1, 1, inP), lerp(-4, 0, inP), 1, 500, 280);
+        it.day.style.transform = it.night.style.transform = `scale(${kb})`;
+        it.night.style.opacity = eInOut(prog(t, m.tc + .7, .45));
+        const lp = popAnim(t, m.tc + .25, 1e9, -2); if (lp) put(it.lab, 26, 26, lp.s, lp.r, lp.o, 0, 30); else hide(it.lab);
+        const pp = eOut(prog(t, m.tc + .45, .35)); put(it.ph.e, 640 + outX, lerp(1900, 1010, pp), .9, 8, pp > 0 ? 1 : 0, it.ph.w / 2, 0);
+      }
+      if (m.kind === 'grid') it.tiles.forEach((tl, k) => {
+        const a = popAnim(t, m.tc + k * .2, 1e9, [-5, 4, 3, -4][k]); if (!a) return hide(tl);
+        put(tl, [70, 560][k % 2] + outX, [560, 1140][k >> 1] - 20, a.s * (1 + .02 * Math.sin(t * 3 + k)), a.r, a.o, 225, 280);
+      });
+      if (m.kind === 'duo') {
+        const a1 = popAnim(t, m.tc, 1e9, -7), a2 = popAnim(t, m.tc + .18, 1e9, 7);
+        if (a1) put(it.p1.e, 50 + outX, 700, a1.s, a1.r, a1.o, it.p1.w / 2, 500); else hide(it.p1.e);
+        if (a2) put(it.p2.e, 560 + outX, 730, a2.s, a2.r, a2.o, it.p2.w / 2, 500); else hide(it.p2.e);
+      }
+      drawStk(it.gag, t, m.tc + .45, m.gx + outX, m.gy, m.gr, m.tn - .05);
+    });
+    // camera flash for each capture
+  });
+  M.forEach((m, i) => {
+    if (i > 0) sfx(T(m.id), 'bubble', .45);
+    sfx(m.tc, 'shutter', 1.0); sfx(m.tc + .45, 'pop', .5);
+    if (m.circle || m.ring) sfx(m.tc + .75, 'ding', .35);
+    if (m.kind === 'grid') [1, 2, 3].forEach(k => sfx(m.tc + k * .2, 'pop_hi', .55));
+    if (m.kind === 'duo') sfx(m.tc + .18, 'pop_hi', .55);
+  });
+  const flashes = M.map(m => m.tc);
+
+  /* ── 5. TWIST: 근데 진짜 소름은 ── */
+  const statT = T('stat') - DROP_LEAD;  // the beat drops just before the narration
+  scene('twist', twistT0, statT + .05, (b, s) => {
+    s.e = el('div', 'L', b, '<span class="emoji" style="font-size:330px;line-height:1">😱</span>');
+    s.q = el('div', 'L st', b, '두둥…'); s.q.style.cssText = 'font:400 120px BHS;color:#fff;--sw:16px;white-space:nowrap';
+  }, (s, t) => {
+    const p = eOut(prog(t, twistT0 + .15, .5)), [sx, sy] = [6 * Math.sin(t * 71), 6 * Math.cos(t * 53)];
+    const hb = Math.max(0, Math.sin(Math.PI * prog(t, T('twist') + .15, .25)), Math.sin(Math.PI * prog(t, T('twist') + 1.05, .25)));
+    const w = s.e.offsetWidth, h = s.e.offsetHeight;
+    put(s.e, 540 - w / 2 + sx, 820 - h / 2 + sy, (lerp(.4, 1, p) + .12 * hb) * lerp(1, 1.25, prog(t, T('twist'), 2.6)), 0, p, w / 2, h / 2);
+    const qp = popAnim(t, T('twist') + 1.3, 1e9, -3);
+    if (qp) { const qw = s.q.offsetWidth; put(s.q, 540 - qw / 2, 1110, qp.s, qp.r, qp.o, qw / 2, 60); } else hide(s.q);
+  });
+  sfx(T('twist') + .15, 'heartbeat', .9); sfx(T('twist') + 1.05, 'heartbeat', .9); sfx(statT - 1.35, 'riser', .7);
+
+  /* ── 6. STAT: 244 commits, 70% ── */
+  const mergeT0 = T('merge') - .05;
+  const bars = [['🤖 AI 직원 (Claude)', 126, '#8B5CF6'], ['⚙️ 자동화 봇', 46, '#2F7BF5'], ['👔 사람 계정', 72, '#9AA3B2']];
+  scene('stat', statT - .02, mergeT0 + .3, (b, s) => {
+    s.card = el('div', 'L card', b); s.card.style.cssText += ';width:960px;padding:50px 56px 60px';
+    s.card.innerHTML = `<div style="font:900 56px Pre;color:#111">${emo('작업 기록(커밋) 244개')}</div><div style="font:700 40px Pre;color:#778;margin:8px 0 26px">${emo('누가 했을까? 🧐')}</div>` +
+      bars.map(([l]) => `<div style="margin-top:30px"><div class="bar-l">${emo(l)}</div><div class="bar-t" style="margin-top:12px"><div class="bar-f"></div></div></div>`).join('');
+    s.fills = [...s.card.querySelectorAll('.bar-f')];
+    s.big = el('div', 'L st', b); s.big.style.cssText = 'font:400 300px BHS;color:#FFE14D;--sw:22px;white-space:nowrap';
+    s.sub = el('div', 'L stk red', b, emo('AI + 봇 = 172개'));
+  }, (s, t) => {
+    const x = eIn(prog(t, mergeT0 - .05, .2)), fade = 1 - x, a = eOut(prog(t, statT, .35));
+    const [sx, sy] = shakeAt(t, statT, 26, .5);
+    put(s.card, 60 + sx, lerp(900, 500, a) + sy - 140 * x, lerp(.85, 1, a) * (1 - .08 * x), 0, clamp(a * 2) * fade, 480, 400);
+    s.fills.forEach((f, k) => { const p = eOut(prog(t, statT + .25 + k * .14, .7)); f.style.width = (bars[k][1] / 126 * 100 * p) + '%'; f.style.background = bars[k][2];
+      f.textContent = p > .15 ? fmt(bars[k][1] * p) : ''; f.style.opacity = k < 2 && t > CH('stat', 1) ? 1 : (t > CH('stat', 1) ? .45 : 1); });
+    const c1 = CH('stat', 1);
+    if (t >= c1) { s.big.textContent = Math.round(70 * eOut(prog(t, c1, .5))) + '%';
+      const p = prog(t, c1, .3), w = s.big.offsetWidth, h = s.big.offsetHeight;
+      put(s.big, 540 - w / 2, 1060 - h / 2, lerp(2.4, 1, eOut(p)) * (1 + .03 * Math.sin(t * 8)), -7, clamp(p * 3) * fade, w / 2, h / 2); } else hide(s.big);
+    drawStk(s.sub, t, c1 + .6, 540, 1235, 4, mergeT0 - .05);
+  });
+  sfx(statT, 'boom', 1.0); [0, 1, 2].forEach(k => sfx(statT + .25 + k * .14, 'pop_hi', .45)); sfx(CH('stat', 1), 'boom', .5); sfx(CH('stat', 1) + .6, 'pop', .5);
+
+  /* ── 7. MERGE: 사장님 = 승인 버튼 담당 ── */
+  const ctaT0 = T('cta') - .05;
+  scene('merge', mergeT0, ctaT0 + .3, (b, s) => {
+    s.card = el('div', 'L', b); s.card.id = 'gh';
+    s.card.innerHTML = `<div class="pr">계좌 준비 <span>#40</span></div><div style="margin-top:14px;font:600 34px Pre;color:#7D8590">Claude 님이 커밋 1개를 올렸어요</div>
+      <div class="ok">✓ 충돌 없음 · 병합 가능</div><div class="mb">Merge pull request</div>`;
+    s.mb = s.card.querySelector('.mb');
+    s.cur = el('div', 'L', b, `<svg width="90" height="110" viewBox="0 0 18 22"><path d="M1 1 L1 17 L5 13 L8 20 L11 19 L8 12 L14 12 Z" fill="#fff" stroke="#000" stroke-width="1.6" stroke-linejoin="round"/></svg>`);
+    s.cnt = Sticker(b, '승인 버튼 26번 클릭 👆', '');
+    s.who = el('div', 'L pill', b, emo('👔 사장님 담당 업무'));
+  }, (s, t) => {
+    const x = eIn(prog(t, ctaT0 - .05, .2)), fade = 1 - x, a = eBack(prog(t, mergeT0 + .1, .4), 1.6);
+    put(s.card, 70, 640 - 120 * x, lerp(.75, 1.06, a) * (1 - .08 * x), 0, clamp(a * 2) * fade, 470, 250);
+    const wp = popAnim(t, CH('merge', 0) + .1, 1e9, -3); if (wp) put(s.who, 540 - s.who.offsetWidth / 2, 450, wp.s, wp.r, wp.o * fade, s.who.offsetWidth / 2, 30); else hide(s.who);
+    const click = CH('merge', 1) + .35;
+    const mbx = 70 + 46 + 260, mby = 640 + (s.mb.offsetTop + 52) * 1.06;
+    const cp = eInOut(prog(t, CH('merge', 1) - .1, .45));
+    put(s.cur, lerp(900, mbx, cp), lerp(1350, mby, cp), t > click && t < click + .12 ? .85 : 1, 0, clamp(cp * 4) * fade);
+    const merged = t >= click;
+    s.mb.style.background = merged ? '#8957E5' : '#238636'; s.mb.textContent = merged ? '✓ Merged' : 'Merge pull request';
+    s.mb.style.transform = `scale(${t > click && t < click + .15 ? .94 : 1})`;
+    drawStk(s.cnt, t, click + .3, 600, 1190, -5, ctaT0 - .05);
+  });
+  sfx(mergeT0, 'whoosh', .5); sfx(CH('merge', 1) + .35, 'click', .9); sfx(CH('merge', 1) + .38, 'tada', .45); sfx(CH('merge', 1) + .65, 'pop', .55);
+
+  /* ── 8. CTA: Cadence 랜딩 ── */
+  const metaT0 = T('meta') - .05;
+  scene('cta', ctaT0, metaT0 + .3, (b, s) => {
+    s.ph = Phone(b, CAPS + 'home.png', 560);
+    s.ring = el('div', 'L ring', s.ph.scr);
+    s.url = el('div', 'L pill', b, emo('🔗 richroro.github.io'));
+    s.g1 = Sticker(b, '진단·견적 무료 🆓', 'red'); s.g2 = Sticker(b, '반복 업무 자동화 ⚡', 'white');
+  }, (s, t) => {
+    const x = eIn(prog(t, metaT0 - .05, .2)), fade = 1 - x, a = eBack(prog(t, ctaT0 + .05, .45), 1.4);
+    put(s.ph.e, (W - 560) / 2, 600 - 150 * x, lerp(.7, 1, a) * (1 - .1 * x), lerp(8, 0, clamp(a)), clamp(a * 2) * fade, 280, 500);
+    const rp = prog(t, CH('cta', 1), .25), k = s.ph.k;
+    if (rp > 0) { s.ring.style.width = 440 * k + 30 + 'px'; s.ring.style.height = 137 * k + 30 + 'px';
+      put(s.ring, 78 * k - 15, 1138 * k - 15, lerp(1.3, 1, eOut(rp)) * (1 + .04 * Math.sin(t * 9)), 0, clamp(rp * 2), (440 * k + 30) / 2, (137 * k + 30) / 2); } else hide(s.ring);
+    const up = popAnim(t, ctaT0 + .3, 1e9, 0); if (up) put(s.url, 540 - s.url.offsetWidth / 2, 445, up.s, 0, up.o * fade, s.url.offsetWidth / 2, 30); else hide(s.url);
+    drawStk(s.g1, t, CH('cta', 1) + .3, 790, 760, 6, metaT0 - .05); drawStk(s.g2, t, CH('cta', 0) + .2, 290, 1180, -6, metaT0 - .05);
+  });
+  sfx(ctaT0, 'whoosh', .6); sfx(CH('cta', 0) + .2, 'pop', .5); sfx(CH('cta', 1), 'ding', .5); sfx(CH('cta', 1) + .3, 'pop', .55);
+
+  /* ── 9. META: credits ── */
+  const subT0 = T('sub') - .05;
+  const rows = [['기획 · 대본', 'AI 🤖'], ['목소리', 'AI 🤖'], ['편집 · 자막', 'AI 🤖'], ['배경음악', "사이트 '한 줄 작곡' 🎵"], ['편집자 월급', '0원 💸']];
+  scene('meta', metaT0, subT0 + .1, (b, s) => {
+    s.card = el('div', 'L', b); s.card.id = 'cred';
+    s.card.innerHTML = '<h3>🎬 CREDITS</h3>' + rows.map(([a, v], i) => `<div class="row${i === rows.length - 1 ? ' last' : ''}"><span>${emo(a)}</span>${emo(v)}</div>`).join('');
+    s.rows = [...s.card.querySelectorAll('.row')];
+  }, (s, t) => {
+    const a = eBack(prog(t, metaT0 + .1, .45), 1.5), x = eIn(prog(t, subT0 - .08, .18));
+    put(s.card, 100, 560 - 100 * x, lerp(.7, 1, a) * (1 - .1 * x), 0, clamp(a * 2) * (1 - x), 440, 330);
+    s.rows.forEach((r, i) => { const rp = prog(t, CH('meta', 1) + i * .32, .25); r.style.opacity = clamp(rp * 2);
+      r.style.transform = `translateX(${lerp(-60, 0, eOut(rp))}px) scale(${i === rows.length - 1 ? 1 + .1 * Math.sin(Math.PI * rp) : 1})`; });
+  });
+  sfx(metaT0, 'whoosh', .55); rows.forEach((_, i) => sfx(CH('meta', 1) + i * .32, i === rows.length - 1 ? 'coin' : 'pop', i === rows.length - 1 ? .8 : .45));
+
+  /* ── 10. SUB: AI can't press subscribe ── */
+  const youT = T('you'), end = TL.end;
+  scene('sub', subT0, end + 1, (b, s) => {
+    s.btn = el('div', 'L', b); s.btn.id = 'subBtn'; s.btn.innerHTML = '구독 <span class="emoji" style="font-size:70px">🔔</span>';
+    s.bot = el('div', 'L', b, '<span class="emoji" style="font-size:150px">🤖</span>');
+    s.hand = el('div', 'L', b, '<span class="emoji" style="font-size:120px">👆</span>');
+    s.sweat = Sticker(b, '💦 왜 안 눌려…', 'white');
+    s.me = el('div', 'L', b, '<span class="emoji" style="font-size:130px">👆🏻</span>');
+    s.down = el('div', 'L', b, '<span class="emoji" style="font-size:150px">👇</span>');
+    s.done = Sticker(b, '구독 완료! 감사합니다 🙇', 'red');
+    s.url = el('div', 'L pill', b, emo('🔗 richroro.github.io'));
+  }, (s, t) => {
+    const a = eOut(prog(t, subT0, .35)), c1 = CH('sub', 1);
+    const d1 = c1 + .2, d2 = c1 + .75;
+    let bx = 540;
+    bx += 250 * eOut(prog(t, d1, .18)); bx -= 500 * eOut(prog(t, d2, .2));
+    bx += 250 * eOut(prog(t, youT, .3));
+    const bounce = t >= youT ? 1 + .12 * Math.sin(Math.PI * prog(t, youT, .35)) : 1;
+    const pressT = youT + .95, pressed = t >= pressT + .08;
+    s.btn.classList.toggle('on', pressed); s.btn.innerHTML = pressed ? '구독중 <span class="emoji" style="font-size:70px">✅</span>' : '구독 <span class="emoji" style="font-size:70px">🔔</span>';
+    put(s.btn, bx - 280, 760 - 88 * (1 - a) + 300 * (1 - a), (lerp(.6, 1, a)) * bounce * (t > pressT && t < pressT + .12 ? .93 : 1), 0, clamp(a * 2), 280, 88);
+    // robot chasing the button until the viewer's turn
+    const chase = t < youT;
+    const hx = lerp(860, 600, eInOut(prog(t, subT0 + .3, .6))) + (t > d1 + .1 ? 240 * eOut(prog(t, d1 + .1, .25)) : 0) - (t > d2 + .1 ? 480 * eOut(prog(t, d2 + .1, .25)) : 0);
+    const hy = lerp(1300, 880, eInOut(prog(t, subT0 + .3, .6)));
+    const ho = chase ? clamp(prog(t, subT0 + .2, .2) * 2) : 1 - prog(t, youT, .2);
+    put(s.hand, hx - 30, hy, 1, -10, ho); put(s.bot, hx + 30, hy + 120, 1, 6 * Math.sin(t * 7), ho);
+    drawStk(s.sweat, t, d2 + .35, 700, 1190, -6, youT - .05);
+    // viewer's hand presses it for real
+    const mp = eInOut(prog(t, youT + .35, .55));
+    if (t >= youT + .3) put(s.me, lerp(700, 560, mp), lerp(1400, 790, mp), t > pressT && t < pressT + .12 ? .9 : 1, 0, clamp(prog(t, youT + .3, .15) * 3) * (1 - prog(t, pressT + .6, .25))); else hide(s.me);
+    const dp = popAnim(t, youT + .05, pressT - .05, 0);
+    if (dp) { const w = s.down.offsetWidth; put(s.down, 540 - w / 2, 1000 + 30 * Math.abs(Math.sin((t - youT) * 7)), dp.s, 0, dp.o, w / 2, 60); } else hide(s.down);
+    drawStk(s.done, t, pressT + .3, 540, 1120, -4);
+    const up = popAnim(t, pressT + .75, 1e9, 0); if (up) put(s.url, 540 - s.url.offsetWidth / 2, 520, up.s, 0, up.o, s.url.offsetWidth / 2, 30); else hide(s.url);
+  });
+  sfx(subT0, 'scratch', .9); sfx(CH('sub', 1) + .2, 'whoosh_dn', .7); sfx(CH('sub', 1) + .75, 'boing', .8); sfx(CH('sub', 1) + 1.1, 'pop', .45);
+  sfx(youT, 'pop_hi', .6); sfx(youT + .95, 'click', .9); sfx(youT + 1.0, 'tada', .7); sfx(youT + 1.25, 'pop', .5);
+
+  PLAN.flashes = flashes.concat([statT]);
+  PLAN.music = { songDrop: 37.895, dropAt: statT, cutAt: subT0, resumeAt: youT, resumeSong: 54.737, end };
+  PLAN.sfx.sort((a, b) => a.t - b.t);
+}
+
+/* ───────────── frame ───────────── */
+function renderFrame(t) {
+  // background drift + grid
+  const bp = [[300 + 160 * Math.sin(t * .31), 640 + 180 * Math.cos(t * .23)], [820 + 140 * Math.cos(t * .27), 1340 + 160 * Math.sin(t * .19)], [540 + 220 * Math.sin(t * .17 + 1), 1000 + 220 * Math.cos(t * .21)]];
+  blobs.forEach((b, i) => { const s = parseFloat(b.style.width); b.style.transform = `translate(${bp[i][0] - s / 2}px,${bp[i][1] - s / 2}px)`; });
+  grid.style.transform = `translateY(${-(t * 26) % 40}px)`;
+  const tw0 = T('twist') - .35, st = T('stat') - DROP_LEAD;
+  tint.style.opacity = .78 * prog(t, tw0, .3) * (1 - prog(t, st, .15)) + .25 * (t >= T('sub') - .05 ? 1 : 0);
+  // title
+  const tp = lerp(.9, 1, eBack(prog(t, 0, .35), 2.2)), bob = 1 + .012 * Math.sin(t * 2.6);
+  put(titleEl, 0, 150, tp * bob, 0, win(t, tw0 + .2, st) ? .35 : 1, 540, 110);
+  // scenes
+  for (const s of scenes) { if (t < s.t0 || t >= s.t1) { s.box.style.display = 'none'; continue; } s.box.style.display = ''; s.draw(s, t); }
+  // capture flashes
+  let f = 0; for (const tc of PLAN.flashes) if (t >= tc) f = Math.max(f, .95 * (1 - eOut(prog(t, tc, .22))));
+  flash.style.opacity = f;
+  drawCaptions(t);
+}
+
+/* ───────────── boot ───────────── */
+window.ready = (async () => {
+  TL = await (await fetch('../build/timeline.json')).json();
+  TL.lines.forEach(l => { LN[l.id] = l; });
+  titleEl.innerHTML = `<div>${emo(TL.title[0])}</div><div class="t2">${emo(TL.title[1])}</div>`;
+  buildAll(); buildCaptions();
+  await document.fonts.ready;
+  await Promise.all([...document.images].map(i => i.decode().catch(() => console.warn('img', i.src))));
+  renderFrame(0);
+  window.renderFrame = renderFrame; window.PLAN = PLAN; window.TL = TL;
+  return { end: TL.end, fps: TL.fps || 30 };
+})();
+</script>
+</body>
+</html>
