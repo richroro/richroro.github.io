@@ -1,0 +1,100 @@
+{
+  "version": 1,
+  "_note": "편집 프로그램이 읽는 수치 규칙. 사람이 읽는 설명과 피드백 기록은 rulebook.md. 둘을 항상 같이 고친다.",
+  "cut": {
+    "max_pause": 0.35,
+    "pad_before": 0.06,
+    "pad_after": 0.14,
+    "head": 0.12,
+    "tail": 0.5,
+    "min_segment": 0.3,
+    "fade_ms": 10
+  },
+  "correct": {
+    "fillers": ["어", "음", "으", "아", "에", "흠", "그", "저", "뭐", "어어", "음음", "응"],
+    "keep_words": []
+  },
+  "zoom": {
+    "mode": "alternate",
+    "levels": [1.0, 1.1],
+    "emphasis": 1.18,
+    "center": [0.5, 0.42],
+    "min_segment_for_change": 1.2
+  },
+  "subtitle": {
+    "font_weight": "Bold",
+    "size": 0.064,
+    "color": "#FFFFFF",
+    "outline_color": "#000000",
+    "outline": 0.13,
+    "shadow": 0,
+    "position": "bottom",
+    "margin": 0.075,
+    "max_chars": 17,
+    "max_chars_portrait": 13,
+    "break_pause": 0.3,
+    "highlight_color": "#FFD400",
+    "lead": 0.05,
+    "hold": 0.12
+  },
+  "emphasis": {
+    "font_weight": "Black",
+    "size": 0.085,
+    "color": "#FFD400",
+    "outline_color": "#000000",
+    "outline": 0.09,
+    "position": "top",
+    "margin": 0.1,
+    "duration": 1.6,
+    "animation": "pop",
+    "sfx": "pop",
+    "zoom": true
+  },
+  "broll": {
+    "mode": "full",
+    "fade": 0.15,
+    "kenburns": 0.04,
+    "credit_size": 0.024,
+    "sfx": "whoosh",
+    "min_dur": 2.0,
+    "max_dur": 5.0,
+    "dim_background": 0.55
+  },
+  "sfx": {
+    "volume_db": -12
+  },
+  "bgm": {
+    "enabled": true,
+    "file": null,
+    "volume_db": -17,
+    "duck_db": -8,
+    "fade_in": 1.0,
+    "fade_out": 2.0
+  },
+  "intro": {
+    "title_seconds": 2.6,
+    "sfx": "ding"
+  },
+  "outro": {
+    "fade": 0.6,
+    "text": ""
+  },
+  "output": {
+    "max_long_side": 1920,
+    "fps": 30,
+    "crf": 20,
+    "preset": "medium",
+    "lufs": -14
+  },
+  "drive": {
+    "inbox": null,
+    "_note": "영상을 올리는 드라이브 폴더 링크. 한 번 정해 두면 '드라이브에 올렸어, 편집해줘'만으로 가장 최근 영상을 가져온다."
+  },
+  "review": {
+    "auto_blur_pii": true,
+    "typo_cer": 0.34,
+    "dropout_sec": 0.4,
+    "freeze_sec": 2.5,
+    "sheet_every": 2.0
+  }
+}
