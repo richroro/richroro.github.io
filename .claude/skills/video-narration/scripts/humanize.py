@@ -158,7 +158,8 @@ def plan_phrases(text: str, seed: int = 0) -> list[dict]:
         base = {",": 0.22, ".": 0.48, "?": 0.58, "!": 0.52}[end]
         pause = 0.0 if last else max(0.12, base * rnd.uniform(0.8, 1.25))
         syll = len(re.findall(r"[가-힣]", p))
-        plan.append({"text": p, "end": end, "pause": round(pause, 3), "speed_jitter": round(rnd.uniform(0.97, 1.03), 3),
+        jitter = rnd.uniform(0.97, 1.03) * (0.96 if re.search(r"\d", p) else 1.0)  # 숫자가 든 핵심 문장은 살짝 천천히
+        plan.append({"text": p, "end": end, "pause": round(pause, 3), "speed_jitter": round(jitter, 3),
                      "breath": not last and pause >= 0.4 and len(re.findall(r"[가-힣]", phrases[i + 1][0])) >= 16})
     return plan  # breath=True 이면 이 문장 뒤 쉼 끝에(다음 긴 문장 직전) 들숨을 넣는다
 
@@ -197,3 +198,110 @@ def room_tone(n: int, sr: int, level_db: float = -64.0, seed: int = 0) -> np.nda
     y = rng.normal(0, 1, n)
     y = np.convolve(y, np.ones(24) / 24, mode="same")  # 고음 깎기
     return (y / (np.sqrt((y ** 2).mean()) + 1e-9) * 10 ** (level_db / 20)).astype(np.float32)
+
+
+# ───────────────────────────── 여러 테이크 중 고르기 ─────────────────────────────
+# 같은 문장도 만들 때마다 억양·높이·또렷함이 달라진다(실측: 억양 폭 5.6~9.3반음, 받아쓰기 오류 0~17%).
+# 성우 녹음처럼 여러 번 만들어 가장 사람다운 테이크를 고른다.
+
+_REC = None
+
+
+def recognizer():
+    """한국어 받아쓰기 모델 (video-edit 스킬과 같은 캐시). 없으면 한 번 받는다(330MB). 실패하면 None."""
+    global _REC
+    if _REC is not None:
+        return _REC or None
+    import os
+    import subprocess
+    try:
+        import sherpa_onnx
+    except ImportError:
+        _REC = False
+        return None
+    root = os.environ.get("VIDEO_EDIT_CACHE") or os.path.expanduser("~/.cache/video-edit")
+    d = os.path.join(root, "models", "sherpa-onnx-zipformer-korean-2024-06-24")
+    if not os.path.exists(os.path.join(d, "tokens.txt")):
+        os.makedirs(os.path.dirname(d), exist_ok=True)
+        url = "https://github.com/k2-fsa/sherpa-onnx/releases/download/asr-models/sherpa-onnx-zipformer-korean-2024-06-24.tar.bz2"
+        print("  발음 확인용 받아쓰기 모델 받는 중 (330MB, 처음 한 번만)…", flush=True)
+        r = subprocess.run(f"curl -sSL --fail -m 900 '{url}' | tar xj -C '{os.path.dirname(d)}'", shell=True)
+        if r.returncode:
+            _REC = False
+            return None
+    try:
+        _REC = sherpa_onnx.OfflineRecognizer.from_transducer(
+            encoder=f"{d}/encoder-epoch-99-avg-1.int8.onnx", decoder=f"{d}/decoder-epoch-99-avg-1.int8.onnx",
+            joiner=f"{d}/joiner-epoch-99-avg-1.int8.onnx", tokens=f"{d}/tokens.txt", num_threads=4)
+    except Exception:
+        _REC = False
+    return _REC or None
+
+
+def heard(y: np.ndarray, sr: int) -> str | None:
+    rec = recognizer()
+    if rec is None:
+        return None
+    n = int(len(y) * 16000 / sr)
+    x = np.interp(np.linspace(0, len(y) - 1, n), np.arange(len(y)), y).astype(np.float32)
+    s = rec.create_stream()
+    s.accept_waveform(16000, x)
+    rec.decode_stream(s)
+    return s.result.text
+
+
+def cer(ref: str, hyp: str) -> float:
+    a, b = re.sub(r"[\s.,?!]", "", ref), re.sub(r"[\s.,?!]", "", hyp)
+    if not a:
+        return 0.0
+    d = list(range(len(b) + 1))
+    for i, ca in enumerate(a, 1):
+        p, d[0] = d[0], i
+        for j, cb in enumerate(b, 1):
+            p, d[j] = d[j], min(d[j] + 1, d[j - 1] + 1, p + (ca != cb))
+    return d[-1] / len(a)
+
+
+def pitch(y: np.ndarray, sr: int) -> dict:
+    """음높이 통계: range(10~90% 폭, 반음), median(Hz), end(문장 끝 - 앞 절반, 반음)."""
+    if sr != 16000:  # 계산량을 줄이려고 16kHz 로
+        n = int(len(y) * 16000 / sr)
+        y, sr = np.interp(np.linspace(0, len(y) - 1, n), np.arange(len(y)), y).astype(np.float32), 16000
+    hop, win = int(sr * 0.01), int(sr * 0.04)
+    lo, hi = int(sr / 450), int(sr / 65)
+    f = []
+    for i in range(0, len(y) - win, hop):
+        fr = y[i:i + win]
+        if np.sqrt((fr ** 2).mean()) < 0.015:
+            continue
+        fr = fr - fr.mean()
+        ac = np.correlate(fr, fr, "full")[win - 1:]
+        k = lo + int(np.argmax(ac[lo:hi]))
+        if ac[k] > 0.45 * ac[0]:
+            f.append(sr / k)
+    if len(f) < 12:
+        return {}
+    f = np.array(f)
+    st = 12 * np.log2(f / np.median(f))
+    return {"range": float(np.percentile(st, 90) - np.percentile(st, 10)), "median": float(np.median(f)),
+            "end": float(np.median(st[-12:]) - np.median(st[: len(st) // 2]))}
+
+
+def take_score(y: np.ndarray, sr: int, spoken: str, end: str, ref_median: float | None) -> tuple[float, dict]:
+    """높을수록 사람답다: 또렷함 · 단조롭지 않은 억양 · 자연스러운 문장 끝 · 앞 문장과 같은 목소리 높이."""
+    info = pitch(y, sr)
+    h = heard(y, sr)
+    c = cer(spoken, ko_normalize(h)) if h is not None else 0.0
+    score = -40 * c
+    if info:
+        r = info["range"]
+        score -= 1.5 * max(0, 6.5 - r) + 1.0 * max(0, r - 10.5)  # 너무 단조롭거나 너무 출렁이면 감점
+        e = info["end"]
+        if end == "?":
+            score -= 0.6 * max(0, 0.5 - e)  # 질문은 끝이 올라가야
+        elif end in ".!":
+            score -= 0.6 * max(0, e + 2) + 0.4 * max(0, -8 - e)  # 평서문은 끝이 2~8반음 내려가야
+        if ref_median:
+            score -= 2.5 * max(0, abs(12 * np.log2(info["median"] / ref_median)) - 0.6)  # 사람이 바뀐 듯한 높이 변화 감점
+    info.update({"cer": round(c, 3), "heard": h})
+    return score, info

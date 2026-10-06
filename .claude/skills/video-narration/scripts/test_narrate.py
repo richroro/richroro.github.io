@@ -179,6 +179,31 @@ class HumanizeTest(unittest.TestCase):
         self.assertLess(abs(b[:50]).max(), abs(b).max() * 0.2)  # 부드럽게 시작
 
 
+class TakeScoreTest(unittest.TestCase):
+    def test_statement_prefers_falling_end_and_same_pitch(self):
+        import numpy as np
+        import humanize as H
+        sr = 16000
+        t = np.arange(int(1.5 * sr)) / sr
+
+        def tone(f0, f1):  # f0 → f1 로 음높이가 변하는 모음 비슷한 소리
+            f = np.linspace(f0, f1, len(t))
+            ph = 2 * np.pi * np.cumsum(f) / sr
+            return (0.3 * (np.sin(ph) + 0.5 * np.sin(2 * ph))).astype(np.float32)
+        orig, H.heard = H.heard, lambda y, sr: None  # 받아쓰기 없이 억양만 비교
+        try:
+            fall, _ = H.take_score(tone(220, 150), sr, "", ".", 200)
+            rise, _ = H.take_score(tone(180, 240), sr, "", ".", 200)
+            other_person, _ = H.take_score(tone(330, 230), sr, "", ".", 200)
+            q_rise, _ = H.take_score(tone(180, 240), sr, "", "?", 200)
+            q_fall, _ = H.take_score(tone(220, 150), sr, "", "?", 200)
+        finally:
+            H.heard = orig
+        self.assertGreater(fall, rise)            # 평서문은 끝이 내려가는 쪽
+        self.assertGreater(fall, other_person)    # 목소리 높이가 확 달라지면 감점
+        self.assertGreater(q_rise, q_fall)        # 질문은 끝이 올라가는 쪽
+
+
 class EngineChoiceTest(unittest.TestCase):
     def test_voice_owner(self):
         self.assertEqual(N.voice_owner("6"), "supertonic")

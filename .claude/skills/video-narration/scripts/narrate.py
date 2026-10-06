@@ -516,6 +516,7 @@ class SupertonicEngine(Engine):
         if not str(self.voice).isdigit() or not 0 <= int(self.voice) <= 9:
             raise EngineUnavailable(f"supertonic 음성은 0~9 번호입니다 (받은 값: {self.voice})")
         self.tts = None
+        self.ref_median = None  # 목소리 기준 높이 (첫 테이크에서 정해짐)
 
     def _model_dir(self) -> str:
         root = os.environ.get("NARRATION_MODEL_DIR") or os.path.expanduser("~/.cache/video-narration")
@@ -565,12 +566,24 @@ class SupertonicEngine(Engine):
             g.speed = rate * (p["speed_jitter"] if human else 1.0)
             g.extra["lang"] = os.environ.get("SUPERTONIC_LANG", "ko")
             # 소리에는 사람이 읽는 형태(세 가지·이십 영업일)를, 자막에는 원래 글(3가지·20영업일)을 쓴다
-            y = np.asarray(self.tts.generate(H.ko_normalize(p["text"]) if human else p["text"], g).samples, dtype=np.float32)
-            if not len(y):
+            spoken = H.ko_normalize(p["text"]) if human else p["text"]
+            takes = int(os.environ.get("NARRATION_TAKES", "3")) if human else 1
+            best = None
+            for _ in range(max(1, takes)):  # 성우처럼 여러 번 녹음해서 가장 사람다운 테이크를 고른다
+                y = np.asarray(self.tts.generate(spoken, g).samples, dtype=np.float32)
+                if not len(y):
+                    continue
+                loud = np.where(np.abs(y) > 0.006)[0]
+                if len(loud):
+                    y = y[max(0, loud[0] - int(0.02 * sr)):loud[-1] + int(0.06 * sr)]
+                sc, info = H.take_score(y, sr, spoken, p["end"], self.ref_median) if takes > 1 else (0.0, {})
+                if best is None or sc > best[0]:
+                    best = (sc, y, info)
+            if best is None:
                 raise RuntimeError("supertonic 이 오디오를 만들지 못함")
-            loud = np.where(np.abs(y) > 0.006)[0]
-            if len(loud):
-                y = y[max(0, loud[0] - int(0.02 * sr)):loud[-1] + int(0.06 * sr)]
+            _, y, info = best
+            if info.get("median") and self.ref_median is None:
+                self.ref_median = info["median"]  # 첫 문장 높이를 기준으로 끝까지 같은 사람처럼
             if human and i and plan[i - 1]["breath"] and len(pieces[-1]) > int(0.4 * sr):
                 # 앞 쉼의 끝부분을 들숨으로 바꾼다 (말 시작 0.06초 전에 끝나게)
                 rms_db = 20 * np.log10(np.sqrt((y ** 2).mean()) + 1e-9)
