@@ -5,7 +5,7 @@ import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { MeshoptDecoder } from 'three/addons/libs/meshopt_decoder.module.js';
 import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
 import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
-import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
+import { N8AOPass } from 'n8ao'; // github.com/N8python/n8ao — 화면 공간 앰비언트 오클루전
 import { ShaderPass } from 'three/addons/postprocessing/ShaderPass.js';
 import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
 import { ShaderChunk } from 'three';
@@ -101,9 +101,14 @@ scene.add(rim2, rim2.target);
 scene.add(new THREE.HemisphereLight(0xfff4ea, 0x2a2420, 0.25));
 
 // ───────────────────────── 후처리 ─────────────────────────
-const rt = new THREE.WebGLRenderTarget(4, 4, { type: THREE.HalfFloatType, samples: 4 });
+const rt = new THREE.WebGLRenderTarget(4, 4, { type: THREE.HalfFloatType });
 const composer = new EffectComposer(renderer, rt);
-composer.addPass(new RenderPass(scene, camera));
+// 앰비언트 오클루전: 눈가·콧구멍·입꼬리·머리카락 밑·목처럼 빛이 덜 드는 곳의 접촉 그림자.
+// 이게 없으면 얼굴이 '조명 받은 마네킹'처럼 떠 보인다. 장면을 직접 그리며 깊이를 같이 남기므로 잘라낸 머리카락도 정확하다.
+const ao = new N8AOPass(scene, camera, 4, 4);
+Object.assign(ao.configuration, { aoRadius: 5, distanceFalloff: 1.2, intensity: 2.2, aoSamples: 16, denoiseSamples: 8, denoiseRadius: 10, gammaCorrection: false, screenSpaceRadius: false, halfRes: false });
+ao.beautyRenderTarget.samples = 4; // 머리카락 alphaToCoverage 용 MSAA
+composer.addPass(ao);
 composer.addPass(new OutputPass());
 const film = new ShaderPass({
   uniforms: {
@@ -135,14 +140,47 @@ const SSS_TO = `{
     wrapNL *= mix( vec3( 1.0 ), vec3( 1.0, 0.86, 0.80 ), smoothstep( 0.6, 0.0, nlRaw ) );
     reflectedLight.directDiffuse += wrapNL * directLight.color * BRDF_Lambert( material.diffuseContribution ) * ( 1.0 - F );
   }`;
-function skinify(mat, wrap) {
+// 피부 모공: 작은 패임을 흩뿌린 높이맵을 노멀로 바꿔 타일로 깐다. 반사광이 매끈한 플라스틱처럼 번지지 않고 잘게 부서진다.
+function poreTexture(size = 256) {
+  const h = new Float32Array(size * size);
+  let seed = 7;
+  const rnd = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
+  for (let k = 0; k < 900; k++) { // 모공
+    const cx = rnd() * size, cy = rnd() * size, r = 0.8 + rnd() * 1.6, d = 0.6 + rnd() * 0.6;
+    for (let y = -4; y <= 4; y++) for (let x = -4; x <= 4; x++) {
+      const px = (Math.floor(cx) + x + size) % size, py = (Math.floor(cy) + y + size) % size;
+      const dd = ((px - cx + size * 1.5) % size - size / 2) ** 2 + ((py - cy + size * 1.5) % size - size / 2) ** 2;
+      h[py * size + px] -= d * Math.exp(-dd / (r * r));
+    }
+  }
+  for (let i = 0; i < h.length; i++) h[i] += (rnd() - 0.5) * 0.35; // 잔결
+  const data = new Uint8Array(size * size * 4);
+  for (let y = 0; y < size; y++) for (let x = 0; x < size; x++) {
+    const H = (xx, yy) => h[((yy + size) % size) * size + ((xx + size) % size)];
+    const dx = (H(x + 1, y) - H(x - 1, y)) * 0.5, dy = (H(x, y + 1) - H(x, y - 1)) * 0.5;
+    const l = Math.hypot(dx, dy, 1), i = 4 * (y * size + x);
+    data[i] = (-dx / l * 0.5 + 0.5) * 255; data[i + 1] = (-dy / l * 0.5 + 0.5) * 255; data[i + 2] = (1 / l * 0.5 + 0.5) * 255; data[i + 3] = 255;
+  }
+  const t = new THREE.DataTexture(data, size, size);
+  t.wrapS = t.wrapT = THREE.RepeatWrapping; t.magFilter = THREE.LinearFilter; t.minFilter = THREE.LinearMipmapLinearFilter;
+  t.generateMipmaps = true; t.needsUpdate = true;
+  return t;
+}
+const PORES = { value: poreTexture() };
+function skinify(mat, wrap, pores = 0) {
   mat.onBeforeCompile = sh => {
     const chunk = ShaderChunk.lights_physical_pars_fragment;
     if (!chunk.includes(SSS_FROM)) return; // three 버전이 바뀌면 그냥 기본 셰이딩
     sh.fragmentShader = sh.fragmentShader.replace('#include <lights_physical_pars_fragment>',
       `#define SKIN_WRAP vec3(${wrap.join(',')})\n` + chunk.replace(SSS_FROM, SSS_TO));
+    if (pores && ShaderChunk.normal_fragment_maps.includes('mapN.xy *= normalScale;')) {
+      sh.uniforms.uPores = PORES;
+      sh.fragmentShader = 'uniform sampler2D uPores;\n' + sh.fragmentShader.replace('#include <normal_fragment_maps>',
+        ShaderChunk.normal_fragment_maps.replace('mapN.xy *= normalScale;',
+          `mapN.xy *= normalScale; mapN.xy += ( texture2D( uPores, vNormalMapUv * 34.0 ).xy * 2.0 - 1.0 ) * ${pores.toFixed(3)};`));
+    }
   };
-  mat.customProgramCacheKey = () => 'skin' + wrap.join();
+  mat.customProgramCacheKey = () => 'skin' + wrap.join() + pores;
 }
 
 // ───────────────────────── 머리카락 셰이더 ─────────────────────────
@@ -235,8 +273,8 @@ M.hair.specularIntensity = 0.12; M.hair.sheen = 0; M.hair.roughness = 0.65; M.ha
 // 가장자리는 두 번째 패스에서 반투명으로 부드럽게(불투명한 속은 첫 패스가 깊이를 쓴다)
 M.hairSoft = M.hair.clone();
 Object.assign(M.hairSoft, { transparent: true, alphaTest: 0.33, alphaToCoverage: false, depthWrite: false });
-skinify(M.face, [0.5, 0.24, 0.16]);
-skinify(M.headskin, [0.5, 0.24, 0.16]);
+skinify(M.face, [0.5, 0.24, 0.16], 0.22);
+skinify(M.headskin, [0.5, 0.24, 0.16], 0.15);
 skinify(M.body, [0.4, 0.2, 0.14]);
 hairify(M.hair, { sway: true, key: 'core' });
 hairify(M.hairSoft, { sway: true, key: 'soft' });
@@ -741,6 +779,8 @@ function animate(now, dt) {
   }
   const mouthQuiet = S.speech ? 0.35 : 1;
   for (const k in S.base) add(k, S.base[k] * (k.startsWith('mouth') ? mouthQuiet : 1));
+  // 세분화로 입술 경계가 살짝 오므라들어 앞니가 비치므로, 말하지 않을 땐 입술을 다물어 둔다
+  add('mouthClose', 0.22 * (1 - S.talkEnv) * (S.mood === 'happy' || S.mood === 'surprise' ? 0.3 : 1));
   // 질문 끝: 눈썹이 올라간다
   add('browInnerUp', S.qEnv * 0.3); add('browOuterUpLeft', S.qEnv * 0.22); add('browOuterUpRight', S.qEnv * 0.22);
   // 눈꺼풀: 편하게 살짝 내려온 기본값 + 시선을 따라간다
@@ -880,7 +920,8 @@ function setQuality(q, auto) {
   quality = q;
   key.shadow.mapSize.set(q === 'high' ? 2048 : 1024, q === 'high' ? 2048 : 1024);
   if (key.shadow.map) { key.shadow.map.dispose(); key.shadow.map = null; }
-  rt.samples = q === 'high' ? 4 : 0;
+  ao.beautyRenderTarget.samples = q === 'high' ? 4 : 0;
+  ao.configuration.halfRes = q !== 'high';
   resize();
   $('#q').textContent = q === 'high' ? '화질: 높음' : '화질: 가볍게';
   if (auto) toast('기기 성능에 맞춰 가벼운 화질로 바꿨어요.');
