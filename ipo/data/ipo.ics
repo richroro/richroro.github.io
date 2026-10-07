@@ -582,9 +582,9 @@ DTSTAMP:20261007T000000Z
 DTSTART;VALUE=DATE:20261012
 DTEND;VALUE=DATE:20261014
 SUMMARY:[청약] 엠에스바이오 (KB증권)
-DESCRIPTION:청약 10/12~10/13 10:00~16:00\n주간사 KB증권\n희망 공
- 모가 6\,800원~7\,800원\n자세히: https://richroro.github.io/ipo/#i=2
- 324
+DESCRIPTION:청약 10/12~10/13 10:00~16:00\n주간사 KB증권\n확정 공
+ 모가 7\,800원\n기관경쟁률 1\,097:1\n확약 30.62%\n자세히: http
+ s://richroro.github.io/ipo/#i=2324
 URL:https://richroro.github.io/ipo/#i=2324
 TRANSP:TRANSPARENT
 BEGIN:VALARM
@@ -621,6 +621,23 @@ DESCRIPTION:증거금 환불 · 배정 결과 확인\n자세히: https://ri
  chroro.github.io/ipo/#i=2324
 URL:https://richroro.github.io/ipo/#i=2324
 TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:feed-list-2324@richroro.github.io
+DTSTAMP:20261007T000000Z
+DTSTART;VALUE=DATE:20261022
+DTEND;VALUE=DATE:20261023
+SUMMARY:[상장] 엠에스바이오
+DESCRIPTION:09:00 시초가 결정 · 공모가 7\,800원\n매도 전략을
+  미리 정해 두세요\n자세히: https://richroro.github.io/ipo/#i=232
+ 4
+URL:https://richroro.github.io/ipo/#i=2324
+TRANSP:TRANSPARENT
+BEGIN:VALARM
+ACTION:DISPLAY
+TRIGGER;RELATED=START:PT8H20M
+DESCRIPTION:[상장] 엠에스바이오 · 장 시작 40분 전
+END:VALARM
 END:VEVENT
 BEGIN:VEVENT
 UID:feed-sub-2326@richroro.github.io
