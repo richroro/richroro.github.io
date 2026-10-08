@@ -1,0 +1,82 @@
+name: 해외 경제뉴스 자동 수집
+
+# 해외 영어 경제 매체 RSS 와 시장 지표를 받아 news/data/ 에 커밋한다.
+# 페이지(https://richroro.github.io/news/)는 열릴 때 news/data/index.json 과 날짜 파일을 읽는다.
+# 수집할 피드·지표 목록은 news/feeds.json 에서 바꾼다.
+#
+# 한국어 번역(선택): 저장소 Settings → Secrets and variables → Actions 에
+#   시크릿 ANTHROPIC_API_KEY 를 넣으면 새 기사 제목·요약을 Claude 로 옮긴다. 없으면 영어 그대로 둔다.
+#   모델을 바꾸려면 변수(Variables) NEWS_TRANSLATE_MODEL 을 넣는다 (기본 claude-opus-5-5).
+
+on:
+  schedule:
+    # 06:17 ~ 23:17 KST 매시. 밤에는 기사가 적어 쉬고, 아침 첫 실행이 밤사이 기사를 모은다.
+    - cron: '17 21-23,0-14 * * *'
+  push:
+    branches: [main]
+    paths: ['news/feeds.json', 'news/fetch_news.py', 'news/translate.py', '.github/workflows/update-news.yml']
+  workflow_dispatch:
+
+concurrency:
+  group: news-fetch
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: 번역 준비
+        env:
+          KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: |
+          if [ -n "$KEY" ]; then
+            pip install --quiet anthropic
+          else
+            echo "ANTHROPIC_API_KEY 시크릿이 없어 번역 없이 영어로 저장합니다." >> "$GITHUB_STEP_SUMMARY"
+          fi
+
+      - name: 뉴스 받기
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          NEWS_TRANSLATE_MODEL: ${{ vars.NEWS_TRANSLATE_MODEL }}
+        run: |
+          set -o pipefail
+          python news/fetch_news.py 2>&1 | tee "$RUNNER_TEMP/fetch.log"
+          {
+            echo "### 해외 경제뉴스 수집"
+            echo '```'
+            cat "$RUNNER_TEMP/fetch.log"
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: 바뀐 게 있으면 커밋
+        run: |
+          if [ -z "$(git status --porcelain -- news/data)" ]; then
+            echo "변경 없음 — 커밋하지 않습니다." >> "$GITHUB_STEP_SUMMARY"
+            exit 0
+          fi
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A news/data
+          git commit -q -m "해외 경제뉴스 자동 수집 $(TZ=Asia/Seoul date '+%Y-%m-%d %H:%M KST')"
+          pushed=0
+          for i in 1 2 3 4; do
+            if git push -q; then pushed=1; break; fi
+            echo "푸시 실패, 재시도 $i"
+            git pull -q --rebase --autostash origin "${GITHUB_REF_NAME}" || true
+            sleep $((2 ** i))
+          done
+          if [ "$pushed" -ne 1 ]; then
+            echo "::error::커밋은 만들었지만 푸시하지 못했습니다. 다음 실행에서 다시 시도합니다."
+            exit 1
+          fi

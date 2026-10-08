@@ -1,0 +1,39 @@
+{
+  "_comment": "수집할 영어 경제 RSS 목록. 한 줄 추가·삭제하면 다음 수집부터 반영된다. hint 는 제목·요약으로 분야를 못 정했을 때 쓰는 기본 분야(market·macro·energy·estate·industry·global·crypto·general). aggregator 는 여러 매체를 모아 둔 피드로, 제목 끝 ' - 매체명' 을 떼어 매체로 쓴다.",
+  "feeds": [
+    {"source": "CNBC",            "hint": "general",  "url": "https://search.cnbc.com/rs/search/combinedcms/view.xml?partnerId=wrss01&id=100003114"},
+    {"source": "CNBC",            "hint": "macro",    "url": "https://search.cnbc.com/rs/search/combinedcms/view.xml?partnerId=wrss01&id=20910258"},
+    {"source": "CNBC",            "hint": "market",   "url": "https://search.cnbc.com/rs/search/combinedcms/view.xml?partnerId=wrss01&id=10000664"},
+    {"source": "MarketWatch",     "hint": "market",   "url": "https://feeds.content.dowjones.io/public/rss/mw_topstories"},
+    {"source": "WSJ",             "hint": "market",   "url": "https://feeds.content.dowjones.io/public/rss/RSSMarketsMain"},
+    {"source": "WSJ",             "hint": "macro",    "url": "https://feeds.content.dowjones.io/public/rss/socialeconomyfeed"},
+    {"source": "Financial Times", "hint": "general",  "url": "https://www.ft.com/global-economy?format=rss"},
+    {"source": "Financial Times", "hint": "market",   "url": "https://www.ft.com/markets?format=rss"},
+    {"source": "Bloomberg",       "hint": "market",   "url": "https://feeds.bloomberg.com/markets/news.rss"},
+    {"source": "Bloomberg",       "hint": "macro",    "url": "https://feeds.bloomberg.com/economics/news.rss"},
+    {"source": "BBC",             "hint": "general",  "url": "https://feeds.bbci.co.uk/news/business/rss.xml"},
+    {"source": "The Guardian",    "hint": "macro",    "url": "https://www.theguardian.com/business/economics/rss"},
+    {"source": "New York Times",  "hint": "general",  "url": "https://rss.nytimes.com/services/xml/rss/nyt/Business.xml"},
+    {"source": "New York Times",  "hint": "macro",    "url": "https://rss.nytimes.com/services/xml/rss/nyt/Economy.xml"},
+    {"source": "The Economist",   "hint": "macro",    "url": "https://www.economist.com/finance-and-economics/rss.xml"},
+    {"source": "Nikkei Asia",     "hint": "global",   "url": "https://asia.nikkei.com/rss/feed/nar"},
+    {"source": "CoinDesk",        "hint": "crypto",   "url": "https://www.coindesk.com/arc/outboundfeeds/rss/"},
+    {"source": "Federal Reserve", "hint": "macro",    "url": "https://www.federalreserve.gov/feeds/press_all.xml"},
+    {"source": "Google News",     "hint": "general",  "url": "https://news.google.com/rss/headlines/section/topic/BUSINESS?hl=en-US&gl=US&ceid=US:en", "aggregator": true}
+  ],
+  "markets": [
+    {"symbol": "^GSPC",    "name": "S&P 500",     "unit": ""},
+    {"symbol": "^IXIC",    "name": "나스닥",       "unit": ""},
+    {"symbol": "^DJI",     "name": "다우",         "unit": ""},
+    {"symbol": "^TNX",     "name": "미 국채 10년", "unit": "%"},
+    {"symbol": "DX-Y.NYB", "name": "달러 인덱스",  "unit": ""},
+    {"symbol": "KRW=X",    "name": "원/달러",      "unit": "원"},
+    {"symbol": "EURUSD=X", "name": "유로/달러",    "unit": ""},
+    {"symbol": "JPY=X",    "name": "달러/엔",      "unit": "엔"},
+    {"symbol": "CL=F",     "name": "WTI 유가",     "unit": "$"},
+    {"symbol": "GC=F",     "name": "금",           "unit": "$"},
+    {"symbol": "^N225",    "name": "닛케이",       "unit": ""},
+    {"symbol": "^KS11",    "name": "코스피",       "unit": ""},
+    {"symbol": "BTC-USD",  "name": "비트코인",     "unit": "$"}
+  ]
+}

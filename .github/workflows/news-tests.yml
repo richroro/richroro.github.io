@@ -1,0 +1,30 @@
+name: 해외 경제뉴스 검사
+
+# news/ 를 바꾸는 PR 마다 수집기 단위 테스트와 자바스크립트 문법을 본다. 네트워크는 쓰지 않는다.
+
+on:
+  pull_request:
+    paths: ['news/**', '.github/workflows/news-tests.yml', '.github/workflows/update-news.yml']
+  push:
+    branches: [main]
+    paths: ['news/**.py', 'news/**.js', 'news/tests/**']
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: pip install --quiet anthropic
+      - name: 단위 테스트
+        run: python -m unittest discover -s news/tests -v
+      - name: 자바스크립트 문법
+        run: node --check news/app.js
+      - name: 피드 목록 형식
+        run: python -c "import json; c=json.load(open('news/feeds.json')); assert c['feeds'] and all(f['url'].startswith('https://') and f['source'] for f in c['feeds'])"
