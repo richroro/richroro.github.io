@@ -61,6 +61,10 @@ const Sub: React.FC<{ page: CapPage }> = ({ page }) => {
   return (
     <AbsoluteFill style={{ justifyContent: "flex-end", alignItems: "center", paddingBottom: 52, opacity: o }}>
       <div style={{ maxWidth: 1640, textAlign: "center", fontFamily: BODY, color: "white", paintOrder: "stroke", filter: "drop-shadow(0 4px 10px rgba(0,0,0,.6))" }}>
+        {page.who ? (
+          // whose voice this is while the picture shows something else (B-roll, the audience)
+          <div style={{ display: "inline-block", fontSize: 28, fontWeight: 800, padding: "2px 14px", marginBottom: 10, borderRadius: 8, background: "rgba(0,0,0,.7)", color: KEY }}>🎙 {page.who}</div>
+        ) : null}
         {page.en ? (
           <div style={{ fontSize: 54, fontWeight: 800, lineHeight: 1.2, letterSpacing: -0.3, WebkitTextStroke: "10px black" }}><En text={page.en} /></div>
         ) : null}
