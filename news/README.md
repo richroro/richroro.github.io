@@ -4,7 +4,7 @@
 
 - **수집 매체**: CNBC, MarketWatch, WSJ, Financial Times, Bloomberg, BBC, The Guardian, New York Times,
   The Economist, Nikkei Asia, CoinDesk, 미 연준 보도자료, Google News(로이터 등 모음) — `feeds.json`
-- **한국어 번역**: 새 기사의 제목·요약을 Claude 로 옮긴다. 화면에서 한국어 ↔ 영어 원문을 바꿔 볼 수 있고,
+- **한국어 번역**: 기사 제목을 무료 기계 번역으로 옮긴다(키 필요 없음). Claude API 키를 넣으면 제목·요약을 Claude 로 옮긴다. 화면에서 한국어 ↔ 영어 원문을 바꿔 볼 수 있고,
   한국어로 볼 때도 영어 원문 제목을 작게 함께 보여 준다.
 - **같은 사건은 하나로 묶는다.** 매체마다 제목이 달라도("Fed holds rates steady…" / "Federal Reserve keeps interest
   rates unchanged…") 한 줄로 모으고, 다른 매체 기사는 그 아래 관련 기사로 단다.
@@ -25,16 +25,22 @@
 ```
 news/feeds.json              수집할 RSS 와 시장 지표 목록 — 여기만 고치면 된다
 news/fetch_news.py           수집기 (번역을 빼면 파이썬 표준 라이브러리만 사용)
-news/translate.py            한국어 번역 (anthropic 패키지)
+news/free_translate.py       한국어 번역 — 기본, 제목만, 키 없이 (표준 라이브러리)
+news/translate.py            한국어 번역 — ANTHROPIC_API_KEY 가 있을 때, 제목·요약 (anthropic 패키지)
 news/data/index.json         갱신 시각, 날짜 목록, 피드 상태, 24시간 키워드
 news/data/days/2026-10-06.json  그날(한국 시각) 기사 — 최신순, 최대 900건
 news/data/markets.json       시장 지표 (Yahoo Finance)
 news/index.html, app.js      페이지
 ```
 
-## 한국어 번역 켜기
+## 한국어 번역
 
-번역은 선택이다. 키가 없으면 영어 원문 그대로 보여 준다.
+**기본: 무료 기계 번역, 제목만.** 키가 필요 없다. Google 번역 웹이 쓰는 공개 주소(translate.googleapis.com,
+`client=gtx`)로 제목을 줄바꿈으로 이어 한 번에 보내고, 돌아온 번역을 줄 단위로 나눈다(줄 수가 어긋나면 하나씩 다시).
+공식 API 가 아니라 막히거나(429) 바뀔 수 있다. 막히면 그 실행은 멈추고, 영어로 남은 제목은 다음 실행에서 다시 옮긴다.
+요약은 영어 원문 그대로 두고, 화면을 한국어로 볼 때는 숨긴다(한국어 제목 + 작은 영어 원문 제목만). English 로 바꾸면 요약이 나온다. 묶는 범위(최근 3일) 안의 안 옮긴 제목을 한 번에 최대 900개까지 옮긴다.
+
+**선택: Claude 로 제목·요약.** 아래처럼 키를 넣으면 무료 번역 대신 Claude 를 쓴다.
 
 1. [Claude Console](https://platform.claude.com) 에서 API 키를 만든다.
 2. 저장소 **Settings → Secrets and variables → Actions → New repository secret** 에

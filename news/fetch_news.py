@@ -3,7 +3,8 @@
 
 feeds.json 의 영어 경제 매체 RSS(CNBC·MarketWatch·FT·BBC·Bloomberg 등)를 모두 받아 분야를 나누고,
 같은 사건을 다룬 기사끼리 묶어 data/ 아래에 날짜(한국 시각)별 JSON 으로 저장한다.
-ANTHROPIC_API_KEY 가 있으면 새 기사 제목·요약을 한국어로 옮긴다(translate.py). 시장 지표도 같이 받는다.
+새 기사 제목을 한국어로 옮긴다 — ANTHROPIC_API_KEY 가 있으면 Claude 로 제목·요약을(translate.py),
+없으면 무료 기계 번역으로 제목만(free_translate.py). 시장 지표도 같이 받는다.
 번역을 빼면 표준 라이브러리만 쓴다. 깃허브 액션(.github/workflows/update-news.yml)이 돌린다.
 
   python fetch_news.py                       # feeds.json 전부 받기
@@ -42,8 +43,9 @@ KEEP_DAYS = 30          # 날짜 파일을 며칠치 남길지
 WINDOW_DAYS = 2         # 오늘 + 이틀 전까지는 매번 다시 묶는다
 MAX_PER_DAY = 900       # 하루 파일에 담을 최대 기사 수
 SUMMARY_LEN = 240
-TRANSLATE_HOURS = 36    # 이보다 오래된 기사는 번역하지 않는다
-TRANSLATE_LIMIT = 240   # 한 번 실행에 옮길 최대 기사 수 (비용 상한)
+TRANSLATE_HOURS = 36    # Claude: 이보다 오래된 기사는 번역하지 않는다
+TRANSLATE_LIMIT = 240   # Claude: 한 번 실행에 옮길 최대 기사 수 (비용 상한)
+FREE_TRANSLATE_LIMIT = 900   # 무료 번역: 한 번 실행에 옮길 최대 제목 수 (요청 수 상한)
 
 MEDIA_NS = "http://search.yahoo.com/mrss/"
 
@@ -801,21 +803,27 @@ def run(args) -> int:
     cluster(items)
     added = len(items) - len(existing)
 
-    # 2-1) 한국어로 옮기기 — 키가 있을 때만. 실패하면 영어로 두고 다음 실행에서 다시 한다.
+    # 2-1) 한국어로 옮기기. 실패한 기사는 영어로 두고 다음 실행에서 다시 한다.
+    #      키가 있으면 Claude(제목·요약, 최근 36시간), 없으면 무료 기계 번역(제목만, 묶는 범위 전체).
     translated = 0
-    if not args.no_translate and os.environ.get("ANTHROPIC_API_KEY"):
-        since = now.timestamp() - TRANSLATE_HOURS * 3600
+    if not args.no_translate:
+        use_claude = bool(os.environ.get("ANTHROPIC_API_KEY"))
+        since = (now.timestamp() - TRANSLATE_HOURS * 3600) if use_claude else oldest
+        limit = args.translate_limit or (TRANSLATE_LIMIT if use_claude else FREE_TRANSLATE_LIMIT)
         pending = sorted((it for it in items if "title_ko" not in it and it["time"] >= since),
-                         key=lambda x: -x["time"])[:args.translate_limit]
+                         key=lambda x: -x["time"])[:limit]
         if pending:
             try:
-                import translate  # 같은 폴더. anthropic 패키지가 필요하다
-                translated = translate.translate_items(pending)
+                if use_claude:
+                    import translate  # 같은 폴더. anthropic 패키지가 필요하다
+                    translated = translate.translate_items(pending)
+                else:
+                    import free_translate  # 같은 폴더. 표준 라이브러리만
+                    translated = free_translate.translate_titles(pending)
             except Exception as ex:  # noqa: BLE001 — 번역이 안 돼도 수집은 마친다
                 print(f"  ✗ 번역 {type(ex).__name__}: {ex}"[:200])
-        print(f"  번역 {translated}/{len(pending)}건")
-    elif not args.no_translate:
-        print("  번역 건너뜀 — ANTHROPIC_API_KEY 없음 (영어 그대로 저장)")
+        engine = "Claude" if use_claude else "무료 기계 번역(제목만)"
+        print(f"  번역 {translated}/{len(pending)}건 · {engine}")
 
     # 3) 날짜별로 나눠 쓰기
     by_day: dict[str, list[dict]] = {d: [] for d in window}
@@ -891,8 +899,9 @@ def main(argv=None) -> int:
     ap.add_argument("--no-markets", action="store_true")
     ap.add_argument("--now", help="현재 시각을 고정 (ISO 8601, 시험용)")
     ap.add_argument("--force-index", action="store_true", help="바뀐 게 없어도 index.json 을 다시 쓴다")
-    ap.add_argument("--no-translate", action="store_true", help="ANTHROPIC_API_KEY 가 있어도 번역하지 않는다")
-    ap.add_argument("--translate-limit", type=int, default=TRANSLATE_LIMIT, help="한 번에 옮길 최대 기사 수")
+    ap.add_argument("--no-translate", action="store_true", help="번역하지 않는다")
+    ap.add_argument("--translate-limit", type=int, default=None,
+                    help=f"한 번에 옮길 최대 기사 수 (기본 Claude {TRANSLATE_LIMIT} · 무료 {FREE_TRANSLATE_LIMIT})")
     return run(ap.parse_args(argv))
 
 
