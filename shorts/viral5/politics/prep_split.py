@@ -23,6 +23,7 @@ edit.json:
   keys       words shown in yellow;  music, sfx (output seconds), tail
   names      short names by "who" (translated shorts): a line spoken while the camera is on someone else
              gets the speaker's name above it; the shot's person is the one whose name is in its "label"
+             (a segment with "offscreen": true shows nobody who speaks, e.g. an audience cutaway)
   music      [{"src", "from", "at", "to", "fade", "gain"}]: a bed built from tracks in $MEDIA (or public/...), each
              placed from output second "at" to "to", starting "from" seconds into its file; a part can also be a
              voice taken from a clip, to run under other pictures;  musicGain;  duck: false keeps the bed level
@@ -200,7 +201,8 @@ def main(sid):
 
     keys = ed.get("keys", [])
     names = ed.get("names") or []
-    seg_who = [next((i for i, n in enumerate(names) if n in s.get("label", "")), None) for s in ed["segments"]]
+    # "offscreen": a cutaway (audience, B-roll) that shows none of the speakers, so every line over it gets a name
+    seg_who = [-1 if s.get("offscreen") else next((i for i, n in enumerate(names) if n in s.get("label", "")), None) for s in ed["segments"]]
     def off_screen(who, t0, t1):
         """is someone else on camera for the first half second of this line, or for most of it?"""
         def on(t):
