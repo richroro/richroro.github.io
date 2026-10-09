@@ -971,81 +971,65 @@ MEDIA=<저장소>/media python3 politics/prep_split.py lindbergh1    # 원본: m
 > 음악: "Floating Cities" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
 > #린드버그 #대서양횡단 #도전 #포기하지마 #동기부여 #옛날영상 #역사 #영어공부 #shorts
 
+## 위력 실험 쇼츠 (`politics/boom1`, `politics/boom2`)
 
-## 축구 텍스트 뉴스 카드 쇼츠 (`fbcard1`, `fbcard2`)
+DVIDS에 올라온 미군 촬영 B-roll(현장음만 있고 음악은 없음)에 원래 소리를 그대로 두고, 실제로 들리는 외침만 번역 자막으로 붙였습니다. 내레이션, 그래픽, 음악은 넣지 않았습니다.
 
-2026년 10월 6일 우즈베키스탄전(용인 미르스타디움, 2-0 승) 뒤 48시간 동안 가장 크게 다뤄진 대표팀 소식 두 개를 텍스트 뉴스 카드로 정리했다.
-화면은 모두 우리 그래픽(`gfx` text·counter·vs·bars)이다. 선수 사진, 중계, 협회 영상은 쓰지 않았다.
-내레이션은 Edge TTS `ko-KR-InJoonNeural` +20%이고, 음악은 `music/hustle.mp3`를 낮게(0.14) 깔았다.
+| id | 제목 | 길이 | 내용 |
+| --- | --- | --- | --- |
+| `boom1` | 바닷속 불발탄 폭파 / 물기둥 실화냐 | 17.9초 | 첫 화면은 솟구치는 물기둥입니다. 이어서 물속 잠수요원, 보트 위에서 지켜보는 대원, "Fire in the hole!"(폭파한다!) 외침, 두 번째 물기둥 순서로 갑니다. |
+| `boom2` | 어깨에 메고 쏘는 84mm / 후폭풍 실화냐 | 24.3초 | 첫 화면은 사격 순간 뒤로 일어나는 흙먼지입니다. 이어서 "Fire, fire, fire" 사격, 교관의 "Tap it. Always tap just to make sure it's seated.", "Back blast all clear." 뒤 사격과 흙먼지, 표적 착탄 순서로 갑니다. |
 
-| id | 길이 | 내용 |
-|---|---|---|
-| `fbcard1` | 32.8초 | 96년생 김민재·황인범·황희찬의 '대표팀 은퇴 소동'을 보도 내용 그대로 4줄로 정리한다. 협회 면담, 황인범의 부인, 손흥민 쪽 입장(별도 입장 없음)도 넣었다. 끝은 "11월 소집에서 셋을 다시 볼 수 있을까?" |
-| `fbcard2` | 31.2초 | 손흥민 A매치 59호 골로 47년 9개월 만에 남자 최다골 1위가 바뀐 경기를 정리한다. 반전으로 남녀 통틀어 1위는 지소연(76골)임을 보여 준다. 끝은 "이 기록, 누가 깰 수 있을까?" |
+```bash
+MEDIA=<저장소>/media python3 politics/prep_split.py boom1    # 원본: media/boom/ (boom2도 같음)
+./render.sh boom1 final/boom1.mp4
+```
 
-### 출처 (모든 수치·사실은 2개 이상 매체에서 확인)
+**영상** (DVIDS 페이지에 "Video by …"와 PUBLIC DOMAIN이 있고 Restrictions 안내는 없음. 둘 다 B-Roll 분류)
+- `boom1`: [DVIDS 923887 「ACDC: EOD Underwater UXO Demolitions」](https://www.dvidshub.net/video/923887/acdc-eod-underwater-uxo-demolitions)
+  - 촬영: Staff Sgt. Dana Beesley (U.S. Marine Corps). 촬영일 2024.5.14, 필리핀 카비테 카바요섬 앞바다, Archipelagic Coastal Defense Continuum(ACDC).
+  - 원본 파일: https://d34w7g4gy10iej.cloudfront.net/video/2405/DOD_110313154/DOD_110313154.mp4
+  - 설명에 따르면 필리핀 해병대·미 해병대 폭발물처리반과 필리핀 해군 특수작전사령부·미 해군 잠수요원이 수중 불발탄 처리 폭파를 했습니다.
+  - 쓴 구간(원본 초): 118.9–121.0(첫 물기둥), 104.0–106.6(잠수요원), 107.0–111.5(보트 위 대원), 125.4–134.0(외침과 두 번째 물기둥).
+- `boom2`: [DVIDS 876009 「B-Roll: Marines fire MAAWS downrange」](https://www.dvidshub.net/video/876009/b-roll-marines-fire-maaws-downrange)
+  - 촬영: Sgt. Jacob Yost (U.S. Marine Corps). 촬영일 2023.3.9, 캘리포니아 캠프 펜들턴, 미 1해병사단.
+  - 원본 파일: https://d34w7g4gy10iej.cloudfront.net/video/2303/DOD_109502604/DOD_109502604.mp4
+  - 설명에 따르면 M3E1 MAAWS는 "Carl Gustaf"라고도 부르는 84mm 무반동 무기입니다.
+  - 쓴 구간(원본 초): 101.4–103.0, 63.5–68.6, 77.6–82.0, 111.8–121.0, 133.6–137.5.
+- `media/boom/`의 mp4 파일:
+  - 내용: 원본에서 잘라낸 구간을 저장용으로 다시 인코딩한 것입니다(x264 CRF 26).
+  - 파일명: `boom_dvids923887_100-136.mp4`는 원본 100–136초, `boom_dvids876009_58-140.mp4`는 원본 58–140초입니다.
+  - 시간축: edit.json의 시간은 이 파일 기준입니다.
+  - 옆의 .json에 DVIDS ID, 페이지·파일 주소, 크레디트, 설명, 구간을 적었습니다.
 
-`fbcard1`
-- SBS 「손흥민 역사 쓴 밤 '은퇴 소동'…"갈등 터졌다" 무슨 일이」, 2026-10-07 21:23 (수정 10-08 01:44) — https://news.sbs.co.kr/news/endPage.do?news_id=N1008787802
-  — 세 선수 동반 은퇴 검토설, 현영민 전력강화위원장의 자정 넘은 면담 뒤 일단락, 리더십 변화 요구, 황인범 "11월 선발은 감독님 결정"
-- 머니투데이 「"손흥민 리더십 불만"…김민재·황인범·황희찬, 동반 은퇴 소동」, 2026-10-08 06:36 — https://www.mt.co.kr/society/2026/10/08/2026100806175919989
-  — 같은 내용(SBS·뉴스1·뉴시스 인용), 경기 뒤 면담과 설득, 황인범 은퇴 부인, 손흥민·협회 직접 입장 없음
-- 서울신문 「손흥민 리더십에 반기 든 '96라인'… 결국 곪은 게 터졌다」, 2026-10-08 18:11 (수정 10-09 01:18) — https://www.seoul.co.kr/news/sport/soccer/2026/10/09/20261009035001
-  — 라커룸에서 동반 은퇴 시사, 자정 넘은 면담, 황인범 "아니요" 답변, 현 위원장은 대화 내용 비공개, 손흥민 직접 언급 없음
-- MHN스포츠 — https://mhnse.com/news/articleView.html?idxno=1580542 — 손흥민의 10월 7일 SNS 글은 소집 소감·감사만 담았고 이번 논란은 언급하지 않음 (화면의 "별도 입장 없음" 근거, 10월 9일 기준)
-- MBC 뉴스투데이 (아래) — 다음 A매치가 11월 2연전
-
-`fbcard2`
-- MBC 뉴스투데이 「손흥민, A매치 역대 최다 골‥우즈벡에 2대 0 승리」, 2026-10-07 06:49 — https://imnews.imbc.com/replay/2026/nwtoday/article/6856202_37012.html
-  — 전반 6분 오른발 프리킥, 151번째 A매치, 59골로 차범근 58골 넘음, 오세훈 추가골, 인용 "16년이란 순간이 제일 소중한 것 같고"(MBC 보도 그대로), 11월 2연전
-- 파이낸셜뉴스 「[속보]차붐 넘었다! 손흥민, 환상 프리킥으로 A매치 59호 골 폭발」, 2026-10-06 20:17 — https://www.fnnews.com/news/202610062016150980
-  — 전반 6분, 151경기 59골, 차범근 136경기 58골, 지소연 182경기 76골(남녀 통틀어 1위)
-- 중앙일보(미주중앙일보 게재) 「손흥민, A매치 59호골...차붐 제치고 최다골 신기록」, 2026-10-06 — https://www.koreadaily.com/article/20261006040904151
-  — 151번째 경기 59호 골, 차범근 58골, 지소연 76골(182경기)
-- 머니투데이 「"SON 상대하는 건 값진 경험" 우즈벡도 인정...」, 2026-10-07 09:04 — https://www.mt.co.kr/sports/2026/10/07/2026100707565628341
-  — 차범근 58호 골은 1978년 12월 17일 방콕 아시안게임 중국전, 47년 9개월 만의 기록 교체
-- 일간스포츠 「[IS 용인] 손흥민, 韓 축구 새 역사 썼다…환상 프리킥으로 59호골」, 2026-10-06 20:10 — https://isplus.com/article/view/isp202610060187 — 프리킥 59호 골, 차범근 58골
-- "47년 9개월"은 1978-12-17 → 2026-10-06 날짜 계산으로도 확인했다.
-
-### 그림·음악 라이선스
-- 화면 그래픽은 모두 템플릿 `gfx`로 직접 만든 것이다. 외부 영상과 사진은 쓰지 않았다(`sources` 비어 있음).
-- 음악: Kevin MacLeod "Hustle", CC BY 4.0 (incompetech.com). 효과음은 `public/sfx`의 기존 소스를 그대로 썼다.
+**소리와 자막**
+- 음악 확인: 두 영상 모두 AudioSet AST 모델로 5초 단위로 검사했습니다. Speech, Vehicle, Boat 같은 현장음만 나왔고 음악은 없었습니다.
+- 자막 확인: faster-whisper small과 medium.en이 둘 다 같은 말을 들은 줄만 번역했습니다.
+  - "Fire in the hole"(923887, 122.4–128.9초)과 "Fire, fire, fire", "Tap it. Always tap just to make sure it's seated.", "Back blast all clear."(876009)가 해당합니다.
+  - 두 모델이 엇갈린 말("Ready for the back blast?", "Back blast area secure", "SCA loaded" 등)은 넣지 않았습니다.
+  - 923887의 타갈로그어 대화도 넣지 않았습니다.
+- 말하는 사람을 특정할 수 없어 이름표는 달지 않았습니다. 사람 이름, 계급, 사연은 지어내지 않았습니다.
+- 설명 자막("미·필리핀 잠수요원들", "바닷속 불발탄 처리 훈련 중", "미 해병대 칼 구스타프 사격", "84mm 무반동총")은 DVIDS 설명에 있는 내용만 썼습니다.
+- 라우드니스: render.sh 결과 −14.6 LUFS(boom1), −14.9 LUFS(boom2)입니다. 폭발음 피크 때문에 true peak −1.5 dB 제한에 걸려 −14보다 조금 낮게 나왔습니다.
+- 미 해병대·국방부가 이 영상을 보증하거나 후원한다는 인상을 주면 안 됩니다(DVIDS 저작권 안내). 화면에는 "영상: 미 해병대 (DVIDS)"만 적었습니다.
 
 ### 업로드 문구
 
-**fbcard1**
-- 제목: `대표팀 96라인 은퇴 소동, 무슨 일이었나 [30초 정리]` (32자)
+**boom1**
+- 제목: `바닷속 불발탄 폭파, 물기둥 실화냐 😳` (21자)
 - 설명:
   ```
-  10월 6일 우즈베키스탄전 뒤 불거진 김민재·황인범·황희찬 '대표팀 은퇴 소동'을 보도 내용 그대로 정리했습니다.
-  (2026년 10월 9일 기준. 손흥민 선수는 이번 논란에 별도 입장을 내지 않았습니다.)
-
-  출처
-  SBS https://news.sbs.co.kr/news/endPage.do?news_id=N1008787802
-  머니투데이 https://www.mt.co.kr/society/2026/10/08/2026100806175919989
-  서울신문 https://www.seoul.co.kr/news/sport/soccer/2026/10/09/20261009035001
-
-  Music: "Hustle" Kevin MacLeod (incompetech.com)
-  Licensed under Creative Commons: By Attribution 4.0 License
-  http://creativecommons.org/licenses/by/4.0/
+  필리핀 카바요섬 앞바다에서 필리핀·미국 해병대와 해군 잠수요원들이 바닷속 불발탄을 폭파 처리하는 순간 (2024년 5월, 연합훈련 ACDC).
+  "Fire in the hole!" = 폭파한다!
+  영상: U.S. Marine Corps video by Staff Sgt. Dana Beesley (DVIDS 923887). 미 해병대·국방부가 이 영상을 보증하거나 후원하지 않습니다.
   ```
-- 해시태그: `#축구대표팀 #김민재 #황인범 #황희찬 #손흥민`
+- 해시태그: `#폭발물처리반 #불발탄 #물기둥 #해병대 #shorts`
 
-**fbcard2**
-- 제목: `손흥민 59골, 47년 만에 바뀐 1위 [30초 정리]` (30자)
+**boom2**
+- 제목: `어깨에 메고 쏘는 84mm, 후폭풍 실화냐` (22자)
 - 설명:
   ```
-  손흥민이 10월 6일 우즈베키스탄전 프리킥으로 A매치 59호 골을 넣어 차범근(58골)을 넘었습니다. 그런데 남녀 통틀어 1위는 따로 있습니다.
-  (2026년 10월 기준)
-
-  출처
-  MBC https://imnews.imbc.com/replay/2026/nwtoday/article/6856202_37012.html
-  파이낸셜뉴스 https://www.fnnews.com/news/202610062016150980
-  중앙일보 https://www.koreadaily.com/article/20261006040904151
-  머니투데이 https://www.mt.co.kr/sports/2026/10/07/2026100707565628341
-
-  Music: "Hustle" Kevin MacLeod (incompetech.com)
-  Licensed under Creative Commons: By Attribution 4.0 License
-  http://creativecommons.org/licenses/by/4.0/
+  미 해병대 1해병사단의 칼 구스타프(M3E1 MAAWS, 84mm 무반동 무기) 사격 훈련. 쏘기 전 "후폭풍 구역 이상 없음!"을 외치는 이유가 보입니다. (2023년 3월, 캘리포니아 캠프 펜들턴)
+  영상: U.S. Marine Corps video by Sgt. Jacob Yost (DVIDS 876009). 미 해병대·국방부가 이 영상을 보증하거나 후원하지 않습니다.
   ```
-- 해시태그: `#손흥민 #차범근 #지소연 #축구대표팀 #shorts`
+- 해시태그: `#칼구스타프 #무반동총 #후폭풍 #미해병대 #shorts`
