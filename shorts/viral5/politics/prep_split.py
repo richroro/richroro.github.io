@@ -25,6 +25,7 @@ edit.json:
   segments   also take "src" (another clip), "audio" (its level, 0 = muted), "rotate" (90/-90/180), "push" ([z0, z1]),
              "trim" ([x0, y0, x1, y1] of the source to keep; "single" is then relative to what is kept)
              and "frame": "film" (a 1080x810 box that shows a whole 4:3 frame instead of the square crop)
+             and "vf" (an extra ffmpeg video filter, applied after trim and rotation)
 """
 import difflib, json, os, re, subprocess, sys
 import numpy as np
@@ -164,6 +165,7 @@ def main(sid):
         tx0, ty0, tx1, ty1 = s.get("trim", [0, 0, 1, 1])  # cut a band off the source (a broadcaster's lower third) before anything else
         vf = "fps=30" + (f",crop=trunc(iw*{tx1 - tx0}/2)*2:trunc(ih*{ty1 - ty0}/2)*2:iw*{tx0}:ih*{ty0}" if s.get("trim") else "")
         vf += {90: ",transpose=1", -90: ",transpose=2", 180: ",hflip,vflip"}.get(s.get("rotate", 0), "")  # e.g. a camera mounted sideways
+        if s.get("vf"): vf += "," + s["vf"]  # an extra ffmpeg filter for this stretch (grade a dark shot, blur a face)
         subprocess.run(["ffmpeg", "-v", "error", "-y", "-ss", str(s["in"]), "-t", f"{dur:.3f}", "-i", seg_src, "-vf", vf,
                         "-c:v", "libx264", "-preset", "veryfast", "-crf", "16", "-pix_fmt", "yuv420p", "-c:a", "aac", "-b:a", "192k", "-ar", "48000", out], check=True)
         clip = {"file": f"{sid}/clips/c{k:02d}.mp4", "label": s.get("label", ""), "at": round(at, 3), "dur": round(dur, 3), "speed": 1.0,
