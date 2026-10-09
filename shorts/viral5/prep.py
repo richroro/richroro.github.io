@@ -161,6 +161,7 @@ def prep(sid):
         "sfx": sorted([{"t": round(at(a), 3), "name": n, "gain": g} for a, n, g in edit.get("sfx", [])], key=lambda s: s["t"]),
         "music": edit.get("music"), "flashes": [round(at(a), 3) for a in edit.get("flashes", [])], "punches": [round(at(a), 3) for a in edit.get("punches", [])],
     }
+    if edit.get("captionY"): data["captionY"] = edit["captionY"]  # e.g. lower the captions when the action sits at the bottom of the frame
     os.makedirs(f"{HERE}/src/data", exist_ok=True)
     json.dump(data, open(f"{HERE}/src/data/{sid}.json", "w"), ensure_ascii=False)
     real = sum(1 for c in clips if c["file"])
