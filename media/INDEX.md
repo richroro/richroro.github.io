@@ -79,6 +79,21 @@ US Senate committee hearings cut from the Senate's own streaming archive (www-se
 - `us6_booker_patel.mp4` (81 s): Booker ↔ FBI Director Patel, "You can say whatever lies you want", Judiciary, 9/15
 UK Parliament footage was not cut: its licence bans satire and entertainment use, and commercial use needs a separate licence.
 
+## NASA Artemis II — `nasa/` (US government work; NASA media guidelines)
+From images.nasa.gov ~orig/~large masters (4K sources downscaled to 1080p):
+- `artemis2_launch_slowmo.mp4` (75 s): slow-motion launch, `artemis2_liftoff_orion_cam.mp4` (54 s): Orion camera at liftoff
+- `artemis2_flyby_moon.mp4` and `artemis2_flyby_crescent.mp4` (90 s each): lunar flyby, Flight Day 6
+- `artemis2_earth_before_reentry.mp4` (75 s) and `artemis2_parachutes.mp4` (90 s): Orion window views on return
+- `artemis2_mission_recap.mp4` (3:32): official recap. Narrated, so check its music credit.
+
+## Old films — `oldfilm/` (public domain in the US and Korea; delivered SILENT)
+Iconic scenes. Korean status rests on Art. 42 (films are protected 70 years from publication); see research/public_domain_old_2026-10.md. The archive copies' added soundtracks were stripped.
+- `trip_to_the_moon_1902_rocket_in_eye.mp4` (70 s), `great_train_robbery_1903_final_shot.mp4` (45 s, 1080p LOC scan), `nosferatu_1922_shadow_on_stairs.mp4` (100 s), `potemkin_1925_odessa_steps.mp4` (90 s), `phantom_of_the_opera_1925_unmasking.mp4` (82 s)
+
+## Old music — `oldmusic/` (pre-1926 recordings, Library of Congress National Jukebox)
+- `m2_stars_stripes_1903.mp3` (Sousa's Band), `m4_caruso_vesti_1904.mp3` (Caruso), `m5_over_there_1917.mp3` (Victor Military Band)
+- Failed: Musopen "In the Hall of the Mountain King" and the US Marine Band "Maple Leaf Rag" on Wikimedia Commons return a Wikimedia error page to this container.
+
 ## Research — `research/`
 - `trends_2026-10.md`: overseas chart songs (Billboard Global 200 / Hot 100, week of 2026-10-10) and high-view gaming/esports videos (Faker/T1, Worlds 2026 anthem, etc.) with source links, plus how to use them legally (Shorts sound library only; Riot fan-content policy). **No songs or game footage were downloaded:** they are copyrighted.
 - `tesla_2026-10.md`: Tesla Q3 2026 deliveries, stock, Korea sales/FSD, press-image terms, 5 footage-free short ideas.
