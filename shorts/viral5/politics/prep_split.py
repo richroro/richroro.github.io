@@ -16,6 +16,10 @@ edit.json:
              add "single": [cx, cy, zoom] (or true to detect) and "label" for a stretch that shows one person full-frame
   lines      [{"who": 0 | 1, "text": "..."}]  what was said, in order. Write only words you are sure of: a caption
              that puts words in someone's mouth is worse than no caption, so leave unclear bits out.
+             translated shorts write {"who", "ko", "en", "at", "to"} instead: "at"/"to" pin a line to source seconds
+             ("t"/"tend" to output seconds), "ko" is the caption and "en" the original under it ("" = Korean only)
+  subOrder   "en-ko" leads with the English line, Korean under it (subtitle-study layout; [bracketed] English words
+             are yellow);  captionY: the caption block's centre (default 1370)
   keys       words shown in yellow;  music, sfx (output seconds), tail
   names      short names by "who" (translated shorts): a line spoken while the camera is on someone else
              gets the speaker's name above it; the shot's person is the one whose name is in its "label"
