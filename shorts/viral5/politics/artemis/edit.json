@@ -1,0 +1,43 @@
+{
+ "src": "nasa/artemis2_flyby_moon.mp4",
+ "title": ["달을 눈앞에서 본 우주비행사", "“달은 포스터가 아니라 진짜 장소예요” 🌕"],
+ "credit": "NASA · 아르테미스 2호",
+ "panels": [],
+ "segments": [
+  {"src": "nasa/artemis2_launch_slowmo.mp4", "in": 16.5, "out": 21.0, "single": [0.54, 0.52, 1.8], "audio": 0, "label": "아르테미스 2호 발사 · 2026.4.1"},
+  {"src": "nasa/artemis2_liftoff_orion_cam.mp4", "in": 23.0, "out": 26.5, "rotate": 90, "single": [0.5, 0.55, 1.0], "audio": 0, "label": "우주선에 단 카메라로 본 발사"},
+  {"src": "nasa/artemis2_flyby_moon.mp4", "in": 6.3, "out": 27.8, "single": [0.74, 0.37, 1.3], "push": [1.0, 1.15], "audio": 0, "label": "🎙 크리스티나 코크 · NASA 우주비행사"},
+  {"src": "nasa/artemis2_flyby_crescent.mp4", "in": 30.0, "out": 36.4, "single": [0.8, 0.45, 1.5], "audio": 0, "label": "🎙 크리스티나 코크 · NASA 우주비행사"},
+  {"src": "nasa/artemis2_earth_before_reentry.mp4", "in": 20.0, "out": 34.2, "single": [0.62, 0.5, 1.1], "audio": 0, "label": "🎙 크리스티나 코크 · NASA 우주비행사"},
+  {"src": "nasa/artemis2_parachutes.mp4", "in": 8.0, "out": 14.5, "single": [0.5, 0.45, 1.0], "audio": 0.25, "label": "지구 귀환 · 2026.4.10"}
+ ],
+ "lines": [
+  {"who": 0, "t": 0.15, "tend": 4.4, "ko": "사람 4명을 태운 로켓이 달로 🚀", "en": ""},
+  {"who": 0, "t": 4.5, "tend": 7.9, "ko": "1972년 아폴로 17호 이후 처음 달에 가는 사람들", "en": ""},
+  {"who": 0, "t": 8.05, "tend": 12.2, "ko": "달을 보는데 갑자기 벅찬 감동이 밀려왔어요.", "en": "I just had an overwhelming sense of being moved by looking at the moon."},
+  {"who": 0, "t": 12.45, "tend": 17.15, "ko": "1~2초뿐이었고, 다시 느껴 보려 해도 안 되더라고요.", "en": "It lasted just a second or two and I actually couldn't even make it happen again."},
+  {"who": 0, "t": 17.75, "tend": 23.75, "ko": "그런데 갑자기 달 풍경에 빨려 들어가면서 실감이 났어요.", "en": "But something just drew me in suddenly to the lunar landscape and it became real,"},
+  {"who": 0, "t": 23.8, "tend": 29.35, "ko": "달은 정말 우주에 따로 존재하는 하나의 천체예요.", "en": "and the truth is, the moon really is its own celestial body in the universe."},
+  {"who": 0, "t": 29.7, "tend": 35.6, "ko": "하늘에 걸린 포스터가 아니라, 진짜 ‘장소’예요.", "en": "It's not just a poster in the sky that goes by. It is a real place."},
+  {"who": 0, "t": 36.35, "tend": 40.9, "ko": "그렇게 보고 나서 우리의 집, 지구와 비교해 보면", "en": "And when we have that perspective and we can compare it to our home of the Earth,"},
+  {"who": 0, "t": 40.95, "tend": 44.3, "ko": "우리가 얼마나 많은 걸 함께 누리는지 새삼 느껴요.", "en": "it just reminds us how much we have in common."},
+  {"who": 0, "t": 44.35, "tend": 46.3, "ko": "필요한 건 전부 지구가 주잖아요.", "en": "Everything we need, the Earth provides,"},
+  {"who": 0, "t": 46.4, "tend": 50.05, "ko": "그것 자체가 어찌 보면 기적이에요.", "en": "and that in and of itself is somewhat of a miracle."},
+  {"who": 0, "t": 50.25, "tend": 53.5, "ko": "4월 10일, 낙하산 3개를 펴고 무사히 귀환 🪂", "en": ""},
+  {"who": 0, "t": 53.6, "tend": 56.6, "ko": "사람이 가장 멀리 다녀온 기록도 새로 썼어요", "en": ""}
+ ],
+ "stickers": [
+  {"text": "비행 6일째, 달 근접 비행 날", "from": 8.2, "to": 11.6, "x": 540, "y": 560, "rot": -2, "bg": "#FFFFFF", "fg": "#111", "size": 36},
+  {"text": "지구 귀환 직전 창밖", "from": 36.1, "to": 39.6, "x": 540, "y": 560, "rot": 2, "bg": "#FFFFFF", "fg": "#111", "size": 36}
+ ],
+ "keys": ["달로", "1972년", "감동이", "포스터가", "‘장소’예요.", "지구가", "기적이에요.", "무사히", "기록도"],
+ "music": [
+  {"src": "public/music/Lightless Dawn.mp3", "from": 164.0, "at": 0.0, "to": 8.6, "fade": 1.0, "gain": 1.7},
+  {"src": "public/music/Lightless Dawn.mp3", "from": 171.6, "at": 7.6, "to": 50.6, "fade": 1.0, "gain": 0.35},
+  {"src": "public/music/Lightless Dawn.mp3", "from": 213.6, "at": 49.6, "to": 57.1, "fade": 1.2, "gain": 1.5},
+  {"src": "nasa/artemis2_flyby_moon.mp4", "from": 6.3, "at": 8.0, "to": 50.1, "fade": 0.15, "gain": 1.0}
+ ],
+ "musicGain": 1.0,
+ "duck": false,
+ "tail": 0.5
+}

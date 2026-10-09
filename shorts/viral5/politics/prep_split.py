@@ -17,6 +17,12 @@ edit.json:
   lines      [{"who": 0 | 1, "text": "..."}]  what was said, in order. Write only words you are sure of: a caption
              that puts words in someone's mouth is worse than no caption, so leave unclear bits out.
   keys       words shown in yellow;  music, sfx (output seconds), tail
+  names      short names by "who" (translated shorts): a line spoken while the camera is on someone else
+             gets the speaker's name above it; the shot's person is the one whose name is in its "label"
+  music      [{"src", "from", "at", "to", "fade", "gain"}]: a bed built from tracks in $MEDIA (or public/...), each
+             placed from output second "at" to "to", starting "from" seconds into its file; a part can also be a
+             voice taken from a clip, to run under other pictures;  musicGain;  duck: false keeps the bed level
+  segments   also take "src" (another clip), "audio" (its level, 0 = muted), "rotate" (90/-90/180), "push" ([z0, z1])
 """
 import difflib, json, os, re, subprocess, sys
 import numpy as np
@@ -152,18 +158,23 @@ def main(sid):
     clips, at, starts = [], 0.0, []
     for k, s in enumerate(ed["segments"]):
         dur = s["out"] - s["in"]; out = f"{pub}/clips/c{k:02d}.mp4"
-        subprocess.run(["ffmpeg", "-v", "error", "-y", "-ss", str(s["in"]), "-t", f"{dur:.3f}", "-i", src, "-vf", "fps=30",
+        seg_src = f"{MEDIA}/{s['src']}" if s.get("src") else src  # a segment may come from another clip of the same hearing
+        vf = "fps=30" + {90: ",transpose=1", -90: ",transpose=2", 180: ",hflip,vflip"}.get(s.get("rotate", 0), "")  # e.g. a camera mounted sideways
+        subprocess.run(["ffmpeg", "-v", "error", "-y", "-ss", str(s["in"]), "-t", f"{dur:.3f}", "-i", seg_src, "-vf", vf,
                         "-c:v", "libx264", "-preset", "veryfast", "-crf", "16", "-pix_fmt", "yuv420p", "-c:a", "aac", "-b:a", "192k", "-ar", "48000", out], check=True)
         clip = {"file": f"{sid}/clips/c{k:02d}.mp4", "label": s.get("label", ""), "at": round(at, 3), "dur": round(dur, 3), "speed": 1.0,
-                "frame": "square", "zoom": [1.0, 1.04], "focus": "50% 50%", "audio": 1.0}
+                "frame": "square", "zoom": s.get("push", [1.0, 1.04]), "focus": "50% 50%", "audio": s.get("audio", 1.0)}
         if s.get("single"):  # this stretch is a one-person shot, not the two-shot: one face-centred crop, labelled
             given = isinstance(s["single"], list)
-            f = s["single"] if given else (face_in(src, [(s["in"], s["out"])], 0.0, 1.0) or [0.5, 0.4, 0.2])
-            clip["crop"] = {"cx": round(f[0], 3), "cy": round(f[1], 3), "zoom": f[2] if given else 1.3, "w": W, "h": H}
+            f = s["single"] if given else (face_in(seg_src, [(s["in"], s["out"])], 0.0, 1.0) or [0.5, 0.4, 0.2])
+            sw, sh = probe(seg_src) if s.get("src") else (W, H)
+            if s.get("rotate") in (90, -90): sw, sh = sh, sw
+            clip["crop"] = {"cx": round(f[0], 3), "cy": round(f[1], 3), "zoom": f[2] if given else 1.3, "w": sw, "h": sh}
         clips.append(clip)
         starts.append(at); at += dur
-    def out_t(t):
+    def out_t(t, src_name=None):
         for s, a in zip(ed["segments"], starts):
+            if src_name is not None and s.get("src", ed["src"]) != src_name: continue
             if s["in"] - 0.3 <= t <= s["out"] + 0.3: return a + t - s["in"]
         return None
 
@@ -178,53 +189,97 @@ def main(sid):
         panels.append({"name": p["name"], "role": p.get("role", ""), "cx": round(f[0], 4), "cy": round(f[1] + 0.05 * PANEL_H / dh, 4),
                        "zoom": round(zoom, 3), "x0": x0, "x1": x1})
 
-    # captions: the written lines, timed on the recognizer's words (moved onto the output timeline)
-    rec, engine = recognized_words(sid)
-    rec_out = []
-    for r in rec:
-        a, b = out_t(r["t0"]), out_t(r["t1"])
-        if a is not None: rec_out.append({"w": r["w"], "t0": a, "t1": b if b is not None else a + 0.3})
-    times, words, nsyl = align(ed["lines"], rec_out, out_t)
     keys = ed.get("keys", [])
+    names = ed.get("names") or []
+    seg_who = [next((i for i, n in enumerate(names) if n in s.get("label", "")), None) for s in ed["segments"]]
+    def off_screen(who, t0, t1):
+        """is someone else on camera for the first half second of this line, or for most of it?"""
+        def on(t):
+            k = next((k for k, a in enumerate(starts) if a <= t < a + ed["segments"][k]["out"] - ed["segments"][k]["in"]), None)
+            return seg_who[k] if k is not None else None
+        other = [on(t) not in (None, who) for t in np.arange(t0, max(t1, t0 + 0.1), 0.1)]
+        lead = next((i for i, o in enumerate(other) if not o), len(other))
+        return lead >= 5 or sum(other) > len(other) / 2
     pages, speakers = [], []
-    for li, L in enumerate(ed["lines"]):
-        cur = []
-        for wi, w in enumerate(words[li]):
-            n = len(SYL.findall(w))
-            if cur and (len(cur) >= 4 or sum(len(SYL.findall(c["text"])) for c in cur) + n > 11):
-                pages.append(cur); cur = []
-            cur.append({"text": w, "key": any(kw in w for kw in keys), "fromMs": max(30, round(times[(li, wi)] * 1000)), "n": n})
-            if w[-1] in ".?!,": pages.append(cur); cur = []
-        if cur: pages.append(cur)
-        t0 = times[(li, 0)]; last = len(words[li]) - 1
-        t1 = times[(li, last)] + 0.17 * nsyl[sum(len(x) for x in words[:li]) + last] + 0.25
-        if speakers and speakers[-1]["who"] == L["who"] and t0 - speakers[-1]["to"] < 0.8: speakers[-1]["to"] = round(t1, 3)
-        else: speakers.append({"from": round(t0 - 0.1, 3), "to": round(t1, 3), "who": L["who"]})
-    out_pages = []
-    for i, toks in enumerate(pages):
-        nxt = pages[i + 1][0]["fromMs"] if i + 1 < len(pages) else round(at * 1000)
-        end = min(nxt, toks[-1]["fromMs"] + 170 * toks[-1]["n"] + 700)
-        for j, tk in enumerate(toks):
-            tk["toMs"] = toks[j + 1]["fromMs"] if j + 1 < len(toks) else end
-        out_pages.append({"startMs": toks[0]["fromMs"], "endMs": end, "tokens": [{k: v for k, v in tk.items() if k != "n"} for tk in toks]})
-
+    if all("ko" in L for L in ed["lines"]):
+        # translation: each line is one page, timed by its "at" (source s) until the next line or its own "to";
+        # no per-word highlight, because Korean word order doesn't follow the English speech
+        # a line is placed by "at"/"to" on its clip's own timeline, or by "t"/"tend" in output seconds (a voice that
+        # runs on under other pictures)
+        start = lambda L: L["t"] if "t" in L else out_t(L["at"], L.get("src", ed["src"]))
+        for li, L in enumerate(ed["lines"]):
+            t0 = start(L)
+            nl = ed["lines"][li + 1] if li + 1 < len(ed["lines"]) else None
+            nxt = start(nl) if nl else None
+            t1 = L["tend"] if "tend" in L else out_t(L["to"], L.get("src", ed["src"])) if L.get("to") is not None else (nxt if nxt is not None else at)
+            toks = [{"text": w, "key": any(kw in w for kw in keys), "fromMs": round(t0 * 1000), "n": 0} for w in L["ko"].split()]
+            for tk in toks: tk["toMs"] = tk["fromMs"]
+            page = {"startMs": round(t0 * 1000), "endMs": round(min(t1, nxt if nxt is not None else 1e9) * 1000), "tokens": toks, "en": L.get("en", "")}
+            if names and off_screen(L["who"], t0, page["endMs"] / 1000): page["who"] = names[L["who"]]
+            pages.append(page)
+            if speakers and speakers[-1]["who"] == L["who"] and t0 - speakers[-1]["to"] < 0.8: speakers[-1]["to"] = round(t1, 3)
+            else: speakers.append({"from": round(t0 - 0.1, 3), "to": round(t1, 3), "who": L["who"]})
+        engine = "translation (line times)"
+    else:
+        # captions: the written lines, timed on the recognizer's words (moved onto the output timeline)
+        rec, engine = recognized_words(sid)
+        rec_out = []
+        for r in rec:
+            a_, b_ = out_t(r["t0"]), out_t(r["t1"])
+            if a_ is not None: rec_out.append({"w": r["w"], "t0": a_, "t1": b_ if b_ is not None else a_ + 0.3})
+        times, words, nsyl = align(ed["lines"], rec_out, out_t)
+        tok_pages = []
+        for li, L in enumerate(ed["lines"]):
+            cur = []
+            for wi, w in enumerate(words[li]):
+                n = len(SYL.findall(w))
+                if cur and (len(cur) >= 4 or sum(len(SYL.findall(c["text"])) for c in cur) + n > 11):
+                    tok_pages.append(cur); cur = []
+                cur.append({"text": w, "key": any(kw in w for kw in keys), "fromMs": max(30, round(times[(li, wi)] * 1000)), "n": n})
+                if w[-1] in ".?!,": tok_pages.append(cur); cur = []
+            if cur: tok_pages.append(cur)
+            t0 = times[(li, 0)]; last = len(words[li]) - 1
+            t1 = times[(li, last)] + 0.17 * nsyl[sum(len(x) for x in words[:li]) + last] + 0.25
+            if speakers and speakers[-1]["who"] == L["who"] and t0 - speakers[-1]["to"] < 0.8: speakers[-1]["to"] = round(t1, 3)
+            else: speakers.append({"from": round(t0 - 0.1, 3), "to": round(t1, 3), "who": L["who"]})
+        for i, toks in enumerate(tok_pages):
+            nxt = tok_pages[i + 1][0]["fromMs"] if i + 1 < len(tok_pages) else round(at * 1000)
+            end = min(nxt, toks[-1]["fromMs"] + 170 * toks[-1]["n"] + 700)
+            for j, tk in enumerate(toks):
+                tk["toMs"] = toks[j + 1]["fromMs"] if j + 1 < len(toks) else end
+            pages.append({"startMs": toks[0]["fromMs"], "endMs": end, "tokens": toks})
+    out_pages = [{**{k: v for k, v in p.items() if k != "tokens"}, "tokens": [{k: v for k, v in tk.items() if k != "n"} for tk in p["tokens"]]} for p in pages]
     tail = ed.get("tail", 0.6); end = round(at + tail, 3)
     env = np.zeros(int(np.ceil(end * FPS)) + 1)  # speech level per frame, for ducking any music under the hearing audio
-    for sp in speakers: env[int(sp["from"] * FPS):int(sp["to"] * FPS)] = 1.0
+    if ed.get("duck", True):
+        for sp in speakers: env[int(sp["from"] * FPS):int(sp["to"] * FPS)] = 1.0
+    music = None
+    if ed.get("music"):  # one bed file out of the listed parts, so the template plays a single track
+        ins, chains = [], []
+        for k, m in enumerate(ed["music"]):
+            dur, fd = m["to"] - m["at"], m.get("fade", 0.8)
+            ins += ["-i", f"{V}/{m['src']}" if m["src"].startswith("public/") else f"{MEDIA}/{m['src']}"]
+            chains.append(f"[{k}:a]atrim={m.get('from', 0)}:{m.get('from', 0) + dur},asetpts=PTS-STARTPTS,aformat=sample_rates=48000:channel_layouts=stereo,volume={m.get('gain', 1.0)},"
+                          f"afade=t=in:d={min(fd, 0.3) if m['at'] == 0 else fd},afade=t=out:st={dur - fd:.3f}:d={fd},adelay={int(m['at'] * 1000)}:all=1[m{k}]")
+        mix = "".join(f"[m{k}]" for k in range(len(ed["music"]))) + f"amix=inputs={len(ed['music'])}:normalize=0[out]"
+        subprocess.run(["ffmpeg", "-v", "error", "-y", *ins, "-filter_complex", ";".join(chains + [mix]), "-map", "[out]", "-c:a", "aac", "-b:a", "192k",
+                        f"{pub}/music.m4a"], check=True)
+        music = {"file": f"{sid}/music.m4a", "gain": ed.get("musicGain", 0.9), "start": 0}
     stickers = []
     if ed.get("context"):
         stickers.append({"text": ed["context"], "from": 0.15, "to": min(3.2, at - 0.2), "x": 540, "y": 1236, "rot": -2, "bg": "#FFFFFF", "fg": "#111", "size": 40})
     data = {"id": sid, "end": end, "title": ed["title"], "credit": ed.get("credit", "출처: 국회 영상회의록"), "lines": [], "origVoice": True,
             "pages": out_pages, "env": [round(float(v), 3) for v in env], "clips": clips, "moments": [],
             "stickers": stickers + ed.get("stickers", []), "sfx": [{"t": a, "name": n, "gain": g} for a, n, g in ed.get("sfx", [])],
-            "music": ed.get("music"), "flashes": [round(a, 3) for k, a in enumerate(starts) if k and abs(ed["segments"][k]["in"] - ed["segments"][k - 1]["out"]) > 0.05], "punches": [],
+            "music": music, "flashes": [round(a, 3) for k, a in enumerate(starts) if k and (abs(ed["segments"][k]["in"] - ed["segments"][k - 1]["out"]) > 0.05
+                                                                       or ed["segments"][k].get("src") != ed["segments"][k - 1].get("src"))], "punches": [],
             "split": {"w": W, "h": H, "panels": panels}, "speakers": speakers, "captionY": ed.get("captionY", 1370)}
     os.makedirs(f"{V}/src/data", exist_ok=True)
     json.dump(data, open(f"{V}/src/data/{sid}.json", "w"), ensure_ascii=False)
     print(f"prep {sid}: {len(clips)} segments, {at:.1f}s + {tail}s tail, {len(out_pages)} caption pages timed on {engine}")
     for p in panels: print(f"  panel {p['name']}: face ({p['cx']:.3f}, {p['cy']:.3f}) zoom {p['zoom']}")
     for p in out_pages:
-        print(f"  {p['startMs'] / 1000:6.2f}–{p['endMs'] / 1000:6.2f}  " + " ".join(t["text"] for t in p["tokens"]))
+        print(f"  {p['startMs'] / 1000:6.2f}–{p['endMs'] / 1000:6.2f}  " + (f"[{p['who']}] " if p.get("who") else "") + " ".join(t["text"] for t in p["tokens"]))
 
 main(sys.argv[1])
 ids = sorted(f[:-5] for f in os.listdir(f"{V}/src/data") if f.endswith(".json"))

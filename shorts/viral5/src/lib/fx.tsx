@@ -40,7 +40,7 @@ export const Sticker: React.FC<{ t: number; t0: number; t1: number; x: number; y
   return (
     <div style={{ position: "absolute", left: x, top: y, transform: `translate(-50%,-50%) rotate(${a.r}deg) scale(${a.s})`, opacity: a.o,
       fontFamily: BODY, fontWeight: 900, fontSize: size, color: fg, background: bg, border: `${6 * k}px solid #111`, borderRadius: 22 * k,
-      padding: `${14 * k}px ${26 * k}px ${12 * k}px`, boxShadow: `${9 * k}px ${9 * k}px 0 #111`, whiteSpace: "nowrap" }}>
+      padding: `${14 * k}px ${26 * k}px ${12 * k}px`, boxShadow: `${9 * k}px ${9 * k}px 0 #111`, whiteSpace: "pre", textAlign: "center", lineHeight: 1.3 }}>
       {children}
     </div>
   );

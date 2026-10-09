@@ -7,7 +7,7 @@ import { AbsoluteFill, Sequence, interpolate, spring, useCurrentFrame, useVideoC
 import { BODY } from "./fonts";
 
 export type Token = { text: string; key: boolean; fromMs: number; toMs: number };
-export type CapPage = { startMs: number; endMs: number; tokens: Token[] };
+export type CapPage = { startMs: number; endMs: number; tokens: Token[]; en?: string; who?: string };
 
 const DESIRED_FONT_SIZE = 100;
 const HIGHLIGHT_COLOR = "#39E508"; // the template's highlight
@@ -41,6 +41,12 @@ const Page: React.FC<{ page: CapPage; centerY: number }> = ({ page, centerY }) =
   const enter = spring({ frame, fps, config: { damping: 200 }, durationInFrames: 5 });
   const text = page.tokens.map((t) => t.text).join("  ");
   const { fontSize } = fitText({ text, withinWidth: width * 0.86, fontFamily: BODY, fontWeight: "900" });
+  // line pages (translations, written captions): a long line wraps onto two lines at a readable size instead of
+  // shrinking to fit one; without an English line under it the text can be bigger
+  const tr = page.en !== undefined;
+  const size = !tr ? Math.min(DESIRED_FONT_SIZE, fontSize) : page.en ? (fontSize >= 60 ? Math.min(84, fontSize) : 64) : fontSize >= 72 ? Math.min(96, fontSize) : 72;
+  const enFit = page.en ? fitText({ text: page.en, withinWidth: width * 0.9, fontFamily: BODY, fontWeight: "700" }).fontSize : 0;
+  const enSize = enFit >= 30 ? Math.min(38, enFit) : 30;
 
   return (
     <AbsoluteFill style={{ top: centerY - 110, height: 220, justifyContent: "center", alignItems: "center" }}>
@@ -48,8 +54,9 @@ const Page: React.FC<{ page: CapPage; centerY: number }> = ({ page, centerY }) =
         style={{
           fontFamily: BODY,
           fontWeight: 900,
-          fontSize: Math.min(DESIRED_FONT_SIZE, fontSize),
+          fontSize: size,
           lineHeight: 1.15,
+          maxWidth: width * 0.92,
           letterSpacing: -1,
           color: "white",
           WebkitTextStroke: "18px black",
@@ -62,11 +69,24 @@ const Page: React.FC<{ page: CapPage; centerY: number }> = ({ page, centerY }) =
           ]),
         }}
       >
+        {page.who ? (
+          // whose voice this is, when the camera is on the other person
+          <div style={{ display: "flex", justifyContent: "center", marginBottom: 12 }}>
+            <div style={{ fontSize: 34, fontWeight: 800, letterSpacing: 0, lineHeight: 1.25, padding: "3px 16px", borderRadius: 10, background: "rgba(0,0,0,.78)", color: KEY_COLOR, WebkitTextStroke: 0 }}>
+              🎙 {page.who}
+            </div>
+          </div>
+        ) : null}
         {page.tokens.map((t, i) => {
           const active = t.fromMs <= timeMs && t.toMs > timeMs;
           const pop = active ? Math.sin(Math.PI * Math.min(1, (timeMs - t.fromMs) / 180)) : 0;
           return <Word key={i} token={t} active={active} pop={pop} />;
         })}
+        {page.en ? (
+          <div style={{ fontSize: enSize, fontWeight: 700, letterSpacing: 0, lineHeight: 1.2, marginTop: 10, color: "rgba(255,255,255,.88)", WebkitTextStroke: "7px black" }}>
+            {page.en}
+          </div>
+        ) : null}
       </div>
     </AbsoluteFill>
   );
