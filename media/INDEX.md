@@ -61,10 +61,22 @@ Extra non-video files: `politics/{1,2,3}.vtt` + `.txt` (transcripts, see below),
   - `tube_launch_altius.mp4`: **not a dropsonde.** An Altius drone ejected from the P-3's sonde launch tube, seen by a belly camera. It is the closest thing to a dropsonde release that NOAA/NASA sites host; no real dropsonde video was found. The footage is courtesy of Area-I (a contractor), so check rights before monetizing.
 - From space: `eye_iss_beryl.mp4`, `eye_iss_dorian.mp4` (NASA ISS camera). `eye_goes_melissa_wide.mp4` / `eye_goes_melissa_zoom.mp4` are 1-minute GOES-19 visible loops of Cat 5 Melissa's eye on 2025-10-28, rendered here from NOAA's raw open data.
 
+## Overseas hearings — `overseas/`
+US Senate committee hearings cut from the Senate's own streaming archive (www-senate-gov-media-srs.akamaized.net, the source behind senate.gov/isvp), 720p, the Senate Recording Studio feed, public domain (17 U.S.C. §105). Senate rules bar political or campaign use. Every clip has a `.json` sidecar (page, HLS URL, in/out seconds, speakers) and an `.en.txt` machine transcript. Picked from `research/overseas_hearings_2026-10.md`.
+- `us1_warren_greer_tariffs.mp4` (95 s): Warren ↔ USTR Greer, "Have tariffs increased prices?", Senate Finance, 7/22
+- `us2_hawley_altman_noshow.mp4` (45 s): Hawley says Sam Altman refused to testify, "Rogue AI" hearing, 9/30
+- `us3_ai_agents_broke_out.mp4` (100 s): 1,200 OpenAI agents "broke out" of their test environment, same hearing
+- `us4_schmitt_smith_hawks.mp4` (110 s): Schmitt ↔ Jack Smith, "Atlanta Hawks game?", Judiciary, 9/29
+- `us5_peters_hegseth_failure.mp4` (102 s): Peters ↔ Hegseth, "You, sir, are the failure", Appropriations, 7/21
+- `us6_booker_patel.mp4` (81 s): Booker ↔ FBI Director Patel, "You can say whatever lies you want", Judiciary, 9/15
+UK Parliament footage was not cut: its licence bans satire and entertainment use, and commercial use needs a separate licence.
+
 ## Research — `research/`
 - `trends_2026-10.md`: overseas chart songs (Billboard Global 200 / Hot 100, week of 2026-10-10) and high-view gaming/esports videos (Faker/T1, Worlds 2026 anthem, etc.) with source links, plus how to use them legally (Shorts sound library only; Riot fan-content policy). **No songs or game footage were downloaded:** they are copyrighted.
 - `tesla_2026-10.md`: Tesla Q3 2026 deliveries, stock, Korea sales/FSD, press-image terms, 5 footage-free short ideas.
 - `japan_2026-10.md`: what's trending in Japan (Billboard Japan, fall anime, memes, VTubers, TGS, travel stats), what works for Korean viewers, Japanese copyright/JASRAC and PDL open-data terms, 5 footage-free short ideas.
+- `overseas_hearings_2026-10.md`: 12 viral US/UK hearing exchanges, Jul–Oct 2026, with official video pages and licence rules.
+- `heartwarming_2026-10.md`: viral heartwarming stories of ordinary people overseas, who owns the clips, portrait rights, licensing agencies, and public-domain Coast Guard footage.
 - `sports_2026-10.md`: overseas football (Messi, Son, Ronaldo, World Cup 2026, Premier League) and NBA (LeBron to 76ers, Wembanyama, opening night 10/20) moments with sources; league copyright terms; 5 footage-free short ideas.
 
 ## Narration — `voice/<id>/`
