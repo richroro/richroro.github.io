@@ -36,6 +36,13 @@ Extra non-video files: `politics/{1,2,3}.vtt` + `.txt` (transcripts, see below),
   2. `2.mp4` 주진우(국민의힘) ↔ 노경필 처장, 법사위 10/6: "대통령이 특정인 고집하며 제청하라 협박하면 헌법상 허용되나?" (AUiDYKuuZGw, 7,073 views), 67 s
   3. `3.mp4` 임종득(국민의힘) ↔ 강신철 국방부 장관, 국방위 국방부 국감 10/7: "북한 지뢰 설치, 이거 도발 아닙니까?" (KFI11mcD8_w, 6,135 views), 93 s
 - **Footage is NOT from YouTube.** YouTube bot-blocked this container, so per the orchestrator the same exchanges were cut from the National Assembly's own VOD (국회 영상회의록시스템, w3.assembly.go.kr → HLS on m.webcast.go.kr, 1280x720). Each `.json` has the player page, the HLS URL, the speaker-index entry and the in/out seconds on the session file. The clip was matched to the speaker index by member, order and length, and the window was placed by finding the YouTube title's quote in the official audio.
+- **More exchanges (added later, same method; next five NATV clips by views):**
+  4. `4.mp4` 김태규(국민의힘) ↔ 노경필 처장, 법사위 10/6: "법을 아는 건 법원, 국회의 법률적 평가에 흔들리지 마시길" (NT4Xrc5Yu8c, ~5.8k), 77 s
+  5. `5.mp4` 박지원(민주) ↔ 조희대 대법원장, 법사위 10/6: "조희대, 다음 대통령 하려고 하는 거 아니냐?" (UIU22a2VcNQ, ~5.6k), 75 s
+  6. `6.mp4` 김병주(민주) ↔ 강신철 국방장관, 국방위 10/7: "내란 직전 박쥐드론… 북한 도발 가장한 계엄 작전?" (ssSIt610qQg, ~4.9k), 90 s, with official subtitles
+  7. `7.mp4` 김의겸(민주) ↔ 노경필 처장, 법사위 10/6: "대법원장, '제청권'을 신성불가침처럼 여겨" (Upx-vN56U00, ~4.9k), 94 s
+  8. `8.mp4` 곽규택(국민의힘) ↔ 노경필 처장, 법사위 10/6: "30년 동안 사법부 독립이 이렇게 흔들린 적 있었나?" (k1ho34TQu0o, ~4.8k), 83 s
+  Party balance across 1–8: 민주 5, 국민의힘 3 (by views, not by choice).
 - Heatmaps: YouTube has none for these clips yet (too new / too few views), so no most-replayed data exists. The windows were chosen from the title quote instead.
 - Transcripts: `3.vtt/3.txt` = official NA subtitles (국방위 session has them). `1.*`, `2.*` = machine transcript (faster-whisper small, uncorrected; e.g. "사법부동립" = 사법부 독립, "개청" = 제청). The 법사위 session has no subtitles and no 회의록 published yet.
 - Picture: the official feed carries a "대한민국 국회" bug and name captions. The 국방위 feed also has a sign-language interpreter inset (bottom right).
@@ -52,6 +59,9 @@ Extra non-video files: `politics/{1,2,3}.vtt` + `.txt` (transcripts, see below),
   - `p3.mp4` (Miss Piggy takeoff) and `p3_kermit_takeoff.mp4`: exterior shots of the P-3s.
   - `tube_launch_altius.mp4`: **not a dropsonde.** An Altius drone ejected from the P-3's sonde launch tube, seen by a belly camera. It is the closest thing to a dropsonde release that NOAA/NASA sites host; no real dropsonde video was found. The footage is courtesy of Area-I (a contractor), so check rights before monetizing.
 - From space: `eye_iss_beryl.mp4`, `eye_iss_dorian.mp4` (NASA ISS camera). `eye_goes_melissa_wide.mp4` / `eye_goes_melissa_zoom.mp4` are 1-minute GOES-19 visible loops of Cat 5 Melissa's eye on 2025-10-28, rendered here from NOAA's raw open data.
+
+## Research — `research/`
+- `trends_2026-10.md`: overseas chart songs (Billboard Global 200 / Hot 100, week of 2026-10-10) and high-view gaming/esports videos (Faker/T1, Worlds 2026 anthem, etc.) with source links, plus how to use them legally (Shorts sound library only; Riot fan-content policy). **No songs or game footage were downloaded:** they are copyrighted.
 
 ## Narration — `voice/<id>/`
 `python3 shorts/viral5/voice_edge.py <id>` ran fine for mars, deepsea, hurricane, lava, hairwash (Edge TTS ko-KR-SunHiNeural via speech.platform.bing.com). Each folder is a copy of `shorts/viral5/build/<id>/` (`timeline.json`, `voice/*.wav`), 10.5 MB total.
