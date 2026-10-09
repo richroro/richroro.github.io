@@ -971,3 +971,81 @@ MEDIA=<저장소>/media python3 politics/prep_split.py lindbergh1    # 원본: m
 > 음악: "Floating Cities" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
 > #린드버그 #대서양횡단 #도전 #포기하지마 #동기부여 #옛날영상 #역사 #영어공부 #shorts
 
+
+## 축구 텍스트 뉴스 카드 쇼츠 (`fbcard1`, `fbcard2`)
+
+2026년 10월 6일 우즈베키스탄전(용인 미르스타디움, 2-0 승) 뒤 48시간 동안 가장 크게 다뤄진 대표팀 소식 두 개를 텍스트 뉴스 카드로 정리했다.
+화면은 모두 우리 그래픽(`gfx` text·counter·vs·bars)이다. 선수 사진, 중계, 협회 영상은 쓰지 않았다.
+내레이션은 Edge TTS `ko-KR-InJoonNeural` +20%이고, 음악은 `music/hustle.mp3`를 낮게(0.14) 깔았다.
+
+| id | 길이 | 내용 |
+|---|---|---|
+| `fbcard1` | 32.8초 | 96년생 김민재·황인범·황희찬의 '대표팀 은퇴 소동'을 보도 내용 그대로 4줄로 정리한다. 협회 면담, 황인범의 부인, 손흥민 쪽 입장(별도 입장 없음)도 넣었다. 끝은 "11월 소집에서 셋을 다시 볼 수 있을까?" |
+| `fbcard2` | 31.2초 | 손흥민 A매치 59호 골로 47년 9개월 만에 남자 최다골 1위가 바뀐 경기를 정리한다. 반전으로 남녀 통틀어 1위는 지소연(76골)임을 보여 준다. 끝은 "이 기록, 누가 깰 수 있을까?" |
+
+### 출처 (모든 수치·사실은 2개 이상 매체에서 확인)
+
+`fbcard1`
+- SBS 「손흥민 역사 쓴 밤 '은퇴 소동'…"갈등 터졌다" 무슨 일이」, 2026-10-07 21:23 (수정 10-08 01:44) — https://news.sbs.co.kr/news/endPage.do?news_id=N1008787802
+  — 세 선수 동반 은퇴 검토설, 현영민 전력강화위원장의 자정 넘은 면담 뒤 일단락, 리더십 변화 요구, 황인범 "11월 선발은 감독님 결정"
+- 머니투데이 「"손흥민 리더십 불만"…김민재·황인범·황희찬, 동반 은퇴 소동」, 2026-10-08 06:36 — https://www.mt.co.kr/society/2026/10/08/2026100806175919989
+  — 같은 내용(SBS·뉴스1·뉴시스 인용), 경기 뒤 면담과 설득, 황인범 은퇴 부인, 손흥민·협회 직접 입장 없음
+- 서울신문 「손흥민 리더십에 반기 든 '96라인'… 결국 곪은 게 터졌다」, 2026-10-08 18:11 (수정 10-09 01:18) — https://www.seoul.co.kr/news/sport/soccer/2026/10/09/20261009035001
+  — 라커룸에서 동반 은퇴 시사, 자정 넘은 면담, 황인범 "아니요" 답변, 현 위원장은 대화 내용 비공개, 손흥민 직접 언급 없음
+- MHN스포츠 — https://mhnse.com/news/articleView.html?idxno=1580542 — 손흥민의 10월 7일 SNS 글은 소집 소감·감사만 담았고 이번 논란은 언급하지 않음 (화면의 "별도 입장 없음" 근거, 10월 9일 기준)
+- MBC 뉴스투데이 (아래) — 다음 A매치가 11월 2연전
+
+`fbcard2`
+- MBC 뉴스투데이 「손흥민, A매치 역대 최다 골‥우즈벡에 2대 0 승리」, 2026-10-07 06:49 — https://imnews.imbc.com/replay/2026/nwtoday/article/6856202_37012.html
+  — 전반 6분 오른발 프리킥, 151번째 A매치, 59골로 차범근 58골 넘음, 오세훈 추가골, 인용 "16년이란 순간이 제일 소중한 것 같고"(MBC 보도 그대로), 11월 2연전
+- 파이낸셜뉴스 「[속보]차붐 넘었다! 손흥민, 환상 프리킥으로 A매치 59호 골 폭발」, 2026-10-06 20:17 — https://www.fnnews.com/news/202610062016150980
+  — 전반 6분, 151경기 59골, 차범근 136경기 58골, 지소연 182경기 76골(남녀 통틀어 1위)
+- 중앙일보(미주중앙일보 게재) 「손흥민, A매치 59호골...차붐 제치고 최다골 신기록」, 2026-10-06 — https://www.koreadaily.com/article/20261006040904151
+  — 151번째 경기 59호 골, 차범근 58골, 지소연 76골(182경기)
+- 머니투데이 「"SON 상대하는 건 값진 경험" 우즈벡도 인정...」, 2026-10-07 09:04 — https://www.mt.co.kr/sports/2026/10/07/2026100707565628341
+  — 차범근 58호 골은 1978년 12월 17일 방콕 아시안게임 중국전, 47년 9개월 만의 기록 교체
+- 일간스포츠 「[IS 용인] 손흥민, 韓 축구 새 역사 썼다…환상 프리킥으로 59호골」, 2026-10-06 20:10 — https://isplus.com/article/view/isp202610060187 — 프리킥 59호 골, 차범근 58골
+- "47년 9개월"은 1978-12-17 → 2026-10-06 날짜 계산으로도 확인했다.
+
+### 그림·음악 라이선스
+- 화면 그래픽은 모두 템플릿 `gfx`로 직접 만든 것이다. 외부 영상과 사진은 쓰지 않았다(`sources` 비어 있음).
+- 음악: Kevin MacLeod "Hustle", CC BY 4.0 (incompetech.com). 효과음은 `public/sfx`의 기존 소스를 그대로 썼다.
+
+### 업로드 문구
+
+**fbcard1**
+- 제목: `대표팀 96라인 은퇴 소동, 무슨 일이었나 [30초 정리]` (32자)
+- 설명:
+  ```
+  10월 6일 우즈베키스탄전 뒤 불거진 김민재·황인범·황희찬 '대표팀 은퇴 소동'을 보도 내용 그대로 정리했습니다.
+  (2026년 10월 9일 기준. 손흥민 선수는 이번 논란에 별도 입장을 내지 않았습니다.)
+
+  출처
+  SBS https://news.sbs.co.kr/news/endPage.do?news_id=N1008787802
+  머니투데이 https://www.mt.co.kr/society/2026/10/08/2026100806175919989
+  서울신문 https://www.seoul.co.kr/news/sport/soccer/2026/10/09/20261009035001
+
+  Music: "Hustle" Kevin MacLeod (incompetech.com)
+  Licensed under Creative Commons: By Attribution 4.0 License
+  http://creativecommons.org/licenses/by/4.0/
+  ```
+- 해시태그: `#축구대표팀 #김민재 #황인범 #황희찬 #손흥민`
+
+**fbcard2**
+- 제목: `손흥민 59골, 47년 만에 바뀐 1위 [30초 정리]` (30자)
+- 설명:
+  ```
+  손흥민이 10월 6일 우즈베키스탄전 프리킥으로 A매치 59호 골을 넣어 차범근(58골)을 넘었습니다. 그런데 남녀 통틀어 1위는 따로 있습니다.
+  (2026년 10월 기준)
+
+  출처
+  MBC https://imnews.imbc.com/replay/2026/nwtoday/article/6856202_37012.html
+  파이낸셜뉴스 https://www.fnnews.com/news/202610062016150980
+  중앙일보 https://www.koreadaily.com/article/20261006040904151
+  머니투데이 https://www.mt.co.kr/sports/2026/10/07/2026100707565628341
+
+  Music: "Hustle" Kevin MacLeod (incompetech.com)
+  Licensed under Creative Commons: By Attribution 4.0 License
+  http://creativecommons.org/licenses/by/4.0/
+  ```
+- 해시태그: `#손흥민 #차범근 #지소연 #축구대표팀 #shorts`

@@ -1,0 +1,205 @@
+{
+ "credit": "SBS·머니투데이·서울신문 보도 종합",
+ "titleStyle": "band",
+ "captionY": 1640,
+ "sources": {},
+ "clips": [
+  {
+   "from": "a",
+   "label": "intro",
+   "gfx": {
+    "type": "text",
+    "lines": [
+     "10월 6일 우즈벡전 뒤",
+     "그날 밤 [은퇴 소동]"
+    ],
+    "steps": [
+     -1,
+     -1
+    ]
+   }
+  },
+  {
+   "from": "b",
+   "label": "who",
+   "gfx": {
+    "type": "text",
+    "lines": [
+     "[96년생] 3명",
+     "김민재",
+     "황인범",
+     "황희찬"
+    ],
+    "steps": [
+     "b.구십육",
+     "b.김민재",
+     "b.황인범",
+     "b.황희찬"
+    ]
+   }
+  },
+  {
+   "from": "c",
+   "label": "fact1",
+   "gfx": {
+    "type": "text",
+    "badge": "30초 정리",
+    "align": "left",
+    "lines": [
+     "① 경기 직후 라커룸",
+     "[동반 은퇴] 시사"
+    ],
+    "steps": [
+     0.05,
+     "c.동반"
+    ]
+   }
+  },
+  {
+   "from": "d",
+   "label": "fact2",
+   "gfx": {
+    "type": "text",
+    "badge": "30초 정리",
+    "align": "left",
+    "lines": [
+     "② 협회 위원장과",
+     "[자정 넘어] 면담"
+    ],
+    "steps": [
+     0.05,
+     "d.자정"
+    ]
+   }
+  },
+  {
+   "from": "e",
+   "label": "fact3",
+   "gfx": {
+    "type": "text",
+    "badge": "30초 정리",
+    "align": "left",
+    "lines": [
+     "③ 주장 손흥민",
+     "[리더십] 변화 요구",
+     "(보도 내용)"
+    ],
+    "steps": [
+     0.05,
+     "e.리더십",
+     "e.전해졌"
+    ]
+   }
+  },
+  {
+   "from": "f",
+   "label": "fact4",
+   "gfx": {
+    "type": "text",
+    "badge": "30초 정리",
+    "align": "left",
+    "lines": [
+     "④ 소동은 [일단락]",
+     "황인범 은퇴설 [부인]"
+    ],
+    "steps": [
+     0.05,
+     "f.황인범"
+    ]
+   }
+  },
+  {
+   "from": "g",
+   "label": "son",
+   "gfx": {
+    "type": "text",
+    "lines": [
+     "손흥민",
+     "이번 논란엔",
+     "[별도 입장 없음]",
+     "(10월 9일 기준)"
+    ],
+    "steps": [
+     0.05,
+     "g.이번",
+     "g.따로",
+     "g.따로"
+    ]
+   }
+  },
+  {
+   "from": "h",
+   "label": "end",
+   "gfx": {
+    "type": "text",
+    "badge": "다음 소집",
+    "lines": [
+     "[11월] A매치",
+     "셋, 다시 볼 수 있을까?"
+    ],
+    "steps": [
+     0.05,
+     "h.셋을"
+    ]
+   }
+  }
+ ],
+ "marks": [],
+ "sfx": [
+  [
+   "a.은퇴",
+   "k_error_003",
+   0.5
+  ],
+  [
+   "b.김민재",
+   "pop",
+   0.5
+  ],
+  [
+   "b.황인범",
+   "pop",
+   0.5
+  ],
+  [
+   "b.황희찬",
+   "pop",
+   0.5
+  ],
+  [
+   "c",
+   "whoosh",
+   0.5
+  ],
+  [
+   "d",
+   "whoosh",
+   0.5
+  ],
+  [
+   "e",
+   "whoosh",
+   0.5
+  ],
+  [
+   "f",
+   "whoosh",
+   0.5
+  ],
+  [
+   "g",
+   "whoosh",
+   0.5
+  ],
+  [
+   "h",
+   "ding",
+   0.5
+  ]
+ ],
+ "music": {
+  "file": "music/hustle.mp3",
+  "gain": 0.14,
+  "start": 0
+ }
+}

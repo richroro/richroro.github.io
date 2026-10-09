@@ -1,0 +1,223 @@
+{
+ "credit": "MBC·파이낸셜뉴스·머니투데이 보도 종합",
+ "titleStyle": "band",
+ "captionY": 1640,
+ "sources": {},
+ "clips": [
+  {
+   "from": "a",
+   "label": "years",
+   "gfx": {
+    "type": "text",
+    "lines": [
+     "[47년] 만에",
+     "최다골 1위 교체",
+     "⚽ 손흥민 [59골]"
+    ],
+    "steps": [
+     -1,
+     -1,
+     -1
+    ]
+   }
+  },
+  {
+   "from": "b",
+   "label": "match",
+   "gfx": {
+    "type": "text",
+    "badge": "30초 정리",
+    "lines": [
+     "10월 6일 우즈벡전",
+     "전반 [6분]"
+    ],
+    "steps": [
+     0.05,
+     "b.전반"
+    ]
+   }
+  },
+  {
+   "from": "c",
+   "label": "fk",
+   "gfx": {
+    "type": "text",
+    "emoji": "🎯",
+    "lines": [
+     "오른발 [프리킥]",
+     "골문 구석 골인"
+    ],
+    "steps": [
+     "c.프리킥",
+     "c.골문"
+    ]
+   }
+  },
+  {
+   "from": "d",
+   "label": "goals",
+   "gfx": {
+    "type": "counter",
+    "to": 59,
+    "unit": "골",
+    "label": "손흥민 [A매치 통산]",
+    "sub": "151경기 · 2026년 10월 6일 기준",
+    "steps": [
+     0.05
+    ],
+    "dur": 1.6
+   }
+  },
+  {
+   "from": "e",
+   "label": "vs",
+   "gfx": {
+    "type": "vs",
+    "left": {
+     "label": "손흥민",
+     "value": "59골",
+     "emoji": "🇰🇷"
+    },
+    "right": {
+     "label": "차범근",
+     "value": "58골",
+     "emoji": "🇰🇷"
+    },
+    "win": "left",
+    "steps": [
+     0.05,
+     "e.오십팔",
+     "e.단독"
+    ]
+   }
+  },
+  {
+   "from": "f",
+   "label": "1978",
+   "gfx": {
+    "type": "text",
+    "lines": [
+     "차범근 58호 골",
+     "[1978년 12월]",
+     "→ 47년 9개월 만"
+    ],
+    "steps": [
+     0.05,
+     "f.천구백",
+     "f@end-0.4"
+    ]
+   }
+  },
+  {
+   "from": "g",
+   "label": "quote",
+   "gfx": {
+    "type": "text",
+    "emoji": "💬",
+    "lines": [
+     "\"함께한 [16년]이",
+     "제일 소중\""
+    ],
+    "steps": [
+     0.05,
+     "g.제일"
+    ]
+   }
+  },
+  {
+   "from": "h",
+   "label": "bars",
+   "gfx": {
+    "type": "bars",
+    "title": "남녀 통틀어 A매치 최다골",
+    "hi": 2,
+    "items": [
+     {
+      "label": "차범근",
+      "value": 58,
+      "text": "58골"
+     },
+     {
+      "label": "손흥민",
+      "value": 59,
+      "text": "59골"
+     },
+     {
+      "label": "지소연",
+      "value": 76,
+      "text": "76골"
+     }
+    ],
+    "steps": [
+     0.05,
+     0.4,
+     "h.지소연"
+    ]
+   }
+  },
+  {
+   "from": "i",
+   "label": "end",
+   "gfx": {
+    "type": "text",
+    "badge": "2026년 10월 기준",
+    "lines": [
+     "이 기록,",
+     "누가 [깰까?]"
+    ],
+    "steps": [
+     0.05,
+     "i.누가"
+    ]
+   }
+  }
+ ],
+ "marks": [],
+ "sfx": [
+  [
+   "a.사십칠",
+   "whoosh",
+   0.5
+  ],
+  [
+   "b",
+   "whoosh",
+   0.5
+  ],
+  [
+   "c.꽂힙",
+   "pop",
+   0.6
+  ],
+  [
+   "d.오십구",
+   "coin",
+   0.5
+  ],
+  [
+   "e.단독",
+   "ding",
+   0.5
+  ],
+  [
+   "f",
+   "whoosh",
+   0.5
+  ],
+  [
+   "h.지소연",
+   "tada",
+   0.5
+  ],
+  [
+   "i",
+   "whoosh",
+   0.5
+  ]
+ ],
+ "music": {
+  "file": "music/hustle.mp3",
+  "gain": 0.14,
+  "start": 0
+ }
+}
