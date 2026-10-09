@@ -1,0 +1,2253 @@
+{
+ "model": "faster-whisper large-v3 (int8, CPU)",
+ "params": {
+  "language": "ko",
+  "beam_size": 5,
+  "vad_filter": false,
+  "word_timestamps": true,
+  "condition_on_previous_text": false
+ },
+ "source": "21.mp4",
+ "duration_s": 173.012,
+ "segments": [
+  {
+   "start": 0.0,
+   "end": 2.16,
+   "text": " 위원회는 이미 알고 있었다는 겁니다",
+   "words": [
+    {
+     "start": 0.0,
+     "end": 0.82,
+     "word": " 위원회는",
+     "probability": 0.954
+    },
+    {
+     "start": 0.82,
+     "end": 1.06,
+     "word": " 이미",
+     "probability": 0.9999
+    },
+    {
+     "start": 1.06,
+     "end": 1.48,
+     "word": " 알고",
+     "probability": 0.9998
+    },
+    {
+     "start": 1.48,
+     "end": 1.94,
+     "word": " 있었다는",
+     "probability": 0.9992
+    },
+    {
+     "start": 1.94,
+     "end": 2.16,
+     "word": " 겁니다",
+     "probability": 0.9989
+    }
+   ]
+  },
+  {
+   "start": 2.16,
+   "end": 5.7,
+   "text": " 중간 추정 결과, 이게 중간 결과입니다 이것도 추정치고",
+   "words": [
+    {
+     "start": 2.16,
+     "end": 3.22,
+     "word": " 중간",
+     "probability": 0.5233
+    },
+    {
+     "start": 3.22,
+     "end": 3.52,
+     "word": " 추정",
+     "probability": 0.8395
+    },
+    {
+     "start": 3.52,
+     "end": 3.76,
+     "word": " 결과,",
+     "probability": 0.9345
+    },
+    {
+     "start": 3.9,
+     "end": 4.04,
+     "word": " 이게",
+     "probability": 0.96
+    },
+    {
+     "start": 4.04,
+     "end": 4.42,
+     "word": " 중간",
+     "probability": 0.999
+    },
+    {
+     "start": 4.42,
+     "end": 4.86,
+     "word": " 결과입니다",
+     "probability": 0.9791
+    },
+    {
+     "start": 4.86,
+     "end": 5.12,
+     "word": " 이것도",
+     "probability": 0.875
+    },
+    {
+     "start": 5.12,
+     "end": 5.7,
+     "word": " 추정치고",
+     "probability": 0.9878
+    }
+   ]
+  },
+  {
+   "start": 5.7,
+   "end": 10.48,
+   "text": " 메일로 보내면서 여러 가지 얘기할 때 중곡 비중을 고려하지 못하였다는 점을",
+   "words": [
+    {
+     "start": 5.7,
+     "end": 6.52,
+     "word": " 메일로",
+     "probability": 0.991
+    },
+    {
+     "start": 6.52,
+     "end": 6.96,
+     "word": " 보내면서",
+     "probability": 0.9996
+    },
+    {
+     "start": 6.96,
+     "end": 7.7,
+     "word": " 여러",
+     "probability": 0.9996
+    },
+    {
+     "start": 7.7,
+     "end": 7.96,
+     "word": " 가지",
+     "probability": 0.9399
+    },
+    {
+     "start": 7.96,
+     "end": 8.36,
+     "word": " 얘기할",
+     "probability": 0.9828
+    },
+    {
+     "start": 8.36,
+     "end": 8.5,
+     "word": " 때",
+     "probability": 0.9998
+    },
+    {
+     "start": 8.5,
+     "end": 8.86,
+     "word": " 중곡",
+     "probability": 0.5831
+    },
+    {
+     "start": 8.86,
+     "end": 9.18,
+     "word": " 비중을",
+     "probability": 0.9637
+    },
+    {
+     "start": 9.18,
+     "end": 9.56,
+     "word": " 고려하지",
+     "probability": 0.9994
+    },
+    {
+     "start": 9.56,
+     "end": 10.18,
+     "word": " 못하였다는",
+     "probability": 0.9444
+    },
+    {
+     "start": 10.18,
+     "end": 10.48,
+     "word": " 점을",
+     "probability": 0.9994
+    }
+   ]
+  },
+  {
+   "start": 10.48,
+   "end": 14.38,
+   "text": " 매일 전달하는 메일에 본문에 분명히 전달했다고 했습니다",
+   "words": [
+    {
+     "start": 10.48,
+     "end": 10.8,
+     "word": " 매일",
+     "probability": 0.7395
+    },
+    {
+     "start": 10.8,
+     "end": 11.68,
+     "word": " 전달하는",
+     "probability": 0.9888
+    },
+    {
+     "start": 11.68,
+     "end": 12.08,
+     "word": " 메일에",
+     "probability": 0.9944
+    },
+    {
+     "start": 12.08,
+     "end": 12.74,
+     "word": " 본문에",
+     "probability": 0.9596
+    },
+    {
+     "start": 12.74,
+     "end": 13.24,
+     "word": " 분명히",
+     "probability": 0.9999
+    },
+    {
+     "start": 13.24,
+     "end": 14.16,
+     "word": " 전달했다고",
+     "probability": 0.9998
+    },
+    {
+     "start": 14.16,
+     "end": 14.38,
+     "word": " 했습니다",
+     "probability": 0.9985
+    }
+   ]
+  },
+  {
+   "start": 14.38,
+   "end": 17.08,
+   "text": " 이런 건 구체적으로 못 보셨겠죠?",
+   "words": [
+    {
+     "start": 14.38,
+     "end": 15.74,
+     "word": " 이런",
+     "probability": 0.3375
+    },
+    {
+     "start": 15.74,
+     "end": 16.08,
+     "word": " 건",
+     "probability": 0.8563
+    },
+    {
+     "start": 16.08,
+     "end": 16.44,
+     "word": " 구체적으로",
+     "probability": 0.9123
+    },
+    {
+     "start": 16.44,
+     "end": 16.58,
+     "word": " 못",
+     "probability": 0.9934
+    },
+    {
+     "start": 16.58,
+     "end": 17.08,
+     "word": " 보셨겠죠?",
+     "probability": 0.9994
+    }
+   ]
+  },
+  {
+   "start": 17.46,
+   "end": 19.68,
+   "text": " 네, 죄송하지만 이건 확인은 못했습니다",
+   "words": [
+    {
+     "start": 17.46,
+     "end": 18.22,
+     "word": " 네,",
+     "probability": 0.9292
+    },
+    {
+     "start": 18.3,
+     "end": 18.7,
+     "word": " 죄송하지만",
+     "probability": 0.9964
+    },
+    {
+     "start": 18.7,
+     "end": 18.96,
+     "word": " 이건",
+     "probability": 0.9964
+    },
+    {
+     "start": 18.96,
+     "end": 19.36,
+     "word": " 확인은",
+     "probability": 0.733
+    },
+    {
+     "start": 19.36,
+     "end": 19.68,
+     "word": " 못했습니다",
+     "probability": 0.8553
+    }
+   ]
+  },
+  {
+   "start": 19.68,
+   "end": 22.84,
+   "text": " 당연히 못 보셨을 것 같습니다 바쁘신데 어떻게 다 보셨겠습니까?",
+   "words": [
+    {
+     "start": 19.68,
+     "end": 20.44,
+     "word": " 당연히",
+     "probability": 0.9727
+    },
+    {
+     "start": 20.44,
+     "end": 20.56,
+     "word": " 못",
+     "probability": 0.9999
+    },
+    {
+     "start": 20.56,
+     "end": 20.92,
+     "word": " 보셨을",
+     "probability": 0.9999
+    },
+    {
+     "start": 20.92,
+     "end": 20.98,
+     "word": " 것",
+     "probability": 0.9948
+    },
+    {
+     "start": 20.98,
+     "end": 21.2,
+     "word": " 같습니다",
+     "probability": 0.9994
+    },
+    {
+     "start": 21.2,
+     "end": 21.82,
+     "word": " 바쁘신데",
+     "probability": 0.9881
+    },
+    {
+     "start": 21.82,
+     "end": 21.98,
+     "word": " 어떻게",
+     "probability": 0.9999
+    },
+    {
+     "start": 21.98,
+     "end": 22.22,
+     "word": " 다",
+     "probability": 0.9888
+    },
+    {
+     "start": 22.22,
+     "end": 22.84,
+     "word": " 보셨겠습니까?",
+     "probability": 0.9834
+    }
+   ]
+  },
+  {
+   "start": 23.88,
+   "end": 27.38,
+   "text": " 문제는 이게 당시 자료는 최종 연구 결과가 아니었습니다",
+   "words": [
+    {
+     "start": 23.88,
+     "end": 24.64,
+     "word": " 문제는",
+     "probability": 0.9866
+    },
+    {
+     "start": 24.64,
+     "end": 24.78,
+     "word": " 이게",
+     "probability": 0.9995
+    },
+    {
+     "start": 24.78,
+     "end": 25.2,
+     "word": " 당시",
+     "probability": 0.9734
+    },
+    {
+     "start": 25.2,
+     "end": 25.66,
+     "word": " 자료는",
+     "probability": 0.9472
+    },
+    {
+     "start": 25.66,
+     "end": 26.06,
+     "word": " 최종",
+     "probability": 0.9996
+    },
+    {
+     "start": 26.06,
+     "end": 26.34,
+     "word": " 연구",
+     "probability": 0.9985
+    },
+    {
+     "start": 26.34,
+     "end": 26.82,
+     "word": " 결과가",
+     "probability": 0.9987
+    },
+    {
+     "start": 26.82,
+     "end": 27.38,
+     "word": " 아니었습니다",
+     "probability": 0.9996
+    }
+   ]
+  },
+  {
+   "start": 27.38,
+   "end": 29.8,
+   "text": " 그러니까 문광윤은 이렇게 얘기했습니다",
+   "words": [
+    {
+     "start": 27.38,
+     "end": 28.32,
+     "word": " 그러니까",
+     "probability": 0.3594
+    },
+    {
+     "start": 28.32,
+     "end": 29.02,
+     "word": " 문광윤은",
+     "probability": 0.8858
+    },
+    {
+     "start": 29.02,
+     "end": 29.28,
+     "word": " 이렇게",
+     "probability": 0.9982
+    },
+    {
+     "start": 29.28,
+     "end": 29.8,
+     "word": " 얘기했습니다",
+     "probability": 0.9731
+    }
+   ]
+  },
+  {
+   "start": 29.8,
+   "end": 33.06,
+   "text": " 이게 진행 중인 잠정적인 중간 추정치고",
+   "words": [
+    {
+     "start": 29.8,
+     "end": 30.74,
+     "word": " 이게",
+     "probability": 0.3941
+    },
+    {
+     "start": 30.74,
+     "end": 31.14,
+     "word": " 진행",
+     "probability": 0.9984
+    },
+    {
+     "start": 31.14,
+     "end": 31.52,
+     "word": " 중인",
+     "probability": 0.9825
+    },
+    {
+     "start": 31.52,
+     "end": 32.08,
+     "word": " 잠정적인",
+     "probability": 0.9891
+    },
+    {
+     "start": 32.08,
+     "end": 32.54,
+     "word": " 중간",
+     "probability": 0.9983
+    },
+    {
+     "start": 32.54,
+     "end": 33.06,
+     "word": " 추정치고",
+     "probability": 0.9572
+    }
+   ]
+  },
+  {
+   "start": 33.06,
+   "end": 36.54,
+   "text": " 아직까지 한창 최종 결과 보고를 만들기 위해서",
+   "words": [
+    {
+     "start": 33.06,
+     "end": 34.44,
+     "word": " 아직까지",
+     "probability": 0.9989
+    },
+    {
+     "start": 34.44,
+     "end": 34.8,
+     "word": " 한창",
+     "probability": 0.9845
+    },
+    {
+     "start": 34.8,
+     "end": 35.44,
+     "word": " 최종",
+     "probability": 0.9998
+    },
+    {
+     "start": 35.44,
+     "end": 35.7,
+     "word": " 결과",
+     "probability": 0.2836
+    },
+    {
+     "start": 35.7,
+     "end": 36.08,
+     "word": " 보고를",
+     "probability": 0.9976
+    },
+    {
+     "start": 36.08,
+     "end": 36.46,
+     "word": " 만들기",
+     "probability": 0.8091
+    },
+    {
+     "start": 36.46,
+     "end": 36.54,
+     "word": " 위해서",
+     "probability": 0.9469
+    }
+   ]
+  },
+  {
+   "start": 36.54,
+   "end": 39.02,
+   "text": " 중간 정도 이렇게 진행되고 있다는 걸 설명한 겁니다",
+   "words": [
+    {
+     "start": 36.54,
+     "end": 36.86,
+     "word": " 중간",
+     "probability": 0.9996
+    },
+    {
+     "start": 36.86,
+     "end": 37.0,
+     "word": " 정도",
+     "probability": 0.9487
+    },
+    {
+     "start": 37.0,
+     "end": 37.58,
+     "word": " 이렇게",
+     "probability": 0.9938
+    },
+    {
+     "start": 37.58,
+     "end": 38.16,
+     "word": " 진행되고",
+     "probability": 0.9997
+    },
+    {
+     "start": 38.16,
+     "end": 38.32,
+     "word": " 있다는",
+     "probability": 0.995
+    },
+    {
+     "start": 38.32,
+     "end": 38.48,
+     "word": " 걸",
+     "probability": 0.3942
+    },
+    {
+     "start": 38.48,
+     "end": 38.84,
+     "word": " 설명한",
+     "probability": 0.9993
+    },
+    {
+     "start": 38.84,
+     "end": 39.02,
+     "word": " 겁니다",
+     "probability": 0.9977
+    }
+   ]
+  },
+  {
+   "start": 39.02,
+   "end": 43.8,
+   "text": " 그런데 그 과정에서 이게 최종 결과는 아직 11월쯤 나오겠다고 얘기한 건데",
+   "words": [
+    {
+     "start": 39.02,
+     "end": 39.72,
+     "word": " 그런데",
+     "probability": 0.8846
+    },
+    {
+     "start": 39.72,
+     "end": 39.84,
+     "word": " 그",
+     "probability": 0.9999
+    },
+    {
+     "start": 39.84,
+     "end": 40.3,
+     "word": " 과정에서",
+     "probability": 1.0
+    },
+    {
+     "start": 40.3,
+     "end": 40.5,
+     "word": " 이게",
+     "probability": 0.6598
+    },
+    {
+     "start": 40.5,
+     "end": 41.4,
+     "word": " 최종",
+     "probability": 0.9999
+    },
+    {
+     "start": 41.4,
+     "end": 41.74,
+     "word": " 결과는",
+     "probability": 0.986
+    },
+    {
+     "start": 41.74,
+     "end": 41.88,
+     "word": " 아직",
+     "probability": 0.9568
+    },
+    {
+     "start": 41.88,
+     "end": 42.68,
+     "word": " 11월쯤",
+     "probability": 0.926
+    },
+    {
+     "start": 42.68,
+     "end": 43.24,
+     "word": " 나오겠다고",
+     "probability": 0.9996
+    },
+    {
+     "start": 43.24,
+     "end": 43.58,
+     "word": " 얘기한",
+     "probability": 0.9992
+    },
+    {
+     "start": 43.58,
+     "end": 43.8,
+     "word": " 건데",
+     "probability": 0.9998
+    }
+   ]
+  },
+  {
+   "start": 43.8,
+   "end": 46.56,
+   "text": " 이게 보도자료에 나갔습니다",
+   "words": [
+    {
+     "start": 43.8,
+     "end": 45.26,
+     "word": " 이게",
+     "probability": 0.9995
+    },
+    {
+     "start": 45.26,
+     "end": 46.1,
+     "word": " 보도자료에",
+     "probability": 0.9962
+    },
+    {
+     "start": 46.1,
+     "end": 46.56,
+     "word": " 나갔습니다",
+     "probability": 0.9975
+    }
+   ]
+  },
+  {
+   "start": 46.56,
+   "end": 48.0,
+   "text": " 그렇잖아요?",
+   "words": [
+    {
+     "start": 46.56,
+     "end": 48.0,
+     "word": " 그렇잖아요?",
+     "probability": 0.8961
+    }
+   ]
+  },
+  {
+   "start": 48.24,
+   "end": 53.68,
+   "text": " 보도자료에 나가는데 위원회 보도자료에 나갈 것은 전혀 몰랐다는 겁니다",
+   "words": [
+    {
+     "start": 48.24,
+     "end": 49.0,
+     "word": " 보도자료에",
+     "probability": 0.9995
+    },
+    {
+     "start": 49.0,
+     "end": 49.38,
+     "word": " 나가는데",
+     "probability": 0.9812
+    },
+    {
+     "start": 49.38,
+     "end": 50.04,
+     "word": " 위원회",
+     "probability": 0.9828
+    },
+    {
+     "start": 50.04,
+     "end": 50.64,
+     "word": " 보도자료에",
+     "probability": 0.9749
+    },
+    {
+     "start": 50.64,
+     "end": 50.92,
+     "word": " 나갈",
+     "probability": 0.9878
+    },
+    {
+     "start": 50.92,
+     "end": 51.22,
+     "word": " 것은",
+     "probability": 0.9984
+    },
+    {
+     "start": 51.22,
+     "end": 51.94,
+     "word": " 전혀",
+     "probability": 0.9999
+    },
+    {
+     "start": 51.94,
+     "end": 53.46,
+     "word": " 몰랐다는",
+     "probability": 0.9997
+    },
+    {
+     "start": 53.46,
+     "end": 53.68,
+     "word": " 겁니다",
+     "probability": 0.9998
+    }
+   ]
+  },
+  {
+   "start": 53.68,
+   "end": 54.36,
+   "text": " 이렇게 나와 있습니다",
+   "words": [
+    {
+     "start": 53.68,
+     "end": 53.94,
+     "word": " 이렇게",
+     "probability": 0.995
+    },
+    {
+     "start": 53.94,
+     "end": 54.14,
+     "word": " 나와",
+     "probability": 0.9992
+    },
+    {
+     "start": 54.14,
+     "end": 54.36,
+     "word": " 있습니다",
+     "probability": 0.9928
+    }
+   ]
+  },
+  {
+   "start": 54.36,
+   "end": 58.98,
+   "text": " 연구원은 해당 수치가 이 보도자료에 사용될 예정임을 사전에 인지하지 못했습니다.",
+   "words": [
+    {
+     "start": 54.36,
+     "end": 55.2,
+     "word": " 연구원은",
+     "probability": 0.8398
+    },
+    {
+     "start": 55.2,
+     "end": 55.46,
+     "word": " 해당",
+     "probability": 0.9973
+    },
+    {
+     "start": 55.46,
+     "end": 55.86,
+     "word": " 수치가",
+     "probability": 0.9975
+    },
+    {
+     "start": 55.86,
+     "end": 56.46,
+     "word": " 이",
+     "probability": 0.5951
+    },
+    {
+     "start": 56.46,
+     "end": 57.12,
+     "word": " 보도자료에",
+     "probability": 0.961
+    },
+    {
+     "start": 57.12,
+     "end": 57.52,
+     "word": " 사용될",
+     "probability": 0.999
+    },
+    {
+     "start": 57.52,
+     "end": 57.94,
+     "word": " 예정임을",
+     "probability": 0.9964
+    },
+    {
+     "start": 57.94,
+     "end": 58.22,
+     "word": " 사전에",
+     "probability": 0.9854
+    },
+    {
+     "start": 58.22,
+     "end": 58.54,
+     "word": " 인지하지",
+     "probability": 0.9983
+    },
+    {
+     "start": 58.54,
+     "end": 58.98,
+     "word": " 못했습니다.",
+     "probability": 0.992
+    }
+   ]
+  },
+  {
+   "start": 59.86,
+   "end": 66.7,
+   "text": " 그리고 중간추정적으로 제공한 자료는 기초추정치고 이후 대외화폐를 관해서 별도로 협의한 바 없습니다.",
+   "words": [
+    {
+     "start": 59.49,
+     "end": 59.9,
+     "word": " 그리고",
+     "probability": 0.9993
+    },
+    {
+     "start": 59.9,
+     "end": 60.82,
+     "word": " 중간추정적으로",
+     "probability": 0.753
+    },
+    {
+     "start": 60.82,
+     "end": 61.28,
+     "word": " 제공한",
+     "probability": 0.9995
+    },
+    {
+     "start": 61.28,
+     "end": 61.62,
+     "word": " 자료는",
+     "probability": 0.9979
+    },
+    {
+     "start": 61.62,
+     "end": 63.36,
+     "word": " 기초추정치고",
+     "probability": 0.9919
+    },
+    {
+     "start": 63.36,
+     "end": 64.14,
+     "word": " 이후",
+     "probability": 0.9896
+    },
+    {
+     "start": 64.14,
+     "end": 64.76,
+     "word": " 대외화폐를",
+     "probability": 0.6412
+    },
+    {
+     "start": 64.76,
+     "end": 65.0,
+     "word": " 관해서",
+     "probability": 0.8661
+    },
+    {
+     "start": 65.0,
+     "end": 66.06,
+     "word": " 별도로",
+     "probability": 0.9985
+    },
+    {
+     "start": 66.06,
+     "end": 66.42,
+     "word": " 협의한",
+     "probability": 0.9988
+    },
+    {
+     "start": 66.42,
+     "end": 66.5,
+     "word": " 바",
+     "probability": 0.998
+    },
+    {
+     "start": 66.5,
+     "end": 66.7,
+     "word": " 없습니다.",
+     "probability": 0.9762
+    }
+   ]
+  },
+  {
+   "start": 67.34,
+   "end": 70.8,
+   "text": " 그런데도 대중문화교류위원회는 무작정 발표를 했습니다.",
+   "words": [
+    {
+     "start": 67.34,
+     "end": 67.94,
+     "word": " 그런데도",
+     "probability": 0.9992
+    },
+    {
+     "start": 67.94,
+     "end": 69.36,
+     "word": " 대중문화교류위원회는",
+     "probability": 0.9951
+    },
+    {
+     "start": 69.36,
+     "end": 70.14,
+     "word": " 무작정",
+     "probability": 0.9982
+    },
+    {
+     "start": 70.14,
+     "end": 70.6,
+     "word": " 발표를",
+     "probability": 0.9954
+    },
+    {
+     "start": 70.6,
+     "end": 70.8,
+     "word": " 했습니다.",
+     "probability": 0.9998
+    }
+   ]
+  },
+  {
+   "start": 71.3,
+   "end": 79.68,
+   "text": " 전 세계는 이 수치를 가지고 대중문화교류위원회가 내년에 편호매너를 가지고 이렇게 할 거라고 얘기한 거 아닙니까?",
+   "words": [
+    {
+     "start": 71.3,
+     "end": 71.5,
+     "word": " 전",
+     "probability": 0.9997
+    },
+    {
+     "start": 71.5,
+     "end": 72.0,
+     "word": " 세계는",
+     "probability": 0.9403
+    },
+    {
+     "start": 72.0,
+     "end": 72.16,
+     "word": " 이",
+     "probability": 0.9999
+    },
+    {
+     "start": 72.16,
+     "end": 72.58,
+     "word": " 수치를",
+     "probability": 0.9996
+    },
+    {
+     "start": 72.58,
+     "end": 72.88,
+     "word": " 가지고",
+     "probability": 0.9999
+    },
+    {
+     "start": 72.88,
+     "end": 74.7,
+     "word": " 대중문화교류위원회가",
+     "probability": 0.9979
+    },
+    {
+     "start": 74.7,
+     "end": 75.66,
+     "word": " 내년에",
+     "probability": 0.9998
+    },
+    {
+     "start": 75.66,
+     "end": 77.62,
+     "word": " 편호매너를",
+     "probability": 0.5435
+    },
+    {
+     "start": 77.62,
+     "end": 78.02,
+     "word": " 가지고",
+     "probability": 0.9991
+    },
+    {
+     "start": 78.02,
+     "end": 78.36,
+     "word": " 이렇게",
+     "probability": 0.9985
+    },
+    {
+     "start": 78.36,
+     "end": 78.58,
+     "word": " 할",
+     "probability": 0.9998
+    },
+    {
+     "start": 78.58,
+     "end": 78.84,
+     "word": " 거라고",
+     "probability": 0.9975
+    },
+    {
+     "start": 78.84,
+     "end": 79.12,
+     "word": " 얘기한",
+     "probability": 0.991
+    },
+    {
+     "start": 79.12,
+     "end": 79.26,
+     "word": " 거",
+     "probability": 0.9775
+    },
+    {
+     "start": 79.26,
+     "end": 79.68,
+     "word": " 아닙니까?",
+     "probability": 0.9999
+    }
+   ]
+  },
+  {
+   "start": 80.28,
+   "end": 81.04,
+   "text": " 장담할 수 있겠습니까?",
+   "words": [
+    {
+     "start": 80.17,
+     "end": 80.58,
+     "word": " 장담할",
+     "probability": 0.9302
+    },
+    {
+     "start": 80.58,
+     "end": 80.68,
+     "word": " 수",
+     "probability": 1.0
+    },
+    {
+     "start": 80.68,
+     "end": 81.04,
+     "word": " 있겠습니까?",
+     "probability": 0.9999
+    }
+   ]
+  },
+  {
+   "start": 81.04,
+   "end": 86.3,
+   "text": " 이 데이터가 100% 완벽할 수는 없을 수도 있습니다",
+   "words": [
+    {
+     "start": 81.04,
+     "end": 82.5,
+     "word": " 이",
+     "probability": 0.9487
+    },
+    {
+     "start": 82.5,
+     "end": 83.6,
+     "word": " 데이터가",
+     "probability": 0.9988
+    },
+    {
+     "start": 83.6,
+     "end": 84.34,
+     "word": " 100",
+     "probability": 0.9892
+    },
+    {
+     "start": 84.34,
+     "end": 84.72,
+     "word": "%",
+     "probability": 0.9947
+    },
+    {
+     "start": 84.72,
+     "end": 85.4,
+     "word": " 완벽할",
+     "probability": 0.9994
+    },
+    {
+     "start": 85.4,
+     "end": 85.58,
+     "word": " 수는",
+     "probability": 0.9953
+    },
+    {
+     "start": 85.58,
+     "end": 85.88,
+     "word": " 없을",
+     "probability": 0.9999
+    },
+    {
+     "start": 85.88,
+     "end": 86.04,
+     "word": " 수도",
+     "probability": 0.9962
+    },
+    {
+     "start": 86.04,
+     "end": 86.3,
+     "word": " 있습니다",
+     "probability": 0.9989
+    }
+   ]
+  },
+  {
+   "start": 86.3,
+   "end": 91.42,
+   "text": " 다만 이 연구 결과 이 추정치 자료 자체가 이렇게 허접하게 만들어졌으면",
+   "words": [
+    {
+     "start": 86.3,
+     "end": 87.16,
+     "word": " 다만",
+     "probability": 0.535
+    },
+    {
+     "start": 87.16,
+     "end": 87.64,
+     "word": " 이",
+     "probability": 0.9863
+    },
+    {
+     "start": 87.64,
+     "end": 88.04,
+     "word": " 연구",
+     "probability": 0.9993
+    },
+    {
+     "start": 88.04,
+     "end": 88.28,
+     "word": " 결과",
+     "probability": 0.6282
+    },
+    {
+     "start": 88.28,
+     "end": 88.58,
+     "word": " 이",
+     "probability": 0.476
+    },
+    {
+     "start": 88.58,
+     "end": 89.14,
+     "word": " 추정치",
+     "probability": 0.9863
+    },
+    {
+     "start": 89.14,
+     "end": 89.58,
+     "word": " 자료",
+     "probability": 0.9953
+    },
+    {
+     "start": 89.58,
+     "end": 89.92,
+     "word": " 자체가",
+     "probability": 0.9996
+    },
+    {
+     "start": 89.92,
+     "end": 90.2,
+     "word": " 이렇게",
+     "probability": 0.999
+    },
+    {
+     "start": 90.2,
+     "end": 90.74,
+     "word": " 허접하게",
+     "probability": 0.9975
+    },
+    {
+     "start": 90.74,
+     "end": 91.42,
+     "word": " 만들어졌으면",
+     "probability": 0.9994
+    }
+   ]
+  },
+  {
+   "start": 91.42,
+   "end": 94.64,
+   "text": " 과연 얼마만큼 객관적으로 국민들에게",
+   "words": [
+    {
+     "start": 91.42,
+     "end": 92.1,
+     "word": " 과연",
+     "probability": 0.9999
+    },
+    {
+     "start": 92.1,
+     "end": 93.06,
+     "word": " 얼마만큼",
+     "probability": 0.9991
+    },
+    {
+     "start": 93.06,
+     "end": 94.02,
+     "word": " 객관적으로",
+     "probability": 0.9995
+    },
+    {
+     "start": 94.02,
+     "end": 94.64,
+     "word": " 국민들에게",
+     "probability": 0.9426
+    }
+   ]
+  },
+  {
+   "start": 94.64,
+   "end": 100.7,
+   "text": " 지금 당장 위원장님 스스로도 이 부분에서 보고도 못 받으셨겠지만",
+   "words": [
+    {
+     "start": 94.64,
+     "end": 95.4,
+     "word": " 지금",
+     "probability": 0.898
+    },
+    {
+     "start": 95.4,
+     "end": 95.86,
+     "word": " 당장",
+     "probability": 0.9996
+    },
+    {
+     "start": 95.86,
+     "end": 96.68,
+     "word": " 위원장님",
+     "probability": 0.9979
+    },
+    {
+     "start": 96.68,
+     "end": 97.34,
+     "word": " 스스로도",
+     "probability": 0.9995
+    },
+    {
+     "start": 97.34,
+     "end": 97.76,
+     "word": " 이",
+     "probability": 0.5247
+    },
+    {
+     "start": 97.76,
+     "end": 98.32,
+     "word": " 부분에서",
+     "probability": 0.9976
+    },
+    {
+     "start": 98.32,
+     "end": 99.94,
+     "word": " 보고도",
+     "probability": 0.9998
+    },
+    {
+     "start": 99.94,
+     "end": 100.1,
+     "word": " 못",
+     "probability": 1.0
+    },
+    {
+     "start": 100.1,
+     "end": 100.7,
+     "word": " 받으셨겠지만",
+     "probability": 0.9992
+    }
+   ]
+  },
+  {
+   "start": 100.7,
+   "end": 104.78,
+   "text": " 이런 식의 진행 과정에 대한 숫자를 가지고 얼마나 믿을 수 있겠습니까",
+   "words": [
+    {
+     "start": 100.7,
+     "end": 101.7,
+     "word": " 이런",
+     "probability": 0.9995
+    },
+    {
+     "start": 101.7,
+     "end": 102.1,
+     "word": " 식의",
+     "probability": 0.9982
+    },
+    {
+     "start": 102.1,
+     "end": 102.36,
+     "word": " 진행",
+     "probability": 0.9998
+    },
+    {
+     "start": 102.36,
+     "end": 102.74,
+     "word": " 과정에",
+     "probability": 0.952
+    },
+    {
+     "start": 102.74,
+     "end": 102.86,
+     "word": " 대한",
+     "probability": 0.995
+    },
+    {
+     "start": 102.86,
+     "end": 103.24,
+     "word": " 숫자를",
+     "probability": 0.9998
+    },
+    {
+     "start": 103.24,
+     "end": 103.42,
+     "word": " 가지고",
+     "probability": 0.9994
+    },
+    {
+     "start": 103.42,
+     "end": 103.9,
+     "word": " 얼마나",
+     "probability": 0.9964
+    },
+    {
+     "start": 103.9,
+     "end": 104.26,
+     "word": " 믿을",
+     "probability": 0.9999
+    },
+    {
+     "start": 104.26,
+     "end": 104.36,
+     "word": " 수",
+     "probability": 0.9999
+    },
+    {
+     "start": 104.36,
+     "end": 104.78,
+     "word": " 있겠습니까",
+     "probability": 0.9995
+    }
+   ]
+  },
+  {
+   "start": 104.78,
+   "end": 108.54,
+   "text": " 마지막으로 그냥 일과적으로 설명하시고",
+   "words": [
+    {
+     "start": 104.78,
+     "end": 106.22,
+     "word": " 마지막으로",
+     "probability": 0.811
+    },
+    {
+     "start": 106.22,
+     "end": 106.42,
+     "word": " 그냥",
+     "probability": 0.9891
+    },
+    {
+     "start": 106.42,
+     "end": 107.92,
+     "word": " 일과적으로",
+     "probability": 0.8509
+    },
+    {
+     "start": 107.92,
+     "end": 108.54,
+     "word": " 설명하시고",
+     "probability": 0.9996
+    }
+   ]
+  },
+  {
+   "start": 108.54,
+   "end": 110.66,
+   "text": " 하나는 여러 가지 검증이 있습니다",
+   "words": [
+    {
+     "start": 108.54,
+     "end": 109.34,
+     "word": " 하나는",
+     "probability": 0.8058
+    },
+    {
+     "start": 109.34,
+     "end": 109.76,
+     "word": " 여러",
+     "probability": 0.9999
+    },
+    {
+     "start": 109.76,
+     "end": 110.0,
+     "word": " 가지",
+     "probability": 0.9587
+    },
+    {
+     "start": 110.0,
+     "end": 110.48,
+     "word": " 검증이",
+     "probability": 0.9999
+    },
+    {
+     "start": 110.48,
+     "end": 110.66,
+     "word": " 있습니다",
+     "probability": 1.0
+    }
+   ]
+  },
+  {
+   "start": 110.66,
+   "end": 115.08,
+   "text": " 우리가 한국에 코첼라를 만들겠다고 페노메논을 얘기했습니다.",
+   "words": [
+    {
+     "start": 110.66,
+     "end": 111.34,
+     "word": " 우리가",
+     "probability": 0.6867
+    },
+    {
+     "start": 111.34,
+     "end": 113.02,
+     "word": " 한국에",
+     "probability": 0.9452
+    },
+    {
+     "start": 113.02,
+     "end": 113.66,
+     "word": " 코첼라를",
+     "probability": 0.906
+    },
+    {
+     "start": 113.66,
+     "end": 114.18,
+     "word": " 만들겠다고",
+     "probability": 0.9925
+    },
+    {
+     "start": 114.18,
+     "end": 114.72,
+     "word": " 페노메논을",
+     "probability": 0.8839
+    },
+    {
+     "start": 114.72,
+     "end": 115.08,
+     "word": " 얘기했습니다.",
+     "probability": 0.9774
+    }
+   ]
+  },
+  {
+   "start": 117.12,
+   "end": 118.82,
+   "text": " 코첼라 한여름에 열리죠?",
+   "words": [
+    {
+     "start": 117.12,
+     "end": 117.8,
+     "word": " 코첼라",
+     "probability": 0.9872
+    },
+    {
+     "start": 117.8,
+     "end": 118.48,
+     "word": " 한여름에",
+     "probability": 0.8875
+    },
+    {
+     "start": 118.48,
+     "end": 118.82,
+     "word": " 열리죠?",
+     "probability": 0.9996
+    }
+   ]
+  },
+  {
+   "start": 120.0,
+   "end": 120.58,
+   "text": " 네, 맞습니다.",
+   "words": [
+    {
+     "start": 119.76,
+     "end": 120.1,
+     "word": " 네,",
+     "probability": 0.9779
+    },
+    {
+     "start": 120.12,
+     "end": 120.58,
+     "word": " 맞습니다.",
+     "probability": 0.9991
+    }
+   ]
+  },
+  {
+   "start": 121.24,
+   "end": 123.4,
+   "text": " 페노메논 한겨울에 열리죠? 12월에?",
+   "words": [
+    {
+     "start": 121.24,
+     "end": 121.92,
+     "word": " 페노메논",
+     "probability": 0.963
+    },
+    {
+     "start": 121.92,
+     "end": 122.62,
+     "word": " 한겨울에",
+     "probability": 0.8789
+    },
+    {
+     "start": 122.62,
+     "end": 122.92,
+     "word": " 열리죠?",
+     "probability": 0.9998
+    },
+    {
+     "start": 123.0,
+     "end": 123.4,
+     "word": " 12월에?",
+     "probability": 0.7445
+    }
+   ]
+  },
+  {
+   "start": 123.76,
+   "end": 124.8,
+   "text": " 한여름에도 열립니다.",
+   "words": [
+    {
+     "start": 123.76,
+     "end": 124.44,
+     "word": " 한여름에도",
+     "probability": 0.9645
+    },
+    {
+     "start": 124.44,
+     "end": 124.8,
+     "word": " 열립니다.",
+     "probability": 0.9999
+    }
+   ]
+  },
+  {
+   "start": 125.08,
+   "end": 127.14,
+   "text": " 아니, 페노메논 내년에 열리는 거 한겨울 아닙니까?",
+   "words": [
+    {
+     "start": 125.08,
+     "end": 125.22,
+     "word": " 아니,",
+     "probability": 0.5812
+    },
+    {
+     "start": 125.3,
+     "end": 125.76,
+     "word": " 페노메논",
+     "probability": 0.997
+    },
+    {
+     "start": 125.76,
+     "end": 126.22,
+     "word": " 내년에",
+     "probability": 0.9088
+    },
+    {
+     "start": 126.22,
+     "end": 126.4,
+     "word": " 열리는",
+     "probability": 0.9129
+    },
+    {
+     "start": 126.4,
+     "end": 126.5,
+     "word": " 거",
+     "probability": 0.7034
+    },
+    {
+     "start": 126.5,
+     "end": 126.82,
+     "word": " 한겨울",
+     "probability": 0.9993
+    },
+    {
+     "start": 126.82,
+     "end": 127.14,
+     "word": " 아닙니까?",
+     "probability": 0.9836
+    }
+   ]
+  },
+  {
+   "start": 127.38,
+   "end": 128.38,
+   "text": " 페노메논 1년 2번입니다.",
+   "words": [
+    {
+     "start": 127.38,
+     "end": 127.74,
+     "word": " 페노메논",
+     "probability": 0.9969
+    },
+    {
+     "start": 127.74,
+     "end": 127.94,
+     "word": " 1년",
+     "probability": 0.9819
+    },
+    {
+     "start": 127.94,
+     "end": 128.38,
+     "word": " 2번입니다.",
+     "probability": 0.9336
+    }
+   ]
+  },
+  {
+   "start": 128.58,
+   "end": 130.96,
+   "text": " 그러니까 내년에 열리는 거 27일에 열리는 거.",
+   "words": [
+    {
+     "start": 128.58,
+     "end": 128.7,
+     "word": " 그러니까",
+     "probability": 0.7973
+    },
+    {
+     "start": 128.7,
+     "end": 129.18,
+     "word": " 내년에",
+     "probability": 0.9998
+    },
+    {
+     "start": 129.18,
+     "end": 129.42,
+     "word": " 열리는",
+     "probability": 0.9997
+    },
+    {
+     "start": 129.42,
+     "end": 129.56,
+     "word": " 거",
+     "probability": 0.8786
+    },
+    {
+     "start": 129.56,
+     "end": 130.2,
+     "word": " 27일에",
+     "probability": 0.738
+    },
+    {
+     "start": 130.2,
+     "end": 130.82,
+     "word": " 열리는",
+     "probability": 0.9896
+    },
+    {
+     "start": 130.82,
+     "end": 130.96,
+     "word": " 거.",
+     "probability": 0.9341
+    }
+   ]
+  },
+  {
+   "start": 131.06,
+   "end": 132.46,
+   "text": " 12월에 있고 5월에 있습니다.",
+   "words": [
+    {
+     "start": 131.06,
+     "end": 131.74,
+     "word": " 12월에",
+     "probability": 0.9544
+    },
+    {
+     "start": 131.74,
+     "end": 131.98,
+     "word": " 있고",
+     "probability": 0.9513
+    },
+    {
+     "start": 131.98,
+     "end": 132.32,
+     "word": " 5월에",
+     "probability": 0.9958
+    },
+    {
+     "start": 132.32,
+     "end": 132.46,
+     "word": " 있습니다.",
+     "probability": 0.9989
+    }
+   ]
+  },
+  {
+   "start": 132.84,
+   "end": 134.6,
+   "text": " 그러니까 내년에 12월에 잡아놓은 거 아닙니까?",
+   "words": [
+    {
+     "start": 132.84,
+     "end": 132.98,
+     "word": " 그러니까",
+     "probability": 0.9958
+    },
+    {
+     "start": 132.98,
+     "end": 133.44,
+     "word": " 내년에",
+     "probability": 0.9996
+    },
+    {
+     "start": 133.44,
+     "end": 133.86,
+     "word": " 12월에",
+     "probability": 0.9999
+    },
+    {
+     "start": 133.86,
+     "end": 134.26,
+     "word": " 잡아놓은",
+     "probability": 0.961
+    },
+    {
+     "start": 134.26,
+     "end": 134.34,
+     "word": " 거",
+     "probability": 0.9992
+    },
+    {
+     "start": 134.34,
+     "end": 134.6,
+     "word": " 아닙니까?",
+     "probability": 0.9969
+    }
+   ]
+  },
+  {
+   "start": 134.74,
+   "end": 137.04,
+   "text": " 이게 52만 명으로 잡아놓으신 겁니다.",
+   "words": [
+    {
+     "start": 134.74,
+     "end": 135.36,
+     "word": " 이게",
+     "probability": 0.7658
+    },
+    {
+     "start": 135.36,
+     "end": 136.04,
+     "word": " 52만",
+     "probability": 0.9957
+    },
+    {
+     "start": 136.04,
+     "end": 136.34,
+     "word": " 명으로",
+     "probability": 0.9813
+    },
+    {
+     "start": 136.34,
+     "end": 136.9,
+     "word": " 잡아놓으신",
+     "probability": 0.9963
+    },
+    {
+     "start": 136.9,
+     "end": 137.04,
+     "word": " 겁니다.",
+     "probability": 0.9918
+    }
+   ]
+  },
+  {
+   "start": 138.06,
+   "end": 140.12,
+   "text": " 한겨울에 열리는 거와 한여름에 열리는 것이.",
+   "words": [
+    {
+     "start": 138.06,
+     "end": 138.74,
+     "word": " 한겨울에",
+     "probability": 0.9956
+    },
+    {
+     "start": 138.74,
+     "end": 139.02,
+     "word": " 열리는",
+     "probability": 0.9999
+    },
+    {
+     "start": 139.02,
+     "end": 139.22,
+     "word": " 거와",
+     "probability": 0.8601
+    },
+    {
+     "start": 139.22,
+     "end": 139.62,
+     "word": " 한여름에",
+     "probability": 0.9981
+    },
+    {
+     "start": 139.62,
+     "end": 139.88,
+     "word": " 열리는",
+     "probability": 1.0
+    },
+    {
+     "start": 139.88,
+     "end": 140.12,
+     "word": " 것이.",
+     "probability": 0.9857
+    }
+   ]
+  },
+  {
+   "start": 140.66,
+   "end": 141.34,
+   "text": " 과연 같겠습니까?",
+   "words": [
+    {
+     "start": 140.66,
+     "end": 140.8,
+     "word": " 과연",
+     "probability": 0.9973
+    },
+    {
+     "start": 140.8,
+     "end": 141.34,
+     "word": " 같겠습니까?",
+     "probability": 0.972
+    }
+   ]
+  },
+  {
+   "start": 143.26,
+   "end": 152.38,
+   "text": " 이 추정치는 사실은 제가 어떤 데이터들로 어떻게 추정된 건지 정확하게 알지는 못해서",
+   "words": [
+    {
+     "start": 143.26,
+     "end": 143.98,
+     "word": " 이",
+     "probability": 0.9891
+    },
+    {
+     "start": 143.98,
+     "end": 144.7,
+     "word": " 추정치는",
+     "probability": 0.9985
+    },
+    {
+     "start": 144.7,
+     "end": 145.46,
+     "word": " 사실은",
+     "probability": 0.9942
+    },
+    {
+     "start": 145.46,
+     "end": 146.0,
+     "word": " 제가",
+     "probability": 0.9994
+    },
+    {
+     "start": 146.0,
+     "end": 148.96,
+     "word": " 어떤",
+     "probability": 0.9989
+    },
+    {
+     "start": 148.96,
+     "end": 150.1,
+     "word": " 데이터들로",
+     "probability": 0.9942
+    },
+    {
+     "start": 150.1,
+     "end": 150.4,
+     "word": " 어떻게",
+     "probability": 0.9997
+    },
+    {
+     "start": 150.4,
+     "end": 151.18,
+     "word": " 추정된",
+     "probability": 0.868
+    },
+    {
+     "start": 151.18,
+     "end": 151.38,
+     "word": " 건지",
+     "probability": 0.9627
+    },
+    {
+     "start": 151.38,
+     "end": 151.84,
+     "word": " 정확하게",
+     "probability": 0.9996
+    },
+    {
+     "start": 151.84,
+     "end": 152.14,
+     "word": " 알지는",
+     "probability": 0.9997
+    },
+    {
+     "start": 152.14,
+     "end": 152.38,
+     "word": " 못해서",
+     "probability": 0.994
+    }
+   ]
+  },
+  {
+   "start": 153.88,
+   "end": 157.06,
+   "text": " 연장이니까 그 분에게도 책임을 지셔야 되는 문제 아닙니까?",
+   "words": [
+    {
+     "start": 153.88,
+     "end": 154.6,
+     "word": " 연장이니까",
+     "probability": 0.7031
+    },
+    {
+     "start": 154.6,
+     "end": 155.12,
+     "word": " 그",
+     "probability": 0.1579
+    },
+    {
+     "start": 155.12,
+     "end": 155.58,
+     "word": " 분에게도",
+     "probability": 0.674
+    },
+    {
+     "start": 155.58,
+     "end": 156.0,
+     "word": " 책임을",
+     "probability": 1.0
+    },
+    {
+     "start": 156.0,
+     "end": 156.28,
+     "word": " 지셔야",
+     "probability": 0.9946
+    },
+    {
+     "start": 156.28,
+     "end": 156.46,
+     "word": " 되는",
+     "probability": 0.7222
+    },
+    {
+     "start": 156.46,
+     "end": 156.7,
+     "word": " 문제",
+     "probability": 0.7982
+    },
+    {
+     "start": 156.7,
+     "end": 157.06,
+     "word": " 아닙니까?",
+     "probability": 0.5766
+    }
+   ]
+  },
+  {
+   "start": 157.34,
+   "end": 163.52,
+   "text": " 다만 이런 추정치가 높게 나오는 것은 반대로 저희에게 어마어마한 발목을 잡는 일이 될 거여서",
+   "words": [
+    {
+     "start": 157.34,
+     "end": 157.96,
+     "word": " 다만",
+     "probability": 0.8923
+    },
+    {
+     "start": 157.96,
+     "end": 158.5,
+     "word": " 이런",
+     "probability": 0.9996
+    },
+    {
+     "start": 158.5,
+     "end": 159.06,
+     "word": " 추정치가",
+     "probability": 0.9999
+    },
+    {
+     "start": 159.06,
+     "end": 159.52,
+     "word": " 높게",
+     "probability": 1.0
+    },
+    {
+     "start": 159.52,
+     "end": 159.68,
+     "word": " 나오는",
+     "probability": 0.9999
+    },
+    {
+     "start": 159.68,
+     "end": 160.0,
+     "word": " 것은",
+     "probability": 1.0
+    },
+    {
+     "start": 160.0,
+     "end": 160.44,
+     "word": " 반대로",
+     "probability": 0.9997
+    },
+    {
+     "start": 160.44,
+     "end": 160.84,
+     "word": " 저희에게",
+     "probability": 0.9959
+    },
+    {
+     "start": 160.84,
+     "end": 161.6,
+     "word": " 어마어마한",
+     "probability": 0.9995
+    },
+    {
+     "start": 161.6,
+     "end": 162.64,
+     "word": " 발목을",
+     "probability": 0.9999
+    },
+    {
+     "start": 162.64,
+     "end": 162.84,
+     "word": " 잡는",
+     "probability": 1.0
+    },
+    {
+     "start": 162.84,
+     "end": 163.0,
+     "word": " 일이",
+     "probability": 0.9999
+    },
+    {
+     "start": 163.0,
+     "end": 163.18,
+     "word": " 될",
+     "probability": 1.0
+    },
+    {
+     "start": 163.18,
+     "end": 163.52,
+     "word": " 거여서",
+     "probability": 0.9295
+    }
+   ]
+  },
+  {
+   "start": 163.52,
+   "end": 165.58,
+   "text": " 저 역시도 굉장히 이런 건 조심스럽습니다.",
+   "words": [
+    {
+     "start": 163.52,
+     "end": 163.78,
+     "word": " 저",
+     "probability": 0.8019
+    },
+    {
+     "start": 163.78,
+     "end": 163.96,
+     "word": " 역시도",
+     "probability": 0.7327
+    },
+    {
+     "start": 163.96,
+     "end": 164.26,
+     "word": " 굉장히",
+     "probability": 0.9969
+    },
+    {
+     "start": 164.26,
+     "end": 164.62,
+     "word": " 이런",
+     "probability": 0.9999
+    },
+    {
+     "start": 164.62,
+     "end": 164.84,
+     "word": " 건",
+     "probability": 0.996
+    },
+    {
+     "start": 164.84,
+     "end": 165.58,
+     "word": " 조심스럽습니다.",
+     "probability": 0.9999
+    }
+   ]
+  },
+  {
+   "start": 165.64,
+   "end": 167.12,
+   "text": " 왜냐하면 이 결과가 곧 나올 텐데",
+   "words": [
+    {
+     "start": 165.64,
+     "end": 165.8,
+     "word": " 왜냐하면",
+     "probability": 0.9988
+    },
+    {
+     "start": 165.8,
+     "end": 165.98,
+     "word": " 이",
+     "probability": 1.0
+    },
+    {
+     "start": 165.98,
+     "end": 166.4,
+     "word": " 결과가",
+     "probability": 1.0
+    },
+    {
+     "start": 166.4,
+     "end": 166.6,
+     "word": " 곧",
+     "probability": 0.9999
+    },
+    {
+     "start": 166.6,
+     "end": 166.84,
+     "word": " 나올",
+     "probability": 1.0
+    },
+    {
+     "start": 166.84,
+     "end": 167.12,
+     "word": " 텐데",
+     "probability": 0.9993
+    }
+   ]
+  },
+  {
+   "start": 167.12,
+   "end": 170.22,
+   "text": " 네 죄송합니다",
+   "words": [
+    {
+     "start": 167.12,
+     "end": 168.66,
+     "word": " 네",
+     "probability": 0.5489
+    },
+    {
+     "start": 168.66,
+     "end": 170.22,
+     "word": " 죄송합니다",
+     "probability": 0.8795
+    }
+   ]
+  },
+  {
+   "start": 170.22,
+   "end": 172.68,
+   "text": " 추정치 제가 좀",
+   "words": [
+    {
+     "start": 170.22,
+     "end": 171.5,
+     "word": " 추정치",
+     "probability": 0.63
+    },
+    {
+     "start": 171.5,
+     "end": 172.52,
+     "word": " 제가",
+     "probability": 0.9788
+    },
+    {
+     "start": 172.52,
+     "end": 172.68,
+     "word": " 좀",
+     "probability": 0.994
+    }
+   ]
+  }
+ ]
+}

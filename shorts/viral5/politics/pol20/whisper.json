@@ -1,0 +1,1024 @@
+{
+ "model": "faster-whisper large-v3 (int8, CPU)",
+ "params": {
+  "language": "ko",
+  "beam_size": 5,
+  "vad_filter": false,
+  "word_timestamps": true,
+  "condition_on_previous_text": false
+ },
+ "source": "20.mp4",
+ "duration_s": 95.016,
+ "segments": [
+  {
+   "start": 0.0,
+   "end": 23.92,
+   "text": " 잘 알겠습니다. 그런데 위원장 본인이 아이디어 내시고 사업을 추진하고 본인이 이끄는 회사가 상표권을 확보했는데 저희들이 좀 아쉬운 거는요. 박진영 위원장님과 오버롭 되는 게 강훈식 전 비서실장, 최희영 장관님 그리고 이번에 멕시코에서 대통령과 찍은 사진이 상당히 좀 아쉬웠어요.",
+   "words": [
+    {
+     "start": 0.0,
+     "end": 1.02,
+     "word": " 잘",
+     "probability": 0.8646
+    },
+    {
+     "start": 1.02,
+     "end": 1.78,
+     "word": " 알겠습니다.",
+     "probability": 0.9998
+    },
+    {
+     "start": 2.04,
+     "end": 2.64,
+     "word": " 그런데",
+     "probability": 0.9763
+    },
+    {
+     "start": 2.64,
+     "end": 3.12,
+     "word": " 위원장",
+     "probability": 0.9967
+    },
+    {
+     "start": 3.12,
+     "end": 3.58,
+     "word": " 본인이",
+     "probability": 0.9991
+    },
+    {
+     "start": 3.58,
+     "end": 3.96,
+     "word": " 아이디어",
+     "probability": 0.994
+    },
+    {
+     "start": 3.96,
+     "end": 4.34,
+     "word": " 내시고",
+     "probability": 0.9977
+    },
+    {
+     "start": 4.34,
+     "end": 4.92,
+     "word": " 사업을",
+     "probability": 0.9998
+    },
+    {
+     "start": 4.92,
+     "end": 5.44,
+     "word": " 추진하고",
+     "probability": 0.9996
+    },
+    {
+     "start": 5.44,
+     "end": 6.58,
+     "word": " 본인이",
+     "probability": 0.9994
+    },
+    {
+     "start": 6.58,
+     "end": 6.9,
+     "word": " 이끄는",
+     "probability": 1.0
+    },
+    {
+     "start": 6.9,
+     "end": 7.32,
+     "word": " 회사가",
+     "probability": 0.9996
+    },
+    {
+     "start": 7.32,
+     "end": 8.14,
+     "word": " 상표권을",
+     "probability": 0.9998
+    },
+    {
+     "start": 8.14,
+     "end": 8.58,
+     "word": " 확보했는데",
+     "probability": 0.9977
+    },
+    {
+     "start": 8.58,
+     "end": 9.94,
+     "word": " 저희들이",
+     "probability": 0.9961
+    },
+    {
+     "start": 9.94,
+     "end": 10.04,
+     "word": " 좀",
+     "probability": 0.9969
+    },
+    {
+     "start": 10.04,
+     "end": 10.52,
+     "word": " 아쉬운",
+     "probability": 0.9998
+    },
+    {
+     "start": 10.52,
+     "end": 10.96,
+     "word": " 거는요.",
+     "probability": 0.6226
+    },
+    {
+     "start": 11.82,
+     "end": 12.78,
+     "word": " 박진영",
+     "probability": 0.958
+    },
+    {
+     "start": 12.78,
+     "end": 13.8,
+     "word": " 위원장님과",
+     "probability": 0.996
+    },
+    {
+     "start": 13.8,
+     "end": 14.34,
+     "word": " 오버롭",
+     "probability": 0.784
+    },
+    {
+     "start": 14.34,
+     "end": 14.5,
+     "word": " 되는",
+     "probability": 0.899
+    },
+    {
+     "start": 14.5,
+     "end": 14.88,
+     "word": " 게",
+     "probability": 0.9998
+    },
+    {
+     "start": 14.88,
+     "end": 15.9,
+     "word": " 강훈식",
+     "probability": 0.9901
+    },
+    {
+     "start": 15.9,
+     "end": 16.14,
+     "word": " 전",
+     "probability": 0.9943
+    },
+    {
+     "start": 16.14,
+     "end": 16.98,
+     "word": " 비서실장,",
+     "probability": 0.9998
+    },
+    {
+     "start": 17.14,
+     "end": 17.7,
+     "word": " 최희영",
+     "probability": 0.8536
+    },
+    {
+     "start": 17.7,
+     "end": 18.42,
+     "word": " 장관님",
+     "probability": 0.9995
+    },
+    {
+     "start": 18.42,
+     "end": 18.7,
+     "word": " 그리고",
+     "probability": 0.8944
+    },
+    {
+     "start": 18.7,
+     "end": 19.04,
+     "word": " 이번에",
+     "probability": 0.9569
+    },
+    {
+     "start": 19.04,
+     "end": 19.9,
+     "word": " 멕시코에서",
+     "probability": 0.9997
+    },
+    {
+     "start": 19.9,
+     "end": 21.22,
+     "word": " 대통령과",
+     "probability": 0.9976
+    },
+    {
+     "start": 21.22,
+     "end": 21.54,
+     "word": " 찍은",
+     "probability": 0.9999
+    },
+    {
+     "start": 21.54,
+     "end": 22.14,
+     "word": " 사진이",
+     "probability": 0.9999
+    },
+    {
+     "start": 22.14,
+     "end": 22.94,
+     "word": " 상당히",
+     "probability": 0.9999
+    },
+    {
+     "start": 22.94,
+     "end": 23.14,
+     "word": " 좀",
+     "probability": 0.9605
+    },
+    {
+     "start": 23.14,
+     "end": 23.92,
+     "word": " 아쉬웠어요.",
+     "probability": 0.9998
+    }
+   ]
+  },
+  {
+   "start": 23.92,
+   "end": 33.18,
+   "text": " 왜냐하면 국민들이 어떻게 생각할까 혹시 박진영 위원장은 저쪽에 섰나 그런 게 아니면",
+   "words": [
+    {
+     "start": 23.92,
+     "end": 24.66,
+     "word": " 왜냐하면",
+     "probability": 0.974
+    },
+    {
+     "start": 24.66,
+     "end": 25.28,
+     "word": " 국민들이",
+     "probability": 0.9998
+    },
+    {
+     "start": 25.28,
+     "end": 25.46,
+     "word": " 어떻게",
+     "probability": 1.0
+    },
+    {
+     "start": 25.46,
+     "end": 26.14,
+     "word": " 생각할까",
+     "probability": 0.9999
+    },
+    {
+     "start": 26.14,
+     "end": 27.2,
+     "word": " 혹시",
+     "probability": 0.3191
+    },
+    {
+     "start": 27.2,
+     "end": 27.84,
+     "word": " 박진영",
+     "probability": 0.9876
+    },
+    {
+     "start": 27.84,
+     "end": 28.58,
+     "word": " 위원장은",
+     "probability": 0.996
+    },
+    {
+     "start": 28.58,
+     "end": 29.42,
+     "word": " 저쪽에",
+     "probability": 0.9991
+    },
+    {
+     "start": 29.42,
+     "end": 29.86,
+     "word": " 섰나",
+     "probability": 0.9975
+    },
+    {
+     "start": 29.86,
+     "end": 31.36,
+     "word": " 그런",
+     "probability": 0.6692
+    },
+    {
+     "start": 31.36,
+     "end": 32.2,
+     "word": " 게",
+     "probability": 0.81
+    },
+    {
+     "start": 32.2,
+     "end": 33.18,
+     "word": " 아니면",
+     "probability": 0.9996
+    }
+   ]
+  },
+  {
+   "start": 33.18,
+   "end": 38.24,
+   "text": " 오히려 저는 박진영 위원장이 피해자가 아닌가 피해를 보고 계시는 거 아닌가",
+   "words": [
+    {
+     "start": 33.18,
+     "end": 34.34,
+     "word": " 오히려",
+     "probability": 0.9992
+    },
+    {
+     "start": 34.34,
+     "end": 34.52,
+     "word": " 저는",
+     "probability": 1.0
+    },
+    {
+     "start": 34.52,
+     "end": 35.12,
+     "word": " 박진영",
+     "probability": 1.0
+    },
+    {
+     "start": 35.12,
+     "end": 35.7,
+     "word": " 위원장이",
+     "probability": 0.9998
+    },
+    {
+     "start": 35.7,
+     "end": 36.42,
+     "word": " 피해자가",
+     "probability": 0.9972
+    },
+    {
+     "start": 36.42,
+     "end": 36.8,
+     "word": " 아닌가",
+     "probability": 1.0
+    },
+    {
+     "start": 36.8,
+     "end": 37.18,
+     "word": " 피해를",
+     "probability": 0.9976
+    },
+    {
+     "start": 37.18,
+     "end": 37.34,
+     "word": " 보고",
+     "probability": 1.0
+    },
+    {
+     "start": 37.34,
+     "end": 37.72,
+     "word": " 계시는",
+     "probability": 0.9999
+    },
+    {
+     "start": 37.72,
+     "end": 37.88,
+     "word": " 거",
+     "probability": 0.9851
+    },
+    {
+     "start": 37.88,
+     "end": 38.24,
+     "word": " 아닌가",
+     "probability": 1.0
+    }
+   ]
+  },
+  {
+   "start": 38.24,
+   "end": 45.2,
+   "text": " 왜냐하면 그 명성이 그 사진이 계속 오버랩 때문에 이 정권의 흥망과 같이 가는 거 아닌가",
+   "words": [
+    {
+     "start": 38.24,
+     "end": 38.5,
+     "word": " 왜냐하면",
+     "probability": 0.9638
+    },
+    {
+     "start": 38.5,
+     "end": 38.88,
+     "word": " 그",
+     "probability": 0.9999
+    },
+    {
+     "start": 38.88,
+     "end": 39.48,
+     "word": " 명성이",
+     "probability": 0.9996
+    },
+    {
+     "start": 39.48,
+     "end": 40.46,
+     "word": " 그",
+     "probability": 0.9762
+    },
+    {
+     "start": 40.46,
+     "end": 40.96,
+     "word": " 사진이",
+     "probability": 0.9999
+    },
+    {
+     "start": 40.96,
+     "end": 41.2,
+     "word": " 계속",
+     "probability": 1.0
+    },
+    {
+     "start": 41.2,
+     "end": 41.68,
+     "word": " 오버랩",
+     "probability": 0.8884
+    },
+    {
+     "start": 41.68,
+     "end": 41.84,
+     "word": " 때문에",
+     "probability": 0.4508
+    },
+    {
+     "start": 41.84,
+     "end": 42.4,
+     "word": " 이",
+     "probability": 0.9733
+    },
+    {
+     "start": 42.4,
+     "end": 43.7,
+     "word": " 정권의",
+     "probability": 0.983
+    },
+    {
+     "start": 43.7,
+     "end": 44.2,
+     "word": " 흥망과",
+     "probability": 0.8486
+    },
+    {
+     "start": 44.2,
+     "end": 44.44,
+     "word": " 같이",
+     "probability": 0.9984
+    },
+    {
+     "start": 44.44,
+     "end": 44.62,
+     "word": " 가는",
+     "probability": 0.9995
+    },
+    {
+     "start": 44.62,
+     "end": 44.84,
+     "word": " 거",
+     "probability": 0.9991
+    },
+    {
+     "start": 44.84,
+     "end": 45.2,
+     "word": " 아닌가",
+     "probability": 1.0
+    }
+   ]
+  },
+  {
+   "start": 45.2,
+   "end": 48.14,
+   "text": " 이런 걱정을 좀 하게 됐습니다",
+   "words": [
+    {
+     "start": 45.2,
+     "end": 46.32,
+     "word": " 이런",
+     "probability": 0.9992
+    },
+    {
+     "start": 46.32,
+     "end": 47.26,
+     "word": " 걱정을",
+     "probability": 0.9998
+    },
+    {
+     "start": 47.26,
+     "end": 47.4,
+     "word": " 좀",
+     "probability": 0.9911
+    },
+    {
+     "start": 47.4,
+     "end": 47.6,
+     "word": " 하게",
+     "probability": 0.9996
+    },
+    {
+     "start": 47.6,
+     "end": 48.14,
+     "word": " 됐습니다",
+     "probability": 0.9994
+    }
+   ]
+  },
+  {
+   "start": 57.4,
+   "end": 59.4,
+   "text": " 네 명확하게 밝힐 수 있습니다",
+   "words": [
+    {
+     "start": 57.4,
+     "end": 58.08,
+     "word": " 네",
+     "probability": 0.4488
+    },
+    {
+     "start": 58.08,
+     "end": 58.76,
+     "word": " 명확하게",
+     "probability": 0.8206
+    },
+    {
+     "start": 58.76,
+     "end": 59.08,
+     "word": " 밝힐",
+     "probability": 0.9989
+    },
+    {
+     "start": 59.08,
+     "end": 59.16,
+     "word": " 수",
+     "probability": 1.0
+    },
+    {
+     "start": 59.16,
+     "end": 59.4,
+     "word": " 있습니다",
+     "probability": 1.0
+    }
+   ]
+  },
+  {
+   "start": 59.4,
+   "end": 65.32,
+   "text": " 저는 실제로 일하면서 이재명 대통령을 위해서 일한다는 생각을 해본 적도 없고요",
+   "words": [
+    {
+     "start": 59.4,
+     "end": 60.08,
+     "word": " 저는",
+     "probability": 0.2313
+    },
+    {
+     "start": 60.08,
+     "end": 60.84,
+     "word": " 실제로",
+     "probability": 0.9997
+    },
+    {
+     "start": 60.84,
+     "end": 62.28,
+     "word": " 일하면서",
+     "probability": 0.6635
+    },
+    {
+     "start": 62.28,
+     "end": 62.82,
+     "word": " 이재명",
+     "probability": 0.9993
+    },
+    {
+     "start": 62.82,
+     "end": 63.52,
+     "word": " 대통령을",
+     "probability": 0.9999
+    },
+    {
+     "start": 63.52,
+     "end": 63.84,
+     "word": " 위해서",
+     "probability": 0.9998
+    },
+    {
+     "start": 63.84,
+     "end": 64.24,
+     "word": " 일한다는",
+     "probability": 0.9998
+    },
+    {
+     "start": 64.24,
+     "end": 64.5,
+     "word": " 생각을",
+     "probability": 0.9998
+    },
+    {
+     "start": 64.5,
+     "end": 64.84,
+     "word": " 해본",
+     "probability": 0.9917
+    },
+    {
+     "start": 64.84,
+     "end": 65.04,
+     "word": " 적도",
+     "probability": 0.9984
+    },
+    {
+     "start": 65.04,
+     "end": 65.32,
+     "word": " 없고요",
+     "probability": 0.9964
+    }
+   ]
+  },
+  {
+   "start": 65.32,
+   "end": 69.2,
+   "text": " 이 정권 혹은 민주당을 위해서 일한다는 생각을 1초도 해본 적이 없고",
+   "words": [
+    {
+     "start": 65.32,
+     "end": 66.02,
+     "word": " 이",
+     "probability": 0.9972
+    },
+    {
+     "start": 66.02,
+     "end": 66.48,
+     "word": " 정권",
+     "probability": 0.9999
+    },
+    {
+     "start": 66.48,
+     "end": 66.8,
+     "word": " 혹은",
+     "probability": 0.9936
+    },
+    {
+     "start": 66.8,
+     "end": 67.22,
+     "word": " 민주당을",
+     "probability": 0.9913
+    },
+    {
+     "start": 67.22,
+     "end": 67.32,
+     "word": " 위해서",
+     "probability": 0.9991
+    },
+    {
+     "start": 67.32,
+     "end": 67.68,
+     "word": " 일한다는",
+     "probability": 1.0
+    },
+    {
+     "start": 67.68,
+     "end": 67.98,
+     "word": " 생각을",
+     "probability": 1.0
+    },
+    {
+     "start": 67.98,
+     "end": 68.56,
+     "word": " 1초도",
+     "probability": 0.9956
+    },
+    {
+     "start": 68.56,
+     "end": 68.82,
+     "word": " 해본",
+     "probability": 0.9999
+    },
+    {
+     "start": 68.82,
+     "end": 69.02,
+     "word": " 적이",
+     "probability": 0.9979
+    },
+    {
+     "start": 69.02,
+     "end": 69.2,
+     "word": " 없고",
+     "probability": 0.9996
+    }
+   ]
+  },
+  {
+   "start": 69.2,
+   "end": 70.66,
+   "text": " 제 마음속에 1%도 없습니다",
+   "words": [
+    {
+     "start": 69.2,
+     "end": 69.42,
+     "word": " 제",
+     "probability": 0.9994
+    },
+    {
+     "start": 69.42,
+     "end": 69.9,
+     "word": " 마음속에",
+     "probability": 0.9788
+    },
+    {
+     "start": 69.9,
+     "end": 70.0,
+     "word": " 1",
+     "probability": 0.9999
+    },
+    {
+     "start": 70.0,
+     "end": 70.48,
+     "word": "%도",
+     "probability": 0.9979
+    },
+    {
+     "start": 70.48,
+     "end": 70.66,
+     "word": " 없습니다",
+     "probability": 0.9998
+    }
+   ]
+  },
+  {
+   "start": 70.66,
+   "end": 75.32,
+   "text": " 그냥 이 일이 우리 다음 세대에 정말 도움이 될 것 같아서 하는 겁니다",
+   "words": [
+    {
+     "start": 70.66,
+     "end": 71.36,
+     "word": " 그냥",
+     "probability": 0.9924
+    },
+    {
+     "start": 71.36,
+     "end": 71.54,
+     "word": " 이",
+     "probability": 1.0
+    },
+    {
+     "start": 71.54,
+     "end": 71.92,
+     "word": " 일이",
+     "probability": 0.9999
+    },
+    {
+     "start": 71.92,
+     "end": 72.5,
+     "word": " 우리",
+     "probability": 0.9999
+    },
+    {
+     "start": 72.5,
+     "end": 72.92,
+     "word": " 다음",
+     "probability": 1.0
+    },
+    {
+     "start": 72.92,
+     "end": 73.4,
+     "word": " 세대에",
+     "probability": 0.9999
+    },
+    {
+     "start": 73.4,
+     "end": 73.76,
+     "word": " 정말",
+     "probability": 0.9999
+    },
+    {
+     "start": 73.76,
+     "end": 74.34,
+     "word": " 도움이",
+     "probability": 0.9999
+    },
+    {
+     "start": 74.34,
+     "end": 74.48,
+     "word": " 될",
+     "probability": 1.0
+    },
+    {
+     "start": 74.48,
+     "end": 74.62,
+     "word": " 것",
+     "probability": 0.9927
+    },
+    {
+     "start": 74.62,
+     "end": 74.9,
+     "word": " 같아서",
+     "probability": 0.9803
+    },
+    {
+     "start": 74.9,
+     "end": 75.14,
+     "word": " 하는",
+     "probability": 0.9997
+    },
+    {
+     "start": 75.14,
+     "end": 75.32,
+     "word": " 겁니다",
+     "probability": 0.9999
+    }
+   ]
+  },
+  {
+   "start": 75.32,
+   "end": 76.96,
+   "text": " 그 외에는 어떠한 생각도 없습니다",
+   "words": [
+    {
+     "start": 75.32,
+     "end": 75.52,
+     "word": " 그",
+     "probability": 0.9942
+    },
+    {
+     "start": 75.52,
+     "end": 75.92,
+     "word": " 외에는",
+     "probability": 0.9998
+    },
+    {
+     "start": 75.92,
+     "end": 76.38,
+     "word": " 어떠한",
+     "probability": 0.9988
+    },
+    {
+     "start": 76.38,
+     "end": 76.72,
+     "word": " 생각도",
+     "probability": 1.0
+    },
+    {
+     "start": 76.72,
+     "end": 76.96,
+     "word": " 없습니다",
+     "probability": 0.9997
+    }
+   ]
+  },
+  {
+   "start": 76.96,
+   "end": 79.3,
+   "text": " 저 증인 선수 했으니까 믿어주세요",
+   "words": [
+    {
+     "start": 76.96,
+     "end": 77.74,
+     "word": " 저",
+     "probability": 0.3657
+    },
+    {
+     "start": 77.74,
+     "end": 78.16,
+     "word": " 증인",
+     "probability": 0.9971
+    },
+    {
+     "start": 78.16,
+     "end": 78.44,
+     "word": " 선수",
+     "probability": 0.8852
+    },
+    {
+     "start": 78.44,
+     "end": 78.66,
+     "word": " 했으니까",
+     "probability": 0.92
+    },
+    {
+     "start": 78.66,
+     "end": 79.3,
+     "word": " 믿어주세요",
+     "probability": 0.9996
+    }
+   ]
+  },
+  {
+   "start": 83.52,
+   "end": 87.34,
+   "text": " 그렇게 안 하도록 최선을 다하겠습니다 정말입니다",
+   "words": [
+    {
+     "start": 83.52,
+     "end": 84.44,
+     "word": " 그렇게",
+     "probability": 0.618
+    },
+    {
+     "start": 84.44,
+     "end": 85.36,
+     "word": " 안",
+     "probability": 0.9999
+    },
+    {
+     "start": 85.36,
+     "end": 85.68,
+     "word": " 하도록",
+     "probability": 0.9921
+    },
+    {
+     "start": 85.68,
+     "end": 86.52,
+     "word": " 최선을",
+     "probability": 0.9999
+    },
+    {
+     "start": 86.52,
+     "end": 86.78,
+     "word": " 다하겠습니다",
+     "probability": 0.9998
+    },
+    {
+     "start": 86.78,
+     "end": 87.34,
+     "word": " 정말입니다",
+     "probability": 0.8325
+    }
+   ]
+  },
+  {
+   "start": 87.34,
+   "end": 93.04,
+   "text": " 다음에 야당 의원님들께서 박진영 씨 약속 잘 지켰나 할 정도로 잘하겠습니다",
+   "words": [
+    {
+     "start": 87.34,
+     "end": 89.16,
+     "word": " 다음에",
+     "probability": 0.6901
+    },
+    {
+     "start": 89.16,
+     "end": 90.16,
+     "word": " 야당",
+     "probability": 0.9993
+    },
+    {
+     "start": 90.16,
+     "end": 90.66,
+     "word": " 의원님들께서",
+     "probability": 0.9876
+    },
+    {
+     "start": 90.66,
+     "end": 91.3,
+     "word": " 박진영",
+     "probability": 0.9495
+    },
+    {
+     "start": 91.3,
+     "end": 91.38,
+     "word": " 씨",
+     "probability": 0.5662
+    },
+    {
+     "start": 91.38,
+     "end": 91.62,
+     "word": " 약속",
+     "probability": 0.9997
+    },
+    {
+     "start": 91.62,
+     "end": 91.76,
+     "word": " 잘",
+     "probability": 1.0
+    },
+    {
+     "start": 91.76,
+     "end": 92.14,
+     "word": " 지켰나",
+     "probability": 0.8661
+    },
+    {
+     "start": 92.14,
+     "end": 92.28,
+     "word": " 할",
+     "probability": 0.9406
+    },
+    {
+     "start": 92.28,
+     "end": 92.54,
+     "word": " 정도로",
+     "probability": 0.9999
+    },
+    {
+     "start": 92.54,
+     "end": 93.04,
+     "word": " 잘하겠습니다",
+     "probability": 0.9554
+    }
+   ]
+  }
+ ]
+}
