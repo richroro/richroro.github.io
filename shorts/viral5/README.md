@@ -1034,3 +1034,46 @@ MEDIA=<저장소>/media python3 politics/prep_split.py boom1    # 원본: media/
   영상: U.S. Marine Corps video by Sgt. Jacob Yost (DVIDS 876009). 미 해병대·국방부가 이 영상을 보증하거나 후원하지 않습니다.
   ```
 - 해시태그: `#칼구스타프 #무반동총 #후폭풍 #미해병대 #shorts`
+
+## 문 폭파 돌입 쇼츠 (`politics/boom3`)
+
+| id | 제목 | 길이 | 내용 |
+| --- | --- | --- | --- |
+| `boom3` | 문 하나 따는데 / 이렇게까지? | 20.8초 | 첫 화면은 문이 터지는 순간의 불꽃과 방폭 담요 뒤에 붙어 선 해병들입니다. 이어서 "Five, four, three, two, one" 카운트다운, 폭파, 연기 속 돌입, 다른 날 문 앞에 둔 카메라에 잡힌 폭파 순서로 갑니다. |
+
+```bash
+MEDIA=<저장소>/media python3 politics/prep_split.py boom3
+./render.sh boom3 final/boom3.mp4
+```
+
+**영상** (둘 다 DVIDS B-Roll, PUBLIC DOMAIN, Restrictions 안내 없음, 미 해병대 촬영)
+- [DVIDS 580472 「Breaching Range」](https://www.dvidshub.net/video/580472/breaching-range)
+  - 페이지 머리 크레디트: Staff Sgt. Albert Carls. 설명 끝: "U.S. Marine Corps video by Lance Cpl. Kaitlynn M. Hendricks".
+  - 촬영 2018.1.12(설명 기준), 노스캐롤라이나 캠프 르준, 보병학교(동부) 보병훈련대대 A중대의 도심 폭파 돌입 교육 종합 평가.
+  - 원본 파일: https://d34w7g4gy10iej.cloudfront.net/video/1801/DOD_105249590/DOD_105249590-1024x576-1769k.mp4
+  - 쓴 구간(원본 초): 473.3–475.0(첫 화면), 466.4–481.6.
+- [DVIDS 580456 「Breaching Range」](https://www.dvidshub.net/video/580456/breaching-range)
+  - 크레디트: Staff Sgt. Albert J. Carls. 촬영 2018.1.11(설명 기준), 같은 교육. 문 앞 바닥에 둔 카메라 화면입니다.
+  - 원본 파일: https://d34w7g4gy10iej.cloudfront.net/video/1801/DOD_105249328/DOD_105249328-1024x576-1769k.mp4
+  - 쓴 구간(원본 초): 286.5–290.4.
+  - 다른 날 다른 폭파라서 자막에 "다른 날"이라고 적었습니다.
+- 원본 조각: `media/boom/boom_dvids580472_460-485.mp4`, `media/boom/boom_dvids580456_280-295.mp4`. 옆의 .json에 출처와 구간을 적었습니다.
+
+**소리와 자막**
+- AST로 검사한 결과 Speech, Artillery fire, Explosion만 나오고 음악은 없었습니다. 원래 소리를 그대로 썼습니다.
+- 카운트다운 "Five, four, three, two, one"은 faster-whisper small과 medium.en이 같게 들었습니다.
+- 두 모델이 엇갈린 말("Reach there"/"Freeze clear", "Lay down more…")은 넣지 않았습니다.
+- 설명 자막("미 해병대 폭파 돌입 훈련")은 DVIDS 설명("demolition and explosive breaching training")에 근거합니다.
+- 화면에 보이는 대로 "문이 터지듯 열렸다", "연기 속으로 바로 돌입"이라고만 적었습니다. 장약 종류나 만드는 법은 다루지 않았습니다.
+- 라우드니스 −14.3 LUFS(폭발 피크가 true peak 제한에 걸림).
+
+### 업로드 문구
+
+**boom3**
+- 제목: `문 하나 따는데 이렇게까지? 💥` (16자)
+- 설명:
+  ```
+  미 해병대 보병학교의 도심 폭파 돌입(explosive breaching) 훈련. "다섯, 넷, 셋, 둘, 하나" 뒤에 문이 터지고, 대원들은 바로 연기 속으로 들어갑니다. (2018년 1월, 노스캐롤라이나 캠프 르준)
+  영상: U.S. Marine Corps video by Lance Cpl. Kaitlynn M. Hendricks / Staff Sgt. Albert J. Carls (DVIDS 580472, 580456). 미 해병대·국방부가 이 영상을 보증하거나 후원하지 않습니다.
+  ```
+- 해시태그: `#미해병대 #폭파돌입 #군대 #해병대 #shorts`
