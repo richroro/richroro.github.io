@@ -1,0 +1,46 @@
+{
+ "file": "21.mp4",
+ "source": "국회 영상회의록시스템 (National Assembly official VOD)",
+ "file_url": "https://m.webcast.go.kr/vod/_definst_/FULL/2026/munche/DHP5922439A1_02_202610071000.mp4/playlist.m3u8",
+ "file_note": "HLS (fMP4), 1280x720; fetched as init + .m4s segments and remuxed (ffmpeg's HLS reader fails on these files). Re-encoded H.264 CRF 25. Times are seconds on the session file's timeline.",
+ "committee": "문화체육관광위원회 (문체위)",
+ "session": "2026년도 국정감사(문화체육관광부 등) — 전체보기[2] (파일 _02, 14:08 감사계속)",
+ "date": "2026-10-07",
+ "subtitles": "no NA subtitles for this session (sami=0); <n>.whisper.json = faster-whisper large-v3, cross-checked with faster-whisper medium and small",
+ "youtube_clip": null,
+ "license_note": "국회 회의 영상: 「국회법」 제149조제2항 — 상업적 목적으로 사용할 수 없음.",
+ "source_page": "https://w3.assembly.go.kr/main/player.do?menu=30&mc=359&ct1=22&ct2=439&ct3=A1&type=&no=667252&wv=0",
+ "api_fileinfo": "https://w3.assembly.go.kr/main/service/movie.do?cmd=fileInfo&mc=359&ct1=22&ct2=439&ct3=A1&no=667252&wv=0",
+ "speakers": [
+  "정연욱 위원(국민의힘)",
+  "박진영 위원장(대중문화교류위원회)"
+ ],
+ "speaker_index_entry": "정연욱 위원 질의 / 박진영 위원장 답변 / 최휘영 장관 답변 / 이재정 위원장 발언 (realTime 15:07:26, 6:14)",
+ "turn_in_out_s": [
+  3565.83,
+  3940.47
+ ],
+ "cut_in_out_s": [
+  3705.8,
+  3878.8
+ ],
+ "cut_duration_s": 173.0,
+ "used_spans_on_clip_s": [
+  [
+   71.2,
+   104.85
+  ],
+  [
+   143.2,
+   153.75
+  ],
+  [
+   157.3,
+   165.65
+  ]
+ ],
+ "exchange": "정 의원이 페노메논 52만 명·1조 원 추정치가 문광연 중간 추정치였다며 '이 추정치 자료 자체가 이렇게 허접하게 만들어졌으면 … 얼마나 믿을 수 있겠습니까' → (코첼라 계절 비교 질의 뒤) 박진영 '이 추정치는 사실은 제가 어떤 데이터들로 어떻게 추정된 건지 정확하게 알지는 못해서 … 다만 이런 추정치가 높게 나오는 것은 반대로 저희에게 어마어마한 발목을 잡는 일이 될 거여서 … 조심스럽습니다.'",
+ "picture_note": "much of this turn shows 정 의원's slides full-frame (clip 0–76 s, 118–158 s); the short shows them as single panels",
+ "cut_note": "153.75–157.3 left out: a short interjection the three recognizers disagree on (위원장이니까 … 책임 …), speaker not certain",
+ "pick_note": "NATV has no per-exchange 박진영 clip. Second most-covered 박진영 exchange: KNN vLzjQDRdqJM '\"자료를 이렇게 허접하게?\" 정연욱 직격탄' (~67K) — YouTube search listing 2026-10-09 ~08:05 UTC; ranking only."
+}
