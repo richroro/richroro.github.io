@@ -2,7 +2,7 @@
 // (see each short's edit.json); everything here is data-driven from src/data/<id>.json written by prep.py.
 import React from "react";
 import { AbsoluteFill, Audio, OffthreadVideo, Sequence, getStaticFiles, interpolate, staticFile, useCurrentFrame, useVideoConfig } from "remotion";
-import { fitText } from "@remotion/layout-utils";
+import { fitText, measureText } from "@remotion/layout-utils";
 import { Captions, CapPage } from "./lib/Captions";
 import { BODY, TITLE, loadFonts } from "./lib/fonts";
 import { Sticker, clamp, eOut, prog } from "./lib/fx";
@@ -177,10 +177,20 @@ const Hook: React.FC<{ d: ShortData; t: number }> = ({ d, t }) => {
   );
 };
 
-const Credit: React.FC<{ d: ShortData; t: number }> = ({ d, t }) => (
-  <div style={{ position: "absolute", right: 24, top: 414, fontFamily: BODY, fontWeight: 700, fontSize: 26, color: "rgba(255,255,255,.85)",
-    background: "rgba(0,0,0,.45)", borderRadius: 12, padding: "6px 14px" }}>{d.clips.find((c) => t >= c.at && t < c.at + c.dur)?.credit ?? d.credit}</div>
-);
+const Credit: React.FC<{ d: ShortData; t: number }> = ({ d, t }) => {
+  const c = d.clips.find((x) => t >= x.at && t < x.at + x.dur);
+  const text = c?.credit ?? d.credit;
+  // the speaker label sits at the frame's top left (clips-with-captions shorts): when a long label and the credit
+  // would run into each other on that row, the credit drops below the label
+  const label = d.split && c?.label && FRAME[c.frame].top < 420 ? c.label : "";
+  const lw = label ? measureText({ text: label, fontFamily: BODY, fontSize: 34, fontWeight: "800" }).width + 36 : 0;
+  const cw = measureText({ text, fontFamily: BODY, fontSize: 26, fontWeight: "700" }).width + 28;
+  const clash = !!label && 24 + lw + 16 + cw + 24 > 1080;
+  return (
+    <div style={{ position: "absolute", right: 24, top: clash ? 482 : 414, fontFamily: BODY, fontWeight: 700, fontSize: 26, color: "rgba(255,255,255,.85)",
+      background: "rgba(0,0,0,.45)", borderRadius: 12, padding: "6px 14px" }}>{text}</div>
+  );
+};
 
 export const ClipShort: React.FC<{ data: ShortData }> = ({ data: d }) => {
   const t = useCurrentFrame() / FPS;
