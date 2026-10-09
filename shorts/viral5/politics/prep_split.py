@@ -22,7 +22,8 @@ edit.json:
   music      [{"src", "from", "at", "to", "fade", "gain"}]: a bed built from tracks in $MEDIA (or public/...), each
              placed from output second "at" to "to", starting "from" seconds into its file; a part can also be a
              voice taken from a clip, to run under other pictures;  musicGain;  duck: false keeps the bed level
-  segments   also take "src" (another clip), "audio" (its level, 0 = muted), "rotate" (90/-90/180), "push" ([z0, z1])
+  segments   also take "src" (another clip), "audio" (its level, 0 = muted), "rotate" (90/-90/180), "push" ([z0, z1]),
+             "vf" (an extra ffmpeg video filter, applied after the rotation)
 """
 import difflib, json, os, re, subprocess, sys
 import numpy as np
@@ -160,6 +161,7 @@ def main(sid):
         dur = s["out"] - s["in"]; out = f"{pub}/clips/c{k:02d}.mp4"
         seg_src = f"{MEDIA}/{s['src']}" if s.get("src") else src  # a segment may come from another clip of the same hearing
         vf = "fps=30" + {90: ",transpose=1", -90: ",transpose=2", 180: ",hflip,vflip"}.get(s.get("rotate", 0), "")  # e.g. a camera mounted sideways
+        if s.get("vf"): vf += "," + s["vf"]  # an extra ffmpeg filter for this stretch (grade a dark shot, blur a face)
         subprocess.run(["ffmpeg", "-v", "error", "-y", "-ss", str(s["in"]), "-t", f"{dur:.3f}", "-i", seg_src, "-vf", vf,
                         "-c:v", "libx264", "-preset", "veryfast", "-crf", "16", "-pix_fmt", "yuv420p", "-c:a", "aac", "-b:a", "192k", "-ar", "48000", out], check=True)
         clip = {"file": f"{sid}/clips/c{k:02d}.mp4", "label": s.get("label", ""), "at": round(at, 3), "dur": round(dur, 3), "speed": 1.0,

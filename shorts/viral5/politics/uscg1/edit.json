@@ -1,0 +1,46 @@
+{
+ "src": "uscg/uscg_chefornak_ice_2026-04-12.mp4",
+ "title": ["얼음 위에 하루 넘게 갇힌 가족", "구조 헬기 실제 교신 🎧🚁"],
+ "credit": "영상: 미국 해안경비대 (U.S. Coast Guard)",
+ "panels": [],
+ "segments": [
+  {"in": 0.0, "out": 15.0, "rotate": 90, "vf": "eq=gamma=1.25:contrast=1.08:saturation=0.9", "single": [0.5, 0.5, 1.0], "push": [1.0, 1.06], "label": "알래스카 · 2026.4.12 새벽"},
+  {"in": 28.0, "out": 35.4, "rotate": 90, "vf": "eq=gamma=1.25:contrast=1.08:saturation=0.9", "single": [0.5, 0.5, 1.0], "push": [1.0, 1.04], "label": "🎙 헬기 호이스트 운용사 교신"},
+  {"in": 50.0, "out": 61.0, "rotate": 90, "vf": "eq=gamma=1.25:contrast=1.08:saturation=0.9", "single": [0.5, 0.5, 1.0], "push": [1.0, 1.05], "label": "🎙 헬기 호이스트 운용사 교신"},
+  {"in": 76.8, "out": 84.6, "rotate": 90, "vf": "eq=gamma=1.25:contrast=1.08:saturation=0.9", "single": [0.5, 0.5, 1.0], "push": [1.0, 1.04], "label": "🎙 헬기 호이스트 운용사 교신"},
+  {"in": 91.6, "out": 108.0, "rotate": 90, "vf": "eq=gamma=1.25:contrast=1.08:saturation=0.9", "single": [0.5, 0.5, 1.0], "push": [1.0, 1.06], "label": "🎙 헬기 호이스트 운용사 교신"}
+ ],
+ "lines": [
+  {"who": 0, "at": 0.05, "to": 1.75, "ko": "오른쪽 5, 천천히 오른쪽… 정지", "en": "Right 5, easy right, and hold."},
+  {"who": 0, "t": 1.85, "tend": 5.6, "ko": "알래스카 셰포낙 서쪽 약 16km 바다", "en": ""},
+  {"who": 0, "t": 5.7, "tend": 9.5, "ko": "물범 사냥 나간 가족 4명 (어른 3, 아이 1)", "en": ""},
+  {"who": 0, "t": 9.6, "tend": 12.6, "ko": "5.5m 배가 얼음 위에 갇혀 24시간 넘게 😰", "en": ""},
+  {"who": 0, "at": 13.1, "to": 14.95, "ko": "정지", "en": "And hold."},
+  {"who": 0, "at": 28.25, "to": 30.9, "ko": "무게 받아!", "en": "Take the load."},
+  {"who": 0, "at": 31.25, "to": 33.7, "ko": "바스켓, 얼음에서 떠올랐다", "en": "Basket is clear of the deck."},
+  {"who": 0, "at": 33.75, "to": 35.35, "ko": "천천히 뒤로, 왼쪽으로", "en": "Easy back and left."},
+  {"who": 0, "at": 50.25, "to": 53.4, "ko": "뒤로 30", "en": "Back 30."},
+  {"who": 0, "at": 53.6, "to": 57.2, "ko": "뒤로 20… 뒤로 10", "en": "Back 20. Back 10."},
+  {"who": 0, "at": 58.5, "to": 60.95, "ko": "천천히 뒤로… 정지", "en": "Easy back, and hold."},
+  {"who": 0, "at": 77.2, "to": 79.1, "ko": "생존자, 얼음에서 떠올랐다", "en": "Survivor's clear of the ice."},
+  {"who": 0, "at": 79.2, "to": 81.2, "ko": "천천히 뒤로, 왼쪽으로 가도 좋다", "en": "Clear to move easy back and left."},
+  {"who": 0, "at": 82.9, "to": 84.55, "ko": "생존자, 절반 올라왔다", "en": "Survivor's halfway up."},
+  {"who": 0, "at": 91.85, "to": 94.4, "ko": "생존자, 헬기 바로 아래", "en": "Survivor's just below the aircraft."},
+  {"who": 0, "t": 44.6, "tend": 48.0, "ko": "가는 길은 눈보라에 시야가 거의 0", "en": ""},
+  {"who": 0, "at": 98.6, "to": 100.6, "ko": "생존자, 문 앞까지 왔다", "en": "Survivor's at the cabin rail."},
+  {"who": 0, "t": 50.4, "tend": 53.3, "ko": "4명 모두 구조, 다친 사람 없음 🙏", "en": ""},
+  {"who": 0, "t": 53.4, "tend": 57.9, "ko": "기장: “우리 모두 해 본 임무 중 손꼽히게 힘든 비행”", "en": "“one of the most challenging missions any of us had ever flown”"}
+ ],
+ "stickers": [
+  {"text": "숫자 = 남은 거리(피트)", "from": 23.2, "to": 33.2, "x": 540, "y": 560, "rot": -2, "bg": "#FFFFFF", "fg": "#111", "size": 36},
+  {"text": "헬기는 중간 급유 2번 · 800마일(1,290km) 넘게 비행", "from": 15.2, "to": 19.6, "x": 540, "y": 560, "rot": 2, "bg": "#FFFFFF", "fg": "#111", "size": 34}
+ ],
+ "keys": ["24시간", "4명", "떠올랐다", "절반", "바로", "문", "모두", "0"],
+ "music": [
+  {"src": "public/music/Lightless Dawn.mp3", "from": 164.0, "at": 0.0, "to": 50.6, "fade": 1.0, "gain": 0.3},
+  {"src": "public/music/Lightless Dawn.mp3", "from": 213.6, "at": 49.6, "to": 58.1, "fade": 1.2, "gain": 1.2}
+ ],
+ "musicGain": 1.0,
+ "duck": false,
+ "tail": 0.5
+}

@@ -1,0 +1,39 @@
+{
+ "src": "uscg/uscg_haleiwa_catamaran_2026-07-14.mp4",
+ "title": ["바다에 빠진 두 남자, 헬기가 왔다", "구조된 남자가 한 말 🥹"],
+ "credit": "영상: 미국 해안경비대 (U.S. Coast Guard)",
+ "panels": [],
+ "segments": [
+  {"in": 34.0, "out": 51.9, "single": [0.5, 0.5, 1.0], "push": [1.0, 1.06], "label": "하와이 오아후 · 2026.7.14"},
+  {"in": 56.4, "out": 72.0, "single": [0.5, 0.5, 1.0], "push": [1.0, 1.05], "label": "하와이 오아후 · 2026.7.14"},
+  {"in": 2.5, "out": 21.0, "single": [0.5, 0.5, 1.0], "push": [1.0, 1.03], "vf": "boxblur=luma_radius=20:luma_power=2:chroma_radius=14:chroma_power=2", "label": "구조 직후 해안경비대 기지 (얼굴 가림)"}
+ ],
+ "lines": [
+  {"who": 0, "t": 0.15, "tend": 3.6, "ko": "길이 3m 작은 쌍동선이 뒤집혔다 🌊", "en": ""},
+  {"who": 0, "t": 3.7, "tend": 7.4, "ko": "두 남자가 바다에… 위치 신호기(PLB) 조난 신호 수신", "en": ""},
+  {"who": 0, "t": 7.5, "tend": 11.2, "ko": "이미 떠 있던 해안경비대 비행기·헬기가 방향을 틀었다", "en": ""},
+  {"who": 0, "t": 11.3, "tend": 15.0, "ko": "할레이와 앞바다 18.5km, 뒤집힌 배 옆에서 발견", "en": ""},
+  {"who": 0, "t": 15.1, "tend": 17.8, "ko": "헬기에서 바스켓을 내려 끌어올린다", "en": ""},
+  {"who": 0, "at": 56.85, "to": 59.2, "ko": "생존자, 문 앞까지 올라왔다", "en": "Survivor is coming up to the door."},
+  {"who": 0, "t": 21.1, "tend": 25.1, "ko": "두 사람 모두 헬기로 기지까지 🚁", "en": ""},
+  {"who": 0, "t": 25.2, "tend": 28.9, "ko": "다친 사람은 없었다 🙏", "en": ""},
+  {"who": 0, "at": 68.85, "to": 71.6, "ko": "생존자, 기내로", "en": "…survivor into the cabin."},
+  {"who": 0, "at": 2.85, "to": 3.9, "ko": "고마워요", "en": "Thank you."},
+  {"who": 0, "t": 35.0, "tend": 39.5, "ko": "헬기에서 내린 뒤, 구조된 남자가 한 말", "en": ""},
+  {"who": 0, "at": 8.6, "to": 11.75, "ko": "우리 아빠가 해안경비대였어요. 마스터 치프 잠수사였죠", "en": "Dude, my dad was in the Coast Guard, he was a Master Chief Diver,"},
+  {"who": 0, "at": 11.8, "to": 14.2, "ko": "그래서 해안경비대가 정말 좋아요", "en": "and I love the Coast Guard so much,"},
+  {"who": 0, "at": 14.22, "to": 16.4, "ko": "여러분이 하는 일, 정말 고마워요", "en": "so thank you guys for doing what you do,"},
+  {"who": 0, "at": 16.45, "to": 18.25, "ko": "여러분 아니었으면 저 지금 여기 없어요", "en": "because I wouldn't be here right now without you guys."},
+  {"who": 0, "at": 18.28, "to": 20.3, "ko": "진짜로요", "en": "Seriously. Straight up."}
+ ],
+ "stickers": [
+ ],
+ "keys": ["뒤집혔다", "조난", "방향을", "18.5km,", "문", "모두", "없었다", "아빠가", "정말", "여기", "진짜로요"],
+ "music": [
+  {"src": "public/music/Heroic Age.mp3", "from": 0.0, "at": 0.0, "to": 33.9, "fade": 1.0, "gain": 0.35},
+  {"src": "public/music/Rising Tide.mp3", "from": 0.0, "at": 33.1, "to": 52.5, "fade": 1.5, "gain": 0.25}
+ ],
+ "musicGain": 1.0,
+ "duck": false,
+ "tail": 0.5
+}
