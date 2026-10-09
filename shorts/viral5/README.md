@@ -1079,15 +1079,17 @@ MEDIA=<저장소>/media python3 politics/prep_split.py boom3
 - 해시태그: `#미해병대 #폭파돌입 #군대 #해병대 #shorts`
 
 
-## 군견 쇼츠 (`politics/dog1`, `politics/dog2`, `politics/dog3`)
+## 군견 쇼츠 (`politics/dog1`~`politics/dog5`)
 
-미군이 DVIDS에 올린 군견(MWD) 영상에 한국어 자막을 붙인 쇼츠 3편입니다. 장르는 ‘군대 실화·공감’이고, 기계가 아니라 사람과 개(얼굴·반응)가 주인공입니다. 그래픽 클립(gfx)은 쓰지 않았습니다. 영상은 모두 미군 장병·국방부 직원이 촬영한 연방정부 저작물(퍼블릭 도메인)입니다. DVIDS 페이지마다 PUBLIC DOMAIN 표시가 있고 Restrictions 안내는 없습니다.
+미군이 DVIDS에 올린 군견(MWD) 영상에 한국어 자막을 붙인 쇼츠 5편입니다. 장르는 ‘군대 실화·공감’이고, 기계가 아니라 사람과 개(얼굴·반응)가 주인공입니다. 그래픽 클립(gfx)은 쓰지 않았습니다. 영상은 모두 미군 장병·국방부 직원이 촬영한 연방정부 저작물(퍼블릭 도메인)입니다. DVIDS 페이지마다 PUBLIC DOMAIN 표시가 있고 Restrictions 안내는 없습니다.
 
 | id | 제목 | 길이 | 내용 | 소리 |
 | --- | --- | --- | --- | --- |
 | `dog1` | 물로 도망치면 / 군견도 못 따라올까? | 23.5초 | 수영장 수중 제압 훈련: 물속 방어복 요원에게 뛰어드는 군견 → 다이빙 → 물속 수영 → 팔 물기 → “물도 안전지대 아님” | 현장음 + 음악 낮게 |
 | `dog2` | 암 진단받은 군견을 위해 / 전우들이 준비한 경례 | 37.6초 | 은퇴 군견 루도를 기리는 부대 행사: 공식 수색 1만 회 이상, 비밀경호국 임무 15회, 대통령 지원 임무 6회 → 2020년 4월 암 진단 → 장병들의 경례 | 행사 영상의 실제 목소리(배경음악 제거) + 자막 |
 | `dog3` | 군견 훈련 미끼가 된 / 대령님의 최후 | 28.3초 | 코소보 평화유지군(KFOR) 동부지역사령관 대령이 직접 방어복을 입고 군견 훈련 미끼가 됨 → “더 빨리 뛰셔야 돼요!” → 제압 | 현장음 + 음악 낮게 |
+| `dog4` | 헬기에서 내려온 / 군견의 출근길 | 20.2초 | 해안경비대 군견 심바가 핸들러와 함께 헬기에서 바다 위 배 갑판으로 하강(호이스트 훈련) | 현장음(헬기·바다) + 음악 낮게 |
+| `dog5` | 10년 복무한 군견의 / 전역식 날 생긴 일 | 29.4초 | 포트 베닝 군견 추모비 앞 전역식: 낭독된 전역 증서(“수많은 장병을 구하고… 새 가족 품에서 은퇴할 자격이 충분합니다”) → 핸들러가 군견을 안아 줌 | 현장음 + 증서 낭독 목소리 + 음악 낮게 |
 
 ```bash
 # 원본: media/dogs/*.mp4 (파일마다 .json에 DVIDS ID·페이지·파일 주소·크레디트·부대·날짜·구간)
@@ -1139,6 +1141,28 @@ python3 politics/prep_split.py dog1 && ./render.sh dog1 final/dog1.mp4   # dog2,
 > 음악: "Sneaky Snitch" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
 > #군견 #군대 #대령 #미군 #shorts
 
+
+**dog4·dog5 추가 메모**
+- dog4: 원본(B-roll)은 헬기·바다 현장음만 있습니다(AST Music 점수 0.01, 말소리 없음). 그래서 자막은 모두 화면 설명입니다. 사실 자막(“해안경비대 군견 심바”, “배에 빠르게 투입하는 훈련”)은 DVIDS 설명(“U.S. Coast Guard K9 Simba from Maritime Safety and Security Team Houston, conducts a hoist … These practice hoists are done to prepare the K9 and their handler for rapid deployments to vessels out on the water.”)에 근거합니다. 마지막 “출근은 헬기로 합니다”는 재치 자막입니다. 후보였던 427728(해병대 CH-53E 패스트로프, 군견 Bobo)은 음악이 깔린 제작 영상이고 화면이 어두워서 쓰지 않았습니다.
+- dog5: 원본은 현장음 B-roll입니다(Music 0.00–0.03). 전역 증서 낭독(원본 51.0–70.3초, `media/dogs/max_certificate.wav`)을 같은 행사의 다른 장면(낭독자, 군견들) 밑에 목소리로 깔았습니다. 그 구간의 장면 소리는 껐습니다. 첫 장면과 마지막 장면은 현장음 그대로입니다. 증서 문장은 faster-whisper small.en·medium.en이 똑같이 들은 부분만 번역했습니다(“For they are credited with saving countless lives of deployed soldiers and personnel in dangerous combat areas, to keeping thousands of personnel, families, and communities safe. These MWDs are truly remarkable and most deserving of retiring to wonderful families eager to share their loving homes.”). 서명 부분(“Signed, Clinton W. Cox, Colonel …”)은 넣지 않았습니다.
+- dog5 이름: DVIDS 설명에는 “Max, a 10-year veteran Belgian Malinois, and Grisha”만 있고 어느 개가 맥스인지는 없습니다. 그래서 화면의 개를 이름으로 가리키지 않았습니다. 첫 자막만 “군견 맥스와 그리샤의 전역식”이고, 제목의 “10년 복무한 군견”은 맥스를 뜻합니다. “4년”은 설명 문장에서 누구에 대한 것인지 애매해서 쓰지 않았습니다.
+- dog5 크레디트: Shantika Ogletree(포트 베닝 공보실, 계급 표기 없음 = 국방부 민간 직원). DVIDS 페이지에 PUBLIC DOMAIN 표시가 있습니다.
+
+**영상 출처 (dog4·dog5)**
+- dog4 — [849910](https://www.dvidshub.net/video/849910) Coast Guard conducts K9 hoist training in Galveston, Texas — Petty Officer 3rd Class Alejandro Rivera, 미 해안경비대 MSST Houston, 2022.6.18, 미국 텍사스주 갤버스턴. 원본 2.4–10, 11.5–18, 18–22.5, 23–24.6초.
+- dog5 — [705767](https://www.dvidshub.net/video/705767) Military Working Dog Retirement Ceremony BRoll — Shantika Ogletree, 904th Military Working Dog Police Detachment, 2019.3.22, 미국 조지아주 포트 베닝 군견 추모비(War Dog Memorial). 원본 23–27.6, 54–57, 46.2–51.2, 2–7, 76–82.3, 94–99.5초(그림), 51.0–70.3초(목소리).
+
+**dog4** — 헬기에서 내려온 군견의 출근길 🚁🐕
+> 미 해안경비대 군견 심바가 핸들러와 함께 헬기에서 바다 위 배로 내려옵니다. 2022년 6월 미국 텍사스주 갤버스턴에서 한 호이스트 훈련이고, 물 위의 선박에 군견과 핸들러를 빠르게 투입하려고 연습한다고 합니다. 출근길이 헬기인 강아지.
+> 영상: 미 해안경비대 (DVIDS, Petty Officer 3rd Class Alejandro Rivera). 미 해안경비대·국토안보부가 이 영상을 보증하거나 후원하지 않습니다.
+> 음악: "Exhilarate" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
+> #군견 #헬기 #해안경비대 #강아지 #shorts
+
+**dog5** — 10년 복무한 군견의 전역식 날 생긴 일
+> 2019년 3월 미국 포트 베닝 군견 추모비 앞에서 열린 군견 맥스와 그리샤의 전역식. 맥스는 10년 차 베테랑입니다. 낭독된 전역 증서: “이 군견들은 위험한 전투 지역에서 수많은 장병의 목숨을 구했고 수천 명의 장병과 가족, 지역사회를 지켰습니다. 사랑 가득한 새 가족 품에서 은퇴할 자격이 충분합니다.” 두 군견은 전역해 새 가족과 함께 살게 됩니다.
+> 영상: 미 육군 포트 베닝 (DVIDS, Shantika Ogletree). 미 육군·국방부가 이 영상을 보증하거나 후원하지 않습니다.
+> 음악: "Lightless Dawn" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
+> #군견 #전역 #감동 #미군 #shorts
 
 ## 동물 랭킹 쇼츠 (`politics/anirank1`, `politics/anirank2`)
 
@@ -1235,3 +1259,72 @@ MEDIA=<저장소>/media python3 politics/prep_split.py ouch1    # 원본: media/
 > 후추 스프레이 훈련이 끝난 뒤: 물로 씻고, 대형 선풍기 앞에 엎드리고… “진짜 최악이야.” 그리고 웃으며 한 한마디. 2026년 미 오하이오 주방위군 보안군 실제 훈련 영상(욕설 한 단어 삐 처리).
 > 영상: 미 공군 주방위군 (DVIDS) — U.S. Air National Guard video by Airman 1st Class Taylor Warehime, 121st Air Refueling Wing. 미 공군·국방부가 이 영상을 보증하거나 후원하지 않습니다.
 > #후추스프레이 #미공군 #군대 #훈련 #shorts
+
+## 군인 감동 실화 쇼츠 (`home1`, `home2`, `home3`)
+
+미군이 DVIDS에 올린 실제 귀국·은퇴 영상(촬영자가 현역 군인, 페이지에 PUBLIC DOMAIN 표시, Restrictions 없음)에 빠른 한국어 내레이션(Edge TTS, `+15%`)을 얹은 1분뉴스쇼·심리야놀자 방식 쇼츠입니다. 기계가 아니라 **사람의 얼굴과 반응**이 주인공이고, 원본 현장음(본인의 말·환호·박수)을 살려 번역 자막을 붙였습니다.
+
+| id | 제목 (띠 두 줄) | 길이 | 영상 | 음악 |
+| --- | --- | --- | --- | --- |
+| `home1` | 깜짝 귀국한 아빠가 / 오히려 더 놀란 이유 | 37.8초 | DVIDS 303088 (미 공군) | Heartwarming |
+| `home2` | 상대 팀 70번이 / **아빠**였을 때 아들 반응 | 33.1초 | DVIDS 301936 (미 공군) | Touching Moments Two - Higher |
+| `home3` | 35년 군 생활 / **마지막 비행**이 끝나자 생긴 일 | 36.5초 | DVIDS 489332 (미 육군) | Dreamer |
+
+```bash
+# 원본 컷: ../../media/home/ (파일마다 .json에 DVIDS ID·페이지·파일 주소·크레디트·부대·날짜·원본 구간)
+mkdir -p public/home1/src public/home2/src public/home3/src
+cp ../../media/home/bingham_*.mp4 public/home1/src/
+cp ../../media/home/martel_*.mp4 public/home2/src/
+cp ../../media/home/george_*.mp4 public/home3/src/
+# home2만: 301936 원본 소리가 아주 작아서(경기장 컷 -43.6 LUFS) 작업 사본의 소리만 키움(화면은 그대로)
+for f in public/home2/src/martel_*.mp4; do ffmpeg -y -i $f -c:v copy -af "loudnorm=I=-19:TP=-2:LRA=15,aresample=48000" -c:a aac -b:a 160k /tmp/x.mp4 && mv /tmp/x.mp4 $f; done
+for id in home1 home2 home3; do python3 voice_edge.py $id && python3 prep.py $id && ./render.sh $id; done
+```
+
+- **템플릿 변경**: `prep.py`에 `edit.json`의 `"subs"`를 넣었습니다. 내레이션 사이 원본 대사(`moments`) 구간에 번역 자막 한 장을 놓습니다: `{"from": "hug@end+0.6", "to": "hug@end+3.85", "ko": "… [노랑]", "en": "원문"}`. 모양은 `prep_split.py` 번역 자막과 같습니다(한국어 위, 영어 아래). 대사 구간은 다음 줄의 `gap`을 대사 길이만큼 벌려서 만듭니다. `fetch.sh`가 위 음악 세 곡도 받습니다.
+- **모양**: `"titleStyle": "band"`(검정 띠 두 줄 제목), 정사각 화면에 `crop`으로 얼굴을 크게, 자막은 화면 아래(`"captionY": 1600`). 첫 프레임은 가장 강한 얼굴(home1 포옹, home2 우는 아들, home3 물세례)이고, 끝은 환호(home1)·포옹(home2)·본인의 마지막 말(home3)에서 바로 끊습니다.
+- **원본 소리**: 303088은 기자 내레이션 영상이라 원본 27–40초, 54–76초에 음악이 깔려 있습니다(AudioSet AST 모델로 확인). 그 구간은 **소리를 끄고** 화면만 썼고, 빙엄 소령의 말(78–85초)과 복도 환호(96–101초)만 살렸습니다. 301936·489332는 현장음만 있는 B-roll입니다(음악 없음).
+- **자막 = 실제 말**: 원문은 faster-whisper medium.en으로 받아 적고, 완성본을 small.en으로 다시 받아 적어 자막 시간과 맞는지 확인했습니다.
+- **쓰지 않은 것**: DVIDS 746401 「Deployed mom surprises kids with early return」은 좋은 장면이지만 크레디트(Jo Anita Miley, Jonathan Stinson, Redstone Arsenal)가 국방부 공무원인지 신문(Redstone Rocket) 외주 인력인지 확인하지 못해서 뺐습니다. 846785(AFMC 사령관 Fini Flight)는 마스크로 얼굴이 가려 뺐습니다.
+
+### 사실과 출처
+모든 사실은 DVIDS 영상 설명, 영상 첫 화면의 공식 슬레이트, 영상 속 본인·동료의 말에서만 가져왔습니다. 이름은 원문 그대로 썼습니다.
+
+**home1** — [DVIDS 303088 「Coming Home」](https://www.dvidshub.net/video/303088/coming-home), SrA Kristen Coager, 27th Special Operations Wing, Cannon AFB, N.M., 2013-10-08
+- 로버트 빙엄 소령(Maj. Robert Bingham), MC-130J 조종사, 522nd Special Operations Squadron (설명·자막 이름표). 화면에서는 “미 공군 수송기 조종사”로만 말함.
+- 아프가니스탄 넉 달 파병(“deployed for four months to Afghanistan”, 영상 내레이션 0:10)
+- 아내 Elssy가 학교 교장과 조회를 계획해 아이들을 놀래 줌(설명), 아이들 Isabella·Zach, 4살·8살(영상 내레이션 0:23–0:34)
+- 학교 전체가 성조기를 들고 복도에 늘어섬(화면)
+- 빙엄 소령의 말(원본 1:18–1:25): “I thought it was just going to be me going into their classrooms and surprising them, and in the end I think I'm the one that got the big surprise.”
+
+**home2** — [DVIDS 301936 「Deployed Airman Returns Home to Surprise Son」](https://www.dvidshub.net/video/301936/deployed-airman-returns-home-surprise-son), MSgt Gustavo Castillo (슬레이트: SSgt Robbie Arp), 52nd Fighter Wing Public Affairs, Spangdahlem AB, 2013-09-21
+- 조셉 마텔 상사(MSgt Joseph Martel), 480th Expeditionary Aircraft Maintenance Unit, 아프가니스탄 칸다하르 파병 후 귀국(설명·슬레이트)
+- 아내가 깜짝 귀국을 함께 계획, 아들 Justin은 전혀 몰랐음, 비행기에서 내려 아내와 만난 **직후** 벨기에 브뤼셀의 아들 고교 미식축구 경기로 감(슬레이트 원문 “completely unaware”, “Immediately after exiting the plane and reuniting with his wife”)
+- 마텔 상사의 말(원본 1:14–1:19): “My wife's standing right there, we're gonna go see my son play some football in Brussels.”
+- **70번 = 아빠**: 설명에는 없고 **화면으로 판단**했습니다. 동전 던지기에 나온 빨간(상대 팀, 홈 팀) 70번이 흰 BITBURG 51번 선수를 안고, 51번이 울음을 터뜨립니다. 70번의 얼굴(원본 3:58–4:05)이 비행장에서 내린 마텔 상사(1:14–1:17)와 같은 사람이고, 경기 뒤 같은 사람이 51번 옆에 섭니다(4:50). 그래서 “상대 팀 유니폼을 입고 나왔다”는 화면에 보이는 그대로만 말하고, 일부러 변장했다거나 51번이 Justin이라는 이름은 말하지 않았습니다(“아들”로만).
+
+**home3** — [DVIDS 489332 「CW5 George retires after 35 years」](https://www.dvidshub.net/video/489332/cw5-george-retires-after-35-years), SFC Eliodoro Molina, U.S. Forces Afghanistan, 2016-10-26
+- 폴 조지 준위(CW5 Paul George), 아프가니스탄 바그람 비행장에서 35년 군 생활의 마지막 비행(설명), 2016년 10월 22일(원본 1:43 감사문 “final flight, 22 October 2016”)
+- 전통: 먼저 비행기가 물을 맞고, 그다음 조종사(설명 “spraying down the aircraft after the last flight and then soaking down the pilot”, 슬레이트 “first their aircraft gets soaked, then they do”)
+- 감사문(원본 1:47–1:52): “…Army aviation excellence during your 35-year career is greatly appreciated.”
+- 본인 인터뷰(원본 3:28–3:33, 4:25–4:26): “…this send-off here in Afghanistan, I couldn't hope for better.” / “It's been an honor to serve.”
+
+### 업로드 문구
+
+**home1** — 깜짝 귀국한 아빠가 오히려 더 놀란 이유
+> 아프가니스탄 파병 넉 달 만에 돌아온 미 공군 조종사 빙엄 소령. 교실에 몰래 들어가 남매만 놀래 줄 생각이었는데, 복도에는 학교 전체가 성조기를 들고 기다리고 있었습니다. “결국 제일 크게 놀란 건 저였던 것 같아요.” (2013년 10월, 미국 뉴멕시코주 클로비스)
+> 영상: 미 공군 (DVIDS 303088, SrA Kristen Coager, 27th Special Operations Wing). 미 공군·국방부가 이 영상을 보증하거나 후원하지 않습니다.
+> 음악: "Heartwarming" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
+> #군인 #깜짝귀국 #감동 #미공군 #shorts
+
+**home2** — 상대팀 70번이 아빠였을 때 아들 반응
+> 아프가니스탄 칸다하르 파병을 마치고 돌아온 미 공군 마텔 상사. 비행기에서 내려 아내와 포옹하자마자 아들의 고교 미식축구 경기장으로 향했습니다. 아들은 아빠가 돌아온 걸 전혀 몰랐고, 경기 전 동전 던지기에 상대 팀 70번 유니폼을 입은 사람이 걸어 나왔습니다. (2013년 9월, 벨기에 브뤼셀)
+> 영상: 미 공군 (DVIDS 301936, MSgt Gustavo Castillo / SSgt Robbie Arp, 52nd Fighter Wing). 미 공군·국방부가 이 영상을 보증하거나 후원하지 않습니다.
+> 음악: "Touching Moments Two - Higher" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
+> #군인 #깜짝귀국 #미식축구 #감동실화 #shorts
+
+**home3** — 35년 군 생활 마지막 비행이 끝나자 생긴 일
+> 미 육군 조종사 폴 조지 준위의 35년 군 생활 마지막 비행(2016년 10월, 아프가니스탄 바그람). 조종사의 마지막 비행엔 전통이 있습니다. 먼저 비행기가 물대포를 맞고, 그다음은 조종사 차례. “복무할 수 있어서 영광이었습니다.”
+> 영상: 미 육군 (DVIDS 489332, SFC Eliodoro Molina, U.S. Forces Afghanistan). 미 육군·국방부가 이 영상을 보증하거나 후원하지 않습니다.
+> 음악: "Dreamer" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
+> #군인 #전역 #마지막비행 #미육군 #shorts

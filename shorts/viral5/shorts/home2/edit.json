@@ -1,0 +1,234 @@
+{
+ "titleStyle": "band",
+ "captionY": 1600,
+ "credit": "영상: 미 공군 (DVIDS)",
+ "sources": {
+  "line": {
+   "file": "martel_flightline_301936_70-95.mp4",
+   "credit": "영상: 미 공군 (DVIDS)",
+   "label": "DVIDS 301936 Deployed Airman Returns Home to Surprise Son, Spangdahlem AB, 2013-09-21 (original 70-95 s)",
+   "url": "https://www.dvidshub.net/video/301936/deployed-airman-returns-home-surprise-son"
+  },
+  "game": {
+   "file": "martel_cointoss_301936_165-230.mp4",
+   "credit": "영상: 미 공군 (DVIDS)",
+   "label": "DVIDS 301936, high school football game in Brussels, 2013-09-21 (original 165-230 s)",
+   "url": "https://www.dvidshub.net/video/301936/deployed-airman-returns-home-surprise-son"
+  }
+ },
+ "clips": [
+  {
+   "src": "game",
+   "from": "hook",
+   "in": 57.0,
+   "label": "울음을 터뜨린 아들",
+   "crop": [
+    0.6,
+    0.38,
+    1.35
+   ],
+   "zoom": [
+    1.0,
+    1.05
+   ],
+   "audio": 0.15
+  },
+  {
+   "src": "line",
+   "from": "who",
+   "in": 0.4,
+   "label": "비행기에서 내린 마텔 상사",
+   "crop": [
+    0.5,
+    0.4,
+    1.0
+   ],
+   "zoom": [
+    1.0,
+    1.06
+   ],
+   "audio": 0.1
+  },
+  {
+   "src": "line",
+   "from": "who@end+0.1",
+   "in": 4.6,
+   "label": "마텔 상사",
+   "crop": [
+    0.45,
+    0.35,
+    1.0
+   ],
+   "zoom": [
+    1.0,
+    1.04
+   ],
+   "audio": 0
+  },
+  {
+   "src": "line",
+   "from": "son",
+   "in": 15.0,
+   "label": "아내와 포옹",
+   "crop": [
+    0.6,
+    0.4,
+    1.15
+   ],
+   "zoom": [
+    1.0,
+    1.06
+   ],
+   "audio": 0.1
+  },
+  {
+   "src": "game",
+   "from": "son.아들은",
+   "in": 0.0,
+   "label": "브뤼셀의 고교 미식축구 경기",
+   "crop": [
+    0.5,
+    0.45,
+    1.0
+   ],
+   "zoom": [
+    1.0,
+    1.06
+   ],
+   "audio": 0.1
+  },
+  {
+   "src": "game",
+   "from": "toss",
+   "in": 5.5,
+   "label": "동전 던지기에 나가는 선수들",
+   "crop": [
+    0.5,
+    0.45,
+    1.0
+   ],
+   "zoom": [
+    1.0,
+    1.06
+   ],
+   "audio": 0.1
+  },
+  {
+   "src": "game",
+   "from": "toss.상대",
+   "in": 13.0,
+   "label": "상대 팀 70번",
+   "crop": [
+    0.55,
+    0.4,
+    1.1
+   ],
+   "zoom": [
+    1.0,
+    1.05
+   ],
+   "audio": 0.1
+  },
+  {
+   "src": "game",
+   "from": "toss@end+0.15",
+   "in": 19.0,
+   "label": "70번과 아들",
+   "crop": [
+    0.55,
+    0.38,
+    1.2
+   ],
+   "zoom": [
+    1.0,
+    1.05
+   ],
+   "audio": 1.0
+  },
+  {
+   "src": "game",
+   "from": "reveal",
+   "in": 29.0,
+   "label": "아빠와 아들",
+   "crop": [
+    0.5,
+    0.35,
+    1.3
+   ],
+   "zoom": [
+    1.0,
+    1.05
+   ],
+   "audio": 0.1
+  },
+  {
+   "src": "game",
+   "from": "reveal@end+0.1",
+   "in": 36.0,
+   "label": "아빠와 아들",
+   "crop": [
+    0.6,
+    0.4,
+    1.25
+   ],
+   "zoom": [
+    1.0,
+    1.04
+   ],
+   "audio": 0
+  },
+  {
+   "src": "game",
+   "from": "close",
+   "in": 55.5,
+   "label": "아빠와 아들",
+   "crop": [
+    0.55,
+    0.38,
+    1.25
+   ],
+   "zoom": [
+    1.0,
+    1.05
+   ],
+   "audio": 0.25
+  }
+ ],
+ "moments": [
+  {
+   "from": "who@end+0.15",
+   "to": "son-0.3",
+   "gain": 1.0
+  },
+  {
+   "from": "reveal@end+0.15",
+   "to": "close-0.2",
+   "gain": 1.0
+  }
+ ],
+ "subs": [
+  {
+   "from": "who@end+0.4",
+   "to": "who@end+2.3",
+   "ko": "아내가 바로 저기 서 있네요",
+   "en": "My wife's standing right there,"
+  },
+  {
+   "from": "who@end+2.3",
+   "to": "son-0.2",
+   "ko": "이제 브뤼셀에 [아들 미식축구] 보러 갑니다",
+   "en": "we're gonna go see my son play some football in Brussels."
+  }
+ ],
+ "stickers": [],
+ "sfx": [],
+ "punches": [
+  "reveal.아빠"
+ ],
+ "flashes": [],
+ "music": {
+  "file": "music/Touching Moments Two - Higher.mp3",
+  "gain": 0.15,
+  "start": 0
+ }
+}
