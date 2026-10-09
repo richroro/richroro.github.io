@@ -972,3 +972,58 @@ MEDIA=<저장소>/media python3 politics/prep_split.py lindbergh1    # 원본: m
 > 음악: "Floating Cities" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
 > #린드버그 #대서양횡단 #도전 #포기하지마 #동기부여 #옛날영상 #역사 #영어공부 #shorts
 
+
+## 군대 랭킹 TOP5 쇼츠 (`politics/rank1`, `politics/rank2`)
+
+「역대급 ○○ 랭킹 TOP5」형(오락 쇼츠 중 조회수 중앙값 최고, `research/research-fun.md`)으로, **사람이 주인공인** DVIDS 실제 영상 다섯 장면을 5위→1위로 세웠습니다. 순위는 편집자 선정이고(“역대급”, 공식 순위 아님), 1위가 끝나면 바로 끊겨 처음으로 돌아갑니다. 내레이션·AI 목소리 없음, 원래 현장음 + 낮은 음악.
+
+| id | 제목(화면) | 길이 | 5위 → 1위 |
+| --- | --- | --- | --- |
+| `rank1` | 보기만 해도 아픈 군대 훈련 TOP5 / 다들 몇 위가 제일 아파 보임?ㅋㅋ | 37.2초 | 테이저건 직접 맞기 → 퍼길스틱 대련 → 얼음 구멍 입수 → 가스실 탈출 → OC(후추) 스프레이 얼굴 직격 |
+| `rank2` | 역대급 소름 돋는 군인 TOP5 / 다들 몇 위에서 소름 돋음?ㅋㅋ | 39.5초 | 해병대 사일런트 드릴 → 눈 속의 무명용사의 묘 경비병 → 항공모함 ‘슈터’의 발진 신호 → C-17 뒷문 고고도 강하 → 신병이 ‘해병’이 되는 순간(EGA 수여식 + 해병대 찬가) |
+
+```bash
+MEDIA=<저장소>/media python3 politics/prep_split.py rank1    # 원본: media/rank1/, media/rank2/
+./render.sh rank1 final/rank1.mp4                            # 저장소 보관본은 이어서 CRF 22로 다시 압축
+```
+
+- 레이아웃: `"titleStyle": "band"`, 정사각 화면에 `single` 크롭으로 얼굴을 크게, 자막은 화면 아래쪽 `"captionY": 1380`, 순위표는 그 아래(`rank` 구간 값). 순위가 바뀔 때 흰 번쩍임 + 작은 “○위” 노란 스티커 + `whoosh` 효과음. 첫 프레임에 제목이 이미 떠 있습니다(rank1: 테이저 맞기 직전 웃는 얼굴, rank2: 사일런트 드릴 대원 얼굴).
+- 영상은 모두 DVIDS 페이지 머리의 “Video by …”가 미군 장병이나 국방부 민간인 직원이고, 페이지에 Restrictions 표시나 “Courtesy” 표시가 없는 B-roll만 썼습니다. 자른 원본과 DVIDS ID·페이지·파일 주소·크레디트·부대·날짜·쓴 구간은 `media/rank1/*.json`, `media/rank2/*.json`.
+- 음악 확인: AudioSet(AST) 태거로 구간별 음악 점수를 보고, 음악이 깔린 영상은 뺐습니다(837044 노르웨이 냉수 입수 패키지, 829296 Ice Bath 제작 영상). EGA 수여식(987854)은 눈물 장면 아래에 지속음(현악 패드)이 보여서 그 3.8초는 **소리를 끄고**(`audio: 0`) 우리 음악만 깔았고, 해병대 찬가를 외치는 부분(원본 342–358초)은 지속음 없이 군중 함성만 있어 원음을 그대로 씁니다.
+- 무음 원본: 퍼길스틱(900015)과 사일런트 드릴(965624)은 원본 오디오 트랙이 무음이라 음악만 들립니다. 효과음으로 타격음을 지어내지 않았습니다.
+- 자막: 실제로 들리는 말은 faster-whisper small.en·medium.en·large-v3로 맞춰 둘 이상이 같은 것만 번역했습니다 — “Taser, taser, taser.”(844913, large-v3·medium.en), “All the way, dunk your head, there you go.”(871794, medium.en·large-v3 “head” / small.en “hands”라 2:1), 해병대 찬가 “and to keep our honor clean, we are proud to claim the title of United States Marine.”(987854, large-v3 + 찬가 가사). 가스실 교관 고함은 인식 결과가 제각각(“Yes!”, “Go Lazio!”)이라 자막에 넣지 않았습니다. 나머지 줄은 화면 설명입니다.
+
+**rank1 영상** (DVIDS, 페이지 = `https://www.dvidshub.net/video/<ID>`)
+- 5위 [844913](https://www.dvidshub.net/video/844913) CEW Training with Security Forces (BROLL) — Senior Airman Gary Hilton, 18th Wing(가데나 공군기지), 2022.5.17 · 원본 63.6–69.2초(“Taser, taser, taser” → 비명), 72.4–76.3초(2명 동시에). DVIDS 설명: 자격 훈련에 “exposure to CEW discharge” 포함.
+- 4위 [900015](https://www.dvidshub.net/video/900015) 198th 2-19 IN Pugil Stick Combat — Toygar Ayla, Fort Benning PAO(VIRIN 231005-A-…), 2023.10.5 · 62.0–68.2초.
+- 3위 [871794](https://www.dvidshub.net/video/871794) Airmen train in cold-water immersion at Fort McCoy … Part V — Scott T. Sturkol, Fort McCoy PAO, 2023.1.27 · 32.0–38.6초. 설명: 공군 주관 16일 혹한기 작전 과정(CWOC)의 일부.
+- 2위 [1016785](https://www.dvidshub.net/video/1016785) Hotel Company Confidence Chamber – B-Roll — Cpl. Eric Valerio, MCRD San Diego, 2026.7.27 · 106.6–113.4초(가스실 문을 나서는 신병들, 밖의 교관들).
+- 1위 [1008601](https://www.dvidshub.net/video/1008601) Security Forces OC spray — Airman 1st Class Taylor Warehime, 121st Air Refueling Wing(오하이오 주방위군), 2026.3.8 · 97.9–101.8초(분사), 176.6–181.2초(호스로 눈 세척, 다른 대원).
+- 음악: "Hyperfun" Kevin MacLeod.
+
+**rank2 영상**
+- 5위 [965624](https://www.dvidshub.net/video/965624) New York Fleet Week Silent Drill Platoon B-Roll — Cpl. Christopher Prelle, Marine Barracks Washington, 2025.5.21(타임스스퀘어) · 178.0–184.5초. 세로(1080×1920) 원본.
+- 4위 [911824](https://www.dvidshub.net/video/911824) Winter 2024 B-Roll – Arlington National Cemetery — Daryl Vaca, Arlington National Cemetery, 2024.1.19 · 216.6–220.3초, 231.2–234.0초(설명의 03:31–04:33 Tomb of the Unknown Soldier 구간).
+- 3위 [948608](https://www.dvidshub.net/video/948608) F-35C Lightning II B-roll Package — MC2 Caden Richmond, USS Carl Vinson, 2024.8.12 · 63.6–69.0초(제트 소리는 30%로 낮춤).
+- 2위 [1005227](https://www.dvidshub.net/video/1005227) Static Line and High-Altitude Jump B-Roll Package — Airman 1st Class Nathan Langston, 97th Air Mobility Wing, 2026.4.10(포트 베닝, C-17) · 273.0–280.5초. 세로 원본.
+- 1위 [987854](https://www.dvidshub.net/video/987854) Fox Company Eagle, Globe, and Anchor Ceremony B-Roll — Cpl. Jordy Morales, MCRD Parris Island, 2025.10.25 · 333.0–336.8초(무음), 346.6–356.3초(원음).
+- 음악: "Heroic Age" Kevin MacLeod (`fetch.sh`가 받음).
+
+**사실 근거 (rank2 자막)**
+- 사일런트 드릴은 구령 없이 하는 소총 시범: Marine Corps 사진 설명·[Marine Barracks Washington 기사](https://www.barracks.marines.mil/News/News-Article-Display/Article/498164/marines-compete-to-march-in-silent-drill-platoon/), [위키백과](https://en.wikipedia.org/wiki/United_States_Marine_Corps_Silent_Drill_Platoon).
+- 무명용사의 묘는 1937년 7월부터 24시간 경계: [미 육군 Tomb 역사](https://www.army.mil/tomb/pages/history.html).
+- EGA는 54시간 ‘크루서블’ 뒤 신병이 처음 ‘해병’으로 불리며 받는 엠블럼: DVIDS 987854 설명(“final event of the Crucible … transformation from recruit to Marine”), DVIDS 968533 설명(“The Crucible is a 54-hour culminating event”).
+- 해병대 찬가 마지막 구절: “First to fight for right and freedom / And to keep our honor clean; / We are proud to claim the title / Of United States Marine.”
+- 슈터 장면은 화면에 보이는 것(팔을 들고 몸을 낮춤 → 바로 옆에서 F-35C 발진)만 적었습니다.
+
+**rank1** — 보기만 해도 아픈 군대 훈련 TOP5 (몇 위가 제일 아파 보임?)
+> 테이저건 직접 맞기, 퍼길스틱 대련, 얼음 구멍 입수, 가스실, 그리고 후추(OC) 스프레이까지. 미군이 실제 훈련에서 겪는 장면을 모았습니다. 순위는 저희 마음대로 정했어요. 여러분 생각엔 몇 위가 제일 아파 보이나요?
+> 영상: 미 공군·미 공군 주방위군·미 육군·미 해병대 (DVIDS) — Senior Airman Gary Hilton, Toygar Ayla, Scott T. Sturkol, Cpl. Eric Valerio, Airman 1st Class Taylor Warehime. 미 국방부와 각 군이 이 영상을 보증하거나 후원하지 않습니다.
+> 음악: "Hyperfun" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
+> #군대 #미군 #훈련 #테이저 #shorts
+
+**rank2** — 역대급 소름 돋는 군인 TOP5 (몇 위에서 소름 돋음?)
+> 구령 없이 소총을 돌리는 해병대 사일런트 드릴, 1937년부터 하루도 쉬지 않은 무명용사의 묘 경비병, 항공모함 ‘슈터’의 발진 신호, C-17 뒷문 고고도 강하, 그리고 54시간 ‘크루서블’을 마친 신병이 해병대 엠블럼을 받고 해병대 찬가를 외치는 순간. 순위는 편집자 선정입니다.
+> 영상: 미 해병대·미 육군(알링턴 국립묘지)·미 해군·미 공군 (DVIDS) — Cpl. Christopher Prelle, Daryl Vaca, MC2 Caden Richmond, Airman 1st Class Nathan Langston, Cpl. Jordy Morales. 미 국방부와 각 군이 이 영상을 보증하거나 후원하지 않습니다.
+> 음악: "Heroic Age" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
+> #군대 #미군 #해병대 #소름 #shorts
