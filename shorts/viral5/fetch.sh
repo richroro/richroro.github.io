@@ -25,4 +25,8 @@ M=$RAW/cjthomas-opensource/mcmusic-kevin-macleod/master/music
 for m in monkeys_spinning_monkeys scheming_weasel hyperfun hustle sneaky_snitch; do
   [ -s "$P/music/$m.mp3" ] || curl -sSfL -o "$P/music/$m.mp3" "$M/$m.mp3"
 done
+# tracks used by the Artemis/Apollo shorts, straight from incompetech.com (same CC BY 4.0 licence)
+for m in "Floating Cities" "Lightless Dawn"; do
+  [ -s "$P/music/$m.mp3" ] || curl -sSfL -o "$P/music/$m.mp3" "https://incompetech.com/music/royalty-free/mp3-royaltyfree/${m// /%20}.mp3"
+done
 echo "shared assets ready in $P/"

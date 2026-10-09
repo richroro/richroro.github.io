@@ -80,7 +80,7 @@ const ClipView: React.FC<{ c: Clip; d: ShortData }> = ({ c, d }) => {
     const left = Math.min(0, Math.max(1080 - dw, 540 - cx * dw)), top = Math.min(0, Math.max(box.height - dh, box.height / 2 - cy * dh));
     cropStyle = { position: "absolute", left, top, width: dw, height: dh };
   }
-  if (d.split && ok && !c.crop) {
+  if (d.split?.panels.length && ok && !c.crop) {
     const { w, h, panels } = d.split;
     const who = d.speakers?.find((sp) => t >= sp.from && t < sp.to)?.who;
     return (

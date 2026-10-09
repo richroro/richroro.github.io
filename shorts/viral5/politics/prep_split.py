@@ -30,6 +30,7 @@ edit.json:
              "trim" ([x0, y0, x1, y1] of the source to keep; "single" is then relative to what is kept)
              and "frame": "film" (a 1080x810 box that shows a whole 4:3 frame instead of the square crop)
              and "vf" (an extra ffmpeg video filter, applied after trim and rotation)
+             and "speed" (e.g. 0.4 = slow motion, baked into the clip; the segment then lasts (out - in) / speed)
 """
 import difflib, json, os, re, subprocess, sys
 import numpy as np
@@ -164,13 +165,14 @@ def main(sid):
     # segments → clips, and the map from source time to output time
     clips, at, starts = [], 0.0, []
     for k, s in enumerate(ed["segments"]):
-        dur = s["out"] - s["in"]; out = f"{pub}/clips/c{k:02d}.mp4"
+        sp = s.get("speed", 1.0); dur = (s["out"] - s["in"]) / sp; out = f"{pub}/clips/c{k:02d}.mp4"
         seg_src = f"{MEDIA}/{s['src']}" if s.get("src") else src  # a segment may come from another clip of the same hearing
         tx0, ty0, tx1, ty1 = s.get("trim", [0, 0, 1, 1])  # cut a band off the source (a broadcaster's lower third) before anything else
-        vf = "fps=30" + (f",crop=trunc(iw*{tx1 - tx0}/2)*2:trunc(ih*{ty1 - ty0}/2)*2:iw*{tx0}:ih*{ty0}" if s.get("trim") else "")
+        vf = (f"setpts=(PTS-STARTPTS)/{sp}," if sp != 1.0 else "") + "fps=30" + (f",crop=trunc(iw*{tx1 - tx0}/2)*2:trunc(ih*{ty1 - ty0}/2)*2:iw*{tx0}:ih*{ty0}" if s.get("trim") else "")
         vf += {90: ",transpose=1", -90: ",transpose=2", 180: ",hflip,vflip"}.get(s.get("rotate", 0), "")  # e.g. a camera mounted sideways
         if s.get("vf"): vf += "," + s["vf"]  # an extra ffmpeg filter for this stretch (grade a dark shot, blur a face)
-        subprocess.run(["ffmpeg", "-v", "error", "-y", "-ss", str(s["in"]), "-t", f"{dur:.3f}", "-i", seg_src, "-vf", vf,
+        af = ["-af", ",".join(f"atempo={x}" for x in ([0.5] * int(np.log(sp) / np.log(0.5) + 1e-9) + [sp / 0.5 ** int(np.log(sp) / np.log(0.5) + 1e-9)]))] if sp != 1.0 else []
+        subprocess.run(["ffmpeg", "-v", "error", "-y", "-ss", str(s["in"]), "-t", f"{s['out'] - s['in']:.3f}", "-i", seg_src, "-vf", vf, *af,
                         "-c:v", "libx264", "-preset", "veryfast", "-crf", "16", "-pix_fmt", "yuv420p", "-c:a", "aac", "-b:a", "192k", "-ar", "48000", out], check=True)
         clip = {"file": f"{sid}/clips/c{k:02d}.mp4", "label": s.get("label", ""), "at": round(at, 3), "dur": round(dur, 3), "speed": 1.0,
                 "frame": s.get("frame", "square"), "zoom": s.get("push", [1.0, 1.04]), "focus": "50% 50%", "audio": s.get("audio", 1.0)}
@@ -184,7 +186,7 @@ def main(sid):
     def out_t(t, src_name=None):
         for s, a in zip(ed["segments"], starts):
             if src_name is not None and s.get("src", ed["src"]) != src_name: continue
-            if s["in"] - 0.3 <= t <= s["out"] + 0.3: return a + t - s["in"]
+            if s["in"] - 0.3 <= t <= s["out"] + 0.3: return a + (t - s["in"]) / s.get("speed", 1.0)
         return None
 
     # panels: each person's face inside their half
@@ -204,7 +206,7 @@ def main(sid):
     def off_screen(who, t0, t1):
         """is someone else on camera for the first half second of this line, or for most of it?"""
         def on(t):
-            k = next((k for k, a in enumerate(starts) if a <= t < a + ed["segments"][k]["out"] - ed["segments"][k]["in"]), None)
+            k = next((k for k, a in enumerate(starts) if a <= t < a + clips[k]["dur"]), None)
             return seg_who[k] if k is not None else None
         other = [on(t) not in (None, who) for t in np.arange(t0, max(t1, t0 + 0.1), 0.1)]
         lead = next((i for i, o in enumerate(other) if not o), len(other))
