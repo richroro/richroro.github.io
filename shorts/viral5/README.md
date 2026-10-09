@@ -1504,3 +1504,41 @@ MEDIA=<저장소>/media python3 politics/prep_split.py boom4    # boom5도 같�
   영상: U.S. Marine Corps video by Lance Cpl. Ethan R. Jones (DVIDS 873781). 미 해병대·국방부가 이 영상을 보증하거나 후원하지 않습니다.
   ```
 - 해시태그: `#미해병대 #수색대 #헬로캐스트 #CH53 #shorts`
+
+## 동물 랭킹 쇼츠 3 (`politics/anirank5`, `politics/anirank6`)
+
+같은 틀입니다(검정 띠 제목, 정사각 크롭, 자막 1380, 순위표, 1위 뒤 처음으로 반복). 순위는 우리가 고른 것입니다. 음악 아래로 원본 자연음(목도리뇌조 날갯짓 소리 등)을 그대로 씁니다.
+
+| id | 제목(화면) | 길이 | 5위 → 1위 | 음악 |
+| --- | --- | --- | --- | --- |
+| `anirank5` | 역대급 귀여운 아기동물 2탄 / TOP5 (다들 몇 번?ㅋㅋ) | 36.3초 | 아장아장 아기 큰뿔양 · 끼리끼리 모인 아기 코끼리물범 · 털뭉치 알바트로스 새끼 · 엄마 옆 딱 붙은 아기 몽크물범 · 밥 달라고 부리 톡톡 알바트로스 | Monkeys Spinning Monkeys (40초부터) |
+| `anirank6` | 역대급 웃긴 야생동물 / TOP5 (다들 몇 번?ㅋㅋ) | 28.4초 | 식량 모으는 우는토끼 · 레슬링 한판 마멋 · 날개로 북 치는 목도리뇌조 · 부리 맞대고 꽁냥 알바트로스 · 물 밖으로 고개 빼꼼 몽크물범 | Hustle |
+
+**영상 (미국 연방기관 저작물, 퍼블릭 도메인)** — 발췌와 출처·사용 구간은 `media/anirank/*.json`
+- 아기 큰뿔양: [Young Desert Bighorn Sheep](https://www.nps.gov/media/video/view.htm?id=33CB309C-0802-485D-A84D-9E8FC5204529) — NPS Video: Michael Quinn, 그랜드캐니언
+- 아기 코끼리물범: [Elephant Seal - Weanling Pod](https://www.nps.gov/media/video/view.htm?id=7E48438D-7E63-4478-AAB9-F0504B3BD80D) — NPS / C. Arreglo, 포인트레이즈 국립해안(“a group of weaned elephant seal pups”)
+- 우는토끼: [A Hungry Pika](https://www.nps.gov/media/video/view.htm?id=B47A5F36-69EE-40CD-A872-84EE3892C3B4), 마멋: [Mountain Moment: Madness of Marmots](https://www.nps.gov/media/video/view.htm?id=46BE6244-8744-4764-955B-47B427FA3EA9) — NPS, 레이니어산 국립공원 (원본 앞의 NPS 로고 화면은 쓰지 않음)
+- 목도리뇌조: [Minute Out In It: Drumbeats in the Forest](https://www.nps.gov/media/video/view.htm?id=552D11E5-7DC7-45E6-924D-3A2A53E89D5A) — NPS/Neal Herbert & Jennifer Jerrett, 옐로스톤
+- 알바트로스(새끼·먹이 주기·커플): [B-Roll: Laysan Albatross on Midway Island](https://videos.fisheries.noaa.gov/detail/videos/b-roll:-seabirds/video/897660927001/b-roll:-laysan-albatross-on-midway-island) — NOAA Fisheries (“Shots include chicks in colony and adults feeding chicks”)
+- 몽크물범(새끼·고개 빼꼼): [B-Roll: Hawaiian Monk Seal](https://videos.fisheries.noaa.gov/detail/videos/b-roll:-seals-and-sea-lions/video/5352712499001/b-roll:-hawaiian-monk-seal) — NOAA Fisheries (NMFS ESA/MMPA 허가 #16632, #13707 하에 촬영)
+- 쓰지 않은 것: 크레딧이 비어 있는 NPS 늑대 새끼 목걸이 카메라 영상(Yukon-Charley), 페이지가 열리지 않는 “Backyard Owls”, 너무 작게 찍힌 오리·흰물떼새·선인장굴뚝새·까마귀 영상. NPS·NOAA가 이 영상을 보증하거나 후원하지 않으며 로고는 쓰지 않았습니다.
+- 음악: "Monkeys Spinning Monkeys", "Hustle" Kevin MacLeod (incompetech.com), CC BY 4.0
+
+**자막 속 사실과 출처**
+- “young Desert Bighorn Sheep” — 위 NPS 영상 설명
+- 코끼리물범 새끼는 약 한 달 만에 젖을 떼고, 어미는 그 직전에 짝짓기 후 바다로 돌아감 — [NOAA: Northern Elephant Seal](https://www.fisheries.noaa.gov/species/northern-elephant-seal)
+- 갓 태어난 몽크물범 새끼는 털이 까맘 — [NOAA: Hawaiian Monk Seal](https://www.fisheries.noaa.gov/species/hawaiian-monk-seal) (“Newborn monk seal pups have black fur.”) 영상 속 검은 새끼가 갓 태어났는지는 알 수 없어 일반 사실로만 적었습니다.
+- 알바트로스 부모는 바다에서 찾은 먹이를 토해서 새끼에게 먹임 — [USFWS: Albatross: Lifetime at Sea](https://www.fws.gov/story/albatross-lifetime-sea), 원본 설명 “adults feeding chicks”. 영상 속 어른이 어미인지 아비인지 알 수 없어 “부모”로 적었습니다. 커플 장면은 행동 이름 없이 “부리 맞대고 꽁냥꽁냥”으로만 적었습니다.
+- 우는토끼(pika)는 토끼과 동물이고 겨울잠을 자지 않고 먹이 더미를 모음 / 어린 마멋은 장난 싸움을 자주 함 / 목도리뇌조 수컷은 날갯짓으로 쿵쿵 소리를 내며 영역을 알림 — 각 NPS 영상 설명
+
+**anirank5** — 역대급 귀여운 아기동물 2탄 TOP5 (다들 몇 번?ㅋㅋ)
+> 아장아장 다가오는 아기 큰뿔양, 젖 떼고 끼리끼리 모인 아기 코끼리물범, 털뭉치 알바트로스 새끼, 엄마 옆에 딱 붙은 아기 몽크물범, 그리고 밥 달라고 부리를 톡톡 치는 알바트로스 새끼까지! 여러분의 원픽은? 순위는 저희 마음대로 고른 것입니다.
+> 영상: 미국 국립공원관리청(NPS) — Michael Quinn(그랜드캐니언), C. Arreglo(포인트레이즈) · 미국 해양대기청(NOAA Fisheries) (NPS·NOAA가 이 영상을 보증하거나 후원하지 않습니다.)
+> 음악: "Monkeys Spinning Monkeys" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
+> #아기동물 #귀여운동물 #알바트로스 #동물 #shorts
+
+**anirank6** — 역대급 웃긴 야생동물 TOP5 (다들 몇 번?ㅋㅋ)
+> 겨울잠 대신 식량 모으는 우는토끼, 레슬링 한판 벌이는 마멋, 날개로 북 치는 목도리뇌조, 부리 맞대고 꽁냥대는 알바트로스 커플, 그리고 물 밖으로 고개 빼꼼 내민 몽크물범까지! 다들 몇 번이 제일 웃겨요? 순위는 저희 마음대로 고른 것입니다.
+> 영상: 미국 국립공원관리청(NPS) — Neal Herbert·Jennifer Jerrett(옐로스톤), 레이니어산 국립공원 · 미국 해양대기청(NOAA Fisheries) (NPS·NOAA가 이 영상을 보증하거나 후원하지 않습니다.)
+> 음악: "Hustle" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
+> #웃긴동물 #야생동물 #마멋 #동물 #shorts
