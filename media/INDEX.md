@@ -100,6 +100,13 @@ Iconic scenes. Korean status rests on Art. 42 (films are protected 70 years from
 - `m2_stars_stripes_1903.mp3` (Sousa's Band), `m4_caruso_vesti_1904.mp3` (Caruso), `m5_over_there_1917.mp3` (Victor Military Band)
 - Failed: Musopen "In the Hall of the Mountain King" and the US Marine Band "Maple Leaf Rag" on Wikimedia Commons return a Wikimedia error page to this container.
 
+## Old basketball — `oldbasketball/` (PD; see research/old_basketball_2026-10.md)
+- `basketball_1904_girls_missouri_valley.mp4` (95 s, 1440x1080 LOC scan, silent): one of the earliest basketball films
+- `basketball_1945_madison_square_garden.mp4` (100 s, US Army film with narration)
+- `basketball_1936_olympic_trial.mp4` (90 s, Universal Newsreel outtake, contrast-corrected; NARA marks it "possibly restricted")
+- `basketball_1934_ford_news_northern_high.mp4` (36 s)
+- Skipped: the WWI reel the research suggested has no basketball (its "Doughboy" game is a war drill). No PD Globetrotters or dunk footage was found.
+
 ## Research — `research/`
 - `trends_2026-10.md`: overseas chart songs (Billboard Global 200 / Hot 100, week of 2026-10-10) and high-view gaming/esports videos (Faker/T1, Worlds 2026 anthem, etc.) with source links, plus how to use them legally (Shorts sound library only; Riot fan-content policy). **No songs or game footage were downloaded:** they are copyrighted.
 - `tesla_2026-10.md`: Tesla Q3 2026 deliveries, stock, Korea sales/FSD, press-image terms, 5 footage-free short ideas.
@@ -108,6 +115,7 @@ Iconic scenes. Korean status rests on Art. 42 (films are protected 70 years from
 - `heartwarming_2026-10.md`: viral heartwarming stories of ordinary people overseas, who owns the clips, portrait rights, licensing agencies, and public-domain Coast Guard footage.
 - `speeches_2026-10.md`: 16 notable overseas speeches (UNGA 81, Trump July 4, etc.), UN Web TV / White House / OGL licence terms.
 - `public_domain_old_2026-10.md`: PD rules for the US and Korea (films: 70 years from publication in Korea; recordings: US pre-1926), 13 films and 11 recordings rated.
+- `old_basketball_2026-10.md`: PD old basketball footage sources and rules.
 - `sports_2026-10.md`: overseas football (Messi, Son, Ronaldo, World Cup 2026, Premier League) and NBA (LeBron to 76ers, Wembanyama, opening night 10/20) moments with sources; league copyright terms; 5 footage-free short ideas.
 
 ## Narration — `voice/<id>/`
