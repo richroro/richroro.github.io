@@ -972,15 +972,17 @@ MEDIA=<저장소>/media python3 politics/prep_split.py lindbergh1    # 원본: m
 > #린드버그 #대서양횡단 #도전 #포기하지마 #동기부여 #옛날영상 #역사 #영어공부 #shorts
 
 
-## 군견 쇼츠 (`politics/dog1`, `politics/dog2`, `politics/dog3`)
+## 군견 쇼츠 (`politics/dog1`~`politics/dog5`)
 
-미군이 DVIDS에 올린 군견(MWD) 영상에 한국어 자막을 붙인 쇼츠 3편입니다. 장르는 ‘군대 실화·공감’이고, 기계가 아니라 사람과 개(얼굴·반응)가 주인공입니다. 그래픽 클립(gfx)은 쓰지 않았습니다. 영상은 모두 미군 장병·국방부 직원이 촬영한 연방정부 저작물(퍼블릭 도메인)입니다. DVIDS 페이지마다 PUBLIC DOMAIN 표시가 있고 Restrictions 안내는 없습니다.
+미군이 DVIDS에 올린 군견(MWD) 영상에 한국어 자막을 붙인 쇼츠 5편입니다. 장르는 ‘군대 실화·공감’이고, 기계가 아니라 사람과 개(얼굴·반응)가 주인공입니다. 그래픽 클립(gfx)은 쓰지 않았습니다. 영상은 모두 미군 장병·국방부 직원이 촬영한 연방정부 저작물(퍼블릭 도메인)입니다. DVIDS 페이지마다 PUBLIC DOMAIN 표시가 있고 Restrictions 안내는 없습니다.
 
 | id | 제목 | 길이 | 내용 | 소리 |
 | --- | --- | --- | --- | --- |
 | `dog1` | 물로 도망치면 / 군견도 못 따라올까? | 23.5초 | 수영장 수중 제압 훈련: 물속 방어복 요원에게 뛰어드는 군견 → 다이빙 → 물속 수영 → 팔 물기 → “물도 안전지대 아님” | 현장음 + 음악 낮게 |
 | `dog2` | 암 진단받은 군견을 위해 / 전우들이 준비한 경례 | 37.6초 | 은퇴 군견 루도를 기리는 부대 행사: 공식 수색 1만 회 이상, 비밀경호국 임무 15회, 대통령 지원 임무 6회 → 2020년 4월 암 진단 → 장병들의 경례 | 행사 영상의 실제 목소리(배경음악 제거) + 자막 |
 | `dog3` | 군견 훈련 미끼가 된 / 대령님의 최후 | 28.3초 | 코소보 평화유지군(KFOR) 동부지역사령관 대령이 직접 방어복을 입고 군견 훈련 미끼가 됨 → “더 빨리 뛰셔야 돼요!” → 제압 | 현장음 + 음악 낮게 |
+| `dog4` | 헬기에서 내려온 / 군견의 출근길 | 20.2초 | 해안경비대 군견 심바가 핸들러와 함께 헬기에서 바다 위 배 갑판으로 하강(호이스트 훈련) | 현장음(헬기·바다) + 음악 낮게 |
+| `dog5` | 10년 복무한 군견의 / 전역식 날 생긴 일 | 29.4초 | 포트 베닝 군견 추모비 앞 전역식: 낭독된 전역 증서(“수많은 장병을 구하고… 새 가족 품에서 은퇴할 자격이 충분합니다”) → 핸들러가 군견을 안아 줌 | 현장음 + 증서 낭독 목소리 + 음악 낮게 |
 
 ```bash
 # 원본: media/dogs/*.mp4 (파일마다 .json에 DVIDS ID·페이지·파일 주소·크레디트·부대·날짜·구간)
@@ -1031,3 +1033,25 @@ python3 politics/prep_split.py dog1 && ./render.sh dog1 final/dog1.mp4   # dog2,
 > 영상: 미 육군 (DVIDS, Sgt. Gillian McCreedy). 미 육군·국방부가 이 영상을 보증하거나 후원하지 않습니다.
 > 음악: "Sneaky Snitch" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
 > #군견 #군대 #대령 #미군 #shorts
+
+**dog4·dog5 추가 메모**
+- dog4: 원본(B-roll)은 헬기·바다 현장음만 있습니다(AST Music 점수 0.01, 말소리 없음). 그래서 자막은 모두 화면 설명입니다. 사실 자막(“해안경비대 군견 심바”, “배에 빠르게 투입하는 훈련”)은 DVIDS 설명(“U.S. Coast Guard K9 Simba from Maritime Safety and Security Team Houston, conducts a hoist … These practice hoists are done to prepare the K9 and their handler for rapid deployments to vessels out on the water.”)에 근거합니다. 마지막 “출근은 헬기로 합니다”는 재치 자막입니다. 후보였던 427728(해병대 CH-53E 패스트로프, 군견 Bobo)은 음악이 깔린 제작 영상이고 화면이 어두워서 쓰지 않았습니다.
+- dog5: 원본은 현장음 B-roll입니다(Music 0.00–0.03). 전역 증서 낭독(원본 51.0–70.3초, `media/dogs/max_certificate.wav`)을 같은 행사의 다른 장면(낭독자, 군견들) 밑에 목소리로 깔았습니다. 그 구간의 장면 소리는 껐습니다. 첫 장면과 마지막 장면은 현장음 그대로입니다. 증서 문장은 faster-whisper small.en·medium.en이 똑같이 들은 부분만 번역했습니다(“For they are credited with saving countless lives of deployed soldiers and personnel in dangerous combat areas, to keeping thousands of personnel, families, and communities safe. These MWDs are truly remarkable and most deserving of retiring to wonderful families eager to share their loving homes.”). 서명 부분(“Signed, Clinton W. Cox, Colonel …”)은 넣지 않았습니다.
+- dog5 이름: DVIDS 설명에는 “Max, a 10-year veteran Belgian Malinois, and Grisha”만 있고 어느 개가 맥스인지는 없습니다. 그래서 화면의 개를 이름으로 가리키지 않았습니다. 첫 자막만 “군견 맥스와 그리샤의 전역식”이고, 제목의 “10년 복무한 군견”은 맥스를 뜻합니다. “4년”은 설명 문장에서 누구에 대한 것인지 애매해서 쓰지 않았습니다.
+- dog5 크레디트: Shantika Ogletree(포트 베닝 공보실, 계급 표기 없음 = 국방부 민간 직원). DVIDS 페이지에 PUBLIC DOMAIN 표시가 있습니다.
+
+**영상 출처 (dog4·dog5)**
+- dog4 — [849910](https://www.dvidshub.net/video/849910) Coast Guard conducts K9 hoist training in Galveston, Texas — Petty Officer 3rd Class Alejandro Rivera, 미 해안경비대 MSST Houston, 2022.6.18, 미국 텍사스주 갤버스턴. 원본 2.4–10, 11.5–18, 18–22.5, 23–24.6초.
+- dog5 — [705767](https://www.dvidshub.net/video/705767) Military Working Dog Retirement Ceremony BRoll — Shantika Ogletree, 904th Military Working Dog Police Detachment, 2019.3.22, 미국 조지아주 포트 베닝 군견 추모비(War Dog Memorial). 원본 23–27.6, 54–57, 46.2–51.2, 2–7, 76–82.3, 94–99.5초(그림), 51.0–70.3초(목소리).
+
+**dog4** — 헬기에서 내려온 군견의 출근길 🚁🐕
+> 미 해안경비대 군견 심바가 핸들러와 함께 헬기에서 바다 위 배로 내려옵니다. 2022년 6월 미국 텍사스주 갤버스턴에서 한 호이스트 훈련이고, 물 위의 선박에 군견과 핸들러를 빠르게 투입하려고 연습한다고 합니다. 출근길이 헬기인 강아지.
+> 영상: 미 해안경비대 (DVIDS, Petty Officer 3rd Class Alejandro Rivera). 미 해안경비대·국토안보부가 이 영상을 보증하거나 후원하지 않습니다.
+> 음악: "Exhilarate" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
+> #군견 #헬기 #해안경비대 #강아지 #shorts
+
+**dog5** — 10년 복무한 군견의 전역식 날 생긴 일
+> 2019년 3월 미국 포트 베닝 군견 추모비 앞에서 열린 군견 맥스와 그리샤의 전역식. 맥스는 10년 차 베테랑입니다. 낭독된 전역 증서: “이 군견들은 위험한 전투 지역에서 수많은 장병의 목숨을 구했고 수천 명의 장병과 가족, 지역사회를 지켰습니다. 사랑 가득한 새 가족 품에서 은퇴할 자격이 충분합니다.” 두 군견은 전역해 새 가족과 함께 살게 됩니다.
+> 영상: 미 육군 포트 베닝 (DVIDS, Shantika Ogletree). 미 육군·국방부가 이 영상을 보증하거나 후원하지 않습니다.
+> 음악: "Lightless Dawn" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
+> #군견 #전역 #감동 #미군 #shorts
