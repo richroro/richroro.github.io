@@ -1055,3 +1055,37 @@ python3 politics/prep_split.py dog1 && ./render.sh dog1 final/dog1.mp4   # dog2,
 > 영상: 미 육군 포트 베닝 (DVIDS, Shantika Ogletree). 미 육군·국방부가 이 영상을 보증하거나 후원하지 않습니다.
 > 음악: "Lightless Dawn" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
 > #군견 #전역 #감동 #미군 #shorts
+
+## 군대 훈훈·유쾌 쇼츠 (`politics/fun1`, `politics/fun2`)
+
+사람이 주인공인 가벼운 군대 장면 2편입니다. 현장음을 그대로 쓰고, 레이아웃은 군견 쇼츠와 같습니다(`titleStyle: band`, `captionY 1600`, `single` 크롭, `broll`로 흰 번쩍임 없음).
+
+| id | 제목 | 길이 | 내용 | 소리 |
+| --- | --- | --- | --- | --- |
+| `fun1` | 미군 줄다리기 대회에 / 헬기 편대가 지나가면 | 24.7초 | 미 육군 3사단 ‘마른 위크’ 줄다리기(6명 대 6명, 1분씩 3라운드, 중앙선 넘기면 승리) → 힘쓰는 얼굴·응원 → 머리 위로 헬기 편대가 지나가고 장병들이 손을 흔듦 | 현장음 + 음악 낮게(Hyperfun) |
+| `fun2` | 6개월 파병 다녀온 / 교장 선생님이 돌아오자 | 21.5초 | 아이오와 공군 주방위군 상사이자 초등학교 교장 드루 와그너가 6개월 중동 파병을 마치고 돌아오자 학교가 깜짝 환영식 → 포옹·하이파이브 → “이렇게 따뜻한 환영 속에 집에 오는 것만 한 게 없죠” | 현장음(환호)·인터뷰 육성, 음악 없음 |
+
+```bash
+# 원본: media/fun/*.mp4 (.json에 DVIDS ID·페이지·파일 주소·크레디트·날짜·구간)
+python3 politics/prep_split.py fun1 && ./render.sh fun1 final/fun1.mp4   # fun2도 같음; final/은 -crf 22로 다시 압축
+```
+
+- 두 원본 모두 B-roll이고 음악이 없습니다(AST Music 점수 0.00–0.10). 후보였던 RIMPAC 26 줄다리기(1013771)는 음악이 깔려 있어서 쓰지 않았습니다.
+- fun1 자막은 모두 화면 설명이고, 줄다리기 규칙은 같은 행사의 다른 DVIDS 영상 [865659](https://www.dvidshub.net/video/865659) 설명에 근거합니다(“a single elimination tournament where two six-person teams on opposite ends of the rope had three one-minute rounds to drag the other team across the center line”). 헬기 편대 장면은 같은 영상(866305) 2:13–2:19에 있습니다. DVIDS 설명에 헬기 이야기가 없어서 기종이나 이유는 말하지 않았습니다. 줄다리기 승패도 영상에 나오지 않아 말하지 않았습니다.
+- fun2의 인물 정보(아이오와 공군 주방위군 185공중급유비행단 상사, 네브래스카 포트 칼훈 초등학교 교장, 6개월 중동 파병, 학교가 준비한 깜짝 환영식, “second family”)는 DVIDS 840409 설명에서 가져왔습니다. 마지막 인용(“there's nothing like coming home to a warm welcoming like this”)은 같은 영상 186.1–190.2초의 인터뷰를 faster-whisper medium.en으로 듣고 번역했습니다(단어 확률 0.89–1.0). 아이들 얼굴이 나오지만 공개 행사를 미 공군이 공개한 영상이고, 크롭은 와그너 상사에게 맞췄습니다.
+
+**영상 출처**
+- fun1 — [866305](https://www.dvidshub.net/video/866305) 3rd Infantry Division Marne Week 2022 Tug of War B-Roll — Daniel Malta, 3rd Infantry Division, 2022.11.28, 미국 조지아주 포트 스튜어트. 원본 44.8–48, 7.5–10.5, 13.5–16.5, 38.5–41, 112–116, 121–124, 133.5–139.5초.
+- fun2 — [840409](https://www.dvidshub.net/video/840409) Fort Calhoun, Neb. School Principal welcomed home following Air Force deployment — Senior Master Sgt. Vincent De Groot, 185th Air Refueling Wing(아이오와 공군 주방위군), 2022.4.21, 미국 네브래스카주 포트 칼훈 초등학교. 원본 53.8–57.6, 9.5–13.5, 34.5–37.5, 38.5–41.5, 60.5–63.5, 185.9–190.6초.
+- 라이선스: 미군·주방위군이 직무로 만든 연방정부 저작물로 퍼블릭 도메인입니다(DVIDS 페이지에 PUBLIC DOMAIN 표시, Restrictions 없음). 음악은 Kevin MacLeod CC BY 4.0입니다.
+
+**fun1** — 미군 줄다리기 대회에 헬기 편대가 지나가면 🚁
+> 미 육군 3사단의 ‘마른 위크(Marne Week)’ 줄다리기 대회. 6명 대 6명이 1분씩 3라운드를 겨뤄 상대를 중앙선 너머로 끌어오면 이깁니다. 모두 진심으로 줄을 당기던 그때, 머리 위로 헬기 편대가 지나갔습니다. 2022년 11월, 미국 조지아주 포트 스튜어트.
+> 영상: 미 육군 (DVIDS, Daniel Malta). 미 육군·국방부가 이 영상을 보증하거나 후원하지 않습니다.
+> 음악: "Hyperfun" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
+> #줄다리기 #미군 #군대 #헬기 #shorts
+
+**fun2** — 6개월 파병 다녀온 교장 선생님이 돌아오자
+> 미국 네브래스카주의 한 초등학교 교장 선생님은 아이오와 공군 주방위군 상사이기도 합니다. 6개월 중동 파병을 마치고 돌아오자, 학교는 전교생이 모인 깜짝 환영식을 준비했습니다. 그가 ‘제2의 가족’이라 부르는 아이들과의 재회. “이렇게 따뜻한 환영 속에 집에 오는 것만 한 게 없죠.”
+> 영상: 미 공군 주방위군 (DVIDS, Senior Master Sgt. Vincent De Groot). 미 공군·국방부가 이 영상을 보증하거나 후원하지 않습니다.
+> #파병 #귀환 #감동 #선생님 #shorts
