@@ -1,0 +1,1309 @@
+{
+ "model": "faster-whisper large-v3 (int8, CPU)",
+ "params": {
+  "language": "ko",
+  "beam_size": 5,
+  "vad_filter": false,
+  "word_timestamps": true,
+  "condition_on_previous_text": false
+ },
+ "source": "12.mp4",
+ "duration_s": 100.008,
+ "segments": [
+  {
+   "start": 0.0,
+   "end": 5.96,
+   "text": " 저희는 2023년에 PSG 한국 경기를 추진하면서 PSG 측과 상당 부분 협상을 진행하고 있었죠.",
+   "words": [
+    {
+     "start": 0.0,
+     "end": 0.06,
+     "word": " 저희는",
+     "probability": 0.5298
+    },
+    {
+     "start": 0.06,
+     "end": 1.12,
+     "word": " 2023년에",
+     "probability": 0.9983
+    },
+    {
+     "start": 1.12,
+     "end": 1.66,
+     "word": " PSG",
+     "probability": 0.9855
+    },
+    {
+     "start": 1.66,
+     "end": 2.0,
+     "word": " 한국",
+     "probability": 0.9951
+    },
+    {
+     "start": 2.0,
+     "end": 2.54,
+     "word": " 경기를",
+     "probability": 0.8885
+    },
+    {
+     "start": 2.54,
+     "end": 3.02,
+     "word": " 추진하면서",
+     "probability": 0.9997
+    },
+    {
+     "start": 3.02,
+     "end": 3.62,
+     "word": " PSG",
+     "probability": 0.999
+    },
+    {
+     "start": 3.62,
+     "end": 4.04,
+     "word": " 측과",
+     "probability": 0.9921
+    },
+    {
+     "start": 4.04,
+     "end": 4.44,
+     "word": " 상당",
+     "probability": 0.9999
+    },
+    {
+     "start": 4.44,
+     "end": 4.62,
+     "word": " 부분",
+     "probability": 0.9709
+    },
+    {
+     "start": 4.62,
+     "end": 5.02,
+     "word": " 협상을",
+     "probability": 0.9998
+    },
+    {
+     "start": 5.02,
+     "end": 5.5,
+     "word": " 진행하고",
+     "probability": 1.0
+    },
+    {
+     "start": 5.5,
+     "end": 5.96,
+     "word": " 있었죠.",
+     "probability": 0.9969
+    }
+   ]
+  },
+  {
+   "start": 6.0,
+   "end": 8.58,
+   "text": " 일정상 개최 가능하다고 설명을 하고요.",
+   "words": [
+    {
+     "start": 6.0,
+     "end": 6.6,
+     "word": " 일정상",
+     "probability": 0.999
+    },
+    {
+     "start": 6.6,
+     "end": 7.0,
+     "word": " 개최",
+     "probability": 0.9962
+    },
+    {
+     "start": 7.0,
+     "end": 7.58,
+     "word": " 가능하다고",
+     "probability": 0.9965
+    },
+    {
+     "start": 7.58,
+     "end": 8.2,
+     "word": " 설명을",
+     "probability": 0.9992
+    },
+    {
+     "start": 8.2,
+     "end": 8.58,
+     "word": " 하고요.",
+     "probability": 0.9994
+    }
+   ]
+  },
+  {
+   "start": 8.66,
+   "end": 9.18,
+   "text": " 네, 맞습니다.",
+   "words": [
+    {
+     "start": 8.66,
+     "end": 8.86,
+     "word": " 네,",
+     "probability": 0.7067
+    },
+    {
+     "start": 8.88,
+     "end": 9.18,
+     "word": " 맞습니다.",
+     "probability": 0.9997
+    }
+   ]
+  },
+  {
+   "start": 9.66,
+   "end": 15.2,
+   "text": " 그런데 다음 PPT 보시면 바로 그때 대한축구협회가 경쟁사업자인 쿠팡에게",
+   "words": [
+    {
+     "start": 9.66,
+     "end": 10.5,
+     "word": " 그런데",
+     "probability": 0.8225
+    },
+    {
+     "start": 10.5,
+     "end": 11.24,
+     "word": " 다음",
+     "probability": 0.9982
+    },
+    {
+     "start": 11.24,
+     "end": 11.58,
+     "word": " PPT",
+     "probability": 0.9214
+    },
+    {
+     "start": 11.58,
+     "end": 11.76,
+     "word": " 보시면",
+     "probability": 0.9848
+    },
+    {
+     "start": 11.76,
+     "end": 12.48,
+     "word": " 바로",
+     "probability": 0.9982
+    },
+    {
+     "start": 12.48,
+     "end": 12.68,
+     "word": " 그때",
+     "probability": 0.9958
+    },
+    {
+     "start": 12.68,
+     "end": 13.6,
+     "word": " 대한축구협회가",
+     "probability": 0.9931
+    },
+    {
+     "start": 13.6,
+     "end": 14.64,
+     "word": " 경쟁사업자인",
+     "probability": 0.9246
+    },
+    {
+     "start": 14.64,
+     "end": 15.2,
+     "word": " 쿠팡에게",
+     "probability": 0.9997
+    }
+   ]
+  },
+  {
+   "start": 15.2,
+   "end": 19.04,
+   "text": " 경기 개최 기간까지 명시한 공문을 발급을 합니다.",
+   "words": [
+    {
+     "start": 15.2,
+     "end": 16.04,
+     "word": " 경기",
+     "probability": 0.9996
+    },
+    {
+     "start": 16.04,
+     "end": 16.4,
+     "word": " 개최",
+     "probability": 0.9943
+    },
+    {
+     "start": 16.4,
+     "end": 16.86,
+     "word": " 기간까지",
+     "probability": 0.9946
+    },
+    {
+     "start": 16.86,
+     "end": 17.54,
+     "word": " 명시한",
+     "probability": 0.9999
+    },
+    {
+     "start": 17.54,
+     "end": 18.38,
+     "word": " 공문을",
+     "probability": 0.9923
+    },
+    {
+     "start": 18.38,
+     "end": 18.88,
+     "word": " 발급을",
+     "probability": 0.9897
+    },
+    {
+     "start": 18.88,
+     "end": 19.04,
+     "word": " 합니다.",
+     "probability": 0.9998
+    }
+   ]
+  },
+  {
+   "start": 19.48,
+   "end": 24.64,
+   "text": " 참고인 이 문서가 PSG 측에 제시된 뒤에 PSG와의 협상에서 무슨 일이 발생했습니까?",
+   "words": [
+    {
+     "start": 19.48,
+     "end": 19.96,
+     "word": " 참고인",
+     "probability": 0.9987
+    },
+    {
+     "start": 19.96,
+     "end": 20.1,
+     "word": " 이",
+     "probability": 0.6424
+    },
+    {
+     "start": 20.1,
+     "end": 20.56,
+     "word": " 문서가",
+     "probability": 0.9997
+    },
+    {
+     "start": 20.56,
+     "end": 21.16,
+     "word": " PSG",
+     "probability": 1.0
+    },
+    {
+     "start": 21.16,
+     "end": 21.64,
+     "word": " 측에",
+     "probability": 0.9997
+    },
+    {
+     "start": 21.64,
+     "end": 22.08,
+     "word": " 제시된",
+     "probability": 0.9999
+    },
+    {
+     "start": 22.08,
+     "end": 22.26,
+     "word": " 뒤에",
+     "probability": 0.9837
+    },
+    {
+     "start": 22.26,
+     "end": 23.14,
+     "word": " PSG와의",
+     "probability": 0.9996
+    },
+    {
+     "start": 23.14,
+     "end": 23.54,
+     "word": " 협상에서",
+     "probability": 0.9999
+    },
+    {
+     "start": 23.54,
+     "end": 23.78,
+     "word": " 무슨",
+     "probability": 0.9999
+    },
+    {
+     "start": 23.78,
+     "end": 24.02,
+     "word": " 일이",
+     "probability": 0.9999
+    },
+    {
+     "start": 24.02,
+     "end": 24.64,
+     "word": " 발생했습니까?",
+     "probability": 0.9994
+    }
+   ]
+  },
+  {
+   "start": 24.94,
+   "end": 27.0,
+   "text": " 계약 날인 직전에서 바로 드랍이 됐습니다.",
+   "words": [
+    {
+     "start": 24.94,
+     "end": 25.32,
+     "word": " 계약",
+     "probability": 0.9675
+    },
+    {
+     "start": 25.32,
+     "end": 25.6,
+     "word": " 날인",
+     "probability": 0.9911
+    },
+    {
+     "start": 25.6,
+     "end": 26.06,
+     "word": " 직전에서",
+     "probability": 0.9982
+    },
+    {
+     "start": 26.06,
+     "end": 26.3,
+     "word": " 바로",
+     "probability": 0.9999
+    },
+    {
+     "start": 26.3,
+     "end": 26.68,
+     "word": " 드랍이",
+     "probability": 0.99
+    },
+    {
+     "start": 26.68,
+     "end": 27.0,
+     "word": " 됐습니다.",
+     "probability": 0.9996
+    }
+   ]
+  },
+  {
+   "start": 27.0,
+   "end": 34.4,
+   "text": " 네. 결국 참고인이 추진하던 PSG 경기는 무산이 됐다는 거잖아요. 대신 쿠팡이 경기를 가져가버렸네요.",
+   "words": [
+    {
+     "start": 27.0,
+     "end": 27.48,
+     "word": " 네.",
+     "probability": 0.2249
+    },
+    {
+     "start": 27.6,
+     "end": 28.04,
+     "word": " 결국",
+     "probability": 0.9874
+    },
+    {
+     "start": 28.04,
+     "end": 28.72,
+     "word": " 참고인이",
+     "probability": 0.9956
+    },
+    {
+     "start": 28.72,
+     "end": 29.4,
+     "word": " 추진하던",
+     "probability": 0.9998
+    },
+    {
+     "start": 29.4,
+     "end": 30.08,
+     "word": " PSG",
+     "probability": 0.9823
+    },
+    {
+     "start": 30.08,
+     "end": 30.64,
+     "word": " 경기는",
+     "probability": 0.999
+    },
+    {
+     "start": 30.64,
+     "end": 31.14,
+     "word": " 무산이",
+     "probability": 0.9944
+    },
+    {
+     "start": 31.14,
+     "end": 31.46,
+     "word": " 됐다는",
+     "probability": 0.9999
+    },
+    {
+     "start": 31.46,
+     "end": 31.88,
+     "word": " 거잖아요.",
+     "probability": 1.0
+    },
+    {
+     "start": 32.08,
+     "end": 32.62,
+     "word": " 대신",
+     "probability": 0.9039
+    },
+    {
+     "start": 32.62,
+     "end": 33.14,
+     "word": " 쿠팡이",
+     "probability": 0.9992
+    },
+    {
+     "start": 33.14,
+     "end": 33.62,
+     "word": " 경기를",
+     "probability": 1.0
+    },
+    {
+     "start": 33.62,
+     "end": 34.4,
+     "word": " 가져가버렸네요.",
+     "probability": 0.9261
+    }
+   ]
+  },
+  {
+   "start": 34.66,
+   "end": 37.72,
+   "text": " 네. 8월 3일 전북현대와 부산에서 경기를 했습니다.",
+   "words": [
+    {
+     "start": 34.66,
+     "end": 35.02,
+     "word": " 네.",
+     "probability": 0.9345
+    },
+    {
+     "start": 35.06,
+     "end": 35.58,
+     "word": " 8월",
+     "probability": 0.9985
+    },
+    {
+     "start": 35.58,
+     "end": 35.84,
+     "word": " 3일",
+     "probability": 0.8849
+    },
+    {
+     "start": 35.84,
+     "end": 36.62,
+     "word": " 전북현대와",
+     "probability": 0.8235
+    },
+    {
+     "start": 36.62,
+     "end": 37.24,
+     "word": " 부산에서",
+     "probability": 0.9969
+    },
+    {
+     "start": 37.24,
+     "end": 37.56,
+     "word": " 경기를",
+     "probability": 0.9962
+    },
+    {
+     "start": 37.56,
+     "end": 37.72,
+     "word": " 했습니다.",
+     "probability": 0.9991
+    }
+   ]
+  },
+  {
+   "start": 38.02,
+   "end": 39.12,
+   "text": " 네. 전한진 증인.",
+   "words": [
+    {
+     "start": 38.02,
+     "end": 38.12,
+     "word": " 네.",
+     "probability": 0.7452
+    },
+    {
+     "start": 38.16,
+     "end": 38.76,
+     "word": " 전한진",
+     "probability": 0.8663
+    },
+    {
+     "start": 38.76,
+     "end": 39.12,
+     "word": " 증인.",
+     "probability": 0.9967
+    }
+   ]
+  },
+  {
+   "start": 39.26,
+   "end": 39.68,
+   "text": " 네.",
+   "words": [
+    {
+     "start": 39.26,
+     "end": 39.68,
+     "word": " 네.",
+     "probability": 0.5738
+    }
+   ]
+  },
+  {
+   "start": 44.76,
+   "end": 49.0,
+   "text": " 2023년 당시에 사무총장이셨고 영문 친서 공문의 최종 결재자셨죠.",
+   "words": [
+    {
+     "start": 44.76,
+     "end": 45.58,
+     "word": " 2023년",
+     "probability": 0.9729
+    },
+    {
+     "start": 45.58,
+     "end": 45.94,
+     "word": " 당시에",
+     "probability": 0.9614
+    },
+    {
+     "start": 45.94,
+     "end": 47.08,
+     "word": " 사무총장이셨고",
+     "probability": 0.9993
+    },
+    {
+     "start": 47.08,
+     "end": 47.46,
+     "word": " 영문",
+     "probability": 0.9915
+    },
+    {
+     "start": 47.46,
+     "end": 47.88,
+     "word": " 친서",
+     "probability": 0.7135
+    },
+    {
+     "start": 47.88,
+     "end": 48.34,
+     "word": " 공문의",
+     "probability": 0.9048
+    },
+    {
+     "start": 48.34,
+     "end": 48.74,
+     "word": " 최종",
+     "probability": 0.9999
+    },
+    {
+     "start": 48.74,
+     "end": 49.15,
+     "word": " 결재자셨죠.",
+     "probability": 0.9325
+    }
+   ]
+  },
+  {
+   "start": 49.76,
+   "end": 50.32,
+   "text": " 네. 맞습니다.",
+   "words": [
+    {
+     "start": 49.76,
+     "end": 50.02,
+     "word": " 네.",
+     "probability": 0.9994
+    },
+    {
+     "start": 50.06,
+     "end": 50.32,
+     "word": " 맞습니다.",
+     "probability": 0.9995
+    }
+   ]
+  },
+  {
+   "start": 50.54,
+   "end": 55.72,
+   "text": " 네. 국제경기개최 여부는 신청을 받아서 서류를 심사한 뒤 협회가 승인하는 것입니다.",
+   "words": [
+    {
+     "start": 50.54,
+     "end": 50.8,
+     "word": " 네.",
+     "probability": 0.4914
+    },
+    {
+     "start": 51.06,
+     "end": 51.88,
+     "word": " 국제경기개최",
+     "probability": 0.9605
+    },
+    {
+     "start": 51.88,
+     "end": 52.2,
+     "word": " 여부는",
+     "probability": 0.7888
+    },
+    {
+     "start": 52.2,
+     "end": 52.7,
+     "word": " 신청을",
+     "probability": 0.9998
+    },
+    {
+     "start": 52.7,
+     "end": 52.98,
+     "word": " 받아서",
+     "probability": 0.9996
+    },
+    {
+     "start": 52.98,
+     "end": 53.4,
+     "word": " 서류를",
+     "probability": 0.9998
+    },
+    {
+     "start": 53.4,
+     "end": 54.02,
+     "word": " 심사한",
+     "probability": 0.9999
+    },
+    {
+     "start": 54.02,
+     "end": 54.34,
+     "word": " 뒤",
+     "probability": 0.9948
+    },
+    {
+     "start": 54.34,
+     "end": 54.84,
+     "word": " 협회가",
+     "probability": 0.99
+    },
+    {
+     "start": 54.84,
+     "end": 55.3,
+     "word": " 승인하는",
+     "probability": 0.999
+    },
+    {
+     "start": 55.3,
+     "end": 55.72,
+     "word": " 것입니다.",
+     "probability": 1.0
+    }
+   ]
+  },
+  {
+   "start": 55.72,
+   "end": 62.9,
+   "text": " 다음 ppt 보시면 그런데 2023년 1월에 쿠팡은 쿠팡플레이 시리즈 개최 승인과",
+   "words": [
+    {
+     "start": 55.72,
+     "end": 57.02,
+     "word": " 다음",
+     "probability": 0.9528
+    },
+    {
+     "start": 57.02,
+     "end": 57.38,
+     "word": " ppt",
+     "probability": 0.8357
+    },
+    {
+     "start": 57.38,
+     "end": 57.62,
+     "word": " 보시면",
+     "probability": 0.963
+    },
+    {
+     "start": 57.62,
+     "end": 58.22,
+     "word": " 그런데",
+     "probability": 0.96
+    },
+    {
+     "start": 58.22,
+     "end": 59.26,
+     "word": " 2023년",
+     "probability": 0.9991
+    },
+    {
+     "start": 59.26,
+     "end": 59.72,
+     "word": " 1월에",
+     "probability": 0.9988
+    },
+    {
+     "start": 59.72,
+     "end": 60.24,
+     "word": " 쿠팡은",
+     "probability": 0.9993
+    },
+    {
+     "start": 60.24,
+     "end": 61.46,
+     "word": " 쿠팡플레이",
+     "probability": 0.9286
+    },
+    {
+     "start": 61.46,
+     "end": 61.96,
+     "word": " 시리즈",
+     "probability": 0.9998
+    },
+    {
+     "start": 61.96,
+     "end": 62.36,
+     "word": " 개최",
+     "probability": 0.9795
+    },
+    {
+     "start": 62.36,
+     "end": 62.9,
+     "word": " 승인과",
+     "probability": 0.9954
+    }
+   ]
+  },
+  {
+   "start": 62.9,
+   "end": 69.46,
+   "text": " 자신들이 승인받을 기간 동안에 타 기관에 해외 클럽 초청 경기가 열리지 않도록 한다는 공문을 요청했습니다",
+   "words": [
+    {
+     "start": 62.9,
+     "end": 63.78,
+     "word": " 자신들이",
+     "probability": 0.9997
+    },
+    {
+     "start": 63.78,
+     "end": 64.32,
+     "word": " 승인받을",
+     "probability": 0.9795
+    },
+    {
+     "start": 64.32,
+     "end": 64.62,
+     "word": " 기간",
+     "probability": 0.9993
+    },
+    {
+     "start": 64.62,
+     "end": 65.0,
+     "word": " 동안에",
+     "probability": 0.948
+    },
+    {
+     "start": 65.0,
+     "end": 65.1,
+     "word": " 타",
+     "probability": 0.9949
+    },
+    {
+     "start": 65.1,
+     "end": 65.74,
+     "word": " 기관에",
+     "probability": 0.7743
+    },
+    {
+     "start": 65.74,
+     "end": 66.14,
+     "word": " 해외",
+     "probability": 0.9998
+    },
+    {
+     "start": 66.14,
+     "end": 66.48,
+     "word": " 클럽",
+     "probability": 0.7888
+    },
+    {
+     "start": 66.48,
+     "end": 66.86,
+     "word": " 초청",
+     "probability": 0.9997
+    },
+    {
+     "start": 66.86,
+     "end": 67.32,
+     "word": " 경기가",
+     "probability": 0.9992
+    },
+    {
+     "start": 67.32,
+     "end": 67.78,
+     "word": " 열리지",
+     "probability": 0.9998
+    },
+    {
+     "start": 67.78,
+     "end": 68.2,
+     "word": " 않도록",
+     "probability": 1.0
+    },
+    {
+     "start": 68.2,
+     "end": 68.48,
+     "word": " 한다는",
+     "probability": 0.9999
+    },
+    {
+     "start": 68.48,
+     "end": 68.94,
+     "word": " 공문을",
+     "probability": 0.9975
+    },
+    {
+     "start": 68.94,
+     "end": 69.46,
+     "word": " 요청했습니다",
+     "probability": 0.9999
+    }
+   ]
+  },
+  {
+   "start": 70.58,
+   "end": 73.24,
+   "text": " 증인 본 의원이 다 살펴봤는데요",
+   "words": [
+    {
+     "start": 70.58,
+     "end": 71.5,
+     "word": " 증인",
+     "probability": 0.6016
+    },
+    {
+     "start": 71.5,
+     "end": 71.96,
+     "word": " 본",
+     "probability": 0.9308
+    },
+    {
+     "start": 71.96,
+     "end": 72.26,
+     "word": " 의원이",
+     "probability": 0.8186
+    },
+    {
+     "start": 72.26,
+     "end": 72.42,
+     "word": " 다",
+     "probability": 0.9999
+    },
+    {
+     "start": 72.42,
+     "end": 73.24,
+     "word": " 살펴봤는데요",
+     "probability": 0.9997
+    }
+   ]
+  },
+  {
+   "start": 73.24,
+   "end": 78.52,
+   "text": " 여기 국제대회 승인 및 운영 규정 이거 다 읽어봤습니다",
+   "words": [
+    {
+     "start": 73.24,
+     "end": 74.72,
+     "word": " 여기",
+     "probability": 0.9868
+    },
+    {
+     "start": 74.72,
+     "end": 75.52,
+     "word": " 국제대회",
+     "probability": 0.9956
+    },
+    {
+     "start": 75.52,
+     "end": 75.9,
+     "word": " 승인",
+     "probability": 0.9996
+    },
+    {
+     "start": 75.9,
+     "end": 76.08,
+     "word": " 및",
+     "probability": 1.0
+    },
+    {
+     "start": 76.08,
+     "end": 76.4,
+     "word": " 운영",
+     "probability": 0.9999
+    },
+    {
+     "start": 76.4,
+     "end": 76.78,
+     "word": " 규정",
+     "probability": 0.9914
+    },
+    {
+     "start": 76.78,
+     "end": 77.5,
+     "word": " 이거",
+     "probability": 0.9475
+    },
+    {
+     "start": 77.5,
+     "end": 77.8,
+     "word": " 다",
+     "probability": 1.0
+    },
+    {
+     "start": 77.8,
+     "end": 78.52,
+     "word": " 읽어봤습니다",
+     "probability": 0.9994
+    }
+   ]
+  },
+  {
+   "start": 78.52,
+   "end": 84.88,
+   "text": " 협회 규정 어디에 특정 사업자가 정식 승인받기도 전에 경기 기간을 선점할 수 있다는 조항이 있습니까",
+   "words": [
+    {
+     "start": 78.52,
+     "end": 79.6,
+     "word": " 협회",
+     "probability": 0.9933
+    },
+    {
+     "start": 79.6,
+     "end": 79.88,
+     "word": " 규정",
+     "probability": 0.9971
+    },
+    {
+     "start": 79.88,
+     "end": 80.36,
+     "word": " 어디에",
+     "probability": 0.8476
+    },
+    {
+     "start": 80.36,
+     "end": 80.76,
+     "word": " 특정",
+     "probability": 0.9999
+    },
+    {
+     "start": 80.76,
+     "end": 81.26,
+     "word": " 사업자가",
+     "probability": 0.9995
+    },
+    {
+     "start": 81.26,
+     "end": 81.72,
+     "word": " 정식",
+     "probability": 0.9998
+    },
+    {
+     "start": 81.72,
+     "end": 82.38,
+     "word": " 승인받기도",
+     "probability": 0.9371
+    },
+    {
+     "start": 82.38,
+     "end": 82.64,
+     "word": " 전에",
+     "probability": 0.9998
+    },
+    {
+     "start": 82.64,
+     "end": 83.1,
+     "word": " 경기",
+     "probability": 0.9996
+    },
+    {
+     "start": 83.1,
+     "end": 83.5,
+     "word": " 기간을",
+     "probability": 0.9029
+    },
+    {
+     "start": 83.5,
+     "end": 83.9,
+     "word": " 선점할",
+     "probability": 0.9987
+    },
+    {
+     "start": 83.9,
+     "end": 83.98,
+     "word": " 수",
+     "probability": 1.0
+    },
+    {
+     "start": 83.98,
+     "end": 84.18,
+     "word": " 있다는",
+     "probability": 0.9989
+    },
+    {
+     "start": 84.18,
+     "end": 84.54,
+     "word": " 조항이",
+     "probability": 0.9844
+    },
+    {
+     "start": 84.54,
+     "end": 84.88,
+     "word": " 있습니까",
+     "probability": 0.999
+    }
+   ]
+  },
+  {
+   "start": 84.88,
+   "end": 85.9,
+   "text": " 그런 조항 없습니다.",
+   "words": [
+    {
+     "start": 84.88,
+     "end": 85.48,
+     "word": " 그런",
+     "probability": 0.9135
+    },
+    {
+     "start": 85.48,
+     "end": 85.72,
+     "word": " 조항",
+     "probability": 0.9976
+    },
+    {
+     "start": 85.72,
+     "end": 85.9,
+     "word": " 없습니다.",
+     "probability": 0.8184
+    }
+   ]
+  },
+  {
+   "start": 86.16,
+   "end": 90.48,
+   "text": " 그런 조항 없죠. 그런데 보십시오. ppt 다섯 번째 보시죠.",
+   "words": [
+    {
+     "start": 86.16,
+     "end": 86.36,
+     "word": " 그런",
+     "probability": 0.8224
+    },
+    {
+     "start": 86.36,
+     "end": 86.62,
+     "word": " 조항",
+     "probability": 0.9997
+    },
+    {
+     "start": 86.62,
+     "end": 86.92,
+     "word": " 없죠.",
+     "probability": 0.9956
+    },
+    {
+     "start": 87.04,
+     "end": 87.5,
+     "word": " 그런데",
+     "probability": 0.999
+    },
+    {
+     "start": 87.5,
+     "end": 88.5,
+     "word": " 보십시오.",
+     "probability": 0.9941
+    },
+    {
+     "start": 88.64,
+     "end": 89.26,
+     "word": " ppt",
+     "probability": 0.7497
+    },
+    {
+     "start": 89.26,
+     "end": 89.8,
+     "word": " 다섯",
+     "probability": 0.9679
+    },
+    {
+     "start": 89.8,
+     "end": 90.06,
+     "word": " 번째",
+     "probability": 0.9796
+    },
+    {
+     "start": 90.06,
+     "end": 90.48,
+     "word": " 보시죠.",
+     "probability": 0.995
+    }
+   ]
+  },
+  {
+   "start": 91.18,
+   "end": 98.1,
+   "text": " 왜 협회가 쿠팡 메일 한 통의 정식 절차 다 무시하고 개최 일정을 선점한 공문을 발성을 했습니까? 무슨 권한으로 한 겁니까?",
+   "words": [
+    {
+     "start": 90.91,
+     "end": 91.22,
+     "word": " 왜",
+     "probability": 0.9911
+    },
+    {
+     "start": 91.22,
+     "end": 91.94,
+     "word": " 협회가",
+     "probability": 0.9975
+    },
+    {
+     "start": 91.94,
+     "end": 92.38,
+     "word": " 쿠팡",
+     "probability": 0.9989
+    },
+    {
+     "start": 92.38,
+     "end": 92.78,
+     "word": " 메일",
+     "probability": 0.8544
+    },
+    {
+     "start": 92.78,
+     "end": 92.86,
+     "word": " 한",
+     "probability": 0.9986
+    },
+    {
+     "start": 92.86,
+     "end": 93.16,
+     "word": " 통의",
+     "probability": 0.9855
+    },
+    {
+     "start": 93.16,
+     "end": 93.48,
+     "word": " 정식",
+     "probability": 0.9999
+    },
+    {
+     "start": 93.48,
+     "end": 93.88,
+     "word": " 절차",
+     "probability": 0.9998
+    },
+    {
+     "start": 93.88,
+     "end": 93.98,
+     "word": " 다",
+     "probability": 0.9984
+    },
+    {
+     "start": 93.98,
+     "end": 94.44,
+     "word": " 무시하고",
+     "probability": 0.9817
+    },
+    {
+     "start": 94.44,
+     "end": 94.8,
+     "word": " 개최",
+     "probability": 0.9865
+    },
+    {
+     "start": 94.8,
+     "end": 95.1,
+     "word": " 일정을",
+     "probability": 0.9482
+    },
+    {
+     "start": 95.1,
+     "end": 95.72,
+     "word": " 선점한",
+     "probability": 0.9987
+    },
+    {
+     "start": 95.72,
+     "end": 96.24,
+     "word": " 공문을",
+     "probability": 0.9993
+    },
+    {
+     "start": 96.24,
+     "end": 96.54,
+     "word": " 발성을",
+     "probability": 0.9453
+    },
+    {
+     "start": 96.54,
+     "end": 96.94,
+     "word": " 했습니까?",
+     "probability": 0.9989
+    },
+    {
+     "start": 97.04,
+     "end": 97.18,
+     "word": " 무슨",
+     "probability": 0.9998
+    },
+    {
+     "start": 97.18,
+     "end": 97.64,
+     "word": " 권한으로",
+     "probability": 0.9976
+    },
+    {
+     "start": 97.64,
+     "end": 97.78,
+     "word": " 한",
+     "probability": 0.9997
+    },
+    {
+     "start": 97.78,
+     "end": 98.1,
+     "word": " 겁니까?",
+     "probability": 0.9998
+    }
+   ]
+  },
+  {
+   "start": 98.74,
+   "end": 99.68,
+   "text": " 네. 이 공문은",
+   "words": [
+    {
+     "start": 98.74,
+     "end": 98.98,
+     "word": " 네.",
+     "probability": 0.7499
+    },
+    {
+     "start": 99.04,
+     "end": 99.14,
+     "word": " 이",
+     "probability": 0.9998
+    },
+    {
+     "start": 99.14,
+     "end": 99.68,
+     "word": " 공문은",
+     "probability": 0.9999
+    }
+   ]
+  }
+ ]
+}

@@ -1,0 +1,1445 @@
+{
+ "model": "faster-whisper large-v3 (int8, CPU)",
+ "params": {
+  "language": "ko",
+  "beam_size": 5,
+  "vad_filter": false,
+  "word_timestamps": true,
+  "condition_on_previous_text": false
+ },
+ "source": "13.mp4",
+ "duration_s": 103.004,
+ "segments": [
+  {
+   "start": 0.0,
+   "end": 5.4,
+   "text": " 협회가 관리해야 될 국제경기 대체 일정을 특정 후원사 영업자산처럼 내준 겁니다.",
+   "words": [
+    {
+     "start": 0.0,
+     "end": 0.28,
+     "word": " 협회가",
+     "probability": 0.6747
+    },
+    {
+     "start": 0.28,
+     "end": 0.6,
+     "word": " 관리해야",
+     "probability": 0.9994
+    },
+    {
+     "start": 0.6,
+     "end": 1.02,
+     "word": " 될",
+     "probability": 0.7534
+    },
+    {
+     "start": 1.02,
+     "end": 1.88,
+     "word": " 국제경기",
+     "probability": 0.8667
+    },
+    {
+     "start": 1.88,
+     "end": 2.26,
+     "word": " 대체",
+     "probability": 0.7861
+    },
+    {
+     "start": 2.26,
+     "end": 2.62,
+     "word": " 일정을",
+     "probability": 0.9277
+    },
+    {
+     "start": 2.62,
+     "end": 3.54,
+     "word": " 특정",
+     "probability": 0.9993
+    },
+    {
+     "start": 3.54,
+     "end": 3.9,
+     "word": " 후원사",
+     "probability": 0.9367
+    },
+    {
+     "start": 3.9,
+     "end": 4.8,
+     "word": " 영업자산처럼",
+     "probability": 0.9573
+    },
+    {
+     "start": 4.8,
+     "end": 5.26,
+     "word": " 내준",
+     "probability": 0.9977
+    },
+    {
+     "start": 5.26,
+     "end": 5.4,
+     "word": " 겁니다.",
+     "probability": 0.9831
+    }
+   ]
+  },
+  {
+   "start": 5.68,
+   "end": 11.84,
+   "text": " 이 메일 보면요. 시체말로 하면 협회의 승인권으로 쿠팡에게 규정에도 없는 경기 일정 팔아먹은 거 아니에요.",
+   "words": [
+    {
+     "start": 5.68,
+     "end": 6.4,
+     "word": " 이",
+     "probability": 0.9856
+    },
+    {
+     "start": 6.4,
+     "end": 6.8,
+     "word": " 메일",
+     "probability": 0.9959
+    },
+    {
+     "start": 6.8,
+     "end": 7.26,
+     "word": " 보면요.",
+     "probability": 0.9099
+    },
+    {
+     "start": 7.42,
+     "end": 8.2,
+     "word": " 시체말로",
+     "probability": 0.9209
+    },
+    {
+     "start": 8.2,
+     "end": 8.32,
+     "word": " 하면",
+     "probability": 0.9983
+    },
+    {
+     "start": 8.32,
+     "end": 8.76,
+     "word": " 협회의",
+     "probability": 0.9717
+    },
+    {
+     "start": 8.76,
+     "end": 9.28,
+     "word": " 승인권으로",
+     "probability": 0.9597
+    },
+    {
+     "start": 9.28,
+     "end": 9.78,
+     "word": " 쿠팡에게",
+     "probability": 0.9994
+    },
+    {
+     "start": 9.78,
+     "end": 10.34,
+     "word": " 규정에도",
+     "probability": 0.9782
+    },
+    {
+     "start": 10.34,
+     "end": 10.56,
+     "word": " 없는",
+     "probability": 1.0
+    },
+    {
+     "start": 10.56,
+     "end": 10.9,
+     "word": " 경기",
+     "probability": 0.9996
+    },
+    {
+     "start": 10.9,
+     "end": 11.1,
+     "word": " 일정",
+     "probability": 0.9788
+    },
+    {
+     "start": 11.1,
+     "end": 11.58,
+     "word": " 팔아먹은",
+     "probability": 0.995
+    },
+    {
+     "start": 11.58,
+     "end": 11.62,
+     "word": " 거",
+     "probability": 0.999
+    },
+    {
+     "start": 11.62,
+     "end": 11.84,
+     "word": " 아니에요.",
+     "probability": 0.9998
+    }
+   ]
+  },
+  {
+   "start": 13.24,
+   "end": 17.2,
+   "text": " 쿠팡에서 그때 희망한다는 걸 인지했던 거지.",
+   "words": [
+    {
+     "start": 13.24,
+     "end": 14.14,
+     "word": " 쿠팡에서",
+     "probability": 0.9959
+    },
+    {
+     "start": 14.14,
+     "end": 14.6,
+     "word": " 그때",
+     "probability": 0.9998
+    },
+    {
+     "start": 14.6,
+     "end": 15.88,
+     "word": " 희망한다는",
+     "probability": 0.9999
+    },
+    {
+     "start": 15.88,
+     "end": 16.06,
+     "word": " 걸",
+     "probability": 0.6301
+    },
+    {
+     "start": 16.06,
+     "end": 16.74,
+     "word": " 인지했던",
+     "probability": 0.9933
+    },
+    {
+     "start": 16.74,
+     "end": 17.2,
+     "word": " 거지.",
+     "probability": 0.9992
+    }
+   ]
+  },
+  {
+   "start": 17.74,
+   "end": 21.14,
+   "text": " 참고인들은 괜히 모셨는지 아십니까? 계속해서 이어가겠습니다.",
+   "words": [
+    {
+     "start": 17.74,
+     "end": 18.64,
+     "word": " 참고인들은",
+     "probability": 0.9436
+    },
+    {
+     "start": 18.64,
+     "end": 19.1,
+     "word": " 괜히",
+     "probability": 0.9996
+    },
+    {
+     "start": 19.1,
+     "end": 19.64,
+     "word": " 모셨는지",
+     "probability": 0.7848
+    },
+    {
+     "start": 19.64,
+     "end": 19.98,
+     "word": " 아십니까?",
+     "probability": 0.9994
+    },
+    {
+     "start": 19.98,
+     "end": 20.6,
+     "word": " 계속해서",
+     "probability": 0.9961
+    },
+    {
+     "start": 20.6,
+     "end": 21.14,
+     "word": " 이어가겠습니다.",
+     "probability": 0.9995
+    }
+   ]
+  },
+  {
+   "start": 21.64,
+   "end": 25.86,
+   "text": " 증인 당시 쿠팡이 협회 공식 후원사였잖아요. 지금 말씀하신 것처럼.",
+   "words": [
+    {
+     "start": 21.64,
+     "end": 22.1,
+     "word": " 증인",
+     "probability": 0.9731
+    },
+    {
+     "start": 22.1,
+     "end": 22.32,
+     "word": " 당시",
+     "probability": 0.7278
+    },
+    {
+     "start": 22.32,
+     "end": 22.94,
+     "word": " 쿠팡이",
+     "probability": 1.0
+    },
+    {
+     "start": 22.94,
+     "end": 23.28,
+     "word": " 협회",
+     "probability": 0.9997
+    },
+    {
+     "start": 23.28,
+     "end": 23.74,
+     "word": " 공식",
+     "probability": 0.9945
+    },
+    {
+     "start": 23.74,
+     "end": 24.6,
+     "word": " 후원사였잖아요.",
+     "probability": 0.9985
+    },
+    {
+     "start": 24.82,
+     "end": 25.04,
+     "word": " 지금",
+     "probability": 0.9991
+    },
+    {
+     "start": 25.04,
+     "end": 25.48,
+     "word": " 말씀하신",
+     "probability": 0.9999
+    },
+    {
+     "start": 25.48,
+     "end": 25.86,
+     "word": " 것처럼.",
+     "probability": 1.0
+    }
+   ]
+  },
+  {
+   "start": 25.86,
+   "end": 30.5,
+   "text": " 팀 12는 협회와 쿠팡 양측과 중개권 계약관계에 있었습니다.",
+   "words": [
+    {
+     "start": 25.86,
+     "end": 26.66,
+     "word": " 팀",
+     "probability": 0.0121
+    },
+    {
+     "start": 26.66,
+     "end": 27.38,
+     "word": " 12는",
+     "probability": 0.6042
+    },
+    {
+     "start": 27.38,
+     "end": 28.06,
+     "word": " 협회와",
+     "probability": 0.9949
+    },
+    {
+     "start": 28.06,
+     "end": 28.38,
+     "word": " 쿠팡",
+     "probability": 0.9993
+    },
+    {
+     "start": 28.38,
+     "end": 28.94,
+     "word": " 양측과",
+     "probability": 0.998
+    },
+    {
+     "start": 28.94,
+     "end": 29.36,
+     "word": " 중개권",
+     "probability": 0.9335
+    },
+    {
+     "start": 29.36,
+     "end": 30.0,
+     "word": " 계약관계에",
+     "probability": 0.8948
+    },
+    {
+     "start": 30.0,
+     "end": 30.5,
+     "word": " 있었습니다.",
+     "probability": 0.9999
+    }
+   ]
+  },
+  {
+   "start": 30.64,
+   "end": 35.34,
+   "text": " 그런데 팀 12는 쿠팡 해외구단 초청경기 운영에도 관여했어요.",
+   "words": [
+    {
+     "start": 30.64,
+     "end": 31.12,
+     "word": " 그런데",
+     "probability": 0.9997
+    },
+    {
+     "start": 31.12,
+     "end": 31.42,
+     "word": " 팀",
+     "probability": 0.9998
+    },
+    {
+     "start": 31.42,
+     "end": 31.9,
+     "word": " 12는",
+     "probability": 0.9995
+    },
+    {
+     "start": 31.9,
+     "end": 32.38,
+     "word": " 쿠팡",
+     "probability": 0.9999
+    },
+    {
+     "start": 32.38,
+     "end": 32.96,
+     "word": " 해외구단",
+     "probability": 0.9629
+    },
+    {
+     "start": 32.96,
+     "end": 33.9,
+     "word": " 초청경기",
+     "probability": 0.9472
+    },
+    {
+     "start": 33.9,
+     "end": 34.32,
+     "word": " 운영에도",
+     "probability": 0.9999
+    },
+    {
+     "start": 34.32,
+     "end": 35.34,
+     "word": " 관여했어요.",
+     "probability": 0.9991
+    }
+   ]
+  },
+  {
+   "start": 35.76,
+   "end": 41.14,
+   "text": " 당시에 증인의 친동생 전한민 씨가 홍명보 재단과 팀 12에 근무한 사실이 있죠?",
+   "words": [
+    {
+     "start": 35.76,
+     "end": 36.54,
+     "word": " 당시에",
+     "probability": 0.9972
+    },
+    {
+     "start": 36.54,
+     "end": 37.58,
+     "word": " 증인의",
+     "probability": 0.9992
+    },
+    {
+     "start": 37.58,
+     "end": 38.08,
+     "word": " 친동생",
+     "probability": 0.9969
+    },
+    {
+     "start": 38.08,
+     "end": 38.62,
+     "word": " 전한민",
+     "probability": 0.9931
+    },
+    {
+     "start": 38.62,
+     "end": 38.82,
+     "word": " 씨가",
+     "probability": 0.8266
+    },
+    {
+     "start": 38.82,
+     "end": 39.3,
+     "word": " 홍명보",
+     "probability": 0.9063
+    },
+    {
+     "start": 39.3,
+     "end": 39.72,
+     "word": " 재단과",
+     "probability": 0.9972
+    },
+    {
+     "start": 39.72,
+     "end": 39.9,
+     "word": " 팀",
+     "probability": 0.9999
+    },
+    {
+     "start": 39.9,
+     "end": 40.28,
+     "word": " 12에",
+     "probability": 0.9961
+    },
+    {
+     "start": 40.28,
+     "end": 40.62,
+     "word": " 근무한",
+     "probability": 0.9998
+    },
+    {
+     "start": 40.62,
+     "end": 40.98,
+     "word": " 사실이",
+     "probability": 0.9479
+    },
+    {
+     "start": 40.98,
+     "end": 41.14,
+     "word": " 있죠?",
+     "probability": 0.9987
+    }
+   ]
+  },
+  {
+   "start": 43.26,
+   "end": 45.04,
+   "text": " 아마 그보다 훨씬 더 전이었을 거로 알고 있습니다.",
+   "words": [
+    {
+     "start": 42.95,
+     "end": 43.36,
+     "word": " 아마",
+     "probability": 0.5615
+    },
+    {
+     "start": 43.36,
+     "end": 43.78,
+     "word": " 그보다",
+     "probability": 0.9977
+    },
+    {
+     "start": 43.78,
+     "end": 43.94,
+     "word": " 훨씬",
+     "probability": 1.0
+    },
+    {
+     "start": 43.94,
+     "end": 44.12,
+     "word": " 더",
+     "probability": 0.9998
+    },
+    {
+     "start": 44.12,
+     "end": 44.56,
+     "word": " 전이었을",
+     "probability": 0.9996
+    },
+    {
+     "start": 44.56,
+     "end": 44.72,
+     "word": " 거로",
+     "probability": 0.9589
+    },
+    {
+     "start": 44.72,
+     "end": 44.82,
+     "word": " 알고",
+     "probability": 1.0
+    },
+    {
+     "start": 44.82,
+     "end": 45.04,
+     "word": " 있습니다.",
+     "probability": 0.9999
+    }
+   ]
+  },
+  {
+   "start": 45.9,
+   "end": 47.96,
+   "text": " 명백한 이해의 충돌 관계로 보입니다.",
+   "words": [
+    {
+     "start": 45.9,
+     "end": 46.56,
+     "word": " 명백한",
+     "probability": 0.9991
+    },
+    {
+     "start": 46.56,
+     "end": 46.86,
+     "word": " 이해의",
+     "probability": 0.5498
+    },
+    {
+     "start": 46.86,
+     "end": 47.2,
+     "word": " 충돌",
+     "probability": 0.9998
+    },
+    {
+     "start": 47.2,
+     "end": 47.58,
+     "word": " 관계로",
+     "probability": 0.9995
+    },
+    {
+     "start": 47.58,
+     "end": 47.96,
+     "word": " 보입니다.",
+     "probability": 0.9999
+    }
+   ]
+  },
+  {
+   "start": 48.04,
+   "end": 49.88,
+   "text": " 그리고 그 기간은 제가 확인한 바 있습니다.",
+   "words": [
+    {
+     "start": 48.04,
+     "end": 48.26,
+     "word": " 그리고",
+     "probability": 0.9996
+    },
+    {
+     "start": 48.26,
+     "end": 48.52,
+     "word": " 그",
+     "probability": 0.9997
+    },
+    {
+     "start": 48.52,
+     "end": 48.96,
+     "word": " 기간은",
+     "probability": 0.9982
+    },
+    {
+     "start": 48.96,
+     "end": 49.1,
+     "word": " 제가",
+     "probability": 0.9999
+    },
+    {
+     "start": 49.1,
+     "end": 49.6,
+     "word": " 확인한",
+     "probability": 0.9997
+    },
+    {
+     "start": 49.6,
+     "end": 49.68,
+     "word": " 바",
+     "probability": 0.9999
+    },
+    {
+     "start": 49.68,
+     "end": 49.88,
+     "word": " 있습니다.",
+     "probability": 0.9982
+    }
+   ]
+  },
+  {
+   "start": 50.16,
+   "end": 53.62,
+   "text": " 그 사실을 협회에 신고하거나 관련 업무에서 회피한 사실이 있습니까?",
+   "words": [
+    {
+     "start": 50.16,
+     "end": 50.28,
+     "word": " 그",
+     "probability": 0.9994
+    },
+    {
+     "start": 50.28,
+     "end": 50.78,
+     "word": " 사실을",
+     "probability": 0.9962
+    },
+    {
+     "start": 50.78,
+     "end": 51.14,
+     "word": " 협회에",
+     "probability": 0.9992
+    },
+    {
+     "start": 51.14,
+     "end": 51.7,
+     "word": " 신고하거나",
+     "probability": 0.9999
+    },
+    {
+     "start": 51.7,
+     "end": 52.0,
+     "word": " 관련",
+     "probability": 0.9989
+    },
+    {
+     "start": 52.0,
+     "end": 52.36,
+     "word": " 업무에서",
+     "probability": 0.9993
+    },
+    {
+     "start": 52.36,
+     "end": 52.86,
+     "word": " 회피한",
+     "probability": 0.9998
+    },
+    {
+     "start": 52.86,
+     "end": 53.22,
+     "word": " 사실이",
+     "probability": 0.9716
+    },
+    {
+     "start": 53.22,
+     "end": 53.62,
+     "word": " 있습니까?",
+     "probability": 0.999
+    }
+   ]
+  },
+  {
+   "start": 53.62,
+   "end": 57.36,
+   "text": " 그 전에 했다고 하더라도 동생이 일 봐주고 나왔을 수도 있는 거잖아요.",
+   "words": [
+    {
+     "start": 53.62,
+     "end": 54.22,
+     "word": " 그",
+     "probability": 0.8771
+    },
+    {
+     "start": 54.22,
+     "end": 54.56,
+     "word": " 전에",
+     "probability": 0.8523
+    },
+    {
+     "start": 54.56,
+     "end": 54.96,
+     "word": " 했다고",
+     "probability": 0.9998
+    },
+    {
+     "start": 54.96,
+     "end": 55.46,
+     "word": " 하더라도",
+     "probability": 1.0
+    },
+    {
+     "start": 55.46,
+     "end": 55.86,
+     "word": " 동생이",
+     "probability": 0.9997
+    },
+    {
+     "start": 55.86,
+     "end": 55.96,
+     "word": " 일",
+     "probability": 0.5305
+    },
+    {
+     "start": 55.96,
+     "end": 56.22,
+     "word": " 봐주고",
+     "probability": 0.9884
+    },
+    {
+     "start": 56.22,
+     "end": 56.64,
+     "word": " 나왔을",
+     "probability": 0.9972
+    },
+    {
+     "start": 56.64,
+     "end": 56.78,
+     "word": " 수도",
+     "probability": 0.9998
+    },
+    {
+     "start": 56.78,
+     "end": 56.96,
+     "word": " 있는",
+     "probability": 0.9999
+    },
+    {
+     "start": 56.96,
+     "end": 57.36,
+     "word": " 거잖아요.",
+     "probability": 0.9999
+    }
+   ]
+  },
+  {
+   "start": 57.56,
+   "end": 58.84,
+   "text": " 그렇지 않다고 알고 있습니다.",
+   "words": [
+    {
+     "start": 57.56,
+     "end": 58.06,
+     "word": " 그렇지",
+     "probability": 0.9644
+    },
+    {
+     "start": 58.06,
+     "end": 58.44,
+     "word": " 않다고",
+     "probability": 1.0
+    },
+    {
+     "start": 58.44,
+     "end": 58.62,
+     "word": " 알고",
+     "probability": 0.9999
+    },
+    {
+     "start": 58.62,
+     "end": 58.84,
+     "word": " 있습니다.",
+     "probability": 0.9991
+    }
+   ]
+  },
+  {
+   "start": 60.06,
+   "end": 62.3,
+   "text": " 네 알겠습니다. 이어가죠.",
+   "words": [
+    {
+     "start": 60.06,
+     "end": 60.78,
+     "word": " 네",
+     "probability": 0.914
+    },
+    {
+     "start": 60.78,
+     "end": 61.5,
+     "word": " 알겠습니다.",
+     "probability": 0.8122
+    },
+    {
+     "start": 61.78,
+     "end": 62.3,
+     "word": " 이어가죠.",
+     "probability": 0.9623
+    }
+   ]
+  },
+  {
+   "start": 63.1,
+   "end": 67.32,
+   "text": " 마지막으로 묻겠습니다. 윗선에 보고받고 지시하고 진행했습니까? 이 모든 사안.",
+   "words": [
+    {
+     "start": 63.1,
+     "end": 63.82,
+     "word": " 마지막으로",
+     "probability": 0.9178
+    },
+    {
+     "start": 63.82,
+     "end": 64.1,
+     "word": " 묻겠습니다.",
+     "probability": 0.9993
+    },
+    {
+     "start": 64.48,
+     "end": 64.92,
+     "word": " 윗선에",
+     "probability": 0.9337
+    },
+    {
+     "start": 64.92,
+     "end": 65.52,
+     "word": " 보고받고",
+     "probability": 0.9317
+    },
+    {
+     "start": 65.52,
+     "end": 66.0,
+     "word": " 지시하고",
+     "probability": 0.9999
+    },
+    {
+     "start": 66.0,
+     "end": 66.64,
+     "word": " 진행했습니까?",
+     "probability": 0.9995
+    },
+    {
+     "start": 66.78,
+     "end": 66.86,
+     "word": " 이",
+     "probability": 0.9905
+    },
+    {
+     "start": 66.86,
+     "end": 67.02,
+     "word": " 모든",
+     "probability": 0.9999
+    },
+    {
+     "start": 67.02,
+     "end": 67.32,
+     "word": " 사안.",
+     "probability": 0.9943
+    }
+   ]
+  },
+  {
+   "start": 68.38,
+   "end": 69.84,
+   "text": " 그 레터 나간 거 말씀하십니까?",
+   "words": [
+    {
+     "start": 68.38,
+     "end": 68.7,
+     "word": " 그",
+     "probability": 0.5243
+    },
+    {
+     "start": 68.7,
+     "end": 68.98,
+     "word": " 레터",
+     "probability": 0.9801
+    },
+    {
+     "start": 68.98,
+     "end": 69.22,
+     "word": " 나간",
+     "probability": 0.99
+    },
+    {
+     "start": 69.22,
+     "end": 69.28,
+     "word": " 거",
+     "probability": 0.9952
+    },
+    {
+     "start": 69.28,
+     "end": 69.84,
+     "word": " 말씀하십니까?",
+     "probability": 0.9638
+    }
+   ]
+  },
+  {
+   "start": 70.04,
+   "end": 72.42,
+   "text": " 아니요. 승인 절차 관련해서 전부 다.",
+   "words": [
+    {
+     "start": 70.04,
+     "end": 70.6,
+     "word": " 아니요.",
+     "probability": 0.9992
+    },
+    {
+     "start": 70.6,
+     "end": 70.9,
+     "word": " 승인",
+     "probability": 0.9999
+    },
+    {
+     "start": 70.9,
+     "end": 71.26,
+     "word": " 절차",
+     "probability": 0.9995
+    },
+    {
+     "start": 71.26,
+     "end": 71.84,
+     "word": " 관련해서",
+     "probability": 0.9772
+    },
+    {
+     "start": 71.84,
+     "end": 72.28,
+     "word": " 전부",
+     "probability": 0.9985
+    },
+    {
+     "start": 72.28,
+     "end": 72.42,
+     "word": " 다.",
+     "probability": 0.9965
+    }
+   ]
+  },
+  {
+   "start": 72.6,
+   "end": 81.4,
+   "text": " 승인 절차는 모든 걸 다 해당 실무부서에서부터 윗선까지 결제 라인에 다 따라서 진행하고 승인이 나는 걸로 알고 있습니다.",
+   "words": [
+    {
+     "start": 72.6,
+     "end": 73.32,
+     "word": " 승인",
+     "probability": 0.9997
+    },
+    {
+     "start": 73.32,
+     "end": 73.62,
+     "word": " 절차는",
+     "probability": 0.9999
+    },
+    {
+     "start": 73.62,
+     "end": 73.88,
+     "word": " 모든",
+     "probability": 1.0
+    },
+    {
+     "start": 73.88,
+     "end": 74.16,
+     "word": " 걸",
+     "probability": 0.9997
+    },
+    {
+     "start": 74.16,
+     "end": 74.34,
+     "word": " 다",
+     "probability": 0.9989
+    },
+    {
+     "start": 74.34,
+     "end": 75.72,
+     "word": " 해당",
+     "probability": 0.9993
+    },
+    {
+     "start": 75.72,
+     "end": 76.6,
+     "word": " 실무부서에서부터",
+     "probability": 0.9401
+    },
+    {
+     "start": 76.6,
+     "end": 78.24,
+     "word": " 윗선까지",
+     "probability": 0.9998
+    },
+    {
+     "start": 78.24,
+     "end": 78.74,
+     "word": " 결제",
+     "probability": 0.8147
+    },
+    {
+     "start": 78.74,
+     "end": 79.0,
+     "word": " 라인에",
+     "probability": 0.9821
+    },
+    {
+     "start": 79.0,
+     "end": 79.12,
+     "word": " 다",
+     "probability": 0.887
+    },
+    {
+     "start": 79.12,
+     "end": 79.58,
+     "word": " 따라서",
+     "probability": 0.9997
+    },
+    {
+     "start": 79.58,
+     "end": 80.1,
+     "word": " 진행하고",
+     "probability": 0.9994
+    },
+    {
+     "start": 80.1,
+     "end": 80.62,
+     "word": " 승인이",
+     "probability": 0.999
+    },
+    {
+     "start": 80.62,
+     "end": 80.84,
+     "word": " 나는",
+     "probability": 0.9961
+    },
+    {
+     "start": 80.84,
+     "end": 81.06,
+     "word": " 걸로",
+     "probability": 0.993
+    },
+    {
+     "start": 81.06,
+     "end": 81.24,
+     "word": " 알고",
+     "probability": 1.0
+    },
+    {
+     "start": 81.24,
+     "end": 81.4,
+     "word": " 있습니다.",
+     "probability": 0.9875
+    }
+   ]
+  },
+  {
+   "start": 81.4,
+   "end": 83.46,
+   "text": " 그 얘기는 정문규 회장까지라는 얘기입니까?",
+   "words": [
+    {
+     "start": 81.4,
+     "end": 81.48,
+     "word": " 그",
+     "probability": 0.9786
+    },
+    {
+     "start": 81.48,
+     "end": 81.86,
+     "word": " 얘기는",
+     "probability": 0.9997
+    },
+    {
+     "start": 81.86,
+     "end": 82.3,
+     "word": " 정문규",
+     "probability": 0.8597
+    },
+    {
+     "start": 82.3,
+     "end": 82.98,
+     "word": " 회장까지라는",
+     "probability": 0.9961
+    },
+    {
+     "start": 82.98,
+     "end": 83.46,
+     "word": " 얘기입니까?",
+     "probability": 0.9994
+    }
+   ]
+  },
+  {
+   "start": 83.62,
+   "end": 86.18,
+   "text": " 정몽규 회장은 결제 라인에 있지 않습니다",
+   "words": [
+    {
+     "start": 83.62,
+     "end": 84.72,
+     "word": " 정몽규",
+     "probability": 0.9095
+    },
+    {
+     "start": 84.72,
+     "end": 85.08,
+     "word": " 회장은",
+     "probability": 0.9986
+    },
+    {
+     "start": 85.08,
+     "end": 85.42,
+     "word": " 결제",
+     "probability": 0.8013
+    },
+    {
+     "start": 85.42,
+     "end": 85.64,
+     "word": " 라인에",
+     "probability": 0.9771
+    },
+    {
+     "start": 85.64,
+     "end": 85.78,
+     "word": " 있지",
+     "probability": 0.9997
+    },
+    {
+     "start": 85.78,
+     "end": 86.18,
+     "word": " 않습니다",
+     "probability": 0.9999
+    }
+   ]
+  },
+  {
+   "start": 86.18,
+   "end": 88.3,
+   "text": " 회장 이하 그러면 어디까지예요?",
+   "words": [
+    {
+     "start": 86.18,
+     "end": 87.1,
+     "word": " 회장",
+     "probability": 0.5767
+    },
+    {
+     "start": 87.1,
+     "end": 87.38,
+     "word": " 이하",
+     "probability": 0.9997
+    },
+    {
+     "start": 87.38,
+     "end": 87.58,
+     "word": " 그러면",
+     "probability": 0.8694
+    },
+    {
+     "start": 87.58,
+     "end": 88.3,
+     "word": " 어디까지예요?",
+     "probability": 0.8651
+    }
+   ]
+  },
+  {
+   "start": 88.92,
+   "end": 90.14,
+   "text": " 상금부 회장까지 있습니다",
+   "words": [
+    {
+     "start": 88.92,
+     "end": 89.56,
+     "word": " 상금부",
+     "probability": 0.9597
+    },
+    {
+     "start": 89.56,
+     "end": 89.92,
+     "word": " 회장까지",
+     "probability": 0.9357
+    },
+    {
+     "start": 89.92,
+     "end": 90.14,
+     "word": " 있습니다",
+     "probability": 0.9999
+    }
+   ]
+  },
+  {
+   "start": 90.14,
+   "end": 92.4,
+   "text": " 상금부 회장 누구까지입니까?",
+   "words": [
+    {
+     "start": 90.14,
+     "end": 91.38,
+     "word": " 상금부",
+     "probability": 0.9643
+    },
+    {
+     "start": 91.38,
+     "end": 91.56,
+     "word": " 회장",
+     "probability": 0.9991
+    },
+    {
+     "start": 91.56,
+     "end": 92.4,
+     "word": " 누구까지입니까?",
+     "probability": 0.9947
+    }
+   ]
+  },
+  {
+   "start": 92.48,
+   "end": 94.96,
+   "text": " 누가 담당하고 있어요? 상금부 회장 한 명 아니잖아요",
+   "words": [
+    {
+     "start": 92.48,
+     "end": 92.96,
+     "word": " 누가",
+     "probability": 0.9971
+    },
+    {
+     "start": 92.96,
+     "end": 93.82,
+     "word": " 담당하고",
+     "probability": 0.9998
+    },
+    {
+     "start": 93.82,
+     "end": 93.96,
+     "word": " 있어요?",
+     "probability": 0.9662
+    },
+    {
+     "start": 94.06,
+     "end": 94.38,
+     "word": " 상금부",
+     "probability": 0.969
+    },
+    {
+     "start": 94.38,
+     "end": 94.6,
+     "word": " 회장",
+     "probability": 0.9981
+    },
+    {
+     "start": 94.6,
+     "end": 94.7,
+     "word": " 한",
+     "probability": 0.9881
+    },
+    {
+     "start": 94.7,
+     "end": 94.84,
+     "word": " 명",
+     "probability": 1.0
+    },
+    {
+     "start": 94.84,
+     "end": 94.96,
+     "word": " 아니잖아요",
+     "probability": 0.9982
+    }
+   ]
+  },
+  {
+   "start": 94.96,
+   "end": 97.24,
+   "text": " 그 당시에 상금부 회장 김정배 상금부 회장입니다",
+   "words": [
+    {
+     "start": 94.96,
+     "end": 95.28,
+     "word": " 그",
+     "probability": 0.8815
+    },
+    {
+     "start": 95.28,
+     "end": 95.32,
+     "word": " 당시에",
+     "probability": 0.9619
+    },
+    {
+     "start": 95.32,
+     "end": 95.76,
+     "word": " 상금부",
+     "probability": 0.9673
+    },
+    {
+     "start": 95.76,
+     "end": 95.96,
+     "word": " 회장",
+     "probability": 0.9994
+    },
+    {
+     "start": 95.96,
+     "end": 96.6,
+     "word": " 김정배",
+     "probability": 0.9816
+    },
+    {
+     "start": 96.6,
+     "end": 97.0,
+     "word": " 상금부",
+     "probability": 0.9991
+    },
+    {
+     "start": 97.0,
+     "end": 97.24,
+     "word": " 회장입니다",
+     "probability": 0.9969
+    }
+   ]
+  },
+  {
+   "start": 97.24,
+   "end": 102.0,
+   "text": " 승인 절차 위반과 특기사항 증인 혼자 결정했다고 떠안고 가실 거 아니죠?",
+   "words": [
+    {
+     "start": 97.24,
+     "end": 98.1,
+     "word": " 승인",
+     "probability": 0.9889
+    },
+    {
+     "start": 98.1,
+     "end": 98.42,
+     "word": " 절차",
+     "probability": 0.9994
+    },
+    {
+     "start": 98.42,
+     "end": 98.88,
+     "word": " 위반과",
+     "probability": 0.9991
+    },
+    {
+     "start": 98.88,
+     "end": 99.38,
+     "word": " 특기사항",
+     "probability": 0.7505
+    },
+    {
+     "start": 99.38,
+     "end": 99.82,
+     "word": " 증인",
+     "probability": 0.9945
+    },
+    {
+     "start": 99.82,
+     "end": 99.94,
+     "word": " 혼자",
+     "probability": 0.9958
+    },
+    {
+     "start": 99.94,
+     "end": 100.74,
+     "word": " 결정했다고",
+     "probability": 1.0
+    },
+    {
+     "start": 100.74,
+     "end": 101.14,
+     "word": " 떠안고",
+     "probability": 0.9294
+    },
+    {
+     "start": 101.14,
+     "end": 101.42,
+     "word": " 가실",
+     "probability": 0.9996
+    },
+    {
+     "start": 101.42,
+     "end": 101.64,
+     "word": " 거",
+     "probability": 0.9979
+    },
+    {
+     "start": 101.64,
+     "end": 102.0,
+     "word": " 아니죠?",
+     "probability": 0.9999
+    }
+   ]
+  }
+ ]
+}

@@ -47,6 +47,10 @@ Extra non-video files: `politics/{1,2,3}.vtt` + `.txt` (transcripts, see below),
   9. `9.mp4` 배현진(국민의힘) ↔ 박진영 대중문화교류위원장: "YG·SM·하이브에 빌었다… 몇백억 손해, 특혜 아니다". News clips of this moment: 3.64M (춘천MBC), 1.26M (채널A). 79 s.
   10. `10.mp4` 김승수(국민의힘) ↔ 박진영: "연봉 20~30억, 오늘 하루 800만 원" / "대통령 위에 위에 분이 와도 우리나라를 위한 일 아니면 안 해요". 102 s.
   11. `11.mp4` 최민희(민주) ↔ 박진영: "개인적으로 이득 취한 게 있나?" / "돈은 좀 많이 썼습니다" (the moment he chokes up). 95 s.
+- **대한축구협회 (문체위 10/7, official NA feed; the only KFA exchange of the 2026 audit so far):**
+  12. `12.mp4` 김재원(조국혁신당) ↔ 전한진 KFA 국제위원장, 이민협 참고인: PSG 내한 무산 → "쿠팡에 경기 기간 명시 공문… 무슨 권한으로?" 100 s.
+  13. `13.mp4` 김재원 ↔ 전한진: "규정에도 없는 경기 일정 팔아먹은 거 아니냐 / 이해충돌 / 정몽규 회장까지 보고?" 103 s.
+  14. `14.mp4` 함슬 대표 (FC바르셀로나 투어 주최사, 참고인) closing statement: "정몽규 회장 13년 5개월 동안 3천만 원, 저는 1년 3억". 94 s. These are the witness's own claims; KFA's rebuttal isn't in the clip.
 - Heatmaps: YouTube has none for these clips yet (too new / too few views), so no most-replayed data exists. The windows were chosen from the title quote instead.
 - Transcripts: `3.vtt/3.txt` = official NA subtitles (국방위 session has them). `1.*`, `2.*` = machine transcript (faster-whisper small, uncorrected; e.g. "사법부동립" = 사법부 독립, "개청" = 제청). The 법사위 session has no subtitles and no 회의록 published yet.
 - `<n>.whisper.json` (all 8 clips): raw faster-whisper **large-v3** output (int8 CPU; language=ko, beam_size=5, vad_filter=False, word_timestamps=True, condition_on_previous_text=False), with segment and word times in seconds on the clip. Not hand-corrected; much more accurate than the `small` .txt/.vtt (e.g. 사법부 독립, 제청, 헌법상).
