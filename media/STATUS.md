@@ -1,4 +1,2 @@
-# media/ status (in progress)
-Done: music/ (6), voice/ (5), mars/edl.mp4, deepsea/{casper,dumbo,jelly,rov}.mp4, lava/{river,ocean,fountain,fountain2}.mp4,
-hairwash/{wash,water,waterball}.mp4, hurricane/dorian_turbulence.mp4 (fallback, no eye), politics/candidates.json.
-Pending: politics/1-3 cuts and hurricane eye footage — YouTube redirects this container to a Google captcha ("Sign in to confirm you're not a bot", HTTP 429) since ~02:20 UTC; retrying.
+# media/ status — complete (2026-10-09 04:05 UTC)
+All requested items are present except the NOAA aircraft "into the eye" footage, which only exists on YouTube/social media. Substitutes are ISS eye views and GOES-19 eye loops (hurricane/eye_*). See INDEX.md for every file, its source and license, and what failed.
