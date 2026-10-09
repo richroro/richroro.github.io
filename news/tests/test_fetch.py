@@ -17,6 +17,7 @@ FIX = os.path.join(HERE, "fixtures")
 sys.path.insert(0, os.path.dirname(HERE))
 
 import fetch_news as fn  # noqa: E402
+import free_translate  # noqa: E402
 
 try:
     import translate  # noqa: E402 — anthropic 패키지가 있어야 한다
@@ -338,24 +339,88 @@ class TranslateTest(unittest.TestCase):
         self.assertEqual(translate.translate_items(self.items(60), client=client, log=lambda *_: None), 0)
         self.assertEqual(len(client.calls), 1)
 
-    def test_run_calls_translator_only_with_key(self):
+    def test_run_picks_engine_by_key(self):
         tmp = tempfile.mkdtemp()
         try:
             cfg = os.path.join(tmp, "feeds.json")
             with open(cfg, "w") as f:
                 json.dump({"feeds": [{"source": "W", "hint": "general", "url": "u", "file": "rss_cnbc.xml"}]}, f)
             args = ["--config", cfg, "--out", os.path.join(tmp, "d"), "--offline-dir", FIX, "--no-markets", "--now", NOW]
-            with mock.patch.object(translate, "translate_items", return_value=0) as tr, mock.patch("builtins.print"):
+            with mock.patch.object(translate, "translate_items", return_value=0) as tr, \
+                    mock.patch.object(free_translate, "translate_titles", return_value=0) as free, \
+                    mock.patch("builtins.print"):
                 with mock.patch.dict(os.environ, {"ANTHROPIC_API_KEY": ""}):
                     fn.main(args)
                 tr.assert_not_called()
+                free.assert_called_once()
+                # 무료 번역은 묶는 범위 전체(어제 기사 포함)를 옮긴다
+                self.assertEqual(len(free.call_args[0][0]), 3)
                 with mock.patch.dict(os.environ, {"ANTHROPIC_API_KEY": "test"}):
                     fn.main(args)
                 tr.assert_called_once()
-                self.assertEqual(len(tr.call_args[0][0]), 3)
+                self.assertEqual(free.call_count, 1)
         finally:
             shutil.rmtree(tmp)
 
+
+def gtx_response(text):
+    """translate.googleapis.com 응답 모양: 문장 조각마다 [번역, 원문, …]."""
+    parts = text.split("\n")
+    segs = [[p + ("\n" if i < len(parts) - 1 else ""), "orig", None] for i, p in enumerate(parts)]
+    return json.dumps([segs, None, "en"]).encode()
+
+
+class FreeTranslateTest(unittest.TestCase):
+    def items(self, n, size=20):
+        return [{"id": f"i{k}", "title": f"Headline number {k} " + "x" * size, "time": k} for k in range(n)]
+
+    def query(self, url):
+        import urllib.parse
+        return urllib.parse.parse_qs(urllib.parse.urlsplit(url).query)["q"][0]
+
+    def test_batches_and_fills_title_ko(self):
+        calls = []
+
+        def http_get(url):
+            q = self.query(url)
+            calls.append(q)
+            return gtx_response("\n".join("제목 " + line.split()[2] for line in q.split("\n")))
+        items = self.items(150, size=40)
+        done = free_translate.translate_titles(items, http_get=http_get, log=lambda *_: None, pause=0)
+        self.assertEqual(done, 150)
+        self.assertGreater(len(calls), 1)                                   # 여러 묶음으로 나눔
+        self.assertTrue(all(len(q) <= free_translate.MAX_CHARS for q in calls))
+        self.assertEqual(items[7]["title_ko"], "제목 7")
+        self.assertNotIn("summary_ko", items[7])                            # 제목만
+
+    def test_line_mismatch_falls_back_to_one_by_one(self):
+        def http_get(url):
+            q = self.query(url)
+            if "\n" in q:
+                return gtx_response("한 줄로 합쳐진 번역")                     # 줄 수가 어긋남
+            return gtx_response("하나: " + q.split()[2])
+        items = self.items(3)
+        self.assertEqual(free_translate.translate_titles(items, http_get=http_get, log=lambda *_: None, pause=0), 3)
+        self.assertEqual([it["title_ko"] for it in items], ["하나: 0", "하나: 1", "하나: 2"])
+
+    def test_block_stops_and_leaves_english(self):
+        calls = []
+
+        def http_get(url):
+            calls.append(url)
+            raise free_translate.Blocked("HTTP 429")
+        items = self.items(200, size=40)
+        self.assertEqual(free_translate.translate_titles(items, http_get=http_get, log=lambda *_: None, pause=0), 0)
+        self.assertEqual(len(calls), 1)
+        self.assertFalse(any("title_ko" in it for it in items))
+
+    def test_bad_response_skips_batch(self):
+        seq = iter([b"<html>not json</html>", gtx_response("둘째")])
+        items = [{"id": "a", "title": "A" * 1495, "time": 1}, {"id": "b", "title": "Second", "time": 2}]
+        done = free_translate.translate_titles(items, http_get=lambda url: next(seq), log=lambda *_: None, pause=0)
+        self.assertEqual(done, 1)
+        self.assertNotIn("title_ko", items[0])
+        self.assertEqual(items[1]["title_ko"], "둘째")
 
 if __name__ == "__main__":
     unittest.main()

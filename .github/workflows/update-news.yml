@@ -4,8 +4,9 @@ name: 해외 경제뉴스 자동 수집
 # 페이지(https://richroro.github.io/news/)는 열릴 때 news/data/index.json 과 날짜 파일을 읽는다.
 # 수집할 피드·지표 목록은 news/feeds.json 에서 바꾼다.
 #
-# 한국어 번역(선택): 저장소 Settings → Secrets and variables → Actions 에
-#   시크릿 ANTHROPIC_API_KEY 를 넣으면 새 기사 제목·요약을 Claude 로 옮긴다. 없으면 영어 그대로 둔다.
+# 한국어 번역: 기본은 무료 기계 번역으로 제목만 옮긴다(news/free_translate.py, 키 필요 없음).
+#   저장소 Settings → Secrets and variables → Actions 에 시크릿 ANTHROPIC_API_KEY 를 넣으면
+#   대신 Claude 로 제목·요약을 옮긴다.
 #   모델을 바꾸려면 변수(Variables) NEWS_TRANSLATE_MODEL 을 넣는다 (기본 claude-opus-5-5).
 
 on:
@@ -14,7 +15,7 @@ on:
     - cron: '17 21-23,0-14 * * *'
   push:
     branches: [main]
-    paths: ['news/feeds.json', 'news/fetch_news.py', 'news/translate.py', '.github/workflows/update-news.yml']
+    paths: ['news/feeds.json', 'news/fetch_news.py', 'news/translate.py', 'news/free_translate.py', '.github/workflows/update-news.yml']
   workflow_dispatch:
 
 concurrency:
