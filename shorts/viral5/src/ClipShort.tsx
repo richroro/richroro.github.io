@@ -37,6 +37,8 @@ export type ShortData = {
   /** who is talking when (index into split.panels), for the speaker highlight */
   speakers?: { from: number; to: number; who: number }[];
   captionY?: number;
+  /** which subtitle line leads on translated pages: Korean over English (default) or English over Korean */
+  subOrder?: "ko-en" | "en-ko";
 };
 
 const FRAME = { square: { top: 400, height: 1080 }, wide: { top: 656, height: 608 }, full: { top: 0, height: 1920 },
@@ -172,7 +174,7 @@ export const ClipShort: React.FC<{ data: ShortData }> = ({ data: d }) => {
       {d.stickers.map((s, i) => (
         <Sticker key={i} t={t} t0={s.from} t1={s.to} x={s.x} y={s.y} rot={s.rot} bg={s.bg} fg={s.fg} size={s.size}>{s.text}</Sticker>
       ))}
-      <Captions pages={d.pages} centerY={d.captionY ?? 1370} />
+      <Captions pages={d.pages} centerY={d.captionY ?? 1370} order={d.subOrder} />
       {flash > 0.002 && <AbsoluteFill style={{ background: "white", opacity: flash }} />}
 
       {d.lines.map((l) => (

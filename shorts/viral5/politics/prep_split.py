@@ -278,7 +278,7 @@ def main(sid):
             "stickers": stickers + ed.get("stickers", []), "sfx": [{"t": a, "name": n, "gain": g} for a, n, g in ed.get("sfx", [])],
             "music": music, "flashes": [round(a, 3) for k, a in enumerate(starts) if k and (abs(ed["segments"][k]["in"] - ed["segments"][k - 1]["out"]) > 0.05
                                                                        or ed["segments"][k].get("src") != ed["segments"][k - 1].get("src"))], "punches": [],
-            "split": {"w": W, "h": H, "panels": panels}, "speakers": speakers, "captionY": ed.get("captionY", 1370)}
+            "split": {"w": W, "h": H, "panels": panels}, "speakers": speakers, "captionY": ed.get("captionY", 1370), "subOrder": ed.get("subOrder", "ko-en")}
     os.makedirs(f"{V}/src/data", exist_ok=True)
     json.dump(data, open(f"{V}/src/data/{sid}.json", "w"), ensure_ascii=False)
     print(f"prep {sid}: {len(clips)} segments, {at:.1f}s + {tail}s tail, {len(out_pages)} caption pages timed on {engine}")
