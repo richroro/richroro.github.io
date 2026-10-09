@@ -8,6 +8,12 @@ edit.json times are anchors on the narration, so a new voice take re-times the w
   "chute"           start of line "chute"
   "chute.낙하산"     the moment "낙하산" is spoken in that line
   "crane@end+0.1"   0.1 s after line "crane" ends
+
+A clip may be a graphic instead of footage (src/lib/Gfx.tsx): "gfx": {"type": "counter" | "bars" | "units" | "text" | "ox" |
+"vs" | "rank" | "quiz", ...}. Its "steps" are anchors as above (or numbers: seconds after the clip starts) for its reveals.
+A gfx clip needs no "src"; with one, that footage plays darkened behind the graphic. A source whose file is a photo
+(.jpg/.png/.webp) is shown still, with the slow zoom. "marks": [{"kind": "circle" | "arrow", "x", "y", "r", "rot",
+"from", "to"}] draws red circles and arrows over the picture (x, y in the 1080x1920 frame).
 """
 import difflib, json, os, re, subprocess, sys, wave
 import numpy as np
@@ -135,20 +141,27 @@ def prep(sid):
     for i, c in enumerate(edit["clips"]):
         a = at(c["from"]) if i else 0.0  # the first shot covers frame 0 too, so the video never opens on black
         b = at(edit["clips"][i + 1]["from"]) if i + 1 < len(edit["clips"]) else tl["end"]
-        s = src[c["src"]]; speed = c.get("speed", 1.0); file = None
-        srcf = f"{pub}/src/{s['file']}"
-        if c.get("in") is not None and os.path.exists(srcf):
+        s = src[c["src"]] if c.get("src") else {}; speed = c.get("speed", 1.0); file = None
+        srcf = f"{pub}/src/{s['file']}" if s.get("file") else ""
+        if srcf and os.path.exists(srcf) and re.search(r"\.(jpe?g|png|webp)$", srcf, re.I):  # a still photo: copied as is
+            ext = srcf.rsplit(".", 1)[1].lower(); out = f"{pub}/clips/c{i:02d}.{ext}"
+            subprocess.run(["cp", srcf, out], check=True); file = f"{sid}/clips/c{i:02d}.{ext}"
+        elif c.get("in") is not None and os.path.exists(srcf):
             out = f"{pub}/clips/c{i:02d}.mp4"; need = (b - a) * speed + 0.5
             subprocess.run(["ffmpeg", "-v", "error", "-y", "-ss", str(c["in"]), "-t", f"{need:.3f}", "-i", srcf, "-vf", "scale='min(1920,iw)':-2,fps=30",
                             "-c:v", "libx264", "-preset", "veryfast", "-crf", "16", "-pix_fmt", "yuv420p", "-c:a", "aac", "-b:a", "160k", "-ar", "48000", out], check=True)
             file = f"{sid}/clips/c{i:02d}.mp4"
-        clip = {"file": file, "label": c.get("label", c["src"]), "at": round(a, 3), "dur": round(b - a, 3), "speed": speed,
+        clip = {"file": file, "label": c.get("label", c.get("src", "")), "at": round(a, 3), "dur": round(b - a, 3), "speed": speed,
                 "frame": c.get("frame", "square"), "zoom": c.get("zoom", [1.04, 1.12]), "focus": c.get("focus", "50% 50%"), "audio": c.get("audio", 0.12)}
         if c.get("credit", s.get("credit")): clip["credit"] = c.get("credit", s.get("credit"))  # per-source credit line (else the short's)
         if c.get("crop") and os.path.exists(srcf):  # [cx, cy, zoom]: aim at one panel of a split-screen source
             wh = subprocess.run(["ffprobe", "-v", "error", "-select_streams", "v:0", "-show_entries", "stream=width,height", "-of", "csv=p=0", srcf],
                                 stdout=subprocess.PIPE, text=True, check=True).stdout.strip().split(",")
             clip["crop"] = {"cx": c["crop"][0], "cy": c["crop"][1], "zoom": c["crop"][2], "w": int(wh[0]), "h": int(wh[1])}
+        if c.get("gfx"):  # a graphic in place of footage; its step anchors become seconds since the clip started
+            g = dict(c["gfx"])
+            if "steps" in g: g["steps"] = [round(x if isinstance(x, (int, float)) else at(x) - a, 3) for x in g["steps"]]
+            clip["gfx"] = g
         clips.append(clip)
 
     caps = {L["id"]: L["cap"] for L in script["lines"]}
@@ -166,6 +179,9 @@ def prep(sid):
     for k in ("titleStyle", "hook", "hookY"):  # news-shorts look: banner title and a red headline over the picture
         if edit.get(k) is not None: data[k] = edit[k]
     if edit.get("hookTo") is not None: data["hookTo"] = round(at(edit["hookTo"]), 3)
+    if edit.get("marks"):
+        data["marks"] = [{**{k: m[k] for k in ("kind", "x", "y", "r", "rot", "color") if k in m}, "from": round(at(m["from"]), 3), "to": round(at(m["to"]), 3)}
+                         for m in edit["marks"]]
     os.makedirs(f"{HERE}/src/data", exist_ok=True)
     json.dump(data, open(f"{HERE}/src/data/{sid}.json", "w"), ensure_ascii=False)
     real = sum(1 for c in clips if c["file"])

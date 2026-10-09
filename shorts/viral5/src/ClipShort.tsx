@@ -1,11 +1,12 @@
 // One short = real footage cut to the narration. The source clips are public-domain or CC footage
 // (see each short's edit.json); everything here is data-driven from src/data/<id>.json written by prep.py.
 import React from "react";
-import { AbsoluteFill, Audio, OffthreadVideo, Sequence, getStaticFiles, interpolate, staticFile, useCurrentFrame, useVideoConfig } from "remotion";
+import { AbsoluteFill, Audio, Img, OffthreadVideo, Sequence, getStaticFiles, interpolate, staticFile, useCurrentFrame, useVideoConfig } from "remotion";
 import { fitText, measureText } from "@remotion/layout-utils";
 import { Captions, CapPage } from "./lib/Captions";
 import { BODY, TITLE, loadFonts } from "./lib/fonts";
 import { Sticker, clamp, eOut, prog } from "./lib/fx";
+import { GFX_BG, GfxView, Marked, Marks, type Gfx, type Mark } from "./lib/Gfx";
 
 loadFonts();
 export const FPS = 30;
@@ -18,6 +19,8 @@ export type Clip = {
   crop?: { cx: number; cy: number; zoom: number; w: number; h: number };
   /** this clip's own credit line, shown instead of the short's while it is on screen */
   credit?: string;
+  /** a graphic (lib/Gfx.tsx) drawn in the frame box instead of footage; footage, if any, plays darkened behind it */
+  gfx?: Gfx;
 };
 /** one person of a side-by-side two-shot: (cx, cy) is their face in 0..1 of the whole source frame, [x0, x1] their half */
 export type Panel = { name: string; role: string; cx: number; cy: number; zoom: number; x0: number; x1: number };
@@ -39,18 +42,27 @@ export type ShortData = {
   captionY?: number;
   /** which subtitle line leads on translated pages: Korean over English (default) or English over Korean */
   subOrder?: "ko-en" | "en-ko";
-  /** "news": the title as black type on a white banner (Korean news-shorts look) instead of the outlined title */
-  titleStyle?: "news";
+  /** "news": the title as black type on a white banner (Korean news-shorts look) instead of the outlined title;
+   *  "band": white and yellow type on a solid black band over the top 400 px (the Korean info-shorts look) */
+  titleStyle?: "news" | "band";
   /** a two-line headline in red with a white outline over the picture, centred on hookY, shown until hookTo (default: throughout) */
   hook?: [string, string];
   hookY?: number;
   hookTo?: number;
+  /** red circles and arrows pointing at something in the picture */
+  marks?: Mark[];
 };
 
 const FRAME = { square: { top: 400, height: 1080 }, wide: { top: 656, height: 608 }, full: { top: 0, height: 1920 },
   film: { top: 400, height: 810 } /* a whole 4:3 frame (silent films) */ };
 const PANELS = [{ top: 400, height: 540 }, { top: 940, height: 540 }];
 const have = (file: string | null) => !!file && getStaticFiles().some((f) => f.name === file);
+const isImg = (file: string | null) => !!file && /\.(jpe?g|png|webp)$/i.test(file);
+
+/** a clip's footage, or its still photo (which then gets the same slow zoom as footage) */
+const Media: React.FC<{ c: Clip; style: React.CSSProperties; volume?: (f: number) => number }> = ({ c, style, volume }) =>
+  isImg(c.file) ? <Img src={staticFile(c.file!)} style={style} />
+    : <OffthreadVideo src={staticFile(c.file!)} playbackRate={c.speed} style={style} {...(volume ? { volume } : { muted: true })} />;
 
 const Placeholder: React.FC<{ label: string }> = ({ label }) => (
   <AbsoluteFill style={{ background: "radial-gradient(ellipse at 50% 40%, #2b3566, #0b0e1d 75%)", justifyContent: "center", alignItems: "center" }}>
@@ -86,6 +98,17 @@ const ClipView: React.FC<{ c: Clip; d: ShortData }> = ({ c, d }) => {
     const left = Math.min(0, Math.max(1080 - dw, 540 - cx * dw)), top = Math.min(0, Math.max(box.height - dh, box.height / 2 - cy * dh));
     cropStyle = { position: "absolute", left, top, width: dw, height: dh };
   }
+  if (c.gfx) {
+    return (
+      <AbsoluteFill>
+        {ok ? <Media c={c} volume={vol} style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", transform: `scale(${s})`, filter: "brightness(.3) saturate(1.1)" }} />
+          : <AbsoluteFill style={{ background: GFX_BG }} />}
+        <div style={{ position: "absolute", left: 0, top: box.top, width: 1080, height: box.height }}>
+          <GfxView g={c.gfx} t={f / FPS} h={box.height} />
+        </div>
+      </AbsoluteFill>
+    );
+  }
   if (d.split?.panels.length && ok && !c.crop) {
     const { w, h, panels } = d.split;
     const who = d.speakers?.find((sp) => t >= sp.from && t < sp.to)?.who;
@@ -118,8 +141,7 @@ const ClipView: React.FC<{ c: Clip; d: ShortData }> = ({ c, d }) => {
   return (
     <AbsoluteFill>
       {ok ? (
-        <OffthreadVideo src={staticFile(c.file!)} muted playbackRate={c.speed}
-          style={{ position: "absolute", inset: -60, width: "calc(100% + 120px)", height: "calc(100% + 120px)", objectFit: "cover", filter: "blur(36px) brightness(.42) saturate(1.2)" }} />
+        <Media c={c} style={{ position: "absolute", inset: -60, width: "calc(100% + 120px)", height: "calc(100% + 120px)", objectFit: "cover", filter: "blur(36px) brightness(.42) saturate(1.2)" }} />
       ) : <AbsoluteFill style={{ background: "#05060b" }} />}
       <div style={{ position: "absolute", left: 0, top: box.top, width: 1080, height: box.height, overflow: "hidden", boxShadow: "0 0 80px rgba(0,0,0,.6)" }}>
         {d.split && c.label ? (
@@ -127,12 +149,11 @@ const ClipView: React.FC<{ c: Clip; d: ShortData }> = ({ c, d }) => {
             background: "#FFE14D", borderRadius: 14, padding: "8px 18px", boxShadow: "0 4px 14px rgba(0,0,0,.35)" }}>{c.label}</div>
         ) : null}
         {cropStyle && ok ? (
-          <OffthreadVideo src={staticFile(c.file!)} volume={vol} playbackRate={c.speed} style={cropStyle} />
+          <Media c={c} volume={vol} style={cropStyle} />
         ) : (
           <AbsoluteFill style={{ transform: `scale(${s})` }}>
             {ok ? (
-              <OffthreadVideo src={staticFile(c.file!)} volume={vol} playbackRate={c.speed}
-                style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: c.focus }} />
+              <Media c={c} volume={vol} style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: c.focus }} />
             ) : <Placeholder label={c.label} />}
           </AbsoluteFill>
         )}
@@ -144,6 +165,19 @@ const ClipView: React.FC<{ c: Clip; d: ShortData }> = ({ c, d }) => {
 const Title: React.FC<{ d: ShortData }> = ({ d }) => {
   // long quote titles shrink to fit the width instead of running off the edge
   const size = (line: string, max = 96, within = 1010) => Math.min(max, fitText({ text: line, withinWidth: within, fontFamily: TITLE }).fontSize);
+  if (d.titleStyle === "band") {
+    // the second line is the yellow one unless the lines mark their own [key] words
+    const marked = d.title.some((l) => l.includes("["));
+    const line = (l: string, i: number) => (
+      <div style={{ fontSize: size(l.replace(/[[\]]/g, ""), 104, 1010), color: !marked && i ? "#FFE14D" : "white" }}><Marked text={l} /></div>
+    );
+    return (
+      <div style={{ position: "absolute", top: 0, left: 0, width: 1080, height: 400, background: "#000", display: "flex", flexDirection: "column",
+        justifyContent: "flex-end", alignItems: "center", paddingBottom: 30, fontFamily: TITLE, lineHeight: 1.12 }}>
+        {d.title.map(line)}
+      </div>
+    );
+  }
   if (d.titleStyle === "news") {
     return (
       <div style={{ position: "absolute", top: 150, left: 0, width: 1080, height: 240, background: "white", display: "flex", flexDirection: "column",
@@ -212,6 +246,7 @@ export const ClipShort: React.FC<{ data: ShortData }> = ({ data: d }) => {
       <Title d={d} />
       <Credit d={d} t={t} />
       <Hook d={d} t={t} />
+      {d.marks ? <Marks marks={d.marks} t={t} /> : null}
       {d.stickers.map((s, i) => (
         <Sticker key={i} t={t} t0={s.from} t1={s.to} x={s.x} y={s.y} rot={s.rot} bg={s.bg} fg={s.fg} size={s.size}>{s.text}</Sticker>
       ))}

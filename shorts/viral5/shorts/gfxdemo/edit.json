@@ -1,0 +1,214 @@
+{
+ "credit": "그래픽 테스트",
+ "titleStyle": "band",
+ "captionY": 1640,
+ "sources": {},
+ "clips": [
+  {
+   "from": "a",
+   "label": "counter",
+   "gfx": {
+    "type": "counter",
+    "to": 42000000,
+    "kr": true,
+    "unit": "원",
+    "label": "직장인 [평균 연봉]",
+    "emoji": "💰",
+    "sub": "2024년 기준 (예시)",
+    "steps": [
+     "a.사천이백만"
+    ]
+   }
+  },
+  {
+   "from": "b",
+   "label": "bars",
+   "gfx": {
+    "type": "bars",
+    "title": "나라별 연봉 (예시)",
+    "hi": 2,
+    "items": [
+     {
+      "label": "한국",
+      "emoji": "🇰🇷",
+      "value": 4000,
+      "text": "4천만"
+     },
+     {
+      "label": "미국",
+      "emoji": "🇺🇸",
+      "value": 6000,
+      "text": "6천만"
+     },
+     {
+      "label": "스위스",
+      "emoji": "🇨🇭",
+      "value": 9000,
+      "text": "9천만"
+     }
+    ],
+    "steps": [
+     "b.한국",
+     "b.미국",
+     "b.스위스"
+    ]
+   }
+  },
+  {
+   "from": "c",
+   "label": "units",
+   "gfx": {
+    "type": "units",
+    "emoji": "🍚",
+    "n": 1000,
+    "per": "1톨 = [1억 원]",
+    "label": "천 톨 =",
+    "total": "[천억 원]",
+    "zoom": true,
+    "steps": [
+     "c.천"
+    ]
+   }
+  },
+  {
+   "from": "c2",
+   "label": "units2",
+   "gfx": {
+    "type": "units",
+    "emoji": "🍚",
+    "n": 10000,
+    "per": "1톨 = [1억 원]",
+    "total": "[1조 원]",
+    "steps": [
+     0.1
+    ],
+    "dur": 1.2
+   }
+  },
+  {
+   "from": "d",
+   "label": "text",
+   "gfx": {
+    "type": "text",
+    "badge": "긴급정리",
+    "lines": [
+     "① 대표팀 [오늘 소집]",
+     "② 내일 [첫 훈련]"
+    ],
+    "align": "left",
+    "steps": [
+     "d.대표팀",
+     "d.내일"
+    ]
+   }
+  },
+  {
+   "from": "e",
+   "label": "ox",
+   "gfx": {
+    "type": "ox",
+    "verdict": "X",
+    "text": "매일 감아도 [탈모 X]",
+    "sub": "(예시 문구)",
+    "steps": [
+     "e.아닙니다"
+    ]
+   }
+  },
+  {
+   "from": "f",
+   "label": "vs",
+   "gfx": {
+    "type": "vs",
+    "left": {
+     "label": "고양이",
+     "emoji": "🐱",
+     "value": "9점"
+    },
+    "right": {
+     "label": "강아지",
+     "emoji": "🐶",
+     "value": "8점"
+    },
+    "win": "left",
+    "steps": [
+     "f.고양이",
+     "f.강아지",
+     "f.승자는"
+    ]
+   }
+  },
+  {
+   "from": "g",
+   "label": "rank",
+   "gfx": {
+    "type": "rank",
+    "n": 3,
+    "text": "바로 [이것]",
+    "emoji": "🚀",
+    "steps": [
+     "g.삼위"
+    ]
+   }
+  },
+  {
+   "from": "h1",
+   "label": "quiz",
+   "gfx": {
+    "type": "quiz",
+    "q": "다음 중 [가장 큰] 행성은?",
+    "options": [
+     "화성",
+     "목성",
+     "금성"
+    ],
+    "answer": 1,
+    "count": 3,
+    "steps": [
+     "h1@end",
+     "h2"
+    ]
+   }
+  }
+ ],
+ "marks": [
+  {
+   "kind": "circle",
+   "x": 540,
+   "y": 900,
+   "r": 150,
+   "from": "a.사천이백만",
+   "to": "a@end"
+  },
+  {
+   "kind": "arrow",
+   "x": 700,
+   "y": 1100,
+   "rot": 200,
+   "from": "g.삼위",
+   "to": "g@end"
+  }
+ ],
+ "sfx": [
+  [
+   "a.사천이백만",
+   "coin",
+   0.6
+  ],
+  [
+   "e.아닙니다",
+   "k_error_003",
+   0.6
+  ],
+  [
+   "h2",
+   "ding",
+   0.6
+  ]
+ ],
+ "music": {
+  "file": "music/hustle.mp3",
+  "gain": 0.18,
+  "start": 0
+ }
+}
