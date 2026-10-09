@@ -64,6 +64,7 @@ Extra non-video files: `politics/{1,2,3}.vtt` + `.txt` (transcripts, see below),
 ## Research — `research/`
 - `trends_2026-10.md`: overseas chart songs (Billboard Global 200 / Hot 100, week of 2026-10-10) and high-view gaming/esports videos (Faker/T1, Worlds 2026 anthem, etc.) with source links, plus how to use them legally (Shorts sound library only; Riot fan-content policy). **No songs or game footage were downloaded:** they are copyrighted.
 - `tesla_2026-10.md`: Tesla Q3 2026 deliveries, stock, Korea sales/FSD, press-image terms, 5 footage-free short ideas.
+- `japan_2026-10.md`: what's trending in Japan (Billboard Japan, fall anime, memes, VTubers, TGS, travel stats), what works for Korean viewers, Japanese copyright/JASRAC and PDL open-data terms, 5 footage-free short ideas.
 - `sports_2026-10.md`: overseas football (Messi, Son, Ronaldo, World Cup 2026, Premier League) and NBA (LeBron to 76ers, Wembanyama, opening night 10/20) moments with sources; league copyright terms; 5 footage-free short ideas.
 
 ## Narration — `voice/<id>/`
