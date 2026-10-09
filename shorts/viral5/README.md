@@ -1420,3 +1420,60 @@ python3 politics/prep_split.py ani1 && ./render.sh ani1 final/ani1.mp4   # ani2,
 > 영상: 미국 국립공원관리청(NPS) 레이니어산 국립공원
 > 음악: "Monkeys Spinning Monkeys" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
 > #피카 #우는토끼 #동물 #귀여운동물 #shorts
+
+## 공수 강하·헬로캐스트 쇼츠 (`politics/boom4`, `politics/boom5`)
+
+| id | 제목 | 길이 | 내용 |
+| --- | --- | --- | --- |
+| `boom4` | 비행기 문 밖으로 / 한 걸음 내딛으면 | 24.9초 | 첫 화면은 C-130 램프 끝에서 하늘로 나가는 강하자입니다. 이어서 173공수여단의 낙하산 착용(얼굴), 다른 강하의 헬멧캠으로 본 램프 걸음과 이탈, 산개, 땅에서 본 낙하산들, 착지 순서로 갑니다. |
+| `boom5` | 헬기에서 바다로 / 그냥 뛰어내림 | 22.0초 | 첫 화면은 CH-53E 뒷문에서 바다로 뛰어내리는 실루엣입니다. 이어서 해변의 2수색대대 해병들(얼굴), 헬기 안, 뒷문 너머 바다, 한 명씩 뛰어내리는 장면 순서로 갑니다. |
+
+```bash
+MEDIA=<저장소>/media python3 politics/prep_split.py boom4    # boom5도 같음
+./render.sh boom4 out/boom4.big.mp4 && ffmpeg -i out/boom4.big.mp4 -c:v libx264 -crf 23 -preset slow -c:a copy -movflags +faststart final/boom4.mp4   # 30MB 이하로
+```
+
+**영상** (모두 DVIDS B-Roll, PUBLIC DOMAIN, Restrictions 안내 없음)
+- `boom4`:
+  - [DVIDS 759457 「310TH PSYOP COMPANY AIRBORNE JUMP」](https://www.dvidshub.net/video/759457)
+    - 촬영: U.S. Army Reserve video by Staff Sgt. Austin Berner. 2020.7.10, 조지아 도빈스 공군예비기지 Tyler 강하장, 공군 C-130 램프에서 강하. 헬멧캠 시점입니다.
+    - 원본 파일: https://d34w7g4gy10iej.cloudfront.net/video/2007/DOD_107893851/DOD_107893851-1024x576-1769k.mp4
+    - 쓴 구간(원본 초): 10.4–12.0, 5.5–16.0, 21.0–23.0, 92.0–96.2.
+  - [DVIDS 956430 「B-Roll: 173rd Airborne Brigade conducts operation at Juliet drop zone」](https://www.dvidshub.net/video/956430)
+    - 촬영: U.S. Army video by Sgt. Kylejian Francia. 2025.3.20, 이탈리아 아비아노, 173공수여단 1-503보병대대.
+    - 원본 파일: https://d34w7g4gy10iej.cloudfront.net/video/2503/DOD_110883211/DOD_110883211.mp4
+    - 쓴 구간(원본 초): 6.5–10.5(shot list "paratroopers donning their parachutes"), 32.0–34.5(공군 86공수비행단 C-130에서 강하).
+  - 서로 다른 강하라서 자막에 "미 육군 173공수여단 (2025.3)", "다른 강하, 헬멧캠 시점으로"라고 구분했습니다.
+- `boom5`: [DVIDS 873781 「2d Recon Helo Casting B-roll」](https://www.dvidshub.net/video/873781)
+  - 촬영: Lance Cpl. Ethan R. Jones (USMC). 2023.2.14, 캠프 르준, 2해병사단 2수색대대 A중대가 CH-53E에서 헬로캐스트.
+  - 원본 파일(4K): https://d34w7g4gy10iej.cloudfront.net/video/2302/DOD_109463194/DOD_109463194.mp4
+  - 쓴 구간(원본 초): 295.6–297.6, 29.0–33.5, 278.0–282.5, 285.0–288.5, 293.5–301.0.
+  - 헬기 안 인물은 비행 헬멧을 썼지만, 설명에 역할이 없어 "CH-53E 헬기 안"으로만 적었습니다.
+- 원본 조각과 출처 .json: `media/boom/boom_dvids759457_0-100.*`, `boom_dvids956430_4-37.*`, `boom_dvids873781_270-312.*`, `boom_dvids873781_25-40.*`(873781은 1920×1080으로 줄임).
+
+**소리와 자막**
+- AST 검사 결과 네 영상 모두 음악이 없었습니다(Speech, Vehicle, Helicopter, Wind 등 현장음). 원래 소리를 그대로 썼습니다.
+- 강하 영상은 엔진과 바람 소리에 묻혀, faster-whisper small.en과 medium.en이 같은 말을 거의 듣지 못했습니다. 그래서 번역 자막 없이 DVIDS 설명에 근거한 상황 자막만 달았습니다.
+- 헬로캐스트 영상은 회전익 소음뿐이라 대사가 없습니다.
+- 라우드니스: boom4 −14.0, boom5 −13.5 LUFS.
+
+### 업로드 문구
+
+**boom4**
+- 제목: `비행기 문 밖으로 한 걸음 내딛으면 🪂` (20자)
+- 설명:
+  ```
+  미 육군 공수부대원이 C-130 뒷문(램프)에서 뛰어내리는 순간을 헬멧캠으로. (2020년 7월, 미국 조지아 도빈스 공군예비기지)
+  강하 전 낙하산 착용 장면과 땅에서 본 강하는 미 육군 173공수여단 (2025년 3월, 이탈리아 아비아노).
+  영상: U.S. Army Reserve video by Staff Sgt. Austin Berner (DVIDS 759457), U.S. Army video by Sgt. Kylejian Francia (DVIDS 956430). 미 육군·국방부가 이 영상을 보증하거나 후원하지 않습니다.
+  ```
+- 해시태그: `#공수부대 #낙하산 #C130 #미육군 #shorts`
+
+**boom5**
+- 제목: `헬기에서 바다로 그냥 뛰어내림 🌊` (17자)
+- 설명:
+  ```
+  미 해병대 2수색대대의 헬로캐스트(helocast) 훈련. CH-53E 헬기 뒷문에서 바다로 한 명씩 뛰어내립니다. (2023년 2월, 노스캐롤라이나 캠프 르준)
+  영상: U.S. Marine Corps video by Lance Cpl. Ethan R. Jones (DVIDS 873781). 미 해병대·국방부가 이 영상을 보증하거나 후원하지 않습니다.
+  ```
+- 해시태그: `#미해병대 #수색대 #헬로캐스트 #CH53 #shorts`
