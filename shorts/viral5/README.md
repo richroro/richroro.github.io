@@ -1328,3 +1328,38 @@ for id in home1 home2 home3; do python3 voice_edge.py $id && python3 prep.py $id
 > 영상: 미 육군 (DVIDS 489332, SFC Eliodoro Molina, U.S. Forces Afghanistan). 미 육군·국방부가 이 영상을 보증하거나 후원하지 않습니다.
 > 음악: "Dreamer" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
 > #군인 #전역 #마지막비행 #미육군 #shorts
+
+## 동물 랭킹 쇼츠 2 (`politics/anirank3`, `politics/anirank4`)
+
+`anirank1`·`anirank2`와 같은 틀(검정 띠 제목, 정사각 크롭, 자막 `captionY` 1380, 순위표, 1위 뒤 처음으로 반복)입니다. 순위는 우리가 고른 것이고 공식 순위가 아닙니다.
+
+| id | 제목(화면) | 길이 | 5위 → 1위 | 음악 |
+| --- | --- | --- | --- | --- |
+| `anirank3` | 역대급 웃긴 곰 모먼트 / TOP5 (다들 몇 번?ㅋㅋ) | 32.9초 | 연어 물고 표정 관리 곰 · 엄마 따라 줄 선 아기곰들 · 연어 두고 신경전 · 폭포 앞 연어 받아먹기 · 상자 부수고 올라탄 곰 | Scheming Weasel (faster version) |
+| `anirank4` | 역대급 신기한 바다 동물 / TOP5 (다들 몇 번?ㅋㅋ) | 38.7초 | 갈기 휘날리는 쏠배감펭 · 납작 엎드린 전자리상어 · 부리 달린 비늘돔 · 뿔 달린 용곰치 · 눈 마주친 대왕문어 | Sneaky Snitch |
+
+**영상 (미국 연방기관 저작물, 퍼블릭 도메인)** — 발췌와 출처·사용 구간은 `media/anirank/*.json`
+- 곰(5편 모두): [Brooks Camp Bear School 101](https://www.nps.gov/media/video/view.htm?id=D3EB8991-E1A2-4A2A-9A98-2F1C45991B0E) — NPS, 카트마이 국립공원 브룩스 캠프(페이지 크레딧 “NPS”, 2019). 이 영화의 음악은 Musicbed·Shutterstock 라이선스 음악이라 **원본 소리는 모두 껐습니다**(`audio: 0`). 1위 상자 장면의 모서리 표시(카메라 뷰파인더 모양)는 원본 영상 그대로입니다. explore.org 웹캠·“Courtesy” 영상은 쓰지 않았고, 페이지가 열리지 않는 곰 목걸이 카메라 영상(“Katmai Bear Video – …”)과 “Boardwalk Bear”도 쓰지 않았습니다.
+- 쏠배감펭: [B-Roll: Indo-Pacific Lionfish](https://videos.fisheries.noaa.gov/detail/videos/b-roll:-fish-sharks/video/4088881464001/b-roll:-indo-pacific-lionfish), 전자리상어: [B-Roll: Sharks](https://videos.fisheries.noaa.gov/detail/videos/b-roll:-fish-sharks/video/4651707268001/b-roll:-sharks)(“Angel Shark” 구간), 비늘돔·용곰치: [B-Roll: Hawkfish, Dragon Moray, and Parrotfish](https://videos.fisheries.noaa.gov/detail/videos/b-roll:-fish-sharks/video/6039896460001/b-roll:-hawkfish-dragon-moray-and-parrotfish)(북서 하와이 제도, “Dragon Moray (Enchelycore pardalis) at Kure Atoll”), 대왕문어: [B-Roll: Octopuses on the West Coast](https://videos.fisheries.noaa.gov/detail/videos/b-roll:-shellfish-other-invertebrates/video/4768156052001/b-roll:-octopuses-on-the-west-coast)(“Giant Pacific Octopus in Tank”) — 모두 NOAA Fisheries, 타이틀 카드 “All footage courtesy of NOAA … Please credit ‘NOAA Fisheries’”.
+- 쏠배감펭·용곰치 장면은 원본이 어두워 `vf`로 밝기만 올렸습니다. NPS·NOAA가 이 영상을 보증하거나 후원하지 않으며 로고는 쓰지 않았습니다.
+- 음악: "Scheming Weasel (faster version)", "Sneaky Snitch" Kevin MacLeod (incompetech.com), CC BY 4.0
+
+**자막 속 사실과 출처**
+- 불곰 새끼는 보통 한 번에 1~3마리, 4마리는 가끔 — [NPS: Brown Bears](https://www.nps.gov/subjects/bears/brown-bears.htm) (“Typically a female will have a litter of one to three cubs, although litters of four occur occasionally.”) 영상 속 새끼 4마리는 화면에서 직접 셌습니다.
+- 곰 장면의 나머지 자막(“입엔 연어”, “그거 내 거 아님?”, “덥석”, “상자… 올라감”)은 장면 묘사와 농담입니다. 상자가 무엇인지는 알 수 없어 “나무 상자”로만 적었습니다.
+- 쏠배감펭(lionfish) 가시에 독 — NOAA 원본 구간 제목 “Removal of Venomous Spines”; 인도·태평양 원산, 대서양 침입종 — [NOAA Ocean Service: What is a lionfish?](https://oceanservice.noaa.gov/facts/lionfish-facts.html)
+- 전자리상어류는 바닥에 숨어 먹이가 지나가길 기다리는 매복형 — [NOAA Fisheries: Common Angelshark](https://www.fisheries.noaa.gov/species/common-angelshark)(같은 무리 종의 설명; 원본은 종명 없이 “Angel Shark”)
+- 비늘돔(parrotfish)은 부리 같은 이빨로 산호를 갉아 먹고 모래로 배설 — [NOAA Ocean Service: How does sand form?](https://oceanservice.noaa.gov/facts/sand.html)
+- 문어는 심장 3개, 뇌 9개(팔마다 하나 + 중앙) — [NOAA Ocean Service, 2026.2](https://oceanservice.noaa.gov/news/feb26/undersea-creatures-valentines-day.html)
+
+**anirank3** — 역대급 웃긴 곰 모먼트 TOP5 (다들 몇 번?ㅋㅋ)
+> 연어 물고 표정 관리하는 곰, 엄마 따라 줄 선 아기곰 4마리, 연어 두고 신경전, 폭포 앞에서 연어 받아먹기, 그리고 나무 상자를 부수고 올라탄 곰까지! 알래스카 카트마이 국립공원 브룩스 캠프의 불곰들입니다. 여러분은 몇 번이 제일 웃겨요? 순위는 저희 마음대로 고른 것입니다.
+> 영상: 미국 국립공원관리청(NPS) 카트마이 국립공원 (NPS가 이 영상을 보증하거나 후원하지 않습니다.)
+> 음악: "Scheming Weasel (faster version)" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
+> #곰 #불곰 #웃긴동물 #알래스카 #shorts
+
+**anirank4** — 역대급 신기한 바다 동물 TOP5 (다들 몇 번?ㅋㅋ)
+> 독가시 갈기를 휘날리는 쏠배감펭, 모래에 납작 엎드린 전자리상어, 산호를 갉아 먹고 모래를 만드는 비늘돔, 뿔 달린 용곰치, 그리고 심장 3개·뇌 9개 대왕문어까지! 다들 몇 번이 제일 신기해요? 순위는 저희 마음대로 고른 것입니다.
+> 영상: 미국 해양대기청(NOAA Fisheries) (NOAA가 이 영상을 보증하거나 후원하지 않습니다.)
+> 음악: "Sneaky Snitch" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
+> #바다생물 #문어 #신기한동물 #해양생물 #shorts

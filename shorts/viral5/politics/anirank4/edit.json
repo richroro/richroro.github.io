@@ -1,0 +1,203 @@
+{
+ "titleStyle": "band",
+ "panels": [],
+ "captionY": 1380,
+ "duck": false,
+ "tail": 0.0,
+ "stickers": [],
+ "src": "anirank/lionfish.mp4",
+ "title": [
+  "역대급 신기한 바다 동물",
+  "[TOP5] (다들 몇 번?ㅋㅋ)"
+ ],
+ "credit": "영상: 미국 해양대기청(NOAA)",
+ "segments": [
+  {
+   "src": "anirank/lionfish.mp4",
+   "in": 1.0,
+   "out": 7.8,
+   "single": [
+    0.5,
+    0.55,
+    1.0
+   ],
+   "rank": {
+    "n": 5,
+    "label": "갈기 휘날리는 쏠배감펭"
+   },
+   "vf": "eq=brightness=0.06:gamma=1.35:saturation=1.1"
+  },
+  {
+   "src": "anirank/angel_shark.mp4",
+   "in": 0.8,
+   "out": 8.0,
+   "single": [
+    0.45,
+    0.55,
+    1.0
+   ],
+   "rank": {
+    "n": 4,
+    "label": "납작 엎드린 전자리상어"
+   }
+  },
+  {
+   "src": "anirank/parrotfish.mp4",
+   "in": 1.0,
+   "out": 8.0,
+   "single": [
+    0.55,
+    0.5,
+    1.0
+   ],
+   "rank": {
+    "n": 3,
+    "label": "부리 달린 비늘돔"
+   }
+  },
+  {
+   "src": "anirank/dragon_moray.mp4",
+   "in": 1.0,
+   "out": 8.0,
+   "single": [
+    0.55,
+    0.5,
+    1.1
+   ],
+   "rank": {
+    "n": 2,
+    "label": "뿔 달린 용곰치"
+   },
+   "vf": "eq=brightness=0.04:gamma=1.2"
+  },
+  {
+   "src": "anirank/giant_octopus.mp4",
+   "in": 1.0,
+   "out": 7.0,
+   "single": [
+    0.47,
+    0.4,
+    1.0
+   ],
+   "rank": {
+    "n": 1,
+    "label": "눈 마주친 대왕문어"
+   }
+  },
+  {
+   "src": "anirank/giant_octopus.mp4",
+   "in": 20.9,
+   "out": 25.5,
+   "single": [
+    0.5,
+    0.55,
+    1.0
+   ]
+  }
+ ],
+ "lines": [
+  {
+   "who": 0,
+   "src": "anirank/lionfish.mp4",
+   "at": 1.0,
+   "to": 4.3,
+   "ko": "갈기 휘날리는 쏠배감펭"
+  },
+  {
+   "who": 0,
+   "src": "anirank/lionfish.mp4",
+   "at": 4.4,
+   "to": 7.7,
+   "ko": "가시에 독 있음 (만지면 안 됨)"
+  },
+  {
+   "who": 0,
+   "src": "anirank/angel_shark.mp4",
+   "at": 0.8,
+   "to": 4.3,
+   "ko": "이거 상어 맞음"
+  },
+  {
+   "who": 0,
+   "src": "anirank/angel_shark.mp4",
+   "at": 4.4,
+   "to": 7.9,
+   "ko": "납작 엎드려 먹이 기다리는 중"
+  },
+  {
+   "who": 0,
+   "src": "anirank/parrotfish.mp4",
+   "at": 1.0,
+   "to": 4.4,
+   "ko": "부리 달린 물고기 비늘돔"
+  },
+  {
+   "who": 0,
+   "src": "anirank/parrotfish.mp4",
+   "at": 4.5,
+   "to": 7.9,
+   "ko": "산호 갉아먹고 모래를 쌈ㅋㅋ"
+  },
+  {
+   "who": 0,
+   "src": "anirank/dragon_moray.mp4",
+   "at": 1.0,
+   "to": 4.4,
+   "ko": "뿔 달린 용…?"
+  },
+  {
+   "who": 0,
+   "src": "anirank/dragon_moray.mp4",
+   "at": 4.5,
+   "to": 7.9,
+   "ko": "이름도 진짜 ‘용곰치’"
+  },
+  {
+   "who": 0,
+   "src": "anirank/giant_octopus.mp4",
+   "at": 1.0,
+   "to": 4.0,
+   "ko": "대왕문어와 눈 마주침 👀"
+  },
+  {
+   "who": 0,
+   "src": "anirank/giant_octopus.mp4",
+   "at": 4.1,
+   "to": 6.9,
+   "ko": "심장 3개, 뇌 9개"
+  },
+  {
+   "who": 0,
+   "src": "anirank/giant_octopus.mp4",
+   "at": 21.0,
+   "to": 25.4,
+   "ko": "(빨판 클로즈업)"
+  }
+ ],
+ "keys": [
+  "독",
+  "상어",
+  "납작",
+  "부리",
+  "모래를",
+  "쌈ㅋㅋ",
+  "용…?",
+  "‘용곰치’",
+  "눈",
+  "심장",
+  "3개,",
+  "뇌",
+  "9개",
+  "빨판"
+ ],
+ "music": [
+  {
+   "src": "public/music/sneaky_snitch.mp3",
+   "from": 0.0,
+   "at": 0.0,
+   "to": 40.0,
+   "fade": 0.6
+  }
+ ],
+ "musicGain": 0.55
+}
