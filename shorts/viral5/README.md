@@ -1077,3 +1077,64 @@ MEDIA=<저장소>/media python3 politics/prep_split.py boom3
   영상: U.S. Marine Corps video by Lance Cpl. Kaitlynn M. Hendricks / Staff Sgt. Albert J. Carls (DVIDS 580472, 580456). 미 해병대·국방부가 이 영상을 보증하거나 후원하지 않습니다.
   ```
 - 해시태그: `#미해병대 #폭파돌입 #군대 #해병대 #shorts`
+
+
+## 군견 쇼츠 (`politics/dog1`, `politics/dog2`, `politics/dog3`)
+
+미군이 DVIDS에 올린 군견(MWD) 영상에 한국어 자막을 붙인 쇼츠 3편입니다. 장르는 ‘군대 실화·공감’이고, 기계가 아니라 사람과 개(얼굴·반응)가 주인공입니다. 그래픽 클립(gfx)은 쓰지 않았습니다. 영상은 모두 미군 장병·국방부 직원이 촬영한 연방정부 저작물(퍼블릭 도메인)입니다. DVIDS 페이지마다 PUBLIC DOMAIN 표시가 있고 Restrictions 안내는 없습니다.
+
+| id | 제목 | 길이 | 내용 | 소리 |
+| --- | --- | --- | --- | --- |
+| `dog1` | 물로 도망치면 / 군견도 못 따라올까? | 23.5초 | 수영장 수중 제압 훈련: 물속 방어복 요원에게 뛰어드는 군견 → 다이빙 → 물속 수영 → 팔 물기 → “물도 안전지대 아님” | 현장음 + 음악 낮게 |
+| `dog2` | 암 진단받은 군견을 위해 / 전우들이 준비한 경례 | 37.6초 | 은퇴 군견 루도를 기리는 부대 행사: 공식 수색 1만 회 이상, 비밀경호국 임무 15회, 대통령 지원 임무 6회 → 2020년 4월 암 진단 → 장병들의 경례 | 행사 영상의 실제 목소리(배경음악 제거) + 자막 |
+| `dog3` | 군견 훈련 미끼가 된 / 대령님의 최후 | 28.3초 | 코소보 평화유지군(KFOR) 동부지역사령관 대령이 직접 방어복을 입고 군견 훈련 미끼가 됨 → “더 빨리 뛰셔야 돼요!” → 제압 | 현장음 + 음악 낮게 |
+
+```bash
+# 원본: media/dogs/*.mp4 (파일마다 .json에 DVIDS ID·페이지·파일 주소·크레디트·부대·날짜·구간)
+python3 politics/prep_split.py dog1 && ./render.sh dog1 final/dog1.mp4   # dog2, dog3도 같음
+# final/은 저장소 크기 때문에 -crf 22로 다시 압축했습니다(dog1, dog3)
+```
+
+- 레이아웃: `"titleStyle": "band"`, 정사각 화면에 `single` 크롭으로 얼굴·개를 크게, 자막 `"captionY": 1600`, 컷마다 흰 번쩍임 없이(`"broll": true`) 바로 붙였습니다. 길이 23.5초·37.6초·28.3초, 라우드니스 −14.0·−14.1·−14.4 LUFS(render.sh).
+- **dog2 소리**: 원본은 공군이 만든 짧은 영상(Package)이라 목소리 밑에 피아노 음악이 깔려 있습니다(AudioSet AST 모델 Music 점수 약 0.45). Demucs(htdemucs, `--two-stems=vocals`)로 음악을 지우고 목소리만 남겼습니다(Music 점수 0.01–0.05). 그 위에 우리 음악(Floating Cities)을 낮게 깔았습니다. 그림은 첫 1.25초만 같은 영상 43.25–44.5초(루도가 핸들러 옆에서 걷는 장면)로 바꿔 첫 화면을 개 얼굴로 했습니다. 목소리는 그대로입니다(`media/dogs/rudo_edit.json`).
+- **dog2 자막**: 영상 속 내레이션을 faster-whisper small.en·medium.en으로 듣고 번역했습니다. 일부는 빼거나 자막을 달지 않았습니다.
+  - “He retired from the Air Force as a ___”의 마지막 단어는 확실히 들리지 않아 이 문장을 통째로 잘랐습니다.
+  - 핸들러 이름은 자막에 넣지 않았습니다. 미 공군 기사 검색 결과로는 Staff Sgt. Peter Van Salisbury지만, af.mil이 이 환경에서 403이라 원문을 직접 확인하지 못했습니다.
+  - 개 이름은 음성 인식이 Bruno/Reno/Rudo로 흔들려서 DVIDS 설명의 “Rudo”(루도)를 따랐습니다.
+  - 뒤의 “to the 823, to the 824”는 길이 때문에 잘랐습니다.
+- **dog3 자막**: 확실히 들리는 말만 따옴표로 번역했습니다.
+  - “get a good smell of me right now” → “지금 내 냄새 잘 맡아 둬”. 개 앞에 무릎 꿇은 대령의 말입니다.
+  - “You've got to run faster” / “Run faster” → “더 빨리 뛰셔야 돼요!” / “더 빨리!”. 화면 밖 목소리입니다.
+  - 나머지(“계급장? 군견은 모릅니다”, “대령님도 예외 없음”)는 화면을 설명하는 재치 자막입니다.
+  - 방어복을 입은 사람이 대령이라는 점은 DVIDS 설명(“Col. Brey Hopkins … dons a bite suit”)과 화면(실내에서 대령이 방어복과 투구를 입는 장면, 같은 옷차림)에 근거합니다. 훈련장 장면에서는 투구 때문에 얼굴이 보이지 않습니다.
+- **dog1 자막**: 말소리 대부분은 들리지 않는 현장 잡담이라 자막을 달지 않았습니다. 사실 자막 두 줄(“미 공군 군견 수중 제압 훈련”, “낯선 환경에 익숙해지는 훈련”)은 DVIDS 설명(“water aggression training … acclimate MWDs to an atypical environment … apprehend a target in water”)에 근거합니다.
+
+**영상 출처** (모두 DVIDS, 원본 주소·구간은 `media/dogs/*.json`)
+- dog1 — [976540](https://www.dvidshub.net/video/976540) B-Roll: 509 SFS Military Working Dog Water Aggression Training — U.S. Air Force video by Senior Airman Bryce Moore, 509th Security Forces Squadron, 2025.9.2, 미국 미주리주 세데일리아 공공 수영장. 원본 39.25–43.95, 97–100.5, 150–152.8, 84–88.5, 130–135.5, 138.3–140.8초.
+- dog2 — [761955](https://www.dvidshub.net/video/761955) 824th Pays Respects to Military Working Dog — Senior Airman Hayden Legg (824th Base Defense Group, Air Combat Command 공보), 2020.7.20, 미국 조지아주 밸도스타(무디 공군기지). 원본 43.25–44.5(그림만), 1.6–8.6, 15.95–26.3, 28.45–42.3, 42.95–48.1초.
+- dog3 — [811932](https://www.dvidshub.net/video/811932) Camp Bondsteel Bite Suit Training (B-roll) — Sgt. Gillian McCreedy(미 육군), 2021.8.28, 코소보 캠프 본드스틸. 원본 32–36.5, 12.5–17.5, 37.3–40.6, 46.5–54, 99.6–107.6초.
+
+**사실 출처**
+- dog1: DVIDS 976540 설명 — “Military working dogs assigned to 509th Security Forces Squadron perform water aggression training at a community pool in Sedalia, Missouri, Sept. 2, 2025. The training helped acclimate MWDs to an atypical environment and enhanced their capability to apprehend a target in water.”
+- dog2: DVIDS 761955 설명 — “The 824th BDG paid tribute to Rudo, a medically-retired military working dog, during a ceremony that honored his life, service and sacrifice to the U.S. Air Force.” 수색 1만 회 이상, 비밀경호국 임무 15회, 대통령 지원 임무 6회, 마지막 핸들러가 집에 데려가려 함, 2020년 4월 암 진단은 같은 영상 속 내레이션이 직접 한 말입니다. 같은 행사를 다룬 미 공군 기사 [824th BDS honors retired MWD (moody.af.mil)](https://www.moody.af.mil/News/Article-Display/Article/2278729/824th-bds-honors-retired-mwd/)는 403으로 원문을 열지 못했습니다. 검색 요약으로는 2020.7.15 행사와 약 5년 복무가 나와서, 이 날짜와 숫자는 쓰지 않았습니다. 루도의 이후 소식(사망 여부 등)은 확인된 출처가 없어 말하지 않았습니다.
+- dog3: DVIDS 811932 설명 — “U.S. Army Col. Brey Hopkins, Commander of KFOR Regional Command-East, dons a bite suit to provide Military Working Dogs (MWD) with another opportunity for ongoing bite suit training. This training ensures that MWDs can assist military police and apprehend suspects using non-lethal force.”
+
+**라이선스**: 미군 장병·국방부 직원이 직무로 만든 영상은 미국 연방정부 저작물로 퍼블릭 도메인입니다(17 U.S.C. §105, DVIDS 저작권 안내 https://www.dvidshub.net/about/copyright). 화면에는 “영상: 미 공군 (DVIDS)”·“영상: 미 육군 (DVIDS)”만 적었습니다. 미군·국방부가 이 영상을 보증하거나 후원한다는 인상을 주면 안 됩니다. 음악은 Kevin MacLeod(incompetech.com) CC BY 4.0입니다: dog1 “Hustle”, dog2 “Floating Cities”, dog3 “Sneaky Snitch”. 효과음은 `public/sfx`(whoosh, ding, boing)입니다.
+
+**dog1** — 물로 도망치면 군견도 못 따라올까? 🐕💦
+> 수영장으로 도망치면 군견을 따돌릴 수 있을까요? 미 공군 제509보안경찰대대 군견들이 2025년 9월 미국 미주리주의 한 공공 수영장에서 ‘수중 제압 훈련’을 했습니다. 낯선 환경에 익숙해지고 물속에서도 대상을 붙잡는 능력을 키우는 훈련이라고 합니다. 결론: 물도 안전지대가 아닙니다.
+> 영상: 미 공군 (DVIDS, Senior Airman Bryce Moore). 미 공군·국방부가 이 영상을 보증하거나 후원하지 않습니다.
+> 음악: "Hustle" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
+> #군견 #군대 #미공군 #강아지 #shorts
+
+**dog2** — 암 진단받은 군견을 위해 전우들이 준비한 경례
+> 미 공군 제824기지방어단의 군견 루도. 공식 수색만 1만 번 넘게 했고, 비밀경호국 임무 15번, 대통령 지원 임무 6번을 수행했습니다. 마지막 핸들러는 루도를 집에 데려가 가족이 되어 주고 싶어 했지만, 루도는 2020년 4월 암 진단을 받았고, 부대는 루도의 복무에 감사하는 자리를 마련했습니다. 장병들이 줄지어 경례하며 루도를 맞았습니다. 영상 속 목소리를 직접 번역했습니다.
+> 영상: 미 공군 (DVIDS, Senior Airman Hayden Legg). 원본의 배경음악은 지웠습니다. 미 공군·국방부가 이 영상을 보증하거나 후원하지 않습니다.
+> 음악: "Floating Cities" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
+> #군견 #감동 #실화 #미공군 #shorts
+
+**dog3** — 군견 훈련 미끼가 된 대령님의 최후 😂
+> 2021년 8월 코소보 캠프 본드스틸. 코소보 평화유지군(KFOR) 동부지역사령관인 미 육군 대령이 직접 방어복을 입고 군견 훈련의 미끼가 됐습니다. 군견에게 냄새를 맡게 해 주고, 투구까지 쓰고 달렸지만… 계급장은 군견에게 통하지 않습니다.
+> 영상: 미 육군 (DVIDS, Sgt. Gillian McCreedy). 미 육군·국방부가 이 영상을 보증하거나 후원하지 않습니다.
+> 음악: "Sneaky Snitch" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
+> #군견 #군대 #대령 #미군 #shorts
