@@ -13,6 +13,8 @@ const fr = (s: number) => Math.round(s * FPS);
 export type Clip = {
   file: string | null; label: string; at: number; dur: number; speed: number;
   frame: "square" | "wide" | "full"; zoom: [number, number]; focus: string; audio: number;
+  /** face-centred crop: (cx, cy) in 0..1 of the source frame, zoom over a plain cover fit, source size */
+  crop?: { cx: number; cy: number; zoom: number; w: number; h: number };
 };
 export type ShortData = {
   id: string; end: number; title: [string, string]; credit: string;
@@ -23,6 +25,8 @@ export type ShortData = {
   sfx: { t: number; name: string; gain: number }[];
   music: { file: string; gain: number; start: number } | null;
   flashes: number[]; punches: number[];
+  /** the clips' own audio is the speech (political clips): keep it at full level, duck only the music */
+  origVoice?: boolean;
 };
 
 const FRAME = { square: { top: 400, height: 1080 }, wide: { top: 656, height: 608 }, full: { top: 0, height: 1920 } };
@@ -51,8 +55,17 @@ const ClipView: React.FC<{ c: Clip; d: ShortData }> = ({ c, d }) => {
     const tt = c.at + rf / FPS;
     const m = d.moments.find((m) => tt >= m.from - 0.15 && tt <= m.to + 0.3);
     if (m) return m.gain * clamp(Math.min((tt - m.from + 0.15) / 0.15, (m.to + 0.3 - tt) / 0.3));
-    return c.audio * (1 - 0.75 * (d.env[fr(tt)] ?? 0));
+    return d.origVoice ? c.audio : c.audio * (1 - 0.75 * (d.env[fr(tt)] ?? 0));
   };
+  // crop mode: place the frame so the face sits in the middle of the box, never showing an edge
+  let cropStyle: React.CSSProperties | null = null;
+  if (c.crop) {
+    const { cx, cy, zoom, w, h } = c.crop;
+    const S = Math.max(1080 / w, box.height / h) * zoom * s;
+    const dw = w * S, dh = h * S;
+    const left = Math.min(0, Math.max(1080 - dw, 540 - cx * dw)), top = Math.min(0, Math.max(box.height - dh, box.height / 2 - cy * dh));
+    cropStyle = { position: "absolute", left, top, width: dw, height: dh };
+  }
   return (
     <AbsoluteFill>
       {ok ? (
@@ -60,12 +73,16 @@ const ClipView: React.FC<{ c: Clip; d: ShortData }> = ({ c, d }) => {
           style={{ position: "absolute", inset: -60, width: "calc(100% + 120px)", height: "calc(100% + 120px)", objectFit: "cover", filter: "blur(36px) brightness(.42) saturate(1.2)" }} />
       ) : <AbsoluteFill style={{ background: "#05060b" }} />}
       <div style={{ position: "absolute", left: 0, top: box.top, width: 1080, height: box.height, overflow: "hidden", boxShadow: "0 0 80px rgba(0,0,0,.6)" }}>
-        <AbsoluteFill style={{ transform: `scale(${s})` }}>
-          {ok ? (
-            <OffthreadVideo src={staticFile(c.file!)} volume={vol} playbackRate={c.speed}
-              style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: c.focus }} />
-          ) : <Placeholder label={c.label} />}
-        </AbsoluteFill>
+        {cropStyle && ok ? (
+          <OffthreadVideo src={staticFile(c.file!)} volume={vol} playbackRate={c.speed} style={cropStyle} />
+        ) : (
+          <AbsoluteFill style={{ transform: `scale(${s})` }}>
+            {ok ? (
+              <OffthreadVideo src={staticFile(c.file!)} volume={vol} playbackRate={c.speed}
+                style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: c.focus }} />
+            ) : <Placeholder label={c.label} />}
+          </AbsoluteFill>
+        )}
       </div>
     </AbsoluteFill>
   );
