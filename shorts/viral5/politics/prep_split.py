@@ -177,17 +177,20 @@ def main(sid):
 
     # segments → clips, and the map from source time to output time
     clips, at, starts, ranks = [], 0.0, [], []
+    tail = ed.get("tail", 0.6)
     for k, s in enumerate(ed["segments"]):
         sp = s.get("speed", 1.0); dur = (s["out"] - s["in"]) / sp; out = f"{pub}/clips/c{k:02d}.mp4"
+        hold = tail if k == len(ed["segments"]) - 1 else 0.0  # the last shot holds its final frame through the tail, never black
         seg_src = f"{MEDIA}/{s['src']}" if s.get("src") else src  # a segment may come from another clip of the same hearing
         tx0, ty0, tx1, ty1 = s.get("trim", [0, 0, 1, 1])  # cut a band off the source (a broadcaster's lower third) before anything else
         vf = (f"setpts=(PTS-STARTPTS)/{sp}," if sp != 1.0 else "") + "fps=30" + (f",crop=trunc(iw*{tx1 - tx0}/2)*2:trunc(ih*{ty1 - ty0}/2)*2:iw*{tx0}:ih*{ty0}" if s.get("trim") else "")
         vf += {90: ",transpose=1", -90: ",transpose=2", 180: ",hflip,vflip"}.get(s.get("rotate", 0), "")  # e.g. a camera mounted sideways
         if s.get("vf"): vf += "," + s["vf"]  # an extra ffmpeg filter for this stretch (grade a dark shot, blur a face)
+        if hold: vf += f",tpad=stop_mode=clone:stop_duration={hold:.3f}"
         af = ["-af", atempo(sp)] if sp != 1.0 else []
-        subprocess.run(["ffmpeg", "-v", "error", "-y", "-ss", str(s["in"]), "-t", f"{s['out'] - s['in']:.3f}", "-i", seg_src, "-vf", vf, *af, "-t", f"{dur:.3f}",
+        subprocess.run(["ffmpeg", "-v", "error", "-y", "-ss", str(s["in"]), "-t", f"{s['out'] - s['in']:.3f}", "-i", seg_src, "-vf", vf, *af, "-t", f"{dur + hold:.3f}",
                         "-c:v", "libx264", "-preset", "veryfast", "-crf", "16", "-pix_fmt", "yuv420p", "-c:a", "aac", "-b:a", "192k", "-ar", "48000", out], check=True)
-        clip = {"file": f"{sid}/clips/c{k:02d}.mp4", "label": s.get("label", ""), "at": round(at, 3), "dur": round(dur, 3), "speed": 1.0,
+        clip = {"file": f"{sid}/clips/c{k:02d}.mp4", "label": s.get("label", ""), "at": round(at, 3), "dur": round(dur + hold, 3), "speed": 1.0,
                 "frame": s.get("frame", "square"), "zoom": s.get("push", [1.0, 1.04]), "focus": "50% 50%", "audio": s.get("audio", 1.0)}
         if s.get("credit"): clip["credit"] = s["credit"]  # this stretch's own source line (B-roll from another archive)
         if s.get("rank"): ranks.append({"n": s["rank"]["n"], "label": s["rank"]["label"], "from": round(at, 3)})  # a TOP-N place
@@ -275,7 +278,7 @@ def main(sid):
                 tk["toMs"] = toks[j + 1]["fromMs"] if j + 1 < len(toks) else end
             pages.append({"startMs": toks[0]["fromMs"], "endMs": end, "tokens": toks})
     out_pages = [{**{k: v for k, v in p.items() if k != "tokens"}, "tokens": [{k: v for k, v in tk.items() if k != "n"} for tk in p["tokens"]]} for p in pages]
-    tail = ed.get("tail", 0.6); end = round(at + tail, 3)
+    end = round(at + tail, 3)
     env = np.zeros(int(np.ceil(end * FPS)) + 1)  # speech level per frame, for ducking any music under the hearing audio
     if ed.get("duck", True):
         for sp in speakers: env[int(sp["from"] * FPS):int(sp["to"] * FPS)] = 1.0
