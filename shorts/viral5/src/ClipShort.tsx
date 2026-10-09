@@ -214,6 +214,7 @@ const Hook: React.FC<{ d: ShortData; t: number }> = ({ d, t }) => {
 const Credit: React.FC<{ d: ShortData; t: number }> = ({ d, t }) => {
   const c = d.clips.find((x) => t >= x.at && t < x.at + x.dur);
   const text = c?.credit ?? d.credit;
+  if (!text) return null;
   // the speaker label sits at the frame's top left (clips-with-captions shorts): when a long label and the credit
   // would run into each other on that row, the credit drops below the label
   const label = d.split && c?.label && FRAME[c.frame].top < 420 ? c.label : "";
