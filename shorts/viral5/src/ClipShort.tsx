@@ -13,7 +13,7 @@ const fr = (s: number) => Math.round(s * FPS);
 
 export type Clip = {
   file: string | null; label: string; at: number; dur: number; speed: number;
-  frame: "square" | "wide" | "full"; zoom: [number, number]; focus: string; audio: number;
+  frame: "square" | "wide" | "full" | "film"; zoom: [number, number]; focus: string; audio: number;
   /** face-centred crop: (cx, cy) in 0..1 of the source frame, zoom over a plain cover fit, source size */
   crop?: { cx: number; cy: number; zoom: number; w: number; h: number };
 };
@@ -37,7 +37,8 @@ export type ShortData = {
   captionY?: number;
 };
 
-const FRAME = { square: { top: 400, height: 1080 }, wide: { top: 656, height: 608 }, full: { top: 0, height: 1920 } };
+const FRAME = { square: { top: 400, height: 1080 }, wide: { top: 656, height: 608 }, full: { top: 0, height: 1920 },
+  film: { top: 400, height: 810 } /* a whole 4:3 frame (silent films) */ };
 const PANELS = [{ top: 400, height: 540 }, { top: 940, height: 540 }];
 const have = (file: string | null) => !!file && getStaticFiles().some((f) => f.name === file);
 
