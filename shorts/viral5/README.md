@@ -741,3 +741,29 @@ MEDIA=<저장소>/media python3 politics/prep_split.py oldflight    # oldflight2
 > 영상: 미국 국립문서기록관리청(NARA) 16-P-1316-1, 111-H-1185 · 미국 의회도서관(Library of Congress, Motion Picture, Broadcasting, and Recorded Sound Division)
 > 음악: "The Rifle Regiment" (J. P. Sousa) United States Marine Band (Victor, 1921) — 미국 의회도서관 National Jukebox
 > #라이트형제 #비행기 #루스벨트 #옛날영상 #미국역사 #항공 #역사 #shorts
+
+## 린드버그 대서양 횡단 쇼츠 (`politics/lindbergh1`)
+
+“해낼 수 없다던 일을 해낸 사람” 편입니다. 1927년에 극장에서 상영된 실제 뉴스 영화(Fox News, Kinograms)로 만들었고, 영어 줄은 **그 뉴스 영화의 화면 자막(intertitle)을 그대로** 옮겼습니다. 무성 필름이라 육성은 없고(`"en": ""` 줄은 한국어 설명만), 음악만 깝니다. 내레이션·AI 목소리 없음.
+
+| id | 제목 | 길이 | 내용 |
+| --- | --- | --- | --- |
+| `lindbergh1` | 아무도 못 한 대서양 단독 횡단, / 25살 우편 비행사가 해냈다..? | 58.8초 | “The annals of mankind record no more daring individual achievement…” → 1927.5.20 루스벨트 비행장 이륙(“the cheers — and fears”) → 다음 날 밤 파리 르부르제의 인파(“He lands!”) → 파리의 린드버그 → 3주 뒤 워싱턴 귀국, 쿨리지 대통령의 수훈비행십자훈장(“The proudest moment of his life”) |
+
+```bash
+MEDIA=<저장소>/media python3 politics/prep_split.py lindbergh1    # 원본: media/speech/lindbergh1927_fox_kinograms.mp4
+./render.sh lindbergh1
+```
+
+- **영상**: [archive.org `Lindberg1927` 〈[Lindbergh's Flight and Return]〉](https://archive.org/details/Lindberg1927) — 프렐링거 아카이브(Prelinger Archives), 제작 “Fox News / Kinograms”, 1927, 무성. 워터마크·덧입힌 음악 없음. 원본 MPEG(368×480, 비정사각 화소, 인터레이스)을 `yadif`로 풀어 640×480으로 다시 인코딩했고, 소스 15–365초만 `media/speech/lindbergh1927_fox_kinograms.mp4`(40 MB)로 잘라 두었습니다. 쓴 구간과 인용한 화면 자막은 같은 이름의 `.json`에 있습니다.
+- **라이선스**: 1927년에 상영(공표)된 뉴스 영화라 미국에서 퍼블릭 도메인입니다(2026년 기준 1930년 이전 공표작은 모두 만료). archive.org 항목도 Public Domain 표시입니다. 화면 크레딧은 “Fox News · Kinograms (1927) · Prelinger Archives”만 적었습니다.
+- **자막**: 영어 줄 11개는 필름의 화면 자막 6장을 그대로 옮겼습니다. Fox News 자막 카드는 이 사본에서 좌우가 조금 잘려 줄 끝 한두 글자가 안 보이는데(manki[nd], gather[ed], fat[e], mas[s], a[ll], reac[h], a[ir] 등), 앞뒤 문맥으로 확실한 것만 채웠습니다. 실제 카드의 “- -”는 “—”로 적었습니다. 한국어 설명 줄(이륙·영웅·환영 인파)과 스티커의 사실 근거는 [NASM 〈Spirit of St. Louis〉](https://airandspace.si.edu/collection-objects/ryan-nyp-spirit-st-louis-charles-lindbergh/nasm_A19280021000): 1927.5.20 아침 뉴욕 출발, 33시간 30분, 3,610마일(≈5,810 km), 최초의 대서양 단독 무착륙 비행, 그전 직업은 세인트루이스–시카고 항공우편 조종사. 나이 25세(1902.2.4 출생).
+- **라벨 근거**: 장면 순서와 Kinograms 자막(“The Memphis arrives at the Navy Yard”, “Then to the Washington Monument for his presentation to President Coolidge”). 색종이 장면은 도시가 자막에 없어서 “1927.6 · 귀국 환영”으로만 적었습니다.
+- 컷마다 흰 번쩍임(템플릿 기본). 음악은 `duck: false`(무성이라 줄일 목소리가 없음). 라우드니스 −14.0 LUFS, 최대 −1.5 dBFS. 템플릿 코드는 바꾸지 않았습니다.
+- **헬렌 켈러 편(`helen1`)은 만들지 않았습니다.** 앤 설리번이 설명하고 헬렌 켈러가 “I am not dumb now”라고 말하는 필름의 유일한 원본 기록은 사우스캐롤라이나대 MIRC의 [Fox Movietone News Story 2-83 〈Helen Keller and Annie Sullivan Macy--outtakes〉](https://digital.tcl.sc.edu/digital/collection/MVTN/id/4264)(촬영 1929.2.27, 유성)인데, ① 카탈로그상 **아웃테이크**(상영본에서 빠진 촬영분)라 1930년 이전 공표를 확인할 수 없고, ② 사본에 “Copyright Moving Image Research Collections. All rights reserved.”라는 권리 주장이 붙어 있습니다. 미 의회도서관·국립문서기록관리청·archive.org에서는 다른 깨끗한 사본을 찾지 못했습니다(LOC의 1919년 〈Deliverance〉는 무성 극영화). 그래서 추측으로 진행하지 않았습니다.
+
+**lindbergh1** — 아무도 못 한 대서양 단독 횡단, 25살 우편 비행사가 해냈다..? ✈️
+> 1927년 5월 20일 아침, 뉴욕 루스벨트 비행장. 25살 항공우편 조종사 찰스 린드버그가 ‘스피릿 오브 세인트루이스’호를 타고 혼자 이륙했습니다. 33시간 30분 뒤 파리 르부르제 비행장에 내리자 엄청난 인파가 몰려들었고, 그는 하루아침에 세계의 영웅이 됐습니다. 영어 자막은 1927년 뉴스 영화 화면에 실제로 나온 문구이고, 한국어는 직접 번역했습니다.
+> 영상: Fox News · Kinograms (1927), Prelinger Archives (archive.org)
+> 음악: "Floating Cities" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
+> #린드버그 #대서양횡단 #도전 #포기하지마 #동기부여 #옛날영상 #역사 #영어공부 #shorts
