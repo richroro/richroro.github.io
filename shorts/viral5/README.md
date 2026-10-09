@@ -972,3 +972,53 @@ MEDIA=<저장소>/media python3 politics/prep_split.py lindbergh1    # 원본: m
 > 음악: "Floating Cities" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
 > #린드버그 #대서양횡단 #도전 #포기하지마 #동기부여 #옛날영상 #역사 #영어공부 #shorts
 
+
+## 동물 랭킹 쇼츠 (`politics/anirank1`, `politics/anirank2`)
+
+10만 이상 오락 쇼츠 중 중앙값이 가장 높은 「역대급 ○○ 랭킹 TOP5」형(`research/research-fun.md`)을 실제 동물 영상으로 만든 두 편입니다. 내레이션·AI 목소리·그래픽 없이 **원본 소리 + 가벼운 음악 + 한 줄 자막**만 씁니다. 순위는 우리가 고른 것이고 공식 순위가 아닙니다. 1위가 끝나면 바로 영상 처음(5위)으로 이어져 반복 재생됩니다(`"tail": 0`).
+
+| id | 제목(화면) | 길이 | 5위 → 1위 | 음악 |
+| --- | --- | --- | --- | --- |
+| `anirank1` | 역대급 귀여운 아기동물 / TOP5 (다들 몇 번?ㅋㅋ) | 37.0초 | 졸다가 철퍼덕 아기 바이슨 · 얼음! 꼬마 청설모 · 엄마 옆 꿀잠 아기 코끼리물범 · 카메라 쳐다보는 아기 물개 · 모래에 얼굴 박은 아기 바다사자 | Monkeys Spinning Monkeys |
+| `anirank2` | 역대급 웃긴 물범 모먼트 / TOP5 (다들 몇 번?ㅋㅋ) | 35.8초 | 바나나 자세 물범 · 모래 범벅 몽크물범 · 코끼리 코 수컷 · 눈 마주친 코끼리물범 · 카메라 코앞에서 입 쩍 몽크물범 | Hyperfun |
+
+```bash
+MEDIA=$PWD/media python3 politics/prep_split.py anirank1     # 원본 발췌: media/anirank/*.mp4 (+ 출처 .json)
+./render.sh anirank1 final/anirank1.mp4
+```
+
+- 레이아웃: `"titleStyle": "band"`(검정 띠 2줄 제목, `[TOP5]`만 노랑), 정사각 화면에 동물이 크게 오도록 `single` 크롭, 자막은 화면 아래쪽 위(`"captionY": 1380`), 그 아래 순위표(구간마다 `"rank"`). 순위마다 흰 번쩍임으로 컷이 바뀝니다. 아기 물개 장면은 원본이 어두워 `vf`로 밝기만 올렸습니다.
+- 자막은 각 장면을 사실대로 묘사하고, 사실 정보는 아래 출처에 있는 것만 넣었습니다. “뭘 봐”, “얼음!” 같은 말은 장면에 붙인 농담입니다. 바다사자 1위의 두 컷(앉아 있는 장면, 엎어지는 장면)은 같은 원본에서 20초쯤 떨어진 같은 새끼의 장면입니다.
+
+**영상 (모두 미국 연방기관이 직접 만든 퍼블릭 도메인 영상, 17 U.S.C. §105)** — 원본 발췌와 출처·파일 주소·크레딧·사용 구간은 `media/anirank/*.json`
+- 아기 바이슨: [Bison Calf](https://www.nps.gov/media/video/view.htm?id=7C9B301A-C879-4F27-BD03-820EFEEE2063) — NPS/Neal Herbert, 옐로스톤 라마 밸리, 2014.5.17 (페이지에 “Copyright Info: Public domain”)
+- 꼬마 청설모: [Mountain Moment: Scurry of Douglas Squirrels](https://www.nps.gov/media/video/view.htm?id=A3DE415A-76D8-4567-8E54-4B32ED747FCB) — NPS, 레이니어산 국립공원 (원본 앞의 NPS 로고 화면은 쓰지 않음)
+- 코끼리물범(아기·수컷·털갈이): [B-Roll: Elephant Seals on the Channel Islands](https://videos.fisheries.noaa.gov/detail/videos/b-roll:-seals-and-sea-lions/video/897627749001/b-roll:-elephant-seals-on-the-channel-islands) — NOAA Fisheries
+- 아기 물개: [B-Roll: Northern Fur Seals on the Pribilof Islands](https://videos.fisheries.noaa.gov/detail/videos/b-roll:-seals-and-sea-lions/video/897639164001/b-roll:-northern-fur-seals-on-the-pribilof-islands) — NOAA Fisheries
+- 아기 바다사자: [B-Roll: California Sea Lions](https://videos.fisheries.noaa.gov/detail/videos/b-roll:-seals-and-sea-lions/video/4084857759001/b-roll:-california-sea-lions) — NOAA Fisheries
+- 잔점박이물범: [B-Roll: Harbor Seals on the Pacific Coast](https://videos.fisheries.noaa.gov/detail/videos/b-roll:-seals-and-sea-lions/video/4419966618001/b:roll:-harbor-seals-on-the-pacific-coast) — NOAA Fisheries (촬영 John D. Brooks / NOAA)
+- 하와이몽크물범: [B-Roll: Hawaiian Monk Seal](https://videos.fisheries.noaa.gov/detail/videos/b-roll:-seals-and-sea-lions/video/5352712499001/b-roll:-hawaiian-monk-seal) — NOAA Fisheries (NMFS ESA/MMPA 허가 #16632, #13707 하에 촬영)
+- NOAA 영상 갤러리의 원본 타이틀 카드: “All footage courtesy of the National Oceanic and Atmospheric Administration (NOAA), a federal agency of the U.S. Department of Commerce. Please credit ‘NOAA Fisheries’”. NPS·NOAA가 이 영상을 보증하거나 후원하지 않으며, 두 기관의 로고는 쓰지 않았습니다. 화면에는 “영상: 미국 국립공원관리청(NPS)”, “영상: 미국 해양대기청(NOAA)”만 적었습니다.
+- 음악: "Monkeys Spinning Monkeys", "Hyperfun" Kevin MacLeod (incompetech.com), CC BY 4.0
+
+**자막 속 사실과 출처**
+- 바이슨 새끼는 4월 말~5월에 태어나고 갓 태어나면 붉은 황갈색 — [NPS Yellowstone: Bison](https://www.nps.gov/yell/learn/nature/bison.htm) (영상 촬영일 5월 17일 → “올봄에 태어난”)
+- 이 영상은 등산객을 수상하게 여기는 어린 더글러스청설모 — 위 NPS 영상 설명(“This curious young Douglas squirrel wasn't sure about passing hikers”)
+- 북방코끼리물범 새끼는 젖을 뗄 때까지 검은색 / 다 자란 수컷의 큰 코는 번식기에 서로 위협할 때 소리를 울리는 데 쓰임 / 털갈이 때 털과 함께 커다란 피부 조각이 벗겨짐 — [NOAA: Northern Elephant Seal](https://www.fisheries.noaa.gov/species/northern-elephant-seal) (털갈이 장면은 원본 카드 “Molting Elephant Seals, San Nicholas Island”)
+- 북방물개 새끼는 생후 약 3개월에 털갈이하기 전까지 검은색, 이후 은회색 — [NOAA: Northern Fur Seal](https://www.fisheries.noaa.gov/species/northern-fur-seal)
+- 원본 설명 “California sea lions and pups” — [NOAA: California Sea Lion](https://www.fisheries.noaa.gov/species/california-sea-lion)(새끼는 태어날 때 짙은 갈색)
+- 잔점박이물범은 머리와 뒷지느러미를 든 ‘바나나 같은’ 자세로 쉼 — [NOAA: Harbor Seal](https://www.fisheries.noaa.gov/species/harbor-seal)
+- 하와이몽크물범은 멸종위기종, 개체 수 약 1,600마리 — [NOAA: Hawaiian Monk Seal](https://www.fisheries.noaa.gov/species/hawaiian-monk-seal)
+- 몽크물범 1위 장면은 “입을 크게 벌린” 것만 적었습니다(하품인지 소리를 내는지는 영상만으로 알 수 없어 단정하지 않음).
+
+**anirank1** — 역대급 귀여운 아기동물 TOP5 (다들 몇 번?ㅋㅋ)
+> 졸다가 철퍼덕 눕는 아기 바이슨부터 모래에 얼굴 박은 아기 바다사자까지, 실제 야생 아기동물 영상으로 뽑은 귀여움 TOP5! 여러분의 원픽은 몇 번인가요? 순위는 저희 마음대로 고른 것입니다😆
+> 영상: 미국 국립공원관리청(NPS) — Neal Herbert(옐로스톤), 레이니어산 국립공원 · 미국 해양대기청(NOAA Fisheries) (NPS·NOAA가 이 영상을 보증하거나 후원하지 않습니다.)
+> 음악: "Monkeys Spinning Monkeys" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
+> #아기동물 #귀여운동물 #동물 #랭킹 #shorts
+
+**anirank2** — 역대급 웃긴 물범 모먼트 TOP5 (다들 몇 번?ㅋㅋ)
+> 바나나 자세로 쉬는 물범, 모래 범벅 몽크물범, 코끼리 코 수컷, 털갈이 중 눈 마주친 코끼리물범, 카메라 코앞에서 입 쩍 벌린 하와이몽크물범(전 세계 약 1,600마리뿐인 멸종위기종)까지! 다들 몇 번이 제일 웃겨요? 순위는 저희 마음대로 고른 것입니다.
+> 영상: 미국 해양대기청(NOAA Fisheries) (NOAA가 이 영상을 보증하거나 후원하지 않습니다.)
+> 음악: "Hyperfun" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
+> #물범 #바다사자 #웃긴동물 #동물 #shorts
