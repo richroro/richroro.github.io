@@ -972,3 +972,59 @@ MEDIA=<저장소>/media python3 politics/prep_split.py lindbergh1    # 원본: m
 > 음악: "Floating Cities" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
 > #린드버그 #대서양횡단 #도전 #포기하지마 #동기부여 #옛날영상 #역사 #영어공부 #shorts
 
+
+## 동물 "몇가지·이유" 쇼츠 (`politics/ani1`~`ani3`)
+
+조회수 10만 이상 동물 쇼츠(`research/research-fun.md`, 동그리 형식)를 따라 만든 세 편입니다. 동물 클립에 위트 있는 자막 한 줄씩, 내레이션 없이 원본 소리나 가벼운 음악만 깔았습니다. 영상은 모두 **미국 국립공원관리청(NPS)이 직접 찍어 공개한 영상**이고, 사실은 NPS·NOAA 페이지와 논문에서만 가져왔습니다.
+
+| id | 제목(화면) | 길이 | 영상 |
+| --- | --- | --- | --- |
+| `ani1` | 주차장 점령한 이 녀석 / 코끼리물범에 대한 몇가지 | 34.5초 | 포인트레예스 국립해안 (드레이크스 비치 주차장의 수컷, 어미와 갓 태어난 새끼, 젖 뗀 새끼들) |
+| `ani2` | 프레리도그가 / 뽀뽀하는 이유ㅋㅋ | 35.6초 | 브라이스캐니언 국립공원 (유타프레리도그) |
+| `ani3` | 겨울잠 안 자는 토끼 친척 / 피카의 필살기ㅋㅋ | 37.1초 | 레이니어산 국립공원 (아메리카우는토끼) |
+
+```bash
+# 원본은 media/<topic>/*.mp4 (저장소에는 넣지 않음, 각 .json의 "file" 주소로 다시 받기). MEDIA 기본값이 media/
+python3 politics/prep_split.py ani1 && ./render.sh ani1 final/ani1.mp4   # ani2, ani3도 같음
+```
+
+- **형식**: `"titleStyle": "band"`(검정 띠 2줄 제목, 아랫줄 노랑), 정사각 화면에 `single` 크롭으로 동물을 크게, 자막은 화면 아래 `"captionY": 1600`, 한 장면 2~6초. 마지막 장면은 첫 장면(또는 같은 동물)으로 돌아가 반복 재생이 이어지게 했습니다.
+- **템플릿 변경**: `politics/prep_split.py`에 `"flash": false`를 추가했습니다. 컷마다 들어가던 흰 번쩍임을 끄고 그냥 자릅니다(기존 쇼츠는 기본값 그대로).
+- **소리**: 코끼리물범 수컷 울음·프레리도그 현장음은 원본 소리를 살렸습니다. 원본에 배경음악이 깔린 영상(Weanling Season at Drakes Beach의 'Into the Sunshine', Call of the Pika)은 음소거했습니다.
+- **원본 기록**: `media/eseal/*.json`, `media/pdog/utah.json`, `media/pika/*.json`에 NPS 페이지·파일 주소·크레딧·라이선스·쓴 구간(초)을 적었습니다.
+- **라이선스**: 모두 NPS 저작물입니다. 각 NPS 영상 페이지에 "Multimedia credited to NPS without any copyright symbol are public domain"이라고 적혀 있고, 저작권 표시가 없습니다. 크레딧이 개인 이름인 영상은 NPS 직원 것만 썼습니다. Carlo Arreglo는 NPS 기사에 "Interpretive ranger"로 나오고, Marjorie Cox는 NPS 모니터링 기사의 사진 크레딧("NPS / Marjorie Cox, NMFS Permit")입니다. 신분을 확인하지 못한 "NPS / Ellen Greenblatt" 영상 4개는 쓰지 않았습니다. 화면에는 "영상: 미국 국립공원관리청(NPS)"만 적었고, NPS 로고(화살촉)는 쓰지 않았습니다.
+- **빼고 검토한 것**: 에버글레이즈 악어 트레일캠(화면에 자막이 박혀 있고 새끼가 잘 안 보임), 바다거북 새끼(720p라 너무 작음). Pexels·Pixabay·위키미디어 공용은 이 작업 환경에서 403·429로 막혀 확인하지 못했습니다.
+
+**사실 출처**
+- `ani1` 코끼리물범
+  - 수컷 2,000~2,722kg("4400-6000 lbs"), 젖 떼기까지 30일, 어미는 굶으며 젖을 먹여 몸무게 30~40% 감소, 젖 뗀 새끼는 "overstuffed sausages affectionately called weaners", 교미 뒤 어미는 바다로 떠나고 새끼는 혼자 남음, 육지에 있는 동안 굶음 — [NPS 포인트레예스 소식지 "The Northern Elephant Seal"](https://www.nps.gov/pore/learn/upload/resourcenewsletter_elephantseals.pdf)
+  - 수컷의 울음("trumpeting")은 1마일(1.6km) 넘게 들림, 약 한 달 수유 뒤 어미가 떠남 — [NPS Viewing Elephant Seals](https://www.nps.gov/pore/planyourvisit/wildlife_viewing_elephantseals.htm)
+  - 수컷의 큰 코는 번식기에 다른 수컷을 위협하는 소리를 울리는 데 씀, 번식기에 굶어 몸무게 최대 36% 감소 — [NOAA Fisheries: Northern Elephant Seal](https://www.fisheries.noaa.gov/species/northern-elephant-seal)
+  - 2019년 1월 방문자센터(주차장) 앞 해변을 차지("possibly shutdown inspired take-over of Drakes Beach", 1월 31일 암컷 53·새끼 52) — [NPS Elephant Seal Monitoring Season Summary 2018–2019](https://www.nps.gov/articles/elephant-seal-monitoring-season-summary-2018-2019.htm)
+  - 젖 뗀 새끼가 남아서 수영을 배움 — [NPS 영상 Weanling Season at Drakes Beach 설명](https://www.nps.gov/media/video/view.htm?id=A5FB64F6-D275-4105-B6ED-664AF342297F)
+  - 바다에서 하루 평균 약 2시간 수면, 육지에서는 10시간 넘게 — Kendall-Bar et al., "Brain activity of diving seals reveals short sleep cycles at depth", *Science* 380, 260–265 (2023) ([UC Santa Cruz·옥스퍼드 보도](https://www.ox.ac.uk/news/2023-04-21-elephant-seals-drift-sleep-while-diving-far-below-ocean-surface)). 연구 대상은 어른 암컷이라 자막은 "어른이 되면"으로 적었습니다.
+- `ani2` 유타프레리도그
+  - 10월부터 3월 말까지 겨울잠, 유타주 남서부에만 삶, 천적마다 다른 경고음과 천적 생김새를 설명하는 '문장', 망보기 — [NPS 브라이스캐니언 Utah Prairie Dog](https://www.nps.gov/brca/learn/nature/upd.htm)
+  - 무리 안에서 "identifying kiss or sniff"로 서로를 알아봄 — [NPS 시어도어루스벨트 국립공원 Prairie Dogs](https://www.nps.gov/thro/learn/nature/prairie-dogs.htm) (검은꼬리프레리도그 설명이라 자막은 프레리도그 일반으로 적음)
+- `ani3` 피카
+  - 토끼과, 겨울잠을 자지 않음, 풀·잎을 모아 '건초더미'를 바위 밑·구멍에 저장, 눈이 덮이면 눈 밑에 굴을 파서 겨울 내내 먹음, 모으다가 간식 — [NPS 영상 A Hungry Pika 설명](https://www.nps.gov/media/video/view.htm?id=B47A5F36-69EE-40CD-A872-84EE3892C3B4)
+  - "eep!" 울음, 울음소리로 다른 개체를 알아본다는 연구 — [NPS 영상 Mountain Moment: Call of the Pika 설명](https://www.nps.gov/media/video/view.htm?id=5833D73D-CDF3-4B07-A008-D668ADCD51D5)
+  - "우는토끼"는 Ochotona의 우리말 이름입니다. 마지막 "그래서 이름이 우는토끼"는 이름과 울음을 이은 말장난입니다.
+
+**ani1** — 주차장 점령한 코끼리물범에 대한 몇가지ㅋㅋ
+> 2019년 미국 포인트레예스 국립해안, 코끼리물범들이 방문자센터 앞 해변과 주차장까지 차지했습니다. 수컷 코는 소리를 울리는 확성기, 엄마는 한 달 동안 굶으면서 젖만 먹이고, 그 결과 새끼는 '꽉 찬 소시지(위너)'가 됩니다. 사실은 미국 국립공원관리청(NPS)·NOAA 자료와 Science(2023) 논문 기준입니다. (NPS가 이 영상을 보증하거나 후원하지 않습니다.)
+> 영상: 미국 국립공원관리청(NPS) 포인트레예스 국립해안 — Carlo Arreglo, Marjorie Cox (NMFS Permit No. 21425)
+> 음악: "Sneaky Snitch" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
+> #코끼리물범 #동물 #동물상식 #귀여운동물 #shorts
+
+**ani2** — 프레리도그가 뽀뽀하는 이유ㅋㅋ
+> 길 한복판에서 뽀뽀하는 프레리도그, 사실은 가족 확인 중입니다. 천적마다 다른 경고음을 내고, 10월부터 3월 말까지 겨울잠을 자는 유타프레리도그. 전 세계에서 미국 유타주 남서부에만 삽니다. 영상은 브라이스캐니언 국립공원에서 미국 국립공원관리청(NPS)이 촬영했습니다. (NPS가 이 영상을 보증하거나 후원하지 않습니다.)
+> 영상: 미국 국립공원관리청(NPS) 브라이스캐니언 국립공원
+> 음악: "Hyperfun" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
+> #프레리도그 #동물 #귀여운동물 #동물상식 #shorts
+
+**ani3** — 겨울잠 안 자는 토끼 친척, 피카의 필살기ㅋㅋ
+> 햄스터 아닙니다. 토끼과 동물 '우는토끼(피카)'. 겨울잠을 자지 않는 대신 눈 오기 전에 풀과 잎을 모아 바위 밑에 '건초더미'를 쌓고, 눈이 덮이면 눈 밑에 굴을 파서 겨울 내내 꺼내 먹습니다. 영상은 레이니어산 국립공원에서 미국 국립공원관리청(NPS)이 촬영했습니다. (NPS가 이 영상을 보증하거나 후원하지 않습니다.)
+> 영상: 미국 국립공원관리청(NPS) 레이니어산 국립공원
+> 음악: "Monkeys Spinning Monkeys" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
+> #피카 #우는토끼 #동물 #귀여운동물 #shorts
