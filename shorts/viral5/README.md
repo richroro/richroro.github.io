@@ -648,3 +648,41 @@ MEDIA=<저장소>/media python3 politics/prep_split.py astrofail    # 원본: me
 > NASA 우주비행사들이 직접 말하는 실패와 재도전. 닉 헤이그는 2018년 첫 발사가 2분 만에 중단돼 200일 임무가 20분 만에 끝났지만, 5개월 뒤 다시 올라가 우주정거장에서 6개월을 보냈습니다. 아닐 메논은 선발 과정을 여러 번 거친 끝에, 데니즈 번햄은 첫 지원이 아닌 도전 끝에 2021년 우주비행사 후보로 뽑혔습니다. 발언은 원문 그대로 번역했고, 길이를 줄이려 일부 구간을 잘랐습니다(흰 번쩍임). (NASA가 이 영상을 보증하거나 후원하지 않습니다.)
 > 영상·사진: NASA (사진 NASA/Bill Ingalls)
 > #우주비행사 #NASA #동기부여 #포기하지마 #영어공부 #shorts
+
+## 1960년대 한국 컬러 쇼츠 (`politics/korea3`, `politics/korea4`)
+
+`korea1`·`korea2`의 후속편입니다. 1964년과 1969년에 미군 촬영반이 찍은 **컬러** 필름으로, 1960년대 서울 거리와 시골 가을걷이를 보여 줍니다. 잘라 둔 원본은 저장소 루트의 `media/korea3/`에 있습니다. 파일마다 `.json`에 NARA 식별번호, 카탈로그 주소, 파일 주소, 제작 기관, 이용 제한 상태, shot list, 자른 구간을 적었고, 음악 파일도 `media/korea3/music/`에 넣었습니다.
+
+| id | 제목 | 길이 | 내용 |
+| --- | --- | --- | --- |
+| `korea3` | 흑백인 줄 알았던 서울 / 1960년대, 컬러로 보면 🎨 | 57.2초 | 1969년 가을 서울 도심(차량·믹서 트럭·고층 건물), 1964년 2월 언덕에서 본 서울, 숭례문, 솜옷 차림 시민과 간판, 말수레, 웃는 아이, 밤의 네온사인(‘대한마아가린’, 춤추는 무희가 나오는 ‘한국타이야’), 1969년 서울시청(깃발, 현수막) |
+| `korea4` | 57년 전 가을걷이 / 1969년 시골, 컬러 영상 🌾 | 57.2초 | 초가 마을 탈곡 마당, 발로 밟는 탈곡기, 도리깨질, 아기를 업고 일하는 여인, 짚단 묶는 할아버지, 소, 볏단 싣는 소달구지 |
+
+```bash
+MEDIA=<저장소>/media python3 politics/prep_split.py korea3   # korea4도 같음
+./render.sh korea3
+```
+
+- 무성 필름입니다(NAID 29288은 카탈로그에 "Silent"로 표시). 원본 오디오는 쓰지 않고 디지털 무음으로 바꿨으며, 자막(한국어만)과 음악만 넣었습니다. 템플릿 코드는 바꾸지 않았습니다.
+- 화면 설명은 NARA shot list와 화면에 보이는 것만 썼습니다. 탈곡기("foot pedal machine"), 도리깨("thin pole with straps attached"), 아기 업은 여인(shot 19), 되새김질하는 소("chewing her cud"), 시청 깃발("Korean flag ... flag of the city of Seoul"), 남대문("South Gate to city"), 네온사인이 그 근거입니다. 간판 글자(대한마아가린, 한국타이야)는 화면에서 읽었습니다.
+- 덧붙인 사실은 두 가지입니다. ① 숭례문은 2008년 2월 10일 방화로 누각이 불탔고 2013년 5월 4일 복구 기념식과 함께 다시 공개됐습니다([서울신문 2013.4.30](https://m.seoul.co.kr/news/2013/04/30/20130430002007), [국가기록원 숭례문](https://theme.archives.go.kr//next/koreaOfRecord/sungnyemunGate.do)). ② 옛 서울시청 본관은 1926년에 경성부청사로 지어져 2008년 5월까지 시청으로 쓰였고, 2012년 10월 서울도서관으로 문을 열었습니다([서울시 미디어허브](https://mediahub.seoul.go.kr/archives/196127), [서울신문 2012.10.27](https://m.go.seoul.co.kr/news/2012/10/27/20121027011029)).
+- 1969년 릴의 시골 장면은 카탈로그에 마을 이름이 없습니다. 슬레이트에는 "Stock footage Seoul, ROK"라고 적혀 있지만 서울이라고 단정하지 않고 라벨을 "한국 농촌"으로 했습니다. 1964년 장면 날짜는 NARA 제작일(1964.2.28)과 필름 슬레이트(25/2/64)를 따랐습니다. 2층 건물과 탑이 있는 광장 장면처럼 이름을 확인하지 못한 건물은 이름을 적지 않았습니다.
+- **쓰지 않은 것**: 도우미가 모은 `media/korea_retro/` 가운데 `korea_1968_orphanage_children_color`(NAID 102044680, "Restricted – Possibly"), 1945 역·1947 집회·1947 화재 클립(모두 "Restricted – Possibly")은 쓰지 않았습니다. `korea_1960_new_housing_and_shop`(NAID 28210, "Unrestricted")은 쓸 수 있지만 흑백이라 이번 컬러 편에서는 뺐습니다. AFAK 필름의 판자촌·천막촌·가까이 찍은 아이들 장면도 넣지 않았습니다. 웃는 아이 한 컷만 길가 장면에서 썼습니다.
+
+**출처**
+- [NARA 428-NPC-43612 (NAID 87540) 〈STOCK FOOTAGE OF KOREA Seoul, Korea〉](https://catalog.archives.gov/id/87540): 1969년 가을(카탈로그 1969.9.21~11.2), 컬러. 미 해군 태평양함대 전투촬영반(슬레이트: T.K. Reynolds), RG 428 해군 사진센터. 파일 https://catalog.archives.gov/medialz/mopix/428/NPC/428-npc-43612.mp4. 이용 제한 "Undetermined", 열람 "Unrestricted". 0:26~2:38(도심), 2:46~6:40(탈곡), 6:40~10:50(짚단·소달구지)를 썼습니다.
+- [NARA 111-LC-47652 (NAID 29288) 〈AFAK (Armed Forces Assistance to Korea)〉](https://catalog.archives.gov/id/29288): 1964.2.28, 컬러, 무성. 미 육군(RG 111 육군 통신감실, Army Library Copy Collection, 슬레이트: 촬영 Welsh). 파일 https://catalog.archives.gov/medialz/mopix/111/lc/111-lc-47652.mp4. 이용 제한 "Unrestricted". 0:28~1:14(전경), 3:47~6:45(거리·숭례문·노점·네온사인)를 썼습니다.
+- 두 항목 모두 2026-10-09에 NARA 카탈로그 API(`catalog.archives.gov/proxy/records/search?naId=…`)로 이용 제한 상태를 직접 확인했습니다.
+- 음악: "Wholesome"(korea3), "Bathed in the Light"(korea4) Kevin MacLeod (incompetech.com), CC BY 4.0
+
+**korea3**: 흑백인 줄 알았던 서울 | 1960년대, 컬러로 보면 🎨
+> 1964년과 1969년, 미군 촬영반이 컬러 필름으로 찍은 서울입니다. 차들이 오가는 도심, 언덕에서 내려다본 낮은 지붕들, 숭례문, 솜 점퍼 차림의 시민들과 말이 끄는 수레, 밤을 밝힌 ‘대한마아가린’과 ‘한국타이야’ 네온사인, 그리고 지금은 서울도서관이 된 옛 서울시청까지. 그 시절 서울, 기억나시나요?
+> 영상: 미국 국립문서기록관리청(NARA) 428-NPC-43612 (NAID 87540, 미 해군 촬영), 111-LC-47652 (NAID 29288, 미 육군 촬영)
+> 음악: "Wholesome" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
+> #옛날서울 #1960년대 #컬러영상 #서울 #숭례문 #서울시청 #근현대사 #옛날영상 #shorts
+
+**korea4**: 57년 전 가을걷이 | 1969년 시골, 컬러 영상 🌾
+> 1969년 가을, 초가지붕 마을의 타작 마당. 미 해군 촬영반이 컬러로 찍은 실제 영상입니다. 발로 밟아 돌리는 탈곡기, 도리깨질, 아기를 업고도 일손을 보태는 어머니, 짚단을 묶는 할아버지, 볏단을 가득 실은 소달구지. 우리 할머니·할아버지의 젊은 날 가을 풍경입니다.
+> 영상: 미국 국립문서기록관리청(NARA) 428-NPC-43612 (NAID 87540, 미 해군 촬영)
+> 음악: "Bathed in the Light" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
+> #가을걷이 #타작 #1969년 #시골풍경 #초가집 #소달구지 #옛날영상 #추억 #shorts
