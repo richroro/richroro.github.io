@@ -335,6 +335,7 @@ MEDIA=<저장소>/media python3 politics/prep_split.py obama09    # 원본: medi
 
 - **사진**: 출처 파일이 `.jpg`/`.png`/`.webp`이면 사진으로 보여 주고 천천히 줌한다.
 - **빨간 원·화살표**: `"marks": [{"kind": "circle", "x": 540, "y": 900, "r": 150, "from": "a.연봉", "to": "a@end"}]`. 좌표는 1080×1920 화면 기준이다. `arrow`는 (x, y)를 가리키고 `rot` 방향에서 들어온다.
+- **순위표 (TOP 5 랭킹)**: 클립(prep.py)이나 구간(politics/prep_split.py)에 `"rank": {"n": 5, "label": "낙하산이 펴지는 순간"}`을 달면 화면 아래(기본 y 1496, `"rankY"`로 조정)에 1~5위 목록이 생긴다. 아직 안 나온 순위는 "???"로 보이고, 지금 나오는 순위는 노랑으로 켜진다. 이때 자막은 영상 위 `"captionY": 1380`에 둔다. 조회수 10만 이상 오락 쇼츠 가운데 「역대급 ○○ 랭킹 TOP5」형이 중앙값 410만으로 가장 높다(`research/research-fun.md`).
 - **나레이션**: Edge TTS를 `"rate": "+20%"` 안팎으로 빠르게 쓴다. 한 줄은 15자 안팎, 자막 한 장은 12자 이내가 되도록 `/`로 나눈다. 마지막 줄은 반전이나 첫 질문으로 돌아가는 말로 끝낸다.
 
 ## 팻 베어 위크 쇼츠 (`fatbear`, `fatbear2`)
@@ -970,6 +971,224 @@ MEDIA=<저장소>/media python3 politics/prep_split.py lindbergh1    # 원본: m
 > 영상: Fox News · Kinograms (1927), Prelinger Archives (archive.org)
 > 음악: "Floating Cities" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
 > #린드버그 #대서양횡단 #도전 #포기하지마 #동기부여 #옛날영상 #역사 #영어공부 #shorts
+
+## 위력 실험 쇼츠 (`politics/boom1`, `politics/boom2`)
+
+DVIDS에 올라온 미군 촬영 B-roll(현장음만 있고 음악은 없음)에 원래 소리를 그대로 두고, 실제로 들리는 외침만 번역 자막으로 붙였습니다. 내레이션, 그래픽, 음악은 넣지 않았습니다.
+
+| id | 제목 | 길이 | 내용 |
+| --- | --- | --- | --- |
+| `boom1` | 바닷속 불발탄 폭파 / 물기둥 실화냐 | 17.9초 | 첫 화면은 솟구치는 물기둥입니다. 이어서 물속 잠수요원, 보트 위에서 지켜보는 대원, "Fire in the hole!"(폭파한다!) 외침, 두 번째 물기둥 순서로 갑니다. |
+| `boom2` | 어깨에 메고 쏘는 84mm / 후폭풍 실화냐 | 24.3초 | 첫 화면은 사격 순간 뒤로 일어나는 흙먼지입니다. 이어서 "Fire, fire, fire" 사격, 교관의 "Tap it. Always tap just to make sure it's seated.", "Back blast all clear." 뒤 사격과 흙먼지, 표적 착탄 순서로 갑니다. |
+
+```bash
+MEDIA=<저장소>/media python3 politics/prep_split.py boom1    # 원본: media/boom/ (boom2도 같음)
+./render.sh boom1 final/boom1.mp4
+```
+
+**영상** (DVIDS 페이지에 "Video by …"와 PUBLIC DOMAIN이 있고 Restrictions 안내는 없음. 둘 다 B-Roll 분류)
+- `boom1`: [DVIDS 923887 「ACDC: EOD Underwater UXO Demolitions」](https://www.dvidshub.net/video/923887/acdc-eod-underwater-uxo-demolitions)
+  - 촬영: Staff Sgt. Dana Beesley (U.S. Marine Corps). 촬영일 2024.5.14, 필리핀 카비테 카바요섬 앞바다, Archipelagic Coastal Defense Continuum(ACDC).
+  - 원본 파일: https://d34w7g4gy10iej.cloudfront.net/video/2405/DOD_110313154/DOD_110313154.mp4
+  - 설명에 따르면 필리핀 해병대·미 해병대 폭발물처리반과 필리핀 해군 특수작전사령부·미 해군 잠수요원이 수중 불발탄 처리 폭파를 했습니다.
+  - 쓴 구간(원본 초): 118.9–121.0(첫 물기둥), 104.0–106.6(잠수요원), 107.0–111.5(보트 위 대원), 125.4–134.0(외침과 두 번째 물기둥).
+- `boom2`: [DVIDS 876009 「B-Roll: Marines fire MAAWS downrange」](https://www.dvidshub.net/video/876009/b-roll-marines-fire-maaws-downrange)
+  - 촬영: Sgt. Jacob Yost (U.S. Marine Corps). 촬영일 2023.3.9, 캘리포니아 캠프 펜들턴, 미 1해병사단.
+  - 원본 파일: https://d34w7g4gy10iej.cloudfront.net/video/2303/DOD_109502604/DOD_109502604.mp4
+  - 설명에 따르면 M3E1 MAAWS는 "Carl Gustaf"라고도 부르는 84mm 무반동 무기입니다.
+  - 쓴 구간(원본 초): 101.4–103.0, 63.5–68.6, 77.6–82.0, 111.8–121.0, 133.6–137.5.
+- `media/boom/`의 mp4 파일:
+  - 내용: 원본에서 잘라낸 구간을 저장용으로 다시 인코딩한 것입니다(x264 CRF 26).
+  - 파일명: `boom_dvids923887_100-136.mp4`는 원본 100–136초, `boom_dvids876009_58-140.mp4`는 원본 58–140초입니다.
+  - 시간축: edit.json의 시간은 이 파일 기준입니다.
+  - 옆의 .json에 DVIDS ID, 페이지·파일 주소, 크레디트, 설명, 구간을 적었습니다.
+
+**소리와 자막**
+- 음악 확인: 두 영상 모두 AudioSet AST 모델로 5초 단위로 검사했습니다. Speech, Vehicle, Boat 같은 현장음만 나왔고 음악은 없었습니다.
+- 자막 확인: faster-whisper small과 medium.en이 둘 다 같은 말을 들은 줄만 번역했습니다.
+  - "Fire in the hole"(923887, 122.4–128.9초)과 "Fire, fire, fire", "Tap it. Always tap just to make sure it's seated.", "Back blast all clear."(876009)가 해당합니다.
+  - 두 모델이 엇갈린 말("Ready for the back blast?", "Back blast area secure", "SCA loaded" 등)은 넣지 않았습니다.
+  - 923887의 타갈로그어 대화도 넣지 않았습니다.
+- 말하는 사람을 특정할 수 없어 이름표는 달지 않았습니다. 사람 이름, 계급, 사연은 지어내지 않았습니다.
+- 설명 자막("미·필리핀 잠수요원들", "바닷속 불발탄 처리 훈련 중", "미 해병대 칼 구스타프 사격", "84mm 무반동총")은 DVIDS 설명에 있는 내용만 썼습니다.
+- 라우드니스: render.sh 결과 −14.6 LUFS(boom1), −14.9 LUFS(boom2)입니다. 폭발음 피크 때문에 true peak −1.5 dB 제한에 걸려 −14보다 조금 낮게 나왔습니다.
+- 미 해병대·국방부가 이 영상을 보증하거나 후원한다는 인상을 주면 안 됩니다(DVIDS 저작권 안내). 화면에는 "영상: 미 해병대 (DVIDS)"만 적었습니다.
+
+### 업로드 문구
+
+**boom1**
+- 제목: `바닷속 불발탄 폭파, 물기둥 실화냐 😳` (21자)
+- 설명:
+  ```
+  필리핀 카바요섬 앞바다에서 필리핀·미국 해병대와 해군 잠수요원들이 바닷속 불발탄을 폭파 처리하는 순간 (2024년 5월, 연합훈련 ACDC).
+  "Fire in the hole!" = 폭파한다!
+  영상: U.S. Marine Corps video by Staff Sgt. Dana Beesley (DVIDS 923887). 미 해병대·국방부가 이 영상을 보증하거나 후원하지 않습니다.
+  ```
+- 해시태그: `#폭발물처리반 #불발탄 #물기둥 #해병대 #shorts`
+
+**boom2**
+- 제목: `어깨에 메고 쏘는 84mm, 후폭풍 실화냐` (22자)
+- 설명:
+  ```
+  미 해병대 1해병사단의 칼 구스타프(M3E1 MAAWS, 84mm 무반동 무기) 사격 훈련. 쏘기 전 "후폭풍 구역 이상 없음!"을 외치는 이유가 보입니다. (2023년 3월, 캘리포니아 캠프 펜들턴)
+  영상: U.S. Marine Corps video by Sgt. Jacob Yost (DVIDS 876009). 미 해병대·국방부가 이 영상을 보증하거나 후원하지 않습니다.
+  ```
+- 해시태그: `#칼구스타프 #무반동총 #후폭풍 #미해병대 #shorts`
+
+## 문 폭파 돌입 쇼츠 (`politics/boom3`)
+
+| id | 제목 | 길이 | 내용 |
+| --- | --- | --- | --- |
+| `boom3` | 문 하나 따는데 / 이렇게까지? | 20.8초 | 첫 화면은 문이 터지는 순간의 불꽃과 방폭 담요 뒤에 붙어 선 해병들입니다. 이어서 "Five, four, three, two, one" 카운트다운, 폭파, 연기 속 돌입, 다른 날 문 앞에 둔 카메라에 잡힌 폭파 순서로 갑니다. |
+
+```bash
+MEDIA=<저장소>/media python3 politics/prep_split.py boom3
+./render.sh boom3 final/boom3.mp4
+```
+
+**영상** (둘 다 DVIDS B-Roll, PUBLIC DOMAIN, Restrictions 안내 없음, 미 해병대 촬영)
+- [DVIDS 580472 「Breaching Range」](https://www.dvidshub.net/video/580472/breaching-range)
+  - 페이지 머리 크레디트: Staff Sgt. Albert Carls. 설명 끝: "U.S. Marine Corps video by Lance Cpl. Kaitlynn M. Hendricks".
+  - 촬영 2018.1.12(설명 기준), 노스캐롤라이나 캠프 르준, 보병학교(동부) 보병훈련대대 A중대의 도심 폭파 돌입 교육 종합 평가.
+  - 원본 파일: https://d34w7g4gy10iej.cloudfront.net/video/1801/DOD_105249590/DOD_105249590-1024x576-1769k.mp4
+  - 쓴 구간(원본 초): 473.3–475.0(첫 화면), 466.4–481.6.
+- [DVIDS 580456 「Breaching Range」](https://www.dvidshub.net/video/580456/breaching-range)
+  - 크레디트: Staff Sgt. Albert J. Carls. 촬영 2018.1.11(설명 기준), 같은 교육. 문 앞 바닥에 둔 카메라 화면입니다.
+  - 원본 파일: https://d34w7g4gy10iej.cloudfront.net/video/1801/DOD_105249328/DOD_105249328-1024x576-1769k.mp4
+  - 쓴 구간(원본 초): 286.5–290.4.
+  - 다른 날 다른 폭파라서 자막에 "다른 날"이라고 적었습니다.
+- 원본 조각: `media/boom/boom_dvids580472_460-485.mp4`, `media/boom/boom_dvids580456_280-295.mp4`. 옆의 .json에 출처와 구간을 적었습니다.
+
+**소리와 자막**
+- AST로 검사한 결과 Speech, Artillery fire, Explosion만 나오고 음악은 없었습니다. 원래 소리를 그대로 썼습니다.
+- 카운트다운 "Five, four, three, two, one"은 faster-whisper small과 medium.en이 같게 들었습니다.
+- 두 모델이 엇갈린 말("Reach there"/"Freeze clear", "Lay down more…")은 넣지 않았습니다.
+- 설명 자막("미 해병대 폭파 돌입 훈련")은 DVIDS 설명("demolition and explosive breaching training")에 근거합니다.
+- 화면에 보이는 대로 "문이 터지듯 열렸다", "연기 속으로 바로 돌입"이라고만 적었습니다. 장약 종류나 만드는 법은 다루지 않았습니다.
+- 라우드니스 −14.3 LUFS(폭발 피크가 true peak 제한에 걸림).
+
+### 업로드 문구
+
+**boom3**
+- 제목: `문 하나 따는데 이렇게까지? 💥` (16자)
+- 설명:
+  ```
+  미 해병대 보병학교의 도심 폭파 돌입(explosive breaching) 훈련. "다섯, 넷, 셋, 둘, 하나" 뒤에 문이 터지고, 대원들은 바로 연기 속으로 들어갑니다. (2018년 1월, 노스캐롤라이나 캠프 르준)
+  영상: U.S. Marine Corps video by Lance Cpl. Kaitlynn M. Hendricks / Staff Sgt. Albert J. Carls (DVIDS 580472, 580456). 미 해병대·국방부가 이 영상을 보증하거나 후원하지 않습니다.
+  ```
+- 해시태그: `#미해병대 #폭파돌입 #군대 #해병대 #shorts`
+
+
+## 군견 쇼츠 (`politics/dog1`, `politics/dog2`, `politics/dog3`)
+
+미군이 DVIDS에 올린 군견(MWD) 영상에 한국어 자막을 붙인 쇼츠 3편입니다. 장르는 ‘군대 실화·공감’이고, 기계가 아니라 사람과 개(얼굴·반응)가 주인공입니다. 그래픽 클립(gfx)은 쓰지 않았습니다. 영상은 모두 미군 장병·국방부 직원이 촬영한 연방정부 저작물(퍼블릭 도메인)입니다. DVIDS 페이지마다 PUBLIC DOMAIN 표시가 있고 Restrictions 안내는 없습니다.
+
+| id | 제목 | 길이 | 내용 | 소리 |
+| --- | --- | --- | --- | --- |
+| `dog1` | 물로 도망치면 / 군견도 못 따라올까? | 23.5초 | 수영장 수중 제압 훈련: 물속 방어복 요원에게 뛰어드는 군견 → 다이빙 → 물속 수영 → 팔 물기 → “물도 안전지대 아님” | 현장음 + 음악 낮게 |
+| `dog2` | 암 진단받은 군견을 위해 / 전우들이 준비한 경례 | 37.6초 | 은퇴 군견 루도를 기리는 부대 행사: 공식 수색 1만 회 이상, 비밀경호국 임무 15회, 대통령 지원 임무 6회 → 2020년 4월 암 진단 → 장병들의 경례 | 행사 영상의 실제 목소리(배경음악 제거) + 자막 |
+| `dog3` | 군견 훈련 미끼가 된 / 대령님의 최후 | 28.3초 | 코소보 평화유지군(KFOR) 동부지역사령관 대령이 직접 방어복을 입고 군견 훈련 미끼가 됨 → “더 빨리 뛰셔야 돼요!” → 제압 | 현장음 + 음악 낮게 |
+
+```bash
+# 원본: media/dogs/*.mp4 (파일마다 .json에 DVIDS ID·페이지·파일 주소·크레디트·부대·날짜·구간)
+python3 politics/prep_split.py dog1 && ./render.sh dog1 final/dog1.mp4   # dog2, dog3도 같음
+# final/은 저장소 크기 때문에 -crf 22로 다시 압축했습니다(dog1, dog3)
+```
+
+- 레이아웃: `"titleStyle": "band"`, 정사각 화면에 `single` 크롭으로 얼굴·개를 크게, 자막 `"captionY": 1600`, 컷마다 흰 번쩍임 없이(`"broll": true`) 바로 붙였습니다. 길이 23.5초·37.6초·28.3초, 라우드니스 −14.0·−14.1·−14.4 LUFS(render.sh).
+- **dog2 소리**: 원본은 공군이 만든 짧은 영상(Package)이라 목소리 밑에 피아노 음악이 깔려 있습니다(AudioSet AST 모델 Music 점수 약 0.45). Demucs(htdemucs, `--two-stems=vocals`)로 음악을 지우고 목소리만 남겼습니다(Music 점수 0.01–0.05). 그 위에 우리 음악(Floating Cities)을 낮게 깔았습니다. 그림은 첫 1.25초만 같은 영상 43.25–44.5초(루도가 핸들러 옆에서 걷는 장면)로 바꿔 첫 화면을 개 얼굴로 했습니다. 목소리는 그대로입니다(`media/dogs/rudo_edit.json`).
+- **dog2 자막**: 영상 속 내레이션을 faster-whisper small.en·medium.en으로 듣고 번역했습니다. 일부는 빼거나 자막을 달지 않았습니다.
+  - “He retired from the Air Force as a ___”의 마지막 단어는 확실히 들리지 않아 이 문장을 통째로 잘랐습니다.
+  - 핸들러 이름은 자막에 넣지 않았습니다. 미 공군 기사 검색 결과로는 Staff Sgt. Peter Van Salisbury지만, af.mil이 이 환경에서 403이라 원문을 직접 확인하지 못했습니다.
+  - 개 이름은 음성 인식이 Bruno/Reno/Rudo로 흔들려서 DVIDS 설명의 “Rudo”(루도)를 따랐습니다.
+  - 뒤의 “to the 823, to the 824”는 길이 때문에 잘랐습니다.
+- **dog3 자막**: 확실히 들리는 말만 따옴표로 번역했습니다.
+  - “get a good smell of me right now” → “지금 내 냄새 잘 맡아 둬”. 개 앞에 무릎 꿇은 대령의 말입니다.
+  - “You've got to run faster” / “Run faster” → “더 빨리 뛰셔야 돼요!” / “더 빨리!”. 화면 밖 목소리입니다.
+  - 나머지(“계급장? 군견은 모릅니다”, “대령님도 예외 없음”)는 화면을 설명하는 재치 자막입니다.
+  - 방어복을 입은 사람이 대령이라는 점은 DVIDS 설명(“Col. Brey Hopkins … dons a bite suit”)과 화면(실내에서 대령이 방어복과 투구를 입는 장면, 같은 옷차림)에 근거합니다. 훈련장 장면에서는 투구 때문에 얼굴이 보이지 않습니다.
+- **dog1 자막**: 말소리 대부분은 들리지 않는 현장 잡담이라 자막을 달지 않았습니다. 사실 자막 두 줄(“미 공군 군견 수중 제압 훈련”, “낯선 환경에 익숙해지는 훈련”)은 DVIDS 설명(“water aggression training … acclimate MWDs to an atypical environment … apprehend a target in water”)에 근거합니다.
+
+**영상 출처** (모두 DVIDS, 원본 주소·구간은 `media/dogs/*.json`)
+- dog1 — [976540](https://www.dvidshub.net/video/976540) B-Roll: 509 SFS Military Working Dog Water Aggression Training — U.S. Air Force video by Senior Airman Bryce Moore, 509th Security Forces Squadron, 2025.9.2, 미국 미주리주 세데일리아 공공 수영장. 원본 39.25–43.95, 97–100.5, 150–152.8, 84–88.5, 130–135.5, 138.3–140.8초.
+- dog2 — [761955](https://www.dvidshub.net/video/761955) 824th Pays Respects to Military Working Dog — Senior Airman Hayden Legg (824th Base Defense Group, Air Combat Command 공보), 2020.7.20, 미국 조지아주 밸도스타(무디 공군기지). 원본 43.25–44.5(그림만), 1.6–8.6, 15.95–26.3, 28.45–42.3, 42.95–48.1초.
+- dog3 — [811932](https://www.dvidshub.net/video/811932) Camp Bondsteel Bite Suit Training (B-roll) — Sgt. Gillian McCreedy(미 육군), 2021.8.28, 코소보 캠프 본드스틸. 원본 32–36.5, 12.5–17.5, 37.3–40.6, 46.5–54, 99.6–107.6초.
+
+**사실 출처**
+- dog1: DVIDS 976540 설명 — “Military working dogs assigned to 509th Security Forces Squadron perform water aggression training at a community pool in Sedalia, Missouri, Sept. 2, 2025. The training helped acclimate MWDs to an atypical environment and enhanced their capability to apprehend a target in water.”
+- dog2: DVIDS 761955 설명 — “The 824th BDG paid tribute to Rudo, a medically-retired military working dog, during a ceremony that honored his life, service and sacrifice to the U.S. Air Force.” 수색 1만 회 이상, 비밀경호국 임무 15회, 대통령 지원 임무 6회, 마지막 핸들러가 집에 데려가려 함, 2020년 4월 암 진단은 같은 영상 속 내레이션이 직접 한 말입니다. 같은 행사를 다룬 미 공군 기사 [824th BDS honors retired MWD (moody.af.mil)](https://www.moody.af.mil/News/Article-Display/Article/2278729/824th-bds-honors-retired-mwd/)는 403으로 원문을 열지 못했습니다. 검색 요약으로는 2020.7.15 행사와 약 5년 복무가 나와서, 이 날짜와 숫자는 쓰지 않았습니다. 루도의 이후 소식(사망 여부 등)은 확인된 출처가 없어 말하지 않았습니다.
+- dog3: DVIDS 811932 설명 — “U.S. Army Col. Brey Hopkins, Commander of KFOR Regional Command-East, dons a bite suit to provide Military Working Dogs (MWD) with another opportunity for ongoing bite suit training. This training ensures that MWDs can assist military police and apprehend suspects using non-lethal force.”
+
+**라이선스**: 미군 장병·국방부 직원이 직무로 만든 영상은 미국 연방정부 저작물로 퍼블릭 도메인입니다(17 U.S.C. §105, DVIDS 저작권 안내 https://www.dvidshub.net/about/copyright). 화면에는 “영상: 미 공군 (DVIDS)”·“영상: 미 육군 (DVIDS)”만 적었습니다. 미군·국방부가 이 영상을 보증하거나 후원한다는 인상을 주면 안 됩니다. 음악은 Kevin MacLeod(incompetech.com) CC BY 4.0입니다: dog1 “Hustle”, dog2 “Floating Cities”, dog3 “Sneaky Snitch”. 효과음은 `public/sfx`(whoosh, ding, boing)입니다.
+
+**dog1** — 물로 도망치면 군견도 못 따라올까? 🐕💦
+> 수영장으로 도망치면 군견을 따돌릴 수 있을까요? 미 공군 제509보안경찰대대 군견들이 2025년 9월 미국 미주리주의 한 공공 수영장에서 ‘수중 제압 훈련’을 했습니다. 낯선 환경에 익숙해지고 물속에서도 대상을 붙잡는 능력을 키우는 훈련이라고 합니다. 결론: 물도 안전지대가 아닙니다.
+> 영상: 미 공군 (DVIDS, Senior Airman Bryce Moore). 미 공군·국방부가 이 영상을 보증하거나 후원하지 않습니다.
+> 음악: "Hustle" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
+> #군견 #군대 #미공군 #강아지 #shorts
+
+**dog2** — 암 진단받은 군견을 위해 전우들이 준비한 경례
+> 미 공군 제824기지방어단의 군견 루도. 공식 수색만 1만 번 넘게 했고, 비밀경호국 임무 15번, 대통령 지원 임무 6번을 수행했습니다. 마지막 핸들러는 루도를 집에 데려가 가족이 되어 주고 싶어 했지만, 루도는 2020년 4월 암 진단을 받았고, 부대는 루도의 복무에 감사하는 자리를 마련했습니다. 장병들이 줄지어 경례하며 루도를 맞았습니다. 영상 속 목소리를 직접 번역했습니다.
+> 영상: 미 공군 (DVIDS, Senior Airman Hayden Legg). 원본의 배경음악은 지웠습니다. 미 공군·국방부가 이 영상을 보증하거나 후원하지 않습니다.
+> 음악: "Floating Cities" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
+> #군견 #감동 #실화 #미공군 #shorts
+
+**dog3** — 군견 훈련 미끼가 된 대령님의 최후 😂
+> 2021년 8월 코소보 캠프 본드스틸. 코소보 평화유지군(KFOR) 동부지역사령관인 미 육군 대령이 직접 방어복을 입고 군견 훈련의 미끼가 됐습니다. 군견에게 냄새를 맡게 해 주고, 투구까지 쓰고 달렸지만… 계급장은 군견에게 통하지 않습니다.
+> 영상: 미 육군 (DVIDS, Sgt. Gillian McCreedy). 미 육군·국방부가 이 영상을 보증하거나 후원하지 않습니다.
+> 음악: "Sneaky Snitch" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
+> #군견 #군대 #대령 #미군 #shorts
+
+
+## 동물 랭킹 쇼츠 (`politics/anirank1`, `politics/anirank2`)
+
+10만 이상 오락 쇼츠 중 중앙값이 가장 높은 「역대급 ○○ 랭킹 TOP5」형(`research/research-fun.md`)을 실제 동물 영상으로 만든 두 편입니다. 내레이션·AI 목소리·그래픽 없이 **원본 소리 + 가벼운 음악 + 한 줄 자막**만 씁니다. 순위는 우리가 고른 것이고 공식 순위가 아닙니다. 1위가 끝나면 바로 영상 처음(5위)으로 이어져 반복 재생됩니다(`"tail": 0`).
+
+| id | 제목(화면) | 길이 | 5위 → 1위 | 음악 |
+| --- | --- | --- | --- | --- |
+| `anirank1` | 역대급 귀여운 아기동물 / TOP5 (다들 몇 번?ㅋㅋ) | 37.0초 | 졸다가 철퍼덕 아기 바이슨 · 얼음! 꼬마 청설모 · 엄마 옆 꿀잠 아기 코끼리물범 · 카메라 쳐다보는 아기 물개 · 모래에 얼굴 박은 아기 바다사자 | Monkeys Spinning Monkeys |
+| `anirank2` | 역대급 웃긴 물범 모먼트 / TOP5 (다들 몇 번?ㅋㅋ) | 35.8초 | 바나나 자세 물범 · 모래 범벅 몽크물범 · 코끼리 코 수컷 · 눈 마주친 코끼리물범 · 카메라 코앞에서 입 쩍 몽크물범 | Hyperfun |
+
+```bash
+MEDIA=$PWD/media python3 politics/prep_split.py anirank1     # 원본 발췌: media/anirank/*.mp4 (+ 출처 .json)
+./render.sh anirank1 final/anirank1.mp4
+```
+
+- 레이아웃: `"titleStyle": "band"`(검정 띠 2줄 제목, `[TOP5]`만 노랑), 정사각 화면에 동물이 크게 오도록 `single` 크롭, 자막은 화면 아래쪽 위(`"captionY": 1380`), 그 아래 순위표(구간마다 `"rank"`). 순위마다 흰 번쩍임으로 컷이 바뀝니다. 아기 물개 장면은 원본이 어두워 `vf`로 밝기만 올렸습니다.
+- 자막은 각 장면을 사실대로 묘사하고, 사실 정보는 아래 출처에 있는 것만 넣었습니다. “뭘 봐”, “얼음!” 같은 말은 장면에 붙인 농담입니다. 바다사자 1위의 두 컷(앉아 있는 장면, 엎어지는 장면)은 같은 원본에서 20초쯤 떨어진 같은 새끼의 장면입니다.
+
+**영상 (모두 미국 연방기관이 직접 만든 퍼블릭 도메인 영상, 17 U.S.C. §105)** — 원본 발췌와 출처·파일 주소·크레딧·사용 구간은 `media/anirank/*.json`
+- 아기 바이슨: [Bison Calf](https://www.nps.gov/media/video/view.htm?id=7C9B301A-C879-4F27-BD03-820EFEEE2063) — NPS/Neal Herbert, 옐로스톤 라마 밸리, 2014.5.17 (페이지에 “Copyright Info: Public domain”)
+- 꼬마 청설모: [Mountain Moment: Scurry of Douglas Squirrels](https://www.nps.gov/media/video/view.htm?id=A3DE415A-76D8-4567-8E54-4B32ED747FCB) — NPS, 레이니어산 국립공원 (원본 앞의 NPS 로고 화면은 쓰지 않음)
+- 코끼리물범(아기·수컷·털갈이): [B-Roll: Elephant Seals on the Channel Islands](https://videos.fisheries.noaa.gov/detail/videos/b-roll:-seals-and-sea-lions/video/897627749001/b-roll:-elephant-seals-on-the-channel-islands) — NOAA Fisheries
+- 아기 물개: [B-Roll: Northern Fur Seals on the Pribilof Islands](https://videos.fisheries.noaa.gov/detail/videos/b-roll:-seals-and-sea-lions/video/897639164001/b-roll:-northern-fur-seals-on-the-pribilof-islands) — NOAA Fisheries
+- 아기 바다사자: [B-Roll: California Sea Lions](https://videos.fisheries.noaa.gov/detail/videos/b-roll:-seals-and-sea-lions/video/4084857759001/b-roll:-california-sea-lions) — NOAA Fisheries
+- 잔점박이물범: [B-Roll: Harbor Seals on the Pacific Coast](https://videos.fisheries.noaa.gov/detail/videos/b-roll:-seals-and-sea-lions/video/4419966618001/b:roll:-harbor-seals-on-the-pacific-coast) — NOAA Fisheries (촬영 John D. Brooks / NOAA)
+- 하와이몽크물범: [B-Roll: Hawaiian Monk Seal](https://videos.fisheries.noaa.gov/detail/videos/b-roll:-seals-and-sea-lions/video/5352712499001/b-roll:-hawaiian-monk-seal) — NOAA Fisheries (NMFS ESA/MMPA 허가 #16632, #13707 하에 촬영)
+- NOAA 영상 갤러리의 원본 타이틀 카드: “All footage courtesy of the National Oceanic and Atmospheric Administration (NOAA), a federal agency of the U.S. Department of Commerce. Please credit ‘NOAA Fisheries’”. NPS·NOAA가 이 영상을 보증하거나 후원하지 않으며, 두 기관의 로고는 쓰지 않았습니다. 화면에는 “영상: 미국 국립공원관리청(NPS)”, “영상: 미국 해양대기청(NOAA)”만 적었습니다.
+- 음악: "Monkeys Spinning Monkeys", "Hyperfun" Kevin MacLeod (incompetech.com), CC BY 4.0
+
+**자막 속 사실과 출처**
+- 바이슨 새끼는 4월 말~5월에 태어나고 갓 태어나면 붉은 황갈색 — [NPS Yellowstone: Bison](https://www.nps.gov/yell/learn/nature/bison.htm) (영상 촬영일 5월 17일 → “올봄에 태어난”)
+- 이 영상은 등산객을 수상하게 여기는 어린 더글러스청설모 — 위 NPS 영상 설명(“This curious young Douglas squirrel wasn't sure about passing hikers”)
+- 북방코끼리물범 새끼는 젖을 뗄 때까지 검은색 / 다 자란 수컷의 큰 코는 번식기에 서로 위협할 때 소리를 울리는 데 쓰임 / 털갈이 때 털과 함께 커다란 피부 조각이 벗겨짐 — [NOAA: Northern Elephant Seal](https://www.fisheries.noaa.gov/species/northern-elephant-seal) (털갈이 장면은 원본 카드 “Molting Elephant Seals, San Nicholas Island”)
+- 북방물개 새끼는 생후 약 3개월에 털갈이하기 전까지 검은색, 이후 은회색 — [NOAA: Northern Fur Seal](https://www.fisheries.noaa.gov/species/northern-fur-seal)
+- 원본 설명 “California sea lions and pups” — [NOAA: California Sea Lion](https://www.fisheries.noaa.gov/species/california-sea-lion)(새끼는 태어날 때 짙은 갈색)
+- 잔점박이물범은 머리와 뒷지느러미를 든 ‘바나나 같은’ 자세로 쉼 — [NOAA: Harbor Seal](https://www.fisheries.noaa.gov/species/harbor-seal)
+- 하와이몽크물범은 멸종위기종, 개체 수 약 1,600마리 — [NOAA: Hawaiian Monk Seal](https://www.fisheries.noaa.gov/species/hawaiian-monk-seal)
+- 몽크물범 1위 장면은 “입을 크게 벌린” 것만 적었습니다(하품인지 소리를 내는지는 영상만으로 알 수 없어 단정하지 않음).
+
+**anirank1** — 역대급 귀여운 아기동물 TOP5 (다들 몇 번?ㅋㅋ)
+> 졸다가 철퍼덕 눕는 아기 바이슨부터 모래에 얼굴 박은 아기 바다사자까지, 실제 야생 아기동물 영상으로 뽑은 귀여움 TOP5! 여러분의 원픽은 몇 번인가요? 순위는 저희 마음대로 고른 것입니다😆
+> 영상: 미국 국립공원관리청(NPS) — Neal Herbert(옐로스톤), 레이니어산 국립공원 · 미국 해양대기청(NOAA Fisheries) (NPS·NOAA가 이 영상을 보증하거나 후원하지 않습니다.)
+> 음악: "Monkeys Spinning Monkeys" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
+> #아기동물 #귀여운동물 #동물 #랭킹 #shorts
+
+**anirank2** — 역대급 웃긴 물범 모먼트 TOP5 (다들 몇 번?ㅋㅋ)
+> 바나나 자세로 쉬는 물범, 모래 범벅 몽크물범, 코끼리 코 수컷, 털갈이 중 눈 마주친 코끼리물범, 카메라 코앞에서 입 쩍 벌린 하와이몽크물범(전 세계 약 1,600마리뿐인 멸종위기종)까지! 다들 몇 번이 제일 웃겨요? 순위는 저희 마음대로 고른 것입니다.
+> 영상: 미국 해양대기청(NOAA Fisheries) (NOAA가 이 영상을 보증하거나 후원하지 않습니다.)
+> 음악: "Hyperfun" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
+> #물범 #바다사자 #웃긴동물 #동물 #shorts
 
 
 ## 고통 훈련 리액션 쇼츠 (`politics/ouch1`~`ouch3`)

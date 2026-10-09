@@ -137,7 +137,7 @@ def prep(sid):
     for i in range(1, len(env)): sm[i] = env[i] if env[i] > sm[i - 1] else sm[i - 1] + (env[i] - sm[i - 1]) * 0.13
 
     # clips: each runs until the next one starts; cut from the source so the renderer seeks nothing
-    src = edit["sources"]; clips = []
+    src = edit["sources"]; clips = []; ranks = []
     for i, c in enumerate(edit["clips"]):
         a = at(c["from"]) if i else 0.0  # the first shot covers frame 0 too, so the video never opens on black
         b = at(edit["clips"][i + 1]["from"]) if i + 1 < len(edit["clips"]) else tl["end"]
@@ -158,6 +158,7 @@ def prep(sid):
             wh = subprocess.run(["ffprobe", "-v", "error", "-select_streams", "v:0", "-show_entries", "stream=width,height", "-of", "csv=p=0", srcf],
                                 stdout=subprocess.PIPE, text=True, check=True).stdout.strip().split(",")
             clip["crop"] = {"cx": c["crop"][0], "cy": c["crop"][1], "zoom": c["crop"][2], "w": int(wh[0]), "h": int(wh[1])}
+        if c.get("rank"): ranks.append({"n": c["rank"]["n"], "label": c["rank"]["label"], "from": round(a, 3)})  # a TOP-N place
         if c.get("gfx"):  # a graphic in place of footage; its step anchors become seconds since the clip started
             g = dict(c["gfx"])
             if "steps" in g: g["steps"] = [round(x if isinstance(x, (int, float)) else at(x) - a, 3) for x in g["steps"]]
@@ -179,6 +180,7 @@ def prep(sid):
     for k in ("titleStyle", "hook", "hookY"):  # news-shorts look: banner title and a red headline over the picture
         if edit.get(k) is not None: data[k] = edit[k]
     if edit.get("hookTo") is not None: data["hookTo"] = round(at(edit["hookTo"]), 3)
+    if ranks: data["ranks"] = {"rows": ranks, **({"y": edit["rankY"]} if edit.get("rankY") else {})}
     if edit.get("marks"):
         data["marks"] = [{**{k: m[k] for k in ("kind", "x", "y", "r", "rot", "color") if k in m}, "from": round(at(m["from"]), 3), "to": round(at(m["to"]), 3)}
                          for m in edit["marks"]]

@@ -37,6 +37,7 @@ edit.json:
              and "broll": true (its src runs on the same timeline as the main clip, the B-roll picture over the same speech,
              so moving to or from it with no gap in time is not a cut and gets no flash)
              and "credit" (this stretch's own credit line, shown instead of the short's while it is on screen)
+  flash      false: plain hard cuts, no white flash at any cut (animal clip shorts)
 """
 import difflib, json, os, re, subprocess, sys
 import numpy as np
@@ -176,20 +177,24 @@ def main(sid):
     pub = f"{V}/public/{sid}"; os.makedirs(f"{pub}/clips", exist_ok=True)
 
     # segments → clips, and the map from source time to output time
-    clips, at, starts = [], 0.0, []
+    clips, at, starts, ranks = [], 0.0, [], []
+    tail = ed.get("tail", 0.6)
     for k, s in enumerate(ed["segments"]):
         sp = s.get("speed", 1.0); dur = (s["out"] - s["in"]) / sp; out = f"{pub}/clips/c{k:02d}.mp4"
+        hold = tail if k == len(ed["segments"]) - 1 else 0.0  # the last shot holds its final frame through the tail, never black
         seg_src = f"{MEDIA}/{s['src']}" if s.get("src") else src  # a segment may come from another clip of the same hearing
         tx0, ty0, tx1, ty1 = s.get("trim", [0, 0, 1, 1])  # cut a band off the source (a broadcaster's lower third) before anything else
         vf = (f"setpts=(PTS-STARTPTS)/{sp}," if sp != 1.0 else "") + "fps=30" + (f",crop=trunc(iw*{tx1 - tx0}/2)*2:trunc(ih*{ty1 - ty0}/2)*2:iw*{tx0}:ih*{ty0}" if s.get("trim") else "")
         vf += {90: ",transpose=1", -90: ",transpose=2", 180: ",hflip,vflip"}.get(s.get("rotate", 0), "")  # e.g. a camera mounted sideways
         if s.get("vf"): vf += "," + s["vf"]  # an extra ffmpeg filter for this stretch (grade a dark shot, blur a face)
+        if hold: vf += f",tpad=stop_mode=clone:stop_duration={hold:.3f}"
         af = ["-af", atempo(sp)] if sp != 1.0 else []
-        subprocess.run(["ffmpeg", "-v", "error", "-y", "-ss", str(s["in"]), "-t", f"{s['out'] - s['in']:.3f}", "-i", seg_src, "-vf", vf, *af, "-t", f"{dur:.3f}",
+        subprocess.run(["ffmpeg", "-v", "error", "-y", "-ss", str(s["in"]), "-t", f"{s['out'] - s['in']:.3f}", "-i", seg_src, "-vf", vf, *af, "-t", f"{dur + hold:.3f}",
                         "-c:v", "libx264", "-preset", "veryfast", "-crf", "16", "-pix_fmt", "yuv420p", "-c:a", "aac", "-b:a", "192k", "-ar", "48000", out], check=True)
-        clip = {"file": f"{sid}/clips/c{k:02d}.mp4", "label": s.get("label", ""), "at": round(at, 3), "dur": round(dur, 3), "speed": 1.0,
+        clip = {"file": f"{sid}/clips/c{k:02d}.mp4", "label": s.get("label", ""), "at": round(at, 3), "dur": round(dur + hold, 3), "speed": 1.0,
                 "frame": s.get("frame", "square"), "zoom": s.get("push", [1.0, 1.04]), "focus": "50% 50%", "audio": s.get("audio", 1.0)}
         if s.get("credit"): clip["credit"] = s["credit"]  # this stretch's own source line (B-roll from another archive)
+        if s.get("rank"): ranks.append({"n": s["rank"]["n"], "label": s["rank"]["label"], "from": round(at, 3)})  # a TOP-N place
         if s.get("single"):  # this stretch is a one-person shot, not the two-shot: one face-centred crop, labelled
             given = isinstance(s["single"], list)
             f = s["single"] if given else (face_in(seg_src, [(s["in"], s["out"])], 0.0, 1.0) or [0.5, 0.4, 0.2])
@@ -274,7 +279,7 @@ def main(sid):
                 tk["toMs"] = toks[j + 1]["fromMs"] if j + 1 < len(toks) else end
             pages.append({"startMs": toks[0]["fromMs"], "endMs": end, "tokens": toks})
     out_pages = [{**{k: v for k, v in p.items() if k != "tokens"}, "tokens": [{k: v for k, v in tk.items() if k != "n"} for tk in p["tokens"]]} for p in pages]
-    tail = ed.get("tail", 0.6); end = round(at + tail, 3)
+    end = round(at + tail, 3)
     env = np.zeros(int(np.ceil(end * FPS)) + 1)  # speech level per frame, for ducking any music under the hearing audio
     if ed.get("duck", True):
         for sp in speakers: env[int(sp["from"] * FPS):int(sp["to"] * FPS)] = 1.0
@@ -296,11 +301,12 @@ def main(sid):
     data = {"id": sid, "end": end, "title": ed["title"], "credit": ed.get("credit", "출처: 국회 영상회의록"), "lines": [], "origVoice": True,
             "pages": out_pages, "env": [round(float(v), 3) for v in env], "clips": clips, "moments": [],
             "stickers": stickers + ed.get("stickers", []), "sfx": [{"t": a, "name": n, "gain": g} for a, n, g in ed.get("sfx", [])],
-            "music": music, "flashes": [round(a, 3) for k, a in enumerate(starts) if k and (abs(ed["segments"][k]["in"] - ed["segments"][k - 1]["out"]) > 0.05
+            "music": music, "flashes": [round(a, 3) for k, a in enumerate(starts) if k and ed.get("flash", True) and (abs(ed["segments"][k]["in"] - ed["segments"][k - 1]["out"]) > 0.05
                                                                        or ed["segments"][k].get("src") != ed["segments"][k - 1].get("src")
                                                                        and not (ed["segments"][k].get("broll") or ed["segments"][k - 1].get("broll")))], "punches": [],
             "split": {"w": W, "h": H, "panels": panels}, "speakers": speakers, "captionY": ed.get("captionY", 1370), "subOrder": ed.get("subOrder", "ko-en"),
-            **{k: ed[k] for k in ("titleStyle", "hook", "hookY", "hookTo") if ed.get(k) is not None}}
+            **{k: ed[k] for k in ("titleStyle", "hook", "hookY", "hookTo") if ed.get(k) is not None},
+            **({"ranks": {"rows": ranks, **({"y": ed["rankY"]} if ed.get("rankY") else {})}} if ranks else {})}
     os.makedirs(f"{V}/src/data", exist_ok=True)
     json.dump(data, open(f"{V}/src/data/{sid}.json", "w"), ensure_ascii=False)
     print(f"prep {sid}: {len(clips)} segments, {at:.1f}s + {tail}s tail, {len(out_pages)} caption pages timed on {engine}")

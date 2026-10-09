@@ -51,6 +51,8 @@ export type ShortData = {
   hookTo?: number;
   /** red circles and arrows pointing at something in the picture */
   marks?: Mark[];
+  /** a ranking list ("TOP 5") under the picture: a row per place, filled in when that place's clip starts */
+  ranks?: { rows: { n: number; label: string; from: number }[]; y?: number };
 };
 
 const FRAME = { square: { top: 400, height: 1080 }, wide: { top: 656, height: 608 }, full: { top: 0, height: 1920 },
@@ -211,9 +213,34 @@ const Hook: React.FC<{ d: ShortData; t: number }> = ({ d, t }) => {
   );
 };
 
+/** the ranking list: places not yet shown read "???", the one playing now is lit yellow */
+const Ranks: React.FC<{ r: NonNullable<ShortData["ranks"]>; t: number }> = ({ r, t }) => {
+  const rows = [...r.rows].sort((a, b) => a.n - b.n);
+  const cur = r.rows.filter((x) => t >= x.from).sort((a, b) => b.from - a.from)[0];
+  const top = r.y ?? 1496, h = Math.min(78, (1890 - top) / rows.length);
+  return (
+    <div style={{ position: "absolute", left: 36, top, width: 1008 }}>
+      {rows.map((x) => {
+        const on = cur?.n === x.n, shown = t >= x.from, p = shown ? eOut(prog(t, x.from, 0.3)) : 1;
+        return (
+          <div key={x.n} style={{ height: h - 8, marginBottom: 8, display: "flex", alignItems: "center", borderRadius: 14, padding: "0 18px",
+            background: on ? "#FFE14D" : "rgba(0,0,0,.55)", border: on ? "4px solid #111" : "4px solid rgba(255,255,255,.12)",
+            transform: `scale(${on ? 1 + 0.04 * Math.sin(Math.PI * p) : 1})`, fontFamily: BODY, fontWeight: 900, fontSize: (h - 8) * 0.56 }}>
+            <span style={{ width: (h - 8) * 1.7, color: on ? "#111" : "#FFE14D" }}>{x.n}위</span>
+            <span style={{ color: on ? "#111" : shown ? "white" : "rgba(255,255,255,.45)", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+              {shown ? x.label : "???"}
+            </span>
+          </div>
+        );
+      })}
+    </div>
+  );
+};
+
 const Credit: React.FC<{ d: ShortData; t: number }> = ({ d, t }) => {
   const c = d.clips.find((x) => t >= x.at && t < x.at + x.dur);
   const text = c?.credit ?? d.credit;
+  if (!text) return null;
   // the speaker label sits at the frame's top left (clips-with-captions shorts): when a long label and the credit
   // would run into each other on that row, the credit drops below the label
   const label = d.split && c?.label && FRAME[c.frame].top < 420 ? c.label : "";
@@ -247,6 +274,7 @@ export const ClipShort: React.FC<{ data: ShortData }> = ({ data: d }) => {
       <Credit d={d} t={t} />
       <Hook d={d} t={t} />
       {d.marks ? <Marks marks={d.marks} t={t} /> : null}
+      {d.ranks ? <Ranks r={d.ranks} t={t} /> : null}
       {d.stickers.map((s, i) => (
         <Sticker key={i} t={t} t0={s.from} t1={s.to} x={s.x} y={s.y} rot={s.rot} bg={s.bg} fg={s.fg} size={s.size}>{s.text}</Sticker>
       ))}
