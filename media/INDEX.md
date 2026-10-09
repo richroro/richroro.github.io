@@ -43,8 +43,15 @@ Extra non-video files: `politics/{1,2,3}.vtt` + `.txt` (transcripts, see below),
 
 ## Hurricane — `hurricane/`
 
-- No NOAA P-3/G-IV cockpit or cabin "stadium effect" video was found on non-YouTube NOAA/NASA sites. OMAO's media library (www.omao.noaa.gov/media/1…9000 scanned) has only one hurricane flight video, the Dorian 2019 turbulence clip. NOAA.gov/AOML pages give 403/404, and the famous Ida/Melissa clips live on YouTube/X/Facebook only.
-- Delivered instead: `eye_iss_beryl.mp4`, `eye_iss_dorian.mp4` (NASA ISS camera looking down into the eye) and `eye_goes_melissa_wide.mp4` / `eye_goes_melissa_zoom.mp4` (1-minute GOES-19 visible loops of Cat 5 Melissa's eye on 2025-10-28, rendered here from NOAA's raw open data). `dorian_turbulence.mp4` remains as B-roll (eyewall turbulence, no eye).
+- **Aircraft into the eye — found on NOAA OMAO's own video library** (www.omao.noaa.gov/aircraft-operations/news-media/video/…; the first scan missed these because the /media/N pages redirect):
+  - `stadium_p3_beryl.mp4`: P-3 Miss Piggy flight deck breaking into Cat 5 Beryl's clear eye (stadium effect), 2024. **Best eye shot.**
+  - `stadium_p3_dorian.mp4`: out the window past the engine as the eyewall opens into Dorian's eye, 5 Sep 2019.
+  - `eye_p3_laura.mp4`, `eye_p3_helene.mp4`: shorter inside-the-eye views.
+  - `flight.mp4`: **vertical 9:16** night flight deck in Hurricane Lee's eyewall turbulence, 2023. Use as the turbulence part.
+  - `flight_delta_cockpit.mp4`: cockpit flying into Hurricane Delta. `dorian_turbulence.mp4`: wing shaking in eyewall cloud.
+  - `p3.mp4` (Miss Piggy takeoff) and `p3_kermit_takeoff.mp4`: exterior shots of the P-3s.
+  - `tube_launch_altius.mp4`: **not a dropsonde.** An Altius drone ejected from the P-3's sonde launch tube, seen by a belly camera. It is the closest thing to a dropsonde release that NOAA/NASA sites host; no real dropsonde video was found. The footage is courtesy of Area-I (a contractor), so check rights before monetizing.
+- From space: `eye_iss_beryl.mp4`, `eye_iss_dorian.mp4` (NASA ISS camera). `eye_goes_melissa_wide.mp4` / `eye_goes_melissa_zoom.mp4` are 1-minute GOES-19 visible loops of Cat 5 Melissa's eye on 2025-10-28, rendered here from NOAA's raw open data.
 
 ## Narration — `voice/<id>/`
 `python3 shorts/viral5/voice_edge.py <id>` ran fine for mars, deepsea, hurricane, lava, hairwash (Edge TTS ko-KR-SunHiNeural via speech.platform.bing.com). Each folder is a copy of `shorts/viral5/build/<id>/` (`timeline.json`, `voice/*.wav`), 10.5 MB total.
