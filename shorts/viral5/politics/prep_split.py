@@ -52,6 +52,13 @@ def jamo(ch):
         return out + [chr(0x11A7 + c % 28)] if c % 28 else out
     return [ch] if SYL.match(ch) else []
 
+def atempo(sp):
+    """an ffmpeg audio filter chain that changes the tempo by sp (each atempo stage stays within 0.5–2)"""
+    parts = []
+    while sp < 0.5: parts.append(0.5); sp /= 0.5
+    while sp > 2.0: parts.append(2.0); sp /= 2.0
+    return ",".join(f"atempo={x:g}" for x in parts + [sp])
+
 def probe(path):
     out = subprocess.run(["ffprobe", "-v", "error", "-select_streams", "v:0", "-show_entries", "stream=width,height", "-of", "csv=p=0", path],
                          stdout=subprocess.PIPE, text=True, check=True).stdout.strip().split(",")
@@ -175,8 +182,8 @@ def main(sid):
         vf = (f"setpts=(PTS-STARTPTS)/{sp}," if sp != 1.0 else "") + "fps=30" + (f",crop=trunc(iw*{tx1 - tx0}/2)*2:trunc(ih*{ty1 - ty0}/2)*2:iw*{tx0}:ih*{ty0}" if s.get("trim") else "")
         vf += {90: ",transpose=1", -90: ",transpose=2", 180: ",hflip,vflip"}.get(s.get("rotate", 0), "")  # e.g. a camera mounted sideways
         if s.get("vf"): vf += "," + s["vf"]  # an extra ffmpeg filter for this stretch (grade a dark shot, blur a face)
-        af = ["-af", ",".join(f"atempo={x}" for x in ([0.5] * int(np.log(sp) / np.log(0.5) + 1e-9) + [sp / 0.5 ** int(np.log(sp) / np.log(0.5) + 1e-9)]))] if sp != 1.0 else []
-        subprocess.run(["ffmpeg", "-v", "error", "-y", "-ss", str(s["in"]), "-t", f"{s['out'] - s['in']:.3f}", "-i", seg_src, "-vf", vf, *af,
+        af = ["-af", atempo(sp)] if sp != 1.0 else []
+        subprocess.run(["ffmpeg", "-v", "error", "-y", "-ss", str(s["in"]), "-t", f"{s['out'] - s['in']:.3f}", "-i", seg_src, "-vf", vf, *af, "-t", f"{dur:.3f}",
                         "-c:v", "libx264", "-preset", "veryfast", "-crf", "16", "-pix_fmt", "yuv420p", "-c:a", "aac", "-b:a", "192k", "-ar", "48000", out], check=True)
         clip = {"file": f"{sid}/clips/c{k:02d}.mp4", "label": s.get("label", ""), "at": round(at, 3), "dur": round(dur, 3), "speed": 1.0,
                 "frame": s.get("frame", "square"), "zoom": s.get("push", [1.0, 1.04]), "focus": "50% 50%", "audio": s.get("audio", 1.0)}
