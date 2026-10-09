@@ -39,6 +39,12 @@ export type ShortData = {
   captionY?: number;
   /** which subtitle line leads on translated pages: Korean over English (default) or English over Korean */
   subOrder?: "ko-en" | "en-ko";
+  /** "news": the title as black type on a white banner (Korean news-shorts look) instead of the outlined title */
+  titleStyle?: "news";
+  /** a two-line headline in red with a white outline over the picture, centred on hookY, shown until hookTo (default: throughout) */
+  hook?: [string, string];
+  hookY?: number;
+  hookTo?: number;
 };
 
 const FRAME = { square: { top: 400, height: 1080 }, wide: { top: 656, height: 608 }, full: { top: 0, height: 1920 },
@@ -137,12 +143,36 @@ const ClipView: React.FC<{ c: Clip; d: ShortData }> = ({ c, d }) => {
 
 const Title: React.FC<{ d: ShortData }> = ({ d }) => {
   // long quote titles shrink to fit the width instead of running off the edge
-  const size = (line: string) => Math.min(96, fitText({ text: line, withinWidth: 1010, fontFamily: TITLE }).fontSize);
+  const size = (line: string, max = 96, within = 1010) => Math.min(max, fitText({ text: line, withinWidth: within, fontFamily: TITLE }).fontSize);
+  if (d.titleStyle === "news") {
+    return (
+      <div style={{ position: "absolute", top: 150, left: 0, width: 1080, height: 240, background: "white", display: "flex", flexDirection: "column",
+        justifyContent: "center", alignItems: "center", fontFamily: TITLE, color: "#111", lineHeight: 1.08, boxShadow: "0 6px 18px rgba(0,0,0,.35)" }}>
+        <div style={{ fontSize: size(d.title[0], 78, 1030) }}>{d.title[0]}</div>
+        <div style={{ fontSize: size(d.title[1], 92, 1030) }}>{d.title[1]}</div>
+      </div>
+    );
+  }
   return (
     <div style={{ position: "absolute", top: 120, width: "100%", textAlign: "center", fontFamily: TITLE, lineHeight: 1.12, color: "white",
       WebkitTextStroke: "16px black", paintOrder: "stroke", filter: "drop-shadow(0 6px 10px rgba(0,0,0,.5))" }}>
       <div style={{ fontSize: size(d.title[0]) }}>{d.title[0]}</div>
       <div style={{ fontSize: size(d.title[1]), color: "#FFE14D" }}>{d.title[1]}</div>
+    </div>
+  );
+};
+
+/** the red news-style headline over the picture: on screen from the first frame (it is the thumbnail), until hookTo */
+const Hook: React.FC<{ d: ShortData; t: number }> = ({ d, t }) => {
+  if (!d.hook || t > (d.hookTo ?? 1e9)) return null;
+  const size = (line: string) => Math.min(96, fitText({ text: line, withinWidth: 1000, fontFamily: TITLE }).fontSize);
+  const p = 1 + 0.12 * (1 - eOut(prog(t, 0, 0.3))), q = d.hookTo ? prog(t, d.hookTo - 0.2, 0.2) : 0;
+  return (
+    <div style={{ position: "absolute", top: (d.hookY ?? 1180) - 110, width: "100%", height: 220, display: "flex", flexDirection: "column", justifyContent: "center",
+      alignItems: "center", fontFamily: TITLE, color: "#E3181E", lineHeight: 1.1, WebkitTextStroke: "16px white", paintOrder: "stroke",
+      filter: "drop-shadow(0 5px 10px rgba(0,0,0,.5))", transform: `scale(${p})`, opacity: 1 - q }}>
+      <div style={{ fontSize: size(d.hook[0]) }}>{d.hook[0]}</div>
+      <div style={{ fontSize: size(d.hook[1]) }}>{d.hook[1]}</div>
     </div>
   );
 };
@@ -171,6 +201,7 @@ export const ClipShort: React.FC<{ data: ShortData }> = ({ data: d }) => {
       <AbsoluteFill style={{ background: "linear-gradient(to bottom, rgba(0,0,0,.75) 0%, rgba(0,0,0,0) 22%, rgba(0,0,0,0) 62%, rgba(0,0,0,.65) 80%, rgba(0,0,0,.2) 100%)" }} />
       <Title d={d} />
       <Credit d={d} t={t} />
+      <Hook d={d} t={t} />
       {d.stickers.map((s, i) => (
         <Sticker key={i} t={t} t0={s.from} t1={s.to} x={s.x} y={s.y} rot={s.rot} bg={s.bg} fg={s.fg} size={s.size}>{s.text}</Sticker>
       ))}

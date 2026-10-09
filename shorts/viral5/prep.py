@@ -163,6 +163,9 @@ def prep(sid):
         "music": edit.get("music"), "flashes": [round(at(a), 3) for a in edit.get("flashes", [])], "punches": [round(at(a), 3) for a in edit.get("punches", [])],
     }
     if edit.get("captionY"): data["captionY"] = edit["captionY"]  # e.g. lower the captions when the action sits at the bottom of the frame
+    for k in ("titleStyle", "hook", "hookY"):  # news-shorts look: banner title and a red headline over the picture
+        if edit.get(k) is not None: data[k] = edit[k]
+    if edit.get("hookTo") is not None: data["hookTo"] = round(at(edit["hookTo"]), 3)
     os.makedirs(f"{HERE}/src/data", exist_ok=True)
     json.dump(data, open(f"{HERE}/src/data/{sid}.json", "w"), ensure_ascii=False)
     real = sum(1 for c in clips if c["file"])

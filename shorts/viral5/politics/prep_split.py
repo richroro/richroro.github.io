@@ -18,6 +18,8 @@ edit.json:
              that puts words in someone's mouth is worse than no caption, so leave unclear bits out.
              translated shorts write {"who", "ko", "en", "at", "to"} instead: "at"/"to" pin a line to source seconds
              ("t"/"tend" to output seconds), "ko" is the caption and "en" the original under it ("" = Korean only)
+  titleStyle "news" sets the title as black type on a white banner;  hook: [line 1, line 2] in red with a white outline
+             over the picture (hookY its centre, hookTo when it goes, in output seconds) — the Korean news-shorts look
   subOrder   "en-ko" leads with the English line, Korean under it (subtitle-study layout; [bracketed] English words
              are yellow);  captionY: the caption block's centre (default 1370)
   keys       words shown in yellow;  music, sfx (output seconds), tail
@@ -297,7 +299,8 @@ def main(sid):
             "music": music, "flashes": [round(a, 3) for k, a in enumerate(starts) if k and (abs(ed["segments"][k]["in"] - ed["segments"][k - 1]["out"]) > 0.05
                                                                        or ed["segments"][k].get("src") != ed["segments"][k - 1].get("src")
                                                                        and not (ed["segments"][k].get("broll") or ed["segments"][k - 1].get("broll")))], "punches": [],
-            "split": {"w": W, "h": H, "panels": panels}, "speakers": speakers, "captionY": ed.get("captionY", 1370), "subOrder": ed.get("subOrder", "ko-en")}
+            "split": {"w": W, "h": H, "panels": panels}, "speakers": speakers, "captionY": ed.get("captionY", 1370), "subOrder": ed.get("subOrder", "ko-en"),
+            **{k: ed[k] for k in ("titleStyle", "hook", "hookY", "hookTo") if ed.get(k) is not None}}
     os.makedirs(f"{V}/src/data", exist_ok=True)
     json.dump(data, open(f"{V}/src/data/{sid}.json", "w"), ensure_ascii=False)
     print(f"prep {sid}: {len(clips)} segments, {at:.1f}s + {tail}s tail, {len(out_pages)} caption pages timed on {engine}")
