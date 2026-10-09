@@ -298,6 +298,39 @@ MEDIA=<저장소>/media python3 politics/prep_split.py obama09    # 원본: medi
 > 영상: 백악관(The White House, 2009) · 이 영상은 백악관이나 연설자가 보증·후원한 것이 아닙니다.
 > #동기부여 #노력 #연습 #1만시간의법칙 #영어공부 #영어명언 #오바마 #shorts
 
+## 오바마 학생 연설 쇼츠 2 (`politics/obama10`, `politics/obama11`)
+
+`obama09*`와 같은 형식입니다. 2010년 9월 14일 버락 오바마 대통령이 필라델피아 줄리아 R. 매스터먼 학교에서 한 두 번째 개학 연설이고, 영상은 백악관이 직접 촬영·공개한 파일입니다. 두 편 모두 같은 연설에서 이어지는 두 대목입니다(어머니 이야기 → 노력 이야기).
+
+| id | 제목 | 길이 | 원본 구간 (백악관 파일 기준, 초) |
+| --- | --- | --- | --- |
+| `obama10` | 농땡이 고등학생을 바꾼 / 엄마의 한마디..? | 58.3초 | 681.2–693.3, 698.9–703.96, 710.1–718.0, 745.6–764.0, 773.75–787.9 (컷 4번) |
+| `obama11` | 성공하는 사람들은 / 더 똑똑해서..? | 58.8초 | 801.85–812.2, 826.6–867.0, 887.0–894.4 (컷 2번) |
+
+```bash
+MEDIA=<저장소>/media python3 politics/prep_split.py obama10    # 원본: media/speech/obama10_masterman_effort.mp4 (원본 678–790초)
+./render.sh obama10
+```
+
+- 레이아웃: `"subOrder": "en-ko"`, `captionY` 1450, 노란색은 obama10 my share of mistakes / Effort? / got serious, obama11 smarter than everybody else / working harder / Try again.
+- 백악관 파일은 640×360뿐이라(더 큰 파일 없음) 크롭을 `zoom` 1.1로 약하게 했습니다. 영상 자체의 청중·강당 전경 컷어웨이(obama10 원본 698.5–703.96초, obama11 원본 845.15–847.65초)는 `"shows": -1`로 두어 자막에 `🎙 버락 오바마`가 붙습니다.
+- 자막 원문은 백악관 공식 녹취록("1:05 P.M. EDT")과 faster-whisper small.en(전체)·medium.en(잘라낸 클립과 렌더 결과)을 대조했습니다. 녹취록과 실제 발언이 다른 곳은 없었고, whisper가 붙인 군더더기 "And"(“She gave me…”)는 녹취록대로 뺐습니다. 렌더한 obama10 오디오를 다시 받아 적어도 자막과 단어 단위로 일치합니다.
+- obama10의 컷: "goof-off" 뒤 "And I was about the age of some of the folks here", "acting… casual about my future", 어머니가 앉혀 놓고 말을 시작하는 장면("She decided to sit me down… she just cut me right off"), 웃음 뒤 "Some of you have had that conversation. And it was pretty jolting…"를 뺐습니다. 어머니가 이미 소개된 뒤라 "She said…"의 뜻은 그대로입니다.
+- obama11의 컷: 수학·과학 이야기 뒤의 "we each have our own gifts… Not everybody is going to catch on… as easily as others", "else." 뒤의 "So don't avoid new challenges… you're going to catch on"을 뺐습니다. 마지막 "learn from your mistakes." 뒤의 "Don't feel threatened if your friends are doing well…"은 넣지 않았습니다.
+- 음악·효과음 없이 연설 원음만 씁니다. AI 목소리·내레이션 없음.
+- 라이선스: 백악관(대통령실) 직원이 직무로 만든 영상이라 미국 연방정부 저작물, **퍼블릭 도메인**(17 U.S.C. §105)입니다. 국립문서기록관리청(NARA)이 관리하는 obamawhitehouse.archives.gov에 보존돼 있습니다. 화면 오른쪽 위 "WH.gov" 표시는 원본 그대로입니다. 백악관·오바마 전 대통령·오바마 재단이 이 영상을 보증하거나 후원하는 것처럼 보이면 안 되고, 정치적 목적으로 쓰지 않습니다. C-SPAN·방송사 화면은 쓰지 않았습니다.
+- 영상: [Back to School](https://obamawhitehouse.archives.gov/back-to-school) 페이지의 "The President's Back to School Speech" (파일 `https://obamawhitehouse.archives.gov/videos/2010/September/091410_PhiladelphiaPA.mp4`, 640×360, 21분), 녹취록: [Remarks by the President in Back to School Speech in Philadelphia, Pennsylvania](https://obamawhitehouse.archives.gov/the-press-office/2010/09/14/remarks-president-back-school-speech-philadelphia-pennsylvania). 잘라낸 원본과 출처·구간은 `media/speech/obama1[01]_masterman_*.mp4`·`.json`.
+
+**obama10** — 농땡이 고등학생을 바꾼 엄마의 한마디?
+> 2010년 9월 14일, 미국 필라델피아 매스터먼 학교. 버락 오바마 대통령이 학생들에게 털어놓은 고등학생 시절 이야기입니다. 성적은 떨어지고, 머리만 믿고 대충 지내던 그에게 어머니가 한 말 — "운이 해결해 주길 기다리지 마라. 조금만 노력하면 어느 학교든 갈 수 있다. 노력이란 게 뭔지 기억은 나니?" 영어 원문과 한국어 번역 자막.
+> 영상: 백악관(The White House, 2010) · 이 영상은 백악관이나 연설자가 보증·후원한 것이 아닙니다.
+> #동기부여 #노력 #공부자극 #영어공부 #영어명언 #오바마 #엄마 #shorts
+
+**obama11** — 성공하는 사람들은 더 똑똑해서?
+> 2010년 9월 14일, 미국 필라델피아 매스터먼 학교 개학 연설. "뛰어나다는 건 남들보다 똑똑해서가 아닙니다. 남들보다 더 열심히 하는 거죠." 수학을 못한다고, 과학에 관심이 없다고 생각하는 학생들에게 버락 오바마 대통령이 한 말. "처음에 성공하지 못했다고 포기하지 마세요. 다시 도전하고, 실수에서 배우세요." 영어 원문과 한국어 번역 자막.
+> 영상: 백악관(The White House, 2010) · 이 영상은 백악관이나 연설자가 보증·후원한 것이 아닙니다.
+> #동기부여 #노력 #공부자극 #수포자 #영어공부 #영어명언 #오바마 #shorts
+
 ## 뉴스 쇼츠 스타일 (`"titleStyle": "news"`, `"hook"`)
 
 국내 스포츠·연예 뉴스 쇼츠에서 흔한 모양입니다. 위쪽 흰 띠에 검은 제목 두 줄, 얼굴 위에 흰 테두리를 두른 빨간 헤드라인 두 줄이 나옵니다. 빨간 헤드라인은 첫 프레임부터 보여서 그대로 썸네일이 됩니다.
