@@ -1665,3 +1665,43 @@ python3 politics/prep_split.py fun1 && ./render.sh fun1 final/fun1.mp4   # fun2�
 > 영상: U.S. Fish & Wildlife Service, National Conservation Training Center, Creative Imagery (미국 어류야생동물관리국이 이 영상을 보증하거나 후원하지 않습니다.)
 > 음악: "Sneaky Snitch" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
 > #새 #웃긴동물 #구애댄스 #동물 #shorts
+
+
+## 신병 훈련소 쇼츠 (`politics/boot1`, `politics/boot2`)
+
+미 해병대 신병훈련소 B-roll(현장음만 있는 원본 묶음)으로 만든 군대 공감 쇼츠 두 편입니다. 사람 얼굴과 반응이 주인공이고, 내레이션 없이 원본 소리(교관 고함, "Yes, sir!", 울음·환호)를 그대로 살렸습니다. 레이아웃은 `"titleStyle": "band"`(검정 띠 두 줄 제목), 정사각 화면에 얼굴 위주 크롭, 그 아래 자막(`"captionY": 1610`)입니다. 음악과 그래픽은 넣지 않았습니다.
+
+| id | 제목 | 길이 | 내용 |
+| --- | --- | --- | --- |
+| `boot1` | 미 해병대 훈련소 첫날 밤 / 버스에 교관이 올라탔다 | 23.3초 | 입소 버스에 오른 교관의 첫 지시("Yes, sir / No, sir만", "내 노란 발자국 위로") → 버스에서 뛰어내림 → 이발소 → 삭발 직후 정면 응시 |
+| `boot2` | 훈련소 13주 만에 / 가족을 다시 만난 순간 | 34.6초 | 패밀리 데이 관람석의 가족 → 장내 안내 "곧 여러분의 새 해병을 만나게 됩니다" → 운동장으로 달려가는 가족 → 포옹 → '해병대 엄마' 티셔츠의 어머니 |
+
+```bash
+# 원본: media/boot/ (파일마다 .json에 DVIDS ID·페이지·파일 주소·크레디트·부대·날짜·쓴 구간)
+python3 politics/prep_split.py boot1 && ./render.sh boot1 final/boot1.mp4
+python3 politics/prep_split.py boot2 && ./render.sh boot2 out/boot2.mp4   # 30MB를 넘어서 final은 crf 22로 한 번 더 압축
+```
+
+- **영상 고르기**: DVIDS 항목 페이지에 "Video by <해병대원>"과 "PUBLIC DOMAIN" 표시가 있고, Restrictions 표시나 제3자 자료(courtesy) 표기가 없는 것만 썼습니다. 음악은 AudioSet AST 모델(`MIT/ast-finetuned-audioset-10-10-0.4593`)로 확인했습니다. 음악이 깔린 편집본(Video Productions)은 쓰지 않았습니다. 예: 강아지 마스코트 "Recruit Chesty XVII Meets His Drill Instructors"(1023578), Charlie Company Pick Up(1024979), 가스실 편집본들(930217·944876·1004444 등). 879117 클립의 24–39초와 1025928의 처음 10초에는 음악 같은 소리가 있어서 그 부분도 빼고 잘랐습니다.
+- **자막(boot1)**: 교관의 말은 faster-whisper small.en·medium.en·large-v3 세 모델이 같은 말을 들은 줄만 번역했습니다. 부대 이름은 인식 결과가 "Recruit Team 5"/"Recurrent Team"으로 갈려서, 실제 이름인 Marine Corps Recruit Depot San Diego로 적었습니다(영상 설명에 나오는 장소). 세 모델이 서로 다르게 들은 "You will scream 'aye, sir'…"는 줄째로 잘라내고 자막도 넣지 않았습니다. 'file off onto my yellow footprints'의 'file off'도 확실하지 않아서 영어 줄에서는 "…onto my yellow footprints."만 남겼습니다. "trash"는 수하물을 가리키지만 원문의 말투를 살려 "쓰레기"로 옮겼습니다.
+- **자막(boot2)**: 장내 안내 "Shortly, you'll meet your new Marine and be able to discuss with them first hand their experiences…"는 medium.en과 large-v3가 일치합니다. 앞부분만 자막으로 넣었습니다. 포옹 장면에는 알아들을 수 있는 말이 없어서 자막을 넣지 않았습니다. 화면 속 사람들의 관계(엄마·아들 등)는 확인할 수 없어서 쓰지 않았고, 티셔츠에 "UNITED STATES MARINE MOM"이라고 적힌 분만 '해병대 엄마'라고 했습니다. 2023년(879117)과 2026년(1025928) 패밀리 데이 영상을 섞었기 때문에 같은 가족이라고 말하지 않았습니다.
+- **사실 출처**(모두 DVIDS 영상 설명): 입소 날 이발·소지품 검사·가족에게 정해진 문구로 전화(1004207, 1015330), 13주 훈련(1015330, 1024979), 패밀리 데이는 수료식 전날이고 가족이 새 해병을 처음 보는 날(1017446, 668636 "Family Day is the first day in which Marines have seen their family since leaving for recruit training").
+- 마지막 자막("훈련소 첫날, 기억나시죠?", "수료식 날, 우리 엄마도 이랬죠")은 한국 시청자에게 하는 말입니다. 미군과 한국군을 비교하는 내용은 넣지 않았습니다.
+- 음악은 넣지 않았습니다(업로드 문구에 음악 크레디트 없음).
+- 둘 다 얼굴이 작아지지 않게 `single: [cx, cy, zoom]`으로 크롭했습니다. 어두운 버스 안 장면은 `"vf": "eq=…"`로 조금 밝혔습니다. 라우드니스는 −14.0 LUFS입니다.
+
+**영상** (DVIDS, 미 해병대 공보 인력이 촬영한 연방정부 저작물)
+- [910298](https://www.dvidshub.net/video/910298) Hotel Company Receiving BROLL package — Lance Cpl. Francisco Angel, MCRD San Diego, 2024.1.9 (세로 4K). boot1: 원본 80.8–88.9초, 93.1–101.8초
+- [1015330](https://www.dvidshub.net/video/1015330) Fox Company Receiving — Cpl. Brooke Pedersen, MCRD San Diego, 2026.7.13. boot1: 원본 291.2–293.4초, 301.4–305.7초 (이발)
+- [879117](https://www.dvidshub.net/video/879117) Family Day B-ROLL Package — Cpl. Luis Arturo Ponce Alavez Jr. 외 8명, MCRD Parris Island, 2023.4.6 (세로). boot2: 원본 589.4–592.6, 597.6–603.8, 1136.0–1142.0, 1237.3–1242.5, 1486.0–1488.6, 1492.8–1499.2초
+- [1025928](https://www.dvidshub.net/video/1025928) Delta Company Family Day — Pfc. Ya-Davi A. Gonzalez, MCRD Parris Island, 2026.10.1. boot2: 원본 30.0–35.0초 (달려가는 가족)
+
+**boot1** — 미 해병대 훈련소 첫날, 버스에 교관이 올라탔다
+> 미국 해병대 신병훈련소 입소 첫날 밤. 신병들이 탄 버스에 교관이 올라와 처음 하는 말입니다. "지금부터 너희 입에서 나올 수 있는 말은 '예, 써!' 아니면 '아닙니다, 써!'뿐이다." 그리고 노란 발자국 위로, 다음은 이발소. 훈련소 첫날 기억나시죠?
+> 영상: 미 해병대 (DVIDS) — Lance Cpl. Francisco Angel, Cpl. Brooke Pedersen / Marine Corps Recruit Depot San Diego. 미 해병대·국방부가 이 영상을 보증하거나 후원하지 않습니다.
+> #훈련소 #해병대 #군대 #신병 #shorts
+
+**boot2** — 훈련소 13주 만에 가족을 다시 만난 순간
+> 미국 해병대 신병훈련소 수료식 하루 전날인 '패밀리 데이'. 13주 훈련을 마친 새 해병들이 입소 뒤 처음으로 가족을 만나는 날입니다. 관람석에서 기다리던 가족들이 운동장으로 달려가는 순간까지. 수료식 날 우리 부모님 얼굴, 기억나시나요?
+> 영상: 미 해병대 (DVIDS) — Cpl. Luis Arturo Ponce Alavez Jr., Cpl. Collin R. Harper, Cpl. Zachary Foshee, Lance Cpl. Brenna A. Ritchie, Lance Cpl. Vincent Needham, Lance Cpl. Jake Richardson, Lance Cpl. William Horsely, Pfc. Landon Lingle, Pfc. Mary Jenni, Pfc. Ya-Davi A. Gonzalez / Marine Corps Recruit Depot Parris Island. 미 해병대·국방부가 이 영상을 보증하거나 후원하지 않습니다.
+> #훈련소 #수료식 #해병대 #감동 #shorts
