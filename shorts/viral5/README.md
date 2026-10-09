@@ -1028,3 +1028,31 @@ python3 politics/prep_split.py ani1 && ./render.sh ani1 final/ani1.mp4   # ani2,
 > 영상: 미국 국립공원관리청(NPS) 레이니어산 국립공원
 > 음악: "Monkeys Spinning Monkeys" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
 > #피카 #우는토끼 #동물 #귀여운동물 #shorts
+
+### 동물 쇼츠 2차 (`politics/ani4`, `ani5`)
+
+| id | 제목(화면) | 길이 | 영상 |
+| --- | --- | --- | --- |
+| `ani4` | 들소한테 가까이 / 가면 안 되는 이유 | 37.0초 | 옐로스톤 Video Library: Bison on Roads, Bison in Summer, Bison in Winter, Bison Calves |
+| `ani5` | 사슴인데 / 비명 지르는 이유ㅋㅋ | 32.3초 | 옐로스톤 Video Library: Elk Bugling (원본 소리 = 실제 버글링) |
+
+- 영상은 [옐로스톤 Video Library](https://www.nps.gov/yell/learn/photosmultimedia/videolibrary.htm)의 B-roll입니다. 각 페이지에 "Copyright Info: Public domain"이라고 적혀 있습니다. 파일 주소·구간은 `media/bison/*.json`, `media/elk/*.json`에 있습니다. 1280×720 파일이 가장 큰 사본이라 크롭을 1.6배 이하로 제한했습니다.
+- 두 편 모두 `"tail": 0`이고, blackdetect(`crop=1080:1080:0:400,blackdetect=d=0.05:pix_th=0.06`)로 검은 화면이 없음을 확인했습니다.
+- ani5는 엘크 울음(버글링)이 첫 1초부터 들리도록 원본 소리를 100%로 두고 음악을 낮췄습니다(0.3).
+- 검토하고 쓰지 않은 것: [NOAA Fisheries B-Roll: Sea Otters](https://videos.fisheries.noaa.gov/detail/video/2789953172001/b-roll:-sea-otters)는 슬레이트에 "All footage courtesy of NOAA, Please credit 'NOAA Fisheries'"라고 적혀 있어 쓸 수 있습니다. 하지만 해달이 720p 화면에서 너무 작게 나와서(어미·새끼 9초 분량만 중간 크기) 이번에는 쓰지 않았습니다.
+
+**사실 출처**
+- `ani4` 들소: 수컷 최대 900kg, 최고 시속 55km, "How fast can a bison run? Faster than you.", 큰 어깨·목 근육으로 머리를 좌우로 휘둘러 눈을 치움, 혹은 근육이라 머리를 제설기처럼 쓸 수 있게 해 줌, 새끼는 태어나고 2~3시간이면 무리를 따라감 — [NPS Yellowstone: Bison](https://www.nps.gov/yell/learn/nature/bison.htm). 바이슨·엘크와는 최소 25야드(23m) — [NPS Yellowstone: Safety](https://www.nps.gov/yell/planyourvisit/safety.htm). "(그래도 아직은 아기ㅋㅋ)"는 자는 새끼 화면에 붙인 농담입니다.
+- `ani5` 엘크: 짝짓기 철 9월 초~10월 중순, 수컷은 암컷에게 자기 존재와 건강을 알리고 다른 수컷에게 경고·도전하려고 버글링, 뿔은 봄에 새로 자라 한창때 하루 2/3인치(약 1.7cm), 다음 해 3~4월에 떨어짐 — [NPS Yellowstone: Elk](https://www.nps.gov/yell/learn/nature/elk.htm). 엘크는 사슴과(Cervidae) 동물입니다.
+
+**ani4** — 들소한테 가까이 가면 안 되는 이유
+> 몸무게 최대 900kg, 달리기는 시속 55km. "들소가 얼마나 빨리 달리나요?"라는 질문에 미국 국립공원관리청(NPS) 옐로스톤 공식 답변은 "Faster than you(당신보다 빠릅니다)". 겨울엔 머리를 제설기처럼 휘둘러 눈을 치우고, 새끼는 태어나고 2~3시간이면 무리를 따라다닙니다. 길에서 만나면 최소 23m, 아니면 차 안에서 구경하세요. 영상: NPS 옐로스톤 국립공원 (NPS가 이 영상을 보증하거나 후원하지 않습니다.)
+> 영상: 미국 국립공원관리청(NPS) 옐로스톤 국립공원
+> 음악: "Hustle" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
+> #들소 #바이슨 #옐로스톤 #동물상식 #shorts
+
+**ani5** — 사슴인데 비명 지르는 이유ㅋㅋ
+> 미국 옐로스톤의 엘크 수컷은 9~10월 짝짓기 철이 되면 이런 소리(버글링)를 냅니다. 암컷에게는 "나 여기 있고 건강해", 다른 수컷에게는 "덤빌 테면 덤벼". 뿔은 봄마다 새로 자라서 한창때는 하루 약 1.7cm씩 크는데, 다음 해 3~4월이면 떨어집니다. 영상과 소리는 실제 NPS 촬영본입니다. (NPS가 이 영상을 보증하거나 후원하지 않습니다.)
+> 영상: 미국 국립공원관리청(NPS) 옐로스톤 국립공원
+> 음악: "Sneaky Snitch" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
+> #엘크 #사슴 #옐로스톤 #동물소리 #shorts
