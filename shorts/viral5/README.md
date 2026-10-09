@@ -971,3 +971,48 @@ MEDIA=<저장소>/media python3 politics/prep_split.py lindbergh1    # 원본: m
 > 음악: "Floating Cities" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
 > #린드버그 #대서양횡단 #도전 #포기하지마 #동기부여 #옛날영상 #역사 #영어공부 #shorts
 
+
+## 고통 훈련 리액션 쇼츠 (`politics/ouch1`~`ouch3`)
+
+미군이 테이저건·후추 스프레이(OC)를 **직접 맞아 보는** 자격 훈련 장면입니다. 기계가 아니라 사람(표정·비명·전우의 반응)이 주인공이고, 원본 현장음을 그대로 살렸습니다. 내레이션·음악 없음. 자막은 실제로 들리는 말의 번역(한국어 + 작은 영어 원문)과, 화면에 보이는 사실만 적은 짧은 한 줄(영어 없음)입니다.
+
+| id | 제목 | 길이 | 영상 |
+| --- | --- | --- | --- |
+| `ouch1` | 테이저건 맞기 1초 전 / 미 공군의 표정 ⚡ | 16.9초 | 웃던 공군 → “테이저! 테이저! 테이저!” → 비명, 넷이 팔짱 끼고 동시에, 양옆 전우가 붙잡아 주는 장면 |
+| `ouch2` | 후추 스프레이 맞고 / 바로 해야 하는 일 🌶️ | 29.5초 | “심호흡하고, 눈 감고, 대기. OC! OC! OC! 눈 떠, 가자!” → 눈 못 뜬 채 코스(제압·수갑) → 세안 |
+| `ouch3` | 후추 스프레이 맞고 나서 / 웃으며 한 한마디 😂 | 15.9초 | 세안 → 대형 선풍기 → “진짜 최악이야, 최악.” → 웃으며 “야, 내 얼굴에 아직 (삐-) 묻어 있어?” |
+
+```bash
+MEDIA=<저장소>/media python3 politics/prep_split.py ouch1    # 원본: media/ouch/ (파일마다 .json에 DVIDS ID·페이지·파일 주소·크레디트·부대·날짜·쓴 구간)
+./render.sh ouch1 final/ouch1.mp4
+```
+
+**영상** (모두 DVIDS B-roll, 현장음만 있고 음악 없음. 페이지에 개별 제한(Restrictions)·Courtesy 표시 없음, 미군이 직무로 촬영한 연방정부 저작물 → 퍼블릭 도메인)
+- `ouch1` — [844913](https://www.dvidshub.net/video/844913) CEW Training with Security Forces (BROLL) — U.S. Air Force video by Senior Airman Gary Hilton, 18th Security Forces Squadron(18th Wing), 일본 가데나 공군기지, 2022.5.17. 원본 64.0–67.6, 69.6–75.8, 76.6–79.2, 80.5–84.95초.
+- `ouch2` — [961560](https://www.dvidshub.net/video/961560) 22nd MEU | Non-Lethal Weapons Course Day 2 — U.S. Marine Corps video by Cpl. Maurion Moore, 22nd Marine Expeditionary Unit, 미 노스캐롤라이나 스톤베이 해병기지, 2025.4.29. 원본 141.8–143.4(첫 화면, 뒤에 다시 나옴), 130.3–138.3, 139.4–145.5, 145.5–152.0, 201.0–205.6, 216.0–218.6초. 마지막 두 장면은 다른 해병이라 자막도 “다음 해병도”로 적었습니다.
+- `ouch3` — [1008601](https://www.dvidshub.net/video/1008601) Security Forces OC spray — U.S. Air National Guard video by Airman 1st Class Taylor Warehime, 121st Security Forces Squadron(오하이오 주방위군), 릭켄배커 주방위군 기지, 2026.3.8. 원본 177.3–180.5, 185.5–190.5, 193.5–196.4, 196.8–201.6초. 원본은 4K 60p라 1080p 30p로 줄여 잘랐고, 마지막 대사의 욕설 한 단어(“shit”, 원본 199.58–199.80초)는 소리를 삐 처리하고 자막은 “(삐-)”로 적었습니다.
+
+**사실·자막**
+- 훈련 성격은 DVIDS 설명 그대로입니다: 844913 “conducted energy weapons qualification training … exposure to CEW discharge”, 961560 “non-lethal weapons course”, 1008601 “exercises involving the taser, oleoresin capsicum spray, PepperBall”. 이름·계급·사연은 쓰지 않았습니다.
+- 대사는 faster-whisper small.en과 large-v3 두 모델이 같은 말을 들은 것만 넣었습니다. 1008601의 189–192초(“I don't feel my eyes”/“I don't pull my eyes”로 엇갈림), 185초(“take it for a walk”)는 넣지 않았습니다. 844913의 첫 묶음 뒤 “Got a bam …”, “That's a problem”도 불확실해서 뺐습니다.
+- “테이저! 테이저! 테이저!”는 쏘기 직전의 경고 구호(“Taser, taser, taser”), “OC! OC! OC!”는 스프레이를 뿌리며 외치는 구호입니다(화면의 분사 순간과 소리가 일치).
+- 보이는 것만 적은 줄: “4명이 팔짱 끼고 동시에”, “양옆 전우가 꽉 붙잡아 주는 이유”(붙잡힌 채 무너지는 장면), “다음 코스: 선풍기 앞”, “후추 스프레이 맞고 세안 중”. ouch3의 세안·선풍기·마지막 대사는 같은 훈련의 다른 사람들일 수 있어 한 사람의 이야기로 묶지 않았습니다(“진짜 최악이야”는 화면 밖 목소리).
+- 사람을 놀리지 않고 상황만 웃음 포인트로 썼습니다. 다친 장면은 없습니다. OC 착색제가 피처럼 보이는 장면(961560의 손 213–215초, 918493의 붉은 얼굴)은 오해를 살 수 있어 쓰지 않았습니다.
+- 라우드니스: ouch1 −14.5, ouch2 −15.1, ouch3 −14.3 LUFS. 미 공군·해병대·국방부가 이 영상을 보증하거나 후원하는 것처럼 보이면 안 됩니다.
+
+**업로드 문구**
+
+**ouch1** — 테이저건 맞기 1초 전, 미 공군의 표정 ⚡
+> 미 공군 보안군은 테이저건 자격을 따려면 직접 맞아 봐야 합니다. “테이저! 테이저! 테이저!” 경고 구호 1초 뒤, 웃던 얼굴이… 양옆 전우들은 팔을 꽉 붙잡아 줍니다. 2022년 일본 가데나 공군기지 실제 훈련 영상.
+> 영상: 미 공군 (DVIDS) — U.S. Air Force video by Senior Airman Gary Hilton, 18th Wing. 미 공군·국방부가 이 영상을 보증하거나 후원하지 않습니다.
+> #테이저건 #미공군 #군대 #훈련 #shorts
+
+**ouch2** — 후추 스프레이 맞고 바로 해야 하는 일 🌶️
+> “심호흡하고, 눈 감고, 대기.” 얼굴에 후추 스프레이(OC)를 맞고 나면 끝이 아니라 시작입니다. 눈도 못 뜬 채 상대를 제압하고 수갑까지 채워야 하는 미 해병대 비살상무기 과정. 2025년 노스캐롤라이나 실제 훈련 영상.
+> 영상: 미 해병대 (DVIDS) — U.S. Marine Corps video by Cpl. Maurion Moore, 22nd MEU. 미 해병대·국방부가 이 영상을 보증하거나 후원하지 않습니다.
+> #후추스프레이 #미해병대 #군대 #훈련 #shorts
+
+**ouch3** — 후추 스프레이 맞고 나서 웃으며 한 한마디 😂
+> 후추 스프레이 훈련이 끝난 뒤: 물로 씻고, 대형 선풍기 앞에 엎드리고… “진짜 최악이야.” 그리고 웃으며 한 한마디. 2026년 미 오하이오 주방위군 보안군 실제 훈련 영상(욕설 한 단어 삐 처리).
+> 영상: 미 공군 주방위군 (DVIDS) — U.S. Air National Guard video by Airman 1st Class Taylor Warehime, 121st Air Refueling Wing. 미 공군·국방부가 이 영상을 보증하거나 후원하지 않습니다.
+> #후추스프레이 #미공군 #군대 #훈련 #shorts
