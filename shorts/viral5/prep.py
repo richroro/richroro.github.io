@@ -175,6 +175,12 @@ def prep(sid):
         "sfx": sorted([{"t": round(at(a), 3), "name": n, "gain": g} for a, n, g in edit.get("sfx", [])], key=lambda s: s["t"]),
         "music": edit.get("music"), "flashes": [round(at(a), 3) for a in edit.get("flashes", [])], "punches": [round(at(a), 3) for a in edit.get("punches", [])],
     }
+    # translated captions for the footage's own speech (a "moment"), placed by anchors; same page shape as prep_split's
+    for s in edit.get("subs", []):
+        t0, t1 = round(at(s["from"]) * 1000), round(at(s["to"]) * 1000)
+        toks = [{"text": re.sub(r"[][]", "", w), "key": "[" in w, "fromMs": t0, "toMs": t0} for w in s["ko"].split()]
+        data["pages"].append({"startMs": t0, "endMs": t1, "tokens": toks, "en": s.get("en", "")})
+    data["pages"].sort(key=lambda p: p["startMs"])
     if edit.get("captionY"): data["captionY"] = edit["captionY"]  # e.g. lower the captions when the action sits at the bottom of the frame
     for k in ("titleStyle", "hook", "hookY"):  # news-shorts look: banner title and a red headline over the picture
         if edit.get(k) is not None: data[k] = edit[k]

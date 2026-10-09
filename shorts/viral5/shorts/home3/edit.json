@@ -1,0 +1,238 @@
+{
+ "titleStyle": "band",
+ "captionY": 1600,
+ "credit": "영상: 미 육군 (DVIDS)",
+ "sources": {
+  "flight": {
+   "file": "george_lastflight_489332_0-64.mp4",
+   "credit": "영상: 미 육군 (DVIDS)",
+   "label": "DVIDS 489332 CW5 George retires after 35 years, Bagram Airfield, 2016 (original 0-64 s)",
+   "url": "https://www.dvidshub.net/video/489332/cw5-george-retires-after-35-years"
+  },
+  "plaque": {
+   "file": "george_plaque_489332_72-114.mp4",
+   "credit": "영상: 미 육군 (DVIDS)",
+   "label": "DVIDS 489332 (original 72-114 s)",
+   "url": "https://www.dvidshub.net/video/489332/cw5-george-retires-after-35-years"
+  },
+  "talk": {
+   "file": "george_interview_489332_200-268.mp4",
+   "credit": "영상: 미 육군 (DVIDS)",
+   "label": "DVIDS 489332 interview (original 200-268 s)",
+   "url": "https://www.dvidshub.net/video/489332/cw5-george-retires-after-35-years"
+  }
+ },
+ "clips": [
+  {
+   "src": "flight",
+   "from": "hook",
+   "in": 55.6,
+   "label": "물세례를 맞는 조지 준위",
+   "crop": [
+    0.45,
+    0.4,
+    1.25
+   ],
+   "zoom": [
+    1.0,
+    1.05
+   ],
+   "audio": 0.25
+  },
+  {
+   "src": "flight",
+   "from": "who",
+   "in": 36.5,
+   "label": "마지막 비행을 마치고 내리는 조지 준위",
+   "crop": [
+    0.47,
+    0.25,
+    1.4
+   ],
+   "zoom": [
+    1.0,
+    1.05
+   ],
+   "audio": 0.1
+  },
+  {
+   "src": "flight",
+   "from": "who.바그람",
+   "in": 8.0,
+   "label": "바그람 기지 활주로",
+   "crop": [
+    0.5,
+    0.45,
+    1.0
+   ],
+   "zoom": [
+    1.0,
+    1.06
+   ],
+   "audio": 0.15
+  },
+  {
+   "src": "flight",
+   "from": "trad.먼저",
+   "in": 23.5,
+   "label": "물대포 아치를 지나는 비행기",
+   "crop": [
+    0.55,
+    0.5,
+    1.0
+   ],
+   "zoom": [
+    1.0,
+    1.06
+   ],
+   "audio": 0.15
+  },
+  {
+   "src": "flight",
+   "from": "trad.그다음은",
+   "in": 46.0,
+   "label": "비행기에서 내린 조지 준위",
+   "crop": [
+    0.45,
+    0.45,
+    1.1
+   ],
+   "zoom": [
+    1.0,
+    1.05
+   ],
+   "audio": 0.15
+  },
+  {
+   "src": "flight",
+   "from": "trad@end+0.1",
+   "in": 53.2,
+   "label": "물세례",
+   "crop": [
+    0.45,
+    0.42,
+    1.15
+   ],
+   "zoom": [
+    1.0,
+    1.05
+   ],
+   "audio": 0
+  },
+  {
+   "src": "plaque",
+   "from": "flag",
+   "in": 10.0,
+   "label": "성조기 액자를 받는 조지 준위",
+   "crop": [
+    0.5,
+    0.45,
+    1.05
+   ],
+   "zoom": [
+    1.0,
+    1.05
+   ],
+   "audio": 0
+  },
+  {
+   "src": "plaque",
+   "from": "flag@end+0.1",
+   "in": 34.8,
+   "label": "감사문 낭독",
+   "crop": [
+    0.5,
+    0.45,
+    1.05
+   ],
+   "zoom": [
+    1.0,
+    1.04
+   ],
+   "audio": 0
+  },
+  {
+   "src": "talk",
+   "from": "flag@end+5.3",
+   "in": 8.0,
+   "label": "조지 준위 인터뷰",
+   "crop": [
+    0.42,
+    0.4,
+    1.15
+   ],
+   "zoom": [
+    1.0,
+    1.04
+   ],
+   "audio": 0
+  },
+  {
+   "src": "talk",
+   "from": "flag@end+10.15",
+   "in": 64.7,
+   "label": "조지 준위",
+   "crop": [
+    0.42,
+    0.4,
+    1.25
+   ],
+   "zoom": [
+    1.0,
+    1.03
+   ],
+   "audio": 0
+  }
+ ],
+ "moments": [
+  {
+   "from": "trad@end+0.15",
+   "to": "flag-0.3",
+   "gain": 1.0
+  },
+  {
+   "from": "flag@end+0.15",
+   "to": "flag@end+5.2",
+   "gain": 1.0
+  },
+  {
+   "from": "flag@end+5.35",
+   "to": "flag@end+10.05",
+   "gain": 1.0
+  },
+  {
+   "from": "flag@end+10.2",
+   "to": "flag@end+12.1",
+   "gain": 1.0
+  }
+ ],
+ "subs": [
+  {
+   "from": "flag@end+0.4",
+   "to": "flag@end+5.2",
+   "ko": "35년간 육군 항공에 보여 준 헌신에 [깊이 감사드립니다]",
+   "en": "Army aviation excellence during your 35-year career is greatly appreciated."
+  },
+  {
+   "from": "flag@end+5.45",
+   "to": "flag@end+10.05",
+   "ko": "아프간에서 받는 이런 환송이라니 [이보다 좋을 순 없어요]",
+   "en": "This send-off here in Afghanistan, I couldn't hope for better."
+  },
+  {
+   "from": "flag@end+10.3",
+   "to": "flag@end+12.1",
+   "ko": "복무할 수 있어서 [영광이었습니다]",
+   "en": "It's been an honor to serve."
+  }
+ ],
+ "stickers": [],
+ "sfx": [],
+ "punches": [],
+ "flashes": [],
+ "music": {
+  "file": "music/Dreamer.mp3",
+  "gain": 0.15,
+  "start": 0
+ }
+}
