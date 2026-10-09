@@ -972,3 +972,65 @@ MEDIA=<저장소>/media python3 politics/prep_split.py lindbergh1    # 원본: m
 > 음악: "Floating Cities" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
 > #린드버그 #대서양횡단 #도전 #포기하지마 #동기부여 #옛날영상 #역사 #영어공부 #shorts
 
+## 위력 실험 쇼츠 (`politics/boom1`, `politics/boom2`)
+
+DVIDS에 올라온 미군 촬영 B-roll(현장음만 있고 음악은 없음)에 원래 소리를 그대로 두고, 실제로 들리는 외침만 번역 자막으로 붙였습니다. 내레이션, 그래픽, 음악은 넣지 않았습니다.
+
+| id | 제목 | 길이 | 내용 |
+| --- | --- | --- | --- |
+| `boom1` | 바닷속 불발탄 폭파 / 물기둥 실화냐 | 17.9초 | 첫 화면은 솟구치는 물기둥입니다. 이어서 물속 잠수요원, 보트 위에서 지켜보는 대원, "Fire in the hole!"(폭파한다!) 외침, 두 번째 물기둥 순서로 갑니다. |
+| `boom2` | 어깨에 메고 쏘는 84mm / 후폭풍 실화냐 | 24.3초 | 첫 화면은 사격 순간 뒤로 일어나는 흙먼지입니다. 이어서 "Fire, fire, fire" 사격, 교관의 "Tap it. Always tap just to make sure it's seated.", "Back blast all clear." 뒤 사격과 흙먼지, 표적 착탄 순서로 갑니다. |
+
+```bash
+MEDIA=<저장소>/media python3 politics/prep_split.py boom1    # 원본: media/boom/ (boom2도 같음)
+./render.sh boom1 final/boom1.mp4
+```
+
+**영상** (DVIDS 페이지에 "Video by …"와 PUBLIC DOMAIN이 있고 Restrictions 안내는 없음. 둘 다 B-Roll 분류)
+- `boom1`: [DVIDS 923887 「ACDC: EOD Underwater UXO Demolitions」](https://www.dvidshub.net/video/923887/acdc-eod-underwater-uxo-demolitions)
+  - 촬영: Staff Sgt. Dana Beesley (U.S. Marine Corps). 촬영일 2024.5.14, 필리핀 카비테 카바요섬 앞바다, Archipelagic Coastal Defense Continuum(ACDC).
+  - 원본 파일: https://d34w7g4gy10iej.cloudfront.net/video/2405/DOD_110313154/DOD_110313154.mp4
+  - 설명에 따르면 필리핀 해병대·미 해병대 폭발물처리반과 필리핀 해군 특수작전사령부·미 해군 잠수요원이 수중 불발탄 처리 폭파를 했습니다.
+  - 쓴 구간(원본 초): 118.9–121.0(첫 물기둥), 104.0–106.6(잠수요원), 107.0–111.5(보트 위 대원), 125.4–134.0(외침과 두 번째 물기둥).
+- `boom2`: [DVIDS 876009 「B-Roll: Marines fire MAAWS downrange」](https://www.dvidshub.net/video/876009/b-roll-marines-fire-maaws-downrange)
+  - 촬영: Sgt. Jacob Yost (U.S. Marine Corps). 촬영일 2023.3.9, 캘리포니아 캠프 펜들턴, 미 1해병사단.
+  - 원본 파일: https://d34w7g4gy10iej.cloudfront.net/video/2303/DOD_109502604/DOD_109502604.mp4
+  - 설명에 따르면 M3E1 MAAWS는 "Carl Gustaf"라고도 부르는 84mm 무반동 무기입니다.
+  - 쓴 구간(원본 초): 101.4–103.0, 63.5–68.6, 77.6–82.0, 111.8–121.0, 133.6–137.5.
+- `media/boom/`의 mp4 파일:
+  - 내용: 원본에서 잘라낸 구간을 저장용으로 다시 인코딩한 것입니다(x264 CRF 26).
+  - 파일명: `boom_dvids923887_100-136.mp4`는 원본 100–136초, `boom_dvids876009_58-140.mp4`는 원본 58–140초입니다.
+  - 시간축: edit.json의 시간은 이 파일 기준입니다.
+  - 옆의 .json에 DVIDS ID, 페이지·파일 주소, 크레디트, 설명, 구간을 적었습니다.
+
+**소리와 자막**
+- 음악 확인: 두 영상 모두 AudioSet AST 모델로 5초 단위로 검사했습니다. Speech, Vehicle, Boat 같은 현장음만 나왔고 음악은 없었습니다.
+- 자막 확인: faster-whisper small과 medium.en이 둘 다 같은 말을 들은 줄만 번역했습니다.
+  - "Fire in the hole"(923887, 122.4–128.9초)과 "Fire, fire, fire", "Tap it. Always tap just to make sure it's seated.", "Back blast all clear."(876009)가 해당합니다.
+  - 두 모델이 엇갈린 말("Ready for the back blast?", "Back blast area secure", "SCA loaded" 등)은 넣지 않았습니다.
+  - 923887의 타갈로그어 대화도 넣지 않았습니다.
+- 말하는 사람을 특정할 수 없어 이름표는 달지 않았습니다. 사람 이름, 계급, 사연은 지어내지 않았습니다.
+- 설명 자막("미·필리핀 잠수요원들", "바닷속 불발탄 처리 훈련 중", "미 해병대 칼 구스타프 사격", "84mm 무반동총")은 DVIDS 설명에 있는 내용만 썼습니다.
+- 라우드니스: render.sh 결과 −14.6 LUFS(boom1), −14.9 LUFS(boom2)입니다. 폭발음 피크 때문에 true peak −1.5 dB 제한에 걸려 −14보다 조금 낮게 나왔습니다.
+- 미 해병대·국방부가 이 영상을 보증하거나 후원한다는 인상을 주면 안 됩니다(DVIDS 저작권 안내). 화면에는 "영상: 미 해병대 (DVIDS)"만 적었습니다.
+
+### 업로드 문구
+
+**boom1**
+- 제목: `바닷속 불발탄 폭파, 물기둥 실화냐 😳` (21자)
+- 설명:
+  ```
+  필리핀 카바요섬 앞바다에서 필리핀·미국 해병대와 해군 잠수요원들이 바닷속 불발탄을 폭파 처리하는 순간 (2024년 5월, 연합훈련 ACDC).
+  "Fire in the hole!" = 폭파한다!
+  영상: U.S. Marine Corps video by Staff Sgt. Dana Beesley (DVIDS 923887). 미 해병대·국방부가 이 영상을 보증하거나 후원하지 않습니다.
+  ```
+- 해시태그: `#폭발물처리반 #불발탄 #물기둥 #해병대 #shorts`
+
+**boom2**
+- 제목: `어깨에 메고 쏘는 84mm, 후폭풍 실화냐` (22자)
+- 설명:
+  ```
+  미 해병대 1해병사단의 칼 구스타프(M3E1 MAAWS, 84mm 무반동 무기) 사격 훈련. 쏘기 전 "후폭풍 구역 이상 없음!"을 외치는 이유가 보입니다. (2023년 3월, 캘리포니아 캠프 펜들턴)
+  영상: U.S. Marine Corps video by Sgt. Jacob Yost (DVIDS 876009). 미 해병대·국방부가 이 영상을 보증하거나 후원하지 않습니다.
+  ```
+- 해시태그: `#칼구스타프 #무반동총 #후폭풍 #미해병대 #shorts`
