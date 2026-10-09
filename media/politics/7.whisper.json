@@ -1,0 +1,854 @@
+{
+ "model": "faster-whisper large-v3 (int8, CPU)",
+ "params": {
+  "language": "ko",
+  "beam_size": 5,
+  "vad_filter": false,
+  "word_timestamps": true,
+  "condition_on_previous_text": false
+ },
+ "source": "7.mp4",
+ "duration_s": 94.018,
+ "segments": [
+  {
+   "start": 0.0,
+   "end": 2.1,
+   "text": " 이런 생각이 들었습니다.",
+   "words": [
+    {
+     "start": 0.0,
+     "end": 1.26,
+     "word": " 이런",
+     "probability": 0.8873
+    },
+    {
+     "start": 1.26,
+     "end": 1.68,
+     "word": " 생각이",
+     "probability": 0.9998
+    },
+    {
+     "start": 1.68,
+     "end": 2.1,
+     "word": " 들었습니다.",
+     "probability": 0.9998
+    }
+   ]
+  },
+  {
+   "start": 4.86,
+   "end": 14.96,
+   "text": " 왜 그러냐면 제청권에 대해서 쭉 제가 읽어보니까 오전에 하신 말씀을 다시 한번 새겨보니까",
+   "words": [
+    {
+     "start": 4.48,
+     "end": 4.98,
+     "word": " 왜",
+     "probability": 0.9907
+    },
+    {
+     "start": 4.98,
+     "end": 5.38,
+     "word": " 그러냐면",
+     "probability": 0.9966
+    },
+    {
+     "start": 5.38,
+     "end": 7.72,
+     "word": " 제청권에",
+     "probability": 0.8389
+    },
+    {
+     "start": 7.72,
+     "end": 8.0,
+     "word": " 대해서",
+     "probability": 1.0
+    },
+    {
+     "start": 8.0,
+     "end": 10.66,
+     "word": " 쭉",
+     "probability": 0.8966
+    },
+    {
+     "start": 10.66,
+     "end": 11.02,
+     "word": " 제가",
+     "probability": 0.9788
+    },
+    {
+     "start": 11.02,
+     "end": 11.62,
+     "word": " 읽어보니까",
+     "probability": 0.9993
+    },
+    {
+     "start": 11.62,
+     "end": 13.02,
+     "word": " 오전에",
+     "probability": 0.9963
+    },
+    {
+     "start": 13.02,
+     "end": 13.24,
+     "word": " 하신",
+     "probability": 0.9999
+    },
+    {
+     "start": 13.24,
+     "end": 13.74,
+     "word": " 말씀을",
+     "probability": 1.0
+    },
+    {
+     "start": 13.74,
+     "end": 14.1,
+     "word": " 다시",
+     "probability": 0.9999
+    },
+    {
+     "start": 14.1,
+     "end": 14.3,
+     "word": " 한번",
+     "probability": 0.8589
+    },
+    {
+     "start": 14.3,
+     "end": 14.96,
+     "word": " 새겨보니까",
+     "probability": 0.9906
+    }
+   ]
+  },
+  {
+   "start": 16.14,
+   "end": 20.8,
+   "text": " 제청권을 상당히 신성불가침의 영역으로 여기고 계셔서",
+   "words": [
+    {
+     "start": 16.14,
+     "end": 17.14,
+     "word": " 제청권을",
+     "probability": 0.9978
+    },
+    {
+     "start": 17.14,
+     "end": 17.54,
+     "word": " 상당히",
+     "probability": 1.0
+    },
+    {
+     "start": 17.54,
+     "end": 18.6,
+     "word": " 신성불가침의",
+     "probability": 0.9908
+    },
+    {
+     "start": 18.6,
+     "end": 19.12,
+     "word": " 영역으로",
+     "probability": 0.9509
+    },
+    {
+     "start": 19.12,
+     "end": 20.42,
+     "word": " 여기고",
+     "probability": 0.9986
+    },
+    {
+     "start": 20.42,
+     "end": 20.8,
+     "word": " 계셔서",
+     "probability": 0.9999
+    }
+   ]
+  },
+  {
+   "start": 20.8,
+   "end": 32.08,
+   "text": " 그래서 제가 보기에 일반적인 평균적인 법관님들이 가진 생각보다 훨씬 더 존귀한 존재로 생각을 하시는구나 이런 느낌을 받았고요.",
+   "words": [
+    {
+     "start": 20.8,
+     "end": 20.92,
+     "word": " 그래서",
+     "probability": 0.7988
+    },
+    {
+     "start": 20.92,
+     "end": 21.74,
+     "word": " 제가",
+     "probability": 0.9997
+    },
+    {
+     "start": 21.74,
+     "end": 22.28,
+     "word": " 보기에",
+     "probability": 0.9998
+    },
+    {
+     "start": 22.28,
+     "end": 23.6,
+     "word": " 일반적인",
+     "probability": 0.9998
+    },
+    {
+     "start": 23.6,
+     "end": 24.34,
+     "word": " 평균적인",
+     "probability": 0.9428
+    },
+    {
+     "start": 24.34,
+     "end": 25.02,
+     "word": " 법관님들이",
+     "probability": 0.9935
+    },
+    {
+     "start": 25.02,
+     "end": 25.38,
+     "word": " 가진",
+     "probability": 0.9999
+    },
+    {
+     "start": 25.38,
+     "end": 26.46,
+     "word": " 생각보다",
+     "probability": 0.9999
+    },
+    {
+     "start": 26.46,
+     "end": 26.78,
+     "word": " 훨씬",
+     "probability": 0.9997
+    },
+    {
+     "start": 26.78,
+     "end": 27.02,
+     "word": " 더",
+     "probability": 1.0
+    },
+    {
+     "start": 27.02,
+     "end": 28.68,
+     "word": " 존귀한",
+     "probability": 0.9614
+    },
+    {
+     "start": 28.68,
+     "end": 29.16,
+     "word": " 존재로",
+     "probability": 0.9999
+    },
+    {
+     "start": 29.16,
+     "end": 29.88,
+     "word": " 생각을",
+     "probability": 0.9972
+    },
+    {
+     "start": 29.88,
+     "end": 30.4,
+     "word": " 하시는구나",
+     "probability": 0.9995
+    },
+    {
+     "start": 30.4,
+     "end": 31.26,
+     "word": " 이런",
+     "probability": 0.8556
+    },
+    {
+     "start": 31.26,
+     "end": 31.66,
+     "word": " 느낌을",
+     "probability": 0.9995
+    },
+    {
+     "start": 31.66,
+     "end": 32.08,
+     "word": " 받았고요.",
+     "probability": 0.9996
+    }
+   ]
+  },
+  {
+   "start": 33.58,
+   "end": 46.06,
+   "text": " 당신의 유치, 대법원장의 유치도 범접하기 어려운 자리로 스스로 자리매김하시는 게 아닌가 이런 느낌이 들었습니다.",
+   "words": [
+    {
+     "start": 33.58,
+     "end": 34.64,
+     "word": " 당신의",
+     "probability": 0.8133
+    },
+    {
+     "start": 34.64,
+     "end": 35.38,
+     "word": " 유치,",
+     "probability": 0.9453
+    },
+    {
+     "start": 35.52,
+     "end": 36.52,
+     "word": " 대법원장의",
+     "probability": 0.9983
+    },
+    {
+     "start": 36.52,
+     "end": 36.92,
+     "word": " 유치도",
+     "probability": 0.9969
+    },
+    {
+     "start": 36.92,
+     "end": 41.14,
+     "word": " 범접하기",
+     "probability": 0.9916
+    },
+    {
+     "start": 41.14,
+     "end": 41.54,
+     "word": " 어려운",
+     "probability": 0.9999
+    },
+    {
+     "start": 41.54,
+     "end": 41.92,
+     "word": " 자리로",
+     "probability": 0.9998
+    },
+    {
+     "start": 41.92,
+     "end": 42.9,
+     "word": " 스스로",
+     "probability": 0.9997
+    },
+    {
+     "start": 42.9,
+     "end": 43.86,
+     "word": " 자리매김하시는",
+     "probability": 0.9688
+    },
+    {
+     "start": 43.86,
+     "end": 44.12,
+     "word": " 게",
+     "probability": 0.9966
+    },
+    {
+     "start": 44.12,
+     "end": 44.52,
+     "word": " 아닌가",
+     "probability": 0.9999
+    },
+    {
+     "start": 44.52,
+     "end": 45.34,
+     "word": " 이런",
+     "probability": 0.9981
+    },
+    {
+     "start": 45.34,
+     "end": 45.66,
+     "word": " 느낌이",
+     "probability": 0.9995
+    },
+    {
+     "start": 45.66,
+     "end": 46.06,
+     "word": " 들었습니다.",
+     "probability": 0.9998
+    }
+   ]
+  },
+  {
+   "start": 47.26,
+   "end": 51.74,
+   "text": " 그 예로 우선 아침에 이런 말씀을 하셨어요",
+   "words": [
+    {
+     "start": 47.26,
+     "end": 48.22,
+     "word": " 그",
+     "probability": 0.1074
+    },
+    {
+     "start": 48.22,
+     "end": 48.7,
+     "word": " 예로",
+     "probability": 0.9986
+    },
+    {
+     "start": 48.7,
+     "end": 49.38,
+     "word": " 우선",
+     "probability": 0.9964
+    },
+    {
+     "start": 49.38,
+     "end": 50.98,
+     "word": " 아침에",
+     "probability": 0.9997
+    },
+    {
+     "start": 50.98,
+     "end": 51.08,
+     "word": " 이런",
+     "probability": 0.9978
+    },
+    {
+     "start": 51.08,
+     "end": 51.44,
+     "word": " 말씀을",
+     "probability": 0.9999
+    },
+    {
+     "start": 51.44,
+     "end": 51.74,
+     "word": " 하셨어요",
+     "probability": 0.9998
+    }
+   ]
+  },
+  {
+   "start": 51.74,
+   "end": 54.5,
+   "text": " 아까 우리 서영규 의원님도 말씀하셨는데",
+   "words": [
+    {
+     "start": 51.74,
+     "end": 52.08,
+     "word": " 아까",
+     "probability": 0.1781
+    },
+    {
+     "start": 52.08,
+     "end": 52.32,
+     "word": " 우리",
+     "probability": 0.9996
+    },
+    {
+     "start": 52.32,
+     "end": 53.2,
+     "word": " 서영규",
+     "probability": 0.8563
+    },
+    {
+     "start": 53.2,
+     "end": 53.66,
+     "word": " 의원님도",
+     "probability": 0.9441
+    },
+    {
+     "start": 53.66,
+     "end": 54.5,
+     "word": " 말씀하셨는데",
+     "probability": 0.9998
+    }
+   ]
+  },
+  {
+   "start": 55.16,
+   "end": 56.86,
+   "text": " 대법관 후보 추천위원회",
+   "words": [
+    {
+     "start": 55.16,
+     "end": 55.92,
+     "word": " 대법관",
+     "probability": 0.998
+    },
+    {
+     "start": 55.92,
+     "end": 56.04,
+     "word": " 후보",
+     "probability": 0.9574
+    },
+    {
+     "start": 56.04,
+     "end": 56.86,
+     "word": " 추천위원회",
+     "probability": 0.9906
+    }
+   ]
+  },
+  {
+   "start": 56.86,
+   "end": 59.46,
+   "text": " 여기 이걸 존중하지 않아도",
+   "words": [
+    {
+     "start": 56.86,
+     "end": 57.44,
+     "word": " 여기",
+     "probability": 0.7524
+    },
+    {
+     "start": 57.44,
+     "end": 57.76,
+     "word": " 이걸",
+     "probability": 0.9998
+    },
+    {
+     "start": 57.76,
+     "end": 58.94,
+     "word": " 존중하지",
+     "probability": 0.9999
+    },
+    {
+     "start": 58.94,
+     "end": 59.46,
+     "word": " 않아도",
+     "probability": 0.9997
+    }
+   ]
+  },
+  {
+   "start": 59.46,
+   "end": 61.98,
+   "text": " 위헌이나 위법은 전혀 아닙니다",
+   "words": [
+    {
+     "start": 59.46,
+     "end": 60.68,
+     "word": " 위헌이나",
+     "probability": 0.8083
+    },
+    {
+     "start": 60.68,
+     "end": 61.26,
+     "word": " 위법은",
+     "probability": 0.8911
+    },
+    {
+     "start": 61.26,
+     "end": 61.6,
+     "word": " 전혀",
+     "probability": 1.0
+    },
+    {
+     "start": 61.6,
+     "end": 61.98,
+     "word": " 아닙니다",
+     "probability": 1.0
+    }
+   ]
+  },
+  {
+   "start": 61.98,
+   "end": 63.54,
+   "text": " 이런 표현을 쓰셨어요",
+   "words": [
+    {
+     "start": 61.98,
+     "end": 62.16,
+     "word": " 이런",
+     "probability": 0.9363
+    },
+    {
+     "start": 62.16,
+     "end": 63.18,
+     "word": " 표현을",
+     "probability": 1.0
+    },
+    {
+     "start": 63.18,
+     "end": 63.54,
+     "word": " 쓰셨어요",
+     "probability": 0.9993
+    }
+   ]
+  },
+  {
+   "start": 66.12,
+   "end": 70.42,
+   "text": " 이 대법관 추천위원회 어디에서 규정하고 있습니까?",
+   "words": [
+    {
+     "start": 66.12,
+     "end": 67.08,
+     "word": " 이",
+     "probability": 0.9795
+    },
+    {
+     "start": 67.08,
+     "end": 68.04,
+     "word": " 대법관",
+     "probability": 0.9999
+    },
+    {
+     "start": 68.04,
+     "end": 68.66,
+     "word": " 추천위원회",
+     "probability": 1.0
+    },
+    {
+     "start": 68.66,
+     "end": 69.54,
+     "word": " 어디에서",
+     "probability": 0.9998
+    },
+    {
+     "start": 69.54,
+     "end": 70.02,
+     "word": " 규정하고",
+     "probability": 0.9999
+    },
+    {
+     "start": 70.02,
+     "end": 70.42,
+     "word": " 있습니까?",
+     "probability": 0.9998
+    }
+   ]
+  },
+  {
+   "start": 72.14,
+   "end": 73.18,
+   "text": " 어느 법에서 규정하고 있죠?",
+   "words": [
+    {
+     "start": 71.68,
+     "end": 72.16,
+     "word": " 어느",
+     "probability": 0.9993
+    },
+    {
+     "start": 72.16,
+     "end": 72.54,
+     "word": " 법에서",
+     "probability": 0.9989
+    },
+    {
+     "start": 72.54,
+     "end": 73.0,
+     "word": " 규정하고",
+     "probability": 1.0
+    },
+    {
+     "start": 73.0,
+     "end": 73.18,
+     "word": " 있죠?",
+     "probability": 0.9999
+    }
+   ]
+  },
+  {
+   "start": 73.38,
+   "end": 75.08,
+   "text": " 법원 조직법에서 규정하고 있습니다",
+   "words": [
+    {
+     "start": 73.38,
+     "end": 73.92,
+     "word": " 법원",
+     "probability": 0.9934
+    },
+    {
+     "start": 73.92,
+     "end": 74.46,
+     "word": " 조직법에서",
+     "probability": 0.9556
+    },
+    {
+     "start": 74.46,
+     "end": 74.88,
+     "word": " 규정하고",
+     "probability": 0.9999
+    },
+    {
+     "start": 74.88,
+     "end": 75.08,
+     "word": " 있습니다",
+     "probability": 0.7987
+    }
+   ]
+  },
+  {
+   "start": 75.08,
+   "end": 79.96,
+   "text": " 그렇죠. 다른 법도 아닌 법원 조직법에서 규정을 하고 있습니다.",
+   "words": [
+    {
+     "start": 75.08,
+     "end": 75.26,
+     "word": " 그렇죠.",
+     "probability": 0.8661
+    },
+    {
+     "start": 75.36,
+     "end": 75.66,
+     "word": " 다른",
+     "probability": 0.9948
+    },
+    {
+     "start": 75.66,
+     "end": 76.08,
+     "word": " 법도",
+     "probability": 0.9999
+    },
+    {
+     "start": 76.08,
+     "end": 76.34,
+     "word": " 아닌",
+     "probability": 1.0
+    },
+    {
+     "start": 76.34,
+     "end": 77.48,
+     "word": " 법원",
+     "probability": 0.9993
+    },
+    {
+     "start": 77.48,
+     "end": 78.26,
+     "word": " 조직법에서",
+     "probability": 0.8945
+    },
+    {
+     "start": 78.26,
+     "end": 79.58,
+     "word": " 규정을",
+     "probability": 0.9991
+    },
+    {
+     "start": 79.58,
+     "end": 79.74,
+     "word": " 하고",
+     "probability": 0.9999
+    },
+    {
+     "start": 79.74,
+     "end": 79.96,
+     "word": " 있습니다.",
+     "probability": 1.0
+    }
+   ]
+  },
+  {
+   "start": 81.04,
+   "end": 88.7,
+   "text": " 이게 원래 내규로 있다가 그 다음에 법원 조직법으로 격상을 한 거죠?",
+   "words": [
+    {
+     "start": 80.76,
+     "end": 81.08,
+     "word": " 이게",
+     "probability": 0.9982
+    },
+    {
+     "start": 81.08,
+     "end": 81.4,
+     "word": " 원래",
+     "probability": 1.0
+    },
+    {
+     "start": 81.4,
+     "end": 82.9,
+     "word": " 내규로",
+     "probability": 0.811
+    },
+    {
+     "start": 82.9,
+     "end": 83.2,
+     "word": " 있다가",
+     "probability": 0.9996
+    },
+    {
+     "start": 83.2,
+     "end": 85.3,
+     "word": " 그",
+     "probability": 0.3683
+    },
+    {
+     "start": 85.3,
+     "end": 86.42,
+     "word": " 다음에",
+     "probability": 0.9986
+    },
+    {
+     "start": 86.42,
+     "end": 86.8,
+     "word": " 법원",
+     "probability": 1.0
+    },
+    {
+     "start": 86.8,
+     "end": 87.46,
+     "word": " 조직법으로",
+     "probability": 0.9996
+    },
+    {
+     "start": 87.46,
+     "end": 88.4,
+     "word": " 격상을",
+     "probability": 0.9929
+    },
+    {
+     "start": 88.4,
+     "end": 88.56,
+     "word": " 한",
+     "probability": 1.0
+    },
+    {
+     "start": 88.56,
+     "end": 88.7,
+     "word": " 거죠?",
+     "probability": 0.9921
+    }
+   ]
+  },
+  {
+   "start": 89.5,
+   "end": 90.7,
+   "text": " 그렇게 알고 있습니다.",
+   "words": [
+    {
+     "start": 89.5,
+     "end": 90.14,
+     "word": " 그렇게",
+     "probability": 0.9934
+    },
+    {
+     "start": 90.14,
+     "end": 90.4,
+     "word": " 알고",
+     "probability": 1.0
+    },
+    {
+     "start": 90.4,
+     "end": 90.7,
+     "word": " 있습니다.",
+     "probability": 0.9993
+    }
+   ]
+  },
+  {
+   "start": 91.92,
+   "end": 93.42,
+   "text": " 법원 조직법이 뭡니까?",
+   "words": [
+    {
+     "start": 91.92,
+     "end": 92.56,
+     "word": " 법원",
+     "probability": 0.9872
+    },
+    {
+     "start": 92.56,
+     "end": 93.04,
+     "word": " 조직법이",
+     "probability": 0.9994
+    },
+    {
+     "start": 93.04,
+     "end": 93.42,
+     "word": " 뭡니까?",
+     "probability": 0.9998
+    }
+   ]
+  }
+ ]
+}

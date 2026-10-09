@@ -1,0 +1,509 @@
+{
+ "model": "faster-whisper large-v3 (int8, CPU)",
+ "params": {
+  "language": "ko",
+  "beam_size": 5,
+  "vad_filter": false,
+  "word_timestamps": true,
+  "condition_on_previous_text": false
+ },
+ "source": "5.mp4",
+ "duration_s": 75.0,
+ "segments": [
+  {
+   "start": 0.0,
+   "end": 8.94,
+   "text": " 윤석열 투예요? 아니 모든 것을 부하직원들한테 떠넘기면 윤석열하고 똑같잖아요.",
+   "words": [
+    {
+     "start": 0.0,
+     "end": 0.7,
+     "word": " 윤석열",
+     "probability": 0.9972
+    },
+    {
+     "start": 0.7,
+     "end": 1.12,
+     "word": " 투예요?",
+     "probability": 0.7993
+    },
+    {
+     "start": 2.64,
+     "end": 3.56,
+     "word": " 아니",
+     "probability": 0.7595
+    },
+    {
+     "start": 3.56,
+     "end": 3.8,
+     "word": " 모든",
+     "probability": 0.7758
+    },
+    {
+     "start": 3.8,
+     "end": 4.2,
+     "word": " 것을",
+     "probability": 0.9995
+    },
+    {
+     "start": 4.2,
+     "end": 6.9,
+     "word": " 부하직원들한테",
+     "probability": 0.8748
+    },
+    {
+     "start": 6.9,
+     "end": 7.62,
+     "word": " 떠넘기면",
+     "probability": 0.9987
+    },
+    {
+     "start": 7.62,
+     "end": 8.38,
+     "word": " 윤석열하고",
+     "probability": 0.997
+    },
+    {
+     "start": 8.38,
+     "end": 8.94,
+     "word": " 똑같잖아요.",
+     "probability": 0.9997
+    }
+   ]
+  },
+  {
+   "start": 12.62,
+   "end": 16.04,
+   "text": " 내란 일으키고 자기는 책임없다고 부하들한테 다 넘기는 거.",
+   "words": [
+    {
+     "start": 12.42,
+     "end": 12.88,
+     "word": " 내란",
+     "probability": 0.9021
+    },
+    {
+     "start": 12.88,
+     "end": 13.3,
+     "word": " 일으키고",
+     "probability": 0.9787
+    },
+    {
+     "start": 13.3,
+     "end": 13.98,
+     "word": " 자기는",
+     "probability": 0.9977
+    },
+    {
+     "start": 13.98,
+     "end": 14.64,
+     "word": " 책임없다고",
+     "probability": 0.9384
+    },
+    {
+     "start": 14.64,
+     "end": 15.28,
+     "word": " 부하들한테",
+     "probability": 0.9611
+    },
+    {
+     "start": 15.28,
+     "end": 15.44,
+     "word": " 다",
+     "probability": 0.9835
+    },
+    {
+     "start": 15.44,
+     "end": 15.84,
+     "word": " 넘기는",
+     "probability": 0.9999
+    },
+    {
+     "start": 15.84,
+     "end": 16.04,
+     "word": " 거.",
+     "probability": 0.8306
+    }
+   ]
+  },
+  {
+   "start": 17.92,
+   "end": 27.4,
+   "text": " 이걸 보고 검찰총장 윤석열이 대통령 되니까 대법원장 조희대 씨 다음 대통령 하려고 그러는 건 아니에요?",
+   "words": [
+    {
+     "start": 17.6,
+     "end": 18.06,
+     "word": " 이걸",
+     "probability": 0.9966
+    },
+    {
+     "start": 18.06,
+     "end": 18.34,
+     "word": " 보고",
+     "probability": 1.0
+    },
+    {
+     "start": 18.34,
+     "end": 20.72,
+     "word": " 검찰총장",
+     "probability": 0.9989
+    },
+    {
+     "start": 20.72,
+     "end": 21.3,
+     "word": " 윤석열이",
+     "probability": 0.9992
+    },
+    {
+     "start": 21.3,
+     "end": 21.56,
+     "word": " 대통령",
+     "probability": 0.9814
+    },
+    {
+     "start": 21.56,
+     "end": 22.06,
+     "word": " 되니까",
+     "probability": 0.9811
+    },
+    {
+     "start": 22.06,
+     "end": 22.86,
+     "word": " 대법원장",
+     "probability": 0.9985
+    },
+    {
+     "start": 22.86,
+     "end": 24.88,
+     "word": " 조희대",
+     "probability": 0.9359
+    },
+    {
+     "start": 24.88,
+     "end": 25.1,
+     "word": " 씨",
+     "probability": 0.9923
+    },
+    {
+     "start": 25.1,
+     "end": 25.8,
+     "word": " 다음",
+     "probability": 0.4341
+    },
+    {
+     "start": 25.8,
+     "end": 26.3,
+     "word": " 대통령",
+     "probability": 1.0
+    },
+    {
+     "start": 26.3,
+     "end": 26.7,
+     "word": " 하려고",
+     "probability": 0.9647
+    },
+    {
+     "start": 26.7,
+     "end": 27.04,
+     "word": " 그러는",
+     "probability": 0.9885
+    },
+    {
+     "start": 27.04,
+     "end": 27.14,
+     "word": " 건",
+     "probability": 0.4996
+    },
+    {
+     "start": 27.14,
+     "end": 27.4,
+     "word": " 아니에요?",
+     "probability": 0.9998
+    }
+   ]
+  },
+  {
+   "start": 31.32,
+   "end": 40.3,
+   "text": " 답변해보세요. 선별적으로 하시니까 답변 안 해도 좋아요. 그것도 증인의 권리예요.",
+   "words": [
+    {
+     "start": 31.32,
+     "end": 32.16,
+     "word": " 답변해보세요.",
+     "probability": 0.9288
+    },
+    {
+     "start": 34.84,
+     "end": 35.68,
+     "word": " 선별적으로",
+     "probability": 0.9992
+    },
+    {
+     "start": 35.68,
+     "end": 36.22,
+     "word": " 하시니까",
+     "probability": 0.999
+    },
+    {
+     "start": 36.22,
+     "end": 36.7,
+     "word": " 답변",
+     "probability": 0.999
+    },
+    {
+     "start": 36.7,
+     "end": 36.84,
+     "word": " 안",
+     "probability": 0.9995
+    },
+    {
+     "start": 36.84,
+     "end": 37.0,
+     "word": " 해도",
+     "probability": 0.888
+    },
+    {
+     "start": 37.0,
+     "end": 37.34,
+     "word": " 좋아요.",
+     "probability": 0.9999
+    },
+    {
+     "start": 38.0,
+     "end": 38.84,
+     "word": " 그것도",
+     "probability": 0.9999
+    },
+    {
+     "start": 38.84,
+     "end": 39.26,
+     "word": " 증인의",
+     "probability": 0.9999
+    },
+    {
+     "start": 39.26,
+     "end": 40.3,
+     "word": " 권리예요.",
+     "probability": 0.9569
+    }
+   ]
+  },
+  {
+   "start": 42.84,
+   "end": 53.44,
+   "text": " 우리가 저도 청와대 비서실장 문체부 장관 국정원장 원내대표를 세 번 했습니다",
+   "words": [
+    {
+     "start": 42.84,
+     "end": 44.12,
+     "word": " 우리가",
+     "probability": 0.7726
+    },
+    {
+     "start": 44.12,
+     "end": 45.4,
+     "word": " 저도",
+     "probability": 0.9752
+    },
+    {
+     "start": 45.4,
+     "end": 47.6,
+     "word": " 청와대",
+     "probability": 0.9996
+    },
+    {
+     "start": 47.6,
+     "end": 48.24,
+     "word": " 비서실장",
+     "probability": 0.9996
+    },
+    {
+     "start": 48.24,
+     "end": 49.64,
+     "word": " 문체부",
+     "probability": 0.8754
+    },
+    {
+     "start": 49.64,
+     "end": 50.0,
+     "word": " 장관",
+     "probability": 0.9923
+    },
+    {
+     "start": 50.0,
+     "end": 51.66,
+     "word": " 국정원장",
+     "probability": 0.999
+    },
+    {
+     "start": 51.66,
+     "end": 52.84,
+     "word": " 원내대표를",
+     "probability": 0.9987
+    },
+    {
+     "start": 52.84,
+     "end": 53.06,
+     "word": " 세",
+     "probability": 0.8436
+    },
+    {
+     "start": 53.06,
+     "end": 53.24,
+     "word": " 번",
+     "probability": 0.9999
+    },
+    {
+     "start": 53.24,
+     "end": 53.44,
+     "word": " 했습니다",
+     "probability": 0.9747
+    }
+   ]
+  },
+  {
+   "start": 53.44,
+   "end": 55.78,
+   "text": " 다 법카 썼어요",
+   "words": [
+    {
+     "start": 53.44,
+     "end": 54.88,
+     "word": " 다",
+     "probability": 0.3401
+    },
+    {
+     "start": 54.88,
+     "end": 55.38,
+     "word": " 법카",
+     "probability": 0.6655
+    },
+    {
+     "start": 55.38,
+     "end": 55.78,
+     "word": " 썼어요",
+     "probability": 0.9934
+    }
+   ]
+  },
+  {
+   "start": 57.2,
+   "end": 63.58,
+   "text": " 만약에 법카를 그렇게 쪼개게 하고 불법적으로 했다고 하면",
+   "words": [
+    {
+     "start": 57.2,
+     "end": 58.48,
+     "word": " 만약에",
+     "probability": 0.991
+    },
+    {
+     "start": 58.48,
+     "end": 59.08,
+     "word": " 법카를",
+     "probability": 0.9989
+    },
+    {
+     "start": 59.08,
+     "end": 59.4,
+     "word": " 그렇게",
+     "probability": 0.9998
+    },
+    {
+     "start": 59.4,
+     "end": 60.02,
+     "word": " 쪼개게",
+     "probability": 0.9255
+    },
+    {
+     "start": 60.02,
+     "end": 60.22,
+     "word": " 하고",
+     "probability": 0.9997
+    },
+    {
+     "start": 60.22,
+     "end": 63.04,
+     "word": " 불법적으로",
+     "probability": 0.9997
+    },
+    {
+     "start": 63.04,
+     "end": 63.38,
+     "word": " 했다고",
+     "probability": 0.9816
+    },
+    {
+     "start": 63.38,
+     "end": 63.58,
+     "word": " 하면",
+     "probability": 0.9999
+    }
+   ]
+  },
+  {
+   "start": 63.58,
+   "end": 69.84,
+   "text": " 제가 재판을 받으면 조의대 대법원장은 무죄줍니까?",
+   "words": [
+    {
+     "start": 63.58,
+     "end": 64.26,
+     "word": " 제가",
+     "probability": 0.947
+    },
+    {
+     "start": 64.26,
+     "end": 66.18,
+     "word": " 재판을",
+     "probability": 0.9964
+    },
+    {
+     "start": 66.18,
+     "end": 66.48,
+     "word": " 받으면",
+     "probability": 0.9999
+    },
+    {
+     "start": 66.48,
+     "end": 68.42,
+     "word": " 조의대",
+     "probability": 0.9293
+    },
+    {
+     "start": 68.42,
+     "end": 69.14,
+     "word": " 대법원장은",
+     "probability": 0.9976
+    },
+    {
+     "start": 69.14,
+     "end": 69.84,
+     "word": " 무죄줍니까?",
+     "probability": 0.9386
+    }
+   ]
+  },
+  {
+   "start": 71.36,
+   "end": 73.76,
+   "text": " 이건 현행범이에요.",
+   "words": [
+    {
+     "start": 71.36,
+     "end": 72.76,
+     "word": " 이건",
+     "probability": 0.9748
+    },
+    {
+     "start": 72.76,
+     "end": 73.76,
+     "word": " 현행범이에요.",
+     "probability": 0.9848
+    }
+   ]
+  }
+ ]
+}

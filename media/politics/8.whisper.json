@@ -1,0 +1,813 @@
+{
+ "model": "faster-whisper large-v3 (int8, CPU)",
+ "params": {
+  "language": "ko",
+  "beam_size": 5,
+  "vad_filter": false,
+  "word_timestamps": true,
+  "condition_on_previous_text": false
+ },
+ "source": "8.mp4",
+ "duration_s": 83.011,
+ "segments": [
+  {
+   "start": 0.0,
+   "end": 2.02,
+   "text": " 지금 말씀을 하신 거 아닙니까?",
+   "words": [
+    {
+     "start": 0.0,
+     "end": 0.74,
+     "word": " 지금",
+     "probability": 0.9734
+    },
+    {
+     "start": 0.74,
+     "end": 1.16,
+     "word": " 말씀을",
+     "probability": 0.9382
+    },
+    {
+     "start": 1.16,
+     "end": 1.38,
+     "word": " 하신",
+     "probability": 0.9975
+    },
+    {
+     "start": 1.38,
+     "end": 1.5,
+     "word": " 거",
+     "probability": 0.9595
+    },
+    {
+     "start": 1.5,
+     "end": 2.02,
+     "word": " 아닙니까?",
+     "probability": 0.9999
+    }
+   ]
+  },
+  {
+   "start": 2.8,
+   "end": 3.46,
+   "text": " 법원 행정처장",
+   "words": [
+    {
+     "start": 2.48,
+     "end": 2.92,
+     "word": " 법원",
+     "probability": 0.9664
+    },
+    {
+     "start": 2.92,
+     "end": 3.46,
+     "word": " 행정처장",
+     "probability": 0.9767
+    }
+   ]
+  },
+  {
+   "start": 4.92,
+   "end": 6.8,
+   "text": " 똑같은 의견을 가지고 있다 그러면",
+   "words": [
+    {
+     "start": 4.92,
+     "end": 5.8,
+     "word": " 똑같은",
+     "probability": 0.6808
+    },
+    {
+     "start": 5.8,
+     "end": 6.14,
+     "word": " 의견을",
+     "probability": 0.9999
+    },
+    {
+     "start": 6.14,
+     "end": 6.36,
+     "word": " 가지고",
+     "probability": 0.9989
+    },
+    {
+     "start": 6.36,
+     "end": 6.6,
+     "word": " 있다",
+     "probability": 0.8476
+    },
+    {
+     "start": 6.6,
+     "end": 6.8,
+     "word": " 그러면",
+     "probability": 0.9991
+    }
+   ]
+  },
+  {
+   "start": 6.8,
+   "end": 9.62,
+   "text": " 본인 입으로 똑같은 입장을 말씀을 하세요.",
+   "words": [
+    {
+     "start": 6.8,
+     "end": 7.72,
+     "word": " 본인",
+     "probability": 0.9983
+    },
+    {
+     "start": 7.72,
+     "end": 8.04,
+     "word": " 입으로",
+     "probability": 0.9997
+    },
+    {
+     "start": 8.04,
+     "end": 8.46,
+     "word": " 똑같은",
+     "probability": 0.9461
+    },
+    {
+     "start": 8.46,
+     "end": 8.72,
+     "word": " 입장을",
+     "probability": 0.9122
+    },
+    {
+     "start": 8.72,
+     "end": 9.18,
+     "word": " 말씀을",
+     "probability": 0.9845
+    },
+    {
+     "start": 9.18,
+     "end": 9.62,
+     "word": " 하세요.",
+     "probability": 0.9999
+    }
+   ]
+  },
+  {
+   "start": 11.26,
+   "end": 11.98,
+   "text": " 법원 행정처장님",
+   "words": [
+    {
+     "start": 11.0,
+     "end": 11.44,
+     "word": " 법원",
+     "probability": 0.9995
+    },
+    {
+     "start": 11.44,
+     "end": 11.98,
+     "word": " 행정처장님",
+     "probability": 0.9996
+    }
+   ]
+  },
+  {
+   "start": 11.98,
+   "end": 13.68,
+   "text": " 대법관이시죠?",
+   "words": [
+    {
+     "start": 11.98,
+     "end": 13.68,
+     "word": " 대법관이시죠?",
+     "probability": 0.9837
+    }
+   ]
+  },
+  {
+   "start": 13.9,
+   "end": 14.3,
+   "text": " 네.",
+   "words": [
+    {
+     "start": 13.9,
+     "end": 14.3,
+     "word": " 네.",
+     "probability": 0.1117
+    }
+   ]
+  },
+  {
+   "start": 15.4,
+   "end": 16.8,
+   "text": " 법관 경력 얼마나 되셨습니까?",
+   "words": [
+    {
+     "start": 15.26,
+     "end": 15.7,
+     "word": " 법관",
+     "probability": 0.9993
+    },
+    {
+     "start": 15.7,
+     "end": 16.08,
+     "word": " 경력",
+     "probability": 0.9995
+    },
+    {
+     "start": 16.08,
+     "end": 16.26,
+     "word": " 얼마나",
+     "probability": 0.8565
+    },
+    {
+     "start": 16.26,
+     "end": 16.8,
+     "word": " 되셨습니까?",
+     "probability": 0.9919
+    }
+   ]
+  },
+  {
+   "start": 18.2,
+   "end": 19.62,
+   "text": " 30년 다 돼갑니다.",
+   "words": [
+    {
+     "start": 18.2,
+     "end": 19.08,
+     "word": " 30년",
+     "probability": 0.9988
+    },
+    {
+     "start": 19.08,
+     "end": 19.2,
+     "word": " 다",
+     "probability": 0.9508
+    },
+    {
+     "start": 19.2,
+     "end": 19.62,
+     "word": " 돼갑니다.",
+     "probability": 0.8732
+    }
+   ]
+  },
+  {
+   "start": 19.74,
+   "end": 20.86,
+   "text": " 30년 동안에",
+   "words": [
+    {
+     "start": 19.74,
+     "end": 20.2,
+     "word": " 30년",
+     "probability": 0.9992
+    },
+    {
+     "start": 20.2,
+     "end": 20.86,
+     "word": " 동안에",
+     "probability": 0.9921
+    }
+   ]
+  },
+  {
+   "start": 21.68,
+   "end": 24.3,
+   "text": " 3권 분립, 사법부 독립",
+   "words": [
+    {
+     "start": 21.68,
+     "end": 22.18,
+     "word": " 3권",
+     "probability": 0.5947
+    },
+    {
+     "start": 22.18,
+     "end": 22.66,
+     "word": " 분립,",
+     "probability": 0.9771
+    },
+    {
+     "start": 22.82,
+     "end": 23.8,
+     "word": " 사법부",
+     "probability": 0.9867
+    },
+    {
+     "start": 23.8,
+     "end": 24.3,
+     "word": " 독립",
+     "probability": 0.9999
+    }
+   ]
+  },
+  {
+   "start": 24.3,
+   "end": 29.0,
+   "text": " 이렇게 대통령, 정부 여당에 의해서 흔들린 적이 있었습니까?",
+   "words": [
+    {
+     "start": 24.3,
+     "end": 25.34,
+     "word": " 이렇게",
+     "probability": 0.9955
+    },
+    {
+     "start": 25.34,
+     "end": 26.0,
+     "word": " 대통령,",
+     "probability": 0.9998
+    },
+    {
+     "start": 26.3,
+     "end": 26.94,
+     "word": " 정부",
+     "probability": 0.9938
+    },
+    {
+     "start": 26.94,
+     "end": 27.38,
+     "word": " 여당에",
+     "probability": 0.9667
+    },
+    {
+     "start": 27.38,
+     "end": 27.72,
+     "word": " 의해서",
+     "probability": 0.9999
+    },
+    {
+     "start": 27.72,
+     "end": 28.32,
+     "word": " 흔들린",
+     "probability": 0.9998
+    },
+    {
+     "start": 28.32,
+     "end": 28.46,
+     "word": " 적이",
+     "probability": 0.9999
+    },
+    {
+     "start": 28.46,
+     "end": 29.0,
+     "word": " 있었습니까?",
+     "probability": 0.9989
+    }
+   ]
+  },
+  {
+   "start": 33.08,
+   "end": 34.78,
+   "text": " 있었습니까 없었습니까",
+   "words": [
+    {
+     "start": 33.08,
+     "end": 34.28,
+     "word": " 있었습니까",
+     "probability": 0.7762
+    },
+    {
+     "start": 34.28,
+     "end": 34.78,
+     "word": " 없었습니까",
+     "probability": 0.7673
+    }
+   ]
+  },
+  {
+   "start": 34.78,
+   "end": 37.6,
+   "text": " 그 부분에 대해서는 제가 말씀드리기가",
+   "words": [
+    {
+     "start": 34.78,
+     "end": 35.44,
+     "word": " 그",
+     "probability": 0.2327
+    },
+    {
+     "start": 35.44,
+     "end": 36.04,
+     "word": " 부분에",
+     "probability": 0.9998
+    },
+    {
+     "start": 36.04,
+     "end": 36.46,
+     "word": " 대해서는",
+     "probability": 0.9997
+    },
+    {
+     "start": 36.46,
+     "end": 36.88,
+     "word": " 제가",
+     "probability": 0.9948
+    },
+    {
+     "start": 36.88,
+     "end": 37.6,
+     "word": " 말씀드리기가",
+     "probability": 0.771
+    }
+   ]
+  },
+  {
+   "start": 37.6,
+   "end": 38.8,
+   "text": " 없었다고 말해야죠",
+   "words": [
+    {
+     "start": 37.6,
+     "end": 38.24,
+     "word": " 없었다고",
+     "probability": 0.7464
+    },
+    {
+     "start": 38.24,
+     "end": 38.8,
+     "word": " 말해야죠",
+     "probability": 0.9552
+    }
+   ]
+  },
+  {
+   "start": 41.18,
+   "end": 45.26,
+   "text": " 교과서에서만 등장하는 헌법책에서만 등장하는",
+   "words": [
+    {
+     "start": 41.18,
+     "end": 42.38,
+     "word": " 교과서에서만",
+     "probability": 0.9176
+    },
+    {
+     "start": 42.38,
+     "end": 42.96,
+     "word": " 등장하는",
+     "probability": 0.9998
+    },
+    {
+     "start": 42.96,
+     "end": 44.62,
+     "word": " 헌법책에서만",
+     "probability": 0.9822
+    },
+    {
+     "start": 44.62,
+     "end": 45.26,
+     "word": " 등장하는",
+     "probability": 1.0
+    }
+   ]
+  },
+  {
+   "start": 45.26,
+   "end": 49.38,
+   "text": " 사법부 독립, 삼권불립 이야기가",
+   "words": [
+    {
+     "start": 45.26,
+     "end": 46.64,
+     "word": " 사법부",
+     "probability": 0.9978
+    },
+    {
+     "start": 46.64,
+     "end": 47.2,
+     "word": " 독립,",
+     "probability": 0.9997
+    },
+    {
+     "start": 47.22,
+     "end": 48.34,
+     "word": " 삼권불립",
+     "probability": 0.8372
+    },
+    {
+     "start": 48.34,
+     "end": 49.38,
+     "word": " 이야기가",
+     "probability": 0.9979
+    }
+   ]
+  },
+  {
+   "start": 49.38,
+   "end": 52.96,
+   "text": " 이재명 대통령의 대통령 취임 이후에",
+   "words": [
+    {
+     "start": 49.38,
+     "end": 50.54,
+     "word": " 이재명",
+     "probability": 0.9982
+    },
+    {
+     "start": 50.54,
+     "end": 51.28,
+     "word": " 대통령의",
+     "probability": 0.9276
+    },
+    {
+     "start": 51.28,
+     "end": 51.74,
+     "word": " 대통령",
+     "probability": 0.9912
+    },
+    {
+     "start": 51.74,
+     "end": 52.44,
+     "word": " 취임",
+     "probability": 0.9945
+    },
+    {
+     "start": 52.44,
+     "end": 52.96,
+     "word": " 이후에",
+     "probability": 0.9996
+    }
+   ]
+  },
+  {
+   "start": 53.52,
+   "end": 56.6,
+   "text": " 늘상 국민들도 관심을 가지는 소재가 되어버렸어요",
+   "words": [
+    {
+     "start": 53.36,
+     "end": 53.96,
+     "word": " 늘상",
+     "probability": 0.9976
+    },
+    {
+     "start": 53.96,
+     "end": 54.78,
+     "word": " 국민들도",
+     "probability": 0.9996
+    },
+    {
+     "start": 54.78,
+     "end": 55.32,
+     "word": " 관심을",
+     "probability": 0.9999
+    },
+    {
+     "start": 55.32,
+     "end": 55.56,
+     "word": " 가지는",
+     "probability": 0.9947
+    },
+    {
+     "start": 55.56,
+     "end": 56.0,
+     "word": " 소재가",
+     "probability": 0.9994
+    },
+    {
+     "start": 56.0,
+     "end": 56.6,
+     "word": " 되어버렸어요",
+     "probability": 0.9898
+    }
+   ]
+  },
+  {
+   "start": 56.6,
+   "end": 57.94,
+   "text": " 정말 슬픈 일입니다",
+   "words": [
+    {
+     "start": 56.6,
+     "end": 57.18,
+     "word": " 정말",
+     "probability": 0.7931
+    },
+    {
+     "start": 57.18,
+     "end": 57.58,
+     "word": " 슬픈",
+     "probability": 0.9996
+    },
+    {
+     "start": 57.58,
+     "end": 57.94,
+     "word": " 일입니다",
+     "probability": 0.9995
+    }
+   ]
+  },
+  {
+   "start": 57.94,
+   "end": 61.64,
+   "text": " 사법부의 독립, 삼권분립은요",
+   "words": [
+    {
+     "start": 57.94,
+     "end": 59.8,
+     "word": " 사법부의",
+     "probability": 0.9929
+    },
+    {
+     "start": 59.8,
+     "end": 60.34,
+     "word": " 독립,",
+     "probability": 0.9999
+    },
+    {
+     "start": 60.34,
+     "end": 61.64,
+     "word": " 삼권분립은요",
+     "probability": 0.8826
+    }
+   ]
+  },
+  {
+   "start": 61.64,
+   "end": 66.28,
+   "text": " 국민들이 우려할 문제가 아니고 사법부 스스로 지켜야 되는 거예요",
+   "words": [
+    {
+     "start": 61.64,
+     "end": 62.96,
+     "word": " 국민들이",
+     "probability": 0.8853
+    },
+    {
+     "start": 62.96,
+     "end": 63.34,
+     "word": " 우려할",
+     "probability": 0.9997
+    },
+    {
+     "start": 63.34,
+     "end": 63.62,
+     "word": " 문제가",
+     "probability": 1.0
+    },
+    {
+     "start": 63.62,
+     "end": 63.98,
+     "word": " 아니고",
+     "probability": 0.9998
+    },
+    {
+     "start": 63.98,
+     "end": 65.08,
+     "word": " 사법부",
+     "probability": 0.9997
+    },
+    {
+     "start": 65.08,
+     "end": 65.46,
+     "word": " 스스로",
+     "probability": 1.0
+    },
+    {
+     "start": 65.46,
+     "end": 65.86,
+     "word": " 지켜야",
+     "probability": 0.9996
+    },
+    {
+     "start": 65.86,
+     "end": 65.98,
+     "word": " 되는",
+     "probability": 0.9861
+    },
+    {
+     "start": 65.98,
+     "end": 66.28,
+     "word": " 거예요",
+     "probability": 0.9938
+    }
+   ]
+  },
+  {
+   "start": 69.96,
+   "end": 76.3,
+   "text": " 저는 이재명 대통령 이후에 지금 근래에 한 1년 반 동안에",
+   "words": [
+    {
+     "start": 69.96,
+     "end": 70.96,
+     "word": " 저는",
+     "probability": 0.928
+    },
+    {
+     "start": 70.96,
+     "end": 71.96,
+     "word": " 이재명",
+     "probability": 0.9995
+    },
+    {
+     "start": 71.96,
+     "end": 72.18,
+     "word": " 대통령",
+     "probability": 0.9999
+    },
+    {
+     "start": 72.18,
+     "end": 73.46,
+     "word": " 이후에",
+     "probability": 0.9998
+    },
+    {
+     "start": 73.46,
+     "end": 74.34,
+     "word": " 지금",
+     "probability": 0.9835
+    },
+    {
+     "start": 74.34,
+     "end": 74.84,
+     "word": " 근래에",
+     "probability": 0.7854
+    },
+    {
+     "start": 74.84,
+     "end": 75.34,
+     "word": " 한",
+     "probability": 0.9606
+    },
+    {
+     "start": 75.34,
+     "end": 75.64,
+     "word": " 1년",
+     "probability": 0.9996
+    },
+    {
+     "start": 75.64,
+     "end": 75.82,
+     "word": " 반",
+     "probability": 0.9922
+    },
+    {
+     "start": 75.82,
+     "end": 76.3,
+     "word": " 동안에",
+     "probability": 0.9896
+    }
+   ]
+  },
+  {
+   "start": 76.3,
+   "end": 81.9,
+   "text": " 이렇게 사법 파괴, 사법권 독립 흔들리는 것",
+   "words": [
+    {
+     "start": 76.3,
+     "end": 76.62,
+     "word": " 이렇게",
+     "probability": 0.9995
+    },
+    {
+     "start": 76.62,
+     "end": 77.9,
+     "word": " 사법",
+     "probability": 0.9991
+    },
+    {
+     "start": 77.9,
+     "end": 78.4,
+     "word": " 파괴,",
+     "probability": 0.9785
+    },
+    {
+     "start": 78.54,
+     "end": 80.14,
+     "word": " 사법권",
+     "probability": 0.9983
+    },
+    {
+     "start": 80.14,
+     "end": 80.64,
+     "word": " 독립",
+     "probability": 1.0
+    },
+    {
+     "start": 80.64,
+     "end": 81.64,
+     "word": " 흔들리는",
+     "probability": 0.9605
+    },
+    {
+     "start": 81.64,
+     "end": 81.9,
+     "word": " 것",
+     "probability": 0.9948
+    }
+   ]
+  },
+  {
+   "start": 81.9,
+   "end": 82.86,
+   "text": " 자",
+   "words": [
+    {
+     "start": 81.9,
+     "end": 82.86,
+     "word": " 자",
+     "probability": 0.0658
+    }
+   ]
+  }
+ ]
+}

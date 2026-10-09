@@ -1,0 +1,765 @@
+{
+ "model": "faster-whisper large-v3 (int8, CPU)",
+ "params": {
+  "language": "ko",
+  "beam_size": 5,
+  "vad_filter": false,
+  "word_timestamps": true,
+  "condition_on_previous_text": false
+ },
+ "source": "1.mp4",
+ "duration_s": 65.504,
+ "segments": [
+  {
+   "start": 1.22,
+   "end": 2.22,
+   "text": " 추궁하는 겁니다.",
+   "words": [
+    {
+     "start": 1.22,
+     "end": 1.98,
+     "word": " 추궁하는",
+     "probability": 0.8839
+    },
+    {
+     "start": 1.98,
+     "end": 2.22,
+     "word": " 겁니다.",
+     "probability": 0.9957
+    }
+   ]
+  },
+  {
+   "start": 2.46,
+   "end": 4.68,
+   "text": " 그리고 또 하나 볼까요?",
+   "words": [
+    {
+     "start": 2.46,
+     "end": 2.96,
+     "word": " 그리고",
+     "probability": 0.8597
+    },
+    {
+     "start": 2.96,
+     "end": 4.14,
+     "word": " 또",
+     "probability": 0.9962
+    },
+    {
+     "start": 4.14,
+     "end": 4.3,
+     "word": " 하나",
+     "probability": 0.9999
+    },
+    {
+     "start": 4.3,
+     "end": 4.68,
+     "word": " 볼까요?",
+     "probability": 0.9999
+    }
+   ]
+  },
+  {
+   "start": 5.52,
+   "end": 6.66,
+   "text": " 사법부 독립.",
+   "words": [
+    {
+     "start": 5.52,
+     "end": 6.28,
+     "word": " 사법부",
+     "probability": 0.9872
+    },
+    {
+     "start": 6.28,
+     "end": 6.66,
+     "word": " 독립.",
+     "probability": 0.9999
+    }
+   ]
+  },
+  {
+   "start": 7.2,
+   "end": 9.36,
+   "text": " 오늘도 제일 많이 나온 얘기가 사법부 독립이에요.",
+   "words": [
+    {
+     "start": 6.94,
+     "end": 7.32,
+     "word": " 오늘도",
+     "probability": 0.9978
+    },
+    {
+     "start": 7.32,
+     "end": 7.82,
+     "word": " 제일",
+     "probability": 1.0
+    },
+    {
+     "start": 7.82,
+     "end": 8.0,
+     "word": " 많이",
+     "probability": 0.9999
+    },
+    {
+     "start": 8.0,
+     "end": 8.24,
+     "word": " 나온",
+     "probability": 0.6361
+    },
+    {
+     "start": 8.24,
+     "end": 8.5,
+     "word": " 얘기가",
+     "probability": 0.9957
+    },
+    {
+     "start": 8.5,
+     "end": 8.9,
+     "word": " 사법부",
+     "probability": 0.9998
+    },
+    {
+     "start": 8.9,
+     "end": 9.36,
+     "word": " 독립이에요.",
+     "probability": 0.9998
+    }
+   ]
+  },
+  {
+   "start": 9.54,
+   "end": 11.84,
+   "text": " 사법부 독립 근거조항이 헌법에 있습니까?",
+   "words": [
+    {
+     "start": 9.54,
+     "end": 10.3,
+     "word": " 사법부",
+     "probability": 0.9996
+    },
+    {
+     "start": 10.3,
+     "end": 10.54,
+     "word": " 독립",
+     "probability": 0.9999
+    },
+    {
+     "start": 10.54,
+     "end": 11.18,
+     "word": " 근거조항이",
+     "probability": 0.8788
+    },
+    {
+     "start": 11.18,
+     "end": 11.52,
+     "word": " 헌법에",
+     "probability": 0.9964
+    },
+    {
+     "start": 11.52,
+     "end": 11.84,
+     "word": " 있습니까?",
+     "probability": 0.9987
+    }
+   ]
+  },
+  {
+   "start": 14.7,
+   "end": 15.88,
+   "text": " 사법권에 속한다.",
+   "words": [
+    {
+     "start": 14.7,
+     "end": 15.46,
+     "word": " 사법권에",
+     "probability": 0.9844
+    },
+    {
+     "start": 15.46,
+     "end": 15.88,
+     "word": " 속한다.",
+     "probability": 0.9873
+    }
+   ]
+  },
+  {
+   "start": 16.1,
+   "end": 18.44,
+   "text": " 제가 몇 존지 기억나지 않습니다만.",
+   "words": [
+    {
+     "start": 16.1,
+     "end": 16.38,
+     "word": " 제가",
+     "probability": 0.1045
+    },
+    {
+     "start": 16.38,
+     "end": 16.98,
+     "word": " 몇",
+     "probability": 0.6607
+    },
+    {
+     "start": 16.98,
+     "end": 17.18,
+     "word": " 존지",
+     "probability": 0.8962
+    },
+    {
+     "start": 17.18,
+     "end": 17.74,
+     "word": " 기억나지",
+     "probability": 0.9933
+    },
+    {
+     "start": 17.74,
+     "end": 18.44,
+     "word": " 않습니다만.",
+     "probability": 0.9975
+    }
+   ]
+  },
+  {
+   "start": 21.04,
+   "end": 24.68,
+   "text": " 아니, 그건 사법권에 속하는 것과 독립이랑 무슨 상관이에요?",
+   "words": [
+    {
+     "start": 20.76,
+     "end": 21.14,
+     "word": " 아니,",
+     "probability": 0.7965
+    },
+    {
+     "start": 21.26,
+     "end": 21.38,
+     "word": " 그건",
+     "probability": 0.6438
+    },
+    {
+     "start": 21.38,
+     "end": 21.9,
+     "word": " 사법권에",
+     "probability": 0.9992
+    },
+    {
+     "start": 21.9,
+     "end": 22.2,
+     "word": " 속하는",
+     "probability": 0.9999
+    },
+    {
+     "start": 22.2,
+     "end": 22.62,
+     "word": " 것과",
+     "probability": 1.0
+    },
+    {
+     "start": 22.62,
+     "end": 23.98,
+     "word": " 독립이랑",
+     "probability": 0.999
+    },
+    {
+     "start": 23.98,
+     "end": 24.18,
+     "word": " 무슨",
+     "probability": 0.9997
+    },
+    {
+     "start": 24.18,
+     "end": 24.68,
+     "word": " 상관이에요?",
+     "probability": 0.9998
+    }
+   ]
+  },
+  {
+   "start": 25.2,
+   "end": 27.84,
+   "text": " 사법부 독립의 근거조항이 헌법에 있냐고요?",
+   "words": [
+    {
+     "start": 25.2,
+     "end": 25.96,
+     "word": " 사법부",
+     "probability": 0.9997
+    },
+    {
+     "start": 25.96,
+     "end": 26.52,
+     "word": " 독립의",
+     "probability": 0.9924
+    },
+    {
+     "start": 26.52,
+     "end": 27.18,
+     "word": " 근거조항이",
+     "probability": 0.9988
+    },
+    {
+     "start": 27.18,
+     "end": 27.5,
+     "word": " 헌법에",
+     "probability": 0.9999
+    },
+    {
+     "start": 27.5,
+     "end": 27.84,
+     "word": " 있냐고요?",
+     "probability": 0.9994
+    }
+   ]
+  },
+  {
+   "start": 27.84,
+   "end": 34.3,
+   "text": " 많은 학자들이 그 조항을 근거로 사법부의 독립을 말씀하시는 것 같습니다.",
+   "words": [
+    {
+     "start": 27.84,
+     "end": 29.34,
+     "word": " 많은",
+     "probability": 0.8495
+    },
+    {
+     "start": 29.34,
+     "end": 29.94,
+     "word": " 학자들이",
+     "probability": 0.9991
+    },
+    {
+     "start": 29.94,
+     "end": 30.1,
+     "word": " 그",
+     "probability": 0.9995
+    },
+    {
+     "start": 30.1,
+     "end": 30.54,
+     "word": " 조항을",
+     "probability": 0.9974
+    },
+    {
+     "start": 30.54,
+     "end": 31.06,
+     "word": " 근거로",
+     "probability": 0.9997
+    },
+    {
+     "start": 31.06,
+     "end": 32.5,
+     "word": " 사법부의",
+     "probability": 0.8273
+    },
+    {
+     "start": 32.5,
+     "end": 33.04,
+     "word": " 독립을",
+     "probability": 0.9983
+    },
+    {
+     "start": 33.04,
+     "end": 33.9,
+     "word": " 말씀하시는",
+     "probability": 0.9639
+    },
+    {
+     "start": 33.9,
+     "end": 34.1,
+     "word": " 것",
+     "probability": 0.9982
+    },
+    {
+     "start": 34.1,
+     "end": 34.3,
+     "word": " 같습니다.",
+     "probability": 0.9983
+    }
+   ]
+  },
+  {
+   "start": 35.36,
+   "end": 36.68,
+   "text": " 103조에 이렇게 되어 있죠.",
+   "words": [
+    {
+     "start": 35.36,
+     "end": 36.22,
+     "word": " 103조에",
+     "probability": 0.797
+    },
+    {
+     "start": 36.22,
+     "end": 36.36,
+     "word": " 이렇게",
+     "probability": 0.9997
+    },
+    {
+     "start": 36.36,
+     "end": 36.56,
+     "word": " 되어",
+     "probability": 0.6994
+    },
+    {
+     "start": 36.56,
+     "end": 36.68,
+     "word": " 있죠.",
+     "probability": 0.9976
+    }
+   ]
+  },
+  {
+   "start": 36.8,
+   "end": 41.62,
+   "text": " 법관은 헌법과 법률에 의하여 그 양심에 따라 독립하여 심판한다.",
+   "words": [
+    {
+     "start": 36.8,
+     "end": 37.42,
+     "word": " 법관은",
+     "probability": 0.7913
+    },
+    {
+     "start": 37.42,
+     "end": 38.26,
+     "word": " 헌법과",
+     "probability": 0.9999
+    },
+    {
+     "start": 38.26,
+     "end": 38.78,
+     "word": " 법률에",
+     "probability": 0.9999
+    },
+    {
+     "start": 38.78,
+     "end": 39.16,
+     "word": " 의하여",
+     "probability": 0.9999
+    },
+    {
+     "start": 39.16,
+     "end": 39.3,
+     "word": " 그",
+     "probability": 0.9999
+    },
+    {
+     "start": 39.3,
+     "end": 39.8,
+     "word": " 양심에",
+     "probability": 1.0
+    },
+    {
+     "start": 39.8,
+     "end": 40.0,
+     "word": " 따라",
+     "probability": 1.0
+    },
+    {
+     "start": 40.0,
+     "end": 41.18,
+     "word": " 독립하여",
+     "probability": 1.0
+    },
+    {
+     "start": 41.18,
+     "end": 41.62,
+     "word": " 심판한다.",
+     "probability": 0.9996
+    }
+   ]
+  },
+  {
+   "start": 41.76,
+   "end": 45.42,
+   "text": " 이게 사법부 독립의 근거로 지금 인용되고 있는 거 아닌가요?",
+   "words": [
+    {
+     "start": 41.76,
+     "end": 41.96,
+     "word": " 이게",
+     "probability": 0.9988
+    },
+    {
+     "start": 41.96,
+     "end": 42.46,
+     "word": " 사법부",
+     "probability": 0.9985
+    },
+    {
+     "start": 42.46,
+     "end": 42.96,
+     "word": " 독립의",
+     "probability": 0.997
+    },
+    {
+     "start": 42.96,
+     "end": 43.78,
+     "word": " 근거로",
+     "probability": 0.9996
+    },
+    {
+     "start": 43.78,
+     "end": 44.0,
+     "word": " 지금",
+     "probability": 0.997
+    },
+    {
+     "start": 44.0,
+     "end": 44.84,
+     "word": " 인용되고",
+     "probability": 0.9501
+    },
+    {
+     "start": 44.84,
+     "end": 44.98,
+     "word": " 있는",
+     "probability": 0.9993
+    },
+    {
+     "start": 44.98,
+     "end": 45.12,
+     "word": " 거",
+     "probability": 0.9268
+    },
+    {
+     "start": 45.12,
+     "end": 45.42,
+     "word": " 아닌가요?",
+     "probability": 0.9999
+    }
+   ]
+  },
+  {
+   "start": 45.84,
+   "end": 47.46,
+   "text": " 그 조항도 당연히 포함되어 있습니다.",
+   "words": [
+    {
+     "start": 45.84,
+     "end": 46.06,
+     "word": " 그",
+     "probability": 0.8354
+    },
+    {
+     "start": 46.06,
+     "end": 46.52,
+     "word": " 조항도",
+     "probability": 0.9999
+    },
+    {
+     "start": 46.52,
+     "end": 46.98,
+     "word": " 당연히",
+     "probability": 1.0
+    },
+    {
+     "start": 46.98,
+     "end": 47.36,
+     "word": " 포함되어",
+     "probability": 0.9866
+    },
+    {
+     "start": 47.36,
+     "end": 47.46,
+     "word": " 있습니다.",
+     "probability": 0.6059
+    }
+   ]
+  },
+  {
+   "start": 47.48,
+   "end": 48.14,
+   "text": " 주어가 뭡니까?",
+   "words": [
+    {
+     "start": 47.48,
+     "end": 47.68,
+     "word": " 주어가",
+     "probability": 0.9917
+    },
+    {
+     "start": 47.68,
+     "end": 48.14,
+     "word": " 뭡니까?",
+     "probability": 0.9997
+    }
+   ]
+  },
+  {
+   "start": 49.84,
+   "end": 50.7,
+   "text": " 법관은이죠.",
+   "words": [
+    {
+     "start": 49.84,
+     "end": 50.7,
+     "word": " 법관은이죠.",
+     "probability": 0.9915
+    }
+   ]
+  },
+  {
+   "start": 52.1,
+   "end": 54.92,
+   "text": " 사법부 독립이라고 헌법에 안 써 있어요.",
+   "words": [
+    {
+     "start": 52.1,
+     "end": 52.96,
+     "word": " 사법부",
+     "probability": 0.9953
+    },
+    {
+     "start": 52.96,
+     "end": 53.52,
+     "word": " 독립이라고",
+     "probability": 1.0
+    },
+    {
+     "start": 53.52,
+     "end": 54.32,
+     "word": " 헌법에",
+     "probability": 0.9836
+    },
+    {
+     "start": 54.32,
+     "end": 54.48,
+     "word": " 안",
+     "probability": 0.9999
+    },
+    {
+     "start": 54.48,
+     "end": 54.68,
+     "word": " 써",
+     "probability": 0.9762
+    },
+    {
+     "start": 54.68,
+     "end": 54.92,
+     "word": " 있어요.",
+     "probability": 0.9637
+    }
+   ]
+  },
+  {
+   "start": 54.92,
+   "end": 60.8,
+   "text": " 그런데 왜 대법원장은 사법부 독립 우리 처장도 사법부 독립이라고 합니까",
+   "words": [
+    {
+     "start": 54.92,
+     "end": 56.4,
+     "word": " 그런데",
+     "probability": 0.6388
+    },
+    {
+     "start": 56.4,
+     "end": 56.8,
+     "word": " 왜",
+     "probability": 0.998
+    },
+    {
+     "start": 56.8,
+     "end": 57.92,
+     "word": " 대법원장은",
+     "probability": 0.9976
+    },
+    {
+     "start": 57.92,
+     "end": 58.42,
+     "word": " 사법부",
+     "probability": 0.9621
+    },
+    {
+     "start": 58.42,
+     "end": 58.86,
+     "word": " 독립",
+     "probability": 1.0
+    },
+    {
+     "start": 58.86,
+     "end": 59.18,
+     "word": " 우리",
+     "probability": 0.4504
+    },
+    {
+     "start": 59.18,
+     "end": 59.64,
+     "word": " 처장도",
+     "probability": 0.9972
+    },
+    {
+     "start": 59.64,
+     "end": 60.02,
+     "word": " 사법부",
+     "probability": 0.9996
+    },
+    {
+     "start": 60.02,
+     "end": 60.44,
+     "word": " 독립이라고",
+     "probability": 0.9999
+    },
+    {
+     "start": 60.44,
+     "end": 60.8,
+     "word": " 합니까",
+     "probability": 0.9991
+    }
+   ]
+  },
+  {
+   "start": 60.8,
+   "end": 65.1,
+   "text": " 이것은 확대해석하고 있는 거죠 확대해석하는 이유는 있어요",
+   "words": [
+    {
+     "start": 60.8,
+     "end": 61.48,
+     "word": " 이것은",
+     "probability": 0.7294
+    },
+    {
+     "start": 61.48,
+     "end": 62.88,
+     "word": " 확대해석하고",
+     "probability": 0.9773
+    },
+    {
+     "start": 62.88,
+     "end": 63.12,
+     "word": " 있는",
+     "probability": 0.9999
+    },
+    {
+     "start": 63.12,
+     "end": 63.4,
+     "word": " 거죠",
+     "probability": 0.9275
+    },
+    {
+     "start": 63.4,
+     "end": 64.46,
+     "word": " 확대해석하는",
+     "probability": 0.9715
+    },
+    {
+     "start": 64.46,
+     "end": 64.84,
+     "word": " 이유는",
+     "probability": 0.9996
+    },
+    {
+     "start": 64.84,
+     "end": 65.1,
+     "word": " 있어요",
+     "probability": 0.9997
+    }
+   ]
+  }
+ ]
+}

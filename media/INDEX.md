@@ -45,6 +45,7 @@ Extra non-video files: `politics/{1,2,3}.vtt` + `.txt` (transcripts, see below),
   Party balance across 1–8: 민주 5, 국민의힘 3 (by views, not by choice).
 - Heatmaps: YouTube has none for these clips yet (too new / too few views), so no most-replayed data exists. The windows were chosen from the title quote instead.
 - Transcripts: `3.vtt/3.txt` = official NA subtitles (국방위 session has them). `1.*`, `2.*` = machine transcript (faster-whisper small, uncorrected; e.g. "사법부동립" = 사법부 독립, "개청" = 제청). The 법사위 session has no subtitles and no 회의록 published yet.
+- `<n>.whisper.json` (all 8 clips): raw faster-whisper **large-v3** output (int8 CPU; language=ko, beam_size=5, vad_filter=False, word_timestamps=True, condition_on_previous_text=False), with segment and word times in seconds on the clip. Not hand-corrected; much more accurate than the `small` .txt/.vtt (e.g. 사법부 독립, 제청, 헌법상).
 - Picture: the official feed carries a "대한민국 국회" bug and name captions. The 국방위 feed also has a sign-language interpreter inset (bottom right).
 - ⚠ Terms: both the NA VOD player and NATV's descriptions state 「국회법」 제149조제2항 — **회의 영상은 상업적 목적으로 사용할 수 없음**. Decide whether a monetized Short is OK before publishing.
 

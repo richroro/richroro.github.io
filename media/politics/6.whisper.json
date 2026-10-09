@@ -1,0 +1,872 @@
+{
+ "model": "faster-whisper large-v3 (int8, CPU)",
+ "params": {
+  "language": "ko",
+  "beam_size": 5,
+  "vad_filter": false,
+  "word_timestamps": true,
+  "condition_on_previous_text": false
+ },
+ "source": "6.mp4",
+ "duration_s": 90.001,
+ "segments": [
+  {
+   "start": 0.0,
+   "end": 3.34,
+   "text": " 생각해 봅니다. 그분의 오랜 군대 생활로 봐서는.",
+   "words": [
+    {
+     "start": 0.0,
+     "end": 0.68,
+     "word": " 생각해",
+     "probability": 0.2654
+    },
+    {
+     "start": 0.68,
+     "end": 1.14,
+     "word": " 봅니다.",
+     "probability": 0.9994
+    },
+    {
+     "start": 1.18,
+     "end": 1.66,
+     "word": " 그분의",
+     "probability": 0.9937
+    },
+    {
+     "start": 1.66,
+     "end": 2.0,
+     "word": " 오랜",
+     "probability": 0.9975
+    },
+    {
+     "start": 2.0,
+     "end": 2.3,
+     "word": " 군대",
+     "probability": 0.999
+    },
+    {
+     "start": 2.3,
+     "end": 2.76,
+     "word": " 생활로",
+     "probability": 0.9635
+    },
+    {
+     "start": 2.76,
+     "end": 3.34,
+     "word": " 봐서는.",
+     "probability": 0.9988
+    }
+   ]
+  },
+  {
+   "start": 4.64,
+   "end": 17.62,
+   "text": " 그다음에 이번에 12.3 내란과 관련해서 24년 11월경에 박지 드론.",
+   "words": [
+    {
+     "start": 4.54,
+     "end": 5.04,
+     "word": " 그다음에",
+     "probability": 0.5164
+    },
+    {
+     "start": 5.04,
+     "end": 6.48,
+     "word": " 이번에",
+     "probability": 0.9979
+    },
+    {
+     "start": 6.48,
+     "end": 10.6,
+     "word": " 12",
+     "probability": 0.9187
+    },
+    {
+     "start": 10.6,
+     "end": 10.84,
+     "word": ".3",
+     "probability": 0.9875
+    },
+    {
+     "start": 10.84,
+     "end": 11.42,
+     "word": " 내란과",
+     "probability": 0.9546
+    },
+    {
+     "start": 11.42,
+     "end": 12.1,
+     "word": " 관련해서",
+     "probability": 0.9999
+    },
+    {
+     "start": 12.1,
+     "end": 14.38,
+     "word": " 24년",
+     "probability": 0.9951
+    },
+    {
+     "start": 14.38,
+     "end": 15.4,
+     "word": " 11월경에",
+     "probability": 0.9948
+    },
+    {
+     "start": 15.4,
+     "end": 17.2,
+     "word": " 박지",
+     "probability": 0.855
+    },
+    {
+     "start": 17.2,
+     "end": 17.62,
+     "word": " 드론.",
+     "probability": 0.7762
+    }
+   ]
+  },
+  {
+   "start": 17.66,
+   "end": 26.14,
+   "text": " 박지 드론은 북한에서 실제 남쪽으로 보낸 드론과 동일한 모습을 가진 걸 박지 드론이라고 하는데 한번 들어보셨습니까?",
+   "words": [
+    {
+     "start": 17.66,
+     "end": 18.5,
+     "word": " 박지",
+     "probability": 0.999
+    },
+    {
+     "start": 18.5,
+     "end": 19.14,
+     "word": " 드론은",
+     "probability": 0.9998
+    },
+    {
+     "start": 19.14,
+     "end": 20.02,
+     "word": " 북한에서",
+     "probability": 0.9999
+    },
+    {
+     "start": 20.02,
+     "end": 20.76,
+     "word": " 실제",
+     "probability": 0.9988
+    },
+    {
+     "start": 20.76,
+     "end": 21.28,
+     "word": " 남쪽으로",
+     "probability": 0.9996
+    },
+    {
+     "start": 21.28,
+     "end": 21.62,
+     "word": " 보낸",
+     "probability": 0.9996
+    },
+    {
+     "start": 21.62,
+     "end": 22.06,
+     "word": " 드론과",
+     "probability": 0.9998
+    },
+    {
+     "start": 22.06,
+     "end": 22.5,
+     "word": " 동일한",
+     "probability": 0.9999
+    },
+    {
+     "start": 22.5,
+     "end": 23.06,
+     "word": " 모습을",
+     "probability": 1.0
+    },
+    {
+     "start": 23.06,
+     "end": 23.36,
+     "word": " 가진",
+     "probability": 0.9998
+    },
+    {
+     "start": 23.36,
+     "end": 23.52,
+     "word": " 걸",
+     "probability": 0.9822
+    },
+    {
+     "start": 23.52,
+     "end": 23.88,
+     "word": " 박지",
+     "probability": 0.9998
+    },
+    {
+     "start": 23.88,
+     "end": 24.42,
+     "word": " 드론이라고",
+     "probability": 0.9992
+    },
+    {
+     "start": 24.42,
+     "end": 24.66,
+     "word": " 하는데",
+     "probability": 0.9833
+    },
+    {
+     "start": 24.66,
+     "end": 25.22,
+     "word": " 한번",
+     "probability": 0.9321
+    },
+    {
+     "start": 25.22,
+     "end": 26.14,
+     "word": " 들어보셨습니까?",
+     "probability": 0.9996
+    }
+   ]
+  },
+  {
+   "start": 26.46,
+   "end": 27.32,
+   "text": " 네 들어봤습니다.",
+   "words": [
+    {
+     "start": 26.46,
+     "end": 26.68,
+     "word": " 네",
+     "probability": 0.7391
+    },
+    {
+     "start": 26.68,
+     "end": 27.32,
+     "word": " 들어봤습니다.",
+     "probability": 0.8115
+    }
+   ]
+  },
+  {
+   "start": 27.32,
+   "end": 41.0,
+   "text": " 그래서 11월경에 김용련 전 국방부 장관이 ADD에 직접 전화를 해서 두 대를 드론사에 줄 것을 지시를 한 것으로 나와 있는데 알고 있습니까?",
+   "words": [
+    {
+     "start": 27.32,
+     "end": 27.88,
+     "word": " 그래서",
+     "probability": 0.8384
+    },
+    {
+     "start": 27.88,
+     "end": 29.28,
+     "word": " 11월경에",
+     "probability": 0.9861
+    },
+    {
+     "start": 29.28,
+     "end": 29.98,
+     "word": " 김용련",
+     "probability": 0.8285
+    },
+    {
+     "start": 29.98,
+     "end": 30.14,
+     "word": " 전",
+     "probability": 0.9899
+    },
+    {
+     "start": 30.14,
+     "end": 30.74,
+     "word": " 국방부",
+     "probability": 0.9997
+    },
+    {
+     "start": 30.74,
+     "end": 31.36,
+     "word": " 장관이",
+     "probability": 0.9833
+    },
+    {
+     "start": 31.36,
+     "end": 33.2,
+     "word": " ADD에",
+     "probability": 0.9156
+    },
+    {
+     "start": 33.2,
+     "end": 34.28,
+     "word": " 직접",
+     "probability": 1.0
+    },
+    {
+     "start": 34.28,
+     "end": 34.88,
+     "word": " 전화를",
+     "probability": 0.9993
+    },
+    {
+     "start": 34.88,
+     "end": 35.24,
+     "word": " 해서",
+     "probability": 0.9999
+    },
+    {
+     "start": 35.24,
+     "end": 35.84,
+     "word": " 두",
+     "probability": 0.6436
+    },
+    {
+     "start": 35.84,
+     "end": 36.28,
+     "word": " 대를",
+     "probability": 0.9991
+    },
+    {
+     "start": 36.28,
+     "end": 37.5,
+     "word": " 드론사에",
+     "probability": 0.9983
+    },
+    {
+     "start": 37.5,
+     "end": 37.78,
+     "word": " 줄",
+     "probability": 0.9998
+    },
+    {
+     "start": 37.78,
+     "end": 38.06,
+     "word": " 것을",
+     "probability": 0.9996
+    },
+    {
+     "start": 38.06,
+     "end": 38.98,
+     "word": " 지시를",
+     "probability": 0.9977
+    },
+    {
+     "start": 38.98,
+     "end": 39.3,
+     "word": " 한",
+     "probability": 0.9999
+    },
+    {
+     "start": 39.3,
+     "end": 39.62,
+     "word": " 것으로",
+     "probability": 0.9999
+    },
+    {
+     "start": 39.62,
+     "end": 39.92,
+     "word": " 나와",
+     "probability": 0.997
+    },
+    {
+     "start": 39.92,
+     "end": 40.18,
+     "word": " 있는데",
+     "probability": 0.8985
+    },
+    {
+     "start": 40.18,
+     "end": 40.52,
+     "word": " 알고",
+     "probability": 0.9988
+    },
+    {
+     "start": 40.52,
+     "end": 41.0,
+     "word": " 있습니까?",
+     "probability": 0.9995
+    }
+   ]
+  },
+  {
+   "start": 41.42,
+   "end": 42.26,
+   "text": " 예 알고 있습니다.",
+   "words": [
+    {
+     "start": 41.42,
+     "end": 41.72,
+     "word": " 예",
+     "probability": 0.4346
+    },
+    {
+     "start": 41.72,
+     "end": 41.98,
+     "word": " 알고",
+     "probability": 0.823
+    },
+    {
+     "start": 41.98,
+     "end": 42.26,
+     "word": " 있습니다.",
+     "probability": 0.9996
+    }
+   ]
+  },
+  {
+   "start": 42.52,
+   "end": 50.5,
+   "text": " 그래서 드론사에 제가 확인을 그 당시에 봤을 때 박지 드론 두 대를 받은 것으로 확인을 했습니다. 맞죠?",
+   "words": [
+    {
+     "start": 42.52,
+     "end": 43.12,
+     "word": " 그래서",
+     "probability": 0.9878
+    },
+    {
+     "start": 43.12,
+     "end": 43.98,
+     "word": " 드론사에",
+     "probability": 0.9983
+    },
+    {
+     "start": 43.98,
+     "end": 44.24,
+     "word": " 제가",
+     "probability": 0.9996
+    },
+    {
+     "start": 44.24,
+     "end": 44.74,
+     "word": " 확인을",
+     "probability": 0.9995
+    },
+    {
+     "start": 44.74,
+     "end": 44.86,
+     "word": " 그",
+     "probability": 0.9986
+    },
+    {
+     "start": 44.86,
+     "end": 45.24,
+     "word": " 당시에",
+     "probability": 0.948
+    },
+    {
+     "start": 45.24,
+     "end": 45.7,
+     "word": " 봤을",
+     "probability": 0.9534
+    },
+    {
+     "start": 45.7,
+     "end": 45.96,
+     "word": " 때",
+     "probability": 0.9998
+    },
+    {
+     "start": 45.96,
+     "end": 46.44,
+     "word": " 박지",
+     "probability": 0.8142
+    },
+    {
+     "start": 46.44,
+     "end": 46.78,
+     "word": " 드론",
+     "probability": 0.7988
+    },
+    {
+     "start": 46.78,
+     "end": 46.96,
+     "word": " 두",
+     "probability": 0.9982
+    },
+    {
+     "start": 46.96,
+     "end": 47.52,
+     "word": " 대를",
+     "probability": 0.9997
+    },
+    {
+     "start": 47.52,
+     "end": 48.2,
+     "word": " 받은",
+     "probability": 0.9999
+    },
+    {
+     "start": 48.2,
+     "end": 48.44,
+     "word": " 것으로",
+     "probability": 1.0
+    },
+    {
+     "start": 48.44,
+     "end": 48.98,
+     "word": " 확인을",
+     "probability": 0.9991
+    },
+    {
+     "start": 48.98,
+     "end": 49.58,
+     "word": " 했습니다.",
+     "probability": 0.9994
+    },
+    {
+     "start": 49.96,
+     "end": 50.5,
+     "word": " 맞죠?",
+     "probability": 0.9995
+    }
+   ]
+  },
+  {
+   "start": 51.1,
+   "end": 52.38,
+   "text": " 예 그렇게 저도 확인을 했습니다.",
+   "words": [
+    {
+     "start": 51.1,
+     "end": 51.28,
+     "word": " 예",
+     "probability": 0.7817
+    },
+    {
+     "start": 51.28,
+     "end": 51.52,
+     "word": " 그렇게",
+     "probability": 0.9992
+    },
+    {
+     "start": 51.52,
+     "end": 51.74,
+     "word": " 저도",
+     "probability": 1.0
+    },
+    {
+     "start": 51.74,
+     "end": 52.16,
+     "word": " 확인을",
+     "probability": 0.9833
+    },
+    {
+     "start": 52.16,
+     "end": 52.38,
+     "word": " 했습니다.",
+     "probability": 0.9981
+    }
+   ]
+  },
+  {
+   "start": 52.38,
+   "end": 63.6,
+   "text": " 이것은 사실은 왜 북한이 보낸 모형을 똑같이 내란이 일어나기 직전 11월에 드론사로 줬느냐",
+   "words": [
+    {
+     "start": 52.38,
+     "end": 54.16,
+     "word": " 이것은",
+     "probability": 0.8479
+    },
+    {
+     "start": 54.16,
+     "end": 54.82,
+     "word": " 사실은",
+     "probability": 0.9989
+    },
+    {
+     "start": 54.82,
+     "end": 55.42,
+     "word": " 왜",
+     "probability": 0.9998
+    },
+    {
+     "start": 55.42,
+     "end": 56.54,
+     "word": " 북한이",
+     "probability": 0.9998
+    },
+    {
+     "start": 56.54,
+     "end": 56.98,
+     "word": " 보낸",
+     "probability": 0.9999
+    },
+    {
+     "start": 56.98,
+     "end": 58.46,
+     "word": " 모형을",
+     "probability": 0.9996
+    },
+    {
+     "start": 58.46,
+     "end": 59.2,
+     "word": " 똑같이",
+     "probability": 0.9999
+    },
+    {
+     "start": 59.2,
+     "end": 60.2,
+     "word": " 내란이",
+     "probability": 0.9206
+    },
+    {
+     "start": 60.2,
+     "end": 60.64,
+     "word": " 일어나기",
+     "probability": 0.9998
+    },
+    {
+     "start": 60.64,
+     "end": 61.14,
+     "word": " 직전",
+     "probability": 0.9998
+    },
+    {
+     "start": 61.14,
+     "end": 62.12,
+     "word": " 11월에",
+     "probability": 0.9391
+    },
+    {
+     "start": 62.12,
+     "end": 63.02,
+     "word": " 드론사로",
+     "probability": 0.9932
+    },
+    {
+     "start": 63.02,
+     "end": 63.6,
+     "word": " 줬느냐",
+     "probability": 0.9983
+    }
+   ]
+  },
+  {
+   "start": 63.6,
+   "end": 77.9,
+   "text": " 제가 봤을 때는 이것은 북한 도발을 가장을 해서 박지 드론을 어떤 사용을 해서 불법 계엄에 사용할 거 아닌가라는 그런 의심을 하고 있는데",
+   "words": [
+    {
+     "start": 63.6,
+     "end": 64.46,
+     "word": " 제가",
+     "probability": 0.0801
+    },
+    {
+     "start": 64.46,
+     "end": 64.92,
+     "word": " 봤을",
+     "probability": 0.9999
+    },
+    {
+     "start": 64.92,
+     "end": 65.2,
+     "word": " 때는",
+     "probability": 0.9996
+    },
+    {
+     "start": 65.2,
+     "end": 66.32,
+     "word": " 이것은",
+     "probability": 0.9999
+    },
+    {
+     "start": 66.32,
+     "end": 67.14,
+     "word": " 북한",
+     "probability": 1.0
+    },
+    {
+     "start": 67.14,
+     "end": 68.3,
+     "word": " 도발을",
+     "probability": 0.995
+    },
+    {
+     "start": 68.3,
+     "end": 68.96,
+     "word": " 가장을",
+     "probability": 0.7142
+    },
+    {
+     "start": 68.96,
+     "end": 69.28,
+     "word": " 해서",
+     "probability": 0.9999
+    },
+    {
+     "start": 69.28,
+     "end": 70.2,
+     "word": " 박지",
+     "probability": 0.7913
+    },
+    {
+     "start": 70.2,
+     "end": 70.68,
+     "word": " 드론을",
+     "probability": 0.8323
+    },
+    {
+     "start": 70.68,
+     "end": 70.86,
+     "word": " 어떤",
+     "probability": 0.94
+    },
+    {
+     "start": 70.86,
+     "end": 71.54,
+     "word": " 사용을",
+     "probability": 0.9942
+    },
+    {
+     "start": 71.54,
+     "end": 71.78,
+     "word": " 해서",
+     "probability": 0.9998
+    },
+    {
+     "start": 71.78,
+     "end": 73.78,
+     "word": " 불법",
+     "probability": 0.9873
+    },
+    {
+     "start": 73.78,
+     "end": 74.16,
+     "word": " 계엄에",
+     "probability": 0.8558
+    },
+    {
+     "start": 74.16,
+     "end": 74.76,
+     "word": " 사용할",
+     "probability": 0.9998
+    },
+    {
+     "start": 74.76,
+     "end": 75.34,
+     "word": " 거",
+     "probability": 0.9418
+    },
+    {
+     "start": 75.34,
+     "end": 76.54,
+     "word": " 아닌가라는",
+     "probability": 0.9575
+    },
+    {
+     "start": 76.54,
+     "end": 76.84,
+     "word": " 그런",
+     "probability": 0.9656
+    },
+    {
+     "start": 76.84,
+     "end": 77.4,
+     "word": " 의심을",
+     "probability": 1.0
+    },
+    {
+     "start": 77.4,
+     "end": 77.6,
+     "word": " 하고",
+     "probability": 0.9998
+    },
+    {
+     "start": 77.6,
+     "end": 77.9,
+     "word": " 있는데",
+     "probability": 0.9217
+    }
+   ]
+  },
+  {
+   "start": 77.9,
+   "end": 79.54,
+   "text": " 장관님 어떻게 생각하세요?",
+   "words": [
+    {
+     "start": 77.9,
+     "end": 78.6,
+     "word": " 장관님",
+     "probability": 0.9988
+    },
+    {
+     "start": 78.6,
+     "end": 78.92,
+     "word": " 어떻게",
+     "probability": 0.8869
+    },
+    {
+     "start": 78.92,
+     "end": 79.54,
+     "word": " 생각하세요?",
+     "probability": 0.9993
+    }
+   ]
+  },
+  {
+   "start": 79.54,
+   "end": 85.56,
+   "text": " 저희도 합리적인 의심을 하고 있고 지금 수사를 시작할 상황입니다.",
+   "words": [
+    {
+     "start": 79.54,
+     "end": 80.72,
+     "word": " 저희도",
+     "probability": 0.8929
+    },
+    {
+     "start": 80.72,
+     "end": 81.32,
+     "word": " 합리적인",
+     "probability": 0.9931
+    },
+    {
+     "start": 81.32,
+     "end": 81.76,
+     "word": " 의심을",
+     "probability": 0.9999
+    },
+    {
+     "start": 81.76,
+     "end": 81.92,
+     "word": " 하고",
+     "probability": 0.9995
+    },
+    {
+     "start": 81.92,
+     "end": 82.16,
+     "word": " 있고",
+     "probability": 0.9982
+    },
+    {
+     "start": 82.16,
+     "end": 82.56,
+     "word": " 지금",
+     "probability": 0.5745
+    },
+    {
+     "start": 82.56,
+     "end": 82.96,
+     "word": " 수사를",
+     "probability": 0.9935
+    },
+    {
+     "start": 82.96,
+     "end": 84.44,
+     "word": " 시작할",
+     "probability": 0.9897
+    },
+    {
+     "start": 84.44,
+     "end": 85.56,
+     "word": " 상황입니다.",
+     "probability": 0.9999
+    }
+   ]
+  }
+ ]
+}
