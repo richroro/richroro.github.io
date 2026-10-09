@@ -30,6 +30,9 @@ edit.json:
              "trim" ([x0, y0, x1, y1] of the source to keep; "single" is then relative to what is kept)
              and "frame": "film" (a 1080x810 box that shows a whole 4:3 frame instead of the square crop)
              and "vf" (an extra ffmpeg video filter, applied after trim and rotation)
+             and "broll": true (its src runs on the same timeline as the main clip, the B-roll picture over the same speech,
+             so moving to or from it with no gap in time is not a cut and gets no flash)
+             and "credit" (this stretch's own credit line, shown instead of the short's while it is on screen)
 """
 import difflib, json, os, re, subprocess, sys
 import numpy as np
@@ -174,6 +177,7 @@ def main(sid):
                         "-c:v", "libx264", "-preset", "veryfast", "-crf", "16", "-pix_fmt", "yuv420p", "-c:a", "aac", "-b:a", "192k", "-ar", "48000", out], check=True)
         clip = {"file": f"{sid}/clips/c{k:02d}.mp4", "label": s.get("label", ""), "at": round(at, 3), "dur": round(dur, 3), "speed": 1.0,
                 "frame": s.get("frame", "square"), "zoom": s.get("push", [1.0, 1.04]), "focus": "50% 50%", "audio": s.get("audio", 1.0)}
+        if s.get("credit"): clip["credit"] = s["credit"]  # this stretch's own source line (B-roll from another archive)
         if s.get("single"):  # this stretch is a one-person shot, not the two-shot: one face-centred crop, labelled
             given = isinstance(s["single"], list)
             f = s["single"] if given else (face_in(seg_src, [(s["in"], s["out"])], 0.0, 1.0) or [0.5, 0.4, 0.2])
@@ -281,7 +285,8 @@ def main(sid):
             "pages": out_pages, "env": [round(float(v), 3) for v in env], "clips": clips, "moments": [],
             "stickers": stickers + ed.get("stickers", []), "sfx": [{"t": a, "name": n, "gain": g} for a, n, g in ed.get("sfx", [])],
             "music": music, "flashes": [round(a, 3) for k, a in enumerate(starts) if k and (abs(ed["segments"][k]["in"] - ed["segments"][k - 1]["out"]) > 0.05
-                                                                       or ed["segments"][k].get("src") != ed["segments"][k - 1].get("src"))], "punches": [],
+                                                                       or ed["segments"][k].get("src") != ed["segments"][k - 1].get("src")
+                                                                       and not (ed["segments"][k].get("broll") or ed["segments"][k - 1].get("broll")))], "punches": [],
             "split": {"w": W, "h": H, "panels": panels}, "speakers": speakers, "captionY": ed.get("captionY", 1370), "subOrder": ed.get("subOrder", "ko-en")}
     os.makedirs(f"{V}/src/data", exist_ok=True)
     json.dump(data, open(f"{V}/src/data/{sid}.json", "w"), ensure_ascii=False)
