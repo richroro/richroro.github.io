@@ -1,0 +1,38 @@
+{
+ "credit": "미 해군 영상 (DVIDS)",
+ "sources": {
+  "day1": {"file": "ghwb_launch_trap_974894_13.mp4", "credit": "미 해군 영상 (DVIDS) · USS 조지 H.W. 부시", "label": "DVIDS 974894 Flight Deck Operations, USS George H.W. Bush, 2025-08-12 (13-22 s)", "url": "https://www.dvidshub.net/video/974894"},
+  "e2": {"file": "ghwb_e2_trap_974949_15.mp4", "credit": "미 해군 영상 (DVIDS) · USS 조지 H.W. 부시", "label": "DVIDS 974949 Flight Ops aboard USS George H.W. Bush, 2025-08-17 (15-27 s)", "url": "https://www.dvidshub.net/video/974949"},
+  "trap": {"file": "ghwb_trap_994266_42.mp4", "credit": "미 해군 영상 (DVIDS) · USS 조지 H.W. 부시", "label": "DVIDS 994266 Flight Operations aboard USS George H.W. Bush, 2026-01-15 (42-51 s)", "url": "https://www.dvidshub.net/video/994266"},
+  "gear": {"file": "ghwb_gear_576952_0.mp4", "credit": "미 해군 영상 (DVIDS) · USS 조지 H.W. 부시", "label": "DVIDS 576952 Carrier Flight Operations, USS George H.W. Bush, 2017-11-29 (0-20 s)", "url": "https://www.dvidshub.net/video/576952"},
+  "dusk": {"file": "ghwb_gear_576952_45.mp4", "credit": "미 해군 영상 (DVIDS) · USS 조지 H.W. 부시", "label": "DVIDS 576952 (45-55 s)", "url": "https://www.dvidshub.net/video/576952"},
+  "f35c": {"file": "lincoln_f35c_824121.mp4", "credit": "미 해군 영상 (DVIDS) · USS 에이브러햄 링컨", "label": "DVIDS 824121 F-35C flight operations, USS Abraham Lincoln, 2021-11-16", "url": "https://www.dvidshub.net/video/824121"},
+  "night": {"file": "gw_night_1019347_60.mp4", "credit": "미 해군 영상 (DVIDS) · USS 조지 워싱턴", "label": "DVIDS 1019347 George Washington Conduct Night Flight Operations, 2026-08-18 (60-77 s)", "url": "https://www.dvidshub.net/video/1019347"},
+  "k200": {"file": "gw_200000th_1019352_0.mp4", "credit": "미 해군 영상 (DVIDS) · USS 조지 워싱턴", "label": "DVIDS 1019352 200,000th Aircraft Lands aboard George Washington, 2026-08-18 (0-12 s)", "url": "https://www.dvidshub.net/video/1019352"}
+ },
+ "clips": [
+  {"src": "day1", "from": "hook", "in": 3.2, "label": "F/A-18E 슈퍼호넷 착함 · 대서양", "zoom": [1.0, 1.08], "audio": 0.35},
+  {"src": "e2", "from": "brake", "in": 1.2, "label": "E-2 호크아이 착함 · 갈고리가 줄을 잡는 순간", "zoom": [1.0, 1.06], "audio": 0.3},
+  {"src": "trap", "from": "wires", "in": 0.0, "label": "줄에 걸려 멈추는 슈퍼호넷", "zoom": [1.0, 1.08], "audio": 0.3},
+  {"src": "gear", "from": "engine", "in": 4.6, "label": "갑판 아래 착함 장치 (어레스팅 기어)", "zoom": [1.0, 1.08], "audio": 0.25},
+  {"src": "dusk", "from": "engine.약", "in": 2.0, "label": "해 질 녘 착함", "zoom": [1.0, 1.06], "audio": 0.3},
+  {"src": "e2", "from": "reset", "in": 6.0, "label": "초록 옷 승조원들이 줄을 제자리로", "zoom": [1.0, 1.06], "audio": 0.3},
+  {"src": "gear", "from": "bolter", "in": 0.0, "label": "착함하러 들어오는 슈퍼호넷", "zoom": [1.0, 1.06], "audio": 0.3},
+  {"src": "day1", "from": "bolter.다시", "in": 1.6, "label": "다시 접근 중인 슈퍼호넷", "zoom": [1.0, 1.06], "audio": 0.3},
+  {"src": "f35c", "from": "lso", "in": 28.2, "label": "F-35C 착함 · USS 에이브러햄 링컨", "zoom": [1.0, 1.06], "audio": 0.3},
+  {"src": "night", "from": "night", "in": 4.6, "frame": "full", "crop": [0.5, 0.5, 1.0], "label": "야간 착함 · USS 조지 워싱턴", "zoom": [1.0, 1.04], "audio": 0.4},
+  {"src": "k200", "from": "end", "in": 3.0, "label": "20만 번째 착함 순간 · 2026.8.18 인도양", "zoom": [1.0, 1.06], "audio": 0.3}
+ ],
+ "moments": [
+  {"from": "hook@end", "to": "brake", "gain": 1.0},
+  {"from": "night@end", "to": "end", "gain": 1.0}
+ ],
+ "stickers": [
+  {"text": "줄 하나로 약 100m 안에 정지", "from": "engine.약", "to": "reset-0.1", "y": 1180, "bg": "#FFFFFF", "rot": 2, "size": 40},
+  {"text": "웨이브 오프 = 착함 취소, 다시 접근", "from": "lso.웨이브", "to": "night-0.1", "y": 1180, "bg": "#FFFFFF", "rot": -2, "size": 40}
+ ],
+ "sfx": [["hook", "whoosh", 0.3], ["brake.갈고리", "pop", 0.4], ["bolter.볼터", "pop", 0.4], ["end.이십만", "pop", 0.5]],
+ "punches": ["brake.갈고리", "engine.약", "end.이십만"],
+ "flashes": ["night"],
+ "music": {"file": "music/Exhilarate.mp3", "gain": 0.3, "start": 0}
+}

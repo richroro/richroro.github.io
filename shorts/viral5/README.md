@@ -418,3 +418,61 @@ MEDIA=<저장소>/media python3 politics/prep_split.py korea1   # korea2도 같�
 > 영상: 미국 국립문서기록관리청(NARA) 428-NPC-421 (NAID 75511) — 미국 정부 저작물(퍼블릭 도메인)
 > 음악: "Heartwarming" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
 > #옛날영상 #진해 #창원 #장날 #1951년 #근현대사 #추억 #shorts
+
+## 항공모함 쇼츠 (`carrier1`, `carrier2`)
+
+미 해군이 DVIDS에 올린 비행갑판 영상(“U.S. Navy video by …”, 근무 중인 연방 공무원 저작물)에 한국어 내레이션(Edge TTS ko-KR-SunHiNeural)과 단어별 자막을 붙인 내레이션 방식 쇼츠입니다(`shorts/carrier1`, `shorts/carrier2`).
+
+| id | 제목 | 길이 | 내용 |
+| --- | --- | --- | --- |
+| `carrier1` | 항공모함에 착함하는 법 / 브레이크는 갈고리 하나 🪝 | 45.8초 | 슈퍼호넷 착함 → E-2 테일후크 → 줄에 걸려 정지 → 갑판 아래 착함 장치 → 줄 되감기(125회 쓰고 교체) → 볼터 → 웨이브 오프 → 야간 착함 → 조지 워싱턴호 20만 번째 착함(2026.8.18) |
+| `carrier2` | 2초 만에 시속 265km / 항공모함 캐터펄트 발진 🚀 | 46.4초 | 캐터펄트 발진 → 갑판 옷 색깔(노랑·초록·보라) → ‘SHOOTER’ 옷의 슈터 → 슈터 발진 신호와 F-35C 발진 → 증기 → 니미츠호 슈터 “배에서 최고의 직업” |
+
+```bash
+# 원본: media/carrier/ (파일마다 .json에 DVIDS ID·페이지·파일 주소·크레디트·날짜·함정·구간)
+mkdir -p public/carrier1/src public/carrier2/src
+cp ../../media/carrier/*.mp4 public/carrier1/src/; cp ../../media/carrier/*.mp4 public/carrier2/src/
+python3 voice_edge.py carrier1 && python3 prep.py carrier1 && ./render.sh carrier1   # carrier2도 같음
+```
+
+- **소리**: 원본 소리(제트 굉음·캐터펄트)는 B-roll(현장음만 있는 영상)에서만 살렸습니다(`moments`: 착함·야간 착함·발진 직후). 인터뷰가 든 특집 영상(909637 「Shooter: USS Nimitz Catapult Officers」)은 음악이 깔려 있어서(AudioSet AST 모델로 확인) **소리를 끄고** 화면만 썼습니다. 음악이 깔린 다른 특집(899725, 1022379, 1019391, 924177 등)은 쓰지 않았습니다.
+- **교신**: 착함신호장교(LSO)의 실제 무전(“ball”, “wave off”)이 들어간 미 해군 영상은 찾지 못했습니다(DVIDS LSO 영상 4건, PALS 인증 영상 2건, FCLP 영상을 faster-whisper로 확인: 음악·인터뷰만 있거나 무전이 없음). 그래서 번역 교신 자막은 없고, ‘웨이브 오프’는 DVIDS 기사 설명으로만 다뤘습니다.
+- **인용**: carrier2 끝의 “Being a shooter is, in my opinion, the best job on the ship”은 909637 영상 2:52–2:58의 말을 faster-whisper small.en·medium.en·base.en으로 확인한 것입니다. 이 대목은 화면이 B-roll이고 목소리만 나오는데, 같은 인터뷰에서 0:54에 “Lieutenant Sam Posey, callsign Beaky”라고 자기소개를 하고 1:03 이름표가 Samuel “Beaky” Posey라서 포지 대위의 말로 적었습니다. 화면(3:10~)은 같은 사람의 인터뷰 장면이고 소리는 껐습니다.
+- **화면 설명 라벨**: 볼터 대목의 화면은 실제 볼터가 아니라 착함하러 들어오는 기체라서 “착함하러 들어오는 슈퍼호넷”으로 적었습니다. 슈터의 발진 신호(몸을 낮추고 팔을 뻗음)는 화면에 보이는 그대로만 말했습니다.
+- **줄 개수**: 링컨함 기사는 “네 가닥”이지만 화면 대부분이 조지 H.W. 부시함이라 개수는 말하지 않았습니다(함마다 다를 수 있음).
+
+**사실 출처 (모두 미 해군 공식 기사·영상 설명, DVIDS)**
+- 캐터펄트 “a dead stop to 165 miles per hour in under two seconds” (165mph ≈ 265km/h), 증기 캐터펄트: [Locked, Loaded, and Ready to Launch, USS George Washington, 2022.2.18](https://www.dvidshub.net/news/415784/locked-loaded-and-ready-launch)
+- 착함 장치가 착함 기체를 “about 340 feet”(약 104m)에 세움, 항모의 증기 캐터펄트 4기: [FRCSW VRT Maintains Carrier Flight Decks, 2021.2.9](https://www.dvidshub.net/news/388705/frcsw-vrt-maintains-carrier-flight-decks)
+- 테일후크가 cross deck pendant(줄)를 잡고 줄은 갑판 아래 엔진으로 이어짐, 줄 하나는 125회 착함 후 교체: [On the wire, USS George Washington, 2014.11.17](https://www.dvidshub.net/news/148007/wire-behind-scenes-arrested-arcraft)
+- 볼터 = “an aircraft missed the arresting wires”, “That pilot came back around and nailed the next landing”: [New Year’s Onboard USS Harry S. Truman, 2020.1.5](https://www.dvidshub.net/news/358237/new-years-onboard-uss-harry-s-truman-firsts-decade)
+- 웨이브 오프 “we simply wave them off and they come back and try again”(LSO): [Marine pilots serve as LSOs, MCAS Beaufort, 2011](https://www.dvidshub.net/news/71531/marine-pilots-serve-lsos)
+- 갑판 옷 색깔(노랑 = 항공기 지휘, 초록 = 착함 장비·캐터펄트, 보라 = 급유 “grapes”): [The Colors of the Flight Deck, USS Gerald R. Ford, 2017](https://www.dvidshub.net/news/255096)
+- 슈터 = “catapult and arresting gear officer also known as a shooter”: DVIDS 899725 [Faces of the Flight Deck – Shooter](https://www.dvidshub.net/video/899725) 인터뷰(0:53)
+- 20만 번째 착함 2026.8.18 인도양: DVIDS [1019352](https://www.dvidshub.net/video/1019352)·[1019391](https://www.dvidshub.net/video/1019391) 설명
+- navy.mil 페이지는 이 작업 환경에서 403으로 막혀 확인하지 못해서, 위 DVIDS(미 국방부 공식 배포) 기사만 썼습니다. “시속 240km에서 2초 만에 정지”는 공식 출처를 찾지 못해 쓰지 않았습니다.
+
+**영상** (모두 DVIDS, “U.S. Navy video by …” 표기, 공개 도메인 안내 페이지 기준; 원본 주소·구간은 `media/carrier/*.json`)
+- [974894](https://www.dvidshub.net/video/974894) Flight Deck Operations — MC2 Christina Lewis, USS George H.W. Bush, 2025.8.12, 대서양
+- [974949](https://www.dvidshub.net/video/974949) Flight Ops aboard USS George H.W. Bush — MC2 Emily Guillory · MCSN Francisco Linares, 2025.8.17
+- [994266](https://www.dvidshub.net/video/994266) Flight Operations aboard USS George H.W. Bush — MCSA Soley Reed · MC2 Christina Lewis, 2026.1.15
+- [986704](https://www.dvidshub.net/video/986704) Flight Deck Operations aboard USS George H.W. Bush — MC3 Jayden Brown, 2025.11.8
+- [576952](https://www.dvidshub.net/video/576952) Carrier Flight Operations — MC3 David Lee, USS George H.W. Bush, 2017.11.29 (설명에 “Video by Mass Communication Specialist 3rd Class David Lee”)
+- [824121](https://www.dvidshub.net/video/824121) F-35C flight operations — MC3 Michael Singley, USS Abraham Lincoln, 2021.11.16
+- [948608](https://www.dvidshub.net/video/948608) F-35C Lightning II B-roll Package — MC2 Caden Richmond, USS Carl Vinson, 2024.8.13
+- [1019347](https://www.dvidshub.net/video/1019347) George Washington Conduct Night Flight Operations — MC1 Robert S. Price, 2026.8.18, 인도양
+- [1019352](https://www.dvidshub.net/video/1019352) 200,000th Aircraft Lands aboard George Washington — MC1 Robert S. Price, 2026.8.18
+- [909637](https://www.dvidshub.net/video/909637) Shooter: USS Nimitz Catapult Officers — MC2 Carson Croom, USS Nimitz, 2023.8.29 (음소거)
+- 음악: "Exhilarate"(carrier1), "Movement Proposition"(carrier2) Kevin MacLeod (incompetech.com), CC BY 4.0 — `fetch.sh`가 받습니다.
+
+**carrier1** — 항공모함에 착함하는 법 | 브레이크는 갈고리 하나 🪝
+> 활주로가 턱없이 짧은 항공모함에 전투기는 어떻게 멈출까? 꼬리의 갈고리(테일후크)가 갑판을 가로지르는 강철 줄을 낚아채면, 갑판 아래 장치가 약 100m 안에 전투기를 세웁니다. 줄을 전부 놓치면 ‘볼터’, 다시 돌아와 재도전. 밤에도 똑같이 합니다. 2026년 8월, 조지 워싱턴호의 20만 번째 착함 순간까지. 모두 미 해군이 공개한 실제 영상입니다.
+> 영상: 미 해군 (DVIDS) — USS George H.W. Bush, USS Abraham Lincoln, USS George Washington. 미 해군·국방부가 이 영상을 보증하거나 후원하지 않습니다.
+> 음악: "Exhilarate" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
+> #항공모함 #착함 #전투기 #슈퍼호넷 #F35 #미해군 #shorts
+
+**carrier2** — 2초 만에 시속 265km | 항공모함 캐터펄트 발진 🚀
+> 정지 상태에서 2초도 안 돼 시속 265km. 항공모함 캐터펄트가 전투기를 쏘아 보내는 순간입니다. 갑판 위 노랑·초록·보라 옷은 각각 하는 일이 다르고(보라 옷 별명은 ‘포도’), 발진을 책임지는 사람은 ‘슈터’라고 부릅니다. 니미츠호 슈터의 한마디: “배에서 최고의 직업이에요.” 모두 미 해군이 공개한 실제 영상입니다.
+> 영상: 미 해군 (DVIDS) — USS George H.W. Bush, USS Abraham Lincoln, USS Carl Vinson, USS Nimitz. 미 해군·국방부가 이 영상을 보증하거나 후원하지 않습니다.
+> 음악: "Movement Proposition" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
+> #항공모함 #캐터펄트 #전투기 #F35 #미해군 #탑건 #shorts
