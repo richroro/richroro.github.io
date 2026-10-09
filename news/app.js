@@ -57,7 +57,11 @@
 
   // ── 언어: 번역이 있으면 한국어, 없으면 영어 원문 ───────────────────────────────
   function tTitle(it) { return lang === 'ko' && it.title_ko ? it.title_ko : it.title; }
-  function tSummary(it) { return lang === 'ko' && it.summary_ko ? it.summary_ko : (it.summary || ''); }
+  // 한국어로 볼 때 제목만 옮긴 기사는 영어 요약을 숨긴다 (한국어 제목 + 영어 원문 제목만)
+  function tSummary(it) {
+    if (lang === 'ko' && it.title_ko) return it.summary_ko || '';
+    return it.summary || '';
+  }
   function origLine(it) {
     return lang === 'ko' && it.title_ko ? '<div class="orig" lang="en">' + hl(it.title, state.q) + '</div>' : '';
   }
