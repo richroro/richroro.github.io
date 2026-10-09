@@ -1,0 +1,389 @@
+{
+ "credit": "",
+ "titleStyle": "band",
+ "captionY": 1650,
+ "sources": {},
+ "music": {
+  "file": "music/sneaky_snitch.mp3",
+  "gain": 0.2,
+  "start": 0
+ },
+ "sfx": [
+  [
+   "a.뒤꿈치",
+   "pop",
+   0.3
+  ],
+  [
+   "b",
+   "boing",
+   0.3
+  ],
+  [
+   "c.사라졌다",
+   "k_error_003",
+   0.3
+  ],
+  [
+   "d.돌아와",
+   "pop_hi",
+   0.3
+  ],
+  [
+   "e",
+   "heartbeat",
+   0.4
+  ],
+  [
+   "f.병장님",
+   "k_glitch_002",
+   0.3
+  ],
+  [
+   "g",
+   "k_question_001",
+   0.3
+  ],
+  [
+   "h",
+   "whoosh",
+   0.3
+  ],
+  [
+   "h.쪽지가",
+   "pop",
+   0.3
+  ],
+  [
+   "j",
+   "bubble",
+   0.3
+  ],
+  [
+   "k",
+   "ding",
+   0.3
+  ],
+  [
+   "l.이백팔십",
+   "pop_hi",
+   0.35
+  ],
+  [
+   "m.이백팔십이",
+   "boing",
+   0.4
+  ]
+ ],
+ "clips": [
+  {
+   "from": "a",
+   "label": "post",
+   "gfx": {
+    "type": "post",
+    "title": "말년 병장이 매일 밤 [내 전투화]를 가져감",
+    "body": [
+     "이병 때 새 전투화가",
+     "너무 [딱딱해서]..."
+    ],
+    "steps": [
+     "a.새",
+     "a.딱딱해서"
+    ]
+   }
+  },
+  {
+   "from": "a.뒤꿈치",
+   "label": "heel",
+   "gfx": {
+    "type": "scene",
+    "chars": [
+     {
+      "name": "나",
+      "mood": "sick",
+      "hat": "🪖"
+     }
+    ],
+    "place": "📍 이병 시절",
+    "prop": "🥾",
+    "steps": [
+     0,
+     0.1
+    ],
+    "bg": "army",
+    "sign": "생활관"
+   }
+  },
+  {
+   "from": "b",
+   "label": "ouch",
+   "gfx": {
+    "type": "scene",
+    "chars": [
+     {
+      "name": "나",
+      "mood": "cry",
+      "hat": "🪖"
+     }
+    ],
+    "prop": "🔥",
+    "say": {
+     "who": 0,
+     "text": "아으... [발 아파] 죽겠다..."
+    },
+    "zoom": 1.08,
+    "focus": 0,
+    "bg": "army",
+    "sign": "생활관"
+   }
+  },
+  {
+   "from": "c",
+   "label": "gone",
+   "gfx": {
+    "type": "scene",
+    "chars": [
+     {
+      "name": "나",
+      "mood": "sleep",
+      "hat": "🪖",
+      "to": "shock"
+     }
+    ],
+    "prop": "❓",
+    "steps": [
+     0,
+     "c.사라졌다",
+     "c.사라졌다"
+    ],
+    "bg": "army",
+    "sign": "생활관"
+   }
+  },
+  {
+   "from": "d",
+   "label": "back",
+   "gfx": {
+    "type": "scene",
+    "chars": [
+     {
+      "name": "나",
+      "mood": "think",
+      "hat": "🪖"
+     }
+    ],
+    "place": "📍 아침",
+    "prop": "🥾",
+    "steps": [
+     0,
+     "d.제자리에"
+    ],
+    "bg": "army",
+    "sign": "생활관"
+   }
+  },
+  {
+   "from": "e",
+   "label": "someone",
+   "gfx": {
+    "type": "scene",
+    "chars": [
+     {
+      "name": "나",
+      "mood": "shock",
+      "hat": "🪖"
+     },
+     {
+      "name": "???",
+      "mood": "neutral",
+      "color": "#6b6f7a"
+     }
+    ],
+    "place": "📍 연병장",
+    "bg": "night",
+    "zoom": 1.08,
+    "focus": 1
+   }
+  },
+  {
+   "from": "f",
+   "label": "sergeant",
+   "gfx": {
+    "type": "scene",
+    "chars": [
+     {
+      "name": "나",
+      "mood": "shock",
+      "hat": "🪖"
+     },
+     {
+      "name": "병장님",
+      "mood": "neutral",
+      "color": "#9FD07A",
+      "hat": "🪖"
+     }
+    ],
+    "prop": "🥾",
+    "steps": [
+     0,
+     "f.전투화를"
+    ],
+    "bg": "night"
+   }
+  },
+  {
+   "from": "g",
+   "label": "hazing",
+   "gfx": {
+    "type": "scene",
+    "chars": [
+     {
+      "name": "나",
+      "mood": "sick",
+      "hat": "🪖"
+     }
+    ],
+    "say": {
+     "who": 0,
+     "text": "설마... [괴롭히는 건가?]"
+    },
+    "zoom": 1.1,
+    "focus": 0,
+    "bg": "night"
+   }
+  },
+  {
+   "from": "h",
+   "label": "discharge",
+   "gfx": {
+    "type": "scene",
+    "chars": [],
+    "card": "병장님 [전역 날]",
+    "bg": "army",
+    "sign": "생활관"
+   }
+  },
+  {
+   "from": "h.전투화",
+   "label": "found",
+   "gfx": {
+    "type": "scene",
+    "chars": [
+     {
+      "name": "나",
+      "mood": "think",
+      "hat": "🪖",
+      "to": "shock"
+     }
+    ],
+    "prop": "🥾📝",
+    "steps": [
+     0,
+     "h.쪽지가",
+     "h.쪽지가"
+    ],
+    "bg": "army",
+    "sign": "생활관"
+   }
+  },
+  {
+   "from": "j",
+   "label": "note",
+   "gfx": {
+    "type": "scene",
+    "chars": [
+     {
+      "name": "나",
+      "mood": "neutral",
+      "hat": "🪖",
+      "to": "cry"
+     },
+     {
+      "name": "병장님",
+      "mood": "happy",
+      "color": "#9FD07A",
+      "hat": "🪖"
+     }
+    ],
+    "say": {
+     "who": 1,
+     "text": "발 아프면 말해라. [신발은 길들이면 된다.]"
+    },
+    "steps": [
+     0,
+     0,
+     "j.신발은"
+    ],
+    "bg": "army",
+    "sign": "전역 축하"
+   }
+  },
+  {
+   "from": "k",
+   "label": "breakin",
+   "gfx": {
+    "type": "scene",
+    "chars": [
+     {
+      "name": "병장님",
+      "mood": "happy",
+      "color": "#9FD07A",
+      "hat": "🪖"
+     }
+    ],
+    "prop": "🥾",
+    "place": "📍 매일 밤",
+    "bg": "night"
+   }
+  },
+  {
+   "from": "l",
+   "label": "280",
+   "gfx": {
+    "type": "scene",
+    "chars": [
+     {
+      "name": "병장님",
+      "mood": "smug",
+      "color": "#9FD07A",
+      "hat": "🪖",
+      "size": 1.15
+     }
+    ],
+    "big": "[280]",
+    "steps": [
+     0,
+     0,
+     9,
+     "l.이백팔십"
+    ],
+    "bg": "army",
+    "sign": "생활관"
+   }
+  },
+  {
+   "from": "m",
+   "label": "mine",
+   "gfx": {
+    "type": "scene",
+    "chars": [
+     {
+      "name": "나",
+      "mood": "shock",
+      "hat": "🪖"
+     }
+    ],
+    "prop": "🥾",
+    "big": "270 → [280]",
+    "steps": [
+     0,
+     0.1,
+     9,
+     "m.이백팔십이"
+    ],
+    "bg": "army",
+    "sign": "생활관"
+   }
+  }
+ ]
+}
