@@ -1040,3 +1040,44 @@ for id in home1 home2 home3; do python3 voice_edge.py $id && python3 prep.py $id
 > 영상: 미 육군 (DVIDS 489332, SFC Eliodoro Molina, U.S. Forces Afghanistan). 미 육군·국방부가 이 영상을 보증하거나 후원하지 않습니다.
 > 음악: "Dreamer" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
 > #군인 #전역 #마지막비행 #미육군 #shorts
+
+### 4·5편 (`home4`, `home5`)
+
+| id | 제목 (띠 두 줄) | 길이 | 영상 | 음악 |
+| --- | --- | --- | --- | --- |
+| `home4` | 시구하러 나온 해병이 / **갑자기 무릎** 꿇은 이유 | 35.6초 | DVIDS 292271 (미 해병대) | Heartwarming |
+| `home5` | 한국 근무 중인 미군 이병 / **정비고에 나타난** 사람 | 38.2초 | DVIDS 293363 (미 육군) | Touching Moments Two - Higher |
+
+```bash
+mkdir -p public/home4/src public/home5/src
+cp ../../media/home/mcgregor_*.mp4 public/home4/src/
+cp ../../media/home/rankin_*.mp4 public/home5/src/
+# home5만: 293363 인터뷰 소리가 작아서(-30.9 LUFS) 작업 사본의 소리만 키움
+for f in public/home5/src/rankin_*.mp4; do ffmpeg -y -i $f -c:v copy -af "loudnorm=I=-19:TP=-2:LRA=15,aresample=48000" -c:a aac -b:a 160k /tmp/x.mp4 && mv /tmp/x.mp4 $f; done
+for id in home4 home5; do python3 voice_edge.py $id && python3 prep.py $id && ./render.sh $id; done
+```
+
+- **home4 소리**: 292271은 기자 내레이션 영상이고 원본 9–17초, 63–78초에 경기장 음악이 깔려 있어서 그 구간은 쓰지 않거나 소리를 껐습니다. 청혼 순간의 관중 환호(38.5–45초)와 인터뷰(46.2–61.1초)만 원본 소리로 씁니다. 화면 뒤 광고판(구단·주류 로고)은 경기장 배경으로만 나옵니다.
+- **home5 화질**: 293363 원본이 640×480(4:3 SD)이라 다른 편보다 흐립니다. 얼굴을 크게 잡아서 썼습니다.
+- **쓰지 않은 것**: 789339·786107(군견 Bogi 은퇴·재회)은 DVIDS 페이지에 “Asset contains copyrighted material”이 있어 뺐습니다. 966210·826854(군견 은퇴식)는 멀리서 찍은 정적인 화면이라, 913596(병사와 반려견 재회)은 10초짜리라 뺐습니다. 451808은 순직한 핸들러 이야기라 뺐습니다.
+
+**home4** — [DVIDS 292271 「Marine Proposes to Girlfriend」](https://www.dvidshub.net/video/292271/marine-proposes-girlfriend), CPT Isaac Lamberth (영상 끝 “Reporting for the 3rd Marine Aircraft Wing”), 2013-06-02, 샌디에이고 펫코 파크
+- 메모리얼 데이 직후 샌디에이고 파드리스의 군인 감사의 밤(military appreciation night), 시구자 윌리엄 맥그리거 병장(Sgt. William McGregor), 시구 뒤 무릎 꿇고 2년 사귄 여자친구에게 청혼(설명, 영상 내레이션 0:09–0:35). 화면에서는 계급 없이 “해병대원”으로만 말함.
+- 인터뷰(원본 0:46–1:01): “I was nervous for him throwing out the first pitch and either throwing it in the dirt or hitting the camerawoman standing behind him. It didn't occur to me until he dropped to his knee and it was perfect. It was absolutely perfect.” 화자의 이름은 영상에 없습니다. 목소리와 내용(“until he dropped to his knee”)으로 청혼받은 여자친구로 보고 따로 이름을 붙이지 않았습니다.
+
+**home5** — [DVIDS 293363 「Father Surprises Son Serving in U.S. Army in the Republic of Korea」](https://www.dvidshub.net/video/293363/father-surprises-son-serving-us-army-republic-korea), SSG Junius Stone, 1st Armored Brigade Combat Team Public Affairs, 2013-06-13, 동두천 캠프 케이시
+- 벤저민 랭킨 3세 이병(Pvt. Benjamin Eugene Rankin III), 2보병사단 1기갑여단 72기갑연대 1대대 D중대 전차병, 캠프 케이시(설명)
+- 정비고(motor pool)에서 일하다 여단 공보실 인터뷰를 하는 줄 알았음(설명), 전역 군인인 아버지 벤저민 랭킨 주니어가 25번째 생일에 맞춰 깜짝 방문, 가족이 몇 달 동안 몰래 계획(설명)
+- 아들의 말(원본 4:17–4:26): “I never expected it in my wildest dreams to be standing here in Korea, look over, and all of a sudden see my dad walking through the motor pool. It's a dream come true.” / 끝(5:35): “Get over here.”
+
+**home4** — 시구하러 나온 해병이 갑자기 무릎 꿇은 이유
+> 2013년 6월, 샌디에이고 파드리스의 군인 감사의 밤. 시구를 맡은 해병대원 윌리엄 맥그리거가 공을 던진 뒤 향한 곳은 2년 사귄 여자친구 앞이었습니다. “공을 땅에 꽂거나 카메라 기자를 맞힐까 봐 걱정했는데… 완벽했어요.”
+> 영상: 미 해병대 (DVIDS 292271, CPT Isaac Lamberth, 3rd Marine Aircraft Wing). 미 해병대·국방부가 이 영상을 보증하거나 후원하지 않습니다.
+> 음악: "Heartwarming" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
+> #군인 #청혼 #프러포즈 #미해병대 #shorts
+
+**home5** — 한국 근무 중인 미군 이병 앞에 나타난 사람
+> 경기도 동두천 캠프 케이시의 전차병 랭킨 이병. 부대 인터뷰가 있는 줄 알았던 날, 정비고로 걸어 들어온 사람은 미국에서 온 아빠였습니다. 25번째 생일에 맞춰 가족이 몇 달 동안 몰래 준비한 방문. “꿈이 이뤄진 거죠.” (2013년 6월)
+> 영상: 미 육군 (DVIDS 293363, SSG Junius Stone, 1st Armored Brigade Combat Team, 2nd Infantry Division). 미 육군·국방부가 이 영상을 보증하거나 후원하지 않습니다.
+> 음악: "Touching Moments Two - Higher" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
+> #주한미군 #깜짝방문 #아빠 #감동실화 #shorts

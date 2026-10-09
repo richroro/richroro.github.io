@@ -1,0 +1,204 @@
+{
+ "titleStyle": "band",
+ "captionY": 1600,
+ "credit": "영상: 미 육군 (DVIDS)",
+ "sources": {
+  "pool": {
+   "file": "rankin_motorpool_293363_14-50.mp4",
+   "credit": "영상: 미 육군 (DVIDS)",
+   "label": "DVIDS 293363 Father Surprises Son Serving in U.S. Army in the Republic of Korea, Camp Casey, 2013-06-13 (original 14-50 s)",
+   "url": "https://www.dvidshub.net/video/293363/father-surprises-son-serving-us-army-republic-korea"
+  },
+  "talk": {
+   "file": "rankin_interview_293363_250-270.mp4",
+   "credit": "영상: 미 육군 (DVIDS)",
+   "label": "DVIDS 293363 interview (original 250-270 s)",
+   "url": "https://www.dvidshub.net/video/293363/father-surprises-son-serving-us-army-republic-korea"
+  },
+  "end": {
+   "file": "rankin_end_293363_330-345.mp4",
+   "credit": "영상: 미 육군 (DVIDS)",
+   "label": "DVIDS 293363 (original 330-345 s)",
+   "url": "https://www.dvidshub.net/video/293363/father-surprises-son-serving-us-army-republic-korea"
+  }
+ },
+ "clips": [
+  {
+   "src": "pool",
+   "from": "hook",
+   "in": 14.5,
+   "label": "아빠와 포옹하는 랭킨 이병",
+   "crop": [
+    0.5,
+    0.35,
+    1.2
+   ],
+   "zoom": [
+    1.0,
+    1.05
+   ],
+   "audio": 0
+  },
+  {
+   "src": "talk",
+   "from": "who",
+   "in": 1.0,
+   "label": "랭킨 이병",
+   "crop": [
+    0.45,
+    0.4,
+    1.0
+   ],
+   "zoom": [
+    1.0,
+    1.04
+   ],
+   "audio": 0
+  },
+  {
+   "src": "pool",
+   "from": "who.인터뷰가",
+   "in": 3.0,
+   "label": "전차 옆에서 기다리는 아빠",
+   "crop": [
+    0.45,
+    0.4,
+    1.0
+   ],
+   "zoom": [
+    1.0,
+    1.05
+   ],
+   "audio": 0
+  },
+  {
+   "src": "pool",
+   "from": "dad.미국에서",
+   "in": 7.4,
+   "label": "아빠와 아들",
+   "crop": [
+    0.5,
+    0.4,
+    1.0
+   ],
+   "zoom": [
+    1.0,
+    1.04
+   ],
+   "audio": 0.2
+  },
+  {
+   "src": "pool",
+   "from": "dad@end+0.1",
+   "in": 10.6,
+   "label": "포옹",
+   "crop": [
+    0.5,
+    0.35,
+    1.05
+   ],
+   "zoom": [
+    1.0,
+    1.05
+   ],
+   "audio": 0
+  },
+  {
+   "src": "pool",
+   "from": "why",
+   "in": 21.0,
+   "label": "웃음이 멈추지 않는 부자",
+   "crop": [
+    0.5,
+    0.4,
+    1.05
+   ],
+   "zoom": [
+    1.0,
+    1.05
+   ],
+   "audio": 0
+  },
+  {
+   "src": "talk",
+   "from": "why@end+0.1",
+   "in": 7.0,
+   "label": "랭킨 이병 인터뷰",
+   "crop": [
+    0.45,
+    0.4,
+    1.1
+   ],
+   "zoom": [
+    1.0,
+    1.04
+   ],
+   "audio": 0
+  },
+  {
+   "src": "end",
+   "from": "why@end+9.0",
+   "in": 5.3,
+   "label": "랭킨 이병과 아빠",
+   "crop": [
+    0.45,
+    0.45,
+    1.0
+   ],
+   "zoom": [
+    1.0,
+    1.03
+   ],
+   "audio": 0
+  }
+ ],
+ "moments": [
+  {
+   "from": "dad@end+0.15",
+   "to": "why-0.2",
+   "gain": 1.0
+  },
+  {
+   "from": "why@end+0.15",
+   "to": "why@end+17.4",
+   "gain": 1.0
+  }
+ ],
+ "subs": [
+  {
+   "from": "why@end+0.2",
+   "to": "why@end+3.75",
+   "ko": "여기 한국에서 이럴 줄은 [꿈에도 몰랐어요]",
+   "en": "I never expected it in my wildest dreams to be standing here in Korea,"
+  },
+  {
+   "from": "why@end+3.75",
+   "to": "why@end+7.1",
+   "ko": "고개를 돌렸는데 아빠가 정비고로 걸어오다니",
+   "en": "look over, and all of a sudden see my dad walking through the motor pool."
+  },
+  {
+   "from": "why@end+7.1",
+   "to": "why@end+9.0",
+   "ko": "[꿈이 이뤄진] 거죠",
+   "en": "It's a dream come true."
+  },
+  {
+   "from": "why@end+9.25",
+   "to": "why@end+11.0",
+   "ko": "이리 와요",
+   "en": "Get over here."
+  }
+ ],
+ "stickers": [],
+ "sfx": [],
+ "punches": [
+  "dad.미국에서"
+ ],
+ "flashes": [],
+ "music": {
+  "file": "music/Touching Moments Two - Higher.mp3",
+  "gain": 0.15,
+  "start": 0
+ }
+}
