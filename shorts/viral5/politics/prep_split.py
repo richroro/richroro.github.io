@@ -24,6 +24,7 @@ edit.json:
              voice taken from a clip, to run under other pictures;  musicGain;  duck: false keeps the bed level
   segments   also take "src" (another clip), "audio" (its level, 0 = muted), "rotate" (90/-90/180), "push" ([z0, z1]),
              "trim" ([x0, y0, x1, y1] of the source to keep; "single" is then relative to what is kept)
+             and "frame": "film" (a 1080x810 box that shows a whole 4:3 frame instead of the square crop)
 """
 import difflib, json, os, re, subprocess, sys
 import numpy as np
@@ -166,7 +167,7 @@ def main(sid):
         subprocess.run(["ffmpeg", "-v", "error", "-y", "-ss", str(s["in"]), "-t", f"{dur:.3f}", "-i", seg_src, "-vf", vf,
                         "-c:v", "libx264", "-preset", "veryfast", "-crf", "16", "-pix_fmt", "yuv420p", "-c:a", "aac", "-b:a", "192k", "-ar", "48000", out], check=True)
         clip = {"file": f"{sid}/clips/c{k:02d}.mp4", "label": s.get("label", ""), "at": round(at, 3), "dur": round(dur, 3), "speed": 1.0,
-                "frame": "square", "zoom": s.get("push", [1.0, 1.04]), "focus": "50% 50%", "audio": s.get("audio", 1.0)}
+                "frame": s.get("frame", "square"), "zoom": s.get("push", [1.0, 1.04]), "focus": "50% 50%", "audio": s.get("audio", 1.0)}
         if s.get("single"):  # this stretch is a one-person shot, not the two-shot: one face-centred crop, labelled
             given = isinstance(s["single"], list)
             f = s["single"] if given else (face_in(seg_src, [(s["in"], s["out"])], 0.0, 1.0) or [0.5, 0.4, 0.2])
