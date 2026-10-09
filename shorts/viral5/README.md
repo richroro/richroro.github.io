@@ -857,7 +857,7 @@ python3 voice_edge.py carrier1 && python3 prep.py carrier1 && ./render.sh carrie
 
 | id | 제목(흰 띠) | 빨간 헤드라인 | 길이 | 내용 |
 | --- | --- | --- | --- | --- |
-| `newsab1` | 손흥민 A매치 59호골 / 차범근 기록 넘었다 | 한국 축구 역사가 / 바뀌었습니다 | 50.2초 | 10.6 우즈베키스탄전 프리킥 골 → 151경기 59골, 차범근 58골(1978) 넘어 한국 남자 최다 → 월드컵 무득점 뒤 9월 두 골로 동률 → 오세훈 추가골 2:0 → 소감 → “최고의 골은?” |
+| `newsab1` | 손흥민 A매치 59호골 / 차범근 기록 넘었다 | 한국 축구 역사가 / 바뀌었습니다 | 51.5초 | 10.6 우즈베키스탄전 프리킥 골 → 151경기 59골, 차범근 58골(1978.12) 넘어 47년 9개월 만에 한국 남자 최다 → 월드컵 무득점 뒤 9월 두 골로 동률 → 오세훈 추가골 2:0 → 소감 → “최고의 골은?” |
 | `newsab2` | 이강인 아틀레티코 / 9월 이달의 선수 | 스페인 팬들이 / 이강인을 뽑았습니다 | 45.4초 | 팬 투표 9월 이달의 선수(후보 시메오네·데이비드·그리말도·카르도주) → 7월 PSG에서 이적, 2031년까지, 7번 → 말라가전 데뷔 결승골·라리가 8월 이달의 골 → 오사수나전 골 4:0, 레알전 89분 2:1 → “몇 골 넣을까?” |
 | `newsab3` | 아시안게임 4연패 / 결승서 일본 1-0 | 한일전 결승을 / 또 이겼습니다 | 45.8초 | 10.3 도요타 스타디움 결승 → 후반 16분 양민혁 크로스·엄지성 골 → 엄지성 대회 4호골 → 인천·자카르타·항저우·나고야 사상 첫 4연패 → 최근 결승 3번 모두 일본 상대 승리 → 유럽파 9명 → “대회 MVP는?” |
 
@@ -868,7 +868,7 @@ python3 voice_edge.py carrier1 && python3 prep.py carrier1 && ./render.sh carrie
 ### 출처 (기사)
 
 **newsab1** — 손흥민 A매치 59호골
-- 경기·기록(10월 6일 용인 미르스타디움, 우즈베키스탄 2-0, 황희찬 패스를 받은 손흥민의 슈팅이 상대 팔에 맞아 프리킥 → 낮게 깔아 찬 오른발 슈팅이 수비벽을 돌아 오른쪽 구석, 151경기 59골, 차범근 136경기 58골·1978.12.17 방콕 아시안게임, 47년 9개월 19일 만, 오세훈 후반 헤더): [서울신문 2026.10.6](https://www.seoul.co.kr/news/sport/soccer/2026/10/06/20261006500310)(사진 연합뉴스), [한국일보 2026.10.6](https://www.hankookilbo.com/news/article/A2026100621050002334), [머니투데이 2026.10.6](https://www.mt.co.kr/sports/2026/10/06/2026100621544044286), [KBC광주방송 2026.10.6](https://news.ikbc.co.kr/article/view/kbc202610060077). 골 시간은 전반 5분(한국일보)·6분(서울신문)으로 엇갈려 말하지 않았습니다.
+- 경기·기록(10월 6일 용인 미르스타디움, 우즈베키스탄 2-0, 황희찬 패스를 받은 손흥민의 슈팅이 상대 팔에 맞아 프리킥 → 낮게 깔아 찬 오른발 슈팅이 수비벽을 돌아 오른쪽 구석, 151경기 59골, 차범근 136경기 58골·1978.12.17 방콕 아시안게임, 47년 9개월 19일 만, 오세훈 후반 헤더). 내레이션·자막·카드는 이에 맞춰 “1978년 12월 → 47년 9개월 만”으로 적었습니다(연도만 빼면 48로 보여 헷갈리므로 개월까지 표기): [서울신문 2026.10.6](https://www.seoul.co.kr/news/sport/soccer/2026/10/06/20261006500310)(사진 연합뉴스), [한국일보 2026.10.6](https://www.hankookilbo.com/news/article/A2026100621050002334), [머니투데이 2026.10.6](https://www.mt.co.kr/sports/2026/10/06/2026100621544044286), [KBC광주방송 2026.10.6](https://news.ikbc.co.kr/article/view/kbc202610060077). 골 시간은 전반 5분(한국일보)·6분(서울신문)으로 엇갈려 말하지 않았습니다.
 - 월드컵 조별리그 3경기 무득점(56골), 9.24 에콰도르전 프리킥 57호, 9.28 우루과이전 58호로 동률: [한국일보 2026.10.6](https://www.hankookilbo.com/news/article/A2026100621050002334), [일간스포츠 2026.9.25](https://isplus.com/article/view/isp202609250002)(에콰도르전 57호), [KBC 2026.10.6](https://news.ikbc.co.kr/article/view/kbc202610060077)(우루과이전 58호 동률).
 - 소감 “역사를 쓸 수 있어서 정말 영광”, “태극마크를 달고 이렇게 많은 골을 넣은 것은 혼자만이 할 수 없는 것”: [일간스포츠 2026.10.7](https://isplus.com/article/view/isp202610070014), [엑스포츠뉴스 2026.10.7](https://www.xportsnews.com/article/2204832)(“한 역사를 쓸 수 있게 돼서 정말 너무나도 영광”, “저 혼자만이 할 수 없는 것”). 내레이션은 두 기사 공통 내용만 옮겼습니다.
 - 16년(2010년 12월 데뷔): 서울신문·한국일보(위와 같음).
@@ -917,3 +917,30 @@ python3 voice_edge.py carrier1 && python3 prep.py carrier1 && ./render.sh carrie
 > 사진: Timmy96 (CC0), M.Sadegh Nikgostar / Fars News Agency (CC BY 4.0) — https://creativecommons.org/licenses/by/4.0/
 > 음악: "Lightless Dawn" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
 > #아시안게임 #한일전 #엄지성 #양민혁 #축구 #shorts
+
+## 린드버그 대서양 횡단 쇼츠 (`politics/lindbergh1`)
+
+“해낼 수 없다던 일을 해낸 사람” 편입니다. 1927년에 극장에서 상영된 실제 뉴스 영화(Fox News, Kinograms)로 만들었고, 영어 줄은 **그 뉴스 영화의 화면 자막(intertitle)을 그대로** 옮겼습니다. 무성 필름이라 육성은 없고(`"en": ""` 줄은 한국어 설명만), 음악만 깝니다. 내레이션·AI 목소리 없음.
+
+| id | 제목 | 길이 | 내용 |
+| --- | --- | --- | --- |
+| `lindbergh1` | 아무도 못 한 대서양 단독 횡단, / 25살 우편 비행사가 해냈다..? | 58.8초 | “The annals of mankind record no more daring individual achievement…” → 1927.5.20 루스벨트 비행장 이륙(“the cheers — and fears”) → 다음 날 밤 파리 르부르제의 인파(“He lands!”) → 파리의 린드버그 → 3주 뒤 워싱턴 귀국, 쿨리지 대통령의 수훈비행십자훈장(“The proudest moment of his life”) |
+
+```bash
+MEDIA=<저장소>/media python3 politics/prep_split.py lindbergh1    # 원본: media/speech/lindbergh1927_fox_kinograms.mp4
+./render.sh lindbergh1
+```
+
+- **영상**: [archive.org `Lindberg1927` 〈[Lindbergh's Flight and Return]〉](https://archive.org/details/Lindberg1927) — 프렐링거 아카이브(Prelinger Archives), 제작 “Fox News / Kinograms”, 1927, 무성. 워터마크·덧입힌 음악 없음. 원본 MPEG(368×480, 비정사각 화소, 인터레이스)을 `yadif`로 풀어 640×480으로 다시 인코딩했고, 소스 15–365초만 `media/speech/lindbergh1927_fox_kinograms.mp4`(40 MB)로 잘라 두었습니다. 쓴 구간과 인용한 화면 자막은 같은 이름의 `.json`에 있습니다.
+- **라이선스**: 1927년에 상영(공표)된 뉴스 영화라 미국에서 퍼블릭 도메인입니다(2026년 기준 1930년 이전 공표작은 모두 만료). archive.org 항목도 Public Domain 표시입니다. 화면 크레딧은 “Fox News · Kinograms (1927) · Prelinger Archives”만 적었습니다.
+- **자막**: 영어 줄 11개는 필름의 화면 자막 6장을 그대로 옮겼습니다. Fox News 자막 카드는 이 사본에서 좌우가 조금 잘려 줄 끝 한두 글자가 안 보이는데(manki[nd], gather[ed], fat[e], mas[s], a[ll], reac[h], a[ir] 등), 앞뒤 문맥으로 확실한 것만 채웠습니다. 실제 카드의 “- -”는 “—”로 적었습니다. 한국어 설명 줄(이륙·영웅·환영 인파)과 스티커의 사실 근거는 [NASM 〈Spirit of St. Louis〉](https://airandspace.si.edu/collection-objects/ryan-nyp-spirit-st-louis-charles-lindbergh/nasm_A19280021000): 1927.5.20 아침 뉴욕 출발, 33시간 30분, 3,610마일(≈5,810 km), 최초의 대서양 단독 무착륙 비행, 그전 직업은 세인트루이스–시카고 항공우편 조종사. 나이 25세(1902.2.4 출생).
+- **라벨 근거**: 장면 순서와 Kinograms 자막(“The Memphis arrives at the Navy Yard”, “Then to the Washington Monument for his presentation to President Coolidge”). 색종이 장면은 도시가 자막에 없어서 “1927.6 · 귀국 환영”으로만 적었습니다.
+- 컷마다 흰 번쩍임(템플릿 기본). 음악은 `duck: false`(무성이라 줄일 목소리가 없음). 라우드니스 −14.0 LUFS, 최대 −1.5 dBFS. 템플릿 코드는 바꾸지 않았습니다.
+- **헬렌 켈러 편(`helen1`)은 만들지 않았습니다.** 앤 설리번이 설명하고 헬렌 켈러가 “I am not dumb now”라고 말하는 필름의 유일한 원본 기록은 사우스캐롤라이나대 MIRC의 [Fox Movietone News Story 2-83 〈Helen Keller and Annie Sullivan Macy--outtakes〉](https://digital.tcl.sc.edu/digital/collection/MVTN/id/4264)(촬영 1929.2.27, 유성)인데, ① 카탈로그상 **아웃테이크**(상영본에서 빠진 촬영분)라 1930년 이전 공표를 확인할 수 없고, ② 사본에 “Copyright Moving Image Research Collections. All rights reserved.”라는 권리 주장이 붙어 있습니다. 미 의회도서관·국립문서기록관리청·archive.org에서는 다른 깨끗한 사본을 찾지 못했습니다(LOC의 1919년 〈Deliverance〉는 무성 극영화). 그래서 추측으로 진행하지 않았습니다.
+
+**lindbergh1** — 아무도 못 한 대서양 단독 횡단, 25살 우편 비행사가 해냈다..? ✈️
+> 1927년 5월 20일 아침, 뉴욕 루스벨트 비행장. 25살 항공우편 조종사 찰스 린드버그가 ‘스피릿 오브 세인트루이스’호를 타고 혼자 이륙했습니다. 33시간 30분 뒤 파리 르부르제 비행장에 내리자 엄청난 인파가 몰려들었고, 그는 하루아침에 세계의 영웅이 됐습니다. 영어 자막은 1927년 뉴스 영화 화면에 실제로 나온 문구이고, 한국어는 직접 번역했습니다.
+> 영상: Fox News · Kinograms (1927), Prelinger Archives (archive.org)
+> 음악: "Floating Cities" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
+> #린드버그 #대서양횡단 #도전 #포기하지마 #동기부여 #옛날영상 #역사 #영어공부 #shorts
+
