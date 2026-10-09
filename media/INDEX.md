@@ -51,6 +51,11 @@ Extra non-video files: `politics/{1,2,3}.vtt` + `.txt` (transcripts, see below),
   12. `12.mp4` 김재원(조국혁신당) ↔ 전한진 KFA 국제위원장, 이민협 참고인: PSG 내한 무산 → "쿠팡에 경기 기간 명시 공문… 무슨 권한으로?" 100 s.
   13. `13.mp4` 김재원 ↔ 전한진: "규정에도 없는 경기 일정 팔아먹은 거 아니냐 / 이해충돌 / 정몽규 회장까지 보고?" 103 s.
   14. `14.mp4` 함슬 대표 (FC바르셀로나 투어 주최사, 참고인) closing statement: "정몽규 회장 13년 5개월 동안 3천만 원, 저는 1년 3억". 94 s. These are the witness's own claims; KFA's rebuttal isn't in the clip.
+- **2024 축구협회 현안질의 (문체위 2024-09-24, 정몽규·홍명보·이임생 출석; a committee hearing, not the audit; official subtitles):**
+  19. `19.mp4` 김재원(조국혁신당) ↔ 홍명보: "선임 과정이 공정했나?" / "저한테 특혜가 있다고 생각하지 않는다". 102 s.
+  16. `16.mp4` 민형배(민주) ↔ 이임생 이사: "제 명예가 달린 일… 제가 사퇴하겠습니다". 88 s.
+  17. `17.mp4` 민형배 ↔ 정몽규: "임원 갈아치우거나 회장이 물러나거나, 세 가지 대안". 80 s.
+  18. `18.mp4` 양문석(민주) ↔ 정몽규·정해성: "부끄럽지 않습니까 / 정 씨 가문의 왕국입니까 / 생각하지 마시고 사퇴하세요, 제발". 94 s.
 - Heatmaps: YouTube has none for these clips yet (too new / too few views), so no most-replayed data exists. The windows were chosen from the title quote instead.
 - Transcripts: `3.vtt/3.txt` = official NA subtitles (국방위 session has them). `1.*`, `2.*` = machine transcript (faster-whisper small, uncorrected; e.g. "사법부동립" = 사법부 독립, "개청" = 제청). The 법사위 session has no subtitles and no 회의록 published yet.
 - `<n>.whisper.json` (all 8 clips): raw faster-whisper **large-v3** output (int8 CPU; language=ko, beam_size=5, vad_filter=False, word_timestamps=True, condition_on_previous_text=False), with segment and word times in seconds on the clip. Not hand-corrected; much more accurate than the `small` .txt/.vtt (e.g. 사법부 독립, 제청, 헌법상).
