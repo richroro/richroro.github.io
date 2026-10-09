@@ -1477,3 +1477,30 @@ MEDIA=<저장소>/media python3 politics/prep_split.py boom4    # boom5도 같�
   영상: U.S. Marine Corps video by Lance Cpl. Ethan R. Jones (DVIDS 873781). 미 해병대·국방부가 이 영상을 보증하거나 후원하지 않습니다.
   ```
 - 해시태그: `#미해병대 #수색대 #헬로캐스트 #CH53 #shorts`
+
+### 이어서: 얼음물·레펠 (`politics/ouch4`, `politics/ouch5`)
+
+| id | 제목 | 길이 | 영상 |
+| --- | --- | --- | --- |
+| `ouch4` | 얼음 구멍에 뛰어든 / 미군의 표정 🥶 | 24.6초 | 얼음 구멍 속 얼굴 → “발 꼬지 마” “신의 가호를, 젊은이” → “준비됐으면, 실시” 입수 → “크게 내쉬어, 호흡 조절해” → 얼음송곳으로 기어 나옴 “A1이지!” |
+| `ouch5` | 레펠 타워 끝에 선 훈련병 / 교관의 한마디 🪢 | 21.1초 | 타워 끝 훈련병과 모자 쓴 교관 → “이쪽으로 오지 마라.” → “세 번 통통 뛰어 봐” → “이제 벽 차고 뛰어내려.” → 하강 |
+
+**영상** (DVIDS B-roll, 현장음만, 음악 없음, 페이지에 개별 제한·Courtesy 표시 없음, 국방부 민간인 직원이 직무로 촬영 → 퍼블릭 도메인)
+- `ouch4` — [821976](https://www.dvidshub.net/video/821976) Cold water immersion training during Cold Weather Operations Course class 21-02 — U.S. Army video by Cedar Wolf(Fort McCoy Multimedia Visual Information), 미 위스콘신 포트 매코이, 2021.1.15. 원본 228.0–229.8, 248.0–252.7, 216.0–222.5, 24.2–29.6, 229.8–231.4, 235.5–239.45초. 설명: “U.S. Soldiers and Marines complete cold water immersion training”.
+- `ouch5` — [1018603](https://www.dvidshub.net/video/1018603) Echo Company, 2nd Battalion, 58th Infantry Regiment, 198th Infantry Brigade, Eagle Rappel Tower Training — Basil Lee, Fort Benning Public Affairs Office, 미 조지아 포트 베닝, 2026.8.6. 원본 137.6–158.0초(4K 60p → 1080p 30p로 잘라 씀, 끝의 인터뷰는 안 씀). 설명: 신병 기초훈련(initial entry training) 중 “Eagle Confidence Tower” 레펠 훈련. `"flash": false`로 흰 번쩍임 없이 이었습니다.
+
+**자막**
+- 대사는 faster-whisper small.en·large-v3(일부 medium.en)가 같은 말을 들은 것만 넣었습니다. ouch4에서 물속 병사와 나눈 잡담(“2학년이라 2년 반…”)과 썰매 장면의 “How was it?”(다른 장면)은 쓰지 않았고, ouch5의 “Go ahead and take a step”(large-v3만 들음)과 “Lane … rappel”도 뺐습니다.
+- ouch4는 같은 훈련의 여러 사람(육군·해병)이 번갈아 나옵니다. 자막은 한 사람의 이야기로 묶지 않았습니다. “A1이지!”(“A1, baby!”)는 누가 한 말인지 화면으로 확인되지 않아 말한 사람을 적지 않았습니다.
+- 보이는 것만 적은 줄: “얼음 깨고 만든 구멍 속”, “나올 땐 얼음송곳으로 찍고”(주황 손잡이 송곳으로 얼음을 찍고 나옴), “옆에 모자 쓴 분이 교관”(드릴 서전트 모자), “그리고 진짜 내려감”.
+- 라우드니스: ouch4 −14.9, ouch5 −14.4 LUFS. ouch4 완성본은 30MB를 넘지 않게 CRF 22로 다시 압축했습니다(15.2MB).
+
+**ouch4** — 얼음 구멍에 뛰어든 미군의 표정 🥶
+> 얼음판을 네모나게 깨서 만든 구멍에 군복 입은 채로 뛰어듭니다. “크게 내쉬어, 호흡 조절해.” 나올 땐 얼음송곳으로 찍고 기어 나와야 합니다. 2021년 1월 미 위스콘신 포트 매코이 혹한기 작전 과정의 실제 훈련 영상.
+> 영상: 미 육군 (DVIDS) — U.S. Army video by Cedar Wolf, Fort McCoy. 미 육군·국방부가 이 영상을 보증하거나 후원하지 않습니다.
+> #혹한기훈련 #얼음물 #미군 #군대 #shorts
+
+**ouch5** — 레펠 타워 끝에 선 훈련병, 교관의 한마디 🪢
+> 미 육군 신병들이 거치는 레펠 타워. 끝에 선 훈련병에게 교관이 한 말: “이쪽으로 오지 마라.” 그리고 “세 번 통통 뛰고, 이제 벽 차고 뛰어내려.” 2026년 8월 미 조지아 포트 베닝 실제 훈련 영상.
+> 영상: 미 육군 (DVIDS) — Video by Basil Lee, Fort Benning Public Affairs. 미 육군·국방부가 이 영상을 보증하거나 후원하지 않습니다.
+> #레펠 #훈련병 #미육군 #군대 #shorts
