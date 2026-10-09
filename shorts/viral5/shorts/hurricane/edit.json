@@ -2,71 +2,187 @@
  "credit": "영상: NOAA",
  "sources": {
   "flight": {
-   "file": "flight.mp4",
-   "label": "NOAA P-3 Hurricane Hunter flight into the eye (NOAA)"
+   "file": "dorian_turbulence.mp4",
+   "label": "NOAA WP-3D Flight Into Hurricane Dorian, 2019-08-30 (NOAA OMAO, LT Kevin Doremus)",
+   "url": "https://www.omao.noaa.gov/media/6206"
+  },
+  "goes_wide": {
+   "file": "eye_goes_melissa_wide.mp4",
+   "label": "GOES-19 visible loop of Hurricane Melissa, 2025-10-28 (NOAA/NESDIS open data)",
+   "url": "https://noaa-goes19.s3.amazonaws.com/index.html#ABI-L1b-RadM/2025/301/"
+  },
+  "flight_ext": {
+   "file": "dorian_ext.mp4",
+   "label": "NOAA WP-3D Flight Into Hurricane Dorian, 2019-08-30 (NOAA OMAO, LT Kevin Doremus) — tone curve for the exterior shots: curves=all='0/0 0.4/0.24 0.8/0.58 1/0.72',eq=saturation=1.1",
+   "url": "https://www.omao.noaa.gov/media/6206"
+  },
+  "cockpit": {
+   "file": "flight_delta_cockpit.mp4",
+   "label": "LT Cmdr Rebecca Shaw piloting NOAA WP-3D N42RF 'Kermit' into Hurricane Delta, 2020-10-06 (NOAA OMAO, credit Mike Mascaro/NOAA)",
+   "url": "https://www.omao.noaa.gov/aircraft-operations/news-media/video/lt-cmdr-rebecca-shaw-piloting-noaa-wp-3d-n42rf-kermit-hurricane-delta-oct-6-2020-credit-mike-mascaro-noaa"
+  },
+  "stadium_dorian": {
+   "file": "stadium_p3_dorian.mp4",
+   "label": "NOAA WP-3D Orion hurricane hunter pass through the eye of Hurricane Dorian, 2019-09-05 (NOAA OMAO)",
+   "url": "https://www.omao.noaa.gov/aircraft-operations/news-media/video/noaa-wp-3d-orion-hurricane-hunter-pass-through-eye-hurricane-dorian-5-sept-2019"
+  },
+  "stadium_beryl": {
+   "file": "stadium_p3_beryl.mp4",
+   "label": "View inside Hurricane Beryl from NOAA WP-3D Orion N43RF 'Miss Piggy', 2024-07-02 (NOAA OMAO)",
+   "url": "https://www.omao.noaa.gov/aircraft-operations/news-media/video/view-inside-hurricane-beryl-noaa-wp-3d-orion-n43rf-miss-piggy-2-july-2024"
+  },
+  "takeoff": {
+   "file": "p3.mp4",
+   "label": "NOAA43 'Miss Piggy' takeoff, Lakeland Linder airport (NOAA OMAO)",
+   "url": "https://www.omao.noaa.gov/aircraft-operations/news-media/video/noaa43-miss-piggy-takeoff"
   }
  },
  "clips": [
   {
-   "src": "flight",
+   "src": "cockpit",
    "from": "hook",
-   "label": "조종석 창밖, 비구름 속으로 진입",
-   "in": null
-  },
-  {
-   "src": "flight",
-   "from": "shake",
-   "label": "심하게 흔들리는 기내",
-   "in": null,
-   "audio": 0.35
-  },
-  {
-   "src": "flight",
-   "from": "wall",
-   "label": "구름 벽을 뚫는 순간",
-   "in": null
-  },
-  {
-   "src": "flight",
-   "from": "wall.조용",
-   "label": "갑자기 맑아지는 창밖",
-   "in": null
-  },
-  {
-   "src": "flight",
-   "from": "eye",
-   "label": "허리케인의 눈, 사방이 구름 벽 (경기장 효과)",
-   "in": null,
+   "in": 1.0,
+   "label": "커밋 조종석: 조종사들과 개구리 인형",
+   "audio": 0.15,
    "zoom": [
     1.0,
-    1.15
+    1.08
+   ]
+  },
+  {
+   "src": "cockpit",
+   "from": "hook.일부러",
+   "in": 18.0,
+   "label": "폭풍 구름 속으로 들어가는 조종석 창",
+   "audio": 0.15
+  },
+  {
+   "src": "flight_ext",
+   "from": "shake",
+   "in": 13.0,
+   "label": "난기류에 흔들리는 날개",
+   "audio": 0.15
+  },
+  {
+   "src": "cockpit",
+   "from": "shake.물건이",
+   "in": 21.5,
+   "label": "난기류에 흔들리는 개구리 인형",
+   "audio": 0.15,
+   "crop": [
+    0.25,
+    0.45,
+    1.3
+   ]
+  },
+  {
+   "src": "stadium_dorian",
+   "from": "wall",
+   "in": 20.0,
+   "label": "엔진 너머 회색 구름 벽",
+   "audio": 0.12
+  },
+  {
+   "src": "stadium_dorian",
+   "from": "wall.조용",
+   "in": 68.0,
+   "label": "구름 벽이 열리며 보이는 파란 하늘",
+   "audio": 0.0,
+   "zoom": [
+    1.0,
+    1.1
+   ]
+  },
+  {
+   "src": "stadium_beryl",
+   "from": "eye",
+   "in": 8.5,
+   "label": "허리케인 베릴의 눈 (조종석 창)",
+   "audio": 0.0,
+   "zoom": [
+    1.0,
+    1.1
+   ]
+  },
+  {
+   "src": "stadium_beryl",
+   "from": "eye.사방이",
+   "in": 33.5,
+   "label": "사방이 구름 벽인 허리케인의 눈",
+   "audio": 0.0,
+   "zoom": [
+    1.0,
+    1.12
    ]
   },
   {
    "src": "flight",
    "from": "why",
-   "label": "드롭존데(센서) 투하",
-   "in": null
+   "in": 0.3,
+   "label": "관측 장비 앞의 승무원",
+   "speed": 0.8,
+   "audio": 0.12
   },
   {
-   "src": "flight",
+   "src": "goes_wide",
+   "from": "why.허리케인이",
+   "in": 0.0,
+   "label": "위성으로 본 허리케인 전체",
+   "audio": 0.0,
+   "zoom": [
+    1.0,
+    1.12
+   ]
+  },
+  {
+   "src": "takeoff",
    "from": "end",
-   "label": "허리케인 헌터 기체 외관",
-   "in": null
+   "in": 23.6,
+   "label": "이륙하는 미스 피기",
+   "audio": 0.06
+  },
+  {
+   "src": "cockpit",
+   "from": "end.폭풍",
+   "in": 33.0,
+   "label": "폭풍 속 조종석의 개구리 인형",
+   "audio": 0.1,
+   "zoom": [
+    1.0,
+    1.08
+   ]
   }
  ],
  "moments": [
   {
-   "from": "shake.붕",
-   "to": "shake@end+0.4",
-   "gain": 0.9
+   "from": "wall.조용",
+   "to": "why-0.05",
+   "gain": 0.0
   }
  ],
  "stickers": [
   {
-   "text": "NOAA 허리케인 헌터 P-3",
+   "text": "NOAA 허리케인 헌터 '커밋' 🐸",
    "from": "hook.비행기",
    "to": "shake-0.1",
+   "y": 560
+  },
+  {
+   "text": "2024 허리케인 베릴의 눈 · NOAA P-3",
+   "from": "eye+0.1",
+   "to": "why-0.1",
+   "y": 560
+  },
+  {
+   "text": "위성 영상 (NOAA)",
+   "from": "why.허리케인이+0.1",
+   "to": "end-0.1",
+   "y": 560
+  },
+  {
+   "text": "동료 비행기 이름은 '미스 피기' 🐷",
+   "from": "end+0.1",
+   "to": "end.폭풍-0.05",
    "y": 560
   }
  ],
@@ -89,5 +205,9 @@
  "flashes": [
   "wall.조용"
  ],
- "music": null
+ "music": {
+  "file": "music/Volatile Reaction.mp3",
+  "gain": 0.18,
+  "start": 28
+ }
 }

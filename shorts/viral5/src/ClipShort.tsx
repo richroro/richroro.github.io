@@ -16,6 +16,8 @@ export type Clip = {
   /** face-centred crop: (cx, cy) in 0..1 of the source frame, zoom over a plain cover fit, source size */
   crop?: { cx: number; cy: number; zoom: number; w: number; h: number };
 };
+/** one person of a side-by-side two-shot: (cx, cy) is their face in 0..1 of the whole source frame, [x0, x1] their half */
+export type Panel = { name: string; role: string; cx: number; cy: number; zoom: number; x0: number; x1: number };
 export type ShortData = {
   id: string; end: number; title: [string, string]; credit: string;
   lines: { id: string; start: number; dur: number }[];
@@ -27,9 +29,15 @@ export type ShortData = {
   flashes: number[]; punches: number[];
   /** the clips' own audio is the speech (political clips): keep it at full level, duck only the music */
   origVoice?: boolean;
+  /** a side-by-side two-shot (국회 영상회의록 layout) shown as two stacked panels: panels[0] on top, panels[1] below */
+  split?: { w: number; h: number; panels: Panel[] };
+  /** who is talking when (index into split.panels), for the speaker highlight */
+  speakers?: { from: number; to: number; who: number }[];
+  captionY?: number;
 };
 
 const FRAME = { square: { top: 400, height: 1080 }, wide: { top: 656, height: 608 }, full: { top: 0, height: 1920 } };
+const PANELS = [{ top: 400, height: 540 }, { top: 940, height: 540 }];
 const have = (file: string | null) => !!file && getStaticFiles().some((f) => f.name === file);
 
 const Placeholder: React.FC<{ label: string }> = ({ label }) => (
@@ -65,6 +73,35 @@ const ClipView: React.FC<{ c: Clip; d: ShortData }> = ({ c, d }) => {
     const dw = w * S, dh = h * S;
     const left = Math.min(0, Math.max(1080 - dw, 540 - cx * dw)), top = Math.min(0, Math.max(box.height - dh, box.height / 2 - cy * dh));
     cropStyle = { position: "absolute", left, top, width: dw, height: dh };
+  }
+  if (d.split && ok) {
+    const { w, h, panels } = d.split;
+    const who = d.speakers?.find((sp) => t >= sp.from && t < sp.to)?.who;
+    return (
+      <AbsoluteFill>
+        <OffthreadVideo src={staticFile(c.file!)} muted playbackRate={c.speed}
+          style={{ position: "absolute", inset: -60, width: "calc(100% + 120px)", height: "calc(100% + 120px)", objectFit: "cover", filter: "blur(36px) brightness(.42) saturate(1.2)" }} />
+        {panels.map((pn, k) => {
+          const box = PANELS[k];
+          const S = (1080 / ((pn.x1 - pn.x0) * w)) * pn.zoom * s, dw = w * S, dh = h * S;
+          const left = Math.min(-pn.x0 * dw, Math.max(1080 - pn.x1 * dw, 540 - pn.cx * dw));
+          const top = Math.min(0, Math.max(box.height - dh, box.height / 2 - pn.cy * dh));
+          const on = who === k;
+          return (
+            <div key={k} style={{ position: "absolute", left: 0, top: box.top, width: 1080, height: box.height, overflow: "hidden" }}>
+              <OffthreadVideo src={staticFile(c.file!)} playbackRate={c.speed} {...(k === 0 ? { volume: vol } : { muted: true })}
+                style={{ position: "absolute", left, top, width: dw, height: dh }} />
+              <div style={{ position: "absolute", left: 24, top: 22, fontFamily: BODY, fontWeight: 800, fontSize: 34, color: "#111",
+                background: on ? "#FFE14D" : "rgba(255,255,255,.92)", borderRadius: 14, padding: "8px 18px", boxShadow: "0 4px 14px rgba(0,0,0,.35)" }}>
+                {pn.name}{pn.role ? <span style={{ fontWeight: 600, fontSize: 26, marginLeft: 10, color: "#444" }}>{pn.role}</span> : null}
+              </div>
+              <div style={{ position: "absolute", inset: 0, border: `7px solid ${on ? "#FFE14D" : "rgba(0,0,0,0)"}`, boxSizing: "border-box" }} />
+            </div>
+          );
+        })}
+        <div style={{ position: "absolute", left: 0, top: PANELS[1].top - 3, width: 1080, height: 6, background: "#000" }} />
+      </AbsoluteFill>
+    );
   }
   return (
     <AbsoluteFill>
@@ -122,7 +159,7 @@ export const ClipShort: React.FC<{ data: ShortData }> = ({ data: d }) => {
       {d.stickers.map((s, i) => (
         <Sticker key={i} t={t} t0={s.from} t1={s.to} x={s.x} y={s.y} rot={s.rot} bg={s.bg} fg={s.fg} size={s.size}>{s.text}</Sticker>
       ))}
-      <Captions pages={d.pages} centerY={1370} />
+      <Captions pages={d.pages} centerY={d.captionY ?? 1370} />
       {flash > 0.002 && <AbsoluteFill style={{ background: "white", opacity: flash }} />}
 
       {d.lines.map((l) => (
