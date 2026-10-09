@@ -7,6 +7,10 @@ import React from "react";
 import { fitText } from "@remotion/layout-utils";
 import { BODY, TITLE } from "./fonts";
 import { clamp, eBack, eInOut, eOut, lerp, prog } from "./fx";
+import { Marked } from "./Marked";
+import { Post, Scene, type PostG, type SceneG } from "./Sseol";
+
+export { Marked };
 
 type Bar = { label: string; value: number; text?: string; color?: string; emoji?: string };
 type Side = { label: string; value?: string; emoji?: string; color?: string };
@@ -27,20 +31,16 @@ export type Gfx = { steps?: number[] } & (
   | { type: "rank"; n: number; text: string; emoji?: string; sub?: string; color?: string }
   /** a question with choices, a countdown ring, then the answer lights up; steps: [count starts, answer] */
   | { type: "quiz"; q: string; options: string[]; answer: number; count?: number }
+  /** a story beat (lib/Sseol.tsx): mochi characters in moods, a speech bubble (steps[0]), a prop (steps[1]), a place tag */
+  | ({ type: "scene" } & SceneG)
+  /** a community-app post for a story's hook; steps[i] reveals body line i */
+  | ({ type: "post" } & PostG)
 );
 
 const KEY = "#FFE14D", RED = "#FF3B3B", GREEN = "#2BD46B", ORANGE = "#FF9F1C";
 const PALETTE = ["#4DA3FF", "#FF5C7A", "#2BD46B", "#FFB020", "#B07CFF"];
 const STROKE = (w: number): React.CSSProperties => ({ WebkitTextStroke: `${w}px black`, paintOrder: "stroke" });
 
-/** text with [key] words in yellow (or `color`) */
-export const Marked: React.FC<{ text: string; color?: string }> = ({ text, color = KEY }) => (
-  <>
-    {text.split(/(\[[^\]]*\])/).map((p, i) =>
-      p.startsWith("[") ? <span key={i} style={{ color }}>{p.slice(1, -1)}</span> : <React.Fragment key={i}>{p}</React.Fragment>,
-    )}
-  </>
-);
 const plain = (s: string) => s.replace(/[[\]]/g, "");
 const fit = (text: string, max: number, width = 960, font = TITLE, weight?: string) =>
   Math.min(max, fitText({ text: plain(text) || " ", withinWidth: width, fontFamily: font, fontWeight: weight }).fontSize);
@@ -319,6 +319,8 @@ export const GfxView: React.FC<{ g: Gfx; t: number; h: number }> = ({ g, t, h })
     case "vs": return <VS g={g} t={t} />;
     case "rank": return <Rank g={g} t={t} />;
     case "quiz": return <Quiz g={g} t={t} />;
+    case "scene": return <Scene g={g} t={t} h={h} />;
+    case "post": return <Post g={g} t={t} />;
   }
 };
 

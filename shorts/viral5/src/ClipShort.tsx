@@ -104,7 +104,7 @@ const ClipView: React.FC<{ c: Clip; d: ShortData }> = ({ c, d }) => {
     return (
       <AbsoluteFill>
         {ok ? <Media c={c} volume={vol} style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", transform: `scale(${s})`, filter: "brightness(.3) saturate(1.1)" }} />
-          : <AbsoluteFill style={{ background: GFX_BG }} />}
+          : <AbsoluteFill style={{ background: c.gfx.type === "scene" || c.gfx.type === "post" ? "#000" : GFX_BG }} />}
         <div style={{ position: "absolute", left: 0, top: box.top, width: 1080, height: box.height }}>
           <GfxView g={c.gfx} t={f / FPS} h={box.height} />
         </div>
@@ -269,7 +269,9 @@ export const ClipShort: React.FC<{ data: ShortData }> = ({ data: d }) => {
           <ClipView c={c} d={d} />
         </Sequence>
       ))}
-      <AbsoluteFill style={{ background: "linear-gradient(to bottom, rgba(0,0,0,.75) 0%, rgba(0,0,0,0) 22%, rgba(0,0,0,0) 62%, rgba(0,0,0,.65) 80%, rgba(0,0,0,.2) 100%)" }} />
+      {/* the shade that keeps captions readable over footage; a story's drawn scenes stay clean */}
+      {["scene", "post"].includes(d.clips.find((c) => t >= c.at && t < c.at + c.dur)?.gfx?.type ?? "") ? null
+        : <AbsoluteFill style={{ background: "linear-gradient(to bottom, rgba(0,0,0,.75) 0%, rgba(0,0,0,0) 22%, rgba(0,0,0,0) 62%, rgba(0,0,0,.65) 80%, rgba(0,0,0,.2) 100%)" }} />}
       <Title d={d} />
       <Credit d={d} t={t} />
       <Hook d={d} t={t} />

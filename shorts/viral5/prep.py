@@ -10,10 +10,11 @@ edit.json times are anchors on the narration, so a new voice take re-times the w
   "crane@end+0.1"   0.1 s after line "crane" ends
 
 A clip may be a graphic instead of footage (src/lib/Gfx.tsx): "gfx": {"type": "counter" | "bars" | "units" | "text" | "ox" |
-"vs" | "rank" | "quiz", ...}. Its "steps" are anchors as above (or numbers: seconds after the clip starts) for its reveals.
+"vs" | "rank" | "quiz" | "scene" | "post", ...} (scene and post are the story shorts' drawn scenes, src/lib/Sseol.tsx). Its "steps" are anchors as above (or numbers: seconds after the clip starts) for its reveals.
 A gfx clip needs no "src"; with one, that footage plays darkened behind the graphic. A source whose file is a photo
 (.jpg/.png/.webp) is shown still, with the slow zoom. "marks": [{"kind": "circle" | "arrow", "x", "y", "r", "rot",
 "from", "to"}] draws red circles and arrows over the picture (x, y in the 1080x1920 frame).
+A line whose "cap" is [""] gets no caption (a character's line that the scene shows in a speech bubble).
 """
 import difflib, json, os, re, subprocess, sys, wave
 import numpy as np
@@ -70,7 +71,8 @@ def spoken_form(word):
 def caption_pages(tl, caps):
     pages = []
     for L in tl["lines"]:
-        groups = [(ci, words_of(p)) for ci, cap in enumerate(caps[L["id"]]) for p in cap.split("/")]
+        groups = [(ci, words_of(p)) for ci, cap in enumerate(caps[L["id"]]) for p in cap.split("/") if p.strip()]
+        if not groups: continue  # "cap": [""]: no caption for this line (a character's line shown in a speech bubble)
         words = [w for _, p in groups for w in p]
         cap_chars, owner = [], []
         for wi, w in enumerate(words):

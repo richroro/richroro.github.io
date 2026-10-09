@@ -3,7 +3,9 @@ tools/build_voice.py writes: voice/<id>.wav plus timeline.json, with per-syllabl
 Edge's word boundaries instead of a speech recognizer.
 
 usage: python3 voice_edge.py <id> [voice] [rate]     reads shorts/<id>/script.json, writes build/<id>/
-The voice and rate default to the script's "voices.nar" entry. Needs network access to speech.platform.bing.com.
+The voice and rate default to the script's "voices.nar" entry. A line's "voice" picks another entry of "voices"
+({"edge", "rate", "pitch"}), so a story can give its characters their own voices. Needs network access to
+speech.platform.bing.com.
 """
 import asyncio, difflib, io, json, os, re, subprocess, sys, wave
 import numpy as np
@@ -21,8 +23,15 @@ KEEP = re.compile(r"[가-힣A-Za-z0-9]")
 chars = lambda s: [c for c in s if KEEP.match(c)]
 os.makedirs(f"{out}/voice", exist_ok=True)
 
-async def synth(text):
-    com = edge_tts.Communicate(text, VOICE, rate=RATE, boundary="WordBoundary", proxy=os.environ.get("HTTPS_PROXY") or None)
+def voice_of(L):
+    """(voice, rate, pitch) for a line: its own "voices" entry, else the narrator's"""
+    v = S.get("voices", {}).get(L.get("voice", "nar")) if L.get("voice", "nar") != "nar" else None
+    if not v:
+        return VOICE, RATE, nar.get("pitch", "+0Hz")
+    return v.get("edge", VOICE), v.get("rate", RATE), v.get("pitch", "+0Hz")
+
+async def synth(text, voice=None, rate=None, pitch="+0Hz"):
+    com = edge_tts.Communicate(text, voice or VOICE, rate=rate or RATE, pitch=pitch, boundary="WordBoundary", proxy=os.environ.get("HTTPS_PROXY") or None)
     audio, words = bytearray(), []
     async for ch in com.stream():
         if ch["type"] == "audio":
@@ -50,7 +59,8 @@ timeline = {"title": S["title"], "lines": [], "fps": 30, "voice": VOICE, "rate":
 t = 0.0
 for L in S["lines"]:
     spoken = L["say"].replace("|", "")
-    x, words = asyncio.run(synth(spoken))
+    lv, lr, lp = voice_of(L)
+    x, words = asyncio.run(synth(spoken, lv, lr, lp))
     x, words = trim(x, words)
     dur = len(x) / SR
     # syllable times: each boundary word spreads its syllables over its duration, then align to the script text
@@ -71,7 +81,7 @@ for L in S["lines"]:
     chunks = [{"t0": round(seg_t[i], 3), "t1": round(seg_t[i + 1] if i + 1 < len(seg_t) else dur, 3), "text": L["cap"][i]} for i in range(len(seg_t))]
     t += L.get("gap", 0.2)
     write(f"{out}/voice/{L['id']}.wav", x)
-    timeline["lines"].append({"id": L["id"], "voice": VOICE, "start": round(t, 3), "dur": round(dur, 3), "wav": f"voice/{L['id']}.wav",
+    timeline["lines"].append({"id": L["id"], "voice": lv, "start": round(t, 3), "dur": round(dur, 3), "wav": f"voice/{L['id']}.wav",
                               "chunks": chunks, "chars": "".join(sc), "ct": [round(v, 3) for v in times]})
     print(f"{L['id']:6s} start={t:6.2f} dur={dur:4.2f} words={len(words)}")
     t += dur

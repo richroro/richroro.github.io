@@ -1,0 +1,340 @@
+{
+ "credit": "",
+ "titleStyle": "band",
+ "captionY": 1650,
+ "sources": {},
+ "music": {
+  "file": "music/monkeys_spinning_monkeys.mp3",
+  "gain": 0.22,
+  "start": 0
+ },
+ "sfx": [
+  [
+   "b.원샷",
+   "pop",
+   0.35
+  ],
+  [
+   "c",
+   "boing",
+   0.3
+  ],
+  [
+   "e",
+   "coin",
+   0.25
+  ],
+  [
+   "g.못",
+   "k_error_003",
+   0.3
+  ],
+  [
+   "j",
+   "whoosh",
+   0.3
+  ],
+  [
+   "k",
+   "pop_hi",
+   0.35
+  ]
+ ],
+ "clips": [
+  {
+   "from": "a",
+   "label": "post",
+   "gfx": {
+    "type": "post",
+    "title": "초6 짝꿍이 1년 내내 [내 우유] 뺏어 먹은 썰",
+    "body": [
+     "급식 우유만 나오면",
+     "내 것까지 [원샷]함 ㅋㅋ"
+    ],
+    "steps": [
+     "a.짝꿍이",
+     "a.우유를"
+    ]
+   }
+  },
+  {
+   "from": "b",
+   "label": "oneshot",
+   "gfx": {
+    "type": "scene",
+    "bg": "class",
+    "place": "📍 6학년 3반",
+    "prop": "🥛",
+    "chars": [
+     {
+      "name": "나",
+      "mood": "neutral",
+      "to": "shock"
+     },
+     {
+      "name": "짝꿍",
+      "color": "#8FD3FF",
+      "mood": "laugh"
+     }
+    ],
+    "steps": [
+     0,
+     "b.가져가서",
+     "b.원샷"
+    ],
+    "sign": "우유 남기지 않기!"
+   }
+  },
+  {
+   "from": "c",
+   "label": "mine",
+   "gfx": {
+    "type": "scene",
+    "bg": "class",
+    "say": {
+     "who": 0,
+     "text": "야! 그거 [내 거]잖아!"
+    },
+    "zoom": 1.08,
+    "focus": 0,
+    "chars": [
+     {
+      "name": "나",
+      "mood": "angry"
+     },
+     {
+      "name": "짝꿍",
+      "color": "#8FD3FF",
+      "mood": "neutral"
+     }
+    ],
+    "sign": "우유 남기지 않기!"
+   }
+  },
+  {
+   "from": "d",
+   "label": "tasty",
+   "gfx": {
+    "type": "scene",
+    "bg": "class",
+    "say": {
+     "who": 1,
+     "text": "응. 맛있더라~"
+    },
+    "zoom": 1.1,
+    "focus": 1,
+    "chars": [
+     {
+      "name": "나",
+      "mood": "shock"
+     },
+     {
+      "name": "짝꿍",
+      "color": "#8FD3FF",
+      "mood": "smug"
+     }
+    ],
+    "sign": "우유 남기지 않기!"
+   }
+  },
+  {
+   "from": "e",
+   "label": "200",
+   "gfx": {
+    "type": "scene",
+    "bg": "class",
+    "sign": "우유 남기지 않기!",
+    "prop": "🥛",
+    "big": "🥛 × [200]",
+    "chars": [
+     {
+      "name": "나",
+      "mood": "sad"
+     },
+     {
+      "name": "짝꿍",
+      "color": "#8FD3FF",
+      "mood": "laugh"
+     }
+    ],
+    "steps": [
+     0,
+     0.1,
+     9,
+     "e.이백"
+    ]
+   }
+  },
+  {
+   "from": "e2",
+   "label": "crazy",
+   "gfx": {
+    "type": "scene",
+    "bg": "class",
+    "say": {
+     "who": 0,
+     "text": "얘는 우유에 [미쳤나?]"
+    },
+    "prop": "🥛🥛",
+    "chars": [
+     {
+      "name": "나",
+      "mood": "think"
+     },
+     {
+      "name": "짝꿍",
+      "color": "#8FD3FF",
+      "mood": "laugh"
+     }
+    ],
+    "sign": "우유 남기지 않기!"
+   }
+  },
+  {
+   "from": "f",
+   "label": "grad",
+   "gfx": {
+    "type": "scene",
+    "bg": "stage",
+    "place": "📍 졸업식",
+    "chars": [
+     {
+      "name": "나",
+      "mood": "neutral"
+     },
+     {
+      "name": "짝꿍",
+      "color": "#8FD3FF",
+      "mood": "shy"
+     }
+    ],
+    "sign": "졸업을 축하합니다"
+   }
+  },
+  {
+   "from": "g",
+   "label": "confess",
+   "gfx": {
+    "type": "scene",
+    "bg": "stage",
+    "say": {
+     "who": 1,
+     "text": "사실 나... [우유 못 먹어]"
+    },
+    "zoom": 1.12,
+    "focus": 1,
+    "chars": [
+     {
+      "name": "나",
+      "mood": "neutral",
+      "to": "shock"
+     },
+     {
+      "name": "짝꿍",
+      "color": "#8FD3FF",
+      "mood": "shy"
+     }
+    ],
+    "steps": [
+     0,
+     0,
+     "g.못"
+    ],
+    "sign": "졸업을 축하합니다"
+   }
+  },
+  {
+   "from": "h",
+   "label": "tummy",
+   "gfx": {
+    "type": "scene",
+    "bg": "class",
+    "place": "📍 그때",
+    "prop": "🥛",
+    "chars": [
+     {
+      "name": "나",
+      "mood": "sick"
+     }
+    ],
+    "sign": "우유 남기지 않기!"
+   }
+  },
+  {
+   "from": "h2",
+   "label": "secret",
+   "gfx": {
+    "type": "scene",
+    "bg": "class",
+    "prop": "🥛",
+    "chars": [
+     {
+      "name": "짝꿍",
+      "color": "#8FD3FF",
+      "mood": "cry"
+     }
+    ],
+    "sign": "우유 남기지 않기!"
+   }
+  },
+  {
+   "from": "i",
+   "label": "tall",
+   "gfx": {
+    "type": "scene",
+    "bg": "class",
+    "prop": "📏",
+    "propX": 0.5,
+    "chars": [
+     {
+      "name": "나",
+      "mood": "shock",
+      "size": 0.8
+     },
+     {
+      "name": "짝꿍",
+      "color": "#8FD3FF",
+      "mood": "smug",
+      "size": 1.25
+     }
+    ],
+    "sign": "우유 남기지 않기!"
+   }
+  },
+  {
+   "from": "j",
+   "label": "now",
+   "gfx": {
+    "type": "scene",
+    "bg": "home",
+    "card": "15년 후...",
+    "chars": []
+   }
+  },
+  {
+   "from": "k",
+   "label": "yeobo",
+   "gfx": {
+    "type": "scene",
+    "bg": "home",
+    "place": "📍 우리 집",
+    "say": {
+     "who": 0,
+     "text": "여보! [우유 좀 남기라고!]"
+    },
+    "prop": "🥛",
+    "chars": [
+     {
+      "name": "나",
+      "mood": "angry"
+     },
+     {
+      "name": "남편",
+      "color": "#8FD3FF",
+      "mood": "laugh"
+     }
+    ]
+   }
+  }
+ ]
+}
