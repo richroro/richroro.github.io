@@ -1,0 +1,298 @@
+{
+ "credit": "사진: Wikimedia Commons (CC BY·CC0)",
+ "sources": {
+  "acl": {
+   "file": "acl.mp4",
+   "credit": "사진: Photo and Share CC/무인양품 (CC BY 2.0) · 2013",
+   "label": "서울월드컵경기장 (2013년)",
+   "url": "https://commons.wikimedia.org/wiki/File:AFC_Champions_League_Final_1st_leg.jpg"
+  },
+  "swcs": {
+   "file": "swcs2001.mp4",
+   "credit": "사진: 국립민속박물관(문덕관 기증), 공공누리 1유형 · 2001",
+   "label": "서울월드컵경기장 (2001년)",
+   "url": "https://commons.wikimedia.org/wiki/File:서울_월드컵_경기장_전경_(2001.11).jpg"
+  },
+  "sat": {
+   "file": "kompsat.mp4",
+   "credit": "사진: 한국항공우주연구원 아리랑 1호, 공공누리 1유형",
+   "label": "서울월드컵경기장 위성 사진",
+   "url": "https://commons.wikimedia.org/wiki/File:아리랑_1호가_촬영한_서울_월드컵_경기장_(335).jpg"
+  },
+  "yazan": {
+   "file": "yazan.mp4",
+   "credit": "사진: Fars/M.Sadegh Nikgostar (CC BY 4.0) · 2024 아시안컵",
+   "label": "야잔 (2024년 요르단 대표)",
+   "url": "https://commons.wikimedia.org/wiki/File:Yazan_Al-Arab_2.jpg"
+  },
+  "table": {
+   "file": "card_table.mp4",
+   "credit": "그래픽: 자체 제작 · 자료: 국민일보·뉴시스",
+   "label": "순위표",
+   "url": ""
+  },
+  "math": {
+   "file": "card_math.mp4",
+   "credit": "그래픽: 자체 제작",
+   "label": "우승 계산",
+   "url": ""
+  }
+ },
+ "clips": [
+  {
+   "src": "acl",
+   "from": "hook",
+   "in": 0.0,
+   "audio": 0.0,
+   "zoom": [
+    1.0,
+    1.08
+   ],
+   "crop": [
+    0.5,
+    0.55,
+    1.0
+   ]
+  },
+  {
+   "src": "acl",
+   "from": "hook.우승까지",
+   "in": 0.0,
+   "audio": 0.0,
+   "zoom": [
+    1.0,
+    1.05
+   ],
+   "crop": [
+    0.45,
+    0.6,
+    1.35
+   ]
+  },
+  {
+   "src": "table",
+   "from": "pts",
+   "in": 0.0,
+   "audio": 0.0,
+   "zoom": [
+    1.0,
+    1.02
+   ]
+  },
+  {
+   "src": "sat",
+   "from": "gap.남은",
+   "in": 0.0,
+   "audio": 0.0,
+   "zoom": [
+    1.0,
+    1.15
+   ]
+  },
+  {
+   "src": "math",
+   "from": "math",
+   "in": 0.0,
+   "audio": 0.0,
+   "zoom": [
+    1.0,
+    1.02
+   ]
+  },
+  {
+   "src": "swcs",
+   "from": "last",
+   "in": 0.0,
+   "audio": 0.0,
+   "zoom": [
+    1.0,
+    1.08
+   ],
+   "crop": [
+    0.3,
+    0.62,
+    1.25
+   ]
+  },
+  {
+   "src": "acl",
+   "from": "last.그래서",
+   "in": 0.0,
+   "audio": 0.0,
+   "zoom": [
+    1.0,
+    1.05
+   ],
+   "crop": [
+    0.6,
+    0.5,
+    1.5
+   ]
+  },
+  {
+   "src": "yazan",
+   "from": "def",
+   "in": 0.0,
+   "audio": 0.0,
+   "zoom": [
+    1.0,
+    1.05
+   ],
+   "crop": [
+    0.5,
+    0.32,
+    1.15
+   ]
+  },
+  {
+   "src": "acl",
+   "from": "att",
+   "in": 0.0,
+   "audio": 0.0,
+   "zoom": [
+    1.0,
+    1.05
+   ],
+   "crop": [
+    0.3,
+    0.62,
+    1.7
+   ]
+  },
+  {
+   "src": "table",
+   "from": "but",
+   "in": 0.0,
+   "audio": 0.0,
+   "zoom": [
+    1.0,
+    1.02
+   ]
+  },
+  {
+   "src": "swcs",
+   "from": "date",
+   "in": 0.0,
+   "audio": 0.0,
+   "zoom": [
+    1.0,
+    1.06
+   ],
+   "crop": [
+    0.82,
+    0.7,
+    1.45
+   ]
+  },
+  {
+   "src": "acl",
+   "from": "end",
+   "in": 0.0,
+   "audio": 0.0,
+   "zoom": [
+    1.0,
+    1.07
+   ],
+   "crop": [
+    0.5,
+    0.5,
+    1.15
+   ]
+  }
+ ],
+ "titleStyle": "news",
+ "hook": [
+  "FC서울이 우승을",
+  "눈앞에 뒀습니다"
+ ],
+ "hookTo": "pts",
+ "captionY": 1430,
+ "stickers": [
+  {
+   "text": "10월 9일 기준",
+   "from": "hook",
+   "to": "pts-0.1",
+   "y": 560
+  },
+  {
+   "text": "사진: 2013년 ACL 결승 1차전",
+   "from": "hook",
+   "to": "pts-0.1",
+   "y": 1530,
+   "size": 34,
+   "rot": 0,
+   "bg": "#111",
+   "fg": "#fff"
+  },
+  {
+   "text": "야잔 (2024년 요르단 대표 경기)",
+   "from": "def",
+   "to": "att-0.1",
+   "y": 560
+  },
+  {
+   "text": "서울월드컵경기장 · 2001년 사진",
+   "from": "last",
+   "to": "last.그래서-0.1",
+   "y": 560
+  }
+ ],
+ "sfx": [
+  [
+   "hook.십",
+   "boom",
+   0.4
+  ],
+  [
+   "pts",
+   "whoosh",
+   0.35
+  ],
+  [
+   "gap.남은",
+   "ding",
+   0.35
+  ],
+  [
+   "math.자력",
+   "tada",
+   0.35
+  ],
+  [
+   "last",
+   "whoosh",
+   0.3
+  ],
+  [
+   "def",
+   "ding",
+   0.35
+  ],
+  [
+   "att",
+   "ding",
+   0.35
+  ],
+  [
+   "but",
+   "whoosh",
+   0.3
+  ],
+  [
+   "end",
+   "pop",
+   0.4
+  ]
+ ],
+ "punches": [
+  "hook.십",
+  "math.자력",
+  "last.십"
+ ],
+ "flashes": [],
+ "music": {
+  "file": "music/Lightless Dawn.mp3",
+  "gain": 0.13,
+  "start": 0
+ }
+}

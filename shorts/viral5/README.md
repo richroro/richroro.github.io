@@ -322,6 +322,57 @@ MEDIA=<저장소>/media python3 politics/prep_split.py obama09    # 원본: medi
 > 음악: "Scheming Weasel (faster version)" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
 > #팻베어위크 #FatBearWeek #곰 #연어 #알래스카 #shorts
 
+## 축구 뉴스 쇼츠 (`newsfb1`~`newsfb4`)
+
+‘어나더 뉴스’ 같은 국내 축구 뉴스 쇼츠의 **모양과 속도만** 따라 한 네 편입니다(흰 띠 제목 + 얼굴 클로즈업 + 빨간 헤드라인, 남자 뉴스 목소리 `ko-KR-InJoonNeural` +15%). 2026-10-09 기준 지난 2주(9.25~10.9)의 실제 기사만 썼고, 사실마다 매체 두 곳 이상에서 확인했습니다. 인용은 기사에 실린 말만 썼습니다.
+
+| id | 흰 띠 제목 | 빨간 헤드라인 | 길이 | 내용 |
+| --- | --- | --- | --- | --- |
+| `newsfb1` | 손흥민 A매치 59호 골 / 차범근 넘었다 | 대한민국 축구 역사가 / 새로 쓰였습니다 | 46.1초 | 10.6 우즈베키스탄전 프리킥 골, 151경기 59골(차범근 136경기 58골), 월드컵 땐 56골 → 4연전 3골, 우루과이전 타이, 경기 뒤 소감, 2-0 승리 |
+| `newsfb2` | 김민재 작심 발언 / “수비수들 불쌍하다” | 대표팀 분위기가 / 심상치 않습니다 | 49.1초 | 10.2 베네수엘라전 0-0 뒤 축구화를 벗어 던진 장면과 방송 인터뷰, 황인범 발언, 모레노 감독 반응(감싸면서도 반박), 이틀 훈련 불참(대표팀 “피로 누적”), 김민재 빠진 우즈벡전 2-0 |
+| `newsfb3` | FC서울 10년 만의 우승 / 승점 10 남았다 | FC서울이 우승을 / 눈앞에 뒀습니다 | 42.9초 | 30라운드까지 19승 5무 6패 승점 62, 2위 울산 47, 남은 8경기에서 승점 10이면 자력 우승, 2016년 이후 첫 우승, 최소 실점 25, 클리말라·야고 13골 공동 선두, 10.10 제주전 |
+| `newsfb4` | ‘손흥민 시대 저무나’ 석 달 뒤 / A매치 최다 골 신기록 | 손흥민이 / 실력으로 답했습니다 | 48.9초 | ‘3개월 전 vs 지금’ 반전 구성: 북중미 월드컵 1승 2패·3경기 무득점·남아공전 선발 제외·조별리그 탈락 → 대회 뒤 인스타그램 약속(“나를 필요로 하실 때까지… 죽기 살기로 달려보겠다”) → 에콰도르·우루과이·우즈벡전 골, 59골 신기록 → 2025 유로파리그 주장 우승 → 기록 날 소감 |
+
+- 헤드라인 근거: “대표팀 분위기가 심상치 않습니다”는 스포츠조선(“대한민국 축구대표팀이 심상치 않다”)·머니투데이(“韓 대표팀 심상치 않은 분위기”) 표현을 따랐습니다. ‘충격’·‘초토화’·‘단독/속보’는 쓰지 않았습니다.
+- `newsfb2`는 비판 기사라 모레노 감독의 반응(“김민재는 상징적인 선수… 그런 이야기는 충분히 할 수 있다”, “공격은 물론 수비도 11명 다 뛰었다”)과 대표팀의 훈련 불참 설명(“피로 누적”)을 함께 넣었습니다. 김민재가 교체된 시각은 매체마다 후반 35분·40분으로 달라 말하지 않았습니다.
+- `newsfb3`는 **10월 9일 기준**입니다(화면에 스티커). 10일 제주전 결과가 나오면 내용이 낡으니 그 전에 올리거나 고쳐서 올려야 합니다.
+- 사진은 모두 **지난 경기 자료**라 화면 위 크레딧에 연도와 경기를(예: “· 2021 이란전”), 첫 장면에 “사진은 지난 경기 자료” 스티커를, 경기 날짜 스티커에는 “사진은 2024년”을, 단체 사진에서 얼굴을 확대한 장면에는 “가운데: 김민재 · 2021년 사진”처럼 누구인지를 붙였습니다. 모레노 감독·김기동 감독·클리말라는 자유 라이선스 사진이 없어서(위키미디어의 것은 CC BY-SA이거나 구단 유튜브 캡처) 쓰지 않고, 발언 카드·순위표·계산 카드(직접 만든 그래픽)와 경기장 사진으로 대신했습니다. 레바논축구협회(FA Lebanon) CC BY 사진도 ‘협회 사진’이라 쓰지 않았습니다.
+- 사진을 영상으로 바꾼 방법: `ffmpeg -loop 1 -t 12`로 12초짜리 mp4(타스님 사진은 아래 사진가 표기 띠를 잘라 냄)를 `public/<id>/src/`에 두고, 얼굴 확대는 `crop`, 천천히 밀기는 `zoom`. 템플릿 코드는 바꾸지 않았습니다. 사진·카드와 출처 JSON은 `media/newsfb/`, 목소리는 `media/voice/newsfb*/`.
+
+**출처 (기사)**
+- `newsfb1`: [한국일보 10.6](https://www.hankookilbo.com/news/article/A2026100621050002334)(151경기 59골, 차범근 136경기 58골, 오른발 낮은 프리킥, 월드컵 땐 56골), [SBS 10.6](https://news.sbs.co.kr/news/endPage.do?news_id=N1008785548), [국민일보 10.6](https://www.kmib.co.kr/article/view.asp?arcid=9000020378)(소감 “감정이 많이 북받치는 것 같다… 함께한 16년이란 시간이 소중하다”, 2-0), [엑스포츠뉴스 10.6](https://www.xportsnews.com/article/2204732)(잠시 말을 멈춤, “골문 오른쪽 하단 구석”, 같은 소감), [머니투데이 10.6](https://www.mt.co.kr/sports/2026/10/06/2026100621544044286), [서울신문 10.7](https://www.seoul.co.kr/news/sport/soccer/2026/10/07/20261007034002)(오세훈 후반 15분 헤더, 우루과이전 58호 타이, 월드컵 3골은 2014·2018), [한국일보 9.28](https://www.hankookilbo.com/news/article/A2026092821560005891)·[스포츠경향 9.28](https://sports.khan.co.kr/article/202609282157003/)(우루과이전 1-4, 58호 골), [FIFA 경기 보고서](https://www.fifa.com/ko/tournaments/mens/worldcup/2030/articles/korea-republic-v-uzbekistan-match-report-october-ko)
+- `newsfb2`: [OSEN 10.2(네이트)](https://m.news.nate.com/view/20261002n37341)(교체 뒤 모레노 감독과 대화, 축구화, 김민재 인터뷰 전문, 모레노 “상징적이고 중요한 선수… 충분히 할 수 있다”, “공격은 물론 수비도 11명 다 뛰었다”), [스타뉴스 10.2(네이트)](https://m.news.nate.com/view/20261002n36375)(같은 장면·발언, 모레노 “섣불리 판단하는 것은 성급”), [머니투데이 10.3](https://www.mt.co.kr/amp/sports/2026/10/03/2026100316294283203), [스포츠조선 10.6(네이트)](https://m.news.nate.com/view/20261006n21778)·[파이낸셜뉴스 10.3](https://www.fnnews.com/news/202610031359112439)(황인범 “대표팀 9년 차… 변화돼야 하는 것들이 많은데 잘 안되는 것 같다”, 울먹임), [경향신문 10.5](https://www.khan.co.kr/article/202610052020025)(모레노 “공격에서도 수비에서도 함께 뛰어줘서 긍정적”, 김민재 실내훈련), [YTN 10.6](https://www.ytn.co.kr/_ln/0107_202610061437469220)(이틀 연속 팀 훈련 불참, 관계자 “피로 누적”), [국민일보 10.6](https://www.kmib.co.kr/article/view.asp?arcid=9000020378)(우즈벡전 출전 명단 제외), [코리아중앙데일리](https://www.koreajoongangdaily.com/sports/kim-minjae-likely-to-sit-out-uzbekistan-friendly-after-missing-training-for-second-straight-day/12905678)
+- `newsfb3`: [국민일보 10.8](https://www.kmib.co.kr/article/view.asp?arcid=9000020975)(19승 5무 6패 승점 62, 울산 47, 남은 8경기·승점 10이면 자력 우승, 2016년 이후, 25실점 최소, 클리말라 13골 야고와 공동 선두, 제주 3위 46·최근 5경기 3승 2무), [뉴시스 10.8](https://www.newsis.com/view/NISX20261008_0003819968)(같은 수치, 10일 오후 2시 서울월드컵경기장, 9.20 포항전 1-2), [서울신문 10.9](https://www.seoul.co.kr/news/sport/soccer/2026/10/09/20261009035002)(같은 수치, 득점 순위)
+
+- `newsfb4`(사용자가 보여 준 ‘손흥민을 비판하는 사람들에게 반박하는 팬 글’에서 주제만 가져옴. 그 글과 사진은 쓰지 않음): [MBC 뉴스데스크](https://imnews.imbc.com/replay/2026/nwdesk/article/6833466_37004.html)(‘손흥민 시대‥이대로 저무나’, 남아공전 교체 명단), [뉴스핌 6.30](https://www.newspim.com/news/view/20260630000293)(체코 2-1, 멕시코 0-1, 남아공 0-1, 남아공전 선발 제외, 조 3위 중 10위로 탈락, 인스타그램 전문 인용), [머니투데이 7.1](https://www.mt.co.kr/article/2026070109235539075)(같은 인스타그램 문장, 조별리그 탈락), [한국일보 10.6](https://www.hankookilbo.com/news/article/A2026100621050002334)·[일간스포츠 9.25](https://isplus.com/article/view/isp202609250002)(에콰도르전 프리킥 57호), [서울신문 10.7](https://www.seoul.co.kr/news/sport/soccer/2026/10/07/20261007034002)(우루과이전 58호), [국민일보 10.6](https://www.kmib.co.kr/article/view.asp?arcid=9000020378)·[엑스포츠뉴스 10.6](https://www.xportsnews.com/article/2204732)(“어릴 때부터 이 자리를 당연하게 생각하지 않았다”), [전북일보 2025.5.22](https://jjan.kr/article/20250522580005)(유로파리그 결승 토트넘 1-0 맨유, 주장, 유럽 1군 15시즌 만의 첫 우승)·[경인일보](https://www.kyeongin.com/article/1740541)(한국인 최초)
+**사진 크레딧** (모두 위키미디어 공용, `media/newsfb/*.json`에 페이지·파일 주소·저자·라이선스)
+- Meghdad Madadi / Tasnim News Agency, CC BY 4.0 — 2021.10.12 이란-한국(테헤란): [손흥민](https://commons.wikimedia.org/wiki/File:Iran,_S._Korea_Closer_to_Securing_Spot_in_World_Cup_Tournament_after_Draw_2021-7.jpg), [손흥민·자한바크시](https://commons.wikimedia.org/wiki/File:Iran,_S._Korea_Closer_to_Securing_Spot_in_World_Cup_Tournament_after_Draw_2021-42.jpg), [한국 선발(김민재·황인범·손흥민)](https://commons.wikimedia.org/wiki/File:Iran,_S._Korea_Closer_to_Securing_Spot_in_World_Cup_Tournament_after_Draw_2021-8.jpg)
+- M.Sadegh Nikgostar / Fars News Agency, CC BY 4.0 — 2024.2.6 아시안컵 4강 요르단-한국: [5](https://commons.wikimedia.org/wiki/File:Asian_Nations_Cup_-_Jordan_and_South_Korea_(5).jpg), [30](https://commons.wikimedia.org/wiki/File:Asian_Nations_Cup_-_Jordan_and_South_Korea_(30).jpg), [32](https://commons.wikimedia.org/wiki/File:Asian_Nations_Cup_-_Jordan_and_South_Korea_(32).jpg), [42](https://commons.wikimedia.org/wiki/File:Asian_Nations_Cup_-_Jordan_and_South_Korea_(42).jpg), [64](https://commons.wikimedia.org/wiki/File:Asian_Nations_Cup_-_Jordan_and_South_Korea_(64).jpg), [70](https://commons.wikimedia.org/wiki/File:Asian_Nations_Cup_-_Jordan_and_South_Korea_(70).jpg), [야잔](https://commons.wikimedia.org/wiki/File:Yazan_Al-Arab_2.jpg)
+- Koen Suyk / Anefo (Nationaal Archief), CC0 — [차범근 1979](https://commons.wikimedia.org/wiki/File:Aankomst_van_het_voetbalelftal_van_Eintracht_Frankfurt_op_Schiphol_i.v.m._de_UEF,_Bestanddeelnr_930-5808.jpg)
+- Photo and Share CC / 무인양품 (Flickr), CC BY 2.0 — [2013 ACL 결승 1차전 서울월드컵경기장](https://commons.wikimedia.org/wiki/File:AFC_Champions_League_Final_1st_leg.jpg)
+- 국립민속박물관(문덕관 기증), 공공누리 제1유형 — [서울월드컵경기장 2001](https://commons.wikimedia.org/wiki/File:서울_월드컵_경기장_전경_(2001.11).jpg); 한국항공우주연구원, 공공누리 제1유형 — [아리랑 1호 위성 사진](https://commons.wikimedia.org/wiki/File:아리랑_1호가_촬영한_서울_월드컵_경기장_(335).jpg)
+- 음악: "Lightless Dawn" Kevin MacLeod (CC BY 4.0), 세 편 공통
+
+**newsfb1** — 손흥민 A매치 59호 골, 차범근 넘었다 ⚽
+> 손흥민이 10월 6일 우즈베키스탄과의 평가전(용인미르스타디움)에서 프리킥으로 A매치 59호 골을 넣어, 차범근 전 감독의 58골을 넘어 한국 남자 선수 A매치 최다 골 기록을 새로 썼습니다(151경기 59골). 한국은 오세훈의 추가 골로 2-0 승리. 손흥민의 A매치 골, 몇 골까지 갈까요? (사진은 지난 경기 자료입니다.)
+> 사진: Meghdad Madadi/Tasnim News Agency (CC BY 4.0), M.Sadegh Nikgostar/Fars News Agency (CC BY 4.0), Koen Suyk/Anefo·Nationaal Archief (CC0), via Wikimedia Commons · 음악: "Lightless Dawn" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
+> #손흥민 #차범근 #축구국가대표 #A매치 #우즈베키스탄 #shorts
+
+**newsfb2** — 김민재 작심 발언 “수비수들 불쌍하다” 👟
+> 10월 2일 베네수엘라전(0-0) 뒤 김민재가 “수비수들 보면 불쌍하다”, “다 같이 머리 처박고 뛰어야 한다”고 말했습니다. 황인범도 아쉬움을 털어놨고, 모레노 임시 감독은 “김민재는 상징적인 선수, 충분히 할 수 있는 말”이라면서도 “공격·수비 모두 다 같이 뛰었다”고 했습니다. 김민재가 선발에서 빠진 6일 우즈베키스탄전은 2-0 승리. 여러분 생각은? (발언은 OSEN·스타뉴스·스포츠조선·파이낸셜뉴스·YTN 보도 기준, 사진은 2021·2024년 경기 자료입니다.)
+> 사진: Meghdad Madadi/Tasnim News Agency (CC BY 4.0), M.Sadegh Nikgostar/Fars News Agency (CC BY 4.0), via Wikimedia Commons · 음악: "Lightless Dawn" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
+> #김민재 #황인범 #모레노 #축구국가대표 #베네수엘라전 #shorts
+
+**newsfb3** — FC서울 10년 만의 우승, 승점 10 남았다 🏆
+> 2026년 10월 9일 기준 K리그1 선두 FC서울은 19승 5무 6패 승점 62로 2위 울산(47)에 15점 앞서 있습니다. 남은 8경기에서 승점 10만 더하면 울산이 전승해도 자력 우승 — 2016년 이후 10년 만입니다. 다음 경기는 10월 10일 오후 2시 서울월드컵경기장 제주전. 몇 라운드에 확정될까요? (사진은 2001·2013·2024년 자료입니다.)
+> 사진: Photo and Share CC/무인양품 (CC BY 2.0), 국립민속박물관·한국항공우주연구원 (공공누리 제1유형), M.Sadegh Nikgostar/Fars News Agency (CC BY 4.0), via Wikimedia Commons · 음악: "Lightless Dawn" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
+> #FC서울 #K리그 #K리그1 #김기동 #우승경쟁 #shorts
+
+**newsfb4** — ‘손흥민 시대 저무나’ 석 달 뒤, A매치 최다 골 🔥
+> 2026 북중미 월드컵 3경기 무득점, 남아공전 선발 제외, 조별리그 탈락. 대회 뒤 손흥민은 “팬분들이 나를 필요로 하실 때까지 모든 것을 쏟아붓겠다, 죽기 살기로 달려보겠다”고 했습니다. 그리고 석 달 뒤 에콰도르·우루과이·우즈베키스탄전 골로 A매치 59골, 차범근을 넘어 한국 남자 최다 골. 손흥민, 몇 살까지 대표팀에서 뛰어주길 바라나요? (사진은 2021·2024년 경기 자료입니다.)
+> 사진: Meghdad Madadi/Tasnim News Agency (CC BY 4.0), M.Sadegh Nikgostar/Fars News Agency (CC BY 4.0), via Wikimedia Commons · 음악: "Lightless Dawn" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
+> #손흥민 #축구국가대표 #A매치최다골 #차범근 #월드컵 #shorts
+
 ## 출처와 라이선스
 
 **영상 (모두 미국 정부 저작물, 퍼블릭 도메인)**
