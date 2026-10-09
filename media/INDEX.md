@@ -107,6 +107,11 @@ Iconic scenes. Korean status rests on Art. 42 (films are protected 70 years from
 - `basketball_1934_ford_news_northern_high.mp4` (36 s)
 - Skipped: the WWI reel the research suggested has no basketball (its "Doughboy" game is a war drill). No PD Globetrotters or dunk footage was found.
 
+## Robots — `robots/` (NASA/JPL, public domain; see research/robots_2026-10.md)
+"마이크로덕" = Microduck, Hugging Face × Pollen Robotics' $399 duck robot (pre-orders opened 2026-08-27). Its demo videos are copyrighted (only the software is Apache-2.0), so no Microduck footage was downloaded. Ideas only.
+- `mars_ingenuity_record_flight.mp4` (35 s), `jpl_eels_snake_robot.mp4` (2:05), `iss_astrobee_flying_robot.mp4` (1:30), `robonaut_2004_feature.mp4` (80 s, 320p bonus, includes the Segway shot)
+- Perseverance's own landing video is already in `mars/edl.mp4`. The DVIDS robot dog and DARPA Robotics Challenge videos need a DVIDS login, so they weren't fetched.
+
 ## Research — `research/`
 - `trends_2026-10.md`: overseas chart songs (Billboard Global 200 / Hot 100, week of 2026-10-10) and high-view gaming/esports videos (Faker/T1, Worlds 2026 anthem, etc.) with source links, plus how to use them legally (Shorts sound library only; Riot fan-content policy). **No songs or game footage were downloaded:** they are copyrighted.
 - `tesla_2026-10.md`: Tesla Q3 2026 deliveries, stock, Korea sales/FSD, press-image terms, 5 footage-free short ideas.
@@ -116,6 +121,7 @@ Iconic scenes. Korean status rests on Art. 42 (films are protected 70 years from
 - `speeches_2026-10.md`: 16 notable overseas speeches (UNGA 81, Trump July 4, etc.), UN Web TV / White House / OGL licence terms.
 - `public_domain_old_2026-10.md`: PD rules for the US and Korea (films: 70 years from publication in Korea; recordings: US pre-1926), 13 films and 11 recordings rated.
 - `old_basketball_2026-10.md`: PD old basketball footage sources and rules.
+- `robots_2026-10.md`: Microduck identification, 12 viral robot videos (copyrighted, ideas only), PD robot footage sources.
 - `sports_2026-10.md`: overseas football (Messi, Son, Ronaldo, World Cup 2026, Premier League) and NBA (LeBron to 76ers, Wembanyama, opening night 10/20) moments with sources; league copyright terms; 5 footage-free short ideas.
 
 ## Narration — `voice/<id>/`
