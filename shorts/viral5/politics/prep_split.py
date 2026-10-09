@@ -12,7 +12,8 @@ edit.json:
   src        clip path inside $MEDIA
   title      [line 1, line 2];  credit (optional);  context: a sticker shown at the start (date, committee)
   panels     [{"name", "role", "half": "left" | "right", "face": [cx, cy, zoom] (optional, else detected)}]  [0] = top
-  segments   [{"in", "out"}]  source ranges in seconds, joined in order (a white flash marks every cut)
+  segments   [{"in", "out"}]  source ranges in seconds, joined in order (a white flash marks every cut);
+             add "single": [cx, cy, zoom] (or true to detect) and "label" for a stretch that shows one person full-frame
   lines      [{"who": 0 | 1, "text": "..."}]  what was said, in order. Write only words you are sure of: a caption
              that puts words in someone's mouth is worse than no caption, so leave unclear bits out.
   keys       words shown in yellow;  music, sfx (output seconds), tail
@@ -57,40 +58,76 @@ def face_in(path, ranges, x0, x1):
     return [float(v) for v in np.median(np.array(pts), 0)] if pts else None
 
 def recognized_words(sid):
-    """[{w, t0, t1}] on the clip's own timeline, from whisper.json if there is one, else the Zipformer transcript"""
-    wp = f"{HERE}/{sid}/whisper.json"
-    if os.path.exists(wp):
-        out = []
-        for seg in json.load(open(wp))["segments"]:
-            for w in seg.get("words") or []:
-                if w["word"].strip(): out.append({"w": w["word"].strip(), "t0": w["start"], "t1": w["end"]})
-        return out, "whisper"
-    return json.load(open(f"{HERE}/{sid}/transcript.json"))["asr"], "zipformer"
+    """[{w, t0, t1}] on the clip's own timeline: faster-whisper's words where it has them (politics/<id>/whisper.json),
+    with the Zipformer's words (transcript.json) filling any stretch whisper skipped"""
+    zp, wp = f"{HERE}/{sid}/transcript.json", f"{HERE}/{sid}/whisper.json"
+    zip_words = json.load(open(zp))["asr"] if os.path.exists(zp) else []
+    if not os.path.exists(wp): return zip_words, "zipformer"
+    wh = [{"w": w["word"].strip(), "t0": w["start"], "t1": w["end"]}
+          for seg in json.load(open(wp))["segments"] for w in seg.get("words") or [] if w["word"].strip()]
+    gaps = [z for z in zip_words if not any(abs(z["t0"] - w["t0"]) < 1.2 or w["t0"] <= z["t0"] <= w["t1"] for w in wh)]
+    return sorted(wh + gaps, key=lambda w: w["t0"]), f"whisper (+{len(gaps)} zipformer words in its gaps)"
 
-def align(lines, rec):
-    """time every word of `lines` (output seconds) by aligning its letters with the recognizer's letters"""
-    ref, owner = [], []  # letters of the script, and (line, word) for each
-    words = [[w for w in L["text"].split()] for L in lines]
-    for li, ws in enumerate(words):
-        for wi, w in enumerate(ws):
-            for ch in w:
-                for j in jamo(ch): ref.append(j); owner.append((li, wi))
-    hyp, ht = [], []  # recognizer letters and their times (letters spread evenly over each word)
+def lcs_pairs(a, b):
+    """index pairs of a longest common subsequence of a and b (dynamic programming, one row at a time)"""
+    m, n = len(a), len(b)
+    if not m or not n: return []
+    bv = np.array([ord(c) for c in b])
+    dp = np.zeros((m + 1, n + 1), np.int32)
+    for i in range(1, m + 1):
+        eq = (bv == ord(a[i - 1])).astype(np.int32)
+        t = np.maximum(dp[i - 1, 1:], dp[i - 1, :-1] + eq)
+        dp[i, 1:] = np.maximum.accumulate(t)
+    pairs, i, j = [], m, n
+    while i > 0 and j > 0:
+        if a[i - 1] == b[j - 1] and dp[i, j] == dp[i - 1, j - 1] + 1: pairs.append((i - 1, j - 1)); i -= 1; j -= 1
+        elif dp[i - 1, j] >= dp[i, j - 1]: i -= 1
+        else: j -= 1
+    pairs.reverse()
+    # keep only matches that sit in a run of at least two (both sides consecutive); lone letters are chance
+    keep = []
+    for k, (x, y) in enumerate(pairs):
+        prev_ok = k > 0 and pairs[k - 1] == (x - 1, y - 1)
+        next_ok = k + 1 < len(pairs) and pairs[k + 1] == (x + 1, y + 1)
+        if prev_ok or next_ok: keep.append((x, y))
+    return keep
+
+def align(lines, rec, out_t):
+    """time every word of `lines` (output seconds): a longest-common-subsequence alignment of the script's letters
+    with the recognizer's letters over the whole clip, split into windows wherever a line has an "at" (source s) pin"""
+    hyp, ht = [], []
     for r in rec:
         chars = [ch for ch in r["w"] if SYL.match(ch)]
-        for k, ch in enumerate(chars):
-            t = r["t0"] + (r["t1"] - r["t0"]) * k / max(1, len(chars))
+        for i, ch in enumerate(chars):
+            t = r["t0"] + (r["t1"] - r["t0"]) * i / max(1, len(chars))
             for j in jamo(ch): hyp.append(j); ht.append(t)
-    first = {}
-    for blk in difflib.SequenceMatcher(a=ref, b=hyp, autojunk=False).get_matching_blocks():
-        if blk.size < 2: continue  # a lone matching letter is as likely chance as speech
-        for k in range(blk.size):
-            key = owner[blk.a + k]
-            first[key] = min(first.get(key, 1e9), ht[blk.b + k])
+    words = [L["text"].split() for L in lines]
     flat = [(li, wi) for li, ws in enumerate(words) for wi in range(len(ws))]
-    times = [first.get(k) for k in flat]
-    # words the recognizer missed: spread them between their timed neighbours, by length
     n = [len(SYL.findall(words[li][wi])) or 1 for li, wi in flat]
+    pins = [li for li, L in enumerate(lines) if L.get("at") is not None]
+    bounds = [0] + pins + [len(lines)]
+    est = {}  # flat word index -> estimated start time
+    for b0, b1 in zip(bounds[:-1], bounds[1:]):
+        if b0 >= b1: continue
+        t_lo = out_t(lines[b0]["at"]) - 0.5 if lines[b0].get("at") is not None else -1e9
+        t_hi = out_t(lines[b1]["at"]) + 0.3 if b1 < len(lines) and lines[b1].get("at") is not None else 1e9
+        ref, owner = [], []
+        for li in range(b0, b1):
+            for wi, w in enumerate(words[li]):
+                pos = 0
+                for ch in w:
+                    for j in jamo(ch): ref.append(j); owner.append((flat.index((li, wi)), pos)); pos += 1
+        idx = [k for k, t in enumerate(ht) if t_lo <= t < t_hi]
+        sub = [hyp[k] for k in idx]
+        got = {}
+        for x, y in lcs_pairs(ref, sub):
+            fw, pos = owner[x]
+            got.setdefault(fw, []).append(ht[idx[y]] - 0.065 * pos)  # back off to where the word would have started
+        for fw, ts in got.items(): est[fw] = float(np.median(ts))
+    times = [est.get(k) for k in range(len(flat))]
+    for li in pins:  # a pinned line starts exactly where it is pinned
+        times[flat.index((li, 0))] = out_t(lines[li]["at"])
+    # words the recognizer missed: spread them between timed neighbours, by length
     i = 0
     while i < len(flat):
         if times[i] is not None: i += 1; continue
@@ -102,7 +139,7 @@ def align(lines, rec):
         for k in range(i, j):
             times[k] = a + (b - a) * acc / max(1, sum(n[i:j])); acc += n[k]
         i = j
-    for k in range(1, len(times)):  # never let a word start before the one it follows
+    for k in range(1, len(times)):  # a word never starts before the one it follows
         times[k] = max(times[k], times[k - 1] + 0.06)
     return {k: t for k, t in zip(flat, times)}, words, n
 
@@ -117,8 +154,13 @@ def main(sid):
         dur = s["out"] - s["in"]; out = f"{pub}/clips/c{k:02d}.mp4"
         subprocess.run(["ffmpeg", "-v", "error", "-y", "-ss", str(s["in"]), "-t", f"{dur:.3f}", "-i", src, "-vf", "fps=30",
                         "-c:v", "libx264", "-preset", "veryfast", "-crf", "16", "-pix_fmt", "yuv420p", "-c:a", "aac", "-b:a", "192k", "-ar", "48000", out], check=True)
-        clips.append({"file": f"{sid}/clips/c{k:02d}.mp4", "label": "", "at": round(at, 3), "dur": round(dur, 3), "speed": 1.0,
-                      "frame": "square", "zoom": [1.0, 1.04], "focus": "50% 50%", "audio": 1.0})
+        clip = {"file": f"{sid}/clips/c{k:02d}.mp4", "label": s.get("label", ""), "at": round(at, 3), "dur": round(dur, 3), "speed": 1.0,
+                "frame": "square", "zoom": [1.0, 1.04], "focus": "50% 50%", "audio": 1.0}
+        if s.get("single"):  # this stretch is a one-person shot, not the two-shot: one face-centred crop, labelled
+            given = isinstance(s["single"], list)
+            f = s["single"] if given else (face_in(src, [(s["in"], s["out"])], 0.0, 1.0) or [0.5, 0.4, 0.2])
+            clip["crop"] = {"cx": round(f[0], 3), "cy": round(f[1], 3), "zoom": f[2] if given else 1.3, "w": W, "h": H}
+        clips.append(clip)
         starts.append(at); at += dur
     def out_t(t):
         for s, a in zip(ed["segments"], starts):
@@ -126,7 +168,7 @@ def main(sid):
         return None
 
     # panels: each person's face inside their half
-    ranges = [(s["in"], s["out"]) for s in ed["segments"]]
+    ranges = [(s["in"], s["out"]) for s in ed["segments"] if not s.get("single")]
     panels = []
     for p in ed["panels"]:
         x0, x1 = (0.0, 0.5) if p["half"] == "left" else (0.5, 1.0)
@@ -142,7 +184,7 @@ def main(sid):
     for r in rec:
         a, b = out_t(r["t0"]), out_t(r["t1"])
         if a is not None: rec_out.append({"w": r["w"], "t0": a, "t1": b if b is not None else a + 0.3})
-    times, words, nsyl = align(ed["lines"], rec_out)
+    times, words, nsyl = align(ed["lines"], rec_out, out_t)
     keys = ed.get("keys", [])
     pages, speakers = [], []
     for li, L in enumerate(ed["lines"]):
@@ -151,7 +193,7 @@ def main(sid):
             n = len(SYL.findall(w))
             if cur and (len(cur) >= 4 or sum(len(SYL.findall(c["text"])) for c in cur) + n > 11):
                 pages.append(cur); cur = []
-            cur.append({"text": w, "key": any(kw in w for kw in keys), "fromMs": round(times[(li, wi)] * 1000), "n": n})
+            cur.append({"text": w, "key": any(kw in w for kw in keys), "fromMs": max(30, round(times[(li, wi)] * 1000)), "n": n})
             if w[-1] in ".?!,": pages.append(cur); cur = []
         if cur: pages.append(cur)
         t0 = times[(li, 0)]; last = len(words[li]) - 1
@@ -175,7 +217,7 @@ def main(sid):
     data = {"id": sid, "end": end, "title": ed["title"], "credit": ed.get("credit", "출처: 국회 영상회의록"), "lines": [], "origVoice": True,
             "pages": out_pages, "env": [round(float(v), 3) for v in env], "clips": clips, "moments": [],
             "stickers": stickers + ed.get("stickers", []), "sfx": [{"t": a, "name": n, "gain": g} for a, n, g in ed.get("sfx", [])],
-            "music": ed.get("music"), "flashes": [round(a, 3) for a in starts[1:]], "punches": [],
+            "music": ed.get("music"), "flashes": [round(a, 3) for k, a in enumerate(starts) if k and abs(ed["segments"][k]["in"] - ed["segments"][k - 1]["out"]) > 0.05], "punches": [],
             "split": {"w": W, "h": H, "panels": panels}, "speakers": speakers, "captionY": ed.get("captionY", 1370)}
     os.makedirs(f"{V}/src/data", exist_ok=True)
     json.dump(data, open(f"{V}/src/data/{sid}.json", "w"), ensure_ascii=False)

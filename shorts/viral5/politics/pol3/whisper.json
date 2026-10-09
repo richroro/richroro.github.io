@@ -1,0 +1,1011 @@
+{
+ "model": "faster-whisper large-v3 (int8, CPU)",
+ "params": {
+  "language": "ko",
+  "beam_size": 5,
+  "vad_filter": false,
+  "word_timestamps": true,
+  "condition_on_previous_text": false
+ },
+ "source": "3.mp4",
+ "duration_s": 93.019,
+ "segments": [
+  {
+   "start": 0.0,
+   "end": 20.16,
+   "text": " 앉으세요. 장관 어제 종합 결과를 발표를 했죠. 하면서 북한이 mdl 이남에 지뢰를 설치했고 거기에 우리 장병이 부상을 당했다 이렇게 발표를 했습니다. 그렇죠.",
+   "words": [
+    {
+     "start": 0.0,
+     "end": 0.34,
+     "word": " 앉으세요.",
+     "probability": 0.9804
+    },
+    {
+     "start": 4.32,
+     "end": 5.06,
+     "word": " 장관",
+     "probability": 0.9843
+    },
+    {
+     "start": 5.06,
+     "end": 6.86,
+     "word": " 어제",
+     "probability": 0.3219
+    },
+    {
+     "start": 6.86,
+     "end": 8.76,
+     "word": " 종합",
+     "probability": 0.9998
+    },
+    {
+     "start": 8.76,
+     "end": 10.78,
+     "word": " 결과를",
+     "probability": 0.9117
+    },
+    {
+     "start": 10.78,
+     "end": 11.14,
+     "word": " 발표를",
+     "probability": 0.9937
+    },
+    {
+     "start": 11.14,
+     "end": 11.48,
+     "word": " 했죠.",
+     "probability": 0.9993
+    },
+    {
+     "start": 12.74,
+     "end": 13.48,
+     "word": " 하면서",
+     "probability": 0.9934
+    },
+    {
+     "start": 13.48,
+     "end": 14.58,
+     "word": " 북한이",
+     "probability": 0.9999
+    },
+    {
+     "start": 14.58,
+     "end": 14.92,
+     "word": " mdl",
+     "probability": 0.779
+    },
+    {
+     "start": 14.92,
+     "end": 15.48,
+     "word": " 이남에",
+     "probability": 0.9458
+    },
+    {
+     "start": 15.48,
+     "end": 16.28,
+     "word": " 지뢰를",
+     "probability": 0.9242
+    },
+    {
+     "start": 16.28,
+     "end": 16.8,
+     "word": " 설치했고",
+     "probability": 0.9945
+    },
+    {
+     "start": 16.8,
+     "end": 17.24,
+     "word": " 거기에",
+     "probability": 0.9939
+    },
+    {
+     "start": 17.24,
+     "end": 17.5,
+     "word": " 우리",
+     "probability": 0.9968
+    },
+    {
+     "start": 17.5,
+     "end": 17.96,
+     "word": " 장병이",
+     "probability": 0.8122
+    },
+    {
+     "start": 17.96,
+     "end": 18.6,
+     "word": " 부상을",
+     "probability": 0.9952
+    },
+    {
+     "start": 18.6,
+     "end": 18.96,
+     "word": " 당했다",
+     "probability": 0.9996
+    },
+    {
+     "start": 18.96,
+     "end": 19.18,
+     "word": " 이렇게",
+     "probability": 0.8001
+    },
+    {
+     "start": 19.18,
+     "end": 19.56,
+     "word": " 발표를",
+     "probability": 0.9998
+    },
+    {
+     "start": 19.56,
+     "end": 19.8,
+     "word": " 했습니다.",
+     "probability": 0.9996
+    },
+    {
+     "start": 20.0,
+     "end": 20.16,
+     "word": " 그렇죠.",
+     "probability": 0.6998
+    }
+   ]
+  },
+  {
+   "start": 20.16,
+   "end": 23.16,
+   "text": " 그럼 이거 도발 아닙니까?",
+   "words": [
+    {
+     "start": 20.16,
+     "end": 21.2,
+     "word": " 그럼",
+     "probability": 0.3003
+    },
+    {
+     "start": 21.2,
+     "end": 21.86,
+     "word": " 이거",
+     "probability": 0.9924
+    },
+    {
+     "start": 21.86,
+     "end": 22.74,
+     "word": " 도발",
+     "probability": 0.9312
+    },
+    {
+     "start": 22.74,
+     "end": 23.16,
+     "word": " 아닙니까?",
+     "probability": 0.9997
+    }
+   ]
+  },
+  {
+   "start": 23.7,
+   "end": 25.0,
+   "text": " 도발 맞죠?",
+   "words": [
+    {
+     "start": 23.7,
+     "end": 24.66,
+     "word": " 도발",
+     "probability": 0.9614
+    },
+    {
+     "start": 24.66,
+     "end": 25.0,
+     "word": " 맞죠?",
+     "probability": 0.9998
+    }
+   ]
+  },
+  {
+   "start": 26.92,
+   "end": 30.74,
+   "text": " 그런데 발표 결과 내용에 도발이라는 말이 빠졌어요",
+   "words": [
+    {
+     "start": 26.72,
+     "end": 27.2,
+     "word": " 그런데",
+     "probability": 0.7041
+    },
+    {
+     "start": 27.2,
+     "end": 28.16,
+     "word": " 발표",
+     "probability": 0.9999
+    },
+    {
+     "start": 28.16,
+     "end": 28.8,
+     "word": " 결과",
+     "probability": 0.9982
+    },
+    {
+     "start": 28.8,
+     "end": 29.34,
+     "word": " 내용에",
+     "probability": 0.9979
+    },
+    {
+     "start": 29.34,
+     "end": 29.82,
+     "word": " 도발이라는",
+     "probability": 0.9688
+    },
+    {
+     "start": 29.82,
+     "end": 30.1,
+     "word": " 말이",
+     "probability": 0.9997
+    },
+    {
+     "start": 30.1,
+     "end": 30.74,
+     "word": " 빠졌어요",
+     "probability": 0.9998
+    }
+   ]
+  },
+  {
+   "start": 30.74,
+   "end": 32.06,
+   "text": " 누가 뺐습니까?",
+   "words": [
+    {
+     "start": 30.74,
+     "end": 31.6,
+     "word": " 누가",
+     "probability": 0.1801
+    },
+    {
+     "start": 31.6,
+     "end": 32.06,
+     "word": " 뺐습니까?",
+     "probability": 0.9899
+    }
+   ]
+  },
+  {
+   "start": 35.0,
+   "end": 38.66,
+   "text": " 우리가 29일에 전체회의할 때 합참의 테이프 장도 이야기를 했었고",
+   "words": [
+    {
+     "start": 34.62,
+     "end": 35.1,
+     "word": " 우리가",
+     "probability": 0.9941
+    },
+    {
+     "start": 35.1,
+     "end": 35.74,
+     "word": " 29일에",
+     "probability": 0.701
+    },
+    {
+     "start": 35.74,
+     "end": 36.3,
+     "word": " 전체회의할",
+     "probability": 0.8433
+    },
+    {
+     "start": 36.3,
+     "end": 36.48,
+     "word": " 때",
+     "probability": 1.0
+    },
+    {
+     "start": 36.48,
+     "end": 37.38,
+     "word": " 합참의",
+     "probability": 0.9236
+    },
+    {
+     "start": 37.38,
+     "end": 37.66,
+     "word": " 테이프",
+     "probability": 0.6511
+    },
+    {
+     "start": 37.66,
+     "end": 38.08,
+     "word": " 장도",
+     "probability": 0.9706
+    },
+    {
+     "start": 38.08,
+     "end": 38.18,
+     "word": " 이야기를",
+     "probability": 0.9691
+    },
+    {
+     "start": 38.18,
+     "end": 38.66,
+     "word": " 했었고",
+     "probability": 0.9972
+    }
+   ]
+  },
+  {
+   "start": 38.66,
+   "end": 40.08,
+   "text": " 장관도 도발이라고 얘기했잖아요",
+   "words": [
+    {
+     "start": 38.66,
+     "end": 39.08,
+     "word": " 장관도",
+     "probability": 0.8315
+    },
+    {
+     "start": 39.08,
+     "end": 39.58,
+     "word": " 도발이라고",
+     "probability": 0.9989
+    },
+    {
+     "start": 39.58,
+     "end": 40.08,
+     "word": " 얘기했잖아요",
+     "probability": 0.7986
+    }
+   ]
+  },
+  {
+   "start": 40.08,
+   "end": 43.14,
+   "text": " 그런데 발표 내용에 도발이 없어요",
+   "words": [
+    {
+     "start": 40.08,
+     "end": 41.26,
+     "word": " 그런데",
+     "probability": 0.9727
+    },
+    {
+     "start": 41.26,
+     "end": 42.22,
+     "word": " 발표",
+     "probability": 0.9987
+    },
+    {
+     "start": 42.22,
+     "end": 42.5,
+     "word": " 내용에",
+     "probability": 0.9904
+    },
+    {
+     "start": 42.5,
+     "end": 42.9,
+     "word": " 도발이",
+     "probability": 0.9999
+    },
+    {
+     "start": 42.9,
+     "end": 43.14,
+     "word": " 없어요",
+     "probability": 0.9999
+    }
+   ]
+  },
+  {
+   "start": 43.14,
+   "end": 45.16,
+   "text": " 그럼 뭡니까 이게?",
+   "words": [
+    {
+     "start": 43.14,
+     "end": 44.58,
+     "word": " 그럼",
+     "probability": 0.9879
+    },
+    {
+     "start": 44.58,
+     "end": 45.0,
+     "word": " 뭡니까",
+     "probability": 0.9992
+    },
+    {
+     "start": 45.0,
+     "end": 45.16,
+     "word": " 이게?",
+     "probability": 0.9758
+    }
+   ]
+  },
+  {
+   "start": 46.8,
+   "end": 48.88,
+   "text": " 그냥 정점 위반입니까?",
+   "words": [
+    {
+     "start": 46.44,
+     "end": 46.92,
+     "word": " 그냥",
+     "probability": 0.9974
+    },
+    {
+     "start": 46.92,
+     "end": 47.28,
+     "word": " 정점",
+     "probability": 0.9286
+    },
+    {
+     "start": 47.28,
+     "end": 48.88,
+     "word": " 위반입니까?",
+     "probability": 0.9948
+    }
+   ]
+  },
+  {
+   "start": 50.64,
+   "end": 53.42,
+   "text": " 수십만 분에 있는 정전 위반으로 보고 계신 거예요?",
+   "words": [
+    {
+     "start": 50.64,
+     "end": 51.44,
+     "word": " 수십만",
+     "probability": 0.8331
+    },
+    {
+     "start": 51.44,
+     "end": 51.74,
+     "word": " 분에",
+     "probability": 0.7351
+    },
+    {
+     "start": 51.74,
+     "end": 51.88,
+     "word": " 있는",
+     "probability": 0.9998
+    },
+    {
+     "start": 51.88,
+     "end": 52.32,
+     "word": " 정전",
+     "probability": 0.9715
+    },
+    {
+     "start": 52.32,
+     "end": 52.72,
+     "word": " 위반으로",
+     "probability": 0.8973
+    },
+    {
+     "start": 52.72,
+     "end": 52.92,
+     "word": " 보고",
+     "probability": 0.9999
+    },
+    {
+     "start": 52.92,
+     "end": 53.22,
+     "word": " 계신",
+     "probability": 0.9997
+    },
+    {
+     "start": 53.22,
+     "end": 53.42,
+     "word": " 거예요?",
+     "probability": 0.9762
+    }
+   ]
+  },
+  {
+   "start": 54.98,
+   "end": 56.36,
+   "text": " 저희가 도발이라고 말씀드렸어요",
+   "words": [
+    {
+     "start": 54.7,
+     "end": 55.1,
+     "word": " 저희가",
+     "probability": 0.9571
+    },
+    {
+     "start": 55.1,
+     "end": 55.6,
+     "word": " 도발이라고",
+     "probability": 0.9998
+    },
+    {
+     "start": 55.6,
+     "end": 56.36,
+     "word": " 말씀드렸어요",
+     "probability": 0.9047
+    }
+   ]
+  },
+  {
+   "start": 56.36,
+   "end": 58.12,
+   "text": " 그런데 왜 발표에 포함을 안 시킵니까?",
+   "words": [
+    {
+     "start": 56.36,
+     "end": 56.58,
+     "word": " 그런데",
+     "probability": 0.5775
+    },
+    {
+     "start": 56.58,
+     "end": 56.76,
+     "word": " 왜",
+     "probability": 0.9997
+    },
+    {
+     "start": 56.76,
+     "end": 57.16,
+     "word": " 발표에",
+     "probability": 0.9353
+    },
+    {
+     "start": 57.16,
+     "end": 57.56,
+     "word": " 포함을",
+     "probability": 0.9985
+    },
+    {
+     "start": 57.56,
+     "end": 57.66,
+     "word": " 안",
+     "probability": 0.9998
+    },
+    {
+     "start": 57.66,
+     "end": 58.12,
+     "word": " 시킵니까?",
+     "probability": 0.9953
+    }
+   ]
+  },
+  {
+   "start": 59.28,
+   "end": 62.3,
+   "text": " 그 발표 내용에 다시 한번 보겠습니다",
+   "words": [
+    {
+     "start": 58.96,
+     "end": 59.36,
+     "word": " 그",
+     "probability": 0.6913
+    },
+    {
+     "start": 59.36,
+     "end": 59.82,
+     "word": " 발표",
+     "probability": 0.9965
+    },
+    {
+     "start": 59.82,
+     "end": 60.58,
+     "word": " 내용에",
+     "probability": 0.9958
+    },
+    {
+     "start": 60.58,
+     "end": 61.82,
+     "word": " 다시",
+     "probability": 0.9504
+    },
+    {
+     "start": 61.82,
+     "end": 61.98,
+     "word": " 한번",
+     "probability": 0.8661
+    },
+    {
+     "start": 61.98,
+     "end": 62.3,
+     "word": " 보겠습니다",
+     "probability": 0.9986
+    }
+   ]
+  },
+  {
+   "start": 62.3,
+   "end": 64.98,
+   "text": " 도발이 전혀 중요한 워딩이 아니어서 하는 겁니까?",
+   "words": [
+    {
+     "start": 62.3,
+     "end": 62.76,
+     "word": " 도발이",
+     "probability": 0.8677
+    },
+    {
+     "start": 62.76,
+     "end": 63.36,
+     "word": " 전혀",
+     "probability": 0.9434
+    },
+    {
+     "start": 63.36,
+     "end": 63.7,
+     "word": " 중요한",
+     "probability": 1.0
+    },
+    {
+     "start": 63.7,
+     "end": 64.12,
+     "word": " 워딩이",
+     "probability": 0.9977
+    },
+    {
+     "start": 64.12,
+     "end": 64.44,
+     "word": " 아니어서",
+     "probability": 0.9986
+    },
+    {
+     "start": 64.44,
+     "end": 64.6,
+     "word": " 하는",
+     "probability": 0.5622
+    },
+    {
+     "start": 64.6,
+     "end": 64.98,
+     "word": " 겁니까?",
+     "probability": 0.9999
+    }
+   ]
+  },
+  {
+   "start": 65.18,
+   "end": 66.14,
+   "text": " 당연히 도발",
+   "words": [
+    {
+     "start": 65.18,
+     "end": 65.8,
+     "word": " 당연히",
+     "probability": 0.9994
+    },
+    {
+     "start": 65.8,
+     "end": 66.14,
+     "word": " 도발",
+     "probability": 0.9997
+    }
+   ]
+  },
+  {
+   "start": 66.14,
+   "end": 68.46,
+   "text": " 그럼 당연히 도발이면 당연히 포함되어야죠",
+   "words": [
+    {
+     "start": 66.14,
+     "end": 66.54,
+     "word": " 그럼",
+     "probability": 0.5363
+    },
+    {
+     "start": 66.54,
+     "end": 67.04,
+     "word": " 당연히",
+     "probability": 1.0
+    },
+    {
+     "start": 67.04,
+     "end": 67.38,
+     "word": " 도발이면",
+     "probability": 0.931
+    },
+    {
+     "start": 67.38,
+     "end": 67.84,
+     "word": " 당연히",
+     "probability": 0.9999
+    },
+    {
+     "start": 67.84,
+     "end": 68.46,
+     "word": " 포함되어야죠",
+     "probability": 0.8827
+    }
+   ]
+  },
+  {
+   "start": 68.46,
+   "end": 71.26,
+   "text": " 그리고 그 도발에 대한 단호한 대응을 해야 되는 거 아니에요?",
+   "words": [
+    {
+     "start": 68.46,
+     "end": 69.26,
+     "word": " 그리고",
+     "probability": 0.9956
+    },
+    {
+     "start": 69.26,
+     "end": 69.42,
+     "word": " 그",
+     "probability": 0.9908
+    },
+    {
+     "start": 69.42,
+     "end": 69.88,
+     "word": " 도발에",
+     "probability": 0.9998
+    },
+    {
+     "start": 69.88,
+     "end": 70.04,
+     "word": " 대한",
+     "probability": 1.0
+    },
+    {
+     "start": 70.04,
+     "end": 70.44,
+     "word": " 단호한",
+     "probability": 0.9942
+    },
+    {
+     "start": 70.44,
+     "end": 70.74,
+     "word": " 대응을",
+     "probability": 0.9939
+    },
+    {
+     "start": 70.74,
+     "end": 70.84,
+     "word": " 해야",
+     "probability": 0.9993
+    },
+    {
+     "start": 70.84,
+     "end": 70.98,
+     "word": " 되는",
+     "probability": 0.9829
+    },
+    {
+     "start": 70.98,
+     "end": 71.12,
+     "word": " 거",
+     "probability": 0.9998
+    },
+    {
+     "start": 71.12,
+     "end": 71.26,
+     "word": " 아니에요?",
+     "probability": 0.9807
+    }
+   ]
+  },
+  {
+   "start": 71.38,
+   "end": 77.18,
+   "text": " 그러니까 지금 여당 의원께서는 이게 도발이 아니라 정전 위반이다",
+   "words": [
+    {
+     "start": 71.38,
+     "end": 71.98,
+     "word": " 그러니까",
+     "probability": 0.9992
+    },
+    {
+     "start": 71.98,
+     "end": 72.36,
+     "word": " 지금",
+     "probability": 0.9964
+    },
+    {
+     "start": 72.36,
+     "end": 72.88,
+     "word": " 여당",
+     "probability": 0.9995
+    },
+    {
+     "start": 72.88,
+     "end": 73.54,
+     "word": " 의원께서는",
+     "probability": 0.9436
+    },
+    {
+     "start": 73.54,
+     "end": 74.36,
+     "word": " 이게",
+     "probability": 0.9999
+    },
+    {
+     "start": 74.36,
+     "end": 74.86,
+     "word": " 도발이",
+     "probability": 0.9998
+    },
+    {
+     "start": 74.86,
+     "end": 75.06,
+     "word": " 아니라",
+     "probability": 0.9999
+    },
+    {
+     "start": 75.06,
+     "end": 76.56,
+     "word": " 정전",
+     "probability": 0.9989
+    },
+    {
+     "start": 76.56,
+     "end": 77.18,
+     "word": " 위반이다",
+     "probability": 0.9996
+    }
+   ]
+  },
+  {
+   "start": 77.18,
+   "end": 80.56,
+   "text": " 수십 번의 정전 위반에 관한 문호를 못하게 하잖아요",
+   "words": [
+    {
+     "start": 77.18,
+     "end": 77.72,
+     "word": " 수십",
+     "probability": 0.9256
+    },
+    {
+     "start": 77.72,
+     "end": 78.04,
+     "word": " 번의",
+     "probability": 0.7582
+    },
+    {
+     "start": 78.04,
+     "end": 78.78,
+     "word": " 정전",
+     "probability": 0.8151
+    },
+    {
+     "start": 78.78,
+     "end": 79.14,
+     "word": " 위반에",
+     "probability": 0.9595
+    },
+    {
+     "start": 79.14,
+     "end": 79.38,
+     "word": " 관한",
+     "probability": 0.9985
+    },
+    {
+     "start": 79.38,
+     "end": 79.74,
+     "word": " 문호를",
+     "probability": 0.6243
+    },
+    {
+     "start": 79.74,
+     "end": 80.2,
+     "word": " 못하게",
+     "probability": 0.8423
+    },
+    {
+     "start": 80.2,
+     "end": 80.56,
+     "word": " 하잖아요",
+     "probability": 0.9991
+    }
+   ]
+  },
+  {
+   "start": 80.56,
+   "end": 82.7,
+   "text": " 그러면 장관으로서 어떻게 이야기해야 돼요?",
+   "words": [
+    {
+     "start": 80.56,
+     "end": 81.32,
+     "word": " 그러면",
+     "probability": 0.8189
+    },
+    {
+     "start": 81.32,
+     "end": 81.98,
+     "word": " 장관으로서",
+     "probability": 0.9967
+    },
+    {
+     "start": 81.98,
+     "end": 82.16,
+     "word": " 어떻게",
+     "probability": 0.999
+    },
+    {
+     "start": 82.16,
+     "end": 82.5,
+     "word": " 이야기해야",
+     "probability": 0.9402
+    },
+    {
+     "start": 82.5,
+     "end": 82.7,
+     "word": " 돼요?",
+     "probability": 0.9891
+    }
+   ]
+  },
+  {
+   "start": 83.34,
+   "end": 84.4,
+   "text": " 그냥 어물쩍 넘어갑니까?",
+   "words": [
+    {
+     "start": 82.96,
+     "end": 83.42,
+     "word": " 그냥",
+     "probability": 0.9944
+    },
+    {
+     "start": 83.42,
+     "end": 83.84,
+     "word": " 어물쩍",
+     "probability": 0.8964
+    },
+    {
+     "start": 83.84,
+     "end": 84.4,
+     "word": " 넘어갑니까?",
+     "probability": 0.999
+    }
+   ]
+  },
+  {
+   "start": 84.66,
+   "end": 86.16,
+   "text": " 사실관계를 이야기해야죠",
+   "words": [
+    {
+     "start": 84.66,
+     "end": 85.58,
+     "word": " 사실관계를",
+     "probability": 0.9766
+    },
+    {
+     "start": 85.58,
+     "end": 86.16,
+     "word": " 이야기해야죠",
+     "probability": 0.9961
+    }
+   ]
+  },
+  {
+   "start": 87.72,
+   "end": 88.64,
+   "text": " 좋습니다",
+   "words": [
+    {
+     "start": 87.72,
+     "end": 88.64,
+     "word": " 좋습니다",
+     "probability": 0.9901
+    }
+   ]
+  },
+  {
+   "start": 90.42,
+   "end": 92.26,
+   "text": " 지뢰 제거했죠",
+   "words": [
+    {
+     "start": 90.42,
+     "end": 91.34,
+     "word": " 지뢰",
+     "probability": 0.961
+    },
+    {
+     "start": 91.34,
+     "end": 92.26,
+     "word": " 제거했죠",
+     "probability": 0.9977
+    }
+   ]
+  }
+ ]
+}

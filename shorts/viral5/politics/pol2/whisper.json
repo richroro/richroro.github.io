@@ -1,0 +1,503 @@
+{
+ "model": "faster-whisper large-v3 (int8, CPU)",
+ "params": {
+  "language": "ko",
+  "beam_size": 5,
+  "vad_filter": false,
+  "word_timestamps": true,
+  "condition_on_previous_text": false
+ },
+ "source": "2.mp4",
+ "duration_s": 67.013,
+ "segments": [
+  {
+   "start": 0.0,
+   "end": 4.1,
+   "text": " 또 메모를 해놓고 지금 국민들이 나와야 되는 그런 실정입니다.",
+   "words": [
+    {
+     "start": 0.0,
+     "end": 0.0,
+     "word": " 또",
+     "probability": 0.0304
+    },
+    {
+     "start": 0.0,
+     "end": 0.46,
+     "word": " 메모를",
+     "probability": 0.9786
+    },
+    {
+     "start": 0.46,
+     "end": 0.76,
+     "word": " 해놓고",
+     "probability": 0.9936
+    },
+    {
+     "start": 0.76,
+     "end": 1.72,
+     "word": " 지금",
+     "probability": 0.9848
+    },
+    {
+     "start": 1.72,
+     "end": 2.5,
+     "word": " 국민들이",
+     "probability": 0.996
+    },
+    {
+     "start": 2.5,
+     "end": 3.1,
+     "word": " 나와야",
+     "probability": 0.9997
+    },
+    {
+     "start": 3.1,
+     "end": 3.28,
+     "word": " 되는",
+     "probability": 0.9523
+    },
+    {
+     "start": 3.28,
+     "end": 3.52,
+     "word": " 그런",
+     "probability": 0.9998
+    },
+    {
+     "start": 3.52,
+     "end": 4.1,
+     "word": " 실정입니다.",
+     "probability": 0.9997
+    }
+   ]
+  },
+  {
+   "start": 5.24,
+   "end": 6.24,
+   "text": " 사법부도 마찬가지예요.",
+   "words": [
+    {
+     "start": 5.13,
+     "end": 5.64,
+     "word": " 사법부도",
+     "probability": 0.9989
+    },
+    {
+     "start": 5.64,
+     "end": 6.24,
+     "word": " 마찬가지예요.",
+     "probability": 0.996
+    }
+   ]
+  },
+  {
+   "start": 6.38,
+   "end": 13.68,
+   "text": " 지금 사법 시스템 망쳐서 이재명 변호인 출신이 지금 대법원장님을 앞에 두고 질의를 하는",
+   "words": [
+    {
+     "start": 6.38,
+     "end": 6.84,
+     "word": " 지금",
+     "probability": 0.9974
+    },
+    {
+     "start": 6.84,
+     "end": 7.24,
+     "word": " 사법",
+     "probability": 0.9998
+    },
+    {
+     "start": 7.24,
+     "end": 7.62,
+     "word": " 시스템",
+     "probability": 0.945
+    },
+    {
+     "start": 7.62,
+     "end": 8.18,
+     "word": " 망쳐서",
+     "probability": 0.9984
+    },
+    {
+     "start": 8.18,
+     "end": 9.36,
+     "word": " 이재명",
+     "probability": 0.999
+    },
+    {
+     "start": 9.36,
+     "end": 9.78,
+     "word": " 변호인",
+     "probability": 0.9914
+    },
+    {
+     "start": 9.78,
+     "end": 10.34,
+     "word": " 출신이",
+     "probability": 0.9999
+    },
+    {
+     "start": 10.34,
+     "end": 10.54,
+     "word": " 지금",
+     "probability": 0.7597
+    },
+    {
+     "start": 10.54,
+     "end": 11.82,
+     "word": " 대법원장님을",
+     "probability": 0.9993
+    },
+    {
+     "start": 11.82,
+     "end": 12.4,
+     "word": " 앞에",
+     "probability": 1.0
+    },
+    {
+     "start": 12.4,
+     "end": 12.9,
+     "word": " 두고",
+     "probability": 0.9979
+    },
+    {
+     "start": 12.9,
+     "end": 13.46,
+     "word": " 질의를",
+     "probability": 0.9928
+    },
+    {
+     "start": 13.46,
+     "end": 13.68,
+     "word": " 하는",
+     "probability": 1.0
+    }
+   ]
+  },
+  {
+   "start": 13.68,
+   "end": 15.92,
+   "text": " 이런 참담한 상황이 벌어진 겁니다.",
+   "words": [
+    {
+     "start": 13.68,
+     "end": 14.52,
+     "word": " 이런",
+     "probability": 0.8423
+    },
+    {
+     "start": 14.52,
+     "end": 15.04,
+     "word": " 참담한",
+     "probability": 0.9981
+    },
+    {
+     "start": 15.04,
+     "end": 15.4,
+     "word": " 상황이",
+     "probability": 1.0
+    },
+    {
+     "start": 15.4,
+     "end": 15.74,
+     "word": " 벌어진",
+     "probability": 0.9999
+    },
+    {
+     "start": 15.74,
+     "end": 15.92,
+     "word": " 겁니다.",
+     "probability": 0.9999
+    }
+   ]
+  },
+  {
+   "start": 18.26,
+   "end": 23.6,
+   "text": " 대통령이 대법관에 대해서 자기 마음대로 대법관 쇼핑하려고",
+   "words": [
+    {
+     "start": 18.26,
+     "end": 19.28,
+     "word": " 대통령이",
+     "probability": 0.999
+    },
+    {
+     "start": 19.28,
+     "end": 20.3,
+     "word": " 대법관에",
+     "probability": 0.9985
+    },
+    {
+     "start": 20.3,
+     "end": 20.6,
+     "word": " 대해서",
+     "probability": 1.0
+    },
+    {
+     "start": 20.6,
+     "end": 21.92,
+     "word": " 자기",
+     "probability": 1.0
+    },
+    {
+     "start": 21.92,
+     "end": 22.52,
+     "word": " 마음대로",
+     "probability": 0.9999
+    },
+    {
+     "start": 22.52,
+     "end": 23.0,
+     "word": " 대법관",
+     "probability": 0.9987
+    },
+    {
+     "start": 23.0,
+     "end": 23.6,
+     "word": " 쇼핑하려고",
+     "probability": 0.9992
+    }
+   ]
+  },
+  {
+   "start": 23.6,
+   "end": 37.06,
+   "text": " 그냥 계속 특정인을 제청할 때까지 고집하면서 특정 대법관을 찍어서 제청하라고 협박하고 압박하면 그건 헌법상 허용됩니까?",
+   "words": [
+    {
+     "start": 23.6,
+     "end": 24.6,
+     "word": " 그냥",
+     "probability": 0.1952
+    },
+    {
+     "start": 24.6,
+     "end": 25.54,
+     "word": " 계속",
+     "probability": 0.9997
+    },
+    {
+     "start": 25.54,
+     "end": 27.2,
+     "word": " 특정인을",
+     "probability": 0.9984
+    },
+    {
+     "start": 27.2,
+     "end": 28.42,
+     "word": " 제청할",
+     "probability": 0.8458
+    },
+    {
+     "start": 28.42,
+     "end": 28.78,
+     "word": " 때까지",
+     "probability": 1.0
+    },
+    {
+     "start": 28.78,
+     "end": 29.36,
+     "word": " 고집하면서",
+     "probability": 0.9999
+    },
+    {
+     "start": 29.36,
+     "end": 30.54,
+     "word": " 특정",
+     "probability": 0.9873
+    },
+    {
+     "start": 30.54,
+     "end": 31.32,
+     "word": " 대법관을",
+     "probability": 0.9143
+    },
+    {
+     "start": 31.32,
+     "end": 31.74,
+     "word": " 찍어서",
+     "probability": 0.9999
+    },
+    {
+     "start": 31.74,
+     "end": 33.24,
+     "word": " 제청하라고",
+     "probability": 0.9995
+    },
+    {
+     "start": 33.24,
+     "end": 34.52,
+     "word": " 협박하고",
+     "probability": 0.9995
+    },
+    {
+     "start": 34.52,
+     "end": 35.1,
+     "word": " 압박하면",
+     "probability": 0.9999
+    },
+    {
+     "start": 35.1,
+     "end": 35.88,
+     "word": " 그건",
+     "probability": 0.8995
+    },
+    {
+     "start": 35.88,
+     "end": 36.3,
+     "word": " 헌법상",
+     "probability": 0.9988
+    },
+    {
+     "start": 36.3,
+     "end": 37.06,
+     "word": " 허용됩니까?",
+     "probability": 0.9983
+    }
+   ]
+  },
+  {
+   "start": 41.68,
+   "end": 44.84,
+   "text": " 헌법상 허용되는 행위예요? 한 명을 찍어서 할 수가 있습니까?",
+   "words": [
+    {
+     "start": 41.5,
+     "end": 42.02,
+     "word": " 헌법상",
+     "probability": 0.9961
+    },
+    {
+     "start": 42.02,
+     "end": 42.4,
+     "word": " 허용되는",
+     "probability": 0.9995
+    },
+    {
+     "start": 42.4,
+     "end": 42.88,
+     "word": " 행위예요?",
+     "probability": 0.9433
+    },
+    {
+     "start": 42.98,
+     "end": 43.34,
+     "word": " 한",
+     "probability": 0.9912
+    },
+    {
+     "start": 43.34,
+     "end": 43.62,
+     "word": " 명을",
+     "probability": 0.896
+    },
+    {
+     "start": 43.62,
+     "end": 43.92,
+     "word": " 찍어서",
+     "probability": 0.9999
+    },
+    {
+     "start": 43.92,
+     "end": 44.22,
+     "word": " 할",
+     "probability": 0.9999
+    },
+    {
+     "start": 44.22,
+     "end": 44.44,
+     "word": " 수가",
+     "probability": 0.9987
+    },
+    {
+     "start": 44.44,
+     "end": 44.84,
+     "word": " 있습니까?",
+     "probability": 0.9999
+    }
+   ]
+  },
+  {
+   "start": 46.42,
+   "end": 49.5,
+   "text": " 그렇게 되면 대법원장 제청권이 형행화되는 거잖아요.",
+   "words": [
+    {
+     "start": 46.02,
+     "end": 46.54,
+     "word": " 그렇게",
+     "probability": 0.9946
+    },
+    {
+     "start": 46.54,
+     "end": 46.8,
+     "word": " 되면",
+     "probability": 1.0
+    },
+    {
+     "start": 46.8,
+     "end": 47.36,
+     "word": " 대법원장",
+     "probability": 0.8273
+    },
+    {
+     "start": 47.36,
+     "end": 48.0,
+     "word": " 제청권이",
+     "probability": 0.9831
+    },
+    {
+     "start": 48.0,
+     "end": 49.1,
+     "word": " 형행화되는",
+     "probability": 0.6899
+    },
+    {
+     "start": 49.1,
+     "end": 49.5,
+     "word": " 거잖아요.",
+     "probability": 1.0
+    }
+   ]
+  },
+  {
+   "start": 51.48,
+   "end": 53.78,
+   "text": " 이 간단한 질문에도 답을 못하세요?",
+   "words": [
+    {
+     "start": 51.48,
+     "end": 52.34,
+     "word": " 이",
+     "probability": 0.4634
+    },
+    {
+     "start": 52.34,
+     "end": 52.84,
+     "word": " 간단한",
+     "probability": 0.9994
+    },
+    {
+     "start": 52.84,
+     "end": 53.2,
+     "word": " 질문에도",
+     "probability": 0.8677
+    },
+    {
+     "start": 53.2,
+     "end": 53.52,
+     "word": " 답을",
+     "probability": 0.9992
+    },
+    {
+     "start": 53.52,
+     "end": 53.78,
+     "word": " 못하세요?",
+     "probability": 0.9818
+    }
+   ]
+  }
+ ]
+}

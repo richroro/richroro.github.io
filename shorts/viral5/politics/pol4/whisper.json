@@ -1,0 +1,1078 @@
+{
+ "model": "faster-whisper large-v3 (int8, CPU)",
+ "params": {
+  "language": "ko",
+  "beam_size": 5,
+  "vad_filter": false,
+  "word_timestamps": true,
+  "condition_on_previous_text": false
+ },
+ "source": "4.mp4",
+ "duration_s": 77.021,
+ "segments": [
+  {
+   "start": 0.0,
+   "end": 4.3,
+   "text": " 하신 것은 제가 볼 때 적절치 않았다고 생각을 합니다.",
+   "words": [
+    {
+     "start": 0.0,
+     "end": 0.44,
+     "word": " 하신",
+     "probability": 0.5462
+    },
+    {
+     "start": 0.44,
+     "end": 0.66,
+     "word": " 것은",
+     "probability": 0.6039
+    },
+    {
+     "start": 0.66,
+     "end": 1.32,
+     "word": " 제가",
+     "probability": 0.9136
+    },
+    {
+     "start": 1.32,
+     "end": 1.56,
+     "word": " 볼",
+     "probability": 0.9986
+    },
+    {
+     "start": 1.56,
+     "end": 1.86,
+     "word": " 때",
+     "probability": 0.9983
+    },
+    {
+     "start": 1.86,
+     "end": 2.76,
+     "word": " 적절치",
+     "probability": 0.9934
+    },
+    {
+     "start": 2.76,
+     "end": 3.38,
+     "word": " 않았다고",
+     "probability": 0.9978
+    },
+    {
+     "start": 3.38,
+     "end": 3.86,
+     "word": " 생각을",
+     "probability": 0.9773
+    },
+    {
+     "start": 3.86,
+     "end": 4.3,
+     "word": " 합니다.",
+     "probability": 0.9997
+    }
+   ]
+  },
+  {
+   "start": 5.26,
+   "end": 8.22,
+   "text": " 그리고 법률은 법원이 아는 겁니다.",
+   "words": [
+    {
+     "start": 5.02,
+     "end": 5.32,
+     "word": " 그리고",
+     "probability": 0.9994
+    },
+    {
+     "start": 5.32,
+     "end": 6.76,
+     "word": " 법률은",
+     "probability": 0.9968
+    },
+    {
+     "start": 6.76,
+     "end": 7.4,
+     "word": " 법원이",
+     "probability": 0.9992
+    },
+    {
+     "start": 7.4,
+     "end": 8.02,
+     "word": " 아는",
+     "probability": 0.9995
+    },
+    {
+     "start": 8.02,
+     "end": 8.22,
+     "word": " 겁니다.",
+     "probability": 0.9845
+    }
+   ]
+  },
+  {
+   "start": 8.22,
+   "end": 10.52,
+   "text": " 제대로 하기로 하고 바람건 달라고 한 거 아닙니까?",
+   "words": [
+    {
+     "start": 8.22,
+     "end": 8.44,
+     "word": " 제대로",
+     "probability": 0.6678
+    },
+    {
+     "start": 8.44,
+     "end": 8.76,
+     "word": " 하기로",
+     "probability": 0.9966
+    },
+    {
+     "start": 8.76,
+     "end": 8.96,
+     "word": " 하고",
+     "probability": 0.9993
+    },
+    {
+     "start": 8.96,
+     "end": 9.68,
+     "word": " 바람건",
+     "probability": 0.7487
+    },
+    {
+     "start": 9.68,
+     "end": 10.08,
+     "word": " 달라고",
+     "probability": 0.9668
+    },
+    {
+     "start": 10.08,
+     "end": 10.2,
+     "word": " 한",
+     "probability": 0.9973
+    },
+    {
+     "start": 10.2,
+     "end": 10.3,
+     "word": " 거",
+     "probability": 0.9901
+    },
+    {
+     "start": 10.3,
+     "end": 10.52,
+     "word": " 아닙니까?",
+     "probability": 0.9926
+    }
+   ]
+  },
+  {
+   "start": 10.52,
+   "end": 12.48,
+   "text": " 법률은 법원이 안 달라고 하면 그 법원 아시죠?",
+   "words": [
+    {
+     "start": 10.52,
+     "end": 10.82,
+     "word": " 법률은",
+     "probability": 0.8835
+    },
+    {
+     "start": 10.82,
+     "end": 11.18,
+     "word": " 법원이",
+     "probability": 0.9996
+    },
+    {
+     "start": 11.18,
+     "end": 11.28,
+     "word": " 안",
+     "probability": 0.9969
+    },
+    {
+     "start": 11.28,
+     "end": 11.6,
+     "word": " 달라고",
+     "probability": 0.7606
+    },
+    {
+     "start": 11.6,
+     "end": 11.7,
+     "word": " 하면",
+     "probability": 0.6482
+    },
+    {
+     "start": 11.7,
+     "end": 11.86,
+     "word": " 그",
+     "probability": 0.8861
+    },
+    {
+     "start": 11.86,
+     "end": 12.3,
+     "word": " 법원",
+     "probability": 0.9964
+    },
+    {
+     "start": 12.3,
+     "end": 12.48,
+     "word": " 아시죠?",
+     "probability": 0.9983
+    }
+   ]
+  },
+  {
+   "start": 12.5,
+   "end": 13.96,
+   "text": " 그런 얘기 안 하고 바람건 달라고 했어요?",
+   "words": [
+    {
+     "start": 12.5,
+     "end": 12.84,
+     "word": " 그런",
+     "probability": 0.8587
+    },
+    {
+     "start": 12.84,
+     "end": 12.9,
+     "word": " 얘기",
+     "probability": 0.9922
+    },
+    {
+     "start": 12.9,
+     "end": 13.04,
+     "word": " 안",
+     "probability": 1.0
+    },
+    {
+     "start": 13.04,
+     "end": 13.24,
+     "word": " 하고",
+     "probability": 0.9855
+    },
+    {
+     "start": 13.24,
+     "end": 13.54,
+     "word": " 바람건",
+     "probability": 0.999
+    },
+    {
+     "start": 13.54,
+     "end": 13.8,
+     "word": " 달라고",
+     "probability": 0.9966
+    },
+    {
+     "start": 13.8,
+     "end": 13.96,
+     "word": " 했어요?",
+     "probability": 0.957
+    }
+   ]
+  },
+  {
+   "start": 14.26,
+   "end": 14.98,
+   "text": " 법원 아시죠? 그렇죠?",
+   "words": [
+    {
+     "start": 14.26,
+     "end": 14.4,
+     "word": " 법원",
+     "probability": 0.9898
+    },
+    {
+     "start": 14.4,
+     "end": 14.78,
+     "word": " 아시죠?",
+     "probability": 0.9998
+    },
+    {
+     "start": 14.86,
+     "end": 14.98,
+     "word": " 그렇죠?",
+     "probability": 0.8007
+    }
+   ]
+  },
+  {
+   "start": 15.5,
+   "end": 17.38,
+   "text": " 그런 거 안 하고 바람건 달라고 했어요?",
+   "words": [
+    {
+     "start": 15.5,
+     "end": 16.1,
+     "word": " 그런",
+     "probability": 0.897
+    },
+    {
+     "start": 16.1,
+     "end": 16.24,
+     "word": " 거",
+     "probability": 0.3493
+    },
+    {
+     "start": 16.24,
+     "end": 16.44,
+     "word": " 안",
+     "probability": 0.9984
+    },
+    {
+     "start": 16.44,
+     "end": 16.62,
+     "word": " 하고",
+     "probability": 0.9962
+    },
+    {
+     "start": 16.62,
+     "end": 16.96,
+     "word": " 바람건",
+     "probability": 0.9995
+    },
+    {
+     "start": 16.96,
+     "end": 17.24,
+     "word": " 달라고",
+     "probability": 0.9995
+    },
+    {
+     "start": 17.24,
+     "end": 17.38,
+     "word": " 했어요?",
+     "probability": 0.9382
+    }
+   ]
+  },
+  {
+   "start": 17.44,
+   "end": 21.8,
+   "text": " 너희가 사실을 주면 나는 판단하겠다는 그런 법원도 아시죠?",
+   "words": [
+    {
+     "start": 17.44,
+     "end": 17.84,
+     "word": " 너희가",
+     "probability": 0.9932
+    },
+    {
+     "start": 17.84,
+     "end": 18.6,
+     "word": " 사실을",
+     "probability": 0.9358
+    },
+    {
+     "start": 18.6,
+     "end": 18.86,
+     "word": " 주면",
+     "probability": 0.9983
+    },
+    {
+     "start": 18.86,
+     "end": 19.1,
+     "word": " 나는",
+     "probability": 0.9669
+    },
+    {
+     "start": 19.1,
+     "end": 20.04,
+     "word": " 판단하겠다는",
+     "probability": 0.9797
+    },
+    {
+     "start": 20.04,
+     "end": 20.38,
+     "word": " 그런",
+     "probability": 0.7126
+    },
+    {
+     "start": 20.38,
+     "end": 21.4,
+     "word": " 법원도",
+     "probability": 0.9993
+    },
+    {
+     "start": 21.4,
+     "end": 21.8,
+     "word": " 아시죠?",
+     "probability": 1.0
+    }
+   ]
+  },
+  {
+   "start": 22.02,
+   "end": 22.9,
+   "text": " 그럼 내가 바람건을...",
+   "words": [
+    {
+     "start": 22.02,
+     "end": 22.12,
+     "word": " 그럼",
+     "probability": 0.3296
+    },
+    {
+     "start": 22.12,
+     "end": 22.26,
+     "word": " 내가",
+     "probability": 0.9996
+    },
+    {
+     "start": 22.26,
+     "end": 22.9,
+     "word": " 바람건을...",
+     "probability": 0.8366
+    }
+   ]
+  },
+  {
+   "start": 22.9,
+   "end": 26.22,
+   "text": " 그래서 법원의 최종적인 판단은 법원이 하시는 겁니다.",
+   "words": [
+    {
+     "start": 22.9,
+     "end": 23.02,
+     "word": " 그래서",
+     "probability": 0.9422
+    },
+    {
+     "start": 23.02,
+     "end": 23.48,
+     "word": " 법원의",
+     "probability": 0.8756
+    },
+    {
+     "start": 23.48,
+     "end": 24.36,
+     "word": " 최종적인",
+     "probability": 0.9932
+    },
+    {
+     "start": 24.36,
+     "end": 25.04,
+     "word": " 판단은",
+     "probability": 0.9999
+    },
+    {
+     "start": 25.04,
+     "end": 25.66,
+     "word": " 법원이",
+     "probability": 0.9999
+    },
+    {
+     "start": 25.66,
+     "end": 25.98,
+     "word": " 하시는",
+     "probability": 0.9988
+    },
+    {
+     "start": 25.98,
+     "end": 26.22,
+     "word": " 겁니다.",
+     "probability": 0.9999
+    }
+   ]
+  },
+  {
+   "start": 26.22,
+   "end": 32.32,
+   "text": " 그래서 너무 국회에서 이렇게 저렇게 법률적인 평가를 하는 거에 흔들리지 않으셔도 됩니다.",
+   "words": [
+    {
+     "start": 26.22,
+     "end": 27.22,
+     "word": " 그래서",
+     "probability": 0.2693
+    },
+    {
+     "start": 27.22,
+     "end": 27.72,
+     "word": " 너무",
+     "probability": 0.9587
+    },
+    {
+     "start": 27.72,
+     "end": 28.42,
+     "word": " 국회에서",
+     "probability": 0.9993
+    },
+    {
+     "start": 28.42,
+     "end": 28.84,
+     "word": " 이렇게",
+     "probability": 0.6119
+    },
+    {
+     "start": 28.84,
+     "end": 29.28,
+     "word": " 저렇게",
+     "probability": 0.9959
+    },
+    {
+     "start": 29.28,
+     "end": 29.9,
+     "word": " 법률적인",
+     "probability": 0.9995
+    },
+    {
+     "start": 29.9,
+     "end": 30.3,
+     "word": " 평가를",
+     "probability": 0.9995
+    },
+    {
+     "start": 30.3,
+     "end": 30.48,
+     "word": " 하는",
+     "probability": 0.9999
+    },
+    {
+     "start": 30.48,
+     "end": 30.72,
+     "word": " 거에",
+     "probability": 0.8307
+    },
+    {
+     "start": 30.72,
+     "end": 31.7,
+     "word": " 흔들리지",
+     "probability": 0.9998
+    },
+    {
+     "start": 31.7,
+     "end": 32.08,
+     "word": " 않으셔도",
+     "probability": 0.9998
+    },
+    {
+     "start": 32.08,
+     "end": 32.32,
+     "word": " 됩니다.",
+     "probability": 1.0
+    }
+   ]
+  },
+  {
+   "start": 32.54,
+   "end": 37.34,
+   "text": " 법원이 최종적인 판단을 하고 법을 아는 것은 법원입니다.",
+   "words": [
+    {
+     "start": 32.54,
+     "end": 33.28,
+     "word": " 법원이",
+     "probability": 0.9989
+    },
+    {
+     "start": 33.28,
+     "end": 34.12,
+     "word": " 최종적인",
+     "probability": 0.9997
+    },
+    {
+     "start": 34.12,
+     "end": 34.84,
+     "word": " 판단을",
+     "probability": 0.997
+    },
+    {
+     "start": 34.84,
+     "end": 35.06,
+     "word": " 하고",
+     "probability": 1.0
+    },
+    {
+     "start": 35.06,
+     "end": 36.04,
+     "word": " 법을",
+     "probability": 0.9999
+    },
+    {
+     "start": 36.04,
+     "end": 36.4,
+     "word": " 아는",
+     "probability": 0.9996
+    },
+    {
+     "start": 36.4,
+     "end": 36.64,
+     "word": " 것은",
+     "probability": 0.9999
+    },
+    {
+     "start": 36.64,
+     "end": 37.34,
+     "word": " 법원입니다.",
+     "probability": 0.9992
+    }
+   ]
+  },
+  {
+   "start": 37.64,
+   "end": 40.54,
+   "text": " 그래서 그 부분에 대해서는 좀 더 당당하셨으면 좋겠고요.",
+   "words": [
+    {
+     "start": 37.64,
+     "end": 38.2,
+     "word": " 그래서",
+     "probability": 0.9997
+    },
+    {
+     "start": 38.2,
+     "end": 38.48,
+     "word": " 그",
+     "probability": 0.7857
+    },
+    {
+     "start": 38.48,
+     "end": 38.9,
+     "word": " 부분에",
+     "probability": 0.9986
+    },
+    {
+     "start": 38.9,
+     "end": 39.14,
+     "word": " 대해서는",
+     "probability": 0.9941
+    },
+    {
+     "start": 39.14,
+     "end": 39.22,
+     "word": " 좀",
+     "probability": 0.9836
+    },
+    {
+     "start": 39.22,
+     "end": 39.38,
+     "word": " 더",
+     "probability": 0.9984
+    },
+    {
+     "start": 39.38,
+     "end": 40.04,
+     "word": " 당당하셨으면",
+     "probability": 0.9985
+    },
+    {
+     "start": 40.04,
+     "end": 40.54,
+     "word": " 좋겠고요.",
+     "probability": 0.9998
+    }
+   ]
+  },
+  {
+   "start": 40.94,
+   "end": 43.36,
+   "text": " 제재청과 관련해서도 앞서도 계속 얘기가 나왔는데",
+   "words": [
+    {
+     "start": 40.94,
+     "end": 41.66,
+     "word": " 제재청과",
+     "probability": 0.9304
+    },
+    {
+     "start": 41.66,
+     "end": 42.12,
+     "word": " 관련해서도",
+     "probability": 0.9896
+    },
+    {
+     "start": 42.12,
+     "end": 42.42,
+     "word": " 앞서도",
+     "probability": 0.9885
+    },
+    {
+     "start": 42.42,
+     "end": 42.64,
+     "word": " 계속",
+     "probability": 0.9986
+    },
+    {
+     "start": 42.64,
+     "end": 42.94,
+     "word": " 얘기가",
+     "probability": 0.9967
+    },
+    {
+     "start": 42.94,
+     "end": 43.36,
+     "word": " 나왔는데",
+     "probability": 0.9997
+    }
+   ]
+  },
+  {
+   "start": 43.36,
+   "end": 53.34,
+   "text": " 제재청권은 행정부 내에서 국무총리나 아니면 행안부 장관이 경찰청장 제청하는 것하고는 전혀 성격이 다릅니다.",
+   "words": [
+    {
+     "start": 43.36,
+     "end": 44.56,
+     "word": " 제재청권은",
+     "probability": 0.9407
+    },
+    {
+     "start": 44.56,
+     "end": 46.22,
+     "word": " 행정부",
+     "probability": 0.9997
+    },
+    {
+     "start": 46.22,
+     "end": 46.66,
+     "word": " 내에서",
+     "probability": 0.9998
+    },
+    {
+     "start": 46.66,
+     "end": 49.04,
+     "word": " 국무총리나",
+     "probability": 0.9986
+    },
+    {
+     "start": 49.04,
+     "end": 49.6,
+     "word": " 아니면",
+     "probability": 0.983
+    },
+    {
+     "start": 49.6,
+     "end": 50.28,
+     "word": " 행안부",
+     "probability": 0.9312
+    },
+    {
+     "start": 50.28,
+     "end": 50.66,
+     "word": " 장관이",
+     "probability": 0.9589
+    },
+    {
+     "start": 50.66,
+     "end": 51.3,
+     "word": " 경찰청장",
+     "probability": 0.9809
+    },
+    {
+     "start": 51.3,
+     "end": 51.76,
+     "word": " 제청하는",
+     "probability": 0.9787
+    },
+    {
+     "start": 51.76,
+     "end": 52.22,
+     "word": " 것하고는",
+     "probability": 0.8415
+    },
+    {
+     "start": 52.22,
+     "end": 52.56,
+     "word": " 전혀",
+     "probability": 0.9999
+    },
+    {
+     "start": 52.56,
+     "end": 52.94,
+     "word": " 성격이",
+     "probability": 0.9999
+    },
+    {
+     "start": 52.94,
+     "end": 53.34,
+     "word": " 다릅니다.",
+     "probability": 0.9998
+    }
+   ]
+  },
+  {
+   "start": 53.34,
+   "end": 61.86,
+   "text": " 그래서 그 부분도 아마 지금 업추비 이런 걸 얘기를 하시는 것도 법리적으로는 좀 풍한 부분이 있으니까",
+   "words": [
+    {
+     "start": 53.34,
+     "end": 54.0,
+     "word": " 그래서",
+     "probability": 0.9789
+    },
+    {
+     "start": 54.0,
+     "end": 54.16,
+     "word": " 그",
+     "probability": 0.9975
+    },
+    {
+     "start": 54.16,
+     "end": 54.7,
+     "word": " 부분도",
+     "probability": 0.9998
+    },
+    {
+     "start": 54.7,
+     "end": 55.64,
+     "word": " 아마",
+     "probability": 1.0
+    },
+    {
+     "start": 55.64,
+     "end": 56.18,
+     "word": " 지금",
+     "probability": 0.9832
+    },
+    {
+     "start": 56.18,
+     "end": 57.02,
+     "word": " 업추비",
+     "probability": 0.9792
+    },
+    {
+     "start": 57.02,
+     "end": 57.16,
+     "word": " 이런",
+     "probability": 0.9999
+    },
+    {
+     "start": 57.16,
+     "end": 57.34,
+     "word": " 걸",
+     "probability": 0.9973
+    },
+    {
+     "start": 57.34,
+     "end": 57.5,
+     "word": " 얘기를",
+     "probability": 0.7587
+    },
+    {
+     "start": 57.5,
+     "end": 57.88,
+     "word": " 하시는",
+     "probability": 1.0
+    },
+    {
+     "start": 57.88,
+     "end": 58.08,
+     "word": " 것도",
+     "probability": 1.0
+    },
+    {
+     "start": 58.08,
+     "end": 59.3,
+     "word": " 법리적으로는",
+     "probability": 0.9992
+    },
+    {
+     "start": 59.3,
+     "end": 59.52,
+     "word": " 좀",
+     "probability": 0.7795
+    },
+    {
+     "start": 59.52,
+     "end": 61.22,
+     "word": " 풍한",
+     "probability": 0.8925
+    },
+    {
+     "start": 61.22,
+     "end": 61.4,
+     "word": " 부분이",
+     "probability": 1.0
+    },
+    {
+     "start": 61.4,
+     "end": 61.86,
+     "word": " 있으니까",
+     "probability": 1.0
+    }
+   ]
+  },
+  {
+   "start": 61.86,
+   "end": 65.26,
+   "text": " 그래서 업추비로 인신공격을 하는 게 아닌가 싶습니다.",
+   "words": [
+    {
+     "start": 61.86,
+     "end": 62.68,
+     "word": " 그래서",
+     "probability": 0.9901
+    },
+    {
+     "start": 62.68,
+     "end": 63.4,
+     "word": " 업추비로",
+     "probability": 0.9997
+    },
+    {
+     "start": 63.4,
+     "end": 64.2,
+     "word": " 인신공격을",
+     "probability": 0.979
+    },
+    {
+     "start": 64.2,
+     "end": 64.38,
+     "word": " 하는",
+     "probability": 1.0
+    },
+    {
+     "start": 64.38,
+     "end": 64.54,
+     "word": " 게",
+     "probability": 0.9997
+    },
+    {
+     "start": 64.54,
+     "end": 64.78,
+     "word": " 아닌가",
+     "probability": 0.9955
+    },
+    {
+     "start": 64.78,
+     "end": 65.26,
+     "word": " 싶습니다.",
+     "probability": 1.0
+    }
+   ]
+  },
+  {
+   "start": 65.36,
+   "end": 71.58,
+   "text": " 그만큼 법리적인 부분에 있어서는 법원이 당당하시니까 당당히 하셔도 된다는 게 제 생각입니다.",
+   "words": [
+    {
+     "start": 65.36,
+     "end": 66.0,
+     "word": " 그만큼",
+     "probability": 0.9999
+    },
+    {
+     "start": 66.0,
+     "end": 66.84,
+     "word": " 법리적인",
+     "probability": 0.9999
+    },
+    {
+     "start": 66.84,
+     "end": 67.3,
+     "word": " 부분에",
+     "probability": 0.9999
+    },
+    {
+     "start": 67.3,
+     "end": 67.78,
+     "word": " 있어서는",
+     "probability": 1.0
+    },
+    {
+     "start": 67.78,
+     "end": 68.2,
+     "word": " 법원이",
+     "probability": 0.9993
+    },
+    {
+     "start": 68.2,
+     "end": 68.96,
+     "word": " 당당하시니까",
+     "probability": 0.9997
+    },
+    {
+     "start": 68.96,
+     "end": 69.8,
+     "word": " 당당히",
+     "probability": 0.872
+    },
+    {
+     "start": 69.8,
+     "end": 70.18,
+     "word": " 하셔도",
+     "probability": 0.9999
+    },
+    {
+     "start": 70.18,
+     "end": 70.56,
+     "word": " 된다는",
+     "probability": 0.9913
+    },
+    {
+     "start": 70.56,
+     "end": 70.8,
+     "word": " 게",
+     "probability": 0.9998
+    },
+    {
+     "start": 70.8,
+     "end": 71.0,
+     "word": " 제",
+     "probability": 0.9999
+    },
+    {
+     "start": 71.0,
+     "end": 71.58,
+     "word": " 생각입니다.",
+     "probability": 1.0
+    }
+   ]
+  },
+  {
+   "start": 71.78,
+   "end": 73.3,
+   "text": " 그래서 그렇게 해 주시길 바라고요.",
+   "words": [
+    {
+     "start": 71.78,
+     "end": 72.18,
+     "word": " 그래서",
+     "probability": 0.9996
+    },
+    {
+     "start": 72.18,
+     "end": 72.42,
+     "word": " 그렇게",
+     "probability": 1.0
+    },
+    {
+     "start": 72.42,
+     "end": 72.58,
+     "word": " 해",
+     "probability": 0.6538
+    },
+    {
+     "start": 72.58,
+     "end": 72.86,
+     "word": " 주시길",
+     "probability": 0.9417
+    },
+    {
+     "start": 72.86,
+     "end": 73.3,
+     "word": " 바라고요.",
+     "probability": 0.9998
+    }
+   ]
+  },
+  {
+   "start": 73.3,
+   "end": 75.16,
+   "text": " 그리고 지금",
+   "words": [
+    {
+     "start": 73.3,
+     "end": 74.38,
+     "word": " 그리고",
+     "probability": 0.9938
+    },
+    {
+     "start": 74.38,
+     "end": 75.16,
+     "word": " 지금",
+     "probability": 0.9992
+    }
+   ]
+  }
+ ]
+}

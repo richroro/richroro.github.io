@@ -2,6 +2,7 @@
 // (see each short's edit.json); everything here is data-driven from src/data/<id>.json written by prep.py.
 import React from "react";
 import { AbsoluteFill, Audio, OffthreadVideo, Sequence, getStaticFiles, interpolate, staticFile, useCurrentFrame, useVideoConfig } from "remotion";
+import { fitText } from "@remotion/layout-utils";
 import { Captions, CapPage } from "./lib/Captions";
 import { BODY, TITLE, loadFonts } from "./lib/fonts";
 import { Sticker, clamp, eOut, prog } from "./lib/fx";
@@ -74,7 +75,7 @@ const ClipView: React.FC<{ c: Clip; d: ShortData }> = ({ c, d }) => {
     const left = Math.min(0, Math.max(1080 - dw, 540 - cx * dw)), top = Math.min(0, Math.max(box.height - dh, box.height / 2 - cy * dh));
     cropStyle = { position: "absolute", left, top, width: dw, height: dh };
   }
-  if (d.split && ok) {
+  if (d.split && ok && !c.crop) {
     const { w, h, panels } = d.split;
     const who = d.speakers?.find((sp) => t >= sp.from && t < sp.to)?.who;
     return (
@@ -110,6 +111,10 @@ const ClipView: React.FC<{ c: Clip; d: ShortData }> = ({ c, d }) => {
           style={{ position: "absolute", inset: -60, width: "calc(100% + 120px)", height: "calc(100% + 120px)", objectFit: "cover", filter: "blur(36px) brightness(.42) saturate(1.2)" }} />
       ) : <AbsoluteFill style={{ background: "#05060b" }} />}
       <div style={{ position: "absolute", left: 0, top: box.top, width: 1080, height: box.height, overflow: "hidden", boxShadow: "0 0 80px rgba(0,0,0,.6)" }}>
+        {d.split && c.label ? (
+          <div style={{ position: "absolute", left: 24, top: 22, zIndex: 2, fontFamily: BODY, fontWeight: 800, fontSize: 34, color: "#111",
+            background: "#FFE14D", borderRadius: 14, padding: "8px 18px", boxShadow: "0 4px 14px rgba(0,0,0,.35)" }}>{c.label}</div>
+        ) : null}
         {cropStyle && ok ? (
           <OffthreadVideo src={staticFile(c.file!)} volume={vol} playbackRate={c.speed} style={cropStyle} />
         ) : (
@@ -125,12 +130,17 @@ const ClipView: React.FC<{ c: Clip; d: ShortData }> = ({ c, d }) => {
   );
 };
 
-const Title: React.FC<{ d: ShortData }> = ({ d }) => (
-  <div style={{ position: "absolute", top: 120, width: "100%", textAlign: "center", fontFamily: TITLE, fontSize: 96, lineHeight: 1.12, color: "white",
-    WebkitTextStroke: "16px black", paintOrder: "stroke", filter: "drop-shadow(0 6px 10px rgba(0,0,0,.5))" }}>
-    {d.title[0]}<br /><span style={{ color: "#FFE14D" }}>{d.title[1]}</span>
-  </div>
-);
+const Title: React.FC<{ d: ShortData }> = ({ d }) => {
+  // long quote titles shrink to fit the width instead of running off the edge
+  const size = (line: string) => Math.min(96, fitText({ text: line, withinWidth: 1010, fontFamily: TITLE }).fontSize);
+  return (
+    <div style={{ position: "absolute", top: 120, width: "100%", textAlign: "center", fontFamily: TITLE, lineHeight: 1.12, color: "white",
+      WebkitTextStroke: "16px black", paintOrder: "stroke", filter: "drop-shadow(0 6px 10px rgba(0,0,0,.5))" }}>
+      <div style={{ fontSize: size(d.title[0]) }}>{d.title[0]}</div>
+      <div style={{ fontSize: size(d.title[1]), color: "#FFE14D" }}>{d.title[1]}</div>
+    </div>
+  );
+};
 
 const Credit: React.FC<{ d: ShortData }> = ({ d }) => (
   <div style={{ position: "absolute", right: 24, top: 414, fontFamily: BODY, fontWeight: 700, fontSize: 26, color: "rgba(255,255,255,.85)",
