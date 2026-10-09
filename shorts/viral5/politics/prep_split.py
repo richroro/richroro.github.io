@@ -37,6 +37,7 @@ edit.json:
              and "broll": true (its src runs on the same timeline as the main clip, the B-roll picture over the same speech,
              so moving to or from it with no gap in time is not a cut and gets no flash)
              and "credit" (this stretch's own credit line, shown instead of the short's while it is on screen)
+  flash      false: plain hard cuts, no white flash at any cut (animal clip shorts)
 """
 import difflib, json, os, re, subprocess, sys
 import numpy as np
@@ -300,7 +301,7 @@ def main(sid):
     data = {"id": sid, "end": end, "title": ed["title"], "credit": ed.get("credit", "출처: 국회 영상회의록"), "lines": [], "origVoice": True,
             "pages": out_pages, "env": [round(float(v), 3) for v in env], "clips": clips, "moments": [],
             "stickers": stickers + ed.get("stickers", []), "sfx": [{"t": a, "name": n, "gain": g} for a, n, g in ed.get("sfx", [])],
-            "music": music, "flashes": [round(a, 3) for k, a in enumerate(starts) if k and (abs(ed["segments"][k]["in"] - ed["segments"][k - 1]["out"]) > 0.05
+            "music": music, "flashes": [round(a, 3) for k, a in enumerate(starts) if k and ed.get("flash", True) and (abs(ed["segments"][k]["in"] - ed["segments"][k - 1]["out"]) > 0.05
                                                                        or ed["segments"][k].get("src") != ed["segments"][k - 1].get("src")
                                                                        and not (ed["segments"][k].get("broll") or ed["segments"][k - 1].get("broll")))], "punches": [],
             "split": {"w": W, "h": H, "panels": panels}, "speakers": speakers, "captionY": ed.get("captionY", 1370), "subOrder": ed.get("subOrder", "ko-en"),
