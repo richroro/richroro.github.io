@@ -35,9 +35,9 @@ save(im, "card_59.png")
 # newsab1: 1978 -> 2026
 im, d = base()
 center(d, 60, "차범근 58호 골", B(56), (170, 180, 200))
-center(d, 140, "1978", T(200), "white")
-center(d, 350, "↓  47년", B(64), (255, 225, 77))
-center(d, 440, "2026", T(200), (227, 24, 30), 8, "white")
+center(d, 140, "1978.12", T(170), "white")
+center(d, 350, "↓  47년 9개월", B(64), (255, 225, 77))
+center(d, 440, "2026.10", T(170), (227, 24, 30), 8, "white")
 save(im, "card_1978.png")
 
 # newsab2: player of the month
