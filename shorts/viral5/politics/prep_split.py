@@ -22,7 +22,8 @@ edit.json:
   music      [{"src", "from", "at", "to", "fade", "gain"}]: a bed built from tracks in $MEDIA (or public/...), each
              placed from output second "at" to "to", starting "from" seconds into its file; a part can also be a
              voice taken from a clip, to run under other pictures;  musicGain;  duck: false keeps the bed level
-  segments   also take "src" (another clip), "audio" (its level, 0 = muted), "rotate" (90/-90/180), "push" ([z0, z1])
+  segments   also take "src" (another clip), "audio" (its level, 0 = muted), "rotate" (90/-90/180), "push" ([z0, z1]),
+             "trim" ([x0, y0, x1, y1] of the source to keep; "single" is then relative to what is kept)
 """
 import difflib, json, os, re, subprocess, sys
 import numpy as np
@@ -159,7 +160,9 @@ def main(sid):
     for k, s in enumerate(ed["segments"]):
         dur = s["out"] - s["in"]; out = f"{pub}/clips/c{k:02d}.mp4"
         seg_src = f"{MEDIA}/{s['src']}" if s.get("src") else src  # a segment may come from another clip of the same hearing
-        vf = "fps=30" + {90: ",transpose=1", -90: ",transpose=2", 180: ",hflip,vflip"}.get(s.get("rotate", 0), "")  # e.g. a camera mounted sideways
+        tx0, ty0, tx1, ty1 = s.get("trim", [0, 0, 1, 1])  # cut a band off the source (a broadcaster's lower third) before anything else
+        vf = "fps=30" + (f",crop=trunc(iw*{tx1 - tx0}/2)*2:trunc(ih*{ty1 - ty0}/2)*2:iw*{tx0}:ih*{ty0}" if s.get("trim") else "")
+        vf += {90: ",transpose=1", -90: ",transpose=2", 180: ",hflip,vflip"}.get(s.get("rotate", 0), "")  # e.g. a camera mounted sideways
         subprocess.run(["ffmpeg", "-v", "error", "-y", "-ss", str(s["in"]), "-t", f"{dur:.3f}", "-i", seg_src, "-vf", vf,
                         "-c:v", "libx264", "-preset", "veryfast", "-crf", "16", "-pix_fmt", "yuv420p", "-c:a", "aac", "-b:a", "192k", "-ar", "48000", out], check=True)
         clip = {"file": f"{sid}/clips/c{k:02d}.mp4", "label": s.get("label", ""), "at": round(at, 3), "dur": round(dur, 3), "speed": 1.0,
@@ -167,8 +170,7 @@ def main(sid):
         if s.get("single"):  # this stretch is a one-person shot, not the two-shot: one face-centred crop, labelled
             given = isinstance(s["single"], list)
             f = s["single"] if given else (face_in(seg_src, [(s["in"], s["out"])], 0.0, 1.0) or [0.5, 0.4, 0.2])
-            sw, sh = probe(seg_src) if s.get("src") else (W, H)
-            if s.get("rotate") in (90, -90): sw, sh = sh, sw
+            sw, sh = probe(f"{pub}/clips/c{k:02d}.mp4")  # the clip as cut (trimmed, rotated)
             clip["crop"] = {"cx": round(f[0], 3), "cy": round(f[1], 3), "zoom": f[2] if given else 1.3, "w": sw, "h": sh}
         clips.append(clip)
         starts.append(at); at += dur
