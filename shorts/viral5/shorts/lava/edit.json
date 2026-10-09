@@ -3,68 +3,200 @@
  "sources": {
   "river": {
    "file": "river.mp4",
-   "label": "July 14, 2018 Kilauea fissure 8 UAS video (USGS)"
-  },
-  "fountain": {
-   "file": "fountain.mp4",
-   "label": "Kilauea fissure 8 lava fountain (USGS)"
+   "label": "Kilauea fissure 8 lava channel, UAS video 2018-07-14 (USGS)"
   },
   "ocean": {
    "file": "ocean.mp4",
-   "label": "Fissure 8 flow, vent to sea (USGS)"
+   "label": "Kilauea fissure 8 flow from vent to sea, 2018 (USGS)"
+  },
+  "fountain": {
+   "file": "fountain.mp4",
+   "label": "Fissure 8 fountaining, 2018-05-30 (USGS HVO)"
+  },
+  "fountain2": {
+   "file": "fountain2.mp4",
+   "label": "Fissure 8 fountain by Leilani Estates, 2018 (USGS)"
   }
  },
  "clips": [
   {
    "src": "river",
    "from": "hook",
-   "label": "위에서 내려다본 용암 강 (드론)",
-   "in": null
+   "in": 55.5,
+   "crop": [
+    0.55,
+    0.55,
+    1.1
+   ],
+   "label": "붉게 빛나는 용암 강",
+   "zoom": [
+    1.0,
+    1.07
+   ]
   },
   {
-   "src": "fountain",
+   "src": "river",
+   "from": "hook.물이",
+   "in": 48.0,
+   "crop": [
+    0.45,
+    0.6,
+    1.1
+   ],
+   "label": "빠르게 흐르는 용암",
+   "zoom": [
+    1.0,
+    1.07
+   ]
+  },
+  {
+   "src": "fountain2",
    "from": "where",
-   "label": "솟구치는 용암 분수",
-   "in": null
+   "in": 3.0,
+   "crop": [
+    0.52,
+    0.45,
+    1.25
+   ],
+   "label": "마을 옆에서 솟구치는 용암",
+   "zoom": [
+    1.0,
+    1.07
+   ]
   },
   {
    "src": "river",
    "from": "where.용암",
-   "label": "빠르게 흐르는 용암 강",
-   "in": null
+   "in": 10.0,
+   "crop": [
+    0.5,
+    0.5,
+    1.0
+   ],
+   "label": "분화구에서 쏟아져 나오는 용암",
+   "zoom": [
+    1.0,
+    1.07
+   ]
   },
   {
    "src": "river",
    "from": "bike",
-   "label": "용암 강 흐름 클로즈업",
-   "in": null,
-   "speed": 1.0
+   "in": 44.3,
+   "crop": [
+    0.42,
+    0.6,
+    1.1
+   ],
+   "label": "빠르게 흐르는 용암 강 (분화구 아래)",
+   "zoom": [
+    1.0,
+    1.07
+   ]
   },
   {
    "src": "ocean",
    "from": "far",
-   "label": "바다까지 이어진 용암 줄기 (항공)",
-   "in": null
+   "in": 15.0,
+   "crop": [
+    0.55,
+    0.6,
+    1.0
+   ],
+   "label": "멀리까지 이어진 용암 강 (항공)",
+   "zoom": [
+    1.0,
+    1.07
+   ]
+  },
+  {
+   "src": "ocean",
+   "from": "far.바다",
+   "in": 21.0,
+   "crop": [
+    0.5,
+    0.6,
+    1.0
+   ],
+   "label": "바다 쪽으로 흐르는 용암",
+   "zoom": [
+    1.0,
+    1.07
+   ]
   },
   {
    "src": "ocean",
    "from": "sea",
-   "label": "바다를 만나 끓어오르는 용암과 수증기",
-   "in": null
+   "in": 50.0,
+   "crop": [
+    0.4,
+    0.5,
+    1.0
+   ],
+   "label": "바다를 만나 끓어오르는 용암",
+   "zoom": [
+    1.0,
+    1.07
+   ]
+  },
+  {
+   "src": "ocean",
+   "from": "sea.새",
+   "in": 70.0,
+   "crop": [
+    0.5,
+    0.55,
+    1.0
+   ],
+   "label": "새로 생기는 해안",
+   "zoom": [
+    1.0,
+    1.07
+   ]
   },
   {
    "src": "ocean",
    "from": "end",
-   "label": "새로 생긴 해안선",
-   "in": null
+   "in": 33.0,
+   "crop": [
+    0.55,
+    0.5,
+    1.0
+   ],
+   "label": "용암이 만든 새 땅",
+   "zoom": [
+    1.0,
+    1.07
+   ]
+  },
+  {
+   "src": "fountain",
+   "from": "end.하와이",
+   "in": 6.0,
+   "crop": [
+    0.37,
+    0.55,
+    1.15
+   ],
+   "label": "솟구치는 용암 분수",
+   "zoom": [
+    1.0,
+    1.07
+   ]
   }
  ],
  "moments": [],
  "stickers": [
   {
    "text": "2018 · 하와이 킬라우에아",
-   "from": "where.킬라우에아",
-   "to": "bike-0.1",
+   "from": "where",
+   "to": "where.용암-0.1",
+   "y": 560
+  },
+  {
+   "text": "새로 생긴 땅 약 3.5㎢ (USGS)",
+   "from": "end.축구장",
+   "to": "end.하와이-0.1",
    "y": 560
   }
  ],
@@ -72,12 +204,12 @@
   [
    "hook",
    "whoosh",
-   0.4
+   0.35
   ],
   [
-   "sea",
-   "whoosh_dn",
-   0.4
+   "sea.끓어",
+   "boom",
+   0.25
   ]
  ],
  "punches": [
@@ -86,5 +218,9 @@
   "sea.새"
  ],
  "flashes": [],
- "music": null
+ "music": {
+  "file": "music/Space Fighter Loop.mp3",
+  "gain": 0.26,
+  "start": 20
+ }
 }

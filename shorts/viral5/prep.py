@@ -133,7 +133,8 @@ def prep(sid):
     # clips: each runs until the next one starts; cut from the source so the renderer seeks nothing
     src = edit["sources"]; clips = []
     for i, c in enumerate(edit["clips"]):
-        a = at(c["from"]); b = at(edit["clips"][i + 1]["from"]) if i + 1 < len(edit["clips"]) else tl["end"]
+        a = at(c["from"]) if i else 0.0  # the first shot covers frame 0 too, so the video never opens on black
+        b = at(edit["clips"][i + 1]["from"]) if i + 1 < len(edit["clips"]) else tl["end"]
         s = src[c["src"]]; speed = c.get("speed", 1.0); file = None
         srcf = f"{pub}/src/{s['file']}"
         if c.get("in") is not None and os.path.exists(srcf):
@@ -141,8 +142,13 @@ def prep(sid):
             subprocess.run(["ffmpeg", "-v", "error", "-y", "-ss", str(c["in"]), "-t", f"{need:.3f}", "-i", srcf, "-vf", "scale='min(1920,iw)':-2,fps=30",
                             "-c:v", "libx264", "-preset", "veryfast", "-crf", "16", "-pix_fmt", "yuv420p", "-c:a", "aac", "-b:a", "160k", "-ar", "48000", out], check=True)
             file = f"{sid}/clips/c{i:02d}.mp4"
-        clips.append({"file": file, "label": c.get("label", c["src"]), "at": round(a, 3), "dur": round(b - a, 3), "speed": speed,
-                      "frame": c.get("frame", "square"), "zoom": c.get("zoom", [1.04, 1.12]), "focus": c.get("focus", "50% 50%"), "audio": c.get("audio", 0.12)})
+        clip = {"file": file, "label": c.get("label", c["src"]), "at": round(a, 3), "dur": round(b - a, 3), "speed": speed,
+                "frame": c.get("frame", "square"), "zoom": c.get("zoom", [1.04, 1.12]), "focus": c.get("focus", "50% 50%"), "audio": c.get("audio", 0.12)}
+        if c.get("crop") and os.path.exists(srcf):  # [cx, cy, zoom]: aim at one panel of a split-screen source
+            wh = subprocess.run(["ffprobe", "-v", "error", "-select_streams", "v:0", "-show_entries", "stream=width,height", "-of", "csv=p=0", srcf],
+                                stdout=subprocess.PIPE, text=True, check=True).stdout.strip().split(",")
+            clip["crop"] = {"cx": c["crop"][0], "cy": c["crop"][1], "zoom": c["crop"][2], "w": int(wh[0]), "h": int(wh[1])}
+        clips.append(clip)
 
     caps = {L["id"]: L["cap"] for L in script["lines"]}
     data = {
@@ -151,7 +157,7 @@ def prep(sid):
         "pages": caption_pages(tl, caps), "env": [round(float(v), 3) for v in sm], "clips": clips,
         "moments": [{"from": round(at(m["from"]), 3), "to": round(at(m["to"]), 3), "gain": m.get("gain", 1.0)} for m in edit.get("moments", [])],
         "stickers": [{"text": s["text"], "from": round(at(s["from"]), 3), "to": round(at(s["to"]), 3), "x": s.get("x", 540), "y": s.get("y", 560),
-                      "rot": s.get("rot", -3), "bg": s.get("bg", "#FFE14D"), "fg": s.get("fg", "#111")} for s in edit.get("stickers", [])],
+                      "rot": s.get("rot", -3), "bg": s.get("bg", "#FFE14D"), "fg": s.get("fg", "#111"), "size": s.get("size", 46)} for s in edit.get("stickers", [])],
         "sfx": sorted([{"t": round(at(a), 3), "name": n, "gain": g} for a, n, g in edit.get("sfx", [])], key=lambda s: s["t"]),
         "music": edit.get("music"), "flashes": [round(at(a), 3) for a in edit.get("flashes", [])], "punches": [round(at(a), 3) for a in edit.get("punches", [])],
     }

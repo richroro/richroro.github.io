@@ -33,13 +33,14 @@ export const shake = (t: number, hits: { t: number; amp: number; dur: number }[]
 const STROKE: React.CSSProperties = { WebkitTextStroke: "16px black", paintOrder: "stroke" };
 
 /** neo-brutalist fact sticker */
-export const Sticker: React.FC<{ t: number; t0: number; t1: number; x: number; y: number; rot?: number; bg?: string; fg?: string; children: React.ReactNode }> = ({ t, t0, t1, x, y, rot = -3, bg = "#FFE14D", fg = "#111", children }) => {
+export const Sticker: React.FC<{ t: number; t0: number; t1: number; x: number; y: number; rot?: number; bg?: string; fg?: string; size?: number; children: React.ReactNode }> = ({ t, t0, t1, x, y, rot = -3, bg = "#FFE14D", fg = "#111", size = 46, children }) => {
   const a = pop(t, t0, t1, rot);
   if (!a) return null;
+  const k = size / 46;
   return (
     <div style={{ position: "absolute", left: x, top: y, transform: `translate(-50%,-50%) rotate(${a.r}deg) scale(${a.s})`, opacity: a.o,
-      fontFamily: BODY, fontWeight: 900, fontSize: 46, color: fg, background: bg, border: "6px solid #111", borderRadius: 22,
-      padding: "14px 26px 12px", boxShadow: "9px 9px 0 #111", whiteSpace: "nowrap" }}>
+      fontFamily: BODY, fontWeight: 900, fontSize: size, color: fg, background: bg, border: `${6 * k}px solid #111`, borderRadius: 22 * k,
+      padding: `${14 * k}px ${26 * k}px ${12 * k}px`, boxShadow: `${9 * k}px ${9 * k}px 0 #111`, whiteSpace: "nowrap" }}>
       {children}
     </div>
   );

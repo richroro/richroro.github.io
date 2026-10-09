@@ -3,75 +3,205 @@
  "sources": {
   "edl": {
    "file": "edl.mp4",
-   "label": "Perseverance Rover's Descent and Touchdown on Mars (NASA/JPL-Caltech)",
+   "label": "Perseverance Rover's Descent and Touchdown on Mars — Onboard Camera Views (NASA/JPL-Caltech)",
    "url": "https://svs.gsfc.nasa.gov/31250"
+  },
+  "td": {
+   "file": "td.mp4",
+   "label": "same video: sky-crane frames 181.6-184.8 s with the 'Touchdown confirmed' call-out from 188.95 s"
   }
  },
  "clips": [
   {
    "src": "edl",
    "from": "hook",
-   "label": "낙하산 아래로 보이는 화성 (하향 카메라)",
-   "in": null
+   "in": 176.0,
+   "crop": [
+    0.254,
+    0.755,
+    2.0
+   ],
+   "label": "로버가 줄에 매달려 내려가는 장면",
+   "zoom": [
+    1.0,
+    1.06
+   ]
   },
   {
    "src": "edl",
-   "from": "chute.낙하산",
-   "label": "낙하산이 펴지는 순간 (상향 카메라)",
-   "in": null,
+   "from": "hook.화성",
+   "in": 171.0,
+   "crop": [
+    0.254,
+    0.255,
+    1.96
+   ],
+   "label": "로버 위에서 올려다본 로켓 크레인",
    "zoom": [
     1.0,
-    1.1
+    1.06
+   ]
+  },
+  {
+   "src": "edl",
+   "from": "chute",
+   "in": 15.9,
+   "crop": [
+    0.27,
+    0.47,
+    1.42
+   ],
+   "label": "낙하산이 펴지는 순간 (30% 속도)",
+   "zoom": [
+    1.0,
+    1.06
    ]
   },
   {
    "src": "edl",
    "from": "shield",
-   "label": "열 방패가 떨어져 나감 (하향 카메라)",
-   "in": null
+   "in": 32.6,
+   "crop": [
+    0.503,
+    0.42,
+    1.2
+   ],
+   "label": "열 방패가 떨어져 나감",
+   "zoom": [
+    1.0,
+    1.06
+   ]
   },
   {
    "src": "edl",
    "from": "shield.화성",
+   "in": 74.0,
+   "crop": [
+    0.503,
+    0.42,
+    1.2
+   ],
    "label": "가까워지는 화성 지표",
-   "in": null
+   "zoom": [
+    1.0,
+    1.06
+   ],
+   "speed": 1.6
   },
   {
    "src": "edl",
    "from": "crane",
-   "label": "로켓 크레인 (로버에서 올려다본 하강단)",
-   "in": null
+   "in": 172.8,
+   "crop": [
+    0.254,
+    0.255,
+    1.96
+   ],
+   "label": "로켓 크레인",
+   "zoom": [
+    1.0,
+    1.06
+   ]
   },
   {
    "src": "edl",
    "from": "crane.줄에",
-   "label": "줄에 매달려 내려가는 로버, 먼지",
-   "in": null
+   "in": 174.6,
+   "crop": [
+    0.254,
+    0.755,
+    2.0
+   ],
+   "label": "줄에 매달린 로버",
+   "zoom": [
+    1.0,
+    1.06
+   ]
   },
   {
-   "src": "edl",
+   "src": "td",
    "from": "crane@end+0.05",
-   "label": "터치다운 순간 + 관제실 'Touchdown confirmed'",
-   "in": null,
-   "audio": 0.2
+   "in": 0.0,
+   "crop": [
+    0.254,
+    0.755,
+    2.0
+   ],
+   "label": "터치다운 + 실제 관제실 음성",
+   "zoom": [
+    1.0,
+    1.06
+   ],
+   "audio": 1.0
   },
   {
    "src": "edl",
    "from": "auto",
-   "label": "JPL 관제실 환호",
-   "in": null
+   "in": 177.5,
+   "crop": [
+    0.254,
+    0.255,
+    1.96
+   ],
+   "label": "로켓을 뿜으며 스스로 내려가는 크레인",
+   "zoom": [
+    1.0,
+    1.06
+   ]
+  },
+  {
+   "src": "edl",
+   "from": "auto.신호",
+   "in": 118.0,
+   "crop": [
+    0.503,
+    0.42,
+    1.2
+   ],
+   "label": "크레이터 위를 하강",
+   "zoom": [
+    1.0,
+    1.06
+   ],
+   "speed": 1.3
   },
   {
    "src": "edl",
    "from": "end",
-   "label": "착륙 직후 화성 지표",
-   "in": null
+   "in": 196.0,
+   "crop": [
+    0.52,
+    0.6,
+    1.0
+   ],
+   "label": "착륙 확인 후 환호하는 관제실",
+   "zoom": [
+    1.0,
+    1.06
+   ],
+   "speed": 0.85,
+   "audio": 0.6
+  },
+  {
+   "src": "edl",
+   "from": "end.이미",
+   "in": 179.0,
+   "crop": [
+    0.254,
+    0.755,
+    2.0
+   ],
+   "label": "먼지 위로 내려앉는 로버",
+   "zoom": [
+    1.0,
+    1.06
+   ]
   }
  ],
  "moments": [
   {
    "from": "crane@end+0.1",
-   "to": "auto-0.15",
+   "to": "auto-0.1",
    "gain": 1.0
   }
  ],
@@ -81,23 +211,31 @@
    "from": "hook.화성",
    "to": "chute-0.1",
    "y": 560
+  },
+  {
+   "text": "🎧 실제 관제실 음성",
+   "from": "crane@end+0.15",
+   "to": "auto-0.15",
+   "y": 1236,
+   "bg": "#FFFFFF",
+   "rot": -2
   }
  ],
  "sfx": [
   [
    "hook",
    "whoosh",
-   0.4
+   0.35
   ],
   [
    "chute.낙하산",
    "pop",
-   0.6
+   0.45
   ],
   [
-   "crane@end",
+   "crane.살포시",
    "riser",
-   0.4
+   0.35
   ]
  ],
  "punches": [
@@ -105,6 +243,12 @@
   "shield",
   "crane.줄에"
  ],
- "flashes": [],
- "music": null
+ "flashes": [
+  "crane@end+0.05"
+ ],
+ "music": {
+  "file": "music/Impact Prelude.mp3",
+  "gain": 0.3,
+  "start": 60
+ }
 }

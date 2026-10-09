@@ -21,7 +21,7 @@ export type ShortData = {
   lines: { id: string; start: number; dur: number }[];
   pages: CapPage[]; env: number[]; clips: Clip[];
   moments: { from: number; to: number; gain: number }[];
-  stickers: { text: string; from: number; to: number; x: number; y: number; rot: number; bg: string; fg: string }[];
+  stickers: { text: string; from: number; to: number; x: number; y: number; rot: number; bg: string; fg: string; size?: number }[];
   sfx: { t: number; name: string; gain: number }[];
   music: { file: string; gain: number; start: number } | null;
   flashes: number[]; punches: number[];
@@ -120,7 +120,7 @@ export const ClipShort: React.FC<{ data: ShortData }> = ({ data: d }) => {
       <Title d={d} />
       <Credit d={d} />
       {d.stickers.map((s, i) => (
-        <Sticker key={i} t={t} t0={s.from} t1={s.to} x={s.x} y={s.y} rot={s.rot} bg={s.bg} fg={s.fg}>{s.text}</Sticker>
+        <Sticker key={i} t={t} t0={s.from} t1={s.to} x={s.x} y={s.y} rot={s.rot} bg={s.bg} fg={s.fg} size={s.size}>{s.text}</Sticker>
       ))}
       <Captions pages={d.pages} centerY={1370} />
       {flash > 0.002 && <AbsoluteFill style={{ background: "white", opacity: flash }} />}
