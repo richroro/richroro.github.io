@@ -1095,3 +1095,23 @@ MEDIA=$PWD/media python3 politics/prep_split.py anirank1     # 원본 발췌: me
 > 영상: 미국 국립공원관리청(NPS) — Neal Herbert·Jennifer Jerrett(옐로스톤), 레이니어산 국립공원 · 미국 해양대기청(NOAA Fisheries) (NPS·NOAA가 이 영상을 보증하거나 후원하지 않습니다.)
 > 음악: "Hustle" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
 > #웃긴동물 #야생동물 #마멋 #동물 #shorts
+
+## 새 랭킹 쇼츠 (`politics/anirank7`)
+
+| id | 제목(화면) | 길이 | 5위 → 1위 | 음악 |
+| --- | --- | --- | --- | --- |
+| `anirank7` | 역대급 웃긴 새 모먼트 / TOP5 (다들 몇 번?ㅋㅋ) | 35.2초 | 다친 척 연기하는 킬디어 · 보라 풍선 달고 춤추는 뇌조 · 머리에 뿔 세운 초원뇌조 · 꼬리 활짝 산쑥들꿩 · 가슴 풍선 뿅뿅 산쑥들꿩 | Sneaky Snitch (45초부터) |
+
+- **영상**: 미국 어류야생동물관리국(USFWS) 국립보전교육센터(NCTC)의 [American Birds B-roll](https://www.fws.gov/NCTC-american-bird-b-rolls) — #3 Plovers and Sandpipers(킬디어), #12 Sharp-tailed Grouse, #13 Lesser Prairie Chicken 1, #11 Sage Grouse. 영상 첫 타이틀 카드에 “All footage is public domain. Please credit ‘U.S. Fish & Wildlife Service, National Conservation Training Center, Creative Imagery’”, 제작 Billings·Canfield·Hagerty(USFWS/NCTC). 목록 페이지가 “일부 영상에는 라이선스 음악이 들어 있다”고 해서 **원본 소리는 모두 뺐습니다**(음악만). 발췌와 사용 구간은 `media/anirank/*.json`.
+- **사실과 출처**
+  - 킬디어는 둥지나 새끼에게 다가오는 적을 떼어 내려고 날개가 부러진 척한다 — [USFWS: Nesting season bird behavior](https://www.fws.gov/story/nesting-season-bird-behavior), [NPS 미시시피강: Killdeer](https://home.nps.gov/miss/learn/nature/birdskill.htm)
+  - 뾰족꼬리뇌조(sharp-tailed grouse) 수컷은 레크에 모여 발을 구르고 보라색 목주머니를 부풀린다 — [USFWS Crescent Lake NWR](https://www.fws.gov/refuge/crescent-lake/visit-us/tours)
+  - 작은초원뇌조(lesser prairie-chicken) 수컷은 구애 때 목 옆 긴 깃털(pinnae)을 세운다 — [USFWS: Lesser Prairie-Chicken](https://www.fws.gov/species/lesser-prairie-chicken-tympanuchus-pallidicinctus) (“뿔”은 그 깃털을 두고 한 농담)
+  - 산쑥들꿩(greater sage-grouse) 수컷은 새벽 레크에서 꼬리를 부채처럼 펴고, 가슴의 노란 공기주머니 두 개를 부풀렸다 꺼뜨리며 펑펑 소리를 내고, 아침에 3~4시간 동안 거의 쉬지 않고 과시한다 — [USFWS: Ensuring the Greater Sage-grouse Remains Lek-y in Love](https://www.fws.gov/story/ensuring-greater-sage-grouse-remains-lek-y-love), [USFWS 종 페이지](https://www.fws.gov/species/greater-sage-grouse-centrocercus-urophasianus)
+  - 한국어 이름: sharp-tailed grouse는 화면에선 “뇌조”, lesser prairie-chicken은 “초원뇌조”, greater sage-grouse는 “산쑥들꿩”으로 적었습니다.
+
+**anirank7** — 역대급 웃긴 새 모먼트 TOP5 (다들 몇 번?ㅋㅋ)
+> 날개 다친 척 연기하는 킬디어, 보라 풍선 달고 춤추는 뇌조, 머리에 ‘뿔’ 세운 초원뇌조, 꼬리를 부채처럼 펼친 산쑥들꿩, 그리고 가슴의 노란 풍선을 뽕뽕 부풀리는 산쑥들꿩까지! 다들 몇 번이 제일 웃겨요? 순위는 저희 마음대로 고른 것입니다.
+> 영상: U.S. Fish & Wildlife Service, National Conservation Training Center, Creative Imagery (미국 어류야생동물관리국이 이 영상을 보증하거나 후원하지 않습니다.)
+> 음악: "Sneaky Snitch" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
+> #새 #웃긴동물 #구애댄스 #동물 #shorts
