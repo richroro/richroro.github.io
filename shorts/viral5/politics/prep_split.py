@@ -176,7 +176,7 @@ def main(sid):
     pub = f"{V}/public/{sid}"; os.makedirs(f"{pub}/clips", exist_ok=True)
 
     # segments → clips, and the map from source time to output time
-    clips, at, starts = [], 0.0, []
+    clips, at, starts, ranks = [], 0.0, [], []
     for k, s in enumerate(ed["segments"]):
         sp = s.get("speed", 1.0); dur = (s["out"] - s["in"]) / sp; out = f"{pub}/clips/c{k:02d}.mp4"
         seg_src = f"{MEDIA}/{s['src']}" if s.get("src") else src  # a segment may come from another clip of the same hearing
@@ -190,6 +190,7 @@ def main(sid):
         clip = {"file": f"{sid}/clips/c{k:02d}.mp4", "label": s.get("label", ""), "at": round(at, 3), "dur": round(dur, 3), "speed": 1.0,
                 "frame": s.get("frame", "square"), "zoom": s.get("push", [1.0, 1.04]), "focus": "50% 50%", "audio": s.get("audio", 1.0)}
         if s.get("credit"): clip["credit"] = s["credit"]  # this stretch's own source line (B-roll from another archive)
+        if s.get("rank"): ranks.append({"n": s["rank"]["n"], "label": s["rank"]["label"], "from": round(at, 3)})  # a TOP-N place
         if s.get("single"):  # this stretch is a one-person shot, not the two-shot: one face-centred crop, labelled
             given = isinstance(s["single"], list)
             f = s["single"] if given else (face_in(seg_src, [(s["in"], s["out"])], 0.0, 1.0) or [0.5, 0.4, 0.2])
@@ -300,7 +301,8 @@ def main(sid):
                                                                        or ed["segments"][k].get("src") != ed["segments"][k - 1].get("src")
                                                                        and not (ed["segments"][k].get("broll") or ed["segments"][k - 1].get("broll")))], "punches": [],
             "split": {"w": W, "h": H, "panels": panels}, "speakers": speakers, "captionY": ed.get("captionY", 1370), "subOrder": ed.get("subOrder", "ko-en"),
-            **{k: ed[k] for k in ("titleStyle", "hook", "hookY", "hookTo") if ed.get(k) is not None}}
+            **{k: ed[k] for k in ("titleStyle", "hook", "hookY", "hookTo") if ed.get(k) is not None},
+            **({"ranks": {"rows": ranks, **({"y": ed["rankY"]} if ed.get("rankY") else {})}} if ranks else {})}
     os.makedirs(f"{V}/src/data", exist_ok=True)
     json.dump(data, open(f"{V}/src/data/{sid}.json", "w"), ensure_ascii=False)
     print(f"prep {sid}: {len(clips)} segments, {at:.1f}s + {tail}s tail, {len(out_pages)} caption pages timed on {engine}")
