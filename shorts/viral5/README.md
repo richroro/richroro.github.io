@@ -295,6 +295,33 @@ MEDIA=<저장소>/media python3 politics/prep_split.py obama09    # 원본: medi
   - 자막이 겹치지 않게 `"captionY": 1430` 정도로 내립니다.
 - 헤드라인과 제목은 사실이어야 합니다. 이 형식의 채널 상당수가 기자회견·중계 영상을 그대로 쓰고 없는 일을 지어내 저작권 경고나 명예훼손 소송을 받습니다. 여기서는 확인된 기사만 쓰고, 그림은 공공누리 1유형·CC BY·퍼블릭 도메인 사진만 씁니다.
 
+## 팻 베어 위크 쇼츠 (`fatbear`, `fatbear2`)
+
+알래스카 카트마이 국립공원의 ‘팻 베어 위크’(2026년은 9월 22~29일) 시기에 맞춘 두 편입니다. 내레이션 방식(`shorts/fatbear*/`)이고, 영상과 사진은 모두 **미국 국립공원관리청(NPS)이 만든 것**만 썼습니다.
+
+| id | 제목 | 길이 | 내용 |
+| --- | --- | --- | --- |
+| `fatbear` | 곰 살찌우기 대회 🐻 / 역대 챔피언 비포·애프터 | 57.3초 | 164번 ‘버키’ 2026년 6월 → 늦여름, 대회 소개, 겨울잠과 연어, 747(“비포도 이미 뚱뚱”), 480 오티스 4회 우승, 128 그레이저 2연패, 32 청크(부러진 턱으로 2025 우승), 작년 투표 수, 2026 챔피언 스티커 |
+| `fatbear2` | 곰 살찌우기 대회 시즌 🐟 / 곰이 연어 잡는 법 3가지 | 52.5초 | 브룩스 폭포, 폭포 꼭대기 ‘립 피셔’(그레이저), 폭포 아래 앉아 실패한 연어 줍기(버키), 물속에 머리 박기·자리싸움, 곰 목걸이 카메라(가자미·다른 곰), 89번 ‘백팩’ 별명 유래와 2026 우승 스티커 |
+
+- **2026년 우승: 89번 ‘백팩’** — 내레이션은 그대로 두고 스티커로만 넣었습니다(`fatbear` 끝, `fatbear2`의 백팩 대목과 끝). 근거: explore.org [Fat Bear Week 결과표](https://explore.org/fat-bear-week) 9월 29일 결승 “89 Backpack: 103,334 / 910: 98,253”(전체 2,503,731표), [CBS News 2026.9.29](https://www.cbsnews.com/news/fat-bear-week-2026-winner-backpack/)(같은 득표 수, “according to Explore.org”), [UPI 2026.9.30](https://www.upi.com/Odd_News/2026/09/30/fat-bear-week-katmai-national-park-backpack-winner/1461790779913/)(카트마이 국립공원 페이스북 발표 인용). 2026-10-09 기준 NPS 웹사이트(명예의 전당·보도자료)에는 아직 2026년 결과가 없습니다. 백팩의 늦여름 사진은 explore.org 사진이라 계속 쓰지 않았습니다.
+- 2026년 우승 외의 사실은 모두 NPS 페이지 기준입니다: 역대 우승(2014 오티스, 2015 409 ‘비드노즈’, 2016·2017 오티스, 2018 409, 2019 435 홀리, 2020 747, 2021 오티스, 2022 747, 2023·2024 128 그레이저, 2025 32 청크), 2014년 하루짜리 ‘팻 베어 튜즈데이’로 시작, 겨울잠 동안 몸무게 최대 3분의 1 감소, 연어는 대략 6월 말~9월, ‘사람보다 갈색곰이 많은 곳’([Fat Bear Week: Past and Present](https://www.nps.gov/katm/learn/nature/fat-bear-week-past-and-present.htm)); 2026년 9월 22~29일, 작년 100여 개국 170만 표 이상([NPS 보도자료 2026.9.11](https://www.nps.gov/katm/learn/news/fat-bear-week-2026.htm)); 그레이저는 ‘립 피셔’·새끼 3번 출산([128](https://www.nps.gov/katm/bear-128-grazer.htm)); 청크는 2025년 초여름 부러진 턱으로 돌아왔지만 살을 찌움([32](https://www.nps.gov/katm/bear-32-chunk.htm)); 버키는 폭포 아래 앉아 점프에 실패한 연어를 잡고, 2026년 브룩스강 최강자([164](https://www.nps.gov/katm/bear-164-bucky.htm)); 백팩은 새끼 때 발을 다쳐 어미 등에 업혀 다녀서 생긴 별명([89](https://www.nps.gov/articles/000/bear-89-backpack.htm)).
+- ‘747 = 점보 제트기’는 번호를 두고 한 농담이고, 747의 ‘비포’ 사진이 이미 뚱뚱한 것은 NPS 페이지 사진 그대로입니다(대체 텍스트도 “already, honestly, quite fat”). 그레이저의 비포(2024)와 애프터(2023)는 연도가 달라서 스티커로 연도를 밝혔습니다. 오티스는 비포 사진이 NPS 사진이 아니라(Courtesy N. Boak) 애프터만 썼습니다.
+- **explore.org 웹캠 영상·사진은 쓰지 않았습니다.** NPS 페이지에 같이 실린 “Courtesy of explore.org”, “Courtesy ○○” 사진도 뺐습니다.
+- 영상 원본: [Brooks Camp Bear School 101](https://www.nps.gov/media/video/view.htm?id=D3EB8991-E1A2-4A2A-9A98-2F1C45991B0E) (NPS, 제작 Katmai NP & Harpers Ferry Center; 원본 음악은 Musicbed·Shutterstock 라이선스 음악이라 소리는 쓰지 않음), [Katmai Virtual Field Trip](https://www.nps.gov/media/video/view.htm?id=5E5C2E41-E0D4-44AD-B8D1-13596483B3F5) (NPS Video By T. Vaughn and J. Pfeiffenberger), 곰 목걸이 카메라 [Eating Flounder](https://www.nps.gov/media/video/view.htm?id=D8836D8B-7778-4896-B872-A541BC6D88FA)·[Bear Encounter](https://www.nps.gov/media/video/view.htm?id=3C759EC8-D2D1-4CF0-ADAA-D2EAC1214DFE) (NPS ‘Changing Tides’ 연구, 2015).
+- 사진: NPS / N. Boak (747), NPS / C. Spencer (오티스), NPS / T. Carmack·F. Jimenez (그레이저), NPS / C. Loberg·T. Carmack (청크), NPS / C. Loberg (버키·백팩 2026).
+- 사진은 `ffmpeg -loop 1`로 10초짜리 mp4를 만들어 영상처럼 넣었고, 얼굴 확대는 기존 `crop` 기능을 그대로 썼습니다(템플릿 변경 없음). 원본·사진과 각 파일의 출처 JSON은 `media/fatbear/`, 목소리는 `media/voice/fatbear*/`.
+
+**fatbear** — 곰 살찌우기 대회 🐻 역대 챔피언 비포·애프터
+> 알래스카 카트마이 국립공원의 ‘팻 베어 위크’는 겨울잠 준비를 가장 잘한(=가장 살찐) 곰을 전 세계 투표로 뽑는 대회입니다. 2026년 대회는 9월 22~29일. 두 번 우승한 747, 최다 4회 우승 오티스, 2연패 엄마 곰 그레이저, 부러진 턱으로도 2025년 우승한 청크까지 — 역대 챔피언의 비포·애프터를 모았습니다. 2026년 챔피언은 89번 ‘백팩’(explore.org 발표)! 여러분의 원픽은? 영상·사진: 미국 국립공원관리청(NPS) (NPS가 이 영상을 보증하거나 후원하지 않습니다.)
+> 음악: "Monkeys Spinning Monkeys" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
+> #팻베어위크 #FatBearWeek #곰 #알래스카 #국립공원 #shorts
+
+**fatbear2** — 곰이 연어 잡는 법 3가지 🐟 (곰 살찌우기 대회 시즌)
+> 알래스카 카트마이 국립공원 브룩스 폭포의 곰들은 연어를 이렇게 잡습니다. ① 폭포 꼭대기에서 입 벌리고 기다리기 ② 폭포 아래 앉아 점프에 실패한 연어 줍기 ③ 물속에 머리 박기. 곰 목걸이 카메라로 본 시점과, 새끼 때 엄마 등에 업혀 다녀서 별명이 ‘백팩’이 된 89번 곰 — 2026년 팻 베어 위크 챔피언(explore.org 발표) — 이야기까지. 영상·사진: 미국 국립공원관리청(NPS) (NPS가 이 영상을 보증하거나 후원하지 않습니다.)
+> 음악: "Scheming Weasel (faster version)" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
+> #팻베어위크 #FatBearWeek #곰 #연어 #알래스카 #shorts
+
 ## 출처와 라이선스
 
 **영상 (모두 미국 정부 저작물, 퍼블릭 도메인)**
@@ -588,3 +615,36 @@ MEDIA=<저장소>/media python3 politics/prep_split.py korea1   # korea2도 같�
 > 1905년 5월, 개통한 지 7개월 된 뉴욕 지하철 맨 앞에서 찍은 실제 영상(14번가→42번가, 옛 그랜드 센트럴역 도착). 1904년 10월 27일 개통식 날 시청 앞, 100피트(30m) 넘는 높이를 도는 9번가 고가철도 ‘빅 루프’, 에디슨 회사가 “지금까지 찍은 브루클린 다리 최고의 영상”이라던 1899년 브루클린 다리, 브로드웨이 만원 전차, 그리고 1905년 새 타임스 빌딩에서 내려다본 타임스 스퀘어.
 > 영상: 미국 의회도서관(Library of Congress) Paper Print Collection · 음악: "Down in the Subway" Billy Murray (Victor, 1904) — 모두 퍼블릭 도메인. 일부 장면은 배속.
 > #뉴욕 #지하철 #옛날영상 #120년전 #shorts
+
+## 우주비행사 실패·재도전 쇼츠 (`politics/astrofail`)
+
+유명인 인터뷰를 이어 붙이는 “1만 시간의 법칙” 류 쇼츠의 **형식만** 가져왔습니다: 내레이션 없이 본인 목소리, 위에 큰 흰색 영어 원문, 아래 작은 한국어 번역(`"subOrder": "en-ko"`), 핵심 구절만 노란색. 영상은 모두 NASA가 직접 찍어 images.nasa.gov에 올린 인터뷰이고, 번역은 직접 했습니다.
+
+| id | 제목 | 길이 | 내용 |
+| --- | --- | --- | --- |
+| `astrofail` | 우주비행사도 / 떨어졌다..? | 46.9초 | 닉 헤이그(2018 소유스 MS-10 발사 중단 → 5개월 뒤 재도전) → 아닐 메논(선발 과정 여러 번, “trying and trying again”) → 데니즈 번햄(“This was not my first application”) |
+
+```bash
+MEDIA=<저장소>/media python3 politics/prep_split.py astrofail    # 원본: media/speech/
+./render.sh astrofail
+```
+
+- 원문은 NASA가 함께 올린 자막(.srt)과 faster-whisper(small.en·medium.en, 애매한 곳은 large-v3)로 맞췄고, 완성본 오디오를 다시 인식시켜 자막 19줄과 대조했습니다. 메논의 “it's **a** real testament”는 medium.en이 “a”를 못 들었지만 NASA 자막과 large-v3가 일치합니다. 헤이그의 첫마디 “Space is really hard”는 NASA 자막·small.en 기준이고 medium.en·large-v3는 “Base”로 들었습니다(앞뒤 문맥상 Space).
+- 컷: 헤이그 “Space is really hard … unpredictable,” 뒤의 스타라이너 이야기(“we've seen that play out over the last several months”)부터 경력 소개까지 빼고 첫 발사 이야기로 바로 넘어갑니다. 메논은 “a few times,” 뒤의 “설레고 긴장됐다·이전 선발 때 만난 사람들과 아직 친구” 부분을 뺐습니다. 의미가 바뀌는 컷은 없습니다(컷마다 흰 번쩍임).
+- 헤이그 구간(“My first launch …”부터)은 목소리만 NASA 인터뷰 원음 그대로 두고, 화면은 B-roll 클립 `media/speech/hague_crew9_2024_broll.mp4`로 바꿨습니다(이름표에 🎙). NASA 영상 속 소유스 발사·추적·로켓 탑재 카메라·바이코누르 공항 장면은 촬영 주체가 표시되어 있지 않아(Roscosmos 영상일 가능성) 쓰지 않고, NASA/Bill Ingalls 사진 4장을 천천히 당겨(1.00→1.08) 넣었습니다: 소유스 MS-10 발사 → 하늘에서 본 발사 중단 → 공항에서 아내와 포옹 → 소유스 MS-12 재발사. 그 뒤 ISS 해치 포옹·우주유영 장면은 NASA 영상 그대로입니다. 자막 문구와 타이밍은 바뀌지 않았습니다.
+- 음량: render.sh의 loudnorm(TP −1.5) 결과가 −14.7 LUFS여서, 0.75 dB를 올리고 리미터(−1.2 dBFS)를 걸어 **−14.1 LUFS, 최대 −1.0 dBFS**로 맞췄습니다.
+- 메논·번햄은 영상 당시(2021.12) 우주비행사 **후보**라 이름표를 “NASA 우주비행사 후보 (2021)”로 적었습니다(둘 다 2024년 3월 수료). 스티커 두 개(“2018.10 소유스 MS-10 발사 중단”, “2019.3 소유스 MS-12로 재도전”)는 NASA 사진 설명과 같은 영상의 화면 표기(“Soyuz MS-10/12”) 기준입니다.
+- 음악은 넣지 않았습니다. 헤이그 영상에는 NASA가 깐 음악이 원래 들어 있습니다.
+- 원본 클립과 출처·NASA ID·구간은 `media/speech/*.json`에 있습니다.
+
+**출처 (NASA, 미국 연방정부 저작물 — 17 U.S.C. §105)**
+- 닉 헤이그: [Meet NASA Astronaut Nick Hague, Crew-9 Commander](https://images.nasa.gov/details/jsc2024m000167_Meet_NASA_Astronaut_Nick_Hague_Crew-9_Commander_HD) (`jsc2024m000167`, 2024.10) — 원본 0:16.5–0:20.25(화면+소리), 1:02.4–1:19.0(소리; 화면은 1:14.3–1:19.0만)
+- 헤이그 구간 사진 (모두 NASA/Bill Ingalls): [NHQ201810110023](https://images.nasa.gov/details/NHQ201810110023) 소유스 MS-10 발사 2018.10.11 · [NHQ201810110018](https://images.nasa.gov/details/NHQ201810110018) 같은 발사, 하늘에서 본 발사 중단 · [NHQ201810110008](https://images.nasa.gov/details/NHQ201810110008) 크라이니 공항에서 아내 케이티와 포옹 2018.10.11 · [NHQ201903150007](https://images.nasa.gov/details/NHQ201903150007) 소유스 MS-12 발사 2019.3.15(현지 시각)
+- 아닐 메논: [NASA Astronaut Candidate Anil Menon](https://images.nasa.gov/details/jsc2021m000273_NASA_Astronaut_Candidate_Anil_Menon) (`jsc2021m000273`, 2021.12) — 원본 3:42.3–3:45.1, 4:12.85–4:26.85
+- 데니즈 번햄: [NASA Astronaut Candidate Deniz Burnham](https://images.nasa.gov/details/jsc2021m000276_NASA_Astronaut_Candidate_Deniz_Burnham) (`jsc2021m000276`, 2021.12) — 원본 7:18.05–7:27.55
+- NASA가 이 영상을 보증하거나 후원한다는 인상을 주면 안 되고, NASA 로고를 채널 로고처럼 쓰면 안 됩니다(NASA media usage guidelines).
+
+**astrofail** — 우주비행사도 떨어졌다..? 🚀 “첫 지원이 아니었어요”
+> NASA 우주비행사들이 직접 말하는 실패와 재도전. 닉 헤이그는 2018년 첫 발사가 2분 만에 중단돼 200일 임무가 20분 만에 끝났지만, 5개월 뒤 다시 올라가 우주정거장에서 6개월을 보냈습니다. 아닐 메논은 선발 과정을 여러 번 거친 끝에, 데니즈 번햄은 첫 지원이 아닌 도전 끝에 2021년 우주비행사 후보로 뽑혔습니다. 발언은 원문 그대로 번역했고, 길이를 줄이려 일부 구간을 잘랐습니다(흰 번쩍임). (NASA가 이 영상을 보증하거나 후원하지 않습니다.)
+> 영상·사진: NASA (사진 NASA/Bill Ingalls)
+> #우주비행사 #NASA #동기부여 #포기하지마 #영어공부 #shorts
