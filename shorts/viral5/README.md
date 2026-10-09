@@ -799,3 +799,70 @@ python3 voice_edge.py carrier1 && python3 prep.py carrier1 && ./render.sh carrie
 > 영상: 미 해군 (DVIDS) — USS George H.W. Bush, USS Abraham Lincoln, USS Carl Vinson, USS Nimitz. 미 해군·국방부가 이 영상을 보증하거나 후원하지 않습니다.
 > 음악: "Movement Proposition" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
 > #항공모함 #캐터펄트 #전투기 #F35 #미해군 #탑건 #shorts
+
+## 해외파 뉴스 쇼츠 (`newsab1`, `newsab2`, `newsab3`)
+
+`"titleStyle": "news"` 모양(흰 띠 제목 + 빨간 헤드라인)으로 만든 해외파 소식 세 편입니다. 2026년 10월 9일 기준 최근 2주 안의 실제 소식만 다뤘고, 사실은 모두 매체 두 곳 이상에서 확인했습니다. 인용은 보도된 말 그대로만 썼습니다. 내레이션은 Edge TTS `ko-KR-InJoonNeural`, 속도 `+22%`(+12%로는 한 편이 60초를 넘어서 올렸음)입니다.
+
+| id | 제목(흰 띠) | 빨간 헤드라인 | 길이 | 내용 |
+| --- | --- | --- | --- | --- |
+| `newsab1` | 손흥민 A매치 59호골 / 차범근 기록 넘었다 | 한국 축구 역사가 / 바뀌었습니다 | 50.2초 | 10.6 우즈베키스탄전 프리킥 골 → 151경기 59골, 차범근 58골(1978) 넘어 한국 남자 최다 → 월드컵 무득점 뒤 9월 두 골로 동률 → 오세훈 추가골 2:0 → 소감 → “최고의 골은?” |
+| `newsab2` | 이강인 아틀레티코 / 9월 이달의 선수 | 스페인 팬들이 / 이강인을 뽑았습니다 | 45.4초 | 팬 투표 9월 이달의 선수(후보 시메오네·데이비드·그리말도·카르도주) → 7월 PSG에서 이적, 2031년까지, 7번 → 말라가전 데뷔 결승골·라리가 8월 이달의 골 → 오사수나전 골 4:0, 레알전 89분 2:1 → “몇 골 넣을까?” |
+| `newsab3` | 아시안게임 4연패 / 결승서 일본 1-0 | 한일전 결승을 / 또 이겼습니다 | 45.8초 | 10.3 도요타 스타디움 결승 → 후반 16분 양민혁 크로스·엄지성 골 → 엄지성 대회 4호골 → 인천·자카르타·항저우·나고야 사상 첫 4연패 → 최근 결승 3번 모두 일본 상대 승리 → 유럽파 9명 → “대회 MVP는?” |
+
+**만드는 법.** 사진은 `media/newsab/stills.sh <id> <사진>`이 10초짜리 mp4(짧은 변 1440px로 lanczos 확대)로 바꿔 `public/<id>/src/`에 넣습니다. 숫자·기록 카드는 `media/newsab/make_cards.py`로 만든 자체 그래픽입니다. 얼굴 확대는 기존 `crop` 그대로 쓰되, 빨간 헤드라인(화면 y≈1070–1290)에 얼굴이 가리지 않게 얼굴이 사각 화면 위쪽 1/3에 오도록 `cy`를 잡았습니다. 템플릿 코드는 바꾸지 않았습니다. 클립 라벨은 화면에 나오지 않아서, **사진 연도는 클립별 크레딧 줄 맨 앞에** 넣었습니다(예: “2024 아시안컵 · 사진: …”). 소식과 다른 경기 사진이라는 점은 스티커로도 밝혔습니다(“※ 사진은 이전 경기 자료 사진”). 원본 사진과 출처 JSON(page, file_url, author, license, attribution)은 `media/newsab/`, 목소리는 `media/voice/newsab*/`.
+
+**쓰지 않은 것.** 대한축구협회·구단·통신사 사진과 중계·기자회견 영상은 하나도 쓰지 않았습니다. 엄지성·이강인(아틀레티코 시절)·도요타 스타디움·메트로폴리타노의 위키미디어 사진은 모두 CC BY-SA라 쓰지 않았고, 엄지성은 그래픽 카드로 대신하면서 화면에 그 이유를 적었습니다. 2022년 대통령 만찬 사진(KOREA.NET 플리커)도 CC BY-SA 2.0이라 뺐습니다. 같은 시기 화제였던 대표팀 ‘96라인’ 갈등, 아시안게임 병역 특례 발언 논란은 사실관계와 양측 입장이 아직 엇갈려 다루지 않았습니다.
+
+### 출처 (기사)
+
+**newsab1** — 손흥민 A매치 59호골
+- 경기·기록(10월 6일 용인 미르스타디움, 우즈베키스탄 2-0, 황희찬 패스를 받은 손흥민의 슈팅이 상대 팔에 맞아 프리킥 → 낮게 깔아 찬 오른발 슈팅이 수비벽을 돌아 오른쪽 구석, 151경기 59골, 차범근 136경기 58골·1978.12.17 방콕 아시안게임, 47년 9개월 19일 만, 오세훈 후반 헤더): [서울신문 2026.10.6](https://www.seoul.co.kr/news/sport/soccer/2026/10/06/20261006500310)(사진 연합뉴스), [한국일보 2026.10.6](https://www.hankookilbo.com/news/article/A2026100621050002334), [머니투데이 2026.10.6](https://www.mt.co.kr/sports/2026/10/06/2026100621544044286), [KBC광주방송 2026.10.6](https://news.ikbc.co.kr/article/view/kbc202610060077). 골 시간은 전반 5분(한국일보)·6분(서울신문)으로 엇갈려 말하지 않았습니다.
+- 월드컵 조별리그 3경기 무득점(56골), 9.24 에콰도르전 프리킥 57호, 9.28 우루과이전 58호로 동률: [한국일보 2026.10.6](https://www.hankookilbo.com/news/article/A2026100621050002334), [일간스포츠 2026.9.25](https://isplus.com/article/view/isp202609250002)(에콰도르전 57호), [KBC 2026.10.6](https://news.ikbc.co.kr/article/view/kbc202610060077)(우루과이전 58호 동률).
+- 소감 “역사를 쓸 수 있어서 정말 영광”, “태극마크를 달고 이렇게 많은 골을 넣은 것은 혼자만이 할 수 없는 것”: [일간스포츠 2026.10.7](https://isplus.com/article/view/isp202610070014), [엑스포츠뉴스 2026.10.7](https://www.xportsnews.com/article/2204832)(“한 역사를 쓸 수 있게 돼서 정말 너무나도 영광”, “저 혼자만이 할 수 없는 것”). 내레이션은 두 기사 공통 내용만 옮겼습니다.
+- 16년(2010년 12월 데뷔): 서울신문·한국일보(위와 같음).
+
+**newsab2** — 이강인 아틀레티코 9월 이달의 선수
+- 9월 이달의 선수(팬 투표, 구단 공식 앱 등, 후원사 마오우가 현지 10월 2일 SNS 발표, 후보 줄리아노 시메오네·조너선 데이비드·그리말도·조니 카르도주): [데일리안 2026.10 초](https://www.dailian.co.kr/news/view/1697635), [스포츠경향 2026.10.5](https://sports.khan.co.kr/article/202610050944003/)(문도 데포르티보 4일 보도 인용).
+- 7월 PSG에서 이적·2031년 6월까지 계약·등번호 7번(그리즈만이 달던 번호): 스포츠경향 2026.10.5, 데일리안(위와 같음)(위와 같음).
+- 말라가 개막전(한국시간 8.20, 2-0) 교체 투입 후 왼발 감아차기 결승골: [머니투데이 2026.8.20](https://www.mt.co.kr/sports/2026/08/20/2026082020124284891), [일간스포츠 2026.8.20](https://isplus.com/article/view/isp202608200110); 라리가 8월 이달의 골: [엑스포츠뉴스 2026.9.10](https://www.xportsnews.com/article/2194075), 스포츠경향 2026.10.5.
+- 오사수나전 풀타임·골·4-0, 레알 마드리드전 89분·2-1 역전승: [스포츠경향 2026.9.17](https://sports.khan.co.kr/article/202609170356003), 데일리안(위와 같음).
+- 9월 출전 수(4경기 vs 5경기)와 ‘몇 번째 개인상’은 매체마다 달라 말하지 않았습니다.
+
+**newsab3** — 아시안게임 남자축구 4연패
+- 10월 3일 도요타 스타디움 결승 한국 1-0 일본, 후반 16분 엄지성(스완지 시티), 4회 연속 우승(2014 인천·2018 자카르타 팔렘방·2022 항저우), 최근 세 번의 결승 모두 일본 상대 승리: [경향신문 2026.10.3](https://www.khan.co.kr/article/202610032131001), [부산일보 2026.10.3](https://www.busan.com/view/busan/view.php?code=2026100320083228829).
+- 양민혁의 오른쪽 크로스, 엄지성이 오른발로 잡아 왼발 슈팅: 부산일보(위와 같음), [머니투데이 2026.10.3](https://www.mt.co.kr/sports/2026/10/03/2026100320543717622).
+- 엄지성 대회 4골: 부산일보(위와 같음), [YTN 2026.10.4](https://www.ytn.co.kr/_ln/0103_202610041329075285).
+- 유럽파 9명(양민혁·배준호 등): [머니투데이 2026.7.9](https://www.mt.co.kr/sports/2026/07/09/2026070909140418386), [데일리안 2026.7.9](https://www.dailian.co.kr/news/view/1665425/), [뉴시스 2026.7.9](https://www.newsis.com/view/NISX20260709_0003702004).
+
+### 사진 크레딧
+
+- **Fars News Agency / M.Sadegh Nikgostar (CC BY 4.0)** — 2024년 2월 6일 아시안컵 4강 요르단 2-0 한국(카타르). 손흥민·이강인 경기 장면, 태극기, 경기장, 대표팀 원진. 위키미디어 공용 [Category:Jordan v South Korea, 6 February 2024](https://commons.wikimedia.org/wiki/Category:Jordan_v_South_Korea,_6_February_2024) 사진 (4), (5), (8), (13), (16), (30), (32), (34), (40), (51), (62), (64), (68), (70). 패배한 경기 사진이라 크레딧 줄에 연도와 대회를 적었습니다.
+- **타타르스탄 공화국 체육부 (tatarstan.ru, CC BY 4.0)** — 2018 월드컵 한국 2-0 독일: [17](https://commons.wikimedia.org/wiki/File:South_Korea_vs_Germany_2018_World_Cup_17.jpg), [20](https://commons.wikimedia.org/wiki/File:South_Korea_vs_Germany_2018_World_Cup_20.jpg).
+- **Meghdad Madadi / Tasnim News Agency (CC BY 4.0)** — 2021.10.12 이란 1-1 한국(테헤란), 손흥민 몸풀기: [2021-7](https://commons.wikimedia.org/wiki/File:Iran,_S._Korea_Closer_to_Securing_Spot_in_World_Cup_Tournament_after_Draw_2021-7.jpg).
+- **Timmy96 (CC0)** — 2025.3.15 QPR 임대 시절 양민혁 [(9)](https://commons.wikimedia.org/wiki/File:Yang_Min-hyuk_15032025_(9).jpg)·[(6)](https://commons.wikimedia.org/wiki/File:Yang_Min-hyuk_15032025_(6).jpg), 2025.9.20 스토크 시티 배준호 [(3)](https://commons.wikimedia.org/wiki/File:Bae_Jun-ho_20092025_(3).jpg)·[(1)](https://commons.wikimedia.org/wiki/File:Bae_Jun-ho_20092025_(1).jpg).
+- **Ayuntamiento de Roquetas de Mar (퍼블릭 도메인 마크)** — 2015년 유소년 대회의 14살 이강인: [Kangin Lee 2015](https://commons.wikimedia.org/wiki/File:Kangin_Lee_2015.jpeg) ([플리커 원본](https://www.flickr.com/photos/aytoroquetas/17092037717/)).
+- 음악: "Lightless Dawn" Kevin MacLeod (incompetech.com), CC BY 4.0.
+
+### 업로드 문구
+
+**newsab1** — 손흥민 A매치 59호골, 차범근 기록 넘었다 ⚽
+> 2026년 10월 6일 우즈베키스탄전(2-0 승). 손흥민이 프리킥으로 A매치 151경기 59번째 골을 넣으며 차범근 전 감독의 58골(1978년)을 넘어 한국 남자 선수 A매치 최다 골 기록을 새로 썼습니다. 경기 뒤 소감: “역사를 쓸 수 있어서 정말 영광”, “태극마크를 달고 이렇게 많은 골을 넣은 것은 혼자만이 할 수 없는 것”(일간스포츠·엑스포츠뉴스 보도). 여러분이 꼽는 손흥민 최고의 골은?
+> ※ 영상 속 사진은 이전 경기 자료 사진입니다(2024 아시안컵·2021 이란 원정·2018 월드컵).
+> 사진: M.Sadegh Nikgostar / Fars News Agency (CC BY 4.0), Meghdad Madadi / Tasnim News Agency (CC BY 4.0), 타타르스탄 공화국 체육부 tatarstan.ru (CC BY 4.0) — https://creativecommons.org/licenses/by/4.0/
+> 음악: "Lightless Dawn" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
+> #손흥민 #차범근 #A매치최다골 #축구국가대표 #우즈베키스탄 #shorts
+
+**newsab2** — 이강인, 아틀레티코 9월 이달의 선수 🏆 (팬 투표)
+> 이강인이 아틀레티코 마드리드 팬 투표로 뽑는 9월 이달의 선수에 선정됐습니다(후원사 10월 2일 발표). 7월 PSG에서 이적해 2031년까지 계약하고 7번을 단 이강인은 말라가와의 개막전 데뷔골(라리가 8월 이달의 골), 9월 오사수나전 골(4-0), 레알 마드리드와의 더비 2-1 승리(89분 출전)로 활약을 이어가고 있습니다. 이번 시즌 몇 골까지 넣을까요?
+> ※ 영상 속 사진은 2024 아시안컵 대표팀 경기와 2015년 유소년 대회 자료 사진입니다.
+> 사진: M.Sadegh Nikgostar / Fars News Agency (CC BY 4.0) — https://creativecommons.org/licenses/by/4.0/, Ayuntamiento de Roquetas de Mar (퍼블릭 도메인)
+> 음악: "Lightless Dawn" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
+> #이강인 #아틀레티코마드리드 #라리가 #이달의선수 #해외축구 #shorts
+
+**newsab3** — 아시안게임 4연패! 한일전 결승 1-0 🥇
+> 2026년 10월 3일 아이치·나고야 아시안게임 남자축구 결승에서 한국이 개최국 일본을 1-0으로 꺾고 사상 첫 4회 연속 금메달을 따냈습니다. 후반 16분 양민혁의 크로스를 엄지성(스완지 시티)이 마무리했고, 엄지성의 이번 대회 4번째 골이었습니다. 최근 세 번의 결승 상대는 모두 일본, 세 번 모두 한국이 이겼습니다. 여러분이 뽑는 대회 MVP는?
+> ※ 경기 사진이 아닌 자료 사진(2025년 양민혁·배준호, 2024 아시안컵)과 자체 그래픽을 썼습니다.
+> 사진: Timmy96 (CC0), M.Sadegh Nikgostar / Fars News Agency (CC BY 4.0) — https://creativecommons.org/licenses/by/4.0/
+> 음악: "Lightless Dawn" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
+> #아시안게임 #한일전 #엄지성 #양민혁 #축구 #shorts
