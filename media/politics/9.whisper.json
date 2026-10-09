@@ -1,0 +1,1163 @@
+{
+ "model": "faster-whisper large-v3 (int8, CPU)",
+ "params": {
+  "language": "ko",
+  "beam_size": 5,
+  "vad_filter": false,
+  "word_timestamps": true,
+  "condition_on_previous_text": false
+ },
+ "source": "9.mp4",
+ "duration_s": 79.017,
+ "segments": [
+  {
+   "start": 0.0,
+   "end": 2.26,
+   "text": " 의 특수성도 좀 이해해 주셨으면 하는 바람입니다.",
+   "words": [
+    {
+     "start": 0.0,
+     "end": 0.04,
+     "word": " 의",
+     "probability": 0.0177
+    },
+    {
+     "start": 0.04,
+     "end": 0.58,
+     "word": " 특수성도",
+     "probability": 0.9817
+    },
+    {
+     "start": 0.58,
+     "end": 0.82,
+     "word": " 좀",
+     "probability": 0.4875
+    },
+    {
+     "start": 0.82,
+     "end": 1.18,
+     "word": " 이해해",
+     "probability": 0.7984
+    },
+    {
+     "start": 1.18,
+     "end": 1.54,
+     "word": " 주셨으면",
+     "probability": 0.992
+    },
+    {
+     "start": 1.54,
+     "end": 1.72,
+     "word": " 하는",
+     "probability": 0.9917
+    },
+    {
+     "start": 1.72,
+     "end": 2.26,
+     "word": " 바람입니다.",
+     "probability": 0.9276
+    }
+   ]
+  },
+  {
+   "start": 6.32,
+   "end": 8.52,
+   "text": " 박진영 위원장도 답변하시죠.",
+   "words": [
+    {
+     "start": 6.32,
+     "end": 7.02,
+     "word": " 박진영",
+     "probability": 0.8712
+    },
+    {
+     "start": 7.02,
+     "end": 7.58,
+     "word": " 위원장도",
+     "probability": 0.9851
+    },
+    {
+     "start": 7.58,
+     "end": 8.52,
+     "word": " 답변하시죠.",
+     "probability": 0.9801
+    }
+   ]
+  },
+  {
+   "start": 8.62,
+   "end": 15.16,
+   "text": " 제가 볼 때 12분 중에 11분을 지리자께서 내용을 정리하셔서",
+   "words": [
+    {
+     "start": 8.62,
+     "end": 8.78,
+     "word": " 제가",
+     "probability": 0.9975
+    },
+    {
+     "start": 8.78,
+     "end": 9.04,
+     "word": " 볼",
+     "probability": 0.9995
+    },
+    {
+     "start": 9.04,
+     "end": 9.26,
+     "word": " 때",
+     "probability": 0.9998
+    },
+    {
+     "start": 9.26,
+     "end": 11.18,
+     "word": " 12분",
+     "probability": 0.9982
+    },
+    {
+     "start": 11.18,
+     "end": 11.4,
+     "word": " 중에",
+     "probability": 0.9993
+    },
+    {
+     "start": 11.4,
+     "end": 12.72,
+     "word": " 11분을",
+     "probability": 0.9993
+    },
+    {
+     "start": 12.72,
+     "end": 13.42,
+     "word": " 지리자께서",
+     "probability": 0.9598
+    },
+    {
+     "start": 13.42,
+     "end": 14.3,
+     "word": " 내용을",
+     "probability": 0.9997
+    },
+    {
+     "start": 14.3,
+     "end": 15.16,
+     "word": " 정리하셔서",
+     "probability": 0.986
+    }
+   ]
+  },
+  {
+   "start": 15.16,
+   "end": 19.82,
+   "text": " 두 분에게 답변의 기회가 너무 없어서 박진영 위원장님 짧게 답변하십시오.",
+   "words": [
+    {
+     "start": 15.16,
+     "end": 15.54,
+     "word": " 두",
+     "probability": 0.9986
+    },
+    {
+     "start": 15.54,
+     "end": 15.96,
+     "word": " 분에게",
+     "probability": 0.9989
+    },
+    {
+     "start": 15.96,
+     "end": 16.42,
+     "word": " 답변의",
+     "probability": 0.9896
+    },
+    {
+     "start": 16.42,
+     "end": 16.62,
+     "word": " 기회가",
+     "probability": 0.9976
+    },
+    {
+     "start": 16.62,
+     "end": 16.78,
+     "word": " 너무",
+     "probability": 0.9986
+    },
+    {
+     "start": 16.78,
+     "end": 17.12,
+     "word": " 없어서",
+     "probability": 0.9999
+    },
+    {
+     "start": 17.12,
+     "end": 18.04,
+     "word": " 박진영",
+     "probability": 0.9972
+    },
+    {
+     "start": 18.04,
+     "end": 18.44,
+     "word": " 위원장님",
+     "probability": 0.9952
+    },
+    {
+     "start": 18.44,
+     "end": 18.96,
+     "word": " 짧게",
+     "probability": 0.9974
+    },
+    {
+     "start": 18.96,
+     "end": 19.82,
+     "word": " 답변하십시오.",
+     "probability": 0.9847
+    }
+   ]
+  },
+  {
+   "start": 20.1,
+   "end": 21.62,
+   "text": " 박진영 위원장님 우선 감사드립니다.",
+   "words": [
+    {
+     "start": 20.1,
+     "end": 20.8,
+     "word": " 박진영",
+     "probability": 0.809
+    },
+    {
+     "start": 20.8,
+     "end": 20.98,
+     "word": " 위원장님",
+     "probability": 0.9596
+    },
+    {
+     "start": 20.98,
+     "end": 21.08,
+     "word": " 우선",
+     "probability": 0.9555
+    },
+    {
+     "start": 21.08,
+     "end": 21.62,
+     "word": " 감사드립니다.",
+     "probability": 0.8509
+    }
+   ]
+  },
+  {
+   "start": 21.7,
+   "end": 24.72,
+   "text": " 왜냐하면 지적해 주신 것 중에 정말 돌아보야 될 게 많이 있습니다.",
+   "words": [
+    {
+     "start": 21.7,
+     "end": 21.8,
+     "word": " 왜냐하면",
+     "probability": 0.9608
+    },
+    {
+     "start": 21.8,
+     "end": 22.18,
+     "word": " 지적해",
+     "probability": 0.9878
+    },
+    {
+     "start": 22.18,
+     "end": 22.46,
+     "word": " 주신",
+     "probability": 1.0
+    },
+    {
+     "start": 22.46,
+     "end": 22.56,
+     "word": " 것",
+     "probability": 0.9821
+    },
+    {
+     "start": 22.56,
+     "end": 22.76,
+     "word": " 중에",
+     "probability": 1.0
+    },
+    {
+     "start": 22.76,
+     "end": 23.08,
+     "word": " 정말",
+     "probability": 0.9965
+    },
+    {
+     "start": 23.08,
+     "end": 24.06,
+     "word": " 돌아보야",
+     "probability": 0.6964
+    },
+    {
+     "start": 24.06,
+     "end": 24.12,
+     "word": " 될",
+     "probability": 0.9523
+    },
+    {
+     "start": 24.12,
+     "end": 24.26,
+     "word": " 게",
+     "probability": 0.9973
+    },
+    {
+     "start": 24.26,
+     "end": 24.46,
+     "word": " 많이",
+     "probability": 0.9998
+    },
+    {
+     "start": 24.46,
+     "end": 24.72,
+     "word": " 있습니다.",
+     "probability": 0.9999
+    }
+   ]
+  },
+  {
+   "start": 24.88,
+   "end": 25.26,
+   "text": " 진짜로.",
+   "words": [
+    {
+     "start": 24.88,
+     "end": 25.26,
+     "word": " 진짜로.",
+     "probability": 0.918
+    }
+   ]
+  },
+  {
+   "start": 26.3,
+   "end": 29.8,
+   "text": " 그리고 이 계약서 3개 항의 분명히 정리가 되어 있는데",
+   "words": [
+    {
+     "start": 26.01,
+     "end": 26.36,
+     "word": " 그리고",
+     "probability": 0.9996
+    },
+    {
+     "start": 26.36,
+     "end": 26.5,
+     "word": " 이",
+     "probability": 0.7815
+    },
+    {
+     "start": 26.5,
+     "end": 27.14,
+     "word": " 계약서",
+     "probability": 0.9996
+    },
+    {
+     "start": 27.14,
+     "end": 27.68,
+     "word": " 3개",
+     "probability": 0.9643
+    },
+    {
+     "start": 27.68,
+     "end": 28.1,
+     "word": " 항의",
+     "probability": 0.7681
+    },
+    {
+     "start": 28.1,
+     "end": 28.94,
+     "word": " 분명히",
+     "probability": 0.9983
+    },
+    {
+     "start": 28.94,
+     "end": 29.3,
+     "word": " 정리가",
+     "probability": 0.9983
+    },
+    {
+     "start": 29.3,
+     "end": 29.46,
+     "word": " 되어",
+     "probability": 0.9953
+    },
+    {
+     "start": 29.46,
+     "end": 29.8,
+     "word": " 있는데",
+     "probability": 0.9999
+    }
+   ]
+  },
+  {
+   "start": 29.8,
+   "end": 33.16,
+   "text": " 그런데 이게 혹시 어디 실제로 정말 무용으로 존재하면 안 되죠.",
+   "words": [
+    {
+     "start": 29.8,
+     "end": 29.88,
+     "word": " 그런데",
+     "probability": 0.8451
+    },
+    {
+     "start": 29.88,
+     "end": 30.04,
+     "word": " 이게",
+     "probability": 0.9817
+    },
+    {
+     "start": 30.04,
+     "end": 30.28,
+     "word": " 혹시",
+     "probability": 0.9996
+    },
+    {
+     "start": 30.28,
+     "end": 30.9,
+     "word": " 어디",
+     "probability": 0.5913
+    },
+    {
+     "start": 30.9,
+     "end": 31.64,
+     "word": " 실제로",
+     "probability": 0.9994
+    },
+    {
+     "start": 31.64,
+     "end": 31.98,
+     "word": " 정말",
+     "probability": 0.9957
+    },
+    {
+     "start": 31.98,
+     "end": 32.44,
+     "word": " 무용으로",
+     "probability": 0.8614
+    },
+    {
+     "start": 32.44,
+     "end": 32.8,
+     "word": " 존재하면",
+     "probability": 0.9998
+    },
+    {
+     "start": 32.8,
+     "end": 32.96,
+     "word": " 안",
+     "probability": 0.9795
+    },
+    {
+     "start": 32.96,
+     "end": 33.16,
+     "word": " 되죠.",
+     "probability": 0.9989
+    }
+   ]
+  },
+  {
+   "start": 33.18,
+   "end": 34.34,
+   "text": " 그래서 이건 정말 확인해 보겠습니다.",
+   "words": [
+    {
+     "start": 33.18,
+     "end": 33.28,
+     "word": " 그래서",
+     "probability": 0.9881
+    },
+    {
+     "start": 33.28,
+     "end": 33.44,
+     "word": " 이건",
+     "probability": 0.9942
+    },
+    {
+     "start": 33.44,
+     "end": 33.7,
+     "word": " 정말",
+     "probability": 1.0
+    },
+    {
+     "start": 33.7,
+     "end": 34.04,
+     "word": " 확인해",
+     "probability": 0.9175
+    },
+    {
+     "start": 34.04,
+     "end": 34.34,
+     "word": " 보겠습니다.",
+     "probability": 0.9998
+    }
+   ]
+  },
+  {
+   "start": 34.52,
+   "end": 35.78,
+   "text": " 굉장히 중요한 문제이기 때문에.",
+   "words": [
+    {
+     "start": 34.52,
+     "end": 34.78,
+     "word": " 굉장히",
+     "probability": 0.9998
+    },
+    {
+     "start": 34.78,
+     "end": 35.16,
+     "word": " 중요한",
+     "probability": 1.0
+    },
+    {
+     "start": 35.16,
+     "end": 35.56,
+     "word": " 문제이기",
+     "probability": 0.9972
+    },
+    {
+     "start": 35.56,
+     "end": 35.78,
+     "word": " 때문에.",
+     "probability": 1.0
+    }
+   ]
+  },
+  {
+   "start": 36.56,
+   "end": 37.98,
+   "text": " 한 가지만 말씀드리고 싶은데요.",
+   "words": [
+    {
+     "start": 36.26,
+     "end": 36.58,
+     "word": " 한",
+     "probability": 0.9993
+    },
+    {
+     "start": 36.58,
+     "end": 36.9,
+     "word": " 가지만",
+     "probability": 0.9986
+    },
+    {
+     "start": 36.9,
+     "end": 37.48,
+     "word": " 말씀드리고",
+     "probability": 0.9999
+    },
+    {
+     "start": 37.48,
+     "end": 37.98,
+     "word": " 싶은데요.",
+     "probability": 0.9998
+    }
+   ]
+  },
+  {
+   "start": 38.76,
+   "end": 42.24,
+   "text": " 이 페노맨원 행사 때 사계사의 대표 가수들이",
+   "words": [
+    {
+     "start": 38.76,
+     "end": 39.4,
+     "word": " 이",
+     "probability": 0.9797
+    },
+    {
+     "start": 39.4,
+     "end": 39.98,
+     "word": " 페노맨원",
+     "probability": 0.7502
+    },
+    {
+     "start": 39.98,
+     "end": 40.36,
+     "word": " 행사",
+     "probability": 0.9998
+    },
+    {
+     "start": 40.36,
+     "end": 40.6,
+     "word": " 때",
+     "probability": 1.0
+    },
+    {
+     "start": 40.6,
+     "end": 41.52,
+     "word": " 사계사의",
+     "probability": 0.9076
+    },
+    {
+     "start": 41.52,
+     "end": 41.74,
+     "word": " 대표",
+     "probability": 1.0
+    },
+    {
+     "start": 41.74,
+     "end": 42.24,
+     "word": " 가수들이",
+     "probability": 0.9949
+    }
+   ]
+  },
+  {
+   "start": 42.24,
+   "end": 44.2,
+   "text": " 이걸 안 하고 따로 공연을 하면",
+   "words": [
+    {
+     "start": 42.24,
+     "end": 42.56,
+     "word": " 이걸",
+     "probability": 0.9998
+    },
+    {
+     "start": 42.56,
+     "end": 42.88,
+     "word": " 안",
+     "probability": 1.0
+    },
+    {
+     "start": 42.88,
+     "end": 43.12,
+     "word": " 하고",
+     "probability": 0.9947
+    },
+    {
+     "start": 43.12,
+     "end": 43.64,
+     "word": " 따로",
+     "probability": 0.9999
+    },
+    {
+     "start": 43.64,
+     "end": 44.04,
+     "word": " 공연을",
+     "probability": 0.9999
+    },
+    {
+     "start": 44.04,
+     "end": 44.2,
+     "word": " 하면",
+     "probability": 0.9999
+    }
+   ]
+  },
+  {
+   "start": 44.2,
+   "end": 46.66,
+   "text": " 두 배, 세 배의 수익을 냅니다. 모든 회사가.",
+   "words": [
+    {
+     "start": 44.2,
+     "end": 44.7,
+     "word": " 두",
+     "probability": 0.8077
+    },
+    {
+     "start": 44.7,
+     "end": 44.98,
+     "word": " 배,",
+     "probability": 0.9994
+    },
+    {
+     "start": 45.08,
+     "end": 45.18,
+     "word": " 세",
+     "probability": 0.9999
+    },
+    {
+     "start": 45.18,
+     "end": 45.56,
+     "word": " 배의",
+     "probability": 0.9406
+    },
+    {
+     "start": 45.56,
+     "end": 45.92,
+     "word": " 수익을",
+     "probability": 0.9999
+    },
+    {
+     "start": 45.92,
+     "end": 46.08,
+     "word": " 냅니다.",
+     "probability": 0.9995
+    },
+    {
+     "start": 46.18,
+     "end": 46.38,
+     "word": " 모든",
+     "probability": 0.9998
+    },
+    {
+     "start": 46.38,
+     "end": 46.66,
+     "word": " 회사가.",
+     "probability": 0.9998
+    }
+   ]
+  },
+  {
+   "start": 47.12,
+   "end": 49.56,
+   "text": " 이걸 희생하게 하는 게 너무 힘들었습니다.",
+   "words": [
+    {
+     "start": 47.12,
+     "end": 47.76,
+     "word": " 이걸",
+     "probability": 0.4778
+    },
+    {
+     "start": 47.76,
+     "end": 48.42,
+     "word": " 희생하게",
+     "probability": 0.9998
+    },
+    {
+     "start": 48.42,
+     "end": 48.62,
+     "word": " 하는",
+     "probability": 1.0
+    },
+    {
+     "start": 48.62,
+     "end": 48.82,
+     "word": " 게",
+     "probability": 0.9999
+    },
+    {
+     "start": 48.82,
+     "end": 49.06,
+     "word": " 너무",
+     "probability": 1.0
+    },
+    {
+     "start": 49.06,
+     "end": 49.56,
+     "word": " 힘들었습니다.",
+     "probability": 1.0
+    }
+   ]
+  },
+  {
+   "start": 50.3,
+   "end": 53.06,
+   "text": " YG한테 빌고 SM한테 빌고 하이브한테 빌고",
+   "words": [
+    {
+     "start": 50.3,
+     "end": 50.94,
+     "word": " YG한테",
+     "probability": 0.9973
+    },
+    {
+     "start": 50.94,
+     "end": 51.4,
+     "word": " 빌고",
+     "probability": 0.9989
+    },
+    {
+     "start": 51.4,
+     "end": 51.88,
+     "word": " SM한테",
+     "probability": 0.9761
+    },
+    {
+     "start": 51.88,
+     "end": 52.28,
+     "word": " 빌고",
+     "probability": 1.0
+    },
+    {
+     "start": 52.28,
+     "end": 52.7,
+     "word": " 하이브한테",
+     "probability": 0.9918
+    },
+    {
+     "start": 52.7,
+     "end": 53.06,
+     "word": " 빌고",
+     "probability": 1.0
+    }
+   ]
+  },
+  {
+   "start": 53.06,
+   "end": 58.42,
+   "text": " 그래서 당장 굉장히 몇백억대의 손해가 일어날 일입니다.",
+   "words": [
+    {
+     "start": 53.06,
+     "end": 53.78,
+     "word": " 그래서",
+     "probability": 0.3104
+    },
+    {
+     "start": 53.78,
+     "end": 55.18,
+     "word": " 당장",
+     "probability": 0.9999
+    },
+    {
+     "start": 55.18,
+     "end": 55.8,
+     "word": " 굉장히",
+     "probability": 0.9996
+    },
+    {
+     "start": 55.8,
+     "end": 57.2,
+     "word": " 몇백억대의",
+     "probability": 0.8897
+    },
+    {
+     "start": 57.2,
+     "end": 57.68,
+     "word": " 손해가",
+     "probability": 0.9993
+    },
+    {
+     "start": 57.68,
+     "end": 58.16,
+     "word": " 일어날",
+     "probability": 0.9999
+    },
+    {
+     "start": 58.16,
+     "end": 58.42,
+     "word": " 일입니다.",
+     "probability": 0.999
+    }
+   ]
+  },
+  {
+   "start": 58.46,
+   "end": 59.12,
+   "text": " 앞으로 몇 년 안에.",
+   "words": [
+    {
+     "start": 58.46,
+     "end": 58.62,
+     "word": " 앞으로",
+     "probability": 0.999
+    },
+    {
+     "start": 58.62,
+     "end": 58.76,
+     "word": " 몇",
+     "probability": 0.9997
+    },
+    {
+     "start": 58.76,
+     "end": 58.98,
+     "word": " 년",
+     "probability": 0.9993
+    },
+    {
+     "start": 58.98,
+     "end": 59.12,
+     "word": " 안에.",
+     "probability": 0.9997
+    }
+   ]
+  },
+  {
+   "start": 59.8,
+   "end": 75.52,
+   "text": " 그러나 장기 비전을 보고 또 이게 우리나라에 파생시킬 효과 또 다른 산업에 전이될 효과 때문에 다들 하기로 큰 결심을 했고 분명히 말씀드린 것은 이 행사를 안 하고 각각 회사들이 그 시간에 각 가수의 공연을 하면 훨씬 더 큰 돈을 법니다.",
+   "words": [
+    {
+     "start": 59.8,
+     "end": 60.24,
+     "word": " 그러나",
+     "probability": 0.9952
+    },
+    {
+     "start": 60.24,
+     "end": 60.72,
+     "word": " 장기",
+     "probability": 0.9901
+    },
+    {
+     "start": 60.72,
+     "end": 61.08,
+     "word": " 비전을",
+     "probability": 0.9994
+    },
+    {
+     "start": 61.08,
+     "end": 61.24,
+     "word": " 보고",
+     "probability": 0.9641
+    },
+    {
+     "start": 61.24,
+     "end": 61.52,
+     "word": " 또",
+     "probability": 0.9051
+    },
+    {
+     "start": 61.52,
+     "end": 61.7,
+     "word": " 이게",
+     "probability": 0.998
+    },
+    {
+     "start": 61.7,
+     "end": 62.78,
+     "word": " 우리나라에",
+     "probability": 0.9786
+    },
+    {
+     "start": 62.78,
+     "end": 63.4,
+     "word": " 파생시킬",
+     "probability": 0.9998
+    },
+    {
+     "start": 63.4,
+     "end": 63.64,
+     "word": " 효과",
+     "probability": 0.983
+    },
+    {
+     "start": 63.64,
+     "end": 63.74,
+     "word": " 또",
+     "probability": 0.9071
+    },
+    {
+     "start": 63.74,
+     "end": 64.0,
+     "word": " 다른",
+     "probability": 0.9997
+    },
+    {
+     "start": 64.0,
+     "end": 64.5,
+     "word": " 산업에",
+     "probability": 0.998
+    },
+    {
+     "start": 64.5,
+     "end": 65.7,
+     "word": " 전이될",
+     "probability": 0.877
+    },
+    {
+     "start": 65.7,
+     "end": 65.98,
+     "word": " 효과",
+     "probability": 0.9996
+    },
+    {
+     "start": 65.98,
+     "end": 66.28,
+     "word": " 때문에",
+     "probability": 1.0
+    },
+    {
+     "start": 66.28,
+     "end": 67.02,
+     "word": " 다들",
+     "probability": 0.9999
+    },
+    {
+     "start": 67.02,
+     "end": 67.36,
+     "word": " 하기로",
+     "probability": 0.9864
+    },
+    {
+     "start": 67.36,
+     "end": 67.5,
+     "word": " 큰",
+     "probability": 0.9999
+    },
+    {
+     "start": 67.5,
+     "end": 67.96,
+     "word": " 결심을",
+     "probability": 0.9999
+    },
+    {
+     "start": 67.96,
+     "end": 68.16,
+     "word": " 했고",
+     "probability": 0.9998
+    },
+    {
+     "start": 68.16,
+     "end": 68.92,
+     "word": " 분명히",
+     "probability": 0.9985
+    },
+    {
+     "start": 68.92,
+     "end": 69.44,
+     "word": " 말씀드린",
+     "probability": 0.998
+    },
+    {
+     "start": 69.44,
+     "end": 69.56,
+     "word": " 것은",
+     "probability": 0.4928
+    },
+    {
+     "start": 69.56,
+     "end": 69.8,
+     "word": " 이",
+     "probability": 0.9998
+    },
+    {
+     "start": 69.8,
+     "end": 70.3,
+     "word": " 행사를",
+     "probability": 0.9999
+    },
+    {
+     "start": 70.3,
+     "end": 70.5,
+     "word": " 안",
+     "probability": 1.0
+    },
+    {
+     "start": 70.5,
+     "end": 70.7,
+     "word": " 하고",
+     "probability": 0.9798
+    },
+    {
+     "start": 70.7,
+     "end": 71.7,
+     "word": " 각각",
+     "probability": 0.9997
+    },
+    {
+     "start": 71.7,
+     "end": 72.18,
+     "word": " 회사들이",
+     "probability": 0.9999
+    },
+    {
+     "start": 72.18,
+     "end": 72.32,
+     "word": " 그",
+     "probability": 0.9998
+    },
+    {
+     "start": 72.32,
+     "end": 72.64,
+     "word": " 시간에",
+     "probability": 0.9999
+    },
+    {
+     "start": 72.64,
+     "end": 72.78,
+     "word": " 각",
+     "probability": 0.9998
+    },
+    {
+     "start": 72.78,
+     "end": 73.12,
+     "word": " 가수의",
+     "probability": 0.9907
+    },
+    {
+     "start": 73.12,
+     "end": 73.46,
+     "word": " 공연을",
+     "probability": 0.994
+    },
+    {
+     "start": 73.46,
+     "end": 73.58,
+     "word": " 하면",
+     "probability": 0.9998
+    },
+    {
+     "start": 73.58,
+     "end": 74.46,
+     "word": " 훨씬",
+     "probability": 0.9999
+    },
+    {
+     "start": 74.46,
+     "end": 74.84,
+     "word": " 더",
+     "probability": 1.0
+    },
+    {
+     "start": 74.84,
+     "end": 74.98,
+     "word": " 큰",
+     "probability": 0.9998
+    },
+    {
+     "start": 74.98,
+     "end": 75.28,
+     "word": " 돈을",
+     "probability": 1.0
+    },
+    {
+     "start": 75.28,
+     "end": 75.52,
+     "word": " 법니다.",
+     "probability": 0.9364
+    }
+   ]
+  },
+  {
+   "start": 75.56,
+   "end": 77.8,
+   "text": " 그래서 특혜를 받는다고 하기에는 조금 그렇습니다.",
+   "words": [
+    {
+     "start": 75.56,
+     "end": 75.74,
+     "word": " 그래서",
+     "probability": 0.9989
+    },
+    {
+     "start": 75.74,
+     "end": 76.22,
+     "word": " 특혜를",
+     "probability": 0.9986
+    },
+    {
+     "start": 76.22,
+     "end": 76.66,
+     "word": " 받는다고",
+     "probability": 0.9998
+    },
+    {
+     "start": 76.66,
+     "end": 76.98,
+     "word": " 하기에는",
+     "probability": 0.6709
+    },
+    {
+     "start": 76.98,
+     "end": 77.4,
+     "word": " 조금",
+     "probability": 0.9988
+    },
+    {
+     "start": 77.4,
+     "end": 77.8,
+     "word": " 그렇습니다.",
+     "probability": 0.9996
+    }
+   ]
+  }
+ ]
+}

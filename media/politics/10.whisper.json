@@ -1,0 +1,1300 @@
+{
+ "model": "faster-whisper large-v3 (int8, CPU)",
+ "params": {
+  "language": "ko",
+  "beam_size": 5,
+  "vad_filter": false,
+  "word_timestamps": true,
+  "condition_on_previous_text": false
+ },
+ "source": "10.mp4",
+ "duration_s": 102.005,
+ "segments": [
+  {
+   "start": 0.0,
+   "end": 1.9,
+   "text": " 같아서 안타깝다는 겁니다.",
+   "words": [
+    {
+     "start": 0.0,
+     "end": 0.3,
+     "word": " 같아서",
+     "probability": 0.3195
+    },
+    {
+     "start": 0.3,
+     "end": 1.62,
+     "word": " 안타깝다는",
+     "probability": 0.9987
+    },
+    {
+     "start": 1.62,
+     "end": 1.9,
+     "word": " 겁니다.",
+     "probability": 0.9969
+    }
+   ]
+  },
+  {
+   "start": 2.8,
+   "end": 3.78,
+   "text": " 저는 정말",
+   "words": [
+    {
+     "start": 2.56,
+     "end": 2.92,
+     "word": " 저는",
+     "probability": 0.9859
+    },
+    {
+     "start": 2.92,
+     "end": 3.78,
+     "word": " 정말",
+     "probability": 0.9981
+    }
+   ]
+  },
+  {
+   "start": 3.78,
+   "end": 5.96,
+   "text": " 그러니까 대통령도",
+   "words": [
+    {
+     "start": 3.78,
+     "end": 5.02,
+     "word": " 그러니까",
+     "probability": 0.975
+    },
+    {
+     "start": 5.02,
+     "end": 5.96,
+     "word": " 대통령도",
+     "probability": 0.9678
+    }
+   ]
+  },
+  {
+   "start": 5.96,
+   "end": 7.7,
+   "text": " SNS에서 미안하다고 하고 좀 찔리는 게",
+   "words": [
+    {
+     "start": 5.96,
+     "end": 6.42,
+     "word": " SNS에서",
+     "probability": 0.9523
+    },
+    {
+     "start": 6.42,
+     "end": 6.82,
+     "word": " 미안하다고",
+     "probability": 0.9578
+    },
+    {
+     "start": 6.82,
+     "end": 6.96,
+     "word": " 하고",
+     "probability": 0.7697
+    },
+    {
+     "start": 6.96,
+     "end": 7.26,
+     "word": " 좀",
+     "probability": 0.5714
+    },
+    {
+     "start": 7.26,
+     "end": 7.56,
+     "word": " 찔리는",
+     "probability": 0.9963
+    },
+    {
+     "start": 7.56,
+     "end": 7.7,
+     "word": " 게",
+     "probability": 0.9963
+    }
+   ]
+  },
+  {
+   "start": 7.7,
+   "end": 9.4,
+   "text": " 너무하죠. 그래서 저는 우리",
+   "words": [
+    {
+     "start": 7.7,
+     "end": 8.06,
+     "word": " 너무하죠.",
+     "probability": 0.2983
+    },
+    {
+     "start": 8.46,
+     "end": 8.98,
+     "word": " 그래서",
+     "probability": 0.6258
+    },
+    {
+     "start": 8.98,
+     "end": 9.2,
+     "word": " 저는",
+     "probability": 1.0
+    },
+    {
+     "start": 9.2,
+     "end": 9.4,
+     "word": " 우리",
+     "probability": 0.9879
+    }
+   ]
+  },
+  {
+   "start": 9.4,
+   "end": 11.84,
+   "text": " 박진영 위원장의",
+   "words": [
+    {
+     "start": 9.4,
+     "end": 10.48,
+     "word": " 박진영",
+     "probability": 0.9995
+    },
+    {
+     "start": 10.48,
+     "end": 11.84,
+     "word": " 위원장의",
+     "probability": 0.8792
+    }
+   ]
+  },
+  {
+   "start": 11.84,
+   "end": 13.8,
+   "text": " 대표께서 정말 본연의",
+   "words": [
+    {
+     "start": 11.84,
+     "end": 12.36,
+     "word": " 대표께서",
+     "probability": 0.9973
+    },
+    {
+     "start": 12.36,
+     "end": 13.12,
+     "word": " 정말",
+     "probability": 0.9979
+    },
+    {
+     "start": 13.12,
+     "end": 13.8,
+     "word": " 본연의",
+     "probability": 0.9966
+    }
+   ]
+  },
+  {
+   "start": 15.0,
+   "end": 16.32,
+   "text": " 일자리로 돌아가셔서",
+   "words": [
+    {
+     "start": 15.0,
+     "end": 15.72,
+     "word": " 일자리로",
+     "probability": 0.9934
+    },
+    {
+     "start": 15.72,
+     "end": 16.32,
+     "word": " 돌아가셔서",
+     "probability": 0.9683
+    }
+   ]
+  },
+  {
+   "start": 16.32,
+   "end": 17.86,
+   "text": " 그런 역할을 했으면 좋겠다.",
+   "words": [
+    {
+     "start": 16.32,
+     "end": 16.92,
+     "word": " 그런",
+     "probability": 0.7077
+    },
+    {
+     "start": 16.92,
+     "end": 17.34,
+     "word": " 역할을",
+     "probability": 0.9999
+    },
+    {
+     "start": 17.34,
+     "end": 17.56,
+     "word": " 했으면",
+     "probability": 0.9998
+    },
+    {
+     "start": 17.56,
+     "end": 17.86,
+     "word": " 좋겠다.",
+     "probability": 0.9974
+    }
+   ]
+  },
+  {
+   "start": 18.02,
+   "end": 18.84,
+   "text": " 그런 생각을 드립니다.",
+   "words": [
+    {
+     "start": 18.02,
+     "end": 18.24,
+     "word": " 그런",
+     "probability": 0.9958
+    },
+    {
+     "start": 18.24,
+     "end": 18.52,
+     "word": " 생각을",
+     "probability": 0.7293
+    },
+    {
+     "start": 18.52,
+     "end": 18.84,
+     "word": " 드립니다.",
+     "probability": 0.9683
+    }
+   ]
+  },
+  {
+   "start": 19.02,
+   "end": 21.16,
+   "text": " 연 매출이 8천억이 넘는 거 아닙니까?",
+   "words": [
+    {
+     "start": 19.02,
+     "end": 19.62,
+     "word": " 연",
+     "probability": 0.2185
+    },
+    {
+     "start": 19.62,
+     "end": 20.02,
+     "word": " 매출이",
+     "probability": 0.9971
+    },
+    {
+     "start": 20.02,
+     "end": 20.44,
+     "word": " 8천억이",
+     "probability": 0.8716
+    },
+    {
+     "start": 20.44,
+     "end": 20.64,
+     "word": " 넘는",
+     "probability": 0.9998
+    },
+    {
+     "start": 20.64,
+     "end": 20.78,
+     "word": " 거",
+     "probability": 0.9937
+    },
+    {
+     "start": 20.78,
+     "end": 21.16,
+     "word": " 아닙니까?",
+     "probability": 0.9993
+    }
+   ]
+  },
+  {
+   "start": 21.36,
+   "end": 23.36,
+   "text": " 연봉이 지금 얼마나 되죠? 우리 박진영 대표.",
+   "words": [
+    {
+     "start": 21.36,
+     "end": 22.08,
+     "word": " 연봉이",
+     "probability": 0.9995
+    },
+    {
+     "start": 22.08,
+     "end": 22.18,
+     "word": " 지금",
+     "probability": 0.5937
+    },
+    {
+     "start": 22.18,
+     "end": 22.4,
+     "word": " 얼마나",
+     "probability": 0.9998
+    },
+    {
+     "start": 22.4,
+     "end": 22.68,
+     "word": " 되죠?",
+     "probability": 0.9787
+    },
+    {
+     "start": 22.72,
+     "end": 22.8,
+     "word": " 우리",
+     "probability": 0.9588
+    },
+    {
+     "start": 22.8,
+     "end": 23.16,
+     "word": " 박진영",
+     "probability": 0.9999
+    },
+    {
+     "start": 23.16,
+     "end": 23.36,
+     "word": " 대표.",
+     "probability": 0.9996
+    }
+   ]
+  },
+  {
+   "start": 23.7,
+   "end": 24.42,
+   "text": " 연봉.",
+   "words": [
+    {
+     "start": 23.7,
+     "end": 24.42,
+     "word": " 연봉.",
+     "probability": 0.9996
+    }
+   ]
+  },
+  {
+   "start": 25.46,
+   "end": 27.46,
+   "text": " 어떻게 연봉이 얼마지?",
+   "words": [
+    {
+     "start": 25.46,
+     "end": 26.18,
+     "word": " 어떻게",
+     "probability": 0.5854
+    },
+    {
+     "start": 26.18,
+     "end": 26.68,
+     "word": " 연봉이",
+     "probability": 0.7022
+    },
+    {
+     "start": 26.68,
+     "end": 27.46,
+     "word": " 얼마지?",
+     "probability": 0.8993
+    }
+   ]
+  },
+  {
+   "start": 28.78,
+   "end": 29.56,
+   "text": " 연봉이 한",
+   "words": [
+    {
+     "start": 28.78,
+     "end": 29.5,
+     "word": " 연봉이",
+     "probability": 0.9871
+    },
+    {
+     "start": 29.5,
+     "end": 29.56,
+     "word": " 한",
+     "probability": 0.9921
+    }
+   ]
+  },
+  {
+   "start": 29.56,
+   "end": 31.4,
+   "text": " 20억 30억 정도 되는 걸로 알고 있는데",
+   "words": [
+    {
+     "start": 29.56,
+     "end": 30.2,
+     "word": " 20억",
+     "probability": 0.5792
+    },
+    {
+     "start": 30.2,
+     "end": 30.56,
+     "word": " 30억",
+     "probability": 0.8621
+    },
+    {
+     "start": 30.56,
+     "end": 30.62,
+     "word": " 정도",
+     "probability": 0.5136
+    },
+    {
+     "start": 30.62,
+     "end": 30.78,
+     "word": " 되는",
+     "probability": 0.9982
+    },
+    {
+     "start": 30.78,
+     "end": 30.92,
+     "word": " 걸로",
+     "probability": 0.963
+    },
+    {
+     "start": 30.92,
+     "end": 31.08,
+     "word": " 알고",
+     "probability": 0.9995
+    },
+    {
+     "start": 31.08,
+     "end": 31.4,
+     "word": " 있는데",
+     "probability": 0.9991
+    }
+   ]
+  },
+  {
+   "start": 31.4,
+   "end": 33.82,
+   "text": " 오늘 하루만 하더라도 연봉으로 치면",
+   "words": [
+    {
+     "start": 31.4,
+     "end": 31.98,
+     "word": " 오늘",
+     "probability": 0.9685
+    },
+    {
+     "start": 31.98,
+     "end": 32.56,
+     "word": " 하루만",
+     "probability": 0.9978
+    },
+    {
+     "start": 32.56,
+     "end": 32.94,
+     "word": " 하더라도",
+     "probability": 0.9899
+    },
+    {
+     "start": 32.94,
+     "end": 33.62,
+     "word": " 연봉으로",
+     "probability": 0.9599
+    },
+    {
+     "start": 33.62,
+     "end": 33.82,
+     "word": " 치면",
+     "probability": 0.9984
+    }
+   ]
+  },
+  {
+   "start": 33.82,
+   "end": 35.44,
+   "text": " 1당이 800만 원이 넘어요",
+   "words": [
+    {
+     "start": 33.82,
+     "end": 34.38,
+     "word": " 1당이",
+     "probability": 0.5983
+    },
+    {
+     "start": 34.38,
+     "end": 34.94,
+     "word": " 800만",
+     "probability": 0.9821
+    },
+    {
+     "start": 34.94,
+     "end": 35.12,
+     "word": " 원이",
+     "probability": 0.8127
+    },
+    {
+     "start": 35.12,
+     "end": 35.44,
+     "word": " 넘어요",
+     "probability": 0.647
+    }
+   ]
+  },
+  {
+   "start": 37.92,
+   "end": 40.2,
+   "text": " 네 정리 부탁드립니다",
+   "words": [
+    {
+     "start": 37.92,
+     "end": 38.78,
+     "word": " 네",
+     "probability": 0.201
+    },
+    {
+     "start": 38.78,
+     "end": 39.64,
+     "word": " 정리",
+     "probability": 0.9231
+    },
+    {
+     "start": 39.64,
+     "end": 40.2,
+     "word": " 부탁드립니다",
+     "probability": 0.9998
+    }
+   ]
+  },
+  {
+   "start": 52.52,
+   "end": 56.08,
+   "text": " 네 답변하실 게 있으면 짧게 시간 드리겠습니다",
+   "words": [
+    {
+     "start": 52.52,
+     "end": 53.38,
+     "word": " 네",
+     "probability": 0.9012
+    },
+    {
+     "start": 53.38,
+     "end": 54.24,
+     "word": " 답변하실",
+     "probability": 0.8657
+    },
+    {
+     "start": 54.24,
+     "end": 54.36,
+     "word": " 게",
+     "probability": 0.8352
+    },
+    {
+     "start": 54.36,
+     "end": 54.5,
+     "word": " 있으면",
+     "probability": 0.9967
+    },
+    {
+     "start": 54.5,
+     "end": 54.98,
+     "word": " 짧게",
+     "probability": 0.9997
+    },
+    {
+     "start": 54.98,
+     "end": 55.74,
+     "word": " 시간",
+     "probability": 0.9789
+    },
+    {
+     "start": 55.74,
+     "end": 56.08,
+     "word": " 드리겠습니다",
+     "probability": 0.9651
+    }
+   ]
+  },
+  {
+   "start": 58.24,
+   "end": 62.02,
+   "text": " 저 대통령이 아니라 대통령 위에 위에 분이 오셔도",
+   "words": [
+    {
+     "start": 58.24,
+     "end": 58.92,
+     "word": " 저",
+     "probability": 0.2798
+    },
+    {
+     "start": 58.92,
+     "end": 59.6,
+     "word": " 대통령이",
+     "probability": 0.9997
+    },
+    {
+     "start": 59.6,
+     "end": 59.78,
+     "word": " 아니라",
+     "probability": 0.9999
+    },
+    {
+     "start": 59.78,
+     "end": 60.18,
+     "word": " 대통령",
+     "probability": 0.999
+    },
+    {
+     "start": 60.18,
+     "end": 61.14,
+     "word": " 위에",
+     "probability": 0.9642
+    },
+    {
+     "start": 61.14,
+     "end": 61.38,
+     "word": " 위에",
+     "probability": 0.8596
+    },
+    {
+     "start": 61.38,
+     "end": 61.72,
+     "word": " 분이",
+     "probability": 0.9972
+    },
+    {
+     "start": 61.72,
+     "end": 62.02,
+     "word": " 오셔도",
+     "probability": 0.9998
+    }
+   ]
+  },
+  {
+   "start": 62.02,
+   "end": 66.68,
+   "text": " 제가 생각할 때 우리나라를 위한 일이 아닌 것 같으면 저 안 해요",
+   "words": [
+    {
+     "start": 62.02,
+     "end": 63.28,
+     "word": " 제가",
+     "probability": 0.998
+    },
+    {
+     "start": 63.28,
+     "end": 63.72,
+     "word": " 생각할",
+     "probability": 0.9999
+    },
+    {
+     "start": 63.72,
+     "end": 63.88,
+     "word": " 때",
+     "probability": 1.0
+    },
+    {
+     "start": 63.88,
+     "end": 65.38,
+     "word": " 우리나라를",
+     "probability": 0.9996
+    },
+    {
+     "start": 65.38,
+     "end": 65.54,
+     "word": " 위한",
+     "probability": 0.9999
+    },
+    {
+     "start": 65.54,
+     "end": 65.72,
+     "word": " 일이",
+     "probability": 0.9999
+    },
+    {
+     "start": 65.72,
+     "end": 65.98,
+     "word": " 아닌",
+     "probability": 1.0
+    },
+    {
+     "start": 65.98,
+     "end": 66.1,
+     "word": " 것",
+     "probability": 0.99
+    },
+    {
+     "start": 66.1,
+     "end": 66.24,
+     "word": " 같으면",
+     "probability": 0.9971
+    },
+    {
+     "start": 66.24,
+     "end": 66.34,
+     "word": " 저",
+     "probability": 0.9714
+    },
+    {
+     "start": 66.34,
+     "end": 66.48,
+     "word": " 안",
+     "probability": 0.9998
+    },
+    {
+     "start": 66.48,
+     "end": 66.68,
+     "word": " 해요",
+     "probability": 0.9323
+    }
+   ]
+  },
+  {
+   "start": 66.68,
+   "end": 68.34,
+   "text": " 진짜 안 합니다",
+   "words": [
+    {
+     "start": 66.68,
+     "end": 67.98,
+     "word": " 진짜",
+     "probability": 0.1206
+    },
+    {
+     "start": 67.98,
+     "end": 68.18,
+     "word": " 안",
+     "probability": 1.0
+    },
+    {
+     "start": 68.18,
+     "end": 68.34,
+     "word": " 합니다",
+     "probability": 0.9985
+    }
+   ]
+  },
+  {
+   "start": 68.34,
+   "end": 71.54,
+   "text": " 한 번도 누가 뭐 하라고 해서 겁먹고 하는 성격도 아니고요",
+   "words": [
+    {
+     "start": 68.34,
+     "end": 69.08,
+     "word": " 한",
+     "probability": 0.9443
+    },
+    {
+     "start": 69.08,
+     "end": 69.42,
+     "word": " 번도",
+     "probability": 0.9983
+    },
+    {
+     "start": 69.42,
+     "end": 69.62,
+     "word": " 누가",
+     "probability": 0.9999
+    },
+    {
+     "start": 69.62,
+     "end": 69.82,
+     "word": " 뭐",
+     "probability": 0.841
+    },
+    {
+     "start": 69.82,
+     "end": 70.06,
+     "word": " 하라고",
+     "probability": 0.9997
+    },
+    {
+     "start": 70.06,
+     "end": 70.22,
+     "word": " 해서",
+     "probability": 0.9996
+    },
+    {
+     "start": 70.22,
+     "end": 70.64,
+     "word": " 겁먹고",
+     "probability": 0.9986
+    },
+    {
+     "start": 70.64,
+     "end": 70.76,
+     "word": " 하는",
+     "probability": 0.9999
+    },
+    {
+     "start": 70.76,
+     "end": 71.22,
+     "word": " 성격도",
+     "probability": 0.9999
+    },
+    {
+     "start": 71.22,
+     "end": 71.54,
+     "word": " 아니고요",
+     "probability": 0.9991
+    }
+   ]
+  },
+  {
+   "start": 71.54,
+   "end": 75.44,
+   "text": " 이거 잘 되면 진짜 정말 좋아요 우리나라에",
+   "words": [
+    {
+     "start": 71.54,
+     "end": 72.24,
+     "word": " 이거",
+     "probability": 0.9968
+    },
+    {
+     "start": 72.24,
+     "end": 72.48,
+     "word": " 잘",
+     "probability": 0.8487
+    },
+    {
+     "start": 72.48,
+     "end": 72.82,
+     "word": " 되면",
+     "probability": 0.9998
+    },
+    {
+     "start": 72.82,
+     "end": 73.68,
+     "word": " 진짜",
+     "probability": 0.9972
+    },
+    {
+     "start": 73.68,
+     "end": 74.58,
+     "word": " 정말",
+     "probability": 0.9995
+    },
+    {
+     "start": 74.58,
+     "end": 74.96,
+     "word": " 좋아요",
+     "probability": 0.9699
+    },
+    {
+     "start": 74.96,
+     "end": 75.44,
+     "word": " 우리나라에",
+     "probability": 0.995
+    }
+   ]
+  },
+  {
+   "start": 75.44,
+   "end": 80.7,
+   "text": " 정말 우리 아들, 딸, 조카 다 진짜 덕 볼 수 있는 너무너무 귀한 기회고요",
+   "words": [
+    {
+     "start": 75.44,
+     "end": 76.54,
+     "word": " 정말",
+     "probability": 0.9451
+    },
+    {
+     "start": 76.54,
+     "end": 76.78,
+     "word": " 우리",
+     "probability": 0.6192
+    },
+    {
+     "start": 76.78,
+     "end": 77.2,
+     "word": " 아들,",
+     "probability": 1.0
+    },
+    {
+     "start": 77.22,
+     "end": 77.52,
+     "word": " 딸,",
+     "probability": 0.9999
+    },
+    {
+     "start": 77.52,
+     "end": 77.86,
+     "word": " 조카",
+     "probability": 0.9989
+    },
+    {
+     "start": 77.86,
+     "end": 78.0,
+     "word": " 다",
+     "probability": 0.9616
+    },
+    {
+     "start": 78.0,
+     "end": 78.48,
+     "word": " 진짜",
+     "probability": 0.9994
+    },
+    {
+     "start": 78.48,
+     "end": 78.82,
+     "word": " 덕",
+     "probability": 0.9917
+    },
+    {
+     "start": 78.82,
+     "end": 79.0,
+     "word": " 볼",
+     "probability": 0.7692
+    },
+    {
+     "start": 79.0,
+     "end": 79.14,
+     "word": " 수",
+     "probability": 1.0
+    },
+    {
+     "start": 79.14,
+     "end": 79.3,
+     "word": " 있는",
+     "probability": 1.0
+    },
+    {
+     "start": 79.3,
+     "end": 79.82,
+     "word": " 너무너무",
+     "probability": 0.9992
+    },
+    {
+     "start": 79.82,
+     "end": 80.18,
+     "word": " 귀한",
+     "probability": 0.9998
+    },
+    {
+     "start": 80.18,
+     "end": 80.7,
+     "word": " 기회고요",
+     "probability": 0.9964
+    }
+   ]
+  },
+  {
+   "start": 80.7,
+   "end": 84.38,
+   "text": " 절대 이거를 무슨 대통령을 위해 민주당을 위해",
+   "words": [
+    {
+     "start": 80.7,
+     "end": 81.08,
+     "word": " 절대",
+     "probability": 0.9969
+    },
+    {
+     "start": 81.08,
+     "end": 81.7,
+     "word": " 이거를",
+     "probability": 0.9677
+    },
+    {
+     "start": 81.7,
+     "end": 82.16,
+     "word": " 무슨",
+     "probability": 0.8566
+    },
+    {
+     "start": 82.16,
+     "end": 83.1,
+     "word": " 대통령을",
+     "probability": 1.0
+    },
+    {
+     "start": 83.1,
+     "end": 83.22,
+     "word": " 위해",
+     "probability": 0.9993
+    },
+    {
+     "start": 83.22,
+     "end": 84.26,
+     "word": " 민주당을",
+     "probability": 0.9171
+    },
+    {
+     "start": 84.26,
+     "end": 84.38,
+     "word": " 위해",
+     "probability": 0.991
+    }
+   ]
+  },
+  {
+   "start": 84.38,
+   "end": 85.86,
+   "text": " 저는 그런 사람도 아니고요",
+   "words": [
+    {
+     "start": 84.38,
+     "end": 84.88,
+     "word": " 저는",
+     "probability": 0.9967
+    },
+    {
+     "start": 84.88,
+     "end": 85.1,
+     "word": " 그런",
+     "probability": 1.0
+    },
+    {
+     "start": 85.1,
+     "end": 85.6,
+     "word": " 사람도",
+     "probability": 0.9999
+    },
+    {
+     "start": 85.6,
+     "end": 85.86,
+     "word": " 아니고요",
+     "probability": 0.9994
+    }
+   ]
+  },
+  {
+   "start": 85.86,
+   "end": 90.1,
+   "text": " 그런 생각을 해본 적도 없고 총선이 저는 언젠지도 생각도 못하고 있었고요.",
+   "words": [
+    {
+     "start": 85.86,
+     "end": 86.04,
+     "word": " 그런",
+     "probability": 0.9878
+    },
+    {
+     "start": 86.04,
+     "end": 86.44,
+     "word": " 생각을",
+     "probability": 0.998
+    },
+    {
+     "start": 86.44,
+     "end": 86.72,
+     "word": " 해본",
+     "probability": 0.9815
+    },
+    {
+     "start": 86.72,
+     "end": 86.96,
+     "word": " 적도",
+     "probability": 0.9988
+    },
+    {
+     "start": 86.96,
+     "end": 87.18,
+     "word": " 없고",
+     "probability": 0.9996
+    },
+    {
+     "start": 87.18,
+     "end": 88.28,
+     "word": " 총선이",
+     "probability": 0.9708
+    },
+    {
+     "start": 88.28,
+     "end": 88.4,
+     "word": " 저는",
+     "probability": 0.9675
+    },
+    {
+     "start": 88.4,
+     "end": 88.92,
+     "word": " 언젠지도",
+     "probability": 0.9925
+    },
+    {
+     "start": 88.92,
+     "end": 89.42,
+     "word": " 생각도",
+     "probability": 0.9998
+    },
+    {
+     "start": 89.42,
+     "end": 89.74,
+     "word": " 못하고",
+     "probability": 0.9902
+    },
+    {
+     "start": 89.74,
+     "end": 90.1,
+     "word": " 있었고요.",
+     "probability": 0.9989
+    }
+   ]
+  },
+  {
+   "start": 90.44,
+   "end": 98.38,
+   "text": " 절대 그런 거 아니고 이거 정말 잘 되면 정말 나중에 하길 잘했다 하실 정도로 정말 좋은 일이 될 수 있습니다.",
+   "words": [
+    {
+     "start": 90.44,
+     "end": 90.98,
+     "word": " 절대",
+     "probability": 0.9992
+    },
+    {
+     "start": 90.98,
+     "end": 91.24,
+     "word": " 그런",
+     "probability": 1.0
+    },
+    {
+     "start": 91.24,
+     "end": 91.38,
+     "word": " 거",
+     "probability": 0.9977
+    },
+    {
+     "start": 91.38,
+     "end": 91.54,
+     "word": " 아니고",
+     "probability": 0.9906
+    },
+    {
+     "start": 91.54,
+     "end": 91.74,
+     "word": " 이거",
+     "probability": 0.921
+    },
+    {
+     "start": 91.74,
+     "end": 92.1,
+     "word": " 정말",
+     "probability": 1.0
+    },
+    {
+     "start": 92.1,
+     "end": 92.34,
+     "word": " 잘",
+     "probability": 0.956
+    },
+    {
+     "start": 92.34,
+     "end": 92.6,
+     "word": " 되면",
+     "probability": 0.9998
+    },
+    {
+     "start": 92.6,
+     "end": 94.86,
+     "word": " 정말",
+     "probability": 0.9975
+    },
+    {
+     "start": 94.86,
+     "end": 95.3,
+     "word": " 나중에",
+     "probability": 0.9996
+    },
+    {
+     "start": 95.3,
+     "end": 96.0,
+     "word": " 하길",
+     "probability": 0.8502
+    },
+    {
+     "start": 96.0,
+     "end": 96.38,
+     "word": " 잘했다",
+     "probability": 0.9993
+    },
+    {
+     "start": 96.38,
+     "end": 96.7,
+     "word": " 하실",
+     "probability": 0.9995
+    },
+    {
+     "start": 96.7,
+     "end": 96.96,
+     "word": " 정도로",
+     "probability": 1.0
+    },
+    {
+     "start": 96.96,
+     "end": 97.42,
+     "word": " 정말",
+     "probability": 0.9996
+    },
+    {
+     "start": 97.42,
+     "end": 97.76,
+     "word": " 좋은",
+     "probability": 1.0
+    },
+    {
+     "start": 97.76,
+     "end": 97.96,
+     "word": " 일이",
+     "probability": 0.9999
+    },
+    {
+     "start": 97.96,
+     "end": 98.12,
+     "word": " 될",
+     "probability": 0.9999
+    },
+    {
+     "start": 98.12,
+     "end": 98.2,
+     "word": " 수",
+     "probability": 1.0
+    },
+    {
+     "start": 98.2,
+     "end": 98.38,
+     "word": " 있습니다.",
+     "probability": 0.9994
+    }
+   ]
+  },
+  {
+   "start": 98.5,
+   "end": 99.66,
+   "text": " 진짜 믿으셨으면 좋겠습니다.",
+   "words": [
+    {
+     "start": 98.5,
+     "end": 98.72,
+     "word": " 진짜",
+     "probability": 0.9864
+    },
+    {
+     "start": 98.72,
+     "end": 99.36,
+     "word": " 믿으셨으면",
+     "probability": 0.8178
+    },
+    {
+     "start": 99.36,
+     "end": 99.66,
+     "word": " 좋겠습니다.",
+     "probability": 0.9999
+    }
+   ]
+  },
+  {
+   "start": 100.62,
+   "end": 101.6,
+   "text": " 네 수고하셨습니다.",
+   "words": [
+    {
+     "start": 100.62,
+     "end": 100.74,
+     "word": " 네",
+     "probability": 0.9636
+    },
+    {
+     "start": 100.74,
+     "end": 101.6,
+     "word": " 수고하셨습니다.",
+     "probability": 0.9633
+    }
+   ]
+  }
+ ]
+}

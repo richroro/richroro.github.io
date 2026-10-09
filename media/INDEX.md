@@ -43,6 +43,10 @@ Extra non-video files: `politics/{1,2,3}.vtt` + `.txt` (transcripts, see below),
   7. `7.mp4` 김의겸(민주) ↔ 노경필 처장, 법사위 10/6: "대법원장, '제청권'을 신성불가침처럼 여겨" (Upx-vN56U00, ~4.9k), 94 s
   8. `8.mp4` 곽규택(국민의힘) ↔ 노경필 처장, 법사위 10/6: "30년 동안 사법부 독립이 이렇게 흔들린 적 있었나?" (k1ho34TQu0o, ~4.8k), 83 s
   Party balance across 1–8: 민주 5, 국민의힘 3 (by views, not by choice).
+- **박진영 (문체위 10/7, official NA feed; picked by the most-viewed news coverage, not NATV):**
+  9. `9.mp4` 배현진(국민의힘) ↔ 박진영 대중문화교류위원장: "YG·SM·하이브에 빌었다… 몇백억 손해, 특혜 아니다". News clips of this moment: 3.64M (춘천MBC), 1.26M (채널A). 79 s.
+  10. `10.mp4` 김승수(국민의힘) ↔ 박진영: "연봉 20~30억, 오늘 하루 800만 원" / "대통령 위에 위에 분이 와도 우리나라를 위한 일 아니면 안 해요". 102 s.
+  11. `11.mp4` 최민희(민주) ↔ 박진영: "개인적으로 이득 취한 게 있나?" / "돈은 좀 많이 썼습니다" (the moment he chokes up). 95 s.
 - Heatmaps: YouTube has none for these clips yet (too new / too few views), so no most-replayed data exists. The windows were chosen from the title quote instead.
 - Transcripts: `3.vtt/3.txt` = official NA subtitles (국방위 session has them). `1.*`, `2.*` = machine transcript (faster-whisper small, uncorrected; e.g. "사법부동립" = 사법부 독립, "개청" = 제청). The 법사위 session has no subtitles and no 회의록 published yet.
 - `<n>.whisper.json` (all 8 clips): raw faster-whisper **large-v3** output (int8 CPU; language=ko, beam_size=5, vad_filter=False, word_timestamps=True, condition_on_previous_text=False), with segment and word times in seconds on the clip. Not hand-corrected; much more accurate than the `small` .txt/.vtt (e.g. 사법부 독립, 제청, 헌법상).
@@ -77,6 +81,8 @@ UK Parliament footage was not cut: its licence bans satire and entertainment use
 - `japan_2026-10.md`: what's trending in Japan (Billboard Japan, fall anime, memes, VTubers, TGS, travel stats), what works for Korean viewers, Japanese copyright/JASRAC and PDL open-data terms, 5 footage-free short ideas.
 - `overseas_hearings_2026-10.md`: 12 viral US/UK hearing exchanges, Jul–Oct 2026, with official video pages and licence rules.
 - `heartwarming_2026-10.md`: viral heartwarming stories of ordinary people overseas, who owns the clips, portrait rights, licensing agencies, and public-domain Coast Guard footage.
+- `speeches_2026-10.md`: 16 notable overseas speeches (UNGA 81, Trump July 4, etc.), UN Web TV / White House / OGL licence terms.
+- `public_domain_old_2026-10.md`: PD rules for the US and Korea (films: 70 years from publication in Korea; recordings: US pre-1926), 13 films and 11 recordings rated.
 - `sports_2026-10.md`: overseas football (Messi, Son, Ronaldo, World Cup 2026, Premier League) and NBA (LeBron to 76ers, Wembanyama, opening night 10/20) moments with sources; league copyright terms; 5 footage-free short ideas.
 
 ## Narration — `voice/<id>/`
