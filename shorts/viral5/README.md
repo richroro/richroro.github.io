@@ -701,3 +701,43 @@ MEDIA=<저장소>/media python3 politics/prep_split.py korea3   # korea4도 같�
 > 영상: 미국 국립문서기록관리청(NARA) 428-NPC-43612 (NAID 87540, 미 해군 촬영)
 > 음악: "Bathed in the Light" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
 > #가을걷이 #타작 #1969년 #시골풍경 #초가집 #소달구지 #옛날영상 #추억 #shorts
+
+## 초기 비행 쇼츠 (`politics/oldflight`, `politics/oldflight2`)
+
+1908~1925년에 찍힌 실제 기록영화로 만든 무성 쇼츠 두 편입니다. 소리가 없어서 한국어 자막(`"en": ""`)과 1926년 이전 녹음만 씁니다. 원본 클립은 `media/oldflight/`, 음악은 `media/oldmusic/`에 있고, 파일마다 `.json`에 제목·연도·제작·카탈로그 주소·파일 주소·자른 구간·권리 근거를 적었습니다.
+
+| id | 제목 | 길이 | 내용 |
+| --- | --- | --- | --- |
+| `oldflight` | 100년 전 비행기 발명 실패 모음 / 이게 날 거라고 믿었다고? 🤨 | 58.3초 | ① 프로펠러를 위로 잔뜩 단 회전날개 기계(먼지만 날리고 못 뜸) → ② 1920년대 베를리너 헬리콥터(1924년 최고 4.6m·1분 35초) → ③ 라이트 비행기: 말이 끌고, 프로펠러는 손으로, 레일 위에서 추를 떨어뜨려 발사 → ④ 1908년 프랑스, 윌버 라이트 |
+| `oldflight2` | 117년 전 첫 군용 비행기 시험 / 대통령은 구경, 전 대통령은 탑승?! ✈️ | 58.7초 | 1909년 7월 포트마이어: 격납고, 오빌 라이트와 프랭크 람 중위, 추 탑 이륙, 1시간 12분 2인 비행 세계 기록, 속도 시험 통과와 3만 달러 구입(‘통신대 1호’) → 1910년 10월 세인트루이스: 루스벨트 전 대통령이 “됐소”라더니 직접 타고 “Bully!” |
+
+```bash
+MEDIA=<저장소>/media python3 politics/prep_split.py oldflight    # oldflight2도 같음
+./render.sh oldflight
+```
+
+- 템플릿 코드는 바꾸지 않았습니다(`"frame": "film"`, `"audio": 0`, 번역 모드 자막만 사용). 원본은 모두 4:3 화면만 남기고 정사각 화소로 다시 인코딩했습니다(NARA 428-NPC 사본은 720x480 비정사각 화소·인터레이스라 `yadif`로 풀고 960x704로).
+- **사실 근거**: 1909 군용기(1909.7.27 오빌 라이트·람 중위 1시간 12분 40초, 7.30 포울루아 중위와 알렉산드리아 왕복 속도 시험 평균 시속 42.5마일, 2만 5천+5천 달러, ‘Signal Corps No. 1’, 세계 첫 군용 비행기)는 [NASM 1909 Wright Military Flyer](https://airandspace.si.edu/collection-objects/1909-wright-military-flyer/nasm_A19120001000); 태프트 대통령 참관은 [NARA 111-H-1185 설명](https://catalog.archives.gov/id/24690); 첫 비행 12초는 NASM; 베를리너 헬리콥터(1924.2.23 4.57m·1분 35초, 추력 부족으로 지면 효과를 못 벗어남)는 [NASM Berliner Helicopter, Model 1924](https://airandspace.si.edu/collection-objects/berliner-helicopter-model-1924/nasm_A19240006000); 루스벨트 비행(1910.10.11 킨로크 비행장, 라이트 시범비행단 아치 혹시, 100피트 미만, 전·현직 통틀어 처음 비행한 미국 대통령)은 [LOC 설명](https://www.loc.gov/item/mp76000114/)·[FAA](https://www.faa.gov/blog/clearedfortakeoff/oval-office-skies-us-presidents-aviation-age); “No, thank you. There are enough high-fliers up there already.”와 “Bully!”는 LOC 필름의 자막 그대로입니다. 라이트 비행기의 레일·추 발사, 말, 손으로 돌리는 프로펠러는 미 육군 항공대 필름의 자막과 화면 그대로입니다.
+- **확실하지 않아서 말을 줄인 것**: ① 회전날개 기계는 필름에도 카탈로그에도 이름·연도가 없어서 “제작자 미상”으로만 적었습니다(항공대 필름 자막: “라이트 복엽기의 라이벌로 나온 이상하고 다소 위험한 기계들”). ③의 말·레일 장면은 연도가 적혀 있지 않아 “1908년 무렵”(바로 다음 자막이 1908년 프랑스 시범)으로, ④는 항공대 필름의 1908년 10월 프랑스 자막을 따라 “1908 · 프랑스 · 윌버 라이트”로만 적고 특정 비행이라고 하지 않았습니다. NARA는 111-H-1185 일부가 1908년 시험일 수 있다고 했지만, 쓴 장면은 1909년 시험 비행 설명에 맞춰 1909로 표기했습니다. 베를리너 헬리콥터 영상은 NARA 설명상 1925년 볼링 필드 시험이라 라벨은 “1920년대”, 기록은 “1924년 최고 기록”으로 나눠 적었습니다.
+- **쓰지 않은 것**: 1908년 9월 17일 셀프리지 중위 사망 사고(화면도 언급도 없음), 사람이 다친 추락 장면, 브리티시 파테·게티·AP 사본과 유튜브 재업로드, 파테 뉴스 장면이 섞인 〈Make America First in the Air〉(342-USAF-17686). 1880~1900년대 날갯짓 비행기(오니솝터)·접히는 기계 같은 유명한 실패 장면은 대부분 파테·고몽 뉴스릴이라 쓸 수 있는 사본을 찾지 못했습니다.
+- **권리**: NARA 16-P·111-H 릴에는 “Restricted – Possibly”(“일부 저작권이 있을 수 있음”이라는 일반 문구) 표시가 있지만, 쓴 장면은 모두 미국 정부가 찍었거나(17 U.S.C. §105) 1926년 이전에 공개된 영상이라 미국에서 퍼블릭 도메인이고, 한국에서도 공표 후 70년이 지났습니다. 428-NPC-28731은 1929~30년경 육군 항공대가 엮은 정부 제작물이고(“Undetermined”), 안의 장면은 1908~1915년 것입니다. 음악 두 곡은 1926년 이전 녹음(미국 Music Modernization Act로 퍼블릭 도메인)입니다.
+
+**출처**
+- [NARA 16-P-1316-1 (NAID 2038) 〈Wright Brothers' Flight〉](https://catalog.archives.gov/id/2038) 1909.7.27 포트마이어, 미 농무부 — [MP4](https://catalog.archives.gov/medialz/mopix/016/16-P/16-p-1316-1.mp4)
+- [NARA 111-H-1185 (NAID 24690) 〈First Army Aeroplane Flight, Fort Myer, Virginia〉](https://catalog.archives.gov/id/24690) 1909, 미 육군 통신대 — [MP4](https://catalog.archives.gov/medialz/mopix/111/h/111-h-1185_5Mbps.mp4), [NARA 블로그](https://unwritten-record.blogs.archives.gov/2022/09/01/the-wright-military-flyer-soars-on-celluloid-uncovering-the-story-of-our-oldest-government-film/)
+- [NARA 111-H-1186 (NAID 24691) 〈Aviation, Historical, since 1919〉 1권](https://catalog.archives.gov/id/24691) 베를리너 헬리콥터 1925, 미 육군 통신대 — [MP4](https://catalog.archives.gov/medialz/mopix/111/h/111-h-1186-r1_5Mbps.mp4)
+- [NARA 428-NPC-28731 (NAID 83219) 〈Pre-War I Air Force Outtakes〉](https://catalog.archives.gov/id/83219) 미 육군 항공대 편집, 1908~1915년 장면 — [MP4](https://catalog.archives.gov/medialz/mopix/428/NPC/428-npc-28731.mp4)
+- [미 의회도서관 〈Colonel Roosevelt is invited to fly in Arch Hoxsey's plane at St. Louis, Mo., 1910〉](https://www.loc.gov/item/mp76000114/) Theodore Roosevelt Association Collection — [MP4](https://tile.loc.gov/storage-services/service/mbrs/ntscrm/01203936/01203936.mp4) (앞의 “Preserved by” 카드는 잘라냄)
+- 음악: "Come Josephine in My Flying Machine" Blanche Ring (Victor 60032, 1910년 12월 녹음) — [archive.org](https://archive.org/details/comeJosephineInMyFlyingMachine) (oldflight); "The Rifle Regiment" (Sousa) United States Marine Band (Victor, 1921) — [LOC National Jukebox](https://www.loc.gov/item/jukebox-40962/) / [archive.org](https://archive.org/details/loc-jukebox-40962-the-rifle-regiment) (oldflight2)
+
+**oldflight** — 100년 전 비행기 발명 실패 모음 ✈️ (이게 날 거라고 믿었다고?)
+> 프로펠러를 위로 잔뜩 달았지만 먼지만 날린 기계, 4.6m 높이에서 더 오르지 못한 1920년대 헬리콥터, 그리고 성공한 라이트 비행기조차 말이 끌고, 프로펠러를 손으로 돌리고, 탑에서 추를 떨어뜨려 쏘아 올려야 했던 시절. 1903년 12초였던 첫 비행이 5년 만에 유럽 하늘을 날기까지. 모두 100년 넘은 실제 기록영화입니다.
+> 영상: 미국 국립문서기록관리청(NARA) 428-NPC-28731, 111-H-1186, 16-P-1316-1 — 미 육군·미 농무부 촬영
+> 음악: "Come Josephine in My Flying Machine" Blanche Ring (Victor, 1910)
+> #비행기 #라이트형제 #옛날영상 #발명 #실패 #헬리콥터 #역사 #shorts
+
+**oldflight2** — 117년 전 첫 군용 비행기 시험 ✈️ 대통령은 구경, 전 대통령은 탑승?!
+> 1909년 7월, 미국 버지니아 포트마이어. 오빌 라이트가 프랭크 람 중위를 태우고 1시간 12분을 날아 2인 비행 세계 기록을 세웠고, 사흘 뒤 속도 시험까지 통과한 이 비행기를 미 육군이 3만 달러에 사들였습니다. 세계 첫 군용 비행기 ‘통신대 1호’. 그리고 이듬해, “하늘엔 허풍선이가 이미 많다”며 사양하던 시어도어 루스벨트 전 대통령이 결국 직접 타고 내려와 한 말: “Bully!”
+> 영상: 미국 국립문서기록관리청(NARA) 16-P-1316-1, 111-H-1185 · 미국 의회도서관(Library of Congress, Motion Picture, Broadcasting, and Recorded Sound Division)
+> 음악: "The Rifle Regiment" (J. P. Sousa) United States Marine Band (Victor, 1921) — 미국 의회도서관 National Jukebox
+> #라이트형제 #비행기 #루스벨트 #옛날영상 #미국역사 #항공 #역사 #shorts
