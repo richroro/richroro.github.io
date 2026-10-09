@@ -82,6 +82,7 @@ US Senate committee hearings cut from the Senate's own streaming archive (www-se
 - `us4_schmitt_smith_hawks.mp4` (110 s): Schmitt ↔ Jack Smith, "Atlanta Hawks game?", Judiciary, 9/29
 - `us5_peters_hegseth_failure.mp4` (102 s): Peters ↔ Hegseth, "You, sir, are the failure", Appropriations, 7/21
 - `us6_booker_patel.mp4` (81 s): Booker ↔ FBI Director Patel, "You can say whatever lies you want", Judiciary, 9/15
+- `<name>.cc.vtt`: verbatim Senate closed captions (live roll-up, uncorrected) from the HLS subs track, shifted so 0 = cut_in. They trail the audio by about 6–7 s.
 UK Parliament footage was not cut: its licence bans satire and entertainment use, and commercial use needs a separate licence.
 
 ## NASA Artemis II — `nasa/` (US government work; NASA media guidelines)
