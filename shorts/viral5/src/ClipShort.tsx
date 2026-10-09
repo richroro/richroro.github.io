@@ -16,6 +16,8 @@ export type Clip = {
   frame: "square" | "wide" | "full"; zoom: [number, number]; focus: string; audio: number;
   /** face-centred crop: (cx, cy) in 0..1 of the source frame, zoom over a plain cover fit, source size */
   crop?: { cx: number; cy: number; zoom: number; w: number; h: number };
+  /** this clip's own credit line, shown instead of the short's while it is on screen */
+  credit?: string;
 };
 /** one person of a side-by-side two-shot: (cx, cy) is their face in 0..1 of the whole source frame, [x0, x1] their half */
 export type Panel = { name: string; role: string; cx: number; cy: number; zoom: number; x0: number; x1: number };
@@ -142,9 +144,9 @@ const Title: React.FC<{ d: ShortData }> = ({ d }) => {
   );
 };
 
-const Credit: React.FC<{ d: ShortData }> = ({ d }) => (
+const Credit: React.FC<{ d: ShortData; t: number }> = ({ d, t }) => (
   <div style={{ position: "absolute", right: 24, top: 414, fontFamily: BODY, fontWeight: 700, fontSize: 26, color: "rgba(255,255,255,.85)",
-    background: "rgba(0,0,0,.45)", borderRadius: 12, padding: "6px 14px" }}>{d.credit}</div>
+    background: "rgba(0,0,0,.45)", borderRadius: 12, padding: "6px 14px" }}>{d.clips.find((c) => t >= c.at && t < c.at + c.dur)?.credit ?? d.credit}</div>
 );
 
 export const ClipShort: React.FC<{ data: ShortData }> = ({ data: d }) => {
@@ -165,7 +167,7 @@ export const ClipShort: React.FC<{ data: ShortData }> = ({ data: d }) => {
       ))}
       <AbsoluteFill style={{ background: "linear-gradient(to bottom, rgba(0,0,0,.75) 0%, rgba(0,0,0,0) 22%, rgba(0,0,0,0) 62%, rgba(0,0,0,.65) 80%, rgba(0,0,0,.2) 100%)" }} />
       <Title d={d} />
-      <Credit d={d} />
+      <Credit d={d} t={t} />
       {d.stickers.map((s, i) => (
         <Sticker key={i} t={t} t0={s.from} t1={s.to} x={s.x} y={s.y} rot={s.rot} bg={s.bg} fg={s.fg} size={s.size}>{s.text}</Sticker>
       ))}
