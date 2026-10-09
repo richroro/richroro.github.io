@@ -116,11 +116,11 @@ MEDIA=<원본 폴더> python3 politics/prep_split.py ustariff    # lines에 "ko"
 
 | id | 제목 | 길이 | 내용 |
 | --- | --- | --- | --- |
-| `fatbear` | 곰 살찌우기 대회 🐻 / 역대 챔피언 비포·애프터 | 57.3초 | 164번 ‘버키’ 2026년 6월 → 늦여름, 대회 소개, 겨울잠과 연어, 747(“비포도 이미 뚱뚱”), 480 오티스 4회 우승, 128 그레이저 2연패, 32 청크(부러진 턱으로 2025 우승), 작년 투표 수 |
-| `fatbear2` | 곰 살찌우기 대회 시즌 🐟 / 곰이 연어 잡는 법 3가지 | 52.5초 | 브룩스 폭포, 폭포 꼭대기 ‘립 피셔’(그레이저), 폭포 아래 앉아 실패한 연어 줍기(버키), 물속에 머리 박기·자리싸움, 곰 목걸이 카메라(가자미·다른 곰), 89번 ‘백팩’ 별명 유래 |
+| `fatbear` | 곰 살찌우기 대회 🐻 / 역대 챔피언 비포·애프터 | 57.3초 | 164번 ‘버키’ 2026년 6월 → 늦여름, 대회 소개, 겨울잠과 연어, 747(“비포도 이미 뚱뚱”), 480 오티스 4회 우승, 128 그레이저 2연패, 32 청크(부러진 턱으로 2025 우승), 작년 투표 수, 2026 챔피언 스티커 |
+| `fatbear2` | 곰 살찌우기 대회 시즌 🐟 / 곰이 연어 잡는 법 3가지 | 52.5초 | 브룩스 폭포, 폭포 꼭대기 ‘립 피셔’(그레이저), 폭포 아래 앉아 실패한 연어 줍기(버키), 물속에 머리 박기·자리싸움, 곰 목걸이 카메라(가자미·다른 곰), 89번 ‘백팩’ 별명 유래와 2026 우승 스티커 |
 
-- **2026년 우승 곰은 영상에 넣지 않았습니다.** 언론(CBS·Fox 등, explore.org 집계 인용)은 9월 29일 결승에서 89번 ‘백팩’이 910번을 이겼다고 보도했지만, 2026-10-09 기준 NPS 사이트(명예의 전당 페이지·보도자료·NPS API 뉴스 목록)에는 아직 2026년 결과가 없습니다. NPS가 발표하면 `fatbear2`의 백팩 대목이나 `fatbear` 끝에 한 줄을 더하면 됩니다.
-- 사실은 모두 NPS 페이지 기준입니다: 역대 우승(2014 오티스, 2015 409 ‘비드노즈’, 2016·2017 오티스, 2018 409, 2019 435 홀리, 2020 747, 2021 오티스, 2022 747, 2023·2024 128 그레이저, 2025 32 청크), 2014년 하루짜리 ‘팻 베어 튜즈데이’로 시작, 겨울잠 동안 몸무게 최대 3분의 1 감소, 연어는 대략 6월 말~9월, ‘사람보다 갈색곰이 많은 곳’([Fat Bear Week: Past and Present](https://www.nps.gov/katm/learn/nature/fat-bear-week-past-and-present.htm)); 2026년 9월 22~29일, 작년 100여 개국 170만 표 이상([NPS 보도자료 2026.9.11](https://www.nps.gov/katm/learn/news/fat-bear-week-2026.htm)); 그레이저는 ‘립 피셔’·새끼 3번 출산([128](https://www.nps.gov/katm/bear-128-grazer.htm)); 청크는 2025년 초여름 부러진 턱으로 돌아왔지만 살을 찌움([32](https://www.nps.gov/katm/bear-32-chunk.htm)); 버키는 폭포 아래 앉아 점프에 실패한 연어를 잡고, 2026년 브룩스강 최강자([164](https://www.nps.gov/katm/bear-164-bucky.htm)); 백팩은 새끼 때 발을 다쳐 어미 등에 업혀 다녀서 생긴 별명([89](https://www.nps.gov/articles/000/bear-89-backpack.htm)).
+- **2026년 우승: 89번 ‘백팩’** — 내레이션은 그대로 두고 스티커로만 넣었습니다(`fatbear` 끝, `fatbear2`의 백팩 대목과 끝). 근거: explore.org [Fat Bear Week 결과표](https://explore.org/fat-bear-week) 9월 29일 결승 “89 Backpack: 103,334 / 910: 98,253”(전체 2,503,731표), [CBS News 2026.9.29](https://www.cbsnews.com/news/fat-bear-week-2026-winner-backpack/)(같은 득표 수, “according to Explore.org”), [UPI 2026.9.30](https://www.upi.com/Odd_News/2026/09/30/fat-bear-week-katmai-national-park-backpack-winner/1461790779913/)(카트마이 국립공원 페이스북 발표 인용). 2026-10-09 기준 NPS 웹사이트(명예의 전당·보도자료)에는 아직 2026년 결과가 없습니다. 백팩의 늦여름 사진은 explore.org 사진이라 계속 쓰지 않았습니다.
+- 2026년 우승 외의 사실은 모두 NPS 페이지 기준입니다: 역대 우승(2014 오티스, 2015 409 ‘비드노즈’, 2016·2017 오티스, 2018 409, 2019 435 홀리, 2020 747, 2021 오티스, 2022 747, 2023·2024 128 그레이저, 2025 32 청크), 2014년 하루짜리 ‘팻 베어 튜즈데이’로 시작, 겨울잠 동안 몸무게 최대 3분의 1 감소, 연어는 대략 6월 말~9월, ‘사람보다 갈색곰이 많은 곳’([Fat Bear Week: Past and Present](https://www.nps.gov/katm/learn/nature/fat-bear-week-past-and-present.htm)); 2026년 9월 22~29일, 작년 100여 개국 170만 표 이상([NPS 보도자료 2026.9.11](https://www.nps.gov/katm/learn/news/fat-bear-week-2026.htm)); 그레이저는 ‘립 피셔’·새끼 3번 출산([128](https://www.nps.gov/katm/bear-128-grazer.htm)); 청크는 2025년 초여름 부러진 턱으로 돌아왔지만 살을 찌움([32](https://www.nps.gov/katm/bear-32-chunk.htm)); 버키는 폭포 아래 앉아 점프에 실패한 연어를 잡고, 2026년 브룩스강 최강자([164](https://www.nps.gov/katm/bear-164-bucky.htm)); 백팩은 새끼 때 발을 다쳐 어미 등에 업혀 다녀서 생긴 별명([89](https://www.nps.gov/articles/000/bear-89-backpack.htm)).
 - ‘747 = 점보 제트기’는 번호를 두고 한 농담이고, 747의 ‘비포’ 사진이 이미 뚱뚱한 것은 NPS 페이지 사진 그대로입니다(대체 텍스트도 “already, honestly, quite fat”). 그레이저의 비포(2024)와 애프터(2023)는 연도가 달라서 스티커로 연도를 밝혔습니다. 오티스는 비포 사진이 NPS 사진이 아니라(Courtesy N. Boak) 애프터만 썼습니다.
 - **explore.org 웹캠 영상·사진은 쓰지 않았습니다.** NPS 페이지에 같이 실린 “Courtesy of explore.org”, “Courtesy ○○” 사진도 뺐습니다.
 - 영상 원본: [Brooks Camp Bear School 101](https://www.nps.gov/media/video/view.htm?id=D3EB8991-E1A2-4A2A-9A98-2F1C45991B0E) (NPS, 제작 Katmai NP & Harpers Ferry Center; 원본 음악은 Musicbed·Shutterstock 라이선스 음악이라 소리는 쓰지 않음), [Katmai Virtual Field Trip](https://www.nps.gov/media/video/view.htm?id=5E5C2E41-E0D4-44AD-B8D1-13596483B3F5) (NPS Video By T. Vaughn and J. Pfeiffenberger), 곰 목걸이 카메라 [Eating Flounder](https://www.nps.gov/media/video/view.htm?id=D8836D8B-7778-4896-B872-A541BC6D88FA)·[Bear Encounter](https://www.nps.gov/media/video/view.htm?id=3C759EC8-D2D1-4CF0-ADAA-D2EAC1214DFE) (NPS ‘Changing Tides’ 연구, 2015).
@@ -128,12 +128,12 @@ MEDIA=<원본 폴더> python3 politics/prep_split.py ustariff    # lines에 "ko"
 - 사진은 `ffmpeg -loop 1`로 10초짜리 mp4를 만들어 영상처럼 넣었고, 얼굴 확대는 기존 `crop` 기능을 그대로 썼습니다(템플릿 변경 없음). 원본·사진과 각 파일의 출처 JSON은 `media/fatbear/`, 목소리는 `media/voice/fatbear*/`.
 
 **fatbear** — 곰 살찌우기 대회 🐻 역대 챔피언 비포·애프터
-> 알래스카 카트마이 국립공원의 ‘팻 베어 위크’는 겨울잠 준비를 가장 잘한(=가장 살찐) 곰을 전 세계 투표로 뽑는 대회입니다. 2026년 대회는 9월 22~29일. 두 번 우승한 747, 최다 4회 우승 오티스, 2연패 엄마 곰 그레이저, 부러진 턱으로도 2025년 우승한 청크까지 — 역대 챔피언의 비포·애프터를 모았습니다. 여러분의 원픽은? 영상·사진: 미국 국립공원관리청(NPS) (NPS가 이 영상을 보증하거나 후원하지 않습니다.)
+> 알래스카 카트마이 국립공원의 ‘팻 베어 위크’는 겨울잠 준비를 가장 잘한(=가장 살찐) 곰을 전 세계 투표로 뽑는 대회입니다. 2026년 대회는 9월 22~29일. 두 번 우승한 747, 최다 4회 우승 오티스, 2연패 엄마 곰 그레이저, 부러진 턱으로도 2025년 우승한 청크까지 — 역대 챔피언의 비포·애프터를 모았습니다. 2026년 챔피언은 89번 ‘백팩’(explore.org 발표)! 여러분의 원픽은? 영상·사진: 미국 국립공원관리청(NPS) (NPS가 이 영상을 보증하거나 후원하지 않습니다.)
 > 음악: "Monkeys Spinning Monkeys" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
 > #팻베어위크 #FatBearWeek #곰 #알래스카 #국립공원 #shorts
 
 **fatbear2** — 곰이 연어 잡는 법 3가지 🐟 (곰 살찌우기 대회 시즌)
-> 알래스카 카트마이 국립공원 브룩스 폭포의 곰들은 연어를 이렇게 잡습니다. ① 폭포 꼭대기에서 입 벌리고 기다리기 ② 폭포 아래 앉아 점프에 실패한 연어 줍기 ③ 물속에 머리 박기. 곰 목걸이 카메라로 본 시점과, 새끼 때 엄마 등에 업혀 다녀서 별명이 ‘백팩’이 된 89번 곰 이야기까지. 영상·사진: 미국 국립공원관리청(NPS) (NPS가 이 영상을 보증하거나 후원하지 않습니다.)
+> 알래스카 카트마이 국립공원 브룩스 폭포의 곰들은 연어를 이렇게 잡습니다. ① 폭포 꼭대기에서 입 벌리고 기다리기 ② 폭포 아래 앉아 점프에 실패한 연어 줍기 ③ 물속에 머리 박기. 곰 목걸이 카메라로 본 시점과, 새끼 때 엄마 등에 업혀 다녀서 별명이 ‘백팩’이 된 89번 곰 — 2026년 팻 베어 위크 챔피언(explore.org 발표) — 이야기까지. 영상·사진: 미국 국립공원관리청(NPS) (NPS가 이 영상을 보증하거나 후원하지 않습니다.)
 > 음악: "Scheming Weasel (faster version)" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
 > #팻베어위크 #FatBearWeek #곰 #연어 #알래스카 #shorts
 
