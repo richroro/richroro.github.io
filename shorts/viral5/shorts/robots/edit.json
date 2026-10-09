@@ -1,0 +1,368 @@
+{
+ "credit": "영상: NASA",
+ "sources": {
+  "ing": {
+   "file": "ing.mp4",
+   "credit": "영상: NASA/JPL-Caltech",
+   "label": "Ingenuity Mars Helicopter's Record-Breaking Flight (Flight 25 navigation camera, sped up ~5x)",
+   "url": "https://images.nasa.gov/details/JPL-20220527-M2020f-0001-NASAs_Ingenuity_Mars_Helicopter_Captures_Video_of_Record_Flight2"
+  },
+  "eels": {
+   "file": "eels.mp4",
+   "credit": "영상: NASA/JPL-Caltech",
+   "label": "Testing Out JPL's New Snake Robot (EELS)",
+   "url": "https://images.nasa.gov/details/JPL-20240508-EELSf-0002-Testing%20Out%20JPLs%20New%20Snake%20Robot"
+  },
+  "roam": {
+   "file": "roam.mp4",
+   "credit": "영상: NASA",
+   "label": "Space to Ground: Flying Robots in Space, 2022-02-04 (58-90 s: Astrobee on the ISS, ROAM tests)",
+   "url": "https://images.nasa.gov/details/jcs2022m000007_Space%20to%20Ground_407_220204"
+  },
+  "isaac": {
+   "file": "isaac.mp4",
+   "credit": "영상: NASA/Ames",
+   "label": "Can Robots Take Care of Spacecraft? (ISAAC demo with Astrobee Bumble on the ISS, first 66 s)",
+   "url": "https://images.nasa.gov/details/ARC-20210810-AAV3354-ISAAC-Astrobee-NASAWeb-1080p"
+  },
+  "r2": {
+   "file": "r2.mp4",
+   "credit": "영상: NASA",
+   "label": "Robonaut 2 prepared for launch on STS-133, KSC 2010 (18-180 s, letterbox cropped)",
+   "url": "https://images.nasa.gov/details/ksc_082710_robonaut"
+  },
+  "r1": {
+   "file": "r1.mp4",
+   "credit": "영상: NASA",
+   "label": "NASA mission feature: Robonaut's first steps, JSC 2004 (pillarbox cropped)",
+   "url": "https://images.nasa.gov/details/ksc_081704_robonaut"
+  }
+ },
+ "clips": [
+  {
+   "src": "eels",
+   "from": "hook",
+   "in": 116.5,
+   "label": "눈 위를 기어가는 EELS",
+   "zoom": [
+    1.02,
+    1.1
+   ]
+  },
+  {
+   "src": "r2",
+   "from": "hook.하나같이",
+   "in": 92.5,
+   "label": "팔을 드는 로보넛 2",
+   "crop": [
+    0.5,
+    0.45,
+    1.0
+   ],
+   "zoom": [
+    1.0,
+    1.08
+   ]
+  },
+  {
+   "src": "ing",
+   "from": "heli",
+   "in": 5.0,
+   "label": "인저뉴어티 항법 카메라 (5배속)",
+   "audio": 0.0,
+   "zoom": [
+    1.0,
+    1.06
+   ]
+  },
+  {
+   "src": "ing",
+   "from": "cam",
+   "in": 12.6,
+   "label": "모래 물결 위를 나는 중",
+   "audio": 0.0,
+   "zoom": [
+    1.0,
+    1.06
+   ]
+  },
+  {
+   "src": "ing",
+   "from": "plan",
+   "in": 28.3,
+   "label": "착륙하며 보이는 헬기 그림자",
+   "audio": 0.0,
+   "zoom": [
+    1.0,
+    1.08
+   ]
+  },
+  {
+   "src": "eels",
+   "from": "eels",
+   "in": 36.5,
+   "label": "모래 위를 기어가는 EELS",
+   "crop": [
+    0.5,
+    0.62,
+    1.3
+   ]
+  },
+  {
+   "src": "eels",
+   "from": "eels.길이",
+   "in": 30.0,
+   "label": "눈밭의 EELS 전체 모습",
+   "crop": [
+    0.45,
+    0.62,
+    1.3
+   ]
+  },
+  {
+   "src": "eels",
+   "from": "moon",
+   "in": 110.6,
+   "label": "엔셀라두스",
+   "audio": 0.0,
+   "crop": [
+    0.5,
+    0.62,
+    1.5
+   ]
+  },
+  {
+   "src": "eels",
+   "from": "moon.생명체",
+   "in": 86.5,
+   "label": "빙하 구멍으로 내려가는 EELS 머리 센서",
+   "crop": [
+    0.5,
+    0.6,
+    1.25
+   ]
+  },
+  {
+   "src": "roam",
+   "from": "bee",
+   "in": 13.8,
+   "label": "ISS 안을 날아다니는 아스트로비",
+   "audio": 0.0,
+   "zoom": [
+    1.0,
+    1.08
+   ]
+  },
+  {
+   "src": "roam",
+   "from": "bee.전기",
+   "in": 18.0,
+   "label": "아스트로비 클로즈업",
+   "audio": 0.0,
+   "zoom": [
+    1.04,
+    1.12
+   ]
+  },
+  {
+   "src": "isaac",
+   "from": "sock",
+   "in": 44.2,
+   "label": "출동하는 범블",
+   "audio": 0.0,
+   "crop": [
+    0.4,
+    0.4,
+    1.3
+   ]
+  },
+  {
+   "src": "isaac",
+   "from": "sock.찾아낸",
+   "in": 57.6,
+   "label": "범블 카메라 화면",
+   "audio": 0.0,
+   "crop": [
+    0.55,
+    0.42,
+    1.3
+   ]
+  },
+  {
+   "src": "isaac",
+   "from": "sock.환기구",
+   "in": 62.0,
+   "label": "환기구를 막은 '양말'",
+   "audio": 0.0,
+   "crop": [
+    0.47,
+    0.42,
+    1.35
+   ]
+  },
+  {
+   "src": "r2",
+   "from": "r2",
+   "in": 12.5,
+   "label": "로보넛 2 (2010, 발사 준비)",
+   "crop": [
+    0.5,
+    0.45,
+    1.0
+   ],
+   "zoom": [
+    1.0,
+    1.06
+   ]
+  },
+  {
+   "src": "r2",
+   "from": "r2.로보넛",
+   "in": 147.0,
+   "label": "손을 흔드는 로보넛 2",
+   "crop": [
+    0.5,
+    0.45,
+    1.0
+   ],
+   "zoom": [
+    1.0,
+    1.06
+   ]
+  },
+  {
+   "src": "r1",
+   "from": "segway",
+   "in": 13.0,
+   "label": "손잡이를 짚고 이동하는 로보넛 (2004)",
+   "audio": 0.0,
+   "zoom": [
+    1.0,
+    1.05
+   ]
+  },
+  {
+   "src": "r1",
+   "from": "segway.세그웨이",
+   "in": 31.6,
+   "label": "세그웨이를 탄 로보넛 (2004)",
+   "audio": 0.0,
+   "zoom": [
+    1.0,
+    1.05
+   ]
+  }
+ ],
+ "moments": [],
+ "stickers": [
+  {
+   "text": "화성에서 헬기가 직접 찍은 영상 · 5배속",
+   "from": "heli.무게",
+   "to": "plan-0.1",
+   "y": 560
+  },
+  {
+   "text": "2021년 4월 첫 비행 → 2024년 1월 마지막 비행",
+   "from": "plan",
+   "to": "eels-0.1",
+   "y": 560
+  },
+  {
+   "text": "캐나다 빙하 구멍 테스트",
+   "from": "moon.생명체+0.1",
+   "to": "bee-0.1",
+   "y": 560
+  },
+  {
+   "text": "실제 국제우주정거장(ISS) 영상",
+   "from": "bee",
+   "to": "sock-0.1",
+   "y": 560
+  },
+  {
+   "text": "※ 훈련 상황 · 양말은 그림 😇",
+   "from": "sock.양말+0.3",
+   "to": "r2-0.1",
+   "y": 1180,
+   "rot": -4,
+   "bg": "#FF4D6D",
+   "fg": "#FFFFFF",
+   "size": 56
+  },
+  {
+   "text": "2011년 2월 우주왕복선 디스커버리호로 발사",
+   "from": "r2+0.2",
+   "to": "segway-0.1",
+   "y": 560
+  },
+  {
+   "text": "실화 · 2004년 NASA 존슨우주센터",
+   "from": "segway.세그웨이+0.3",
+   "to": "segway@end+1.3",
+   "y": 1180,
+   "rot": -4,
+   "bg": "#FF4D6D",
+   "fg": "#FFFFFF",
+   "size": 56
+  }
+ ],
+ "sfx": [
+  [
+   "hook.하나같이",
+   "whoosh",
+   0.35
+  ],
+  [
+   "heli",
+   "k_maximize_003",
+   0.4
+  ],
+  [
+   "plan.번이나",
+   "ding",
+   0.45
+  ],
+  [
+   "eels",
+   "whoosh",
+   0.35
+  ],
+  [
+   "bee",
+   "k_maximize_003",
+   0.4
+  ],
+  [
+   "sock",
+   "k_error_003",
+   0.4
+  ],
+  [
+   "sock.양말",
+   "boing",
+   0.5
+  ],
+  [
+   "r2",
+   "whoosh",
+   0.35
+  ],
+  [
+   "segway.세그웨이",
+   "scratch",
+   0.45
+  ]
+ ],
+ "punches": [
+  "hook.정상이",
+  "plan.번이나",
+  "sock.양말",
+  "segway.세그웨이"
+ ],
+ "flashes": [],
+ "music": {
+  "file": "music/sneaky_snitch.mp3",
+  "gain": 0.22,
+  "start": 0
+ }
+}

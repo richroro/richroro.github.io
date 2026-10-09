@@ -144,6 +144,7 @@ def prep(sid):
             file = f"{sid}/clips/c{i:02d}.mp4"
         clip = {"file": file, "label": c.get("label", c["src"]), "at": round(a, 3), "dur": round(b - a, 3), "speed": speed,
                 "frame": c.get("frame", "square"), "zoom": c.get("zoom", [1.04, 1.12]), "focus": c.get("focus", "50% 50%"), "audio": c.get("audio", 0.12)}
+        if c.get("credit", s.get("credit")): clip["credit"] = c.get("credit", s.get("credit"))  # per-source credit line (else the short's)
         if c.get("crop") and os.path.exists(srcf):  # [cx, cy, zoom]: aim at one panel of a split-screen source
             wh = subprocess.run(["ffprobe", "-v", "error", "-select_streams", "v:0", "-show_entries", "stream=width,height", "-of", "csv=p=0", srcf],
                                 stdout=subprocess.PIPE, text=True, check=True).stdout.strip().split(",")
