@@ -12,7 +12,8 @@ The layout change is mechanical:
   - every sticker comes off the picture (its text goes in the upload description); the spec can keep a short truth
     note as a small corner tag instead ("tags").
 The spec says what is new: "title", "lines" (replace a line by id; "after": id inserts a new one), "drop": [line ids],
-"cover", "tags", "clips" ({index: fields to set}, "insert": [[index, clip]]), "marks" (replace them, new coordinates),
+"cover", "tags", "clips" ({index: fields to set}, "insert": [[index, clip]]), "clipsReplace" (a whole new clip list),
+"sources" (add or replace), "dropSources", "marks" (replace them, new coordinates),
 "voices", "sfx", "punches", "music".
 """
 import copy, json, os, subprocess, sys
@@ -88,6 +89,8 @@ def main(sid):
             m["x"], m["y"] = round(l1 + u * S1), round(400 + t1 + v * S1)
             if "r" in m: m["r"] = round(m["r"] * S1 / S0)
     for c in edit["clips"]: c.pop("_wh", None)
+    if "clipsReplace" in spec: edit["clips"] = spec["clipsReplace"]
+    for k in spec.get("dropSources", []): edit["sources"].pop(k, None)
     for k, v in spec.get("clips", {}).items():
         if v is None: edit["clips"][int(k)] = None
         else: edit["clips"][int(k)].update(v)
