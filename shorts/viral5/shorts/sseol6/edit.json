@@ -10,69 +10,64 @@
  },
  "sfx": [
   [
-   "a.뒤꿈치",
+   "a.사탕을",
    "pop",
    0.3
   ],
   [
-   "b",
-   "boing",
-   0.3
-  ],
-  [
-   "c.사라졌다",
-   "k_error_003",
-   0.3
-  ],
-  [
-   "d.돌아와",
+   "b.몰래",
    "pop_hi",
    0.3
   ],
   [
-   "e",
-   "heartbeat",
-   0.4
-  ],
-  [
-   "f.병장님",
-   "k_glitch_002",
-   0.3
-  ],
-  [
-   "g",
+   "c.소문이",
    "k_question_001",
    0.3
   ],
   [
-   "h",
-   "whoosh",
-   0.3
-  ],
-  [
-   "h.쪽지가",
-   "pop",
-   0.3
-  ],
-  [
-   "j",
+   "d",
    "bubble",
    0.3
   ],
   [
-   "k",
+   "e",
+   "bubble",
+   0.3
+  ],
+  [
+   "f",
+   "whoosh",
+   0.3
+  ],
+  [
+   "g",
+   "boing",
+   0.3
+  ],
+  [
+   "h.길어지시더라고요",
+   "k_error_003",
+   0.3
+  ],
+  [
+   "i.거른",
    "ding",
    0.3
   ],
   [
-   "l.이백팔십",
+   "j.십",
+   "tada",
+   0.35
+  ],
+  [
+   "k.끝",
    "pop_hi",
    0.35
   ],
   [
-   "m.이백팔십이",
-   "boing",
-   0.4
+   "l.팀",
+   "coin",
+   0.3
   ]
  ],
  "clips": [
@@ -81,308 +76,293 @@
    "label": "post",
    "gfx": {
     "type": "post",
-    "title": "말년 병장이 매일 밤 [내 전투화]를 가져감",
+    "title": "신입이 매일 아침 팀장님 책상에 [사탕]을 둠",
     "body": [
-     "이병 때 새 전투화가",
-     "너무 [딱딱해서]..."
+     "아무도 없는 시간에",
+     "[몰래] 하나씩..."
     ],
     "steps": [
-     "a.새",
-     "a.딱딱해서"
+     "a.매일",
+     "a.사탕을"
     ]
    }
   },
   {
-   "from": "a.뒤꿈치",
-   "label": "heel",
+   "from": "b",
+   "label": "sneak",
    "gfx": {
     "type": "scene",
     "chars": [
      {
-      "name": "나",
-      "mood": "sick",
-      "hat": "🪖"
+      "name": "신입",
+      "mood": "shy",
+      "color": "#FFB36B"
      }
     ],
-    "place": "📍 이병 시절",
-    "prop": "🥾",
+    "place": "📍 아침 사무실",
+    "prop": "🍬",
     "steps": [
      0,
      0.1
     ],
-    "bg": "army",
-    "sign": "생활관"
-   }
-  },
-  {
-   "from": "b",
-   "label": "ouch",
-   "gfx": {
-    "type": "scene",
-    "chars": [
-     {
-      "name": "나",
-      "mood": "cry",
-      "hat": "🪖"
-     }
-    ],
-    "prop": "🔥",
-    "say": {
-     "who": 0,
-     "text": "아으... [발 아파] 죽겠다..."
-    },
-    "zoom": 1.08,
-    "focus": 0,
-    "bg": "army",
-    "sign": "생활관"
+    "bg": "office"
    }
   },
   {
    "from": "c",
-   "label": "gone",
+   "label": "rumor",
    "gfx": {
     "type": "scene",
     "chars": [
      {
+      "name": "선배",
+      "mood": "smug",
+      "color": "#8FD3FF"
+     },
+     {
       "name": "나",
-      "mood": "sleep",
-      "hat": "🪖",
-      "to": "shock"
+      "mood": "think"
+     },
+     {
+      "name": "동료",
+      "mood": "shy",
+      "color": "#FF9EBB"
      }
     ],
-    "prop": "❓",
-    "steps": [
-     0,
-     "c.사라졌다",
-     "c.사라졌다"
-    ],
-    "bg": "army",
-    "sign": "생활관"
+    "bg": "office"
    }
   },
   {
    "from": "d",
-   "label": "back",
+   "label": "suck",
    "gfx": {
     "type": "scene",
     "chars": [
      {
-      "name": "나",
-      "mood": "think",
-      "hat": "🪖"
-     }
-    ],
-    "place": "📍 아침",
-    "prop": "🥾",
-    "steps": [
-     0,
-     "d.제자리에"
-    ],
-    "bg": "army",
-    "sign": "생활관"
-   }
-  },
-  {
-   "from": "e",
-   "label": "someone",
-   "gfx": {
-    "type": "scene",
-    "chars": [
-     {
-      "name": "나",
-      "mood": "shock",
-      "hat": "🪖"
+      "name": "선배",
+      "mood": "smug",
+      "color": "#8FD3FF"
      },
      {
-      "name": "???",
-      "mood": "neutral",
-      "color": "#6b6f7a"
-     }
-    ],
-    "place": "📍 연병장",
-    "bg": "night",
-    "zoom": 1.08,
-    "focus": 1
-   }
-  },
-  {
-   "from": "f",
-   "label": "sergeant",
-   "gfx": {
-    "type": "scene",
-    "chars": [
-     {
       "name": "나",
-      "mood": "shock",
-      "hat": "🪖"
+      "mood": "think"
      },
      {
-      "name": "병장님",
+      "name": "동료",
       "mood": "neutral",
-      "color": "#9FD07A",
-      "hat": "🪖"
-     }
-    ],
-    "prop": "🥾",
-    "steps": [
-     0,
-     "f.전투화를"
-    ],
-    "bg": "night"
-   }
-  },
-  {
-   "from": "g",
-   "label": "hazing",
-   "gfx": {
-    "type": "scene",
-    "chars": [
-     {
-      "name": "나",
-      "mood": "sick",
-      "hat": "🪖"
+      "color": "#FF9EBB"
      }
     ],
     "say": {
      "who": 0,
-     "text": "설마... [괴롭히는 건가?]"
+     "text": "저⁠거 완⁠전 [⁠아⁠부⁠]⁠하⁠는 거⁠지⁠."
     },
-    "zoom": 1.1,
-    "focus": 0,
-    "bg": "night"
+    "bg": "office"
    }
   },
   {
-   "from": "h",
-   "label": "discharge",
+   "from": "e",
+   "label": "crush",
+   "gfx": {
+    "type": "scene",
+    "chars": [
+     {
+      "name": "선배",
+      "mood": "neutral",
+      "color": "#8FD3FF"
+     },
+     {
+      "name": "나",
+      "mood": "think"
+     },
+     {
+      "name": "동료",
+      "mood": "love",
+      "color": "#FF9EBB"
+     }
+    ],
+    "say": {
+     "who": 2,
+     "text": "아⁠니⁠야⁠, 팀⁠장⁠님 [⁠좋⁠아⁠하⁠는 거⁠야⁠]⁠."
+    },
+    "bg": "office"
+   }
+  },
+  {
+   "from": "f",
+   "label": "8am",
    "gfx": {
     "type": "scene",
     "chars": [],
-    "card": "병장님 [전역 날]",
-    "bg": "army",
-    "sign": "생활관"
+    "card": "오전 [8:00]",
+    "bg": "office"
    }
   },
   {
-   "from": "h.전투화",
-   "label": "found",
+   "from": "g",
+   "label": "ask",
    "gfx": {
     "type": "scene",
     "chars": [
      {
       "name": "나",
-      "mood": "think",
-      "hat": "🪖",
-      "to": "shock"
+      "mood": "think"
+     },
+     {
+      "name": "신입",
+      "mood": "shock",
+      "color": "#FFB36B"
      }
     ],
-    "prop": "🥾📝",
+    "prop": "🍬",
+    "say": {
+     "who": 0,
+     "text": "저⁠기⁠.⁠.⁠. 사⁠탕⁠은 [⁠왜⁠] 두⁠는 거⁠야⁠?"
+    },
     "steps": [
      0,
-     "h.쪽지가",
-     "h.쪽지가"
+     0.1
     ],
-    "bg": "army",
-    "sign": "생활관"
+    "bg": "office"
    }
   },
   {
-   "from": "j",
-   "label": "note",
+   "from": "h",
+   "label": "reason",
    "gfx": {
     "type": "scene",
     "chars": [
      {
       "name": "나",
       "mood": "neutral",
-      "hat": "🪖",
-      "to": "cry"
+      "to": "shock"
      },
      {
-      "name": "병장님",
-      "mood": "happy",
-      "color": "#9FD07A",
-      "hat": "🪖"
+      "name": "신입",
+      "mood": "smug",
+      "color": "#FFB36B"
      }
     ],
     "say": {
      "who": 1,
-     "text": "발 아프면 말해라. [신발은 길들이면 된다.]"
+     "text": "팀⁠장⁠님⁠은 배⁠고⁠프⁠시⁠면⁠, [⁠회⁠의⁠가 길⁠어⁠지⁠시⁠더⁠라⁠고⁠요⁠.⁠]"
     },
     "steps": [
      0,
      0,
-     "j.신발은"
+     "h.길어지시더라고요"
     ],
-    "bg": "army",
-    "sign": "전역 축하"
+    "bg": "office"
    }
   },
   {
-   "from": "k",
-   "label": "breakin",
+   "from": "i",
+   "label": "data",
    "gfx": {
     "type": "scene",
     "chars": [
      {
-      "name": "병장님",
-      "mood": "happy",
-      "color": "#9FD07A",
-      "hat": "🪖"
+      "name": "팀장님",
+      "mood": "sick",
+      "color": "#C9A7FF",
+      "size": 1.08
      }
     ],
-    "prop": "🥾",
-    "place": "📍 매일 밤",
-    "bg": "night"
-   }
-  },
-  {
-   "from": "l",
-   "label": "280",
-   "gfx": {
-    "type": "scene",
-    "chars": [
-     {
-      "name": "병장님",
-      "mood": "smug",
-      "color": "#9FD07A",
-      "hat": "🪖",
-      "size": 1.15
-     }
-    ],
-    "big": "[280]",
-    "steps": [
-     0,
-     0,
-     9,
-     "l.이백팔십"
-    ],
-    "bg": "army",
-    "sign": "생활관"
-   }
-  },
-  {
-   "from": "m",
-   "label": "mine",
-   "gfx": {
-    "type": "scene",
-    "chars": [
-     {
-      "name": "나",
-      "mood": "shock",
-      "hat": "🪖"
-     }
-    ],
-    "prop": "🥾",
-    "big": "270 → [280]",
+    "prop": "⏰",
+    "place": "📍 아침 거른 날",
+    "big": "회의 [2시간]",
     "steps": [
      0,
      0.1,
      9,
-     "m.이백팔십이"
+     "i.거른"
     ],
-    "bg": "army",
-    "sign": "생활관"
+    "bg": "office"
+   }
+  },
+  {
+   "from": "j",
+   "label": "10min",
+   "gfx": {
+    "type": "scene",
+    "chars": [
+     {
+      "name": "팀장님",
+      "mood": "happy",
+      "color": "#C9A7FF",
+      "size": 1.08
+     },
+     {
+      "name": "신입",
+      "mood": "smug",
+      "color": "#FFB36B"
+     }
+    ],
+    "prop": "🍬",
+    "big": "회의 [10분]",
+    "steps": [
+     0,
+     0.1,
+     9,
+     "j.십"
+    ],
+    "bg": "office"
+   }
+  },
+  {
+   "from": "k",
+   "label": "done",
+   "gfx": {
+    "type": "scene",
+    "chars": [
+     {
+      "name": "팀장님",
+      "mood": "laugh",
+      "color": "#C9A7FF",
+      "size": 1.08
+     },
+     {
+      "name": "나",
+      "mood": "love"
+     }
+    ],
+    "prop": "🍬",
+    "say": {
+     "who": 0,
+     "text": "자⁠, 오⁠늘 회⁠의 [⁠끝⁠!⁠]"
+    },
+    "bg": "office"
+   }
+  },
+  {
+   "from": "l",
+   "label": "chipin",
+   "gfx": {
+    "type": "scene",
+    "chars": [
+     {
+      "name": "선배",
+      "mood": "happy",
+      "color": "#8FD3FF"
+     },
+     {
+      "name": "나",
+      "mood": "laugh"
+     },
+     {
+      "name": "동료",
+      "mood": "happy",
+      "color": "#FF9EBB"
+     }
+    ],
+    "big": "사탕값 [N빵] 🍬",
+    "steps": [
+     0,
+     0,
+     9,
+     "l.팀"
+    ],
+    "bg": "office"
    }
   }
  ]
