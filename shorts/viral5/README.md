@@ -4150,7 +4150,7 @@ edit.json 예:
 > 영상: Pexels — Joshua Woroniecki, Guidance Pillar Production, FUNESMA79, AP Vibes, pippu
 > 음악: "Heroic Age" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
 > #파도 #바다 #시원한영상 #랭킹 #shorts
-> 고정 댓글: 1위 돌집 살았다 vs 못 살았다 👇
+> 고정 댓글: 1위 제목 지어주세요 👇 몇 번이 제일 시원했음?
 
 **top11** — 역대급 화산·용암 모먼트 랭킹 TOP5 ㄷㄷ
 > 용암을 망치로 퍼 올리는 과학자, 숲을 태우며 밀려오는 용암, 아스팔트까지 태운 도로 위 용암, 바다를 만나 20m 치솟은 돌… 그리고 1위는 카메라까지 날아온 그것. 전부 하와이 화산관측소의 실제 영상입니다. 다들 몇 번이 제일 무서워요?
@@ -4167,7 +4167,6 @@ edit.json 예:
 > 고정 댓글: 1번 제목 지어주세요 👇
 
 창작: 열두 편 모두 실제 영상이고 지어낸 이야기는 없어 "창작" 표시는 필요 없습니다. 자막 중 "~했는데.."·"~??"는 다음 장면을 예고하는 말투일 뿐 사실 주장이 아닙니다.
-
 ## 2D 운전 애니 무언 해외판 (벤치마크, `drive1`~`drive10`)
 
 `research/benchmark-drawn.md` 2절과 `research/benchmark-targets-drawn.json`의 `road` 목표(알룔료 R1 3,201만·R2 2,865만·R3 2,601만)를 그대로 따른 **말 없는 해외판** 10편이다. 내레이션과 자막이 없고, 9:16 화면 가운데 16:9 그림, 위 검정 칸에 흰 한국어 제목 한 줄, 아래 검정 칸에 영어 한 줄이 처음부터 끝까지 있다. 운전자 얼굴 클로즈업(그림 높이의 약 70%)과 3D 차 장면(3/4 뒤·옆·앞·위)을 1.5~2초마다 번갈아 자르고, 효과음(경적·엔진·타이어·둥둥·사이렌)과 음악만으로 진행한다. 결말은 모두 자업자득이다(출구를 놓침, 맨 뒤 줄, 트럭 뒤에 갇힘, 단속 카메라, 경찰에 갓길로). 사고·부상·주인공의 보복은 없고, 주인공은 거리를 두거나 비켜 주거나 깜빡이를 켠다. `drive1`~`drive6`은 보고서 아이디어 목록의 새 편이고, `drive7`~`drive10`은 기존 `road1`·`road2`·`road8`·`road9`의 무언판이다(`road1`~`road10`은 그대로 둠).
