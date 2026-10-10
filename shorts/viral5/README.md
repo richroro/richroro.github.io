@@ -3086,3 +3086,77 @@ for i in 5 6 7 8 9 10; do python3 voice_edge.py doodle$i && python3 prep.py dood
   Music: "Sneaky Snitch" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
   ```
 - 해시태그: #편의점 #알바 #훈훈 #짤툰 #낙서툰
+
+## "○○ 특" 공감 애니 2 (`teuk5`~`teuk8`)
+
+`teuk1`~`teuk4`와 똑같은 틀로 만든 4편이다(`research/research-fun.md` 4절, `research-formats2.md` 9절: 같은 틀로 많이). 주홍 찹쌀떡 "나"(`#FFB36B`), 제목 띠 두 줄(대상 / "○○ 특"), 0초부터 첫 장면, 번호 붙은 공감 7개(장면당 3~4초, 내레이터가 항목만 읽고 "나"가 말풍선으로 반응), "여러분은 몇 개 해당?ㅋㅋ" + "난 7개 다…ㅋㅋ"로 끝난다. 자막 위치(`captionY` 1650), 효과음 배치(pop·whoosh·boing·ding)도 1편들과 같다.
+
+- **그림**: 전부 직접 그렸다(`src/lib/Sseol.tsx`). 외부 사진·영상·사실 인용은 없다. 그래서 `sources`는 비어 있고 화면 크레딧도 없다. 숫자("1년", "D-30", "6시간 뒤")는 모두 창작 속 장면이지 사실 주장이 아니다.
+- **유머**: 자기 자신의 습관을 소재로 한다. 몸, 직업, 지역, 집단을 놀리지 않는다(헬스장 편도 체형 얘기 없이 "회원권·근육통·치킨"만). 실제 가게·앱·은행·카드사 이름이나 로고는 없다("편의점", "입금 알림", "장바구니"는 일반 명사).
+- **길이 맞추기**: 1편들(29~32초)보다 조금 길게 하려고 내레이터 속도를 +15%에서 +12%로, 항목 앞 쉼(`gap`)을 0.18초에서 0.4초로, 끝 여백(`tail`)을 1.0초로 늘렸다.
+
+| id | 제목 띠 | 길이 | 1~7 | 음악 |
+| --- | --- | --- | --- | --- |
+| `teuk5` | 자취생이라면 / 자취 첫 달 특 | 32.2초 | 너무 조용해서 잠이 안 옴 · 라면 냄비가 곧 그릇 · 대파 한 단은 끝까지 못 먹음 · 휴지 없는 걸 마지막 한 칸에서 앎 · 빨래 돌려 놓고 까맣게 잊기 · 엄마 반찬이 세상에서 제일 맛있음 · 관리비 고지서 보고 깜짝 | Scheming Weasel (faster version) |
+| `teuk6` | 장마철 공감 / 비 오는 날 특 | 32.6초 | 우산 챙긴 날은 비가 안 옴 · 우산 없는 날만 갑자기 소나기 · 집에 우산 많은데 또 사기 · 양말 젖으면 하루 종일 찝찝 · 괜히 파전 생각나기 · 빗소리 들으면 잠이 쏟아짐 · 집 도착하자마자 비 그침 | Monkeys Spinning Monkeys |
+| `teuk7` | 운동 시작하면 / 헬스장 첫 주 특 | 32.1초 | 일단 1년부터 끊기 · 운동복부터 풀세트 · 기구 쓰는 법 몰라서 몰래 따라 하기 · 첫날부터 너무 열심히 · 다음 날 계단을 못 내려감 · 운동했으니까 치킨은 괜찮음 · 사흘째부터 갈까 말까 고민 | Exhilarate |
+| `teuk8` | 직장인 / 월급날 특 | 33.1초 | 아침부터 입금 알림만 기다림 · 들어오자마자 카드값 빠져나감 · 점심은 괜히 비싼 메뉴 · 고생한 나한테 선물 · 장바구니 전부 결제 · 이번 달은 진짜 아끼자 다짐 · 다음 날부터 다음 월급날 세기 | Hustle |
+
+```bash
+python3 voice_edge.py teuk5 && python3 prep.py teuk5 && ./render.sh teuk5 final/teuk5.mp4 && python3 qa_review.py teuk5
+```
+
+**목소리**(`script.json`의 `voices`)
+
+- `teuk5`: 내레이터 `SunHi` +12%, 나 `InJoon` +12%·+15Hz
+- `teuk6`: 내레이터 `HyunsuMultilingual` +12%, 나 `SunHi` +12%·+18Hz
+- `teuk7`: 내레이터 `SunHi` +12%, 나 `InJoon` +15%·+10Hz
+- `teuk8`: 내레이터 `HyunsuMultilingual` +12%, 나 `SunHi` +15%·+15Hz
+
+**템플릿 추가**(`src/lib/Sseol.tsx`, 기존 배경·장면은 그대로)
+
+- 배경 2종을 더했다. `gym`(벽 거울, 덤벨 선반, 회색 바닥), `rain`(흐린 하늘 빌딩 거리, 사선 빗줄기, 물웅덩이). `Backdrop`의 `switch`에 `case` 두 개만 늘었다.
+
+**qa_review**: 4편 모두 11개 항목 PASS(WARN·FAIL 0). `teuk7` 4번 장면은 처음에 표정이 그대로라 화면 전환이 5.0초 동안 잡히지 않아(WARN) 표정을 happy→angry로 바꿨다. 같은 편 1번의 달력 이모지(📅)는 영어 날짜가 찍혀 보여서 ✅로 바꿨다.
+
+**업로드 문구**
+
+`teuk5`
+- 제목: 자취 첫 달 특ㅋㅋ
+- 설명:
+  ```
+  대파 한 단은 왜 끝까지 못 먹을까 🥬 여러분은 몇 개 해당?ㅋㅋ (창작 애니)
+  직접 그린 창작 애니메이션입니다. 등장인물은 실제와 관계없습니다.
+  Music: "Scheming Weasel (faster version)" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
+  ```
+- 해시태그: #공감 #특 #자취생 #자취 #공감애니
+
+`teuk6`
+- 제목: 비 오는 날 특ㅋㅋ
+- 설명:
+  ```
+  우산 챙긴 날만 비가 안 오는 사람 손 ☔ 여러분은 몇 개 해당?ㅋㅋ (창작 애니)
+  직접 그린 창작 애니메이션입니다. 등장인물은 실제와 관계없습니다.
+  Music: "Monkeys Spinning Monkeys" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
+  ```
+- 해시태그: #공감 #특 #비오는날 #장마 #공감애니
+
+`teuk7`
+- 제목: 헬스장 첫 주 특ㅋㅋ
+- 설명:
+  ```
+  1년 회원권 끊고 사흘째부터 고민 시작 💪 여러분은 몇 개 해당?ㅋㅋ (창작 애니)
+  직접 그린 창작 애니메이션입니다. 등장인물은 실제와 관계없습니다.
+  Music: "Exhilarate" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
+  ```
+- 해시태그: #공감 #특 #헬스장 #운동 #공감애니
+
+`teuk8`
+- 제목: 직장인 월급날 특ㅋㅋ
+- 설명:
+  ```
+  월급은 통장을 스쳐 갈 뿐 💸 여러분은 몇 개 해당?ㅋㅋ (창작 애니)
+  직접 그린 창작 애니메이션입니다. 등장인물은 실제와 관계없습니다.
+  Music: "Hustle" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
+  ```
+- 해시태그: #공감 #특 #직장인 #월급날 #공감애니
