@@ -1,6 +1,6 @@
 {
  "titleStyle": "band",
- "captionY": 1640,
+ "captionY": 1580,
  "credit": "영상: Pexels",
  "sources": {
   "signph": {
@@ -12,9 +12,9 @@
    "license": "Pexels License"
   },
   "darkph": {
-   "file": "ph37643871.jpg",
+   "file": "ph37643871_clean.jpg",
    "credit": "사진: Pexels",
-   "label": "Pexels photo 37643871 by Norbert Szomszéd (Pexels License)",
+   "label": "Pexels photo 37643871 by Norbert Szomszéd (Pexels License) — maker name on the sign painted over by us",
    "url": "https://www.pexels.com/photo/green-emergency-exit-sign-in-dark-corridor-37643871/",
    "creator": "Norbert Szomszéd",
    "license": "Pexels License"
@@ -94,7 +94,7 @@
   },
   {
    "src": "red1",
-   "from": "hook.초록색일까요",
+   "from": "hook.국제",
    "label": "빨간 EXIT",
    "zoom": [
     1.0,
@@ -216,7 +216,7 @@
    "crop": [
     0.62,
     0.45,
-    1.5
+    1.066
    ]
   },
   {
@@ -231,7 +231,7 @@
    "crop": [
     0.55,
     0.5,
-    1.6
+    1.137
    ]
   },
   {
@@ -246,7 +246,7 @@
    "crop": [
     0.5,
     0.5,
-    1.3
+    1.232
    ]
   },
   {
@@ -293,7 +293,7 @@
    "crop": [
     0.7,
     0.35,
-    1.2
+    1.0
    ]
   },
   {
@@ -324,7 +324,7 @@
    "crop": [
     0.62,
     0.45,
-    1.5
+    1.066
    ],
    "in": 9.4
   }
@@ -333,29 +333,13 @@
   {
    "kind": "circle",
    "x": 540,
-   "y": 940,
+   "y": 1160,
    "r": 230,
    "from": "man",
    "to": "man.일본"
   }
  ],
- "stickers": [
-  {
-   "text": "소방청 고시 「유도등의 형식승인 및 제품검사의 기술기준」 제9조",
-   "from": "kr.피난구",
-   "to": "man-0.1",
-   "y": 540,
-   "size": 30
-  },
-  {
-   "text": "ISO 7010 E001 · ISO 3864",
-   "from": "iso.국제표준에서",
-   "to": "kr-0.1",
-   "y": 540,
-   "size": 40,
-   "bg": "#fff"
-  }
- ],
+ "stickers": [],
  "sfx": [
   [
    "myth",
@@ -401,5 +385,18 @@
   "file": "music/Lightless Dawn.mp3",
   "gain": 0.1,
   "start": 0
+ },
+ "frame": "capTall",
+ "capStyle": "info2",
+ "hideCredit": true,
+ "tags": [],
+ "cover": {
+  "src": "signph",
+  "focus": "55% 50%",
+  "zoom": 1.0,
+  "title": [
+   "비상구 표시가",
+   "[초록색]인 진짜 이유"
+  ]
  }
 }

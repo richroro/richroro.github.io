@@ -1,0 +1,121 @@
+# lfhorror1 shot list: "<line id> <kind> [args]". A shot starts 0.25 s before its line and runs to the next shot.
+# kinds: ph <photo> [pos] | v <clip> [from] [pos] | doc1 <focus> | doc2 all|note | env | letter <n> | mirror <v> [zoom]
+#        hand L|R ink|clean [none|bottle|pen|paper] | cctv one|two|glitch | clock <text> | tclock <fails> | phone | roster
+#        log mine|old | coins | hoodie far|close | switch | black | static
+# "+nar <mood>" shows narrator 도치 in the corner (flipped after the swap, line 109+).
+000 doc1 head
+001 v 9945033 0 +nar think
+002 env
+005 ph 3989434 +nar neutral
+006 v 4455202 0 +nar neutral
+008 v 4455202 6 +nar think
+010 ph 6980693 +nar neutral
+011 hand L ink none
+014 v 3929080 1 +nar sad
+017 hand L ink pen
+019 ph 6980693 70%_40%
+021 ph 7300738b +nar neutral
+023 ph 39150183
+025 mirror empty 1
+026 mirror empty 1.35
+027 v 9945020 0 +nar neutral
+028 clock 23:59
+029 v 19217894 2
+030 roster
+032 v 25810707 2 80%_50% +nar think
+033 doc1 all
+034 doc1 0
+037 mirror print1 1.2
+040 mirror empty 1
+041 doc1 1
+044 v 9945033 3 +nar think
+045 doc1 2
+048 clock 03:13
+050 doc1 3
+052 v 19217899 3 +nar think
+053 doc1 4
+055 hand L ink none
+057 doc2 all
+058 doc2 note
+060 hand L ink pen
+061 doc2 note2
+063 mirror empty 1.1
+066 v 30275280 3 +nar neutral
+069 v 25810707 8 80%_50% +nar neutral
+071 v 30275280 12 +nar neutral
+072 v 3929080 6 +nar neutral
+074 mirror vest 1.2
+075 ph 15491784c
+076 mirror empty 1.2
+078 v 9945020 4 +nar sad
+079 v 4761733 2 +nar think
+081 clock 03:13
+083 v 32365209 0
+084 hoodie far
+086 v 34572307 0
+087 mirror hood 1.2
+090 hoodie far
+092 v 7767338 6
+093 hand R ink bottle
+096 hand L ink none
+098 hoodie close
+100 v 7767338 2
+101 coins
+102 hoodie close
+106 mirror hood 1.5
+107 hoodie close
+109 static
+111 v 15069622 3
+113 coins
+115 mirror me 1.1
+118 mirror wave 1.3
+120 mirror me 1.1
+121 log mine
+124 hand R clean pen
+126 log mine
+127 v 15365449 2 +nar think
+129 mirror print2 1.1
+131 mirror print2 1.45
+134 v 9431584 0 +nar sad
+137 cctv one
+140 cctv two
+143 cctv glitch
+146 doc1 all
+148 doc2 note
+149 env
+151 v 19217894 6 +nar think
+152 doc2 note2
+154 env
+155 mirror empty 1
+156 doc1 4
+158 v 9945020 6 +nar think
+160 clock 06:00
+162 tclock 0
+164 tclock 1
+166 tclock 2
+168 tclock 3
+170 v 19217899 0 +nar shock
+173 v 7598737 2 +nar sad
+174 log mine
+176 mirror shake 1.2
+179 ph 31762056 +nar sad
+180 ph 31650977 +nar neutral
+181 switch
+185 env open
+187 letter 0
+190 letter 2
+191 letter 3
+192 letter 4
+193 hand L ink none
+194 hand R clean paper
+195 letter 5
+197 letter 6
+199 letter 7
+201 letter 8
+203 letter 9
+204 phone
+208 ph 30669567 +nar neutral
+211 mirror wave 1.25
+213 hand R clean pen
+216 hand R clean none
+217 env

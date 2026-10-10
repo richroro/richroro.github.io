@@ -1,404 +1,511 @@
 {
  "credit": "",
- "titleStyle": "band",
- "captionY": 1650,
+ "postFrame": {
+  "app": "썰방",
+  "color": "#FF8A4C",
+  "meta": "익명 | 창작 사연게시판"
+ },
  "sources": {},
  "music": {
   "file": "music/scheming_weasel.mp3",
-  "gain": 0.2,
+  "gain": 0.16,
   "start": 0
  },
  "sfx": [
   [
-   "b",
-   "pop",
-   0.3
-  ],
-  [
    "c",
-   "boing",
-   0.3
-  ],
-  [
-   "d",
-   "pop",
+   "bubble",
    0.25
   ],
   [
-   "e",
-   "whoosh",
-   0.25
-  ],
-  [
-   "f",
+   "j",
    "pop_hi",
    0.3
   ],
   [
-   "h.외국에서",
-   "ding",
-   0.3
-  ],
-  [
-   "j",
-   "whoosh",
-   0.3
-  ],
-  [
-   "k",
-   "pop",
-   0.3
-  ],
-  [
-   "l.한국말",
+   "l",
    "k_error_003",
-   0.3
+   0.25
   ],
   [
-   "m",
+   "n",
    "boing",
    0.3
-  ],
-  [
-   "o",
-   "tada",
-   0.25
   ]
  ],
  "clips": [
   {
    "from": "a",
-   "label": "post",
+   "label": "a",
    "gfx": {
-    "type": "post",
-    "title": "환갑 우리 아빠가 새벽마다 [영어 공부] 하는 썰",
-    "body": [
-     "매일 새벽 다섯 시 중얼중얼",
-     "엄마도 [이유를] 모름 ㅋㅋ"
-    ],
-    "steps": [
-     "a.새벽",
-     "a.단어장을"
-    ],
+    "type": "scene",
+    "bg": "home",
+    "prop": "📖",
+    "propX": 0.82,
     "chars": [
      {
+      "style": "chibi",
+      "look": {
+       "age": "old",
+       "hairdo": "bald",
+       "hair": "#8a8a90",
+       "top": "#5b7fbf",
+       "topKind": "shirt",
+       "pants": "#3d3d48",
+       "glasses": true
+      },
       "name": "아빠",
-      "color": "#FFB36B",
-      "mood": "think"
+      "mood": "think",
+      "x": 0.4,
+      "size": 1.2
      }
     ]
    }
   },
   {
-   "from": "a@end",
-   "label": "dawn",
+   "from": "b",
+   "label": "b",
    "gfx": {
     "type": "scene",
     "bg": "night",
     "place": "📍 새벽 5시",
     "prop": "📖",
+    "propX": 0.25,
     "chars": [
      {
-      "name": "아빠",
-      "color": "#FFB36B",
-      "mood": "think"
+      "style": "chibi",
+      "look": {
+       "age": "old",
+       "hairdo": "bald",
+       "hair": "#8a8a90",
+       "top": "#5b7fbf",
+       "topKind": "shirt",
+       "pants": "#3d3d48",
+       "glasses": true
+      },
+      "mood": "think",
+      "x": 0.6,
+      "size": 1.1
      }
     ]
    }
   },
   {
    "from": "c",
-   "label": "why",
+   "label": "c",
    "gfx": {
     "type": "scene",
-    "bg": "home",
-    "place": "📍 거실",
-    "say": {
-     "who": 0,
-     "text": "당신 갑자기 [왜 그래요?]"
-    },
-    "prop": "📖",
+    "bg": "night",
+    "zoom0": 1.0,
+    "zoom": 1.06,
     "chars": [
      {
-      "name": "엄마",
-      "color": "#FF9EBB",
-      "mood": "shock"
-     },
-     {
-      "name": "아빠",
-      "color": "#FFB36B",
-      "mood": "think"
+      "style": "chibi",
+      "look": {
+       "age": "old",
+       "hairdo": "bald",
+       "hair": "#8a8a90",
+       "top": "#5b7fbf",
+       "topKind": "shirt",
+       "pants": "#3d3d48",
+       "glasses": true
+      },
+      "mood": "smug",
+      "size": 1.55
      }
     ]
    }
   },
   {
    "from": "d",
-   "label": "secret",
+   "label": "d",
    "gfx": {
     "type": "scene",
     "bg": "home",
-    "say": {
-     "who": 1,
-     "text": "[몰라도] 돼."
-    },
-    "prop": "📖",
-    "zoom": 1.08,
-    "focus": 1,
+    "big": "× [100]",
+    "steps": [
+     0,
+     0,
+     9,
+     0.2
+    ],
     "chars": [
      {
-      "name": "엄마",
-      "color": "#FF9EBB",
-      "mood": "sad"
-     },
-     {
-      "name": "아빠",
-      "color": "#FFB36B",
-      "mood": "smug"
+      "style": "chibi",
+      "look": {
+       "age": "old",
+       "hairdo": "bald",
+       "hair": "#8a8a90",
+       "top": "#5b7fbf",
+       "topKind": "shirt",
+       "pants": "#3d3d48",
+       "glasses": true
+      },
+      "mood": "sleep",
+      "x": 0.3,
+      "size": 1.0
      }
     ]
    }
   },
   {
    "from": "e",
-   "label": "peek",
+   "label": "e",
    "gfx": {
     "type": "scene",
     "bg": "home",
-    "prop": "👂",
     "chars": [
      {
-      "name": "나",
+      "style": "chibi",
+      "look": {
+       "age": "old",
+       "hairdo": "perm",
+       "hair": "#4a3a34",
+       "top": "#ff9eb5",
+       "topKind": "cardigan"
+      },
+      "name": "엄마",
       "mood": "think",
-      "color": "#FFD84D"
+      "x": 0.3
+     },
+     {
+      "style": "chibi",
+      "look": {
+       "hairdo": "long",
+       "hair": "#4a2f22",
+       "top": "#ffd84d",
+       "topKind": "tee",
+       "pants": "#4a6fa8"
+      },
+      "name": "나",
+      "mood": "shy",
+      "x": 0.72
      }
     ]
    }
   },
   {
    "from": "f",
-   "label": "sentence",
+   "label": "f",
    "gfx": {
     "type": "scene",
-    "bg": "night",
-    "say": {
-     "who": 0,
-     "text": "나이스 투 미츄. [아임 수아스 파더.]"
-    },
-    "prop": "📖",
-    "zoom": 1.1,
-    "focus": 0,
+    "bg": "bedroom",
     "chars": [
      {
-      "name": "아빠",
-      "color": "#FFB36B",
-      "mood": "neutral"
+      "style": "chibi",
+      "look": {
+       "hairdo": "long",
+       "hair": "#4a2f22",
+       "top": "#ffd84d",
+       "topKind": "tee",
+       "pants": "#4a6fa8"
+      },
+      "mood": "shy",
+      "size": 1.5
+     }
+    ]
+   }
+  },
+  {
+   "from": "g",
+   "label": "g",
+   "gfx": {
+    "type": "scene",
+    "bg": "street",
+    "chars": [
+     {
+      "style": "chibi",
+      "look": {
+       "hairdo": "long",
+       "hair": "#4a2f22",
+       "top": "#ffd84d",
+       "topKind": "tee",
+       "pants": "#4a6fa8"
+      },
+      "name": "나",
+      "mood": "love",
+      "x": 0.3
      },
      {
-      "name": "나",
-      "mood": "shock",
-      "color": "#FFD84D"
+      "style": "chibi",
+      "look": {
+       "hairdo": "side",
+       "hair": "#2a2a30",
+       "top": "#2f3a4f",
+       "topKind": "suit",
+       "accColor": "#7cc4ff"
+      },
+      "name": "남자친구",
+      "mood": "happy",
+      "x": 0.72
      }
     ]
    }
   },
   {
    "from": "h",
-   "label": "oh",
+   "label": "h",
    "gfx": {
     "type": "scene",
-    "bg": "home",
-    "place": "📍 그러고 보니",
-    "prop": "💡",
+    "bg": "store",
+    "sign": "동네 서점",
+    "prop": "📚",
+    "propX": 0.82,
     "chars": [
      {
-      "name": "나",
-      "mood": "shock",
-      "color": "#FFD84D"
+      "style": "chibi",
+      "look": {
+       "age": "old",
+       "hairdo": "bald",
+       "hair": "#8a8a90",
+       "top": "#5b7fbf",
+       "topKind": "shirt",
+       "pants": "#3d3d48",
+       "glasses": true
+      },
+      "mood": "angry",
+      "x": 0.4,
+      "size": 1.2
      }
-    ],
-    "steps": [
-     0,
-     0.1
     ]
    }
   },
   {
-   "from": "h.외국에서",
-   "label": "abroad",
+   "from": "i",
+   "label": "i",
    "gfx": {
     "type": "scene",
-    "bg": "home",
-    "prop": "✈️",
+    "bg": "door",
+    "sign": "우리 집",
+    "prop": "🎁",
+    "propX": 0.45,
     "chars": [
      {
-      "name": "나",
-      "mood": "shy",
-      "color": "#FFD84D"
+      "style": "chibi",
+      "look": {
+       "hairdo": "side",
+       "hair": "#2a2a30",
+       "top": "#2f3a4f",
+       "topKind": "suit",
+       "accColor": "#7cc4ff"
+      },
+      "mood": "neutral",
+      "x": 0.25,
+      "size": 1.1
      }
-    ],
-    "zoom": 1.08,
-    "focus": 0
+    ]
    }
   },
   {
    "from": "j",
-   "label": "day",
+   "label": "j",
    "gfx": {
     "type": "scene",
-    "bg": "home",
-    "card": "드디어 그날...",
-    "chars": []
+    "bg": "door",
+    "sign": "우리 집",
+    "prop": "👋",
+    "propX": 0.84,
+    "chars": [
+     {
+      "style": "chibi",
+      "look": {
+       "age": "old",
+       "hairdo": "bald",
+       "hair": "#8a8a90",
+       "top": "#5b7fbf",
+       "topKind": "shirt",
+       "pants": "#3d3d48",
+       "glasses": true
+      },
+      "mood": "happy",
+      "x": 0.4,
+      "size": 1.45
+     }
+    ]
    }
   },
   {
    "from": "k",
-   "label": "nice",
+   "label": "k",
    "gfx": {
     "type": "scene",
     "bg": "home",
-    "place": "📍 우리 집",
-    "say": {
-     "who": 0,
-     "text": "나, [나이스 투 미츄!]"
-    },
     "chars": [
      {
-      "name": "아빠",
-      "color": "#FFB36B",
-      "mood": "shy"
-     },
-     {
-      "name": "남자친구",
-      "color": "#8FD3FF",
-      "mood": "happy"
+      "style": "chibi",
+      "look": {
+       "hairdo": "side",
+       "hair": "#2a2a30",
+       "top": "#2f3a4f",
+       "topKind": "suit",
+       "accColor": "#7cc4ff"
+      },
+      "mood": "happy",
+      "size": 1.5
      }
     ]
    }
   },
   {
    "from": "l",
-   "label": "korean",
+   "label": "l",
    "gfx": {
     "type": "scene",
     "bg": "home",
-    "say": {
-     "who": 1,
-     "text": "안녕하세요 아버님! [저 한국말 잘해요!]"
-    },
     "chars": [
      {
-      "name": "아빠",
-      "color": "#FFB36B",
-      "mood": "shy",
-      "to": "shock"
+      "style": "chibi",
+      "look": {
+       "age": "old",
+       "hairdo": "bald",
+       "hair": "#8a8a90",
+       "top": "#5b7fbf",
+       "topKind": "shirt",
+       "pants": "#3d3d48",
+       "glasses": true
+      },
+      "mood": "shock",
+      "x": 0.28
      },
      {
-      "name": "남자친구",
-      "color": "#8FD3FF",
-      "mood": "laugh"
+      "style": "chibi",
+      "look": {
+       "hairdo": "side",
+       "hair": "#2a2a30",
+       "top": "#2f3a4f",
+       "topKind": "suit",
+       "accColor": "#7cc4ff"
+      },
+      "mood": "laugh",
+      "x": 0.72
      }
-    ],
-    "steps": [
-     0,
-     0,
-     "l.한국말"
     ]
    }
   },
   {
    "from": "m",
-   "label": "frozen",
+   "label": "m",
    "gfx": {
     "type": "scene",
     "bg": "home",
-    "prop": "🧊",
+    "prop": "📖",
+    "propX": 0.84,
     "chars": [
      {
-      "name": "아빠",
-      "color": "#FFB36B",
-      "mood": "shock"
-     },
-     {
-      "name": "남자친구",
-      "color": "#8FD3FF",
-      "mood": "happy"
+      "style": "chibi",
+      "look": {
+       "age": "old",
+       "hairdo": "bald",
+       "hair": "#8a8a90",
+       "top": "#5b7fbf",
+       "topKind": "shirt",
+       "pants": "#3d3d48",
+       "glasses": true
+      },
+      "mood": "sad",
+      "x": 0.45,
+      "size": 1.35
      }
     ]
    }
   },
   {
    "from": "n",
-   "label": "since",
+   "label": "n",
    "gfx": {
     "type": "scene",
     "bg": "home",
-    "place": "📍 요즘",
+    "prop": "👍",
+    "propX": 0.84,
     "chars": [
      {
-      "name": "아빠",
-      "color": "#FFB36B",
-      "mood": "smug"
-     },
-     {
-      "name": "나",
-      "mood": "laugh",
-      "color": "#FFD84D"
-     },
-     {
-      "name": "남자친구",
-      "color": "#8FD3FF",
-      "mood": "happy"
+      "style": "chibi",
+      "look": {
+       "age": "old",
+       "hairdo": "bald",
+       "hair": "#8a8a90",
+       "top": "#5b7fbf",
+       "topKind": "shirt",
+       "pants": "#3d3d48",
+       "glasses": true
+      },
+      "mood": "smug",
+      "size": 1.55
      }
     ]
    }
   },
   {
    "from": "o",
-   "label": "howareyou",
+   "label": "o",
    "gfx": {
     "type": "scene",
     "bg": "home",
-    "say": {
-     "who": 0,
-     "text": "하우 아 유?"
-    },
+    "place": "📍 1년 뒤",
     "chars": [
      {
-      "name": "아빠",
-      "color": "#FFB36B",
-      "mood": "happy"
+      "style": "chibi",
+      "look": {
+       "age": "old",
+       "hairdo": "bald",
+       "hair": "#8a8a90",
+       "top": "#5b7fbf",
+       "topKind": "shirt",
+       "pants": "#3d3d48",
+       "glasses": true
+      },
+      "mood": "happy",
+      "x": 0.25
      },
      {
-      "name": "남자친구",
-      "color": "#8FD3FF",
-      "mood": "laugh"
+      "style": "chibi",
+      "look": {
+       "hairdo": "side",
+       "hair": "#2a2a30",
+       "top": "#2f3a4f",
+       "topKind": "suit",
+       "accColor": "#7cc4ff"
+      },
+      "mood": "laugh",
+      "x": 0.55
+     },
+     {
+      "style": "chibi",
+      "look": {
+       "hairdo": "long",
+       "hair": "#4a2f22",
+       "top": "#ffd84d",
+       "topKind": "tee",
+       "pants": "#4a6fa8"
+      },
+      "mood": "laugh",
+      "x": 0.83,
+      "size": 0.9
      }
     ]
    }
   },
   {
-   "from": "o.아임",
-   "label": "fine",
+   "from": "p",
+   "label": "p",
    "gfx": {
     "type": "scene",
     "bg": "home",
-    "say": {
-     "who": 0,
-     "text": "[아임 파인, 땡큐!]"
-    },
-    "zoom": 1.1,
-    "focus": 0,
+    "prop": "👍",
+    "propX": 0.85,
     "chars": [
      {
-      "name": "아빠",
-      "color": "#FFB36B",
-      "mood": "laugh"
-     },
-     {
-      "name": "남자친구",
-      "color": "#8FD3FF",
-      "mood": "laugh"
+      "style": "chibi",
+      "look": {
+       "hairdo": "side",
+       "hair": "#2a2a30",
+       "top": "#2f3a4f",
+       "topKind": "suit",
+       "accColor": "#7cc4ff"
+      },
+      "mood": "laugh",
+      "x": 0.45,
+      "size": 1.45
      }
     ]
    }

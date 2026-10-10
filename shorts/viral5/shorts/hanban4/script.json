@@ -6,18 +6,23 @@
  "voices": {
   "nar": {
    "edge": "ko-KR-InJoonNeural",
-   "rate": "+20%"
+   "rate": "+25%"
+  },
+  "hook": {
+   "edge": "ko-KR-InJoonNeural",
+   "rate": "+52%"
   }
  },
  "lines": [
   {
    "id": "hook",
    "gap": 0.05,
-   "say": "이천이십사년 오월,| 한국 하늘에서 오로라가 찍혔습니다.",
+   "say": "한국 하늘에 오로라가 찍혔습니다.",
    "cap": [
-    "2024년 5월",
-    "[한국]에서 / 오로라 포착"
-   ]
+    "[한국] 하늘에",
+    "[오로라]가 찍혔다"
+   ],
+   "voice": "hook"
   },
   {
    "id": "sun",

@@ -1,7 +1,7 @@
 {
  "credit": "영상: NASA",
  "titleStyle": "band",
- "captionY": 1640,
+ "captionY": 1580,
  "sources": {
   "ea": {
    "file": "Blazar_EarthShot_A_v05_H264.mp4",
@@ -74,7 +74,7 @@
   },
   {
    "src": "fermi",
-   "from": "hook.당신",
+   "from": "hook.몸을",
    "in": 25.0,
    "label": "날아가는 입자들",
    "audio": 0.0
@@ -195,39 +195,14 @@
  "marks": [
   {
    "kind": "circle",
-   "x": 560,
-   "y": 990,
-   "r": 210,
+   "x": 568,
+   "y": 1230,
+   "r": 296,
    "from": "ice.통째로+0.2",
    "to": "sensor-0.1"
   }
  ],
- "stickers": [
-  {
-   "text": "아이스큐브 중성미자 관측소",
-   "from": "ice+0.1",
-   "to": "ice.통째로-0.1",
-   "y": 1380
-  },
-  {
-   "text": "깊이 1,450~2,450m",
-   "from": "ice.통째로+0.3",
-   "to": "sensor-0.1",
-   "y": 1380
-  },
-  {
-   "text": "2026.10.6 발표",
-   "from": "nobel+0.1",
-   "to": "end-0.1",
-   "y": 1380
-  },
-  {
-   "text": "2026년 10월 기준",
-   "from": "end+0.1",
-   "to": "end@end+0.5",
-   "y": 1380
-  }
- ],
+ "stickers": [],
  "sfx": [
   [
    "hook",
@@ -266,5 +241,24 @@
   "file": "music/Floating Cities.mp3",
   "gain": 0.14,
   "start": 0
+ },
+ "frame": "capTall",
+ "capStyle": "info2",
+ "hideCredit": true,
+ "tags": [],
+ "cover": {
+  "src": "dawn",
+  "focus": "72% 55%",
+  "zoom": 1.0,
+  "title": [
+   "올해 노벨물리학상",
+   "[남극 얼음 덩어리]의 정체"
+  ],
+  "arrow": {
+   "x": 690,
+   "y": 1230,
+   "rot": 200,
+   "len": 250
+  }
  }
 }

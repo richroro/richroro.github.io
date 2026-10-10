@@ -8,6 +8,8 @@ import { BODY, TITLE, loadFonts } from "./lib/fonts";
 import { Sticker, clamp, eOut, prog } from "./lib/fx";
 import { GFX_BG, GfxView, Marked, Marks, type Gfx, type Mark } from "./lib/Gfx";
 import { ROUNDED43, Rounded43, YearSticker, rounded43Crop } from "./lib/Retro";
+import { CoverView, InfoCaps, Tags, type Cover, type Tag } from "./lib/Info2";
+import { TeukShort, type TeukOpts } from "./lib/Teuk";
 import { CAP_TALL, CapBox, type CapBoxOpts } from "./lib/CapBox";
 import { PlainCaptions, RiddleTitle } from "./lib/Riddle";
 import { RETROBOX, RetroTitle, RetroYear, StripCaptions } from "./lib/RetroV2";
@@ -70,12 +72,17 @@ export type ShortData = {
   marks?: Mark[];
   /** a ranking list ("TOP 5") under the picture: a row per place, filled in when that place's clip starts */
   ranks?: { rows: { n: number; label: string; from: number }[]; y?: number };
+  /** "teuk": the "○○ 특" v2 look (lib/Teuk.tsx), which draws the whole short itself */
+  layout?: "teuk";
+  teuk?: TeukOpts;
   /** "retro2" (lib/RetroV2.tsx): yellow/white title over the top quarter, captions inside the picture box, no shade or credit badge */
   look?: "retro2";
   /** ranking v2 (lib/RankV2.tsx): 3-line band, the list over the picture's left edge, boxed captions */
   rank2?: Rank2;
   /** captions in a box over the bottom of the picture, one accent colour (lib/CapBox.tsx), in place of the word captions */
   capBox?: CapBoxOpts;
+  /** 정보 쇼츠 v2 (lib/Info2.tsx): a 0.5 s thumbnail cover, two-line yellow-only captions, no credit badge, small truth tags */
+  cover?: Cover; capStyle?: "info2"; hideCredit?: boolean; tags?: Tag[];
 };
 
 const FRAME = { square: { top: 400, height: 1080 }, wide: { top: 656, height: 608 }, full: { top: 0, height: 1920 },
@@ -311,6 +318,7 @@ export const ClipShort: React.FC<{ data: ShortData }> = ({ data: d }) => {
     const tt = f / FPS, inMoment = d.moments.some((m) => tt >= m.from - 0.2 && tt <= m.to + 0.2);
     return d.music.gain * (1 - 0.6 * (d.env[f] ?? 0)) * (inMoment ? 0.35 : 1) * prog(tt, 0, 0.1) * (1 - prog(tt, d.end - 1.0, 1.0));
   };
+  if (d.layout === "teuk") return <TeukShort d={d} />;
   return (
     <AbsoluteFill style={{ background: "#000" }}>
       {d.clips.map((c, i) => (
@@ -322,19 +330,22 @@ export const ClipShort: React.FC<{ data: ShortData }> = ({ data: d }) => {
       {d.look === "retro2" || ["scene", "post", "road"].includes(d.clips.find((c) => t >= c.at && (t < c.at + c.dur || until(c) === total))?.gfx?.type ?? "") ? null
         : <AbsoluteFill style={{ background: "linear-gradient(to bottom, rgba(0,0,0,.75) 0%, rgba(0,0,0,0) 22%, rgba(0,0,0,0) 62%, rgba(0,0,0,.65) 80%, rgba(0,0,0,.2) 100%)" }} />}
       <Title d={d} />
-      <Credit d={d} t={t} />
+      {d.hideCredit ? null : <Credit d={d} t={t} />}
       <Hook d={d} t={t} />
       {d.marks ? <Marks marks={d.marks} t={t} /> : null}
       {d.ranks ? (d.rank2 ? <RankList ranks={d.ranks} r={d.rank2} t={t} /> : <Ranks r={d.ranks} t={t} />) : null}
       {d.stickers.map((s, i) => (
         <Sticker key={i} t={t} t0={s.from} t1={s.to} x={s.x} y={s.y} rot={s.rot} bg={s.bg} fg={s.fg} size={s.size}>{s.text}</Sticker>
       ))}
-      {d.capBox ? <CapBox pages={d.pages} o={d.capBox} />
+      {d.tags ? <Tags tags={d.tags} t={t} /> : null}
+      {d.capStyle === "info2" ? <InfoCaps pages={d.pages} centerY={d.captionY ?? 1370} />
+        : d.capBox ? <CapBox pages={d.pages} o={d.capBox} />
         : d.capLook === "plain" ? <PlainCaptions pages={d.pages} centerY={d.captionY} />
         : d.look === "retro2" ? <StripCaptions pages={d.pages} />
         : d.rank2 ? <BoxCaptions pages={d.pages} centerY={d.captionY ?? 1640} />
         : <Captions pages={d.pages} centerY={d.captionY ?? 1370} order={d.subOrder} />}
       {flash > 0.002 && <AbsoluteFill style={{ background: "white", opacity: flash }} />}
+      {d.cover ? <CoverView c={d.cover} t={t} /> : null}
 
       {d.lines.map((l) => (
         <Sequence key={l.id} from={fr(l.start)} layout="none"><Audio src={staticFile(`${d.id}/voice/${l.id}.wav`)} /></Sequence>

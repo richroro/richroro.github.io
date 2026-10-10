@@ -1,321 +1,396 @@
 {
  "credit": "",
- "titleStyle": "band",
- "captionY": 1650,
+ "postFrame": {
+  "app": "썰방",
+  "color": "#FF8A4C",
+  "meta": "익명 | 창작 사연게시판"
+ },
  "sources": {},
  "music": {
   "file": "music/monkeys_spinning_monkeys.mp3",
-  "gain": 0.2,
+  "gain": 0.15,
   "start": 0
  },
  "sfx": [
   [
-   "b",
-   "pop",
-   0.25
-  ],
-  [
-   "c",
-   "pop",
+   "a",
+   "shutter",
    0.3
   ],
   [
-   "d",
-   "pop_hi",
+   "e",
+   "pop",
    0.25
-  ],
-  [
-   "e.삼백",
-   "coin",
-   0.25
-  ],
-  [
-   "f",
-   "whoosh",
-   0.25
-  ],
-  [
-   "g",
-   "whoosh",
-   0.25
-  ],
-  [
-   "h.하루",
-   "ding",
-   0.25
-  ],
-  [
-   "j.퇴원하셨다",
-   "tada",
-   0.3
   ],
   [
    "k",
-   "pop",
+   "bubble",
    0.25
   ],
   [
-   "l.당신을",
-   "pop_hi",
+   "o",
+   "shutter",
    0.3
   ]
  ],
  "clips": [
   {
    "from": "a",
-   "label": "post",
+   "label": "a",
    "gfx": {
-    "type": "post",
-    "title": "할아버지가 매일 [같은 나무]만 찍는 썰",
-    "body": [
-     "매일 아침 같은 자리, 같은 각도",
-     "사진첩에 나무만 가득 🌳"
-    ],
-    "steps": [
-     "a.매일",
-     "a.나무"
-    ],
+    "type": "scene",
+    "bg": "linear-gradient(180deg,#bfe6ff 0%,#e9f7ff 60%,#9bd27b 60%,#7fbf5f 100%)",
+    "prop": "🌳",
+    "propX": 0.75,
     "chars": [
      {
+      "style": "chibi",
+      "look": {
+       "age": "old",
+       "hairdo": "bald",
+       "hair": "#dcdce2",
+       "top": "#6a8f5a",
+       "topKind": "vest",
+       "acc": "cap",
+       "accColor": "#c98a4b"
+      },
       "name": "할아버지",
-      "color": "#B9F27C",
-      "mood": "think"
+      "mood": "smug",
+      "x": 0.3,
+      "size": 1.1
      }
     ]
    }
   },
   {
-   "from": "a@end",
-   "label": "angle",
+   "from": "b",
+   "label": "b",
    "gfx": {
     "type": "scene",
-    "bg": "home",
-    "place": "📍 거실 창가",
-    "prop": "📸",
+    "bg": "linear-gradient(180deg,#bfe6ff 0%,#e9f7ff 60%,#9bd27b 60%,#7fbf5f 100%)",
+    "prop": "🌳📱",
+    "propX": 0.22,
     "chars": [
      {
-      "name": "할아버지",
-      "color": "#B9F27C",
-      "mood": "think"
+      "style": "chibi",
+      "look": {
+       "age": "old",
+       "hairdo": "bald",
+       "hair": "#dcdce2",
+       "top": "#6a8f5a",
+       "topKind": "vest",
+       "acc": "cap",
+       "accColor": "#c98a4b"
+      },
+      "mood": "neutral",
+      "x": 0.65,
+      "size": 1.2
      }
     ]
    }
   },
   {
    "from": "c",
-   "label": "why",
+   "label": "c",
    "gfx": {
     "type": "scene",
-    "bg": "home",
-    "say": {
-     "who": 0,
-     "text": "할아버지, 그 나무가 [그렇게 예뻐요?]"
-    },
-    "prop": "🌳",
+    "bg": "linear-gradient(180deg,#bfe6ff 0%,#e9f7ff 60%,#9bd27b 60%,#7fbf5f 100%)",
     "chars": [
      {
-      "name": "나",
-      "color": "#FFD84D",
-      "mood": "think"
-     },
-     {
-      "name": "할아버지",
-      "color": "#B9F27C",
-      "mood": "neutral"
+      "style": "chibi",
+      "look": {
+       "hairdo": "long",
+       "hair": "#4a2f22",
+       "top": "#7cc4ff",
+       "topKind": "tee"
+      },
+      "mood": "think",
+      "size": 1.5
      }
     ]
    }
   },
   {
    "from": "d",
-   "label": "today",
+   "label": "d",
    "gfx": {
     "type": "scene",
-    "bg": "home",
-    "say": {
-     "who": 1,
-     "text": "응. [오늘 거] 찍어야지."
-    },
-    "prop": "📸",
-    "zoom": 1.08,
-    "focus": 1,
+    "bg": "linear-gradient(180deg,#bfe6ff 0%,#e9f7ff 60%,#9bd27b 60%,#7fbf5f 100%)",
+    "prop": "🌳",
+    "propX": 0.85,
     "chars": [
      {
-      "name": "나",
-      "color": "#FFD84D",
-      "mood": "think"
-     },
-     {
-      "name": "할아버지",
-      "color": "#B9F27C",
-      "mood": "happy"
+      "style": "chibi",
+      "look": {
+       "age": "old",
+       "hairdo": "bald",
+       "hair": "#dcdce2",
+       "top": "#6a8f5a",
+       "topKind": "vest",
+       "acc": "cap",
+       "accColor": "#c98a4b"
+      },
+      "mood": "happy",
+      "x": 0.45,
+      "size": 1.45
      }
     ]
    }
   },
   {
    "from": "e",
-   "label": "300",
+   "label": "e",
    "gfx": {
     "type": "scene",
     "bg": "home",
-    "prop": "📱",
-    "big": "🌳 × [300]",
-    "chars": [
-     {
-      "name": "나",
-      "color": "#FFD84D",
-      "mood": "shock"
-     }
-    ],
-    "steps": [
-     0,
-     0.1,
-     9,
-     "e.삼백"
-    ]
+    "big": "🌳🌳🌳🌳",
+    "chars": []
    }
   },
   {
    "from": "f",
-   "label": "seasons",
+   "label": "f",
    "gfx": {
     "type": "scene",
     "bg": "home",
-    "prop": "🌸🌳🍁",
+    "prop": "📤",
+    "propX": 0.8,
     "chars": [
      {
-      "name": "나",
-      "color": "#FFD84D",
-      "mood": "think"
+      "style": "chibi",
+      "look": {
+       "hairdo": "long",
+       "hair": "#4a2f22",
+       "top": "#7cc4ff",
+       "topKind": "tee"
+      },
+      "mood": "shock",
+      "x": 0.35,
+      "size": 1.2
      }
     ]
    }
   },
   {
    "from": "g",
-   "label": "hospital",
+   "label": "g",
    "gfx": {
     "type": "scene",
     "bg": "hospital",
-    "place": "📍 병원",
+    "prop": "📱",
+    "propX": 0.72,
     "chars": [
      {
+      "style": "chibi",
+      "look": {
+       "age": "old",
+       "hairdo": "perm",
+       "hair": "#ececf0",
+       "top": "#ff9eb5",
+       "topKind": "gown"
+      },
       "name": "할머니",
-      "color": "#C9A7FF",
-      "mood": "sleep"
+      "mood": "happy",
+      "x": 0.35,
+      "size": 1.2
      }
     ]
    }
   },
   {
    "from": "h",
-   "label": "daily",
+   "label": "h",
    "gfx": {
     "type": "scene",
     "bg": "hospital",
-    "prop": "📱🌳",
+    "place": "📍 병실",
     "chars": [
      {
-      "name": "할머니",
-      "color": "#C9A7FF",
-      "mood": "happy"
+      "style": "chibi",
+      "look": {
+       "age": "old",
+       "hairdo": "perm",
+       "hair": "#ececf0",
+       "top": "#ff9eb5",
+       "topKind": "gown"
+      },
+      "mood": "sleep",
+      "x": 0.3,
+      "size": 1.1
      }
     ]
    }
   },
   {
    "from": "i",
-   "label": "red",
+   "label": "i",
    "gfx": {
     "type": "scene",
-    "bg": "hospital",
-    "say": {
-     "who": 0,
-     "text": "오늘은 잎이 [더 빨개졌네.]"
-    },
-    "prop": "🍁",
-    "zoom": 1.08,
-    "focus": 0,
+    "bg": "linear-gradient(180deg,#9aa3ad,#c3c9cf)",
+    "prop": "🧱",
+    "propX": 0.15,
     "chars": [
      {
-      "name": "할머니",
-      "color": "#C9A7FF",
-      "mood": "love"
+      "style": "chibi",
+      "look": {
+       "age": "old",
+       "hairdo": "perm",
+       "hair": "#ececf0",
+       "top": "#ff9eb5",
+       "topKind": "gown"
+      },
+      "mood": "sad",
+      "x": 0.5,
+      "size": 1.3
      }
     ]
    }
   },
   {
    "from": "j",
-   "label": "home",
+   "label": "j",
    "gfx": {
     "type": "scene",
-    "bg": "home",
-    "place": "📍 오늘",
-    "prop": "💐",
+    "bg": "linear-gradient(180deg,#bfe6ff 0%,#e9f7ff 60%,#9bd27b 60%,#7fbf5f 100%)",
+    "prop": "📱🌳",
+    "propX": 0.75,
     "chars": [
      {
-      "name": "할아버지",
-      "color": "#B9F27C",
-      "mood": "laugh"
-     },
-     {
-      "name": "할머니",
-      "color": "#C9A7FF",
-      "mood": "happy"
+      "style": "chibi",
+      "look": {
+       "age": "old",
+       "hairdo": "bald",
+       "hair": "#dcdce2",
+       "top": "#6a8f5a",
+       "topKind": "vest",
+       "acc": "cap",
+       "accColor": "#c98a4b"
+      },
+      "mood": "love",
+      "x": 0.35,
+      "size": 1.2
      }
     ]
    }
   },
   {
    "from": "k",
-   "label": "real",
+   "label": "k",
    "gfx": {
     "type": "scene",
-    "bg": "home",
-    "say": {
-     "who": 1,
-     "text": "어머, [사진보다] 훨씬 예쁘네."
-    },
-    "prop": "🌳",
+    "bg": "linear-gradient(180deg,#bfe6ff 0%,#e9f7ff 60%,#9bd27b 60%,#7fbf5f 100%)",
+    "big": "🌸🌳🍁⛄",
+    "chars": []
+   }
+  },
+  {
+   "from": "l",
+   "label": "l",
+   "gfx": {
+    "type": "scene",
+    "bg": "street",
+    "prop": "💐",
+    "propX": 0.5,
     "chars": [
      {
-      "name": "할아버지",
-      "color": "#B9F27C",
-      "mood": "happy"
+      "style": "chibi",
+      "look": {
+       "age": "old",
+       "hairdo": "perm",
+       "hair": "#ececf0",
+       "top": "#ff9eb5",
+       "topKind": "cardigan"
+      },
+      "mood": "happy",
+      "x": 0.3
      },
      {
-      "name": "할머니",
-      "color": "#C9A7FF",
-      "mood": "love"
+      "style": "chibi",
+      "look": {
+       "age": "old",
+       "hairdo": "bald",
+       "hair": "#dcdce2",
+       "top": "#6a8f5a",
+       "topKind": "vest",
+       "acc": "cap",
+       "accColor": "#c98a4b"
+      },
+      "mood": "cry",
+      "x": 0.72
      }
     ]
    }
   },
   {
-   "from": "l",
-   "label": "you",
+   "from": "m",
+   "label": "m",
    "gfx": {
     "type": "scene",
-    "bg": "home",
-    "say": {
-     "who": 0,
-     "text": "그럼 내일부턴, [당신을] 찍어야지."
-    },
-    "prop": "📸",
-    "zoom": 1.08,
-    "focus": 0,
+    "bg": "linear-gradient(180deg,#bfe6ff 0%,#e9f7ff 60%,#9bd27b 60%,#7fbf5f 100%)",
+    "prop": "🌳",
+    "propX": 0.78,
     "chars": [
      {
-      "name": "할아버지",
-      "color": "#B9F27C",
-      "mood": "smug"
-     },
+      "style": "chibi",
+      "look": {
+       "age": "old",
+       "hairdo": "perm",
+       "hair": "#ececf0",
+       "top": "#ff9eb5",
+       "topKind": "cardigan"
+      },
+      "mood": "love",
+      "x": 0.35,
+      "size": 1.2
+     }
+    ]
+   }
+  },
+  {
+   "from": "n",
+   "label": "n",
+   "gfx": {
+    "type": "scene",
+    "bg": "linear-gradient(180deg,#bfe6ff 0%,#e9f7ff 60%,#9bd27b 60%,#7fbf5f 100%)",
+    "chars": [
      {
-      "name": "할머니",
-      "color": "#C9A7FF",
-      "mood": "shy"
+      "style": "chibi",
+      "look": {
+       "age": "old",
+       "hairdo": "perm",
+       "hair": "#ececf0",
+       "top": "#ff9eb5",
+       "topKind": "cardigan"
+      },
+      "mood": "laugh",
+      "size": 1.5
+     }
+    ]
+   }
+  },
+  {
+   "from": "o",
+   "label": "o",
+   "gfx": {
+    "type": "scene",
+    "bg": "linear-gradient(180deg,#bfe6ff 0%,#e9f7ff 60%,#9bd27b 60%,#7fbf5f 100%)",
+    "prop": "📸",
+    "propX": 0.85,
+    "chars": [
+     {
+      "style": "chibi",
+      "look": {
+       "age": "old",
+       "hairdo": "bald",
+       "hair": "#dcdce2",
+       "top": "#6a8f5a",
+       "topKind": "vest",
+       "acc": "cap",
+       "accColor": "#c98a4b"
+      },
+      "mood": "shy",
+      "x": 0.45,
+      "size": 1.45
      }
     ]
    }

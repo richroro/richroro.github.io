@@ -1,6 +1,6 @@
 {
  "titleStyle": "band",
- "captionY": 1640,
+ "captionY": 1580,
  "credit": "영상: Pexels",
  "sources": {
   "selfie": {
@@ -262,7 +262,7 @@
    "crop": [
     0.5,
     0.42,
-    1.25
+    1.0
    ],
    "zoom": [
     1.0,
@@ -275,37 +275,21 @@
   {
    "kind": "circle",
    "x": 540,
-   "y": 820,
+   "y": 1120,
    "r": 330,
    "from": "mirror.뒷벽",
    "to": "mirror.육십"
   },
   {
    "kind": "arrow",
-   "x": 800,
-   "y": 1100,
+   "x": 700,
+   "y": 1150,
    "rot": 200,
    "from": "back.문이",
    "to": "back@end"
   }
  ],
- "stickers": [
-  {
-   "text": "장애인등편의법 시행규칙 [별표 1]",
-   "from": "law.우리",
-   "to": "chair-0.1",
-   "y": 540,
-   "size": 40
-  },
-  {
-   "text": "별표 1 · 9.라.(2) 승강기 거울",
-   "from": "mirror.육십",
-   "to": "rule-0.1",
-   "y": 540,
-   "size": 40,
-   "bg": "#fff"
-  }
- ],
+ "stickers": [],
  "sfx": [
   [
    "myth",
@@ -351,5 +335,24 @@
   "file": "music/sneaky_snitch.mp3",
   "gain": 0.1,
   "start": 0
+ },
+ "frame": "capTall",
+ "capStyle": "info2",
+ "hideCredit": true,
+ "tags": [],
+ "cover": {
+  "src": "selfie",
+  "focus": "50% 45%",
+  "zoom": 1.0,
+  "title": [
+   "엘리베이터 거울이",
+   "[셀카용이 아닌] 진짜 이유"
+  ],
+  "arrow": {
+   "x": 620,
+   "y": 900,
+   "rot": 160,
+   "len": 240
+  }
  }
 }

@@ -1,0 +1,668 @@
+{
+ "captions": true,
+ "maxChars": 22,
+ "credit": "영상: NOAA Ocean Exploration",
+ "sources": {
+  "jelly": {
+   "file": "media/top6/red_jellyfish_poralia.mp4",
+   "credit": "영상: NOAA Ocean Exploration",
+   "desc": "붉은 해파리 Poralia, 2021 North Atlantic Stepping Stones — NOAA Ocean Exploration",
+   "url": "https://oceanexplorer.noaa.gov/multimedia/video-playlist-ex2104-redjelly/"
+  },
+  "bubbles": {
+   "file": "media/top6/methane_bubble_river.mp4",
+   "credit": "영상: NOAA Ocean Exploration",
+   "desc": "가스 거품, Seascape Alaska 2023 — NOAA Ocean Exploration",
+   "url": "https://oceanexplorer.noaa.gov/multimedia/video-playlist-ex2304-bubbles/"
+  },
+  "wreck": {
+   "file": "media/top6/shipwreck_19th_century.mp4",
+   "credit": "영상: NOAA Ocean Exploration",
+   "desc": "19세기 난파선, 멕시코만 2019 — NOAA Ocean Exploration",
+   "url": "https://oceanexplorer.noaa.gov/multimedia/video-playlist-marine-finest/"
+  },
+  "smoker": {
+   "file": "media/top6/black_smoker_marianas.mp4",
+   "credit": "영상: NOAA Ocean Exploration",
+   "desc": "블랙 스모커, 2016 Deepwater Exploration of the Marianas — NOAA Ocean Exploration",
+   "url": "https://oceanexplorer.noaa.gov/multimedia/video-playlist-ex1605-vents/"
+  },
+  "brimstone": {
+   "file": "media/top6/eruption_brimstone_pit.mp4",
+   "credit": "영상: NOAA/PMEL",
+   "desc": "브림스톤 피트 분화, Submarine Ring of Fire 2006 — NOAA/PMEL",
+   "url": "https://oceanexplorer.noaa.gov/multimedia/video-playlist-06rof-brimstone/"
+  },
+  "wreckStill": {
+   "file": "media/top6/shipwreck_19th_century.mp4",
+   "time": 8.0,
+   "credit": "사진: NOAA Ocean Exploration"
+  },
+  "jellyStill": {
+   "file": "media/top6/red_jellyfish_poralia.mp4",
+   "time": 7.0,
+   "credit": "영상: NOAA Ocean Exploration"
+  }
+ },
+ "music": {
+  "gain": 0.24,
+  "duck": 0.6,
+  "xfade": 1.5
+ },
+ "coldOpen": {
+  "lines": [
+   "c1b",
+   "c2d",
+   "c3d",
+   "c3h",
+   "c1e"
+  ],
+  "music": "Deep Haze",
+  "gap": 0.5,
+  "min": 20
+ },
+ "titleCard": {
+  "dur": 3,
+  "kicker": "심해 다큐",
+  "title": [
+   "수심 4,000m",
+   "아무도 몰랐던 세계"
+  ],
+  "bg": {
+   "type": "footage",
+   "src": "jelly",
+   "in": 5
+  }
+ },
+ "chapterCard": {
+  "dur": 2
+ },
+ "chapters": {
+  "c1": {
+   "music": "Investigations",
+   "ambience": {
+    "name": "deep",
+    "gain": 0.18
+   },
+   "shots": [
+    {
+     "type": "footage",
+     "src": "bubbles",
+     "in": 6.0,
+     "crop": [
+      0.5,
+      0.5,
+      1.0
+     ],
+     "push": [
+      1.0,
+      1.08
+     ]
+    },
+    {
+     "at": "c1a.햇빛",
+     "type": "card",
+     "kind": "fact",
+     "label": "햇빛이 거의 사라지는 깊이",
+     "big": "200m",
+     "bg": "bubbles",
+     "fade": 0.4
+    },
+    {
+     "at": "c1b",
+     "type": "footage",
+     "src": "jelly",
+     "in": 0.5,
+     "push": [
+      1.04,
+      1.0
+     ],
+     "fade": 0.4
+    },
+    {
+     "at": "c1c",
+     "type": "card",
+     "kind": "fact",
+     "label": "바다의 평균 깊이",
+     "big": "약 [3,700m]",
+     "sub": "가장 깊은 곳은 1만 1천m 가까이",
+     "bg": "jelly",
+     "bgIn": 6,
+     "fade": 0.4
+    },
+    {
+     "at": "c1d",
+     "type": "card",
+     "kind": "map",
+     "center": [
+      140,
+      22
+     ],
+     "span": 70,
+     "label": "[마리아나 해구]",
+     "fade": 0.4,
+     "dots": [
+      {
+       "lon": 127.8,
+       "lat": 36.4,
+       "label": "한국",
+       "at": 0.2
+      },
+      {
+       "lon": 142.2,
+       "lat": 11.35,
+       "label": "마리아나 해구",
+       "at": 1.0
+      }
+     ],
+     "arrows": [
+      {
+       "from": [
+        127.8,
+        36.4
+       ],
+       "to": [
+        142.2,
+        11.35
+       ],
+       "at": 0.6,
+       "dashed": true
+      }
+     ]
+    },
+    {
+     "at": "c1e",
+     "type": "footage",
+     "src": "smoker",
+     "in": 8.5,
+     "crop": [
+      0.45,
+      0.5,
+      1.1
+     ],
+     "fade": 0.4
+    },
+    {
+     "at": "c1f",
+     "type": "footage",
+     "src": "bubbles",
+     "in": 0.5,
+     "fade": 0.4
+    },
+    {
+     "at": "c1f2",
+     "type": "card",
+     "kind": "fact",
+     "label": "수심 4,000m의 수압",
+     "big": "지상의 [400배]",
+     "sub": "손톱만 한 넓이에 약 400kg",
+     "bg": "smoker",
+     "bgIn": 2,
+     "fade": 0.4,
+     "revealAt": "c1f2.400배"
+    },
+    {
+     "at": "c1g",
+     "type": "photo",
+     "src": "wreckStill",
+     "kb": {
+      "from": [
+       0.5,
+       0.5,
+       1.0
+      ],
+      "to": [
+       0.42,
+       0.55,
+       1.18
+      ]
+     },
+     "fade": 0.5,
+     "lower": "2019 · 멕시코만"
+    }
+   ],
+   "sfx": [
+    [
+     "c1a.햇빛",
+     "pop",
+     0.35
+    ],
+    [
+     "c1c",
+     "pop",
+     0.35
+    ],
+    [
+     "c1f2.400배",
+     "pop",
+     0.35
+    ]
+   ]
+  },
+  "c2": {
+   "music": "Clean Soul",
+   "shots": [
+    {
+     "type": "post",
+     "board": "심해 탐사 썰",
+     "title": "탐사선에서 밤샘하다가 [소름] 돋은 썰",
+     "body": [
+      "새벽 세 시, 모니터에",
+      "하얀 그림자가 지나갔다"
+     ],
+     "meta": "익명 · 창작 썰",
+     "chars": [
+      {
+       "color": "#FFD84D",
+       "mood": "shock"
+      }
+     ],
+     "steps": [
+      "c2a.모니터",
+      "c2b"
+     ]
+    },
+    {
+     "at": "c2c",
+     "type": "scene",
+     "bg": "desk",
+     "place": "📍 탐사선 관제실",
+     "chars": [
+      {
+       "name": "민지",
+       "color": "#FFD84D",
+       "mood": "sleep",
+       "to": "shock",
+       "x": 0.3
+      }
+     ],
+     "turn": "c2c.하얀",
+     "prop": "👻",
+     "propX": 0.62,
+     "propAt": "c2c.하얀",
+     "fade": 0.3
+    },
+    {
+     "at": "c2d",
+     "type": "scene",
+     "bg": "office",
+     "place": "📍 탐사선 관제실",
+     "zoom": 1.06,
+     "focus": 0,
+     "chars": [
+      {
+       "name": "민지",
+       "color": "#FFD84D",
+       "mood": "shock"
+      },
+      {
+       "name": "선배",
+       "color": "#8FD3FF",
+       "mood": "sleep",
+       "to": "smug",
+       "flip": true
+      }
+     ],
+     "turn": "c2e",
+     "says": [
+      {
+       "who": 0,
+       "line": "c2d"
+      },
+      {
+       "who": 1,
+       "line": "c2e"
+      }
+     ]
+    },
+    {
+     "at": "c2f",
+     "type": "card",
+     "kind": "text",
+     "text": "[바다 눈]\n위에서 천천히 가라앉는 유기물 부스러기",
+     "bg": "jelly",
+     "bgIn": 2,
+     "fade": 0.3
+    },
+    {
+     "at": "c2g0",
+     "type": "card",
+     "kind": "doc",
+     "title": "탐사선 야간 근무 수칙",
+     "lines": [
+      "1. 모니터에서 눈을 떼지 말 것",
+      "2. 이상한 것을 보면 반드시 {기록}할 것",
+      "3. 새벽 영상은 다음 날 [다 같이] 볼 것"
+     ],
+     "steps": [
+      0.2,
+      "c2g0.이상한",
+      "c2g0@end-0.2"
+     ],
+     "page": "1쪽",
+     "bg": "wreck",
+     "bgIn": 2,
+     "fade": 0.3
+    },
+    {
+     "at": "c2g",
+     "type": "scene",
+     "bg": "night",
+     "chars": [
+      {
+       "name": "민지",
+       "color": "#FFD84D",
+       "mood": "think"
+      }
+     ],
+     "chat": {
+      "title": "탐사팀 (5)",
+      "msgs": [
+       {
+        "me": true,
+        "text": "이거 뭐예요?? 👻",
+        "at": "c2g.단톡방"
+       },
+       {
+        "name": "팀장",
+        "color": "#B9F27C",
+        "text": "잠깐만",
+        "at": "c2g@end+0.2"
+       },
+       {
+        "name": "팀장",
+        "color": "#B9F27C",
+        "text": "내일 다 같이 [돌려 보자]",
+        "at": "c2h"
+       }
+      ]
+     }
+    },
+    {
+     "at": "c2h.다음",
+     "type": "scene",
+     "bg": "office",
+     "card": "다음 날 아침...",
+     "chars": [
+      {
+       "color": "#FFD84D",
+       "mood": "neutral"
+      },
+      {
+       "color": "#8FD3FF",
+       "mood": "shock"
+      },
+      {
+       "color": "#B9F27C",
+       "mood": "think"
+      }
+     ]
+    },
+    {
+     "at": "c2h.팀",
+     "type": "scene",
+     "bg": "office",
+     "chars": [
+      {
+       "name": "민지",
+       "color": "#FFD84D",
+       "mood": "smug"
+      },
+      {
+       "name": "선배",
+       "color": "#8FD3FF",
+       "mood": "shock"
+      },
+      {
+       "name": "팀장",
+       "color": "#B9F27C",
+       "mood": "think"
+      }
+     ],
+     "big": "정체는 [???]",
+     "bigAt": "c2h.돌려"
+    }
+   ],
+   "sfx": [
+    [
+     "c2c.하얀",
+     "k_question_001",
+     0.4
+    ],
+    [
+     "c2d",
+     "pop",
+     0.4
+    ]
+   ]
+  },
+  "c3": {
+   "music": "Gathering Darkness",
+   "musicCuts": [
+    {
+     "at": "c3p",
+     "dur": 1.8
+    }
+   ],
+   "sfx": [
+    [
+     "c3a",
+     "whoosh",
+     0.45
+    ],
+    [
+     "c3c",
+     "whoosh",
+     0.45
+    ],
+    [
+     "c3e",
+     "whoosh",
+     0.45
+    ],
+    [
+     "c3f",
+     "whoosh",
+     0.45
+    ],
+    [
+     "c3h",
+     "boom",
+     0.4
+    ]
+   ],
+   "shots": [
+    {
+     "type": "card",
+     "kind": "grid",
+     "title": "바닷속 소름 [TOP 5]",
+     "items": [
+      {
+       "icon": "🪼",
+       "label": "붉은 해파리"
+      },
+      {
+       "icon": "🫧",
+       "label": "가스의 강"
+      },
+      {
+       "icon": "⛵",
+       "label": "19세기 난파선"
+      },
+      {
+       "icon": "🌑",
+       "label": "검은 굴뚝"
+      },
+      {
+       "icon": "🌋",
+       "label": "바닷속 화산"
+      }
+     ],
+     "cols": 5,
+     "focus": 0,
+     "zoomAt": "c30.5위"
+    },
+    {
+     "at": "c3a",
+     "type": "relayout",
+     "short": "top6",
+     "parts": [
+      0,
+      1
+     ],
+     "fade": 0.3,
+     "lowerThirds": false,
+     "badge": "5위",
+     "lower": "이름 없는 심해 해파리"
+    },
+    {
+     "at": "c3c",
+     "type": "relayout",
+     "short": "top6",
+     "parts": [
+      2,
+      3
+     ],
+     "fade": 0.3,
+     "lowerThirds": false,
+     "badge": "4위",
+     "lower": "바위 밑 가스의 강"
+    },
+    {
+     "at": "c3e",
+     "type": "relayout",
+     "short": "top6",
+     "parts": [
+      4,
+      5
+     ],
+     "fade": 0.3,
+     "lowerThirds": false,
+     "badge": "3위",
+     "lower": "우연히 찾은 난파선"
+    },
+    {
+     "at": "c3f",
+     "type": "relayout",
+     "short": "top6",
+     "parts": [
+      6,
+      7
+     ],
+     "fade": 0.3,
+     "lowerThirds": false,
+     "badge": "2위",
+     "lower": "검은 연기 뿜는 굴뚝"
+    },
+    {
+     "at": "c3p",
+     "type": "card",
+     "kind": "grid",
+     "title": "바닷속 소름 [TOP 5]",
+     "items": [
+      {
+       "icon": "🪼",
+       "label": "붉은 해파리"
+      },
+      {
+       "icon": "🫧",
+       "label": "가스의 강"
+      },
+      {
+       "icon": "⛵",
+       "label": "19세기 난파선"
+      },
+      {
+       "icon": "🌑",
+       "label": "검은 굴뚝"
+      },
+      {
+       "icon": "🌋",
+       "label": "바닷속 화산"
+      }
+     ],
+     "cols": 5,
+     "done": [
+      0,
+      1,
+      2,
+      3
+     ],
+     "circle": 4,
+     "circleAt": 0.3,
+     "fade": 0.2
+    },
+    {
+     "at": "c3h",
+     "type": "card",
+     "kind": "rank",
+     "total": 5,
+     "title": "소름 TOP 5",
+     "n": 1,
+     "label": "사상 첫 해저 화산 분화",
+     "bg": "brimstone",
+     "fade": 0.2
+    },
+    {
+     "at": "c3h.사람이",
+     "type": "relayout",
+     "short": "top6",
+     "parts": [
+      8,
+      9,
+      10
+     ],
+     "fade": 0.3,
+     "lowerThirds": false,
+     "badge": "1위",
+     "lower": "사상 첫 해저 화산 분화"
+    }
+   ]
+  },
+  "c4": {
+   "music": "Lost Frontier",
+   "shots": [
+    {
+     "type": "footage",
+     "src": "wreck",
+     "in": 6.0,
+     "crop": [
+      0.45,
+      0.5,
+      1.05
+     ]
+    }
+   ]
+  }
+ },
+ "outro": {
+  "dur": 20,
+  "music": "Lost Frontier",
+  "label": "다음 영상",
+  "bg": {
+   "type": "footage",
+   "src": "smoker",
+   "in": 0,
+   "speed": 0.6
+  }
+ },
+ "thumb": {
+  "lines": [
+   "수심 4,000m에서",
+   "[찍힌] 것들"
+  ],
+  "tag": "심해 다큐",
+  "src": "jellyStill",
+  "crop": [
+   0.5,
+   0.5,
+   1.0
+  ],
+  "circle": {
+   "x": 655,
+   "y": 215,
+   "r": 145
+  },
+  "valign": "bottom"
+ }
+}

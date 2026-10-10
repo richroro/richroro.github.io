@@ -71,7 +71,7 @@ def spoken_form(word):
     w = re.sub(r"(\d),(\d)", r"\1\2", word)
     return "".join(SYL.findall(re.sub(r"\d+", lambda m: read_num(int(m.group())), w)))
 
-def caption_pages(tl, caps):
+def caption_pages(tl, caps, grouped=False):
     pages = []
     for L in tl["lines"]:
         groups = [(ci, words_of(p)) for ci, cap in enumerate(caps[L["id"]]) for p in cap.split("/") if p.strip()]
@@ -96,7 +96,7 @@ def caption_pages(tl, caps):
             toks = []
             for w in p:
                 toks.append({"text": w["text"], "key": w["key"], **({"red": True} if w.get("red") else {}), "fromMs": round((L["start"] + times[wi]) * 1000)}); wi += 1
-            pages.append({"tokens": toks, "lineEndMs": round((L["start"] + L["dur"]) * 1000)})
+            pages.append({"tokens": toks, "lineEndMs": round((L["start"] + L["dur"]) * 1000), **({"g": f"{L['id']}:{ci}"} if grouped else {})})
     for i, p in enumerate(pages):
         nxt = pages[i + 1]["tokens"][0]["fromMs"] if i + 1 < len(pages) else 10 ** 9
         p["startMs"] = p["tokens"][0]["fromMs"]
@@ -176,7 +176,7 @@ def prep(sid):
     data = {
         "id": sid, "end": tl["end"], "title": script["title"], "credit": edit["credit"],
         "lines": [{"id": L["id"], "start": L["start"], "dur": L["dur"]} for L in tl["lines"]],
-        "pages": caption_pages(tl, caps), "env": [round(float(v), 3) for v in sm], "clips": clips,
+        "pages": caption_pages(tl, caps, edit.get("layout") == "teuk"), "env": [round(float(v), 3) for v in sm], "clips": clips,
         "moments": [{"from": round(at(m["from"]), 3), "to": round(at(m["to"]), 3), "gain": m.get("gain", 1.0)} for m in edit.get("moments", [])],
         "stickers": [{"text": s["text"], "from": round(at(s["from"]), 3), "to": round(at(s["to"]), 3), "x": s.get("x", 540), "y": s.get("y", 560),
                       "rot": s.get("rot", -3), "bg": s.get("bg", "#FFE14D"), "fg": s.get("fg", "#111"), "size": s.get("size", 46)} for s in edit.get("stickers", [])],
@@ -195,10 +195,17 @@ def prep(sid):
         if edit.get(k) is not None: data[k] = edit[k]
     if edit.get("capBox"): data["capBox"] = edit["capBox"]  # captions in a box over the picture's bottom (src/lib/CapBox.tsx)
     if edit.get("hookTo") is not None: data["hookTo"] = round(at(edit["hookTo"]), 3)
+    if edit.get("postFrame"):  # 썰 v2 (src/lib/PostFrame.tsx): the whole short is a post; its body is each line's caption, one row per "/" page
+        body = [{"from": round(L["start"] - 0.05 if i else 0.0, 3), "text": "\n".join(p.strip() for c in caps[L["id"]] for p in c.split("/") if p.strip())} for i, L in enumerate(tl["lines"])]
+        data["postFrame"] = {**edit["postFrame"], "body": [b for b in body if b["text"]]}
+    for k in ("layout", "teuk"):  # "teuk": the "○○ 특" v2 look (src/lib/Teuk.tsx); its caption pages carry "g", the script caption they belong to
+        if edit.get(k) is not None: data[k] = edit[k]
     if ranks: data["ranks"] = {"rows": ranks, **({"y": edit["rankY"]} if edit.get("rankY") else {})}
     if edit.get("marks"):
         data["marks"] = [{**{k: m[k] for k in ("kind", "x", "y", "r", "rot", "color") if k in m}, "from": round(at(m["from"]), 3), "to": round(at(m["to"]), 3)}
                          for m in edit["marks"]]
+    if any(k in edit for k in ("cover", "capStyle", "hideCredit", "tags")):  # 정보 쇼츠 v2 (info2_prep.py)
+        import info2_prep; info2_prep.extend(data, edit, script, sid, pub, at)
     os.makedirs(f"{HERE}/src/data", exist_ok=True)
     json.dump(data, open(f"{HERE}/src/data/{sid}.json", "w"), ensure_ascii=False)
     real = sum(1 for c in clips if c["file"])

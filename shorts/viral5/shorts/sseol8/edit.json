@@ -1,344 +1,431 @@
 {
  "credit": "",
- "titleStyle": "band",
- "captionY": 1650,
+ "postFrame": {
+  "app": "썰방",
+  "color": "#FF8A4C",
+  "meta": "익명 | 창작 사연게시판"
+ },
  "sources": {},
  "music": {
   "file": "music/hyperfun.mp3",
-  "gain": 0.2,
+  "gain": 0.15,
   "start": 0
  },
  "sfx": [
   [
-   "b.한참",
-   "pop",
-   0.3
-  ],
-  [
    "c",
-   "k_question_001",
-   0.3
-  ],
-  [
-   "d.공통점이",
-   "pop_hi",
-   0.3
-  ],
-  [
-   "e.초인종을",
    "ding",
-   0.35
-  ],
-  [
-   "e.빵",
-   "boing",
    0.3
   ],
   [
-   "f.눌러",
-   "click",
-   0.4
-  ],
-  [
-   "f@end+0.05",
+   "g",
    "ding",
-   0.4
-  ],
-  [
-   "g.사랑해요",
-   "pop_hi",
-   0.3
-  ],
-  [
-   "h.조카",
-   "k_error_003",
    0.3
   ],
   [
    "i",
-   "bubble",
-   0.3
+   "k_error_003",
+   0.2
   ],
   [
-   "j",
-   "whoosh",
-   0.3
-  ],
-  [
-   "j.사탕",
+   "m",
    "pop",
-   0.3
+   0.25
   ],
   [
-   "k",
+   "o",
    "tada",
-   0.3
+   0.25
   ]
  ],
  "clips": [
   {
    "from": "a",
-   "label": "post",
+   "label": "a",
    "gfx": {
-    "type": "post",
-    "title": "택배 기사님들이 우리 집 앞에서 [자꾸 웃음]",
-    "body": [
-     "현관 카메라 보면",
-     "다들 [한참 웃다가] 감"
-    ],
-    "steps": [
-     "a.기사님들이",
-     "a.웃는다"
-    ],
+    "type": "scene",
+    "bg": "door",
+    "sign": "302호",
+    "prop": "📦",
+    "propX": 0.5,
     "chars": [
      {
+      "style": "chibi",
+      "look": {
+       "hairdo": "short",
+       "hair": "#2a2a30",
+       "top": "#5a8f6a",
+       "topKind": "vest",
+       "acc": "cap",
+       "accColor": "#5a8f6a"
+      },
       "name": "기사님",
       "mood": "laugh",
-      "color": "#8FD3FF",
-      "hat": "📦"
+      "x": 0.3,
+      "size": 1.1
      }
     ]
    }
   },
   {
    "from": "b",
-   "label": "laugh",
+   "label": "b",
    "gfx": {
     "type": "scene",
+    "bg": "home",
+    "prop": "📱",
+    "propX": 0.72,
     "chars": [
      {
-      "name": "기사님",
-      "mood": "laugh",
-      "color": "#8FD3FF",
-      "hat": "📦"
+      "style": "chibi",
+      "look": {
+       "hairdo": "bun",
+       "hair": "#3a2622",
+       "top": "#c9a7ff",
+       "topKind": "hoodie"
+      },
+      "mood": "think",
+      "x": 0.3,
+      "size": 1.15
      }
-    ],
-    "place": "📍 우리 집 현관",
-    "prop": "📦",
-    "bg": "door"
+    ]
    }
   },
   {
    "from": "c",
-   "label": "why",
+   "label": "c",
    "gfx": {
     "type": "scene",
+    "bg": "door",
+    "sign": "302호",
+    "prop": "🔔",
+    "propX": 0.84,
     "chars": [
      {
-      "name": "나",
-      "mood": "think"
+      "style": "chibi",
+      "look": {
+       "hairdo": "short",
+       "hair": "#2a2a30",
+       "top": "#5a8f6a",
+       "topKind": "vest",
+       "acc": "cap",
+       "accColor": "#5a8f6a"
+      },
+      "mood": "happy",
+      "x": 0.3,
+      "size": 1.1
      }
-    ],
-    "prop": "🚪",
-    "say": {
-     "who": 0,
-     "text": "우⁠리 집 문⁠에 [⁠뭐 묻⁠었⁠나⁠?⁠]"
-    },
-    "bg": "home"
+    ]
    }
   },
   {
    "from": "d",
-   "label": "replay",
+   "label": "d",
    "gfx": {
     "type": "scene",
+    "bg": "door",
+    "sign": "302호",
+    "prop": "👋",
+    "propX": 0.84,
     "chars": [
      {
-      "name": "나",
-      "mood": "think",
-      "to": "shock"
+      "style": "chibi",
+      "look": {
+       "hairdo": "short",
+       "hair": "#2a2a30",
+       "top": "#5a8f6a",
+       "topKind": "vest",
+       "acc": "cap",
+       "accColor": "#5a8f6a"
+      },
+      "mood": "laugh",
+      "size": 1.5
      }
-    ],
-    "prop": "📱",
-    "steps": [
-     0,
-     0.1,
-     "d.공통점이"
-    ],
-    "bg": "home"
+    ]
    }
   },
   {
    "from": "e",
-   "label": "bell",
+   "label": "e",
    "gfx": {
     "type": "scene",
+    "bg": "door",
+    "sign": "302호",
     "chars": [
      {
-      "name": "기사님",
-      "mood": "neutral",
-      "color": "#8FD3FF",
-      "hat": "📦",
-      "to": "laugh"
+      "style": "chibi",
+      "look": {
+       "hairdo": "bun",
+       "hair": "#3a2622",
+       "top": "#c9a7ff",
+       "topKind": "hoodie"
+      },
+      "mood": "think",
+      "x": 0.3,
+      "size": 1.2
      }
-    ],
-    "prop": "🔔",
-    "steps": [
-     0,
-     "e.초인종을",
-     "e.빵"
-    ],
-    "bg": "door"
+    ]
    }
   },
   {
    "from": "f",
-   "label": "try",
+   "label": "f",
    "gfx": {
     "type": "scene",
+    "bg": "door",
+    "sign": "302호",
+    "prop": "❓",
+    "propX": 0.75,
     "chars": [
      {
-      "name": "나",
-      "mood": "think"
+      "style": "chibi",
+      "look": {
+       "hairdo": "bun",
+       "hair": "#3a2622",
+       "top": "#c9a7ff",
+       "topKind": "hoodie"
+      },
+      "mood": "shock",
+      "x": 0.25,
+      "size": 1.0
      }
-    ],
-    "place": "📍 현관",
-    "prop": "🔔",
-    "steps": [
-     0,
-     "f.눌러"
-    ],
-    "bg": "door"
+    ]
    }
   },
   {
    "from": "g",
-   "label": "voice",
+   "label": "g",
    "gfx": {
     "type": "scene",
+    "bg": "door",
+    "sign": "302호",
+    "prop": "👆",
+    "propX": 0.85,
     "chars": [
      {
-      "name": "나",
+      "style": "chibi",
+      "look": {
+       "hairdo": "bun",
+       "hair": "#3a2622",
+       "top": "#c9a7ff",
+       "topKind": "hoodie"
+      },
       "mood": "neutral",
-      "to": "shock"
+      "x": 0.3,
+      "size": 1.2
      }
-    ],
-    "prop": "🔔",
-    "zoom": 1.08,
-    "focus": 0,
-    "steps": [
-     0,
-     0,
-     "g.사랑해요"
-    ],
-    "bg": "door"
+    ]
    }
   },
   {
    "from": "h",
-   "label": "culprit",
+   "label": "h",
    "gfx": {
     "type": "scene",
-    "chars": [
-     {
-      "name": "나",
-      "mood": "shock"
-     },
-     {
-      "name": "조카",
-      "mood": "smug",
-      "color": "#B9F27C",
-      "size": 0.72
-     }
-    ],
-    "big": "범인 [5살]",
+    "bg": "door",
+    "sign": "302호",
+    "big": "🔔 [♥]",
     "steps": [
      0,
      0,
      9,
-     "h.조카"
+     0.1
     ],
-    "bg": "home"
-   }
-  },
-  {
-   "from": "h.놀러",
-   "label": "record",
-   "gfx": {
-    "type": "scene",
-    "chars": [
-     {
-      "name": "나",
-      "mood": "laugh"
-     },
-     {
-      "name": "조카",
-      "mood": "happy",
-      "color": "#B9F27C",
-      "size": 0.72
-     }
-    ],
-    "prop": "🎙️",
-    "steps": [
-     0,
-     "h.녹음해"
-    ],
-    "bg": "home"
+    "chars": []
    }
   },
   {
    "from": "i",
-   "label": "because",
+   "label": "i",
    "gfx": {
     "type": "scene",
+    "bg": "home",
+    "prop": "🎙️",
+    "propX": 0.84,
     "chars": [
      {
-      "name": "나",
-      "mood": "love"
-     },
-     {
+      "style": "chibi",
+      "look": {
+       "age": "kid",
+       "hairdo": "pigtails",
+       "hair": "#3a2622",
+       "top": "#ffd84d",
+       "topKind": "dress"
+      },
       "name": "조카",
-      "mood": "happy",
-      "color": "#B9F27C",
-      "size": 0.72
+      "mood": "smug",
+      "x": 0.5,
+      "size": 1.2
      }
-    ],
-    "say": {
-     "who": 1,
-     "text": "기⁠사⁠님⁠들 [⁠힘⁠드⁠니⁠까⁠!⁠]"
-    },
-    "bg": "home"
+    ]
    }
   },
   {
    "from": "j",
-   "label": "candy",
+   "label": "j",
    "gfx": {
     "type": "scene",
+    "bg": "home",
     "chars": [
      {
-      "name": "나",
-      "mood": "shock"
+      "style": "chibi",
+      "look": {
+       "hairdo": "bun",
+       "hair": "#3a2622",
+       "top": "#c9a7ff",
+       "topKind": "hoodie"
+      },
+      "mood": "shock",
+      "x": 0.3
+     },
+     {
+      "style": "chibi",
+      "look": {
+       "age": "kid",
+       "hairdo": "pigtails",
+       "hair": "#3a2622",
+       "top": "#ffd84d",
+       "topKind": "dress"
+      },
+      "mood": "happy",
+      "x": 0.72,
+      "size": 0.85
      }
-    ],
-    "place": "📍 다음 날",
-    "prop": "🍬📝",
-    "steps": [
-     0,
-     "j.사탕"
-    ],
-    "bg": "door"
+    ]
    }
   },
   {
    "from": "k",
-   "label": "reply",
+   "label": "k",
    "gfx": {
     "type": "scene",
+    "bg": "home",
     "chars": [
      {
-      "name": "기사님",
-      "mood": "love",
-      "color": "#8FD3FF",
-      "hat": "📦"
+      "style": "chibi",
+      "look": {
+       "age": "kid",
+       "hairdo": "pigtails",
+       "hair": "#3a2622",
+       "top": "#ffd84d",
+       "topKind": "dress"
+      },
+      "mood": "shy",
+      "size": 1.5
      }
+    ]
+   }
+  },
+  {
+   "from": "l",
+   "label": "l",
+   "gfx": {
+    "type": "scene",
+    "bg": "home",
+    "chars": [
+     {
+      "style": "chibi",
+      "look": {
+       "hairdo": "bun",
+       "hair": "#3a2622",
+       "top": "#c9a7ff",
+       "topKind": "hoodie"
+      },
+      "mood": "love",
+      "x": 0.45,
+      "size": 1.35
+     }
+    ]
+   }
+  },
+  {
+   "from": "m",
+   "label": "m",
+   "gfx": {
+    "type": "scene",
+    "bg": "door",
+    "sign": "302호",
+    "prop": "🛍️",
+    "propX": 0.62,
+    "chars": [
+     {
+      "style": "chibi",
+      "look": {
+       "hairdo": "bun",
+       "hair": "#3a2622",
+       "top": "#c9a7ff",
+       "topKind": "hoodie"
+      },
+      "mood": "shock",
+      "x": 0.25
+     }
+    ]
+   }
+  },
+  {
+   "from": "n",
+   "label": "n",
+   "gfx": {
+    "type": "scene",
+    "bg": "home",
+    "prop": "🍭💌",
+    "propX": 0.72,
+    "chars": [
+     {
+      "style": "chibi",
+      "look": {
+       "age": "kid",
+       "hairdo": "pigtails",
+       "hair": "#3a2622",
+       "top": "#ffd84d",
+       "topKind": "dress"
+      },
+      "mood": "shock",
+      "x": 0.3,
+      "size": 1.1
+     }
+    ]
+   }
+  },
+  {
+   "from": "o",
+   "label": "o",
+   "gfx": {
+    "type": "scene",
+    "bg": "home",
+    "big": "💌 [사랑해]",
+    "steps": [
+     0,
+     0,
+     9,
+     0.1
     ],
-    "prop": "🍬",
-    "say": {
-     "who": 0,
-     "text": "[⁠나⁠도 사⁠랑⁠해⁠] ♥ - 택⁠배 아⁠저⁠씨"
-    },
-    "bg": "door"
+    "chars": []
+   }
+  },
+  {
+   "from": "p",
+   "label": "p",
+   "gfx": {
+    "type": "scene",
+    "bg": "home",
+    "prop": "🎙️",
+    "propX": 0.84,
+    "chars": [
+     {
+      "style": "chibi",
+      "look": {
+       "age": "kid",
+       "hairdo": "pigtails",
+       "hair": "#3a2622",
+       "top": "#ffd84d",
+       "topKind": "dress"
+      },
+      "mood": "love",
+      "x": 0.45,
+      "size": 1.45
+     }
+    ]
    }
   }
  ]

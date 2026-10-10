@@ -1,35 +1,8 @@
 {
  "titleStyle": "band",
- "captionY": 1640,
+ "captionY": 1580,
  "credit": "영상: Pexels",
  "sources": {
-  "b2": {
-   "file": "bic02.jpg",
-   "credit": "사진: Trounce (CC BY 3.0)",
-   "label": "02-BICcristal2008-03-26.jpg by Trounce, Wikimedia Commons (CC BY 3.0, dual-licensed with GFDL)",
-   "url": "https://commons.wikimedia.org/wiki/File:02-BICcristal2008-03-26.jpg",
-   "creator": "Trounce (Wikimedia Commons)",
-   "license": "CC BY 3.0 (dual-licensed with GFDL 1.2+; CC BY 3.0 chosen)",
-   "file_url": "https://upload.wikimedia.org/wikipedia/commons/"
-  },
-  "b4": {
-   "file": "bic04.jpg",
-   "credit": "사진: Trounce (CC BY 3.0)",
-   "label": "04-BICcristal2008-03-26.jpg by Trounce, Wikimedia Commons (CC BY 3.0, dual-licensed with GFDL)",
-   "url": "https://commons.wikimedia.org/wiki/File:04-BICcristal2008-03-26.jpg",
-   "creator": "Trounce (Wikimedia Commons)",
-   "license": "CC BY 3.0 (dual-licensed with GFDL 1.2+; CC BY 3.0 chosen)",
-   "file_url": "https://upload.wikimedia.org/wikipedia/commons/"
-  },
-  "b5": {
-   "file": "bic05.jpg",
-   "credit": "사진: Trounce (CC BY 3.0)",
-   "label": "05-BICcristal2008-03-26.jpg by Trounce, Wikimedia Commons (CC BY 3.0, dual-licensed with GFDL)",
-   "url": "https://commons.wikimedia.org/wiki/File:05-BICcristal2008-03-26.jpg",
-   "creator": "Trounce (Wikimedia Commons)",
-   "license": "CC BY 3.0 (dual-licensed with GFDL 1.2+; CC BY 3.0 chosen)",
-   "file_url": "https://upload.wikimedia.org/wikipedia/commons/"
-  },
   "chew": {
    "file": "px6878203.mp4",
    "credit": "영상: Pexels",
@@ -85,27 +58,43 @@
    "url": "https://www.pexels.com/video/assorted-pens-on-wooden-desk-6324531/",
    "creator": "Vanessa Garcia",
    "license": "Pexels License"
+  },
+  "cap": {
+   "file": "cap_drawn.png",
+   "credit": "그림: 직접 그림",
+   "label": "Ballpoint pen cap with the ventilation hole, our own drawing (media/info2/draw_cap.py)",
+   "url": "https://github.com/richroro/richroro.github.io/blob/main/shorts/viral5/media/info2/draw_cap.py",
+   "license": "our own drawing"
+  },
+  "pens": {
+   "file": "ph983826.jpg",
+   "credit": "사진: Pexels",
+   "label": "Pexels photo 983826 'Three ball point pens' by Jess Bailey Designs (Pexels License)",
+   "url": "https://www.pexels.com/photo/three-ball-point-pens-983826/",
+   "license": "Pexels License (free to use; checked on the item page 2026-10-10)",
+   "fileUrl": "https://images.pexels.com/photos/983826/pexels-photo-983826.jpeg?w=1920",
+   "creator": "Jess Bailey Designs"
   }
  },
  "clips": [
   {
-   "src": "b5",
+   "src": "cap",
    "from": "hook",
-   "label": "볼펜 뚜껑 끝 구멍",
+   "label": "뚜껑 끝 구멍 (그림)",
    "zoom": [
     1.0,
     1.05
    ],
    "audio": 0,
    "crop": [
-    0.84,
-    0.55,
-    2.2
+    0.5,
+    0.2475,
+    1.6
    ]
   },
   {
    "src": "write",
-   "from": "hook.잉크",
+   "from": "ink",
    "label": "필기",
    "zoom": [
     1.0,
@@ -136,19 +125,30 @@
    ]
   },
   {
-   "src": "b2",
+   "src": "pens",
    "from": "no.국제표준",
-   "label": "볼펜 뚜껑",
+   "label": "볼펜",
    "zoom": [
     1.0,
     1.05
    ],
    "audio": 0,
    "crop": [
-    0.78,
-    0.55,
-    1.8
+    0.45,
+    0.5,
+    1.0
    ]
+  },
+  {
+   "src": "cap",
+   "from": "no.적혀",
+   "crop": [
+    0.5,
+    0.5,
+    1.0
+   ],
+   "label": "뚜껑 (그림)",
+   "audio": 0
   },
   {
    "src": "kid",
@@ -199,47 +199,47 @@
    ]
   },
   {
-   "src": "b4",
+   "src": "cap",
    "from": "rule.뚜껑을",
-   "label": "뚜껑",
+   "label": "뚜껑 (그림)",
    "zoom": [
     1.0,
     1.05
    ],
    "audio": 0,
    "crop": [
-    0.75,
-    0.7,
-    1.5
+    0.5,
+    0.5,
+    1.0
    ]
   },
   {
-   "src": "b5",
+   "src": "cap",
    "from": "num",
-   "label": "뚜껑 끝 구멍",
+   "label": "뚜껑 끝 구멍 (그림)",
    "zoom": [
     1.0,
     1.03
    ],
    "audio": 0,
    "crop": [
-    0.82,
-    0.55,
-    2.2
+    0.5,
+    0.2475,
+    1.6
    ]
   },
   {
-   "src": "b2",
+   "src": "cap",
    "from": "num.지름",
-   "label": "구멍 확대",
+   "label": "구멍 확대 (그림)",
    "zoom": [
     1.0,
     1.03
    ],
    "audio": 0,
    "crop": [
-    0.9,
-    0.6,
+    0.5,
+    0.2475,
     3.0
    ]
   },
@@ -327,53 +327,31 @@
  "marks": [
   {
    "kind": "circle",
-   "x": 860,
-   "y": 1115,
+   "x": 540,
+   "y": 1050,
    "r": 110,
-   "from": "hook",
-   "to": "hook.잉크"
+   "from": "hook+0.3",
+   "to": "ink-0.1"
   },
   {
    "kind": "circle",
-   "x": 900,
-   "y": 1000,
-   "r": 120,
-   "from": "num",
-   "to": "num.지름"
+   "x": 540,
+   "y": 1050,
+   "r": 110,
+   "from": "num+0.2",
+   "to": "num.지름-0.1"
   },
   {
    "kind": "arrow",
-   "x": 760,
-   "y": 1000,
+   "x": 540,
+   "y": 1159,
+   "r": 220,
    "rot": 200,
-   "from": "num.지름",
-   "to": "num@end"
+   "from": "num.지름+0.1",
+   "to": "time-0.1"
   }
  ],
- "stickers": [
-  {
-   "text": "ISO 11540:2021 (14세 이하용 펜 뚜껑)",
-   "from": "no.국제표준",
-   "to": "why-0.1",
-   "y": 540,
-   "size": 38,
-   "bg": "#fff"
-  },
-  {
-   "text": "최소 8 L/분 · 구멍 약 3.4mm²",
-   "from": "num",
-   "to": "time-0.1",
-   "y": 540,
-   "size": 40
-  },
-  {
-   "text": "학용품 안전기준 (산업통상자원부 고시)",
-   "from": "kr",
-   "to": "end-0.1",
-   "y": 540,
-   "size": 38
-  }
- ],
+ "stickers": [],
  "sfx": [
   [
    "no",
@@ -419,5 +397,24 @@
   "file": "music/scheming_weasel.mp3",
   "gain": 0.09,
   "start": 0
+ },
+ "frame": "capTall",
+ "capStyle": "info2",
+ "hideCredit": true,
+ "tags": [],
+ "cover": {
+  "src": "cap",
+  "focus": "50% 50%",
+  "zoom": 1.0,
+  "at": "bottom",
+  "title": [
+   "볼펜 뚜껑에",
+   "[구멍이 뚫린] 진짜 이유"
+  ],
+  "ring": {
+   "x": 540,
+   "y": 475,
+   "r": 105
+  }
  }
 }

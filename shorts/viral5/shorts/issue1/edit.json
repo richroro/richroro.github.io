@@ -1,7 +1,7 @@
 {
  "credit": "영상: 한국항공우주연구원",
  "titleStyle": "band",
- "captionY": 1640,
+ "captionY": 1580,
  "sources": {
   "n2": {
    "file": "nuri2_2022.webm",
@@ -26,14 +26,6 @@
    "url": "https://commons.wikimedia.org/wiki/File:누리호_1차_시험_발사_장면.webm",
    "license": "CC BY (KARI via Commons, YouTube CC-BY)",
    "fileUrl": "https://upload.wikimedia.org/wikipedia/commons/7/7f/%EB%88%84%EB%A6%AC%ED%98%B8_1%EC%B0%A8_%EC%8B%9C%ED%97%98_%EB%B0%9C%EC%82%AC_%EC%9E%A5%EB%A9%B4.webm"
-  },
-  "pad": {
-   "file": "pad01.jpg",
-   "credit": "사진: 한국항공우주연구원",
-   "label": "KSLV-II Nuri and the launchpad 01, 2021 (KARI, KOGL Type 1)",
-   "url": "https://commons.wikimedia.org/wiki/File:KSLV-II_Nuri_and_the_launchpad_01.jpg",
-   "license": "KOGL Type 1 (공공누리 제1유형), KARI",
-   "fileUrl": "https://upload.wikimedia.org/wikipedia/commons/5/53/KSLV-II_Nuri_and_the_launchpad_01.jpg"
   }
  },
  "clips": [
@@ -50,7 +42,7 @@
   },
   {
    "src": "n3",
-   "from": "hook.딱",
+   "from": "what",
    "in": 66.0,
    "label": "하늘로 오르는 누리호",
    "audio": 0.2,
@@ -67,14 +59,21 @@
    "audio": 0.25
   },
   {
-   "src": "pad",
+   "src": "n2",
    "from": "ok.군집위성",
    "label": "발사대의 누리호",
    "zoom": [
     1.1,
     1.2
    ],
-   "focus": "45% 50%"
+   "focus": "45% 50%",
+   "in": 12.5,
+   "crop": [
+    0.42,
+    0.5,
+    1.0
+   ],
+   "audio": 0.2
   },
   {
    "src": "n3",
@@ -85,7 +84,7 @@
    "crop": [
     0.25,
     0.27,
-    2.0
+    1.86
    ]
   },
   {
@@ -97,7 +96,7 @@
    "crop": [
     0.2,
     0.5,
-    2.0
+    1.86
    ]
   },
   {
@@ -109,7 +108,7 @@
    "crop": [
     0.2,
     0.5,
-    2.0
+    1.86
    ]
   },
   {
@@ -121,7 +120,7 @@
    "crop": [
     0.25,
     0.5,
-    2.0
+    1.86
    ]
   },
   {
@@ -133,7 +132,7 @@
    "crop": [
     0.1,
     0.5,
-    2.0
+    1.86
    ]
   },
   {
@@ -145,7 +144,7 @@
    "crop": [
     0.75,
     0.5,
-    2.0
+    1.86
    ]
   },
   {
@@ -157,7 +156,7 @@
    "crop": [
     0.78,
     0.45,
-    2.2
+    2.05
    ]
   },
   {
@@ -187,34 +186,7 @@
   }
  ],
  "marks": [],
- "stickers": [
-  {
-   "text": "2026.10.7 누리호 5차 발사",
-   "from": "hook+0.0",
-   "to": "ok-0.1",
-   "y": 520
-  },
-  {
-   "text": "자료화면: 지난 발사 영상",
-   "from": "ok+0.1",
-   "to": "sep-0.1",
-   "y": 520,
-   "size": 38
-  },
-  {
-   "text": "자료화면 · 3차 발사 탑재 카메라",
-   "from": "sep+0.1",
-   "to": "call-0.1",
-   "y": 520,
-   "size": 38
-  },
-  {
-   "text": "2026년 10월 기준",
-   "from": "end+0.1",
-   "to": "end@end+0.5",
-   "y": 520
-  }
- ],
+ "stickers": [],
  "sfx": [
   [
    "hook",
@@ -251,5 +223,31 @@
   "file": "music/Heroic Age.mp3",
   "gain": 0.14,
   "start": 0
+ },
+ "frame": "capTall",
+ "capStyle": "info2",
+ "hideCredit": true,
+ "tags": [
+  {
+   "text": "자료화면 · 지난 발사",
+   "from": "hook",
+   "to": "end@end+0.5"
+  }
+ ],
+ "cover": {
+  "src": "n2",
+  "in": 4.4,
+  "focus": "33% 50%",
+  "zoom": 1.05,
+  "title": [
+   "누리호 위성 15기 중",
+   "[1기]만 못 나온 이유"
+  ],
+  "arrow": {
+   "x": 500,
+   "y": 1030,
+   "rot": 20,
+   "len": 250
+  }
  }
 }

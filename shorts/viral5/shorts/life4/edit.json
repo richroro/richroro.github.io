@@ -1,6 +1,6 @@
 {
  "titleStyle": "band",
- "captionY": 1640,
+ "captionY": 1580,
  "credit": "영상: Pexels",
  "sources": {
   "win": {
@@ -90,22 +90,6 @@
    "zoom": [
     1.0,
     1.04
-   ],
-   "audio": 0
-  },
-  {
-   "src": "win",
-   "from": "hook.왜일까요",
-   "in": 4,
-   "label": "창밖",
-   "crop": [
-    0.5,
-    0.4,
-    1.0
-   ],
-   "zoom": [
-    1.0,
-    1.05
    ],
    "audio": 0
   },
@@ -260,15 +244,15 @@
   {
    "kind": "circle",
    "x": 540,
-   "y": 600,
+   "y": 647,
    "r": 140,
    "from": "hook.창문",
-   "to": "hook.왜일까요"
+   "to": "see-0.1"
   },
   {
    "kind": "arrow",
    "x": 540,
-   "y": 620,
+   "y": 664,
    "rot": 120,
    "from": "dark.비상구를",
    "to": "dark@end"
@@ -276,29 +260,13 @@
   {
    "kind": "circle",
    "x": 540,
-   "y": 1150,
+   "y": 1370,
    "r": 220,
    "from": "twist.날개",
    "to": "twist@end"
   }
  ],
- "stickers": [
-  {
-   "text": "대한항공 뉴스룸 2023.9 설명",
-   "from": "see",
-   "to": "see@end",
-   "y": 540,
-   "size": 38,
-   "bg": "#fff"
-  },
-  {
-   "text": "항공사·공항마다 규정이 다를 수 있음",
-   "from": "twist",
-   "to": "twist.날개",
-   "y": 540,
-   "size": 38
-  }
- ],
+ "stickers": [],
  "sfx": [
   [
    "see",
@@ -349,5 +317,19 @@
   "file": "music/Floating Cities.mp3",
   "gain": 0.1,
   "start": 0
+ },
+ "frame": "capTall",
+ "capStyle": "info2",
+ "hideCredit": true,
+ "tags": [],
+ "cover": {
+  "src": "shade",
+  "in": 2,
+  "focus": "50% 30%",
+  "zoom": 1.0,
+  "title": [
+   "이착륙 때 창문 덮개",
+   "[열라고 하는] 진짜 이유"
+  ]
  }
 }

@@ -1,410 +1,534 @@
 {
  "credit": "",
- "titleStyle": "band",
- "captionY": 1650,
+ "postFrame": {
+  "app": "썰방",
+  "color": "#FF8A4C",
+  "meta": "익명 | 창작 사연게시판"
+ },
  "sources": {},
  "music": {
   "file": "music/sneaky_snitch.mp3",
-  "gain": 0.2,
+  "gain": 0.17,
   "start": 0
  },
  "sfx": [
   [
-   "b",
+   "a",
    "pop",
-   0.3
-  ],
-  [
-   "c",
-   "pop",
-   0.3
-  ],
-  [
-   "d.백",
-   "coin",
    0.25
   ],
   [
-   "e",
-   "boing",
+   "d",
+   "bubble",
    0.3
   ],
   [
-   "f.진짜",
-   "ding",
-   0.25
-  ],
-  [
-   "h",
+   "f",
    "pop_hi",
-   0.3
+   0.25
   ],
   [
-   "j.어머니가",
+   "l",
    "k_error_003",
-   0.3
-  ],
-  [
-   "l.문자를",
-   "pop",
    0.3
   ],
   [
    "m",
    "whoosh",
-   0.3
+   0.25
   ],
   [
-   "n.주더라",
+   "o",
    "boing",
-   0.35
+   0.3
   ]
  ],
  "clips": [
   {
    "from": "a",
-   "label": "post",
+   "label": "a",
    "gfx": {
-    "type": "post",
-    "title": "고1 때 반장이 매일 아침 [내 책상에] 쪽지 두고 간 썰",
-    "body": [
-     "“내일 체육복 챙겨”",
-     "“수행평가 금요일까지” 📝"
-    ],
-    "steps": [
-     "a.책상에",
-     "a.쪽지를"
-    ],
+    "type": "scene",
+    "bg": "class",
+    "sign": "1학년 2반",
+    "prop": "📝",
+    "propX": 0.5,
     "chars": [
      {
+      "style": "chibi",
+      "look": {
+       "age": "teen",
+       "hairdo": "pony",
+       "hair": "#3a2622",
+       "top": "#2f3e66",
+       "topKind": "uniform",
+       "pants": "#2f3e66"
+      },
       "name": "나",
-      "color": "#FFD84D",
-      "mood": "shy"
+      "mood": "shock",
+      "x": 0.28
      },
      {
+      "style": "chibi",
+      "look": {
+       "age": "teen",
+       "hairdo": "side",
+       "hair": "#1f1f24",
+       "top": "#2f3e66",
+       "topKind": "uniform",
+       "glasses": true,
+       "accColor": "#3d6fd9"
+      },
       "name": "반장",
-      "color": "#8FD3FF",
-      "mood": "neutral"
+      "mood": "smug",
+      "x": 0.72
      }
     ]
    }
   },
   {
-   "from": "a@end",
-   "label": "gym",
+   "from": "b",
+   "label": "b",
    "gfx": {
     "type": "scene",
-    "bg": "class",
-    "place": "📍 1학년 2반",
+    "bg": "desk",
     "prop": "📝",
-    "say": {
-     "who": 1,
-     "text": "내일 [체육복] 챙겨."
-    },
+    "propX": 0.75,
     "chars": [
      {
-      "name": "나",
-      "mood": "neutral",
-      "color": "#FFD84D"
-     },
-     {
-      "name": "반장",
-      "color": "#8FD3FF",
-      "mood": "neutral"
+      "style": "chibi",
+      "look": {
+       "age": "teen",
+       "hairdo": "pony",
+       "hair": "#3a2622",
+       "top": "#2f3e66",
+       "topKind": "uniform",
+       "pants": "#2f3e66"
+      },
+      "mood": "think",
+      "x": 0.3,
+      "size": 1.2
      }
-    ],
-    "sign": "체육복 챙기기"
+    ]
    }
   },
   {
    "from": "c",
-   "label": "test",
+   "label": "c",
    "gfx": {
     "type": "scene",
     "bg": "class",
-    "prop": "📝",
-    "say": {
-     "who": 1,
-     "text": "수행평가, [금요일]까지."
-    },
-    "chars": [
-     {
-      "name": "나",
-      "mood": "think",
-      "color": "#FFD84D"
-     },
-     {
-      "name": "반장",
-      "color": "#8FD3FF",
-      "mood": "neutral"
-     }
+    "sign": "1학년 2반",
+    "big": "💧 ☂️ 🍚",
+    "steps": [
+     0,
+     0,
+     9,
+     0.1
     ],
-    "sign": "수행평가 금요일까지!"
+    "chars": []
    }
   },
   {
    "from": "d",
-   "label": "100",
+   "label": "d",
    "gfx": {
     "type": "scene",
     "bg": "class",
-    "prop": "📝",
-    "big": "📝 × [100]",
+    "sign": "1학년 2반",
+    "zoom0": 1.0,
+    "zoom": 1.06,
     "chars": [
      {
-      "name": "나",
-      "mood": "shock",
-      "color": "#FFD84D"
-     },
-     {
-      "name": "반장",
-      "color": "#8FD3FF",
-      "mood": "neutral"
+      "style": "chibi",
+      "look": {
+       "age": "teen",
+       "hairdo": "pony",
+       "hair": "#3a2622",
+       "top": "#2f3e66",
+       "topKind": "uniform",
+       "pants": "#2f3e66"
+      },
+      "mood": "love",
+      "size": 1.55
      }
-    ],
-    "steps": [
-     0,
-     0.1,
-     9,
-     "d.백"
     ]
    }
   },
   {
    "from": "e",
-   "label": "tease",
+   "label": "e",
    "gfx": {
     "type": "scene",
     "bg": "class",
-    "say": {
-     "who": 1,
-     "text": "야, 반장이 [너 좋아하는] 거 아냐?"
-    },
-    "zoom": 1.08,
-    "focus": 1,
+    "sign": "1학년 2반",
     "chars": [
      {
-      "name": "나",
-      "mood": "shock",
-      "color": "#FFD84D"
+      "style": "chibi",
+      "look": {
+       "age": "teen",
+       "hairdo": "bob",
+       "hair": "#7a4a2a",
+       "top": "#2f3e66",
+       "topKind": "uniform",
+       "acc": "headband",
+       "accColor": "#ffd84d"
+      },
+      "mood": "laugh",
+      "x": 0.3
      },
      {
-      "name": "짝꿍",
-      "color": "#B9F27C",
-      "mood": "laugh"
+      "style": "chibi",
+      "look": {
+       "age": "teen",
+       "hairdo": "pony",
+       "hair": "#3a2622",
+       "top": "#2f3e66",
+       "topKind": "uniform",
+       "pants": "#2f3e66"
+      },
+      "mood": "shy",
+      "x": 0.7
      }
-    ],
-    "sign": "쉿! 자습 중"
+    ]
    }
   },
   {
    "from": "f",
-   "label": "really",
+   "label": "f",
    "gfx": {
     "type": "scene",
     "bg": "class",
+    "sign": "1학년 2반",
+    "prop": "💌",
+    "propX": 0.84,
     "chars": [
      {
-      "name": "나",
-      "mood": "think",
-      "to": "shy",
-      "color": "#FFD84D"
+      "style": "chibi",
+      "look": {
+       "age": "teen",
+       "hairdo": "bob",
+       "hair": "#7a4a2a",
+       "top": "#2f3e66",
+       "topKind": "uniform",
+       "acc": "headband",
+       "accColor": "#ffd84d"
+      },
+      "mood": "smug",
+      "x": 0.45,
+      "size": 1.45
      }
-    ],
-    "prop": "💭",
-    "steps": [
-     0,
-     0.1,
-     "f.진짜"
-    ],
-    "sign": "쉿! 자습 중"
+    ]
    }
   },
   {
    "from": "g",
-   "label": "reply",
+   "label": "g",
    "gfx": {
     "type": "scene",
-    "bg": "night",
-    "place": "📍 새벽 2시",
-    "prop": "💌",
+    "bg": "bedroom",
+    "place": "📍 내 방",
+    "prop": "✏️",
+    "propX": 0.75,
     "chars": [
      {
-      "name": "나",
-      "mood": "love",
-      "color": "#FFD84D"
+      "style": "chibi",
+      "look": {
+       "age": "teen",
+       "hairdo": "pony",
+       "hair": "#3a2622",
+       "top": "#2f3e66",
+       "topKind": "uniform",
+       "pants": "#2f3e66"
+      },
+      "mood": "think",
+      "x": 0.35,
+      "size": 1.1
      }
     ]
    }
   },
   {
    "from": "h",
-   "label": "letter",
+   "label": "h",
    "gfx": {
     "type": "scene",
-    "bg": "night",
-    "say": {
-     "who": 0,
-     "text": "반장아, 사실 나도 [너 좋아.]"
-    },
+    "bg": "bedroom",
     "prop": "💌",
-    "zoom": 1.1,
-    "focus": 0,
+    "propX": 0.2,
     "chars": [
      {
-      "name": "나",
+      "style": "chibi",
+      "look": {
+       "age": "teen",
+       "hairdo": "pony",
+       "hair": "#3a2622",
+       "top": "#2f3e66",
+       "topKind": "uniform",
+       "pants": "#2f3e66"
+      },
       "mood": "shy",
-      "color": "#FFD84D"
+      "x": 0.62,
+      "size": 1.35
      }
     ]
    }
   },
   {
    "from": "i",
-   "label": "huh",
+   "label": "i",
    "gfx": {
     "type": "scene",
     "bg": "class",
-    "place": "📍 다음 날",
+    "sign": "1학년 2반",
     "prop": "💌",
+    "propX": 0.8,
     "chars": [
      {
-      "name": "나",
-      "mood": "shy",
-      "color": "#FFD84D"
-     },
-     {
-      "name": "반장",
-      "color": "#8FD3FF",
-      "mood": "neutral",
-      "to": "think"
+      "style": "chibi",
+      "look": {
+       "age": "teen",
+       "hairdo": "pony",
+       "hair": "#3a2622",
+       "top": "#2f3e66",
+       "topKind": "uniform",
+       "pants": "#2f3e66"
+      },
+      "mood": "smug",
+      "x": 0.5,
+      "size": 1.0,
+      "flip": true
      }
-    ],
-    "steps": [
-     0,
-     0.1,
-     "i.갸우뚱"
-    ],
-    "sign": "쉿! 자습 중"
+    ]
    }
   },
   {
    "from": "j",
-   "label": "mom",
+   "label": "j",
    "gfx": {
     "type": "scene",
-    "bg": "class",
-    "say": {
-     "who": 1,
-     "text": "어... 그거 [너희 어머니가] 부탁하신 건데?"
-    },
-    "zoom": 1.1,
-    "focus": 1,
+    "bg": "home",
+    "place": "📍 우리 집",
     "chars": [
      {
+      "style": "chibi",
+      "look": {
+       "age": "teen",
+       "hairdo": "pony",
+       "hair": "#3a2622",
+       "top": "#2f3e66",
+       "topKind": "uniform",
+       "pants": "#2f3e66"
+      },
       "name": "나",
-      "mood": "shy",
-      "to": "shock",
-      "color": "#FFD84D"
+      "mood": "neutral",
+      "x": 0.28
      },
      {
-      "name": "반장",
-      "color": "#8FD3FF",
-      "mood": "think"
+      "style": "chibi",
+      "look": {
+       "hairdo": "bun",
+       "hair": "#2b2222",
+       "top": "#ffb36b",
+       "topKind": "apron",
+       "accColor": "#fff3c4"
+      },
+      "name": "엄마",
+      "mood": "neutral",
+      "x": 0.72
      }
-    ],
-    "steps": [
-     0,
-     0,
-     "j.어머니가"
-    ],
-    "sign": "쉿! 자습 중"
+    ]
    }
   },
   {
    "from": "k",
-   "label": "friends",
+   "label": "k",
    "gfx": {
     "type": "scene",
     "bg": "home",
-    "place": "📍 엄마들 모임",
-    "prop": "☕",
+    "prop": "💌",
+    "propX": 0.82,
     "chars": [
      {
-      "name": "엄마",
-      "color": "#FF9EBB",
-      "mood": "laugh"
-     },
-     {
-      "name": "반장 엄마",
-      "color": "#C9A7FF",
-      "mood": "laugh"
+      "style": "chibi",
+      "look": {
+       "hairdo": "bun",
+       "hair": "#2b2222",
+       "top": "#ffb36b",
+       "topKind": "apron",
+       "accColor": "#fff3c4"
+      },
+      "mood": "smug",
+      "x": 0.42,
+      "size": 1.45
      }
     ]
    }
   },
   {
    "from": "l",
-   "label": "texts",
+   "label": "l",
    "gfx": {
     "type": "scene",
-    "bg": "night",
-    "prop": "📱",
+    "bg": "home",
+    "zoom0": 1.0,
+    "zoom": 1.08,
     "chars": [
      {
-      "name": "엄마",
-      "color": "#FF9EBB",
-      "mood": "smug"
+      "style": "chibi",
+      "look": {
+       "age": "teen",
+       "hairdo": "pony",
+       "hair": "#3a2622",
+       "top": "#2f3e66",
+       "topKind": "uniform",
+       "pants": "#2f3e66"
+      },
+      "mood": "shock",
+      "size": 1.55
      }
-    ],
-    "big": "매일 밤 [문자]",
-    "steps": [
-     0,
-     0.1,
-     9,
-     "l.문자를"
     ]
    }
   },
   {
    "from": "m",
-   "label": "evening",
+   "label": "m",
    "gfx": {
     "type": "scene",
-    "bg": "home",
-    "card": "그날 저녁...",
-    "chars": []
+    "bg": "street",
+    "chars": [
+     {
+      "style": "chibi",
+      "look": {
+       "hairdo": "bun",
+       "hair": "#2b2222",
+       "top": "#ffb36b",
+       "topKind": "apron",
+       "accColor": "#fff3c4"
+      },
+      "mood": "happy",
+      "x": 0.25
+     },
+     {
+      "style": "chibi",
+      "look": {
+       "age": "teen",
+       "hairdo": "side",
+       "hair": "#1f1f24",
+       "top": "#2f3e66",
+       "topKind": "uniform",
+       "glasses": true,
+       "accColor": "#3d6fd9"
+      },
+      "mood": "smug",
+      "x": 0.5
+     },
+     {
+      "style": "chibi",
+      "look": {
+       "age": "teen",
+       "hairdo": "pony",
+       "hair": "#3a2622",
+       "top": "#2f3e66",
+       "topKind": "uniform",
+       "pants": "#2f3e66"
+      },
+      "mood": "shock",
+      "x": 0.78,
+      "size": 0.9
+     }
+    ]
    }
   },
   {
    "from": "n",
-   "label": "caught",
+   "label": "n",
+   "gfx": {
+    "type": "scene",
+    "bg": "class",
+    "big": "📝 × [100]",
+    "steps": [
+     0,
+     0,
+     9,
+     0.2
+    ],
+    "chars": [
+     {
+      "style": "chibi",
+      "look": {
+       "age": "teen",
+       "hairdo": "side",
+       "hair": "#1f1f24",
+       "top": "#2f3e66",
+       "topKind": "uniform",
+       "glasses": true,
+       "accColor": "#3d6fd9"
+      },
+      "mood": "happy",
+      "x": 0.68,
+      "size": 1.2
+     }
+    ]
+   }
+  },
+  {
+   "from": "o",
+   "label": "o",
    "gfx": {
     "type": "scene",
     "bg": "home",
-    "place": "📍 우리 집",
-    "say": {
-     "who": 0,
-     "text": "딸~ 이 쪽지, [반장 엄마가] 주더라?"
-    },
-    "prop": "💌",
     "chars": [
      {
-      "name": "엄마",
-      "color": "#FF9EBB",
-      "mood": "smug"
+      "style": "chibi",
+      "look": {
+       "hairdo": "bun",
+       "hair": "#2b2222",
+       "top": "#ffb36b",
+       "topKind": "apron",
+       "accColor": "#fff3c4"
+      },
+      "mood": "laugh",
+      "x": 0.3
      },
      {
-      "name": "나",
-      "mood": "shock",
-      "to": "cry",
-      "color": "#FFD84D"
+      "style": "chibi",
+      "look": {
+       "age": "teen",
+       "hairdo": "pony",
+       "hair": "#3a2622",
+       "top": "#2f3e66",
+       "topKind": "uniform",
+       "pants": "#2f3e66"
+      },
+      "mood": "cry",
+      "x": 0.72
      }
-    ],
-    "steps": [
-     0,
-     0.1,
-     "n.주더라"
+    ]
+   }
+  },
+  {
+   "from": "p",
+   "label": "p",
+   "gfx": {
+    "type": "scene",
+    "bg": "bedroom",
+    "prop": "🏠",
+    "propX": 0.84,
+    "chars": [
+     {
+      "style": "chibi",
+      "look": {
+       "age": "teen",
+       "hairdo": "pony",
+       "hair": "#3a2622",
+       "top": "#2f3e66",
+       "topKind": "uniform",
+       "pants": "#2f3e66"
+      },
+      "mood": "cry",
+      "size": 1.5
+     }
     ]
    }
   }

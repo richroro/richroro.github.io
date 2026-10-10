@@ -1,0 +1,526 @@
+{
+ "credit": "",
+ "postFrame": {
+  "app": "썰방",
+  "color": "#FF8A4C",
+  "meta": "익명 | 창작 사연게시판"
+ },
+ "sources": {},
+ "music": {
+  "file": "music/sneaky_snitch.mp3",
+  "gain": 0.16,
+  "start": 0
+ },
+ "sfx": [
+  [
+   "a",
+   "pop",
+   0.25
+  ],
+  [
+   "d",
+   "whoosh",
+   0.25
+  ],
+  [
+   "g",
+   "boing",
+   0.25
+  ],
+  [
+   "l",
+   "tada",
+   0.2
+  ],
+  [
+   "p",
+   "pop_hi",
+   0.3
+  ]
+ ],
+ "clips": [
+  {
+   "from": "a",
+   "label": "a",
+   "gfx": {
+    "type": "scene",
+    "bg": "class",
+    "sign": "1학년 3반",
+    "chars": [
+     {
+      "style": "chibi",
+      "look": {
+       "age": "teen",
+       "hairdo": "short",
+       "hair": "#2a2a30",
+       "top": "#2f3e66",
+       "topKind": "uniform",
+       "accColor": "#3d6fd9"
+      },
+      "name": "나",
+      "mood": "shock",
+      "x": 0.28,
+      "size": 0.9
+     },
+     {
+      "style": "chibi",
+      "look": {
+       "age": "teen",
+       "hairdo": "spiky",
+       "hair": "#6a3e26",
+       "top": "#2f3e66",
+       "topKind": "uniform",
+       "accColor": "#3d6fd9"
+      },
+      "name": "조카",
+      "mood": "smug",
+      "x": 0.72,
+      "size": 1.15
+     }
+    ]
+   }
+  },
+  {
+   "from": "b",
+   "label": "b",
+   "gfx": {
+    "type": "scene",
+    "bg": "home",
+    "big": "🌳❓",
+    "chars": []
+   }
+  },
+  {
+   "from": "c",
+   "label": "c",
+   "gfx": {
+    "type": "scene",
+    "bg": "home",
+    "chars": [
+     {
+      "style": "chibi",
+      "look": {
+       "hairdo": "bob",
+       "hair": "#2b2222",
+       "top": "#ff9eb5",
+       "topKind": "cardigan"
+      },
+      "name": "큰누나",
+      "mood": "happy",
+      "x": 0.3,
+      "size": 1.15
+     },
+     {
+      "style": "chibi",
+      "look": {
+       "age": "teen",
+       "hairdo": "short",
+       "hair": "#2a2a30",
+       "top": "#2f3e66",
+       "topKind": "uniform",
+       "accColor": "#3d6fd9"
+      },
+      "name": "나",
+      "mood": "neutral",
+      "x": 0.75,
+      "size": 0.85
+     }
+    ]
+   }
+  },
+  {
+   "from": "d",
+   "label": "d",
+   "gfx": {
+    "type": "scene",
+    "bg": "hospital",
+    "place": "📍 그해",
+    "chars": [
+     {
+      "style": "chibi",
+      "look": {
+       "age": "old",
+       "hairdo": "perm",
+       "hair": "#5a4a44",
+       "top": "#c9a7ff",
+       "topKind": "apron"
+      },
+      "name": "엄마",
+      "mood": "love",
+      "x": 0.35,
+      "size": 1.15
+     },
+     {
+      "style": "chibi",
+      "look": {
+       "hairdo": "bob",
+       "hair": "#2b2222",
+       "top": "#ff9eb5",
+       "topKind": "cardigan"
+      },
+      "name": "큰누나",
+      "mood": "shock",
+      "x": 0.75
+     }
+    ]
+   }
+  },
+  {
+   "from": "e",
+   "label": "e",
+   "gfx": {
+    "type": "scene",
+    "bg": "home",
+    "prop": "❓",
+    "propX": 0.84,
+    "chars": [
+     {
+      "style": "chibi",
+      "look": {
+       "age": "teen",
+       "hairdo": "spiky",
+       "hair": "#6a3e26",
+       "top": "#2f3e66",
+       "topKind": "uniform",
+       "accColor": "#3d6fd9"
+      },
+      "mood": "smug",
+      "x": 0.4,
+      "size": 1.35
+     }
+    ]
+   }
+  },
+  {
+   "from": "f",
+   "label": "f",
+   "gfx": {
+    "type": "scene",
+    "bg": "street",
+    "chars": [
+     {
+      "style": "chibi",
+      "look": {
+       "age": "teen",
+       "hairdo": "short",
+       "hair": "#2a2a30",
+       "top": "#2f3e66",
+       "topKind": "uniform",
+       "accColor": "#3d6fd9"
+      },
+      "mood": "sad",
+      "x": 0.3
+     },
+     {
+      "style": "chibi",
+      "look": {
+       "age": "teen",
+       "hairdo": "spiky",
+       "hair": "#6a3e26",
+       "top": "#2f3e66",
+       "topKind": "uniform",
+       "accColor": "#3d6fd9"
+      },
+      "mood": "laugh",
+      "x": 0.72
+     }
+    ]
+   }
+  },
+  {
+   "from": "g",
+   "label": "g",
+   "gfx": {
+    "type": "scene",
+    "bg": "class",
+    "sign": "1학년 3반",
+    "prop": "🍞",
+    "propX": 0.85,
+    "chars": [
+     {
+      "style": "chibi",
+      "look": {
+       "age": "teen",
+       "hairdo": "spiky",
+       "hair": "#6a3e26",
+       "top": "#2f3e66",
+       "topKind": "uniform",
+       "accColor": "#3d6fd9"
+      },
+      "mood": "smug",
+      "size": 1.5
+     }
+    ]
+   }
+  },
+  {
+   "from": "h",
+   "label": "h",
+   "gfx": {
+    "type": "scene",
+    "bg": "class",
+    "sign": "1학년 3반",
+    "chars": [
+     {
+      "style": "chibi",
+      "look": {
+       "age": "teen",
+       "hairdo": "short",
+       "hair": "#2a2a30",
+       "top": "#2f3e66",
+       "topKind": "uniform",
+       "accColor": "#3d6fd9"
+      },
+      "mood": "angry",
+      "x": 0.45,
+      "size": 1.45
+     }
+    ]
+   }
+  },
+  {
+   "from": "i",
+   "label": "i",
+   "gfx": {
+    "type": "scene",
+    "bg": "class",
+    "sign": "1학년 3반",
+    "prop": "🍞",
+    "propX": 0.5,
+    "chars": [
+     {
+      "style": "chibi",
+      "look": {
+       "age": "teen",
+       "hairdo": "short",
+       "hair": "#2a2a30",
+       "top": "#2f3e66",
+       "topKind": "uniform",
+       "accColor": "#3d6fd9"
+      },
+      "mood": "cry",
+      "x": 0.3,
+      "size": 0.9
+     },
+     {
+      "style": "chibi",
+      "look": {
+       "age": "teen",
+       "hairdo": "spiky",
+       "hair": "#6a3e26",
+       "top": "#2f3e66",
+       "topKind": "uniform",
+       "accColor": "#3d6fd9"
+      },
+      "mood": "laugh",
+      "x": 0.72,
+      "size": 1.1
+     }
+    ]
+   }
+  },
+  {
+   "from": "j",
+   "label": "j",
+   "gfx": {
+    "type": "scene",
+    "bg": "home",
+    "place": "📍 설날",
+    "prop": "🧧",
+    "propX": 0.84,
+    "chars": [
+     {
+      "style": "chibi",
+      "look": {
+       "age": "teen",
+       "hairdo": "short",
+       "hair": "#2a2a30",
+       "top": "#2f3e66",
+       "topKind": "uniform",
+       "accColor": "#3d6fd9"
+      },
+      "mood": "smug",
+      "x": 0.45,
+      "size": 1.3
+     }
+    ]
+   }
+  },
+  {
+   "from": "k",
+   "label": "k",
+   "gfx": {
+    "type": "scene",
+    "bg": "home",
+    "chars": [
+     {
+      "style": "chibi",
+      "look": {
+       "hairdo": "bob",
+       "hair": "#2b2222",
+       "top": "#ff9eb5",
+       "topKind": "cardigan"
+      },
+      "mood": "angry",
+      "size": 1.5
+     }
+    ]
+   }
+  },
+  {
+   "from": "l",
+   "label": "l",
+   "gfx": {
+    "type": "scene",
+    "bg": "home",
+    "big": "🙇",
+    "chars": [
+     {
+      "style": "chibi",
+      "look": {
+       "age": "teen",
+       "hairdo": "spiky",
+       "hair": "#6a3e26",
+       "top": "#2f3e66",
+       "topKind": "uniform",
+       "accColor": "#3d6fd9"
+      },
+      "mood": "sad",
+      "x": 0.3,
+      "size": 0.8
+     },
+     {
+      "style": "chibi",
+      "look": {
+       "age": "teen",
+       "hairdo": "short",
+       "hair": "#2a2a30",
+       "top": "#2f3e66",
+       "topKind": "uniform",
+       "accColor": "#3d6fd9"
+      },
+      "mood": "smug",
+      "x": 0.72,
+      "size": 1.15
+     }
+    ]
+   }
+  },
+  {
+   "from": "m",
+   "label": "m",
+   "gfx": {
+    "type": "scene",
+    "bg": "home",
+    "prop": "🧧",
+    "propX": 0.85,
+    "chars": [
+     {
+      "style": "chibi",
+      "look": {
+       "age": "teen",
+       "hairdo": "short",
+       "hair": "#2a2a30",
+       "top": "#2f3e66",
+       "topKind": "uniform",
+       "accColor": "#3d6fd9"
+      },
+      "mood": "laugh",
+      "size": 1.5
+     }
+    ]
+   }
+  },
+  {
+   "from": "n",
+   "label": "n",
+   "gfx": {
+    "type": "scene",
+    "bg": "home",
+    "zoom0": 1.0,
+    "zoom": 1.08,
+    "chars": [
+     {
+      "style": "chibi",
+      "look": {
+       "age": "teen",
+       "hairdo": "spiky",
+       "hair": "#6a3e26",
+       "top": "#2f3e66",
+       "topKind": "uniform",
+       "accColor": "#3d6fd9"
+      },
+      "mood": "angry",
+      "size": 1.55
+     }
+    ]
+   }
+  },
+  {
+   "from": "o",
+   "label": "o",
+   "gfx": {
+    "type": "scene",
+    "bg": "class",
+    "sign": "1학년 3반",
+    "prop": "💢",
+    "propX": 0.75,
+    "chars": [
+     {
+      "style": "chibi",
+      "look": {
+       "age": "teen",
+       "hairdo": "short",
+       "hair": "#2a2a30",
+       "top": "#2f3e66",
+       "topKind": "uniform",
+       "accColor": "#3d6fd9"
+      },
+      "mood": "shock",
+      "x": 0.3,
+      "size": 0.9
+     }
+    ]
+   }
+  },
+  {
+   "from": "p",
+   "label": "p",
+   "gfx": {
+    "type": "scene",
+    "bg": "class",
+    "sign": "1학년 3반",
+    "chars": [
+     {
+      "style": "chibi",
+      "look": {
+       "age": "teen",
+       "hairdo": "spiky",
+       "hair": "#6a3e26",
+       "top": "#2f3e66",
+       "topKind": "uniform",
+       "accColor": "#3d6fd9"
+      },
+      "mood": "smug",
+      "x": 0.6,
+      "size": 1.4
+     },
+     {
+      "style": "chibi",
+      "look": {
+       "age": "teen",
+       "hairdo": "short",
+       "hair": "#2a2a30",
+       "top": "#2f3e66",
+       "topKind": "uniform",
+       "accColor": "#3d6fd9"
+      },
+      "mood": "love",
+      "x": 0.2,
+      "size": 0.85
+     }
+    ]
+   }
+  }
+ ]
+}

@@ -1,0 +1,40 @@
+{
+ "voices": {
+  "hook": {
+   "edge": "ko-KR-SunHiNeural",
+   "rate": "+52%"
+  }
+ },
+ "lines": [
+  {
+   "id": "lead",
+   "voice": "hook",
+   "say": "가을 하늘 먼지가 절반입니다.",
+   "cap": [
+    "가을 하늘",
+    "[먼지]가 [절반]"
+   ]
+  }
+ ],
+ "tags": [
+  {
+   "text": "2023.4.12 황사 날 (위성)",
+   "from": "dust",
+   "to": "autumn-0.05"
+  },
+  {
+   "text": "2025.10.28 맑은 가을날 (위성)",
+   "from": "autumn",
+   "to": "pm-0.05"
+  }
+ ],
+ "cover": {
+  "src": "cirrus",
+  "focus": "50% 30%",
+  "zoom": 1.0,
+  "title": [
+   "가을 하늘이 유독",
+   "[높고 파란] 이유"
+  ]
+ }
+}
