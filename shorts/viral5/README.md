@@ -2206,9 +2206,9 @@ python3 qa_review.py hanban1
 
 | id | 제목 | 길이 | 장면 |
 | --- | --- | --- | --- |
-| `ceo1` | 페이스북은 공짜인데 / 돈은 어떻게 버냐는 질문에..? | 35.0초 | 오린 해치 상원의원 ↔ 마크 저커버그, 상무·법사위 합동 2018.4.10, “Senator, we run ads.” |
+| `ceo1` | 페북 공짜인데 돈은 어떻게? / 저커버그의 한마디..? | 35.0초 | 오린 해치 상원의원 ↔ 마크 저커버그, 상무·법사위 합동 2018.4.10, “Senator, we run ads.” |
 | `ceo2` | 챗GPT 만든 CEO에게 / “돈 많이 버시죠?” 묻자..? | 37.7초 | 존 케네디 상원의원 ↔ 샘 올트먼, 법사위 소위 2023.5.16, “I have no equity in OpenAI.” / “You need a lawyer or an agent.” |
-| `ceo3` | 국적을 거듭 묻는 질문에 / 틱톡 CEO의 대답..? | 35.1초 | 톰 코튼 상원의원 ↔ 추쇼우즈(틱톡), 법사위 2024.1.31, “Senator, I'm Singaporean.” |
+| `ceo3` | 틱톡 CEO 추쇼우즈에게 / 국적을 거듭 묻자..? | 35.1초 | 톰 코튼 상원의원 ↔ 추쇼우즈(틱톡), 법사위 2024.1.31, “Senator, I'm Singaporean.” |
 | `ceo4` | “딥시크, 얼마나 큰일이었나?” / 올트먼과 리사 수의 대답..? | 34.5초 | 테드 크루즈 위원장 ↔ 샘 올트먼·리사 수(AMD), 상무위 2025.5.8, “Not a huge deal.” / “somewhere in between” |
 
 ```bash
@@ -2226,7 +2226,7 @@ MEDIA=$PWD/media python3 politics/prep_split.py ceo1    # 원본: media/celeb/
   - `ceo3` (`chew.mp4`, 스트림 약 2:39:50부터): (0–1.8초 반응 컷 29.6–31.4, 그 밑 음성 7.45–9.25) + 9.25–18.05 + 28.75–52.68. 컷 1번: “중국 시민권을 신청한 적 있나”·“싱가포르 여권이 있나” 문답(약 10.7초)을 뺐습니다. 답에 싱가포르 국가·군 복무 이야기가 나와서(군대 소재 제외), 문답 단위로 통째로 뺐고 앞뒤 질문·답은 온전합니다. 끝 0.5초는 상원 카메라가 추쇼우즈를 비춥니다.
   - `ceo4` (`ai25.mp4`, 스트림 약 3:13:50부터): (0–2초 반응 컷 50.0–52.0, 그 밑 음성 20.25–22.25) + 22.25–30.38 + 34.6–47.3 + 85.3–89.7 + 100.55–107.2. 컷 3번: 크루즈 질문 끝 “and what's coming next? And let's, each of the four of you.”, 올트먼 답 뒷부분(“maybe the most downloaded app overall” 이후 오픈소스·소비자 앱 이야기), 리사 수 답 중간(“When you think about what we learned… in the United States.”)을 뺐습니다. 리사 수의 첫 문장(85.3–89.7)은 상원 카메라가 회의장 전경을 비추는 구간이라 `"shows": -1`로 🎙 표시. 올트먼 구간은 올트먼과 옆자리 리사 수가 함께 보이게 넓게 크롭했습니다.
 - **리사 수 스티커**(“리사 수는 엔비디아 젠슨 황의 먼 친척”): 리사 수 본인이 “distant relatives”라고 말했고(2020 CTA 행사, 2024 블룸버그 인터뷰 “We were really distant, so we didn't grow up together”), 엔비디아 대변인도 젠슨 황 어머니 쪽 먼 친척이라고 확인했습니다([Business Insider](https://www.businessinsider.nl/amd-ceo-lisa-su-says-she-never-met-her-distant-cousin-nvidia-ceo-jensen-huang-until-later-in-their-careers/), [AOL/BI](https://www.aol.com/amd-ceo-lisa-su-says-014208683.html)). 정확한 촌수(5촌 등)는 계보학자 추정이라 쓰지 않았습니다.
-- **중립성**: 질의자 4명이 모두 공화당 상원의원인 것은 화제 장면을 고르다 보니 그렇게 된 것이고, 정당이 아니라 CEO의 답이 주인공입니다. 정당·정치인을 조롱하는 문구는 없고, ceo3 제목도 “거듭 묻는 질문에 침착하게 답한 장면”으로만 잡았습니다. 수치·주장(딥시크 다운로드 1위 등)은 발언 그대로이며 따로 검증한 사실이 아닙니다. 화면에 회사 로고를 브랜딩처럼 쓰지 않았습니다.
+- **중립성**: 질의자 4명이 모두 공화당 상원의원인 것은 화제 장면을 고르다 보니 그렇게 된 것이고, 정당이 아니라 CEO의 답이 주인공입니다. 정당·정치인을 조롱하는 문구는 없고, ceo3 제목도 “국적을 거듭 물은 장면”으로만 잡았습니다. 수치·주장(딥시크 다운로드 1위 등)은 발언 그대로이며 따로 검증한 사실이 아닙니다. 화면에 회사 로고를 브랜딩처럼 쓰지 않았습니다.
 - **라이선스**: 미 상원 Recording Studio(상원 직원)가 직무로 촬영한 위원회 청문회 영상이라 미국 연방정부 저작물, **퍼블릭 도메인**(17 U.S.C. §105)입니다. 위원회 청문회 페이지에 박힌 senate.gov ISVP 플레이어(`www.senate.gov/isvp/?comm=…&filename=…`)가 재생하는 상원 Akamai HLS 원본을 그대로 받았습니다. C-SPAN 로고나 방송사 화면은 없습니다. 상원 규칙(S.Res.431)상 정치·선거운동 용도로는 쓸 수 없고, 상원·의원·증인·회사가 이 영상을 보증하는 것처럼 보이면 안 됩니다.
 - **원본**: 쓰는 구간을 담은 원본 클립(0초 기준 재인코딩)과 출처 페이지·HLS 주소·스트림 구간·기록 링크가 `media/celeb/*.mp4`·`*.json`에 있습니다.
   - `ceo1`: [상무위 청문회 페이지](https://www.commerce.senate.gov/2018/4/facebook-social-media-privacy-and-the-use-and-abuse-of-data) · 스트림 `commerce041018` 약 1:31:17–1:32:22 · 기록 [S. Hrg. 115-683](https://www.govinfo.gov/content/pkg/CHRG-115shrg37801/html/CHRG-115shrg37801.htm)
@@ -2235,7 +2235,7 @@ MEDIA=$PWD/media python3 politics/prep_split.py ceo1    # 원본: media/celeb/
   - `ceo4`: [상무위 청문회 페이지](https://www.commerce.senate.gov/2025/5/winning-the-ai-race-strengthening-u-s-capabilities-in-computing-and-innovation_2) · 스트림 `commerce050825` 약 3:14:10–3:15:37 · 기록 [S. Hrg. 119-143](https://www.govinfo.gov/content/pkg/CHRG-119shrg61426/html/CHRG-119shrg61426.htm)
 - **원래 계획에서 바뀐 것**: `ceo2`는 원래 순다르 피차이(2018.12.11 하원 법사위, “iPhone is made by a different company”)였습니다. 하원 법사위 청문회 페이지가 위원회 공식 유튜브 영상(`Ul5fMAG2tk4`, House Committee on the Judiciary 채널)만 걸어 두고 있고, 이 작업 환경에서는 유튜브가 다운로드를 막아(“Sign in to confirm you're not a bot”, 스토리보드만 허용) 받을 수 없었습니다. 그래서 대안 목록의 샘 올트먼 2023 상원 법사위 소위로 바꿨습니다. 그 영상을 받을 수 있는 환경이라면 같은 형식으로 피차이 편을 만들 수 있습니다(하원 위원회 직원 촬영이면 역시 퍼블릭 도메인).
 
-**ceo1** — 페이스북은 공짜인데 돈은 어떻게 버냐는 질문에?
+**ceo1** — 페북 공짜인데 돈은 어떻게? 저커버그의 한마디
 > 2018년 4월 10일, 미국 상원 상무위원회·법사위원회 합동 청문회(워싱턴 D.C.). 케임브리지 애널리티카 개인정보 유출 사태 직후 처음 의회에 선 마크 저커버그 페이스북 CEO에게 오린 해치 상원의원이 물었습니다. “사용자가 돈을 안 내는데 사업은 어떻게 유지하죠?” 저커버그의 대답은 한마디였습니다. 영어 원문과 한국어 번역 자막(답변 중간 일부 생략).
 > 영상: 미국 상원(U.S. Senate) 위원회 청문회 공식 영상 · 이 영상은 영상 속 인물이나 기관이 보증·후원한 것이 아닙니다.
 > #저커버그 #페이스북 #청문회 #영어공부 #shorts
@@ -2245,7 +2245,7 @@ MEDIA=$PWD/media python3 politics/prep_split.py ceo1    # 원본: media/celeb/
 > 영상: 미국 상원(U.S. Senate) 위원회 청문회 공식 영상 · 이 영상은 영상 속 인물이나 기관이 보증·후원한 것이 아닙니다.
 > #샘올트먼 #챗GPT #오픈AI #영어공부 #shorts
 
-**ceo3** — 국적을 거듭 묻는 질문에 틱톡 CEO의 대답
+**ceo3** — 틱톡 CEO 추쇼우즈에게 국적을 거듭 묻자
 > 2024년 1월 31일, 미국 상원 법사위원회 청문회(워싱턴 D.C.). 빅테크 CEO 5명이 출석한 자리에서 톰 코튼 상원의원이 틱톡의 추쇼우즈(Shou Zi Chew) CEO에게 국적과 중국 공산당과의 관계를 거듭 물었고, 추쇼우즈 CEO는 차분하게 “저는 싱가포르인입니다”라고 답했습니다. 영어 원문과 한국어 번역 자막(중간 문답 일부 생략).
 > 영상: 미국 상원(U.S. Senate) 위원회 청문회 공식 영상 · 이 영상은 영상 속 인물이나 기관이 보증·후원한 것이 아닙니다.
 > #틱톡 #청문회 #싱가포르 #영어공부 #shorts
