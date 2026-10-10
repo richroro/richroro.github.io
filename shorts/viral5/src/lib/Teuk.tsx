@@ -181,7 +181,8 @@ const Photo: React.FC<{ g: PhotoG; c: Clip; t: number; h: number; mascot: string
 };
 
 const Item: React.FC<{ c: Clip; i: number; mascot: string }> = ({ c, i, mascot }) => {
-  const t = useCurrentFrame() / FPS, h = TEUK_BOX.height;
+  // the first picture is the thumbnail: it starts with its slam-ins (punch, big word, prop) already landed
+  const t = useCurrentFrame() / FPS + (i === 0 ? 0.6 : 0), h = TEUK_BOX.height;
   const g = c.gfx as unknown as TeukG;
   return (
     <div style={{ position: "absolute", left: 0, top: TEUK_BOX.top, width: 1080, height: h, overflow: "hidden" }}>
@@ -222,11 +223,11 @@ const groups = (d: ShortData): Group[] => {
     out.push(Object.assign({ from: p.startMs / 1000, to: p.endMs / 1000, lines: [text] }, { g }));
   }
   if (out[0]) out[0].from = 0;  // a caption from the very first frame
-  if (out.length) out[out.length - 1].to = d.end;  // and the last one holds to the end, so the bottom is never empty
+  if (out.length) out[out.length - 1].to = d.end + 1;  // and the last one holds to the end, so the bottom is never empty
   return out;
 };
 const Subtitle: React.FC<{ g: Group }> = ({ g }) => {
-  const t = useCurrentFrame() / FPS, p = eOut(prog(t, 0, 0.12));
+  const t = useCurrentFrame() / FPS, p = g.from === 0 ? 1 : eOut(prog(t, 0, 0.12));  // the first frame is the thumbnail: no fade-in
   const fs = Math.min(84, ...g.lines.map((l) => fitText({ text: l, withinWidth: 980, fontFamily: BODY, fontWeight: "800" }).fontSize));
   return (
     <div style={{ position: "absolute", left: 0, right: 0, top: TEUK_BOX.top + TEUK_BOX.height + 40, height: 1920 - TEUK_BOX.top - TEUK_BOX.height - 90, display: "flex",
