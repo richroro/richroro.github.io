@@ -5903,7 +5903,7 @@ python3 qa_review.py sseol17 && python3 sseol_v2/score.py sseol17
 - `prep.py`: 위 키가 있을 때만 `info2_prep.extend()`를 부르는 2줄.
 - 나머지는 새 파일입니다: `src/lib/Info2.tsx`, `info2_prep.py`, `media/info2/*`.
 
-**다른 쇼츠는 그대로인지 확인했습니다.** origin을 합치기 전, 손대지 않은 v1 `issue1`을 훅이 없는 원래 `ClipShort.tsx`와 훅을 넣은 `ClipShort.tsx`로 각각 렌더해 비교했더니, 두 mp4가 바이트까지 같았습니다(`cmp` 동일, 프레임별 md5 동일). `qa_review.py`는 고치지 않았습니다.
+**다른 쇼츠는 그대로인지 확인했습니다.** origin을 합치기 전, 손대지 않은 v1 `issue1`을 훅이 없는 원래 `ClipShort.tsx`와 훅을 넣은 `ClipShort.tsx`로 각각 렌더해 비교했더니, 두 mp4가 바이트까지 같았습니다(`cmp` 동일, 프레임별 md5 동일). origin을 두 번 합친 뒤에도 같은 v1 `issue1`을 합친 `ClipShort.tsx`와 origin의 `ClipShort.tsx`로 렌더해 비교했고, 역시 바이트까지 같았습니다. `tsc`는 데이터 파일 외 오류가 없습니다. `qa_review.py`는 고치지 않았습니다.
 
 ### 만드는 순서
 
@@ -6262,7 +6262,7 @@ hanban2의 힌남노 9일 플립북(`hinnamnor_wv_wide_sequence.mp4`)은 `media/
 >
 > ▶ [채널명] 채널 구독: https://www.youtube.com/@[핸들]
 >
-> 출처: 자료: 우주항공청·정책브리핑, 파이낸셜뉴스, 전자신문, 머니투데이방송, 아이뉴스24(2026-10 기준) · 영상: 한국항공우주연구원(2022 자료) (CC BY) · 영상: 한국항공우주연구원(2023 자료) (CC BY) · 영상: 한국항공우주연구원(2021 자료) (CC BY) · 음악: "Heroic Age" Kevin MacLeod (incompetech.com), CC BY 4.0 (creativecommons.org/licenses/by/4.0) · 영상은 지난 발사(2021~2023) 자료화면입니다
+> 출처: 자료: 우주항공청·정책브리핑, 파이낸셜뉴스, 전자신문, 머니투데이방송, 아이뉴스24(2026-10 기준) · 영상: 한국항공우주연구원(2022 자료) (CC BY) · 영상: 한국항공우주연구원(2023 자료) (CC BY) · 영상: 한국항공우주연구원(2021 자료) (CC BY) · 음악: "Heroic Age" Kevin MacLeod (incompetech.com), CC BY 4.0 (creativecommons.org/licenses/by/4.0) · 영상은 지난 발사(2021~2023) 자료화면입니다. 분리·교신 결과는 우주항공청 발표 기준이며 독립 검증 결과는 아닙니다
 >
 > #Shorts #누리호 #우주항공청 #군집위성 #나로우주센터 #우주 #로켓 #과학뉴스 #이슈
 
@@ -6274,7 +6274,7 @@ hanban2의 힌남노 9일 플립북(`hinnamnor_wv_wide_sequence.mp4`)은 `media/
 >
 > ▶ [채널명] 채널 구독: https://www.youtube.com/@[핸들]
 >
-> 출처: 자료: 국가데이터처 9월 소비자물가동향(정책브리핑), 재정경제부·산업통상부 자료, KDI 경제정보센터(2026-10 기준) · 영상·사진: Pexels(David Bronner, Shoot With Riyas, African Creator, Esteban M, Zahid Nisar, Toàn BDS, Tom Fisk, Luke Nomad) · 사진: NASA (퍼블릭 도메인) · 음악: "Movement Proposition" Kevin MacLeod (incompetech.com), CC BY 4.0 (creativecommons.org/licenses/by/4.0) · NASA·NOAA·USGS 등 미국 정부 기관은 이 영상을 보증하지 않습니다
+> 출처: 자료: 국가데이터처 9월 소비자물가동향(정책브리핑), 재정경제부·산업통상부 자료, KDI 경제정보센터(2026-10 기준) · 영상·사진: Pexels(David Bronner, Shoot With Riyas, African Creator, Esteban M, Zahid Nisar, Toàn BDS, Tom Fisk, Luke Nomad) · 사진: NASA (퍼블릭 도메인) · 음악: "Movement Proposition" Kevin MacLeod (incompetech.com), CC BY 4.0 (creativecommons.org/licenses/by/4.0) · 상한제가 없었을 때의 물가 상승률 3.5%는 정부(재정경제부) 추정 발표 기준이며 독립 검증 결과는 아닙니다. NASA·NOAA·USGS 등 미국 정부 기관은 이 영상을 보증하지 않습니다
 >
 > #Shorts #기름값 #경유 #석유최고가격제 #소비자물가 #유가 #주유소 #경제뉴스 #이슈
 
@@ -6454,7 +6454,7 @@ hanban2의 힌남노 9일 플립북(`hinnamnor_wv_wide_sequence.mp4`)은 `media/
 >
 > ▶ [채널명] 채널 구독: https://www.youtube.com/@[핸들]
 >
-> 출처: 자료: 국립공원공단 발표(한국경제·경기일보 2026.7.2, 세계일보 2026.5.7), 환경부 발표(데일리벳 2022.6.2) · 영상·사진: Pexels(Magda Ehlers, PUWOOK Kwak, Irina Fedotova, Simo Herold) · 음악: "Heartwarming" Kevin MacLeod (incompetech.com), CC BY 4.0 (creativecommons.org/licenses/by/4.0) · 곰 영상은 동물원의 반달가슴곰, 산 영상은 참고 영상입니다. 개체 수는 국립공원공단 추정치입니다
+> 출처: 자료: 국립공원공단 발표(한국경제·경기일보 2026.7.2, 세계일보 2026.5.7), 환경부 발표(데일리벳 2022.6.2) · 영상·사진: Pexels(Magda Ehlers, PUWOOK Kwak, Irina Fedotova, Simo Herold) · 음악: "Heartwarming" Kevin MacLeod (incompetech.com), CC BY 4.0 (creativecommons.org/licenses/by/4.0) · 곰 영상은 동물원의 반달가슴곰, 산 영상은 참고 영상입니다. 개체 수와 위치 기록은 국립공원공단 발표 기준이며 독립 검증 결과는 아닙니다
 >
 > #Shorts #반달가슴곰 #지리산 #국립공원 #멸종위기 #반달곰 #동물 #진짜이유 #동물상식
 
@@ -6478,7 +6478,7 @@ hanban2의 힌남노 9일 플립북(`hinnamnor_wv_wide_sequence.mp4`)은 `media/
 >
 > ▶ [채널명] 채널 구독: https://www.youtube.com/@[핸들]
 >
-> 출처: 자료: 철원군 조사(강원도민일보 2025.12.14), 철원 두루미 운영협의체(뉴스펭귄), International Crane Foundation, BirdLife · 영상·사진: Pexels(Nicky Pe, Brixiv) · 음악: "Dreamer" Kevin MacLeod (incompetech.com), CC BY 4.0 (creativecommons.org/licenses/by/4.0) · 두루미 영상은 국외에서 찍은 참고 영상입니다. 개체 수는 철원군 조사 결과입니다
+> 출처: 자료: 철원군 조사(강원도민일보 2025.12.14), 철원 두루미 운영협의체(뉴스펭귄), International Crane Foundation, BirdLife · 영상·사진: Pexels(Nicky Pe, Brixiv) · 음악: "Dreamer" Kevin MacLeod (incompetech.com), CC BY 4.0 (creativecommons.org/licenses/by/4.0) · 두루미 영상은 국외에서 찍은 참고 영상입니다. 개체 수는 철원군 조사 발표 기준이며 독립 검증 결과는 아닙니다
 >
 > #Shorts #두루미 #철원 #철새 #멸종위기 #재두루미 #천연기념물 #동물 #진짜이유
 
