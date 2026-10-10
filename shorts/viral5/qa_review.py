@@ -88,7 +88,8 @@ def review(sid):
     riddle = edit.get("titleStyle") == "riddle"
     lo = 19.5 if riddle else 25
     row("길이", lo <= dur <= 45, 18 <= dur <= 50, f"{dur:.1f}초" + (" (괴담 형식 20~23초)" if riddle else " (31~45초 최적)" if 31 <= dur <= 45 else ""))
-    row("제목 띠", edit.get("titleStyle") in ("band", "riddle"), True, edit.get("titleStyle", "없음"))
+    # the "○○ 특" v2 layout (lib/Teuk.tsx) sets its one-line title on a dark page instead of a band, as the benchmark hits do
+    row("제목 띠", edit.get("titleStyle") in ("band", "riddle") or edit.get("layout") == "teuk", True, edit.get("titleStyle") or edit.get("layout") or "없음")
     lens = [visible(t) for t in title]
     row("제목 길이", max(lens) <= 13, max(lens) <= 15, " / ".join(title) + f" ({'+'.join(map(str, lens))}자)")
     hits = [h for h in HOOKS if any(h in t for t in title)] + (["숫자"] if any(re.search(r"\d", t) for t in title) else [])
