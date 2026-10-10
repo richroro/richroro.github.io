@@ -2949,3 +2949,74 @@ python3 qa_review.py retro1
 > 사진: 한국저작권위원회(공유마당, CC BY, 부경근대사료연구소 수집) · 크기 조정·밝기 보정
 > 음악: "Gymnopedie No 1" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
 > #그시절 #버스정류장 #옛날서울 #추억 #shorts
+
+## 그 시절 레트로 쇼츠 2 (`retro5`~`retro8`)
+
+"그 시절 레트로" 시리즈 2탄입니다. 틀은 `retro1`~`retro4`와 똑같습니다: 검정 바탕, 위 2줄 띠 제목(아랫줄 노랑), `"frame": "rounded43"` 둥근 4:3 옛 사진 + 필름 그레인 `0.15` + 클립별 노란 연도 스티커, 아래 한 줄 자막(`captionY` 1335), Edge TTS `ko-KR-SunHiNeural` `+10%`, 한 줄에 사진 한 장, "지금은 ○○" 대비 뒤 "이 시절 ○○, 기억나는 분?"으로 끝, 끝에 `ding`, 음악 Gymnopedie·Heartwarming(gain 0.22), 출처 스티커는 흰 바탕 y 1478. 템플릿 코드는 바꾸지 않았습니다.
+
+| id | 띠 제목 | 길이 | 내용 | 음악 |
+| --- | --- | --- | --- | --- |
+| `retro5` | 엄마 손 잡고 따라가던 / 그 시절 시장 구경 | 39.0초 | 1966년 부산 부평시장 → 1952년 부평시장의 고춧가루·과일 수레·무와 파 좌판·금붕어 장수 → 1967년 대구 서문시장 갈치 → 1968년 자갈치시장 → 1968년 남대문시장 낮과 밤의 포목점 → 1978년 서울 한남동 시장 → 지금은 만져 보지도 않고 인터넷으로 장보기(국가기록원) → 기억나는 분? | Heartwarming |
+| `retro6` | 학교 끝나면 사 먹던 / 그 시절 길거리 간식 | 38.5초 | "뻥!" 귀 막는 아이와 1952년 부산 뻥튀기 장수 → 옥수수 모양 풀빵 → 풀빵·도너츠 → 1953년 대구·1967년 서문시장 번데기 → 1952년 광주 리어카 빙수 → 1968년 부산 아이스케익 뽑기 → 1978년 서울 엿판 → 1952년 마산 사탕·과자·전 노점 → 지금은 편의점 → 기억나는 분? | Heartwarming |
+| `retro7` | 칙칙폭폭 증기기관차 / 그 시절 기차역 | 39.5초 | 1957년 함백선 증기기관차 → 1957년 영월의 기와지붕 새 역 → 1954년·1952년 서울역 → 1953년 대구역 앞 한복 차림 승객 → 1952년 부산 철도공작창 증기기관차 → 열차 창밖 논밭(1952 경주) → 1957년 서울역 디젤기관차 시운전 → 1964년 열차에서 본 한강대교 → 지금은 2004년부터 KTX, 2024년 이용객 8천만 명 넘게(국토교통부) → 1973년 청주역, 기억나는 분? | Gymnopedie No 1 |
+| `retro8` | 운동장에서 입학식 하던 / 그 시절 국민학교 | 39.0초 | 1952년 땅바닥에 앉은 야외 입학식 → "국민학교" → 1958년 남대문 초등학교 체조 시간 → 1953년 경북 돌담 학교 → 1954년 소풍 행렬과 1958년 소풍 점심 → 1952년 부산 여중생 소풍 → 1962년 실력고사 → 1950년대엔 새 학년이 4월 → 1962년부터 3월, 1996년 초등학교로(국가기록원) → 기억나는 분? | Gymnopedie No 2 |
+
+```bash
+python3 media/retro/fetch.py retro5 retro6 retro7 retro8   # 사진(공유마당) → public/retroN/src/ (라이선스 코드 01·21만 OK)
+python3 voice_edge.py retro5 && python3 prep.py retro5
+./render.sh retro5 final/retro5.mp4
+python3 qa_review.py retro5
+```
+
+- 연도 스티커는 항목 제목 앞의 연도("1954년 7월 14일 서울역")를 쓰고, 제목에 연도가 없는 KTV 사진은 창작년도("1957-03-09")를 씁니다. 공유마당 창작년도 칸이 깨진 항목(`13154762` "19919", `13154382` "26963", `13154170` "1960년대")은 제목의 연도를 따랐습니다.
+- 4.5초가 넘는 줄(훅, `retro7` "지금은", `retro8` "1962년부터")은 같은 사진의 `crop` 디테일 컷으로 나눴습니다. `retro8`의 마지막 컷은 훅 사진의 디테일 컷이라 첫 장면으로 이어집니다.
+
+### 사진 출처와 라이선스
+
+`retro1`~`retro4`와 같은 두 묶음만 썼고, `media/retro/fetch.py`로 각 공유마당 항목 페이지의 라이선스 코드를 다시 확인했습니다(모두 `21` CC BY 또는 `01` 공공누리 제1유형, 2026-10-10). 항목별 페이지·파일 주소·라이선스·저작자·연도·사용 구간(초)은 `media/retro/retro5~8.json`과 각 `edit.json`의 `sources`에 있습니다.
+
+- **한국저작권위원회 소장 근현대 사진 (CC BY)**: 공유마당 "2018년 공유저작물DB수집"(부경근대사료연구소 수집). 화면 표시 "사진: 한국저작권위원회".
+- **한국정책방송원(KTV) 사진 (공공누리 제1유형)**: `retro7`의 함백선 열차·영월 역사·디젤기관차·서울역 야경, `retro8`의 체조 시간·소풍·실력고사. 화면 표시 "사진: 한국정책방송원".
+- 고르지 않은 것: 공유마당 검색에 많이 나오는 "1971년_…" 사진(셀수스협동조합)은 라이선스 코드 `98`(기증저작물 자유이용)이라 뺐습니다. 1951~53년 사진 중 군인·미군 시설·비행장·철조망·폭격 피해·포로·피란민이 제목이나 화면에 있는 것, 구걸·고아처럼 사람을 딱하게 보이게 하는 것, 상표 간판이 크게 보이는 것(예: 남대문시장 박카스, 자유시장 영문 간판), 사행성 뽑기 기계는 고르지 않았습니다.
+- 사진은 1600px로 줄였고 밝기 보정은 하지 않았습니다.
+
+항목별 목록(사용한 사진):
+
+- **retro5**: [1966년 부산 중구 부평동 부평시장](https://gongu.copyright.or.kr/gongu/wrt/wrt/view.do?wrtSn=13155112&menuNo=200018) (한국저작권위원회, 1966년, CC BY); [1952년 부산 중구 부평시장의 고춧가루 노점상들](https://gongu.copyright.or.kr/gongu/wrt/wrt/view.do?wrtSn=13153869&menuNo=200018) (한국저작권위원회, 1952년, CC BY); [1952년 부산 중구 부평동시장의 과일구루마 노점상](https://gongu.copyright.or.kr/gongu/wrt/wrt/view.do?wrtSn=13153856&menuNo=200018) (한국저작권위원회, 1952년, CC BY); [1952년 부산 중구 부평시장의 야채 노점상들](https://gongu.copyright.or.kr/gongu/wrt/wrt/view.do?wrtSn=13153878&menuNo=200018) (한국저작권위원회, 1952년, CC BY); [1952년 부산 중구 부평시장의 금붕어 장수](https://gongu.copyright.or.kr/gongu/wrt/wrt/view.do?wrtSn=13153871&menuNo=200018) (한국저작권위원회, 1952년, CC BY); [1967년 대구 서문시장_어물전의 갈치장수_1](https://gongu.copyright.or.kr/gongu/wrt/wrt/view.do?wrtSn=13152674&menuNo=200018) (한국저작권위원회, 1967년, CC BY); [1968년 자갈치시장 생선 노점상과 사람들](https://gongu.copyright.or.kr/gongu/wrt/wrt/view.do?wrtSn=13153524&menuNo=200018) (한국저작권위원회, 1968년, CC BY); [1968년 서울 남대문시장 모습](https://gongu.copyright.or.kr/gongu/wrt/wrt/view.do?wrtSn=13154179&menuNo=200018) (한국저작권위원회, 1968년, CC BY); [1968년 서울 남대문시장 포목점 야간 모습](https://gongu.copyright.or.kr/gongu/wrt/wrt/view.do?wrtSn=13154183&menuNo=200018) (한국저작권위원회, 1968년, CC BY); [1978년 서울 한남동 재래시장 내 야채 노점상들](https://gongu.copyright.or.kr/gongu/wrt/wrt/view.do?wrtSn=13154969&menuNo=200018) (한국저작권위원회, 1978년, CC BY); [1978년 서울 한남동 재래시장 입구_1](https://gongu.copyright.or.kr/gongu/wrt/wrt/view.do?wrtSn=13154970&menuNo=200018) (한국저작권위원회, 1978년, CC BY); [1978년 서울 한남동 재래시장 내 과일가게](https://gongu.copyright.or.kr/gongu/wrt/wrt/view.do?wrtSn=13154966&menuNo=200018) (한국저작권위원회, 1978년, CC BY)
+- **retro6**: [1952년 부산 중구 보수동 축대식 담벼락 아래의 뻥튀기 장수](https://gongu.copyright.or.kr/gongu/wrt/wrt/view.do?wrtSn=13153848&menuNo=200018) (한국저작권위원회, 1952년, CC BY); [1952년 부산 중구 부평시장의 옥수수 모양의 풀빵 노점상](https://gongu.copyright.or.kr/gongu/wrt/wrt/view.do?wrtSn=13153881&menuNo=200018) (한국저작권위원회, 1952년, CC BY); [1952년 부산 중구 부평시장의 풀빵과 도너츠장수](https://gongu.copyright.or.kr/gongu/wrt/wrt/view.do?wrtSn=13153886&menuNo=200018) (한국저작권위원회, 1952년, CC BY); [1953년 대구거리의 번데기 장수](https://gongu.copyright.or.kr/gongu/wrt/wrt/view.do?wrtSn=13152591&menuNo=200018) (한국저작권위원회, 1953년, CC BY); [1967년 대구 서문시장 골목_번데기장수](https://gongu.copyright.or.kr/gongu/wrt/wrt/view.do?wrtSn=13152661&menuNo=200018) (한국저작권위원회, 1967년, CC BY); [1952년 광주 거리의 리어카 빙수 판매점](https://gongu.copyright.or.kr/gongu/wrt/wrt/view.do?wrtSn=13153161&menuNo=200018) (한국저작권위원회, 1952년, CC BY); [1968년 부산_ 거리의 아이스케익 뽑기 노점](https://gongu.copyright.or.kr/gongu/wrt/wrt/view.do?wrtSn=13153509&menuNo=200018) (한국저작권위원회, 1968년, CC BY); [1967년 대구 서문시장_엿장수, 과일 노점 등](https://gongu.copyright.or.kr/gongu/wrt/wrt/view.do?wrtSn=13152677&menuNo=200018) (한국저작권위원회, 1967년, CC BY); [1978년 서울 동대문시장 거리의 엿장수 엿판](https://gongu.copyright.or.kr/gongu/wrt/wrt/view.do?wrtSn=13154943&menuNo=200018) (한국저작권위원회, 1978년, CC BY); [1952년 마산 어시장 인근 거리에서 사탕과 과자를 팔면서 전을 굽고있는 노점상](https://gongu.copyright.or.kr/gongu/wrt/wrt/view.do?wrtSn=13154354&menuNo=200018) (한국저작권위원회, 1952년, CC BY); [1952년 부산 중구 부평시장 카바이트상가 앞의 팥죽과 콩국 노점상](https://gongu.copyright.or.kr/gongu/wrt/wrt/view.do?wrtSn=13153864&menuNo=200018) (한국저작권위원회, 1952년, CC BY)
+- **retro7**: [함백선을 질주하는 열차](https://gongu.copyright.or.kr/gongu/wrt/wrt/view.do?wrtSn=13070891&menuNo=200018) (한국정책방송원, 1957-03-09, 공공누리 제1유형); [1954년 7월 14일 서울역](https://gongu.copyright.or.kr/gongu/wrt/wrt/view.do?wrtSn=13154762&menuNo=200018) (한국저작권위원회, 19919, CC BY); [1952년 서울역과 역 앞 거리 모습](https://gongu.copyright.or.kr/gongu/wrt/wrt/view.do?wrtSn=13154123&menuNo=200018) (한국저작권위원회, 1952년, CC BY); [1953년 대구역 앞에서 차를 기다리는 사람들](https://gongu.copyright.or.kr/gongu/wrt/wrt/view.do?wrtSn=13152491&menuNo=200018) (한국저작권위원회, 1953년, CC BY); [1952년 부산철도 공작창과 수리를 위해 있는 증기 기관차들](https://gongu.copyright.or.kr/gongu/wrt/wrt/view.do?wrtSn=13153930&menuNo=200018) (한국저작권위원회, 1952년, CC BY); [외국에서 도입된 디젤기관차를 서울역에서 시운전중이다](https://gongu.copyright.or.kr/gongu/wrt/wrt/view.do?wrtSn=13070920&menuNo=200018) (한국정책방송원, 1957-09-22, 공공누리 제1유형); [함백선 개통과 함께 신축된 강원도 영월의 철도역사](https://gongu.copyright.or.kr/gongu/wrt/wrt/view.do?wrtSn=13070892&menuNo=200018) (한국정책방송원, 1957-03-09, 공공누리 제1유형); [1964년 열차 안에서 촬영한 서울 한강대교](https://gongu.copyright.or.kr/gongu/wrt/wrt/view.do?wrtSn=13154170&menuNo=200018) (한국저작권위원회, 1960년대, CC BY); [1952년 여름, 열차를 타고가며 바라본 경주 남산](https://gongu.copyright.or.kr/gongu/wrt/wrt/view.do?wrtSn=13153143&menuNo=200018) (한국저작권위원회, 1952년, CC BY); [1973년 10월 26일  청주역](https://gongu.copyright.or.kr/gongu/wrt/wrt/view.do?wrtSn=13154382&menuNo=200018) (한국저작권위원회, 26963, CC BY); [서울역 야경](https://gongu.copyright.or.kr/gongu/wrt/wrt/view.do?wrtSn=13070998&menuNo=200018) (한국정책방송원, 1958-08-17, 공공누리 제1유형)
+- **retro8**: [1952년 부산의 야외에서 진행 중인 초등학생 입학식 모습](https://gongu.copyright.or.kr/gongu/wrt/wrt/view.do?wrtSn=13153919&menuNo=200018) (한국저작권위원회, 1952년, CC BY); [남대문 초등학교의 체조시간](https://gongu.copyright.or.kr/gongu/wrt/wrt/view.do?wrtSn=13070976&menuNo=200018) (한국정책방송원, 1958-06-14, 공공누리 제1유형); [1953년 경북지역의 외벽 담을 돌로 만든 학교의 학생들](https://gongu.copyright.or.kr/gongu/wrt/wrt/view.do?wrtSn=13154419&menuNo=200018) (한국저작권위원회, 1953년, CC BY); [소풍나온 어린이들](https://gongu.copyright.or.kr/gongu/wrt/wrt/view.do?wrtSn=13070827&menuNo=200018) (한국정책방송원, 1954-05-05, 공공누리 제1유형); [1958년 초등학교 소풍의 점심시간](https://gongu.copyright.or.kr/gongu/wrt/wrt/view.do?wrtSn=13152627&menuNo=200018) (한국저작권위원회, 1958년, CC BY); [1952년 부산의 여자중학생들이 소풍을 마치고 대연동 인근 고갯길을 넘어오는 모습](https://gongu.copyright.or.kr/gongu/wrt/wrt/view.do?wrtSn=13153920&menuNo=200018) (한국저작권위원회, 1952년, CC BY); [1952년 진해우체국과 여학생들](https://gongu.copyright.or.kr/gongu/wrt/wrt/view.do?wrtSn=13154322&menuNo=200018) (한국저작권위원회, 1952년, CC BY); [62년도 실력고사](https://gongu.copyright.or.kr/gongu/wrt/wrt/view.do?wrtSn=13071202&menuNo=200018) (한국정책방송원, 1962-10-27, 공공누리 제1유형); [1966년 부산 중구 옛 부산시청 앞을 지나는 여학생들](https://gongu.copyright.or.kr/gongu/wrt/wrt/view.do?wrtSn=13155113&menuNo=200018) (한국저작권위원회, 1966년, CC BY)
+
+### 사실과 출처 (2026-10-10 확인)
+
+- 사진의 연도·장소·내용은 각 공유마당 항목의 제목과 창작년도를 따랐습니다(예: "1952년 부산 중구 부평시장의 금붕어 장수", "1953년 대구역 앞에서 차를 기다리는 사람들", "함백선 개통과 함께 신축된 강원도 영월의 철도역사"(KTV, 1957-03-09), "62년도 실력고사"(KTV, 1962-10-27)). 사진에 보이지 않는 이야기, 가격, 인물 사연은 넣지 않았습니다.
+- `retro5` — [국가기록원 「사진대한민국: 시장과 백화점」](https://theme.archives.go.kr/next/photo/market.do): "최근에는 사람도 장소도 상품도 보이지 않고 직접 만져볼 수 없는 네트워크를 통한 '인터넷쇼핑몰'과 'TV홈쇼핑몰' 등이 등장했다." → "지금은 손으로 만져 보지도 않고 인터넷으로 장을 보죠."
+- `retro6` — 숫자나 연도 주장은 사진 제목의 것뿐입니다. "지금은 편의점 하나면 다 있지만"은 특정 상표 없이 쓴 일반 대비 문장입니다.
+- `retro7` — [e-나라지표 「고속철도 여객 수송동향」(국토교통부 철도운영과)](https://www.index.go.kr/unify/idx-info.do?idxCd=1252): "KTX 이용자수는 2004.4.1부터 운행을 시작하여", KTX 수송인원 "81,184 천명('24년)" → "2004년부터 KTX가 달리고, 2024년 이용객만 8천만 명이 넘어요."
+- `retro8` — [국가기록원 「사진대한민국: 졸업」](https://theme.archives.go.kr/next/photo/graduation.do): "학기의 시작은 광복 이후부터 1951년까지는 9월, 1950년대는 4월, 1962년부터는 3월이었다." 같은 주제의 [「초·중·고등학교」 페이지](https://theme.archives.go.kr/next/photo/graduation02List.do): "1906년 보통학교, 1938년 심상소학교, 1941년 국민학교로 명칭이 변경되었다. 1996년 초등학교로 명칭이 변경된 이후 오늘까지 이어지고 있다."
+
+### 업로드 문구
+
+**retro5** — 엄마 손 잡고 따라가던 그 시절 시장 구경
+> 엄마 손 잡고 따라가던 시장, 기억나세요? 1952년 부산 부평시장의 고춧가루 노점과 과일 수레, 금붕어 장수, 1967년 대구 서문시장의 갈치, 1968년 자갈치시장과 남대문시장, 1978년 서울 한남동 시장까지. 지금은 손으로 만져 보지도 않고 인터넷으로 장을 보죠(국가기록원 「사진대한민국: 시장과 백화점」). 이 시절 시장 구경, 기억나는 분?
+> 사진: 한국저작권위원회(공유마당, CC BY, 부경근대사료연구소 수집) · 크기 조정
+> 음악: "Heartwarming" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
+> #그시절 #재래시장 #옛날사진 #추억 #shorts
+
+**retro6** — 학교 끝나면 사 먹던 그 시절 길거리 간식 ㅠㅠ
+> "뻥!" 소리에 귀부터 막던 뻥튀기, 기억나세요? 1952년 부산의 뻥튀기 장수와 풀빵·도너츠, 1953년 대구와 1967년 서문시장의 번데기, 1952년 광주 리어카 빙수, 1968년 부산 아이스케익 뽑기, 1978년 서울 엿장수 엿판까지. 이 시절 길거리 간식, 기억나는 분?
+> 사진: 한국저작권위원회(공유마당, CC BY, 부경근대사료연구소 수집) · 크기 조정
+> 음악: "Heartwarming" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
+> #그시절 #추억의간식 #뻥튀기 #옛날사진 #shorts
+
+**retro7** — 칙칙폭폭 증기기관차, 그 시절 기차역
+> 연기 뿜으며 달리던 증기기관차, 기억나세요? 1957년 함백선 열차와 영월의 기와지붕 새 역, 1950년대 서울역과 대구역, 부산 철도공작창의 증기기관차, 1957년 서울역 디젤기관차 시운전, 1964년 열차에서 본 한강대교까지. 지금은 2004년 4월부터 KTX가 달리고, 2024년 한 해 KTX 이용객은 8,118만 명이었습니다(e-나라지표, 국토교통부). 이 시절 기차역, 기억나는 분?
+> 사진: 한국저작권위원회(공유마당, CC BY, 부경근대사료연구소 수집), 한국정책방송원(공유마당, 공공누리 제1유형) · 크기 조정
+> 음악: "Gymnopedie No 1" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
+> #그시절 #기차역 #증기기관차 #옛날사진 #shorts
+
+**retro8** — 운동장에서 입학식 하던 그 시절 국민학교
+> 의자도 없이 땅바닥에 앉아 치른 1952년 입학식, 1958년 체조 시간, 소풍날의 줄 맞춘 행렬과 점심시간, 1962년 실력고사까지. 1950년대엔 새 학년이 4월에 시작했고 1962년부터 3월로 바뀌었으며, 1941년부터 쓰던 "국민학교"라는 이름은 1996년 "초등학교"가 됐습니다(국가기록원 「사진대한민국: 졸업」). 이 시절 국민학교, 기억나는 분?
+> 사진: 한국저작권위원회(공유마당, CC BY, 부경근대사료연구소 수집), 한국정책방송원(공유마당, 공공누리 제1유형) · 크기 조정
+> 음악: "Gymnopedie No 2" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
+> #그시절 #국민학교 #입학식 #추억 #shorts
