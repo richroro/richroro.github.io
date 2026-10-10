@@ -1,0 +1,541 @@
+{
+ "credit": "",
+ "titleStyle": "band",
+ "titleKey": "#3CFF6A",
+ "captionY": 1640,
+ "sources": {
+  "px8556246": {
+   "file": "px8556246.jpg",
+   "path": "public/doodle/px8556246.jpg",
+   "page": "https://www.pexels.com/photo/brown-eggs-in-egg-tray-8556246/",
+   "file_url": "https://images.pexels.com/photos/8556246/pexels-photo-8556246.jpeg?auto=compress&cs=tinysrgb&w=1600",
+   "license": "Pexels License",
+   "creator": "Marcello Sokal",
+   "credit": "사진: Pexels",
+   "seconds": [
+    [
+     0.0,
+     2.85
+    ]
+   ]
+  },
+  "px19891628": {
+   "file": "px19891628.jpg",
+   "path": "public/doodle/px19891628.jpg",
+   "page": "https://www.pexels.com/photo/eggs-on-white-background-19891628/",
+   "file_url": "https://images.pexels.com/photos/19891628/pexels-photo-19891628.jpeg?auto=compress&cs=tinysrgb&w=1600",
+   "license": "Pexels License",
+   "creator": "Ben Molyneux",
+   "credit": "사진: Pexels",
+   "seconds": [
+    [
+     6.36,
+     8.42
+    ]
+   ]
+  },
+  "px2255459": {
+   "file": "px2255459.jpg",
+   "path": "public/doodle/px2255459.jpg",
+   "page": "https://www.pexels.com/photo/flock-of-hens-on-green-field-2255459/",
+   "file_url": "https://images.pexels.com/photos/2255459/pexels-photo-2255459.jpeg?auto=compress&cs=tinysrgb&w=1600",
+   "license": "Pexels License",
+   "creator": "Alexas Fotos",
+   "credit": "사진: Pexels",
+   "seconds": [
+    [
+     17.07,
+     19.17
+    ]
+   ]
+  },
+  "px1300375": {
+   "file": "px1300375.jpg",
+   "path": "public/doodle/px1300375.jpg",
+   "page": "https://www.pexels.com/photo/peep-of-brown-chicken-1300375/",
+   "file_url": "https://images.pexels.com/photos/1300375/pexels-photo-1300375.jpeg?auto=compress&cs=tinysrgb&w=1600",
+   "license": "Pexels License",
+   "creator": "Magda Ehlers",
+   "credit": "사진: Pexels",
+   "seconds": [
+    [
+     19.17,
+     21.64
+    ]
+   ]
+  },
+  "px6294391": {
+   "file": "px6294391.jpg",
+   "path": "public/doodle/px6294391.jpg",
+   "page": "https://www.pexels.com/photo/fried-egg-with-condiment-in-frying-pan-6294391/",
+   "file_url": "https://images.pexels.com/photos/6294391/pexels-photo-6294391.jpeg?auto=compress&cs=tinysrgb&w=1600",
+   "license": "Pexels License",
+   "creator": "Klaus Nielsen",
+   "credit": "사진: Pexels",
+   "seconds": [
+    [
+     30.58,
+     32.38
+    ]
+   ]
+  }
+ },
+ "music": {
+  "file": "music/sneaky_snitch.mp3",
+  "gain": 0.12,
+  "start": 0
+ },
+ "sfx": [
+  [
+   "b",
+   "pop",
+   0.22
+  ],
+  [
+   "c",
+   "boing",
+   0.3
+  ],
+  [
+   "d",
+   "whoosh",
+   0.2
+  ],
+  [
+   "e",
+   "pop",
+   0.25
+  ],
+  [
+   "f",
+   "whoosh",
+   0.2
+  ],
+  [
+   "g",
+   "pop",
+   0.22
+  ],
+  [
+   "h",
+   "whoosh",
+   0.2
+  ],
+  [
+   "i",
+   "pop",
+   0.25
+  ],
+  [
+   "j",
+   "pop",
+   0.25
+  ],
+  [
+   "k",
+   "whoosh",
+   0.2
+  ],
+  [
+   "l",
+   "pop",
+   0.22
+  ],
+  [
+   "l2",
+   "k_error_003",
+   0.3
+  ],
+  [
+   "m",
+   "pop",
+   0.22
+  ],
+  [
+   "z",
+   "pop",
+   0.22
+  ]
+ ],
+ "clips": [
+  {
+   "from": "a",
+   "label": "hook",
+   "credit": "사진: Pexels",
+   "gfx": {
+    "type": "scene",
+    "photo": "doodle/px8556246.jpg",
+    "chars": [
+     {
+      "style": "doodle",
+      "hair": "#FF7A1A",
+      "mood": "think",
+      "to": "shock",
+      "x": 0.74,
+      "size": 1
+     }
+    ],
+    "steps": [
+     9,
+     9,
+     "a.뭔지",
+     9
+    ]
+   }
+  },
+  {
+   "from": "b",
+   "label": "factory",
+   "gfx": {
+    "type": "scene",
+    "bg": "home",
+    "chars": [
+     {
+      "style": "doodle",
+      "hair": "#FF7A1A",
+      "mood": "smug",
+      "x": 0.3
+     }
+    ],
+    "steps": [
+     "b",
+     0.1,
+     9,
+     9
+    ],
+    "prop": "🏭",
+    "propX": 0.74,
+    "say": {
+     "who": 0,
+     "text": "그냥 [공장 번호] 아님?"
+    }
+   }
+  },
+  {
+   "from": "c",
+   "label": "wrong",
+   "gfx": {
+    "type": "scene",
+    "bg": "#FFE14D",
+    "chars": [
+     {
+      "style": "doodle",
+      "hair": "#FF7A1A",
+      "mood": "shock",
+      "x": 0.3
+     }
+    ],
+    "steps": [
+     9,
+     0.1,
+     9,
+     "c+0.4"
+    ],
+    "prop": "🥚",
+    "propX": 0.72,
+    "big": "{땡!} [10]자리"
+   }
+  },
+  {
+   "from": "d",
+   "label": "date",
+   "credit": "사진: Pexels",
+   "gfx": {
+    "type": "scene",
+    "photo": "doodle/px19891628.jpg",
+    "chars": [
+     {
+      "style": "doodle",
+      "hair": "#FF7A1A",
+      "mood": "think",
+      "x": 0.2,
+      "size": 0.9
+     }
+    ],
+    "steps": [
+     9,
+     9,
+     9,
+     "d+0.5"
+    ],
+    "big": "앞 [4자리]"
+   }
+  },
+  {
+   "from": "e",
+   "label": "0823",
+   "gfx": {
+    "type": "scene",
+    "bg": "#dff3ff",
+    "chars": [
+     {
+      "style": "doodle",
+      "hair": "#FF7A1A",
+      "mood": "neutral",
+      "to": "smug",
+      "x": 0.3
+     }
+    ],
+    "steps": [
+     9,
+     0.1,
+     "e+1.2",
+     "e+0.4"
+    ],
+    "prop": "🐣",
+    "propX": 0.74,
+    "big": "[0823]"
+   }
+  },
+  {
+   "from": "f",
+   "label": "farm",
+   "gfx": {
+    "type": "scene",
+    "bg": "#d8f5c8",
+    "chars": [
+     {
+      "style": "doodle",
+      "hair": "#FF7A1A",
+      "mood": "think",
+      "x": 0.3
+     }
+    ],
+    "steps": [
+     9,
+     0.1,
+     9,
+     "f+0.5"
+    ],
+    "prop": "🏡",
+    "propX": 0.74,
+    "big": "가운데 [5자리]"
+   }
+  },
+  {
+   "from": "g",
+   "label": "lookup",
+   "gfx": {
+    "type": "scene",
+    "bg": "bedroom",
+    "chars": [
+     {
+      "style": "doodle",
+      "hair": "#FF7A1A",
+      "mood": "neutral",
+      "to": "happy",
+      "x": 0.3
+     }
+    ],
+    "steps": [
+     9,
+     0.1,
+     "g+0.9",
+     9
+    ],
+    "prop": "📱",
+    "propX": 0.74
+   }
+  },
+  {
+   "from": "h",
+   "label": "last",
+   "gfx": {
+    "type": "scene",
+    "bg": "night",
+    "chars": [
+     {
+      "style": "doodle",
+      "hair": "#FF7A1A",
+      "mood": "shock",
+      "x": 0.3
+     }
+    ],
+    "steps": [
+     9,
+     0.1,
+     9,
+     "h+0.6"
+    ],
+    "prop": "🔍",
+    "propX": 0.74,
+    "big": "{마지막 1자리}"
+   }
+  },
+  {
+   "from": "i",
+   "label": "free",
+   "credit": "사진: Pexels",
+   "gfx": {
+    "type": "scene",
+    "photo": "doodle/px2255459.jpg",
+    "chars": [
+     {
+      "style": "doodle",
+      "hair": "#FF7A1A",
+      "mood": "laugh",
+      "x": 0.8,
+      "size": 0.9
+     }
+    ],
+    "steps": [
+     9,
+     9,
+     9,
+     "i+0.4"
+    ],
+    "big": "[1번] 방사"
+   }
+  },
+  {
+   "from": "j",
+   "label": "barn",
+   "credit": "사진: Pexels",
+   "gfx": {
+    "type": "scene",
+    "photo": "doodle/px1300375.jpg",
+    "chars": [
+     {
+      "style": "doodle",
+      "hair": "#FF7A1A",
+      "mood": "happy",
+      "x": 0.82,
+      "size": 0.85
+     }
+    ],
+    "steps": [
+     9,
+     9,
+     9,
+     "j+0.4"
+    ],
+    "big": "[2번] 평사"
+   }
+  },
+  {
+   "from": "k",
+   "label": "cage",
+   "gfx": {
+    "type": "scene",
+    "bg": "#e9e4dc",
+    "chars": [
+     {
+      "style": "doodle",
+      "hair": "#FF7A1A",
+      "mood": "sad",
+      "x": 0.3
+     }
+    ],
+    "steps": [
+     9,
+     0.1,
+     9,
+     "k+0.4"
+    ],
+    "prop": "🐔",
+    "propX": 0.74,
+    "big": "[3번]·[4번] 케이지"
+   }
+  },
+  {
+   "from": "l",
+   "label": "area",
+   "gfx": {
+    "type": "vs",
+    "title": "닭 한 마리당 케이지 넓이",
+    "left": {
+     "label": "3번",
+     "value": "0.075㎡",
+     "emoji": "🐔"
+    },
+    "right": {
+     "label": "4번",
+     "value": "0.05㎡",
+     "emoji": "🐔"
+    },
+    "steps": [
+     0.05,
+     0.3,
+     "l+0.6"
+    ],
+    "win": "left"
+   }
+  },
+  {
+   "from": "l2",
+   "label": "a4",
+   "gfx": {
+    "type": "scene",
+    "bg": "#FFB3C7",
+    "chars": [
+     {
+      "style": "doodle",
+      "hair": "#FF7A1A",
+      "mood": "shock",
+      "x": 0.3
+     }
+    ],
+    "steps": [
+     9,
+     0.1,
+     9,
+     "l2+0.5"
+    ],
+    "prop": "📄",
+    "propX": 0.74,
+    "big": "{A4}보다 좁음"
+   }
+  },
+  {
+   "from": "m",
+   "label": "mine",
+   "gfx": {
+    "type": "scene",
+    "bg": "home",
+    "chars": [
+     {
+      "style": "doodle",
+      "hair": "#FF7A1A",
+      "mood": "think",
+      "x": 0.5
+     }
+    ],
+    "steps": [
+     "m",
+     9,
+     9,
+     9
+    ],
+    "say": {
+     "who": 0,
+     "text": "잠깐, 우리 집 계란 [몇 번]이지?"
+    }
+   }
+  },
+  {
+   "from": "z",
+   "label": "ask",
+   "credit": "사진: Pexels",
+   "gfx": {
+    "type": "scene",
+    "photo": "doodle/px6294391.jpg",
+    "chars": [
+     {
+      "style": "doodle",
+      "hair": "#FF7A1A",
+      "mood": "think",
+      "to": "smug",
+      "x": 0.8,
+      "size": 0.95
+     }
+    ],
+    "steps": [
+     9,
+     9,
+     "z.몇",
+     9
+    ]
+   }
+  }
+ ]
+}

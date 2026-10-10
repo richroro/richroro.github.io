@@ -1,0 +1,366 @@
+{
+ "credit": "",
+ "titleStyle": "band",
+ "captionY": 1650,
+ "sources": {},
+ "music": {
+  "file": "music/hustle.mp3",
+  "gain": 0.2,
+  "start": 0
+ },
+ "sfx": [
+  [
+   "c1",
+   "pop",
+   0.25
+  ],
+  [
+   "b1",
+   "whoosh",
+   0.22
+  ],
+  [
+   "c2",
+   "pop",
+   0.25
+  ],
+  [
+   "b2",
+   "whoosh",
+   0.22
+  ],
+  [
+   "b2.카드값",
+   "boing",
+   0.3
+  ],
+  [
+   "c3",
+   "pop",
+   0.25
+  ],
+  [
+   "b3",
+   "whoosh",
+   0.22
+  ],
+  [
+   "c4",
+   "pop",
+   0.25
+  ],
+  [
+   "b4",
+   "whoosh",
+   0.22
+  ],
+  [
+   "c5",
+   "pop",
+   0.25
+  ],
+  [
+   "b5",
+   "whoosh",
+   0.22
+  ],
+  [
+   "b5.전부",
+   "boing",
+   0.3
+  ],
+  [
+   "c6",
+   "pop",
+   0.25
+  ],
+  [
+   "b6",
+   "whoosh",
+   0.22
+  ],
+  [
+   "c7",
+   "pop",
+   0.25
+  ],
+  [
+   "b7",
+   "whoosh",
+   0.22
+  ],
+  [
+   "b7.다음",
+   "boing",
+   0.3
+  ],
+  [
+   "y",
+   "pop",
+   0.25
+  ],
+  [
+   "z",
+   "whoosh",
+   0.22
+  ],
+  [
+   "z.몇",
+   "ding",
+   0.3
+  ],
+  [
+   "a",
+   "pop_hi",
+   0.3
+  ]
+ ],
+ "clips": [
+  {
+   "from": "a",
+   "label": "hook",
+   "gfx": {
+    "type": "scene",
+    "bg": "office",
+    "place": "📍 월급날",
+    "prop": "💰",
+    "propX": 0.72,
+    "chars": [
+     {
+      "name": "나",
+      "color": "#FFB36B",
+      "mood": "love",
+      "x": 0.32
+     }
+    ],
+    "steps": [
+     0.05,
+     -1,
+     9,
+     -1
+    ]
+   }
+  },
+  {
+   "from": "b1",
+   "label": "beat1",
+   "gfx": {
+    "type": "scene",
+    "bg": "subway",
+    "place": "📍 출근길",
+    "prop": "📱",
+    "propX": 0.72,
+    "chars": [
+     {
+      "name": "나",
+      "color": "#FFB36B",
+      "mood": "think",
+      "to": "love",
+      "x": 0.32
+     }
+    ],
+    "say": {
+     "who": 0,
+     "text": "[들어왔다]!!"
+    },
+    "steps": [
+     "c1",
+     0.1,
+     "c1",
+     0.1
+    ]
+   }
+  },
+  {
+   "from": "b2",
+   "label": "beat2",
+   "gfx": {
+    "type": "scene",
+    "bg": "office",
+    "big": "💸 [스쳐 감]",
+    "chars": [
+     {
+      "name": "나",
+      "color": "#FFB36B",
+      "mood": "shock",
+      "to": "cry"
+     }
+    ],
+    "say": {
+     "who": 0,
+     "text": "안녕, 내 [월급]…"
+    },
+    "steps": [
+     "c2",
+     0.1,
+     "c2",
+     "b2.카드값"
+    ]
+   }
+  },
+  {
+   "from": "b3",
+   "label": "beat3",
+   "gfx": {
+    "type": "scene",
+    "bg": "office",
+    "prop": "🍣",
+    "propX": 0.72,
+    "chars": [
+     {
+      "name": "나",
+      "color": "#FFB36B",
+      "mood": "love",
+      "x": 0.32
+     }
+    ],
+    "say": {
+     "who": 0,
+     "text": "오늘은 [초밥]이다!"
+    },
+    "steps": [
+     "c3",
+     0.1,
+     9,
+     0.1
+    ]
+   }
+  },
+  {
+   "from": "b4",
+   "label": "beat4",
+   "gfx": {
+    "type": "scene",
+    "bg": "store",
+    "prop": "🎁",
+    "propX": 0.72,
+    "chars": [
+     {
+      "name": "나",
+      "color": "#FFB36B",
+      "mood": "happy",
+      "x": 0.32
+     }
+    ],
+    "say": {
+     "who": 0,
+     "text": "수고했어, [나]!"
+    },
+    "steps": [
+     "c4",
+     0.1,
+     9,
+     0.1
+    ]
+   }
+  },
+  {
+   "from": "b5",
+   "label": "beat5",
+   "gfx": {
+    "type": "scene",
+    "bg": "bedroom",
+    "big": "🛍️ × [5]",
+    "chars": [
+     {
+      "name": "나",
+      "color": "#FFB36B",
+      "mood": "smug",
+      "to": "laugh"
+     }
+    ],
+    "say": {
+     "who": 0,
+     "text": "[결제] 완료!"
+    },
+    "steps": [
+     "c5",
+     0.1,
+     "c5",
+     "b5.전부"
+    ]
+   }
+  },
+  {
+   "from": "b6",
+   "label": "beat6",
+   "gfx": {
+    "type": "scene",
+    "bg": "desk",
+    "prop": "📒",
+    "propX": 0.66,
+    "chars": [
+     {
+      "name": "나",
+      "color": "#FFB36B",
+      "mood": "angry",
+      "x": 0.3
+     }
+    ],
+    "say": {
+     "who": 0,
+     "text": "오늘부터 [가계부] 쓴다!"
+    },
+    "steps": [
+     "c6",
+     0.1,
+     9,
+     0.1
+    ]
+   }
+  },
+  {
+   "from": "b7",
+   "label": "beat7",
+   "gfx": {
+    "type": "scene",
+    "bg": "office",
+    "big": "D-[30]",
+    "chars": [
+     {
+      "name": "나",
+      "color": "#FFB36B",
+      "mood": "think",
+      "to": "cry"
+     }
+    ],
+    "say": {
+     "who": 0,
+     "text": "월급날 [언제] 와…"
+    },
+    "steps": [
+     "c7",
+     0.1,
+     "c7",
+     "b7.다음"
+    ]
+   }
+  },
+  {
+   "from": "z",
+   "label": "end",
+   "gfx": {
+    "type": "scene",
+    "bg": "office",
+    "big": "[몇 개]?",
+    "chars": [
+     {
+      "name": "나",
+      "color": "#FFB36B",
+      "mood": "laugh"
+     }
+    ],
+    "steps": [
+     "y",
+     0.1,
+     9,
+     "z.몇"
+    ],
+    "say": {
+     "who": 0,
+     "text": "난 [7개] 다…ㅋㅋ"
+    }
+   }
+  }
+ ]
+}

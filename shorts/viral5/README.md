@@ -2950,6 +2950,324 @@ python3 qa_review.py retro1
 > 음악: "Gymnopedie No 1" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
 > #그시절 #버스정류장 #옛날서울 #추억 #shorts
 
+## 낙서 짤툰 쇼츠 2 (`doodle5`~`doodle10`)
+
+`doodle1`~`doodle4`와 같은 틀로 만든 6편이다. `research/research-formats2.md` 9절의 "같은 틀로 여러 편"을 따랐다. 틀은 앞 4편과 똑같다: 검정 바탕, 2줄 제목 띠(아랫줄 초록 `#3CFF6A`), 가운데 1080×1080 그림, `captionY` 1640의 한 줄 자막, 주인공 도치(주황 삐죽머리 `"style": "doodle"`), 내레이터 InJoon +25%, 인물 대사는 자기 목소리의 말풍선(아래 자막 없음), 사진+낙서 장면과 가끔 `vs`, 끝은 묻는 한 줄 뒤 0.3초 컷. 템플릿 코드는 바꾸지 않았다. 새 조연은 같은 낙서 스킨이고 머리만 다르다: 친구(검은 단발 `bob`), 새벽 손님(회색 파마 `perm`).
+
+| id | 제목 띠 | 길이 | 내용 | 사실/창작 | 음악 |
+| --- | --- | --- | --- | --- | --- |
+| `doodle5` | 대부분 모르는 / 계란 껍데기 숫자의 뜻 | 32.4초 | "이 숫자 뭔지 앎?" → 도치 "공장 번호 아님?" → 땡, 10자리 전부 뜻 있음 → 앞 4자리 산란일(0823 = 8월 23일) → 가운데 5자리 농장 고유번호(조회 가능) → 마지막 한 자리: 1 방사, 2 평사, 3·4 케이지 → `vs` 3번 0.075㎡ vs 4번 0.05㎡ → 4번은 A4 한 장보다 좁음 → "님 냉장고 계란은 몇 번임?" | 사실 (출처 아래) | Sneaky Snitch |
+| `doodle6` | 회사 단톡 / "넵"의 7단계 | 34.8초 | 단톡 화면에 넵 → 넵! → 넵넵 → 넵 알겠습니다 → 넹 → `vs` 넵! vs 넵.... → 7단계: 도치가 "오늘은 어려울 것 같습니다" 보내자 팀장님의 "넵." → 공포 → "지금 바로 하겠습니다!" → "님은 주로 몇 단계 넵 씀?" | 창작 | Hustle |
+| `doodle7` | 대부분 모르는 / 소화기 바늘의 비밀 | 33.2초 | "바늘 어디 가리킴?" → "바늘이 있었어?" → 손잡이 옆 압력계 → 초록이면 정상, 벗어나면 교체 → 분말 소화기 10년, 검사 합격 시 1회 3년 연장(`vs`) → "우리 집 거 2010년산인데?" → 쓰는 법 네 동작(안전핀, 바람 등지고, 호스 불 쪽, 손잡이 쥐고 빗자루처럼) → "지금 초록임?" | 사실 (출처 아래) | Scheming Weasel |
+| `doodle8` | 카페 진동벨 / 울리면 벌어지는 일 | 32.3초 | 진동벨 받는 순간 게임 시작 → 벨만 쳐다봄(`vs` 친구 얼굴 vs 진동벨) → 친구 "내 말 듣고 있어?" → 옆 테이블 벨에 움찔 → 10분째 조용 → 카운터에 확인하러 감 → 그 순간 손에서 부르르르, 민망함 100% → 반전: 친구 벨이었음 → "님은 벨 울리면 몇 초 만에 일어남?" | 창작 | Monkeys Spinning Monkeys |
+| `doodle9` | 식당에서 / "여기요" vs "저기요" | 34.2초 | 여기요파 vs 저기요파(`vs`) → 진짜 문제는 타이밍 → 손 반쯤 들었다가 머리 긁는 척 → 눈만 마주침 → 용기 내서 "저, 저기요…" → 아무도 못 들음 → 친구가 "이모! 여기 공깃밥 하나요!" 한 방 → 최강은 이모님파 → "님은 여기요? 저기요? 이모님?" | 창작 | Hyperfun |
+| `doodle10` | 편의점 알바가 / 새벽 3시에 보는 손님 | 33.1초 | 새벽 3시, 매일 같은 손님 → 컵라면·삼각김밥, 말없이 먹고 감, 좀 무서움 → 비 오는 날 계산대로 직진 → 내민 건 따뜻한 캔커피 "이건 학생 거" → 야간 근무 퇴근길이었음 → 그날 이후 내가 먼저 인사 → "님은 이런 손님 만나 봄?" | 창작 (훈훈한 반전) | Sneaky Snitch |
+
+```bash
+media/doodle/fetch.sh                      # 사진 43장(doodle1~10) → public/doodle/ (저장소에는 넣지 않음)
+for i in 5 6 7 8 9 10; do python3 voice_edge.py doodle$i && python3 prep.py doodle$i && ./render.sh doodle$i final/doodle$i.mp4 && python3 qa_review.py doodle$i; done
+```
+
+**목소리**(`script.json`의 `voices`): 내레이터 `InJoon` +25%, 도치 `HyunsuMultilingual` +18%·+12Hz(앞 4편과 같음). doodle9의 도치만 +5%로 늦췄다("저, 저기요…"가 작고 머뭇거리게). doodle6의 팀장님은 `SunHi` +10%·−8Hz, doodle8·doodle9의 친구는 `SunHi` +15%·+5Hz, doodle10의 손님은 `SunHi` +8%·−6Hz다.
+
+**사진**: 모두 Pexels 사진이다. 사람 얼굴이 없는 물건·장소·동물 사진이고, 읽히는 상표·로고·간판이 없는 것만 골랐다. 각 사진 페이지를 2026-10-10에 열어 "License: Free"(Pexels License)를 확인했다(조건은 위 `doodle1`~`doodle4` 절과 같다). 고르는 중에 상표가 보인 사진(노트북·모니터 로고, 소화기 상표 라벨, 커피머신 상표, 편의점 상품 포장)과 산란계 케이지 사진, 휴대폰 화면 UI 사진은 뺐다. 진동벨은 Pexels에 쓸 만한 사진이 없어 🔔 이모지로 그렸다. doodle7의 압력계 사진(39649976)은 소화기용이 아닌 일반 압력계다. 초록·노랑·빨강 눈금이 있어 "초록이면 정상"을 보여 주는 그림으로만 썼고, 화면 문구는 "압력계"뿐이다. doodle9의 주방 사진(4947388) 안쪽 끝에 아주 작은 요리사 실루엣이 있으나 얼굴은 알아볼 수 없다. doodle10의 상가 사진(34534099) 오른쪽 끝의 약국 표시는 정사각형 자르기 밖이다. 페이지 주소, 파일 주소, 제작자, 쓴 구간(초)은 `media/doodle/sources.json`과 각 `edit.json`의 `sources`에 있다. 화면에는 "사진: Pexels"만 쓴다.
+
+| 파일 | 제작자 | 쓴 곳(초) |
+| --- | --- | --- |
+| [8556246](https://www.pexels.com/photo/brown-eggs-in-egg-tray-8556246/) 달걀 판 | Marcello Sokal | doodle5 0.0~2.9 |
+| [19891628](https://www.pexels.com/photo/eggs-on-white-background-19891628/) 흰 바탕 달걀 4개 | Ben Molyneux | doodle5 6.4~8.4 |
+| [2255459](https://www.pexels.com/photo/flock-of-hens-on-green-field-2255459/) 풀밭의 닭 | Alexas Fotos | doodle5 17.1~19.2 |
+| [1300375](https://www.pexels.com/photo/peep-of-brown-chicken-1300375/) 축사 바닥의 닭 | Magda Ehlers | doodle5 19.2~21.6 |
+| [6294391](https://www.pexels.com/photo/fried-egg-with-condiment-in-frying-pan-6294391/) 달걀 프라이 | Klaus Nielsen | doodle5 30.6~32.4 |
+| [8533741](https://www.pexels.com/photo/close-up-shot-of-a-smartphone-on-white-surface-8533741/) 흰 바닥의 휴대폰(빈 화면) | Hanna Pad (anna-nekrashevich) | doodle6 0.0~2.1 |
+| [8472486](https://www.pexels.com/photo/a-photo-of-a-minimalist-workspace-8472486/) 책상 위 노트북(빈 화면) | Cup of Couple | doodle6 12.1~16.1 |
+| [5483236](https://www.pexels.com/photo/an-empty-office-5483236/) 빈 사무실 | cottonbro studio | doodle6 22.2~23.7 |
+| [30391091](https://www.pexels.com/photo/cozy-workspace-with-coffee-mug-on-desk-30391091/) 키보드 옆 커피 | Letícia Alvares | doodle6 30.0~33.0 |
+| [21299748](https://www.pexels.com/photo/fire-alarm-21299748/) 벽에 걸린 소화기 | Jakub Zerdzicki | doodle7 0.0~2.5, 30.7~33.2 |
+| [39649976](https://www.pexels.com/photo/analog-pressure-gauge-on-cutting-mat-39649976/) 압력계(일반용) | Mohsen Adelimoghaddam | doodle7 4.3~8.3 |
+| [13756513](https://www.pexels.com/photo/photograph-of-a-red-fire-extinguisher-13756513/) 복도의 소화기 | Tibor Szabo | doodle7 12.9~14.7 |
+| [4099350](https://www.pexels.com/photo/kitchen-room-design-4099350/) 가스레인지 부엌 | Taryn Elliott | doodle7 22.8~24.4 |
+| [2566027](https://www.pexels.com/photo/coffee-machine-2566027/) 커피머신 | Sander Dalhuisen | doodle8 0.0~3.0 |
+| [12620633](https://www.pexels.com/photo/cup-of-latte-art-on-brown-wooden-table-12620633/) 라테 | Gabriel | doodle8 3.0~4.9 |
+| [18721982](https://www.pexels.com/photo/plants-near-chairs-in-restaurant-18721982/) 카페 실내 | Arda Kaykısız | doodle8 8.3~10.7 |
+| [6612572](https://www.pexels.com/photo/an-espresso-machine-6612572/) 카페 카운터 | Pavel Danilyuk | doodle8 13.8~15.4 |
+| [302900](https://www.pexels.com/photo/cappuccino-drink-on-table-302900/) 유리잔 라테 | Chevanon Photography | doodle8 26.6~29.9 |
+| [30027297](https://www.pexels.com/photo/quiet-indoor-restaurant-with-sunlit-tables-30027297/) 빈 식당 | Jim (Jimothy) Natanauan | doodle9 0.0~2.8 |
+| [13774731](https://www.pexels.com/photo/kimchi-stew-on-a-clay-pot-13774731/) 김치찌개 | Cynthia Ortega Espinosa | doodle9 8.6~10.6, 30.7~34.2 |
+| [4947388](https://www.pexels.com/photo/kitchen-restaurant-4947388/) 식당 주방 | Maria Orlova | doodle9 14.1~17.5 |
+| [2313695](https://www.pexels.com/photo/chopsticks-on-plate-near-foods-on-plates-2313695/) 만두와 반찬 | Lio Photography | doodle9 20.5~23.7 |
+| [34534099](https://www.pexels.com/photo/shopping-cart-at-night-outside-storefront-34534099/) 밤의 상가 입구 | El Jundi | doodle10 0.0~3.2, 31.1~33.1 |
+| [13796733](https://www.pexels.com/photo/noodles-with-vegetables-in-white-ceramic-bowl-13796733/) 컵라면 | Markus Winkler | doodle10 5.1~8.6 |
+| [12394042](https://www.pexels.com/photo/lights-on-the-road-during-a-rainy-night-12394042/) 비 오는 밤길 | Denniz Futalan | doodle10 13.1~15.2 |
+| [18139081](https://www.pexels.com/photo/steam-over-a-cup-18139081/) 김 나는 머그잔 | More Amore | doodle10 20.9~24.2 |
+
+**doodle5 사실 확인**
+
+- "10자리 = 산란일자 4자리 + 농장(생산자) 고유번호 5자리 + 사육환경번호 1자리", 예 "0823M3FDS2" = 8월 23일 산란: 식품의약품안전처, 정책브리핑 「"이제 산란일자 표시보고 신선한 달걀 구입하세요"」 2019-08-02: https://www.korea.kr/news/policyNewsView.do?newsId=148863411 , 농림축산식품부 「닭이 알을 낳은 날짜 확인하고 구입하세요」 2019-02-21(식약처·농식품부, 2019-02-23 시행): https://www.mafra.go.kr/bbs/mafra/68/319933/artclView.do
+- 사육환경번호 "1 방사, 2 평사, 3 개선 케이지(0.075㎡/마리), 4 기존 케이지(0.05㎡/마리)": 농림축산식품부 「계란 껍데기 표시정보(난각표시)로 계란 이력정보 확인하세요」 2022-01-20: https://www.mafra.go.kr/bbs/mafra/68/329424/artclView.do . 같은 식약처 2019-08-02 자료는 1을 "방목장에서 닭이 자유롭게 다니도록", 2를 "케이지(닭장)와 축사를 자유롭게 다니도록" 키우는 방식으로 설명한다. 화면의 "닭장 없이 축사 안을 다님"은 이 설명을 줄인 것이다.
+- "번호로 어느 농장인지 조회 가능": 위 농식품부 2022-01-20 자료(축산물이력관리시스템 www.mtrace.go.kr·축산물이력제 앱), 식품안전나라 달걀 이력 조회: https://www.foodsafetykorea.go.kr/portal/fooddanger/farmInfoSearch.do
+- "4번은 A4 용지 한 장보다 좁음": A4는 210×297mm = 0.0624㎡이고 4번 기준은 0.05㎡/마리라서 계산으로 맞다(3번 0.075㎡은 A4보다 넓다). 화면에서는 위 농식품부 자료의 번호별 기준만 말한다.
+
+**doodle7 사실 확인**
+
+- "압력계 바늘이 초록(녹색) 범위면 정상, 벗어나면 압력이 빠진 것이라 교체": 충북 영동소방서 안내(뉴스서울 2023-12-20) "압력지시계의 바늘이 녹색 범위를 벗어나 있으면 압력 저하로 사용할 수 없으므로 반드시 교체 또는 폐기를 해야 한다": https://newsseoul.co.kr/news/view/1065579634577441 . 인천 남동소방서 「10년 지난 노후 소화기 교체 당부」 2021-07-14 "압력계의 바늘은 녹색 범위에 있는지 등을 확인한다": https://www.incheon.go.kr/119/NE030401/2073127
+- "분말 소화기 10년, 성능 확인 검사 합격 시 1회 3년 연장": 인천 서부소방서 「10년 이상 노후 소화기 교체·폐기 당부」 2021-09-02 "분말소화기의 내용연수가 10년으로 법제화됐다", "한국소방산업기술원의 성능 확인검사에서 합격하면 1회에 한해 3년 연장 사용이 가능하다": https://www.incheon.go.kr/119/NE030401/2075369 . 같은 내용이 위 영동소방서 안내와 서산소방서 안내(뉴스서울 2023-02-06)에도 있다: https://newsseoul.co.kr/news/view/1065580233271372
+- "쓰는 법: 안전핀 뽑고, 바람 등지고, 호스는 불 쪽, 손잡이 꽉 쥐고 빗자루로 쓸듯이": 서울시 「화재 발생시 이렇게 하세요!」 "손잡이 부분의 안전핀을 뽑아주세요", "바람을 등지고 서서 호스를 불쪽으로 향하게 합시다", "손잡이를 힘껏 움켜쥐고 빗자루로 쓸듯이 뿌립시다": https://news.seoul.go.kr/safe/archives/20691
+- "우리 집 거 2010년산인데?"는 도치의 농담 대사(창작)다. 2010년 제조면 2026년에 10년이 넘었다는 점만 웃음 포인트로 쓴다.
+
+**창작 편**(doodle6, 8, 9, 10): 수치나 법령을 말하지 않는다. 실제 앱·카페·식당·편의점 이름이나 로고는 없다. 단톡 화면은 "○○팀 단톡"이라는 우리 그림이다. 설명란에 "창작"을 적는다.
+
+**qa_review**: 6편 모두 11개 항목 PASS(WARN·FAIL 0). 처음 doodle6은 단톡 화면 세 장면(1~3단계)이 같은 사무실 배경이라 한 장면(10초)으로 잡혀 "장면 길이" FAIL이 났다. 2·3단계 배경을 노랑·밤으로 바꿔 최장 4.0초가 됐다. 시트를 보고 두 가지를 고쳤다. doodle5의 📅 이모지는 "7월 17일"이 그려져 "0823"과 어긋나서 🐣로 바꿨고, doodle8의 📳 이모지는 스마트폰으로 보여서 진동벨을 🔔로 그렸다.
+
+**업로드 문구**
+
+`doodle5`
+- 제목: 대부분 모르는 계란 껍데기 숫자의 뜻
+- 설명:
+  ```
+  계란에 찍힌 10자리, 공장 번호 아님 🥚 앞 4자리는 낳은 날, 마지막 한 자리는 닭이 사는 환경! 님 냉장고 계란은 몇 번?
+  출처: 식품의약품안전처(2019.8.2), 농림축산식품부(2019.2.21, 2022.1.20) 난각표시 안내
+  사진: Pexels (Marcello Sokal, Ben Molyneux, Alexas Fotos, Magda Ehlers, Klaus Nielsen) · 캐릭터는 직접 그린 그림입니다.
+  Music: "Sneaky Snitch" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
+  ```
+- 해시태그: #계란 #난각번호 #생활꿀팁 #짤툰 #낙서툰
+
+`doodle6`
+- 제목: 회사 단톡 "넵"의 7단계ㅋㅋ
+- 설명:
+  ```
+  같은 넵인데 마음은 다 다름 📱 마지막 단계는 진짜 공포… 님은 주로 몇 단계 넵 씀? (창작)
+  창작 짤툰입니다. 등장인물과 대화는 실제와 관계없으며 특정 앱·회사와 무관합니다.
+  사진: Pexels (Hanna Pad, Cup of Couple, cottonbro studio, Letícia Alvares)
+  Music: "Hustle" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
+  ```
+- 해시태그: #회사생활 #넵 #직장인공감 #짤툰 #낙서툰
+
+`doodle7`
+- 제목: 대부분 모르는 소화기 바늘의 비밀
+- 설명:
+  ```
+  님 집 소화기 바늘, 지금 초록임? 🧯 초록 밖이면 교체, 분말 소화기는 10년! 쓰는 법 네 동작까지.
+  출처: 충북 영동소방서·인천 남동소방서·인천 서부소방서·서산소방서 소화기 관리 안내, 서울시 화재 행동요령
+  사진: Pexels (Jakub Zerdzicki, Mohsen Adelimoghaddam, Tibor Szabo, Taryn Elliott) · 캐릭터는 직접 그린 그림입니다.
+  Music: "Scheming Weasel" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
+  ```
+- 해시태그: #소화기 #화재안전 #생활꿀팁 #짤툰 #낙서툰
+
+`doodle8`
+- 제목: 카페 진동벨 울리면 벌어지는 일ㅋㅋ
+- 설명:
+  ```
+  10분 기다리다 카운터 갔더니 손에서 부르르… 근데 그 벨 📳 님은 벨 울리면 몇 초 만에 일어남? (창작)
+  창작 짤툰입니다. 등장인물은 실제와 관계없으며 특정 카페와 무관합니다.
+  사진: Pexels (Sander Dalhuisen, Gabriel, Arda Kaykısız, Pavel Danilyuk, Chevanon Photography)
+  Music: "Monkeys Spinning Monkeys" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
+  ```
+- 해시태그: #카페 #진동벨 #공감 #짤툰 #낙서툰
+
+`doodle9`
+- 제목: 식당에서 "여기요" vs "저기요"
+- 설명:
+  ```
+  손 반쯤 들었다가 머리 긁는 척한 사람 🙋 결국 최강은 따로 있음. 님은 여기요? 저기요? 이모님? (창작)
+  창작 짤툰입니다. 등장인물은 실제와 관계없으며 특정 식당과 무관합니다.
+  사진: Pexels (Jim Natanauan, Cynthia Ortega Espinosa, Maria Orlova, Lio Photography)
+  Music: "Hyperfun" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
+  ```
+- 해시태그: #식당 #여기요 #저기요 #공감 #짤툰
+
+`doodle10`
+- 제목: 편의점 알바가 새벽 3시에 보는 손님
+- 설명:
+  ```
+  매일 새벽 3시, 말없이 컵라면 먹고 가던 손님 🌙 비 오던 날 내민 건… 님은 이런 손님 만나 봄? (창작)
+  창작 짤툰입니다. 등장인물은 실제와 관계없으며 특정 편의점과 무관합니다.
+  사진: Pexels (El Jundi, Markus Winkler, Denniz Futalan, More Amore)
+  Music: "Sneaky Snitch" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
+  ```
+- 해시태그: #편의점 #알바 #훈훈 #짤툰 #낙서툰
+
+## "○○ 특" 공감 애니 2 (`teuk5`~`teuk8`)
+
+`teuk1`~`teuk4`와 똑같은 틀로 만든 4편이다(`research/research-fun.md` 4절, `research-formats2.md` 9절: 같은 틀로 많이). 주홍 찹쌀떡 "나"(`#FFB36B`), 제목 띠 두 줄(대상 / "○○ 특"), 0초부터 첫 장면, 번호 붙은 공감 7개(장면당 3~4초, 내레이터가 항목만 읽고 "나"가 말풍선으로 반응), "여러분은 몇 개 해당?ㅋㅋ" + "난 7개 다…ㅋㅋ"로 끝난다. 자막 위치(`captionY` 1650), 효과음 배치(pop·whoosh·boing·ding)도 1편들과 같다.
+
+- **그림**: 전부 직접 그렸다(`src/lib/Sseol.tsx`). 외부 사진·영상·사실 인용은 없다. 그래서 `sources`는 비어 있고 화면 크레딧도 없다. 숫자("1년", "D-30", "6시간 뒤")는 모두 창작 속 장면이지 사실 주장이 아니다.
+- **유머**: 자기 자신의 습관을 소재로 한다. 몸, 직업, 지역, 집단을 놀리지 않는다(헬스장 편도 체형 얘기 없이 "회원권·근육통·치킨"만). 실제 가게·앱·은행·카드사 이름이나 로고는 없다("편의점", "입금 알림", "장바구니"는 일반 명사).
+- **길이 맞추기**: 1편들(29~32초)보다 조금 길게 하려고 내레이터 속도를 +15%에서 +12%로, 항목 앞 쉼(`gap`)을 0.18초에서 0.4초로, 끝 여백(`tail`)을 1.0초로 늘렸다.
+
+| id | 제목 띠 | 길이 | 1~7 | 음악 |
+| --- | --- | --- | --- | --- |
+| `teuk5` | 자취생이라면 / 자취 첫 달 특 | 32.2초 | 너무 조용해서 잠이 안 옴 · 라면 냄비가 곧 그릇 · 대파 한 단은 끝까지 못 먹음 · 휴지 없는 걸 마지막 한 칸에서 앎 · 빨래 돌려 놓고 까맣게 잊기 · 엄마 반찬이 세상에서 제일 맛있음 · 관리비 고지서 보고 깜짝 | Scheming Weasel (faster version) |
+| `teuk6` | 장마철 공감 / 비 오는 날 특 | 32.6초 | 우산 챙긴 날은 비가 안 옴 · 우산 없는 날만 갑자기 소나기 · 집에 우산 많은데 또 사기 · 양말 젖으면 하루 종일 찝찝 · 괜히 파전 생각나기 · 빗소리 들으면 잠이 쏟아짐 · 집 도착하자마자 비 그침 | Monkeys Spinning Monkeys |
+| `teuk7` | 운동 시작하면 / 헬스장 첫 주 특 | 32.1초 | 일단 1년부터 끊기 · 운동복부터 풀세트 · 기구 쓰는 법 몰라서 몰래 따라 하기 · 첫날부터 너무 열심히 · 다음 날 계단을 못 내려감 · 운동했으니까 치킨은 괜찮음 · 사흘째부터 갈까 말까 고민 | Exhilarate |
+| `teuk8` | 직장인 / 월급날 특 | 33.1초 | 아침부터 입금 알림만 기다림 · 들어오자마자 카드값 빠져나감 · 점심은 괜히 비싼 메뉴 · 고생한 나한테 선물 · 장바구니 전부 결제 · 이번 달은 진짜 아끼자 다짐 · 다음 날부터 다음 월급날 세기 | Hustle |
+
+```bash
+python3 voice_edge.py teuk5 && python3 prep.py teuk5 && ./render.sh teuk5 final/teuk5.mp4 && python3 qa_review.py teuk5
+```
+
+**목소리**(`script.json`의 `voices`)
+
+- `teuk5`: 내레이터 `SunHi` +12%, 나 `InJoon` +12%·+15Hz
+- `teuk6`: 내레이터 `HyunsuMultilingual` +12%, 나 `SunHi` +12%·+18Hz
+- `teuk7`: 내레이터 `SunHi` +12%, 나 `InJoon` +15%·+10Hz
+- `teuk8`: 내레이터 `HyunsuMultilingual` +12%, 나 `SunHi` +15%·+15Hz
+
+**템플릿 추가**(`src/lib/Sseol.tsx`, 기존 배경·장면은 그대로)
+
+- 배경 2종을 더했다. `gym`(벽 거울, 덤벨 선반, 회색 바닥), `rain`(흐린 하늘 빌딩 거리, 사선 빗줄기, 물웅덩이). `Backdrop`의 `switch`에 `case` 두 개만 늘었다.
+
+**qa_review**: 4편 모두 11개 항목 PASS(WARN·FAIL 0). `teuk7` 4번 장면은 처음에 표정이 그대로라 화면 전환이 5.0초 동안 잡히지 않아(WARN) 표정을 happy→angry로 바꿨다. 같은 편 1번의 달력 이모지(📅)는 영어 날짜가 찍혀 보여서 ✅로 바꿨다.
+
+**업로드 문구**
+
+`teuk5`
+- 제목: 자취 첫 달 특ㅋㅋ
+- 설명:
+  ```
+  대파 한 단은 왜 끝까지 못 먹을까 🥬 여러분은 몇 개 해당?ㅋㅋ (창작 애니)
+  직접 그린 창작 애니메이션입니다. 등장인물은 실제와 관계없습니다.
+  Music: "Scheming Weasel (faster version)" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
+  ```
+- 해시태그: #공감 #특 #자취생 #자취 #공감애니
+
+`teuk6`
+- 제목: 비 오는 날 특ㅋㅋ
+- 설명:
+  ```
+  우산 챙긴 날만 비가 안 오는 사람 손 ☔ 여러분은 몇 개 해당?ㅋㅋ (창작 애니)
+  직접 그린 창작 애니메이션입니다. 등장인물은 실제와 관계없습니다.
+  Music: "Monkeys Spinning Monkeys" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
+  ```
+- 해시태그: #공감 #특 #비오는날 #장마 #공감애니
+
+`teuk7`
+- 제목: 헬스장 첫 주 특ㅋㅋ
+- 설명:
+  ```
+  1년 회원권 끊고 사흘째부터 고민 시작 💪 여러분은 몇 개 해당?ㅋㅋ (창작 애니)
+  직접 그린 창작 애니메이션입니다. 등장인물은 실제와 관계없습니다.
+  Music: "Exhilarate" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
+  ```
+- 해시태그: #공감 #특 #헬스장 #운동 #공감애니
+
+`teuk8`
+- 제목: 직장인 월급날 특ㅋㅋ
+- 설명:
+  ```
+  월급은 통장을 스쳐 갈 뿐 💸 여러분은 몇 개 해당?ㅋㅋ (창작 애니)
+  직접 그린 창작 애니메이션입니다. 등장인물은 실제와 관계없습니다.
+  Music: "Hustle" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
+  ```
+- 해시태그: #공감 #특 #직장인 #월급날 #공감애니
+
+## 2D 운전 참교육 애니 2 (`road5`~`road10`)
+
+`road1`~`road4`와 **같은 틀**로 만든 6편이다(`research/research-formats2.md` 7절, 9절 "같은 틀로 여러 편"). 차·얼굴 색, 빨간 제목 둘째 줄(`"titleKey": "#FF3B3B"`), 목소리 4개(내레이터 `InJoon` +20%, 빌런 `HyunsuMultilingual` +12%·−6Hz, 나 `SunHi` +15%·+10Hz, 경찰 `InJoon` +12%·−14Hz), 자막 위치(`captionY` 1640), 말풍선 대사(`"cap": [""]`), 범칙금 통고 카드, 질문 한 줄 끝맺음이 모두 같다. 박자도 같다: ① 빌런 행동(0초부터, 첫 프레임이 썸네일) → ② "나"의 반응(말풍선) → ③ "법은 이래요." 법규 → ④ 경찰 단속·범칙금 통고 → 질문.
+
+- **그림·소리**: 전부 직접 그린 것(`src/lib/Road.tsx`, 얼굴은 `Sseol.tsx`의 `Mochi`)이고 경적·사이렌은 `road_sfx.py`로 합성했다. 외부 사진·영상이 없어서 `sources`는 비어 있고 화면 크레딧도 없다. 사고 장면, 실제 차종·로고·번호판, 실제 앱·회사 이름은 없다. 사실 근거는 `media/road/facts2.json`.
+- **보복운전**: 나는 매번 참는다. 5편은 "경적 연타도 위반", 8편은 "막아서면 더 위험", 9편은 "겁주기 급제동 = 보복운전", 7·9편은 "거리를 넉넉히", 9편은 "비켜 주고 영상으로 신고"라고 말한다. 상상 장면은 없어서 `imagine`은 쓰지 않았다.
+- **새 부품 없음**: 템플릿 코드는 고치지 않았다. 6편의 옆 길 차는 `path`의 첫 점을 step `-1`(−0.8초, `stepT` 기본값), 시간 0.01초로 줘서 0초부터 가로(−90°/90°)로 서 있게 했다.
+- **제작 스크립트**: 장면 JSON은 손으로 쓰지 않고 작은 Python 생성기로 만든 뒤 `shorts/<id>/`에 저장했다(생성기는 저장소에 넣지 않았다. 결과 JSON이 원본이다).
+
+| id | 제목 띠 | 길이 | 내용 | 음악 |
+| --- | --- | --- | --- | --- |
+| `road5` | 터널 안 차선 변경 / 안 되는 진짜 이유 | 38.5초 | 터널 실선에서 이리저리 바꾸는 빌런, 내 앞으로 훅 → 놀란 나, 경적 연타도 위반 → 흰색 실선은 차로 변경 금지, 터널 안은 앞지르기도 금지 → 또 휙 했는데 바로 옆이 경찰차, 진로 변경 금지 위반 3만 원 → "잘 지키시나요?" | Monkeys Spinning Monkeys |
+| `road6` | 교차로 꼬리물기 / 빌런 참교육 | 39.2초 | 앞이 막혔는데 노란불에 밀고 들어간 빌런, 빨간불에 교차로 한가운데 정지 → 옆 길의 나 "우리 신호인데 못 가잖아!" → 교차로 안에 멈출 것 같으면 초록불이어도 진입 금지, 정지선에서 대기 → 빠져나가자마자 단속, 교차로 통행방법 위반 4만 원 → "동네에도 꼬리물기 많죠?" | Hyperfun |
+| `road7` | 운전 중 휴대폰 / 만지면 생기는 일 | 37.0초 | 비틀비틀 앞차, 알고 보니 휴대폰 → 차선 넘어와 놀란 나, 거리 두기 → 운전 중 사용 금지, 서 있을 때·긴급 신고·손에 안 드는 장치는 예외 → 출발하며 또 보다 단속, 6만 원 → "폰 안 보시죠?" | Sneaky Snitch |
+| `road8` | 고속도로 갓길 / 달리는 빌런의 최후 | 39.6초 | 정체 속 갓길로 쌩 → "갓길은 고장 났을 때 쓰는 곳인데!", 막아서면 더 위험 → 고장 등 부득이할 때만, 긴급차·신호/경찰 지시는 예외 → 갓길 끝에 서 있던 경찰차, 갓길 통행 6만 원 → 줄 선 내가 더 빨랐다 | Hustle |
+| `road9` | 상향등 켜고 / 바짝 붙는 차의 최후 | 38.9초 | 상향등 번쩍이며 바짝 → 무서운 나, 급제동으로 겁주면 보복운전, 비켜 주고 영상으로 신고 → 안전거리, 반복 위협은 난폭운전(1년 이하 징역·500만 원 이하 벌금) → 또 바짝 붙은 앞차가 경찰차, 고속도로 안전거리 미확보 4만 원 → "이런 차 만난 적 있죠?" | Scheming Weasel |
+| `road10` | 버스전용차로 / 혼자 타면 생기는 일 | 37.4초 | 버스전용차로를 혼자 쌩 → "저기 버스 전용인데…" → 고속도로 버스전용차로는 9인승 이상, 12인승 이하는 6명 이상(11인승·7명 승합차는 OK) → 혼자 탄 빌런 단속, 6만 원 → "알고 계셨나요?" | Monkeys Spinning Monkeys |
+
+```bash
+python3 voice_edge.py road5 && python3 prep.py road5 && ./render.sh road5 final/road5.mp4 && python3 qa_review.py road5
+```
+
+**qa_review**: 6편 모두 11개 항목 PASS(WARN·FAIL 0), −14.0 LUFS, 8.2~11.1MB. 첫 시도에서 `road10`이 첫 장면 3.9초(WARN)라 첫 문장 중간("버스전용차로")에 확대 컷을 넣었다. 시트를 보고 고친 것: `road5`·`road7` 차끼리 겹쳐 사고처럼 보이던 장면의 간격, `road8` 버스와 트럭이 겹친 첫 화면, `road6` 화면 밖으로 잘린 "나" 이름표와 너무 긴 자막 한 장, `road9` 통고 카드 제목 줄바꿈과 썸네일의 "번쩍번쩍!"(0초부터).
+
+### 사실과 출처 (2026-10-10, 국가법령정보센터 현행 본문과 별표 원문에서 확인)
+
+도로교통법(2026.7.1 시행), 같은 법 시행령(2026.10.2 시행), 시행규칙(2026.8.24 시행). 범칙금은 모두 시행령 [별표 8](운전자)의 승용자동차등 금액이고, 별표 8은 여러 호를 한 칸으로 묶어 금액을 적는다(제4~20호 6만 원, 제21~43호 4만 원, 제44~58호 3만 원).
+
+- `road5` 진로 변경 금지: 안전표지로 진로 변경이 금지된 곳에서는 진로를 바꾸면 안 된다(공사 장애물 등은 예외). — 도로교통법 제14조제5항. 그 표시가 백색실선(노면표시 506 진로변경제한선). — 시행규칙 [별표 6]. 터널 안 앞지르기 금지. — 법 제22조제3항제2호. 정당한 사유 없는 반복·연속 경음기 금지. — 법 제49조제1항제8호다목(별표 8 제36호). 진로 변경 금지 장소 진로 변경 3만 원. — 시행령 [별표 8] 제45호
+- `road6` 꼬리물기: 앞차 상황 때문에 교차로(정지선 넘은 부분)에 멈춰 다른 차를 방해할 우려가 있으면 교차로에 들어가면 안 된다. — 법 제25조제5항(신호 색과 관계없음). 교차로 통행방법 위반 4만 원. — 시행령 [별표 8] 제25호
+- `road7` 휴대폰: 운전 중 휴대용 전화 사용 금지, 예외는 정지 중·긴급자동차·범죄/재해 신고 등 긴급·대통령령 장치. — 법 제49조제1항제10호. 그 장치는 "손으로 잡지 아니하고도 사용할 수 있도록 해 주는 장치". — 시행령 제29조. 범칙금 6만 원. — 시행령 [별표 8] 제15호
+- `road8` 갓길: 고속도로등에서 고장 등 부득이한 경우가 아니면 갓길 통행 금지. 예외: 긴급자동차·보수작업 차, 정체 시 신호기나 경찰공무원등의 신호·지시. — 법 제60조제1항. 갓길 통행 6만 원. — 시행령 [별표 8] 제19호
+- `road9` 안전거리: 앞차가 갑자기 서도 충돌을 피할 거리. — 법 제19조제1항. 급제동 금지. — 법 제19조제4항. 안전거리 미확보 등을 지속·반복해 위협하면 난폭운전. — 법 제46조의3. 1년 이하 징역이나 500만 원 이하 벌금. — 법 제151조의2제1호. 고속도로·자동차전용도로 안전거리 미확보 4만 원. — 시행령 [별표 8] 제23호. 보복운전은 형사처벌 대상(형법상 특수협박 등)이라는 일반 설명만 했다. 상향등 자체의 위법 여부(법 제37조제2항·시행령 제20조는 밤에 앞차 바로 뒤에서 전조등 밝기를 함부로 조작하지 말라는 규정)는 화면에서 단정하지 않았다.
+- `road10` 버스전용차로: 고속도로 버스전용차로는 9인승 이상 승용자동차와 승합자동차, 단 승용자동차와 12인승 이하 승합자동차는 6명 이상 탄 경우만. — 시행령 제9조제1항·[별표 1]. 운영 구간·시간은 경찰청 고시에 따르므로 화면에 쓰지 않았다. 고속도로버스전용차로 통행 위반 6만 원. — 시행령 [별표 8] 제20호
+- 벌점은 쓰지 않았다(시행규칙 별표 28 표를 확실히 대조하지 않았다).
+
+### 업로드 문구
+
+`road5`
+- 제목: 터널 안 차선 변경 안 되는 진짜 이유ㄷㄷ
+- 설명:
+  ```
+  터널 안 흰색 실선, 그냥 선이 아닙니다 🚇 (창작 애니)
+  흰색 실선(진로변경제한선)에선 차로를 바꾸면 안 되고(도로교통법 제14조), 터널 안은 앞지르기도 금지예요(제22조). 진로 변경 금지 위반 범칙금은 승용차 3만 원(시행령 별표 8).
+  화가 나도 경적을 계속 울리거나 쫓아가 위협하지 마세요. 보복운전은 범죄입니다.
+  직접 그린 창작 애니메이션입니다. 등장인물과 차량은 실제와 관계없습니다.
+  Music: "Monkeys Spinning Monkeys" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
+  ```
+- 해시태그: #운전 #참교육 #터널 #실선 #도로교통법
+
+`road6`
+- 제목: 교차로 꼬리물기 빌런 참교육ㄷㄷ
+- 설명:
+  ```
+  앞이 막혔는데 교차로로 밀고 들어가면? 🚦 (창작 애니)
+  교차로 안에 멈춰 다른 차를 막을 것 같으면 초록불이어도 들어가면 안 돼요(도로교통법 제25조제5항). 교차로 통행방법 위반 범칙금은 승용차 4만 원(시행령 별표 8).
+  직접 그린 창작 애니메이션입니다. 등장인물과 차량은 실제와 관계없습니다.
+  Music: "Hyperfun" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
+  ```
+- 해시태그: #꼬리물기 #교차로 #운전 #참교육 #도로교통법
+
+`road7`
+- 제목: 운전 중 휴대폰 만지면 생기는 일ㄷㄷ
+- 설명:
+  ```
+  "잠깐 답장만…" 그 잠깐이 제일 위험해요 📱 (창작 애니)
+  운전 중 휴대폰 사용은 금지(도로교통법 제49조). 차가 서 있을 때, 긴급 신고, 손에 들지 않는 장치는 예외예요. 범칙금은 승용차 6만 원(시행령 별표 8).
+  직접 그린 창작 애니메이션입니다. 등장인물과 차량은 실제와 관계없습니다.
+  Music: "Sneaky Snitch" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
+  ```
+- 해시태그: #운전중휴대폰 #운전 #참교육 #안전운전 #도로교통법
+
+`road8`
+- 제목: 고속도로 갓길 달리는 빌런의 최후ㄷㄷ
+- 설명:
+  ```
+  꽉 막힌 고속도로, 갓길로 쌩 달리면 결국… 🚨 (창작 애니)
+  고속도로 갓길은 고장 등 부득이한 경우가 아니면 달릴 수 없어요. 긴급차, 정체 때 신호나 경찰이 허락한 경우는 예외(도로교통법 제60조). 갓길 통행 범칙금은 승용차 6만 원(시행령 별표 8).
+  화가 나도 막아서지 마세요. 그게 더 위험합니다.
+  직접 그린 창작 애니메이션입니다. 등장인물과 차량은 실제와 관계없습니다.
+  Music: "Hustle" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
+  ```
+- 해시태그: #갓길 #고속도로 #운전 #참교육 #도로교통법
+
+`road9`
+- 제목: 상향등 켜고 바짝 붙는 차의 최후ㄷㄷ
+- 설명:
+  ```
+  뒤에서 번쩍번쩍 바짝 붙는 차, 이렇게 됩니다 💡 (창작 애니)
+  앞차가 갑자기 서도 부딪히지 않을 거리를 둬야 해요(도로교통법 제19조). 고속도로 안전거리 미확보 범칙금은 승용차 4만 원(시행령 별표 8). 계속 위협하면 난폭운전으로 1년 이하 징역이나 500만 원 이하 벌금(제46조의3, 제151조의2).
+  급제동으로 겁주면 보복운전, 범죄입니다. 비켜 주고 블랙박스 영상으로 신고하세요.
+  직접 그린 창작 애니메이션입니다. 등장인물과 차량은 실제와 관계없습니다.
+  Music: "Scheming Weasel" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
+  ```
+- 해시태그: #안전거리 #상향등 #보복운전 #참교육 #도로교통법
+
+`road10`
+- 제목: 버스전용차로 혼자 타면 생기는 일ㄷㄷ
+- 설명:
+  ```
+  고속도로 버스전용차로, 몇 명 타야 달릴 수 있을까? 🚌 (창작 애니)
+  고속도로 버스전용차로는 9인승 이상 차만, 그중 12인승 이하는 6명 이상 타야 해요(도로교통법 시행령 별표 1). 위반 범칙금은 승용차 6만 원(시행령 별표 8). 운영 구간과 시간은 표지판을 확인하세요.
+  직접 그린 창작 애니메이션입니다. 등장인물과 차량은 실제와 관계없습니다.
+  Music: "Monkeys Spinning Monkeys" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
+  ```
+- 해시태그: #버스전용차로 #고속도로 #운전 #참교육 #도로교통법
+
 ## 그 시절 레트로 쇼츠 2 (`retro5`~`retro8`)
 
 "그 시절 레트로" 시리즈 2탄입니다. 틀은 `retro1`~`retro4`와 똑같습니다: 검정 바탕, 위 2줄 띠 제목(아랫줄 노랑), `"frame": "rounded43"` 둥근 4:3 옛 사진 + 필름 그레인 `0.15` + 클립별 노란 연도 스티커, 아래 한 줄 자막(`captionY` 1335), Edge TTS `ko-KR-SunHiNeural` `+10%`, 한 줄에 사진 한 장, "지금은 ○○" 대비 뒤 "이 시절 ○○, 기억나는 분?"으로 끝, 끝에 `ding`, 음악 Gymnopedie·Heartwarming(gain 0.22), 출처 스티커는 흰 바탕 y 1478. 템플릿 코드는 바꾸지 않았습니다.
