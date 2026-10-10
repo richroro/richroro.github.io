@@ -3466,6 +3466,207 @@ python3 qa_review.py top5                                    # 네 편 모두 FA
 > 음악: "Dreamer" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
 > #신기한장소 #국립공원 #옐로스톤 #데스밸리 #shorts
 
+## 괴담 쇼츠 v2 (벤치마크, `horror1`~`horror12`)
+
+`research/benchmark-footage.md` 1절과 `research/benchmark-targets-footage.json`의 `horror_riddle`(디로록 「[괴담] 이해하면 무서운」, 중앙값 21초)에 맞춰 `horror1`~`horror8`을 같은 이야기·같은 영상으로 다시 만들고, 아이디어 목록에서 학교·일상 물건 괴담 4편(`horror9`~`horror12`)을 새로 만들었다. 열두 편 모두 **직접 쓴 창작 괴담**이다. 피·폭력·실존 장소·브랜드·인물은 없고, 공포는 암시로만 준다.
+
+**v1에서 바뀐 것**
+- **길이 32.4초 → 20.0~22.2초.** 목소리를 Edge TTS `ko-KR-InJoonNeural` `+18%` `-4Hz`로 다시 녹음하고, 대본을 7~8줄로 줄였다. 줄 사이 쉼은 0.18초(`horror9`·`horror11`은 0.26초)다.
+- **끝.** “이해하셨나요? 정답은 댓글에” 줄을 지웠다. 반전 한 줄 뒤 0.45~0.6초에서 끊고 첫 장면으로 돌아간다(루프). 정답 유도는 고정 댓글로 옮겼다.
+- **0초.** 첫 자막(3~5음절, “밤 열한 시”)과 제목 단어가 첫 프레임에 이미 떠 있다. 첫 줄의 `gap`을 0으로 두면 첫 자막 페이지가 0 ms에 시작하고, `capLook: "plain"`은 등장 애니메이션이 없어서 첫 프레임에 글자가 다 보인다. 첫 장면은 열두 편 모두 **얼굴 없는 손이나 실루엣**이다(버튼을 누르는 손, 문손잡이를 잡는 손, 휴대폰을 든 손, 열쇠를 든 손, 젖은 유리를 짚은 손, 텐트 안 손 그림자, 공책을 든 손, 할머니 손 위의 아이 손, 옷걸이를 잡은 손).
+- **화면.** 검정 띠와 1:1 박스를 없애고 9:16 전체 화면에 영상을 깔았다. 위쪽에 흰 작은 글씨 “이해하면 무서운”과 큰 빨간 한 단어(예: “엘리베이터”)를 그림 위에 얹는다. 자막은 흰색 한 가지이고 높이 62.5%(y=1200)에 둔다. 강조색과 현재 단어 초록 강조는 없다. 화면에 출처 배지가 없고, 영상 크레딧은 모두 설명란에 넣는다.
+- **제목 명사.** 장소 대신 물건으로 바꾼 편이 있다: 비상계단 → **센서등**, 지하주차장 → **김 서린 차**, 캠핑장 → **발자국**.
+- 어두운 보정과 아껴 쓴 효과음(편마다 3~4개, 번쩍임 1번)은 그대로다. 음악은 Kevin MacLeod “Gathering Darkness”(홀수 편)와 “Ghost Story”(짝수 편)를 번갈아 쓴다.
+- **브랜드 점검.** v1 `horror2`의 운동화(8472547)는 옆면에 상표 별 무늬가 보여서 빼고, 손이 신발을 내려놓는 장면(8533759)으로 바꿨다. v1 `horror3`의 택배 상자(7362620)는 빨간 “FRAGILE” 스티커가 9:16 화면에 들어와서 빼고, 종이봉투(7362603)만 쓴다. 화면이 거의 검게 보이던 휴대폰 알림 클립(34786856·34786878)도 손에 든 휴대폰 장면으로 바꿨다. 0초 화면에는 상표·간판·라벨이 없다.
+
+### 새 템플릿 옵션 (edit.json, 기존 쇼츠는 그대로)
+| 옵션 | 뜻 |
+|---|---|
+| `"titleStyle": "riddle"` | 띠 없이 그림 위에 2줄 제목을 얹는다. `title[0]`은 흰 작은 수식어(최대 64px), `title[1]`은 빨간 큰 한 단어(최대 168px)이고 검은 외곽선과 그림자가 있다. 색은 `"titleKey"`(기본 `#E8141B`)로 바꾼다 |
+| `"titleY"` | riddle 제목 블록의 세로 중심(기본 330px, 약 17%) |
+| `"capLook": "plain"` | 흰색 한 가지 자막. 최대 82px, 얇은 외곽선과 그림자가 있고 단어 강조·등장 애니메이션은 없다. `"captionY"`로 위치를 정한다(괴담 v2는 1200) |
+| `"frame": "full"` + `"credit": ""` + 클립마다 `"credit": ""` | 이미 있던 기능이다. 9:16 전체 화면에 화면 크레딧 없이 쓴다 |
+
+- 코드: 새 파일 `src/lib/Riddle.tsx`(`RiddleTitle`, `PlainCaptions`). 공유 파일에는 연결부만 넣었다. `src/ClipShort.tsx`에 import 1줄, `ShortData` 타입 3필드, `Title`에 1줄, 자막 자리에 분기 1개를 넣었고, `prep.py`는 넘기는 키 목록에 `titleY`, `capLook` 두 개를 더했다. 이 키가 없는 쇼츠는 data JSON과 화면이 전과 같다.
+- 확인: 손대지 않은 `doodle1`을 바꾸기 전 커밋(워크트리)과 바꾼 뒤에 각각 렌더했다. `src/data/doodle1.json`이 같고, mp4 파일이 바이트 단위로 같다(1,032프레임 framemd5 모두 일치).
+- 시리즈 스크립트: `media/horror/make_edits_v2.py`(12편 컷 목록 → edit.json과 `media/horror/sources_v2.json`), `media/horror/grade3.sh`(원본을 받아 `catalog.CX` 지점을 중심으로 9:16로 자르고 1080×1920으로 어둡게 보정), `media/horror/scorecard.py`(아래 표), `media/horror/catalog.py`에 새 클립·`CX`·`DARK`·`BRIGHT` 추가. 예전 `make_edits.py`는 v1 기록용이라 다시 돌리면 안 된다(v2 edit.json을 덮어쓴다).
+
+```bash
+python3 media/horror/make_edits_v2.py       # shorts/horror1-12/edit.json + media/horror/sources_v2.json
+media/horror/grade3.sh                      # Pexels·Pixabay 원본 → public/horror*/src/ (9:16, 1080x1920, 보정)
+for i in $(seq 1 12); do python3 voice_edge.py horror$i && python3 prep.py horror$i && ./render.sh horror$i final/horror$i.mp4; done
+# horror7(야간 노이즈)은 45.7MB라 CRF 23으로 다시 인코딩했다 (15.0MB):
+#   ffmpeg -i final/horror7.mp4 -c:v libx264 -crf 23 -preset slow -pix_fmt yuv420p -c:a copy -movflags +faststart out/horror7.mp4
+for i in $(seq 1 12); do python3 qa_review.py horror$i; done
+python3 media/horror/scorecard.py $(seq -f "horror%g" 1 12)
+```
+
+| id | 화면 제목 | 길이 | 이야기 (정답) |
+| --- | --- | --- | --- |
+| `horror1` | 이해하면 무서운 / 엘리베이터 | 22.2초 | 밤 11시 혼자 남은 건물, 1층에서 부른 엘리베이터가 텅 빈 채 열리는데 한 발 들이자 "정원이 초과되었습니다". 엘리베이터는 혼자 위로. "나는 다음 걸 타기로 했다." (정답: 눈에 안 보이는 '누군가들'로 이미 꽉 차 있었다) |
+| `horror2` | 이해하면 무서운 / 도어락 | 21.8초 | 새벽 3시 도어락이 열렸다 다시 잠김. 비밀번호는 나만 앎. 아침 현관은 그대로, 신발만 한 켤레 더. "나는 혼자 산다." (정답: 누군가 들어와 안에서 문을 잠갔고, 나간 적이 없다) |
+| `horror3` | 이해하면 무서운 / 택배 | 20.1초 | 점심시간 택배 문자, 이어서 "안에 계신 분이 바로 받아 가셨어요". 나는 회사, 혼자 살고, 문은 잠갔다. 퇴근해 보니 문 앞엔 아무것도 없다. (정답: 잠긴 집 안에 누군가 있었고 지금도 있다) |
+| `horror4` | 이해하면 무서운 / 거울 | 20.1초 | 이사 온 원룸의 큰 거울 속 방은 늘 조금 어둡다. 불을 끄고 누웠는데 거울 속 방은 아직 밝고, 거울 속 침대엔 아무도 없다. (정답: 거울 속 '나'는 누워 있지 않고 일어나서 이쪽을 보고 있다) |
+| `horror5` | 이해하면 무서운 / 센서등 | 21.4초 | 점검 날 밤 계단으로 내려가는데, 센서등이 내가 가기 전에 한 층씩 먼저 켜진다. 1층 문손잡이를 잡자 등 뒤 2층 불이 딸깍. "나는 뒤돌아보지 않았다." (정답: 보이지 않는 누군가가 한 층 앞서 내려가다가, 지금 내 바로 뒤로 올라갔다) |
+| `horror6` | 이해하면 무서운 / 김 서린 차 | 21.0초 | 몇 달째 안 움직인 차의 운전석 유리에 김이 서려 있고, 손가락 글씨 "또 봤네?"가 좌우로 뒤집혀 있다. 차 문은 전부 잠겨 있다. (정답: 잠긴 차 안에 누군가 있어 숨을 쉬고, 안쪽에서 글씨를 썼다) |
+| `horror7` | 이해하면 무서운 / 홈캠 | 20.5초 | 현관을 향해 단 홈캠에 새벽 2~4시, 침대 옆에서 자는 나를 내려다보는 영상. 그날 밤 현관문은 열리지 않았다. (정답: 처음부터 집 안에 있던 누군가가 카메라를 옮겨 찍고 되돌려 놓았다) |
+| `horror8` | 이해하면 무서운 / 발자국 | 22.2초 | 혼자 캠핑, 새벽에 텐트 주위를 한 바퀴 도는 발소리. 아침에 보니 입구에서 나와 한 바퀴 돌고 다시 입구로 들어간 발자국. "나는 밤새 나간 적이 없다." (정답: 텐트 안에 나 말고 누가 있었다) |
+| `horror9` | 이해하면 무서운 / 단톡방 | 20.2초 | 새벽 3시, 누군가 나를 반 단톡방에 초대한다. 나 빼고 다 들어와 있고, 이름 없는 사람이 "이제야 다 모였네". 참여 인원 30명. "우리 반은 나까지 스물아홉 명이다." (정답: 반 아이가 아닌 누군가가 한 명 끼어 있고, 나를 기다리고 있었다) |
+| `horror10` | 이해하면 무서운 / 알림장 | 20.0초 | 알림장 부모님 확인 칸에 엄마 이름으로 사인이 되어 있다. 엄마는 지난주부터 출장 중, 어젯밤 집엔 나 혼자. "알림장은 밤새 내 방 책가방 안에 있었다." (정답: 내가 자는 동안 누군가 내 방에 들어와 엄마인 척 사인했다) |
+| `horror11` | 이해하면 무서운 / 할머니 손금 | 20.1초 | 할머니가 내 손금을 보며 "오래 살겠네". 장난삼아 할머니 손을 펴 보니 얼음처럼 차갑고, 손바닥엔 손금이 하나도 없다. (정답: 그 '할머니'는 살아 있는 사람이 아니다) |
+| `horror12` | 이해하면 무서운 / 숨바꼭질 | 20.2초 | 동생이 술래, 나는 안방 옷장에 숨었다. 동생 목소리가 멀어진 뒤 옷장 안 내 등 뒤에서 "여기 좋지?". "우리 집엔 나랑 동생, 딱 둘뿐이다." (정답: 옷장 안에 처음부터 다른 '누군가'가 숨어 있었다) |
+
+### 검토 결과 (`qa_review.py`)
+열두 편 모두 **FAIL 0**이다. WARN은 편마다 같은 두 줄이다.
+- **길이 WARN (20.0~22.2초).** 검토표의 PASS 구간은 25~45초인데, 이 포맷의 벤치마크 목표가 20~23초다. 일부러 맞춘 값이다.
+- **제목 띠 WARN (`riddle`).** 벤치마크가 띠 없는 그림 위 제목이라 일부러 띠를 뺐다.
+- 그 밖에 첫 장면 0.2~1.2초, 최장 샷 2.0~3.0초, 자막 한 장 최장 9자, −14.0 LUFS, 검은 화면 없음, 용량 10.4~27.3MB로 모두 PASS다.
+- 사람이 본 것(first.png, last.png, sheet.png): 0초에 손이나 실루엣, 빨간 제목 단어, 첫 자막이 함께 보인다. 끝은 반전 자막 위의 정지에 가까운 장면이다. 글자가 겹치거나 잘린 곳은 없다. 얼굴이 알아볼 수 있게 나오는 장면은 없다(`horror6` 빈 주차장 먼 문 앞의 작은 실루엣 하나는 v1과 같은 클립이고, 알아볼 수 없는 크기다).
+
+### 벤치마크 점수표
+렌더(`final/*.mp4`)를 `qa_review.py`와 같은 장면 감지로 재고, 음성 타임라인(`build/<id>/timeline.json`)과 대본에서 셌다. 훅 끝은 첫 문장 마지막 음절 + 0.15초, 음절/초는 전체 음절 ÷ 길이, 줄 수는 대본 줄(괄호는 문장 수)이다.
+
+| id | 길이 (목표 20–23, 21) | 훅 끝 (≤1.2) | 첫 전환 (≤1.5) | 평균 샷 (1.9) | 최장 샷 (≤3.0) | 음절/초 (≥5.8) | 줄 수 (9) | 화면 제목 (10+5자) |
+|---|---|---|---|---|---|---|---|---|
+| `horror1` | 22.2초 | 0.67초 | 0.77초 | 1.71초 | 2.97초 | 4.41 (98음절) | 8줄 (13문장) | 이해하면 무서운 / 엘리베이터 (7+5자) |
+| `horror2` | 21.8초 | 0.73초 | 0.23초 | 1.28초 | 2.07초 | 3.99 (87음절) | 8줄 (12문장) | 이해하면 무서운 / 도어락 (7+3자) |
+| `horror3` | 20.1초 | 0.72초 | 0.93초 | 1.55초 | 2.43초 | 5.22 (105음절) | 7줄 (10문장) | 이해하면 무서운 / 택배 (7+2자) |
+| `horror4` | 20.1초 | 0.94초 | 1.2초 | 1.34초 | 1.97초 | 5.46 (110음절) | 7줄 (10문장) | 이해하면 무서운 / 거울 (7+2자) |
+| `horror5` | 21.4초 | 0.81초 | 0.33초 | 1.43초 | 2.07초 | 4.85 (104음절) | 7줄 (12문장) | 이해하면 무서운 / 센서등 (7+3자) |
+| `horror6` | 21.0초 | 0.64초 | 0.83초 | 1.4초 | 2.6초 | 5.18 (109음절) | 7줄 (10문장) | 이해하면 무서운 / 김 서린 차 (7+4자) |
+| `horror7` | 20.5초 | 0.68초 | 0.77초 | 1.46초 | 2.47초 | 5.56 (114음절) | 7줄 (11문장) | 이해하면 무서운 / 홈캠 (7+2자) |
+| `horror8` | 22.2초 | 0.76초 | 1.0초 | 1.48초 | 2.67초 | 4.92 (109음절) | 7줄 (12문장) | 이해하면 무서운 / 발자국 (7+3자) |
+| `horror9` | 20.2초 | 0.65초 | 0.77초 | 1.44초 | 3.0초 | 5.36 (108음절) | 8줄 (10문장) | 이해하면 무서운 / 단톡방 (7+3자) |
+| `horror10` | 20.0초 | 0.89초 | 1.23초 | 1.43초 | 2.5초 | 5.69 (114음절) | 8줄 (9문장) | 이해하면 무서운 / 알림장 (7+3자) |
+| `horror11` | 20.1초 | 0.55초 | 0.7초 | 1.43초 | 2.3초 | 5.48 (110음절) | 7줄 (10문장) | 이해하면 무서운 / 할머니 손금 (7+5자) |
+| `horror12` | 20.2초 | 0.83초 | 1.1초 | 1.34초 | 2.33초 | 4.12 (83음절) | 7줄 (11문장) | 이해하면 무서운 / 숨바꼭질 (7+4자) |
+
+**못 맞춘 것과 이유**
+- **음절/초 3.99~5.69 (목표 5.8 이상).** 목표 5.8은 벤치마크에서 잰 값이 아니다. “+18%로 약 6.2음절/초”를 가정한 추정이다. 실제 InJoon `+18%`의 순수 발화 속도는 약 5.6음절/초라, 쉼이 전혀 없어도 5.8에 닿지 않는다. 지시대로 +18%를 지켰고, 문장 안 쉼과 줄 사이 쉼을 줄여 v1(4.1)보다 빨라졌다. `horror1`·`horror2`·`horror12`가 특히 낮은 이유는 “사, 삼, 이, 일. 띵.”, “삑, 삑, 삑, 삑”, “하나, 둘, 셋”처럼 박자를 두고 읽는 소리 구절 때문이다(지우면 이야기의 소리 단서가 사라진다).
+- **평균 샷 1.28~1.71초 (목표 1.9, 추정).** 목표보다 조금 더 빠르다. 장면 감지는 한 클립 안에서 문이 열리거나 불이 켜지는 변화도 전환으로 센다. 최장 샷은 모두 3.0초 이하로 목표 안이다.
+- **줄 수 7~8줄 (목표 9, 추정).** 문장 수로는 9~13문장이고, 자막 한 장은 3~9음절이다.
+- **화면 제목 7+2~5자 (목표 10+5).** 벤치마크 화면 제목이 “신기한 / 지우개”처럼 짧은 수식어 + 명사라서 화면에서는 “[괴담]”을 빼고 “이해하면 무서운 / ○○”만 둔다. “[괴담] 이해하면 무서운 ○○”는 업로드 제목에 쓴다.
+- 길이, 훅 끝(0.55~0.94초), 첫 전환(0.23~1.23초), 최장 샷은 열두 편 모두 목표 안이다.
+
+### 영상과 라이선스 (2026-10-10, 각 영상 페이지를 열어 “Free”·제작자를 확인)
+페이지 주소·파일 주소·제작자·쓴 구간(초)은 `media/horror/sources_v2.json`과 각 `edit.json`의 `sources`에 있다. 화면에는 출처를 표시하지 않고, 업로드 설명란에 모든 제작자를 적는다.
+- **Pexels License** (https://www.pexels.com/license/ — 무료, 수정 가능, 출처 표기 불필요. 수정 없는 판매·재배포와 사람을 나쁘게 보이게 하는 사용은 금지):
+  - horror1: 7701962 MART PRODUCTION, 15201563 Darina Evstafeva, 34779661 Stefan, 15434928 Yusuf Çelik, 5823578 Charlotte May, 978049 Stefan Kwiecinski / Pixabay: 130783·131012 Jesehab
+  - horror2: 2108274 Nazar Matveichev, 35999369 Jakub Bukowski, 9658661 Videas Cl, 29038649 Адам Аушев, 7598737 Artadya Gumelar, 19217899 Nino Souza, 5384813 Tima Miroshnichenko, 3512344 Bran Sodre, 8533759 Kaboompics (karola-g) / Pixabay: 28237 Jacques_Barrette
+  - horror3: 6611938 Tima Miroshnichenko, 8346903 Kampus Production, 7362603 RDNE Stock project, 13358555 Edwin Lopez, 9658661 Videas Cl, 5483080 cottonbro studio, 15365449 Matthias Groeneveld, 7598737 Artadya Gumelar
+  - horror4: 7646797 Alena Darmel, 32834268 Benjamin Eriksen, 36778198 Curtis Adams, 27861219 Nothing Ahead, 5384813 Tima Miroshnichenko, 4623153 Artem Podrez, 19217895 Nino Souza
+  - horror5: 4354915 Ahmet Akpolat, 5843879·9152640 Erik Mclean, 3134591 Caleb Oquendo, 12096163 Sasha Poberailo, 39024320 Alef Morais, 5986347 Pat Whelen, 6010700 Tima Miroshnichenko, 4990438 Pavel Danilyuk, 7644222 Yaroslav Shuraev
+  - horror6: 6302990 Klaus Nielsen, 27890130 Baran Robin, 6028858·6028882 Артем Ковальчук, 19217892 Nino Souza, 38433795 Rishabh Kaple, 5192033 Ming Z, 5227362 Francesco Ungaro, 32078487 Rec Everywhere
+  - horror7: 13358555 Edwin Lopez, 19228170·15887293 Curtis Adams, 34106136 Cemrecan Yurtman, 6028175 Ricky Esquivel, 19193293 Rafael Fernanz, 6114429 cottonbro studio, 5245970 Hemanth K M, 6443851 Pavel Danilyuk
+  - horror8: 5994916·5994907·5994915 cottonbro studio, 9976082 George Morina, 34405948 Emir Reinado, 7714908 Greta Hoffman, 9591436 Kain kn, 5391986 Saidouni Sidi Med, 4162882 Grisha Grishkoff, 39485457·39619866 Nothing Ahead, 5419248 Yaroslav Shuraev
+  - horror9: 6611941·5384813 Tima Miroshnichenko, 13358555 Edwin Lopez, 8342690·8342695 Pavel Danilyuk, 6935499·7822022 RDNE Stock project, 19193293 Rafael Fernanz
+  - horror10: 7055339 Kindel Media, 5897634 Katerina Holmes, 6326847 Kaboompics (karola-g), 8342690 Pavel Danilyuk, 6863499 Nataliya Vaitkevich, 7598737 Artadya Gumelar, 19193293 Rafael Fernanz, 5384813 Tima Miroshnichenko, 19217899 Nino Souza, 39425735 Sergei Starostin
+  - horror11: 9479751 Ron Lach, 19585708 Salih Sezgen, 35889601 K (@kelly), 10210122·4547598 cottonbro studio, 7234023 Artem Podrez, 5271483 Moe Magners, 7546178 SHVETS production
+  - horror12: 9594994·8322393 Ron Lach, 7598737 Artadya Gumelar, 2108274 Nazar Matveichev, 4547598 cottonbro studio, 19217899 Nino Souza, 9658661 Videas Cl, 37554583 Zulfugar Karimov
+  - v2에서 새로 쓴 클립의 페이지: 7701962, 2108274, 6611938, 7646797, 4354915, 6302990, 13358555, 5994916, 5994907, 6611941, 7822022, 8342690, 6935499, 8342695, 7055339, 5897634, 6326847, 6863499, 39425735, 9479751, 19585708, 35889601, 10210122, 7234023, 5271483, 7546178, 4547598, 9594994, 8322393, 37554583, 8533759. 주소는 `https://www.pexels.com/video/<slug>-<id>/`이고, slug는 `catalog.py`에 있다.
+- **Pixabay Content License** (무료, 수정 가능, 출처 표기 불필요. 원본 그대로의 판매·배포 금지): 130783·131012 Jesehab(`horror1`), 28237 Jacques_Barrette(`horror2`).
+- 손은 모두 얼굴이 나오지 않는 익명의 손이다. 무섭거나 나쁜 맥락의 장면에 알아볼 수 있는 사람은 없다.
+- 음악: Kevin MacLeod (incompetech.com), CC BY 4.0.
+- 사실 인용: 열두 편 모두 창작 괴담이라 숫자·법·날짜 같은 사실 주장이 없다.
+
+### 업로드 문구
+설명란 첫 줄에 **창작 괴담**이라고 밝힌다. 정답 유도는 영상에서 빼고 고정 댓글로 옮겼다. 고정 댓글은 정답을 직접 말하지 않고 단서를 준다.
+
+**horror1** — [괴담] 이해하면 무서운 엘리베이터 ㄷㄷ
+> 창작 괴담입니다. 실제 장소·인물과 관계없습니다. 텅 빈 엘리베이터에 한 발 들였을 뿐인데 정원 초과?
+> 영상: Pexels (MART PRODUCTION, Darina Evstafeva, Stefan, Yusuf Çelik, Charlotte May, Stefan Kwiecinski), Pixabay (Jesehab)
+> 음악: "Gathering Darkness" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
+> #괴담 #이해하면무서운이야기 #공포 #엘리베이터 #shorts
+
+고정 댓글: “정원 초과인데 안은 텅 비어 있었다면… 그 엘리베이터엔 몇 명이 타고 있었을까요? 위층에서 누가 불렀던 걸까요? 정답은 답글로 👀”
+
+**horror2** — [괴담] 이해하면 무서운 도어락 ㄷㄷ
+> 창작 괴담입니다. 실제 장소·인물과 관계없습니다. 새벽 세 시에 열렸다가 다시 잠긴 도어락. 비밀번호는 나만 아는데요.
+> 영상: Pexels (Nazar Matveichev, Jakub Bukowski, Videas Cl, Адам Аушев, Artadya Gumelar, Nino Souza, Tima Miroshnichenko, Bran Sodre, Kaboompics (karola-g)), Pixabay (Jacques_Barrette)
+> 음악: "Ghost Story" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
+> #괴담 #이해하면무서운이야기 #공포 #도어락 #shorts
+
+고정 댓글: “문은 안에서 다시 잠겼고, 신발은 한 켤레 늘었습니다. 그 사람은 언제 나갔을까요? 정답은 답글로 👀”
+
+**horror3** — [괴담] 이해하면 무서운 택배 문자 ㄷㄷ
+> 창작 괴담입니다. 실제 업체·인물과 관계없습니다. 나는 회사에 있고, 혼자 사는데… 택배는 누가 받아 갔을까요?
+> 영상: Pexels (Tima Miroshnichenko, Kampus Production, RDNE Stock project, Edwin Lopez, Videas Cl, cottonbro studio, Matthias Groeneveld, Artadya Gumelar)
+> 음악: "Gathering Darkness" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
+> #괴담 #이해하면무서운이야기 #공포 #택배 #shorts
+
+고정 댓글: “잠긴 집 안에서 택배를 받아 간 '안에 계신 분'은 지금 어디 있을까요? 정답은 답글로 👀”
+
+**horror4** — [괴담] 이해하면 무서운 거울 ㄷㄷ
+> 창작 괴담입니다. 실제 장소·인물과 관계없습니다. 불을 껐는데 거울 속 방은 아직 밝았다면?
+> 영상: Pexels (Alena Darmel, Benjamin Eriksen, Curtis Adams, Nothing Ahead, Tima Miroshnichenko, Artem Podrez, Nino Souza)
+> 음악: "Ghost Story" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
+> #괴담 #이해하면무서운이야기 #공포 #거울 #shorts
+
+고정 댓글: “거울 속 침대가 비어 있었다면, 거울 속 '나'는 지금 어디서 무엇을 하고 있을까요? 정답은 답글로 👀”
+
+**horror5** — [괴담] 이해하면 무서운 센서등 ㄷㄷ
+> 창작 괴담입니다. 실제 장소·인물과 관계없습니다. 내가 가기도 전에 한 층씩 먼저 켜지던 비상계단 센서등.
+> 영상: Pexels (Ahmet Akpolat, Erik Mclean, Caleb Oquendo, Sasha Poberailo, Alef Morais, Pat Whelen, Tima Miroshnichenko, Pavel Danilyuk, Yaroslav Shuraev)
+> 음악: "Gathering Darkness" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
+> #괴담 #이해하면무서운이야기 #공포 #비상계단 #shorts
+
+고정 댓글: “센서등은 사람이 지나가야 켜집니다. 계속 한 층 아래를 지나간 건 누구였고, 마지막에 2층 불은 왜 켜졌을까요? 정답은 답글로 👀”
+
+**horror6** — [괴담] 이해하면 무서운 김 서린 차 ㄷㄷ
+> 창작 괴담입니다. 실제 장소·인물과 관계없습니다. 몇 달째 서 있는 차, 김 서린 유리에 좌우가 뒤집힌 글씨 "또 봤네?"
+> 영상: Pexels (Klaus Nielsen, Baran Robin, Артем Ковальчук, Nino Souza, Rishabh Kaple, Ming Z, Francesco Ungaro, Rec Everywhere)
+> 음악: "Ghost Story" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
+> #괴담 #이해하면무서운이야기 #공포 #지하주차장 #shorts
+
+고정 댓글: “김은 어느 쪽에서 숨을 쉬어야 서릴까요? 그리고 글씨는 왜 뒤집혀 있었을까요? 정답은 답글로 👀”
+
+**horror7** — [괴담] 이해하면 무서운 홈캠 ㄷㄷ
+> 창작 괴담입니다. 실제 장소·인물·제품과 관계없습니다. 현관만 비추던 홈캠에 왜 자는 내가 찍혀 있었을까요?
+> 영상: Pexels (Edwin Lopez, Curtis Adams, Cemrecan Yurtman, Ricky Esquivel, Rafael Fernanz, cottonbro studio, Hemanth K M, Pavel Danilyuk)
+> 음악: "Gathering Darkness" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
+> #괴담 #이해하면무서운이야기 #공포 #홈캠 #shorts
+
+고정 댓글: “현관문은 한 번도 열리지 않았는데, 누가 홈캠을 침대 옆으로 옮겼다가 다시 돌려놨을까요? 정답은 답글로 👀”
+
+**horror8** — [괴담] 이해하면 무서운 발자국 ㄷㄷ
+> 창작 괴담입니다. 실제 장소·인물과 관계없습니다. 텐트 입구에서 나와 한 바퀴 돌고 다시 들어간 발자국. 나는 밤새 나간 적이 없는데요.
+> 영상: Pexels (cottonbro studio, George Morina, Emir Reinado, Greta Hoffman, Kain kn, Saidouni Sidi Med, Grisha Grishkoff, Nothing Ahead, Yaroslav Shuraev)
+> 음악: "Ghost Story" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
+> #괴담 #이해하면무서운이야기 #공포 #캠핑 #shorts
+
+고정 댓글: “발자국은 밖에서 온 게 아니라 입구에서 '나와서' 다시 '들어갔습니다'. 그날 밤 텐트 안엔 몇 명이 있었을까요? 정답은 답글로 👀”
+
+**horror9** — [괴담] 이해하면 무서운 단톡방 ㄷㄷ
+> 창작 괴담입니다. 실제 인물·학교·앱과 관계없습니다. 새벽 세 시에 초대된 반 단톡방, 그리고 "이제야 다 모였네".
+> 영상: Pexels (Tima Miroshnichenko, Edwin Lopez, Pavel Danilyuk, RDNE Stock project, Rafael Fernanz)
+> 음악: "Gathering Darkness" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
+> #괴담 #이해하면무서운이야기 #공포 #단톡방 #shorts
+
+고정 댓글: “우리 반은 나까지 29명인데 참여 인원은 30명. 서른 번째는 누구였고, 누구를 기다리고 있었을까요? 정답은 답글로 👀”
+
+**horror10** — [괴담] 이해하면 무서운 알림장 ㄷㄷ
+> 창작 괴담입니다. 실제 인물·학교와 관계없습니다. 출장 간 엄마의 사인이 내 알림장에 있었다면?
+> 영상: Pexels (Kindel Media, Katerina Holmes, Kaboompics (karola-g), Pavel Danilyuk, Nataliya Vaitkevich, Artadya Gumelar, Rafael Fernanz, Tima Miroshnichenko, Nino Souza, Sergei Starostin)
+> 음악: "Ghost Story" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
+> #괴담 #이해하면무서운이야기 #공포 #알림장 #shorts
+
+고정 댓글: “엄마는 출장 중이고 집엔 나 혼자였습니다. 밤새 내 방 가방에서 알림장을 꺼내 사인한 사람은 누구일까요? 정답은 답글로 👀”
+
+**horror11** — [괴담] 이해하면 무서운 할머니 손금 ㄷㄷ
+> 창작 괴담입니다. 실제 인물과 관계없습니다. 내 손금을 보고 웃으신 할머니, 그런데 할머니 손바닥엔…
+> 영상: Pexels (Ron Lach, Salih Sezgen, K (@kelly), cottonbro studio, Artem Podrez, Moe Magners, SHVETS production)
+> 음악: "Gathering Darkness" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
+> #괴담 #이해하면무서운이야기 #공포 #손금 #shorts
+
+고정 댓글: “살아 있는 사람이라면 손바닥에 손금이 있죠. 얼음처럼 차가운 손, 손금 없는 손바닥의 '할머니'는 누구였을까요? 정답은 답글로 👀”
+
+**horror12** — [괴담] 이해하면 무서운 숨바꼭질 ㄷㄷ
+> 창작 괴담입니다. 실제 인물과 관계없습니다. 옷장에 숨었는데 등 뒤에서 들린 한마디, "여기 좋지?"
+> 영상: Pexels (Ron Lach, Artadya Gumelar, Nazar Matveichev, cottonbro studio, Nino Souza, Videas Cl, Zulfugar Karimov)
+> 음악: "Ghost Story" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
+> #괴담 #이해하면무서운이야기 #공포 #숨바꼭질 #shorts
+
+고정 댓글: “동생은 밖에서 나를 찾고 있었고, 집엔 우리 둘뿐입니다. 옷장 안에서 속삭인 건 누구였을까요? 정답은 답글로 👀”
 ## 그 시절 레트로 v2 (벤치마크, `retro1`~`retro12`)
 
 `research/benchmark-footage.md` 2절과 `research/benchmark-targets-footage.json`의 `retro` 목표에 맞춰 다시 만든 판입니다. 벤치마크는 그 시절 우리의 「김치 식단」(359만), 「80년대 캠핑」(314만), 「계곡 식사」(189만)입니다. 바뀐 점은 다음과 같습니다.
