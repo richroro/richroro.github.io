@@ -1,0 +1,727 @@
+{
+ "credit": "",
+ "titleStyle": "band",
+ "titleEn": "The Left-Lane Hog",
+ "sources": {},
+ "music": {
+  "file": "music/monkeys_spinning_monkeys.mp3",
+  "gain": 0.32,
+  "start": 0
+ },
+ "sfx": [
+  [
+   7.4,
+   "engine",
+   0.3
+  ],
+  [
+   14.6,
+   "siren",
+   0.8
+  ],
+  [
+   16.2,
+   "dundun",
+   0.6
+  ],
+  [
+   18.0,
+   "siren",
+   0.5
+  ],
+  [
+   24.6,
+   "dundun",
+   0.8
+  ]
+ ],
+ "clips": [
+  {
+   "from": 0.0,
+   "frame": "wide",
+   "zoom": [
+    1,
+    1
+   ],
+   "gfx": {
+    "type": "road",
+    "view": "face",
+    "driver": {
+     "skin": "#FFD9B0",
+     "hair": "cap",
+     "cap": "#8b5cf6",
+     "hairColor": "#2a2320",
+     "shirt": "#C9A7FF",
+     "mood": "cool",
+     "moods": [
+      [
+       0.6,
+       "happy"
+      ]
+     ]
+    },
+    "flip": true,
+    "car": "#FF5C5C",
+    "speed": 700,
+    "marks": [
+     [
+      0.5,
+      "note"
+     ]
+    ]
+   }
+  },
+  {
+   "from": 1.4,
+   "frame": "wide",
+   "zoom": [
+    1,
+    1
+   ],
+   "gfx": {
+    "type": "road",
+    "view": "car",
+    "cam": "high",
+    "cars": [
+     {
+      "kind": "car",
+      "lane": 1,
+      "z": 0,
+      "color": "#FF5C5C",
+      "driver": {
+       "skin": "#FFD9B0",
+       "hair": "cap",
+       "cap": "#8b5cf6",
+       "hairColor": "#2a2320",
+       "shirt": "#C9A7FF",
+       "mood": "happy",
+       "moods": []
+      }
+     },
+     {
+      "kind": "car",
+      "lane": 1,
+      "z": -9,
+      "color": "#4DA3FF"
+     },
+     {
+      "kind": "car",
+      "lane": 1,
+      "z": -18,
+      "color": "#E8E8E8"
+     },
+     {
+      "kind": "car",
+      "lane": 1,
+      "z": -27,
+      "color": "#B9F27C"
+     },
+     {
+      "kind": "car",
+      "lane": 1,
+      "z": -36,
+      "color": "#FFB36B"
+     }
+    ],
+    "follow": 0,
+    "speed": 14,
+    "cam2": {
+     "x": 3,
+     "y": 16,
+     "z": -30,
+     "yaw": 0,
+     "pitch": -30
+    },
+    "camAt": 0.2,
+    "camDur": 2
+   }
+  },
+  {
+   "from": 3.6,
+   "frame": "wide",
+   "zoom": [
+    1,
+    1
+   ],
+   "gfx": {
+    "type": "road",
+    "view": "face",
+    "driver": {
+     "skin": "#FFD9B0",
+     "hair": "short",
+     "hairColor": "#2a2320",
+     "shirt": "#FFD84D",
+     "mood": "bored",
+     "moods": [
+      [
+       0.8,
+       "angry"
+      ]
+     ]
+    },
+    "ahead": {
+     "kind": "car",
+     "color": "#FF5C5C",
+     "size": 0.55
+    },
+    "marks": [
+     [
+      0.9,
+      "anger"
+     ]
+    ]
+   }
+  },
+  {
+   "from": 5.2,
+   "frame": "wide",
+   "zoom": [
+    1,
+    1
+   ],
+   "gfx": {
+    "type": "road",
+    "view": "car",
+    "cam": "rearL",
+    "cars": [
+     {
+      "kind": "car",
+      "lane": 1,
+      "z": 0,
+      "color": "#4DA3FF",
+      "marks": [
+       [
+        0.4,
+        "anger"
+       ]
+      ],
+      "driver": {
+       "skin": "#FFD9B0",
+       "hair": "short",
+       "hairColor": "#2a2320",
+       "shirt": "#FFD84D",
+       "mood": "angry",
+       "moods": []
+      }
+     },
+     {
+      "kind": "car",
+      "lane": 1,
+      "z": 10,
+      "color": "#FF5C5C",
+      "driver": {
+       "skin": "#FFD9B0",
+       "hair": "cap",
+       "cap": "#8b5cf6",
+       "hairColor": "#2a2320",
+       "shirt": "#C9A7FF",
+       "mood": "happy",
+       "moods": []
+      }
+     },
+     {
+      "kind": "car",
+      "lane": 1,
+      "z": -9,
+      "color": "#E8E8E8",
+      "marks": [
+       [
+        0.9,
+        "anger"
+       ]
+      ]
+     },
+     {
+      "kind": "car",
+      "lane": 1,
+      "z": -18,
+      "color": "#B9F27C",
+      "marks": [
+       [
+        0.9,
+        "anger"
+       ]
+      ]
+     }
+    ],
+    "follow": 0,
+    "speed": 14
+   }
+  },
+  {
+   "from": 7.2,
+   "frame": "wide",
+   "zoom": [
+    1,
+    1
+   ],
+   "gfx": {
+    "type": "road",
+    "view": "face",
+    "driver": {
+     "skin": "#FFD9B0",
+     "hair": "cap",
+     "cap": "#8b5cf6",
+     "hairColor": "#2a2320",
+     "shirt": "#C9A7FF",
+     "mood": "happy",
+     "moods": []
+    },
+    "flip": true,
+    "car": "#FF5C5C",
+    "speed": 700,
+    "marks": [
+     [
+      0.3,
+      "note"
+     ]
+    ],
+    "zoom": [
+     1.0,
+     1.06
+    ]
+   }
+  },
+  {
+   "from": 8.8,
+   "frame": "wide",
+   "zoom": [
+    1,
+    1
+   ],
+   "gfx": {
+    "type": "road",
+    "view": "car",
+    "cam": "side",
+    "cars": [
+     {
+      "kind": "car",
+      "lane": 1,
+      "z": 0,
+      "color": "#FF5C5C",
+      "driver": {
+       "skin": "#FFD9B0",
+       "hair": "cap",
+       "cap": "#8b5cf6",
+       "hairColor": "#2a2320",
+       "shirt": "#C9A7FF",
+       "mood": "happy",
+       "moods": []
+      }
+     },
+     {
+      "kind": "car",
+      "lane": 1,
+      "z": -9,
+      "color": "#4DA3FF",
+      "driver": {
+       "skin": "#FFD9B0",
+       "hair": "short",
+       "hairColor": "#2a2320",
+       "shirt": "#FFD84D",
+       "mood": "angry",
+       "moods": []
+      }
+     }
+    ],
+    "follow": 0,
+    "speed": 14
+   }
+  },
+  {
+   "from": 10.6,
+   "frame": "wide",
+   "zoom": [
+    1,
+    1
+   ],
+   "gfx": {
+    "type": "road",
+    "view": "face",
+    "driver": {
+     "skin": "#FFD9B0",
+     "hair": "short",
+     "hairColor": "#2a2320",
+     "shirt": "#FFD84D",
+     "mood": "side",
+     "moods": [
+      [
+       0.9,
+       "cool"
+      ]
+     ]
+    },
+    "ahead": {
+     "kind": "car",
+     "color": "#FF5C5C",
+     "size": 0.5
+    }
+   }
+  },
+  {
+   "from": 12.4,
+   "frame": "wide",
+   "zoom": [
+    1,
+    1
+   ],
+   "gfx": {
+    "type": "road",
+    "view": "car",
+    "cam": "rearR",
+    "cars": [
+     {
+      "kind": "car",
+      "lane": 1,
+      "z": 0,
+      "color": "#FF5C5C",
+      "driver": {
+       "skin": "#FFD9B0",
+       "hair": "cap",
+       "cap": "#8b5cf6",
+       "hairColor": "#2a2320",
+       "shirt": "#C9A7FF",
+       "mood": "happy",
+       "moods": []
+      }
+     },
+     {
+      "kind": "police",
+      "lane": 1,
+      "z": -30,
+      "path": [
+       [
+        0.2,
+        1,
+        -10,
+        1.4
+       ]
+      ],
+      "siren": 1.4,
+      "driver": {
+       "skin": "#F2C49B",
+       "hair": "cap",
+       "cap": "#1d2a5a",
+       "shirt": "#1d2a5a",
+       "beard": "mustache",
+       "hairColor": "#2a2320",
+       "mood": "side",
+       "moods": []
+      }
+     },
+     {
+      "kind": "car",
+      "lane": 2,
+      "z": -4,
+      "color": "#4DA3FF",
+      "path": [
+       [
+        0,
+        2,
+        20,
+        2.0
+       ]
+      ],
+      "blink": "R",
+      "driver": {
+       "skin": "#FFD9B0",
+       "hair": "short",
+       "hairColor": "#2a2320",
+       "shirt": "#FFD84D",
+       "mood": "cool",
+       "moods": []
+      }
+     }
+    ],
+    "follow": 0,
+    "speed": 14
+   }
+  },
+  {
+   "from": 14.4,
+   "frame": "wide",
+   "zoom": [
+    1,
+    1
+   ],
+   "gfx": {
+    "type": "road",
+    "view": "face",
+    "driver": {
+     "skin": "#FFD9B0",
+     "hair": "cap",
+     "cap": "#8b5cf6",
+     "hairColor": "#2a2320",
+     "shirt": "#C9A7FF",
+     "mood": "shock",
+     "moods": []
+    },
+    "flip": true,
+    "car": "#FF5C5C",
+    "speed": 700,
+    "police": 0.2,
+    "marks": [
+     [
+      0.3,
+      "!"
+     ]
+    ]
+   }
+  },
+  {
+   "from": 16.0,
+   "frame": "wide",
+   "zoom": [
+    1,
+    1
+   ],
+   "gfx": {
+    "type": "road",
+    "view": "face",
+    "driver": {
+     "skin": "#F2C49B",
+     "hair": "cap",
+     "cap": "#1d2a5a",
+     "shirt": "#1d2a5a",
+     "beard": "mustache",
+     "hairColor": "#2a2320",
+     "mood": "side",
+     "moods": []
+    },
+    "car": "#F2F2F2",
+    "ahead": {
+     "kind": "car",
+     "color": "#FF5C5C",
+     "size": 0.6
+    },
+    "police": 0.0,
+    "zoom": [
+     1.0,
+     1.2
+    ]
+   }
+  },
+  {
+   "from": 17.8,
+   "frame": "wide",
+   "zoom": [
+    1,
+    1
+   ],
+   "gfx": {
+    "type": "road",
+    "view": "car",
+    "cam": "high",
+    "cars": [
+     {
+      "kind": "car",
+      "lane": 1,
+      "z": 0,
+      "color": "#FF5C5C",
+      "path": [
+       [
+        0.2,
+        4,
+        -4,
+        1.8
+       ]
+      ],
+      "blink": "R",
+      "driver": {
+       "skin": "#FFD9B0",
+       "hair": "cap",
+       "cap": "#8b5cf6",
+       "hairColor": "#2a2320",
+       "shirt": "#C9A7FF",
+       "mood": "eek",
+       "moods": []
+      }
+     },
+     {
+      "kind": "police",
+      "lane": 1,
+      "z": -9,
+      "siren": 0,
+      "path": [
+       [
+        0.4,
+        4,
+        -13,
+        1.8
+       ]
+      ],
+      "driver": {
+       "skin": "#F2C49B",
+       "hair": "cap",
+       "cap": "#1d2a5a",
+       "shirt": "#1d2a5a",
+       "beard": "mustache",
+       "hairColor": "#2a2320",
+       "mood": "side",
+       "moods": []
+      }
+     },
+     {
+      "kind": "car",
+      "lane": 1,
+      "z": -20,
+      "color": "#E8E8E8",
+      "path": [
+       [
+        0.8,
+        1,
+        25,
+        1.6
+       ]
+      ]
+     },
+     {
+      "kind": "car",
+      "lane": 1,
+      "z": -30,
+      "color": "#B9F27C",
+      "path": [
+       [
+        1.0,
+        1,
+        12,
+        1.4
+       ]
+      ]
+     }
+    ],
+    "follow": 0,
+    "speed": 14,
+    "stopAt": 1.4
+   }
+  },
+  {
+   "from": 20.2,
+   "frame": "wide",
+   "zoom": [
+    1,
+    1
+   ],
+   "gfx": {
+    "type": "road",
+    "view": "face",
+    "driver": {
+     "skin": "#FFD9B0",
+     "hair": "short",
+     "hairColor": "#2a2320",
+     "shirt": "#FFD84D",
+     "mood": "happy",
+     "moods": []
+    },
+    "speed": 2400,
+    "marks": [
+     [
+      0.4,
+      "note"
+     ]
+    ]
+   }
+  },
+  {
+   "from": 22.0,
+   "frame": "wide",
+   "zoom": [
+    1,
+    1
+   ],
+   "gfx": {
+    "type": "road",
+    "view": "car",
+    "cam": "rearL",
+    "cars": [
+     {
+      "kind": "car",
+      "lane": 4,
+      "z": 0,
+      "color": "#FF5C5C",
+      "driver": {
+       "skin": "#FFD9B0",
+       "hair": "cap",
+       "cap": "#8b5cf6",
+       "hairColor": "#2a2320",
+       "shirt": "#C9A7FF",
+       "mood": "sad",
+       "moods": []
+      }
+     },
+     {
+      "kind": "police",
+      "lane": 4,
+      "z": -8,
+      "siren": 0,
+      "driver": {
+       "skin": "#F2C49B",
+       "hair": "cap",
+       "cap": "#1d2a5a",
+       "shirt": "#1d2a5a",
+       "beard": "mustache",
+       "hairColor": "#2a2320",
+       "mood": "side",
+       "moods": []
+      }
+     },
+     {
+      "kind": "car",
+      "lane": 1,
+      "z": -40,
+      "color": "#E8E8E8",
+      "vz": 14
+     },
+     {
+      "kind": "car",
+      "lane": 1,
+      "z": -55,
+      "color": "#8FD3FF",
+      "vz": 14
+     },
+     {
+      "kind": "car",
+      "lane": 1,
+      "z": -70,
+      "color": "#B9F27C",
+      "vz": 14
+     }
+    ],
+    "follow": 0,
+    "speed": 0
+   }
+  },
+  {
+   "from": 24.4,
+   "frame": "wide",
+   "zoom": [
+    1,
+    1
+   ],
+   "gfx": {
+    "type": "road",
+    "view": "face",
+    "driver": {
+     "skin": "#FFD9B0",
+     "hair": "cap",
+     "cap": "#8b5cf6",
+     "hairColor": "#2a2320",
+     "shirt": "#C9A7FF",
+     "mood": "cry",
+     "moods": []
+    },
+    "flip": true,
+    "car": "#FF5C5C",
+    "speed": 0,
+    "police": 0.0,
+    "zoom": [
+     1.0,
+     1.1
+    ],
+    "dun": [
+     0.2
+    ]
+   }
+  }
+ ]
+}
