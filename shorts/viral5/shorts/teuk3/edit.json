@@ -113,11 +113,6 @@
    0.25
   ],
   [
-   "a7.우유는",
-   "boing",
-   0.25
-  ],
-  [
    "z",
    "ding",
    0.25
@@ -342,16 +337,17 @@
    "label": "a7",
    "gfx": {
     "type": "face",
-    "mood": "laugh",
+    "mood": "cry",
     "pos": "close",
-    "prop": "🥛",
-    "big": "원샷",
-    "propX": 0.8,
+    "to": "love",
+    "fx": "hearts",
+    "prop": "🍱",
+    "propX": 0.82,
     "propY": 0.72,
     "steps": [
-     0.9,
+     "a7.그",
      0.05,
-     "a7.우유는"
+     0.15
     ]
    }
   },

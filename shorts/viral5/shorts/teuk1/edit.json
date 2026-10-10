@@ -123,6 +123,11 @@
    0.25
   ],
   [
+   "a7.아직",
+   "boing",
+   0.25
+  ],
+  [
    "z",
    "ding",
    0.25
@@ -350,13 +355,17 @@
    "label": "a7",
    "gfx": {
     "type": "face",
-    "mood": "think",
+    "mood": "cry",
     "pos": "right",
-    "prop": "🍱",
+    "fx": "gloom",
+    "prop": "🕙",
+    "big": "10:00",
+    "propX": 0.2,
+    "propY": 0.3,
     "steps": [
      0.9,
      0.05,
-     0.15
+     "a7.아직"
     ]
    }
   },

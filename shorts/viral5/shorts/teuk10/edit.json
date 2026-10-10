@@ -20,13 +20,6 @@
    "license": "CC0",
    "credit": "Cup Noodle Zeitaku-toromi-fukahire-soup.jpg by 毒島みるく (CC0, http://creativecommons.org/publicdomain/zero/1.0/deed.en), via Wikimedia Commons"
   },
-  "kimchi": {
-   "file": "kimchi.jpg",
-   "page": "https://commons.wikimedia.org/wiki/File:Korean_cuisine-Kimchi-08.jpg",
-   "file_url": "https://upload.wikimedia.org/wikipedia/commons/9/9d/Korean_cuisine-Kimchi-08.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
-   "license": "CC BY 2.0",
-   "credit": "Korean cuisine-Kimchi-08.jpg by Jeremy Keith (CC BY 2.0, https://creativecommons.org/licenses/by/2.0), via Wikimedia Commons"
-  },
   "ramyeon": {
    "file": "ramyeon.jpg",
    "page": "https://commons.wikimedia.org/wiki/File:20200804_033546_Ramyeon_IMG_8515.jpg",
@@ -82,11 +75,6 @@
    "a3",
    "whoosh",
    0.15
-  ],
-  [
-   "a4",
-   "pop_hi",
-   0.18
   ],
   [
    "a4",
@@ -150,11 +138,6 @@
   ],
   [
    "a5.바닥",
-   "boing",
-   0.25
-  ],
-  [
-   "a7.얼굴",
    "boing",
    0.25
   ],
@@ -265,18 +248,17 @@
   {
    "from": "a4",
    "label": "a4",
-   "src": "kimchi",
    "gfx": {
-    "type": "photo",
-    "react": {
-     "mood": "sad",
-     "side": "left"
-    },
+    "type": "face",
+    "mood": "smug",
+    "pos": "left",
+    "prop": "🍜",
+    "propX": 0.8,
+    "propY": 0.35,
     "steps": [
-     0.12,
-     0.2,
-     0.25,
-     1000.0
+     0.9,
+     0.05,
+     0.15
     ]
    }
   },
@@ -374,22 +356,22 @@
    "label": "a7",
    "gfx": {
     "type": "scene",
-    "bg": "bath",
+    "bg": "store",
     "chars": [
      {
       "name": "나",
       "color": "#FFB36B",
-      "mood": "shock",
-      "size": 1.35
+      "mood": "think",
+      "to": "happy",
+      "size": 1.2
      }
     ],
-    "prop": "🪞",
-    "big": "퉁퉁",
+    "prop": "🍜",
     "steps": [
      9,
      0.1,
-     9,
-     "a7.얼굴"
+     "a7.또",
+     9
     ]
    }
   },

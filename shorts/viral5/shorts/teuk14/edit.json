@@ -344,27 +344,28 @@
    "label": "a9",
    "gfx": {
     "type": "scene",
-    "bg": "street",
-    "place": "📸 찰칵",
+    "bg": "home",
     "chars": [
      {
       "color": "#8FD3FF",
-      "mood": "happy"
+      "mood": "happy",
+      "to": "shock"
      },
      {
       "name": "나",
       "color": "#FFB36B",
-      "mood": "sleep"
+      "mood": "happy"
      },
      {
       "color": "#C9A7FF",
-      "mood": "happy"
+      "mood": "neutral"
      }
     ],
+    "prop": "🎂",
     "steps": [
      9,
-     9,
-     9,
+     0.1,
+     "a9.주인공",
      9
     ]
    }

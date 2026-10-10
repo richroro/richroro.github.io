@@ -118,6 +118,11 @@
    0.25
   ],
   [
+   "a7.공부가",
+   "boing",
+   0.25
+  ],
+  [
    "z",
    "ding",
    0.25
@@ -325,10 +330,10 @@
    "label": "a9",
    "gfx": {
     "type": "face",
-    "mood": "sad",
+    "mood": "shock",
     "pos": "right",
-    "fx": "gloom",
-    "prop": "🍜",
+    "fx": "sparkle",
+    "prop": "🛋️",
     "propX": 0.2,
     "propY": 0.3,
     "steps": [
@@ -343,21 +348,22 @@
    "label": "a7",
    "gfx": {
     "type": "scene",
-    "bg": "night",
+    "bg": "desk",
     "chars": [
      {
       "name": "나",
       "color": "#FFB36B",
-      "mood": "think",
+      "mood": "happy",
       "size": 1.2
      }
     ],
-    "prop": "💭",
+    "prop": "📚",
+    "big": "이제야?",
     "steps": [
      9,
      0.1,
      9,
-     9
+     "a7.공부가"
     ]
    }
   },
