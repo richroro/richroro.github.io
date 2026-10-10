@@ -1,0 +1,925 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#f6f6f8">
+<meta name="description" content="유튜브 채널 여러 개를 한 화면에서 기획하고 관리하는 무료 도구. 채널별 주제·업로드 요일·개설 체크리스트·영상 기획 보드를 브라우저에 저장합니다. 로그인 없음.">
+<title>채널 공장 · 유튜브 멀티채널 플래너</title>
+<link rel="canonical" href="https://richroro.github.io/youtube-channels/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="채널 공장">
+<meta property="og:title" content="채널 공장 · 유튜브 멀티채널 플래너">
+<meta property="og:description" content="채널 여러 개의 주제·업로드 요일·개설 체크리스트·영상 기획을 한 화면에서. 데이터는 내 브라우저에만 저장됩니다.">
+<meta property="og:url" content="https://richroro.github.io/youtube-channels/">
+<meta property="og:locale" content="ko_KR">
+<meta name="twitter:card" content="summary">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect x='4' y='18' width='62' height='44' rx='12' fill='%23e5283c'/><rect x='34' y='38' width='62' height='44' rx='12' fill='%23ff7a45'/><path d='M58 50v20l17-10z' fill='white'/></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&display=swap">
+<style>
+:root{
+  --bg:#f6f6f8; --panel:#ffffff; --panel-2:#f1f2f5; --line:#e3e5ea; --line-2:#cdd1d9;
+  --ink:#16181d; --ink-2:#4f5663; --ink-3:#8a909c;
+  --accent:#e5283c; --accent-2:#c81d30; --accent-wash:#fdeaec; --on-accent:#fff;
+  --ok:#12996b; --ok-wash:#e3f6ef; --warn:#b26b00; --warn-wash:#fff3df;
+  --shadow:0 10px 30px -18px rgba(20,24,32,.45);
+  --r:14px; --r-sm:9px;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0f1014; --panel:#17191f; --panel-2:#1e2129; --line:#2a2e38; --line-2:#3a3f4c;
+    --ink:#eef0f4; --ink-2:#aab1bf; --ink-3:#6f7786;
+    --accent:#ff4d5e; --accent-2:#ff6b79; --accent-wash:#3a1a20; --on-accent:#fff;
+    --ok:#33d19a; --ok-wash:#14302a; --warn:#ffb547; --warn-wash:#332710;
+    --shadow:0 12px 34px -16px rgba(0,0,0,.85);
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0f1014; --panel:#17191f; --panel-2:#1e2129; --line:#2a2e38; --line-2:#3a3f4c;
+  --ink:#eef0f4; --ink-2:#aab1bf; --ink-3:#6f7786;
+  --accent:#ff4d5e; --accent-2:#ff6b79; --accent-wash:#3a1a20; --on-accent:#fff;
+  --ok:#33d19a; --ok-wash:#14302a; --warn:#ffb547; --warn-wash:#332710;
+  --shadow:0 12px 34px -16px rgba(0,0,0,.85);
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+[hidden]{display:none !important}
+body{
+  font-family:"Noto Sans KR","Apple SD Gothic Neo","Malgun Gothic",system-ui,sans-serif;
+  background:var(--bg);color:var(--ink);letter-spacing:-.2px;line-height:1.5;
+  -webkit-font-smoothing:antialiased;min-height:100vh;
+}
+button,input,select,textarea{font-family:inherit;color:inherit;font-size:14px}
+button{cursor:pointer;border:none;background:none}
+a{color:var(--accent)}
+.wrap{max-width:1180px;margin:0 auto;padding:0 16px}
+
+/* ---------- 머리 ---------- */
+header{position:sticky;top:0;z-index:20;background:color-mix(in srgb,var(--bg) 88%,transparent);
+  backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+.top{display:flex;align-items:center;gap:12px;height:60px}
+.brand{display:flex;align-items:center;gap:9px;font-weight:900;font-size:17px;text-decoration:none;color:var(--ink);white-space:nowrap}
+.brand small{font-weight:500;color:var(--ink-3);font-size:12px}
+.top .sp{flex:1}
+nav.tabs{display:flex;gap:4px;overflow-x:auto;scrollbar-width:none;padding-bottom:10px}
+nav.tabs::-webkit-scrollbar{display:none}
+.tab{height:36px;padding:0 14px;border-radius:99px;font-weight:700;font-size:14px;color:var(--ink-2);white-space:nowrap;display:inline-flex;align-items:center;gap:6px}
+.tab:hover{background:var(--panel-2)}
+.tab.on{background:var(--ink);color:var(--bg)}
+.tab .n{font-size:12px;font-weight:700;opacity:.7}
+
+/* ---------- 공용 ---------- */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;height:38px;padding:0 14px;
+  border-radius:var(--r-sm);background:var(--panel);border:1px solid var(--line);color:var(--ink);
+  font-weight:700;font-size:14px;transition:.14s;white-space:nowrap}
+.btn:hover{border-color:var(--line-2)}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:var(--on-accent)}
+.btn.primary:hover{background:var(--accent-2);border-color:var(--accent-2)}
+.btn.sm{height:30px;padding:0 10px;font-size:13px}
+.btn.ghost{background:transparent;border-color:transparent}
+.btn.ghost:hover{background:var(--panel-2)}
+.btn.danger{color:var(--accent)}
+.btn.icon{width:38px;padding:0}
+input[type=text],input[type=number],input[type=date],select,textarea{
+  width:100%;background:var(--panel-2);border:1px solid var(--line);border-radius:var(--r-sm);
+  padding:9px 11px;outline:none;transition:.14s;color:var(--ink)}
+input:focus,select:focus,textarea:focus{border-color:var(--accent);background:var(--panel)}
+textarea{resize:vertical;min-height:70px;line-height:1.5}
+label.f{display:flex;flex-direction:column;gap:5px;font-size:13px;font-weight:700;color:var(--ink-2)}
+label.f .hint{font-weight:500;color:var(--ink-3);font-size:12px}
+.err{color:var(--accent);font-size:12px;font-weight:600}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow)}
+.muted{color:var(--ink-3)}
+.badge{display:inline-flex;align-items:center;height:22px;padding:0 8px;border-radius:99px;font-size:12px;font-weight:700;background:var(--panel-2);color:var(--ink-2);white-space:nowrap}
+.badge.plan{background:var(--panel-2);color:var(--ink-2)}
+.badge.prep{background:var(--warn-wash);color:var(--warn)}
+.badge.live{background:var(--ok-wash);color:var(--ok)}
+.badge.stop{background:var(--panel-2);color:var(--ink-3);text-decoration:line-through}
+.dot{width:10px;height:10px;border-radius:50%;flex:none;display:inline-block}
+.bar{height:6px;border-radius:99px;background:var(--panel-2);overflow:hidden}
+.bar i{display:block;height:100%;background:var(--ok);border-radius:99px;transition:width .25s}
+.sec-head{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;flex-wrap:wrap;margin:26px 0 14px}
+.sec-head h2{font-size:22px;font-weight:900;letter-spacing:-.6px}
+.sec-head p{color:var(--ink-2);font-size:14px;margin-top:2px}
+.sec-head .acts{display:flex;gap:8px;flex-wrap:wrap}
+
+/* ---------- 요약 ---------- */
+.stats{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px;margin-top:20px}
+.stat{padding:14px 16px}
+.stat b{display:block;font-size:26px;font-weight:900;letter-spacing:-1px;line-height:1.2}
+.stat span{font-size:13px;color:var(--ink-2);font-weight:600}
+.stat.alert b{color:var(--accent)}
+
+/* ---------- 채널 카드 ---------- */
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(310px,1fr));gap:14px}
+.ch{position:relative;overflow:hidden;display:flex;flex-direction:column}
+.ch .stripe{height:6px}
+.ch .body{padding:14px 16px 12px;display:flex;flex-direction:column;gap:10px;flex:1}
+.ch .row1{display:flex;align-items:flex-start;gap:10px}
+.ch .av{width:44px;height:44px;border-radius:50%;display:grid;place-items:center;color:#fff;font-weight:900;font-size:18px;flex:none}
+.ch h3{font-size:17px;font-weight:900;letter-spacing:-.4px;line-height:1.3;word-break:break-all}
+.ch .handle{font-size:13px;color:var(--ink-3);word-break:break-all}
+.ch .topic{font-size:14px;color:var(--ink-2)}
+.days{display:flex;gap:4px;flex-wrap:wrap}
+.days span{width:28px;height:28px;border-radius:50%;display:grid;place-items:center;font-size:12px;font-weight:700;background:var(--panel-2);color:var(--ink-3)}
+.days span.on{color:#fff}
+.meta{display:flex;gap:6px;flex-wrap:wrap}
+.prog{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--ink-2);font-weight:600}
+.prog .bar{flex:1}
+.ch .foot{display:flex;gap:6px;padding:10px 12px;border-top:1px solid var(--line);flex-wrap:wrap}
+.ch .foot .sp{flex:1}
+.empty{padding:40px 20px;text-align:center;color:var(--ink-2)}
+.empty h3{font-size:18px;margin-bottom:6px;color:var(--ink)}
+.tpls{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:8px;margin-top:16px;text-align:left}
+.tpl{padding:12px;border-radius:var(--r-sm);border:1px solid var(--line);background:var(--panel-2);display:flex;flex-direction:column;gap:3px;transition:.14s}
+.tpl:hover{border-color:var(--accent)}
+.tpl b{font-size:14px;display:flex;align-items:center;gap:6px}
+.tpl span{font-size:12px;color:var(--ink-3)}
+
+/* ---------- 주간 ---------- */
+.weeknav{display:flex;align-items:center;gap:6px}
+.weeknav b{min-width:150px;text-align:center;font-size:15px}
+.week{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:8px}
+.day{padding:10px;min-height:160px;display:flex;flex-direction:column;gap:6px}
+.day.today{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent) inset}
+.day .dh{display:flex;justify-content:space-between;align-items:baseline;font-weight:900;font-size:14px}
+.day .dh small{font-weight:600;color:var(--ink-3);font-size:12px}
+.day.sun .dh span{color:var(--accent)}
+.slot{border-radius:8px;padding:7px 8px;font-size:12px;border-left:4px solid;background:var(--panel-2);text-align:left;width:100%;display:flex;flex-direction:column;gap:2px}
+.slot b{font-size:12px;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.slot .t{color:var(--ink-2);overflow:hidden;text-overflow:ellipsis;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
+.slot.empty-slot .t{color:var(--accent);font-weight:700}
+.slot.extra{border-left-style:dashed}
+.day .load{margin-top:auto;font-size:11px;color:var(--ink-3);font-weight:600}
+.day .load.hi{color:var(--warn)}
+.legend{display:flex;gap:14px;flex-wrap:wrap;font-size:13px;color:var(--ink-2);margin-top:12px}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+
+/* ---------- 영상 보드 ---------- */
+.filters{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px}
+.chip{height:32px;padding:0 12px;border-radius:99px;background:var(--panel);border:1px solid var(--line);font-size:13px;font-weight:700;color:var(--ink-2);display:inline-flex;align-items:center;gap:6px}
+.chip.on{background:var(--ink);border-color:var(--ink);color:var(--bg)}
+.board{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:10px;align-items:start}
+.col{padding:10px;display:flex;flex-direction:column;gap:8px;background:var(--panel-2);border:1px solid var(--line);border-radius:var(--r)}
+.col h4{font-size:13px;font-weight:900;display:flex;justify-content:space-between;color:var(--ink-2);padding:2px 4px}
+.vid{padding:10px;border-radius:10px;background:var(--panel);border:1px solid var(--line);display:flex;flex-direction:column;gap:6px;text-align:left;width:100%;cursor:pointer;transition:.14s}
+.vid:hover{border-color:var(--line-2)}
+.vid .vt{font-size:14px;font-weight:700;line-height:1.35;word-break:break-all}
+.vid .vm{display:flex;gap:6px;align-items:center;font-size:12px;color:var(--ink-3);flex-wrap:wrap}
+.vid .vm .late{color:var(--accent);font-weight:700}
+.vid .mv{display:flex;gap:4px}
+.vid .mv button{flex:1;height:26px;border-radius:7px;background:var(--panel-2);font-size:12px;font-weight:700;color:var(--ink-2)}
+.vid .mv button:hover{background:var(--line)}
+.vid .mv button:disabled{opacity:.3;cursor:default}
+
+/* ---------- 체크리스트 ---------- */
+.guide{padding:18px 20px;margin-bottom:16px}
+.guide h3{font-size:17px;font-weight:900;margin-bottom:8px}
+.guide ol{padding-left:20px;display:flex;flex-direction:column;gap:4px;font-size:14px;color:var(--ink-2)}
+.guide ol b{color:var(--ink)}
+.guide .tip{margin-top:10px;font-size:13px;color:var(--ink-3)}
+.cl{padding:6px 0}
+.cl-item{display:flex;gap:12px;padding:12px 18px;align-items:flex-start;border-top:1px solid var(--line);cursor:pointer}
+.cl-item:first-child{border-top:none}
+.cl-item input{width:20px;height:20px;margin-top:2px;accent-color:var(--ok);flex:none;cursor:pointer}
+.cl-item b{display:block;font-size:15px}
+.cl-item span{font-size:13px;color:var(--ink-3)}
+.cl-item.done b{color:var(--ink-3);text-decoration:line-through}
+.cl-head{display:flex;align-items:center;gap:12px;padding:16px 18px;border-bottom:1px solid var(--line);flex-wrap:wrap}
+.cl-head h3{font-size:17px;font-weight:900}
+.cl-head .prog{flex:1;min-width:160px}
+
+/* ---------- 대화상자 ---------- */
+dialog{border:none;border-radius:18px;background:var(--panel);color:var(--ink);width:min(560px,calc(100vw - 24px));
+  max-height:calc(100dvh - 24px);padding:0;box-shadow:0 30px 80px -20px rgba(0,0,0,.5);margin:auto}
+dialog::backdrop{background:rgba(10,12,16,.55)}
+dialog form{display:flex;flex-direction:column;max-height:calc(100dvh - 24px)}
+.dh2{display:flex;align-items:center;justify-content:space-between;padding:16px 20px;border-bottom:1px solid var(--line)}
+.dh2 h3{font-size:18px;font-weight:900}
+.db{padding:16px 20px;display:grid;grid-template-columns:1fr 1fr;gap:12px;overflow-y:auto}
+.db .full{grid-column:1/-1}
+.df{display:flex;gap:8px;padding:14px 20px;border-top:1px solid var(--line)}
+.df .sp{flex:1}
+.daypick{display:flex;gap:6px;flex-wrap:wrap}
+.daypick label{cursor:pointer}
+.daypick input{position:absolute;opacity:0;pointer-events:none}
+.daypick span{width:38px;height:38px;border-radius:50%;display:grid;place-items:center;font-weight:800;font-size:14px;background:var(--panel-2);border:1px solid var(--line);color:var(--ink-2);transition:.12s}
+.daypick input:checked+span{background:var(--accent);border-color:var(--accent);color:#fff}
+.daypick input:focus-visible+span{outline:2px solid var(--accent);outline-offset:2px}
+.colors{display:flex;gap:8px;flex-wrap:wrap}
+.colors label{cursor:pointer}
+.colors input{position:absolute;opacity:0;pointer-events:none}
+.colors span{width:30px;height:30px;border-radius:50%;display:block;border:3px solid transparent;box-shadow:0 0 0 1px var(--line)}
+.colors input:checked+span{border-color:var(--panel);box-shadow:0 0 0 2px var(--ink)}
+.colors input:focus-visible+span{outline:2px solid var(--accent);outline-offset:2px}
+
+.toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(20px);background:var(--ink);color:var(--bg);
+  padding:10px 16px;border-radius:99px;font-size:14px;font-weight:700;opacity:0;transition:.2s;pointer-events:none;z-index:50;max-width:calc(100vw - 32px)}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+footer{padding:40px 0 50px;color:var(--ink-3);font-size:13px;text-align:center}
+footer a{color:var(--ink-2)}
+
+@media (max-width:1000px){
+  .board{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .week{grid-template-columns:repeat(4,minmax(0,1fr))}
+  .stats{grid-template-columns:repeat(3,minmax(0,1fr))}
+}
+@media (max-width:640px){
+  .brand small{display:none}
+  .stats{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .stat b{font-size:22px}
+  .stat:last-child{grid-column:1/-1}
+  .grid{grid-template-columns:1fr}
+  .board{grid-template-columns:1fr}
+  .week{grid-template-columns:1fr}
+  .day{min-height:0}
+  .db{grid-template-columns:1fr}
+  .sec-head h2{font-size:19px}
+  .top .btn .lbl{display:none}
+}
+</style>
+</head>
+<body>
+<header>
+  <div class="wrap">
+    <div class="top">
+      <a class="brand" href="./">
+        <svg width="30" height="30" viewBox="0 0 100 100" aria-hidden="true"><rect x="4" y="18" width="62" height="44" rx="12" fill="#e5283c"/><rect x="34" y="38" width="62" height="44" rx="12" fill="#ff7a45"/><path d="M58 50v20l17-10z" fill="#fff"/></svg>
+        채널 공장 <small>유튜브 멀티채널 플래너</small>
+      </a>
+      <div class="sp"></div>
+      <button class="btn icon ghost" id="themeBtn" title="화면 밝기 바꾸기" aria-label="화면 밝기 바꾸기">◐</button>
+      <button class="btn primary" id="addBtn"><span aria-hidden="true">＋</span><span class="lbl">새 채널</span></button>
+    </div>
+    <nav class="tabs" role="tablist">
+      <button class="tab on" data-tab="channels" role="tab">채널 <span class="n" id="nCh"></span></button>
+      <button class="tab" data-tab="week" role="tab">주간 업로드</button>
+      <button class="tab" data-tab="videos" role="tab">영상 기획 <span class="n" id="nVid"></span></button>
+      <button class="tab" data-tab="check" role="tab">개설 체크리스트</button>
+      <button class="tab" data-tab="data" role="tab">백업</button>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap">
+  <div class="stats" id="stats"></div>
+
+  <!-- 채널 -->
+  <section data-panel="channels">
+    <div class="sec-head">
+      <div><h2>내 채널</h2><p>채널마다 주제·대상·업로드 요일을 정해 두면 주간 일정과 영상 기획이 자동으로 따라옵니다.</p></div>
+      <div class="acts">
+        <select id="sortSel" aria-label="정렬" style="width:auto">
+          <option value="created">만든 순</option>
+          <option value="name">이름순</option>
+          <option value="status">상태순</option>
+          <option value="load">주간 업로드 많은 순</option>
+        </select>
+      </div>
+    </div>
+    <div id="chList"></div>
+  </section>
+
+  <!-- 주간 -->
+  <section data-panel="week" hidden>
+    <div class="sec-head">
+      <div><h2>주간 업로드 일정</h2><p>채널별 업로드 요일이 슬롯이 됩니다. 영상이 배정되지 않은 슬롯을 눌러 바로 기획을 채우세요.</p></div>
+      <div class="weeknav">
+        <button class="btn sm icon" id="wPrev" aria-label="지난주">‹</button>
+        <b id="wLabel"></b>
+        <button class="btn sm icon" id="wNext" aria-label="다음 주">›</button>
+        <button class="btn sm" id="wToday">이번 주</button>
+      </div>
+    </div>
+    <div class="week" id="week"></div>
+    <div class="legend">
+      <span><i class="dot" style="background:var(--ink-3)"></i>채널 색 = 업로드 슬롯</span>
+      <span style="color:var(--accent);font-weight:700">빈 슬롯 = 아직 영상 미배정</span>
+      <span>점선 = 정기 요일 밖에 잡은 영상</span>
+    </div>
+  </section>
+
+  <!-- 영상 -->
+  <section data-panel="videos" hidden>
+    <div class="sec-head">
+      <div><h2>영상 기획 보드</h2><p>아이디어부터 공개까지 단계별로 옮기며 관리합니다. 카드를 누르면 수정할 수 있어요.</p></div>
+      <div class="acts"><button class="btn primary" id="addVidBtn">＋ 영상 추가</button></div>
+    </div>
+    <div class="filters" id="vFilters"></div>
+    <div class="board" id="board"></div>
+  </section>
+
+  <!-- 체크리스트 -->
+  <section data-panel="check" hidden>
+    <div class="sec-head">
+      <div><h2>개설 체크리스트</h2><p>채널을 새로 열 때 빠뜨리기 쉬운 것들. 채널마다 따로 체크됩니다.</p></div>
+    </div>
+    <div class="card guide">
+      <h3>구글 계정 하나로 채널 여러 개 만드는 법</h3>
+      <ol>
+        <li>유튜브에 로그인한 뒤 오른쪽 위 <b>프로필 사진 → 설정</b>으로 갑니다.</li>
+        <li><b>채널 추가 또는 관리</b>를 누르고 <b>채널 만들기</b>를 고릅니다. (<a href="https://www.youtube.com/channel_switcher" target="_blank" rel="noopener">바로 가기</a>)</li>
+        <li>채널 이름과 핸들(@)을 정하면 <b>브랜드 계정</b>으로 새 채널이 생깁니다. 기존 채널과 구독자·영상·분석이 모두 따로입니다.</li>
+        <li>채널 사이는 다시 로그인할 필요 없이 프로필 사진 → <b>계정 전환</b>으로 오갑니다.</li>
+        <li>함께 운영할 사람이 있으면 유튜브 스튜디오 <b>설정 → 권한</b>에서 채널별로 관리자·편집자를 초대합니다.</li>
+      </ol>
+      <p class="tip">짧은 시간에 채널을 한꺼번에 많이 만들면 생성이 잠시 막힐 수 있습니다. 수익 창출(파트너 프로그램) 조건도 채널마다 따로 채워야 하니, 처음엔 2~3개로 시작해 업로드 주기를 지킬 수 있는지 확인한 뒤 늘리는 걸 권합니다.</p>
+    </div>
+    <div class="filters" id="cFilters"></div>
+    <div id="clBox"></div>
+  </section>
+
+  <!-- 백업 -->
+  <section data-panel="data" hidden>
+    <div class="sec-head">
+      <div><h2>백업과 옮기기</h2><p>모든 데이터는 이 브라우저에만 저장됩니다. 다른 기기로 옮기거나 함께 쓰려면 파일로 내보내세요.</p></div>
+    </div>
+    <div class="card" style="padding:18px 20px;display:flex;flex-direction:column;gap:14px">
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        <button class="btn primary" id="expJson">JSON 백업 내려받기</button>
+        <button class="btn" id="impJson">JSON 불러오기</button>
+        <button class="btn" id="expCsv">채널 목록 CSV</button>
+        <button class="btn" id="expVidCsv">영상 기획 CSV</button>
+        <input type="file" id="impFile" accept="application/json,.json" hidden>
+      </div>
+      <p class="muted" style="font-size:13px" id="storeNote"></p>
+      <div style="border-top:1px solid var(--line);padding-top:14px;display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+        <button class="btn danger" id="resetBtn">모두 지우기</button>
+        <span class="muted" style="font-size:13px">채널·영상·체크 기록이 모두 사라집니다. 먼저 백업하세요.</span>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">로그인·서버 없이 브라우저에 저장됩니다 · <a href="/">richroro.github.io</a></div>
+</footer>
+
+<!-- 채널 편집 -->
+<dialog id="chDlg">
+  <form method="dialog" id="chForm" novalidate>
+    <div class="dh2"><h3 id="chDlgTitle">새 채널</h3><button type="button" class="btn icon ghost" data-close aria-label="닫기">✕</button></div>
+    <div class="db">
+      <label class="f full">채널 이름 *<input type="text" name="name" maxlength="100" required placeholder="예: 3분 경제"></label>
+      <label class="f">핸들 <span class="hint">영문·숫자·. _ - 3~30자</span><input type="text" name="handle" maxlength="31" placeholder="@econ3min" autocomplete="off"><span class="err" id="handleErr"></span></label>
+      <label class="f">상태<select name="status">
+        <option value="plan">기획 중</option><option value="prep">개설 준비</option><option value="live">운영 중</option><option value="stop">쉬는 중</option>
+      </select></label>
+      <label class="f full">주제 / 콘셉트<input type="text" name="topic" maxlength="140" placeholder="예: 하루 경제 뉴스를 3분 쇼츠로"></label>
+      <label class="f">시청 대상<input type="text" name="audience" maxlength="80" placeholder="예: 20~30대 사회초년생"></label>
+      <label class="f">형식<select name="format">
+        <option value="long">롱폼</option><option value="shorts">쇼츠</option><option value="both">롱폼 + 쇼츠</option><option value="live">라이브</option>
+      </select></label>
+      <div class="f full">업로드 요일<div class="daypick" id="dayPick"></div></div>
+      <label class="f">소속 구글 계정 <span class="hint">어느 계정에 만들었는지 메모</span><input type="text" name="account" maxlength="80" placeholder="예: 업무용 계정"></label>
+      <label class="f">구독자 목표<input type="number" name="goal" min="0" step="100" placeholder="1000"></label>
+      <label class="f">현재 구독자<input type="number" name="subs" min="0" step="1" placeholder="0"></label>
+      <div class="f">채널 색<div class="colors" id="colorPick"></div></div>
+      <label class="f full">메모<textarea name="notes" maxlength="1000" placeholder="차별점, 참고 채널, 썸네일 톤 등"></textarea></label>
+    </div>
+    <div class="df">
+      <button type="button" class="btn danger" id="chDel">삭제</button>
+      <div class="sp"></div>
+      <button type="button" class="btn" data-close>취소</button>
+      <button type="submit" class="btn primary">저장</button>
+    </div>
+  </form>
+</dialog>
+
+<!-- 영상 편집 -->
+<dialog id="vDlg">
+  <form method="dialog" id="vForm" novalidate>
+    <div class="dh2"><h3 id="vDlgTitle">영상 추가</h3><button type="button" class="btn icon ghost" data-close aria-label="닫기">✕</button></div>
+    <div class="db">
+      <label class="f full">제목 *<input type="text" name="title" maxlength="140" required placeholder="예: 금리 인하, 내 대출엔 언제?"></label>
+      <label class="f">채널<select name="ch" id="vCh"></select></label>
+      <label class="f">단계<select name="stage" id="vStage"></select></label>
+      <label class="f">공개 예정일<input type="date" name="due"></label>
+      <label class="f">형식<select name="kind"><option value="long">롱폼</option><option value="shorts">쇼츠</option><option value="live">라이브</option></select></label>
+      <label class="f full">메모<textarea name="notes" maxlength="2000" placeholder="후킹 문장, 대본 개요, 썸네일 문구"></textarea></label>
+    </div>
+    <div class="df">
+      <button type="button" class="btn danger" id="vDel">삭제</button>
+      <div class="sp"></div>
+      <button type="button" class="btn" data-close>취소</button>
+      <button type="submit" class="btn primary">저장</button>
+    </div>
+  </form>
+</dialog>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+(() => {
+'use strict';
+
+/* ---------- 상수 ---------- */
+const KEY = 'ytch.v1', THEME_KEY = 'ytch.theme';
+const DAY_NAMES = ['일', '월', '화', '수', '목', '금', '토'];
+const WEEK_ORDER = [1, 2, 3, 4, 5, 6, 0];          // 월요일부터
+const COLORS = ['#e5283c', '#ff7a45', '#f2a516', '#1fae6e', '#1a9bb8', '#3f6ee8', '#7b52e0', '#d4439b', '#5d6573'];
+const STATUS = { plan: '기획 중', prep: '개설 준비', live: '운영 중', stop: '쉬는 중' };
+const STATUS_ORDER = { live: 0, prep: 1, plan: 2, stop: 3 };
+const FORMAT = { long: '롱폼', shorts: '쇼츠', both: '롱폼 + 쇼츠', live: '라이브' };
+const STAGES = [
+  ['idea', '아이디어'], ['script', '대본'], ['shoot', '촬영'],
+  ['edit', '편집'], ['sched', '예약'], ['done', '공개'],
+];
+const STAGE_IDX = Object.fromEntries(STAGES.map(([k], i) => [k, i]));
+const CHECKS = [
+  ['create', '브랜드 채널 만들기', '설정 → 채널 추가 또는 관리 → 채널 만들기'],
+  ['handle', '핸들(@) 정하기', '짧고 채널 이름과 같은 철자로. 나중에 바꿀 수 있지만 링크가 바뀝니다'],
+  ['avatar', '프로필 사진', '800×800px 정사각형, 작게 보여도 알아보게'],
+  ['banner', '배너 이미지', '2048×1152px, 글자는 가운데 1235×338px 안전 영역에'],
+  ['about', '채널 설명·키워드', '첫 두 줄에 무엇을, 누구에게, 얼마나 자주 올리는지'],
+  ['links', '링크·연락처 이메일', '비즈니스 문의용 이메일은 채널마다 따로 두면 관리가 편합니다'],
+  ['verify', '전화번호 인증', '맞춤 썸네일, 15분 넘는 영상, 라이브 같은 중급 기능이 열립니다'],
+  ['defaults', '업로드 기본 설정', '카테고리·설명란 템플릿·태그를 미리 저장'],
+  ['perm', '관리 권한 정리', '스튜디오 설정 → 권한에서 함께 운영할 사람 초대'],
+  ['playlist', '재생목록 2~3개', '채널 첫 화면 구성을 위해 주제별로 묶기'],
+  ['trailer', '채널 예고편 / 첫 영상', '처음 온 시청자에게 보여 줄 영상 지정'],
+  ['stock', '영상 3편 미리 비축', '업로드 주기가 끊기지 않게 첫 주 분량을 먼저'],
+];
+const TEMPLATES = [
+  { name: '경제 쇼츠', topic: '하루 경제 뉴스를 1분 쇼츠로 정리', audience: '20~30대 직장인', format: 'shorts', days: [1, 2, 3, 4, 5], color: '#3f6ee8' },
+  { name: '게임 플레이', topic: '신작·인디 게임 플레이와 공략', audience: '10~20대 게이머', format: 'both', days: [3, 6], color: '#7b52e0' },
+  { name: '요리 브이로그', topic: '자취생 15분 집밥 레시피', audience: '1인 가구', format: 'long', days: [0], color: '#ff7a45' },
+  { name: '육아·키즈', topic: '아이와 함께하는 놀이·숫자·한글', audience: '유아 부모', format: 'both', days: [2, 5], color: '#1fae6e' },
+  { name: '음악 플레이리스트', topic: '공부·작업용 로파이 플레이리스트', audience: '수험생·재택근무자', format: 'long', days: [1, 4], color: '#1a9bb8' },
+  { name: 'IT 리뷰', topic: '가성비 전자기기 솔직 리뷰', audience: '얼리어답터', format: 'long', days: [4], color: '#5d6573' },
+];
+
+/* ---------- 상태 ---------- */
+let S = load();
+let tab = 'channels', weekOff = 0, vFilter = 'all', cSel = null, editCh = null, editVid = null;
+
+function blank() { return { v: 1, channels: [], videos: [] }; }
+function load() {
+  try {
+    const raw = localStorage.getItem(KEY);
+    if (!raw) return blank();
+    return sanitize(JSON.parse(raw));
+  } catch (e) { return blank(); }
+}
+let storeOk = true;
+function save() {
+  try { localStorage.setItem(KEY, JSON.stringify(S)); storeOk = true; }
+  catch (e) { storeOk = false; }
+}
+function sanitize(d) {
+  const out = blank();
+  if (!d || typeof d !== 'object') return out;
+  const str = (x, n) => (typeof x === 'string' ? x : '').slice(0, n);
+  const num = x => (Number.isFinite(+x) && +x >= 0 ? Math.floor(+x) : '');
+  for (const c of Array.isArray(d.channels) ? d.channels : []) {
+    if (!c || !c.id || !c.name) continue;
+    out.channels.push({
+      id: str(c.id, 40), name: str(c.name, 100), handle: str(c.handle, 31), topic: str(c.topic, 140),
+      audience: str(c.audience, 80), format: FORMAT[c.format] ? c.format : 'long',
+      days: (Array.isArray(c.days) ? c.days : []).map(Number).filter(x => x >= 0 && x <= 6),
+      color: COLORS.includes(c.color) ? c.color : COLORS[0], status: STATUS[c.status] ? c.status : 'plan',
+      account: str(c.account, 80), goal: num(c.goal), subs: num(c.subs), notes: str(c.notes, 1000),
+      checks: c.checks && typeof c.checks === 'object' ? Object.fromEntries(CHECKS.filter(([k]) => c.checks[k]).map(([k]) => [k, true])) : {},
+      created: Number(c.created) || Date.now(),
+    });
+  }
+  const ids = new Set(out.channels.map(c => c.id));
+  for (const v of Array.isArray(d.videos) ? d.videos : []) {
+    if (!v || !v.id || !v.title || !ids.has(v.ch)) continue;
+    out.videos.push({
+      id: str(v.id, 40), ch: v.ch, title: str(v.title, 140), stage: STAGE_IDX[v.stage] != null ? v.stage : 'idea',
+      due: /^\d{4}-\d{2}-\d{2}$/.test(v.due) ? v.due : '', kind: ['long', 'shorts', 'live'].includes(v.kind) ? v.kind : 'long',
+      notes: str(v.notes, 2000), created: Number(v.created) || Date.now(),
+    });
+  }
+  return out;
+}
+
+/* ---------- 도우미 ---------- */
+const $ = s => document.querySelector(s);
+const $$ = s => [...document.querySelectorAll(s)];
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const uid = () => Date.now().toString(36) + Math.random().toString(36).slice(2, 8);
+const chById = id => S.channels.find(c => c.id === id);
+const pad = n => String(n).padStart(2, '0');
+const ymd = d => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+const todayStr = () => ymd(new Date());
+const fmtN = n => Number(n).toLocaleString('ko-KR');
+function mondayOf(off) {
+  const d = new Date(); d.setHours(0, 0, 0, 0);
+  d.setDate(d.getDate() - ((d.getDay() + 6) % 7) + off * 7);
+  return d;
+}
+function fmtDue(s) {
+  if (!s) return '';
+  const [, m, d] = s.split('-');
+  return `${+m}/${+d}(${DAY_NAMES[new Date(s + 'T00:00').getDay()]})`;
+}
+function normHandle(h) { return h.trim().replace(/^@+/, ''); }
+function handleError(h, selfId) {
+  if (!h) return '';
+  if (h.length < 3 || h.length > 30) return '3~30자로 정해 주세요';
+  if (!/^[A-Za-z0-9._-]+$/.test(h)) return '영문·숫자·마침표·밑줄·하이픈만 쓸 수 있어요';
+  if (S.channels.some(c => c.id !== selfId && c.handle.toLowerCase() === h.toLowerCase())) return '이미 다른 채널에 쓴 핸들입니다';
+  return '';
+}
+function isActive(c) { return c.status !== 'stop'; }
+function checkPct(c) { return Math.round(CHECKS.filter(([k]) => c.checks[k]).length / CHECKS.length * 100); }
+let toastT;
+function toast(msg) {
+  const t = $('#toast'); t.textContent = msg; t.classList.add('show');
+  clearTimeout(toastT); toastT = setTimeout(() => t.classList.remove('show'), 2200);
+}
+function avatarText(name) { return [...name.trim()][0] || '?'; }
+
+/* ---------- 요약 ---------- */
+function weekSlots(off) {
+  const mon = mondayOf(off), slots = [];
+  for (let i = 0; i < 7; i++) {
+    const d = new Date(mon); d.setDate(mon.getDate() + i);
+    const ds = ymd(d), dow = d.getDay();
+    for (const c of S.channels) if (isActive(c) && c.days.includes(dow)) {
+      slots.push({ ds, c, filled: S.videos.some(v => v.ch === c.id && v.due === ds) });
+    }
+  }
+  return slots;
+}
+function renderStats() {
+  const slots = weekSlots(0);
+  const empty = slots.filter(s => !s.filled).length;
+  const live = S.channels.filter(c => c.status === 'live').length;
+  const wip = S.videos.filter(v => v.stage !== 'done' && v.stage !== 'idea').length;
+  const late = S.videos.filter(v => v.due && v.due < todayStr() && v.stage !== 'done').length;
+  $('#stats').innerHTML = [
+    [S.channels.length, `채널 (운영 중 ${live})`],
+    [slots.length, '이번 주 업로드 슬롯'],
+    [empty, '이번 주 빈 슬롯', empty > 0],
+    [wip, '제작 중인 영상'],
+    [late, '공개일 지난 영상', late > 0],
+  ].map(([n, l, a]) => `<div class="card stat${a ? ' alert' : ''}"><b>${fmtN(n)}</b><span>${l}</span></div>`).join('');
+  $('#nCh').textContent = S.channels.length || '';
+  $('#nVid').textContent = S.videos.filter(v => v.stage !== 'done').length || '';
+}
+
+/* ---------- 채널 목록 ---------- */
+function tplHtml() {
+  return `<div class="tpls">${TEMPLATES.map((t, i) => `
+    <button class="tpl" data-tpl="${i}"><b><i class="dot" style="background:${t.color}"></i>${esc(t.name)}</b>
+    <span>${esc(FORMAT[t.format])} · ${t.days.length ? WEEK_ORDER.filter(d => t.days.includes(d)).map(d => DAY_NAMES[d]).join('·') : '-'}</span></button>`).join('')}</div>`;
+}
+function renderChannels() {
+  const box = $('#chList');
+  if (!S.channels.length) {
+    box.innerHTML = `<div class="card empty"><h3>아직 채널이 없어요</h3>
+      <p>‘새 채널’로 직접 만들거나, 아래 예시 중 하나로 빠르게 시작해 보세요. 만든 뒤 얼마든지 고칠 수 있습니다.</p>
+      ${tplHtml()}</div>`;
+    return;
+  }
+  const sort = $('#sortSel').value;
+  const list = [...S.channels].sort((a, b) =>
+    sort === 'name' ? a.name.localeCompare(b.name, 'ko') :
+    sort === 'status' ? STATUS_ORDER[a.status] - STATUS_ORDER[b.status] :
+    sort === 'load' ? b.days.length - a.days.length : a.created - b.created);
+  box.innerHTML = `<div class="grid">${list.map(c => {
+    const vids = S.videos.filter(v => v.ch === c.id);
+    const open = vids.filter(v => v.stage !== 'done').length, done = vids.length - open;
+    const pct = checkPct(c);
+    const goalPct = c.goal ? Math.min(100, Math.round((+c.subs || 0) / c.goal * 100)) : null;
+    return `<article class="card ch">
+      <div class="stripe" style="background:${c.color}"></div>
+      <div class="body">
+        <div class="row1">
+          <div class="av" style="background:${c.color}">${esc(avatarText(c.name))}</div>
+          <div style="flex:1;min-width:0">
+            <h3>${esc(c.name)}</h3>
+            <div class="handle">${c.handle ? '@' + esc(c.handle) : '핸들 미정'}${c.account ? ' · ' + esc(c.account) : ''}</div>
+          </div>
+          <span class="badge ${c.status}">${STATUS[c.status]}</span>
+        </div>
+        ${c.topic ? `<div class="topic">${esc(c.topic)}</div>` : ''}
+        <div class="meta">
+          <span class="badge">${FORMAT[c.format]}</span>
+          ${c.audience ? `<span class="badge">${esc(c.audience)}</span>` : ''}
+          <span class="badge">주 ${c.days.length}회</span>
+        </div>
+        <div class="days">${WEEK_ORDER.map(d => `<span class="${c.days.includes(d) ? 'on' : ''}" ${c.days.includes(d) ? `style="background:${c.color}"` : ''}>${DAY_NAMES[d]}</span>`).join('')}</div>
+        <div class="prog">개설 준비 <div class="bar"><i style="width:${pct}%"></i></div> ${pct}%</div>
+        ${goalPct != null ? `<div class="prog">구독자 ${fmtN(+c.subs || 0)} / ${fmtN(c.goal)} <div class="bar"><i style="width:${goalPct}%;background:${c.color}"></i></div> ${goalPct}%</div>` : ''}
+        <div class="muted" style="font-size:13px">기획 중 영상 ${open}편 · 공개 ${done}편</div>
+      </div>
+      <div class="foot">
+        <button class="btn sm" data-edit="${c.id}">편집</button>
+        <button class="btn sm" data-check="${c.id}">체크리스트</button>
+        <div class="sp"></div>
+        <button class="btn sm primary" data-addvid="${c.id}">＋ 영상</button>
+      </div>
+    </article>`;
+  }).join('')}</div>`;
+}
+
+/* ---------- 주간 ---------- */
+function renderWeek() {
+  const mon = mondayOf(weekOff), sun = new Date(mon); sun.setDate(mon.getDate() + 6);
+  $('#wLabel').textContent = `${mon.getMonth() + 1}/${mon.getDate()} ~ ${sun.getMonth() + 1}/${sun.getDate()}`;
+  const today = todayStr();
+  if (!S.channels.length) {
+    $('#week').innerHTML = `<div class="card empty" style="grid-column:1/-1"><h3>채널부터 만들어 주세요</h3><p>채널에 업로드 요일을 정하면 여기에 슬롯이 생깁니다.</p></div>`;
+    return;
+  }
+  let html = '';
+  for (let i = 0; i < 7; i++) {
+    const d = new Date(mon); d.setDate(mon.getDate() + i);
+    const ds = ymd(d), dow = d.getDay();
+    const items = [];
+    const seen = new Set();
+    for (const c of S.channels) {
+      if (!isActive(c) || !c.days.includes(dow)) continue;
+      const vids = S.videos.filter(v => v.ch === c.id && v.due === ds);
+      if (vids.length) vids.forEach(v => { seen.add(v.id); items.push({ c, v }); });
+      else items.push({ c, v: null, ds });
+    }
+    for (const v of S.videos) {
+      if (v.due !== ds || seen.has(v.id)) continue;
+      const c = chById(v.ch); if (c) items.push({ c, v, extra: true });
+    }
+    const n = items.filter(x => x.v).length;
+    html += `<div class="card day${ds === today ? ' today' : ''}${dow === 0 ? ' sun' : ''}">
+      <div class="dh"><span>${DAY_NAMES[dow]}</span><small>${d.getMonth() + 1}/${d.getDate()}</small></div>
+      ${items.map(({ c, v, extra }) => v
+        ? `<button class="slot${extra ? ' extra' : ''}" style="border-color:${c.color}" data-vid="${v.id}"><b>${esc(c.name)}</b><span class="t">${v.stage === 'done' ? '✓ ' : ''}${esc(v.title)} · ${STAGES[STAGE_IDX[v.stage]][1]}</span></button>`
+        : `<button class="slot empty-slot" style="border-color:${c.color}" data-fill="${c.id}" data-ds="${ds}"><b>${esc(c.name)}</b><span class="t">＋ 영상 배정</span></button>`).join('')}
+      ${items.length ? `<div class="load${n >= 4 ? ' hi' : ''}">영상 ${n}편${n >= 4 ? ' · 몰려 있어요' : ''}</div>` : '<div class="load">쉬는 날</div>'}
+    </div>`;
+  }
+  $('#week').innerHTML = html;
+}
+
+/* ---------- 영상 보드 ---------- */
+function renderFilters(el, current, withAll) {
+  const chips = (withAll ? [`<button class="chip${current === 'all' ? ' on' : ''}" data-f="all">전체</button>`] : [])
+    .concat(S.channels.map(c => `<button class="chip${current === c.id ? ' on' : ''}" data-f="${c.id}"><i class="dot" style="background:${c.color}"></i>${esc(c.name)}</button>`));
+  el.innerHTML = chips.join('');
+}
+function renderVideos() {
+  if (vFilter !== 'all' && !chById(vFilter)) vFilter = 'all';
+  renderFilters($('#vFilters'), vFilter, true);
+  if (!S.channels.length) {
+    $('#board').innerHTML = `<div class="card empty" style="grid-column:1/-1"><h3>채널부터 만들어 주세요</h3><p>영상은 채널에 속합니다.</p></div>`;
+    return;
+  }
+  const today = todayStr();
+  const list = S.videos.filter(v => vFilter === 'all' || v.ch === vFilter)
+    .sort((a, b) => (a.due || '9999').localeCompare(b.due || '9999') || a.created - b.created);
+  $('#board').innerHTML = STAGES.map(([k, label], i) => {
+    const vs = list.filter(v => v.stage === k);
+    return `<div class="col"><h4><span>${label}</span><span>${vs.length}</span></h4>
+      ${vs.map(v => {
+        const c = chById(v.ch);
+        const late = v.due && v.due < today && k !== 'done';
+        return `<div class="vid" data-vid="${v.id}" role="button" tabindex="0">
+          <div class="vt">${esc(v.title)}</div>
+          <div class="vm"><i class="dot" style="background:${c.color}"></i>${esc(c.name)}
+            ${v.kind !== 'long' ? `<span class="badge">${v.kind === 'shorts' ? '쇼츠' : '라이브'}</span>` : ''}
+            ${v.due ? `<span class="${late ? 'late' : ''}">${fmtDue(v.due)}${late ? ' 지남' : ''}</span>` : ''}</div>
+          <div class="mv">
+            <button data-mv="-1" data-id="${v.id}" ${i === 0 ? 'disabled' : ''} aria-label="이전 단계로">‹ 이전</button>
+            <button data-mv="1" data-id="${v.id}" ${i === STAGES.length - 1 ? 'disabled' : ''} aria-label="다음 단계로">다음 ›</button>
+          </div>
+        </div>`;
+      }).join('') || '<div class="muted" style="font-size:12px;padding:4px">비어 있음</div>'}
+    </div>`;
+  }).join('');
+}
+
+/* ---------- 체크리스트 ---------- */
+function renderChecks() {
+  if (!S.channels.length) {
+    $('#cFilters').innerHTML = '';
+    $('#clBox').innerHTML = `<div class="card empty"><h3>채널부터 만들어 주세요</h3><p>채널마다 개설 진행 상황이 따로 기록됩니다.</p></div>`;
+    return;
+  }
+  if (!chById(cSel)) cSel = S.channels[0].id;
+  renderFilters($('#cFilters'), cSel, false);
+  const c = chById(cSel), pct = checkPct(c);
+  $('#clBox').innerHTML = `<div class="card">
+    <div class="cl-head"><i class="dot" style="background:${c.color};width:14px;height:14px"></i><h3>${esc(c.name)}</h3>
+      <div class="prog"><div class="bar"><i style="width:${pct}%"></i></div> ${pct}%</div></div>
+    <div class="cl">${CHECKS.map(([k, t, d]) => `
+      <label class="cl-item${c.checks[k] ? ' done' : ''}"><input type="checkbox" data-ck="${k}" ${c.checks[k] ? 'checked' : ''}>
+      <div><b>${t}</b><span>${d}</span></div></label>`).join('')}</div>
+  </div>`;
+}
+
+/* ---------- 그리기 ---------- */
+function render() {
+  renderStats();
+  if (tab === 'channels') renderChannels();
+  if (tab === 'week') renderWeek();
+  if (tab === 'videos') renderVideos();
+  if (tab === 'check') renderChecks();
+  if (tab === 'data') {
+    $('#storeNote').textContent = storeOk
+      ? `채널 ${S.channels.length}개 · 영상 ${S.videos.length}편이 이 브라우저에 저장돼 있습니다.`
+      : '이 브라우저는 저장을 막고 있어 창을 닫으면 내용이 사라집니다. JSON 백업을 내려받아 두세요.';
+  }
+}
+function commit() { save(); render(); if (!storeOk) toast('저장 공간을 쓸 수 없어 이 창을 닫으면 사라집니다'); }
+function setTab(t) {
+  tab = t;
+  $$('.tab').forEach(b => { b.classList.toggle('on', b.dataset.tab === t); b.setAttribute('aria-selected', b.dataset.tab === t); });
+  $$('[data-panel]').forEach(p => p.hidden = p.dataset.panel !== t);
+  try { history.replaceState(null, '', '#' + t); } catch (e) {}
+  render();
+}
+
+/* ---------- 채널 대화상자 ---------- */
+$('#dayPick').innerHTML = WEEK_ORDER.map(d => `<label><input type="checkbox" name="days" value="${d}"><span>${DAY_NAMES[d]}</span></label>`).join('');
+$('#colorPick').innerHTML = COLORS.map(c => `<label title="${c}"><input type="radio" name="color" value="${c}"><span style="background:${c}"></span></label>`).join('');
+
+function openCh(id, preset) {
+  editCh = id ? chById(id) : null;
+  const f = $('#chForm'), c = editCh || Object.assign({
+    name: '', handle: '', topic: '', audience: '', format: 'long', days: [], account: '', goal: 1000, subs: '', notes: '',
+    status: 'plan', color: COLORS[S.channels.length % COLORS.length],
+  }, preset || {});
+  $('#chDlgTitle').textContent = editCh ? '채널 편집' : '새 채널';
+  f.name.value = c.name; f.handle.value = c.handle ? '@' + c.handle : ''; f.topic.value = c.topic;
+  f.audience.value = c.audience; f.format.value = c.format; f.status.value = c.status; f.account.value = c.account;
+  f.goal.value = c.goal; f.subs.value = c.subs; f.notes.value = c.notes;
+  $$('#dayPick input').forEach(i => i.checked = c.days.includes(+i.value));
+  $$('#colorPick input').forEach(i => i.checked = i.value === c.color);
+  $('#handleErr').textContent = '';
+  $('#chDel').hidden = !editCh;
+  $('#chDlg').showModal();
+  setTimeout(() => f.name.focus(), 30);
+}
+$('#chForm').handle.addEventListener('input', e => {
+  $('#handleErr').textContent = handleError(normHandle(e.target.value), editCh && editCh.id);
+});
+$('#chForm').addEventListener('submit', e => {
+  e.preventDefault();
+  const f = e.target, name = f.name.value.trim(), handle = normHandle(f.handle.value);
+  if (!name) { f.name.focus(); toast('채널 이름을 적어 주세요'); return; }
+  const herr = handleError(handle, editCh && editCh.id);
+  if (herr) { $('#handleErr').textContent = herr; f.handle.focus(); return; }
+  const data = {
+    name, handle, topic: f.topic.value.trim(), audience: f.audience.value.trim(), format: f.format.value,
+    status: f.status.value, account: f.account.value.trim(), notes: f.notes.value.trim(),
+    goal: f.goal.value === '' ? '' : Math.max(0, Math.floor(+f.goal.value)),
+    subs: f.subs.value === '' ? '' : Math.max(0, Math.floor(+f.subs.value)),
+    days: $$('#dayPick input:checked').map(i => +i.value),
+    color: ($('#colorPick input:checked') || {}).value || COLORS[0],
+  };
+  if (editCh) Object.assign(editCh, data);
+  else S.channels.push(Object.assign({ id: uid(), checks: {}, created: Date.now() }, data));
+  $('#chDlg').close(); commit(); toast(editCh ? '채널을 고쳤습니다' : `‘${name}’ 채널을 만들었습니다`);
+});
+$('#chDel').addEventListener('click', () => {
+  if (!editCh) return;
+  const n = S.videos.filter(v => v.ch === editCh.id).length;
+  if (!confirm(`‘${editCh.name}’ 채널을 지울까요?${n ? `\n이 채널의 영상 기획 ${n}편도 함께 지워집니다.` : ''}`)) return;
+  S.videos = S.videos.filter(v => v.ch !== editCh.id);
+  S.channels = S.channels.filter(c => c !== editCh);
+  $('#chDlg').close(); commit(); toast('채널을 지웠습니다');
+});
+
+/* ---------- 영상 대화상자 ---------- */
+$('#vStage').innerHTML = STAGES.map(([k, l]) => `<option value="${k}">${l}</option>`).join('');
+function openVid(id, preset) {
+  if (!S.channels.length) { toast('채널을 먼저 만들어 주세요'); openCh(); return; }
+  editVid = id ? S.videos.find(v => v.id === id) : null;
+  const f = $('#vForm');
+  const v = editVid || Object.assign({ title: '', ch: vFilter !== 'all' ? vFilter : S.channels[0].id, stage: 'idea', due: '', kind: '', notes: '' }, preset || {});
+  $('#vCh').innerHTML = S.channels.map(c => `<option value="${c.id}">${esc(c.name)}</option>`).join('');
+  $('#vDlgTitle').textContent = editVid ? '영상 수정' : '영상 추가';
+  f.title.value = v.title; f.ch.value = v.ch; f.stage.value = v.stage; f.due.value = v.due; f.notes.value = v.notes;
+  const c = chById(v.ch);
+  f.kind.value = v.kind || (c && c.format === 'shorts' ? 'shorts' : c && c.format === 'live' ? 'live' : 'long');
+  $('#vDel').hidden = !editVid;
+  $('#vDlg').showModal();
+  setTimeout(() => f.title.focus(), 30);
+}
+$('#vForm').addEventListener('submit', e => {
+  e.preventDefault();
+  const f = e.target, title = f.title.value.trim();
+  if (!title) { f.title.focus(); toast('제목을 적어 주세요'); return; }
+  const data = { title, ch: f.ch.value, stage: f.stage.value, due: f.due.value, kind: f.kind.value, notes: f.notes.value.trim() };
+  if (editVid) Object.assign(editVid, data);
+  else S.videos.push(Object.assign({ id: uid(), created: Date.now() }, data));
+  $('#vDlg').close(); commit(); toast(editVid ? '영상을 고쳤습니다' : '영상을 추가했습니다');
+});
+$('#vDel').addEventListener('click', () => {
+  if (!editVid || !confirm(`‘${editVid.title}’ 기획을 지울까요?`)) return;
+  S.videos = S.videos.filter(v => v !== editVid);
+  $('#vDlg').close(); commit(); toast('영상을 지웠습니다');
+});
+$$('[data-close]').forEach(b => b.addEventListener('click', () => b.closest('dialog').close()));
+$$('dialog').forEach(d => d.addEventListener('click', e => { if (e.target === d) d.close(); }));
+
+/* ---------- 이벤트 ---------- */
+$('.tabs').addEventListener('click', e => { const b = e.target.closest('.tab'); if (b) setTab(b.dataset.tab); });
+$('#addBtn').addEventListener('click', () => openCh());
+$('#addVidBtn').addEventListener('click', () => openVid());
+$('#sortSel').addEventListener('change', renderChannels);
+$('#chList').addEventListener('click', e => {
+  const t = e.target.closest('button'); if (!t) return;
+  if (t.dataset.tpl != null) {
+    const p = TEMPLATES[+t.dataset.tpl];
+    openCh(null, { name: p.name, topic: p.topic, audience: p.audience, format: p.format, days: [...p.days], color: p.color });
+  }
+  if (t.dataset.edit) openCh(t.dataset.edit);
+  if (t.dataset.addvid) openVid(null, { ch: t.dataset.addvid });
+  if (t.dataset.check) { cSel = t.dataset.check; setTab('check'); }
+});
+$('#week').addEventListener('click', e => {
+  const t = e.target.closest('button'); if (!t) return;
+  if (t.dataset.vid) openVid(t.dataset.vid);
+  if (t.dataset.fill) openVid(null, { ch: t.dataset.fill, due: t.dataset.ds, stage: 'idea' });
+});
+$('#wPrev').addEventListener('click', () => { weekOff--; renderWeek(); });
+$('#wNext').addEventListener('click', () => { weekOff++; renderWeek(); });
+$('#wToday').addEventListener('click', () => { weekOff = 0; renderWeek(); });
+$('#vFilters').addEventListener('click', e => { const b = e.target.closest('[data-f]'); if (b) { vFilter = b.dataset.f; renderVideos(); } });
+$('#board').addEventListener('click', e => {
+  const mv = e.target.closest('[data-mv]');
+  if (mv) {
+    const v = S.videos.find(x => x.id === mv.dataset.id);
+    const i = STAGE_IDX[v.stage] + +mv.dataset.mv;
+    if (i >= 0 && i < STAGES.length) { v.stage = STAGES[i][0]; commit(); }
+    return;
+  }
+  const card = e.target.closest('[data-vid]'); if (card) openVid(card.dataset.vid);
+});
+$('#board').addEventListener('keydown', e => {
+  if ((e.key === 'Enter' || e.key === ' ') && e.target.matches('.vid')) { e.preventDefault(); openVid(e.target.dataset.vid); }
+});
+$('#cFilters').addEventListener('click', e => { const b = e.target.closest('[data-f]'); if (b) { cSel = b.dataset.f; renderChecks(); } });
+$('#clBox').addEventListener('change', e => {
+  const k = e.target.dataset.ck, c = chById(cSel); if (!k || !c) return;
+  if (e.target.checked) c.checks[k] = true; else delete c.checks[k];
+  commit();
+  if (checkPct(c) === 100) toast(`‘${c.name}’ 개설 준비 끝! 🎉`);
+});
+
+/* ---------- 백업 ---------- */
+function download(name, text, type) {
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob([text], { type }));
+  a.download = name; document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+}
+const csvCell = x => { const s = String(x ?? ''); return /[",\n]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s; };
+const csv = rows => '﻿' + rows.map(r => r.map(csvCell).join(',')).join('\r\n');
+$('#expJson').addEventListener('click', () => download(`채널공장-${todayStr()}.json`, JSON.stringify(S, null, 2), 'application/json'));
+$('#expCsv').addEventListener('click', () => download(`채널목록-${todayStr()}.csv`, csv([
+  ['이름', '핸들', '상태', '주제', '대상', '형식', '업로드 요일', '구글 계정', '현재 구독자', '구독자 목표', '개설 준비 %', '메모'],
+  ...S.channels.map(c => [c.name, c.handle ? '@' + c.handle : '', STATUS[c.status], c.topic, c.audience, FORMAT[c.format],
+    WEEK_ORDER.filter(d => c.days.includes(d)).map(d => DAY_NAMES[d]).join(''), c.account, c.subs, c.goal, checkPct(c), c.notes]),
+]), 'text/csv'));
+$('#expVidCsv').addEventListener('click', () => download(`영상기획-${todayStr()}.csv`, csv([
+  ['채널', '제목', '단계', '공개 예정일', '형식', '메모'],
+  ...S.videos.map(v => [chById(v.ch).name, v.title, STAGES[STAGE_IDX[v.stage]][1], v.due, { long: '롱폼', shorts: '쇼츠', live: '라이브' }[v.kind], v.notes]),
+]), 'text/csv'));
+$('#impJson').addEventListener('click', () => $('#impFile').click());
+$('#impFile').addEventListener('change', async e => {
+  const file = e.target.files[0]; e.target.value = '';
+  if (!file) return;
+  try {
+    const d = sanitize(JSON.parse(await file.text()));
+    if (!d.channels.length) { toast('채널이 들어 있지 않은 파일입니다'); return; }
+    if (S.channels.length && !confirm(`지금 내용을 지우고 파일의 채널 ${d.channels.length}개 · 영상 ${d.videos.length}편으로 바꿀까요?`)) return;
+    S = d; commit(); toast('불러왔습니다');
+  } catch (err) { toast('읽을 수 없는 파일입니다'); }
+});
+$('#resetBtn').addEventListener('click', () => {
+  if (!S.channels.length && !S.videos.length) { toast('지울 내용이 없습니다'); return; }
+  if (!confirm('채널·영상·체크 기록을 모두 지울까요? 되돌릴 수 없습니다.')) return;
+  S = blank(); commit(); toast('모두 지웠습니다');
+});
+
+/* ---------- 테마 ---------- */
+function applyTheme(t) {
+  if (t) document.documentElement.dataset.theme = t; else delete document.documentElement.dataset.theme;
+  const dark = t ? t === 'dark' : matchMedia('(prefers-color-scheme: dark)').matches;
+  document.querySelector('meta[name=theme-color]').content = dark ? '#0f1014' : '#f6f6f8';
+}
+let theme = null;
+try { theme = localStorage.getItem(THEME_KEY); } catch (e) {}
+applyTheme(theme);
+$('#themeBtn').addEventListener('click', () => {
+  const dark = document.documentElement.dataset.theme
+    ? document.documentElement.dataset.theme === 'dark'
+    : matchMedia('(prefers-color-scheme: dark)').matches;
+  theme = dark ? 'light' : 'dark';
+  applyTheme(theme);
+  try { localStorage.setItem(THEME_KEY, theme); } catch (e) {}
+});
+
+/* ---------- 시작 ---------- */
+const first = location.hash.slice(1);
+setTab(['channels', 'week', 'videos', 'check', 'data'].includes(first) ? first : 'channels');
+})();
+</script>
+</body>
+</html>
