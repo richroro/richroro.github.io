@@ -58,7 +58,8 @@
    "c1e"
   ],
   "music": "Deep Haze",
-  "gap": 0.5
+  "gap": 0.5,
+  "min": 20
  },
  "titleCard": {
   "dur": 3,
@@ -164,7 +165,8 @@
         142.2,
         11.35
        ],
-       "at": 0.6
+       "at": 0.6,
+       "dashed": true
       }
      ]
     },
@@ -218,6 +220,23 @@
      "fade": 0.5,
      "lower": "2019 · 멕시코만"
     }
+   ],
+   "sfx": [
+    [
+     "c1a.햇빛",
+     "pop",
+     0.35
+    ],
+    [
+     "c1c",
+     "pop",
+     0.35
+    ],
+    [
+     "c1f2.400배",
+     "pop",
+     0.35
+    ]
    ]
   },
   "c2": {
@@ -306,6 +325,26 @@
      "fade": 0.3
     },
     {
+     "at": "c2g0",
+     "type": "card",
+     "kind": "doc",
+     "title": "탐사선 야간 근무 수칙",
+     "lines": [
+      "1. 모니터에서 눈을 떼지 말 것",
+      "2. 이상한 것을 보면 반드시 {기록}할 것",
+      "3. 새벽 영상은 다음 날 [다 같이] 볼 것"
+     ],
+     "steps": [
+      0.2,
+      "c2g0.이상한",
+      "c2g0@end-0.2"
+     ],
+     "page": "1쪽",
+     "bg": "wreck",
+     "bgIn": 2,
+     "fade": 0.3
+    },
+    {
      "at": "c2g",
      "type": "scene",
      "bg": "night",
@@ -383,30 +422,98 @@
      "big": "정체는 [???]",
      "bigAt": "c2h.돌려"
     }
+   ],
+   "sfx": [
+    [
+     "c2c.하얀",
+     "k_question_001",
+     0.4
+    ],
+    [
+     "c2d",
+     "pop",
+     0.4
+    ]
    ]
   },
   "c3": {
    "music": "Gathering Darkness",
+   "musicCuts": [
+    {
+     "at": "c3p",
+     "dur": 1.8
+    }
+   ],
+   "sfx": [
+    [
+     "c3a",
+     "whoosh",
+     0.45
+    ],
+    [
+     "c3c",
+     "whoosh",
+     0.45
+    ],
+    [
+     "c3e",
+     "whoosh",
+     0.45
+    ],
+    [
+     "c3f",
+     "whoosh",
+     0.45
+    ],
+    [
+     "c3h",
+     "boom",
+     0.4
+    ]
+   ],
    "shots": [
     {
      "type": "card",
-     "kind": "rank",
-     "total": 5,
-     "title": "소름 TOP 5",
-     "n": 5,
-     "label": "이름 없는 심해 해파리",
-     "bg": "jelly",
-     "bgIn": 3
+     "kind": "grid",
+     "title": "바닷속 소름 [TOP 5]",
+     "items": [
+      {
+       "icon": "🪼",
+       "label": "붉은 해파리"
+      },
+      {
+       "icon": "🫧",
+       "label": "가스의 강"
+      },
+      {
+       "icon": "⛵",
+       "label": "19세기 난파선"
+      },
+      {
+       "icon": "🌑",
+       "label": "검은 굴뚝"
+      },
+      {
+       "icon": "🌋",
+       "label": "바닷속 화산"
+      }
+     ],
+     "cols": 5,
+     "focus": 0,
+     "zoomAt": "c30.5위"
     },
     {
-     "at": "c3a.근처",
+     "at": "c3a",
      "type": "relayout",
      "short": "top6",
      "parts": [
       0,
       1
      ],
-     "fade": 0.3
+     "fade": 0.3,
+     "lowerThirds": false,
+     "badge": "5위",
+     "lower": "이름 없는 심해 해파리"
     },
     {
      "at": "c3c",
@@ -416,7 +523,10 @@
       2,
       3
      ],
-     "fade": 0.3
+     "fade": 0.3,
+     "lowerThirds": false,
+     "badge": "4위",
+     "lower": "바위 밑 가스의 강"
     },
     {
      "at": "c3e",
@@ -426,7 +536,10 @@
       4,
       5
      ],
-     "fade": 0.3
+     "fade": 0.3,
+     "lowerThirds": false,
+     "badge": "3위",
+     "lower": "우연히 찾은 난파선"
     },
     {
      "at": "c3f",
@@ -436,7 +549,48 @@
       6,
       7
      ],
-     "fade": 0.3
+     "fade": 0.3,
+     "lowerThirds": false,
+     "badge": "2위",
+     "lower": "검은 연기 뿜는 굴뚝"
+    },
+    {
+     "at": "c3p",
+     "type": "card",
+     "kind": "grid",
+     "title": "바닷속 소름 [TOP 5]",
+     "items": [
+      {
+       "icon": "🪼",
+       "label": "붉은 해파리"
+      },
+      {
+       "icon": "🫧",
+       "label": "가스의 강"
+      },
+      {
+       "icon": "⛵",
+       "label": "19세기 난파선"
+      },
+      {
+       "icon": "🌑",
+       "label": "검은 굴뚝"
+      },
+      {
+       "icon": "🌋",
+       "label": "바닷속 화산"
+      }
+     ],
+     "cols": 5,
+     "done": [
+      0,
+      1,
+      2,
+      3
+     ],
+     "circle": 4,
+     "circleAt": 0.3,
+     "fade": 0.2
     },
     {
      "at": "c3h",
@@ -458,7 +612,10 @@
       9,
       10
      ],
-     "fade": 0.3
+     "fade": 0.3,
+     "lowerThirds": false,
+     "badge": "1위",
+     "lower": "사상 첫 해저 화산 분화"
     }
    ]
   },

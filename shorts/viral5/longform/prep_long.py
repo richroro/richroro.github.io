@@ -83,14 +83,16 @@ def fmt_ts(s):
 
 # ── captions: words with [key] marks, split into pages of at most 2 lines of maxChars ──
 def words_of(text):
-    out, key = [], False
+    """caption words: [key] yellow, {key} red (괴담), '/' a page break"""
+    out, key, red = [], False, False
     for raw in text.replace("/", " / ").split():
         if raw == "/": out.append({"brk": True}); continue
-        buf, k_any = "", False
+        buf, k_any, r_any = "", False, False
         for ch in raw:
             if ch in "[]": key = ch == "["; continue
-            buf += ch; k_any = k_any or key
-        if buf: out.append({"text": buf, "key": k_any})
+            if ch in "{}": red = ch == "{"; continue
+            buf += ch; k_any = k_any or key; r_any = r_any or red
+        if buf: out.append({"text": buf, "key": k_any, **({"red": True} if r_any else {})})
     return out
 
 
@@ -195,7 +197,7 @@ class Long:
 
     @staticmethod
     def spoken(L):
-        return L.get("say", re.sub(r"[\[\]/]", "", L.get("text", ""))).replace("|", "")
+        return L.get("say", re.sub(r"[\[\]{}/]", "", L.get("text", ""))).replace("|", "")
 
     # ── media ──
     def src_path(self, s):
@@ -255,8 +257,10 @@ class Long:
         S, E = self.S, self.E
         self.calibrate()
         gap0 = S.get("gap", 0.35)
-        chap_dur = E.get("chapterCard", {}).get("dur", 2.0)
-        if not 1.5 <= chap_dur <= 2.5: self.warn.append(f"chapter card {chap_dur} s (the kit expects 1.5-2.5 s)")
+        self.sleep = bool(E.get("sleep"))
+        cc = E.get("chapterCard", {}); chap_style = cc.get("style", "dip" if self.sleep else "card")
+        chap_dur = cc.get("dur", 1.0 if chap_style == "dip" else 2.0)
+        if chap_style == "card" and not 1.5 <= chap_dur <= 2.5: self.warn.append(f"chapter card {chap_dur} s (the kit expects 1.5-2.5 s)")
         title_dur = E.get("titleCard", {}).get("dur", 3.0)
         out_dur = E.get("outro", {}).get("dur", 20.0)
 
@@ -271,6 +275,8 @@ class Long:
         for lid, L in lines.items():
             if "short" in L:
                 L.update(self.short_line(L)); continue
+            if "pause" in L:  # a beat of silence on purpose ("정답은?" 3 s): its text, if any, stays on screen as a caption
+                L["dur"] = float(L["pause"]); L["chars"], L["ct"] = "", []; continue
             spoken = self.spoken(L)
             voice, rate, pitch = self.voice_of(L)
             x, words = self.tts(spoken, voice, rate, pitch)
@@ -278,6 +284,8 @@ class Long:
             y = x * (10 ** (-18 / 20) / (np.sqrt(np.mean(voiced ** 2)) + 1e-9))  # prep.py's level match
             y = np.tanh(y * 1.2) / np.tanh(1.2)
             f = f"{self.pub}/voice/{lid}.wav"; write_wav(f, y)
+            if self.voices.get(L.get("voice", "nar"), {}).get("fx") == "radio":  # a PA announcement or a phone: band-limited, a little crunch
+                run(["ffmpeg", "-v", "error", "-y", "-i", f, "-af", "highpass=f=320,lowpass=f=3300,acrusher=bits=10:mix=0.25,volume=1.4", f + ".tmp.wav"]); os.replace(f + ".tmp.wav", f)
             L["dur"] = round(len(x) / SR, 3); L["file"] = f"{self.rel}/voice/{lid}.wav"
             L["chars"], L["ct"] = self.syl_times(spoken, x, words)
             L["syl"] = len(SYL.findall(spoken))
@@ -290,7 +298,8 @@ class Long:
             L = lines[p]
             cold.append({"line": p, "start": round(t, 3)}); t += L["dur"] + E.get("coldOpen", {}).get("gap", 0.45)
         cold_end = round(t + 0.2, 3) if picks else 0.0
-        if picks and not 20 <= cold_end <= 40: self.warn.append(f"cold open is {cold_end:.1f} s (aim for 20-40 s)")
+        lo, hi = E.get("coldOpen", {}).get("min", 20), E.get("coldOpen", {}).get("max", 40)
+        if picks and not lo <= cold_end <= hi: self.warn.append(f"cold open is {cold_end:.1f} s (aim for {lo}-{hi} s)")
         title_at = cold_end; t = cold_end + title_dur
 
         # 3) chapters
@@ -339,12 +348,17 @@ class Long:
             plan[0][0] = ch["body"]
             for a, b, sh in plan:
                 shots += self.make_shot(sh, a, b, ch)
+        if chap_style == "dip":  # after a dip to black each chapter fades in
+            for ch in chapters:
+                fs = next((x for x in shots if abs(x["start"] - ch["body"]) < 1e-3), None)
+                if fs and not fs.get("fade"): fs["fade"] = 0.5
         # cards and outro become shots too, so the picture is one list
         first_of = lambda ch: next((s for s in shots if s["start"] >= ch["body"] - 1e-3 and s.get("file")), None)
         for ch in chapters:
             fs = first_of(ch)
-            shots.append({"type": "chapter", "start": ch["card"], "end": ch["body"], "n": ch["n"], "title": ch["title"],
-                          "bg": fs["file"] if fs else None, "bgIsImg": bool(fs and fs["type"] == "photo"), "fade": 0.3})
+            kick = cc.get("kicker", "CHAPTER {n:02d}").format(n=ch["n"], total=len(chapters))
+            shots.append({"type": "chapter", "start": ch["card"], "end": ch["body"], "n": ch["n"], "title": ch["title"], "kicker": kick, "style": chap_style,
+                          "bg": fs["file"] if fs else None, "bgIsImg": bool(fs and fs["type"] == "photo"), "fade": 0.0 if chap_style == "dip" else 0.3})
         tc = E.get("titleCard", {})
         fs = first_of(chapters[0]) if chapters else None
         bgsrc = self.make_shot(tc["bg"], title_at, title_at + title_dur, None)[0] if tc.get("bg") else None
@@ -399,6 +413,16 @@ class Long:
         for i in range(1, n): sm[i] = env[i] if env[i] > sm[i - 1] else sm[i - 1] + (env[i] - sm[i - 1]) * 0.13
         for m in media:  # under a short's own sound the bed ducks as under a voice (1.0) or drops out (1.5: the short has its own music)
             for f in range(int(m["start"] * FPS), min(n, int((m["start"] + m["dur"]) * FPS))): sm[f] = max(sm[f], m["duck"])
+        sfx = []
+        for ch, C in zip(chapters, S["chapters"]):
+            spec = E.get("chapters", {}).get(C["id"], {})
+            for c_ in spec.get("musicCuts", []):  # the bed stops dead before a twist, then comes back over 0.5 s
+                a = self.at(c_["at"], ch); d = c_.get("dur", 1.0)
+                for f in range(int(a * FPS), min(n, int((a + d + 0.5) * FPS))):
+                    sm[f] = max(sm[f], 1.5 if f < (a + d) * FPS else 1.5 * (1 - (f / FPS - a - d) / 0.5))
+            for a, name, g in spec.get("sfx", []):
+                if not os.path.exists(f"{V}/public/sfx/{name}.wav"): self.warn.append(f"sfx {name}.wav not in public/sfx (run fetch.sh)")
+                sfx.append({"t": self.at(a, ch), "file": f"sfx/{name}.wav", "gain": g})
         self.music = self.music_plan(chapters, cold_end, title_at + title_dur, outro_at, end)
         self.amb = self.amb_plan(chapters)
 
@@ -420,7 +444,9 @@ class Long:
             "voice": [{k: v[k] for k in ("file", "start", "dur")} for v in voice if v["file"]], "media": media,
             "music": self.music, "musicDuck": E.get("music", {}).get("duck", 0.6), "amb": self.amb,
             "env": [int(round(min(1.5, float(x)) * 60)) for x in sm[::3]],  # 10 per second, 0..90 (90 = a short's own sound)
-            "pages": pages, "thumb": self.thumb(),
+            "pages": pages, "thumb": self.thumb(), "sfx": sorted(sfx, key=lambda x: x["t"]),
+            "pauses": [{"start": L["start"], "dur": L["dur"]} for L in lines.values() if "pause" in L and "start" in L],
+            "dim": E.get("dim", 0.3 if self.sleep else 0.0),
         }
         os.makedirs(f"{V}/src/longdata", exist_ok=True)
         json.dump(data, open(f"{V}/src/longdata/{self.id}.json", "w"), ensure_ascii=False, separators=(",", ":"))
@@ -457,7 +483,8 @@ class Long:
     def make_shot(self, sh, a, b, ch):
         """one edit.json shot over [a, b) -> one or more resolved shots"""
         ty = sh.get("type", "footage"); skip = sh.get("_skip", 0.0)
-        base = {"type": ty, "start": round(a, 3), "end": round(b, 3), "fade": sh.get("fade", 0.0), "lower": sh.get("lower"), "t0": round(skip, 3)}
+        base = {"type": ty, "start": round(a, 3), "end": round(b, 3), "fade": sh.get("fade", 1.0 if self.sleep else 0.0), "lower": sh.get("lower"), "t0": round(skip, 3),
+                **({"badge": sh["badge"]} if sh.get("badge") else {})}
         if ty == "footage":
             s = self.source(sh["src"]); p = self.src_path(s["file"])
             speed = sh.get("speed", 1.0); t_in = sh.get("in", 0.0) + skip * speed
@@ -499,7 +526,12 @@ class Long:
                 bgs = self.make_shot({"type": "footage", "src": sh["bg"], "in": sh.get("bgIn", 0)}, a, b, ch)[0] if self.source(sh["bg"])["file"].endswith(".mp4") \
                     else self.make_shot({"type": "photo", "src": sh["bg"]}, a, b, ch)[0]
                 out["bg"] = bgs.get("file"); out["bgIsImg"] = bgs["type"] == "photo"; out["credit"] = bgs.get("credit")
-            if "revealAt" in sh: out["revealAt"] = self.rel_at(sh["revealAt"], a, ch)
+            for k in ("revealAt", "zoomAt", "circleAt"):
+                if k in sh: out[k] = self.rel_at(sh[k], a, ch) if not isinstance(sh[k], (int, float)) else sh[k]
+            if "steps" in sh: out["steps"] = [self.rel_at(x, a, ch) if not isinstance(x, (int, float)) else x for x in sh["steps"]]
+            if sh.get("kind") == "map":
+                out["dots"] = [{**d, **({"at": self.rel_at(d["at"], a, ch)} if isinstance(d.get("at"), str) else {})} for d in sh.get("dots", [])]
+                out["arrows"] = [{**d, **({"at": self.rel_at(d["at"], a, ch)} if isinstance(d.get("at"), str) else {})} for d in sh.get("arrows", [])]
             return [out]
         if ty == "relayout":
             return self.relayout(sh, a, b, ch, base)
@@ -538,7 +570,8 @@ class Long:
             d = json.load(open(se))
             for c in d["clips"]:
                 p = f"{V}/public/{c['file']}" if c.get("file") else None
-                parts.append({"path": p, "in": 0.0, "dur": c["dur"], "speed": c.get("speed", 1.0), "credit": c.get("credit") or d.get("credit", ""), "lower": None})
+                parts.append({"path": p, "in": 0.0, "dur": c["dur"], "speed": c.get("speed", 1.0), "credit": c.get("credit") or d.get("credit", ""), "lower": None,
+                              "gfx": c.get("gfx")})
         else:
             sys.exit(f"relayout {sid}: needs politics/{sid}/edit.json segments or a prepped src/data/{sid}.json")
         if sh.get("parts"): parts = [parts[i] for i in sh["parts"]]
@@ -551,6 +584,11 @@ class Long:
             if skip >= pt["dur"]: skip -= pt["dur"]; continue
             if pt.get("rank"): keep_rank = pt["lower"]
             lower = pt["lower"] or keep_rank
+            g = pt.get("gfx")
+            if g and g.get("type") in ("scene", "post"):  # a drawn 썰 beat: acted again on the 16:9 stage, not cropped from the vertical frame
+                out.append({**base, **self.scene_of_gfx(g), "start": round(t, 3), "end": round(t + d - skip, 3), "t0": round(skip, 3),
+                            "fade": sh.get("fade", 0.0) if not out else sh.get("cutFade", 0.0), "credit": "", "lower": None})
+                t += d - skip; skip = 0.0; continue
             if pt["path"] and os.path.exists(pt["path"]):
                 f, w, hh = self.cut(pt["path"], pt["in"] + skip * pt["speed"], d - skip, pt["speed"])
             else:
@@ -561,6 +599,21 @@ class Long:
                         "lower": lower if sh.get("lowerThirds", True) else base.get("lower"), "label": ""})
             t += d - skip; skip = 0.0
         return out
+
+    @staticmethod
+    def scene_of_gfx(g):
+        """a short's scene/post graphic (lib/Gfx.tsx, times in steps) as a long-form scene/post shot"""
+        st = g.get("steps") or []
+        at = lambda i, dflt: st[i] if len(st) > i and st[i] is not None else dflt
+        if g["type"] == "post":
+            return {"type": "post", "g": {k: v for k, v in g.items() if k != "type"}}
+        sc = {k: g[k] for k in ("bg", "sign", "place", "photo", "chars", "prop", "propX", "big", "card", "zoom", "focus") if k in g}
+        sc["says"] = [{"who": g["say"]["who"], "text": g["say"]["text"], "at": at(0, 0.05)}] if g.get("say") else []
+        sc["propAt"], sc["bigAt"] = at(1, 0.1), at(3, 0.1)
+        sc["turn"] = at(2, None) if any(c.get("to") for c in g.get("chars", [])) else None
+        if g.get("chat"):
+            sc["chat"] = {**g["chat"], "msgs": [{**m, "at": at(4 + i, 0.15 + 0.45 * i)} for i, m in enumerate(g["chat"]["msgs"])]}
+        return {"type": "scene", "g": sc}
 
     def short_line(self, L):
         """a script line that plays a reused short with its own sound: vertical (final/<id>.mp4 over a blurred fill)
@@ -591,7 +644,7 @@ class Long:
     def music_plan(self, chapters, cold_end, title_end, outro_at, end):
         """one bed per stretch (cold open + title, each chapter from its card, the outro); the same track on
         neighbouring stretches keeps playing, a new one crossfades in over `xfade` seconds"""
-        E = self.E; mc = E.get("music", {}); gain = mc.get("gain", 0.25); xf = mc.get("xfade", 1.5)
+        E = self.E; mc = E.get("music", {}); gain = mc.get("gain", 0.18 if self.sleep else 0.25); xf = mc.get("xfade", 3.0 if self.sleep else 1.5)
         spans = []
         first = next((E.get("chapters", {}).get(C["id"], {}).get("music") for C in self.S["chapters"] if E.get("chapters", {}).get(C["id"], {}).get("music")), None)
         if title_end > 0: spans.append((0.0, title_end, E.get("coldOpen", {}).get("music") or first))
@@ -648,7 +701,7 @@ class Long:
         out, wi = [], 0
         for p in pages:
             n = sum(len(line) for line in p)
-            out.append({"startMs": round((start + (times[wi] if wi else 0.0)) * 1000) - (0 if wi else 80), "lines": [[{"text": w["text"], "key": w["key"]} for w in line] for line in p], "top": top})
+            out.append({"startMs": round((start + (times[wi] if wi else 0.0)) * 1000) - (0 if wi else 80), "lines": [[{k: w[k] for k in ("text", "key", "red") if k in w} for w in line] for line in p], "top": top})
             wi += n
         for i, p in enumerate(out):
             p["endMs"] = out[i + 1]["startMs"] if i + 1 < len(out) else round((start + L["dur"] + 0.25) * 1000)

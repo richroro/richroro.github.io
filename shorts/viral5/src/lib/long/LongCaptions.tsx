@@ -6,6 +6,7 @@ import { BODY } from "../fonts";
 import type { LongPage } from "./types";
 
 export const KEY = "#FFE14D";
+export const RED = "#FF3B3B";
 const fr = (s: number) => Math.round(s * 30);
 
 const Page: React.FC<{ p: LongPage; size: number }> = ({ p, size }) => {
@@ -16,7 +17,7 @@ const Page: React.FC<{ p: LongPage; size: number }> = ({ p, size }) => {
         WebkitTextStroke: `${Math.round(size * 0.17)}px black`, paintOrder: "stroke", textShadow: "0 3px 8px rgba(0,0,0,.55)" }}>
         {p.lines.map((line, i) => (
           <div key={i} style={{ whiteSpace: "nowrap" }}>
-            {line.map((w, k) => <span key={k} style={{ color: w.key ? KEY : "white" }}>{(k ? " " : "") + w.text}</span>)}
+            {line.map((w, k) => <span key={k} style={{ color: w.red ? RED : w.key ? KEY : "white" }}>{(k ? " " : "") + w.text}</span>)}
           </div>
         ))}
       </div>

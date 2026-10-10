@@ -1,9 +1,11 @@
 #!/usr/bin/env bash
 # Render one long-form, bring its audio to -14 LUFS, and fit it under the git host's file cap.
 # usage: longform/render_long.sh <id>
-#   1. picture: rendered in chunks of CHUNK frames (--frames a-b, --muted, x264 CRF 12 "veryfast", near lossless) and joined
-#      without re-encoding; a finished chunk is kept, so a crashed or stopped render resumes where it stopped
-#   2. sound: one audio-only render of the whole timeline (WAV), two-pass loudnorm to -14 LUFS / -1.5 dBTP, AAC 160k
+#   1. render in chunks of CHUNK frames (--frames a-b): picture as x264 CRF 12 "veryfast" (near lossless), sound as 16-bit PCM,
+#      in MKV; the chunks are joined without re-encoding (PCM joins sample-exact, so there is no seam), and a finished
+#      chunk is kept, so a crashed or stopped render resumes where it stopped. (A separate audio-only render would cost
+#      almost a second full pass: Remotion evaluates every frame to find the sounds.)
+#   2. sound: two-pass loudnorm of the joined PCM to -14 LUFS / -1.5 dBTP, AAC 160k
 #   3. size: two-pass encode at the bitrate the duration allows for MAXMB (default 95 MB), with +faststart:
 #        >= X264_MIN kb/s (default 3000)  x264 1080p
 #        >= X265_MIN kb/s (default 1400)  x265 1080p (hvc1 tag; ~40% smaller than x264 at the same look)
@@ -24,46 +26,52 @@ DUR=$(python3 -c "print($N/30)")
 echo "render $ID: $N frames ($DUR s) in chunks of $CHUNK"
 
 # 1) picture
-T0=$(date +%s); : > "$W/list.txt"; i=0
+T0=$(date +%s); : > "$W/list.txt"; : > "$W/alist.txt"; i=0; RESUMED=False
+ls "$W"/v*.mkv >/dev/null 2>&1 && RESUMED=True  # render_fps then covers only the chunks rendered this time
 for ((a = 0; a < N; a += CHUNK)); do
   b=$((a + CHUNK - 1)); ((b >= N)) && b=$((N - 1))
-  f=$(printf "v%03d.mp4" $i)
+  f=$(printf "v%03d.mkv" $i)
   if [ ! -s "$W/$f" ]; then
     t=$(date +%s)
-    npx remotion render src/index.ts "$ID" "$W/tmp.mp4" --frames=$a-$b --muted --codec=h264 --crf=12 --x264-preset=veryfast \
+    npx remotion render src/index.ts "$ID" "$W/tmp.mkv" --frames=$a-$b --codec=h264-mkv --audio-codec=pcm-16 --crf=12 --x264-preset=veryfast \
       --browser-executable="$BX" --concurrency="$CONC" --log=error 2>&1 | grep -v -e "memory" -e "Memory" -e "docker" || true
-    [ -s "$W/tmp.mp4" ] || { echo "chunk $i failed"; exit 1; }
-    mv "$W/tmp.mp4" "$W/$f"
+    [ -s "$W/tmp.mkv" ] || { echo "chunk $i failed"; exit 1; }
+    mv "$W/tmp.mkv" "$W/$f"
     echo "  chunk $i: frames $a-$b in $(( $(date +%s) - t )) s"
   fi
-  echo "file '$f'" >> "$W/list.txt"; i=$((i + 1))
+  # each chunk's sound cut to exactly its frames (Remotion adds a few samples), so the joined track never drifts or clicks
+  [ -s "$W/${f%.mkv}.wav" ] || ffmpeg -hide_banner -loglevel error -y -i "$W/$f" -map 0:a -af "atrim=end_sample=$(((b - a + 1) * 1600))" -c:a pcm_s16le "$W/${f%.mkv}.wav"
+  echo "file '$f'" >> "$W/list.txt"; echo "file '${f%.mkv}.wav'" >> "$W/alist.txt"; i=$((i + 1))
 done
 T1=$(date +%s)
 
-# 2) sound: the whole timeline at once (no seams), then -14 LUFS
-npx remotion render src/index.ts "$ID" "$W/audio.wav" --codec=wav --browser-executable="$BX" --concurrency="$CONC" --log=error 2>&1 | grep -v -e "memory" -e "Memory" -e "docker" || true
+# 2) sound: the joined PCM, to -14 LUFS
+ffmpeg -hide_banner -loglevel error -y -f concat -safe 0 -i "$W/alist.txt" -c:a pcm_s16le "$W/audio.wav"
 T2=$(date +%s)
 M=$(ffmpeg -hide_banner -nostats -i "$W/audio.wav" -af loudnorm=I=-14:TP=-1.5:LRA=11:print_format=json -f null - 2>&1 | sed -n '/^{/,/^}/p')
 get() { echo "$M" | python3 -c "import sys,json; print(json.load(sys.stdin)['$1'])"; }
 LN="loudnorm=I=-14:TP=-1.5:LRA=11:measured_I=$(get input_i):measured_TP=$(get input_tp):measured_LRA=$(get input_lra):measured_thresh=$(get input_thresh):offset=$(get target_offset):linear=true"
 ffmpeg -hide_banner -loglevel error -y -i "$W/audio.wav" -af "$LN,aresample=48000" -c:a aac -b:a ${ABR}k "$W/audio.m4a"
-ffmpeg -hide_banner -loglevel error -y -f concat -safe 0 -i "$W/list.txt" -i "$W/audio.m4a" -map 0:v -map 1:a -c copy -shortest "$W/master.mkv"
+ffmpeg -hide_banner -loglevel error -y -f concat -safe 0 -i "$W/list.txt" -i "$W/audio.m4a" -map 0:v -map 1:a -c copy "$W/master.mkv"
 
 # 3) fit the size
 KB=$(python3 -c "print(int(min($CAP, ($MAXMB*1e6*8*0.97/$DUR - ${ABR}e3)/1e3)))")
 if ((KB >= X264_MIN)); then CODEC=x264 SCALE=1080
 elif ((KB >= X265_MIN)); then CODEC=x265 SCALE=1080
 else CODEC=x265 SCALE=720; fi
-VF=$([ $SCALE = 720 ] && echo "scale=1280:720:flags=lanczos" || echo "null")
+VF=$([ $SCALE = 720 ] && echo "scale=1280:720:flags=lanczos" || echo "null")  # both passes see the same frames: -pix_fmt yuv420p in each (Remotion's chunks are yuvj420p)
 enc() {  # $1 = kb/s
   if [ $CODEC = x264 ]; then
-    ffmpeg -hide_banner -loglevel error -y -i "$W/master.mkv" -vf "$VF" -c:v libx264 -preset medium -b:v ${1}k -pass 1 -passlogfile "$W/pass" -an -f null /dev/null
+    ffmpeg -hide_banner -loglevel error -y -i "$W/master.mkv" -vf "$VF" -c:v libx264 -preset medium -b:v ${1}k -pass 1 -passlogfile "$W/pass" -pix_fmt yuv420p -an -f null /dev/null
     ffmpeg -hide_banner -loglevel error -y -i "$W/master.mkv" -vf "$VF" -c:v libx264 -preset medium -b:v ${1}k -pass 2 -passlogfile "$W/pass" -pix_fmt yuv420p \
       -c:a copy -movflags +faststart "final/$ID.mp4"
   else
-    ffmpeg -hide_banner -loglevel error -y -i "$W/master.mkv" -vf "$VF" -c:v libx265 -preset fast -b:v ${1}k -x265-params "pass=1:stats=$W/x265.log:log-level=error" -an -f null /dev/null
-    ffmpeg -hide_banner -loglevel error -y -i "$W/master.mkv" -vf "$VF" -c:v libx265 -preset fast -b:v ${1}k -x265-params "pass=2:stats=$W/x265.log:log-level=error" -tag:v hvc1 -pix_fmt yuv420p \
-      -c:a copy -movflags +faststart "final/$ID.mp4"
+    ffmpeg -hide_banner -loglevel error -y -i "$W/master.mkv" -vf "$VF" -c:v libx265 -preset fast -b:v ${1}k -x265-params "pass=1:stats=$W/x265.log:log-level=error" -pix_fmt yuv420p -an -f null /dev/null
+    # pass 2 goes to MKV and is then remuxed: writing MP4 straight away turns on global headers, which changes the encoder
+    # settings from pass 1 and x265 stops with "Incomplete CU-tree stats file"
+    ffmpeg -hide_banner -loglevel error -y -i "$W/master.mkv" -vf "$VF" -c:v libx265 -preset fast -b:v ${1}k -x265-params "pass=2:stats=$W/x265.log:log-level=error" -pix_fmt yuv420p \
+      -c:a copy "$W/enc.mkv"
+    ffmpeg -hide_banner -loglevel error -y -i "$W/enc.mkv" -c copy -tag:v hvc1 -movflags +faststart "final/$ID.mp4"; rm -f "$W/enc.mkv"
   fi
 }
 enc $KB
@@ -76,9 +84,9 @@ SZ=$(stat -c %s "final/$ID.mp4")
 python3 - "$W/render.json" <<EOF
 import json, sys
 d = dict(id="$ID", frames=$N, seconds=$DUR, picture_s=$((T1 - T0)), audio_s=$((T2 - T1)), encode_s=$((T3 - T2)),
-         render_fps=round($N / max(1, $((T1 - T0))), 2), codec="$CODEC", height=$SCALE, video_kbps=$KB, audio_kbps=$ABR,
+         render_fps=round($N / max(1, $((T1 - T0))), 2), resumed=$RESUMED, codec="$CODEC", height=$SCALE, video_kbps=$KB, audio_kbps=$ABR,
          size_mb=round($SZ / 1e6, 2), mb_per_min=round($SZ / 1e6 / ($DUR / 60), 2))
 json.dump(d, open(sys.argv[1], "w"), indent=1); print(json.dumps(d))
 EOF
-[ "${KEEP:-0}" = 1 ] || rm -f "$W"/v*.mp4 "$W/audio.wav" "$W"/pass* "$W"/x265.log*
+[ "${KEEP:-0}" = 1 ] || rm -f "$W"/v*.mkv "$W"/v*.wav "$W/audio.wav" "$W"/pass* "$W"/x265.log*
 ffprobe -v error -show_entries format=duration,size:stream=codec_name,width,height -of compact "final/$ID.mp4"

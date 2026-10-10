@@ -8,7 +8,7 @@ import { BODY } from "./lib/fonts";
 import { loadFonts } from "./lib/fonts";
 import { clamp, eInOut, lerp, prog } from "./lib/fx";
 import { LongCaptions, KEY } from "./lib/long/LongCaptions";
-import { BlurBg, ChapterCard, FactCard, MapCard, OutroSpace, RankCard, TextCard, TitleCard } from "./lib/long/Cards";
+import { BlurBg, ChapterCard, DocCard, FactCard, GridCard, MapCard, OutroSpace, RankCard, TextCard, TitleCard } from "./lib/long/Cards";
 import { PostStage, Stage } from "./lib/long/Stage";
 import { LongThumb } from "./lib/long/Thumb";
 import type { FootageShot, LongData, PhotoShot, Shot } from "./lib/long/types";
@@ -99,7 +99,7 @@ const ShotView: React.FC<{ s: Shot; lead: number }> = ({ s, lead }) => {
     case "scene": body = <Stage g={s.g} t={Math.max(0, t)} />; break;
     case "post": body = <PostStage g={s.g} t={Math.max(0, t)} />; break;
     case "short": body = <ShortV file={s.file} t0={s.t0 ?? 0} blur={s.blur} />; break;
-    case "chapter": body = <ChapterCard t={Math.max(0, local)} dur={len} n={s.n} title={s.title} bg={s.bg} bgIsImg={s.bgIsImg} bgBlur={s.bgBlur} />; break;
+    case "chapter": body = <ChapterCard t={Math.max(0, local)} dur={len} n={s.n} title={s.title} bg={s.bg} bgIsImg={s.bgIsImg} bgBlur={s.bgBlur} kicker={s.kicker} style={s.style} />; break;
     case "title": body = <TitleCard t={Math.max(0, local)} dur={len} kicker={s.kicker} title={s.title} sub={s.sub} bg={s.bg} bgIsImg={s.bgIsImg} bgBlur={s.bgBlur} />; break;
     case "outro": body = (
       <AbsoluteFill>
@@ -111,10 +111,12 @@ const ShotView: React.FC<{ s: Shot; lead: number }> = ({ s, lead }) => {
       const bt = Math.max(0, t);
       body = (
         <AbsoluteFill>
-          {s.kind === "map" ? null : <BlurBg file={s.bg} isImg={s.bgIsImg} blur={s.bgBlur} dim={0.4} />}
+          {s.kind === "map" || s.kind === "grid" ? null : <BlurBg file={s.bg} isImg={s.bgIsImg} blur={s.bgBlur} dim={s.kind === "doc" ? 0.3 : 0.4} />}
           {s.kind === "fact" ? <FactCard t={bt} big={s.big ?? ""} label={s.label} sub={s.sub} revealAt={s.revealAt} />
             : s.kind === "text" ? <TextCard t={bt} text={s.text ?? ""} />
             : s.kind === "rank" ? <RankCard t={bt} n={s.n ?? 1} total={s.total} title={s.title} label={s.label} />
+            : s.kind === "grid" ? <GridCard t={bt} items={s.items ?? []} cols={s.cols} title={s.title} focus={s.focus} done={s.done} circle={s.circle} zoomAt={s.zoomAt} circleAt={s.circleAt} />
+            : s.kind === "doc" ? <DocCard t={bt} title={s.title} lines={s.lines ?? []} steps={s.steps} page={s.page} paper={s.paper} />
             : <MapCard t={bt} dur={len} center={s.center ?? [127.8, 36.3]} span={s.span ?? 40} label={s.label} dots={s.dots} arrows={s.arrows} />}
         </AbsoluteFill>
       );
@@ -125,6 +127,10 @@ const ShotView: React.FC<{ s: Shot; lead: number }> = ({ s, lead }) => {
     <AbsoluteFill style={{ opacity: o }}>
       {body}
       {s.lower ? <Lower text={s.lower} t={Math.max(0, local)} /> : null}
+      {s.badge ? (
+        <div style={{ position: "absolute", left: 40, top: 92, fontFamily: BODY, fontWeight: 900, fontSize: 64, color: "#111", background: KEY, border: "6px solid #111",
+          borderRadius: 18, padding: "0 26px", boxShadow: "7px 7px 0 #111", transform: `scale(${0.6 + 0.4 * clamp(local / 0.2)})`, transformOrigin: "0 0" }}>{s.badge}</div>
+      ) : null}
     </AbsoluteFill>
   );
 };
@@ -147,6 +153,7 @@ export const Long: React.FC<{ d: LongData }> = ({ d }) => {
         const b = fr(s.end) >= total - 1 ? total : fr(s.end);
         return b > a ? <Sequence key={i} from={a} durationInFrames={b - a}><ShotView s={s} lead={lead} /></Sequence> : null;
       })}
+      {d.dim ? <AbsoluteFill style={{ background: `rgba(0,0,0,${d.dim})` }} /> : null}
       {cur && PICTURE.has(cur.type) && d.captions ? (
         <AbsoluteFill style={{ background: "linear-gradient(to bottom, rgba(0,0,0,.35) 0%, rgba(0,0,0,0) 14%, rgba(0,0,0,0) 72%, rgba(0,0,0,.45) 100%)" }} />
       ) : null}
@@ -183,6 +190,9 @@ export const Long: React.FC<{ d: LongData }> = ({ d }) => {
           </Sequence>
         ) : null;
       })}
+      {(d.sfx ?? []).map((x, i) => (
+        <Sequence key={`s${i}`} from={fr(x.t)} layout="none"><Audio src={staticFile(x.file)} volume={x.gain} /></Sequence>
+      ))}
       {d.amb.map((m, i) => {
         const a = fr(m.start), b = Math.min(total, fr(m.end));
         return b > a && have(m.file) ? (

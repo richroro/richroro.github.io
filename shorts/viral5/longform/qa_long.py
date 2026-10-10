@@ -60,7 +60,9 @@ def review(lid):
     luma = ImageStat.Stat(Image.open(last).convert("L")).mean[0] if os.path.exists(last) else 0
     row("마지막 프레임", luma > 16, f"밝기 {luma:.0f}/255")
     # silences inside the narration, from the timeline
-    sounds = sorted([(v["start"], v["start"] + v["dur"]) for v in d["voice"]] + [(m_["start"], m_["start"] + m_["dur"]) for m_ in d["media"]])
+    # (a "pause" line is a silence on purpose, so it counts as sound here)
+    sounds = sorted([(v["start"], v["start"] + v["dur"]) for v in d["voice"]] + [(m_["start"], m_["start"] + m_["dur"]) for m_ in d["media"]]
+                    + [(p_["start"], p_["start"] + p_["dur"]) for p_ in d.get("pauses", [])])
     spans = [(0.0, d["coldOpen"]["end"])] + [(c["body"], c["end"]) for c in d["chapters"]]
     gaps = []
     for a, b in spans:
@@ -71,7 +73,8 @@ def review(lid):
     # and in the mix (dead air: below -50 dB for 1.5 s while narration should run)
     sil = re.findall(r"silence_start: ([\d.]+)\n.*?silence_end: ([\d.]+) \| silence_duration: ([\d.]+)",
                      sh(["ffmpeg", "-hide_banner", "-nostats", "-i", mp4, "-af", "silencedetect=n=-50dB:d=1.5", "-vn", "-f", "null", "-"]), re.S)
-    dead = [(float(a), float(c)) for a, b, c in sil if any(x <= float(a) < y for x, y in spans)]
+    planned = [(p_["start"] - 0.3, p_["start"] + p_["dur"] + 0.3) for p_ in d.get("pauses", [])]
+    dead = [(float(a), float(c)) for a, b, c in sil if any(x <= float(a) < y for x, y in spans) and not any(x <= float(a) < y for x, y in planned)]
     row("무음 (믹스)", not dead, f"{len(dead)}곳", ", ".join(f"{ts(a)} {c:.1f}s" for a, c in dead[:6]))
     # captions
     font = ImageFont.truetype(f"{V}/public/fonts/Pretendard-ExtraBold.otf", d["captionSize"])

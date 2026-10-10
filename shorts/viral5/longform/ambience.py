@@ -1,4 +1,5 @@
-"""Synthesize loopable ambience beds for long-forms: rain, wind, deep (underwater rumble), room (quiet room tone).
+"""Synthesize loopable ambience beds for long-forms: rain, wind, deep (underwater rumble), room (quiet room tone),
+hum (a fluorescent light's buzz and a fridge motor: a convenience store or an office at night, for 괴담).
 usage: python3 longform/ambience.py <out dir>      writes <name>.wav, 60 s, 44.1 kHz mono, peak about -6 dBFS
 Generated from noise here, so there is no licence to track. The last 2 s are crossfaded into the start, so <Audio loop> is seamless.
 """
@@ -43,8 +44,14 @@ def deep():
 def room():
     return norm(lp_fast(rng.standard_normal(N), 900), 0.12)
 
+def hum():
+    t = np.arange(N) / SR
+    buzz = sum(a * np.sin(2 * np.pi * 120 * k * t) for k, a in ((1, 1.0), (2, 0.35), (3, 0.2), (5, 0.08)))  # mains buzz of a tube light
+    motor = lp_fast(rng.standard_normal(N), 180) * (0.6 + 0.4 * (np.sin(2 * np.pi * t / 23) > -0.3))  # a fridge compressor cycling
+    return norm(0.25 * buzz * (1 + 0.05 * np.sin(2 * np.pi * 0.3 * t)) + norm(motor, 0.6) + room() * 2, 0.4)
+
 out = sys.argv[1]; os.makedirs(out, exist_ok=True)
-for name, fn in (("rain", rain), ("wind", wind), ("deep", deep), ("room", room)):
+for name, fn in (("rain", rain), ("wind", wind), ("deep", deep), ("room", room), ("hum", hum)):
     x = loopable(fn())
     with wave.open(f"{out}/{name}.wav", "wb") as w:
         w.setnchannels(1); w.setsampwidth(2); w.setframerate(SR); w.writeframes((np.clip(x, -1, 1) * 32767).astype(np.int16).tobytes())

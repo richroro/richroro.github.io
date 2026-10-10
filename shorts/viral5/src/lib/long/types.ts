@@ -1,7 +1,7 @@
 // The data a long-form composition reads (src/longdata/<id>.json, written by longform/prep_long.py). Times are seconds.
 import type { Char, Chat, PostG } from "../Sseol";
 
-export type Word = { text: string; key: boolean };
+export type Word = { text: string; key: boolean; red?: boolean };
 /** a caption page: one or two lines of words; top = shown at the top (the outro, where the bottom is end-screen space) */
 export type LongPage = { startMs: number; endMs: number; lines: Word[][]; top?: boolean };
 
@@ -14,6 +14,8 @@ type ShotBase = {
   credit?: string;
   /** a small label at the lower left, above the captions ("5위 · 이름 없는 심해 해파리") */
   lower?: string | null;
+  /** a big rank or number badge at the top left, under the chapter label ("15위") */
+  badge?: string;
 };
 export type FootageShot = ShotBase & {
   type: "footage"; file: string | null; w?: number; h?: number; speed?: number; label?: string;
@@ -49,7 +51,7 @@ export type SceneSpec = {
 export type SceneShot = ShotBase & { type: "scene"; g: SceneSpec };
 export type PostShot = ShotBase & { type: "post"; g: PostG & { steps?: number[] } };
 export type CardShot = ShotBase & {
-  type: "card"; kind: "fact" | "text" | "rank" | "map";
+  type: "card"; kind: "fact" | "text" | "rank" | "map" | "grid" | "doc";
   bg?: string | null; bgIsImg?: boolean; bgBlur?: string | null;
   /** fact: a big number or word, its label above and a line under it */
   big?: string; label?: string; sub?: string;
@@ -60,11 +62,18 @@ export type CardShot = ShotBase & {
   /** map: the window (lon/lat centre and width in degrees), dots and arrows */
   center?: [number, number]; span?: number;
   dots?: { lon: number; lat: number; label?: string; at?: number }[];
-  arrows?: { from: [number, number]; to: [number, number]; at?: number }[];
+  arrows?: { from: [number, number]; to: [number, number]; at?: number; dashed?: boolean }[];
   revealAt?: number | null;
+  /** grid (the list explainer's "contents" screen): icons with names; `focus` is lit and zoomed into at zoomAt,
+   *  `done` are greyed and ticked, `circle` gets a red circle at circleAt; `cols` per row (default 4) */
+  items?: { icon: string; label: string }[]; cols?: number; focus?: number; done?: number[]; circle?: number; zoomAt?: number | null; circleAt?: number | null;
+  /** doc (a notice, a handover sheet, a rule list): `title`, `lines` revealed at `steps`, `page` ("3쪽"), `paper` colour */
+  lines?: string[]; steps?: number[]; page?: string; paper?: string;
 };
 export type ShortShot = ShotBase & { type: "short"; file: string; blur?: string | null };
-export type ChapterShot = ShotBase & { type: "chapter"; n: number; title: string; bg: string | null; bgIsImg?: boolean; bgBlur?: string | null };
+export type ChapterShot = ShotBase & { type: "chapter"; n: number; title: string; bg: string | null; bgIsImg?: boolean; bgBlur?: string | null;
+  /** "CHAPTER 01", "괴담 03 / 12"; style "card" (full-screen card) or "dip" (a short dip to black, the title only in the corner label) */
+  kicker?: string; style?: "card" | "dip" };
 export type TitleShot = ShotBase & { type: "title"; kicker: string; title: [string, string]; sub: string; bg: string | null; bgIsImg?: boolean; bgBlur?: string | null };
 export type OutroShot = ShotBase & { type: "outro"; bg: FootageShot | PhotoShot | null; label: string; boxes: boolean };
 export type Shot = FootageShot | PhotoShot | SceneShot | PostShot | CardShot | ShortShot | ChapterShot | TitleShot | OutroShot;
@@ -81,6 +90,15 @@ export type Thumb = {
   /** a small tag at the top ("다큐", "몰아보기") */
   tag?: string;
   bg?: string;
+  /** "band": the 사연툰 look — the lines on a band across the top, a drawn scene under it (chars, says, `scene` backdrop);
+   *  "grid": the list-explainer look — a white board, a black title with a red key word, round icons in a grid */
+  style?: "band" | "grid";
+  chars?: (Char & { x?: number; size?: number })[];
+  says?: { who: number; text: string }[];
+  scene?: string;
+  items?: { icon: string; label: string }[];
+  /** band: the band's background colour (default black) */
+  bandBg?: string;
 };
 
 export type LongData = {
@@ -98,4 +116,9 @@ export type LongData = {
   env: number[];
   pages: LongPage[];
   thumb: Thumb | null;
+  sfx?: { t: number; file: string; gain: number }[];
+  /** silences on purpose ("정답은?"), which QA does not count as gaps */
+  pauses?: { start: number; dur: number }[];
+  /** darken the whole picture (0..1; sleep mode 0.3) */
+  dim?: number;
 };

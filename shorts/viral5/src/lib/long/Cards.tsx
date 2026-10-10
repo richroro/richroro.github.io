@@ -48,15 +48,25 @@ export const TitleCard: React.FC<{ t: number; dur: number; kicker: string; title
   );
 };
 
-export const ChapterCard: React.FC<{ t: number; dur: number; n: number; title: string; bg: string | null; bgIsImg?: boolean; bgBlur?: string | null }> = ({ t, dur, n, title, bg, bgIsImg, bgBlur }) => {
+export const ChapterCard: React.FC<{ t: number; dur: number; n: number; title: string; bg: string | null; bgIsImg?: boolean; bgBlur?: string | null;
+  kicker?: string; style?: "card" | "dip" }> = ({ t, dur, n, title, bg, bgIsImg, bgBlur, kicker, style }) => {
   const o = prog(t, 0, 0.25) * (1 - prog(t, dur - 0.25, 0.25));
   const line = eOut(prog(t, 0.1, 0.5));
+  if (style === "dip") {  // a quiet dip to black with the title small in the middle (sleep and story long-forms)
+    return (
+      <AbsoluteFill style={{ background: "#000", justifyContent: "center", alignItems: "center" }}>
+        <div style={{ fontFamily: BODY, fontWeight: 800, fontSize: 40, color: "rgba(255,255,255,.75)", opacity: prog(t, 0.15, 0.3) * (1 - prog(t, dur - 0.3, 0.3)) }}>
+          {kicker ? <span style={{ color: KEY, marginRight: 18 }}>{kicker}</span> : null}<Marked text={title} />
+        </div>
+      </AbsoluteFill>
+    );
+  }
   return (
     <AbsoluteFill>
       <BlurBg file={bg} isImg={bgIsImg} blur={bgBlur} dim={0.3} />
       <AbsoluteFill style={{ justifyContent: "center", alignItems: "center", opacity: o }}>
         <div style={{ fontFamily: BODY, fontWeight: 900, fontSize: 44, letterSpacing: 10, color: KEY, transform: `translateY(${18 * (1 - eOut(prog(t, 0, 0.5)))}px)` }}>
-          CHAPTER {String(n).padStart(2, "0")}
+          {kicker ?? `CHAPTER ${String(n).padStart(2, "0")}`}
         </div>
         <div style={{ width: 760 * line, height: 6, background: KEY, borderRadius: 3, margin: "22px 0 30px" }} />
         <div style={{ fontFamily: TITLE, fontSize: fit(title, 130, 1700), color: "white", ...STROKE(14), textAlign: "center", lineHeight: 1.12,
@@ -105,7 +115,7 @@ export const RankCard: React.FC<{ t: number; n: number; total?: number; title?: 
 
 /** a plain outline map (Natural Earth land, public domain) zoomed to a lon/lat window, with pulsing dots and drawn arrows */
 export const MapCard: React.FC<{ t: number; dur: number; center: [number, number]; span: number; label?: string;
-  dots?: { lon: number; lat: number; label?: string; at?: number }[]; arrows?: { from: [number, number]; to: [number, number]; at?: number }[] }> = ({ t, dur, center, span, label, dots = [], arrows = [] }) => {
+  dots?: { lon: number; lat: number; label?: string; at?: number }[]; arrows?: { from: [number, number]; to: [number, number]; at?: number; dashed?: boolean }[] }> = ({ t, dur, center, span, label, dots = [], arrows = [] }) => {
   const k = 1.18 - 0.18 * eInOut(prog(t, 0, Math.min(dur, 4)));
   const vw = span * 10 * k, vh = vw * H / W, vx = (center[0] + 180) * 10 - vw / 2, vy = (90 - center[1]) * 10 - vh / 2;
   const P = (lon: number, lat: number) => [((lon + 180) * 10 - vx) / vw * W, ((90 - lat) * 10 - vy) / vh * H];
@@ -121,7 +131,16 @@ export const MapCard: React.FC<{ t: number; dur: number; center: [number, number
         {arrows.map((a, i) => {
           const [x1, y1] = P(...a.from), [x2, y2] = P(...a.to), len = Math.hypot(x2 - x1, y2 - y1), q = eInOut(prog(t, a.at ?? 0.6, 1.0));
           const mx = (x1 + x2) / 2 - (y2 - y1) * 0.18, my = (y1 + y2) / 2 + (x2 - x1) * 0.18;
-          return <path key={i} d={`M${x1} ${y1} Q${mx} ${my} ${x2} ${y2}`} fill="none" stroke="#FF3B3B" strokeWidth={10} strokeLinecap="round" markerEnd={q > 0.97 ? "url(#ah)" : undefined}
+          const d = `M${x1} ${y1} Q${mx} ${my} ${x2} ${y2}`;
+          if (a.dashed) {  // a dotted route: the dashes are revealed along the path by a growing mask
+            return (
+              <g key={i}>
+                <mask id={`m${i}`} maskUnits="userSpaceOnUse"><path d={d} fill="none" stroke="white" strokeWidth={24} strokeDasharray={len * 1.2} strokeDashoffset={len * 1.2 * (1 - q)} /></mask>
+                <path d={d} fill="none" stroke="#FF3B3B" strokeWidth={9} strokeLinecap="round" strokeDasharray="4 22" mask={`url(#m${i})`} markerEnd={q > 0.97 ? "url(#ah)" : undefined} />
+              </g>
+            );
+          }
+          return <path key={i} d={d} fill="none" stroke="#FF3B3B" strokeWidth={10} strokeLinecap="round" markerEnd={q > 0.97 ? "url(#ah)" : undefined}
             strokeDasharray={len * 1.2} strokeDashoffset={len * 1.2 * (1 - q)} style={{ filter: "drop-shadow(0 0 6px rgba(0,0,0,.6))" }} />;
         })}
         {dots.map((d, i) => {
@@ -163,3 +182,65 @@ export const OutroSpace: React.FC<{ t: number; label: string; boxes: boolean }> 
     </AbsoluteFill>
   );
 };
+
+const ICON_BG = ["#FFD84D", "#8FD3FF", "#FF9EBB", "#B9F27C", "#C9A7FF", "#FFB36B", "#7FE0D0", "#D9D9D9"];
+
+/** the list explainer's contents screen (잡학 리스트): round icons with names on a white board. The `focus` item is lit
+ *  and, from zoomAt, the camera moves into it; `done` items are greyed with a tick; `circle` gets a red circle at circleAt */
+export const GridCard: React.FC<{ t: number; items: { icon: string; label: string }[]; cols?: number; title?: string; focus?: number; done?: number[];
+  circle?: number; zoomAt?: number | null; circleAt?: number | null }> = ({ t, items, cols = 4, title, focus, done = [], circle, zoomAt, circleAt }) => {
+  const rows = Math.ceil(items.length / cols), cell = Math.min(400, 1700 / cols), ch = Math.min(360, (title ? 820 : 900) / rows);
+  const gx = (W - cols * cell) / 2, gy = (title ? 210 : 120) + ((title ? 820 : 900) - rows * ch) / 2;
+  const pos = (i: number) => [gx + (i % cols) * cell + cell / 2, gy + Math.floor(i / cols) * ch + ch / 2 - 20];
+  const z = focus != null && zoomAt != null ? eInOut(prog(t, zoomAt, 0.6)) : 0;
+  const [fx, fy] = focus != null ? pos(focus) : [W / 2, H / 2];
+  const r = Math.min(cell, ch) * 0.3;
+  return (
+    <AbsoluteFill style={{ background: "#fbfaf6", overflow: "hidden" }}>
+      <AbsoluteFill style={{ transform: `translate(${(W / 2 - fx) * z}px, ${(H / 2 - 60 - fy) * z}px) scale(${1 + 1.4 * z})`, transformOrigin: `${fx}px ${fy}px` }}>
+        {title ? <div style={{ position: "absolute", left: 0, right: 0, top: 70, textAlign: "center", fontFamily: TITLE, fontSize: 92, color: "#111" }}><Marked text={title} color="#E3181E" /></div> : null}
+        {items.map((it, i) => {
+          const [x, y] = pos(i), on = focus === i, off = done.includes(i), p = eBack(prog(t, 0.04 * i, 0.25), 2);
+          return (
+            <div key={i} style={{ position: "absolute", left: x - cell / 2, top: y - r, width: cell, textAlign: "center", opacity: (off ? 0.35 : 1) * clamp(p * 2), transform: `scale(${(on ? 1.08 : 1) * p})` }}>
+              <div style={{ margin: "0 auto", width: 2 * r, height: 2 * r, borderRadius: r, background: ICON_BG[i % ICON_BG.length], border: `${on ? 10 : 6}px solid ${on ? "#111" : "#1b1b1f"}`,
+                boxShadow: on ? `0 0 0 8px ${KEY}` : "none", display: "flex", justifyContent: "center", alignItems: "center", fontSize: r * 1.05, lineHeight: 1, boxSizing: "border-box" }}>{it.icon}</div>
+              <div style={{ marginTop: 14, fontFamily: BODY, fontWeight: 900, fontSize: Math.min(44, r * 0.42), color: "#111", whiteSpace: "nowrap" }}><Marked text={it.label} color="#E3181E" /></div>
+              {off ? <div style={{ position: "absolute", left: cell / 2 + r * 0.45, top: -r * 0.1, fontSize: r * 0.8, color: "#1fa34a", fontWeight: 900, fontFamily: BODY }}>✓</div> : null}
+            </div>
+          );
+        })}
+        {circle != null ? (() => {
+          // around the icon and its name together
+          const [x, y] = pos(circle), q = eOut(prog(t, circleAt ?? 0.3, 0.5)), rx = cell * 0.5, ry = r + 62, L = Math.PI * (rx + ry) * 1.05;
+          return (
+            <svg width={W} height={H} style={{ position: "absolute", inset: 0, overflow: "visible" }}>
+              <ellipse cx={x} cy={y + 40} rx={rx} ry={ry} fill="none" stroke="#FF2A2A" strokeWidth={14} strokeLinecap="round" strokeDasharray={L} strokeDashoffset={L * (1 - q)} transform={`rotate(-6 ${x} ${y + 40})`} />
+            </svg>
+          );
+        })() : null}
+      </AbsoluteFill>
+    </AbsoluteFill>
+  );
+};
+
+/** a document on a dark background (a notice, a handover sheet, a rule list): the title, then each line at its step;
+ *  {word} marks red, [word] yellow highlighter */
+export const DocCard: React.FC<{ t: number; title?: string; lines: string[]; steps?: number[]; page?: string; paper?: string }> = ({ t, title, lines, steps = [], page, paper = "#f3eedf" }) => (
+  <AbsoluteFill style={{ justifyContent: "flex-start", alignItems: "center", paddingTop: 70 }}>
+    <div style={{ position: "relative", width: 1180, minHeight: 640, maxHeight: 820, overflow: "hidden", background: paper, borderRadius: 6, boxShadow: "0 30px 80px rgba(0,0,0,.6)",
+      padding: "56px 80px 70px", boxSizing: "border-box", transform: `rotate(-1.2deg) translateY(${20 * (1 - eOut(prog(t, 0, 0.5)))}px)`, opacity: prog(t, 0, 0.3),
+      backgroundImage: "repeating-linear-gradient(180deg, transparent 0 63px, rgba(60,80,120,.13) 63px 65px)" }}>
+      {title ? <div style={{ fontFamily: BODY, fontWeight: 900, fontSize: 58, color: "#1b1b1f", marginBottom: 26, borderBottom: "4px solid #1b1b1f", paddingBottom: 14 }}><Marked text={title} color="#FFE14D" /></div> : null}
+      {lines.map((l, i) => {
+        const o = prog(t, steps[i] ?? 0.5 + 0.9 * i, 0.3);
+        return (
+          <div key={i} style={{ fontFamily: BODY, fontWeight: 700, fontSize: 44, lineHeight: 1.45, color: "#26262b", opacity: o, transform: `translateX(${-14 * (1 - o)}px)`, wordBreak: "keep-all" }}>
+            <Marked text={l} color="#c79a00" />
+          </div>
+        );
+      })}
+      {page ? <div style={{ position: "absolute", right: 40, bottom: 22, fontFamily: BODY, fontWeight: 700, fontSize: 30, color: "#77736a" }}>{page}</div> : null}
+    </div>
+  </AbsoluteFill>
+);
