@@ -1,0 +1,922 @@
+{
+ "credit": "",
+ "titleStyle": "band",
+ "titleKey": "#FF3B3B",
+ "captionY": 1640,
+ "sources": {},
+ "music": {
+  "file": "music/hustle.mp3",
+  "gain": 0.13,
+  "start": 0
+ },
+ "sfx": [
+  [
+   "a",
+   "whoosh",
+   0.25
+  ],
+  [
+   "b",
+   "pop",
+   0.25
+  ],
+  [
+   "c",
+   "k_drop_002",
+   0.3
+  ],
+  [
+   "d",
+   "boing",
+   0.3
+  ],
+  [
+   "e.위험",
+   "k_error_003",
+   0.35
+  ],
+  [
+   "f",
+   "whoosh",
+   0.2
+  ],
+  [
+   "f.고속도로",
+   "ding",
+   0.25
+  ],
+  [
+   "g",
+   "siren",
+   0.22
+  ],
+  [
+   "g.정체",
+   "ding",
+   0.25
+  ],
+  [
+   "h",
+   "whoosh",
+   0.25
+  ],
+  [
+   "i",
+   "siren",
+   0.3
+  ],
+  [
+   "j",
+   "boing",
+   0.3
+  ],
+  [
+   "k.범칙금",
+   "coin",
+   0.35
+  ],
+  [
+   "l",
+   "whoosh",
+   0.2
+  ],
+  [
+   "l.여러분",
+   "pop",
+   0.2
+  ]
+ ],
+ "clips": [
+  {
+   "from": "a",
+   "label": "갓길 쌩",
+   "gfx": {
+    "type": "road",
+    "view": "top",
+    "place": "📍 고속도로",
+    "speed": 150,
+    "zoom": 1.05,
+    "steps": [
+     0,
+     1.2
+    ],
+    "road": "highway",
+    "lanes": 4,
+    "paint": [
+     {
+      "lane": 4,
+      "y": 300,
+      "text": "갓길"
+     },
+     {
+      "lane": 4,
+      "y": 900,
+      "text": "갓길"
+     }
+    ],
+    "cars": [
+     {
+      "lane": 1,
+      "y": 200,
+      "color": "#C9A7FF",
+      "mood": "sad",
+      "brake": true
+     },
+     {
+      "lane": 1,
+      "y": 520,
+      "color": "#FFD84D",
+      "mood": "sleep",
+      "brake": true
+     },
+     {
+      "lane": 1,
+      "y": 840,
+      "color": "#E8E8E8",
+      "mood": "sad",
+      "brake": true
+     },
+     {
+      "lane": 2,
+      "y": 320,
+      "color": "#B9F27C",
+      "mood": "sad",
+      "brake": true
+     },
+     {
+      "lane": 3,
+      "y": 180,
+      "color": "#FF9F45",
+      "mood": "neutral",
+      "kind": "truck",
+      "brake": true
+     },
+     {
+      "lane": 4,
+      "y": 950,
+      "color": "#FF5C5C",
+      "face": "#C9A7FF",
+      "mood": "laugh",
+      "tag": "빌런",
+      "fast": true,
+      "path": [
+       [
+        0,
+        4,
+        380,
+        0,
+        2.2
+       ]
+      ]
+     },
+     {
+      "lane": 2,
+      "y": 700,
+      "color": "#4DA3FF",
+      "face": "#FFD84D",
+      "mood": "sad",
+      "tag": "나",
+      "brake": true,
+      "to": "shock",
+      "toAt": 1
+     },
+     {
+      "lane": 3,
+      "y": 640,
+      "color": "#3FB27F",
+      "mood": "neutral",
+      "kind": "bus",
+      "brake": true
+     },
+     {
+      "lane": 3,
+      "y": 1010,
+      "color": "#FF9EBB",
+      "mood": "sad",
+      "brake": true
+     }
+    ]
+   }
+  },
+  {
+   "from": "b",
+   "label": "답이지",
+   "gfx": {
+    "type": "road",
+    "view": "top",
+    "speed": 900,
+    "zoom": 1.25,
+    "focus": 0,
+    "steps": [
+     0.05
+    ],
+    "say": {
+     "who": 0,
+     "text": "막히면 [갓길]이 답이지~"
+    },
+    "road": "highway",
+    "lanes": 4,
+    "paint": [
+     {
+      "lane": 4,
+      "y": 800,
+      "text": "갓길"
+     }
+    ],
+    "cars": [
+     {
+      "lane": 4,
+      "y": 560,
+      "color": "#FF5C5C",
+      "face": "#C9A7FF",
+      "mood": "smug",
+      "tag": "빌런",
+      "fast": true
+     },
+     {
+      "lane": 3,
+      "y": 420,
+      "color": "#E8E8E8",
+      "mood": "sad",
+      "brake": true
+     },
+     {
+      "lane": 3,
+      "y": 820,
+      "color": "#FF9EBB",
+      "mood": "sad",
+      "brake": true
+     }
+    ]
+   }
+  },
+  {
+   "from": "c",
+   "label": "줄 서서",
+   "gfx": {
+    "type": "road",
+    "view": "top",
+    "speed": 120,
+    "steps": [
+     0.05,
+     0.5
+    ],
+    "road": "highway",
+    "lanes": 4,
+    "paint": [
+     {
+      "lane": 4,
+      "y": 300,
+      "text": "갓길"
+     },
+     {
+      "lane": 4,
+      "y": 900,
+      "text": "갓길"
+     }
+    ],
+    "cars": [
+     {
+      "lane": 1,
+      "y": 200,
+      "color": "#C9A7FF",
+      "mood": "sad",
+      "brake": true
+     },
+     {
+      "lane": 1,
+      "y": 520,
+      "color": "#FFD84D",
+      "mood": "sleep",
+      "brake": true
+     },
+     {
+      "lane": 1,
+      "y": 840,
+      "color": "#E8E8E8",
+      "mood": "sad",
+      "brake": true
+     },
+     {
+      "lane": 2,
+      "y": 320,
+      "color": "#B9F27C",
+      "mood": "sad",
+      "brake": true
+     },
+     {
+      "lane": 3,
+      "y": 180,
+      "color": "#FF9F45",
+      "mood": "neutral",
+      "kind": "truck",
+      "brake": true
+     },
+     {
+      "lane": 2,
+      "y": 700,
+      "color": "#4DA3FF",
+      "face": "#FFD84D",
+      "mood": "sad",
+      "tag": "나",
+      "brake": true
+     },
+     {
+      "lane": 2,
+      "y": 1020,
+      "color": "#FF9EBB",
+      "mood": "sad",
+      "brake": true
+     },
+     {
+      "lane": 3,
+      "y": 640,
+      "color": "#3FB27F",
+      "mood": "neutral",
+      "kind": "bus",
+      "brake": true
+     },
+     {
+      "lane": 3,
+      "y": 1010,
+      "color": "#4DA3FF",
+      "mood": "sleep",
+      "brake": true
+     }
+    ]
+   }
+  },
+  {
+   "from": "d",
+   "label": "운전석",
+   "gfx": {
+    "type": "road",
+    "view": "cockpit",
+    "lanes": 4,
+    "road": "highway",
+    "speed": 80,
+    "steps": [
+     0.05,
+     0.05
+    ],
+    "me": {
+     "lane": 2,
+     "mood": "angry"
+    },
+    "say": {
+     "who": "me",
+     "text": "갓길은 [고장 났을 때] 쓰는 곳인데!"
+    },
+    "cars": [
+     {
+      "lane": 2,
+      "y": 620,
+      "color": "#B9F27C",
+      "mood": "sad",
+      "brake": true
+     },
+     {
+      "lane": 4,
+      "y": 520,
+      "color": "#FF5C5C",
+      "face": "#C9A7FF",
+      "mood": "laugh",
+      "path": [
+       [
+        0,
+        4,
+        120,
+        0,
+        1.6
+       ]
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "from": "e",
+   "label": "막아서기 금지",
+   "gfx": {
+    "type": "road",
+    "view": "top",
+    "speed": 150,
+    "steps": [
+     0.05,
+     0.3,
+     9,
+     0.6
+    ],
+    "big": "막아서면 [더 위험]",
+    "road": "highway",
+    "lanes": 4,
+    "paint": [
+     {
+      "lane": 4,
+      "y": 300,
+      "text": "갓길"
+     },
+     {
+      "lane": 4,
+      "y": 900,
+      "text": "갓길"
+     }
+    ],
+    "cars": [
+     {
+      "lane": 3,
+      "y": 560,
+      "color": "#4DA3FF",
+      "face": "#FFD84D",
+      "mood": "angry",
+      "tag": "나",
+      "to": "think",
+      "toAt": 2,
+      "brake": true
+     },
+     {
+      "lane": 2,
+      "y": 560,
+      "color": "#B9F27C",
+      "mood": "sad",
+      "brake": true
+     },
+     {
+      "lane": 3,
+      "y": 880,
+      "color": "#FF9EBB",
+      "mood": "sad",
+      "brake": true
+     }
+    ]
+   }
+  },
+  {
+   "from": "f",
+   "label": "법",
+   "gfx": {
+    "type": "road",
+    "view": "top",
+    "speed": 900,
+    "zoom": 1.15,
+    "steps": [
+     0.05
+    ],
+    "road": "highway",
+    "lanes": 4,
+    "signs": [
+     {
+      "x": 540,
+      "y": 110,
+      "text": "갓길 통행 금지",
+      "kind": "green",
+      "size": 150
+     }
+    ],
+    "paint": [
+     {
+      "lane": 4,
+      "y": 600,
+      "text": "갓길"
+     }
+    ],
+    "cars": [
+     {
+      "lane": 2,
+      "y": 620,
+      "color": "#4DA3FF",
+      "face": "#FFD84D",
+      "mood": "happy",
+      "tag": "나"
+     }
+    ]
+   }
+  },
+  {
+   "from": "f.고속도로",
+   "label": "고장 예외",
+   "gfx": {
+    "type": "road",
+    "view": "top",
+    "speed": 0,
+    "steps": [
+     0.05,
+     0.3,
+     9,
+     1.2
+    ],
+    "big": "[고장]일 때만",
+    "road": "highway",
+    "lanes": 4,
+    "paint": [
+     {
+      "lane": 4,
+      "y": 300,
+      "text": "갓길"
+     }
+    ],
+    "cars": [
+     {
+      "lane": 4,
+      "y": 560,
+      "color": "#E8E8E8",
+      "mood": "sad",
+      "brake": true,
+      "blink": "R"
+     }
+    ]
+   }
+  },
+  {
+   "from": "g",
+   "label": "긴급차 예외",
+   "gfx": {
+    "type": "road",
+    "view": "top",
+    "speed": 900,
+    "steps": [
+     0.05,
+     0.3
+    ],
+    "road": "highway",
+    "lanes": 4,
+    "paint": [
+     {
+      "lane": 4,
+      "y": 800,
+      "text": "갓길"
+     }
+    ],
+    "cars": [
+     {
+      "lane": 4,
+      "y": 900,
+      "kind": "police",
+      "sirenAt": 0,
+      "path": [
+       [
+        0,
+        4,
+        300,
+        0,
+        1.6
+       ]
+      ]
+     },
+     {
+      "lane": 3,
+      "y": 500,
+      "color": "#B9F27C",
+      "mood": "neutral"
+     },
+     {
+      "lane": 2,
+      "y": 700,
+      "color": "#E8E8E8",
+      "mood": "neutral"
+     }
+    ]
+   }
+  },
+  {
+   "from": "g.정체",
+   "label": "신호 허락",
+   "gfx": {
+    "type": "road",
+    "view": "top",
+    "speed": 200,
+    "steps": [
+     0.05,
+     0.3,
+     9,
+     0.4
+    ],
+    "big": "신호·경찰 [허락] 땐 OK",
+    "road": "highway",
+    "lanes": 4,
+    "signs": [
+     {
+      "x": 540,
+      "y": 980,
+      "text": "갓길 차로 운영 중",
+      "kind": "green",
+      "size": 140
+     }
+    ],
+    "cars": [
+     {
+      "lane": 4,
+      "y": 700,
+      "color": "#C9A7FF",
+      "mood": "happy"
+     },
+     {
+      "lane": 3,
+      "y": 500,
+      "color": "#FFD84D",
+      "mood": "neutral",
+      "brake": true
+     }
+    ]
+   }
+  },
+  {
+   "from": "h",
+   "label": "끝까지",
+   "gfx": {
+    "type": "road",
+    "view": "top",
+    "speed": 1100,
+    "steps": [
+     0.1,
+     1.0
+    ],
+    "zoom": 1.1,
+    "focus": 0,
+    "road": "highway",
+    "lanes": 4,
+    "paint": [
+     {
+      "lane": 4,
+      "y": 300,
+      "text": "갓길"
+     },
+     {
+      "lane": 4,
+      "y": 900,
+      "text": "갓길"
+     }
+    ],
+    "cars": [
+     {
+      "lane": 4,
+      "y": 700,
+      "color": "#FF5C5C",
+      "face": "#C9A7FF",
+      "mood": "laugh",
+      "tag": "빌런",
+      "fast": true,
+      "to": "shock",
+      "toAt": 1,
+      "path": [
+       [
+        0,
+        4,
+        520,
+        0,
+        1.0
+       ]
+      ]
+     },
+     {
+      "lane": 3,
+      "y": 500,
+      "color": "#E8E8E8",
+      "mood": "sad",
+      "brake": true
+     }
+    ]
+   }
+  },
+  {
+   "from": "i",
+   "label": "경찰 대기",
+   "gfx": {
+    "type": "road",
+    "view": "top",
+    "speed": 500,
+    "stopAt": 1,
+    "steps": [
+     0.05,
+     0.9,
+     1.0
+    ],
+    "zoom": [
+     1.2,
+     1.3
+    ],
+    "focus": 1,
+    "road": "highway",
+    "lanes": 4,
+    "say": {
+     "who": 1,
+     "text": "갓길로 오셨죠? [여기 세우세요]."
+    },
+    "sayAt": 2,
+    "cars": [
+     {
+      "lane": 4,
+      "y": 900,
+      "color": "#FF5C5C",
+      "face": "#C9A7FF",
+      "mood": "shock",
+      "brake": 1,
+      "path": [
+       [
+        0,
+        4,
+        620,
+        0,
+        0.9
+       ]
+      ]
+     },
+     {
+      "lane": 4,
+      "y": 260,
+      "kind": "police",
+      "sirenAt": 0,
+      "brake": true
+     }
+    ]
+   }
+  },
+  {
+   "from": "j",
+   "label": "억울",
+   "gfx": {
+    "type": "road",
+    "view": "top",
+    "speed": 0,
+    "zoom": 1.3,
+    "focus": 0,
+    "steps": [
+     0.05
+    ],
+    "say": {
+     "who": 0,
+     "text": "왜 [하필] 여기 서 있는 건데…"
+    },
+    "road": "highway",
+    "lanes": 4,
+    "cars": [
+     {
+      "lane": 4,
+      "y": 620,
+      "color": "#FF5C5C",
+      "face": "#C9A7FF",
+      "mood": "sad",
+      "brake": true
+     },
+     {
+      "lane": 4,
+      "y": 260,
+      "kind": "police"
+     }
+    ]
+   }
+  },
+  {
+   "from": "k",
+   "label": "범칙금",
+   "gfx": {
+    "type": "road",
+    "view": "top",
+    "speed": 0,
+    "steps": [
+     0,
+     0,
+     0,
+     0.3
+    ],
+    "ticket": {
+     "title": "범칙금 납부 통고",
+     "lines": [
+      "고속도로 갓길 통행",
+      "승용차 [6만 원]"
+     ]
+    },
+    "road": "highway",
+    "lanes": 4,
+    "paint": [
+     {
+      "lane": 4,
+      "y": 1150,
+      "text": "갓길"
+     }
+    ],
+    "cars": [
+     {
+      "lane": 4,
+      "y": 520,
+      "color": "#FF5C5C",
+      "face": "#C9A7FF",
+      "mood": "cry",
+      "brake": true
+     },
+     {
+      "lane": 4,
+      "y": 200,
+      "kind": "police"
+     }
+    ]
+   }
+  },
+  {
+   "from": "l",
+   "label": "더 빨랐다",
+   "gfx": {
+    "type": "road",
+    "view": "top",
+    "speed": 700,
+    "steps": [
+     0.05,
+     0.5
+    ],
+    "road": "highway",
+    "lanes": 4,
+    "paint": [
+     {
+      "lane": 4,
+      "y": 300,
+      "text": "갓길"
+     },
+     {
+      "lane": 4,
+      "y": 900,
+      "text": "갓길"
+     }
+    ],
+    "cars": [
+     {
+      "lane": 2,
+      "y": 700,
+      "color": "#4DA3FF",
+      "face": "#FFD84D",
+      "mood": "happy",
+      "tag": "나",
+      "to": "laugh",
+      "toAt": 1
+     },
+     {
+      "lane": 1,
+      "y": 380,
+      "color": "#B9F27C",
+      "mood": "happy"
+     },
+     {
+      "lane": 4,
+      "y": 240,
+      "color": "#FF5C5C",
+      "face": "#C9A7FF",
+      "mood": "cry",
+      "brake": true,
+      "path": [
+       [
+        0,
+        4,
+        1300,
+        0,
+        2.2
+       ]
+      ]
+     },
+     {
+      "lane": 4,
+      "y": -100,
+      "kind": "police",
+      "path": [
+       [
+        0,
+        4,
+        960,
+        0,
+        2.2
+       ]
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "from": "l.여러분",
+   "label": "질문",
+   "gfx": {
+    "type": "road",
+    "view": "cockpit",
+    "lanes": 4,
+    "road": "highway",
+    "speed": 700,
+    "steps": [
+     0.05,
+     0.1,
+     0.5
+    ],
+    "me": {
+     "lane": 2,
+     "mood": "happy",
+     "to": "laugh",
+     "toAt": 2
+    },
+    "cars": [
+     {
+      "lane": 2,
+      "y": 300,
+      "color": "#E8E8E8",
+      "mood": "happy"
+     }
+    ]
+   }
+  }
+ ]
+}
