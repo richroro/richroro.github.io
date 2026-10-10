@@ -2507,3 +2507,69 @@ python3 voice_edge.py teuk1 && python3 prep.py teuk1 && ./render.sh teuk1 final/
   Music: "Hyperfun" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
   ```
 - 해시태그: #공감 #특 #단톡방 #친구공감 #공감애니
+
+## 역대급 랭킹 TOP5 쇼츠 (`politics/top1`~`top4`, 군대 아님)
+
+「역대급 ○○ 랭킹 TOP5」형(오락 쇼츠 중 조회수 중앙값 410만, `research/research-fun.md`)을 **쓸 수 있는 영상만으로** 만든 네 편입니다. 내레이션 없음, 음악 + 한 줄 자막. 순위는 편집자 선정이고 공식 순위가 아닙니다. 1위가 끝나면 바로 끊겨 5위로 다시 돌아갑니다(`"tail": 0`). 장소·장면마다 두 컷(3.4초 안팎, 두 번째는 다른 구간이나 더 크게 자른 컷)이라 한 장면이 4초를 넘지 않습니다. 사람·얼굴이 나오는 장면은 쓰지 않았습니다(top2만 손).
+
+| id | 제목(화면) | 길이 | 5위 → 1위 | 음악 |
+| --- | --- | --- | --- | --- |
+| `top1` | 역대급 소름 돋는 백룸 같은 공간 / TOP5 (몇 위가 제일 소름?) | 35.1초 | 한밤의 텅 빈 수영장 · 끝이 안 보이는 주차장 · 끝없는 지하 에스컬레이터 · 아무도 없는 쇼핑몰 복도 · 불 꺼진 병원 복도 | Dark Fog |
+| `top2` | 역대급 만족스러운 순간 / TOP5 (몇 위가 제일 좋음?ㅋㅋ) | 35.1초 | 구슬 슬라임 주무르기 · 초코 케이크 단면 · 연필심에 하트 조각 · 물감 흘러내리기 · 키네틱 샌드 자르기 | Monkeys Spinning Monkeys |
+| `top3` | 역대급 신기한 자연현상 / TOP5 (몇 위가 제일 신기?ㄷㄷ) | 37.4초 | 세계 최대 활동 간헐천 · 바다 밑의 호수 · 알래스카 오로라 · 구름에 잠긴 그랜드캐니언 · 최고 400m 용암 분수 | Floating Cities |
+| `top4` | 우주에서 찍힌 소름 돋는 장면 / TOP5 (몇 위가 제일 소름?) | 34.6초 | 우주에서 본 번개 폭풍 · 발밑에 깔린 오로라 · 지구에 드리운 달 그림자 · 지구 위로 떠오른 혜성 · 달 뒤로 지는 지구 | Lightless Dawn |
+
+```bash
+./fetch.sh                                                   # "Dark Fog"(top1) 포함
+MEDIA=$PWD/media python3 politics/prep_split.py top1         # 원본: media/top1~top4/*.mp4 (저장소에 없음, 각 .json의 주소로 다시 받기)
+./render.sh top1 final/top1.mp4                              # top3·top4 보관본은 이어서 CRF 22로 다시 압축(30MB 이하)
+python3 qa_review.py top1                                    # 네 편 모두 FAIL 0, WARN 0
+```
+
+- 레이아웃: `"titleStyle": "band"`, 정사각 화면에 `single` 크롭, 자막 `"captionY": 1380`, 그 아래 순위표(`rank`, 안 나온 순위는 "???", 지금 순위는 노랑). 순위가 바뀔 때 흰 번쩍임 + “○위” 노란 스티커 + `whoosh`. 첫 프레임에 제목·순위표·5위 영상이 함께 보입니다. 원본 소리는 모두 껐습니다(`audio: 0`; 음악·잡음이 섞인 원본이 있어서).
+- top1의 “백룸”은 장르 이름으로만 썼고, 원조 백룸 사진이나 위키 이미지는 쓰지 않았습니다. 영상은 모두 실제 공간의 Pexels 영상이며 어둡게·비네트만 더했습니다(`vf`). 수영장 시계는 21시 28분이라 자막을 “밤 9시 반”으로 적었습니다.
+- top4의 ISS 장면은 NASA 웹 영상(1024×768)이 흐려서, NASA ‘Gateway to Astronaut Photography’의 원본 사진(4256×2832)을 받아 우리가 다시 타임랩스로 이었습니다(사진 번호는 아래). 1위는 NASA 사진 한 장(art002e021278)에 천천히 다가가는 화면입니다. 브리프의 “우주에서 본 로켓 발사”는 쓸 만한 NASA 영상이 없어(ISS에서 찍은 소유스 발사는 연기 자국 사진뿐) 혜성 장면으로 바꿨습니다.
+
+### 영상과 라이선스 (원본 페이지·파일 주소·크레딧·쓴 구간: `media/top*/*.json`, 각 `edit.json`의 `sources`)
+- **Pexels License** (상업적 이용·수정 가능, 출처 표기 선택, 식별 가능한 인물 비하·보증 암시 금지 — 각 영상 페이지와 https://www.pexels.com/license/ 확인)
+  - top1: [6011926](https://www.pexels.com/video/an-indoor-swimming-pool-used-in-training-6011926/) Tima Miroshnichenko, [5972198](https://www.pexels.com/video/view-of-an-empty-indoor-parking-space-5972198/) gusat silviu, [31053763](https://www.pexels.com/video/empty-underground-escalator-in-urban-setting-31053763/) Yunus Kılıç, [15365449](https://www.pexels.com/video/an-empty-shopping-mall-corridor-with-flickering-lights-15365449/) Matthias Groeneveld, [29241126](https://www.pexels.com/video/dimly-lit-hospital-corridor-with-gurney-29241126/) SN.CHE
+  - top2: [6150670](https://www.pexels.com/video/person-squishing-a-purple-slime-with-beads-6150670/) cottonbro studio, [3326577](https://www.pexels.com/video/slicing-the-cake-in-slow-motion-3326577/) Taryn Elliott, [30324202](https://www.pexels.com/video/precision-crafting-of-pink-pencil-sculpture-30324202/) Vũ Vũ, [5908184](https://www.pexels.com/video/pouring-paint-into-a-shape-5908184/) Mike Murray
+- **Pixabay Content License**: top2 1위 [키네틱 샌드 144459](https://pixabay.com/videos/kinetic-sand-sand-cutting-asmr-144459/) (u_5l867xgjyb)
+- **미국 연방기관 퍼블릭 도메인 (17 U.S.C. §105)**
+  - top3: [Steamboat Geyser](https://www.nps.gov/media/video/view.htm?id=E82CA7B7-2638-42F3-9480-5280D003D608) NPS/Jacob W. Frank(2018.9.17) · [브라인 풀](https://archive.oceanexplorer.noaa.gov/okeanos/explorations/ex1711/dailyupdates/media/video/dive10-brinepool/brinepool.html) NOAA Office of Ocean Exploration and Research(2017, 멕시코만) · [데날리 오로라](https://www.nps.gov/media/video/view.htm?id=7207C6A8-ED77-4A35-B3F8-4F09E00B0B86) NPS/Jacob W. Frank(원본 배경음악은 별도 저작물이라 소리 없이 영상만) · [그랜드캐니언 구름 바다](https://www.nps.gov/media/video/view.htm?id=8564EE61-9CF1-4B78-A32F-546EEA5230E8) NPS/M. Quinn(2015.1.28) · [킬라우에아 43번째 분출](https://www.usgs.gov/media/videos/march-10-2026-video-kilauea-episode-43-lava-fountaining) USGS/M. Patrick(2026.3.10)
+  - top4: ISS Crew Earth Observations (Image Science & Analysis Laboratory, NASA Johnson Space Center) — [번개](https://eol.jsc.nasa.gov/BeyondThePhotography/CrewEarthObservationsVideos/#lightningstorms_iss_20120218) ISS030-E-104579~104672(2012.2.18, 우간다→잔지바르) · [남극 오로라](https://eol.jsc.nasa.gov/BeyondThePhotography/CrewEarthObservationsVideos/#aurora_iss_20110917) ISS029-E-5985~6095(2011.9.17, 인도양) · [일식 그림자](https://eol.jsc.nasa.gov/BeyondThePhotography/CrewEarthObservationsVideos/#solareclipse_iss_20120520) ISS031-E-56780~57000(2012.5.20) · [러브조이 혜성](https://eol.jsc.nasa.gov/BeyondThePhotography/CrewEarthObservationsVideos/#lovejoy_iss_20111221) ISS030-E-14287~14400(2011.12.21) · [Earthset art002e021278](https://images.nasa.gov/details/art002e021278) NASA(아르테미스 2호, 2026.4.6)
+  - 화면에는 “영상: Pexels/Pixabay/NASA”, “사진: NASA”, “영상: 미국 국립공원관리청(NPS)” 등 짧은 출처만 적었습니다. 기관 로고·타이틀 카드는 쓰지 않았습니다.
+- 음악: "Dark Fog", "Monkeys Spinning Monkeys", "Floating Cities", "Lightless Dawn" Kevin MacLeod (incompetech.com), CC BY 4.0
+
+### 자막 속 사실과 출처
+- 스팀보트 간헐천은 세계에서 가장 높이 솟는 활동 간헐천, 큰 분출은 300피트(91m) 이상 — [NPS Yellowstone](https://www.nps.gov/yell/learn/nature/steamboat-geyser.htm)
+- 브라인 풀은 사실상 바닷속 호수, 염도가 주변 바닷물의 3~8배 — [NOAA Ocean Exploration EX1711](https://archive.oceanexplorer.noaa.gov/okeanos/explorations/ex1711/dailyupdates/media/video/dive10-brinepool/brinepool.html)
+- 데날리 오로라: 영상 페이지(NPS Denali). 그랜드캐니언: 찬 공기가 따뜻한 공기층 아래 갇히는 드문 ‘지면 역전’이 협곡을 구름으로 채움 — [DOI/NPS](https://www.doi.gov/employees/news/nps-grand-canyon-fills-with-sea-of-clouds)
+- 킬라우에아 43번째 분출(2026.3.10) 최고 분수 높이는 두 분출구 모두 “적어도 1,300피트(400m)로 추정” — [USGS HVO](https://www.usgs.gov/observatories/hvo/news/photo-video-chronology-march-10-11-2026-kilauea-episode-43-eruption-and) (화면: “최고 400m 이상 (추정)”)
+- top4는 각 NASA 페이지 설명 그대로: 2012.2.18 중앙아프리카 번개 폭풍 / 2011.9.17 남극 오로라(인도양 상공) / 2012.5.20 동아시아 금환일식 때 구름 위 달 그림자 / 2011.12.21 러브조이 혜성 / 2026.4.6 아르테미스 2호 승무원이 찍은 Earthset(달 뒤로 지는 지구)
+
+### 업로드 문구
+
+**top1** — 역대급 소름 돋는 백룸 같은 공간 TOP5 ㄷㄷ
+> 아무도 없는 밤 수영장, 끝이 안 보이는 지하주차장, 끝없는 지하 에스컬레이터, 사람 하나 없는 쇼핑몰 복도, 그리고 불 꺼진 병원 복도까지. ‘백룸’ 느낌 나는 실제 공간 TOP5! 다들 몇 위가 제일 소름 돋나요? 순위는 저희 마음대로 고른 것입니다.
+> 영상: Pexels — Tima Miroshnichenko, gusat silviu, Yunus Kılıç, Matthias Groeneveld, SN.CHE
+> 음악: "Dark Fog" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
+> #백룸 #리미널스페이스 #소름 #랭킹 #shorts
+
+**top2** — 역대급 만족스러운 순간 TOP5 ㅋㅋ
+> 구슬 슬라임, 초코 케이크 단면, 연필심 하트 조각, 흘러내리는 물감, 그리고 키네틱 샌드 자르기까지! 보기만 해도 속이 시원한 순간 TOP5. 다들 몇 위가 제일 좋아요? 순위는 저희 마음대로 고른 것입니다.
+> 영상: Pexels — cottonbro studio, Taryn Elliott, Vũ Vũ, Mike Murray · Pixabay — u_5l867xgjyb
+> 음악: "Monkeys Spinning Monkeys" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
+> #만족 #ASMR #키네틱샌드 #힐링 #shorts
+
+**top3** — 역대급 신기한 자연현상 TOP5 ㄷㄷ
+> 91m 넘게 치솟는 세계 최대 활동 간헐천, 바닷속에 있는 호수(브라인 풀), 알래스카 데날리의 오로라, 구름 바다에 잠긴 그랜드캐니언, 그리고 2026년 3월 최고 400m(추정)까지 솟은 하와이 킬라우에아 용암 분수까지. 다들 몇 위가 제일 신기해요? 순위는 저희 마음대로 고른 것입니다.
+> 영상: 미국 국립공원관리청(NPS) — Jacob W. Frank, M. Quinn · 미국 해양대기청(NOAA Ocean Exploration) · 미국 지질조사국(USGS) — M. Patrick (각 기관이 이 영상을 보증하거나 후원하지 않습니다.)
+> 음악: "Floating Cities" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
+> #자연현상 #용암 #오로라 #신기한영상 #shorts
+
+**top4** — 우주에서 찍힌 소름 돋는 장면 TOP5 ㄷㄷ
+> 국제우주정거장(ISS)에서 내려다본 번개 폭풍과 오로라, 2012년 금환일식 때 구름 위에 드리운 달 그림자, 지구 위로 떠오른 러브조이 혜성, 그리고 2026년 4월 아르테미스 2호 승무원이 찍은 ‘달 뒤로 지는 지구’까지. 전부 실제 사진·영상입니다. 다들 몇 위가 제일 소름?
+> 영상·사진: NASA (ISS Crew Earth Observations, Image Science & Analysis Laboratory, NASA Johnson Space Center · Artemis II) (NASA가 이 영상을 보증하거나 후원하지 않습니다.)
+> 음악: "Lightless Dawn" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
+> #우주 #NASA #소름 #지구 #shorts
