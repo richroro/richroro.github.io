@@ -1,30 +1,29 @@
 {
- "titleStyle": "band",
- "titleKey": "#ff2a2a",
- "captionY": 1640,
- "credit": "영상: Pexels",
+ "frame": "full",
+ "titleStyle": "riddle",
+ "titleKey": "#E8141B",
+ "capLook": "plain",
+ "captionY": 1200,
+ "credit": "",
  "sources": {
+  "px4354915": {
+   "file": "px4354915.mp4",
+   "label": "Pexels video 4354915 by Ahmet Akpolat (Pexels License)",
+   "url": "https://www.pexels.com/video/a-person-pressing-an-elevator-button-4354915/",
+   "file_url": "https://www.pexels.com/download/video/4354915/",
+   "license": "Pexels License",
+   "creator": "Ahmet Akpolat"
+  },
   "px5843879": {
    "file": "px5843879.mp4",
-   "credit": "영상: Pexels",
    "label": "Pexels video 5843879 by Erik Mclean (Pexels License)",
    "url": "https://www.pexels.com/video/an-empty-staircase-5843879/",
    "file_url": "https://www.pexels.com/download/video/5843879/",
    "license": "Pexels License",
    "creator": "Erik Mclean"
   },
-  "px6010700": {
-   "file": "px6010700.mp4",
-   "credit": "영상: Pexels",
-   "label": "Pexels video 6010700 by Tima Miroshnichenko (Pexels License)",
-   "url": "https://www.pexels.com/video/an-empty-stairs-6010700/",
-   "file_url": "https://www.pexels.com/download/video/6010700/",
-   "license": "Pexels License",
-   "creator": "Tima Miroshnichenko"
-  },
   "px3134591": {
    "file": "px3134591.mp4",
-   "credit": "영상: Pexels",
    "label": "Pexels video 3134591 by Caleb Oquendo (Pexels License)",
    "url": "https://www.pexels.com/video/a-lighted-exit-sign-for-direction-3134591/",
    "file_url": "https://www.pexels.com/download/video/3134591/",
@@ -33,7 +32,6 @@
   },
   "px9152640": {
    "file": "px9152640.mp4",
-   "credit": "영상: Pexels",
    "label": "Pexels video 9152640 by Erik Mclean (Pexels License)",
    "url": "https://www.pexels.com/video/high-angle-shot-of-stairs-9152640/",
    "file_url": "https://www.pexels.com/download/video/9152640/",
@@ -42,7 +40,6 @@
   },
   "px12096163": {
    "file": "px12096163.mp4",
-   "credit": "영상: Pexels",
    "label": "Pexels video 12096163 by Sasha Poberailo (Pexels License)",
    "url": "https://www.pexels.com/video/smoke-in-staircase-12096163/",
    "file_url": "https://www.pexels.com/download/video/12096163/",
@@ -51,7 +48,6 @@
   },
   "px39024320": {
    "file": "px39024320.mp4",
-   "credit": "영상: Pexels",
    "label": "Pexels video 39024320 by Alef Morais (Pexels License)",
    "url": "https://www.pexels.com/video/warmly-lit-wooden-stairs-in-modern-interior-39024320/",
    "file_url": "https://www.pexels.com/download/video/39024320/",
@@ -60,16 +56,22 @@
   },
   "px5986347": {
    "file": "px5986347.mp4",
-   "credit": "영상: Pexels",
    "label": "Pexels video 5986347 by Pat Whelen (Pexels License)",
    "url": "https://www.pexels.com/video/high-angle-view-of-a-circular-staircase-5986347/",
    "file_url": "https://www.pexels.com/download/video/5986347/",
    "license": "Pexels License",
    "creator": "Pat Whelen"
   },
+  "px6010700": {
+   "file": "px6010700.mp4",
+   "label": "Pexels video 6010700 by Tima Miroshnichenko (Pexels License)",
+   "url": "https://www.pexels.com/video/an-empty-stairs-6010700/",
+   "file_url": "https://www.pexels.com/download/video/6010700/",
+   "license": "Pexels License",
+   "creator": "Tima Miroshnichenko"
+  },
   "px4990438": {
    "file": "px4990438.mp4",
-   "credit": "영상: Pexels",
    "label": "Pexels video 4990438 by Pavel Danilyuk (Pexels License)",
    "url": "https://www.pexels.com/video/stairs-inside-the-old-building-4990438/",
    "file_url": "https://www.pexels.com/download/video/4990438/",
@@ -78,7 +80,6 @@
   },
   "px7644222": {
    "file": "px7644222.mp4",
-   "credit": "영상: Pexels",
    "label": "Pexels video 7644222 by Yaroslav Shuraev (Pexels License)",
    "url": "https://www.pexels.com/video/an-exit-signage-at-the-building-7644222/",
    "file_url": "https://www.pexels.com/download/video/7644222/",
@@ -88,26 +89,28 @@
  },
  "clips": [
   {
-   "src": "px5843879",
+   "src": "px4354915",
    "from": "a",
+   "in": 1.0,
+   "zoom": [
+    1.0,
+    1.07
+   ],
+   "audio": 0,
+   "credit": "",
+   "label": "버튼을 누르는 손"
+  },
+  {
+   "src": "px5843879",
+   "from": "a.엘리베이터",
    "in": 0.0,
    "zoom": [
     1.0,
     1.07
    ],
    "audio": 0,
+   "credit": "",
    "label": "비상계단"
-  },
-  {
-   "src": "px6010700",
-   "from": "a.열두",
-   "in": 2.0,
-   "zoom": [
-    1.0,
-    1.07
-   ],
-   "audio": 0,
-   "label": "어두운 계단"
   },
   {
    "src": "px3134591",
@@ -118,6 +121,7 @@
     1.07
    ],
    "audio": 0,
+   "credit": "",
    "label": "비상구 표시"
   },
   {
@@ -129,6 +133,7 @@
     1.07
    ],
    "audio": 0,
+   "credit": "",
    "label": "계단"
   },
   {
@@ -140,18 +145,8 @@
     1.07
    ],
    "audio": 0,
+   "credit": "",
    "label": "어두운 계단"
-  },
-  {
-   "src": "px5843879",
-   "from": "c.내가",
-   "in": 3.0,
-   "zoom": [
-    1.0,
-    1.07
-   ],
-   "audio": 0,
-   "label": "내려가는 계단"
   },
   {
    "src": "px39024320",
@@ -162,6 +157,7 @@
     1.07
    ],
    "audio": 0,
+   "credit": "",
    "label": "켜진 불"
   },
   {
@@ -173,18 +169,32 @@
     1.07
    ],
    "audio": 0,
+   "credit": "",
    "label": "아래층"
   },
   {
    "src": "px5986347",
-   "from": "d.끝까지",
+   "from": "d.아홉",
    "in": 3.0,
    "zoom": [
     1.0,
     1.07
    ],
    "audio": 0,
+   "credit": "",
    "label": "나선 계단"
+  },
+  {
+   "src": "px6010700",
+   "from": "d.꼭",
+   "in": 2.0,
+   "zoom": [
+    1.0,
+    1.07
+   ],
+   "audio": 0,
+   "credit": "",
+   "label": "어두운 계단"
   },
   {
    "src": "px4990438",
@@ -195,17 +205,19 @@
     1.07
    ],
    "audio": 0,
+   "credit": "",
    "label": "1층"
   },
   {
    "src": "px7644222",
-   "from": "e.일",
+   "from": "e.잡는",
    "in": 5.0,
    "zoom": [
     1.0,
     1.07
    ],
    "audio": 0,
+   "credit": "",
    "label": "비상구"
   },
   {
@@ -217,6 +229,7 @@
     1.15
    ],
    "audio": 0,
+   "credit": "",
    "label": "등 뒤"
   },
   {
@@ -228,6 +241,7 @@
     1.2
    ],
    "audio": 0,
+   "credit": "",
    "label": "2층 불"
   },
   {
@@ -239,29 +253,8 @@
     1.25
    ],
    "audio": 0,
+   "credit": "",
    "label": "위층 어둠"
-  },
-  {
-   "src": "px5843879",
-   "from": "end",
-   "in": 0.5,
-   "zoom": [
-    1.06,
-    1.14
-   ],
-   "audio": 0,
-   "label": "비상계단"
-  },
-  {
-   "src": "px3134591",
-   "from": "end.정답은",
-   "in": 5.0,
-   "zoom": [
-    1.0,
-    1.07
-   ],
-   "audio": 0,
-   "label": "비상구 표시"
   }
  ],
  "stickers": [],
@@ -277,14 +270,14 @@
    0.6
   ],
   [
-   "g",
+   "f.이",
    "heartbeat",
-   0.7
+   0.6
   ],
   [
-   "end",
+   "g",
    "k_glitch_002",
-   0.35
+   0.3
   ]
  ],
  "flashes": [
