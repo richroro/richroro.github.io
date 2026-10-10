@@ -12,18 +12,18 @@ from shots import PLAN  # noqa: E402
 
 LEAD = 0.6          # silence before the first word
 TITLE = 3.6         # the title card after the prologue
-CH_LEAD = 1.3       # from a chapter's start (dip to black, chapter card) to its first word
+CH_LEAD = 1.1       # from a chapter's start (dip to black, chapter card) to its first word
 TAIL = 6.0          # after the last word: hold, then the end card
 MAXCAP = 28         # characters in one caption line
 # pictures shown in their own colours; everything else is a print or drawing on paper and gets a warm, dark grade
 COLOUR = {"nuijen_storm", "willaerts_wreck", "lairesse_calypso", "lairesse_mercury", "jordaens_nausicaa", "sandrart_nausicaa",
           "rubens_circe", "rubens_episodes", "ducros_coast", "ducros_scilla", "mignard_sirens", "vianen_tazza"}
 # the YouTube chapters (and the on-screen chapter cards): scenes grouped so a chapter is about 1-1.5 minutes
-GROUPS = [("prologue", "10년 중 8년"), ("map", "트로이에서 이타카까지"), ("lotus", "집을 잊게 하는 열매"),
-          ("cyclops", "내 이름은 아무도 아니다"), ("name", "한 번의 외침"), ("wind", "수평선에 보인 고향"),
-          ("circe", "1년을 잊은 사람"), ("underworld", "같은 예언"), ("sirens", "알고도 지나가는 법"),
+GROUPS = [("prologue", "10년 중 8년"), ("map", "900km도 안 되는 길"), ("lotus", "집을 잊게 하는 열매"),
+          ("cyclops", "내 이름은 \u2018아무도 아니\u2019"), ("name", "한 번의 외침, 네 줄의 저주"), ("wind", "열흘째, 고향이 보였다"),
+          ("circe", "바다는 아무 짓도 하지 않았다"), ("underworld", "같은 예언"), ("sirens", "말하지 않은 여섯 명"),
           ("cattle", "두 번째 잠"), ("calypso", "늙지 않는 7년"), ("raft", "열여드레째의 폭풍"), ("ship", "세 번째 잠"),
-          ("nobody", "늙은 개 한 마리"), ("reason", "진짜 이유"), ("bed", "움직이지 않는 침대")]
+          ("nobody", "아무도 알아보지 못했다"), ("reason", "진짜 이유"), ("bed", "아무도 옮길 수 없는 침대")]
 
 def caption_chunks(text, words, dur):
     """split a line into caption pieces of at most MAXCAP characters and time each from the word boundaries"""
@@ -112,7 +112,7 @@ def main():
             else:
                 spec.update(sh[2] if len(sh) > 2 else {})
             shots.append(spec)
-        t = cend - 0.5 + 1.2  # chapter gap
+        t = cend - 0.5 + 0.9  # chapter gap
     end_voice = lines[-1]["t"] + lines[-1]["dur"]
     total = end_voice + TAIL
     shots.append({"kind": "end", "t0": round(end_voice + 2.0, 3)})

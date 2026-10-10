@@ -9,14 +9,14 @@ V=$1; W=${WORK:-out/odyssey}; OUT=final/odyssey.mp4
 BX=${CHROME:-/opt/pw-browsers/chromium_headless_shell-1194/chrome-linux/headless_shell}
 mkdir -p "$W" final
 cp longform/odyssey/edit.json public/odyssey/edit.json
-# pictures in 5000-frame pieces (a crashed browser costs one piece, and a rerun skips the pieces already there)
+# pictures in 2000-frame pieces (a crashed browser costs one piece, and a rerun skips the pieces already there)
 FR=$(python3 -c "import json,math; print(math.ceil(json.load(open('public/odyssey/edit.json'))['duration']*30))")
 : > "$W/pieces.txt"
-for ((a = 0; a < FR; a += 5000)); do
-  b=$(( a + 4999 < FR - 1 ? a + 4999 : FR - 1 )); P=$(printf "piece_%05d.mp4" "$a")
+for ((a = 0; a < FR; a += 2000)); do
+  b=$(( a + 1999 < FR - 1 ? a + 1999 : FR - 1 )); P=$(printf "piece_%05d.mp4" "$a")
   for try in 1 2 3; do
     [ -s "$W/$P" ] && break
-    npx remotion render src/index.ts odyssey "$W/$P.tmp.mp4" --frames="$a-$b" --browser-executable="$BX" --concurrency="${CONC:-3}" --crf=17 --muted --log=error \
+    timeout 1500 npx remotion render src/index.ts odyssey "$W/$P.tmp.mp4" --frames="$a-$b" --browser-executable="$BX" --concurrency="${CONC:-3}" --crf=17 --muted --log=error \
       && mv "$W/$P.tmp.mp4" "$W/$P" || echo "piece $a failed (try $try)"
   done
   [ -s "$W/$P" ] || { echo "piece $a failed"; exit 1; }
