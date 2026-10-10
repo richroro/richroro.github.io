@@ -1,0 +1,421 @@
+{
+ "src": "top4/iss_lightning.mp4",
+ "title": [
+  "우주에서 찍힌 소름 돋는 장면",
+  "[TOP5] (몇 위가 제일 소름?)"
+ ],
+ "titleStyle": "band",
+ "credit": "영상: NASA",
+ "panels": [],
+ "stickers": [
+  {
+   "text": "5위",
+   "from": 0.0,
+   "to": 1.4,
+   "x": 130,
+   "y": 500,
+   "rot": -4,
+   "bg": "#FFE14D",
+   "fg": "#111",
+   "size": 64
+  },
+  {
+   "text": "4위",
+   "from": 6.69,
+   "to": 8.09,
+   "x": 130,
+   "y": 500,
+   "rot": -4,
+   "bg": "#FFE14D",
+   "fg": "#111",
+   "size": 64
+  },
+  {
+   "text": "3위",
+   "from": 13.59,
+   "to": 14.99,
+   "x": 130,
+   "y": 500,
+   "rot": -4,
+   "bg": "#FFE14D",
+   "fg": "#111",
+   "size": 64
+  },
+  {
+   "text": "2위",
+   "from": 20.59,
+   "to": 21.99,
+   "x": 130,
+   "y": 500,
+   "rot": -4,
+   "bg": "#FFE14D",
+   "fg": "#111",
+   "size": 64
+  },
+  {
+   "text": "1위",
+   "from": 27.59,
+   "to": 28.99,
+   "x": 130,
+   "y": 500,
+   "rot": -4,
+   "bg": "#FFE14D",
+   "fg": "#111",
+   "size": 64
+  }
+ ],
+ "keys": [
+  "번개",
+  "오로라를",
+  "달",
+  "혜성",
+  "지구"
+ ],
+ "sfx": [
+  [
+   6.69,
+   "whoosh",
+   0.5
+  ],
+  [
+   13.59,
+   "whoosh",
+   0.5
+  ],
+  [
+   20.59,
+   "whoosh",
+   0.5
+  ],
+  [
+   27.59,
+   "whoosh",
+   0.5
+  ]
+ ],
+ "music": [
+  {
+   "src": "public/music/Lightless Dawn.mp3",
+   "from": 0.0,
+   "at": 0.0,
+   "to": 34.59,
+   "fade": 0.3,
+   "gain": 1.0
+  }
+ ],
+ "musicGain": 0.7,
+ "duck": false,
+ "captionY": 1380,
+ "tail": 0.0,
+ "segments": [
+  {
+   "src": "top4/iss_lightning.mp4",
+   "in": 0.0,
+   "out": 3.4,
+   "single": [
+    0.55,
+    0.55,
+    1.0
+   ],
+   "push": [
+    1.0,
+    1.05
+   ],
+   "audio": 0,
+   "credit": "영상: NASA",
+   "vf": "eq=brightness=0.04:contrast=1.15:gamma=1.25",
+   "rank": {
+    "n": 5,
+    "label": "우주에서 본 번개 폭풍"
+   }
+  },
+  {
+   "src": "top4/iss_lightning.mp4",
+   "in": 0.3,
+   "out": 2.6,
+   "single": [
+    0.6,
+    0.62,
+    1.5
+   ],
+   "push": [
+    1.0,
+    1.05
+   ],
+   "audio": 0,
+   "credit": "영상: NASA",
+   "vf": "eq=brightness=0.04:contrast=1.15:gamma=1.25",
+   "speed": 0.7
+  },
+  {
+   "src": "top4/iss_aurora.mp4",
+   "in": 0.0,
+   "out": 3.4,
+   "single": [
+    0.38,
+    0.5,
+    1.0
+   ],
+   "push": [
+    1.0,
+    1.05
+   ],
+   "audio": 0,
+   "credit": "영상: NASA",
+   "rank": {
+    "n": 4,
+    "label": "발밑에 깔린 오로라"
+   }
+  },
+  {
+   "src": "top4/iss_aurora.mp4",
+   "in": 3.4,
+   "out": 6.9,
+   "single": [
+    0.5,
+    0.55,
+    1.25
+   ],
+   "push": [
+    1.0,
+    1.05
+   ],
+   "audio": 0,
+   "credit": "영상: NASA"
+  },
+  {
+   "src": "top4/iss_eclipse.mp4",
+   "in": 1.2,
+   "out": 4.6,
+   "single": [
+    0.5,
+    0.6,
+    1.1
+   ],
+   "push": [
+    1.0,
+    1.05
+   ],
+   "audio": 0,
+   "credit": "영상: NASA",
+   "vf": "eq=contrast=1.35:brightness=0.02:gamma=1.15",
+   "rank": {
+    "n": 3,
+    "label": "지구에 드리운 달 그림자"
+   }
+  },
+  {
+   "src": "top4/iss_eclipse.mp4",
+   "in": 4.6,
+   "out": 8.2,
+   "single": [
+    0.5,
+    0.55,
+    1.4
+   ],
+   "push": [
+    1.0,
+    1.05
+   ],
+   "audio": 0,
+   "credit": "영상: NASA",
+   "vf": "eq=contrast=1.35:brightness=0.02:gamma=1.15"
+  },
+  {
+   "src": "top4/iss_lovejoy.mp4",
+   "in": 0.2,
+   "out": 3.6,
+   "single": [
+    0.27,
+    0.5,
+    1.0
+   ],
+   "push": [
+    1.0,
+    1.05
+   ],
+   "audio": 0,
+   "credit": "영상: NASA",
+   "rank": {
+    "n": 2,
+    "label": "지구 위로 떠오른 혜성"
+   }
+  },
+  {
+   "src": "top4/iss_lovejoy.mp4",
+   "in": 3.6,
+   "out": 7.2,
+   "single": [
+    0.3,
+    0.48,
+    1.25
+   ],
+   "push": [
+    1.0,
+    1.05
+   ],
+   "audio": 0,
+   "credit": "영상: NASA"
+  },
+  {
+   "src": "top4/artemis2_earthset.mp4",
+   "in": 0.0,
+   "out": 3.4,
+   "single": [
+    0.47,
+    0.5,
+    1.0
+   ],
+   "push": [
+    1.0,
+    1.0
+   ],
+   "audio": 0,
+   "credit": "사진: NASA",
+   "rank": {
+    "n": 1,
+    "label": "달 뒤로 지는 지구"
+   }
+  },
+  {
+   "src": "top4/artemis2_earthset.mp4",
+   "in": 3.4,
+   "out": 7.0,
+   "single": [
+    0.47,
+    0.5,
+    1.0
+   ],
+   "push": [
+    1.0,
+    1.0
+   ],
+   "audio": 0,
+   "credit": "사진: NASA"
+  }
+ ],
+ "lines": [
+  {
+   "who": 0,
+   "t": 0.1,
+   "tend": 3.35,
+   "ko": "우주에서 본 번개"
+  },
+  {
+   "who": 0,
+   "t": 3.5,
+   "tend": 6.636,
+   "ko": "아프리카 밤하늘 번개 폭풍"
+  },
+  {
+   "who": 0,
+   "t": 6.786,
+   "tend": 10.036,
+   "ko": "오로라를 위에서 보면"
+  },
+  {
+   "who": 0,
+   "t": 10.186,
+   "tend": 13.536,
+   "ko": "인도양 위 남극 오로라"
+  },
+  {
+   "who": 0,
+   "t": 13.686,
+   "tend": 16.936,
+   "ko": "구름 위 검은 얼룩…"
+  },
+  {
+   "who": 0,
+   "t": 17.086,
+   "tend": 20.536,
+   "ko": "2012년 일식 때 달 그림자"
+  },
+  {
+   "who": 0,
+   "t": 20.686,
+   "tend": 23.936,
+   "ko": "지평선 위 하얀 꼬리"
+  },
+  {
+   "who": 0,
+   "t": 24.086,
+   "tend": 27.536,
+   "ko": "러브조이 혜성 (2011)"
+  },
+  {
+   "who": 0,
+   "t": 27.686,
+   "tend": 30.936,
+   "ko": "달 뒤로 지는 지구"
+  },
+  {
+   "who": 0,
+   "t": 31.086,
+   "tend": 34.536,
+   "ko": "2026년 아르테미스 2호"
+  }
+ ],
+ "sources": [
+  {
+   "file": "top4/iss_lightning.mp4",
+   "title": "Lightning Storms from Uganda to Zanzibar Island (ISS Expedition 30, 2012-02-18)",
+   "page": "https://eol.jsc.nasa.gov/BeyondThePhotography/CrewEarthObservationsVideos/#lightningstorms_iss_20120218",
+   "file_url": "https://eol.jsc.nasa.gov/DatabaseImages/ESC/large/ISS030/ISS030-E-104579.JPG … ISS030-E-104672.JPG (94 frames, our time-lapse at 12 fps)",
+   "license": "Public domain (NASA, 17 U.S.C. §105)",
+   "credit": "Image Science & Analysis Laboratory, NASA Johnson Space Center (ISS Crew Earth Observations)",
+   "used_seconds": [
+    0.0,
+    3.4
+   ]
+  },
+  {
+   "file": "top4/iss_aurora.mp4",
+   "title": "Aurora Australis 1 (ISS Expedition 29, 2011-09-17)",
+   "page": "https://eol.jsc.nasa.gov/BeyondThePhotography/CrewEarthObservationsVideos/#aurora_iss_20110917",
+   "file_url": "https://eol.jsc.nasa.gov/DatabaseImages/ESC/large/ISS029/ISS029-E-5985.JPG … ISS029-E-6095.JPG (111 frames, 15 fps)",
+   "license": "Public domain (NASA, 17 U.S.C. §105)",
+   "credit": "Image Science & Analysis Laboratory, NASA Johnson Space Center (ISS Crew Earth Observations)",
+   "used_seconds": [
+    0.0,
+    6.9
+   ]
+  },
+  {
+   "file": "top4/iss_eclipse.mp4",
+   "title": "Solar Eclipse over Asia (ISS Expedition 31, 2012-05-20)",
+   "page": "https://eol.jsc.nasa.gov/BeyondThePhotography/CrewEarthObservationsVideos/#solareclipse_iss_20120520",
+   "file_url": "https://eol.jsc.nasa.gov/DatabaseImages/ESC/large/ISS031/ISS031-E-56780.JPG … ISS031-E-57000.JPG (221 frames, 24 fps)",
+   "license": "Public domain (NASA, 17 U.S.C. §105)",
+   "credit": "Image Science & Analysis Laboratory, NASA Johnson Space Center (ISS Crew Earth Observations)",
+   "used_seconds": [
+    1.2,
+    8.2
+   ]
+  },
+  {
+   "file": "top4/iss_lovejoy.mp4",
+   "title": "Lovejoy Comet Flies over Southern Hemisphere (ISS Expedition 30, 2011-12-21)",
+   "page": "https://eol.jsc.nasa.gov/BeyondThePhotography/CrewEarthObservationsVideos/#lovejoy_iss_20111221",
+   "file_url": "https://eol.jsc.nasa.gov/DatabaseImages/ESC/large/ISS030/ISS030-E-14287.JPG … ISS030-E-14400.JPG (114 frames, 15 fps)",
+   "license": "Public domain (NASA, 17 U.S.C. §105)",
+   "credit": "Image Science & Analysis Laboratory, NASA Johnson Space Center (ISS Crew Earth Observations)",
+   "used_seconds": [
+    0.2,
+    7.2
+   ]
+  },
+  {
+   "file": "top4/artemis2_earthset.mp4",
+   "title": "A Breathtaking Earthset from Orion (art002e021278, Artemis II, 2026-04-06)",
+   "page": "https://images.nasa.gov/details/art002e021278",
+   "file_url": "https://images-assets.nasa.gov/image/art002e021278/art002e021278~orig.jpg (our slow zoom, 7 s)",
+   "license": "Public domain (NASA, 17 U.S.C. §105)",
+   "credit": "NASA",
+   "used_seconds": [
+    0.0,
+    7.0
+   ]
+  }
+ ]
+}

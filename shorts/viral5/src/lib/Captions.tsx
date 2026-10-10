@@ -5,8 +5,9 @@ import { fitText } from "@remotion/layout-utils";
 import React from "react";
 import { AbsoluteFill, Sequence, interpolate, spring, useCurrentFrame, useVideoConfig } from "remotion";
 import { BODY } from "./fonts";
+import { RED } from "./Marked";
 
-export type Token = { text: string; key: boolean; fromMs: number; toMs: number };
+export type Token = { text: string; key: boolean; fromMs: number; toMs: number; red?: boolean };  // red: a {marked} word
 export type CapPage = { startMs: number; endMs: number; tokens: Token[]; en?: string; who?: string };
 
 const DESIRED_FONT_SIZE = 100;
@@ -19,7 +20,7 @@ const Word: React.FC<{ token: Token; active: boolean; pop: number }> = ({ token,
     style={{
       display: "inline-block",
       whiteSpace: "pre",
-      color: active ? HIGHLIGHT_COLOR : token.key ? KEY_COLOR : "white",
+      color: token.red ? RED : active ? HIGHLIGHT_COLOR : token.key ? KEY_COLOR : "white",
       transform: `scale(${1 + 0.12 * pop}) translateY(${-10 * pop}px)`,
       margin: "0 0.16em",  // wide enough that the popped (1.12x) word doesn't touch its neighbours
     }}

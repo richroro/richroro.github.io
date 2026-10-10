@@ -6,16 +6,21 @@ import { fitText, measureText } from "@remotion/layout-utils";
 import { BODY, TITLE } from "./fonts";
 import { clamp, eBack, eInOut, eOut, prog } from "./fx";
 import { Marked } from "./Marked";
+import { Doodle, PhotoBackdrop } from "./Doodle";
 
 export type Mood = "neutral" | "happy" | "laugh" | "shock" | "sad" | "cry" | "angry" | "smug" | "shy" | "think" | "sleep" | "love" | "sick";
 /** a character: `mood` until steps[2], then `to` (a reaction mid-scene); x is 0..1 across the frame */
-export type Char = { name?: string; color?: string; mood?: Mood; to?: Mood; hat?: string; x?: number; size?: number; flip?: boolean };
+export type Char = { name?: string; color?: string; mood?: Mood; to?: Mood; hat?: string; x?: number; size?: number; flip?: boolean;
+  /** "doodle": the hand-drawn skin (lib/Doodle.tsx) with `hair` colour and `hairdo` ("spiky" | "perm" | "bob" | "bald") */
+  style?: "doodle"; hair?: string; hairdo?: "spiky" | "perm" | "bob" | "bald" };
 export type SceneG = {
   /** "📍 편의점" tag at the top left */
   place?: string;
   /** a backdrop drawn here ("class", "home", "street", "store", "army", "night", "stage", "office", "door", "hospital", "bedroom", "bath",
    *  "subway", "cafeteria", "desk") or any CSS background */
   bg?: string;
+  /** a real photo (a path under public/) filling the box in place of `bg`, slowly zooming; photoFit "cover" (default) or "contain", photoPos its CSS position */
+  photo?: string; photoFit?: "cover" | "contain"; photoPos?: string;
   chars: Char[];
   /** a speech bubble over chars[who]; steps[0] is when it pops (default at once) */
   say?: { who: number; text: string };
@@ -44,6 +49,7 @@ const PALETTE = ["#FFD84D", "#FF9EBB", "#8FD3FF", "#B9F27C", "#C9A7FF", "#FFB36B
 
 /** a mochi character in a mood; t is seconds since the scene started (every scene opens with a small squash) */
 export const Mochi: React.FC<{ c: Char; i: number; t: number; size: number; mood?: Mood }> = ({ c, i, t, size, mood = c.mood ?? "neutral" }) => {
+  if (c.style === "doodle") return <Doodle c={c} i={i} t={t} size={size} mood={mood} />;
   const color = c.color ?? PALETTE[i % PALETTE.length];
   const enter = eOut(prog(t, 0, 0.22));
   let sx = 1, sy = 1, dx = 0, dy = 0, rot = 0;
@@ -286,7 +292,8 @@ export const Scene: React.FC<{ g: SceneG & { steps?: number[] }; t: number; h: n
   return (
     <div style={{ position: "absolute", inset: 0, overflow: "hidden" }}>
       <div style={{ position: "absolute", inset: 0, transform: `scale(${z})`, transformOrigin: `${fx}px ${baseY + size / 2}px` }}>
-        <Backdrop kind={g.bg ?? "linear-gradient(180deg, #fff6e8 0%, #ffe9cf 100%)"} h={h} sign={g.sign} tagged={!!g.place} />
+        {g.photo ? <PhotoBackdrop src={g.photo} fit={g.photoFit} pos={g.photoPos} t={t} />
+          : <Backdrop kind={g.bg ?? "linear-gradient(180deg, #fff6e8 0%, #ffe9cf 100%)"} h={h} sign={g.sign} tagged={!!g.place} />}
         {g.chat ? <ChatPhone c={g.chat} t={t} at={(g.steps ?? []).slice(4)} h={h} /> : null}
         {g.prop ? (
           <div style={{ position: "absolute", left: px * 1080, top: py, fontSize: 190, lineHeight: 1, whiteSpace: "nowrap",

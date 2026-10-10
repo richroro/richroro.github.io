@@ -1,0 +1,80 @@
+{
+ "credit": "",
+ "titleStyle": "band",
+ "titleKey": "#FF3B3B",
+ "captionY": 1640,
+ "sources": {},
+ "music": {"file": "music/sneaky_snitch.mp3", "gain": 0.13, "start": 0},
+ "sfx": [
+  ["a@end-0.9", "horn", 0.3], ["b", "k_drop_002", 0.3], ["c", "whoosh", 0.2], ["d", "pop", 0.25], ["e.보복운전", "k_error_003", 0.35],
+  ["f", "whoosh", 0.2], ["f.미터", "ding", 0.25], ["f.고속도로", "whoosh", 0.2], ["g", "whoosh", 0.2],
+  ["h.훅", "whoosh", 0.25], ["i", "siren", 0.3], ["j", "pop", 0.2], ["k", "boing", 0.3], ["l.범칙금", "coin", 0.35], ["m", "whoosh", 0.2], ["m.여러분", "pop", 0.2]
+ ],
+ "clips": [
+  {"from": "a", "label": "훅 끼어들기", "gfx": {"type": "road", "view": "top", "place": "📍 도심 도로", "road": "city", "speed": 800, "steps": [0, 0.9, 1.5], "shake": [1],
+   "cars": [
+    {"lane": 2.65, "y": 560, "color": "#FF5C5C", "face": "#C9A7FF", "mood": "smug", "tag": "빌런", "path": [[0, 2, 520, 0, 0.9]]},
+    {"lane": 2, "y": 800, "color": "#4DA3FF", "face": "#FFD84D", "mood": "neutral", "to": "shock", "toAt": 1, "tag": "나", "brake": 1},
+    {"lane": 1, "y": 300, "color": "#E8E8E8", "mood": "neutral"},
+    {"lane": 3, "y": 860, "color": "#B9F27C", "mood": "think"}
+   ]}},
+  {"from": "b", "label": "급브레이크", "gfx": {"type": "road", "view": "cockpit", "road": "city", "speed": 300, "steps": [0.05, 0.05], "shake": [0], "me": {"mood": "shock"},
+   "say": {"who": "me", "text": "으악! [깜빡이] 좀 켜!"},
+   "cars": [{"lane": 2, "y": 820, "color": "#FF5C5C", "face": "#C9A7FF", "mood": "smug", "brake": true}]}},
+  {"from": "c", "label": "뒤차 위험", "gfx": {"type": "road", "view": "top", "road": "city", "speed": 300, "stopAt": 2, "steps": [0.05, 0.35, 0.65, 1.4], "shake": [1],
+   "cars": [
+    {"lane": 2, "y": 100, "color": "#FF5C5C", "face": "#C9A7FF", "mood": "smug"},
+    {"lane": 2, "y": 400, "color": "#4DA3FF", "face": "#FFD84D", "mood": "shock", "brake": 0, "tag": "나"},
+    {"lane": 2, "y": 700, "color": "#FFD84D", "mood": "neutral", "to": "shock", "toAt": 1, "brake": 1},
+    {"lane": 2, "y": 1000, "color": "#C9A7FF", "mood": "neutral", "to": "shock", "toAt": 2, "brake": 2}
+   ]}},
+  {"from": "d", "label": "빌런 뻔뻔", "gfx": {"type": "road", "view": "top", "road": "city", "speed": 700, "zoom": 1.25, "focus": 0, "steps": [0.05, 0.6, 0.8],
+   "say": {"who": 0, "text": "뭐 어때, 들어왔잖아~"},
+   "cars": [{"lane": 2, "y": 600, "color": "#FF5C5C", "face": "#C9A7FF", "mood": "smug", "to": "laugh", "toAt": 2, "tag": "빌런"}]}},
+  {"from": "e", "label": "보복운전 금지", "gfx": {"type": "road", "view": "cockpit", "road": "city", "speed": 700, "steps": [0.05, 0.1, 1.5, 1.4], "me": {"mood": "angry", "to": "think", "toAt": 2},
+   "big": "똑같이 하면 [보복운전]",
+   "cars": [{"lane": 2, "y": 470, "color": "#FF5C5C", "face": "#C9A7FF", "mood": "smug"}]}},
+  {"from": "f", "label": "법", "gfx": {"type": "road", "view": "top", "road": "city", "speed": 800, "zoom": 1.3, "focus": 0, "steps": [0.05],
+   "cars": [{"lane": 2, "y": 560, "color": "#4DA3FF", "face": "#FFD84D", "mood": "happy", "tag": "나", "blink": "R", "blinkAt": 0}]}},
+  {"from": "f.미터", "label": "30m 전", "gfx": {"type": "road", "view": "top", "road": "city", "speed": 800, "steps": [0.05, 1.8],
+   "signs": [{"x": 1010, "y": 230, "text": "30m", "kind": "warn", "size": 130}],
+   "paint": [{"lane": 3, "y": 260, "text": "▼"}],
+   "cars": [{"lane": 2, "y": 820, "color": "#4DA3FF", "face": "#FFD84D", "mood": "happy", "tag": "나", "blink": "R", "blinkAt": 0, "path": [[0, 2, 560, 0, 1.6], [1, 3, 420, 0, 0.9]]}]}},
+  {"from": "f.고속도로", "label": "100m 전", "gfx": {"type": "road", "view": "top", "road": "highway", "speed": 1100, "steps": [0.05, 1.7],
+   "signs": [{"x": 540, "y": 110, "text": "고속도로는 100m 전", "kind": "green", "size": 150}],
+   "cars": [{"lane": 2, "y": 860, "color": "#4DA3FF", "face": "#FFD84D", "mood": "happy", "tag": "나", "blink": "L", "blinkAt": 0, "path": [[0, 2, 600, 0, 1.6], [1, 1, 460, 0, 1.0]]},
+            {"lane": 2, "y": 250, "kind": "truck", "color": "#FF9F45"}]}},
+  {"from": "g", "label": "끝까지", "gfx": {"type": "road", "view": "top", "road": "city", "speed": 800, "steps": [0.05, 0.3, 9, 1.5], "zoom": 1.1, "focus": 0,
+   "big": "끝까지 [깜빡]",
+   "cars": [{"lane": 2, "y": 700, "color": "#4DA3FF", "face": "#FFD84D", "mood": "happy", "tag": "나", "blink": "L", "blinkAt": 0, "path": [[1, 1, 640, 0, 1.6]]}]}},
+  {"from": "h", "label": "또 훅", "gfx": {"type": "road", "view": "top", "road": "city", "speed": 800, "steps": [0.1, 0.9], "zoom": 1.1, "focus": 0,
+   "cars": [
+    {"lane": 3, "y": 520, "color": "#FF5C5C", "face": "#C9A7FF", "mood": "laugh", "tag": "빌런", "fast": true, "path": [[1, 2, 480, 0, 0.6]]},
+    {"lane": 2, "y": 1180, "kind": "police", "sirenAt": 99, "path": [[0, 2, 900, 0, 1.4]]}
+   ]}},
+  {"from": "i", "label": "경찰차", "gfx": {"type": "road", "view": "top", "road": "city", "speed": 700, "steps": [0.05, 0.6, 0.6], "zoom": 1.15, "focus": 1,
+   "cars": [
+    {"lane": 2, "y": 330, "color": "#FF5C5C", "face": "#C9A7FF", "mood": "laugh", "to": "shock", "toAt": 1},
+    {"lane": 2, "y": 680, "kind": "police", "sirenAt": 0}
+   ]}},
+  {"from": "j", "label": "세우세요", "gfx": {"type": "road", "view": "top", "road": "city", "speed": 700, "stopAt": 3, "steps": [0.05, 0.6, 1.5, 2.0],
+   "say": {"who": 1, "text": "깜빡이 안 켠 차량, [우측]에 세우세요."},
+   "cars": [
+    {"lane": 2, "y": 330, "color": "#FF5C5C", "face": "#C9A7FF", "mood": "shock", "to": "sad", "toAt": 2, "blink": "R", "blinkAt": 1, "brake": 3, "path": [[1, 3, 340, 0, 0.9]]},
+    {"lane": 2, "y": 700, "kind": "police", "path": [[1, 3, 720, 0, 0.9]]}
+   ]}},
+  {"from": "k", "label": "헉", "gfx": {"type": "road", "view": "top", "road": "city", "speed": 0, "zoom": 1.3, "focus": 0, "steps": [0.05],
+   "say": {"who": 0, "text": "헉, [경찰차]였어?"},
+   "cars": [{"lane": 3, "y": 560, "color": "#FF5C5C", "face": "#C9A7FF", "mood": "shock", "brake": true}, {"lane": 3, "y": 900, "kind": "police"}]}},
+  {"from": "l", "label": "범칙금", "gfx": {"type": "road", "view": "top", "road": "city", "speed": 0, "steps": [0, 0, 0, 0.3],
+   "ticket": {"title": "범칙금 납부 통고", "lines": ["진로 변경 신호 불이행", "승용차 [3만 원]"]},
+   "cars": [{"lane": 3, "y": 200, "color": "#FF5C5C", "face": "#C9A7FF", "mood": "cry", "brake": true}, {"lane": 3, "y": 520, "kind": "police"}]}},
+  {"from": "m", "label": "깜빡이 한 번", "gfx": {"type": "road", "view": "top", "road": "city", "speed": 800, "steps": [0.05, 0.6, 1.6],
+   "cars": [
+    {"lane": 3, "y": 700, "color": "#4DA3FF", "face": "#FFD84D", "mood": "happy", "tag": "나", "blink": "L", "blinkAt": 0, "blinkOff": 2, "path": [[1, 2, 600, 0, 1.0]]},
+    {"lane": 2, "y": 1000, "color": "#B9F27C", "mood": "happy"}
+   ]}},
+  {"from": "m.여러분", "label": "질문", "gfx": {"type": "road", "view": "cockpit", "road": "city", "speed": 800, "steps": [0.05, 0.4, 0.5], "me": {"mood": "happy", "to": "laugh", "toAt": 2},
+   "cars": [{"lane": 2.8, "y": 520, "color": "#E8E8E8", "mood": "happy", "blink": "L", "blinkAt": 0, "path": [[1, 2, 470, 0, 1.4]]}]}}
+ ]
+}

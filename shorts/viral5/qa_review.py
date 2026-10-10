@@ -34,7 +34,11 @@ def measure(f, thr):
     cuts = []
     for x in (float(x) for x in re.findall(r"pts_time:([\d.]+)", err)):
         if x > 0.2 and (not cuts or x - cuts[-1] > 0.3): cuts.append(x)
-    return dur, (lufs[-1] if lufs else None), black, cuts
+    # one black closing frame (a clip that stopped a frame before the end) is too short for blackdetect but blinks on every loop
+    err = run(["ffmpeg", "-hide_banner", "-nostats", "-sseof", "-0.25", "-i", f, "-vf", f"{PICTURE},signalstats,metadata=print:key=lavfi.signalstats.YAVG", "-an", "-f", "null", "-"]).stderr
+    ys = [float(y) for y in re.findall(r"YAVG=([\d.]+)", err)]
+    endblack = len(ys) >= 2 and ys[-1] < 3 and ys[-2] > 10
+    return dur, (lufs[-1] if lufs else None), black, cuts, endblack
 
 def stills(f, dur, out):
     run(["ffmpeg", "-v", "error", "-y", "-ss", "0.03", "-i", f, "-frames:v", "1", f"{out}/first.png"])
@@ -69,7 +73,7 @@ def review(sid):
     title, pages, trans, say, edit = texts(sid)
     # drawn story scenes (and the planned top-down road cartoons) differ by a character or a bubble, so they need a finer threshold than footage cuts
     drawn = bool(edit.get("clips")) and all(c.get("gfx", {}).get("type") in ("scene", "post", "road") for c in edit["clips"])
-    dur, lufs, black, cuts = measure(f, 0.04 if drawn else 0.12)
+    dur, lufs, black, cuts, endblack = measure(f, 0.04 if drawn else 0.12)
     if edit.get("segments"):  # translated-clip shorts: segment joins are cuts too, even when the picture barely changes
         t = 0.0
         for sg in edit["segments"][:-1]:
@@ -101,7 +105,7 @@ def review(sid):
     asked = sorted({m.group(0) for s in say + pages for m in [ASKS.search(s)] if m})
     row("구독·좋아요 요청", not asked, False, ", ".join(asked) or "없음")
     row("소리", lufs is not None and abs(lufs + 14) <= 1, lufs is not None and abs(lufs + 14) <= 2, f"{lufs} LUFS")
-    row("검은 화면", not black, False, ", ".join(f"{a}~{b}초" for a, b in black) or "없음")
+    row("검은 화면", not black and not endblack, False, ", ".join([f"{a}~{b}초" for a, b in black] + (["마지막 1프레임"] if endblack else [])) or "없음")
     size = os.path.getsize(f) / 1e6
     row("용량", size <= 30, False, f"{size:.1f}MB")
     lines = [f"# {sid} 검토", "", "| 항목 | 결과 | 값 |", "|---|---|---|"] + [f"| {n} | {r} | {v} |" for n, r, v in rows]
