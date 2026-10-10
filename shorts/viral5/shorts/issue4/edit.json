@@ -1,0 +1,270 @@
+{
+ "credit": "영상: NASA",
+ "titleStyle": "band",
+ "captionY": 1640,
+ "sources": {
+  "ea": {
+   "file": "Blazar_EarthShot_A_v05_H264.mp4",
+   "credit": "애니메이션: NASA 고다드",
+   "label": "Blazar EarthShot A (NASA's Goddard Space Flight Center Conceptual Image Lab, SVS 20281)",
+   "url": "https://svs.gsfc.nasa.gov/20281",
+   "license": "Public domain (NASA)",
+   "fileUrl": "https://svs.gsfc.nasa.gov/vis/a020000/a020200/a020281/Blazar_EarthShot_A_v05_H264.mp4"
+  },
+  "eb": {
+   "file": "Blazar_EarthShot_B_v05_H264.mp4",
+   "credit": "애니메이션: NASA 고다드",
+   "label": "Blazar EarthShot B (NASA's Goddard Space Flight Center Conceptual Image Lab, SVS 20281)",
+   "url": "https://svs.gsfc.nasa.gov/20281",
+   "license": "Public domain (NASA)",
+   "fileUrl": "https://svs.gsfc.nasa.gov/vis/a020000/a020200/a020281/Blazar_EarthShot_B_v05_H264.mp4"
+  },
+  "fermi": {
+   "file": "12994_Fermi_Blazar_Neutrino_1080.mp4",
+   "credit": "애니메이션: NASA 고다드",
+   "label": "NASA's Fermi Links Cosmic Neutrino to Monster Black Hole (NASA's Goddard Space Flight Center, SVS 12994) — picture only, its music is muted",
+   "url": "https://svs.gsfc.nasa.gov/12994",
+   "license": "Public domain (NASA); third-party music muted",
+   "fileUrl": "https://svs.gsfc.nasa.gov/vis/a010000/a012900/a012994/12994_Fermi_Blazar_Neutrino_1080.mp4"
+  },
+  "dawn": {
+   "file": "icl_dawn.jpg",
+   "credit": "사진: John Hardin (CC BY 4.0)",
+   "label": "The ICL at Dawn (John Hardin, CC BY 4.0)",
+   "url": "https://commons.wikimedia.org/wiki/File:The_ICL_at_Dawn.jpg",
+   "license": "CC BY 4.0",
+   "fileUrl": "https://upload.wikimedia.org/wikipedia/commons/6/6f/The_ICL_at_Dawn.jpg"
+  },
+  "night": {
+   "file": "icl_night.jpg",
+   "credit": "사진: John Hardin (CC BY 4.0)",
+   "label": "The ICL at Night (John Hardin, CC BY 4.0)",
+   "url": "https://commons.wikimedia.org/wiki/File:The_ICL_at_Night.jpg",
+   "license": "CC BY 4.0",
+   "fileUrl": "https://upload.wikimedia.org/wikipedia/commons/6/69/The_ICL_at_Night.jpg"
+  },
+  "diag": {
+   "file": "icecube_diagram.jpg",
+   "credit": "그림: IceCube Collaboration (CC BY 4.0)",
+   "label": "The IceCube Neutrino Observatory (Karen Andeen and Matthias Plum for the IceCube Collaboration, CC BY 4.0)",
+   "url": "https://commons.wikimedia.org/wiki/File:The_IceCube_Neutrino_Observatory.jpg",
+   "license": "CC BY 4.0",
+   "fileUrl": "https://upload.wikimedia.org/wikipedia/commons/5/59/The_IceCube_Neutrino_Observatory.jpg"
+  },
+  "aurora": {
+   "file": "pole_aurora_nsf.jpg",
+   "credit": "사진: 미국 국립과학재단(NSF)",
+   "label": "Amundsen-Scott dome Aurora (Jonathan Berry/National Science Foundation, public domain)",
+   "url": "https://commons.wikimedia.org/wiki/File:Amundsen-Scott_dome_Aurora_1.jpg",
+   "license": "Public domain (PD-USGov-NSF)",
+   "fileUrl": "https://upload.wikimedia.org/wikipedia/commons/0/0e/Amundsen-Scott_dome_Aurora_1.jpg"
+  }
+ },
+ "clips": [
+  {
+   "src": "ea",
+   "from": "hook",
+   "in": 4.2,
+   "label": "입자가 쏟아지는 지구",
+   "audio": 0.0,
+   "zoom": [
+    1.0,
+    1.1
+   ]
+  },
+  {
+   "src": "fermi",
+   "from": "hook.당신",
+   "in": 25.0,
+   "label": "날아가는 입자들",
+   "audio": 0.0
+  },
+  {
+   "src": "fermi",
+   "from": "name",
+   "in": 22.0,
+   "label": "중성미자 궤적",
+   "audio": 0.0
+  },
+  {
+   "src": "eb",
+   "from": "name.지구도",
+   "in": 4.0,
+   "label": "지구와 입자",
+   "audio": 0.0,
+   "zoom": [
+    1.0,
+    1.1
+   ]
+  },
+  {
+   "src": "dawn",
+   "from": "ice",
+   "label": "남극점 아이스큐브 연구동",
+   "crop": [
+    0.75,
+    0.6,
+    1.0
+   ],
+   "zoom": [
+    1.05,
+    1.15
+   ]
+  },
+  {
+   "src": "diag",
+   "from": "ice.통째로",
+   "label": "아이스큐브 구조도",
+   "crop": [
+    0.42,
+    0.5,
+    1.0
+   ],
+   "zoom": [
+    1.0,
+    1.04
+   ]
+  },
+  {
+   "src": "fermi",
+   "from": "sensor",
+   "in": 53.0,
+   "label": "얼음 속 센서 줄",
+   "audio": 0.0
+  },
+  {
+   "src": "fermi",
+   "from": "sensor.부딪힐",
+   "in": 47.0,
+   "label": "충돌과 빛",
+   "audio": 0.0
+  },
+  {
+   "src": "night",
+   "from": "found",
+   "label": "밤의 아이스큐브 연구동",
+   "zoom": [
+    1.05,
+    1.15
+   ]
+  },
+  {
+   "src": "fermi",
+   "from": "found.고에너지",
+   "in": 11.0,
+   "label": "멀리 있는 블레이저",
+   "audio": 0.0
+  },
+  {
+   "src": "aurora",
+   "from": "nobel",
+   "label": "남극점 기지의 오로라",
+   "zoom": [
+    1.05,
+    1.15
+   ]
+  },
+  {
+   "src": "dawn",
+   "from": "nobel.노벨물리학상",
+   "label": "아이스큐브 연구동과 은하수",
+   "zoom": [
+    1.0,
+    1.1
+   ]
+  },
+  {
+   "src": "fermi",
+   "from": "end",
+   "in": 58.0,
+   "label": "빛나는 센서들",
+   "audio": 0.0
+  },
+  {
+   "src": "eb",
+   "from": "end.지금도",
+   "in": 1.0,
+   "label": "지구로 날아오는 입자",
+   "audio": 0.0,
+   "zoom": [
+    1.0,
+    1.1
+   ]
+  }
+ ],
+ "marks": [
+  {
+   "kind": "circle",
+   "x": 560,
+   "y": 990,
+   "r": 210,
+   "from": "ice.통째로+0.2",
+   "to": "sensor-0.1"
+  }
+ ],
+ "stickers": [
+  {
+   "text": "아이스큐브 중성미자 관측소",
+   "from": "ice+0.1",
+   "to": "ice.통째로-0.1",
+   "y": 1380
+  },
+  {
+   "text": "깊이 1,450~2,450m",
+   "from": "ice.통째로+0.3",
+   "to": "sensor-0.1",
+   "y": 1380
+  },
+  {
+   "text": "2026.10.6 발표",
+   "from": "nobel+0.1",
+   "to": "end-0.1",
+   "y": 1380
+  },
+  {
+   "text": "2026년 10월 기준",
+   "from": "end+0.1",
+   "to": "end@end+0.5",
+   "y": 1380
+  }
+ ],
+ "sfx": [
+  [
+   "hook",
+   "whoosh",
+   0.4
+  ],
+  [
+   "name.지구도",
+   "whoosh",
+   0.35
+  ],
+  [
+   "sensor.빛을",
+   "ding",
+   0.3
+  ],
+  [
+   "nobel",
+   "riser",
+   0.25
+  ],
+  [
+   "end",
+   "tada",
+   0.25
+  ]
+ ],
+ "punches": [
+  "hook.백조",
+  "sensor.빛을"
+ ],
+ "flashes": [
+  "sensor.빛을"
+ ],
+ "music": {
+  "file": "music/Floating Cities.mp3",
+  "gain": 0.14,
+  "start": 0
+ }
+}

@@ -13,7 +13,7 @@ export type Char = { name?: string; color?: string; mood?: Mood; to?: Mood; hat?
 export type SceneG = {
   /** "📍 편의점" tag at the top left */
   place?: string;
-  /** a backdrop drawn here ("class", "home", "street", "store", "army", "night", "stage", "office", "door") or any CSS background */
+  /** a backdrop drawn here ("class", "home", "street", "store", "army", "night", "stage", "office", "door", "hospital") or any CSS background */
   bg?: string;
   chars: Char[];
   /** a speech bubble over chars[who]; steps[0] is when it pops (default at once) */
@@ -173,6 +173,13 @@ const Backdrop: React.FC<{ kind: string; h: number; sign?: string; tagged?: bool
       {box({ left: 930, top: 400, width: 74, height: 116, background: "#f7f7f7", border: "5px solid #8a8a8a", borderRadius: 12 })}
       {box({ left: 953, top: 452, width: 28, height: 28, borderRadius: 14, background: "#ff5a5a" })}
       {box({ left: 590, top: F + 18, width: 270, height: 34, background: "#7d6b5a", borderRadius: 8 })}</>);
+    case "hospital": return (<>{wall("#eef8f6", "#e2f2ef", "#c9d6d4")}
+      {box({ left: 80, top: 130, width: 300, height: 300, background: "linear-gradient(180deg,#cfeaff,#f1f9ff)", border: "14px solid #fff", boxShadow: "0 0 0 5px #a9c4c1" })}
+      {box({ left: 440, top: 90, width: 18, height: F - 90, background: "repeating-linear-gradient(180deg,#bfe3dc 0 40px,#a8d6cd 40px 80px)", borderRadius: 9 })}
+      {box({ right: 60, top: F - 170, width: 470, height: 90, background: "#ffffff", border: "8px solid #9fb8b5", borderRadius: "24px 24px 8px 8px" })}
+      {box({ right: 60, top: F - 230, width: 120, height: 150, background: "#9fb8b5", borderRadius: "16px 16px 0 0" })}
+      {box({ right: 400, top: F - 310, width: 80, height: 80, borderRadius: 40, background: "#ff6b6b", border: "6px solid #fff", boxSizing: "border-box" })}
+      {box({ right: 432, top: F - 293, width: 16, height: 46, background: "#fff" })}{box({ right: 417, top: F - 278, width: 46, height: 16, background: "#fff" })}</>);
     default: return box({ inset: 0, background: kind });
   }
 };
@@ -227,8 +234,8 @@ export const Scene: React.FC<{ g: SceneG & { steps?: number[] }; t: number; h: n
           borderRadius: 999, padding: "6px 26px", boxShadow: `5px 5px 0 ${INK}` }}>{g.place}</div>
       ) : null}
       {g.big ? (
-        <div style={{ position: "absolute", left: 0, right: 0, top: 150, textAlign: "center", fontFamily: TITLE, fontSize: 160, lineHeight: 1, color: "#FFE14D",
-          WebkitTextStroke: "18px black", paintOrder: "stroke", transform: `scale(${eBack(prog(t, bigAt, 0.3), 2.4)}) rotate(-4deg)`, filter: "drop-shadow(0 10px 14px rgba(0,0,0,.35))" }}>
+        <div style={{ position: "absolute", left: 0, right: 0, top: g.sign && g.bg === "class" ? 500 : 150, textAlign: "center", fontFamily: TITLE, fontSize: 160, lineHeight: 1,
+          color: "#FFE14D", wordBreak: "keep-all", WebkitTextStroke: "18px black", paintOrder: "stroke", transform: `scale(${eBack(prog(t, bigAt, 0.3), 2.4)}) rotate(-4deg)`, filter: "drop-shadow(0 10px 14px rgba(0,0,0,.35))" }}>
           <Marked text={g.big} color="#ff4d6d" />
         </div>
       ) : null}
