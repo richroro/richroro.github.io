@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Download the doodle1-doodle4 photos listed in sources.json into public/doodle/ (git-ignored).
+# Download the doodle1-doodle10 photos listed in sources.json into public/doodle/ (git-ignored).
 # usage: media/doodle/fetch.sh      (from shorts/viral5)
 set -euo pipefail
 cd "$(dirname "$0")/../.."

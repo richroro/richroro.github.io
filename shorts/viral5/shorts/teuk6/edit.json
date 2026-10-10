@@ -1,0 +1,374 @@
+{
+ "credit": "",
+ "titleStyle": "band",
+ "captionY": 1650,
+ "sources": {},
+ "music": {
+  "file": "music/monkeys_spinning_monkeys.mp3",
+  "gain": 0.2,
+  "start": 0
+ },
+ "sfx": [
+  [
+   "c1",
+   "pop",
+   0.25
+  ],
+  [
+   "b1",
+   "whoosh",
+   0.22
+  ],
+  [
+   "b1.비가",
+   "boing",
+   0.3
+  ],
+  [
+   "c2",
+   "pop",
+   0.25
+  ],
+  [
+   "b2",
+   "whoosh",
+   0.22
+  ],
+  [
+   "b2.소나기",
+   "boing",
+   0.3
+  ],
+  [
+   "c3",
+   "pop",
+   0.25
+  ],
+  [
+   "b3",
+   "whoosh",
+   0.22
+  ],
+  [
+   "c4",
+   "pop",
+   0.25
+  ],
+  [
+   "b4",
+   "whoosh",
+   0.22
+  ],
+  [
+   "b4.하루",
+   "boing",
+   0.3
+  ],
+  [
+   "c5",
+   "pop",
+   0.25
+  ],
+  [
+   "b5",
+   "whoosh",
+   0.22
+  ],
+  [
+   "c6",
+   "pop",
+   0.25
+  ],
+  [
+   "b6",
+   "whoosh",
+   0.22
+  ],
+  [
+   "b6.쏟아짐",
+   "boing",
+   0.3
+  ],
+  [
+   "c7",
+   "pop",
+   0.25
+  ],
+  [
+   "b7",
+   "whoosh",
+   0.22
+  ],
+  [
+   "b7.그침",
+   "boing",
+   0.3
+  ],
+  [
+   "y",
+   "pop",
+   0.25
+  ],
+  [
+   "z",
+   "whoosh",
+   0.22
+  ],
+  [
+   "z.몇",
+   "ding",
+   0.3
+  ],
+  [
+   "a",
+   "pop_hi",
+   0.3
+  ]
+ ],
+ "clips": [
+  {
+   "from": "a",
+   "label": "hook",
+   "gfx": {
+    "type": "scene",
+    "bg": "rain",
+    "place": "☔ 비 오는 날",
+    "prop": "☔",
+    "propX": 0.72,
+    "chars": [
+     {
+      "name": "나",
+      "color": "#FFB36B",
+      "mood": "sad",
+      "x": 0.32
+     }
+    ],
+    "steps": [
+     0.05,
+     -1,
+     9,
+     -1
+    ]
+   }
+  },
+  {
+   "from": "b1",
+   "label": "beat1",
+   "gfx": {
+    "type": "scene",
+    "bg": "street",
+    "prop": "🌂",
+    "propX": 0.72,
+    "big": "☀️ [쨍쨍]",
+    "chars": [
+     {
+      "name": "나",
+      "color": "#FFB36B",
+      "mood": "think",
+      "to": "angry",
+      "x": 0.32
+     }
+    ],
+    "say": {
+     "who": 0,
+     "text": "왜 [맑은데]…"
+    },
+    "steps": [
+     "c1",
+     0.1,
+     "c1",
+     "b1.비가"
+    ]
+   }
+  },
+  {
+   "from": "b2",
+   "label": "beat2",
+   "gfx": {
+    "type": "scene",
+    "bg": "rain",
+    "big": "☔ [쏴아]",
+    "chars": [
+     {
+      "name": "나",
+      "color": "#FFB36B",
+      "mood": "shock"
+     }
+    ],
+    "say": {
+     "who": 0,
+     "text": "아까 [맑았잖아]!"
+    },
+    "steps": [
+     "c2",
+     0.1,
+     9,
+     "b2.소나기"
+    ]
+   }
+  },
+  {
+   "from": "b3",
+   "label": "beat3",
+   "gfx": {
+    "type": "scene",
+    "bg": "store",
+    "sign": "우산 있어요",
+    "prop": "🌂",
+    "propX": 0.72,
+    "chars": [
+     {
+      "name": "나",
+      "color": "#FFB36B",
+      "mood": "sad",
+      "x": 0.32
+     }
+    ],
+    "say": {
+     "who": 0,
+     "text": "집에 [열 개]는 있는데…"
+    },
+    "steps": [
+     "c3",
+     0.1,
+     9,
+     0.1
+    ]
+   }
+  },
+  {
+   "from": "b4",
+   "label": "beat4",
+   "gfx": {
+    "type": "scene",
+    "bg": "rain",
+    "big": "🧦 [축축]",
+    "chars": [
+     {
+      "name": "나",
+      "color": "#FFB36B",
+      "mood": "sick"
+     }
+    ],
+    "say": {
+     "who": 0,
+     "text": "발에서 [철퍽] 소리 나…"
+    },
+    "steps": [
+     "c4",
+     0.1,
+     9,
+     "b4.하루"
+    ]
+   }
+  },
+  {
+   "from": "b5",
+   "label": "beat5",
+   "gfx": {
+    "type": "scene",
+    "bg": "home",
+    "prop": "🥞",
+    "propX": 0.72,
+    "chars": [
+     {
+      "name": "나",
+      "color": "#FFB36B",
+      "mood": "think",
+      "to": "love",
+      "x": 0.32
+     }
+    ],
+    "say": {
+     "who": 0,
+     "text": "빗소리가 [지글지글] 같아…"
+    },
+    "steps": [
+     "c5",
+     0.1,
+     "c5",
+     0.1
+    ]
+   }
+  },
+  {
+   "from": "b6",
+   "label": "beat6",
+   "gfx": {
+    "type": "scene",
+    "bg": "office",
+    "big": "Zzz",
+    "chars": [
+     {
+      "name": "나",
+      "color": "#FFB36B",
+      "mood": "sleep"
+     }
+    ],
+    "say": {
+     "who": 0,
+     "text": "[5분]만 눈 감을게…"
+    },
+    "steps": [
+     "c6",
+     0.1,
+     9,
+     "b6.쏟아짐"
+    ]
+   }
+  },
+  {
+   "from": "b7",
+   "label": "beat7",
+   "gfx": {
+    "type": "scene",
+    "bg": "street",
+    "big": "☀️ [쨍]",
+    "chars": [
+     {
+      "name": "나",
+      "color": "#FFB36B",
+      "mood": "shock",
+      "to": "angry"
+     }
+    ],
+    "say": {
+     "who": 0,
+     "text": "[이제] 그친다고?!"
+    },
+    "steps": [
+     "c7",
+     0.1,
+     "c7",
+     "b7.그침"
+    ]
+   }
+  },
+  {
+   "from": "z",
+   "label": "end",
+   "gfx": {
+    "type": "scene",
+    "bg": "rain",
+    "big": "[몇 개]?",
+    "chars": [
+     {
+      "name": "나",
+      "color": "#FFB36B",
+      "mood": "laugh"
+     }
+    ],
+    "steps": [
+     "y",
+     0.1,
+     9,
+     "z.몇"
+    ],
+    "say": {
+     "who": 0,
+     "text": "난 [7개] 다…ㅋㅋ"
+    }
+   }
+  }
+ ]
+}

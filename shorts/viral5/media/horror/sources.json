@@ -1,5 +1,5 @@
 {
- "note": "Stock footage for horror1-horror4 (licence pages opened 2026-10-10). Files are not committed; download from file_url, cut, scale to 1080p, mute and grade as described in media/horror/catalog.py, save as public/<short>/src/<file>. used_in = source in-points (seconds) per short; each cut runs 1-4.5 s (speed 3-4x for the floor indicators).",
+ "note": "Stock footage for horror1-horror8 (licence pages opened 2026-10-10). Files are not committed; download from file_url, cut, scale to 1080p, mute and grade as described in media/horror/catalog.py (horror5-8: media/horror/grade2.sh), save as public/<short>/src/<file>. used_in = source in-points (seconds) per short; each cut runs 1-4.5 s (speed 3-4x for the floor indicators).",
  "sources": [
   {
    "file": "pxpb130783.mp4",
@@ -557,6 +557,680 @@
      "source_in_seconds": [
       1.0,
       6.0
+     ]
+    }
+   ]
+  },
+  {
+   "file": "px5843879.mp4",
+   "credit": "영상: Pexels",
+   "label": "Pexels video 5843879 by Erik Mclean (Pexels License)",
+   "url": "https://www.pexels.com/video/an-empty-staircase-5843879/",
+   "file_url": "https://www.pexels.com/download/video/5843879/",
+   "license": "Pexels License",
+   "creator": "Erik Mclean",
+   "used_in": [
+    {
+     "short": "horror5",
+     "source_in_seconds": [
+      0.0,
+      3.0,
+      0.5
+     ]
+    }
+   ]
+  },
+  {
+   "file": "px6010700.mp4",
+   "credit": "영상: Pexels",
+   "label": "Pexels video 6010700 by Tima Miroshnichenko (Pexels License)",
+   "url": "https://www.pexels.com/video/an-empty-stairs-6010700/",
+   "file_url": "https://www.pexels.com/download/video/6010700/",
+   "license": "Pexels License",
+   "creator": "Tima Miroshnichenko",
+   "used_in": [
+    {
+     "short": "horror5",
+     "source_in_seconds": [
+      2.0,
+      10.0
+     ]
+    }
+   ]
+  },
+  {
+   "file": "px3134591.mp4",
+   "credit": "영상: Pexels",
+   "label": "Pexels video 3134591 by Caleb Oquendo (Pexels License)",
+   "url": "https://www.pexels.com/video/a-lighted-exit-sign-for-direction-3134591/",
+   "file_url": "https://www.pexels.com/download/video/3134591/",
+   "license": "Pexels License",
+   "creator": "Caleb Oquendo",
+   "used_in": [
+    {
+     "short": "horror5",
+     "source_in_seconds": [
+      1.0,
+      5.0
+     ]
+    }
+   ]
+  },
+  {
+   "file": "px9152640.mp4",
+   "credit": "영상: Pexels",
+   "label": "Pexels video 9152640 by Erik Mclean (Pexels License)",
+   "url": "https://www.pexels.com/video/high-angle-shot-of-stairs-9152640/",
+   "file_url": "https://www.pexels.com/download/video/9152640/",
+   "license": "Pexels License",
+   "creator": "Erik Mclean",
+   "used_in": [
+    {
+     "short": "horror5",
+     "source_in_seconds": [
+      4.0,
+      8.0
+     ]
+    }
+   ]
+  },
+  {
+   "file": "px12096163.mp4",
+   "credit": "영상: Pexels",
+   "label": "Pexels video 12096163 by Sasha Poberailo (Pexels License)",
+   "url": "https://www.pexels.com/video/smoke-in-staircase-12096163/",
+   "file_url": "https://www.pexels.com/download/video/12096163/",
+   "license": "Pexels License",
+   "creator": "Sasha Poberailo",
+   "used_in": [
+    {
+     "short": "horror5",
+     "source_in_seconds": [
+      1.0,
+      6.0
+     ]
+    }
+   ]
+  },
+  {
+   "file": "px39024320.mp4",
+   "credit": "영상: Pexels",
+   "label": "Pexels video 39024320 by Alef Morais (Pexels License)",
+   "url": "https://www.pexels.com/video/warmly-lit-wooden-stairs-in-modern-interior-39024320/",
+   "file_url": "https://www.pexels.com/download/video/39024320/",
+   "license": "Pexels License",
+   "creator": "Alef Morais",
+   "used_in": [
+    {
+     "short": "horror5",
+     "source_in_seconds": [
+      1.0,
+      5.0
+     ]
+    }
+   ]
+  },
+  {
+   "file": "px5986347.mp4",
+   "credit": "영상: Pexels",
+   "label": "Pexels video 5986347 by Pat Whelen (Pexels License)",
+   "url": "https://www.pexels.com/video/high-angle-view-of-a-circular-staircase-5986347/",
+   "file_url": "https://www.pexels.com/download/video/5986347/",
+   "license": "Pexels License",
+   "creator": "Pat Whelen",
+   "used_in": [
+    {
+     "short": "horror5",
+     "source_in_seconds": [
+      3.0
+     ]
+    }
+   ]
+  },
+  {
+   "file": "px4990438.mp4",
+   "credit": "영상: Pexels",
+   "label": "Pexels video 4990438 by Pavel Danilyuk (Pexels License)",
+   "url": "https://www.pexels.com/video/stairs-inside-the-old-building-4990438/",
+   "file_url": "https://www.pexels.com/download/video/4990438/",
+   "license": "Pexels License",
+   "creator": "Pavel Danilyuk",
+   "used_in": [
+    {
+     "short": "horror5",
+     "source_in_seconds": [
+      1.0
+     ]
+    }
+   ]
+  },
+  {
+   "file": "px7644222.mp4",
+   "credit": "영상: Pexels",
+   "label": "Pexels video 7644222 by Yaroslav Shuraev (Pexels License)",
+   "url": "https://www.pexels.com/video/an-exit-signage-at-the-building-7644222/",
+   "file_url": "https://www.pexels.com/download/video/7644222/",
+   "license": "Pexels License",
+   "creator": "Yaroslav Shuraev",
+   "used_in": [
+    {
+     "short": "horror5",
+     "source_in_seconds": [
+      5.0
+     ]
+    }
+   ]
+  },
+  {
+   "file": "px6028858.mp4",
+   "credit": "영상: Pexels",
+   "label": "Pexels video 6028858 by Артем Ковальчук (Pexels License)",
+   "url": "https://www.pexels.com/video/empty-parking-lot-6028858/",
+   "file_url": "https://www.pexels.com/download/video/6028858/",
+   "license": "Pexels License",
+   "creator": "Артем Ковальчук",
+   "used_in": [
+    {
+     "short": "horror6",
+     "source_in_seconds": [
+      0.5,
+      6.0
+     ]
+    }
+   ]
+  },
+  {
+   "file": "px27890130.mp4",
+   "credit": "영상: Pexels",
+   "label": "Pexels video 27890130 by Baran Robin (Pexels License)",
+   "url": "https://www.pexels.com/video/a-car-is-parked-in-a-parking-garage-27890130/",
+   "file_url": "https://www.pexels.com/download/video/27890130/",
+   "license": "Pexels License",
+   "creator": "Baran Robin",
+   "used_in": [
+    {
+     "short": "horror6",
+     "source_in_seconds": [
+      0.5
+     ]
+    }
+   ]
+  },
+  {
+   "file": "px19217892.mp4",
+   "credit": "영상: Pexels",
+   "label": "Pexels video 19217892 by Nino Souza (Pexels License)",
+   "url": "https://www.pexels.com/video/an-empty-parking-garage-with-a-large-ceiling-19217892/",
+   "file_url": "https://www.pexels.com/download/video/19217892/",
+   "license": "Pexels License",
+   "creator": "Nino Souza",
+   "used_in": [
+    {
+     "short": "horror6",
+     "source_in_seconds": [
+      1.0,
+      6.0
+     ]
+    }
+   ]
+  },
+  {
+   "file": "px5972195.mp4",
+   "credit": "영상: Pexels",
+   "label": "Pexels video 5972195 by gusat silviu (Pexels License)",
+   "url": "https://www.pexels.com/video/empty-mall-parking-5972195/",
+   "file_url": "https://www.pexels.com/download/video/5972195/",
+   "license": "Pexels License",
+   "creator": "gusat silviu",
+   "used_in": [
+    {
+     "short": "horror6",
+     "source_in_seconds": [
+      4.0
+     ]
+    }
+   ]
+  },
+  {
+   "file": "px6028882.mp4",
+   "credit": "영상: Pexels",
+   "label": "Pexels video 6028882 by Артем Ковальчук (Pexels License)",
+   "url": "https://www.pexels.com/video/video-of-a-parking-deck-6028882/",
+   "file_url": "https://www.pexels.com/download/video/6028882/",
+   "license": "Pexels License",
+   "creator": "Артем Ковальчук",
+   "used_in": [
+    {
+     "short": "horror6",
+     "source_in_seconds": [
+      2.0,
+      14.0
+     ]
+    }
+   ]
+  },
+  {
+   "file": "px38433795.mp4",
+   "credit": "영상: Pexels",
+   "label": "Pexels video 38433795 by Rishabh Kaple (Pexels License)",
+   "url": "https://www.pexels.com/video/rainy-day-drive-through-foggy-window-38433795/",
+   "file_url": "https://www.pexels.com/download/video/38433795/",
+   "license": "Pexels License",
+   "creator": "Rishabh Kaple",
+   "used_in": [
+    {
+     "short": "horror6",
+     "source_in_seconds": [
+      1.0,
+      8.0,
+      12.0
+     ]
+    }
+   ]
+  },
+  {
+   "file": "px5192033.mp4",
+   "credit": "영상: Pexels",
+   "label": "Pexels video 5192033 by Ming Z (Pexels License)",
+   "url": "https://www.pexels.com/video/video-of-a-wet-window-5192033/",
+   "file_url": "https://www.pexels.com/download/video/5192033/",
+   "license": "Pexels License",
+   "creator": "Ming Z",
+   "used_in": [
+    {
+     "short": "horror6",
+     "source_in_seconds": [
+      2.0,
+      10.0
+     ]
+    }
+   ]
+  },
+  {
+   "file": "px5227362.mp4",
+   "credit": "영상: Pexels",
+   "label": "Pexels video 5227362 by Francesco Ungaro (Pexels License)",
+   "url": "https://www.pexels.com/video/raindrops-falling-on-the-glass-5227362/",
+   "file_url": "https://www.pexels.com/download/video/5227362/",
+   "license": "Pexels License",
+   "creator": "Francesco Ungaro",
+   "used_in": [
+    {
+     "short": "horror6",
+     "source_in_seconds": [
+      3.0,
+      15.0
+     ]
+    }
+   ]
+  },
+  {
+   "file": "px32078487.mp4",
+   "credit": "영상: Pexels",
+   "label": "Pexels video 32078487 by Rec Everywhere (Pexels License)",
+   "url": "https://www.pexels.com/video/automated-garage-door-closing-at-night-32078487/",
+   "file_url": "https://www.pexels.com/download/video/32078487/",
+   "license": "Pexels License",
+   "creator": "Rec Everywhere",
+   "used_in": [
+    {
+     "short": "horror6",
+     "source_in_seconds": [
+      4.0
+     ]
+    }
+   ]
+  },
+  {
+   "file": "px5245970.mp4",
+   "credit": "영상: Pexels",
+   "label": "Pexels video 5245970 by Hemanth K M (Pexels License)",
+   "url": "https://www.pexels.com/video/a-close-up-shot-of-a-camera-iris-5245970/",
+   "file_url": "https://www.pexels.com/download/video/5245970/",
+   "license": "Pexels License",
+   "creator": "Hemanth K M",
+   "used_in": [
+    {
+     "short": "horror7",
+     "source_in_seconds": [
+      2.0,
+      10.0,
+      3.0
+     ]
+    }
+   ]
+  },
+  {
+   "file": "px34106136.mp4",
+   "credit": "영상: Pexels",
+   "label": "Pexels video 34106136 by Cemrecan Yurtman (Pexels License)",
+   "url": "https://www.pexels.com/video/cctv-camera-on-a-rainy-day-with-architectural-background-34106136/",
+   "file_url": "https://www.pexels.com/download/video/34106136/",
+   "license": "Pexels License",
+   "creator": "Cemrecan Yurtman",
+   "used_in": [
+    {
+     "short": "horror7",
+     "source_in_seconds": [
+      1.0,
+      6.0
+     ]
+    }
+   ]
+  },
+  {
+   "file": "px19228170.mp4",
+   "credit": "영상: Pexels",
+   "label": "Pexels video 19228170 by Curtis Adams (Pexels License)",
+   "url": "https://www.pexels.com/video/the-foyer-of-a-home-with-hardwood-floors-and-a-chandelier-19228170/",
+   "file_url": "https://www.pexels.com/download/video/19228170/",
+   "license": "Pexels License",
+   "creator": "Curtis Adams",
+   "used_in": [
+    {
+     "short": "horror7",
+     "source_in_seconds": [
+      0.5,
+      8.0,
+      12.0
+     ]
+    }
+   ]
+  },
+  {
+   "file": "px6028175.mp4",
+   "credit": "영상: Pexels",
+   "label": "Pexels video 6028175 by Ricky Esquivel (Pexels License)",
+   "url": "https://www.pexels.com/video/camera-lens-closeup-6028175/",
+   "file_url": "https://www.pexels.com/download/video/6028175/",
+   "license": "Pexels License",
+   "creator": "Ricky Esquivel",
+   "used_in": [
+    {
+     "short": "horror7",
+     "source_in_seconds": [
+      1.0
+     ]
+    }
+   ]
+  },
+  {
+   "file": "px19193293.mp4",
+   "credit": "영상: Pexels",
+   "label": "Pexels video 19193293 by Rafael Fernanz (Pexels License)",
+   "url": "https://www.pexels.com/video/living-room-19193293/",
+   "file_url": "https://www.pexels.com/download/video/19193293/",
+   "license": "Pexels License",
+   "creator": "Rafael Fernanz",
+   "used_in": [
+    {
+     "short": "horror7",
+     "source_in_seconds": [
+      1.0,
+      6.0
+     ]
+    }
+   ]
+  },
+  {
+   "file": "px6114429.mp4",
+   "credit": "영상: Pexels",
+   "label": "Pexels video 6114429 by cottonbro studio (Pexels License)",
+   "url": "https://www.pexels.com/video/lamp-on-a-side-table-lighting-up-6114429/",
+   "file_url": "https://www.pexels.com/download/video/6114429/",
+   "license": "Pexels License",
+   "creator": "cottonbro studio",
+   "used_in": [
+    {
+     "short": "horror7",
+     "source_in_seconds": [
+      3.0
+     ]
+    }
+   ]
+  },
+  {
+   "file": "px6443851.mp4",
+   "credit": "영상: Pexels",
+   "label": "Pexels video 6443851 by Pavel Danilyuk (Pexels License)",
+   "url": "https://www.pexels.com/video/video-of-a-bed-and-pillows-6443851/",
+   "file_url": "https://www.pexels.com/download/video/6443851/",
+   "license": "Pexels License",
+   "creator": "Pavel Danilyuk",
+   "used_in": [
+    {
+     "short": "horror7",
+     "source_in_seconds": [
+      1.0,
+      8.0
+     ]
+    }
+   ]
+  },
+  {
+   "file": "px15887293.mp4",
+   "credit": "영상: Pexels",
+   "label": "Pexels video 15887293 by Curtis Adams (Pexels License)",
+   "url": "https://www.pexels.com/video/a-double-bed-in-a-luminous-bedroom-15887293/",
+   "file_url": "https://www.pexels.com/download/video/15887293/",
+   "license": "Pexels License",
+   "creator": "Curtis Adams",
+   "used_in": [
+    {
+     "short": "horror7",
+     "source_in_seconds": [
+      2.0,
+      7.0
+     ]
+    }
+   ]
+  },
+  {
+   "file": "px3773489.mp4",
+   "credit": "영상: Pexels",
+   "label": "Pexels video 3773489 by Curtis Adams (Pexels License)",
+   "url": "https://www.pexels.com/video/tracking-shot-of-a-bedroom-3773489/",
+   "file_url": "https://www.pexels.com/download/video/3773489/",
+   "license": "Pexels License",
+   "creator": "Curtis Adams",
+   "used_in": [
+    {
+     "short": "horror7",
+     "source_in_seconds": [
+      2.0
+     ]
+    }
+   ]
+  },
+  {
+   "file": "px5994915.mp4",
+   "credit": "영상: Pexels",
+   "label": "Pexels video 5994915 by cottonbro studio (Pexels License)",
+   "url": "https://www.pexels.com/video/video-of-a-tent-in-the-middle-of-the-forest-at-night-5994915/",
+   "file_url": "https://www.pexels.com/download/video/5994915/",
+   "license": "Pexels License",
+   "creator": "cottonbro studio",
+   "used_in": [
+    {
+     "short": "horror8",
+     "source_in_seconds": [
+      5.0,
+      20.0,
+      30.0
+     ]
+    }
+   ]
+  },
+  {
+   "file": "px9976082.mp4",
+   "credit": "영상: Pexels",
+   "label": "Pexels video 9976082 by George Morina (Pexels License)",
+   "url": "https://www.pexels.com/video/rain-falling-on-ground-at-night-9976082/",
+   "file_url": "https://www.pexels.com/download/video/9976082/",
+   "license": "Pexels License",
+   "creator": "George Morina",
+   "used_in": [
+    {
+     "short": "horror8",
+     "source_in_seconds": [
+      2.0,
+      20.0
+     ]
+    }
+   ]
+  },
+  {
+   "file": "px34405948.mp4",
+   "credit": "영상: Pexels",
+   "label": "Pexels video 34405948 by Emir Reinado (Pexels License)",
+   "url": "https://www.pexels.com/video/full-moon-shining-through-forest-trees-34405948/",
+   "file_url": "https://www.pexels.com/download/video/34405948/",
+   "license": "Pexels License",
+   "creator": "Emir Reinado",
+   "used_in": [
+    {
+     "short": "horror8",
+     "source_in_seconds": [
+      1.0
+     ]
+    }
+   ]
+  },
+  {
+   "file": "px7714908.mp4",
+   "credit": "영상: Pexels",
+   "label": "Pexels video 7714908 by Greta Hoffman (Pexels License)",
+   "url": "https://www.pexels.com/video/muddy-puddle-7714908/",
+   "file_url": "https://www.pexels.com/download/video/7714908/",
+   "license": "Pexels License",
+   "creator": "Greta Hoffman",
+   "used_in": [
+    {
+     "short": "horror8",
+     "source_in_seconds": [
+      1.0
+     ]
+    }
+   ]
+  },
+  {
+   "file": "px9591436.mp4",
+   "credit": "영상: Pexels",
+   "label": "Pexels video 9591436 by Kain kn (Pexels License)",
+   "url": "https://www.pexels.com/video/light-flashing-in-tent-at-night-9591436/",
+   "file_url": "https://www.pexels.com/download/video/9591436/",
+   "license": "Pexels License",
+   "creator": "Kain kn",
+   "used_in": [
+    {
+     "short": "horror8",
+     "source_in_seconds": [
+      1.0,
+      6.0
+     ]
+    }
+   ]
+  },
+  {
+   "file": "px5391986.mp4",
+   "credit": "영상: Pexels",
+   "label": "Pexels video 5391986 by Saidouni Sidi Med (Pexels License)",
+   "url": "https://www.pexels.com/video/leaves-swaying-in-the-wind-at-night-5391986/",
+   "file_url": "https://www.pexels.com/download/video/5391986/",
+   "license": "Pexels License",
+   "creator": "Saidouni Sidi Med",
+   "used_in": [
+    {
+     "short": "horror8",
+     "source_in_seconds": [
+      2.0
+     ]
+    }
+   ]
+  },
+  {
+   "file": "px4162882.mp4",
+   "credit": "영상: Pexels",
+   "label": "Pexels video 4162882 by Grisha Grishkoff (Pexels License)",
+   "url": "https://www.pexels.com/video/a-tent-on-the-campsite-by-the-lake-4162882/",
+   "file_url": "https://www.pexels.com/download/video/4162882/",
+   "license": "Pexels License",
+   "creator": "Grisha Grishkoff",
+   "used_in": [
+    {
+     "short": "horror8",
+     "source_in_seconds": [
+      1.0
+     ]
+    }
+   ]
+  },
+  {
+   "file": "px39485457.mp4",
+   "credit": "영상: Pexels",
+   "label": "Pexels video 39485457 by Nothing Ahead (Pexels License)",
+   "url": "https://www.pexels.com/video/close-up-of-water-droplets-on-fabric-canopy-39485457/",
+   "file_url": "https://www.pexels.com/download/video/39485457/",
+   "license": "Pexels License",
+   "creator": "Nothing Ahead",
+   "used_in": [
+    {
+     "short": "horror8",
+     "source_in_seconds": [
+      1.0
+     ]
+    }
+   ]
+  },
+  {
+   "file": "px39619866.mp4",
+   "credit": "영상: Pexels",
+   "label": "Pexels video 39619866 by Nothing Ahead (Pexels License)",
+   "url": "https://www.pexels.com/video/rainwater-puddles-in-a-muddy-pathway-39619866/",
+   "file_url": "https://www.pexels.com/download/video/39619866/",
+   "license": "Pexels License",
+   "creator": "Nothing Ahead",
+   "used_in": [
+    {
+     "short": "horror8",
+     "source_in_seconds": [
+      1.0,
+      6.0
+     ]
+    }
+   ]
+  },
+  {
+   "file": "px5419248.mp4",
+   "credit": "영상: Pexels",
+   "label": "Pexels video 5419248 by Yaroslav Shuraev (Pexels License)",
+   "url": "https://www.pexels.com/video/close-up-video-of-a-camping-tent-5419248/",
+   "file_url": "https://www.pexels.com/download/video/5419248/",
+   "license": "Pexels License",
+   "creator": "Yaroslav Shuraev",
+   "used_in": [
+    {
+     "short": "horror8",
+     "source_in_seconds": [
+      2.0,
+      12.0
+     ]
+    }
+   ]
+  },
+  {
+   "file": "px39485454.mp4",
+   "credit": "영상: Pexels",
+   "label": "Pexels video 39485454 by Nothing Ahead (Pexels License)",
+   "url": "https://www.pexels.com/video/raindrops-dripping-from-canopy-focused-in-frame-39485454/",
+   "file_url": "https://www.pexels.com/download/video/39485454/",
+   "license": "Pexels License",
+   "creator": "Nothing Ahead",
+   "used_in": [
+    {
+     "short": "horror8",
+     "source_in_seconds": [
+      2.0
      ]
     }
    ]
