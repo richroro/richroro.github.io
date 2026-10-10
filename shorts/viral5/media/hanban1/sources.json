@@ -1,0 +1,149 @@
+[
+  {
+    "file": "public/hanban1/src/paektu_landsat8_2015.jpg",
+    "type": "image",
+    "size": "4000x3000",
+    "page_url": "https://science.nasa.gov/earth/earth-observatory/mount-paektu-north-koreas-slumbering-giant-88020/",
+    "file_url": "https://assets.science.nasa.gov/content/dam/science/esd/eo/images/imagerecords/88000/88020/paektu_oli_2015265_lrg.jpg",
+    "licence": "Public domain (NASA Earth Observatory image; Landsat 8 OLI data from USGS). Credit line on page: 'NASA Earth Observatory images by Joshua Stevens, using Landsat data from the U.S. Geological Survey'",
+    "credit": "사진: NASA",
+    "description": "Landsat 8 true-colour, 22 Sep 2015, looking straight down at Paektu/Changbaishan in summer. Dark-blue crater lake 천지 inside a light-tan/grey bare summit cone, surrounded by dark-green forest; grey lava lobes to the SE.",
+    "key_points": [
+      {"what": "천지 crater lake (center)", "x": 0.425, "y": 0.294, "radius_frac_of_width": 0.03},
+      {"what": "bare summit cone / caldera rim (circle around lake)", "x": 0.43, "y": 0.30, "radius_frac_of_width": 0.09}
+    ],
+    "notable_moments": []
+  },
+  {
+    "file": "public/hanban1/src/paektu_iss006_2003.jpg",
+    "type": "image",
+    "size": "3032x2064",
+    "page_url": "https://eol.jsc.nasa.gov/Collections/EarthObservatory/articles/Baitoushan_Volcano,_China_and_North_Korea.htm",
+    "file_url": "https://eol.jsc.nasa.gov/DatabaseImages/ESC/large/ISS006/ISS006-E-43366.JPG",
+    "licence": "Public domain – ISS astronaut photograph ISS006-E-43366 (NASA JSC Earth Science & Remote Sensing Unit). Required courtesy line: 'Image courtesy of the Earth Science and Remote Sensing Unit, NASA Johnson Space Center'",
+    "credit": "사진: NASA",
+    "description": "Oblique astronaut photo, 4 Apr 2003: snow-covered caldera with frozen, snow-covered 천지 in the centre; dramatic radial ridges. Bottom ~3% of the frame is a white strip with the label 'ISS006E43366' — crop it out (keep y < 0.965).",
+    "key_points": [
+      {"what": "frozen 천지 crater lake (center)", "x": 0.49, "y": 0.57, "radius_frac_of_width": 0.15}
+    ],
+    "notable_moments": []
+  },
+  {
+    "file": "public/hanban1/src/korea_modis_2010003.jpg",
+    "type": "image",
+    "size": "3400x4600 (portrait)",
+    "page_url": "https://science.nasa.gov/earth/earth-observatory/heavy-snow-in-korea-42211/",
+    "file_url": "https://assets.science.nasa.gov/content/dam/science/esd/eo/images/imagerecords/42000/42211/korea_tmo_2010003_lrg.jpg",
+    "licence": "Public domain – 'NASA image by Jeff Schmaltz, MODIS Rapid Response Team, Goddard Space Flight Center'",
+    "credit": "사진: NASA",
+    "description": "Terra MODIS true colour, 3 Jan 2010: whole Korean Peninsula (snow-covered north, brown south), East Sea with cloud streets, western Japan (Kyushu/Honshu tip) bottom-right, Jeju bottom-centre. Paektu appears as a bright snow cap with a dark forest ring near the top-centre. Portrait format suits 9:16 — good for a 'zoom from peninsula to Paektu' move and for a direction-of-ash arrow toward Japan.",
+    "key_points": [
+      {"what": "백두산 snow cap (summit/caldera)", "x": 0.507, "y": 0.115, "radius_frac_of_width": 0.03},
+      {"what": "Jeju island", "x": 0.355, "y": 0.93},
+      {"what": "western Japan (direction of B-Tm ash)", "x": 0.80, "y": 0.90}
+    ],
+    "notable_moments": []
+  },
+  {
+    "file": "public/hanban1/src/msh1980_plume_usgs.jpg",
+    "type": "image",
+    "size": "2994x4500 (portrait)",
+    "page_url": "https://commons.wikimedia.org/wiki/File:MSH80_eruption_mount_st_helens_05-18-80.jpg",
+    "file_url": "https://upload.wikimedia.org/wikipedia/commons/a/a5/MSH80_eruption_mount_st_helens_05-18-80.jpg",
+    "licence": "Public domain – {{PD-USGov-USGS}}; USGS photo by Austin Post, 18 May 1980 (from USGS Mount St. Helens image collection)",
+    "credit": "사진: USGS",
+    "description": "Classic Plinian eruption column of Mount St. Helens, 18 May 1980: billowing grey ash column rising from the snow-streaked, ash-darkened cone. Portrait – ideal full-screen 9:16 for 'an explosive (Plinian) eruption looks like this'. Generic reference image – NOT Paektu; label as such.",
+    "key_points": [
+      {"what": "eruption column (upper body)", "x": 0.50, "y": 0.28},
+      {"what": "vent / column base at summit", "x": 0.60, "y": 0.54}
+    ],
+    "notable_moments": []
+  },
+  {
+    "file": "public/hanban1/src/pinatubo1991_plume_usgs.jpg",
+    "type": "image",
+    "size": "1920x1284 (Commons 1920px rendition of 2875x1923 original; original blocked by Wikimedia rate limit during download)",
+    "page_url": "https://commons.wikimedia.org/wiki/File:Pinatubo91eruption_plume.jpg",
+    "file_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4e/Pinatubo91eruption_plume.jpg/1920px-Pinatubo91eruption_plume.jpg",
+    "licence": "Public domain – {{PD-USGov-USGS}}; 'U.S. Geological Survey Photograph taken on June 12, 1991, 08:51 hours, by Dave Harlow' (CVO Photo Archives)",
+    "credit": "사진: USGS",
+    "description": "Mount Pinatubo eruption column, 12 Jun 1991, seen from Clark Air Base: towering mushroom-shaped grey ash column above white cumulus and a flat field. Generic explosive-eruption reference – NOT Paektu.",
+    "key_points": [
+      {"what": "ash column", "x": 0.50, "y": 0.28},
+      {"what": "column base above mountains", "x": 0.48, "y": 0.52}
+    ],
+    "notable_moments": []
+  },
+  {
+    "file": "public/hanban1/src/kilauea2018_ash_explosion_usgs.mp4",
+    "type": "video",
+    "size": "1920x1080, 26.1 s, H.264, no audio (trimmed from 4.45–30.5 s of the 37.8 s original; USGS title cards removed)",
+    "page_url": "https://www.usgs.gov/media/videos/kilauea-volcano-summit-eruption-may-24-2018",
+    "file_url": "https://usgs-ocapsv2-public-input-media.s3.us-west-2.amazonaws.com/assets/palladium/production/s3fs-public/atoms/video/multimediaFile-2114.mp4",
+    "licence": "Public domain (USGS page: 'Usage: Public Domain'; video from USGS Hawaiian Volcano Observatory)",
+    "credit": "영상: USGS",
+    "description": "Explosion at Kīlauea summit, ~6 pm HST 24 May 2018; 'produced an ash cloud that rose to 10,000 feet above sea level' (USGS). Real-time ground shot of a cauliflower grey ash cloud boiling up from the crater, dark ash drifting up-right under an overcast evening sky. Small 'USGS' bug at bottom-left (keep or crop). Best available real explosive-ash footage; it is a small phreatic explosion, not Plinian – use as generic 'ash cloud' b-roll.",
+    "notable_moments": [
+      {"t": 0, "what": "Ash cloud already billowing from crater floor, plume left-centre (x≈0.4), dark ash streaming up-right"},
+      {"t": 4, "what": "Slight reframing to the right; dense white-grey base churning, dark top drifting right"},
+      {"t": 8, "what": "Camera steady; dark ash column top-right becomes darker/bigger"},
+      {"t": 12, "what": "Plume base widens; good steady 2–3 s window 12–15"},
+      {"t": 16, "what": "Darker ash core appears inside the base of the cloud"},
+      {"t": 20, "what": "Dark core grows; most dramatic 'ash' look 20–24"},
+      {"t": 24, "what": "Same framing, cloud still rising; clip ends ~26 s"}
+    ]
+  },
+  {
+    "file": "public/hanban1/src/kilauea2026_lava_fountain_usgs.mp4",
+    "type": "video",
+    "size": "1280x720, 51.5 s, H.264 + AAC (original file, unmodified)",
+    "page_url": "https://www.usgs.gov/media/videos/june-1-2026-video-episode-48-lava-fountain-summit-kilauea",
+    "file_url": "https://usgs-ocapsv2-public-input-media.s3.us-west-2.amazonaws.com/assets/palladium/production/s3fs-public/media/video/DSC_7557_converted.mp4",
+    "licence": "Public domain ('USGS video by L. Gallant'; USGS page Usage: Public Domain; mirrored at archive.org/details/usgs-volcano-kilauea-dsc-7557-converted-mp4 with PD mark)",
+    "credit": "영상: USGS",
+    "description": "Kīlauea episode-48 lava fountain, 1 Jun 2026, Halemaʻumaʻu crater: huge bright orange-red lava fountain with tan tephra/gas plume rising behind it to the right, dark tephra-covered ground in foreground, blue sky. Very eye-catching hook shot, but it is Hawaiian-style (effusive) – Paektu was explosive; avoid implying Paektu looks like this. Only 720p.",
+    "notable_moments": [
+      {"t": 0, "what": "Full lava fountain centre-left (x≈0.45, y≈0.45), plume billowing up-right; locked-off tripod shot"},
+      {"t": 10, "what": "Same framing; fountain pulsing taller, sky brightening"},
+      {"t": 20, "what": "Tephra cloud thicker on the left side of fountain"},
+      {"t": 30, "what": "Fountain steady; plume drifting right"},
+      {"t": 40, "what": "Similar; white steam patch top-right grows"},
+      {"t": 50, "what": "End; nearly identical framing throughout – any 2–3 s window works"}
+    ]
+  },
+  {
+    "file": "public/hanban1/src/tonga2022_goes_umbrella_nasa_noaa.mp4",
+    "type": "video",
+    "size": "3840x2160, 5.0 s, 29.97 fps, H.264 (original file)",
+    "page_url": "https://science.nasa.gov/earth/earth-observatory/hunga-tonga-hunga-haapai-erupts-149347/",
+    "file_url": "https://assets.science.nasa.gov/content/dam/science/esd/eo/images/imagerecords/152000/152313/tonga_goes_2022015_4k.mp4",
+    "licence": "Public domain – NASA Earth Observatory animation using 'GOES imagery courtesy of NOAA and the National Environmental Satellite, Data, and Information Service (NESDIS)'. Same loop on https://science.nasa.gov/resource/tonga-eruption/ credited 'NASA Earth Observatory image by Joshua Stevens using GOES imagery courtesy of NOAA and NESDIS'",
+    "credit": "영상: NASA·NOAA",
+    "description": "GOES-17 view from space of the 15 Jan 2022 Hunga Tonga–Hunga Haʻapai eruption: a mushroom-shaped umbrella cloud bursts out of the ocean and spreads hundreds of km, then the scene passes into night. Shows how a big explosive eruption looks from orbit. Very short (5 s) – slow it down 0.5x for a 3–4 s shot if needed.",
+    "notable_moments": [
+      {"t": 0, "what": "Daylight cloud field; tiny dark eruption dot near centre (x≈0.48, y≈0.52)"},
+      {"t": 1, "what": "Umbrella cloud already mushrooming, casting a shadow to the right"},
+      {"t": 2, "what": "Umbrella cloud larger; day/night terminator darkening right half"},
+      {"t": 3, "what": "Night side: bright white umbrella cloud with a faint concentric shock-wave ring"},
+      {"t": 4, "what": "Cloud wider, ring expanding; best 'size' frame"}
+    ]
+  },
+  {
+    "file": "public/hanban1/src/msh1980_ashcloud_satellite_usgs_noaa.mp4",
+    "type": "video",
+    "size": "400x268 (LOW-RES), 15.0 s, H.264, no audio (trimmed 0.9–15.9 s to remove USGS logo cards)",
+    "page_url": "https://www.usgs.gov/media/videos/mount-st-helens-1980-ash-cloud-seen-space",
+    "file_url": "https://usgs-ocapsv2-public-input-media.s3.us-west-2.amazonaws.com/assets/palladium/production/s3fs-public/MSH_1980_NOAA.mp4",
+    "licence": "Public domain (USGS page Usage: Public Domain; satellite images 'used courtesy of the National Oceanic and Atmospheric Administration (NOAA)')",
+    "credit": "영상: USGS·NOAA",
+    "description": "Optional. Grayscale 1980 GOES satellite frames (one per second) of the western USA showing the Mount St. Helens ash cloud (labelled 'ASH', red arrow on 'Mount St. Helens') drifting EAST with the westerlies over ~2 days. Illustrates 'ash goes where the wind blows / westerlies carry ash east'. Very low resolution – use small/inset only, or skip.",
+    "notable_moments": [
+      {"t": 0, "what": "18 May 1980 15:15 GMT frame; red arrow points at Mount St. Helens (left, x≈0.15, y≈0.3)"},
+      {"t": 1, "what": "Yellow 'ASH' label appears just east of the volcano"},
+      {"t": 3, "what": "Ash label moved further east over Idaho"},
+      {"t": 7, "what": "Ash cloud over Montana; frames continue through evening"},
+      {"t": 12, "what": "19 May frames: 'ASH' label far east over the Plains"},
+      {"t": 14, "what": "Last frame (19 May 22:15 GMT)"}
+    ]
+  }
+]

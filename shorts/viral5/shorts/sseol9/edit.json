@@ -88,6 +88,38 @@
     ],
     "steps": [
      "a.매일",
+     "a.저녁"
+    ],
+    "chars": [
+     {
+      "name": "나",
+      "mood": "think",
+      "color": "#FFD84D"
+     },
+     {
+      "name": "할머니",
+      "mood": "shy",
+      "color": "#F4C7D6"
+     }
+    ]
+   }
+  },
+  {
+   "from": "a.문고리에",
+   "label": "handle",
+   "gfx": {
+    "type": "scene",
+    "chars": [
+     {
+      "name": "나",
+      "mood": "shock",
+      "color": "#FFD84D"
+     }
+    ],
+    "bg": "door",
+    "prop": "🛍️",
+    "steps": [
+     0,
      "a.반찬이"
     ]
    }
@@ -109,7 +141,7 @@
      0,
      0.05
     ],
-    "bg": "linear-gradient(180deg, #efe9de 0%, #ddd3c3 100%)"
+    "bg": "door"
    }
   },
   {
@@ -128,7 +160,7 @@
      0,
      0.05
     ],
-    "bg": "linear-gradient(180deg, #efe9de 0%, #ddd3c3 100%)"
+    "bg": "door"
    }
   },
   {
@@ -147,7 +179,7 @@
      0,
      0.05
     ],
-    "bg": "linear-gradient(180deg, #efe9de 0%, #ddd3c3 100%)"
+    "bg": "door"
    }
   },
   {
@@ -166,7 +198,7 @@
      "who": 0,
      "text": "이거... [누가] 주는 거지?"
     },
-    "bg": "linear-gradient(180deg, #efe9de 0%, #ddd3c3 100%)"
+    "bg": "door"
    }
   },
   {
@@ -184,7 +216,7 @@
     "prop": "🚪",
     "propX": 0.7,
     "place": "📍 문 뒤",
-    "bg": "linear-gradient(180deg, #efe9de 0%, #ddd3c3 100%)"
+    "bg": "door"
    }
   },
   {
@@ -194,7 +226,7 @@
     "type": "scene",
     "chars": [],
     "card": "저녁 [6:00]",
-    "bg": "linear-gradient(180deg, #efe9de 0%, #ddd3c3 100%)"
+    "bg": "door"
    }
   },
   {
@@ -218,7 +250,7 @@
      0,
      "e.살금살금"
     ],
-    "bg": "linear-gradient(180deg, #efe9de 0%, #ddd3c3 100%)"
+    "bg": "door"
    }
   },
   {
@@ -243,7 +275,7 @@
     },
     "zoom": 1.08,
     "focus": 1,
-    "bg": "linear-gradient(180deg, #efe9de 0%, #ddd3c3 100%)"
+    "bg": "door"
    }
   },
   {
@@ -253,7 +285,7 @@
     "type": "scene",
     "chars": [],
     "card": "3년 전...",
-    "bg": "linear-gradient(180deg, #efe9de 0%, #ddd3c3 100%)"
+    "bg": "door"
    }
   },
   {
@@ -281,7 +313,7 @@
      9,
      "h.오"
     ],
-    "bg": "linear-gradient(180deg, #efe9de 0%, #ddd3c3 100%)"
+    "bg": "door"
    }
   },
   {
@@ -304,7 +336,7 @@
      "who": 1,
      "text": "그때 고마워서, [매일 갚는 거야.]"
     },
-    "bg": "linear-gradient(180deg, #efe9de 0%, #ddd3c3 100%)"
+    "bg": "door"
    }
   },
   {
@@ -329,7 +361,7 @@
      0,
      "j.반찬통을"
     ],
-    "bg": "linear-gradient(180deg, #efe9de 0%, #ddd3c3 100%)"
+    "bg": "door"
    }
   },
   {
@@ -356,7 +388,7 @@
      9,
      "k.더"
     ],
-    "bg": "linear-gradient(180deg, #efe9de 0%, #ddd3c3 100%)"
+    "bg": "door"
    }
   },
   {

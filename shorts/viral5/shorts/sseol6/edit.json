@@ -83,6 +83,38 @@
     ],
     "steps": [
      "a.매일",
+     "a.팀장님"
+    ],
+    "chars": [
+     {
+      "name": "신입",
+      "mood": "shy",
+      "color": "#FFB36B"
+     },
+     {
+      "name": "팀장님",
+      "mood": "happy",
+      "color": "#C9A7FF"
+     }
+    ]
+   }
+  },
+  {
+   "from": "a.책상에",
+   "label": "desk",
+   "gfx": {
+    "type": "scene",
+    "chars": [
+     {
+      "name": "신입",
+      "mood": "shy",
+      "color": "#FFB36B"
+     }
+    ],
+    "bg": "office",
+    "prop": "🍬",
+    "steps": [
+     0,
      "a.사탕을"
     ]
    }
@@ -269,7 +301,6 @@
      }
     ],
     "prop": "⏰",
-    "place": "📍 아침 거른 날",
     "big": "회의 [2시간]",
     "steps": [
      0,
@@ -278,6 +309,28 @@
      "i.거른"
     ],
     "bg": "office"
+   }
+  },
+  {
+   "from": "i.전부",
+   "label": "skipped",
+   "gfx": {
+    "type": "scene",
+    "chars": [
+     {
+      "name": "팀장님",
+      "mood": "sick",
+      "color": "#C9A7FF",
+      "size": 1.08
+     }
+    ],
+    "bg": "office",
+    "place": "📍 아침 거른 날",
+    "prop": "🍞❌",
+    "steps": [
+     0,
+     0.1
+    ]
    }
   },
   {

@@ -1,0 +1,355 @@
+{
+ "titleStyle": "band",
+ "captionY": 1640,
+ "credit": "영상: Pexels",
+ "sources": {
+  "selfie": {
+   "file": "ph32571093.jpg",
+   "credit": "사진: Pexels",
+   "label": "Pexels photo 32571093 by Anna Holodna (Pexels License)",
+   "url": "https://www.pexels.com/photo/couple-taking-mirror-selfie-in-elevator-32571093/",
+   "license": "Pexels License",
+   "creator": "Anna Holodna"
+  },
+  "selfie2": {
+   "file": "ph17489439.jpg",
+   "credit": "사진: Pexels",
+   "label": "Pexels photo 17489439 by Zakhar Vozhdaienko (Pexels License)",
+   "url": "https://www.pexels.com/photo/woman-in-jacket-taking-photo-of-herself-in-elevator-17489439/",
+   "license": "Pexels License",
+   "creator": "Zakhar Vozhdaienko"
+  },
+  "narrow": {
+   "file": "ph7722159.jpg",
+   "credit": "사진: Pexels",
+   "label": "Pexels photo 7722159 by Max Vakhtbovych (Pexels License)",
+   "url": "https://www.pexels.com/photo/a-stainless-steel-narrow-elevator-7722159/",
+   "license": "Pexels License",
+   "creator": "Max Vakhtbovych"
+  },
+  "wait": {
+   "file": "px5378938.mp4",
+   "credit": "영상: Pexels",
+   "label": "Pexels video 5378938 by cottonbro studio (Pexels License)",
+   "url": "https://www.pexels.com/video/people-waiting-fir-the-elevator-lift-5378938/",
+   "license": "Pexels License",
+   "creator": "cottonbro studio"
+  },
+  "floor": {
+   "file": "px15434928.mp4",
+   "credit": "영상: Pexels",
+   "label": "Pexels video 15434928 by Yusuf Çelik (Pexels License)",
+   "url": "https://www.pexels.com/video/an-elevator-screen-shows-going-downfloor-15434928/",
+   "license": "Pexels License",
+   "creator": "Yusuf Çelik"
+  },
+  "wheel": {
+   "file": "px7423581.mp4",
+   "credit": "영상: Pexels",
+   "label": "Pexels video 7423581 by Gustavo Fring (Pexels License)",
+   "url": "https://www.pexels.com/video/man-moving-his-wheelchair-7423581/",
+   "license": "Pexels License",
+   "creator": "Gustavo Fring"
+  },
+  "wheel2": {
+   "file": "px8400828.mp4",
+   "credit": "영상: Pexels",
+   "label": "Pexels video 8400828 by SHVETS production (Pexels License)",
+   "url": "https://www.pexels.com/video/person-using-a-wheelchair-8400828/",
+   "license": "Pexels License",
+   "creator": "SHVETS production"
+  },
+  "refl": {
+   "file": "px8525792.mp4",
+   "credit": "영상: Pexels",
+   "label": "Pexels video 8525792 by cottonbro studio (Pexels License)",
+   "url": "https://www.pexels.com/video/a-reflection-of-a-person-holding-the-push-ring-of-the-wheelchair-8525792/",
+   "license": "Pexels License",
+   "creator": "cottonbro studio"
+  },
+  "door": {
+   "file": "pxpb131012.mp4",
+   "credit": "영상: Pixabay",
+   "label": "Pixabay video 131012 by Jesehab (Pixabay Content License)",
+   "url": "https://pixabay.com/videos/inside-elevator-elevator-rise-131012/",
+   "license": "Pixabay Content License",
+   "creator": "Jesehab"
+  }
+ },
+ "clips": [
+  {
+   "src": "selfie",
+   "from": "hook",
+   "label": "엘리베이터 거울 셀카",
+   "crop": [
+    0.5,
+    0.45,
+    1.0
+   ],
+   "zoom": [
+    1.0,
+    1.06
+   ],
+   "audio": 0
+  },
+  {
+   "src": "wait",
+   "from": "myth",
+   "in": 5,
+   "label": "엘리베이터 기다리기",
+   "zoom": [
+    1.0,
+    1.06
+   ],
+   "audio": 0
+  },
+  {
+   "src": "floor",
+   "from": "myth.달았다고들",
+   "in": 0.5,
+   "label": "층 표시",
+   "crop": [
+    0.5,
+    0.4,
+    1.0
+   ],
+   "zoom": [
+    1.0,
+    1.05
+   ],
+   "audio": 0
+  },
+  {
+   "src": "door",
+   "from": "law",
+   "in": 4,
+   "label": "엘리베이터 안",
+   "crop": [
+    0.35,
+    0.5,
+    1.0
+   ],
+   "zoom": [
+    1.0,
+    1.06
+   ],
+   "audio": 0
+  },
+  {
+   "src": "narrow",
+   "from": "chair",
+   "label": "좁은 엘리베이터",
+   "crop": [
+    0.5,
+    0.5,
+    1.0
+   ],
+   "zoom": [
+    1.0,
+    1.06
+   ],
+   "audio": 0
+  },
+  {
+   "src": "wheel",
+   "from": "chair.돌아설",
+   "in": 2,
+   "label": "휠체어 바퀴",
+   "zoom": [
+    1.0,
+    1.05
+   ],
+   "audio": 0
+  },
+  {
+   "src": "wheel2",
+   "from": "back",
+   "in": 3,
+   "label": "후진하는 휠체어",
+   "crop": [
+    0.5,
+    0.55,
+    1.0
+   ],
+   "zoom": [
+    1.0,
+    1.05
+   ],
+   "audio": 0
+  },
+  {
+   "src": "door",
+   "from": "back.문이",
+   "in": 29.8,
+   "label": "뒤에서 열리는 문",
+   "crop": [
+    0.72,
+    0.5,
+    1.0
+   ],
+   "zoom": [
+    1.0,
+    1.03
+   ],
+   "audio": 0
+  },
+  {
+   "src": "selfie",
+   "from": "mirror",
+   "label": "뒷벽 거울",
+   "crop": [
+    0.5,
+    0.45,
+    1.0
+   ],
+   "zoom": [
+    1.0,
+    1.02
+   ],
+   "audio": 0
+  },
+  {
+   "src": "selfie2",
+   "from": "mirror.육십",
+   "label": "거울 셀카",
+   "crop": [
+    0.5,
+    0.45,
+    1.0
+   ],
+   "zoom": [
+    1.0,
+    1.06
+   ],
+   "audio": 0
+  },
+  {
+   "src": "refl",
+   "from": "rule",
+   "in": 3,
+   "label": "거울에 비친 휠체어",
+   "crop": [
+    0.5,
+    0.5,
+    1.0
+   ],
+   "zoom": [
+    1.0,
+    1.05
+   ],
+   "audio": 0
+  },
+  {
+   "src": "refl",
+   "from": "end",
+   "in": 20,
+   "label": "휠체어 바퀴와 반사",
+   "crop": [
+    0.5,
+    0.5,
+    1.0
+   ],
+   "zoom": [
+    1.05,
+    1.12
+   ],
+   "audio": 0
+  },
+  {
+   "src": "selfie",
+   "from": "end.백미러",
+   "label": "뒷벽 거울",
+   "crop": [
+    0.5,
+    0.42,
+    1.25
+   ],
+   "zoom": [
+    1.0,
+    1.04
+   ],
+   "audio": 0
+  }
+ ],
+ "marks": [
+  {
+   "kind": "circle",
+   "x": 540,
+   "y": 820,
+   "r": 330,
+   "from": "mirror.뒷벽",
+   "to": "mirror.육십"
+  },
+  {
+   "kind": "arrow",
+   "x": 800,
+   "y": 1100,
+   "rot": 200,
+   "from": "back.문이",
+   "to": "back@end"
+  }
+ ],
+ "stickers": [
+  {
+   "text": "장애인등편의법 시행규칙 [별표 1]",
+   "from": "law.우리",
+   "to": "chair-0.1",
+   "y": 540,
+   "size": 40
+  },
+  {
+   "text": "별표 1 · 9.라.(2) 승강기 거울",
+   "from": "mirror.육십",
+   "to": "rule-0.1",
+   "y": 540,
+   "size": 40,
+   "bg": "#fff"
+  }
+ ],
+ "sfx": [
+  [
+   "myth",
+   "whoosh",
+   0.4
+  ],
+  [
+   "law",
+   "riser",
+   0.4
+  ],
+  [
+   "law.우리",
+   "pop",
+   0.6
+  ],
+  [
+   "chair",
+   "whoosh",
+   0.4
+  ],
+  [
+   "back.문이",
+   "k_question_001",
+   0.5
+  ],
+  [
+   "mirror.뒷벽",
+   "ding",
+   0.6
+  ],
+  [
+   "end",
+   "whoosh",
+   0.4
+  ]
+ ],
+ "punches": [
+  "mirror.뒷벽"
+ ],
+ "flashes": [],
+ "music": {
+  "file": "music/sneaky_snitch.mp3",
+  "gain": 0.1,
+  "start": 0
+ }
+}

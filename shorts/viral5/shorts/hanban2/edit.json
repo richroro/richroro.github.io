@@ -1,0 +1,373 @@
+{
+ "titleStyle": "band",
+ "captionY": 1640,
+ "credit": "위성: NASA",
+ "sources": {
+  "modis": {
+   "file": "hinnamnor_modis_20220901.jpg",
+   "credit": "위성: NASA",
+   "label": "Super Typhoon Hinnamnor, Terra MODIS, 1 Sep 2022 (NASA Earth Observatory)",
+   "url": "https://earthobservatory.nasa.gov/images/150290/typhoon-hinnamnor"
+  },
+  "khanun": {
+   "file": "svs_gpm_khanun_2023.mp4",
+   "credit": "영상: NASA",
+   "label": "GPM IMERG view of Typhoon Khanun, 31 Jul 2023 (NASA GSFC SVS 5135)",
+   "url": "https://svs.gsfc.nasa.gov/5135"
+  },
+  "milton": {
+   "file": "iss_hurricane_milton_2024_0-75s.mp4",
+   "credit": "영상: NASA",
+   "label": "Hurricane Milton from the ISS, 8 Oct 2024 (NASA JSC, 0-75 s of the original)",
+   "url": "https://images.nasa.gov/details/jsc2024m000173_International_Space_Station_Cameras_Capture_New_Views_Of_Hurricane_Milton_241008"
+  },
+  "erin": {
+   "file": "iss_hurricane_erin_2025_122-176s.mp4",
+   "credit": "영상: NASA",
+   "label": "Hurricane Erin from the ISS, Aug 2025 (NASA JSC, 122-176 s of the original)",
+   "url": "https://images.nasa.gov/details/jsc2025m000148-Hurricane_Erin_Seen_From_International_Space_Station"
+  },
+  "w0904": {
+   "file": "hinnamnor_wv_wide_2022-09-04.jpg",
+   "credit": "위성: NASA Worldview",
+   "label": "Hinnamnor, VIIRS corrected reflectance, 4 Sep 2022 (NASA Worldview snapshot)",
+   "url": "https://worldview.earthdata.nasa.gov/?v=115,15,150,46&l=VIIRS_SNPP_CorrectedReflectance_TrueColor,VIIRS_NOAA20_CorrectedReflectance_TrueColor,Coastlines_15m&t=2022-09-04"
+  },
+  "p0905": {
+   "file": "hinnamnor_wv_portrait_2022-09-05.jpg",
+   "credit": "위성: NASA Worldview",
+   "label": "Hinnamnor south-west of Jeju, VIIRS, 5 Sep 2022 (NASA Worldview snapshot, lon 117-139, lat 17-45)",
+   "url": "https://worldview.earthdata.nasa.gov/?v=117,17,139,45&l=VIIRS_SNPP_CorrectedReflectance_TrueColor,VIIRS_NOAA20_CorrectedReflectance_TrueColor,Coastlines_15m&t=2022-09-05"
+  },
+  "p0906": {
+   "file": "hinnamnor_wv_portrait_2022-09-06.jpg",
+   "credit": "위성: NASA Worldview",
+   "label": "Hinnamnor gone north-east, VIIRS, 6 Sep 2022 (NASA Worldview snapshot, lon 117-139, lat 17-45)",
+   "url": "https://worldview.earthdata.nasa.gov/?v=117,17,139,45&l=VIIRS_SNPP_CorrectedReflectance_TrueColor,VIIRS_NOAA20_CorrectedReflectance_TrueColor,Coastlines_15m&t=2022-09-06"
+  },
+  "seq": {
+   "file": "hinnamnor_wv_wide_sequence.mp4",
+   "credit": "위성: NASA Worldview",
+   "label": "Hinnamnor daily VIIRS flip-book, 29 Aug - 6 Sep 2022 (built from NASA Worldview snapshots, 0.8 s per day)",
+   "url": "https://worldview.earthdata.nasa.gov/?v=115,15,150,46&l=VIIRS_SNPP_CorrectedReflectance_TrueColor,VIIRS_NOAA20_CorrectedReflectance_TrueColor,Coastlines_15m&t=2022-09-05"
+  },
+  "jangmi": {
+   "file": "jangmi2026_viirs_20260531.jpg",
+   "credit": "위성: NASA",
+   "label": "Typhoon Jangmi, VIIRS, 31 May 2026 (NASA Earth Observatory)",
+   "url": "https://science.nasa.gov/earth/earth-observatory/typhoon-jangmi/"
+  },
+  "jeye": {
+   "file": "jangmi2026_viirs_eye_20260530.jpg",
+   "credit": "위성: NASA",
+   "label": "Typhoon Jangmi eye, VIIRS, 30 May 2026 (NASA Earth Observatory)",
+   "url": "https://science.nasa.gov/earth/earth-observatory/typhoon-jangmi/"
+  }
+ },
+ "clips": [
+  {
+   "src": "modis",
+   "from": "hook",
+   "label": "힌남노의 눈",
+   "crop": [
+    0.565,
+    0.44,
+    1.35
+   ],
+   "zoom": [
+    1.0,
+    1.08
+   ]
+  },
+  {
+   "src": "khanun",
+   "from": "high",
+   "in": 0.5,
+   "label": "지구본 위 태풍 (GPM)",
+   "crop": [
+    0.5,
+    0.45,
+    1.0
+   ],
+   "zoom": [
+    1.0,
+    1.05
+   ],
+   "audio": 0
+  },
+  {
+   "src": "milton",
+   "from": "high.고기압을",
+   "in": 18.0,
+   "label": "우주에서 본 허리케인",
+   "crop": [
+    0.45,
+    0.72,
+    1.45
+   ],
+   "zoom": [
+    1.0,
+    1.05
+   ],
+   "audio": 0
+  },
+  {
+   "src": "khanun",
+   "from": "high.가장자리를",
+   "in": 7.0,
+   "label": "북상하는 태풍 (GPM)",
+   "crop": [
+    0.5,
+    0.45,
+    1.0
+   ],
+   "zoom": [
+    1.0,
+    1.05
+   ],
+   "audio": 0
+  },
+  {
+   "src": "w0904",
+   "from": "turn",
+   "label": "북쪽으로 올라오는 힌남노",
+   "crop": [
+    0.32,
+    0.45,
+    1.0
+   ],
+   "zoom": [
+    1.0,
+    1.05
+   ]
+  },
+  {
+   "src": "p0905",
+   "from": "turn.편서풍을",
+   "label": "제주 남서쪽의 힌남노",
+   "crop": [
+    0.45,
+    0.42,
+    1.0
+   ],
+   "zoom": [
+    1.0,
+    1.05
+   ]
+  },
+  {
+   "src": "p0906",
+   "from": "turn.북동쪽으로",
+   "label": "북동쪽으로 빠져나간 힌남노",
+   "crop": [
+    0.5,
+    0.35,
+    1.0
+   ],
+   "zoom": [
+    1.0,
+    1.05
+   ]
+  },
+  {
+   "src": "seq",
+   "from": "hin",
+   "in": 1.0,
+   "speed": 0.75,
+   "label": "힌남노 9일간 위성 사진",
+   "crop": [
+    0.5,
+    0.5,
+    1.0
+   ],
+   "zoom": [
+    1.0,
+    1.0
+   ],
+   "audio": 0
+  },
+  {
+   "src": "seq",
+   "from": "fast",
+   "in": 4.0,
+   "speed": 0.65,
+   "label": "힌남노 9일간 위성 사진",
+   "crop": [
+    0.5,
+    0.5,
+    1.0
+   ],
+   "zoom": [
+    1.0,
+    1.0
+   ],
+   "audio": 0
+  },
+  {
+   "src": "jangmi",
+   "from": "jangmi",
+   "label": "태풍 장미 (2026.5.31)",
+   "crop": [
+    0.48,
+    0.5,
+    1.15
+   ],
+   "zoom": [
+    1.0,
+    1.06
+   ]
+  },
+  {
+   "src": "jeye",
+   "from": "jangmi.꺾여",
+   "label": "태풍 장미의 눈",
+   "crop": [
+    0.5,
+    0.5,
+    1.2
+   ],
+   "zoom": [
+    1.0,
+    1.06
+   ]
+  },
+  {
+   "src": "erin",
+   "from": "end",
+   "in": 48.0,
+   "label": "구름 꼭대기 (ISS)",
+   "crop": [
+    0.5,
+    0.55,
+    1.0
+   ],
+   "zoom": [
+    1.0,
+    1.05
+   ],
+   "audio": 0
+  },
+  {
+   "src": "modis",
+   "from": "end.우리",
+   "label": "힌남노의 눈",
+   "crop": [
+    0.565,
+    0.44,
+    1.0
+   ],
+   "zoom": [
+    1.0,
+    1.08
+   ]
+  }
+ ],
+ "marks": [
+  {
+   "kind": "circle",
+   "x": 296,
+   "y": 1242,
+   "r": 150,
+   "from": "hin.오키나와",
+   "to": "fast-0.05"
+  },
+  {
+   "kind": "arrow",
+   "x": 860,
+   "y": 600,
+   "rot": -40,
+   "from": "turn.북동쪽으로+0.1",
+   "to": "hin-0.05"
+  }
+ ],
+ "stickers": [
+  {
+   "text": "2022 초강력 태풍 힌남노",
+   "from": "hook+0.1",
+   "to": "high-0.05",
+   "y": 520
+  },
+  {
+   "text": "참고: 우주에서 본 허리케인",
+   "from": "high.고기압을+0.1",
+   "to": "high.가장자리를-0.05",
+   "y": 520,
+   "size": 40
+  },
+  {
+   "text": "2022.9.5 · 제주 남서쪽",
+   "from": "turn.편서풍을+0.1",
+   "to": "turn.북동쪽으로-0.05",
+   "y": 520
+  },
+  {
+   "text": "다음 날, 북동쪽으로 빠져나감",
+   "from": "turn.북동쪽으로+0.1",
+   "to": "hin-0.05",
+   "y": 520,
+   "size": 42
+  },
+  {
+   "text": "8.29 ~ 9.6 매일 위성 사진",
+   "from": "hin+0.1",
+   "to": "fast.동해로-0.05",
+   "y": 520
+  },
+  {
+   "text": "시속 2km → 98km (기상청)",
+   "from": "fast.동해로",
+   "to": "jangmi-0.05",
+   "y": 520
+  },
+  {
+   "text": "2026.5.31 태풍 장미 (위성)",
+   "from": "jangmi+0.1",
+   "to": "jangmi.꺾여-0.05",
+   "y": 520
+  }
+ ],
+ "sfx": [
+  [
+   "hook",
+   "whoosh",
+   0.4
+  ],
+  [
+   "high",
+   "k_question_001",
+   0.35
+  ],
+  [
+   "turn.북동쪽으로",
+   "whoosh_dn",
+   0.45
+  ],
+  [
+   "hin.멈춰",
+   "k_drop_002",
+   0.4
+  ],
+  [
+   "fast.동해로",
+   "riser",
+   0.3
+  ],
+  [
+   "end",
+   "ding",
+   0.3
+  ]
+ ],
+ "punches": [
+  "turn.북동쪽으로",
+  "fast.백"
+ ],
+ "flashes": [
+  "hin"
+ ],
+ "music": {
+  "file": "music/Movement Proposition.mp3",
+  "gain": 0.12,
+  "start": 0
+ }
+}
