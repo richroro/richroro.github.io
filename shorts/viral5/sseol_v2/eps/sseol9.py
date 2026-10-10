@@ -5,7 +5,7 @@ DOOR = {"bg": "door", "sign": "502호"}
 EP = {
     "title": "옆집에서 3년째 반찬이 온다",
     "music": ("monkeys_spinning_monkeys", 0.16),
-    "voices": {"nar": ("SunHi", "+28%"), "me": ("SunHi", "+26%", "+8Hz"), "gma": ("SunHi", "+22%", "-10Hz")},
+    "voices": {"nar": ("SunHi", "+32%"), "me": ("SunHi", "+30%", "+8Hz"), "gma": ("SunHi", "+28%", "-10Hz")},
     "cast": {"me": ME, "gma": GMA},
     "beats": [
         ("a", "nar", "옆집에서 삼 년째 반찬이 와.", "옆집에서 [3년째] / 반찬이 와", {**DOOR, "chars": ["me:shock@0.4*1.15"], "prop": "🛍️", "propX": 0.8}),
