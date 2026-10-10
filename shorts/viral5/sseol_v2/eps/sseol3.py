@@ -5,7 +5,7 @@ FR = {"name": "친구", "look": {"age": "kid", "hairdo": "spiky", "hair": "#5a3a
 EP = {
     "title": "비 오면 내 운동화가 사라진다ㅋㅋ",
     "music": ("monkeys_spinning_monkeys", 0.17),
-    "voices": {"nar": ("InJoon", "+28%"), "me": ("InJoon", "+26%", "+22Hz"), "gma": ("SunHi", "+16%", "-10Hz"), "fr": ("Hyunsu", "+26%", "+18Hz")},
+    "voices": {"nar": ("InJoon", "+28%"), "me": ("InJoon", "+26%", "+22Hz"), "gma": ("SunHi", "+22%", "-10Hz"), "fr": ("Hyunsu", "+26%", "+18Hz")},
     "cast": {"me": ME, "gma": GMA, "fr": FR},
     "beats": [
         ("a", "nar", "비만 오면 내 운동화가 사라져.", "비만 오면 / 내 [운동화]가 사라져", {"bg": "rain", "chars": ["me:shock@0.4*1.2"], "prop": "👟❓", "propX": 0.8}),

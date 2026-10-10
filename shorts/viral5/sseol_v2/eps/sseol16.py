@@ -7,7 +7,7 @@ PARK = {"bg": "linear-gradient(180deg,#bfe6ff 0%,#e9f7ff 60%,#9bd27b 60%,#7fbf5f
 EP = {
     "title": "할아버지가 나무만 1년 찍었다",
     "music": ("monkeys_spinning_monkeys", 0.15),
-    "voices": {"nar": ("SunHi", "+28%"), "me": ("SunHi", "+26%", "+8Hz"), "gpa": ("InJoon", "+12%", "-15Hz"), "gma": ("SunHi", "+14%", "-10Hz")},
+    "voices": {"nar": ("SunHi", "+28%"), "me": ("SunHi", "+26%", "+8Hz"), "gpa": ("InJoon", "+22%", "-15Hz"), "gma": ("SunHi", "+22%", "-10Hz")},
     "cast": {"me": ME, "gpa": GPA, "gma": GMA, "gma2": GMA2},
     "beats": [
         ("a", "nar", "할아버지가 일 년째 나무만 찍어.", "할아버지가 1년째 / [나무만] 찍어", {**PARK, "chars": ["gpa:smug@0.3*1.1"], "prop": "🌳", "propX": 0.75, "tags": True}),

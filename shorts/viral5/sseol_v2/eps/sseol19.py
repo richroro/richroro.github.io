@@ -7,7 +7,7 @@ CH = "2학년 4반 단톡방"
 EP = {
     "title": "할머니가 우리 단톡방에 있다ㅋㅋ",
     "music": ("hyperfun", 0.15),
-    "voices": {"nar": ("InJoon", "+28%"), "me": ("InJoon", "+26%", "+12Hz"), "fr": ("Hyunsu", "+28%", "+10Hz"), "fr2": ("SunHi", "+28%", "+12Hz"), "gma": ("SunHi", "+16%", "-10Hz")},
+    "voices": {"nar": ("InJoon", "+28%"), "me": ("InJoon", "+26%", "+12Hz"), "fr": ("Hyunsu", "+28%", "+10Hz"), "fr2": ("SunHi", "+28%", "+12Hz"), "gma": ("SunHi", "+22%", "-10Hz")},
     "cast": {"me": ME, "gma": GMA, "fr": FR, "fr2": FR2},
     "beats": [
         ("a", "nar", "할머니가 우리 반 단톡방에 있어.", "할머니가 우리 반 / [단톡방]에 있어", {"bg": "class", "chars": ["me:shock@0.24"], "chat": {"title": CH, "msgs": [{"name": "할미", "text": "얘들아 안녕", "color": "#ff9eb5"}]}, "steps": [0, 0, 9, 0, 0.1]}),

@@ -7,7 +7,7 @@ BANK = {"bg": "office", "place": "📍 동네 은행"}
 EP = {
     "title": "할아버지가 은행에 출근한다ㅋㅋ",
     "music": ("scheming_weasel", 0.16),
-    "voices": {"nar": ("SunHi", "+28%"), "me": ("SunHi", "+26%", "+8Hz"), "gpa": ("InJoon", "+12%", "-15Hz"), "gma": ("SunHi", "+14%", "-10Hz"), "clk": ("Hyunsu", "+26%", "+4Hz")},
+    "voices": {"nar": ("SunHi", "+28%"), "me": ("SunHi", "+26%", "+8Hz"), "gpa": ("InJoon", "+22%", "-15Hz"), "gma": ("SunHi", "+22%", "-10Hz"), "clk": ("Hyunsu", "+26%", "+4Hz")},
     "cast": {"me": ME, "gpa": GPA, "gma": GMA, "clk": CLK},
     "beats": [
         ("a", "nar", "할아버지가 은행에 출근해.", "할아버지가 / 은행에 [출근]해", {**BANK, "chars": ["gpa:smug@0.4*1.2"], "prop": "🏦", "propX": 0.82, "tags": True}),

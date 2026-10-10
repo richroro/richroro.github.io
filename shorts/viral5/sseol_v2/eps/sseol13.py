@@ -7,7 +7,7 @@ GH = {"bg": "home", "place": "📍 할머니 집"}
 EP = {
     "title": "할머니가 내 전화만 늦게 받아ㅋㅋ",
     "music": ("scheming_weasel", 0.15),
-    "voices": {"nar": ("SunHi", "+28%"), "me": ("SunHi", "+26%", "+8Hz"), "kid": ("SunHi", "+24%", "+30Hz"), "gma": ("SunHi", "+16%", "-10Hz")},
+    "voices": {"nar": ("SunHi", "+28%"), "me": ("SunHi", "+26%", "+8Hz"), "kid": ("SunHi", "+24%", "+30Hz"), "gma": ("SunHi", "+22%", "-10Hz")},
     "cast": {"me": ME, "gma": GMA, "mom": MOM, "kid": KID},
     "beats": [
         ("a", "nar", "할머니가 내 전화만 늦게 받아.", "할머니가 / [내 전화만] 늦게 받아", {**GH, "chars": ["gma:smug@0.4*1.2"], "prop": "📱", "propX": 0.82, "tags": True}),
