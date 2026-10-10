@@ -171,10 +171,10 @@ const Title: React.FC<{ d: ShortData }> = ({ d }) => {
   const size = (line: string, max = 96, within = 1010) => Math.min(max, fitText({ text: line, withinWidth: within, fontFamily: TITLE }).fontSize);
   if (d.titleStyle === "band") {
     // the second line is the yellow one unless the lines mark their own [key] words
-    const marked = d.title.some((l) => l.includes("["));
+    const marked = d.title.some((l) => /(^|[^\\])\[/.test(l)); // "\[괴담]" is a literal bracket, not a mark
     const key = d.titleKey ?? "#FFE14D";
     const line = (l: string, i: number) => (
-      <div style={{ fontSize: size(l.replace(/[[\]{}]/g, ""), 104, 1010), color: !marked && i ? key : "white" }}><Marked text={l} color={key} /></div>
+      <div style={{ fontSize: size(l.replace(/(^|[^\\])\[([^\]]*)\]/g, "$1$2").replace(/\\\[/g, "[").replace(/[{}]/g, ""), 104, 1010), color: !marked && i ? key : "white" }}><Marked text={l} color={key} /></div>
     );
     return (
       <div style={{ position: "absolute", top: 0, left: 0, width: 1080, height: 400, background: "#000", display: "flex", flexDirection: "column",
