@@ -1,8 +1,8 @@
-"""Upload text for the 썰 v2 shorts (README "썰 쇼츠 v2"): python3 sseol_v2/upload.py prints the markdown."""
+"""Upload text for the 썰 v2 shorts (README "썰 쇼츠 v2"): python3 sseol_v2/texts.py prints the markdown."""
 import importlib.util, os
 
 HERE = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-MUSIC = {"monkeys_spinning_monkeys": "Monkeys Spinning Monkeys", "sneaky_snitch": "Sneaky Snitch", "scheming_weasel": "Scheming Weasel (faster version)", "hyperfun": "Hyperfun"}
+MUSIC = {"monkeys_spinning_monkeys": "Monkeys Spinning Monkeys", "sneaky_snitch": "Sneaky Snitch", "scheming_weasel": "Scheming Weasel", "hyperfun": "Hyperfun"}
 # id: (upload title, one-line description, hashtags, pinned comment)
 TEXT = {
     1: ("짝꿍이 내 우유를 1년 마셨다ㅋㅋ", "초6 짝꿍이 1년 내내 내 급식 우유를 마신 진짜 이유 🥛", "#썰 #창작썰 #썰툰 #학교썰", "여러분 짝꿍은 뭘 뺏어 먹었어요?ㅋㅋ"),
@@ -27,8 +27,9 @@ TEXT = {
     20: ("매달 1일 만 원이 입금된다ㄷㄷ", "모르는 '하나'가 1년째 보내는 만 원의 정체 💸", "#썰 #창작썰 #썰툰 #친구", "여러분은 어릴 때 빌려준 돈 기억나요?ㅋㅋ"),
 }
 
-for i in range(1, 21):
-    sp = importlib.util.spec_from_file_location("m", f"{HERE}/sseol_v2/eps/sseol{i}.py"); m = importlib.util.module_from_spec(sp); sp.loader.exec_module(m)
-    title, desc, tags, pin = TEXT[i]
-    print(f"`sseol{i}` (화면 제목: {m.EP['title']})\n- 제목: {title}\n- 설명:\n  ```\n  {desc} (창작 썰)\n  이 이야기는 지어낸 창작 썰입니다. 등장인물과 장소는 실제와 관계없습니다.\n"
-          f"  Music: \"{MUSIC[m.EP['music'][0]]}\" Kevin MacLeod (incompetech.com), CC BY 4.0\n  ```\n- 해시태그: {tags}\n- 고정 댓글: {pin}\n")
+if __name__ == "__main__":
+  for i in range(1, 21):
+      sp = importlib.util.spec_from_file_location("m", f"{HERE}/sseol_v2/eps/sseol{i}.py"); m = importlib.util.module_from_spec(sp); sp.loader.exec_module(m)
+      title, desc, tags, pin = TEXT[i]
+      print(f"`sseol{i}` (화면 제목: {m.EP['title']})\n- 제목: {title}\n- 설명:\n  ```\n  {desc} (창작 썰)\n  이 이야기는 지어낸 창작 썰입니다. 등장인물과 장소는 실제와 관계없습니다.\n"
+            f"  Music: \"{MUSIC[m.EP['music'][0]]}\" Kevin MacLeod (incompetech.com), CC BY 4.0\n  ```\n- 해시태그: {tags}\n- 고정 댓글: {pin}\n")
