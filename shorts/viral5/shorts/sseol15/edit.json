@@ -79,11 +79,18 @@
     "steps": [
      "a.독서실",
      "a.핫팩이"
+    ],
+    "chars": [
+     {
+      "name": "나",
+      "color": "#FFD84D",
+      "mood": "shock"
+     }
     ]
    }
   },
   {
-   "from": "b",
+   "from": "a@end",
    "label": "summer",
    "gfx": {
     "type": "scene",

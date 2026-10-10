@@ -54,11 +54,23 @@
     "steps": [
      "a.짝꿍이",
      "a.우유를"
+    ],
+    "chars": [
+     {
+      "name": "나",
+      "color": "#FFD84D",
+      "mood": "shock"
+     },
+     {
+      "name": "짝꿍",
+      "color": "#8FD3FF",
+      "mood": "laugh"
+     }
     ]
    }
   },
   {
-   "from": "b",
+   "from": "a@end",
    "label": "oneshot",
    "gfx": {
     "type": "scene",

@@ -74,11 +74,23 @@
     "steps": [
      "a.책상에",
      "a.쪽지를"
+    ],
+    "chars": [
+     {
+      "name": "나",
+      "color": "#FFD84D",
+      "mood": "shy"
+     },
+     {
+      "name": "반장",
+      "color": "#8FD3FF",
+      "mood": "neutral"
+     }
     ]
    }
   },
   {
-   "from": "b",
+   "from": "a@end",
    "label": "gym",
    "gfx": {
     "type": "scene",

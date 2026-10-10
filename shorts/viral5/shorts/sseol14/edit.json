@@ -79,11 +79,18 @@
     "steps": [
      "a.퇴근",
      "a.현관에"
+    ],
+    "chars": [
+     {
+      "name": "초코 🐾",
+      "color": "#C8956B",
+      "mood": "smug"
+     }
     ]
    }
   },
   {
-   "from": "c",
+   "from": "a@end",
    "label": "psychic",
    "gfx": {
     "type": "scene",
@@ -366,7 +373,7 @@
     "bg": "home",
     "say": {
      "who": 0,
-     "text": "아니 초코야, [나는 왜?]"
+     "text": "아니, 초코야! [나는 왜?]"
     },
     "zoom": 1.1,
     "focus": 0,

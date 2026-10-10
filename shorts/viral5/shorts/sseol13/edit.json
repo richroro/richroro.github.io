@@ -74,11 +74,23 @@
     "steps": [
      "a.전화만",
      "a.늦게"
+    ],
+    "chars": [
+     {
+      "name": "나",
+      "color": "#FFD84D",
+      "mood": "think"
+     },
+     {
+      "name": "외할머니",
+      "color": "#C9A7FF",
+      "mood": "smug"
+     }
     ]
    }
   },
   {
-   "from": "b",
+   "from": "a@end",
    "label": "mom",
    "gfx": {
     "type": "scene",
