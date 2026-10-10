@@ -71,7 +71,7 @@ export const LongThumb: React.FC<{ d: LongData }> = ({ d }) => {
   const th = d.thumb!;
   if (th.style === "band") return <BandThumb th={th} />;
   if (th.style === "grid") return <GridThumb th={th} />;
-  const right = th.side === "right";
+  const right = th.side === "right", bottom = th.valign === "bottom";
   const key = th.key ?? "#FFE14D";
   const textW = th.char ? 800 : 1180;
   const size = Math.min(150, ...th.lines.map((l) => fitText({ text: l.replace(/[[\]{}\\]/g, ""), withinWidth: textW, fontFamily: TITLE }).fontSize));
@@ -85,7 +85,7 @@ export const LongThumb: React.FC<{ d: LongData }> = ({ d }) => {
   return (
     <AbsoluteFill style={{ background: th.bg ?? "radial-gradient(ellipse at 60% 40%, #24345f, #070a14 75%)", overflow: "hidden" }}>
       {img}
-      <AbsoluteFill style={{ background: `linear-gradient(${right ? "270deg" : "90deg"}, rgba(0,0,0,.72) 0%, rgba(0,0,0,.35) 45%, rgba(0,0,0,0) 70%)` }} />
+      <AbsoluteFill style={{ background: `linear-gradient(${bottom ? "0deg" : right ? "270deg" : "90deg"}, rgba(0,0,0,.72) 0%, rgba(0,0,0,.35) 45%, rgba(0,0,0,0) 70%)` }} />
       {c ? (
         <div style={{ position: "absolute", left: (c.x ?? (right ? 0.22 : 0.8)) * W - cs / 2, top: (c.y ?? 0.98) * H - cs, width: cs, height: cs }}>
           <Mochi c={c} i={0} t={0.6} size={cs} />
@@ -100,7 +100,7 @@ export const LongThumb: React.FC<{ d: LongData }> = ({ d }) => {
           </g>
         </svg>
       ) : null}
-      <div style={{ position: "absolute", top: 0, bottom: 0, [right ? "right" : "left"]: 44, width: textW, display: "flex", flexDirection: "column", justifyContent: "center",
+      <div style={{ position: "absolute", top: 0, bottom: bottom ? 26 : 0, [right ? "right" : "left"]: 44, width: textW, display: "flex", flexDirection: "column", justifyContent: bottom ? "flex-end" : "center",
         alignItems: right ? "flex-end" : "flex-start", textAlign: right ? "right" : "left" }}>
         {th.tag ? <div style={{ fontFamily: BODY, fontWeight: 900, fontSize: 40, color: "#111", background: key, border: "5px solid #111", borderRadius: 12, padding: "2px 18px", marginBottom: 14 }}>{th.tag}</div> : null}
         {th.lines.map((l, i) => (

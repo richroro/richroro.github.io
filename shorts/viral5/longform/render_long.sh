@@ -6,12 +6,16 @@
 #      chunk is kept, so a crashed or stopped render resumes where it stopped. (A separate audio-only render would cost
 #      almost a second full pass: Remotion evaluates every frame to find the sounds.)
 #   2. sound: two-pass loudnorm of the joined PCM to -14 LUFS / -1.5 dBTP, AAC 160k
-#   3. size: two-pass encode at the bitrate the duration allows for MAXMB (default 95 MB), with +faststart:
-#        >= X264_MIN kb/s (default 3000)  x264 1080p
-#        >= X265_MIN kb/s (default 1400)  x265 1080p (hvc1 tag; ~40% smaller than x264 at the same look)
-#        below that                       x265 720p (1080p would smear on moving footage)
-#      CAP (default 8000 kb/s) keeps short videos from being encoded bigger than they need
-# env: CHROME (headless shell), CHUNK (default 2700 = 90 s), CONC (default nproc), MAXMB, X264_MIN, X265_MIN, CAP, KEEP=1 keeps out/long/<id>/
+#   3. size: two-pass encode at the bitrate the duration allows for MAXMB (default 95 MB), with +faststart. The thresholds
+#      depend on what is on screen (edit.json "encode": {"content": "drawn" | "mixed" | "footage"}, default mixed), from
+#      constant-quality test encodes of the demo (README "롱폼 제작 키트"):
+#                    x264 1080p if >=   x265 1080p if >=   else x265 720p
+#        drawn            900 kb/s           450 kb/s
+#        mixed           3000 kb/s          1400 kb/s
+#        footage         5000 kb/s          2000 kb/s
+#      (x265 gets the hvc1 tag; X264_MIN / X265_MIN override.) CAP (default 8000 kb/s) keeps short videos from being
+#      encoded bigger than they need. Sound is AAC 160k up to 10 minutes, 128k up to 20, 96k beyond (speech and a bed).
+# env: CHROME (headless shell), CHUNK (default 2700 = 90 s), CONC (default nproc), MAXMB, X264_MIN, X265_MIN, CAP, PRESET, KEEP=1 keeps out/long/<id>/
 # writes final/<id>.mp4, out/long/<id>/master.mkv (near-lossless picture + normalized sound, for a higher-quality upload),
 #        out/long/<id>/render.json (timings, frames per second, codec, bitrate, size)
 set -euo pipefail
@@ -19,10 +23,14 @@ cd "$(dirname "$0")/.."
 ID=$1
 BX=${CHROME:-/opt/pw-browsers/chromium_headless_shell-1194/chrome-linux/headless_shell}
 [ -x "$BX" ] || BX=$(ls -d /opt/pw-browsers/chromium_headless_shell-*/chrome-linux/headless_shell 2>/dev/null | head -1)
-CHUNK=${CHUNK:-2700} CONC=${CONC:-$(nproc)} MAXMB=${MAXMB:-95} X264_MIN=${X264_MIN:-3000} X265_MIN=${X265_MIN:-1400} CAP=${CAP:-8000} ABR=160
+CONTENT=$(python3 -c "import json; print(json.load(open('longform/$ID/edit.json')).get('encode', {}).get('content', 'mixed'))")
+case $CONTENT in drawn) D264=900 D265=450;; footage) D264=5000 D265=2000;; *) D264=3000 D265=1400;; esac
+CHUNK=${CHUNK:-2700} CONC=${CONC:-$(nproc)} MAXMB=${MAXMB:-95} X264_MIN=${X264_MIN:-$D264} X265_MIN=${X265_MIN:-$D265} CAP=${CAP:-8000}
+PRESET=${PRESET:-fast}  # x265 preset (x264 always "medium"); "faster" roughly halves a 25-minute encode for a little more blur
 W=out/long/$ID; mkdir -p "$W" final
 N=$(python3 -c "import json,math; print(math.ceil(json.load(open('src/longdata/$ID.json'))['end']*30))")
 DUR=$(python3 -c "print($N/30)")
+ABR=$(python3 -c "print(160 if $DUR <= 600 else 128 if $DUR <= 1200 else 96)")
 echo "render $ID: $N frames ($DUR s) in chunks of $CHUNK"
 
 # 1) picture
@@ -66,10 +74,10 @@ enc() {  # $1 = kb/s
     ffmpeg -hide_banner -loglevel error -y -i "$W/master.mkv" -vf "$VF" -c:v libx264 -preset medium -b:v ${1}k -pass 2 -passlogfile "$W/pass" -pix_fmt yuv420p \
       -c:a copy -movflags +faststart "final/$ID.mp4"
   else
-    ffmpeg -hide_banner -loglevel error -y -i "$W/master.mkv" -vf "$VF" -c:v libx265 -preset fast -b:v ${1}k -x265-params "pass=1:stats=$W/x265.log:log-level=error" -pix_fmt yuv420p -an -f null /dev/null
+    ffmpeg -hide_banner -loglevel error -y -i "$W/master.mkv" -vf "$VF" -c:v libx265 -preset $PRESET -b:v ${1}k -x265-params "pass=1:stats=$W/x265.log:log-level=error" -pix_fmt yuv420p -an -f null /dev/null
     # pass 2 goes to MKV and is then remuxed: writing MP4 straight away turns on global headers, which changes the encoder
     # settings from pass 1 and x265 stops with "Incomplete CU-tree stats file"
-    ffmpeg -hide_banner -loglevel error -y -i "$W/master.mkv" -vf "$VF" -c:v libx265 -preset fast -b:v ${1}k -x265-params "pass=2:stats=$W/x265.log:log-level=error" -pix_fmt yuv420p \
+    ffmpeg -hide_banner -loglevel error -y -i "$W/master.mkv" -vf "$VF" -c:v libx265 -preset $PRESET -b:v ${1}k -x265-params "pass=2:stats=$W/x265.log:log-level=error" -pix_fmt yuv420p \
       -c:a copy "$W/enc.mkv"
     ffmpeg -hide_banner -loglevel error -y -i "$W/enc.mkv" -c copy -tag:v hvc1 -movflags +faststart "final/$ID.mp4"; rm -f "$W/enc.mkv"
   fi
@@ -84,7 +92,7 @@ SZ=$(stat -c %s "final/$ID.mp4")
 python3 - "$W/render.json" <<EOF
 import json, sys
 d = dict(id="$ID", frames=$N, seconds=$DUR, picture_s=$((T1 - T0)), audio_s=$((T2 - T1)), encode_s=$((T3 - T2)),
-         render_fps=round($N / max(1, $((T1 - T0))), 2), resumed=$RESUMED, codec="$CODEC", height=$SCALE, video_kbps=$KB, audio_kbps=$ABR,
+         render_fps=round($N / max(1, $((T1 - T0))), 2), resumed=$RESUMED, content="$CONTENT", codec="$CODEC", height=$SCALE, video_kbps=$KB, audio_kbps=$ABR,
          size_mb=round($SZ / 1e6, 2), mb_per_min=round($SZ / 1e6 / ($DUR / 60), 2))
 json.dump(d, open(sys.argv[1], "w"), indent=1); print(json.dumps(d))
 EOF

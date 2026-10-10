@@ -85,8 +85,8 @@ export type Thumb = {
   char?: Char & { x?: number; y?: number; size?: number };
   circle?: { x: number; y: number; r: number };
   arrow?: { x: number; y: number; rot: number; len?: number };
-  /** where the text sits: "left" (default) or "right" */
-  side?: "left" | "right";
+  /** where the text sits: "left" (default) or "right", and "center" (default) or "bottom" */
+  side?: "left" | "right"; valign?: "center" | "bottom";
   /** a small tag at the top ("다큐", "몰아보기") */
   tag?: string;
   bg?: string;
