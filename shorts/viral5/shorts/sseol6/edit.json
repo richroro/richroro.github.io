@@ -1,0 +1,369 @@
+{
+ "credit": "",
+ "titleStyle": "band",
+ "captionY": 1650,
+ "sources": {},
+ "music": {
+  "file": "music/sneaky_snitch.mp3",
+  "gain": 0.2,
+  "start": 0
+ },
+ "sfx": [
+  [
+   "a.사탕을",
+   "pop",
+   0.3
+  ],
+  [
+   "b.몰래",
+   "pop_hi",
+   0.3
+  ],
+  [
+   "c.소문이",
+   "k_question_001",
+   0.3
+  ],
+  [
+   "d",
+   "bubble",
+   0.3
+  ],
+  [
+   "e",
+   "bubble",
+   0.3
+  ],
+  [
+   "f",
+   "whoosh",
+   0.3
+  ],
+  [
+   "g",
+   "boing",
+   0.3
+  ],
+  [
+   "h.길어지시더라고요",
+   "k_error_003",
+   0.3
+  ],
+  [
+   "i.거른",
+   "ding",
+   0.3
+  ],
+  [
+   "j.십",
+   "tada",
+   0.35
+  ],
+  [
+   "k.끝",
+   "pop_hi",
+   0.35
+  ],
+  [
+   "l.팀",
+   "coin",
+   0.3
+  ]
+ ],
+ "clips": [
+  {
+   "from": "a",
+   "label": "post",
+   "gfx": {
+    "type": "post",
+    "title": "신입이 매일 아침 팀장님 책상에 [사탕]을 둠",
+    "body": [
+     "아무도 없는 시간에",
+     "[몰래] 하나씩..."
+    ],
+    "steps": [
+     "a.매일",
+     "a.사탕을"
+    ]
+   }
+  },
+  {
+   "from": "b",
+   "label": "sneak",
+   "gfx": {
+    "type": "scene",
+    "chars": [
+     {
+      "name": "신입",
+      "mood": "shy",
+      "color": "#FFB36B"
+     }
+    ],
+    "place": "📍 아침 사무실",
+    "prop": "🍬",
+    "steps": [
+     0,
+     0.1
+    ],
+    "bg": "office"
+   }
+  },
+  {
+   "from": "c",
+   "label": "rumor",
+   "gfx": {
+    "type": "scene",
+    "chars": [
+     {
+      "name": "선배",
+      "mood": "smug",
+      "color": "#8FD3FF"
+     },
+     {
+      "name": "나",
+      "mood": "think"
+     },
+     {
+      "name": "동료",
+      "mood": "shy",
+      "color": "#FF9EBB"
+     }
+    ],
+    "bg": "office"
+   }
+  },
+  {
+   "from": "d",
+   "label": "suck",
+   "gfx": {
+    "type": "scene",
+    "chars": [
+     {
+      "name": "선배",
+      "mood": "smug",
+      "color": "#8FD3FF"
+     },
+     {
+      "name": "나",
+      "mood": "think"
+     },
+     {
+      "name": "동료",
+      "mood": "neutral",
+      "color": "#FF9EBB"
+     }
+    ],
+    "say": {
+     "who": 0,
+     "text": "저⁠거 완⁠전 [⁠아⁠부⁠]⁠하⁠는 거⁠지⁠."
+    },
+    "bg": "office"
+   }
+  },
+  {
+   "from": "e",
+   "label": "crush",
+   "gfx": {
+    "type": "scene",
+    "chars": [
+     {
+      "name": "선배",
+      "mood": "neutral",
+      "color": "#8FD3FF"
+     },
+     {
+      "name": "나",
+      "mood": "think"
+     },
+     {
+      "name": "동료",
+      "mood": "love",
+      "color": "#FF9EBB"
+     }
+    ],
+    "say": {
+     "who": 2,
+     "text": "아⁠니⁠야⁠, 팀⁠장⁠님 [⁠좋⁠아⁠하⁠는 거⁠야⁠]⁠."
+    },
+    "bg": "office"
+   }
+  },
+  {
+   "from": "f",
+   "label": "8am",
+   "gfx": {
+    "type": "scene",
+    "chars": [],
+    "card": "오전 [8:00]",
+    "bg": "office"
+   }
+  },
+  {
+   "from": "g",
+   "label": "ask",
+   "gfx": {
+    "type": "scene",
+    "chars": [
+     {
+      "name": "나",
+      "mood": "think"
+     },
+     {
+      "name": "신입",
+      "mood": "shock",
+      "color": "#FFB36B"
+     }
+    ],
+    "prop": "🍬",
+    "say": {
+     "who": 0,
+     "text": "저⁠기⁠.⁠.⁠. 사⁠탕⁠은 [⁠왜⁠] 두⁠는 거⁠야⁠?"
+    },
+    "steps": [
+     0,
+     0.1
+    ],
+    "bg": "office"
+   }
+  },
+  {
+   "from": "h",
+   "label": "reason",
+   "gfx": {
+    "type": "scene",
+    "chars": [
+     {
+      "name": "나",
+      "mood": "neutral",
+      "to": "shock"
+     },
+     {
+      "name": "신입",
+      "mood": "smug",
+      "color": "#FFB36B"
+     }
+    ],
+    "say": {
+     "who": 1,
+     "text": "팀⁠장⁠님⁠은 배⁠고⁠프⁠시⁠면⁠, [⁠회⁠의⁠가 길⁠어⁠지⁠시⁠더⁠라⁠고⁠요⁠.⁠]"
+    },
+    "steps": [
+     0,
+     0,
+     "h.길어지시더라고요"
+    ],
+    "bg": "office"
+   }
+  },
+  {
+   "from": "i",
+   "label": "data",
+   "gfx": {
+    "type": "scene",
+    "chars": [
+     {
+      "name": "팀장님",
+      "mood": "sick",
+      "color": "#C9A7FF",
+      "size": 1.08
+     }
+    ],
+    "prop": "⏰",
+    "place": "📍 아침 거른 날",
+    "big": "회의 [2시간]",
+    "steps": [
+     0,
+     0.1,
+     9,
+     "i.거른"
+    ],
+    "bg": "office"
+   }
+  },
+  {
+   "from": "j",
+   "label": "10min",
+   "gfx": {
+    "type": "scene",
+    "chars": [
+     {
+      "name": "팀장님",
+      "mood": "happy",
+      "color": "#C9A7FF",
+      "size": 1.08
+     },
+     {
+      "name": "신입",
+      "mood": "smug",
+      "color": "#FFB36B"
+     }
+    ],
+    "prop": "🍬",
+    "big": "회의 [10분]",
+    "steps": [
+     0,
+     0.1,
+     9,
+     "j.십"
+    ],
+    "bg": "office"
+   }
+  },
+  {
+   "from": "k",
+   "label": "done",
+   "gfx": {
+    "type": "scene",
+    "chars": [
+     {
+      "name": "팀장님",
+      "mood": "laugh",
+      "color": "#C9A7FF",
+      "size": 1.08
+     },
+     {
+      "name": "나",
+      "mood": "love"
+     }
+    ],
+    "prop": "🍬",
+    "say": {
+     "who": 0,
+     "text": "자⁠, 오⁠늘 회⁠의 [⁠끝⁠!⁠]"
+    },
+    "bg": "office"
+   }
+  },
+  {
+   "from": "l",
+   "label": "chipin",
+   "gfx": {
+    "type": "scene",
+    "chars": [
+     {
+      "name": "선배",
+      "mood": "happy",
+      "color": "#8FD3FF"
+     },
+     {
+      "name": "나",
+      "mood": "laugh"
+     },
+     {
+      "name": "동료",
+      "mood": "happy",
+      "color": "#FF9EBB"
+     }
+    ],
+    "big": "사탕값 [N빵] 🍬",
+    "steps": [
+     0,
+     0,
+     9,
+     "l.팀"
+    ],
+    "bg": "office"
+   }
+  }
+ ]
+}
