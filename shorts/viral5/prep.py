@@ -197,6 +197,8 @@ def prep(sid):
     if edit.get("marks"):
         data["marks"] = [{**{k: m[k] for k in ("kind", "x", "y", "r", "rot", "color") if k in m}, "from": round(at(m["from"]), 3), "to": round(at(m["to"]), 3)}
                          for m in edit["marks"]]
+    if any(k in edit for k in ("cover", "capStyle", "hideCredit", "tags")):  # 정보 쇼츠 v2 (info2_prep.py)
+        import info2_prep; info2_prep.extend(data, edit, script, sid, pub, at)
     os.makedirs(f"{HERE}/src/data", exist_ok=True)
     json.dump(data, open(f"{HERE}/src/data/{sid}.json", "w"), ensure_ascii=False)
     real = sum(1 for c in clips if c["file"])
