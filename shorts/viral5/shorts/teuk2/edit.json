@@ -1,0 +1,380 @@
+{
+ "credit": "",
+ "titleStyle": "band",
+ "captionY": 1650,
+ "sources": {},
+ "music": {
+  "file": "music/sneaky_snitch.mp3",
+  "gain": 0.2,
+  "start": 0
+ },
+ "sfx": [
+  [
+   "c1",
+   "pop",
+   0.25
+  ],
+  [
+   "b1",
+   "whoosh",
+   0.22
+  ],
+  [
+   "c2",
+   "pop",
+   0.25
+  ],
+  [
+   "b2",
+   "whoosh",
+   0.22
+  ],
+  [
+   "b2.한",
+   "boing",
+   0.3
+  ],
+  [
+   "c3",
+   "pop",
+   0.25
+  ],
+  [
+   "b3",
+   "whoosh",
+   0.22
+  ],
+  [
+   "c4",
+   "pop",
+   0.25
+  ],
+  [
+   "b4",
+   "whoosh",
+   0.22
+  ],
+  [
+   "b4.아침",
+   "boing",
+   0.3
+  ],
+  [
+   "c5",
+   "pop",
+   0.25
+  ],
+  [
+   "b5",
+   "whoosh",
+   0.22
+  ],
+  [
+   "b5.제일",
+   "boing",
+   0.3
+  ],
+  [
+   "c6",
+   "pop",
+   0.25
+  ],
+  [
+   "b6",
+   "whoosh",
+   0.22
+  ],
+  [
+   "b6.전부",
+   "boing",
+   0.3
+  ],
+  [
+   "c7",
+   "pop",
+   0.25
+  ],
+  [
+   "b7",
+   "whoosh",
+   0.22
+  ],
+  [
+   "y",
+   "pop",
+   0.25
+  ],
+  [
+   "z",
+   "whoosh",
+   0.22
+  ],
+  [
+   "z.몇",
+   "ding",
+   0.3
+  ],
+  [
+   "a",
+   "pop_hi",
+   0.3
+  ]
+ ],
+ "clips": [
+  {
+   "from": "a",
+   "label": "hook",
+   "gfx": {
+    "type": "scene",
+    "bg": "desk",
+    "place": "📍 시험 D-1",
+    "prop": "📚",
+    "propX": 0.66,
+    "chars": [
+     {
+      "name": "나",
+      "color": "#FFB36B",
+      "mood": "shock",
+      "x": 0.3
+     }
+    ],
+    "steps": [
+     0.05,
+     -1,
+     9,
+     -1
+    ]
+   }
+  },
+  {
+   "from": "b1",
+   "label": "beat1",
+   "gfx": {
+    "type": "scene",
+    "bg": "desk",
+    "prop": "🧹",
+    "propX": 0.66,
+    "chars": [
+     {
+      "name": "나",
+      "color": "#FFB36B",
+      "mood": "happy",
+      "x": 0.3
+     }
+    ],
+    "say": {
+     "who": 0,
+     "text": "정리가 돼야 [공부]가 되지!"
+    },
+    "steps": [
+     "c1",
+     0.1,
+     9,
+     0.1
+    ]
+   }
+  },
+  {
+   "from": "b2",
+   "label": "beat2",
+   "gfx": {
+    "type": "scene",
+    "bg": "desk",
+    "big": "⏰ [1시간]",
+    "prop": "📝",
+    "propX": 0.66,
+    "chars": [
+     {
+      "name": "나",
+      "color": "#FFB36B",
+      "mood": "think",
+      "x": 0.3
+     }
+    ],
+    "say": {
+     "who": 0,
+     "text": "형광펜 [색깔] 맞춰야 돼"
+    },
+    "steps": [
+     "c2",
+     0.1,
+     9,
+     "b2.한"
+    ]
+   }
+  },
+  {
+   "from": "b3",
+   "label": "beat3",
+   "gfx": {
+    "type": "scene",
+    "bg": "home",
+    "prop": "📺🐧",
+    "propX": 0.72,
+    "chars": [
+     {
+      "name": "나",
+      "color": "#FFB36B",
+      "mood": "laugh",
+      "to": "love",
+      "x": 0.3
+     }
+    ],
+    "say": {
+     "who": 0,
+     "text": "[펭귄] 진짜 귀엽다…"
+    },
+    "steps": [
+     "c3",
+     0.1,
+     "c3",
+     0.1
+    ]
+   }
+  },
+  {
+   "from": "b4",
+   "label": "beat4",
+   "gfx": {
+    "type": "scene",
+    "bg": "bedroom",
+    "big": "☀️ [07:00]",
+    "chars": [
+     {
+      "name": "나",
+      "color": "#FFB36B",
+      "mood": "sleep",
+      "to": "shock"
+     }
+    ],
+    "say": {
+     "who": 0,
+     "text": "왜 벌써 [아침]이야?!"
+    },
+    "steps": [
+     "c4",
+     0.1,
+     "b4.아침",
+     "b4.아침"
+    ]
+   }
+  },
+  {
+   "from": "b5",
+   "label": "beat5",
+   "gfx": {
+    "type": "scene",
+    "bg": "class",
+    "big": "집중력 [MAX]",
+    "chars": [
+     {
+      "color": "#8FD3FF",
+      "mood": "think"
+     },
+     {
+      "name": "나",
+      "color": "#FFB36B",
+      "mood": "angry"
+     },
+     {
+      "color": "#B9F27C",
+      "mood": "think"
+     }
+    ],
+    "say": {
+     "who": 1,
+     "text": "이거 [나온다], 이거!"
+    },
+    "steps": [
+     "c5",
+     0.1,
+     9,
+     "b5.제일"
+    ]
+   }
+  },
+  {
+   "from": "b6",
+   "label": "beat6",
+   "gfx": {
+    "type": "scene",
+    "bg": "street",
+    "big": "🧠 포맷 [완료]",
+    "chars": [
+     {
+      "name": "나",
+      "color": "#FFB36B",
+      "mood": "happy",
+      "to": "think"
+     }
+    ],
+    "say": {
+     "who": 0,
+     "text": "근데 나 방금 [뭐 썼지?]"
+    },
+    "steps": [
+     "c6",
+     0.1,
+     "c6",
+     "b6.전부"
+    ]
+   }
+  },
+  {
+   "from": "b7",
+   "label": "beat7",
+   "gfx": {
+    "type": "scene",
+    "bg": "desk",
+    "place": "📍 새벽 2시",
+    "prop": "🌙",
+    "propX": 0.66,
+    "chars": [
+     {
+      "name": "나",
+      "color": "#FFB36B",
+      "mood": "think",
+      "to": "sad",
+      "x": 0.3
+     }
+    ],
+    "say": {
+     "who": 0,
+     "text": "나 뭐 하고 [살지?]"
+    },
+    "steps": [
+     "c7",
+     0.1,
+     "c7",
+     0.1
+    ]
+   }
+  },
+  {
+   "from": "z",
+   "label": "end",
+   "gfx": {
+    "type": "scene",
+    "bg": "class",
+    "big": "[몇 개]?",
+    "chars": [
+     {
+      "name": "나",
+      "color": "#FFB36B",
+      "mood": "laugh"
+     }
+    ],
+    "steps": [
+     "y",
+     0.1,
+     9,
+     "z.몇"
+    ],
+    "say": {
+     "who": 0,
+     "text": "난 [7개] 다…ㅋㅋ"
+    }
+   }
+  }
+ ]
+}
