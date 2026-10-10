@@ -78,7 +78,39 @@
     ],
     "steps": [
      "a.카페",
-     "a.그림을"
+     "a.사장님은"
+    ],
+    "chars": [
+     {
+      "name": "나",
+      "mood": "love",
+      "color": "#FFD84D"
+     },
+     {
+      "name": "사장님",
+      "mood": "smug",
+      "color": "#C9A7FF"
+     }
+    ]
+   }
+  },
+  {
+   "from": "a.그림을",
+   "label": "mycup",
+   "gfx": {
+    "type": "scene",
+    "chars": [
+     {
+      "name": "나",
+      "mood": "happy",
+      "color": "#FFD84D"
+     }
+    ],
+    "bg": "linear-gradient(180deg, #fbe7cf 0%, #f2cfa6 100%)",
+    "prop": "☕",
+    "steps": [
+     0,
+     0.1
     ]
    }
   },
@@ -325,9 +357,36 @@
     "prop": "☕",
     "say": {
      "who": 1,
-     "text": "단골 도장 다 모으셨어요. [오늘은 무료예요!]"
+     "text": "단골 도장 [다 모으셨어요.]"
     },
     "bg": "linear-gradient(180deg, #fbe7cf 0%, #f2cfa6 100%)"
+   }
+  },
+  {
+   "from": "k.오늘은",
+   "label": "freedrink",
+   "gfx": {
+    "type": "scene",
+    "chars": [
+     {
+      "name": "나",
+      "mood": "love",
+      "color": "#FFD84D"
+     },
+     {
+      "name": "사장님",
+      "mood": "happy",
+      "color": "#C9A7FF"
+     }
+    ],
+    "bg": "linear-gradient(180deg, #fbe7cf 0%, #f2cfa6 100%)",
+    "prop": "☕",
+    "say": {
+     "who": 1,
+     "text": "오늘은 [무료예요!]"
+    },
+    "zoom": 1.08,
+    "focus": 0
    }
   }
  ]

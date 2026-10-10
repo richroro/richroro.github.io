@@ -33,7 +33,8 @@ def measure(f, thr):
 
 def stills(f, dur, out):
     run(["ffmpeg", "-v", "error", "-y", "-ss", "0.03", "-i", f, "-frames:v", "1", f"{out}/first.png"])
-    run(["ffmpeg", "-v", "error", "-y", "-ss", f"{max(0, dur - 0.08):.2f}", "-i", f, "-frames:v", "1", f"{out}/last.png"])
+    # from the end of the file, so the frame exists even when the audio runs a little longer than the video
+    run(["ffmpeg", "-v", "error", "-y", "-sseof", "-0.25", "-i", f, "-update", "1", "-frames:v", "8", f"{out}/last.png"])
     for k in range(16):
         run(["ffmpeg", "-v", "error", "-y", "-ss", f"{0.05 + (dur - 0.3) * k / 15:.2f}", "-i", f, "-frames:v", "1", "-vf", "scale=270:480", f"{out}/f{k:02d}.png"])
     run(["ffmpeg", "-v", "error", "-y", "-i", f"{out}/f%02d.png", "-vf", "tile=8x2", f"{out}/sheet.png"])

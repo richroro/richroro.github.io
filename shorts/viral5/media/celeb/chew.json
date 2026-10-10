@@ -1,0 +1,36 @@
+{
+ "id": "ceo3",
+ "committee": "Senate Judiciary Committee",
+ "hearing": "Big Tech and the Online Child Sexual Exploitation Crisis",
+ "date": "2024-01-31",
+ "source_page": "https://www.judiciary.senate.gov/committee-activity/hearings/big-tech-and-the-online-child-sexual-exploitation-crisis",
+ "player": "https://www.senate.gov/isvp/?comm=judiciary&filename=judiciary013124",
+ "file_url": "https://www-senate-gov-media-srs.akamaized.net/hls/live/2036788/judiciary/judiciary013124/master.m3u8 (1280x720, with the Senate's own English caption track text_1.m3u8)",
+ "stream_cut_s": [
+  9590,
+  9665
+ ],
+ "clip_note": "chew.mp4 re-encoded from 0",
+ "used_in_clip_s": [
+  [
+   7.45,
+   18.05
+  ],
+  [
+   28.75,
+   52.68
+  ]
+ ],
+ "transcript": "https://www.govinfo.gov/content/pkg/CHRG-118shrg57444/html/CHRG-118shrg57444.htm (S. Hrg. 118-497)",
+ "speakers": [
+  "Sen. Tom Cotton (R-AR)",
+  "Shou Zi Chew, CEO, TikTok"
+ ],
+ "credit": "미국 상원 (U.S. Senate)",
+ "left_out": "18.05–28.75: the Chinese-citizenship and Singapore-passport questions, whose answers mention his national/military service (the short avoids military content); the questions and answers on both sides of the cut are complete.",
+ "file": "chew.mp4",
+ "license": "Work of the United States Government, public domain (17 U.S.C. §105): the hearing was recorded by the U.S. Senate Recording Studio and streamed/archived through the Senate's own ISVP player (senate.gov/isvp) embedded on the committee's hearing page; the HLS stream is hosted on the Senate's Akamai account (www-senate-gov-media-srs / www-senate-gov-msl3archive). NOT C-SPAN footage (no C-SPAN bug; C-SPAN's own camera feed is not used).",
+ "use_restrictions": "Senate rules (S.Res.431, 99th Congress) bar use of Senate broadcast coverage for political or commercial-campaign purposes; use as news/commentary only, don't edit to misrepresent, don't imply endorsement by the Senate, the senators, the witnesses or their companies.",
+ "checked": "ASR: faster-whisper small.en + medium.en (and tiny.en for locating) against the official GPO transcript; Senate caption track where available",
+ "stream_cut_note": "stream_cut_s is the ffmpeg -ss/-t requested on the HLS master; a stream-copy seek lands on a segment boundary, so the clip's 0 s may be up to ~15 s off that stream time. Locate the exchange by the quoted words."
+}

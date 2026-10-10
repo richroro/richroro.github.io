@@ -351,7 +351,7 @@ MEDIA=<저장소>/media python3 politics/prep_split.py obama09    # 원본: medi
   |---|---|
   | `chars[]` | 등장인물. `name`(이름표), `color`, `mood`, `to`(steps[2]에 바뀌는 표정), `size`(1보다 크면 키가 큼), `x`(0~1), `hat`(머리 위 이모지), `flip` |
   | `mood` | `neutral` `happy` `laugh` `shock` `sad` `cry` `angry` `smug` `shy` `think` `sleep` `love` `sick` |
-  | `bg` | 배경 `class` `home` `street` `store` `army` `night` `stage` `office` `door`(현관문·초인종), 또는 CSS 배경 |
+  | `bg` | 배경 `class` `home` `street` `store` `army` `night` `stage` `office` `door`(현관문·초인종) `hospital`(병실 창·침대), 또는 CSS 배경. 칠판(`class`)에 `sign`이 있으면 `big`은 칠판 아래로 내려온다 |
   | `sign` | 배경 판에 쓰는 글(칠판, 무대 현수막, 생활관 게시판, 가게 간판, 현관문 호수) |
   | `say` | 말풍선 `{"who": 0, "text": "야! [내 거]잖아!"}`. 말하는 인물 머리 위에 뜬다(steps[0]) |
   | `prop` / `propX` | 소품 이모지(🥛📱💸). steps[1]에 튀어나온다 |
@@ -2030,13 +2030,14 @@ MEDIA=<저장소>/media python3 politics/prep_split.py rank1    # 원본: media/
 | `life1` | 비행기 창문이 / 네모가 아닌 진짜 이유 | 28.6초 | 둥근 모서리 창 → 1954년 코멧 2대 공중분해 → 물탱크 압력 시험 → 네모난 창 모서리에서 균열(실제로는 지붕 안테나 창·비상구 창이라고 스티커로 밝힘) → 각진 모서리에 힘이 몰림 → 그래서 둥글게 | Movement Proposition |
 | `life2` | 엘리베이터 거울이 / 셀카용이 아닌 진짜 이유 | 29.1초 | 엘베 거울 셀카 → “기다림이 덜 지루하라고”는 흔한 설 → 진짜 이유는 법에 있음 → 휠체어는 안에서 못 돌아서 후진으로 내림 → 뒷벽 0.6m 이상 높이에 견고한 거울 → 돌 수 없는 장애인용 승강기는 의무 → “휠체어의 백미러” | Sneaky Snitch |
 | `life3` | 제한속도 지켜도 / 1차로에서 단속되는 이유 | 27.4초 | 인천대교 ‘급차선 변경 집중 단속중(고속도로순찰대)’ 전광판 → 편도 3차로 이상 고속도로 1차로는 앞지르기 차로 → 추월 후 오른쪽으로 → 지정차로 위반 승용 4만 원·벌점 10점(승합 5만 원) → 시속 80km 미만 정체 땐 예외 → “여러분은 몇 차로?” | Exhilarate |
-| `life4` | 이착륙 때 창문 덮개 / 열라고 하는 진짜 이유 | 30.4초 | 창밖 상황 빨리 발견·대응 → 정전 시 바깥 빛으로 비상구 찾기 → 밖에서도 기내 확인 → 조명 낮추는 것도 눈의 어둠 적응 → 반전: 대한항공은 2021년부터 의무 아닌 권고, 날개 위·비상구 창은 여는 게 원칙 | Floating Cities |
+| `life4` | 이착륙 때 창문 덮개 / 열라고 하는 진짜 이유 | 30.7초 | 창밖 상황 빨리 발견·대응 → 정전 시 바깥 빛으로 비상구 찾기 → 밖에서도 기내 확인 → 조명 낮추는 것도 눈의 어둠 적응 → 반전: 대한항공은 2021년부터 의무 아닌 권고, 날개 위·비상구 창은 여는 게 원칙 → “여러분은 열어 두시나요?” | Floating Cities |
 
 ```bash
 # 원본: media/life/sources.json 의 주소에서 받아 1080p로 다시 인코딩해 public/life*/src/ 에 (파일 이름은 edit.json sources.file)
 # life3 운전 영상 3개(36017323, 36108436, 35186893)는 번호판이 안 읽히도록 화면 아래 42%를 흐리게 처리:
 ffmpeg -i <원본>.mp4 -filter_complex "[0]scale=-2:1080,split[a][b];[b]crop=iw:ih*0.42:0:ih*0.5,gblur=sigma=5[c];[a][c]overlay=0:H*0.5" -an px<id>.mp4
 for id in life1 life2 life3 life4; do python3 voice_edge.py $id && python3 prep.py $id && ./render.sh $id final/$id.mp4; done
+for id in life1 life2 life3 life4; do python3 qa_review.py $id; done   # 네 편 모두 FAIL·WARN 없음
 ```
 
 ### 사실과 출처 (2026-10-09 확인)
@@ -2093,14 +2094,19 @@ for id in life1 life2 life3 life4; do python3 voice_edge.py $id && python3 prep.
 > #고속도로 #1차로 #지정차로 #운전상식 #shorts
 
 **life4** — 이착륙 때 창문 덮개 열라는 진짜 이유 ✈️
-> 이착륙 때 창문 덮개를 열어 두면 창밖 상황을 빨리 발견할 수 있고, 정전 때 바깥 빛으로 비상구를 찾을 수 있고, 밖에서도 기내를 확인할 수 있습니다. 조명을 낮추는 것도 눈이 어둠에 적응하도록 하는 것. 다만 대한항공은 2021년부터 의무가 아닌 권고로 운영하고, 날개 위·비상구 창문은 여는 게 원칙입니다(대한항공 뉴스룸 2023.9). 항공사마다 규정은 다를 수 있어요.
+> 이착륙 때 창문 덮개를 열어 두면 창밖 상황을 빨리 발견할 수 있고, 정전 때 바깥 빛으로 비상구를 찾을 수 있고, 밖에서도 기내를 확인할 수 있습니다. 조명을 낮추는 것도 눈이 어둠에 적응하도록 하는 것. 다만 대한항공은 2021년부터 의무가 아닌 권고로 운영하고, 날개 위·비상구 창문은 여는 게 원칙입니다(대한항공 뉴스룸 2023.9). 항공사마다 규정은 다를 수 있어요. 여러분은 이착륙 때 창문, 열어 두시나요?
 > 영상: Pexels (Dilara Hazıroğlu, Afif Ramdhasuma, K, Content Kiosk, Grigoriy Bunkov, Taryn Elliott)
 > 음악: "Floating Cities" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
 > #비행기 #항공상식 #창문덮개 #대한항공 #shorts
+**issue4** — 노벨물리학상 받은 남극 얼음 덩어리의 정체 🧊
+> 2026년 노벨물리학상은 남극 얼음 1km³를 통째로 검출기로 만든 '아이스큐브 중성미자 관측소'를 이끈 프랜시스 할젠 교수에게 돌아갔습니다(10월 6일 발표, 단독 수상). 얼음 속 1,450~2,450m에 심은 센서 5,160개가 중성미자가 드물게 부딪힐 때 나는 빛을 잡아, 2013년 우주에서 온 고에너지 중성미자를 처음 확인했습니다. 중성미자는 지금도 1초에 약 100조 개씩 우리 몸을 통과합니다.
+> 출처: 노벨위원회 발표(서울신문·한국일보 보도), IceCube 공식 자료, NASA / 영상: NASA 고다드 우주비행센터 애니메이션 · 사진: John Hardin(CC BY 4.0), IceCube Collaboration 구조도(CC BY 4.0), 미국 국립과학재단(NSF). NASA·NSF가 이 영상을 보증하지 않습니다.
+> 음악: "Floating Cities" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
+> #노벨물리학상 #중성미자 #아이스큐브 #남극 #shorts
 
 ## 이번 주 이슈 30초 정리 (`issue1`~`issue4`)
 
-2026년 10월 둘째 주 뉴스 4편. 장르는 하나로 묶었습니다: **정치색 없는 뉴스를 30초에 풀어 주는 질문형 해설**(검정 제목 띠 + 실제 영상·사진 + 1줄 자막 + Edge TTS +20%). 원본은 `media/{nuri,oil,hangul,nobel}/`(영상 파일은 저장소에 넣지 않음, `sources.json`에 페이지·파일 주소·라이선스·크레디트·쓴 구간), 작업 사본은 `public/issueN/src/`.
+2026년 10월 둘째 주 뉴스 4편. 군사 소재·군 촬영 영상은 쓰지 않습니다. 장르는 하나로 묶었습니다: **정치색 없는 뉴스를 30초에 풀어 주는 질문형 해설**(검정 제목 띠 + 실제 영상·사진 + 1줄 자막 + Edge TTS +20%). 원본은 `media/{nuri,oil,hangul,nobel}/`(영상 파일은 저장소에 넣지 않음, `sources.json`에 페이지·파일 주소·라이선스·크레디트·쓴 구간), 작업 사본은 `public/issueN/src/`.
 
 | id | 제목(화면 띠) | 길이 | 내용 | 정확한 날짜 한계 | 음악 |
 | --- | --- | --- | --- | --- | --- |
@@ -2138,7 +2144,7 @@ for id in life1 life2 life3 life4; do python3 voice_edge.py $id && python3 prep.
 ### 사진·영상 출처와 라이선스
 화면에는 짧은 크레디트만 씁니다(오른쪽 위). 라이선스는 여기와 업로드 문구에만 적습니다.
 - **issue1** — 한국항공우주연구원(KARI) 공식 영상: [누리호 1차 발사 장면(2021)](https://commons.wikimedia.org/wiki/File:%EB%88%84%EB%A6%AC%ED%98%B8_1%EC%B0%A8_%EC%8B%9C%ED%97%98_%EB%B0%9C%EC%82%AC_%EC%9E%A5%EB%A9%B4.webm), [2차 발사(2022)](https://commons.wikimedia.org/wiki/File:Second_launch_of_the_Korean_Space_Launch_Vehicle-II_on_21_June_2022.webm), [3차 발사·탑재 카메라(2023)](https://commons.wikimedia.org/wiki/File:Third_launch_of_the_Korean_Space_Launch_Vehicle-II_on_25_May_2023.webm) — 모두 위키미디어 공용, **CC BY**(KARI TV가 CC BY로 공개). 사진 [KSLV-II Nuri and the launchpad 01](https://commons.wikimedia.org/wiki/File:KSLV-II_Nuri_and_the_launchpad_01.jpg) — KARI, **공공누리 제1유형**. 5차 발사 자체의 영상·사진은 쓰지 않았습니다(정책브리핑의 5차 영상엔 공공누리 표시가 없고, 기사 사진은 뉴스1·연합뉴스). 그래서 화면에 "자료화면: 지난 발사 영상", "자료화면 · 3차 발사 탑재 카메라" 스티커를 붙였습니다.
-- **issue2** — [Filling Up Gas Tank](https://commons.wikimedia.org/wiki/File:Filling_Up_Gas_Tank.webm)(Antti Makkonen / Sounds of Changes, **CC BY 4.0**); [Oil Tankers at anchor in Southern California](https://www.dvidshub.net/video/749266)(미국 해안경비대 PO3 Aidan Cooney, **퍼블릭 도메인**); 주유소 사진 [태창주유소](https://commons.wikimedia.org/wiki/File:%ED%83%9C%EC%B0%BD%EC%A3%BC%EC%9C%A0%EC%86%8C(%ED%99%8D%EC%B2%9C%EA%B5%B0_%EC%84%9C%EB%A9%B4)IMG_3903.jpg)(최광모, **CC0**), [Filling station in South Korea](https://commons.wikimedia.org/wiki/File:Filling_station_in_South_Korea.jpg)(Hankook12, **CC0**), [Hyundai Oilbank Songak](https://commons.wikimedia.org/wiki/File:Hyundai_Oilbank_Songak_Gas_Station_20240729.jpg)(LandAndTree, **CC0**), [SK Enclean](https://commons.wikimedia.org/wiki/File:SK_Enclean.jpg)(iTurtle, **CC BY 3.0**), [S Oil Songnae](https://commons.wikimedia.org/wiki/File:S_Oil_Songnae_Interchange_Gas_Station_-_panoramio.jpg)(슈트레인저, **CC BY 3.0**). 특정 주유소·정유사를 탓하는 문장은 없습니다(브랜드는 배경으로만 보임).
+- **issue2** — [Filling Up Gas Tank](https://commons.wikimedia.org/wiki/File:Filling_Up_Gas_Tank.webm)(Antti Makkonen / Sounds of Changes, **CC BY 4.0**); [우주정거장에서 본 호르무즈 해협 iss063e002679](https://images.nasa.gov/details/iss063e002679)(NASA, Christopher Cassidy, **퍼블릭 도메인**); 유조선 사진 [Crude Oil Tanker in Port Arthur, Texas](https://commons.wikimedia.org/wiki/File:Crude_Oil_Tanker_in_Port_Arthur,_Texas.jpg)(Quintin Soloviev, **CC0**), [Advantage Smooth, Calandkanaal](https://commons.wikimedia.org/wiki/File:Advantage_Smooth,_Crude_Oil_Tanker,_IMO_9999620,_Calandkanaal_pic1.jpg)(Alfvanbeem, **CC0**); 주유소 사진 [태창주유소](https://commons.wikimedia.org/wiki/File:%ED%83%9C%EC%B0%BD%EC%A3%BC%EC%9C%A0%EC%86%8C(%ED%99%8D%EC%B2%9C%EA%B5%B0_%EC%84%9C%EB%A9%B4)IMG_3903.jpg)(최광모, **CC0**), [Filling station in South Korea](https://commons.wikimedia.org/wiki/File:Filling_station_in_South_Korea.jpg)(Hankook12, **CC0**), [Hyundai Oilbank Songak](https://commons.wikimedia.org/wiki/File:Hyundai_Oilbank_Songak_Gas_Station_20240729.jpg)(LandAndTree, **CC0**), [SK Enclean](https://commons.wikimedia.org/wiki/File:SK_Enclean.jpg)(iTurtle, **CC BY 3.0**), [S Oil Songnae](https://commons.wikimedia.org/wiki/File:S_Oil_Songnae_Interchange_Gas_Station_-_panoramio.jpg)(슈트레인저, **CC BY 3.0**). 특정 주유소·정유사를 탓하는 문장은 없습니다(브랜드는 배경으로만 보임).
 - **issue3** — [훈민정음 해례본](https://commons.wikimedia.org/wiki/Category:Hunminjeongeum_Haerye) 1·2·7면(**퍼블릭 도메인**); [한글날 기념식(1954)](https://commons.wikimedia.org/wiki/File:%ED%95%9C%EA%B8%80%EB%82%A0_%EA%B8%B0%EB%85%90%EC%8B%9D_(1954).jpg)(한국정책방송원, 공유마당); [Gwanghwamun in November 1993](https://commons.wikimedia.org/wiki/File:Gwanghwamun_in_November_1993.jpg)(국립민속박물관 민속아카이브); [광화문 (1996.05)](https://commons.wikimedia.org/wiki/File:%EA%B4%91%ED%99%94%EB%AC%B8_(1996.05).jpg)·[광화문과 구중앙청 (1996.08)](https://commons.wikimedia.org/wiki/File:%EA%B4%91%ED%99%94%EB%AC%B8%EA%B3%BC_%EA%B5%AC%EC%A4%91%EC%95%99%EC%B2%AD_(1996.08)_01.jpg)(서울연구원 사진으로 본 서울); [광화문광장 야경 2024](https://commons.wikimedia.org/wiki/File:Nightview_of_the_Gwanghwamun_Square_2024.jpg)(서울관광재단); [나신걸 한글편지(1490)](https://commons.wikimedia.org/wiki/File:%EB%82%98%EC%8B%A0%EA%B1%B8_%ED%95%9C%EA%B8%80%ED%8E%B8%EC%A7%80,_1490.jpg)·[여주 영릉 항공](https://commons.wikimedia.org/wiki/File:%EC%97%AC%EC%A3%BC_%EC%98%81%EB%A6%89%EA%B3%BC_%EC%98%81%EB%A6%89_%EC%84%B8%EC%A2%85_%EC%98%81%EB%A6%89_%EC%A0%84%EA%B2%BD(%ED%95%AD%EA%B3%B5).jpg)(국가유산청) — 해례본 외 모두 **공공누리 제1유형**. 광화문 세종대왕 동상 사진은 쓰지 않았습니다(한국은 조형물 파노라마 자유가 비영리로 한정). 연표 그래픽 1장은 해례본 사진을 어둡게 깐 위에 올렸습니다.
 - **issue4** — NASA 고다드 우주비행센터 애니메이션 [SVS 20281 Blazar EarthShot A·B](https://svs.gsfc.nasa.gov/20281), [SVS 12994](https://svs.gsfc.nasa.gov/12994)(**퍼블릭 도메인**, 12994의 배경음악 "Hidden Tides"(Killer Tracks)는 소리를 0으로 꺼서 쓰지 않음, 12994 안의 Mellinger·SYSTEM Sounds 항목은 쓰지 않음); [The ICL at Dawn](https://commons.wikimedia.org/wiki/File:The_ICL_at_Dawn.jpg)·[The ICL at Night](https://commons.wikimedia.org/wiki/File:The_ICL_at_Night.jpg)(John Hardin, **CC BY 4.0**); [The IceCube Neutrino Observatory 구조도](https://commons.wikimedia.org/wiki/File:The_IceCube_Neutrino_Observatory.jpg)(Karen Andeen·Matthias Plum for the IceCube Collaboration, **CC BY 4.0**); [Amundsen-Scott dome Aurora](https://commons.wikimedia.org/wiki/File:Amundsen-Scott_dome_Aurora_1.jpg)(Jonathan Berry/NSF, **퍼블릭 도메인**). 수상자 사진은 쓰지 않았습니다.
 - 음악: Kevin MacLeod (incompetech.com), CC BY 4.0.
@@ -2152,7 +2158,7 @@ for id in life1 life2 life3 life4; do python3 voice_edge.py $id && python3 prep.
 
 **issue2** — 기름값 상한제 있는데 경유 20% 오른 이유 ⛽
 > 2026년 9월 소비자물가에서 경유는 1년 전보다 20.0%, 휘발유는 11.8% 올랐습니다. 3월 13일 시작된 석유 최고가격제는 주유소 판매가가 아니라 정유사가 주유소에 공급하는 가격에 상한을 두고, 상한선도 국제유가에 따라 다시 정해집니다(경유 1차 1,713원 → 10차 1,773원). 정부는 상한제가 없었다면 9월 물가 상승률이 2.9%가 아니라 3.5%였을 것으로 추정합니다. 10차 상한은 9월 19일부터 4주간 적용됩니다. (2026년 10월 기준)
-> 출처: 국가데이터처 9월 소비자물가동향(정책브리핑), 재정경제부·산업통상부 자료, 이투데이, 머니투데이, KDI 경제정보센터 / 영상: Antti Makkonen "Filling Up Gas Tank"(CC BY 4.0), 미국 해안경비대(DVIDS) · 사진: 위키미디어 공용 최광모·Hankook12·LandAndTree(CC0), iTurtle·슈트레인저(CC BY 3.0). 미국 정부가 이 영상을 보증하지 않습니다.
+> 출처: 국가데이터처 9월 소비자물가동향(정책브리핑), 재정경제부·산업통상부 자료, 이투데이, 머니투데이, KDI 경제정보센터 / 영상: Antti Makkonen "Filling Up Gas Tank"(CC BY 4.0) · 사진: NASA, 위키미디어 공용 최광모·Hankook12·LandAndTree·Quintin Soloviev·Alfvanbeem(CC0), iTurtle·슈트레인저(CC BY 3.0). NASA가 이 영상을 보증하지 않습니다.
 > 음악: "Movement Proposition" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
 > #기름값 #경유 #석유최고가격제 #소비자물가 #shorts
 
@@ -2167,3 +2173,196 @@ for id in life1 life2 life3 life4; do python3 voice_edge.py $id && python3 prep.
 > 출처: 노벨위원회 발표(서울신문·한국일보 보도), IceCube 공식 자료, NASA / 영상: NASA 고다드 우주비행센터 애니메이션 · 사진: John Hardin(CC BY 4.0), IceCube Collaboration 구조도(CC BY 4.0), 미국 국립과학재단(NSF). NASA·NSF가 이 영상을 보증하지 않습니다.
 > 음악: "Floating Cities" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
 > #노벨물리학상 #중성미자 #아이스큐브 #남극 #shorts
+
+## 한반도 자연·과학 지식 쇼츠 (`hanban1`~`hanban4`)
+
+「질문형 해설 + 공공 B-roll」(`research/research-info.md` 형식 A)로 만든 정보 쇼츠 4편입니다. 위쪽 검정 띠에 2줄 제목(0초부터 끝까지), 가운데 실제 위성사진·우주정거장 사진·현장 영상, 아래 1줄 자막(`"captionY": 1640`), Edge TTS `ko-KR-InJoonNeural`/`SunHiNeural` +20%, 빨간 원·화살표, 마지막 반전 한 줄. 그래픽 카드는 쓰지 않았습니다. 모두 `qa_review.py`에서 FAIL·WARN 없이 통과했고, faster-whisper small로 들은 내레이션이 대본과 맞습니다.
+
+| id | 제목(화면) | 길이 | 용량 | 내용 | 음악 |
+| --- | --- | --- | --- | --- | --- |
+| `hanban1` | 백두산이 폭발하면 / 화산재는 어디로 갈까? | 29.9초 | 22.7MB | 946년 ‘천년 분화’ → 화산재가 바다 건너 일본까지(높은 하늘의 바람) → 2002~2005년 무렵 지진 급증·지표 상승 → 기상청 위성 감시 → “언제 터질지 아무도 모른다, 그래서 지켜본다” | Lightless Dawn |
+| `hanban2` | 태풍이 한국 앞에서 / 휙 꺾이는 이유 | 30.2초 | 17.9MB | 북태평양고기압 가장자리를 따라 서→북 → 편서풍을 만나 북동쪽으로 전향 → 2022 힌남노(오키나와 남쪽 정체 → 꺾인 뒤 시속 98km) → 2026년 6월 태풍 장미도 오키나와 부근에서 전향 → “어디서 꺾이느냐가 우리 동네 날씨” | Movement Proposition |
+| `hanban3` | 가을 하늘이 유독 / 높고 파란 이유 | 28.2초 | 9.0MB | 레일리 산란 → 먼지·수증기가 많으면 희뿌옇게(2023.4.12 황사 날 위성) → 가을엔 건조한 이동성 고기압(2025.10.28 맑은 날 위성) → 2025년 서울 초미세먼지 봄 24 → 가을 13 → 새털구름 → “하늘이 높아진 게 아니라 공기가 깨끗해진 것” | Dreamer |
+| `hanban4` | 한국에서 오로라가 / 찍힌 날 생긴 일 | 32.6초 | 16.1MB | 2024년 5월 태양 흑점 폭발 → 21년 만의 G5 지자기 폭풍 → 원래 북극 근처 현상 → 영천 보현산천문대 카메라에 붉은 오로라, 강원 화천에서도 촬영 → 붉은빛은 200km 넘는 높이 → 반전: 눈으로는 거의 안 보였고 카메라에만 찍힘 | Floating Cities |
+
+```bash
+python3 voice_edge.py hanban1 && python3 prep.py hanban1
+./render.sh hanban1 out/hanban1.mp4        # 저장소 보관본은 이어서 CRF 23으로 다시 압축(final/)
+python3 qa_review.py hanban1
+```
+
+- 원본은 `public/hanban*/src/`(저장소에 넣지 않음)에 받아 썼고, 파일마다 페이지·파일 주소·라이선스·크레디트·장면 설명이 `media/hanban*/sources.json`에 있습니다. 크레디트는 화면 오른쪽 위에 클립별로 “사진: NASA”, “영상: USGS”처럼 짧게만 붙였습니다.
+- **다른 곳의 그림임을 밝힘**: 백두산 분화 영상은 없으므로 세인트헬렌스·킬라우에아·피나투보·통가 장면에는 “참고: …” 스티커를 붙였습니다. 오로라 사진·영상은 미국(아이다호·유타)에서 찍은 NASA 자료라 첫 프레임부터 “같은 폭풍 · 미국 아이다호” 스티커, 유타 영상에는 “※ 미국 유타 영상” 스티커를 붙였습니다. 한국 오로라 사진(천문연·용인어린이천문대)은 공공누리 표시가 없고 “©”라 쓰지 않았고, 한국은 우주정거장에서 찍은 한반도 야경(NASA)으로 보여 줍니다. 허리케인 밀턴·에린 ISS 영상은 “참고: 우주에서 본 허리케인”으로 표시했습니다.
+- **군 자료 없음**: 미 공군 허리케인 헌터, JTWC·해군 자료, 미 해군 NRL 진로가 겹친 NASA 이미지(2026 바비)는 쓰지 않았습니다.
+
+**사실 근거**
+
+`hanban1` 백두산
+- 946년 말 분화, “공통 시대(CE) 최대급 분화 중 하나”, 화산재가 일본 해저·호수 퇴적층(B-Tm 층)에서 발견, 하루 안에 일본에 닿을 수 있는 성층권 하부 기류 — Oppenheimer et al. 2017, *Quaternary Science Reviews* 158:164–171 ([PDF](https://www.climatology.uni-mainz.de/files/2016/03/Oppenheimer_2017_QSR-1.pdf), [UCL](https://discovery.ucl.ac.uk/id/eprint/10096385/)). 이 연대로 ‘분화가 발해를 멸망시켰다’는 설은 성립하지 않습니다(926년 멸망). “지난 2천 년 사이 가장 큰 분화 중 하나”는 이 논문의 “largest volcanic eruptions of the Common Era”를 옮긴 것입니다.
+- 화산재가 일본까지: NASA Earth Observatory 2016 “flung ash as far away as Japan” ([Mount Paektu: North Korea's Slumbering Giant](https://science.nasa.gov/earth/earth-observatory/mount-paektu-north-koreas-slumbering-giant-88020/)).
+- 분출량·VEI는 연구마다 달라(24km³ DRE, 40–98km³, VEI 6 vs 7: Yang et al. 2021 *Bull. Volcanol.* 83:74) 숫자를 쓰지 않았습니다.
+- 2002~2005년 무렵 미소지진 급증·지표 상승: Liu et al. 2020 *Frontiers in Earth Science* ([doi](https://frontiersin.org/articles/10.3389/feart.2020.599329/full), “unrest from July 2002 to July 2005”), Ri et al. 2016 *Science Advances* ([PMC4846464](https://pmc.ncbi.nlm.nih.gov/articles/PMC4846464)), NASA EO 2016(“Between 2002 and 2005, a surge of weak earthquakes”), 기상청 [국내 화산 자료](https://www.weather.go.kr/w/eqk-vol/volcano/archive/korea.do)(“2003.6월부터 미소지진발생 급증하여 2006년까지”). 출처마다 끝 연도가 달라 화면은 “2002~2005년 무렵”, 내레이션은 “2002년부터 몇 년 동안”.
+- 기상청 위성 감시: 기상청 [화산 분석](https://www.weather.go.kr/eqk_pub/analVolcano.do) “광학ㆍ열적외선 위성(Landsat 5~8호)과 레이더 위성(Sentinel-1)을 이용하여 백두산 지표온도 및 지표변위 … 정기적으로 분석”, 같은 페이지 “향후 분화 가능성도 있다”.
+- “언제 터질지 아무도 모른다”: NASA EO 2016 “more research and monitoring is required before scientists can say much about … the likelihood that it will erupt”, 뉴시스 2023.1.12(“2025년에 정확히 백두산이 분화한다는 과학적 근거는 없다”, [기사](https://www.newsis.com/view/NISX20230112_0002156039)).
+
+`hanban2` 태풍
+- 북태평양고기압 가장자리를 따라 북서진 → 서쪽 가장자리에서 북상 → 편서풍 영향으로 빠르게 북동진(전향): 기상청 [2011 태풍분석보고서](https://www.kma.go.kr/download_01/typhoon/typreport_2011.pdf)(“mT 남서쪽 가장자리 … 북서진”, “편서풍 효과가 가미되면서 빠르게 북동진”). NOAA AOML [Hurricane FAQ G5](https://www.aoml.noaa.gov/hrd/tcfaq/G5.html)(“subtropical ridge … recurve back toward the east … westerly winds”).
+- 힌남노: 기상청 [2022 태풍 분석보고서](https://www.kma.go.kr/download_01/typhoon/typeffect_2022.pdf) — 8.28 발생, 남쪽으로 이동, “9월 1일부터 이틀간 일본 오키나와 남쪽 해상에서 정체”, 9.5 “북동진으로 전향한 이후 … 이동속도가 빨라지며”, 9.6 04:50 거제 부근 상륙; 분석표 이동속도 9.2 시속 2–5km → 9.6 18시 동해상 시속 98km(화면 “시속 2km → 98km”, 내레이션 “백 킬로미터 가까이”). “초강력”은 같은 보고서의 강도 분류. NASA EO [Typhoon Hinnamnor](https://earthobservatory.nasa.gov/images/150290/typhoon-hinnamnor).
+- 태풍 장미: 기상청 보도자료 2026.6.2 “1951년 이후, 역대 세 번째로 이른 영향 태풍”, “1일(월) 낮 오키나와 부근에서 오른쪽으로 전향 … 우리나라 육상에는 영향이 없을 것으로 보인다”([보도자료](https://www.weather.go.kr/kma/flexer/html/press/2026/06/02/ATC202606020316422_d6d87f66-a42e-4f4c-9787-6bb9ba16a81e.hwp.files/Sections1.html)). 위성사진은 NASA EO [Typhoon Jangmi](https://science.nasa.gov/earth/earth-observatory/typhoon-jangmi/)(2026.5.31).
+- 영향 태풍은 7~9월, 그중 8월이 가장 많음(평년 1991–2020, 같은 2022 보고서). 이번 편에는 쓰지 않았습니다.
+
+`hanban3` 가을 하늘
+- 파란빛이 더 잘 흩어짐: NASA Space Place [Why Is the Sky Blue?](https://spaceplace.nasa.gov/blue-sky/en/)(“Blue light is scattered more than the other colors”). 배수(400nm vs 700nm 약 9배)는 계산값이라 내레이션은 “훨씬”만 씁니다.
+- 가을 하늘이 높고 파란 이유 = 습도가 낮고 대기가 투명: 기상청 강원지방기상청 보도자료 2010.10.1(“가을철은 습도가 낮고 … 대기가 투명해지기 때문”, [보도자료](https://www.kma.go.kr/kma/flexer/html/press2/2010/10/01/ATC201010011327022_e8101fd9-cc6e-4fa6-b3b2-863093d606f0.hwp.files/Sections1.html)). 같은 자료의 파장 설명(파란색을 장파로 적음)은 틀려서 쓰지 않았습니다.
+- 가을 이동성 고기압 → 맑고 건조: 기상청 3개월 전망 2014.9.23(“10월은 이동성 고기압의 영향을 자주 받아 맑고 건조한 날이 많겠으며”, [뉴스와이어 게재](https://www.newswire.co.kr/newsRead.php?no=767078)). ‘양쯔강 기단’은 기상청 출처가 없어 쓰지 않았습니다.
+- 서울 초미세먼지(PM2.5) 2025년 계절 평균 봄 24, 가을 13㎍/㎥, 2023·2024년에도 가을이 가장 낮음: 서울시 대기환경정보 [계절별 평균](https://cleanair.seoul.go.kr/statistics/seasonAverage). 일평균 미세먼지(PM10) 2023.4.12 260㎍/㎥(황사 위기경보 ‘관심’), 2025.10.28 22㎍/㎥: 같은 사이트 일별 자료.
+- 습도는 여름보다 가을이 낮지만 봄보다 낮지는 않아서(서울 평년 7월 76.2%, 10월 61.8%, 4월 54.8%) “가을이 가장 건조”라고 하지 않았습니다. 봄과 가을의 차이는 먼지라 먼지 수치를 씁니다.
+- 새털구름(권운) 높이 6km 이상: 미국 기상청 [Cloud Classification](https://www.weather.gov/lmk/cloud_classification)(“High-level clouds occur above about 20,000 feet … Cirrus”). “높아 보인다”는 설명(멀리까지 또렷 + 높은 구름)은 해석이라 “~보이는 거죠”로 말합니다.
+
+`hanban4` 오로라
+- 한국천문연구원 보도 참고자료 2024.5.13 「천문연 망원경 및 한국에서 촬영한 오로라 사진」([KASI](https://www.kasi.re.kr/kor/publication/post/newsMaterial/30045)): 보현산천문대 TIMOS 전천카메라(적색광 OI 630.0nm 필터)가 “북쪽 고위도 방향에서 적색 오로라를 포착”, 5월 12일 새벽 강원 화천에서 용인어린이천문대 박정하·심형섭 씨 촬영, 2003년 10월 30일에도 보현산 전천카메라에 붉은 오로라. 보현산 사진 시각 표기 “240510 19:09”는 세계시로 보여(한국 시각 5.11 새벽) 화면에는 날짜만 “그날”로 썼습니다.
+- 육안으로는 거의 안 보임: 이데일리 2024.5.13(“육안으로는 긴가민가 할 정도 … 노출 시간을 늘려 촬영”, [Daum](https://v.daum.net/v/20240513143330827)), YTN 2024.5.15(“한국에서는 육안으로 오로라를 볼 수 없었지만”, [기사](https://www.ytn.co.kr/_ln/0103_202405151400013483)), MBC([기사](https://imnews.imbc.com/news/2024/society/article/6597973_36438.html)).
+- G5(최고 등급), 2003년 10월 이후 처음: NOAA SWPC [NOAA Space Weather Scales](https://www.swpc.noaa.gov/noaa-scales-explanation), USGS [May 10, 2024 Magnetic Disturbance](https://www.usgs.gov/programs/geomagnetism/science/may-10-2024-magnetic-disturbance)(“The last G5 storm occurred on October 31, 2003”), NASA [How NASA Tracked the Most Intense Solar Storm in Decades](https://science.nasa.gov/science-research/heliophysics/how-nasa-tracked-the-most-intense-solar-storm-in-decades/)(흑점군 AR 13663·13664, CME 7개 이상). 플레어 영상은 13664의 X2.2(5.9)·X5.8(5.11).
+- 붉은빛은 200km 위 산소: NASA [Auroras](https://science.nasa.gov/sun/auroras/)(“Green … 60 to 120 miles (100–200 km) altitude, and red occurs above 120 miles (200 km)”). “그래서 멀리서도 보인 것”은 높이에 따른 기하학적 설명입니다.
+- 원래 고위도 현상: YTN 2024.5.15 천문연 전문가(“지자기 위도로 65도 정도 부근에서 발생”). 2024년 10월·2025년의 한국 오로라는 공식 확인 자료가 없어 넣지 않았습니다.
+
+**그림 출처와 라이선스**
+- `hanban1`: [Landsat 8 백두산 2015.9](https://science.nasa.gov/earth/earth-observatory/mount-paektu-north-koreas-slumbering-giant-88020/)·[MODIS 한반도 2010.1.3](https://science.nasa.gov/earth/earth-observatory/heavy-snow-in-korea-42211/)·[ISS006-E-43366 백두산 칼데라 2003](https://eol.jsc.nasa.gov/Collections/EarthObservatory/articles/Baitoushan_Volcano,_China_and_North_Korea.htm) — NASA, 퍼블릭 도메인; [GOES-17 통가 우산 구름 2022.1.15](https://science.nasa.gov/earth/earth-observatory/hunga-tonga-hunga-haapai-erupts-149347/) — NASA Earth Observatory/NOAA, 퍼블릭 도메인; [킬라우에아 정상 분화 2018.5.24](https://www.usgs.gov/media/videos/kilauea-volcano-summit-eruption-may-24-2018)(원본 12–15초, 20–24초) — USGS, 퍼블릭 도메인; [세인트헬렌스 1980.5.18](https://commons.wikimedia.org/wiki/File:MSH80_eruption_mount_st_helens_05-18-80.jpg)(USGS/Austin Post)·[피나투보 1991.6.12](https://commons.wikimedia.org/wiki/File:Pinatubo91eruption_plume.jpg)(USGS/Dave Harlow) — PD-USGov-USGS.
+- `hanban2`: [MODIS 힌남노 2022.9.1](https://earthobservatory.nasa.gov/images/150290/typhoon-hinnamnor) — NASA; NASA Worldview VIIRS 스냅숏 2022.8.29–9.6(9일치를 0.8초씩 이어 붙인 플립북 포함, 주소는 `media/hanban2/sources.json`) — NASA EOSDIS, 퍼블릭 도메인; [GPM 태풍 카눈 2023](https://svs.gsfc.nasa.gov/5135) — NASA GSFC SVS; [ISS 허리케인 밀턴 2024.10.8](https://images.nasa.gov/details/jsc2024m000173_International_Space_Station_Cameras_Capture_New_Views_Of_Hurricane_Milton_241008)(원본 18초~)·[ISS 허리케인 에린 2025](https://images.nasa.gov/details/jsc2025m000148-Hurricane_Erin_Seen_From_International_Space_Station)(원본 170초~) — NASA; [VIIRS 태풍 장미 2026.5.30–31](https://science.nasa.gov/earth/earth-observatory/typhoon-jangmi/) — NASA. ESA 우주인이 함께 있던 시기의 힌남노 ISS 사진(ISS067-E-302073)은 촬영자가 확인되지 않아 쓰지 않았습니다.
+- `hanban3`: NASA Worldview MODIS Terra 한반도·서울 2023.4.12, 2025.10.28 — NASA EOSDIS, 퍼블릭 도메인; [ISS073-E-0983131 한반도 남부와 파란 대기층 2025.9.21](https://images.nasa.gov/details/iss073e0983131)(NASA 우주인 조니 김 촬영) — NASA; [Cirrus cloud over Federal Way, WA](https://commons.wikimedia.org/wiki/File:Cirrus_cloud_over_Federal_Way,_WA.jpg) — Ron Clausen, CC0; [Ongjin South Korea sea city 03](https://commons.wikimedia.org/wiki/File:Ongjin_South_Korea_sea_city_03.jpg) — Hankook12, CC0; [Time lapse clouds](https://commons.wikimedia.org/wiki/File:Free_Creative_Commons_Stock_video_-_Time_lapse_clouds.webm) — Johann Mynhardt, **CC BY 2.0**(설명란 표기 필요). 한국 가을 하늘 사진은 Commons에 대부분 CC BY-SA, 서울시 사진은 공공누리 4유형이라 쓰지 않았습니다.
+- `hanban4`: [SDO X2.2 플레어 2024.5.9](https://svs.gsfc.nasa.gov/5284/)·[SDO X5.8 2024.5.11](https://svs.gsfc.nasa.gov/5289/)·[SDO 13663·13664 플레어 2024.5.7–8](https://svs.gsfc.nasa.gov/14683/) — NASA/SDO; [2024년 5월 오로라 사진·타임랩스(유타·아이다호)](https://svs.gsfc.nasa.gov/14835/) — NASA/Bill Dunford(같은 페이지의 편집 영상은 제3자 화면·음악이 섞여 쓰지 않음); [ISS072-E-147641 붉은·초록 오로라 2024.11](https://images.nasa.gov/details/iss072e147641)·[ISS038-E-038300 한반도 야경 2014.1.30](https://images.nasa.gov/details/iss038e038300)·[ISS062-E-082060 서울 야경 2020.3.5](https://images.nasa.gov/details/iss062e082060) — NASA, 퍼블릭 도메인.
+- 음악: Kevin MacLeod "Lightless Dawn", "Movement Proposition", "Dreamer", "Floating Cities" (incompetech.com, CC BY 4.0, `fetch.sh`가 받음). NASA·USGS·NOAA는 이 영상을 보증하거나 후원하지 않습니다(설명란 명시, 로고 미사용).
+
+**업로드 문구**
+
+**hanban1** — 백두산 폭발하면 화산재는 어디로 갈까?
+> 서기 946년 말, 백두산은 지난 2천 년 사이 가장 큰 분화 중 하나를 일으켰고, 그 화산재는 바다 건너 일본까지 날아가 쌓였습니다(Oppenheimer et al. 2017). 2002~2005년 무렵에는 백두산 아래 미소지진이 급증하고 땅이 부풀어 올랐고, 지금은 기상청이 Landsat·Sentinel-1 위성으로 지표 온도와 변위를 정기적으로 분석합니다. 언제 분화할지는 아직 아무도 예측하지 못합니다. ※ 분화 장면은 다른 화산(세인트헬렌스·킬라우에아·피나투보·통가)의 참고 영상입니다.
+> 출처: 기상청 화산 분석 weather.go.kr/eqk_pub/analVolcano.do · Oppenheimer et al. 2017 Quaternary Science Reviews · NASA Earth Observatory "Mount Paektu: North Korea's Slumbering Giant" · Liu et al. 2020 Frontiers in Earth Science
+> 사진·영상: NASA(Landsat 8, Terra MODIS, 국제우주정거장), NASA·NOAA(GOES-17), USGS(Austin Post, Dave Harlow, 하와이 화산관측소). NASA·USGS·NOAA는 이 영상을 보증하지 않습니다.
+> 음악: "Lightless Dawn" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
+> #백두산 #화산 #천지 #지구과학 #shorts
+
+**hanban2** — 태풍이 한국 앞에서 휙 꺾이는 이유?
+> 태풍은 북태평양고기압을 뚫지 못하고 가장자리를 따라 서쪽에서 북쪽으로 돌다가, 편서풍을 만나면 북동쪽으로 꺾입니다(전향). 2022년 힌남노는 오키나와 남쪽에서 이틀간 정체(시속 2~5km)했다가 전향 뒤 빨라져, 9월 6일 거제에 상륙하고 동해로 빠질 때는 시속 98km였습니다. 2026년 6월 태풍 장미도 오키나와 부근에서 전향해 우리나라 육상에는 영향이 없었습니다. 여러분 동네는 힌남노 때 어땠나요?
+> 출처: 기상청 2022 태풍 분석보고서, 2011 태풍분석보고서, 기상청 보도자료(2026.6.2) · NOAA AOML Hurricane FAQ · NASA Earth Observatory
+> 위성·영상: NASA(Terra MODIS, Worldview VIIRS, GPM, 국제우주정거장). NASA는 이 영상을 보증하지 않습니다.
+> 음악: "Movement Proposition" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
+> #태풍 #힌남노 #날씨 #기상청 #shorts
+
+**hanban3** — 가을 하늘이 유독 높고 파란 이유
+> 하늘이 파란 건 파란빛이 공기에 더 잘 흩어지기 때문(레일리 산란). 먼지와 수증기가 많으면 모든 빛이 흩어져 하늘이 희뿌예지는데, 가을엔 건조한 이동성 고기압이 자주 찾아와 공기가 맑고 투명해집니다. 2025년 서울 초미세먼지 평균은 봄 24㎍/㎥, 가을 13㎍/㎥. 위성사진: 2023년 4월 12일 황사 날(서울 미세먼지 260) vs 2025년 10월 28일(22).
+> 출처: 기상청 보도자료(2010.10.1)·3개월 전망 · 서울시 대기환경정보 계절별 평균 · NASA Space Place "Why Is the Sky Blue?" · 미국 기상청 구름 분류
+> 사진·영상: NASA(Worldview MODIS, 국제우주정거장), Ron Clausen (CC0), Hankook12 (CC0), "Time lapse clouds" Johann Mynhardt (CC BY 2.0, https://creativecommons.org/licenses/by/2.0/). NASA는 이 영상을 보증하지 않습니다.
+> 음악: "Dreamer" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
+> #가을하늘 #미세먼지 #날씨 #과학 #shorts
+
+**hanban4** — 한국에서 오로라가 찍힌 날 ㄷㄷ
+> 2024년 5월, 2003년 이후 처음으로 최고 등급(G5) 지자기 폭풍이 지구를 덮쳤습니다. 이때 경북 영천 보현산천문대의 전천카메라에 붉은 오로라가 잡혔고(한국천문연구원), 5월 12일 새벽 강원 화천에서도 아마추어 천문가들이 촬영에 성공했습니다. 다만 눈으로는 거의 보이지 않았고 장노출 카메라에만 찍혔습니다. ※ 영상 속 오로라는 같은 폭풍 때 미국 유타·아이다호에서 NASA가 촬영한 것입니다.
+> 출처: 한국천문연구원 참고자료(2024.5.13) · NOAA SWPC · USGS 지자기 프로그램 · NASA "How NASA Tracked the Most Intense Solar Storm in Decades", "Auroras"
+> 사진·영상: NASA/SDO, NASA/Bill Dunford, NASA(국제우주정거장). NASA는 이 영상을 보증하지 않습니다.
+> 음악: "Floating Cities" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
+> #오로라 #태양폭풍 #보현산천문대 #우주 #shorts
+
+## 빅테크 CEO 청문회 쇼츠 (`politics/ceo1`~`ceo4`)
+
+유명 테크 CEO가 미국 의회 청문회에서 한 화제의 한마디를, 레퍼런스(“1만 시간의 법칙 (한영자막)”)와 같은 **형식만** 따라 영어(위, 크게)·한국어(아래, 작게) 2단 자막으로 만든 4편입니다. 내레이터·AI 목소리·음악 없이 청문회 원음만 씁니다. 영상은 모두 **미 상원 Recording Studio가 직접 촬영한 위원회 공식 영상**(senate.gov ISVP 플레이어의 HLS 원본)이고, C-SPAN·방송사·유튜브 재업로드 화면은 쓰지 않았습니다.
+
+| id | 제목 | 길이 | 장면 |
+| --- | --- | --- | --- |
+| `ceo1` | 페북 공짜인데 돈은 어떻게? / 저커버그의 한마디..? | 35.0초 | 오린 해치 상원의원 ↔ 마크 저커버그, 상무·법사위 합동 2018.4.10, “Senator, we run ads.” |
+| `ceo2` | 챗GPT 만든 CEO에게 / “돈 많이 버시죠?” 묻자..? | 37.7초 | 존 케네디 상원의원 ↔ 샘 올트먼, 법사위 소위 2023.5.16, “I have no equity in OpenAI.” / “You need a lawyer or an agent.” |
+| `ceo3` | 틱톡 CEO 추쇼우즈에게 / 국적을 거듭 묻자..? | 35.1초 | 톰 코튼 상원의원 ↔ 추쇼우즈(틱톡), 법사위 2024.1.31, “Senator, I'm Singaporean.” |
+| `ceo4` | “딥시크, 얼마나 큰일이었나?” / 올트먼과 리사 수의 대답..? | 34.5초 | 테드 크루즈 위원장 ↔ 샘 올트먼·리사 수(AMD), 상무위 2025.5.8, “Not a huge deal.” / “somewhere in between” |
+
+```bash
+MEDIA=$PWD/media python3 politics/prep_split.py ceo1    # 원본: media/celeb/
+./render.sh ceo1 final/ceo1.mp4
+```
+
+- **첫 장면·장면 길이 (qa_review 대응)**: 상원 카메라는 질문하는 동안 의원만 비추므로, ceo1·ceo3·ceo4는 0초에 CEO가 **말없이 듣고 있는 얼굴**(같은 청문회의 다른 순간, 원음은 끄고 `"cutaway": true`)을 1.8~2초 보여 주고, 그 밑에 의원의 실제 질문 음성(`music` 목소리 파트, 원본 그대로)이 흐릅니다. 그 컷에서 말하는 입 모양은 나오지 않습니다(ceo1 저커버그 64.35–66.35: 해치 질문 뒤 답하기 전 침묵 / ceo3 추쇼우즈 29.6–31.4: 여권 질문을 듣는 중 / ceo4 리사 수 50.0–52.0: 옆자리 올트먼 발언을 듣는 중). 한 화면이 4.5초를 넘지 않도록 긴 단일 카메라 구간은 같은 화면 안에서 가까운 크롭/넓은 크롭을 번갈아 나눴습니다(흰 번쩍임 없음, 시간은 이어짐).
+- 템플릿 변경(`prep_split.py`, 기존 쇼츠 영향 없음): 구간에 `"cutaway": true`를 주면 자막 시간 계산(`at`/`to`→출력 초)에서 그 구간을 건너뜁니다. 원본 시각이 ±0.3초 안에 겹치는 반응 컷이 다른 줄을 가로채지 않게 하기 위한 것입니다.
+- **레이아웃**: `"titleStyle": "band"`(검정 띠 2줄 질문형 제목, 아랫줄 노랑), `"subOrder": "en-ko"`, `"captionY": 1600`, 정사각 화면에 `single` 크롭으로 얼굴을 크게, 이름표 “이름 · 직함 (연도)”. 화면에 없는 사람이 말하면 자막 위에 `🎙 이름`. 첫 3초에 장면 설명 스티커(“2018년 미국 상원 청문회 · 개인정보 유출 사태 직후” 등). 영어 `[괄호]`·한국어 `keys`로 핵심 구절만 노랑.
+- **자막 검증**: 영어는 GPO 공식 청문회 기록(아래 링크)과 faster-whisper small.en·medium.en(위치 찾기는 tiny.en, 2024·2025년은 상원 스트림 자체 영어 자막 트랙도)을 대조했고 모두 일치합니다. 기록과 실제 발음이 다른 곳은 들리는 대로 적었습니다: ceo1 “users don't pay”(기록 “do not”), ceo2 “I make… no.”(기록 “No.”), “Would you be qualified…”(실제로 “to… to…” 하고 말을 고름). 자막 시간은 medium.en 단어 시간에 `at`/`to`로 고정했습니다.
+- **컷과 화면** (원본 = `media/celeb/<파일>.mp4` 초. HLS를 스트림 복사로 잘라 시작점이 세그먼트 경계에 맞춰지므로, 스트림 시각은 ±15초쯤 어긋날 수 있습니다. 정확한 위치는 인용한 문장으로 찾으면 됩니다)
+  - `ceo1` (`zuck.mp4`, 스트림 약 1:30:50부터): (0–2초 반응 컷 64.35–66.35, 그 밑 음성 27.2–29.2) + 29.2–49.4 + 59.62–71.85. 컷 1번: 저커버그 답변의 “It is our mission to… we are committed to doing that.”(약 10초)를 뺐습니다. 답의 요지(“무료 버전은 언제나 있다”)는 그대로이고, 바로 다음 해치의 “Well, if so, how do you sustain…”으로 이어집니다. 원본이 640×360뿐이라 화질이 낮고, 원본 화면 아래 위원회 자막(“Joint Commerce and Judiciary Committee”)이 크롭 밖으로 빠집니다.
+  - `ceo2` (`alt23.mp4`, 스트림 약 1:58:10부터): 2.2–39.3, 자르지 않음(크롭 전환만). 첫 1.8초는 올트먼 얼굴(케네디의 “Can you send me that information?”이 들림).
+  - `ceo3` (`chew.mp4`, 스트림 약 2:39:50부터): (0–1.8초 반응 컷 29.6–31.4, 그 밑 음성 7.45–9.25) + 9.25–18.05 + 28.75–52.68. 컷 1번: “중국 시민권을 신청한 적 있나”·“싱가포르 여권이 있나” 문답(약 10.7초)을 뺐습니다. 답에 싱가포르 국가·군 복무 이야기가 나와서(군대 소재 제외), 문답 단위로 통째로 뺐고 앞뒤 질문·답은 온전합니다. 끝 0.5초는 상원 카메라가 추쇼우즈를 비춥니다.
+  - `ceo4` (`ai25.mp4`, 스트림 약 3:13:50부터): (0–2초 반응 컷 50.0–52.0, 그 밑 음성 20.25–22.25) + 22.25–30.38 + 34.6–47.3 + 85.3–89.7 + 100.55–107.2. 컷 3번: 크루즈 질문 끝 “and what's coming next? And let's, each of the four of you.”, 올트먼 답 뒷부분(“maybe the most downloaded app overall” 이후 오픈소스·소비자 앱 이야기), 리사 수 답 중간(“When you think about what we learned… in the United States.”)을 뺐습니다. 리사 수의 첫 문장(85.3–89.7)은 상원 카메라가 회의장 전경을 비추는 구간이라 `"shows": -1`로 🎙 표시. 올트먼 구간은 올트먼과 옆자리 리사 수가 함께 보이게 넓게 크롭했습니다.
+- **리사 수 스티커**(“리사 수는 엔비디아 젠슨 황의 먼 친척”): 리사 수 본인이 “distant relatives”라고 말했고(2020 CTA 행사, 2024 블룸버그 인터뷰 “We were really distant, so we didn't grow up together”), 엔비디아 대변인도 젠슨 황 어머니 쪽 먼 친척이라고 확인했습니다([Business Insider](https://www.businessinsider.nl/amd-ceo-lisa-su-says-she-never-met-her-distant-cousin-nvidia-ceo-jensen-huang-until-later-in-their-careers/), [AOL/BI](https://www.aol.com/amd-ceo-lisa-su-says-014208683.html)). 정확한 촌수(5촌 등)는 계보학자 추정이라 쓰지 않았습니다.
+- **중립성**: 질의자 4명이 모두 공화당 상원의원인 것은 화제 장면을 고르다 보니 그렇게 된 것이고, 정당이 아니라 CEO의 답이 주인공입니다. 정당·정치인을 조롱하는 문구는 없고, ceo3 제목도 “국적을 거듭 물은 장면”으로만 잡았습니다. 수치·주장(딥시크 다운로드 1위 등)은 발언 그대로이며 따로 검증한 사실이 아닙니다. 화면에 회사 로고를 브랜딩처럼 쓰지 않았습니다.
+- **라이선스**: 미 상원 Recording Studio(상원 직원)가 직무로 촬영한 위원회 청문회 영상이라 미국 연방정부 저작물, **퍼블릭 도메인**(17 U.S.C. §105)입니다. 위원회 청문회 페이지에 박힌 senate.gov ISVP 플레이어(`www.senate.gov/isvp/?comm=…&filename=…`)가 재생하는 상원 Akamai HLS 원본을 그대로 받았습니다. C-SPAN 로고나 방송사 화면은 없습니다. 상원 규칙(S.Res.431)상 정치·선거운동 용도로는 쓸 수 없고, 상원·의원·증인·회사가 이 영상을 보증하는 것처럼 보이면 안 됩니다.
+- **원본**: 쓰는 구간을 담은 원본 클립(0초 기준 재인코딩)과 출처 페이지·HLS 주소·스트림 구간·기록 링크가 `media/celeb/*.mp4`·`*.json`에 있습니다.
+  - `ceo1`: [상무위 청문회 페이지](https://www.commerce.senate.gov/2018/4/facebook-social-media-privacy-and-the-use-and-abuse-of-data) · 스트림 `commerce041018` 약 1:31:17–1:32:22 · 기록 [S. Hrg. 115-683](https://www.govinfo.gov/content/pkg/CHRG-115shrg37801/html/CHRG-115shrg37801.htm)
+  - `ceo2`: [법사위 청문회 페이지](https://www.judiciary.senate.gov/committee-activity/hearings/oversight-of-ai-rules-for-artificial-intelligence) · 스트림 `judiciary051623` 약 1:58:12–1:58:49 · 기록 [S. Hrg. 118-37](https://www.govinfo.gov/content/pkg/CHRG-118shrg52706/html/CHRG-118shrg52706.htm)
+  - `ceo3`: [법사위 청문회 페이지](https://www.judiciary.senate.gov/committee-activity/hearings/big-tech-and-the-online-child-sexual-exploitation-crisis) · 스트림 `judiciary013124` 약 2:39:57–2:40:43 · 기록 [S. Hrg. 118-497](https://www.govinfo.gov/content/pkg/CHRG-118shrg57444/html/CHRG-118shrg57444.htm)
+  - `ceo4`: [상무위 청문회 페이지](https://www.commerce.senate.gov/2025/5/winning-the-ai-race-strengthening-u-s-capabilities-in-computing-and-innovation_2) · 스트림 `commerce050825` 약 3:14:10–3:15:37 · 기록 [S. Hrg. 119-143](https://www.govinfo.gov/content/pkg/CHRG-119shrg61426/html/CHRG-119shrg61426.htm)
+- **원래 계획에서 바뀐 것**: `ceo2`는 원래 순다르 피차이(2018.12.11 하원 법사위, “iPhone is made by a different company”)였습니다. 하원 법사위 청문회 페이지가 위원회 공식 유튜브 영상(`Ul5fMAG2tk4`, House Committee on the Judiciary 채널)만 걸어 두고 있고, 이 작업 환경에서는 유튜브가 다운로드를 막아(“Sign in to confirm you're not a bot”, 스토리보드만 허용) 받을 수 없었습니다. 그래서 대안 목록의 샘 올트먼 2023 상원 법사위 소위로 바꿨습니다. 그 영상을 받을 수 있는 환경이라면 같은 형식으로 피차이 편을 만들 수 있습니다(하원 위원회 직원 촬영이면 역시 퍼블릭 도메인).
+
+**ceo1** — 페북 공짜인데 돈은 어떻게? 저커버그의 한마디
+> 2018년 4월 10일, 미국 상원 상무위원회·법사위원회 합동 청문회(워싱턴 D.C.). 케임브리지 애널리티카 개인정보 유출 사태 직후 처음 의회에 선 마크 저커버그 페이스북 CEO에게 오린 해치 상원의원이 물었습니다. “사용자가 돈을 안 내는데 사업은 어떻게 유지하죠?” 저커버그의 대답은 한마디였습니다. 영어 원문과 한국어 번역 자막(답변 중간 일부 생략).
+> 영상: 미국 상원(U.S. Senate) 위원회 청문회 공식 영상 · 이 영상은 영상 속 인물이나 기관이 보증·후원한 것이 아닙니다.
+> #저커버그 #페이스북 #청문회 #영어공부 #shorts
+
+**ceo2** — 챗GPT 만든 CEO에게 "돈 많이 버시죠?" 묻자
+> 2023년 5월 16일, 미국 상원 법사위원회 AI 소위원회 청문회(워싱턴 D.C.). AI 규제를 논의하던 자리에서 존 케네디 상원의원이 오픈AI의 샘 올트먼 CEO에게 “돈은 많이 버시죠?”라고 묻자 나온 대답. (오픈AI 지분 관련 발언은 2023년 청문회 당시 본인 말입니다.) 영어 원문과 한국어 번역 자막.
+> 영상: 미국 상원(U.S. Senate) 위원회 청문회 공식 영상 · 이 영상은 영상 속 인물이나 기관이 보증·후원한 것이 아닙니다.
+> #샘올트먼 #챗GPT #오픈AI #영어공부 #shorts
+
+**ceo3** — 틱톡 CEO 추쇼우즈에게 국적을 거듭 묻자
+> 2024년 1월 31일, 미국 상원 법사위원회 청문회(워싱턴 D.C.). 빅테크 CEO 5명이 출석한 자리에서 톰 코튼 상원의원이 틱톡의 추쇼우즈(Shou Zi Chew) CEO에게 국적과 중국 공산당과의 관계를 거듭 물었고, 추쇼우즈 CEO는 차분하게 “저는 싱가포르인입니다”라고 답했습니다. 영어 원문과 한국어 번역 자막(중간 문답 일부 생략).
+> 영상: 미국 상원(U.S. Senate) 위원회 청문회 공식 영상 · 이 영상은 영상 속 인물이나 기관이 보증·후원한 것이 아닙니다.
+> #틱톡 #청문회 #싱가포르 #영어공부 #shorts
+
+**ceo4** — "딥시크, 얼마나 큰일이었나?" 올트먼과 리사 수의 대답
+> 2025년 5월 8일, 미국 상원 상무위원회 ‘AI 경쟁’ 청문회(워싱턴 D.C.). 테드 크루즈 위원장이 “딥시크는 얼마나 큰일이었나”라고 묻자 오픈AI 샘 올트먼 CEO와 AMD 리사 수 CEO의 답이 엇갈렸습니다. 리사 수 CEO는 엔비디아 젠슨 황 CEO와 먼 친척이기도 합니다(본인 언급). 발언 속 수치·평가는 발언 그대로입니다. 영어 원문과 한국어 번역 자막(답변 일부 생략).
+> 영상: 미국 상원(U.S. Senate) 위원회 청문회 공식 영상 · 이 영상은 영상 속 인물이나 기관이 보증·후원한 것이 아닙니다.
+> #딥시크 #샘올트먼 #리사수 #AI #shorts
+
+## 젠슨 황·테크 리더 육성 쇼츠 (`politics/jensen*`)
+
+레퍼런스(유명인 육성 + 위 영어·아래 한국어 2단 자막 + 질문형 제목)의 **형식만** 따랐습니다. 젠슨 황 인터뷰를 올리는 국내 채널들이 쓰는 방송·행사 영상은 쓰지 않았고, 라이선스를 확인한 영상만 썼습니다. 내레이션·AI 음성·음악 없이 본인 목소리만 씁니다.
+
+| id | 제목 (검정 띠, 2줄째 노랑) | 길이 | 출처 · 쓴 구간 (클립 기준 초) |
+| --- | --- | --- | --- |
+| `jensen1` | 젠슨 황이 말한 GPU 1대, / 무게가 32kg..? | 44.8초 | 백악관 2025.4.30 · 17.5–21.75, 43.15–83.0 (컷 1번) |
+| `jensen2` | 젠슨 황: 전기를 넣으면 / '이것'이 나오는 기계..? | 35.3초 | 백악관 2025.4.30 · 112.6–117.5, 136.75–166.5 (컷 1번) |
+| `jensen3` | 젠슨 황이 인도에 / '지금이 기회'라고 한 이유..? | 32.1초 | 모디 총리 공식 채널(CC BY) 2024.9.22 · 18.6–31.1, 84.6–103.5 (컷 1번) |
+| `jensen4` | 손정의가 말한 / AGI 다음에 오는 것..? | 37.0초 | 백악관 2025.1.21 '스타게이트' 발표 · 11.0–47.3 (자르지 않음) |
+
+```bash
+MEDIA=$PWD/media python3 politics/prep_split.py jensen1     # 원본: media/celeb/ (출처·구간은 같은 이름의 .json)
+./render.sh jensen1 final/jensen1.mp4
+```
+
+- **장면 전환**: 긴 원본 테이크를 문장 시작마다(3~4초) 이어지는 구간으로 나눠 얼굴 크롭을 번갈아 바꿨습니다(가까이↔조금 멀리). 시간이 이어지는 구간이라 흰 번쩍임은 없고 말도 그대로입니다. 백악관 와이드 화면은 연단의 젠슨 황에 맞춰 1.8~2.2배로 당겼습니다(360p라 흐림). `qa_review.py` 결과 네 편 모두 WARN·FAIL 없음.
+- **레이아웃**: `"titleStyle": "band"`, `"subOrder": "en-ko"`, `captionY` 1590(사진 아래, 유튜브 버튼 영역 위), 정사각 얼굴 크롭, 첫 화면부터 제목. 영어 `[괄호]`와 한국어 `keys`로 핵심 구절만 노랗게. 시작 3초 흰 스티커로 장소·날짜만 적었습니다. 화면 출처 표기는 "백악관 영상 · 날짜", "나렌드라 모디 공식 채널 · 2024.9".
+- **영상 1 — 백악관 "Investing in America" 행사(2025.4.30)**: 백악관 공식 유튜브 [WtXHaYrhflk](https://www.youtube.com/watch?v=WtXHaYrhflk)의 25:10–28:30. 이 컨테이너에서는 유튜브 다운로드가 봇 확인으로 막혀서, 같은 업로드를 그대로 보존한 archive.org 미러 [youtube-WtXHaYrhflk](https://archive.org/details/youtube-WtXHaYrhflk)(channel @WhiteHouse, creator "The White House")에서 받았습니다. 미러가 **360p뿐**이라 화질이 낮고, 원본 중계가 중간에 객석 뒤 와이드 화면으로 바뀌어(클립 57–95초, 144–172초) 그 구간은 연단의 젠슨 황을 작게 비춥니다. 미국 연방정부 저작물, 퍼블릭 도메인(17 U.S.C. §105).
+  - 자막: 백악관이 올린 영어 자막(en-US.vtt)과 faster-whisper small.en·medium.en·large-v3 대조. "Well, after all this time"(자막·small·large 일치), `jensen2` 첫 줄은 "manufacturing, manufacturing…"으로 말을 고쳐 시작해 둘째 "Manufacturing isn't about…"부터 썼고(구간만 따로 돌린 세 모델 모두 같은 문장), "The really, the really amazing thing"도 고쳐 말한 뒤의 "The really amazing thing"부터 썼습니다(세 모델 일치; 백악관 자막은 "real").
+  - 뺀 부분: IBM System 360 설명, 대통령 지도력·정책에 대한 감사(83–111초, 166초 이후). 정치적 발언을 빼고 기술 설명만 남겼습니다. 컷은 각각 문장 경계에서 한 번(흰 번쩍임).
+  - "70파운드(약 32kg)": 단위 환산만 괄호로 덧붙였습니다. "That's one GPU unit"은 무대 옆 전시물(GB200 NVL 랙 계열로 보이나 영상에서 확인 불가)을 가리킨 말이라 번역은 "저게 GPU 한 대"로 그대로 뒀습니다.
+- **영상 2 — 모디 총리 공식 채널 인터뷰(2024.9.22, 뉴욕)**: Wikimedia Commons [File:PM Modi is such an incredible student, NVIDIA CEO Jensen Huang.webm](https://commons.wikimedia.org/wiki/File:PM_Modi_is_such_an_incredible_student,_NVIDIA_CEO_Jensen_Huang.webm) (원본: Narendra Modi 유튜브 [saTD1u8PorI](https://www.youtube.com/watch?v=saTD1u8PorI), 유튜브 "크리에이티브 커먼즈 저작자 표시"로 공개, Commons 표기 **CC BY 3.0**). 총리 채널이 직접 찍고 자막(이름표)을 넣은 인터뷰라 업로더가 원저작자입니다. Commons에는 "라이선스 검토 대기" 표시가 있습니다. 1080p.
+  - 자막: 공식 녹취록이 없어 whisper 세 모델만으로 맞췄고 세 모델이 일치합니다.
+  - 정치색을 피하려고 앞부분의 총리 칭찬("such an incredible student")과 협력사 나열은 빼고, 인도 인재·AI 산업·"AI가 컴퓨팅을 대중화했다·지금이 인도의 순간" 부분만 썼습니다. 컷 1번(31.1→84.6초, 문장 경계).
+- **영상 3 (대체편) — 백악관 '스타게이트' 발표(2025.1.21, 루스벨트룸)**: 백악관 공식 유튜브 [X5gMiDnYEds](https://www.youtube.com/watch?v=X5gMiDnYEds)의 8:00–9:05, archive.org 미러 [youtube-X5gMiDnYEds](https://archive.org/details/youtube-X5gMiDnYEds)(360p). 퍼블릭 도메인(17 U.S.C. §105). 젠슨 황 본인 영상이 2건뿐이라 넷째 편은 손정의 소프트뱅크그룹 회장의 발언으로 채웠습니다. 백악관 자막은 "AGI"를 "Asia"로 잘못 적었는데 whisper 세 모델 모두 "AGI"로 들어서 AGI로 썼습니다. 마지막 "Well, this is the beginning of our golden age."(정치 구호와 겹침)는 넣지 않고 "…we could solve."에서 끝냈습니다. "Larry"는 래리 엘리슨(오라클)입니다.
+- 원본 클립과 출처·라이선스·구간 기록: `media/celeb/*.mp4`·`.json`. 단어 시간: `politics/jensen*/whisper.json`(faster-whisper medium.en).
+- **찾았지만 쓰지 않은 젠슨 황 영상**: 2025.10.31 APEC 경주 이재명 대통령 접견·CEO 서밋 특별세션·GPU 26만 장 발표(정책브리핑 기사는 "텍스트에 한하여" 공공누리 1유형이고 사진은 연합뉴스, 영상은 정책브리핑에 저작권 없음 표기; KTV 영상은 "All Rights Reserved"이고 공공누리 1유형 표시를 찾지 못함; CEO 서밋은 대한상의 주최), 2026.6 방한(기업·대학 행사, 정부 영상 없음), 2026.9.2 G20 혁신장관회의 러트닉 장관 대담(상무부 주최라 유력했지만 찾은 영상은 CNBC·News Central·DRM News 등 방송사 업로드뿐, 상무부 자체 녹화본을 찾지 못함), 2026.9.29 백악관 AI 오찬(공개 발언은 대통령뿐), 2026.10.8 국가과학·기술메달 수여(대통령·크라치오스만 발언), 2026.8.19 백악관 기술 리더 행사(젠슨 황 발언 확인 불가, 유튜브 다운로드 불가), 2025.11.19 미·사우디 투자포럼 머스크 대담(포럼 주최측 제작·C-SPAN, 머스크 동석), 대만 총통부·행정원(젠슨 황 발언 영상 없음), Commons의 Computex 2025 한국 유튜버 영상(CC BY지만 젠슨 황은 지나가는 장면뿐이고 기조연설 화면은 엔비디아 저작물), GTC·Computex·스탠퍼드·칼텍·CMU 연설과 팟캐스트(라이선스 불가).
+
+**jensen1** — 젠슨 황이 말한 GPU 1대, 무게가 32kg..?
+> 2025년 4월 30일 미국 백악관 'Investing in America' 행사. 엔비디아 젠슨 황 CEO가 "60년 만에 컴퓨터를 다시 발명했다"며 GPU 한 대가 70파운드(약 32kg), 부품 6만 개, 1만 와트라고 설명합니다. "슈퍼컴퓨터를 시험하는 데도 슈퍼컴퓨터가 필요합니다." 영어 원문과 한국어 번역 자막(직접 번역).
+> 영상: 백악관(The White House, 2025.4.30) · 이 영상은 영상 속 인물이나 기관이 보증·후원한 것이 아닙니다.
+> #젠슨황 #엔비디아 #GPU #영어공부 #한영자막
+
+**jensen2** — 젠슨 황: 전기를 넣으면 '이것'이 나오는 기계..?
+> 2025년 4월 30일 미국 백악관 행사에서 젠슨 황 엔비디아 CEO가 말한 AI의 정체. "제조업은 이제 값싼 노동력이 아니라 기술의 문제입니다." "예전엔 물이 들어가면 전기가 나왔다면, 이제는 전기가 들어가면 토큰, 즉 인공지능이 나옵니다." 영어 원문과 한국어 번역 자막(직접 번역).
+> 영상: 백악관(The White House, 2025.4.30) · 이 영상은 영상 속 인물이나 기관이 보증·후원한 것이 아닙니다.
+> #젠슨황 #엔비디아 #인공지능 #AI공장 #영어공부
+
+**jensen3** — 젠슨 황이 인도에 '지금이 기회'라고 한 이유..?
+> 2024년 9월 22일 미국 뉴욕, 인도 총리와 테크 CEO 간담회 뒤 젠슨 황 엔비디아 CEO 인터뷰. "AI는 컴퓨팅을 정말 대중화했습니다. 지금이 인도의 순간입니다. 기회를 잡아야 합니다." 영어 원문과 한국어 번역 자막(직접 번역, 일부 구간 생략).
+> 영상: Narendra Modi 공식 유튜브 "PM Modi is such an incredible student: NVIDIA CEO Jensen Huang" (https://www.youtube.com/watch?v=saTD1u8PorI), CC BY 3.0 (https://creativecommons.org/licenses/by/3.0/) — 잘라내고 확대·자막을 넣음. 이 영상은 영상 속 인물이나 기관이 보증·후원한 것이 아닙니다.
+> #젠슨황 #엔비디아 #인도 #AI #한영자막
+
+**jensen4** — 손정의가 말한 AGI 다음에 오는 것..?
+> 2025년 1월 21일 미국 백악관, AI 인프라 '스타게이트' 발표. 손정의 소프트뱅크그룹 회장: "AGI는 아주, 아주 곧 옵니다. 그다음엔 초인공지능이 와서 인류가 풀 수 있으리라 생각하지 못한 문제들을 풀 겁니다." 영어 원문과 한국어 번역 자막(직접 번역).
+> 영상: 백악관(The White House, 2025.1.21) · 이 영상은 영상 속 인물이나 기관이 보증·후원한 것이 아닙니다.
+> #손정의 #AGI #초인공지능 #스타게이트 #영어공부
