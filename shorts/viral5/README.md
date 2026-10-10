@@ -6657,3 +6657,320 @@ python3 longform/lfhorror1/qa.py           # 자체 QA + 콘택트 시트(out/re
 
 #괴담 #무서운이야기 #공포 #창작괴담 #규칙괴담 #편의점 #야간알바 #인수인계서 #이해하면무서운이야기 #공포썰 #미스터리
 ```
+
+## 롱폼: 오디세우스 (F1 스토리형 신화 다큐)
+
+`odyssey` · 16:9 1920×1080 · 18:44 · 16챕터 · `final/odyssey.mp4`, `final/odyssey-thumb.jpg` · 파일: `longform/odyssey/`
+
+조사(`research/research-longform-docu.md` §4 ②, §4-0)의 F1 수사 구조를 따랐다. 연대기 나열이 아니라 "질문 → 단서 → 반전 → 판결 → 당신" 순서다.
+- 0:00 역설("10년 중 8년은 바다 위에 있지 않았다")과 "왜 자기 집을 알아보지 못했을까".
+- 0:50 질문 고정: 흔한 답 둘(험한 바다, 신의 분노)은 "틀린 말은 아니지만 8년을 설명하지 못한다", 진짜 답은 맨 끝.
+- 1:22 지도와 한국 닻 ①(청동기 시대·고인돌).
+- 2:07~11:20 단서 사슬: 흔한 답 ① 신의 분노를 4:26 장에서 반쯤 깨고(분노를 부른 건 자기 입), 흔한 답 ② 험한 바다를 7:14 장에서 깬다(키르케의 1년 동안 바다는 아무 짓도 안 함). 잠 세 번, 저주 네 줄 체크.
+- 11:21 한국 닻 ②(7년 = 초등학교 6년보다 길다) + 12:05 질문 뒤집기(64%): "왜 10년이나 걸렸을까가 아니라, 늙지 않는 섬을 두고 왜 굳이 돌아가려 했을까".
+- 15:42 판결(84%): 기도의 빈틈과 끝까지 집을 고른 고집.
+- 16:45 당신 연결(89%): "'오디세이'라는 말이 바로 이 10년에서 나왔다".
+- 16:51~ 첫 장면 회수(침대·10년 중 8년) + 열린 떡밥: 테이레시아스의 마지막 예언(노를 메고 바다를 모르는 땅까지).
+
+그림은 미술관 CC0 고전 판화·회화만 쓰고, 내레이션은 Edge TTS `ko-KR-InJoonNeural` +6%, 문장 사이 0.36초다. 리서치는 "실제 항해 3년 남짓"이라고 요약했지만, 원문(버틀러·머리)으로 세면 칼립소 7년 + 키르케 1년 = 8년이고 나머지는 2년 남짓이라 영상은 "2년 남짓"으로 말한다.
+
+### 만드는 법
+```
+python3 longform/odyssey/fetch_media.py                 # 그림 76장(Rijksmuseum IIIF), 음악 17곡, Natural Earth → public/odyssey/, 지도 그리기
+python3 longform/odyssey/voice.py <voice_dir>           # 문장 211개 TTS + 단어 시각
+python3 longform/odyssey/build_edit.py <voice_dir>      # script.json + shots.py → edit.json (컷·자막·챕터)
+longform/odyssey/render_odyssey.sh <voice_dir>          # Remotion(odyssey) 2000프레임씩 → mix.py → -14 LUFS → HEVC 2-pass, 92MB 목표
+python3 longform/odyssey/make_sources.py                 # sources.json (화면에 나온 그림만)
+python3 longform/odyssey/qa.py final/odyssey.mp4 <dir>  # QA + 콘택트 시트
+```
+- 화면 부품은 `src/lib/long/f1_*.tsx`(지도·10년 막대·기도 체크리스트·함대·올리브나무 침대·제목/끝 카드)이고, `src/Root.tsx`에는 `odyssey` 컴포지션 한 줄만 더했다. 쇼츠 템플릿 파일은 건드리지 않았다.
+- 롱폼 공용 키트(`src/Long.tsx`)보다 먼저 만들어서 자체 파이프라인을 쓴다. 키트 QA(`longform/qa_long.py`)는 `longform/odyssey/qa_long_odyssey.py`로 돌린다(edit.json을 키트의 LongData 항목으로 옮겨 임시 폴더에서 검사; `src/longdata/odyssey.json`을 만들면 키트가 같은 id의 컴포지션을 하나 더 등록하므로 만들지 않는다).
+- 장면 전환은 35%까지만 어두워지고(완전 검정은 키트 QA의 검은 화면 FAIL), 끝 카드는 마지막 프레임까지 그림 위에 남는다. 이 두 가지를 고칠 때는 `patch_render.py`로 해당 1초 구간 20곳과 끝 카드만 다시 렌더해 붙였다.
+
+### 인코딩과 QA
+- `final/odyssey.mp4`: 18:44.3, 1920×1080 30fps, HEVC(libx265 slow, 2-pass 522kbit/s, hvc1) + AAC 128kbit/s 48kHz, 93.2MB(10진), -14.0 LUFS, true peak -1.1 dBTP.
+- `qa_long_odyssey.py`(키트 qa_long): 12항목 모두 PASS — 길이, 10~25분, 소리 -14.0, 용량 93.2MB, 검은 화면 0곳, 마지막 프레임 밝기 54, 내레이션 공백 0, 무음 0, 자막 넘침 없음(가장 긴 줄 998px), 챕터 16개, 썸네일 1280×720 0.13MB, 멈춘 화면 0.
+- `qa.py`(이 편 전용): 0 FAIL, 1 WARN(가장 긴 한 컷 19초 — 지도·그래픽 컷), 18 PASS. 그림 76점 126컷, 같은 그림은 최대 2번이고 두 번째는 다른 크롭, 자막 407개 한 줄 30자 이하, 화면 금지어 없음.
+- 콘택트 시트와 첫 15초는 `out/review/odyssey/`에서 직접 확인했다(나체 고전화 크롭, 자막, 챕터 카드, 끝 카드).
+
+### 이야기 검토 (REVIEW.md 2-1)
+1. **한 줄 요약**: 괴물을 꾀로 이긴 남자가 자기 이름을 한 번 외친 대가로 10년을 떠돌다가, 잠든 채 집에 돌아와 자기 집도 못 알아봤다.
+2. **제목으로 결말을 맞힐 수 없다**: 제목은 "왜 10년?"을 묻고 부제는 "8년은 바다가 아니었다"(훅)까지만 준다. 시청자가 예상하는 흔한 답(괴물·험한 바다·신의 분노)은 영상이 먼저 꺼내서 하나씩 깨고, 결말은 '아무도 옮길 수 없는 침대'와 아직 끝나지 않은 여행(노의 예언)이다.
+3. **구체적인 장면**: 수레 스물두 대로도 못 끄는 바위, "내 이름은 아무도 아니다", 열흘째 수평선에 보인 이타카의 들불, 소가죽 바람 자루, 거름 더미 위의 늙은 개, 밤마다 풀던 수의, 살아 있는 올리브나무를 깎아 만든 침대 기둥.
+4. **커지는 갈등**: 12척 → 1척 → 0명(혼자) → 뗏목도 부서짐 → 집에 와도 거지 신세. 저주의 네 줄이 하나씩 체크되며(화면 체크리스트) 상황이 꺾일 때마다 한 칸씩 채워진다.
+5. **복선 있는 반전**:
+   - 0:00 "그는 왜 자기 집을 알아보지 못했을까요?" → 13~14장(안개 속에서 깨어남).
+   - 1:35 "그 집 침실에는 오디세우스가 직접 만든 비밀이 하나" + 칼립소 장 "목수 솜씨가 좋았습니다. 이것도 기억해 두십시오" + 해변의 올리브나무 → 마지막 침대 시험.
+   - 3:09 '아무도 아니' → 14장 "자기 집에서 정말 아무도 아닌 사람".
+   - 4:26 "이 기도에는 작은 빈틈이 하나" → 15장 '그래도 꼭 돌아가야 한다면'이 빈틈.
+   - 8:20 테이레시아스의 예언 → 끝에서 "예언에는 한 줄이 더 있었습니다"(노).
+   - 잠 세 번: 첫 잠은 고향을, 둘째 잠은 동료를 빼앗고, 셋째 잠이 그를 집에 데려다 놓는다.
+   - 연꽃("같은 함정이 한 번 더 나옵니다") → 키르케의 1년, 이번엔 부하들이 그를 끌어낸다.
+6. **감정 하나**: 뭉클. 20년 기다린 늙은 개, 낮에 짜고 밤에 푼 천, 늙지 않는 몸을 7년 동안 거절한 이유가 마지막 침대 한 장면으로 모인다.
+7. **설교 금지**: 교훈 문장 없음. 마지막 두 줄도 "그를 다시 오디세우스로 만든 건… 움직이지 않고 기다려 준 것들이었습니다"로 장면을 요약할 뿐, "~해야 한다"는 말은 없다. 지명 추정과 숫자 출처는 설명란에 둔다.
+8. **살아 있는 인물**: 부하들(빈손이 서러워 자루를 엶, 굶주려 소를 잡음 — 에우릴로코스의 "차라리 바다에서 한 번에 죽는 게 낫다"), 포세이돈(아들의 복수), 칼립소(사랑과 불사의 제안, 마지막 질문), 페넬로페(얼굴 대신 비밀로 시험하는 영리함), 오디세우스 자신(허영 — 이름을 외침, 그리고 고집).
+9. **구조**: 결말 유형은 '의외의 이유 + 따뜻한 반전' + 열린 떡밥. 60~80초마다 새 숫자나 작은 반전이 하나씩 있다(9일·10일째, 12척→1척, 1년, 여섯 명, 한 달, 7년, 17일·18일째, 스무 해째, 3년). 챕터 제목 16개 중 숫자 7개, 부정어 4개. 같은 F1 시리즈의 다음 편은 다른 결말 유형으로 쓴다.
+10. **폭력 수위**: 키클롭스·라이스트리고네스·스킬라·구혼자 장면은 "해치기 시작했습니다/돌아오지 못했습니다/데려갔습니다/짧게 말하겠습니다"로만 말하고 그림도 잔혹한 장면(사람을 먹는 판화 등)은 고르지 않았다. 트로이 전쟁은 한 문장. 나체 고전화는 얼굴·풍경 쪽으로 잘라 노출이 화면에 오지 않게 했다.
+
+### 챕터 (설명란과 같음)
+```
+0:00 10년 중 8년
+1:22 900km도 안 되는 길
+2:07 집을 잊게 하는 열매
+3:09 내 이름은 ‘아무도 아니’
+4:26 한 번의 외침, 네 줄의 저주
+5:38 열흘째, 고향이 보였다
+7:14 바다는 아무 짓도 하지 않았다
+8:18 같은 예언
+9:17 말하지 않은 여섯 명
+10:06 두 번째 잠
+11:21 늙지 않는 7년
+12:48 열여드레째의 폭풍
+13:26 세 번째 잠
+14:43 아무도 알아보지 못했다
+15:42 진짜 이유
+16:51 아무도 옮길 수 없는 침대
+```
+화면에는 장면 20개마다 0.9초 검은 전환을 두고, 위 16개 챕터 시작에만 큰 챕터 카드를 띄운다. 왼쪽 위에 작은 챕터 이름, 오른쪽 위에 그림 작가·연도·소장처가 작게 뜬다.
+
+### 사실 확인 (원문 대조)
+영역본은 새뮤얼 버틀러(1900, Project Gutenberg #1727)로 줄 단위 확인했고, A.T. 머리(1919, Loeb, Perseus)와 권수를 맞췄다. 한국어 번역본은 인용하지 않았고 영어 원문에서 직접 옮겼다. 버틀러는 로마식 이름(Ulysses, Neptune, Minerva, Jove)을 쓰므로 그리스식으로 바꿔 불렀다.
+- **10년 중 7년은 칼립소의 섬** — 제7권: "I stayed with Calypso seven years straight on end … at last when the eighth year came round she bade me depart".
+- **1년은 키르케의 집, 그리고 부하들이 집 생각을 하자고 함** — 제10권: "We stayed with Circe for a whole twelvemonth … my men called me apart and said, ‘Sir, it is time you began to think about going home’".
+- **나머지 2년 남짓** — 트로이 전쟁 10년(제14권 "nine whole years, but in the tenth we sacked") + 귀향 20년째(제16권 "got home in the twentieth year") → 귀향길 약 10년, 그중 8년이 두 섬. 시가 직접 보여 주는 시간은 마지막 6주(브리태니커).
+- **모험담 대부분은 그의 회상** — 제9~12권은 파이아케스 왕 알키노오스의 식탁에서 오디세우스가 직접 이야기하는 부분이다.
+- **배 12척** — 제9권: "I had twelve ships with me".
+- **말레아 곶, 9일 표류, 10일째 연꽃의 땅** — 제9권: "doubling Cape Malea … driven thence by foul winds for a space of nine days … on the tenth day we reached the land of the Lotus-eaters"; 열매를 먹은 부하들을 울며 배에 묶음.
+- **동굴 입구 바위** — 제9권: 스물두 대의 수레로도 끌 수 없는 바위("twenty-two strong four-wheeled waggons would not be enough").
+- **'아무도 아니'(Noman/우티스)** — 제9권: "my name is Noman"; "Noman is killing me" → 이웃 키클롭스들이 돌아감; 양의 배 밑에 매달려 탈출.
+- **이름을 외침, 포세이돈에게 한 기도의 네 줄** — 제9권: "say it was the valiant warrior Ulysses, son of Laertes, who lives in Ithaca"; 기도: "grant that Ulysses may never reach his home alive; or if he must get back to his friends at last, let him do so late and in sore plight after losing all his men [let him reach his home in another man’s ship and find trouble in his house]" (버틀러는 괄호, 머리 9.534-535는 본문).
+- **아이올로스 한 달, 바람 자루, 9일 항해, 10일째 고향의 불, 첫 잠** — 제10권: "Aeolus entertained me for a whole month"; "Nine days and nine nights did we sail, and on the tenth day our native land showed on the horizon … we could see the stubble fires burning, and I, being then dead beat, fell into a light sleep, for I had never let the rudder out of my own hands"; 부하들이 금은이 든 줄 알고 자루를 엶; 아이올로스는 신들이 미워하는 자라며 거절.
+- **라이스트리고네스: 자기 배만 항구 밖, 나머지 전부 잃음** — 제10권: "I kept my own ship outside"; "cut the cable of my own ship … As for the others there was not one of them left".
+- **키르케: 돼지, 헤르메스의 약초(몰뤼)** — 제10권: "turned them into pigs"; "the gods call it Moly".
+- **테이레시아스의 예언이 기도와 같음** — 제11권: "you will return in bad plight after losing all your men, [in another man’s ship, and you will find trouble in your house"; 태양신의 소에 손대지 말 것.
+- **어머니는 그리움으로 죽음, 세 번 안으려다 실패, 페넬로페는 울며 기다림** — 제11권: "my longing to know what you were doing … took me"(안티클레이아의 말).
+- **세이렌: 밀랍, 돛대, 더 단단히 묶음** — 제12권: "stop your men’s ears with wax"; 부하들이 더 단단히 묶음.
+- **스킬라 쪽을 택하고 부하들에게 말하지 않음, 여섯 명** — 제12권: "you had better lose six men than your whole crew"; "I said nothing about Scylla, for I knew the men would not go on rowing if I did"; "snatched up my six best men".
+- **트리나키아: 한 달 남풍, 기도하러 가서 잠듦, 에우릴로코스의 말** — 제12권: "For a whole month the wind blew steadily from the South"; "they sent me off into a sweet sleep"; "there is none so bad as famine … I for one would rather drink salt water once for all".
+- **9일 표류, 10일째 밤 오기기아** — 제12권 끝·제7권: "carried along for nine days till on the tenth night the gods stranded me on the Ogygian island".
+- **칼립소의 불사 제안, 날마다 바닷가에서 욺, 헤르메스, 대답** — 제5권: "let me make you immortal"; 바닷가 바위에서 울던 장면; 제우스가 헤르메스를 보냄; "my wife Penelope is inferior to you in comeliness … Nevertheless, I want to get home".
+- **뗏목 4일, 17일 항해, 18일째 산, 이노의 베일, 이틀 밤낮 수영** — 제5권: "In four days he had completed the whole work"; "Days seven and ten did he sail … on the eighteenth the dim outlines of the mountains"; 베일(이노/레우코테아); "he floated about for two nights and two days".
+- **파이아케스 배, 깊은 잠, 해변에 내려놓음, 올리브나무** — 제13권: "they spread a rug and a linen sheet on deck that he might sleep soundly"; "a deep, sweet, and almost deathlike slumber"; 선물을 항구 머리의 올리브나무 곁에 둠.
+- **자기 고향을 못 알아봄(안개)** — 제13권: "He had been so long away that he did not know it again; moreover, Jove’s daughter Minerva had made it a foggy day".
+- **거지로 변장, 늙은 개 아르고스** — 제13권(아테나의 변장), 제17권: 거름 더미, "he dropped his ears and wagged his tail, but he could not get close up", 눈물을 몰래 닦음, "Argos died as soon as he had recognised his master"(머리: 스무 해째).
+- **페넬로페의 수의 3년** — 제2권: "at night she would unpick the stitches again by torchlight. She fooled us in this way for three years".
+- **침대 시험, 올리브나무 기둥, 비밀을 아는 하녀 한 명** — 제23권: "There was a young olive growing within the precincts of the house … I built my room round this … made it the centre-post of my bed"; 페넬로페가 울며 끌어안음; 비밀은 둘과 하녀 악토리스만 앎.
+- **작품 연대** — 브리태니커 「Odyssey」: 약 기원전 725~675년 성립, 10년 방랑(시의 실제 사건은 마지막 6주).
+- **한국 연결 문장** — 유네스코 세계유산 「Gochang, Hwasun and Ganghwa Dolmen Sites」(2000 등재): 수백 기의 고인돌이 '기원전 1천년기'의 무덤. 화면은 "이 무렵 한반도는 청동기 시대였습니다" + 유네스코 표현을 그대로 인용.
+- **거리 900km 미만** — 트로이(39.96N 26.24E) → 말레아 곶 → 이타카(38.37N 20.72E) 바닷길을 지도 좌표로 재면 약 840km(make_maps.py의 경로점, 대권거리 합).
+- **노의 예언(열린 결말)** — 제11권(테이레시아스): "you must take a well made oar and carry it on and on, till you come to a country where the people have never heard of the sea … A wayfarer will meet you and will say it must be a winnowing shovel"; 제23권에서 오디세우스가 페넬로페에게 다시 말함.
+- **'오디세이'라는 말** — 영어 odyssey(길고 험한 여정)는 이 서사시 제목에서 나온 일반명사다(메리엄-웹스터·옥스퍼드 사전의 어원 설명).
+- **한국 닻 ②** — 한국 초등학교는 6년제(초·중등교육법 제39조) → 칼립소의 7년은 "입학해 졸업하고도 남는 시간".
+- **지명 추정** — 제르바(연꽃), 시칠리아(키클롭스·트리나키아), 리파리(아이올로스), 치르체오 곶(키르케), 메시나 해협(스킬라·카리브디스), 고조(오기기아), 코르푸(스케리아)는 고대(스트라본, 투키디데스 등)와 근대 학자들의 전통적 추정이다. 화면 지도에는 모두 '추정'으로, 내레이션은 "~라는 추측", "~로 보곤 합니다"로 말한다. 라이스트리고네스의 보니파시오(코르시카)는 지도 라벨에만 '추정'으로 썼다.
+
+출처: Homer, *The Odyssey*, tr. Samuel Butler (1900), https://www.gutenberg.org/ebooks/1727 · tr. A. T. Murray (Loeb, 1919), https://www.perseus.tufts.edu/hopper/text?doc=Perseus:text:1999.01.0136 · Britannica, https://www.britannica.com/topic/Odyssey-epic-by-Homer · UNESCO, https://whc.unesco.org/en/list/977
+
+### 그림·음악·지도 출처와 라이선스
+모든 그림은 Rijksmuseum 소장품의 공개 이미지이며, 작품 기록마다 `CC0 1.0`(https://creativecommons.org/publicdomain/zero/1.0/)이 붙어 있는 것을 Rijksmuseum Linked Art API(`data.rijksmuseum.nl`, 각 객체의 `subject_of → subject_to`)에서 하나씩 확인했다. 위키미디어 공용 API는 작업 내내 429(요청 제한)라서 공용 그림은 쓰지 않았다. 영국박물관(NC-SA), 영화·게임·방송 화면은 쓰지 않았다. 각 그림은 최대 2번, 두 번째는 다른 부분으로 잘라 썼다. 고전 판화의 나체는 얼굴·풍경 쪽으로 크롭했다.
+
+| id | 작가 | 작품 (소장처 표기) | 연도 | 소장품 기록 |
+|---|---|---|---|---|
+| `anon_laestrygonians` | anoniem | Laestrygonen verpletteren de vloot van Odysseus met zware stenen | 1500 - 1640 | [RP-T-1889-A-2177(R)](https://id.rijksmuseum.nl/200138822) |
+| `bartolozzi_meeting` | Francesco Bartolozzi | The meeting of Ulysses and Penelope | 1788-01-01 | [RP-P-OB-34.223](https://id.rijksmuseum.nl/200153692) |
+| `basse_boat` | Willem Basse | Odysseus bouwt een boot op het eiland Ogygia | 1632 - 1634 | [RP-P-BI-710](https://id.rijksmuseum.nl/200154289) |
+| `bauer_scylla` | Marius Bauer | Willem Treub als Odysseus tussen Scylla en Charybdis | 1896-02-16 | [RP-P-1925-1000](https://id.rijksmuseum.nl/200279470) |
+| `baur_storm` | Johann Wilhelm Baur | Vijf zeilschepen op zee tijdens een storm | 1640 | [3/4](https://id.rijksmuseum.nl/200154575) |
+| `brown_argus` | Joseph Brown | Ulysses | 1855 | [RP-P-OB-18.440](https://id.rijksmuseum.nl/200166691) |
+| `burke_euryclea` | Thomas Burke | Penelope awakened by Euryclea, with the News of Ulysses's return, and the Death of the Suitors | 1773-02 | [RP-P-OB-102.065](https://id.rijksmuseum.nl/200504304) |
+| `casembroot_storm` | Abraham Casembroot | Gezichten van de haven van Messina | 1603 - 1658 | [RP-P-BI-5630](https://id.rijksmuseum.nl/200169442) |
+| `castiglione_circe` | Giovanni Benedetto Castiglione | Circe met de in dieren veranderde reisgenoten van Odysseus | 1650 - 1651 | [RP-P-OB-12.200](https://id.rijksmuseum.nl/200123998) |
+| `chodowiecki_penelope` | Daniel Nikolaus Chodowiecki | Penelope | 1780 | [RP-P-OB-14.246](https://id.rijksmuseum.nl/200172175) |
+| `delattre_bow` | Jean-Marie Delattre | Penelope wenend met de boog van Odysseus in haar hand | 1779 | [RP-P-OB-63.817](https://id.rijksmuseum.nl/200183041) |
+| `ducros_coast` | Louis Ducros | Capo Grosso entre Messine & Taormina | 1778 | [RP-T-00-493-33](https://id.rijksmuseum.nl/20012335) |
+| `ducros_scilla` | Louis Ducros | Voyage en Italie, en Sicile et à Malte - 1778 | 1778 | [RP-T-00-493-32A](https://id.rijksmuseum.nl/200510565) |
+| `fessard_tiresias` | Etienne Fessard | Olisse evoque l'ombre de Tiresias | 1730 - 1740 | [RP-P-OB-63.101](https://id.rijksmuseum.nl/200387437) |
+| `flaxman_asleep` | James Parker | Ulysses asleep laid on his own coast by the Phaeacian sailors | 1805 | [63](https://id.rijksmuseum.nl/200778093) |
+| `flaxman_demodocus` | James Neagle | Ulysses weeps at the song of Demodocus | 1805 | [54](https://id.rijksmuseum.nl/200778027) |
+| `flaxman_dog` | James Parker | Odyssee | 1805 | [67](https://id.rijksmuseum.nl/200778117) |
+| `flaxman_ghosts` | James Parker | Odyssey | 1805 | [RP-P-1975-75-58](https://id.rijksmuseum.nl/200778073) |
+| `flaxman_leucothea` | James Neagle | Odyssey | 1805 | [RP-P-1975-75-50](https://id.rijksmuseum.nl/200778017) |
+| `flaxman_oldman` | James Parker | Minerva restoring Ulysses to his own shape | 1805 | [66](https://id.rijksmuseum.nl/200778112) |
+| `flaxman_polyphemus` | James Parker | Ulysses giving wine to Polyphemus | 1805 | [RP-P-1975-75-55](https://id.rijksmuseum.nl/200778031) |
+| `flaxman_scylla` | James Parker | Odyssey | 1805 | [61](https://id.rijksmuseum.nl/200778084) |
+| `jordaens_nausicaa` | Jacques Jordaens | Ontmoeting van Odysseus en Nausicaa | ca. 1630 - ca. 1640 | [SK-C-1744](https://id.rijksmuseum.nl/200550768) |
+| `klinger_penelope` | Max Klinger | Penelope kijkt in gedachten verzonken naar haar weefgetouw | 1895 | [RP-P-2011-36-127](https://id.rijksmuseum.nl/200555558) |
+| `kobell_storm` | Hendrik Kobell | Twee schepen op zee bij storm | 1761 - 1779 | [RP-T-00-1672](https://id.rijksmuseum.nl/200305914) |
+| `lairesse_calypso` | Gerard de Lairesse | Odysseus and Calypso | c. 1680 | [SK-A-211](https://id.rijksmuseum.nl/200111829) |
+| `lairesse_mercury` | Gerard de Lairesse | Mercurius gelast Calypso om Odysseus te laten vertrekken | c. 1680 | [SK-A-212](https://id.rijksmuseum.nl/200111835) |
+| `messina_channel` | B. Rulli | Het Kanaal van Messina | 1700 - 1782 | [RP-P-OB-39.179](https://id.rijksmuseum.nl/200147237) |
+| `mignard_sirens` | Nicolas Mignard | Odysseus en de sirenen | 1637 | [RP-P-H-OB-207.729](https://id.rijksmuseum.nl/200623690) |
+| `neptune_messina` | Ledru Mauro | Nettuno | 1880 - 1900 | [RP-F-F16718](https://id.rijksmuseum.nl/200325242) |
+| `nolin_alcinous` | Jean Baptiste Nolin | Odysseus naar het paleis van Alkinoös geleid | 1677 | [RP-P-OB-63.381](https://id.rijksmuseum.nl/200242764) |
+| `nuijen_storm` | Wijnand Nuijen | Schipbreuk op een rotsachtige kust | ca. 1837 | [SK-A-4644](https://id.rijksmuseum.nl/200107810) |
+| `penelope_statue` | James Anderson | Sculptuur van Penelope, Vaticaan | ca. 1857 - ca. 1875 | [23](https://id.rijksmuseum.nl/200144983) |
+| `penelope_weaving` | Monogrammist FG | Penelope en haar vrouwen aan het weven | 1529 - 1542 | [RP-P-H-H-135(R)](https://id.rijksmuseum.nl/200370660) |
+| `picart_penelope` | atelier van Bernard Picart | Penelope weeft de lijkwade voor Laërtes | 1733 | [RP-P-1906-2807](https://id.rijksmuseum.nl/200370111) |
+| `rubens_circe` | Peter Paul Rubens | Aankomst van Odysseus en metgezellen bij Circe | 1587 - 1640 | [RP-T-1948-418](https://id.rijksmuseum.nl/200153405) |
+| `rubens_episodes` | Peter Paul Rubens | Drie gecombineerde episoden uit de geschiedenis van Odysseus | 1587 - 1640 | [RP-T-1948-419](https://id.rijksmuseum.nl/200153406) |
+| `sandrart_nausicaa` | Joachim von Sandrart | Odysseus and Nausicaa | c. 1630 - c. 1688 | [1](https://id.rijksmuseum.nl/2006375) |
+| `schelfhout_olive` | Lodewijk Schelfhout | Olivier, Corse | 1921 | [RP-P-1952-965](https://id.rijksmuseum.nl/200295157) |
+| `tivoli_olive` | Pierre Louis Dubourcq | Olijfboom, te Tivoli | 1843-05-28 | [RP-T-1912-40](https://id.rijksmuseum.nl/200317227) |
+| `trento_circe` | Antonio da Trento | Odysseus op het eiland van Circe | 1602 | [RP-P-OB-31.128](https://id.rijksmuseum.nl/200139886) |
+| `tvt_argos` | Theodoor van Thulden | Odysseus door zijn hond Argus herkend | 1632 - 1633 | [RP-P-OB-66.765](https://id.rijksmuseum.nl/200394057) |
+| `tvt_argos_lying` | Theodoor van Thulden | Odysseus krijgt een aalmoes van een van zijn bedienden | 1632 - 1633 | [35/58](https://id.rijksmuseum.nl/200394058) |
+| `tvt_bag_gift` | Theodoor van Thulden | Odysseus ontvangt van Aeolus de zak met tegenwinden | 1632 - 1633 | [13/58](https://id.rijksmuseum.nl/200394036) |
+| `tvt_bag_open` | Theodoor van Thulden | De werken van Odysseus | 1632 - 1633 | [16/58](https://id.rijksmuseum.nl/200394039) |
+| `tvt_bed` | Theodoor van Thulden | De werken van Odysseus | 1632 - 1633 | [RP-P-OB-66.779](https://id.rijksmuseum.nl/200394071) |
+| `tvt_beggar` | Theodoor van Thulden | Odysseus als bedelaar aan de deur van zijn huis | 1632 - 1633 | [36/58](https://id.rijksmuseum.nl/200394059) |
+| `tvt_bow_feast` | Theodoor van Thulden | De werken van Odysseus | 1632 - 1633 | [38/58](https://id.rijksmuseum.nl/200394061) |
+| `tvt_cave_sheep` | Theodoor van Thulden | Odysseus ontsnapt uit de grot van Polyphemus | 1632 - 1633 | [RP-P-OB-66.742](https://id.rijksmuseum.nl/200394034) |
+| `tvt_circe_arrival` | Theodoor van Thulden | De werken van Odysseus | 1632 - 1633 | [18/58](https://id.rijksmuseum.nl/200394041) |
+| `tvt_cyclops_land` | Theodoor van Thulden | De werken van Odysseus | 1632 - 1633 | [RP-P-OB-66.737](https://id.rijksmuseum.nl/200394029) |
+| `tvt_embrace` | Theodoor van Thulden | De werken van Odysseus | 1632 - 1633 | [RP-P-OB-66.777](https://id.rijksmuseum.nl/200394069) |
+| `tvt_eumaeus` | Theodoor van Thulden | De werken van Odysseus | 1632 - 1633 | [RP-P-OB-66.764](https://id.rijksmuseum.nl/200394056) |
+| `tvt_farewell` | Theodoor van Thulden | Odysseus neemt afscheid van Alcinoüs | 1632 - 1633 | [29/58](https://id.rijksmuseum.nl/200394052) |
+| `tvt_grief` | Theodoor van Thulden | Odysseus in het land van de lotuseters | 1632 - 1633 | [5/58](https://id.rijksmuseum.nl/200394028) |
+| `tvt_helm` | Theodoor van Thulden | De werken van Odysseus | 1632 - 1633 | [15/58](https://id.rijksmuseum.nl/200394038) |
+| `tvt_laestrygonians` | Theodoor van Thulden | Odysseus in het land van de Laistrygonen | 1632 - 1633 | [17/58](https://id.rijksmuseum.nl/200394040) |
+| `tvt_lotus` | Theodoor van Thulden | Odysseus offert aan de goden | 1632 - 1633 | [RP-P-OB-66.733](https://id.rijksmuseum.nl/200394025) |
+| `tvt_minerva_ithaca` | Theodoor van Thulden | Minerva toont Ithaka aan Odysseus | 1632 - 1633 | [31/58](https://id.rijksmuseum.nl/200394054) |
+| `tvt_minerva_penelope` | Theodoor van Thulden | De werken van Odysseus | 1632 - 1633 | [RP-P-OB-66.781](https://id.rijksmuseum.nl/200394073) |
+| `tvt_raft` | Theodoor van Thulden | De werken van Odysseus | 1632 - 1633 | [RP-P-OB-66.759](https://id.rijksmuseum.nl/200394051) |
+| `tvt_rock_throw` | Theodoor van Thulden | Polyphemus werpt een rots naar het schip van Odysseus | 1632 - 1633 | [12/58](https://id.rijksmuseum.nl/200394035) |
+| `tvt_rowing` | Theodoor van Thulden | Odysseus arriveert bij de onderwereld | 1632 - 1633 | [RP-P-OB-66.752](https://id.rijksmuseum.nl/200394044) |
+| `tvt_sacrifice` | Theodoor van Thulden | Odysseus cremeert het lichaam van Elpenor | 1632 - 1633 | [25/58](https://id.rijksmuseum.nl/200394048) |
+| `tvt_sirens` | Theodoor van Thulden | De werken van Odysseus | 1632 - 1633 | [26/58](https://id.rijksmuseum.nl/200394049) |
+| `tvt_underworld` | Theodoor van Thulden | Odysseus in de onderwereld | 1632 - 1633 | [24/58](https://id.rijksmuseum.nl/200394047) |
+| `tvt_wakes` | Theodoor van Thulden | Minerva verschijnt in de gedaante van Telemachus aan Odysseus | 1632 - 1633 | [RP-P-OB-66.763](https://id.rijksmuseum.nl/200394055) |
+| `tvt_winds` | Theodoor van Thulden | De werken van Odysseus | 1632 - 1633 | [RP-P-OB-66.745](https://id.rijksmuseum.nl/200394037) |
+| `valck_calypso` | anoniem | Mercurius beveelt Calypso om Odysseus te laten vertrekken | 1670 | [RP-P-1878-A-1193](https://id.rijksmuseum.nl/200214701) |
+| `vanthulden_bag` | Theodoor van Thulden | De metgezellen van Odysseus maken de zak open waarin Aeolus de winden besloten had | 1631 - 1633 | [RP-T-00-444](https://id.rijksmuseum.nl/20012371) |
+| `velijn_penelope` | Philippus Velijn | Titelpagina voor: Penelope, 1821. | 1821 | [RP-P-1907-1865](https://id.rijksmuseum.nl/200390804) |
+| `vianen_tazza` | Adam van Vianen | Drinkschaal met een voorstelling van Circe en de gezellen van Odysseus | 1610 | [BK-1985-24](https://id.rijksmuseum.nl/200390664) |
+| `vinkeles_storm` | Reinier Vinkeles | Schip in storm op zee | 1751 - 1816 | [RP-P-OB-64.451](https://id.rijksmuseum.nl/200269380) |
+| `watson_storm` | James Watson | Storm op zee met schipbreuk en zinkend schip | 1758 - 1790 | [RP-P-OB-33.752](https://id.rijksmuseum.nl/200273119) |
+| `willaerts_wreck` | Adam Willaerts | Shipwreck off a Rocky Coast | 1614 | [SK-A-1955](https://id.rijksmuseum.nl/200108404) |
+| `zeeman_storm` | Reinier Zeeman | Zeegezichten en landschappen | 1650 | [RP-P-OB-12.944](https://id.rijksmuseum.nl/200128623) |
+
+- 음악: Kevin MacLeod (incompetech.com), CC BY 4.0 — "Bittersweet", "Darkness is Coming", "Despair and Triumph", "Dreams Become Real", "Echoes of Time v2", "Healing", "Impact Lento", "Lasting Hope", "Long Note Four", "Long Note Three", "Long Note Two", "Midnight Tale", "Ossuary 6 - Air", "Penumbra", "Sad Trio", "Teller of the Tales", "The Descent". 장면마다 분위기에 맞춰 바꾸고(2.5초 크로스페이드), 같은 곡이 이어지는 장면은 끊지 않는다. 목소리 아래에서 -11dB, 문장 사이 -6dB로 낮춘다.
+- 지도: Natural Earth 1:10m·1:50m 육지(퍼블릭 도메인) 위에 `make_maps.py`로 직접 그렸다. 경로 점선과 라벨은 영상에서 애니메이션으로 그린다.
+- 그래픽(10년 막대, 기도 체크리스트, 12척→1척, 올리브나무 침대, 제목·끝 카드): 직접 그림.
+- 화면 표기: 오른쪽 위에 "작가, 연도 · Rijksmuseum"만 작게. '저작권', '퍼블릭 도메인' 같은 말은 화면에 없다(설명란에만).
+
+### 업로드
+설명글은 `upload/make_desc.py odyssey`가 `upload/specs/odyssey.json`에서 만든 `upload/txt/odyssey.txt`와 같다(채널 이름·핸들은 `upload/channels.json`의 docu 항목을 채우면 바뀐다).
+
+- 제목: 오디세우스는 왜 집까지 10년이나 걸렸을까? — 8년은 바다가 아니었다 (39자)
+- 썸네일: `final/odyssey-thumb.jpg` — 바이난트 나위언 「바위 해안의 난파선」을 어둡게, 아래 1/3에 흰 문장 "그중 8년은 섬에 갇혔다"(공백 빼고 10자) + 노랑 큰 글자 "10년".
+- 설명:
+  ```
+  호메로스의 『오디세이아』에서 오디세우스가 트로이에서 이타카로 돌아오는 데 걸린 10년 가운데 7년은 칼립소의 섬, 1년은 키르케의 집에서 흘렀습니다. 900km도 안 되는 바닷길이 왜 10년이 됐을까요? 영역본 원문(새뮤얼 버틀러 1900, A.T. 머리 1919)을 따라 키클롭스의 동굴에서 이타카 해변까지, 흔히 듣는 두 가지 답을 하나씩 확인합니다.
+  
+  0:00 10년 중 8년
+  1:22 900km도 안 되는 길
+  2:07 집을 잊게 하는 열매
+  3:09 내 이름은 ‘아무도 아니’
+  4:26 한 번의 외침, 네 줄의 저주
+  5:38 열흘째, 고향이 보였다
+  7:14 바다는 아무 짓도 하지 않았다
+  8:18 같은 예언
+  9:17 말하지 않은 여섯 명
+  10:06 두 번째 잠
+  11:21 늙지 않는 7년
+  12:48 열여드레째의 폭풍
+  13:26 세 번째 잠
+  14:43 아무도 알아보지 못했다
+  15:42 진짜 이유
+  16:51 아무도 옮길 수 없는 침대
+  
+  ▶ [채널명] 채널 구독: https://www.youtube.com/@[핸들]
+  
+  출처: 그림: 테오도르 판 튈던 「오디세우스의 업적」 연작(1633), Rijksmuseum, CC0 · 존 플랙스먼 원화 『오디세이아』 삽화(1805년 판), Rijksmuseum, CC0 · 헤라르트 더 라이레서 「오디세우스와 칼립소」(1680년경), Rijksmuseum, CC0 · 야코프 요르단스 「오디세우스와 나우시카」(1630년경), Rijksmuseum, CC0 · 바이난트 나위언 「바위 해안의 난파선」(1837년경), Rijksmuseum, CC0 · 그 밖의 그림도 모두 Rijksmuseum CC0 — 그림 76점의 전체 출처는 고정 댓글 · 지도: Natural Earth 위에 직접 그림 · 원문: 호메로스 『오디세이아』 영역본(새뮤얼 버틀러 1900, A.T. 머리 1919) · 자료: 브리태니커 「Odyssey」, 유네스코 세계유산 「고창·화순·강화 고인돌 유적」 · 내레이션: AI 합성 음성 · 음악: "Bittersweet", "Darkness is Coming", "Despair and Triumph", "Dreams Become Real", "Echoes of Time v2", "Healing", "Impact Lento", "Lasting Hope", "Long Note Four", "Long Note Three", "Long Note Two", "Midnight Tale", "Ossuary 6 - Air", "Penumbra", "Sad Trio", "Teller of the Tales", "The Descent" Kevin MacLeod (incompetech.com), CC BY 4.0 (creativecommons.org/licenses/by/4.0) · 지도의 지명(제르바, 시칠리아, 메시나 해협, 코르푸 등)은 고대와 근대 학자들의 추정입니다
+  
+  #오디세이아 #오디세우스 #그리스신화 #호메로스 #신화 #역사다큐 #다큐 #지식 #Odyssey
+  ```
+- 해시태그: #오디세이아 #오디세우스 #그리스신화 #호메로스 #신화 #역사다큐 #다큐 #지식 #Odyssey
+- 고정 댓글:
+  ```
+  늙지 않는 몸을 주겠다는 칼립소의 제안, 여러분이라면 7년 동안 거절할 수 있었을까요?
+  
+  그림 출처 (모두 Rijksmuseum, CC0)
+  · anoniem, Laestrygonen verpletteren de vloot van Odysseus met zware st (1500 - 1640) https://id.rijksmuseum.nl/200138822
+  · Francesco Bartolozzi, The meeting of Ulysses and Penelope (1788-01-01) https://id.rijksmuseum.nl/200153692
+  · Willem Basse, Odysseus bouwt een boot op het eiland Ogygia (1632 - 1634) https://id.rijksmuseum.nl/200154289
+  · Marius Bauer, Willem Treub als Odysseus tussen Scylla en Charybdis (1896-02-16) https://id.rijksmuseum.nl/200279470
+  · Johann Wilhelm Baur, Vijf zeilschepen op zee tijdens een storm (1640) https://id.rijksmuseum.nl/200154575
+  · Joseph Brown, Ulysses (1855) https://id.rijksmuseum.nl/200166691
+  · Thomas Burke, Penelope awakened by Euryclea, with the News of Ulysses's re (1773-02) https://id.rijksmuseum.nl/200504304
+  · Abraham Casembroot, Gezichten van de haven van Messina (1603 - 1658) https://id.rijksmuseum.nl/200169442
+  · Giovanni Benedetto Castiglione, Circe met de in dieren veranderde reisgenoten van Odysseus (1650 - 1651) https://id.rijksmuseum.nl/200123998
+  · Daniel Nikolaus Chodowiecki, Penelope (1780) https://id.rijksmuseum.nl/200172175
+  · Jean-Marie Delattre, Penelope wenend met de boog van Odysseus in haar hand (1779) https://id.rijksmuseum.nl/200183041
+  · Louis Ducros, Capo Grosso entre Messine & Taormina (1778) https://id.rijksmuseum.nl/20012335
+  · Louis Ducros, Voyage en Italie, en Sicile et à Malte - 1778 (1778) https://id.rijksmuseum.nl/200510565
+  · Etienne Fessard, Olisse evoque l'ombre de Tiresias (1730 - 1740) https://id.rijksmuseum.nl/200387437
+  · James Parker, Ulysses asleep laid on his own coast by the Phaeacian sailor (1805) https://id.rijksmuseum.nl/200778093
+  · James Neagle, Ulysses weeps at the song of Demodocus (1805) https://id.rijksmuseum.nl/200778027
+  · James Parker, Odyssee (1805) https://id.rijksmuseum.nl/200778117
+  · James Parker, Odyssey (1805) https://id.rijksmuseum.nl/200778073
+  · James Neagle, Odyssey (1805) https://id.rijksmuseum.nl/200778017
+  · James Parker, Minerva restoring Ulysses to his own shape (1805) https://id.rijksmuseum.nl/200778112
+  · James Parker, Ulysses giving wine to Polyphemus (1805) https://id.rijksmuseum.nl/200778031
+  · James Parker, Odyssey (1805) https://id.rijksmuseum.nl/200778084
+  · Jacques Jordaens, Ontmoeting van Odysseus en Nausicaa (ca. 1630 - ca. 1640) https://id.rijksmuseum.nl/200550768
+  · Max Klinger, Penelope kijkt in gedachten verzonken naar haar weefgetouw (1895) https://id.rijksmuseum.nl/200555558
+  · Hendrik Kobell, Twee schepen op zee bij storm (1761 - 1779) https://id.rijksmuseum.nl/200305914
+  · Gerard de Lairesse, Odysseus and Calypso (c. 1680) https://id.rijksmuseum.nl/200111829
+  · Gerard de Lairesse, Mercurius gelast Calypso om Odysseus te laten vertrekken (c. 1680) https://id.rijksmuseum.nl/200111835
+  · B. Rulli, Het Kanaal van Messina (1700 - 1782) https://id.rijksmuseum.nl/200147237
+  · Nicolas Mignard, Odysseus en de sirenen (1637) https://id.rijksmuseum.nl/200623690
+  · Ledru Mauro, Nettuno (1880 - 1900) https://id.rijksmuseum.nl/200325242
+  · Jean Baptiste Nolin, Odysseus naar het paleis van Alkinoös geleid (1677) https://id.rijksmuseum.nl/200242764
+  · Wijnand Nuijen, Schipbreuk op een rotsachtige kust (ca. 1837) https://id.rijksmuseum.nl/200107810
+  · James Anderson, Sculptuur van Penelope, Vaticaan (ca. 1857 - ca. 1875) https://id.rijksmuseum.nl/200144983
+  · Monogrammist FG, Penelope en haar vrouwen aan het weven (1529 - 1542) https://id.rijksmuseum.nl/200370660
+  · atelier van Bernard Picart, Penelope weeft de lijkwade voor Laërtes (1733) https://id.rijksmuseum.nl/200370111
+  · Peter Paul Rubens, Aankomst van Odysseus en metgezellen bij Circe (1587 - 1640) https://id.rijksmuseum.nl/200153405
+  · Peter Paul Rubens, Drie gecombineerde episoden uit de geschiedenis van Odysseus (1587 - 1640) https://id.rijksmuseum.nl/200153406
+  · Joachim von Sandrart, Odysseus and Nausicaa (c. 1630 - c. 1688) https://id.rijksmuseum.nl/2006375
+  · Lodewijk Schelfhout, Olivier, Corse (1921) https://id.rijksmuseum.nl/200295157
+  · Pierre Louis Dubourcq, Olijfboom, te Tivoli (1843-05-28) https://id.rijksmuseum.nl/200317227
+  · Antonio da Trento, Odysseus op het eiland van Circe (1602) https://id.rijksmuseum.nl/200139886
+  · Theodoor van Thulden, Odysseus door zijn hond Argus herkend (1632 - 1633) https://id.rijksmuseum.nl/200394057
+  · Theodoor van Thulden, Odysseus krijgt een aalmoes van een van zijn bedienden (1632 - 1633) https://id.rijksmuseum.nl/200394058
+  · Theodoor van Thulden, Odysseus ontvangt van Aeolus de zak met tegenwinden (1632 - 1633) https://id.rijksmuseum.nl/200394036
+  · Theodoor van Thulden, De werken van Odysseus (1632 - 1633) https://id.rijksmuseum.nl/200394039
+  · Theodoor van Thulden, De werken van Odysseus (1632 - 1633) https://id.rijksmuseum.nl/200394071
+  · Theodoor van Thulden, Odysseus als bedelaar aan de deur van zijn huis (1632 - 1633) https://id.rijksmuseum.nl/200394059
+  · Theodoor van Thulden, De werken van Odysseus (1632 - 1633) https://id.rijksmuseum.nl/200394061
+  · Theodoor van Thulden, Odysseus ontsnapt uit de grot van Polyphemus (1632 - 1633) https://id.rijksmuseum.nl/200394034
+  · Theodoor van Thulden, De werken van Odysseus (1632 - 1633) https://id.rijksmuseum.nl/200394041
+  · Theodoor van Thulden, De werken van Odysseus (1632 - 1633) https://id.rijksmuseum.nl/200394029
+  · Theodoor van Thulden, De werken van Odysseus (1632 - 1633) https://id.rijksmuseum.nl/200394069
+  · Theodoor van Thulden, De werken van Odysseus (1632 - 1633) https://id.rijksmuseum.nl/200394056
+  · Theodoor van Thulden, Odysseus neemt afscheid van Alcinoüs (1632 - 1633) https://id.rijksmuseum.nl/200394052
+  · Theodoor van Thulden, Odysseus in het land van de lotuseters (1632 - 1633) https://id.rijksmuseum.nl/200394028
+  · Theodoor van Thulden, De werken van Odysseus (1632 - 1633) https://id.rijksmuseum.nl/200394038
+  · Theodoor van Thulden, Odysseus in het land van de Laistrygonen (1632 - 1633) https://id.rijksmuseum.nl/200394040
+  · Theodoor van Thulden, Odysseus offert aan de goden (1632 - 1633) https://id.rijksmuseum.nl/200394025
+  · Theodoor van Thulden, Minerva toont Ithaka aan Odysseus (1632 - 1633) https://id.rijksmuseum.nl/200394054
+  · Theodoor van Thulden, De werken van Odysseus (1632 - 1633) https://id.rijksmuseum.nl/200394073
+  · Theodoor van Thulden, De werken van Odysseus (1632 - 1633) https://id.rijksmuseum.nl/200394051
+  · Theodoor van Thulden, Polyphemus werpt een rots naar het schip van Odysseus (1632 - 1633) https://id.rijksmuseum.nl/200394035
+  · Theodoor van Thulden, Odysseus arriveert bij de onderwereld (1632 - 1633) https://id.rijksmuseum.nl/200394044
+  · Theodoor van Thulden, Odysseus cremeert het lichaam van Elpenor (1632 - 1633) https://id.rijksmuseum.nl/200394048
+  · Theodoor van Thulden, De werken van Odysseus (1632 - 1633) https://id.rijksmuseum.nl/200394049
+  · Theodoor van Thulden, Odysseus in de onderwereld (1632 - 1633) https://id.rijksmuseum.nl/200394047
+  · Theodoor van Thulden, Minerva verschijnt in de gedaante van Telemachus aan Odysseu (1632 - 1633) https://id.rijksmuseum.nl/200394055
+  · Theodoor van Thulden, De werken van Odysseus (1632 - 1633) https://id.rijksmuseum.nl/200394037
+  · anoniem, Mercurius beveelt Calypso om Odysseus te laten vertrekken (1670) https://id.rijksmuseum.nl/200214701
+  · Theodoor van Thulden, De metgezellen van Odysseus maken de zak open waarin Aeolus  (1631 - 1633) https://id.rijksmuseum.nl/20012371
+  · Philippus Velijn, Titelpagina voor: Penelope, 1821. (1821) https://id.rijksmuseum.nl/200390804
+  · Adam van Vianen, Drinkschaal met een voorstelling van Circe en de gezellen va (1610) https://id.rijksmuseum.nl/200390664
+  · Reinier Vinkeles, Schip in storm op zee (1751 - 1816) https://id.rijksmuseum.nl/200269380
+  · James Watson, Storm op zee met schipbreuk en zinkend schip (1758 - 1790) https://id.rijksmuseum.nl/200273119
+  · Adam Willaerts, Shipwreck off a Rocky Coast (1614) https://id.rijksmuseum.nl/200108404
+  · Reinier Zeeman, Zeegezichten en landschappen (1650) https://id.rijksmuseum.nl/200128623
+  ```
+
+설명란 길이: 1470자 (YouTube 한도 5,000자), 고정 댓글 7984자 (한도 10,000자).
