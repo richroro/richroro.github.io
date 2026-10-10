@@ -1,0 +1,239 @@
+{
+ "title": [
+  "우주에서 찍힌 역대급 장면",
+  "랭킹 TOP5"
+ ],
+ "sub": "(1번 제목 추천좀)",
+ "color": "#7FB2FF",
+ "music": "public/music/Lightless Dawn.mp3",
+ "keys": [],
+ "places": [
+  {
+   "n": 5,
+   "label": "번개",
+   "caps": [
+    "우주에서 밑을 봤는데..",
+    "구름 속 번개가 번쩍??"
+   ],
+   "shots": [
+    {
+     "src": "top4/iss_lightning.mp4",
+     "in": 0.0,
+     "dur": 2.3,
+     "single": [
+      0.55,
+      0.55,
+      1.0
+     ],
+     "vf": "eq=brightness=0.04:contrast=1.15:gamma=1.25"
+    },
+    {
+     "src": "top4/iss_lightning.mp4",
+     "in": 0.3,
+     "dur": 2.8,
+     "single": [
+      0.6,
+      0.62,
+      1.3
+     ],
+     "speed": 0.7,
+     "vf": "eq=brightness=0.04:contrast=1.15:gamma=1.25"
+    }
+   ]
+  },
+  {
+   "n": 4,
+   "label": "오로라",
+   "caps": [
+    "발밑이 초록색인데..",
+    "오로라를 위에서 봄??"
+   ],
+   "shots": [
+    {
+     "src": "top4/iss_aurora.mp4",
+     "in": 0.0,
+     "dur": 2.5,
+     "single": [
+      0.38,
+      0.5,
+      1.0
+     ]
+    },
+    {
+     "src": "top4/iss_aurora.mp4",
+     "in": 3.4,
+     "dur": 2.6,
+     "single": [
+      0.5,
+      0.55,
+      1.2
+     ]
+    }
+   ]
+  },
+  {
+   "n": 3,
+   "label": "달그림자",
+   "caps": [
+    "구름 위에 검은 얼룩..",
+    "달 그림자였음??"
+   ],
+   "shots": [
+    {
+     "src": "top4/iss_eclipse.mp4",
+     "in": 1.2,
+     "dur": 2.5,
+     "single": [
+      0.5,
+      0.6,
+      1.1
+     ],
+     "vf": "eq=contrast=1.35:brightness=0.02:gamma=1.15"
+    },
+    {
+     "src": "top4/iss_eclipse.mp4",
+     "in": 4.6,
+     "dur": 2.6,
+     "single": [
+      0.5,
+      0.55,
+      1.3
+     ],
+     "vf": "eq=contrast=1.35:brightness=0.02:gamma=1.15"
+    }
+   ]
+  },
+  {
+   "n": 2,
+   "label": "혜성",
+   "caps": [
+    "지평선 위 하얀 꼬리..",
+    "혜성이 떠오름??"
+   ],
+   "shots": [
+    {
+     "src": "top4/iss_lovejoy.mp4",
+     "in": 0.2,
+     "dur": 2.5,
+     "single": [
+      0.27,
+      0.5,
+      1.0
+     ]
+    },
+    {
+     "src": "top4/iss_lovejoy.mp4",
+     "in": 3.6,
+     "dur": 2.6,
+     "single": [
+      0.3,
+      0.48,
+      1.2
+     ]
+    }
+   ]
+  },
+  {
+   "n": 1,
+   "label": "지구",
+   "caps": [
+    "달 뒤로 뭔가 지는데..",
+    "저게 지구라고??"
+   ],
+   "shots": [
+    {
+     "src": "top4/artemis2_earthset.mp4",
+     "in": 0.0,
+     "dur": 1.8,
+     "single": [
+      0.47,
+      0.5,
+      1.0
+     ]
+    },
+    {
+     "src": "top4/artemis2_earthset.mp4",
+     "in": 1.8,
+     "dur": 1.7,
+     "single": [
+      0.47,
+      0.5,
+      1.15
+     ]
+    },
+    {
+     "src": "top4/artemis2_earthset.mp4",
+     "in": 3.5,
+     "dur": 1.7,
+     "single": [
+      0.47,
+      0.5,
+      1.3
+     ]
+    }
+   ]
+  }
+ ],
+ "sources": [
+  {
+   "file": "top4/iss_lightning.mp4",
+   "title": "Lightning Storms from Uganda to Zanzibar Island (ISS Expedition 30, 2012-02-18)",
+   "page": "https://eol.jsc.nasa.gov/BeyondThePhotography/CrewEarthObservationsVideos/#lightningstorms_iss_20120218",
+   "file_url": "https://eol.jsc.nasa.gov/DatabaseImages/ESC/large/ISS030/ISS030-E-104579.JPG … ISS030-E-104672.JPG (94 frames, our time-lapse at 12 fps)",
+   "license": "Public domain (NASA, 17 U.S.C. §105)",
+   "credit": "Image Science & Analysis Laboratory, NASA Johnson Space Center (ISS Crew Earth Observations)",
+   "used_seconds": [
+    0.0,
+    3.4
+   ]
+  },
+  {
+   "file": "top4/iss_aurora.mp4",
+   "title": "Aurora Australis 1 (ISS Expedition 29, 2011-09-17)",
+   "page": "https://eol.jsc.nasa.gov/BeyondThePhotography/CrewEarthObservationsVideos/#aurora_iss_20110917",
+   "file_url": "https://eol.jsc.nasa.gov/DatabaseImages/ESC/large/ISS029/ISS029-E-5985.JPG … ISS029-E-6095.JPG (111 frames, 15 fps)",
+   "license": "Public domain (NASA, 17 U.S.C. §105)",
+   "credit": "Image Science & Analysis Laboratory, NASA Johnson Space Center (ISS Crew Earth Observations)",
+   "used_seconds": [
+    0.0,
+    6.9
+   ]
+  },
+  {
+   "file": "top4/iss_eclipse.mp4",
+   "title": "Solar Eclipse over Asia (ISS Expedition 31, 2012-05-20)",
+   "page": "https://eol.jsc.nasa.gov/BeyondThePhotography/CrewEarthObservationsVideos/#solareclipse_iss_20120520",
+   "file_url": "https://eol.jsc.nasa.gov/DatabaseImages/ESC/large/ISS031/ISS031-E-56780.JPG … ISS031-E-57000.JPG (221 frames, 24 fps)",
+   "license": "Public domain (NASA, 17 U.S.C. §105)",
+   "credit": "Image Science & Analysis Laboratory, NASA Johnson Space Center (ISS Crew Earth Observations)",
+   "used_seconds": [
+    1.2,
+    8.2
+   ]
+  },
+  {
+   "file": "top4/iss_lovejoy.mp4",
+   "title": "Lovejoy Comet Flies over Southern Hemisphere (ISS Expedition 30, 2011-12-21)",
+   "page": "https://eol.jsc.nasa.gov/BeyondThePhotography/CrewEarthObservationsVideos/#lovejoy_iss_20111221",
+   "file_url": "https://eol.jsc.nasa.gov/DatabaseImages/ESC/large/ISS030/ISS030-E-14287.JPG … ISS030-E-14400.JPG (114 frames, 15 fps)",
+   "license": "Public domain (NASA, 17 U.S.C. §105)",
+   "credit": "Image Science & Analysis Laboratory, NASA Johnson Space Center (ISS Crew Earth Observations)",
+   "used_seconds": [
+    0.2,
+    7.2
+   ]
+  },
+  {
+   "file": "top4/artemis2_earthset.mp4",
+   "title": "A Breathtaking Earthset from Orion (art002e021278, Artemis II, 2026-04-06)",
+   "page": "https://images.nasa.gov/details/art002e021278",
+   "file_url": "https://images-assets.nasa.gov/image/art002e021278/art002e021278~orig.jpg (our slow zoom, 7 s)",
+   "license": "Public domain (NASA, 17 U.S.C. §105)",
+   "credit": "NASA",
+   "used_seconds": [
+    0.0,
+    7.0
+   ]
+  }
+ ]
+}

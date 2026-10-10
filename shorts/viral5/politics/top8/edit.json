@@ -1,98 +1,39 @@
 {
  "src": "top8/balanced_rock.mp4",
  "title": [
-  "지구에서 가장 이상한 장소",
-  "[TOP5] (몇 위가 제일 이상?ㄷㄷ)"
+  "역대급 이상한 지구 장소",
+  "랭킹 TOP5"
  ],
  "titleStyle": "band",
- "credit": "영상: 미국 국립공원관리청(NPS)",
+ "credit": "",
  "panels": [],
- "stickers": [
-  {
-   "text": "5위",
-   "from": 0.0,
-   "to": 1.4,
-   "x": 130,
-   "y": 500,
-   "rot": -4,
-   "bg": "#FFE14D",
-   "fg": "#111",
-   "size": 64
-  },
-  {
-   "text": "4위",
-   "from": 6.8,
-   "to": 8.2,
-   "x": 130,
-   "y": 500,
-   "rot": -4,
-   "bg": "#FFE14D",
-   "fg": "#111",
-   "size": 64
-  },
-  {
-   "text": "3위",
-   "from": 13.6,
-   "to": 15.0,
-   "x": 130,
-   "y": 500,
-   "rot": -4,
-   "bg": "#FFE14D",
-   "fg": "#111",
-   "size": 64
-  },
-  {
-   "text": "2위",
-   "from": 20.4,
-   "to": 21.8,
-   "x": 130,
-   "y": 500,
-   "rot": -4,
-   "bg": "#FFE14D",
-   "fg": "#111",
-   "size": 64
-  },
-  {
-   "text": "1위",
-   "from": 27.2,
-   "to": 28.6,
-   "x": 130,
-   "y": 500,
-   "rot": -4,
-   "bg": "#FFE14D",
-   "fg": "#111",
-   "size": 64
-  }
- ],
- "keys": [
-  "얹혀",
-  "39m",
-  "소금밭",
-  "86m",
-  "용암",
-  "150m",
-  "혼자",
-  "무지개",
-  "100m"
- ],
+ "rank2": {
+  "sub": "(몇 번이 제일 이상?)",
+  "color": "#C08BFF",
+  "hide": [
+   1
+  ]
+ },
+ "flash": false,
+ "keys": [],
  "sfx": [
   [
-   6.8,
+   5.1,
    "whoosh",
    0.5
   ],
   [
-   13.6,
+   10.2,
+   "whoosh",
+   0.5
+  ],
+  [
+   15.3,
    "whoosh",
    0.5
   ],
   [
    20.4,
-   "whoosh",
-   0.5
-  ],
-  [
-   27.2,
    "whoosh",
    0.5
   ]
@@ -102,128 +43,21 @@
    "src": "public/music/Dreamer.mp3",
    "from": 0.0,
    "at": 0.0,
-   "to": 37.4,
+   "to": 25.6,
    "fade": 0.3,
    "gain": 1.0
   }
  ],
- "musicGain": 0.7,
+ "musicGain": 0.8,
  "duck": false,
- "captionY": 1380,
+ "captionY": 1640,
  "tail": 0.0,
  "segments": [
   {
    "src": "top8/balanced_rock.mp4",
    "in": 0.0,
-   "out": 3.4,
-   "single": [
-    0.4,
-    0.5,
-    1.0
-   ],
-   "push": [
-    1.0,
-    1.05
-   ],
-   "audio": 0,
-   "credit": "영상: 미국 국립공원관리청(NPS)",
-   "rank": {
-    "n": 5,
-    "label": "아치스 균형 바위"
-   }
-  },
-  {
-   "src": "top8/balanced_rock.mp4",
-   "in": 5.0,
-   "out": 8.4,
-   "single": [
-    0.36,
-    0.4,
-    1.3
-   ],
-   "push": [
-    1.0,
-    1.05
-   ],
-   "audio": 0,
-   "credit": "영상: 미국 국립공원관리청(NPS)"
-  },
-  {
-   "src": "top8/badwater_basin.mp4",
-   "in": 1.5,
-   "out": 4.9,
-   "single": [
-    0.5,
-    0.5,
-    1.0
-   ],
-   "push": [
-    1.0,
-    1.05
-   ],
-   "audio": 0,
-   "credit": "영상: 미국 국립공원관리청(NPS)",
-   "rank": {
-    "n": 4,
-    "label": "북미에서 가장 낮은 땅"
-   }
-  },
-  {
-   "src": "top8/badwater_basin.mp4",
-   "in": 7.5,
-   "out": 10.9,
-   "single": [
-    0.45,
-    0.55,
-    1.15
-   ],
-   "push": [
-    1.0,
-    1.05
-   ],
-   "audio": 0,
-   "credit": "영상: 미국 국립공원관리청(NPS)"
-  },
-  {
-   "src": "top8/halemaumau_lava_lake.mp4",
-   "in": 0.0,
-   "out": 3.4,
-   "single": [
-    0.45,
-    0.5,
-    1.0
-   ],
-   "push": [
-    1.0,
-    1.05
-   ],
-   "audio": 0,
-   "credit": "영상: 미국 지질조사국(USGS)",
-   "rank": {
-    "n": 3,
-    "label": "화산 속 용암 호수"
-   }
-  },
-  {
-   "src": "top8/halemaumau_lava_lake.mp4",
-   "in": 5.5,
-   "out": 8.9,
-   "single": [
-    0.48,
-    0.45,
-    1.25
-   ],
-   "push": [
-    1.0,
-    1.05
-   ],
-   "audio": 0,
-   "credit": "영상: 미국 지질조사국(USGS)"
-  },
-  {
-   "src": "top8/racetrack_sailing_stones.mp4",
-   "in": 0.5,
-   "out": 3.9,
+   "out": 2.3,
+   "frame": "tall",
    "single": [
     0.38,
     0.5,
@@ -231,19 +65,127 @@
    ],
    "push": [
     1.0,
-    1.05
+    1.06
    ],
    "audio": 0,
-   "credit": "영상: 미국 국립공원관리청(NPS)",
+   "rank": {
+    "n": 5,
+    "label": "균형바위"
+   }
+  },
+  {
+   "src": "top8/balanced_rock.mp4",
+   "in": 5.0,
+   "out": 7.8,
+   "frame": "tall",
+   "single": [
+    0.36,
+    0.4,
+    1.2
+   ],
+   "push": [
+    1.0,
+    1.06
+   ],
+   "audio": 0
+  },
+  {
+   "src": "top8/badwater_basin.mp4",
+   "in": 1.5,
+   "out": 4.0,
+   "frame": "tall",
+   "single": [
+    0.5,
+    0.5,
+    1.0
+   ],
+   "push": [
+    1.0,
+    1.06
+   ],
+   "audio": 0,
+   "rank": {
+    "n": 4,
+    "label": "소금사막"
+   }
+  },
+  {
+   "src": "top8/badwater_basin.mp4",
+   "in": 7.5,
+   "out": 10.1,
+   "frame": "tall",
+   "single": [
+    0.45,
+    0.55,
+    1.1
+   ],
+   "push": [
+    1.0,
+    1.06
+   ],
+   "audio": 0
+  },
+  {
+   "src": "top8/halemaumau_lava_lake.mp4",
+   "in": 0.0,
+   "out": 2.5,
+   "frame": "tall",
+   "single": [
+    0.5,
+    0.5,
+    1.0
+   ],
+   "push": [
+    1.0,
+    1.06
+   ],
+   "audio": 0,
+   "rank": {
+    "n": 3,
+    "label": "용암호수"
+   }
+  },
+  {
+   "src": "top8/halemaumau_lava_lake.mp4",
+   "in": 5.5,
+   "out": 8.1,
+   "frame": "tall",
+   "single": [
+    0.55,
+    0.45,
+    1.15
+   ],
+   "push": [
+    1.0,
+    1.06
+   ],
+   "audio": 0
+  },
+  {
+   "src": "top8/racetrack_sailing_stones.mp4",
+   "in": 0.5,
+   "out": 3.0,
+   "frame": "tall",
+   "single": [
+    0.38,
+    0.7,
+    1.0
+   ],
+   "push": [
+    1.0,
+    1.06
+   ],
+   "audio": 0,
    "rank": {
     "n": 2,
-    "label": "스스로 움직이는 돌"
+    "label": "떠도는돌"
    }
   },
   {
    "src": "top8/racetrack_sailing_stones.mp4",
    "in": 6.5,
-   "out": 9.9,
+   "out": 9.1,
+   "frame": "tall",
    "single": [
     0.45,
     0.6,
@@ -251,15 +193,15 @@
    ],
    "push": [
     1.0,
-    1.05
+    1.06
    ],
-   "audio": 0,
-   "credit": "영상: 미국 국립공원관리청(NPS)"
+   "audio": 0
   },
   {
    "src": "top8/grand_prismatic_spring.mp4",
    "in": 0.0,
-   "out": 3.4,
+   "out": 1.8,
+   "frame": "tall",
    "single": [
     0.5,
     0.5,
@@ -267,114 +209,107 @@
    ],
    "push": [
     1.0,
-    1.05
+    1.06
    ],
    "audio": 0,
-   "credit": "영상: 미국 국립공원관리청(NPS)",
    "rank": {
     "n": 1,
-    "label": "무지개색 거대 온천"
+    "label": "온천"
    }
   },
   {
    "src": "top8/grand_prismatic_spring.mp4",
    "in": 4.5,
-   "out": 7.9,
+   "out": 6.2,
+   "frame": "tall",
    "single": [
-    0.3,
+    0.35,
     0.5,
     1.0
    ],
    "push": [
     1.0,
-    1.05
+    1.06
    ],
-   "audio": 0,
-   "credit": "영상: 미국 국립공원관리청(NPS)"
+   "audio": 0
   },
   {
    "src": "top8/grand_prismatic_spring.mp4",
    "in": 9.5,
-   "out": 12.9,
+   "out": 11.2,
+   "frame": "tall",
    "single": [
-    0.68,
+    0.65,
     0.5,
     1.0
    ],
    "push": [
     1.0,
-    1.05
+    1.06
    ],
-   "audio": 0,
-   "credit": "영상: 미국 국립공원관리청(NPS)"
+   "audio": 0
   }
  ],
  "lines": [
   {
    "who": 0,
-   "t": 0.1,
-   "tend": 3.35,
-   "ko": "바위가 위에 얹혀 있음?"
+   "t": 0.0,
+   "tend": 2.3,
+   "ko": "바위 위에 바위가.."
   },
   {
    "who": 0,
-   "t": 3.5,
-   "tend": 6.75,
-   "ko": "높이 39m 균형 바위"
+   "t": 2.3,
+   "tend": 5.1,
+   "ko": "39m인데 안 떨어짐??"
   },
   {
    "who": 0,
-   "t": 6.9,
-   "tend": 10.15,
-   "ko": "끝없이 펼쳐진 소금밭"
+   "t": 5.1,
+   "tend": 7.6,
+   "ko": "끝없는 소금밭인데.."
   },
   {
    "who": 0,
-   "t": 10.3,
-   "tend": 13.55,
-   "ko": "바다보다 86m 낮은 땅"
+   "t": 7.6,
+   "tend": 10.2,
+   "ko": "바다보다 86m 낮음??"
   },
   {
    "who": 0,
-   "t": 13.7,
-   "tend": 16.95,
-   "ko": "용암이 호수처럼 출렁"
+   "t": 10.2,
+   "tend": 12.7,
+   "ko": "화산 속을 들여다보니.."
   },
   {
    "who": 0,
-   "t": 17.1,
-   "tend": 20.35,
-   "ko": "폭 약 150m 용암 호수"
+   "t": 12.7,
+   "tend": 15.3,
+   "ko": "용암이 호수처럼 출렁??"
   },
   {
    "who": 0,
-   "t": 20.5,
-   "tend": 23.75,
-   "ko": "돌이 혼자 움직인 흔적"
+   "t": 15.3,
+   "tend": 17.8,
+   "ko": "사막에 돌 하나가.."
   },
   {
    "who": 0,
-   "t": 23.9,
-   "tend": 27.15,
-   "ko": "범인은 물·얼음·바람"
+   "t": 17.8,
+   "tend": 20.4,
+   "ko": "혼자 움직인 흔적??"
   },
   {
    "who": 0,
-   "t": 27.3,
-   "tend": 30.55,
-   "ko": "땅 위에 무지개 웅덩이"
+   "t": 20.4,
+   "tend": 22.2,
+   "ko": "땅에 웅덩이가 있는데.."
   },
   {
    "who": 0,
-   "t": 30.7,
-   "tend": 33.95,
-   "ko": "지름 최대 100m 온천"
-  },
-  {
-   "who": 0,
-   "t": 34.1,
-   "tend": 37.35,
-   "ko": "다들 몇 위가 제일 이상?"
+   "t": 22.2,
+   "tend": 25.6,
+   "ko": "색깔이 무지개??"
   }
  ],
  "sources": [
@@ -400,6 +335,16 @@
      5.0,
      8.4
     ]
+   ],
+   "used_seconds": [
+    [
+     0.0,
+     2.3
+    ],
+    [
+     5.0,
+     7.8
+    ]
    ]
   },
   {
@@ -423,6 +368,16 @@
     [
      7.5,
      10.9
+    ]
+   ],
+   "used_seconds": [
+    [
+     1.5,
+     4.0
+    ],
+    [
+     7.5,
+     10.1
     ]
    ]
   },
@@ -448,6 +403,16 @@
      5.5,
      8.9
     ]
+   ],
+   "used_seconds": [
+    [
+     0.0,
+     2.5
+    ],
+    [
+     5.5,
+     8.1
+    ]
    ]
   },
   {
@@ -471,6 +436,16 @@
     [
      6.5,
      9.9
+    ]
+   ],
+   "used_seconds": [
+    [
+     0.5,
+     3.0
+    ],
+    [
+     6.5,
+     9.1
     ]
    ]
   },
@@ -499,6 +474,20 @@
     [
      9.5,
      12.9
+    ]
+   ],
+   "used_seconds": [
+    [
+     0.0,
+     1.8
+    ],
+    [
+     4.5,
+     6.2
+    ],
+    [
+     9.5,
+     11.2
     ]
    ]
   }

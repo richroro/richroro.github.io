@@ -3775,6 +3775,198 @@ python3 media/retro/v2_scorecard.py retro1 retro2 retro3 retro4 retro5 retro6 re
 >
 > 고정 댓글: 80~90년대 시내 나가면 꼭 들르던 곳 있었죠? 어디였어요? 👇
 
+## 역대급 랭킹 TOP5 v2 (벤치마크, `politics/top1`~`top12`)
+
+`research/benchmark-footage.md` §3와 `research/benchmark-targets-footage.json`의 `ranking_top5`(약 25초, 5개 × 4.5–5초)에 맞춰 **top1–8을 같은 영상으로 다시 편집**하고, 같은 틀로 **top9–12를 새로 만든** 열두 편입니다. 내레이션 없음, 음악 + 예고형 자막. 순위는 편집자 선정이고 공식 순위가 아닙니다. 벤치마크 채널(랭킹김·랭킹공·랭킹각)에서는 **구조만** 따랐고, 그 채널의 영상은 한 프레임도 쓰지 않았습니다.
+
+| id | 화면 제목 (1줄 / 2줄 / 3줄) | 길이 | 5위 → 2위 (1위는 끝까지 "???") | 음악 |
+| --- | --- | --- | --- | --- |
+| `top1` | 역대급 백룸 같은 공간들 / 랭킹 TOP5 / (몇 번이 제일 무서움?) | 25.6초 | 수영장 · 주차장 · 지하통로 · 쇼핑몰 (1위: 불 꺼진 병원 복도) | Dark Fog |
+| `top2` | 역대급 만족스러운 순간 / 랭킹 TOP5 / (1번 제목 추천좀) | 25.6초 | 슬라임 · 케이크 · 연필심 · 물감 (1위: 키네틱 샌드 썰기) | Monkeys Spinning Monkeys |
+| `top3` | 역대급 신기한 자연현상 / 랭킹 TOP5 / (몇 번이 제일 신기?ㄷㄷ) | 25.6초 | 간헐천 · 심해호수 · 오로라 · 구름바다 (1위: 킬라우에아 용암 분수) | Floating Cities |
+| `top4` | 우주에서 찍힌 역대급 장면 / 랭킹 TOP5 / (1번 제목 추천좀) | 25.6초 | 번개 · 오로라 · 달그림자 · 혜성 (1위: 달 뒤로 지는 지구) | Lightless Dawn |
+| `top5` | 역대급 거대한 폭포 / 랭킹 TOP5 / (몇 번이 제일 웅장?) | 25.6초 | 급류 · 나라다 · 디어크릭 · 로어폭포 (1위: 요세미티 폭포) | Heroic Age |
+| `top6` | 역대급 소름 돋는 바닷속 / 랭킹 TOP5 / (몇 번이 제일 소름?) | 25.6초 | 해파리 · 가스강 · 난파선 · 굴뚝 (1위: 브림스톤 해저 분화) | Gathering Darkness |
+| `top7` | 역대급 무서운 날씨 / 랭킹 TOP5 / (몇 번이 제일 무서움?) | 25.6초 | 슈퍼셀 · 홍수 · 태풍눈 · 우주태풍 (1위: EF3 토네이도) | Movement Proposition |
+| `top8` | 역대급 이상한 지구 장소 / 랭킹 TOP5 / (몇 번이 제일 이상?) | 25.6초 | 균형바위 · 소금사막 · 용암호수 · 떠도는돌 (1위: 그랜드 프리즈매틱 온천) | Dreamer |
+| `top9` (새) | 역대급 시원한 얼음 깨기 / 랭킹 TOP5 / (1번 제목 추천좀) | 25.6초 | 얼음낚시 · 바이칼 · 얼음투척 · 알래스카 (1위: 그린란드 빙벽 붕괴) | Exhilarate |
+| `top10` (새) | 역대급 시원한 파도 / 랭킹 TOP5 / (몇 번이 제일 시원함?) | 25.6초 | LA 파도 · 방파제 · 분수구멍 · 폭풍철탑 (1위: 바위 위 돌집을 덮친 파도) | Heroic Age |
+| `top11` (새) | 역대급 화산·용암 모먼트 / 랭킹 TOP5 / (몇 번이 제일 무서움?) | 25.6초 | 용암채취 · 숲 삼킴 · 도로침공 · 바다폭발 (1위: 용암호 낙석 폭발) | Gathering Darkness |
+| `top12` (새) | 역대급 물에 던진 돌 / 랭킹 TOP5 / (몇 번이 제일 시원함?) | 25.6초 | 거울호수 · 진흙물 · 계곡돌 · 물왕관 (1위: 바윗덩이 물기둥) | Hustle |
+
+```bash
+npm i && ./fetch.sh
+python3 media/fetch_top.py                                  # top1~top8 원본을 media/top*/의 JSON대로 다시 받음(ISS 타임랩스는 원본 사진으로 다시 만듦)
+                                                            # top9~top12 원본: media/top9~12/*.json의 page_url·file_url·cut_from_original_seconds 구간(1080p, 30fps)
+python3 politics/top_v2.py top9                             # politics/top9/spec.json → politics/top9/edit.json (시간 계산)
+MEDIA=$PWD/media python3 politics/prep_split.py top9
+./render.sh top9 final/top9.mp4                             # 30MB가 넘으면 영상만 CRF 23으로 다시 압축(오디오 복사): top11만 해당
+python3 qa_review.py top9                                   # 열두 편 모두 FAIL 0, WARN 0
+```
+
+### 새 템플릿 옵션 (모두 새 옵션이라, 이 옵션이 없는 쇼츠는 전과 똑같이 렌더됩니다)
+
+- **`src/lib/RankV2.tsx`** (새 파일)
+  - `RankBand`: 3줄 띠, 높이 420px. 1줄 `title[0]`은 `rank2.color`색(기본 분홍) 86px, 2줄 `title[1]`("랭킹 TOP5")은 흰색 150px, 3줄 `rank2.sub`는 46px.
+  - `RankList`: 영상 위 왼쪽(x 22, y 452~)의 순위표. 1 빨강 `#FF3B3B`, 2 주황 `#FF9A1F`, 3 노랑 `#FFE14D`, 4–5 흰색. 이름은 그 순위가 시작될 때 채워집니다. `rank2.hide`(기본 `[1]`)의 순위는 **끝까지 "???"**입니다. 지금 순위는 그 색 테두리 + 어두운 바탕으로 켜지고, 시작할 때 0.35초 튀어 오릅니다(0초 썸네일 프레임에서는 튀지 않음).
+  - `BoxCaptions`: 검정 상자 위 흰 글씨 자막(최대 76px, `captionY` 기본 1640). **0초에 시작하는 자막은 등장 애니메이션 없이 첫 프레임부터 떠 있습니다**(썸네일).
+  - `TALL`: 새 화면 틀 `"frame": "tall"` = 띠 아래 전부(y 420~1920, 1080×1500). 아래 23%의 빈 회색 칸이 없어집니다.
+- **`src/ClipShort.tsx`** (작은 연결만): `ShortData.rank2`, 프레임 종류 `"tall"`, 그리고 `rank2`가 있을 때만 `Title`→`RankBand`, `Ranks`→`RankList`, `Captions`→`BoxCaptions`로 바꾸는 세 줄.
+- **`politics/prep_split.py`** (한 단어): edit.json의 `rank2`를 데이터로 넘깁니다. 설명은 파일 머리말에 있습니다.
+- **`politics/top_v2.py`** (새 파일): `politics/<id>/spec.json`(제목·3줄·색·음악·순위별 라벨·자막·샷)으로 edit.json을 씁니다. 5위→1위로 샷을 이어 붙이고, 샷마다 자막 1장(첫 자막 0초), 순위가 바뀔 때 `whoosh`, `"tail": 0`(1위가 끝나면 바로 5위로 루프), `"flash": false`, `"credit": ""`(출처 배지는 화면에서 빼고 설명란으로), 원본 소리 끔, `sources`에 쓴 구간을 채웁니다.
+- **`media/fetch_top.py`** (새 파일): top1–8 원본 40개를 각 JSON대로 다시 만듭니다(Flickr 링크는 페이지의 secret으로, Commons 429는 재시도).
+- 회귀 확인: 손대지 않은 `doodle1`(프레임 200·1000)과 **예전 top5 edit.json**(밴드 + 아래 순위표 경로, 프레임 0·150·600·1050)을 바뀌기 전·후 코드로 렌더해 픽셀 비교 → 모두 **차이 없음**.
+
+edit.json 예:
+```json
+"titleStyle": "band", "title": ["역대급 시원한 얼음 깨기", "랭킹 TOP5"], "credit": "", "flash": false, "tail": 0, "captionY": 1640,
+"rank2": {"sub": "(1번 제목 추천좀)", "color": "#FF5FA2", "hide": [1]},
+"segments": [{"src": "top9/x.mp4", "in": 1.0, "out": 3.3, "frame": "tall", "single": [0.62, 0.5, 1.0], "audio": 0, "rank": {"n": 5, "label": "얼음낚시"}}, …],
+"lines": [{"who": 0, "t": 0.0, "tend": 2.3, "ko": "얼음에 구멍 뚫는데.."}, …]
+```
+
+### 벤치마크 점수표
+
+목표는 `benchmark-targets-footage.json`의 `ranking_top5`: 길이 25초 · 훅 끝 0초(첫 자막이 0초에 떠 있음) · 첫 전환 ≤2.5초 · 평균 샷 2.4초 · 최장 샷 3.5초 · 음절/초 0(내레이션 없음) · 자막 7장 · 제목 줄당 [10, 7, 12]자.
+우리 값: 길이·LUFS·용량은 렌더본(ffprobe, `qa_review.py`), 샷은 편집 목록(edit.json 세그먼트 = 실제 컷), 괄호 안은 `qa_review.py` 장면 감지 값(영상 속 움직임까지 컷으로 셈).
+
+| id | 길이 | 첫 자막 | 첫 전환 | 평균 샷 (감지) | 최장 샷 | 음절/초 | 자막 장 수 (최장) | 제목 줄당 글자 | 결과 |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| top1 | 25.6 | 0.0초 | 2.3 | 2.33 (2.3) | 2.8 | 0 | 10 (10자) | 10 / 6 / 8 | FAIL 0 WARN 0, 17.5MB |
+| top2 | 25.6 | 0.0초 | 2.3 | 2.33 (2.1) | 2.8 | 0 | 10 (9자) | 10 / 6 / 7 | FAIL 0 WARN 0, 18.1MB |
+| top3 | 25.6 | 0.0초 | 2.3 | 2.33 (2.1) | 2.8 | 0 | 10 (10자) | 10 / 6 / 7 | FAIL 0 WARN 0, 20.1MB |
+| top4 | 25.6 | 0.0초 | 2.3 | 2.33 (2.3) | 2.8 | 0 | 10 (9자) | 11 / 6 / 7 | FAIL 0 WARN 0, 25.6MB |
+| top5 | 25.6 | 0.0초 | 2.3 | 2.33 (1.8) | 2.8 | 0 | 10 (10자) | 8 / 6 / 7 | FAIL 0 WARN 0, 28.2MB |
+| top6 | 25.6 | 0.0초 | 2.3 | 2.33 (2.3) | 2.8 | 0 | 10 (10자) | 10 / 6 / 7 | FAIL 0 WARN 0, 27.5MB |
+| top7 | 25.6 | 0.0초 | 2.3 | 2.33 (2.3) | 2.8 | 0 | 10 (10자) | 8 / 6 / 8 | FAIL 0 WARN 0, 18.9MB |
+| top8 | 25.6 | 0.0초 | 2.3 | 2.33 (2.3) | 2.8 | 0 | 10 (9자) | 10 / 6 / 7 | FAIL 0 WARN 0, 22.6MB |
+| top9 | 25.6 | 0.0초 | 2.3 (감지 0.3) | 2.33 (1.8) | 2.8 | 0 | 10 (8자) | 10 / 6 / 7 | FAIL 0 WARN 0, 14.0MB |
+| top10 | 25.6 | 0.0초 | 2.3 | 2.33 (2.3) | 2.8 | 0 | 10 (8자) | 8 / 6 / 8 | FAIL 0 WARN 0, 12.9MB |
+| top11 | 25.6 | 0.0초 | 2.3 | 2.33 (1.7) | 2.8 | 0 | 10 (8자) | 10 / 6 / 8 | FAIL 0 WARN 0, 15.9MB |
+| top12 | 25.6 | 0.0초 | 2.3 | 2.33 (2.3) | 2.8 | 0 | 10 (8자) | 8 / 6 / 8 | FAIL 0 WARN 0, 17.7MB |
+
+이전 판(top1–8)과 비교: 34.6–37.4초 → 25.6초, 항목당 약 7초 → 5.1초(5위 2.3+2.8, 4–2위 2.5+2.6, 1위 1.8+1.7+1.7), 첫 전환 3.4 → 2.3초, 최장 샷 4.0 → 2.8초.
+
+**빗나간 것과 이유**
+- **길이 25.6초(목표 25초)**: `qa_review.py`의 길이 통과선이 25초 이상이라 0.6초 여유를 두었습니다(벤치마크 범위 22–25초, 레시피 23–26초 안).
+- **자막 10장(목표 7장)**: 레시피의 "항목당 1–2장"을 5개 항목 모두에 2장씩 적용했습니다(설정 1장 + 결과 1장). 7은 벤치마크 평균 추정값입니다. 1위의 세 번째 샷에는 새 자막을 넣지 않고 두 번째 자막을 이어 띄웁니다.
+- **제목 2줄 6자(목표 7자)**: 우리는 TOP5라 "랭킹 TOP5"(벤치마크는 "랭킹 TOP7"과 같은 형식, 숫자만 다름). 3줄은 7–8자로 목표 12자보다 짧습니다. 벤치마크의 "(다들 몇 번이 제일 웃김?ㅋㅋㅋ)"처럼 길게 쓰면 46px에서 너무 작아져서입니다.
+- **감지된 평균 샷이 짧은 편(top5·9·11 1.7–1.8초)**: 편집 컷은 똑같이 11개이고, 장면 감지가 화면 속 큰 움직임(물보라, 폭발 섬광, 얼음 구멍 드릴)을 컷으로 더 센 것입니다. top9의 "첫 전환 0.3초"도 드릴이 돌며 화면이 크게 변한 것을 감지한 값이고, 실제 첫 컷은 2.3초입니다.
+- **피사체**: 벤치마크는 사람·동물의 반응이 중심입니다. 우리는 얼굴 금지 규칙 때문에 손·뒷모습·실루엣만 썼습니다(top2·9·11·12). top1·3–8은 기존 영상이라 "결과가 있는 순간"이 약한 장면(정지에 가까운 풍경)이 남아 있어, 자막을 예고형으로 바꿔 보완했습니다.
+
+### 영상과 라이선스 (원본 페이지·파일 주소·크레딧·쓴 구간: `media/top*/*.json`의 `used_in`(`"version": "v2"`), 각 `edit.json`의 `sources.used_seconds`)
+
+- **top1–8**: 영상과 라이선스는 위의 「역대급 랭킹 TOP5 쇼츠」·「역대급 랭킹 TOP5 쇼츠 2」 절과 같습니다(같은 클립, 쓴 구간만 바뀜). v2에서는 화면 출처 배지를 없애고 크레딧을 모두 설명란(아래 업로드 문구)에 넣었습니다.
+- **top9** (얼음 깨기)
+  - Pexels License (각 영상 페이지 "Free" → https://www.pexels.com/license/ 확인): [6831069](https://www.pexels.com/video/man-opening-a-hole-in-the-ice-6831069/) Tima Miroshnichenko (얼음 드릴, 1.0–3.3·7.2–10.0초) · [4434241](https://www.pexels.com/video/ice-breaking-4434241/) Yaroslav Shuraev (바이칼 얼음 찍기, 0.4–2.9·3.2–5.8초) · [7128251](https://www.pexels.com/video/man-breaking-ice-7128251/) Nadezhda Moryak (역광 실루엣이 얼음판을 던짐, 0.3–2.8·2.7–5.3초) · [28988888](https://www.pexels.com/video/dramatic-arctic-iceberg-collapse-in-greenland-28988888/) Cristian Manieri (그린란드 빙벽 붕괴, 6.0–7.8·8.2–9.9·10.2–11.9초)
+  - **CC BY 2.0**: [Margerie Glacier calving video](https://commons.wikimedia.org/wiki/File:Margerie_Glacier_calving_video.webm) gails_pictures (Flickr, Wikimedia Commons 경유; 파일은 Commons가 인용한 Flickr 원본), 0.0–2.5·2.4–5.0초, 잘라내고 확대함
+  - (쓰기 쉬운 미국 기관 빙하 영상은 해설이 섞인 480p 이하 프로그램뿐이라 쓰지 않았습니다. Pixabay의 빙하 붕괴 결과는 AI 생성물이라 뺐습니다.)
+- **top10** (파도) — 모두 Pexels License: [20363746](https://www.pexels.com/video/massive-ocean-wave-on-california-los-angeles-coast-beach-20363746/) Joshua Woroniecki (3.6–5.9·7.8–10.6초) · [15876185](https://www.pexels.com/video/a-large-wave-crashes-into-the-rocks-at-the-end-of-a-pier-15876185/) Guidance Pillar Production (0.4–2.9·3.0–5.6초) · [32379563](https://www.pexels.com/video/dramatic-coastal-blowholes-and-ocean-waves-32379563/) FUNESMA79 (2.0–4.5·9.3–11.9초; 원본 1–7초 왼쪽 끝의 아주 작은 두 사람은 크롭 밖) · [34490216](https://www.pexels.com/video/dramatic-storm-waves-crashing-on-coastal-tower-34490216/) AP Vibes (0.5–3.0·3.0–5.6초) · [32091837](https://www.pexels.com/video/dramatic-ocean-waves-crashing-on-rocks-32091837/) pippu (1.8–3.6·4.5–6.2·8.3–10.0초)
+- **top11** (화산·용암) — 모두 **미국 지질조사국(USGS) Hawaiian Volcano Observatory, 퍼블릭 도메인**(각 페이지 "Sources/Usage: Public Domain."): [용암 채취 2023.6.22](https://www.usgs.gov/media/videos/lava-sampling-halemaumau-june-22-2023) (4.8–7.1·10.2–13.0초; 주황 작업복의 뒷모습·다리·장갑 낀 손만, 얼굴 없음) · [식생을 태우는 용암 끝 2016.6.29](https://www.usgs.gov/media/videos/flow-front-moving-through-vegetation) (2.0–4.5·9.0–11.6초) · [카우필리 거리의 용암 2018.5.24](https://www.usgs.gov/media/videos/kilauea-volcano-pahoehoe-flows-kaupili-street) (0.0–2.5·6.0–8.6초) · [푸히오칼라이키니 해안 폭발 2010.9.28](https://www.usgs.gov/media/videos/successive-littoral-explosions-puhi-o-kalaikini-ocean-entry) (0.0–2.5·3.8–6.4초) · [할레마우마우 대형 낙석 2016.1.8](https://www.usgs.gov/media/videos/large-rockfall-halemaumau-crater) (0.0–1.8·2.0–3.7·5.0–6.7초). 모서리의 USGS 표시와 웹캠 시각 표시는 크롭 밖으로 뺐습니다.
+- **top12** (물에 던진 돌) — 모두 Pexels License: [12279967](https://www.pexels.com/video/stones-falling-into-a-lake-in-a-mountain-landscape-12279967/) Marsel Sharipov (2.6–4.9·4.9–7.7초) · [34666821](https://www.pexels.com/video/rippling-water-surface-with-stone-splash-34666821/) Jack And Matt Photography (0.3–2.8·2.8–5.4초) · [4174020](https://www.pexels.com/video/slow-motion-of-rocks-falling-to-the-water-4174020/) K (@kelly) (1.6–4.1·6.3–8.9초) · [13723991](https://www.pexels.com/video/stone-falling-into-lake-13723991/) Marsel Sharipov (2.45–4.95·4.0–6.6초, 두 번째 샷은 확대 다시보기) · [4510319](https://www.pexels.com/video/throwing-big-rock-on-water-4510319/) Martina Tomšič (1.4–3.2·3.2–4.9·6.4–8.1초)
+- 예비 클립(편집에는 안 씀)도 같은 형식의 JSON이 `media/top9~12/`에 있습니다.
+- 음악: "Dark Fog", "Monkeys Spinning Monkeys", "Floating Cities", "Lightless Dawn", "Heroic Age", "Gathering Darkness", "Movement Proposition", "Dreamer", "Exhilarate", "Hustle" Kevin MacLeod (incompetech.com), CC BY 4.0
+
+### 자막 속 사실과 출처
+
+- top1–8: 위 두 절의 「자막 속 사실과 출처」와 같습니다(91m 간헐천, 바닷물보다 최대 8배 짠 브라인 풀, 400m 이상(추정) 용암 분수, 23m·51m·53m·94m·740m 폭포, 수심 700m 해파리, 19세기 범선, 500년 만의 홍수, 시속 233km 밀턴, 시속 257km(추정) EF3 토네이도, 39m 균형 바위, 해수면보다 86m 낮은 배드워터). v2에서 새로 넣은 숫자는 없습니다. top4 3위 "달 그림자였음??"은 NASA 페이지의 2012.5.20 금환일식 설명 그대로입니다.
+- top9 2위 "높이 61m 얼음벽": 마저리 빙하는 "폭 약 0.85마일, 얼음 벽 높이는 수면 위 약 200피트" — [NPS Glacier Bay](https://www.nps.gov/glba/learn/nature/overview-of-selected-glaciers-in-glacier-bay.htm) (200피트 ≈ 61m). 나머지 top9 자막에는 숫자가 없습니다(그린란드 영상은 Pexels 설명 "Greenland iceberg"만 있음).
+- top11 4위 "나무가 그대로 불탐": "The leading tip of the flow is burning vegetation in a kīpuka." — [USGS](https://www.usgs.gov/media/videos/flow-front-moving-through-vegetation)
+- top11 3위 "아스팔트까지 불탐": "Burning asphalt created the black smoke seen in the video…" — [USGS](https://www.usgs.gov/media/videos/kilauea-volcano-pahoehoe-flows-kaupili-street)
+- top11 2위 "돌이 20m 치솟음": "The explosions were throwing ejecta up to about 20 meters." — [USGS](https://www.usgs.gov/media/videos/successive-littoral-explosions-puhi-o-kalaikini-ocean-entry)
+- top11 1위 "카메라까지 날아옴": 낙석 폭발이 "용암호 수면보다 약 110m 위인 분화구 가장자리까지 빛나는 파편을 던졌고 … 파편이 USGS HVO 웹캠 쪽으로 날아온다" — [USGS](https://www.usgs.gov/media/videos/large-rockfall-halemaumau-crater)
+- top10·top12는 사실 주장이 없는 예고형 자막뿐입니다("LA 파도"는 Pexels 페이지 제목의 "California Los Angeles Coast", top10 1위 "돌집"은 화면에 보이는 바위 위 작은 돌 구조물을 부른 말).
+
+### 업로드 문구
+
+공통: 고정 댓글은 **"1번 제목 지어주세요 👇 제일 웃긴 제목 고정합니다"** (top2·4·9) 또는 아래 각 편의 질문. 설명란 첫 줄에 1위 이름은 쓰지 않습니다(댓글용).
+
+**top1** — 역대급 백룸 같은 공간들 랭킹 TOP5 ㄷㄷ
+> 밤 9시 반 텅 빈 수영장, 차 한 대 없는 지하주차장, 끝없이 내려가는 지하통로, 불이 깜빡이는 쇼핑몰 복도… 그리고 1위는? 다들 몇 번이 제일 무서움? 순위는 저희 마음대로 고른 것입니다.
+> 영상: Pexels — Tima Miroshnichenko, gusat silviu, Yunus Kılıç, Matthias Groeneveld, SN.CHE
+> 음악: "Dark Fog" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
+> #백룸 #리미널스페이스 #랭킹 #소름 #shorts
+> 고정 댓글: 1번 장소 이름 지어주세요 👇 여기 혼자 갈 수 있는 사람?
+
+**top2** — 역대급 만족스러운 순간 랭킹 TOP5 ㅋㅋ
+> 구슬 슬라임, 와르르 무너지는 초코 케이크, 하트가 나오는 연필심, 줄줄 흘러내리는 물감… 1위는 직접 보세요. 1번 제목 추천받습니다! 순위는 저희 마음대로 고른 것입니다.
+> 영상: Pexels — cottonbro studio, Taryn Elliott, Vũ Vũ, Mike Murray · Pixabay — u_5l867xgjyb
+> 음악: "Monkeys Spinning Monkeys" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
+> #만족 #ASMR #랭킹 #힐링 #shorts
+> 고정 댓글: 1번 제목 지어주세요 👇 제일 웃긴 제목 고정합니다
+
+**top3** — 역대급 신기한 자연현상 랭킹 TOP5 ㄷㄷ
+> 91m 넘게 솟는 간헐천, 바다 밑바닥의 호수, 하늘에서 춤추는 오로라, 구름 바다에 잠긴 그랜드캐니언, 그리고 1위는 땅이 갈라지며 솟은 그것(최고 400m 이상 추정). 다들 몇 번이 제일 신기해요? 순위는 저희 마음대로 고른 것입니다.
+> 영상: 미국 국립공원관리청(NPS) — Jacob W. Frank, M. Quinn · 미국 해양대기청(NOAA Ocean Exploration) · 미국 지질조사국(USGS) — M. Patrick (각 기관이 이 영상을 보증하거나 후원하지 않습니다.)
+> 음악: "Floating Cities" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
+> #자연현상 #신기한영상 #랭킹 #오로라 #shorts
+> 고정 댓글: 이 중에 직접 보고 싶은 거 몇 번?
+
+**top4** — 우주에서 찍힌 역대급 장면 랭킹 TOP5 ㄷㄷ
+> 구름 속 번개, 발밑에 깔린 오로라, 구름 위 검은 얼룩의 정체(2012년 금환일식 달 그림자), 지평선 위로 떠오른 혜성… 그리고 1위는 2026년 아르테미스 2호에서 찍힌 그 장면. 전부 실제 NASA 사진·영상입니다. 1번 제목 추천좀!
+> 영상·사진: NASA (ISS Crew Earth Observations, Image Science & Analysis Laboratory, NASA Johnson Space Center · Artemis II) (NASA가 이 영상을 보증하거나 후원하지 않습니다.)
+> 음악: "Lightless Dawn" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
+> #우주 #NASA #랭킹 #지구 #shorts
+> 고정 댓글: 1번 제목 지어주세요 👇 제일 웃긴 제목 고정합니다
+
+**top5** — 역대급 거대한 폭포 랭킹 TOP5 ㄷㄷ
+> 1마일 안에 23m를 떨어지는 급류, 높이 51m 나라다 폭포, 붉은 협곡의 53m 디어크릭 폭포, 낙차 94m 옐로스톤 로어 폭포, 그리고 1위는 세 단 합쳐 740m. 다들 몇 번이 제일 웅장해요? 순위는 저희 마음대로 고른 것입니다.
+> 영상: 미국 국립공원관리청(NPS) — Jacob W. Frank, Blum·Well·Wang·Estrada·Caldon · Yosemite Falls: G. Edward Johnson / CC BY 4.0 (Wikimedia Commons, 잘라내고 확대함) (각 기관이 이 영상을 보증하거나 후원하지 않습니다.)
+> 음악: "Heroic Age" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
+> #폭포 #대자연 #랭킹 #옐로스톤 #shorts
+> 고정 댓글: 1위 폭포 이름 아는 사람? 👇
+
+**top6** — 역대급 소름 돋는 바닷속 랭킹 TOP5 ㄷㄷ
+> 수심 700m의 핏빛 해파리, 바위 밑을 흐르는 은빛 가스의 강, 어둠 속 19세기 범선 난파선, 검은 연기를 뿜는 바다 밑 굴뚝, 그리고 1위는 사람이 처음 목격한 그 장면. 전부 실제 탐사 영상입니다. 다들 몇 번이 제일 소름?
+> 영상: 미국 해양대기청(NOAA Ocean Exploration, NOAA/PMEL) (NOAA가 이 영상을 보증하거나 후원하지 않습니다.)
+> 음악: "Gathering Darkness" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
+> #심해 #바다 #소름 #랭킹 #shorts
+> 고정 댓글: 바닷속 들어갈 수 있다면 몇 번 보러 감?
+
+**top7** — 역대급 무서운 날씨 랭킹 TOP5 ㄷㄷ
+> 하늘이 통째로 도는 슈퍼셀, 2022년 옐로스톤 500년 만의 홍수, 허리케인 눈 속의 파란 하늘, 우주에서 본 시속 233km 허리케인, 그리고 1위는 최대 시속 257km(추정)의 그것(인명 피해 없음). 다들 몇 번이 제일 무서워요?
+> 영상: 미국 해양대기청(NOAA/NSSL — Matthew Woods, Sean Waugh · NOAA Hurricane Hunters — Nick Underwood) · 미국 국립공원관리청(NPS — Chase Tedder) · NASA (각 기관이 이 영상을 보증하거나 후원하지 않습니다.)
+> 음악: "Movement Proposition" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
+> #날씨 #토네이도 #허리케인 #랭킹 #shorts
+> 고정 댓글: 이 중에 실제로 겪어본 거 있음?
+
+**top8** — 역대급 이상한 지구 장소 랭킹 TOP5 ㄷㄷ
+> 안 떨어지는 39m 균형 바위, 바다보다 86m 낮은 소금 사막, 화산 속에서 출렁이는 용암 호수, 돌이 혼자 움직인 흔적, 그리고 1위는 땅 위의 무지개 웅덩이. 전부 실제 미국 국립공원에 있는 장소입니다. 다들 몇 번이 제일 이상해요?
+> 영상: 미국 국립공원관리청(NPS) — Neal Herbert, Jacob W. Frank · 미국 지질조사국(USGS) (각 기관이 이 영상을 보증하거나 후원하지 않습니다.)
+> 음악: "Dreamer" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
+> #신기한장소 #국립공원 #랭킹 #여행 #shorts
+> 고정 댓글: 1위 장소 이름 맞히는 사람? 👇
+
+**top9** — 역대급 시원한 얼음 깨기 랭킹 TOP5 ㄷㄷ
+> 얼음 구멍에서 물이 콸콸, 바이칼 얼음판이 거미줄처럼 쩍쩍, 던진 얼음판이 산산조각, 높이 61m 알래스카 빙하 벽이 와르르… 1위는 직접 보세요. 1번 제목 추천좀! 순위는 저희 마음대로 고른 것입니다.
+> 영상: Pexels — Tima Miroshnichenko, Yaroslav Shuraev, Nadezhda Moryak, Cristian Manieri · "Margerie Glacier calving video" gails_pictures / CC BY 2.0 (https://creativecommons.org/licenses/by/2.0/, Wikimedia Commons, 잘라내고 확대함) · 빙하 높이: 미국 국립공원관리청(NPS) Glacier Bay
+> 음악: "Exhilarate" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
+> #얼음 #빙하 #시원한영상 #랭킹 #shorts
+> 고정 댓글: 1번 제목 지어주세요 👇 제일 웃긴 제목 고정합니다
+
+**top10** — 역대급 시원한 파도 랭킹 TOP5 ㄷㄷ
+> 집채만 한 LA 파도, 방파제 끝에서 폭발하는 파도, 바위 틈에서 솟는 물기둥, 폭풍 속 철탑을 삼킨 파도… 1위는 바위 위 돌집을 통째로? 다들 몇 번이 제일 시원해요? 순위는 저희 마음대로 고른 것입니다.
+> 영상: Pexels — Joshua Woroniecki, Guidance Pillar Production, FUNESMA79, AP Vibes, pippu
+> 음악: "Heroic Age" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
+> #파도 #바다 #시원한영상 #랭킹 #shorts
+> 고정 댓글: 1위 돌집 살았다 vs 못 살았다 👇
+
+**top11** — 역대급 화산·용암 모먼트 랭킹 TOP5 ㄷㄷ
+> 용암을 망치로 퍼 올리는 과학자, 숲을 태우며 밀려오는 용암, 아스팔트까지 태운 도로 위 용암, 바다를 만나 20m 치솟은 돌… 그리고 1위는 카메라까지 날아온 그것. 전부 하와이 화산관측소의 실제 영상입니다. 다들 몇 번이 제일 무서워요?
+> 영상: 미국 지질조사국(USGS) Hawaiian Volcano Observatory (USGS가 이 영상을 보증하거나 후원하지 않습니다.)
+> 음악: "Gathering Darkness" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
+> #화산 #용암 #하와이 #랭킹 #shorts
+> 고정 댓글: 1위 이름 지어주세요 👇 몇 번이 제일 무서웠음?
+
+**top12** — 역대급 물에 던진 돌 랭킹 TOP5 ㅋㅋ
+> 거울 호수가 깨지는 순간, 진흙 폭탄, 계곡 물기둥, 물 왕관… 1위는 바윗덩이 하나로 물이 하늘까지? 다들 몇 번이 제일 시원해요? 순위는 저희 마음대로 고른 것입니다.
+> 영상: Pexels — Marsel Sharipov, Jack And Matt Photography, K (@kelly), Martina Tomšič
+> 음악: "Hustle" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
+> #돌던지기 #물튀김 #시원한영상 #랭킹 #shorts
+> 고정 댓글: 1번 제목 지어주세요 👇
+
+창작: 열두 편 모두 실제 영상이고 지어낸 이야기는 없어 "창작" 표시는 필요 없습니다. 자막 중 "~했는데.."·"~??"는 다음 장면을 예고하는 말투일 뿐 사실 주장이 아닙니다.
+
 ## 2D 운전 애니 무언 해외판 (벤치마크, `drive1`~`drive10`)
 
 `research/benchmark-drawn.md` 2절과 `research/benchmark-targets-drawn.json`의 `road` 목표(알룔료 R1 3,201만·R2 2,865만·R3 2,601만)를 그대로 따른 **말 없는 해외판** 10편이다. 내레이션과 자막이 없고, 9:16 화면 가운데 16:9 그림, 위 검정 칸에 흰 한국어 제목 한 줄, 아래 검정 칸에 영어 한 줄이 처음부터 끝까지 있다. 운전자 얼굴 클로즈업(그림 높이의 약 70%)과 3D 차 장면(3/4 뒤·옆·앞·위)을 1.5~2초마다 번갈아 자르고, 효과음(경적·엔진·타이어·둥둥·사이렌)과 음악만으로 진행한다. 결말은 모두 자업자득이다(출구를 놓침, 맨 뒤 줄, 트럭 뒤에 갇힘, 단속 카메라, 경찰에 갓길로). 사고·부상·주인공의 보복은 없고, 주인공은 거리를 두거나 비켜 주거나 깜빡이를 켠다. `drive1`~`drive6`은 보고서 아이디어 목록의 새 편이고, `drive7`~`drive10`은 기존 `road1`·`road2`·`road8`·`road9`의 무언판이다(`road1`~`road10`은 그대로 둠).

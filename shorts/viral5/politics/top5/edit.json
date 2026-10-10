@@ -2,94 +2,38 @@
  "src": "top5/great_falls_potomac.mp4",
  "title": [
   "역대급 거대한 폭포",
-  "[TOP5] (몇 위가 제일 웅장?ㄷㄷ)"
+  "랭킹 TOP5"
  ],
  "titleStyle": "band",
- "credit": "영상: 미국 국립공원관리청(NPS)",
+ "credit": "",
  "panels": [],
- "stickers": [
-  {
-   "text": "5위",
-   "from": 0.0,
-   "to": 1.4,
-   "x": 130,
-   "y": 500,
-   "rot": -4,
-   "bg": "#FFE14D",
-   "fg": "#111",
-   "size": 64
-  },
-  {
-   "text": "4위",
-   "from": 6.8,
-   "to": 8.2,
-   "x": 130,
-   "y": 500,
-   "rot": -4,
-   "bg": "#FFE14D",
-   "fg": "#111",
-   "size": 64
-  },
-  {
-   "text": "3위",
-   "from": 13.6,
-   "to": 15.0,
-   "x": 130,
-   "y": 500,
-   "rot": -4,
-   "bg": "#FFE14D",
-   "fg": "#111",
-   "size": 64
-  },
-  {
-   "text": "2위",
-   "from": 20.4,
-   "to": 21.8,
-   "x": 130,
-   "y": 500,
-   "rot": -4,
-   "bg": "#FFE14D",
-   "fg": "#111",
-   "size": 64
-  },
-  {
-   "text": "1위",
-   "from": 27.2,
-   "to": 28.6,
-   "x": 130,
-   "y": 500,
-   "rot": -4,
-   "bg": "#FFE14D",
-   "fg": "#111",
-   "size": 64
-  }
- ],
- "keys": [
-  "끓어오름",
-  "51m",
-  "53m",
-  "94m",
-  "폭발하듯",
-  "740m"
- ],
+ "rank2": {
+  "sub": "(몇 번이 제일 웅장?)",
+  "color": "#4FC3FF",
+  "hide": [
+   1
+  ]
+ },
+ "flash": false,
+ "keys": [],
  "sfx": [
   [
-   6.8,
+   5.1,
    "whoosh",
    0.5
   ],
   [
-   13.6,
+   10.2,
+   "whoosh",
+   0.5
+  ],
+  [
+   15.3,
    "whoosh",
    0.5
   ],
   [
    20.4,
-   "whoosh",
-   0.5
-  ],
-  [
-   27.2,
    "whoosh",
    0.5
   ]
@@ -99,20 +43,21 @@
    "src": "public/music/Heroic Age.mp3",
    "from": 0.0,
    "at": 0.0,
-   "to": 37.4,
+   "to": 25.6,
    "fade": 0.3,
    "gain": 1.0
   }
  ],
- "musicGain": 0.7,
+ "musicGain": 0.8,
  "duck": false,
- "captionY": 1380,
+ "captionY": 1640,
  "tail": 0.0,
  "segments": [
   {
    "src": "top5/great_falls_potomac.mp4",
    "in": 0.5,
-   "out": 3.9,
+   "out": 2.8,
+   "frame": "tall",
    "single": [
     0.45,
     0.5,
@@ -120,71 +65,71 @@
    ],
    "push": [
     1.0,
-    1.05
+    1.06
    ],
    "audio": 0,
-   "credit": "영상: 미국 국립공원관리청(NPS)",
    "rank": {
     "n": 5,
-    "label": "안개 속 거대한 급류"
+    "label": "급류"
    }
   },
   {
    "src": "top5/great_falls_potomac.mp4",
    "in": 7.0,
-   "out": 10.4,
+   "out": 9.8,
+   "frame": "tall",
    "single": [
     0.32,
     0.6,
-    1.3
+    1.2
    ],
    "push": [
     1.0,
-    1.05
+    1.06
    ],
-   "audio": 0,
-   "credit": "영상: 미국 국립공원관리청(NPS)"
+   "audio": 0
   },
   {
    "src": "top5/narada_falls.mp4",
    "in": 1.0,
-   "out": 4.4,
+   "out": 3.5,
+   "frame": "tall",
    "single": [
-    0.57,
+    0.55,
     0.5,
     1.0
    ],
    "push": [
     1.0,
-    1.05
+    1.06
    ],
    "audio": 0,
-   "credit": "영상: 미국 국립공원관리청(NPS)",
    "rank": {
     "n": 4,
-    "label": "레이니어산 나라다 폭포"
+    "label": "나라다"
    }
   },
   {
    "src": "top5/narada_falls.mp4",
    "in": 8.5,
-   "out": 11.9,
+   "out": 11.1,
+   "frame": "tall",
    "single": [
     0.55,
     0.5,
-    1.05
+    1.0
    ],
    "push": [
     1.0,
-    1.05
+    1.06
    ],
-   "audio": 0,
-   "credit": "영상: 미국 국립공원관리청(NPS)"
+   "audio": 0
   },
   {
    "src": "top5/deer_creek_falls.mp4",
    "in": 4.3,
-   "out": 7.7,
+   "out": 6.8,
+   "frame": "tall",
    "single": [
     0.5,
     0.5,
@@ -192,19 +137,19 @@
    ],
    "push": [
     1.0,
-    1.05
+    1.06
    ],
    "audio": 0,
-   "credit": "영상: 미국 국립공원관리청(NPS)",
    "rank": {
     "n": 3,
-    "label": "그랜드캐니언 숨은 폭포"
+    "label": "디어크릭"
    }
   },
   {
    "src": "top5/deer_creek_falls.mp4",
    "in": 10.2,
-   "out": 13.6,
+   "out": 12.8,
+   "frame": "tall",
    "single": [
     0.47,
     0.45,
@@ -212,15 +157,15 @@
    ],
    "push": [
     1.0,
-    1.05
+    1.06
    ],
-   "audio": 0,
-   "credit": "영상: 미국 국립공원관리청(NPS)"
+   "audio": 0
   },
   {
    "src": "top5/yellowstone_lower_falls.mp4",
    "in": 0.0,
-   "out": 3.4,
+   "out": 2.5,
+   "frame": "tall",
    "single": [
     0.35,
     0.5,
@@ -228,35 +173,35 @@
    ],
    "push": [
     1.0,
-    1.05
+    1.06
    ],
    "audio": 0,
-   "credit": "영상: 미국 국립공원관리청(NPS)",
    "rank": {
     "n": 2,
-    "label": "옐로스톤 로어 폭포"
+    "label": "로어폭포"
    }
   },
   {
    "src": "top5/yellowstone_lower_falls.mp4",
    "in": 10.0,
-   "out": 13.4,
+   "out": 12.6,
+   "frame": "tall",
    "single": [
     0.34,
     0.45,
-    1.35
+    1.2
    ],
    "push": [
     1.0,
-    1.05
+    1.06
    ],
-   "audio": 0,
-   "credit": "영상: 미국 국립공원관리청(NPS)"
+   "audio": 0
   },
   {
    "src": "top5/yosemite_falls.mp4",
    "in": 0.0,
-   "out": 3.4,
+   "out": 1.8,
+   "frame": "tall",
    "single": [
     0.47,
     0.5,
@@ -264,114 +209,107 @@
    ],
    "push": [
     1.0,
-    1.05
+    1.06
    ],
    "audio": 0,
-   "credit": "영상: G. Edward Johnson (CC BY)",
    "rank": {
     "n": 1,
-    "label": "740m 요세미티 폭포"
+    "label": "요세미티"
    }
   },
   {
    "src": "top5/yosemite_falls.mp4",
    "in": 4.5,
-   "out": 7.9,
+   "out": 6.2,
+   "frame": "tall",
    "single": [
     0.47,
     0.42,
-    1.35
+    1.3
    ],
    "push": [
     1.0,
-    1.05
+    1.06
    ],
-   "audio": 0,
-   "credit": "영상: G. Edward Johnson (CC BY)"
+   "audio": 0
   },
   {
    "src": "top5/yosemite_falls.mp4",
    "in": 9.5,
-   "out": 12.9,
+   "out": 11.2,
+   "frame": "tall",
    "single": [
     0.47,
     0.62,
-    1.2
+    1.15
    ],
    "push": [
     1.0,
-    1.05
+    1.06
    ],
-   "audio": 0,
-   "credit": "영상: G. Edward Johnson (CC BY)"
+   "audio": 0
   }
  ],
  "lines": [
   {
    "who": 0,
-   "t": 0.1,
-   "tend": 3.35,
-   "ko": "강 전체가 끓어오름"
+   "t": 0.0,
+   "tend": 2.3,
+   "ko": "강이 끓는 것 같은데.."
   },
   {
    "who": 0,
-   "t": 3.5,
-   "tend": 6.75,
-   "ko": "1마일도 안 돼 23m 낙하"
+   "t": 2.3,
+   "tend": 5.1,
+   "ko": "1마일 안에 23m 낙하??"
   },
   {
    "who": 0,
-   "t": 6.9,
-   "tend": 10.15,
-   "ko": "하얀 커튼 같은 물줄기"
+   "t": 5.1,
+   "tend": 7.6,
+   "ko": "하얀 커튼 같은데.."
   },
   {
    "who": 0,
-   "t": 10.3,
-   "tend": 13.55,
-   "ko": "통째로 보면 높이 51m"
+   "t": 7.6,
+   "tend": 10.2,
+   "ko": "통째로 높이 51m??"
   },
   {
    "who": 0,
-   "t": 13.7,
-   "tend": 16.95,
-   "ko": "붉은 바위 틈에서 콸콸"
+   "t": 10.2,
+   "tend": 12.7,
+   "ko": "바위 틈에서 콸콸.."
   },
   {
    "who": 0,
-   "t": 17.1,
-   "tend": 20.35,
-   "ko": "53m 아래로 곤두박질"
+   "t": 12.7,
+   "tend": 15.3,
+   "ko": "53m 아래로 곤두박질??"
   },
   {
    "who": 0,
-   "t": 20.5,
-   "tend": 23.75,
-   "ko": "물보라가 구름처럼 솟음"
+   "t": 15.3,
+   "tend": 17.8,
+   "ko": "물보라가 구름처럼.."
   },
   {
    "who": 0,
-   "t": 23.9,
-   "tend": 27.15,
-   "ko": "낙차 94m 협곡 폭포"
+   "t": 17.8,
+   "tend": 20.4,
+   "ko": "낙차가 무려 94m??"
   },
   {
    "who": 0,
-   "t": 27.3,
-   "tend": 30.55,
-   "ko": "눈 녹은 물이 폭발하듯"
+   "t": 20.4,
+   "tend": 22.2,
+   "ko": "눈 녹은 물이 폭발.."
   },
   {
    "who": 0,
-   "t": 30.7,
-   "tend": 33.95,
-   "ko": "세 단 합치면 740m"
-  },
-  {
-   "who": 0,
-   "t": 34.1,
-   "tend": 37.35,
-   "ko": "다들 몇 위가 제일 웅장?"
+   "t": 22.2,
+   "tend": 25.6,
+   "ko": "세 단 합치면 740m??"
   }
  ],
  "sources": [
@@ -397,6 +335,16 @@
      7.0,
      10.4
     ]
+   ],
+   "used_seconds": [
+    [
+     0.5,
+     2.8
+    ],
+    [
+     7.0,
+     9.8
+    ]
    ]
   },
   {
@@ -420,6 +368,16 @@
     [
      8.5,
      11.9
+    ]
+   ],
+   "used_seconds": [
+    [
+     1.0,
+     3.5
+    ],
+    [
+     8.5,
+     11.1
     ]
    ]
   },
@@ -445,6 +403,16 @@
      10.2,
      13.6
     ]
+   ],
+   "used_seconds": [
+    [
+     4.3,
+     6.8
+    ],
+    [
+     10.2,
+     12.8
+    ]
    ]
   },
   {
@@ -468,6 +436,16 @@
     [
      10.0,
      13.4
+    ]
+   ],
+   "used_seconds": [
+    [
+     0.0,
+     2.5
+    ],
+    [
+     10.0,
+     12.6
     ]
    ]
   },
@@ -496,6 +474,20 @@
     [
      9.5,
      12.9
+    ]
+   ],
+   "used_seconds": [
+    [
+     0.0,
+     1.8
+    ],
+    [
+     4.5,
+     6.2
+    ],
+    [
+     9.5,
+     11.2
     ]
    ]
   }
