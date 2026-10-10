@@ -3640,7 +3640,7 @@ edit.json 예:
 > 영상: Pexels — Joshua Woroniecki, Guidance Pillar Production, FUNESMA79, AP Vibes, pippu
 > 음악: "Heroic Age" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
 > #파도 #바다 #시원한영상 #랭킹 #shorts
-> 고정 댓글: 1위 돌집 살았다 vs 못 살았다 👇
+> 고정 댓글: 1위 제목 지어주세요 👇 몇 번이 제일 시원했음?
 
 **top11** — 역대급 화산·용암 모먼트 랭킹 TOP5 ㄷㄷ
 > 용암을 망치로 퍼 올리는 과학자, 숲을 태우며 밀려오는 용암, 아스팔트까지 태운 도로 위 용암, 바다를 만나 20m 치솟은 돌… 그리고 1위는 카메라까지 날아온 그것. 전부 하와이 화산관측소의 실제 영상입니다. 다들 몇 번이 제일 무서워요?
