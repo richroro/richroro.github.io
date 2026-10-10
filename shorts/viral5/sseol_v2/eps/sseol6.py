@@ -8,11 +8,11 @@ OF = {"bg": "office"}
 EP = {
     "title": "신입이 매일 사탕을 두고 간다ㅋㅋ",
     "music": ("sneaky_snitch", 0.16),
-    "voices": {"nar": ("Hyunsu", "+28%"), "me": ("Hyunsu", "+26%", "+8Hz"), "new": ("SunHi", "+26%", "+6Hz"), "c1": ("InJoon", "+26%"),
-               "c2": ("SunHi", "+28%", "-6Hz"), "boss": ("InJoon", "+18%", "-8Hz")},
+    "voices": {"nar": ("Hyunsu", "+36%"), "me": ("Hyunsu", "+32%", "+8Hz"), "new": ("SunHi", "+26%", "+6Hz"), "c1": ("InJoon", "+26%"),
+               "c2": ("SunHi", "+28%", "-6Hz"), "boss": ("InJoon", "+26%", "-8Hz")},
     "cast": {"me": ME, "new": NEW, "boss": BOSS, "c1": C1, "c2": C2},
     "beats": [
-        ("a", "nar", "신입이 매일 팀장님 책상에 사탕을 둬.", "신입이 매일 / 팀장님 책상에 [사탕]", {**OF, "chars": ["new:smug@0.3", "boss:think@0.72"], "prop": "🍬", "propX": 0.5, "tags": True}),
+        ("a", "nar", "신입이 매일 사탕을 두고 가.", "신입이 매일 / [사탕]을 두고 가", {**OF, "chars": ["new:smug@0.3", "boss:think@0.72"], "prop": "🍬", "propX": 0.5, "tags": True}),
         ("b", "nar", "근데 회의 있는 날엔 꼭 제일 큰 사탕이야.", "근데 회의 있는 날엔 / 꼭 [제일 큰 사탕]", {**OF, "chars": ["boss:shock@0.3*1.1"], "prop": "🍬", "propX": 0.72}),
         ("c", "nar", "그러니까 사무실에 소문이 돌았지.", "사무실에 / [소문]이 돌았지", {**OF, "chars": ["c1:think@0.2*0.9", "c2:smug@0.5*0.9", "me:shock@0.8*0.9"]}),
         ("d", "c1", "저거 완전 아부 아니야?", "\"저거 완전 / [아부] 아니야?\"", {**OF, "chars": ["c1:smug*1.5"]}),

@@ -7,7 +7,7 @@ STORE = {"bg": "store", "sign": "24시 편의점"}
 EP = {
     "title": "3시 손님한텐 돈 받지 말래",
     "music": ("scheming_weasel", 0.16),
-    "voices": {"nar": ("Hyunsu", "+28%"), "me": ("Hyunsu", "+26%", "+8Hz"), "boss": ("InJoon", "+24%", "-4Hz"), "gpa": ("InJoon", "+22%", "-15Hz")},
+    "voices": {"nar": ("Hyunsu", "+36%"), "me": ("Hyunsu", "+32%", "+8Hz"), "boss": ("InJoon", "+24%", "-4Hz"), "gpa": ("InJoon", "+22%", "-15Hz")},
     "cast": {"me": ME, "boss": BOSS, "boss2": BOSS_PJ, "gpa": GPA},
     "beats": [
         ("a", "nar", "세 시 손님한텐 돈 받지 말래.", "3시 손님한텐 / [돈 받지 말래]", {**STORE, "chars": ["me:shock@0.28", "gpa:happy@0.72"], "prop": "🥛🍞", "propX": 0.5}),

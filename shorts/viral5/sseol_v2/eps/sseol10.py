@@ -4,7 +4,7 @@ SIS = {"name": "동생", "look": {"age": "kid", "hairdo": "pony", "hair": "#4a2f
 EP = {
     "title": "동생 선물이 양말 1짝이다ㅋㅋ",
     "music": ("sneaky_snitch", 0.16),
-    "voices": {"nar": ("Hyunsu", "+28%"), "me": ("Hyunsu", "+26%", "+8Hz"), "sis": ("SunHi", "+26%", "+18Hz")},
+    "voices": {"nar": ("Hyunsu", "+36%"), "me": ("Hyunsu", "+32%", "+8Hz"), "sis": ("SunHi", "+26%", "+18Hz")},
     "cast": {"me": ME, "sis": SIS},
     "beats": [
         ("a", "nar", "동생 생일 선물이 양말 한 짝이야.", "동생 생일 선물이 / 양말 [한 짝]", {"bg": "bedroom", "chars": ["me:shock@0.28", "sis:smug@0.72*0.9"], "prop": "🧦", "propX": 0.5, "tags": True}),
