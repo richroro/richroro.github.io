@@ -306,15 +306,16 @@ MEDIA=<저장소>/media python3 politics/prep_split.py obama09    # 원본: medi
 | id | 제목 (검정 띠, 2줄째 노랑) | 길이 | 출처 · 쓴 구간 (클립 기준 초) |
 | --- | --- | --- | --- |
 | `jensen1` | 젠슨 황이 말한 GPU 1대, / 무게가 32kg..? | 44.8초 | 백악관 2025.4.30 · 17.5–21.75, 43.15–83.0 (컷 1번) |
-| `jensen2` | 젠슨 황: 전기를 넣으면 / '이것'이 나오는 기계..? | 35.2초 | 백악관 2025.4.30 · 112.6–117.5, 136.75–166.5 (컷 1번) |
-| `jensen3` | 젠슨 황이 인도에 / '지금이 기회'라고 한 이유..? | 32.0초 | 모디 총리 공식 채널(CC BY) 2024.9.22 · 18.6–31.1, 84.6–103.5 (컷 1번) |
-| `jensen4` | 손정의가 말한 / AGI 다음에 오는 것..? | 36.9초 | 백악관 2025.1.21 '스타게이트' 발표 · 11.0–47.3 (자르지 않음) |
+| `jensen2` | 젠슨 황: 전기를 넣으면 / '이것'이 나오는 기계..? | 35.3초 | 백악관 2025.4.30 · 112.6–117.5, 136.75–166.5 (컷 1번) |
+| `jensen3` | 젠슨 황이 인도에 / '지금이 기회'라고 한 이유..? | 32.1초 | 모디 총리 공식 채널(CC BY) 2024.9.22 · 18.6–31.1, 84.6–103.5 (컷 1번) |
+| `jensen4` | 손정의가 말한 / AGI 다음에 오는 것..? | 37.0초 | 백악관 2025.1.21 '스타게이트' 발표 · 11.0–47.3 (자르지 않음) |
 
 ```bash
 MEDIA=$PWD/media python3 politics/prep_split.py jensen1     # 원본: media/celeb/ (출처·구간은 같은 이름의 .json)
 ./render.sh jensen1 final/jensen1.mp4
 ```
 
+- **장면 전환**: 긴 원본 테이크를 문장 시작마다(3~4초) 이어지는 구간으로 나눠 얼굴 크롭을 번갈아 바꿨습니다(가까이↔조금 멀리). 시간이 이어지는 구간이라 흰 번쩍임은 없고 말도 그대로입니다. 백악관 와이드 화면은 연단의 젠슨 황에 맞춰 1.8~2.2배로 당겼습니다(360p라 흐림). `qa_review.py` 결과 네 편 모두 WARN·FAIL 없음.
 - **레이아웃**: `"titleStyle": "band"`, `"subOrder": "en-ko"`, `captionY` 1590(사진 아래, 유튜브 버튼 영역 위), 정사각 얼굴 크롭, 첫 화면부터 제목. 영어 `[괄호]`와 한국어 `keys`로 핵심 구절만 노랗게. 시작 3초 흰 스티커로 장소·날짜만 적었습니다. 화면 출처 표기는 "백악관 영상 · 날짜", "나렌드라 모디 공식 채널 · 2024.9".
 - **영상 1 — 백악관 "Investing in America" 행사(2025.4.30)**: 백악관 공식 유튜브 [WtXHaYrhflk](https://www.youtube.com/watch?v=WtXHaYrhflk)의 25:10–28:30. 이 컨테이너에서는 유튜브 다운로드가 봇 확인으로 막혀서, 같은 업로드를 그대로 보존한 archive.org 미러 [youtube-WtXHaYrhflk](https://archive.org/details/youtube-WtXHaYrhflk)(channel @WhiteHouse, creator "The White House")에서 받았습니다. 미러가 **360p뿐**이라 화질이 낮고, 원본 중계가 중간에 객석 뒤 와이드 화면으로 바뀌어(클립 57–95초, 144–172초) 그 구간은 연단의 젠슨 황을 작게 비춥니다. 미국 연방정부 저작물, 퍼블릭 도메인(17 U.S.C. §105).
   - 자막: 백악관이 올린 영어 자막(en-US.vtt)과 faster-whisper small.en·medium.en·large-v3 대조. "Well, after all this time"(자막·small·large 일치), `jensen2` 첫 줄은 "manufacturing, manufacturing…"으로 말을 고쳐 시작해 둘째 "Manufacturing isn't about…"부터 썼고(구간만 따로 돌린 세 모델 모두 같은 문장), "The really, the really amazing thing"도 고쳐 말한 뒤의 "The really amazing thing"부터 썼습니다(세 모델 일치; 백악관 자막은 "real").
