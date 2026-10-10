@@ -1,48 +1,45 @@
 {
- "titleStyle": "band",
- "titleKey": "#ff2a2a",
- "captionY": 1640,
- "credit": "영상: Pexels",
+ "frame": "full",
+ "titleStyle": "riddle",
+ "titleKey": "#E8141B",
+ "capLook": "plain",
+ "captionY": 1200,
+ "credit": "",
  "sources": {
-  "px6028858": {
-   "file": "px6028858.mp4",
-   "credit": "영상: Pexels",
-   "label": "Pexels video 6028858 by Артем Ковальчук (Pexels License)",
-   "url": "https://www.pexels.com/video/empty-parking-lot-6028858/",
-   "file_url": "https://www.pexels.com/download/video/6028858/",
+  "px6302990": {
+   "file": "px6302990.mp4",
+   "label": "Pexels video 6302990 by Klaus Nielsen (Pexels License)",
+   "url": "https://www.pexels.com/video/hand-slipping-on-rainy-window-6302990/",
+   "file_url": "https://www.pexels.com/download/video/6302990/",
    "license": "Pexels License",
-   "creator": "Артем Ковальчук"
+   "creator": "Klaus Nielsen"
   },
   "px27890130": {
    "file": "px27890130.mp4",
-   "credit": "영상: Pexels",
    "label": "Pexels video 27890130 by Baran Robin (Pexels License)",
    "url": "https://www.pexels.com/video/a-car-is-parked-in-a-parking-garage-27890130/",
    "file_url": "https://www.pexels.com/download/video/27890130/",
    "license": "Pexels License",
    "creator": "Baran Robin"
   },
+  "px6028858": {
+   "file": "px6028858.mp4",
+   "label": "Pexels video 6028858 by Артем Ковальчук (Pexels License)",
+   "url": "https://www.pexels.com/video/empty-parking-lot-6028858/",
+   "file_url": "https://www.pexels.com/download/video/6028858/",
+   "license": "Pexels License",
+   "creator": "Артем Ковальчук"
+  },
   "px19217892": {
    "file": "px19217892.mp4",
-   "credit": "영상: Pexels",
    "label": "Pexels video 19217892 by Nino Souza (Pexels License)",
    "url": "https://www.pexels.com/video/an-empty-parking-garage-with-a-large-ceiling-19217892/",
    "file_url": "https://www.pexels.com/download/video/19217892/",
    "license": "Pexels License",
    "creator": "Nino Souza"
   },
-  "px5972195": {
-   "file": "px5972195.mp4",
-   "credit": "영상: Pexels",
-   "label": "Pexels video 5972195 by gusat silviu (Pexels License)",
-   "url": "https://www.pexels.com/video/empty-mall-parking-5972195/",
-   "file_url": "https://www.pexels.com/download/video/5972195/",
-   "license": "Pexels License",
-   "creator": "gusat silviu"
-  },
   "px6028882": {
    "file": "px6028882.mp4",
-   "credit": "영상: Pexels",
    "label": "Pexels video 6028882 by Артем Ковальчук (Pexels License)",
    "url": "https://www.pexels.com/video/video-of-a-parking-deck-6028882/",
    "file_url": "https://www.pexels.com/download/video/6028882/",
@@ -51,7 +48,6 @@
   },
   "px38433795": {
    "file": "px38433795.mp4",
-   "credit": "영상: Pexels",
    "label": "Pexels video 38433795 by Rishabh Kaple (Pexels License)",
    "url": "https://www.pexels.com/video/rainy-day-drive-through-foggy-window-38433795/",
    "file_url": "https://www.pexels.com/download/video/38433795/",
@@ -60,7 +56,6 @@
   },
   "px5192033": {
    "file": "px5192033.mp4",
-   "credit": "영상: Pexels",
    "label": "Pexels video 5192033 by Ming Z (Pexels License)",
    "url": "https://www.pexels.com/video/video-of-a-wet-window-5192033/",
    "file_url": "https://www.pexels.com/download/video/5192033/",
@@ -69,7 +64,6 @@
   },
   "px5227362": {
    "file": "px5227362.mp4",
-   "credit": "영상: Pexels",
    "label": "Pexels video 5227362 by Francesco Ungaro (Pexels License)",
    "url": "https://www.pexels.com/video/raindrops-falling-on-the-glass-5227362/",
    "file_url": "https://www.pexels.com/download/video/5227362/",
@@ -78,7 +72,6 @@
   },
   "px32078487": {
    "file": "px32078487.mp4",
-   "credit": "영상: Pexels",
    "label": "Pexels video 32078487 by Rec Everywhere (Pexels License)",
    "url": "https://www.pexels.com/video/automated-garage-door-closing-at-night-32078487/",
    "file_url": "https://www.pexels.com/download/video/32078487/",
@@ -88,15 +81,16 @@
  },
  "clips": [
   {
-   "src": "px6028858",
+   "src": "px6302990",
    "from": "a",
-   "in": 0.5,
+   "in": 1.0,
    "zoom": [
     1.0,
     1.07
    ],
    "audio": 0,
-   "label": "지하주차장"
+   "credit": "",
+   "label": "젖은 유리를 짚은 손"
   },
   {
    "src": "px27890130",
@@ -107,29 +101,32 @@
     1.07
    ],
    "audio": 0,
+   "credit": "",
    "label": "세워 둔 차"
   },
   {
-   "src": "px19217892",
+   "src": "px6028858",
    "from": "b",
+   "in": 0.5,
+   "zoom": [
+    1.0,
+    1.07
+   ],
+   "audio": 0,
+   "credit": "",
+   "label": "지하주차장"
+  },
+  {
+   "src": "px19217892",
+   "from": "b.주인을",
    "in": 1.0,
    "zoom": [
     1.0,
     1.07
    ],
    "audio": 0,
+   "credit": "",
    "label": "빈 주차장"
-  },
-  {
-   "src": "px5972195",
-   "from": "b.주인을",
-   "in": 4.0,
-   "zoom": [
-    1.0,
-    1.07
-   ],
-   "audio": 0,
-   "label": "기둥"
   },
   {
    "src": "px6028882",
@@ -140,17 +137,19 @@
     1.07
    ],
    "audio": 0,
+   "credit": "",
    "label": "지나가는 길"
   },
   {
    "src": "px38433795",
-   "from": "c.괜히",
+   "from": "c.창문",
    "in": 1.0,
    "zoom": [
     1.0,
     1.07
    ],
    "audio": 0,
+   "credit": "",
    "label": "차 안"
   },
   {
@@ -162,17 +161,19 @@
     1.07
    ],
    "audio": 0,
+   "credit": "",
    "label": "김 서린 유리"
   },
   {
    "src": "px38433795",
-   "from": "d.하얗게",
+   "from": "d.김이",
    "in": 8.0,
    "zoom": [
     1.1,
     1.18
    ],
    "audio": 0,
+   "credit": "",
    "label": "김 서린 창"
   },
   {
@@ -184,6 +185,7 @@
     1.07
    ],
    "audio": 0,
+   "credit": "",
    "label": "유리"
   },
   {
@@ -195,6 +197,7 @@
     1.2
    ],
    "audio": 0,
+   "credit": "",
    "label": "글씨"
   },
   {
@@ -206,6 +209,7 @@
     1.18
    ],
    "audio": 0,
+   "credit": "",
    "label": "주차장"
   },
   {
@@ -217,6 +221,7 @@
     1.07
    ],
    "audio": 0,
+   "credit": "",
    "label": "창"
   },
   {
@@ -228,6 +233,7 @@
     1.22
    ],
    "audio": 0,
+   "credit": "",
    "label": "뒤집힌 글씨"
   },
   {
@@ -239,29 +245,8 @@
     1.07
    ],
    "audio": 0,
+   "credit": "",
    "label": "닫힌 문"
-  },
-  {
-   "src": "px6028858",
-   "from": "end",
-   "in": 6.0,
-   "zoom": [
-    1.06,
-    1.14
-   ],
-   "audio": 0,
-   "label": "지하주차장"
-  },
-  {
-   "src": "px19217892",
-   "from": "end.정답은",
-   "in": 6.0,
-   "zoom": [
-    1.0,
-    1.07
-   ],
-   "audio": 0,
-   "label": "빈 주차장"
   }
  ],
  "stickers": [
@@ -270,7 +255,7 @@
    "from": "e.또",
    "to": "f",
    "x": 540,
-   "y": 600,
+   "y": 860,
    "rot": 0,
    "bg": "#E8ECEF",
    "fg": "#222",
@@ -286,12 +271,12 @@
   [
    "f.좌우로",
    "heartbeat",
-   0.7
+   0.6
   ],
   [
-   "end",
+   "g",
    "k_glitch_002",
-   0.35
+   0.3
   ]
  ],
  "flashes": [

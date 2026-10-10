@@ -4,6 +4,7 @@ import { LongForm, longFrames } from "./LongForm";
 import { LongCompositions } from "./Long";
 import { SHORTS } from "./data";
 import { LONGS } from "./longs";
+import { LfSaeyeon1Comps } from "./lib/long/lfsaeyeon1_comps";
 
 export const RemotionRoot: React.FC = () => (
   <>
@@ -18,5 +19,6 @@ export const RemotionRoot: React.FC = () => (
       ) : null;
     })}
     <LongCompositions />
+    <LfSaeyeon1Comps />
   </>
 );

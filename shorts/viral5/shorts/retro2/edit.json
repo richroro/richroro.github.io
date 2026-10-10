@@ -1,8 +1,7 @@
 {
  "titleStyle": "band",
- "frame": "rounded43",
+ "frame": "retrobox",
  "grain": 0.15,
- "captionY": 1335,
  "credit": "",
  "sources": {
   "13153849": {
@@ -17,7 +16,11 @@
    "seconds": [
     [
      0.0,
-     3.34
+     1.45
+    ],
+    [
+     1.45,
+     2.92
     ]
    ]
   },
@@ -32,8 +35,8 @@
    "year": "1952년",
    "seconds": [
     [
-     3.34,
-     7.15
+     2.92,
+     6.25
     ]
    ]
   },
@@ -48,8 +51,8 @@
    "year": "1952년",
    "seconds": [
     [
-     7.15,
-     10.12
+     6.25,
+     8.83
     ]
    ]
   },
@@ -64,8 +67,8 @@
    "year": "1952년",
    "seconds": [
     [
-     10.12,
-     12.71
+     8.83,
+     11.08
     ]
    ]
   },
@@ -80,24 +83,8 @@
    "year": "1953년",
    "seconds": [
     [
-     12.71,
-     15.04
-    ]
-   ]
-  },
-  "13153229": {
-   "file": "13153229.jpg",
-   "credit": "사진: 한국저작권위원회",
-   "label": "1952년 9월 김포의 수로 밑에서 빨래를 하는 모습 (한국저작권위원회, 공유마당, CC BY (저작자표시))",
-   "url": "https://gongu.copyright.or.kr/gongu/wrt/wrt/view.do?wrtSn=13153229&menuNo=200018",
-   "file_url": "https://gongu.copyright.or.kr/gongu/wrt/cmmn/wrtFileImageView.do?wrtSn=13153229&filePath=L2Rpc2sxL25ld2RhdGEvMjAxOC8yMS9DTFMxLzEzMTUzMjI5X0NPTENUX1dSVDIwMTgxMTI2XzE=&thumbAt=N&wrtTy=10006",
-   "creator": "한국저작권위원회",
-   "license": "CC BY (저작자표시)",
-   "year": "1952년9월",
-   "seconds": [
-    [
-     15.04,
-     17.5
+     11.08,
+     13.1
     ]
    ]
   },
@@ -112,8 +99,8 @@
    "year": "1952년",
    "seconds": [
     [
-     17.5,
-     20.84
+     13.1,
+     16.02
     ]
    ]
   },
@@ -128,24 +115,8 @@
    "year": "1968년",
    "seconds": [
     [
-     20.84,
-     24.38
-    ]
-   ]
-  },
-  "13154089": {
-   "file": "13154089.jpg",
-   "credit": "사진: 한국저작권위원회",
-   "label": "1967년 6월 부산 동래구 세병교 아래에서 빨래하는 여인들과 동해남부선 철교 (한국저작권위원회, 공유마당, CC BY (저작자표시))",
-   "url": "https://gongu.copyright.or.kr/gongu/wrt/wrt/view.do?wrtSn=13154089&menuNo=200018",
-   "file_url": "https://gongu.copyright.or.kr/gongu/wrt/cmmn/wrtFileImageView.do?wrtSn=13154089&filePath=L2Rpc2sxL25ld2RhdGEvMjAxOC8yMS9DTFMxLzEzMTU0MDg5X0NPTENUX1dSVDIwMTgxMTI2XzE=&thumbAt=N&wrtTy=10006",
-   "creator": "한국저작권위원회",
-   "license": "CC BY (저작자표시)",
-   "year": "1967년 6월",
-   "seconds": [
-    [
-     24.38,
-     27.59
+     16.02,
+     19.11
     ]
    ]
   },
@@ -160,8 +131,8 @@
    "year": "1973년 10월",
    "seconds": [
     [
-     27.59,
-     31.53
+     19.11,
+     22.54
     ]
    ]
   },
@@ -176,8 +147,8 @@
    "year": "1953년",
    "seconds": [
     [
-     31.53,
-     35.37
+     22.54,
+     25.9
     ]
    ]
   },
@@ -192,8 +163,8 @@
    "year": "1953년",
    "seconds": [
     [
-     35.37,
-     38.12
+     25.9,
+     28.39
     ]
    ]
   }
@@ -209,6 +180,22 @@
     1.06
    ],
    "audio": 0
+  },
+  {
+   "src": "13153849",
+   "from": "hook+1.4",
+   "label": "1952년 부산 중구 보수천 하구에서 빨래를 하는 주민들_2",
+   "year": "1952",
+   "zoom": [
+    1.0,
+    1.06
+   ],
+   "audio": 0,
+   "crop": [
+    0.5,
+    0.55,
+    1.6
+   ]
   },
   {
    "src": "13153772",
@@ -255,17 +242,6 @@
    "audio": 0
   },
   {
-   "src": "13153229",
-   "from": "under",
-   "label": "1952년 9월 김포의 수로 밑에서 빨래를 하는 모습",
-   "year": "1952",
-   "zoom": [
-    1.0,
-    1.06
-   ],
-   "audio": 0
-  },
-  {
    "src": "13152451",
    "from": "dry",
    "label": "1952년 대구 신천 강변에서 빨래를 널거나  머리를 감고 있는 여인_1",
@@ -281,17 +257,6 @@
    "from": "foot",
    "label": "1968년 서울의 어느 골목에서 빨래감을 발로 문지르고 있는 할머니",
    "year": "1968",
-   "zoom": [
-    1.0,
-    1.06
-   ],
-   "audio": 0
-  },
-  {
-   "src": "13154089",
-   "from": "still",
-   "label": "1967년 6월 부산 동래구 세병교 아래에서 빨래하는 여인들과 동해남부선",
-   "year": "1967",
    "zoom": [
     1.0,
     1.06
@@ -332,17 +297,7 @@
    "audio": 0
   }
  ],
- "stickers": [
-  {
-   "text": "국가기록원 「사진대한민국: 가전제품」",
-   "from": "spread.세탁기",
-   "to": "now@end",
-   "y": 1478,
-   "size": 30,
-   "bg": "#fff",
-   "rot": -1
-  }
- ],
+ "stickers": [],
  "sfx": [
   [
    "end",
@@ -356,5 +311,6 @@
   "file": "music/Gymnopedie No 1.mp3",
   "gain": 0.22,
   "start": 0
- }
+ },
+ "look": "retro2"
 }

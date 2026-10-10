@@ -1,0 +1,298 @@
+{
+ "title": [
+  "역대급 소름 돋는 바닷속",
+  "랭킹 TOP5"
+ ],
+ "sub": "(몇 번이 제일 소름?)",
+ "color": "#5BE0C2",
+ "music": "public/music/Gathering Darkness.mp3",
+ "keys": [],
+ "places": [
+  {
+   "n": 5,
+   "label": "해파리",
+   "caps": [
+    "수심 700m 내려가니..",
+    "핏빛 해파리 등장??"
+   ],
+   "shots": [
+    {
+     "src": "top6/red_jellyfish_poralia.mp4",
+     "in": 3.0,
+     "dur": 2.3,
+     "single": [
+      0.47,
+      0.5,
+      1.0
+     ]
+    },
+    {
+     "src": "top6/red_jellyfish_poralia.mp4",
+     "in": 8.5,
+     "dur": 2.8,
+     "single": [
+      0.48,
+      0.5,
+      1.15
+     ]
+    }
+   ]
+  },
+  {
+   "n": 4,
+   "label": "가스강",
+   "caps": [
+    "바위 밑을 비췄더니..",
+    "은빛 강이 흐름??"
+   ],
+   "shots": [
+    {
+     "src": "top6/methane_bubble_river.mp4",
+     "in": 0.5,
+     "dur": 2.5,
+     "single": [
+      0.45,
+      0.5,
+      1.0
+     ]
+    },
+    {
+     "src": "top6/methane_bubble_river.mp4",
+     "in": 6.5,
+     "dur": 2.6,
+     "single": [
+      0.4,
+      0.5,
+      1.0
+     ]
+    }
+   ]
+  },
+  {
+   "n": 3,
+   "label": "난파선",
+   "caps": [
+    "어둠 속에 뭔가..",
+    "19세기 범선 난파선??"
+   ],
+   "shots": [
+    {
+     "src": "top6/shipwreck_19th_century.mp4",
+     "in": 1.0,
+     "dur": 2.5,
+     "single": [
+      0.55,
+      0.5,
+      1.0
+     ]
+    },
+    {
+     "src": "top6/shipwreck_19th_century.mp4",
+     "in": 6.5,
+     "dur": 2.6,
+     "single": [
+      0.4,
+      0.5,
+      1.0
+     ]
+    }
+   ]
+  },
+  {
+   "n": 2,
+   "label": "굴뚝",
+   "caps": [
+    "바다 밑 굴뚝에서..",
+    "검은 연기가 콸콸??"
+   ],
+   "shots": [
+    {
+     "src": "top6/black_smoker_marianas.mp4",
+     "in": 0.0,
+     "dur": 2.5,
+     "single": [
+      0.45,
+      0.5,
+      1.0
+     ]
+    },
+    {
+     "src": "top6/black_smoker_marianas.mp4",
+     "in": 4.4,
+     "dur": 2.6,
+     "single": [
+      0.46,
+      0.45,
+      1.2
+     ]
+    }
+   ]
+  },
+  {
+   "n": 1,
+   "label": "분화",
+   "caps": [
+    "바닷속이 끓더니..",
+    "해저 화산 폭발??"
+   ],
+   "shots": [
+    {
+     "src": "top6/eruption_brimstone_pit.mp4",
+     "in": 0.0,
+     "dur": 1.8,
+     "single": [
+      0.57,
+      0.5,
+      1.0
+     ]
+    },
+    {
+     "src": "top6/eruption_brimstone_pit.mp4",
+     "in": 4.5,
+     "dur": 1.7,
+     "single": [
+      0.58,
+      0.45,
+      1.2
+     ]
+    },
+    {
+     "src": "top6/eruption_brimstone_pit.mp4",
+     "in": 9.5,
+     "dur": 1.7,
+     "single": [
+      0.55,
+      0.55,
+      1.0
+     ]
+    }
+   ]
+  }
+ ],
+ "sources": [
+  {
+   "title": "Red Jellyfish",
+   "page": "https://oceanexplorer.noaa.gov/multimedia/video-playlist-ex2104-redjelly/",
+   "file_url": "https://oceanexplorer.noaa.gov/wp-content/uploads/2021/08/ex2104-dive20-redjelly-1280x720-2.mp4",
+   "license": "Public domain (17 U.S.C. §105; NOAA federal work)",
+   "credit": "NOAA Ocean Exploration, 2021 North Atlantic Stepping Stones",
+   "cut_from_original_seconds": [
+    7.5,
+    21.5
+   ],
+   "fact": "This red jellyfish was seen during the 700-meter (2,297-foot) water column exploration in Hydrographer Canyon; scientists identified it as belonging to the genus Poralia but think it may be an undescribed species.",
+   "fact_url": "https://oceanexplorer.noaa.gov/multimedia/video-playlist-ex2104-redjelly/",
+   "file": "top6/red_jellyfish_poralia.mp4",
+   "used_seconds_in_cut": [
+    [
+     3.0,
+     6.4
+    ],
+    [
+     8.5,
+     11.9
+    ]
+   ]
+  },
+  {
+   "title": "Follow the Bubbles: July 18, 2023",
+   "page": "https://oceanexplorer.noaa.gov/multimedia/video-playlist-ex2304-bubbles/",
+   "file_url": "https://oceanexplorer.noaa.gov/wp-content/uploads/2023/09/dive04-follow-bubbles-1920x1080-1.mp4",
+   "license": "Public domain (17 U.S.C. §105; NOAA federal work)",
+   "credit": "NOAA Ocean Exploration, Seascape Alaska",
+   "cut_from_original_seconds": [
+    39.3,
+    52.2
+   ],
+   "fact": "The line of Sanak seeps emits a curtain of gas rising more than 1,500 meters (4,920 feet) above the seafloor; the dive explored them at 2,100 meters (6,900 feet) water depth.",
+   "fact_url": "https://oceanexplorer.noaa.gov/news/ak-seep-discovery/",
+   "file": "top6/methane_bubble_river.mp4",
+   "used_seconds_in_cut": [
+    [
+     0.5,
+     3.9
+    ],
+    [
+     6.5,
+     9.9
+    ]
+   ]
+  },
+  {
+   "title": "Exploration At Its Finest (unexpected shipwreck discovery, May 16, 2019)",
+   "page": "https://oceanexplorer.noaa.gov/multimedia/video-playlist-marine-finest/",
+   "file_url": "https://oceanexplorer.noaa.gov/wp-content/uploads/2019/05/dive3-1920x1080-3.mp4",
+   "license": "Public domain (17 U.S.C. §105; NOAA federal work)",
+   "credit": "NOAA Ocean Exploration",
+   "cut_from_original_seconds": [
+    27.0,
+    39.0
+   ],
+   "fact": "Experts suspect the wreck is that of a sailing vessel built sometime in the mid-19th century, perhaps a schooner or brig, measuring roughly 37.8 meters (124 feet) long; it was discovered unexpectedly on May 16, 2019 during an 'engineering dive' to test new ROV equipment.",
+   "fact_url": "https://oceanexplorer.noaa.gov/expedition/ex1902/",
+   "file": "top6/shipwreck_19th_century.mp4",
+   "used_seconds_in_cut": [
+    [
+     1.0,
+     4.4
+    ],
+    [
+     6.5,
+     9.9
+    ]
+   ]
+  },
+  {
+   "title": "Oases of Life: May 2016",
+   "page": "https://oceanexplorer.noaa.gov/multimedia/video-playlist-ex1605-vents/",
+   "file_url": "https://oceanexplorer.noaa.gov/wp-content/uploads/2023/02/vents-1280x720-1.mp4",
+   "license": "Public domain (17 U.S.C. §105; NOAA federal work)",
+   "credit": "NOAA Ocean Exploration, 2016 Deepwater Exploration of the Marianas",
+   "cut_from_original_seconds": [
+    36.1,
+    50.1
+   ],
+   "fact": "During the 2016 Deepwater Exploration of the Marianas, NOAA discovered a new active high-temperature 'black smoker' hydrothermal vent field on the Mariana back-arc spreading center, composed of multiple chimneys, including one that was over 30 meters (98 feet) tall.",
+   "fact_url": "https://oceanexplorer.noaa.gov/multimedia/video-playlist-ex1605-vents/",
+   "file": "top6/black_smoker_marianas.mp4",
+   "used_seconds_in_cut": [
+    [
+     0.0,
+     3.4
+    ],
+    [
+     4.4,
+     7.8
+    ]
+   ]
+  },
+  {
+   "title": "Brimstone Vent (Submarine Ring of Fire 2006)",
+   "page": "https://oceanexplorer.noaa.gov/multimedia/video-playlist-06rof-brimstone/",
+   "file_url": "https://oceanexplorer.noaa.gov/wp-content/uploads/2014/03/srof06_nwrota_brimstone14_640x480.mp4",
+   "license": "Public domain (17 U.S.C. §105; NOAA federal work)",
+   "credit": "Submarine Ring of Fire 2006 Expedition, NOAA/PMEL",
+   "cut_from_original_seconds": [
+    2,
+    16
+   ],
+   "fact": "In 2006, scientists witnessed for the first time ever an underwater volcanic eruption, at the Brimstone Pit vent site on NW Rota-1; at Brimstone Pit, the pressure of 560 meters (1,837 feet) of water over the site reduces the power of the explosive bursts.",
+   "fact_url": "https://oceanexplorer.noaa.gov/multimedia/video-playlist-06rof-brimstone/",
+   "file": "top6/eruption_brimstone_pit.mp4",
+   "used_seconds_in_cut": [
+    [
+     0.0,
+     3.4
+    ],
+    [
+     4.5,
+     7.9
+    ],
+    [
+     9.5,
+     12.9
+    ]
+   ]
+  }
+ ]
+}

@@ -1,0 +1,727 @@
+{
+ "credit": "",
+ "titleStyle": "band",
+ "titleKey": "#FFE14D",
+ "frame": "capTall",
+ "capBox": {
+  "y": 1600
+ },
+ "sources": {
+  "px8533741": {
+   "file": "px8533741.jpg",
+   "path": "public/doodle/px8533741.jpg",
+   "page": "https://www.pexels.com/photo/close-up-shot-of-a-smartphone-on-white-surface-8533741/",
+   "file_url": "https://images.pexels.com/photos/8533741/pexels-photo-8533741.jpeg?auto=compress&cs=tinysrgb&w=1600",
+   "license": "Pexels License",
+   "creator": "Hanna Pad (anna-nekrashevich)",
+   "credit": "사진: Pexels (설명란 표기)",
+   "seconds": [
+    [
+     1.85,
+     3.71
+    ]
+   ]
+  },
+  "px30027297": {
+   "file": "px30027297.jpg",
+   "path": "public/doodle/px30027297.jpg",
+   "page": "https://www.pexels.com/photo/quiet-indoor-restaurant-with-sunlit-tables-30027297/",
+   "file_url": "https://images.pexels.com/photos/30027297/pexels-photo-30027297.jpeg?auto=compress&cs=tinysrgb&w=1600",
+   "license": "Pexels License",
+   "creator": "Jim (Jimothy) Natanauan",
+   "credit": "사진: Pexels (설명란 표기)",
+   "seconds": [
+    [
+     25.13,
+     27.11
+    ]
+   ]
+  }
+ },
+ "music": {
+  "file": "music/hustle.mp3",
+  "gain": 0.12,
+  "start": 0
+ },
+ "sfx": [
+  [
+   "a",
+   "whoosh",
+   0.2
+  ],
+  [
+   "b.서른두",
+   "pop",
+   0.25
+  ],
+  [
+   "d",
+   "pop",
+   0.22
+  ],
+  [
+   "f",
+   "pop",
+   0.22
+  ],
+  [
+   "g",
+   "boing",
+   0.28
+  ],
+  [
+   "h",
+   "pop",
+   0.22
+  ],
+  [
+   "i",
+   "whoosh",
+   0.2
+  ],
+  [
+   "k",
+   "pop",
+   0.22
+  ],
+  [
+   "m.세",
+   "pop",
+   0.25
+  ],
+  [
+   "n.어머님",
+   "boing",
+   0.3
+  ],
+  [
+   "z",
+   "pop",
+   0.22
+  ]
+ ],
+ "clips": [
+  {
+   "from": "a0",
+   "label": "a0",
+   "gfx": {
+    "type": "scene",
+    "bg": "#2b1c1c",
+    "chars": [
+     {
+      "style": "doodle",
+      "hairdo": "bob",
+      "hair": "#3b3b3b",
+      "mood": "angry",
+      "size": 2.0,
+      "x": 0.5,
+      "y": 100
+     }
+    ],
+    "prop": "📢",
+    "propX": 0.8,
+    "steps": [
+     9,
+     0.1,
+     9,
+     9
+    ],
+    "floor": 400
+   }
+  },
+  {
+   "from": "a",
+   "label": "a",
+   "gfx": {
+    "type": "scene",
+    "photo": "doodle/px8533741.jpg",
+    "photoPos": "50% 40%",
+    "chars": [
+     {
+      "style": "doodle",
+      "hair": "#FF7A1A",
+      "mood": "shock",
+      "size": 2.1,
+      "x": 0.5,
+      "y": 110
+     }
+    ],
+    "steps": [
+     9,
+     9,
+     9,
+     9
+    ],
+    "floor": 400
+   }
+  },
+  {
+   "from": "b",
+   "label": "b",
+   "gfx": {
+    "type": "scene",
+    "bg": "bedroom",
+    "chars": [
+     {
+      "style": "doodle",
+      "hair": "#FF7A1A",
+      "mood": "sick",
+      "size": 1.25
+     }
+    ],
+    "chat": {
+     "title": "○○초 6회 동창회 (32)",
+     "msgs": [
+      {
+       "name": "반장",
+       "text": "📢 공지! 다들 꼭 읽어 주세요",
+       "color": "#FFD84D"
+      },
+      {
+       "name": "반장",
+       "text": "날짜 투표 오늘 밤 12시까지!",
+       "color": "#FFD84D"
+      }
+     ]
+    },
+    "steps": [
+     9,
+     9,
+     9,
+     9,
+     0.1,
+     "b.서른두"
+    ],
+    "floor": 400
+   }
+  },
+  {
+   "from": "b2",
+   "label": "b2",
+   "gfx": {
+    "type": "scene",
+    "bg": "home",
+    "chars": [
+     {
+      "style": "doodle",
+      "hairdo": "perm",
+      "hair": "#5a3a2a",
+      "mood": "happy",
+      "size": 1.75,
+      "x": 0.3,
+      "rot": -3
+     }
+    ],
+    "prop": "👋",
+    "steps": [
+     9,
+     0.1,
+     9,
+     9
+    ],
+    "floor": 400,
+    "propX": 0.76
+   }
+  },
+  {
+   "from": "c",
+   "label": "c",
+   "gfx": {
+    "type": "scene",
+    "bg": "night",
+    "chars": [
+     {
+      "style": "doodle",
+      "hair": "#FF7A1A",
+      "mood": "think",
+      "size": 1.25
+     }
+    ],
+    "chat": {
+     "title": "○○초 6회 동창회 (32)",
+     "msgs": [
+      {
+       "name": "반장",
+       "text": "📢 공지! 다들 꼭 읽어 주세요",
+       "color": "#FFD84D"
+      },
+      {
+       "name": "반장",
+       "text": "날짜 투표 오늘 밤 12시까지!",
+       "color": "#FFD84D"
+      }
+     ]
+    },
+    "steps": [
+     9,
+     9,
+     9,
+     9,
+     0,
+     0
+    ],
+    "floor": 400
+   }
+  },
+  {
+   "from": "d",
+   "label": "d",
+   "gfx": {
+    "type": "scene",
+    "bg": "#FFE14D",
+    "chars": [
+     {
+      "style": "doodle",
+      "hair": "#FF7A1A",
+      "mood": "shock",
+      "size": 1.25
+     }
+    ],
+    "chat": {
+     "title": "○○초 6회 동창회 (32)",
+     "msgs": [
+      {
+       "name": "반장",
+       "text": "📢 공지! 다들 꼭 읽어 주세요",
+       "color": "#FFD84D"
+      },
+      {
+       "name": "반장",
+       "text": "날짜 투표 오늘 밤 12시까지!",
+       "color": "#FFD84D"
+      },
+      {
+       "name": "반장",
+       "text": "회비 5만 원, 입금하면 ✅ 눌러 주기",
+       "color": "#FFD84D"
+      }
+     ]
+    },
+    "steps": [
+     9,
+     9,
+     9,
+     9,
+     0,
+     0,
+     "d+0.2"
+    ],
+    "floor": 400
+   }
+  },
+  {
+   "from": "e",
+   "label": "e",
+   "gfx": {
+    "type": "scene",
+    "bg": "office",
+    "chars": [
+     {
+      "style": "doodle",
+      "hair": "#FF7A1A",
+      "mood": "sad",
+      "size": 1.25
+     }
+    ],
+    "chat": {
+     "title": "○○초 6회 동창회 (32)",
+     "msgs": [
+      {
+       "name": "반장",
+       "text": "📢 공지! 다들 꼭 읽어 주세요",
+       "color": "#FFD84D"
+      },
+      {
+       "name": "반장",
+       "text": "날짜 투표 오늘 밤 12시까지!",
+       "color": "#FFD84D"
+      },
+      {
+       "name": "반장",
+       "text": "회비 5만 원, 입금하면 ✅ 눌러 주기",
+       "color": "#FFD84D"
+      },
+      {
+       "name": "반장",
+       "text": "불참자는 사유 한 줄씩",
+       "color": "#FFD84D"
+      }
+     ]
+    },
+    "steps": [
+     9,
+     9,
+     9,
+     9,
+     0,
+     0,
+     0,
+     "e+0.1"
+    ],
+    "floor": 400
+   }
+  },
+  {
+   "from": "f",
+   "label": "f",
+   "gfx": {
+    "type": "scene",
+    "bg": "#FFB3C7",
+    "chars": [
+     {
+      "style": "doodle",
+      "hair": "#FF7A1A",
+      "mood": "sick",
+      "size": 1.25
+     }
+    ],
+    "chat": {
+     "title": "○○초 6회 동창회 (32)",
+     "msgs": [
+      {
+       "name": "반장",
+       "text": "📢 공지! 다들 꼭 읽어 주세요",
+       "color": "#FFD84D"
+      },
+      {
+       "name": "반장",
+       "text": "날짜 투표 오늘 밤 12시까지!",
+       "color": "#FFD84D"
+      },
+      {
+       "name": "반장",
+       "text": "회비 5만 원, 입금하면 ✅ 눌러 주기",
+       "color": "#FFD84D"
+      },
+      {
+       "name": "반장",
+       "text": "불참자는 사유 한 줄씩",
+       "color": "#FFD84D"
+      },
+      {
+       "name": "반장",
+       "text": "1차 고기, 2차 노래방, 3차 해장국",
+       "color": "#FFD84D"
+      }
+     ]
+    },
+    "steps": [
+     9,
+     9,
+     9,
+     9,
+     0,
+     0,
+     0,
+     0,
+     "f+0.2"
+    ],
+    "floor": 400
+   }
+  },
+  {
+   "from": "g",
+   "label": "g",
+   "gfx": {
+    "type": "scene",
+    "bg": "#d8f5c8",
+    "chars": [
+     {
+      "style": "doodle",
+      "hair": "#FF7A1A",
+      "mood": "shock",
+      "size": 1.25
+     }
+    ],
+    "chat": {
+     "title": "○○초 6회 동창회 (32)",
+     "msgs": [
+      {
+       "name": "반장",
+       "text": "📢 공지! 다들 꼭 읽어 주세요",
+       "color": "#FFD84D"
+      },
+      {
+       "name": "반장",
+       "text": "날짜 투표 오늘 밤 12시까지!",
+       "color": "#FFD84D"
+      },
+      {
+       "name": "반장",
+       "text": "회비 5만 원, 입금하면 ✅ 눌러 주기",
+       "color": "#FFD84D"
+      },
+      {
+       "name": "반장",
+       "text": "불참자는 사유 한 줄씩",
+       "color": "#FFD84D"
+      },
+      {
+       "name": "반장",
+       "text": "1차 고기, 2차 노래방, 3차 해장국",
+       "color": "#FFD84D"
+      },
+      {
+       "name": "반장",
+       "text": "드레스 코드는 초록색",
+       "color": "#FFD84D"
+      }
+     ]
+    },
+    "steps": [
+     9,
+     9,
+     9,
+     9,
+     0,
+     0,
+     0,
+     0,
+     0,
+     "g+0.1"
+    ],
+    "floor": 400
+   }
+  },
+  {
+   "from": "h",
+   "label": "h",
+   "gfx": {
+    "type": "scene",
+    "bg": "bedroom",
+    "chars": [
+     {
+      "style": "doodle",
+      "hair": "#FF7A1A",
+      "mood": "cry",
+      "size": 1.75,
+      "x": 0.3,
+      "rot": -3
+     }
+    ],
+    "prop": "👕",
+    "steps": [
+     "h",
+     0.1,
+     9,
+     9
+    ],
+    "floor": 400,
+    "propX": 0.76
+   }
+  },
+  {
+   "from": "i",
+   "label": "i",
+   "gfx": {
+    "type": "scene",
+    "bg": "home",
+    "chars": [
+     {
+      "style": "doodle",
+      "hairdo": "bob",
+      "hair": "#3b3b3b",
+      "mood": "sad",
+      "size": 1.75,
+      "x": 0.3,
+      "rot": -4
+     }
+    ],
+    "big": "반장 입장",
+    "steps": [
+     9,
+     9,
+     9,
+     "i+0.3"
+    ],
+    "floor": 400
+   }
+  },
+  {
+   "from": "j",
+   "label": "j",
+   "gfx": {
+    "type": "scene",
+    "bg": "night",
+    "chars": [
+     {
+      "style": "doodle",
+      "hairdo": "bob",
+      "hair": "#3b3b3b",
+      "mood": "cry",
+      "size": 1.75,
+      "x": 0.3,
+      "rot": -3
+     }
+    ],
+    "prop": "📱",
+    "big": "읽음 31",
+    "steps": [
+     9,
+     0.1,
+     9,
+     "j.아무도"
+    ],
+    "floor": 400,
+    "propX": 0.76
+   }
+  },
+  {
+   "from": "k",
+   "label": "k",
+   "gfx": {
+    "type": "scene",
+    "bg": "#e9e4dc",
+    "chars": [
+     {
+      "style": "doodle",
+      "hairdo": "bob",
+      "hair": "#3b3b3b",
+      "mood": "angry",
+      "size": 1.6,
+      "x": 0.5
+     }
+    ],
+    "steps": [
+     "k",
+     9,
+     9,
+     9
+    ],
+    "floor": 400
+   }
+  },
+  {
+   "from": "l",
+   "label": "l",
+   "gfx": {
+    "type": "scene",
+    "bg": "#dff3ff",
+    "chars": [
+     {
+      "style": "doodle",
+      "hairdo": "bob",
+      "hair": "#3b3b3b",
+      "mood": "think",
+      "size": 1.75,
+      "x": 0.3,
+      "rot": -3
+     }
+    ],
+    "prop": "📜",
+    "steps": [
+     9,
+     0.1,
+     9,
+     9
+    ],
+    "floor": 400,
+    "propX": 0.76
+   }
+  },
+  {
+   "from": "m",
+   "label": "m",
+   "gfx": {
+    "type": "scene",
+    "photo": "doodle/px30027297.jpg",
+    "chars": [
+     {
+      "style": "doodle",
+      "hairdo": "bob",
+      "hair": "#3b3b3b",
+      "mood": "sad",
+      "size": 1.12
+     },
+     {
+      "style": "doodle",
+      "hair": "#FF7A1A",
+      "mood": "neutral",
+      "size": 1.12
+     },
+     {
+      "style": "doodle",
+      "hairdo": "bald",
+      "hair": "#3b3b3b",
+      "mood": "neutral",
+      "size": 1.12
+     }
+    ],
+    "big": "3명",
+    "steps": [
+     9,
+     9,
+     9,
+     "m.세"
+    ],
+    "floor": 400
+   }
+  },
+  {
+   "from": "n",
+   "label": "n",
+   "gfx": {
+    "type": "scene",
+    "bg": "#FFE14D",
+    "chars": [
+     {
+      "style": "doodle",
+      "hairdo": "bob",
+      "hair": "#3b3b3b",
+      "mood": "sad",
+      "size": 1.12
+     },
+     {
+      "style": "doodle",
+      "hair": "#FF7A1A",
+      "mood": "shy",
+      "size": 1.12
+     },
+     {
+      "style": "doodle",
+      "hairdo": "perm",
+      "hair": "#5a3a2a",
+      "mood": "happy",
+      "size": 1.12
+     }
+    ],
+    "big": "+ 반장 어머님",
+    "steps": [
+     9,
+     9,
+     9,
+     "n.어머님"
+    ],
+    "floor": 400
+   }
+  },
+  {
+   "from": "z",
+   "label": "z",
+   "gfx": {
+    "type": "scene",
+    "bg": "bedroom",
+    "chars": [
+     {
+      "style": "doodle",
+      "hair": "#FF7A1A",
+      "mood": "think",
+      "to": "smug",
+      "size": 1.75,
+      "x": 0.3,
+      "rot": -3
+     }
+    ],
+    "prop": "📱",
+    "steps": [
+     9,
+     0.1,
+     "z.반장",
+     9
+    ],
+    "floor": 400,
+    "propX": 0.76
+   }
+  }
+ ]
+}

@@ -1,0 +1,417 @@
+{
+ "credit": "",
+ "layout": "teuk",
+ "teuk": {
+  "bg": "#22262e",
+  "mascot": "#FFB36B"
+ },
+ "sources": {
+  "cup": {
+   "file": "cup.jpg",
+   "page": "https://commons.wikimedia.org/wiki/File:Cup_Noodle_Zeitaku-nikumori-Dandanmian.jpg",
+   "file_url": "https://upload.wikimedia.org/wikipedia/commons/2/27/Cup_Noodle_Zeitaku-nikumori-Dandanmian.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+   "license": "CC0",
+   "credit": "Cup Noodle Zeitaku-nikumori-Dandanmian.jpg by 毒島みるく (CC0, http://creativecommons.org/publicdomain/zero/1.0/deed.en), via Wikimedia Commons",
+   "used_seconds": [
+    [
+     0.0,
+     1.59
+    ]
+   ]
+  },
+  "cup2": {
+   "file": "cup2.jpg",
+   "page": "https://commons.wikimedia.org/wiki/File:Cup_Noodle_Zeitaku-toromi-fukahire-soup.jpg",
+   "file_url": "https://upload.wikimedia.org/wikipedia/commons/f/f3/Cup_Noodle_Zeitaku-toromi-fukahire-soup.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+   "license": "CC0",
+   "credit": "Cup Noodle Zeitaku-toromi-fukahire-soup.jpg by 毒島みるく (CC0, http://creativecommons.org/publicdomain/zero/1.0/deed.en), via Wikimedia Commons",
+   "used_seconds": [
+    [
+     2.88,
+     5.71
+    ]
+   ]
+  },
+  "ramyeon": {
+   "file": "ramyeon.jpg",
+   "page": "https://commons.wikimedia.org/wiki/File:20200804_033546_Ramyeon_IMG_8515.jpg",
+   "file_url": "https://upload.wikimedia.org/wikipedia/commons/5/58/20200804_033546_Ramyeon_IMG_8515.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+   "license": "CC0",
+   "credit": "20200804 033546 Ramyeon IMG 8515.jpg by Choi Kwang-mo (CC0, http://creativecommons.org/publicdomain/zero/1.0/deed.en), via Wikimedia Commons",
+   "used_seconds": [
+    [
+     17.2,
+     19.64
+    ]
+   ]
+  }
+ },
+ "music": {
+  "file": "music/sneaky_snitch.mp3",
+  "gain": 0.18,
+  "start": 0
+ },
+ "sfx": [
+  [
+   "a1",
+   "pop_hi",
+   0.18
+  ],
+  [
+   "a1",
+   "whoosh",
+   0.15
+  ],
+  [
+   "a1b",
+   "whoosh",
+   0.15
+  ],
+  [
+   "a2",
+   "pop_hi",
+   0.18
+  ],
+  [
+   "a2",
+   "whoosh",
+   0.15
+  ],
+  [
+   "c1",
+   "pop",
+   0.22
+  ],
+  [
+   "a3",
+   "whoosh",
+   0.15
+  ],
+  [
+   "a4",
+   "whoosh",
+   0.15
+  ],
+  [
+   "a5",
+   "whoosh",
+   0.15
+  ],
+  [
+   "c2",
+   "pop",
+   0.22
+  ],
+  [
+   "a6",
+   "pop_hi",
+   0.18
+  ],
+  [
+   "a6",
+   "whoosh",
+   0.15
+  ],
+  [
+   "a8",
+   "whoosh",
+   0.15
+  ],
+  [
+   "a9",
+   "whoosh",
+   0.15
+  ],
+  [
+   "a7",
+   "whoosh",
+   0.15
+  ],
+  [
+   "z",
+   "whoosh",
+   0.15
+  ],
+  [
+   "y",
+   "pop",
+   0.22
+  ],
+  [
+   "a1b",
+   "boing",
+   0.25
+  ],
+  [
+   "a5.바닥",
+   "boing",
+   0.25
+  ],
+  [
+   "z",
+   "ding",
+   0.25
+  ]
+ ],
+ "clips": [
+  {
+   "from": "a1",
+   "label": "a1",
+   "src": "cup",
+   "gfx": {
+    "type": "photo",
+    "react": {
+     "mood": "shock",
+     "side": "right",
+     "size": 470
+    },
+    "tag": "물 선?",
+    "steps": [
+     -1,
+     0.2,
+     0.25,
+     1000.0
+    ]
+   }
+  },
+  {
+   "from": "a1b",
+   "label": "a1b",
+   "gfx": {
+    "type": "face",
+    "mood": "shock",
+    "pos": "close",
+    "fx": "lines",
+    "prop": "🍜",
+    "big": "선 어디?",
+    "propX": 0.82,
+    "propY": 0.7,
+    "steps": [
+     0.9,
+     0.05,
+     0.0
+    ]
+   }
+  },
+  {
+   "from": "a2",
+   "label": "a2",
+   "src": "cup2",
+   "gfx": {
+    "type": "photo",
+    "react": {
+     "mood": "smug",
+     "side": "left"
+    },
+    "tag": "2분 30초",
+    "steps": [
+     0.12,
+     0.2,
+     0.25,
+     1000.0
+    ]
+   }
+  },
+  {
+   "from": "c1",
+   "label": "c1",
+   "gfx": {
+    "type": "face",
+    "mood": "smug",
+    "pos": "right",
+    "fx": "sparkle",
+    "steps": [
+     0.9,
+     0.05,
+     0.15
+    ]
+   }
+  },
+  {
+   "from": "a3",
+   "label": "a3",
+   "gfx": {
+    "type": "scene",
+    "bg": "night",
+    "place": "📍 밤 11시",
+    "chars": [
+     {
+      "name": "나",
+      "color": "#FFB36B",
+      "mood": "love",
+      "size": 1.2
+     }
+    ],
+    "prop": "🍜",
+    "steps": [
+     9,
+     0.1,
+     9,
+     9
+    ]
+   }
+  },
+  {
+   "from": "a4",
+   "label": "a4",
+   "gfx": {
+    "type": "face",
+    "mood": "smug",
+    "pos": "left",
+    "prop": "🍜",
+    "propX": 0.8,
+    "propY": 0.35,
+    "steps": [
+     0.9,
+     0.05,
+     0.15
+    ]
+   }
+  },
+  {
+   "from": "a5",
+   "label": "a5",
+   "gfx": {
+    "type": "face",
+    "mood": "laugh",
+    "pos": "tilt",
+    "fx": "sweat",
+    "prop": "🥣",
+    "big": "원샷",
+    "steps": [
+     0.9,
+     0.05,
+     "a5.바닥"
+    ]
+   }
+  },
+  {
+   "from": "c2",
+   "label": "c2",
+   "gfx": {
+    "type": "face",
+    "mood": "sick",
+    "pos": "low",
+    "fx": "gloom",
+    "prop": "🥤",
+    "propX": 0.82,
+    "propY": 0.35,
+    "steps": [
+     0.9,
+     0.05,
+     0.15
+    ]
+   }
+  },
+  {
+   "from": "a6",
+   "label": "a6",
+   "src": "ramyeon",
+   "gfx": {
+    "type": "photo",
+    "react": {
+     "mood": "think",
+     "side": "right"
+    },
+    "tag": "하나 더?",
+    "steps": [
+     0.12,
+     0.2,
+     0.25,
+     1000.0
+    ]
+   }
+  },
+  {
+   "from": "a8",
+   "label": "a8",
+   "gfx": {
+    "type": "face",
+    "mood": "angry",
+    "pos": "right",
+    "prop": "🥢",
+    "propX": 0.2,
+    "propY": 0.3,
+    "steps": [
+     0.9,
+     0.05,
+     0.15
+    ]
+   }
+  },
+  {
+   "from": "a9",
+   "label": "a9",
+   "gfx": {
+    "type": "face",
+    "mood": "shock",
+    "pos": "low",
+    "fx": "steam",
+    "prop": "👓",
+    "propX": 0.8,
+    "propY": 0.3,
+    "steps": [
+     0.9,
+     0.05,
+     0.15
+    ]
+   }
+  },
+  {
+   "from": "a7",
+   "label": "a7",
+   "gfx": {
+    "type": "scene",
+    "bg": "store",
+    "chars": [
+     {
+      "name": "나",
+      "color": "#FFB36B",
+      "mood": "think",
+      "to": "happy",
+      "size": 1.2
+     }
+    ],
+    "prop": "🍜",
+    "steps": [
+     9,
+     0.1,
+     "a7.또",
+     9
+    ]
+   }
+  },
+  {
+   "from": "z",
+   "label": "z",
+   "gfx": {
+    "type": "face",
+    "mood": "think",
+    "pos": "left",
+    "prop": "🍜",
+    "propX": 0.8,
+    "propY": 0.35,
+    "steps": [
+     0.9,
+     0.05,
+     0.15
+    ]
+   }
+  },
+  {
+   "from": "y",
+   "label": "y",
+   "gfx": {
+    "type": "face",
+    "mood": "happy",
+    "pos": "close",
+    "fx": "steam",
+    "steps": [
+     0.9,
+     0.05,
+     0.15
+    ]
+   }
+  }
+ ]
+}

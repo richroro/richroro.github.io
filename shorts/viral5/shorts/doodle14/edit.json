@@ -1,0 +1,751 @@
+{
+ "credit": "",
+ "titleStyle": "band",
+ "titleKey": "#FFE14D",
+ "frame": "capTall",
+ "capBox": {
+  "y": 1600
+ },
+ "sources": {
+  "px19222549": {
+   "file": "px19222549.jpg",
+   "path": "public/doodle/px19222549.jpg",
+   "page": "https://www.pexels.com/photo/waterfront-of-seoul-from-the-hangang-river-19222549/",
+   "file_url": "https://images.pexels.com/photos/19222549/pexels-photo-19222549.jpeg?auto=compress&cs=tinysrgb&w=1600",
+   "license": "Pexels License",
+   "creator": "Muneeb Babar",
+   "credit": "사진: Pexels (설명란 표기)",
+   "seconds": [
+    [
+     7.95,
+     9.26
+    ],
+    [
+     15.16,
+     17.04
+    ]
+   ]
+  },
+  "px17967670": {
+   "file": "px17967670.jpg",
+   "path": "public/doodle/px17967670.jpg",
+   "page": "https://www.pexels.com/photo/gwangan-bridge-near-skyscrapers-in-busan-south-korea-17967670/",
+   "file_url": "https://images.pexels.com/photos/17967670/pexels-photo-17967670.jpeg?auto=compress&cs=tinysrgb&w=1600",
+   "license": "Pexels License",
+   "creator": "Junsu Park",
+   "credit": "사진: Pexels (설명란 표기)",
+   "seconds": [
+    [
+     1.55,
+     3.97
+    ],
+    [
+     17.04,
+     18.42
+    ],
+    [
+     32.94,
+     34.43
+    ]
+   ]
+  },
+  "px38010001": {
+   "file": "px38010001.jpg",
+   "path": "public/doodle/px38010001.jpg",
+   "page": "https://www.pexels.com/photo/haeundae-beach-with-skyline-in-south-korea-38010001/",
+   "file_url": "https://images.pexels.com/photos/38010001/pexels-photo-38010001.jpeg?auto=compress&cs=tinysrgb&w=1600",
+   "license": "Pexels License",
+   "creator": "Rüveyda Akkaya",
+   "credit": "사진: Pexels (설명란 표기)",
+   "seconds": [
+    [
+     9.26,
+     10.88
+    ],
+    [
+     19.33,
+     20.61
+    ],
+    [
+     31.35,
+     32.94
+    ]
+   ]
+  }
+ },
+ "music": {
+  "file": "music/monkeys_spinning_monkeys.mp3",
+  "gain": 0.12,
+  "start": 0
+ },
+ "sfx": [
+  [
+   "a",
+   "whoosh",
+   0.2
+  ],
+  [
+   "b",
+   "pop",
+   0.22
+  ],
+  [
+   "d.부엌",
+   "boing",
+   0.28
+  ],
+  [
+   "e.부추",
+   "pop",
+   0.25
+  ],
+  [
+   "g",
+   "pop",
+   0.22
+  ],
+  [
+   "i.수고",
+   "boing",
+   0.28
+  ],
+  [
+   "k",
+   "pop",
+   0.22
+  ],
+  [
+   "m.별로",
+   "k_error_003",
+   0.28
+  ],
+  [
+   "p",
+   "pop",
+   0.22
+  ],
+  [
+   "r",
+   "boing",
+   0.3
+  ],
+  [
+   "z",
+   "pop",
+   0.22
+  ]
+ ],
+ "clips": [
+  {
+   "from": "a0",
+   "label": "a0",
+   "gfx": {
+    "type": "scene",
+    "bg": "home",
+    "chars": [
+     {
+      "style": "doodle",
+      "hairdo": "perm",
+      "hair": "#5a3a2a",
+      "mood": "happy",
+      "size": 2.0,
+      "x": 0.5,
+      "y": 100
+     }
+    ],
+    "prop": "🌿",
+    "propX": 0.8,
+    "steps": [
+     9,
+     0.1,
+     9,
+     9
+    ],
+    "floor": 400
+   }
+  },
+  {
+   "from": "a",
+   "label": "a",
+   "gfx": {
+    "type": "scene",
+    "photo": "doodle/px17967670.jpg",
+    "chars": [
+     {
+      "style": "doodle",
+      "hair": "#FF7A1A",
+      "mood": "shock",
+      "size": 2.1,
+      "x": 0.5,
+      "y": 110
+     }
+    ],
+    "place": "📍 부산",
+    "steps": [
+     9,
+     9,
+     9,
+     9
+    ],
+    "floor": 400
+   }
+  },
+  {
+   "from": "a2",
+   "label": "a2",
+   "gfx": {
+    "type": "scene",
+    "bg": "#e9e4dc",
+    "chars": [
+     {
+      "style": "doodle",
+      "hair": "#FF7A1A",
+      "mood": "think",
+      "size": 1.75,
+      "x": 0.3,
+      "rot": -4
+     }
+    ],
+    "big": "서울말 = 표준어",
+    "steps": [
+     9,
+     9,
+     9,
+     "a2+0.4"
+    ],
+    "floor": 400,
+    "bigSize": 118
+   }
+  },
+  {
+   "from": "b",
+   "label": "b",
+   "gfx": {
+    "type": "scene",
+    "bg": "home",
+    "chars": [
+     {
+      "style": "doodle",
+      "hair": "#FF7A1A",
+      "mood": "think",
+      "size": 1.75,
+      "x": 0.3,
+      "rot": -3
+     }
+    ],
+    "prop": "🛑",
+    "steps": [
+     "b",
+     0.1,
+     9,
+     9
+    ],
+    "floor": 400,
+    "propX": 0.76
+   }
+  },
+  {
+   "from": "c",
+   "label": "c",
+   "gfx": {
+    "type": "scene",
+    "photo": "doodle/px19222549.jpg",
+    "chars": [
+     {
+      "style": "doodle",
+      "hair": "#FF7A1A",
+      "mood": "smug",
+      "size": 1.75,
+      "x": 0.3,
+      "rot": -3
+     }
+    ],
+    "prop": "🛑",
+    "big": "서울: 정지 = 멈춤",
+    "place": "📍 서울",
+    "steps": [
+     9,
+     0.1,
+     9,
+     "c+0.3"
+    ],
+    "floor": 400,
+    "bigSize": 118,
+    "propX": 0.76
+   }
+  },
+  {
+   "from": "d",
+   "label": "d",
+   "gfx": {
+    "type": "scene",
+    "photo": "doodle/px38010001.jpg",
+    "chars": [
+     {
+      "style": "doodle",
+      "hair": "#FF7A1A",
+      "mood": "shock",
+      "size": 1.75,
+      "x": 0.3,
+      "rot": -3
+     }
+    ],
+    "prop": "🍳",
+    "big": "경상: 정지 = 부엌",
+    "place": "📍 부산",
+    "steps": [
+     9,
+     0.1,
+     9,
+     "d.부엌"
+    ],
+    "floor": 400,
+    "bigSize": 118,
+    "propX": 0.76
+   }
+  },
+  {
+   "from": "e",
+   "label": "e",
+   "gfx": {
+    "type": "scene",
+    "bg": "#d8f5c8",
+    "chars": [
+     {
+      "style": "doodle",
+      "hair": "#FF7A1A",
+      "mood": "think",
+      "size": 1.75,
+      "x": 0.3,
+      "rot": -3
+     }
+    ],
+    "prop": "🌿",
+    "big": "정구지 = 부추",
+    "steps": [
+     9,
+     0.1,
+     9,
+     "e.부추"
+    ],
+    "floor": 400,
+    "propX": 0.76
+   }
+  },
+  {
+   "from": "f",
+   "label": "f",
+   "gfx": {
+    "type": "scene",
+    "bg": "home",
+    "chars": [
+     {
+      "style": "doodle",
+      "hair": "#FF7A1A",
+      "mood": "laugh",
+      "size": 1.75,
+      "x": 0.3,
+      "rot": -3
+     }
+    ],
+    "prop": "🌿",
+    "steps": [
+     "f",
+     0.1,
+     9,
+     9
+    ],
+    "floor": 400,
+    "propX": 0.76
+   }
+  },
+  {
+   "from": "g",
+   "label": "g",
+   "gfx": {
+    "type": "scene",
+    "bg": "home",
+    "chars": [
+     {
+      "style": "doodle",
+      "hairdo": "perm",
+      "hair": "#5a3a2a",
+      "mood": "happy",
+      "size": 1.4
+     },
+     {
+      "style": "doodle",
+      "hair": "#FF7A1A",
+      "mood": "shock",
+      "size": 1.4
+     }
+    ],
+    "steps": [
+     "g",
+     9,
+     9,
+     9
+    ],
+    "say": {
+     "who": 0,
+     "text": "아이고, 욕봤다"
+    },
+    "floor": 400
+   }
+  },
+  {
+   "from": "h",
+   "label": "h",
+   "gfx": {
+    "type": "scene",
+    "photo": "doodle/px19222549.jpg",
+    "photoPos": "30% 50%",
+    "chars": [
+     {
+      "style": "doodle",
+      "hair": "#FF7A1A",
+      "mood": "cry",
+      "size": 2.1,
+      "x": 0.5,
+      "y": 110
+     }
+    ],
+    "big": "서울: 욕보다 = 창피",
+    "steps": [
+     9,
+     9,
+     9,
+     "h+0.4"
+    ],
+    "floor": 400,
+    "bigSize": 118
+   }
+  },
+  {
+   "from": "i",
+   "label": "i",
+   "gfx": {
+    "type": "scene",
+    "photo": "doodle/px17967670.jpg",
+    "photoPos": "60% 50%",
+    "chars": [
+     {
+      "style": "doodle",
+      "hair": "#FF7A1A",
+      "mood": "shock",
+      "to": "happy",
+      "size": 1.75,
+      "x": 0.3,
+      "rot": -4
+     }
+    ],
+    "big": "경상: 수고했다",
+    "steps": [
+     9,
+     9,
+     "i.수고",
+     "i+0.3"
+    ],
+    "floor": 400,
+    "bigSize": 118
+   }
+  },
+  {
+   "from": "j",
+   "label": "j",
+   "gfx": {
+    "type": "scene",
+    "bg": "#FFB3C7",
+    "chars": [
+     {
+      "style": "doodle",
+      "hair": "#FF7A1A",
+      "mood": "shy",
+      "size": 1.95,
+      "x": 0.64,
+      "y": 80,
+      "flip": true,
+      "rot": 3
+     }
+    ],
+    "steps": [
+     "j",
+     9,
+     9,
+     9
+    ],
+    "floor": 400
+   }
+  },
+  {
+   "from": "k",
+   "label": "k",
+   "gfx": {
+    "type": "scene",
+    "photo": "doodle/px38010001.jpg",
+    "photoPos": "40% 50%",
+    "chars": [
+     {
+      "style": "doodle",
+      "hairdo": "bob",
+      "hair": "#3b3b3b",
+      "mood": "smug",
+      "size": 1.4
+     },
+     {
+      "style": "doodle",
+      "hair": "#FF7A1A",
+      "mood": "happy",
+      "size": 1.4
+     }
+    ],
+    "steps": [
+     "k",
+     9,
+     9,
+     9
+    ],
+    "say": {
+     "who": 0,
+     "text": "니 그 옷 좀 파이다"
+    },
+    "floor": 400
+   }
+  },
+  {
+   "from": "l",
+   "label": "l",
+   "gfx": {
+    "type": "scene",
+    "bg": "street",
+    "chars": [
+     {
+      "style": "doodle",
+      "hair": "#FF7A1A",
+      "mood": "think",
+      "size": 1.75,
+      "x": 0.3,
+      "rot": -3
+     }
+    ],
+    "prop": "🕳️",
+    "big": "서울: 땅이 파임",
+    "steps": [
+     9,
+     0.1,
+     9,
+     "l+0.4"
+    ],
+    "floor": 400,
+    "bigSize": 118,
+    "propX": 0.76
+   }
+  },
+  {
+   "from": "m",
+   "label": "m",
+   "gfx": {
+    "type": "scene",
+    "bg": "#2b1c1c",
+    "chars": [
+     {
+      "style": "doodle",
+      "hair": "#FF7A1A",
+      "mood": "shock",
+      "to": "cry",
+      "size": 1.75,
+      "x": 0.3,
+      "rot": -4
+     }
+    ],
+    "big": "경상: 파이다 = 별로",
+    "steps": [
+     9,
+     9,
+     "m.별로",
+     "m+0.2"
+    ],
+    "floor": 400,
+    "bigSize": 118
+   }
+  },
+  {
+   "from": "n",
+   "label": "n",
+   "gfx": {
+    "type": "scene",
+    "bg": "bedroom",
+    "chars": [
+     {
+      "style": "doodle",
+      "hair": "#FF7A1A",
+      "mood": "sad",
+      "size": 1.75,
+      "x": 0.3,
+      "rot": -3
+     }
+    ],
+    "prop": "👕",
+    "steps": [
+     "n",
+     0.1,
+     9,
+     9
+    ],
+    "floor": 400,
+    "propX": 0.76
+   }
+  },
+  {
+   "from": "o",
+   "label": "o",
+   "gfx": {
+    "type": "scene",
+    "bg": "#d8f5c8",
+    "chars": [
+     {
+      "style": "doodle",
+      "hair": "#FF7A1A",
+      "mood": "smug",
+      "size": 1.75,
+      "x": 0.3,
+      "rot": -3
+     }
+    ],
+    "prop": "📒",
+    "steps": [
+     9,
+     0.1,
+     9,
+     9
+    ],
+    "floor": 400,
+    "propX": 0.76
+   }
+  },
+  {
+   "from": "p",
+   "label": "p",
+   "gfx": {
+    "type": "scene",
+    "bg": "home",
+    "chars": [
+     {
+      "style": "doodle",
+      "hair": "#FF7A1A",
+      "mood": "happy",
+      "size": 1.9,
+      "x": 0.5,
+      "y": 80
+     }
+    ],
+    "steps": [
+     "p",
+     9,
+     9,
+     9
+    ],
+    "floor": 400
+   }
+  },
+  {
+   "from": "q",
+   "label": "q",
+   "gfx": {
+    "type": "scene",
+    "bg": "home",
+    "chars": [
+     {
+      "style": "doodle",
+      "hairdo": "perm",
+      "hair": "#5a3a2a",
+      "mood": "laugh",
+      "size": 1.4
+     },
+     {
+      "style": "doodle",
+      "hair": "#FF7A1A",
+      "mood": "shy",
+      "size": 1.4
+     }
+    ],
+    "steps": [
+     "q",
+     9,
+     9,
+     9
+    ],
+    "say": {
+     "who": 0,
+     "text": "서울 아가 다 됐네!"
+    },
+    "floor": 400
+   }
+  },
+  {
+   "from": "r",
+   "label": "r",
+   "gfx": {
+    "type": "scene",
+    "photo": "doodle/px38010001.jpg",
+    "chars": [
+     {
+      "style": "doodle",
+      "hairdo": "bob",
+      "hair": "#3b3b3b",
+      "mood": "smug",
+      "size": 1.4
+     },
+     {
+      "style": "doodle",
+      "hair": "#FF7A1A",
+      "mood": "cry",
+      "size": 1.4
+     }
+    ],
+    "steps": [
+     "r",
+     9,
+     9,
+     9
+    ],
+    "say": {
+     "who": 0,
+     "text": "근데 그 옷은 진짜 파이다"
+    },
+    "floor": 400
+   }
+  },
+  {
+   "from": "z",
+   "label": "z",
+   "gfx": {
+    "type": "scene",
+    "photo": "doodle/px17967670.jpg",
+    "chars": [
+     {
+      "style": "doodle",
+      "hair": "#FF7A1A",
+      "mood": "think",
+      "to": "smug",
+      "size": 1.4
+     },
+     {
+      "style": "doodle",
+      "hairdo": "bob",
+      "hair": "#3b3b3b",
+      "mood": "laugh",
+      "size": 1.4
+     }
+    ],
+    "steps": [
+     9,
+     9,
+     "z+0.6",
+     9
+    ],
+    "floor": 400
+   }
+  }
+ ]
+}
