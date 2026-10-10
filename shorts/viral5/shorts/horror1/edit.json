@@ -14,13 +14,21 @@
    "license": "Pexels License",
    "creator": "MART PRODUCTION"
   },
-  "px15201563": {
-   "file": "px15201563.mp4",
-   "label": "Pexels video 15201563 by Darina Evstafeva (Pexels License)",
-   "url": "https://www.pexels.com/video/point-of-view-of-a-person-walking-along-a-creepy-hotel-corridor-15201563/",
-   "file_url": "https://www.pexels.com/download/video/15201563/",
+  "pxpb131012": {
+   "file": "pxpb131012.mp4",
+   "label": "Pixabay video 131012 by Jesehab (Pixabay Content License)",
+   "url": "https://pixabay.com/videos/inside-elevator-elevator-rise-131012/",
+   "file_url": "https://cdn.pixabay.com/video/2022/09/12/131012-748849022_large.mp4",
+   "license": "Pixabay Content License",
+   "creator": "Jesehab"
+  },
+  "px15434928": {
+   "file": "px15434928.mp4",
+   "label": "Pexels video 15434928 by Yusuf Çelik (Pexels License)",
+   "url": "https://www.pexels.com/video/an-elevator-screen-shows-going-downfloor-15434928/",
+   "file_url": "https://www.pexels.com/download/video/15434928/",
    "license": "Pexels License",
-   "creator": "Darina Evstafeva"
+   "creator": "Yusuf Çelik"
   },
   "px34779661": {
    "file": "px34779661.mp4",
@@ -30,13 +38,13 @@
    "license": "Pexels License",
    "creator": "Stefan"
   },
-  "px15434928": {
-   "file": "px15434928.mp4",
-   "label": "Pexels video 15434928 by Yusuf Çelik (Pexels License)",
-   "url": "https://www.pexels.com/video/an-elevator-screen-shows-going-downfloor-15434928/",
-   "file_url": "https://www.pexels.com/download/video/15434928/",
+  "px15201563": {
+   "file": "px15201563.mp4",
+   "label": "Pexels video 15201563 by Darina Evstafeva (Pexels License)",
+   "url": "https://www.pexels.com/video/point-of-view-of-a-person-walking-along-a-creepy-hotel-corridor-15201563/",
+   "file_url": "https://www.pexels.com/download/video/15201563/",
    "license": "Pexels License",
-   "creator": "Yusuf Çelik"
+   "creator": "Darina Evstafeva"
   },
   "px5823578": {
    "file": "px5823578.mp4",
@@ -51,14 +59,6 @@
    "label": "Pixabay video 130783 by Jesehab (Pixabay Content License)",
    "url": "https://pixabay.com/videos/elevator-door-open-waiting-elevator-130783/",
    "file_url": "https://cdn.pixabay.com/video/2022/09/10/130783-748347211_large.mp4",
-   "license": "Pixabay Content License",
-   "creator": "Jesehab"
-  },
-  "pxpb131012": {
-   "file": "pxpb131012.mp4",
-   "label": "Pixabay video 131012 by Jesehab (Pixabay Content License)",
-   "url": "https://pixabay.com/videos/inside-elevator-elevator-rise-131012/",
-   "file_url": "https://cdn.pixabay.com/video/2022/09/12/131012-748849022_large.mp4",
    "license": "Pixabay Content License",
    "creator": "Jesehab"
   },
@@ -85,32 +85,20 @@
    "label": "버튼을 누르는 손"
   },
   {
-   "src": "px15201563",
-   "from": "a.건물엔",
-   "in": 6.0,
+   "src": "pxpb131012",
+   "from": "a.엘리베이터엔",
+   "in": 0.5,
    "zoom": [
     1.0,
     1.07
    ],
    "audio": 0,
    "credit": "",
-   "label": "빈 복도"
-  },
-  {
-   "src": "px34779661",
-   "from": "b",
-   "in": 2.0,
-   "zoom": [
-    1.0,
-    1.07
-   ],
-   "audio": 0,
-   "credit": "",
-   "label": "엘리베이터 홀"
+   "label": "엘리베이터 안"
   },
   {
    "src": "px15434928",
-   "from": "b.엘리베이터를",
+   "from": "b",
    "in": 0.0,
    "zoom": [
     1.0,
@@ -121,57 +109,20 @@
    "label": "층 표시"
   },
   {
-   "src": "px5823578",
+   "src": "px34779661",
+   "from": "b.아저씨",
+   "in": 2.0,
+   "zoom": [
+    1.0,
+    1.07
+   ],
+   "audio": 0,
+   "credit": "",
+   "label": "열린 문 밖"
+  },
+  {
+   "src": "pxpb131012",
    "from": "c",
-   "in": 0.6,
-   "zoom": [
-    1.05,
-    1.1
-   ],
-   "audio": 0,
-   "credit": "",
-   "label": "4층→1층",
-   "speed": 4.0
-  },
-  {
-   "src": "px15434928",
-   "from": "c.띵",
-   "in": 8.0,
-   "zoom": [
-    1.15,
-    1.25
-   ],
-   "audio": 0,
-   "credit": "",
-   "label": "표시등"
-  },
-  {
-   "src": "pxpb130783",
-   "from": "d",
-   "in": 2.6,
-   "zoom": [
-    1.0,
-    1.07
-   ],
-   "audio": 0,
-   "credit": "",
-   "label": "문이 열림"
-  },
-  {
-   "src": "pxpb131012",
-   "from": "d.안은",
-   "in": 0.5,
-   "zoom": [
-    1.0,
-    1.07
-   ],
-   "audio": 0,
-   "credit": "",
-   "label": "빈 엘리베이터 안"
-  },
-  {
-   "src": "pxpb131012",
-   "from": "e",
    "in": 9.0,
    "zoom": [
     1.12,
@@ -182,8 +133,69 @@
    "label": "엘리베이터 안"
   },
   {
+   "src": "px34779661",
+   "from": "d",
+   "in": 9.0,
+   "zoom": [
+    1.0,
+    1.07
+   ],
+   "audio": 0,
+   "credit": "",
+   "label": "문 밖"
+  },
+  {
+   "src": "px15201563",
+   "from": "d.얼굴이",
+   "in": 6.0,
+   "zoom": [
+    1.0,
+    1.07
+   ],
+   "audio": 0,
+   "credit": "",
+   "label": "복도"
+  },
+  {
+   "src": "px5823578",
+   "from": "e",
+   "in": 0.6,
+   "zoom": [
+    1.05,
+    1.1
+   ],
+   "audio": 0,
+   "credit": "",
+   "label": "층 표시",
+   "speed": 4.0
+  },
+  {
+   "src": "pxpb130783",
+   "from": "e.아무도",
+   "in": 2.6,
+   "zoom": [
+    1.0,
+    1.07
+   ],
+   "audio": 0,
+   "credit": "",
+   "label": "열리는 문"
+  },
+  {
+   "src": "px15434928",
+   "from": "f",
+   "in": 8.0,
+   "zoom": [
+    1.15,
+    1.25
+   ],
+   "audio": 0,
+   "credit": "",
+   "label": "1층 표시"
+  },
+  {
    "src": "px978049",
-   "from": "e.삐",
+   "from": "f.문이",
    "in": 0.0,
    "zoom": [
     1.1,
@@ -195,7 +207,7 @@
   },
   {
    "src": "pxpb131012",
-   "from": "f",
+   "from": "g",
    "in": 5.0,
    "zoom": [
     1.15,
@@ -204,70 +216,33 @@
    "audio": 0,
    "credit": "",
    "label": "빈 엘리베이터"
-  },
-  {
-   "src": "px34779661",
-   "from": "g",
-   "in": 9.0,
-   "zoom": [
-    1.0,
-    1.07
-   ],
-   "audio": 0,
-   "credit": "",
-   "label": "뒷걸음질"
-  },
-  {
-   "src": "px978049",
-   "from": "g.엘리베이터는",
-   "in": 0.0,
-   "zoom": [
-    1.0,
-    1.07
-   ],
-   "audio": 0,
-   "credit": "",
-   "label": "위로",
-   "speed": 3.0
-  },
-  {
-   "src": "pxpb130783",
-   "from": "h",
-   "in": 0.3,
-   "zoom": [
-    1.06,
-    1.14
-   ],
-   "audio": 0,
-   "credit": "",
-   "label": "닫힌 엘리베이터"
   }
  ],
  "stickers": [],
  "sfx": [
   [
-   "c.띵",
-   "ding",
-   0.55
-  ],
-  [
-   "e.삐",
+   "c",
    "k_error_003",
    0.6
   ],
   [
-   "g",
+   "d.얼굴이",
    "heartbeat",
    0.6
   ],
   [
-   "h",
+   "f",
+   "ding",
+   0.5
+  ],
+  [
+   "g",
    "k_glitch_002",
    0.3
   ]
  ],
  "flashes": [
-  "e.삐"
+  "c"
  ],
  "music": {
   "file": "music/Gathering Darkness.mp3",
