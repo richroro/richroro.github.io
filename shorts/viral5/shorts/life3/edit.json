@@ -1,0 +1,290 @@
+{
+ "titleStyle": "band",
+ "captionY": 1640,
+ "credit": "영상: Pexels",
+ "sources": {
+  "bridge": {
+   "file": "px36017323.mp4",
+   "credit": "영상: Pexels",
+   "label": "Pexels video 36017323 by Raphael Kim (Pexels License)",
+   "url": "https://www.pexels.com/video/driving-across-bridge-at-sunset-in-korea-36017323/",
+   "license": "Pexels License",
+   "creator": "Raphael Kim"
+  },
+  "aerial": {
+   "file": "px18565055.mp4",
+   "credit": "영상: Pexels",
+   "label": "Pexels video 18565055 by FREE VIDEO HAPPY (Pexels License)",
+   "url": "https://www.pexels.com/video/sihwho-18565055/",
+   "license": "Pexels License",
+   "creator": "FREE VIDEO HAPPY"
+  },
+  "pov": {
+   "file": "px36108436.mp4",
+   "credit": "영상: Pexels",
+   "label": "Pexels video 36108436 by Airam Dato-on (Pexels License)",
+   "url": "https://www.pexels.com/video/driving-on-a-highway-with-overcast-skies-36108436/",
+   "license": "Pexels License",
+   "creator": "Airam Dato-on"
+  },
+  "jam": {
+   "file": "px35186893.mp4",
+   "credit": "영상: Pexels",
+   "label": "Pexels video 35186893 by Nothing Ahead (Pexels License)",
+   "url": "https://www.pexels.com/video/city-highway-traffic-during-daytime-commute-35186893/",
+   "license": "Pexels License",
+   "creator": "Nothing Ahead"
+  },
+  "lane": {
+   "file": "px4608282.mp4",
+   "credit": "영상: Pexels",
+   "label": "Pexels video 4608282 by K (Pexels License)",
+   "url": "https://www.pexels.com/video/vehicle-overtaking-at-the-highway-4608282/",
+   "license": "Pexels License",
+   "creator": "K"
+  },
+  "top": {
+   "file": "px28690652.mp4",
+   "credit": "영상: Pexels",
+   "label": "Pexels video 28690652 by SHOX ART (Pexels License)",
+   "url": "https://www.pexels.com/video/aerial-view-of-busy-highway-in-daylight-28690652/",
+   "license": "Pexels License",
+   "creator": "SHOX ART"
+  }
+ },
+ "clips": [
+  {
+   "src": "bridge",
+   "from": "hook",
+   "in": 0.9,
+   "label": "단속 안내 전광판",
+   "crop": [
+    0.42,
+    0.4,
+    1.0
+   ],
+   "zoom": [
+    1.0,
+    1.04
+   ],
+   "audio": 0
+  },
+  {
+   "src": "aerial",
+   "from": "law",
+   "in": 1,
+   "label": "고속도로 항공",
+   "crop": [
+    0.55,
+    0.5,
+    1.0
+   ],
+   "zoom": [
+    1.0,
+    1.06
+   ],
+   "audio": 0
+  },
+  {
+   "src": "bridge",
+   "from": "law.차로는",
+   "in": 4,
+   "label": "1차로",
+   "crop": [
+    0.38,
+    0.6,
+    1.0
+   ],
+   "zoom": [
+    1.0,
+    1.03
+   ],
+   "audio": 0
+  },
+  {
+   "src": "lane",
+   "from": "back",
+   "in": 44,
+   "label": "추월하는 차",
+   "zoom": [
+    1.0,
+    1.05
+   ],
+   "audio": 0,
+   "crop": [
+    0.5,
+    0.55,
+    1.0
+   ]
+  },
+  {
+   "src": "pov",
+   "from": "fine",
+   "in": 4,
+   "label": "고속도로 주행",
+   "crop": [
+    0.5,
+    0.55,
+    1.0
+   ],
+   "zoom": [
+    1.0,
+    1.06
+   ],
+   "audio": 0
+  },
+  {
+   "src": "top",
+   "from": "fine.승용차는",
+   "in": 2,
+   "label": "고속도로 위에서",
+   "crop": [
+    0.45,
+    0.5,
+    1.0
+   ],
+   "zoom": [
+    1.0,
+    1.06
+   ],
+   "audio": 0
+  },
+  {
+   "src": "jam",
+   "from": "exc",
+   "in": 8,
+   "label": "막히는 도로",
+   "crop": [
+    0.5,
+    0.55,
+    1.0
+   ],
+   "zoom": [
+    1.0,
+    1.05
+   ],
+   "audio": 0
+  },
+  {
+   "src": "top",
+   "from": "exc.차로로",
+   "in": 7,
+   "label": "뚫린 고속도로",
+   "crop": [
+    0.45,
+    0.5,
+    1.0
+   ],
+   "zoom": [
+    1.0,
+    1.05
+   ],
+   "audio": 0
+  },
+  {
+   "src": "bridge",
+   "from": "end",
+   "in": 7,
+   "label": "고속도로 주행",
+   "crop": [
+    0.42,
+    0.55,
+    1.0
+   ],
+   "zoom": [
+    1.0,
+    1.05
+   ],
+   "audio": 0
+  },
+  {
+   "src": "aerial",
+   "from": "end.여러분은",
+   "in": 7,
+   "label": "고속도로 항공",
+   "crop": [
+    0.55,
+    0.5,
+    1.0
+   ],
+   "zoom": [
+    1.02,
+    1.1
+   ],
+   "audio": 0
+  }
+ ],
+ "marks": [
+  {
+   "kind": "arrow",
+   "x": 230,
+   "y": 1190,
+   "rot": 300,
+   "from": "law.차로는",
+   "to": "law@end"
+  }
+ ],
+ "stickers": [
+  {
+   "text": "도로교통법 시행규칙 [별표 9]",
+   "from": "law.차로는",
+   "to": "back-0.1",
+   "y": 540,
+   "size": 40
+  },
+  {
+   "text": "승합차 5만 원 · 2026년 10월 기준",
+   "from": "fine.승용차는",
+   "to": "exc-0.1",
+   "y": 540,
+   "size": 40,
+   "bg": "#fff"
+  }
+ ],
+ "sfx": [
+  [
+   "law",
+   "k_error_003",
+   0.5
+  ],
+  [
+   "law.차로는",
+   "pop",
+   0.6
+  ],
+  [
+   "back",
+   "whoosh",
+   0.4
+  ],
+  [
+   "fine",
+   "whoosh",
+   0.4
+  ],
+  [
+   "fine.승용차는",
+   "coin",
+   0.6
+  ],
+  [
+   "exc",
+   "whoosh",
+   0.4
+  ],
+  [
+   "end",
+   "ding",
+   0.5
+  ]
+ ],
+ "punches": [
+  "fine.지정차로"
+ ],
+ "flashes": [],
+ "music": {
+  "file": "music/Exhilarate.mp3",
+  "gain": 0.1,
+  "start": 0
+ }
+}
