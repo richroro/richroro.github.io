@@ -1,0 +1,450 @@
+{
+ "credit": "",
+ "titleStyle": "band",
+ "captionY": 1650,
+ "sources": {},
+ "music": {
+  "file": "music/monkeys_spinning_monkeys.mp3",
+  "gain": 0.2,
+  "start": 0
+ },
+ "sfx": [
+  [
+   "b",
+   "pop",
+   0.3
+  ],
+  [
+   "c.깨물었다",
+   "k_question_001",
+   0.3
+  ],
+  [
+   "d.커피",
+   "pop",
+   0.25
+  ],
+  [
+   "e",
+   "whoosh_dn",
+   0.3
+  ],
+  [
+   "g",
+   "boing",
+   0.3
+  ],
+  [
+   "h.보리예요",
+   "k_error_003",
+   0.35
+  ],
+  [
+   "i.보리를",
+   "pop_hi",
+   0.3
+  ],
+  [
+   "j.와락",
+   "bubble",
+   0.3
+  ],
+  [
+   "k",
+   "whoosh",
+   0.3
+  ],
+  [
+   "k.결혼했다",
+   "tada",
+   0.3
+  ],
+  [
+   "l.둘이다",
+   "ding",
+   0.3
+  ],
+  [
+   "n.둘",
+   "boing",
+   0.4
+  ]
+ ],
+ "clips": [
+  {
+   "from": "a",
+   "label": "post",
+   "gfx": {
+    "type": "post",
+    "title": "소개팅 상대가 내 이름 듣고 [웃음 참음]",
+    "body": [
+     "첫 소개팅이었는데",
+     "[이름] 말하자마자..."
+    ],
+    "steps": [
+     "a.소개팅",
+     "a.인사를"
+    ]
+   }
+  },
+  {
+   "from": "b",
+   "label": "hello",
+   "gfx": {
+    "type": "scene",
+    "chars": [
+     {
+      "name": "나",
+      "mood": "shy",
+      "color": "#FF9EBB"
+     },
+     {
+      "name": "상대",
+      "mood": "neutral",
+      "color": "#8FD3FF"
+     }
+    ],
+    "place": "📍 소개팅",
+    "say": {
+     "who": 0,
+     "text": "안⁠녕⁠하⁠세⁠요⁠, [⁠보⁠리⁠]⁠예⁠요⁠!"
+    },
+    "prop": "☕",
+    "bg": "linear-gradient(180deg, #fbe7cf 0%, #f2cfa6 100%)"
+   }
+  },
+  {
+   "from": "c",
+   "label": "bite",
+   "gfx": {
+    "type": "scene",
+    "chars": [
+     {
+      "name": "나",
+      "mood": "neutral",
+      "color": "#FF9EBB"
+     },
+     {
+      "name": "상대",
+      "mood": "neutral",
+      "color": "#8FD3FF",
+      "to": "shy"
+     }
+    ],
+    "zoom": 1.1,
+    "focus": 1,
+    "steps": [
+     0,
+     0,
+     "c.깨물었다"
+    ],
+    "bg": "linear-gradient(180deg, #fbe7cf 0%, #f2cfa6 100%)"
+   }
+  },
+  {
+   "from": "d",
+   "label": "meal",
+   "gfx": {
+    "type": "scene",
+    "chars": [
+     {
+      "name": "나",
+      "mood": "think",
+      "color": "#FF9EBB"
+     },
+     {
+      "name": "상대",
+      "mood": "shy",
+      "color": "#8FD3FF"
+     }
+    ],
+    "prop": "🍝",
+    "bg": "linear-gradient(180deg, #fbe7cf 0%, #f2cfa6 100%)"
+   }
+  },
+  {
+   "from": "d.커피",
+   "label": "coffee",
+   "gfx": {
+    "type": "scene",
+    "chars": [
+     {
+      "name": "나",
+      "mood": "think",
+      "color": "#FF9EBB"
+     },
+     {
+      "name": "상대",
+      "mood": "smug",
+      "color": "#8FD3FF"
+     }
+    ],
+    "prop": "☕",
+    "bg": "linear-gradient(180deg, #fbe7cf 0%, #f2cfa6 100%)"
+   }
+  },
+  {
+   "from": "e",
+   "label": "hurt",
+   "gfx": {
+    "type": "scene",
+    "chars": [
+     {
+      "name": "나",
+      "mood": "sad",
+      "color": "#FF9EBB"
+     },
+     {
+      "name": "상대",
+      "mood": "shy",
+      "color": "#8FD3FF"
+     }
+    ],
+    "say": {
+     "who": 0,
+     "text": "내 이⁠름⁠이 [⁠그⁠렇⁠게 웃⁠긴⁠가⁠]⁠.⁠.⁠."
+    },
+    "bg": "linear-gradient(180deg, #fbe7cf 0%, #f2cfa6 100%)"
+   }
+  },
+  {
+   "from": "f",
+   "label": "enough",
+   "gfx": {
+    "type": "scene",
+    "chars": [
+     {
+      "name": "나",
+      "mood": "angry",
+      "color": "#FF9EBB"
+     },
+     {
+      "name": "상대",
+      "mood": "shy",
+      "color": "#8FD3FF"
+     }
+    ],
+    "bg": "linear-gradient(180deg, #fbe7cf 0%, #f2cfa6 100%)"
+   }
+  },
+  {
+   "from": "g",
+   "label": "ask",
+   "gfx": {
+    "type": "scene",
+    "chars": [
+     {
+      "name": "나",
+      "mood": "sad",
+      "color": "#FF9EBB"
+     },
+     {
+      "name": "상대",
+      "mood": "shock",
+      "color": "#8FD3FF"
+     }
+    ],
+    "say": {
+     "who": 0,
+     "text": "저⁠기⁠.⁠.⁠. 왜 자⁠꾸 [⁠웃⁠으⁠세⁠요⁠?⁠]"
+    },
+    "zoom": 1.08,
+    "focus": 0,
+    "bg": "linear-gradient(180deg, #fbe7cf 0%, #f2cfa6 100%)"
+   }
+  },
+  {
+   "from": "h",
+   "label": "dog",
+   "gfx": {
+    "type": "scene",
+    "chars": [
+     {
+      "name": "나",
+      "mood": "neutral",
+      "color": "#FF9EBB",
+      "to": "shock"
+     },
+     {
+      "name": "상대",
+      "mood": "laugh",
+      "color": "#8FD3FF"
+     }
+    ],
+    "say": {
+     "who": 1,
+     "text": "죄⁠송⁠해⁠요⁠.⁠.⁠. 저⁠희 집 [⁠강⁠아⁠지 이⁠름⁠이 보⁠리⁠]⁠예⁠요"
+    },
+    "steps": [
+     0,
+     0,
+     "h.보리예요"
+    ],
+    "bg": "linear-gradient(180deg, #fbe7cf 0%, #f2cfa6 100%)"
+   }
+  },
+  {
+   "from": "i",
+   "label": "meet",
+   "gfx": {
+    "type": "scene",
+    "chars": [
+     {
+      "name": "나",
+      "mood": "happy",
+      "color": "#FF9EBB"
+     },
+     {
+      "name": "상대",
+      "mood": "happy",
+      "color": "#8FD3FF"
+     }
+    ],
+    "place": "📍 다음 주말",
+    "prop": "🐶",
+    "steps": [
+     0,
+     "i.보리를"
+    ],
+    "bg": "street"
+   }
+  },
+  {
+   "from": "j",
+   "label": "hug",
+   "gfx": {
+    "type": "scene",
+    "chars": [
+     {
+      "name": "나",
+      "mood": "love",
+      "color": "#FF9EBB"
+     }
+    ],
+    "prop": "🐶💕",
+    "steps": [
+     0,
+     "j.와락"
+    ],
+    "bg": "street"
+   }
+  },
+  {
+   "from": "k",
+   "label": "3y",
+   "gfx": {
+    "type": "scene",
+    "chars": [],
+    "card": "3년 뒤...",
+    "bg": "home"
+   }
+  },
+  {
+   "from": "k.결혼했다",
+   "label": "wedding",
+   "gfx": {
+    "type": "scene",
+    "chars": [
+     {
+      "name": "나",
+      "mood": "love",
+      "color": "#FF9EBB"
+     },
+     {
+      "name": "남편",
+      "mood": "love",
+      "color": "#8FD3FF"
+     }
+    ],
+    "prop": "💍",
+    "bg": "stage",
+    "sign": "결혼합니다"
+   }
+  },
+  {
+   "from": "l",
+   "label": "two",
+   "gfx": {
+    "type": "scene",
+    "chars": [
+     {
+      "name": "나",
+      "mood": "happy",
+      "color": "#FF9EBB"
+     },
+     {
+      "name": "남편",
+      "mood": "happy",
+      "color": "#8FD3FF"
+     }
+    ],
+    "place": "📍 우리 집",
+    "prop": "🐶",
+    "big": "보리 × [2]",
+    "steps": [
+     0,
+     0.1,
+     9,
+     "l.둘이다"
+    ],
+    "bg": "home"
+   }
+  },
+  {
+   "from": "m",
+   "label": "call",
+   "gfx": {
+    "type": "scene",
+    "chars": [
+     {
+      "name": "나",
+      "mood": "neutral",
+      "color": "#FF9EBB"
+     },
+     {
+      "name": "남편",
+      "mood": "happy",
+      "color": "#8FD3FF"
+     }
+    ],
+    "say": {
+     "who": 1,
+     "text": "보⁠리⁠야⁠~⁠!"
+    },
+    "prop": "🐶",
+    "bg": "home"
+   }
+  },
+  {
+   "from": "n",
+   "label": "both",
+   "gfx": {
+    "type": "scene",
+    "chars": [
+     {
+      "name": "나",
+      "mood": "laugh",
+      "color": "#FF9EBB",
+      "x": 0.45
+     },
+     {
+      "name": "남편",
+      "mood": "laugh",
+      "color": "#8FD3FF",
+      "x": 0.8
+     }
+    ],
+    "prop": "🐶",
+    "propX": 0.14,
+    "big": "[둘 다] 옴",
+    "steps": [
+     0,
+     0,
+     9,
+     "n.둘"
+    ],
+    "bg": "home"
+   }
+  }
+ ]
+}

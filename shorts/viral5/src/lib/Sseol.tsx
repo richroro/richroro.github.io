@@ -119,7 +119,7 @@ export const Mochi: React.FC<{ c: Char; i: number; t: number; size: number; mood
 
 /** simple drawn backdrops, so each place reads at a glance; h is the box height, the floor is the bottom 260 px.
  *  `sign` is written on the place's board (chalkboard, stage banner, barracks notice, shop sign) */
-const Backdrop: React.FC<{ kind: string; h: number; sign?: string }> = ({ kind, h, sign }) => {
+const Backdrop: React.FC<{ kind: string; h: number; sign?: string; tagged?: boolean }> = ({ kind, h, sign, tagged }) => {
   const F = h - 260, box = (st: React.CSSProperties, k?: number) => <div key={k} style={{ position: "absolute", ...st }} />;
   const wall = (c1: string, c2: string, floor: string) => (
     <>{box({ inset: 0, background: `linear-gradient(180deg, ${c1}, ${c2})` })}{box({ left: 0, right: 0, top: F, bottom: 0, background: floor })}
@@ -127,7 +127,7 @@ const Backdrop: React.FC<{ kind: string; h: number; sign?: string }> = ({ kind, 
   );
   const write = (left: number, top: number, width: number, height: number, color: string, size = 64) => sign ? (
     <div style={{ position: "absolute", left, top, width, height, display: "flex", justifyContent: "center", alignItems: "center", textAlign: "center",
-      fontFamily: BODY, fontWeight: 900, fontSize: Math.min(size, fitText({ text: sign, withinWidth: width - 60, fontFamily: BODY, fontWeight: "900" }).fontSize), color, lineHeight: 1.2 }}>{sign}</div>
+      fontFamily: BODY, fontWeight: 900, fontSize: Math.min(size, fitText({ text: sign, withinWidth: width - 60, fontFamily: BODY, fontWeight: "900" }).fontSize), color, lineHeight: 1.2, wordBreak: "keep-all" }}>{sign}</div>
   ) : null;
   switch (kind) {
     case "class": return (<>{wall("#f6efdc", "#efe3c4", "#c99a64")}
@@ -145,7 +145,7 @@ const Backdrop: React.FC<{ kind: string; h: number; sign?: string }> = ({ kind, 
         box({ left: x, top, width: w, height: F - top, background: k % 2 ? "#b9c8dc" : "#cdd8e6", borderRadius: "10px 10px 0 0" }, k))}
       {box({ left: 0, right: 0, top: F, bottom: 0, background: "#9aa3ad" })}{box({ left: 0, right: 0, top: F, height: 26, background: "#d8dde2" })}</>);
     case "store": return (<>{wall("#fbfbf6", "#f1f1ea", "#dcdfe3")}
-      {box({ left: 0, right: 0, top: 0, height: 120, background: "linear-gradient(90deg,#2bb3a0,#3d7bd9)" })}{write(0, 0, 1080, 120, "white", 62)}
+      {box({ left: 0, right: 0, top: 0, height: 120, background: "linear-gradient(90deg,#2bb3a0,#3d7bd9)" })}{tagged ? write(400, 0, 680, 120, "white", 62) : write(0, 0, 1080, 120, "white", 62)}
       {[200, 350, 500].map((y, k) => <div key={k} style={{ position: "absolute", left: 60, right: 60, top: y, height: 110, display: "flex", gap: 14, alignItems: "flex-end", borderBottom: "14px solid #b8bec7" }}>
         {Array.from({ length: 12 }, (_, j) => <div key={j} style={{ flex: 1, height: 60 + ((j * 37 + k * 11) % 40), borderRadius: 8, background: PALETTE[(j + k) % PALETTE.length] }} />)}
       </div>)}</>);
@@ -186,13 +186,13 @@ export const Scene: React.FC<{ g: SceneG & { steps?: number[] }; t: number; h: n
     bubble = { left, top: Math.max(120, foot - (sz[g.say.who] ?? size) - bh - 64), w, size: fs, tail: clamp(sx - left - 30, 34, w - 94) };
   }
   const bub = bubble ? eBack(prog(t, sayAt, 0.28), 2.2) : 0;
-  const px = g.propX ?? (n === 1 ? Math.min(0.84, xs[0] + 0.36) : 0.5), py = n === 1 ? baseY + 40 : baseY - 70;
+  const px = g.propX ?? (n === 1 ? Math.min(0.84, xs[0] + 0.36) : 0.5), py = n === 1 ? baseY + 40 : n === 2 ? baseY - 70 : baseY - 200;
   const z = 1 + ((g.zoom ?? 1) - 1) * eInOut(prog(t, 0, 3));
   const fx = g.focus != null ? xs[g.focus] * 1080 : 540;
   return (
     <div style={{ position: "absolute", inset: 0, overflow: "hidden" }}>
       <div style={{ position: "absolute", inset: 0, transform: `scale(${z})`, transformOrigin: `${fx}px ${baseY + size / 2}px` }}>
-        <Backdrop kind={g.bg ?? "linear-gradient(180deg, #fff6e8 0%, #ffe9cf 100%)"} h={h} sign={g.sign} />
+        <Backdrop kind={g.bg ?? "linear-gradient(180deg, #fff6e8 0%, #ffe9cf 100%)"} h={h} sign={g.sign} tagged={!!g.place} />
         {g.prop ? (
           <div style={{ position: "absolute", left: px * 1080, top: py, fontSize: 190, lineHeight: 1, whiteSpace: "nowrap",
             transform: `translateX(-50%) scale(${eBack(prog(t, propAt, 0.3), 2.4)}) rotate(${6 * Math.sin(t * 4)}deg)`, filter: "drop-shadow(0 10px 10px rgba(0,0,0,.25))" }}>{g.prop}</div>
@@ -224,7 +224,7 @@ export const Scene: React.FC<{ g: SceneG & { steps?: number[] }; t: number; h: n
       {bubble && g.say ? (
         <div style={{ position: "absolute", left: bubble.left, top: bubble.top, width: bubble.w, transform: `scale(${bub})`, transformOrigin: `${bubble.tail + 30}px 100%`, opacity: clamp(bub * 2) }}>
           <div style={{ position: "relative", background: "white", border: `6px solid ${INK}`, borderRadius: 40, padding: "24px 40px", boxShadow: `8px 8px 0 ${INK}`,
-            fontFamily: BODY, fontWeight: 900, fontSize: bubble.size, lineHeight: 1.25, color: INK, textAlign: "center" }}>
+            fontFamily: BODY, fontWeight: 900, fontSize: bubble.size, lineHeight: 1.25, color: INK, textAlign: "center", wordBreak: "keep-all" }}>
             <Marked text={g.say.text} color="#e8212e" />
             <svg width={60} height={50} style={{ position: "absolute", left: bubble.tail - 6, bottom: -46 }} viewBox="0 0 60 50">
               <path d="M6 0 L30 46 L54 0 Z" fill="white" stroke={INK} strokeWidth={6} strokeLinejoin="round" />
