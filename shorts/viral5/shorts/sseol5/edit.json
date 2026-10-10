@@ -23,13 +23,13 @@
    0.25
   ],
   [
-   "l",
+   "j",
    "k_error_003",
    0.25
   ],
   [
    "o",
-   "coin",
+   "boing",
    0.3
   ]
  ],
@@ -53,7 +53,6 @@
        "topKind": "vest",
        "pants": "#3d4a66"
       },
-      "name": "나",
       "mood": "shock",
       "x": 0.28
      },
@@ -67,7 +66,6 @@
        "topKind": "cardigan",
        "glasses": true
       },
-      "name": "할아버지",
       "mood": "happy",
       "x": 0.72
      }
@@ -118,7 +116,7 @@
        "topKind": "vest",
        "mustache": true
       },
-      "mood": "neutral",
+      "mood": "shy",
       "size": 1.55
      }
     ]
@@ -144,6 +142,7 @@
        "topKind": "cardigan",
        "glasses": true
       },
+      "name": "할아버지",
       "mood": "neutral",
       "x": 0.62,
       "size": 1.1
@@ -159,7 +158,7 @@
     "bg": "store",
     "sign": "24시 편의점",
     "prop": "🥛🍞",
-    "propX": 0.72,
+    "propX": 0.75,
     "chars": [
      {
       "style": "chibi",
@@ -171,8 +170,8 @@
        "topKind": "cardigan",
        "glasses": true
       },
-      "mood": "happy",
-      "x": 0.3,
+      "mood": "think",
+      "x": 0.35,
       "size": 1.1
      }
     ]
@@ -196,7 +195,7 @@
        "topKind": "cardigan",
        "glasses": true
       },
-      "mood": "neutral",
+      "mood": "smug",
       "size": 1.55
      }
     ]
@@ -209,6 +208,8 @@
     "type": "scene",
     "bg": "store",
     "sign": "24시 편의점",
+    "prop": "💦",
+    "propX": 0.84,
     "chars": [
      {
       "style": "chibi",
@@ -231,31 +232,6 @@
    "label": "h",
    "gfx": {
     "type": "scene",
-    "bg": "store",
-    "sign": "24시 편의점",
-    "chars": [
-     {
-      "style": "chibi",
-      "look": {
-       "age": "old",
-       "hairdo": "bald",
-       "hair": "#d9d9de",
-       "top": "#8a6f55",
-       "topKind": "cardigan",
-       "glasses": true
-      },
-      "mood": "laugh",
-      "x": 0.5,
-      "size": 1.35
-     }
-    ]
-   }
-  },
-  {
-   "from": "i",
-   "label": "i",
-   "gfx": {
-    "type": "scene",
     "bg": "night",
     "big": "[30]일째",
     "chars": [
@@ -269,7 +245,7 @@
        "topKind": "cardigan",
        "glasses": true
       },
-      "mood": "happy",
+      "mood": "neutral",
       "x": 0.3
      },
      {
@@ -281,20 +257,20 @@
        "topKind": "vest",
        "pants": "#3d4a66"
       },
-      "mood": "happy",
+      "mood": "shy",
       "x": 0.72
      }
     ]
    }
   },
   {
-   "from": "j",
-   "label": "j",
+   "from": "i",
+   "label": "i",
    "gfx": {
     "type": "scene",
     "bg": "store",
     "sign": "24시 편의점",
-    "prop": "🏷️",
+    "prop": "📋",
     "propX": 0.84,
     "chars": [
      {
@@ -309,7 +285,33 @@
       },
       "mood": "think",
       "x": 0.45,
-      "size": 1.45
+      "size": 1.4
+     }
+    ]
+   }
+  },
+  {
+   "from": "j",
+   "label": "j",
+   "gfx": {
+    "type": "scene",
+    "bg": "store",
+    "sign": "24시 편의점",
+    "zoom0": 1.0,
+    "zoom": 1.08,
+    "chars": [
+     {
+      "style": "chibi",
+      "look": {
+       "age": "old",
+       "hairdo": "bald",
+       "hair": "#d9d9de",
+       "top": "#8a6f55",
+       "topKind": "cardigan",
+       "glasses": true
+      },
+      "mood": "angry",
+      "size": 1.55
      }
     ]
    }
@@ -333,45 +335,8 @@
        "glasses": true
       },
       "mood": "smug",
-      "size": 1.55
-     }
-    ]
-   }
-  },
-  {
-   "from": "l",
-   "label": "l",
-   "gfx": {
-    "type": "scene",
-    "bg": "store",
-    "sign": "24시 편의점",
-    "chars": [
-     {
-      "style": "chibi",
-      "look": {
-       "age": "old",
-       "hairdo": "bald",
-       "hair": "#d9d9de",
-       "top": "#8a6f55",
-       "topKind": "cardigan",
-       "glasses": true
-      },
-      "name": "할아버지",
-      "mood": "laugh",
-      "x": 0.28
-     },
-     {
-      "style": "chibi",
-      "look": {
-       "hairdo": "side",
-       "hair": "#3a3030",
-       "top": "#3cb4a5",
-       "topKind": "vest",
-       "mustache": true
-      },
-      "name": "사장님",
-      "mood": "happy",
-      "x": 0.5
+      "x": 0.4,
+      "size": 1.3
      },
      {
       "style": "chibi",
@@ -382,22 +347,20 @@
        "topKind": "vest",
        "pants": "#3d4a66"
       },
-      "name": "나",
       "mood": "shock",
-      "x": 0.8,
-      "size": 0.9
+      "x": 0.82,
+      "size": 0.85
      }
     ]
    }
   },
   {
-   "from": "m",
-   "label": "m",
+   "from": "l",
+   "label": "l",
    "gfx": {
     "type": "scene",
-    "bg": "night",
-    "prop": "🔍",
-    "propX": 0.2,
+    "bg": "home",
+    "place": "📍 1년 전",
     "chars": [
      {
       "style": "chibi",
@@ -409,7 +372,43 @@
        "topKind": "cardigan",
        "glasses": true
       },
-      "mood": "smug",
+      "mood": "neutral",
+      "x": 0.3
+     },
+     {
+      "style": "chibi",
+      "look": {
+       "hairdo": "side",
+       "hair": "#3a3030",
+       "top": "#3cb4a5",
+       "topKind": "vest",
+       "mustache": true
+      },
+      "mood": "happy",
+      "x": 0.72
+     }
+    ]
+   }
+  },
+  {
+   "from": "m",
+   "label": "m",
+   "gfx": {
+    "type": "scene",
+    "bg": "bedroom",
+    "prop": "💤",
+    "propX": 0.2,
+    "chars": [
+     {
+      "style": "chibi",
+      "look": {
+       "hairdo": "side",
+       "hair": "#3a3030",
+       "top": "#9fb8ff",
+       "topKind": "tee",
+       "mustache": true
+      },
+      "mood": "sleep",
       "x": 0.55,
       "size": 1.25
      }
@@ -421,22 +420,21 @@
    "label": "n",
    "gfx": {
     "type": "scene",
-    "bg": "bedroom",
-    "prop": "📱",
-    "propX": 0.72,
+    "bg": "store",
+    "sign": "24시 편의점",
     "chars": [
      {
       "style": "chibi",
       "look": {
-       "hairdo": "short",
-       "hair": "#2a2a30",
-       "top": "#3cb4a5",
-       "topKind": "vest",
-       "pants": "#3d4a66"
+       "age": "old",
+       "hairdo": "bald",
+       "hair": "#d9d9de",
+       "top": "#8a6f55",
+       "topKind": "cardigan",
+       "glasses": true
       },
-      "mood": "think",
-      "x": 0.3,
-      "size": 1.1
+      "mood": "happy",
+      "size": 1.5
      }
     ]
    }
@@ -446,8 +444,7 @@
    "label": "o",
    "gfx": {
     "type": "scene",
-    "bg": "bedroom",
-    "big": "💸 [UP]",
+    "bg": "night",
     "chars": [
      {
       "style": "chibi",
@@ -458,8 +455,20 @@
        "topKind": "vest",
        "pants": "#3d4a66"
       },
-      "mood": "shock",
-      "size": 1.55
+      "mood": "laugh",
+      "x": 0.3
+     },
+     {
+      "style": "chibi",
+      "look": {
+       "hairdo": "side",
+       "hair": "#3a3030",
+       "top": "#3cb4a5",
+       "topKind": "vest",
+       "mustache": true
+      },
+      "mood": "cry",
+      "x": 0.72
      }
     ]
    }
@@ -471,6 +480,8 @@
     "type": "scene",
     "bg": "store",
     "sign": "24시 편의점",
+    "prop": "🥱",
+    "propX": 0.85,
     "chars": [
      {
       "style": "chibi",
@@ -481,20 +492,9 @@
        "topKind": "vest",
        "mustache": true
       },
-      "mood": "laugh",
-      "x": 0.3
-     },
-     {
-      "style": "chibi",
-      "look": {
-       "hairdo": "short",
-       "hair": "#2a2a30",
-       "top": "#3cb4a5",
-       "topKind": "vest",
-       "pants": "#3d4a66"
-      },
-      "mood": "love",
-      "x": 0.72
+      "mood": "sleep",
+      "x": 0.45,
+      "size": 1.45
      }
     ]
    }

@@ -1,421 +1,527 @@
 {
  "credit": "",
- "titleStyle": "band",
- "captionY": 1650,
+ "postFrame": {
+  "app": "썰방",
+  "color": "#FF8A4C",
+  "meta": "익명 | 창작 사연게시판"
+ },
  "sources": {},
  "music": {
   "file": "music/sneaky_snitch.mp3",
-  "gain": 0.2,
+  "gain": 0.16,
   "start": 0
  },
  "sfx": [
   [
-   "a.사탕을",
+   "a",
    "pop",
-   0.3
-  ],
-  [
-   "b.몰래",
-   "pop_hi",
-   0.3
-  ],
-  [
-   "c.소문이",
-   "k_question_001",
-   0.3
-  ],
-  [
-   "d",
-   "bubble",
-   0.3
+   0.25
   ],
   [
    "e",
    "bubble",
-   0.3
+   0.25
   ],
   [
-   "f",
-   "whoosh",
-   0.3
-  ],
-  [
-   "g",
-   "boing",
-   0.3
-  ],
-  [
-   "h.길어지시더라고요",
+   "i",
    "k_error_003",
-   0.3
+   0.25
   ],
   [
-   "i.거른",
-   "ding",
-   0.3
-  ],
-  [
-   "j.십",
+   "l",
    "tada",
-   0.35
+   0.25
   ],
   [
-   "k.끝",
+   "o",
    "pop_hi",
-   0.35
-  ],
-  [
-   "l.팀",
-   "coin",
    0.3
   ]
  ],
  "clips": [
   {
    "from": "a",
-   "label": "post",
-   "gfx": {
-    "type": "post",
-    "title": "신입이 매일 아침 팀장님 책상에 [사탕]을 둠",
-    "body": [
-     "아무도 없는 시간에",
-     "[몰래] 하나씩..."
-    ],
-    "steps": [
-     "a.매일",
-     "a.팀장님"
-    ],
-    "chars": [
-     {
-      "name": "신입",
-      "mood": "shy",
-      "color": "#FFB36B"
-     },
-     {
-      "name": "팀장님",
-      "mood": "happy",
-      "color": "#C9A7FF"
-     }
-    ]
-   }
-  },
-  {
-   "from": "a.책상에",
-   "label": "desk",
+   "label": "a",
    "gfx": {
     "type": "scene",
-    "chars": [
-     {
-      "name": "신입",
-      "mood": "shy",
-      "color": "#FFB36B"
-     }
-    ],
     "bg": "office",
     "prop": "🍬",
-    "steps": [
-     0,
-     "a.사탕을"
+    "propX": 0.5,
+    "chars": [
+     {
+      "style": "chibi",
+      "look": {
+       "hairdo": "bob",
+       "hair": "#5a3a22",
+       "top": "#ffd84d",
+       "topKind": "cardigan",
+       "acc": "pin",
+       "accColor": "#ff5c8a"
+      },
+      "name": "신입",
+      "mood": "smug",
+      "x": 0.3
+     },
+     {
+      "style": "chibi",
+      "look": {
+       "hairdo": "side",
+       "hair": "#555560",
+       "top": "#2f3a4f",
+       "topKind": "suit",
+       "glasses": true,
+       "accColor": "#d33b3b"
+      },
+      "name": "팀장님",
+      "mood": "think",
+      "x": 0.72
+     }
     ]
    }
   },
   {
    "from": "b",
-   "label": "sneak",
+   "label": "b",
    "gfx": {
     "type": "scene",
+    "bg": "office",
+    "prop": "🍬",
+    "propX": 0.72,
     "chars": [
      {
-      "name": "신입",
-      "mood": "shy",
-      "color": "#FFB36B"
+      "style": "chibi",
+      "look": {
+       "hairdo": "side",
+       "hair": "#555560",
+       "top": "#2f3a4f",
+       "topKind": "suit",
+       "glasses": true,
+       "accColor": "#d33b3b"
+      },
+      "mood": "shock",
+      "x": 0.3,
+      "size": 1.1
      }
-    ],
-    "place": "📍 아침 사무실",
-    "prop": "🍬",
-    "steps": [
-     0,
-     0.1
-    ],
-    "bg": "office"
+    ]
    }
   },
   {
    "from": "c",
-   "label": "rumor",
+   "label": "c",
    "gfx": {
     "type": "scene",
+    "bg": "office",
     "chars": [
      {
-      "name": "선배",
+      "style": "chibi",
+      "look": {
+       "hairdo": "spiky",
+       "hair": "#7a4a2a",
+       "top": "#9be07b",
+       "topKind": "shirt"
+      },
+      "mood": "think",
+      "x": 0.2,
+      "size": 0.9
+     },
+     {
+      "style": "chibi",
+      "look": {
+       "hairdo": "long",
+       "hair": "#2b2222",
+       "top": "#ff9eb5",
+       "topKind": "shirt"
+      },
       "mood": "smug",
-      "color": "#8FD3FF"
+      "x": 0.5,
+      "size": 0.9
      },
      {
-      "name": "나",
-      "mood": "think"
-     },
-     {
-      "name": "동료",
-      "mood": "shy",
-      "color": "#FF9EBB"
+      "style": "chibi",
+      "look": {
+       "hairdo": "short",
+       "hair": "#2a2a30",
+       "top": "#6f8fd9",
+       "topKind": "shirt",
+       "pants": "#3d4a66"
+      },
+      "mood": "shock",
+      "x": 0.8,
+      "size": 0.9
      }
-    ],
-    "bg": "office"
+    ]
    }
   },
   {
    "from": "d",
-   "label": "suck",
+   "label": "d",
    "gfx": {
     "type": "scene",
+    "bg": "office",
     "chars": [
      {
-      "name": "선배",
+      "style": "chibi",
+      "look": {
+       "hairdo": "spiky",
+       "hair": "#7a4a2a",
+       "top": "#9be07b",
+       "topKind": "shirt"
+      },
       "mood": "smug",
-      "color": "#8FD3FF"
-     },
-     {
-      "name": "나",
-      "mood": "think"
-     },
-     {
-      "name": "동료",
-      "mood": "neutral",
-      "color": "#FF9EBB"
+      "size": 1.5
      }
-    ],
-    "say": {
-     "who": 0,
-     "text": "저⁠거 완⁠전 [⁠아⁠부⁠]⁠하⁠는 거⁠지⁠."
-    },
-    "bg": "office"
+    ]
    }
   },
   {
    "from": "e",
-   "label": "crush",
+   "label": "e",
    "gfx": {
     "type": "scene",
+    "bg": "office",
+    "prop": "💘",
+    "propX": 0.85,
     "chars": [
      {
-      "name": "선배",
-      "mood": "neutral",
-      "color": "#8FD3FF"
-     },
-     {
-      "name": "나",
-      "mood": "think"
-     },
-     {
-      "name": "동료",
+      "style": "chibi",
+      "look": {
+       "hairdo": "long",
+       "hair": "#2b2222",
+       "top": "#ff9eb5",
+       "topKind": "shirt"
+      },
       "mood": "love",
-      "color": "#FF9EBB"
+      "x": 0.45,
+      "size": 1.45
      }
-    ],
-    "say": {
-     "who": 2,
-     "text": "아⁠니⁠야⁠, 팀⁠장⁠님 [⁠좋⁠아⁠하⁠는 거⁠야⁠]⁠."
-    },
-    "bg": "office"
+    ]
    }
   },
   {
    "from": "f",
-   "label": "8am",
+   "label": "f",
    "gfx": {
     "type": "scene",
-    "chars": [],
-    "card": "오전 [8:00]",
-    "bg": "office"
+    "bg": "office",
+    "chars": [
+     {
+      "style": "chibi",
+      "look": {
+       "hairdo": "short",
+       "hair": "#2a2a30",
+       "top": "#6f8fd9",
+       "topKind": "shirt",
+       "pants": "#3d4a66"
+      },
+      "name": "나",
+      "mood": "think",
+      "x": 0.3
+     },
+     {
+      "style": "chibi",
+      "look": {
+       "hairdo": "bob",
+       "hair": "#5a3a22",
+       "top": "#ffd84d",
+       "topKind": "cardigan",
+       "acc": "pin",
+       "accColor": "#ff5c8a"
+      },
+      "name": "신입",
+      "mood": "neutral",
+      "x": 0.72
+     }
+    ]
    }
   },
   {
    "from": "g",
-   "label": "ask",
+   "label": "g",
    "gfx": {
     "type": "scene",
+    "bg": "office",
     "chars": [
      {
-      "name": "나",
-      "mood": "think"
-     },
-     {
-      "name": "신입",
-      "mood": "shock",
-      "color": "#FFB36B"
+      "style": "chibi",
+      "look": {
+       "hairdo": "short",
+       "hair": "#2a2a30",
+       "top": "#6f8fd9",
+       "topKind": "shirt",
+       "pants": "#3d4a66"
+      },
+      "mood": "smug",
+      "size": 1.5
      }
-    ],
-    "prop": "🍬",
-    "say": {
-     "who": 0,
-     "text": "저⁠기⁠.⁠.⁠. 사⁠탕⁠은 [⁠왜⁠] 두⁠는 거⁠야⁠?"
-    },
-    "steps": [
-     0,
-     0.1
-    ],
-    "bg": "office"
+    ]
    }
   },
   {
    "from": "h",
-   "label": "reason",
+   "label": "h",
    "gfx": {
     "type": "scene",
+    "bg": "office",
+    "prop": "📋",
+    "propX": 0.84,
     "chars": [
      {
-      "name": "나",
+      "style": "chibi",
+      "look": {
+       "hairdo": "bob",
+       "hair": "#5a3a22",
+       "top": "#ffd84d",
+       "topKind": "cardigan",
+       "acc": "pin",
+       "accColor": "#ff5c8a"
+      },
       "mood": "neutral",
-      "to": "shock"
-     },
-     {
-      "name": "신입",
-      "mood": "smug",
-      "color": "#FFB36B"
+      "x": 0.45,
+      "size": 1.45
      }
-    ],
-    "say": {
-     "who": 1,
-     "text": "팀⁠장⁠님⁠은 배⁠고⁠프⁠시⁠면⁠, [⁠회⁠의⁠가 길⁠어⁠지⁠시⁠더⁠라⁠고⁠요⁠.⁠]"
-    },
-    "steps": [
-     0,
-     0,
-     "h.길어지시더라고요"
-    ],
-    "bg": "office"
+    ]
    }
   },
   {
    "from": "i",
-   "label": "data",
+   "label": "i",
    "gfx": {
     "type": "scene",
-    "chars": [
-     {
-      "name": "팀장님",
-      "mood": "sick",
-      "color": "#C9A7FF",
-      "size": 1.08
-     }
-    ],
-    "prop": "⏰",
-    "big": "회의 [2시간]",
-    "steps": [
-     0,
-     0.1,
-     9,
-     "i.거른"
-    ],
-    "bg": "office"
-   }
-  },
-  {
-   "from": "i.전부",
-   "label": "skipped",
-   "gfx": {
-    "type": "scene",
-    "chars": [
-     {
-      "name": "팀장님",
-      "mood": "sick",
-      "color": "#C9A7FF",
-      "size": 1.08
-     }
-    ],
     "bg": "office",
-    "place": "📍 아침 거른 날",
-    "prop": "🍞❌",
+    "place": "📍 회의실",
+    "big": "⏰ [2시간]",
     "steps": [
      0,
-     0.1
+     0,
+     9,
+     0.3
+    ],
+    "chars": [
+     {
+      "style": "chibi",
+      "look": {
+       "hairdo": "side",
+       "hair": "#555560",
+       "top": "#2f3a4f",
+       "topKind": "suit",
+       "glasses": true,
+       "accColor": "#d33b3b"
+      },
+      "mood": "angry",
+      "x": 0.5,
+      "size": 1.2
+     }
     ]
    }
   },
   {
    "from": "j",
-   "label": "10min",
+   "label": "j",
    "gfx": {
     "type": "scene",
+    "bg": "desk",
+    "prop": "📒",
+    "propX": 0.72,
     "chars": [
      {
-      "name": "팀장님",
-      "mood": "happy",
-      "color": "#C9A7FF",
-      "size": 1.08
-     },
-     {
-      "name": "신입",
-      "mood": "smug",
-      "color": "#FFB36B"
+      "style": "chibi",
+      "look": {
+       "hairdo": "bob",
+       "hair": "#5a3a22",
+       "top": "#ffd84d",
+       "topKind": "cardigan",
+       "acc": "pin",
+       "accColor": "#ff5c8a"
+      },
+      "mood": "think",
+      "x": 0.3,
+      "size": 1.1
      }
-    ],
-    "prop": "🍬",
-    "big": "회의 [10분]",
-    "steps": [
-     0,
-     0.1,
-     9,
-     "j.십"
-    ],
-    "bg": "office"
+    ]
    }
   },
   {
    "from": "k",
-   "label": "done",
+   "label": "k",
    "gfx": {
     "type": "scene",
+    "bg": "office",
+    "prop": "🍬",
+    "propX": 0.85,
     "chars": [
      {
-      "name": "팀장님",
-      "mood": "laugh",
-      "color": "#C9A7FF",
-      "size": 1.08
-     },
-     {
-      "name": "나",
-      "mood": "love"
+      "style": "chibi",
+      "look": {
+       "hairdo": "side",
+       "hair": "#555560",
+       "top": "#2f3a4f",
+       "topKind": "suit",
+       "glasses": true,
+       "accColor": "#d33b3b"
+      },
+      "mood": "love",
+      "x": 0.45,
+      "size": 1.4
      }
-    ],
-    "prop": "🍬",
-    "say": {
-     "who": 0,
-     "text": "자⁠, 오⁠늘 회⁠의 [⁠끝⁠!⁠]"
-    },
-    "bg": "office"
+    ]
    }
   },
   {
    "from": "l",
-   "label": "chipin",
+   "label": "l",
    "gfx": {
     "type": "scene",
+    "bg": "office",
+    "place": "📍 회의실",
     "chars": [
      {
-      "name": "선배",
+      "style": "chibi",
+      "look": {
+       "hairdo": "side",
+       "hair": "#555560",
+       "top": "#2f3a4f",
+       "topKind": "suit",
+       "glasses": true,
+       "accColor": "#d33b3b"
+      },
       "mood": "happy",
-      "color": "#8FD3FF"
+      "x": 0.25
      },
      {
-      "name": "나",
-      "mood": "laugh"
+      "style": "chibi",
+      "look": {
+       "hairdo": "spiky",
+       "hair": "#7a4a2a",
+       "top": "#9be07b",
+       "topKind": "shirt"
+      },
+      "mood": "shock",
+      "x": 0.52,
+      "size": 0.9
      },
      {
-      "name": "동료",
-      "mood": "happy",
-      "color": "#FF9EBB"
+      "style": "chibi",
+      "look": {
+       "hairdo": "long",
+       "hair": "#2b2222",
+       "top": "#ff9eb5",
+       "topKind": "shirt"
+      },
+      "mood": "shock",
+      "x": 0.8,
+      "size": 0.9
      }
-    ],
-    "big": "사탕값 [N빵] 🍬",
-    "steps": [
-     0,
-     0,
-     9,
-     "l.팀"
-    ],
-    "bg": "office"
+    ]
+   }
+  },
+  {
+   "from": "m",
+   "label": "m",
+   "gfx": {
+    "type": "scene",
+    "bg": "office",
+    "chars": [
+     {
+      "style": "chibi",
+      "look": {
+       "hairdo": "side",
+       "hair": "#555560",
+       "top": "#2f3a4f",
+       "topKind": "suit",
+       "glasses": true,
+       "accColor": "#d33b3b"
+      },
+      "mood": "happy",
+      "size": 1.55
+     }
+    ]
+   }
+  },
+  {
+   "from": "n",
+   "label": "n",
+   "gfx": {
+    "type": "scene",
+    "bg": "office",
+    "prop": "🪙",
+    "propX": 0.5,
+    "chars": [
+     {
+      "style": "chibi",
+      "look": {
+       "hairdo": "spiky",
+       "hair": "#7a4a2a",
+       "top": "#9be07b",
+       "topKind": "shirt"
+      },
+      "mood": "happy",
+      "x": 0.2,
+      "size": 0.9
+     },
+     {
+      "style": "chibi",
+      "look": {
+       "hairdo": "short",
+       "hair": "#2a2a30",
+       "top": "#6f8fd9",
+       "topKind": "shirt",
+       "pants": "#3d4a66"
+      },
+      "mood": "happy",
+      "x": 0.5,
+      "size": 0.9
+     },
+     {
+      "style": "chibi",
+      "look": {
+       "hairdo": "long",
+       "hair": "#2b2222",
+       "top": "#ff9eb5",
+       "topKind": "shirt"
+      },
+      "mood": "happy",
+      "x": 0.8,
+      "size": 0.9
+     }
+    ]
+   }
+  },
+  {
+   "from": "o",
+   "label": "o",
+   "gfx": {
+    "type": "scene",
+    "bg": "office",
+    "prop": "🍬🍬",
+    "propX": 0.5,
+    "chars": [
+     {
+      "style": "chibi",
+      "look": {
+       "hairdo": "bob",
+       "hair": "#5a3a22",
+       "top": "#ffd84d",
+       "topKind": "cardigan",
+       "acc": "pin",
+       "accColor": "#ff5c8a"
+      },
+      "mood": "smug",
+      "x": 0.3
+     },
+     {
+      "style": "chibi",
+      "look": {
+       "hairdo": "side",
+       "hair": "#555560",
+       "top": "#2f3a4f",
+       "topKind": "suit",
+       "glasses": true,
+       "accColor": "#d33b3b"
+      },
+      "mood": "shock",
+      "x": 0.72
+     }
+    ]
    }
   }
  ]

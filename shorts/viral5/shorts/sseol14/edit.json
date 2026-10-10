@@ -1,393 +1,470 @@
 {
  "credit": "",
- "titleStyle": "band",
- "captionY": 1650,
+ "postFrame": {
+  "app": "썰방",
+  "color": "#FF8A4C",
+  "meta": "익명 | 창작 사연게시판"
+ },
  "sources": {},
  "music": {
   "file": "music/hyperfun.mp3",
-  "gain": 0.2,
+  "gain": 0.15,
   "start": 0
  },
  "sfx": [
   [
-   "c",
-   "tada",
-   0.25
-  ],
-  [
-   "d",
+   "a",
    "pop",
-   0.3
-  ],
-  [
-   "e",
-   "whoosh",
    0.25
   ],
   [
    "f",
-   "pop",
+   "ding",
    0.3
   ],
   [
-   "g.오신다",
-   "boing",
-   0.3
-  ],
-  [
-   "h",
-   "pop",
-   0.25
-  ],
-  [
-   "i.오신다",
-   "k_error_003",
-   0.3
-  ],
-  [
-   "k.오신다",
-   "boing",
-   0.3
-  ],
-  [
-   "l.한",
-   "coin",
-   0.25
-  ],
-  [
-   "m.외면",
+   "i",
    "whoosh",
-   0.3
+   0.25
   ],
   [
-   "n",
+   "o",
    "k_error_003",
+   0.25
+  ],
+  [
+   "p",
+   "boing",
    0.3
   ]
  ],
  "clips": [
   {
    "from": "a",
-   "label": "post",
+   "label": "a",
    "gfx": {
-    "type": "post",
-    "title": "우리 집 강아지가 [아빠 퇴근]을 미리 아는 썰",
-    "body": [
-     "매일 퇴근 10분 전 현관 앞 대기",
-     "가족들 다 소름 ㅋㅋ"
-    ],
-    "steps": [
-     "a.퇴근",
-     "a.현관에"
-    ],
+    "type": "scene",
+    "bg": "door",
+    "sign": "우리 집",
+    "prop": "⏰",
+    "propX": 0.84,
     "chars": [
      {
-      "name": "초코 🐾",
-      "color": "#C8956B",
-      "mood": "smug"
+      "style": "chibi",
+      "look": {
+       "kind": "dog",
+       "hair": "#7a4a2a",
+       "acc": "collar",
+       "accColor": "#e8212e"
+      },
+      "name": "초코",
+      "mood": "happy",
+      "x": 0.45,
+      "size": 1.2
      }
     ]
    }
   },
   {
-   "from": "a@end",
-   "label": "psychic",
+   "from": "b",
+   "label": "b",
    "gfx": {
     "type": "scene",
-    "bg": "home",
-    "place": "📍 현관",
-    "prop": "✨",
+    "bg": "door",
+    "sign": "우리 집",
+    "big": "⏰ [-10분]",
     "chars": [
      {
-      "name": "나",
-      "color": "#FFD84D",
-      "mood": "shock"
-     },
+      "style": "chibi",
+      "look": {
+       "kind": "dog",
+       "hair": "#7a4a2a",
+       "acc": "collar",
+       "accColor": "#e8212e"
+      },
+      "mood": "neutral",
+      "x": 0.3,
+      "size": 1.0
+     }
+    ]
+   }
+  },
+  {
+   "from": "c",
+   "label": "c",
+   "gfx": {
+    "type": "scene",
+    "bg": "night",
+    "prop": "🌙",
+    "propX": 0.2,
+    "chars": [
      {
-      "name": "초코 🐾",
-      "color": "#C8956B",
-      "mood": "smug"
-     },
-     {
-      "name": "엄마",
-      "color": "#FF9EBB",
-      "mood": "laugh"
+      "style": "chibi",
+      "look": {
+       "kind": "dog",
+       "hair": "#7a4a2a",
+       "acc": "collar",
+       "accColor": "#e8212e"
+      },
+      "mood": "smug",
+      "x": 0.5,
+      "size": 1.1
      }
     ]
    }
   },
   {
    "from": "d",
-   "label": "smell",
+   "label": "d",
    "gfx": {
     "type": "scene",
     "bg": "home",
-    "say": {
-     "who": 0,
-     "text": "초코야, 너 [아빠 냄새] 맡는 거야?"
-    },
     "chars": [
      {
+      "style": "chibi",
+      "look": {
+       "age": "teen",
+       "hairdo": "long",
+       "hair": "#3a2622",
+       "top": "#ffd84d",
+       "topKind": "hoodie"
+      },
       "name": "나",
-      "color": "#FFD84D",
-      "mood": "think"
+      "mood": "shock",
+      "x": 0.3
      },
      {
-      "name": "초코 🐾",
-      "color": "#C8956B",
-      "mood": "happy"
+      "style": "chibi",
+      "look": {
+       "kind": "dog",
+       "hair": "#7a4a2a",
+       "acc": "collar",
+       "accColor": "#e8212e"
+      },
+      "name": "초코",
+      "mood": "smug",
+      "x": 0.72,
+      "size": 0.8
      }
     ]
    }
   },
   {
    "from": "e",
-   "label": "phone",
+   "label": "e",
    "gfx": {
     "type": "scene",
     "bg": "home",
-    "place": "📍 저녁 7시",
-    "prop": "📱",
     "chars": [
      {
-      "name": "나",
-      "color": "#FFD84D",
-      "mood": "think"
+      "style": "chibi",
+      "look": {
+       "age": "teen",
+       "hairdo": "long",
+       "hair": "#3a2622",
+       "top": "#ffd84d",
+       "topKind": "hoodie"
+      },
+      "mood": "think",
+      "x": 0.3,
+      "size": 1.1
      },
      {
-      "name": "엄마",
-      "color": "#FF9EBB",
-      "mood": "neutral"
+      "style": "chibi",
+      "look": {
+       "kind": "dog",
+       "hair": "#7a4a2a",
+       "acc": "collar",
+       "accColor": "#e8212e"
+      },
+      "mood": "sleep",
+      "x": 0.75,
+      "size": 0.8
      }
     ]
    }
   },
   {
    "from": "f",
-   "label": "parking",
+   "label": "f",
    "gfx": {
     "type": "scene",
     "bg": "home",
-    "say": {
-     "who": 1,
-     "text": "응, [주차장]이야? 알았어~"
-    },
     "prop": "📱",
+    "propX": 0.82,
     "chars": [
      {
-      "name": "나",
-      "color": "#FFD84D",
-      "mood": "think"
-     },
-     {
+      "style": "chibi",
+      "look": {
+       "hairdo": "bob",
+       "hair": "#2b2222",
+       "top": "#c9a7ff",
+       "topKind": "cardigan"
+      },
       "name": "엄마",
-      "color": "#FF9EBB",
-      "mood": "happy"
+      "mood": "shock",
+      "x": 0.4,
+      "size": 1.2
      }
     ]
    }
   },
   {
    "from": "g",
-   "label": "coming",
+   "label": "g",
    "gfx": {
     "type": "scene",
-    "bg": "home",
-    "say": {
-     "who": 0,
-     "text": "초코야! [아빠 오신다~]"
-    },
+    "bg": "street",
+    "place": "📍 주차장",
+    "prop": "📱",
+    "propX": 0.84,
     "chars": [
      {
-      "name": "엄마",
-      "color": "#FF9EBB",
-      "mood": "happy"
-     },
-     {
-      "name": "초코 🐾",
-      "color": "#C8956B",
-      "mood": "neutral",
-      "to": "laugh"
+      "style": "chibi",
+      "look": {
+       "hairdo": "side",
+       "hair": "#2a2a30",
+       "top": "#3a4766",
+       "topKind": "suit",
+       "accColor": "#d33b3b",
+       "glasses": true
+      },
+      "name": "아빠",
+      "mood": "happy",
+      "x": 0.45,
+      "size": 1.35
      }
-    ],
-    "steps": [
-     0,
-     0,
-     "g.오신다"
     ]
    }
   },
   {
    "from": "h",
-   "label": "car",
+   "label": "h",
    "gfx": {
     "type": "scene",
-    "bg": "street",
-    "place": "📍 주차장",
-    "prop": "🚗📱",
+    "bg": "home",
     "chars": [
      {
-      "name": "아빠",
-      "color": "#FFB36B",
-      "mood": "happy"
+      "style": "chibi",
+      "look": {
+       "hairdo": "bob",
+       "hair": "#2b2222",
+       "top": "#c9a7ff",
+       "topKind": "cardigan"
+      },
+      "mood": "happy",
+      "size": 1.5
      }
     ]
    }
   },
   {
    "from": "i",
-   "label": "learned",
+   "label": "i",
    "gfx": {
     "type": "scene",
-    "bg": "home",
-    "big": "“아빠 [오신다]”",
+    "bg": "door",
+    "sign": "우리 집",
+    "prop": "💨",
+    "propX": 0.85,
     "chars": [
      {
-      "name": "나",
-      "color": "#FFD84D",
-      "mood": "shock"
-     },
-     {
-      "name": "초코 🐾",
-      "color": "#C8956B",
-      "mood": "smug"
+      "style": "chibi",
+      "look": {
+       "kind": "dog",
+       "hair": "#7a4a2a",
+       "acc": "collar",
+       "accColor": "#e8212e"
+      },
+      "mood": "laugh",
+      "x": 0.4,
+      "size": 1.3
      }
-    ],
-    "steps": [
-     0,
-     0,
-     9,
-     "i.오신다"
     ]
    }
   },
   {
    "from": "j",
-   "label": "joke",
+   "label": "j",
    "gfx": {
     "type": "scene",
     "bg": "home",
-    "place": "📍 어느 휴일",
     "chars": [
      {
-      "name": "엄마",
-      "color": "#FF9EBB",
-      "mood": "smug"
-     },
-     {
-      "name": "초코 🐾",
-      "color": "#C8956B",
-      "mood": "sleep"
+      "style": "chibi",
+      "look": {
+       "kind": "dog",
+       "hair": "#7a4a2a",
+       "acc": "collar",
+       "accColor": "#e8212e"
+      },
+      "mood": "think",
+      "size": 1.45
      }
     ]
    }
   },
   {
    "from": "k",
-   "label": "prank",
+   "label": "k",
    "gfx": {
     "type": "scene",
     "bg": "home",
-    "say": {
-     "who": 0,
-     "text": "초코야! [아빠 오신다~]"
-    },
-    "zoom": 1.08,
-    "focus": 0,
     "chars": [
      {
-      "name": "엄마",
-      "color": "#FF9EBB",
-      "mood": "laugh"
+      "style": "chibi",
+      "look": {
+       "hairdo": "bob",
+       "hair": "#2b2222",
+       "top": "#c9a7ff",
+       "topKind": "cardigan"
+      },
+      "mood": "smug",
+      "x": 0.3
      },
      {
-      "name": "초코 🐾",
-      "color": "#C8956B",
-      "mood": "sleep",
-      "to": "happy"
+      "style": "chibi",
+      "look": {
+       "kind": "dog",
+       "hair": "#7a4a2a",
+       "acc": "collar",
+       "accColor": "#e8212e"
+      },
+      "mood": "shock",
+      "x": 0.72,
+      "size": 0.8
      }
-    ],
-    "steps": [
-     0,
-     0,
-     "k.오신다"
     ]
    }
   },
   {
    "from": "l",
-   "label": "wait",
+   "label": "l",
    "gfx": {
     "type": "scene",
     "bg": "home",
-    "place": "📍 현관",
-    "big": "⏰ [1시간]",
     "chars": [
      {
-      "name": "초코 🐾",
-      "color": "#C8956B",
-      "mood": "happy",
-      "to": "sleep"
+      "style": "chibi",
+      "look": {
+       "hairdo": "bob",
+       "hair": "#2b2222",
+       "top": "#c9a7ff",
+       "topKind": "cardigan"
+      },
+      "mood": "laugh",
+      "x": 0.45,
+      "size": 1.45
      }
-    ],
-    "steps": [
-     0,
-     0,
-     "l.기다렸고",
-     "l.한"
     ]
    }
   },
   {
    "from": "m",
-   "label": "ignore",
+   "label": "m",
    "gfx": {
     "type": "scene",
-    "bg": "home",
+    "bg": "door",
+    "sign": "우리 집",
+    "big": "⏳ [1시간]",
     "chars": [
      {
-      "name": "아빠",
-      "color": "#FFB36B",
-      "mood": "happy",
-      "to": "shock"
-     },
-     {
-      "name": "초코 🐾",
-      "color": "#C8956B",
-      "mood": "smug",
-      "flip": true
+      "style": "chibi",
+      "look": {
+       "kind": "dog",
+       "hair": "#7a4a2a",
+       "acc": "collar",
+       "accColor": "#e8212e"
+      },
+      "mood": "sad",
+      "x": 0.4,
+      "size": 1.2
      }
-    ],
-    "steps": [
-     0,
-     0,
-     "m.외면"
     ]
    }
   },
   {
    "from": "n",
-   "label": "why",
+   "label": "n",
+   "gfx": {
+    "type": "scene",
+    "bg": "door",
+    "sign": "우리 집",
+    "prop": "👋",
+    "propX": 0.84,
+    "chars": [
+     {
+      "style": "chibi",
+      "look": {
+       "hairdo": "side",
+       "hair": "#2a2a30",
+       "top": "#3a4766",
+       "topKind": "suit",
+       "accColor": "#d33b3b",
+       "glasses": true
+      },
+      "mood": "happy",
+      "x": 0.4,
+      "size": 1.3
+     }
+    ]
+   }
+  },
+  {
+   "from": "o",
+   "label": "o",
    "gfx": {
     "type": "scene",
     "bg": "home",
-    "say": {
-     "who": 0,
-     "text": "아니, 초코야! [나는 왜?]"
-    },
-    "zoom": 1.1,
-    "focus": 0,
     "chars": [
      {
-      "name": "아빠",
-      "color": "#FFB36B",
-      "mood": "cry"
+      "style": "chibi",
+      "look": {
+       "hairdo": "side",
+       "hair": "#2a2a30",
+       "top": "#3a4766",
+       "topKind": "suit",
+       "accColor": "#d33b3b",
+       "glasses": true
+      },
+      "mood": "shock",
+      "x": 0.3
      },
      {
-      "name": "초코 🐾",
-      "color": "#C8956B",
-      "mood": "smug",
+      "style": "chibi",
+      "look": {
+       "kind": "dog",
+       "hair": "#7a4a2a",
+       "acc": "collar",
+       "accColor": "#e8212e"
+      },
+      "mood": "angry",
+      "x": 0.72,
+      "size": 0.85,
       "flip": true
+     }
+    ]
+   }
+  },
+  {
+   "from": "p",
+   "label": "p",
+   "gfx": {
+    "type": "scene",
+    "bg": "home",
+    "chars": [
+     {
+      "style": "chibi",
+      "look": {
+       "hairdo": "side",
+       "hair": "#2a2a30",
+       "top": "#3a4766",
+       "topKind": "suit",
+       "accColor": "#d33b3b",
+       "glasses": true
+      },
+      "mood": "cry",
+      "size": 1.5
      }
     ]
    }

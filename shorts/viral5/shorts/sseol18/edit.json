@@ -1,0 +1,500 @@
+{
+ "credit": "",
+ "postFrame": {
+  "app": "썰방",
+  "color": "#FF8A4C",
+  "meta": "익명 | 창작 사연게시판"
+ },
+ "sources": {},
+ "music": {
+  "file": "music/hyperfun.mp3",
+  "gain": 0.15,
+  "start": 0
+ },
+ "sfx": [
+  [
+   "a",
+   "pop",
+   0.25
+  ],
+  [
+   "c",
+   "tada",
+   0.25
+  ],
+  [
+   "g",
+   "shutter",
+   0.3
+  ],
+  [
+   "o",
+   "k_error_003",
+   0.25
+  ]
+ ],
+ "clips": [
+  {
+   "from": "a",
+   "label": "a",
+   "gfx": {
+    "type": "scene",
+    "bg": "linear-gradient(180deg,#cfeaff 0%,#eef8ff 62%,#c9d6c0 62%,#b5c7a8 100%)",
+    "prop": "🎓",
+    "propX": 0.5,
+    "chars": [
+     {
+      "style": "chibi",
+      "look": {
+       "hairdo": "pony",
+       "hair": "#3a2622",
+       "top": "#7cc4ff",
+       "topKind": "hoodie"
+      },
+      "name": "나",
+      "mood": "shock",
+      "x": 0.28
+     },
+     {
+      "style": "chibi",
+      "look": {
+       "hairdo": "bob",
+       "hair": "#2b2222",
+       "top": "#ff8f6b",
+       "topKind": "cardigan",
+       "glasses": true
+      },
+      "name": "엄마",
+      "mood": "laugh",
+      "x": 0.72
+     }
+    ]
+   }
+  },
+  {
+   "from": "b",
+   "label": "b",
+   "gfx": {
+    "type": "scene",
+    "bg": "home",
+    "prop": "📱",
+    "propX": 0.72,
+    "chars": [
+     {
+      "style": "chibi",
+      "look": {
+       "hairdo": "pony",
+       "hair": "#3a2622",
+       "top": "#7cc4ff",
+       "topKind": "hoodie"
+      },
+      "mood": "happy",
+      "x": 0.3,
+      "size": 1.1
+     }
+    ]
+   }
+  },
+  {
+   "from": "c",
+   "label": "c",
+   "gfx": {
+    "type": "scene",
+    "bg": "home",
+    "prop": "📱",
+    "propX": 0.85,
+    "chars": [
+     {
+      "style": "chibi",
+      "look": {
+       "hairdo": "bob",
+       "hair": "#2b2222",
+       "top": "#ff8f6b",
+       "topKind": "cardigan",
+       "glasses": true
+      },
+      "mood": "laugh",
+      "size": 1.5
+     }
+    ]
+   }
+  },
+  {
+   "from": "d",
+   "label": "d",
+   "gfx": {
+    "type": "scene",
+    "bg": "hospital",
+    "place": "📍 20년 전",
+    "prop": "👶",
+    "propX": 0.8,
+    "chars": [
+     {
+      "style": "chibi",
+      "look": {
+       "hairdo": "bob",
+       "hair": "#2b2222",
+       "top": "#ff8f6b",
+       "topKind": "cardigan",
+       "glasses": true
+      },
+      "mood": "love",
+      "x": 0.45,
+      "size": 1.2
+     }
+    ]
+   }
+  },
+  {
+   "from": "e",
+   "label": "e",
+   "gfx": {
+    "type": "scene",
+    "bg": "desk",
+    "prop": "📚",
+    "propX": 0.84,
+    "chars": [
+     {
+      "style": "chibi",
+      "look": {
+       "hairdo": "bob",
+       "hair": "#2b2222",
+       "top": "#ff8f6b",
+       "topKind": "cardigan",
+       "glasses": true
+      },
+      "mood": "think",
+      "x": 0.45,
+      "size": 1.25
+     }
+    ]
+   }
+  },
+  {
+   "from": "f",
+   "label": "f",
+   "gfx": {
+    "type": "scene",
+    "bg": "linear-gradient(180deg,#cfeaff 0%,#eef8ff 62%,#c9d6c0 62%,#b5c7a8 100%)",
+    "chars": [
+     {
+      "style": "chibi",
+      "look": {
+       "hairdo": "pony",
+       "hair": "#3a2622",
+       "top": "#7cc4ff",
+       "topKind": "hoodie"
+      },
+      "mood": "shock",
+      "size": 1.5
+     }
+    ]
+   }
+  },
+  {
+   "from": "g",
+   "label": "g",
+   "gfx": {
+    "type": "scene",
+    "bg": "stage",
+    "sign": "입학을 환영합니다",
+    "chars": [
+     {
+      "style": "chibi",
+      "look": {
+       "hairdo": "long",
+       "hair": "#8a5a3a",
+       "top": "#9be07b",
+       "topKind": "tee",
+       "acc": "headband",
+       "accColor": "#ffd84d"
+      },
+      "mood": "happy",
+      "x": 0.2,
+      "size": 0.85
+     },
+     {
+      "style": "chibi",
+      "look": {
+       "hairdo": "bob",
+       "hair": "#2b2222",
+       "top": "#ff8f6b",
+       "topKind": "cardigan",
+       "glasses": true
+      },
+      "mood": "laugh",
+      "x": 0.5,
+      "size": 0.85
+     },
+     {
+      "style": "chibi",
+      "look": {
+       "hairdo": "pony",
+       "hair": "#3a2622",
+       "top": "#7cc4ff",
+       "topKind": "hoodie"
+      },
+      "mood": "shock",
+      "x": 0.8,
+      "size": 0.85
+     }
+    ]
+   }
+  },
+  {
+   "from": "h",
+   "label": "h",
+   "gfx": {
+    "type": "scene",
+    "bg": "stage",
+    "sign": "입학을 환영합니다",
+    "chars": [
+     {
+      "style": "chibi",
+      "look": {
+       "hairdo": "pony",
+       "hair": "#3a2622",
+       "top": "#7cc4ff",
+       "topKind": "hoodie"
+      },
+      "mood": "angry",
+      "x": 0.45,
+      "size": 1.45
+     }
+    ]
+   }
+  },
+  {
+   "from": "i",
+   "label": "i",
+   "gfx": {
+    "type": "scene",
+    "bg": "stage",
+    "sign": "입학을 환영합니다",
+    "chars": [
+     {
+      "style": "chibi",
+      "look": {
+       "hairdo": "bob",
+       "hair": "#2b2222",
+       "top": "#ff8f6b",
+       "topKind": "cardigan",
+       "glasses": true
+      },
+      "mood": "smug",
+      "size": 1.5
+     }
+    ]
+   }
+  },
+  {
+   "from": "j",
+   "label": "j",
+   "gfx": {
+    "type": "scene",
+    "bg": "office",
+    "place": "📍 도서관",
+    "prop": "📚",
+    "propX": 0.78,
+    "chars": [
+     {
+      "style": "chibi",
+      "look": {
+       "hairdo": "bob",
+       "hair": "#2b2222",
+       "top": "#ff8f6b",
+       "topKind": "cardigan",
+       "glasses": true
+      },
+      "mood": "happy",
+      "x": 0.35,
+      "size": 1.15
+     }
+    ]
+   }
+  },
+  {
+   "from": "k",
+   "label": "k",
+   "gfx": {
+    "type": "scene",
+    "bg": "cafeteria",
+    "sign": "학생 식당",
+    "prop": "🍻🎉",
+    "propX": 0.82,
+    "chars": [
+     {
+      "style": "chibi",
+      "look": {
+       "hairdo": "pony",
+       "hair": "#3a2622",
+       "top": "#7cc4ff",
+       "topKind": "hoodie"
+      },
+      "mood": "laugh",
+      "x": 0.4,
+      "size": 1.2
+     }
+    ]
+   }
+  },
+  {
+   "from": "l",
+   "label": "l",
+   "gfx": {
+    "type": "scene",
+    "bg": "linear-gradient(180deg,#cfeaff 0%,#eef8ff 62%,#c9d6c0 62%,#b5c7a8 100%)",
+    "chars": [
+     {
+      "style": "chibi",
+      "look": {
+       "hairdo": "long",
+       "hair": "#8a5a3a",
+       "top": "#9be07b",
+       "topKind": "tee",
+       "acc": "headband",
+       "accColor": "#ffd84d"
+      },
+      "name": "동기",
+      "mood": "laugh",
+      "x": 0.3
+     },
+     {
+      "style": "chibi",
+      "look": {
+       "hairdo": "bob",
+       "hair": "#2b2222",
+       "top": "#ff8f6b",
+       "topKind": "cardigan",
+       "glasses": true
+      },
+      "name": "엄마",
+      "mood": "shy",
+      "x": 0.72
+     }
+    ]
+   }
+  },
+  {
+   "from": "m",
+   "label": "m",
+   "gfx": {
+    "type": "scene",
+    "bg": "office",
+    "place": "📍 도서관",
+    "chars": [
+     {
+      "style": "chibi",
+      "look": {
+       "hairdo": "long",
+       "hair": "#8a5a3a",
+       "top": "#9be07b",
+       "topKind": "tee",
+       "acc": "headband",
+       "accColor": "#ffd84d"
+      },
+      "mood": "love",
+      "size": 1.5
+     }
+    ]
+   }
+  },
+  {
+   "from": "n",
+   "label": "n",
+   "gfx": {
+    "type": "scene",
+    "bg": "home",
+    "prop": "📄",
+    "propX": 0.5,
+    "chars": [
+     {
+      "style": "chibi",
+      "look": {
+       "hairdo": "pony",
+       "hair": "#3a2622",
+       "top": "#7cc4ff",
+       "topKind": "hoodie"
+      },
+      "mood": "think",
+      "x": 0.3,
+      "size": 1.1
+     },
+     {
+      "style": "chibi",
+      "look": {
+       "hairdo": "bob",
+       "hair": "#2b2222",
+       "top": "#ff8f6b",
+       "topKind": "cardigan",
+       "glasses": true
+      },
+      "mood": "smug",
+      "x": 0.72
+     }
+    ]
+   }
+  },
+  {
+   "from": "o",
+   "label": "o",
+   "gfx": {
+    "type": "scene",
+    "bg": "home",
+    "big": "🏆 vs ⚠️",
+    "chars": [
+     {
+      "style": "chibi",
+      "look": {
+       "hairdo": "bob",
+       "hair": "#2b2222",
+       "top": "#ff8f6b",
+       "topKind": "cardigan",
+       "glasses": true
+      },
+      "mood": "laugh",
+      "x": 0.3,
+      "size": 1.15
+     },
+     {
+      "style": "chibi",
+      "look": {
+       "hairdo": "pony",
+       "hair": "#3a2622",
+       "top": "#7cc4ff",
+       "topKind": "hoodie"
+      },
+      "mood": "cry",
+      "x": 0.72,
+      "size": 0.9
+     }
+    ]
+   }
+  },
+  {
+   "from": "p",
+   "label": "p",
+   "gfx": {
+    "type": "scene",
+    "bg": "home",
+    "prop": "📚",
+    "propX": 0.85,
+    "chars": [
+     {
+      "style": "chibi",
+      "look": {
+       "hairdo": "bob",
+       "hair": "#2b2222",
+       "top": "#ff8f6b",
+       "topKind": "cardigan",
+       "glasses": true
+      },
+      "mood": "happy",
+      "x": 0.45,
+      "size": 1.45
+     }
+    ]
+   }
+  }
+ ]
+}

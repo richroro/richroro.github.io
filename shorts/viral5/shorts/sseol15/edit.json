@@ -1,336 +1,433 @@
 {
  "credit": "",
- "titleStyle": "band",
- "captionY": 1650,
+ "postFrame": {
+  "app": "썰방",
+  "color": "#FF8A4C",
+  "meta": "익명 | 창작 사연게시판"
+ },
  "sources": {},
  "music": {
   "file": "music/sneaky_snitch.mp3",
-  "gain": 0.2,
+  "gain": 0.15,
   "start": 0
  },
  "sfx": [
   [
-   "b.한여름에도",
-   "boing",
-   0.3
-  ],
-  [
-   "c",
+   "a",
    "pop",
-   0.3
-  ],
-  [
-   "d",
-   "whoosh",
    0.25
-  ],
-  [
-   "e.사장님이었다",
-   "ding",
-   0.3
   ],
   [
    "f",
-   "pop",
-   0.3
-  ],
-  [
-   "g",
-   "pop",
-   0.25
-  ],
-  [
-   "h.덜덜",
-   "boing",
-   0.25
-  ],
-  [
-   "i.북극이었다",
    "k_error_003",
+   0.2
+  ],
+  [
+   "l",
+   "boing",
    0.3
   ],
   [
-   "j",
-   "whoosh",
-   0.3
-  ],
-  [
-   "k.종이가",
-   "pop",
-   0.3
-  ],
-  [
-   "l.고장",
+   "o",
    "tada",
-   0.3
+   0.25
   ]
  ],
  "clips": [
   {
    "from": "a",
-   "label": "post",
+   "label": "a",
    "gfx": {
-    "type": "post",
-    "title": "독서실 [내 자리에만] 매일 핫팩이 놓여 있던 썰",
-    "body": [
-     "한여름에도 매일 저녁",
-     "누가 두는지 아무도 모름"
-    ],
-    "steps": [
-     "a.독서실",
-     "a.핫팩이"
-    ],
+    "type": "scene",
+    "bg": "desk",
+    "prop": "♨️",
+    "propX": 0.75,
     "chars": [
      {
+      "style": "chibi",
+      "look": {
+       "age": "teen",
+       "hairdo": "buzz",
+       "hair": "#1f1f24",
+       "top": "#ececf0",
+       "topKind": "tee",
+       "glasses": true
+      },
       "name": "나",
-      "color": "#FFD84D",
-      "mood": "shock"
+      "mood": "shock",
+      "x": 0.3,
+      "size": 1.2
      }
     ]
    }
   },
   {
-   "from": "a@end",
-   "label": "summer",
+   "from": "b",
+   "label": "b",
    "gfx": {
     "type": "scene",
-    "bg": "class",
-    "place": "📍 8월",
-    "prop": "☀️",
-    "big": "♨️ [핫팩]",
+    "bg": "desk",
+    "prop": "📚",
+    "propX": 0.84,
     "chars": [
      {
-      "name": "나",
-      "color": "#FFD84D",
-      "mood": "shock"
+      "style": "chibi",
+      "look": {
+       "age": "teen",
+       "hairdo": "buzz",
+       "hair": "#1f1f24",
+       "top": "#ececf0",
+       "topKind": "tee",
+       "glasses": true
+      },
+      "mood": "sleep",
+      "x": 0.45,
+      "size": 1.25
      }
-    ],
-    "steps": [
-     0,
-     0.1,
-     9,
-     "b.한여름에도"
     ]
    }
   },
   {
    "from": "c",
-   "label": "fan",
+   "label": "c",
    "gfx": {
     "type": "scene",
-    "bg": "class",
-    "say": {
-     "who": 0,
-     "text": "누구지? 혹시 [비밀 팬]인가?"
-    },
-    "prop": "♨️",
-    "chars": [
-     {
-      "name": "나",
-      "color": "#FFD84D",
-      "mood": "shy"
-     }
-    ],
-    "sign": "쉿! 정숙"
+    "bg": "desk",
+    "big": "♨️ × [30]",
+    "chars": []
    }
   },
   {
    "from": "d",
-   "label": "hide",
+   "label": "d",
    "gfx": {
     "type": "scene",
-    "bg": "class",
-    "place": "📍 독서실 복도",
-    "prop": "👀",
+    "bg": "desk",
     "chars": [
      {
-      "name": "나",
-      "color": "#FFD84D",
-      "mood": "think"
+      "style": "chibi",
+      "look": {
+       "age": "teen",
+       "hairdo": "buzz",
+       "hair": "#1f1f24",
+       "top": "#ececf0",
+       "topKind": "tee",
+       "glasses": true
+      },
+      "mood": "angry",
+      "size": 1.5
      }
-    ],
-    "sign": "쉿! 정숙"
+    ]
    }
   },
   {
    "from": "e",
-   "label": "boss",
+   "label": "e",
    "gfx": {
     "type": "scene",
-    "bg": "class",
-    "prop": "♨️",
+    "bg": "night",
+    "prop": "👀",
+    "propX": 0.55,
     "chars": [
      {
-      "name": "나",
-      "color": "#FFD84D",
-      "mood": "shock"
-     },
-     {
-      "name": "사장님",
-      "color": "#8FD3FF",
-      "mood": "neutral"
+      "style": "chibi",
+      "look": {
+       "age": "teen",
+       "hairdo": "buzz",
+       "hair": "#1f1f24",
+       "top": "#ececf0",
+       "topKind": "tee",
+       "glasses": true
+      },
+      "mood": "think",
+      "x": 0.2,
+      "size": 0.9
      }
-    ],
-    "sign": "쉿! 정숙",
-    "steps": [
-     0,
-     0.1
     ]
    }
   },
   {
    "from": "f",
-   "label": "why",
+   "label": "f",
    "gfx": {
     "type": "scene",
-    "bg": "class",
-    "say": {
-     "who": 0,
-     "text": "사장님? 이거 [왜 저만] 주세요?"
-    },
+    "bg": "desk",
     "prop": "♨️",
+    "propX": 0.84,
     "chars": [
      {
-      "name": "나",
-      "color": "#FFD84D",
-      "mood": "think"
-     },
-     {
+      "style": "chibi",
+      "look": {
+       "hairdo": "bald",
+       "hair": "#6a6a70",
+       "top": "#8a6f55",
+       "topKind": "cardigan",
+       "mustache": true
+      },
       "name": "사장님",
-      "color": "#8FD3FF",
-      "mood": "shy"
+      "mood": "smug",
+      "x": 0.4,
+      "size": 1.3
      }
-    ],
-    "sign": "쉿! 정숙"
+    ]
    }
   },
   {
    "from": "g",
-   "label": "vent",
+   "label": "g",
    "gfx": {
     "type": "scene",
-    "bg": "class",
-    "say": {
-     "who": 1,
-     "text": "학생 자리, [에어컨 바로 밑]이잖아."
-    },
-    "prop": "🌬️",
+    "bg": "desk",
     "chars": [
      {
-      "name": "나",
-      "color": "#FFD84D",
-      "mood": "shock"
+      "style": "chibi",
+      "look": {
+       "age": "teen",
+       "hairdo": "buzz",
+       "hair": "#1f1f24",
+       "top": "#ececf0",
+       "topKind": "tee",
+       "glasses": true
+      },
+      "mood": "shock",
+      "x": 0.3
      },
      {
-      "name": "사장님",
-      "color": "#8FD3FF",
-      "mood": "neutral"
+      "style": "chibi",
+      "look": {
+       "hairdo": "bald",
+       "hair": "#6a6a70",
+       "top": "#8a6f55",
+       "topKind": "cardigan",
+       "mustache": true
+      },
+      "mood": "neutral",
+      "x": 0.72
      }
-    ],
-    "sign": "쉿! 정숙"
+    ]
    }
   },
   {
    "from": "h",
-   "label": "shiver",
+   "label": "h",
    "gfx": {
     "type": "scene",
-    "bg": "class",
-    "say": {
-     "who": 1,
-     "text": "맨날 [덜덜] 떨면서 공부하길래."
-    },
+    "bg": "desk",
+    "prop": "❄️",
+    "propX": 0.15,
     "chars": [
      {
-      "name": "나",
-      "color": "#FFD84D",
-      "mood": "shy"
-     },
-     {
-      "name": "사장님",
-      "color": "#8FD3FF",
-      "mood": "happy"
+      "style": "chibi",
+      "look": {
+       "hairdo": "bald",
+       "hair": "#6a6a70",
+       "top": "#8a6f55",
+       "topKind": "cardigan",
+       "mustache": true
+      },
+      "mood": "happy",
+      "size": 1.5
      }
-    ],
-    "sign": "쉿! 정숙"
+    ]
    }
   },
   {
    "from": "i",
-   "label": "arctic",
+   "label": "i",
    "gfx": {
     "type": "scene",
-    "bg": "class",
-    "place": "📍 내 자리",
+    "bg": "desk",
     "prop": "❄️",
-    "big": "🥶 [북극]",
+    "propX": 0.15,
     "chars": [
      {
-      "name": "나",
-      "color": "#FFD84D",
-      "mood": "sick"
+      "style": "chibi",
+      "look": {
+       "age": "teen",
+       "hairdo": "buzz",
+       "hair": "#1f1f24",
+       "top": "#ececf0",
+       "topKind": "tee",
+       "glasses": true
+      },
+      "mood": "sick",
+      "x": 0.45,
+      "size": 1.35
      }
-    ],
-    "steps": [
-     0,
-     0.1,
-     9,
-     "i.북극이었다"
     ]
    }
   },
   {
    "from": "j",
-   "label": "next",
+   "label": "j",
    "gfx": {
     "type": "scene",
-    "bg": "class",
-    "card": "다음 날...",
-    "chars": []
+    "bg": "desk",
+    "prop": "🤫",
+    "propX": 0.2,
+    "chars": [
+     {
+      "style": "chibi",
+      "look": {
+       "age": "teen",
+       "hairdo": "buzz",
+       "hair": "#1f1f24",
+       "top": "#ececf0",
+       "topKind": "tee",
+       "glasses": true
+      },
+      "mood": "sad",
+      "x": 0.55,
+      "size": 1.2
+     }
+    ]
    }
   },
   {
    "from": "k",
-   "label": "paper",
+   "label": "k",
    "gfx": {
     "type": "scene",
-    "bg": "class",
+    "bg": "office",
     "prop": "📄",
+    "propX": 0.72,
     "chars": [
      {
-      "name": "나",
-      "color": "#FFD84D",
+      "style": "chibi",
+      "look": {
+       "age": "teen",
+       "hairdo": "buzz",
+       "hair": "#1f1f24",
+       "top": "#ececf0",
+       "topKind": "tee",
+       "glasses": true
+      },
       "mood": "think",
-      "to": "shock"
+      "x": 0.3,
+      "size": 1.1
      }
-    ],
-    "sign": "에어컨 ↓",
-    "steps": [
-     0,
-     "k.종이가",
-     "k.종이가"
     ]
    }
   },
   {
    "from": "l",
-   "label": "broken",
+   "label": "l",
    "gfx": {
     "type": "scene",
-    "bg": "class",
+    "bg": "office",
+    "big": "[고장]",
+    "chars": []
+   }
+  },
+  {
+   "from": "m",
+   "label": "m",
+   "gfx": {
+    "type": "scene",
+    "bg": "desk",
+    "prop": "🥵",
+    "propX": 0.85,
     "chars": [
      {
-      "name": "나",
-      "color": "#FFD84D",
-      "mood": "laugh"
+      "style": "chibi",
+      "look": {
+       "age": "teen",
+       "hairdo": "pony",
+       "hair": "#5a3a22",
+       "top": "#ff9eb5",
+       "topKind": "tee"
+      },
+      "mood": "angry",
+      "size": 1.5
+     }
+    ]
+   }
+  },
+  {
+   "from": "n",
+   "label": "n",
+   "gfx": {
+    "type": "scene",
+    "bg": "desk",
+    "chars": [
+     {
+      "style": "chibi",
+      "look": {
+       "age": "teen",
+       "hairdo": "pony",
+       "hair": "#5a3a22",
+       "top": "#ff9eb5",
+       "topKind": "tee"
+      },
+      "mood": "sick",
+      "x": 0.25,
+      "size": 0.95
      },
      {
-      "name": "사장님",
-      "color": "#8FD3FF",
-      "mood": "smug"
+      "style": "chibi",
+      "look": {
+       "hairdo": "bald",
+       "hair": "#6a6a70",
+       "top": "#8a6f55",
+       "topKind": "cardigan",
+       "mustache": true
+      },
+      "mood": "smug",
+      "x": 0.72
      }
-    ],
-    "sign": "📄 고장 📄"
+    ]
+   }
+  },
+  {
+   "from": "o",
+   "label": "o",
+   "gfx": {
+    "type": "scene",
+    "bg": "street",
+    "place": "📍 그해 겨울",
+    "prop": "💯",
+    "propX": 0.84,
+    "chars": [
+     {
+      "style": "chibi",
+      "look": {
+       "age": "teen",
+       "hairdo": "buzz",
+       "hair": "#1f1f24",
+       "top": "#ececf0",
+       "topKind": "tee",
+       "glasses": true
+      },
+      "mood": "laugh",
+      "x": 0.45,
+      "size": 1.3
+     }
+    ]
+   }
+  },
+  {
+   "from": "p",
+   "label": "p",
+   "gfx": {
+    "type": "scene",
+    "bg": "office",
+    "prop": "📄",
+    "propX": 0.84,
+    "chars": [
+     {
+      "style": "chibi",
+      "look": {
+       "hairdo": "bald",
+       "hair": "#6a6a70",
+       "top": "#8a6f55",
+       "topKind": "cardigan",
+       "mustache": true
+      },
+      "mood": "laugh",
+      "x": 0.4,
+      "size": 1.35
+     }
+    ]
    }
   }
  ]

@@ -1,368 +1,435 @@
 {
  "credit": "",
- "titleStyle": "band",
- "captionY": 1650,
+ "postFrame": {
+  "app": "썰방",
+  "color": "#FF8A4C",
+  "meta": "익명 | 창작 사연게시판"
+ },
  "sources": {},
  "music": {
   "file": "music/scheming_weasel.mp3",
-  "gain": 0.2,
+  "gain": 0.15,
   "start": 0
  },
  "sfx": [
   [
-   "b",
+   "a",
    "pop",
-   0.3
-  ],
-  [
-   "c",
-   "pop_hi",
-   0.3
-  ],
-  [
-   "d.한참",
-   "k_error_003",
    0.25
   ],
   [
    "e",
    "boing",
-   0.3
-  ],
-  [
-   "f",
-   "pop",
    0.25
   ],
   [
-   "g",
-   "whoosh",
-   0.3
-  ],
-  [
-   "h.들린",
+   "h",
    "ding",
    0.3
   ],
   [
-   "j",
-   "whoosh",
-   0.25
-  ],
-  [
-   "l.세",
-   "coin",
-   0.25
-  ],
-  [
-   "m",
-   "boing",
-   0.35
+   "o",
+   "pop_hi",
+   0.3
   ]
  ],
  "clips": [
   {
    "from": "a",
-   "label": "post",
+   "label": "a",
    "gfx": {
-    "type": "post",
-    "title": "외할머니가 내 전화만 [3초 늦게] 받는 썰",
-    "body": [
-     "엄마 전화는 한 번에 받으심",
-     "내 전화만 꼭 3초 뒤에 ㅋㅋ"
-    ],
-    "steps": [
-     "a.전화만",
-     "a.늦게"
-    ],
+    "type": "scene",
+    "bg": "home",
+    "place": "📍 할머니 집",
+    "prop": "📱",
+    "propX": 0.82,
     "chars": [
      {
-      "name": "나",
-      "color": "#FFD84D",
-      "mood": "think"
-     },
-     {
+      "style": "chibi",
+      "look": {
+       "age": "old",
+       "hairdo": "perm",
+       "hair": "#ececf0",
+       "top": "#9be07b",
+       "topKind": "cardigan",
+       "glasses": true
+      },
       "name": "외할머니",
-      "color": "#C9A7FF",
-      "mood": "smug"
+      "mood": "smug",
+      "x": 0.4,
+      "size": 1.2
      }
     ]
    }
   },
   {
-   "from": "a@end",
-   "label": "mom",
+   "from": "b",
+   "label": "b",
    "gfx": {
     "type": "scene",
-    "bg": "home",
-    "place": "📍 외할머니 댁",
+    "bg": "office",
     "prop": "📱",
+    "propX": 0.82,
     "chars": [
      {
+      "style": "chibi",
+      "look": {
+       "hairdo": "long",
+       "hair": "#2b2222",
+       "top": "#ff9eb5",
+       "topKind": "shirt"
+      },
       "name": "엄마",
-      "color": "#FF9EBB",
-      "mood": "happy"
-     },
-     {
-      "name": "외할머니",
-      "color": "#C9A7FF",
-      "mood": "happy"
+      "mood": "happy",
+      "x": 0.4,
+      "size": 1.2
      }
     ]
    }
   },
   {
    "from": "c",
-   "label": "quick",
+   "label": "c",
+   "gfx": {
+    "type": "scene",
+    "bg": "bedroom",
+    "prop": "📱",
+    "propX": 0.8,
+    "chars": [
+     {
+      "style": "chibi",
+      "look": {
+       "hairdo": "bob",
+       "hair": "#4a2f22",
+       "top": "#7cc4ff",
+       "topKind": "hoodie"
+      },
+      "mood": "sad",
+      "x": 0.35,
+      "size": 1.2
+     }
+    ]
+   }
+  },
+  {
+   "from": "c2",
+   "label": "c2",
    "gfx": {
     "type": "scene",
     "bg": "home",
-    "say": {
-     "who": 1,
-     "text": "어, 그래 [딸!]"
-    },
+    "place": "📍 할머니 집",
     "prop": "📱",
-    "zoom": 1.08,
-    "focus": 1,
+    "propX": 0.2,
     "chars": [
      {
-      "name": "엄마",
-      "color": "#FF9EBB",
-      "mood": "laugh"
-     },
-     {
-      "name": "외할머니",
-      "color": "#C9A7FF",
-      "mood": "laugh"
+      "style": "chibi",
+      "look": {
+       "age": "old",
+       "hairdo": "perm",
+       "hair": "#ececf0",
+       "top": "#9be07b",
+       "topKind": "cardigan",
+       "glasses": true
+      },
+      "mood": "happy",
+      "x": 0.6,
+      "size": 1.2
      }
     ]
    }
   },
   {
    "from": "d",
-   "label": "ring",
+   "label": "d",
    "gfx": {
     "type": "scene",
-    "bg": "street",
-    "prop": "📱",
-    "big": "📞 [띠리리…]",
+    "bg": "bedroom",
     "chars": [
      {
-      "name": "나",
-      "color": "#FFD84D",
-      "mood": "think"
+      "style": "chibi",
+      "look": {
+       "hairdo": "bob",
+       "hair": "#4a2f22",
+       "top": "#7cc4ff",
+       "topKind": "hoodie"
+      },
+      "mood": "angry",
+      "size": 1.5
      }
-    ],
-    "steps": [
-     0,
-     0.1,
-     9,
-     "d.한참"
     ]
    }
   },
   {
    "from": "e",
-   "label": "why",
+   "label": "e",
    "gfx": {
     "type": "scene",
-    "bg": "street",
-    "say": {
-     "who": 0,
-     "text": "할머니! 왜 이렇게 [늦게] 받아?"
-    },
-    "prop": "📱",
+    "bg": "home",
+    "place": "📍 할머니 집",
     "chars": [
      {
-      "name": "나",
-      "color": "#FFD84D",
-      "mood": "angry"
+      "style": "chibi",
+      "look": {
+       "age": "old",
+       "hairdo": "perm",
+       "hair": "#ececf0",
+       "top": "#9be07b",
+       "topKind": "cardigan",
+       "glasses": true
+      },
+      "mood": "shy",
+      "size": 1.5
      }
     ]
    }
   },
   {
    "from": "f",
-   "label": "ears",
+   "label": "f",
    "gfx": {
     "type": "scene",
     "bg": "home",
-    "say": {
-     "who": 0,
-     "text": "응~ 할머니가 [귀가 좀 어두워서] 그래~"
-    },
-    "prop": "📱",
-    "zoom": 1.08,
-    "focus": 0,
+    "place": "📍 할머니 집",
     "chars": [
      {
-      "name": "외할머니",
-      "color": "#C9A7FF",
-      "mood": "smug"
+      "style": "chibi",
+      "look": {
+       "hairdo": "bob",
+       "hair": "#4a2f22",
+       "top": "#7cc4ff",
+       "topKind": "hoodie"
+      },
+      "mood": "smug",
+      "x": 0.2,
+      "size": 0.95
+     },
+     {
+      "style": "chibi",
+      "look": {
+       "age": "old",
+       "hairdo": "perm",
+       "hair": "#ececf0",
+       "top": "#9be07b",
+       "topKind": "cardigan",
+       "glasses": true
+      },
+      "mood": "neutral",
+      "x": 0.72
      }
     ]
    }
   },
   {
    "from": "g",
-   "label": "holiday",
+   "label": "g",
    "gfx": {
     "type": "scene",
     "bg": "home",
-    "place": "📍 명절",
+    "place": "📍 할머니 집",
+    "prop": "📱",
+    "propX": 0.84,
     "chars": [
      {
-      "name": "나",
-      "color": "#FFD84D",
-      "mood": "happy"
-     },
-     {
-      "name": "외할머니",
-      "color": "#C9A7FF",
-      "mood": "happy"
+      "style": "chibi",
+      "look": {
+       "age": "old",
+       "hairdo": "perm",
+       "hair": "#ececf0",
+       "top": "#9be07b",
+       "topKind": "cardigan",
+       "glasses": true
+      },
+      "mood": "love",
+      "x": 0.45,
+      "size": 1.35
      }
     ]
    }
   },
   {
    "from": "h",
-   "label": "call",
+   "label": "h",
    "gfx": {
     "type": "scene",
     "bg": "home",
-    "prop": "📱",
-    "chars": [
-     {
-      "name": "나",
-      "color": "#FFD84D",
-      "mood": "think"
-     },
-     {
-      "name": "외할머니",
-      "color": "#C9A7FF",
-      "mood": "neutral",
-      "to": "shock"
-     }
-    ],
-    "steps": [
-     0,
-     0.1,
-     "h.들린"
-    ]
+    "place": "📍 할머니 집",
+    "big": "🎵📱🎵",
+    "chars": []
    }
   },
   {
    "from": "i",
-   "label": "ringtone",
+   "label": "i",
    "gfx": {
     "type": "scene",
-    "bg": "home",
-    "prop": "📱🎵",
-    "zoom": 1.1,
-    "focus": 1,
+    "bg": "bedroom",
+    "place": "📍 그때",
+    "prop": "🎙️",
+    "propX": 0.84,
     "chars": [
      {
-      "name": "나",
-      "color": "#FFD84D",
-      "mood": "shock"
-     },
-     {
-      "name": "외할머니",
-      "color": "#C9A7FF",
-      "mood": "love"
+      "style": "chibi",
+      "look": {
+       "age": "kid",
+       "hairdo": "pigtails",
+       "hair": "#4a2f22",
+       "top": "#ffd84d",
+       "topKind": "dress"
+      },
+      "name": "8살 나",
+      "mood": "laugh",
+      "x": 0.45,
+      "size": 1.2
      }
     ]
    }
   },
   {
    "from": "j",
-   "label": "then",
+   "label": "j",
    "gfx": {
     "type": "scene",
     "bg": "home",
-    "place": "📍 그때",
-    "prop": "🎙️",
+    "place": "📍 할머니 집",
+    "prop": "📱",
+    "propX": 0.22,
     "chars": [
      {
-      "name": "8살 나",
-      "color": "#FFD84D",
-      "size": 0.8,
-      "mood": "laugh"
-     },
-     {
-      "name": "외할머니",
-      "color": "#C9A7FF",
-      "mood": "happy"
+      "style": "chibi",
+      "look": {
+       "age": "old",
+       "hairdo": "perm",
+       "hair": "#ececf0",
+       "top": "#9be07b",
+       "topKind": "cardigan",
+       "glasses": true
+      },
+      "mood": "happy",
+      "x": 0.6,
+      "size": 1.25
      }
     ]
    }
   },
   {
    "from": "k",
-   "label": "listen",
+   "label": "k",
    "gfx": {
     "type": "scene",
     "bg": "home",
-    "prop": "📱",
+    "place": "📍 할머니 집",
     "chars": [
      {
-      "name": "나",
-      "color": "#FFD84D",
-      "mood": "cry"
-     },
-     {
-      "name": "외할머니",
-      "color": "#C9A7FF",
-      "mood": "shy"
+      "style": "chibi",
+      "look": {
+       "age": "old",
+       "hairdo": "perm",
+       "hair": "#ececf0",
+       "top": "#9be07b",
+       "topKind": "cardigan",
+       "glasses": true
+      },
+      "mood": "laugh",
+      "size": 1.5
      }
     ]
    }
   },
   {
    "from": "l",
-   "label": "three",
+   "label": "l",
    "gfx": {
     "type": "scene",
-    "bg": "street",
-    "place": "📍 요즘",
-    "prop": "📱",
+    "bg": "bedroom",
     "big": "📞 × [3]",
     "chars": [
      {
-      "name": "나",
-      "color": "#FFD84D",
-      "mood": "happy"
+      "style": "chibi",
+      "look": {
+       "hairdo": "bob",
+       "hair": "#4a2f22",
+       "top": "#7cc4ff",
+       "topKind": "hoodie"
+      },
+      "mood": "happy",
+      "x": 0.4,
+      "size": 1.2
      }
-    ],
-    "steps": [
-     0,
-     0.1,
-     9,
-     "l.세"
     ]
    }
   },
   {
    "from": "m",
-   "label": "again",
+   "label": "m",
+   "gfx": {
+    "type": "scene",
+    "bg": "street",
+    "prop": "📱",
+    "propX": 0.85,
+    "chars": [
+     {
+      "style": "chibi",
+      "look": {
+       "hairdo": "bob",
+       "hair": "#4a2f22",
+       "top": "#7cc4ff",
+       "topKind": "hoodie"
+      },
+      "mood": "love",
+      "x": 0.45,
+      "size": 1.4
+     }
+    ]
+   }
+  },
+  {
+   "from": "n",
+   "label": "n",
    "gfx": {
     "type": "scene",
     "bg": "home",
-    "say": {
-     "who": 0,
-     "text": "끊고 [다시 걸어 봐라~] 벨소리 듣게."
-    },
-    "prop": "📱🎵",
+    "place": "📍 할머니 집",
     "chars": [
      {
-      "name": "외할머니",
-      "color": "#C9A7FF",
-      "mood": "love"
-     },
+      "style": "chibi",
+      "look": {
+       "age": "old",
+       "hairdo": "perm",
+       "hair": "#ececf0",
+       "top": "#9be07b",
+       "topKind": "cardigan",
+       "glasses": true
+      },
+      "mood": "smug",
+      "x": 0.5,
+      "size": 1.2
+     }
+    ]
+   }
+  },
+  {
+   "from": "o",
+   "label": "o",
+   "gfx": {
+    "type": "scene",
+    "bg": "home",
+    "place": "📍 할머니 집",
+    "prop": "🎵",
+    "propX": 0.85,
+    "chars": [
      {
-      "name": "나",
-      "color": "#FFD84D",
-      "mood": "shock"
+      "style": "chibi",
+      "look": {
+       "age": "old",
+       "hairdo": "perm",
+       "hair": "#ececf0",
+       "top": "#9be07b",
+       "topKind": "cardigan",
+       "glasses": true
+      },
+      "mood": "laugh",
+      "x": 0.45,
+      "size": 1.45
      }
     ]
    }
