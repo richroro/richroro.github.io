@@ -1,6 +1,6 @@
 """낙서 짤툰 v2 builder: writes shorts/<id>/script.json and edit.json in the v2 look (README "낙서 짤툰 v2").
 
-The v2 look: the picture box runs to the bottom ("frame": "tall1520"), captions sit in a navy box over the bottom of the picture
+The v2 look: the picture box runs to the bottom ("frame": "capTall"), captions sit in a navy box over the bottom of the picture
 ("capBox"), one accent colour (yellow) everywhere, no on-screen source badge, and 도치 is drawn 1.5-2x bigger with a
 different shot per scene (mid, close-up cut at the chest, side with a tilt). doodle1-10 reuse their v1 scenes (read from
 git at the v1 commit) under a new script; doodle11-16 are written here from scratch.
@@ -42,10 +42,9 @@ CAPFIX = {
     "이천십에 십삼 더하면 이천이십삼. 이미 지났어.": '"2010 + 13 = [2023] / 이미 지났어"',
     "그거 이천십오 년에 접었거든요?": '"그거 [2015년]에 / 접었거든요?"',
     "아홉 시 회의라고요, 아홉 시!": '"[9시] 회의라고요 / [9시]!"',
+    "소화전 앞은 과태료가 더 세요.": '"소화전 앞은 / 과태료가 [더 세요]"',
     "소화전 앞은 일 분만 서도 신고돼요.": '"소화전 앞은 / [1분]만 서도 신고돼요"',
     "같은 자리, 같은 각도로 일 분 간격 두 장이요.": '"같은 자리·각도로 / [1분] 간격 두 장이요"',
-    "소화전 앞은 승용차 팔만 원이요.": '"소화전 앞 승용차 / [8만 원]이요"',
-    "아들, 아빠 차에 과태료 팔만 원이 나왔다?": '"아빠 차에 과태료 / [8만 원]이 나왔다?"',
     "커피 자국 바지는 삼 층 아가씨 거고.": '"커피 자국 바지는 / [3층] 아가씨 거"',
     "콘센트, 멀티탭 사고만 5년간 387건이래.": '"멀티탭 사고만 / 5년간 [387건]이래"',
 }
@@ -120,7 +119,7 @@ def build(sid, title, lines, clips, music, sfx, voices=None, sources=None):
         g = shoot({"type": "scene", **g} if "type" not in g else g, k)
         out.append({"from": frm, "label": frm, "gfx": g})
     photos = {g["gfx"]["photo"].split("/")[-1].rsplit(".", 1)[0] for g in out if g["gfx"].get("photo")}
-    edit = {"credit": "", "titleStyle": "band", "titleKey": "#FFE14D", "frame": "tall1520", "capBox": {"y": 1600},
+    edit = {"credit": "", "titleStyle": "band", "titleKey": "#FFE14D", "frame": "capTall", "capBox": {"y": 1600},
             "sources": {k: v for k, v in (sources or {}).items() if k in photos}, "music": music, "sfx": sfx, "clips": out}
     missing = photos - set(edit["sources"])
     if missing: raise SystemExit(f"{sid}: no source for {missing}")

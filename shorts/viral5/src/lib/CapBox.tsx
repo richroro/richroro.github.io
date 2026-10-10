@@ -1,7 +1,7 @@
 // Captions in a box over the bottom of the picture (낙서 짤툰 v2, research/benchmark-drawn.md §1): white bold type on a
 // dark navy box, a sentence on one or two lines, the [key] and {red} words both in one accent colour, the spoken word
 // popping without changing colour. Picked with "capBox": {...} in edit.json; shorts without it keep lib/Captions.tsx.
-// Also the "tall1520" frame: the picture box runs from under the title band to the bottom edge, so no empty strip is left.
+// Also the "capTall" frame: the picture box runs from under the title band to the bottom edge, so no empty strip is left.
 import { fitText } from "@remotion/layout-utils";
 import React from "react";
 import { Sequence, spring, useCurrentFrame, useVideoConfig } from "remotion";
@@ -9,7 +9,7 @@ import { BODY } from "./fonts";
 import type { CapPage } from "./Captions";
 
 export type CapBoxOpts = { y?: number; accent?: string; bg?: string; width?: number };
-export const TALL1520 = { top: 400, height: 1520 };
+export const CAP_TALL = { top: 400, height: 1520 };
 
 const Page: React.FC<{ page: CapPage; o: CapBoxOpts }> = ({ page, o }) => {
   const frame = useCurrentFrame();
