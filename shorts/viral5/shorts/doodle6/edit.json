@@ -1,0 +1,490 @@
+{
+ "credit": "",
+ "titleStyle": "band",
+ "titleKey": "#3CFF6A",
+ "captionY": 1640,
+ "sources": {
+  "px8533741": {
+   "file": "px8533741.jpg",
+   "path": "public/doodle/px8533741.jpg",
+   "page": "https://www.pexels.com/photo/close-up-shot-of-a-smartphone-on-white-surface-8533741/",
+   "file_url": "https://images.pexels.com/photos/8533741/pexels-photo-8533741.jpeg?auto=compress&cs=tinysrgb&w=1600",
+   "license": "Pexels License",
+   "creator": "Hanna Pad (anna-nekrashevich)",
+   "credit": "사진: Pexels",
+   "seconds": [
+    [
+     0.0,
+     2.1
+    ]
+   ]
+  },
+  "px8472486": {
+   "file": "px8472486.jpg",
+   "path": "public/doodle/px8472486.jpg",
+   "page": "https://www.pexels.com/photo/a-photo-of-a-minimalist-workspace-8472486/",
+   "file_url": "https://images.pexels.com/photos/8472486/pexels-photo-8472486.jpeg?auto=compress&cs=tinysrgb&w=1600",
+   "license": "Pexels License",
+   "creator": "Cup of Couple",
+   "credit": "사진: Pexels",
+   "seconds": [
+    [
+     12.1,
+     16.07
+    ]
+   ]
+  },
+  "px5483236": {
+   "file": "px5483236.jpg",
+   "path": "public/doodle/px5483236.jpg",
+   "page": "https://www.pexels.com/photo/an-empty-office-5483236/",
+   "file_url": "https://images.pexels.com/photos/5483236/pexels-photo-5483236.jpeg?auto=compress&cs=tinysrgb&w=1600",
+   "license": "Pexels License",
+   "creator": "cottonbro studio",
+   "credit": "사진: Pexels",
+   "seconds": [
+    [
+     22.24,
+     23.72
+    ]
+   ]
+  },
+  "px30391091": {
+   "file": "px30391091.jpg",
+   "path": "public/doodle/px30391091.jpg",
+   "page": "https://www.pexels.com/photo/cozy-workspace-with-coffee-mug-on-desk-30391091/",
+   "file_url": "https://images.pexels.com/photos/30391091/pexels-photo-30391091.jpeg?auto=compress&cs=tinysrgb&w=1600",
+   "license": "Pexels License",
+   "creator": "Letícia Alvares",
+   "credit": "사진: Pexels",
+   "seconds": [
+    [
+     29.97,
+     32.95
+    ]
+   ]
+  }
+ },
+ "music": {
+  "file": "music/hustle.mp3",
+  "gain": 0.12,
+  "start": 0
+ },
+ "sfx": [
+  [
+   "b",
+   "ding",
+   0.25
+  ],
+  [
+   "c",
+   "ding",
+   0.25
+  ],
+  [
+   "d",
+   "ding",
+   0.25
+  ],
+  [
+   "e",
+   "ding",
+   0.25
+  ],
+  [
+   "f",
+   "ding",
+   0.25
+  ],
+  [
+   "g",
+   "ding",
+   0.25
+  ],
+  [
+   "h",
+   "whoosh",
+   0.2
+  ],
+  [
+   "j",
+   "k_error_003",
+   0.32
+  ],
+  [
+   "k",
+   "whoosh_dn",
+   0.3
+  ],
+  [
+   "l",
+   "boing",
+   0.3
+  ],
+  [
+   "z",
+   "pop",
+   0.22
+  ]
+ ],
+ "clips": [
+  {
+   "from": "a",
+   "label": "hook",
+   "credit": "사진: Pexels",
+   "gfx": {
+    "type": "scene",
+    "photo": "doodle/px8533741.jpg",
+    "chars": [
+     {
+      "style": "doodle",
+      "hair": "#FF7A1A",
+      "mood": "think",
+      "to": "shock",
+      "x": 0.24,
+      "size": 1
+     }
+    ],
+    "steps": [
+     9,
+     9,
+     "a.단계",
+     9
+    ],
+    "photoPos": "50% 40%"
+   }
+  },
+  {
+   "from": "b",
+   "label": "nep1",
+   "gfx": {
+    "type": "scene",
+    "bg": "office",
+    "chars": [
+     {
+      "style": "doodle",
+      "hair": "#FF7A1A",
+      "mood": "neutral",
+      "x": 0.28
+     }
+    ],
+    "steps": [
+     9,
+     9,
+     9,
+     9,
+     "b+0.3",
+     "b+0.6"
+    ],
+    "chat": {
+     "title": "○○팀 단톡",
+     "msgs": [
+      {
+       "name": "팀장님",
+       "text": "내일 오전까지 자료 부탁해요",
+       "color": "#FFD84D"
+      },
+      {
+       "text": "넵",
+       "me": true
+      }
+     ]
+    }
+   }
+  },
+  {
+   "from": "c",
+   "label": "nep2",
+   "gfx": {
+    "type": "scene",
+    "bg": "#FFE14D",
+    "chars": [
+     {
+      "style": "doodle",
+      "hair": "#FF7A1A",
+      "mood": "happy",
+      "x": 0.28
+     }
+    ],
+    "steps": [
+     9,
+     9,
+     9,
+     9,
+     0,
+     "c+0.3"
+    ],
+    "chat": {
+     "title": "○○팀 단톡",
+     "msgs": [
+      {
+       "text": "넵",
+       "me": true
+      },
+      {
+       "text": "넵!",
+       "me": true
+      }
+     ]
+    }
+   }
+  },
+  {
+   "from": "d",
+   "label": "nep3",
+   "gfx": {
+    "type": "scene",
+    "bg": "night",
+    "chars": [
+     {
+      "style": "doodle",
+      "hair": "#FF7A1A",
+      "mood": "smug",
+      "x": 0.28
+     }
+    ],
+    "steps": [
+     9,
+     9,
+     9,
+     9,
+     0,
+     0,
+     "d+0.3"
+    ],
+    "chat": {
+     "title": "○○팀 단톡",
+     "msgs": [
+      {
+       "text": "넵",
+       "me": true
+      },
+      {
+       "text": "넵!",
+       "me": true
+      },
+      {
+       "text": "넵넵",
+       "me": true
+      }
+     ]
+    }
+   }
+  },
+  {
+   "from": "e",
+   "label": "nep4",
+   "credit": "사진: Pexels",
+   "gfx": {
+    "type": "scene",
+    "photo": "doodle/px8472486.jpg",
+    "chars": [
+     {
+      "style": "doodle",
+      "hair": "#FF7A1A",
+      "mood": "sick",
+      "x": 0.78,
+      "size": 0.9
+     }
+    ],
+    "steps": [
+     9,
+     9,
+     9,
+     "e+0.6"
+    ],
+    "big": "[넵 알겠습니다]"
+   }
+  },
+  {
+   "from": "f",
+   "label": "nep5",
+   "gfx": {
+    "type": "scene",
+    "bg": "#FFB3C7",
+    "chars": [
+     {
+      "style": "doodle",
+      "hair": "#FF7A1A",
+      "mood": "shy",
+      "x": 0.3
+     }
+    ],
+    "steps": [
+     9,
+     0.1,
+     9,
+     "f+0.4"
+    ],
+    "prop": "😚",
+    "propX": 0.74,
+    "big": "[넹]"
+   }
+  },
+  {
+   "from": "g",
+   "label": "nep6",
+   "gfx": {
+    "type": "vs",
+    "title": "같은 넵, 다른 마음",
+    "left": {
+     "label": "넵!",
+     "emoji": "😆"
+    },
+    "right": {
+     "label": "넵....",
+     "emoji": "😭"
+    },
+    "steps": [
+     0.05,
+     0.3,
+     "g+1.6"
+    ]
+   }
+  },
+  {
+   "from": "h",
+   "label": "seven",
+   "credit": "사진: Pexels",
+   "gfx": {
+    "type": "scene",
+    "photo": "doodle/px5483236.jpg",
+    "chars": [
+     {
+      "style": "doodle",
+      "hair": "#FF7A1A",
+      "mood": "shock",
+      "x": 0.5
+     }
+    ],
+    "steps": [
+     9,
+     9,
+     9,
+     "h+0.4"
+    ],
+    "big": "[7단계]"
+   }
+  },
+  {
+   "from": "i",
+   "label": "excuse",
+   "gfx": {
+    "type": "scene",
+    "bg": "office",
+    "chars": [
+     {
+      "style": "doodle",
+      "hair": "#FF7A1A",
+      "mood": "sick",
+      "x": 0.28
+     }
+    ],
+    "steps": [
+     9,
+     9,
+     9,
+     9,
+     0,
+     "i+0.2",
+     "j"
+    ],
+    "chat": {
+     "title": "○○팀 단톡",
+     "msgs": [
+      {
+       "text": "넵넵",
+       "me": true
+      },
+      {
+       "text": "팀장님, 그 보고서 오늘은 좀 어려울 것 같습니다…",
+       "me": true
+      },
+      {
+       "name": "팀장님",
+       "text": "넵.",
+       "color": "#FFD84D"
+      }
+     ]
+    }
+   }
+  },
+  {
+   "from": "k",
+   "label": "fear",
+   "gfx": {
+    "type": "scene",
+    "bg": "#2b1c1c",
+    "chars": [
+     {
+      "style": "doodle",
+      "hair": "#FF7A1A",
+      "mood": "shock",
+      "x": 0.3
+     }
+    ],
+    "steps": [
+     9,
+     0.1,
+     9,
+     "k+0.5"
+    ],
+    "prop": "😱",
+    "propX": 0.74,
+    "big": "팀장님의 {\"넵.\"}"
+   }
+  },
+  {
+   "from": "l",
+   "label": "now",
+   "credit": "사진: Pexels",
+   "gfx": {
+    "type": "scene",
+    "photo": "doodle/px30391091.jpg",
+    "chars": [
+     {
+      "style": "doodle",
+      "hair": "#FF7A1A",
+      "mood": "cry",
+      "x": 0.8,
+      "size": 0.9
+     }
+    ],
+    "steps": [
+     "l",
+     9,
+     9,
+     9
+    ],
+    "say": {
+     "who": 0,
+     "text": "아닙니다! [지금 바로] 하겠습니다!"
+    }
+   }
+  },
+  {
+   "from": "z",
+   "label": "ask",
+   "gfx": {
+    "type": "scene",
+    "bg": "bedroom",
+    "chars": [
+     {
+      "style": "doodle",
+      "hair": "#FF7A1A",
+      "mood": "think",
+      "to": "smug"
+     }
+    ],
+    "steps": [
+     9,
+     0.1,
+     "z.몇",
+     9
+    ],
+    "prop": "📱",
+    "propX": 0.74
+   }
+  }
+ ]
+}
