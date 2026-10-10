@@ -1,315 +1,172 @@
 {
- "src": "top7/supercell_mothership.mp4",
  "title": [
   "역대급 무서운 날씨",
   "랭킹 TOP5"
  ],
- "titleStyle": "band",
- "credit": "",
- "panels": [],
- "rank2": {
-  "sub": "(몇 번이 제일 무서움?)",
-  "color": "#9AD0FF",
-  "hide": [
-   1
-  ]
- },
- "flash": false,
+ "sub": "(몇 번이 제일 무서움?)",
+ "color": "#9AD0FF",
+ "music": "public/music/Movement Proposition.mp3",
  "keys": [],
- "sfx": [
-  [
-   5.1,
-   "whoosh",
-   0.5
-  ],
-  [
-   10.2,
-   "whoosh",
-   0.5
-  ],
-  [
-   15.3,
-   "whoosh",
-   0.5
-  ],
-  [
-   20.4,
-   "whoosh",
-   0.5
-  ]
- ],
- "music": [
+ "places": [
   {
-   "src": "public/music/Movement Proposition.mp3",
-   "from": 0.0,
-   "at": 0.0,
-   "to": 25.6,
-   "fade": 0.3,
-   "gain": 1.0
-  }
- ],
- "musicGain": 0.8,
- "duck": false,
- "captionY": 1640,
- "tail": 0.0,
- "segments": [
-  {
-   "src": "top7/supercell_mothership.mp4",
-   "in": 0.5,
-   "out": 2.8,
-   "frame": "tall",
-   "single": [
-    0.45,
-    0.5,
-    1.0
+   "n": 5,
+   "label": "슈퍼셀",
+   "caps": [
+    "하늘이 이상한데..",
+    "구름이 통째로 회전??"
    ],
-   "push": [
-    1.0,
-    1.06
-   ],
-   "audio": 0,
-   "rank": {
-    "n": 5,
-    "label": "슈퍼셀"
-   }
+   "shots": [
+    {
+     "src": "top7/supercell_mothership.mp4",
+     "in": 0.5,
+     "dur": 2.3,
+     "single": [
+      0.45,
+      0.5,
+      1.0
+     ]
+    },
+    {
+     "src": "top7/supercell_mothership.mp4",
+     "in": 6.0,
+     "dur": 2.8,
+     "single": [
+      0.5,
+      0.5,
+      1.0
+     ]
+    }
+   ]
   },
   {
-   "src": "top7/supercell_mothership.mp4",
-   "in": 6.0,
-   "out": 8.8,
-   "frame": "tall",
-   "single": [
-    0.5,
-    0.5,
-    1.0
+   "n": 4,
+   "label": "홍수",
+   "caps": [
+    "강물이 불어나더니..",
+    "500년 만의 홍수??"
    ],
-   "push": [
-    1.0,
-    1.06
-   ],
-   "audio": 0
+   "shots": [
+    {
+     "src": "top7/flood_lamar_river.mp4",
+     "in": 3.0,
+     "dur": 2.5,
+     "single": [
+      0.5,
+      0.5,
+      1.0
+     ]
+    },
+    {
+     "src": "top7/flood_lamar_river.mp4",
+     "in": 7.0,
+     "dur": 2.6,
+     "single": [
+      0.6,
+      0.5,
+      1.1
+     ]
+    }
+   ]
   },
   {
-   "src": "top7/flood_lamar_river.mp4",
-   "in": 3.0,
-   "out": 5.5,
-   "frame": "tall",
-   "single": [
-    0.5,
-    0.5,
-    1.0
+   "n": 3,
+   "label": "태풍눈",
+   "caps": [
+    "허리케인에 돌진했는데..",
+    "안에는 파란 하늘??"
    ],
-   "push": [
-    1.0,
-    1.06
-   ],
-   "audio": 0,
-   "rank": {
-    "n": 4,
-    "label": "홍수"
-   }
+   "shots": [
+    {
+     "src": "top7/hurricane_irma_eye_noaa.mp4",
+     "in": 5.0,
+     "dur": 2.5,
+     "single": [
+      0.6,
+      0.5,
+      1.0
+     ]
+    },
+    {
+     "src": "top7/hurricane_irma_eye_noaa.mp4",
+     "in": 9.5,
+     "dur": 2.6,
+     "single": [
+      0.62,
+      0.45,
+      1.1
+     ]
+    }
+   ]
   },
   {
-   "src": "top7/flood_lamar_river.mp4",
-   "in": 7.0,
-   "out": 9.6,
-   "frame": "tall",
-   "single": [
-    0.6,
-    0.5,
-    1.1
+   "n": 2,
+   "label": "우주태풍",
+   "caps": [
+    "우주에서 내려다보니..",
+    "풍속 시속 233km??"
    ],
-   "push": [
-    1.0,
-    1.06
-   ],
-   "audio": 0
+   "shots": [
+    {
+     "src": "top7/hurricane_milton_iss.mp4",
+     "in": 0.0,
+     "dur": 2.5,
+     "single": [
+      0.42,
+      0.5,
+      1.0
+     ]
+    },
+    {
+     "src": "top7/hurricane_milton_iss.mp4",
+     "in": 6.0,
+     "dur": 2.6,
+     "single": [
+      0.45,
+      0.6,
+      1.3
+     ]
+    }
+   ]
   },
   {
-   "src": "top7/hurricane_irma_eye_noaa.mp4",
-   "in": 5.0,
-   "out": 7.5,
-   "frame": "tall",
-   "single": [
-    0.6,
-    0.5,
-    1.0
+   "n": 1,
+   "label": "토네이도",
+   "caps": [
+    "눈앞에 뭔가 내려오는데..",
+    "시속 257km (추정)??"
    ],
-   "push": [
-    1.0,
-    1.06
-   ],
-   "audio": 0,
-   "rank": {
-    "n": 3,
-    "label": "태풍눈"
-   }
-  },
-  {
-   "src": "top7/hurricane_irma_eye_noaa.mp4",
-   "in": 9.5,
-   "out": 12.1,
-   "frame": "tall",
-   "single": [
-    0.62,
-    0.45,
-    1.1
-   ],
-   "push": [
-    1.0,
-    1.06
-   ],
-   "audio": 0
-  },
-  {
-   "src": "top7/hurricane_milton_iss.mp4",
-   "in": 0.0,
-   "out": 2.5,
-   "frame": "tall",
-   "single": [
-    0.42,
-    0.5,
-    1.0
-   ],
-   "push": [
-    1.0,
-    1.06
-   ],
-   "audio": 0,
-   "rank": {
-    "n": 2,
-    "label": "우주태풍"
-   }
-  },
-  {
-   "src": "top7/hurricane_milton_iss.mp4",
-   "in": 6.0,
-   "out": 8.6,
-   "frame": "tall",
-   "single": [
-    0.45,
-    0.6,
-    1.3
-   ],
-   "push": [
-    1.0,
-    1.06
-   ],
-   "audio": 0
-  },
-  {
-   "src": "top7/tornado_st_libory.mp4",
-   "in": 0.3,
-   "out": 2.1,
-   "frame": "tall",
-   "single": [
-    0.36,
-    0.5,
-    1.0
-   ],
-   "push": [
-    1.0,
-    1.06
-   ],
-   "audio": 0,
-   "rank": {
-    "n": 1,
-    "label": "토네이도"
-   }
-  },
-  {
-   "src": "top7/tornado_st_libory.mp4",
-   "in": 3.7,
-   "out": 5.4,
-   "frame": "tall",
-   "single": [
-    0.36,
-    0.5,
-    1.0
-   ],
-   "push": [
-    1.0,
-    1.06
-   ],
-   "audio": 0
-  },
-  {
-   "src": "top7/tornado_st_libory.mp4",
-   "in": 10.0,
-   "out": 11.7,
-   "frame": "tall",
-   "single": [
-    0.4,
-    0.5,
-    1.0
-   ],
-   "push": [
-    1.0,
-    1.06
-   ],
-   "audio": 0
-  }
- ],
- "lines": [
-  {
-   "who": 0,
-   "t": 0.0,
-   "tend": 2.3,
-   "ko": "하늘이 이상한데.."
-  },
-  {
-   "who": 0,
-   "t": 2.3,
-   "tend": 5.1,
-   "ko": "구름이 통째로 회전??"
-  },
-  {
-   "who": 0,
-   "t": 5.1,
-   "tend": 7.6,
-   "ko": "강물이 불어나더니.."
-  },
-  {
-   "who": 0,
-   "t": 7.6,
-   "tend": 10.2,
-   "ko": "500년 만의 홍수??"
-  },
-  {
-   "who": 0,
-   "t": 10.2,
-   "tend": 12.7,
-   "ko": "허리케인에 돌진했는데.."
-  },
-  {
-   "who": 0,
-   "t": 12.7,
-   "tend": 15.3,
-   "ko": "안에는 파란 하늘??"
-  },
-  {
-   "who": 0,
-   "t": 15.3,
-   "tend": 17.8,
-   "ko": "우주에서 내려다보니.."
-  },
-  {
-   "who": 0,
-   "t": 17.8,
-   "tend": 20.4,
-   "ko": "풍속 시속 233km??"
-  },
-  {
-   "who": 0,
-   "t": 20.4,
-   "tend": 22.2,
-   "ko": "눈앞에 뭔가 내려오는데.."
-  },
-  {
-   "who": 0,
-   "t": 22.2,
-   "tend": 25.6,
-   "ko": "시속 257km (추정)??"
+   "shots": [
+    {
+     "src": "top7/tornado_st_libory.mp4",
+     "in": 0.3,
+     "dur": 1.8,
+     "single": [
+      0.36,
+      0.5,
+      1.0
+     ]
+    },
+    {
+     "src": "top7/tornado_st_libory.mp4",
+     "in": 3.7,
+     "dur": 1.7,
+     "single": [
+      0.36,
+      0.5,
+      1.0
+     ]
+    },
+    {
+     "src": "top7/tornado_st_libory.mp4",
+     "in": 10.0,
+     "dur": 1.7,
+     "single": [
+      0.4,
+      0.5,
+      1.0
+     ]
+    }
+   ]
   }
  ],
  "sources": [
@@ -341,16 +198,6 @@
      6.0,
      9.4
     ]
-   ],
-   "used_seconds": [
-    [
-     0.5,
-     2.8
-    ],
-    [
-     6.0,
-     8.8
-    ]
    ]
   },
   {
@@ -374,16 +221,6 @@
     [
      7.0,
      10.4
-    ]
-   ],
-   "used_seconds": [
-    [
-     3.0,
-     5.5
-    ],
-    [
-     7.0,
-     9.6
     ]
    ]
   },
@@ -409,16 +246,6 @@
      9.5,
      12.9
     ]
-   ],
-   "used_seconds": [
-    [
-     5.0,
-     7.5
-    ],
-    [
-     9.5,
-     12.1
-    ]
    ]
   },
   {
@@ -442,16 +269,6 @@
     [
      6.0,
      9.4
-    ]
-   ],
-   "used_seconds": [
-    [
-     0.0,
-     2.5
-    ],
-    [
-     6.0,
-     8.6
     ]
    ]
   },
@@ -480,20 +297,6 @@
     [
      10.0,
      13.4
-    ]
-   ],
-   "used_seconds": [
-    [
-     0.3,
-     2.1
-    ],
-    [
-     3.7,
-     5.4
-    ],
-    [
-     10.0,
-     11.7
     ]
    ]
   }

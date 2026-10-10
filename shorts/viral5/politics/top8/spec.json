@@ -1,315 +1,172 @@
 {
- "src": "top8/balanced_rock.mp4",
  "title": [
   "역대급 이상한 지구 장소",
   "랭킹 TOP5"
  ],
- "titleStyle": "band",
- "credit": "",
- "panels": [],
- "rank2": {
-  "sub": "(몇 번이 제일 이상?)",
-  "color": "#C08BFF",
-  "hide": [
-   1
-  ]
- },
- "flash": false,
+ "sub": "(몇 번이 제일 이상?)",
+ "color": "#C08BFF",
+ "music": "public/music/Dreamer.mp3",
  "keys": [],
- "sfx": [
-  [
-   5.1,
-   "whoosh",
-   0.5
-  ],
-  [
-   10.2,
-   "whoosh",
-   0.5
-  ],
-  [
-   15.3,
-   "whoosh",
-   0.5
-  ],
-  [
-   20.4,
-   "whoosh",
-   0.5
-  ]
- ],
- "music": [
+ "places": [
   {
-   "src": "public/music/Dreamer.mp3",
-   "from": 0.0,
-   "at": 0.0,
-   "to": 25.6,
-   "fade": 0.3,
-   "gain": 1.0
-  }
- ],
- "musicGain": 0.8,
- "duck": false,
- "captionY": 1640,
- "tail": 0.0,
- "segments": [
-  {
-   "src": "top8/balanced_rock.mp4",
-   "in": 0.0,
-   "out": 2.3,
-   "frame": "tall",
-   "single": [
-    0.38,
-    0.5,
-    1.0
+   "n": 5,
+   "label": "균형바위",
+   "caps": [
+    "바위 위에 바위가..",
+    "39m인데 안 떨어짐??"
    ],
-   "push": [
-    1.0,
-    1.06
-   ],
-   "audio": 0,
-   "rank": {
-    "n": 5,
-    "label": "균형바위"
-   }
+   "shots": [
+    {
+     "src": "top8/balanced_rock.mp4",
+     "in": 0.0,
+     "dur": 2.3,
+     "single": [
+      0.38,
+      0.5,
+      1.0
+     ]
+    },
+    {
+     "src": "top8/balanced_rock.mp4",
+     "in": 5.0,
+     "dur": 2.8,
+     "single": [
+      0.36,
+      0.4,
+      1.2
+     ]
+    }
+   ]
   },
   {
-   "src": "top8/balanced_rock.mp4",
-   "in": 5.0,
-   "out": 7.8,
-   "frame": "tall",
-   "single": [
-    0.36,
-    0.4,
-    1.2
+   "n": 4,
+   "label": "소금사막",
+   "caps": [
+    "끝없는 소금밭인데..",
+    "바다보다 86m 낮음??"
    ],
-   "push": [
-    1.0,
-    1.06
-   ],
-   "audio": 0
+   "shots": [
+    {
+     "src": "top8/badwater_basin.mp4",
+     "in": 1.5,
+     "dur": 2.5,
+     "single": [
+      0.5,
+      0.5,
+      1.0
+     ]
+    },
+    {
+     "src": "top8/badwater_basin.mp4",
+     "in": 7.5,
+     "dur": 2.6,
+     "single": [
+      0.45,
+      0.55,
+      1.1
+     ]
+    }
+   ]
   },
   {
-   "src": "top8/badwater_basin.mp4",
-   "in": 1.5,
-   "out": 4.0,
-   "frame": "tall",
-   "single": [
-    0.5,
-    0.5,
-    1.0
+   "n": 3,
+   "label": "용암호수",
+   "caps": [
+    "화산 속을 들여다보니..",
+    "용암이 호수처럼 출렁??"
    ],
-   "push": [
-    1.0,
-    1.06
-   ],
-   "audio": 0,
-   "rank": {
-    "n": 4,
-    "label": "소금사막"
-   }
+   "shots": [
+    {
+     "src": "top8/halemaumau_lava_lake.mp4",
+     "in": 0.0,
+     "dur": 2.5,
+     "single": [
+      0.5,
+      0.5,
+      1.0
+     ]
+    },
+    {
+     "src": "top8/halemaumau_lava_lake.mp4",
+     "in": 5.5,
+     "dur": 2.6,
+     "single": [
+      0.55,
+      0.45,
+      1.15
+     ]
+    }
+   ]
   },
   {
-   "src": "top8/badwater_basin.mp4",
-   "in": 7.5,
-   "out": 10.1,
-   "frame": "tall",
-   "single": [
-    0.45,
-    0.55,
-    1.1
+   "n": 2,
+   "label": "떠도는돌",
+   "caps": [
+    "사막에 돌 하나가..",
+    "혼자 움직인 흔적??"
    ],
-   "push": [
-    1.0,
-    1.06
-   ],
-   "audio": 0
+   "shots": [
+    {
+     "src": "top8/racetrack_sailing_stones.mp4",
+     "in": 0.5,
+     "dur": 2.5,
+     "single": [
+      0.38,
+      0.7,
+      1.0
+     ]
+    },
+    {
+     "src": "top8/racetrack_sailing_stones.mp4",
+     "in": 6.5,
+     "dur": 2.6,
+     "single": [
+      0.45,
+      0.6,
+      1.0
+     ]
+    }
+   ]
   },
   {
-   "src": "top8/halemaumau_lava_lake.mp4",
-   "in": 0.0,
-   "out": 2.5,
-   "frame": "tall",
-   "single": [
-    0.5,
-    0.5,
-    1.0
+   "n": 1,
+   "label": "온천",
+   "caps": [
+    "땅에 웅덩이가 있는데..",
+    "색깔이 무지개??"
    ],
-   "push": [
-    1.0,
-    1.06
-   ],
-   "audio": 0,
-   "rank": {
-    "n": 3,
-    "label": "용암호수"
-   }
-  },
-  {
-   "src": "top8/halemaumau_lava_lake.mp4",
-   "in": 5.5,
-   "out": 8.1,
-   "frame": "tall",
-   "single": [
-    0.55,
-    0.45,
-    1.15
-   ],
-   "push": [
-    1.0,
-    1.06
-   ],
-   "audio": 0
-  },
-  {
-   "src": "top8/racetrack_sailing_stones.mp4",
-   "in": 0.5,
-   "out": 3.0,
-   "frame": "tall",
-   "single": [
-    0.38,
-    0.7,
-    1.0
-   ],
-   "push": [
-    1.0,
-    1.06
-   ],
-   "audio": 0,
-   "rank": {
-    "n": 2,
-    "label": "떠도는돌"
-   }
-  },
-  {
-   "src": "top8/racetrack_sailing_stones.mp4",
-   "in": 6.5,
-   "out": 9.1,
-   "frame": "tall",
-   "single": [
-    0.45,
-    0.6,
-    1.0
-   ],
-   "push": [
-    1.0,
-    1.06
-   ],
-   "audio": 0
-  },
-  {
-   "src": "top8/grand_prismatic_spring.mp4",
-   "in": 0.0,
-   "out": 1.8,
-   "frame": "tall",
-   "single": [
-    0.5,
-    0.5,
-    1.0
-   ],
-   "push": [
-    1.0,
-    1.06
-   ],
-   "audio": 0,
-   "rank": {
-    "n": 1,
-    "label": "온천"
-   }
-  },
-  {
-   "src": "top8/grand_prismatic_spring.mp4",
-   "in": 4.5,
-   "out": 6.2,
-   "frame": "tall",
-   "single": [
-    0.35,
-    0.5,
-    1.0
-   ],
-   "push": [
-    1.0,
-    1.06
-   ],
-   "audio": 0
-  },
-  {
-   "src": "top8/grand_prismatic_spring.mp4",
-   "in": 9.5,
-   "out": 11.2,
-   "frame": "tall",
-   "single": [
-    0.65,
-    0.5,
-    1.0
-   ],
-   "push": [
-    1.0,
-    1.06
-   ],
-   "audio": 0
-  }
- ],
- "lines": [
-  {
-   "who": 0,
-   "t": 0.0,
-   "tend": 2.3,
-   "ko": "바위 위에 바위가.."
-  },
-  {
-   "who": 0,
-   "t": 2.3,
-   "tend": 5.1,
-   "ko": "39m인데 안 떨어짐??"
-  },
-  {
-   "who": 0,
-   "t": 5.1,
-   "tend": 7.6,
-   "ko": "끝없는 소금밭인데.."
-  },
-  {
-   "who": 0,
-   "t": 7.6,
-   "tend": 10.2,
-   "ko": "바다보다 86m 낮음??"
-  },
-  {
-   "who": 0,
-   "t": 10.2,
-   "tend": 12.7,
-   "ko": "화산 속을 들여다보니.."
-  },
-  {
-   "who": 0,
-   "t": 12.7,
-   "tend": 15.3,
-   "ko": "용암이 호수처럼 출렁??"
-  },
-  {
-   "who": 0,
-   "t": 15.3,
-   "tend": 17.8,
-   "ko": "사막에 돌 하나가.."
-  },
-  {
-   "who": 0,
-   "t": 17.8,
-   "tend": 20.4,
-   "ko": "혼자 움직인 흔적??"
-  },
-  {
-   "who": 0,
-   "t": 20.4,
-   "tend": 22.2,
-   "ko": "땅에 웅덩이가 있는데.."
-  },
-  {
-   "who": 0,
-   "t": 22.2,
-   "tend": 25.6,
-   "ko": "색깔이 무지개??"
+   "shots": [
+    {
+     "src": "top8/grand_prismatic_spring.mp4",
+     "in": 0.0,
+     "dur": 1.8,
+     "single": [
+      0.5,
+      0.5,
+      1.0
+     ]
+    },
+    {
+     "src": "top8/grand_prismatic_spring.mp4",
+     "in": 4.5,
+     "dur": 1.7,
+     "single": [
+      0.35,
+      0.5,
+      1.0
+     ]
+    },
+    {
+     "src": "top8/grand_prismatic_spring.mp4",
+     "in": 9.5,
+     "dur": 1.7,
+     "single": [
+      0.65,
+      0.5,
+      1.0
+     ]
+    }
+   ]
   }
  ],
  "sources": [
@@ -335,16 +192,6 @@
      5.0,
      8.4
     ]
-   ],
-   "used_seconds": [
-    [
-     0.0,
-     2.3
-    ],
-    [
-     5.0,
-     7.8
-    ]
    ]
   },
   {
@@ -368,16 +215,6 @@
     [
      7.5,
      10.9
-    ]
-   ],
-   "used_seconds": [
-    [
-     1.5,
-     4.0
-    ],
-    [
-     7.5,
-     10.1
     ]
    ]
   },
@@ -403,16 +240,6 @@
      5.5,
      8.9
     ]
-   ],
-   "used_seconds": [
-    [
-     0.0,
-     2.5
-    ],
-    [
-     5.5,
-     8.1
-    ]
    ]
   },
   {
@@ -436,16 +263,6 @@
     [
      6.5,
      9.9
-    ]
-   ],
-   "used_seconds": [
-    [
-     0.5,
-     3.0
-    ],
-    [
-     6.5,
-     9.1
     ]
    ]
   },
@@ -474,20 +291,6 @@
     [
      9.5,
      12.9
-    ]
-   ],
-   "used_seconds": [
-    [
-     0.0,
-     1.8
-    ],
-    [
-     4.5,
-     6.2
-    ],
-    [
-     9.5,
-     11.2
     ]
    ]
   }

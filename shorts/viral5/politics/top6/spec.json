@@ -1,315 +1,172 @@
 {
- "src": "top6/red_jellyfish_poralia.mp4",
  "title": [
   "역대급 소름 돋는 바닷속",
   "랭킹 TOP5"
  ],
- "titleStyle": "band",
- "credit": "",
- "panels": [],
- "rank2": {
-  "sub": "(몇 번이 제일 소름?)",
-  "color": "#5BE0C2",
-  "hide": [
-   1
-  ]
- },
- "flash": false,
+ "sub": "(몇 번이 제일 소름?)",
+ "color": "#5BE0C2",
+ "music": "public/music/Gathering Darkness.mp3",
  "keys": [],
- "sfx": [
-  [
-   5.1,
-   "whoosh",
-   0.5
-  ],
-  [
-   10.2,
-   "whoosh",
-   0.5
-  ],
-  [
-   15.3,
-   "whoosh",
-   0.5
-  ],
-  [
-   20.4,
-   "whoosh",
-   0.5
-  ]
- ],
- "music": [
+ "places": [
   {
-   "src": "public/music/Gathering Darkness.mp3",
-   "from": 0.0,
-   "at": 0.0,
-   "to": 25.6,
-   "fade": 0.3,
-   "gain": 1.0
-  }
- ],
- "musicGain": 0.8,
- "duck": false,
- "captionY": 1640,
- "tail": 0.0,
- "segments": [
-  {
-   "src": "top6/red_jellyfish_poralia.mp4",
-   "in": 3.0,
-   "out": 5.3,
-   "frame": "tall",
-   "single": [
-    0.47,
-    0.5,
-    1.0
+   "n": 5,
+   "label": "해파리",
+   "caps": [
+    "수심 700m 내려가니..",
+    "핏빛 해파리 등장??"
    ],
-   "push": [
-    1.0,
-    1.06
-   ],
-   "audio": 0,
-   "rank": {
-    "n": 5,
-    "label": "해파리"
-   }
+   "shots": [
+    {
+     "src": "top6/red_jellyfish_poralia.mp4",
+     "in": 3.0,
+     "dur": 2.3,
+     "single": [
+      0.47,
+      0.5,
+      1.0
+     ]
+    },
+    {
+     "src": "top6/red_jellyfish_poralia.mp4",
+     "in": 8.5,
+     "dur": 2.8,
+     "single": [
+      0.48,
+      0.5,
+      1.15
+     ]
+    }
+   ]
   },
   {
-   "src": "top6/red_jellyfish_poralia.mp4",
-   "in": 8.5,
-   "out": 11.3,
-   "frame": "tall",
-   "single": [
-    0.48,
-    0.5,
-    1.15
+   "n": 4,
+   "label": "가스강",
+   "caps": [
+    "바위 밑을 비췄더니..",
+    "은빛 강이 흐름??"
    ],
-   "push": [
-    1.0,
-    1.06
-   ],
-   "audio": 0
+   "shots": [
+    {
+     "src": "top6/methane_bubble_river.mp4",
+     "in": 0.5,
+     "dur": 2.5,
+     "single": [
+      0.45,
+      0.5,
+      1.0
+     ]
+    },
+    {
+     "src": "top6/methane_bubble_river.mp4",
+     "in": 6.5,
+     "dur": 2.6,
+     "single": [
+      0.4,
+      0.5,
+      1.0
+     ]
+    }
+   ]
   },
   {
-   "src": "top6/methane_bubble_river.mp4",
-   "in": 0.5,
-   "out": 3.0,
-   "frame": "tall",
-   "single": [
-    0.45,
-    0.5,
-    1.0
+   "n": 3,
+   "label": "난파선",
+   "caps": [
+    "어둠 속에 뭔가..",
+    "19세기 범선 난파선??"
    ],
-   "push": [
-    1.0,
-    1.06
-   ],
-   "audio": 0,
-   "rank": {
-    "n": 4,
-    "label": "가스강"
-   }
+   "shots": [
+    {
+     "src": "top6/shipwreck_19th_century.mp4",
+     "in": 1.0,
+     "dur": 2.5,
+     "single": [
+      0.55,
+      0.5,
+      1.0
+     ]
+    },
+    {
+     "src": "top6/shipwreck_19th_century.mp4",
+     "in": 6.5,
+     "dur": 2.6,
+     "single": [
+      0.4,
+      0.5,
+      1.0
+     ]
+    }
+   ]
   },
   {
-   "src": "top6/methane_bubble_river.mp4",
-   "in": 6.5,
-   "out": 9.1,
-   "frame": "tall",
-   "single": [
-    0.4,
-    0.5,
-    1.0
+   "n": 2,
+   "label": "굴뚝",
+   "caps": [
+    "바다 밑 굴뚝에서..",
+    "검은 연기가 콸콸??"
    ],
-   "push": [
-    1.0,
-    1.06
-   ],
-   "audio": 0
+   "shots": [
+    {
+     "src": "top6/black_smoker_marianas.mp4",
+     "in": 0.0,
+     "dur": 2.5,
+     "single": [
+      0.45,
+      0.5,
+      1.0
+     ]
+    },
+    {
+     "src": "top6/black_smoker_marianas.mp4",
+     "in": 4.4,
+     "dur": 2.6,
+     "single": [
+      0.46,
+      0.45,
+      1.2
+     ]
+    }
+   ]
   },
   {
-   "src": "top6/shipwreck_19th_century.mp4",
-   "in": 1.0,
-   "out": 3.5,
-   "frame": "tall",
-   "single": [
-    0.55,
-    0.5,
-    1.0
+   "n": 1,
+   "label": "분화",
+   "caps": [
+    "바닷속이 끓더니..",
+    "해저 화산 폭발??"
    ],
-   "push": [
-    1.0,
-    1.06
-   ],
-   "audio": 0,
-   "rank": {
-    "n": 3,
-    "label": "난파선"
-   }
-  },
-  {
-   "src": "top6/shipwreck_19th_century.mp4",
-   "in": 6.5,
-   "out": 9.1,
-   "frame": "tall",
-   "single": [
-    0.4,
-    0.5,
-    1.0
-   ],
-   "push": [
-    1.0,
-    1.06
-   ],
-   "audio": 0
-  },
-  {
-   "src": "top6/black_smoker_marianas.mp4",
-   "in": 0.0,
-   "out": 2.5,
-   "frame": "tall",
-   "single": [
-    0.45,
-    0.5,
-    1.0
-   ],
-   "push": [
-    1.0,
-    1.06
-   ],
-   "audio": 0,
-   "rank": {
-    "n": 2,
-    "label": "굴뚝"
-   }
-  },
-  {
-   "src": "top6/black_smoker_marianas.mp4",
-   "in": 4.4,
-   "out": 7.0,
-   "frame": "tall",
-   "single": [
-    0.46,
-    0.45,
-    1.2
-   ],
-   "push": [
-    1.0,
-    1.06
-   ],
-   "audio": 0
-  },
-  {
-   "src": "top6/eruption_brimstone_pit.mp4",
-   "in": 0.0,
-   "out": 1.8,
-   "frame": "tall",
-   "single": [
-    0.57,
-    0.5,
-    1.0
-   ],
-   "push": [
-    1.0,
-    1.06
-   ],
-   "audio": 0,
-   "rank": {
-    "n": 1,
-    "label": "분화"
-   }
-  },
-  {
-   "src": "top6/eruption_brimstone_pit.mp4",
-   "in": 4.5,
-   "out": 6.2,
-   "frame": "tall",
-   "single": [
-    0.58,
-    0.45,
-    1.2
-   ],
-   "push": [
-    1.0,
-    1.06
-   ],
-   "audio": 0
-  },
-  {
-   "src": "top6/eruption_brimstone_pit.mp4",
-   "in": 9.5,
-   "out": 11.2,
-   "frame": "tall",
-   "single": [
-    0.55,
-    0.55,
-    1.0
-   ],
-   "push": [
-    1.0,
-    1.06
-   ],
-   "audio": 0
-  }
- ],
- "lines": [
-  {
-   "who": 0,
-   "t": 0.0,
-   "tend": 2.3,
-   "ko": "수심 700m 내려가니.."
-  },
-  {
-   "who": 0,
-   "t": 2.3,
-   "tend": 5.1,
-   "ko": "핏빛 해파리 등장??"
-  },
-  {
-   "who": 0,
-   "t": 5.1,
-   "tend": 7.6,
-   "ko": "바위 밑을 비췄더니.."
-  },
-  {
-   "who": 0,
-   "t": 7.6,
-   "tend": 10.2,
-   "ko": "은빛 강이 흐름??"
-  },
-  {
-   "who": 0,
-   "t": 10.2,
-   "tend": 12.7,
-   "ko": "어둠 속에 뭔가.."
-  },
-  {
-   "who": 0,
-   "t": 12.7,
-   "tend": 15.3,
-   "ko": "19세기 범선 난파선??"
-  },
-  {
-   "who": 0,
-   "t": 15.3,
-   "tend": 17.8,
-   "ko": "바다 밑 굴뚝에서.."
-  },
-  {
-   "who": 0,
-   "t": 17.8,
-   "tend": 20.4,
-   "ko": "검은 연기가 콸콸??"
-  },
-  {
-   "who": 0,
-   "t": 20.4,
-   "tend": 22.2,
-   "ko": "바닷속이 끓더니.."
-  },
-  {
-   "who": 0,
-   "t": 22.2,
-   "tend": 25.6,
-   "ko": "해저 화산 폭발??"
+   "shots": [
+    {
+     "src": "top6/eruption_brimstone_pit.mp4",
+     "in": 0.0,
+     "dur": 1.8,
+     "single": [
+      0.57,
+      0.5,
+      1.0
+     ]
+    },
+    {
+     "src": "top6/eruption_brimstone_pit.mp4",
+     "in": 4.5,
+     "dur": 1.7,
+     "single": [
+      0.58,
+      0.45,
+      1.2
+     ]
+    },
+    {
+     "src": "top6/eruption_brimstone_pit.mp4",
+     "in": 9.5,
+     "dur": 1.7,
+     "single": [
+      0.55,
+      0.55,
+      1.0
+     ]
+    }
+   ]
   }
  ],
  "sources": [
@@ -335,16 +192,6 @@
      8.5,
      11.9
     ]
-   ],
-   "used_seconds": [
-    [
-     3.0,
-     5.3
-    ],
-    [
-     8.5,
-     11.3
-    ]
    ]
   },
   {
@@ -368,16 +215,6 @@
     [
      6.5,
      9.9
-    ]
-   ],
-   "used_seconds": [
-    [
-     0.5,
-     3.0
-    ],
-    [
-     6.5,
-     9.1
     ]
    ]
   },
@@ -403,16 +240,6 @@
      6.5,
      9.9
     ]
-   ],
-   "used_seconds": [
-    [
-     1.0,
-     3.5
-    ],
-    [
-     6.5,
-     9.1
-    ]
    ]
   },
   {
@@ -436,16 +263,6 @@
     [
      4.4,
      7.8
-    ]
-   ],
-   "used_seconds": [
-    [
-     0.0,
-     2.5
-    ],
-    [
-     4.4,
-     7.0
     ]
    ]
   },
@@ -474,20 +291,6 @@
     [
      9.5,
      12.9
-    ]
-   ],
-   "used_seconds": [
-    [
-     0.0,
-     1.8
-    ],
-    [
-     4.5,
-     6.2
-    ],
-    [
-     9.5,
-     11.2
     ]
    ]
   }

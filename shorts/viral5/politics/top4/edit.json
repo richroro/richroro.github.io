@@ -1,94 +1,39 @@
 {
  "src": "top4/iss_lightning.mp4",
  "title": [
-  "우주에서 찍힌 소름 돋는 장면",
-  "[TOP5] (몇 위가 제일 소름?)"
+  "우주에서 찍힌 역대급 장면",
+  "랭킹 TOP5"
  ],
  "titleStyle": "band",
- "credit": "영상: NASA",
+ "credit": "",
  "panels": [],
- "stickers": [
-  {
-   "text": "5위",
-   "from": 0.0,
-   "to": 1.4,
-   "x": 130,
-   "y": 500,
-   "rot": -4,
-   "bg": "#FFE14D",
-   "fg": "#111",
-   "size": 64
-  },
-  {
-   "text": "4위",
-   "from": 6.69,
-   "to": 8.09,
-   "x": 130,
-   "y": 500,
-   "rot": -4,
-   "bg": "#FFE14D",
-   "fg": "#111",
-   "size": 64
-  },
-  {
-   "text": "3위",
-   "from": 13.59,
-   "to": 14.99,
-   "x": 130,
-   "y": 500,
-   "rot": -4,
-   "bg": "#FFE14D",
-   "fg": "#111",
-   "size": 64
-  },
-  {
-   "text": "2위",
-   "from": 20.59,
-   "to": 21.99,
-   "x": 130,
-   "y": 500,
-   "rot": -4,
-   "bg": "#FFE14D",
-   "fg": "#111",
-   "size": 64
-  },
-  {
-   "text": "1위",
-   "from": 27.59,
-   "to": 28.99,
-   "x": 130,
-   "y": 500,
-   "rot": -4,
-   "bg": "#FFE14D",
-   "fg": "#111",
-   "size": 64
-  }
- ],
- "keys": [
-  "번개",
-  "오로라를",
-  "달",
-  "혜성",
-  "지구"
- ],
+ "rank2": {
+  "sub": "(1번 제목 추천좀)",
+  "color": "#7FB2FF",
+  "hide": [
+   1
+  ]
+ },
+ "flash": false,
+ "keys": [],
  "sfx": [
   [
-   6.69,
+   5.1,
    "whoosh",
    0.5
   ],
   [
-   13.59,
+   10.2,
    "whoosh",
    0.5
   ],
   [
-   20.59,
+   15.3,
    "whoosh",
    0.5
   ],
   [
-   27.59,
+   20.4,
    "whoosh",
    0.5
   ]
@@ -98,20 +43,21 @@
    "src": "public/music/Lightless Dawn.mp3",
    "from": 0.0,
    "at": 0.0,
-   "to": 34.59,
+   "to": 25.6,
    "fade": 0.3,
    "gain": 1.0
   }
  ],
- "musicGain": 0.7,
+ "musicGain": 0.8,
  "duck": false,
- "captionY": 1380,
+ "captionY": 1640,
  "tail": 0.0,
  "segments": [
   {
    "src": "top4/iss_lightning.mp4",
    "in": 0.0,
-   "out": 3.4,
+   "out": 2.3,
+   "frame": "tall",
    "single": [
     0.55,
     0.55,
@@ -119,38 +65,38 @@
    ],
    "push": [
     1.0,
-    1.05
+    1.06
    ],
    "audio": 0,
-   "credit": "영상: NASA",
    "vf": "eq=brightness=0.04:contrast=1.15:gamma=1.25",
    "rank": {
     "n": 5,
-    "label": "우주에서 본 번개 폭풍"
+    "label": "번개"
    }
   },
   {
    "src": "top4/iss_lightning.mp4",
    "in": 0.3,
-   "out": 2.6,
+   "out": 2.26,
+   "frame": "tall",
    "single": [
     0.6,
     0.62,
-    1.5
+    1.3
    ],
    "push": [
     1.0,
-    1.05
+    1.06
    ],
    "audio": 0,
-   "credit": "영상: NASA",
    "vf": "eq=brightness=0.04:contrast=1.15:gamma=1.25",
    "speed": 0.7
   },
   {
    "src": "top4/iss_aurora.mp4",
    "in": 0.0,
-   "out": 3.4,
+   "out": 2.5,
+   "frame": "tall",
    "single": [
     0.38,
     0.5,
@@ -158,35 +104,35 @@
    ],
    "push": [
     1.0,
-    1.05
+    1.06
    ],
    "audio": 0,
-   "credit": "영상: NASA",
    "rank": {
     "n": 4,
-    "label": "발밑에 깔린 오로라"
+    "label": "오로라"
    }
   },
   {
    "src": "top4/iss_aurora.mp4",
    "in": 3.4,
-   "out": 6.9,
+   "out": 6.0,
+   "frame": "tall",
    "single": [
     0.5,
     0.55,
-    1.25
+    1.2
    ],
    "push": [
     1.0,
-    1.05
+    1.06
    ],
-   "audio": 0,
-   "credit": "영상: NASA"
+   "audio": 0
   },
   {
    "src": "top4/iss_eclipse.mp4",
    "in": 1.2,
-   "out": 4.6,
+   "out": 3.7,
+   "frame": "tall",
    "single": [
     0.5,
     0.6,
@@ -194,37 +140,37 @@
    ],
    "push": [
     1.0,
-    1.05
+    1.06
    ],
    "audio": 0,
-   "credit": "영상: NASA",
    "vf": "eq=contrast=1.35:brightness=0.02:gamma=1.15",
    "rank": {
     "n": 3,
-    "label": "지구에 드리운 달 그림자"
+    "label": "달그림자"
    }
   },
   {
    "src": "top4/iss_eclipse.mp4",
    "in": 4.6,
-   "out": 8.2,
+   "out": 7.2,
+   "frame": "tall",
    "single": [
     0.5,
     0.55,
-    1.4
+    1.3
    ],
    "push": [
     1.0,
-    1.05
+    1.06
    ],
    "audio": 0,
-   "credit": "영상: NASA",
    "vf": "eq=contrast=1.35:brightness=0.02:gamma=1.15"
   },
   {
    "src": "top4/iss_lovejoy.mp4",
    "in": 0.2,
-   "out": 3.6,
+   "out": 2.7,
+   "frame": "tall",
    "single": [
     0.27,
     0.5,
@@ -232,35 +178,35 @@
    ],
    "push": [
     1.0,
-    1.05
+    1.06
    ],
    "audio": 0,
-   "credit": "영상: NASA",
    "rank": {
     "n": 2,
-    "label": "지구 위로 떠오른 혜성"
+    "label": "혜성"
    }
   },
   {
    "src": "top4/iss_lovejoy.mp4",
    "in": 3.6,
-   "out": 7.2,
+   "out": 6.2,
+   "frame": "tall",
    "single": [
     0.3,
     0.48,
-    1.25
+    1.2
    ],
    "push": [
     1.0,
-    1.05
+    1.06
    ],
-   "audio": 0,
-   "credit": "영상: NASA"
+   "audio": 0
   },
   {
    "src": "top4/artemis2_earthset.mp4",
    "in": 0.0,
-   "out": 3.4,
+   "out": 1.8,
+   "frame": "tall",
    "single": [
     0.47,
     0.5,
@@ -268,92 +214,107 @@
    ],
    "push": [
     1.0,
-    1.0
+    1.06
    ],
    "audio": 0,
-   "credit": "사진: NASA",
    "rank": {
     "n": 1,
-    "label": "달 뒤로 지는 지구"
+    "label": "지구"
    }
   },
   {
    "src": "top4/artemis2_earthset.mp4",
-   "in": 3.4,
-   "out": 7.0,
+   "in": 1.8,
+   "out": 3.5,
+   "frame": "tall",
    "single": [
     0.47,
     0.5,
-    1.0
+    1.15
    ],
    "push": [
     1.0,
-    1.0
+    1.06
    ],
-   "audio": 0,
-   "credit": "사진: NASA"
+   "audio": 0
+  },
+  {
+   "src": "top4/artemis2_earthset.mp4",
+   "in": 3.5,
+   "out": 5.2,
+   "frame": "tall",
+   "single": [
+    0.47,
+    0.5,
+    1.3
+   ],
+   "push": [
+    1.0,
+    1.06
+   ],
+   "audio": 0
   }
  ],
  "lines": [
   {
    "who": 0,
-   "t": 0.1,
-   "tend": 3.35,
-   "ko": "우주에서 본 번개"
+   "t": 0.0,
+   "tend": 2.3,
+   "ko": "우주에서 밑을 봤는데.."
   },
   {
    "who": 0,
-   "t": 3.5,
-   "tend": 6.636,
-   "ko": "아프리카 밤하늘 번개 폭풍"
+   "t": 2.3,
+   "tend": 5.1,
+   "ko": "구름 속 번개가 번쩍??"
   },
   {
    "who": 0,
-   "t": 6.786,
-   "tend": 10.036,
-   "ko": "오로라를 위에서 보면"
+   "t": 5.1,
+   "tend": 7.6,
+   "ko": "발밑이 초록색인데.."
   },
   {
    "who": 0,
-   "t": 10.186,
-   "tend": 13.536,
-   "ko": "인도양 위 남극 오로라"
+   "t": 7.6,
+   "tend": 10.2,
+   "ko": "오로라를 위에서 봄??"
   },
   {
    "who": 0,
-   "t": 13.686,
-   "tend": 16.936,
-   "ko": "구름 위 검은 얼룩…"
+   "t": 10.2,
+   "tend": 12.7,
+   "ko": "구름 위에 검은 얼룩.."
   },
   {
    "who": 0,
-   "t": 17.086,
-   "tend": 20.536,
-   "ko": "2012년 일식 때 달 그림자"
+   "t": 12.7,
+   "tend": 15.3,
+   "ko": "달 그림자였음??"
   },
   {
    "who": 0,
-   "t": 20.686,
-   "tend": 23.936,
-   "ko": "지평선 위 하얀 꼬리"
+   "t": 15.3,
+   "tend": 17.8,
+   "ko": "지평선 위 하얀 꼬리.."
   },
   {
    "who": 0,
-   "t": 24.086,
-   "tend": 27.536,
-   "ko": "러브조이 혜성 (2011)"
+   "t": 17.8,
+   "tend": 20.4,
+   "ko": "혜성이 떠오름??"
   },
   {
    "who": 0,
-   "t": 27.686,
-   "tend": 30.936,
-   "ko": "달 뒤로 지는 지구"
+   "t": 20.4,
+   "tend": 22.2,
+   "ko": "달 뒤로 뭔가 지는데.."
   },
   {
    "who": 0,
-   "t": 31.086,
-   "tend": 34.536,
-   "ko": "2026년 아르테미스 2호"
+   "t": 22.2,
+   "tend": 25.6,
+   "ko": "저게 지구라고??"
   }
  ],
  "sources": [
@@ -365,8 +326,14 @@
    "license": "Public domain (NASA, 17 U.S.C. §105)",
    "credit": "Image Science & Analysis Laboratory, NASA Johnson Space Center (ISS Crew Earth Observations)",
    "used_seconds": [
-    0.0,
-    3.4
+    [
+     0.0,
+     2.3
+    ],
+    [
+     0.3,
+     2.26
+    ]
    ]
   },
   {
@@ -377,8 +344,14 @@
    "license": "Public domain (NASA, 17 U.S.C. §105)",
    "credit": "Image Science & Analysis Laboratory, NASA Johnson Space Center (ISS Crew Earth Observations)",
    "used_seconds": [
-    0.0,
-    6.9
+    [
+     0.0,
+     2.5
+    ],
+    [
+     3.4,
+     6.0
+    ]
    ]
   },
   {
@@ -389,8 +362,14 @@
    "license": "Public domain (NASA, 17 U.S.C. §105)",
    "credit": "Image Science & Analysis Laboratory, NASA Johnson Space Center (ISS Crew Earth Observations)",
    "used_seconds": [
-    1.2,
-    8.2
+    [
+     1.2,
+     3.7
+    ],
+    [
+     4.6,
+     7.2
+    ]
    ]
   },
   {
@@ -401,8 +380,14 @@
    "license": "Public domain (NASA, 17 U.S.C. §105)",
    "credit": "Image Science & Analysis Laboratory, NASA Johnson Space Center (ISS Crew Earth Observations)",
    "used_seconds": [
-    0.2,
-    7.2
+    [
+     0.2,
+     2.7
+    ],
+    [
+     3.6,
+     6.2
+    ]
    ]
   },
   {
@@ -413,8 +398,18 @@
    "license": "Public domain (NASA, 17 U.S.C. §105)",
    "credit": "NASA",
    "used_seconds": [
-    0.0,
-    7.0
+    [
+     0.0,
+     1.8
+    ],
+    [
+     1.8,
+     3.5
+    ],
+    [
+     3.5,
+     5.2
+    ]
    ]
   }
  ]
