@@ -6,7 +6,7 @@ BF = {"name": "남자친구", "look": {"hairdo": "side", "hair": "#2a2a30", "top
 EP = {
     "title": "60살 아빠가 영어 시작했다",
     "music": ("scheming_weasel", 0.16),
-    "voices": {"nar": ("SunHi", "+28%"), "dad": ("InJoon", "+12%", "-15Hz"), "mom": ("SunHi", "+18%", "-10Hz"), "bf": ("Hyunsu", "+26%")},
+    "voices": {"nar": ("SunHi", "+28%"), "dad": ("InJoon", "+24%", "-15Hz"), "mom": ("SunHi", "+24%", "-10Hz"), "bf": ("Hyunsu", "+26%")},
     "cast": {"me": ME, "dad": DAD, "mom": MOM, "bf": BF},
     "beats": [
         ("a", "nar", "예순 살 아빠가 영어를 시작했어.", "60살 아빠가 / [영어]를 시작했어", {"bg": "home", "chars": ["dad:think@0.4*1.2"], "prop": "📖", "propX": 0.82, "tags": True}),
