@@ -1967,13 +1967,14 @@ MEDIA=<저장소>/media python3 politics/prep_split.py rank1    # 원본: media/
 | `life1` | 비행기 창문이 / 네모가 아닌 진짜 이유 | 28.6초 | 둥근 모서리 창 → 1954년 코멧 2대 공중분해 → 물탱크 압력 시험 → 네모난 창 모서리에서 균열(실제로는 지붕 안테나 창·비상구 창이라고 스티커로 밝힘) → 각진 모서리에 힘이 몰림 → 그래서 둥글게 | Movement Proposition |
 | `life2` | 엘리베이터 거울이 / 셀카용이 아닌 진짜 이유 | 29.1초 | 엘베 거울 셀카 → “기다림이 덜 지루하라고”는 흔한 설 → 진짜 이유는 법에 있음 → 휠체어는 안에서 못 돌아서 후진으로 내림 → 뒷벽 0.6m 이상 높이에 견고한 거울 → 돌 수 없는 장애인용 승강기는 의무 → “휠체어의 백미러” | Sneaky Snitch |
 | `life3` | 제한속도 지켜도 / 1차로에서 단속되는 이유 | 27.4초 | 인천대교 ‘급차선 변경 집중 단속중(고속도로순찰대)’ 전광판 → 편도 3차로 이상 고속도로 1차로는 앞지르기 차로 → 추월 후 오른쪽으로 → 지정차로 위반 승용 4만 원·벌점 10점(승합 5만 원) → 시속 80km 미만 정체 땐 예외 → “여러분은 몇 차로?” | Exhilarate |
-| `life4` | 이착륙 때 창문 덮개 / 열라고 하는 진짜 이유 | 30.4초 | 창밖 상황 빨리 발견·대응 → 정전 시 바깥 빛으로 비상구 찾기 → 밖에서도 기내 확인 → 조명 낮추는 것도 눈의 어둠 적응 → 반전: 대한항공은 2021년부터 의무 아닌 권고, 날개 위·비상구 창은 여는 게 원칙 | Floating Cities |
+| `life4` | 이착륙 때 창문 덮개 / 열라고 하는 진짜 이유 | 30.7초 | 창밖 상황 빨리 발견·대응 → 정전 시 바깥 빛으로 비상구 찾기 → 밖에서도 기내 확인 → 조명 낮추는 것도 눈의 어둠 적응 → 반전: 대한항공은 2021년부터 의무 아닌 권고, 날개 위·비상구 창은 여는 게 원칙 → “여러분은 열어 두시나요?” | Floating Cities |
 
 ```bash
 # 원본: media/life/sources.json 의 주소에서 받아 1080p로 다시 인코딩해 public/life*/src/ 에 (파일 이름은 edit.json sources.file)
 # life3 운전 영상 3개(36017323, 36108436, 35186893)는 번호판이 안 읽히도록 화면 아래 42%를 흐리게 처리:
 ffmpeg -i <원본>.mp4 -filter_complex "[0]scale=-2:1080,split[a][b];[b]crop=iw:ih*0.42:0:ih*0.5,gblur=sigma=5[c];[a][c]overlay=0:H*0.5" -an px<id>.mp4
 for id in life1 life2 life3 life4; do python3 voice_edge.py $id && python3 prep.py $id && ./render.sh $id final/$id.mp4; done
+for id in life1 life2 life3 life4; do python3 qa_review.py $id; done   # 네 편 모두 FAIL·WARN 없음
 ```
 
 ### 사실과 출처 (2026-10-09 확인)
@@ -2030,7 +2031,7 @@ for id in life1 life2 life3 life4; do python3 voice_edge.py $id && python3 prep.
 > #고속도로 #1차로 #지정차로 #운전상식 #shorts
 
 **life4** — 이착륙 때 창문 덮개 열라는 진짜 이유 ✈️
-> 이착륙 때 창문 덮개를 열어 두면 창밖 상황을 빨리 발견할 수 있고, 정전 때 바깥 빛으로 비상구를 찾을 수 있고, 밖에서도 기내를 확인할 수 있습니다. 조명을 낮추는 것도 눈이 어둠에 적응하도록 하는 것. 다만 대한항공은 2021년부터 의무가 아닌 권고로 운영하고, 날개 위·비상구 창문은 여는 게 원칙입니다(대한항공 뉴스룸 2023.9). 항공사마다 규정은 다를 수 있어요.
+> 이착륙 때 창문 덮개를 열어 두면 창밖 상황을 빨리 발견할 수 있고, 정전 때 바깥 빛으로 비상구를 찾을 수 있고, 밖에서도 기내를 확인할 수 있습니다. 조명을 낮추는 것도 눈이 어둠에 적응하도록 하는 것. 다만 대한항공은 2021년부터 의무가 아닌 권고로 운영하고, 날개 위·비상구 창문은 여는 게 원칙입니다(대한항공 뉴스룸 2023.9). 항공사마다 규정은 다를 수 있어요. 여러분은 이착륙 때 창문, 열어 두시나요?
 > 영상: Pexels (Dilara Hazıroğlu, Afif Ramdhasuma, K, Content Kiosk, Grigoriy Bunkov, Taryn Elliott)
 > 음악: "Floating Cities" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
 > #비행기 #항공상식 #창문덮개 #대한항공 #shorts
