@@ -4926,7 +4926,7 @@ Pexels와 Pixabay를 먼저 시도했지만, 두 사이트 모두 이 환경에 
   
   ▶ [채널명] 채널 구독: https://www.youtube.com/@[핸들]
   
-  출처: 그림·대본·목소리 직접 제작(등장인물·채팅방은 실제와 관계없음) · 사진: Alarm clock on a chair (Unsplash).jpg by Szűcs László szucslaszlo (CC0, http://creativecommons.org/publicdomain/zero/1.0/deed.en), via Wikimedia Commons · 사진: Cappuchino latte art.jpg by Blanka Novotná (Public domain), via Wikimedia Commons · 음악: "Hustle" Kevin MacLeod (incompetech.com), CC BY 4.0 (creativecommons.org/licenses/by/4.0)
+  출처: 그림·대본 직접 제작(등장인물·채팅방은 실제와 관계없음) · 목소리: AI 합성 음성 · 사진: Alarm clock on a chair (Unsplash).jpg by Szűcs László szucslaszlo (CC0, http://creativecommons.org/publicdomain/zero/1.0/deed.en), via Wikimedia Commons · 사진: Cappuchino latte art.jpg by Blanka Novotná (Public domain), via Wikimedia Commons · 음악: "Hustle" Kevin MacLeod (incompetech.com), CC BY 4.0 (creativecommons.org/licenses/by/4.0)
   
   #Shorts #공감 #특 #공감툰 #공감애니 #창작애니 #일상공감 #월요일 #직장인 #출근 #직장인공감
   ```
@@ -4941,7 +4941,7 @@ Pexels와 Pixabay를 먼저 시도했지만, 두 사이트 모두 이 환경에 
   
   ▶ [채널명] 채널 구독: https://www.youtube.com/@[핸들]
   
-  출처: 그림·대본·목소리 직접 제작(등장인물·채팅방은 실제와 관계없음) · 사진: Personal organizer with metallic ring binder.jpg by Old Photo Profile (CC BY 2.0, https://creativecommons.org/licenses/by/2.0), via Wikimedia Commons · 사진: Working on a planning session with stationery items, notebook, and colorful pencils on a wooden desk.jpg by Shixart1985 (CC BY 2.0, https://creativecommons.org/licenses/by/2.0), via Wikimedia Commons · 음악: "Sneaky Snitch" Kevin MacLeod (incompetech.com), CC BY 4.0 (creativecommons.org/licenses/by/4.0)
+  출처: 그림·대본 직접 제작(등장인물·채팅방은 실제와 관계없음) · 목소리: AI 합성 음성 · 사진: Personal organizer with metallic ring binder.jpg by Old Photo Profile (CC BY 2.0, https://creativecommons.org/licenses/by/2.0), via Wikimedia Commons · 사진: Working on a planning session with stationery items, notebook, and colorful pencils on a wooden desk.jpg by Shixart1985 (CC BY 2.0, https://creativecommons.org/licenses/by/2.0), via Wikimedia Commons · 음악: "Sneaky Snitch" Kevin MacLeod (incompetech.com), CC BY 4.0 (creativecommons.org/licenses/by/4.0)
   
   #Shorts #공감 #특 #공감툰 #공감애니 #창작애니 #일상공감 #시험기간 #학생공감 #벼락치기 #중간고사
   ```
@@ -4956,7 +4956,7 @@ Pexels와 Pixabay를 먼저 시도했지만, 두 사이트 모두 이 환경에 
   
   ▶ [채널명] 채널 구독: https://www.youtube.com/@[핸들]
   
-  출처: 그림·대본·목소리 직접 제작(등장인물·채팅방은 실제와 관계없음) · 사진: Korean fried chicken 5.jpg by insatiablemunch (CC BY 2.0, https://creativecommons.org/licenses/by/2.0), via Wikimedia Commons · 사진: Korean cuisine-Kimchi-08.jpg by Jeremy Keith (CC BY 2.0, https://creativecommons.org/licenses/by/2.0), via Wikimedia Commons · 음악: "Monkeys Spinning Monkeys" Kevin MacLeod (incompetech.com), CC BY 4.0 (creativecommons.org/licenses/by/4.0)
+  출처: 그림·대본 직접 제작(등장인물·채팅방은 실제와 관계없음) · 목소리: AI 합성 음성 · 사진: Korean fried chicken 5.jpg by insatiablemunch (CC BY 2.0, https://creativecommons.org/licenses/by/2.0), via Wikimedia Commons · 사진: Korean cuisine-Kimchi-08.jpg by Jeremy Keith (CC BY 2.0, https://creativecommons.org/licenses/by/2.0), via Wikimedia Commons · 음악: "Monkeys Spinning Monkeys" Kevin MacLeod (incompetech.com), CC BY 4.0 (creativecommons.org/licenses/by/4.0)
   
   #Shorts #공감 #특 #공감툰 #공감애니 #창작애니 #일상공감 #급식 #학교 #학창시절 #추억
   ```
@@ -4971,7 +4971,7 @@ Pexels와 Pixabay를 먼저 시도했지만, 두 사이트 모두 이 환경에 
   
   ▶ [채널명] 채널 구독: https://www.youtube.com/@[핸들]
   
-  출처: 그림·대본·목소리 직접 제작(등장인물·채팅방은 실제와 관계없음) · 사진: Smartphone display screen.jpg by Skitterphoto (CC0, http://creativecommons.org/publicdomain/zero/1.0/deed.en), via Wikimedia Commons · 음악: "Hyperfun" Kevin MacLeod (incompetech.com), CC BY 4.0 (creativecommons.org/licenses/by/4.0)
+  출처: 그림·대본 직접 제작(등장인물·채팅방은 실제와 관계없음) · 목소리: AI 합성 음성 · 사진: Smartphone display screen.jpg by Skitterphoto (CC0, http://creativecommons.org/publicdomain/zero/1.0/deed.en), via Wikimedia Commons · 음악: "Hyperfun" Kevin MacLeod (incompetech.com), CC BY 4.0 (creativecommons.org/licenses/by/4.0)
   
   #Shorts #공감 #특 #공감툰 #공감애니 #창작애니 #일상공감 #단톡방 #카톡공감 #친구공감 #읽씹
   ```
@@ -4986,7 +4986,7 @@ Pexels와 Pixabay를 먼저 시도했지만, 두 사이트 모두 이 환경에 
   
   ▶ [채널명] 채널 구독: https://www.youtube.com/@[핸들]
   
-  출처: 그림·대본·목소리 직접 제작(등장인물·채팅방은 실제와 관계없음) · 사진: Ramyeon and kimchi.jpg by Hyeon-Jeong Suk (CC BY 2.0, https://creativecommons.org/licenses/by/2.0), via Wikimedia Commons · 사진: Beijing scallions.jpg by Fumikas Sagisavas (CC0, http://creativecommons.org/publicdomain/zero/1.0/deed.en), via Wikimedia Commons · 사진: Chained rolls of toilet paper at MBTA Sullivan station bathrooms.jpg by 4300streetcar (CC BY 4.0, https://creativecommons.org/licenses/by/4.0), via Wikimedia Commons · 사진: CSA-Red-Spring-Onions.jpg by Evan-Amos (Public domain), via Wikimedia Commons · 음악: "Scheming Weasel" Kevin MacLeod (incompetech.com), CC BY 4.0 (creativecommons.org/licenses/by/4.0)
+  출처: 그림·대본 직접 제작(등장인물·채팅방은 실제와 관계없음) · 목소리: AI 합성 음성 · 사진: Ramyeon and kimchi.jpg by Hyeon-Jeong Suk (CC BY 2.0, https://creativecommons.org/licenses/by/2.0), via Wikimedia Commons · 사진: Beijing scallions.jpg by Fumikas Sagisavas (CC0, http://creativecommons.org/publicdomain/zero/1.0/deed.en), via Wikimedia Commons · 사진: Chained rolls of toilet paper at MBTA Sullivan station bathrooms.jpg by 4300streetcar (CC BY 4.0, https://creativecommons.org/licenses/by/4.0), via Wikimedia Commons · 사진: CSA-Red-Spring-Onions.jpg by Evan-Amos (Public domain), via Wikimedia Commons · 음악: "Scheming Weasel" Kevin MacLeod (incompetech.com), CC BY 4.0 (creativecommons.org/licenses/by/4.0)
   
   #Shorts #공감 #특 #공감툰 #공감애니 #창작애니 #일상공감 #자취 #자취생 #자취공감 #혼자살기
   ```
@@ -5001,7 +5001,7 @@ Pexels와 Pixabay를 먼저 시도했지만, 두 사이트 모두 이 환경에 
   
   ▶ [채널명] 채널 구독: https://www.youtube.com/@[핸들]
   
-  출처: 그림·대본·목소리 직접 제작(등장인물·채팅방은 실제와 관계없음) · 사진: Clear Umbrella Rain Liverpool (Unsplash).jpg by freddie marriage fredmarriage (CC0, http://creativecommons.org/publicdomain/zero/1.0/deed.en), via Wikimedia Commons · 사진: Closeup of black umbrella in rain.jpg by Shixart1985 (CC BY 2.0, https://creativecommons.org/licenses/by/2.0), via Wikimedia Commons · 사진: Korean pancake-Pajeon-08.jpg by Jamie (CC BY 2.0, https://creativecommons.org/licenses/by/2.0), via Wikimedia Commons · 음악: "Monkeys Spinning Monkeys" Kevin MacLeod (incompetech.com), CC BY 4.0 (creativecommons.org/licenses/by/4.0)
+  출처: 그림·대본 직접 제작(등장인물·채팅방은 실제와 관계없음) · 목소리: AI 합성 음성 · 사진: Clear Umbrella Rain Liverpool (Unsplash).jpg by freddie marriage fredmarriage (CC0, http://creativecommons.org/publicdomain/zero/1.0/deed.en), via Wikimedia Commons · 사진: Closeup of black umbrella in rain.jpg by Shixart1985 (CC BY 2.0, https://creativecommons.org/licenses/by/2.0), via Wikimedia Commons · 사진: Korean pancake-Pajeon-08.jpg by Jamie (CC BY 2.0, https://creativecommons.org/licenses/by/2.0), via Wikimedia Commons · 음악: "Monkeys Spinning Monkeys" Kevin MacLeod (incompetech.com), CC BY 4.0 (creativecommons.org/licenses/by/4.0)
   
   #Shorts #공감 #특 #공감툰 #공감애니 #창작애니 #일상공감 #비오는날 #장마 #우산 #날씨공감
   ```
@@ -5016,7 +5016,7 @@ Pexels와 Pixabay를 먼저 시도했지만, 두 사이트 모두 이 환경에 
   
   ▶ [채널명] 채널 구독: https://www.youtube.com/@[핸들]
   
-  출처: 그림·대본·목소리 직접 제작(등장인물·채팅방은 실제와 관계없음) · 사진: Exercise equipment (rubber ball, light-weight dumbbells, jump rope).jpg by CDC/ Debora Cartagena (Public domain), via Wikimedia Commons · 사진: Stairs steps.jpg by Knites (CC0, http://creativecommons.org/publicdomain/zero/1.0/deed.en), via Wikimedia Commons · 사진: Korean fried chicken 5.jpg by insatiablemunch (CC BY 2.0, https://creativecommons.org/licenses/by/2.0), via Wikimedia Commons · 음악: "Exhilarate" Kevin MacLeod (incompetech.com), CC BY 4.0 (creativecommons.org/licenses/by/4.0)
+  출처: 그림·대본 직접 제작(등장인물·채팅방은 실제와 관계없음) · 목소리: AI 합성 음성 · 사진: Exercise equipment (rubber ball, light-weight dumbbells, jump rope).jpg by CDC/ Debora Cartagena (Public domain), via Wikimedia Commons · 사진: Stairs steps.jpg by Knites (CC0, http://creativecommons.org/publicdomain/zero/1.0/deed.en), via Wikimedia Commons · 사진: Korean fried chicken 5.jpg by insatiablemunch (CC BY 2.0, https://creativecommons.org/licenses/by/2.0), via Wikimedia Commons · 음악: "Exhilarate" Kevin MacLeod (incompetech.com), CC BY 4.0 (creativecommons.org/licenses/by/4.0)
   
   #Shorts #공감 #특 #공감툰 #공감애니 #창작애니 #일상공감 #헬스장 #운동 #헬린이 #다이어트
   ```
@@ -5031,7 +5031,7 @@ Pexels와 Pixabay를 먼저 시도했지만, 두 사이트 모두 이 환경에 
   
   ▶ [채널명] 채널 구독: https://www.youtube.com/@[핸들]
   
-  출처: 그림·대본·목소리 직접 제작(등장인물·채팅방은 실제와 관계없음) · 사진: Steak, carrots, bok choy, sweet peppers, and mashed potatoes - Massachusetts.jpg by Daderot (CC0, http://creativecommons.org/publicdomain/zero/1.0/deed.en), via Wikimedia Commons · 사진: Mini grocery toy pushcart.jpg by Me (Elsa Versailles) (Public domain), via Wikimedia Commons · 사진: WallCalendar.jpg by Claudio Elias (Public domain), via Wikimedia Commons · 음악: "Hustle" Kevin MacLeod (incompetech.com), CC BY 4.0 (creativecommons.org/licenses/by/4.0)
+  출처: 그림·대본 직접 제작(등장인물·채팅방은 실제와 관계없음) · 목소리: AI 합성 음성 · 사진: Steak, carrots, bok choy, sweet peppers, and mashed potatoes - Massachusetts.jpg by Daderot (CC0, http://creativecommons.org/publicdomain/zero/1.0/deed.en), via Wikimedia Commons · 사진: Mini grocery toy pushcart.jpg by Me (Elsa Versailles) (Public domain), via Wikimedia Commons · 사진: WallCalendar.jpg by Claudio Elias (Public domain), via Wikimedia Commons · 음악: "Hustle" Kevin MacLeod (incompetech.com), CC BY 4.0 (creativecommons.org/licenses/by/4.0)
   
   #Shorts #공감 #특 #공감툰 #공감애니 #창작애니 #일상공감 #월급날 #직장인 #월급 #직장인공감
   ```
@@ -5046,7 +5046,7 @@ Pexels와 Pixabay를 먼저 시도했지만, 두 사이트 모두 이 환경에 
   
   ▶ [채널명] 채널 구독: https://www.youtube.com/@[핸들]
   
-  출처: 그림·대본·목소리 직접 제작(등장인물·채팅방은 실제와 관계없음) · 사진: Korean.snacks-Tteokbokki-04.jpg by Sung Sook (CC BY 2.0, https://creativecommons.org/licenses/by/2.0), via Wikimedia Commons · 사진: Kimchi fried rice.jpg by Sharon Ang (CC0, http://creativecommons.org/publicdomain/zero/1.0/deed.en), via Wikimedia Commons · 사진: Korean.snacks-Tteokbokki-08.jpg by jetalone (flickr) (CC BY 2.0, https://creativecommons.org/licenses/by/2.0), via Wikimedia Commons · 사진: Tteokbokki Bunsik Korean food 02.jpg by Hankook12 (CC0, http://creativecommons.org/publicdomain/zero/1.0/deed.en), via Wikimedia Commons · 사진: Korean food at Tteokbokki restaurant in Shin-Okubo 3.jpg by Syced (CC0, http://creativecommons.org/publicdomain/zero/1.0/deed.en), via Wikimedia Commons · 사진: Korean rice cake (tteokbokki).jpg by Fumikas Sagisavas (CC0, http://creativecommons.org/publicdomain/zero/1.0/deed.en), via Wikimedia Commons · 음악: "Hyperfun" Kevin MacLeod (incompetech.com), CC BY 4.0 (creativecommons.org/licenses/by/4.0)
+  출처: 그림·대본 직접 제작(등장인물·채팅방은 실제와 관계없음) · 목소리: AI 합성 음성 · 사진: Korean.snacks-Tteokbokki-04.jpg by Sung Sook (CC BY 2.0, https://creativecommons.org/licenses/by/2.0), via Wikimedia Commons · 사진: Kimchi fried rice.jpg by Sharon Ang (CC0, http://creativecommons.org/publicdomain/zero/1.0/deed.en), via Wikimedia Commons · 사진: Korean.snacks-Tteokbokki-08.jpg by jetalone (flickr) (CC BY 2.0, https://creativecommons.org/licenses/by/2.0), via Wikimedia Commons · 사진: Tteokbokki Bunsik Korean food 02.jpg by Hankook12 (CC0, http://creativecommons.org/publicdomain/zero/1.0/deed.en), via Wikimedia Commons · 사진: Korean food at Tteokbokki restaurant in Shin-Okubo 3.jpg by Syced (CC0, http://creativecommons.org/publicdomain/zero/1.0/deed.en), via Wikimedia Commons · 사진: Korean rice cake (tteokbokki).jpg by Fumikas Sagisavas (CC0, http://creativecommons.org/publicdomain/zero/1.0/deed.en), via Wikimedia Commons · 음악: "Hyperfun" Kevin MacLeod (incompetech.com), CC BY 4.0 (creativecommons.org/licenses/by/4.0)
   
   #Shorts #공감 #특 #공감툰 #공감애니 #창작애니 #일상공감 #떡볶이 #분식 #먹방공감 #밀떡쌀떡
   ```
@@ -5061,7 +5061,7 @@ Pexels와 Pixabay를 먼저 시도했지만, 두 사이트 모두 이 환경에 
   
   ▶ [채널명] 채널 구독: https://www.youtube.com/@[핸들]
   
-  출처: 그림·대본·목소리 직접 제작(등장인물·채팅방은 실제와 관계없음) · 사진: 컵라면 사진 1 by 毒島みるく (CC0, http://creativecommons.org/publicdomain/zero/1.0/deed.en), via Wikimedia Commons · 사진: 컵라면 사진 2 by 毒島みるく (CC0, http://creativecommons.org/publicdomain/zero/1.0/deed.en), via Wikimedia Commons · 사진: 20200804 033546 Ramyeon IMG 8515.jpg by Choi Kwang-mo (CC0, http://creativecommons.org/publicdomain/zero/1.0/deed.en), via Wikimedia Commons · 음악: "Sneaky Snitch" Kevin MacLeod (incompetech.com), CC BY 4.0 (creativecommons.org/licenses/by/4.0)
+  출처: 그림·대본 직접 제작(등장인물·채팅방은 실제와 관계없음) · 목소리: AI 합성 음성 · 사진: 컵라면 사진 1 by 毒島みるく (CC0, http://creativecommons.org/publicdomain/zero/1.0/deed.en), via Wikimedia Commons · 사진: 컵라면 사진 2 by 毒島みるく (CC0, http://creativecommons.org/publicdomain/zero/1.0/deed.en), via Wikimedia Commons · 사진: 20200804 033546 Ramyeon IMG 8515.jpg by Choi Kwang-mo (CC0, http://creativecommons.org/publicdomain/zero/1.0/deed.en), via Wikimedia Commons · 음악: "Sneaky Snitch" Kevin MacLeod (incompetech.com), CC BY 4.0 (creativecommons.org/licenses/by/4.0)
   
   #Shorts #공감 #특 #공감툰 #공감애니 #창작애니 #일상공감 #컵라면 #라면 #야식 #편의점
   ```
@@ -5076,7 +5076,7 @@ Pexels와 Pixabay를 먼저 시도했지만, 두 사이트 모두 이 환경에 
   
   ▶ [채널명] 채널 구독: https://www.youtube.com/@[핸들]
   
-  출처: 그림·대본·목소리 직접 제작(등장인물·채팅방은 실제와 관계없음) · 사진: Taiyaki - cut section.jpg by 毒島みるく (CC0, http://creativecommons.org/publicdomain/zero/1.0/deed.en), via Wikimedia Commons · 사진: Bungeoppang-01.jpg by Siqbal at en.wikipedia (Public domain), via Wikimedia Commons · 사진: 시장 2.jpg by Chae Ji-young (CC BY 4.0, https://creativecommons.org/licenses/by/4.0), via Wikimedia Commons · 사진: Taiyaki 003.jpg by Ocdp (CC0, http://creativecommons.org/publicdomain/zero/1.0/deed.en), via Wikimedia Commons · 음악: "Monkeys Spinning Monkeys" Kevin MacLeod (incompetech.com), CC BY 4.0 (creativecommons.org/licenses/by/4.0)
+  출처: 그림·대본 직접 제작(등장인물·채팅방은 실제와 관계없음) · 목소리: AI 합성 음성 · 사진: Taiyaki - cut section.jpg by 毒島みるく (CC0, http://creativecommons.org/publicdomain/zero/1.0/deed.en), via Wikimedia Commons · 사진: Bungeoppang-01.jpg by Siqbal at en.wikipedia (Public domain), via Wikimedia Commons · 사진: 시장 2.jpg by Chae Ji-young (CC BY 4.0, https://creativecommons.org/licenses/by/4.0), via Wikimedia Commons · 사진: Taiyaki 003.jpg by Ocdp (CC0, http://creativecommons.org/publicdomain/zero/1.0/deed.en), via Wikimedia Commons · 음악: "Monkeys Spinning Monkeys" Kevin MacLeod (incompetech.com), CC BY 4.0 (creativecommons.org/licenses/by/4.0)
   
   #Shorts #공감 #특 #공감툰 #공감애니 #창작애니 #일상공감 #붕어빵 #겨울간식 #팥붕슈붕 #길거리음식
   ```
@@ -5091,7 +5091,7 @@ Pexels와 Pixabay를 먼저 시도했지만, 두 사이트 모두 이 환경에 
   
   ▶ [채널명] 채널 구독: https://www.youtube.com/@[핸들]
   
-  출처: 그림·대본·목소리 직접 제작(등장인물·채팅방은 실제와 관계없음) · 사진: Samgyeopsal-gui 1.jpg by chomjong (CC BY 2.0, https://creativecommons.org/licenses/by/2.0), via Wikimedia Commons · 사진: Samgyeopsal table.jpg by 이동원 (CC0, http://creativecommons.org/publicdomain/zero/1.0/deed.en), via Wikimedia Commons · 사진: Korean.food-Samgyeopsal-02.jpg by Blue Lotus (a flickr user) (CC BY 2.0, https://creativecommons.org/licenses/by/2.0), via Wikimedia Commons · 사진: Kimchi-bokkeum-bap (Kimchi fried rice) - Kogi 2023-09-11.jpg by Andy Li (CC0, http://creativecommons.org/publicdomain/zero/1.0/deed.en), via Wikimedia Commons · 사진: Samgyeopsal-gui.jpg by jinsoo jang (CC0, http://creativecommons.org/publicdomain/zero/1.0/deed.en), via Wikimedia Commons · 음악: "Hustle" Kevin MacLeod (incompetech.com), CC BY 4.0 (creativecommons.org/licenses/by/4.0)
+  출처: 그림·대본 직접 제작(등장인물·채팅방은 실제와 관계없음) · 목소리: AI 합성 음성 · 사진: Samgyeopsal-gui 1.jpg by chomjong (CC BY 2.0, https://creativecommons.org/licenses/by/2.0), via Wikimedia Commons · 사진: Samgyeopsal table.jpg by 이동원 (CC0, http://creativecommons.org/publicdomain/zero/1.0/deed.en), via Wikimedia Commons · 사진: Korean.food-Samgyeopsal-02.jpg by Blue Lotus (a flickr user) (CC BY 2.0, https://creativecommons.org/licenses/by/2.0), via Wikimedia Commons · 사진: Kimchi-bokkeum-bap (Kimchi fried rice) - Kogi 2023-09-11.jpg by Andy Li (CC0, http://creativecommons.org/publicdomain/zero/1.0/deed.en), via Wikimedia Commons · 사진: Samgyeopsal-gui.jpg by jinsoo jang (CC0, http://creativecommons.org/publicdomain/zero/1.0/deed.en), via Wikimedia Commons · 음악: "Hustle" Kevin MacLeod (incompetech.com), CC BY 4.0 (creativecommons.org/licenses/by/4.0)
   
   #Shorts #공감 #특 #공감툰 #공감애니 #창작애니 #일상공감 #삼겹살 #고기 #회식 #먹방공감
   ```
@@ -5106,7 +5106,7 @@ Pexels와 Pixabay를 먼저 시도했지만, 두 사이트 모두 이 환경에 
   
   ▶ [채널명] 채널 구독: https://www.youtube.com/@[핸들]
   
-  출처: 그림·대본·목소리 직접 제작(등장인물·채팅방은 실제와 관계없음) · 사진: Bukchon, Seoul - Bukchon3283.jpg by lumoplank (CC0, http://creativecommons.org/publicdomain/zero/1.0/deed.en), via Wikimedia Commons · 사진: 횡단보도 사진 by Monotaxism (CC0, http://creativecommons.org/publicdomain/zero/1.0/deed.en), via Wikimedia Commons · 사진: Korean.snacks-Tteokbokki-04.jpg by Sung Sook (CC BY 2.0, https://creativecommons.org/licenses/by/2.0), via Wikimedia Commons · 사진: World Map 1689.JPG by Gerard van Schagen (Public domain), via Wikimedia Commons · 음악: "Scheming Weasel" Kevin MacLeod (incompetech.com), CC BY 4.0 (creativecommons.org/licenses/by/4.0)
+  출처: 그림·대본 직접 제작(등장인물·채팅방은 실제와 관계없음) · 목소리: AI 합성 음성 · 사진: Bukchon, Seoul - Bukchon3283.jpg by lumoplank (CC0, http://creativecommons.org/publicdomain/zero/1.0/deed.en), via Wikimedia Commons · 사진: 횡단보도 사진 by Monotaxism (CC0, http://creativecommons.org/publicdomain/zero/1.0/deed.en), via Wikimedia Commons · 사진: Korean.snacks-Tteokbokki-04.jpg by Sung Sook (CC BY 2.0, https://creativecommons.org/licenses/by/2.0), via Wikimedia Commons · 사진: World Map 1689.JPG by Gerard van Schagen (Public domain), via Wikimedia Commons · 음악: "Scheming Weasel" Kevin MacLeod (incompetech.com), CC BY 4.0 (creativecommons.org/licenses/by/4.0)
   
   #Shorts #공감 #특 #공감툰 #공감애니 #창작애니 #일상공감 #길치 #방향치 #길찾기 #공감짤
   ```
@@ -5121,7 +5121,7 @@ Pexels와 Pixabay를 먼저 시도했지만, 두 사이트 모두 이 환경에 
   
   ▶ [채널명] 채널 구독: https://www.youtube.com/@[핸들]
   
-  출처: 그림·대본·목소리 직접 제작(등장인물·채팅방은 실제와 관계없음) · 사진: Pepperoni pizza slice on a red plate.jpg by MVS9966 (CC BY 3.0, https://creativecommons.org/licenses/by/3.0), via Wikimedia Commons · 사진: Piece of chocolate cake on a white plate decorated with chocolate sauce.jpg by Daria Yakovleva (minor edits by Subsidiary account) (CC0, http://creativecommons.org/publicdomain/zero/1.0/deed.en), via Wikimedia Commons · 음악: "Sneaky Snitch" Kevin MacLeod (incompetech.com), CC BY 4.0 (creativecommons.org/licenses/by/4.0)
+  출처: 그림·대본 직접 제작(등장인물·채팅방은 실제와 관계없음) · 목소리: AI 합성 음성 · 사진: Pepperoni pizza slice on a red plate.jpg by MVS9966 (CC BY 3.0, https://creativecommons.org/licenses/by/3.0), via Wikimedia Commons · 사진: Piece of chocolate cake on a white plate decorated with chocolate sauce.jpg by Daria Yakovleva (minor edits by Subsidiary account) (CC0, http://creativecommons.org/publicdomain/zero/1.0/deed.en), via Wikimedia Commons · 음악: "Sneaky Snitch" Kevin MacLeod (incompetech.com), CC BY 4.0 (creativecommons.org/licenses/by/4.0)
   
   #Shorts #공감 #특 #공감툰 #공감애니 #창작애니 #일상공감 #눈치 #친구공감 #인간관계 #MBTI
   ```
@@ -5224,7 +5224,7 @@ Pexels와 Pixabay를 먼저 시도했지만, 두 사이트 모두 이 환경에 
 
 ### 출처와 라이선스
 
-- 그림·이야기·목소리: 직접 제작(창작). 사진·영상 소스 없음. 실제 브랜드·로고·앱 화면 없음(도어록 앱, 채팅, 케첩병은 이름 없는 일반 그림).
+- 그림·이야기: 직접 제작(창작). 목소리: AI 합성 음성(Edge TTS). 사진·영상 소스 없음. 실제 브랜드·로고·앱 화면 없음(도어록 앱, 채팅, 케첩병은 이름 없는 일반 그림).
 - 음악: Kevin MacLeod (incompetech.com), CC BY 4.0 — "Carefree"(0:00~2:10, 9:34~), "Sneaky Snitch"(2:10~3:42), "Investigations"(3:42~6:48), "Heartwarming"(6:49~9:34). `longform/lfsaeyeon1/fetch_music.sh`가 incompetech.com에서 받는다.
 - 효과음: Kenney Interface Sounds(CC0)와 `../tools/sfx.py`로 합성한 소리(`fetch.sh`).
 - 글꼴: Black Han Sans, Pretendard (SIL OFL).
@@ -5587,7 +5587,7 @@ python3 qa_review.py sseol17 && python3 sseol_v2/score.py sseol17
 - **그림**: 20편 모두 `src/lib/Chibi.tsx`·`Sseol.tsx`로 직접 그렸다. 사진·영상·다른 채널의 캐릭터는 쓰지 않았다(`edit.json` `sources` = `{}`). 앱 화면 "썰방"은 지어낸 이름이고, 실제 서비스의 이름·로고·색을 따라 하지 않았다. 화면 안 간판·게시판 글은 "24시 편의점", "동네 서점", "작은 카페"처럼 일반 명사만 쓴다.
 - **목소리**: Microsoft Edge TTS(ko-KR SunHi·InJoon·HyunsuMultilingual), `voice_edge.py`.
 - **음악**: Kevin MacLeod (incompetech.com), CC BY 4.0. `sseol1`·`3`·`7`·`9`·`16` "Monkeys Spinning Monkeys", `sseol2`·`6`·`10`·`15`·`17`·`20` "Sneaky Snitch", `sseol4`·`5`·`12`·`13` "Scheming Weasel", `sseol8`·`11`·`14`·`18`·`19` "Hyperfun". 크레딧은 각 설명글에 있다.
-- **사실 주장**: 20편 모두 지어낸 이야기(창작)이고, 사실로 내세우는 정보(수치, 법, 통계)가 없어서 인용할 자료가 없다. 설명글마다 "(창작)"과 "그림·이야기·목소리 직접 제작"이 들어간다. 실존 인물·학교·회사·은행·앱 이름은 없다.
+- **사실 주장**: 20편 모두 지어낸 이야기(창작)이고, 사실로 내세우는 정보(수치, 법, 통계)가 없어서 인용할 자료가 없다. 설명글마다 "(창작)"과 "그림·이야기 직접 제작"과 "목소리: AI 합성 음성"이 들어간다. 실존 인물·학교·회사·은행·앱 이름은 없다.
 
 ### 업로드 문구
 
@@ -5602,7 +5602,7 @@ python3 qa_review.py sseol17 && python3 sseol_v2/score.py sseol17
 
   ▶ [채널명] 채널 구독: https://www.youtube.com/@[핸들]
 
-  출처: 그림·이야기·목소리 직접 제작 · 음악: "Monkeys Spinning Monkeys" Kevin MacLeod (incompetech.com), CC BY 4.0 (creativecommons.org/licenses/by/4.0)
+  출처: 그림·이야기 직접 제작 · 목소리: AI 합성 음성 · 음악: "Monkeys Spinning Monkeys" Kevin MacLeod (incompetech.com), CC BY 4.0 (creativecommons.org/licenses/by/4.0)
 
   #Shorts #썰 #썰툰 #창작썰 #썰애니 #웃긴썰 #학교썰 #짝꿍 #급식 #우유 #초등학교 #설렘
   ```
@@ -5616,7 +5616,7 @@ python3 qa_review.py sseol17 && python3 sseol_v2/score.py sseol17
 
   ▶ [채널명] 채널 구독: https://www.youtube.com/@[핸들]
 
-  출처: 그림·이야기·목소리 직접 제작 · 음악: "Sneaky Snitch" Kevin MacLeod (incompetech.com), CC BY 4.0 (creativecommons.org/licenses/by/4.0)
+  출처: 그림·이야기 직접 제작 · 목소리: AI 합성 음성 · 음악: "Sneaky Snitch" Kevin MacLeod (incompetech.com), CC BY 4.0 (creativecommons.org/licenses/by/4.0)
 
   #Shorts #썰 #썰툰 #창작썰 #썰애니 #웃긴썰 #학교썰 #반장 #쪽지 #고백 #엄마 #고등학생
   ```
@@ -5630,7 +5630,7 @@ python3 qa_review.py sseol17 && python3 sseol_v2/score.py sseol17
 
   ▶ [채널명] 채널 구독: https://www.youtube.com/@[핸들]
 
-  출처: 그림·이야기·목소리 직접 제작 · 음악: "Monkeys Spinning Monkeys" Kevin MacLeod (incompetech.com), CC BY 4.0 (creativecommons.org/licenses/by/4.0)
+  출처: 그림·이야기 직접 제작 · 목소리: AI 합성 음성 · 음악: "Monkeys Spinning Monkeys" Kevin MacLeod (incompetech.com), CC BY 4.0 (creativecommons.org/licenses/by/4.0)
 
   #Shorts #썰 #썰툰 #창작썰 #썰애니 #웃긴썰 #가족썰 #할머니 #운동화 #장마 #초등학생 #공감
   ```
@@ -5644,7 +5644,7 @@ python3 qa_review.py sseol17 && python3 sseol_v2/score.py sseol17
 
   ▶ [채널명] 채널 구독: https://www.youtube.com/@[핸들]
 
-  출처: 그림·이야기·목소리 직접 제작 · 음악: "Scheming Weasel" Kevin MacLeod (incompetech.com), CC BY 4.0 (creativecommons.org/licenses/by/4.0)
+  출처: 그림·이야기 직접 제작 · 목소리: AI 합성 음성 · 음악: "Scheming Weasel" Kevin MacLeod (incompetech.com), CC BY 4.0 (creativecommons.org/licenses/by/4.0)
 
   #Shorts #썰 #썰툰 #창작썰 #썰애니 #웃긴썰 #가족썰 #아빠 #영어공부 #남자친구 #상견례 #아빠썰
   ```
@@ -5658,7 +5658,7 @@ python3 qa_review.py sseol17 && python3 sseol_v2/score.py sseol17
 
   ▶ [채널명] 채널 구독: https://www.youtube.com/@[핸들]
 
-  출처: 그림·이야기·목소리 직접 제작 · 음악: "Scheming Weasel" Kevin MacLeod (incompetech.com), CC BY 4.0 (creativecommons.org/licenses/by/4.0)
+  출처: 그림·이야기 직접 제작 · 목소리: AI 합성 음성 · 음악: "Scheming Weasel" Kevin MacLeod (incompetech.com), CC BY 4.0 (creativecommons.org/licenses/by/4.0)
 
   #Shorts #썰 #썰툰 #창작썰 #썰애니 #웃긴썰 #알바썰 #편의점 #편의점알바 #야간알바 #사장님 #사이다
   ```
@@ -5672,7 +5672,7 @@ python3 qa_review.py sseol17 && python3 sseol_v2/score.py sseol17
 
   ▶ [채널명] 채널 구독: https://www.youtube.com/@[핸들]
 
-  출처: 그림·이야기·목소리 직접 제작 · 음악: "Sneaky Snitch" Kevin MacLeod (incompetech.com), CC BY 4.0 (creativecommons.org/licenses/by/4.0)
+  출처: 그림·이야기 직접 제작 · 목소리: AI 합성 음성 · 음악: "Sneaky Snitch" Kevin MacLeod (incompetech.com), CC BY 4.0 (creativecommons.org/licenses/by/4.0)
 
   #Shorts #썰 #썰툰 #창작썰 #썰애니 #웃긴썰 #회사생활 #직장인 #신입 #팀장님 #회의 #공감
   ```
@@ -5686,7 +5686,7 @@ python3 qa_review.py sseol17 && python3 sseol_v2/score.py sseol17
 
   ▶ [채널명] 채널 구독: https://www.youtube.com/@[핸들]
 
-  출처: 그림·이야기·목소리 직접 제작 · 음악: "Monkeys Spinning Monkeys" Kevin MacLeod (incompetech.com), CC BY 4.0 (creativecommons.org/licenses/by/4.0)
+  출처: 그림·이야기 직접 제작 · 목소리: AI 합성 음성 · 음악: "Monkeys Spinning Monkeys" Kevin MacLeod (incompetech.com), CC BY 4.0 (creativecommons.org/licenses/by/4.0)
 
   #Shorts #썰 #썰툰 #창작썰 #썰애니 #웃긴썰 #소개팅 #연애썰 #이름 #강아지 #커플 #설렘
   ```
@@ -5700,7 +5700,7 @@ python3 qa_review.py sseol17 && python3 sseol_v2/score.py sseol17
 
   ▶ [채널명] 채널 구독: https://www.youtube.com/@[핸들]
 
-  출처: 그림·이야기·목소리 직접 제작 · 음악: "Hyperfun" Kevin MacLeod (incompetech.com), CC BY 4.0 (creativecommons.org/licenses/by/4.0)
+  출처: 그림·이야기 직접 제작 · 목소리: AI 합성 음성 · 음악: "Hyperfun" Kevin MacLeod (incompetech.com), CC BY 4.0 (creativecommons.org/licenses/by/4.0)
 
   #Shorts #썰 #썰툰 #창작썰 #썰애니 #웃긴썰 #택배 #조카 #초인종 #택배기사님 #가족썰 #훈훈
   ```
@@ -5714,7 +5714,7 @@ python3 qa_review.py sseol17 && python3 sseol_v2/score.py sseol17
 
   ▶ [채널명] 채널 구독: https://www.youtube.com/@[핸들]
 
-  출처: 그림·이야기·목소리 직접 제작 · 음악: "Monkeys Spinning Monkeys" Kevin MacLeod (incompetech.com), CC BY 4.0 (creativecommons.org/licenses/by/4.0)
+  출처: 그림·이야기 직접 제작 · 목소리: AI 합성 음성 · 음악: "Monkeys Spinning Monkeys" Kevin MacLeod (incompetech.com), CC BY 4.0 (creativecommons.org/licenses/by/4.0)
 
   #Shorts #썰 #썰툰 #창작썰 #썰애니 #웃긴썰 #이웃 #반찬 #할머니 #아파트 #층간소음 #감동
   ```
@@ -5728,7 +5728,7 @@ python3 qa_review.py sseol17 && python3 sseol_v2/score.py sseol17
 
   ▶ [채널명] 채널 구독: https://www.youtube.com/@[핸들]
 
-  출처: 그림·이야기·목소리 직접 제작 · 음악: "Sneaky Snitch" Kevin MacLeod (incompetech.com), CC BY 4.0 (creativecommons.org/licenses/by/4.0)
+  출처: 그림·이야기 직접 제작 · 목소리: AI 합성 음성 · 음악: "Sneaky Snitch" Kevin MacLeod (incompetech.com), CC BY 4.0 (creativecommons.org/licenses/by/4.0)
 
   #Shorts #썰 #썰툰 #창작썰 #썰애니 #웃긴썰 #남매 #동생 #생일선물 #가족썰 #현실남매 #선물
   ```
@@ -5742,7 +5742,7 @@ python3 qa_review.py sseol17 && python3 sseol_v2/score.py sseol17
 
   ▶ [채널명] 채널 구독: https://www.youtube.com/@[핸들]
 
-  출처: 그림·이야기·목소리 직접 제작 · 음악: "Hyperfun" Kevin MacLeod (incompetech.com), CC BY 4.0 (creativecommons.org/licenses/by/4.0)
+  출처: 그림·이야기 직접 제작 · 목소리: AI 합성 음성 · 음악: "Hyperfun" Kevin MacLeod (incompetech.com), CC BY 4.0 (creativecommons.org/licenses/by/4.0)
 
   #Shorts #썰 #썰툰 #창작썰 #썰애니 #웃긴썰 #카페 #단골 #고양이 #비오는날 #카페사장님 #설렘
   ```
@@ -5756,7 +5756,7 @@ python3 qa_review.py sseol17 && python3 sseol_v2/score.py sseol17
 
   ▶ [채널명] 채널 구독: https://www.youtube.com/@[핸들]
 
-  출처: 그림·이야기·목소리 직접 제작 · 음악: "Scheming Weasel" Kevin MacLeod (incompetech.com), CC BY 4.0 (creativecommons.org/licenses/by/4.0)
+  출처: 그림·이야기 직접 제작 · 목소리: AI 합성 음성 · 음악: "Scheming Weasel" Kevin MacLeod (incompetech.com), CC BY 4.0 (creativecommons.org/licenses/by/4.0)
 
   #Shorts #썰 #썰툰 #창작썰 #썰애니 #웃긴썰 #할아버지 #은행 #적금 #가족썰 #할머니 #감동
   ```
@@ -5770,7 +5770,7 @@ python3 qa_review.py sseol17 && python3 sseol_v2/score.py sseol17
 
   ▶ [채널명] 채널 구독: https://www.youtube.com/@[핸들]
 
-  출처: 그림·이야기·목소리 직접 제작 · 음악: "Scheming Weasel" Kevin MacLeod (incompetech.com), CC BY 4.0 (creativecommons.org/licenses/by/4.0)
+  출처: 그림·이야기 직접 제작 · 목소리: AI 합성 음성 · 음악: "Scheming Weasel" Kevin MacLeod (incompetech.com), CC BY 4.0 (creativecommons.org/licenses/by/4.0)
 
   #Shorts #썰 #썰툰 #창작썰 #썰애니 #웃긴썰 #할머니 #가족썰 #전화 #벨소리 #손녀 #감동
   ```
@@ -5784,7 +5784,7 @@ python3 qa_review.py sseol17 && python3 sseol_v2/score.py sseol17
 
   ▶ [채널명] 채널 구독: https://www.youtube.com/@[핸들]
 
-  출처: 그림·이야기·목소리 직접 제작 · 음악: "Hyperfun" Kevin MacLeod (incompetech.com), CC BY 4.0 (creativecommons.org/licenses/by/4.0)
+  출처: 그림·이야기 직접 제작 · 목소리: AI 합성 음성 · 음악: "Hyperfun" Kevin MacLeod (incompetech.com), CC BY 4.0 (creativecommons.org/licenses/by/4.0)
 
   #Shorts #썰 #썰툰 #창작썰 #썰애니 #웃긴썰 #강아지 #반려견 #아빠 #퇴근 #가족썰 #댕댕이
   ```
@@ -5798,7 +5798,7 @@ python3 qa_review.py sseol17 && python3 sseol_v2/score.py sseol17
 
   ▶ [채널명] 채널 구독: https://www.youtube.com/@[핸들]
 
-  출처: 그림·이야기·목소리 직접 제작 · 음악: "Sneaky Snitch" Kevin MacLeod (incompetech.com), CC BY 4.0 (creativecommons.org/licenses/by/4.0)
+  출처: 그림·이야기 직접 제작 · 목소리: AI 합성 음성 · 음악: "Sneaky Snitch" Kevin MacLeod (incompetech.com), CC BY 4.0 (creativecommons.org/licenses/by/4.0)
 
   #Shorts #썰 #썰툰 #창작썰 #썰애니 #웃긴썰 #독서실 #고3 #수험생 #핫팩 #에어컨 #감동
   ```
@@ -5812,7 +5812,7 @@ python3 qa_review.py sseol17 && python3 sseol_v2/score.py sseol17
 
   ▶ [채널명] 채널 구독: https://www.youtube.com/@[핸들]
 
-  출처: 그림·이야기·목소리 직접 제작 · 음악: "Monkeys Spinning Monkeys" Kevin MacLeod (incompetech.com), CC BY 4.0 (creativecommons.org/licenses/by/4.0)
+  출처: 그림·이야기 직접 제작 · 목소리: AI 합성 음성 · 음악: "Monkeys Spinning Monkeys" Kevin MacLeod (incompetech.com), CC BY 4.0 (creativecommons.org/licenses/by/4.0)
 
   #Shorts #썰 #썰툰 #창작썰 #썰애니 #웃긴썰 #할아버지 #할머니 #나무 #사진 #부부 #감동
   ```
@@ -5826,7 +5826,7 @@ python3 qa_review.py sseol17 && python3 sseol_v2/score.py sseol17
 
   ▶ [채널명] 채널 구독: https://www.youtube.com/@[핸들]
 
-  출처: 그림·이야기·목소리 직접 제작 · 음악: "Sneaky Snitch" Kevin MacLeod (incompetech.com), CC BY 4.0 (creativecommons.org/licenses/by/4.0)
+  출처: 그림·이야기 직접 제작 · 목소리: AI 합성 음성 · 음악: "Sneaky Snitch" Kevin MacLeod (incompetech.com), CC BY 4.0 (creativecommons.org/licenses/by/4.0)
 
   #Shorts #썰 #썰툰 #창작썰 #썰애니 #웃긴썰 #족보 #조카 #삼촌 #가족썰 #명절 #고등학교
   ```
@@ -5840,7 +5840,7 @@ python3 qa_review.py sseol17 && python3 sseol_v2/score.py sseol17
 
   ▶ [채널명] 채널 구독: https://www.youtube.com/@[핸들]
 
-  출처: 그림·이야기·목소리 직접 제작 · 음악: "Hyperfun" Kevin MacLeod (incompetech.com), CC BY 4.0 (creativecommons.org/licenses/by/4.0)
+  출처: 그림·이야기 직접 제작 · 목소리: AI 합성 음성 · 음악: "Hyperfun" Kevin MacLeod (incompetech.com), CC BY 4.0 (creativecommons.org/licenses/by/4.0)
 
   #Shorts #썰 #썰툰 #창작썰 #썰애니 #웃긴썰 #대학생 #새내기 #엄마 #만학도 #가족썰 #캠퍼스
   ```
@@ -5854,7 +5854,7 @@ python3 qa_review.py sseol17 && python3 sseol_v2/score.py sseol17
 
   ▶ [채널명] 채널 구독: https://www.youtube.com/@[핸들]
 
-  출처: 그림·이야기·목소리 직접 제작 · 음악: "Hyperfun" Kevin MacLeod (incompetech.com), CC BY 4.0 (creativecommons.org/licenses/by/4.0)
+  출처: 그림·이야기 직접 제작 · 목소리: AI 합성 음성 · 음악: "Hyperfun" Kevin MacLeod (incompetech.com), CC BY 4.0 (creativecommons.org/licenses/by/4.0)
 
   #Shorts #썰 #썰툰 #창작썰 #썰애니 #웃긴썰 #단톡방 #할머니 #학교썰 #고등학생 #카톡 #공감
   ```
@@ -5868,7 +5868,7 @@ python3 qa_review.py sseol17 && python3 sseol_v2/score.py sseol17
 
   ▶ [채널명] 채널 구독: https://www.youtube.com/@[핸들]
 
-  출처: 그림·이야기·목소리 직접 제작 · 음악: "Sneaky Snitch" Kevin MacLeod (incompetech.com), CC BY 4.0 (creativecommons.org/licenses/by/4.0)
+  출처: 그림·이야기 직접 제작 · 목소리: AI 합성 음성 · 음악: "Sneaky Snitch" Kevin MacLeod (incompetech.com), CC BY 4.0 (creativecommons.org/licenses/by/4.0)
 
   #Shorts #썰 #썰툰 #창작썰 #썰애니 #웃긴썰 #입금 #통장 #친구 #초등학교 #우정 #감동
   ```
