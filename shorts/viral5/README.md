@@ -4570,3 +4570,367 @@ doodle1, 5, 7은 이야기로 다시 썼지만(아래 "이야기 검토") 대사
 - 해시태그: #세탁소 #동네사장님 #훈훈 #짤툰
 - 고정 댓글: 님 동네 단골집 사장님의 미친 기억력 썰 풀고 가기 👇
 
+
+## "○○ 특" v2 (벤치마크, `teuk1`~`teuk14`)
+
+`research/benchmark-drawn.md` 3절과 `research/benchmark-targets-drawn.json`의 `teuk` 목표(자체공감 「곱창 특」 98.7만, 「바나나 우유 특」 96.9만)에 맞춰 v1 8편을 다시 만들고 6편을 새로 만들었다. 2026-10-10 이야기 검토(REVIEW.md 2-1절)로 대본을 한 번 더 고쳤다.
+
+**바뀐 점 (v1 → v2)**
+
+- 제목은 한 줄 "○○ 특"(3~7자)이다. 제목을 읽는 첫 줄을 없애고, 0초부터 첫 항목과 가장 센 리액션 그림이 나온다.
+- 위쪽 검정 띠가 없다. 어두운 단색 바탕(편마다 색이 조금 다름)이고, 오른쪽 위에 마스코트 로고, 가운데 그림 칸(1080×1160), 아래에 흰 글씨 2줄 관찰체 자막이 있다. 강조색과 단어 하이라이트는 없다.
+- 첫 항목은 짧은 훅 줄(1~1.4초)과 그다음 줄로 나눴다. 첫 줄 끝(훅 끝)이 1.0~1.7초다.
+- 항목마다 그림 종류가 바뀐다. 마스코트 클로즈업(정면 꽉 차게, 왼쪽, 오른쪽, 아래에서 올라옴, 기울임, 효과선, 땀, 김, 하트, 불꽃), 사진(Wikimedia Commons, 반응 원형 인서트), 그린 장면(`Sseol.tsx`)을 섞는다.
+- 내레이터 속도를 올렸다(SunHi +32%, Hyunsu +40%, 실측 6.3~6.9음절/초). "나"의 반응 줄은 7줄에서 2줄로 줄였고, 말풍선 대신 따옴표 자막으로 넣었다.
+- 번호 목록("1. 알람 다섯 번 끄기")을 없애고 "~함/~음" 관찰체 문장으로 썼다. 끝은 "여러분은 몇 개 해당?ㅋㅋ"와 "나"의 펀치라인 한 줄이다.
+- 화면에 출처 배지가 없다. 사진 크레딧은 모두 설명란(`upload/txt/<id>.txt`)에 있다.
+
+### 새 템플릿 옵션 (`src/lib/Teuk.tsx`, 기존 쇼츠는 그대로)
+
+- `edit.json` 최상위에 `"layout": "teuk"`를 두면 `ClipShort`가 영상 전체를 `TeukShort`에 넘긴다(`src/ClipShort.tsx`에 import 1줄, 타입 2줄, `return` 1줄). `"teuk": {"bg": "#2e2321", "mascot": "#FFB36B"}`로 바탕색과 마스코트 색을 정한다.
+- 클립의 `gfx.type`은 세 가지다. `"face"`는 마스코트 리액션 클로즈업이다(`mood`, `to`, `pos`: close·left·right·low·tilt, `fx`: lines·sweat·steam·gloom·sparkle·fire·hearts, `burst`, `prop`·`propX`·`propY`, `big`, `say`, `steps` = [표정 바뀌는 때, 말풍선, 큰 글씨]). `"photo"`는 클립의 `src` 사진을 천천히 확대해 보여 준다(`react`: 반응 원형 인서트 {mood, to, side, size}, `tag`, `big`, `zoom`, `pos`, `steps` = [인서트, 태그, 큰 글씨, 인서트 표정 바뀜]). `"scene"`은 기존 `Sseol.tsx` 장면이다.
+- 자막: `prep.py`가 `layout: teuk`일 때 자막 페이지마다 `"g"`(대사 id:자막 번호)를 붙이고, `TeukShort`가 같은 `g`의 페이지를 2줄로 함께 띄운다. `cap`의 `/`가 줄바꿈이다. qa_review는 줄마다 글자 수를 잰다. 첫 자막은 0초부터, 마지막 자막은 영상 끝까지 보인다.
+- 만드는 도구(`media/teuk/`): `episodes.py`(대본·그림), `make.py`(script.json·edit.json 생성), `fetch.py`(Commons 라이선스 확인 `resolve`, 사진 내려받기), `score.py`(벤치마크 점수표), `upload.py`(설명글 spec), `readme.py`(이 절).
+- 하위 호환 확인: 템플릿을 바꾸기 전과 후에 `sseol1`(바꾸지 않은 썰 쇼츠)의 `src/data/sseol1.json`이 바이트 단위로 같고, 프레임 0·45·200·400·700의 정지 화면 md5가 모두 같았다.
+
+```bash
+python3 media/teuk/make.py teuk9 && python3 media/teuk/fetch.py teuk9 && python3 voice_edge.py teuk9 && python3 prep.py teuk9 \
+  && ./render.sh teuk9 final/teuk9.mp4 && python3 qa_review.py teuk9 && python3 media/teuk/score.py teuk9
+```
+
+### 편 목록과 노리는 공감 포인트
+
+| id | 화면 제목 | 노리는 공감 포인트 | 결말 유형 | 감정 | 음악 |
+| --- | --- | --- | --- | --- | --- |
+| `teuk1` | 월요일 아침 특 | 알람 이름까지 '진짜_최종_마지막'으로 바꿔 가며 버틴 아침이 겨우 오전 10시라는 허탈함 | 허탈 개그 | 공감 | Hustle |
+| `teuk2` | 시험 기간 특 | 시험 전날에만 생기는 정리 욕구, 끝나고 나서야 잘되는 공부 | 역전(끝나니까 공부가 됨) | 웃음 | Sneaky Snitch |
+| `teuk3` | 급식 특 | 4교시 메뉴 확인부터 국자 한 번 더까지, 졸업하고 나서야 그리운 급식 | 따뜻한 반전 | 뭉클한 공감 | Monkeys Spinning Monkeys |
+| `teuk4` | 단톡방 특 | 알림 끄고 몰래 읽는 나, 정작 조용해지면 먼저 '심심해' 보내는 나 | 자기 폭로 반전 | 웃음 | Hyperfun |
+| `teuk5` | 자취 첫 달 특 | 냄비가 그릇, 대파 한 단, 마지막 휴지 한 칸, 결국 본가 가는 날만 기다리는 첫 달 | 의외의 결말(자유 → 본가 그리움) | 공감 | Scheming Weasel (faster version) |
+| `teuk6` | 비 오는 날 특 | 우산의 법칙과 밀가루 없는 파전, 집에 오자마자 그치는 비 | 허탈 개그 | 웃음 | Monkeys Spinning Monkeys |
+| `teuk7` | 헬스장 첫 주 특 | 1년 회원권, 다음 날 계단, 운동 후 치킨, 결국 샤워만 하고 오는 헬스장 | 허탈 개그 | 웃음 | Exhilarate |
+| `teuk8` | 월급날 특 | 입금 알림 대기부터 '내가 쏜다' 후회, 이틀 만에 원래 잔고 | 허탈 개그 | 공감 | Hustle |
+| `teuk9` | 떡볶이 특 | 1인분 → 볶음밥, 단무지 리필, 어묵 국물 눈치, '당분간 안 먹어' 다음 날 또 추천 | 자기 배신 반전 | 웃음 | Hyperfun |
+| `teuk10` | 컵라면 특 | 보이지 않는 물 선, 1분째 젓가락 대기, 고르는 데 20분·먹는 데 3분 | 자기 배신 반전 | 웃음 | Sneaky Snitch |
+| `teuk11` | 붕어빵 특 | 팥 vs 슈크림 → 둘 다, 머리·꼬리 성격, 3마리 → 1마리, 지도에 몰래 별표 | 의외의 결말(혼자만 아는 가게) | 웃음 | Monkeys Spinning Monkeys |
+| `teuk12` | 삼겹살 특 | 굽는 사람은 못 먹고, 엘리베이터에서 메뉴가 들키고, 마지막 한 점은 아무도 안 먹는 고깃집 | 펀치라인(그 한 점 내가 먹을게) | 웃음 | Hustle |
+| `teuk13` | 길치 특 | 뒤를 가리키는 화살표, 출구 번호, 오른쪽 하면 왼쪽부터, 근데 맛집 가는 길은 한 번에 | 역전(맛집만 직진) | 웃음 | Scheming Weasel (faster version) |
+| `teuk14` | 눈치 없는 사람 특 | '이거 누가 시켰어요?', 스포, 깜짝 파티 장소 질문 → 근데 제일 착한 친구 → 혹시 나야? | 따뜻한 반전 + 자기 폭로 | 웃음과 공감 | Sneaky Snitch |
+
+### 벤치마크 점수표
+
+벤치마크 값은 `benchmark-targets-drawn.json`의 `teuk`이다(길이·훅·컷·음절 속도는 보고서가 *추정*으로 표시한 값). 우리 값은 렌더(`final/<id>.mp4`, qa_review와 같은 그림 칸·장면 기준 0.12)와 목소리 타임라인(`build/<id>/timeline.json`, 한글 음절 수 ÷ 대사 길이 합, 줄 사이 쉼 제외)에서 쟀다. `python3 media/teuk/score.py <id>`로 다시 잴 수 있다.
+
+| 편 | 길이 | 훅 끝 | 첫 화면 변화 | 평균 / 최장 장면 | 음절/초 | 줄 수 | 제목 |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| 목표 | 28초 | 1.5초 | 1.5초 | 2.2 / 3.5초 | 6.5 | 14 | 3~7자 |
+| `teuk1` 월요일 아침 특 | 28.4초 | 1.36초 | 1.60초 | 2.03 / 2.77초 | 6.76 | 14 | 6자 |
+| `teuk2` 시험 기간 특 | 28.9초 | 1.34초 | 1.60초 | 1.92 / 2.77초 | 6.43 | 14 | 5자 |
+| `teuk3` 급식 특 | 28.6초 | 0.98초 | 1.23초 | 1.90 / 2.63초 | 6.84 | 14 | 3자 |
+| `teuk4` 단톡방 특 | 27.7초 | 1.11초 | 1.37초 | 1.73 / 3.37초 | 6.30 | 14 | 4자 |
+| `teuk5` 자취 첫 달 특 | 27.3초 | 1.19초 | 1.43초 | 1.95 / 3.17초 | 6.94 | 14 | 5자 |
+| `teuk6` 비 오는 날 특 | 27.5초 | 1.16초 | 1.40초 | 1.96 / 2.70초 | 6.40 | 14 | 5자 |
+| `teuk7` 헬스장 첫 주 특 | 25.4초 | 1.14초 | 1.40초 | 1.81 / 2.57초 | 6.77 | 14 | 6자 |
+| `teuk8` 월급날 특 | 27.4초 | 1.70초 | 1.97초 | 1.95 / 2.80초 | 6.38 | 14 | 4자 |
+| `teuk9` 떡볶이 특 | 29.5초 | 1.27초 | 1.53초 | 2.11 / 3.27초 | 6.72 | 13 | 4자 |
+| `teuk10` 컵라면 특 | 30.3초 | 1.34초 | 1.60초 | 2.16 / 3.13초 | 6.36 | 14 | 4자 |
+| `teuk11` 붕어빵 특 | 27.6초 | 1.20초 | 1.47초 | 1.97 / 2.90초 | 6.51 | 13 | 4자 |
+| `teuk12` 삼겹살 특 | 28.8초 | 1.12초 | 1.37초 | 2.06 / 3.37초 | 6.85 | 14 | 4자 |
+| `teuk13` 길치 특 | 27.6초 | 1.28초 | 1.53초 | 1.97 / 2.63초 | 6.66 | 14 | 3자 |
+| `teuk14` 눈치 없는 사람 특 | 29.0초 | 1.01초 | 1.27초 | 1.93 / 2.83초 | 6.60 | 14 | 7자 |
+
+**목표와 다른 점**
+
+- 길이는 25.4~30.3초(중앙값 28.5초)로 목표(28초, 25~35초) 안이다. 가장 짧은 teuk7(25.4초)은 항목 문장이 짧은 편이다.
+- 음절 속도는 6.30~6.94음절/초로 모두 6.2 이상이다(목표 6.5, v1 중앙값 5.27).
+- 훅 끝: 첫 줄을 짧게 나눠 1.0~1.7초로 목표(1.5초)에 맞췄다.
+- 평균 장면 길이는 목표(2.2초)보다 조금 짧거나 비슷하다. 줄마다 그림을 바꾸고, 사진 클립의 반응 인서트가 뜨는 순간도 화면 변화로 잡힌다.
+- 줄 수는 13~14줄로 목표(14, 12~16)에 맞췄다. teuk9·teuk11은 항목이 길어 13줄이다.
+- 제목 길이: `눈치 없는 사람 특`은 7자로, 목표 범위(3~7자)의 끝이다. 보고서 아이디어 목록의 제목(자체공감 「눈치 없는 사람 특」 117만)을 그대로 썼다.
+- qa_review의 '제목 띠' WARN은 의도한 것이다. 벤치마크 레시피가 "위 제목 띠 없음"이라서 띠를 뺐다.
+
+### 이야기 검토 (REVIEW.md 2-1, 2026-10-10)로 다시 쓴 항목
+
+흔한 말, 구체적이지 않은 말, 마지막이 약한 항목을 바꿨다. 마지막 항목은 꺾이거나 가장 세게 했다. 바꾼 뒤 모두 다시 녹음하고 다시 렌더했다.
+
+- `teuk1`: 일어나는 게 기본 → 마지막 알람 이름이 '진짜_최종_마지막' · 회사 앞 깊은 한숨 → 출입 카드 '삑' 소리가 하루 중 제일 슬픔 · 커피 마셔야 사람 됨 → 커피 전엔 메일을 읽어도 글자가 안 들어옴 · 출근하자마자 점심 고민(마지막) → 이렇게 버텼는데 아직 오전 10시
+- `teuk2`: 새벽 3시 배고픔 → 새벽 3시에 갑자기 방 구조 바꾸고 싶음 · 벼락치기 중 인생 고민(마지막) → 시험 끝나고 나니까 공부가 제일 잘됨
+- `teuk3`: 디저트 날은 하루 종일 행복 → 국자가 한 번 더 오면 그날은 대성공 · 우유 원샷(마지막) → 졸업하고 나니까 그 급식이 제일 그리움
+- `teuk4`: 나가기 버튼 100번(마지막) → 막상 조용해지면 내가 먼저 '심심해' 보냄
+- `teuk5`: 엄마 반찬이 세상에서 제일 맛있음 → 엄마 반찬통 돌려줄 때 빈 통 미안해서 과자 넣음 · 관리비 고지서 보고 깜짝(마지막) → 자유롭다더니 한 달 뒤 본가 가는 날만 기다림
+- `teuk6`: 양말 젖으면 하루 종일 찝찝 → 젖은 운동화에서 하루 종일 '찌걱' 소리 · 비 오면 괜히 파전 생각 → 파전 해 먹자 했는데 밀가루가 없음
+- `teuk7`: 사흘째부터 갈까 말까(마지막) → 결국 1년 회원권으로 샤워만 하고 옴
+- `teuk8`: 고생한 나한테 선물 → '오늘은 내가 쏜다' 계산할 때 살짝 후회 · 다음 월급날 세기(마지막) → 이틀 만에 잔고가 월급 전이랑 같아짐
+- `teuk9`: 맵다 맵다 하면서 젓가락 안 멈춤 → 맵다면서 단무지만 세 번 리필 · 어묵은 마지막에 먹어야 제맛 → 포장마차 어묵 국물 세 번째 컵부터 눈치 · 떡파 vs 어묵파 → 떡만 골라 먹는 친구랑 먹으면 어묵만 산더미 · 튀김 국물에 퐁당 → 김말이 찍는 순간 반은 국물 속으로 · 다음 날 또 생각남(마지막) → '당분간 안 먹어' 해 놓고 다음 날 점심에 또 추천
+- `teuk10`: 2분 반에 뚜껑 → 1분째 젓가락 들고 대기 · 밤 11시엔 세상에서 제일 맛있음 → 붓기는 내일의 나에게 · 김치 없으면 허전 → 뚜껑 접어서 앞접시로 쓰는 건 국룰 · 하나 더 땡김 → 고르는 데 20분, 먹는 데 3분 · 다음 날 얼굴 퉁퉁(마지막) → '다음엔 다른 맛' 다짐하고 또 같은 맛
+- `teuk11`: 입천장 데임 → 한 입에 입천장 데고 말 잃음 · 식으면 데워 먹음 → 천 원에 몇 마리인지로 물가 체감 · 파는 곳 찾으면 보물 찾은 기분(마지막) → 파는 곳 발견하면 지도에 몰래 별표
+- `teuk12`: 옷 냄새는 집에 가서야 앎 → 엘리베이터 탄 사람들이 내 저녁 메뉴 맞힘 · 냄새 맡으면 또 배고픔 → '불판 갈아 드릴까요?' 배부른데 '네!' · 쌈장으로 밥 한 공기 → 마늘 안 먹는다더니 불판 위 마늘만 노림
+- `teuk14`: 단체 사진에서 눈 감음(눈치와 무관) → 깜짝 생일 파티 장소를 주인공 앞에서 물어봄
+
+### 사진 출처와 라이선스
+
+Pexels와 Pixabay를 먼저 시도했지만, 두 사이트 모두 이 환경에 봇 확인 화면(Cloudflare)을 돌려줘서 항목별 라이선스 페이지를 열 수 없었다. 그래서 쓰지 않았다. 대신 Wikimedia Commons에서 CC0, 퍼블릭 도메인, CC BY 파일만 골랐다(BY-SA, NC, ND 제외). 라이선스는 각 파일 페이지의 메타데이터(imageinfo extmetadata)에서 2026-10-10에 확인했다(`media/teuk/fetch.py resolve`). 모든 사진을 큰 크기로 보고 상표, 가게 이름, 앱 아이콘, 알아볼 수 있는 얼굴이 없는 것만 남겼다. 컵라면 제품 사진은 위에서 내려다본 컵 속만 보이는 것만 썼다. 물 끓이는 주전자 사진은 각인된 글씨 때문에, 학교 급식 사진은 군 관련 사진뿐이라서 뺐다. 각 파일의 페이지 주소, 파일 주소, 라이선스, 작가, 쓴 구간은 `media/teuk/photos.json`과 각 `edit.json`의 `sources`에 있다. 화면에는 크레딧을 넣지 않고 설명란에 넣는다.
+
+| 사진 키 | 파일 (Commons) | 작가 | 라이선스 | 쓴 편 (초) |
+| --- | --- | --- | --- | --- |
+| `alarm` | [Alarm clock on a chair (Unsplash).jpg](https://commons.wikimedia.org/wiki/File:Alarm_clock_on_a_chair_(Unsplash).jpg) | Szűcs László szucslaszlo | CC0 | teuk1 3.7~4.8 |
+| `alley1` | [Bukchon, Seoul - Bukchon3283.jpg](https://commons.wikimedia.org/wiki/File:Bukchon,_Seoul_-_Bukchon3283.jpg) | lumoplank | CC0 | teuk13 3.6~5.6 |
+| `bungeo1` | [Taiyaki - cut section.jpg](https://commons.wikimedia.org/wiki/File:Taiyaki_-_cut_section.jpg) | 毒島みるく | CC0 | teuk11 0.0~1.5 |
+| `bungeo2` | [Bungeoppang-01.jpg](https://commons.wikimedia.org/wiki/File:Bungeoppang-01.jpg) | Siqbal at en.wikipedia | Public domain | teuk11 10.1~12.3 |
+| `bungeo3` | [시장 2.jpg](https://commons.wikimedia.org/wiki/File:%EC%8B%9C%EC%9E%A5_2.jpg) | Chae Ji-young | CC BY 4.0 | teuk11 21.3~23.9 |
+| `bungeo4` | [Taiyaki 003.jpg](https://commons.wikimedia.org/wiki/File:Taiyaki_003.jpg) | Ocdp | CC0 | teuk11 23.9~25.2 |
+| `cake` | [Piece of chocolate cake on a white plate decorated with chocolate sauce.jpg](https://commons.wikimedia.org/wiki/File:Piece_of_chocolate_cake_on_a_white_plate_decorated_with_chocolate_sauce.jpg) | Daria Yakovleva (minor edits by Subsidiary account) | CC0 | teuk14 26.1~27.4 |
+| `calendar` | [WallCalendar.jpg](https://commons.wikimedia.org/wiki/File:WallCalendar.jpg) | Claudio Elias | Public domain | teuk8 21.5~24.0 |
+| `cart` | [Mini grocery toy pushcart.jpg](https://commons.wikimedia.org/wiki/File:Mini_grocery_toy_pushcart.jpg) | Me (Elsa Versailles) | Public domain | teuk8 11.5~13.5 |
+| `chicken` | [Korean fried chicken 5.jpg](https://commons.wikimedia.org/wiki/File:Korean_fried_chicken_5.jpg) | insatiablemunch | CC BY 2.0 | teuk3 9.4~11.9, teuk7 13.2~15.1 |
+| `coffee` | [Cappuchino latte art.jpg](https://commons.wikimedia.org/wiki/File:Cappuchino_latte_art.jpg) | Blanka Novotná | Public domain | teuk1 15.8~18.6 |
+| `crossroad` | [An Example of Raised Crosswalks near Sogang University 2.jpg](https://commons.wikimedia.org/wiki/File:An_Example_of_Raised_Crosswalks_near_Sogang_University_2.jpg) | Monotaxism | CC0 | teuk13 9.3~11.4 |
+| `cup` | [Cup Noodle Zeitaku-nikumori-Dandanmian.jpg](https://commons.wikimedia.org/wiki/File:Cup_Noodle_Zeitaku-nikumori-Dandanmian.jpg) | 毒島みるく | CC0 | teuk10 0.0~1.6 |
+| `cup2` | [Cup Noodle Zeitaku-toromi-fukahire-soup.jpg](https://commons.wikimedia.org/wiki/File:Cup_Noodle_Zeitaku-toromi-fukahire-soup.jpg) | 毒島みるく | CC0 | teuk10 2.9~5.7 |
+| `desk` | [Working on a planning session with stationery items, notebook, and colorful pencils on a wooden desk.jpg](https://commons.wikimedia.org/wiki/File:Working_on_a_planning_session_with_stationery_items,_notebook,_and_colorful_pencils_on_a_wooden_desk.jpg) | Shixart1985 | CC BY 2.0 | teuk2 26.5~28.9 |
+| `dumbbell` | [Exercise equipment (rubber ball, light-weight dumbbells, jump rope).jpg](https://commons.wikimedia.org/wiki/File:Exercise_equipment_(rubber_ball,_light-weight_dumbbells,_jump_rope).jpg) | CDC/ Debora Cartagena | Public domain | teuk7 8.4~10.4 |
+| `fried_kimchi` | [Kimchi fried rice.jpg](https://commons.wikimedia.org/wiki/File:Kimchi_fried_rice.jpg) | Sharon Ang | CC0 | teuk9 1.5~4.0 |
+| `fried_pan` | [Kimchi-bokkeum-bap (Kimchi fried rice) - Kogi 2023-09-11.jpg](https://commons.wikimedia.org/wiki/File:Kimchi-bokkeum-bap_(Kimchi_fried_rice)_-_Kogi_2023-09-11.jpg) | Andy Li | CC0 | teuk12 14.8~16.8 |
+| `greenonion` | [Beijing scallions.jpg](https://commons.wikimedia.org/wiki/File:Beijing_scallions.jpg) | Fumikas Sagisavas | CC0 | teuk5 5.7~7.9 |
+| `greenonion2` | [CSA-Red-Spring-Onions.jpg](https://commons.wikimedia.org/wiki/File:CSA-Red-Spring-Onions.jpg) | Evan-Amos | Public domain | teuk5 23.9~25.2 |
+| `grill1` | [Samgyeopsal-gui 1.jpg](https://commons.wikimedia.org/wiki/File:Samgyeopsal-gui_1.jpg) | chomjong | CC BY 2.0 | teuk12 0.0~1.4 |
+| `grill2` | [Korean.food-Samgyeopsal-02.jpg](https://commons.wikimedia.org/wiki/File:Korean.food-Samgyeopsal-02.jpg) | Blue Lotus (a flickr user) | CC BY 2.0 | teuk12 8.7~11.4 |
+| `grill3` | [Samgyeopsal-gui.jpg](https://commons.wikimedia.org/wiki/File:Samgyeopsal-gui.jpg) | jinsoo jang | CC0 | teuk12 26.6~28.8 |
+| `kimchi` | [Korean cuisine-Kimchi-08.jpg](https://commons.wikimedia.org/wiki/File:Korean_cuisine-Kimchi-08.jpg) | Jeremy Keith | CC BY 2.0 | teuk3 24.9~26.1 |
+| `lastslice` | [Pepperoni pizza slice on a red plate.jpg](https://commons.wikimedia.org/wiki/File:Pepperoni_pizza_slice_on_a_red_plate.jpg) | MVS9966 | CC BY 3.0 | teuk14 13.3~15.6 |
+| `map` | [World Map 1689.JPG](https://commons.wikimedia.org/wiki/File:World_Map_1689.JPG) | Gerard van Schagen | Public domain | teuk13 25.6~27.6 |
+| `notes` | [Personal organizer with metallic ring binder.jpg](https://commons.wikimedia.org/wiki/File:Personal_organizer_with_metallic_ring_binder.jpg) | Old Photo Profile | CC BY 2.0 | teuk2 3.7~5.7 |
+| `pajeon` | [Korean pancake-Pajeon-08.jpg](https://commons.wikimedia.org/wiki/File:Korean_pancake-Pajeon-08.jpg) | Jamie | CC BY 2.0 | teuk6 10.9~13.6 |
+| `phone` | [Smartphone display screen.jpg](https://commons.wikimedia.org/wiki/File:Smartphone_display_screen.jpg) | Skitterphoto | CC0 | teuk4 14.3~16.6 |
+| `pot` | [Ramyeon and kimchi.jpg](https://commons.wikimedia.org/wiki/File:Ramyeon_and_kimchi.jpg) | Hyeon-Jeong Suk | CC BY 2.0 | teuk5 2.9~4.5 |
+| `rainwindow` | [Clear Umbrella Rain Liverpool (Unsplash).jpg](https://commons.wikimedia.org/wiki/File:Clear_Umbrella_Rain_Liverpool_(Unsplash).jpg) | freddie marriage fredmarriage | CC0 | teuk6 5.3~6.5 |
+| `ramyeon` | [20200804 033546 Ramyeon IMG 8515.jpg](https://commons.wikimedia.org/wiki/File:20200804_033546_Ramyeon_IMG_8515.jpg) | Choi Kwang-mo | CC0 | teuk10 17.2~19.6 |
+| `ssam` | [Samgyeopsal table.jpg](https://commons.wikimedia.org/wiki/File:Samgyeopsal_table.jpg) | 이동원 | CC0 | teuk12 6.3~8.7 |
+| `stairs` | [Stairs steps.jpg](https://commons.wikimedia.org/wiki/File:Stairs_steps.jpg) | Knites | CC0 | teuk7 10.4~12.0 |
+| `steak` | [Steak, carrots, bok choy, sweet peppers, and mashed potatoes - Massachusetts.jpg](https://commons.wikimedia.org/wiki/File:Steak,_carrots,_bok_choy,_sweet_peppers,_and_mashed_potatoes_-_Massachusetts.jpg) | Daderot | CC0 | teuk8 6.8~8.7 |
+| `tbk_cheese` | [Korean food at Tteokbokki restaurant in Shin-Okubo 3.jpg](https://commons.wikimedia.org/wiki/File:Korean_food_at_Tteokbokki_restaurant_in_Shin-Okubo_3.jpg) | Syced | CC0 | teuk9 16.9~19.9 |
+| `tbk_eomuk` | [Korean.snacks-Tteokbokki-08.jpg](https://commons.wikimedia.org/wiki/File:Korean.snacks-Tteokbokki-08.jpg) | jetalone (flickr) | CC BY 2.0 | teuk9 7.6~10.6 |
+| `tbk_fork` | [Tteokbokki Bunsik Korean food 02.jpg](https://commons.wikimedia.org/wiki/File:Tteokbokki_Bunsik_Korean_food_02.jpg) | Hankook12 | CC0 | teuk9 14.3~16.9 |
+| `tbk_pan` | [Korean.snacks-Tteokbokki-04.jpg](https://commons.wikimedia.org/wiki/File:Korean.snacks-Tteokbokki-04.jpg) | Sung Sook | CC BY 2.0 | teuk9 0.0~1.5, teuk13 22.0~24.3 |
+| `tbk_plate` | [Korean rice cake (tteokbokki).jpg](https://commons.wikimedia.org/wiki/File:Korean_rice_cake_(tteokbokki).jpg) | Fumikas Sagisavas | CC0 | teuk9 26.1~27.4 |
+| `tissue` | [Chained rolls of toilet paper at MBTA Sullivan station bathrooms.jpg](https://commons.wikimedia.org/wiki/File:Chained_rolls_of_toilet_paper_at_MBTA_Sullivan_station_bathrooms.jpg) | 4300streetcar | CC BY 4.0 | teuk5 7.9~10.2 |
+| `umbrella` | [Closeup of black umbrella in rain.jpg](https://commons.wikimedia.org/wiki/File:Closeup_of_black_umbrella_in_rain.jpg) | Shixart1985 | CC BY 2.0 | teuk6 6.5~8.5 |
+
+### 사실 확인
+
+14편 모두 관찰체 창작 대본이다. 통계, 가격, 법규 같은 사실 주장은 없다. 시간·숫자("10분", "3분", "천 원에 몇 마리")는 장면 속 표현이고 사실로 내세우지 않는다. 그래서 인용할 출처가 없다. 실제 브랜드, 가게, 앱, 회사 이름은 없다("국룰", "밀떡/쌀떡"은 일반 명사). 사람 유형 편(길치, 눈치 없는 사람)은 "나"의 습관으로 쓰고, 끝에서 "혹시 나야?", "맛집 가는 길은 한 번에"처럼 자기 자신을 소재로 돌린다. 몸, 지역, 직업, 집단은 놀리지 않는다. 설명란 요약 앞에 "(창작)"이 붙는다.
+
+### 업로드 문구
+
+설명글은 공통 형식(`upload/README.md`)으로 `upload/specs/<id>.json` → `python3 upload/make_desc.py <id>` → `upload/txt/<id>.txt`에 있다. 채널 이름과 핸들은 아직 자리표시자다. 아래는 그 내용이다.
+
+`teuk1`
+- 제목: 월요일 아침 특ㅋㅋ
+- 설명:
+  ```
+  (창작) 알람을 다섯 번 끄고서야 겨우 일어나는 월요일 아침을 담았습니다. 마지막 알람 이름이 '진짜_최종_마지막'이고, 출입 카드 '삑' 소리가 하루 중 제일 슬프다면 공감할 겁니다. 여러분은 몇 개 해당되나요?
+  
+  ▶ [채널명] 채널 구독: https://www.youtube.com/@[핸들]
+  
+  출처: 그림·대본·목소리 직접 제작(등장인물·채팅방은 실제와 관계없음) · 사진: Alarm clock on a chair (Unsplash).jpg by Szűcs László szucslaszlo (CC0, http://creativecommons.org/publicdomain/zero/1.0/deed.en), via Wikimedia Commons · 사진: Cappuchino latte art.jpg by Blanka Novotná (Public domain), via Wikimedia Commons · 음악: "Hustle" Kevin MacLeod (incompetech.com), CC BY 4.0 (creativecommons.org/licenses/by/4.0)
+  
+  #Shorts #공감 #특 #공감툰 #공감애니 #창작애니 #일상공감 #월요일 #직장인 #출근 #직장인공감
+  ```
+- 해시태그: #Shorts #공감 #특 #공감툰 #공감애니 #창작애니 #일상공감 #월요일 #직장인 #출근 #직장인공감
+- 고정 댓글: 알람 몇 번 끄고 일어나세요?
+
+`teuk2`
+- 제목: 시험 기간 특ㅋㅋ
+- 설명:
+  ```
+  (창작) 시험 전날만 되면 갑자기 책상 정리가 하고 싶어지는 시험 기간의 모습을 모았습니다. 계획표만 한 시간 만들고, 새벽 3시에 방 구조를 바꾸고 싶어지는 바로 그 마음입니다. 여러분은 몇 개 해당되나요?
+  
+  ▶ [채널명] 채널 구독: https://www.youtube.com/@[핸들]
+  
+  출처: 그림·대본·목소리 직접 제작(등장인물·채팅방은 실제와 관계없음) · 사진: Personal organizer with metallic ring binder.jpg by Old Photo Profile (CC BY 2.0, https://creativecommons.org/licenses/by/2.0), via Wikimedia Commons · 사진: Working on a planning session with stationery items, notebook, and colorful pencils on a wooden desk.jpg by Shixart1985 (CC BY 2.0, https://creativecommons.org/licenses/by/2.0), via Wikimedia Commons · 음악: "Sneaky Snitch" Kevin MacLeod (incompetech.com), CC BY 4.0 (creativecommons.org/licenses/by/4.0)
+  
+  #Shorts #공감 #특 #공감툰 #공감애니 #창작애니 #일상공감 #시험기간 #학생공감 #벼락치기 #중간고사
+  ```
+- 해시태그: #Shorts #공감 #특 #공감툰 #공감애니 #창작애니 #일상공감 #시험기간 #학생공감 #벼락치기 #중간고사
+- 고정 댓글: 시험 전날 제일 많이 한 딴짓은?
+
+`teuk3`
+- 제목: 급식 특ㅋㅋ
+- 설명:
+  ```
+  (창작) 4교시부터 오늘 급식 메뉴만 생각하던 학교 급식 시간을 떠올려 봤습니다. 종이 치자마자 뛰지 않고 아주 빠르게 걷고, 국자가 한 번 더 오면 그날은 대성공이었죠. 여러분은 몇 개 해당되나요?
+  
+  ▶ [채널명] 채널 구독: https://www.youtube.com/@[핸들]
+  
+  출처: 그림·대본·목소리 직접 제작(등장인물·채팅방은 실제와 관계없음) · 사진: Korean fried chicken 5.jpg by insatiablemunch (CC BY 2.0, https://creativecommons.org/licenses/by/2.0), via Wikimedia Commons · 사진: Korean cuisine-Kimchi-08.jpg by Jeremy Keith (CC BY 2.0, https://creativecommons.org/licenses/by/2.0), via Wikimedia Commons · 음악: "Monkeys Spinning Monkeys" Kevin MacLeod (incompetech.com), CC BY 4.0 (creativecommons.org/licenses/by/4.0)
+  
+  #Shorts #공감 #특 #공감툰 #공감애니 #창작애니 #일상공감 #급식 #학교 #학창시절 #추억
+  ```
+- 해시태그: #Shorts #공감 #특 #공감툰 #공감애니 #창작애니 #일상공감 #급식 #학교 #학창시절 #추억
+- 고정 댓글: 최애 급식 메뉴 하나만 적고 가기
+
+`teuk4`
+- 제목: 단톡방 특ㅋㅋ
+- 설명:
+  ```
+  (창작) 알림은 꺼 놓고 몰래 다 읽는 단톡방의 하루를 모았습니다. 질문하면 아무도 대답이 없고, 엄마한테 보낼 톡을 단톡방에 보내는 그 순간까지 담았습니다. 여러분은 몇 개 해당되나요?
+  
+  ▶ [채널명] 채널 구독: https://www.youtube.com/@[핸들]
+  
+  출처: 그림·대본·목소리 직접 제작(등장인물·채팅방은 실제와 관계없음) · 사진: Smartphone display screen.jpg by Skitterphoto (CC0, http://creativecommons.org/publicdomain/zero/1.0/deed.en), via Wikimedia Commons · 음악: "Hyperfun" Kevin MacLeod (incompetech.com), CC BY 4.0 (creativecommons.org/licenses/by/4.0)
+  
+  #Shorts #공감 #특 #공감툰 #공감애니 #창작애니 #일상공감 #단톡방 #카톡공감 #친구공감 #읽씹
+  ```
+- 해시태그: #Shorts #공감 #특 #공감툰 #공감애니 #창작애니 #일상공감 #단톡방 #카톡공감 #친구공감 #읽씹
+- 고정 댓글: 지금 안 읽은 톡 몇 개 있어요?
+
+`teuk5`
+- 제목: 자취 첫 달 특ㅋㅋ
+- 설명:
+  ```
+  (창작) 집이 너무 조용해서 오히려 잠이 안 오는 자취 첫 달의 모습입니다. 라면 냄비가 곧 그릇이 되고, 대파 한 단은 끝까지 먹은 적이 없는 그 시절입니다. 여러분은 몇 개 해당되나요?
+  
+  ▶ [채널명] 채널 구독: https://www.youtube.com/@[핸들]
+  
+  출처: 그림·대본·목소리 직접 제작(등장인물·채팅방은 실제와 관계없음) · 사진: Ramyeon and kimchi.jpg by Hyeon-Jeong Suk (CC BY 2.0, https://creativecommons.org/licenses/by/2.0), via Wikimedia Commons · 사진: Beijing scallions.jpg by Fumikas Sagisavas (CC0, http://creativecommons.org/publicdomain/zero/1.0/deed.en), via Wikimedia Commons · 사진: Chained rolls of toilet paper at MBTA Sullivan station bathrooms.jpg by 4300streetcar (CC BY 4.0, https://creativecommons.org/licenses/by/4.0), via Wikimedia Commons · 사진: CSA-Red-Spring-Onions.jpg by Evan-Amos (Public domain), via Wikimedia Commons · 음악: "Scheming Weasel" Kevin MacLeod (incompetech.com), CC BY 4.0 (creativecommons.org/licenses/by/4.0)
+  
+  #Shorts #공감 #특 #공감툰 #공감애니 #창작애니 #일상공감 #자취 #자취생 #자취공감 #혼자살기
+  ```
+- 해시태그: #Shorts #공감 #특 #공감툰 #공감애니 #창작애니 #일상공감 #자취 #자취생 #자취공감 #혼자살기
+- 고정 댓글: 자취하면서 제일 놀랐던 순간은?
+
+`teuk6`
+- 제목: 비 오는 날 특ㅋㅋ
+- 설명:
+  ```
+  (창작) 우산 챙긴 날엔 비가 한 방울도 안 오는 비 오는 날의 법칙을 모았습니다. 집에 우산이 많은데 또 하나 사고, 파전 해 먹자 했는데 밀가루가 없는 날입니다. 여러분은 몇 개 해당되나요?
+  
+  ▶ [채널명] 채널 구독: https://www.youtube.com/@[핸들]
+  
+  출처: 그림·대본·목소리 직접 제작(등장인물·채팅방은 실제와 관계없음) · 사진: Clear Umbrella Rain Liverpool (Unsplash).jpg by freddie marriage fredmarriage (CC0, http://creativecommons.org/publicdomain/zero/1.0/deed.en), via Wikimedia Commons · 사진: Closeup of black umbrella in rain.jpg by Shixart1985 (CC BY 2.0, https://creativecommons.org/licenses/by/2.0), via Wikimedia Commons · 사진: Korean pancake-Pajeon-08.jpg by Jamie (CC BY 2.0, https://creativecommons.org/licenses/by/2.0), via Wikimedia Commons · 음악: "Monkeys Spinning Monkeys" Kevin MacLeod (incompetech.com), CC BY 4.0 (creativecommons.org/licenses/by/4.0)
+  
+  #Shorts #공감 #특 #공감툰 #공감애니 #창작애니 #일상공감 #비오는날 #장마 #우산 #날씨공감
+  ```
+- 해시태그: #Shorts #공감 #특 #공감툰 #공감애니 #창작애니 #일상공감 #비오는날 #장마 #우산 #날씨공감
+- 고정 댓글: 집에 우산 몇 개 있어요?
+
+`teuk7`
+- 제목: 헬스장 첫 주 특ㅋㅋ
+- 설명:
+  ```
+  (창작) 일단 회원권은 1년짜리부터 끊는 헬스장 첫 주의 모습입니다. 첫날부터 너무 열심히 해서 다음 날 계단을 못 내려가고, 운동했으니까 치킨은 괜찮다고 믿습니다. 여러분은 몇 개 해당되나요?
+  
+  ▶ [채널명] 채널 구독: https://www.youtube.com/@[핸들]
+  
+  출처: 그림·대본·목소리 직접 제작(등장인물·채팅방은 실제와 관계없음) · 사진: Exercise equipment (rubber ball, light-weight dumbbells, jump rope).jpg by CDC/ Debora Cartagena (Public domain), via Wikimedia Commons · 사진: Stairs steps.jpg by Knites (CC0, http://creativecommons.org/publicdomain/zero/1.0/deed.en), via Wikimedia Commons · 사진: Korean fried chicken 5.jpg by insatiablemunch (CC BY 2.0, https://creativecommons.org/licenses/by/2.0), via Wikimedia Commons · 음악: "Exhilarate" Kevin MacLeod (incompetech.com), CC BY 4.0 (creativecommons.org/licenses/by/4.0)
+  
+  #Shorts #공감 #특 #공감툰 #공감애니 #창작애니 #일상공감 #헬스장 #운동 #헬린이 #다이어트
+  ```
+- 해시태그: #Shorts #공감 #특 #공감툰 #공감애니 #창작애니 #일상공감 #헬스장 #운동 #헬린이 #다이어트
+- 고정 댓글: 헬스장 며칠째까지 가 봤어요?
+
+`teuk8`
+- 제목: 월급날 특ㅋㅋ
+- 설명:
+  ```
+  (창작) 아침부터 입금 알림만 기다리는 월급날 하루를 담았습니다. 들어오자마자 카드값이 빠져나가고, '오늘은 내가 쏜다' 해 놓고 계산할 때 살짝 후회합니다. 여러분은 몇 개 해당되나요?
+  
+  ▶ [채널명] 채널 구독: https://www.youtube.com/@[핸들]
+  
+  출처: 그림·대본·목소리 직접 제작(등장인물·채팅방은 실제와 관계없음) · 사진: Steak, carrots, bok choy, sweet peppers, and mashed potatoes - Massachusetts.jpg by Daderot (CC0, http://creativecommons.org/publicdomain/zero/1.0/deed.en), via Wikimedia Commons · 사진: Mini grocery toy pushcart.jpg by Me (Elsa Versailles) (Public domain), via Wikimedia Commons · 사진: WallCalendar.jpg by Claudio Elias (Public domain), via Wikimedia Commons · 음악: "Hustle" Kevin MacLeod (incompetech.com), CC BY 4.0 (creativecommons.org/licenses/by/4.0)
+  
+  #Shorts #공감 #특 #공감툰 #공감애니 #창작애니 #일상공감 #월급날 #직장인 #월급 #직장인공감
+  ```
+- 해시태그: #Shorts #공감 #특 #공감툰 #공감애니 #창작애니 #일상공감 #월급날 #직장인 #월급 #직장인공감
+- 고정 댓글: 월급날 제일 먼저 사는 건?
+
+`teuk9`
+- 제목: 떡볶이 특ㅋㅋ
+- 설명:
+  ```
+  (창작) 1인분 시켰는데 정신 차려 보면 볶음밥까지 먹고 있는 떡볶이의 법칙을 모았습니다. 맵다면서 단무지만 세 번 리필하고, 밀떡 쌀떡 토론은 10분이 걸립니다. 여러분은 몇 개 해당되나요?
+  
+  ▶ [채널명] 채널 구독: https://www.youtube.com/@[핸들]
+  
+  출처: 그림·대본·목소리 직접 제작(등장인물·채팅방은 실제와 관계없음) · 사진: Korean.snacks-Tteokbokki-04.jpg by Sung Sook (CC BY 2.0, https://creativecommons.org/licenses/by/2.0), via Wikimedia Commons · 사진: Kimchi fried rice.jpg by Sharon Ang (CC0, http://creativecommons.org/publicdomain/zero/1.0/deed.en), via Wikimedia Commons · 사진: Korean.snacks-Tteokbokki-08.jpg by jetalone (flickr) (CC BY 2.0, https://creativecommons.org/licenses/by/2.0), via Wikimedia Commons · 사진: Tteokbokki Bunsik Korean food 02.jpg by Hankook12 (CC0, http://creativecommons.org/publicdomain/zero/1.0/deed.en), via Wikimedia Commons · 사진: Korean food at Tteokbokki restaurant in Shin-Okubo 3.jpg by Syced (CC0, http://creativecommons.org/publicdomain/zero/1.0/deed.en), via Wikimedia Commons · 사진: Korean rice cake (tteokbokki).jpg by Fumikas Sagisavas (CC0, http://creativecommons.org/publicdomain/zero/1.0/deed.en), via Wikimedia Commons · 음악: "Hyperfun" Kevin MacLeod (incompetech.com), CC BY 4.0 (creativecommons.org/licenses/by/4.0)
+  
+  #Shorts #공감 #특 #공감툰 #공감애니 #창작애니 #일상공감 #떡볶이 #분식 #먹방공감 #밀떡쌀떡
+  ```
+- 해시태그: #Shorts #공감 #특 #공감툰 #공감애니 #창작애니 #일상공감 #떡볶이 #분식 #먹방공감 #밀떡쌀떡
+- 고정 댓글: 밀떡 vs 쌀떡, 여러분은?
+
+`teuk10`
+- 제목: 컵라면 특ㅋㅋ
+- 설명:
+  ```
+  (창작) 물 선까지 부으라는데 그 선이 안 보이는 컵라면의 순간들을 모았습니다. 3분 기다리라는데 1분째 젓가락을 들고 있고, 고르는 데 20분, 먹는 데 3분이 걸립니다. 여러분은 몇 개 해당되나요?
+  
+  ▶ [채널명] 채널 구독: https://www.youtube.com/@[핸들]
+  
+  출처: 그림·대본·목소리 직접 제작(등장인물·채팅방은 실제와 관계없음) · 사진: Cup Noodle Zeitaku-nikumori-Dandanmian.jpg by 毒島みるく (CC0, http://creativecommons.org/publicdomain/zero/1.0/deed.en), via Wikimedia Commons · 사진: Cup Noodle Zeitaku-toromi-fukahire-soup.jpg by 毒島みるく (CC0, http://creativecommons.org/publicdomain/zero/1.0/deed.en), via Wikimedia Commons · 사진: 20200804 033546 Ramyeon IMG 8515.jpg by Choi Kwang-mo (CC0, http://creativecommons.org/publicdomain/zero/1.0/deed.en), via Wikimedia Commons · 음악: "Sneaky Snitch" Kevin MacLeod (incompetech.com), CC BY 4.0 (creativecommons.org/licenses/by/4.0)
+  
+  #Shorts #공감 #특 #공감툰 #공감애니 #창작애니 #일상공감 #컵라면 #라면 #야식 #편의점
+  ```
+- 해시태그: #Shorts #공감 #특 #공감툰 #공감애니 #창작애니 #일상공감 #컵라면 #라면 #야식 #편의점
+- 고정 댓글: 컵라면 몇 분 기다리세요?
+
+`teuk11`
+- 제목: 붕어빵 특ㅋㅋ
+- 설명:
+  ```
+  (창작) 팥이냐 슈크림이냐 고르다가 결국 둘 다 사는 붕어빵의 계절입니다. 머리부터 먹냐 꼬리부터 먹냐로 성격이 나오고, 세 마리 샀는데 집에 오면 한 마리만 남습니다. 여러분은 몇 개 해당되나요?
+  
+  ▶ [채널명] 채널 구독: https://www.youtube.com/@[핸들]
+  
+  출처: 그림·대본·목소리 직접 제작(등장인물·채팅방은 실제와 관계없음) · 사진: Taiyaki - cut section.jpg by 毒島みるく (CC0, http://creativecommons.org/publicdomain/zero/1.0/deed.en), via Wikimedia Commons · 사진: Bungeoppang-01.jpg by Siqbal at en.wikipedia (Public domain), via Wikimedia Commons · 사진: 시장 2.jpg by Chae Ji-young (CC BY 4.0, https://creativecommons.org/licenses/by/4.0), via Wikimedia Commons · 사진: Taiyaki 003.jpg by Ocdp (CC0, http://creativecommons.org/publicdomain/zero/1.0/deed.en), via Wikimedia Commons · 음악: "Monkeys Spinning Monkeys" Kevin MacLeod (incompetech.com), CC BY 4.0 (creativecommons.org/licenses/by/4.0)
+  
+  #Shorts #공감 #특 #공감툰 #공감애니 #창작애니 #일상공감 #붕어빵 #겨울간식 #팥붕슈붕 #길거리음식
+  ```
+- 해시태그: #Shorts #공감 #특 #공감툰 #공감애니 #창작애니 #일상공감 #붕어빵 #겨울간식 #팥붕슈붕 #길거리음식
+- 고정 댓글: 팥 vs 슈크림, 머리 vs 꼬리?
+
+`teuk12`
+- 제목: 삼겹살 특ㅋㅋ
+- 설명:
+  ```
+  (창작) 고기 굽는 사람은 정작 한 점도 못 먹는 삼겹살 자리의 모습을 모았습니다. 다 익었냐고 물으면 대답은 늘 '조금만 더'이고, 배부르다면서 볶음밥은 꼭 시킵니다. 여러분은 몇 개 해당되나요?
+  
+  ▶ [채널명] 채널 구독: https://www.youtube.com/@[핸들]
+  
+  출처: 그림·대본·목소리 직접 제작(등장인물·채팅방은 실제와 관계없음) · 사진: Samgyeopsal-gui 1.jpg by chomjong (CC BY 2.0, https://creativecommons.org/licenses/by/2.0), via Wikimedia Commons · 사진: Samgyeopsal table.jpg by 이동원 (CC0, http://creativecommons.org/publicdomain/zero/1.0/deed.en), via Wikimedia Commons · 사진: Korean.food-Samgyeopsal-02.jpg by Blue Lotus (a flickr user) (CC BY 2.0, https://creativecommons.org/licenses/by/2.0), via Wikimedia Commons · 사진: Kimchi-bokkeum-bap (Kimchi fried rice) - Kogi 2023-09-11.jpg by Andy Li (CC0, http://creativecommons.org/publicdomain/zero/1.0/deed.en), via Wikimedia Commons · 사진: Samgyeopsal-gui.jpg by jinsoo jang (CC0, http://creativecommons.org/publicdomain/zero/1.0/deed.en), via Wikimedia Commons · 음악: "Hustle" Kevin MacLeod (incompetech.com), CC BY 4.0 (creativecommons.org/licenses/by/4.0)
+  
+  #Shorts #공감 #특 #공감툰 #공감애니 #창작애니 #일상공감 #삼겹살 #고기 #회식 #먹방공감
+  ```
+- 해시태그: #Shorts #공감 #특 #공감툰 #공감애니 #창작애니 #일상공감 #삼겹살 #고기 #회식 #먹방공감
+- 고정 댓글: 고기 굽는 담당 누구예요?
+
+`teuk13`
+- 제목: 길치 특ㅋㅋ
+- 설명:
+  ```
+  (창작) 지도 앱을 켜고 걷는데 화살표가 계속 뒤를 가리키는 길치의 하루입니다. 길을 물어봐 놓고 반대로 걷고, 오른쪽이라고 하면 일단 왼쪽부터 봅니다. 여러분은 몇 개 해당되나요?
+  
+  ▶ [채널명] 채널 구독: https://www.youtube.com/@[핸들]
+  
+  출처: 그림·대본·목소리 직접 제작(등장인물·채팅방은 실제와 관계없음) · 사진: Bukchon, Seoul - Bukchon3283.jpg by lumoplank (CC0, http://creativecommons.org/publicdomain/zero/1.0/deed.en), via Wikimedia Commons · 사진: An Example of Raised Crosswalks near Sogang University 2.jpg by Monotaxism (CC0, http://creativecommons.org/publicdomain/zero/1.0/deed.en), via Wikimedia Commons · 사진: Korean.snacks-Tteokbokki-04.jpg by Sung Sook (CC BY 2.0, https://creativecommons.org/licenses/by/2.0), via Wikimedia Commons · 사진: World Map 1689.JPG by Gerard van Schagen (Public domain), via Wikimedia Commons · 음악: "Scheming Weasel" Kevin MacLeod (incompetech.com), CC BY 4.0 (creativecommons.org/licenses/by/4.0)
+  
+  #Shorts #공감 #특 #공감툰 #공감애니 #창작애니 #일상공감 #길치 #방향치 #길찾기 #공감짤
+  ```
+- 해시태그: #Shorts #공감 #특 #공감툰 #공감애니 #창작애니 #일상공감 #길치 #방향치 #길찾기 #공감짤
+- 고정 댓글: 길 잃어버린 썰 하나씩 풀고 가기
+
+`teuk14`
+- 제목: 눈치 없는 사람 특ㅋㅋ
+- 설명:
+  ```
+  (창작) 다들 조용한데 혼자 '이거 누가 시켰어요?' 하고 묻는 친구, 주변에 한 명쯤 있죠. 결말이 궁금하다니까 진짜 결말을 말해 주고, 깜짝 파티 장소를 주인공 앞에서 물어봅니다. 여러분 주변에도 있나요, 아니면 혹시 나인가요?
+  
+  ▶ [채널명] 채널 구독: https://www.youtube.com/@[핸들]
+  
+  출처: 그림·대본·목소리 직접 제작(등장인물·채팅방은 실제와 관계없음) · 사진: Pepperoni pizza slice on a red plate.jpg by MVS9966 (CC BY 3.0, https://creativecommons.org/licenses/by/3.0), via Wikimedia Commons · 사진: Piece of chocolate cake on a white plate decorated with chocolate sauce.jpg by Daria Yakovleva (minor edits by Subsidiary account) (CC0, http://creativecommons.org/publicdomain/zero/1.0/deed.en), via Wikimedia Commons · 음악: "Sneaky Snitch" Kevin MacLeod (incompetech.com), CC BY 4.0 (creativecommons.org/licenses/by/4.0)
+  
+  #Shorts #공감 #특 #공감툰 #공감애니 #창작애니 #일상공감 #눈치 #친구공감 #인간관계 #MBTI
+  ```
+- 해시태그: #Shorts #공감 #특 #공감툰 #공감애니 #창작애니 #일상공감 #눈치 #친구공감 #인간관계 #MBTI
+- 고정 댓글: 혹시… 나야? 몇 개 해당?
+
