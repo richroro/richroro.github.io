@@ -1,7 +1,7 @@
 """lfsaeyeon1 QA (used until the kit's qa_long.py runs on it): PASS/WARN/FAIL lines plus contact sheets.
 
 checks final/lfsaeyeon1.mp4 (size, resolution, length, loudness, true peak, black frames, frozen picture),
-src/data/lfsaeyeon1.json (cut rhythm, caption length, chapters) and every on-screen text for banned words.
+longform/lfsaeyeon1/video.json (cut rhythm, caption length, chapters) and every on-screen text for banned words.
 Sheets: out/review/lfsaeyeon1/sheet_<n>.jpg, one frame every 30 s, 4×4 per sheet.
 
 usage: python3 longform/lfsaeyeon1/qa.py
@@ -41,7 +41,7 @@ check(len(last) and sum(last) / len(last) > 40, "last frame", f"mean luma {sum(l
 tp = json.loads(subprocess.check_output(["ffprobe", "-v", "error", "-show_streams", "-of", "json", THUMB]))["streams"][0]
 check((tp["width"], tp["height"]) == (1280, 720), "thumbnail", f"{tp['width']}x{tp['height']} final/{SID}-thumb.jpg")
 
-D = json.load(open(f"{ROOT}/src/data/{SID}.json"))
+D = json.load(open(f"{HERE}/video.json"))
 pics, last = [], None
 for c in D["cuts"]:
     if not c["g"].get("hold") or last is None:

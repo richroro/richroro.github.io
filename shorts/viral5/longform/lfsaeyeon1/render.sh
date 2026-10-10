@@ -1,12 +1,13 @@
 #!/usr/bin/env bash
 # lfsaeyeon1: voice → cuts → render → loudness (-14 LUFS) and size (≤ 95 MB) → final/lfsaeyeon1.mp4 and the thumbnail.
-#   voice.py (Edge TTS, cached) → build.py (cuts) → prep.py (timeline, src/data) → Remotion (Root.tsx → src/lib/long/lfsaeyeon1_comps.tsx)
+#   voice.py (Edge TTS, cached) → build.py (cuts) → prep.py (timeline → video.json) → Remotion (Root.tsx → src/lib/long/lfsaeyeon1_comps.tsx)
 #   → ffmpeg: H.264 1080p30, 2-pass at a bitrate that fits 95 MB, AAC 192k with a two-pass loudnorm to -14 LUFS / -1.5 dBTP
 set -euo pipefail
 cd "$(dirname "$0")/../.."
 ID=lfsaeyeon1 OUT=out/$ID; mkdir -p "$OUT" final
 ./longform/$ID/fetch_music.sh >/dev/null
 python3 longform/$ID/voice.py && python3 longform/$ID/build.py && python3 longform/$ID/prep.py
+[ -f src/data/index.ts ] || python3 prep.py  # the shorts index Root.tsx imports (empty if no short is prepared)
 npx remotion bundle src/index.ts --out-dir "$OUT/bundle" --log=error
 npx remotion render "$OUT/bundle" $ID "$OUT/raw.mp4" --concurrency=4 --crf=16 --log=error
 npx remotion still "$OUT/bundle" $ID-thumb "$OUT/thumb.png" --log=error

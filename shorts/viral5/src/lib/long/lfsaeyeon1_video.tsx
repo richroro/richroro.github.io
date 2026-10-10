@@ -1,4 +1,4 @@
-// lfsaeyeon1 (사연툰 "반찬통 이름표"): the whole 16:9 episode from src/data/lfsaeyeon1.json (longform/lfsaeyeon1/prep.py):
+// lfsaeyeon1 (사연툰 "반찬통 이름표"): the whole 16:9 episode from longform/lfsaeyeon1/video.json (longform/lfsaeyeon1/prep.py):
 // the cuts on the stage (lfsaeyeon1_stage.tsx), narration captions at the bottom, the title card after the cold open,
 // one voice file per line, the music beds (looped, faded at their ends, dipped under speech) and the sound effects.
 import React from "react";
