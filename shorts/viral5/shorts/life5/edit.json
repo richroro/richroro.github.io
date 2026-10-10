@@ -1,6 +1,6 @@
 {
  "titleStyle": "band",
- "captionY": 1640,
+ "captionY": 1580,
  "credit": "영상: Pexels",
  "sources": {
   "amberarrow": {
@@ -82,12 +82,12 @@
    "crop": [
     0.45,
     0.5,
-    1.4
+    1.0
    ]
   },
   {
    "src": "amber",
-   "from": "hook.대부분",
+   "from": "q",
    "label": "노란불",
    "zoom": [
     1.0,
@@ -98,12 +98,12 @@
    "crop": [
     0.27,
     0.5,
-    1.5
+    1.066
    ]
   },
   {
    "src": "amberarrow",
-   "from": "hook.왜",
+   "from": "q.딱",
    "label": "노란 화살표 신호",
    "zoom": [
     1.0,
@@ -114,7 +114,7 @@
    "crop": [
     0.45,
     0.5,
-    1.4
+    1.0
    ]
   },
   {
@@ -210,7 +210,7 @@
    "crop": [
     0.55,
     0.45,
-    1.3
+    1.0
    ]
   },
   {
@@ -242,7 +242,7 @@
    "crop": [
     0.27,
     0.5,
-    1.5
+    1.066
    ]
   },
   {
@@ -274,7 +274,7 @@
    "crop": [
     0.45,
     0.5,
-    1.4
+    1.0
    ]
   },
   {
@@ -329,37 +329,14 @@
  "marks": [
   {
    "kind": "circle",
-   "x": 200,
-   "y": 890,
-   "r": 150,
+   "x": 198,
+   "y": 1110,
+   "r": 151,
    "from": "hook",
-   "to": "hook.대부분"
+   "to": "q-0.1"
   }
  ],
- "stickers": [
-  {
-   "text": "법정 시간은 아님 · 한국교통연구원(2025)",
-   "from": "hook.왜",
-   "to": "mean-0.1",
-   "y": 540,
-   "size": 36,
-   "bg": "#fff"
-  },
-  {
-   "text": "도로교통법 시행규칙 [별표 2]",
-   "from": "mean.정지선",
-   "to": "stop-0.1",
-   "y": 540,
-   "size": 40
-  },
-  {
-   "text": "대법원 2024.5 판결 (세계일보·문화일보 보도)",
-   "from": "court",
-   "to": "end-0.1",
-   "y": 540,
-   "size": 36
-  }
- ],
+ "stickers": [],
  "sfx": [
   [
    "mean",
@@ -405,5 +382,19 @@
   "file": "music/hustle.mp3",
   "gain": 0.09,
   "start": 0
+ },
+ "frame": "capTall",
+ "capStyle": "info2",
+ "hideCredit": true,
+ "tags": [],
+ "cover": {
+  "src": "amber",
+  "in": 0.3,
+  "focus": "27% 50%",
+  "zoom": 1.0,
+  "title": [
+   "신호등 노란불이",
+   "[3초]인 진짜 이유"
+  ]
  }
 }

@@ -16,18 +16,18 @@
 
 | 키 | 값 | 하는 일 | 코드 |
 |---|---|---|---|
-| `"frame": "tall"` | – | 그림이 제목 띠 아래 전체(1080×1520)를 채움. `crop: [cx, cy, zoom]`은 그대로 동작 | `src/ClipShort.tsx` `FRAME`에 한 줄 |
+| `"frame": "capTall"` | – | 그림이 제목 띠 아래 전체(1080×1520)를 채움. 낙서 짤툰 v2가 먼저 넣은 공용 프레임(`src/lib/CapBox.tsx` `CAP_TALL`)을 그대로 씀. `crop: [cx, cy, zoom]`은 그대로 동작 | (새 코드 없음) |
 | `"cover"` | `{"src", "in", "title": [줄1, 줄2], "dur": 0.5, "focus", "zoom", "arrow": {"x","y","rot","len"}, "ring": {"x","y","r"}, "at": "top"\|"bottom", "note"}` | 0–`dur`초 표지. `src`가 사진이면 그대로, 영상이면 `in`초 프레임을 `prep.py`가 `public/<id>/cover.jpg`로 뽑음. 제목의 `[단어]`는 노랑(없으면 2줄 전체 노랑). `note`는 사진이 제목과 다른 대상일 때 아래 작은 글씨(hanban4: "사진: 같은 폭풍 때 미국 아이다호") | `src/lib/Info2.tsx` `CoverView`, `info2_prep.py` |
 | `"capStyle": "info2"` | – | 자막 한 장을 한 줄(크게) 또는 균형 맞춘 2줄로, 흰 글씨 + `[노랑]`만. `{빨강}`도 노랑으로. 초록 단어 강조 없음 | `src/lib/Info2.tsx` `InfoCaps` |
 | `"hideCredit": true` | – | 화면 오른쪽 위 출처 배지를 끔 | `ClipShort.tsx` `Credit` 앞 조건 한 줄 |
 | `"tags"` | `[{"text", "from", "to", "y"}]` | 그림 왼쪽 위 작은 회색 글씨(사실 표시만: "자료화면", "참고: 1991 필리핀 피나투보") | `src/lib/Info2.tsx` `Tags` |
 
 공유 파일에 들어간 것은 훅뿐입니다.
-- `src/ClipShort.tsx`: import 1줄, `ShortData`에 선택 필드 1줄, `FRAME.tall`, `Credit`·`Captions` 앞 조건, 맨 위에 `CoverView`.
+- `src/ClipShort.tsx`: import 1줄, `ShortData`에 선택 필드 1줄, `Credit` 앞 조건, 자막 선택에 `capStyle === "info2"` 한 갈래, `Tags`, 맨 위에 `CoverView`. (처음엔 `FRAME.tall`을 따로 넣었지만, origin을 합치면서 같은 크기의 공용 `capTall`로 바꾸고 뺐습니다. 이미 렌더한 편도 픽셀 위치가 같습니다.)
 - `prep.py`: 위 키가 있을 때만 `info2_prep.extend()`를 부르는 2줄.
 - 나머지는 새 파일입니다: `src/lib/Info2.tsx`, `info2_prep.py`, `media/info2/*`.
 
-**다른 쇼츠는 그대로인지 확인했습니다.** 손대지 않은 v1 `issue1`을 훅이 없는 원래 `ClipShort.tsx`와 훅을 넣은 `ClipShort.tsx`로 각각 렌더해 비교했더니, 두 mp4가 바이트까지 같았습니다(`cmp` 동일, 프레임별 md5 동일). `qa_review.py`는 고치지 않았습니다.
+**다른 쇼츠는 그대로인지 확인했습니다.** origin을 합치기 전, 손대지 않은 v1 `issue1`을 훅이 없는 원래 `ClipShort.tsx`와 훅을 넣은 `ClipShort.tsx`로 각각 렌더해 비교했더니, 두 mp4가 바이트까지 같았습니다(`cmp` 동일, 프레임별 md5 동일). `qa_review.py`는 고치지 않았습니다.
 
 ### 만드는 순서
 

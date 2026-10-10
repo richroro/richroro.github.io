@@ -99,7 +99,7 @@ def main(sid):
             for f in [f for f, x in v.items() if x is None]: edit["clips"][int(k)].pop(f)
     for k, c in sorted(spec.get("insert", []), key=lambda x: -x[0]): edit["clips"].insert(k, c)
     edit["clips"] = [c for c in edit["clips"] if c]
-    edit["frame"] = "tall"
+    edit["frame"] = "capTall"
     edit["capStyle"] = "info2"
     edit["hideCredit"] = True
     edit["captionY"] = spec.get("captionY", 1580)

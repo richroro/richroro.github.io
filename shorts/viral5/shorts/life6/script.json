@@ -6,17 +6,22 @@
  "voices": {
   "nar": {
    "edge": "ko-KR-InJoonNeural",
-   "rate": "+20%"
+   "rate": "+25%"
+  },
+  "hook": {
+   "edge": "ko-KR-InJoonNeural",
+   "rate": "+52%"
   }
  },
  "lines": [
   {
    "id": "hook",
-   "voice": "nar",
+   "voice": "hook",
    "gap": 0.05,
-   "say": "비상구 표시, 왜 빨간색이 아니라 초록색일까요?",
+   "say": "비상구 초록 국제 약속입니다.",
    "cap": [
-    "비상구 표시 / 왜 [빨강] 아닌 [초록]일까?"
+    "비상구 [초록]",
+    "[국제 약속]입니다"
    ]
   },
   {

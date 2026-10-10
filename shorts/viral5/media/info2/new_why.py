@@ -10,7 +10,7 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from px import px
 
 HERE = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-HOOK = {"edge": "ko-KR-InJoonNeural", "rate": "+40%"}
+HOOK = {"edge": "ko-KR-InJoonNeural", "rate": "+50%"}
 
 def L(id, say, cap, voice="nar"):
     return {"id": id, "voice": voice, "gap": 0.05 if voice == "hook" else 0.15, "say": say, "cap": cap}
@@ -24,9 +24,9 @@ SHORTS = {}
 
 # ── why1 지리산 반달가슴곰 ──
 SHORTS["why1"] = dict(
-    title=["한반도에 반달곰이", "[다시 돌아온] 진짜 이유"], nar="ko-KR-InJoonNeural", music="Heartwarming.mp3",
+    title=["한반도에 반달곰이", "[다시 돌아온] 진짜 이유"], nar="ko-KR-InJoonNeural", music="Heartwarming.mp3", rate="+30%",
     lines=[
-        L("hook", "여섯 마리가, 구십육 마리 됐습니다.", ["[6마리]가", "[96마리] 됐습니다"], "hook"),
+        L("hook", "여섯 마리가 구십육 마리 됐습니다.", ["[6마리]가", "[96마리] 됐습니다"], "hook"),
         L("what", "지리산 반달가슴곰 얘기입니다.", ["지리산 / [반달가슴곰] 얘기"]),
         L("rare", "천연기념물이자,| 멸종위기 일 급인 곰이죠.", ["[천연기념물]이자", "멸종위기 [1급]"]),
         L("start", "이천사 년, 러시아에서 온 여섯 마리를| 지리산에 풀어 준 게 시작이었어요.", ["[2004년] 러시아에서 온 / [6마리]를", "지리산에 [풀어 줌]"]),
@@ -48,7 +48,7 @@ SHORTS["why1"] = dict(
         C("bear2", "hook", 2.5, [0.68, 0.45, 1.0], "반달가슴곰 얼굴"),
         C("bear2", "hook.구십육", 9.5, [0.62, 0.45, 1.3], "반달가슴곰"),
         C("mt", "what", 2.0, [0.5, 0.5, 1.0], "산줄기"),
-        C("bear2", "what.반달가슴곰", 4.5, [0.7, 0.42, 1.6], "가슴의 반달 무늬"),
+        C("bear2", "what.반달가슴곰", 3.0, [0.71, 0.4, 1.5], "반달가슴곰 얼굴과 가슴 무늬"),
         C("bear1", "rare", 3.0, [0.6, 0.5, 1.0], "반달가슴곰 무리"),
         C("climb", "rare.멸종위기", 18.0, [0.5, 0.35, 1.0], "나무 타는 곰"),
         C("mt", "start", 12.0, [0.3, 0.5, 1.0], "산줄기"),
@@ -57,14 +57,14 @@ SHORTS["why1"] = dict(
         C("zoo", "goal.오래", 5.0, [0.3, 0.6, 1.3], "반달가슴곰"),
         C("bear2", "gen", 0.5, [0.35, 0.5, 1.0], "두 마리"),
         C("climb", "gen.그", 28.0, [0.5, 0.3, 1.0], "나무 타는 곰"),
-        C("bear2", "gen.이천이십이", 7.0, [0.6, 0.45, 1.2], "반달가슴곰"),
+        C("bear2", "gen.이천이십이", 6.0, [0.66, 0.4, 1.3], "반달가슴곰"),
         C("trail", "osam", 3.0, [0.5, 0.5, 1.0], "숲길"),
         C("climb", "osam.이름은", 10.0, [0.4, 0.35, 1.2], "나무 타는 곰"),
         C("mt", "now", 20.0, [0.6, 0.5, 1.0], "산줄기"),
         C("trail", "now.탐방로", 10.0, [0.5, 0.5, 1.0], "탐방로"),
         C("bear1", "now.영", 8.0, [0.6, 0.5, 1.3], "반달가슴곰"),
-        C("trail", "end", 15.0, [0.5, 0.5, 1.0], "숲길"),
-        C("bear2", "end.지리산에선", 10.5, [0.68, 0.45, 1.2], "반달가슴곰"),
+        C("mt", "end", 25.0, [0.4, 0.5, 1.0], "산줄기"),
+        C("bear2", "end.지리산에선", 3.0, [0.71, 0.4, 1.4], "반달가슴곰 얼굴"),
     ],
     tags=[{"text": "자료화면", "from": 0, "to": "end@end+0.6"}],
     cover={"src": "bear2", "in": 3.0, "focus": "70% 45%", "title": ["한반도에 반달곰이", "[다시 돌아온] 진짜 이유"], "arrow": {"x": 730, "y": 930, "rot": -25, "len": 250}},
@@ -101,7 +101,7 @@ SHORTS["why2"] = dict(
         C("o3", "hook.세", 5.0, [0.35, 0.45, 1.3], "문어"),
         C("o1", "two", 6.0, [0.6, 0.5, 1.0], "문어"),
         C("aq", "two.하나는", 2.0, [0.5, 0.5, 1.0], "수족관 문어"),
-        C("o3", "blue", 3.0, [0.32, 0.45, 1.6], "문어 눈"),
+        C("o3", "blue", 3.0, [0.22, 0.42, 1.3], "문어 눈"),
         C("noaa", "blue.구리가", 5.0, [0.62, 0.55, 1.0], "심해 문어"),
         C("o4", "why", 2.0, [0.5, 0.6, 1.2], "숨은 문어"),
         C("o5", "why.더", 1.0, [0.4, 0.5, 1.0], "바닥의 문어"),
@@ -115,13 +115,13 @@ SHORTS["why2"] = dict(
         C("o3", "end.심장", 1.0, [0.3, 0.5, 1.2], "문어 얼굴"),
     ],
     tags=[],
-    cover={"src": "o3", "in": 0.5, "focus": "44% 50%", "at": "bottom", "title": ["문어 심장이", "[3개]인 진짜 이유"], "ring": {"x": 476, "y": 640, "r": 120}},
+    cover={"src": "o3", "in": 0.5, "focus": "44% 50%", "at": "bottom", "title": ["문어 심장이", "[3개]인 진짜 이유"], "ring": {"x": 497, "y": 800, "r": 120}},
     sfx=[["hook", "whoosh", 0.4], ["blue", "ding", 0.35], ["swim.온몸으로", "k_error_003", 0.35], ["kr", "pop", 0.35]],
 )
 
 # ── why3 철원 두루미 ──
 SHORTS["why3"] = dict(
-    title=["철원에 두루미 떼가", "[해마다 오는] 진짜 이유"], nar="ko-KR-SunHiNeural", music="Dreamer.mp3",
+    title=["철원에 두루미 떼가", "[해마다 오는] 진짜 이유"], nar="ko-KR-SunHiNeural", music="Dreamer.mp3", rate="+32%",
     hook={"edge": "ko-KR-SunHiNeural", "rate": "+40%"},
     lines=[
         L("hook", "두루미 떼, 만 천 마리 왔습니다.", ["두루미 떼", "[1만 1천 마리]"], "hook"),
@@ -142,7 +142,7 @@ SHORTS["why3"] = dict(
     clips=[
         C("c1", "hook", 0.5, [0.38, 0.4, 1.4], "눈 덮인 개울의 두루미"),
         C("c3", "hook.만", 2.0, [0.3, 0.5, 1.0], "두루미 한 쌍"),
-        C("c1", "rec", 8.0, [0.75, 0.3, 1.2], "날아오르는 두루미"),
+        C("c1", "rec", 9.3, [0.8, 0.25, 1.3], "날아오르는 두루미"),
         C("wn", "rec.재두루미가", 3.0, [0.45, 0.5, 1.0], "재두루미"),
         C("c2", "rec.두루미가", 1.0, [0.35, 0.5, 1.0], "두루미"),
         C("c4", "rare", 2.0, [0.42, 0.4, 1.0], "두루미 머리"),
@@ -165,9 +165,9 @@ SHORTS["why3"] = dict(
 
 # ── why4 까치 ──
 SHORTS["why4"] = dict(
-    title=["까치가 한국에선 길조", "[영국에선 흉조]인 이유"], nar="ko-KR-InJoonNeural", music="sneaky_snitch.mp3",
+    title=["까치가 한국에선 길조", "[영국에선 흉조]인 이유"], nar="ko-KR-InJoonNeural", music="sneaky_snitch.mp3", rate="+32%",
     lines=[
-        L("hook", "나라새 투표 일 위, 까치입니다.", ["[나라새] 투표 1위", "[까치]입니다"], "hook"),
+        L("hook", "나라새 일 위, 까치입니다.", ["[나라새] 1위", "[까치]입니다"], "hook"),
         L("vote", "천구백육십사 년 한 신문의 나라새 뽑기에서 뽑혔죠.| 정식 국조는 아니지만요.", ["1964년 / [나라새] 뽑기", "정식 국조는 [아님]"]),
         L("guest", "아침에 까치가 울면 반가운 손님이 온다,| 그래서 길조였어요.", ["아침 까치는 / [반가운 손님]", "그래서 [길조]"]),
         L("bridge", "칠월칠석엔,| 견우와 직녀를 잇는 오작교도 놓죠.", ["칠월칠석엔", "견우·직녀의 / [오작교]"]),
@@ -190,7 +190,7 @@ SHORTS["why4"] = dict(
         C("m4", "vote.정식", 14.0, [0.55, 0.5, 1.0], "까치"),
         C("m2", "guest", 14.0, [0.55, 0.5, 1.2], "까치"),
         C("m1", "guest.그래서", 12.0, [0.5, 0.55, 1.6], "까치들"),
-        C("m4", "bridge", 2.0, [0.3, 0.5, 1.0], "까치"),
+        C("m4", "bridge", 12.0, [0.5, 0.5, 1.0], "까치"),
         C("m1", "bridge.견우와", 20.0, [0.5, 0.55, 1.3], "까치들"),
         C("m6", "europe", 5.0, [0.5, 0.7, 1.0], "영국의 까치"),
         C("m6", "europe.까치", 14.0, [0.6, 0.75, 1.4], "까치 한 마리"),
@@ -210,8 +210,8 @@ SHORTS["why4"] = dict(
 
 def write(sid):
     s = SHORTS[sid]
-    script = {"title": s["title"], "voices": {"nar": {"edge": s["nar"], "rate": "+25%"}, "hook": s.get("hook", HOOK)}, "tail": 0.5, "lines": s["lines"]}
-    edit = {"credit": "", "titleStyle": "band", "frame": "tall", "capStyle": "info2", "hideCredit": True, "captionY": 1580,
+    script = {"title": s["title"], "voices": {"nar": {"edge": s["nar"], "rate": s.get("rate", "+25%")}, "hook": s.get("hook", HOOK)}, "tail": 0.5, "lines": s["lines"]}
+    edit = {"credit": "", "titleStyle": "band", "frame": "capTall", "capStyle": "info2", "hideCredit": True, "captionY": 1580,
             "sources": s["sources"], "clips": s["clips"], "marks": [], "stickers": [], "tags": s["tags"], "cover": s["cover"],
             "sfx": s["sfx"], "punches": [], "flashes": [], "music": {"file": f"music/{s['music']}", "gain": 0.14, "start": 0}}
     os.makedirs(f"{HERE}/shorts/{sid}", exist_ok=True)

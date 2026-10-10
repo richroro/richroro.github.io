@@ -26,14 +26,6 @@
    "url": "https://commons.wikimedia.org/wiki/File:누리호_1차_시험_발사_장면.webm",
    "license": "CC BY (KARI via Commons, YouTube CC-BY)",
    "fileUrl": "https://upload.wikimedia.org/wikipedia/commons/7/7f/%EB%88%84%EB%A6%AC%ED%98%B8_1%EC%B0%A8_%EC%8B%9C%ED%97%98_%EB%B0%9C%EC%82%AC_%EC%9E%A5%EB%A9%B4.webm"
-  },
-  "pad": {
-   "file": "pad01.jpg",
-   "credit": "사진: 한국항공우주연구원",
-   "label": "KSLV-II Nuri and the launchpad 01, 2021 (KARI, KOGL Type 1)",
-   "url": "https://commons.wikimedia.org/wiki/File:KSLV-II_Nuri_and_the_launchpad_01.jpg",
-   "license": "KOGL Type 1 (공공누리 제1유형), KARI",
-   "fileUrl": "https://upload.wikimedia.org/wikipedia/commons/5/53/KSLV-II_Nuri_and_the_launchpad_01.jpg"
   }
  },
  "clips": [
@@ -67,14 +59,21 @@
    "audio": 0.25
   },
   {
-   "src": "pad",
+   "src": "n2",
    "from": "ok.군집위성",
    "label": "발사대의 누리호",
    "zoom": [
     1.1,
     1.2
    ],
-   "focus": "45% 50%"
+   "focus": "45% 50%",
+   "in": 12.5,
+   "crop": [
+    0.42,
+    0.5,
+    1.0
+   ],
+   "audio": 0.2
   },
   {
    "src": "n3",
@@ -225,7 +224,7 @@
   "gain": 0.14,
   "start": 0
  },
- "frame": "tall",
+ "frame": "capTall",
  "capStyle": "info2",
  "hideCredit": true,
  "tags": [
