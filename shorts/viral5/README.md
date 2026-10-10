@@ -1787,3 +1787,80 @@ MEDIA=<저장소>/media python3 politics/prep_split.py rank1    # 원본: media/
 > 영상: 미 해병대·미 육군(알링턴 국립묘지)·미 해군·미 공군 (DVIDS) — Cpl. Christopher Prelle, Daryl Vaca, MC2 Caden Richmond, Airman 1st Class Nathan Langston, Cpl. Jordy Morales. 미 국방부와 각 군이 이 영상을 보증하거나 후원하지 않습니다.
 > 음악: "Heroic Age" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
 > #군대 #미군 #해병대 #소름 #shorts
+
+## 생활 상식 “~하는 이유” 쇼츠 (`life1`~`life4`)
+
+질문형 해설 + 스톡 실사 B-roll 방식(`research/research-info.md` 형식 A)입니다. 위쪽 검정 띠에 두 줄 제목이 0초부터 끝까지 있고, 가운데 정사각 화면은 2~3초마다 바뀌는 실제 영상·사진이며, 아래에 한 줄 자막이 붙습니다. 내레이션은 Edge TTS `ko-KR-InJoonNeural` `+20%`이고, 마지막 줄 직후에 바로 끊습니다. 그래픽 카드는 쓰지 않았고 군 영상(DVIDS 등)도 없습니다.
+
+| id | 띠 제목 | 길이 | 내용 | 음악 |
+| --- | --- | --- | --- | --- |
+| `life1` | 비행기 창문이 / 네모가 아닌 진짜 이유 | 28.6초 | 둥근 모서리 창 → 1954년 코멧 2대 공중분해 → 물탱크 압력 시험 → 네모난 창 모서리에서 균열(실제로는 지붕 안테나 창·비상구 창이라고 스티커로 밝힘) → 각진 모서리에 힘이 몰림 → 그래서 둥글게 | Movement Proposition |
+| `life2` | 엘리베이터 거울이 / 셀카용이 아닌 진짜 이유 | 29.1초 | 엘베 거울 셀카 → “기다림이 덜 지루하라고”는 흔한 설 → 진짜 이유는 법에 있음 → 휠체어는 안에서 못 돌아서 후진으로 내림 → 뒷벽 0.6m 이상 높이에 견고한 거울 → 돌 수 없는 장애인용 승강기는 의무 → “휠체어의 백미러” | Sneaky Snitch |
+| `life3` | 제한속도 지켜도 / 1차로에서 단속되는 이유 | 27.4초 | 인천대교 ‘급차선 변경 집중 단속중(고속도로순찰대)’ 전광판 → 편도 3차로 이상 고속도로 1차로는 앞지르기 차로 → 추월 후 오른쪽으로 → 지정차로 위반 승용 4만 원·벌점 10점(승합 5만 원) → 시속 80km 미만 정체 땐 예외 → “여러분은 몇 차로?” | Exhilarate |
+| `life4` | 이착륙 때 창문 덮개 / 열라고 하는 진짜 이유 | 30.4초 | 창밖 상황 빨리 발견·대응 → 정전 시 바깥 빛으로 비상구 찾기 → 밖에서도 기내 확인 → 조명 낮추는 것도 눈의 어둠 적응 → 반전: 대한항공은 2021년부터 의무 아닌 권고, 날개 위·비상구 창은 여는 게 원칙 | Floating Cities |
+
+```bash
+# 원본: media/life/sources.json 의 주소에서 받아 1080p로 다시 인코딩해 public/life*/src/ 에 (파일 이름은 edit.json sources.file)
+# life3 운전 영상 3개(36017323, 36108436, 35186893)는 번호판이 안 읽히도록 화면 아래 42%를 흐리게 처리:
+ffmpeg -i <원본>.mp4 -filter_complex "[0]scale=-2:1080,split[a][b];[b]crop=iw:ih*0.42:0:ih*0.5,gblur=sigma=5[c];[a][c]overlay=0:H*0.5" -an px<id>.mp4
+for id in life1 life2 life3 life4; do python3 voice_edge.py $id && python3 prep.py $id && ./render.sh $id final/$id.mp4; done
+```
+
+### 사실과 출처 (2026-10-09 확인)
+
+**life1 — 코멧 사고와 둥근 창**
+- [FAA Lessons Learned: de Havilland Comet](https://www.faa.gov/lessons_learned/transport_airplane/accidents/G-ALYV): BOAC 781편(G-ALYP) 1954.1.10 엘바섬 근처 공중분해 35명 사망, 남아공항공 201편(G-ALYY) 1954.4.8 나폴리 근처 21명 사망. 물탱크 시험 기체 G-ALYU는 실제 비행 1,230회 뒤 탱크 ‘비행’ 1,830회 만에 “squarish forward escape hatch window” 모서리에서 파손. 엘바 사고의 첫 균열은 동체 지붕의 “ADF windows, also squarish”. 결론: “squarish windows were creating stress concentrations… fatigued the material around the window corners.”
+- [DH Aircraft Heritage – Comet 1 inquiry](https://www.dh-aircraft.co.uk/aircraft/dh106/comet1/inquiry/): 균열은 지붕의 ADF 창에서 시작해 앞쪽 창으로 이어짐, 3,060회 압력 주기 뒤 파손.
+- [Aerossurance – Comet misconceptions](https://aerossurance.com/safety-management/comet-misconceptions/): “객실 네모 창 때문에 추락했다”는 단순화된 설명이고 나폴리 사고 기원은 확인되지 않았다는 점. 그래서 내레이션은 “네모난 창의 모서리”라고만 하고, 화면 스티커로 “실제 균열: 지붕 안테나 창·비상구 창 모서리”를 밝혔습니다. “세계 첫 제트 여객기”는 코멧 1이 1952년 5월 BOAC 런던–요하네스버그 노선으로 세계 첫 정기 제트 여객 운항을 한 기종이라는 뜻입니다([This Day in Aviation](https://www.thisdayinaviation.com/tag/de-havilland-dh-106-comet-1/)). “칠십 년 전”은 1954년 기준 어림수(72년)입니다.
+
+**life2 — 엘리베이터 거울**
+- [장애인·노인·임산부 등의 편의증진 보장에 관한 법률 시행규칙 [별표 1]](https://www.law.go.kr/법령/장애인·노인·임산부등의편의증진보장에관한법률시행규칙/별표) (시행 2026.7.2., 별표 1 개정 2023.12.11.) 9. 장애인용 승강기 라. 기타 설비 (2): “승강기 내부의 후면에는 내부에서 휠체어가 180도 회전이 불가능할 경우에는 휠체어가 후진하여 문의 개폐여부를 확인하거나 내릴 수 있도록 승강기 후면의 0.6미터 이상의 높이에 견고한 재질의 거울을 설치하여야 한다.”
+- 적용 대상(장애인용 승강기를 둬야 하는 시설)은 같은 법 시행령 [별표 2]. 그래서 “모든 엘리베이터”가 아니라 “휠체어가 돌 수 없는 장애인용 승강기라면 의무”라고 말했습니다. “기다림이 덜 지루하라고”는 1차 출처가 없는 통설이라 “흔히 ~ 하는데요”로만 소개했습니다.
+
+**life3 — 고속도로 1차로**
+- [도로교통법](https://www.law.go.kr/법령/도로교통법) (시행 2026.7.1.) 제60조①(고속도로에서 행정안전부령으로 정하는 차로에 따라 통행), 제60조②(앞지르기는 정해진 차로로).
+- [도로교통법 시행규칙](https://www.law.go.kr/법령/도로교통법시행규칙) (시행 2026.8.24.) 제16조③(중앙선 쪽부터 1차로), [별표 9] 고속도로 편도 3차로 이상 1차로: “앞지르기를 하려는 승용자동차 및 앞지르기를 하려는 경형·소형·중형 승합자동차. 다만, 차량통행량 증가 등 도로상황으로 인하여 부득이하게 시속 80킬로미터 미만으로 통행할 수밖에 없는 경우에는 앞지르기를 하는 경우가 아니라도 통행할 수 있다.” [별표 28] 21. 지정차로 통행위반(제60조제1항 포함) 벌점 10점.
+- [도로교통법 시행령 [별표 8]](https://www.law.go.kr/법령/도로교통법시행령) (시행 2026.10.2.) 39. 고속도로 지정차로 통행 위반(제60조제1항): 승합자동차등 5만 원, 승용자동차등 4만 원.
+- 언론·정부 확인: [SBS 2025.7.16](https://news.sbs.co.kr/news/endPage.do?news_id=N1008178713) “벌점 10점에 승용차 운전자에게는 범칙금 4만 원, 승합차는 5만 원”, [정책브리핑 2023.7.25](https://www.korea.kr/news/policyNewsView.do?newsId=148918108) “1차로(추월차로)… 벌점 10점… 승용 4만 원 / 승합 5만 원”.
+- 화면의 “고속도로 급차선 변경 집중 단속중(고속도로순찰대)” 전광판은 Pexels 영상(인천대교 구간으로 보임) 속 실제 표지이고, 지정차로 단속과는 별개의 안내입니다. 내레이션은 전광판을 설명하지 않습니다.
+
+**life4 — 이착륙 때 창문 덮개**
+- [대한항공 뉴스룸 2023.9.6 「항공상식 Q&A」](https://news.koreanair.com/항공상식qa-우리-비행기는-곧-착륙하오니-이-것/): “이·착륙 시 창문 밖으로 벌어지는 상황을 신속하게 발견하고 빠르게 대응”, “혹 기내가 정전이 될 경우 바깥의 불빛에 의지해 비상구를 찾거나…”, “외부에서도 항공기 내부 상황을 확인해 대처”, 조명을 낮추는 것은 “승객들의 눈을 어둠에 빠르게 적응하도록 하는 예방 조치”, “대한항공은 2021년부터 이·착륙 시 창문 덮개를 열어두는 것을 의무가 아닌 권고 사항으로 실시”, “날개 위쪽, 비상구 창문 등은 법적으로 개방하는 것이 원칙”.
+- 미국 FAA에는 창문 덮개 규정이 없고 항공사마다 다르다는 점(예: [AFAR](https://www.afar.com/magazine/why-do-window-shades-have-to-be-open-for-takeoff-and-landing))을 고려해 “항공사·공항마다 규정이 다를 수 있음” 스티커를 붙였습니다. “사고는 대부분 이착륙 때” 같은 통계는 출처를 확인하지 못해 쓰지 않았습니다.
+
+### 영상·사진과 라이선스
+모든 원본의 페이지·파일 주소·제작자·라이선스·쓴 구간은 `media/life/sources.json`과 각 `edit.json`의 `sources`에 있습니다. 화면에는 “영상: Pexels”, “사진: Pexels”, “영상: Pixabay”, “사진: 영국 정보부(IWM TR 6113)”만 표시합니다.
+- **Pexels License**: 상업적 이용·수정 가능, 출처 표기 불필요(식별 가능한 인물을 나쁘게 보이게 하거나 보증을 암시하는 사용 금지). 이번 쇼츠의 인물 장면은 셀카·대기·탑승 등 중립적 장면뿐입니다.
+  - life1: 10710412 Afif Ramdhasuma, 3740041 K, 11292266 Alireza Akhlaghi, 2023708 Sher Lyn ., 8511231 Lukas L, 35839565 Rise Within Studio, 3785721 Taryn Elliott
+  - life2: 사진 32571093 Anna Holodna, 17489439 Zakhar Vozhdaienko, 7722159 Max Vakhtbovych; 영상 5378938 cottonbro studio, 15434928 Yusuf Çelik, 7423581 Gustavo Fring, 8400828 SHVETS production, 8525792 cottonbro studio
+  - life3: 36017323 Raphael Kim, 18565055 FREE VIDEO HAPPY, 36108436 Airam Dato-on, 35186893 Nothing Ahead, 4608282 K, 28690652 SHOX ART
+  - life4: 18749262 Dilara Hazıroğlu, 10710412 Afif Ramdhasuma, 3723453 K, 35576270 Content Kiosk, 3701057 K, 35507462 Grigoriy Bunkov, 3740041 K, 3740022 K, 3785721 Taryn Elliott
+- **Pixabay Content License**: [131012 Jesehab](https://pixabay.com/videos/inside-elevator-elevator-rise-131012/) (life2 엘리베이터 안·문 열림).
+- **퍼블릭 도메인(PD-UKGov)**: [BOAC Comet, Entebbe 1952](https://commons.wikimedia.org/wiki/File:BOAC_Comet_1952.jpg), Ministry of Information official photographer, Imperial War Museums TR 6113 (1957년 6월 1일 이전 촬영된 영국 정부 사진). 코멧 잔해 사진(CC BY-SA)은 쓰지 않았습니다.
+- 음악: Kevin MacLeod (incompetech.com), CC BY 4.0.
+
+### 업로드 문구
+
+**life1** — 비행기 창문이 네모가 아닌 진짜 이유 ✈️
+> 1954년, 세계 첫 제트 여객기 ‘코멧’ 두 대가 석 달 사이 하늘에서 부서졌습니다. 동체를 통째로 물탱크에 넣고 압력을 수천 번 넣었다 빼는 시험 끝에 찾은 원인은 네모난 창(지붕 안테나 창·비상구 창) 모서리의 금속 피로. 그래서 지금 비행기 창문은 모서리를 둥글게 만듭니다. (출처: FAA Lessons Learned – de Havilland Comet)
+> 영상: Pexels (Afif Ramdhasuma, K, Alireza Akhlaghi, Sher Lyn, Lukas L, Rise Within Studio, Taryn Elliott) · 사진: BOAC Comet 1952, Ministry of Information/Imperial War Museums (퍼블릭 도메인)
+> 음악: "Movement Proposition" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
+> #비행기 #비행기창문 #항공상식 #생활상식 #shorts
+
+**life2** — 엘리베이터 거울이 셀카용이 아닌 진짜 이유 🪞
+> 엘리베이터 거울, 기다림이 덜 지루하라고 달았다는 얘기 들어 보셨죠? 우리 법에는 다른 이유가 적혀 있습니다. 「장애인·노인·임산부 등의 편의증진 보장에 관한 법률 시행규칙」 [별표 1]: 휠체어가 안에서 180도 돌 수 없는 장애인용 승강기는, 후진하며 문이 열렸는지 확인할 수 있도록 뒷벽 0.6m 이상 높이에 견고한 거울을 달아야 합니다. (2026년 10월 기준, law.go.kr)
+> 영상·사진: Pexels (Anna Holodna, Zakhar Vozhdaienko, Max Vakhtbovych, cottonbro studio, Yusuf Çelik, Gustavo Fring, SHVETS production), Pixabay (Jesehab)
+> 음악: "Sneaky Snitch" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
+> #엘리베이터 #엘베거울 #생활상식 #휠체어 #shorts
+
+**life3** — 제한속도 지켜도 1차로에서 단속되는 이유 🚗
+> 편도 3차로 이상 고속도로의 1차로는 앞지르기할 때만 쓰는 차로입니다(도로교통법 시행규칙 별표 9). 계속 달리면 고속도로 지정차로 위반 — 승용차 범칙금 4만 원, 승합차 5만 원, 벌점 10점. 단, 정체로 시속 80km 미만일 땐 예외입니다. (2026년 10월 기준, law.go.kr) 여러분은 몇 차로로 달리시나요?
+> 영상: Pexels (Raphael Kim, FREE VIDEO HAPPY, Airam Dato-on, Nothing Ahead, K, SHOX ART)
+> 음악: "Exhilarate" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
+> #고속도로 #1차로 #지정차로 #운전상식 #shorts
+
+**life4** — 이착륙 때 창문 덮개 열라는 진짜 이유 ✈️
+> 이착륙 때 창문 덮개를 열어 두면 창밖 상황을 빨리 발견할 수 있고, 정전 때 바깥 빛으로 비상구를 찾을 수 있고, 밖에서도 기내를 확인할 수 있습니다. 조명을 낮추는 것도 눈이 어둠에 적응하도록 하는 것. 다만 대한항공은 2021년부터 의무가 아닌 권고로 운영하고, 날개 위·비상구 창문은 여는 게 원칙입니다(대한항공 뉴스룸 2023.9). 항공사마다 규정은 다를 수 있어요.
+> 영상: Pexels (Dilara Hazıroğlu, Afif Ramdhasuma, K, Content Kiosk, Grigoriy Bunkov, Taryn Elliott)
+> 음악: "Floating Cities" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
+> #비행기 #항공상식 #창문덮개 #대한항공 #shorts
