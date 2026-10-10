@@ -1,9 +1,31 @@
 {
  "credit": "",
  "titleStyle": "band",
- "titleKey": "#3CFF6A",
- "captionY": 1640,
+ "titleKey": "#FFE14D",
+ "frame": "capTall",
+ "capBox": {
+  "y": 1600
+ },
  "sources": {
+  "px38853682": {
+   "file": "px38853682.jpg",
+   "path": "public/doodle/px38853682.jpg",
+   "page": "https://www.pexels.com/photo/organized-refrigerator-with-bottles-and-limes-38853682/",
+   "file_url": "https://images.pexels.com/photos/38853682/pexels-photo-38853682.jpeg?auto=compress&cs=tinysrgb&w=1600",
+   "license": "Pexels License",
+   "creator": "thAnh nguyễn",
+   "credit": "사진: Pexels (설명란 표기)",
+   "seconds": [
+    [
+     0.0,
+     1.38
+    ],
+    [
+     20.81,
+     23.31
+    ]
+   ]
+  },
   "px8556246": {
    "file": "px8556246.jpg",
    "path": "public/doodle/px8556246.jpg",
@@ -11,11 +33,15 @@
    "file_url": "https://images.pexels.com/photos/8556246/pexels-photo-8556246.jpeg?auto=compress&cs=tinysrgb&w=1600",
    "license": "Pexels License",
    "creator": "Marcello Sokal",
-   "credit": "사진: Pexels",
+   "credit": "사진: Pexels (설명란 표기)",
    "seconds": [
     [
-     0.0,
-     2.85
+     1.38,
+     2.93
+    ],
+    [
+     23.31,
+     24.96
     ]
    ]
   },
@@ -26,11 +52,15 @@
    "file_url": "https://images.pexels.com/photos/19891628/pexels-photo-19891628.jpeg?auto=compress&cs=tinysrgb&w=1600",
    "license": "Pexels License",
    "creator": "Ben Molyneux",
-   "credit": "사진: Pexels",
+   "credit": "사진: Pexels (설명란 표기)",
    "seconds": [
     [
-     6.36,
-     8.42
+     6.01,
+     8.41
+    ],
+    [
+     16.93,
+     18.57
     ]
    ]
   },
@@ -41,11 +71,11 @@
    "file_url": "https://images.pexels.com/photos/2255459/pexels-photo-2255459.jpeg?auto=compress&cs=tinysrgb&w=1600",
    "license": "Pexels License",
    "creator": "Alexas Fotos",
-   "credit": "사진: Pexels",
+   "credit": "사진: Pexels (설명란 표기)",
    "seconds": [
     [
-     17.07,
-     19.17
+     8.41,
+     10.77
     ]
    ]
   },
@@ -56,11 +86,11 @@
    "file_url": "https://images.pexels.com/photos/1300375/pexels-photo-1300375.jpeg?auto=compress&cs=tinysrgb&w=1600",
    "license": "Pexels License",
    "creator": "Magda Ehlers",
-   "credit": "사진: Pexels",
+   "credit": "사진: Pexels (설명란 표기)",
    "seconds": [
     [
-     19.17,
-     21.64
+     10.77,
+     12.42
     ]
    ]
   },
@@ -71,11 +101,11 @@
    "file_url": "https://images.pexels.com/photos/6294391/pexels-photo-6294391.jpeg?auto=compress&cs=tinysrgb&w=1600",
    "license": "Pexels License",
    "creator": "Klaus Nielsen",
-   "credit": "사진: Pexels",
+   "credit": "사진: Pexels (설명란 표기)",
    "seconds": [
     [
-     30.58,
-     32.38
+     27.57,
+     29.15
     ]
    ]
   }
@@ -87,29 +117,19 @@
  },
  "sfx": [
   [
+   "a",
+   "whoosh",
+   0.2
+  ],
+  [
    "b",
    "pop",
    0.22
   ],
   [
-   "c",
-   "boing",
-   0.3
-  ],
-  [
-   "d",
-   "whoosh",
-   0.2
-  ],
-  [
-   "e",
+   "d.끝",
    "pop",
    0.25
-  ],
-  [
-   "f",
-   "whoosh",
-   0.2
   ],
   [
    "g",
@@ -117,17 +137,12 @@
    0.22
   ],
   [
-   "h",
-   "whoosh",
-   0.2
+   "h.좁음",
+   "boing",
+   0.28
   ],
   [
-   "i",
-   "pop",
-   0.25
-  ],
-  [
-   "j",
+   "j.팔월",
    "pop",
    0.25
   ],
@@ -137,17 +152,12 @@
    0.2
   ],
   [
-   "l",
-   "pop",
-   0.22
-  ],
-  [
-   "l2",
-   "k_error_003",
+   "l.사",
+   "boing",
    0.3
   ],
   [
-   "m",
+   "n",
    "pop",
    0.22
   ],
@@ -159,9 +169,34 @@
  ],
  "clips": [
   {
+   "from": "a0",
+   "label": "a0",
+   "gfx": {
+    "type": "scene",
+    "photo": "doodle/px38853682.jpg",
+    "chars": [
+     {
+      "style": "doodle",
+      "hairdo": "perm",
+      "hair": "#5a3a2a",
+      "mood": "angry",
+      "size": 2.0,
+      "x": 0.5,
+      "y": 100
+     }
+    ],
+    "steps": [
+     9,
+     9,
+     9,
+     9
+    ],
+    "floor": 400
+   }
+  },
+  {
    "from": "a",
-   "label": "hook",
-   "credit": "사진: Pexels",
+   "label": "a",
    "gfx": {
     "type": "scene",
     "photo": "doodle/px8556246.jpg",
@@ -169,23 +204,25 @@
      {
       "style": "doodle",
       "hair": "#FF7A1A",
-      "mood": "think",
-      "to": "shock",
-      "x": 0.74,
-      "size": 1
+      "mood": "shock",
+      "size": 2.1,
+      "x": 0.5,
+      "y": 110
      }
     ],
+    "big": "4번",
     "steps": [
      9,
      9,
-     "a.뭔지",
-     9
-    ]
+     9,
+     "a+0.3"
+    ],
+    "floor": 400
    }
   },
   {
    "from": "b",
-   "label": "factory",
+   "label": "b",
    "gfx": {
     "type": "scene",
     "bg": "home",
@@ -194,52 +231,59 @@
       "style": "doodle",
       "hair": "#FF7A1A",
       "mood": "smug",
-      "x": 0.3
+      "size": 1.75,
+      "x": 0.3,
+      "rot": -3
      }
     ],
+    "prop": "🥚",
     "steps": [
      "b",
      0.1,
      9,
      9
     ],
-    "prop": "🏭",
-    "propX": 0.74,
-    "say": {
-     "who": 0,
-     "text": "그냥 [공장 번호] 아님?"
-    }
+    "floor": 400,
+    "propX": 0.76
    }
   },
   {
    "from": "c",
-   "label": "wrong",
+   "label": "c",
    "gfx": {
     "type": "scene",
-    "bg": "#FFE14D",
+    "bg": "home",
     "chars": [
      {
       "style": "doodle",
+      "hairdo": "perm",
+      "hair": "#5a3a2a",
+      "mood": "angry",
+      "size": 1.4
+     },
+     {
+      "style": "doodle",
       "hair": "#FF7A1A",
-      "mood": "shock",
-      "x": 0.3
+      "mood": "think",
+      "size": 1.4
      }
     ],
     "steps": [
+     "c",
      9,
-     0.1,
      9,
-     "c+0.4"
+     9
     ],
-    "prop": "🥚",
-    "propX": 0.72,
-    "big": "{땡!} [10]자리"
+    "say": {
+     "who": 0,
+     "text": "끝자리는 닭이 사는 집이야"
+    },
+    "floor": 400
    }
   },
   {
    "from": "d",
-   "label": "date",
-   "credit": "사진: Pexels",
+   "label": "d",
    "gfx": {
     "type": "scene",
     "photo": "doodle/px19891628.jpg",
@@ -248,22 +292,78 @@
       "style": "doodle",
       "hair": "#FF7A1A",
       "mood": "think",
-      "x": 0.2,
-      "size": 0.9
+      "size": 1.6,
+      "x": 0.5
      }
     ],
+    "big": "끝 1자리",
     "steps": [
      9,
      9,
      9,
-     "d+0.5"
+     "d.끝"
     ],
-    "big": "앞 [4자리]"
+    "floor": 400
    }
   },
   {
    "from": "e",
-   "label": "0823",
+   "label": "e",
+   "gfx": {
+    "type": "scene",
+    "photo": "doodle/px2255459.jpg",
+    "chars": [
+     {
+      "style": "doodle",
+      "hairdo": "perm",
+      "hair": "#5a3a2a",
+      "mood": "happy",
+      "size": 2.1,
+      "x": 0.5,
+      "y": 110
+     }
+    ],
+    "big": "1번 풀밭",
+    "steps": [
+     "e",
+     9,
+     9,
+     "e.풀밭"
+    ],
+    "floor": 400
+   }
+  },
+  {
+   "from": "f",
+   "label": "f",
+   "gfx": {
+    "type": "scene",
+    "photo": "doodle/px1300375.jpg",
+    "chars": [
+     {
+      "style": "doodle",
+      "hairdo": "perm",
+      "hair": "#5a3a2a",
+      "mood": "sad",
+      "size": 1.75,
+      "x": 0.3,
+      "rot": -4
+     }
+    ],
+    "big": "3·4번 케이지",
+    "steps": [
+     "f",
+     9,
+     9,
+     "f+0.2"
+    ],
+    "floor": 400,
+    "bigSize": 118
+   }
+  },
+  {
+   "from": "g",
+   "label": "g",
    "gfx": {
     "type": "scene",
     "bg": "#dff3ff",
@@ -271,199 +371,26 @@
      {
       "style": "doodle",
       "hair": "#FF7A1A",
-      "mood": "neutral",
-      "to": "smug",
-      "x": 0.3
+      "mood": "smug",
+      "size": 1.75,
+      "x": 0.3,
+      "rot": -3
      }
     ],
+    "prop": "🏠",
     "steps": [
-     9,
-     0.1,
-     "e+1.2",
-     "e+0.4"
-    ],
-    "prop": "🐣",
-    "propX": 0.74,
-    "big": "[0823]"
-   }
-  },
-  {
-   "from": "f",
-   "label": "farm",
-   "gfx": {
-    "type": "scene",
-    "bg": "#d8f5c8",
-    "chars": [
-     {
-      "style": "doodle",
-      "hair": "#FF7A1A",
-      "mood": "think",
-      "x": 0.3
-     }
-    ],
-    "steps": [
-     9,
+     "g",
      0.1,
      9,
-     "f+0.5"
-    ],
-    "prop": "🏡",
-    "propX": 0.74,
-    "big": "가운데 [5자리]"
-   }
-  },
-  {
-   "from": "g",
-   "label": "lookup",
-   "gfx": {
-    "type": "scene",
-    "bg": "bedroom",
-    "chars": [
-     {
-      "style": "doodle",
-      "hair": "#FF7A1A",
-      "mood": "neutral",
-      "to": "happy",
-      "x": 0.3
-     }
-    ],
-    "steps": [
-     9,
-     0.1,
-     "g+0.9",
      9
     ],
-    "prop": "📱",
-    "propX": 0.74
+    "floor": 400,
+    "propX": 0.76
    }
   },
   {
    "from": "h",
-   "label": "last",
-   "gfx": {
-    "type": "scene",
-    "bg": "night",
-    "chars": [
-     {
-      "style": "doodle",
-      "hair": "#FF7A1A",
-      "mood": "shock",
-      "x": 0.3
-     }
-    ],
-    "steps": [
-     9,
-     0.1,
-     9,
-     "h+0.6"
-    ],
-    "prop": "🔍",
-    "propX": 0.74,
-    "big": "{마지막 1자리}"
-   }
-  },
-  {
-   "from": "i",
-   "label": "free",
-   "credit": "사진: Pexels",
-   "gfx": {
-    "type": "scene",
-    "photo": "doodle/px2255459.jpg",
-    "chars": [
-     {
-      "style": "doodle",
-      "hair": "#FF7A1A",
-      "mood": "laugh",
-      "x": 0.8,
-      "size": 0.9
-     }
-    ],
-    "steps": [
-     9,
-     9,
-     9,
-     "i+0.4"
-    ],
-    "big": "[1번] 방사"
-   }
-  },
-  {
-   "from": "j",
-   "label": "barn",
-   "credit": "사진: Pexels",
-   "gfx": {
-    "type": "scene",
-    "photo": "doodle/px1300375.jpg",
-    "chars": [
-     {
-      "style": "doodle",
-      "hair": "#FF7A1A",
-      "mood": "happy",
-      "x": 0.82,
-      "size": 0.85
-     }
-    ],
-    "steps": [
-     9,
-     9,
-     9,
-     "j+0.4"
-    ],
-    "big": "[2번] 평사"
-   }
-  },
-  {
-   "from": "k",
-   "label": "cage",
-   "gfx": {
-    "type": "scene",
-    "bg": "#e9e4dc",
-    "chars": [
-     {
-      "style": "doodle",
-      "hair": "#FF7A1A",
-      "mood": "sad",
-      "x": 0.3
-     }
-    ],
-    "steps": [
-     9,
-     0.1,
-     9,
-     "k+0.4"
-    ],
-    "prop": "🐔",
-    "propX": 0.74,
-    "big": "[3번]·[4번] 케이지"
-   }
-  },
-  {
-   "from": "l",
-   "label": "area",
-   "gfx": {
-    "type": "vs",
-    "title": "닭 한 마리당 케이지 넓이",
-    "left": {
-     "label": "3번",
-     "value": "0.075㎡",
-     "emoji": "🐔"
-    },
-    "right": {
-     "label": "4번",
-     "value": "0.05㎡",
-     "emoji": "🐔"
-    },
-    "steps": [
-     0.05,
-     0.3,
-     "l+0.6"
-    ],
-    "win": "left"
-   }
-  },
-  {
-   "from": "l2",
-   "label": "a4",
+   "label": "h",
    "gfx": {
     "type": "scene",
     "bg": "#FFB3C7",
@@ -472,23 +399,135 @@
       "style": "doodle",
       "hair": "#FF7A1A",
       "mood": "shock",
-      "x": 0.3
+      "size": 1.75,
+      "x": 0.3,
+      "rot": -3
      }
     ],
+    "prop": "📄",
+    "big": "A4보다 좁음",
     "steps": [
      9,
      0.1,
      9,
-     "l2+0.5"
+     "h.좁음"
     ],
-    "prop": "📄",
-    "propX": 0.74,
-    "big": "{A4}보다 좁음"
+    "floor": 400,
+    "propX": 0.76
+   }
+  },
+  {
+   "from": "i",
+   "label": "i",
+   "gfx": {
+    "type": "scene",
+    "photo": "doodle/px19891628.jpg",
+    "photoPos": "30% 50%",
+    "chars": [
+     {
+      "style": "doodle",
+      "hair": "#FF7A1A",
+      "mood": "think",
+      "size": 2.1,
+      "x": 0.5,
+      "y": 110
+     }
+    ],
+    "steps": [
+     "i",
+     9,
+     9,
+     9
+    ],
+    "floor": 400
+   }
+  },
+  {
+   "from": "j",
+   "label": "j",
+   "gfx": {
+    "type": "scene",
+    "bg": "#dff3ff",
+    "chars": [
+     {
+      "style": "doodle",
+      "hairdo": "perm",
+      "hair": "#5a3a2a",
+      "mood": "smug",
+      "size": 1.75,
+      "x": 0.3,
+      "rot": -3
+     }
+    ],
+    "prop": "🐣",
+    "big": "8월 23일",
+    "steps": [
+     "j",
+     0.1,
+     9,
+     "j.팔월"
+    ],
+    "floor": 400,
+    "propX": 0.76
+   }
+  },
+  {
+   "from": "k",
+   "label": "k",
+   "gfx": {
+    "type": "scene",
+    "photo": "doodle/px38853682.jpg",
+    "chars": [
+     {
+      "style": "doodle",
+      "hair": "#FF7A1A",
+      "mood": "sad",
+      "size": 1.95,
+      "x": 0.64,
+      "y": 80,
+      "flip": true,
+      "rot": 3
+     }
+    ],
+    "steps": [
+     9,
+     9,
+     9,
+     9
+    ],
+    "floor": 400
+   }
+  },
+  {
+   "from": "l",
+   "label": "l",
+   "gfx": {
+    "type": "scene",
+    "photo": "doodle/px8556246.jpg",
+    "photoPos": "30% 50%",
+    "chars": [
+     {
+      "style": "doodle",
+      "hair": "#FF7A1A",
+      "mood": "shock",
+      "size": 1.6,
+      "x": 0.5
+     }
+    ],
+    "big": "엄마 계란도 4번",
+    "steps": [
+     9,
+     9,
+     9,
+     "l.사"
+    ],
+    "floor": 400,
+    "bigSize": 118
    }
   },
   {
    "from": "m",
-   "label": "mine",
+   "label": "m",
    "gfx": {
     "type": "scene",
     "bg": "home",
@@ -496,26 +535,60 @@
      {
       "style": "doodle",
       "hair": "#FF7A1A",
-      "mood": "think",
-      "x": 0.5
+      "mood": "smug",
+      "size": 1.4
+     },
+     {
+      "style": "doodle",
+      "hairdo": "perm",
+      "hair": "#5a3a2a",
+      "mood": "shock",
+      "size": 1.4
      }
     ],
+    "prop": "🥚",
     "steps": [
      "m",
-     9,
+     0.1,
      9,
      9
     ],
     "say": {
      "who": 0,
-     "text": "잠깐, 우리 집 계란 [몇 번]이지?"
-    }
+     "text": "엄마, 이건 뭔데?"
+    },
+    "floor": 400
+   }
+  },
+  {
+   "from": "n",
+   "label": "n",
+   "gfx": {
+    "type": "scene",
+    "bg": "#FFE14D",
+    "chars": [
+     {
+      "style": "doodle",
+      "hairdo": "perm",
+      "hair": "#5a3a2a",
+      "mood": "shy",
+      "size": 1.75,
+      "x": 0.3,
+      "rot": -4
+     }
+    ],
+    "steps": [
+     "n",
+     9,
+     9,
+     9
+    ],
+    "floor": 400
    }
   },
   {
    "from": "z",
-   "label": "ask",
-   "credit": "사진: Pexels",
+   "label": "z",
    "gfx": {
     "type": "scene",
     "photo": "doodle/px6294391.jpg",
@@ -525,8 +598,11 @@
       "hair": "#FF7A1A",
       "mood": "think",
       "to": "smug",
-      "x": 0.8,
-      "size": 0.95
+      "size": 1.95,
+      "x": 0.64,
+      "y": 80,
+      "flip": true,
+      "rot": 3
      }
     ],
     "steps": [
@@ -534,7 +610,8 @@
      9,
      "z.몇",
      9
-    ]
+    ],
+    "floor": 400
    }
   }
  ]

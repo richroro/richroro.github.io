@@ -193,6 +193,7 @@ def prep(sid):
     if edit.get("look"): data["look"] = edit["look"]  # "retro2": 그 시절 레트로 v2 layout (src/lib/RetroV2.tsx)
     for k in ("titleStyle", "titleKey", "hook", "hookY", "titleEn"):  # news-shorts look: banner title and a red headline over the picture
         if edit.get(k) is not None: data[k] = edit[k]
+    if edit.get("capBox"): data["capBox"] = edit["capBox"]  # captions in a box over the picture's bottom (src/lib/CapBox.tsx)
     if edit.get("hookTo") is not None: data["hookTo"] = round(at(edit["hookTo"]), 3)
     if ranks: data["ranks"] = {"rows": ranks, **({"y": edit["rankY"]} if edit.get("rankY") else {})}
     if edit.get("marks"):
