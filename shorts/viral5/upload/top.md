@@ -17,7 +17,7 @@ Pexels 작가들과 Flickr 작가 gails_pictures가 찍은 실제 얼음 깨기 
 
 ▶ [채널명] 채널 구독: https://www.youtube.com/@[핸들]
 
-출처: 영상: Pexels(Tima Miroshnichenko, Yaroslav Shuraev, Nadezhda Moryak, Cristian Manieri) · "Margerie Glacier calving video" gails_pictures, CC BY 2.0, Wikimedia Commons(잘라내고 확대함) · 빙하 높이: 미국 국립공원관리청 NPS Glacier Bay · 음악: "Exhilarate" Kevin MacLeod (incompetech.com), CC BY 4.0 (creativecommons.org/licenses/by/4.0) · 순위는 편집자가 고른 것이며 공식 순위가 아닙니다
+출처: 영상: Pexels — Tima Miroshnichenko(6831069) · Yaroslav Shuraev(4434241) · Nadezhda Moryak(7128251) · Cristian Manieri(28988888) · "Margerie Glacier calving video" gails_pictures, CC BY 2.0, Wikimedia Commons(잘라내고 확대함) · 빙하 높이: 미국 국립공원관리청 NPS Glacier Bay · 음악: "Exhilarate" Kevin MacLeod (incompetech.com), CC BY 4.0 (creativecommons.org/licenses/by/4.0) · 순위는 편집자가 고른 것이며 공식 순위가 아닙니다
 
 #Shorts #얼음 #얼음깨기 #빙하 #시원한영상 #만족 #바이칼 #알래스카 #랭킹 #TOP5 #역대급
 ```
@@ -43,7 +43,7 @@ Pexels 작가들이 실제로 찍은 텅 빈 공간 다섯 곳을 백룸 느낌 
 
 ▶ [채널명] 채널 구독: https://www.youtube.com/@[핸들]
 
-출처: 영상: Pexels(Tima Miroshnichenko, gusat silviu, Yunus Kılıç, Matthias Groeneveld, SN.CHE) · 음악: "Dark Fog" Kevin MacLeod (incompetech.com), CC BY 4.0 (creativecommons.org/licenses/by/4.0) · 순위는 편집자가 고른 것이며 공식 순위가 아닙니다
+출처: 영상: Pexels — Tima Miroshnichenko(6011926) · gusat silviu(5972198) · Yunus Kılıç(31053763) · Matthias Groeneveld(15365449) · SN.CHE(29241126) · 음악: "Dark Fog" Kevin MacLeod (incompetech.com), CC BY 4.0 (creativecommons.org/licenses/by/4.0) · 순위는 편집자가 고른 것이며 공식 순위가 아닙니다
 
 #Shorts #백룸 #리미널스페이스 #소름 #무서운영상 #빈공간 #랭킹 #TOP5 #역대급 #공포
 ```
@@ -69,7 +69,7 @@ Pexels 작가들이 슬로모션으로 찍은 돌 던지기 영상 다섯 개를
 
 ▶ [채널명] 채널 구독: https://www.youtube.com/@[핸들]
 
-출처: 영상: Pexels(Marsel Sharipov, Jack And Matt Photography, K @kelly, Martina Tomšič) · 음악: "Hustle" Kevin MacLeod (incompetech.com), CC BY 4.0 (creativecommons.org/licenses/by/4.0) · 순위는 편집자가 고른 것이며 공식 순위가 아닙니다
+출처: 영상: Pexels — Marsel Sharipov(12279967, 13723991) · Jack And Matt Photography(34666821) · K @kelly(4174020) · Martina Tomšič(4510319) · 음악: "Hustle" Kevin MacLeod (incompetech.com), CC BY 4.0 (creativecommons.org/licenses/by/4.0) · 순위는 편집자가 고른 것이며 공식 순위가 아닙니다
 
 #Shorts #돌던지기 #물튀김 #슬로모션 #시원한영상 #만족 #힐링 #랭킹 #TOP5 #역대급
 ```
@@ -121,7 +121,7 @@ Pexels 작가들이 찍은 실제 바다 영상으로 가장 시원한 파도 �
 
 ▶ [채널명] 채널 구독: https://www.youtube.com/@[핸들]
 
-출처: 영상: Pexels(Joshua Woroniecki, Guidance Pillar Production, FUNESMA79, AP Vibes, pippu) · 음악: "Heroic Age" Kevin MacLeod (incompetech.com), CC BY 4.0 (creativecommons.org/licenses/by/4.0) · 순위는 편집자가 고른 것이며 공식 순위가 아닙니다
+출처: 영상: Pexels — Joshua Woroniecki(20363746) · Guidance Pillar Production(15876185) · FUNESMA79(32379563) · AP Vibes(34490216) · pippu(32091837) · 음악: "Heroic Age" Kevin MacLeod (incompetech.com), CC BY 4.0 (creativecommons.org/licenses/by/4.0) · 순위는 편집자가 고른 것이며 공식 순위가 아닙니다
 
 #Shorts #파도 #바다 #시원한영상 #폭풍 #힐링 #만족 #랭킹 #TOP5 #역대급
 ```
@@ -147,7 +147,7 @@ Pexels·Pixabay 작가들이 찍은 보기만 해도 시원한 손맛 영상 다
 
 ▶ [채널명] 채널 구독: https://www.youtube.com/@[핸들]
 
-출처: 영상: Pexels(cottonbro studio, Taryn Elliott, Vũ Vũ, Mike Murray) · Pixabay(u_5l867xgjyb) · 음악: "Monkeys Spinning Monkeys" Kevin MacLeod (incompetech.com), CC BY 4.0 (creativecommons.org/licenses/by/4.0) · 순위는 편집자가 고른 것이며 공식 순위가 아닙니다
+출처: 영상: Pexels — cottonbro studio(6150670) · Taryn Elliott(3326577) · Vũ Vũ(30324202) · Mike Murray(5908184) · Pixabay — u_5l867xgjyb(144459) · 음악: "Monkeys Spinning Monkeys" Kevin MacLeod (incompetech.com), CC BY 4.0 (creativecommons.org/licenses/by/4.0) · 순위는 편집자가 고른 것이며 공식 순위가 아닙니다
 
 #Shorts #만족 #ASMR #힐링 #슬라임 #키네틱샌드 #랭킹 #TOP5 #역대급 #시원한영상
 ```
