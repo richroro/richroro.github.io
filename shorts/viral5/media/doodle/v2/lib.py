@@ -30,6 +30,34 @@ def cap_pages(cap):
         else: out.append(p)
     return [" / ".join(out)]
 
+# dialogue captions that need digits (the voice reads the words) or a better break
+CAPFIX = {
+    "계란 일 번으로 사 오랬지!": '"계란 [1번]으로 / 사 오랬지!"',
+    "일 번은 풀밭, 이 번은 축사 안을 돌아다녀.": '"[1번]은 풀밭 / [2번]은 축사 안"',
+    "삼 번, 사 번은 케이지.": '"[3번], [4번]은 케이지"',
+    "그럼 사 번이 제일 넓은 방 아님?": '"그럼 [4번]이 / 제일 넓은 방 아님?"',
+    "그럼 앞에 영팔이삼은 뭔데?": '"그럼 앞에 / [0823]은 뭔데?"',
+    "닭이 알 낳은 날. 팔월 이십삼일.": '"닭이 알 낳은 날 / [8월 23일]"',
+    "여기 제조 이천십 년이라고 적혀 있는데?": '"여기 제조 / [2010년]이라는데?"',
+    "이천십에 십삼 더하면 이천이십삼. 이미 지났어.": '"2010 + 13 = [2023] / 이미 지났어"',
+    "그거 이천십오 년에 접었거든요?": '"그거 [2015년]에 / 접었거든요?"',
+    "아홉 시 회의라고요, 아홉 시!": '"[9시] 회의라고요 / [9시]!"',
+    "소화전 앞은 일 분만 서도 신고돼요.": '"소화전 앞은 / [1분]만 서도 신고돼요"',
+    "같은 자리, 같은 각도로 일 분 간격 두 장이요.": '"같은 자리·각도로 / [1분] 간격 두 장이요"',
+    "소화전 앞은 승용차 팔만 원이요.": '"소화전 앞 승용차 / [8만 원]이요"',
+    "아들, 아빠 차에 과태료 팔만 원이 나왔다?": '"아빠 차에 과태료 / [8만 원]이 나왔다?"',
+    "커피 자국 바지는 삼 층 아가씨 거고.": '"커피 자국 바지는 / [3층] 아가씨 거"',
+    "콘센트, 멀티탭 사고만 5년간 387건이래.": '"멀티탭 사고만 / 5년간 [387건]이래"',
+}
+
+def quote(say):
+    """a spoken line as a quoted caption: one page, or two pages split near the middle when it is over 12 characters"""
+    if say in CAPFIX: return CAPFIX[say]
+    t = say.rstrip(".").strip()
+    if vis(t) + 0 <= 12: return f'"{t}"'
+    w = t.split(" "); best = min(range(1, len(w)), key=lambda k: abs(vis(" ".join(w[:k])) - vis(" ".join(w[k:]))))
+    return f'"{" ".join(w[:best])} / {" ".join(w[best:])}"'
+
 # shots for a lone character, in turn: mid, close-up (cut at the chest), side (tilted, flipped)
 SHOTS = [dict(size=1.6, x=0.5), dict(size=2.1, x=0.5, y=110), dict(size=1.75, x=0.3, rot=-4), dict(size=1.95, x=0.64, y=80, flip=True, rot=3)]
 
@@ -80,9 +108,13 @@ def build(sid, title, lines, clips, music, sfx, voices=None, sources=None):
     script = {"title": title, "voices": {**VOICES, **(voices or {})}, "tail": 0.3,
               "lines": [{"id": i, "voice": v, "gap": 0.04 if k == 0 else (0.06 if v != "nar" else 0.08), "say": re.sub(r"\.\s+(?=\S)", ", ", s), "cap": cap_pages(c)} for k, (i, v, s, c) in enumerate(lines)]}
     script["lines"][0]["gap"] = 0.0
-    if script["lines"][0]["cap"] == [""]:  # a cold-open line of dialogue: captioned from frame 0 (in quotes) instead of a bubble
-        script["lines"][0]["cap"] = cap_pages('"' + lines[0][2].rstrip(".") + '"')
-        if clips and clips[0][1].get("say"): clips[0] = (clips[0][0], {k: v for k, v in clips[0][1].items() if k != "say"})
+    # dialogue is captioned too, in quotes (the benchmark's dialogue captions): the bubble stays only where two or more
+    # characters share the frame (it shows who is talking); a lone speaker's bubble is dropped
+    keep = {g.get("steps", [None])[0] for _, g in clips if g.get("say") and len(g.get("chars", [])) > 1}
+    for k, L in enumerate(script["lines"]):
+        if L["cap"] == [""] and L["id"] not in keep: L["cap"] = [quote(lines[k][2])]
+    clips = [(f, {kk: vv for kk, vv in g.items() if kk != "say"} if g.get("say") and len(g.get("chars", [])) <= 1 and g.get("steps", [None])[0] not in keep else g) for f, g in clips]
+    if keep - {L["id"] for L in script["lines"]}: pass
     out = []
     for k, (frm, g) in enumerate(clips):
         g = shoot({"type": "scene", **g} if "type" not in g else g, k)

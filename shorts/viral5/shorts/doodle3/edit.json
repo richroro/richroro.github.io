@@ -1,8 +1,11 @@
 {
  "credit": "",
  "titleStyle": "band",
- "titleKey": "#3CFF6A",
- "captionY": 1640,
+ "titleKey": "#FFE14D",
+ "frame": "tall",
+ "capBox": {
+  "y": 1600
+ },
  "sources": {
   "px17800465": {
    "file": "px17800465.jpg",
@@ -11,19 +14,19 @@
    "file_url": "https://images.pexels.com/photos/17800465/pexels-photo-17800465.jpeg?auto=compress&cs=tinysrgb&w=1600",
    "license": "Pexels License",
    "creator": "Elina Volkova",
-   "credit": "사진: Pexels",
+   "credit": "사진: Pexels (설명란 표기)",
    "seconds": [
     [
-     0.0,
-     2.82
+     1.36,
+     2.96
     ],
     [
-     12.62,
-     14.79
+     10.02,
+     11.83
     ],
     [
-     31.23,
-     33.24
+     26.98,
+     28.73
     ]
    ]
   },
@@ -34,11 +37,11 @@
    "file_url": "https://images.pexels.com/photos/15595486/pexels-photo-15595486.jpeg?auto=compress&cs=tinysrgb&w=1600",
    "license": "Pexels License",
    "creator": "Pramod Tiwari",
-   "credit": "사진: Pexels",
+   "credit": "사진: Pexels (설명란 표기)",
    "seconds": [
     [
-     4.84,
-     6.8
+     2.96,
+     4.9
     ]
    ]
   },
@@ -49,11 +52,15 @@
    "file_url": "https://images.pexels.com/photos/15595490/pexels-photo-15595490.jpeg?auto=compress&cs=tinysrgb&w=1600",
    "license": "Pexels License",
    "creator": "Pramod Tiwari",
-   "credit": "사진: Pexels",
+   "credit": "사진: Pexels (설명란 표기)",
    "seconds": [
     [
-     6.8,
-     10.88
+     4.9,
+     8.56
+    ],
+    [
+     17.63,
+     19.53
     ]
    ]
   },
@@ -64,26 +71,11 @@
    "file_url": "https://images.pexels.com/photos/21348105/pexels-photo-21348105.jpeg?auto=compress&cs=tinysrgb&w=1600",
    "license": "Pexels License",
    "creator": "Elina Volkova",
-   "credit": "사진: Pexels",
+   "credit": "사진: Pexels (설명란 표기)",
    "seconds": [
     [
-     18.03,
-     19.75
-    ]
-   ]
-  },
-  "px21235187": {
-   "file": "px21235187.jpg",
-   "path": "public/doodle/px21235187.jpg",
-   "page": "https://www.pexels.com/photo/bus-at-stop-on-street-21235187/",
-   "file_url": "https://images.pexels.com/photos/21235187/pexels-photo-21235187.jpeg?auto=compress&cs=tinysrgb&w=1600",
-   "license": "Pexels License",
-   "creator": "Elina Volkova",
-   "credit": "사진: Pexels",
-   "seconds": [
-    [
-     25.75,
-     27.44
+     14.06,
+     15.49
     ]
    ]
   }
@@ -148,13 +140,42 @@
    "z",
    "ding",
    0.22
+  ],
+  [
+   "i0",
+   "boing",
+   0.28
   ]
  ],
  "clips": [
   {
+   "from": "i0",
+   "label": "i0",
+   "gfx": {
+    "type": "scene",
+    "bg": "subway",
+    "chars": [
+     {
+      "style": "doodle",
+      "hair": "#FF7A1A",
+      "mood": "shock",
+      "size": 2.0,
+      "x": 0.5,
+      "y": 100
+     }
+    ],
+    "steps": [
+     0,
+     9,
+     9,
+     9
+    ],
+    "floor": 400
+   }
+  },
+  {
    "from": "a",
-   "label": "hook",
-   "credit": "사진: Pexels",
+   "label": "a",
    "gfx": {
     "type": "scene",
     "photo": "doodle/px17800465.jpg",
@@ -163,7 +184,9 @@
       "style": "doodle",
       "hair": "#FF7A1A",
       "mood": "think",
-      "x": 0.24
+      "size": 2.1,
+      "x": 0.5,
+      "y": 110
      }
     ],
     "steps": [
@@ -172,38 +195,13 @@
      9,
      9
     ],
-    "photoPos": "60% 50%"
-   }
-  },
-  {
-   "from": "a2",
-   "label": "game",
-   "gfx": {
-    "type": "scene",
-    "bg": "subway",
-    "chars": [
-     {
-      "style": "doodle",
-      "hair": "#FF7A1A",
-      "mood": "smug",
-      "x": 0.3
-     }
-    ],
-    "prop": "🔔",
-    "propX": 0.72,
-    "steps": [
-     9,
-     0.1,
-     9,
-     9
-    ],
-    "place": "📍 버스 안"
+    "photoPos": "60% 50%",
+    "floor": 400
    }
   },
   {
    "from": "b",
-   "label": "two",
-   "credit": "사진: Pexels",
+   "label": "b",
    "gfx": {
     "type": "scene",
     "photo": "doodle/px15595486.jpg",
@@ -212,7 +210,10 @@
       "style": "doodle",
       "hair": "#FF7A1A",
       "mood": "neutral",
-      "to": "smug"
+      "to": "smug",
+      "size": 1.75,
+      "x": 0.3,
+      "rot": -4
      }
     ],
     "steps": [
@@ -222,13 +223,13 @@
      9
     ],
     "place": "📍 버스 안",
-    "big": "D-[2]"
+    "big": "D-2",
+    "floor": 400
    }
   },
   {
    "from": "c",
-   "label": "one",
-   "credit": "사진: Pexels",
+   "label": "c",
    "gfx": {
     "type": "scene",
     "photo": "doodle/px15595490.jpg",
@@ -237,14 +238,15 @@
       "style": "doodle",
       "hair": "#FF7A1A",
       "mood": "think",
-      "x": 0.28
+      "x": 0.28,
+      "size": 1.4
      },
      {
       "style": "doodle",
       "hairdo": "bald",
       "mood": "sleep",
       "x": 0.74,
-      "size": 1.05
+      "size": 1.4
      }
     ],
     "steps": [
@@ -255,13 +257,14 @@
     ],
     "say": {
      "who": 0,
-     "text": "저 아저씨도 [내릴 것] 같은데?"
-    }
+     "text": "저 아저씨도 내릴 것 같은데?"
+    },
+    "floor": 400
    }
   },
   {
    "from": "e",
-   "label": "same",
+   "label": "e",
    "gfx": {
     "type": "scene",
     "bg": "subway",
@@ -271,20 +274,23 @@
       "hair": "#3b3b3b",
       "hairdo": "bob",
       "mood": "think",
-      "x": 0.2
+      "x": 0.2,
+      "size": 1.12
      },
      {
       "style": "doodle",
       "hairdo": "bald",
       "mood": "think",
-      "x": 0.5
+      "x": 0.5,
+      "size": 1.12
      },
      {
       "style": "doodle",
       "hair": "#c9c9c9",
       "hairdo": "perm",
       "mood": "think",
-      "x": 0.8
+      "x": 0.8,
+      "size": 1.12
      }
     ],
     "steps": [
@@ -292,13 +298,13 @@
      9,
      9,
      9
-    ]
+    ],
+    "floor": 400
    }
   },
   {
    "from": "e2",
-   "label": "stare",
-   "credit": "사진: Pexels",
+   "label": "e2",
    "gfx": {
     "type": "scene",
     "photo": "doodle/px17800465.jpg",
@@ -310,14 +316,14 @@
       "hairdo": "bob",
       "mood": "think",
       "x": 0.2,
-      "size": 0.85
+      "size": 1.4
      },
      {
       "style": "doodle",
       "hairdo": "bald",
       "mood": "think",
       "x": 0.45,
-      "size": 0.85
+      "size": 1.4
      }
     ],
     "prop": "📱",
@@ -327,35 +333,41 @@
      0.1,
      9,
      9
-    ]
+    ],
+    "floor": 400
    }
   },
   {
    "from": "f",
-   "label": "vs",
+   "label": "f",
    "gfx": {
-    "type": "vs",
-    "title": "하차벨 앞 눈치게임",
-    "left": {
-     "label": "내가 누름",
-     "emoji": "🙋"
-    },
-    "right": {
-     "label": "남이 누름",
-     "emoji": "🙄"
-    },
-    "win": "right",
+    "type": "scene",
+    "bg": "#dff3ff",
+    "chars": [
+     {
+      "style": "doodle",
+      "hair": "#FF7A1A",
+      "mood": "sick",
+      "size": 1.25,
+      "x": 0.5
+     }
+    ],
+    "prop": "🙋  🙄",
+    "propX": 0.5,
+    "big": "내가 누름 vs 남이 누름",
     "steps": [
-     0.05,
-     0.3,
+     9,
+     0.1,
+     9,
      "f.아무도"
-    ]
+    ],
+    "floor": 400,
+    "bigSize": 104
    }
   },
   {
    "from": "g",
-   "label": "pass",
-   "credit": "사진: Pexels",
+   "label": "g",
    "gfx": {
     "type": "scene",
     "photo": "doodle/px21348105.jpg",
@@ -364,7 +376,11 @@
       "style": "doodle",
       "hair": "#FF7A1A",
       "mood": "shock",
-      "x": 0.26
+      "size": 1.95,
+      "x": 0.64,
+      "y": 80,
+      "flip": true,
+      "rot": 3
      }
     ],
     "steps": [
@@ -373,12 +389,13 @@
      9,
      "g+0.4"
     ],
-    "big": "{통과}"
+    "big": "통과",
+    "floor": 400
    }
   },
   {
    "from": "g2",
-   "label": "freeze",
+   "label": "g2",
    "gfx": {
     "type": "scene",
     "bg": "#bfe7ff",
@@ -387,23 +404,51 @@
       "style": "doodle",
       "hair": "#FF7A1A",
       "mood": "sick",
-      "x": 0.3
+      "size": 1.75,
+      "x": 0.3,
+      "rot": -3
      }
     ],
     "prop": "🥶",
-    "propX": 0.72,
-    "big": "[-10℃]",
+    "propX": 0.76,
+    "big": "-10℃",
     "steps": [
      9,
      0.1,
      9,
      "g2+0.4"
-    ]
+    ],
+    "floor": 400
+   }
+  },
+  {
+   "from": "g3",
+   "label": "g3",
+   "gfx": {
+    "type": "scene",
+    "photo": "doodle/px15595490.jpg",
+    "chars": [
+     {
+      "style": "doodle",
+      "hair": "#FF7A1A",
+      "mood": "cry",
+      "size": 2.1,
+      "x": 0.5,
+      "y": 110
+     }
+    ],
+    "steps": [
+     "g3",
+     9,
+     9,
+     9
+    ],
+    "floor": 400
    }
   },
   {
    "from": "h",
-   "label": "jump",
+   "label": "h",
    "gfx": {
     "type": "scene",
     "bg": "subway",
@@ -413,7 +458,7 @@
       "hair": "#FF7A1A",
       "mood": "shock",
       "x": 0.14,
-      "size": 0.95
+      "size": 0.92
      },
      {
       "style": "doodle",
@@ -421,14 +466,14 @@
       "hairdo": "bob",
       "mood": "shock",
       "x": 0.38,
-      "size": 0.95
+      "size": 0.92
      },
      {
       "style": "doodle",
       "hairdo": "bald",
       "mood": "shock",
       "x": 0.62,
-      "size": 0.95
+      "size": 0.92
      },
      {
       "style": "doodle",
@@ -436,7 +481,7 @@
       "hairdo": "perm",
       "mood": "shock",
       "x": 0.86,
-      "size": 0.95
+      "size": 0.92
      }
     ],
     "steps": [
@@ -447,17 +492,16 @@
     ],
     "say": {
      "who": 0,
-     "text": "기사님, [내려요]!"
-    }
+     "text": "기사님, 내려요!"
+    },
+    "floor": 400
    }
   },
   {
    "from": "j",
-   "label": "same stop",
-   "credit": "사진: Pexels",
+   "label": "j",
    "gfx": {
     "type": "scene",
-    "photo": "doodle/px21235187.jpg",
     "chars": [
      {
       "style": "doodle",
@@ -465,7 +509,7 @@
       "mood": "shock",
       "to": "laugh",
       "x": 0.2,
-      "size": 0.8
+      "size": 1.12
      },
      {
       "style": "doodle",
@@ -473,14 +517,14 @@
       "hairdo": "bob",
       "mood": "laugh",
       "x": 0.45,
-      "size": 0.8
+      "size": 1.12
      },
      {
       "style": "doodle",
       "hairdo": "bald",
       "mood": "laugh",
       "x": 0.7,
-      "size": 0.8
+      "size": 1.12
      }
     ],
     "steps": [
@@ -489,12 +533,13 @@
      "j.정류장",
      9
     ],
-    "photoPos": "40% 50%"
+    "bg": "street",
+    "floor": 400
    }
   },
   {
    "from": "k",
-   "label": "walk",
+   "label": "k",
    "gfx": {
     "type": "scene",
     "bg": "street",
@@ -504,7 +549,7 @@
       "hair": "#FF7A1A",
       "mood": "sad",
       "x": 0.2,
-      "size": 0.85
+      "size": 0.92
      },
      {
       "style": "doodle",
@@ -512,14 +557,14 @@
       "hairdo": "bob",
       "mood": "sad",
       "x": 0.42,
-      "size": 0.85
+      "size": 0.92
      },
      {
       "style": "doodle",
       "hairdo": "bald",
       "mood": "sad",
       "x": 0.64,
-      "size": 0.85
+      "size": 0.92
      },
      {
       "style": "doodle",
@@ -527,7 +572,7 @@
       "hairdo": "perm",
       "mood": "sick",
       "x": 0.86,
-      "size": 0.85
+      "size": 0.92
      }
     ],
     "steps": [
@@ -539,14 +584,43 @@
     "big": "+1 정거장 🚶",
     "say": {
      "who": 0,
-     "text": "다음엔 [내가] 누른다…"
-    }
+     "text": "다음엔 내가 누른다…"
+    },
+    "floor": 400
+   }
+  },
+  {
+   "from": "k2",
+   "label": "k2",
+   "gfx": {
+    "type": "scene",
+    "bg": "street",
+    "chars": [
+     {
+      "style": "doodle",
+      "hair": "#FF7A1A",
+      "mood": "angry",
+      "size": 2.1,
+      "x": 0.5,
+      "y": 110
+     }
+    ],
+    "steps": [
+     "k2",
+     9,
+     9,
+     9
+    ],
+    "say": {
+     "who": 0,
+     "text": "다음엔 내가 누른다"
+    },
+    "floor": 400
    }
   },
   {
    "from": "z",
-   "label": "ask",
-   "credit": "사진: Pexels",
+   "label": "z",
    "gfx": {
     "type": "scene",
     "photo": "doodle/px17800465.jpg",
@@ -555,7 +629,9 @@
       "style": "doodle",
       "hair": "#FF7A1A",
       "mood": "smug",
-      "x": 0.76
+      "size": 1.75,
+      "x": 0.3,
+      "rot": -4
      }
     ],
     "steps": [
@@ -564,7 +640,8 @@
      9,
      9
     ],
-    "photoPos": "40% 50%"
+    "photoPos": "40% 50%",
+    "floor": 400
    }
   }
  ]

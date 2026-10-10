@@ -1,8 +1,11 @@
 {
  "credit": "",
  "titleStyle": "band",
- "titleKey": "#3CFF6A",
- "captionY": 1640,
+ "titleKey": "#FFE14D",
+ "frame": "tall",
+ "capBox": {
+  "y": 1600
+ },
  "sources": {
   "px21299748": {
    "file": "px21299748.jpg",
@@ -11,15 +14,15 @@
    "file_url": "https://images.pexels.com/photos/21299748/pexels-photo-21299748.jpeg?auto=compress&cs=tinysrgb&w=1600",
    "license": "Pexels License",
    "creator": "Jakub Zerdzicki",
-   "credit": "사진: Pexels",
+   "credit": "사진: Pexels (설명란 표기)",
    "seconds": [
     [
-     0.0,
-     2.52
+     1.54,
+     3.34
     ],
     [
-     30.67,
-     33.16
+     28.49,
+     30.64
     ]
    ]
   },
@@ -30,11 +33,11 @@
    "file_url": "https://images.pexels.com/photos/39649976/pexels-photo-39649976.jpeg?auto=compress&cs=tinysrgb&w=1600",
    "license": "Pexels License",
    "creator": "Mohsen Adelimoghaddam",
-   "credit": "사진: Pexels",
+   "credit": "사진: Pexels (설명란 표기)",
    "seconds": [
     [
-     4.26,
-     8.35
+     3.34,
+     5.22
     ]
    ]
   },
@@ -45,26 +48,11 @@
    "file_url": "https://images.pexels.com/photos/13756513/pexels-photo-13756513.jpeg?auto=compress&cs=tinysrgb&w=1600",
    "license": "Pexels License",
    "creator": "Tibor Szabo",
-   "credit": "사진: Pexels",
+   "credit": "사진: Pexels (설명란 표기)",
    "seconds": [
     [
-     12.91,
-     14.68
-    ]
-   ]
-  },
-  "px4099350": {
-   "file": "px4099350.jpg",
-   "path": "public/doodle/px4099350.jpg",
-   "page": "https://www.pexels.com/photo/kitchen-room-design-4099350/",
-   "file_url": "https://images.pexels.com/photos/4099350/pexels-photo-4099350.jpeg?auto=compress&cs=tinysrgb&w=1600",
-   "license": "Pexels License",
-   "creator": "Taryn Elliott",
-   "credit": "사진: Pexels",
-   "seconds": [
-    [
-     22.82,
-     24.43
+     9.5,
+     11.92
     ]
    ]
   }
@@ -76,71 +64,88 @@
  },
  "sfx": [
   [
+   "a",
+   "whoosh",
+   0.2
+  ],
+  [
    "b",
    "pop",
    0.22
   ],
   [
-   "c",
-   "whoosh",
-   0.2
+   "d",
+   "pop",
+   0.22
   ],
   [
-   "d",
-   "ding",
+   "e.이천십",
+   "boing",
    0.25
   ],
   [
-   "e",
-   "k_error_003",
-   0.3
+   "g",
+   "pop",
+   0.22
   ],
   [
-   "f",
+   "i.이천이십삼",
+   "boing",
+   0.28
+  ],
+  [
+   "k",
    "whoosh",
    0.2
   ],
   [
-   "g",
+   "l.받쳐져",
    "boing",
    0.3
   ],
   [
-   "h",
-   "pop",
-   0.22
-  ],
-  [
-   "h2",
-   "pop",
-   0.22
-  ],
-  [
-   "i",
-   "whoosh",
-   0.2
-  ],
-  [
-   "j",
-   "pop",
-   0.22
-  ],
-  [
-   "k",
+   "m",
    "pop",
    0.22
   ],
   [
    "z",
-   "ding",
+   "pop",
    0.22
   ]
  ],
  "clips": [
   {
+   "from": "a0",
+   "label": "a0",
+   "gfx": {
+    "type": "scene",
+    "bg": "door",
+    "chars": [
+     {
+      "style": "doodle",
+      "hairdo": "spiky",
+      "hair": "#3b3b3b",
+      "mood": "angry",
+      "size": 2.0,
+      "x": 0.36,
+      "y": 100
+     }
+    ],
+    "prop": "🧯",
+    "propX": 0.84,
+    "steps": [
+     9,
+     0,
+     9,
+     9
+    ],
+    "floor": 400
+   }
+  },
+  {
    "from": "a",
-   "label": "hook",
-   "credit": "사진: Pexels",
+   "label": "a",
    "gfx": {
     "type": "scene",
     "photo": "doodle/px21299748.jpg",
@@ -148,102 +153,51 @@
      {
       "style": "doodle",
       "hair": "#FF7A1A",
-      "mood": "think",
-      "to": "shock",
-      "x": 0.78,
-      "size": 1
+      "mood": "shock",
+      "size": 2.1,
+      "x": 0.5,
+      "y": 110
      }
     ],
     "steps": [
      9,
      9,
-     "a.바늘",
+     9,
      9
-    ]
+    ],
+    "place": "📍 현관",
+    "floor": 400
    }
   },
   {
    "from": "b",
-   "label": "what",
-   "gfx": {
-    "type": "scene",
-    "bg": "home",
-    "chars": [
-     {
-      "style": "doodle",
-      "hair": "#FF7A1A",
-      "mood": "shock",
-      "x": 0.3
-     }
-    ],
-    "steps": [
-     "b",
-     0.1,
-     9,
-     9
-    ],
-    "prop": "🧯",
-    "propX": 0.74,
-    "say": {
-     "who": 0,
-     "text": "소화기에 [바늘]이 있었어?"
-    }
-   }
-  },
-  {
-   "from": "c",
-   "label": "gauge",
-   "credit": "사진: Pexels",
+   "label": "b",
    "gfx": {
     "type": "scene",
     "photo": "doodle/px39649976.jpg",
+    "photoPos": "50% 35%",
     "chars": [
      {
       "style": "doodle",
       "hair": "#FF7A1A",
       "mood": "think",
-      "x": 0.2,
-      "size": 0.85
+      "size": 1.75,
+      "x": 0.3,
+      "rot": -4
      }
     ],
     "steps": [
+     "b",
      9,
      9,
-     9,
-     "c+0.5"
+     9
     ],
-    "big": "[압력계]",
-    "photoPos": "50% 35%"
+    "floor": 400
    }
   },
   {
-   "from": "d",
-   "label": "green",
-   "gfx": {
-    "type": "scene",
-    "bg": "#d8f5c8",
-    "chars": [
-     {
-      "style": "doodle",
-      "hair": "#FF7A1A",
-      "mood": "happy",
-      "x": 0.3
-     }
-    ],
-    "steps": [
-     9,
-     0.1,
-     9,
-     "d+0.5"
-    ],
-    "prop": "✅",
-    "propX": 0.74,
-    "big": "[초록] = 정상"
-   }
-  },
-  {
-   "from": "e",
-   "label": "out",
+   "from": "c",
+   "label": "c",
    "gfx": {
     "type": "scene",
     "bg": "#FFB3C7",
@@ -252,24 +206,54 @@
       "style": "doodle",
       "hair": "#FF7A1A",
       "mood": "shock",
-      "x": 0.3
+      "size": 1.75,
+      "x": 0.3,
+      "rot": -3
      }
     ],
+    "prop": "🧯",
+    "big": "초록 밖 = 교체",
     "steps": [
      9,
      0.1,
      9,
-     "e+1.3"
+     "c+0.6"
     ],
-    "prop": "🧯",
-    "propX": 0.74,
-    "big": "벗어나면 {교체}"
+    "floor": 400,
+    "propX": 0.76
    }
   },
   {
-   "from": "f",
-   "label": "limit",
-   "credit": "사진: Pexels",
+   "from": "d",
+   "label": "d",
+   "gfx": {
+    "type": "scene",
+    "bg": "door",
+    "chars": [
+     {
+      "style": "doodle",
+      "hairdo": "spiky",
+      "hair": "#3b3b3b",
+      "mood": "smug",
+      "size": 1.75,
+      "x": 0.3,
+      "rot": -3
+     }
+    ],
+    "prop": "🧯",
+    "steps": [
+     "d",
+     0.1,
+     9,
+     9
+    ],
+    "floor": 400,
+    "propX": 0.76
+   }
+  },
+  {
+   "from": "e",
+   "label": "e",
    "gfx": {
     "type": "scene",
     "photo": "doodle/px13756513.jpg",
@@ -277,23 +261,25 @@
      {
       "style": "doodle",
       "hair": "#FF7A1A",
-      "mood": "think",
-      "x": 0.22,
-      "size": 0.9
+      "mood": "smug",
+      "size": 2.1,
+      "x": 0.5,
+      "y": 110
      }
     ],
+    "big": "2010",
     "steps": [
+     "e",
      9,
      9,
-     9,
-     "f+0.6"
+     "e.이천십"
     ],
-    "big": "[기한]?"
+    "floor": 400
    }
   },
   {
-   "from": "g",
-   "label": "10y",
+   "from": "f",
+   "label": "f",
    "gfx": {
     "type": "scene",
     "bg": "#FFE14D",
@@ -302,124 +288,54 @@
       "style": "doodle",
       "hair": "#FF7A1A",
       "mood": "shock",
-      "x": 0.3
+      "size": 1.75,
+      "x": 0.3,
+      "rot": -3
      }
     ],
+    "prop": "⏳",
+    "big": "분말 10년",
     "steps": [
      9,
      0.1,
      9,
-     "g+0.5"
+     "f+0.3"
     ],
-    "prop": "⏳",
-    "propX": 0.74,
-    "big": "분말 [10년]"
+    "floor": 400,
+    "propX": 0.76
    }
   },
   {
-   "from": "h",
-   "label": "extend",
-   "gfx": {
-    "type": "vs",
-    "title": "10년 지나면?",
-    "left": {
-     "label": "교체",
-     "emoji": "🧯"
-    },
-    "right": {
-     "label": "검사 합격",
-     "value": "+3년 (1회)",
-     "emoji": "✅"
-    },
-    "steps": [
-     0.05,
-     0.3,
-     "h+1.0"
-    ]
-   }
-  },
-  {
-   "from": "h2",
-   "label": "2010",
+   "from": "g",
+   "label": "g",
    "gfx": {
     "type": "scene",
     "bg": "home",
     "chars": [
      {
       "style": "doodle",
-      "hair": "#FF7A1A",
-      "mood": "sick",
-      "x": 0.3
+      "hairdo": "spiky",
+      "hair": "#3b3b3b",
+      "mood": "think",
+      "size": 1.95,
+      "x": 0.64,
+      "y": 80,
+      "flip": true,
+      "rot": 3
      }
     ],
     "steps": [
-     "h2",
-     0.1,
+     "g",
+     9,
      9,
      9
     ],
-    "prop": "🧯",
-    "propX": 0.74,
-    "say": {
-     "who": 0,
-     "text": "우리 집 거 [2010년산]인데?"
-    }
+    "floor": 400
    }
   },
   {
-   "from": "i",
-   "label": "how",
-   "credit": "사진: Pexels",
-   "gfx": {
-    "type": "scene",
-    "photo": "doodle/px4099350.jpg",
-    "chars": [
-     {
-      "style": "doodle",
-      "hair": "#FF7A1A",
-      "mood": "neutral",
-      "to": "smug",
-      "x": 0.78,
-      "size": 0.9
-     }
-    ],
-    "steps": [
-     9,
-     9,
-     "i+0.8",
-     "i+0.5"
-    ],
-    "big": "딱 [네 동작]"
-   }
-  },
-  {
-   "from": "j",
-   "label": "pin",
-   "gfx": {
-    "type": "scene",
-    "bg": "#fff0e0",
-    "chars": [
-     {
-      "style": "doodle",
-      "hair": "#FF7A1A",
-      "mood": "angry",
-      "x": 0.3
-     }
-    ],
-    "steps": [
-     9,
-     "j+1.6",
-     9,
-     "j+0.3"
-    ],
-    "prop": "🔥",
-    "propX": 0.76,
-    "big": "핀 뽑고 → [불 쪽]"
-   }
-  },
-  {
-   "from": "k",
-   "label": "sweep",
+   "from": "h",
+   "label": "h",
    "gfx": {
     "type": "scene",
     "bg": "#dff3ff",
@@ -427,25 +343,173 @@
      {
       "style": "doodle",
       "hair": "#FF7A1A",
-      "mood": "smug",
-      "x": 0.3
+      "mood": "think",
+      "size": 1.75,
+      "x": 0.3,
+      "rot": -3
      }
     ],
+    "prop": "✅",
+    "big": "+3년, 한 번",
     "steps": [
      9,
      0.1,
      9,
-     "k+1.2"
+     "h+0.5"
     ],
-    "prop": "🧹",
-    "propX": 0.74,
-    "big": "{쓱쓱}"
+    "floor": 400,
+    "propX": 0.76
+   }
+  },
+  {
+   "from": "i",
+   "label": "i",
+   "gfx": {
+    "type": "scene",
+    "bg": "office",
+    "chars": [
+     {
+      "style": "doodle",
+      "hair": "#FF7A1A",
+      "mood": "smug",
+      "size": 1.4
+     },
+     {
+      "style": "doodle",
+      "hairdo": "spiky",
+      "hair": "#3b3b3b",
+      "mood": "sick",
+      "size": 1.4
+     }
+    ],
+    "big": "2023",
+    "steps": [
+     "i",
+     9,
+     9,
+     "i.이천이십삼"
+    ],
+    "say": {
+     "who": 0,
+     "text": "이미 지났어"
+    },
+    "floor": 400
+   }
+  },
+  {
+   "from": "j",
+   "label": "j",
+   "gfx": {
+    "type": "scene",
+    "bg": "home",
+    "chars": [
+     {
+      "style": "doodle",
+      "hairdo": "spiky",
+      "hair": "#3b3b3b",
+      "mood": "sad",
+      "size": 1.75,
+      "x": 0.3,
+      "rot": -4
+     }
+    ],
+    "steps": [
+     "j",
+     9,
+     9,
+     9
+    ],
+    "floor": 400
+   }
+  },
+  {
+   "from": "k",
+   "label": "k",
+   "gfx": {
+    "type": "scene",
+    "bg": "night",
+    "chars": [
+     {
+      "style": "doodle",
+      "hair": "#FF7A1A",
+      "mood": "happy",
+      "to": "think",
+      "size": 1.95,
+      "x": 0.64,
+      "y": 80,
+      "flip": true,
+      "rot": 3
+     }
+    ],
+    "place": "📍 다음 날",
+    "steps": [
+     9,
+     9,
+     "k.안",
+     9
+    ],
+    "floor": 400
+   }
+  },
+  {
+   "from": "l",
+   "label": "l",
+   "gfx": {
+    "type": "scene",
+    "bg": "door",
+    "chars": [
+     {
+      "style": "doodle",
+      "hair": "#FF7A1A",
+      "mood": "shock",
+      "size": 1.75,
+      "x": 0.3,
+      "rot": -3
+     }
+    ],
+    "prop": "🧯",
+    "propX": 0.76,
+    "big": "문 받침",
+    "steps": [
+     9,
+     0,
+     9,
+     "l.받쳐져"
+    ],
+    "floor": 400
+   }
+  },
+  {
+   "from": "m",
+   "label": "m",
+   "gfx": {
+    "type": "scene",
+    "bg": "door",
+    "chars": [
+     {
+      "style": "doodle",
+      "hairdo": "spiky",
+      "hair": "#3b3b3b",
+      "mood": "laugh",
+      "size": 1.75,
+      "x": 0.3,
+      "rot": -3
+     }
+    ],
+    "prop": "🧯",
+    "propX": 0.76,
+    "steps": [
+     "m",
+     0,
+     9,
+     9
+    ],
+    "floor": 400
    }
   },
   {
    "from": "z",
-   "label": "ask",
-   "credit": "사진: Pexels",
+   "label": "z",
    "gfx": {
     "type": "scene",
     "photo": "doodle/px21299748.jpg",
@@ -455,8 +519,9 @@
       "hair": "#FF7A1A",
       "mood": "think",
       "to": "smug",
-      "x": 0.78,
-      "size": 1
+      "size": 1.75,
+      "x": 0.3,
+      "rot": -4
      }
     ],
     "steps": [
@@ -464,7 +529,8 @@
      9,
      "z.초록",
      9
-    ]
+    ],
+    "floor": 400
    }
   }
  ]
