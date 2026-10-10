@@ -1,0 +1,367 @@
+{
+ "credit": "",
+ "titleStyle": "band",
+ "captionY": 1650,
+ "sources": {},
+ "music": {
+  "file": "music/Exhilarate.mp3",
+  "gain": 0.2,
+  "start": 0
+ },
+ "sfx": [
+  [
+   "c1",
+   "pop",
+   0.25
+  ],
+  [
+   "b1",
+   "whoosh",
+   0.22
+  ],
+  [
+   "b1.회원권",
+   "boing",
+   0.3
+  ],
+  [
+   "c2",
+   "pop",
+   0.25
+  ],
+  [
+   "b2",
+   "whoosh",
+   0.22
+  ],
+  [
+   "c3",
+   "pop",
+   0.25
+  ],
+  [
+   "b3",
+   "whoosh",
+   0.22
+  ],
+  [
+   "c4",
+   "pop",
+   0.25
+  ],
+  [
+   "b4",
+   "whoosh",
+   0.22
+  ],
+  [
+   "b4.너무",
+   "boing",
+   0.3
+  ],
+  [
+   "c5",
+   "pop",
+   0.25
+  ],
+  [
+   "b5",
+   "whoosh",
+   0.22
+  ],
+  [
+   "b5.계단",
+   "boing",
+   0.3
+  ],
+  [
+   "c6",
+   "pop",
+   0.25
+  ],
+  [
+   "b6",
+   "whoosh",
+   0.22
+  ],
+  [
+   "c7",
+   "pop",
+   0.25
+  ],
+  [
+   "b7",
+   "whoosh",
+   0.22
+  ],
+  [
+   "y",
+   "pop",
+   0.25
+  ],
+  [
+   "z",
+   "whoosh",
+   0.22
+  ],
+  [
+   "z.몇",
+   "ding",
+   0.3
+  ],
+  [
+   "a",
+   "pop_hi",
+   0.3
+  ]
+ ],
+ "clips": [
+  {
+   "from": "a",
+   "label": "hook",
+   "gfx": {
+    "type": "scene",
+    "bg": "gym",
+    "place": "📍 헬스장 1일 차",
+    "prop": "💪",
+    "propX": 0.3,
+    "chars": [
+     {
+      "name": "나",
+      "color": "#FFB36B",
+      "mood": "happy",
+      "x": 0.62
+     }
+    ],
+    "steps": [
+     0.05,
+     -1,
+     9,
+     -1
+    ]
+   }
+  },
+  {
+   "from": "b1",
+   "label": "beat1",
+   "gfx": {
+    "type": "scene",
+    "bg": "gym",
+    "big": "✅ [12개월]",
+    "chars": [
+     {
+      "name": "나",
+      "color": "#FFB36B",
+      "mood": "happy",
+      "x": 0.4
+     }
+    ],
+    "say": {
+     "who": 0,
+     "text": "이제 [갓생] 산다!"
+    },
+    "steps": [
+     "c1",
+     0.1,
+     9,
+     "b1.회원권"
+    ]
+   }
+  },
+  {
+   "from": "b2",
+   "label": "beat2",
+   "gfx": {
+    "type": "scene",
+    "bg": "store",
+    "prop": "👟",
+    "propX": 0.72,
+    "chars": [
+     {
+      "name": "나",
+      "color": "#FFB36B",
+      "mood": "love",
+      "x": 0.32
+     }
+    ],
+    "say": {
+     "who": 0,
+     "text": "장비가 [반]이지!"
+    },
+    "steps": [
+     "c2",
+     0.1,
+     9,
+     0.1
+    ]
+   }
+  },
+  {
+   "from": "b3",
+   "label": "beat3",
+   "gfx": {
+    "type": "scene",
+    "bg": "gym",
+    "chars": [
+     {
+      "color": "#8FD3FF",
+      "mood": "happy",
+      "x": 0.25
+     },
+     {
+      "name": "나",
+      "color": "#FFB36B",
+      "mood": "think",
+      "to": "smug",
+      "x": 0.68
+     }
+    ],
+    "say": {
+     "who": 1,
+     "text": "[저렇게] 하는 거구나…"
+    },
+    "steps": [
+     "c3",
+     0.1,
+     "c3",
+     0.1
+    ]
+   }
+  },
+  {
+   "from": "b4",
+   "label": "beat4",
+   "gfx": {
+    "type": "scene",
+    "bg": "gym",
+    "big": "🔥 [풀파워]",
+    "chars": [
+     {
+      "name": "나",
+      "color": "#FFB36B",
+      "mood": "happy",
+      "to": "angry",
+      "x": 0.4
+     }
+    ],
+    "say": {
+     "who": 0,
+     "text": "하나 더! [하나] 더!"
+    },
+    "steps": [
+     "c4",
+     0.1,
+     "c4",
+     "b4.너무"
+    ]
+   }
+  },
+  {
+   "from": "b5",
+   "label": "beat5",
+   "gfx": {
+    "type": "scene",
+    "bg": "street",
+    "big": "[근육통]",
+    "chars": [
+     {
+      "name": "나",
+      "color": "#FFB36B",
+      "mood": "sick"
+     }
+    ],
+    "say": {
+     "who": 0,
+     "text": "다리가 [말을] 안 들어…"
+    },
+    "steps": [
+     "c5",
+     0.1,
+     9,
+     "b5.계단"
+    ]
+   }
+  },
+  {
+   "from": "b6",
+   "label": "beat6",
+   "gfx": {
+    "type": "scene",
+    "bg": "home",
+    "prop": "🍗",
+    "propX": 0.72,
+    "chars": [
+     {
+      "name": "나",
+      "color": "#FFB36B",
+      "mood": "laugh",
+      "x": 0.32
+     }
+    ],
+    "say": {
+     "who": 0,
+     "text": "이건 [단백질]이야!"
+    },
+    "steps": [
+     "c6",
+     0.1,
+     9,
+     0.1
+    ]
+   }
+  },
+  {
+   "from": "b7",
+   "label": "beat7",
+   "gfx": {
+    "type": "scene",
+    "bg": "bedroom",
+    "place": "📍 3일 차",
+    "chars": [
+     {
+      "name": "나",
+      "color": "#FFB36B",
+      "mood": "think",
+      "to": "sleep"
+     }
+    ],
+    "say": {
+     "who": 0,
+     "text": "오늘은 [쉬는 날]로 하자…"
+    },
+    "steps": [
+     "c7",
+     0.1,
+     "c7",
+     0.1
+    ]
+   }
+  },
+  {
+   "from": "z",
+   "label": "end",
+   "gfx": {
+    "type": "scene",
+    "bg": "gym",
+    "big": "[몇 개]?",
+    "chars": [
+     {
+      "name": "나",
+      "color": "#FFB36B",
+      "mood": "laugh"
+     }
+    ],
+    "steps": [
+     "y",
+     0.1,
+     9,
+     "z.몇"
+    ],
+    "say": {
+     "who": 0,
+     "text": "난 [7개] 다…ㅋㅋ"
+    }
+   }
+  }
+ ]
+}
