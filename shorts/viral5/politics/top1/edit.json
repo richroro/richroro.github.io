@@ -1,95 +1,39 @@
 {
  "src": "top1/pool_dark_px6011926.mp4",
  "title": [
-  "역대급 소름 돋는 백룸 같은 공간",
-  "[TOP5] (몇 위가 제일 소름?)"
+  "역대급 백룸 같은 공간들",
+  "랭킹 TOP5"
  ],
  "titleStyle": "band",
- "credit": "영상: Pexels",
+ "credit": "",
  "panels": [],
- "stickers": [
-  {
-   "text": "5위",
-   "from": 0.0,
-   "to": 1.4,
-   "x": 130,
-   "y": 500,
-   "rot": -4,
-   "bg": "#FFE14D",
-   "fg": "#111",
-   "size": 64
-  },
-  {
-   "text": "4위",
-   "from": 7.0,
-   "to": 8.4,
-   "x": 130,
-   "y": 500,
-   "rot": -4,
-   "bg": "#FFE14D",
-   "fg": "#111",
-   "size": 64
-  },
-  {
-   "text": "3위",
-   "from": 13.9,
-   "to": 15.3,
-   "x": 130,
-   "y": 500,
-   "rot": -4,
-   "bg": "#FFE14D",
-   "fg": "#111",
-   "size": 64
-  },
-  {
-   "text": "2위",
-   "from": 20.8,
-   "to": 22.2,
-   "x": 130,
-   "y": 500,
-   "rot": -4,
-   "bg": "#FFE14D",
-   "fg": "#111",
-   "size": 64
-  },
-  {
-   "text": "1위",
-   "from": 27.7,
-   "to": 29.1,
-   "x": 130,
-   "y": 500,
-   "rot": -4,
-   "bg": "#FFE14D",
-   "fg": "#111",
-   "size": 64
-  }
- ],
- "keys": [
-  "수영장",
-  "한",
-  "내려감",
-  "CCTV만",
-  "아무도",
-  "소름?"
- ],
+ "rank2": {
+  "sub": "(몇 번이 제일 무서움?)",
+  "color": "#B67CFF",
+  "hide": [
+   1
+  ]
+ },
+ "flash": false,
+ "keys": [],
  "sfx": [
   [
-   7.0,
+   5.1,
    "whoosh",
    0.5
   ],
   [
-   13.9,
+   10.2,
    "whoosh",
    0.5
   ],
   [
-   20.8,
+   15.3,
    "whoosh",
    0.5
   ],
   [
-   27.7,
+   20.4,
    "whoosh",
    0.5
   ]
@@ -99,20 +43,21 @@
    "src": "public/music/Dark Fog.mp3",
    "from": 0.0,
    "at": 0.0,
-   "to": 35.1,
+   "to": 25.6,
    "fade": 0.3,
    "gain": 1.0
   }
  ],
  "musicGain": 0.8,
  "duck": false,
- "captionY": 1380,
+ "captionY": 1640,
  "tail": 0.0,
  "segments": [
   {
    "src": "top1/pool_dark_px6011926.mp4",
    "in": 0.0,
-   "out": 3.4,
+   "out": 2.3,
+   "frame": "tall",
    "single": [
     0.5,
     0.5,
@@ -120,37 +65,37 @@
    ],
    "push": [
     1.0,
-    1.05
+    1.06
    ],
    "audio": 0,
-   "credit": "영상: Pexels",
    "vf": "vignette=PI/4.5",
    "rank": {
     "n": 5,
-    "label": "한밤의 텅 빈 수영장"
+    "label": "수영장"
    }
   },
   {
    "src": "top1/pool_dark_px6011926.mp4",
    "in": 3.6,
-   "out": 7.2,
+   "out": 6.4,
+   "frame": "tall",
    "single": [
     0.5,
     0.45,
-    1.35
+    1.3
    ],
    "push": [
     1.0,
-    1.05
+    1.06
    ],
    "audio": 0,
-   "credit": "영상: Pexels",
    "vf": "vignette=PI/4.5"
   },
   {
    "src": "top1/parking_px5972198.mp4",
    "in": 0.3,
-   "out": 3.7,
+   "out": 2.8,
+   "frame": "tall",
    "single": [
     0.5,
     0.5,
@@ -158,37 +103,37 @@
    ],
    "push": [
     1.0,
-    1.05
+    1.06
    ],
    "audio": 0,
-   "credit": "영상: Pexels",
    "vf": "eq=brightness=-0.07:gamma=0.9:saturation=0.7,vignette=PI/4.5",
    "rank": {
     "n": 4,
-    "label": "끝이 안 보이는 주차장"
+    "label": "주차장"
    }
   },
   {
    "src": "top1/parking_px5972198.mp4",
    "in": 6.0,
-   "out": 9.5,
+   "out": 8.6,
+   "frame": "tall",
    "single": [
     0.5,
     0.5,
-    1.2
+    1.15
    ],
    "push": [
     1.0,
-    1.05
+    1.06
    ],
    "audio": 0,
-   "credit": "영상: Pexels",
    "vf": "eq=brightness=-0.07:gamma=0.9:saturation=0.7,vignette=PI/4.5"
   },
   {
    "src": "top1/escalator_down_px31053763.mp4",
    "in": 0.5,
-   "out": 3.9,
+   "out": 3.0,
+   "frame": "tall",
    "single": [
     0.5,
     0.55,
@@ -196,37 +141,37 @@
    ],
    "push": [
     1.0,
-    1.05
+    1.06
    ],
    "audio": 0,
-   "credit": "영상: Pexels",
    "vf": "vignette=PI/4.5",
    "rank": {
     "n": 3,
-    "label": "끝없는 지하 에스컬레이터"
+    "label": "지하통로"
    }
   },
   {
    "src": "top1/escalator_down_px31053763.mp4",
    "in": 4.5,
-   "out": 8.0,
+   "out": 7.1,
+   "frame": "tall",
    "single": [
     0.5,
     0.35,
-    1.4
+    1.3
    ],
    "push": [
     1.0,
-    1.05
+    1.06
    ],
    "audio": 0,
-   "credit": "영상: Pexels",
    "vf": "vignette=PI/4.5"
   },
   {
    "src": "top1/mall_corridor_px15365449.mp4",
    "in": 0.5,
-   "out": 3.9,
+   "out": 3.0,
+   "frame": "tall",
    "single": [
     0.5,
     0.5,
@@ -234,20 +179,20 @@
    ],
    "push": [
     1.0,
-    1.05
+    1.06
    ],
    "audio": 0,
-   "credit": "영상: Pexels",
    "vf": "vignette=PI/4.5",
    "rank": {
     "n": 2,
-    "label": "아무도 없는 쇼핑몰 복도"
+    "label": "쇼핑몰"
    }
   },
   {
    "src": "top1/mall_corridor_px15365449.mp4",
-   "in": 12.0,
-   "out": 15.5,
+   "in": 4.0,
+   "out": 6.6,
+   "frame": "tall",
    "single": [
     0.5,
     0.5,
@@ -255,16 +200,16 @@
    ],
    "push": [
     1.0,
-    1.05
+    1.06
    ],
    "audio": 0,
-   "credit": "영상: Pexels",
    "vf": "vignette=PI/4.5"
   },
   {
    "src": "top1/hospital_corridor_px29241126.mp4",
    "in": 0.0,
-   "out": 3.4,
+   "out": 1.8,
+   "frame": "tall",
    "single": [
     0.5,
     0.5,
@@ -272,94 +217,110 @@
    ],
    "push": [
     1.0,
-    1.05
+    1.06
    ],
    "audio": 0,
-   "credit": "영상: Pexels",
    "vf": "vignette=PI/4.5",
    "rank": {
     "n": 1,
-    "label": "불 꺼진 병원 복도"
+    "label": "병원"
    }
   },
   {
    "src": "top1/hospital_corridor_px29241126.mp4",
-   "in": 3.4,
-   "out": 7.4,
+   "in": 2.0,
+   "out": 3.7,
+   "frame": "tall",
    "single": [
     0.5,
     0.5,
-    1.45
+    1.25
    ],
    "push": [
     1.0,
-    1.05
+    1.06
    ],
    "audio": 0,
-   "credit": "영상: Pexels",
+   "vf": "vignette=PI/4.5"
+  },
+  {
+   "src": "top1/hospital_corridor_px29241126.mp4",
+   "in": 4.0,
+   "out": 5.7,
+   "frame": "tall",
+   "single": [
+    0.5,
+    0.5,
+    1.5
+   ],
+   "push": [
+    1.0,
+    1.06
+   ],
+   "audio": 0,
    "vf": "vignette=PI/4.5"
   }
  ],
  "lines": [
   {
    "who": 0,
-   "t": 0.1,
-   "tend": 3.35,
-   "ko": "밤 9시 반, 텅 빈 수영장"
+   "t": 0.0,
+   "tend": 2.3,
+   "ko": "밤 9시 반 수영장 갔는데.."
   },
   {
    "who": 0,
-   "t": 3.5,
-   "tend": 6.95,
-   "ko": "물소리 하나 안 들림"
+   "t": 2.3,
+   "tend": 5.1,
+   "ko": "물소리가 하나도 안 나??"
   },
   {
    "who": 0,
-   "t": 7.1,
-   "tend": 10.35,
-   "ko": "차가 한 대도 없다"
+   "t": 5.1,
+   "tend": 7.6,
+   "ko": "차 한 대도 없는데.."
   },
   {
    "who": 0,
-   "t": 10.5,
-   "tend": 13.85,
-   "ko": "기둥만 끝없이 반복됨"
+   "t": 7.6,
+   "tend": 10.2,
+   "ko": "기둥만 끝없이 반복??"
   },
   {
    "who": 0,
-   "t": 14.0,
-   "tend": 17.25,
-   "ko": "지하로 끝없이 내려감"
+   "t": 10.2,
+   "tend": 12.7,
+   "ko": "계속 내려가는데.."
   },
   {
    "who": 0,
-   "t": 17.4,
-   "tend": 20.75,
-   "ko": "CCTV만 나를 보고 있다"
+   "t": 12.7,
+   "tend": 15.3,
+   "ko": "끝에 CCTV 하나만??"
   },
   {
    "who": 0,
-   "t": 20.9,
-   "tend": 24.15,
-   "ko": "문 닫은 쇼핑몰 복도"
+   "t": 15.3,
+   "tend": 17.8,
+   "ko": "텅 빈 복도를 걷는데.."
   },
   {
    "who": 0,
-   "t": 24.3,
-   "tend": 27.65,
-   "ko": "걸어도 걸어도 아무도 없음"
+   "t": 17.8,
+   "tend": 20.4,
+   "ko": "불이 깜빡깜빡??"
   },
   {
    "who": 0,
-   "t": 27.8,
-   "tend": 31.05,
-   "ko": "아무도 없는 병동 복도"
+   "t": 20.4,
+   "tend": 22.2,
+   "ko": "불 꺼진 병동인데.."
   },
   {
    "who": 0,
-   "t": 31.2,
-   "tend": 35.05,
-   "ko": "다들 몇 위가 제일 소름?"
+   "t": 22.2,
+   "tend": 25.6,
+   "ko": "저 끝에 뭐가 있음??"
   }
  ],
  "sources": [
@@ -373,11 +334,11 @@
    "used_seconds": [
     [
      0.0,
-     3.4
+     2.3
     ],
     [
      3.6,
-     7.2
+     6.4
     ]
    ]
   },
@@ -391,11 +352,11 @@
    "used_seconds": [
     [
      0.3,
-     3.7
+     2.8
     ],
     [
      6.0,
-     9.5
+     8.6
     ]
    ]
   },
@@ -409,11 +370,11 @@
    "used_seconds": [
     [
      0.5,
-     3.9
+     3.0
     ],
     [
      4.5,
-     8.0
+     7.1
     ]
    ]
   },
@@ -427,11 +388,11 @@
    "used_seconds": [
     [
      0.5,
-     3.9
+     3.0
     ],
     [
-     12.0,
-     15.5
+     4.0,
+     6.6
     ]
    ]
   },
@@ -445,11 +406,15 @@
    "used_seconds": [
     [
      0.0,
-     3.4
+     1.8
     ],
     [
-     3.4,
-     7.4
+     2.0,
+     3.7
+    ],
+    [
+     4.0,
+     5.7
     ]
    ]
   }

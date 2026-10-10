@@ -1,0 +1,622 @@
+{
+ "credit": "",
+ "titleStyle": "band",
+ "titleKey": "#FFE14D",
+ "frame": "capTall",
+ "capBox": {
+  "y": 1600
+ },
+ "sources": {
+  "px17293343": {
+   "file": "px17293343.jpg",
+   "path": "public/doodle/px17293343.jpg",
+   "page": "https://www.pexels.com/photo/white-shirts-on-hangers-17293343/",
+   "file_url": "https://images.pexels.com/photos/17293343/pexels-photo-17293343.jpeg?auto=compress&cs=tinysrgb&w=1600",
+   "license": "Pexels License",
+   "creator": "Pew Nguyen",
+   "credit": "사진: Pexels (설명란 표기)",
+   "seconds": [
+    [
+     0.0,
+     1.59
+    ],
+    [
+     6.14,
+     8.56
+    ],
+    [
+     27.55,
+     29.22
+    ]
+   ]
+  },
+  "px965632": {
+   "file": "px965632.jpg",
+   "path": "public/doodle/px965632.jpg",
+   "page": "https://www.pexels.com/photo/hanged-assorted-shirts-965632/",
+   "file_url": "https://images.pexels.com/photos/965632/pexels-photo-965632.jpeg?auto=compress&cs=tinysrgb&w=1600",
+   "license": "Pexels License",
+   "creator": "Arnie Chou",
+   "credit": "사진: Pexels (설명란 표기)",
+   "seconds": [
+    [
+     1.59,
+     3.84
+    ],
+    [
+     14.3,
+     16.75
+    ],
+    [
+     33.21,
+     34.92
+    ]
+   ]
+  },
+  "px28576618": {
+   "file": "px28576618.jpg",
+   "path": "public/doodle/px28576618.jpg",
+   "page": "https://www.pexels.com/photo/home-laundry-room-with-iron-and-clothes-28576618/",
+   "file_url": "https://images.pexels.com/photos/28576618/pexels-photo-28576618.jpeg?auto=compress&cs=tinysrgb&w=1600",
+   "license": "Pexels License",
+   "creator": "Jonathan Borba",
+   "credit": "사진: Pexels (설명란 표기)",
+   "seconds": [
+    [
+     3.84,
+     6.14
+    ],
+    [
+     10.49,
+     11.94
+    ],
+    [
+     31.41,
+     33.21
+    ]
+   ]
+  }
+ },
+ "music": {
+  "file": "music/sneaky_snitch.mp3",
+  "gain": 0.12,
+  "start": 0
+ },
+ "sfx": [
+  [
+   "a.꺼냄",
+   "pop",
+   0.25
+  ],
+  [
+   "b.미침",
+   "boing",
+   0.28
+  ],
+  [
+   "d",
+   "pop",
+   0.22
+  ],
+  [
+   "e",
+   "pop",
+   0.22
+  ],
+  [
+   "f",
+   "pop",
+   0.22
+  ],
+  [
+   "g.얼룩",
+   "boing",
+   0.28
+  ],
+  [
+   "h",
+   "pop",
+   0.22
+  ],
+  [
+   "j",
+   "whoosh",
+   0.2
+  ],
+  [
+   "k.새로",
+   "pop",
+   0.25
+  ],
+  [
+   "l",
+   "pop",
+   0.22
+  ],
+  [
+   "z",
+   "pop",
+   0.22
+  ]
+ ],
+ "clips": [
+  {
+   "from": "a0",
+   "label": "a0",
+   "gfx": {
+    "type": "scene",
+    "photo": "doodle/px17293343.jpg",
+    "chars": [
+     {
+      "style": "doodle",
+      "hairdo": "bald",
+      "hair": "#3b3b3b",
+      "mood": "happy",
+      "size": 2.0,
+      "x": 0.5,
+      "y": 100
+     }
+    ],
+    "prop": "👔",
+    "propX": 0.82,
+    "steps": [
+     9,
+     0.1,
+     9,
+     9
+    ],
+    "floor": 400
+   }
+  },
+  {
+   "from": "a",
+   "label": "a",
+   "gfx": {
+    "type": "scene",
+    "photo": "doodle/px965632.jpg",
+    "chars": [
+     {
+      "style": "doodle",
+      "hair": "#FF7A1A",
+      "mood": "shock",
+      "size": 1.75,
+      "x": 0.3,
+      "rot": -3
+     }
+    ],
+    "prop": "👔",
+    "steps": [
+     9,
+     "a.꺼냄",
+     9,
+     9
+    ],
+    "place": "📍 동네 세탁소",
+    "floor": 400,
+    "propX": 0.76
+   }
+  },
+  {
+   "from": "a2",
+   "label": "a2",
+   "gfx": {
+    "type": "scene",
+    "photo": "doodle/px28576618.jpg",
+    "chars": [
+     {
+      "style": "doodle",
+      "hair": "#FF7A1A",
+      "mood": "neutral",
+      "size": 1.75,
+      "x": 0.3,
+      "rot": -3
+     }
+    ],
+    "prop": "👔",
+    "steps": [
+     "a2",
+     0.1,
+     9,
+     9
+    ],
+    "floor": 400,
+    "propX": 0.76
+   }
+  },
+  {
+   "from": "b",
+   "label": "b",
+   "gfx": {
+    "type": "scene",
+    "photo": "doodle/px17293343.jpg",
+    "photoPos": "30% 50%",
+    "chars": [
+     {
+      "style": "doodle",
+      "hairdo": "bald",
+      "hair": "#3b3b3b",
+      "mood": "smug",
+      "size": 1.95,
+      "x": 0.64,
+      "y": 80,
+      "flip": true,
+      "rot": 3
+     }
+    ],
+    "big": "기억력 미침",
+    "steps": [
+     9,
+     9,
+     9,
+     "b.미침"
+    ],
+    "floor": 400
+   }
+  },
+  {
+   "from": "c",
+   "label": "c",
+   "gfx": {
+    "type": "scene",
+    "bg": "store",
+    "chars": [
+     {
+      "style": "doodle",
+      "hair": "#FF7A1A",
+      "mood": "think",
+      "size": 1.75,
+      "x": 0.3,
+      "rot": -3
+     }
+    ],
+    "prop": "🚫",
+    "big": "번호표 없음",
+    "steps": [
+     9,
+     0.1,
+     9,
+     "c+0.3"
+    ],
+    "floor": 400,
+    "propX": 0.76
+   }
+  },
+  {
+   "from": "d",
+   "label": "d",
+   "gfx": {
+    "type": "scene",
+    "photo": "doodle/px28576618.jpg",
+    "chars": [
+     {
+      "style": "doodle",
+      "hair": "#FF7A1A",
+      "mood": "shock",
+      "size": 2.1,
+      "x": 0.5,
+      "y": 110
+     }
+    ],
+    "steps": [
+     "d",
+     9,
+     9,
+     9
+    ],
+    "floor": 400
+   }
+  },
+  {
+   "from": "e",
+   "label": "e",
+   "gfx": {
+    "type": "scene",
+    "bg": "store",
+    "chars": [
+     {
+      "style": "doodle",
+      "hairdo": "bald",
+      "hair": "#3b3b3b",
+      "mood": "smug",
+      "size": 1.75,
+      "x": 0.3,
+      "rot": -3
+     }
+    ],
+    "prop": "☕",
+    "steps": [
+     "e",
+     0.1,
+     9,
+     9
+    ],
+    "floor": 400,
+    "propX": 0.76
+   }
+  },
+  {
+   "from": "f",
+   "label": "f",
+   "gfx": {
+    "type": "scene",
+    "photo": "doodle/px965632.jpg",
+    "photoPos": "70% 50%",
+    "chars": [
+     {
+      "style": "doodle",
+      "hairdo": "bald",
+      "hair": "#3b3b3b",
+      "mood": "think",
+      "size": 1.75,
+      "x": 0.3,
+      "rot": -3
+     }
+    ],
+    "prop": "🧥",
+    "steps": [
+     "f",
+     0.1,
+     9,
+     9
+    ],
+    "floor": 400,
+    "propX": 0.76
+   }
+  },
+  {
+   "from": "g",
+   "label": "g",
+   "gfx": {
+    "type": "scene",
+    "bg": "#FFE14D",
+    "chars": [
+     {
+      "style": "doodle",
+      "hair": "#FF7A1A",
+      "mood": "shock",
+      "size": 1.6,
+      "x": 0.5
+     }
+    ],
+    "big": "사람 = 얼룩",
+    "steps": [
+     9,
+     9,
+     9,
+     "g.얼룩"
+    ],
+    "floor": 400
+   }
+  },
+  {
+   "from": "h",
+   "label": "h",
+   "gfx": {
+    "type": "scene",
+    "bg": "home",
+    "chars": [
+     {
+      "style": "doodle",
+      "hair": "#FF7A1A",
+      "mood": "cry",
+      "size": 1.75,
+      "x": 0.3,
+      "rot": -3
+     }
+    ],
+    "prop": "🍲",
+    "steps": [
+     "h",
+     0.1,
+     9,
+     9
+    ],
+    "floor": 400,
+    "propX": 0.76
+   }
+  },
+  {
+   "from": "i",
+   "label": "i",
+   "gfx": {
+    "type": "scene",
+    "bg": "#FFB3C7",
+    "chars": [
+     {
+      "style": "doodle",
+      "hair": "#FF7A1A",
+      "mood": "sad",
+      "size": 1.75,
+      "x": 0.3,
+      "rot": -4
+     }
+    ],
+    "big": "그날만…",
+    "steps": [
+     9,
+     9,
+     9,
+     "i.흘린"
+    ],
+    "floor": 400
+   }
+  },
+  {
+   "from": "i2",
+   "label": "i2",
+   "gfx": {
+    "type": "scene",
+    "bg": "store",
+    "chars": [
+     {
+      "style": "doodle",
+      "hair": "#FF7A1A",
+      "mood": "think",
+      "size": 1.4
+     },
+     {
+      "style": "doodle",
+      "hairdo": "bald",
+      "hair": "#3b3b3b",
+      "mood": "neutral",
+      "size": 1.4
+     }
+    ],
+    "prop": "📱",
+    "propX": 0.2,
+    "steps": [
+     "i2",
+     0.1,
+     9,
+     9
+    ],
+    "say": {
+     "who": 0,
+     "text": "다음 주 면접이라…"
+    },
+    "floor": 400
+   }
+  },
+  {
+   "from": "j",
+   "label": "j",
+   "gfx": {
+    "type": "scene",
+    "bg": "street",
+    "chars": [
+     {
+      "style": "doodle",
+      "hair": "#FF7A1A",
+      "mood": "neutral",
+      "size": 1.6,
+      "x": 0.5
+     }
+    ],
+    "place": "📍 일주일 뒤",
+    "steps": [
+     9,
+     9,
+     9,
+     9
+    ],
+    "floor": 400
+   }
+  },
+  {
+   "from": "k",
+   "label": "k",
+   "gfx": {
+    "type": "scene",
+    "photo": "doodle/px17293343.jpg",
+    "photoPos": "60% 50%",
+    "chars": [
+     {
+      "style": "doodle",
+      "hair": "#FF7A1A",
+      "mood": "shock",
+      "to": "love",
+      "size": 1.75,
+      "x": 0.3,
+      "rot": -3
+     }
+    ],
+    "prop": "🔘",
+    "big": "새 단추",
+    "steps": [
+     9,
+     0.1,
+     "k.새로",
+     "k.새로"
+    ],
+    "floor": 400,
+    "propX": 0.76
+   }
+  },
+  {
+   "from": "l",
+   "label": "l",
+   "gfx": {
+    "type": "scene",
+    "bg": "store",
+    "chars": [
+     {
+      "style": "doodle",
+      "hairdo": "bald",
+      "hair": "#3b3b3b",
+      "mood": "happy",
+      "size": 1.4
+     },
+     {
+      "style": "doodle",
+      "hair": "#FF7A1A",
+      "mood": "shy",
+      "size": 1.4
+     }
+    ],
+    "steps": [
+     "l",
+     9,
+     9,
+     9
+    ],
+    "say": {
+     "who": 0,
+     "text": "서비스야, 면접 본다며?"
+    },
+    "floor": 400
+   }
+  },
+  {
+   "from": "m",
+   "label": "m",
+   "gfx": {
+    "type": "scene",
+    "photo": "doodle/px28576618.jpg",
+    "chars": [
+     {
+      "style": "doodle",
+      "hair": "#FF7A1A",
+      "mood": "love",
+      "size": 1.95,
+      "x": 0.64,
+      "y": 80,
+      "flip": true,
+      "rot": 3
+     }
+    ],
+    "steps": [
+     9,
+     9,
+     9,
+     9
+    ],
+    "floor": 400
+   }
+  },
+  {
+   "from": "z",
+   "label": "z",
+   "gfx": {
+    "type": "scene",
+    "photo": "doodle/px965632.jpg",
+    "chars": [
+     {
+      "style": "doodle",
+      "hair": "#FF7A1A",
+      "mood": "happy",
+      "to": "smug",
+      "size": 1.6,
+      "x": 0.5
+     }
+    ],
+    "steps": [
+     9,
+     9,
+     "z.사장님",
+     9
+    ],
+    "floor": 400
+   }
+  }
+ ]
+}

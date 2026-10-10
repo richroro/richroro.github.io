@@ -1,0 +1,441 @@
+{
+ "src": "top10/la_giant_wave.mp4",
+ "title": [
+  "역대급 시원한 파도",
+  "랭킹 TOP5"
+ ],
+ "titleStyle": "band",
+ "credit": "",
+ "panels": [],
+ "rank2": {
+  "sub": "(몇 번이 제일 시원함?)",
+  "color": "#3FD0FF",
+  "hide": [
+   1
+  ]
+ },
+ "flash": false,
+ "keys": [],
+ "sfx": [
+  [
+   5.1,
+   "whoosh",
+   0.5
+  ],
+  [
+   10.2,
+   "whoosh",
+   0.5
+  ],
+  [
+   15.3,
+   "whoosh",
+   0.5
+  ],
+  [
+   20.4,
+   "whoosh",
+   0.5
+  ]
+ ],
+ "music": [
+  {
+   "src": "public/music/Heroic Age.mp3",
+   "from": 0.0,
+   "at": 0.0,
+   "to": 25.6,
+   "fade": 0.3,
+   "gain": 1.0
+  }
+ ],
+ "musicGain": 0.8,
+ "duck": false,
+ "captionY": 1640,
+ "tail": 0.0,
+ "segments": [
+  {
+   "src": "top10/la_giant_wave.mp4",
+   "in": 3.6,
+   "out": 5.9,
+   "frame": "tall",
+   "single": [
+    0.45,
+    0.55,
+    1.0
+   ],
+   "push": [
+    1.0,
+    1.06
+   ],
+   "audio": 0,
+   "rank": {
+    "n": 5,
+    "label": "LA 파도"
+   }
+  },
+  {
+   "src": "top10/la_giant_wave.mp4",
+   "in": 7.8,
+   "out": 10.6,
+   "frame": "tall",
+   "single": [
+    0.45,
+    0.55,
+    1.0
+   ],
+   "push": [
+    1.0,
+    1.06
+   ],
+   "audio": 0
+  },
+  {
+   "src": "top10/jetty_end_blast.mp4",
+   "in": 0.4,
+   "out": 2.9,
+   "frame": "tall",
+   "single": [
+    0.47,
+    0.5,
+    1.0
+   ],
+   "push": [
+    1.0,
+    1.06
+   ],
+   "audio": 0,
+   "rank": {
+    "n": 4,
+    "label": "방파제"
+   }
+  },
+  {
+   "src": "top10/jetty_end_blast.mp4",
+   "in": 3.0,
+   "out": 5.6,
+   "frame": "tall",
+   "single": [
+    0.48,
+    0.45,
+    1.1
+   ],
+   "push": [
+    1.0,
+    1.06
+   ],
+   "audio": 0
+  },
+  {
+   "src": "top10/tropical_blowhole.mp4",
+   "in": 2.0,
+   "out": 4.5,
+   "frame": "tall",
+   "single": [
+    0.5,
+    0.5,
+    1.0
+   ],
+   "push": [
+    1.0,
+    1.06
+   ],
+   "audio": 0,
+   "rank": {
+    "n": 3,
+    "label": "분수구멍"
+   }
+  },
+  {
+   "src": "top10/tropical_blowhole.mp4",
+   "in": 9.3,
+   "out": 11.9,
+   "frame": "tall",
+   "single": [
+    0.5,
+    0.5,
+    1.0
+   ],
+   "push": [
+    1.0,
+    1.06
+   ],
+   "audio": 0
+  },
+  {
+   "src": "top10/storm_tower_swallowed.mp4",
+   "in": 0.5,
+   "out": 3.0,
+   "frame": "tall",
+   "single": [
+    0.55,
+    0.4,
+    1.0
+   ],
+   "push": [
+    1.0,
+    1.06
+   ],
+   "audio": 0,
+   "rank": {
+    "n": 2,
+    "label": "폭풍철탑"
+   }
+  },
+  {
+   "src": "top10/storm_tower_swallowed.mp4",
+   "in": 3.0,
+   "out": 5.6,
+   "frame": "tall",
+   "single": [
+    0.55,
+    0.45,
+    1.1
+   ],
+   "push": [
+    1.0,
+    1.06
+   ],
+   "audio": 0
+  },
+  {
+   "src": "top10/rock_house_engulfed.mp4",
+   "in": 1.8,
+   "out": 3.6,
+   "frame": "tall",
+   "single": [
+    0.38,
+    0.45,
+    1.0
+   ],
+   "push": [
+    1.0,
+    1.06
+   ],
+   "audio": 0,
+   "rank": {
+    "n": 1,
+    "label": "돌집"
+   }
+  },
+  {
+   "src": "top10/rock_house_engulfed.mp4",
+   "in": 4.5,
+   "out": 6.2,
+   "frame": "tall",
+   "single": [
+    0.38,
+    0.45,
+    1.0
+   ],
+   "push": [
+    1.0,
+    1.06
+   ],
+   "audio": 0
+  },
+  {
+   "src": "top10/rock_house_engulfed.mp4",
+   "in": 8.3,
+   "out": 10.0,
+   "frame": "tall",
+   "single": [
+    0.38,
+    0.45,
+    1.0
+   ],
+   "push": [
+    1.0,
+    1.06
+   ],
+   "audio": 0
+  }
+ ],
+ "lines": [
+  {
+   "who": 0,
+   "t": 0.0,
+   "tend": 2.3,
+   "ko": "집채만한 파도가.."
+  },
+  {
+   "who": 0,
+   "t": 2.3,
+   "tend": 5.1,
+   "ko": "그대로 와르르??"
+  },
+  {
+   "who": 0,
+   "t": 5.1,
+   "tend": 7.6,
+   "ko": "방파제 끝에 파도가.."
+  },
+  {
+   "who": 0,
+   "t": 7.6,
+   "tend": 10.2,
+   "ko": "그대로 폭발??"
+  },
+  {
+   "who": 0,
+   "t": 10.2,
+   "tend": 12.7,
+   "ko": "바위 틈에서 뭔가.."
+  },
+  {
+   "who": 0,
+   "t": 12.7,
+   "tend": 15.3,
+   "ko": "물기둥 발사??"
+  },
+  {
+   "who": 0,
+   "t": 15.3,
+   "tend": 17.8,
+   "ko": "폭풍 속 철탑에.."
+  },
+  {
+   "who": 0,
+   "t": 17.8,
+   "tend": 20.4,
+   "ko": "통째로 삼킴??"
+  },
+  {
+   "who": 0,
+   "t": 20.4,
+   "tend": 22.2,
+   "ko": "바위 위 돌집에.."
+  },
+  {
+   "who": 0,
+   "t": 22.2,
+   "tend": 25.6,
+   "ko": "통째로 사라짐??"
+  }
+ ],
+ "sources": [
+  {
+   "file": "top10/jetty_end_blast.mp4",
+   "title": "A large wave crashes into the rocks at the end of a pier",
+   "page": "https://www.pexels.com/video/a-large-wave-crashes-into-the-rocks-at-the-end-of-a-pier-15876185/",
+   "file_url": "https://videos.pexels.com/video-files/15876185/15876185-hd_1920_1080_30fps.mp4 (via https://www.pexels.com/download/video/15876185/)",
+   "license": "Pexels License",
+   "license_url": "https://www.pexels.com/license/",
+   "credit": "Guidance Pillar Production (Pexels)",
+   "date": "2023-03-10 (Pexels upload)",
+   "cut_from_original_seconds": [
+    12,
+    26.3
+   ],
+   "used_seconds": [
+    [
+     0.4,
+     2.9
+    ],
+    [
+     3.0,
+     5.6
+    ]
+   ]
+  },
+  {
+   "file": "top10/la_giant_wave.mp4",
+   "title": "Massive Ocean Wave On California Los Angeles Coast Beach",
+   "page": "https://www.pexels.com/video/massive-ocean-wave-on-california-los-angeles-coast-beach-20363746/",
+   "file_url": "https://videos.pexels.com/video-files/20363746/20363746-uhd_3840_2160_60fps.mp4 (via https://www.pexels.com/download/video/20363746/)",
+   "license": "Pexels License",
+   "license_url": "https://www.pexels.com/license/",
+   "credit": "Joshua Woroniecki (Pexels)",
+   "date": "2024-02-22 (Pexels upload)",
+   "cut_from_original_seconds": [
+    5,
+    18.8
+   ],
+   "used_seconds": [
+    [
+     3.6,
+     5.9
+    ],
+    [
+     7.8,
+     10.6
+    ]
+   ]
+  },
+  {
+   "file": "top10/rock_house_engulfed.mp4",
+   "title": "Dramatic Ocean Waves Crashing on Rocks",
+   "page": "https://www.pexels.com/video/dramatic-ocean-waves-crashing-on-rocks-32091837/",
+   "file_url": "https://videos.pexels.com/video-files/32091837/13680365_3840_2160_30fps.mp4 (via https://www.pexels.com/download/video/32091837/)",
+   "license": "Pexels License",
+   "license_url": "https://www.pexels.com/license/",
+   "credit": "pippu (Pexels)",
+   "date": "2025-05-15 (Pexels upload)",
+   "cut_from_original_seconds": [
+    0,
+    10.5
+   ],
+   "used_seconds": [
+    [
+     1.8,
+     3.6
+    ],
+    [
+     4.5,
+     6.2
+    ],
+    [
+     8.3,
+     10.0
+    ]
+   ]
+  },
+  {
+   "file": "top10/storm_tower_swallowed.mp4",
+   "title": "Dramatic Storm Waves Crashing on Coastal Tower",
+   "page": "https://www.pexels.com/video/dramatic-storm-waves-crashing-on-coastal-tower-34490216/",
+   "file_url": "https://videos.pexels.com/video-files/34490216/14613806_3840_2160_24fps.mp4 (via https://www.pexels.com/download/video/34490216/)",
+   "license": "Pexels License",
+   "license_url": "https://www.pexels.com/license/",
+   "credit": "AP Vibes (Pexels)",
+   "date": "2025-10-28 (Pexels upload)",
+   "cut_from_original_seconds": [
+    0,
+    11.4
+   ],
+   "used_seconds": [
+    [
+     0.5,
+     3.0
+    ],
+    [
+     3.0,
+     5.6
+    ]
+   ]
+  },
+  {
+   "file": "top10/tropical_blowhole.mp4",
+   "title": "Dramatic Coastal Blowholes and Ocean Waves",
+   "page": "https://www.pexels.com/video/dramatic-coastal-blowholes-and-ocean-waves-32379563/",
+   "file_url": "https://videos.pexels.com/video-files/32379563/13811087_3840_2160_60fps.mp4 (via https://www.pexels.com/download/video/32379563/)",
+   "license": "Pexels License",
+   "license_url": "https://www.pexels.com/license/",
+   "credit": "FUNESMA79 . (Pexels)",
+   "date": "2025-06-02 (Pexels upload)",
+   "cut_from_original_seconds": [
+    8.5,
+    21.5
+   ],
+   "used_seconds": [
+    [
+     2.0,
+     4.5
+    ],
+    [
+     9.3,
+     11.9
+    ]
+   ]
+  }
+ ]
+}
