@@ -1,437 +1,502 @@
 {
  "credit": "",
- "titleStyle": "band",
- "captionY": 1650,
+ "postFrame": {
+  "app": "썰방",
+  "color": "#FF8A4C",
+  "meta": "익명 | 창작 사연게시판"
+ },
  "sources": {},
  "music": {
   "file": "music/scheming_weasel.mp3",
-  "gain": 0.2,
+  "gain": 0.16,
   "start": 0
  },
  "sfx": [
   [
-   "b",
+   "a",
    "pop",
-   0.3
-  ],
-  [
-   "c",
-   "boing",
-   0.3
-  ],
-  [
-   "e",
-   "whoosh",
-   0.3
-  ],
-  [
-   "e.할아버지",
-   "heartbeat",
-   0.35
-  ],
-  [
-   "e.우유랑",
-   "pop",
-   0.3
-  ],
-  [
-   "g.나가",
-   "whoosh_dn",
-   0.3
-  ],
-  [
-   "h.똑같이",
-   "k_glitch_002",
    0.25
   ],
   [
-   "i",
-   "heartbeat",
-   0.35
-  ],
-  [
-   "j",
+   "d",
    "whoosh",
-   0.3
+   0.25
   ],
   [
-   "k",
-   "bubble",
-   0.3
-  ],
-  [
-   "l.쪽지",
-   "pop_hi",
-   0.3
-  ],
-  [
-   "n.아버지",
+   "l",
    "k_error_003",
-   0.3
+   0.25
   ],
   [
-   "o.시급이",
-   "tada",
-   0.35
+   "o",
+   "coin",
+   0.3
   ]
  ],
  "clips": [
   {
    "from": "a",
-   "label": "post",
+   "label": "a",
    "gfx": {
-    "type": "post",
-    "title": "새벽 3시 할아버지한테는 [돈 받지 말래]",
-    "body": [
-     "편의점 야간 알바 첫날",
-     "사장님의 [이상한 규칙]"
-    ],
-    "steps": [
-     "a.야간",
-     "a.말했다"
-    ],
+    "type": "scene",
+    "bg": "store",
+    "sign": "24시 편의점",
+    "prop": "🥛🍞",
+    "propX": 0.5,
     "chars": [
      {
+      "style": "chibi",
+      "look": {
+       "hairdo": "short",
+       "hair": "#2a2a30",
+       "top": "#3cb4a5",
+       "topKind": "vest",
+       "pants": "#3d4a66"
+      },
       "name": "나",
       "mood": "shock",
-      "color": "#FFD84D"
+      "x": 0.28
      },
      {
+      "style": "chibi",
+      "look": {
+       "age": "old",
+       "hairdo": "bald",
+       "hair": "#d9d9de",
+       "top": "#8a6f55",
+       "topKind": "cardigan",
+       "glasses": true
+      },
       "name": "할아버지",
-      "mood": "neutral",
-      "color": "#E6D5B8"
+      "mood": "happy",
+      "x": 0.72
      }
     ]
    }
   },
   {
    "from": "b",
-   "label": "rule",
+   "label": "b",
    "gfx": {
     "type": "scene",
+    "bg": "store",
+    "sign": "24시 편의점",
     "chars": [
      {
-      "name": "나",
-      "mood": "neutral"
-     },
-     {
+      "style": "chibi",
+      "look": {
+       "hairdo": "side",
+       "hair": "#3a3030",
+       "top": "#3cb4a5",
+       "topKind": "vest",
+       "mustache": true
+      },
       "name": "사장님",
-      "mood": "think",
-      "color": "#C9A7FF"
+      "mood": "smug",
+      "x": 0.6,
+      "size": 1.2
      }
-    ],
-    "place": "📍 편의점",
-    "say": {
-     "who": 1,
-     "text": "새⁠벽 3⁠시 할⁠아⁠버⁠지⁠한⁠테⁠는 [⁠돈 받⁠지 마⁠.⁠]"
-    },
-    "bg": "store"
+    ]
    }
   },
   {
    "from": "c",
-   "label": "why",
+   "label": "c",
    "gfx": {
     "type": "scene",
+    "bg": "store",
+    "sign": "24시 편의점",
+    "zoom0": 1.0,
+    "zoom": 1.06,
     "chars": [
      {
-      "name": "나",
-      "mood": "shock"
-     },
-     {
-      "name": "사장님",
+      "style": "chibi",
+      "look": {
+       "hairdo": "side",
+       "hair": "#3a3030",
+       "top": "#3cb4a5",
+       "topKind": "vest",
+       "mustache": true
+      },
       "mood": "neutral",
-      "color": "#C9A7FF"
+      "size": 1.55
      }
-    ],
-    "say": {
-     "who": 0,
-     "text": "네⁠? [⁠왜⁠요⁠?⁠]"
-    },
-    "zoom": 1.08,
-    "focus": 0,
-    "bg": "store",
-    "sign": "24시 편의점"
+    ]
+   }
+  },
+  {
+   "from": "d",
+   "label": "d",
+   "gfx": {
+    "type": "scene",
+    "bg": "night",
+    "place": "📍 새벽 3시",
+    "prop": "🕒",
+    "propX": 0.2,
+    "chars": [
+     {
+      "style": "chibi",
+      "look": {
+       "age": "old",
+       "hairdo": "bald",
+       "hair": "#d9d9de",
+       "top": "#8a6f55",
+       "topKind": "cardigan",
+       "glasses": true
+      },
+      "mood": "neutral",
+      "x": 0.62,
+      "size": 1.1
+     }
+    ]
    }
   },
   {
    "from": "e",
-   "label": "3am",
+   "label": "e",
    "gfx": {
     "type": "scene",
-    "chars": [],
-    "card": "새벽 [3:00]",
-    "bg": "night"
+    "bg": "store",
+    "sign": "24시 편의점",
+    "prop": "🥛🍞",
+    "propX": 0.72,
+    "chars": [
+     {
+      "style": "chibi",
+      "look": {
+       "age": "old",
+       "hairdo": "bald",
+       "hair": "#d9d9de",
+       "top": "#8a6f55",
+       "topKind": "cardigan",
+       "glasses": true
+      },
+      "mood": "happy",
+      "x": 0.3,
+      "size": 1.1
+     }
+    ]
    }
   },
   {
-   "from": "e.할아버지",
-   "label": "enter",
+   "from": "f",
+   "label": "f",
    "gfx": {
     "type": "scene",
+    "bg": "store",
+    "sign": "24시 편의점",
     "chars": [
      {
-      "name": "나",
+      "style": "chibi",
+      "look": {
+       "age": "old",
+       "hairdo": "bald",
+       "hair": "#d9d9de",
+       "top": "#8a6f55",
+       "topKind": "cardigan",
+       "glasses": true
+      },
       "mood": "neutral",
-      "to": "shock"
-     },
-     {
-      "name": "할아버지",
-      "mood": "neutral",
-      "color": "#E6D5B8"
+      "size": 1.55
      }
-    ],
-    "prop": "🥛🍞",
-    "steps": [
-     0,
-     "e.우유랑",
-     "e.우유랑"
-    ],
-    "bg": "store",
-    "sign": "24시 편의점"
+    ]
    }
   },
   {
    "from": "g",
-   "label": "leave",
+   "label": "g",
    "gfx": {
     "type": "scene",
+    "bg": "store",
+    "sign": "24시 편의점",
     "chars": [
      {
-      "name": "나",
-      "mood": "shock"
-     },
-     {
-      "name": "할아버지",
-      "mood": "neutral",
-      "color": "#E6D5B8",
-      "flip": true,
-      "x": 0.8
+      "style": "chibi",
+      "look": {
+       "hairdo": "short",
+       "hair": "#2a2a30",
+       "top": "#3cb4a5",
+       "topKind": "vest",
+       "pants": "#3d4a66"
+      },
+      "mood": "shy",
+      "x": 0.45,
+      "size": 1.45
      }
-    ],
-    "prop": "🚪",
-    "propX": 0.52,
-    "steps": [
-     0,
-     "g.나가"
-    ],
-    "bg": "store",
-    "sign": "24시 편의점"
+    ]
    }
   },
   {
    "from": "h",
-   "label": "again",
+   "label": "h",
    "gfx": {
     "type": "scene",
+    "bg": "store",
+    "sign": "24시 편의점",
     "chars": [
      {
-      "name": "나",
-      "mood": "sick"
-     },
-     {
-      "name": "할아버지",
-      "mood": "neutral",
-      "color": "#E6D5B8"
+      "style": "chibi",
+      "look": {
+       "age": "old",
+       "hairdo": "bald",
+       "hair": "#d9d9de",
+       "top": "#8a6f55",
+       "topKind": "cardigan",
+       "glasses": true
+      },
+      "mood": "laugh",
+      "x": 0.5,
+      "size": 1.35
      }
-    ],
-    "prop": "🥛🍞",
-    "big": "매일 [3:00]",
-    "place": "📍 매일 새벽",
-    "steps": [
-     0,
-     0.1,
-     9,
-     "h.똑같이"
-    ],
-    "bg": "store"
+    ]
    }
   },
   {
    "from": "i",
-   "label": "ghost",
+   "label": "i",
    "gfx": {
     "type": "scene",
+    "bg": "night",
+    "big": "[30]일째",
     "chars": [
      {
-      "name": "나",
-      "mood": "sick"
+      "style": "chibi",
+      "look": {
+       "age": "old",
+       "hairdo": "bald",
+       "hair": "#d9d9de",
+       "top": "#8a6f55",
+       "topKind": "cardigan",
+       "glasses": true
+      },
+      "mood": "happy",
+      "x": 0.3
+     },
+     {
+      "style": "chibi",
+      "look": {
+       "hairdo": "short",
+       "hair": "#2a2a30",
+       "top": "#3cb4a5",
+       "topKind": "vest",
+       "pants": "#3d4a66"
+      },
+      "mood": "happy",
+      "x": 0.72
      }
-    ],
-    "prop": "👻",
-    "say": {
-     "who": 0,
-     "text": "혹⁠시⁠.⁠.⁠. [⁠사⁠람 아⁠닌 거⁠] 아⁠니⁠야⁠?"
-    },
-    "zoom": 1.1,
-    "focus": 0,
-    "steps": [
-     0,
-     "i.사람"
-    ],
-    "bg": "night"
+    ]
    }
   },
   {
    "from": "j",
-   "label": "month",
+   "label": "j",
    "gfx": {
     "type": "scene",
-    "chars": [],
-    "card": "한 달 뒤...",
     "bg": "store",
-    "sign": "24시 편의점"
+    "sign": "24시 편의점",
+    "prop": "🏷️",
+    "propX": 0.84,
+    "chars": [
+     {
+      "style": "chibi",
+      "look": {
+       "age": "old",
+       "hairdo": "bald",
+       "hair": "#d9d9de",
+       "top": "#8a6f55",
+       "topKind": "cardigan",
+       "glasses": true
+      },
+      "mood": "think",
+      "x": 0.45,
+      "size": 1.45
+     }
+    ]
    }
   },
   {
    "from": "k",
-   "label": "envelope",
+   "label": "k",
    "gfx": {
     "type": "scene",
+    "bg": "store",
+    "sign": "24시 편의점",
     "chars": [
      {
-      "name": "나",
-      "mood": "shock"
-     },
-     {
-      "name": "할아버지",
-      "mood": "happy",
-      "color": "#E6D5B8"
+      "style": "chibi",
+      "look": {
+       "age": "old",
+       "hairdo": "bald",
+       "hair": "#d9d9de",
+       "top": "#8a6f55",
+       "topKind": "cardigan",
+       "glasses": true
+      },
+      "mood": "smug",
+      "size": 1.55
      }
-    ],
-    "place": "📍 마지막 날",
-    "prop": "✉️",
-    "say": {
-     "who": 1,
-     "text": "그⁠동⁠안 [⁠고⁠마⁠웠⁠네⁠.⁠]"
-    },
-    "steps": [
-     0,
-     0.4
-    ],
-    "bg": "store"
+    ]
    }
   },
   {
    "from": "l",
-   "label": "inside",
+   "label": "l",
    "gfx": {
     "type": "scene",
+    "bg": "store",
+    "sign": "24시 편의점",
     "chars": [
      {
+      "style": "chibi",
+      "look": {
+       "age": "old",
+       "hairdo": "bald",
+       "hair": "#d9d9de",
+       "top": "#8a6f55",
+       "topKind": "cardigan",
+       "glasses": true
+      },
+      "name": "할아버지",
+      "mood": "laugh",
+      "x": 0.28
+     },
+     {
+      "style": "chibi",
+      "look": {
+       "hairdo": "side",
+       "hair": "#3a3030",
+       "top": "#3cb4a5",
+       "topKind": "vest",
+       "mustache": true
+      },
+      "name": "사장님",
+      "mood": "happy",
+      "x": 0.5
+     },
+     {
+      "style": "chibi",
+      "look": {
+       "hairdo": "short",
+       "hair": "#2a2a30",
+       "top": "#3cb4a5",
+       "topKind": "vest",
+       "pants": "#3d4a66"
+      },
       "name": "나",
-      "mood": "shock"
+      "mood": "shock",
+      "x": 0.8,
+      "size": 0.9
      }
-    ],
-    "prop": "💵📝",
-    "steps": [
-     0,
-     "l.우유"
-    ],
-    "bg": "store",
-    "sign": "24시 편의점"
+    ]
    }
   },
   {
    "from": "m",
-   "label": "note",
+   "label": "m",
    "gfx": {
     "type": "scene",
+    "bg": "night",
+    "prop": "🔍",
+    "propX": 0.2,
     "chars": [
      {
-      "name": "나",
-      "mood": "cry"
-     },
-     {
-      "name": "할아버지",
-      "mood": "happy",
-      "color": "#E6D5B8"
+      "style": "chibi",
+      "look": {
+       "age": "old",
+       "hairdo": "bald",
+       "hair": "#d9d9de",
+       "top": "#8a6f55",
+       "topKind": "cardigan",
+       "glasses": true
+      },
+      "mood": "smug",
+      "x": 0.55,
+      "size": 1.25
      }
-    ],
-    "prop": "📝",
-    "say": {
-     "who": 1,
-     "text": "우⁠리 아⁠들 가⁠게⁠, [⁠잘 지⁠켜 줘⁠서⁠] 고⁠맙⁠네⁠."
-    },
-    "bg": "store",
-    "sign": "24시 편의점"
+    ]
    }
   },
   {
    "from": "n",
-   "label": "father",
+   "label": "n",
    "gfx": {
     "type": "scene",
+    "bg": "bedroom",
+    "prop": "📱",
+    "propX": 0.72,
     "chars": [
      {
-      "name": "할아버지",
-      "mood": "smug",
-      "color": "#E6D5B8"
-     },
-     {
-      "name": "사장님",
-      "mood": "laugh",
-      "color": "#C9A7FF"
+      "style": "chibi",
+      "look": {
+       "hairdo": "short",
+       "hair": "#2a2a30",
+       "top": "#3cb4a5",
+       "topKind": "vest",
+       "pants": "#3d4a66"
+      },
+      "mood": "think",
+      "x": 0.3,
+      "size": 1.1
      }
-    ],
-    "big": "[아버지]?!",
-    "steps": [
-     0,
-     0,
-     9,
-     "n.아버지"
-    ],
-    "bg": "store",
-    "sign": "24시 편의점"
-   }
-  },
-  {
-   "from": "n.알바생이",
-   "label": "check",
-   "gfx": {
-    "type": "scene",
-    "chars": [
-     {
-      "name": "할아버지",
-      "mood": "smug",
-      "color": "#E6D5B8"
-     }
-    ],
-    "prop": "👀",
-    "place": "📍 매일 새벽 3시",
-    "steps": [
-     0,
-     "n.몰래"
-    ],
-    "bg": "store"
+    ]
    }
   },
   {
    "from": "o",
-   "label": "raise",
+   "label": "o",
    "gfx": {
     "type": "scene",
+    "bg": "bedroom",
+    "big": "💸 [UP]",
     "chars": [
      {
-      "name": "나",
-      "mood": "love"
+      "style": "chibi",
+      "look": {
+       "hairdo": "short",
+       "hair": "#2a2a30",
+       "top": "#3cb4a5",
+       "topKind": "vest",
+       "pants": "#3d4a66"
+      },
+      "mood": "shock",
+      "size": 1.55
+     }
+    ]
+   }
+  },
+  {
+   "from": "p",
+   "label": "p",
+   "gfx": {
+    "type": "scene",
+    "bg": "store",
+    "sign": "24시 편의점",
+    "chars": [
+     {
+      "style": "chibi",
+      "look": {
+       "hairdo": "side",
+       "hair": "#3a3030",
+       "top": "#3cb4a5",
+       "topKind": "vest",
+       "mustache": true
+      },
+      "mood": "laugh",
+      "x": 0.3
      },
      {
-      "name": "사장님",
-      "mood": "happy",
-      "color": "#C9A7FF"
+      "style": "chibi",
+      "look": {
+       "hairdo": "short",
+       "hair": "#2a2a30",
+       "top": "#3cb4a5",
+       "topKind": "vest",
+       "pants": "#3d4a66"
+      },
+      "mood": "love",
+      "x": 0.72
      }
-    ],
-    "prop": "💰",
-    "big": "시급 [UP]",
-    "steps": [
-     0,
-     0.1,
-     9,
-     "o.올랐다"
-    ],
-    "bg": "store",
-    "sign": "24시 편의점"
+    ]
    }
   }
  ]
