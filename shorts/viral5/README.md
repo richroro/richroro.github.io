@@ -3532,7 +3532,7 @@ python3 media/retro/v2_scorecard.py retro1 retro2 retro3 retro4 retro5 retro6 re
 | `retro11` | 엘리베이터 없어도 살았다 / 80년대 산동네 실태 | 27.7초 | 1981, 1984, 1989 | 1981년 서울 성북구 산을 덮은 집 → 지붕 위에 지붕 → 언덕 → 1989년 부산 영도 산비탈·항구 → 1984년 남산에서 본 도심 빌딩 → 지금은 엘리베이터 → 기억나는 분? | Gymnopedie No 1 |
 | `retro12` | 빌딩숲 없어도 북적였다 / 80년대 시내 모습 | 29.6초 | 1980~1995 | 1980년 광화문과 뒤의 중앙청 → 1984년 숭례문 일대 빌딩, 시청과 호텔 → 1983년 연말 남대문시장 털옷 → 1985년 상봉터미널 준공 → 1995년 부산 자갈치시장 좌판·소쿠리 → 1993년 광화문 앞 한산한 도로 → 기억나는 분? | Gymnopedie No 2 |
 
-모든 편은 `python3 qa_review.py retro1 … retro12`에서 **WARN 0개, FAIL 0개**입니다. 길이 27.1~30.5초, 자막 한 장 최장 12자, 소리 −13.9~−14.0 LUFS, 용량 9.6~28.6MB입니다. 각 편의 `out/review/<id>/first.png`, `last.png`, `sheet.png`를 보고 다음을 확인했습니다.
+모든 편은 `python3 qa_review.py retro1 … retro12`에서 **WARN 0개, FAIL 0개**입니다. 베이스 브랜치에 새로 생긴 "설명글" 검사도 통과했습니다. 업로드 설명글 spec은 `upload/specs/retro1~12.json`, 생성된 설명글은 `upload/txt/retro1~12.txt`에 있습니다. 채널 이름과 핸들은 아직 `upload/channels.json`의 자리표시자입니다. 길이 27.1~30.5초, 자막 한 장 최장 12자, 소리 −13.9~−14.0 LUFS, 용량 9.6~28.6MB입니다. 각 편의 `out/review/<id>/first.png`, `last.png`, `sheet.png`를 보고 다음을 확인했습니다.
 
 - 0초 프레임에 2줄 제목, 사람 또는 풍경, 첫 자막이 함께 보입니다.
 - 마지막 장면은 첫 장면의 사진이라 루프로 이어집니다.
