@@ -1,0 +1,318 @@
+{
+ "credit": "",
+ "titleStyle": "band",
+ "captionY": 1650,
+ "sources": {},
+ "music": {
+  "file": "music/monkeys_spinning_monkeys.mp3",
+  "gain": 0.2,
+  "start": 0
+ },
+ "sfx": [
+  [
+   "b",
+   "pop",
+   0.25
+  ],
+  [
+   "c",
+   "pop",
+   0.3
+  ],
+  [
+   "d",
+   "pop_hi",
+   0.25
+  ],
+  [
+   "e.삼백",
+   "coin",
+   0.25
+  ],
+  [
+   "f",
+   "whoosh",
+   0.25
+  ],
+  [
+   "g",
+   "whoosh",
+   0.25
+  ],
+  [
+   "h.하루",
+   "ding",
+   0.25
+  ],
+  [
+   "j.퇴원하셨다",
+   "tada",
+   0.3
+  ],
+  [
+   "k",
+   "pop",
+   0.25
+  ],
+  [
+   "l.당신을",
+   "pop_hi",
+   0.3
+  ]
+ ],
+ "clips": [
+  {
+   "from": "a",
+   "label": "post",
+   "gfx": {
+    "type": "post",
+    "title": "할아버지가 매일 [같은 나무]만 찍는 썰",
+    "body": [
+     "매일 아침 같은 자리, 같은 각도",
+     "사진첩에 나무만 가득 🌳"
+    ],
+    "steps": [
+     "a.매일",
+     "a.나무"
+    ]
+   }
+  },
+  {
+   "from": "b",
+   "label": "angle",
+   "gfx": {
+    "type": "scene",
+    "bg": "home",
+    "place": "📍 거실 창가",
+    "prop": "📸",
+    "chars": [
+     {
+      "name": "할아버지",
+      "color": "#B9F27C",
+      "mood": "think"
+     }
+    ]
+   }
+  },
+  {
+   "from": "c",
+   "label": "why",
+   "gfx": {
+    "type": "scene",
+    "bg": "home",
+    "say": {
+     "who": 0,
+     "text": "할아버지, 그 나무가 [그렇게 좋아요?]"
+    },
+    "prop": "🌳",
+    "chars": [
+     {
+      "name": "나",
+      "color": "#FFD84D",
+      "mood": "think"
+     },
+     {
+      "name": "할아버지",
+      "color": "#B9F27C",
+      "mood": "neutral"
+     }
+    ]
+   }
+  },
+  {
+   "from": "d",
+   "label": "today",
+   "gfx": {
+    "type": "scene",
+    "bg": "home",
+    "say": {
+     "who": 1,
+     "text": "응. [오늘 거] 찍어야지."
+    },
+    "prop": "📸",
+    "zoom": 1.08,
+    "focus": 1,
+    "chars": [
+     {
+      "name": "나",
+      "color": "#FFD84D",
+      "mood": "think"
+     },
+     {
+      "name": "할아버지",
+      "color": "#B9F27C",
+      "mood": "happy"
+     }
+    ]
+   }
+  },
+  {
+   "from": "e",
+   "label": "300",
+   "gfx": {
+    "type": "scene",
+    "bg": "home",
+    "prop": "📱",
+    "big": "🌳 × [300]",
+    "chars": [
+     {
+      "name": "나",
+      "color": "#FFD84D",
+      "mood": "shock"
+     }
+    ],
+    "steps": [
+     0,
+     0.1,
+     9,
+     "e.삼백"
+    ]
+   }
+  },
+  {
+   "from": "f",
+   "label": "seasons",
+   "gfx": {
+    "type": "scene",
+    "bg": "home",
+    "prop": "🌸🌳🍁",
+    "chars": [
+     {
+      "name": "나",
+      "color": "#FFD84D",
+      "mood": "think"
+     }
+    ]
+   }
+  },
+  {
+   "from": "g",
+   "label": "hospital",
+   "gfx": {
+    "type": "scene",
+    "bg": "linear-gradient(180deg,#e9f6f3 0%,#d6eee8 76%,#bcd9d2 76%)",
+    "place": "📍 병원",
+    "prop": "🛏️",
+    "chars": [
+     {
+      "name": "할머니",
+      "color": "#C9A7FF",
+      "mood": "sleep"
+     }
+    ]
+   }
+  },
+  {
+   "from": "h",
+   "label": "daily",
+   "gfx": {
+    "type": "scene",
+    "bg": "linear-gradient(180deg,#e9f6f3 0%,#d6eee8 76%,#bcd9d2 76%)",
+    "prop": "📱🌳",
+    "chars": [
+     {
+      "name": "할머니",
+      "color": "#C9A7FF",
+      "mood": "happy"
+     }
+    ]
+   }
+  },
+  {
+   "from": "i",
+   "label": "red",
+   "gfx": {
+    "type": "scene",
+    "bg": "linear-gradient(180deg,#e9f6f3 0%,#d6eee8 76%,#bcd9d2 76%)",
+    "say": {
+     "who": 0,
+     "text": "오늘은 잎이 [더 빨개졌네.]"
+    },
+    "prop": "🍁",
+    "zoom": 1.08,
+    "focus": 0,
+    "chars": [
+     {
+      "name": "할머니",
+      "color": "#C9A7FF",
+      "mood": "love"
+     }
+    ]
+   }
+  },
+  {
+   "from": "j",
+   "label": "home",
+   "gfx": {
+    "type": "scene",
+    "bg": "home",
+    "place": "📍 오늘",
+    "prop": "💐",
+    "chars": [
+     {
+      "name": "할아버지",
+      "color": "#B9F27C",
+      "mood": "laugh"
+     },
+     {
+      "name": "할머니",
+      "color": "#C9A7FF",
+      "mood": "happy"
+     }
+    ]
+   }
+  },
+  {
+   "from": "k",
+   "label": "real",
+   "gfx": {
+    "type": "scene",
+    "bg": "home",
+    "say": {
+     "who": 1,
+     "text": "어머, [사진보다] 훨씬 예쁘네."
+    },
+    "prop": "🌳",
+    "chars": [
+     {
+      "name": "할아버지",
+      "color": "#B9F27C",
+      "mood": "happy"
+     },
+     {
+      "name": "할머니",
+      "color": "#C9A7FF",
+      "mood": "love"
+     }
+    ]
+   }
+  },
+  {
+   "from": "l",
+   "label": "you",
+   "gfx": {
+    "type": "scene",
+    "bg": "home",
+    "say": {
+     "who": 0,
+     "text": "그럼 내일부턴, [당신을] 찍어야지."
+    },
+    "prop": "📸",
+    "zoom": 1.08,
+    "focus": 0,
+    "chars": [
+     {
+      "name": "할아버지",
+      "color": "#B9F27C",
+      "mood": "smug"
+     },
+     {
+      "name": "할머니",
+      "color": "#C9A7FF",
+      "mood": "shy"
+     }
+    ]
+   }
+  }
+ ]
+}

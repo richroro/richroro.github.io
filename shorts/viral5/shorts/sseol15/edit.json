@@ -1,0 +1,330 @@
+{
+ "credit": "",
+ "titleStyle": "band",
+ "captionY": 1650,
+ "sources": {},
+ "music": {
+  "file": "music/sneaky_snitch.mp3",
+  "gain": 0.2,
+  "start": 0
+ },
+ "sfx": [
+  [
+   "b.한여름에도",
+   "boing",
+   0.3
+  ],
+  [
+   "c",
+   "pop",
+   0.3
+  ],
+  [
+   "d",
+   "whoosh",
+   0.25
+  ],
+  [
+   "e.사장님이었다",
+   "ding",
+   0.3
+  ],
+  [
+   "f",
+   "pop",
+   0.3
+  ],
+  [
+   "g",
+   "pop",
+   0.25
+  ],
+  [
+   "h.덜덜",
+   "boing",
+   0.25
+  ],
+  [
+   "i.북극이었다",
+   "k_error_003",
+   0.3
+  ],
+  [
+   "j",
+   "whoosh",
+   0.3
+  ],
+  [
+   "k.종이가",
+   "pop",
+   0.3
+  ],
+  [
+   "l.고장",
+   "tada",
+   0.3
+  ]
+ ],
+ "clips": [
+  {
+   "from": "a",
+   "label": "post",
+   "gfx": {
+    "type": "post",
+    "title": "독서실 [내 자리에만] 매일 핫팩이 놓여 있던 썰",
+    "body": [
+     "한여름에도 매일 저녁",
+     "누가 두는지 아무도 모름"
+    ],
+    "steps": [
+     "a.독서실",
+     "a.핫팩이"
+    ]
+   }
+  },
+  {
+   "from": "b",
+   "label": "summer",
+   "gfx": {
+    "type": "scene",
+    "bg": "class",
+    "place": "📍 8월",
+    "prop": "☀️",
+    "big": "♨️ [핫팩]",
+    "chars": [
+     {
+      "name": "나",
+      "color": "#FFD84D",
+      "mood": "shock"
+     }
+    ],
+    "steps": [
+     0,
+     0.1,
+     9,
+     "b.한여름에도"
+    ]
+   }
+  },
+  {
+   "from": "c",
+   "label": "fan",
+   "gfx": {
+    "type": "scene",
+    "bg": "class",
+    "say": {
+     "who": 0,
+     "text": "누구지? 혹시 [비밀 팬]인가?"
+    },
+    "prop": "♨️",
+    "chars": [
+     {
+      "name": "나",
+      "color": "#FFD84D",
+      "mood": "shy"
+     }
+    ],
+    "sign": "쉿! 정숙"
+   }
+  },
+  {
+   "from": "d",
+   "label": "hide",
+   "gfx": {
+    "type": "scene",
+    "bg": "class",
+    "place": "📍 독서실 복도",
+    "prop": "👀",
+    "chars": [
+     {
+      "name": "나",
+      "color": "#FFD84D",
+      "mood": "think"
+     }
+    ],
+    "sign": "쉿! 정숙"
+   }
+  },
+  {
+   "from": "e",
+   "label": "boss",
+   "gfx": {
+    "type": "scene",
+    "bg": "class",
+    "prop": "♨️",
+    "chars": [
+     {
+      "name": "나",
+      "color": "#FFD84D",
+      "mood": "shock"
+     },
+     {
+      "name": "사장님",
+      "color": "#8FD3FF",
+      "mood": "neutral"
+     }
+    ],
+    "sign": "쉿! 정숙",
+    "steps": [
+     0,
+     0.1
+    ]
+   }
+  },
+  {
+   "from": "f",
+   "label": "why",
+   "gfx": {
+    "type": "scene",
+    "bg": "class",
+    "say": {
+     "who": 0,
+     "text": "사장님? 이거 [왜 저만] 주세요?"
+    },
+    "prop": "♨️",
+    "chars": [
+     {
+      "name": "나",
+      "color": "#FFD84D",
+      "mood": "think"
+     },
+     {
+      "name": "사장님",
+      "color": "#8FD3FF",
+      "mood": "shy"
+     }
+    ],
+    "sign": "쉿! 정숙"
+   }
+  },
+  {
+   "from": "g",
+   "label": "vent",
+   "gfx": {
+    "type": "scene",
+    "bg": "class",
+    "say": {
+     "who": 1,
+     "text": "학생 자리, [에어컨 바로 밑]이잖아."
+    },
+    "prop": "🌬️",
+    "chars": [
+     {
+      "name": "나",
+      "color": "#FFD84D",
+      "mood": "shock"
+     },
+     {
+      "name": "사장님",
+      "color": "#8FD3FF",
+      "mood": "neutral"
+     }
+    ],
+    "sign": "쉿! 정숙"
+   }
+  },
+  {
+   "from": "h",
+   "label": "shiver",
+   "gfx": {
+    "type": "scene",
+    "bg": "class",
+    "say": {
+     "who": 1,
+     "text": "맨날 [덜덜] 떨면서 공부하길래."
+    },
+    "chars": [
+     {
+      "name": "나",
+      "color": "#FFD84D",
+      "mood": "shy"
+     },
+     {
+      "name": "사장님",
+      "color": "#8FD3FF",
+      "mood": "happy"
+     }
+    ],
+    "sign": "쉿! 정숙"
+   }
+  },
+  {
+   "from": "i",
+   "label": "arctic",
+   "gfx": {
+    "type": "scene",
+    "bg": "class",
+    "place": "📍 내 자리",
+    "prop": "❄️",
+    "big": "🥶 [북극]",
+    "chars": [
+     {
+      "name": "나",
+      "color": "#FFD84D",
+      "mood": "sick"
+     }
+    ],
+    "steps": [
+     0,
+     0.1,
+     9,
+     "i.북극이었다"
+    ]
+   }
+  },
+  {
+   "from": "j",
+   "label": "next",
+   "gfx": {
+    "type": "scene",
+    "bg": "class",
+    "card": "다음 날...",
+    "chars": []
+   }
+  },
+  {
+   "from": "k",
+   "label": "paper",
+   "gfx": {
+    "type": "scene",
+    "bg": "class",
+    "prop": "📄",
+    "chars": [
+     {
+      "name": "나",
+      "color": "#FFD84D",
+      "mood": "think",
+      "to": "shock"
+     }
+    ],
+    "sign": "에어컨 ↓",
+    "steps": [
+     0,
+     "k.종이가",
+     "k.종이가"
+    ]
+   }
+  },
+  {
+   "from": "l",
+   "label": "broken",
+   "gfx": {
+    "type": "scene",
+    "bg": "class",
+    "chars": [
+     {
+      "name": "나",
+      "color": "#FFD84D",
+      "mood": "laugh"
+     },
+     {
+      "name": "사장님",
+      "color": "#8FD3FF",
+      "mood": "smug"
+     }
+    ],
+    "sign": "📄 고장 📄"
+   }
+  }
+ ]
+}
