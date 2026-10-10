@@ -56,7 +56,11 @@ def download(sid):
         if os.path.exists(dst): continue
         cache = f"{ROOT}/build/teuk_photos/{k}.orig"; os.makedirs(os.path.dirname(cache), exist_ok=True)
         if not os.path.exists(cache):
-            open(cache, "wb").write(get(P[k]["thumb_url"], True)); time.sleep(1)
+            url = P[k]["thumb_url"]
+            if "/thumb/" not in url:  # an unscaled original (originals are throttled harder): ask for a 1280 px rendering instead
+                head, name = P[k]["file_url"].rsplit("/", 1); url = head.replace("/commons/", "/commons/thumb/") + f"/{name}/1280px-{name}"
+            data = get(url, True)  # written only once complete, so a failed fetch leaves no empty cache
+            open(cache, "wb").write(data); time.sleep(2)
         # cover the 1080x1160 picture box at its native resolution (the renderer adds the slow push-in)
         subprocess.run(["ffmpeg", "-v", "error", "-y", "-i", cache, "-vf", "scale=1296:1392:force_original_aspect_ratio=increase", "-q:v", "3", dst], check=True)
     print(sid, "photos ready")
