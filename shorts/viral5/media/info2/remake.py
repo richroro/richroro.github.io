@@ -93,7 +93,9 @@ def main(sid):
     for k in spec.get("dropSources", []): edit["sources"].pop(k, None)
     for k, v in spec.get("clips", {}).items():
         if v is None: edit["clips"][int(k)] = None
-        else: edit["clips"][int(k)].update(v)
+        else:
+            edit["clips"][int(k)].update(v)
+            for f in [f for f, x in v.items() if x is None]: edit["clips"][int(k)].pop(f)
     for k, c in sorted(spec.get("insert", []), key=lambda x: -x[0]): edit["clips"].insert(k, c)
     edit["clips"] = [c for c in edit["clips"] if c]
     edit["frame"] = "tall"
