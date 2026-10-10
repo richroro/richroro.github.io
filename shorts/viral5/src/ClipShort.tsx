@@ -7,6 +7,7 @@ import { Captions, CapPage } from "./lib/Captions";
 import { BODY, TITLE, loadFonts } from "./lib/fonts";
 import { Sticker, clamp, eOut, prog } from "./lib/fx";
 import { GFX_BG, GfxView, Marked, Marks, type Gfx, type Mark } from "./lib/Gfx";
+import { ROUNDED43, Rounded43, YearSticker, rounded43Crop } from "./lib/Retro";
 
 loadFonts();
 export const FPS = 30;
@@ -14,13 +15,16 @@ const fr = (s: number) => Math.round(s * FPS);
 
 export type Clip = {
   file: string | null; label: string; at: number; dur: number; speed: number;
-  frame: "square" | "wide" | "full" | "film"; zoom: [number, number]; focus: string; audio: number;
+  frame: "square" | "wide" | "full" | "film" | "rounded43"; zoom: [number, number]; focus: string; audio: number;
   /** face-centred crop: (cx, cy) in 0..1 of the source frame, zoom over a plain cover fit, source size */
   crop?: { cx: number; cy: number; zoom: number; w: number; h: number };
   /** this clip's own credit line, shown instead of the short's while it is on screen */
   credit?: string;
   /** a graphic (lib/Gfx.tsx) drawn in the frame box instead of footage; footage, if any, plays darkened behind it */
   gfx?: Gfx;
+  /** "rounded43" frame only (lib/Retro.tsx): film grain over the photo (0..1), and the year sticker on its corner */
+  grain?: number;
+  year?: string;
 };
 /** one person of a side-by-side two-shot: (cx, cy) is their face in 0..1 of the whole source frame, [x0, x1] their half */
 export type Panel = { name: string; role: string; cx: number; cy: number; zoom: number; x0: number; x1: number };
@@ -58,7 +62,7 @@ export type ShortData = {
 };
 
 const FRAME = { square: { top: 400, height: 1080 }, wide: { top: 656, height: 608 }, full: { top: 0, height: 1920 },
-  film: { top: 400, height: 810 } /* a whole 4:3 frame (silent films) */ };
+  film: { top: 400, height: 810 } /* a whole 4:3 frame (silent films) */, rounded43: { top: ROUNDED43.top, height: ROUNDED43.height } };
 const PANELS = [{ top: 400, height: 540 }, { top: 940, height: 540 }];
 const have = (file: string | null) => !!file && getStaticFiles().some((f) => f.name === file);
 const isImg = (file: string | null) => !!file && /\.(jpe?g|png|webp)$/i.test(file);
@@ -139,6 +143,21 @@ const ClipView: React.FC<{ c: Clip; d: ShortData }> = ({ c, d }) => {
           );
         })}
         <div style={{ position: "absolute", left: 0, top: PANELS[1].top - 3, width: 1080, height: 6, background: "#000" }} />
+      </AbsoluteFill>
+    );
+  }
+  if (c.frame === "rounded43") {  // 그 시절 레트로: the photo in a rounded 4:3 frame on black, grain, year sticker
+    const prev = d.clips[d.clips.indexOf(c) - 1];
+    return (
+      <AbsoluteFill>
+        <Rounded43 grain={c.grain} frame={f}>
+          {c.crop && ok ? <Media c={c} volume={vol} style={rounded43Crop(c.crop, s)} /> : (
+            <AbsoluteFill style={{ transform: `scale(${s})` }}>
+              {ok ? <Media c={c} volume={vol} style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: c.focus }} /> : <Placeholder label={c.label} />}
+            </AbsoluteFill>
+          )}
+        </Rounded43>
+        {c.year ? <YearSticker year={c.year} t={f / FPS} popIn={prev?.year !== c.year} /> : null}
       </AbsoluteFill>
     );
   }
@@ -250,8 +269,9 @@ const Credit: React.FC<{ d: ShortData; t: number }> = ({ d, t }) => {
   const lw = label ? measureText({ text: label, fontFamily: BODY, fontSize: 34, fontWeight: "800" }).width + 36 : 0;
   const cw = measureText({ text, fontFamily: BODY, fontSize: 26, fontWeight: "700" }).width + 28;
   const clash = !!label && 24 + lw + 16 + cw + 24 > 1080;
+  const r43 = c?.frame === "rounded43";  // inside the rounded photo frame, bottom right
   return (
-    <div style={{ position: "absolute", right: 24, top: clash ? 482 : 414, fontFamily: BODY, fontWeight: 700, fontSize: 26, color: "rgba(255,255,255,.85)",
+    <div style={{ position: "absolute", right: r43 ? 52 : 24, top: r43 ? ROUNDED43.top + ROUNDED43.height - 60 : clash ? 482 : 414, fontFamily: BODY, fontWeight: 700, fontSize: 26, color: "rgba(255,255,255,.85)",
       background: "rgba(0,0,0,.45)", borderRadius: 12, padding: "6px 14px" }}>{text}</div>
   );
 };
