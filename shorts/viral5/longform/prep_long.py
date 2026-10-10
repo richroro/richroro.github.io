@@ -7,6 +7,7 @@ Writes  public/long/<id>/voice/*.wav, clips/*.mp4, img/*, shorts/*.mp4   (git-ig
         src/longdata/<id>.json + src/longdata/index.ts                   (the composition's data)
         upload/specs/<id>.json "chapters" and "music" (python3 upload/make_desc.py <id> writes the description)
 TTS takes are cached in build/long/<id>/tts/, so a re-run only synthesizes changed lines (--no-tts fails on a missing one).
+A "voices" entry with "engine" (README "음성 v2") is read by voice_engine.py instead, which caches in build/tts_cache/.
 
 The Edge TTS call, its trimming and the syllable timing are voice_edge.py's own code, and the number reading
 (spoken_form) is prep.py's; both are loaded from those files (their function definitions only), so the long-forms
@@ -150,6 +151,22 @@ class Long:
         v = self.voices.get(L.get("voice", "nar"), nar)
         return v.get("edge", nar.get("edge", "ko-KR-InJoonNeural")), v.get("rate", self.rate), v.get("pitch", nar.get("pitch", "+0Hz"))
 
+    def entry_v2(self, L):
+        """the line's "voices" entry when voice_engine.py should read it (another engine, or Edge with post/tempo), else None"""
+        nar = self.voices.get("nar", {}); v = dict(self.voices.get(L.get("voice", "nar"), nar))
+        if v.get("engine", "edge") == "edge" and not v.get("post") and not v.get("tempo"): return None
+        if L.get("voice", "nar") == "nar" and getattr(self, "v2_factor", None):  # "sps" calibration of a v2 narrator
+            if v.get("engine") == "supertonic": v["speed"] = round(min(2.0, float(v.get("speed", 1.05)) * self.v2_factor), 3)
+            else: v["tempo"] = round(float(v.get("tempo", 1.0)) * self.v2_factor, 3)
+        return v
+
+    def tts_v2(self, spoken, v):
+        sys.path.insert(0, V); import voice_engine
+        if self.no_tts:
+            k = voice_engine.key_of(spoken if v.get("engine", "edge") == "edge" else voice_engine.ko_text(spoken), v)
+            if not os.path.exists(f"{voice_engine.CACHE}/{k}.json"): sys.exit(f"no cached take for '{spoken[:30]}' (run without --no-tts)")
+        return voice_engine.synth(spoken if v.get("engine", "edge") == "edge" else voice_engine.ko_text(spoken), v)
+
     def tts(self, spoken, voice, rate, pitch):
         key = h(spoken, voice, rate, pitch); wav, js = f"{self.cache}/{key}.wav", f"{self.cache}/{key}.json"
         if not os.path.exists(js):
@@ -185,6 +202,12 @@ class Long:
         self.rate = nar.get("rate", "+0%")
         target = self.S.get("sps")
         if not target: return
+        if self.entry_v2({"voice": "nar"}):  # a v2 narrator: measure at its own speed, then scale speed/tempo
+            sample = [L for C in self.S["chapters"] for L in C["lines"] if L.get("voice", "nar") == "nar" and "short" not in L][:4]
+            syl = sum(len(SYL.findall(self.spoken(L))) for L in sample)
+            dur = sum(len(self.tts_v2(self.spoken(L), self.entry_v2(L))[0]) / SR for L in sample)
+            self.v2_factor = target / (syl / dur)
+            print(f"rate: natural {syl / dur:.2f} syl/s -> x{self.v2_factor:.3f} for {target} syl/s"); return
         sample = [L for C in self.S["chapters"] for L in C["lines"] if L.get("voice", "nar") == "nar" and "short" not in L][:4]
         syl = dur = 0.0
         for L in sample:  # measured the way the result is: syllables over each trimmed take
@@ -279,7 +302,8 @@ class Long:
                 L["dur"] = float(L["pause"]); L["chars"], L["ct"] = "", []; continue
             spoken = self.spoken(L)
             voice, rate, pitch = self.voice_of(L)
-            x, words = self.tts(spoken, voice, rate, pitch)
+            ent = self.entry_v2(L)
+            x, words = self.tts_v2(spoken, ent) if ent else self.tts(spoken, voice, rate, pitch)
             voiced = x[np.abs(x) > 0.02]
             y = x * (10 ** (-18 / 20) / (np.sqrt(np.mean(voiced ** 2)) + 1e-9))  # prep.py's level match
             y = np.tanh(y * 1.2) / np.tanh(1.2)

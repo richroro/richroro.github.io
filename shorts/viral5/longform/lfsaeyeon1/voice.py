@@ -8,7 +8,9 @@ The voice pass works like voice_edge.py (per-syllable times from Edge's word bou
 it writes build/lfsaeyeon1/voice/<line>.wav and build/lfsaeyeon1/timeline.json, caches each line by its text and
 voice, and puts longer pauses where a scene or chapter turns.
 
-usage: python3 longform/lfsaeyeon1/voice.py [--script-only]
+usage: python3 longform/lfsaeyeon1/voice.py [--script-only] [--voices cast.json]
+--voices replaces entries of VOICES from a JSON file for this run (A/B; script.json keeps the cast it was written with).
+An entry with "engine" (README "음성 v2") is read by voice_engine.py (cached in build/tts_cache/, word times aligned).
 """
 import asyncio, difflib, hashlib, json, os, re, subprocess, sys, wave
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -84,7 +86,9 @@ def script():
 SR = 44100
 
 async def synth(text, v):
-    import edge_tts
+    import edge_tts, ssl, edge_tts.communicate as etc
+    ca = os.environ.get("SSL_CERT_FILE")  # edge-tts trusts only certifi's bundle; behind a TLS-inspecting proxy use the system's
+    if ca and os.path.exists(ca) and hasattr(etc, "_SSL_CTX"): etc._SSL_CTX = ssl.create_default_context(cafile=ca)
     com = edge_tts.Communicate(text, v["edge"], rate=v["rate"], pitch=v["pitch"], boundary="WordBoundary", proxy=os.environ.get("HTTPS_PROXY") or None)
     audio, words = bytearray(), []
     async for ch in com.stream():
@@ -116,6 +120,8 @@ def write(path, x):
 
 def main():
     S = script()
+    if "--voices" in sys.argv:  # after script(): script.json keeps the cast it was written with
+        VOICES.update(json.load(open(sys.argv[sys.argv.index("--voices") + 1])))
     if "--script-only" in sys.argv:
         print(len(S["lines"]), "lines"); return
     out = f"{ROOT}/build/{SID}"; cache = f"{out}/cache"
@@ -125,15 +131,19 @@ def main():
     for L in S["lines"]:
         v = VOICES[L["voice"]]; spoken = L["say"].replace("|", "")
         key = hashlib.sha1(json.dumps([spoken, v], ensure_ascii=False).encode()).hexdigest()[:16]
-        if not os.path.exists(f"{cache}/{key}.json"):
+        if v.get("engine", "edge") != "edge" or v.get("post") or v.get("tempo"):  # 음성 v2: voice_engine.py reads, trims, aligns
+            sys.path.insert(0, ROOT); import voice_engine
+            x, words = voice_engine.synth(spoken if v.get("engine", "edge") == "edge" else voice_engine.ko_text(spoken), v)
+        elif not os.path.exists(f"{cache}/{key}.json"):
             for attempt in range(4):
                 try:
                     mp3, words = asyncio.run(synth(spoken, v)); break
                 except Exception as e:  # the service drops a connection now and then
                     print("retry", L["id"], e); import time; time.sleep(2 ** attempt)
             open(f"{cache}/{key}.mp3", "wb").write(mp3); json.dump(words, open(f"{cache}/{key}.json", "w"))
-        x = decode(open(f"{cache}/{key}.mp3", "rb").read()); words = json.load(open(f"{cache}/{key}.json"))
-        x, words = trim(x, words)
+        if not (v.get("engine", "edge") != "edge" or v.get("post") or v.get("tempo")):
+            x = decode(open(f"{cache}/{key}.mp3", "rb").read()); words = json.load(open(f"{cache}/{key}.json"))
+            x, words = trim(x, words)
         dur = len(x) / SR
         rec = [(c, t0 + d * k / max(1, len(chars(w)))) for t0, d, w in words for k, c in enumerate(chars(w))]
         sc = chars(spoken); times = [None] * len(sc)
