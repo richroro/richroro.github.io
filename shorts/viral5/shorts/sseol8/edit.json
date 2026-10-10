@@ -1,0 +1,337 @@
+{
+ "credit": "",
+ "titleStyle": "band",
+ "captionY": 1650,
+ "sources": {},
+ "music": {
+  "file": "music/hyperfun.mp3",
+  "gain": 0.2,
+  "start": 0
+ },
+ "sfx": [
+  [
+   "b.한참",
+   "pop",
+   0.3
+  ],
+  [
+   "c",
+   "k_question_001",
+   0.3
+  ],
+  [
+   "d.공통점이",
+   "pop_hi",
+   0.3
+  ],
+  [
+   "e.초인종을",
+   "ding",
+   0.35
+  ],
+  [
+   "e.빵",
+   "boing",
+   0.3
+  ],
+  [
+   "f.눌러",
+   "click",
+   0.4
+  ],
+  [
+   "f@end+0.05",
+   "ding",
+   0.4
+  ],
+  [
+   "g.사랑해요",
+   "pop_hi",
+   0.3
+  ],
+  [
+   "h.조카",
+   "k_error_003",
+   0.3
+  ],
+  [
+   "i",
+   "bubble",
+   0.3
+  ],
+  [
+   "j",
+   "whoosh",
+   0.3
+  ],
+  [
+   "j.사탕",
+   "pop",
+   0.3
+  ],
+  [
+   "k",
+   "tada",
+   0.3
+  ]
+ ],
+ "clips": [
+  {
+   "from": "a",
+   "label": "post",
+   "gfx": {
+    "type": "post",
+    "title": "택배 기사님들이 우리 집 앞에서 [자꾸 웃음]",
+    "body": [
+     "현관 카메라 보면",
+     "다들 [한참 웃다가] 감"
+    ],
+    "steps": [
+     "a.기사님들이",
+     "a.웃는다"
+    ]
+   }
+  },
+  {
+   "from": "b",
+   "label": "laugh",
+   "gfx": {
+    "type": "scene",
+    "chars": [
+     {
+      "name": "기사님",
+      "mood": "laugh",
+      "color": "#8FD3FF",
+      "hat": "📦"
+     }
+    ],
+    "place": "📍 우리 집 현관",
+    "prop": "📦",
+    "bg": "street"
+   }
+  },
+  {
+   "from": "c",
+   "label": "why",
+   "gfx": {
+    "type": "scene",
+    "chars": [
+     {
+      "name": "나",
+      "mood": "think"
+     }
+    ],
+    "prop": "🚪",
+    "say": {
+     "who": 0,
+     "text": "우⁠리 집 문⁠에 [⁠뭐 묻⁠었⁠나⁠?⁠]"
+    },
+    "bg": "home"
+   }
+  },
+  {
+   "from": "d",
+   "label": "replay",
+   "gfx": {
+    "type": "scene",
+    "chars": [
+     {
+      "name": "나",
+      "mood": "think",
+      "to": "shock"
+     }
+    ],
+    "prop": "📱",
+    "steps": [
+     0,
+     0.1,
+     "d.공통점이"
+    ],
+    "bg": "home"
+   }
+  },
+  {
+   "from": "e",
+   "label": "bell",
+   "gfx": {
+    "type": "scene",
+    "chars": [
+     {
+      "name": "기사님",
+      "mood": "neutral",
+      "color": "#8FD3FF",
+      "hat": "📦",
+      "to": "laugh"
+     }
+    ],
+    "prop": "🔔",
+    "steps": [
+     0,
+     "e.초인종을",
+     "e.빵"
+    ],
+    "bg": "street"
+   }
+  },
+  {
+   "from": "f",
+   "label": "try",
+   "gfx": {
+    "type": "scene",
+    "chars": [
+     {
+      "name": "나",
+      "mood": "think"
+     }
+    ],
+    "place": "📍 현관",
+    "prop": "🔔",
+    "steps": [
+     0,
+     "f.눌러"
+    ],
+    "bg": "street"
+   }
+  },
+  {
+   "from": "g",
+   "label": "voice",
+   "gfx": {
+    "type": "scene",
+    "chars": [
+     {
+      "name": "나",
+      "mood": "neutral",
+      "to": "shock"
+     }
+    ],
+    "prop": "🔔",
+    "zoom": 1.08,
+    "focus": 0,
+    "steps": [
+     0,
+     0,
+     "g.사랑해요"
+    ],
+    "bg": "street"
+   }
+  },
+  {
+   "from": "h",
+   "label": "culprit",
+   "gfx": {
+    "type": "scene",
+    "chars": [
+     {
+      "name": "나",
+      "mood": "shock"
+     },
+     {
+      "name": "조카",
+      "mood": "smug",
+      "color": "#B9F27C",
+      "size": 0.72
+     }
+    ],
+    "big": "범인 [5살]",
+    "steps": [
+     0,
+     0,
+     9,
+     "h.조카"
+    ],
+    "bg": "home"
+   }
+  },
+  {
+   "from": "h.놀러",
+   "label": "record",
+   "gfx": {
+    "type": "scene",
+    "chars": [
+     {
+      "name": "나",
+      "mood": "laugh"
+     },
+     {
+      "name": "조카",
+      "mood": "happy",
+      "color": "#B9F27C",
+      "size": 0.72
+     }
+    ],
+    "prop": "🎙️",
+    "steps": [
+     0,
+     "h.녹음해"
+    ],
+    "bg": "home"
+   }
+  },
+  {
+   "from": "i",
+   "label": "because",
+   "gfx": {
+    "type": "scene",
+    "chars": [
+     {
+      "name": "나",
+      "mood": "love"
+     },
+     {
+      "name": "조카",
+      "mood": "happy",
+      "color": "#B9F27C",
+      "size": 0.72
+     }
+    ],
+    "say": {
+     "who": 1,
+     "text": "기⁠사⁠님⁠들 [⁠힘⁠드⁠니⁠까⁠!⁠]"
+    },
+    "bg": "home"
+   }
+  },
+  {
+   "from": "j",
+   "label": "candy",
+   "gfx": {
+    "type": "scene",
+    "chars": [
+     {
+      "name": "나",
+      "mood": "shock"
+     }
+    ],
+    "place": "📍 다음 날",
+    "prop": "🍬📝",
+    "steps": [
+     0,
+     "j.사탕"
+    ],
+    "bg": "street"
+   }
+  },
+  {
+   "from": "k",
+   "label": "reply",
+   "gfx": {
+    "type": "scene",
+    "chars": [
+     {
+      "name": "기사님",
+      "mood": "love",
+      "color": "#8FD3FF",
+      "hat": "📦"
+     }
+    ],
+    "prop": "🍬",
+    "say": {
+     "who": 0,
+     "text": "[⁠나⁠도 사⁠랑⁠해⁠] ♥ - 택⁠배 아⁠저⁠씨"
+    },
+    "bg": "street"
+   }
+  }
+ ]
+}
