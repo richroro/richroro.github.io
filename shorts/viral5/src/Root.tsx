@@ -3,6 +3,7 @@ import { ClipShort, FPS, type ShortData } from "./ClipShort";
 import { LongForm, longFrames } from "./LongForm";
 import { SHORTS } from "./data";
 import { LONGS } from "./longs";
+import { F1_FPS, F1Odyssey, f1Metadata } from "./lib/long/f1_Odyssey";
 
 export const RemotionRoot: React.FC = () => (
   <>
@@ -16,5 +17,6 @@ export const RemotionRoot: React.FC = () => (
           durationInFrames={longFrames(parts)} />
       ) : null;
     })}
+    <Composition id="odyssey" component={F1Odyssey} defaultProps={{ edit: null, route: null }} calculateMetadata={f1Metadata} width={1920} height={1080} fps={F1_FPS} durationInFrames={1} />
   </>
 );
