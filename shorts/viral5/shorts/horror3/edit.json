@@ -4,12 +4,12 @@
  "captionY": 1640,
  "credit": "영상: Pexels",
  "sources": {
-  "px7362808": {
-   "file": "px7362808.mp4",
+  "px7362620": {
+   "file": "px7362620.mp4",
    "credit": "영상: Pexels",
-   "label": "Pexels video 7362808 by RDNE Stock project (Pexels License)",
-   "url": "https://www.pexels.com/video/a-dolly-shot-of-packages-on-the-front-door-7362808/",
-   "file_url": "https://www.pexels.com/download/video/7362808/",
+   "label": "Pexels video 7362620 by RDNE Stock project (Pexels License)",
+   "url": "https://www.pexels.com/video/video-of-a-box-fragile-7362620/",
+   "file_url": "https://www.pexels.com/download/video/7362620/",
    "license": "Pexels License",
    "creator": "RDNE Stock project"
   },
@@ -88,7 +88,7 @@
  },
  "clips": [
   {
-   "src": "px7362808",
+   "src": "px7362620",
    "from": "a",
    "in": 0.5,
    "zoom": [
@@ -96,7 +96,12 @@
     1.07
    ],
    "audio": 0,
-   "label": "문 앞 택배"
+   "label": "문 앞 택배",
+   "crop": [
+    0.3,
+    0.5,
+    1.5
+   ]
   },
   {
    "src": "px34786856",
@@ -151,7 +156,12 @@
     1.07
    ],
    "audio": 0,
-   "label": "문 앞 봉투"
+   "label": "문 앞 봉투",
+   "crop": [
+    0.35,
+    0.45,
+    1.4
+   ]
   },
   {
    "src": "px9658661",
