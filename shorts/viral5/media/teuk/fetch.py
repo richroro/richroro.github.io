@@ -58,7 +58,7 @@ def download(sid):
         if not os.path.exists(cache):
             url = P[k]["thumb_url"]
             if "/thumb/" not in url:  # an unscaled original (originals are throttled harder): ask for a 1280 px rendering instead
-                head, name = P[k]["file_url"].rsplit("/", 1); url = head.replace("/commons/", "/commons/thumb/") + f"/{name}/1280px-{name}"
+                head, name = P[k]["file_url"].split("?")[0].rsplit("/", 1); url = head.replace("/commons/", "/commons/thumb/") + f"/{name}/1280px-{name}"
             data = get(url, True)  # written only once complete, so a failed fetch leaves no empty cache
             open(cache, "wb").write(data); time.sleep(2)
         # cover the 1080x1160 picture box at its native resolution (the renderer adds the slow push-in)
