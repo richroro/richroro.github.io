@@ -2949,3 +2949,140 @@ python3 qa_review.py retro1
 > 사진: 한국저작권위원회(공유마당, CC BY, 부경근대사료연구소 수집) · 크기 조정·밝기 보정
 > 음악: "Gymnopedie No 1" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
 > #그시절 #버스정류장 #옛날서울 #추억 #shorts
+
+## 낙서 짤툰 쇼츠 2 (`doodle5`~`doodle10`)
+
+`doodle1`~`doodle4`와 같은 틀로 만든 6편이다. `research/research-formats2.md` 9절의 "같은 틀로 여러 편"을 따랐다. 틀은 앞 4편과 똑같다: 검정 바탕, 2줄 제목 띠(아랫줄 초록 `#3CFF6A`), 가운데 1080×1080 그림, `captionY` 1640의 한 줄 자막, 주인공 도치(주황 삐죽머리 `"style": "doodle"`), 내레이터 InJoon +25%, 인물 대사는 자기 목소리의 말풍선(아래 자막 없음), 사진+낙서 장면과 가끔 `vs`, 끝은 묻는 한 줄 뒤 0.3초 컷. 템플릿 코드는 바꾸지 않았다. 새 조연은 같은 낙서 스킨이고 머리만 다르다: 친구(검은 단발 `bob`), 새벽 손님(회색 파마 `perm`).
+
+| id | 제목 띠 | 길이 | 내용 | 사실/창작 | 음악 |
+| --- | --- | --- | --- | --- | --- |
+| `doodle5` | 대부분 모르는 / 계란 껍데기 숫자의 뜻 | 32.4초 | "이 숫자 뭔지 앎?" → 도치 "공장 번호 아님?" → 땡, 10자리 전부 뜻 있음 → 앞 4자리 산란일(0823 = 8월 23일) → 가운데 5자리 농장 고유번호(조회 가능) → 마지막 한 자리: 1 방사, 2 평사, 3·4 케이지 → `vs` 3번 0.075㎡ vs 4번 0.05㎡ → 4번은 A4 한 장보다 좁음 → "님 냉장고 계란은 몇 번임?" | 사실 (출처 아래) | Sneaky Snitch |
+| `doodle6` | 회사 단톡 / "넵"의 7단계 | 34.8초 | 단톡 화면에 넵 → 넵! → 넵넵 → 넵 알겠습니다 → 넹 → `vs` 넵! vs 넵.... → 7단계: 도치가 "오늘은 어려울 것 같습니다" 보내자 팀장님의 "넵." → 공포 → "지금 바로 하겠습니다!" → "님은 주로 몇 단계 넵 씀?" | 창작 | Hustle |
+| `doodle7` | 대부분 모르는 / 소화기 바늘의 비밀 | 33.2초 | "바늘 어디 가리킴?" → "바늘이 있었어?" → 손잡이 옆 압력계 → 초록이면 정상, 벗어나면 교체 → 분말 소화기 10년, 검사 합격 시 1회 3년 연장(`vs`) → "우리 집 거 2010년산인데?" → 쓰는 법 네 동작(안전핀, 바람 등지고, 호스 불 쪽, 손잡이 쥐고 빗자루처럼) → "지금 초록임?" | 사실 (출처 아래) | Scheming Weasel |
+| `doodle8` | 카페 진동벨 / 울리면 벌어지는 일 | 32.3초 | 진동벨 받는 순간 게임 시작 → 벨만 쳐다봄(`vs` 친구 얼굴 vs 진동벨) → 친구 "내 말 듣고 있어?" → 옆 테이블 벨에 움찔 → 10분째 조용 → 카운터에 확인하러 감 → 그 순간 손에서 부르르르, 민망함 100% → 반전: 친구 벨이었음 → "님은 벨 울리면 몇 초 만에 일어남?" | 창작 | Monkeys Spinning Monkeys |
+| `doodle9` | 식당에서 / "여기요" vs "저기요" | 34.2초 | 여기요파 vs 저기요파(`vs`) → 진짜 문제는 타이밍 → 손 반쯤 들었다가 머리 긁는 척 → 눈만 마주침 → 용기 내서 "저, 저기요…" → 아무도 못 들음 → 친구가 "이모! 여기 공깃밥 하나요!" 한 방 → 최강은 이모님파 → "님은 여기요? 저기요? 이모님?" | 창작 | Hyperfun |
+| `doodle10` | 편의점 알바가 / 새벽 3시에 보는 손님 | 33.1초 | 새벽 3시, 매일 같은 손님 → 컵라면·삼각김밥, 말없이 먹고 감, 좀 무서움 → 비 오는 날 계산대로 직진 → 내민 건 따뜻한 캔커피 "이건 학생 거" → 야간 근무 퇴근길이었음 → 그날 이후 내가 먼저 인사 → "님은 이런 손님 만나 봄?" | 창작 (훈훈한 반전) | Sneaky Snitch |
+
+```bash
+media/doodle/fetch.sh                      # 사진 43장(doodle1~10) → public/doodle/ (저장소에는 넣지 않음)
+for i in 5 6 7 8 9 10; do python3 voice_edge.py doodle$i && python3 prep.py doodle$i && ./render.sh doodle$i final/doodle$i.mp4 && python3 qa_review.py doodle$i; done
+```
+
+**목소리**(`script.json`의 `voices`): 내레이터 `InJoon` +25%, 도치 `HyunsuMultilingual` +18%·+12Hz(앞 4편과 같음). doodle9의 도치만 +5%로 늦췄다("저, 저기요…"가 작고 머뭇거리게). doodle6의 팀장님은 `SunHi` +10%·−8Hz, doodle8·doodle9의 친구는 `SunHi` +15%·+5Hz, doodle10의 손님은 `SunHi` +8%·−6Hz다.
+
+**사진**: 모두 Pexels 사진이다. 사람 얼굴이 없는 물건·장소·동물 사진이고, 읽히는 상표·로고·간판이 없는 것만 골랐다. 각 사진 페이지를 2026-10-10에 열어 "License: Free"(Pexels License)를 확인했다(조건은 위 `doodle1`~`doodle4` 절과 같다). 고르는 중에 상표가 보인 사진(노트북·모니터 로고, 소화기 상표 라벨, 커피머신 상표, 편의점 상품 포장)과 산란계 케이지 사진, 휴대폰 화면 UI 사진은 뺐다. 진동벨과 식당 호출벨은 Pexels에 쓸 만한 사진이 없어 이모지(📳)로 그렸다. doodle7의 압력계 사진(39649976)은 소화기용이 아닌 일반 압력계다. 초록·노랑·빨강 눈금이 있어 "초록이면 정상"을 보여 주는 그림으로만 썼고, 화면 문구는 "압력계"뿐이다. doodle9의 주방 사진(4947388) 안쪽 끝에 아주 작은 요리사 실루엣이 있으나 얼굴은 알아볼 수 없다. doodle10의 상가 사진(34534099) 오른쪽 끝의 약국 표시는 정사각형 자르기 밖이다. 페이지 주소, 파일 주소, 제작자, 쓴 구간(초)은 `media/doodle/sources.json`과 각 `edit.json`의 `sources`에 있다. 화면에는 "사진: Pexels"만 쓴다.
+
+| 파일 | 제작자 | 쓴 곳(초) |
+| --- | --- | --- |
+| [8556246](https://www.pexels.com/photo/brown-eggs-in-egg-tray-8556246/) 달걀 판 | Marcello Sokal | doodle5 0.0~2.9 |
+| [19891628](https://www.pexels.com/photo/eggs-on-white-background-19891628/) 흰 바탕 달걀 4개 | Ben Molyneux | doodle5 6.4~8.4 |
+| [2255459](https://www.pexels.com/photo/flock-of-hens-on-green-field-2255459/) 풀밭의 닭 | Alexas Fotos | doodle5 17.1~19.2 |
+| [1300375](https://www.pexels.com/photo/peep-of-brown-chicken-1300375/) 축사 바닥의 닭 | Magda Ehlers | doodle5 19.2~21.6 |
+| [6294391](https://www.pexels.com/photo/fried-egg-with-condiment-in-frying-pan-6294391/) 달걀 프라이 | Klaus Nielsen | doodle5 30.6~32.4 |
+| [8533741](https://www.pexels.com/photo/close-up-shot-of-a-smartphone-on-white-surface-8533741/) 흰 바닥의 휴대폰(빈 화면) | Hanna Pad (anna-nekrashevich) | doodle6 0.0~2.1 |
+| [8472486](https://www.pexels.com/photo/a-photo-of-a-minimalist-workspace-8472486/) 책상 위 노트북(빈 화면) | Cup of Couple | doodle6 12.1~16.1 |
+| [5483236](https://www.pexels.com/photo/an-empty-office-5483236/) 빈 사무실 | cottonbro studio | doodle6 22.2~23.7 |
+| [30391091](https://www.pexels.com/photo/cozy-workspace-with-coffee-mug-on-desk-30391091/) 키보드 옆 커피 | Letícia Alvares | doodle6 30.0~33.0 |
+| [21299748](https://www.pexels.com/photo/fire-alarm-21299748/) 벽에 걸린 소화기 | Jakub Zerdzicki | doodle7 0.0~2.5, 30.7~33.2 |
+| [39649976](https://www.pexels.com/photo/analog-pressure-gauge-on-cutting-mat-39649976/) 압력계(일반용) | Mohsen Adelimoghaddam | doodle7 4.3~8.3 |
+| [13756513](https://www.pexels.com/photo/photograph-of-a-red-fire-extinguisher-13756513/) 복도의 소화기 | Tibor Szabo | doodle7 12.9~14.7 |
+| [4099350](https://www.pexels.com/photo/kitchen-room-design-4099350/) 가스레인지 부엌 | Taryn Elliott | doodle7 22.8~24.4 |
+| [2566027](https://www.pexels.com/photo/coffee-machine-2566027/) 커피머신 | Sander Dalhuisen | doodle8 0.0~3.0 |
+| [12620633](https://www.pexels.com/photo/cup-of-latte-art-on-brown-wooden-table-12620633/) 라테 | Gabriel | doodle8 3.0~4.9 |
+| [18721982](https://www.pexels.com/photo/plants-near-chairs-in-restaurant-18721982/) 카페 실내 | Arda Kaykısız | doodle8 8.3~10.7 |
+| [6612572](https://www.pexels.com/photo/an-espresso-machine-6612572/) 카페 카운터 | Pavel Danilyuk | doodle8 13.8~15.4 |
+| [302900](https://www.pexels.com/photo/cappuccino-drink-on-table-302900/) 유리잔 라테 | Chevanon Photography | doodle8 26.6~29.9 |
+| [30027297](https://www.pexels.com/photo/quiet-indoor-restaurant-with-sunlit-tables-30027297/) 빈 식당 | Jim (Jimothy) Natanauan | doodle9 0.0~2.8 |
+| [13774731](https://www.pexels.com/photo/kimchi-stew-on-a-clay-pot-13774731/) 김치찌개 | Cynthia Ortega Espinosa | doodle9 8.6~10.6, 30.7~34.2 |
+| [4947388](https://www.pexels.com/photo/kitchen-restaurant-4947388/) 식당 주방 | Maria Orlova | doodle9 14.1~17.5 |
+| [2313695](https://www.pexels.com/photo/chopsticks-on-plate-near-foods-on-plates-2313695/) 만두와 반찬 | Lio Photography | doodle9 20.5~23.7 |
+| [34534099](https://www.pexels.com/photo/shopping-cart-at-night-outside-storefront-34534099/) 밤의 상가 입구 | El Jundi | doodle10 0.0~3.2, 31.1~33.1 |
+| [13796733](https://www.pexels.com/photo/noodles-with-vegetables-in-white-ceramic-bowl-13796733/) 컵라면 | Markus Winkler | doodle10 5.1~8.6 |
+| [12394042](https://www.pexels.com/photo/lights-on-the-road-during-a-rainy-night-12394042/) 비 오는 밤길 | Denniz Futalan | doodle10 13.1~15.2 |
+| [18139081](https://www.pexels.com/photo/steam-over-a-cup-18139081/) 김 나는 머그잔 | More Amore | doodle10 20.9~24.2 |
+
+**doodle5 사실 확인**
+
+- "10자리 = 산란일자 4자리 + 농장(생산자) 고유번호 5자리 + 사육환경번호 1자리", 예 "0823M3FDS2" = 8월 23일 산란: 식품의약품안전처, 정책브리핑 「"이제 산란일자 표시보고 신선한 달걀 구입하세요"」 2019-08-02: https://www.korea.kr/news/policyNewsView.do?newsId=148863411 , 농림축산식품부 「닭이 알을 낳은 날짜 확인하고 구입하세요」 2019-02-21(식약처·농식품부, 2019-02-23 시행): https://www.mafra.go.kr/bbs/mafra/68/319933/artclView.do
+- 사육환경번호 "1 방사, 2 평사, 3 개선 케이지(0.075㎡/마리), 4 기존 케이지(0.05㎡/마리)": 농림축산식품부 「계란 껍데기 표시정보(난각표시)로 계란 이력정보 확인하세요」 2022-01-20: https://www.mafra.go.kr/bbs/mafra/68/329424/artclView.do . 같은 식약처 2019-08-02 자료는 1을 "방목장에서 닭이 자유롭게 다니도록", 2를 "케이지(닭장)와 축사를 자유롭게 다니도록" 키우는 방식으로 설명한다. 화면의 "닭장 없이 축사 안을 다님"은 이 설명을 줄인 것이다.
+- "번호로 어느 농장인지 조회 가능": 위 농식품부 2022-01-20 자료(축산물이력관리시스템 www.mtrace.go.kr·축산물이력제 앱), 식품안전나라 달걀 이력 조회: https://www.foodsafetykorea.go.kr/portal/fooddanger/farmInfoSearch.do
+- "4번은 A4 용지 한 장보다 좁음": A4는 210×297mm = 0.0624㎡이고 4번 기준은 0.05㎡/마리라서 계산으로 맞다(3번 0.075㎡은 A4보다 넓다). 화면에서는 위 농식품부 자료의 번호별 기준만 말한다.
+
+**doodle7 사실 확인**
+
+- "압력계 바늘이 초록(녹색) 범위면 정상, 벗어나면 압력이 빠진 것이라 교체": 충북 영동소방서 안내(뉴스서울 2023-12-20) "압력지시계의 바늘이 녹색 범위를 벗어나 있으면 압력 저하로 사용할 수 없으므로 반드시 교체 또는 폐기를 해야 한다": https://newsseoul.co.kr/news/view/1065579634577441 . 인천 남동소방서 「10년 지난 노후 소화기 교체 당부」 2021-07-14 "압력계의 바늘은 녹색 범위에 있는지 등을 확인한다": https://www.incheon.go.kr/119/NE030401/2073127
+- "분말 소화기 10년, 성능 확인 검사 합격 시 1회 3년 연장": 인천 서부소방서 「10년 이상 노후 소화기 교체·폐기 당부」 2021-09-02 "분말소화기의 내용연수가 10년으로 법제화됐다", "한국소방산업기술원의 성능 확인검사에서 합격하면 1회에 한해 3년 연장 사용이 가능하다": https://www.incheon.go.kr/119/NE030401/2075369 . 같은 내용이 위 영동소방서 안내와 서산소방서 안내(뉴스서울 2023-02-06)에도 있다: https://newsseoul.co.kr/news/view/1065580233271372
+- "쓰는 법: 안전핀 뽑고, 바람 등지고, 호스는 불 쪽, 손잡이 꽉 쥐고 빗자루로 쓸듯이": 서울시 「화재 발생시 이렇게 하세요!」 "손잡이 부분의 안전핀을 뽑아주세요", "바람을 등지고 서서 호스를 불쪽으로 향하게 합시다", "손잡이를 힘껏 움켜쥐고 빗자루로 쓸듯이 뿌립시다": https://news.seoul.go.kr/safe/archives/20691
+- "우리 집 거 2010년산인데?"는 도치의 농담 대사(창작)다. 2010년 제조면 2026년에 10년이 넘었다는 점만 웃음 포인트로 쓴다.
+
+**창작 편**(doodle6, 8, 9, 10): 수치나 법령을 말하지 않는다. 실제 앱·카페·식당·편의점 이름이나 로고는 없다. 단톡 화면은 "○○팀 단톡"이라는 우리 그림이다. 설명란에 "창작"을 적는다.
+
+**qa_review**: 6편 모두 11개 항목 PASS(WARN·FAIL 0). 처음 doodle6은 단톡 화면 세 장면(1~3단계)이 같은 사무실 배경이라 한 장면(10초)으로 잡혀 "장면 길이" FAIL이 났다. 2·3단계 배경을 노랑·밤으로 바꿔 최장 4.0초가 됐다. 시트를 보고 두 가지를 고쳤다. doodle5의 📅 이모지는 "7월 17일"이 그려져 "0823"과 어긋나서 🐣로 바꿨고, doodle8의 📳 이모지는 스마트폰으로 보여서 진동벨을 🔔로 그렸다.
+
+**업로드 문구**
+
+`doodle5`
+- 제목: 대부분 모르는 계란 껍데기 숫자의 뜻
+- 설명:
+  ```
+  계란에 찍힌 10자리, 공장 번호 아님 🥚 앞 4자리는 낳은 날, 마지막 한 자리는 닭이 사는 환경! 님 냉장고 계란은 몇 번?
+  출처: 식품의약품안전처(2019.8.2), 농림축산식품부(2019.2.21, 2022.1.20) 난각표시 안내
+  사진: Pexels (Marcello Sokal, Ben Molyneux, Alexas Fotos, Magda Ehlers, Klaus Nielsen) · 캐릭터는 직접 그린 그림입니다.
+  Music: "Sneaky Snitch" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
+  ```
+- 해시태그: #계란 #난각번호 #생활꿀팁 #짤툰 #낙서툰
+
+`doodle6`
+- 제목: 회사 단톡 "넵"의 7단계ㅋㅋ
+- 설명:
+  ```
+  같은 넵인데 마음은 다 다름 📱 마지막 단계는 진짜 공포… 님은 주로 몇 단계 넵 씀? (창작)
+  창작 짤툰입니다. 등장인물과 대화는 실제와 관계없으며 특정 앱·회사와 무관합니다.
+  사진: Pexels (Hanna Pad, Cup of Couple, cottonbro studio, Letícia Alvares)
+  Music: "Hustle" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
+  ```
+- 해시태그: #회사생활 #넵 #직장인공감 #짤툰 #낙서툰
+
+`doodle7`
+- 제목: 대부분 모르는 소화기 바늘의 비밀
+- 설명:
+  ```
+  님 집 소화기 바늘, 지금 초록임? 🧯 초록 밖이면 교체, 분말 소화기는 10년! 쓰는 법 네 동작까지.
+  출처: 충북 영동소방서·인천 남동소방서·인천 서부소방서·서산소방서 소화기 관리 안내, 서울시 화재 행동요령
+  사진: Pexels (Jakub Zerdzicki, Mohsen Adelimoghaddam, Tibor Szabo, Taryn Elliott) · 캐릭터는 직접 그린 그림입니다.
+  Music: "Scheming Weasel" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
+  ```
+- 해시태그: #소화기 #화재안전 #생활꿀팁 #짤툰 #낙서툰
+
+`doodle8`
+- 제목: 카페 진동벨 울리면 벌어지는 일ㅋㅋ
+- 설명:
+  ```
+  10분 기다리다 카운터 갔더니 손에서 부르르… 근데 그 벨 📳 님은 벨 울리면 몇 초 만에 일어남? (창작)
+  창작 짤툰입니다. 등장인물은 실제와 관계없으며 특정 카페와 무관합니다.
+  사진: Pexels (Sander Dalhuisen, Gabriel, Arda Kaykısız, Pavel Danilyuk, Chevanon Photography)
+  Music: "Monkeys Spinning Monkeys" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
+  ```
+- 해시태그: #카페 #진동벨 #공감 #짤툰 #낙서툰
+
+`doodle9`
+- 제목: 식당에서 "여기요" vs "저기요"
+- 설명:
+  ```
+  손 반쯤 들었다가 머리 긁는 척한 사람 🙋 결국 최강은 따로 있음. 님은 여기요? 저기요? 이모님? (창작)
+  창작 짤툰입니다. 등장인물은 실제와 관계없으며 특정 식당과 무관합니다.
+  사진: Pexels (Jim Natanauan, Cynthia Ortega Espinosa, Maria Orlova, Lio Photography)
+  Music: "Hyperfun" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
+  ```
+- 해시태그: #식당 #여기요 #저기요 #공감 #짤툰
+
+`doodle10`
+- 제목: 편의점 알바가 새벽 3시에 보는 손님
+- 설명:
+  ```
+  매일 새벽 3시, 말없이 컵라면 먹고 가던 손님 🌙 비 오던 날 내민 건… 님은 이런 손님 만나 봄? (창작)
+  창작 짤툰입니다. 등장인물은 실제와 관계없으며 특정 편의점과 무관합니다.
+  사진: Pexels (El Jundi, Markus Winkler, Denniz Futalan, More Amore)
+  Music: "Sneaky Snitch" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
+  ```
+- 해시태그: #편의점 #알바 #훈훈 #짤툰 #낙서툰
