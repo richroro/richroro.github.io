@@ -10,7 +10,7 @@ SRC = json.load(open(f"{HERE}/media/info2/sources.json"))
 MUSIC = lambda m: f'음악: "{m}" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/'
 MNAME = {"Heroic Age.mp3": "Heroic Age", "Movement Proposition.mp3": "Movement Proposition", "Heartwarming.mp3": "Heartwarming",
          "Floating Cities.mp3": "Floating Cities", "sneaky_snitch.mp3": "Sneaky Snitch", "Exhilarate.mp3": "Exhilarate", "hustle.mp3": "Hustle",
-         "Lightless Dawn.mp3": "Lightless Dawn", "scheming_weasel.mp3": "Scheming Weasel (faster version)", "Dreamer.mp3": "Dreamer",
+         "Lightless Dawn.mp3": "Lightless Dawn", "scheming_weasel.mp3": "Scheming Weasel", "Dreamer.mp3": "Dreamer",
          "monkeys_spinning_monkeys.mp3": "Monkeys Spinning Monkeys"}
 
 # upload title, description (facts, "2026년 10월 기준"), hashtags, pinned comment
@@ -37,12 +37,19 @@ UP = {
  "why4": ("까치가 한국에선 길조, 영국에선 흉조인 진짜 이유?", "까치는 1964년 한 신문의 '나라새 뽑기'에서 나라새로 뽑혔습니다(정식 국조로 지정된 적은 없음). 아침에 까치가 울면 반가운 손님이 온다고 했고, 칠월칠석엔 견우와 직녀를 잇는 오작교를 놓는 새였죠. 반면 영국 동요 'One for sorrow'처럼 까치 한 마리를 불길하게 보는 미신도 있습니다. 까치는 거울 속 자신을 알아보고(2008) 사람 얼굴도 기억하지만(2011, 서울대 연구), 전기 설비 피해 때문에 2000년부터 유해 야생동물로 지정돼 있습니다.\n출처: 한국민족문화대백과사전 '까치', Prior et al. 2008 PLoS Biology, Lee et al. 2011 Animal Cognition, 환경부 자료(KED Global 2023, 전북일보 2025)", "#까치 #길조 #새 #동물상식 #shorts", "여러분 동네 까치는 길조인가요, 해조인가요? 🐦"),
 }
 
+def pxname(r):
+    """the Pexels creator: the record's creator, else the name after "by" in the label"""
+    c = r.get("creator") or ""
+    if c and not c.startswith(("영상", "사진")): return c.replace(" (Pexels)", "")
+    lab = r.get("label") or ""
+    return lab.split(" by ")[1].replace(" (Pexels License)", "") if " by " in lab else "Pexels"
+
 def credits(sid):
     """credit line for the description, from the sources the short really uses"""
     px, other = [], []
     for k, r in SRC[sid].items():
         lic = (r.get("license") or "")
-        if lic.startswith("Pexels"): px.append(r["label"].split(" by ")[1].replace(" (Pexels License)", ""))
+        if lic.startswith("Pexels"): px.append(pxname(r))
         elif lic == "our own drawing": other.append("그림: 직접 그림")
         else: other.append(f"{r['label']} — {lic.split(';')[0]}")
     out = []
@@ -89,17 +96,14 @@ def main():
         p("")
     p(open(f"{HERE}/media/info2/README_facts.md").read())
     p("### 업로드 문구\n")
-    p("화면 글자에는 저작권·라이선스 표시가 없고, 모든 크레딧은 설명란에 있습니다. 창작(허구) 에피소드는 없습니다(모두 사실 해설).\n")
+    p("설명글은 저장소 공통 형식(`upload/README.md`)으로 `upload/specs/<id>.json`에 쓰고 `python3 upload/make_desc.py <id>`로 `upload/txt/<id>.txt`를 만들었습니다(`media/info2/upload_specs.py`가 spec을 씁니다). "
+      "화면 글자에는 저작권·라이선스 표시가 없고, 모든 크레딧은 설명란의 출처 줄에 있습니다. 창작(허구) 에피소드는 없습니다(모두 사실 해설). "
+      "해시태그는 공통 형식에 맞춰 #Shorts 포함 8~15개입니다(지시서의 3~5개보다 많음, 아래 보고 참고). 구독 줄의 채널 이름·핸들은 `upload/channels.json`의 자리표시자입니다.\n")
     for i in IDS:
-        t, desc, tags, pin = UP[i]
-        p(f"**{i}** — {t}")
-        for ln in desc.split("\n"): p(f"> {ln}")
-        p(f"> {credits(i)}")
-        if any(r.get('license', '').startswith(('Public domain', 'PD', 'US federal', 'Public Domain')) or 'NASA' in (r.get('label') or '') for r in SRC[i].values()):
-            p("> NASA·NOAA·USGS 등 미국 정부 기관은 이 영상을 보증하지 않습니다.")
-        p(f"> {MUSIC(MNAME.get(os.path.basename(edits[i]['music']['file']), edits[i]['music']['file']))}")
-        p(f"> {tags}")
-        p(f">\n> 고정 댓글: {pin}\n")
+        spec = json.load(open(f"{HERE}/upload/specs/{i}.json"))
+        p(f"**{i}** — 업로드 제목: {spec['title']}\n")
+        for ln in open(f"{HERE}/upload/txt/{i}.txt").read().strip().split("\n"): p(f"> {ln}" if ln else ">")
+        p(f"\n고정 댓글: {spec.get('pinned', '')}\n")
 
 if __name__ == "__main__":
     main()

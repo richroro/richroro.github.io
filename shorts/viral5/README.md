@@ -5139,3 +5139,626 @@ Pexels와 Pixabay를 먼저 시도했지만, 두 사이트 모두 이 환경에 
 - 해시태그: #Shorts #공감 #특 #공감툰 #공감애니 #창작애니 #일상공감 #눈치 #친구공감 #인간관계 #MBTI
 - 고정 댓글: 혹시… 나야? 몇 개 해당?
 
+
+## 정보 쇼츠 v2 (벤치마크: life·issue·hanban·why)
+
+`research/benchmark-footage.md` 4절과 `research/benchmark-targets-footage.json`의 `info_reason` 레시피에 맞춰 정보 쇼츠 16편(`life1`~`life8`, `issue1`~`issue4`, `hanban1`~`hanban4`)을 다시 만들고, 동물 + 한국 연결 새 편 4개(`why1`~`why4`)를 더했습니다. 속도·컷·길이는 원래도 괜찮았고, 결정적 차이는 **첫 프레임과 생김새**였습니다. 그래서 바꾼 것은 다음 다섯 가지입니다.
+
+1. **0–0.5초 표지(썸네일 프레임).** 가장 강한 사진·프레임을 화면 전체에, 굵은 2줄 제목(흰색 + 노랑 핵심어)을 크게, 필요하면 빨간 화살표나 원. 0.5초에 본편으로 컷.
+2. **아래 빈 공간 없앰.** 그림이 제목 띠 아래 전체(1080×1520)를 채웁니다. 예전 1:1 박스 + 흐린 아래 23%가 없어졌습니다.
+3. **자막은 최대 2줄, 강조색은 노랑 하나.** 초록 '지금 읽는 단어' 강조와 빨강을 없앴습니다. 자막 한 장은 12음절 이하(qa_review 기준), 한 줄 13자 이하.
+4. **화면의 출처 배지·각주 스티커 없앰.** 크레딧과 근거는 모두 설명란으로 옮겼습니다. 사실이 틀려 보일 수 있는 곳(자료화면, 다른 나라·다른 화산 영상)만 왼쪽 위에 작은 회색 글씨 태그로 남겼습니다.
+5. **첫 문장을 결과·숫자로.** 질문으로 시작하던 첫 줄을 2초 안에 끝나는 결과형 문장으로 다시 녹음했습니다(예: life5 "노란불 3초 밟는 시간 아닙니다."). 첫 줄은 목소리를 +35~52%로 빠르게, 나머지는 +20~38%(벤치마크 6.3–6.6음절/초)로 맞췄습니다.
+
+그 밖에 규칙 점검에서 걸린 것도 고쳤습니다.
+- **상표·회사 이름.** issue2의 주유소 사진(정유사 상표가 보임)을 상표 없는 Pexels 주유·유조선·정유 공장 영상으로 바꿨습니다. issue1의 발사대 사진(운반차 제조사 로고)은 같은 KARI 발사 영상으로 바꿨습니다. life7의 볼펜 사진(펜 상표)은 직접 그린 뚜껑 그림(`media/info2/draw_cap.py`)과 상표 없는 Pexels 사진으로, life6의 비상구 사진은 표지판에 찍힌 제조사 이름을 칠해 지웠습니다(`media/info2/clean_sign.py`). life4 내레이션의 항공사 이름은 "국내 한 항공사"로 바꾸고 출처는 설명란에 둡니다.
+- **훅 문장 정확도.** hanban2 "태풍 길은, 고기압이 정합니다", why3 "두루미 떼"(1만여 마리는 재두루미 포함 두루미류 합계라 본문에서 종별 숫자를 따로 말함), why4 제목은 조사 결과 중국에서도 까치가 길조라서 "한국에서만"이 아니라 "한국에선 길조 / 영국에선 흉조"로 정했습니다.
+
+### 새 템플릿 옵션 (`edit.json`, 모두 선택 사항)
+
+| 키 | 값 | 하는 일 | 코드 |
+|---|---|---|---|
+| `"frame": "capTall"` | – | 그림이 제목 띠 아래 전체(1080×1520)를 채움. 낙서 짤툰 v2가 먼저 넣은 공용 프레임(`src/lib/CapBox.tsx` `CAP_TALL`)을 그대로 씀. `crop: [cx, cy, zoom]`은 그대로 동작 | (새 코드 없음) |
+| `"cover"` | `{"src", "in", "title": [줄1, 줄2], "dur": 0.5, "focus", "zoom", "arrow": {"x","y","rot","len"}, "ring": {"x","y","r"}, "at": "top"\|"bottom", "note"}` | 0–`dur`초 표지. `src`가 사진이면 그대로, 영상이면 `in`초 프레임을 `prep.py`가 `public/<id>/cover.jpg`로 뽑음. 제목의 `[단어]`는 노랑(없으면 2줄 전체 노랑). `note`는 사진이 제목과 다른 대상일 때 아래 작은 글씨(hanban4: "사진: 같은 폭풍 때 미국 아이다호") | `src/lib/Info2.tsx` `CoverView`, `info2_prep.py` |
+| `"capStyle": "info2"` | – | 자막 한 장을 한 줄(크게) 또는 균형 맞춘 2줄로, 흰 글씨 + `[노랑]`만. `{빨강}`도 노랑으로. 초록 단어 강조 없음 | `src/lib/Info2.tsx` `InfoCaps` |
+| `"hideCredit": true` | – | 화면 오른쪽 위 출처 배지를 끔 | `ClipShort.tsx` `Credit` 앞 조건 한 줄 |
+| `"tags"` | `[{"text", "from", "to", "y"}]` | 그림 왼쪽 위 작은 회색 글씨(사실 표시만: "자료화면", "참고: 1991 필리핀 피나투보") | `src/lib/Info2.tsx` `Tags` |
+
+공유 파일에 들어간 것은 훅뿐입니다.
+- `src/ClipShort.tsx`: import 1줄, `ShortData`에 선택 필드 1줄, `Credit` 앞 조건, 자막 선택에 `capStyle === "info2"` 한 갈래, `Tags`, 맨 위에 `CoverView`. (처음엔 `FRAME.tall`을 따로 넣었지만, origin을 합치면서 같은 크기의 공용 `capTall`로 바꾸고 뺐습니다. 이미 렌더한 편도 픽셀 위치가 같습니다.)
+- `prep.py`: 위 키가 있을 때만 `info2_prep.extend()`를 부르는 2줄.
+- 나머지는 새 파일입니다: `src/lib/Info2.tsx`, `info2_prep.py`, `media/info2/*`.
+
+**다른 쇼츠는 그대로인지 확인했습니다.** origin을 합치기 전, 손대지 않은 v1 `issue1`을 훅이 없는 원래 `ClipShort.tsx`와 훅을 넣은 `ClipShort.tsx`로 각각 렌더해 비교했더니, 두 mp4가 바이트까지 같았습니다(`cmp` 동일, 프레임별 md5 동일). `qa_review.py`는 고치지 않았습니다.
+
+### 만드는 순서
+
+```bash
+cd shorts/viral5 && npm i && ./fetch.sh
+python3 media/info2/fetch_src.py issue1 ...      # 원본 → public/<id>/src/ (Wikimedia는 느리게 재시도, 1080p로 다시 인코딩)
+build/pxget.sh <id> <pexels id>...                # (작업용) Pexels 영상 받기 + 미리보기 시트
+python3 media/info2/remake.py issue1 ...          # 기존 16편: v1(커밋 1dcdd42)의 script/edit + media/info2/specs/<id>.json → v2
+python3 media/info2/new_why.py                    # 새 4편 script/edit
+python3 media/info2/draw_cap.py public/life7/src/cap_drawn.png
+python3 media/info2/clean_sign.py public/life6/src/ph37643871.jpg public/life6/src/ph37643871_clean.jpg
+python3 voice_edge.py <id> && python3 prep.py <id> && ./render.sh <id> final/<id>.mp4
+# 30MB를 넘으면 CRF 23으로 다시 인코딩
+ffmpeg -i final/<id>.mp4 -c:v libx264 -crf 23 -preset slow -pix_fmt yuv420p -c:a copy -movflags +faststart out/<id>.mp4
+python3 qa_review.py <id> && python3 media/info2/scorecard.py <id> && python3 media/info2/sources.py <id>
+python3 media/info2/readme_v2.py                  # 이 절(점수표·출처·업로드 문구)을 다시 만듦
+```
+
+hanban2의 힌남노 9일 플립북(`hinnamnor_wv_wide_sequence.mp4`)은 `media/hanban2/sources.json`의 9개 Worldview 스냅숏을 0.8초씩 이어 붙여 다시 만들었습니다(`ffmpeg -framerate 1.25 -pattern_type glob -i 'hinnamnor_wv_wide_*.jpg'`).
+
+### 편 목록
+
+| id | 화면 제목 | 첫 문장(훅) | 음악 |
+|---|---|---|---|
+| `issue1` | 누리호 위성 15기 중 / 1기만 못 나온 이유 | 위성 딱 한 기가 못 나갔습니다. | Heroic Age |
+| `issue2` | 기름값 상한제 있는데 / 경유 20% 오른 이유 | 경유값이 이십 퍼센트 올랐습니다. | Movement Proposition |
+| `issue3` | 한글날이 22년 동안 / 쉬는 날 아니었던 이유 | 한글날, 이십이 년 안 쉬었습니다. | Heartwarming |
+| `issue4` | 올해 노벨물리학상 / 남극 얼음 덩어리의 정체 | 일 초에 백조 개가 몸을 뚫고 갑니다. | Floating Cities |
+| `life1` | 비행기 창문이 / 네모가 아닌 진짜 이유 | 창 모서리가, 비행기를 찢었습니다. | Movement Proposition |
+| `life2` | 엘리베이터 거울이 / 셀카용이 아닌 진짜 이유 | 엘리베이터 거울, 셀카용 아닙니다. | Sneaky Snitch |
+| `life3` | 제한속도 지켜도 / 1차로에서 단속되는 이유 | 1차로 주행, 사만 원입니다. | Exhilarate |
+| `life4` | 이착륙 때 창문 덮개 / 열라고 하는 진짜 이유 | 창문 덮개는 비상구 찾는 빛. | Floating Cities |
+| `life5` | 신호등 노란불이 / 3초인 진짜 이유 | 노란불 3초 밟는 시간 아닙니다. | Hustle |
+| `life6` | 비상구 표시가 / 초록색인 진짜 이유 | 비상구 초록 국제 약속입니다. | Lightless Dawn |
+| `life7` | 볼펜 뚜껑에 / 구멍이 뚫린 진짜 이유 | 볼펜 뚜껑 구멍은, 숨구멍입니다. | Scheming Weasel |
+| `life8` | 지하철 임산부 배려석이 / 분홍색인 진짜 이유 | 분홍 배려석 눈에 띄라고 칠했습니다. | Heartwarming |
+| `hanban1` | 백두산이 폭발하면 / 화산재는 어디로 갈까? | 백두산 화산재 일본까지 갔습니다. | Lightless Dawn |
+| `hanban2` | 태풍이 한국 앞에서 / 휙 꺾이는 이유 | 태풍 길은, 고기압이 정합니다. | Movement Proposition |
+| `hanban3` | 가을 하늘이 유독 / 높고 파란 이유 | 가을 하늘 먼지가 절반입니다. | Dreamer |
+| `hanban4` | 한국에서 오로라가 / 찍힌 날 생긴 일 | 한국 하늘에 오로라가 찍혔습니다. | Floating Cities |
+| `why1` | 한반도에 반달곰이 / 다시 돌아온 진짜 이유 | 여섯 마리가 구십육 마리 됐습니다. | Heartwarming |
+| `why2` | 문어 심장이 / 3개인 진짜 이유 | 문어는 심장이 세 개입니다. | Monkeys Spinning Monkeys |
+| `why3` | 철원에 두루미 떼가 / 해마다 오는 진짜 이유 | 두루미 떼, 만 천 마리 왔습니다. | Dreamer |
+| `why4` | 까치가 한국에선 길조 / 영국에선 흉조인 이유 | 나라새 일 위 까치입니다. | Sneaky Snitch |
+
+### 벤치마크 점수표
+
+목표(`research/benchmark-targets-footage.json` → `info_reason`): 길이 32초(레시피 28–40), 훅 끝 ≤2.0초, 첫 컷 0.5초, 평균 샷 2.2초(레시피 2.0–2.5), 최장 샷 ≤3.5초, 6.4음절/초, 13문장(레시피 12–15), 제목 줄당 [11, 11]자(레시피 9–13).
+
+우리 값은 `final/<id>.mp4`(ffprobe, qa_review.py 장면 감지)와 `build/<id>/timeline.json`(voice_edge.py)에서 `python3 media/info2/scorecard.py <id>`로 쟀습니다. 음절/초는 '전체'(음절 ÷ 영상 길이)와 '발화'(음절 ÷ 줄들의 소리 길이, 줄 안 쉼 포함). 문장 수는 대본의 마침표·물음표 수.
+
+| id | 화면 제목 | 길이 | 훅 끝 | 첫 컷 | 평균 샷 | 최장 샷 | 음절/초 전체 · 발화 | 문장 | 제목 글자/줄 | 벗어난 점 |
+|---|---|---|---|---|---|---|---|---|---|---|
+| `issue1` | 누리호 위성 15기 중 / 1기만 못 나온 이유 | 31.7 | 1.71 | 0.5 | 2.12 | 3.43 | 5.92 · 6.24 | 11 | 12+11 | 문장 11개 |
+| `issue2` | 기름값 상한제 있는데 / 경유 20% 오른 이유 | 32.3 | 1.86 | 0.5 | 2.02 | 3.1 | 6.1 · 6.39 | 9 | 11+12 | 문장 9개 |
+| `issue3` | 한글날이 22년 동안 / 쉬는 날 아니었던 이유 | 27.4 | 1.9 | 0.5 | 1.96 | 3.2 | 6.28 · 6.66 | 9 | 11+12 | 길이 27.4초, 문장 9개 |
+| `issue4` | 올해 노벨물리학상 / 남극 얼음 덩어리의 정체 | 29.4 | 1.9 | 0.5 | 1.63 | 2.97 | 6.43 · 6.76 | 9 | 9+13 | 문장 9개 |
+| `life1` | 비행기 창문이 / 네모가 아닌 진짜 이유 | 27.0 | 1.97 | 0.5 | 2.25 | 3.3 | 6.62 · 7.03 | 7 | 7+12 | 길이 27.0초, 문장 7개 |
+| `life2` | 엘리베이터 거울이 / 셀카용이 아닌 진짜 이유 | 27.3 | 1.93 | 0.5 | 1.95 | 3.3 | 6.59 · 7.03 | 9 | 9+13 | 길이 27.3초, 문장 9개 |
+| `life3` | 제한속도 지켜도 / 1차로에서 단속되는 이유 | 25.8 | 1.8 | 0.5 | 1.72 | 3.23 | 6.33 · 6.74 | 9 | 8+13 | 길이 25.8초, 문장 9개 |
+| `life4` | 이착륙 때 창문 덮개 / 열라고 하는 진짜 이유 | 27.9 | 1.43 | 0.5 | 2.15 | 3.3 | 6.2 · 6.57 | 9 | 11+12 | 길이 27.9초, 문장 9개 |
+| `life5` | 신호등 노란불이 / 3초인 진짜 이유 | 35.4 | 1.62 | 0.5 | 2.08 | 3.57 | 6.39 · 6.72 | 9 | 8+9 | 최장 샷 3.57초, 문장 9개 |
+| `life6` | 비상구 표시가 / 초록색인 진짜 이유 | 31.9 | 1.55 | 0.5 | 1.99 | 3.13 | 6.43 · 6.76 | 8 | 7+10 | 문장 8개 |
+| `life7` | 볼펜 뚜껑에 / 구멍이 뚫린 진짜 이유 | 34.1 | 1.97 | 0.5 | 1.63 | 3.4 | 6.09 · 6.44 | 11 | 6+12 | 문장 11개 |
+| `life8` | 지하철 임산부 배려석이 / 분홍색인 진짜 이유 | 33.6 | 1.67 | 0.5 | 1.98 | 3.0 | 6.12 · 6.46 | 10 | 12+10 | 문장 10개 |
+| `hanban1` | 백두산이 폭발하면 / 화산재는 어디로 갈까? | 29.8 | 1.74 | 0.5 | 1.99 | 3.27 | 6.48 · 6.94 | 10 | 9+12 | 문장 10개 |
+| `hanban2` | 태풍이 한국 앞에서 / 휙 꺾이는 이유 | 28.5 | 1.72 | 0.5 | 1.42 | 2.67 | 6.15 · 6.57 | 8 | 10+8 | 문장 8개 |
+| `hanban3` | 가을 하늘이 유독 / 높고 파란 이유 | 28.6 | 1.43 | 0.5 | 1.79 | 3.3 | 6.36 · 6.8 | 9 | 9+8 | 문장 9개 |
+| `hanban4` | 한국에서 오로라가 / 찍힌 날 생긴 일 | 29.4 | 1.54 | 0.5 | 2.1 | 3.37 | 5.88 · 6.27 | 10 | 9+9 | 문장 10개 |
+| `why1` | 한반도에 반달곰이 / 다시 돌아온 진짜 이유 | 37.0 | 1.62 | 0.5 | 1.85 | 3.6 | 6.02 · 6.32 | 13 | 9+12 | 최장 샷 3.6초 |
+| `why2` | 문어 심장이 / 3개인 진짜 이유 | 28.6 | 1.47 | 0.5 | 1.24 | 3.1 | 6.29 · 6.67 | 10 | 6+9 | 문장 10개 |
+| `why3` | 철원에 두루미 떼가 / 해마다 오는 진짜 이유 | 29.7 | 1.87 | 0.5 | 1.85 | 3.1 | 6.0 · 6.31 | 12 | 10+12 | 없음 |
+| `why4` | 까치가 한국에선 길조 / 영국에선 흉조인 이유 | 32.1 | 1.42 | 0.5 | 1.78 | 3.3 | 6.04 · 6.37 | 12 | 11+11 | 없음 |
+
+**표에서 벗어난 점과 이유**
+
+- **문장 수(목표 13, 레시피 12–15).** 우리 편은 대부분 8–11문장입니다. 대신 자막은 편마다 20–27장입니다.
+  - 벤치마크 `lines`는 자막 단서로 추정한 값입니다. 우리 대본은 한 줄에 두세 구절(`|`)을 이어 말하기 때문에 마침표로 세면 적게 나옵니다.
+  - 문장을 늘리면 길이가 40초를 넘기 쉽습니다. 그래서 정보량(음절 160–230)과 길이를 기준으로 맞췄습니다.
+- **길이 28초 미만(life1 27.0, life2 27.3, life3 25.8, life4 27.9, issue3 27.4).** v1 대본에 결과형 첫 줄을 붙이고 목소리를 +25%로 올리면서 1–3초 줄었습니다.
+  - qa_review 기준(25–45초)은 PASS입니다.
+  - life3에는 같은 근거의 "승합차는 5만 원" 한 줄을 더해 25초를 넘겼습니다.
+  - 내용이 없는 문장을 덧붙여 늘리지는 않았습니다.
+- **최장 샷 3.5초 초과(why1 3.6, life5 3.57).**
+  - why1은 같은 동물원 장면을 연달아 쓴 구간을 장면 감지가 한 샷으로 합쳤습니다.
+  - life5는 대법원 판결 문장의 정지선 컷입니다.
+  - 둘 다 qa_review 기준(4.5초)은 PASS입니다.
+- **전체 음절/초가 6.4보다 낮은 편(5.7–6.3).** 전체 값은 줄과 줄 사이의 쉼과 끝 0.5초를 포함합니다. 말하는 동안의 속도(발화)는 6.0–7.0으로 벤치마크 6.3–6.6 근처입니다.
+- **제목 줄당 글자.** 화면 제목은 v1 제목을 그대로 두었습니다. 띠 제목이 이미 "~하는 진짜 이유", "~ 생긴 일", "~의 정체" 패턴이고 qa_review 제목 길이도 PASS여서, 채널 안 일관성을 지켰습니다. 업로드 제목은 아래처럼 "진짜 이유", "ㄷㄷ", "?" 꼴로 바꿨습니다.
+- **issue1, issue2, issue4, hanban3은 origin을 합치기 전에 렌더했습니다.** 합친 뒤 프레임 이름만 `tall`에서 공용 `capTall`로 바꿨고, 둘은 같은 1080×1520 상자라 화면은 같습니다. 나머지 16편은 합친 템플릿으로 렌더했습니다. qa_review는 20편 모두 합친 뒤의 qa_review.py로 다시 돌렸습니다.
+
+
+### 영상·사진 출처와 라이선스
+
+파일마다 페이지·파일 주소·라이선스·제작자·쓴 구간은 `media/info2/sources.json`(이 표의 원본)과 각 `edit.json`의 `sources`에 있습니다. Pexels 항목은 하나씩 페이지를 열어 License "Free"(Pexels License)를 확인했습니다(2026-10-10). 화면에는 출처 배지를 두지 않고, 아래 업로드 문구의 설명란에 모두 적습니다.
+
+**issue1**
+- [Second launch of the Korean Space Launch Vehicle-II on 21 June 2022 (KARI TV, CC BY)](https://commons.wikimedia.org/wiki/File:Second_launch_of_the_Korean_Space_Launch_Vehicle-II_on_21_June_2022.webm) — CC BY (KARI TV via Commons, YouTube CC-BY); 1.5-3.4s, 56.5-59.0s, 12.5-15.1s, 60.0-62.2s, cover still (frame at 4.4s)
+- [Third launch of the Korean Space Launch Vehicle-II on 25 May 2023 (KARI TV, CC BY), incl. onboard cameras](https://commons.wikimedia.org/wiki/File:Third_launch_of_the_Korean_Space_Launch_Vehicle-II_on_25_May_2023.webm) — CC BY (KARI TV via Commons, YouTube CC-BY); 66.0-68.1s, 88.0-90.0s, 126.0-128.1s, 138.0-140.9s, 190.0-192.1s, 160.0-161.5s, 300.0-303.4s, 306.0-307.7s, 34.0-36.3s
+- [누리호 1차 시험 발사 장면, 2021-10-21 (KARI, CC BY)](https://commons.wikimedia.org/wiki/File:누리호_1차_시험_발사_장면.webm) — CC BY (KARI via Commons, YouTube CC-BY); 52.0-54.4s
+
+**issue2**
+- [Pexels video 9592759 by David Bronner (Pexels License)](https://www.pexels.com/video/close-up-of-gas-pump-display-9592759/) — Pexels License (free to use, no attribution required; checked on the item page 2026-10-10); 0.0-2.0s, 0.6-2.9s
+- [Pexels video 9109484 by Shoot With Riyas (Pexels License)](https://www.pexels.com/video/a-person-refilling-gas-on-a-car-9109484/) — Pexels License (free to use, no attribution required; checked on the item page 2026-10-10); 1.0-2.4s, 5.5-7.5s, 4.0-6.5s, cover still (frame at 2.4s)
+- [Pexels video 15556113 by African Creator (Pexels License)](https://www.pexels.com/video/fuel-pump-15556113/) — Pexels License (free to use, no attribution required; checked on the item page 2026-10-10); 2.6-4.7s, 5.5-8.6s
+- [iss063e002679, northern tip of Oman on the Strait of Hormuz, 2020-04-23 (NASA, Christopher Cassidy, public domain)](https://images.nasa.gov/details/iss063e002679) — Public domain (NASA); still 2.4s on screen
+- [Pexels video 4911815 by Esteban M (Pexels License)](https://www.pexels.com/video/an-oil-tanker-in-the-sea-4911815/) — Pexels License (free to use, no attribution required; checked on the item page 2026-10-10); 2.0-3.9s
+- [Pexels video 9654558 by Zahid Nisar (Pexels License)](https://www.pexels.com/video/an-oil-tanker-traveling-across-the-sea-9654558/) — Pexels License (free to use, no attribution required; checked on the item page 2026-10-10); 1.0-2.5s
+- [Pexels video 29959405 by Toàn BDS (Pexels License)](https://www.pexels.com/video/aerial-view-of-industrial-oil-refinery-by-the-sea-29959405/) — Pexels License (free to use, no attribution required; checked on the item page 2026-10-10); 3.0-5.6s
+- [Pexels video 10396407 by Tom Fisk (Pexels License)](https://www.pexels.com/video/aerial-view-of-oil-refinery-plant-10396407/) — Pexels License (free to use, no attribution required; checked on the item page 2026-10-10); 5.0-7.3s
+- [Pexels video 33682128 by Toàn BDS (Pexels License)](https://www.pexels.com/video/aerial-view-of-industrial-storage-tank-facility-33682128/) — Pexels License (free to use, no attribution required; checked on the item page 2026-10-10); 20.0-22.1s
+- [Pexels video 30899591 by Toàn BDS (Pexels License)](https://www.pexels.com/video/aerial-view-of-industrial-plant-and-storage-tanks-30899591/) — Pexels License (free to use, no attribution required; checked on the item page 2026-10-10); 6.0-7.7s
+- [Pexels video 14807918 by Luke Nomad (Pexels License)](https://www.pexels.com/video/drone-footage-of-a-docked-oil-tanker-14807918/) — Pexels License (free to use, no attribution required; checked on the item page 2026-10-10); 2.0-4.5s
+
+**issue3**
+- [Hunminjeongeum Haerye 02 (1446, public domain)](https://commons.wikimedia.org/wiki/File:Hunminjeongeum_Haerye_02.jpg) — Public domain (PD-old, 1446); still 2.0s on screen, still 1.6s on screen, cover still (frame at 0s)
+- [Gwanghwamun in November 1993, 국립민속박물관 민속아카이브 (KOGL Type 1)](https://commons.wikimedia.org/wiki/File:Gwanghwamun_in_November_1993.jpg) — KOGL Type 1; still 3.0s on screen, still 1.7s on screen
+- [한글날 기념식 (1954), 한국정책방송원 via 공유마당 (KOGL Type 1)](https://commons.wikimedia.org/wiki/File:한글날_기념식_(1954).jpg) — KOGL Type 1; still 1.5s on screen, still 1.8s on screen
+- [광화문과 구중앙청 (1996.08) 01, 서울연구데이터서비스 (KOGL Type 1)](https://commons.wikimedia.org/wiki/File:광화문과_구중앙청_(1996.08)_01.jpg) — KOGL Type 1; still 2.7s on screen
+- [광화문 (1996.05), 서울연구데이터서비스 (KOGL Type 1)](https://commons.wikimedia.org/wiki/File:광화문_(1996.05).jpg) — KOGL Type 1; still 1.9s on screen
+- [Hunminjeongeum Haerye 07 (1446, public domain)](https://commons.wikimedia.org/wiki/File:Hunminjeongeum_Haerye_07.jpg) — Public domain (PD-old, 1446); still 3.2s on screen
+- [Nightview of the Gwanghwamun Square 2024, Seoul Tourism Organization (KOGL Type 1)](https://commons.wikimedia.org/wiki/File:Nightview_of_the_Gwanghwamun_Square_2024.jpg) — KOGL Type 1; still 2.7s on screen
+- [Hunminjeongeum Haerye 01 front cover (1446, public domain)](https://commons.wikimedia.org/wiki/File:Hunminjeongeum_Haerye_01_(front_cover).jpg) — Public domain (PD-old, 1446); still 1.8s on screen
+- [나신걸 한글편지, 1490 (Cultural Heritage Administration, KOGL Type 1)](https://commons.wikimedia.org/wiki/File:나신걸_한글편지,_1490.jpg) — KOGL Type 1; still 1.5s on screen
+- [여주 영릉(세종) 전경(항공), 문화재청 (KOGL Type 1)](https://commons.wikimedia.org/wiki/File:여주_영릉과_영릉_세종_영릉_전경(항공).jpg) — KOGL Type 1; still 2.0s on screen
+
+**issue4**
+- [Blazar EarthShot A (NASA's Goddard Space Flight Center Conceptual Image Lab, SVS 20281)](https://svs.gsfc.nasa.gov/20281) — Public domain (NASA); 4.2-5.2s
+- [NASA's Fermi Links Cosmic Neutrino to Monster Black Hole (NASA's Goddard Space Flight Center, SVS 12994) — picture only, its music is muted](https://svs.gsfc.nasa.gov/12994) — Public domain (NASA); third-party music muted; 25.0-26.1s, 22.0-23.9s, 53.0-56.0s, 47.0-48.9s, 11.0-13.1s, 58.0-60.1s
+- [Blazar EarthShot B (NASA's Goddard Space Flight Center Conceptual Image Lab, SVS 20281)](https://svs.gsfc.nasa.gov/20281) — Public domain (NASA); 4.0-6.0s, 1.0-3.9s
+- [The ICL at Dawn (John Hardin, CC BY 4.0)](https://commons.wikimedia.org/wiki/File:The_ICL_at_Dawn.jpg) — CC BY 4.0; still 2.9s on screen, still 1.9s on screen, cover still (frame at 0s)
+- [The IceCube Neutrino Observatory (Karen Andeen and Matthias Plum for the IceCube Collaboration, CC BY 4.0)](https://commons.wikimedia.org/wiki/File:The_IceCube_Neutrino_Observatory.jpg) — CC BY 4.0; still 2.0s on screen
+- [The ICL at Night (John Hardin, CC BY 4.0)](https://commons.wikimedia.org/wiki/File:The_ICL_at_Night.jpg) — CC BY 4.0; still 1.8s on screen
+- [Amundsen-Scott dome Aurora (Jonathan Berry/National Science Foundation, public domain)](https://commons.wikimedia.org/wiki/File:Amundsen-Scott_dome_Aurora_1.jpg) — Public domain (PD-USGov-NSF); still 2.9s on screen
+
+**life1**
+- [Pexels video 10710412 by Afif Ramdhasuma (Pexels License)](https://www.pexels.com/video/an-airplane-window-seat-view-10710412/) — Pexels License; 0.3-2.4s, cover still (frame at 0.3s)
+- [BOAC de Havilland Comet at Entebbe, 1952 — Ministry of Information official photographer, IWM TR 6113 (PD-UKGov)](https://commons.wikimedia.org/wiki/File:BOAC_Comet_1952.jpg) — Public domain (PD-UKGov: Crown copyright photograph taken before 1 June 1957); still 2.7s on screen, still 2.3s on screen, still 3.3s on screen
+- [Pexels video 3740041 by K (Pexels License)](https://www.pexels.com/video/view-of-sunset-from-an-airplane-in-flight-3740041/) — Pexels License; 0.5-2.8s, 6.0-7.7s
+- [Pexels video 11292266 by Alireza Akhlaghi (Pexels License)](https://www.pexels.com/video/window-view-from-an-airplane-flying-above-the-clouds-11292266/) — Pexels License; 10.0-12.6s
+- [Pexels video 2023708 by Sher Lyn . (Pexels License)](https://www.pexels.com/video/view-of-an-airplane-s-wing-from-window-2023708/) — Pexels License; 1.0-4.2s
+- [Pexels video 8511231 by Lukas L (Pexels License)](https://www.pexels.com/video/a-view-in-the-window-seat-8511231/) — Pexels License; 1.0-3.2s
+- [Pexels video 35839565 by Rise Within Studio (Pexels License)](https://www.pexels.com/video/airplane-takeoff-view-with-rain-on-window-35839565/) — Pexels License; 3.0-4.9s
+- [Pexels video 3785721 by Taryn Elliott (Pexels License)](https://www.pexels.com/video/view-of-the-airport-field-from-an-airplane-s-window-3785721/) — Pexels License; 4.0-6.7s
+
+**life2**
+- [Pexels photo 32571093 by Anna Holodna (Pexels License)](https://www.pexels.com/photo/couple-taking-mirror-selfie-in-elevator-32571093/) — Pexels License; still 2.1s on screen, still 2.7s on screen, still 1.6s on screen, cover still (frame at 0s)
+- [Pexels video 5378938 by cottonbro studio (Pexels License)](https://www.pexels.com/video/people-waiting-fir-the-elevator-lift-5378938/) — Pexels License; 5.0-6.5s
+- [Pexels video 15434928 by Yusuf Çelik (Pexels License)](https://www.pexels.com/video/an-elevator-screen-shows-going-downfloor-15434928/) — Pexels License; 0.5-1.7s
+- [Pixabay video 131012 by Jesehab (Pixabay Content License)](https://pixabay.com/videos/inside-elevator-elevator-rise-131012/) — Pixabay Content License; 4.0-6.5s, 29.8-31.6s
+- [Pexels photo 7722159 by Max Vakhtbovych (Pexels License)](https://www.pexels.com/photo/a-stainless-steel-narrow-elevator-7722159/) — Pexels License; still 1.8s on screen
+- [Pexels video 7423581 by Gustavo Fring (Pexels License)](https://www.pexels.com/video/man-moving-his-wheelchair-7423581/) — Pexels License; 2.0-3.4s
+- [Pexels video 8400828 by SHVETS production (Pexels License)](https://www.pexels.com/video/person-using-a-wheelchair-8400828/) — Pexels License; 3.0-4.7s
+- [Pexels photo 17489439 by Zakhar Vozhdaienko (Pexels License)](https://www.pexels.com/photo/woman-in-jacket-taking-photo-of-herself-in-elevator-17489439/) — Pexels License; still 3.1s on screen
+- [Pexels video 8525792 by cottonbro studio (Pexels License)](https://www.pexels.com/video/a-reflection-of-a-person-holding-the-push-ring-of-the-wheelchair-8525792/) — Pexels License; 3.0-6.3s, 20.0-22.5s
+
+**life3**
+- [Pexels video 36017323 by Raphael Kim (Pexels License)](https://www.pexels.com/video/driving-across-bridge-at-sunset-in-korea-36017323/) — Pexels License; 0.9-2.9s, 4.0-6.2s, 7.0-9.1s
+- [Pexels video 18565055 by FREE VIDEO HAPPY (Pexels License)](https://www.pexels.com/video/sihwho-18565055/) — Pexels License; 1.0-2.8s, 7.0-9.5s, cover still (frame at 1s)
+- [Pexels video 4608282 by K (Pexels License)](https://www.pexels.com/video/vehicle-overtaking-at-the-highway-4608282/) — Pexels License; 44.0-46.9s
+- [Pexels video 36108436 by Airam Dato-on (Pexels License)](https://www.pexels.com/video/driving-on-a-highway-with-overcast-skies-36108436/) — Pexels License; 4.0-7.1s, 10.0-11.6s
+- [Pexels video 28690652 by SHOX ART (Pexels License)](https://www.pexels.com/video/aerial-view-of-busy-highway-in-daylight-28690652/) — Pexels License; 2.0-5.0s, 7.0-8.4s
+- [Pexels video 35186893 by Nothing Ahead (Pexels License)](https://www.pexels.com/video/city-highway-traffic-during-daytime-commute-35186893/) — Pexels License; 8.0-11.2s
+
+**life4**
+- [Pexels video 18749262 by Dilara Hazıroğlu (Pexels License)](https://www.pexels.com/video/a-view-of-an-airplane-window-from-inside-the-plane-18749262/) — Pexels License; 2.0-3.6s, cover still (frame at 2s)
+- [Pexels video 3723453 by K (Pexels License)](https://www.pexels.com/video/footage-of-the-plane-taking-off-3723453/) — Pexels License; 8.0-9.4s
+- [Pexels video 35576270 by Content Kiosk (Pexels License)](https://www.pexels.com/video/aerial-view-from-airplane-window-on-runway-35576270/) — Pexels License; 2.0-4.0s, 7.0-9.9s
+- [Pexels video 3701057 by K (Pexels License)](https://www.pexels.com/video/silhouette-footage-of-a-person-in-the-window-3701057/) — Pexels License; 1.0-3.0s, 5.0-7.0s
+- [Pexels video 35507462 by Grigoriy Bunkov (Pexels License)](https://www.pexels.com/video/airplane-cabin-with-passengers-and-crew-35507462/) — Pexels License; 0.5-2.0s, 6.0-9.3s
+- [Pexels video 3740041 by K (Pexels License)](https://www.pexels.com/video/view-of-sunset-from-an-airplane-in-flight-3740041/) — Pexels License; 1.0-3.6s
+- [Pexels video 3740022 by K (Pexels License)](https://www.pexels.com/video/footage-inside-the-airplane-3740022/) — Pexels License; 2.0-4.9s
+- [Pexels video 10710412 by Afif Ramdhasuma (Pexels License)](https://www.pexels.com/video/an-airplane-window-seat-view-10710412/) — Pexels License; 2.0-4.5s
+- [Pexels video 3785721 by Taryn Elliott (Pexels License)](https://www.pexels.com/video/view-of-the-airport-field-from-an-airplane-s-window-3785721/) — Pexels License; 2.0-5.2s
+
+**life5**
+- [Pexels video 33825909 by SHOX ART (Pexels License)](https://www.pexels.com/video/traffic-lights-changing-against-blue-sky-33825909/) — Pexels License; 4.0-5.8s, 5.0-6.1s, 4.5-7.5s
+- [Pexels video 3999410 by K (Pexels License)](https://www.pexels.com/video/traffic-light-with-yellow-light-turning-to-red-3999410/) — Pexels License; 0.3-1.9s, 4.0-5.3s, cover still (frame at 0.3s)
+- [Pexels video 1390281 by Zuzanna Musial (Pexels License)](https://www.pexels.com/video/city-driving-in-an-ordinary-day-1390281/) — Pexels License; 2.0-3.9s, 12.0-15.4s, 18.0-20.6s
+- [Pexels video 34507814 by JMT 35 (Pexels License)](https://www.pexels.com/video/busy-urban-intersection-with-traffic-and-pedestrians-34507814/) — Pexels License; 3.0-5.1s, 8.0-9.3s
+- [Pexels video 5921059 by Aleks Magnusson (Pexels License)](https://www.pexels.com/video/dash-cam-view-of-the-road-5921059/) — Pexels License; 3.0-4.6s, 7.0-9.4s
+- [Pexels video 31801544 by Paul Bill (Pexels License)](https://www.pexels.com/video/bustling-seoul-street-near-gwanghwamun-gate-31801544/) — Pexels License; 2.0-5.3s, 10.0-12.0s
+- [Pexels video 17041886 by Ben Garves (Pexels License)](https://www.pexels.com/video/a-yellow-painted-three-way-intersection-traffic-light-changes-from-green-to-amber-to-red-17041886/) — Pexels License; 1.5-5.1s
+- [Pexels video 39573529 by Yasemin Gül (Pexels License)](https://www.pexels.com/video/busy-city-intersection-with-traffic-lights-39573529/) — Pexels License; 2.0-4.5s
+
+**life6**
+- [Pexels photo 31827772 by Nischal Pradhan (Pexels License)](https://www.pexels.com/photo/green-emergency-exit-sign-with-lighting-fixture-31827772/) — Pexels License; still 0.6s on screen, still 1.9s on screen, cover still (frame at 0s)
+- [Pexels video 3134591 by Caleb Oquendo (Pexels License)](https://www.pexels.com/video/a-lighted-exit-sign-for-direction-3134591/) — Pexels License; 3.0-4.1s, 2.0-4.1s
+- [Pexels video 14595546 by Mustafa Akkuş (Pexels License)](https://www.pexels.com/video/people-walking-in-corridor-in-green-lights-14595546/) — Pexels License; 1.0-4.1s, 7.0-8.8s
+- [Pexels video 28957437 by Paolo San (Pexels License)](https://www.pexels.com/video/dramatic-foggy-light-show-in-dark-hallway-28957437/) — Pexels License; 12.0-14.6s, 3.0-4.3s
+- [Pexels photo 37643871 by Norbert Szomszéd (Pexels License) — maker name on the sign painted over by us](https://www.pexels.com/photo/green-emergency-exit-sign-in-dark-corridor-37643871/) — Pexels License; still 1.8s on screen, still 2.6s on screen
+- [Pexels video 16657022 by Erik Mclean (Pexels License)](https://www.pexels.com/video/a-red-exit-sign-in-the-dark-16657022/) — Pexels License; 1.0-3.5s, 3.0-5.1s
+- [Pexels video 31801555 by Paul Bill (Pexels License)](https://www.pexels.com/video/urban-subway-commuters-boarding-a-train-31801555/) — Pexels License; 0.5-1.5s
+- [Pexels video 7644222 by Yaroslav Shuraev (Pexels License)](https://www.pexels.com/video/an-exit-signage-at-the-building-7644222/) — Pexels License; 8.6-11.7s, 9.4-11.8s
+- [Pexels photo 24702725 by Jakub Zerdzicki (Pexels License)](https://www.pexels.com/photo/evacuation-sign-hanging-under-ceiling-24702725/) — Pexels License; still 1.8s on screen
+
+**life7**
+- [Ballpoint pen cap with the ventilation hole, our own drawing (media/info2/draw_cap.py)](https://github.com/richroro/richroro.github.io/blob/main/shorts/viral5/media/info2/draw_cap.py) — our own drawing; still 2.1s on screen, still 0.9s on screen, still 3.2s on screen, still 2.5s on screen, still 2.6s on screen, cover still (frame at 0s)
+- [Pexels video 28405798 by Адам Аушев (Pexels License)](https://www.pexels.com/video/a-person-writing-on-a-piece-of-paper-with-a-pen-28405798/) — Pexels License; 0.3-2.2s
+- [Pexels video 6878203 by cottonbro studio (Pexels License)](https://www.pexels.com/video/man-spinning-pen-on-his-hand-6878203/) — Pexels License; 2.0-3.5s, 9.0-10.4s, 3.0-6.4s
+- [Pexels photo 983826 'Three ball point pens' by Jess Bailey Designs (Pexels License)](https://www.pexels.com/photo/three-ball-point-pens-983826/) — Pexels License (free to use; checked on the item page 2026-10-10); still 3.0s on screen
+- [Pexels video 5601055 by Allan Mas (Pexels License)](https://www.pexels.com/video/girl-drawing-on-a-paper-with-a-marker-5601055/) — Pexels License; 0.0-2.1s, 5.0-7.1s
+- [Pexels video 12760956 by Mizuno K (Pexels License)](https://www.pexels.com/video/top-view-of-a-boy-doing-drawing-12760956/) — Pexels License; 2.0-4.3s
+- [Pexels video 5599021 by Allan Mas (Pexels License)](https://www.pexels.com/video/little-girl-hands-using-colored-markers-5599021/) — Pexels License; 3.0-4.7s
+- [Pexels video 3678073 by cottonbro studio (Pexels License)](https://www.pexels.com/video/a-girl-is-drawing-using-different-colored-pens-3678073/) — Pexels License; 8.0-10.0s
+- [Pexels video 6324531 by Vanessa Garcia (Pexels License)](https://www.pexels.com/video/assorted-pens-on-wooden-desk-6324531/) — Pexels License; 2.0-3.4s
+
+**life8**
+- [Designated seats for pregnant women of Seoul Metro Line 1 in 2018 — Garam, Wikimedia Commons ('Attribution only' licence: any use with attribution)](https://commons.wikimedia.org/wiki/File:Designated_seats_for_pregnant_women_of_Seoul_Metro_Line_1_in_2018.jpg) — {{Attribution}}: any use, including commercial and derivative, with attribution to Garam; still 1.8s on screen, still 2.3s on screen, still 2.0s on screen, still 2.0s on screen, still 1.5s on screen, still 2.8s on screen, still 1.9s on screen, still 3.0s on screen, cover still (frame at 0s)
+- [Pexels video 31801555 by Paul Bill (Pexels License)](https://www.pexels.com/video/urban-subway-commuters-boarding-a-train-31801555/) — Pexels License; 0.0-2.8s, 3.0-5.2s
+- [Pexels video 27355485 by Orhan Pergel (Pexels License)](https://www.pexels.com/video/a-man-is-sitting-in-a-subway-train-with-other-people-27355485/) — Pexels License; 6.0-7.7s, 2.0-4.1s
+- [Pexels photo 36621878 by wal_ 172619 (Pexels License)](https://www.pexels.com/photo/commuters-in-seoul-metro-subway-carriage-36621878/) — Pexels License; still 1.6s on screen
+- [Pexels video 7677215 by PNW Production (Pexels License)](https://www.pexels.com/video/a-pregnant-woman-holding-her-baby-bump-7677215/) — Pexels License; 2.0-4.0s
+- [Pexels video 36302344 by Earth Photart (Pexels License)](https://www.pexels.com/video/empty-subway-car-during-daytime-transit-36302344/) — Pexels License; 2.0-4.2s
+- [Pexels video 8772870 by KADO FUETA (Pexels License)](https://www.pexels.com/video/a-subway-train-with-empty-seats-and-people-walking-8772870/) — Pexels License; 1.0-2.8s
+
+**hanban1**
+- [Mount St. Helens eruption column, 18 May 1980 (USGS/Austin Post)](https://commons.wikimedia.org/wiki/File:MSH80_eruption_mount_st_helens_05-18-80.jpg) — Public domain – {{PD-USGov-USGS}}; USGS photo by Austin Post, 18 May 1980 (from USGS Mount St. Helens image collection); still 1.9s on screen
+- [Kilauea summit ash explosion, 24 May 2018 (USGS HVO)](https://www.usgs.gov/media/videos/kilauea-volcano-summit-eruption-may-24-2018) — Public domain (USGS page: 'Usage: Public Domain'; video from USGS Hawaiian Volcano Observatory); 12.0-14.6s, 20.0-22.5s
+- [Mount Paektu, Landsat 8 OLI, Sep 2015 (NASA Earth Observatory)](https://science.nasa.gov/earth/earth-observatory/mount-paektu-north-koreas-slumbering-giant-88020/) — Public domain (NASA Earth Observatory image; Landsat 8 OLI data from USGS). Credit line on page: 'NASA Earth Observatory images by Joshua Stevens, using Landsat data from the U.S. Geological Survey'; still 2.0s on screen, still 2.5s on screen, still 1.9s on screen, still 2.3s on screen, cover still (frame at 0s)
+- [Pinatubo eruption column, 12 Jun 1991 (USGS/Dave Harlow)](https://commons.wikimedia.org/wiki/File:Pinatubo91eruption_plume.jpg) — Public domain – {{PD-USGov-USGS}}; 'U.S. Geological Survey Photograph taken on June 12, 1991, 08:51 hours, by Dave Harlow' (CVO Photo Archives); still 1.0s on screen
+- [Baitoushan/Paektu caldera from the ISS, ISS006-E-43366, Apr 2003 (NASA JSC)](https://eol.jsc.nasa.gov/Collections/EarthObservatory/articles/Baitoushan_Volcano,_China_and_North_Korea.htm) — Public domain – ISS astronaut photograph ISS006-E-43366 (NASA JSC Earth Science & Remote Sensing Unit). Required courtesy line: 'Image courtesy of the Earth Science and Remote Sensing Unit, NASA Johnson Space Center'; still 2.1s on screen, still 3.3s on screen
+- [Korean Peninsula and Japan, Terra MODIS, 3 Jan 2010 (NASA Earth Observatory)](https://science.nasa.gov/earth/earth-observatory/heavy-snow-in-korea-42211/) — Public domain – 'NASA image by Jeff Schmaltz, MODIS Rapid Response Team, Goddard Space Flight Center'; still 1.4s on screen, still 1.6s on screen, still 2.2s on screen
+- [Hunga Tonga-Hunga Ha'apai umbrella cloud, GOES-17, 15 Jan 2022 (NASA Earth Observatory)](https://science.nasa.gov/earth/earth-observatory/hunga-tonga-hunga-haapai-erupts-149347/) — Public domain – NASA Earth Observatory animation using 'GOES imagery courtesy of NOAA and the National Environmental Satellite, Data, and Information Service (NESDIS)'. Same loop on https://science.nasa.gov/resource/tonga-eruption/ credited 'NASA Earth Observatory image by Joshua Stevens using GOES imagery courtesy of NOAA and NESDIS'; 0.0-1.4s
+
+**hanban2**
+- [Super Typhoon Hinnamnor, Terra MODIS, 1 Sep 2022 (NASA Earth Observatory)](https://earthobservatory.nasa.gov/images/150290/typhoon-hinnamnor) — NASA Earth Observatory image (Lauren Dauphin, MODIS/Aqua via NASA EOSDIS LANCE, GIBS/Worldview) - public domain; still 1.9s on screen, still 2.4s on screen, cover still (frame at 0s)
+- [GPM IMERG view of Typhoon Khanun, 31 Jul 2023 (NASA GSFC SVS 5135)](https://svs.gsfc.nasa.gov/5135) — NASA Scientific Visualization Studio (GPM IMERG + GPM core observatory) - NASA work, public domain; credit NASA/GSFC SVS; 0.5-3.2s, 7.0-8.7s
+- [Hurricane Milton from the ISS, 8 Oct 2024 (NASA JSC, 0-75 s of the original)](https://images.nasa.gov/details/jsc2024m000173_International_Space_Station_Cameras_Capture_New_Views_Of_Hurricane_Milton_241008) — NASA JSC ISS external-camera video - public domain (NASA media guidelines; no NASA logo endorsement implied); 18.0-19.2s
+- [Hinnamnor, VIIRS corrected reflectance, 4 Sep 2022 (NASA Worldview snapshot)](https://worldview.earthdata.nasa.gov/?v=115,15,150,46&l=VIIRS_SNPP_CorrectedReflectance_TrueColor,VIIRS_NOAA20_CorrectedReflectance_TrueColor,Coastlines_15m&t=2022-09-04) — NASA EOSDIS GIBS/Worldview imagery (Suomi NPP & NOAA-20 VIIRS) - US Government work, no copyright; NASA asks for acknowledgement "NASA Worldview / EOSDIS"; still 1.9s on screen
+- [Hinnamnor south-west of Jeju, VIIRS, 5 Sep 2022 (NASA Worldview snapshot, lon 117-139, lat 17-45)](https://worldview.earthdata.nasa.gov/?v=117,17,139,45&l=VIIRS_SNPP_CorrectedReflectance_TrueColor,VIIRS_NOAA20_CorrectedReflectance_TrueColor,Coastlines_15m&t=2022-09-05) — NASA EOSDIS GIBS/Worldview imagery (Suomi NPP & NOAA-20 VIIRS) - US Government work, no copyright; NASA asks for acknowledgement "NASA Worldview / EOSDIS"; still 1.0s on screen
+- [Hinnamnor gone north-east, VIIRS, 6 Sep 2022 (NASA Worldview snapshot, lon 117-139, lat 17-45)](https://worldview.earthdata.nasa.gov/?v=117,17,139,45&l=VIIRS_SNPP_CorrectedReflectance_TrueColor,VIIRS_NOAA20_CorrectedReflectance_TrueColor,Coastlines_15m&t=2022-09-06) — NASA EOSDIS GIBS/Worldview imagery (Suomi NPP & NOAA-20 VIIRS) - US Government work, no copyright; NASA asks for acknowledgement "NASA Worldview / EOSDIS"; still 1.5s on screen
+- [Hinnamnor daily VIIRS flip-book, 29 Aug - 6 Sep 2022 (built from NASA Worldview snapshots, 0.8 s per day)](https://worldview.earthdata.nasa.gov/?v=115,15,150,46&l=VIIRS_SNPP_CorrectedReflectance_TrueColor,VIIRS_NOAA20_CorrectedReflectance_TrueColor,Coastlines_15m&t=2022-09-05) — NASA EOSDIS GIBS/Worldview imagery (Suomi NPP & NOAA-20 VIIRS) - US Government work, no copyright; NASA asks for acknowledgement "NASA Worldview / EOSDIS"; 1.0-3.7s, 4.0-7.0s
+- [Typhoon Jangmi, VIIRS, 31 May 2026 (NASA Earth Observatory)](https://science.nasa.gov/earth/earth-observatory/typhoon-jangmi/) — NASA Earth Observatory image (Michala Garrison, VIIRS day-night band from NASA EOSDIS LANCE, GIBS/Worldview, JPSS) - public domain; still 2.1s on screen
+- [Typhoon Jangmi eye, VIIRS, 30 May 2026 (NASA Earth Observatory)](https://science.nasa.gov/earth/earth-observatory/typhoon-jangmi/) — NASA Earth Observatory image (VIIRS, NASA EOSDIS LANCE/GIBS, JPSS) - public domain; still 2.2s on screen
+- [Hurricane Erin from the ISS, Aug 2025 (NASA JSC, 122-176 s of the original)](https://images.nasa.gov/details/jsc2025m000148-Hurricane_Erin_Seen_From_International_Space_Station) — NASA JSC ISS external-camera video - public domain; 48.0-49.5s
+
+**hanban3**
+- [Cirrus cloud over Federal Way, WA (Ron Clausen, CC0, Wikimedia Commons)](https://commons.wikimedia.org/wiki/File:Cirrus_cloud_over_Federal_Way,_WA.jpg) — CC0 1.0 (Ron Clausen, own work); still 2.6s on screen, still 1.5s on screen, still 1.3s on screen, still 2.0s on screen, cover still (frame at 0s)
+- [Ongjin, South Korea, sea and sky, May 2023 (Hankook12, CC0, Wikimedia Commons; 1920 px rendition)](https://commons.wikimedia.org/wiki/File:Ongjin_South_Korea_sea_city_03.jpg) — CC0 1.0 (Hankook12, own work; checked via the Commons API LicenseShortName); still 1.3s on screen, still 1.3s on screen, still 1.7s on screen
+- [Southern Korea and the blue limb from the ISS, iss073e0983131, 21 Sep 2025 (NASA JSC)](https://images.nasa.gov/details/iss073e0983131) — Public domain (NASA ISS crew photo; EXIF description names NASA astronaut Jonny Kim); still 2.6s on screen
+- [Korea on a yellow-dust day, Terra MODIS, 12 Apr 2023 (NASA Worldview snapshot)](https://worldview.earthdata.nasa.gov/?v=123.5,33,131.5,39.5&l=MODIS_Terra_CorrectedReflectance_TrueColor&t=2023-04-12-T00:00:00Z) — Public domain (NASA EOSDIS/Worldview imagery, no copyright; NASA requests credit); still 1.8s on screen
+- [Seoul area on a yellow-dust day, Terra MODIS, 12 Apr 2023 (NASA Worldview snapshot)](https://worldview.earthdata.nasa.gov/?v=123.5,33,131.5,39.5&l=MODIS_Terra_CorrectedReflectance_TrueColor&t=2023-04-12-T00:00:00Z) — Public domain (NASA EOSDIS/Worldview imagery); still 1.6s on screen
+- [Korea on a clear autumn day, Terra MODIS, 28 Oct 2025 (NASA Worldview snapshot)](https://worldview.earthdata.nasa.gov/?v=123.5,33,131.5,39.5&l=MODIS_Terra_CorrectedReflectance_TrueColor&t=2025-10-28-T00:00:00Z) — Public domain (NASA EOSDIS/Worldview imagery); still 2.6s on screen, still 3.3s on screen
+- [Seoul area on a clear autumn day, Terra MODIS, 28 Oct 2025 (NASA Worldview snapshot)](https://worldview.earthdata.nasa.gov/?v=123.5,33,131.5,39.5&l=MODIS_Terra_CorrectedReflectance_TrueColor&t=2025-10-28-T00:00:00Z) — Public domain (NASA EOSDIS/Worldview imagery); still 1.8s on screen
+- [Time lapse clouds (Johann Mynhardt, CC BY 2.0, Wikimedia Commons)](https://commons.wikimedia.org/wiki/File:Free_Creative_Commons_Stock_video_-_Time_lapse_clouds.webm) — CC BY 2.0 (Johann Mynhardt, via Flickr 7337676096); 3.0-4.3s, 12.0-13.8s
+
+**hanban4**
+- [Aurora over Idaho with the ISS streak, 11 May 2024 (NASA SVS 14835)](https://svs.gsfc.nasa.gov/14835/) — NASA media (page credit 'Credit: NASA/Bill Dunford'); treated as NASA PD. 3000x2000.; still 0.6s on screen, still 2.0s on screen, cover still (frame at 0s)
+- [Korean Peninsula at night from the ISS, ISS038-E-038300, 30 Jan 2014](https://images.nasa.gov/details/iss038e038300) — Public domain (NASA JSC ISS crew Earth observation photo, no third-party credit in metadata); still 1.2s on screen, still 2.0s on screen, still 1.9s on screen, still 1.9s on screen
+- [SDO AIA 131 X2.2 flare from AR 13664, 9 May 2024 (NASA SVS 5284)](https://svs.gsfc.nasa.gov/5284/) — Public domain (NASA/SDO; NASA media usage guidelines). Re-encoded H.264 CRF24 from 142 MB original, no other edits.; 2.5-5.6s
+- [SDO AIA 131 flares from AR 13663/13664, 7-8 May 2024 (NASA SVS 14683)](https://svs.gsfc.nasa.gov/14683/) — Public domain (page credit: 'Credit: NASA/SDO'). Unmodified.; 12.6-14.1s
+- [SDO AIA 171 X5.8 flare from AR 13664, 11 May 2024 (NASA SVS 5289)](https://svs.gsfc.nasa.gov/5289/) — Public domain (NASA/SDO). Unmodified.; 8.5-11.8s
+- [Red and green aurora from the ISS, iss072e147641, 9 Nov 2024](https://images.nasa.gov/details/iss072e147641) — Public domain (NASA ISS crew photo, JSC; EXIF names NASA astronaut Don Pettit). 8256x5504.; still 2.7s on screen
+- [Aurora timelapse, Bear Lake, Utah, 10 May 2024 (NASA SVS 14835)](https://svs.gsfc.nasa.gov/14835/) — NASA media (page credit 'Credit: NASA/Bill Dunford'); treated as NASA PD - see licensing note. Unmodified.; 0.5-1.9s
+- [Red and green aurora over Utah, 10 May 2024 (NASA SVS 14835, PNG converted to JPEG)](https://svs.gsfc.nasa.gov/14835/) — NASA media (credit NASA/Bill Dunford); still 2.7s on screen
+- [Aurora timelapse wide, Utah, 10 May 2024 (NASA SVS 14835)](https://svs.gsfc.nasa.gov/14835/) — NASA media (page credit 'Credit: NASA/Bill Dunford'); treated as NASA PD - see licensing note. Unmodified.; 0.0-1.8s
+- [Night lights of Seoul from the ISS, iss062e082060, 5 Mar 2020](https://images.nasa.gov/details/iss062e082060) — Public domain (NASA JSC ISS crew Earth observation photo, no third-party credit in metadata); still 3.4s on screen
+
+**why1**
+- [Pexels video 35012840 by Magda Ehlers (Pexels License)](https://www.pexels.com/video/asian-black-bears-eating-in-natural-habitat-35012840/) — Pexels License (free to use, no attribution required; checked on the item page 2026-10-10); 2.5-3.1s, 9.5-10.7s, 3.0-4.6s, 0.5-1.7s, 6.0-8.4s, 3.0-5.9s, cover still (frame at 3.0s)
+- [Pexels video 34267124 by PUWOOK Kwak (Pexels License)](https://www.pexels.com/video/aerial-view-of-serene-mountain-landscape-34267124/) — Pexels License (free to use, no attribution required; checked on the item page 2026-10-10); 2.0-2.4s, 12.0-14.3s, 20.0-23.6s, 25.0-27.4s
+- [Pexels video 35012841 by Magda Ehlers (Pexels License)](https://www.pexels.com/video/asian-black-bears-grazing-in-natural-habitat-35012841/) — Pexels License (free to use, no attribution required; checked on the item page 2026-10-10); 3.0-4.1s, 12.0-13.8s, 20.0-22.0s, 8.0-9.8s
+- [Pexels video 39169726 by Irina Fedotova (Pexels License)](https://www.pexels.com/video/black-bear-climbing-trees-in-forest-habitat-39169726/) — Pexels License (free to use, no attribution required; checked on the item page 2026-10-10); 18.0-19.8s, 28.0-29.7s, 10.0-11.2s
+- [Pexels video 39323803 by Irina Fedotova (Pexels License)](https://www.pexels.com/video/asian-black-bear-exploring-zoo-habitat-39323803/) — Pexels License (free to use, no attribution required; checked on the item page 2026-10-10); 5.0-7.2s
+- [Pexels video 19022174 by Simo Herold (Pexels License)](https://www.pexels.com/video/hiking-trail-in-the-forest-19022174/) — Pexels License (free to use, no attribution required; checked on the item page 2026-10-10); 3.0-6.3s, 10.0-11.6s
+
+**why2**
+- [Pexels video 34139293 by JUN HO LEE (Pexels License)](https://www.pexels.com/video/close-up-of-octopus-exploring-coral-reef-34139293/) — Pexels License (free to use, no attribution required; checked on the item page 2026-10-10); 0.5-1.3s, 5.0-5.8s, 3.0-5.0s, 7.0-10.1s, 1.0-3.0s, cover still (frame at 0.5s)
+- [Pexels video 1312397 by Tom Fisk (Pexels License)](https://www.pexels.com/video/video-of-an-octopus-underwater-1312397/) — Pexels License (free to use, no attribution required; checked on the item page 2026-10-10); 6.0-7.8s, 14.0-15.8s
+- [Pexels video 17836505 by Entdecker Fuchs (Pexels License)](https://www.pexels.com/video/pulpa-aquarium-biarritz-17836505/) — Pexels License (free to use, no attribution required; checked on the item page 2026-10-10); 2.0-3.5s, 9.0-11.7s
+- [Deep-sea octopus crawling, Astoria Canyon, EX2301 dive 6 (NOAA Ocean Exploration, 2023 Shakedown + EXPRESS West Coast Exploration)](https://oceanexplorer.noaa.gov/?p=12287) — US federal government work, public domain (NOAA Ocean Exploration media guidelines: credit 'NOAA Ocean Exploration'); logo corner cropped out; 5.0-6.9s, 15.0-16.4s
+- [Pexels video 31496835 by JUN HO LEE (Pexels License)](https://www.pexels.com/video/octopus-camouflages-in-coral-reef-31496835/) — Pexels License (free to use, no attribution required; checked on the item page 2026-10-10); 2.0-4.0s
+- [Pexels video 39027976 by JUN HO LEE (Pexels License)](https://www.pexels.com/video/camouflaged-octopus-on-ocean-floor-39027976/) — Pexels License (free to use, no attribution required; checked on the item page 2026-10-10); 1.0-2.9s, 4.0-5.4s
+- [Pexels video 15623348 by Jozef Papp (Pexels License)](https://www.pexels.com/video/underwater-footage-of-an-octopus-swimming-in-the-sea-15623348/) — Pexels License (free to use, no attribution required; checked on the item page 2026-10-10); 0.5-1.8s, 9.0-11.2s
+
+**why3**
+- [Pexels video 29982167 by Nicky Pe (Pexels License)](https://www.pexels.com/video/majestic-red-crowned-crane-in-winter-forest-29982167/) — Pexels License (free to use, no attribution required; checked on the item page 2026-10-10); 0.5-1.3s, 9.3-12.2s, 2.0-3.6s, 4.0-5.8s, 11.0-13.7s
+- [Pexels video 27021165 by Nicky Pe (Pexels License)](https://www.pexels.com/video/kranich_mandschurenkranich-27021165/) — Pexels License (free to use, no attribution required; checked on the item page 2026-10-10); 2.0-3.2s, 11.0-12.9s, 6.0-7.2s, 14.0-15.0s
+- [Pexels video 35571618 by Brixiv (Pexels License)](https://www.pexels.com/video/elegant-white-naped-crane-in-natural-habitat-35571618/) — Pexels License (free to use, no attribution required; checked on the item page 2026-10-10); 3.0-3.1s, 10.0-11.7s, 16.0-17.3s
+- [Pexels video 27182521 by Nicky Pe (Pexels License)](https://www.pexels.com/video/mandschurenkranich_rotkronenkranich-27182521/) — Pexels License (free to use, no attribution required; checked on the item page 2026-10-10); 1.0-4.0s, 5.0-6.4s
+- [Pexels video 27624545 by Nicky Pe (Pexels License)](https://www.pexels.com/video/rotkronenkranich-27624545/) — Pexels License (free to use, no attribution required; checked on the item page 2026-10-10); 2.0-4.2s, 10.0-12.3s, 18.0-20.5s, cover still (frame at 2.0s)
+
+**why4**
+- [Pexels video 39575836 by Bil Hinton (Pexels License)](https://www.pexels.com/video/close-up-of-a-eurasian-magpie-in-nature-39575836/) — Pexels License (free to use, no attribution required; checked on the item page 2026-10-10); 1.0-1.7s, 8.0-10.1s, 16.0-17.5s, 20.0-22.2s
+- [Pexels video 13780153 by Justin Stretch (Pexels License)](https://www.pexels.com/video/close-up-of-magpie-13780153/) — Pexels License (free to use, no attribution required; checked on the item page 2026-10-10); 3.0-3.9s, 14.0-16.2s, 30.0-31.2s, 38.0-40.4s, cover still (frame at 21.3s)
+- [Pexels video 11202600 by 대정 김 (Pexels License)](https://www.pexels.com/video/magpies-drinking-water-from-puddle-11202600/) — Pexels License (free to use, no attribution required; checked on the item page 2026-10-10); 2.0-5.3s, 12.0-13.4s, 20.0-22.0s, 6.0-7.5s, 24.0-26.0s
+- [Pexels video 34931507 by Bil Hinton (Pexels License)](https://www.pexels.com/video/eurasian-magpie-foraging-in-forest-34931507/) — Pexels License (free to use, no attribution required; checked on the item page 2026-10-10); 14.0-15.7s, 12.0-13.0s, 8.0-10.5s
+- [Pexels video 36480781 by Scott Precious (Pexels License)](https://www.pexels.com/video/magpie-foraging-on-mossy-wall-in-early-spring-36480781/) — Pexels License (free to use, no attribution required; checked on the item page 2026-10-10); 5.0-6.1s, 14.0-16.5s
+
+### 사실과 출처
+
+**기존 16편.** 내레이션의 사실은 v1과 같습니다. 근거는 위의 각 절(「생활 상식 “~하는 이유” 쇼츠」, 「2차: life5~life8」, 「이번 주 이슈 30초 정리」, 「한반도 자연·과학 지식 쇼츠」)에 있는 그대로입니다. 새로 쓴 첫 문장은 같은 근거를 결과형으로 앞당긴 것입니다.
+- issue1 "위성 딱 한 기가 못 나갔습니다": 큐브위성 10기 중 1기 미분리(머니투데이방송·아이뉴스24).
+- issue2 "경유값이 20% 올랐습니다": 2026년 9월 경유 +20.0%(국가데이터처, 정책브리핑).
+- issue3 "한글날, 22년 안 쉬었습니다": 1991–2012년(문화체육관광부 보도자료).
+- issue4 "1초에 100조 개가 몸을 뚫고 갑니다": IceCube Facts.
+- life1 "창 모서리가, 비행기를 찢었습니다": FAA Lessons Learned, "squarish windows were creating stress concentrations".
+- life2 "엘리베이터 거울, 셀카용 아닙니다": 편의증진법 시행규칙 [별표 1].
+- life3 "1차로 주행, 4만 원입니다": 시행령 [별표 8] 39. 이 편에 새로 넣은 "승합차는 5만 원"도 같은 별표에서 왔습니다.
+- life4 "창문 덮개, 비상구 찾는 빛입니다": 대한항공 뉴스룸 2023.9.6, "정전이 될 경우 바깥의 불빛에 의지해 비상구를 찾거나".
+- life5 "노란불 3초, 밟는 시간이 아닙니다": 시행규칙 [별표 2], 한국교통연구원.
+- life6 "비상구 초록색, 국제 약속입니다": ISO 3864·7010, 소방청 고시.
+- life7 "볼펜 뚜껑 구멍은, 숨구멍입니다": ISO 11540:2021 서문.
+- life8 "분홍 배려석, 눈에 띄라고 칠했습니다": 서울시 미디어허브 2015.7.23, "'분홍색'으로 연출해 주목도를 높이기로".
+- hanban1 "백두산 화산재, 일본까지 갔습니다": NASA EO 2016, Oppenheimer et al. 2017.
+- hanban2 "태풍 길은, 고기압이 정합니다": 기상청 태풍분석보고서, NOAA AOML G5.
+- hanban3 "가을 하늘, 먼지가 절반입니다": 서울시 2025년 초미세먼지 봄 24, 가을 13㎍/㎥. 본문에서 "거의 절반"이라고 말합니다.
+- hanban4 "한국 하늘에, 오로라가 찍혔습니다": 한국천문연구원 2024.5.13.
+
+**why1 반달가슴곰** (2026-10-10 확인)
+- 2004년 러시아에서 들여온 6마리 첫 방사, 2022년 4세대 출산: [데일리벳 2022.6.2(환경부·국립공원공단 발표)](https://www.dailyvet.co.kr/?p=166985). 원문: "러시아에서 들여온 반달가슴곰 6마리가 지리산에 처음 방사".
+- 야생 약 96마리(추정): [한국경제 2026.7.2(국립공원공단 발표)](https://www.hankyung.com/article/2026070228377), [경기일보 2026.7.2](https://www.kyeonggi.com/article/20260702580161). 원문: "지리산 등 야생에 사는 반달가슴곰은 현재 96마리로 추정된다."
+- 목표 50마리(최소 존속 개체군): [데일리벳, 10주년 심포지엄 보도](https://www.dailyvet.co.kr/?p=30339).
+- 천연기념물 제329호, 멸종위기 야생생물 Ⅰ급: [노컷뉴스](https://www.nocutnews.co.kr/news/6471859), [서울신문 2015](https://m.go.seoul.co.kr/news/2015/04/13/20150413012009).
+- KM-53 '오삼이': 2017년 김천 수도산에서 발견, 2018년 수도산에 다시 방사. 출처: [서울신문 2018.9.4](https://m.go.seoul.co.kr/news/2018/09/04/20180904500093), [경기일보 2023.6.15](https://www.kyeonggi.com/article/20230615580305).
+- 탐방로 10m 안에 머문 기록 0.44%(2015–2025년 위치 기록 약 3만 건): [세계일보 2026.5.7(국립공원공단 분석)](https://www.segye.com/newsView/20260507508420). "곰이 사람을 피해 다닌다"는 이 수치에 대한 해석으로 말했습니다.
+- 확인하지 못한 것: 50마리 목표를 달성한 연도, 1983년 설악산 마지막 기록. 두 가지 모두 쓰지 않았습니다.
+- 정치적 논쟁인 적정 개체 수(약 64마리설)는 다루지 않았습니다.
+
+**why2 문어 심장**
+- 아가미 심장 2개 + 체심장 1개: [Live Science](https://www.livescience.com/how-many-hearts-does-an-octopus-have), [BBC Science Focus](https://www.sciencefocus.com/nature/why-does-an-octopus-have-more-than-one-heart). BBC 원문: "copper-rich haemocyanin dissolved directly in their blood".
+- 헤모시아닌이 산소를 덜 나르고 더 높은 압력이 필요함: BBC Science Focus, [ScienceABC](https://www.scienceabc.com/nature/animals/why-do-octopuses-have-three-hearts)(대중 과학 사이트).
+- 헤엄칠 때 체심장이 멈춤: Wells M.J. et al. 1987, *J. Exp. Biol.* 131:175, doi:10.1242/jeb.131.1.175. 원문: "Jet propulsion is accompanied by cardiac arrest".
+- "그래서 주로 기어 다닌다"는 이 연구에 대한 흔한 해석입니다. 내레이션은 "기어 다닐 때가 많죠"라고만 합니다.
+- 우리나라 상업 문어는 대문어와 참문어(돌문어)이고, 대문어는 최대 약 3m, 50kg 이상입니다. 국립수산과학원 동해수산연구소 연구자 칼럼, [뉴스토마토 2016.7.8](https://newstomato.com/ReadNews.aspx?no=670095).
+
+**why3 철원 두루미**
+- 2025년 11월 29일 철원군 조사에서 두루미류 11,640마리를 셌습니다: 두루미 1,567, 재두루미 10,002, 흑두루미 60, 검은목두루미 1, 캐나다두루미 10. 역대 최대입니다. 출처: [강원도민일보 2025.12.14](https://www.kado.net/news/articleView.html?idxno=2022415). 이 때문에 훅은 "두루미 떼, 1만 1천 마리"이고, 본문에서 종별 숫자를 나눠 말합니다.
+- 천연기념물 제202호, 멸종위기 Ⅰ급: [뉴스펭귄](https://www.newspenguin.com/news/articleView.html?idxno=13509).
+- 세계 개체 수: BirdLife는 2,000–2,650마리, ICF는 약 4,500마리로 봅니다. 그래서 "몇천 마리뿐"이라고 했습니다. 출처: [BirdLife](https://datazone.birdlife.org/species/factsheet/red-crowned-crane-grus-japonensis), [ICF](https://savingcranes.org/species-field-guide/red-crowned-crane/).
+- 철원에 오는 이유 세 가지의 출처는 [뉴스펭귄](https://www.newspenguin.com/news/articleView.html?idxno=13509)(철원 두루미 운영협의체)과 강원도민일보("볏집 존치사업과 무논 조성")입니다.
+  - 사람이 거의 안 들어가는 민통선 들판
+  - 볏짚 존치사업과 먹이 주기
+  - 얕은 물에서 자는 습성, 겨울에도 얼지 않는 샘통, 물 댄 논
+- 확인하지 못한 것: 2026년 1월 동시센서스 철원 수치.
+- 민통선은 서식지 설명으로만 말하고 군 영상은 쓰지 않았습니다.
+
+**why4 까치**
+- 1964년 한 신문의 '나라새 뽑기 운동'에서 까치가 나라새로 뽑혔습니다. 정부가 국조로 지정한 적은 없습니다. 출처: [한국민족문화대백과사전 '까치'](https://encykorea.aks.ac.kr/Article/E0011213), [시대일보](https://www.sidae.com/article/2014070423258056079). 신문 이름은 말하지 않았습니다.
+- "아침에 까치가 울면 반가운 사람이 온다", 칠석 오작교: 같은 사전 항목.
+- 영국의 "One for sorrow" 미신: [USC Folklore Archive](https://folklore.usc.edu/one-for-sorrow-two-for-joy-nursery-rhyme/).
+- 거울 자기 인식: Prior, Schwarz & Güntürkün 2008, *PLoS Biology* 6(8):e202, [PMC2517622](https://pmc.ncbi.nlm.nih.gov/articles/PMC2517622).
+- 사람 얼굴 구별: Lee, Lee, Choe & Jablonski 2011, *Animal Cognition* 14:817–825.
+- 유해 야생동물 지정(2000년, 전기 설비·농작물 피해): [전북일보 2025.3.19](https://jjan.kr/article/20250319580367), [KED Global 2023.7.25](https://www.kedglobal.com/newsView/ked202307250019).
+- 중국에서도 까치(喜鹊)는 길조입니다. 그래서 제목을 "한국에서만"으로 쓰지 않았습니다.
+
+
+### 업로드 문구
+
+설명글은 저장소 공통 형식(`upload/README.md`)으로 `upload/specs/<id>.json`에 쓰고 `python3 upload/make_desc.py <id>`로 `upload/txt/<id>.txt`를 만들었습니다(`media/info2/upload_specs.py`가 spec을 씁니다). 화면 글자에는 저작권·라이선스 표시가 없고, 모든 크레딧은 설명란의 출처 줄에 있습니다. 창작(허구) 에피소드는 없습니다(모두 사실 해설). 해시태그는 공통 형식에 맞춰 #Shorts 포함 8~15개입니다(지시서의 3~5개보다 많음, 아래 보고 참고). 구독 줄의 채널 이름·핸들은 `upload/channels.json`의 자리표시자입니다.
+
+**issue1** — 업로드 제목: 누리호 위성 15기 중 1기만 못 나온 진짜 이유 ㄷㄷ
+
+> 10월 7일 누리호 5차 발사에서 군집위성 5기는 궤도에 올랐지만, 큐브위성 10기 중 1기는 분리 신호를 받고도 덮개가 열리지 않아 나오지 못했습니다. 군집위성 5기는 당일 교신에 성공했고, 누리호는 5번 중 4번 성공했습니다. 6차 발사는 내년 하반기 목표입니다.
+>
+> ▶ [채널명] 채널 구독: https://www.youtube.com/@[핸들]
+>
+> 출처: 자료: 우주항공청·정책브리핑, 파이낸셜뉴스, 전자신문, 머니투데이방송, 아이뉴스24(2026-10 기준) · 영상: 한국항공우주연구원(2022 자료) (CC BY) · 영상: 한국항공우주연구원(2023 자료) (CC BY) · 영상: 한국항공우주연구원(2021 자료) (CC BY) · 음악: "Heroic Age" Kevin MacLeod (incompetech.com), CC BY 4.0 (creativecommons.org/licenses/by/4.0) · 영상은 지난 발사(2021~2023) 자료화면입니다
+>
+> #Shorts #누리호 #우주항공청 #군집위성 #나로우주센터 #우주 #로켓 #과학뉴스 #이슈
+
+고정 댓글: 다음 6차 발사, 몇 번째 성공일까요? 🚀
+
+**issue2** — 업로드 제목: 기름값 상한제 있는데 경유 20% 오른 진짜 이유
+
+> 2026년 9월 경유값은 1년 전보다 20.0% 올랐습니다. 3월 13일 시작된 석유 최고가격제는 주유소 판매가가 아니라 정유사 공급가에 상한을 두고, 상한선도 국제유가에 따라 바뀝니다. 정부는 상한제가 없었다면 9월 물가 상승률이 2.9%가 아니라 3.5%였을 것으로 봅니다.
+>
+> ▶ [채널명] 채널 구독: https://www.youtube.com/@[핸들]
+>
+> 출처: 자료: 국가데이터처 9월 소비자물가동향(정책브리핑), 재정경제부·산업통상부 자료, KDI 경제정보센터(2026-10 기준) · 영상·사진: Pexels(David Bronner, Shoot With Riyas, African Creator, Esteban M, Zahid Nisar, Toàn BDS, Tom Fisk, Luke Nomad) · 사진: NASA (퍼블릭 도메인) · 음악: "Movement Proposition" Kevin MacLeod (incompetech.com), CC BY 4.0 (creativecommons.org/licenses/by/4.0) · NASA·NOAA·USGS 등 미국 정부 기관은 이 영상을 보증하지 않습니다
+>
+> #Shorts #기름값 #경유 #석유최고가격제 #소비자물가 #유가 #주유소 #경제뉴스 #이슈
+
+고정 댓글: 요즘 주유소 가면 경유 리터당 얼마인가요? ⛽
+
+**issue3** — 업로드 제목: 한글날이 22년 동안 쉬는 날이 아니었던 진짜 이유?
+
+> 한글날은 1991년부터 2012년까지 22년 동안 공휴일이 아니었습니다. 공휴일이 많고 경제 여건이 어렵다는 이유로 국군의 날과 함께 빠졌기 때문입니다. 2006년 국경일이 됐고, 2013년부터 다시 쉬는 날이 됐습니다.
+>
+> ▶ [채널명] 채널 구독: https://www.youtube.com/@[핸들]
+>
+> 출처: 자료: 문화체육관광부 보도자료(2012), 국가기록원 '기록으로 보는 국경일' · 사진: 훈민정음 해례본(공유 저작물) (퍼블릭 도메인) · 사진: 국립민속박물관(후지모토 다쿠미) (공공누리 제1유형) · 사진: 한국정책방송원 (공공누리 제1유형) · 사진: 서울연구원 사진으로 본 서울 (공공누리 제1유형) · 사진: 서울관광재단 (공공누리 제1유형) · 사진: 국가유산청 (공공누리 제1유형) · 음악: "Heartwarming" Kevin MacLeod (incompetech.com), CC BY 4.0 (creativecommons.org/licenses/by/4.0)
+>
+> #Shorts #한글날 #공휴일 #훈민정음 #한국사 #세종대왕 #국경일 #빨간날 #이슈
+
+고정 댓글: 여러분은 한글날에 학교 간 기억, 있나요? 📅
+
+**issue4** — 업로드 제목: 올해 노벨물리학상 받은 남극 얼음 덩어리의 정체 ㄷㄷ
+
+> 2026년 노벨물리학상은 남극 얼음 1km³를 검출기로 만든 아이스큐브 중성미자 관측소를 이끈 프랜시스 할젠 교수가 단독으로 받았습니다. 얼음 속 센서 5,160개가 중성미자가 부딪힐 때 나는 빛을 잡아, 2013년 우주에서 온 고에너지 중성미자를 처음 확인했습니다.
+>
+> ▶ [채널명] 채널 구독: https://www.youtube.com/@[핸들]
+>
+> 출처: 자료: 노벨위원회 발표(서울신문·한국일보 보도), IceCube 공식 자료, NASA · 애니메이션: NASA 고다드 (퍼블릭 도메인) · 사진: John Hardin (CC BY 4.0) · 그림: IceCube Collaboration (CC BY 4.0) · 사진: 미국 국립과학재단(NSF) (퍼블릭 도메인) · 음악: "Floating Cities" Kevin MacLeod (incompetech.com), CC BY 4.0 (creativecommons.org/licenses/by/4.0) · NASA·NOAA·USGS 등 미국 정부 기관은 이 영상을 보증하지 않습니다
+>
+> #Shorts #노벨물리학상 #중성미자 #아이스큐브 #남극 #노벨상 #과학 #우주 #이슈
+
+고정 댓글: 1초에 100조 개가 지나간다니, 믿어지시나요? 🧊
+
+**life1** — 업로드 제목: 비행기 창문이 네모가 아닌 진짜 이유 ✈️
+
+> 1954년 세계 첫 제트 여객기 코멧 두 대가 석 달 사이 하늘에서 부서졌습니다. 물탱크 압력 시험에서 찾은 원인은 네모난 창 모서리에 힘이 몰려 생긴 금속 피로였습니다. 그래서 지금 비행기 창문은 모서리가 둥급니다.
+>
+> ▶ [채널명] 채널 구독: https://www.youtube.com/@[핸들]
+>
+> 출처: 자료: FAA Lessons Learned – de Havilland Comet · 영상·사진: Pexels(Afif Ramdhasuma, K, Alireza Akhlaghi, Sher Lyn ., Lukas L, Rise Within Studio, Taryn Elliott) · 사진: 영국 정보부(IWM TR 6113) (퍼블릭 도메인) · 음악: "Movement Proposition" Kevin MacLeod (incompetech.com), CC BY 4.0 (creativecommons.org/licenses/by/4.0)
+>
+> #Shorts #비행기 #비행기창문 #항공상식 #생활상식 #진짜이유 #코멧 #여행 #지식
+
+고정 댓글: 창가 자리파? 통로 자리파? 🪟
+
+**life2** — 업로드 제목: 엘리베이터 거울이 셀카용이 아닌 진짜 이유 ㄷㄷ
+
+> 엘리베이터 거울은 셀카용이 아니라 법에 적힌 장치입니다. 휠체어가 안에서 돌 수 없는 장애인용 승강기는 후진하며 문을 확인할 수 있도록 뒷벽 0.6m 이상 높이에 거울을 달아야 합니다. 휠체어의 백미러인 셈입니다.
+>
+> ▶ [채널명] 채널 구독: https://www.youtube.com/@[핸들]
+>
+> 출처: 자료: 국가법령정보센터 장애인·노인·임산부 등의 편의증진 보장에 관한 법률 시행규칙 [별표 1](2026-10-10 기준) · 영상·사진: Pexels(Anna Holodna, cottonbro studio, Yusuf Çelik, Max Vakhtbovych, Gustavo Fring, SHVETS production, Zakhar Vozhdaienko) · 영상: Pixabay (Pixabay Content License) · 음악: "Sneaky Snitch" Kevin MacLeod (incompetech.com), CC BY 4.0 (creativecommons.org/licenses/by/4.0)
+>
+> #Shorts #엘리베이터 #엘베거울 #생활상식 #휠체어 #진짜이유 #장애인편의 #법 #지식
+
+고정 댓글: 엘베 거울, 셀카 말고 이렇게 쓰는 거 알고 계셨나요? 🪞
+
+**life3** — 업로드 제목: 제한속도 지켜도 1차로에서 단속되는 진짜 이유 🚗
+
+> 편도 3차로 이상 고속도로의 1차로는 앞지르기할 때만 쓰는 차로입니다. 계속 달리면 지정차로 위반으로 승용차 범칙금 4만 원, 승합차 5만 원, 벌점 10점입니다. 정체로 시속 80km도 못 낼 때는 예외입니다.
+>
+> ▶ [채널명] 채널 구독: https://www.youtube.com/@[핸들]
+>
+> 출처: 자료: 국가법령정보센터 도로교통법 시행규칙 [별표 9]·시행령 [별표 8](2026-10-10 기준) · 영상·사진: Pexels(Raphael Kim, FREE VIDEO HAPPY, K, Airam Dato-on, SHOX ART, Nothing Ahead) · 음악: "Exhilarate" Kevin MacLeod (incompetech.com), CC BY 4.0 (creativecommons.org/licenses/by/4.0)
+>
+> #Shorts #고속도로 #1차로 #지정차로 #운전상식 #진짜이유 #범칙금 #운전 #지식
+
+고정 댓글: 여러분은 고속도로에서 몇 차로로 달리시나요? 🛣️
+
+**life4** — 업로드 제목: 이착륙 때 창문 덮개 열라는 진짜 이유 ✈️
+
+> 이착륙 때 창문 덮개를 열면 창밖 상황을 빨리 발견하고, 정전 때 바깥 빛으로 비상구를 찾을 수 있습니다. 조명을 낮추는 것도 눈이 어둠에 적응하라는 것입니다. 국내 한 항공사는 2021년부터 의무가 아닌 권고로 바꿨고, 날개 위와 비상구 창은 여는 게 원칙입니다.
+>
+> ▶ [채널명] 채널 구독: https://www.youtube.com/@[핸들]
+>
+> 출처: 자료: 대한항공 뉴스룸 「항공상식 Q&A」(2023.9.6). 항공사마다 규정은 다를 수 있음 · 영상·사진: Pexels(Dilara Hazıroğlu, K, Content Kiosk, Grigoriy Bunkov, Afif Ramdhasuma, Taryn Elliott) · 음악: "Floating Cities" Kevin MacLeod (incompetech.com), CC BY 4.0 (creativecommons.org/licenses/by/4.0)
+>
+> #Shorts #비행기 #항공상식 #창문덮개 #비상구 #진짜이유 #이착륙 #여행 #지식
+
+고정 댓글: 이착륙 때 창문, 열어 두시나요? 🛫
+
+**life5** — 업로드 제목: 노란불 3초, 밟으라는 시간이 아닌 진짜 이유 🚦
+
+> 대부분의 교차로 노란불은 3초지만, 노란불은 정지선 앞에서 멈추라는 신호입니다. 시속 50km면 멈추는 데 2.46초, 70km면 5.9초가 걸려 딜레마존이 생깁니다. 2024년 대법원은 못 멈출 거리였어도 멈추지 않았다면 신호위반으로 봤습니다.
+>
+> ▶ [채널명] 채널 구독: https://www.youtube.com/@[핸들]
+>
+> 출처: 자료: 한국교통연구원 「황색신호와 딜레마존」(2025), 도로교통법 시행규칙 [별표 2], 대법원 2024.5 판결(세계일보·문화일보 보도) · 영상·사진: Pexels(SHOX ART, K, Zuzanna Musial, JMT 35, Aleks Magnusson, Paul Bill, Ben Garves, Yasemin Gül) · 음악: "Hustle" Kevin MacLeod (incompetech.com), CC BY 4.0 (creativecommons.org/licenses/by/4.0)
+>
+> #Shorts #신호등 #노란불 #딜레마존 #운전상식 #진짜이유 #교통법규 #운전 #지식
+
+고정 댓글: 노란불 보면 밟는다 vs 멈춘다, 솔직히? 🚥
+
+**life6** — 업로드 제목: 비상구 표시가 초록색인 진짜 이유 🟩
+
+> 비상구 표시가 초록인 건 연기 속에서 더 잘 보여서가 아니라 국제 약속 때문입니다. 국제표준에서 초록은 안전, 빨강은 금지와 소방 장비를 뜻하고, 소방청 기준도 피난구유도등을 녹색 바탕에 흰 글자로 정해 뒀습니다.
+>
+> ▶ [채널명] 채널 구독: https://www.youtube.com/@[핸들]
+>
+> 출처: 자료: 소방청 고시 「유도등의 형식승인 및 제품검사의 기술기준」 제9조, ISO 3864·7010 · 영상·사진: Pexels(Nischal Pradhan, Caleb Oquendo, Mustafa Akkuş, Paolo San, Norbert Szomszéd, Erik Mclean, Paul Bill, Yaroslav Shuraev, Jakub Zerdzicki) · 음악: "Lightless Dawn" Kevin MacLeod (incompetech.com), CC BY 4.0 (creativecommons.org/licenses/by/4.0)
+>
+> #Shorts #비상구 #생활상식 #소방 #픽토그램 #진짜이유 #안전 #초록색 #지식
+
+고정 댓글: 빨간 EXIT 표시, 해외에서 본 적 있나요? 🏃
+
+**life7** — 업로드 제목: 볼펜 뚜껑에 구멍이 뚫린 진짜 이유 ㄷㄷ
+
+> 볼펜 뚜껑 끝 구멍은 잉크 때문이 아니라 아이 안전 때문입니다. 국제표준 ISO 11540은 아이가 뚜껑을 삼켜도 숨을 쉴 수 있게 분당 8리터 이상 공기가 통하도록 정합니다. 질식을 완전히 막진 못해도 병원에 갈 시간을 벌어 줍니다.
+>
+> ▶ [채널명] 채널 구독: https://www.youtube.com/@[핸들]
+>
+> 출처: 자료: ISO 11540:2021, 산업통상자원부 학용품 안전기준 · 영상·사진: Pexels(Адам Аушев, cottonbro studio, Jess Bailey Designs, Allan Mas, Mizuno K, Vanessa Garcia) · 그림: 직접 그림 · 음악: "Scheming Weasel" Kevin MacLeod (incompetech.com), CC BY 4.0 (creativecommons.org/licenses/by/4.0) · 뚜껑 그림은 직접 그린 것입니다
+>
+> #Shorts #볼펜 #생활상식 #어린이안전 #볼펜뚜껑 #진짜이유 #ISO #문구 #지식
+
+고정 댓글: 볼펜 뚜껑 씹는 버릇, 있으신가요? 🖊️
+
+**life8** — 업로드 제목: 지하철 임산부 배려석이 분홍색인 진짜 이유 🩷
+
+> 서울 지하철 임산부 배려석은 2013년 작은 엠블럼으로 시작했지만 눈에 잘 띄지 않았습니다. 그래서 서울시는 2015년 좌석과 바닥까지 분홍으로 바꾼 핑크카펫을 도입했습니다. 2016년엔 1~8호선 7,140석으로 늘었습니다.
+>
+> ▶ [채널명] 채널 구독: https://www.youtube.com/@[핸들]
+>
+> 출처: 자료: 서울시 교통(2013), 서울시 미디어허브(2015.7.23), 뉴스토마토(2016.1.15) · 영상·사진: Pexels(Paul Bill, Orhan Pergel, wal_ 172619, PNW Production, Earth Photart, KADO FUETA) · 사진: Garam (위키미디어 공용) ({{Attribution}}: any use, including commercial and derivative, with attribution to Garam) · 음악: "Heartwarming" Kevin MacLeod (incompetech.com), CC BY 4.0 (creativecommons.org/licenses/by/4.0)
+>
+> #Shorts #임산부배려석 #핑크카펫 #지하철 #서울지하철 #진짜이유 #생활상식 #임산부 #지식
+
+고정 댓글: 분홍 자리, 비워 두시나요? 🚇
+
+**hanban1** — 업로드 제목: 백두산 폭발하면 화산재는 어디로 갈까? ㄷㄷ
+
+> 서기 946년 백두산 분화의 화산재는 바다 건너 일본까지 날아가 쌓였습니다. 2002~2005년 무렵에는 백두산 아래 작은 지진이 급증하고 땅이 부풀었습니다. 지금은 기상청이 위성으로 지표 온도와 변위를 감시하지만, 언제 분화할지는 아무도 모릅니다.
+>
+> ▶ [채널명] 채널 구독: https://www.youtube.com/@[핸들]
+>
+> 출처: 자료: 기상청 화산 분석, Oppenheimer et al. 2017, NASA Earth Observatory, Liu et al. 2020 · 사진: USGS (퍼블릭 도메인) · 영상: USGS (퍼블릭 도메인) · 사진: NASA (퍼블릭 도메인) · 영상: NASA·NOAA (퍼블릭 도메인) · 음악: "Lightless Dawn" Kevin MacLeod (incompetech.com), CC BY 4.0 (creativecommons.org/licenses/by/4.0) · 분화 장면은 다른 화산(세인트헬렌스·킬라우에아·피나투보·통가)의 참고 영상입니다. NASA·NOAA·USGS 등 미국 정부 기관은 이 영상을 보증하지 않습니다
+>
+> #Shorts #백두산 #화산 #천지 #지구과학 #화산재 #기상청 #과학 #지식
+
+고정 댓글: 백두산 천지, 직접 가 보신 분 있나요? 🌋
+
+**hanban2** — 업로드 제목: 태풍이 한국 앞에서 휙 꺾이는 진짜 이유?
+
+> 태풍은 북태평양고기압을 뚫지 못하고 가장자리를 따라 돌다가, 편서풍을 만나면 북동쪽으로 꺾입니다. 2022년 힌남노는 오키나와 남쪽에서 거의 멈췄다가 꺾인 뒤 시속 98km까지 빨라졌습니다. 올해 6월 태풍 장미도 오키나와 부근에서 꺾여 한국 땅을 비껴갔습니다.
+>
+> ▶ [채널명] 채널 구독: https://www.youtube.com/@[핸들]
+>
+> 출처: 자료: 기상청 2022 태풍 분석보고서·2011 태풍분석보고서·보도자료(2026.6.2), NOAA AOML · 위성: NASA (퍼블릭 도메인) · 영상: NASA (퍼블릭 도메인) · 위성: NASA Worldview (퍼블릭 도메인) · 음악: "Movement Proposition" Kevin MacLeod (incompetech.com), CC BY 4.0 (creativecommons.org/licenses/by/4.0) · 우주에서 본 허리케인 장면은 참고 영상입니다. NASA·NOAA·USGS 등 미국 정부 기관은 이 영상을 보증하지 않습니다
+>
+> #Shorts #태풍 #힌남노 #날씨 #기상청 #북태평양고기압 #편서풍 #과학 #지식
+
+고정 댓글: 힌남노 때 우리 동네는 어땠나요? 🌀
+
+**hanban3** — 업로드 제목: 가을 하늘이 유독 높고 파란 진짜 이유
+
+> 하늘이 파란 건 파란빛이 공기에 더 잘 흩어지기 때문입니다. 가을엔 건조한 이동성 고기압이 자주 와서 먼지와 수증기가 적고, 2025년 서울 초미세먼지 평균은 봄 24에서 가을 13㎍/㎥로 거의 절반이었습니다. 하늘이 높아진 게 아니라 공기가 깨끗해진 것입니다.
+>
+> ▶ [채널명] 채널 구독: https://www.youtube.com/@[핸들]
+>
+> 출처: 자료: 기상청 보도자료(2010.10.1), 서울시 대기환경정보 계절별 평균, NASA Space Place · 사진: Ron Clausen (CC0 1.0) · 사진: Hankook12 (CC0 1.0) · 사진: NASA (퍼블릭 도메인) · 사진: NASA Worldview (퍼블릭 도메인) · 영상: Johann Mynhardt (CC BY 2.0) · 음악: "Dreamer" Kevin MacLeod (incompetech.com), CC BY 4.0 (creativecommons.org/licenses/by/4.0) · NASA·NOAA·USGS 등 미국 정부 기관은 이 영상을 보증하지 않습니다
+>
+> #Shorts #가을하늘 #미세먼지 #날씨 #과학 #가을 #하늘 #레일리산란 #지식
+
+고정 댓글: 오늘 여러분 동네 하늘은 몇 점인가요? ☁️
+
+**hanban4** — 업로드 제목: 한국에서 오로라가 찍힌 날 생긴 일 ㄷㄷ
+
+> 2024년 5월, 21년 만의 최고 등급 지자기 폭풍 때 경북 영천 보현산천문대 카메라에 붉은 오로라가 찍혔습니다. 강원 화천에서도 촬영됐지만, 눈으로는 거의 보이지 않고 장노출 카메라에만 잡혔습니다. 영상 속 오로라는 같은 폭풍 때 미국에서 찍힌 것입니다.
+>
+> ▶ [채널명] 채널 구독: https://www.youtube.com/@[핸들]
+>
+> 출처: 자료: 한국천문연구원 참고자료(2024.5.13), NOAA SWPC, USGS, NASA · 사진: NASA/Bill Dunford (퍼블릭 도메인) · 사진: NASA (퍼블릭 도메인) · 영상: NASA SDO (퍼블릭 도메인) · 영상: NASA/Bill Dunford (퍼블릭 도메인) · 음악: "Floating Cities" Kevin MacLeod (incompetech.com), CC BY 4.0 (creativecommons.org/licenses/by/4.0) · 영상 속 오로라는 같은 폭풍 때 미국 유타·아이다호에서 NASA가 촬영한 것입니다. NASA·NOAA·USGS 등 미국 정부 기관은 이 영상을 보증하지 않습니다
+>
+> #Shorts #오로라 #태양폭풍 #보현산천문대 #우주 #지자기폭풍 #천문 #과학 #지식
+
+고정 댓글: 한국에서 오로라, 직접 보고 싶나요? 🌌
+
+**why1** — 업로드 제목: 한반도에 반달곰이 다시 돌아온 진짜 이유 🐻
+
+> 2004년 러시아에서 들여온 반달가슴곰 6마리를 지리산에 풀어 준 것이 복원의 시작이었습니다. 국립공원공단은 지금 야생 반달가슴곰을 약 96마리로 추정합니다. 곰의 위치 기록 중 탐방로 10m 안에 머문 건 0.44%뿐이라, 정해진 길로만 다니는 게 서로에게 안전합니다.
+>
+> ▶ [채널명] 채널 구독: https://www.youtube.com/@[핸들]
+>
+> 출처: 자료: 국립공원공단 발표(한국경제·경기일보 2026.7.2, 세계일보 2026.5.7), 환경부 발표(데일리벳 2022.6.2) · 영상·사진: Pexels(Magda Ehlers, PUWOOK Kwak, Irina Fedotova, Simo Herold) · 음악: "Heartwarming" Kevin MacLeod (incompetech.com), CC BY 4.0 (creativecommons.org/licenses/by/4.0) · 곰 영상은 동물원의 반달가슴곰, 산 영상은 참고 영상입니다. 개체 수는 국립공원공단 추정치입니다
+>
+> #Shorts #반달가슴곰 #지리산 #국립공원 #멸종위기 #반달곰 #동물 #진짜이유 #동물상식
+
+고정 댓글: 지리산 갔다가 반달곰 흔적 본 적 있나요? 🐾
+
+**why2** — 업로드 제목: 문어 심장이 3개인 진짜 이유 ㄷㄷ
+
+> 문어는 아가미로 피를 보내는 심장 2개와 온몸으로 보내는 심장 1개를 가졌습니다. 구리가 든 헤모시아닌 때문에 피가 파랗고, 산소를 덜 실어 더 센 압력으로 돌려야 합니다. 헤엄칠 땐 온몸 심장이 멈춘다는 연구가 있어, 문어는 주로 바닥을 기어 다닙니다.
+>
+> ▶ [채널명] 채널 구독: https://www.youtube.com/@[핸들]
+>
+> 출처: 자료: Wells et al. 1987 J. Exp. Biol. 131:175, BBC Science Focus, Live Science, 국립수산과학원 연구자 칼럼(뉴스토마토 2016) · 영상·사진: Pexels(JUN HO LEE, Tom Fisk, Entdecker Fuchs, Jozef Papp) · 영상: NOAA (퍼블릭 도메인) · 음악: "Monkeys Spinning Monkeys" Kevin MacLeod (incompetech.com), CC BY 4.0 (creativecommons.org/licenses/by/4.0) · NASA·NOAA·USGS 등 미국 정부 기관은 이 영상을 보증하지 않습니다
+>
+> #Shorts #문어 #문어심장 #바다생물 #과학상식 #동물 #진짜이유 #해양생물 #동물상식
+
+고정 댓글: 문어 숙회 vs 문어 라면, 여러분 픽은? 🐙
+
+**why3** — 업로드 제목: 철원에 두루미 떼가 해마다 오는 진짜 이유 ㄷㄷ
+
+> 2025년 11월 철원군 조사에서 두루미류 1만 1,640마리가 확인돼 역대 최대를 기록했습니다. 재두루미 1만 2마리, 두루미 1,567마리 등 5종입니다. 사람이 드문 민통선 들판, 논에 남긴 볏짚과 곡식, 얼지 않는 샘통과 물 댄 논이 철원을 겨울 집으로 만들었습니다.
+>
+> ▶ [채널명] 채널 구독: https://www.youtube.com/@[핸들]
+>
+> 출처: 자료: 철원군 조사(강원도민일보 2025.12.14), 철원 두루미 운영협의체(뉴스펭귄), International Crane Foundation, BirdLife · 영상·사진: Pexels(Nicky Pe, Brixiv) · 음악: "Dreamer" Kevin MacLeod (incompetech.com), CC BY 4.0 (creativecommons.org/licenses/by/4.0) · 두루미 영상은 국외에서 찍은 참고 영상입니다. 개체 수는 철원군 조사 결과입니다
+>
+> #Shorts #두루미 #철원 #철새 #멸종위기 #재두루미 #천연기념물 #동물 #진짜이유
+
+고정 댓글: 겨울 철원 두루미, 직접 보신 분 있나요? 🕊️
+
+**why4** — 업로드 제목: 까치가 한국에선 길조, 영국에선 흉조인 진짜 이유?
+
+> 까치는 1964년 한 신문의 나라새 뽑기에서 1위를 했고, 반가운 손님을 알리는 길조로 여겨졌습니다. 반면 영국에는 까치 한 마리를 보면 슬픔이 온다는 미신이 있습니다. 거울 속 자신을 알아보는 똑똑한 새지만, 우리나라에선 전기 설비 피해로 유해 야생동물로 지정돼 있습니다.
+>
+> ▶ [채널명] 채널 구독: https://www.youtube.com/@[핸들]
+>
+> 출처: 자료: 한국민족문화대백과사전 '까치', Prior et al. 2008 PLoS Biology, Lee et al. 2011 Animal Cognition, 환경부 자료(KED Global 2023) · 영상·사진: Pexels(Bil Hinton, Justin Stretch, 대정 김, Scott Precious) · 음악: "Sneaky Snitch" Kevin MacLeod (incompetech.com), CC BY 4.0 (creativecommons.org/licenses/by/4.0)
+>
+> #Shorts #까치 #길조 #새 #동물상식 #진짜이유 #칠월칠석 #오작교 #동물
+
+고정 댓글: 여러분 동네 까치는 길조인가요, 해조인가요? 🐦
+

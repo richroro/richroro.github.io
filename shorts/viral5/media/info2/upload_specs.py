@@ -1,9 +1,9 @@
 """Write upload/specs/<id>.json (house description format, upload/README.md) for the info v2 shorts, then run
 python3 upload/make_desc.py <id>. Titles and pinned comments come from readme_v2.UP; credits from media/info2/sources.json.
 usage: python3 media/info2/upload_specs.py"""
-import json, os, subprocess, sys
+import json, os, re, subprocess, sys
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from readme_v2 import UP, SRC, IDS, HERE
+from readme_v2 import UP, SRC, IDS, HERE, pxname
 
 SUMMARY = {
  "issue1": "10월 7일 누리호 5차 발사에서 군집위성 5기는 궤도에 올랐지만, 큐브위성 10기 중 1기는 분리 신호를 받고도 덮개가 열리지 않아 나오지 못했습니다. 군집위성 5기는 당일 교신에 성공했고, 누리호는 5번 중 4번 성공했습니다. 6차 발사는 내년 하반기 목표입니다.",
@@ -85,11 +85,14 @@ def media_credits(sid):
     px, out = [], []
     for k, r in SRC[sid].items():
         lic = r.get("license") or ""
-        if lic.startswith("Pexels"): px.append(r["label"].split(" by ")[1].replace(" (Pexels License)", ""))
+        if lic.startswith("Pexels"): px.append(pxname(r))
         elif lic == "our own drawing": out.append("그림: 직접 그림")
         else:
-            name = (r.get("label") or r["file"]).split(" (")[0]
-            out.append(f"자료 영상·사진: {name} ({lic.split(';')[0].split(' (')[0]})")
+            short = re.split(r" [–-] |\(|;", lic)[0].strip()
+            if short.startswith(("NASA", "Public", "PD", "US federal", "퍼블릭")) or "public domain" in lic.lower(): short = "퍼블릭 도메인"
+            short = short.replace("KOGL Type 1", "공공누리 제1유형")
+            cr = r.get("credit") or r.get("label")
+            out.append(cr if short in cr else f"{cr} ({short})")
     if px: out.insert(0, "영상·사진: Pexels(" + ", ".join(dict.fromkeys(px)) + ")")
     return list(dict.fromkeys(out))
 
@@ -98,7 +101,7 @@ def main():
         title, _, _, pin = UP[i]
         spec = {"title": title, "summary": SUMMARY[i], "sources": FACTS[i] + media_credits(i), "tags": EXTRA_TAGS[i], "pinned": pin}
         if i in CAVEAT: spec["caveat"] = CAVEAT[i]
-        if any("NASA" in s or "NOAA" in s or "USGS" in s for s in spec["sources"]):
+        if any(k in s for s in spec["sources"] for k in ("NASA", "NOAA", "USGS", "NSF")):
             spec["caveat"] = (spec.get("caveat", "") + ". " if spec.get("caveat") else "") + "NASA·NOAA·USGS 등 미국 정부 기관은 이 영상을 보증하지 않습니다"
         json.dump(spec, open(f"{HERE}/upload/specs/{i}.json", "w"), ensure_ascii=False, indent=2)
         r = subprocess.run([sys.executable, "upload/make_desc.py", i], cwd=HERE, capture_output=True, text=True)
