@@ -1,238 +1,256 @@
 {
  "credit": "",
- "titleStyle": "band",
- "captionY": 1650,
- "sources": {},
+ "layout": "teuk",
+ "teuk": {
+  "bg": "#262a33",
+  "mascot": "#FFB36B"
+ },
+ "sources": {
+  "alarm": {
+   "file": "alarm.jpg",
+   "page": "https://commons.wikimedia.org/wiki/File:Alarm_clock_on_a_chair_(Unsplash).jpg",
+   "file_url": "https://upload.wikimedia.org/wikipedia/commons/e/e8/Alarm_clock_on_a_chair_%28Unsplash%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+   "license": "CC0",
+   "credit": "Alarm clock on a chair (Unsplash).jpg by Szűcs László szucslaszlo (CC0, http://creativecommons.org/publicdomain/zero/1.0/deed.en), via Wikimedia Commons",
+   "used_seconds": [
+    [
+     3.73,
+     4.8
+    ]
+   ]
+  },
+  "coffee": {
+   "file": "coffee.jpg",
+   "page": "https://commons.wikimedia.org/wiki/File:Cappuchino_latte_art.jpg",
+   "file_url": "https://upload.wikimedia.org/wikipedia/commons/1/1d/Cappuchino_latte_art.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+   "license": "Public domain",
+   "credit": "Cappuchino latte art.jpg by Blanka Novotná (Public domain), via Wikimedia Commons",
+   "used_seconds": [
+    [
+     15.82,
+     18.61
+    ]
+   ]
+  }
+ },
  "music": {
   "file": "music/hustle.mp3",
-  "gain": 0.2,
+  "gain": 0.18,
   "start": 0
  },
  "sfx": [
   [
-   "c1",
-   "pop",
-   0.25
+   "a1",
+   "whoosh",
+   0.15
   ],
   [
-   "b1",
+   "a1b",
    "whoosh",
+   0.15
+  ],
+  [
+   "c1",
+   "pop_hi",
+   0.18
+  ],
+  [
+   "c1",
+   "pop",
    0.22
   ],
   [
-   "b1.다섯",
-   "boing",
-   0.3
+   "a2",
+   "whoosh",
+   0.15
+  ],
+  [
+   "a3",
+   "whoosh",
+   0.15
+  ],
+  [
+   "a4",
+   "whoosh",
+   0.15
   ],
   [
    "c2",
    "pop",
-   0.25
-  ],
-  [
-   "b2",
-   "whoosh",
    0.22
   ],
   [
-   "b2.며칠",
-   "boing",
-   0.3
-  ],
-  [
-   "c3",
-   "pop",
-   0.25
-  ],
-  [
-   "b3",
+   "a5",
    "whoosh",
-   0.22
+   0.15
   ],
   [
-   "c4",
-   "pop",
-   0.25
+   "a6",
+   "pop_hi",
+   0.18
   ],
   [
-   "b4",
+   "a6",
    "whoosh",
-   0.22
+   0.15
   ],
   [
-   "c5",
-   "pop",
-   0.25
-  ],
-  [
-   "b5",
+   "a8",
    "whoosh",
-   0.22
+   0.15
   ],
   [
-   "b5.한숨",
-   "boing",
-   0.3
-  ],
-  [
-   "c6",
-   "pop",
-   0.25
-  ],
-  [
-   "b6",
+   "a9",
    "whoosh",
-   0.22
+   0.15
   ],
   [
-   "b6.사람",
-   "tada",
-   0.3
-  ],
-  [
-   "c7",
-   "pop",
-   0.25
-  ],
-  [
-   "b7",
+   "a7",
    "whoosh",
-   0.22
-  ],
-  [
-   "y",
-   "pop",
-   0.25
+   0.15
   ],
   [
    "z",
    "whoosh",
+   0.15
+  ],
+  [
+   "y",
+   "pop",
    0.22
   ],
   [
-   "z.몇",
-   "ding",
-   0.3
+   "a1",
+   "boing",
+   0.25
   ],
   [
-   "a",
+   "a2.출근",
+   "boing",
+   0.25
+  ],
+  [
+   "a8.연타",
+   "boing",
+   0.25
+  ],
+  [
+   "a7.아직",
+   "boing",
+   0.25
+  ],
+  [
+   "z",
    "ding",
-   0.3
+   0.25
   ]
  ],
  "clips": [
   {
-   "from": "a",
-   "label": "hook",
+   "from": "a1",
+   "label": "a1",
    "gfx": {
-    "type": "scene",
-    "bg": "bedroom",
-    "place": "📍 월요일 07:00",
+    "type": "face",
+    "mood": "shock",
+    "pos": "close",
+    "fx": "lines",
     "prop": "⏰",
-    "propX": 0.75,
-    "chars": [
-     {
-      "name": "나",
-      "color": "#FFB36B",
-      "mood": "sleep"
-     }
-    ],
+    "big": "×5",
+    "propX": 0.82,
+    "propY": 0.72,
     "steps": [
+     0.9,
      0.05,
-     -1,
-     9,
-     -1
+     0.0
     ]
    }
   },
   {
-   "from": "b1",
-   "label": "beat1",
+   "from": "a1b",
+   "label": "a1b",
    "gfx": {
     "type": "scene",
     "bg": "bedroom",
-    "big": "⏰ × [5]",
-    "chars": [
-     {
-      "name": "나",
-      "color": "#FFB36B",
-      "mood": "sleep"
-     }
-    ],
-    "say": {
-     "who": 0,
-     "text": "딱 [5분]만…!"
-    },
-    "steps": [
-     "c1",
-     0.1,
-     9,
-     "b1.다섯"
-    ]
-   }
-  },
-  {
-   "from": "b2",
-   "label": "beat2",
-   "gfx": {
-    "type": "scene",
-    "bg": "bedroom",
-    "big": "D-[5]",
-    "chars": [
-     {
-      "name": "나",
-      "color": "#FFB36B",
-      "mood": "think",
-      "to": "sad"
-     }
-    ],
-    "say": {
-     "who": 0,
-     "text": "아직 [닷새]나 남았네…"
-    },
-    "steps": [
-     "c2",
-     0.1,
-     "c2",
-     "b2.며칠"
-    ]
-   }
-  },
-  {
-   "from": "b3",
-   "label": "beat3",
-   "gfx": {
-    "type": "scene",
-    "bg": "bath",
-    "prop": "🪥",
-    "propX": 0.76,
     "chars": [
      {
       "name": "나",
       "color": "#FFB36B",
       "mood": "sleep",
-      "to": "shock"
+      "size": 1.25
      }
     ],
-    "say": {
-     "who": 0,
-     "text": "나 [이 닦았나?]"
-    },
+    "prop": "⏰",
     "steps": [
-     "c3",
+     9,
      0.1,
-     "c3",
-     0.1
+     9,
+     9
     ]
    }
   },
   {
-   "from": "b4",
-   "label": "beat4",
+   "from": "c1",
+   "label": "c1",
+   "src": "alarm",
+   "gfx": {
+    "type": "photo",
+    "react": {
+     "mood": "sleep",
+     "side": "left"
+    },
+    "steps": [
+     0.12,
+     0.2,
+     0.25,
+     1000.0
+    ]
+   }
+  },
+  {
+   "from": "a2",
+   "label": "a2",
+   "gfx": {
+    "type": "face",
+    "mood": "sad",
+    "pos": "left",
+    "fx": "gloom",
+    "big": "D-5",
+    "steps": [
+     0.9,
+     0.05,
+     "a2.출근"
+    ]
+   }
+  },
+  {
+   "from": "a3",
+   "label": "a3",
+   "gfx": {
+    "type": "scene",
+    "bg": "bath",
+    "chars": [
+     {
+      "name": "나",
+      "color": "#FFB36B",
+      "mood": "sleep",
+      "size": 1.3
+     }
+    ],
+    "prop": "🪥",
+    "steps": [
+     9,
+     0.1,
+     9,
+     9
+    ]
+   }
+  },
+  {
+   "from": "a4",
+   "label": "a4",
    "gfx": {
     "type": "scene",
     "bg": "subway",
-    "place": "📍 출근길",
     "chars": [
      {
       "color": "#8FD3FF",
@@ -249,129 +267,148 @@
       "mood": "sleep"
      }
     ],
-    "say": {
-     "who": 1,
-     "text": "헉, [내릴 역] 지났나?!"
-    },
     "steps": [
-     "c4",
-     0.1,
-     "c4",
-     0.1
+     9,
+     9,
+     "a4.내릴",
+     9
     ]
    }
   },
   {
-   "from": "b5",
-   "label": "beat5",
+   "from": "c2",
+   "label": "c2",
    "gfx": {
-    "type": "scene",
-    "bg": "street",
-    "big": "하아…",
-    "prop": "🏢",
-    "propX": 0.78,
-    "chars": [
-     {
-      "name": "나",
-      "color": "#FFB36B",
-      "mood": "sad",
-      "to": "smug"
-     }
-    ],
-    "say": {
-     "who": 0,
-     "text": "그래… [가자]."
-    },
+    "type": "face",
+    "mood": "shock",
+    "pos": "tilt",
+    "fx": "sweat",
     "steps": [
-     "c5",
-     0.1,
-     "c5",
-     "b5.한숨"
+     0.9,
+     0.05,
+     0.15
     ]
    }
   },
   {
-   "from": "b6",
-   "label": "beat6",
+   "from": "a5",
+   "label": "a5",
    "gfx": {
-    "type": "scene",
-    "bg": "office",
-    "big": "부팅 [완료]",
-    "prop": "☕",
-    "propX": 0.78,
-    "chars": [
-     {
-      "name": "나",
-      "color": "#FFB36B",
-      "mood": "sleep",
-      "to": "happy"
-     }
-    ],
-    "say": {
-     "who": 0,
-     "text": "좋은 아침입니다!"
-    },
+    "type": "face",
+    "mood": "sad",
+    "pos": "low",
+    "fx": "gloom",
+    "prop": "💨",
+    "propX": 0.8,
+    "propY": 0.3,
     "steps": [
-     "c6",
-     0.1,
-     "b6.사람",
-     "b6.사람"
+     0.9,
+     0.05,
+     0.15
     ]
    }
   },
   {
-   "from": "b7",
-   "label": "beat7",
+   "from": "a6",
+   "label": "a6",
+   "src": "coffee",
    "gfx": {
-    "type": "scene",
-    "bg": "office",
-    "place": "📍 09:01",
-    "prop": "🍜",
-    "propX": 0.78,
-    "chars": [
-     {
-      "name": "나",
-      "color": "#FFB36B",
-      "mood": "think",
-      "to": "love"
-     }
-    ],
-    "say": {
-     "who": 0,
-     "text": "오늘 [점심] 뭐 먹지?"
+    "type": "photo",
+    "react": {
+     "mood": "happy",
+     "side": "right"
     },
+    "tag": "충전 완료",
     "steps": [
-     "c7",
-     0.1,
-     "c7",
-     0.1
+     0.12,
+     0.2,
+     0.25,
+     1000.0
+    ]
+   }
+  },
+  {
+   "from": "a8",
+   "label": "a8",
+   "gfx": {
+    "type": "face",
+    "mood": "angry",
+    "pos": "left",
+    "prop": "👆",
+    "big": "연타",
+    "propX": 0.8,
+    "propY": 0.35,
+    "steps": [
+     0.9,
+     0.05,
+     "a8.연타"
+    ]
+   }
+  },
+  {
+   "from": "a9",
+   "label": "a9",
+   "gfx": {
+    "type": "face",
+    "mood": "think",
+    "pos": "low",
+    "prop": "🕐",
+    "propX": 0.8,
+    "propY": 0.25,
+    "steps": [
+     0.9,
+     0.05,
+     0.15
+    ]
+   }
+  },
+  {
+   "from": "a7",
+   "label": "a7",
+   "gfx": {
+    "type": "face",
+    "mood": "cry",
+    "pos": "right",
+    "fx": "gloom",
+    "prop": "🕙",
+    "big": "10:00",
+    "propX": 0.2,
+    "propY": 0.3,
+    "steps": [
+     0.9,
+     0.05,
+     "a7.아직"
     ]
    }
   },
   {
    "from": "z",
-   "label": "end",
+   "label": "z",
    "gfx": {
-    "type": "scene",
-    "bg": "office",
-    "big": "[몇 개]?",
-    "chars": [
-     {
-      "name": "나",
-      "color": "#FFB36B",
-      "mood": "laugh"
-     }
-    ],
+    "type": "face",
+    "mood": "happy",
+    "pos": "close",
+    "fx": "sparkle",
     "steps": [
-     "y",
-     0.1,
-     9,
-     "z.몇"
-    ],
-    "say": {
-     "who": 0,
-     "text": "난 [7개] 다…ㅋㅋ"
-    }
+     0.9,
+     0.05,
+     0.15
+    ]
+   }
+  },
+  {
+   "from": "y",
+   "label": "y",
+   "gfx": {
+    "type": "face",
+    "mood": "laugh",
+    "pos": "left",
+    "fx": "lines",
+    "steps": [
+     0.9,
+     0.05,
+     0.15
+    ]
    }
   }
  ]

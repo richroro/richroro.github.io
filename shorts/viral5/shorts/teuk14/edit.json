@@ -1,0 +1,434 @@
+{
+ "credit": "",
+ "layout": "teuk",
+ "teuk": {
+  "bg": "#262330",
+  "mascot": "#FFB36B"
+ },
+ "sources": {
+  "lastslice": {
+   "file": "lastslice.jpg",
+   "page": "https://commons.wikimedia.org/wiki/File:Pepperoni_pizza_slice_on_a_red_plate.jpg",
+   "file_url": "https://upload.wikimedia.org/wikipedia/commons/4/46/Pepperoni_pizza_slice_on_a_red_plate.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+   "license": "CC BY 3.0",
+   "credit": "Pepperoni pizza slice on a red plate.jpg by MVS9966 (CC BY 3.0, https://creativecommons.org/licenses/by/3.0), via Wikimedia Commons",
+   "used_seconds": [
+    [
+     13.31,
+     15.58
+    ]
+   ]
+  },
+  "cake": {
+   "file": "cake.jpg",
+   "page": "https://commons.wikimedia.org/wiki/File:Piece_of_chocolate_cake_on_a_white_plate_decorated_with_chocolate_sauce.jpg",
+   "file_url": "https://upload.wikimedia.org/wikipedia/commons/e/ef/Piece_of_chocolate_cake_on_a_white_plate_decorated_with_chocolate_sauce.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+   "license": "CC0",
+   "credit": "Piece of chocolate cake on a white plate decorated with chocolate sauce.jpg by Daria Yakovleva (minor edits by Subsidiary account) (CC0, http://creativecommons.org/publicdomain/zero/1.0/deed.en), via Wikimedia Commons",
+   "used_seconds": [
+    [
+     26.14,
+     27.39
+    ]
+   ]
+  }
+ },
+ "music": {
+  "file": "music/sneaky_snitch.mp3",
+  "gain": 0.18,
+  "start": 0
+ },
+ "sfx": [
+  [
+   "a1",
+   "whoosh",
+   0.15
+  ],
+  [
+   "a1b",
+   "whoosh",
+   0.15
+  ],
+  [
+   "a2",
+   "whoosh",
+   0.15
+  ],
+  [
+   "c1",
+   "pop",
+   0.22
+  ],
+  [
+   "a3",
+   "whoosh",
+   0.15
+  ],
+  [
+   "a4",
+   "whoosh",
+   0.15
+  ],
+  [
+   "a5",
+   "pop_hi",
+   0.18
+  ],
+  [
+   "a5",
+   "whoosh",
+   0.15
+  ],
+  [
+   "a6",
+   "whoosh",
+   0.15
+  ],
+  [
+   "c2",
+   "pop",
+   0.22
+  ],
+  [
+   "a8",
+   "whoosh",
+   0.15
+  ],
+  [
+   "a9",
+   "whoosh",
+   0.15
+  ],
+  [
+   "a7",
+   "whoosh",
+   0.15
+  ],
+  [
+   "z",
+   "pop_hi",
+   0.18
+  ],
+  [
+   "z",
+   "whoosh",
+   0.15
+  ],
+  [
+   "y",
+   "pop",
+   0.22
+  ],
+  [
+   "a1",
+   "boing",
+   0.25
+  ],
+  [
+   "z",
+   "ding",
+   0.25
+  ]
+ ],
+ "clips": [
+  {
+   "from": "a1",
+   "label": "a1",
+   "gfx": {
+    "type": "face",
+    "mood": "shock",
+    "pos": "close",
+    "fx": "lines",
+    "big": "...?",
+    "steps": [
+     0.9,
+     0.05,
+     0.0
+    ]
+   }
+  },
+  {
+   "from": "a1b",
+   "label": "a1b",
+   "gfx": {
+    "type": "scene",
+    "bg": "home",
+    "chars": [
+     {
+      "color": "#8FD3FF",
+      "mood": "neutral"
+     },
+     {
+      "name": "나",
+      "color": "#FFB36B",
+      "mood": "happy"
+     },
+     {
+      "color": "#C9A7FF",
+      "mood": "neutral",
+      "to": "shock"
+     }
+    ],
+    "prop": "🍗",
+    "steps": [
+     9,
+     0.1,
+     "a1b.물어봄",
+     9
+    ]
+   }
+  },
+  {
+   "from": "a2",
+   "label": "a2",
+   "gfx": {
+    "type": "face",
+    "mood": "smug",
+    "pos": "left",
+    "prop": "🎬",
+    "steps": [
+     0.9,
+     0.05,
+     0.15
+    ]
+   }
+  },
+  {
+   "from": "c1",
+   "label": "c1",
+   "gfx": {
+    "type": "face",
+    "mood": "shock",
+    "pos": "right",
+    "fx": "sweat",
+    "steps": [
+     0.9,
+     0.05,
+     0.15
+    ]
+   }
+  },
+  {
+   "from": "a3",
+   "label": "a3",
+   "gfx": {
+    "type": "scene",
+    "chars": [
+     {
+      "name": "나",
+      "color": "#FFB36B",
+      "mood": "happy"
+     }
+    ],
+    "chat": {
+     "title": "우리 반 (28)",
+     "msgs": [
+      {
+       "name": "민지",
+       "text": "아 그건 좀…"
+      },
+      {
+       "name": "준호",
+       "text": "…"
+      },
+      {
+       "text": "😆😆😆🎉🎉",
+       "me": true,
+       "unread": "26"
+      },
+      {
+       "text": "🥳🥳🥳",
+       "me": true,
+       "unread": "26"
+      }
+     ]
+    },
+    "bg": "linear-gradient(180deg, #fff6e8 0%, #ffe9cf 100%)",
+    "steps": [
+     9,
+     9,
+     9,
+     9,
+     0.1,
+     0.5,
+     "a3.혼자",
+     "a3.폭탄"
+    ]
+   }
+  },
+  {
+   "from": "a4",
+   "label": "a4",
+   "gfx": {
+    "type": "scene",
+    "bg": "office",
+    "chars": [
+     {
+      "color": "#8FD3FF",
+      "mood": "sleep"
+     },
+     {
+      "name": "나",
+      "color": "#FFB36B",
+      "mood": "happy",
+      "hat": "✋"
+     },
+     {
+      "color": "#C9A7FF",
+      "mood": "shock"
+     }
+    ],
+    "steps": [
+     9,
+     9,
+     9,
+     9
+    ]
+   }
+  },
+  {
+   "from": "a5",
+   "label": "a5",
+   "src": "lastslice",
+   "gfx": {
+    "type": "photo",
+    "react": {
+     "mood": "think",
+     "side": "right"
+    },
+    "tag": "마지막 1조각",
+    "steps": [
+     0.12,
+     0.2,
+     0.25,
+     1000.0
+    ]
+   }
+  },
+  {
+   "from": "a6",
+   "label": "a6",
+   "gfx": {
+    "type": "face",
+    "mood": "happy",
+    "pos": "tilt",
+    "fx": "sparkle",
+    "steps": [
+     0.9,
+     0.05,
+     0.15
+    ]
+   }
+  },
+  {
+   "from": "c2",
+   "label": "c2",
+   "gfx": {
+    "type": "face",
+    "mood": "think",
+    "pos": "low",
+    "steps": [
+     0.9,
+     0.05,
+     0.15
+    ]
+   }
+  },
+  {
+   "from": "a8",
+   "label": "a8",
+   "gfx": {
+    "type": "face",
+    "mood": "happy",
+    "pos": "right",
+    "prop": "🍰",
+    "propX": 0.2,
+    "propY": 0.3,
+    "steps": [
+     0.9,
+     0.05,
+     0.15
+    ]
+   }
+  },
+  {
+   "from": "a9",
+   "label": "a9",
+   "gfx": {
+    "type": "scene",
+    "bg": "home",
+    "chars": [
+     {
+      "color": "#8FD3FF",
+      "mood": "happy",
+      "to": "shock"
+     },
+     {
+      "name": "나",
+      "color": "#FFB36B",
+      "mood": "happy"
+     },
+     {
+      "color": "#C9A7FF",
+      "mood": "neutral"
+     }
+    ],
+    "prop": "🎂",
+    "steps": [
+     9,
+     0.1,
+     "a9.주인공",
+     9
+    ]
+   }
+  },
+  {
+   "from": "a7",
+   "label": "a7",
+   "gfx": {
+    "type": "face",
+    "mood": "love",
+    "pos": "close",
+    "fx": "hearts",
+    "steps": [
+     0.9,
+     0.05,
+     0.15
+    ]
+   }
+  },
+  {
+   "from": "z",
+   "label": "z",
+   "src": "cake",
+   "gfx": {
+    "type": "photo",
+    "react": {
+     "mood": "happy",
+     "side": "left"
+    },
+    "steps": [
+     0.12,
+     0.2,
+     0.25,
+     1000.0
+    ]
+   }
+  },
+  {
+   "from": "y",
+   "label": "y",
+   "gfx": {
+    "type": "face",
+    "mood": "shock",
+    "pos": "close",
+    "fx": "lines",
+    "steps": [
+     0.9,
+     0.05,
+     0.15
+    ]
+   }
+  }
+ ]
+}

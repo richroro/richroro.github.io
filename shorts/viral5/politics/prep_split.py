@@ -39,6 +39,8 @@ edit.json:
              and "credit" (this stretch's own credit line, shown instead of the short's while it is on screen)
              and "cutaway": true (a reaction picture, usually with "audio": 0 under a voice part in "music": no line is timed onto it)
   flash      false: plain hard cuts, no white flash at any cut (animal clip shorts)
+  rank2      ranking v2 (src/lib/RankV2.tsx): {"sub": band line 3, "color": band line 1, "hide": [places kept "???"], "y"};
+             use with segments' "frame": "tall" (the picture fills the page under the band) and "rank": {"n", "label"}
 """
 import difflib, json, os, re, subprocess, sys
 import numpy as np
@@ -307,7 +309,7 @@ def main(sid):
                                                                        or ed["segments"][k].get("src") != ed["segments"][k - 1].get("src")
                                                                        and not (ed["segments"][k].get("broll") or ed["segments"][k - 1].get("broll")))], "punches": [],
             "split": {"w": W, "h": H, "panels": panels}, "speakers": speakers, "captionY": ed.get("captionY", 1370), "subOrder": ed.get("subOrder", "ko-en"),
-            **{k: ed[k] for k in ("titleStyle", "titleKey", "hook", "hookY", "hookTo") if ed.get(k) is not None},
+            **{k: ed[k] for k in ("titleStyle", "titleKey", "hook", "hookY", "hookTo", "rank2") if ed.get(k) is not None},
             **({"ranks": {"rows": ranks, **({"y": ed["rankY"]} if ed.get("rankY") else {})}} if ranks else {})}
     os.makedirs(f"{V}/src/data", exist_ok=True)
     json.dump(data, open(f"{V}/src/data/{sid}.json", "w"), ensure_ascii=False)

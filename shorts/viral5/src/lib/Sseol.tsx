@@ -15,7 +15,9 @@ export type Char = { name?: string; color?: string; mood?: Mood; to?: Mood; hat?
   /** "doodle": the hand-drawn skin (lib/Doodle.tsx) with `hair` colour and `hairdo` ("spiky" | "perm" | "bob" | "bald") */
   style?: "doodle" | "chibi"; hair?: string; hairdo?: "spiky" | "perm" | "bob" | "bald";
   /** "chibi": a person or dog with its own hair, clothes and age (lib/Chibi.tsx) */
-  look?: Look };
+  look?: Look;
+  /** close-ups and poses (낙서 짤툰 v2): sink the feet y px below the floor (a big character cut at the chest), tilt rot degrees */
+  y?: number; rot?: number };
 export type SceneG = {
   /** "📍 편의점" tag at the top left */
   place?: string;
@@ -43,6 +45,10 @@ export type SceneG = {
   /** a group-chat phone screen on the right (no real app's look): message i pops at steps[4 + i] (default every 0.45 s),
    *  older ones scroll up; `me` messages sit on the right, others under a name; `unread` is the small count beside a bubble */
   chat?: Chat;
+  /** px from the box bottom up to the floor the characters stand on (default 76): raised in a tall box, so the faces clear the caption box */
+  floor?: number;
+  /** the big word's font size (default 160): smaller for a long line, so it stays inside the box */
+  bigSize?: number;
 };
 export type Chat = { title?: string; msgs: { name?: string; text: string; me?: boolean; unread?: string; color?: string }[] };
 /** the hook card; `meta` is the grey line under the title (default "익명 · 창작 썰"), likes and comments are shown if given;
@@ -287,7 +293,8 @@ const ChatPhone: React.FC<{ c: Chat; t: number; at: number[]; h: number }> = ({ 
 };
 
 /** one beat of the story: the characters on a backdrop, a speech bubble, a prop, a place tag, a time-skip card */
-export const Scene: React.FC<{ g: SceneG & { steps?: number[] }; t: number; h: number }> = ({ g, t, h }) => {
+export const Scene: React.FC<{ g: SceneG & { steps?: number[] }; t: number; h: number }> = ({ g, t, h: box }) => {
+  const h = box - (g.floor ?? 76) + 76;  // the layout height: the floor line and the feet move up with g.floor, the backdrop still fills the box
   const n = g.chars.length;
   const size = n === 1 ? 430 : n === 2 ? 380 : 300, sz = g.chars.map((c) => size * (c.size ?? 1));  // c.size: taller or shorter than the rest
   const xs = g.chars.map((c, i) => c.x ?? (g.chat ? (n === 1 ? 0.24 : [0.15, 0.36, 0.25][i]) : n === 1 ? (g.prop ? 0.4 : 0.5) : n === 2 ? [0.28, 0.72][i] : [0.2, 0.5, 0.8][i]));
@@ -303,7 +310,7 @@ export const Scene: React.FC<{ g: SceneG & { steps?: number[] }; t: number; h: n
     const tw = measureText({ text, fontFamily: BODY, fontSize: fs, fontWeight: "900" }).width, w = Math.min(maxW, tw + 2 * pad + 12);
     const bh = Math.ceil(tw / (inner * 0.9)) * fs * 1.25 + 60;  // just above the speaker's head, tail included
     const sx = (xs[g.say.who] ?? 0.5) * 1080, left = clamp(sx - w / 2, 24, 1080 - 24 - w);
-    bubble = { left, top: Math.max(120, foot - (sz[g.say.who] ?? size) - bh - 64), w, size: fs, tail: clamp(sx - left - 30, 34, w - 94) };
+    bubble = { left, top: Math.max(120, foot + (g.chars[g.say.who]?.y ?? 0) - (sz[g.say.who] ?? size) - bh - 64), w, size: fs, tail: clamp(sx - left - 30, 34, w - 94) };
   }
   const bub = bubble ? eBack(prog(t, sayAt, 0.28), 2.2) : 0;
   const px = g.propX ?? (n === 1 ? Math.min(0.84, xs[0] + 0.36) : 0.5), py = n === 1 ? baseY + 40 : n === 2 ? baseY - 70 : baseY - 200;
@@ -322,7 +329,7 @@ export const Scene: React.FC<{ g: SceneG & { steps?: number[] }; t: number; h: n
         {g.chars.map((c, i) => {
           const sw = !!c.to && t >= swAt;
           return (
-            <div key={i} style={{ position: "absolute", left: xs[i] * 1080 - sz[i] / 2, top: foot - sz[i], width: sz[i], height: sz[i] }}>
+            <div key={i} style={{ position: "absolute", left: xs[i] * 1080 - sz[i] / 2, top: foot - sz[i] + (c.y ?? 0), width: sz[i], height: sz[i], ...(c.rot ? { transform: `rotate(${c.rot}deg)`, transformOrigin: "50% 100%" } : {}) }}>
               <Mochi c={c} i={i} t={sw ? t - swAt : t} size={sz[i]} mood={sw ? c.to : c.mood} />
               {c.name ? (
                 <div style={{ position: "absolute", left: -100, right: -100, top: sz[i] + 2, textAlign: "center" }}>
@@ -338,7 +345,7 @@ export const Scene: React.FC<{ g: SceneG & { steps?: number[] }; t: number; h: n
           borderRadius: 999, padding: "6px 26px", boxShadow: `5px 5px 0 ${INK}` }}>{g.place}</div>
       ) : null}
       {g.big ? (
-        <div style={{ position: "absolute", left: 0, right: 0, top: g.sign && g.bg === "class" ? 500 : 150, textAlign: "center", fontFamily: TITLE, fontSize: 160, lineHeight: 1,
+        <div style={{ position: "absolute", left: 0, right: 0, top: g.sign && g.bg === "class" ? 500 : 150, textAlign: "center", fontFamily: TITLE, fontSize: g.bigSize ?? 160, lineHeight: 1,
           color: "#FFE14D", wordBreak: "keep-all", WebkitTextStroke: "18px black", paintOrder: "stroke", transform: `scale(${eBack(prog(t, bigAt, 0.3), 2.4)}) rotate(-4deg)`, filter: "drop-shadow(0 10px 14px rgba(0,0,0,.35))" }}>
           <Marked text={g.big} color="#ff4d6d" />
         </div>

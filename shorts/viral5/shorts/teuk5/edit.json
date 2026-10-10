@@ -1,149 +1,199 @@
 {
  "credit": "",
- "titleStyle": "band",
- "captionY": 1650,
- "sources": {},
+ "layout": "teuk",
+ "teuk": {
+  "bg": "#2a2629",
+  "mascot": "#FFB36B"
+ },
+ "sources": {
+  "pot": {
+   "file": "pot.jpg",
+   "page": "https://commons.wikimedia.org/wiki/File:Ramyeon_and_kimchi.jpg",
+   "file_url": "https://upload.wikimedia.org/wikipedia/commons/3/38/Ramyeon_and_kimchi.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+   "license": "CC BY 2.0",
+   "credit": "Ramyeon and kimchi.jpg by Hyeon-Jeong Suk (CC BY 2.0, https://creativecommons.org/licenses/by/2.0), via Wikimedia Commons",
+   "used_seconds": [
+    [
+     2.87,
+     4.48
+    ]
+   ]
+  },
+  "greenonion": {
+   "file": "greenonion.jpg",
+   "page": "https://commons.wikimedia.org/wiki/File:Beijing_scallions.jpg",
+   "file_url": "https://upload.wikimedia.org/wikipedia/commons/6/68/Beijing_scallions.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+   "license": "CC0",
+   "credit": "Beijing scallions.jpg by Fumikas Sagisavas (CC0, http://creativecommons.org/publicdomain/zero/1.0/deed.en), via Wikimedia Commons",
+   "used_seconds": [
+    [
+     5.74,
+     7.91
+    ]
+   ]
+  },
+  "tissue": {
+   "file": "tissue.jpg",
+   "page": "https://commons.wikimedia.org/wiki/File:Chained_rolls_of_toilet_paper_at_MBTA_Sullivan_station_bathrooms.jpg",
+   "file_url": "https://upload.wikimedia.org/wikipedia/commons/1/16/Chained_rolls_of_toilet_paper_at_MBTA_Sullivan_station_bathrooms.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+   "license": "CC BY 4.0",
+   "credit": "Chained rolls of toilet paper at MBTA Sullivan station bathrooms.jpg by 4300streetcar (CC BY 4.0, https://creativecommons.org/licenses/by/4.0), via Wikimedia Commons",
+   "used_seconds": [
+    [
+     7.91,
+     10.18
+    ]
+   ]
+  },
+  "greenonion2": {
+   "file": "greenonion2.jpg",
+   "page": "https://commons.wikimedia.org/wiki/File:CSA-Red-Spring-Onions.jpg",
+   "file_url": "https://upload.wikimedia.org/wikipedia/commons/d/da/CSA-Red-Spring-Onions.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+   "license": "Public domain",
+   "credit": "CSA-Red-Spring-Onions.jpg by Evan-Amos (Public domain), via Wikimedia Commons",
+   "used_seconds": [
+    [
+     23.92,
+     25.17
+    ]
+   ]
+  }
+ },
  "music": {
   "file": "music/scheming_weasel.mp3",
-  "gain": 0.2,
+  "gain": 0.18,
   "start": 0
  },
  "sfx": [
   [
-   "c1",
-   "pop",
-   0.25
+   "a1",
+   "whoosh",
+   0.15
   ],
   [
-   "b1",
+   "a1b",
    "whoosh",
+   0.15
+  ],
+  [
+   "a2",
+   "pop_hi",
+   0.18
+  ],
+  [
+   "a2",
+   "whoosh",
+   0.15
+  ],
+  [
+   "c1",
+   "pop",
    0.22
+  ],
+  [
+   "a3",
+   "pop_hi",
+   0.18
+  ],
+  [
+   "a3",
+   "whoosh",
+   0.15
+  ],
+  [
+   "a4",
+   "pop_hi",
+   0.18
+  ],
+  [
+   "a4",
+   "whoosh",
+   0.15
+  ],
+  [
+   "a5",
+   "whoosh",
+   0.15
   ],
   [
    "c2",
    "pop",
-   0.25
-  ],
-  [
-   "b2",
-   "whoosh",
    0.22
   ],
   [
-   "c3",
-   "pop",
-   0.25
-  ],
-  [
-   "b3",
+   "a6",
    "whoosh",
-   0.22
+   0.15
   ],
   [
-   "b3.끝까지",
-   "boing",
-   0.3
-  ],
-  [
-   "c4",
-   "pop",
-   0.25
-  ],
-  [
-   "b4",
+   "a8",
    "whoosh",
-   0.22
+   0.15
   ],
   [
-   "b4.마지막",
-   "boing",
-   0.3
-  ],
-  [
-   "c5",
-   "pop",
-   0.25
-  ],
-  [
-   "b5",
+   "a9",
    "whoosh",
-   0.22
+   0.15
   ],
   [
-   "b5.까맣게",
-   "boing",
-   0.3
-  ],
-  [
-   "c6",
-   "pop",
-   0.25
-  ],
-  [
-   "b6",
+   "a7",
    "whoosh",
-   0.22
+   0.15
   ],
   [
-   "c7",
-   "pop",
-   0.25
-  ],
-  [
-   "b7",
-   "whoosh",
-   0.22
-  ],
-  [
-   "y",
-   "pop",
-   0.25
+   "z",
+   "pop_hi",
+   0.18
   ],
   [
    "z",
    "whoosh",
+   0.15
+  ],
+  [
+   "y",
+   "pop",
    0.22
   ],
   [
-   "z.몇",
-   "ding",
-   0.3
+   "a1",
+   "boing",
+   0.25
   ],
   [
-   "a",
-   "pop_hi",
-   0.3
+   "a8.두",
+   "boing",
+   0.25
+  ],
+  [
+   "z",
+   "ding",
+   0.25
   ]
  ],
  "clips": [
   {
-   "from": "a",
-   "label": "hook",
+   "from": "a1",
+   "label": "a1",
    "gfx": {
-    "type": "scene",
-    "bg": "home",
-    "place": "📍 자취 1일 차",
-    "prop": "📦",
-    "propX": 0.72,
-    "chars": [
-     {
-      "name": "나",
-      "color": "#FFB36B",
-      "mood": "love",
-      "x": 0.32
-     }
-    ],
+    "type": "face",
+    "mood": "shock",
+    "pos": "close",
+    "fx": "gloom",
+    "prop": "🌙",
+    "big": "고요…",
+    "propX": 0.82,
+    "propY": 0.25,
     "steps": [
+     0.9,
      0.05,
-     -1,
-     9,
-     -1
+     0.0
     ]
    }
   },
   {
-   "from": "b1",
-   "label": "beat1",
+   "from": "a1b",
+   "label": "a1b",
    "gfx": {
     "type": "scene",
     "bg": "bedroom",
@@ -151,218 +201,228 @@
      {
       "name": "나",
       "color": "#FFB36B",
-      "mood": "sleep",
-      "to": "shock"
+      "mood": "shock",
+      "size": 1.25
      }
     ],
-    "say": {
-     "who": 0,
-     "text": "방금 [무슨 소리]야?!"
-    },
+    "prop": "🌙",
     "steps": [
-     "c1",
-     0.1,
-     "c1",
-     0.1
-    ]
-   }
-  },
-  {
-   "from": "b2",
-   "label": "beat2",
-   "gfx": {
-    "type": "scene",
-    "bg": "home",
-    "prop": "🍜",
-    "propX": 0.72,
-    "chars": [
-     {
-      "name": "나",
-      "color": "#FFB36B",
-      "mood": "happy",
-      "x": 0.32
-     }
-    ],
-    "say": {
-     "who": 0,
-     "text": "설거지 [하나] 줄였다!"
-    },
-    "steps": [
-     "c2",
+     9,
      0.1,
      9,
-     0.1
+     9
     ]
    }
   },
   {
-   "from": "b3",
-   "label": "beat3",
+   "from": "a2",
+   "label": "a2",
+   "src": "pot",
    "gfx": {
-    "type": "scene",
-    "bg": "home",
-    "prop": "🥬",
-    "propX": 0.72,
-    "big": "D+[14]",
-    "chars": [
-     {
-      "name": "나",
-      "color": "#FFB36B",
-      "mood": "think",
-      "to": "sad",
-      "x": 0.32
-     }
-    ],
-    "say": {
-     "who": 0,
-     "text": "너 또 [시들었니]…"
+    "type": "photo",
+    "react": {
+     "mood": "happy",
+     "side": "right"
+    },
+    "tag": "설거지 -1",
+    "steps": [
+     0.12,
+     0.2,
+     0.25,
+     1000.0
+    ]
+   }
+  },
+  {
+   "from": "c1",
+   "label": "c1",
+   "gfx": {
+    "type": "face",
+    "mood": "smug",
+    "pos": "right",
+    "fx": "sparkle",
+    "steps": [
+     0.9,
+     0.05,
+     0.15
+    ]
+   }
+  },
+  {
+   "from": "a3",
+   "label": "a3",
+   "src": "greenonion",
+   "gfx": {
+    "type": "photo",
+    "react": {
+     "mood": "sad",
+     "side": "left"
     },
     "steps": [
-     "c3",
-     0.1,
-     "c3",
-     "b3.끝까지"
+     0.12,
+     0.2,
+     0.25,
+     1000.0
     ]
    }
   },
   {
-   "from": "b4",
-   "label": "beat4",
+   "from": "a4",
+   "label": "a4",
+   "src": "tissue",
    "gfx": {
-    "type": "scene",
-    "bg": "bath",
-    "big": "🧻 × [1]",
-    "chars": [
-     {
-      "name": "나",
-      "color": "#FFB36B",
-      "mood": "shock"
-     }
-    ],
-    "say": {
-     "who": 0,
-     "text": "안 돼… [마지막]이야!"
+    "type": "photo",
+    "react": {
+     "mood": "shock",
+     "side": "right"
     },
+    "tag": "마지막 1칸",
     "steps": [
-     "c4",
-     0.1,
-     9,
-     "b4.마지막"
+     0.12,
+     0.2,
+     0.25,
+     1000.0
     ]
    }
   },
   {
-   "from": "b5",
-   "label": "beat5",
+   "from": "a5",
+   "label": "a5",
    "gfx": {
-    "type": "scene",
-    "bg": "home",
+    "type": "face",
+    "mood": "think",
+    "pos": "left",
     "prop": "🧺",
-    "propX": 0.72,
-    "big": "[6시간] 뒤",
-    "chars": [
-     {
-      "name": "나",
-      "color": "#FFB36B",
-      "mood": "happy",
-      "to": "shock",
-      "x": 0.32
-     }
-    ],
-    "say": {
-     "who": 0,
-     "text": "아, [빨래]!!"
-    },
     "steps": [
-     "c5",
-     0.1,
-     "c5",
-     "b5.까맣게"
+     0.9,
+     0.05,
+     0.15
     ]
    }
   },
   {
-   "from": "b6",
-   "label": "beat6",
+   "from": "c2",
+   "label": "c2",
    "gfx": {
-    "type": "scene",
-    "bg": "home",
-    "prop": "🍱",
-    "propX": 0.72,
-    "chars": [
-     {
-      "name": "나",
-      "color": "#FFB36B",
-      "mood": "love",
-      "to": "cry",
-      "x": 0.32
-     }
-    ],
-    "say": {
-     "who": 0,
-     "text": "엄마 [보고 싶어]…"
-    },
+    "type": "face",
+    "mood": "shock",
+    "pos": "tilt",
+    "fx": "lines",
     "steps": [
-     "c6",
-     0.1,
-     "c6",
-     0.1
+     0.9,
+     0.05,
+     0.15
     ]
    }
   },
   {
-   "from": "b7",
-   "label": "beat7",
+   "from": "a6",
+   "label": "a6",
+   "gfx": {
+    "type": "face",
+    "mood": "shy",
+    "pos": "close",
+    "fx": "hearts",
+    "prop": "🍪",
+    "propX": 0.82,
+    "propY": 0.72,
+    "steps": [
+     0.9,
+     0.05,
+     0.15
+    ]
+   }
+  },
+  {
+   "from": "a8",
+   "label": "a8",
+   "gfx": {
+    "type": "face",
+    "mood": "shock",
+    "pos": "low",
+    "prop": "🛵",
+    "big": "2인분",
+    "propX": 0.8,
+    "propY": 0.3,
+    "steps": [
+     0.9,
+     0.05,
+     "a8.두"
+    ]
+   }
+  },
+  {
+   "from": "a9",
+   "label": "a9",
    "gfx": {
     "type": "scene",
     "bg": "door",
-    "prop": "🧾",
-    "propX": 0.42,
     "chars": [
      {
       "name": "나",
       "color": "#FFB36B",
-      "mood": "think",
-      "to": "shock",
-      "x": 0.22
+      "mood": "happy",
+      "size": 1.2
      }
     ],
-    "say": {
-     "who": 0,
-     "text": "내가 [이만큼] 썼다고?!"
-    },
+    "prop": "📦",
     "steps": [
-     "c7",
+     9,
      0.1,
-     "c7",
-     0.1
+     9,
+     9
+    ]
+   }
+  },
+  {
+   "from": "a7",
+   "label": "a7",
+   "gfx": {
+    "type": "face",
+    "mood": "cry",
+    "pos": "left",
+    "fx": "gloom",
+    "prop": "🏠",
+    "propX": 0.8,
+    "propY": 0.35,
+    "steps": [
+     0.9,
+     0.05,
+     0.15
     ]
    }
   },
   {
    "from": "z",
-   "label": "end",
+   "label": "z",
+   "src": "greenonion2",
    "gfx": {
-    "type": "scene",
-    "bg": "home",
-    "big": "[몇 개]?",
-    "chars": [
-     {
-      "name": "나",
-      "color": "#FFB36B",
-      "mood": "laugh"
-     }
-    ],
+    "type": "photo",
+    "react": {
+     "mood": "happy",
+     "side": "left"
+    },
     "steps": [
-     "y",
-     0.1,
-     9,
-     "z.몇"
-    ],
-    "say": {
-     "who": 0,
-     "text": "난 [7개] 다…ㅋㅋ"
-    }
+     0.12,
+     0.2,
+     0.25,
+     1000.0
+    ]
+   }
+  },
+  {
+   "from": "y",
+   "label": "y",
+   "gfx": {
+    "type": "face",
+    "mood": "laugh",
+    "pos": "right",
+    "fx": "lines",
+    "steps": [
+     0.9,
+     0.05,
+     0.15
+    ]
    }
   }
  ]

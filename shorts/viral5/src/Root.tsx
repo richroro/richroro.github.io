@@ -2,8 +2,10 @@ import { Composition } from "remotion";
 import { ClipShort, FPS, type ShortData } from "./ClipShort";
 import { LongForm, longFrames } from "./LongForm";
 import { PostFrameShort } from "./lib/PostFrame";
+import { LongCompositions } from "./Long";
 import { SHORTS } from "./data";
 import { LONGS } from "./longs";
+import { LfSaeyeon1Comps } from "./lib/long/lfsaeyeon1_comps";
 
 export const RemotionRoot: React.FC = () => (
   <>
@@ -17,5 +19,7 @@ export const RemotionRoot: React.FC = () => (
           durationInFrames={longFrames(parts)} />
       ) : null;
     })}
+    <LongCompositions />
+    <LfSaeyeon1Comps />
   </>
 );
