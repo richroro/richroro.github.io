@@ -1,98 +1,39 @@
 {
  "src": "top6/red_jellyfish_poralia.mp4",
  "title": [
-  "바닷속 소름 돋는 장면",
-  "[TOP5] (몇 위가 제일 소름?)"
+  "역대급 소름 돋는 바닷속",
+  "랭킹 TOP5"
  ],
  "titleStyle": "band",
- "credit": "영상: 미국 해양대기청(NOAA)",
+ "credit": "",
  "panels": [],
- "stickers": [
-  {
-   "text": "5위",
-   "from": 0.0,
-   "to": 1.4,
-   "x": 130,
-   "y": 500,
-   "rot": -4,
-   "bg": "#FFE14D",
-   "fg": "#111",
-   "size": 64
-  },
-  {
-   "text": "4위",
-   "from": 6.8,
-   "to": 8.2,
-   "x": 130,
-   "y": 500,
-   "rot": -4,
-   "bg": "#FFE14D",
-   "fg": "#111",
-   "size": 64
-  },
-  {
-   "text": "3위",
-   "from": 13.6,
-   "to": 15.0,
-   "x": 130,
-   "y": 500,
-   "rot": -4,
-   "bg": "#FFE14D",
-   "fg": "#111",
-   "size": 64
-  },
-  {
-   "text": "2위",
-   "from": 20.4,
-   "to": 21.8,
-   "x": 130,
-   "y": 500,
-   "rot": -4,
-   "bg": "#FFE14D",
-   "fg": "#111",
-   "size": 64
-  },
-  {
-   "text": "1위",
-   "from": 27.2,
-   "to": 28.6,
-   "x": 130,
-   "y": 500,
-   "rot": -4,
-   "bg": "#FFE14D",
-   "fg": "#111",
-   "size": 64
-  }
- ],
- "keys": [
-  "700m",
-  "은빛",
-  "1500m",
-  "유령선",
-  "37.8m",
-  "검은",
-  "30m",
-  "폭발",
-  "처음"
- ],
+ "rank2": {
+  "sub": "(몇 번이 제일 소름?)",
+  "color": "#5BE0C2",
+  "hide": [
+   1
+  ]
+ },
+ "flash": false,
+ "keys": [],
  "sfx": [
   [
-   6.8,
+   5.1,
    "whoosh",
    0.5
   ],
   [
-   13.6,
+   10.2,
+   "whoosh",
+   0.5
+  ],
+  [
+   15.3,
    "whoosh",
    0.5
   ],
   [
    20.4,
-   "whoosh",
-   0.5
-  ],
-  [
-   27.2,
    "whoosh",
    0.5
   ]
@@ -102,20 +43,21 @@
    "src": "public/music/Gathering Darkness.mp3",
    "from": 0.0,
    "at": 0.0,
-   "to": 37.4,
+   "to": 25.6,
    "fade": 0.3,
    "gain": 1.0
   }
  ],
- "musicGain": 0.7,
+ "musicGain": 0.8,
  "duck": false,
- "captionY": 1380,
+ "captionY": 1640,
  "tail": 0.0,
  "segments": [
   {
    "src": "top6/red_jellyfish_poralia.mp4",
    "in": 3.0,
-   "out": 6.4,
+   "out": 5.3,
+   "frame": "tall",
    "single": [
     0.47,
     0.5,
@@ -123,19 +65,19 @@
    ],
    "push": [
     1.0,
-    1.05
+    1.06
    ],
    "audio": 0,
-   "credit": "영상: 미국 해양대기청(NOAA)",
    "rank": {
     "n": 5,
-    "label": "이름 없는 심해 해파리"
+    "label": "해파리"
    }
   },
   {
    "src": "top6/red_jellyfish_poralia.mp4",
    "in": 8.5,
-   "out": 11.9,
+   "out": 11.3,
+   "frame": "tall",
    "single": [
     0.48,
     0.5,
@@ -143,15 +85,15 @@
    ],
    "push": [
     1.0,
-    1.05
+    1.06
    ],
-   "audio": 0,
-   "credit": "영상: 미국 해양대기청(NOAA)"
+   "audio": 0
   },
   {
    "src": "top6/methane_bubble_river.mp4",
    "in": 0.5,
-   "out": 3.9,
+   "out": 3.0,
+   "frame": "tall",
    "single": [
     0.45,
     0.5,
@@ -159,35 +101,35 @@
    ],
    "push": [
     1.0,
-    1.05
+    1.06
    ],
    "audio": 0,
-   "credit": "영상: 미국 해양대기청(NOAA)",
    "rank": {
     "n": 4,
-    "label": "바위 밑 가스의 강"
+    "label": "가스강"
    }
   },
   {
    "src": "top6/methane_bubble_river.mp4",
    "in": 6.5,
-   "out": 9.9,
+   "out": 9.1,
+   "frame": "tall",
    "single": [
     0.4,
     0.5,
-    1.1
+    1.0
    ],
    "push": [
     1.0,
-    1.05
+    1.06
    ],
-   "audio": 0,
-   "credit": "영상: 미국 해양대기청(NOAA)"
+   "audio": 0
   },
   {
    "src": "top6/shipwreck_19th_century.mp4",
    "in": 1.0,
-   "out": 4.4,
+   "out": 3.5,
+   "frame": "tall",
    "single": [
     0.55,
     0.5,
@@ -195,19 +137,19 @@
    ],
    "push": [
     1.0,
-    1.05
+    1.06
    ],
    "audio": 0,
-   "credit": "영상: 미국 해양대기청(NOAA)",
    "rank": {
     "n": 3,
-    "label": "우연히 찾은 난파선"
+    "label": "난파선"
    }
   },
   {
    "src": "top6/shipwreck_19th_century.mp4",
    "in": 6.5,
-   "out": 9.9,
+   "out": 9.1,
+   "frame": "tall",
    "single": [
     0.4,
     0.5,
@@ -215,51 +157,51 @@
    ],
    "push": [
     1.0,
-    1.05
+    1.06
    ],
-   "audio": 0,
-   "credit": "영상: 미국 해양대기청(NOAA)"
+   "audio": 0
   },
   {
    "src": "top6/black_smoker_marianas.mp4",
    "in": 0.0,
-   "out": 3.4,
+   "out": 2.5,
+   "frame": "tall",
    "single": [
-    0.47,
+    0.45,
     0.5,
     1.0
    ],
    "push": [
     1.0,
-    1.05
+    1.06
    ],
    "audio": 0,
-   "credit": "영상: 미국 해양대기청(NOAA)",
    "rank": {
     "n": 2,
-    "label": "검은 연기 뿜는 굴뚝"
+    "label": "굴뚝"
    }
   },
   {
    "src": "top6/black_smoker_marianas.mp4",
    "in": 4.4,
-   "out": 7.8,
+   "out": 7.0,
+   "frame": "tall",
    "single": [
     0.46,
     0.45,
-    1.3
+    1.2
    ],
    "push": [
     1.0,
-    1.05
+    1.06
    ],
-   "audio": 0,
-   "credit": "영상: 미국 해양대기청(NOAA)"
+   "audio": 0
   },
   {
    "src": "top6/eruption_brimstone_pit.mp4",
    "in": 0.0,
-   "out": 3.4,
+   "out": 1.8,
+   "frame": "tall",
    "single": [
     0.57,
     0.5,
@@ -267,114 +209,107 @@
    ],
    "push": [
     1.0,
-    1.05
+    1.06
    ],
    "audio": 0,
-   "credit": "영상: 미국 해양대기청(NOAA)",
    "rank": {
     "n": 1,
-    "label": "사상 첫 해저 화산 분화"
+    "label": "분화"
    }
   },
   {
    "src": "top6/eruption_brimstone_pit.mp4",
    "in": 4.5,
-   "out": 7.9,
+   "out": 6.2,
+   "frame": "tall",
    "single": [
     0.58,
     0.45,
-    1.3
+    1.2
    ],
    "push": [
     1.0,
-    1.05
+    1.06
    ],
-   "audio": 0,
-   "credit": "영상: 미국 해양대기청(NOAA)"
+   "audio": 0
   },
   {
    "src": "top6/eruption_brimstone_pit.mp4",
    "in": 9.5,
-   "out": 12.9,
+   "out": 11.2,
+   "frame": "tall",
    "single": [
     0.55,
     0.55,
-    1.1
+    1.0
    ],
    "push": [
     1.0,
-    1.05
+    1.06
    ],
-   "audio": 0,
-   "credit": "영상: 미국 해양대기청(NOAA)"
+   "audio": 0
   }
  ],
  "lines": [
   {
    "who": 0,
-   "t": 0.1,
-   "tend": 3.35,
-   "ko": "수심 700m 핏빛 해파리"
+   "t": 0.0,
+   "tend": 2.3,
+   "ko": "수심 700m 내려가니.."
   },
   {
    "who": 0,
-   "t": 3.5,
-   "tend": 6.75,
-   "ko": "아직 이름 없는 신종?"
+   "t": 2.3,
+   "tend": 5.1,
+   "ko": "핏빛 해파리 등장??"
   },
   {
    "who": 0,
-   "t": 6.9,
-   "tend": 10.15,
-   "ko": "바위 밑에 은빛 강이?"
+   "t": 5.1,
+   "tend": 7.6,
+   "ko": "바위 밑을 비췄더니.."
   },
   {
    "who": 0,
-   "t": 10.3,
-   "tend": 13.55,
-   "ko": "가스 거품이 1500m 위로"
+   "t": 7.6,
+   "tend": 10.2,
+   "ko": "은빛 강이 흐름??"
   },
   {
    "who": 0,
-   "t": 13.7,
-   "tend": 16.95,
-   "ko": "심해에 잠든 유령선"
+   "t": 10.2,
+   "tend": 12.7,
+   "ko": "어둠 속에 뭔가.."
   },
   {
    "who": 0,
-   "t": 17.1,
-   "tend": 20.35,
-   "ko": "길이 37.8m 19세기 범선?"
+   "t": 12.7,
+   "tend": 15.3,
+   "ko": "19세기 범선 난파선??"
   },
   {
    "who": 0,
-   "t": 20.5,
-   "tend": 23.75,
-   "ko": "바다 밑 굴뚝이 검은 연기"
+   "t": 15.3,
+   "tend": 17.8,
+   "ko": "바다 밑 굴뚝에서.."
   },
   {
    "who": 0,
-   "t": 23.9,
-   "tend": 27.15,
-   "ko": "30m 넘는 굴뚝도 있음"
+   "t": 17.8,
+   "tend": 20.4,
+   "ko": "검은 연기가 콸콸??"
   },
   {
    "who": 0,
-   "t": 27.3,
-   "tend": 30.55,
-   "ko": "바닷속 화산이 폭발 중"
+   "t": 20.4,
+   "tend": 22.2,
+   "ko": "바닷속이 끓더니.."
   },
   {
    "who": 0,
-   "t": 30.7,
-   "tend": 33.95,
-   "ko": "사람이 처음 본 해저 분화"
-  },
-  {
-   "who": 0,
-   "t": 34.1,
-   "tend": 37.35,
-   "ko": "다들 몇 위가 제일 소름?"
+   "t": 22.2,
+   "tend": 25.6,
+   "ko": "해저 화산 폭발??"
   }
  ],
  "sources": [
@@ -400,6 +335,16 @@
      8.5,
      11.9
     ]
+   ],
+   "used_seconds": [
+    [
+     3.0,
+     5.3
+    ],
+    [
+     8.5,
+     11.3
+    ]
    ]
   },
   {
@@ -423,6 +368,16 @@
     [
      6.5,
      9.9
+    ]
+   ],
+   "used_seconds": [
+    [
+     0.5,
+     3.0
+    ],
+    [
+     6.5,
+     9.1
     ]
    ]
   },
@@ -448,6 +403,16 @@
      6.5,
      9.9
     ]
+   ],
+   "used_seconds": [
+    [
+     1.0,
+     3.5
+    ],
+    [
+     6.5,
+     9.1
+    ]
    ]
   },
   {
@@ -471,6 +436,16 @@
     [
      4.4,
      7.8
+    ]
+   ],
+   "used_seconds": [
+    [
+     0.0,
+     2.5
+    ],
+    [
+     4.4,
+     7.0
     ]
    ]
   },
@@ -499,6 +474,20 @@
     [
      9.5,
      12.9
+    ]
+   ],
+   "used_seconds": [
+    [
+     0.0,
+     1.8
+    ],
+    [
+     4.5,
+     6.2
+    ],
+    [
+     9.5,
+     11.2
     ]
    ]
   }

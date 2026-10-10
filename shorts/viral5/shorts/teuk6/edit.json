@@ -1,373 +1,425 @@
 {
  "credit": "",
- "titleStyle": "band",
- "captionY": 1650,
- "sources": {},
+ "layout": "teuk",
+ "teuk": {
+  "bg": "#222a30",
+  "mascot": "#FFB36B"
+ },
+ "sources": {
+  "rainwindow": {
+   "file": "rainwindow.jpg",
+   "page": "https://commons.wikimedia.org/wiki/File:Clear_Umbrella_Rain_Liverpool_(Unsplash).jpg",
+   "file_url": "https://upload.wikimedia.org/wikipedia/commons/a/ac/Clear_Umbrella_Rain_Liverpool_%28Unsplash%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+   "license": "CC0",
+   "credit": "Clear Umbrella Rain Liverpool (Unsplash).jpg by freddie marriage fredmarriage (CC0, http://creativecommons.org/publicdomain/zero/1.0/deed.en), via Wikimedia Commons",
+   "used_seconds": [
+    [
+     5.27,
+     6.45
+    ]
+   ]
+  },
+  "umbrella": {
+   "file": "umbrella.jpg",
+   "page": "https://commons.wikimedia.org/wiki/File:Closeup_of_black_umbrella_in_rain.jpg",
+   "file_url": "https://upload.wikimedia.org/wikipedia/commons/d/d4/Closeup_of_black_umbrella_in_rain.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+   "license": "CC BY 2.0",
+   "credit": "Closeup of black umbrella in rain.jpg by Shixart1985 (CC BY 2.0, https://creativecommons.org/licenses/by/2.0), via Wikimedia Commons",
+   "used_seconds": [
+    [
+     6.45,
+     8.46
+    ]
+   ]
+  },
+  "pajeon": {
+   "file": "pajeon.jpg",
+   "page": "https://commons.wikimedia.org/wiki/File:Korean_pancake-Pajeon-08.jpg",
+   "file_url": "https://upload.wikimedia.org/wikipedia/commons/6/69/Korean_pancake-Pajeon-08.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+   "license": "CC BY 2.0",
+   "credit": "Korean pancake-Pajeon-08.jpg by Jamie (CC BY 2.0, https://creativecommons.org/licenses/by/2.0), via Wikimedia Commons",
+   "used_seconds": [
+    [
+     10.95,
+     13.64
+    ]
+   ]
+  }
+ },
  "music": {
   "file": "music/monkeys_spinning_monkeys.mp3",
-  "gain": 0.2,
+  "gain": 0.18,
   "start": 0
  },
  "sfx": [
   [
-   "c1",
-   "pop",
-   0.25
+   "a1",
+   "whoosh",
+   0.15
   ],
   [
-   "b1",
+   "a1b",
    "whoosh",
+   0.15
+  ],
+  [
+   "a2",
+   "whoosh",
+   0.15
+  ],
+  [
+   "c1",
+   "pop_hi",
+   0.18
+  ],
+  [
+   "c1",
+   "pop",
    0.22
   ],
   [
-   "b1.비가",
-   "boing",
-   0.3
+   "a3",
+   "pop_hi",
+   0.18
+  ],
+  [
+   "a3",
+   "whoosh",
+   0.15
+  ],
+  [
+   "a4",
+   "whoosh",
+   0.15
+  ],
+  [
+   "a5",
+   "pop_hi",
+   0.18
+  ],
+  [
+   "a5",
+   "whoosh",
+   0.15
   ],
   [
    "c2",
    "pop",
-   0.25
-  ],
-  [
-   "b2",
-   "whoosh",
    0.22
   ],
   [
-   "b2.소나기",
-   "boing",
-   0.3
-  ],
-  [
-   "c3",
-   "pop",
-   0.25
-  ],
-  [
-   "b3",
+   "a6",
    "whoosh",
-   0.22
+   0.15
   ],
   [
-   "c4",
-   "pop",
-   0.25
-  ],
-  [
-   "b4",
+   "a8",
    "whoosh",
-   0.22
+   0.15
   ],
   [
-   "b4.하루",
-   "boing",
-   0.3
-  ],
-  [
-   "c5",
-   "pop",
-   0.25
-  ],
-  [
-   "b5",
+   "a9",
    "whoosh",
-   0.22
+   0.15
   ],
   [
-   "c6",
-   "pop",
-   0.25
-  ],
-  [
-   "b6",
+   "a7",
    "whoosh",
-   0.22
-  ],
-  [
-   "b6.쏟아짐",
-   "boing",
-   0.3
-  ],
-  [
-   "c7",
-   "pop",
-   0.25
-  ],
-  [
-   "b7",
-   "whoosh",
-   0.22
-  ],
-  [
-   "b7.그침",
-   "boing",
-   0.3
-  ],
-  [
-   "y",
-   "pop",
-   0.25
+   0.15
   ],
   [
    "z",
    "whoosh",
+   0.15
+  ],
+  [
+   "y",
+   "pop",
    0.22
   ],
   [
-   "z.몇",
-   "ding",
-   0.3
+   "a1b",
+   "boing",
+   0.25
   ],
   [
-   "a",
-   "pop_hi",
-   0.3
+   "a7.비",
+   "boing",
+   0.25
+  ],
+  [
+   "z",
+   "ding",
+   0.25
   ]
  ],
  "clips": [
   {
-   "from": "a",
-   "label": "hook",
+   "from": "a1",
+   "label": "a1",
    "gfx": {
-    "type": "scene",
-    "bg": "rain",
-    "place": "☔ 비 오는 날",
-    "prop": "☔",
-    "propX": 0.72,
-    "chars": [
-     {
-      "name": "나",
-      "color": "#FFB36B",
-      "mood": "sad",
-      "x": 0.32
-     }
-    ],
+    "type": "face",
+    "mood": "angry",
+    "pos": "close",
+    "fx": "lines",
+    "prop": "☂️",
+    "propX": 0.82,
+    "propY": 0.72,
     "steps": [
+     0.9,
      0.05,
-     -1,
-     9,
-     -1
+     0.15
     ]
    }
   },
   {
-   "from": "b1",
-   "label": "beat1",
+   "from": "a1b",
+   "label": "a1b",
    "gfx": {
     "type": "scene",
     "bg": "street",
-    "prop": "🌂",
-    "propX": 0.72,
-    "big": "☀️ [쨍쨍]",
     "chars": [
      {
       "name": "나",
       "color": "#FFB36B",
-      "mood": "think",
-      "to": "angry",
-      "x": 0.32
+      "mood": "angry",
+      "size": 1.2
      }
     ],
-    "say": {
-     "who": 0,
-     "text": "왜 [맑은데]…"
-    },
+    "prop": "☀️",
+    "big": "맑음",
     "steps": [
-     "c1",
+     9,
      0.1,
-     "c1",
-     "b1.비가"
+     9,
+     0.2
     ]
    }
   },
   {
-   "from": "b2",
-   "label": "beat2",
+   "from": "a2",
+   "label": "a2",
    "gfx": {
     "type": "scene",
     "bg": "rain",
-    "big": "☔ [쏴아]",
-    "chars": [
-     {
-      "name": "나",
-      "color": "#FFB36B",
-      "mood": "shock"
-     }
-    ],
-    "say": {
-     "who": 0,
-     "text": "아까 [맑았잖아]!"
-    },
-    "steps": [
-     "c2",
-     0.1,
-     9,
-     "b2.소나기"
-    ]
-   }
-  },
-  {
-   "from": "b3",
-   "label": "beat3",
-   "gfx": {
-    "type": "scene",
-    "bg": "store",
-    "sign": "우산 있어요",
-    "prop": "🌂",
-    "propX": 0.72,
-    "chars": [
-     {
-      "name": "나",
-      "color": "#FFB36B",
-      "mood": "sad",
-      "x": 0.32
-     }
-    ],
-    "say": {
-     "who": 0,
-     "text": "집에 [열 개]는 있는데…"
-    },
-    "steps": [
-     "c3",
-     0.1,
-     9,
-     0.1
-    ]
-   }
-  },
-  {
-   "from": "b4",
-   "label": "beat4",
-   "gfx": {
-    "type": "scene",
-    "bg": "rain",
-    "big": "🧦 [축축]",
-    "chars": [
-     {
-      "name": "나",
-      "color": "#FFB36B",
-      "mood": "sick"
-     }
-    ],
-    "say": {
-     "who": 0,
-     "text": "발에서 [철퍽] 소리 나…"
-    },
-    "steps": [
-     "c4",
-     0.1,
-     9,
-     "b4.하루"
-    ]
-   }
-  },
-  {
-   "from": "b5",
-   "label": "beat5",
-   "gfx": {
-    "type": "scene",
-    "bg": "home",
-    "prop": "🥞",
-    "propX": 0.72,
-    "chars": [
-     {
-      "name": "나",
-      "color": "#FFB36B",
-      "mood": "think",
-      "to": "love",
-      "x": 0.32
-     }
-    ],
-    "say": {
-     "who": 0,
-     "text": "빗소리가 [지글지글] 같아…"
-    },
-    "steps": [
-     "c5",
-     0.1,
-     "c5",
-     0.1
-    ]
-   }
-  },
-  {
-   "from": "b6",
-   "label": "beat6",
-   "gfx": {
-    "type": "scene",
-    "bg": "office",
-    "big": "Zzz",
-    "chars": [
-     {
-      "name": "나",
-      "color": "#FFB36B",
-      "mood": "sleep"
-     }
-    ],
-    "say": {
-     "who": 0,
-     "text": "[5분]만 눈 감을게…"
-    },
-    "steps": [
-     "c6",
-     0.1,
-     9,
-     "b6.쏟아짐"
-    ]
-   }
-  },
-  {
-   "from": "b7",
-   "label": "beat7",
-   "gfx": {
-    "type": "scene",
-    "bg": "street",
-    "big": "☀️ [쨍]",
     "chars": [
      {
       "name": "나",
       "color": "#FFB36B",
       "mood": "shock",
-      "to": "angry"
+      "size": 1.2
      }
     ],
-    "say": {
-     "who": 0,
-     "text": "[이제] 그친다고?!"
+    "steps": [
+     9,
+     9,
+     9,
+     9
+    ]
+   }
+  },
+  {
+   "from": "c1",
+   "label": "c1",
+   "src": "rainwindow",
+   "gfx": {
+    "type": "photo",
+    "react": {
+     "mood": "cry",
+     "side": "left"
     },
     "steps": [
-     "c7",
+     0.12,
+     0.2,
+     0.25,
+     1000.0
+    ]
+   }
+  },
+  {
+   "from": "a3",
+   "label": "a3",
+   "src": "umbrella",
+   "gfx": {
+    "type": "photo",
+    "react": {
+     "mood": "think",
+     "side": "right"
+    },
+    "tag": "우산 +1",
+    "steps": [
+     0.12,
+     0.2,
+     0.25,
+     1000.0
+    ]
+   }
+  },
+  {
+   "from": "a4",
+   "label": "a4",
+   "gfx": {
+    "type": "face",
+    "mood": "sick",
+    "pos": "tilt",
+    "fx": "sweat",
+    "prop": "🧦",
+    "propX": 0.2,
+    "propY": 0.3,
+    "steps": [
+     0.9,
+     0.05,
+     0.15
+    ]
+   }
+  },
+  {
+   "from": "a5",
+   "label": "a5",
+   "src": "pajeon",
+   "gfx": {
+    "type": "photo",
+    "react": {
+     "mood": "love",
+     "side": "left"
+    },
+    "steps": [
+     0.12,
+     0.2,
+     0.25,
+     1000.0
+    ]
+   }
+  },
+  {
+   "from": "c2",
+   "label": "c2",
+   "gfx": {
+    "type": "face",
+    "mood": "happy",
+    "pos": "left",
+    "fx": "sparkle",
+    "steps": [
+     0.9,
+     0.05,
+     0.15
+    ]
+   }
+  },
+  {
+   "from": "a6",
+   "label": "a6",
+   "gfx": {
+    "type": "face",
+    "mood": "sleep",
+    "pos": "low",
+    "fx": "gloom",
+    "prop": "🌧️",
+    "propX": 0.8,
+    "propY": 0.25,
+    "steps": [
+     0.9,
+     0.05,
+     0.15
+    ]
+   }
+  },
+  {
+   "from": "a8",
+   "label": "a8",
+   "gfx": {
+    "type": "face",
+    "mood": "sad",
+    "pos": "right",
+    "fx": "gloom",
+    "prop": "🎒",
+    "propX": 0.2,
+    "propY": 0.3,
+    "steps": [
+     0.9,
+     0.05,
+     0.15
+    ]
+   }
+  },
+  {
+   "from": "a9",
+   "label": "a9",
+   "gfx": {
+    "type": "scene",
+    "bg": "rain",
+    "chars": [
+     {
+      "color": "#8FD3FF",
+      "mood": "sad"
+     },
+     {
+      "name": "나",
+      "color": "#FFB36B",
+      "mood": "angry"
+     }
+    ],
+    "steps": [
+     9,
+     9,
+     9,
+     9
+    ]
+   }
+  },
+  {
+   "from": "a7",
+   "label": "a7",
+   "gfx": {
+    "type": "scene",
+    "bg": "home",
+    "chars": [
+     {
+      "name": "나",
+      "color": "#FFB36B",
+      "mood": "neutral",
+      "to": "angry",
+      "size": 1.2
+     }
+    ],
+    "prop": "🌤️",
+    "big": "실화?",
+    "steps": [
+     9,
      0.1,
-     "c7",
-     "b7.그침"
+     "a7.비",
+     "a7.비"
     ]
    }
   },
   {
    "from": "z",
-   "label": "end",
+   "label": "z",
    "gfx": {
-    "type": "scene",
-    "bg": "rain",
-    "big": "[몇 개]?",
-    "chars": [
-     {
-      "name": "나",
-      "color": "#FFB36B",
-      "mood": "laugh"
-     }
-    ],
+    "type": "face",
+    "mood": "happy",
+    "pos": "close",
+    "fx": "sparkle",
     "steps": [
-     "y",
-     0.1,
-     9,
-     "z.몇"
-    ],
-    "say": {
-     "who": 0,
-     "text": "난 [7개] 다…ㅋㅋ"
-    }
+     0.9,
+     0.05,
+     0.15
+    ]
+   }
+  },
+  {
+   "from": "y",
+   "label": "y",
+   "gfx": {
+    "type": "face",
+    "mood": "think",
+    "pos": "right",
+    "prop": "☂️",
+    "steps": [
+     0.9,
+     0.05,
+     0.15
+    ]
    }
   }
  ]

@@ -1,8 +1,7 @@
 {
  "titleStyle": "band",
- "frame": "rounded43",
+ "frame": "retrobox",
  "grain": 0.15,
- "captionY": 1335,
  "credit": "",
  "sources": {
   "13153848": {
@@ -17,15 +16,15 @@
    "seconds": [
     [
      0.0,
-     1.73
+     1.53
     ],
     [
-     1.73,
-     4.33
+     1.53,
+     3.79
     ],
     [
-     4.33,
-     7.07
+     3.79,
+     6.17
     ]
    ]
   },
@@ -40,24 +39,8 @@
    "year": "1952년",
    "seconds": [
     [
-     7.07,
-     9.98
-    ]
-   ]
-  },
-  "13153886": {
-   "file": "13153886.jpg",
-   "credit": "사진: 한국저작권위원회",
-   "label": "1952년 부산 중구 부평시장의 풀빵과 도너츠장수 (한국저작권위원회, 공유마당, CC BY (저작자표시))",
-   "url": "https://gongu.copyright.or.kr/gongu/wrt/wrt/view.do?wrtSn=13153886&menuNo=200018",
-   "file_url": "https://gongu.copyright.or.kr/gongu/wrt/cmmn/wrtFileImageView.do?wrtSn=13153886&filePath=L2Rpc2sxL25ld2RhdGEvMjAxOC8yMS9DTFMxLzEzMTUzODg2X0NPTENUX1dSVDIwMTgxMTI2XzE=&thumbAt=N&wrtTy=10006",
-   "creator": "한국저작권위원회",
-   "license": "CC BY (저작자표시)",
-   "year": "1952년",
-   "seconds": [
-    [
-     9.98,
-     12.32
+     6.17,
+     8.71
     ]
    ]
   },
@@ -72,24 +55,8 @@
    "year": "1953년",
    "seconds": [
     [
-     12.32,
-     15.4
-    ]
-   ]
-  },
-  "13152661": {
-   "file": "13152661.jpg",
-   "credit": "사진: 한국저작권위원회",
-   "label": "1967년 대구 서문시장 골목_번데기장수 (한국저작권위원회, 공유마당, CC BY (저작자표시))",
-   "url": "https://gongu.copyright.or.kr/gongu/wrt/wrt/view.do?wrtSn=13152661&menuNo=200018",
-   "file_url": "https://gongu.copyright.or.kr/gongu/wrt/cmmn/wrtFileImageView.do?wrtSn=13152661&filePath=L2Rpc2sxL25ld2RhdGEvMjAxOC8yMS9DTFMxLzEzMTUyNjYxX0NPTENUX1dSVDIwMTgxMTI2XzE=&thumbAt=N&wrtTy=10006",
-   "creator": "한국저작권위원회",
-   "license": "CC BY (저작자표시)",
-   "year": "1967년",
-   "seconds": [
-    [
-     15.4,
-     18.83
+     8.71,
+     11.39
     ]
    ]
   },
@@ -104,8 +71,8 @@
    "year": "1952년",
    "seconds": [
     [
-     18.83,
-     23.07
+     11.39,
+     15.08
     ]
    ]
   },
@@ -120,8 +87,8 @@
    "year": "1968년",
    "seconds": [
     [
-     23.07,
-     26.46
+     15.08,
+     18.03
     ]
    ]
   },
@@ -136,8 +103,8 @@
    "year": "1978년",
    "seconds": [
     [
-     26.46,
-     29.94
+     18.03,
+     21.08
     ]
    ]
   },
@@ -152,8 +119,8 @@
    "year": "1952년",
    "seconds": [
     [
-     29.94,
-     33.29
+     21.08,
+     23.99
     ]
    ]
   },
@@ -168,8 +135,8 @@
    "year": "1952년",
    "seconds": [
     [
-     33.29,
-     35.44
+     23.99,
+     25.86
     ]
    ]
   },
@@ -184,8 +151,8 @@
    "year": "1967년",
    "seconds": [
     [
-     35.44,
-     38.47
+     25.86,
+     28.6
     ]
    ]
   }
@@ -246,32 +213,10 @@
    "audio": 0
   },
   {
-   "src": "13153886",
-   "from": "donut",
-   "label": "1952년 부산 중구 부평시장의 풀빵과 도너츠장수",
-   "year": "1952",
-   "zoom": [
-    1.0,
-    1.06
-   ],
-   "audio": 0
-  },
-  {
    "src": "13152591",
    "from": "bun",
    "label": "1953년 대구거리의 번데기 장수",
    "year": "1953",
-   "zoom": [
-    1.0,
-    1.06
-   ],
-   "audio": 0
-  },
-  {
-   "src": "13152661",
-   "from": "bun2",
-   "label": "1967년 대구 서문시장 골목_번데기장수",
-   "year": "1967",
    "zoom": [
     1.0,
     1.06
@@ -359,5 +304,6 @@
   "file": "music/Heartwarming.mp3",
   "gain": 0.22,
   "start": 0
- }
+ },
+ "look": "retro2"
 }

@@ -1,0 +1,298 @@
+{
+ "title": [
+  "역대급 신기한 자연현상",
+  "랭킹 TOP5"
+ ],
+ "sub": "(몇 번이 제일 신기?ㄷㄷ)",
+ "color": "#4FD8FF",
+ "music": "public/music/Floating Cities.mp3",
+ "keys": [],
+ "places": [
+  {
+   "n": 5,
+   "label": "간헐천",
+   "caps": [
+    "땅에서 물이 솟는데..",
+    "큰 분출은 91m 넘게??"
+   ],
+   "shots": [
+    {
+     "src": "top3/steamboat_geyser.mp4",
+     "in": 1.0,
+     "dur": 2.3,
+     "single": [
+      0.4,
+      0.5,
+      1.0
+     ]
+    },
+    {
+     "src": "top3/steamboat_geyser.mp4",
+     "in": 6.0,
+     "dur": 2.8,
+     "single": [
+      0.42,
+      0.4,
+      1.2
+     ]
+    }
+   ]
+  },
+  {
+   "n": 4,
+   "label": "심해호수",
+   "caps": [
+    "바다 밑바닥인데..",
+    "호수가 있다고??"
+   ],
+   "shots": [
+    {
+     "src": "top3/brine_pool_underwater_lake.mp4",
+     "in": 0.5,
+     "dur": 2.5,
+     "single": [
+      0.4,
+      0.5,
+      1.0
+     ]
+    },
+    {
+     "src": "top3/brine_pool_underwater_lake.mp4",
+     "in": 6.0,
+     "dur": 2.6,
+     "single": [
+      0.35,
+      0.5,
+      1.2
+     ]
+    }
+   ]
+  },
+  {
+   "n": 3,
+   "label": "오로라",
+   "caps": [
+    "하늘을 올려다봤는데..",
+    "초록 커튼이 춤춤??"
+   ],
+   "shots": [
+    {
+     "src": "top3/aurora_denali.mp4",
+     "in": 0.0,
+     "dur": 2.5,
+     "single": [
+      0.6,
+      0.4,
+      1.0
+     ]
+    },
+    {
+     "src": "top3/aurora_denali.mp4",
+     "in": 3.4,
+     "dur": 2.6,
+     "single": [
+      0.5,
+      0.4,
+      1.0
+     ]
+    }
+   ]
+  },
+  {
+   "n": 2,
+   "label": "구름바다",
+   "caps": [
+    "협곡을 내려다보니..",
+    "구름 바다로 꽉 참??"
+   ],
+   "shots": [
+    {
+     "src": "top3/grandcanyon_cloud_inversion.mp4",
+     "in": 0.0,
+     "dur": 2.5,
+     "single": [
+      0.5,
+      0.5,
+      1.0
+     ]
+    },
+    {
+     "src": "top3/grandcanyon_cloud_inversion.mp4",
+     "in": 6.0,
+     "dur": 2.6,
+     "single": [
+      0.6,
+      0.4,
+      1.2
+     ]
+    }
+   ]
+  },
+  {
+   "n": 1,
+   "label": "용암",
+   "caps": [
+    "땅이 갈라지더니..",
+    "400m 넘게 솟음(추정)"
+   ],
+   "shots": [
+    {
+     "src": "top3/lava_fountain.mp4",
+     "in": 0.0,
+     "dur": 1.8,
+     "single": [
+      0.3,
+      0.5,
+      1.0
+     ]
+    },
+    {
+     "src": "top3/lava_fountain.mp4",
+     "in": 2.0,
+     "dur": 1.7,
+     "single": [
+      0.28,
+      0.45,
+      1.25
+     ]
+    },
+    {
+     "src": "top3/lava_fountain.mp4",
+     "in": 7.6,
+     "dur": 1.7,
+     "single": [
+      0.45,
+      0.5,
+      1.0
+     ]
+    }
+   ]
+  }
+ ],
+ "sources": [
+  {
+   "file": "top3/steamboat_geyser.mp4",
+   "title": "Minute Out In It: Steamboat Geyser Eruption",
+   "page": "https://www.nps.gov/media/video/view.htm?id=E82CA7B7-2638-42F3-9480-5280D003D608",
+   "file_url": "https://www.nps.gov/nps-audiovideo/audiovideo/2fd174d9-f0f1-4a33-acd7-1c580cb6731c1080p.mp4",
+   "license": "Public domain (17 U.S.C. §105)",
+   "credit": "NPS / Jacob W. Frank",
+   "cut_from_original_seconds": [
+    168.5,
+    182.5
+   ],
+   "used_seconds_in_cut": [
+    [
+     1.0,
+     4.4
+    ],
+    [
+     6.0,
+     9.4
+    ]
+   ],
+   "fact": "Steamboat Geyser is the world's tallest active geyser; its major eruptions shoot water more than 300 feet (91 m).",
+   "fact_url": "https://www.nps.gov/yell/learn/nature/steamboat-geyser.htm"
+  },
+  {
+   "file": "top3/brine_pool_underwater_lake.mp4",
+   "title": "Dive 10: Bucket List Brine",
+   "page": "https://archive.oceanexplorer.noaa.gov/okeanos/explorations/ex1711/dailyupdates/media/video/dive10-brinepool/brinepool.html",
+   "file_url": "https://archive.oceanexplorer.noaa.gov/okeanos/explorations/ex1711/dailyupdates/media/video/dive10-brinepool/brinepool-1280x720.mp4",
+   "license": "Public domain (17 U.S.C. §105)",
+   "credit": "Video courtesy of the NOAA Office of Ocean Exploration and Research, Gulf of Mexico 2017",
+   "cut_from_original_seconds": [
+    10.2,
+    22.2
+   ],
+   "used_seconds_in_cut": [
+    [
+     0.5,
+     3.9
+    ],
+    [
+     6.0,
+     9.4
+    ]
+   ],
+   "fact": "This brine pool is essentially an underwater lake; the salinity of the water in such pools can be three to eight times more than the surrounding water, so the denser brine sinks and forms a pool.",
+   "fact_url": "https://archive.oceanexplorer.noaa.gov/okeanos/explorations/ex1711/dailyupdates/media/video/dive10-brinepool/brinepool.html"
+  },
+  {
+   "file": "top3/aurora_denali.mp4",
+   "title": "Lights in Motion (2012 aurora borealis time-lapse compilation)",
+   "page": "https://www.nps.gov/media/video/view.htm?id=7207C6A8-ED77-4A35-B3F8-4F09E00B0B86",
+   "file_url": "https://www.nps.gov/nps-audiovideo/legacy/dena/C5EF51DA-1DD8-B71C-07C6E1CFD2F38E2F/dena-Lights-in-Motion-with-original-composition-Coronal-Mass-Ejection-by-Peter-Van-Zandt-Lane_1280x720.mp4",
+   "license": "Public domain (17 U.S.C. §105)",
+   "credit": "NPS / Jacob W. Frank",
+   "cut_from_original_seconds": [
+    136.5,
+    150.5
+   ],
+   "used_seconds_in_cut": [
+    [
+     0.0,
+     3.4
+    ],
+    [
+     3.4,
+     6.8
+    ]
+   ],
+   "fact": "The aurora occurs year-round, but only in the fall, winter and early spring is there enough darkness at Denali to see the northern lights.",
+   "fact_url": "https://www.nps.gov/dena/planyourvisit/night-sky.htm"
+  },
+  {
+   "file": "top3/grandcanyon_cloud_inversion.mp4",
+   "title": "Grand Canyon Total Cloud Inversion Timelapse - Jan. 28, 2015",
+   "page": "https://www.nps.gov/media/video/view.htm?id=8564EE61-9CF1-4B78-A32F-546EEA5230E8",
+   "file_url": "https://www.nps.gov/nps-audiovideo/audiovideo/049d3565-8694-4964-a6cf-c6871f1992411080p.mp4",
+   "license": "Public domain (17 U.S.C. §105)",
+   "credit": "NPS video by M. Quinn",
+   "cut_from_original_seconds": [
+    0,
+    14
+   ],
+   "used_seconds_in_cut": [
+    [
+     0.0,
+     3.4
+    ],
+    [
+     6.0,
+     9.4
+    ]
+   ],
+   "fact": "A rare ground inversion can fill the Grand Canyon from rim to rim with a sea of clouds; ground inversions occur when cold air is trapped by a layer of warm air.",
+   "fact_url": "https://www.doi.gov/employees/news/nps-grand-canyon-fills-with-sea-of-clouds"
+  },
+  {
+   "file": "top3/lava_fountain.mp4",
+   "title": "March 10, 2026 — Video of Kīlauea episode 43 lava fountaining",
+   "page": "https://www.usgs.gov/media/videos/march-10-2026-video-kilauea-episode-43-lava-fountaining",
+   "file_url": "https://usgs-ocapsv2-public-input-media.s3.us-west-2.amazonaws.com/assets/palladium/production/s3fs-public/media/video/multimediaFile-4597.mp4",
+   "license": "Public domain (17 U.S.C. §105)",
+   "credit": "USGS video by M. Patrick (page text reads 'USGS photo by M. Patrick')",
+   "cut_from_original_seconds": [
+    0,
+    14
+   ],
+   "used_seconds_in_cut": [
+    [
+     0.0,
+     3.4
+    ],
+    [
+     3.4,
+     6.8
+    ],
+    [
+     7.6,
+     11.0
+    ]
+   ],
+   "fact": "During episode 43 (March 10, 2026), USGS estimated the maximum fountain heights at at least 1,300 feet (400 meters) from both vents.",
+   "fact_url": "https://www.usgs.gov/observatories/hvo/news/photo-video-chronology-march-10-11-2026-kilauea-episode-43-eruption-and"
+  }
+ ]
+}

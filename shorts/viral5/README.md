@@ -3465,3 +3465,1677 @@ python3 qa_review.py top5                                    # 네 편 모두 FA
 > 영상: 미국 국립공원관리청(NPS) — Neal Herbert, Jacob W. Frank · 미국 지질조사국(USGS) (각 기관이 이 영상을 보증하거나 후원하지 않습니다.)
 > 음악: "Dreamer" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
 > #신기한장소 #국립공원 #옐로스톤 #데스밸리 #shorts
+
+## 괴담 쇼츠 v2 (벤치마크, `horror1`~`horror12`)
+
+`research/benchmark-footage.md` 1절과 `research/benchmark-targets-footage.json`의 `horror_riddle`(디로록 「[괴담] 이해하면 무서운」, 중앙값 21초)에 맞춰 `horror1`~`horror8`을 같은 이야기·같은 영상으로 다시 만들고, 아이디어 목록에서 학교·일상 물건 괴담 4편(`horror9`~`horror12`)을 새로 만들었다. 열두 편 모두 **직접 쓴 창작 괴담**이다. 피·폭력·실존 장소·브랜드·인물은 없고, 공포는 암시로만 준다.
+
+**v1에서 바뀐 것**
+- **길이 32.4초 → 20.0~22.2초.** 목소리를 Edge TTS `ko-KR-InJoonNeural` `+18%` `-4Hz`로 다시 녹음하고, 대본을 7~8줄로 줄였다. 줄 사이 쉼은 0.18초(`horror9`·`horror11`은 0.26초)다.
+- **끝.** “이해하셨나요? 정답은 댓글에” 줄을 지웠다. 반전 한 줄 뒤 0.45~0.6초에서 끊고 첫 장면으로 돌아간다(루프). 정답 유도는 고정 댓글로 옮겼다.
+- **0초.** 첫 자막(3~5음절, “밤 열한 시”)과 제목 단어가 첫 프레임에 이미 떠 있다. 첫 줄의 `gap`을 0으로 두면 첫 자막 페이지가 0 ms에 시작하고, `capLook: "plain"`은 등장 애니메이션이 없어서 첫 프레임에 글자가 다 보인다. 첫 장면은 열두 편 모두 **얼굴 없는 손이나 실루엣**이다(버튼을 누르는 손, 문손잡이를 잡는 손, 휴대폰을 든 손, 열쇠를 든 손, 젖은 유리를 짚은 손, 텐트 안 손 그림자, 공책을 든 손, 할머니 손 위의 아이 손, 옷걸이를 잡은 손).
+- **화면.** 검정 띠와 1:1 박스를 없애고 9:16 전체 화면에 영상을 깔았다. 위쪽에 흰 작은 글씨 “이해하면 무서운”과 큰 빨간 한 단어(예: “엘리베이터”)를 그림 위에 얹는다. 자막은 흰색 한 가지이고 높이 62.5%(y=1200)에 둔다. 강조색과 현재 단어 초록 강조는 없다. 화면에 출처 배지가 없고, 영상 크레딧은 모두 설명란에 넣는다.
+- **제목 명사.** 장소 대신 물건으로 바꾼 편이 있다: 비상계단 → **센서등**, 지하주차장 → **김 서린 차**, 캠핑장 → **발자국**.
+- 어두운 보정과 아껴 쓴 효과음(편마다 3~4개, 번쩍임 1번)은 그대로다. 음악은 Kevin MacLeod “Gathering Darkness”(홀수 편)와 “Ghost Story”(짝수 편)를 번갈아 쓴다.
+- **브랜드 점검.** v1 `horror2`의 운동화(8472547)는 옆면에 상표 별 무늬가 보여서 빼고, 손이 신발을 내려놓는 장면(8533759)으로 바꿨다. v1 `horror3`의 택배 상자(7362620)는 빨간 “FRAGILE” 스티커가 9:16 화면에 들어와서 빼고, 종이봉투(7362603)만 쓴다. 화면이 거의 검게 보이던 휴대폰 알림 클립(34786856·34786878)도 손에 든 휴대폰 장면으로 바꿨다. 0초 화면에는 상표·간판·라벨이 없다.
+
+### 새 템플릿 옵션 (edit.json, 기존 쇼츠는 그대로)
+| 옵션 | 뜻 |
+|---|---|
+| `"titleStyle": "riddle"` | 띠 없이 그림 위에 2줄 제목을 얹는다. `title[0]`은 흰 작은 수식어(최대 64px), `title[1]`은 빨간 큰 한 단어(최대 168px)이고 검은 외곽선과 그림자가 있다. 색은 `"titleKey"`(기본 `#E8141B`)로 바꾼다 |
+| `"titleY"` | riddle 제목 블록의 세로 중심(기본 330px, 약 17%) |
+| `"capLook": "plain"` | 흰색 한 가지 자막. 최대 82px, 얇은 외곽선과 그림자가 있고 단어 강조·등장 애니메이션은 없다. `"captionY"`로 위치를 정한다(괴담 v2는 1200) |
+| `"frame": "full"` + `"credit": ""` + 클립마다 `"credit": ""` | 이미 있던 기능이다. 9:16 전체 화면에 화면 크레딧 없이 쓴다 |
+
+- 코드: 새 파일 `src/lib/Riddle.tsx`(`RiddleTitle`, `PlainCaptions`). 공유 파일에는 연결부만 넣었다. `src/ClipShort.tsx`에 import 1줄, `ShortData` 타입 3필드, `Title`에 1줄, 자막 자리에 분기 1개를 넣었고, `prep.py`는 넘기는 키 목록에 `titleY`, `capLook` 두 개를 더했다. 이 키가 없는 쇼츠는 data JSON과 화면이 전과 같다.
+- 확인: 손대지 않은 `doodle1`을 바꾸기 전 커밋(워크트리)과 바꾼 뒤에 각각 렌더했다. `src/data/doodle1.json`이 같고, mp4 파일이 바이트 단위로 같다(1,032프레임 framemd5 모두 일치).
+- 시리즈 스크립트: `media/horror/make_edits_v2.py`(12편 컷 목록 → edit.json과 `media/horror/sources_v2.json`), `media/horror/grade3.sh`(원본을 받아 `catalog.CX` 지점을 중심으로 9:16로 자르고 1080×1920으로 어둡게 보정), `media/horror/scorecard.py`(아래 표), `media/horror/catalog.py`에 새 클립·`CX`·`DARK`·`BRIGHT` 추가. 예전 `make_edits.py`는 v1 기록용이라 다시 돌리면 안 된다(v2 edit.json을 덮어쓴다).
+
+```bash
+python3 media/horror/make_edits_v2.py       # shorts/horror1-12/edit.json + media/horror/sources_v2.json
+media/horror/grade3.sh                      # Pexels·Pixabay 원본 → public/horror*/src/ (9:16, 1080x1920, 보정)
+for i in $(seq 1 12); do python3 voice_edge.py horror$i && python3 prep.py horror$i && ./render.sh horror$i final/horror$i.mp4; done
+# horror7(야간 노이즈)은 45.7MB라 CRF 23으로 다시 인코딩했다 (15.0MB):
+#   ffmpeg -i final/horror7.mp4 -c:v libx264 -crf 23 -preset slow -pix_fmt yuv420p -c:a copy -movflags +faststart out/horror7.mp4
+for i in $(seq 1 12); do python3 qa_review.py horror$i; done
+python3 media/horror/scorecard.py $(seq -f "horror%g" 1 12)
+```
+
+| id | 화면 제목 | 길이 | 이야기 (정답) |
+| --- | --- | --- | --- |
+| `horror1` | 이해하면 무서운 / 엘리베이터 | 22.2초 | 밤 11시 혼자 남은 건물, 1층에서 부른 엘리베이터가 텅 빈 채 열리는데 한 발 들이자 "정원이 초과되었습니다". 엘리베이터는 혼자 위로. "나는 다음 걸 타기로 했다." (정답: 눈에 안 보이는 '누군가들'로 이미 꽉 차 있었다) |
+| `horror2` | 이해하면 무서운 / 도어락 | 21.8초 | 새벽 3시 도어락이 열렸다 다시 잠김. 비밀번호는 나만 앎. 아침 현관은 그대로, 신발만 한 켤레 더. "나는 혼자 산다." (정답: 누군가 들어와 안에서 문을 잠갔고, 나간 적이 없다) |
+| `horror3` | 이해하면 무서운 / 택배 | 20.1초 | 점심시간 택배 문자, 이어서 "안에 계신 분이 바로 받아 가셨어요". 나는 회사, 혼자 살고, 문은 잠갔다. 퇴근해 보니 문 앞엔 아무것도 없다. (정답: 잠긴 집 안에 누군가 있었고 지금도 있다) |
+| `horror4` | 이해하면 무서운 / 거울 | 20.1초 | 이사 온 원룸의 큰 거울 속 방은 늘 조금 어둡다. 불을 끄고 누웠는데 거울 속 방은 아직 밝고, 거울 속 침대엔 아무도 없다. (정답: 거울 속 '나'는 누워 있지 않고 일어나서 이쪽을 보고 있다) |
+| `horror5` | 이해하면 무서운 / 센서등 | 21.4초 | 점검 날 밤 계단으로 내려가는데, 센서등이 내가 가기 전에 한 층씩 먼저 켜진다. 1층 문손잡이를 잡자 등 뒤 2층 불이 딸깍. "나는 뒤돌아보지 않았다." (정답: 보이지 않는 누군가가 한 층 앞서 내려가다가, 지금 내 바로 뒤로 올라갔다) |
+| `horror6` | 이해하면 무서운 / 김 서린 차 | 21.0초 | 몇 달째 안 움직인 차의 운전석 유리에 김이 서려 있고, 손가락 글씨 "또 봤네?"가 좌우로 뒤집혀 있다. 차 문은 전부 잠겨 있다. (정답: 잠긴 차 안에 누군가 있어 숨을 쉬고, 안쪽에서 글씨를 썼다) |
+| `horror7` | 이해하면 무서운 / 홈캠 | 20.5초 | 현관을 향해 단 홈캠에 새벽 2~4시, 침대 옆에서 자는 나를 내려다보는 영상. 그날 밤 현관문은 열리지 않았다. (정답: 처음부터 집 안에 있던 누군가가 카메라를 옮겨 찍고 되돌려 놓았다) |
+| `horror8` | 이해하면 무서운 / 발자국 | 22.2초 | 혼자 캠핑, 새벽에 텐트 주위를 한 바퀴 도는 발소리. 아침에 보니 입구에서 나와 한 바퀴 돌고 다시 입구로 들어간 발자국. "나는 밤새 나간 적이 없다." (정답: 텐트 안에 나 말고 누가 있었다) |
+| `horror9` | 이해하면 무서운 / 단톡방 | 20.2초 | 새벽 3시, 누군가 나를 반 단톡방에 초대한다. 나 빼고 다 들어와 있고, 이름 없는 사람이 "이제야 다 모였네". 참여 인원 30명. "우리 반은 나까지 스물아홉 명이다." (정답: 반 아이가 아닌 누군가가 한 명 끼어 있고, 나를 기다리고 있었다) |
+| `horror10` | 이해하면 무서운 / 알림장 | 20.0초 | 알림장 부모님 확인 칸에 엄마 이름으로 사인이 되어 있다. 엄마는 지난주부터 출장 중, 어젯밤 집엔 나 혼자. "알림장은 밤새 내 방 책가방 안에 있었다." (정답: 내가 자는 동안 누군가 내 방에 들어와 엄마인 척 사인했다) |
+| `horror11` | 이해하면 무서운 / 할머니 손금 | 20.1초 | 할머니가 내 손금을 보며 "오래 살겠네". 장난삼아 할머니 손을 펴 보니 얼음처럼 차갑고, 손바닥엔 손금이 하나도 없다. (정답: 그 '할머니'는 살아 있는 사람이 아니다) |
+| `horror12` | 이해하면 무서운 / 숨바꼭질 | 20.2초 | 동생이 술래, 나는 안방 옷장에 숨었다. 동생 목소리가 멀어진 뒤 옷장 안 내 등 뒤에서 "여기 좋지?". "우리 집엔 나랑 동생, 딱 둘뿐이다." (정답: 옷장 안에 처음부터 다른 '누군가'가 숨어 있었다) |
+
+### 검토 결과 (`qa_review.py`)
+열두 편 모두 **FAIL 0**이다. WARN은 편마다 같은 두 줄이다.
+- **길이 WARN (20.0~22.2초).** 검토표의 PASS 구간은 25~45초인데, 이 포맷의 벤치마크 목표가 20~23초다. 일부러 맞춘 값이다.
+- **제목 띠 WARN (`riddle`).** 벤치마크가 띠 없는 그림 위 제목이라 일부러 띠를 뺐다.
+- 그 밖에 첫 장면 0.2~1.2초, 최장 샷 2.0~3.0초, 자막 한 장 최장 9자, −14.0 LUFS, 검은 화면 없음, 용량 10.4~27.3MB로 모두 PASS다.
+- 사람이 본 것(first.png, last.png, sheet.png): 0초에 손이나 실루엣, 빨간 제목 단어, 첫 자막이 함께 보인다. 끝은 반전 자막 위의 정지에 가까운 장면이다. 글자가 겹치거나 잘린 곳은 없다. 얼굴이 알아볼 수 있게 나오는 장면은 없다(`horror6` 빈 주차장 먼 문 앞의 작은 실루엣 하나는 v1과 같은 클립이고, 알아볼 수 없는 크기다).
+
+### 벤치마크 점수표
+렌더(`final/*.mp4`)를 `qa_review.py`와 같은 장면 감지로 재고, 음성 타임라인(`build/<id>/timeline.json`)과 대본에서 셌다. 훅 끝은 첫 문장 마지막 음절 + 0.15초, 음절/초는 전체 음절 ÷ 길이, 줄 수는 대본 줄(괄호는 문장 수)이다.
+
+| id | 길이 (목표 20–23, 21) | 훅 끝 (≤1.2) | 첫 전환 (≤1.5) | 평균 샷 (1.9) | 최장 샷 (≤3.0) | 음절/초 (≥5.8) | 줄 수 (9) | 화면 제목 (10+5자) |
+|---|---|---|---|---|---|---|---|---|
+| `horror1` | 22.2초 | 0.67초 | 0.77초 | 1.71초 | 2.97초 | 4.41 (98음절) | 8줄 (13문장) | 이해하면 무서운 / 엘리베이터 (7+5자) |
+| `horror2` | 21.8초 | 0.73초 | 0.23초 | 1.28초 | 2.07초 | 3.99 (87음절) | 8줄 (12문장) | 이해하면 무서운 / 도어락 (7+3자) |
+| `horror3` | 20.1초 | 0.72초 | 0.93초 | 1.55초 | 2.43초 | 5.22 (105음절) | 7줄 (10문장) | 이해하면 무서운 / 택배 (7+2자) |
+| `horror4` | 20.1초 | 0.94초 | 1.2초 | 1.34초 | 1.97초 | 5.46 (110음절) | 7줄 (10문장) | 이해하면 무서운 / 거울 (7+2자) |
+| `horror5` | 21.4초 | 0.81초 | 0.33초 | 1.43초 | 2.07초 | 4.85 (104음절) | 7줄 (12문장) | 이해하면 무서운 / 센서등 (7+3자) |
+| `horror6` | 21.0초 | 0.64초 | 0.83초 | 1.4초 | 2.6초 | 5.18 (109음절) | 7줄 (10문장) | 이해하면 무서운 / 김 서린 차 (7+4자) |
+| `horror7` | 20.5초 | 0.68초 | 0.77초 | 1.46초 | 2.47초 | 5.56 (114음절) | 7줄 (11문장) | 이해하면 무서운 / 홈캠 (7+2자) |
+| `horror8` | 22.2초 | 0.76초 | 1.0초 | 1.48초 | 2.67초 | 4.92 (109음절) | 7줄 (12문장) | 이해하면 무서운 / 발자국 (7+3자) |
+| `horror9` | 20.2초 | 0.65초 | 0.77초 | 1.44초 | 3.0초 | 5.36 (108음절) | 8줄 (10문장) | 이해하면 무서운 / 단톡방 (7+3자) |
+| `horror10` | 20.0초 | 0.89초 | 1.23초 | 1.43초 | 2.5초 | 5.69 (114음절) | 8줄 (9문장) | 이해하면 무서운 / 알림장 (7+3자) |
+| `horror11` | 20.1초 | 0.55초 | 0.7초 | 1.43초 | 2.3초 | 5.48 (110음절) | 7줄 (10문장) | 이해하면 무서운 / 할머니 손금 (7+5자) |
+| `horror12` | 20.2초 | 0.83초 | 1.1초 | 1.34초 | 2.33초 | 4.12 (83음절) | 7줄 (11문장) | 이해하면 무서운 / 숨바꼭질 (7+4자) |
+
+**못 맞춘 것과 이유**
+- **음절/초 3.99~5.69 (목표 5.8 이상).** 목표 5.8은 벤치마크에서 잰 값이 아니다. “+18%로 약 6.2음절/초”를 가정한 추정이다. 실제 InJoon `+18%`의 순수 발화 속도는 약 5.6음절/초라, 쉼이 전혀 없어도 5.8에 닿지 않는다. 지시대로 +18%를 지켰고, 문장 안 쉼과 줄 사이 쉼을 줄여 v1(4.1)보다 빨라졌다. `horror1`·`horror2`·`horror12`가 특히 낮은 이유는 “사, 삼, 이, 일. 띵.”, “삑, 삑, 삑, 삑”, “하나, 둘, 셋”처럼 박자를 두고 읽는 소리 구절 때문이다(지우면 이야기의 소리 단서가 사라진다).
+- **평균 샷 1.28~1.71초 (목표 1.9, 추정).** 목표보다 조금 더 빠르다. 장면 감지는 한 클립 안에서 문이 열리거나 불이 켜지는 변화도 전환으로 센다. 최장 샷은 모두 3.0초 이하로 목표 안이다.
+- **줄 수 7~8줄 (목표 9, 추정).** 문장 수로는 9~13문장이고, 자막 한 장은 3~9음절이다.
+- **화면 제목 7+2~5자 (목표 10+5).** 벤치마크 화면 제목이 “신기한 / 지우개”처럼 짧은 수식어 + 명사라서 화면에서는 “[괴담]”을 빼고 “이해하면 무서운 / ○○”만 둔다. “[괴담] 이해하면 무서운 ○○”는 업로드 제목에 쓴다.
+- 길이, 훅 끝(0.55~0.94초), 첫 전환(0.23~1.23초), 최장 샷은 열두 편 모두 목표 안이다.
+
+### 영상과 라이선스 (2026-10-10, 각 영상 페이지를 열어 “Free”·제작자를 확인)
+페이지 주소·파일 주소·제작자·쓴 구간(초)은 `media/horror/sources_v2.json`과 각 `edit.json`의 `sources`에 있다. 화면에는 출처를 표시하지 않고, 업로드 설명란에 모든 제작자를 적는다.
+- **Pexels License** (https://www.pexels.com/license/ — 무료, 수정 가능, 출처 표기 불필요. 수정 없는 판매·재배포와 사람을 나쁘게 보이게 하는 사용은 금지):
+  - horror1: 7701962 MART PRODUCTION, 15201563 Darina Evstafeva, 34779661 Stefan, 15434928 Yusuf Çelik, 5823578 Charlotte May, 978049 Stefan Kwiecinski / Pixabay: 130783·131012 Jesehab
+  - horror2: 2108274 Nazar Matveichev, 35999369 Jakub Bukowski, 9658661 Videas Cl, 29038649 Адам Аушев, 7598737 Artadya Gumelar, 19217899 Nino Souza, 5384813 Tima Miroshnichenko, 3512344 Bran Sodre, 8533759 Kaboompics (karola-g) / Pixabay: 28237 Jacques_Barrette
+  - horror3: 6611938 Tima Miroshnichenko, 8346903 Kampus Production, 7362603 RDNE Stock project, 13358555 Edwin Lopez, 9658661 Videas Cl, 5483080 cottonbro studio, 15365449 Matthias Groeneveld, 7598737 Artadya Gumelar
+  - horror4: 7646797 Alena Darmel, 32834268 Benjamin Eriksen, 36778198 Curtis Adams, 27861219 Nothing Ahead, 5384813 Tima Miroshnichenko, 4623153 Artem Podrez, 19217895 Nino Souza
+  - horror5: 4354915 Ahmet Akpolat, 5843879·9152640 Erik Mclean, 3134591 Caleb Oquendo, 12096163 Sasha Poberailo, 39024320 Alef Morais, 5986347 Pat Whelen, 6010700 Tima Miroshnichenko, 4990438 Pavel Danilyuk, 7644222 Yaroslav Shuraev
+  - horror6: 6302990 Klaus Nielsen, 27890130 Baran Robin, 6028858·6028882 Артем Ковальчук, 19217892 Nino Souza, 38433795 Rishabh Kaple, 5192033 Ming Z, 5227362 Francesco Ungaro, 32078487 Rec Everywhere
+  - horror7: 13358555 Edwin Lopez, 19228170·15887293 Curtis Adams, 34106136 Cemrecan Yurtman, 6028175 Ricky Esquivel, 19193293 Rafael Fernanz, 6114429 cottonbro studio, 5245970 Hemanth K M, 6443851 Pavel Danilyuk
+  - horror8: 5994916·5994907·5994915 cottonbro studio, 9976082 George Morina, 34405948 Emir Reinado, 7714908 Greta Hoffman, 9591436 Kain kn, 5391986 Saidouni Sidi Med, 4162882 Grisha Grishkoff, 39485457·39619866 Nothing Ahead, 5419248 Yaroslav Shuraev
+  - horror9: 6611941·5384813 Tima Miroshnichenko, 13358555 Edwin Lopez, 8342690·8342695 Pavel Danilyuk, 6935499·7822022 RDNE Stock project, 19193293 Rafael Fernanz
+  - horror10: 7055339 Kindel Media, 5897634 Katerina Holmes, 6326847 Kaboompics (karola-g), 8342690 Pavel Danilyuk, 6863499 Nataliya Vaitkevich, 7598737 Artadya Gumelar, 19193293 Rafael Fernanz, 5384813 Tima Miroshnichenko, 19217899 Nino Souza, 39425735 Sergei Starostin
+  - horror11: 9479751 Ron Lach, 19585708 Salih Sezgen, 35889601 K (@kelly), 10210122·4547598 cottonbro studio, 7234023 Artem Podrez, 5271483 Moe Magners, 7546178 SHVETS production
+  - horror12: 9594994·8322393 Ron Lach, 7598737 Artadya Gumelar, 2108274 Nazar Matveichev, 4547598 cottonbro studio, 19217899 Nino Souza, 9658661 Videas Cl, 37554583 Zulfugar Karimov
+  - v2에서 새로 쓴 클립의 페이지: 7701962, 2108274, 6611938, 7646797, 4354915, 6302990, 13358555, 5994916, 5994907, 6611941, 7822022, 8342690, 6935499, 8342695, 7055339, 5897634, 6326847, 6863499, 39425735, 9479751, 19585708, 35889601, 10210122, 7234023, 5271483, 7546178, 4547598, 9594994, 8322393, 37554583, 8533759. 주소는 `https://www.pexels.com/video/<slug>-<id>/`이고, slug는 `catalog.py`에 있다.
+- **Pixabay Content License** (무료, 수정 가능, 출처 표기 불필요. 원본 그대로의 판매·배포 금지): 130783·131012 Jesehab(`horror1`), 28237 Jacques_Barrette(`horror2`).
+- 손은 모두 얼굴이 나오지 않는 익명의 손이다. 무섭거나 나쁜 맥락의 장면에 알아볼 수 있는 사람은 없다.
+- 음악: Kevin MacLeod (incompetech.com), CC BY 4.0.
+- 사실 인용: 열두 편 모두 창작 괴담이라 숫자·법·날짜 같은 사실 주장이 없다.
+
+### 업로드 문구
+설명란 첫 줄에 **창작 괴담**이라고 밝힌다. 정답 유도는 영상에서 빼고 고정 댓글로 옮겼다. 고정 댓글은 정답을 직접 말하지 않고 단서를 준다.
+
+**horror1** — [괴담] 이해하면 무서운 엘리베이터 ㄷㄷ
+> 창작 괴담입니다. 실제 장소·인물과 관계없습니다. 텅 빈 엘리베이터에 한 발 들였을 뿐인데 정원 초과?
+> 영상: Pexels (MART PRODUCTION, Darina Evstafeva, Stefan, Yusuf Çelik, Charlotte May, Stefan Kwiecinski), Pixabay (Jesehab)
+> 음악: "Gathering Darkness" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
+> #괴담 #이해하면무서운이야기 #공포 #엘리베이터 #shorts
+
+고정 댓글: “정원 초과인데 안은 텅 비어 있었다면… 그 엘리베이터엔 몇 명이 타고 있었을까요? 위층에서 누가 불렀던 걸까요? 정답은 답글로 👀”
+
+**horror2** — [괴담] 이해하면 무서운 도어락 ㄷㄷ
+> 창작 괴담입니다. 실제 장소·인물과 관계없습니다. 새벽 세 시에 열렸다가 다시 잠긴 도어락. 비밀번호는 나만 아는데요.
+> 영상: Pexels (Nazar Matveichev, Jakub Bukowski, Videas Cl, Адам Аушев, Artadya Gumelar, Nino Souza, Tima Miroshnichenko, Bran Sodre, Kaboompics (karola-g)), Pixabay (Jacques_Barrette)
+> 음악: "Ghost Story" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
+> #괴담 #이해하면무서운이야기 #공포 #도어락 #shorts
+
+고정 댓글: “문은 안에서 다시 잠겼고, 신발은 한 켤레 늘었습니다. 그 사람은 언제 나갔을까요? 정답은 답글로 👀”
+
+**horror3** — [괴담] 이해하면 무서운 택배 문자 ㄷㄷ
+> 창작 괴담입니다. 실제 업체·인물과 관계없습니다. 나는 회사에 있고, 혼자 사는데… 택배는 누가 받아 갔을까요?
+> 영상: Pexels (Tima Miroshnichenko, Kampus Production, RDNE Stock project, Edwin Lopez, Videas Cl, cottonbro studio, Matthias Groeneveld, Artadya Gumelar)
+> 음악: "Gathering Darkness" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
+> #괴담 #이해하면무서운이야기 #공포 #택배 #shorts
+
+고정 댓글: “잠긴 집 안에서 택배를 받아 간 '안에 계신 분'은 지금 어디 있을까요? 정답은 답글로 👀”
+
+**horror4** — [괴담] 이해하면 무서운 거울 ㄷㄷ
+> 창작 괴담입니다. 실제 장소·인물과 관계없습니다. 불을 껐는데 거울 속 방은 아직 밝았다면?
+> 영상: Pexels (Alena Darmel, Benjamin Eriksen, Curtis Adams, Nothing Ahead, Tima Miroshnichenko, Artem Podrez, Nino Souza)
+> 음악: "Ghost Story" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
+> #괴담 #이해하면무서운이야기 #공포 #거울 #shorts
+
+고정 댓글: “거울 속 침대가 비어 있었다면, 거울 속 '나'는 지금 어디서 무엇을 하고 있을까요? 정답은 답글로 👀”
+
+**horror5** — [괴담] 이해하면 무서운 센서등 ㄷㄷ
+> 창작 괴담입니다. 실제 장소·인물과 관계없습니다. 내가 가기도 전에 한 층씩 먼저 켜지던 비상계단 센서등.
+> 영상: Pexels (Ahmet Akpolat, Erik Mclean, Caleb Oquendo, Sasha Poberailo, Alef Morais, Pat Whelen, Tima Miroshnichenko, Pavel Danilyuk, Yaroslav Shuraev)
+> 음악: "Gathering Darkness" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
+> #괴담 #이해하면무서운이야기 #공포 #비상계단 #shorts
+
+고정 댓글: “센서등은 사람이 지나가야 켜집니다. 계속 한 층 아래를 지나간 건 누구였고, 마지막에 2층 불은 왜 켜졌을까요? 정답은 답글로 👀”
+
+**horror6** — [괴담] 이해하면 무서운 김 서린 차 ㄷㄷ
+> 창작 괴담입니다. 실제 장소·인물과 관계없습니다. 몇 달째 서 있는 차, 김 서린 유리에 좌우가 뒤집힌 글씨 "또 봤네?"
+> 영상: Pexels (Klaus Nielsen, Baran Robin, Артем Ковальчук, Nino Souza, Rishabh Kaple, Ming Z, Francesco Ungaro, Rec Everywhere)
+> 음악: "Ghost Story" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
+> #괴담 #이해하면무서운이야기 #공포 #지하주차장 #shorts
+
+고정 댓글: “김은 어느 쪽에서 숨을 쉬어야 서릴까요? 그리고 글씨는 왜 뒤집혀 있었을까요? 정답은 답글로 👀”
+
+**horror7** — [괴담] 이해하면 무서운 홈캠 ㄷㄷ
+> 창작 괴담입니다. 실제 장소·인물·제품과 관계없습니다. 현관만 비추던 홈캠에 왜 자는 내가 찍혀 있었을까요?
+> 영상: Pexels (Edwin Lopez, Curtis Adams, Cemrecan Yurtman, Ricky Esquivel, Rafael Fernanz, cottonbro studio, Hemanth K M, Pavel Danilyuk)
+> 음악: "Gathering Darkness" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
+> #괴담 #이해하면무서운이야기 #공포 #홈캠 #shorts
+
+고정 댓글: “현관문은 한 번도 열리지 않았는데, 누가 홈캠을 침대 옆으로 옮겼다가 다시 돌려놨을까요? 정답은 답글로 👀”
+
+**horror8** — [괴담] 이해하면 무서운 발자국 ㄷㄷ
+> 창작 괴담입니다. 실제 장소·인물과 관계없습니다. 텐트 입구에서 나와 한 바퀴 돌고 다시 들어간 발자국. 나는 밤새 나간 적이 없는데요.
+> 영상: Pexels (cottonbro studio, George Morina, Emir Reinado, Greta Hoffman, Kain kn, Saidouni Sidi Med, Grisha Grishkoff, Nothing Ahead, Yaroslav Shuraev)
+> 음악: "Ghost Story" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
+> #괴담 #이해하면무서운이야기 #공포 #캠핑 #shorts
+
+고정 댓글: “발자국은 밖에서 온 게 아니라 입구에서 '나와서' 다시 '들어갔습니다'. 그날 밤 텐트 안엔 몇 명이 있었을까요? 정답은 답글로 👀”
+
+**horror9** — [괴담] 이해하면 무서운 단톡방 ㄷㄷ
+> 창작 괴담입니다. 실제 인물·학교·앱과 관계없습니다. 새벽 세 시에 초대된 반 단톡방, 그리고 "이제야 다 모였네".
+> 영상: Pexels (Tima Miroshnichenko, Edwin Lopez, Pavel Danilyuk, RDNE Stock project, Rafael Fernanz)
+> 음악: "Gathering Darkness" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
+> #괴담 #이해하면무서운이야기 #공포 #단톡방 #shorts
+
+고정 댓글: “우리 반은 나까지 29명인데 참여 인원은 30명. 서른 번째는 누구였고, 누구를 기다리고 있었을까요? 정답은 답글로 👀”
+
+**horror10** — [괴담] 이해하면 무서운 알림장 ㄷㄷ
+> 창작 괴담입니다. 실제 인물·학교와 관계없습니다. 출장 간 엄마의 사인이 내 알림장에 있었다면?
+> 영상: Pexels (Kindel Media, Katerina Holmes, Kaboompics (karola-g), Pavel Danilyuk, Nataliya Vaitkevich, Artadya Gumelar, Rafael Fernanz, Tima Miroshnichenko, Nino Souza, Sergei Starostin)
+> 음악: "Ghost Story" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
+> #괴담 #이해하면무서운이야기 #공포 #알림장 #shorts
+
+고정 댓글: “엄마는 출장 중이고 집엔 나 혼자였습니다. 밤새 내 방 가방에서 알림장을 꺼내 사인한 사람은 누구일까요? 정답은 답글로 👀”
+
+**horror11** — [괴담] 이해하면 무서운 할머니 손금 ㄷㄷ
+> 창작 괴담입니다. 실제 인물과 관계없습니다. 내 손금을 보고 웃으신 할머니, 그런데 할머니 손바닥엔…
+> 영상: Pexels (Ron Lach, Salih Sezgen, K (@kelly), cottonbro studio, Artem Podrez, Moe Magners, SHVETS production)
+> 음악: "Gathering Darkness" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
+> #괴담 #이해하면무서운이야기 #공포 #손금 #shorts
+
+고정 댓글: “살아 있는 사람이라면 손바닥에 손금이 있죠. 얼음처럼 차가운 손, 손금 없는 손바닥의 '할머니'는 누구였을까요? 정답은 답글로 👀”
+
+**horror12** — [괴담] 이해하면 무서운 숨바꼭질 ㄷㄷ
+> 창작 괴담입니다. 실제 인물과 관계없습니다. 옷장에 숨었는데 등 뒤에서 들린 한마디, "여기 좋지?"
+> 영상: Pexels (Ron Lach, Artadya Gumelar, Nazar Matveichev, cottonbro studio, Nino Souza, Videas Cl, Zulfugar Karimov)
+> 음악: "Ghost Story" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
+> #괴담 #이해하면무서운이야기 #공포 #숨바꼭질 #shorts
+
+고정 댓글: “동생은 밖에서 나를 찾고 있었고, 집엔 우리 둘뿐입니다. 옷장 안에서 속삭인 건 누구였을까요? 정답은 답글로 👀”
+## 그 시절 레트로 v2 (벤치마크, `retro1`~`retro12`)
+
+`research/benchmark-footage.md` 2절과 `research/benchmark-targets-footage.json`의 `retro` 목표에 맞춰 다시 만든 판입니다. 벤치마크는 그 시절 우리의 「김치 식단」(359만), 「80년대 캠핑」(314만), 「계곡 식사」(189만)입니다. 바뀐 점은 다음과 같습니다.
+
+- **화면 제목**: 노란 1줄은 도발·대비형("요즘 ○○ 반성해라", "○○ 없어도 ○○했다"), 흰 2줄은 시대("80년대 ○○ 모습/실태"). `retro1`~`retro8`은 사진이 1950~70년대라서 2줄을 "그 시절 ○○ 모습"으로 썼습니다.
+- **그림 박스**: 높이 27~73%(위 518px, 높이 884px), 폭 95%, 둥근 모서리. 바탕은 검정입니다.
+- **자막**: 박스 안 아래쪽의 반투명 검정 띠 위에 흰 글씨로 넣고, 강조색은 노랑 하나만 씁니다. 단어별 초록 강조는 쓰지 않습니다. 첫 자막은 0초 프레임부터 떠 있어 썸네일에 잡힙니다.
+- **출처 표시**: 화면의 출처 배지·각주 스티커와 위아래 그림자를 모두 뺐습니다. 크레딧은 설명란에 넣습니다.
+- **연도 표시**: 박스 왼쪽 위에 작은 노란 연도 태그를 둡니다.
+- **길이와 발화**: 27~31초, Edge TTS `ko-KR-SunHiNeural` `+25%`, 9~12문장. 첫 구절은 연도나 짧은 문장으로 끊어 1.5초 안에 끝냅니다.
+- **시대**: 새 편 `retro9`~`retro12`는 1980~1995년 사진입니다.
+
+### 새 템플릿 옵션 (`src/lib/RetroV2.tsx`)
+
+`edit.json` 최상위에 두 키를 넣으면 켜집니다. 키가 없는 쇼츠는 예전과 똑같이 렌더됩니다.
+
+- 확인 1: 이 판 이전(HEAD 1dcdd42)의 `retro1`(`rounded43`)을 옛 코드와 새 코드로 렌더해 0·120·400프레임을 비교했습니다. 다른 픽셀은 0개였습니다.
+- 확인 2: `teuk1`의 0·200·500·800프레임도 바꾸기 전후로 렌더해 비교했습니다. 역시 0픽셀이 달랐습니다.
+
+```json
+{ "titleStyle": "band", "frame": "retrobox", "look": "retro2", "grain": 0.12, "credit": "" }
+```
+
+- `"frame": "retrobox"`: 사진을 27~73% 높이의 둥근 박스(`RETROBOX`)에 넣습니다. `rounded43`과 같은 필름 그레인(`grain`), `crop: [cx, cy, zoom]` 디테일 컷, 클립별 `year`를 씁니다. 연도는 작은 노란 태그로 보이고, 첫 클립에서는 튀어나오지 않아 0초 프레임에도 보입니다.
+- `"look": "retro2"`: 위 25% 안의 노랑(1줄)·흰색(2줄) 제목(`RetroTitle`), 박스 안 반투명 띠 자막(`StripCaptions`)을 켜고, 그림자 오버레이와 출처 배지(`Credit`)를 끕니다. `titleStyle`은 `qa_review.py`의 제목 띠 검사 때문에 `"band"`로 둡니다.
+- 바꾼 곳:
+  - `src/lib/RetroV2.tsx`(새 파일).
+  - `src/lib/Retro.tsx`: `Rounded43`과 `rounded43Crop`에 생략 가능한 `box` 인자를 추가했습니다. 기본값은 기존 `ROUNDED43`입니다.
+  - `src/ClipShort.tsx`: import 1줄, `Clip.frame`에 `"retrobox"`, `ShortData.look`, `FRAME` 1줄, ClipView 분기 조건과 연도 태그 1줄, Title 1줄, Credit 조건 1개, 그림자 조건 1개, Captions 분기 1줄을 바꿨습니다.
+  - `prep.py`: `look`을 넘기는 1줄을 추가했습니다.
+- 도구(`media/retro/`):
+  - `v2_remake.py`: `retro1`~`retro8`을 v2로 바꾼 일회성 스크립트입니다. 제목, `+25%`, 간격 0.06초, 줄 빼기, 첫 구절, 각주 스티커 제거를 합니다.
+  - `fetch_commons.py`: 위키미디어 공용 파일 페이지에서 라이선스를 확인하고, 썸네일러로 받아 sRGB로 변환합니다. 서울역사아카이브 스캔 중 일부가 CMYK입니다.
+  - `v2_new.py`: `retro9`~`retro12`의 대본과 편집을 만듭니다.
+  - `v2_seconds.py`: 사진별 화면 사용 구간(초)을 edit.json과 사이드카에 기록합니다.
+  - `v2_scorecard.py`: 아래 성적표를 계산합니다.
+
+```bash
+python3 media/retro/fetch.py retro1 retro2 retro3 retro4 retro5 retro6 retro7 retro8   # 공유마당 사진 (기존)
+python3 media/retro/fetch_commons.py retro9 retro10 retro11 retro12                   # 위키미디어 공용 사진 (라이선스 확인)
+python3 media/retro/v2_new.py                                                           # retro9~12 script.json·edit.json
+python3 voice_edge.py retro9 && python3 prep.py retro9 && python3 media/retro/v2_seconds.py retro9
+./render.sh retro9 final/retro9.mp4    # 30MB가 넘으면 CRF 23으로 다시 인코딩(retro9~12는 그렇게 했습니다)
+python3 qa_review.py retro9
+python3 media/retro/v2_scorecard.py retro1 retro2 retro3 retro4 retro5 retro6 retro7 retro8 retro9 retro10 retro11 retro12
+```
+
+`retro9`~`retro12`는 그레인과 세밀한 사진 때문에 처음 렌더가 30MB를 넘었습니다(31~44MB). 그래서 `ffmpeg -c:v libx264 -crf 23 -preset slow -c:a copy`로 다시 인코딩했습니다(9.6~14.3MB).
+
+### 에피소드
+
+| id | 화면 제목 (노랑 / 흰) | 길이 | 사진 시대 | 내용 | 음악 |
+| --- | --- | --- | --- | --- | --- |
+| `retro1` | 요즘 키즈카페 반성해라 / 그 시절 골목 놀이 모습 | 28.0초 | 1952~1978 | 기존 대본 12줄, 마지막 국가기록원 문장을 짧게 | Heartwarming |
+| `retro2` | 세탁기 없어도 끄떡없던 / 그 시절 빨래터 모습 | 28.4초 | 1952~1973 | "수로 밑", "1960년대에도" 2줄 뺌 | Gymnopedie No 1 |
+| `retro3` | 트럭 없어도 다 날랐다 / 그 시절 지게꾼 모습 | 28.9초 | 1952~1967 | "큰 가구도", "쉴 땐" 2줄 뺌 | Gymnopedie No 2 |
+| `retro4` | 요즘 정류장 반성해라 / 그 시절 버스 정류장 | 30.5초 | 1952~1968 | 첫 구절 "1968년 종로." | Gymnopedie No 1 |
+| `retro5` | 요즘 대형마트 반성해라 / 그 시절 시장 구경 모습 | 29.2초 | 1952~1978 | "좌판", "밤 포목점" 2줄 뺌, 첫 구절 "1966년 부산." | Heartwarming |
+| `retro6` | 편의점 없어도 행복했다 / 그 시절 길거리 간식 | 28.6초 | 1952~1978 | "도너츠", "1967년 번데기" 2줄 뺌 | Heartwarming |
+| `retro7` | 고속열차보다 낭만 있던 / 그 시절 기차역 모습 | 29.4초 | 1952~1973 | "1952년 서울역 앞", "창밖 논밭" 2줄 뺌 | Gymnopedie No 1 |
+| `retro8` | 의자 없이 땅바닥 입학식 / 그 시절 국민학교 실태 | 27.6초 | 1952~1966 | "돌담 학교", "여중생 소풍" 2줄 뺌, 첫 구절 "의자도 없이 땅바닥에." | Gymnopedie No 2 |
+| `retro9` | 요즘 출근길 반성해라 / 80년대 지하철 모습 | 28.1초 | 1983~1987 | 1983년 꽃 단 2호선 개통 열차 → 시운전 노선도 → 1984년 이대역 초록 타일 터널 → 구로공단역(지금 구로디지털단지역) → 1984년 5월 2호선 48.8km 완전 개통 → 하루 230만 명 → 1986년 자동 개찰구 → 지금은 카드 "삑" → 기억나는 분? | Heartwarming |
+| `retro10` | 요즘 놀이공원 반성해라 / 80년대 나들이 모습 | 27.1초 | 1984, 1989 | 1984년 5월 1일 서울대공원 개원 인파 → 공사 5년 7개월 → 코끼리 얼굴 열차 → 꼬마·엄마 아빠 → 돌아오는 길 1989년 분식집의 튀김·김밥·만두, 국밥·김치찌개 → 예약 없이 가던 시절 → 기억나는 분? | Heartwarming |
+| `retro11` | 엘리베이터 없어도 살았다 / 80년대 산동네 실태 | 27.7초 | 1981, 1984, 1989 | 1981년 서울 성북구 산을 덮은 집 → 지붕 위에 지붕 → 언덕 → 1989년 부산 영도 산비탈·항구 → 1984년 남산에서 본 도심 빌딩 → 지금은 엘리베이터 → 기억나는 분? | Gymnopedie No 1 |
+| `retro12` | 빌딩숲 없어도 북적였다 / 80년대 시내 모습 | 29.6초 | 1980~1995 | 1980년 광화문과 뒤의 중앙청 → 1984년 숭례문 일대 빌딩, 시청과 호텔 → 1983년 연말 남대문시장 털옷 → 1985년 상봉터미널 준공 → 1995년 부산 자갈치시장 좌판·소쿠리 → 1993년 광화문 앞 한산한 도로 → 기억나는 분? | Gymnopedie No 2 |
+
+모든 편은 `python3 qa_review.py retro1 … retro12`에서 **WARN 0개, FAIL 0개**입니다. 베이스 브랜치에 새로 생긴 "설명글" 검사도 통과했습니다. 업로드 설명글 spec은 `upload/specs/retro1~12.json`, 생성된 설명글은 `upload/txt/retro1~12.txt`에 있습니다. 채널 이름과 핸들은 아직 `upload/channels.json`의 자리표시자입니다. 길이 27.1~30.5초, 자막 한 장 최장 12자, 소리 −13.9~−14.0 LUFS, 용량 9.6~28.6MB입니다. 각 편의 `out/review/<id>/first.png`, `last.png`, `sheet.png`를 보고 다음을 확인했습니다.
+
+- 0초 프레임에 2줄 제목, 사람 또는 풍경, 첫 자막이 함께 보입니다.
+- 마지막 장면은 첫 장면의 사진이라 루프로 이어집니다.
+- 글자가 겹치거나 잘리지 않았습니다.
+- 크게 보이는 상표가 없습니다(아래 참고).
+
+### 벤치마크 성적표 (`python3 media/retro/v2_scorecard.py`)
+
+측정 방법은 다음과 같습니다.
+
+- 길이·첫 전환·평균/최장 샷: `final/<id>.mp4`를 `qa_review.py`와 같은 장면 감지(그림 박스, 임계값 0.12)로 쟀습니다.
+- 훅 끝: 첫 내레이션 구절(첫 `|`까지)의 마지막 음절이 끝나는 시각입니다(`build/<id>/timeline.json`).
+- 음절/초: 숫자를 읽는 음절까지 센 전체 발화 음절 수 ÷ 길이입니다.
+- 줄 수: 내레이션 문장 수입니다.
+- 제목 글자: 줄마다 셌고, 띄어쓰기는 뺐습니다.
+
+| id | 길이 | 훅 끝 | 첫 전환 | 평균 샷 | 최장 샷 | 음절/초 | 줄 수 | 제목 글자 |
+|---|---|---|---|---|---|---|---|---|
+| 목표 | 28초 | ≤1.5초 | ≤2.5초 | 2.7초 | ≤4.0초 | 6.0 | ≤12 | 11/9 |
+| `retro1` | 28.0초 | 1.5초 | 2.2초 | 2.2초 | 3.6초 | 6.0 | 12 | 10/9 |
+| `retro2` | 28.4초 | 1.1초 | 1.5초 | 2.6초 | 3.4초 | 6.1 | 10 | 10/8 |
+| `retro3` | 28.9초 | 1.3초 | 2.1초 | 2.2초 | 3.6초 | 6.0 | 10 | 9/8 |
+| `retro4` | 30.5초 | 1.4초 | 2.2초 | 2.3초 | 3.5초 | 6.2 | 10 | 9/8 |
+| `retro5` | 29.2초 | 1.4초 | 2.1초 | 2.7초 | 3.5초 | 6.3 | 10 | 10/9 |
+| `retro6` | 28.6초 | 1.5초 | 1.5초 | 2.6초 | 3.7초 | 5.9 | 10 | 10/8 |
+| `retro7` | 29.4초 | 0.7초 | 1.5초 | 2.7초 | 3.6초 | 6.4 | 9 | 10/8 |
+| `retro8` | 27.6초 | 1.4초 | 1.5초 | 2.5초 | 3.3초 | 6.2 | 9 | 10/9 |
+| `retro9` | 28.1초 | 1.2초 | 1.6초 | 2.3초 | 3.7초 | 6.2 | 10 | 9/9 |
+| `retro10` | 27.1초 | 1.2초 | 1.6초 | 2.3초 | 3.8초 | 5.8 | 11 | 10/9 |
+| `retro11` | 27.7초 | 1.1초 | 1.6초 | 2.3초 | 3.9초 | 6.2 | 11 | 11/9 |
+| `retro12` | 29.6초 | 1.0초 | 1.6초 | 2.5초 | 3.6초 | 6.1 | 11 | 10/8 |
+
+**놓친 것과 이유**
+
+- **제목 1줄 글자 수**: 9~11자로, 목표 11자에 1~2자 모자랍니다. 짧은 도발형("요즘 ○○ 반성해라")은 띄어쓰기를 빼면 9~10자입니다. 줄당 13자 이하인 검토 기준은 모두 지킵니다.
+- **`retro10` 음절/초 5.8**: 목표 6.0보다 조금 낮습니다. 사진이 두 장뿐이라 컷마다 문장을 짧게 끊었습니다.
+- **`retro4` 길이 30.5초**: 목표 28초보다 2.5초 깁니다. 대본은 10문장으로 이미 짧고, 숫자(810대, 7,383대)를 읽느라 길어졌습니다.
+- **벤치마크 쪽 수치는 대부분 추정입니다**: 길이·컷·음성은 측정하지 못했고(`benchmark-footage.md` 0절), 확실한 것은 레이아웃과 제목뿐입니다. 우리 쪽은 모두 실측입니다.
+- **움직이는 영상은 쓰지 못했습니다** (가장 큰 차이). 1980~90년대 대한뉴스와 KTV 영상을 찾았지만 조건에 맞는 것이 없었습니다.
+  - e-영상역사관: 대한뉴스·문화영화 항목 페이지(예: 대한뉴스 1602호 「여름 피서철」(1986), 1497호 「물놀이 조심」(1984))에 공공누리 표시가 없고, "공공누리가 부착되지 않은 자료는 사전에 협의"라고 나옵니다.
+  - e-영상역사관 국가기록사진(해수욕장, 피서, 귀성 등 1983~1999년 26건): 모두 **공공누리 제4유형**(변경금지·상업 이용 금지)이었습니다.
+  - 공유마당 영상: 1980년대 대한뉴스·KTV 영상이 없습니다(대한뉴스 검색 3건은 2000년대 이후 영상).
+  - 공유마당 KTV 사진(공공누리 제1유형, wrtSn 13070800~13071799): 하나씩 열어 봤는데 모두 1950~70년대였습니다.
+  - 위키미디어 공용의 대한뉴스 영상: 1953년 2건뿐입니다.
+- **아이디어 목록 소재를 대부분 바꿨습니다**: 양은 도시락, 연탄, 해수욕장, 귀성길, 구멍가게, 안내양, 운동회는 쓸 수 있는 1980~90년대 사진이 거의 없었습니다.
+  - 국립민속박물관의 양은도시락·연탄화덕 같은 유물 사진(공유마당, 공공누리 제1유형): 원본 이미지가 외부 서버(nfm.museum.go.kr)에 있는데, 이 환경에서 접속되지 않았습니다. 사람도 나오지 않습니다.
+  - 그래서 공공누리 제1유형·CC BY 사진이 실제로 있는 소재로 정했습니다: 지하철 출근길(아이디어 7번의 출근길 실태), 놀이공원 나들이(6번), 산동네, 시내.
+  - `retro10`·`retro11`은 사진이 2~3장이라, 한 사진을 여러 각도의 디테일 컷(`crop`)으로 나눴습니다. 벤치마크 ③도 한 장면을 길게 씁니다.
+- **뺀 사진**:
+  - 1984년 여의도 고층 빌딩 공사 사진 12장(CC BY 3.0): 위키미디어 공용이 "건축저작물, 한국 파노라마 자유는 비영리만"이라고 경고해서 뺐습니다.
+  - 1988년 "John TDY" 서울 거리 사진(CC BY 2.0): 미군 출장(TDY) 사진첩이라 뺐습니다(군대 관련 배제).
+  - 1990년 실내 놀이공원 간식 수레 사진(공공누리 제1유형): 수레와 냉동고에 기업 로고와 캐릭터가 커서 뺐습니다.
+- **`retro1`~`retro8`의 시대**: 사진은 그대로 1950~70년대입니다. 알려진 한계입니다.
+
+### 사진 출처와 라이선스
+
+`retro1`~`retro8`은 기존과 같습니다. 공유마당 항목 페이지에서 라이선스 코드(`21` CC BY, `01` 공공누리 제1유형)를 `media/retro/fetch.py`로 2026-10-10에 다시 확인했습니다.
+
+- 저작자는 한국저작권위원회(2018년 공유저작물DB수집, 부경근대사료연구소 수집)와 한국정책방송원입니다.
+- v2에서 뺀 줄의 사진은 `edit.json`의 `sources`에서도 뺐습니다. 사이드카 `media/retro/retroN.json`에는 남아 있고 `used_seconds`가 `[]`입니다.
+
+`retro9`~`retro12`는 **위키미디어 공용** 파일 페이지의 라이선스 틀을 `media/retro/fetch_commons.py`로 확인했습니다(2026-10-10). 허용한 라이선스는 KOGL Type 1, CC BY(버전 무관), CC0, 퍼블릭 도메인뿐이고, 17개 파일이 모두 통과했습니다.
+
+| 묶음 | 라이선스 | 원 출처 |
+| --- | --- | --- |
+| 서울역사박물관 / 서울특별시 | 공공누리 제1유형 | 서울역사아카이브, 『선진 수도로의 도약: 1979-1983』(2018), 『세계는 서울로, 서울은 세계로: 1984-1988』(2019) |
+| 후지모토 다쿠미 기증 | 공공누리 제1유형 | 국립민속박물관 민속아카이브 |
+| 한국저작권위원회 | CC BY 4.0 | 공유마당 |
+| 서울특별시 | CC BY 3.0 | 서울사진아카이브 (상봉터미널 1985) |
+
+- 이미지는 이 컨테이너에서 `upload.wikimedia.org`가 429를 돌려줘서 `commons.wikimedia.org/w/thumb.php`(폭 2000px)로 받았습니다. 그다음 sRGB로 바꾸고 1600px로 줄였습니다.
+- 항목별 페이지·파일 주소·라이선스·저작자·원 출처·설명·사용 구간(초)은 `media/retro/retro9~12.json`과 각 `edit.json`의 `sources`에 있습니다.
+- 사람이 나오는 사진은 다음과 같이 처리했습니다.
+  - 인파, 승객, 시장 손님은 모두 일상 장면입니다.
+  - `retro9` 시운전 사진과 자동 개찰 사진에는 당시 서울시장과 공무원들이 있습니다. 그래서 노선도와 손잡이, 개찰구 기계만 보이게 확대해서 썼습니다.
+  - `retro12` 남대문시장 사진에는 시장과 수행원이 있습니다. 오른쪽 털옷 진열만 확대해서 썼습니다.
+  - 정치 인물은 이름을 말하지도 보여 주지도 않습니다.
+- 간판: 분식집 간판(국밥·백반·김치찌개)과 역 이름판, 노선도 같은 일반 글자는 보입니다. 기업 로고는 크게 나오지 않습니다.
+- 확인 필요: `retro9` 0초의 2호선 개통 열차 앞면에는 당시 서울지하철공사(공기업) 원형 마크가 작게 보입니다.
+
+항목별 목록(사용한 사진, 쓴 구간):
+
+- **retro1**: [1978년 서울 한남동 주택가 골목안 아이들](https://gongu.copyright.or.kr/gongu/wrt/wrt/view.do?wrtSn=13154972&menuNo=200018) (한국저작권위원회, 1978년, CC BY (저작자표시); 0–2.25, 2.25–3.59초); [1978년 서울 한남동 학교 앞 문구점 앞의 아이들](https://gongu.copyright.or.kr/gongu/wrt/wrt/view.do?wrtSn=13154977&menuNo=200018) (한국저작권위원회, 1978년, CC BY (저작자표시); 3.59–5.87초); [1952년 진해의 어느 공터에서 고무줄 뛰기를 하는 여자 아이들](https://gongu.copyright.or.kr/gongu/wrt/wrt/view.do?wrtSn=13154364&menuNo=200018) (한국저작권위원회, 1952년, CC BY (저작자표시); 5.87–9.5초); [1952년 마산의 어느골목에서 고무줄 뛰기를 하는 소녀들](https://gongu.copyright.or.kr/gongu/wrt/wrt/view.do?wrtSn=13154363&menuNo=200018) (한국저작권위원회, 1952년, CC BY (저작자표시); 9.5–11.04초); [1952년 경남 진해 어느 마을 골목 마당에서 널뛰기를 하는 아이들](https://gongu.copyright.or.kr/gongu/wrt/wrt/view.do?wrtSn=13154340&menuNo=200018) (한국저작권위원회, 1952년, CC BY (저작자표시); 11.04–12.6초); [1978년 서울 한남동 골목에 모여 놀이를 하는 아이들](https://gongu.copyright.or.kr/gongu/wrt/wrt/view.do?wrtSn=13154959&menuNo=200018) (한국저작권위원회, 1978년, CC BY (저작자표시); 12.6–15.21초); [1968년 물방개를 황용한 뽑기놀이 장수](https://gongu.copyright.or.kr/gongu/wrt/wrt/view.do?wrtSn=13153490&menuNo=200018) (한국저작권위원회, 1968년, CC BY (저작자표시); 15.21–18.2초); [주택가 길에서 축구하는 어린이들](https://gongu.copyright.or.kr/gongu/wrt/wrt/view.do?wrtSn=13071730&menuNo=200018) (한국정책방송원, 1973-06-08, 공공누리 제1유형 (출처표시); 18.2–19.49초); [물놀이하는 어린이들](https://gongu.copyright.or.kr/gongu/wrt/wrt/view.do?wrtSn=13070985&menuNo=200018) (한국정책방송원, 1958-07-08, 공공누리 제1유형 (출처표시); 19.49–21.04초); [서울 시내 주택가 어린이 놀이터](https://gongu.copyright.or.kr/gongu/wrt/wrt/view.do?wrtSn=13071729&menuNo=200018) (한국정책방송원, 1973-06-08, 공공누리 제1유형 (출처표시); 21.04–22.92초); [1952년경 대구 둔산로 주변 마을 고목에서 그네 뛰는 아이들](https://gongu.copyright.or.kr/gongu/wrt/wrt/view.do?wrtSn=13152472&menuNo=200018) (한국저작권위원회, 1952년경, CC BY (저작자표시); 22.92–25.29초); [1952년 부산 수영구 남천동 농가의 마당에서 노는 여자 아이들](https://gongu.copyright.or.kr/gongu/wrt/wrt/view.do?wrtSn=13153791&menuNo=200018) (한국저작권위원회, 1952년, CC BY (저작자표시); 25.29–27.94초)
+- **retro2**: [1952년 부산 중구 보수천 하구에서 빨래를 하는 주민들_2](https://gongu.copyright.or.kr/gongu/wrt/wrt/view.do?wrtSn=13153849&menuNo=200018) (한국저작권위원회, 1952년, CC BY (저작자표시); 0–1.45, 1.45–2.92초); [1952년 부산 보수천 하구에서 빨래를 하는 주민들_1](https://gongu.copyright.or.kr/gongu/wrt/wrt/view.do?wrtSn=13153772&menuNo=200018) (한국저작권위원회, 1952년, CC BY (저작자표시); 2.92–6.25초); [1952년 부산 보수천 하구에서 빨래를 하는 여인](https://gongu.copyright.or.kr/gongu/wrt/wrt/view.do?wrtSn=13153771&menuNo=200018) (한국저작권위원회, 1952년, CC BY (저작자표시); 6.25–8.83초); [1952년 부산 수영구 남천동 개울에서 아이를 업고 빨래를 하는 여인](https://gongu.copyright.or.kr/gongu/wrt/wrt/view.do?wrtSn=13153790&menuNo=200018) (한국저작권위원회, 1952년, CC BY (저작자표시); 8.83–11.08초); [1953년 부산 외곽의 마을공동 빨래터](https://gongu.copyright.or.kr/gongu/wrt/wrt/view.do?wrtSn=13153990&menuNo=200018) (한국저작권위원회, 1953년, CC BY (저작자표시); 11.08–13.1초); [1952년 대구 신천 강변에서 빨래를 널거나  머리를 감고 있는 여인_1](https://gongu.copyright.or.kr/gongu/wrt/wrt/view.do?wrtSn=13152451&menuNo=200018) (한국저작권위원회, 1952년, CC BY (저작자표시); 13.1–16.02초); [1968년 서울의 어느 골목에서 빨래감을 발로 문지르고 있는 할머니](https://gongu.copyright.or.kr/gongu/wrt/wrt/view.do?wrtSn=13154904&menuNo=200018) (한국저작권위원회, 1968년, CC BY (저작자표시); 16.02–19.11초); [1973년 10월 충주 달천에서 빨래하는 사람들과 계명산](https://gongu.copyright.or.kr/gongu/wrt/wrt/view.do?wrtSn=13154395&menuNo=200018) (한국저작권위원회, 1973년 10월, CC BY (저작자표시); 19.11–22.54초); [1953년 서울 외곽지역 정비된 하천에서 빨래하는 여인들_1](https://gongu.copyright.or.kr/gongu/wrt/wrt/view.do?wrtSn=13154702&menuNo=200018) (한국저작권위원회, 1953년, CC BY (저작자표시); 22.54–25.9초); [1953년 서울 외곽지역 정비된 하천에서 빨래하는 여인들_2](https://gongu.copyright.or.kr/gongu/wrt/wrt/view.do?wrtSn=13154703&menuNo=200018) (한국저작권위원회, 1953년, CC BY (저작자표시); 25.9–28.39초)
+- **retro3**: [1960년 수원 용주여관앞을 지나는 지게에 세간살이를 얹고가는 사람](https://gongu.copyright.or.kr/gongu/wrt/wrt/view.do?wrtSn=13153007&menuNo=200018) (한국저작권위원회, 1960년, CC BY (저작자표시); 0–2.08, 2.08–3.8, 3.8–5.19초); [1953년 부산 중구의 가구를 지게에 지고 다니며 팔러 다니는 사람과 그 뒤를 따라 가는 아가씨들](https://gongu.copyright.or.kr/gongu/wrt/wrt/view.do?wrtSn=13155025&menuNo=200018) (한국저작권위원회, 1953년, CC BY (저작자표시); 5.19–8.78초); [1952년 부산 중구 광복로 거리의 멸치 지게 행상인](https://gongu.copyright.or.kr/gongu/wrt/wrt/view.do?wrtSn=13153842&menuNo=200018) (한국저작권위원회, 1952년, CC BY (저작자표시); 8.78–10.04초); [1952년 대구 지겟짐에 사과를 담아 거리에서 팔고있는 참외장수](https://gongu.copyright.or.kr/gongu/wrt/wrt/view.do?wrtSn=13152344&menuNo=200018) (한국저작권위원회, 1952년, CC BY (저작자표시); 10.04–11.58초); [1952년 부산 남구 대연동 우룡산 자락 밭에서 농작물을 캐서 지게에 지고 가는 여인](https://gongu.copyright.or.kr/gongu/wrt/wrt/view.do?wrtSn=13153641&menuNo=200018) (한국저작권위원회, 1952년, CC BY (저작자표시); 11.58–14.3초); [1952년 부산 남구 대연동의 산에서 나무뿌리를 캐서 지게에 지고 가는 어르신](https://gongu.copyright.or.kr/gongu/wrt/wrt/view.do?wrtSn=13153680&menuNo=200018) (한국저작권위원회, 1952년, CC BY (저작자표시); 14.3–16.02초); [1953년 작은 지게를 진 아이](https://gongu.copyright.or.kr/gongu/wrt/wrt/view.do?wrtSn=13153202&menuNo=200018) (한국저작권위원회, 1953년, CC BY (저작자표시); 16.02–18.38초); [1953년 서울 영등포역 앞 역전식당과 지게꾼](https://gongu.copyright.or.kr/gongu/wrt/wrt/view.do?wrtSn=13154692&menuNo=200018) (한국저작권위원회, 1953년, CC BY (저작자표시); 18.38–21.06초); [1960년 6월 경기도 파주 법원리 도로의 지게에 짐을 지고 가는 사람](https://gongu.copyright.or.kr/gongu/wrt/wrt/view.do?wrtSn=13153114&menuNo=200018) (한국저작권위원회, 1960년6월, CC BY (저작자표시); 21.06–23.88초); [1952년 부산 남구 감만동 주민이 빈지게를 지고 지나가는 모습](https://gongu.copyright.or.kr/gongu/wrt/wrt/view.do?wrtSn=13153603&menuNo=200018) (한국저작권위원회, 1952년, CC BY (저작자표시); 23.88–26.5초); [1967년 대구거리_ 짐 운반용 지게를 진 사람들](https://gongu.copyright.or.kr/gongu/wrt/wrt/view.do?wrtSn=13152680&menuNo=200018) (한국저작권위원회, 1967년, CC BY (저작자표시); 26.5–28.84초)
+- **retro4**: [1968년 서울 종로5가 거리와 택시, 시내버스 모습_2](https://gongu.copyright.or.kr/gongu/wrt/wrt/view.do?wrtSn=13154193&menuNo=200018) (한국저작권위원회, 1968년, CC BY (저작자표시); 0–2.16, 2.16–4.18초); [1968년 서울 종로3가 거리와 택시, 시내버스 모습_1](https://gongu.copyright.or.kr/gongu/wrt/wrt/view.do?wrtSn=13154192&menuNo=200018) (한국저작권위원회, 1968년, CC BY (저작자표시); 4.18–7.01초); [1954년 7월 14일 서울 중앙청 앞 대로를 지나는 시내버스](https://gongu.copyright.or.kr/gongu/wrt/wrt/view.do?wrtSn=13154758&menuNo=200018) (한국저작권위원회, 19919, CC BY (저작자표시); 7.01–9.41초); [1952년 대구역 앞 시영버스](https://gongu.copyright.or.kr/gongu/wrt/wrt/view.do?wrtSn=13152535&menuNo=200018) (한국저작권위원회, 1952년, CC BY (저작자표시); 9.41–12.43초); [1953년 서울 서대문구 독립문 옆 버스정류장의 사람들과 아이들](https://gongu.copyright.or.kr/gongu/wrt/wrt/view.do?wrtSn=13154682&menuNo=200018) (한국저작권위원회, 1953년, CC BY (저작자표시); 12.43–14.52초); [1953년 서울 영등포의 버스를 기다리는 어르신들](https://gongu.copyright.or.kr/gongu/wrt/wrt/view.do?wrtSn=13154695&menuNo=200018) (한국저작권위원회, 1953년, CC BY (저작자표시); 14.52–16.66초); [1960년 3월 서울시내 한국상업은행 앞 거리와 시내버스](https://gongu.copyright.or.kr/gongu/wrt/wrt/view.do?wrtSn=13154858&menuNo=200018) (한국저작권위원회, 1960년 3월, CC BY (저작자표시); 16.66–19.65초); [1963년 서울거리의 시내버스 모습](https://gongu.copyright.or.kr/gongu/wrt/wrt/view.do?wrtSn=13154652&menuNo=200018) (한국저작권위원회, 1963년, CC BY (저작자표시); 19.64–21.21초); [1953년 부산 부산진구 연지동의 시내버스](https://gongu.copyright.or.kr/gongu/wrt/wrt/view.do?wrtSn=13155010&menuNo=200018) (한국저작권위원회, 1953년, CC BY (저작자표시); 21.21–23.06초); [1959년 서울역](https://gongu.copyright.or.kr/gongu/wrt/wrt/view.do?wrtSn=13154168&menuNo=200018) (한국저작권위원회, 1959년, CC BY (저작자표시); 23.06–26.6, 26.6–27.71초); [1967년 대구 거리_ 외곽지역에서 버스를 기다리는 사람들](https://gongu.copyright.or.kr/gongu/wrt/wrt/view.do?wrtSn=13152653&menuNo=200018) (한국저작권위원회, 1967년, CC BY (저작자표시); 27.7–30.46초)
+- **retro5**: [1966년 부산 중구 부평동 부평시장](https://gongu.copyright.or.kr/gongu/wrt/wrt/view.do?wrtSn=13155112&menuNo=200018) (한국저작권위원회, 1966년, CC BY (저작자표시); 0–2.14, 2.14–4.4초); [1952년 부산 중구 부평시장의 고춧가루 노점상들](https://gongu.copyright.or.kr/gongu/wrt/wrt/view.do?wrtSn=13153869&menuNo=200018) (한국저작권위원회, 1952년, CC BY (저작자표시); 4.41–6.2초); [1952년 부산 중구 부평동시장의 과일구루마 노점상](https://gongu.copyright.or.kr/gongu/wrt/wrt/view.do?wrtSn=13153856&menuNo=200018) (한국저작권위원회, 1952년, CC BY (저작자표시); 6.2–7.9초); [1952년 부산 중구 부평시장의 금붕어 장수](https://gongu.copyright.or.kr/gongu/wrt/wrt/view.do?wrtSn=13153871&menuNo=200018) (한국저작권위원회, 1952년, CC BY (저작자표시); 7.9–10.31초); [1967년 대구 서문시장_어물전의 갈치장수_1](https://gongu.copyright.or.kr/gongu/wrt/wrt/view.do?wrtSn=13152674&menuNo=200018) (한국저작권위원회, 1967년, CC BY (저작자표시); 10.31–13.66초); [1968년 자갈치시장 생선 노점상과 사람들](https://gongu.copyright.or.kr/gongu/wrt/wrt/view.do?wrtSn=13153524&menuNo=200018) (한국저작권위원회, 1968년, CC BY (저작자표시); 13.66–17초); [1968년 서울 남대문시장 모습](https://gongu.copyright.or.kr/gongu/wrt/wrt/view.do?wrtSn=13154179&menuNo=200018) (한국저작권위원회, 1968년, CC BY (저작자표시); 17–19.83초); [1978년 서울 한남동 재래시장 입구_1](https://gongu.copyright.or.kr/gongu/wrt/wrt/view.do?wrtSn=13154970&menuNo=200018) (한국저작권위원회, 1978년, CC BY (저작자표시); 19.83–23.32초); [1978년 서울 한남동 재래시장 내 과일가게](https://gongu.copyright.or.kr/gongu/wrt/wrt/view.do?wrtSn=13154966&menuNo=200018) (한국저작권위원회, 1978년, CC BY (저작자표시); 23.32–26.49초); [1978년 서울 한남동 재래시장 내 야채 노점상들](https://gongu.copyright.or.kr/gongu/wrt/wrt/view.do?wrtSn=13154969&menuNo=200018) (한국저작권위원회, 1978년, CC BY (저작자표시); 26.49–29.2초)
+- **retro6**: [1952년 부산 중구 보수동 축대식 담벼락 아래의 뻥튀기 장수](https://gongu.copyright.or.kr/gongu/wrt/wrt/view.do?wrtSn=13153848&menuNo=200018) (한국저작권위원회, 1952년, CC BY (저작자표시); 0–1.53, 1.53–3.79, 3.79–6.17초); [1952년 부산 중구 부평시장의 옥수수 모양의 풀빵 노점상](https://gongu.copyright.or.kr/gongu/wrt/wrt/view.do?wrtSn=13153881&menuNo=200018) (한국저작권위원회, 1952년, CC BY (저작자표시); 6.17–8.71초); [1953년 대구거리의 번데기 장수](https://gongu.copyright.or.kr/gongu/wrt/wrt/view.do?wrtSn=13152591&menuNo=200018) (한국저작권위원회, 1953년, CC BY (저작자표시); 8.71–11.39초); [1952년 광주 거리의 리어카 빙수 판매점](https://gongu.copyright.or.kr/gongu/wrt/wrt/view.do?wrtSn=13153161&menuNo=200018) (한국저작권위원회, 1952년, CC BY (저작자표시); 11.39–15.08초); [1968년 부산_ 거리의 아이스케익 뽑기 노점](https://gongu.copyright.or.kr/gongu/wrt/wrt/view.do?wrtSn=13153509&menuNo=200018) (한국저작권위원회, 1968년, CC BY (저작자표시); 15.08–18.03초); [1978년 서울 동대문시장 거리의 엿장수 엿판](https://gongu.copyright.or.kr/gongu/wrt/wrt/view.do?wrtSn=13154943&menuNo=200018) (한국저작권위원회, 1978년, CC BY (저작자표시); 18.03–21.08초); [1952년 마산 어시장 인근 거리에서 사탕과 과자를 팔면서 전을 굽고있는 노점상](https://gongu.copyright.or.kr/gongu/wrt/wrt/view.do?wrtSn=13154354&menuNo=200018) (한국저작권위원회, 1952년, CC BY (저작자표시); 21.08–23.99초); [1952년 부산 중구 부평시장 카바이트상가 앞의 팥죽과 콩국 노점상](https://gongu.copyright.or.kr/gongu/wrt/wrt/view.do?wrtSn=13153864&menuNo=200018) (한국저작권위원회, 1952년, CC BY (저작자표시); 23.99–25.86초); [1967년 대구 서문시장_엿장수, 과일 노점 등](https://gongu.copyright.or.kr/gongu/wrt/wrt/view.do?wrtSn=13152677&menuNo=200018) (한국저작권위원회, 1967년, CC BY (저작자표시); 25.86–28.6초)
+- **retro7**: [함백선을 질주하는 열차](https://gongu.copyright.or.kr/gongu/wrt/wrt/view.do?wrtSn=13070891&menuNo=200018) (한국정책방송원, 1957, 공공누리 제1유형 (출처표시); 0–1.45, 1.45–2.9초); [함백선 개통과 함께 신축된 강원도 영월의 철도역사](https://gongu.copyright.or.kr/gongu/wrt/wrt/view.do?wrtSn=13070892&menuNo=200018) (한국정책방송원, 1957, 공공누리 제1유형 (출처표시); 2.9–6.24초); [1954년 7월 14일 서울역](https://gongu.copyright.or.kr/gongu/wrt/wrt/view.do?wrtSn=13154762&menuNo=200018) (한국저작권위원회, 1954, CC BY (저작자표시); 6.24–9.21초); [1953년 대구역 앞에서 차를 기다리는 사람들](https://gongu.copyright.or.kr/gongu/wrt/wrt/view.do?wrtSn=13152491&menuNo=200018) (한국저작권위원회, 1953, CC BY (저작자표시); 9.21–12.56초); [1952년 부산철도 공작창과 수리를 위해 있는 증기 기관차들](https://gongu.copyright.or.kr/gongu/wrt/wrt/view.do?wrtSn=13153930&menuNo=200018) (한국저작권위원회, 1952, CC BY (저작자표시); 12.56–15.66초); [외국에서 도입된 디젤기관차를 서울역에서 시운전중이다](https://gongu.copyright.or.kr/gongu/wrt/wrt/view.do?wrtSn=13070920&menuNo=200018) (한국정책방송원, 1957, 공공누리 제1유형 (출처표시); 15.66–19.29초); [1964년 열차 안에서 촬영한 서울 한강대교](https://gongu.copyright.or.kr/gongu/wrt/wrt/view.do?wrtSn=13154170&menuNo=200018) (한국저작권위원회, 1964, CC BY (저작자표시); 19.29–21.93초); [서울역 야경](https://gongu.copyright.or.kr/gongu/wrt/wrt/view.do?wrtSn=13070998&menuNo=200018) (한국정책방송원, 1958, 공공누리 제1유형 (출처표시); 21.93–25.22, 25.22–26.89초); [1973년 10월 26일  청주역](https://gongu.copyright.or.kr/gongu/wrt/wrt/view.do?wrtSn=13154382&menuNo=200018) (한국저작권위원회, 1973, CC BY (저작자표시); 26.89–29.33초)
+- **retro8**: [1952년 부산의 야외에서 진행 중인 초등학생 입학식 모습](https://gongu.copyright.or.kr/gongu/wrt/wrt/view.do?wrtSn=13153919&menuNo=200018) (한국저작권위원회, 1952, CC BY (저작자표시); 0–1.45, 1.45–3.92, 24.92–27.56초); [남대문 초등학교의 체조시간](https://gongu.copyright.or.kr/gongu/wrt/wrt/view.do?wrtSn=13070976&menuNo=200018) (한국정책방송원, 1958, 공공누리 제1유형 (출처표시); 3.92–6.51, 6.51–9.24초); [소풍나온 어린이들](https://gongu.copyright.or.kr/gongu/wrt/wrt/view.do?wrtSn=13070827&menuNo=200018) (한국정책방송원, 1954, 공공누리 제1유형 (출처표시); 9.24–11.58초); [1958년 초등학교 소풍의 점심시간](https://gongu.copyright.or.kr/gongu/wrt/wrt/view.do?wrtSn=13152627&menuNo=200018) (한국저작권위원회, 1958, CC BY (저작자표시); 11.58–13.9초); [62년도 실력고사](https://gongu.copyright.or.kr/gongu/wrt/wrt/view.do?wrtSn=13071202&menuNo=200018) (한국정책방송원, 1962, 공공누리 제1유형 (출처표시); 13.9–17.02초); [1952년 진해우체국과 여학생들](https://gongu.copyright.or.kr/gongu/wrt/wrt/view.do?wrtSn=13154322&menuNo=200018) (한국저작권위원회, 1952, CC BY (저작자표시); 17.02–20.09초); [1966년 부산 중구 옛 부산시청 앞을 지나는 여학생들](https://gongu.copyright.or.kr/gongu/wrt/wrt/view.do?wrtSn=13155113&menuNo=200018) (한국저작권위원회, 1966, CC BY (저작자표시); 20.09–23.41, 23.41–24.92초)
+- **retro9**: [지하철 2호선 개통](https://commons.wikimedia.org/wiki/File%3A%EC%A7%80%ED%95%98%EC%B2%A0_2%ED%98%B8%EC%84%A0_%EA%B0%9C%ED%86%B5_%281983.12.17%29.jpg) ([파일](https://upload.wikimedia.org/wikipedia/commons/2/20/%EC%A7%80%ED%95%98%EC%B2%A0_2%ED%98%B8%EC%84%A0_%EA%B0%9C%ED%86%B5_%281983.12.17%29.jpg); 서울역사박물관, 1983년, KOGL Type 1, 원 출처 서울역사아카이브; 0–1.6, 1.6–3.36, 3.36–6.05, 25.64–28.07초); [지하철 2호선 연장구간 시운전](https://commons.wikimedia.org/wiki/File%3A%EC%A7%80%ED%95%98%EC%B2%A0_2%ED%98%B8%EC%84%A0_%EC%97%B0%EC%9E%A5%EA%B5%AC%EA%B0%84_%EC%8B%9C%EC%9A%B4%EC%A0%84_%281983.03.19%29.jpg) ([파일](https://upload.wikimedia.org/wikipedia/commons/6/69/%EC%A7%80%ED%95%98%EC%B2%A0_2%ED%98%B8%EC%84%A0_%EC%97%B0%EC%9E%A5%EA%B5%AC%EA%B0%84_%EC%8B%9C%EC%9A%B4%EC%A0%84_%281983.03.19%29.jpg); 서울특별시, 1983년, KOGL Type 1, 원 출처 『세계는 서울로, 서울은 세계로: 1984-1988』(2019); 6.05–8.52초); [이대역](https://commons.wikimedia.org/wiki/File%3A%EC%9D%B4%EB%8C%80%EC%97%AD_%281984.04.15%29.jpg) ([파일](https://upload.wikimedia.org/wikipedia/commons/d/df/%EC%9D%B4%EB%8C%80%EC%97%AD_%281984.04.15%29.jpg); 서울역사박물관, 1984년, KOGL Type 1, 원 출처 서울역사아카이브; 8.52–10.71, 10.71–12.05초); [구로공단역](https://commons.wikimedia.org/wiki/File%3A%EA%B5%AC%EB%A1%9C%EA%B3%B5%EB%8B%A8%EC%97%AD_%281984.05.03%29.jpg) ([파일](https://upload.wikimedia.org/wikipedia/commons/c/c1/%EA%B5%AC%EB%A1%9C%EA%B3%B5%EB%8B%A8%EC%97%AD_%281984.05.03%29.jpg); 서울역사박물관, 1984년, KOGL Type 1, 원 출처 서울역사아카이브; 12.05–14.7초); [지하철 2호선 순환열차](https://commons.wikimedia.org/wiki/File%3A%EC%A7%80%ED%95%98%EC%B2%A0_2%ED%98%B8%EC%84%A0_%EC%88%9C%ED%99%98%EC%97%B4%EC%B0%A8_%281984.08.07%29.jpg) ([파일](https://upload.wikimedia.org/wikipedia/commons/3/3e/%EC%A7%80%ED%95%98%EC%B2%A0_2%ED%98%B8%EC%84%A0_%EC%88%9C%ED%99%98%EC%97%B4%EC%B0%A8_%281984.08.07%29.jpg); 서울역사박물관, 1984년, KOGL Type 1, 원 출처 서울역사아카이브; 14.7–18.39, 18.39–20.59, 24.12–25.64초); [지하철 역무 자동화](https://commons.wikimedia.org/wiki/File%3A%EC%A7%80%ED%95%98%EC%B2%A0_%EC%97%AD%EB%AC%B4_%EC%9E%90%EB%8F%99%ED%99%94_%281987.03.10%29.jpg) ([파일](https://upload.wikimedia.org/wikipedia/commons/f/fd/%EC%A7%80%ED%95%98%EC%B2%A0_%EC%97%AD%EB%AC%B4_%EC%9E%90%EB%8F%99%ED%99%94_%281987.03.10%29.jpg); 서울역사박물관, 1987년, KOGL Type 1, 원 출처 서울역사아카이브; 20.59–24.12초)
+- **retro10**: [서울대공원 개원.jpg](https://commons.wikimedia.org/wiki/File%3A%EC%84%9C%EC%9A%B8%EB%8C%80%EA%B3%B5%EC%9B%90_%EA%B0%9C%EC%9B%90.jpg) ([파일](https://upload.wikimedia.org/wikipedia/commons/e/e8/%EC%84%9C%EC%9A%B8%EB%8C%80%EA%B3%B5%EC%9B%90_%EA%B0%9C%EC%9B%90.jpg); 서울역사아카이브, 1984년, KOGL Type 1, 원 출처 『세계는 서울로, 서울은 세계로: 1984-1988』(2019); 0–1.6, 1.6–2.45, 2.45–4.88, 4.88–6.8, 6.8–9.33, 9.33–11.99, 11.99–14.28, 22.36–24.63, 24.63–27.07초); [Bunsikjeom in Seoul](https://commons.wikimedia.org/wiki/File%3ABunsikjeom_in_Seoul_%281989%29.jpg) ([파일](https://upload.wikimedia.org/wikipedia/commons/6/60/Bunsikjeom_in_Seoul_%281989%29.jpg); 후지모토 다쿠미, 1989년, KOGL Type 1, 원 출처 민속아카이브; 14.28–18.03, 18.03–20.87, 20.87–22.36초)
+- **retro11**: [Villages in Seongbuk-gu, 1981.jpg](https://commons.wikimedia.org/wiki/File%3AVillages_in_Seongbuk-gu%2C_1981.jpg) ([파일](https://upload.wikimedia.org/wikipedia/commons/9/9f/Villages_in_Seongbuk-gu%2C_1981.jpg); 후지모토 다쿠미, 1981년, KOGL Type 1, 원 출처 민속아카이브; 0–1.6, 1.6–3.33, 3.33–5.56, 5.56–7.45, 7.45–9.96, 23.09–25.15, 25.15–27.68초); [1989년 부산 남항에서 바라본 영도 영선동 산자락 주거 모습.jpg](https://commons.wikimedia.org/wiki/File%3A1989%EB%85%84_%EB%B6%80%EC%82%B0_%EB%82%A8%ED%95%AD%EC%97%90%EC%84%9C_%EB%B0%94%EB%9D%BC%EB%B3%B8_%EC%98%81%EB%8F%84_%EC%98%81%EC%84%A0%EB%8F%99_%EC%82%B0%EC%9E%90%EB%9D%BD_%EC%A3%BC%EA%B1%B0_%EB%AA%A8%EC%8A%B5.jpg) ([파일](https://upload.wikimedia.org/wikipedia/commons/9/98/1989%EB%85%84_%EB%B6%80%EC%82%B0_%EB%82%A8%ED%95%AD%EC%97%90%EC%84%9C_%EB%B0%94%EB%9D%BC%EB%B3%B8_%EC%98%81%EB%8F%84_%EC%98%81%EC%84%A0%EB%8F%99_%EC%82%B0%EC%9E%90%EB%9D%BD_%EC%A3%BC%EA%B1%B0_%EB%AA%A8%EC%8A%B5.jpg); 한국저작권위원회, 1989년, CC BY 4.0, 원 출처 공유마당; 9.96–13.44, 13.44–15.48, 15.48–17.58초); [남산에서 내려다 본 1984년 서울도심 전경.jpg](https://commons.wikimedia.org/wiki/File%3A%EB%82%A8%EC%82%B0%EC%97%90%EC%84%9C_%EB%82%B4%EB%A0%A4%EB%8B%A4_%EB%B3%B8_1984%EB%85%84_%EC%84%9C%EC%9A%B8%EB%8F%84%EC%8B%AC_%EC%A0%84%EA%B2%BD.jpg) ([파일](https://upload.wikimedia.org/wikipedia/commons/b/b1/%EB%82%A8%EC%82%B0%EC%97%90%EC%84%9C_%EB%82%B4%EB%A0%A4%EB%8B%A4_%EB%B3%B8_1984%EB%85%84_%EC%84%9C%EC%9A%B8%EB%8F%84%EC%8B%AC_%EC%A0%84%EA%B2%BD.jpg); 서울특별시청, 1984년, KOGL Type 1, 원 출처 서울역사아카이브 > 서울시정사진> 촬영연도별 > 1984-1988 > 남산에서 내려다 본 서울전경; 17.58–21.46, 21.46–23.09초)
+- **retro12**: [서울 광화문과 중앙청](https://commons.wikimedia.org/wiki/File%3A%EC%84%9C%EC%9A%B8_%EA%B4%91%ED%99%94%EB%AC%B8%EA%B3%BC_%EC%A4%91%EC%95%99%EC%B2%AD_%281980%EB%85%84_10%EC%9B%94_14%EC%9D%BC%29.jpg) ([파일](https://upload.wikimedia.org/wikipedia/commons/e/ea/%EC%84%9C%EC%9A%B8_%EA%B4%91%ED%99%94%EB%AC%B8%EA%B3%BC_%EC%A4%91%EC%95%99%EC%B2%AD_%281980%EB%85%84_10%EC%9B%94_14%EC%9D%BC%29.jpg); 한국저작권위원회, 1980년, CC BY 4.0, 원 출처 공유마당; 0–1.6, 1.6–2.92, 2.92–4.67, 26.91–29.63초); [숭례문 일대](https://commons.wikimedia.org/wiki/File%3A%EC%88%AD%EB%A1%80%EB%AC%B8_%EC%9D%BC%EB%8C%80_%281984.10.15%29.jpg) ([파일](https://upload.wikimedia.org/wikipedia/commons/0/04/%EC%88%AD%EB%A1%80%EB%AC%B8_%EC%9D%BC%EB%8C%80_%281984.10.15%29.jpg); 서울역사박물관, 1984년, KOGL Type 1, 원 출처 서울역사아카이브; 4.67–8.18, 8.18–10.03초); [남대문 시장.jpg](https://commons.wikimedia.org/wiki/File%3A%EB%82%A8%EB%8C%80%EB%AC%B8_%EC%8B%9C%EC%9E%A5.jpg) ([파일](https://upload.wikimedia.org/wikipedia/commons/4/4a/%EB%82%A8%EB%8C%80%EB%AC%B8_%EC%8B%9C%EC%9E%A5.jpg); Seoul History Archive, 1983년, KOGL Type 1, 원 출처 https://museum.seoul.go.kr/archive/archiveNew/NR_archiveView.do?ctgryId=CTGRY766&type=B&upperNodeId=CTGRY770&fileSn=300&fileId=H-TRNS-97471-770; 10.03–13.59초); [Seoul Sangbong Bus Terminal 1985.JPG](https://commons.wikimedia.org/wiki/File%3ASeoul_Sangbong_Bus_Terminal_1985.JPG) ([파일](https://upload.wikimedia.org/wikipedia/commons/b/b9/Seoul_Sangbong_Bus_Terminal_1985.JPG); 서울특별시, 1985년, CC BY 3.0, 원 출처 http://photoarchives.seoul.go.kr/photo/view/70278?only=true; 13.6–16.66초); [1995년 부산 자갈치시장 수변.jpg](https://commons.wikimedia.org/wiki/File%3A1995%EB%85%84_%EB%B6%80%EC%82%B0_%EC%9E%90%EA%B0%88%EC%B9%98%EC%8B%9C%EC%9E%A5_%EC%88%98%EB%B3%80.jpg) ([파일](https://upload.wikimedia.org/wikipedia/commons/4/46/1995%EB%85%84_%EB%B6%80%EC%82%B0_%EC%9E%90%EA%B0%88%EC%B9%98%EC%8B%9C%EC%9E%A5_%EC%88%98%EB%B3%80.jpg); 한국저작권위원회, 1995년, CC BY 4.0, 원 출처 공유마당; 16.66–20.21, 20.21–22.25초); [Gwanghwamun in November 1993.jpg](https://commons.wikimedia.org/wiki/File%3AGwanghwamun_in_November_1993.jpg) ([파일](https://upload.wikimedia.org/wikipedia/commons/d/d4/Gwanghwamun_in_November_1993.jpg); 후지모토 다쿠미, 1993년, KOGL Type 1, 원 출처 민속아카이브; 22.25–24.91, 24.91–26.91초)
+
+### 사실과 출처
+
+`retro1`~`retro8`의 사실 문장은 앞 섹션 「그 시절 레트로 쇼츠」·「그 시절 레트로 쇼츠 2」의 "사실과 출처"를 그대로 따릅니다. v2에서 남은 사실 문장과 출처는 다음과 같습니다.
+
+| id | 남은 사실 문장 | 출처 |
+| --- | --- | --- |
+| `retro1` | 산업화로 놀이가 사라짐 | 국가기록원 「사진대한민국: 민속놀이」 |
+| `retro2` | 세탁기는 1970년대에 늘기 시작, 2002년 말 보급률 96% | 「가전제품」 |
+| `retro3` | 1956년 서울 자동차 5,335대 | 「자동차」 |
+| `retro4` | 1956년 서울 버스 810대, 1959년 첫 신호등, 지금 서울 시내버스 7,383대 | 「자동차」, 서울시 교통분야 누리집 |
+| `retro5` | 인터넷 장보기 | 「시장과 백화점」 |
+| `retro6` | 연도만 (사진 제목) | 공유마당 사진 제목 |
+| `retro7` | 2004년 KTX, 2024년 이용객 8천만 명 넘음 | e-나라지표, 국토교통부 |
+| `retro8` | 1950년대 4월 학기, 1962년부터 3월, 1996년 초등학교 | 「졸업」, 「초·중·고등학교」 |
+
+`retro9`~`retro12`의 사실 문장은 모두 각 사진의 공식 기록 설명에서 왔습니다(서울역사박물관 간행 사진집이 위키미디어 공용 파일 설명에 인용되어 있음). 사진에 보이지 않는 사연이나 가격은 넣지 않았습니다.
+
+- `retro9`:
+  - [「지하철 2호선 개통 (1983.12.17)」](https://commons.wikimedia.org/wiki/File:%EC%A7%80%ED%95%98%EC%B2%A0_2%ED%98%B8%EC%84%A0_%EA%B0%9C%ED%86%B5_(1983.12.17).jpg) — 『선진 수도로의 도약: 1979-1983』(서울역사박물관, 2018) 154쪽: "1983년 12월 지하철 2호선 중 교대역에서 서울대입구역 구간이 개통되었다." → "1983년 12월, 2호선 새 구간이 개통한 날".
+  - [「지하철 2호선 연장구간 시운전 (1983.03.19)」](https://commons.wikimedia.org/wiki/File:%EC%A7%80%ED%95%98%EC%B2%A0_2%ED%98%B8%EC%84%A0_%EC%97%B0%EC%9E%A5%EA%B5%AC%EA%B0%84_%EC%8B%9C%EC%9A%B4%EC%A0%84_(1983.03.19).jpg): "미개통 구간인 서울대입구역-홍대입구역을 … 시운전하는 모습" → "개통 전엔 시운전도 했죠".
+  - [「이대역 (1984.04.15)」](https://commons.wikimedia.org/wiki/File:%EC%9D%B4%EB%8C%80%EC%97%AD_(1984.04.15).jpg): "시운전 중인 지하철 2호선이 이대역을 지나고 있다."
+  - [「구로공단역 (1984.05.03)」](https://commons.wikimedia.org/wiki/File:%EA%B5%AC%EB%A1%9C%EA%B3%B5%EB%8B%A8%EC%97%AD_(1984.05.03).jpg): "현재 '구로디지털단지'역이 개통 당시에는 '구로공단'역으로 표기되어 있다."
+  - [「지하철 2호선 순환열차 (1984.08.07)」](https://commons.wikimedia.org/wiki/File:%EC%A7%80%ED%95%98%EC%B2%A0_2%ED%98%B8%EC%84%A0_%EC%88%9C%ED%99%98%EC%97%B4%EC%B0%A8_(1984.08.07).jpg) — 『세계는 서울로, 서울은 세계로: 1984-1988』(2019): "1984년 5월 22일 … 지하철 2호선 48.8km 전구간이 완전 개통되었다", "하루 230만 명을 수송" → "그해 5월 48.8킬로미터가 다 이어졌어요", "하루 230만 명이 지하철을 탔대요". 230만 명은 1·2호선 합계 수송 인원이라 "2호선만"이라고 말하지 않았습니다.
+  - [「지하철 역무 자동화 (1987.03.10)」](https://commons.wikimedia.org/wiki/File:%EC%A7%80%ED%95%98%EC%B2%A0_%EC%97%AD%EB%AC%B4_%EC%9E%90%EB%8F%99%ED%99%94_(1987.03.10).jpg): "1986년 4월부터 승차권 발매에서 집표에 이르는 지하철 역무의 자동화가 이루어짐에 따라 자동 개찰 장치를 이용하여" → "1986년부터는 표를 넣는 자동 개찰구".
+- `retro10`:
+  - [「서울대공원 개원」](https://commons.wikimedia.org/wiki/File:%EC%84%9C%EC%9A%B8%EB%8C%80%EA%B3%B5%EC%9B%90_%EA%B0%9C%EC%9B%90.jpg): "1984년 5월 서울대공원이 착공 5년 7개월 만에 개원하였다. (1984.05.01)" → "1984년 5월 1일 서울대공원이 문 연 날", "공사만 5년 7개월". 코끼리 얼굴을 단 열차는 사진에 보이는 그대로입니다.
+  - [「Bunsikjeom in Seoul (1989)」](https://commons.wikimedia.org/wiki/File:Bunsikjeom_in_Seoul_(1989).jpg): "서울에서 촬영한 튀김과 김밥, 만두 등을 판매하는 분식집." 국밥·김치찌개는 사진 속 간판 글자입니다.
+- `retro11`: 사진 설명의 연도·장소만 썼습니다.
+  - [「Villages in Seongbuk-gu, 1981」](https://commons.wikimedia.org/wiki/File:Villages_in_Seongbuk-gu,_1981.jpg): "서울 성북구에서 촬영한 마을의 가옥들"
+  - [「1989년 부산 남항에서 바라본 영도 영선동 산자락 주거 모습」](https://commons.wikimedia.org/wiki/File:1989%EB%85%84_%EB%B6%80%EC%82%B0_%EB%82%A8%ED%95%AD%EC%97%90%EC%84%9C_%EB%B0%94%EB%9D%BC%EB%B3%B8_%EC%98%81%EB%8F%84_%EC%98%81%EC%84%A0%EB%8F%99_%EC%82%B0%EC%9E%90%EB%9D%BD_%EC%A3%BC%EA%B1%B0_%EB%AA%A8%EC%8A%B5.jpg)
+  - [「남산에서 내려다 본 1984년 서울도심 전경」](https://commons.wikimedia.org/wiki/File:%EB%82%A8%EC%82%B0%EC%97%90%EC%84%9C_%EB%82%B4%EB%A0%A4%EB%8B%A4_%EB%B3%B8_1984%EB%85%84_%EC%84%9C%EC%9A%B8%EB%8F%84%EC%8B%AC_%EC%A0%84%EA%B2%BD.jpg)
+  - "지금은 엘리베이터로 집에 올라가지만"은 숫자나 특정 장소 없이 쓴 일반 대비 문장입니다.
+- `retro12`:
+  - [「서울 광화문과 중앙청 (1980년 10월 14일)」](https://commons.wikimedia.org/wiki/File:%EC%84%9C%EC%9A%B8_%EA%B4%91%ED%99%94%EB%AC%B8%EA%B3%BC_%EC%A4%91%EC%95%99%EC%B2%AD_(1980%EB%85%84_10%EC%9B%94_14%EC%9D%BC).jpg)
+  - [「숭례문 일대 (1984.10.15)」](https://commons.wikimedia.org/wiki/File:%EC%88%AD%EB%A1%80%EB%AC%B8_%EC%9D%BC%EB%8C%80_(1984.10.15).jpg): "오른쪽 상단에는 서울 플라자호텔, 서울시청, 프레스센터가 위치" → "시청과 호텔이 보이죠"(호텔 이름은 말하지 않음).
+  - [「남대문 시장」](https://commons.wikimedia.org/wiki/File:%EB%82%A8%EB%8C%80%EB%AC%B8_%EC%8B%9C%EC%9E%A5.jpg): "(1983.12.24)" → "1983년 연말 남대문시장".
+  - [「Seoul Sangbong Bus Terminal 1985」](https://commons.wikimedia.org/wiki/File:Seoul_Sangbong_Bus_Terminal_1985.JPG): "서울 상봉시외버스터미널이 준공", 1985-08-01 → "1985년엔 상봉터미널이 새로 지어졌어요".
+  - [「1995년 부산 자갈치시장 수변」](https://commons.wikimedia.org/wiki/File:1995%EB%85%84_%EB%B6%80%EC%82%B0_%EC%9E%90%EA%B0%88%EC%B9%98%EC%8B%9C%EC%9E%A5_%EC%88%98%EB%B3%80.jpg)
+  - [「Gwanghwamun in November 1993」](https://commons.wikimedia.org/wiki/File:Gwanghwamun_in_November_1993.jpg)
+  - 중앙청 철거 같은 정치·역사 평가는 넣지 않았습니다.
+
+### 업로드 문구
+
+모든 편은 실제 기록 사진과 사실 문장으로 만들었습니다. 창작(허구) 장면이 없어서 "창작" 표기는 필요 없습니다.
+
+설명란 공통 끝줄은 음악 크레딧입니다. 곡 이름은 편마다 다릅니다.
+
+> 음악: "곡 이름" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
+
+공통 고정 댓글 틀: "여러분은 이 시절 ○○, 어떤 기억이 있으세요? 그때 몇 살이었는지도 댓글로 알려 주세요 👇"
+
+**retro1** — 해 질 때까지 골목에서 놀던 그 시절, 지금은 상상도 못할 진짜 골목 놀이
+> 학교만 끝나면 다 골목으로! 1952년 진해·마산의 고무줄 뛰기, 마당의 널뛰기, 1968년 물방개 뽑기 장수, 1973년 서울 주택가 찻길 축구와 놀이터, 1978년 서울 한남동 골목의 아이들까지. 국가기록원은 산업화로 많은 놀이가 우리 곁에서 사라졌다고 적었습니다(「사진대한민국: 민속놀이」). 이 시절 골목 놀이, 기억나는 분?
+> 사진: 한국저작권위원회(공유마당, CC BY, 부경근대사료연구소 수집), 한국정책방송원(공유마당, 공공누리 제1유형) · 크기 조정·밝기 보정·부분 확대
+> 음악: "Heartwarming" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
+> #그시절 #골목놀이 #옛날사진 #추억 #shorts
+>
+> 고정 댓글: 고무줄, 널뛰기, 물방개 뽑기… 여러분 동네에선 뭐 하고 놀았어요? 👇
+
+**retro2** — 개울 돌 위에서 빨래 비비던 그 시절, 지금은 상상도 못할 진짜 빨래터 풍경
+> 세탁기가 없던 시절, 빨래는 개울에서 했습니다. 1952년 부산 보수천, 아이를 업은 채 빨래하는 엄마, 마을 공동 빨래터, 자갈 위에 널어 말린 빨래, 1968년 서울 골목에서 발로 밟아 빨던 할머니까지. 국가기록원에 따르면 세탁기 보급은 1970년대에 들어서야 높아지기 시작했고, 2002년 말 보급률은 96%였습니다(「사진대한민국: 가전제품」). 이 시절 빨래터, 기억나는 분?
+> 사진: 한국저작권위원회(공유마당, CC BY, 부경근대사료연구소 수집) · 크기 조정·부분 확대
+> 음악: "Gymnopedie No 1" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
+> #그시절 #빨래터 #옛날사진 #추억 #shorts
+>
+> 고정 댓글: 개울 빨래, 방망이 소리 기억나는 분? 집에 세탁기 처음 들어온 날도 알려 주세요 👇
+
+**retro3** — 세간살이 통째로 지게에 지고 나르던 그 시절, 다시는 볼 수 없는 진짜 지게꾼
+> 1960년 수원, 등에 진 건 세간살이 통째로! 1953년 부산의 가구 지게 행상, 멸치·과일 장수, 밭에서 캔 작물과 땔감, 아이용 작은 지게까지. 1956년 서울의 자동차는 5,335대뿐이었습니다(국가기록원 「사진대한민국: 자동차」). 지금은 클릭 한 번이면 문 앞까지 오는 택배. 이 시절 지게, 기억나는 분?
+> 사진: 한국저작권위원회(공유마당, CC BY, 부경근대사료연구소 수집) · 크기 조정·부분 확대
+> 음악: "Gymnopedie No 2" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
+> #그시절 #지게 #옛날사진 #추억 #shorts
+>
+> 고정 댓글: 할아버지 댁에 지게 있었던 분? 직접 져 본 분도 손! 👇
+
+**retro4** — 한복에 양산 쓰고 버스 기다리던 그 시절, 지금은 상상도 못할 진짜 정류장
+> 1968년 종로, 한복에 양산 쓰고 버스를 기다리던 풍경. 1954년 중앙청 앞 시내버스, 1952년 대구 버스, 독립문 옆 정류장의 아이들까지. 1956년 서울의 버스는 810대, 1959년엔 서울에 첫 교통신호등이 생겼습니다(국가기록원). 지금 서울 시내버스는 7,383대(서울시, 2026년 1월 기준). 이 시절 버스 정류장, 기억나는 분?
+> 사진: 한국저작권위원회(공유마당, CC BY, 부경근대사료연구소 수집) · 크기 조정·밝기 보정·부분 확대
+> 음악: "Gymnopedie No 1" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
+> #그시절 #버스정류장 #옛날서울 #추억 #shorts
+>
+> 고정 댓글: 처음 타 본 시내버스, 기억나세요? 그때 버스비 얼마였는지도 알려 주세요 👇
+
+**retro5** — 엄마 손 잡고 시장 따라가던 그 시절, 요즘 마트가 못 주는 진짜 장보기 풍경
+> 엄마 손 잡고 따라가던 시장, 기억나세요? 1952년 부산 부평시장의 고춧가루 노점과 과일 수레, 금붕어 장수, 1967년 대구 서문시장의 갈치, 1968년 자갈치시장과 남대문시장, 1978년 서울 한남동 시장까지. 지금은 손으로 만져 보지도 않고 인터넷으로 장을 보죠(국가기록원 「사진대한민국: 시장과 백화점」). 이 시절 시장 구경, 기억나는 분?
+> 사진: 한국저작권위원회(공유마당, CC BY, 부경근대사료연구소 수집) · 크기 조정·부분 확대
+> 음악: "Heartwarming" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
+> #그시절 #재래시장 #옛날사진 #추억 #shorts
+>
+> 고정 댓글: 시장 따라가면 꼭 사 달라고 조르던 거 있었죠? 뭐였어요? 👇
+
+**retro6** — 뻥 소리에 귀 막고 기다리던 그 시절, 지금은 사라진 진짜 길거리 간식
+> "뻥!" 소리에 귀부터 막던 뻥튀기, 기억나세요? 1952년 부산의 뻥튀기 장수와 옥수수 모양 풀빵, 1953년 대구의 번데기 노점, 1952년 광주 리어카 빙수, 1968년 부산 아이스케익 뽑기, 1978년 서울 엿장수 엿판까지. 이 시절 길거리 간식, 기억나는 분?
+> 사진: 한국저작권위원회(공유마당, CC BY, 부경근대사료연구소 수집) · 크기 조정·부분 확대
+> 음악: "Heartwarming" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
+> #그시절 #추억의간식 #뻥튀기 #옛날사진 #shorts
+>
+> 고정 댓글: 뻥튀기, 번데기, 엿… 여러분의 최애 길거리 간식은? 👇
+
+**retro7** — 연기 뿜는 증기기관차 타던 그 시절, 다시는 볼 수 없는 진짜 기차역 풍경
+> 연기 뿜으며 달리던 증기기관차, 기억나세요? 1957년 함백선 열차와 영월의 기와지붕 새 역, 1950년대 서울역과 대구역, 부산 철도공작창의 증기기관차, 1957년 서울역 디젤기관차 시운전, 1964년 열차에서 본 한강대교까지. 지금은 2004년 4월부터 KTX가 달리고, 2024년 한 해 KTX 이용객은 8,118만 명이었습니다(e-나라지표, 국토교통부). 이 시절 기차역, 기억나는 분?
+> 사진: 한국저작권위원회(공유마당, CC BY, 부경근대사료연구소 수집), 한국정책방송원(공유마당, 공공누리 제1유형) · 크기 조정·부분 확대
+> 음악: "Gymnopedie No 1" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
+> #그시절 #기차역 #증기기관차 #옛날사진 #shorts
+>
+> 고정 댓글: 기차 타고 처음 간 곳 어디였어요? 삶은 달걀 까먹던 기억도 👇
+
+**retro8** — 땅바닥에 앉아 입학식 하던 그 시절, 지금은 상상도 못할 진짜 국민학교
+> 의자도 없이 땅바닥에 앉아 치른 1952년 입학식, 1958년 체조 시간, 소풍날의 줄 맞춘 행렬과 점심시간, 1962년 실력고사까지. 1950년대엔 새 학년이 4월에 시작했고 1962년부터 3월로 바뀌었으며, 1941년부터 쓰던 "국민학교"라는 이름은 1996년 "초등학교"가 됐습니다(국가기록원 「사진대한민국: 졸업」). 이 시절 국민학교, 기억나는 분?
+> 사진: 한국저작권위원회(공유마당, CC BY, 부경근대사료연구소 수집), 한국정책방송원(공유마당, 공공누리 제1유형) · 크기 조정·부분 확대
+> 음악: "Gymnopedie No 2" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
+> #그시절 #국민학교 #입학식 #추억 #shorts
+>
+> 고정 댓글: 국민학교 졸업생 손! 몇 회 졸업이세요? 👇
+
+**retro9** — 꽃 단 열차로 2호선이 개통하던 80년대, 지금은 상상도 못할 진짜 지하철 풍경
+> 1983년 12월, 꽃 장식을 단 2호선 열차가 새 구간 개통을 알렸습니다. 개통 전 시운전, 1984년 초록 타일 터널의 이대역, 지금은 구로디지털단지역이 된 구로공단역까지. 1984년 5월 22일 2호선 48.8km가 완전 개통됐고, 그 무렵 서울 지하철은 하루 230만 명을 실어 날랐습니다. 1986년 4월부터는 표를 넣는 자동 개찰구가 생겼죠(서울역사박물관 『선진 수도로의 도약: 1979-1983』, 『세계는 서울로, 서울은 세계로: 1984-1988』). 이 시절 2호선, 기억나는 분?
+> 사진: 서울역사박물관·서울특별시(서울역사아카이브, 공공누리 제1유형, Wikimedia Commons) · 크기 조정·색 공간 변환·부분 확대
+> 음악: "Heartwarming" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
+> #그시절 #80년대 #지하철2호선 #출근길 #shorts
+>
+> 고정 댓글: 종이 승차권 넣고 개찰구 통과하던 기억 있으세요? 처음 탄 지하철 노선은? 👇
+
+**retro10** — 코끼리 열차 보려고 인파가 몰리던 80년대, 다시는 볼 수 없는 진짜 나들이 풍경
+> 1984년 5월 1일, 착공 5년 7개월 만에 서울대공원이 문을 열던 날의 인파(서울역사박물관 『세계는 서울로, 서울은 세계로: 1984-1988』). 코끼리 얼굴을 단 열차, 모자 쓴 꼬마와 엄마 아빠, 그리고 돌아오는 길 1989년 서울 분식집의 튀김·김밥·만두까지. 이 시절 나들이, 기억나는 분?
+> 사진: 서울역사박물관(서울역사아카이브, 공공누리 제1유형), 후지모토 다쿠미 기증(국립민속박물관 민속아카이브, 공공누리 제1유형), Wikimedia Commons · 크기 조정·색 공간 변환·부분 확대
+> 음악: "Heartwarming" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
+> #그시절 #80년대 #서울대공원 #나들이 #shorts
+>
+> 고정 댓글: 어릴 때 처음 간 동물원·놀이공원 어디였어요? 그날 먹은 것도 알려 주세요 👇
+
+**retro11** — 산비탈 끝까지 집이 빼곡하던 80년대, 지금은 상상도 못할 진짜 산동네 풍경
+> 1981년 서울 성북구, 산이 집으로 덮였던 풍경. 지붕 위에 지붕, 집 위에 또 집. 1989년 부산 영도의 산비탈 마을과 항구, 그리고 1984년 남산에서 내려다본 서울 도심까지. 이 시절 산동네, 기억나는 분?
+> 사진: 후지모토 다쿠미 기증(국립민속박물관 민속아카이브, 공공누리 제1유형), 서울특별시(서울역사아카이브, 공공누리 제1유형), 한국저작권위원회(공유마당, CC BY 4.0, https://creativecommons.org/licenses/by/4.0/), Wikimedia Commons · 크기 조정·색 공간 변환·부분 확대
+> 음악: "Gymnopedie No 1" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
+> #그시절 #80년대 #산동네 #옛날사진 #shorts
+>
+> 고정 댓글: 언덕 위 동네 살아 본 분? 계단 몇 개였는지 기억나세요? 👇
+
+**retro12** — 광화문 뒤에 중앙청이 서 있던 80년대, 다시는 볼 수 없는 진짜 시내 풍경
+> 1980년 광화문과 그 뒤의 중앙청, 1984년 숭례문 일대와 시청 쪽 빌딩들, 1983년 연말 남대문시장의 털옷 가게, 1985년 새로 지어진 상봉시외버스터미널, 1995년 부산 자갈치시장 물가의 좌판, 1993년 한산한 광화문 앞까지. 이 시절 시내 풍경, 기억나는 분?
+> 사진: 한국저작권위원회(공유마당, CC BY 4.0, https://creativecommons.org/licenses/by/4.0/), 서울역사박물관(서울역사아카이브, 공공누리 제1유형), 서울특별시(서울사진아카이브, CC BY 3.0, https://creativecommons.org/licenses/by/3.0/), 후지모토 다쿠미 기증(국립민속박물관 민속아카이브, 공공누리 제1유형), Wikimedia Commons · 크기 조정·색 공간 변환·부분 확대
+> 음악: "Gymnopedie No 2" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
+> #그시절 #80년대 #옛날서울 #광화문 #shorts
+>
+> 고정 댓글: 80~90년대 시내 나가면 꼭 들르던 곳 있었죠? 어디였어요? 👇
+
+## 역대급 랭킹 TOP5 v2 (벤치마크, `politics/top1`~`top12`)
+
+`research/benchmark-footage.md` §3와 `research/benchmark-targets-footage.json`의 `ranking_top5`(약 25초, 5개 × 4.5–5초)에 맞춰 **top1–8을 같은 영상으로 다시 편집**하고, 같은 틀로 **top9–12를 새로 만든** 열두 편입니다. 내레이션 없음, 음악 + 예고형 자막. 순위는 편집자 선정이고 공식 순위가 아닙니다. 벤치마크 채널(랭킹김·랭킹공·랭킹각)에서는 **구조만** 따랐고, 그 채널의 영상은 한 프레임도 쓰지 않았습니다.
+
+| id | 화면 제목 (1줄 / 2줄 / 3줄) | 길이 | 5위 → 2위 (1위는 끝까지 "???") | 음악 |
+| --- | --- | --- | --- | --- |
+| `top1` | 역대급 백룸 같은 공간들 / 랭킹 TOP5 / (몇 번이 제일 무서움?) | 25.6초 | 수영장 · 주차장 · 지하통로 · 쇼핑몰 (1위: 불 꺼진 병원 복도) | Dark Fog |
+| `top2` | 역대급 만족스러운 순간 / 랭킹 TOP5 / (1번 제목 추천좀) | 25.6초 | 슬라임 · 케이크 · 연필심 · 물감 (1위: 키네틱 샌드 썰기) | Monkeys Spinning Monkeys |
+| `top3` | 역대급 신기한 자연현상 / 랭킹 TOP5 / (몇 번이 제일 신기?ㄷㄷ) | 25.6초 | 간헐천 · 심해호수 · 오로라 · 구름바다 (1위: 킬라우에아 용암 분수) | Floating Cities |
+| `top4` | 우주에서 찍힌 역대급 장면 / 랭킹 TOP5 / (1번 제목 추천좀) | 25.6초 | 번개 · 오로라 · 달그림자 · 혜성 (1위: 달 뒤로 지는 지구) | Lightless Dawn |
+| `top5` | 역대급 거대한 폭포 / 랭킹 TOP5 / (몇 번이 제일 웅장?) | 25.6초 | 급류 · 나라다 · 디어크릭 · 로어폭포 (1위: 요세미티 폭포) | Heroic Age |
+| `top6` | 역대급 소름 돋는 바닷속 / 랭킹 TOP5 / (몇 번이 제일 소름?) | 25.6초 | 해파리 · 가스강 · 난파선 · 굴뚝 (1위: 브림스톤 해저 분화) | Gathering Darkness |
+| `top7` | 역대급 무서운 날씨 / 랭킹 TOP5 / (몇 번이 제일 무서움?) | 25.6초 | 슈퍼셀 · 홍수 · 태풍눈 · 우주태풍 (1위: EF3 토네이도) | Movement Proposition |
+| `top8` | 역대급 이상한 지구 장소 / 랭킹 TOP5 / (몇 번이 제일 이상?) | 25.6초 | 균형바위 · 소금사막 · 용암호수 · 떠도는돌 (1위: 그랜드 프리즈매틱 온천) | Dreamer |
+| `top9` (새) | 역대급 시원한 얼음 깨기 / 랭킹 TOP5 / (1번 제목 추천좀) | 25.6초 | 얼음낚시 · 바이칼 · 얼음투척 · 알래스카 (1위: 그린란드 빙벽 붕괴) | Exhilarate |
+| `top10` (새) | 역대급 시원한 파도 / 랭킹 TOP5 / (몇 번이 제일 시원함?) | 25.6초 | LA 파도 · 방파제 · 분수구멍 · 폭풍철탑 (1위: 바위 위 돌집을 덮친 파도) | Heroic Age |
+| `top11` (새) | 역대급 화산·용암 모먼트 / 랭킹 TOP5 / (몇 번이 제일 무서움?) | 25.6초 | 용암채취 · 숲 삼킴 · 도로침공 · 바다폭발 (1위: 용암호 낙석 폭발) | Gathering Darkness |
+| `top12` (새) | 역대급 물에 던진 돌 / 랭킹 TOP5 / (몇 번이 제일 시원함?) | 25.6초 | 거울호수 · 진흙물 · 계곡돌 · 물왕관 (1위: 바윗덩이 물기둥) | Hustle |
+
+```bash
+npm i && ./fetch.sh
+python3 media/fetch_top.py                                  # top1~top8 원본을 media/top*/의 JSON대로 다시 받음(ISS 타임랩스는 원본 사진으로 다시 만듦)
+                                                            # top9~top12 원본: media/top9~12/*.json의 page_url·file_url·cut_from_original_seconds 구간(1080p, 30fps)
+python3 politics/top_v2.py top9                             # politics/top9/spec.json → politics/top9/edit.json (시간 계산)
+MEDIA=$PWD/media python3 politics/prep_split.py top9
+./render.sh top9 final/top9.mp4                             # 30MB가 넘으면 영상만 CRF 23으로 다시 압축(오디오 복사): top11만 해당
+python3 qa_review.py top9                                   # 열두 편 모두 FAIL 0, WARN 0
+```
+
+### 새 템플릿 옵션 (모두 새 옵션이라, 이 옵션이 없는 쇼츠는 전과 똑같이 렌더됩니다)
+
+- **`src/lib/RankV2.tsx`** (새 파일)
+  - `RankBand`: 3줄 띠, 높이 420px. 1줄 `title[0]`은 `rank2.color`색(기본 분홍) 86px, 2줄 `title[1]`("랭킹 TOP5")은 흰색 150px, 3줄 `rank2.sub`는 46px.
+  - `RankList`: 영상 위 왼쪽(x 22, y 452~)의 순위표. 1 빨강 `#FF3B3B`, 2 주황 `#FF9A1F`, 3 노랑 `#FFE14D`, 4–5 흰색. 이름은 그 순위가 시작될 때 채워집니다. `rank2.hide`(기본 `[1]`)의 순위는 **끝까지 "???"**입니다. 지금 순위는 그 색 테두리 + 어두운 바탕으로 켜지고, 시작할 때 0.35초 튀어 오릅니다(0초 썸네일 프레임에서는 튀지 않음).
+  - `BoxCaptions`: 검정 상자 위 흰 글씨 자막(최대 76px, `captionY` 기본 1640). **0초에 시작하는 자막은 등장 애니메이션 없이 첫 프레임부터 떠 있습니다**(썸네일).
+  - `TALL`: 새 화면 틀 `"frame": "tall"` = 띠 아래 전부(y 420~1920, 1080×1500). 아래 23%의 빈 회색 칸이 없어집니다.
+- **`src/ClipShort.tsx`** (작은 연결만): `ShortData.rank2`, 프레임 종류 `"tall"`, 그리고 `rank2`가 있을 때만 `Title`→`RankBand`, `Ranks`→`RankList`, `Captions`→`BoxCaptions`로 바꾸는 세 줄.
+- **`politics/prep_split.py`** (한 단어): edit.json의 `rank2`를 데이터로 넘깁니다. 설명은 파일 머리말에 있습니다.
+- **`politics/top_v2.py`** (새 파일): `politics/<id>/spec.json`(제목·3줄·색·음악·순위별 라벨·자막·샷)으로 edit.json을 씁니다. 5위→1위로 샷을 이어 붙이고, 샷마다 자막 1장(첫 자막 0초), 순위가 바뀔 때 `whoosh`, `"tail": 0`(1위가 끝나면 바로 5위로 루프), `"flash": false`, `"credit": ""`(출처 배지는 화면에서 빼고 설명란으로), 원본 소리 끔, `sources`에 쓴 구간을 채웁니다.
+- **`media/fetch_top.py`** (새 파일): top1–8 원본 40개를 각 JSON대로 다시 만듭니다(Flickr 링크는 페이지의 secret으로, Commons 429는 재시도).
+- 회귀 확인: 손대지 않은 `doodle1`(프레임 200·1000)과 **예전 top5 edit.json**(밴드 + 아래 순위표 경로, 프레임 0·150·600·1050)을 바뀌기 전·후 코드로 렌더해 픽셀 비교 → 모두 **차이 없음**.
+
+edit.json 예:
+```json
+"titleStyle": "band", "title": ["역대급 시원한 얼음 깨기", "랭킹 TOP5"], "credit": "", "flash": false, "tail": 0, "captionY": 1640,
+"rank2": {"sub": "(1번 제목 추천좀)", "color": "#FF5FA2", "hide": [1]},
+"segments": [{"src": "top9/x.mp4", "in": 1.0, "out": 3.3, "frame": "tall", "single": [0.62, 0.5, 1.0], "audio": 0, "rank": {"n": 5, "label": "얼음낚시"}}, …],
+"lines": [{"who": 0, "t": 0.0, "tend": 2.3, "ko": "얼음에 구멍 뚫는데.."}, …]
+```
+
+### 벤치마크 점수표
+
+목표는 `benchmark-targets-footage.json`의 `ranking_top5`: 길이 25초 · 훅 끝 0초(첫 자막이 0초에 떠 있음) · 첫 전환 ≤2.5초 · 평균 샷 2.4초 · 최장 샷 3.5초 · 음절/초 0(내레이션 없음) · 자막 7장 · 제목 줄당 [10, 7, 12]자.
+우리 값: 길이·LUFS·용량은 렌더본(ffprobe, `qa_review.py`), 샷은 편집 목록(edit.json 세그먼트 = 실제 컷), 괄호 안은 `qa_review.py` 장면 감지 값(영상 속 움직임까지 컷으로 셈).
+
+| id | 길이 | 첫 자막 | 첫 전환 | 평균 샷 (감지) | 최장 샷 | 음절/초 | 자막 장 수 (최장) | 제목 줄당 글자 | 결과 |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| top1 | 25.6 | 0.0초 | 2.3 | 2.33 (2.3) | 2.8 | 0 | 10 (10자) | 10 / 6 / 8 | FAIL 0 WARN 0, 17.5MB |
+| top2 | 25.6 | 0.0초 | 2.3 | 2.33 (2.1) | 2.8 | 0 | 10 (9자) | 10 / 6 / 7 | FAIL 0 WARN 0, 18.1MB |
+| top3 | 25.6 | 0.0초 | 2.3 | 2.33 (2.1) | 2.8 | 0 | 10 (10자) | 10 / 6 / 7 | FAIL 0 WARN 0, 20.1MB |
+| top4 | 25.6 | 0.0초 | 2.3 | 2.33 (2.3) | 2.8 | 0 | 10 (9자) | 11 / 6 / 7 | FAIL 0 WARN 0, 25.6MB |
+| top5 | 25.6 | 0.0초 | 2.3 | 2.33 (1.8) | 2.8 | 0 | 10 (10자) | 8 / 6 / 7 | FAIL 0 WARN 0, 28.2MB |
+| top6 | 25.6 | 0.0초 | 2.3 | 2.33 (2.3) | 2.8 | 0 | 10 (10자) | 10 / 6 / 7 | FAIL 0 WARN 0, 27.5MB |
+| top7 | 25.6 | 0.0초 | 2.3 | 2.33 (2.3) | 2.8 | 0 | 10 (10자) | 8 / 6 / 8 | FAIL 0 WARN 0, 18.9MB |
+| top8 | 25.6 | 0.0초 | 2.3 | 2.33 (2.3) | 2.8 | 0 | 10 (9자) | 10 / 6 / 7 | FAIL 0 WARN 0, 22.6MB |
+| top9 | 25.6 | 0.0초 | 2.3 (감지 0.3) | 2.33 (1.8) | 2.8 | 0 | 10 (8자) | 10 / 6 / 7 | FAIL 0 WARN 0, 14.0MB |
+| top10 | 25.6 | 0.0초 | 2.3 | 2.33 (2.3) | 2.8 | 0 | 10 (8자) | 8 / 6 / 8 | FAIL 0 WARN 0, 12.9MB |
+| top11 | 25.6 | 0.0초 | 2.3 | 2.33 (1.7) | 2.8 | 0 | 10 (8자) | 10 / 6 / 8 | FAIL 0 WARN 0, 15.9MB |
+| top12 | 25.6 | 0.0초 | 2.3 | 2.33 (2.3) | 2.8 | 0 | 10 (8자) | 8 / 6 / 8 | FAIL 0 WARN 0, 17.7MB |
+
+이전 판(top1–8)과 비교: 34.6–37.4초 → 25.6초, 항목당 약 7초 → 5.1초(5위 2.3+2.8, 4–2위 2.5+2.6, 1위 1.8+1.7+1.7), 첫 전환 3.4 → 2.3초, 최장 샷 4.0 → 2.8초.
+
+**빗나간 것과 이유**
+- **길이 25.6초(목표 25초)**: `qa_review.py`의 길이 통과선이 25초 이상이라 0.6초 여유를 두었습니다(벤치마크 범위 22–25초, 레시피 23–26초 안).
+- **자막 10장(목표 7장)**: 레시피의 "항목당 1–2장"을 5개 항목 모두에 2장씩 적용했습니다(설정 1장 + 결과 1장). 7은 벤치마크 평균 추정값입니다. 1위의 세 번째 샷에는 새 자막을 넣지 않고 두 번째 자막을 이어 띄웁니다.
+- **제목 2줄 6자(목표 7자)**: 우리는 TOP5라 "랭킹 TOP5"(벤치마크는 "랭킹 TOP7"과 같은 형식, 숫자만 다름). 3줄은 7–8자로 목표 12자보다 짧습니다. 벤치마크의 "(다들 몇 번이 제일 웃김?ㅋㅋㅋ)"처럼 길게 쓰면 46px에서 너무 작아져서입니다.
+- **감지된 평균 샷이 짧은 편(top5·9·11 1.7–1.8초)**: 편집 컷은 똑같이 11개이고, 장면 감지가 화면 속 큰 움직임(물보라, 폭발 섬광, 얼음 구멍 드릴)을 컷으로 더 센 것입니다. top9의 "첫 전환 0.3초"도 드릴이 돌며 화면이 크게 변한 것을 감지한 값이고, 실제 첫 컷은 2.3초입니다.
+- **피사체**: 벤치마크는 사람·동물의 반응이 중심입니다. 우리는 얼굴 금지 규칙 때문에 손·뒷모습·실루엣만 썼습니다(top2·9·11·12). top1·3–8은 기존 영상이라 "결과가 있는 순간"이 약한 장면(정지에 가까운 풍경)이 남아 있어, 자막을 예고형으로 바꿔 보완했습니다.
+
+### 영상과 라이선스 (원본 페이지·파일 주소·크레딧·쓴 구간: `media/top*/*.json`의 `used_in`(`"version": "v2"`), 각 `edit.json`의 `sources.used_seconds`)
+
+- **top1–8**: 영상과 라이선스는 위의 「역대급 랭킹 TOP5 쇼츠」·「역대급 랭킹 TOP5 쇼츠 2」 절과 같습니다(같은 클립, 쓴 구간만 바뀜). v2에서는 화면 출처 배지를 없애고 크레딧을 모두 설명란(아래 업로드 문구)에 넣었습니다.
+- **top9** (얼음 깨기)
+  - Pexels License (각 영상 페이지 "Free" → https://www.pexels.com/license/ 확인): [6831069](https://www.pexels.com/video/man-opening-a-hole-in-the-ice-6831069/) Tima Miroshnichenko (얼음 드릴, 1.0–3.3·7.2–10.0초) · [4434241](https://www.pexels.com/video/ice-breaking-4434241/) Yaroslav Shuraev (바이칼 얼음 찍기, 0.4–2.9·3.2–5.8초) · [7128251](https://www.pexels.com/video/man-breaking-ice-7128251/) Nadezhda Moryak (역광 실루엣이 얼음판을 던짐, 0.3–2.8·2.7–5.3초) · [28988888](https://www.pexels.com/video/dramatic-arctic-iceberg-collapse-in-greenland-28988888/) Cristian Manieri (그린란드 빙벽 붕괴, 6.0–7.8·8.2–9.9·10.2–11.9초)
+  - **CC BY 2.0**: [Margerie Glacier calving video](https://commons.wikimedia.org/wiki/File:Margerie_Glacier_calving_video.webm) gails_pictures (Flickr, Wikimedia Commons 경유; 파일은 Commons가 인용한 Flickr 원본), 0.0–2.5·2.4–5.0초, 잘라내고 확대함
+  - (쓰기 쉬운 미국 기관 빙하 영상은 해설이 섞인 480p 이하 프로그램뿐이라 쓰지 않았습니다. Pixabay의 빙하 붕괴 결과는 AI 생성물이라 뺐습니다.)
+- **top10** (파도) — 모두 Pexels License: [20363746](https://www.pexels.com/video/massive-ocean-wave-on-california-los-angeles-coast-beach-20363746/) Joshua Woroniecki (3.6–5.9·7.8–10.6초) · [15876185](https://www.pexels.com/video/a-large-wave-crashes-into-the-rocks-at-the-end-of-a-pier-15876185/) Guidance Pillar Production (0.4–2.9·3.0–5.6초) · [32379563](https://www.pexels.com/video/dramatic-coastal-blowholes-and-ocean-waves-32379563/) FUNESMA79 (2.0–4.5·9.3–11.9초; 원본 1–7초 왼쪽 끝의 아주 작은 두 사람은 크롭 밖) · [34490216](https://www.pexels.com/video/dramatic-storm-waves-crashing-on-coastal-tower-34490216/) AP Vibes (0.5–3.0·3.0–5.6초) · [32091837](https://www.pexels.com/video/dramatic-ocean-waves-crashing-on-rocks-32091837/) pippu (1.8–3.6·4.5–6.2·8.3–10.0초)
+- **top11** (화산·용암) — 모두 **미국 지질조사국(USGS) Hawaiian Volcano Observatory, 퍼블릭 도메인**(각 페이지 "Sources/Usage: Public Domain."): [용암 채취 2023.6.22](https://www.usgs.gov/media/videos/lava-sampling-halemaumau-june-22-2023) (4.8–7.1·10.2–13.0초; 주황 작업복의 뒷모습·다리·장갑 낀 손만, 얼굴 없음) · [식생을 태우는 용암 끝 2016.6.29](https://www.usgs.gov/media/videos/flow-front-moving-through-vegetation) (2.0–4.5·9.0–11.6초) · [카우필리 거리의 용암 2018.5.24](https://www.usgs.gov/media/videos/kilauea-volcano-pahoehoe-flows-kaupili-street) (0.0–2.5·6.0–8.6초) · [푸히오칼라이키니 해안 폭발 2010.9.28](https://www.usgs.gov/media/videos/successive-littoral-explosions-puhi-o-kalaikini-ocean-entry) (0.0–2.5·3.8–6.4초) · [할레마우마우 대형 낙석 2016.1.8](https://www.usgs.gov/media/videos/large-rockfall-halemaumau-crater) (0.0–1.8·2.0–3.7·5.0–6.7초). 모서리의 USGS 표시와 웹캠 시각 표시는 크롭 밖으로 뺐습니다.
+- **top12** (물에 던진 돌) — 모두 Pexels License: [12279967](https://www.pexels.com/video/stones-falling-into-a-lake-in-a-mountain-landscape-12279967/) Marsel Sharipov (2.6–4.9·4.9–7.7초) · [34666821](https://www.pexels.com/video/rippling-water-surface-with-stone-splash-34666821/) Jack And Matt Photography (0.3–2.8·2.8–5.4초) · [4174020](https://www.pexels.com/video/slow-motion-of-rocks-falling-to-the-water-4174020/) K (@kelly) (1.6–4.1·6.3–8.9초) · [13723991](https://www.pexels.com/video/stone-falling-into-lake-13723991/) Marsel Sharipov (2.45–4.95·4.0–6.6초, 두 번째 샷은 확대 다시보기) · [4510319](https://www.pexels.com/video/throwing-big-rock-on-water-4510319/) Martina Tomšič (1.4–3.2·3.2–4.9·6.4–8.1초)
+- 예비 클립(편집에는 안 씀)도 같은 형식의 JSON이 `media/top9~12/`에 있습니다.
+- 음악: "Dark Fog", "Monkeys Spinning Monkeys", "Floating Cities", "Lightless Dawn", "Heroic Age", "Gathering Darkness", "Movement Proposition", "Dreamer", "Exhilarate", "Hustle" Kevin MacLeod (incompetech.com), CC BY 4.0
+
+### 자막 속 사실과 출처
+
+- top1–8: 위 두 절의 「자막 속 사실과 출처」와 같습니다(91m 간헐천, 바닷물보다 최대 8배 짠 브라인 풀, 400m 이상(추정) 용암 분수, 23m·51m·53m·94m·740m 폭포, 수심 700m 해파리, 19세기 범선, 500년 만의 홍수, 시속 233km 밀턴, 시속 257km(추정) EF3 토네이도, 39m 균형 바위, 해수면보다 86m 낮은 배드워터). v2에서 새로 넣은 숫자는 없습니다. top4 3위 "달 그림자였음??"은 NASA 페이지의 2012.5.20 금환일식 설명 그대로입니다.
+- top9 2위 "높이 61m 얼음벽": 마저리 빙하는 "폭 약 0.85마일, 얼음 벽 높이는 수면 위 약 200피트" — [NPS Glacier Bay](https://www.nps.gov/glba/learn/nature/overview-of-selected-glaciers-in-glacier-bay.htm) (200피트 ≈ 61m). 나머지 top9 자막에는 숫자가 없습니다(그린란드 영상은 Pexels 설명 "Greenland iceberg"만 있음).
+- top11 4위 "나무가 그대로 불탐": "The leading tip of the flow is burning vegetation in a kīpuka." — [USGS](https://www.usgs.gov/media/videos/flow-front-moving-through-vegetation)
+- top11 3위 "아스팔트까지 불탐": "Burning asphalt created the black smoke seen in the video…" — [USGS](https://www.usgs.gov/media/videos/kilauea-volcano-pahoehoe-flows-kaupili-street)
+- top11 2위 "돌이 20m 치솟음": "The explosions were throwing ejecta up to about 20 meters." — [USGS](https://www.usgs.gov/media/videos/successive-littoral-explosions-puhi-o-kalaikini-ocean-entry)
+- top11 1위 "카메라까지 날아옴": 낙석 폭발이 "용암호 수면보다 약 110m 위인 분화구 가장자리까지 빛나는 파편을 던졌고 … 파편이 USGS HVO 웹캠 쪽으로 날아온다" — [USGS](https://www.usgs.gov/media/videos/large-rockfall-halemaumau-crater)
+- top10·top12는 사실 주장이 없는 예고형 자막뿐입니다("LA 파도"는 Pexels 페이지 제목의 "California Los Angeles Coast", top10 1위 "돌집"은 화면에 보이는 바위 위 작은 돌 구조물을 부른 말).
+
+### 업로드 문구
+
+공통: 고정 댓글은 **"1번 제목 지어주세요 👇 제일 웃긴 제목 고정합니다"** (top2·4·9) 또는 아래 각 편의 질문. 설명란 첫 줄에 1위 이름은 쓰지 않습니다(댓글용).
+
+**top1** — 역대급 백룸 같은 공간들 랭킹 TOP5 ㄷㄷ
+> 밤 9시 반 텅 빈 수영장, 차 한 대 없는 지하주차장, 끝없이 내려가는 지하통로, 불이 깜빡이는 쇼핑몰 복도… 그리고 1위는? 다들 몇 번이 제일 무서움? 순위는 저희 마음대로 고른 것입니다.
+> 영상: Pexels — Tima Miroshnichenko, gusat silviu, Yunus Kılıç, Matthias Groeneveld, SN.CHE
+> 음악: "Dark Fog" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
+> #백룸 #리미널스페이스 #랭킹 #소름 #shorts
+> 고정 댓글: 1번 장소 이름 지어주세요 👇 여기 혼자 갈 수 있는 사람?
+
+**top2** — 역대급 만족스러운 순간 랭킹 TOP5 ㅋㅋ
+> 구슬 슬라임, 와르르 무너지는 초코 케이크, 하트가 나오는 연필심, 줄줄 흘러내리는 물감… 1위는 직접 보세요. 1번 제목 추천받습니다! 순위는 저희 마음대로 고른 것입니다.
+> 영상: Pexels — cottonbro studio, Taryn Elliott, Vũ Vũ, Mike Murray · Pixabay — u_5l867xgjyb
+> 음악: "Monkeys Spinning Monkeys" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
+> #만족 #ASMR #랭킹 #힐링 #shorts
+> 고정 댓글: 1번 제목 지어주세요 👇 제일 웃긴 제목 고정합니다
+
+**top3** — 역대급 신기한 자연현상 랭킹 TOP5 ㄷㄷ
+> 91m 넘게 솟는 간헐천, 바다 밑바닥의 호수, 하늘에서 춤추는 오로라, 구름 바다에 잠긴 그랜드캐니언, 그리고 1위는 땅이 갈라지며 솟은 그것(최고 400m 이상 추정). 다들 몇 번이 제일 신기해요? 순위는 저희 마음대로 고른 것입니다.
+> 영상: 미국 국립공원관리청(NPS) — Jacob W. Frank, M. Quinn · 미국 해양대기청(NOAA Ocean Exploration) · 미국 지질조사국(USGS) — M. Patrick (각 기관이 이 영상을 보증하거나 후원하지 않습니다.)
+> 음악: "Floating Cities" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
+> #자연현상 #신기한영상 #랭킹 #오로라 #shorts
+> 고정 댓글: 이 중에 직접 보고 싶은 거 몇 번?
+
+**top4** — 우주에서 찍힌 역대급 장면 랭킹 TOP5 ㄷㄷ
+> 구름 속 번개, 발밑에 깔린 오로라, 구름 위 검은 얼룩의 정체(2012년 금환일식 달 그림자), 지평선 위로 떠오른 혜성… 그리고 1위는 2026년 아르테미스 2호에서 찍힌 그 장면. 전부 실제 NASA 사진·영상입니다. 1번 제목 추천좀!
+> 영상·사진: NASA (ISS Crew Earth Observations, Image Science & Analysis Laboratory, NASA Johnson Space Center · Artemis II) (NASA가 이 영상을 보증하거나 후원하지 않습니다.)
+> 음악: "Lightless Dawn" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
+> #우주 #NASA #랭킹 #지구 #shorts
+> 고정 댓글: 1번 제목 지어주세요 👇 제일 웃긴 제목 고정합니다
+
+**top5** — 역대급 거대한 폭포 랭킹 TOP5 ㄷㄷ
+> 1마일 안에 23m를 떨어지는 급류, 높이 51m 나라다 폭포, 붉은 협곡의 53m 디어크릭 폭포, 낙차 94m 옐로스톤 로어 폭포, 그리고 1위는 세 단 합쳐 740m. 다들 몇 번이 제일 웅장해요? 순위는 저희 마음대로 고른 것입니다.
+> 영상: 미국 국립공원관리청(NPS) — Jacob W. Frank, Blum·Well·Wang·Estrada·Caldon · Yosemite Falls: G. Edward Johnson / CC BY 4.0 (Wikimedia Commons, 잘라내고 확대함) (각 기관이 이 영상을 보증하거나 후원하지 않습니다.)
+> 음악: "Heroic Age" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
+> #폭포 #대자연 #랭킹 #옐로스톤 #shorts
+> 고정 댓글: 1위 폭포 이름 아는 사람? 👇
+
+**top6** — 역대급 소름 돋는 바닷속 랭킹 TOP5 ㄷㄷ
+> 수심 700m의 핏빛 해파리, 바위 밑을 흐르는 은빛 가스의 강, 어둠 속 19세기 범선 난파선, 검은 연기를 뿜는 바다 밑 굴뚝, 그리고 1위는 사람이 처음 목격한 그 장면. 전부 실제 탐사 영상입니다. 다들 몇 번이 제일 소름?
+> 영상: 미국 해양대기청(NOAA Ocean Exploration, NOAA/PMEL) (NOAA가 이 영상을 보증하거나 후원하지 않습니다.)
+> 음악: "Gathering Darkness" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
+> #심해 #바다 #소름 #랭킹 #shorts
+> 고정 댓글: 바닷속 들어갈 수 있다면 몇 번 보러 감?
+
+**top7** — 역대급 무서운 날씨 랭킹 TOP5 ㄷㄷ
+> 하늘이 통째로 도는 슈퍼셀, 2022년 옐로스톤 500년 만의 홍수, 허리케인 눈 속의 파란 하늘, 우주에서 본 시속 233km 허리케인, 그리고 1위는 최대 시속 257km(추정)의 그것(인명 피해 없음). 다들 몇 번이 제일 무서워요?
+> 영상: 미국 해양대기청(NOAA/NSSL — Matthew Woods, Sean Waugh · NOAA Hurricane Hunters — Nick Underwood) · 미국 국립공원관리청(NPS — Chase Tedder) · NASA (각 기관이 이 영상을 보증하거나 후원하지 않습니다.)
+> 음악: "Movement Proposition" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
+> #날씨 #토네이도 #허리케인 #랭킹 #shorts
+> 고정 댓글: 이 중에 실제로 겪어본 거 있음?
+
+**top8** — 역대급 이상한 지구 장소 랭킹 TOP5 ㄷㄷ
+> 안 떨어지는 39m 균형 바위, 바다보다 86m 낮은 소금 사막, 화산 속에서 출렁이는 용암 호수, 돌이 혼자 움직인 흔적, 그리고 1위는 땅 위의 무지개 웅덩이. 전부 실제 미국 국립공원에 있는 장소입니다. 다들 몇 번이 제일 이상해요?
+> 영상: 미국 국립공원관리청(NPS) — Neal Herbert, Jacob W. Frank · 미국 지질조사국(USGS) (각 기관이 이 영상을 보증하거나 후원하지 않습니다.)
+> 음악: "Dreamer" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
+> #신기한장소 #국립공원 #랭킹 #여행 #shorts
+> 고정 댓글: 1위 장소 이름 맞히는 사람? 👇
+
+**top9** — 역대급 시원한 얼음 깨기 랭킹 TOP5 ㄷㄷ
+> 얼음 구멍에서 물이 콸콸, 바이칼 얼음판이 거미줄처럼 쩍쩍, 던진 얼음판이 산산조각, 높이 61m 알래스카 빙하 벽이 와르르… 1위는 직접 보세요. 1번 제목 추천좀! 순위는 저희 마음대로 고른 것입니다.
+> 영상: Pexels — Tima Miroshnichenko, Yaroslav Shuraev, Nadezhda Moryak, Cristian Manieri · "Margerie Glacier calving video" gails_pictures / CC BY 2.0 (https://creativecommons.org/licenses/by/2.0/, Wikimedia Commons, 잘라내고 확대함) · 빙하 높이: 미국 국립공원관리청(NPS) Glacier Bay
+> 음악: "Exhilarate" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
+> #얼음 #빙하 #시원한영상 #랭킹 #shorts
+> 고정 댓글: 1번 제목 지어주세요 👇 제일 웃긴 제목 고정합니다
+
+**top10** — 역대급 시원한 파도 랭킹 TOP5 ㄷㄷ
+> 집채만 한 LA 파도, 방파제 끝에서 폭발하는 파도, 바위 틈에서 솟는 물기둥, 폭풍 속 철탑을 삼킨 파도… 1위는 바위 위 돌집을 통째로? 다들 몇 번이 제일 시원해요? 순위는 저희 마음대로 고른 것입니다.
+> 영상: Pexels — Joshua Woroniecki, Guidance Pillar Production, FUNESMA79, AP Vibes, pippu
+> 음악: "Heroic Age" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
+> #파도 #바다 #시원한영상 #랭킹 #shorts
+> 고정 댓글: 1위 제목 지어주세요 👇 몇 번이 제일 시원했음?
+
+**top11** — 역대급 화산·용암 모먼트 랭킹 TOP5 ㄷㄷ
+> 용암을 망치로 퍼 올리는 과학자, 숲을 태우며 밀려오는 용암, 아스팔트까지 태운 도로 위 용암, 바다를 만나 20m 치솟은 돌… 그리고 1위는 카메라까지 날아온 그것. 전부 하와이 화산관측소의 실제 영상입니다. 다들 몇 번이 제일 무서워요?
+> 영상: 미국 지질조사국(USGS) Hawaiian Volcano Observatory (USGS가 이 영상을 보증하거나 후원하지 않습니다.)
+> 음악: "Gathering Darkness" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
+> #화산 #용암 #하와이 #랭킹 #shorts
+> 고정 댓글: 1위 이름 지어주세요 👇 몇 번이 제일 무서웠음?
+
+**top12** — 역대급 물에 던진 돌 랭킹 TOP5 ㅋㅋ
+> 거울 호수가 깨지는 순간, 진흙 폭탄, 계곡 물기둥, 물 왕관… 1위는 바윗덩이 하나로 물이 하늘까지? 다들 몇 번이 제일 시원해요? 순위는 저희 마음대로 고른 것입니다.
+> 영상: Pexels — Marsel Sharipov, Jack And Matt Photography, K (@kelly), Martina Tomšič
+> 음악: "Hustle" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
+> #돌던지기 #물튀김 #시원한영상 #랭킹 #shorts
+> 고정 댓글: 1번 제목 지어주세요 👇
+
+창작: 열두 편 모두 실제 영상이고 지어낸 이야기는 없어 "창작" 표시는 필요 없습니다. 자막 중 "~했는데.."·"~??"는 다음 장면을 예고하는 말투일 뿐 사실 주장이 아닙니다.
+## 2D 운전 애니 무언 해외판 (벤치마크, `drive1`~`drive10`)
+
+`research/benchmark-drawn.md` 2절과 `research/benchmark-targets-drawn.json`의 `road` 목표(알룔료 R1 3,201만·R2 2,865만·R3 2,601만)를 그대로 따른 **말 없는 해외판** 10편이다. 내레이션과 자막이 없고, 9:16 화면 가운데 16:9 그림, 위 검정 칸에 흰 한국어 제목 한 줄, 아래 검정 칸에 영어 한 줄이 처음부터 끝까지 있다. 운전자 얼굴 클로즈업(그림 높이의 약 70%)과 3D 차 장면(3/4 뒤·옆·앞·위)을 1.5~2초마다 번갈아 자르고, 효과음(경적·엔진·타이어·둥둥·사이렌)과 음악만으로 진행한다. 결말은 모두 자업자득이다(출구를 놓침, 맨 뒤 줄, 트럭 뒤에 갇힘, 단속 카메라, 경찰에 갓길로). 사고·부상·주인공의 보복은 없고, 주인공은 거리를 두거나 비켜 주거나 깜빡이를 켠다. `drive1`~`drive6`은 보고서 아이디어 목록의 새 편이고, `drive7`~`drive10`은 기존 `road1`·`road2`·`road8`·`road9`의 무언판이다(`road1`~`road10`은 그대로 둠).
+
+- **그림·소리**: 전부 직접 그린 것(코드로 그림)과 numpy 합성음이다. 외부 사진·영상이 없어서 `sources`는 비어 있고 화면 크레딧도 없다. 실제 차종·로고·번호판·상표·사람은 없다. 화면의 글자는 제목 두 줄과 표지판 숫자("1km", "32km", "100", "30")뿐이다.
+- **같은 틀**: 주인공은 노란 후드(`HERO`) 또는 분홍 옷(`HEROINE`)에 파란 차(`#4DA3FF`), 경찰은 남색 모자·콧수염(`COP`), 트럭 기사는 초록 모자·수염(`TRUCKER`). 악역은 편마다 바뀐다. 컷 순서는 0초 얼굴(썸네일) → 차 장면 → 얼굴 반응 → … → "둥둥"과 붉은 테두리 → 악역 우는 얼굴.
+- **무언판으로 고른 기존 4편과 이유**: `road1`(1차로 정속), `road2`(깜빡이 없이 끼어들기), `road8`(갓길 주행), `road9`(상향등·바짝 붙기)는 고속도로 한 곳에서 일어나고, 세계 어디서나 같은 빌런이며, 원래 결말(경찰이 갓길로 세움, 갓길 끝의 경찰차, 앞차가 경찰)이 그림만으로 통쾌하다. `road3`(빨간불 우회전)·`road4`(스쿨존 범칙금 구간)·`road7`(휴대폰 예외)·`road10`(버스전용차로 인원)·`road5`(터널 실선)는 한국 법 조문을 말로 설명해야 이해되고, `road6`(꼬리물기)은 교차로 장면이 필요해서 뺐다.
+- **보복운전 없음**: 주인공은 경적을 울리지 않고(1편의 경적은 악역), 막아서지 않는다. 9편 주인공은 갓길 차를 막지 않고, 8편 주인공은 마지막에 깜빡이를 켜고 들어간다.
+
+```bash
+python3 drive_eps.py                          # 장면 목록 → shorts/drive*/edit.json, script.json (내레이션 없음)
+python3 voice_edge.py drive1 && python3 prep.py drive1 && ./render.sh drive1 final/drive1.mp4 && python3 qa_review.py drive1
+```
+`voice_edge.py`는 대사 줄이 없으면 음성을 만들지 않고 길이(`tail`)만 적는다. `drive7`은 렌더 뒤 −12.7 LUFS(WARN)라서 영상은 그대로 두고 소리만 −1.3dB 다시 인코딩했다(−14.0 LUFS).
+
+### 새 템플릿 옵션 (모두 새 값이라 기존 쇼츠는 그대로)
+
+| 파일 | 바뀐 것 |
+|---|---|
+| `src/lib/Drive.tsx` (새 파일) | `road` 그래픽의 새 시점 `view: "face"`(운전석 얼굴 클로즈업)와 `view: "car"`(작은 3D 장면). 1920×1080 무대를 클립 칸에 맞춰 줄인다(`"frame": "wide"`면 1080×608 = 16:9) |
+| `src/lib/DriveFace.tsx` (새 파일) | 운전자 얼굴(머리·어깨) 17가지 표정, 머리 모양 8가지, 선글라스·안경, 콧수염·수염, 표정 타임라인. 기호(`!`, `?`, `?!`, 분노, 땀, 음표)와 경적 폭발 그림(글자 없음) |
+| `src/lib/Bilingual.tsx` (새 파일) | `titleEn`이 있으면 쓰는 제목: 그림 위 검정 칸에 흰 한국어(Pretendard 800), 그림 아래 검정 칸에 영어 |
+| `src/lib/Road.tsx` | `view`가 `"face"`/`"car"`면 `Drive`로 넘기는 한 줄(+ 타입에 두 값) |
+| `src/ClipShort.tsx` | `ShortData.titleEn` 타입과 `Title` 첫 줄의 분기 한 줄 |
+| `prep.py` | `titleEn`을 데이터로 넘김. 음성이 하나도 없으면 더킹 정규화를 건너뜀(빈 배열의 percentile 오류 방지, 음성이 있으면 같은 계산) |
+| `drive_sfx.py` (새 파일), `fetch.sh` 한 줄 | `engine.wav`(엔진 부앙), `squeal.wav`(타이어 끼익), `dundun.wav`(둥둥) 합성. 경적·사이렌은 기존 `road_sfx.py` |
+| `drive_eps.py` (새 파일) | 10편의 장면 목록과 `edit.json`/`script.json` 생성기 |
+
+**쓰는 법** (`edit.json`): `"titleStyle": "band"`, `"titleEn": "English line"`, 각 클립 `"frame": "wide"`, `"gfx": {"type": "road", "view": "face" | "car", ...}`. 시간 값은 모두 **그 클립이 시작한 뒤 초**다(`steps` 안 씀). `script.json`은 `"lines": []`, `"tail"`이 전체 길이.
+
+| 값 | 쓰임 |
+|---|---|
+| 공통 `zoom` `shake` `dun` `flash` `streaks` `time` | 천천히 다가감(`[from,to]`), 흔들림, "둥둥"(살짝 줌 + 어두운 붉은 테두리), 흰 번쩍(단속 카메라), 집중선 `[t0,t1]`, `"night"`/`"dusk"` |
+| 공통 `speed` `stopAt` | 세상이 흐르는 속도(car: m/s, face: 옆 창 px/s), `stopAt` 초에 서서히 멈춤 |
+| face `driver` | `{skin, hair: short\|spiky\|slick\|bald\|cap\|bob\|curly\|long, hairColor, cap, glasses: sun\|round, beard: mustache\|stubble\|full, shirt, mood, moods: [[t, mood]]}`. 표정: neutral smug grin angry rage shock scared sad cry happy laugh cool side bored yell eek squint |
+| face `flip` `car` | 좌우 반전(악역 컷은 반대쪽을 봄), 문틀에 보이는 차 색 |
+| face `ahead` | 앞유리로 보이는 앞차 `{kind, color, size 0..1, to, toAt, brake: [[t0,t1]], siren, dark}` |
+| face `peer` | 옆 창으로 지나가는 차·트럭 `{kind, color, driver, x0, x1, at, dur, siren}` |
+| face `honk` `marks` `police` `glare` | 손으로 경적(그림 + 흔들림), 머리 위 기호 `[[t, "!"]]`, 경광등 빛(t부터), 뒤차 상향등 눈부심 `[[t0,t1]]` |
+| car `cam` `cam2` `camAt` `camDur` `follow` | 카메라 프리셋 `rear` `rearL` `rearR` `side` `sideL` `front` `frontL` `high` 또는 `{x,y,z,yaw,pitch,fov}`(따라가는 차 기준), 중간에 다른 카메라로 이동 |
+| car `cars[]` | `{kind: car\|tiny\|suv\|sports\|van\|truck\|police\|work, color, lane, z, vz, path: [[t, lane, z, dur]], heading, driver, brake, blink, blinkAt, blinkOff, honk, siren, lights, dark (true 또는 그 초까지), smoke, fast, marks}`. 1차로가 왼쪽, `lanes+1`이 갓길. 운전자 얼굴은 유리 너머로만 보이고, 뒤에서 보면 뒤통수 |
+| car 도로 | `lanes`, `cones: [[lane, z]]`, `laneEnd: {lane, z0, z1}`(차로 끝 라바콘·빗금), `exit: {z}`(오른쪽 출구 + 140m 앞 표지), `signs: [{z, kind: exit\|km\|speed\|merge\|work, text}]`, `speedCam: {z, at}`, `hill`(오르막) |
+
+**확인**: 손대지 않은 기존 쇼츠 `road1`(도로 그래픽)과 `sseol1`(썰 장면)을 원래 커밋의 코드와 바뀐 코드로 같은 음성 빌드에서 렌더해 비교했다. 두 편 모두 영상 프레임이 비트 단위로 같았다(framemd5 일치, PSNR inf).
+
+### 벤치마크 점수표
+
+목표는 `benchmark-targets-drawn.json`의 `road`: 길이 28초, 훅 끝 0.0초, 첫 화면 변화 ≤1.5초, 평균 장면 2.0초, 최장 4.0초, 초당 음절 0(내레이션 없음), 줄 1(제목 한 줄 + 영어), 제목 9~16자. 우리 값은 렌더한 `final/<id>.mp4`를 `qa_review.py`와 같은 방법(그림 칸 scene > 0.04, 0.3초 안 전환 합침)으로 잰 것이다. 이 방법은 표정·줌·경광등이 바뀌어도 전환으로 센다. 훅 끝은 0.0초다: 0초 첫 프레임에 제목과 얼굴(또는 차)이 이미 있고 말이 없다. 초당 음절과 내레이션 줄은 `build/<id>/timeline.json`의 대사 줄이 0개라서 0이다.
+
+| id | 화면 제목 (한 / 영) | 길이 | 훅 끝 | 첫 전환 | 평균 / 최장 장면 | 전환 | 초당 음절 | 줄 | 제목 글자 | qa |
+|---|---|---|---|---|---|---|---|---|---|---|
+| `drive1` | 감히 경차를 무시해? / How dare you ignore a tiny car? | 27.2초 | 0.0초 | 0.7초 | 1.4 / 2.6초 | 18 | 0 | 0 (제목 1줄 + 영어) | 8자 | PASS 10/10, -14.0 LUFS, 6.8MB |
+| `drive2` | 합류 끝까지 달린 차의 최후 / The Last-Second Merger | 27.0초 | 0.0초 | 1.4초 | 1.5 / 2.6초 | 17 | 0 | 0 (제목 1줄 + 영어) | 11자 | PASS 10/10, -13.9 LUFS, 6.8MB |
+| `drive3` | 트럭 옆에서 까불면 안되는 이유 / Never Mess With a Truck | 27.1초 | 0.0초 | 1.5초 | 1.4 / 3.0초 | 18 | 0 | 0 (제목 1줄 + 영어) | 13자 | PASS 10/10, -14.0 LUFS, 7.1MB |
+| `drive4` | 추월하면 빨라지는 차의 최후 / He Speeds Up When You Pass | 26.6초 | 0.0초 | 1.4초 | 1.8 / 2.6초 | 14 | 0 | 0 (제목 1줄 + 영어) | 12자 | PASS 10/10, -14.0 LUFS, 6.4MB |
+| `drive5` | 브레이크만 밟는 빌런 / The Brake Checker | 26.6초 | 0.0초 | 0.3초 | 1.6 / 2.6초 | 16 | 0 | 0 (제목 1줄 + 영어) | 9자 | PASS 10/10, -14.0 LUFS, 6.9MB |
+| `drive6` | 밤에 라이트 안 켠 차의 최후 / The Invisible Car (No Headlights) | 26.7초 | 0.0초 | 1.3초 | 1.6 / 2.6초 | 16 | 0 | 0 (제목 1줄 + 영어) | 11자 | PASS 10/10, -14.6 LUFS, 4.7MB |
+| `drive7` | 1차로 막는 차의 최후 / The Left-Lane Hog | 27.0초 | 0.0초 | 1.4초 | 1.8 / 2.6초 | 14 | 0 | 0 (제목 1줄 + 영어) | 9자 | PASS 10/10, -14.0 LUFS, 6.3MB |
+| `drive8` | 깜빡이 없이 끼어든 차의 최후 / Cut In Without a Signal? | 26.5초 | 0.0초 | 0.2초 | 1.7 / 2.4초 | 15 | 0 | 0 (제목 1줄 + 영어) | 12자 | PASS 10/10, -14.0 LUFS, 6.3MB |
+| `drive9` | 갓길로 새치기한 차의 최후 / The Shoulder Cheater | 26.0초 | 0.0초 | 1.4초 | 1.6 / 2.6초 | 15 | 0 | 0 (제목 1줄 + 영어) | 11자 | PASS 10/10, -14.0 LUFS, 7.2MB |
+| `drive10` | 상향등 켜고 붙던 차의 최후 / Tailgating With High Beams? | 26.1초 | 0.0초 | 1.3초 | 1.5 / 2.6초 | 17 | 0 | 0 (제목 1줄 + 영어) | 11자 | PASS 10/10, -14.0 LUFS, 5.7MB |
+
+**놓친 것과 이유**
+- 길이 26.0~27.2초로 목표 28초보다 0.8~2초 짧다. 레시피 범위(20~35초)와 이번 요청(25~30초) 안이고, 마지막 컷을 늘리면 우는 얼굴이 늘어져 루프가 느려져서 그대로 뒀다.
+- 평균 장면 1.4~1.8초는 목표 2.0초보다 짧다. 표정이 바뀌는 순간(같은 컷 안)과 "둥둥" 줌도 전환으로 세는 측정 방식 때문이다. 실제 컷은 편마다 14개로, 컷 평균은 1.86~1.94초다.
+- 첫 전환 0.2~1.5초는 모두 목표(≤1.5초) 안이다. 최장 장면 2.4~3.0초도 목표(≤4.0초) 안이다.
+- 벤치마크 값 중 길이·첫 전환·장면 길이는 보고서가 *추정*으로 적은 것이다(유튜브가 로그인을 요구해 재지 못함).
+
+**qa_review**: 10편 모두 FAIL 0. 처음 렌더에서 `drive7`만 소리 WARN(−12.7 LUFS)이 나와 소리만 다시 맞췄다(위). 첫 시트를 보고 고친 것: 얼굴 눈꺼풀 기울기가 화남·슬픔에서 반대로 그려지던 것, 트럭 옆 카메라가 트레일러에 가려지던 컷(`drive1` 9번째), 옆 카메라 앞을 가리던 나무, 경찰차가 카메라 바로 앞에 크게 걸리던 컷(`drive8`), 영어 제목 한 단어 줄바꿈(`drive4`).
+
+### 출처·라이선스·사실 근거
+
+- 그림: 전부 이 저장소 코드로 직접 그림(`src/lib/Drive.tsx`, `DriveFace.tsx`). 외부 이미지·영상 없음. 벤치마크 채널(알룔료)의 영상·캐릭터는 쓰지 않았고 구성(얼굴 클로즈업 ↔ 차 장면, 16:9 레터박스, 한·영 제목, 자업자득 결말)만 따랐다.
+- 효과음: `drive_sfx.py`(엔진·타이어·둥둥), `road_sfx.py`(경적·사이렌), `../tools/sfx.py`(`shutter`, `click`) — 모두 numpy 합성.
+- 음악: Kevin MacLeod (incompetech.com), CC BY 4.0 — Sneaky Snitch(1·5편), Hustle(2·8편), Scheming Weasel(3·6·10편), Hyperfun(4·9편), Monkeys Spinning Monkeys(7편).
+- 사이드카: `media/drive/sources.json`(외부 출처 없음, 음악·효과음·사실 근거).
+- 사실(설명란에만 씀, 2026-10-10 국가법령정보센터 도로교통법 현행 본문에서 확인):
+  - 제37조제1항: 밤(해가 진 후부터 해가 뜨기 전까지)에 도로에서 차를 운행하면 전조등·차폭등·미등과 그 밖의 등화를 켜야 한다. 제2항: 밤에 마주 보고 가거나 앞차 바로 뒤를 따라갈 때는 등화 밝기를 줄이는 등 필요한 조작을 해야 한다. (`drive6`, `drive10`)
+  - 제19조제1항(앞차가 갑자기 서도 충돌을 피할 거리), 제4항(위험방지 등 부득이한 경우가 아니면 급제동 금지). (`drive3`, `drive5`, `drive10`)
+  - 제46조의3: 안전거리 미확보·진로변경 금지 위반·급제동 금지 위반, 정당한 사유 없는 소음 발생 등을 연달아 하거나 지속·반복해 위협하면 난폭운전. (`drive1`, `drive5`, `drive10`)
+  - `drive7`·`drive8`·`drive9`의 1차로(제60조제1항·시행규칙 [별표 9]), 깜빡이 시기(제38조제1항·시행령 [별표 2]), 갓길(제60조제1항)은 위 `road1`~`road4`, `road5`~`road10` 절의 출처 그대로다.
+  - 화면에는 법 조문·범칙금을 쓰지 않았다. `drive2`(합류)와 `drive4`(추월)는 설명란에도 법 문장을 쓰지 않았다.
+
+### 업로드 문구
+
+모든 편의 설명란 끝에 같은 창작 표시와 음악 크레딧을 붙인다. 해시태그는 한국어와 영어를 섞어 5개다.
+
+`drive1`
+- 제목: 감히 경차를 무시해?ㄷㄷ / How dare you ignore a tiny car? 🚗
+- 설명:
+  ```
+  (창작 애니) 경차 뒤에 바짝 붙어 빵빵대던 SUV, 결국 나가야 할 출구를 놓쳤다 🚗
+  The SUV that bullied a tiny car missed its own exit.
+  바짝 붙거나 경적으로 계속 위협하면 난폭운전이 될 수 있어요(도로교통법 제46조의3).
+  직접 그린 창작 애니메이션입니다. 등장인물·차량·상황은 실제와 관계없습니다.
+  An original hand-drawn cartoon (fiction). No real people, cars or brands.
+  Music: "Sneaky Snitch" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
+  #운전공감 #참교육 #애니메이션 #karma #driving
+  ```
+- 해시태그: #운전공감 #참교육 #애니메이션 #karma #driving
+- 고정 댓글: 경차 무시하는 차, 여러분도 만나 보셨나요? / Ever been bullied for driving a small car? 👇
+
+`drive2`
+- 제목: 합류 끝까지 달린 차의 최후ㄷㄷ / The Last-Second Merger
+- 설명:
+  ```
+  (창작 애니) 줄 선 차들 옆으로 끝까지 달려간 차, 결국 맨 뒤 작업차 뒤로 🐢
+  He raced past the whole line to the very end of the lane... and ended up behind the slowest truck.
+  직접 그린 창작 애니메이션입니다. 등장인물·차량·상황은 실제와 관계없습니다.
+  An original hand-drawn cartoon (fiction). No real people, cars or brands.
+  Music: "Hustle" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
+  #운전공감 #참교육 #애니메이션 #karma #driving
+  ```
+- 해시태그: #운전공감 #참교육 #애니메이션 #karma #driving
+- 고정 댓글: 합류 구간 새치기, 여러분은 양보해 주나요? / Do you let last-second mergers in? 👇
+
+`drive3`
+- 제목: 트럭 옆에서 까불면 안되는 이유ㄷㄷ / Never Mess With a Truck 🚚
+- 설명:
+  ```
+  (창작 애니) 트럭 앞에서 알짱대던 스포츠카, 오르막 한 차로에서 트럭 뒤에 갇혔다 🚚
+  The show-off who taunted a truck got stuck behind it on a one-lane hill.
+  앞차를 놀리듯 갑자기 브레이크를 밟는 급제동은 금지예요(도로교통법 제19조제4항).
+  직접 그린 창작 애니메이션입니다. 등장인물·차량·상황은 실제와 관계없습니다.
+  An original hand-drawn cartoon (fiction). No real people, cars or brands.
+  Music: "Scheming Weasel" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
+  #운전공감 #참교육 #트럭 #karma #truck
+  ```
+- 해시태그: #운전공감 #참교육 #트럭 #karma #truck
+- 고정 댓글: 트럭 앞에서 급제동하는 차, 보신 적 있나요? / Seen anyone brake-test a truck? 👇
+
+`drive4`
+- 제목: 추월하면 빨라지는 차의 최후ㄷㄷ / He Speeds Up When You Pass
+- 설명:
+  ```
+  (창작 애니) 추월하려고만 하면 밟아 버리던 차, 결국 단속 카메라 앞에서 번쩍 📸
+  He sped up every time someone tried to pass... right into a speed camera.
+  직접 그린 창작 애니메이션입니다. 등장인물·차량·상황은 실제와 관계없습니다.
+  An original hand-drawn cartoon (fiction). No real people, cars or brands.
+  Music: "Hyperfun" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
+  #운전공감 #참교육 #애니메이션 #karma #driving
+  ```
+- 해시태그: #운전공감 #참교육 #애니메이션 #karma #driving
+- 고정 댓글: 추월하면 빨라지는 차, 왜 그러는 걸까요? / Why do people speed up when you pass? 👇
+
+`drive5`
+- 제목: 브레이크만 밟는 빌런ㄷㄷ / The Brake Checker
+- 설명:
+  ```
+  (창작 애니) 뒤차 겁주려고 브레이크를 콕콕 밟던 빌런, 이번 뒤차는… 🚓
+  The brake checker picked the wrong car to brake-check.
+  부득이한 경우가 아니면 급제동은 금지(도로교통법 제19조제4항), 반복해서 위협하면 난폭운전(제46조의3)이에요. 이런 차를 만나면 거리를 넉넉히 두세요.
+  직접 그린 창작 애니메이션입니다. 등장인물·차량·상황은 실제와 관계없습니다.
+  An original hand-drawn cartoon (fiction). No real people, cars or brands.
+  Music: "Sneaky Snitch" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
+  #운전공감 #참교육 #급제동 #karma #brakecheck
+  ```
+- 해시태그: #운전공감 #참교육 #급제동 #karma #brakecheck
+- 고정 댓글: 브레이크 빌런 만나면 어떻게 하세요? / What do you do with a brake checker? 👇
+
+`drive6`
+- 제목: 밤에 라이트 안 켠 차의 최후ㄷㄷ / The Invisible Car (No Headlights)
+- 설명:
+  ```
+  (창작 애니) 밤길에 라이트도 안 켜고 달리던 차, 드디어 켰더니 바로 앞에… 🚓
+  He finally switched his headlights on... right behind a police car.
+  밤(해가 진 뒤부터 뜨기 전까지)에 도로를 달릴 때는 전조등·차폭등·미등을 켜야 해요(도로교통법 제37조).
+  직접 그린 창작 애니메이션입니다. 등장인물·차량·상황은 실제와 관계없습니다.
+  An original hand-drawn cartoon (fiction). No real people, cars or brands.
+  Music: "Scheming Weasel" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
+  #운전공감 #참교육 #스텔스차량 #karma #headlights
+  ```
+- 해시태그: #운전공감 #참교육 #스텔스차량 #karma #headlights
+- 고정 댓글: 밤에 라이트 안 켠 차, 얼마나 무서운지 아시죠? / Ever met an invisible car at night? 👇
+
+`drive7` (`road1` 무언판)
+- 제목: 1차로 막는 차의 최후ㄷㄷ / The Left-Lane Hog
+- 설명:
+  ```
+  (창작 애니) 뻥 뚫린 길에서 1차로를 막고 느긋하게 가던 차, 결국 🚓
+  The left-lane hog finally meets the car behind him.
+  편도 3차로 이상 고속도로의 1차로는 앞지르기할 때 쓰는 차로예요(도로교통법 제60조제1항, 시행규칙 [별표 9]). 그래도 바짝 붙어 위협하면 보복운전입니다.
+  직접 그린 창작 애니메이션입니다. 등장인물·차량·상황은 실제와 관계없습니다.
+  An original hand-drawn cartoon (fiction). No real people, cars or brands.
+  Music: "Monkeys Spinning Monkeys" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
+  #운전공감 #참교육 #1차로 #karma #leftlane
+  ```
+- 해시태그: #운전공감 #참교육 #1차로 #karma #leftlane
+- 고정 댓글: 1차로 정속 주행, 여러분 생각은? / Left-lane campers: annoying or fine? 👇
+
+`drive8` (`road2` 무언판)
+- 제목: 깜빡이 없이 끼어든 차의 최후ㄷㄷ / Cut In Without a Signal?
+- 설명:
+  ```
+  (창작 애니) 깜빡이 없이 훅훅 끼어들던 차, 이번에 끼어든 앞은 하필… 🚓
+  No signal, no warning... and this time he cut in front of the police.
+  진로를 바꿀 땐 30m(고속도로 100m) 앞부터 깜빡이를 켜야 해요(도로교통법 제38조, 시행령 [별표 2]). 화가 나도 똑같이 끼어들면 보복운전입니다.
+  직접 그린 창작 애니메이션입니다. 등장인물·차량·상황은 실제와 관계없습니다.
+  An original hand-drawn cartoon (fiction). No real people, cars or brands.
+  Music: "Hustle" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
+  #운전공감 #참교육 #깜빡이 #karma #turnsignal
+  ```
+- 해시태그: #운전공감 #참교육 #깜빡이 #karma #turnsignal
+- 고정 댓글: 깜빡이 안 켜고 끼어드는 차, 하루에 몇 번 보세요? / How many no-signal cut-ins do you see a day? 👇
+
+`drive9` (`road8` 무언판)
+- 제목: 갓길로 새치기한 차의 최후ㄷㄷ / The Shoulder Cheater
+- 설명:
+  ```
+  (창작 애니) 꽉 막힌 길에서 갓길로 쌩 달리던 차, 갓길 끝에서 기다리던 건… 🚧
+  He used the shoulder to skip the jam... until the shoulder ended.
+  고속도로 갓길은 고장 등 부득이한 경우가 아니면 달릴 수 없어요(도로교통법 제60조제1항). 막아서지 마세요, 그게 더 위험합니다.
+  직접 그린 창작 애니메이션입니다. 등장인물·차량·상황은 실제와 관계없습니다.
+  An original hand-drawn cartoon (fiction). No real people, cars or brands.
+  Music: "Hyperfun" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
+  #운전공감 #참교육 #갓길 #karma #trafficjam
+  ```
+- 해시태그: #운전공감 #참교육 #갓길 #karma #trafficjam
+- 고정 댓글: 갓길 주행하는 차 보면 어떤 생각 드세요? / What do you think of shoulder drivers? 👇
+
+`drive10` (`road9` 무언판)
+- 제목: 상향등 켜고 붙던 차의 최후ㄷㄷ / Tailgating With High Beams?
+- 설명:
+  ```
+  (창작 애니) 상향등 켜고 바짝 붙던 차, 다음에 붙은 앞차는… 🚓
+  High beams, tailgating... and the next car he tailgated was a police car.
+  밤에 앞차 바로 뒤를 따라갈 때는 등화 밝기를 줄여야 하고(도로교통법 제37조제2항), 앞차가 갑자기 서도 피할 거리를 둬야 해요(제19조제1항). 계속 위협하면 난폭운전(제46조의3).
+  직접 그린 창작 애니메이션입니다. 등장인물·차량·상황은 실제와 관계없습니다.
+  An original hand-drawn cartoon (fiction). No real people, cars or brands.
+  Music: "Scheming Weasel" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
+  #운전공감 #참교육 #상향등 #karma #tailgating
+  ```
+- 해시태그: #운전공감 #참교육 #상향등 #karma #tailgating
+- 고정 댓글: 상향등 테러 당해 보신 분? / Ever been blinded by high beams from behind? 👇
+
+## 낙서 짤툰 v2 (벤치마크, `doodle1`~`doodle16`)
+
+`research/benchmark-drawn.md` 1절과 `research/benchmark-targets-drawn.json`의 `doodle` 목표에 맞춰 기존 10편을 다시 만들고 6편을 새로 만들었다. 벤치마크는 콩자반 「현재 논란중인 에스컬레이터 길막녀」(955만), 「오프리쉬 신고하면 벌어지는 일」(614만), 김블루 「읽기만 해도 기빨리는 게시글」(494만)이다. 이 채널들의 **구조만** 따랐고 영상·그림은 하나도 가져오지 않았다. 가장 큰 변화는 주제 각도다. "알면 좋은 상식"에서 **"누가 잘못했나"**(민폐, 신고, A vs B)로 옮겼다. 상황은 누구나 겪는 일반적인 것이고, 실존 인물이나 특정 사건은 다루지 않는다. 양쪽 입장을 다 보여 준다.
+
+**v1에서 바뀐 것**
+
+| 항목 | v1 | v2 |
+|---|---|---|
+| 첫 줄 | 질문·배경 설명(훅 2.0~3.3초) | **대사**("기사님, 내려요!", "멀티탭에 또 멀티탭?", "계란 일 번으로 사 오랬지!"), 0초부터 따옴표 자막, 훅 끝 0.4~1.8초 |
+| 말 속도 | InJoon +25%, 5.3음절/초 | InJoon **+50%**, 인물 +25~42%, 문장 안 마침표는 쉼표로 읽음, **6.3~7.1음절/초** |
+| 제목 | "대부분 모르는 ○○" 상식형 | "○○ 신고하면 벌어지는 일", "현재 논란중인 ○○", "읽기만 해도 기빨리는 ○○", "A vs B" |
+| 이야기 | 상식 나열 4편 | 16편 모두 갈등 + 복선 있는 펀치라인(아래 "이야기 검토") |
+| 그림 칸 | 1080×1080, 아래 440px 빈 검정 | **세로로 꽉 찬 칸**(1080×1520, 제목 띠 아래부터 화면 끝까지) |
+| 자막 | 그림 밖 검정 칸, 한 줄 3~6자, 초록·노랑·빨강, 인물 대사는 말풍선만 | **그림 안 아래쪽 남색 상자**, 한 문장을 1~2줄로(12자까지 한 장), **노랑 한 색**. 인물 대사도 따옴표 자막으로 나온다. 말풍선은 두 명 이상이 한 화면에 있을 때만 남긴다(누가 말하는지 보이게) |
+| 도치 | 모든 장면 같은 크기·자리·포즈 | **1.6~2.1배**, 장면마다 미디엄 → 가슴 위 클로즈업 → 옆으로 기운 컷 → 반대쪽 클로즈업 순서로 바뀜 |
+| 화면 출처 표시 | "사진: Pexels" 배지 | 없음. 사진 크레딧은 모두 설명란에 쓴다 |
+| `vs` 그래픽 카드 | 사용 | 낙서 장면으로 바꿈(그래픽만 나오는 화면 없음) |
+
+### 새 템플릿 옵션 (모두 하위호환)
+
+옵션을 안 쓰는 쇼츠는 예전과 똑같이 그린다. 확인: 템플릿을 바꾸기 전에 `sseol1`과 `teuk1`의 `src/data/*.json`을 고정해 두고 0·123·400·700프레임을 렌더했다. 바꾼 뒤 같은 데이터로 다시 렌더했더니 8장 모두 PNG md5가 같았다. `qa_review.py`는 바꾸지 않았다.
+
+- **`"frame": "capTall"`** (`src/lib/CapBox.tsx`의 `CAP_TALL`, `ClipShort.tsx`의 `FRAME`에 한 줄. 랭킹 v2의 `"tall"`(위 420px)과는 다른 틀이다): 그림 칸을 제목 띠 아래(400px)부터 화면 끝(1920px)까지 1080×1520으로 쓴다. edit.json 맨 위에 두면 모든 클립에 적용된다(prep.py는 원래 `frame`을 넘겨준다). 낙서 장면(`scene`)은 높이를 받아 배경과 바닥을 그대로 늘려 그린다.
+- **`"capBox": {"y": 1600, "accent": "#FFE14D", "bg": "rgba(16,20,52,.9)", "width": 940}`** (`src/lib/CapBox.tsx`, `ClipShort.tsx`와 `prep.py`에 한 줄씩): 기존 단어 자막(`Captions`) 대신 남색 둥근 상자 안의 흰 굵은 자막을 그린다. 한 줄에 다 들어가면 크게 한 줄로, 아니면 **글자 수가 비슷한 두 줄**로 나눈다(아랫줄에 한 단어만 남지 않게). `[키워드]`와 `{빨강}`은 둘 다 `accent` 한 색이고, 읽는 단어는 색 대신 살짝 튀어 오른다. `y`는 상자 중심 높이, 나머지는 생략하면 위 기본값이다.
+- **인물 `y`, `rot`** (`src/lib/Sseol.tsx` `Char`): `y`는 발을 바닥보다 y px 아래로 내린다. 크게 키운 인물이 가슴 위만 보이는 클로즈업이 된다. `rot`는 인물을 발 기준으로 기울인다(도). 말풍선 높이도 `y`를 따라간다.
+- **장면 `floor`** (`Sseol.tsx` `SceneG`): 칸 아래에서 바닥선까지의 높이(px, 기본 76)다. 세로 칸에서는 400으로 올린다. 그러면 인물 얼굴이 자막 상자 위에 오고, 자막 아래로도 바닥이 이어져 빈 곳이 없다.
+- **장면 `bigSize`** (`Sseol.tsx`): `big` 글씨 크기(기본 160). 7자 이상이면 빌더가 104~118로 줄여 칸 밖으로 나가지 않게 한다.
+- 제목 띠 둘째 줄은 기존 `titleKey`를 노랑(`#FFE14D`)으로 썼다(코드 변경 없음).
+
+**만드는 법**: 대본과 편집은 `media/doodle/v2/`의 빌더가 쓴다. `remake.py`는 doodle1~10을 만든다. v1 장면을 v1 커밋(`6b46ca7`)에서 읽어 새 대본에 다시 배치한다. `new.py`는 doodle11~16을 처음부터 쓴다. `lib.py`가 공통 부분이다. 세로 칸 배치, 컷마다 다른 도치 샷, 한 색 강조, `/` 두 쪽을 12자 안이면 한 장(두 줄)으로 합치기, 대사의 따옴표 자막, 문장 안 마침표를 쉼표로 읽게 하기, 긴 `big` 글씨 줄이기를 맡는다.
+
+```bash
+media/doodle/fetch.sh                                   # 사진 55장 → public/doodle/
+python3 media/doodle/v2/remake.py && python3 media/doodle/v2/new.py    # shorts/doodle1~16/script.json, edit.json
+for i in $(seq 1 16); do python3 voice_edge.py doodle$i && python3 prep.py doodle$i; done
+python3 media/doodle/v2/seconds.py doodle{1..16}        # 사진이 화면에 나온 초 → edit.json sources, media/doodle/sources.json
+for i in $(seq 1 16); do ./render.sh doodle$i final/doodle$i.mp4 && python3 qa_review.py doodle$i; done
+python3 media/doodle/v2/score.py doodle{1..16}          # 아래 점수표
+python3 media/doodle/v2/upload.py                       # 아래 업로드 문구
+```
+
+### 이야기 검토 (REVIEW.md 2-1절)
+
+v2 대본을 처음 쓴 뒤 REVIEW.md에 2-1절 "이야기 검토"가 생겼다. 16편을 그 기준으로 다시 봤다. 1번(한 줄 요약), 2번(제목으로 결말을 못 맞힘), 5번(복선 있는 반전), 7번(설교 금지) 중 하나에 걸린 12편을 다시 쓰고 다시 만들었다.
+
+| id | 다시 쓴 이유 | 바꾼 것 |
+|---|---|---|
+| `doodle1` | 1·5·7: 교체 신호를 늘어놓는 정보 나열, 반전 없음 | 룸메이트와의 말다툼으로 바꿨다. 복선은 "폰이 하루 종일 충전 중"이고, 결말은 멀티탭 탑이 벽에 안 꽂혀 있었다는 것 |
+| `doodle4` | 2: "엄마가 1초 만에 찾음"은 제목만 봐도 보인다 | 엄마가 처음부터 들고 있던 반찬통(첫 장면부터 손에 보임)이 곧 김치였다는 정체 반전 |
+| `doodle5` | 1·7: 숫자 뜻을 늘어놓기만 함 | 4번 계란을 사 와서 엄마에게 혼남 → 엄마가 설명 → 엄마 냉장고 계란도 4번(세일). 사실은 엄마 대사에 녹였다 |
+| `doodle7` | 1·7: 압력계·기한·사용법 강의 | "멀쩡한 걸 왜 버려" 아빠와 숫자 싸움을 하다가 이긴다. 다음 날 그 소화기가 문 받침이 되어 있다(첫 장면 문 옆 소화기가 복선) |
+| `doodle8` | 5: 첫 장면 "근데 내 벨 아님"이 반전을 미리 말함 | 첫 줄을 "저기, 제 거 아직인가요?"로 바꾸고 복선("친구도 벨을 내 벨 옆에 둠")을 넣었다 |
+| `doodle9` | 5: 첫 장면이 펀치라인("이모!")을 미리 씀 | 첫 줄을 도치의 기어드는 "저, 저기요…"로 바꿨다 |
+| `doodle11` | 7: 안전수칙 세 가지를 늘어놓음. 끝("계단으로 갈게요")이 약함 | 출근 첫날의 말다툼으로 바꿨다. 복선은 "9시 회의라고요!"이고, 결말은 그 사람이 팀장님이었다는 정체 반전. 사실은 둘의 말싸움 안에 넣었다 |
+| `doodle12` | 7: 신고 구역 여섯 곳을 늘어놓음. 5: 아빠 차 반전의 복선이 없었음 | 이웃과의 문답에 규정을 녹였다. 복선은 "빨간 차, 어디서 많이 본 차" |
+| `doodle13` | 5: 끝 "나도 체크는 했음"이 약함 | 복선 "이 방엔 반장 어머님도 계심"을 넣고, 결말을 "참석 셋: 반장, 나, 반장 어머님"으로 바꿨다 |
+| `doodle14` | 1·5: 단어 뜻 나열로 끝남 | 배운 말로 "이모님, 정지에서 욕보셨습니다!"라고 인사하는 역전에 이어, 앞에 깐 "파이다"를 다시 꺼내는 펀치라인 |
+| `doodle15` | 2·7: 결론이 "속도랑 말 한마디"라는 교훈 | 젖히기가 도미노처럼 번지다가 맨 뒷줄 "저는 뒤가 벽인데요?"로 끝난다 |
+| `doodle16` | 5: "면접 본다며?"의 복선이 없었음 | 맡길 때 "단추 하나 없는데 다림질만", 통화 "다음 주 면접이라"를 앞에 깔았다 |
+
+그대로 둔 4편(`doodle2`, `doodle3`, `doodle6`, `doodle10`)은 네 기준을 통과했다. 각각 단계적으로 커지다가, 앞에 깐 단서("아직 내 방", "다들 똑같은 생각", 넵 단계, "매일 같은 시간")로 꺾인다.
+
+| id | 한 줄 요약 | 결말 유형 | 노리는 감정 |
+|---|---|---|---|
+| `doodle1` | 룸메이트가 멀티탭을 3층까지 쌓았다가, 그 탑이 벽에 안 꽂혀 있었다 | 허탈 개그 | 웃음 |
+| `doodle2` | 만 원 의자를 팔다가 네고가 배송비 요구까지 갔고, 의자는 아직 내 방에 있다 | 허탈 개그 | 웃음 |
+| `doodle3` | 다들 누가 벨 누르겠지 하다가, 네 명이 같은 정류장에서 같이 걸었다 | 의외의 이유 | 공감 |
+| `doodle4` | 냉장고를 10분 뒤지다가, 김치가 엄마 손에 있었다 | 정체 반전 | 웃음 |
+| `doodle5` | 4번 계란을 사 와서 혼났는데, 엄마 냉장고 계란도 4번이었다 | 역전 | 웃음 |
+| `doodle6` | 넵 7단계를 늘어놓다가, 팀장님의 "넵." 한 글자에 보고서를 냈다 | 역전 | 공감 |
+| `doodle7` | 2010년산 소화기로 아빠와 싸워 이겼는데, 그 소화기가 문 받침이 됐다 | 허탈 개그 | 웃음 |
+| `doodle8` | 진동벨만 보다가 카운터에서 울렸는데, 그게 친구 벨이었다 | 오해 | 웃음 |
+| `doodle9` | 직원을 못 불러 쩔쩔매다가, 친구의 "이모!" 한 마디에 끝났다 | 허탈 개그 | 공감 |
+| `doodle10` | 무섭던 새벽 3시 손님이, 비 오는 날 캔커피를 건넸다 | 따뜻한 반전 | 뭉클 |
+| `doodle11` | 에스컬레이터 왼쪽에서 말다툼한 아저씨가, 출근 첫날 우리 팀장님이었다 | 정체 반전 | 웃음 |
+| `doodle12` | 소화전 앞 빨간 차를 신고했는데, 아빠 차였다 | 역전 | 웃음 |
+| `doodle13` | 동창회 공지가 7줄까지 길어졌는데, 참석 체크는 반장·나·반장 어머님 셋이었다 | 허탈 개그 | 공감 |
+| `doodle14` | 부산 친구 집에서 사투리를 배워 인사했더니, 옷은 "파이다"였다 | 역전 | 웃음 |
+| `doodle15` | 기차 의자를 끝까지 젖혔더니 도미노가 됐고, 맨 뒷줄은 벽이었다 | 허탈 개그 | 웃음 |
+| `doodle16` | 사람을 얼룩으로 기억하는 세탁소 사장님이, 지나가듯 한 면접 얘기까지 기억해 단추를 달아 줬다 | 따뜻한 반전 | 뭉클 |
+
+결말 유형은 허탈 개그 6, 역전 4, 정체 반전 2, 따뜻한 반전 2, 오해 1, 의외의 이유 1로 섞었다. 같은 유형이 연달아 나오지 않게 올리는 순서를 이렇게 권한다(9번, 같은 뼈대 연속 금지): 11 → 2 → 4 → 12 → 1 → 3 → 16 → 5 → 13 → 8 → 14 → 7 → 10 → 15 → 6 → 9.
+
+### 벤치마크 점수표
+
+`python3 media/doodle/v2/score.py doodle{1..16}`로 쟀다. 기준은 `research/benchmark-targets-drawn.json`의 `doodle` 목표다. 길이·훅·첫 화면 변화·화면 길이·음절/초는 벤치마크를 재지 못해 보고서의 **추정값**이다. 측정 방법은 보고서와 같다. 그림 칸 1080×1080(400px부터)에서 ffmpeg scene > 0.04를 쓰고 0.3초 안의 변화는 합친다. 음절/초는 한글 음절 수를 대사 줄 길이 합으로 나눈 값이다. 훅 끝은 첫 줄이 끝나는 시각이다.
+
+| id | 제목 | 길이 | 훅 끝 | 첫 화면 변화 | 평균/최장 화면 | 음절/초 | 줄 수 | 제목 글자(줄별) |
+|---|---|---|---|---|---|---|---|---|
+| 목표 | 2줄 6~9자 | 34초 (30~38) | ≤1.8초 | ≤2.0초 | 2.5 / ≤4.0초 | ≥6.2 | 14 (12~16) | 6~9 |
+| `doodle1` | 멀티탭에 멀티탭 / 꽂으면 벌어지는 일 | 26.5초 | 1.43초 | 0.37초 | 0.74 / 2.63초 | 6.65 | 14 | 7+8 |
+| `doodle2` | 중고거래 네고 / 선 넘으면 벌어지는 일 | 28.2초 | 1.31초 | 0.37초 | 0.78 / 2.00초 | 6.59 | 17 | 6+9 |
+| `doodle3` | 하차벨 아무도 / 안 누르면 벌어지는 일 | 28.7초 | 1.28초 | 0.33초 | 1.11 / 2.90초 | 6.76 | 17 | 6+9 |
+| `doodle4` | "냉장고에 있잖아" / 엄마 vs 나 | 27.5초 | 1.02초 | 0.27초 | 0.71 / 2.47초 | 6.32 | 17 | 7+5 |
+| `doodle5` | 계란 1번 vs 4번 / 진짜 차이 | 29.2초 | 1.30초 | 0.77초 | 0.81 / 2.47초 | 6.83 | 16 | 8+4 |
+| `doodle6` | 팀장님 "넵." 받으면 / 벌어지는 일 | 28.5초 | 0.36초 | 0.37초 | 1.24 / 3.33초 | 7.08 | 17 | 7+5 |
+| `doodle7` | 소화기 바늘 / 초록 밖이면 벌어지는 일 | 30.7초 | 1.46초 | 0.37초 | 0.77 / 1.90초 | 6.51 | 15 | 5+10 |
+| `doodle8` | 카페 진동벨 / 울리면 벌어지는 일 | 30.6초 | 1.71초 | 0.50초 | 0.87 / 2.73초 | 6.63 | 15 | 5+8 |
+| `doodle9` | 식당 직원 부를 때 / "여기요" vs "저기요" | 29.3초 | 1.27초 | 0.90초 | 0.75 / 1.97초 | 6.28 | 16 | 7+8 |
+| `doodle10` | 새벽 3시 편의점 / 수상한 손님의 정체 | 30.2초 | 1.43초 | 1.50초 | 1.26 / 2.87초 | 6.68 | 16 | 7+8 |
+| `doodle11` | 현재 논란중인 / 에스컬레이터 2줄 서기 | 33.3초 | 1.45초 | 0.77초 | 0.85 / 3.27초 | 6.45 | 16 | 6+10 |
+| `doodle12` | 불법주차 신고하면 / 벌어지는 일 | 33.3초 | 1.04초 | 0.77초 | 0.98 / 2.97초 | 6.39 | 17 | 8+5 |
+| `doodle13` | 읽기만 해도 기빨리는 / 동창회 단톡 현실 | 31.5초 | 1.77초 | 1.87초 | 1.12 / 2.73초 | 6.64 | 17 | 9+7 |
+| `doodle14` | 서울 vs 부산 / 같은 말 다른 뜻 | 34.4초 | 1.47초 | 1.57초 | 0.77 / 1.60초 | 7.00 | 21 | 6+6 |
+| `doodle15` | 현재 논란중인 / 기차 의자 끝까지 젖히기? | 28.1초 | 1.41초 | 0.77초 | 0.97 / 2.70초 | 6.82 | 16 | 6+10 |
+| `doodle16` | 동네 세탁소 사장님의 / 미친 기억력 비결 | 34.9초 | 1.51초 | 1.60초 | 1.03 / 2.43초 | 6.75 | 17 | 9+7 |
+
+v1과 비교하면(doodle1~10 중앙값) 훅 끝은 2.67초에서 1.3초로, 음절/초는 5.30에서 6.6으로 바뀌었다. qa_review는 16편 모두 11개 항목 PASS(WARN·FAIL 0)였다.
+
+**못 맞춘 것과 이유**
+- **길이**: 26.5~34.9초(중앙값 29.8초)이고, 9편이 목표 34초(30~38초)보다 짧다. 말을 +50%로 빠르게 하면서 같은 이야기가 5~6초 줄었다. 줄을 더하면 이야기가 늘어지거나(2-1절 4번) 설명이 끼어서(7번), 줄은 이야기에 필요한 만큼만 뒀다. 모두 qa_review의 25~45초 안이고, 5편은 31초 이상이다. 34초 목표 자체가 추정값이다(247편 중앙값).
+- **평균 화면 길이**: 0.7~1.3초로, 목표 2.5초보다 "빠르다". 이 잣대(scene > 0.04)는 표정, 말풍선, 큰 글씨, 자막 상자가 바뀌어도 화면 변화로 센다. 장면(컷)의 실제 길이는 1.5~2.5초다. 최장은 1.6~3.3초로 목표 4.0초 안이다.
+- **줄 수**: 17줄인 편이 8편, doodle14는 21줄이다. 대사가 짧게 오가는 말다툼 구조라서 줄이 짧다(doodle14는 사투리 대사가 한두 마디씩이다). 길이는 그대로 30~35초다.
+- **제목 한 줄 6~9자**: doodle7 2줄(10자), doodle11 2줄(10자), doodle15 2줄(10자)이 넘는다. "에스컬레이터 2줄 서기", "기차 의자 끝까지 젖히기?"는 오케스트레이터가 정한 제목에서 왔다(doodle15의 "KTX"는 서비스 이름이라 "기차"로 바꿨다). qa_review 기준(한 줄 13자 이하)은 통과한다.
+
+
+### 사진과 라이선스
+
+모두 Pexels 사진이다. 사람 얼굴이 알아보이지 않는 물건·장소 사진이고, 읽히는 상표·로고·간판이 없는 것만 썼다. doodle1~10의 사진은 위 `doodle1`~`doodle4`, `doodle5`~`doodle10` 절의 표와 같다. 다만 v2의 세로 칸에서 doodle3의 「정류장의 버스」(21235187)는 버스 옆면 글씨와 노선 번호가 크게 보여서 빼고 그린 거리 배경으로 바꿨다. 새로 쓴 12장은 2026-10-10에 각 사진 페이지에서 "License: Free"(Pexels License)와 제작자를 확인했다. [Pexels License](https://www.pexels.com/license/)는 무료이고 상업적 이용과 수정이 가능하며 출처 표기가 필요 없다. 그래도 설명란에 제작자를 적는다. v2는 화면에 출처 배지를 띄우지 않는다. 페이지 주소, 파일 주소, 제작자, 쓴 구간(초)은 `media/doodle/sources.json`(`used_in`)과 각 `edit.json`의 `sources`에 있다. 쓴 구간은 `seconds.py`가 렌더 데이터에서 채운다.
+
+| 파일 | 제작자 | 쓴 곳 |
+| --- | --- | --- |
+| [7202628](https://www.pexels.com/photo/photograph-of-two-escalators-7202628/) 나란한 에스컬레이터 | SpotwizardLee | doodle11 |
+| [18764954](https://www.pexels.com/photo/view-of-the-escalator-18764954/) 어두운 에스컬레이터 | Orhan Pergel | doodle11 |
+| [5264140](https://www.pexels.com/photo/red-fire-hydrant-on-street-5264140/) 인도의 빨간 소화전 | Brett Sayles | doodle12 |
+| [15818611](https://www.pexels.com/photo/zebra-crossing-in-a-town-15818611/) 횡단보도(멀리 주차된 차의 번호판은 읽히지 않음) | Dương Huỳnh Trung | doodle12 |
+| [19222549](https://www.pexels.com/photo/waterfront-of-seoul-from-the-hangang-river-19222549/) 한강과 서울 | Muneeb Babar | doodle14 |
+| [17967670](https://www.pexels.com/photo/gwangan-bridge-near-skyscrapers-in-busan-south-korea-17967670/) 광안대교 | Junsu Park | doodle14 |
+| [38010001](https://www.pexels.com/photo/haeundae-beach-with-skyline-in-south-korea-38010001/) 해운대(사람은 점처럼 작음) | Rüveyda Akkaya | doodle14 |
+| [19870620](https://www.pexels.com/photo/empty-seats-on-train-19870620/) 빈 기차 좌석(로고 없음, 통로 끝 작은 실루엣은 알아볼 수 없음) | Budget Bizar | doodle15 |
+| [14715657](https://www.pexels.com/photo/empty-train-car-14715657/) 파란 좌석 객차 | Kristina Chuprina | doodle15 |
+| [17293343](https://www.pexels.com/photo/white-shirts-on-hangers-17293343/) 옷걸이의 흰 셔츠 | Pew Nguyen | doodle16 |
+| [965632](https://www.pexels.com/photo/hanged-assorted-shirts-965632/) 걸린 셔츠들 | Arnie Chou | doodle16 |
+| [28576618](https://www.pexels.com/photo/home-laundry-room-with-iron-and-clothes-28576618/) 다리미와 빨래 | Jonathan Borba | doodle16 |
+
+doodle13은 앞 편의 [8533741](https://www.pexels.com/photo/close-up-shot-of-a-smartphone-on-white-surface-8533741/)(빈 화면 휴대폰, Hanna Pad)과 [30027297](https://www.pexels.com/photo/quiet-indoor-restaurant-with-sunlit-tables-30027297/)(빈 식당, Jim Natanauan)을 다시 썼다. 단톡 화면은 우리 그림이다. 어떤 앱의 모양도 따르지 않았고 방 이름은 "○○초 6회 동창회"다.
+
+### 사실과 출처 (2026-10-10 확인)
+
+doodle1, 5, 7은 이야기로 다시 썼지만(아래 "이야기 검토") 대사에 녹인 사실은 v1과 같은 출처에서 왔다. 출처 원문은 위 `doodle1`~`doodle4`, `doodle5`~`doodle10` 절에 있다.
+- doodle1 "정부도 멀티탭에 또 연결하지 말랬어": 산업통상부·한국소비자원·국립소방연구원 보도자료(2025-09-04)의 "멀티탭에 또 다른 멀티탭을 연결해 사용하지 말 것"이다. "콘센트, 멀티탭 사고만 5년간 387건"은 같은 자료의 2020~2024년 CISS 접수 387건이다. 제목의 "벌어지는 일"은 룸메이트와의 말다툼과 결말이다. 화재가 났다고 말하지 않는다.
+- doodle5: "껍데기 열 자리 중 맨 끝 한 자리가 사육환경 번호", "1번 풀밭(방사), 2번 축사 안(평사), 3·4번 케이지", "앞 네 자리 0823은 8월 23일 산란"은 식약처(2019-08-02)와 농식품부(2019-02-21, 2022-01-20) 자료다. "4번은 한 마리당 A4 한 장보다 좁음"은 4번 기준 0.05㎡/마리와 A4 0.0624㎡를 비교해 계산했다. 엄마가 세일 때문에 4번을 샀다는 결말은 창작이다.
+- doodle7: "바늘이 초록 밖이면 압력이 빠진 거라 교체"는 영동소방서 안내 "압력지시계의 바늘이 녹색 범위를 벗어나 있으면 압력 저하로 사용할 수 없으므로 반드시 교체 또는 폐기"에서 왔다. "분말 소화기는 딱 10년", "검사 합격해도 연장은 한 번, 3년뿐"은 인천 서부소방서 안내(2021-09-02)다. 그래서 2010년 제조 소화기는 연장해도 2023년까지다. 문 받침 결말은 창작이다(화면에서는 웃음으로만 쓴다. 소화기를 문 받침으로 쓰라는 뜻이 아니다).
+
+**doodle11 에스컬레이터 두 줄 서기**
+- 2007년 정부의 두 줄 서기 캠페인, 2015년 공식 중단: YTN(중앙일보 인용) 2026-04-23. 원문은 2007년 정부가 "안전사고와 설비 고장 문제를 이유로" 두 줄 서기를 시작했고, 2015년 "두 줄 서기 캠페인을 공식 중단하고" 안전수칙으로 바꿨다는 내용이다. https://www.ytn.co.kr/_ln/0103_202604230947373431
+- "10년간 중대 사고 135건, 그중 90건이 이용자 과실": 세계일보 2026-08-28(행정안전부 국가승강기정보센터 자료). 원문 "2016년부터 지난해까지 에스컬레이터에서 발생한 중대 사고는 총 135건이다… 이 중 이용자 과실로 발생한 사고가 90건". https://www.segye.com/newsView/20260827516314
+- "올해 정부 설문도 49.9 대 50.1, 딱 반반": 더팩트. 2026-08-29 행정안전부 토론회의 사전 설문에서 두 줄 서기가 49.9%, 한 줄 서기와 걷기가 50.1%였다. https://news.tf.co.kr/read/life/2359430.htm
+- 정부의 최근 입장(설명란 출처): SBS Biz 2026-09-23 "행안부는 토론 결과를 반영해 일률적인 두 줄 서기 캠페인과 규제는 더 이상 추진하지 않습니다". https://biz.sbs.co.kr/amp/article/20000336458
+- 양쪽 입장: 비켜 주는 게 당연하다는 바쁜 사람과 걷기가 위험하다는 도치가 같은 분량으로 말한다. 정부 설문도 반반이다. 끝은 "님은 서는 편? 걷는 편?"이다. 그 사람이 팀장님이었다는 결말은 창작이다. 등장인물은 실존 인물이 아닌 낙서 인물이다.
+- 2026-09-23 행정안전부가 일률적인 두 줄 서기 캠페인을 추진하지 않고 3대 안전 수칙(손잡이 잡기, 걷거나 뛰지 않기, 안전선 지키기)에 집중한다고 밝혔다(SBS Biz). v2 대본은 2-1절 7번(설교 금지) 때문에 이 수칙을 화면에서 늘어놓지 않는다. 설명란의 출처에만 둔다.
+
+**doodle12 불법주차 신고** (신고 요건은 사실, 아빠 차 반전은 창작)
+- "같은 자리, 같은 각도로 일 분 간격 두 장이요", "앱으로 보내면 단속 공무원 없이 과태료": 서울특별시 교통 누리집 「교통법규 위반차량 '시민신고제' 운영 안내」(2026-03-12 갱신). 원문 "동일한 위치·각도 1분 간격 사진 2장(정지상태 확인)을 통해 주정차 위반지역·차량번호 등이 식별 가능하고 촬영시간이 표출되어 있어야 함"이고, 요건을 갖추면 현장 단속 없이 과태료를 부과한다. https://news.seoul.go.kr/traffic/archives/507047
+- "소화전, 횡단보도, 인도 같은 여섯 곳은 일 분이면 주민 신고 대상"(여섯 곳은 소화전 5m, 교차로 모퉁이 5m, 버스 정류소 10m, 횡단보도, 초등학교 정문 앞 어린이 보호구역, 인도): 경기일보 2023-08-02(행정안전부 인용). 원문 "기존 5곳(…)에서 인도를 포함해 총 6곳으로", "모든 지자체의 신고 기준이 1분으로 통일됐고". https://kyeonggi.com/article/20230801580171
+- 과태료 금액: 처음에는 "소화전 앞은 승용차 8만 원"이라고 썼다. 근거는 강동구청 보도자료 2019-08-13의 "소화전 주변 5m 이내 주정차 시 과태료가 4만원에서 8만원으로 상향"과 같은 해 8월 1일 「도로교통법 시행령」 개정이었다. 그런데 국가법령정보센터(law.go.kr)의 현행 시행령 [별표 6] 원문은 이 환경에서 열리지 않았다(페이지가 스크립트로만 그려진다). 그래서 숫자를 빼고 "소화전 앞은 과태료가 더 세요"로 바꿔 다시 녹음하고 렌더했다. 일반 구역보다 높다는 점은 위 강동구청 자료(4만 원 → 8만 원)에 근거한다.
+- "신고는 안전신문고 앱으로 함": 위 서울시 안내의 신고 채널 "행안부 안전신문고 앱 운영", "행안부 안전신문고 www.safetyreport.go.kr". 안전신문고는 정부(행정안전부) 신고 창구라서 이름을 그대로 썼다. 상업 앱이 아니다.
+- 양쪽 입장: 지나가던 이웃이 "잠깐 세운 건데 너무하네"라고 차 주인 편을 든다. 신고하는 도치는 규정으로 답한다. 끝은 아빠 차였다는 반전과 "님이면 신고함? 안 함?"이다(가족이어도 신고할까). 이웃과 아빠는 창작 인물이다.
+
+**doodle14 서울 vs 부산 같은 말 다른 뜻** (뜻은 사실, 장면은 창작. 화면의 "서울"은 표준어를 말하고, 영상 안에서도 그렇게 말한다)
+- 정지: 우리말샘의 방언 뜻은 "'부엌'의 방언(강원, 경상, 전라, 제주, 충북)"이고, 표준어 정지(停止)는 "움직이고 있던 것이 멎거나 그침". https://opendict.korean.go.kr/search/searchResult?query=정지
+- 정구지: 우리말샘 "'부추'의 방언(경상, 전북, 충청)". https://opendict.korean.go.kr/search/searchResult?query=정구지
+- 욕보다: 표준국어대사전 "부끄러운 일을 당하다." 우리말샘 "'수고하다'의 방언(경상)". https://stdict.korean.go.kr/search/searchResult.do?searchKeyword=욕보다 , https://opendict.korean.go.kr/search/searchResult?query=욕보다 (사전에 있는 다른 뜻 하나는 일부러 쓰지 않았다)
+- 파이다: 우리말샘 "'나쁘다'의 방언(경상)". 표준어 파이다는 '파다'의 피동인 "구멍이나 구덩이가 만들어지다". https://opendict.korean.go.kr/search/searchResult?query=파이다
+
+**창작 편**(doodle2, 3, 4, 6, 8, 9, 10, 13, 15, 16, 그리고 doodle12의 이야기): 수치나 법령을 말하지 않는다. 실제 업체·앱·식당·세탁소 이름이나 로고는 없다. doodle15는 처음에 제목을 "KTX 의자"로 했다가, 서비스 이름이라 규칙대로 "기차 의자"로 바꿨다. 대사와 자막에는 KTX가 나오지 않는다. 화면의 기차 사진은 로고가 없는 일반 객차다. 영상에는 사실 주장이 없고 매너 논쟁만 있다(젖힐 권리 vs 뒷사람 공간, 그리고 도미노처럼 번지는 결말). 설명란에 "창작"을 적는다.
+
+### 유튜브 설명글 (`upload/` 형식)
+
+`upload/README.md`의 공통 형식으로 16편의 `upload/specs/doodle*.json`을 `media/doodle/v2/specs.py`가 쓴다. 요약은 2~4문장이다. 첫 문장은 상황(사실이 있는 편은 그 사실)이고, 펀치라인은 쓰지 않는다. 사진 크레딧은 edit.json에서 읽고, 사실 출처 기관도 출처 줄에 넣는다. 16편 모두 `fiction: true`라서 요약 앞에 "(창작)"이 붙는다. 해시태그는 `#Shorts`를 빼고 10개다. `python3 upload/make_desc.py doodle<N>`이 `upload/txt/doodle<N>.txt`를 만든다. qa_review의 '설명글' 항목은 16편 모두 PASS다. 채널 이름과 핸들은 아직 `[채널명]`/`[핸들]` 자리표시자다. 아래 "업로드 문구"는 이 형식이 생기기 전의 초안이다. 제목과 고정 댓글은 같고, 설명글은 `upload/txt/`의 것을 쓴다.
+
+### 업로드 문구
+
+제목 끝에는 REVIEW.md 4절대로 ㅋㅋ·ㄷㄷ·?를 붙였다. 고정 댓글은 결말을 말하지 않는 질문이다. 사진 크레딧은 화면 대신 설명란에 모두 적었다.
+
+`doodle1`
+- 제목: 멀티탭에 멀티탭 꽂으면 벌어지는 일ㅋㅋ
+- 설명:
+  ```
+  칸 모자라서 3층까지 쌓은 자취방 멀티탭 탑 🔌 잔소리 vs 멀쩡하거든? 끝까지 따라가 봤더니… 님 방 멀티탭은 몇 층? (창작)
+  창작 짤툰입니다. 등장인물과 이야기는 실제와 관계없으며 특정 업체·앱·단체와 무관합니다. 영상 속 수치와 규정은 아래 출처에 따른 사실입니다.
+  출처: 산업통상부·한국소비자원·국립소방연구원 보도자료(2025.9.4: 2020~2024년 CISS 접수 387건, 「멀티탭에 또 다른 멀티탭을 연결해 사용하지 말 것」)
+  사진: Pexels (Саша Алалыкин, Nikita Nikitin, Tim Mossholder) · 캐릭터와 배경 그림은 직접 그린 그림입니다.
+  Music: "Sneaky Snitch" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
+  ```
+- 해시태그: #멀티탭 #전기안전 #생활꿀팁 #짤툰
+- 고정 댓글: 님 방 멀티탭, 지금 몇 층까지 쌓여 있음? 🔌
+
+`doodle2`
+- 제목: 중고거래 네고 선 넘으면 벌어지는 일ㅋㅋ
+- 설명:
+  ```
+  만 원짜리 의자 올렸다가 배송비 낼 뻔한 썰 🪑 님들이 받아본 최강 네고는? (창작)
+  창작 짤툰입니다. 등장인물과 이야기는 실제와 관계없으며 특정 업체·앱·단체와 무관합니다. 영상 속 수치와 규정은 아래 출처에 따른 사실입니다.
+  사진: Pexels (Gizem Gökce, Tima Miroshnichenko) · 캐릭터와 배경 그림은 직접 그린 그림입니다.
+  Music: "Monkeys Spinning Monkeys" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
+  ```
+- 해시태그: #중고거래 #네고 #공감 #짤툰
+- 고정 댓글: 지금까지 받아본 네고 중 제일 선 넘은 거 적고 가기 👇
+
+`doodle3`
+- 제목: 하차벨 아무도 안 누르면 벌어지는 일ㅋㅋ
+- 설명:
+  ```
+  누가 누르겠지… 하다가 네 명이 같이 걸어간 썰 🚌🔔 님들은 벨 먼저 누르는 쪽? (창작)
+  창작 짤툰입니다. 등장인물과 이야기는 실제와 관계없으며 특정 업체·앱·단체와 무관합니다. 영상 속 수치와 규정은 아래 출처에 따른 사실입니다.
+  사진: Pexels (Elina Volkova, Pramod Tiwari) · 캐릭터와 배경 그림은 직접 그린 그림입니다.
+  Music: "Scheming Weasel" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
+  ```
+- 해시태그: #버스 #하차벨 #눈치게임 #짤툰
+- 고정 댓글: 벨 먼저 누르는 쪽 🙋 vs 남이 누르길 기다리는 쪽 🙄 님은?
+
+`doodle4`
+- 제목: "냉장고에 있잖아" 엄마 vs 나ㅋㅋ
+- 설명:
+  ```
+  10분 찾아도 없던 김치, 엄마는 1초 컷 🫙 근데 그 김치 어디서 나왔냐면… 님 집 엄마도 이런 적 있음? (창작)
+  창작 짤툰입니다. 등장인물과 이야기는 실제와 관계없으며 특정 업체·앱·단체와 무관합니다. 영상 속 수치와 규정은 아래 출처에 따른 사실입니다.
+  사진: Pexels (Polina Tankilevitch, thAnh nguyễn, Max Vakhtbovych, cottonbro studio) · 캐릭터와 배경 그림은 직접 그린 그림입니다.
+  Music: "Hyperfun" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
+  ```
+- 해시태그: #엄마 #냉장고 #공감 #짤툰
+- 고정 댓글: 님 집 냉장고에도 엄마 눈에만 보이는 칸 있음? 😂
+
+`doodle5`
+- 제목: 계란 1번 vs 4번 진짜 차이 ㄷㄷ
+- 설명:
+  ```
+  4번 계란 사 왔다가 엄마한테 혼난 썰 🥚 끝자리는 닭이 사는 집! 근데 엄마 냉장고 계란은…? 님 냉장고 계란은 몇 번? (창작)
+  창작 짤툰입니다. 등장인물과 이야기는 실제와 관계없으며 특정 업체·앱·단체와 무관합니다. 영상 속 수치와 규정은 아래 출처에 따른 사실입니다.
+  출처: 식품의약품안전처(2019.8.2), 농림축산식품부(2019.2.21, 2022.1.20) 난각표시 안내
+  사진: Pexels (thAnh nguyễn, Marcello Sokal, Ben Molyneux, Alexas Fotos, Magda Ehlers, Klaus Nielsen) · 캐릭터와 배경 그림은 직접 그린 그림입니다.
+  Music: "Sneaky Snitch" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
+  ```
+- 해시태그: #계란 #난각번호 #생활꿀팁 #짤툰
+- 고정 댓글: 지금 냉장고 계란 마지막 숫자 몇 번인지 확인하고 댓글 ㄱㄱ 🥚
+
+`doodle6`
+- 제목: 팀장님 "넵." 받으면 벌어지는 일ㅋㅋ
+- 설명:
+  ```
+  같은 넵인데 마음은 다 다름 📱 마지막 단계는 진짜 공포… 님은 주로 몇 단계 넵 씀? (창작)
+  창작 짤툰입니다. 등장인물과 이야기는 실제와 관계없으며 특정 업체·앱·단체와 무관합니다. 영상 속 수치와 규정은 아래 출처에 따른 사실입니다.
+  사진: Pexels (Hanna Pad, Cup of Couple, cottonbro studio, Letícia Alvares) · 캐릭터와 배경 그림은 직접 그린 그림입니다.
+  Music: "Hustle" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
+  ```
+- 해시태그: #회사생활 #넵 #직장인공감 #짤툰
+- 고정 댓글: 님이 제일 많이 쓰는 넵은 몇 단계? 1~7 숫자로 ㄱㄱ
+
+`doodle7`
+- 제목: 소화기 바늘 초록 밖이면 벌어지는 일ㅋㅋ
+- 설명:
+  ```
+  2010년산 소화기 바꾸자 vs 멀쩡한 걸 왜 버려 🧯 숫자로 아빠를 이겼는데 다음 날… 님 집 소화기 바늘, 지금 초록임? (창작)
+  창작 짤툰입니다. 등장인물과 이야기는 실제와 관계없으며 특정 업체·앱·단체와 무관합니다. 영상 속 수치와 규정은 아래 출처에 따른 사실입니다.
+  출처: 충북 영동소방서·인천 남동소방서·인천 서부소방서·서산소방서 소화기 관리 안내(압력계 녹색 범위, 분말 소화기 내용연수 10년, 성능 확인 검사 합격 시 1회 3년 연장)
+  사진: Pexels (Jakub Zerdzicki, Mohsen Adelimoghaddam, Tibor Szabo) · 캐릭터와 배경 그림은 직접 그린 그림입니다.
+  Music: "Scheming Weasel" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
+  ```
+- 해시태그: #소화기 #화재안전 #생활꿀팁 #짤툰
+- 고정 댓글: 지금 소화기 바늘 보고 오기 🧯 초록이었음?
+
+`doodle8`
+- 제목: 카페 진동벨 울리면 벌어지는 일ㅋㅋ
+- 설명:
+  ```
+  10분째 조용한 진동벨, 들고 카운터 갔더니 손에서 부르르… 근데 그 벨 🔔 님은 벨 울리면 몇 초 만에 일어남? (창작)
+  창작 짤툰입니다. 등장인물과 이야기는 실제와 관계없으며 특정 업체·앱·단체와 무관합니다. 영상 속 수치와 규정은 아래 출처에 따른 사실입니다.
+  사진: Pexels (Sander Dalhuisen, Gabriel, Arda Kaykısız, Pavel Danilyuk, Chevanon Photography) · 캐릭터와 배경 그림은 직접 그린 그림입니다.
+  Music: "Monkeys Spinning Monkeys" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
+  ```
+- 해시태그: #카페 #진동벨 #공감 #짤툰
+- 고정 댓글: 진동벨 울리면 몇 초 만에 일어남? ⏱️
+
+`doodle9`
+- 제목: 식당 직원 부를 때 "여기요" vs "저기요"
+- 설명:
+  ```
+  손 반쯤 들었다가 머리 긁는 척한 사람 🙋 결국 최강은 따로 있음. 님은 여기요? 저기요? 이모님? (창작)
+  창작 짤툰입니다. 등장인물과 이야기는 실제와 관계없으며 특정 업체·앱·단체와 무관합니다. 영상 속 수치와 규정은 아래 출처에 따른 사실입니다.
+  사진: Pexels (Jim, Cynthia Ortega Espinosa, Maria Orlova, Lio Photography) · 캐릭터와 배경 그림은 직접 그린 그림입니다.
+  Music: "Hyperfun" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
+  ```
+- 해시태그: #식당 #여기요 #저기요 #짤툰
+- 고정 댓글: 여기요파 🙋 / 저기요파 🗣️ / 이모님파 👑 님은?
+
+`doodle10`
+- 제목: 새벽 3시 편의점 수상한 손님의 정체
+- 설명:
+  ```
+  매일 새벽 3시, 말없이 컵라면 먹고 가던 손님 🌙 비 오던 날 내민 건… 님은 이런 손님 만나 봄? (창작)
+  창작 짤툰입니다. 등장인물과 이야기는 실제와 관계없으며 특정 업체·앱·단체와 무관합니다. 영상 속 수치와 규정은 아래 출처에 따른 사실입니다.
+  사진: Pexels (El Jundi, Markus Winkler, Denniz Futalan, More Amore) · 캐릭터와 배경 그림은 직접 그린 그림입니다.
+  Music: "Sneaky Snitch" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
+  ```
+- 해시태그: #편의점 #알바 #훈훈 #짤툰
+- 고정 댓글: 알바하면서 만난 제일 기억에 남는 손님은? 🌙
+
+`doodle11`
+- 제목: 현재 논란중인 에스컬레이터 2줄 서기
+- 설명:
+  ```
+  출근 첫날 왼쪽에 섰다가 "바빠요!" 🚶 두 줄 서기 vs 비켜 주기, 정부 설문도 49.9 대 50.1. 근데 그 아저씨 정체가… (창작)
+  창작 짤툰입니다. 등장인물과 이야기는 실제와 관계없으며 특정 업체·앱·단체와 무관합니다. 영상 속 수치와 규정은 아래 출처에 따른 사실입니다.
+  출처: 세계일보(2026.8.28, 행정안전부 국가승강기정보센터 2016~2025 중대사고 135건·이용자 과실 90건), 더팩트(2026.8 토론회 사전 설문), SBS Biz(2026.9.23 행정안전부 발표), YTN(2026.4.23, 2007년 두 줄 서기·2015년 중단)
+  사진: Pexels (SpotwizardLee, Orhan Pergel) · 캐릭터와 배경 그림은 직접 그린 그림입니다.
+  Music: "Sneaky Snitch" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
+  ```
+- 해시태그: #에스컬레이터 #두줄서기 #논란 #짤툰
+- 고정 댓글: 님은 서는 편 🧍 vs 걷는 편 🚶? 이유도 같이!
+
+`doodle12`
+- 제목: 불법주차 신고하면 벌어지는 일 ㄷㄷ
+- 설명:
+  ```
+  소화전 앞 빨간 차, 1분 간격 사진 두 장 📸 신고 요건은 진짜, 마지막 반전은 창작. 님이면 신고함? (창작)
+  창작 짤툰입니다. 등장인물과 이야기는 실제와 관계없으며 특정 업체·앱·단체와 무관합니다. 영상 속 수치와 규정은 아래 출처에 따른 사실입니다.
+  출처: 서울특별시 교통 누리집 「교통법규 위반차량 시민신고제 운영 안내」(2026.3.12 갱신: 같은 위치·각도 1분 간격 사진 2장, 현장 단속 없이 과태료), 경기일보(2023.8.2, 행정안전부: 주민신고 6대 구역·1분 기준), 강동구청 보도자료(2019.8.13, 소화전 5m 이내 과태료 상향)
+  사진: Pexels (Brett Sayles, Dương Huỳnh Trung) · 캐릭터와 배경 그림은 직접 그린 그림입니다.
+  Music: "Scheming Weasel" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
+  ```
+- 해시태그: #불법주차 #안전신문고 #소화전 #짤툰
+- 고정 댓글: 가족 차여도 신고한다 🙋 vs 일단 전화부터 📞 님은?
+
+`doodle13`
+- 제목: 읽기만 해도 기빨리는 동창회 단톡 현실
+- 설명:
+  ```
+  알림 32개, 공지 7줄 📢 근데 반장 입장도 있음… 참석 체크한 3명의 정체는? 님 단톡에도 이런 반장 있음? (창작)
+  창작 짤툰입니다. 등장인물과 이야기는 실제와 관계없으며 특정 업체·앱·단체와 무관합니다. 영상 속 수치와 규정은 아래 출처에 따른 사실입니다.
+  사진: Pexels (Hanna Pad, Jim) · 캐릭터와 배경 그림은 직접 그린 그림입니다.
+  Music: "Hustle" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
+  ```
+- 해시태그: #동창회 #단톡 #공감 #짤툰
+- 고정 댓글: 공지 길게 쓰는 반장 vs 읽고 답 안 하는 단톡방, 누가 더 잘못? 🤔
+
+`doodle14`
+- 제목: 서울 vs 부산 같은 말 다른 뜻ㅋㅋ
+- 설명:
+  ```
+  정지 = 부엌, 정구지 = 부추, 욕봤다 = 수고했다 🌿 부산 친구 집에서 배운 말로 인사했더니… 님 동네에도 이런 말 있음? (창작)
+  창작 짤툰입니다. 등장인물과 이야기는 실제와 관계없으며 특정 업체·앱·단체와 무관합니다. 영상 속 수치와 규정은 아래 출처에 따른 사실입니다.
+  뜻 출처: 국립국어원 우리말샘·표준국어대사전(정지·정구지·욕보다·파이다·단디 표제어, 2026.10.10 확인). 화면의 '서울'은 표준어 기준입니다.
+  사진: Pexels (Muneeb Babar, Junsu Park, Rüveyda Akkaya) · 캐릭터와 배경 그림은 직접 그린 그림입니다.
+  Music: "Monkeys Spinning Monkeys" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
+  ```
+- 해시태그: #부산사투리 #경상도사투리 #서울vs부산 #짤툰
+- 고정 댓글: 님 동네에서만 쓰는 말 하나씩 적고 가기 👇
+
+`doodle15`
+- 제목: 현재 논란중인 기차 의자 끝까지 젖히기?
+- 설명:
+  ```
+  의자 끝까지 젖히는 건 권리? 뒷사람 무릎은? 💺 한 번 젖혔더니 도미노가 시작됨. 님은 끝까지? 반만? (창작)
+  창작 짤툰입니다. 등장인물과 이야기는 실제와 관계없으며 특정 업체·앱·단체와 무관합니다. 영상 속 수치와 규정은 아래 출처에 따른 사실입니다.
+  사진: Pexels (Budget Bizar, Kristina Chuprina) · 캐릭터와 배경 그림은 직접 그린 그림입니다.
+  Music: "Hyperfun" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
+  ```
+- 해시태그: #기차 #의자젖히기 #논란 #짤툰
+- 고정 댓글: 끝까지 젖힌다 💺 vs 반만 젖힌다 🙂 vs 안 젖힌다 🙅 님은?
+
+`doodle16`
+- 제목: 동네 세탁소 사장님의 미친 기억력 비결
+- 설명:
+  ```
+  번호표도 장부도 없이 내 셔츠를 꺼내는 사장님 👔 비결은 얼룩…? 일주일 뒤 셔츠에 생긴 일. 님 동네에도 이런 사장님 있음? (창작)
+  창작 짤툰입니다. 등장인물과 이야기는 실제와 관계없으며 특정 업체·앱·단체와 무관합니다. 영상 속 수치와 규정은 아래 출처에 따른 사실입니다.
+  사진: Pexels (Pew Nguyen, Arnie Chou, Jonathan Borba) · 캐릭터와 배경 그림은 직접 그린 그림입니다.
+  Music: "Sneaky Snitch" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
+  ```
+- 해시태그: #세탁소 #동네사장님 #훈훈 #짤툰
+- 고정 댓글: 님 동네 단골집 사장님의 미친 기억력 썰 풀고 가기 👇
+
+
+## "○○ 특" v2 (벤치마크, `teuk1`~`teuk14`)
+
+`research/benchmark-drawn.md` 3절과 `research/benchmark-targets-drawn.json`의 `teuk` 목표(자체공감 「곱창 특」 98.7만, 「바나나 우유 특」 96.9만)에 맞춰 v1 8편을 다시 만들고 6편을 새로 만들었다. 2026-10-10 이야기 검토(REVIEW.md 2-1절)로 대본을 한 번 더 고쳤다.
+
+**바뀐 점 (v1 → v2)**
+
+- 제목은 한 줄 "○○ 특"(3~7자)이다. 제목을 읽는 첫 줄을 없애고, 0초부터 첫 항목과 가장 센 리액션 그림이 나온다.
+- 위쪽 검정 띠가 없다. 어두운 단색 바탕(편마다 색이 조금 다름)이고, 오른쪽 위에 마스코트 로고, 가운데 그림 칸(1080×1160), 아래에 흰 글씨 2줄 관찰체 자막이 있다. 강조색과 단어 하이라이트는 없다.
+- 첫 항목은 짧은 훅 줄(1~1.4초)과 그다음 줄로 나눴다. 첫 줄 끝(훅 끝)이 1.0~1.7초다.
+- 항목마다 그림 종류가 바뀐다. 마스코트 클로즈업(정면 꽉 차게, 왼쪽, 오른쪽, 아래에서 올라옴, 기울임, 효과선, 땀, 김, 하트, 불꽃), 사진(Wikimedia Commons, 반응 원형 인서트), 그린 장면(`Sseol.tsx`)을 섞는다.
+- 내레이터 속도를 올렸다(SunHi +32%, Hyunsu +40%, 실측 6.3~6.9음절/초). "나"의 반응 줄은 7줄에서 2줄로 줄였고, 말풍선 대신 따옴표 자막으로 넣었다.
+- 번호 목록("1. 알람 다섯 번 끄기")을 없애고 "~함/~음" 관찰체 문장으로 썼다. 끝은 "여러분은 몇 개 해당?ㅋㅋ"와 "나"의 펀치라인 한 줄이다.
+- 화면에 출처 배지가 없다. 사진 크레딧은 모두 설명란(`upload/txt/<id>.txt`)에 있다.
+
+### 새 템플릿 옵션 (`src/lib/Teuk.tsx`, 기존 쇼츠는 그대로)
+
+- `edit.json` 최상위에 `"layout": "teuk"`를 두면 `ClipShort`가 영상 전체를 `TeukShort`에 넘긴다(`src/ClipShort.tsx`에 import 1줄, 타입 2줄, `return` 1줄). `"teuk": {"bg": "#2e2321", "mascot": "#FFB36B"}`로 바탕색과 마스코트 색을 정한다.
+- 클립의 `gfx.type`은 세 가지다. `"face"`는 마스코트 리액션 클로즈업이다(`mood`, `to`, `pos`: close·left·right·low·tilt, `fx`: lines·sweat·steam·gloom·sparkle·fire·hearts, `burst`, `prop`·`propX`·`propY`, `big`, `say`, `steps` = [표정 바뀌는 때, 말풍선, 큰 글씨]). `"photo"`는 클립의 `src` 사진을 천천히 확대해 보여 준다(`react`: 반응 원형 인서트 {mood, to, side, size}, `tag`, `big`, `zoom`, `pos`, `steps` = [인서트, 태그, 큰 글씨, 인서트 표정 바뀜]). `"scene"`은 기존 `Sseol.tsx` 장면이다.
+- 자막: `prep.py`가 `layout: teuk`일 때 자막 페이지마다 `"g"`(대사 id:자막 번호)를 붙이고, `TeukShort`가 같은 `g`의 페이지를 2줄로 함께 띄운다. `cap`의 `/`가 줄바꿈이다. qa_review는 줄마다 글자 수를 잰다. 첫 자막은 0초부터, 마지막 자막은 영상 끝까지 보인다.
+- 만드는 도구(`media/teuk/`): `episodes.py`(대본·그림), `make.py`(script.json·edit.json 생성), `fetch.py`(Commons 라이선스 확인 `resolve`, 사진 내려받기), `score.py`(벤치마크 점수표), `upload.py`(설명글 spec), `readme.py`(이 절).
+- 하위 호환 확인: 템플릿을 바꾸기 전과 후에 `sseol1`(바꾸지 않은 썰 쇼츠)의 `src/data/sseol1.json`이 바이트 단위로 같고, 프레임 0·45·200·400·700의 정지 화면 md5가 모두 같았다.
+
+```bash
+python3 media/teuk/make.py teuk9 && python3 media/teuk/fetch.py teuk9 && python3 voice_edge.py teuk9 && python3 prep.py teuk9 \
+  && ./render.sh teuk9 final/teuk9.mp4 && python3 qa_review.py teuk9 && python3 media/teuk/score.py teuk9
+```
+
+### 편 목록과 노리는 공감 포인트
+
+| id | 화면 제목 | 노리는 공감 포인트 | 결말 유형 | 감정 | 음악 |
+| --- | --- | --- | --- | --- | --- |
+| `teuk1` | 월요일 아침 특 | 알람 이름까지 '진짜_최종_마지막'으로 바꿔 가며 버틴 아침이 겨우 오전 10시라는 허탈함 | 허탈 개그 | 공감 | Hustle |
+| `teuk2` | 시험 기간 특 | 시험 전날에만 생기는 정리 욕구, 끝나고 나서야 잘되는 공부 | 역전(끝나니까 공부가 됨) | 웃음 | Sneaky Snitch |
+| `teuk3` | 급식 특 | 4교시 메뉴 확인부터 국자 한 번 더까지, 졸업하고 나서야 그리운 급식 | 따뜻한 반전 | 뭉클한 공감 | Monkeys Spinning Monkeys |
+| `teuk4` | 단톡방 특 | 알림 끄고 몰래 읽는 나, 정작 조용해지면 먼저 '심심해' 보내는 나 | 자기 폭로 반전 | 웃음 | Hyperfun |
+| `teuk5` | 자취 첫 달 특 | 냄비가 그릇, 대파 한 단, 마지막 휴지 한 칸, 결국 본가 가는 날만 기다리는 첫 달 | 의외의 결말(자유 → 본가 그리움) | 공감 | Scheming Weasel (faster version) |
+| `teuk6` | 비 오는 날 특 | 우산의 법칙과 밀가루 없는 파전, 집에 오자마자 그치는 비 | 허탈 개그 | 웃음 | Monkeys Spinning Monkeys |
+| `teuk7` | 헬스장 첫 주 특 | 1년 회원권, 다음 날 계단, 운동 후 치킨, 결국 샤워만 하고 오는 헬스장 | 허탈 개그 | 웃음 | Exhilarate |
+| `teuk8` | 월급날 특 | 입금 알림 대기부터 '내가 쏜다' 후회, 이틀 만에 원래 잔고 | 허탈 개그 | 공감 | Hustle |
+| `teuk9` | 떡볶이 특 | 1인분 → 볶음밥, 단무지 리필, 어묵 국물 눈치, '당분간 안 먹어' 다음 날 또 추천 | 자기 배신 반전 | 웃음 | Hyperfun |
+| `teuk10` | 컵라면 특 | 보이지 않는 물 선, 1분째 젓가락 대기, 고르는 데 20분·먹는 데 3분 | 자기 배신 반전 | 웃음 | Sneaky Snitch |
+| `teuk11` | 붕어빵 특 | 팥 vs 슈크림 → 둘 다, 머리·꼬리 성격, 3마리 → 1마리, 지도에 몰래 별표 | 의외의 결말(혼자만 아는 가게) | 웃음 | Monkeys Spinning Monkeys |
+| `teuk12` | 삼겹살 특 | 굽는 사람은 못 먹고, 엘리베이터에서 메뉴가 들키고, 마지막 한 점은 아무도 안 먹는 고깃집 | 펀치라인(그 한 점 내가 먹을게) | 웃음 | Hustle |
+| `teuk13` | 길치 특 | 뒤를 가리키는 화살표, 출구 번호, 오른쪽 하면 왼쪽부터, 근데 맛집 가는 길은 한 번에 | 역전(맛집만 직진) | 웃음 | Scheming Weasel (faster version) |
+| `teuk14` | 눈치 없는 사람 특 | '이거 누가 시켰어요?', 스포, 깜짝 파티 장소 질문 → 근데 제일 착한 친구 → 혹시 나야? | 따뜻한 반전 + 자기 폭로 | 웃음과 공감 | Sneaky Snitch |
+
+### 벤치마크 점수표
+
+벤치마크 값은 `benchmark-targets-drawn.json`의 `teuk`이다(길이·훅·컷·음절 속도는 보고서가 *추정*으로 표시한 값). 우리 값은 렌더(`final/<id>.mp4`, qa_review와 같은 그림 칸·장면 기준 0.12)와 목소리 타임라인(`build/<id>/timeline.json`, 한글 음절 수 ÷ 대사 길이 합, 줄 사이 쉼 제외)에서 쟀다. `python3 media/teuk/score.py <id>`로 다시 잴 수 있다.
+
+| 편 | 길이 | 훅 끝 | 첫 화면 변화 | 평균 / 최장 장면 | 음절/초 | 줄 수 | 제목 |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| 목표 | 28초 | 1.5초 | 1.5초 | 2.2 / 3.5초 | 6.5 | 14 | 3~7자 |
+| `teuk1` 월요일 아침 특 | 28.4초 | 1.36초 | 1.60초 | 2.03 / 2.77초 | 6.76 | 14 | 6자 |
+| `teuk2` 시험 기간 특 | 28.9초 | 1.34초 | 1.60초 | 1.92 / 2.77초 | 6.43 | 14 | 5자 |
+| `teuk3` 급식 특 | 28.6초 | 0.98초 | 1.23초 | 1.90 / 2.63초 | 6.84 | 14 | 3자 |
+| `teuk4` 단톡방 특 | 27.7초 | 1.11초 | 1.37초 | 1.73 / 3.37초 | 6.30 | 14 | 4자 |
+| `teuk5` 자취 첫 달 특 | 27.3초 | 1.19초 | 1.43초 | 1.95 / 3.17초 | 6.94 | 14 | 5자 |
+| `teuk6` 비 오는 날 특 | 27.5초 | 1.16초 | 1.40초 | 1.96 / 2.70초 | 6.40 | 14 | 5자 |
+| `teuk7` 헬스장 첫 주 특 | 25.4초 | 1.14초 | 1.40초 | 1.81 / 2.57초 | 6.77 | 14 | 6자 |
+| `teuk8` 월급날 특 | 27.4초 | 1.70초 | 1.97초 | 1.95 / 2.80초 | 6.38 | 14 | 4자 |
+| `teuk9` 떡볶이 특 | 29.5초 | 1.27초 | 1.53초 | 2.11 / 3.27초 | 6.72 | 13 | 4자 |
+| `teuk10` 컵라면 특 | 30.3초 | 1.34초 | 1.60초 | 2.16 / 3.13초 | 6.36 | 14 | 4자 |
+| `teuk11` 붕어빵 특 | 27.6초 | 1.20초 | 1.47초 | 1.97 / 2.90초 | 6.51 | 13 | 4자 |
+| `teuk12` 삼겹살 특 | 28.8초 | 1.12초 | 1.37초 | 2.06 / 3.37초 | 6.85 | 14 | 4자 |
+| `teuk13` 길치 특 | 27.6초 | 1.28초 | 1.53초 | 1.97 / 2.63초 | 6.66 | 14 | 3자 |
+| `teuk14` 눈치 없는 사람 특 | 29.0초 | 1.01초 | 1.27초 | 1.93 / 2.83초 | 6.60 | 14 | 7자 |
+
+**목표와 다른 점**
+
+- 길이는 25.4~30.3초(중앙값 28.5초)로 목표(28초, 25~35초) 안이다. 가장 짧은 teuk7(25.4초)은 항목 문장이 짧은 편이다.
+- 음절 속도는 6.30~6.94음절/초로 모두 6.2 이상이다(목표 6.5, v1 중앙값 5.27).
+- 훅 끝: 첫 줄을 짧게 나눠 1.0~1.7초로 목표(1.5초)에 맞췄다.
+- 평균 장면 길이는 목표(2.2초)보다 조금 짧거나 비슷하다. 줄마다 그림을 바꾸고, 사진 클립의 반응 인서트가 뜨는 순간도 화면 변화로 잡힌다.
+- 줄 수는 13~14줄로 목표(14, 12~16)에 맞췄다. teuk9·teuk11은 항목이 길어 13줄이다.
+- 제목 길이: `눈치 없는 사람 특`은 7자로, 목표 범위(3~7자)의 끝이다. 보고서 아이디어 목록의 제목(자체공감 「눈치 없는 사람 특」 117만)을 그대로 썼다.
+- qa_review의 '제목 띠' WARN은 의도한 것이다. 벤치마크 레시피가 "위 제목 띠 없음"이라서 띠를 뺐다.
+
+### 이야기 검토 (REVIEW.md 2-1, 2026-10-10)로 다시 쓴 항목
+
+흔한 말, 구체적이지 않은 말, 마지막이 약한 항목을 바꿨다. 마지막 항목은 꺾이거나 가장 세게 했다. 바꾼 뒤 모두 다시 녹음하고 다시 렌더했다.
+
+- `teuk1`: 일어나는 게 기본 → 마지막 알람 이름이 '진짜_최종_마지막' · 회사 앞 깊은 한숨 → 출입 카드 '삑' 소리가 하루 중 제일 슬픔 · 커피 마셔야 사람 됨 → 커피 전엔 메일을 읽어도 글자가 안 들어옴 · 출근하자마자 점심 고민(마지막) → 이렇게 버텼는데 아직 오전 10시
+- `teuk2`: 새벽 3시 배고픔 → 새벽 3시에 갑자기 방 구조 바꾸고 싶음 · 벼락치기 중 인생 고민(마지막) → 시험 끝나고 나니까 공부가 제일 잘됨
+- `teuk3`: 디저트 날은 하루 종일 행복 → 국자가 한 번 더 오면 그날은 대성공 · 우유 원샷(마지막) → 졸업하고 나니까 그 급식이 제일 그리움
+- `teuk4`: 나가기 버튼 100번(마지막) → 막상 조용해지면 내가 먼저 '심심해' 보냄
+- `teuk5`: 엄마 반찬이 세상에서 제일 맛있음 → 엄마 반찬통 돌려줄 때 빈 통 미안해서 과자 넣음 · 관리비 고지서 보고 깜짝(마지막) → 자유롭다더니 한 달 뒤 본가 가는 날만 기다림
+- `teuk6`: 양말 젖으면 하루 종일 찝찝 → 젖은 운동화에서 하루 종일 '찌걱' 소리 · 비 오면 괜히 파전 생각 → 파전 해 먹자 했는데 밀가루가 없음
+- `teuk7`: 사흘째부터 갈까 말까(마지막) → 결국 1년 회원권으로 샤워만 하고 옴
+- `teuk8`: 고생한 나한테 선물 → '오늘은 내가 쏜다' 계산할 때 살짝 후회 · 다음 월급날 세기(마지막) → 이틀 만에 잔고가 월급 전이랑 같아짐
+- `teuk9`: 맵다 맵다 하면서 젓가락 안 멈춤 → 맵다면서 단무지만 세 번 리필 · 어묵은 마지막에 먹어야 제맛 → 포장마차 어묵 국물 세 번째 컵부터 눈치 · 떡파 vs 어묵파 → 떡만 골라 먹는 친구랑 먹으면 어묵만 산더미 · 튀김 국물에 퐁당 → 김말이 찍는 순간 반은 국물 속으로 · 다음 날 또 생각남(마지막) → '당분간 안 먹어' 해 놓고 다음 날 점심에 또 추천
+- `teuk10`: 2분 반에 뚜껑 → 1분째 젓가락 들고 대기 · 밤 11시엔 세상에서 제일 맛있음 → 붓기는 내일의 나에게 · 김치 없으면 허전 → 뚜껑 접어서 앞접시로 쓰는 건 국룰 · 하나 더 땡김 → 고르는 데 20분, 먹는 데 3분 · 다음 날 얼굴 퉁퉁(마지막) → '다음엔 다른 맛' 다짐하고 또 같은 맛
+- `teuk11`: 입천장 데임 → 한 입에 입천장 데고 말 잃음 · 식으면 데워 먹음 → 천 원에 몇 마리인지로 물가 체감 · 파는 곳 찾으면 보물 찾은 기분(마지막) → 파는 곳 발견하면 지도에 몰래 별표
+- `teuk12`: 옷 냄새는 집에 가서야 앎 → 엘리베이터 탄 사람들이 내 저녁 메뉴 맞힘 · 냄새 맡으면 또 배고픔 → '불판 갈아 드릴까요?' 배부른데 '네!' · 쌈장으로 밥 한 공기 → 마늘 안 먹는다더니 불판 위 마늘만 노림
+- `teuk14`: 단체 사진에서 눈 감음(눈치와 무관) → 깜짝 생일 파티 장소를 주인공 앞에서 물어봄
+
+### 사진 출처와 라이선스
+
+Pexels와 Pixabay를 먼저 시도했지만, 두 사이트 모두 이 환경에 봇 확인 화면(Cloudflare)을 돌려줘서 항목별 라이선스 페이지를 열 수 없었다. 그래서 쓰지 않았다. 대신 Wikimedia Commons에서 CC0, 퍼블릭 도메인, CC BY 파일만 골랐다(BY-SA, NC, ND 제외). 라이선스는 각 파일 페이지의 메타데이터(imageinfo extmetadata)에서 2026-10-10에 확인했다(`media/teuk/fetch.py resolve`). 모든 사진을 큰 크기로 보고 상표, 가게 이름, 앱 아이콘, 알아볼 수 있는 얼굴이 없는 것만 남겼다. 컵라면 제품 사진은 위에서 내려다본 컵 속만 보이는 것만 썼다. 물 끓이는 주전자 사진은 각인된 글씨 때문에, 학교 급식 사진은 군 관련 사진뿐이라서 뺐다. 각 파일의 페이지 주소, 파일 주소, 라이선스, 작가, 쓴 구간은 `media/teuk/photos.json`과 각 `edit.json`의 `sources`에 있다. 화면에는 크레딧을 넣지 않고 설명란에 넣는다.
+
+| 사진 키 | 파일 (Commons) | 작가 | 라이선스 | 쓴 편 (초) |
+| --- | --- | --- | --- | --- |
+| `alarm` | [Alarm clock on a chair (Unsplash).jpg](https://commons.wikimedia.org/wiki/File:Alarm_clock_on_a_chair_(Unsplash).jpg) | Szűcs László szucslaszlo | CC0 | teuk1 3.7~4.8 |
+| `alley1` | [Bukchon, Seoul - Bukchon3283.jpg](https://commons.wikimedia.org/wiki/File:Bukchon,_Seoul_-_Bukchon3283.jpg) | lumoplank | CC0 | teuk13 3.6~5.6 |
+| `bungeo1` | [Taiyaki - cut section.jpg](https://commons.wikimedia.org/wiki/File:Taiyaki_-_cut_section.jpg) | 毒島みるく | CC0 | teuk11 0.0~1.5 |
+| `bungeo2` | [Bungeoppang-01.jpg](https://commons.wikimedia.org/wiki/File:Bungeoppang-01.jpg) | Siqbal at en.wikipedia | Public domain | teuk11 10.1~12.3 |
+| `bungeo3` | [시장 2.jpg](https://commons.wikimedia.org/wiki/File:%EC%8B%9C%EC%9E%A5_2.jpg) | Chae Ji-young | CC BY 4.0 | teuk11 21.3~23.9 |
+| `bungeo4` | [Taiyaki 003.jpg](https://commons.wikimedia.org/wiki/File:Taiyaki_003.jpg) | Ocdp | CC0 | teuk11 23.9~25.2 |
+| `cake` | [Piece of chocolate cake on a white plate decorated with chocolate sauce.jpg](https://commons.wikimedia.org/wiki/File:Piece_of_chocolate_cake_on_a_white_plate_decorated_with_chocolate_sauce.jpg) | Daria Yakovleva (minor edits by Subsidiary account) | CC0 | teuk14 26.1~27.4 |
+| `calendar` | [WallCalendar.jpg](https://commons.wikimedia.org/wiki/File:WallCalendar.jpg) | Claudio Elias | Public domain | teuk8 21.5~24.0 |
+| `cart` | [Mini grocery toy pushcart.jpg](https://commons.wikimedia.org/wiki/File:Mini_grocery_toy_pushcart.jpg) | Me (Elsa Versailles) | Public domain | teuk8 11.5~13.5 |
+| `chicken` | [Korean fried chicken 5.jpg](https://commons.wikimedia.org/wiki/File:Korean_fried_chicken_5.jpg) | insatiablemunch | CC BY 2.0 | teuk3 9.4~11.9, teuk7 13.2~15.1 |
+| `coffee` | [Cappuchino latte art.jpg](https://commons.wikimedia.org/wiki/File:Cappuchino_latte_art.jpg) | Blanka Novotná | Public domain | teuk1 15.8~18.6 |
+| `crossroad` | [An Example of Raised Crosswalks near Sogang University 2.jpg](https://commons.wikimedia.org/wiki/File:An_Example_of_Raised_Crosswalks_near_Sogang_University_2.jpg) | Monotaxism | CC0 | teuk13 9.3~11.4 |
+| `cup` | [Cup Noodle Zeitaku-nikumori-Dandanmian.jpg](https://commons.wikimedia.org/wiki/File:Cup_Noodle_Zeitaku-nikumori-Dandanmian.jpg) | 毒島みるく | CC0 | teuk10 0.0~1.6 |
+| `cup2` | [Cup Noodle Zeitaku-toromi-fukahire-soup.jpg](https://commons.wikimedia.org/wiki/File:Cup_Noodle_Zeitaku-toromi-fukahire-soup.jpg) | 毒島みるく | CC0 | teuk10 2.9~5.7 |
+| `desk` | [Working on a planning session with stationery items, notebook, and colorful pencils on a wooden desk.jpg](https://commons.wikimedia.org/wiki/File:Working_on_a_planning_session_with_stationery_items,_notebook,_and_colorful_pencils_on_a_wooden_desk.jpg) | Shixart1985 | CC BY 2.0 | teuk2 26.5~28.9 |
+| `dumbbell` | [Exercise equipment (rubber ball, light-weight dumbbells, jump rope).jpg](https://commons.wikimedia.org/wiki/File:Exercise_equipment_(rubber_ball,_light-weight_dumbbells,_jump_rope).jpg) | CDC/ Debora Cartagena | Public domain | teuk7 8.4~10.4 |
+| `fried_kimchi` | [Kimchi fried rice.jpg](https://commons.wikimedia.org/wiki/File:Kimchi_fried_rice.jpg) | Sharon Ang | CC0 | teuk9 1.5~4.0 |
+| `fried_pan` | [Kimchi-bokkeum-bap (Kimchi fried rice) - Kogi 2023-09-11.jpg](https://commons.wikimedia.org/wiki/File:Kimchi-bokkeum-bap_(Kimchi_fried_rice)_-_Kogi_2023-09-11.jpg) | Andy Li | CC0 | teuk12 14.8~16.8 |
+| `greenonion` | [Beijing scallions.jpg](https://commons.wikimedia.org/wiki/File:Beijing_scallions.jpg) | Fumikas Sagisavas | CC0 | teuk5 5.7~7.9 |
+| `greenonion2` | [CSA-Red-Spring-Onions.jpg](https://commons.wikimedia.org/wiki/File:CSA-Red-Spring-Onions.jpg) | Evan-Amos | Public domain | teuk5 23.9~25.2 |
+| `grill1` | [Samgyeopsal-gui 1.jpg](https://commons.wikimedia.org/wiki/File:Samgyeopsal-gui_1.jpg) | chomjong | CC BY 2.0 | teuk12 0.0~1.4 |
+| `grill2` | [Korean.food-Samgyeopsal-02.jpg](https://commons.wikimedia.org/wiki/File:Korean.food-Samgyeopsal-02.jpg) | Blue Lotus (a flickr user) | CC BY 2.0 | teuk12 8.7~11.4 |
+| `grill3` | [Samgyeopsal-gui.jpg](https://commons.wikimedia.org/wiki/File:Samgyeopsal-gui.jpg) | jinsoo jang | CC0 | teuk12 26.6~28.8 |
+| `kimchi` | [Korean cuisine-Kimchi-08.jpg](https://commons.wikimedia.org/wiki/File:Korean_cuisine-Kimchi-08.jpg) | Jeremy Keith | CC BY 2.0 | teuk3 24.9~26.1 |
+| `lastslice` | [Pepperoni pizza slice on a red plate.jpg](https://commons.wikimedia.org/wiki/File:Pepperoni_pizza_slice_on_a_red_plate.jpg) | MVS9966 | CC BY 3.0 | teuk14 13.3~15.6 |
+| `map` | [World Map 1689.JPG](https://commons.wikimedia.org/wiki/File:World_Map_1689.JPG) | Gerard van Schagen | Public domain | teuk13 25.6~27.6 |
+| `notes` | [Personal organizer with metallic ring binder.jpg](https://commons.wikimedia.org/wiki/File:Personal_organizer_with_metallic_ring_binder.jpg) | Old Photo Profile | CC BY 2.0 | teuk2 3.7~5.7 |
+| `pajeon` | [Korean pancake-Pajeon-08.jpg](https://commons.wikimedia.org/wiki/File:Korean_pancake-Pajeon-08.jpg) | Jamie | CC BY 2.0 | teuk6 10.9~13.6 |
+| `phone` | [Smartphone display screen.jpg](https://commons.wikimedia.org/wiki/File:Smartphone_display_screen.jpg) | Skitterphoto | CC0 | teuk4 14.3~16.6 |
+| `pot` | [Ramyeon and kimchi.jpg](https://commons.wikimedia.org/wiki/File:Ramyeon_and_kimchi.jpg) | Hyeon-Jeong Suk | CC BY 2.0 | teuk5 2.9~4.5 |
+| `rainwindow` | [Clear Umbrella Rain Liverpool (Unsplash).jpg](https://commons.wikimedia.org/wiki/File:Clear_Umbrella_Rain_Liverpool_(Unsplash).jpg) | freddie marriage fredmarriage | CC0 | teuk6 5.3~6.5 |
+| `ramyeon` | [20200804 033546 Ramyeon IMG 8515.jpg](https://commons.wikimedia.org/wiki/File:20200804_033546_Ramyeon_IMG_8515.jpg) | Choi Kwang-mo | CC0 | teuk10 17.2~19.6 |
+| `ssam` | [Samgyeopsal table.jpg](https://commons.wikimedia.org/wiki/File:Samgyeopsal_table.jpg) | 이동원 | CC0 | teuk12 6.3~8.7 |
+| `stairs` | [Stairs steps.jpg](https://commons.wikimedia.org/wiki/File:Stairs_steps.jpg) | Knites | CC0 | teuk7 10.4~12.0 |
+| `steak` | [Steak, carrots, bok choy, sweet peppers, and mashed potatoes - Massachusetts.jpg](https://commons.wikimedia.org/wiki/File:Steak,_carrots,_bok_choy,_sweet_peppers,_and_mashed_potatoes_-_Massachusetts.jpg) | Daderot | CC0 | teuk8 6.8~8.7 |
+| `tbk_cheese` | [Korean food at Tteokbokki restaurant in Shin-Okubo 3.jpg](https://commons.wikimedia.org/wiki/File:Korean_food_at_Tteokbokki_restaurant_in_Shin-Okubo_3.jpg) | Syced | CC0 | teuk9 16.9~19.9 |
+| `tbk_eomuk` | [Korean.snacks-Tteokbokki-08.jpg](https://commons.wikimedia.org/wiki/File:Korean.snacks-Tteokbokki-08.jpg) | jetalone (flickr) | CC BY 2.0 | teuk9 7.6~10.6 |
+| `tbk_fork` | [Tteokbokki Bunsik Korean food 02.jpg](https://commons.wikimedia.org/wiki/File:Tteokbokki_Bunsik_Korean_food_02.jpg) | Hankook12 | CC0 | teuk9 14.3~16.9 |
+| `tbk_pan` | [Korean.snacks-Tteokbokki-04.jpg](https://commons.wikimedia.org/wiki/File:Korean.snacks-Tteokbokki-04.jpg) | Sung Sook | CC BY 2.0 | teuk9 0.0~1.5, teuk13 22.0~24.3 |
+| `tbk_plate` | [Korean rice cake (tteokbokki).jpg](https://commons.wikimedia.org/wiki/File:Korean_rice_cake_(tteokbokki).jpg) | Fumikas Sagisavas | CC0 | teuk9 26.1~27.4 |
+| `tissue` | [Chained rolls of toilet paper at MBTA Sullivan station bathrooms.jpg](https://commons.wikimedia.org/wiki/File:Chained_rolls_of_toilet_paper_at_MBTA_Sullivan_station_bathrooms.jpg) | 4300streetcar | CC BY 4.0 | teuk5 7.9~10.2 |
+| `umbrella` | [Closeup of black umbrella in rain.jpg](https://commons.wikimedia.org/wiki/File:Closeup_of_black_umbrella_in_rain.jpg) | Shixart1985 | CC BY 2.0 | teuk6 6.5~8.5 |
+
+### 사실 확인
+
+14편 모두 관찰체 창작 대본이다. 통계, 가격, 법규 같은 사실 주장은 없다. 시간·숫자("10분", "3분", "천 원에 몇 마리")는 장면 속 표현이고 사실로 내세우지 않는다. 그래서 인용할 출처가 없다. 실제 브랜드, 가게, 앱, 회사 이름은 없다("국룰", "밀떡/쌀떡"은 일반 명사). 사람 유형 편(길치, 눈치 없는 사람)은 "나"의 습관으로 쓰고, 끝에서 "혹시 나야?", "맛집 가는 길은 한 번에"처럼 자기 자신을 소재로 돌린다. 몸, 지역, 직업, 집단은 놀리지 않는다. 설명란 요약 앞에 "(창작)"이 붙는다.
+
+### 업로드 문구
+
+설명글은 공통 형식(`upload/README.md`)으로 `upload/specs/<id>.json` → `python3 upload/make_desc.py <id>` → `upload/txt/<id>.txt`에 있다. 채널 이름과 핸들은 아직 자리표시자다. 아래는 그 내용이다.
+
+`teuk1`
+- 제목: 월요일 아침 특ㅋㅋ
+- 설명:
+  ```
+  (창작) 알람을 다섯 번 끄고서야 겨우 일어나는 월요일 아침을 담았습니다. 마지막 알람 이름이 '진짜_최종_마지막'이고, 출입 카드 '삑' 소리가 하루 중 제일 슬프다면 공감할 겁니다. 여러분은 몇 개 해당되나요?
+  
+  ▶ [채널명] 채널 구독: https://www.youtube.com/@[핸들]
+  
+  출처: 그림·대본·목소리 직접 제작(등장인물·채팅방은 실제와 관계없음) · 사진: Alarm clock on a chair (Unsplash).jpg by Szűcs László szucslaszlo (CC0, http://creativecommons.org/publicdomain/zero/1.0/deed.en), via Wikimedia Commons · 사진: Cappuchino latte art.jpg by Blanka Novotná (Public domain), via Wikimedia Commons · 음악: "Hustle" Kevin MacLeod (incompetech.com), CC BY 4.0 (creativecommons.org/licenses/by/4.0)
+  
+  #Shorts #공감 #특 #공감툰 #공감애니 #창작애니 #일상공감 #월요일 #직장인 #출근 #직장인공감
+  ```
+- 해시태그: #Shorts #공감 #특 #공감툰 #공감애니 #창작애니 #일상공감 #월요일 #직장인 #출근 #직장인공감
+- 고정 댓글: 알람 몇 번 끄고 일어나세요?
+
+`teuk2`
+- 제목: 시험 기간 특ㅋㅋ
+- 설명:
+  ```
+  (창작) 시험 전날만 되면 갑자기 책상 정리가 하고 싶어지는 시험 기간의 모습을 모았습니다. 계획표만 한 시간 만들고, 새벽 3시에 방 구조를 바꾸고 싶어지는 바로 그 마음입니다. 여러분은 몇 개 해당되나요?
+  
+  ▶ [채널명] 채널 구독: https://www.youtube.com/@[핸들]
+  
+  출처: 그림·대본·목소리 직접 제작(등장인물·채팅방은 실제와 관계없음) · 사진: Personal organizer with metallic ring binder.jpg by Old Photo Profile (CC BY 2.0, https://creativecommons.org/licenses/by/2.0), via Wikimedia Commons · 사진: Working on a planning session with stationery items, notebook, and colorful pencils on a wooden desk.jpg by Shixart1985 (CC BY 2.0, https://creativecommons.org/licenses/by/2.0), via Wikimedia Commons · 음악: "Sneaky Snitch" Kevin MacLeod (incompetech.com), CC BY 4.0 (creativecommons.org/licenses/by/4.0)
+  
+  #Shorts #공감 #특 #공감툰 #공감애니 #창작애니 #일상공감 #시험기간 #학생공감 #벼락치기 #중간고사
+  ```
+- 해시태그: #Shorts #공감 #특 #공감툰 #공감애니 #창작애니 #일상공감 #시험기간 #학생공감 #벼락치기 #중간고사
+- 고정 댓글: 시험 전날 제일 많이 한 딴짓은?
+
+`teuk3`
+- 제목: 급식 특ㅋㅋ
+- 설명:
+  ```
+  (창작) 4교시부터 오늘 급식 메뉴만 생각하던 학교 급식 시간을 떠올려 봤습니다. 종이 치자마자 뛰지 않고 아주 빠르게 걷고, 국자가 한 번 더 오면 그날은 대성공이었죠. 여러분은 몇 개 해당되나요?
+  
+  ▶ [채널명] 채널 구독: https://www.youtube.com/@[핸들]
+  
+  출처: 그림·대본·목소리 직접 제작(등장인물·채팅방은 실제와 관계없음) · 사진: Korean fried chicken 5.jpg by insatiablemunch (CC BY 2.0, https://creativecommons.org/licenses/by/2.0), via Wikimedia Commons · 사진: Korean cuisine-Kimchi-08.jpg by Jeremy Keith (CC BY 2.0, https://creativecommons.org/licenses/by/2.0), via Wikimedia Commons · 음악: "Monkeys Spinning Monkeys" Kevin MacLeod (incompetech.com), CC BY 4.0 (creativecommons.org/licenses/by/4.0)
+  
+  #Shorts #공감 #특 #공감툰 #공감애니 #창작애니 #일상공감 #급식 #학교 #학창시절 #추억
+  ```
+- 해시태그: #Shorts #공감 #특 #공감툰 #공감애니 #창작애니 #일상공감 #급식 #학교 #학창시절 #추억
+- 고정 댓글: 최애 급식 메뉴 하나만 적고 가기
+
+`teuk4`
+- 제목: 단톡방 특ㅋㅋ
+- 설명:
+  ```
+  (창작) 알림은 꺼 놓고 몰래 다 읽는 단톡방의 하루를 모았습니다. 질문하면 아무도 대답이 없고, 엄마한테 보낼 톡을 단톡방에 보내는 그 순간까지 담았습니다. 여러분은 몇 개 해당되나요?
+  
+  ▶ [채널명] 채널 구독: https://www.youtube.com/@[핸들]
+  
+  출처: 그림·대본·목소리 직접 제작(등장인물·채팅방은 실제와 관계없음) · 사진: Smartphone display screen.jpg by Skitterphoto (CC0, http://creativecommons.org/publicdomain/zero/1.0/deed.en), via Wikimedia Commons · 음악: "Hyperfun" Kevin MacLeod (incompetech.com), CC BY 4.0 (creativecommons.org/licenses/by/4.0)
+  
+  #Shorts #공감 #특 #공감툰 #공감애니 #창작애니 #일상공감 #단톡방 #카톡공감 #친구공감 #읽씹
+  ```
+- 해시태그: #Shorts #공감 #특 #공감툰 #공감애니 #창작애니 #일상공감 #단톡방 #카톡공감 #친구공감 #읽씹
+- 고정 댓글: 지금 안 읽은 톡 몇 개 있어요?
+
+`teuk5`
+- 제목: 자취 첫 달 특ㅋㅋ
+- 설명:
+  ```
+  (창작) 집이 너무 조용해서 오히려 잠이 안 오는 자취 첫 달의 모습입니다. 라면 냄비가 곧 그릇이 되고, 대파 한 단은 끝까지 먹은 적이 없는 그 시절입니다. 여러분은 몇 개 해당되나요?
+  
+  ▶ [채널명] 채널 구독: https://www.youtube.com/@[핸들]
+  
+  출처: 그림·대본·목소리 직접 제작(등장인물·채팅방은 실제와 관계없음) · 사진: Ramyeon and kimchi.jpg by Hyeon-Jeong Suk (CC BY 2.0, https://creativecommons.org/licenses/by/2.0), via Wikimedia Commons · 사진: Beijing scallions.jpg by Fumikas Sagisavas (CC0, http://creativecommons.org/publicdomain/zero/1.0/deed.en), via Wikimedia Commons · 사진: Chained rolls of toilet paper at MBTA Sullivan station bathrooms.jpg by 4300streetcar (CC BY 4.0, https://creativecommons.org/licenses/by/4.0), via Wikimedia Commons · 사진: CSA-Red-Spring-Onions.jpg by Evan-Amos (Public domain), via Wikimedia Commons · 음악: "Scheming Weasel" Kevin MacLeod (incompetech.com), CC BY 4.0 (creativecommons.org/licenses/by/4.0)
+  
+  #Shorts #공감 #특 #공감툰 #공감애니 #창작애니 #일상공감 #자취 #자취생 #자취공감 #혼자살기
+  ```
+- 해시태그: #Shorts #공감 #특 #공감툰 #공감애니 #창작애니 #일상공감 #자취 #자취생 #자취공감 #혼자살기
+- 고정 댓글: 자취하면서 제일 놀랐던 순간은?
+
+`teuk6`
+- 제목: 비 오는 날 특ㅋㅋ
+- 설명:
+  ```
+  (창작) 우산 챙긴 날엔 비가 한 방울도 안 오는 비 오는 날의 법칙을 모았습니다. 집에 우산이 많은데 또 하나 사고, 파전 해 먹자 했는데 밀가루가 없는 날입니다. 여러분은 몇 개 해당되나요?
+  
+  ▶ [채널명] 채널 구독: https://www.youtube.com/@[핸들]
+  
+  출처: 그림·대본·목소리 직접 제작(등장인물·채팅방은 실제와 관계없음) · 사진: Clear Umbrella Rain Liverpool (Unsplash).jpg by freddie marriage fredmarriage (CC0, http://creativecommons.org/publicdomain/zero/1.0/deed.en), via Wikimedia Commons · 사진: Closeup of black umbrella in rain.jpg by Shixart1985 (CC BY 2.0, https://creativecommons.org/licenses/by/2.0), via Wikimedia Commons · 사진: Korean pancake-Pajeon-08.jpg by Jamie (CC BY 2.0, https://creativecommons.org/licenses/by/2.0), via Wikimedia Commons · 음악: "Monkeys Spinning Monkeys" Kevin MacLeod (incompetech.com), CC BY 4.0 (creativecommons.org/licenses/by/4.0)
+  
+  #Shorts #공감 #특 #공감툰 #공감애니 #창작애니 #일상공감 #비오는날 #장마 #우산 #날씨공감
+  ```
+- 해시태그: #Shorts #공감 #특 #공감툰 #공감애니 #창작애니 #일상공감 #비오는날 #장마 #우산 #날씨공감
+- 고정 댓글: 집에 우산 몇 개 있어요?
+
+`teuk7`
+- 제목: 헬스장 첫 주 특ㅋㅋ
+- 설명:
+  ```
+  (창작) 일단 회원권은 1년짜리부터 끊는 헬스장 첫 주의 모습입니다. 첫날부터 너무 열심히 해서 다음 날 계단을 못 내려가고, 운동했으니까 치킨은 괜찮다고 믿습니다. 여러분은 몇 개 해당되나요?
+  
+  ▶ [채널명] 채널 구독: https://www.youtube.com/@[핸들]
+  
+  출처: 그림·대본·목소리 직접 제작(등장인물·채팅방은 실제와 관계없음) · 사진: Exercise equipment (rubber ball, light-weight dumbbells, jump rope).jpg by CDC/ Debora Cartagena (Public domain), via Wikimedia Commons · 사진: Stairs steps.jpg by Knites (CC0, http://creativecommons.org/publicdomain/zero/1.0/deed.en), via Wikimedia Commons · 사진: Korean fried chicken 5.jpg by insatiablemunch (CC BY 2.0, https://creativecommons.org/licenses/by/2.0), via Wikimedia Commons · 음악: "Exhilarate" Kevin MacLeod (incompetech.com), CC BY 4.0 (creativecommons.org/licenses/by/4.0)
+  
+  #Shorts #공감 #특 #공감툰 #공감애니 #창작애니 #일상공감 #헬스장 #운동 #헬린이 #다이어트
+  ```
+- 해시태그: #Shorts #공감 #특 #공감툰 #공감애니 #창작애니 #일상공감 #헬스장 #운동 #헬린이 #다이어트
+- 고정 댓글: 헬스장 며칠째까지 가 봤어요?
+
+`teuk8`
+- 제목: 월급날 특ㅋㅋ
+- 설명:
+  ```
+  (창작) 아침부터 입금 알림만 기다리는 월급날 하루를 담았습니다. 들어오자마자 카드값이 빠져나가고, '오늘은 내가 쏜다' 해 놓고 계산할 때 살짝 후회합니다. 여러분은 몇 개 해당되나요?
+  
+  ▶ [채널명] 채널 구독: https://www.youtube.com/@[핸들]
+  
+  출처: 그림·대본·목소리 직접 제작(등장인물·채팅방은 실제와 관계없음) · 사진: Steak, carrots, bok choy, sweet peppers, and mashed potatoes - Massachusetts.jpg by Daderot (CC0, http://creativecommons.org/publicdomain/zero/1.0/deed.en), via Wikimedia Commons · 사진: Mini grocery toy pushcart.jpg by Me (Elsa Versailles) (Public domain), via Wikimedia Commons · 사진: WallCalendar.jpg by Claudio Elias (Public domain), via Wikimedia Commons · 음악: "Hustle" Kevin MacLeod (incompetech.com), CC BY 4.0 (creativecommons.org/licenses/by/4.0)
+  
+  #Shorts #공감 #특 #공감툰 #공감애니 #창작애니 #일상공감 #월급날 #직장인 #월급 #직장인공감
+  ```
+- 해시태그: #Shorts #공감 #특 #공감툰 #공감애니 #창작애니 #일상공감 #월급날 #직장인 #월급 #직장인공감
+- 고정 댓글: 월급날 제일 먼저 사는 건?
+
+`teuk9`
+- 제목: 떡볶이 특ㅋㅋ
+- 설명:
+  ```
+  (창작) 1인분 시켰는데 정신 차려 보면 볶음밥까지 먹고 있는 떡볶이의 법칙을 모았습니다. 맵다면서 단무지만 세 번 리필하고, 밀떡 쌀떡 토론은 10분이 걸립니다. 여러분은 몇 개 해당되나요?
+  
+  ▶ [채널명] 채널 구독: https://www.youtube.com/@[핸들]
+  
+  출처: 그림·대본·목소리 직접 제작(등장인물·채팅방은 실제와 관계없음) · 사진: Korean.snacks-Tteokbokki-04.jpg by Sung Sook (CC BY 2.0, https://creativecommons.org/licenses/by/2.0), via Wikimedia Commons · 사진: Kimchi fried rice.jpg by Sharon Ang (CC0, http://creativecommons.org/publicdomain/zero/1.0/deed.en), via Wikimedia Commons · 사진: Korean.snacks-Tteokbokki-08.jpg by jetalone (flickr) (CC BY 2.0, https://creativecommons.org/licenses/by/2.0), via Wikimedia Commons · 사진: Tteokbokki Bunsik Korean food 02.jpg by Hankook12 (CC0, http://creativecommons.org/publicdomain/zero/1.0/deed.en), via Wikimedia Commons · 사진: Korean food at Tteokbokki restaurant in Shin-Okubo 3.jpg by Syced (CC0, http://creativecommons.org/publicdomain/zero/1.0/deed.en), via Wikimedia Commons · 사진: Korean rice cake (tteokbokki).jpg by Fumikas Sagisavas (CC0, http://creativecommons.org/publicdomain/zero/1.0/deed.en), via Wikimedia Commons · 음악: "Hyperfun" Kevin MacLeod (incompetech.com), CC BY 4.0 (creativecommons.org/licenses/by/4.0)
+  
+  #Shorts #공감 #특 #공감툰 #공감애니 #창작애니 #일상공감 #떡볶이 #분식 #먹방공감 #밀떡쌀떡
+  ```
+- 해시태그: #Shorts #공감 #특 #공감툰 #공감애니 #창작애니 #일상공감 #떡볶이 #분식 #먹방공감 #밀떡쌀떡
+- 고정 댓글: 밀떡 vs 쌀떡, 여러분은?
+
+`teuk10`
+- 제목: 컵라면 특ㅋㅋ
+- 설명:
+  ```
+  (창작) 물 선까지 부으라는데 그 선이 안 보이는 컵라면의 순간들을 모았습니다. 3분 기다리라는데 1분째 젓가락을 들고 있고, 고르는 데 20분, 먹는 데 3분이 걸립니다. 여러분은 몇 개 해당되나요?
+  
+  ▶ [채널명] 채널 구독: https://www.youtube.com/@[핸들]
+  
+  출처: 그림·대본·목소리 직접 제작(등장인물·채팅방은 실제와 관계없음) · 사진: 컵라면 사진 1 by 毒島みるく (CC0, http://creativecommons.org/publicdomain/zero/1.0/deed.en), via Wikimedia Commons · 사진: 컵라면 사진 2 by 毒島みるく (CC0, http://creativecommons.org/publicdomain/zero/1.0/deed.en), via Wikimedia Commons · 사진: 20200804 033546 Ramyeon IMG 8515.jpg by Choi Kwang-mo (CC0, http://creativecommons.org/publicdomain/zero/1.0/deed.en), via Wikimedia Commons · 음악: "Sneaky Snitch" Kevin MacLeod (incompetech.com), CC BY 4.0 (creativecommons.org/licenses/by/4.0)
+  
+  #Shorts #공감 #특 #공감툰 #공감애니 #창작애니 #일상공감 #컵라면 #라면 #야식 #편의점
+  ```
+- 해시태그: #Shorts #공감 #특 #공감툰 #공감애니 #창작애니 #일상공감 #컵라면 #라면 #야식 #편의점
+- 고정 댓글: 컵라면 몇 분 기다리세요?
+
+`teuk11`
+- 제목: 붕어빵 특ㅋㅋ
+- 설명:
+  ```
+  (창작) 팥이냐 슈크림이냐 고르다가 결국 둘 다 사는 붕어빵의 계절입니다. 머리부터 먹냐 꼬리부터 먹냐로 성격이 나오고, 세 마리 샀는데 집에 오면 한 마리만 남습니다. 여러분은 몇 개 해당되나요?
+  
+  ▶ [채널명] 채널 구독: https://www.youtube.com/@[핸들]
+  
+  출처: 그림·대본·목소리 직접 제작(등장인물·채팅방은 실제와 관계없음) · 사진: Taiyaki - cut section.jpg by 毒島みるく (CC0, http://creativecommons.org/publicdomain/zero/1.0/deed.en), via Wikimedia Commons · 사진: Bungeoppang-01.jpg by Siqbal at en.wikipedia (Public domain), via Wikimedia Commons · 사진: 시장 2.jpg by Chae Ji-young (CC BY 4.0, https://creativecommons.org/licenses/by/4.0), via Wikimedia Commons · 사진: Taiyaki 003.jpg by Ocdp (CC0, http://creativecommons.org/publicdomain/zero/1.0/deed.en), via Wikimedia Commons · 음악: "Monkeys Spinning Monkeys" Kevin MacLeod (incompetech.com), CC BY 4.0 (creativecommons.org/licenses/by/4.0)
+  
+  #Shorts #공감 #특 #공감툰 #공감애니 #창작애니 #일상공감 #붕어빵 #겨울간식 #팥붕슈붕 #길거리음식
+  ```
+- 해시태그: #Shorts #공감 #특 #공감툰 #공감애니 #창작애니 #일상공감 #붕어빵 #겨울간식 #팥붕슈붕 #길거리음식
+- 고정 댓글: 팥 vs 슈크림, 머리 vs 꼬리?
+
+`teuk12`
+- 제목: 삼겹살 특ㅋㅋ
+- 설명:
+  ```
+  (창작) 고기 굽는 사람은 정작 한 점도 못 먹는 삼겹살 자리의 모습을 모았습니다. 다 익었냐고 물으면 대답은 늘 '조금만 더'이고, 배부르다면서 볶음밥은 꼭 시킵니다. 여러분은 몇 개 해당되나요?
+  
+  ▶ [채널명] 채널 구독: https://www.youtube.com/@[핸들]
+  
+  출처: 그림·대본·목소리 직접 제작(등장인물·채팅방은 실제와 관계없음) · 사진: Samgyeopsal-gui 1.jpg by chomjong (CC BY 2.0, https://creativecommons.org/licenses/by/2.0), via Wikimedia Commons · 사진: Samgyeopsal table.jpg by 이동원 (CC0, http://creativecommons.org/publicdomain/zero/1.0/deed.en), via Wikimedia Commons · 사진: Korean.food-Samgyeopsal-02.jpg by Blue Lotus (a flickr user) (CC BY 2.0, https://creativecommons.org/licenses/by/2.0), via Wikimedia Commons · 사진: Kimchi-bokkeum-bap (Kimchi fried rice) - Kogi 2023-09-11.jpg by Andy Li (CC0, http://creativecommons.org/publicdomain/zero/1.0/deed.en), via Wikimedia Commons · 사진: Samgyeopsal-gui.jpg by jinsoo jang (CC0, http://creativecommons.org/publicdomain/zero/1.0/deed.en), via Wikimedia Commons · 음악: "Hustle" Kevin MacLeod (incompetech.com), CC BY 4.0 (creativecommons.org/licenses/by/4.0)
+  
+  #Shorts #공감 #특 #공감툰 #공감애니 #창작애니 #일상공감 #삼겹살 #고기 #회식 #먹방공감
+  ```
+- 해시태그: #Shorts #공감 #특 #공감툰 #공감애니 #창작애니 #일상공감 #삼겹살 #고기 #회식 #먹방공감
+- 고정 댓글: 고기 굽는 담당 누구예요?
+
+`teuk13`
+- 제목: 길치 특ㅋㅋ
+- 설명:
+  ```
+  (창작) 지도 앱을 켜고 걷는데 화살표가 계속 뒤를 가리키는 길치의 하루입니다. 길을 물어봐 놓고 반대로 걷고, 오른쪽이라고 하면 일단 왼쪽부터 봅니다. 여러분은 몇 개 해당되나요?
+  
+  ▶ [채널명] 채널 구독: https://www.youtube.com/@[핸들]
+  
+  출처: 그림·대본·목소리 직접 제작(등장인물·채팅방은 실제와 관계없음) · 사진: Bukchon, Seoul - Bukchon3283.jpg by lumoplank (CC0, http://creativecommons.org/publicdomain/zero/1.0/deed.en), via Wikimedia Commons · 사진: 횡단보도 사진 by Monotaxism (CC0, http://creativecommons.org/publicdomain/zero/1.0/deed.en), via Wikimedia Commons · 사진: Korean.snacks-Tteokbokki-04.jpg by Sung Sook (CC BY 2.0, https://creativecommons.org/licenses/by/2.0), via Wikimedia Commons · 사진: World Map 1689.JPG by Gerard van Schagen (Public domain), via Wikimedia Commons · 음악: "Scheming Weasel" Kevin MacLeod (incompetech.com), CC BY 4.0 (creativecommons.org/licenses/by/4.0)
+  
+  #Shorts #공감 #특 #공감툰 #공감애니 #창작애니 #일상공감 #길치 #방향치 #길찾기 #공감짤
+  ```
+- 해시태그: #Shorts #공감 #특 #공감툰 #공감애니 #창작애니 #일상공감 #길치 #방향치 #길찾기 #공감짤
+- 고정 댓글: 길 잃어버린 썰 하나씩 풀고 가기
+
+`teuk14`
+- 제목: 눈치 없는 사람 특ㅋㅋ
+- 설명:
+  ```
+  (창작) 다들 조용한데 혼자 '이거 누가 시켰어요?' 하고 묻는 친구, 주변에 한 명쯤 있죠. 결말이 궁금하다니까 진짜 결말을 말해 주고, 깜짝 파티 장소를 주인공 앞에서 물어봅니다. 여러분 주변에도 있나요, 아니면 혹시 나인가요?
+  
+  ▶ [채널명] 채널 구독: https://www.youtube.com/@[핸들]
+  
+  출처: 그림·대본·목소리 직접 제작(등장인물·채팅방은 실제와 관계없음) · 사진: Pepperoni pizza slice on a red plate.jpg by MVS9966 (CC BY 3.0, https://creativecommons.org/licenses/by/3.0), via Wikimedia Commons · 사진: Piece of chocolate cake on a white plate decorated with chocolate sauce.jpg by Daria Yakovleva (minor edits by Subsidiary account) (CC0, http://creativecommons.org/publicdomain/zero/1.0/deed.en), via Wikimedia Commons · 음악: "Sneaky Snitch" Kevin MacLeod (incompetech.com), CC BY 4.0 (creativecommons.org/licenses/by/4.0)
+  
+  #Shorts #공감 #특 #공감툰 #공감애니 #창작애니 #일상공감 #눈치 #친구공감 #인간관계 #MBTI
+  ```
+- 해시태그: #Shorts #공감 #특 #공감툰 #공감애니 #창작애니 #일상공감 #눈치 #친구공감 #인간관계 #MBTI
+- 고정 댓글: 혹시… 나야? 몇 개 해당?
+
