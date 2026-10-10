@@ -17,7 +17,7 @@ export type SceneG = {
   /** "📍 편의점" tag at the top left */
   place?: string;
   /** a backdrop drawn here ("class", "home", "street", "store", "army", "night", "stage", "office", "door", "hospital", "bedroom", "bath",
-   *  "subway", "cafeteria", "desk") or any CSS background */
+   *  "subway", "cafeteria", "desk", "gym", "rain") or any CSS background */
   bg?: string;
   /** a real photo (a path under public/) filling the box in place of `bg`, slowly zooming; photoFit "cover" (default) or "contain", photoPos its CSS position */
   photo?: string; photoFit?: "cover" | "contain"; photoPos?: string;
@@ -223,6 +223,20 @@ const Backdrop: React.FC<{ kind: string; h: number; sign?: string; tagged?: bool
       {box({ left: 830, top: 170, width: 16, height: F - 260, background: "#1b1b1f" })}
       {box({ left: 0, right: 0, top: F - 90, height: 40, background: "#b07a4f" })}{box({ left: 0, right: 0, top: F - 50, bottom: 0, background: "#8a5d3b" })}
       {[0, 1, 2, 3].map((k) => box({ left: 560 + k * 6, top: F - 140 - k * 46, width: 220 - k * 12, height: 44, background: ["#ff7a7a", "#7ab8ff", "#9be07b", "#ffcf6b"][k], border: "5px solid #1b1b1f", borderRadius: 6 }, k))}</>);
+    case "gym": return (<>{wall("#f2f0ea", "#e6e3da", "#5c6470")}
+      {box({ left: 80, top: 120, width: 560, height: 360, background: "linear-gradient(135deg,#f6fbff,#d3e3ee)", border: "12px solid #9aa6b2", borderRadius: 10 })}
+      {box({ left: 130, top: 160, width: 110, height: 12, background: "rgba(255,255,255,.9)", borderRadius: 6, transform: "rotate(-30deg)" })}
+      {box({ right: 70, top: F - 330, width: 300, height: 16, background: "#3a3f47", borderRadius: 8 })}{box({ right: 70, top: F - 180, width: 300, height: 16, background: "#3a3f47", borderRadius: 8 })}
+      {box({ right: 70, top: F - 330, width: 16, height: 330, background: "#3a3f47" })}{box({ right: 354, top: F - 330, width: 16, height: 330, background: "#3a3f47" })}
+      {[0, 1, 2, 3].map((k) => box({ right: 92 + k * 66, top: F - 380 + (k % 2) * 6, width: 44, height: 44, borderRadius: 22, background: ["#ff7a7a", "#7ab8ff", "#9be07b", "#ffcf6b"][k], border: "5px solid #1b1b1f" }, k))}
+      {[0, 1, 2, 3].map((k) => box({ right: 92 + k * 66, top: F - 232 + (k % 2) * 6, width: 44, height: 44, borderRadius: 22, background: "#4a4f58", border: "5px solid #1b1b1f" }, 10 + k))}
+      {box({ left: 0, right: 0, top: F + 40, height: 18, background: "#7b8592" })}</>);
+    case "rain": return (<>{box({ inset: 0, background: "linear-gradient(180deg,#7e8a9a,#b8c2cd)" })}
+      {[[40, 300, 170], [230, 180, 150], [400, 340, 190], [610, 230, 160], [790, 380, 210]].map(([x, top, w], k) =>
+        box({ left: x, top, width: w, height: F - top, background: k % 2 ? "#8995a6" : "#99a4b3", borderRadius: "10px 10px 0 0" }, k))}
+      {Array.from({ length: 46 }, (_, k) => box({ left: (k * 233) % 1060, top: (k * 157) % (F - 60), width: 5, height: 46, borderRadius: 3, background: "rgba(225,240,255,.75)", transform: "rotate(14deg)" }, 20 + k))}
+      {box({ left: 0, right: 0, top: F, bottom: 0, background: "#6f7883" })}{box({ left: 0, right: 0, top: F, height: 26, background: "#a9b3bd" })}
+      {[[120, 90, 220], [560, 130, 300], [860, 80, 180]].map(([x, y, w], k) => box({ left: x, top: F + y, width: w, height: 34, borderRadius: "50%", background: "rgba(190,215,240,.7)" }, 80 + k))}</>);
     default: return box({ inset: 0, background: kind });
   }
 };
