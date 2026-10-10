@@ -1,0 +1,15 @@
+{
+  "_note": "name(채널 이름)과 handle(@ 뒤 핸들)을 실제 값으로 바꾼 뒤 python3 upload/make_desc.py --all 을 돌리면 모든 설명글의 구독 줄이 바뀝니다. link는 구독 줄 아래에 넣을 관련 링크(선택)이고, tags는 그 채널 모든 영상 끝에 붙는 해시태그입니다.",
+  "channels": {
+    "sseol":    {"label": "썰 채널 (썰, ○○ 특)", "name": "[채널명]", "handle": "[핸들]", "prefixes": ["sseol", "teuk"], "tags": []},
+    "doodle":   {"label": "낙서 짤툰 채널", "name": "[채널명]", "handle": "[핸들]", "prefixes": ["doodle"], "tags": []},
+    "horror":   {"label": "[괴담] 채널", "name": "[채널명]", "handle": "[핸들]", "prefixes": ["horror"], "tags": []},
+    "top":      {"label": "랭킹 TOP5 채널", "name": "[채널명]", "handle": "[핸들]", "prefixes": ["top"], "tags": []},
+    "retro":    {"label": "그 시절 레트로 채널", "name": "[채널명]", "handle": "[핸들]", "prefixes": ["retro"], "tags": []},
+    "info":     {"label": "정보·지식·뉴스 채널", "name": "[채널명]", "handle": "[핸들]", "prefixes": ["life", "issue", "hanban", "why"], "tags": []},
+    "celeb":    {"label": "유명인 인터뷰 채널", "name": "[채널명]", "handle": "[핸들]", "prefixes": ["jensen", "ceo"], "tags": []},
+    "animal":   {"label": "동물 채널", "name": "[채널명]", "handle": "[핸들]", "prefixes": ["ani", "anirank"], "tags": []},
+    "military": {"label": "군대 실화·공감 채널", "name": "[채널명]", "handle": "[핸들]", "prefixes": ["ouch", "boom", "dog", "home", "boot", "fun", "rank"], "tags": []},
+    "docu":     {"label": "롱폼 다큐 채널", "name": "[채널명]", "handle": "[핸들]", "prefixes": ["odyssey"], "long": true, "tags": []}
+  }
+}

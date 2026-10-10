@@ -9,6 +9,8 @@ import { clamp, eBack, prog } from "./fx";
 
 /** where the rounded 4:3 frame sits on the 1080×1920 page: under the 400 px title band, above the caption */
 export const ROUNDED43 = { left: 30, top: 440, width: 1020, height: 765, radius: 36, border: 5 };
+/** another box on the page (lib/RetroV2.tsx RETROBOX) can reuse the frame, grain and crop */
+type Box = typeof ROUNDED43;
 
 /** film grain: a fresh noise pattern each frame (seeded, so renders are deterministic), plus a vignette */
 const Grain: React.FC<{ amount: number; frame: number }> = ({ amount, frame }) => {
@@ -43,15 +45,15 @@ export const YearSticker: React.FC<{ year: string; t: number; popIn: boolean }> 
 };
 
 /** a crop ("crop": [cx, cy, zoom] in edit.json) inside the frame: (cx, cy) of the photo sits in the middle, never showing an edge */
-export const rounded43Crop = (c: { cx: number; cy: number; zoom: number; w: number; h: number }, s: number): React.CSSProperties => {
-  const W = ROUNDED43.width - 2 * ROUNDED43.border, H = ROUNDED43.height - 2 * ROUNDED43.border;
+export const rounded43Crop = (c: { cx: number; cy: number; zoom: number; w: number; h: number }, s: number, box: Box = ROUNDED43): React.CSSProperties => {
+  const W = box.width - 2 * box.border, H = box.height - 2 * box.border;
   const S = Math.max(W / c.w, H / c.h) * c.zoom * s, dw = c.w * S, dh = c.h * S;
   return { position: "absolute", left: Math.min(0, Math.max(W - dw, W / 2 - c.cx * dw)), top: Math.min(0, Math.max(H - dh, H / 2 - c.cy * dh)), width: dw, height: dh };
 };
 
 /** the photo (children, already scaled by the clip's slow zoom) inside the rounded 4:3 frame */
-export const Rounded43: React.FC<{ grain?: number; frame: number; children: React.ReactNode }> = ({ grain, frame, children }) => {
-  const b = ROUNDED43;
+export const Rounded43: React.FC<{ grain?: number; frame: number; children: React.ReactNode; box?: Box }> = ({ grain, frame, children, box }) => {
+  const b = box ?? ROUNDED43;
   return (
     <div style={{ position: "absolute", left: b.left, top: b.top, width: b.width, height: b.height, borderRadius: b.radius, overflow: "hidden",
       border: `${b.border}px solid rgba(255,255,255,.92)`, boxSizing: "border-box", background: "#111", boxShadow: "0 10px 40px rgba(0,0,0,.7)" }}>
