@@ -24,6 +24,7 @@ npm i
 python3 voice_edge.py <id>                  # 내레이션(Edge TTS) + 음절 타이밍 → build/<id>/
 python3 prep.py <id>                        # 컷 편집·자막 페이지·더킹 데이터 → src/data/<id>.json
 ./render.sh <id>                            # out/<id>.mp4 (1080×1920, 30fps, -14 LUFS)
+python3 qa_review.py <id>                   # 조회수 10만+ 쇼츠 형식 검토(REVIEW.md) → out/review/<id>/
 npx remotion studio                         # 미리보기
 ```
 
@@ -343,15 +344,15 @@ MEDIA=<저장소>/media python3 politics/prep_split.py obama09    # 원본: medi
 조회수 10만 이상 오락 쇼츠 중 TTS·내레이션 썰은 중앙값 109만이다. 썰구리(구독 3.9만)는 커뮤니티 글 화면, 캐릭터, AI 내레이션만으로 최근 15편 중 14편이 10만을 넘었다(`research/research-fun.md`). 우리는 AI 그림 도구가 없어서 캐릭터를 직접 그린다(`src/lib/Sseol.tsx`). 표정이 바뀌는 찹쌀떡 모양 캐릭터가 문장마다 장면을 연기한다. 예시는 `shorts/sseol1/`이다.
 
 - **화면**: `"titleStyle": "band"` 제목 띠, 가운데 1080×1080 장면, 아래 자막(`"captionY": 1650`). 장면 위에는 자막용 그늘을 깔지 않는다.
-- **첫 클립 `post`**: 커뮤니티 글 카드(실제 서비스 이름이나 로고 없음)로 훅을 건다. `title`, `body`(줄마다 `steps`로 한 줄씩 나타남), `board`(기본 "썰 게시판"), `meta`(기본 "익명 · 창작 썰"). 조회수·추천 수를 지어내지 않도록 `likes`·`comments`·`hot`(🔥 인기글)은 기본으로 끈다.
+- **첫 클립 `post`**: 커뮤니티 글 카드(실제 서비스 이름이나 로고 없음)로 훅을 건다. `chars`에 주인공 한두 명(예: 놀란 얼굴 `shock`)을 넣으면 카드 오른쪽 아래에 0초부터 서 있어서, 첫 프레임(썸네일)에 글만이 아니라 얼굴이 보인다(조회수 높은 쇼츠는 첫 프레임에 주인공을 보여 준다). `title`, `body`(줄마다 `steps`로 한 줄씩 나타남), `board`(기본 "썰 게시판"), `meta`(기본 "익명 · 창작 썰"). 조회수·추천 수를 지어내지 않도록 `likes`·`comments`·`hot`(🔥 인기글)은 기본으로 끈다.
 - **장면 `scene`**: 문장마다 한 장면(2~3초)을 둔다.
 
   | 값 | 쓰임 |
   |---|---|
   | `chars[]` | 등장인물. `name`(이름표), `color`, `mood`, `to`(steps[2]에 바뀌는 표정), `size`(1보다 크면 키가 큼), `x`(0~1), `hat`(머리 위 이모지), `flip` |
   | `mood` | `neutral` `happy` `laugh` `shock` `sad` `cry` `angry` `smug` `shy` `think` `sleep` `love` `sick` |
-  | `bg` | 배경 `class` `home` `street` `store` `army` `night` `stage` `office`, 또는 CSS 배경 |
-  | `sign` | 배경 판에 쓰는 글(칠판, 무대 현수막, 생활관 게시판, 가게 간판) |
+  | `bg` | 배경 `class` `home` `street` `store` `army` `night` `stage` `office` `door`(현관문·초인종), 또는 CSS 배경 |
+  | `sign` | 배경 판에 쓰는 글(칠판, 무대 현수막, 생활관 게시판, 가게 간판, 현관문 호수) |
   | `say` | 말풍선 `{"who": 0, "text": "야! [내 거]잖아!"}`. 말하는 인물 머리 위에 뜬다(steps[0]) |
   | `prop` / `propX` | 소품 이모지(🥛📱💸). steps[1]에 튀어나온다 |
   | `big` | 장면 위에 크게 박히는 말("🥛 × [200]"), steps[3] |
@@ -362,7 +363,53 @@ MEDIA=<저장소>/media python3 politics/prep_split.py obama09    # 원본: medi
 - **목소리**: `script.json`의 `"voices"`에 인물마다 `{"edge", "rate", "pitch"}`를 두고, 줄마다 `"voice"`로 고른다. 내레이터는 `nar`다. 예: 아이 목소리 `{"edge": "ko-KR-SunHiNeural", "rate": "+18%", "pitch": "+30Hz"}`. 줄마다 음량을 맞추므로 목소리가 달라도 크기는 같다.
 - **대사는 말풍선으로**: 인물의 대사 줄은 `"cap": [""]`로 두면 아래 자막을 띄우지 않고 말풍선만 보여 준다. 내레이션 줄만 아래 자막으로 나온다.
 - **이야기 틀**: 이상한 행동이나 상황으로 시작한다(제목 "~한 이유", "~한 썰"). 3~4번 쌓아서 반전 한 줄로 끝내고 바로 끊는다. 30~40초.
+- **같은 인물은 같은 색**: `color`를 비우면 장면 안 순서대로 색이 정해져서, 같은 인물이라도 순서가 바뀌면 색이 바뀐다. 여러 장면에 나오는 인물은 `"color"`를 직접 준다(예: 나 `#FFD84D`, 짝꿍 `#8FD3FF`). `hat`은 머리 위에 얹는 것(모자, 우산)에만 쓴다. 안경 같은 얼굴 소품은 머리 위에 떠서 후광처럼 보인다.
 - **창작 표시**: 이야기는 지어낸 것이다. 실화라고 쓰지 않고, 카드 `meta`와 설명란에 "창작"을 밝힌다. 실존 인물, 학교, 회사, 브랜드 이름은 쓰지 않는다.
+
+## 썰 쇼츠 (`sseol1`~`sseol4`)
+
+학교·가족 창작 썰 4편. 모두 지어낸 이야기이고, 카드 `meta`는 "익명 · 창작 썰"이다. 음악은 gain 0.2 안팎, 화면 크레딧은 없다(그림은 직접 그린 것).
+
+| id | 제목 띠 | 한 줄 줄거리 | 길이 | 음악 |
+| --- | --- | --- | --- | --- |
+| `sseol1` | 짝꿍이 1년 동안 / 내 우유를 마신 이유 | 초6 짝꿍이 1년 내내 내 우유를 뺏어 먹었는데, 사실은 우유 먹고 배 아파하는 나 대신 마셔 준 것. 15년 뒤 그 짝꿍은 남편 | 34.3초 | Monkeys Spinning Monkeys |
+| `sseol2` | 반장이 매일 내 책상에 / 쪽지를 두고 간 이유 | 고1 반장의 매일 쪽지에 설레서 답장까지 썼는데, 엄마가 반장한테 부탁한 알림이었다. 그날 저녁 내 답장은 엄마 손에 | 37.4초 | Sneaky Snitch |
+| `sseol3` | 할머니가 비 오는 날마다 / 내 운동화를 숨긴 이유 | 비만 오면 사라지던 운동화는 할머니가 몰래 빨아 전기장판에 말려 둔 것. 예보가 틀려 쨍쨍한 날에도 장화는 신고 감 | 39.9초 | Monkeys Spinning Monkeys |
+| `sseol4` | 환갑 아빠가 갑자기 / 영어 공부를 시작한 이유 | 외국에서 자란 남자친구를 맞으려고 새벽마다 "아임 수아스 파더"를 연습한 아빠. 남자친구는 한국말을 잘했지만 아빠는 지금도 영어로만 말함 | 39.0초 | Scheming Weasel |
+
+**목소리** (Edge TTS, `script.json`의 `voices`)
+- `sseol1`: 내레이션 SunHi +12%, 나(아이) SunHi +18% +30Hz, 짝꿍 InJoon +15% +25Hz
+- `sseol2`: 내레이션 SunHi +12%, 나 SunHi +15% +22Hz, 반장 InJoon +12% +10Hz, 짝꿍 HyunsuMultilingual +15% +15Hz, 엄마 SunHi −3% −10Hz
+- `sseol3`: 내레이션 InJoon +12%, 나(아이) InJoon +15% +22Hz, 할머니 SunHi −8% −10Hz
+- `sseol4`: 내레이션(수아) SunHi +12%, 아빠 InJoon −5% −15Hz, 엄마 SunHi −5% −10Hz, 남자친구 HyunsuMultilingual +12%
+
+모든 줄을 faster-whisper(medium)로 다시 들어 대본과 맞췄다. 잘못 들리던 줄은 말을 바꿨다("신는 거야" → "아기 같잖아", "엿들어 봤다" → "문 뒤에 숨어서 들어 봤다", "갸웃" → "갸우뚱").
+
+### 업로드 문구
+
+**sseol1**
+- 제목: 짝꿍이 1년 동안 내 우유를 마신 이유ㅋㅋ
+- 설명: 초6 때 짝꿍이 매일 내 급식 우유를 뺏어 먹었다… 졸업식 날 밝혀진 진짜 이유 🥛 (창작 썰입니다)
+  Music: "Monkeys Spinning Monkeys" Kevin MacLeod (incompetech.com), CC BY 4.0
+- 해시태그: #썰 #창작썰 #썰툰 #학교썰 #쇼츠
+
+**sseol2**
+- 제목: 반장이 매일 내 책상에 쪽지를 두고 간 이유ㅋㅋ
+- 설명: 매일 아침 책상 위 반장의 쪽지… 설레서 답장까지 썼는데 📝 (창작 썰입니다)
+  Music: "Sneaky Snitch" Kevin MacLeod (incompetech.com), CC BY 4.0
+- 해시태그: #썰 #창작썰 #썰툰 #학교썰 #엄마썰
+
+**sseol3**
+- 제목: 할머니가 비 오는 날마다 운동화를 숨긴 이유
+- 설명: 비만 오면 사라지던 내 운동화, 범인은 할머니였다 👟☔ (창작 썰입니다)
+  Music: "Monkeys Spinning Monkeys" Kevin MacLeod (incompetech.com), CC BY 4.0
+- 해시태그: #썰 #창작썰 #썰툰 #할머니 #가족썰
+
+**sseol4**
+- 제목: 환갑 아빠가 갑자기 영어 공부를 시작한 이유ㅋㅋ
+- 설명: 매일 새벽 5시, 아빠가 몰래 연습하던 단 한 문장 📖 (창작 썰입니다)
+  Music: "Scheming Weasel (faster version)" Kevin MacLeod (incompetech.com), CC BY 4.0
+- 해시태그: #썰 #창작썰 #썰툰 #아빠썰 #가족썰
 
 ## 썰 쇼츠 (`sseol5`~`sseol8`)
 
