@@ -1,0 +1,396 @@
+{
+ "titleStyle": "band",
+ "captionY": 1640,
+ "credit": "영상: NASA",
+ "sources": {
+  "idaho": {
+   "file": "aurora_idaho_may11_iss_streak.jpg",
+   "credit": "사진: NASA/Bill Dunford",
+   "label": "Aurora over Idaho with the ISS streak, 11 May 2024 (NASA SVS 14835)",
+   "url": "https://svs.gsfc.nasa.gov/14835/"
+  },
+  "utah_v": {
+   "file": "aurora_utah_may10_vertical.mp4",
+   "credit": "영상: NASA/Bill Dunford",
+   "label": "Aurora timelapse, Bear Lake, Utah, 10 May 2024 (NASA SVS 14835)",
+   "url": "https://svs.gsfc.nasa.gov/14835/"
+  },
+  "utah_w": {
+   "file": "aurora_utah_may10_wide.mp4",
+   "credit": "영상: NASA/Bill Dunford",
+   "label": "Aurora timelapse wide, Utah, 10 May 2024 (NASA SVS 14835)",
+   "url": "https://svs.gsfc.nasa.gov/14835/"
+  },
+  "utah_p": {
+   "file": "aurora_utah_may10_photo.jpg",
+   "credit": "사진: NASA/Bill Dunford",
+   "label": "Red and green aurora over Utah, 10 May 2024 (NASA SVS 14835, PNG converted to JPEG)",
+   "url": "https://svs.gsfc.nasa.gov/14835/"
+  },
+  "x22": {
+   "file": "sdo_x22_may9_aia131.mp4",
+   "credit": "영상: NASA SDO",
+   "label": "SDO AIA 131 X2.2 flare from AR 13664, 9 May 2024 (NASA SVS 5284)",
+   "url": "https://svs.gsfc.nasa.gov/5284/"
+  },
+  "dual": {
+   "file": "sdo_may7-8_ar13663_13664_aia131.mp4",
+   "credit": "영상: NASA SDO",
+   "label": "SDO AIA 131 flares from AR 13663/13664, 7-8 May 2024 (NASA SVS 14683)",
+   "url": "https://svs.gsfc.nasa.gov/14683/"
+  },
+  "x58": {
+   "file": "sdo_x58_may11_aia171.mp4",
+   "credit": "영상: NASA SDO",
+   "label": "SDO AIA 171 X5.8 flare from AR 13664, 11 May 2024 (NASA SVS 5289)",
+   "url": "https://svs.gsfc.nasa.gov/5289/"
+  },
+  "issaur": {
+   "file": "iss_red_green_aurora_iss072e147641.jpg",
+   "credit": "사진: NASA",
+   "label": "Red and green aurora from the ISS, iss072e147641, 9 Nov 2024",
+   "url": "https://images.nasa.gov/details/iss072e147641"
+  },
+  "korea": {
+   "file": "korea_night_iss038.jpg",
+   "credit": "사진: NASA",
+   "label": "Korean Peninsula at night from the ISS, ISS038-E-038300, 30 Jan 2014",
+   "url": "https://images.nasa.gov/details/iss038e038300"
+  },
+  "seoul": {
+   "file": "seoul_night_iss062.jpg",
+   "credit": "사진: NASA",
+   "label": "Night lights of Seoul from the ISS, iss062e082060, 5 Mar 2020",
+   "url": "https://images.nasa.gov/details/iss062e082060"
+  }
+ },
+ "clips": [
+  {
+   "src": "idaho",
+   "from": "hook",
+   "label": "아이다호 하늘의 붉은·초록 오로라",
+   "crop": [
+    0.3,
+    0.45,
+    1.0
+   ],
+   "zoom": [
+    1.0,
+    1.08
+   ]
+  },
+  {
+   "src": "korea",
+   "from": "hook.한국",
+   "label": "우주에서 본 한반도의 밤",
+   "crop": [
+    0.68,
+    0.6,
+    1.25
+   ],
+   "zoom": [
+    1.0,
+    1.06
+   ]
+  },
+  {
+   "src": "x22",
+   "from": "sun",
+   "in": 2.5,
+   "label": "흑점 13664의 X2.2 플레어",
+   "crop": [
+    0.62,
+    0.6,
+    1.7
+   ],
+   "zoom": [
+    1.0,
+    1.05
+   ],
+   "audio": 0
+  },
+  {
+   "src": "dual",
+   "from": "sun.폭발이",
+   "in": 12.6,
+   "label": "연달아 터지는 플레어",
+   "crop": [
+    0.23,
+    0.63,
+    1.5
+   ],
+   "zoom": [
+    1.0,
+    1.05
+   ],
+   "audio": 0
+  },
+  {
+   "src": "x58",
+   "from": "storm",
+   "in": 8.5,
+   "label": "X5.8 플레어 (5월 11일)",
+   "crop": [
+    0.55,
+    0.52,
+    1.05
+   ],
+   "zoom": [
+    1.0,
+    1.06
+   ],
+   "audio": 0
+  },
+  {
+   "src": "issaur",
+   "from": "far",
+   "label": "우주정거장에서 본 오로라",
+   "crop": [
+    0.55,
+    0.4,
+    1.0
+   ],
+   "zoom": [
+    1.0,
+    1.07
+   ]
+  },
+  {
+   "src": "korea",
+   "from": "far.한국은",
+   "label": "한반도 위치",
+   "crop": [
+    0.6,
+    0.55,
+    1.0
+   ],
+   "zoom": [
+    1.0,
+    1.05
+   ]
+  },
+  {
+   "src": "korea",
+   "from": "caught",
+   "label": "남한 전체",
+   "crop": [
+    0.75,
+    0.66,
+    1.5
+   ],
+   "zoom": [
+    1.0,
+    1.05
+   ]
+  },
+  {
+   "src": "utah_v",
+   "from": "caught.붉은",
+   "in": 0.5,
+   "label": "붉은 오로라 타임랩스 (미국)",
+   "crop": [
+    0.5,
+    0.4,
+    1.0
+   ],
+   "zoom": [
+    1.0,
+    1.05
+   ],
+   "audio": 0
+  },
+  {
+   "src": "korea",
+   "from": "caught.강원",
+   "label": "강원 쪽",
+   "crop": [
+    0.8,
+    0.5,
+    2.2
+   ],
+   "zoom": [
+    1.0,
+    1.05
+   ]
+  },
+  {
+   "src": "utah_p",
+   "from": "red",
+   "label": "위는 빨강, 아래는 초록",
+   "crop": [
+    0.5,
+    0.45,
+    1.0
+   ],
+   "zoom": [
+    1.0,
+    1.05
+   ]
+  },
+  {
+   "src": "utah_w",
+   "from": "red.그래서",
+   "in": 0.0,
+   "label": "지평선 위 오로라",
+   "crop": [
+    0.45,
+    0.45,
+    1.0
+   ],
+   "zoom": [
+    1.0,
+    1.05
+   ],
+   "audio": 0
+  },
+  {
+   "src": "seoul",
+   "from": "end",
+   "label": "우주에서 본 서울의 밤",
+   "crop": [
+    0.45,
+    0.45,
+    1.0
+   ],
+   "zoom": [
+    1.0,
+    1.08
+   ]
+  },
+  {
+   "src": "idaho",
+   "from": "end.카메라",
+   "label": "장노출 사진 속 오로라",
+   "crop": [
+    0.3,
+    0.45,
+    1.0
+   ],
+   "zoom": [
+    1.08,
+    1.0
+   ]
+  }
+ ],
+ "marks": [
+  {
+   "kind": "circle",
+   "x": 700,
+   "y": 980,
+   "r": 260,
+   "from": "far.한국은+0.2",
+   "to": "far@end"
+  },
+  {
+   "kind": "arrow",
+   "x": 640,
+   "y": 560,
+   "rot": 150,
+   "from": "red+0.3",
+   "to": "red.그래서-0.1"
+  }
+ ],
+ "stickers": [
+  {
+   "text": "같은 폭풍 · 미국 아이다호 (5.11)",
+   "from": "hook+0.2",
+   "to": "hook.한국-0.05",
+   "y": 520
+  },
+  {
+   "text": "우주에서 본 한반도의 밤",
+   "from": "hook.한국+0.1",
+   "to": "sun-0.05",
+   "y": 520
+  },
+  {
+   "text": "2024.5.9 태양 플레어 (NASA SDO)",
+   "from": "sun+0.1",
+   "to": "storm-0.05",
+   "y": 520
+  },
+  {
+   "text": "NOAA 최고 등급 G5 · 2003년 이후 처음",
+   "from": "storm+0.1",
+   "to": "far-0.05",
+   "y": 520,
+   "size": 40
+  },
+  {
+   "text": "📍 경북 영천 보현산천문대",
+   "from": "caught+0.1",
+   "to": "caught.붉은-0.05",
+   "y": 520
+  },
+  {
+   "text": "※ 미국 유타 영상 (2024.5.10)",
+   "from": "caught.붉은+0.1",
+   "to": "caught.강원-0.05",
+   "y": 520,
+   "bg": "#fff"
+  },
+  {
+   "text": "📍 강원 화천 · 5월 12일 새벽",
+   "from": "caught.강원+0.1",
+   "to": "red-0.05",
+   "y": 520
+  },
+  {
+   "text": "빨강 = 200km 위 · 초록 = 그 아래",
+   "from": "red+0.2",
+   "to": "red.그래서-0.05",
+   "y": 1380,
+   "size": 42
+  },
+  {
+   "text": "장노출 카메라라 더 선명함",
+   "from": "end.카메라+0.1",
+   "to": "end@end+0.6",
+   "y": 520
+  }
+ ],
+ "sfx": [
+  [
+   "hook",
+   "whoosh",
+   0.4
+  ],
+  [
+   "sun.폭발이",
+   "boom",
+   0.35
+  ],
+  [
+   "storm",
+   "riser",
+   0.3
+  ],
+  [
+   "far.한국은",
+   "pop",
+   0.4
+  ],
+  [
+   "caught.붉은",
+   "ding",
+   0.35
+  ],
+  [
+   "end",
+   "k_error_003",
+   0.4
+  ]
+ ],
+ "punches": [
+  "sun.폭발이",
+  "caught.붉은"
+ ],
+ "flashes": [
+  "storm"
+ ],
+ "music": {
+  "file": "music/Floating Cities.mp3",
+  "gain": 0.12,
+  "start": 0
+ }
+}
