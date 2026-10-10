@@ -3399,3 +3399,69 @@ for id in horror5 horror6 horror7 horror8; do python3 qa_review.py $id; done
 > 영상: Pexels (cottonbro studio, Kain kn, Grisha Grishkoff, Yaroslav Shuraev, George Morina, Saidouni Sidi Med, Emir Reinado, Nothing Ahead, Greta Hoffman)
 > 음악: "Ghost Story" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
 > #괴담 #이해하면무서운이야기 #공포 #캠핑 #shorts
+
+## 역대급 랭킹 TOP5 쇼츠 2 (`politics/top5`~`top8`)
+
+`top1`~`top4`와 **완전히 같은 틀**로 만든 네 편입니다. `"titleStyle": "band"`(윗줄 흰색 "역대급 ○○", 아랫줄 "[TOP5] (몇 위가 제일 ○○?)"), 정사각 `single` 크롭, 자막 `"captionY": 1380`, 아래 순위표(`rank`, 안 나온 순위 "???"), 순위마다 노란 “○위” 스티커 + `whoosh`, 장소마다 3.4초 컷 두 개(1위만 세 개, 마지막 컷에 "다들 몇 위가 제일 ○○?"), 내레이션 없음·원본 소리 끔(`audio: 0`), 1위가 끝나면 바로 끊김(`"tail": 0`). 순위는 편집자 선정이고 공식 순위가 아닙니다. 사람 얼굴·상표·군사 소재는 없습니다(동물 랭킹은 다른 채널 몫이라 top6에는 생물 장면을 해파리 한 컷만 넣었습니다).
+
+| id | 제목(화면) | 길이 | 5위 → 1위 | 음악 |
+| --- | --- | --- | --- | --- |
+| `top5` | 역대급 거대한 폭포 / [TOP5] (몇 위가 제일 웅장?ㄷㄷ) | 37.4초 | 안개 속 거대한 급류(그레이트폴스) · 레이니어산 나라다 폭포 · 그랜드캐니언 숨은 폭포(디어크릭) · 옐로스톤 로어 폭포 · 740m 요세미티 폭포 | Heroic Age |
+| `top6` | 바닷속 소름 돋는 장면 / [TOP5] (몇 위가 제일 소름?) | 37.4초 | 이름 없는 심해 해파리 · 바위 밑 가스의 강 · 우연히 찾은 난파선 · 검은 연기 뿜는 굴뚝 · 사상 첫 해저 화산 분화 | Gathering Darkness |
+| `top7` | 역대급 무서운 날씨 / [TOP5] (몇 위가 제일 무서움?) | 37.4초 | 회전하는 괴물 구름(슈퍼셀) · 옐로스톤 500년 홍수 · 허리케인 눈 속 비행 · 우주에서 본 허리케인 · EF3 거대 토네이도 | Movement Proposition |
+| `top8` | 지구에서 가장 이상한 장소 / [TOP5] (몇 위가 제일 이상?ㄷㄷ) | 37.4초 | 아치스 균형 바위 · 북미에서 가장 낮은 땅(배드워터) · 화산 속 용암 호수 · 스스로 움직이는 돌(레이스트랙) · 무지개색 거대 온천(그랜드 프리즈매틱) | Dreamer |
+
+```bash
+./fetch.sh                                                   # 네 곡 모두 포함
+MEDIA=$PWD/media python3 politics/prep_split.py top5         # 원본: media/top5~top8/*.mp4 (저장소에 없음, 각 .json의 주소로 다시 받아 cut_from_original_seconds 구간을 1920x1080·30fps로 자름)
+./render.sh top5 final/top5.mp4                              # 렌더 뒤 영상만 CRF 23으로 다시 압축(오디오 복사) → 11~17MB
+python3 qa_review.py top5                                    # 네 편 모두 FAIL 0, WARN 0
+```
+
+- 원본 클립은 모두 14초 안팎으로 잘라 둔 것입니다(쓴 구간·화면 설명은 `media/top*/*.json`의 `notes`·`used_in`). 저해상도 원본(브림스톤 분화 640x480, 할레마우마우 850x480, 디어크릭·그레이트폴스 720p, 밀턴 720p, 토네이도 720p)은 1080p로 키워서 조금 흐립니다.
+- top6 브림스톤 원본 위쪽의 ROV 정보 줄(날짜·수심)은 잘라 냈고, top8 용암 호수의 USGS 모서리 표시·top7 밀턴의 ISS 모듈·top7 어마의 비행기 엔진·top6 난파선의 ROV 장비는 정사각 크롭 밖으로 뺐습니다(밀턴 확대 컷은 아래쪽에 정거장 부품이 조금 보임).
+- top8 그랜드 프리즈매틱은 전망대에서 찍은 영상이라 산책로에 아주 작은 관광객 실루엣·먼 주차장 버스가 보입니다(식별 불가, 확대 컷은 쓰지 않음).
+- top7 슈퍼셀 원본은 12초뿐이라 두 구간(0–3.7초, 5.25–12초)을 이어 0.771배로 늦췄습니다(풍선 띄우는 사람 4명이 나오는 1.5초는 뺌). 토네이도 영상 속 차량 소리는 꺼서 목소리가 들리지 않습니다. 토네이도는 사망·부상 0명(NWS 조사), 피해 건물은 화면에 없습니다.
+- top7 옐로스톤 홍수 영상은 Flickr 기록상 2022.6.20 촬영(최고 수위 6.13 이후의 높은 물)이라 자막을 “500년 만의 홍수 (2022)”로만 적었습니다.
+
+### 영상과 라이선스 (원본 페이지·파일 주소·크레딧·쓴 구간: `media/top5~top8/*.json`, 각 `edit.json`의 `sources`)
+- **미국 연방기관 퍼블릭 도메인 (17 U.S.C. §105)**
+  - top5: [Great Falls B-roll](https://www.nps.gov/media/video/view.htm?id=3E1DA12E-2547-42CE-AE27-312E81574332) NPS · [Narada Falls](https://www.nps.gov/media/video/view.htm?id=DAB28414-8ACE-492F-BCB8-2DF544BC3D1C) NPS · [Deer Creek Falls](https://www.nps.gov/media/video/view.htm?id=7EAC3264-E68F-4F00-8431-7582706F1745) NPS/Blum, Well, Wang, Estrada, Caldon · [Lower Falls](https://www.nps.gov/media/video/view.htm?id=DA88A39A-11E3-439B-9CFD-E56913A4BBDD) NPS/Jacob W. Frank — NPS 페이지: "Multimedia credited to NPS without any copyright symbol are public domain"
+  - top6 (모두 NOAA Ocean Exploration): [붉은 해파리 Poralia](https://oceanexplorer.noaa.gov/multimedia/video-playlist-ex2104-redjelly/) 2021 North Atlantic Stepping Stones · [가스 거품](https://oceanexplorer.noaa.gov/multimedia/video-playlist-ex2304-bubbles/) Seascape Alaska(2023.7.18) · [19세기 난파선](https://oceanexplorer.noaa.gov/multimedia/video-playlist-marine-finest/) (2019.5.16, 멕시코만) · [블랙 스모커](https://oceanexplorer.noaa.gov/multimedia/video-playlist-ex1605-vents/) 2016 Deepwater Exploration of the Marianas · [브림스톤 피트 분화](https://oceanexplorer.noaa.gov/multimedia/video-playlist-06rof-brimstone/) Submarine Ring of Fire 2006, NOAA/PMEL
+  - top7: [슈퍼셀 타임랩스](https://www.flickr.com/photos/noaanssl/48325626841/) NOAA/NSSL/Matthew Woods (Flickr Public Domain Mark) · [라마강 홍수](https://www.flickr.com/photos/yellowstonenps/52212141973/) NPS/Chase Tedder (Public Domain Mark, Commons PD-USGov-NPS) · [어마 눈 속 비행](https://commons.wikimedia.org/wiki/File:Although_most_of_our_Hurricane_-Irma_flight_videos_display_the_unique_turbule....webm) Nick Underwood, NOAA Hurricane Hunters (Commons PD-NOAA, 라이선스 검토 완료) · [ISS에서 본 허리케인 밀턴](https://images.nasa.gov/details/jsc2024m000173_International_Space_Station_Cameras_Capture_New_Views_Of_Hurricane_Milton_241008) NASA · [세인트리보리 토네이도](https://commons.wikimedia.org/wiki/File:Sean_Waugh_NOAA_NSSL_-_Saint_Libory_Nebraska_EF3_Tornado_17_05_2026.webm) Dr. Sean Waugh, NOAA NSSL (Commons PD-USGov-NOAA)
+  - top8: [Balanced Rock](https://www.nps.gov/media/video/view.htm?id=FD943AF9-7F2B-4299-B91B-491F2CDB1C29) NPS/Neal Herbert · [Badwater Basin](https://www.nps.gov/media/video/view.htm?id=55850C7D-FFC3-6103-D5C288C1FF969A31) NPS · [Racetrack](https://www.nps.gov/media/video/view.htm?id=582F570D-B9C7-8138-0C0BDC270BD0D080) NPS · [Halemaʻumaʻu 용암 호수](https://www.usgs.gov/media/videos/lava-lake-within-halemaumau-vent) USGS HVO ("Sources/Usage: Public Domain.") · [Grand Prismatic 타임랩스](https://commons.wikimedia.org/wiki/File:Grand_Prismatic_Spring_(timelapse).webm) NPS/Jacob W. Frank (Commons PD-USGov-NPS)
+- **CC BY 4.0**: top5 1위 [Yosemite Upper Falls high flow](https://commons.wikimedia.org/wiki/File:Yosemite_Upper_Falls_high_flow_Yosemite_CA_2023-07-13_14-42-17_1.webm) G. Edward Johnson (Wikimedia Commons) — 확대·크롭·소리 끔으로 수정. NPS의 요세미티 폭포 영상(Yosemite Nature Notes)은 Yosemite Conservancy CC BY-ND라 쓰지 않았습니다.
+- 화면에는 “영상: 미국 국립공원관리청(NPS)”, “영상: 미국 해양대기청(NOAA)”, “영상: 미국 지질조사국(USGS)”, “영상: NASA”, “영상: G. Edward Johnson (CC BY)”만 적었습니다. 기관 로고·타이틀 카드는 쓰지 않았습니다.
+- 음악: "Heroic Age", "Gathering Darkness", "Movement Proposition", "Dreamer" Kevin MacLeod (incompetech.com), CC BY 4.0
+
+### 자막 속 사실과 출처
+- top5: 그레이트폴스는 20피트 폭포 여럿, 1마일도 안 되는 거리에서 총 76피트(23m) 낙차 — [NPS Great Falls](https://www.nps.gov/grfa/learn/nature/falls.htm) / 나라다 폭포 전체 높이 168피트(51m) — [NPS](https://www.nps.gov/places/narada-falls.htm) / 디어크릭 폭포 174피트(53m) — [NPS 영상 설명](https://www.nps.gov/media/video/view.htm?id=46D6B336-AA98-49FB-B7F8-D238C47D12F9) / 옐로스톤 로어 폭포 308피트(94m) — [NPS Yellowstone](https://home.nps.gov/yell/planyourvisit/canyonplan.htm) / 요세미티 폭포 2,425피트(740m), 세 폭포(윗폭포 1,430·중간 675·아랫폭포 320피트)로 이루어짐 — [NPS Yosemite](https://www.nps.gov/yose/planyourvisit/waterfalls.htm) (영상은 윗폭포)
+- top6: 붉은 해파리는 수심 700m 탐사 구간에서 발견, Poralia 속이지만 “미기재 종일 수도” — [NOAA](https://oceanexplorer.noaa.gov/multimedia/video-playlist-ex2104-redjelly/) (화면 “신종?”) / 사낙 가스 분출대의 가스 커튼이 해저에서 1,500m 넘게 솟음 — [NOAA](https://oceanexplorer.noaa.gov/news/ak-seep-discovery/) / 난파선은 19세기 중반 범선으로 추정, 길이 약 37.8m — [NOAA EX1902](https://oceanexplorer.noaa.gov/expedition/ex1902/) (화면 “19세기 범선?”) / 이 블랙 스모커 열수구 지대엔 30m(98피트)가 넘는 굴뚝도 있음 — [NOAA](https://oceanexplorer.noaa.gov/multimedia/video-playlist-ex1605-vents/) (영상 속 굴뚝이 그 굴뚝이라는 말은 하지 않음) / 2006년 브림스톤 피트에서 사상 처음으로 해저 화산 분화를 목격 — [NOAA](https://oceanexplorer.noaa.gov/multimedia/video-playlist-06rof-brimstone/)
+- top7: 가장 강한 토네이도 대부분이 슈퍼셀에서 나옴 — [NOAA SPC](https://www.spc.noaa.gov/misc/AbtDerechos/supercells.htm) / 2022.6.13 옐로스톤 500년 빈도 홍수 — [NPS](https://www.nps.gov/yell/planyourvisit/flood-recovery.htm) / 2024.10.8 오전 8시(미 동부) 밀턴 풍속 시속 145마일(233km) — [NASA](https://images.nasa.gov/details/jsc2024m000173_International_Space_Station_Cameras_Capture_New_Views_Of_Hurricane_Milton_241008) / 2026.5.17 네브래스카 세인트리보리 토네이도 EF-3, 최대 추정 풍속 160mph(257km/h), 사망 0·부상 0 — [NWS Hastings 조사](https://www.weather.gov/media/gid/events/2026/May17th/PNS.pdf) / 어마의 눈 안 파란 하늘은 영상에 보이는 그대로(수치 없음)
+- top8: 밸런스드 록 높이 128피트(39m) — [NPS Arches](https://www.nps.gov/places/balanced-rock-viewing-area.htm) / 배드워터 분지는 해수면보다 282피트(86m) 낮은 북미 최저점 — [NPS Death Valley](https://www.nps.gov/places/badwater-basin.htm) / 용암 호수 폭 약 150m — [USGS](https://www.usgs.gov/media/videos/lava-lake-within-halemaumau-vent) / 레이스트랙의 돌은 물·얼음·바람의 드문 조합으로 움직임 — [NPS](https://www.nps.gov/articles/deva-moving-rocks.htm) / 그랜드 프리즈매틱은 옐로스톤 최대 온천, 지름 200–330피트(61–100m) — [NPS](https://www.nps.gov/places/000/grand-prismatic-spring.htm)
+
+### 업로드 문구
+
+**top5** — 역대급 거대한 폭포 TOP5 ㄷㄷ
+> 안개 속 그레이트폴스 급류, 레이니어산 나라다 폭포, 그랜드캐니언 붉은 협곡의 디어크릭 폭포, 높이 94m 옐로스톤 로어 폭포, 그리고 세 단 합쳐 740m인 요세미티 폭포까지. 다들 몇 위가 제일 웅장해요? 순위는 저희 마음대로 고른 것입니다.
+> 영상: 미국 국립공원관리청(NPS) — Jacob W. Frank, Blum·Well·Wang·Estrada·Caldon · Yosemite Falls: G. Edward Johnson / CC BY 4.0 (Wikimedia Commons, 잘라내고 확대함) (각 기관이 이 영상을 보증하거나 후원하지 않습니다.)
+> 음악: "Heroic Age" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
+> #폭포 #요세미티 #옐로스톤 #대자연 #shorts
+
+**top6** — 바닷속 소름 돋는 장면 TOP5 ㄷㄷ
+> 수심 700m의 핏빛 해파리, 바위 밑을 강처럼 흐르는 가스 거품, 우연히 찾은 19세기 범선 난파선, 검은 연기를 뿜는 심해 굴뚝, 그리고 사람이 처음으로 목격한 해저 화산 분화까지. 전부 실제 탐사 영상입니다. 다들 몇 위가 제일 소름?
+> 영상: 미국 해양대기청(NOAA Ocean Exploration, NOAA/PMEL) (NOAA가 이 영상을 보증하거나 후원하지 않습니다.)
+> 음악: "Gathering Darkness" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
+> #심해 #바다 #소름 #해저화산 #shorts
+
+**top7** — 역대급 무서운 날씨 TOP5 ㄷㄷ
+> 하늘을 통째로 돌리는 슈퍼셀, 2022년 옐로스톤 500년 만의 홍수, 허리케인 어마의 눈 속으로 들어간 관측기, 우주정거장에서 본 허리케인 밀턴, 그리고 2026년 5월 네브래스카의 EF3 토네이도(최대 풍속 시속 257km 추정, 인명 피해 없음)까지. 다들 몇 위가 제일 무서워요?
+> 영상: 미국 해양대기청(NOAA/NSSL — Matthew Woods, Sean Waugh · NOAA Hurricane Hunters — Nick Underwood) · 미국 국립공원관리청(NPS — Chase Tedder) · NASA (각 기관이 이 영상을 보증하거나 후원하지 않습니다.)
+> 음악: "Movement Proposition" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
+> #토네이도 #허리케인 #날씨 #자연재해 #shorts
+
+**top8** — 지구에서 가장 이상한 장소 TOP5 ㄷㄷ
+> 쓰러질 듯 안 쓰러지는 39m 균형 바위, 바다보다 86m 낮은 소금 사막, 화산 속에서 끓는 용암 호수, 아무도 없는데 스스로 움직이는 돌, 그리고 무지개색 거대 온천까지. 전부 실제 미국 국립공원에 있는 장소입니다. 다들 몇 위가 제일 이상해요?
+> 영상: 미국 국립공원관리청(NPS) — Neal Herbert, Jacob W. Frank · 미국 지질조사국(USGS) (각 기관이 이 영상을 보증하거나 후원하지 않습니다.)
+> 음악: "Dreamer" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
+> #신기한장소 #국립공원 #옐로스톤 #데스밸리 #shorts
