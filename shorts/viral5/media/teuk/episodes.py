@@ -51,7 +51,7 @@ EPISODES = {
   ("a8", "nar", "나무젓가락은 꼭 삐뚤게 쪼개짐.", "나무젓가락은 / 꼭 삐뚤게 쪼개짐", F("angry", "right", prop="🥢", propX=0.2, propY=0.3)),
   ("a9", "nar", "뜨거운 물 부으면 안경에 김이 서림.", "뜨거운 물 부으면 / 안경에 김 서림", F("shock", "low", fx="steam", prop="👓", propX=0.8, propY=0.3)),
   ("a7", "nar", "다음엔 다른 맛 먹자 해 놓고 또 같은 맛 집어 듦.", "'다음엔 다른 맛' 다짐하고 / 또 같은 맛 집어 듦", S(bg="store", chars=[me("think", to="happy", size=1.2)], prop="🍜", steps=[9, 0.1, "a7.또", 9])),
-  (*END, P("kettle", react="happy")),
+  (*END, F("think", "left", prop="🍜", propX=0.8, propY=0.35)),
   ("y", "me", "난 지금 물 끓이는 중.", "\"난 지금 물 끓이는 중\"", F("happy", "close", fx="steam")),
  ]),
  "teuk11": dict(title="붕어빵 특", nar=NAR_M, me=ME_F, music=("music/monkeys_spinning_monkeys.mp3", 0.18), bg="#2b2520", lines=[
@@ -79,7 +79,7 @@ EPISODES = {
   ("a3", "nar", "쌈 싸 먹다가 입보다 쌈이 더 커짐.", "쌈 싸 먹다가 / 입보다 쌈이 더 커짐", P("ssam", react="shock", big="왕쌈", bigat="a3.입보다")),
   ("a4", "nar", "김치를 불판에 올리면 그때부터 진짜 시작.", "김치를 불판에 올리면 / 그때부터 진짜 시작", P("grill2", react="love", side="left", tag="진짜 시작")),
   ("a5", "nar", "옷에 밴 냄새로 엘리베이터 사람들이 내 저녁 메뉴 맞힘.", "엘리베이터 탄 사람들이 / 내 저녁 메뉴 맞힘",
-   S(bg="home", chars=[me("neutral", to="shock", size=1.2)], prop="👕", steps=[9, 0.1, "a5.집에", 9])),
+   S(bg="home", chars=[me("neutral", to="shock", size=1.2)], prop="👕", steps=[9, 0.1, "a5.맞힘", 9])),
   ("a6", "nar", "배부르다면서 볶음밥은 꼭 시킴.", "배부르다면서 / 볶음밥은 꼭 시킴", P("fried_pan", react="laugh", side="left")),
   ("c2", "me", "볶음밥 배는 따로 있어.", "\"볶음밥 배는 따로 있어\"", F("smug", "close", fx="sparkle")),
   ("a8", "nar", "불판 갈아 드릴까요 물으면 배부른데 네 함.", "'불판 갈아 드릴까요?' / 배부른데 '네!'", F("love", "low", fx="steam")),

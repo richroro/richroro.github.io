@@ -26,13 +26,6 @@
    "file_url": "https://upload.wikimedia.org/wikipedia/commons/5/58/20200804_033546_Ramyeon_IMG_8515.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
    "license": "CC0",
    "credit": "20200804 033546 Ramyeon IMG 8515.jpg by Choi Kwang-mo (CC0, http://creativecommons.org/publicdomain/zero/1.0/deed.en), via Wikimedia Commons"
-  },
-  "kettle": {
-   "file": "kettle.jpg",
-   "page": "https://commons.wikimedia.org/wiki/File:Pot_Kettle_Black.jpg",
-   "file_url": "https://upload.wikimedia.org/wikipedia/commons/b/b7/Pot_Kettle_Black.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
-   "license": "CC BY 2.0",
-   "credit": "Pot Kettle Black.jpg by J Horsefjord (CC BY 2.0, https://creativecommons.org/licenses/by/2.0), via Wikimedia Commons"
   }
  },
  "music": {
@@ -115,11 +108,6 @@
    "a7",
    "whoosh",
    0.15
-  ],
-  [
-   "z",
-   "pop_hi",
-   0.18
   ],
   [
    "z",
@@ -378,18 +366,17 @@
   {
    "from": "z",
    "label": "z",
-   "src": "kettle",
    "gfx": {
-    "type": "photo",
-    "react": {
-     "mood": "happy",
-     "side": "right"
-    },
+    "type": "face",
+    "mood": "think",
+    "pos": "left",
+    "prop": "🍜",
+    "propX": 0.8,
+    "propY": 0.35,
     "steps": [
-     0.12,
-     0.2,
-     0.25,
-     1000.0
+     0.9,
+     0.05,
+     0.15
     ]
    }
   },
