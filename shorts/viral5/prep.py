@@ -193,6 +193,9 @@ def prep(sid):
     for k in ("titleStyle", "titleKey", "hook", "hookY"):  # news-shorts look: banner title and a red headline over the picture
         if edit.get(k) is not None: data[k] = edit[k]
     if edit.get("hookTo") is not None: data["hookTo"] = round(at(edit["hookTo"]), 3)
+    if edit.get("postFrame"):  # 썰 v2 (src/lib/PostFrame.tsx): the whole short is a post; its body is each line's caption (or "body"), one row per "/" page
+        body = [{"from": round(L["start"] - 0.05 if i else 0.0, 3), "text": "\n".join(p.strip() for c in caps[L["id"]] for p in c.split("/") if p.strip())} for i, L in enumerate(tl["lines"])]
+        data["postFrame"] = {**edit["postFrame"], "body": [b for b in body if b["text"]]}
     if ranks: data["ranks"] = {"rows": ranks, **({"y": edit["rankY"]} if edit.get("rankY") else {})}
     if edit.get("marks"):
         data["marks"] = [{**{k: m[k] for k in ("kind", "x", "y", "r", "rot", "color") if k in m}, "from": round(at(m["from"]), 3), "to": round(at(m["to"]), 3)}

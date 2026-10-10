@@ -1,13 +1,14 @@
 import { Composition } from "remotion";
 import { ClipShort, FPS, type ShortData } from "./ClipShort";
 import { LongForm, longFrames } from "./LongForm";
+import { PostFrameShort } from "./lib/PostFrame";
 import { SHORTS } from "./data";
 import { LONGS } from "./longs";
 
 export const RemotionRoot: React.FC = () => (
   <>
     {SHORTS.map((d) => (
-      <Composition key={d.id} id={d.id} component={ClipShort} defaultProps={{ data: d }} width={1080} height={1920} fps={FPS} durationInFrames={Math.ceil(d.end * FPS)} />
+      <Composition key={d.id} id={d.id} component={"postFrame" in d ? PostFrameShort : ClipShort} defaultProps={{ data: d }} width={1080} height={1920} fps={FPS} durationInFrames={Math.ceil(d.end * FPS)} />
     ))}
     {LONGS.map((l) => {
       const parts = l.parts.map((id) => SHORTS.find((d) => d.id === id)).filter((d): d is ShortData => !!d);

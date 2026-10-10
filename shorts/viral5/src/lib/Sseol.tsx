@@ -7,12 +7,15 @@ import { BODY, TITLE } from "./fonts";
 import { clamp, eBack, eInOut, eOut, prog } from "./fx";
 import { Marked } from "./Marked";
 import { Doodle, PhotoBackdrop } from "./Doodle";
+import { Chibi, type Look } from "./Chibi";
 
 export type Mood = "neutral" | "happy" | "laugh" | "shock" | "sad" | "cry" | "angry" | "smug" | "shy" | "think" | "sleep" | "love" | "sick";
 /** a character: `mood` until steps[2], then `to` (a reaction mid-scene); x is 0..1 across the frame */
 export type Char = { name?: string; color?: string; mood?: Mood; to?: Mood; hat?: string; x?: number; size?: number; flip?: boolean;
   /** "doodle": the hand-drawn skin (lib/Doodle.tsx) with `hair` colour and `hairdo` ("spiky" | "perm" | "bob" | "bald") */
-  style?: "doodle"; hair?: string; hairdo?: "spiky" | "perm" | "bob" | "bald" };
+  style?: "doodle" | "chibi"; hair?: string; hairdo?: "spiky" | "perm" | "bob" | "bald";
+  /** "chibi": a person or dog with its own hair, clothes and age (lib/Chibi.tsx) */
+  look?: Look };
 export type SceneG = {
   /** "📍 편의점" tag at the top left */
   place?: string;
@@ -35,6 +38,8 @@ export type SceneG = {
   sign?: string;
   /** a slow push-in to this scale over the first 3 s, centred on chars[focus] */
   zoom?: number; focus?: number;
+  /** the scale the scene opens at (default 1): with `zoom` equal to it, a held close-up instead of a push-in */
+  zoom0?: number;
   /** a group-chat phone screen on the right (no real app's look): message i pops at steps[4 + i] (default every 0.45 s),
    *  older ones scroll up; `me` messages sit on the right, others under a name; `unread` is the small count beside a bubble */
   chat?: Chat;
@@ -50,6 +55,7 @@ const PALETTE = ["#FFD84D", "#FF9EBB", "#8FD3FF", "#B9F27C", "#C9A7FF", "#FFB36B
 /** a mochi character in a mood; t is seconds since the scene started (every scene opens with a small squash) */
 export const Mochi: React.FC<{ c: Char; i: number; t: number; size: number; mood?: Mood }> = ({ c, i, t, size, mood = c.mood ?? "neutral" }) => {
   if (c.style === "doodle") return <Doodle c={c} i={i} t={t} size={size} mood={mood} />;
+  if (c.style === "chibi") return <Chibi c={c} i={i} t={t} size={size} mood={mood} />;
   const color = c.color ?? PALETTE[i % PALETTE.length];
   const enter = eOut(prog(t, 0, 0.22));
   let sx = 1, sy = 1, dx = 0, dy = 0, rot = 0;
@@ -301,7 +307,7 @@ export const Scene: React.FC<{ g: SceneG & { steps?: number[] }; t: number; h: n
   }
   const bub = bubble ? eBack(prog(t, sayAt, 0.28), 2.2) : 0;
   const px = g.propX ?? (n === 1 ? Math.min(0.84, xs[0] + 0.36) : 0.5), py = n === 1 ? baseY + 40 : n === 2 ? baseY - 70 : baseY - 200;
-  const z = 1 + ((g.zoom ?? 1) - 1) * eInOut(prog(t, 0, 3));
+  const z0 = g.zoom0 ?? 1, z = z0 + ((g.zoom ?? z0) - z0) * eInOut(prog(t, 0, 3));
   const fx = g.focus != null ? xs[g.focus] * 1080 : 540;
   return (
     <div style={{ position: "absolute", inset: 0, overflow: "hidden" }}>
