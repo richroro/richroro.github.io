@@ -57,7 +57,7 @@ export const LfhMain: React.FC<{ e: LfhEdit }> = ({ e }) => {
   const st = t - s.t0;
   // a quick dip to black between shots (8 frames), never a full black frame
   const cut = Math.min(st, s.t1 - t);
-  const dip = cut < 0.12 ? 0.55 * (1 - cut / 0.12) : 0;
+  const dip = cut < 0.12 ? 0.2 * (1 - cut / 0.12) : 0;
   const flick = 0.04 * (Math.sin(t * 47) > 0.96 ? 1 : 0) + 0.02 * Math.sin(t * 3.1);
   const cap = e.caps.find((c) => t >= c.t0 && t < c.t1);
   const card = e.cards.find((c) => t >= c.t && t < c.t + 2.3);

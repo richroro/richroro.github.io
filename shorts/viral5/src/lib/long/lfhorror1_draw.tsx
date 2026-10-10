@@ -338,7 +338,7 @@ export const Phone: React.FC<{ t: number; msgs: string[]; from: string; times?: 
 
 /** red digital clock */
 export const Clock: React.FC<{ t: number; text: string }> = ({ t, text }) => (
-  <AbsoluteFill style={{ background: "#040405", justifyContent: "center", alignItems: "center" }}>
+  <AbsoluteFill style={{ background: "radial-gradient(ellipse 60% 45% at 50% 50%, #2a0909 0%, #120606 55%, #08080a 100%)", justifyContent: "center", alignItems: "center" }}>
     <div style={{ fontFamily: CODE, fontWeight: 700, fontSize: 330, color: RED, letterSpacing: 20, textShadow: `0 0 ${30 + 10 * Math.sin(t * 9)}px rgba(255,30,30,.8)`,
       opacity: 0.8 + 0.2 * Math.sin(t * 31) * (Math.sin(t * 2) > 0.8 ? 1 : 0.1) }}>{text}</div>
   </AbsoluteFill>
@@ -453,7 +453,7 @@ export const Stock: React.FC<{ t: number; src: string; video?: boolean; from?: n
 export const ChapterCard: React.FC<{ t: number; n: number; title: string }> = ({ t, n, title }) => {
   const a = clamp(t * 3) * (1 - prog(t, 1.9, 0.3));
   return (
-    <AbsoluteFill style={{ background: `rgba(0,0,0,${0.75 * a})`, justifyContent: "center", alignItems: "center", opacity: a }}>
+    <AbsoluteFill style={{ background: `rgba(0,0,0,${0.5 * a})`, justifyContent: "center", alignItems: "center", opacity: a }}>
       <div style={{ fontFamily: CODE, fontSize: 40, color: "#bbb", letterSpacing: 8 }}>{String(n).padStart(2, "0")}</div>
       <div style={{ fontFamily: TITLE, fontSize: 120, color: "#f2f2f2", marginTop: 10 }}>{title}</div>
     </AbsoluteFill>
