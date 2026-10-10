@@ -2871,3 +2871,81 @@ for id in horror1 horror2 horror3 horror4; do python3 qa_review.py $id; done
 > 영상: Pexels (Curtis Adams, Benjamin Eriksen, Nothing Ahead, Tima Miroshnichenko, Artem Podrez, Nino Souza, Artadya Gumelar)
 > 음악: "Ghost Story" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
 > #괴담 #이해하면무서운이야기 #공포 #거울 #shorts
+
+## 그 시절 레트로 쇼츠 (`retro1`~`retro4`)
+
+`research/research-formats2.md` 6절의 "그 시절 레트로" 포맷입니다. 검정 바탕, 위 2줄 띠 제목(윗줄 흰색, 아랫줄 노랑), 가운데 **둥근 모서리 4:3 옛 사진**(필름 그레인, 왼쪽 위 노란 연도 스티커), 아래 한 줄 자막으로 되어 있습니다. 사진은 한 줄에 한 장씩 3~4초마다 바뀌고 천천히 줌됩니다. 내레이션은 Edge TTS `ko-KR-SunHiNeural` `+10%`이고, "지금은 ○○" 대비 한 줄 뒤에 "이 시절 ○○, 기억나는 분?"으로 끝납니다.
+
+| id | 띠 제목 | 길이 | 내용 | 음악 |
+| --- | --- | --- | --- | --- |
+| `retro1` | 해 질 때까지 / 골목에서 놀던 시절 | 33.3초 | 1978년 서울 한남동 골목 아이들 → 고무줄(1952 진해·마산) → 널뛰기 → 쪼그려 앉아 노는 남자아이들 → 1968년 물방개 뽑기 장수 → 찻길 축구·냇가 물놀이·놀이터(KTV 1958·1973) → 국가기록원 "산업화로 많은 놀이가 사라졌다" → 기억나는 분? | Heartwarming |
+| `retro2` | 세탁기 없던 그 시절 / 온 동네 빨래터 | 38.1초 | "빨래는 어디서?" → 1952년 부산 보수천 개울 → 아이 업고 빨래 → 마을 공동 빨래터(1953) → 수로 밑 → 자갈 위에 널어 말리기 → 1968년 서울 발로 밟아 빨기 → 1960~70년대에도 개울 빨래 → 세탁기는 1970년대부터 늘기 시작 → 2002년 말 보급률 96% → 기억나는 분? | Gymnopedie No 1 |
+| `retro3` | 세간살이 통째로 / 지게로 나르던 시절 | 37.3초 | 1960년 수원, 세간살이를 진 지게꾼 → 1953년 부산 가구 지게 행상 → 멸치·과일 장수 → 밭 작물·땔감 → 아이용 작은 지게 → 길가에 세워 둔 지게 → 1956년 서울 자동차 5,335대 → 지금은 문 앞까지 택배 → 기억나는 분? | Gymnopedie No 2 |
+| `retro4` | MZ는 모르는 / 그 시절 버스 정류장 | 35.1초 | 1968년 종로5가 정류장의 한복·양산 → 종로3가 버스와 택시 → 1954년 중앙청 앞 시내버스 → 1952년 대구 버스 → 독립문 옆 정류장 아이들 → 영등포 어르신들 → 1956년 서울 버스 810대 → 1959년 첫 신호등 → 지금 서울 시내버스 7,383대(9배 넘게) → 기억나는 분? | Gymnopedie No 1 |
+
+```bash
+python3 media/retro/fetch.py                  # 사진(공유마당)과 음악 → public/retroN/src/, public/music/ (라이선스도 다시 확인)
+python3 voice_edge.py retro1 && python3 prep.py retro1
+./render.sh retro1 final/retro1.mp4
+python3 qa_review.py retro1
+```
+
+### 새 템플릿 부품 (`src/lib/Retro.tsx`)
+
+`edit.json` 최상위에 두면 모든 클립에, 클립에 두면 그 클립에만 적용됩니다. 기존 쇼츠는 이 값이 없으므로 그대로 렌더됩니다(teuk1을 바꾸기 전후로 렌더해 프레임이 픽셀 단위로 같은 것을 확인).
+
+- `"frame": "rounded43"` — 사진을 1080×1080 정사각 대신 둥근 모서리 4:3 액자(1020×765, 위 440px, 얇은 흰 테두리)에 넣고 바탕은 검정으로 둡니다. 크레딧은 액자 안 오른쪽 아래에 붙습니다. `"crop": [cx, cy, zoom]`을 주면 그 지점을 확대한 "디테일 컷"이 되어, 한 장면이 4.5초를 넘을 때 같은 사진으로 컷을 나눌 수 있습니다.
+- `"grain": 0.15` — 사진 위에만 필름 그레인(프레임마다 바뀌는 노이즈)과 부드러운 비네팅을 얹습니다. 0~1.
+- `"year": "1978"` — 액자 왼쪽 위의 노란 원형 연도 스티커입니다. 클립마다 다르게 줄 수 있고, 앞 클립과 연도가 바뀔 때만 톡 튀어나옵니다. 네 자리 숫자면 아래에 "년"이 붙습니다.
+- 바꾼 곳: `src/lib/Retro.tsx`(새 파일), `src/ClipShort.tsx`(Clip 타입에 `rounded43`·`grain`·`year`, FRAME 한 줄, ClipView 분기 하나, Credit 위치 한 줄), `prep.py`(클립 `frame` 기본값을 edit.json 최상위에서 읽고, `grain`·`year`를 넘기는 3줄).
+- "그때 vs 지금" 비교는 그래픽 카드 대신 숫자를 내레이션·자막·출처 스티커로 넣었습니다(그래픽 전용 화면은 쓰지 않는다는 요청에 따라). 필요하면 기존 `gfx` `vs`를 `"src"`와 함께 써서 사진 위에 얹을 수 있습니다.
+
+### 사진 출처와 라이선스
+
+모든 사진은 **공유마당(gongu.copyright.or.kr, 한국저작권위원회)** 에서 각 항목 페이지의 라이선스 표시를 직접 확인한 것만 썼습니다(2026-10-10). `media/retro/fetch.py`가 항목 페이지의 라이선스 코드를 읽어 `01`(공공누리 제1유형)이나 `21`(CC BY)이 아니면 BAD로 표시합니다. 항목별 페이지·파일 주소·라이선스·저작자·연도·사용 구간(초)은 `media/retro/retro1~4.json`과 각 `edit.json`의 `sources`에 있습니다.
+
+- **한국저작권위원회 소장 근현대 사진 (CC BY)**: 공유마당 "2018년 공유저작물DB수집", 요약정보 "부경근대사료연구소에서 대한민국의 각 지역별 근현대사진을 수집하여 제공". 저작자 표시는 "한국저작권위원회".
+- **한국정책방송원(KTV) 사진 (공공누리 제1유형)**: `retro1`의 1958·1973년 사진 3장(물놀이, 주택가 축구, 주택가 놀이터).
+- 쓰지 않은 것: 서울역사아카이브(공공누리 1유형)는 이미지 서버가 8088 포트라 이 환경에서 받을 수 없었습니다. 공유마당의 셀수스협동조합 사진은 "기증저작물 자유이용"(공공누리 아님)이라 뺐습니다. 위키미디어 공용의 전민조 기증 사진은 원 출처(대한민국역사박물관) 페이지가 지금 공공누리 제4유형이고 신문사 사진기자의 사진이라 뺐습니다. 국가기록원 기록물 검색의 사진은 항목 페이지에 공공누리 유형 표시가 없어 쓰지 않았습니다. 전쟁·군 관련 장면(철조망, 군인, 비행장)과 상표가 크게 보이는 사진도 고르지 않았습니다.
+- 사진은 1600px로 줄였고, 어두운 슬라이드 5장(`"fix": "bright"`)은 밝기를 보정했습니다. 화면에는 "사진: 한국저작권위원회", "사진: 한국정책방송원"만 표시합니다.
+
+항목별 목록(사용한 사진):
+
+- **retro1**: [1978년 서울 한남동 골목에 모여 놀이를 하는 아이들](https://gongu.copyright.or.kr/gongu/wrt/wrt/view.do?wrtSn=13154959&menuNo=200018) (한국저작권위원회, 1978년, CC BY); [1952년 진해의 어느 공터에서 고무줄 뛰기를 하는 여자 아이들](https://gongu.copyright.or.kr/gongu/wrt/wrt/view.do?wrtSn=13154364&menuNo=200018) (한국저작권위원회, 1952년, CC BY); [1952년 마산의 어느골목에서 고무줄 뛰기를 하는 소녀들](https://gongu.copyright.or.kr/gongu/wrt/wrt/view.do?wrtSn=13154363&menuNo=200018) (한국저작권위원회, 1952년, CC BY); [1952년 경남 진해 어느 마을 골목 마당에서 널뛰기를 하는 아이들 ](https://gongu.copyright.or.kr/gongu/wrt/wrt/view.do?wrtSn=13154340&menuNo=200018) (한국저작권위원회, 1952년, CC BY); [1968년 물방개를 황용한 뽑기놀이 장수](https://gongu.copyright.or.kr/gongu/wrt/wrt/view.do?wrtSn=13153490&menuNo=200018) (한국저작권위원회, 1968년, CC BY); [주택가 길에서 축구하는 어린이들](https://gongu.copyright.or.kr/gongu/wrt/wrt/view.do?wrtSn=13071730&menuNo=200018) (한국정책방송원, 1973-06-08, KOGL 1); [서울 시내 주택가 어린이 놀이터](https://gongu.copyright.or.kr/gongu/wrt/wrt/view.do?wrtSn=13071729&menuNo=200018) (한국정책방송원, 1973-06-08, KOGL 1); [물놀이하는 어린이들 ](https://gongu.copyright.or.kr/gongu/wrt/wrt/view.do?wrtSn=13070985&menuNo=200018) (한국정책방송원, 1958-07-08, KOGL 1); [1978년 서울 한남동 학교 앞 문구점 앞의 아이들](https://gongu.copyright.or.kr/gongu/wrt/wrt/view.do?wrtSn=13154977&menuNo=200018) (한국저작권위원회, 1978년, CC BY); [1978년 서울 한남동 주택가 골목안 아이들](https://gongu.copyright.or.kr/gongu/wrt/wrt/view.do?wrtSn=13154972&menuNo=200018) (한국저작권위원회, 1978년, CC BY); [1952년 부산 수영구 남천동 농가의 마당에서 노는 여자 아이들](https://gongu.copyright.or.kr/gongu/wrt/wrt/view.do?wrtSn=13153791&menuNo=200018) (한국저작권위원회, 1952년, CC BY); [1952년경 대구 둔산로 주변 마을 고목에서 그네 뛰는 아이들](https://gongu.copyright.or.kr/gongu/wrt/wrt/view.do?wrtSn=13152472&menuNo=200018) (한국저작권위원회, 1952년경, CC BY)
+- **retro2**: [1952년 부산 중구 보수천 하구에서 빨래를 하는 주민들_2](https://gongu.copyright.or.kr/gongu/wrt/wrt/view.do?wrtSn=13153849&menuNo=200018) (한국저작권위원회, 1952년, CC BY); [1952년 부산 보수천 하구에서 빨래를 하는 주민들_1](https://gongu.copyright.or.kr/gongu/wrt/wrt/view.do?wrtSn=13153772&menuNo=200018) (한국저작권위원회, 1952년, CC BY); [1952년 부산 보수천 하구에서 빨래를 하는 여인](https://gongu.copyright.or.kr/gongu/wrt/wrt/view.do?wrtSn=13153771&menuNo=200018) (한국저작권위원회, 1952년, CC BY); [1952년 부산 수영구 남천동 개울에서 아이를 업고 빨래를 하는 여인](https://gongu.copyright.or.kr/gongu/wrt/wrt/view.do?wrtSn=13153790&menuNo=200018) (한국저작권위원회, 1952년, CC BY); [1953년 부산 외곽의 마을공동 빨래터](https://gongu.copyright.or.kr/gongu/wrt/wrt/view.do?wrtSn=13153990&menuNo=200018) (한국저작권위원회, 1953년, CC BY); [1952년 9월 김포의 수로 밑에서 빨래를 하는 모습](https://gongu.copyright.or.kr/gongu/wrt/wrt/view.do?wrtSn=13153229&menuNo=200018) (한국저작권위원회, 1952년9월, CC BY); [1968년 서울의 어느 골목에서 빨래감을 발로 문지르고 있는 할머니](https://gongu.copyright.or.kr/gongu/wrt/wrt/view.do?wrtSn=13154904&menuNo=200018) (한국저작권위원회, 1968년, CC BY); [1952년 대구 신천 강변에서 빨래를 널거나  머리를 감고 있는 여인_1](https://gongu.copyright.or.kr/gongu/wrt/wrt/view.do?wrtSn=13152451&menuNo=200018) (한국저작권위원회, 1952년, CC BY); [1953년 서울 외곽지역 정비된 하천에서 빨래하는 여인들_1](https://gongu.copyright.or.kr/gongu/wrt/wrt/view.do?wrtSn=13154702&menuNo=200018) (한국저작권위원회, 1953년, CC BY); [1973년 10월 충주 달천에서 빨래하는 사람들과 계명산](https://gongu.copyright.or.kr/gongu/wrt/wrt/view.do?wrtSn=13154395&menuNo=200018) (한국저작권위원회, 1973년 10월, CC BY); [1967년 6월 부산 동래구 세병교 아래에서 빨래하는 여인들과 동해남부선 철교](https://gongu.copyright.or.kr/gongu/wrt/wrt/view.do?wrtSn=13154089&menuNo=200018) (한국저작권위원회, 1967년 6월, CC BY); [1953년 서울 외곽지역 정비된 하천에서 빨래하는 여인들_2](https://gongu.copyright.or.kr/gongu/wrt/wrt/view.do?wrtSn=13154703&menuNo=200018) (한국저작권위원회, 1953년, CC BY)
+- **retro3**: [1960년 수원 용주여관앞을 지나는 지게에 세간살이를 얹고가는 사람](https://gongu.copyright.or.kr/gongu/wrt/wrt/view.do?wrtSn=13153007&menuNo=200018) (한국저작권위원회, 1960년, CC BY); [1953년 부산 중구의 가구를 지게에 지고 다니며 팔러 다니는 사람과 그 뒤를 따라 가는 아가씨들](https://gongu.copyright.or.kr/gongu/wrt/wrt/view.do?wrtSn=13155025&menuNo=200018) (한국저작권위원회, 1953년, CC BY); [1953년 부산 중심가 한국손해보험 앞 거리에서 가구를 지게에 지고가는 사람](https://gongu.copyright.or.kr/gongu/wrt/wrt/view.do?wrtSn=13153994&menuNo=200018) (한국저작권위원회, 1953년, CC BY); [1952년 부산 중구 광복로 거리의 멸치 지게 행상인](https://gongu.copyright.or.kr/gongu/wrt/wrt/view.do?wrtSn=13153842&menuNo=200018) (한국저작권위원회, 1952년, CC BY); [1967년 대구거리_ 짐 운반용 지게를 진 사람들](https://gongu.copyright.or.kr/gongu/wrt/wrt/view.do?wrtSn=13152680&menuNo=200018) (한국저작권위원회, 1967년, CC BY); [1952년 부산 남구 감만동 주민이 빈지게를 지고 지나가는 모습](https://gongu.copyright.or.kr/gongu/wrt/wrt/view.do?wrtSn=13153603&menuNo=200018) (한국저작권위원회, 1952년, CC BY); [1952년 부산 남구 대연동 우룡산 자락 밭에서 농작물을 캐서 지게에 지고 가는 여인](https://gongu.copyright.or.kr/gongu/wrt/wrt/view.do?wrtSn=13153641&menuNo=200018) (한국저작권위원회, 1952년, CC BY); [1952년 부산 남구 대연동 논둑 옆 길에 세워 둔 지게](https://gongu.copyright.or.kr/gongu/wrt/wrt/view.do?wrtSn=13153627&menuNo=200018) (한국저작권위원회, 1952년, CC BY); [1953년 작은 지게를 진 아이](https://gongu.copyright.or.kr/gongu/wrt/wrt/view.do?wrtSn=13153202&menuNo=200018) (한국저작권위원회, 1953년, CC BY); [1952년 대구 지겟짐에 사과를 담아 거리에서 팔고있는 참외장수](https://gongu.copyright.or.kr/gongu/wrt/wrt/view.do?wrtSn=13152344&menuNo=200018) (한국저작권위원회, 1952년, CC BY); [1953년 서울 영등포역 앞 역전식당과 지게꾼](https://gongu.copyright.or.kr/gongu/wrt/wrt/view.do?wrtSn=13154692&menuNo=200018) (한국저작권위원회, 1953년, CC BY); [1952년 부산 남구 대연동의 산에서 나무뿌리를 캐서 지게에 지고 가는 어르신](https://gongu.copyright.or.kr/gongu/wrt/wrt/view.do?wrtSn=13153680&menuNo=200018) (한국저작권위원회, 1952년, CC BY); [1960년 6월 경기도 파주 법원리 도로의 지게에 짐을 지고 가는 사람](https://gongu.copyright.or.kr/gongu/wrt/wrt/view.do?wrtSn=13153114&menuNo=200018) (한국저작권위원회, 1960년6월, CC BY)
+- **retro4**: [1968년 서울 종로5가 거리와 택시, 시내버스 모습_2](https://gongu.copyright.or.kr/gongu/wrt/wrt/view.do?wrtSn=13154193&menuNo=200018) (한국저작권위원회, 1968년, CC BY); [1954년 7월 14일 서울 중앙청 앞 대로를 지나는 시내버스](https://gongu.copyright.or.kr/gongu/wrt/wrt/view.do?wrtSn=13154758&menuNo=200018) (한국저작권위원회, 19919, CC BY); [1960년 3월 서울시내 한국상업은행 앞 거리와 시내버스](https://gongu.copyright.or.kr/gongu/wrt/wrt/view.do?wrtSn=13154858&menuNo=200018) (한국저작권위원회, 1960년 3월, CC BY); [1963년 서울거리의 시내버스 모습](https://gongu.copyright.or.kr/gongu/wrt/wrt/view.do?wrtSn=13154652&menuNo=200018) (한국저작권위원회, 1963년, CC BY); [1968년 서울 종로3가 거리와 택시, 시내버스 모습_1](https://gongu.copyright.or.kr/gongu/wrt/wrt/view.do?wrtSn=13154192&menuNo=200018) (한국저작권위원회, 1968년, CC BY); [1952년 대구역 앞 시영버스](https://gongu.copyright.or.kr/gongu/wrt/wrt/view.do?wrtSn=13152535&menuNo=200018) (한국저작권위원회, 1952년, CC BY); [1953년 부산 부산진구 연지동의 시내버스](https://gongu.copyright.or.kr/gongu/wrt/wrt/view.do?wrtSn=13155010&menuNo=200018) (한국저작권위원회, 1953년, CC BY); [1953년 서울 서대문구 독립문 옆 버스정류장의 사람들과 아이들](https://gongu.copyright.or.kr/gongu/wrt/wrt/view.do?wrtSn=13154682&menuNo=200018) (한국저작권위원회, 1953년, CC BY); [1953년 서울 영등포의 버스를 기다리는 어르신들](https://gongu.copyright.or.kr/gongu/wrt/wrt/view.do?wrtSn=13154695&menuNo=200018) (한국저작권위원회, 1953년, CC BY); [1967년 대구 거리_ 외곽지역에서 버스를 기다리는 사람들](https://gongu.copyright.or.kr/gongu/wrt/wrt/view.do?wrtSn=13152653&menuNo=200018) (한국저작권위원회, 1967년, CC BY); [1959년 서울역](https://gongu.copyright.or.kr/gongu/wrt/wrt/view.do?wrtSn=13154168&menuNo=200018) (한국저작권위원회, 1959년, CC BY)
+
+### 사실과 출처 (2026-10-10 확인)
+
+- 사진의 연도·장소는 각 공유마당 항목의 제목과 창작년도를 그대로 따랐습니다(예: "1952년 부산 보수천 하구에서 빨래를 하는 주민들", "1960년 수원 … 지게에 세간살이를 얹고가는 사람", "1968년 서울 종로5가 거리와 택시, 시내버스 모습"). 사진에 보이지 않는 이야기는 지어내지 않았습니다.
+- `retro1` — [국가기록원 「사진대한민국: 민속놀이」](https://theme.archives.go.kr/next/photo/folkPlay.do): "산업화로 농경생활의 틀에서 벗어나면서 여러 종류의 민속놀이가 우리 주변에서 사라졌다."
+- `retro2` — [국가기록원 「사진대한민국: 가전제품」](https://theme.archives.go.kr/next/photo/homeAppliances.do): "1970년대 들어 … 냉장고, 세탁기의 보급률도 점차 높아지기 시작하였다", "2002년말 기준으로 주요 가전제품의 보급률은 … 세탁기 96%".
+- `retro3` — [국가기록원 「사진대한민국: 자동차」](https://theme.archives.go.kr/next/photo/motorCar.do): "1956년 서울에는 5,335대의 자동차가 있었다."
+- `retro4` — 같은 「자동차」 페이지: "그 중 … 버스가 810대", "1959년 전국적으로 총 6,319건의 교통사고가 발생하였고, 이로 인해 서울시내에 처음으로 교통신호등이 등장하였다." [서울시 교통분야 누리집 「시내버스, 마을버스 운영현황('26년 1월 기준)」](https://news.seoul.go.kr/traffic/archives/1706): 시내버스 64개 회사, 7,383대(예비 353대), 396개 노선. 7,383 ÷ 810 = 9.1 → "아홉 배가 넘죠".
+
+### 업로드 문구
+
+**retro1** — 해 질 때까지 골목에서 놀던 시절 ㅠㅠ
+> 학교만 끝나면 다 골목으로! 1952년 진해·마산의 고무줄 뛰기, 마당의 널뛰기, 1968년 물방개 뽑기 장수, 1973년 서울 주택가 찻길 축구와 놀이터, 1978년 서울 한남동 골목의 아이들까지. 국가기록원은 산업화로 많은 놀이가 우리 곁에서 사라졌다고 적었습니다. 이 시절 골목 놀이, 기억나는 분?
+> 사진: 한국저작권위원회(공유마당, CC BY, 부경근대사료연구소 수집), 한국정책방송원(공유마당, 공공누리 제1유형) · 일부 크기 조정·밝기 보정
+> 음악: "Heartwarming" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
+> #그시절 #추억 #골목놀이 #옛날사진 #shorts
+
+**retro2** — 세탁기 없던 그 시절, 온 동네 빨래터
+> 세탁기가 없던 시절, 빨래는 개울에서 했습니다. 1952년 부산 보수천, 아이를 업은 채 빨래하는 엄마, 마을 공동 빨래터, 자갈 위에 널어 말린 빨래, 1968년 서울 골목에서 발로 밟아 빨던 할머니까지. 국가기록원에 따르면 세탁기 보급은 1970년대에 들어서야 높아지기 시작했고, 2002년 말 보급률은 96%였습니다. 이 시절 빨래터, 기억나는 분?
+> 사진: 한국저작권위원회(공유마당, CC BY, 부경근대사료연구소 수집) · 크기 조정
+> 음악: "Gymnopedie No 1" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
+> #그시절 #빨래터 #옛날사진 #추억 #shorts
+
+**retro3** — 세간살이 통째로 지게로 나르던 시절 ㄷㄷ
+> 1960년 수원, 등에 진 건 세간살이 통째로! 1953년 부산의 가구 지게 행상, 멸치·과일 장수, 밭에서 캔 작물과 땔감, 아이용 작은 지게까지. 1956년 서울의 자동차는 5,335대뿐이었습니다(국가기록원). 지금은 클릭 한 번이면 문 앞까지 오는 택배. 이 시절 지게, 기억나는 분?
+> 사진: 한국저작권위원회(공유마당, CC BY, 부경근대사료연구소 수집) · 크기 조정
+> 음악: "Gymnopedie No 2" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
+> #그시절 #지게 #옛날사진 #추억 #shorts
+
+**retro4** — MZ는 모르는 그 시절 버스 정류장
+> 1968년 종로5가 정류장, 한복에 양산 쓰고 버스를 기다리던 풍경. 1954년 중앙청 앞 시내버스, 1952년 대구 버스, 독립문 옆 정류장의 아이들까지. 1956년 서울의 버스는 810대, 1959년엔 서울에 첫 교통신호등이 생겼습니다(국가기록원). 지금 서울 시내버스는 7,383대(서울시, 2026년 1월 기준). 이 시절 버스 정류장, 기억나는 분?
+> 사진: 한국저작권위원회(공유마당, CC BY, 부경근대사료연구소 수집) · 크기 조정·밝기 보정
+> 음악: "Gymnopedie No 1" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
+> #그시절 #버스정류장 #옛날서울 #추억 #shorts

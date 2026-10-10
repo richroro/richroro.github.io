@@ -157,7 +157,9 @@ def prep(sid):
                             "-c:v", "libx264", "-preset", "veryfast", "-crf", "16", "-pix_fmt", "yuv420p", "-c:a", "aac", "-b:a", "160k", "-ar", "48000", out], check=True)
             file = f"{sid}/clips/c{i:02d}.mp4"
         clip = {"file": file, "label": c.get("label", c.get("src", "")), "at": round(a, 3), "dur": round(b - a, 3), "speed": speed,
-                "frame": c.get("frame", "square"), "zoom": c.get("zoom", [1.04, 1.12]), "focus": c.get("focus", "50% 50%"), "audio": c.get("audio", 0.12)}
+                "frame": c.get("frame", edit.get("frame", "square")), "zoom": c.get("zoom", [1.04, 1.12]), "focus": c.get("focus", "50% 50%"), "audio": c.get("audio", 0.12)}
+        for k in ("grain", "year"):  # 그 시절 레트로 ("frame": "rounded43"): film grain and the year sticker, per clip or for the whole short
+            if c.get(k, edit.get(k)) is not None: clip[k] = c.get(k, edit.get(k))
         if c.get("credit", s.get("credit")): clip["credit"] = c.get("credit", s.get("credit"))  # per-source credit line (else the short's)
         if c.get("crop") and os.path.exists(srcf):  # [cx, cy, zoom]: aim at one panel of a split-screen source
             wh = subprocess.run(["ffprobe", "-v", "error", "-select_streams", "v:0", "-show_entries", "stream=width,height", "-of", "csv=p=0", srcf],
