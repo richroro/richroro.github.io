@@ -9,7 +9,20 @@ V=$1; W=${WORK:-out/odyssey}; OUT=final/odyssey.mp4
 BX=${CHROME:-/opt/pw-browsers/chromium_headless_shell-1194/chrome-linux/headless_shell}
 mkdir -p "$W" final
 cp longform/odyssey/edit.json public/odyssey/edit.json
-[ -s "$W/video.mp4" ] || npx remotion render src/index.ts odyssey "$W/video.mp4" --browser-executable="$BX" --concurrency="$(nproc)" --crf=17 --muted --log=error
+# pictures in 5000-frame pieces (a crashed browser costs one piece, and a rerun skips the pieces already there)
+FR=$(python3 -c "import json,math; print(math.ceil(json.load(open('public/odyssey/edit.json'))['duration']*30))")
+: > "$W/pieces.txt"
+for ((a = 0; a < FR; a += 5000)); do
+  b=$(( a + 4999 < FR - 1 ? a + 4999 : FR - 1 )); P=$(printf "piece_%05d.mp4" "$a")
+  for try in 1 2 3; do
+    [ -s "$W/$P" ] && break
+    npx remotion render src/index.ts odyssey "$W/$P.tmp.mp4" --frames="$a-$b" --browser-executable="$BX" --concurrency="${CONC:-3}" --crf=17 --muted --log=error \
+      && mv "$W/$P.tmp.mp4" "$W/$P" || echo "piece $a failed (try $try)"
+  done
+  [ -s "$W/$P" ] || { echo "piece $a failed"; exit 1; }
+  echo "file '$P'" >> "$W/pieces.txt"
+done
+[ -s "$W/video.mp4" ] || ffmpeg -hide_banner -loglevel error -y -f concat -safe 0 -i "$W/pieces.txt" -c copy "$W/video.mp4"
 python3 longform/odyssey/mix.py "$V" "$W/mix.wav"
 M=$(ffmpeg -hide_banner -nostats -i "$W/mix.wav" -af loudnorm=I=-14:TP=-1.5:LRA=11:print_format=json -f null - 2>&1 | sed -n '/^{/,/^}/p')
 get() { echo "$M" | python3 -c "import sys,json; print(json.load(sys.stdin)['$1'])"; }
