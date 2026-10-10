@@ -11,14 +11,6 @@
    "license": "CC BY 4.0",
    "fileUrl": "https://upload.wikimedia.org/wikipedia/commons/d/d5/Filling_Up_Gas_Tank.webm"
   },
-  "tank": {
-   "file": "tankers_uscg.mp4",
-   "credit": "영상: 미국 해안경비대",
-   "label": "Oil Tankers at anchor in Southern California, 2020-04-23 (U.S. Coast Guard, PO3 Aidan Cooney, public domain)",
-   "url": "https://www.dvidshub.net/video/749266/oil-tankers-anchor-southern-california",
-   "license": "Public domain (U.S. Coast Guard work, DVIDS VIRIN 200423-G-SL960-827)",
-   "fileUrl": "https://d34w7g4gy10iej.cloudfront.net/video/2004/DOD_107784864/DOD_107784864.mp4"
-  },
   "hong": {
    "file": "hongcheon_station_cc0.jpg",
    "credit": "사진: 최광모 (CC0)",
@@ -58,6 +50,30 @@
    "url": "https://commons.wikimedia.org/wiki/File:S_Oil_Songnae_Interchange_Gas_Station_-_panoramio.jpg",
    "license": "CC BY 3.0",
    "fileUrl": "https://upload.wikimedia.org/wikipedia/commons/7/72/S_Oil_Songnae_Interchange_Gas_Station_-_panoramio.jpg"
+  },
+  "hormuz": {
+   "file": "hormuz_iss_nasa.jpg",
+   "credit": "사진: NASA",
+   "label": "iss063e002679, northern tip of Oman on the Strait of Hormuz, 2020-04-23 (NASA, Christopher Cassidy, public domain)",
+   "url": "https://images.nasa.gov/details/iss063e002679",
+   "license": "Public domain (NASA)",
+   "fileUrl": "https://images-assets.nasa.gov/image/iss063e002679/iss063e002679~large.jpg"
+  },
+  "tk_pa": {
+   "file": "tanker_portarthur_cc0.jpg",
+   "credit": "사진: Quintin Soloviev (CC0)",
+   "label": "Crude Oil Tanker in Port Arthur, Texas (Quintin Soloviev, CC0)",
+   "url": "https://commons.wikimedia.org/wiki/File:Crude_Oil_Tanker_in_Port_Arthur,_Texas.jpg",
+   "license": "CC0",
+   "fileUrl": "https://upload.wikimedia.org/wikipedia/commons/d/da/Crude_Oil_Tanker_in_Port_Arthur%2C_Texas.jpg"
+  },
+  "tk_cal": {
+   "file": "tanker_calandkanaal_cc0.jpg",
+   "credit": "사진: Alfvanbeem (CC0)",
+   "label": "Advantage Smooth, Crude Oil Tanker, Calandkanaal pic1 (Alfvanbeem, CC0)",
+   "url": "https://commons.wikimedia.org/wiki/File:Advantage_Smooth,_Crude_Oil_Tanker,_IMO_9999620,_Calandkanaal_pic1.jpg",
+   "license": "CC0",
+   "fileUrl": "https://upload.wikimedia.org/wikipedia/commons/4/4e/Advantage_Smooth%2C_Crude_Oil_Tanker%2C_IMO_9999620%2C_Calandkanaal_pic1.jpg"
   }
  },
  "clips": [
@@ -83,22 +99,23 @@
    ]
   },
   {
-   "src": "tank",
+   "src": "hormuz",
    "from": "war",
-   "in": 30.0,
-   "label": "바다 위 유조선들",
-   "audio": 0.1
+   "label": "우주에서 본 호르무즈 해협",
+   "zoom": [
+    1.05,
+    1.18
+   ]
   },
   {
-   "src": "tank",
+   "src": "tk_pa",
    "from": "war.국제유가",
-   "in": 42.0,
-   "label": "유조선 근접",
-   "audio": 0.1,
+   "label": "원유 운반선",
    "zoom": [
-    1.0,
-    1.1
-   ]
+    1.05,
+    1.15
+   ],
+   "focus": "60% 50%"
   },
   {
    "src": "ks",
@@ -147,7 +164,7 @@
   {
    "src": "fill",
    "from": "reset.지금은",
-   "in": 61.5,
+   "in": 63.5,
    "label": "주유 노즐들",
    "audio": 0.2,
    "zoom": [
@@ -156,14 +173,17 @@
    ]
   },
   {
-   "src": "tank",
+   "src": "tk_cal",
    "from": "effect",
-   "in": 9.0,
-   "label": "정박한 유조선",
-   "audio": 0.1,
+   "label": "저장 탱크 앞 유조선",
+   "crop": [
+    0.3,
+    0.62,
+    1.0
+   ],
    "zoom": [
-    1.0,
-    1.1
+    1.05,
+    1.15
    ]
   },
   {
@@ -193,9 +213,9 @@
  "marks": [
   {
    "kind": "circle",
-   "x": 540,
-   "y": 1060,
-   "r": 170,
+   "x": 520,
+   "y": 1170,
+   "r": 180,
    "from": "hook+0.3",
    "to": "hook.경유값이-0.1"
   },
@@ -241,6 +261,13 @@
    "from": "end+0.1",
    "to": "end@end+0.5",
    "y": 520
+  },
+  {
+   "text": "호르무즈 해협 · 우주정거장에서",
+   "from": "war+0.1",
+   "to": "war.국제유가-0.1",
+   "y": 520,
+   "size": 38
   }
  ],
  "sfx": [
