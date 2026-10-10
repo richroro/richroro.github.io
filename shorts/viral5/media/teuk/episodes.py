@@ -20,7 +20,7 @@ EPISODES = {
   ("a1b", "nar", "정신 차려 보면 볶음밥까지 먹고 있음.", "정신 차려 보면 / 볶음밥까지 먹고 있음",
    P("fried_kimchi", react="laugh", side="left", big="+볶음밥", bigat="a1b.볶음밥")),
   ("a2", "nar", "맵다면서 단무지만 세 번 리필함.", "맵다면서 / 단무지만 세 번 리필함",
-   F("sick", "tilt", to="laugh", at="a2.젓가락", fx="fire", burst="#FF7A59")),
+   F("sick", "tilt", to="laugh", at="a2.리필함", fx="fire", burst="#FF7A59")),
   ("c1", "me", "스읍 하 근데 맛있어.", "\"스읍… 하… 근데 맛있어\"", F("cry", "right", fx="sweat", prop="🌶️")),
   ("a3", "nar", "포장마차 어묵 국물은 세 번째 컵부터 눈치 보임.", "포장마차 어묵 국물 / 세 번째 컵부터 눈치 보임",
    P("tbk_eomuk", react="love", side="left", tag="마지막 한 입")),

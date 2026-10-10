@@ -222,6 +222,7 @@ const groups = (d: ShortData): Group[] => {
     out.push(Object.assign({ from: p.startMs / 1000, to: p.endMs / 1000, lines: [text] }, { g }));
   }
   if (out[0]) out[0].from = 0;  // a caption from the very first frame
+  if (out.length) out[out.length - 1].to = d.end;  // and the last one holds to the end, so the bottom is never empty
   return out;
 };
 const Subtitle: React.FC<{ g: Group }> = ({ g }) => {
