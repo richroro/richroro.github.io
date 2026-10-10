@@ -1,0 +1,255 @@
+{
+ "credit": "영상: 한국항공우주연구원",
+ "titleStyle": "band",
+ "captionY": 1640,
+ "sources": {
+  "n2": {
+   "file": "nuri2_2022.webm",
+   "credit": "영상: 한국항공우주연구원(2022 자료)",
+   "label": "Second launch of the Korean Space Launch Vehicle-II on 21 June 2022 (KARI TV, CC BY)",
+   "url": "https://commons.wikimedia.org/wiki/File:Second_launch_of_the_Korean_Space_Launch_Vehicle-II_on_21_June_2022.webm",
+   "license": "CC BY (KARI TV via Commons, YouTube CC-BY)",
+   "fileUrl": "https://upload.wikimedia.org/wikipedia/commons/1/11/Second_launch_of_the_Korean_Space_Launch_Vehicle-II_on_21_June_2022.webm"
+  },
+  "n3": {
+   "file": "nuri3_2023.webm",
+   "credit": "영상: 한국항공우주연구원(2023 자료)",
+   "label": "Third launch of the Korean Space Launch Vehicle-II on 25 May 2023 (KARI TV, CC BY), incl. onboard cameras",
+   "url": "https://commons.wikimedia.org/wiki/File:Third_launch_of_the_Korean_Space_Launch_Vehicle-II_on_25_May_2023.webm",
+   "license": "CC BY (KARI TV via Commons, YouTube CC-BY)",
+   "fileUrl": "https://upload.wikimedia.org/wikipedia/commons/f/fb/Third_launch_of_the_Korean_Space_Launch_Vehicle-II_on_25_May_2023.webm"
+  },
+  "n1": {
+   "file": "nuri1_2021.webm",
+   "credit": "영상: 한국항공우주연구원(2021 자료)",
+   "label": "누리호 1차 시험 발사 장면, 2021-10-21 (KARI, CC BY)",
+   "url": "https://commons.wikimedia.org/wiki/File:누리호_1차_시험_발사_장면.webm",
+   "license": "CC BY (KARI via Commons, YouTube CC-BY)",
+   "fileUrl": "https://upload.wikimedia.org/wikipedia/commons/7/7f/%EB%88%84%EB%A6%AC%ED%98%B8_1%EC%B0%A8_%EC%8B%9C%ED%97%98_%EB%B0%9C%EC%82%AC_%EC%9E%A5%EB%A9%B4.webm"
+  },
+  "pad": {
+   "file": "pad01.jpg",
+   "credit": "사진: 한국항공우주연구원",
+   "label": "KSLV-II Nuri and the launchpad 01, 2021 (KARI, KOGL Type 1)",
+   "url": "https://commons.wikimedia.org/wiki/File:KSLV-II_Nuri_and_the_launchpad_01.jpg",
+   "license": "KOGL Type 1 (공공누리 제1유형), KARI",
+   "fileUrl": "https://upload.wikimedia.org/wikipedia/commons/5/53/KSLV-II_Nuri_and_the_launchpad_01.jpg"
+  }
+ },
+ "clips": [
+  {
+   "src": "n2",
+   "from": "hook",
+   "in": 1.5,
+   "label": "누리호 이륙 근접",
+   "audio": 0.35,
+   "zoom": [
+    1.0,
+    1.06
+   ]
+  },
+  {
+   "src": "n3",
+   "from": "hook.딱",
+   "in": 66.0,
+   "label": "하늘로 오르는 누리호",
+   "audio": 0.2,
+   "zoom": [
+    1.05,
+    1.15
+   ]
+  },
+  {
+   "src": "n2",
+   "from": "ok",
+   "in": 56.5,
+   "label": "항공 촬영 이륙",
+   "audio": 0.25
+  },
+  {
+   "src": "pad",
+   "from": "ok.군집위성",
+   "label": "발사대의 누리호",
+   "zoom": [
+    1.1,
+    1.2
+   ],
+   "focus": "45% 50%"
+  },
+  {
+   "src": "n3",
+   "from": "sep",
+   "in": 88.0,
+   "label": "1단 외부 카메라",
+   "audio": 0.0,
+   "crop": [
+    0.25,
+    0.27,
+    2.0
+   ]
+  },
+  {
+   "src": "n3",
+   "from": "sep.위성들이",
+   "in": 126.0,
+   "label": "페어링 내부 위성 분리",
+   "audio": 0.0,
+   "crop": [
+    0.2,
+    0.5,
+    2.0
+   ]
+  },
+  {
+   "src": "n3",
+   "from": "fail",
+   "in": 138.0,
+   "label": "멀어지는 위성",
+   "audio": 0.0,
+   "crop": [
+    0.2,
+    0.5,
+    2.0
+   ]
+  },
+  {
+   "src": "n3",
+   "from": "fail.분리",
+   "in": 190.0,
+   "label": "빈 우주",
+   "audio": 0.0,
+   "crop": [
+    0.25,
+    0.5,
+    2.0
+   ]
+  },
+  {
+   "src": "n3",
+   "from": "fail.덮개",
+   "in": 160.0,
+   "label": "사출관",
+   "audio": 0.0,
+   "crop": [
+    0.1,
+    0.5,
+    2.0
+   ]
+  },
+  {
+   "src": "n3",
+   "from": "call",
+   "in": 300.0,
+   "label": "3단 너머 지구",
+   "audio": 0.0,
+   "crop": [
+    0.75,
+    0.5,
+    2.0
+   ]
+  },
+  {
+   "src": "n3",
+   "from": "next",
+   "in": 306.0,
+   "label": "지구",
+   "audio": 0.0,
+   "crop": [
+    0.78,
+    0.45,
+    2.2
+   ]
+  },
+  {
+   "src": "n1",
+   "from": "next.한반도",
+   "in": 52.0,
+   "label": "구름 위로 오르는 누리호",
+   "audio": 0.15
+  },
+  {
+   "src": "n3",
+   "from": "end",
+   "in": 34.0,
+   "label": "발사대 이륙",
+   "audio": 0.3,
+   "zoom": [
+    1.0,
+    1.1
+   ]
+  },
+  {
+   "src": "n2",
+   "from": "end.다음은",
+   "in": 60.0,
+   "label": "항공 촬영 상승",
+   "audio": 0.25
+  }
+ ],
+ "marks": [],
+ "stickers": [
+  {
+   "text": "2026.10.7 누리호 5차 발사",
+   "from": "hook+0.0",
+   "to": "ok-0.1",
+   "y": 520
+  },
+  {
+   "text": "자료화면: 지난 발사 영상",
+   "from": "ok+0.1",
+   "to": "sep-0.1",
+   "y": 520,
+   "size": 38
+  },
+  {
+   "text": "자료화면 · 3차 발사 탑재 카메라",
+   "from": "sep+0.1",
+   "to": "call-0.1",
+   "y": 520,
+   "size": 38
+  },
+  {
+   "text": "2026년 10월 기준",
+   "from": "end+0.1",
+   "to": "end@end+0.5",
+   "y": 520
+  }
+ ],
+ "sfx": [
+  [
+   "hook",
+   "whoosh",
+   0.4
+  ],
+  [
+   "hook.딱",
+   "k_error_003",
+   0.35
+  ],
+  [
+   "fail.덮개",
+   "k_error_003",
+   0.4
+  ],
+  [
+   "call",
+   "ding",
+   0.35
+  ],
+  [
+   "end",
+   "riser",
+   0.3
+  ]
+ ],
+ "punches": [
+  "hook.딱",
+  "fail.덮개"
+ ],
+ "flashes": [],
+ "music": {
+  "file": "music/Heroic Age.mp3",
+  "gain": 0.14,
+  "start": 0
+ }
+}

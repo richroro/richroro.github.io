@@ -8,7 +8,10 @@ import json, os, re, statistics, subprocess, sys
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 SYL = re.compile(r"[가-힣A-Za-z0-9%]")
-HOOKS = ["이유", "썰", "정체", "생긴 일", "생기는 일", "최후", "결말", "역대급", "TOP", "소름", "실화", "레전드", "차이", "vs", "?", "ㅋㅋ", "ㄷㄷ"]
+# title patterns of 100k+ shorts (research-fun.md §5, research-info.md §1): "~하는 이유", "~썰", "정체", "생긴 일", "역대급",
+# "TOP N", "소름", "~에 대한 몇가지", "~의 필살기", "~ 특", "~의 최후/결말", X vs Y, second person, ㅋㅋ/ㄷㄷ/?, numbers
+HOOKS = ["이유", "썰", "정체", "생긴 일", "생기는 일", "하는 일", "최후", "결말", "역대급", "TOP", "소름", "실화", "레전드", "현실", "충격", "차이",
+         "vs", "몇가지", "몇 가지", "필살기", " 특", "당신", "반응", "?", "ㅋㅋ", "ㄷㄷ", "!!"]
 ASKS = ["구독", "좋아요", "알림 설정"]
 PICTURE = "crop=1080:1080:0:400"  # the frame box under the title band, where cuts and black frames count
 
@@ -79,7 +82,10 @@ def review(sid):
     row("제목 호기심", bool(hits), False, ", ".join(hits) or "패턴 없음")
     shots = [b - a for a, b in zip([0.0] + cuts, cuts + [dur])]
     row("첫 장면", shots[0] <= 3.5, shots[0] <= 5, f"{shots[0]:.1f}초 뒤 첫 전환")
-    row("장면 길이", max(shots) <= 4.5, max(shots) <= 6, f"최장 {max(shots):.1f}초, 평균 {statistics.mean(shots):.1f}초, 전환 {len(cuts)}번")
+    # one person talking (interviews, speeches) may hold a little longer, with punch-in cuts at sentence breaks
+    talk = bool(trans)
+    lim = (6, 8) if talk else (4.5, 6)
+    row("장면 길이", max(shots) <= lim[0], max(shots) <= lim[1], f"최장 {max(shots):.1f}초, 평균 {statistics.mean(shots):.1f}초, 전환 {len(cuts)}번" + (" (인터뷰 기준 6초)" if talk else ""))
     if pages:
         worst = max(pages, key=visible)
         row("자막 한 장", visible(worst) <= 12, visible(worst) <= 15, f"최장 {visible(worst)}자: {worst}")
