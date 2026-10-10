@@ -13,7 +13,8 @@ export type Char = { name?: string; color?: string; mood?: Mood; to?: Mood; hat?
 export type SceneG = {
   /** "📍 편의점" tag at the top left */
   place?: string;
-  /** a backdrop drawn here ("class", "home", "street", "store", "army", "night", "stage", "office", "door", "hospital") or any CSS background */
+  /** a backdrop drawn here ("class", "home", "street", "store", "army", "night", "stage", "office", "door", "hospital", "bedroom", "bath",
+   *  "subway", "cafeteria", "desk") or any CSS background */
   bg?: string;
   chars: Char[];
   /** a speech bubble over chars[who]; steps[0] is when it pops (default at once) */
@@ -29,7 +30,11 @@ export type SceneG = {
   sign?: string;
   /** a slow push-in to this scale over the first 3 s, centred on chars[focus] */
   zoom?: number; focus?: number;
+  /** a group-chat phone screen on the right (no real app's look): message i pops at steps[4 + i] (default every 0.45 s),
+   *  older ones scroll up; `me` messages sit on the right, others under a name; `unread` is the small count beside a bubble */
+  chat?: Chat;
 };
+export type Chat = { title?: string; msgs: { name?: string; text: string; me?: boolean; unread?: string; color?: string }[] };
 /** the hook card; `meta` is the grey line under the title (default "익명 · 창작 썰"), likes and comments are shown if given;
  *  `chars` (one or two) stand at the bottom right from frame 0, so the thumbnail shows a face, not just text */
 export type PostG = { board?: string; title: string; body?: string[]; meta?: string; likes?: string; comments?: string; hot?: boolean; chars?: Char[] };
@@ -180,15 +185,86 @@ const Backdrop: React.FC<{ kind: string; h: number; sign?: string; tagged?: bool
       {box({ right: 60, top: F - 230, width: 120, height: 150, background: "#9fb8b5", borderRadius: "16px 16px 0 0" })}
       {box({ right: 400, top: F - 310, width: 80, height: 80, borderRadius: 40, background: "#ff6b6b", border: "6px solid #fff", boxSizing: "border-box" })}
       {box({ right: 432, top: F - 293, width: 16, height: 46, background: "#fff" })}{box({ right: 417, top: F - 278, width: 46, height: 16, background: "#fff" })}</>);
+    case "bedroom": return (<>{wall("#e9e4ff", "#ddd6fb", "#c9a57e")}
+      {box({ left: 90, top: 130, width: 280, height: 280, background: "linear-gradient(180deg,#ffd9a8,#fff2d6)", border: "14px solid #fff", boxShadow: "0 0 0 5px #b7aee0" })}
+      {box({ left: 60, top: 110, width: 70, height: 340, background: "#8fb8ff", borderRadius: "0 0 30px 30px" })}{box({ left: 330, top: 110, width: 70, height: 340, background: "#8fb8ff", borderRadius: "0 0 30px 30px" })}
+      {box({ right: 50, top: F - 300, width: 70, height: 300, background: "#a8774e", borderRadius: "20px 20px 0 0" })}
+      {box({ right: 50, top: F - 120, width: 520, height: 120, background: "#f4f4f4", border: "6px solid #c8c3e6", borderRadius: "20px 20px 0 0" })}
+      {box({ right: 120, top: F - 150, width: 400, height: 100, background: "#ffb3c7", border: "6px solid #e2849f", borderRadius: "40px 40px 10px 10px" })}</>);
+    case "bath": return (<>{box({ inset: 0, background: "#e8f7fb", backgroundImage: "linear-gradient(#c6e6ee 3px, transparent 3px), linear-gradient(90deg, #c6e6ee 3px, transparent 3px)", backgroundSize: "90px 90px" })}
+      {box({ left: 0, right: 0, top: F, bottom: 0, background: "#9fc4cf" })}
+      {box({ left: 330, top: 110, width: 420, height: 330, background: "linear-gradient(135deg,#f4fbff,#cfe6f0)", border: "14px solid #b7c9d1", borderRadius: 30 })}
+      {box({ left: 380, top: 160, width: 120, height: 14, background: "rgba(255,255,255,.9)", borderRadius: 7, transform: "rotate(-30deg)" })}
+      {box({ left: 300, top: F - 150, width: 480, height: 90, background: "#fff", border: "8px solid #b7c9d1", borderRadius: "10px 10px 50px 50px" })}
+      {box({ left: 525, top: F - 200, width: 30, height: 60, background: "#9aa9b0", borderRadius: 8 })}</>);
+    case "subway": return (<>{wall("#dfe8ef", "#cfdbe5", "#8d98a3")}
+      {[0, 1, 2].map((k) => box({ left: 70 + k * 330, top: 170, width: 280, height: 220, background: "linear-gradient(180deg,#2b3550,#3d4a6b)", border: "12px solid #b4c0cc", borderRadius: 26 }, k))}
+      {[0, 1, 2].map((k) => box({ left: 110 + k * 330, top: 210, width: 120, height: 10, background: "rgba(255,240,180,.7)", borderRadius: 5 }, 10 + k))}
+      {box({ left: 0, right: 0, top: 70, height: 14, background: "#a9b3bd" })}
+      {[120, 300, 480, 660, 840].map((x, k) => <div key={20 + k} style={{ position: "absolute", left: x, top: 80, width: 50, height: 90, border: "8px solid #8a95a0", borderTop: "none", borderRadius: "0 0 25px 25px" }} />)}
+      {box({ left: 0, right: 0, top: F - 130, height: 60, background: "#4f7fd1", borderRadius: "14px 14px 0 0" })}{box({ left: 0, right: 0, top: F - 70, height: 70, background: "#3d67b3" })}
+      {box({ left: 0, right: 0, top: 30, height: 30, background: "#2bb3a0" })}</>);
+    case "cafeteria": return (<>{wall("#fff6df", "#fdecc6", "#cfd6dc")}
+      {box({ left: 300, top: 70, width: 480, height: 150, background: "#2f5d46", border: "12px solid #9b6a3c", borderRadius: 10 })}{write(312, 82, 456, 126, "rgba(255,255,240,.92)", 56)}
+      {box({ left: 0, right: 0, top: F - 210, height: 40, background: "#b9c2ca" })}{box({ left: 0, right: 0, top: F - 170, height: 170, background: "#dfe4e8" })}
+      {[60, 280, 500, 720].map((x, k) => box({ left: x, top: F - 262, width: 190, height: 60, background: ["#ffcf6b", "#ff8f6b", "#9be07b", "#f2f2f2"][k], border: "8px solid #9aa4ad", borderRadius: "0 0 60px 60px" }, k))}
+      {box({ left: 900, top: F - 290, width: 120, height: 90, background: "#c9d1d8", borderRadius: "60px 60px 0 0" })}</>);
+    case "desk": return (<>{box({ inset: 0, background: "linear-gradient(180deg,#1d2347,#2c3466)" })}
+      {box({ left: 90, top: 110, width: 280, height: 280, background: "linear-gradient(180deg,#0f1430,#1f2a5a)", border: "14px solid #4a5285" })}
+      {box({ left: 270, top: 150, width: 60, height: 60, borderRadius: 30, background: "#fff1a8", boxShadow: "0 0 40px #fff1a8" })}
+      {box({ left: 640, top: 140, width: 300, height: 600, background: "radial-gradient(ellipse at 50% 0%, rgba(255,236,150,.55), rgba(255,236,150,0) 70%)" })}
+      {box({ left: 760, top: 110, width: 160, height: 70, background: "#ffd84d", borderRadius: "80px 80px 10px 10px", border: "6px solid #1b1b1f" })}
+      {box({ left: 830, top: 170, width: 16, height: F - 260, background: "#1b1b1f" })}
+      {box({ left: 0, right: 0, top: F - 90, height: 40, background: "#b07a4f" })}{box({ left: 0, right: 0, top: F - 50, bottom: 0, background: "#8a5d3b" })}
+      {[0, 1, 2, 3].map((k) => box({ left: 560 + k * 6, top: F - 140 - k * 46, width: 220 - k * 12, height: 44, background: ["#ff7a7a", "#7ab8ff", "#9be07b", "#ffcf6b"][k], border: "5px solid #1b1b1f", borderRadius: 6 }, k))}</>);
     default: return box({ inset: 0, background: kind });
   }
+};
+
+/** a group chat on a phone (generic, no real app's look): messages pop in at `at[i]`, the list scrolls so the newest shows */
+const ChatPhone: React.FC<{ c: Chat; t: number; at: number[]; h: number }> = ({ c, t, at, h }) => {
+  const W = 540, left = 1080 - W - 24, top = 24, H = h - 48, head = 110, fs = 40;
+  const shown = c.msgs.map((m, i) => ({ m, i, p: prog(t, at[i] ?? 0.15 + 0.45 * i, 0.22) })).filter((x) => x.p > 0);
+  const hOf = (m: Chat["msgs"][number]) => {
+    const tw = measureText({ text: m.text.replace(/[[\]]/g, ""), fontFamily: BODY, fontSize: fs, fontWeight: "800" }).width;
+    return Math.ceil(tw / 330) * fs * 1.3 + 36 + (m.me ? 0 : 44) + 22;
+  };
+  let y = 0; const ys = shown.map((x) => { const y0 = y; y += hOf(x.m) * eOut(x.p); return y0; });
+  const room = H - head - 40, scroll = Math.max(0, y - room);
+  return (
+    <div style={{ position: "absolute", left, top, width: W, height: H, background: "#1b1b1f", borderRadius: 60, padding: 16, boxSizing: "border-box", boxShadow: "0 18px 40px rgba(0,0,0,.3)" }}>
+      <div style={{ position: "relative", width: "100%", height: "100%", borderRadius: 46, overflow: "hidden", background: "#b8d4e8" }}>
+        <div style={{ position: "absolute", left: 0, right: 0, top: head, bottom: 0 }}>
+          {shown.map(({ m, i, p }, k) => (
+            <div key={i} style={{ position: "absolute", left: 18, right: 18, top: 20 + ys[k] - scroll, display: "flex", flexDirection: "column", alignItems: m.me ? "flex-end" : "flex-start",
+              opacity: clamp(p * 2), transform: `scale(${0.6 + 0.4 * eBack(p, 2)})`, transformOrigin: m.me ? "100% 0" : "0 0" }}>
+              {m.me ? null : (
+                <div style={{ display: "flex", alignItems: "center", gap: 10, fontFamily: BODY, fontWeight: 800, fontSize: 30, color: "#33414d", height: 44 }}>
+                  <span style={{ width: 34, height: 34, borderRadius: 17, background: m.color ?? PALETTE[(i * 3 + 2) % PALETTE.length], border: `3px solid ${INK}` }} />{m.name ?? ""}
+                </div>
+              )}
+              <div style={{ display: "flex", alignItems: "flex-end", gap: 8, flexDirection: m.me ? "row-reverse" : "row" }}>
+                <div style={{ maxWidth: 370, background: m.me ? "#c8f5a8" : "white", borderRadius: 26, padding: "16px 22px", fontFamily: BODY, fontWeight: 800, fontSize: fs, lineHeight: 1.3,
+                  color: INK, wordBreak: "keep-all", border: `3px solid ${INK}` }}><Marked text={m.text} color="#e8212e" /></div>
+                {m.unread ? <span style={{ fontFamily: BODY, fontWeight: 900, fontSize: 28, color: "#e0a400" }}>{m.unread}</span> : null}
+              </div>
+            </div>
+          ))}
+        </div>
+        <div style={{ position: "absolute", left: 0, right: 0, top: 0, height: head, background: "#a3c3da", display: "flex", alignItems: "center", gap: 14, padding: "20px 26px 0",
+          boxSizing: "border-box", fontFamily: BODY, fontWeight: 900, fontSize: 38, color: INK, whiteSpace: "nowrap", overflow: "hidden" }}>
+          <span style={{ fontSize: 40 }}>‹</span>{c.title ?? "단톡방"}
+        </div>
+      </div>
+    </div>
+  );
 };
 
 /** one beat of the story: the characters on a backdrop, a speech bubble, a prop, a place tag, a time-skip card */
 export const Scene: React.FC<{ g: SceneG & { steps?: number[] }; t: number; h: number }> = ({ g, t, h }) => {
   const n = g.chars.length;
   const size = n === 1 ? 430 : n === 2 ? 380 : 300, sz = g.chars.map((c) => size * (c.size ?? 1));  // c.size: taller or shorter than the rest
-  const xs = g.chars.map((c, i) => c.x ?? (n === 1 ? (g.prop ? 0.4 : 0.5) : n === 2 ? [0.28, 0.72][i] : [0.2, 0.5, 0.8][i]));
+  const xs = g.chars.map((c, i) => c.x ?? (g.chat ? (n === 1 ? 0.24 : [0.15, 0.36, 0.25][i]) : n === 1 ? (g.prop ? 0.4 : 0.5) : n === 2 ? [0.28, 0.72][i] : [0.2, 0.5, 0.8][i]));
   const foot = h - 76, baseY = foot - size;  // feet on the floor, with room for the name tags under them
   const sayAt = g.steps?.[0] ?? 0.05, propAt = g.steps?.[1] ?? 0.1, swAt = g.steps?.[2] ?? 1e9, bigAt = g.steps?.[3] ?? 0.1;
   // the bubble sits over its speaker (kept on screen), its tail pointing down at them
@@ -211,6 +287,7 @@ export const Scene: React.FC<{ g: SceneG & { steps?: number[] }; t: number; h: n
     <div style={{ position: "absolute", inset: 0, overflow: "hidden" }}>
       <div style={{ position: "absolute", inset: 0, transform: `scale(${z})`, transformOrigin: `${fx}px ${baseY + size / 2}px` }}>
         <Backdrop kind={g.bg ?? "linear-gradient(180deg, #fff6e8 0%, #ffe9cf 100%)"} h={h} sign={g.sign} tagged={!!g.place} />
+        {g.chat ? <ChatPhone c={g.chat} t={t} at={(g.steps ?? []).slice(4)} h={h} /> : null}
         {g.prop ? (
           <div style={{ position: "absolute", left: px * 1080, top: py, fontSize: 190, lineHeight: 1, whiteSpace: "nowrap",
             transform: `translateX(-50%) scale(${eBack(prog(t, propAt, 0.3), 2.4)}) rotate(${6 * Math.sin(t * 4)}deg)`, filter: "drop-shadow(0 10px 10px rgba(0,0,0,.25))" }}>{g.prop}</div>

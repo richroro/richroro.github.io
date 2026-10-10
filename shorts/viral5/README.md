@@ -2431,3 +2431,79 @@ MEDIA=$PWD/media python3 politics/prep_split.py jensen1     # 원본: media/cele
 > 2025년 1월 21일 미국 백악관, AI 인프라 '스타게이트' 발표. 손정의 소프트뱅크그룹 회장: "AGI는 아주, 아주 곧 옵니다. 그다음엔 초인공지능이 와서 인류가 풀 수 있으리라 생각하지 못한 문제들을 풀 겁니다." 영어 원문과 한국어 번역 자막(직접 번역).
 > 영상: 백악관(The White House, 2025.1.21) · 이 영상은 영상 속 인물이나 기관이 보증·후원한 것이 아닙니다.
 > #손정의 #AGI #초인공지능 #스타게이트 #영어공부
+
+## "○○ 특" 공감 애니 (`teuk1`~`teuk4`)
+
+자체공감(구독 31.6만)의 벡터 마스코트 "○○ 특" 쇼츠(편당 36~58만, `research/research-fun.md` 4절, 8절 제안 4번)를 우리 찹쌀떡 캐릭터로 만든 4편이다. 썰 쇼츠와 같은 `scene` 클립을 쓰지만 글 카드(`post`)는 없다. 0초부터 첫 장면(제목 띠 + 주인공 표정 + 소품)으로 시작한다. 이어서 번호 붙은 공감 7개를 장면 하나에 3~4초씩 보여 주고, "여러분은 몇 개 해당?ㅋㅋ"라는 댓글 질문으로 끝난다. 마지막 줄은 주인공의 말풍선 "난 7개 다…ㅋㅋ"다.
+
+- **틀**: 내레이터가 항목 이름만 빠르게 읽는다(+15%). 자막은 `"1. 알람 [다섯 번] 끄기"`처럼 번호를 붙인다(번호는 읽지 않음). 그다음 주인공이 말풍선 한 줄로 반응하고(목소리 있음, 아래 자막 없음), 표정이 바뀌며(`to`), 큰 글씨(`big`)가 박힌다.
+- **시리즈 마스코트**: 주홍색 찹쌀떡 "나"(`#FFB36B`)가 네 편 모두에 나온다. 제목 띠 첫 줄은 대상("직장인", "학생이라면 공감", "학교 다닐 때", "누구나 있는"), 둘째 줄은 "○○ 특"이다.
+- **그림**: 전부 직접 그렸다(`src/lib/Sseol.tsx`). 외부 사진·영상은 없다. 그래서 `sources`는 비어 있고 화면 크레딧도 없다.
+- **유머**: 자기 자신을 소재로 한 가벼운 공감이다. 특정 집단, 몸, 지역, 직업을 놀리지 않는다. 등장인물, 학교, 회사, 앱 이름은 모두 지어낸 것이고, 단톡방 화면은 실제 메신저의 로고나 디자인을 쓰지 않은 일반 채팅 화면이다.
+
+| id | 제목 띠 | 길이 | 1~7 | 음악 |
+| --- | --- | --- | --- | --- |
+| `teuk1` | 직장인 / 월요일 아침 특 | 29.0초 | 알람 다섯 번 끄기 · 주말까지 며칠 남았는지 세기 · 씻다가 다시 잠들 뻔 · 지하철에서 서서 졸기 · 회사 앞에서 깊은 한숨 · 커피 마시고 겨우 사람 되기 · 출근하자마자 점심 메뉴 고민 | Hustle |
+| `teuk2` | 학생이라면 공감 / 시험 기간 특 | 31.9초 | 갑자기 책상 정리 · 계획표만 한 시간 · 안 보던 다큐가 꿀잼 · 10분만 누웠는데 아침 · 쉬는 시간 10분에 제일 많이 외움 · 끝나자마자 전부 까먹기 · 벼락치기 중 갑자기 인생 고민 | Sneaky Snitch |
+| `teuk3` | 학교 다닐 때 / 급식 먹을 때 특 | 29.4초 | 4교시부터 메뉴 확인 · 종 치자마자 급식실 직행("뛰지 말고… 빠르게 걷기!") · 앞에 몇 명인지 세기 · 맛있는 반찬은 마지막에 · 친구가 안 먹는 반찬 노리기 · 디저트 나오는 날은 하루 종일 행복 · 식판 반납 전 우유 원샷 | Monkeys Spinning Monkeys |
+| `teuk4` | 누구나 있는 / 단톡방 특 | 29.9초 | 알림 끄고 몰래 다 읽기 · 질문하면 아무도 대답 안 함 · 약속 잡으면 결국 안 만남 · 새벽 감성 톡 아침에 후회 · 엄마한테 보낼 톡을 단톡방에 · 숫자 1 사라지는지 계속 확인(생일 축하로 끝남) · 나가기 버튼 고민만 100번 | Hyperfun |
+
+```bash
+python3 voice_edge.py teuk1 && python3 prep.py teuk1 && ./render.sh teuk1 final/teuk1.mp4 && python3 qa_review.py teuk1
+```
+
+**목소리**(`script.json`의 `voices`)
+
+- `teuk1`: 내레이터 `SunHi` +15%, 나 `InJoon` +10%·+8Hz
+- `teuk2`: 내레이터 `HyunsuMultilingual` +15%, 나 `SunHi` +15%·+20Hz
+- `teuk3`: 내레이터 `SunHi` +15%, 나 `InJoon` +15%·+25Hz
+- `teuk4`: 내레이터 `HyunsuMultilingual` +15%, 나 `SunHi` +12%·+10Hz
+
+**템플릿 추가**(`src/lib/Sseol.tsx`, 기존 편은 그대로)
+
+- 배경 5종을 더했다. `bedroom`(침대·커튼 창), `bath`(타일·거울·세면대), `subway`(지하철 창·손잡이·좌석), `cafeteria`(배식대·메뉴판, `sign` 가능), `desk`(밤 책상·스탠드·책 더미).
+- `chat`은 장면 오른쪽에 단톡방 휴대폰 화면을 그린다. 값은 `{"title": "우리 반 (28)", "msgs": [{"name", "text", "me", "unread"}]}`이다. 메시지 i는 `steps[4 + i]`에 뜨고(없으면 0.45초 간격), 넘치면 위로 밀린다. `chat`이 있으면 인물은 기본적으로 왼쪽(x 0.24)에 선다.
+
+**qa_review**: 4편 모두 11개 항목 PASS(WARN·FAIL 0). 칠판이나 급식실 `sign`이 있는 장면에서는 `big`이 표지판과 겹쳐서 그 장면의 `sign`을 뺐다.
+
+**업로드 문구**
+
+`teuk1`
+- 제목: 직장인 월요일 아침 특ㅋㅋ
+- 설명:
+  ```
+  알람 다섯 번 끄기부터 출근하자마자 점심 고민까지 ⏰☕ 여러분은 몇 개 해당?ㅋㅋ (창작 애니)
+  직접 그린 창작 애니메이션입니다. 등장인물은 실제와 관계없습니다.
+  Music: "Hustle" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
+  ```
+- 해시태그: #공감 #특 #직장인 #월요일 #공감애니
+
+`teuk2`
+- 제목: 시험 기간 특ㅋㅋ
+- 설명:
+  ```
+  시험 전날만 되면 책상 정리가 왜 이렇게 하고 싶을까 📚 여러분은 몇 개 해당?ㅋㅋ (창작 애니)
+  직접 그린 창작 애니메이션입니다. 등장인물은 실제와 관계없습니다.
+  Music: "Sneaky Snitch" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
+  ```
+- 해시태그: #공감 #특 #시험기간 #학생공감 #공감애니
+
+`teuk3`
+- 제목: 급식 먹을 때 특ㅋㅋ
+- 설명:
+  ```
+  4교시부터 메뉴 확인하던 그 시절 🍱 여러분은 몇 개 해당?ㅋㅋ (창작 애니)
+  직접 그린 창작 애니메이션입니다. 등장인물은 실제와 관계없습니다.
+  Music: "Monkeys Spinning Monkeys" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
+  ```
+- 해시태그: #공감 #특 #급식 #학교 #공감애니
+
+`teuk4`
+- 제목: 단톡방 특ㅋㅋ
+- 설명:
+  ```
+  알림 끄고 몰래 다 읽는 사람 손 🙋 여러분은 몇 개 해당?ㅋㅋ (창작 애니)
+  직접 그린 창작 애니메이션입니다. 등장인물과 채팅방은 실제와 관계없습니다.
+  Music: "Hyperfun" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
+  ```
+- 해시태그: #공감 #특 #단톡방 #친구공감 #공감애니

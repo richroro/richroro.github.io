@@ -1,0 +1,530 @@
+{
+ "credit": "",
+ "titleStyle": "band",
+ "captionY": 1650,
+ "sources": {},
+ "music": {
+  "file": "music/hyperfun.mp3",
+  "gain": 0.2,
+  "start": 0
+ },
+ "sfx": [
+  [
+   "c1",
+   "pop",
+   0.25
+  ],
+  [
+   "b1",
+   "whoosh",
+   0.22
+  ],
+  [
+   "c2",
+   "pop",
+   0.25
+  ],
+  [
+   "b2",
+   "whoosh",
+   0.22
+  ],
+  [
+   "b2.대답",
+   "boing",
+   0.3
+  ],
+  [
+   "c3",
+   "pop",
+   0.25
+  ],
+  [
+   "b3",
+   "whoosh",
+   0.22
+  ],
+  [
+   "c4",
+   "pop",
+   0.25
+  ],
+  [
+   "b4",
+   "whoosh",
+   0.22
+  ],
+  [
+   "b4.후회",
+   "boing",
+   0.3
+  ],
+  [
+   "c5",
+   "pop",
+   0.25
+  ],
+  [
+   "b5",
+   "whoosh",
+   0.22
+  ],
+  [
+   "c6",
+   "pop",
+   0.25
+  ],
+  [
+   "b6",
+   "whoosh",
+   0.22
+  ],
+  [
+   "c7",
+   "pop",
+   0.25
+  ],
+  [
+   "b7",
+   "whoosh",
+   0.22
+  ],
+  [
+   "y",
+   "pop",
+   0.25
+  ],
+  [
+   "z",
+   "whoosh",
+   0.22
+  ],
+  [
+   "z.몇",
+   "ding",
+   0.3
+  ],
+  [
+   "a",
+   "pop",
+   0.25
+  ],
+  [
+   "a+0.2",
+   "pop_hi",
+   0.2
+  ],
+  [
+   "a+0.4",
+   "pop",
+   0.2
+  ]
+ ],
+ "clips": [
+  {
+   "from": "a",
+   "label": "hook",
+   "gfx": {
+    "type": "scene",
+    "bg": "home",
+    "place": "💬 +300",
+    "chars": [
+     {
+      "name": "나",
+      "color": "#FFB36B",
+      "mood": "shock"
+     }
+    ],
+    "chat": {
+     "title": "우리 반 (28)",
+     "msgs": [
+      {
+       "name": "민지",
+       "text": "ㅋㅋㅋㅋㅋㅋ"
+      },
+      {
+       "name": "준호",
+       "text": "ㅋㅋㅋㅋㅋㅋㅋㅋ"
+      },
+      {
+       "name": "서연",
+       "text": "아 진짜 웃겨ㅋㅋ"
+      },
+      {
+       "name": "도윤",
+       "text": "ㅋㅋㅋㅋㅋㅋㅋ"
+      },
+      {
+       "name": "하은",
+       "text": "ㄹㅇㅋㅋㅋㅋ"
+      }
+     ]
+    },
+    "steps": [
+     0.05,
+     -1,
+     9,
+     -1,
+     -1,
+     -1,
+     -1,
+     0.2,
+     0.4
+    ]
+   }
+  },
+  {
+   "from": "b1",
+   "label": "beat1",
+   "gfx": {
+    "type": "scene",
+    "bg": "home",
+    "place": "🔕 알림 끔",
+    "chars": [
+     {
+      "name": "나",
+      "color": "#FFB36B",
+      "mood": "shy"
+     }
+    ],
+    "chat": {
+     "title": "우리 반 (28)",
+     "msgs": [
+      {
+       "name": "민지",
+       "text": "내일 체육복 입고 와?"
+      },
+      {
+       "name": "준호",
+       "text": "ㅇㅇ"
+      },
+      {
+       "name": "서연",
+       "text": "나 몰랐어ㅋㅋ"
+      }
+     ]
+    },
+    "say": {
+     "who": 0,
+     "text": "[읽기만] 할게…"
+    },
+    "steps": [
+     "c1",
+     0.1,
+     9,
+     0.1,
+     0.1,
+     0.5,
+     0.9
+    ]
+   }
+  },
+  {
+   "from": "b2",
+   "label": "beat2",
+   "gfx": {
+    "type": "scene",
+    "bg": "home",
+    "big": "…",
+    "chars": [
+     {
+      "name": "나",
+      "color": "#FFB36B",
+      "mood": "think",
+      "to": "sad"
+     }
+    ],
+    "chat": {
+     "title": "우리 반 (28)",
+     "msgs": [
+      {
+       "text": "내일 준비물 뭐야?",
+       "me": true,
+       "unread": "1"
+      }
+     ]
+    },
+    "say": {
+     "who": 0,
+     "text": "다들 [읽었잖아]…"
+    },
+    "steps": [
+     "c2",
+     0.1,
+     "c2",
+     "b2.대답",
+     0.1
+    ]
+   }
+  },
+  {
+   "from": "b3",
+   "label": "beat3",
+   "gfx": {
+    "type": "scene",
+    "bg": "home",
+    "chars": [
+     {
+      "name": "나",
+      "color": "#FFB36B",
+      "mood": "happy",
+      "to": "sad"
+     }
+    ],
+    "chat": {
+     "title": "친구들 (5)",
+     "msgs": [
+      {
+       "name": "민지",
+       "text": "다음 주에 보자!"
+      },
+      {
+       "name": "준호",
+       "text": "ㄱㄱ"
+      },
+      {
+       "text": "언제 돼?",
+       "me": true
+      },
+      {
+       "name": "서연",
+       "text": "난 다 돼"
+      },
+      {
+       "name": "도윤",
+       "text": "그럼 [다음에]~"
+      }
+     ]
+    },
+    "say": {
+     "who": 0,
+     "text": "또 [다음에]야?"
+    },
+    "steps": [
+     "c3",
+     0.1,
+     "c3",
+     0.1,
+     0.1,
+     0.45,
+     0.8,
+     1.15,
+     "b3.결국"
+    ]
+   }
+  },
+  {
+   "from": "b4",
+   "label": "beat4",
+   "gfx": {
+    "type": "scene",
+    "bg": "night",
+    "place": "📍 새벽 3시",
+    "big": "☀️ 아침",
+    "chars": [
+     {
+      "name": "나",
+      "color": "#FFB36B",
+      "mood": "love",
+      "to": "shock"
+     }
+    ],
+    "chat": {
+     "title": "친구들 (5)",
+     "msgs": [
+      {
+       "text": "얘들아…",
+       "me": true
+      },
+      {
+       "text": "너희가 있어서 [진짜 다행이야]",
+       "me": true
+      }
+     ]
+    },
+    "say": {
+     "who": 0,
+     "text": "으악, [내가 보냈어?]"
+    },
+    "steps": [
+     "c4",
+     0.1,
+     "b4.후회",
+     "b4.후회",
+     0.1,
+     0.5
+    ]
+   }
+  },
+  {
+   "from": "b5",
+   "label": "beat5",
+   "gfx": {
+    "type": "scene",
+    "bg": "home",
+    "chars": [
+     {
+      "name": "나",
+      "color": "#FFB36B",
+      "mood": "happy",
+      "to": "shock"
+     }
+    ],
+    "chat": {
+     "title": "우리 반 (28)",
+     "msgs": [
+      {
+       "text": "엄마 사랑해 💕",
+       "me": true
+      },
+      {
+       "name": "준호",
+       "text": "?"
+      },
+      {
+       "name": "민지",
+       "text": "ㅋㅋㅋㅋㅋㅋ"
+      },
+      {
+       "name": "서연",
+       "text": "나도 사랑해ㅋㅋ"
+      }
+     ]
+    },
+    "say": {
+     "who": 0,
+     "text": "잠깐, [여기 아니야!]"
+    },
+    "steps": [
+     "c5",
+     0.1,
+     "c5",
+     0.1,
+     0.1,
+     "b5.단톡방에",
+     "b5@end",
+     "c5"
+    ]
+   }
+  },
+  {
+   "from": "b6",
+   "label": "beat6",
+   "gfx": {
+    "type": "scene",
+    "bg": "home",
+    "chars": [
+     {
+      "name": "나",
+      "color": "#FFB36B",
+      "mood": "think",
+      "to": "love"
+     }
+    ],
+    "chat": {
+     "title": "친구들 (5)",
+     "msgs": [
+      {
+       "text": "나 오늘 생일인데…",
+       "me": true,
+       "unread": "1"
+      },
+      {
+       "name": "민지",
+       "text": "헐 [생일 축하해]!!"
+      },
+      {
+       "name": "준호",
+       "text": "🎂🎂🎂"
+      }
+     ]
+    },
+    "say": {
+     "who": 0,
+     "text": "[읽었다]!"
+    },
+    "steps": [
+     "c6",
+     0.1,
+     "c6",
+     0.1,
+     0.1,
+     "c6",
+     "c6+0.4"
+    ]
+   }
+  },
+  {
+   "from": "b7",
+   "label": "beat7",
+   "gfx": {
+    "type": "scene",
+    "bg": "night",
+    "chars": [
+     {
+      "name": "나",
+      "color": "#FFB36B",
+      "mood": "think",
+      "to": "happy"
+     }
+    ],
+    "chat": {
+     "title": "우리 반 (28)",
+     "msgs": [
+      {
+       "name": "도윤",
+       "text": "ㅋㅋㅋㅋㅋㅋ"
+      },
+      {
+       "name": "하은",
+       "text": "아 배아파ㅋㅋㅋ"
+      },
+      {
+       "name": "민지",
+       "text": "ㅋㅋㅋㅋㅋㅋㅋ"
+      }
+     ]
+    },
+    "say": {
+     "who": 0,
+     "text": "그래도 [재밌으니까]…"
+    },
+    "steps": [
+     "c7",
+     0.1,
+     "c7",
+     0.1,
+     0.1,
+     "b7.고민만",
+     "c7"
+    ]
+   }
+  },
+  {
+   "from": "z",
+   "label": "end",
+   "gfx": {
+    "type": "scene",
+    "bg": "home",
+    "big": "[몇 개]?",
+    "chars": [
+     {
+      "name": "나",
+      "color": "#FFB36B",
+      "mood": "laugh"
+     }
+    ],
+    "steps": [
+     "y",
+     0.1,
+     9,
+     "z.몇"
+    ],
+    "say": {
+     "who": 0,
+     "text": "난 [7개] 다…ㅋㅋ"
+    }
+   }
+  }
+ ]
+}
