@@ -1957,3 +1957,92 @@ MEDIA=<저장소>/media python3 politics/prep_split.py rank1    # 원본: media/
 > 영상: 미 해병대·미 육군(알링턴 국립묘지)·미 해군·미 공군 (DVIDS) — Cpl. Christopher Prelle, Daryl Vaca, MC2 Caden Richmond, Airman 1st Class Nathan Langston, Cpl. Jordy Morales. 미 국방부와 각 군이 이 영상을 보증하거나 후원하지 않습니다.
 > 음악: "Heroic Age" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
 > #군대 #미군 #해병대 #소름 #shorts
+
+## 한반도 자연·과학 지식 쇼츠 (`hanban1`~`hanban4`)
+
+「질문형 해설 + 공공 B-roll」(`research/research-info.md` 형식 A)로 만든 정보 쇼츠 4편입니다. 위쪽 검정 띠에 2줄 제목(0초부터 끝까지), 가운데 실제 위성사진·우주정거장 사진·현장 영상, 아래 1줄 자막(`"captionY": 1640`), Edge TTS `ko-KR-InJoonNeural`/`SunHiNeural` +20%, 빨간 원·화살표, 마지막 반전 한 줄. 그래픽 카드는 쓰지 않았습니다. 모두 `qa_review.py`에서 FAIL·WARN 없이 통과했고, faster-whisper small로 들은 내레이션이 대본과 맞습니다.
+
+| id | 제목(화면) | 길이 | 용량 | 내용 | 음악 |
+| --- | --- | --- | --- | --- | --- |
+| `hanban1` | 백두산이 폭발하면 / 화산재는 어디로 갈까? | 29.9초 | 22.7MB | 946년 ‘천년 분화’ → 화산재가 바다 건너 일본까지(높은 하늘의 바람) → 2002~2005년 무렵 지진 급증·지표 상승 → 기상청 위성 감시 → “언제 터질지 아무도 모른다, 그래서 지켜본다” | Lightless Dawn |
+| `hanban2` | 태풍이 한국 앞에서 / 휙 꺾이는 이유 | 30.2초 | 17.9MB | 북태평양고기압 가장자리를 따라 서→북 → 편서풍을 만나 북동쪽으로 전향 → 2022 힌남노(오키나와 남쪽 정체 → 꺾인 뒤 시속 98km) → 2026년 6월 태풍 장미도 오키나와 부근에서 전향 → “어디서 꺾이느냐가 우리 동네 날씨” | Movement Proposition |
+| `hanban3` | 가을 하늘이 유독 / 높고 파란 이유 | 28.2초 | 9.0MB | 레일리 산란 → 먼지·수증기가 많으면 희뿌옇게(2023.4.12 황사 날 위성) → 가을엔 건조한 이동성 고기압(2025.10.28 맑은 날 위성) → 2025년 서울 초미세먼지 봄 24 → 가을 13 → 새털구름 → “하늘이 높아진 게 아니라 공기가 깨끗해진 것” | Dreamer |
+| `hanban4` | 한국에서 오로라가 / 찍힌 날 생긴 일 | 32.6초 | 16.1MB | 2024년 5월 태양 흑점 폭발 → 21년 만의 G5 지자기 폭풍 → 원래 북극 근처 현상 → 영천 보현산천문대 카메라에 붉은 오로라, 강원 화천에서도 촬영 → 붉은빛은 200km 넘는 높이 → 반전: 눈으로는 거의 안 보였고 카메라에만 찍힘 | Floating Cities |
+
+```bash
+python3 voice_edge.py hanban1 && python3 prep.py hanban1
+./render.sh hanban1 out/hanban1.mp4        # 저장소 보관본은 이어서 CRF 23으로 다시 압축(final/)
+python3 qa_review.py hanban1
+```
+
+- 원본은 `public/hanban*/src/`(저장소에 넣지 않음)에 받아 썼고, 파일마다 페이지·파일 주소·라이선스·크레디트·장면 설명이 `media/hanban*/sources.json`에 있습니다. 크레디트는 화면 오른쪽 위에 클립별로 “사진: NASA”, “영상: USGS”처럼 짧게만 붙였습니다.
+- **다른 곳의 그림임을 밝힘**: 백두산 분화 영상은 없으므로 세인트헬렌스·킬라우에아·피나투보·통가 장면에는 “참고: …” 스티커를 붙였습니다. 오로라 사진·영상은 미국(아이다호·유타)에서 찍은 NASA 자료라 첫 프레임부터 “같은 폭풍 · 미국 아이다호” 스티커, 유타 영상에는 “※ 미국 유타 영상” 스티커를 붙였습니다. 한국 오로라 사진(천문연·용인어린이천문대)은 공공누리 표시가 없고 “©”라 쓰지 않았고, 한국은 우주정거장에서 찍은 한반도 야경(NASA)으로 보여 줍니다. 허리케인 밀턴·에린 ISS 영상은 “참고: 우주에서 본 허리케인”으로 표시했습니다.
+- **군 자료 없음**: 미 공군 허리케인 헌터, JTWC·해군 자료, 미 해군 NRL 진로가 겹친 NASA 이미지(2026 바비)는 쓰지 않았습니다.
+
+**사실 근거**
+
+`hanban1` 백두산
+- 946년 말 분화, “공통 시대(CE) 최대급 분화 중 하나”, 화산재가 일본 해저·호수 퇴적층(B-Tm 층)에서 발견, 하루 안에 일본에 닿을 수 있는 성층권 하부 기류 — Oppenheimer et al. 2017, *Quaternary Science Reviews* 158:164–171 ([PDF](https://www.climatology.uni-mainz.de/files/2016/03/Oppenheimer_2017_QSR-1.pdf), [UCL](https://discovery.ucl.ac.uk/id/eprint/10096385/)). 이 연대로 ‘분화가 발해를 멸망시켰다’는 설은 성립하지 않습니다(926년 멸망). “지난 2천 년 사이 가장 큰 분화 중 하나”는 이 논문의 “largest volcanic eruptions of the Common Era”를 옮긴 것입니다.
+- 화산재가 일본까지: NASA Earth Observatory 2016 “flung ash as far away as Japan” ([Mount Paektu: North Korea's Slumbering Giant](https://science.nasa.gov/earth/earth-observatory/mount-paektu-north-koreas-slumbering-giant-88020/)).
+- 분출량·VEI는 연구마다 달라(24km³ DRE, 40–98km³, VEI 6 vs 7: Yang et al. 2021 *Bull. Volcanol.* 83:74) 숫자를 쓰지 않았습니다.
+- 2002~2005년 무렵 미소지진 급증·지표 상승: Liu et al. 2020 *Frontiers in Earth Science* ([doi](https://frontiersin.org/articles/10.3389/feart.2020.599329/full), “unrest from July 2002 to July 2005”), Ri et al. 2016 *Science Advances* ([PMC4846464](https://pmc.ncbi.nlm.nih.gov/articles/PMC4846464)), NASA EO 2016(“Between 2002 and 2005, a surge of weak earthquakes”), 기상청 [국내 화산 자료](https://www.weather.go.kr/w/eqk-vol/volcano/archive/korea.do)(“2003.6월부터 미소지진발생 급증하여 2006년까지”). 출처마다 끝 연도가 달라 화면은 “2002~2005년 무렵”, 내레이션은 “2002년부터 몇 년 동안”.
+- 기상청 위성 감시: 기상청 [화산 분석](https://www.weather.go.kr/eqk_pub/analVolcano.do) “광학ㆍ열적외선 위성(Landsat 5~8호)과 레이더 위성(Sentinel-1)을 이용하여 백두산 지표온도 및 지표변위 … 정기적으로 분석”, 같은 페이지 “향후 분화 가능성도 있다”.
+- “언제 터질지 아무도 모른다”: NASA EO 2016 “more research and monitoring is required before scientists can say much about … the likelihood that it will erupt”, 뉴시스 2023.1.12(“2025년에 정확히 백두산이 분화한다는 과학적 근거는 없다”, [기사](https://www.newsis.com/view/NISX20230112_0002156039)).
+
+`hanban2` 태풍
+- 북태평양고기압 가장자리를 따라 북서진 → 서쪽 가장자리에서 북상 → 편서풍 영향으로 빠르게 북동진(전향): 기상청 [2011 태풍분석보고서](https://www.kma.go.kr/download_01/typhoon/typreport_2011.pdf)(“mT 남서쪽 가장자리 … 북서진”, “편서풍 효과가 가미되면서 빠르게 북동진”). NOAA AOML [Hurricane FAQ G5](https://www.aoml.noaa.gov/hrd/tcfaq/G5.html)(“subtropical ridge … recurve back toward the east … westerly winds”).
+- 힌남노: 기상청 [2022 태풍 분석보고서](https://www.kma.go.kr/download_01/typhoon/typeffect_2022.pdf) — 8.28 발생, 남쪽으로 이동, “9월 1일부터 이틀간 일본 오키나와 남쪽 해상에서 정체”, 9.5 “북동진으로 전향한 이후 … 이동속도가 빨라지며”, 9.6 04:50 거제 부근 상륙; 분석표 이동속도 9.2 시속 2–5km → 9.6 18시 동해상 시속 98km(화면 “시속 2km → 98km”, 내레이션 “백 킬로미터 가까이”). “초강력”은 같은 보고서의 강도 분류. NASA EO [Typhoon Hinnamnor](https://earthobservatory.nasa.gov/images/150290/typhoon-hinnamnor).
+- 태풍 장미: 기상청 보도자료 2026.6.2 “1951년 이후, 역대 세 번째로 이른 영향 태풍”, “1일(월) 낮 오키나와 부근에서 오른쪽으로 전향 … 우리나라 육상에는 영향이 없을 것으로 보인다”([보도자료](https://www.weather.go.kr/kma/flexer/html/press/2026/06/02/ATC202606020316422_d6d87f66-a42e-4f4c-9787-6bb9ba16a81e.hwp.files/Sections1.html)). 위성사진은 NASA EO [Typhoon Jangmi](https://science.nasa.gov/earth/earth-observatory/typhoon-jangmi/)(2026.5.31).
+- 영향 태풍은 7~9월, 그중 8월이 가장 많음(평년 1991–2020, 같은 2022 보고서). 이번 편에는 쓰지 않았습니다.
+
+`hanban3` 가을 하늘
+- 파란빛이 더 잘 흩어짐: NASA Space Place [Why Is the Sky Blue?](https://spaceplace.nasa.gov/blue-sky/en/)(“Blue light is scattered more than the other colors”). 배수(400nm vs 700nm 약 9배)는 계산값이라 내레이션은 “훨씬”만 씁니다.
+- 가을 하늘이 높고 파란 이유 = 습도가 낮고 대기가 투명: 기상청 강원지방기상청 보도자료 2010.10.1(“가을철은 습도가 낮고 … 대기가 투명해지기 때문”, [보도자료](https://www.kma.go.kr/kma/flexer/html/press2/2010/10/01/ATC201010011327022_e8101fd9-cc6e-4fa6-b3b2-863093d606f0.hwp.files/Sections1.html)). 같은 자료의 파장 설명(파란색을 장파로 적음)은 틀려서 쓰지 않았습니다.
+- 가을 이동성 고기압 → 맑고 건조: 기상청 3개월 전망 2014.9.23(“10월은 이동성 고기압의 영향을 자주 받아 맑고 건조한 날이 많겠으며”, [뉴스와이어 게재](https://www.newswire.co.kr/newsRead.php?no=767078)). ‘양쯔강 기단’은 기상청 출처가 없어 쓰지 않았습니다.
+- 서울 초미세먼지(PM2.5) 2025년 계절 평균 봄 24, 가을 13㎍/㎥, 2023·2024년에도 가을이 가장 낮음: 서울시 대기환경정보 [계절별 평균](https://cleanair.seoul.go.kr/statistics/seasonAverage). 일평균 미세먼지(PM10) 2023.4.12 260㎍/㎥(황사 위기경보 ‘관심’), 2025.10.28 22㎍/㎥: 같은 사이트 일별 자료.
+- 습도는 여름보다 가을이 낮지만 봄보다 낮지는 않아서(서울 평년 7월 76.2%, 10월 61.8%, 4월 54.8%) “가을이 가장 건조”라고 하지 않았습니다. 봄과 가을의 차이는 먼지라 먼지 수치를 씁니다.
+- 새털구름(권운) 높이 6km 이상: 미국 기상청 [Cloud Classification](https://www.weather.gov/lmk/cloud_classification)(“High-level clouds occur above about 20,000 feet … Cirrus”). “높아 보인다”는 설명(멀리까지 또렷 + 높은 구름)은 해석이라 “~보이는 거죠”로 말합니다.
+
+`hanban4` 오로라
+- 한국천문연구원 보도 참고자료 2024.5.13 「천문연 망원경 및 한국에서 촬영한 오로라 사진」([KASI](https://www.kasi.re.kr/kor/publication/post/newsMaterial/30045)): 보현산천문대 TIMOS 전천카메라(적색광 OI 630.0nm 필터)가 “북쪽 고위도 방향에서 적색 오로라를 포착”, 5월 12일 새벽 강원 화천에서 용인어린이천문대 박정하·심형섭 씨 촬영, 2003년 10월 30일에도 보현산 전천카메라에 붉은 오로라. 보현산 사진 시각 표기 “240510 19:09”는 세계시로 보여(한국 시각 5.11 새벽) 화면에는 날짜만 “그날”로 썼습니다.
+- 육안으로는 거의 안 보임: 이데일리 2024.5.13(“육안으로는 긴가민가 할 정도 … 노출 시간을 늘려 촬영”, [Daum](https://v.daum.net/v/20240513143330827)), YTN 2024.5.15(“한국에서는 육안으로 오로라를 볼 수 없었지만”, [기사](https://www.ytn.co.kr/_ln/0103_202405151400013483)), MBC([기사](https://imnews.imbc.com/news/2024/society/article/6597973_36438.html)).
+- G5(최고 등급), 2003년 10월 이후 처음: NOAA SWPC [NOAA Space Weather Scales](https://www.swpc.noaa.gov/noaa-scales-explanation), USGS [May 10, 2024 Magnetic Disturbance](https://www.usgs.gov/programs/geomagnetism/science/may-10-2024-magnetic-disturbance)(“The last G5 storm occurred on October 31, 2003”), NASA [How NASA Tracked the Most Intense Solar Storm in Decades](https://science.nasa.gov/science-research/heliophysics/how-nasa-tracked-the-most-intense-solar-storm-in-decades/)(흑점군 AR 13663·13664, CME 7개 이상). 플레어 영상은 13664의 X2.2(5.9)·X5.8(5.11).
+- 붉은빛은 200km 위 산소: NASA [Auroras](https://science.nasa.gov/sun/auroras/)(“Green … 60 to 120 miles (100–200 km) altitude, and red occurs above 120 miles (200 km)”). “그래서 멀리서도 보인 것”은 높이에 따른 기하학적 설명입니다.
+- 원래 고위도 현상: YTN 2024.5.15 천문연 전문가(“지자기 위도로 65도 정도 부근에서 발생”). 2024년 10월·2025년의 한국 오로라는 공식 확인 자료가 없어 넣지 않았습니다.
+
+**그림 출처와 라이선스**
+- `hanban1`: [Landsat 8 백두산 2015.9](https://science.nasa.gov/earth/earth-observatory/mount-paektu-north-koreas-slumbering-giant-88020/)·[MODIS 한반도 2010.1.3](https://science.nasa.gov/earth/earth-observatory/heavy-snow-in-korea-42211/)·[ISS006-E-43366 백두산 칼데라 2003](https://eol.jsc.nasa.gov/Collections/EarthObservatory/articles/Baitoushan_Volcano,_China_and_North_Korea.htm) — NASA, 퍼블릭 도메인; [GOES-17 통가 우산 구름 2022.1.15](https://science.nasa.gov/earth/earth-observatory/hunga-tonga-hunga-haapai-erupts-149347/) — NASA Earth Observatory/NOAA, 퍼블릭 도메인; [킬라우에아 정상 분화 2018.5.24](https://www.usgs.gov/media/videos/kilauea-volcano-summit-eruption-may-24-2018)(원본 12–15초, 20–24초) — USGS, 퍼블릭 도메인; [세인트헬렌스 1980.5.18](https://commons.wikimedia.org/wiki/File:MSH80_eruption_mount_st_helens_05-18-80.jpg)(USGS/Austin Post)·[피나투보 1991.6.12](https://commons.wikimedia.org/wiki/File:Pinatubo91eruption_plume.jpg)(USGS/Dave Harlow) — PD-USGov-USGS.
+- `hanban2`: [MODIS 힌남노 2022.9.1](https://earthobservatory.nasa.gov/images/150290/typhoon-hinnamnor) — NASA; NASA Worldview VIIRS 스냅숏 2022.8.29–9.6(9일치를 0.8초씩 이어 붙인 플립북 포함, 주소는 `media/hanban2/sources.json`) — NASA EOSDIS, 퍼블릭 도메인; [GPM 태풍 카눈 2023](https://svs.gsfc.nasa.gov/5135) — NASA GSFC SVS; [ISS 허리케인 밀턴 2024.10.8](https://images.nasa.gov/details/jsc2024m000173_International_Space_Station_Cameras_Capture_New_Views_Of_Hurricane_Milton_241008)(원본 18초~)·[ISS 허리케인 에린 2025](https://images.nasa.gov/details/jsc2025m000148-Hurricane_Erin_Seen_From_International_Space_Station)(원본 170초~) — NASA; [VIIRS 태풍 장미 2026.5.30–31](https://science.nasa.gov/earth/earth-observatory/typhoon-jangmi/) — NASA. ESA 우주인이 함께 있던 시기의 힌남노 ISS 사진(ISS067-E-302073)은 촬영자가 확인되지 않아 쓰지 않았습니다.
+- `hanban3`: NASA Worldview MODIS Terra 한반도·서울 2023.4.12, 2025.10.28 — NASA EOSDIS, 퍼블릭 도메인; [ISS073-E-0983131 한반도 남부와 파란 대기층 2025.9.21](https://images.nasa.gov/details/iss073e0983131)(NASA 우주인 조니 김 촬영) — NASA; [Cirrus cloud over Federal Way, WA](https://commons.wikimedia.org/wiki/File:Cirrus_cloud_over_Federal_Way,_WA.jpg) — Ron Clausen, CC0; [Ongjin South Korea sea city 03](https://commons.wikimedia.org/wiki/File:Ongjin_South_Korea_sea_city_03.jpg) — Hankook12, CC0; [Time lapse clouds](https://commons.wikimedia.org/wiki/File:Free_Creative_Commons_Stock_video_-_Time_lapse_clouds.webm) — Johann Mynhardt, **CC BY 2.0**(설명란 표기 필요). 한국 가을 하늘 사진은 Commons에 대부분 CC BY-SA, 서울시 사진은 공공누리 4유형이라 쓰지 않았습니다.
+- `hanban4`: [SDO X2.2 플레어 2024.5.9](https://svs.gsfc.nasa.gov/5284/)·[SDO X5.8 2024.5.11](https://svs.gsfc.nasa.gov/5289/)·[SDO 13663·13664 플레어 2024.5.7–8](https://svs.gsfc.nasa.gov/14683/) — NASA/SDO; [2024년 5월 오로라 사진·타임랩스(유타·아이다호)](https://svs.gsfc.nasa.gov/14835/) — NASA/Bill Dunford(같은 페이지의 편집 영상은 제3자 화면·음악이 섞여 쓰지 않음); [ISS072-E-147641 붉은·초록 오로라 2024.11](https://images.nasa.gov/details/iss072e147641)·[ISS038-E-038300 한반도 야경 2014.1.30](https://images.nasa.gov/details/iss038e038300)·[ISS062-E-082060 서울 야경 2020.3.5](https://images.nasa.gov/details/iss062e082060) — NASA, 퍼블릭 도메인.
+- 음악: Kevin MacLeod "Lightless Dawn", "Movement Proposition", "Dreamer", "Floating Cities" (incompetech.com, CC BY 4.0, `fetch.sh`가 받음). NASA·USGS·NOAA는 이 영상을 보증하거나 후원하지 않습니다(설명란 명시, 로고 미사용).
+
+**업로드 문구**
+
+**hanban1** — 백두산 폭발하면 화산재는 어디로 갈까?
+> 서기 946년 말, 백두산은 지난 2천 년 사이 가장 큰 분화 중 하나를 일으켰고, 그 화산재는 바다 건너 일본까지 날아가 쌓였습니다(Oppenheimer et al. 2017). 2002~2005년 무렵에는 백두산 아래 미소지진이 급증하고 땅이 부풀어 올랐고, 지금은 기상청이 Landsat·Sentinel-1 위성으로 지표 온도와 변위를 정기적으로 분석합니다. 언제 분화할지는 아직 아무도 예측하지 못합니다. ※ 분화 장면은 다른 화산(세인트헬렌스·킬라우에아·피나투보·통가)의 참고 영상입니다.
+> 출처: 기상청 화산 분석 weather.go.kr/eqk_pub/analVolcano.do · Oppenheimer et al. 2017 Quaternary Science Reviews · NASA Earth Observatory "Mount Paektu: North Korea's Slumbering Giant" · Liu et al. 2020 Frontiers in Earth Science
+> 사진·영상: NASA(Landsat 8, Terra MODIS, 국제우주정거장), NASA·NOAA(GOES-17), USGS(Austin Post, Dave Harlow, 하와이 화산관측소). NASA·USGS·NOAA는 이 영상을 보증하지 않습니다.
+> 음악: "Lightless Dawn" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
+> #백두산 #화산 #천지 #지구과학 #shorts
+
+**hanban2** — 태풍이 한국 앞에서 휙 꺾이는 이유?
+> 태풍은 북태평양고기압을 뚫지 못하고 가장자리를 따라 서쪽에서 북쪽으로 돌다가, 편서풍을 만나면 북동쪽으로 꺾입니다(전향). 2022년 힌남노는 오키나와 남쪽에서 이틀간 정체(시속 2~5km)했다가 전향 뒤 빨라져, 9월 6일 거제에 상륙하고 동해로 빠질 때는 시속 98km였습니다. 2026년 6월 태풍 장미도 오키나와 부근에서 전향해 우리나라 육상에는 영향이 없었습니다. 여러분 동네는 힌남노 때 어땠나요?
+> 출처: 기상청 2022 태풍 분석보고서, 2011 태풍분석보고서, 기상청 보도자료(2026.6.2) · NOAA AOML Hurricane FAQ · NASA Earth Observatory
+> 위성·영상: NASA(Terra MODIS, Worldview VIIRS, GPM, 국제우주정거장). NASA는 이 영상을 보증하지 않습니다.
+> 음악: "Movement Proposition" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
+> #태풍 #힌남노 #날씨 #기상청 #shorts
+
+**hanban3** — 가을 하늘이 유독 높고 파란 이유
+> 하늘이 파란 건 파란빛이 공기에 더 잘 흩어지기 때문(레일리 산란). 먼지와 수증기가 많으면 모든 빛이 흩어져 하늘이 희뿌예지는데, 가을엔 건조한 이동성 고기압이 자주 찾아와 공기가 맑고 투명해집니다. 2025년 서울 초미세먼지 평균은 봄 24㎍/㎥, 가을 13㎍/㎥. 위성사진: 2023년 4월 12일 황사 날(서울 미세먼지 260) vs 2025년 10월 28일(22).
+> 출처: 기상청 보도자료(2010.10.1)·3개월 전망 · 서울시 대기환경정보 계절별 평균 · NASA Space Place "Why Is the Sky Blue?" · 미국 기상청 구름 분류
+> 사진·영상: NASA(Worldview MODIS, 국제우주정거장), Ron Clausen (CC0), Hankook12 (CC0), "Time lapse clouds" Johann Mynhardt (CC BY 2.0, https://creativecommons.org/licenses/by/2.0/). NASA는 이 영상을 보증하지 않습니다.
+> 음악: "Dreamer" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
+> #가을하늘 #미세먼지 #날씨 #과학 #shorts
+
+**hanban4** — 한국에서 오로라가 찍힌 날 ㄷㄷ
+> 2024년 5월, 2003년 이후 처음으로 최고 등급(G5) 지자기 폭풍이 지구를 덮쳤습니다. 이때 경북 영천 보현산천문대의 전천카메라에 붉은 오로라가 잡혔고(한국천문연구원), 5월 12일 새벽 강원 화천에서도 아마추어 천문가들이 촬영에 성공했습니다. 다만 눈으로는 거의 보이지 않았고 장노출 카메라에만 찍혔습니다. ※ 영상 속 오로라는 같은 폭풍 때 미국 유타·아이다호에서 NASA가 촬영한 것입니다.
+> 출처: 한국천문연구원 참고자료(2024.5.13) · NOAA SWPC · USGS 지자기 프로그램 · NASA "How NASA Tracked the Most Intense Solar Storm in Decades", "Auroras"
+> 사진·영상: NASA/SDO, NASA/Bill Dunford, NASA(국제우주정거장). NASA는 이 영상을 보증하지 않습니다.
+> 음악: "Floating Cities" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
+> #오로라 #태양폭풍 #보현산천문대 #우주 #shorts

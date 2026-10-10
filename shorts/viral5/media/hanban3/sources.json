@@ -1,255 +1,264 @@
 [
-  {
-    "file": "worldview_korea_2023-04-12.jpg",
-    "page_url": "https://worldview.earthdata.nasa.gov/?v=123.5,33,131.5,39.5&l=MODIS_Terra_CorrectedReflectance_TrueColor&t=2023-04-12-T00:00:00Z",
-    "file_url": "https://wvs.earthdata.nasa.gov/api/v1/snapshot?REQUEST=GetSnapshot&TIME=2023-04-12&BBOX=33,123.5,39.5,131.5&CRS=EPSG:4326&LAYERS=MODIS_Terra_CorrectedReflectance_TrueColor&FORMAT=image/jpeg&WIDTH=2400&HEIGHT=1950",
-    "licence": "Public domain (NASA EOSDIS/Worldview imagery, no copyright; NASA requests credit)",
-    "credit": "사진: NASA Worldview",
-    "description": "MODIS Terra true colour, 12 Apr 2023 (~10:30 KST overpass). Yellow-dust (황사) day: whole South Korea and surrounding seas covered by yellow-brown/grey haze; sea looks murky olive instead of dark blue; land contrast washed out. Seoul city-average PM10 that day = 260 ug/m3 (daily), PM2.5 = 30 (cleanair.seoul.go.kr). Linear lat/lon frame: lon 123.5-131.5E, lat 33-39.5N, 2400x1950.",
-    "key_points": [
-      {
-        "what": "서울 (Seoul)",
-        "x": 0.435,
-        "y": 0.298
-      },
-      {
-        "what": "부산 (Busan)",
-        "x": 0.698,
-        "y": 0.665
-      },
-      {
-        "what": "제주 (Jeju)",
-        "x": 0.381,
-        "y": 0.942
-      },
-      {
-        "what": "서해 (Yellow Sea) open water",
-        "x": 0.188,
-        "y": 0.538
-      }
-    ],
-    "notable_moments": []
-  },
-  {
-    "file": "worldview_korea_2025-10-28.jpg",
-    "page_url": "https://worldview.earthdata.nasa.gov/?v=123.5,33,131.5,39.5&l=MODIS_Terra_CorrectedReflectance_TrueColor&t=2025-10-28-T00:00:00Z",
-    "file_url": "https://wvs.earthdata.nasa.gov/api/v1/snapshot?REQUEST=GetSnapshot&TIME=2025-10-28&BBOX=33,123.5,39.5,131.5&CRS=EPSG:4326&LAYERS=MODIS_Terra_CorrectedReflectance_TrueColor&FORMAT=image/jpeg&WIDTH=2400&HEIGHT=1950",
-    "licence": "Public domain (NASA EOSDIS/Worldview imagery)",
-    "credit": "사진: NASA Worldview",
-    "description": "MODIS Terra true colour, 28 Oct 2025. Crisp autumn day: land sharp, Seoul grey urban patch and Han River visible, seas deep navy-blue; small cumulus streets over the seas at left/bottom/right, a few clouds over Jeju. Same framing as the 2023-04-12 image -> direct before/after wipe. Seoul PM10 daily = 22, PM2.5 = 9 ug/m3.",
-    "key_points": [
-      {
-        "what": "서울 (Seoul)",
-        "x": 0.435,
-        "y": 0.298
-      },
-      {
-        "what": "부산 (Busan)",
-        "x": 0.698,
-        "y": 0.665
-      },
-      {
-        "what": "제주 (Jeju)",
-        "x": 0.381,
-        "y": 0.942
-      },
-      {
-        "what": "서해 (Yellow Sea) open water",
-        "x": 0.188,
-        "y": 0.538
-      }
-    ],
-    "notable_moments": []
-  },
-  {
-    "file": "worldview_seoul_vertical_2023-04-12.jpg",
-    "page_url": "https://worldview.earthdata.nasa.gov/?v=123.5,33,131.5,39.5&l=MODIS_Terra_CorrectedReflectance_TrueColor&t=2023-04-12-T00:00:00Z",
-    "file_url": "https://wvs.earthdata.nasa.gov/api/v1/snapshot?REQUEST=GetSnapshot&TIME=2023-04-12&BBOX=36.6,126.4,38.6,127.525&CRS=EPSG:4326&LAYERS=MODIS_Terra_CorrectedReflectance_TrueColor&FORMAT=image/jpeg&WIDTH=1080&HEIGHT=1920",
-    "licence": "Public domain (NASA EOSDIS/Worldview imagery)",
-    "credit": "사진: NASA Worldview",
-    "description": "9:16 vertical zoom on Seoul metro area, yellow-dust day 12 Apr 2023. Everything brownish-beige and soft; Han River and city barely distinguishable. Upsampled from 250 m MODIS (slightly soft).",
-    "key_points": [
-      {
-        "what": "서울 도심 (Seoul centre)",
-        "x": 0.514,
-        "y": 0.517
-      },
-      {
-        "what": "한강 하구 / 경기만 (Han estuary / Gyeonggi Bay)",
-        "x": 0.1,
-        "y": 0.65
-      }
-    ],
-    "notable_moments": []
-  },
-  {
-    "file": "worldview_seoul_vertical_2025-10-28.jpg",
-    "page_url": "https://worldview.earthdata.nasa.gov/?v=123.5,33,131.5,39.5&l=MODIS_Terra_CorrectedReflectance_TrueColor&t=2025-10-28-T00:00:00Z",
-    "file_url": "https://wvs.earthdata.nasa.gov/api/v1/snapshot?REQUEST=GetSnapshot&TIME=2025-10-28&BBOX=36.6,126.4,38.6,127.525&CRS=EPSG:4326&LAYERS=MODIS_Terra_CorrectedReflectance_TrueColor&FORMAT=image/jpeg&WIDTH=1080&HEIGHT=1920",
-    "licence": "Public domain (NASA EOSDIS/Worldview imagery)",
-    "credit": "사진: NASA Worldview",
-    "description": "Same 9:16 Seoul frame on clear autumn day 28 Oct 2025: grey urban fabric of Seoul, Han River line and dark green mountains crisp; teal-blue Gyeonggi Bay. Pair with the 2023-04-12 vertical for a wipe.",
-    "key_points": [
-      {
-        "what": "서울 도심 (Seoul centre)",
-        "x": 0.514,
-        "y": 0.517
-      },
-      {
-        "what": "한강 하구 / 경기만",
-        "x": 0.1,
-        "y": 0.65
-      }
-    ],
-    "notable_moments": []
-  },
-  {
-    "file": "worldview_korea_2021-03-29.jpg",
-    "page_url": "https://worldview.earthdata.nasa.gov/?v=123.5,33,131.5,39.5&l=MODIS_Terra_CorrectedReflectance_TrueColor&t=2021-03-29-T00:00:00Z",
-    "file_url": "https://wvs.earthdata.nasa.gov/api/v1/snapshot?REQUEST=GetSnapshot&TIME=2021-03-29&BBOX=33,123.5,39.5,131.5&CRS=EPSG:4326&LAYERS=MODIS_Terra_CorrectedReflectance_TrueColor&FORMAT=image/jpeg&WIDTH=2400&HEIGHT=1950",
-    "licence": "Public domain (NASA EOSDIS/Worldview imagery)",
-    "credit": "사진: NASA Worldview",
-    "description": "Backup dust day: 29 Mar 2021 major yellow-dust event; thick tan dust plume over Yellow Sea and southern Korea, one white cloud patch west of Seoul. Seoul PM10 daily = 264, PM2.5 = 48.",
-    "key_points": [
-      {
-        "what": "서울 (Seoul)",
-        "x": 0.435,
-        "y": 0.298
-      },
-      {
-        "what": "부산 (Busan)",
-        "x": 0.698,
-        "y": 0.665
-      },
-      {
-        "what": "제주 (Jeju)",
-        "x": 0.381,
-        "y": 0.942
-      },
-      {
-        "what": "서해 (Yellow Sea) open water",
-        "x": 0.188,
-        "y": 0.538
-      }
-    ],
-    "notable_moments": []
-  },
-  {
-    "file": "worldview_korea_2023-10-18.jpg",
-    "page_url": "https://worldview.earthdata.nasa.gov/?v=123.5,33,131.5,39.5&l=MODIS_Terra_CorrectedReflectance_TrueColor&t=2023-10-18-T00:00:00Z",
-    "file_url": "https://wvs.earthdata.nasa.gov/api/v1/snapshot?REQUEST=GetSnapshot&TIME=2023-10-18&BBOX=33,123.5,39.5,131.5&CRS=EPSG:4326&LAYERS=MODIS_Terra_CorrectedReflectance_TrueColor&FORMAT=image/jpeg&WIDTH=2400&HEIGHT=1950",
-    "licence": "Public domain (NASA EOSDIS/Worldview imagery)",
-    "credit": "사진: NASA Worldview",
-    "description": "Backup autumn image 18 Oct 2023: southern half clear with dark-blue seas, but northern Korea/Seoul region partly under a cloud band; contrails visible over Yellow Sea at left. Seoul PM10 32 / PM2.5 17. Prefer 2025-10-28.",
-    "key_points": [
-      {
-        "what": "서울 (Seoul)",
-        "x": 0.435,
-        "y": 0.298
-      },
-      {
-        "what": "부산 (Busan)",
-        "x": 0.698,
-        "y": 0.665
-      },
-      {
-        "what": "제주 (Jeju)",
-        "x": 0.381,
-        "y": 0.942
-      },
-      {
-        "what": "서해 (Yellow Sea) open water",
-        "x": 0.188,
-        "y": 0.538
-      }
-    ],
-    "notable_moments": []
-  },
-  {
-    "file": "nasa_iss073e0983131_korea.jpg",
-    "page_url": "https://images.nasa.gov/details/iss073e0983131",
-    "file_url": "https://images-assets.nasa.gov/image/iss073e0983131/iss073e0983131~orig.jpg",
-    "licence": "Public domain (NASA ISS crew photo; EXIF description names NASA astronaut Jonny Kim)",
-    "credit": "사진: NASA",
-    "description": "ISS photo 21 Sep 2025 06:11 UTC (15:11 KST), 8256x5504, Nikon Z9 24mm. Oblique view looking NW from off western Japan: partly cloudy southern Korean peninsula, sun glint on Yellow Sea (left) and Korea Strait, thin bright-blue atmospheric limb along the horizon against black space, ISS solar array at right. NASA caption: 'A partly cloudy Korean Peninsula, surrounded by the sun's glint reflecting off the Sea of Japan and the Yellow Sea'. Long-form credit: Image courtesy of the Earth Science and Remote Sensing Unit, NASA Johnson Space Center.",
-    "key_points": [
-      {
-        "what": "얇은 파란 대기층 (blue atmospheric limb) - centre of arc",
-        "x": 0.5,
-        "y": 0.235
-      },
-      {
-        "what": "한반도 남부 (southern Korea landmass)",
-        "x": 0.41,
-        "y": 0.46
-      },
-      {
-        "what": "부산 부근 해안 (approx. Busan coast) - low confidence",
-        "x": 0.58,
-        "y": 0.45
-      },
-      {
-        "what": "ISS 태양전지판 (solar array, crop out if needed)",
-        "x": 0.85,
-        "y": 0.4
-      }
-    ],
-    "notable_moments": []
-  },
-  {
-    "file": "cirrus_bluesky_federalway_cc0.jpg",
-    "page_url": "https://commons.wikimedia.org/wiki/File:Cirrus_cloud_over_Federal_Way,_WA.jpg",
-    "file_url": "https://upload.wikimedia.org/wikipedia/commons/8/88/Cirrus_cloud_over_Federal_Way%2C_WA.jpg",
-    "licence": "CC0 1.0 (Ron Clausen, own work)",
-    "credit": "사진: Ron Clausen (CC0)",
-    "description": "VERTICAL 1704x2272. Deep-blue sky with feathery cirrus (새털구름) streaks, sunlit maple crown at bottom-right. Taken 25 Jun 2017, Federal Way, Washington, USA (NOT Korea - use only as generic 'cirrus/새털구름' illustration).",
-    "key_points": [
-      {
-        "what": "새털구름 (cirrus) main patch",
-        "x": 0.55,
-        "y": 0.22
-      },
-      {
-        "what": "가는 권운 줄무늬 (thin cirrus streaks)",
-        "x": 0.35,
-        "y": 0.62
-      },
-      {
-        "what": "나무 (maple tree)",
-        "x": 0.75,
-        "y": 0.88
-      }
-    ],
-    "notable_moments": []
-  },
-  {
-    "file": "clouds_timelapse_mynhardt.mp4",
-    "page_url": "https://commons.wikimedia.org/wiki/File:Free_Creative_Commons_Stock_video_-_Time_lapse_clouds.webm",
-    "file_url": "https://upload.wikimedia.org/wikipedia/commons/e/e9/Free_Creative_Commons_Stock_video_-_Time_lapse_clouds.webm",
-    "licence": "CC BY 2.0 (Johann Mynhardt, via Flickr 7337676096)",
-    "credit": "영상: Johann Mynhardt (CC BY 2.0)",
-    "description": "1280x720, 23.6 s, re-encoded H.264 (no audio). Time-lapse looking up at puffy white cumulus drifting across a slightly dull/grey-blue sky. Not cirrus, not Korea; sky colour is muted (could be graded). Backup B-roll only.",
-    "notable_moments": [
-      {
-        "t": 0,
-        "what": "white cumulus top-left and left, blue sky right"
-      },
-      {
-        "t": 4,
-        "what": "big cumulus mass centre-left, small wisps upper right"
-      },
-      {
-        "t": 10,
-        "what": "several cumulus spread across frame"
-      },
-      {
-        "t": 16,
-        "what": "two large clouds left and upper right, smaller ones bottom"
-      },
-      {
-        "t": 22,
-        "what": "clouds fill top half, bright sun-lit edges"
-      }
-    ]
-  }
+ {
+  "file": "worldview_korea_2023-04-12.jpg",
+  "page_url": "https://worldview.earthdata.nasa.gov/?v=123.5,33,131.5,39.5&l=MODIS_Terra_CorrectedReflectance_TrueColor&t=2023-04-12-T00:00:00Z",
+  "file_url": "https://wvs.earthdata.nasa.gov/api/v1/snapshot?REQUEST=GetSnapshot&TIME=2023-04-12&BBOX=33,123.5,39.5,131.5&CRS=EPSG:4326&LAYERS=MODIS_Terra_CorrectedReflectance_TrueColor&FORMAT=image/jpeg&WIDTH=2400&HEIGHT=1950",
+  "licence": "Public domain (NASA EOSDIS/Worldview imagery, no copyright; NASA requests credit)",
+  "credit": "사진: NASA Worldview",
+  "description": "MODIS Terra true colour, 12 Apr 2023 (~10:30 KST overpass). Yellow-dust (황사) day: whole South Korea and surrounding seas covered by yellow-brown/grey haze; sea looks murky olive instead of dark blue; land contrast washed out. Seoul city-average PM10 that day = 260 ug/m3 (daily), PM2.5 = 30 (cleanair.seoul.go.kr). Linear lat/lon frame: lon 123.5-131.5E, lat 33-39.5N, 2400x1950.",
+  "key_points": [
+   {
+    "what": "서울 (Seoul)",
+    "x": 0.435,
+    "y": 0.298
+   },
+   {
+    "what": "부산 (Busan)",
+    "x": 0.698,
+    "y": 0.665
+   },
+   {
+    "what": "제주 (Jeju)",
+    "x": 0.381,
+    "y": 0.942
+   },
+   {
+    "what": "서해 (Yellow Sea) open water",
+    "x": 0.188,
+    "y": 0.538
+   }
+  ],
+  "notable_moments": []
+ },
+ {
+  "file": "worldview_korea_2025-10-28.jpg",
+  "page_url": "https://worldview.earthdata.nasa.gov/?v=123.5,33,131.5,39.5&l=MODIS_Terra_CorrectedReflectance_TrueColor&t=2025-10-28-T00:00:00Z",
+  "file_url": "https://wvs.earthdata.nasa.gov/api/v1/snapshot?REQUEST=GetSnapshot&TIME=2025-10-28&BBOX=33,123.5,39.5,131.5&CRS=EPSG:4326&LAYERS=MODIS_Terra_CorrectedReflectance_TrueColor&FORMAT=image/jpeg&WIDTH=2400&HEIGHT=1950",
+  "licence": "Public domain (NASA EOSDIS/Worldview imagery)",
+  "credit": "사진: NASA Worldview",
+  "description": "MODIS Terra true colour, 28 Oct 2025. Crisp autumn day: land sharp, Seoul grey urban patch and Han River visible, seas deep navy-blue; small cumulus streets over the seas at left/bottom/right, a few clouds over Jeju. Same framing as the 2023-04-12 image -> direct before/after wipe. Seoul PM10 daily = 22, PM2.5 = 9 ug/m3.",
+  "key_points": [
+   {
+    "what": "서울 (Seoul)",
+    "x": 0.435,
+    "y": 0.298
+   },
+   {
+    "what": "부산 (Busan)",
+    "x": 0.698,
+    "y": 0.665
+   },
+   {
+    "what": "제주 (Jeju)",
+    "x": 0.381,
+    "y": 0.942
+   },
+   {
+    "what": "서해 (Yellow Sea) open water",
+    "x": 0.188,
+    "y": 0.538
+   }
+  ],
+  "notable_moments": []
+ },
+ {
+  "file": "worldview_seoul_vertical_2023-04-12.jpg",
+  "page_url": "https://worldview.earthdata.nasa.gov/?v=123.5,33,131.5,39.5&l=MODIS_Terra_CorrectedReflectance_TrueColor&t=2023-04-12-T00:00:00Z",
+  "file_url": "https://wvs.earthdata.nasa.gov/api/v1/snapshot?REQUEST=GetSnapshot&TIME=2023-04-12&BBOX=36.6,126.4,38.6,127.525&CRS=EPSG:4326&LAYERS=MODIS_Terra_CorrectedReflectance_TrueColor&FORMAT=image/jpeg&WIDTH=1080&HEIGHT=1920",
+  "licence": "Public domain (NASA EOSDIS/Worldview imagery)",
+  "credit": "사진: NASA Worldview",
+  "description": "9:16 vertical zoom on Seoul metro area, yellow-dust day 12 Apr 2023. Everything brownish-beige and soft; Han River and city barely distinguishable. Upsampled from 250 m MODIS (slightly soft).",
+  "key_points": [
+   {
+    "what": "서울 도심 (Seoul centre)",
+    "x": 0.514,
+    "y": 0.517
+   },
+   {
+    "what": "한강 하구 / 경기만 (Han estuary / Gyeonggi Bay)",
+    "x": 0.1,
+    "y": 0.65
+   }
+  ],
+  "notable_moments": []
+ },
+ {
+  "file": "worldview_seoul_vertical_2025-10-28.jpg",
+  "page_url": "https://worldview.earthdata.nasa.gov/?v=123.5,33,131.5,39.5&l=MODIS_Terra_CorrectedReflectance_TrueColor&t=2025-10-28-T00:00:00Z",
+  "file_url": "https://wvs.earthdata.nasa.gov/api/v1/snapshot?REQUEST=GetSnapshot&TIME=2025-10-28&BBOX=36.6,126.4,38.6,127.525&CRS=EPSG:4326&LAYERS=MODIS_Terra_CorrectedReflectance_TrueColor&FORMAT=image/jpeg&WIDTH=1080&HEIGHT=1920",
+  "licence": "Public domain (NASA EOSDIS/Worldview imagery)",
+  "credit": "사진: NASA Worldview",
+  "description": "Same 9:16 Seoul frame on clear autumn day 28 Oct 2025: grey urban fabric of Seoul, Han River line and dark green mountains crisp; teal-blue Gyeonggi Bay. Pair with the 2023-04-12 vertical for a wipe.",
+  "key_points": [
+   {
+    "what": "서울 도심 (Seoul centre)",
+    "x": 0.514,
+    "y": 0.517
+   },
+   {
+    "what": "한강 하구 / 경기만",
+    "x": 0.1,
+    "y": 0.65
+   }
+  ],
+  "notable_moments": []
+ },
+ {
+  "file": "worldview_korea_2021-03-29.jpg",
+  "page_url": "https://worldview.earthdata.nasa.gov/?v=123.5,33,131.5,39.5&l=MODIS_Terra_CorrectedReflectance_TrueColor&t=2021-03-29-T00:00:00Z",
+  "file_url": "https://wvs.earthdata.nasa.gov/api/v1/snapshot?REQUEST=GetSnapshot&TIME=2021-03-29&BBOX=33,123.5,39.5,131.5&CRS=EPSG:4326&LAYERS=MODIS_Terra_CorrectedReflectance_TrueColor&FORMAT=image/jpeg&WIDTH=2400&HEIGHT=1950",
+  "licence": "Public domain (NASA EOSDIS/Worldview imagery)",
+  "credit": "사진: NASA Worldview",
+  "description": "Backup dust day: 29 Mar 2021 major yellow-dust event; thick tan dust plume over Yellow Sea and southern Korea, one white cloud patch west of Seoul. Seoul PM10 daily = 264, PM2.5 = 48.",
+  "key_points": [
+   {
+    "what": "서울 (Seoul)",
+    "x": 0.435,
+    "y": 0.298
+   },
+   {
+    "what": "부산 (Busan)",
+    "x": 0.698,
+    "y": 0.665
+   },
+   {
+    "what": "제주 (Jeju)",
+    "x": 0.381,
+    "y": 0.942
+   },
+   {
+    "what": "서해 (Yellow Sea) open water",
+    "x": 0.188,
+    "y": 0.538
+   }
+  ],
+  "notable_moments": []
+ },
+ {
+  "file": "worldview_korea_2023-10-18.jpg",
+  "page_url": "https://worldview.earthdata.nasa.gov/?v=123.5,33,131.5,39.5&l=MODIS_Terra_CorrectedReflectance_TrueColor&t=2023-10-18-T00:00:00Z",
+  "file_url": "https://wvs.earthdata.nasa.gov/api/v1/snapshot?REQUEST=GetSnapshot&TIME=2023-10-18&BBOX=33,123.5,39.5,131.5&CRS=EPSG:4326&LAYERS=MODIS_Terra_CorrectedReflectance_TrueColor&FORMAT=image/jpeg&WIDTH=2400&HEIGHT=1950",
+  "licence": "Public domain (NASA EOSDIS/Worldview imagery)",
+  "credit": "사진: NASA Worldview",
+  "description": "Backup autumn image 18 Oct 2023: southern half clear with dark-blue seas, but northern Korea/Seoul region partly under a cloud band; contrails visible over Yellow Sea at left. Seoul PM10 32 / PM2.5 17. Prefer 2025-10-28.",
+  "key_points": [
+   {
+    "what": "서울 (Seoul)",
+    "x": 0.435,
+    "y": 0.298
+   },
+   {
+    "what": "부산 (Busan)",
+    "x": 0.698,
+    "y": 0.665
+   },
+   {
+    "what": "제주 (Jeju)",
+    "x": 0.381,
+    "y": 0.942
+   },
+   {
+    "what": "서해 (Yellow Sea) open water",
+    "x": 0.188,
+    "y": 0.538
+   }
+  ],
+  "notable_moments": []
+ },
+ {
+  "file": "nasa_iss073e0983131_korea.jpg",
+  "page_url": "https://images.nasa.gov/details/iss073e0983131",
+  "file_url": "https://images-assets.nasa.gov/image/iss073e0983131/iss073e0983131~orig.jpg",
+  "licence": "Public domain (NASA ISS crew photo; EXIF description names NASA astronaut Jonny Kim)",
+  "credit": "사진: NASA",
+  "description": "ISS photo 21 Sep 2025 06:11 UTC (15:11 KST), 8256x5504, Nikon Z9 24mm. Oblique view looking NW from off western Japan: partly cloudy southern Korean peninsula, sun glint on Yellow Sea (left) and Korea Strait, thin bright-blue atmospheric limb along the horizon against black space, ISS solar array at right. NASA caption: 'A partly cloudy Korean Peninsula, surrounded by the sun's glint reflecting off the Sea of Japan and the Yellow Sea'. Long-form credit: Image courtesy of the Earth Science and Remote Sensing Unit, NASA Johnson Space Center.",
+  "key_points": [
+   {
+    "what": "얇은 파란 대기층 (blue atmospheric limb) - centre of arc",
+    "x": 0.5,
+    "y": 0.235
+   },
+   {
+    "what": "한반도 남부 (southern Korea landmass)",
+    "x": 0.41,
+    "y": 0.46
+   },
+   {
+    "what": "부산 부근 해안 (approx. Busan coast) - low confidence",
+    "x": 0.58,
+    "y": 0.45
+   },
+   {
+    "what": "ISS 태양전지판 (solar array, crop out if needed)",
+    "x": 0.85,
+    "y": 0.4
+   }
+  ],
+  "notable_moments": []
+ },
+ {
+  "file": "cirrus_bluesky_federalway_cc0.jpg",
+  "page_url": "https://commons.wikimedia.org/wiki/File:Cirrus_cloud_over_Federal_Way,_WA.jpg",
+  "file_url": "https://upload.wikimedia.org/wikipedia/commons/8/88/Cirrus_cloud_over_Federal_Way%2C_WA.jpg",
+  "licence": "CC0 1.0 (Ron Clausen, own work)",
+  "credit": "사진: Ron Clausen (CC0)",
+  "description": "VERTICAL 1704x2272. Deep-blue sky with feathery cirrus (새털구름) streaks, sunlit maple crown at bottom-right. Taken 25 Jun 2017, Federal Way, Washington, USA (NOT Korea - use only as generic 'cirrus/새털구름' illustration).",
+  "key_points": [
+   {
+    "what": "새털구름 (cirrus) main patch",
+    "x": 0.55,
+    "y": 0.22
+   },
+   {
+    "what": "가는 권운 줄무늬 (thin cirrus streaks)",
+    "x": 0.35,
+    "y": 0.62
+   },
+   {
+    "what": "나무 (maple tree)",
+    "x": 0.75,
+    "y": 0.88
+   }
+  ],
+  "notable_moments": []
+ },
+ {
+  "file": "clouds_timelapse_mynhardt.mp4",
+  "page_url": "https://commons.wikimedia.org/wiki/File:Free_Creative_Commons_Stock_video_-_Time_lapse_clouds.webm",
+  "file_url": "https://upload.wikimedia.org/wikipedia/commons/e/e9/Free_Creative_Commons_Stock_video_-_Time_lapse_clouds.webm",
+  "licence": "CC BY 2.0 (Johann Mynhardt, via Flickr 7337676096)",
+  "credit": "영상: Johann Mynhardt (CC BY 2.0)",
+  "description": "1280x720, 23.6 s, re-encoded H.264 (no audio). Time-lapse looking up at puffy white cumulus drifting across a slightly dull/grey-blue sky. Not cirrus, not Korea; sky colour is muted (could be graded). Backup B-roll only.",
+  "notable_moments": [
+   {
+    "t": 0,
+    "what": "white cumulus top-left and left, blue sky right"
+   },
+   {
+    "t": 4,
+    "what": "big cumulus mass centre-left, small wisps upper right"
+   },
+   {
+    "t": 10,
+    "what": "several cumulus spread across frame"
+   },
+   {
+    "t": 16,
+    "what": "two large clouds left and upper right, smaller ones bottom"
+   },
+   {
+    "t": 22,
+    "what": "clouds fill top half, bright sun-lit edges"
+   }
+  ]
+ },
+ {
+  "file": "public/hanban3/src/ongjin_sea_cc0.jpg",
+  "page_url": "https://commons.wikimedia.org/wiki/File:Ongjin_South_Korea_sea_city_03.jpg",
+  "file_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/4/44/Ongjin_South_Korea_sea_city_03.jpg/1920px-Ongjin_South_Korea_sea_city_03.jpg",
+  "licence": "CC0 1.0 (Hankook12, own work; checked via the Commons API LicenseShortName)",
+  "credit": "사진: Hankook12",
+  "description": "Sea and blue sky at Ongjin, Incheon, South Korea (May 2023), 1920 px rendition",
+  "notable_moments": []
+ }
 ]
