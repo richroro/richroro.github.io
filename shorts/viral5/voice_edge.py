@@ -2,22 +2,42 @@
 tools/build_voice.py writes: voice/<id>.wav plus timeline.json, with per-syllable times taken from
 Edge's word boundaries instead of a speech recognizer.
 
-usage: python3 voice_edge.py <id> [voice] [rate]     reads shorts/<id>/script.json, writes build/<id>/
+usage: python3 voice_edge.py <id> [voice] [rate] [--voices cast.json]   reads shorts/<id>/script.json, writes build/<id>/
 The voice and rate default to the script's "voices.nar" entry. A line's "voice" picks another entry of "voices"
 ({"edge", "rate", "pitch"}), so a story can give its characters their own voices. Needs network access to
 speech.platform.bing.com.
+An entry with "engine" (README "음성 v2": "supertonic", "qwen", or "edge" with "post"/"tempo") is read by
+voice_engine.py instead; its syllable times come from aligned word times, so timeline.json has the same fields.
+--engine azure (or env VOICE_ENGINE=azure) reads every Edge entry with the Azure voice of the same name.
+--voices replaces entries of "voices" from a JSON file ({"nar": {...}, "me": {...}}) without touching the script (A/B);
+its "pauses" key, like a script's own "pauses" ({"line": 0.15, "turn": 0.25, "punch": 0.45}), sets the gap before each
+line: "turn" when the speaker changes, "punch" before the last line, "line" otherwise. Without it each line's "gap" counts.
 """
 import asyncio, difflib, io, json, os, re, subprocess, sys, wave
 import numpy as np
 import edge_tts
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-sid = sys.argv[1]
+ARGS = [a for a in sys.argv[1:] if not a.startswith("--")]
+CAST = sys.argv[sys.argv.index("--voices") + 1] if "--voices" in sys.argv else None
+if CAST: ARGS.remove(CAST)
+if "--engine" in sys.argv:  # --engine azure: read every Edge voice with the same-named Azure voice (no recasting)
+    os.environ["VOICE_ENGINE"] = sys.argv[sys.argv.index("--engine") + 1]; ARGS.remove(os.environ["VOICE_ENGINE"])
+sid = ARGS[0]
 out = f"{HERE}/build/{sid}"
 S = json.load(open(f"{HERE}/shorts/{sid}/script.json"))
+if CAST:
+    C = json.load(open(CAST))
+    if "pauses" in C: S["pauses"] = C.pop("pauses")
+    S.setdefault("voices", {}).update(C)
+P = S.get("pauses")  # 음성 v2 pause rules {"line", "turn", "punch"} (s) replace the lines' own "gap"
 nar = S.get("voices", {}).get("nar", {})
-VOICE = sys.argv[2] if len(sys.argv) > 2 else nar.get("edge", "ko-KR-SunHiNeural")
-RATE = sys.argv[3] if len(sys.argv) > 3 else nar.get("rate", "+8%")
+VOICE = ARGS[1] if len(ARGS) > 1 else nar.get("edge", "ko-KR-SunHiNeural")
+RATE = ARGS[2] if len(ARGS) > 2 else nar.get("rate", "+8%")
+if os.environ.get("VOICE_ENGINE", "edge") != "edge":  # same voice names and rates, another engine (azure)
+    S["voices"] = {r: ({"edge": VOICE, "rate": RATE, **v, "engine": os.environ["VOICE_ENGINE"]} if v.get("engine", "edge") == "edge" else v)
+                   for r, v in {"nar": {}, **S.get("voices", {})}.items()}
+    nar = S["voices"]["nar"]
 SR = 44100
 KEEP = re.compile(r"[가-힣A-Za-z0-9]")
 chars = lambda s: [c for c in s if KEEP.match(c)]
@@ -30,7 +50,16 @@ def voice_of(L):
         return VOICE, RATE, nar.get("pitch", "+0Hz")
     return v.get("edge", VOICE), v.get("rate", RATE), v.get("pitch", "+0Hz")
 
+def entry_of(L):
+    """the line's whole "voices" entry when it names another engine or a v2 option, else None (plain Edge)"""
+    v = S.get("voices", {}).get(L.get("voice", "nar")) or nar
+    return v if v.get("engine", "edge") != "edge" or v.get("post") or v.get("tempo") or v.get("sps") else None
+
 async def synth(text, voice=None, rate=None, pitch="+0Hz"):
+    ca = os.environ.get("SSL_CERT_FILE")  # edge-tts trusts only certifi's bundle; behind a TLS-inspecting proxy use the system's
+    if ca and os.path.exists(ca):
+        import ssl, edge_tts.communicate as etc
+        if hasattr(etc, "_SSL_CTX"): etc._SSL_CTX = ssl.create_default_context(cafile=ca)
     com = edge_tts.Communicate(text, voice or VOICE, rate=rate or RATE, pitch=pitch, boundary="WordBoundary", proxy=os.environ.get("HTTPS_PROXY") or None)
     audio, words = bytearray(), []
     async for ch in com.stream():
@@ -57,11 +86,17 @@ def write(path, x):
 
 timeline = {"title": S["title"], "lines": [], "fps": 30, "voice": VOICE, "rate": RATE}
 t = 0.0
-for L in S["lines"]:
+for li, L in enumerate(S["lines"]):
     spoken = L["say"].replace("|", "")
     lv, lr, lp = voice_of(L)
-    x, words = asyncio.run(synth(spoken, lv, lr, lp))
-    x, words = trim(x, words)
+    ent = entry_of(L)
+    if ent:  # 음성 v2 engine: voice_engine.py reads, trims and aligns (cached)
+        import voice_engine
+        x, words = voice_engine.synth(spoken if ent.get("engine", "edge") == "edge" else voice_engine.ko_text(spoken), ent)
+        lv = ent.get("edge") or f'{ent["engine"]}:{ent.get("voice") or ent.get("speaker") or "design"}'
+    else:
+        x, words = asyncio.run(synth(spoken, lv, lr, lp))
+        x, words = trim(x, words)
     dur = len(x) / SR
     # syllable times: each boundary word spreads its syllables over its duration, then align to the script text
     rec = [(c, t0 + d * k / max(1, len(chars(w)))) for t0, d, w in words for k, c in enumerate(chars(w))]
@@ -79,7 +114,11 @@ for L in S["lines"]:
         segs.append(times[pos] if pos < len(times) else dur); pos += len(chars(seg))
     seg_t = [0.0] + [max(0.0, s - 0.06) for s in segs[1:]]
     chunks = [{"t0": round(seg_t[i], 3), "t1": round(seg_t[i + 1] if i + 1 < len(seg_t) else dur, 3), "text": L["cap"][i]} for i in range(len(seg_t))]
-    t += L.get("gap", 0.2)
+    if P and li:
+        prev = S["lines"][li - 1].get("voice", "nar")
+        t += P["punch"] if li == len(S["lines"]) - 1 else P["turn"] if prev != L.get("voice", "nar") else P["line"]
+    else:
+        t += L.get("gap", 0.2)
     write(f"{out}/voice/{L['id']}.wav", x)
     timeline["lines"].append({"id": L["id"], "voice": lv, "start": round(t, 3), "dur": round(dur, 3), "wav": f"voice/{L['id']}.wav",
                               "chunks": chunks, "chars": "".join(sc), "ct": [round(v, 3) for v in times]})

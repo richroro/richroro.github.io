@@ -1,0 +1,428 @@
+{
+ "edge_now": {
+  "about": "what the scripts use today: Edge, three Korean voices, pitch shifts for characters, the scripts' own rates",
+  "cast": {
+   "nar_f": {
+    "edge": "ko-KR-SunHiNeural",
+    "rate": "+28%"
+   },
+   "young_f": {
+    "edge": "ko-KR-SunHiNeural",
+    "rate": "+12%",
+    "pitch": "+20Hz"
+   },
+   "elder_f": {
+    "edge": "ko-KR-SunHiNeural",
+    "rate": "-12%",
+    "pitch": "-20Hz"
+   },
+   "mid_f": {
+    "edge": "ko-KR-SunHiNeural",
+    "rate": "+38%",
+    "pitch": "-4Hz"
+   },
+   "nar_m": {
+    "edge": "ko-KR-InJoonNeural",
+    "rate": "+25%"
+   },
+   "horror": {
+    "edge": "ko-KR-InJoonNeural",
+    "rate": "+18%",
+    "pitch": "-4Hz"
+   },
+   "docu": {
+    "edge": "ko-KR-InJoonNeural",
+    "rate": "+0%"
+   },
+   "elder_m": {
+    "edge": "ko-KR-InJoonNeural",
+    "rate": "+22%",
+    "pitch": "-15Hz"
+   }
+  },
+  "lines": {
+   "T09": {
+    "rate": "+50%"
+   },
+   "T10": {
+    "rate": "+40%"
+   }
+  }
+ },
+ "edge_tuned": {
+  "about": "Edge with no pitch shifts: a different voice per character (multilingual voices reading Korean), each line brought to its format's rate",
+  "target": true,
+  "cast": {
+   "nar_f": {
+    "engine": "edge",
+    "edge": "fr-FR-VivienneMultilingualNeural",
+    "rate": "+0%"
+   },
+   "young_f": {
+    "engine": "edge",
+    "edge": "en-US-AvaMultilingualNeural",
+    "rate": "+0%"
+   },
+   "elder_f": {
+    "engine": "edge",
+    "edge": "de-DE-SeraphinaMultilingualNeural",
+    "rate": "+0%"
+   },
+   "mid_f": {
+    "engine": "edge",
+    "edge": "en-US-EmmaMultilingualNeural",
+    "rate": "+0%"
+   },
+   "nar_m": {
+    "engine": "edge",
+    "edge": "ko-KR-InJoonNeural",
+    "rate": "+0%"
+   },
+   "horror": {
+    "engine": "edge",
+    "edge": "ko-KR-HyunsuMultilingualNeural",
+    "rate": "+0%"
+   },
+   "docu": {
+    "engine": "edge",
+    "edge": "ko-KR-HyunsuMultilingualNeural",
+    "rate": "+0%"
+   },
+   "elder_m": {
+    "engine": "edge",
+    "edge": "fr-FR-RemyMultilingualNeural",
+    "rate": "+0%"
+   }
+  },
+  "roles": {
+   "husband": {
+    "engine": "edge",
+    "edge": "ko-KR-HyunsuMultilingualNeural",
+    "rate": "+0%"
+   }
+  },
+  "pauses": {
+   "sseol": {
+    "line": 0.14,
+    "turn": 0.24,
+    "punch": 0.5
+   },
+   "issue": {
+    "line": 0.16,
+    "turn": 0.16,
+    "punch": 0.4
+   },
+   "horror": {
+    "line": 0.3,
+    "turn": 0.3,
+    "punch": 0.75
+   }
+  }
+ },
+ "supertonic": {
+  "about": "Supertonic 3 on this CPU: one preset voice per character, each line brought to its format's rate",
+  "target": true,
+  "cast": {
+   "nar_f": {
+    "engine": "supertonic",
+    "voice": "F1",
+    "speed": 1.05
+   },
+   "young_f": {
+    "engine": "supertonic",
+    "voice": "F2",
+    "speed": 1.05
+   },
+   "elder_f": {
+    "engine": "supertonic",
+    "voice": "F3",
+    "speed": 1.05
+   },
+   "mid_f": {
+    "engine": "supertonic",
+    "voice": "F4",
+    "speed": 1.05
+   },
+   "nar_m": {
+    "engine": "supertonic",
+    "voice": "M4",
+    "speed": 1.05
+   },
+   "horror": {
+    "engine": "supertonic",
+    "voice": "M5",
+    "speed": 1.05
+   },
+   "docu": {
+    "engine": "supertonic",
+    "voice": "M1",
+    "speed": 1.05
+   },
+   "elder_m": {
+    "engine": "supertonic",
+    "voice": "M3",
+    "speed": 1.05
+   }
+  },
+  "roles": {
+   "husband": {
+    "engine": "supertonic",
+    "voice": "M1",
+    "speed": 1.05
+   }
+  },
+  "pauses": {
+   "sseol": {
+    "line": 0.14,
+    "turn": 0.24,
+    "punch": 0.5
+   },
+   "issue": {
+    "line": 0.16,
+    "turn": 0.16,
+    "punch": 0.4
+   },
+   "horror": {
+    "line": 0.3,
+    "turn": 0.3,
+    "punch": 0.75
+   }
+  }
+ },
+ "qwen": {
+  "about": "Qwen3-TTS 0.6B CustomVoice built-in speakers (no instructions on 0.6B): sohee for Korean women, the others reading Korean; tempo brings each line to its format's rate",
+  "target": true,
+  "cast": {
+   "nar_f": {
+    "engine": "qwen",
+    "speaker": "sohee"
+   },
+   "young_f": {
+    "engine": "qwen",
+    "speaker": "sohee"
+   },
+   "elder_f": {
+    "engine": "qwen",
+    "speaker": "serena"
+   },
+   "mid_f": {
+    "engine": "qwen",
+    "speaker": "vivian"
+   },
+   "nar_m": {
+    "engine": "qwen",
+    "speaker": "ryan"
+   },
+   "horror": {
+    "engine": "qwen",
+    "speaker": "uncle_fu"
+   },
+   "docu": {
+    "engine": "qwen",
+    "speaker": "eric"
+   },
+   "elder_m": {
+    "engine": "qwen",
+    "speaker": "uncle_fu"
+   }
+  }
+ },
+ "abl_edge_voices": {
+  "about": "ablation: edge_tuned voices only (no rate targeting, no post)",
+  "cast": {
+   "nar_f": {
+    "engine": "edge",
+    "edge": "fr-FR-VivienneMultilingualNeural",
+    "rate": "+0%"
+   },
+   "young_f": {
+    "engine": "edge",
+    "edge": "en-US-AvaMultilingualNeural",
+    "rate": "+0%"
+   },
+   "elder_f": {
+    "engine": "edge",
+    "edge": "de-DE-SeraphinaMultilingualNeural",
+    "rate": "+0%"
+   },
+   "mid_f": {
+    "engine": "edge",
+    "edge": "en-US-EmmaMultilingualNeural",
+    "rate": "+0%"
+   },
+   "nar_m": {
+    "engine": "edge",
+    "edge": "ko-KR-InJoonNeural",
+    "rate": "+0%"
+   },
+   "horror": {
+    "engine": "edge",
+    "edge": "ko-KR-HyunsuMultilingualNeural",
+    "rate": "+0%"
+   },
+   "docu": {
+    "engine": "edge",
+    "edge": "ko-KR-HyunsuMultilingualNeural",
+    "rate": "+0%"
+   },
+   "elder_m": {
+    "engine": "edge",
+    "edge": "fr-FR-RemyMultilingualNeural",
+    "rate": "+0%"
+   }
+  }
+ },
+ "abl_edge_now_nopitch": {
+  "about": "ablation: edge_now with pitch shifts removed (same voices and rates)",
+  "cast": {
+   "nar_f": {
+    "edge": "ko-KR-SunHiNeural",
+    "rate": "+28%"
+   },
+   "young_f": {
+    "edge": "ko-KR-SunHiNeural",
+    "rate": "+12%"
+   },
+   "elder_f": {
+    "edge": "ko-KR-SunHiNeural",
+    "rate": "-12%"
+   },
+   "mid_f": {
+    "edge": "ko-KR-SunHiNeural",
+    "rate": "+38%"
+   },
+   "nar_m": {
+    "edge": "ko-KR-InJoonNeural",
+    "rate": "+25%"
+   },
+   "horror": {
+    "edge": "ko-KR-InJoonNeural",
+    "rate": "+18%"
+   },
+   "docu": {
+    "edge": "ko-KR-InJoonNeural",
+    "rate": "+0%"
+   },
+   "elder_m": {
+    "edge": "ko-KR-InJoonNeural",
+    "rate": "+22%"
+   }
+  },
+  "lines": {
+   "T09": {
+    "rate": "+50%"
+   },
+   "T10": {
+    "rate": "+40%"
+   }
+  }
+ },
+ "abl_edge_tuned_post": {
+  "about": "ablation: edge_tuned with the post chain (high-pass, presence lift, gentle compression, de-ess)",
+  "target": true,
+  "cast": {
+   "nar_f": {
+    "engine": "edge",
+    "edge": "fr-FR-VivienneMultilingualNeural",
+    "rate": "+0%",
+    "post": true
+   },
+   "young_f": {
+    "engine": "edge",
+    "edge": "en-US-AvaMultilingualNeural",
+    "rate": "+0%",
+    "post": true
+   },
+   "elder_f": {
+    "engine": "edge",
+    "edge": "de-DE-SeraphinaMultilingualNeural",
+    "rate": "+0%",
+    "post": true
+   },
+   "mid_f": {
+    "engine": "edge",
+    "edge": "en-US-EmmaMultilingualNeural",
+    "rate": "+0%",
+    "post": true
+   },
+   "nar_m": {
+    "engine": "edge",
+    "edge": "ko-KR-InJoonNeural",
+    "rate": "+0%",
+    "post": true
+   },
+   "horror": {
+    "engine": "edge",
+    "edge": "ko-KR-HyunsuMultilingualNeural",
+    "rate": "+0%",
+    "post": true
+   },
+   "docu": {
+    "engine": "edge",
+    "edge": "ko-KR-HyunsuMultilingualNeural",
+    "rate": "+0%",
+    "post": true
+   },
+   "elder_m": {
+    "engine": "edge",
+    "edge": "fr-FR-RemyMultilingualNeural",
+    "rate": "+0%",
+    "post": true
+   }
+  }
+ },
+ "abl_supertonic_post": {
+  "about": "ablation: supertonic with the post chain (high-pass, presence lift, gentle compression, de-ess)",
+  "target": true,
+  "cast": {
+   "nar_f": {
+    "engine": "supertonic",
+    "voice": "F1",
+    "speed": 1.05,
+    "post": true
+   },
+   "young_f": {
+    "engine": "supertonic",
+    "voice": "F2",
+    "speed": 1.05,
+    "post": true
+   },
+   "elder_f": {
+    "engine": "supertonic",
+    "voice": "F3",
+    "speed": 1.05,
+    "post": true
+   },
+   "mid_f": {
+    "engine": "supertonic",
+    "voice": "F4",
+    "speed": 1.05,
+    "post": true
+   },
+   "nar_m": {
+    "engine": "supertonic",
+    "voice": "M4",
+    "speed": 1.05,
+    "post": true
+   },
+   "horror": {
+    "engine": "supertonic",
+    "voice": "M5",
+    "speed": 1.05,
+    "post": true
+   },
+   "docu": {
+    "engine": "supertonic",
+    "voice": "M1",
+    "speed": 1.05,
+    "post": true
+   },
+   "elder_m": {
+    "engine": "supertonic",
+    "voice": "M3",
+    "speed": 1.05,
+    "post": true
+   }
+  }
+ }
+}
