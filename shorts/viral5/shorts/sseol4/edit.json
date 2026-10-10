@@ -1,0 +1,358 @@
+{
+ "credit": "",
+ "titleStyle": "band",
+ "captionY": 1650,
+ "sources": {},
+ "music": {
+  "file": "music/scheming_weasel.mp3",
+  "gain": 0.2,
+  "start": 0
+ },
+ "sfx": [
+  [
+   "b",
+   "pop",
+   0.3
+  ],
+  [
+   "c",
+   "boing",
+   0.3
+  ],
+  [
+   "d",
+   "pop",
+   0.25
+  ],
+  [
+   "e",
+   "whoosh",
+   0.25
+  ],
+  [
+   "f",
+   "pop_hi",
+   0.3
+  ],
+  [
+   "h.외국에서",
+   "ding",
+   0.3
+  ],
+  [
+   "j",
+   "whoosh",
+   0.3
+  ],
+  [
+   "k",
+   "pop",
+   0.3
+  ],
+  [
+   "l.한국말",
+   "k_error_003",
+   0.3
+  ],
+  [
+   "m",
+   "boing",
+   0.3
+  ],
+  [
+   "o",
+   "tada",
+   0.25
+  ]
+ ],
+ "clips": [
+  {
+   "from": "a",
+   "label": "post",
+   "gfx": {
+    "type": "post",
+    "title": "환갑 우리 아빠가 새벽마다 [영어 공부] 하는 썰",
+    "body": [
+     "매일 새벽 다섯 시 중얼중얼",
+     "엄마도 [이유를] 모름 ㅋㅋ"
+    ],
+    "steps": [
+     "a.새벽",
+     "a.단어장을"
+    ]
+   }
+  },
+  {
+   "from": "b",
+   "label": "dawn",
+   "gfx": {
+    "type": "scene",
+    "bg": "night",
+    "place": "📍 새벽 5시",
+    "prop": "📖",
+    "chars": [
+     {
+      "name": "아빠",
+      "color": "#FFB36B",
+      "mood": "think"
+     }
+    ]
+   }
+  },
+  {
+   "from": "c",
+   "label": "why",
+   "gfx": {
+    "type": "scene",
+    "bg": "home",
+    "place": "📍 거실",
+    "say": {
+     "who": 0,
+     "text": "당신 갑자기 [왜 그래요?]"
+    },
+    "prop": "📖",
+    "chars": [
+     {
+      "name": "엄마",
+      "color": "#FF9EBB",
+      "mood": "shock"
+     },
+     {
+      "name": "아빠",
+      "color": "#FFB36B",
+      "mood": "think"
+     }
+    ]
+   }
+  },
+  {
+   "from": "d",
+   "label": "secret",
+   "gfx": {
+    "type": "scene",
+    "bg": "home",
+    "say": {
+     "who": 1,
+     "text": "[몰라도] 돼."
+    },
+    "prop": "📖",
+    "zoom": 1.08,
+    "focus": 1,
+    "chars": [
+     {
+      "name": "엄마",
+      "color": "#FF9EBB",
+      "mood": "sad"
+     },
+     {
+      "name": "아빠",
+      "color": "#FFB36B",
+      "mood": "smug"
+     }
+    ]
+   }
+  },
+  {
+   "from": "e",
+   "label": "peek",
+   "gfx": {
+    "type": "scene",
+    "bg": "home",
+    "prop": "👂",
+    "chars": [
+     {
+      "name": "나",
+      "mood": "think",
+      "color": "#FFD84D"
+     }
+    ]
+   }
+  },
+  {
+   "from": "f",
+   "label": "sentence",
+   "gfx": {
+    "type": "scene",
+    "bg": "night",
+    "say": {
+     "who": 0,
+     "text": "나이스 투 미츄. [아임 수아스 파더.]"
+    },
+    "prop": "📖",
+    "zoom": 1.1,
+    "focus": 0,
+    "chars": [
+     {
+      "name": "아빠",
+      "color": "#FFB36B",
+      "mood": "neutral"
+     },
+     {
+      "name": "나",
+      "mood": "shock",
+      "color": "#FFD84D"
+     }
+    ]
+   }
+  },
+  {
+   "from": "h",
+   "label": "oh",
+   "gfx": {
+    "type": "scene",
+    "bg": "home",
+    "place": "📍 그러고 보니",
+    "prop": "✈️",
+    "chars": [
+     {
+      "name": "나",
+      "mood": "shock",
+      "to": "shy",
+      "color": "#FFD84D"
+     }
+    ],
+    "steps": [
+     0,
+     "h.외국에서",
+     "h.남자친구를"
+    ]
+   }
+  },
+  {
+   "from": "j",
+   "label": "day",
+   "gfx": {
+    "type": "scene",
+    "bg": "home",
+    "card": "드디어 그날...",
+    "chars": []
+   }
+  },
+  {
+   "from": "k",
+   "label": "nice",
+   "gfx": {
+    "type": "scene",
+    "bg": "home",
+    "place": "📍 우리 집",
+    "say": {
+     "who": 0,
+     "text": "나, [나이스 투 미츄!]"
+    },
+    "chars": [
+     {
+      "name": "아빠",
+      "color": "#FFB36B",
+      "mood": "shy"
+     },
+     {
+      "name": "남자친구",
+      "color": "#8FD3FF",
+      "mood": "happy"
+     }
+    ]
+   }
+  },
+  {
+   "from": "l",
+   "label": "korean",
+   "gfx": {
+    "type": "scene",
+    "bg": "home",
+    "say": {
+     "who": 1,
+     "text": "안녕하세요 아버님! [저 한국말 잘해요!]"
+    },
+    "chars": [
+     {
+      "name": "아빠",
+      "color": "#FFB36B",
+      "mood": "shy",
+      "to": "shock"
+     },
+     {
+      "name": "남자친구",
+      "color": "#8FD3FF",
+      "mood": "laugh"
+     }
+    ],
+    "steps": [
+     0,
+     0,
+     "l.한국말"
+    ]
+   }
+  },
+  {
+   "from": "m",
+   "label": "frozen",
+   "gfx": {
+    "type": "scene",
+    "bg": "home",
+    "prop": "🧊",
+    "chars": [
+     {
+      "name": "아빠",
+      "color": "#FFB36B",
+      "mood": "shock"
+     },
+     {
+      "name": "남자친구",
+      "color": "#8FD3FF",
+      "mood": "happy"
+     }
+    ]
+   }
+  },
+  {
+   "from": "n",
+   "label": "since",
+   "gfx": {
+    "type": "scene",
+    "bg": "home",
+    "place": "📍 요즘",
+    "chars": [
+     {
+      "name": "아빠",
+      "color": "#FFB36B",
+      "mood": "smug"
+     },
+     {
+      "name": "나",
+      "mood": "laugh",
+      "color": "#FFD84D"
+     },
+     {
+      "name": "남자친구",
+      "color": "#8FD3FF",
+      "mood": "happy"
+     }
+    ]
+   }
+  },
+  {
+   "from": "o",
+   "label": "howareyou",
+   "gfx": {
+    "type": "scene",
+    "bg": "home",
+    "say": {
+     "who": 0,
+     "text": "하우 아 유? [아임 파인, 땡큐!]"
+    },
+    "chars": [
+     {
+      "name": "아빠",
+      "color": "#FFB36B",
+      "mood": "happy"
+     },
+     {
+      "name": "남자친구",
+      "color": "#8FD3FF",
+      "mood": "laugh"
+     }
+    ]
+   }
+  }
+ ]
+}

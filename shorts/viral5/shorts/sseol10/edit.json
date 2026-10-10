@@ -1,0 +1,380 @@
+{
+ "credit": "",
+ "titleStyle": "band",
+ "captionY": 1650,
+ "sources": {},
+ "music": {
+  "file": "music/sneaky_snitch.mp3",
+  "gain": 0.2,
+  "start": 0
+ },
+ "sfx": [
+  [
+   "b.한",
+   "boing",
+   0.3
+  ],
+  [
+   "c.한쪽",
+   "boing",
+   0.3
+  ],
+  [
+   "d.접는",
+   "pop",
+   0.3
+  ],
+  [
+   "e",
+   "k_error_003",
+   0.3
+  ],
+  [
+   "f",
+   "pop",
+   0.25
+  ],
+  [
+   "g.잃어버렸던",
+   "ding",
+   0.35
+  ],
+  [
+   "h",
+   "whoosh",
+   0.3
+  ],
+  [
+   "h2",
+   "bubble",
+   0.3
+  ],
+  [
+   "j",
+   "whoosh",
+   0.3
+  ],
+  [
+   "k.패딩이",
+   "k_error_003",
+   0.35
+  ],
+  [
+   "l",
+   "boing",
+   0.4
+  ]
+ ],
+ "clips": [
+  {
+   "from": "a",
+   "label": "post",
+   "gfx": {
+    "type": "post",
+    "title": "동생이 내 생일마다 [이상한 선물]을 줌",
+    "body": [
+     "올해는 [양말 한 짝]",
+     "작년엔 이어폰 한쪽..."
+    ],
+    "steps": [
+     "a.생일마다",
+     "a.선물을"
+    ]
+   }
+  },
+  {
+   "from": "b",
+   "label": "sock",
+   "gfx": {
+    "type": "scene",
+    "chars": [
+     {
+      "name": "나",
+      "mood": "think",
+      "color": "#8FD3FF"
+     }
+    ],
+    "place": "📍 올해 생일",
+    "prop": "🧦",
+    "big": "[한 짝]",
+    "steps": [
+     0,
+     0.05,
+     9,
+     "b.한"
+    ],
+    "bg": "home"
+   }
+  },
+  {
+   "from": "c",
+   "label": "earphone",
+   "gfx": {
+    "type": "scene",
+    "chars": [
+     {
+      "name": "나",
+      "mood": "sad",
+      "color": "#8FD3FF"
+     }
+    ],
+    "place": "📍 작년 생일",
+    "prop": "🎧",
+    "big": "[한쪽]",
+    "steps": [
+     0,
+     0.05,
+     9,
+     "c.한쪽"
+    ],
+    "bg": "home"
+   }
+  },
+  {
+   "from": "d",
+   "label": "hairtie",
+   "gfx": {
+    "type": "scene",
+    "chars": [
+     {
+      "name": "나",
+      "mood": "shock",
+      "color": "#8FD3FF"
+     }
+    ],
+    "place": "📍 재작년 생일",
+    "prop": "🎀☂️",
+    "steps": [
+     0,
+     0.05
+    ],
+    "bg": "home"
+   }
+  },
+  {
+   "from": "e",
+   "label": "trash",
+   "gfx": {
+    "type": "scene",
+    "chars": [
+     {
+      "name": "나",
+      "mood": "angry",
+      "color": "#8FD3FF"
+     },
+     {
+      "name": "동생",
+      "mood": "smug",
+      "color": "#FF9EBB"
+     }
+    ],
+    "say": {
+     "who": 0,
+     "text": "야, 이거 다 [쓰레기] 아니야?"
+    },
+    "bg": "home"
+   }
+  },
+  {
+   "from": "f",
+   "label": "look",
+   "gfx": {
+    "type": "scene",
+    "chars": [
+     {
+      "name": "나",
+      "mood": "angry",
+      "color": "#8FD3FF"
+     },
+     {
+      "name": "동생",
+      "mood": "smug",
+      "color": "#FF9EBB"
+     }
+    ],
+    "say": {
+     "who": 1,
+     "text": "오빠, [잘 좀 봐 봐.]"
+    },
+    "zoom": 1.08,
+    "focus": 1,
+    "bg": "home"
+   }
+  },
+  {
+   "from": "g",
+   "label": "lost",
+   "gfx": {
+    "type": "scene",
+    "chars": [
+     {
+      "name": "나",
+      "mood": "think",
+      "color": "#8FD3FF",
+      "to": "shock"
+     },
+     {
+      "name": "동생",
+      "mood": "smug",
+      "color": "#FF9EBB"
+     }
+    ],
+    "prop": "🧦🎧🎀☂️",
+    "big": "전부 [내 거]",
+    "steps": [
+     0,
+     0.1,
+     "g.잃어버렸던",
+     "g.잃어버렸던"
+    ],
+    "bg": "home"
+   }
+  },
+  {
+   "from": "h",
+   "label": "collect",
+   "gfx": {
+    "type": "scene",
+    "chars": [
+     {
+      "name": "동생",
+      "mood": "happy",
+      "color": "#FF9EBB"
+     }
+    ],
+    "place": "📍 1년 내내",
+    "prop": "🔍",
+    "steps": [
+     0,
+     "h.몰래"
+    ],
+    "bg": "street"
+   }
+  },
+  {
+   "from": "h2",
+   "label": "really",
+   "gfx": {
+    "type": "scene",
+    "chars": [
+     {
+      "name": "나",
+      "mood": "cry",
+      "color": "#8FD3FF"
+     },
+     {
+      "name": "동생",
+      "mood": "shy",
+      "color": "#FF9EBB"
+     }
+    ],
+    "say": {
+     "who": 0,
+     "text": "너... 이걸 [다 모은 거야?]"
+    },
+    "bg": "home"
+   }
+  },
+  {
+   "from": "i",
+   "label": "always",
+   "gfx": {
+    "type": "scene",
+    "chars": [
+     {
+      "name": "나",
+      "mood": "cry",
+      "color": "#8FD3FF"
+     },
+     {
+      "name": "동생",
+      "mood": "happy",
+      "color": "#FF9EBB"
+     }
+    ],
+    "say": {
+     "who": 1,
+     "text": "오빠는 [맨날] 잃어버리잖아."
+    },
+    "bg": "home"
+   }
+  },
+  {
+   "from": "j",
+   "label": "lastbox",
+   "gfx": {
+    "type": "scene",
+    "chars": [
+     {
+      "name": "나",
+      "mood": "love",
+      "color": "#8FD3FF"
+     },
+     {
+      "name": "동생",
+      "mood": "smug",
+      "color": "#FF9EBB"
+     }
+    ],
+    "prop": "🎁",
+    "bg": "home"
+   }
+  },
+  {
+   "from": "k",
+   "label": "padding",
+   "gfx": {
+    "type": "scene",
+    "chars": [
+     {
+      "name": "나",
+      "mood": "neutral",
+      "color": "#8FD3FF",
+      "to": "shock"
+     },
+     {
+      "name": "동생",
+      "mood": "smug",
+      "color": "#FF9EBB"
+     }
+    ],
+    "prop": "🧥",
+    "big": "[내 패딩]",
+    "steps": [
+     0,
+     0.1,
+     "k.패딩이",
+     "k.패딩이"
+    ],
+    "bg": "home"
+   }
+  },
+  {
+   "from": "l",
+   "label": "mine",
+   "gfx": {
+    "type": "scene",
+    "chars": [
+     {
+      "name": "나",
+      "mood": "angry",
+      "color": "#8FD3FF"
+     },
+     {
+      "name": "동생",
+      "mood": "laugh",
+      "color": "#FF9EBB"
+     }
+    ],
+    "say": {
+     "who": 0,
+     "text": "이건 [원래 내 거]잖아!"
+    },
+    "prop": "🧥",
+    "zoom": 1.08,
+    "focus": 0,
+    "bg": "home"
+   }
+  }
+ ]
+}
