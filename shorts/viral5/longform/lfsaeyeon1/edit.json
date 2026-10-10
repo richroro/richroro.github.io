@@ -1,0 +1,180 @@
+{
+ "_note": "music beds by chapter (Kevin MacLeod, incompetech.com, CC BY 4.0) and sound effects by line ('find' = a phrase of the line; atLine: from the line's first word, else from the cut). Read by prep.py.",
+ "music": [
+  {
+   "file": "music/Carefree.mp3",
+   "fromCh": 0,
+   "toCh": 2,
+   "gain": 0.13
+  },
+  {
+   "file": "music/Sneaky Snitch.mp3",
+   "fromCh": 2,
+   "toCh": 3,
+   "gain": 0.12
+  },
+  {
+   "file": "music/Investigations.mp3",
+   "fromCh": 3,
+   "toQuiet": true,
+   "gain": 0.12
+  },
+  {
+   "file": "music/Heartwarming.mp3",
+   "fromQuiet": true,
+   "toCh": 6,
+   "gain": 0.14
+  },
+  {
+   "file": "music/Carefree.mp3",
+   "fromCh": 6,
+   "toCh": null,
+   "gain": 0.13,
+   "offset": 20
+  }
+ ],
+ "sfx": [
+  {
+   "find": "이건 엄마 거야",
+   "name": "pop",
+   "gain": 0.3
+  },
+  {
+   "find": "그리고 저희는… 각방을",
+   "name": "boom",
+   "gain": 0.25,
+   "dt": 0.3
+  },
+  {
+   "find": "그런데 그 깻잎이",
+   "name": "k_error_003",
+   "gain": 0.3,
+   "dt": 0.3
+  },
+  {
+   "find": "귀가 새빨갰어요",
+   "name": "boing",
+   "gain": 0.3,
+   "dt": 0.1
+  },
+  {
+   "find": "반찬통마다 하얀 스티커",
+   "name": "pop_hi",
+   "gain": 0.3,
+   "dt": 0.3
+  },
+  {
+   "find": "케첩은 왜",
+   "name": "boing",
+   "gain": 0.25,
+   "atLine": true,
+   "dt": 1.2
+  },
+  {
+   "find": "딱 세 번 간",
+   "name": "ding",
+   "gain": 0.25,
+   "dt": 0.3
+  },
+  {
+   "find": "이런 답이 왔어요",
+   "name": "bubble",
+   "gain": 0.3,
+   "atLine": true,
+   "dt": 1.0
+  },
+  {
+   "find": "1초도 안 걸렸어요",
+   "name": "boom",
+   "gain": 0.3,
+   "dt": 0.2
+  },
+  {
+   "find": "토요일은 어머님 생신",
+   "name": "whoosh",
+   "gain": 0.3
+  },
+  {
+   "find": "심장이 쿵",
+   "name": "heartbeat",
+   "gain": 0.35,
+   "dt": 0.1
+  },
+  {
+   "find": "수저를 탁",
+   "name": "click",
+   "gain": 0.4,
+   "atLine": true,
+   "dt": 2.2
+  },
+  {
+   "find": "열림 기록을 봤더니",
+   "name": "pop",
+   "gain": 0.2,
+   "dt": 0.5
+  },
+  {
+   "find": "2시 9분",
+   "name": "heartbeat",
+   "gain": 0.3,
+   "dt": 0.1
+  },
+  {
+   "find": "삐, 삐, 삐",
+   "name": "k_maximize_003",
+   "gain": 0.3,
+   "atLine": true,
+   "dt": 0.0
+  },
+  {
+   "find": "삐, 삐, 삐",
+   "name": "k_maximize_003",
+   "gain": 0.3,
+   "atLine": true,
+   "dt": 0.25
+  },
+  {
+   "find": "삐, 삐, 삐",
+   "name": "k_maximize_003",
+   "gain": 0.3,
+   "atLine": true,
+   "dt": 0.5
+  },
+  {
+   "find": "삐, 삐, 삐",
+   "name": "k_confirmation_002",
+   "gain": 0.3,
+   "atLine": true,
+   "dt": 0.9
+  },
+  {
+   "find": "다음 날 새벽 4시 반",
+   "name": "whoosh",
+   "gain": 0.25
+  },
+  {
+   "find": "'엄마'라고 쓴 건",
+   "name": "pop_hi",
+   "gain": 0.3,
+   "atLine": true,
+   "dt": 0.3
+  },
+  {
+   "find": "그 주 일요일. 제 장조림",
+   "name": "whoosh",
+   "gain": 0.3
+  },
+  {
+   "find": "남편이 조용히 손을",
+   "name": "boing",
+   "gain": 0.3,
+   "dt": 0.2
+  },
+  {
+   "find": "귀가… 빨갰어요",
+   "name": "boing",
+   "gain": 0.3,
+   "dt": 0.1
+  }
+ ]
+}

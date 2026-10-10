@@ -1,271 +1,319 @@
 {
  "credit": "",
- "titleStyle": "band",
- "captionY": 1650,
- "sources": {},
+ "layout": "teuk",
+ "teuk": {
+  "bg": "#25283a",
+  "mascot": "#FFB36B"
+ },
+ "sources": {
+  "notes": {
+   "file": "notes.jpg",
+   "page": "https://commons.wikimedia.org/wiki/File:Personal_organizer_with_metallic_ring_binder.jpg",
+   "file_url": "https://upload.wikimedia.org/wikipedia/commons/5/56/Personal_organizer_with_metallic_ring_binder.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+   "license": "CC BY 2.0",
+   "credit": "Personal organizer with metallic ring binder.jpg by Old Photo Profile (CC BY 2.0, https://creativecommons.org/licenses/by/2.0), via Wikimedia Commons",
+   "used_seconds": [
+    [
+     3.68,
+     5.66
+    ]
+   ]
+  },
+  "desk": {
+   "file": "desk.jpg",
+   "page": "https://commons.wikimedia.org/wiki/File:Working_on_a_planning_session_with_stationery_items,_notebook,_and_colorful_pencils_on_a_wooden_desk.jpg",
+   "file_url": "https://upload.wikimedia.org/wikipedia/commons/5/51/Working_on_a_planning_session_with_stationery_items%2C_notebook%2C_and_colorful_pencils_on_a_wooden_desk.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+   "license": "CC BY 2.0",
+   "credit": "Working on a planning session with stationery items, notebook, and colorful pencils on a wooden desk.jpg by Shixart1985 (CC BY 2.0, https://creativecommons.org/licenses/by/2.0), via Wikimedia Commons",
+   "used_seconds": [
+    [
+     26.46,
+     28.86
+    ]
+   ]
+  }
+ },
  "music": {
   "file": "music/sneaky_snitch.mp3",
-  "gain": 0.2,
+  "gain": 0.18,
   "start": 0
  },
  "sfx": [
   [
-   "c1",
-   "pop",
-   0.25
+   "a1",
+   "whoosh",
+   0.15
   ],
   [
-   "b1",
+   "a1b",
    "whoosh",
+   0.15
+  ],
+  [
+   "a2",
+   "pop_hi",
+   0.18
+  ],
+  [
+   "a2",
+   "whoosh",
+   0.15
+  ],
+  [
+   "c1",
+   "pop",
    0.22
+  ],
+  [
+   "a3",
+   "whoosh",
+   0.15
+  ],
+  [
+   "a4",
+   "whoosh",
+   0.15
+  ],
+  [
+   "a5",
+   "whoosh",
+   0.15
   ],
   [
    "c2",
    "pop",
-   0.25
-  ],
-  [
-   "b2",
-   "whoosh",
    0.22
   ],
   [
-   "b2.한",
-   "boing",
-   0.3
-  ],
-  [
-   "c3",
-   "pop",
-   0.25
-  ],
-  [
-   "b3",
+   "a6",
    "whoosh",
-   0.22
+   0.15
   ],
   [
-   "c4",
-   "pop",
-   0.25
-  ],
-  [
-   "b4",
+   "a8",
    "whoosh",
-   0.22
+   0.15
   ],
   [
-   "b4.아침",
-   "boing",
-   0.3
-  ],
-  [
-   "c5",
-   "pop",
-   0.25
-  ],
-  [
-   "b5",
+   "a9",
    "whoosh",
-   0.22
+   0.15
   ],
   [
-   "b5.제일",
-   "boing",
-   0.3
-  ],
-  [
-   "c6",
-   "pop",
-   0.25
-  ],
-  [
-   "b6",
+   "a7",
    "whoosh",
-   0.22
-  ],
-  [
-   "b6.전부",
-   "boing",
-   0.3
-  ],
-  [
-   "c7",
-   "pop",
-   0.25
-  ],
-  [
-   "b7",
-   "whoosh",
-   0.22
-  ],
-  [
-   "y",
-   "pop",
-   0.25
+   0.15
   ],
   [
    "z",
    "whoosh",
+   0.15
+  ],
+  [
+   "y",
+   "pop_hi",
+   0.18
+  ],
+  [
+   "y",
+   "pop",
    0.22
   ],
   [
-   "z.몇",
-   "ding",
-   0.3
+   "a1",
+   "boing",
+   0.25
   ],
   [
-   "a",
-   "pop_hi",
-   0.3
+   "a6.전부",
+   "boing",
+   0.25
+  ],
+  [
+   "a7.공부가",
+   "boing",
+   0.25
+  ],
+  [
+   "z",
+   "ding",
+   0.25
   ]
  ],
  "clips": [
   {
-   "from": "a",
-   "label": "hook",
+   "from": "a1",
+   "label": "a1",
    "gfx": {
-    "type": "scene",
-    "bg": "desk",
-    "place": "📍 시험 D-1",
+    "type": "face",
+    "mood": "shock",
+    "pos": "close",
+    "fx": "lines",
     "prop": "📚",
-    "propX": 0.66,
-    "chars": [
-     {
-      "name": "나",
-      "color": "#FFB36B",
-      "mood": "shock",
-      "x": 0.3
-     }
-    ],
+    "big": "D-1",
+    "propX": 0.82,
+    "propY": 0.72,
     "steps": [
+     0.9,
      0.05,
-     -1,
-     9,
-     -1
+     0.0
     ]
    }
   },
   {
-   "from": "b1",
-   "label": "beat1",
+   "from": "a1b",
+   "label": "a1b",
    "gfx": {
     "type": "scene",
     "bg": "desk",
-    "prop": "🧹",
-    "propX": 0.66,
     "chars": [
      {
       "name": "나",
       "color": "#FFB36B",
       "mood": "happy",
-      "x": 0.3
+      "size": 1.2
      }
     ],
-    "say": {
-     "who": 0,
-     "text": "정리가 돼야 [공부]가 되지!"
-    },
+    "prop": "🧹",
     "steps": [
-     "c1",
+     9,
      0.1,
      9,
-     0.1
+     9
     ]
    }
   },
   {
-   "from": "b2",
-   "label": "beat2",
+   "from": "a2",
+   "label": "a2",
+   "src": "notes",
    "gfx": {
-    "type": "scene",
-    "bg": "desk",
-    "big": "⏰ [1시간]",
-    "prop": "📝",
-    "propX": 0.66,
-    "chars": [
-     {
-      "name": "나",
-      "color": "#FFB36B",
-      "mood": "think",
-      "x": 0.3
-     }
-    ],
-    "say": {
-     "who": 0,
-     "text": "형광펜 [색깔] 맞춰야 돼"
+    "type": "photo",
+    "react": {
+     "mood": "smug",
+     "side": "right"
     },
+    "tag": "계획 완벽",
     "steps": [
-     "c2",
-     0.1,
-     9,
-     "b2.한"
+     0.12,
+     0.2,
+     0.25,
+     1000.0
     ]
    }
   },
   {
-   "from": "b3",
-   "label": "beat3",
+   "from": "c1",
+   "label": "c1",
+   "gfx": {
+    "type": "face",
+    "mood": "smug",
+    "pos": "right",
+    "fx": "sparkle",
+    "steps": [
+     0.9,
+     0.05,
+     0.15
+    ]
+   }
+  },
+  {
+   "from": "a3",
+   "label": "a3",
    "gfx": {
     "type": "scene",
     "bg": "home",
-    "prop": "📺🐧",
-    "propX": 0.72,
     "chars": [
      {
       "name": "나",
       "color": "#FFB36B",
-      "mood": "laugh",
-      "to": "love",
-      "x": 0.3
+      "mood": "love",
+      "size": 1.2
      }
     ],
-    "say": {
-     "who": 0,
-     "text": "[펭귄] 진짜 귀엽다…"
-    },
+    "prop": "📺",
     "steps": [
-     "c3",
+     9,
      0.1,
-     "c3",
-     0.1
+     9,
+     9
     ]
    }
   },
   {
-   "from": "b4",
-   "label": "beat4",
+   "from": "a4",
+   "label": "a4",
    "gfx": {
-    "type": "scene",
-    "bg": "bedroom",
-    "big": "☀️ [07:00]",
-    "chars": [
-     {
-      "name": "나",
-      "color": "#FFB36B",
-      "mood": "sleep",
-      "to": "shock"
-     }
-    ],
-    "say": {
-     "who": 0,
-     "text": "왜 벌써 [아침]이야?!"
-    },
+    "type": "face",
+    "mood": "sleep",
+    "pos": "low",
+    "to": "shock",
+    "prop": "☀️",
+    "propX": 0.8,
+    "propY": 0.25,
     "steps": [
-     "c4",
-     0.1,
-     "b4.아침",
-     "b4.아침"
+     "a4.아침",
+     0.05,
+     0.15
     ]
    }
   },
   {
-   "from": "b5",
-   "label": "beat5",
+   "from": "a5",
+   "label": "a5",
+   "gfx": {
+    "type": "face",
+    "mood": "think",
+    "pos": "right",
+    "prop": "📖",
+    "propX": 0.2,
+    "propY": 0.35,
+    "steps": [
+     0.9,
+     0.05,
+     0.15
+    ]
+   }
+  },
+  {
+   "from": "c2",
+   "label": "c2",
+   "gfx": {
+    "type": "face",
+    "mood": "laugh",
+    "pos": "left",
+    "fx": "lines",
+    "steps": [
+     0.9,
+     0.05,
+     0.15
+    ]
+   }
+  },
+  {
+   "from": "a6",
+   "label": "a6",
+   "gfx": {
+    "type": "face",
+    "mood": "happy",
+    "pos": "tilt",
+    "prop": "🧠",
+    "big": "삭제",
+    "propX": 0.2,
+    "propY": 0.3,
+    "steps": [
+     0.9,
+     0.05,
+     "a6.전부"
+    ]
+   }
+  },
+  {
+   "from": "a8",
+   "label": "a8",
    "gfx": {
     "type": "scene",
     "bg": "class",
-    "big": "집중력 [MAX]",
     "chars": [
      {
       "color": "#8FD3FF",
@@ -274,106 +322,94 @@
      {
       "name": "나",
       "color": "#FFB36B",
-      "mood": "angry"
-     },
-     {
-      "color": "#B9F27C",
-      "mood": "think"
+      "mood": "smug"
      }
     ],
     "say": {
-     "who": 1,
-     "text": "이거 [나온다], 이거!"
+     "who": 0,
+     "text": "범위 어디까지야?"
     },
     "steps": [
-     "c5",
-     0.1,
+     0.2,
      9,
-     "b5.제일"
+     9,
+     9
     ]
    }
   },
   {
-   "from": "b6",
-   "label": "beat6",
+   "from": "a9",
+   "label": "a9",
+   "gfx": {
+    "type": "face",
+    "mood": "shock",
+    "pos": "right",
+    "fx": "sparkle",
+    "prop": "🛋️",
+    "propX": 0.2,
+    "propY": 0.3,
+    "steps": [
+     0.9,
+     0.05,
+     0.15
+    ]
+   }
+  },
+  {
+   "from": "a7",
+   "label": "a7",
    "gfx": {
     "type": "scene",
-    "bg": "street",
-    "big": "🧠 포맷 [완료]",
+    "bg": "desk",
     "chars": [
      {
       "name": "나",
       "color": "#FFB36B",
       "mood": "happy",
-      "to": "think"
+      "size": 1.2
      }
     ],
-    "say": {
-     "who": 0,
-     "text": "근데 나 방금 [뭐 썼지?]"
-    },
+    "prop": "📚",
+    "big": "이제야?",
     "steps": [
-     "c6",
+     9,
      0.1,
-     "c6",
-     "b6.전부"
-    ]
-   }
-  },
-  {
-   "from": "b7",
-   "label": "beat7",
-   "gfx": {
-    "type": "scene",
-    "bg": "desk",
-    "place": "📍 새벽 2시",
-    "prop": "🌙",
-    "propX": 0.66,
-    "chars": [
-     {
-      "name": "나",
-      "color": "#FFB36B",
-      "mood": "think",
-      "to": "sad",
-      "x": 0.3
-     }
-    ],
-    "say": {
-     "who": 0,
-     "text": "나 뭐 하고 [살지?]"
-    },
-    "steps": [
-     "c7",
-     0.1,
-     "c7",
-     0.1
+     9,
+     "a7.공부가"
     ]
    }
   },
   {
    "from": "z",
-   "label": "end",
+   "label": "z",
    "gfx": {
-    "type": "scene",
-    "bg": "class",
-    "big": "[몇 개]?",
-    "chars": [
-     {
-      "name": "나",
-      "color": "#FFB36B",
-      "mood": "laugh"
-     }
-    ],
+    "type": "face",
+    "mood": "happy",
+    "pos": "close",
+    "fx": "sparkle",
     "steps": [
-     "y",
-     0.1,
-     9,
-     "z.몇"
-    ],
-    "say": {
-     "who": 0,
-     "text": "난 [7개] 다…ㅋㅋ"
-    }
+     0.9,
+     0.05,
+     0.15
+    ]
+   }
+  },
+  {
+   "from": "y",
+   "label": "y",
+   "src": "desk",
+   "gfx": {
+    "type": "photo",
+    "react": {
+     "mood": "laugh",
+     "side": "right"
+    },
+    "steps": [
+     0.12,
+     0.2,
+     0.25,
+     1000.0
+    ]
    }
   }
  ]

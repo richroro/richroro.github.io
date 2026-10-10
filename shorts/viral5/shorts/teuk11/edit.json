@@ -1,0 +1,416 @@
+{
+ "credit": "",
+ "layout": "teuk",
+ "teuk": {
+  "bg": "#2b2520",
+  "mascot": "#FFB36B"
+ },
+ "sources": {
+  "bungeo1": {
+   "file": "bungeo1.jpg",
+   "page": "https://commons.wikimedia.org/wiki/File:Taiyaki_-_cut_section.jpg",
+   "file_url": "https://upload.wikimedia.org/wikipedia/commons/9/9a/Taiyaki_-_cut_section.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+   "license": "CC0",
+   "credit": "Taiyaki - cut section.jpg by 毒島みるく (CC0, http://creativecommons.org/publicdomain/zero/1.0/deed.en), via Wikimedia Commons",
+   "used_seconds": [
+    [
+     0.0,
+     1.45
+    ]
+   ]
+  },
+  "bungeo2": {
+   "file": "bungeo2.jpg",
+   "page": "https://commons.wikimedia.org/wiki/File:Bungeoppang-01.jpg",
+   "file_url": "https://upload.wikimedia.org/wikipedia/commons/2/28/Bungeoppang-01.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+   "license": "Public domain",
+   "credit": "Bungeoppang-01.jpg by Siqbal at en.wikipedia (Public domain), via Wikimedia Commons",
+   "used_seconds": [
+    [
+     10.1,
+     12.31
+    ]
+   ]
+  },
+  "bungeo3": {
+   "file": "bungeo3.jpg",
+   "page": "https://commons.wikimedia.org/wiki/File:%EC%8B%9C%EC%9E%A5_2.jpg",
+   "file_url": "https://upload.wikimedia.org/wikipedia/commons/4/46/%EC%8B%9C%EC%9E%A5_2.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+   "license": "CC BY 4.0",
+   "credit": "시장 2.jpg by Chae Ji-young (CC BY 4.0, https://creativecommons.org/licenses/by/4.0), via Wikimedia Commons",
+   "used_seconds": [
+    [
+     21.35,
+     23.9
+    ]
+   ]
+  },
+  "bungeo4": {
+   "file": "bungeo4.jpg",
+   "page": "https://commons.wikimedia.org/wiki/File:Taiyaki_003.jpg",
+   "file_url": "https://upload.wikimedia.org/wikipedia/commons/8/8e/Taiyaki_003.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+   "license": "CC0",
+   "credit": "Taiyaki 003.jpg by Ocdp (CC0, http://creativecommons.org/publicdomain/zero/1.0/deed.en), via Wikimedia Commons",
+   "used_seconds": [
+    [
+     23.9,
+     25.25
+    ]
+   ]
+  }
+ },
+ "music": {
+  "file": "music/monkeys_spinning_monkeys.mp3",
+  "gain": 0.18,
+  "start": 0
+ },
+ "sfx": [
+  [
+   "a1",
+   "pop_hi",
+   0.18
+  ],
+  [
+   "a1",
+   "whoosh",
+   0.15
+  ],
+  [
+   "a1b",
+   "whoosh",
+   0.15
+  ],
+  [
+   "a2",
+   "whoosh",
+   0.15
+  ],
+  [
+   "c1",
+   "pop",
+   0.22
+  ],
+  [
+   "a3",
+   "whoosh",
+   0.15
+  ],
+  [
+   "a4",
+   "pop_hi",
+   0.18
+  ],
+  [
+   "a4",
+   "whoosh",
+   0.15
+  ],
+  [
+   "a5",
+   "whoosh",
+   0.15
+  ],
+  [
+   "a6",
+   "whoosh",
+   0.15
+  ],
+  [
+   "c2",
+   "pop",
+   0.22
+  ],
+  [
+   "a8",
+   "whoosh",
+   0.15
+  ],
+  [
+   "a7",
+   "pop_hi",
+   0.18
+  ],
+  [
+   "a7",
+   "whoosh",
+   0.15
+  ],
+  [
+   "z",
+   "pop_hi",
+   0.18
+  ],
+  [
+   "z",
+   "whoosh",
+   0.15
+  ],
+  [
+   "y",
+   "pop",
+   0.22
+  ],
+  [
+   "a1b.둘",
+   "boing",
+   0.25
+  ],
+  [
+   "a2",
+   "boing",
+   0.25
+  ],
+  [
+   "a3.입천장",
+   "boing",
+   0.25
+  ],
+  [
+   "a6.집에",
+   "boing",
+   0.25
+  ],
+  [
+   "z",
+   "ding",
+   0.25
+  ]
+ ],
+ "clips": [
+  {
+   "from": "a1",
+   "label": "a1",
+   "src": "bungeo1",
+   "gfx": {
+    "type": "photo",
+    "react": {
+     "mood": "think",
+     "side": "right",
+     "size": 470
+    },
+    "tag": "팥? 슈크림?",
+    "steps": [
+     -1,
+     0.2,
+     0.25,
+     1000.0
+    ]
+   }
+  },
+  {
+   "from": "a1b",
+   "label": "a1b",
+   "gfx": {
+    "type": "face",
+    "mood": "shock",
+    "pos": "close",
+    "fx": "lines",
+    "big": "둘 다!",
+    "steps": [
+     0.9,
+     0.05,
+     "a1b.둘"
+    ]
+   }
+  },
+  {
+   "from": "a2",
+   "label": "a2",
+   "gfx": {
+    "type": "face",
+    "mood": "think",
+    "pos": "left",
+    "prop": "🐟",
+    "big": "머리? 꼬리?",
+    "propX": 0.8,
+    "propY": 0.72,
+    "steps": [
+     0.9,
+     0.05,
+     0.0
+    ]
+   }
+  },
+  {
+   "from": "c1",
+   "label": "c1",
+   "gfx": {
+    "type": "face",
+    "mood": "happy",
+    "pos": "right",
+    "fx": "sparkle",
+    "steps": [
+     0.9,
+     0.05,
+     0.15
+    ]
+   }
+  },
+  {
+   "from": "a3",
+   "label": "a3",
+   "gfx": {
+    "type": "face",
+    "mood": "shock",
+    "pos": "tilt",
+    "fx": "fire",
+    "big": "앗 뜨!",
+    "burst": "#FF8A5C",
+    "steps": [
+     0.9,
+     0.05,
+     "a3.입천장"
+    ]
+   }
+  },
+  {
+   "from": "a4",
+   "label": "a4",
+   "src": "bungeo2",
+   "gfx": {
+    "type": "photo",
+    "react": {
+     "mood": "love",
+     "side": "left"
+    },
+    "tag": "이유 1순위",
+    "steps": [
+     0.12,
+     0.2,
+     0.25,
+     1000.0
+    ]
+   }
+  },
+  {
+   "from": "a5",
+   "label": "a5",
+   "gfx": {
+    "type": "scene",
+    "bg": "street",
+    "place": "📍 집 가는 길",
+    "chars": [
+     {
+      "name": "나",
+      "color": "#FFB36B",
+      "mood": "happy",
+      "size": 1.15
+     }
+    ],
+    "prop": "🐟",
+    "steps": [
+     9,
+     0.1,
+     9,
+     9
+    ]
+   }
+  },
+  {
+   "from": "a6",
+   "label": "a6",
+   "gfx": {
+    "type": "face",
+    "mood": "smug",
+    "pos": "left",
+    "prop": "🐟",
+    "big": "3 → 1",
+    "steps": [
+     0.9,
+     0.05,
+     "a6.집에"
+    ]
+   }
+  },
+  {
+   "from": "c2",
+   "label": "c2",
+   "gfx": {
+    "type": "face",
+    "mood": "shy",
+    "pos": "close",
+    "fx": "sweat",
+    "steps": [
+     0.9,
+     0.05,
+     0.15
+    ]
+   }
+  },
+  {
+   "from": "a8",
+   "label": "a8",
+   "gfx": {
+    "type": "scene",
+    "bg": "home",
+    "chars": [
+     {
+      "name": "나",
+      "color": "#FFB36B",
+      "mood": "happy",
+      "size": 1.2
+     }
+    ],
+    "prop": "🐟",
+    "steps": [
+     9,
+     0.1,
+     9,
+     9
+    ]
+   }
+  },
+  {
+   "from": "a7",
+   "label": "a7",
+   "src": "bungeo3",
+   "gfx": {
+    "type": "photo",
+    "react": {
+     "mood": "love",
+     "side": "right"
+    },
+    "tag": "★ 저장",
+    "steps": [
+     0.12,
+     0.2,
+     0.25,
+     1000.0
+    ]
+   }
+  },
+  {
+   "from": "z",
+   "label": "z",
+   "src": "bungeo4",
+   "gfx": {
+    "type": "photo",
+    "react": {
+     "mood": "happy",
+     "side": "left"
+    },
+    "steps": [
+     0.12,
+     0.2,
+     0.25,
+     1000.0
+    ]
+   }
+  },
+  {
+   "from": "y",
+   "label": "y",
+   "gfx": {
+    "type": "face",
+    "mood": "laugh",
+    "pos": "close",
+    "fx": "lines",
+    "steps": [
+     0.9,
+     0.05,
+     0.15
+    ]
+   }
+  }
+ ]
+}

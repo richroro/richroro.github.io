@@ -4390,3 +4390,848 @@ python3 voice_edge.py drive1 && python3 prep.py drive1 && ./render.sh drive1 fin
   ```
 - 해시태그: #운전공감 #참교육 #상향등 #karma #tailgating
 - 고정 댓글: 상향등 테러 당해 보신 분? / Ever been blinded by high beams from behind? 👇
+
+## 낙서 짤툰 v2 (벤치마크, `doodle1`~`doodle16`)
+
+`research/benchmark-drawn.md` 1절과 `research/benchmark-targets-drawn.json`의 `doodle` 목표에 맞춰 기존 10편을 다시 만들고 6편을 새로 만들었다. 벤치마크는 콩자반 「현재 논란중인 에스컬레이터 길막녀」(955만), 「오프리쉬 신고하면 벌어지는 일」(614만), 김블루 「읽기만 해도 기빨리는 게시글」(494만)이다. 이 채널들의 **구조만** 따랐고 영상·그림은 하나도 가져오지 않았다. 가장 큰 변화는 주제 각도다. "알면 좋은 상식"에서 **"누가 잘못했나"**(민폐, 신고, A vs B)로 옮겼다. 상황은 누구나 겪는 일반적인 것이고, 실존 인물이나 특정 사건은 다루지 않는다. 양쪽 입장을 다 보여 준다.
+
+**v1에서 바뀐 것**
+
+| 항목 | v1 | v2 |
+|---|---|---|
+| 첫 줄 | 질문·배경 설명(훅 2.0~3.3초) | **대사**("기사님, 내려요!", "멀티탭에 또 멀티탭?", "계란 일 번으로 사 오랬지!"), 0초부터 따옴표 자막, 훅 끝 0.4~1.8초 |
+| 말 속도 | InJoon +25%, 5.3음절/초 | InJoon **+50%**, 인물 +25~42%, 문장 안 마침표는 쉼표로 읽음, **6.3~7.1음절/초** |
+| 제목 | "대부분 모르는 ○○" 상식형 | "○○ 신고하면 벌어지는 일", "현재 논란중인 ○○", "읽기만 해도 기빨리는 ○○", "A vs B" |
+| 이야기 | 상식 나열 4편 | 16편 모두 갈등 + 복선 있는 펀치라인(아래 "이야기 검토") |
+| 그림 칸 | 1080×1080, 아래 440px 빈 검정 | **세로로 꽉 찬 칸**(1080×1520, 제목 띠 아래부터 화면 끝까지) |
+| 자막 | 그림 밖 검정 칸, 한 줄 3~6자, 초록·노랑·빨강, 인물 대사는 말풍선만 | **그림 안 아래쪽 남색 상자**, 한 문장을 1~2줄로(12자까지 한 장), **노랑 한 색**. 인물 대사도 따옴표 자막으로 나온다. 말풍선은 두 명 이상이 한 화면에 있을 때만 남긴다(누가 말하는지 보이게) |
+| 도치 | 모든 장면 같은 크기·자리·포즈 | **1.6~2.1배**, 장면마다 미디엄 → 가슴 위 클로즈업 → 옆으로 기운 컷 → 반대쪽 클로즈업 순서로 바뀜 |
+| 화면 출처 표시 | "사진: Pexels" 배지 | 없음. 사진 크레딧은 모두 설명란에 쓴다 |
+| `vs` 그래픽 카드 | 사용 | 낙서 장면으로 바꿈(그래픽만 나오는 화면 없음) |
+
+### 새 템플릿 옵션 (모두 하위호환)
+
+옵션을 안 쓰는 쇼츠는 예전과 똑같이 그린다. 확인: 템플릿을 바꾸기 전에 `sseol1`과 `teuk1`의 `src/data/*.json`을 고정해 두고 0·123·400·700프레임을 렌더했다. 바꾼 뒤 같은 데이터로 다시 렌더했더니 8장 모두 PNG md5가 같았다. `qa_review.py`는 바꾸지 않았다.
+
+- **`"frame": "capTall"`** (`src/lib/CapBox.tsx`의 `CAP_TALL`, `ClipShort.tsx`의 `FRAME`에 한 줄. 랭킹 v2의 `"tall"`(위 420px)과는 다른 틀이다): 그림 칸을 제목 띠 아래(400px)부터 화면 끝(1920px)까지 1080×1520으로 쓴다. edit.json 맨 위에 두면 모든 클립에 적용된다(prep.py는 원래 `frame`을 넘겨준다). 낙서 장면(`scene`)은 높이를 받아 배경과 바닥을 그대로 늘려 그린다.
+- **`"capBox": {"y": 1600, "accent": "#FFE14D", "bg": "rgba(16,20,52,.9)", "width": 940}`** (`src/lib/CapBox.tsx`, `ClipShort.tsx`와 `prep.py`에 한 줄씩): 기존 단어 자막(`Captions`) 대신 남색 둥근 상자 안의 흰 굵은 자막을 그린다. 한 줄에 다 들어가면 크게 한 줄로, 아니면 **글자 수가 비슷한 두 줄**로 나눈다(아랫줄에 한 단어만 남지 않게). `[키워드]`와 `{빨강}`은 둘 다 `accent` 한 색이고, 읽는 단어는 색 대신 살짝 튀어 오른다. `y`는 상자 중심 높이, 나머지는 생략하면 위 기본값이다.
+- **인물 `y`, `rot`** (`src/lib/Sseol.tsx` `Char`): `y`는 발을 바닥보다 y px 아래로 내린다. 크게 키운 인물이 가슴 위만 보이는 클로즈업이 된다. `rot`는 인물을 발 기준으로 기울인다(도). 말풍선 높이도 `y`를 따라간다.
+- **장면 `floor`** (`Sseol.tsx` `SceneG`): 칸 아래에서 바닥선까지의 높이(px, 기본 76)다. 세로 칸에서는 400으로 올린다. 그러면 인물 얼굴이 자막 상자 위에 오고, 자막 아래로도 바닥이 이어져 빈 곳이 없다.
+- **장면 `bigSize`** (`Sseol.tsx`): `big` 글씨 크기(기본 160). 7자 이상이면 빌더가 104~118로 줄여 칸 밖으로 나가지 않게 한다.
+- 제목 띠 둘째 줄은 기존 `titleKey`를 노랑(`#FFE14D`)으로 썼다(코드 변경 없음).
+
+**만드는 법**: 대본과 편집은 `media/doodle/v2/`의 빌더가 쓴다. `remake.py`는 doodle1~10을 만든다. v1 장면을 v1 커밋(`6b46ca7`)에서 읽어 새 대본에 다시 배치한다. `new.py`는 doodle11~16을 처음부터 쓴다. `lib.py`가 공통 부분이다. 세로 칸 배치, 컷마다 다른 도치 샷, 한 색 강조, `/` 두 쪽을 12자 안이면 한 장(두 줄)으로 합치기, 대사의 따옴표 자막, 문장 안 마침표를 쉼표로 읽게 하기, 긴 `big` 글씨 줄이기를 맡는다.
+
+```bash
+media/doodle/fetch.sh                                   # 사진 55장 → public/doodle/
+python3 media/doodle/v2/remake.py && python3 media/doodle/v2/new.py    # shorts/doodle1~16/script.json, edit.json
+for i in $(seq 1 16); do python3 voice_edge.py doodle$i && python3 prep.py doodle$i; done
+python3 media/doodle/v2/seconds.py doodle{1..16}        # 사진이 화면에 나온 초 → edit.json sources, media/doodle/sources.json
+for i in $(seq 1 16); do ./render.sh doodle$i final/doodle$i.mp4 && python3 qa_review.py doodle$i; done
+python3 media/doodle/v2/score.py doodle{1..16}          # 아래 점수표
+python3 media/doodle/v2/upload.py                       # 아래 업로드 문구
+```
+
+### 이야기 검토 (REVIEW.md 2-1절)
+
+v2 대본을 처음 쓴 뒤 REVIEW.md에 2-1절 "이야기 검토"가 생겼다. 16편을 그 기준으로 다시 봤다. 1번(한 줄 요약), 2번(제목으로 결말을 못 맞힘), 5번(복선 있는 반전), 7번(설교 금지) 중 하나에 걸린 12편을 다시 쓰고 다시 만들었다.
+
+| id | 다시 쓴 이유 | 바꾼 것 |
+|---|---|---|
+| `doodle1` | 1·5·7: 교체 신호를 늘어놓는 정보 나열, 반전 없음 | 룸메이트와의 말다툼으로 바꿨다. 복선은 "폰이 하루 종일 충전 중"이고, 결말은 멀티탭 탑이 벽에 안 꽂혀 있었다는 것 |
+| `doodle4` | 2: "엄마가 1초 만에 찾음"은 제목만 봐도 보인다 | 엄마가 처음부터 들고 있던 반찬통(첫 장면부터 손에 보임)이 곧 김치였다는 정체 반전 |
+| `doodle5` | 1·7: 숫자 뜻을 늘어놓기만 함 | 4번 계란을 사 와서 엄마에게 혼남 → 엄마가 설명 → 엄마 냉장고 계란도 4번(세일). 사실은 엄마 대사에 녹였다 |
+| `doodle7` | 1·7: 압력계·기한·사용법 강의 | "멀쩡한 걸 왜 버려" 아빠와 숫자 싸움을 하다가 이긴다. 다음 날 그 소화기가 문 받침이 되어 있다(첫 장면 문 옆 소화기가 복선) |
+| `doodle8` | 5: 첫 장면 "근데 내 벨 아님"이 반전을 미리 말함 | 첫 줄을 "저기, 제 거 아직인가요?"로 바꾸고 복선("친구도 벨을 내 벨 옆에 둠")을 넣었다 |
+| `doodle9` | 5: 첫 장면이 펀치라인("이모!")을 미리 씀 | 첫 줄을 도치의 기어드는 "저, 저기요…"로 바꿨다 |
+| `doodle11` | 7: 안전수칙 세 가지를 늘어놓음. 끝("계단으로 갈게요")이 약함 | 출근 첫날의 말다툼으로 바꿨다. 복선은 "9시 회의라고요!"이고, 결말은 그 사람이 팀장님이었다는 정체 반전. 사실은 둘의 말싸움 안에 넣었다 |
+| `doodle12` | 7: 신고 구역 여섯 곳을 늘어놓음. 5: 아빠 차 반전의 복선이 없었음 | 이웃과의 문답에 규정을 녹였다. 복선은 "빨간 차, 어디서 많이 본 차" |
+| `doodle13` | 5: 끝 "나도 체크는 했음"이 약함 | 복선 "이 방엔 반장 어머님도 계심"을 넣고, 결말을 "참석 셋: 반장, 나, 반장 어머님"으로 바꿨다 |
+| `doodle14` | 1·5: 단어 뜻 나열로 끝남 | 배운 말로 "이모님, 정지에서 욕보셨습니다!"라고 인사하는 역전에 이어, 앞에 깐 "파이다"를 다시 꺼내는 펀치라인 |
+| `doodle15` | 2·7: 결론이 "속도랑 말 한마디"라는 교훈 | 젖히기가 도미노처럼 번지다가 맨 뒷줄 "저는 뒤가 벽인데요?"로 끝난다 |
+| `doodle16` | 5: "면접 본다며?"의 복선이 없었음 | 맡길 때 "단추 하나 없는데 다림질만", 통화 "다음 주 면접이라"를 앞에 깔았다 |
+
+그대로 둔 4편(`doodle2`, `doodle3`, `doodle6`, `doodle10`)은 네 기준을 통과했다. 각각 단계적으로 커지다가, 앞에 깐 단서("아직 내 방", "다들 똑같은 생각", 넵 단계, "매일 같은 시간")로 꺾인다.
+
+| id | 한 줄 요약 | 결말 유형 | 노리는 감정 |
+|---|---|---|---|
+| `doodle1` | 룸메이트가 멀티탭을 3층까지 쌓았다가, 그 탑이 벽에 안 꽂혀 있었다 | 허탈 개그 | 웃음 |
+| `doodle2` | 만 원 의자를 팔다가 네고가 배송비 요구까지 갔고, 의자는 아직 내 방에 있다 | 허탈 개그 | 웃음 |
+| `doodle3` | 다들 누가 벨 누르겠지 하다가, 네 명이 같은 정류장에서 같이 걸었다 | 의외의 이유 | 공감 |
+| `doodle4` | 냉장고를 10분 뒤지다가, 김치가 엄마 손에 있었다 | 정체 반전 | 웃음 |
+| `doodle5` | 4번 계란을 사 와서 혼났는데, 엄마 냉장고 계란도 4번이었다 | 역전 | 웃음 |
+| `doodle6` | 넵 7단계를 늘어놓다가, 팀장님의 "넵." 한 글자에 보고서를 냈다 | 역전 | 공감 |
+| `doodle7` | 2010년산 소화기로 아빠와 싸워 이겼는데, 그 소화기가 문 받침이 됐다 | 허탈 개그 | 웃음 |
+| `doodle8` | 진동벨만 보다가 카운터에서 울렸는데, 그게 친구 벨이었다 | 오해 | 웃음 |
+| `doodle9` | 직원을 못 불러 쩔쩔매다가, 친구의 "이모!" 한 마디에 끝났다 | 허탈 개그 | 공감 |
+| `doodle10` | 무섭던 새벽 3시 손님이, 비 오는 날 캔커피를 건넸다 | 따뜻한 반전 | 뭉클 |
+| `doodle11` | 에스컬레이터 왼쪽에서 말다툼한 아저씨가, 출근 첫날 우리 팀장님이었다 | 정체 반전 | 웃음 |
+| `doodle12` | 소화전 앞 빨간 차를 신고했는데, 아빠 차였다 | 역전 | 웃음 |
+| `doodle13` | 동창회 공지가 7줄까지 길어졌는데, 참석 체크는 반장·나·반장 어머님 셋이었다 | 허탈 개그 | 공감 |
+| `doodle14` | 부산 친구 집에서 사투리를 배워 인사했더니, 옷은 "파이다"였다 | 역전 | 웃음 |
+| `doodle15` | 기차 의자를 끝까지 젖혔더니 도미노가 됐고, 맨 뒷줄은 벽이었다 | 허탈 개그 | 웃음 |
+| `doodle16` | 사람을 얼룩으로 기억하는 세탁소 사장님이, 지나가듯 한 면접 얘기까지 기억해 단추를 달아 줬다 | 따뜻한 반전 | 뭉클 |
+
+결말 유형은 허탈 개그 6, 역전 4, 정체 반전 2, 따뜻한 반전 2, 오해 1, 의외의 이유 1로 섞었다. 같은 유형이 연달아 나오지 않게 올리는 순서를 이렇게 권한다(9번, 같은 뼈대 연속 금지): 11 → 2 → 4 → 12 → 1 → 3 → 16 → 5 → 13 → 8 → 14 → 7 → 10 → 15 → 6 → 9.
+
+### 벤치마크 점수표
+
+`python3 media/doodle/v2/score.py doodle{1..16}`로 쟀다. 기준은 `research/benchmark-targets-drawn.json`의 `doodle` 목표다. 길이·훅·첫 화면 변화·화면 길이·음절/초는 벤치마크를 재지 못해 보고서의 **추정값**이다. 측정 방법은 보고서와 같다. 그림 칸 1080×1080(400px부터)에서 ffmpeg scene > 0.04를 쓰고 0.3초 안의 변화는 합친다. 음절/초는 한글 음절 수를 대사 줄 길이 합으로 나눈 값이다. 훅 끝은 첫 줄이 끝나는 시각이다.
+
+| id | 제목 | 길이 | 훅 끝 | 첫 화면 변화 | 평균/최장 화면 | 음절/초 | 줄 수 | 제목 글자(줄별) |
+|---|---|---|---|---|---|---|---|---|
+| 목표 | 2줄 6~9자 | 34초 (30~38) | ≤1.8초 | ≤2.0초 | 2.5 / ≤4.0초 | ≥6.2 | 14 (12~16) | 6~9 |
+| `doodle1` | 멀티탭에 멀티탭 / 꽂으면 벌어지는 일 | 26.5초 | 1.43초 | 0.37초 | 0.74 / 2.63초 | 6.65 | 14 | 7+8 |
+| `doodle2` | 중고거래 네고 / 선 넘으면 벌어지는 일 | 28.2초 | 1.31초 | 0.37초 | 0.78 / 2.00초 | 6.59 | 17 | 6+9 |
+| `doodle3` | 하차벨 아무도 / 안 누르면 벌어지는 일 | 28.7초 | 1.28초 | 0.33초 | 1.11 / 2.90초 | 6.76 | 17 | 6+9 |
+| `doodle4` | "냉장고에 있잖아" / 엄마 vs 나 | 27.5초 | 1.02초 | 0.27초 | 0.71 / 2.47초 | 6.32 | 17 | 7+5 |
+| `doodle5` | 계란 1번 vs 4번 / 진짜 차이 | 29.2초 | 1.30초 | 0.77초 | 0.81 / 2.47초 | 6.83 | 16 | 8+4 |
+| `doodle6` | 팀장님 "넵." 받으면 / 벌어지는 일 | 28.5초 | 0.36초 | 0.37초 | 1.24 / 3.33초 | 7.08 | 17 | 7+5 |
+| `doodle7` | 소화기 바늘 / 초록 밖이면 벌어지는 일 | 30.7초 | 1.46초 | 0.37초 | 0.77 / 1.90초 | 6.51 | 15 | 5+10 |
+| `doodle8` | 카페 진동벨 / 울리면 벌어지는 일 | 30.6초 | 1.71초 | 0.50초 | 0.87 / 2.73초 | 6.63 | 15 | 5+8 |
+| `doodle9` | 식당 직원 부를 때 / "여기요" vs "저기요" | 29.3초 | 1.27초 | 0.90초 | 0.75 / 1.97초 | 6.28 | 16 | 7+8 |
+| `doodle10` | 새벽 3시 편의점 / 수상한 손님의 정체 | 30.2초 | 1.43초 | 1.50초 | 1.26 / 2.87초 | 6.68 | 16 | 7+8 |
+| `doodle11` | 현재 논란중인 / 에스컬레이터 2줄 서기 | 33.3초 | 1.45초 | 0.77초 | 0.85 / 3.27초 | 6.45 | 16 | 6+10 |
+| `doodle12` | 불법주차 신고하면 / 벌어지는 일 | 33.3초 | 1.04초 | 0.77초 | 0.98 / 2.97초 | 6.39 | 17 | 8+5 |
+| `doodle13` | 읽기만 해도 기빨리는 / 동창회 단톡 현실 | 31.5초 | 1.77초 | 1.87초 | 1.12 / 2.73초 | 6.64 | 17 | 9+7 |
+| `doodle14` | 서울 vs 부산 / 같은 말 다른 뜻 | 34.4초 | 1.47초 | 1.57초 | 0.77 / 1.60초 | 7.00 | 21 | 6+6 |
+| `doodle15` | 현재 논란중인 / 기차 의자 끝까지 젖히기? | 28.1초 | 1.41초 | 0.77초 | 0.97 / 2.70초 | 6.82 | 16 | 6+10 |
+| `doodle16` | 동네 세탁소 사장님의 / 미친 기억력 비결 | 34.9초 | 1.51초 | 1.60초 | 1.03 / 2.43초 | 6.75 | 17 | 9+7 |
+
+v1과 비교하면(doodle1~10 중앙값) 훅 끝은 2.67초에서 1.3초로, 음절/초는 5.30에서 6.6으로 바뀌었다. qa_review는 16편 모두 11개 항목 PASS(WARN·FAIL 0)였다.
+
+**못 맞춘 것과 이유**
+- **길이**: 26.5~34.9초(중앙값 29.8초)이고, 9편이 목표 34초(30~38초)보다 짧다. 말을 +50%로 빠르게 하면서 같은 이야기가 5~6초 줄었다. 줄을 더하면 이야기가 늘어지거나(2-1절 4번) 설명이 끼어서(7번), 줄은 이야기에 필요한 만큼만 뒀다. 모두 qa_review의 25~45초 안이고, 5편은 31초 이상이다. 34초 목표 자체가 추정값이다(247편 중앙값).
+- **평균 화면 길이**: 0.7~1.3초로, 목표 2.5초보다 "빠르다". 이 잣대(scene > 0.04)는 표정, 말풍선, 큰 글씨, 자막 상자가 바뀌어도 화면 변화로 센다. 장면(컷)의 실제 길이는 1.5~2.5초다. 최장은 1.6~3.3초로 목표 4.0초 안이다.
+- **줄 수**: 17줄인 편이 8편, doodle14는 21줄이다. 대사가 짧게 오가는 말다툼 구조라서 줄이 짧다(doodle14는 사투리 대사가 한두 마디씩이다). 길이는 그대로 30~35초다.
+- **제목 한 줄 6~9자**: doodle7 2줄(10자), doodle11 2줄(10자), doodle15 2줄(10자)이 넘는다. "에스컬레이터 2줄 서기", "기차 의자 끝까지 젖히기?"는 오케스트레이터가 정한 제목에서 왔다(doodle15의 "KTX"는 서비스 이름이라 "기차"로 바꿨다). qa_review 기준(한 줄 13자 이하)은 통과한다.
+
+
+### 사진과 라이선스
+
+모두 Pexels 사진이다. 사람 얼굴이 알아보이지 않는 물건·장소 사진이고, 읽히는 상표·로고·간판이 없는 것만 썼다. doodle1~10의 사진은 위 `doodle1`~`doodle4`, `doodle5`~`doodle10` 절의 표와 같다. 다만 v2의 세로 칸에서 doodle3의 「정류장의 버스」(21235187)는 버스 옆면 글씨와 노선 번호가 크게 보여서 빼고 그린 거리 배경으로 바꿨다. 새로 쓴 12장은 2026-10-10에 각 사진 페이지에서 "License: Free"(Pexels License)와 제작자를 확인했다. [Pexels License](https://www.pexels.com/license/)는 무료이고 상업적 이용과 수정이 가능하며 출처 표기가 필요 없다. 그래도 설명란에 제작자를 적는다. v2는 화면에 출처 배지를 띄우지 않는다. 페이지 주소, 파일 주소, 제작자, 쓴 구간(초)은 `media/doodle/sources.json`(`used_in`)과 각 `edit.json`의 `sources`에 있다. 쓴 구간은 `seconds.py`가 렌더 데이터에서 채운다.
+
+| 파일 | 제작자 | 쓴 곳 |
+| --- | --- | --- |
+| [7202628](https://www.pexels.com/photo/photograph-of-two-escalators-7202628/) 나란한 에스컬레이터 | SpotwizardLee | doodle11 |
+| [18764954](https://www.pexels.com/photo/view-of-the-escalator-18764954/) 어두운 에스컬레이터 | Orhan Pergel | doodle11 |
+| [5264140](https://www.pexels.com/photo/red-fire-hydrant-on-street-5264140/) 인도의 빨간 소화전 | Brett Sayles | doodle12 |
+| [15818611](https://www.pexels.com/photo/zebra-crossing-in-a-town-15818611/) 횡단보도(멀리 주차된 차의 번호판은 읽히지 않음) | Dương Huỳnh Trung | doodle12 |
+| [19222549](https://www.pexels.com/photo/waterfront-of-seoul-from-the-hangang-river-19222549/) 한강과 서울 | Muneeb Babar | doodle14 |
+| [17967670](https://www.pexels.com/photo/gwangan-bridge-near-skyscrapers-in-busan-south-korea-17967670/) 광안대교 | Junsu Park | doodle14 |
+| [38010001](https://www.pexels.com/photo/haeundae-beach-with-skyline-in-south-korea-38010001/) 해운대(사람은 점처럼 작음) | Rüveyda Akkaya | doodle14 |
+| [19870620](https://www.pexels.com/photo/empty-seats-on-train-19870620/) 빈 기차 좌석(로고 없음, 통로 끝 작은 실루엣은 알아볼 수 없음) | Budget Bizar | doodle15 |
+| [14715657](https://www.pexels.com/photo/empty-train-car-14715657/) 파란 좌석 객차 | Kristina Chuprina | doodle15 |
+| [17293343](https://www.pexels.com/photo/white-shirts-on-hangers-17293343/) 옷걸이의 흰 셔츠 | Pew Nguyen | doodle16 |
+| [965632](https://www.pexels.com/photo/hanged-assorted-shirts-965632/) 걸린 셔츠들 | Arnie Chou | doodle16 |
+| [28576618](https://www.pexels.com/photo/home-laundry-room-with-iron-and-clothes-28576618/) 다리미와 빨래 | Jonathan Borba | doodle16 |
+
+doodle13은 앞 편의 [8533741](https://www.pexels.com/photo/close-up-shot-of-a-smartphone-on-white-surface-8533741/)(빈 화면 휴대폰, Hanna Pad)과 [30027297](https://www.pexels.com/photo/quiet-indoor-restaurant-with-sunlit-tables-30027297/)(빈 식당, Jim Natanauan)을 다시 썼다. 단톡 화면은 우리 그림이다. 어떤 앱의 모양도 따르지 않았고 방 이름은 "○○초 6회 동창회"다.
+
+### 사실과 출처 (2026-10-10 확인)
+
+doodle1, 5, 7은 이야기로 다시 썼지만(아래 "이야기 검토") 대사에 녹인 사실은 v1과 같은 출처에서 왔다. 출처 원문은 위 `doodle1`~`doodle4`, `doodle5`~`doodle10` 절에 있다.
+- doodle1 "정부도 멀티탭에 또 연결하지 말랬어": 산업통상부·한국소비자원·국립소방연구원 보도자료(2025-09-04)의 "멀티탭에 또 다른 멀티탭을 연결해 사용하지 말 것"이다. "콘센트, 멀티탭 사고만 5년간 387건"은 같은 자료의 2020~2024년 CISS 접수 387건이다. 제목의 "벌어지는 일"은 룸메이트와의 말다툼과 결말이다. 화재가 났다고 말하지 않는다.
+- doodle5: "껍데기 열 자리 중 맨 끝 한 자리가 사육환경 번호", "1번 풀밭(방사), 2번 축사 안(평사), 3·4번 케이지", "앞 네 자리 0823은 8월 23일 산란"은 식약처(2019-08-02)와 농식품부(2019-02-21, 2022-01-20) 자료다. "4번은 한 마리당 A4 한 장보다 좁음"은 4번 기준 0.05㎡/마리와 A4 0.0624㎡를 비교해 계산했다. 엄마가 세일 때문에 4번을 샀다는 결말은 창작이다.
+- doodle7: "바늘이 초록 밖이면 압력이 빠진 거라 교체"는 영동소방서 안내 "압력지시계의 바늘이 녹색 범위를 벗어나 있으면 압력 저하로 사용할 수 없으므로 반드시 교체 또는 폐기"에서 왔다. "분말 소화기는 딱 10년", "검사 합격해도 연장은 한 번, 3년뿐"은 인천 서부소방서 안내(2021-09-02)다. 그래서 2010년 제조 소화기는 연장해도 2023년까지다. 문 받침 결말은 창작이다(화면에서는 웃음으로만 쓴다. 소화기를 문 받침으로 쓰라는 뜻이 아니다).
+
+**doodle11 에스컬레이터 두 줄 서기**
+- 2007년 정부의 두 줄 서기 캠페인, 2015년 공식 중단: YTN(중앙일보 인용) 2026-04-23. 원문은 2007년 정부가 "안전사고와 설비 고장 문제를 이유로" 두 줄 서기를 시작했고, 2015년 "두 줄 서기 캠페인을 공식 중단하고" 안전수칙으로 바꿨다는 내용이다. https://www.ytn.co.kr/_ln/0103_202604230947373431
+- "10년간 중대 사고 135건, 그중 90건이 이용자 과실": 세계일보 2026-08-28(행정안전부 국가승강기정보센터 자료). 원문 "2016년부터 지난해까지 에스컬레이터에서 발생한 중대 사고는 총 135건이다… 이 중 이용자 과실로 발생한 사고가 90건". https://www.segye.com/newsView/20260827516314
+- "올해 정부 설문도 49.9 대 50.1, 딱 반반": 더팩트. 2026-08-29 행정안전부 토론회의 사전 설문에서 두 줄 서기가 49.9%, 한 줄 서기와 걷기가 50.1%였다. https://news.tf.co.kr/read/life/2359430.htm
+- 정부의 최근 입장(설명란 출처): SBS Biz 2026-09-23 "행안부는 토론 결과를 반영해 일률적인 두 줄 서기 캠페인과 규제는 더 이상 추진하지 않습니다". https://biz.sbs.co.kr/amp/article/20000336458
+- 양쪽 입장: 비켜 주는 게 당연하다는 바쁜 사람과 걷기가 위험하다는 도치가 같은 분량으로 말한다. 정부 설문도 반반이다. 끝은 "님은 서는 편? 걷는 편?"이다. 그 사람이 팀장님이었다는 결말은 창작이다. 등장인물은 실존 인물이 아닌 낙서 인물이다.
+- 2026-09-23 행정안전부가 일률적인 두 줄 서기 캠페인을 추진하지 않고 3대 안전 수칙(손잡이 잡기, 걷거나 뛰지 않기, 안전선 지키기)에 집중한다고 밝혔다(SBS Biz). v2 대본은 2-1절 7번(설교 금지) 때문에 이 수칙을 화면에서 늘어놓지 않는다. 설명란의 출처에만 둔다.
+
+**doodle12 불법주차 신고** (신고 요건은 사실, 아빠 차 반전은 창작)
+- "같은 자리, 같은 각도로 일 분 간격 두 장이요", "앱으로 보내면 단속 공무원 없이 과태료": 서울특별시 교통 누리집 「교통법규 위반차량 '시민신고제' 운영 안내」(2026-03-12 갱신). 원문 "동일한 위치·각도 1분 간격 사진 2장(정지상태 확인)을 통해 주정차 위반지역·차량번호 등이 식별 가능하고 촬영시간이 표출되어 있어야 함"이고, 요건을 갖추면 현장 단속 없이 과태료를 부과한다. https://news.seoul.go.kr/traffic/archives/507047
+- "소화전, 횡단보도, 인도 같은 여섯 곳은 일 분이면 주민 신고 대상"(여섯 곳은 소화전 5m, 교차로 모퉁이 5m, 버스 정류소 10m, 횡단보도, 초등학교 정문 앞 어린이 보호구역, 인도): 경기일보 2023-08-02(행정안전부 인용). 원문 "기존 5곳(…)에서 인도를 포함해 총 6곳으로", "모든 지자체의 신고 기준이 1분으로 통일됐고". https://kyeonggi.com/article/20230801580171
+- 과태료 금액: 처음에는 "소화전 앞은 승용차 8만 원"이라고 썼다. 근거는 강동구청 보도자료 2019-08-13의 "소화전 주변 5m 이내 주정차 시 과태료가 4만원에서 8만원으로 상향"과 같은 해 8월 1일 「도로교통법 시행령」 개정이었다. 그런데 국가법령정보센터(law.go.kr)의 현행 시행령 [별표 6] 원문은 이 환경에서 열리지 않았다(페이지가 스크립트로만 그려진다). 그래서 숫자를 빼고 "소화전 앞은 과태료가 더 세요"로 바꿔 다시 녹음하고 렌더했다. 일반 구역보다 높다는 점은 위 강동구청 자료(4만 원 → 8만 원)에 근거한다.
+- "신고는 안전신문고 앱으로 함": 위 서울시 안내의 신고 채널 "행안부 안전신문고 앱 운영", "행안부 안전신문고 www.safetyreport.go.kr". 안전신문고는 정부(행정안전부) 신고 창구라서 이름을 그대로 썼다. 상업 앱이 아니다.
+- 양쪽 입장: 지나가던 이웃이 "잠깐 세운 건데 너무하네"라고 차 주인 편을 든다. 신고하는 도치는 규정으로 답한다. 끝은 아빠 차였다는 반전과 "님이면 신고함? 안 함?"이다(가족이어도 신고할까). 이웃과 아빠는 창작 인물이다.
+
+**doodle14 서울 vs 부산 같은 말 다른 뜻** (뜻은 사실, 장면은 창작. 화면의 "서울"은 표준어를 말하고, 영상 안에서도 그렇게 말한다)
+- 정지: 우리말샘의 방언 뜻은 "'부엌'의 방언(강원, 경상, 전라, 제주, 충북)"이고, 표준어 정지(停止)는 "움직이고 있던 것이 멎거나 그침". https://opendict.korean.go.kr/search/searchResult?query=정지
+- 정구지: 우리말샘 "'부추'의 방언(경상, 전북, 충청)". https://opendict.korean.go.kr/search/searchResult?query=정구지
+- 욕보다: 표준국어대사전 "부끄러운 일을 당하다." 우리말샘 "'수고하다'의 방언(경상)". https://stdict.korean.go.kr/search/searchResult.do?searchKeyword=욕보다 , https://opendict.korean.go.kr/search/searchResult?query=욕보다 (사전에 있는 다른 뜻 하나는 일부러 쓰지 않았다)
+- 파이다: 우리말샘 "'나쁘다'의 방언(경상)". 표준어 파이다는 '파다'의 피동인 "구멍이나 구덩이가 만들어지다". https://opendict.korean.go.kr/search/searchResult?query=파이다
+
+**창작 편**(doodle2, 3, 4, 6, 8, 9, 10, 13, 15, 16, 그리고 doodle12의 이야기): 수치나 법령을 말하지 않는다. 실제 업체·앱·식당·세탁소 이름이나 로고는 없다. doodle15는 처음에 제목을 "KTX 의자"로 했다가, 서비스 이름이라 규칙대로 "기차 의자"로 바꿨다. 대사와 자막에는 KTX가 나오지 않는다. 화면의 기차 사진은 로고가 없는 일반 객차다. 영상에는 사실 주장이 없고 매너 논쟁만 있다(젖힐 권리 vs 뒷사람 공간, 그리고 도미노처럼 번지는 결말). 설명란에 "창작"을 적는다.
+
+### 유튜브 설명글 (`upload/` 형식)
+
+`upload/README.md`의 공통 형식으로 16편의 `upload/specs/doodle*.json`을 `media/doodle/v2/specs.py`가 쓴다. 요약은 2~4문장이다. 첫 문장은 상황(사실이 있는 편은 그 사실)이고, 펀치라인은 쓰지 않는다. 사진 크레딧은 edit.json에서 읽고, 사실 출처 기관도 출처 줄에 넣는다. 16편 모두 `fiction: true`라서 요약 앞에 "(창작)"이 붙는다. 해시태그는 `#Shorts`를 빼고 10개다. `python3 upload/make_desc.py doodle<N>`이 `upload/txt/doodle<N>.txt`를 만든다. qa_review의 '설명글' 항목은 16편 모두 PASS다. 채널 이름과 핸들은 아직 `[채널명]`/`[핸들]` 자리표시자다. 아래 "업로드 문구"는 이 형식이 생기기 전의 초안이다. 제목과 고정 댓글은 같고, 설명글은 `upload/txt/`의 것을 쓴다.
+
+### 업로드 문구
+
+제목 끝에는 REVIEW.md 4절대로 ㅋㅋ·ㄷㄷ·?를 붙였다. 고정 댓글은 결말을 말하지 않는 질문이다. 사진 크레딧은 화면 대신 설명란에 모두 적었다.
+
+`doodle1`
+- 제목: 멀티탭에 멀티탭 꽂으면 벌어지는 일ㅋㅋ
+- 설명:
+  ```
+  칸 모자라서 3층까지 쌓은 자취방 멀티탭 탑 🔌 잔소리 vs 멀쩡하거든? 끝까지 따라가 봤더니… 님 방 멀티탭은 몇 층? (창작)
+  창작 짤툰입니다. 등장인물과 이야기는 실제와 관계없으며 특정 업체·앱·단체와 무관합니다. 영상 속 수치와 규정은 아래 출처에 따른 사실입니다.
+  출처: 산업통상부·한국소비자원·국립소방연구원 보도자료(2025.9.4: 2020~2024년 CISS 접수 387건, 「멀티탭에 또 다른 멀티탭을 연결해 사용하지 말 것」)
+  사진: Pexels (Саша Алалыкин, Nikita Nikitin, Tim Mossholder) · 캐릭터와 배경 그림은 직접 그린 그림입니다.
+  Music: "Sneaky Snitch" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
+  ```
+- 해시태그: #멀티탭 #전기안전 #생활꿀팁 #짤툰
+- 고정 댓글: 님 방 멀티탭, 지금 몇 층까지 쌓여 있음? 🔌
+
+`doodle2`
+- 제목: 중고거래 네고 선 넘으면 벌어지는 일ㅋㅋ
+- 설명:
+  ```
+  만 원짜리 의자 올렸다가 배송비 낼 뻔한 썰 🪑 님들이 받아본 최강 네고는? (창작)
+  창작 짤툰입니다. 등장인물과 이야기는 실제와 관계없으며 특정 업체·앱·단체와 무관합니다. 영상 속 수치와 규정은 아래 출처에 따른 사실입니다.
+  사진: Pexels (Gizem Gökce, Tima Miroshnichenko) · 캐릭터와 배경 그림은 직접 그린 그림입니다.
+  Music: "Monkeys Spinning Monkeys" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
+  ```
+- 해시태그: #중고거래 #네고 #공감 #짤툰
+- 고정 댓글: 지금까지 받아본 네고 중 제일 선 넘은 거 적고 가기 👇
+
+`doodle3`
+- 제목: 하차벨 아무도 안 누르면 벌어지는 일ㅋㅋ
+- 설명:
+  ```
+  누가 누르겠지… 하다가 네 명이 같이 걸어간 썰 🚌🔔 님들은 벨 먼저 누르는 쪽? (창작)
+  창작 짤툰입니다. 등장인물과 이야기는 실제와 관계없으며 특정 업체·앱·단체와 무관합니다. 영상 속 수치와 규정은 아래 출처에 따른 사실입니다.
+  사진: Pexels (Elina Volkova, Pramod Tiwari) · 캐릭터와 배경 그림은 직접 그린 그림입니다.
+  Music: "Scheming Weasel" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
+  ```
+- 해시태그: #버스 #하차벨 #눈치게임 #짤툰
+- 고정 댓글: 벨 먼저 누르는 쪽 🙋 vs 남이 누르길 기다리는 쪽 🙄 님은?
+
+`doodle4`
+- 제목: "냉장고에 있잖아" 엄마 vs 나ㅋㅋ
+- 설명:
+  ```
+  10분 찾아도 없던 김치, 엄마는 1초 컷 🫙 근데 그 김치 어디서 나왔냐면… 님 집 엄마도 이런 적 있음? (창작)
+  창작 짤툰입니다. 등장인물과 이야기는 실제와 관계없으며 특정 업체·앱·단체와 무관합니다. 영상 속 수치와 규정은 아래 출처에 따른 사실입니다.
+  사진: Pexels (Polina Tankilevitch, thAnh nguyễn, Max Vakhtbovych, cottonbro studio) · 캐릭터와 배경 그림은 직접 그린 그림입니다.
+  Music: "Hyperfun" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
+  ```
+- 해시태그: #엄마 #냉장고 #공감 #짤툰
+- 고정 댓글: 님 집 냉장고에도 엄마 눈에만 보이는 칸 있음? 😂
+
+`doodle5`
+- 제목: 계란 1번 vs 4번 진짜 차이 ㄷㄷ
+- 설명:
+  ```
+  4번 계란 사 왔다가 엄마한테 혼난 썰 🥚 끝자리는 닭이 사는 집! 근데 엄마 냉장고 계란은…? 님 냉장고 계란은 몇 번? (창작)
+  창작 짤툰입니다. 등장인물과 이야기는 실제와 관계없으며 특정 업체·앱·단체와 무관합니다. 영상 속 수치와 규정은 아래 출처에 따른 사실입니다.
+  출처: 식품의약품안전처(2019.8.2), 농림축산식품부(2019.2.21, 2022.1.20) 난각표시 안내
+  사진: Pexels (thAnh nguyễn, Marcello Sokal, Ben Molyneux, Alexas Fotos, Magda Ehlers, Klaus Nielsen) · 캐릭터와 배경 그림은 직접 그린 그림입니다.
+  Music: "Sneaky Snitch" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
+  ```
+- 해시태그: #계란 #난각번호 #생활꿀팁 #짤툰
+- 고정 댓글: 지금 냉장고 계란 마지막 숫자 몇 번인지 확인하고 댓글 ㄱㄱ 🥚
+
+`doodle6`
+- 제목: 팀장님 "넵." 받으면 벌어지는 일ㅋㅋ
+- 설명:
+  ```
+  같은 넵인데 마음은 다 다름 📱 마지막 단계는 진짜 공포… 님은 주로 몇 단계 넵 씀? (창작)
+  창작 짤툰입니다. 등장인물과 이야기는 실제와 관계없으며 특정 업체·앱·단체와 무관합니다. 영상 속 수치와 규정은 아래 출처에 따른 사실입니다.
+  사진: Pexels (Hanna Pad, Cup of Couple, cottonbro studio, Letícia Alvares) · 캐릭터와 배경 그림은 직접 그린 그림입니다.
+  Music: "Hustle" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
+  ```
+- 해시태그: #회사생활 #넵 #직장인공감 #짤툰
+- 고정 댓글: 님이 제일 많이 쓰는 넵은 몇 단계? 1~7 숫자로 ㄱㄱ
+
+`doodle7`
+- 제목: 소화기 바늘 초록 밖이면 벌어지는 일ㅋㅋ
+- 설명:
+  ```
+  2010년산 소화기 바꾸자 vs 멀쩡한 걸 왜 버려 🧯 숫자로 아빠를 이겼는데 다음 날… 님 집 소화기 바늘, 지금 초록임? (창작)
+  창작 짤툰입니다. 등장인물과 이야기는 실제와 관계없으며 특정 업체·앱·단체와 무관합니다. 영상 속 수치와 규정은 아래 출처에 따른 사실입니다.
+  출처: 충북 영동소방서·인천 남동소방서·인천 서부소방서·서산소방서 소화기 관리 안내(압력계 녹색 범위, 분말 소화기 내용연수 10년, 성능 확인 검사 합격 시 1회 3년 연장)
+  사진: Pexels (Jakub Zerdzicki, Mohsen Adelimoghaddam, Tibor Szabo) · 캐릭터와 배경 그림은 직접 그린 그림입니다.
+  Music: "Scheming Weasel" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
+  ```
+- 해시태그: #소화기 #화재안전 #생활꿀팁 #짤툰
+- 고정 댓글: 지금 소화기 바늘 보고 오기 🧯 초록이었음?
+
+`doodle8`
+- 제목: 카페 진동벨 울리면 벌어지는 일ㅋㅋ
+- 설명:
+  ```
+  10분째 조용한 진동벨, 들고 카운터 갔더니 손에서 부르르… 근데 그 벨 🔔 님은 벨 울리면 몇 초 만에 일어남? (창작)
+  창작 짤툰입니다. 등장인물과 이야기는 실제와 관계없으며 특정 업체·앱·단체와 무관합니다. 영상 속 수치와 규정은 아래 출처에 따른 사실입니다.
+  사진: Pexels (Sander Dalhuisen, Gabriel, Arda Kaykısız, Pavel Danilyuk, Chevanon Photography) · 캐릭터와 배경 그림은 직접 그린 그림입니다.
+  Music: "Monkeys Spinning Monkeys" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
+  ```
+- 해시태그: #카페 #진동벨 #공감 #짤툰
+- 고정 댓글: 진동벨 울리면 몇 초 만에 일어남? ⏱️
+
+`doodle9`
+- 제목: 식당 직원 부를 때 "여기요" vs "저기요"
+- 설명:
+  ```
+  손 반쯤 들었다가 머리 긁는 척한 사람 🙋 결국 최강은 따로 있음. 님은 여기요? 저기요? 이모님? (창작)
+  창작 짤툰입니다. 등장인물과 이야기는 실제와 관계없으며 특정 업체·앱·단체와 무관합니다. 영상 속 수치와 규정은 아래 출처에 따른 사실입니다.
+  사진: Pexels (Jim, Cynthia Ortega Espinosa, Maria Orlova, Lio Photography) · 캐릭터와 배경 그림은 직접 그린 그림입니다.
+  Music: "Hyperfun" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
+  ```
+- 해시태그: #식당 #여기요 #저기요 #짤툰
+- 고정 댓글: 여기요파 🙋 / 저기요파 🗣️ / 이모님파 👑 님은?
+
+`doodle10`
+- 제목: 새벽 3시 편의점 수상한 손님의 정체
+- 설명:
+  ```
+  매일 새벽 3시, 말없이 컵라면 먹고 가던 손님 🌙 비 오던 날 내민 건… 님은 이런 손님 만나 봄? (창작)
+  창작 짤툰입니다. 등장인물과 이야기는 실제와 관계없으며 특정 업체·앱·단체와 무관합니다. 영상 속 수치와 규정은 아래 출처에 따른 사실입니다.
+  사진: Pexels (El Jundi, Markus Winkler, Denniz Futalan, More Amore) · 캐릭터와 배경 그림은 직접 그린 그림입니다.
+  Music: "Sneaky Snitch" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
+  ```
+- 해시태그: #편의점 #알바 #훈훈 #짤툰
+- 고정 댓글: 알바하면서 만난 제일 기억에 남는 손님은? 🌙
+
+`doodle11`
+- 제목: 현재 논란중인 에스컬레이터 2줄 서기
+- 설명:
+  ```
+  출근 첫날 왼쪽에 섰다가 "바빠요!" 🚶 두 줄 서기 vs 비켜 주기, 정부 설문도 49.9 대 50.1. 근데 그 아저씨 정체가… (창작)
+  창작 짤툰입니다. 등장인물과 이야기는 실제와 관계없으며 특정 업체·앱·단체와 무관합니다. 영상 속 수치와 규정은 아래 출처에 따른 사실입니다.
+  출처: 세계일보(2026.8.28, 행정안전부 국가승강기정보센터 2016~2025 중대사고 135건·이용자 과실 90건), 더팩트(2026.8 토론회 사전 설문), SBS Biz(2026.9.23 행정안전부 발표), YTN(2026.4.23, 2007년 두 줄 서기·2015년 중단)
+  사진: Pexels (SpotwizardLee, Orhan Pergel) · 캐릭터와 배경 그림은 직접 그린 그림입니다.
+  Music: "Sneaky Snitch" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
+  ```
+- 해시태그: #에스컬레이터 #두줄서기 #논란 #짤툰
+- 고정 댓글: 님은 서는 편 🧍 vs 걷는 편 🚶? 이유도 같이!
+
+`doodle12`
+- 제목: 불법주차 신고하면 벌어지는 일 ㄷㄷ
+- 설명:
+  ```
+  소화전 앞 빨간 차, 1분 간격 사진 두 장 📸 신고 요건은 진짜, 마지막 반전은 창작. 님이면 신고함? (창작)
+  창작 짤툰입니다. 등장인물과 이야기는 실제와 관계없으며 특정 업체·앱·단체와 무관합니다. 영상 속 수치와 규정은 아래 출처에 따른 사실입니다.
+  출처: 서울특별시 교통 누리집 「교통법규 위반차량 시민신고제 운영 안내」(2026.3.12 갱신: 같은 위치·각도 1분 간격 사진 2장, 현장 단속 없이 과태료), 경기일보(2023.8.2, 행정안전부: 주민신고 6대 구역·1분 기준), 강동구청 보도자료(2019.8.13, 소화전 5m 이내 과태료 상향)
+  사진: Pexels (Brett Sayles, Dương Huỳnh Trung) · 캐릭터와 배경 그림은 직접 그린 그림입니다.
+  Music: "Scheming Weasel" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
+  ```
+- 해시태그: #불법주차 #안전신문고 #소화전 #짤툰
+- 고정 댓글: 가족 차여도 신고한다 🙋 vs 일단 전화부터 📞 님은?
+
+`doodle13`
+- 제목: 읽기만 해도 기빨리는 동창회 단톡 현실
+- 설명:
+  ```
+  알림 32개, 공지 7줄 📢 근데 반장 입장도 있음… 참석 체크한 3명의 정체는? 님 단톡에도 이런 반장 있음? (창작)
+  창작 짤툰입니다. 등장인물과 이야기는 실제와 관계없으며 특정 업체·앱·단체와 무관합니다. 영상 속 수치와 규정은 아래 출처에 따른 사실입니다.
+  사진: Pexels (Hanna Pad, Jim) · 캐릭터와 배경 그림은 직접 그린 그림입니다.
+  Music: "Hustle" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
+  ```
+- 해시태그: #동창회 #단톡 #공감 #짤툰
+- 고정 댓글: 공지 길게 쓰는 반장 vs 읽고 답 안 하는 단톡방, 누가 더 잘못? 🤔
+
+`doodle14`
+- 제목: 서울 vs 부산 같은 말 다른 뜻ㅋㅋ
+- 설명:
+  ```
+  정지 = 부엌, 정구지 = 부추, 욕봤다 = 수고했다 🌿 부산 친구 집에서 배운 말로 인사했더니… 님 동네에도 이런 말 있음? (창작)
+  창작 짤툰입니다. 등장인물과 이야기는 실제와 관계없으며 특정 업체·앱·단체와 무관합니다. 영상 속 수치와 규정은 아래 출처에 따른 사실입니다.
+  뜻 출처: 국립국어원 우리말샘·표준국어대사전(정지·정구지·욕보다·파이다·단디 표제어, 2026.10.10 확인). 화면의 '서울'은 표준어 기준입니다.
+  사진: Pexels (Muneeb Babar, Junsu Park, Rüveyda Akkaya) · 캐릭터와 배경 그림은 직접 그린 그림입니다.
+  Music: "Monkeys Spinning Monkeys" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
+  ```
+- 해시태그: #부산사투리 #경상도사투리 #서울vs부산 #짤툰
+- 고정 댓글: 님 동네에서만 쓰는 말 하나씩 적고 가기 👇
+
+`doodle15`
+- 제목: 현재 논란중인 기차 의자 끝까지 젖히기?
+- 설명:
+  ```
+  의자 끝까지 젖히는 건 권리? 뒷사람 무릎은? 💺 한 번 젖혔더니 도미노가 시작됨. 님은 끝까지? 반만? (창작)
+  창작 짤툰입니다. 등장인물과 이야기는 실제와 관계없으며 특정 업체·앱·단체와 무관합니다. 영상 속 수치와 규정은 아래 출처에 따른 사실입니다.
+  사진: Pexels (Budget Bizar, Kristina Chuprina) · 캐릭터와 배경 그림은 직접 그린 그림입니다.
+  Music: "Hyperfun" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
+  ```
+- 해시태그: #기차 #의자젖히기 #논란 #짤툰
+- 고정 댓글: 끝까지 젖힌다 💺 vs 반만 젖힌다 🙂 vs 안 젖힌다 🙅 님은?
+
+`doodle16`
+- 제목: 동네 세탁소 사장님의 미친 기억력 비결
+- 설명:
+  ```
+  번호표도 장부도 없이 내 셔츠를 꺼내는 사장님 👔 비결은 얼룩…? 일주일 뒤 셔츠에 생긴 일. 님 동네에도 이런 사장님 있음? (창작)
+  창작 짤툰입니다. 등장인물과 이야기는 실제와 관계없으며 특정 업체·앱·단체와 무관합니다. 영상 속 수치와 규정은 아래 출처에 따른 사실입니다.
+  사진: Pexels (Pew Nguyen, Arnie Chou, Jonathan Borba) · 캐릭터와 배경 그림은 직접 그린 그림입니다.
+  Music: "Sneaky Snitch" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
+  ```
+- 해시태그: #세탁소 #동네사장님 #훈훈 #짤툰
+- 고정 댓글: 님 동네 단골집 사장님의 미친 기억력 썰 풀고 가기 👇
+
+
+## "○○ 특" v2 (벤치마크, `teuk1`~`teuk14`)
+
+`research/benchmark-drawn.md` 3절과 `research/benchmark-targets-drawn.json`의 `teuk` 목표(자체공감 「곱창 특」 98.7만, 「바나나 우유 특」 96.9만)에 맞춰 v1 8편을 다시 만들고 6편을 새로 만들었다. 2026-10-10 이야기 검토(REVIEW.md 2-1절)로 대본을 한 번 더 고쳤다.
+
+**바뀐 점 (v1 → v2)**
+
+- 제목은 한 줄 "○○ 특"(3~7자)이다. 제목을 읽는 첫 줄을 없애고, 0초부터 첫 항목과 가장 센 리액션 그림이 나온다.
+- 위쪽 검정 띠가 없다. 어두운 단색 바탕(편마다 색이 조금 다름)이고, 오른쪽 위에 마스코트 로고, 가운데 그림 칸(1080×1160), 아래에 흰 글씨 2줄 관찰체 자막이 있다. 강조색과 단어 하이라이트는 없다.
+- 첫 항목은 짧은 훅 줄(1~1.4초)과 그다음 줄로 나눴다. 첫 줄 끝(훅 끝)이 1.0~1.7초다.
+- 항목마다 그림 종류가 바뀐다. 마스코트 클로즈업(정면 꽉 차게, 왼쪽, 오른쪽, 아래에서 올라옴, 기울임, 효과선, 땀, 김, 하트, 불꽃), 사진(Wikimedia Commons, 반응 원형 인서트), 그린 장면(`Sseol.tsx`)을 섞는다.
+- 내레이터 속도를 올렸다(SunHi +32%, Hyunsu +40%, 실측 6.3~6.9음절/초). "나"의 반응 줄은 7줄에서 2줄로 줄였고, 말풍선 대신 따옴표 자막으로 넣었다.
+- 번호 목록("1. 알람 다섯 번 끄기")을 없애고 "~함/~음" 관찰체 문장으로 썼다. 끝은 "여러분은 몇 개 해당?ㅋㅋ"와 "나"의 펀치라인 한 줄이다.
+- 화면에 출처 배지가 없다. 사진 크레딧은 모두 설명란(`upload/txt/<id>.txt`)에 있다.
+
+### 새 템플릿 옵션 (`src/lib/Teuk.tsx`, 기존 쇼츠는 그대로)
+
+- `edit.json` 최상위에 `"layout": "teuk"`를 두면 `ClipShort`가 영상 전체를 `TeukShort`에 넘긴다(`src/ClipShort.tsx`에 import 1줄, 타입 2줄, `return` 1줄). `"teuk": {"bg": "#2e2321", "mascot": "#FFB36B"}`로 바탕색과 마스코트 색을 정한다.
+- 클립의 `gfx.type`은 세 가지다. `"face"`는 마스코트 리액션 클로즈업이다(`mood`, `to`, `pos`: close·left·right·low·tilt, `fx`: lines·sweat·steam·gloom·sparkle·fire·hearts, `burst`, `prop`·`propX`·`propY`, `big`, `say`, `steps` = [표정 바뀌는 때, 말풍선, 큰 글씨]). `"photo"`는 클립의 `src` 사진을 천천히 확대해 보여 준다(`react`: 반응 원형 인서트 {mood, to, side, size}, `tag`, `big`, `zoom`, `pos`, `steps` = [인서트, 태그, 큰 글씨, 인서트 표정 바뀜]). `"scene"`은 기존 `Sseol.tsx` 장면이다.
+- 자막: `prep.py`가 `layout: teuk`일 때 자막 페이지마다 `"g"`(대사 id:자막 번호)를 붙이고, `TeukShort`가 같은 `g`의 페이지를 2줄로 함께 띄운다. `cap`의 `/`가 줄바꿈이다. qa_review는 줄마다 글자 수를 잰다. 첫 자막은 0초부터, 마지막 자막은 영상 끝까지 보인다.
+- 만드는 도구(`media/teuk/`): `episodes.py`(대본·그림), `make.py`(script.json·edit.json 생성), `fetch.py`(Commons 라이선스 확인 `resolve`, 사진 내려받기), `score.py`(벤치마크 점수표), `upload.py`(설명글 spec), `readme.py`(이 절).
+- 하위 호환 확인: 템플릿을 바꾸기 전과 후에 `sseol1`(바꾸지 않은 썰 쇼츠)의 `src/data/sseol1.json`이 바이트 단위로 같고, 프레임 0·45·200·400·700의 정지 화면 md5가 모두 같았다.
+
+```bash
+python3 media/teuk/make.py teuk9 && python3 media/teuk/fetch.py teuk9 && python3 voice_edge.py teuk9 && python3 prep.py teuk9 \
+  && ./render.sh teuk9 final/teuk9.mp4 && python3 qa_review.py teuk9 && python3 media/teuk/score.py teuk9
+```
+
+### 편 목록과 노리는 공감 포인트
+
+| id | 화면 제목 | 노리는 공감 포인트 | 결말 유형 | 감정 | 음악 |
+| --- | --- | --- | --- | --- | --- |
+| `teuk1` | 월요일 아침 특 | 알람 이름까지 '진짜_최종_마지막'으로 바꿔 가며 버틴 아침이 겨우 오전 10시라는 허탈함 | 허탈 개그 | 공감 | Hustle |
+| `teuk2` | 시험 기간 특 | 시험 전날에만 생기는 정리 욕구, 끝나고 나서야 잘되는 공부 | 역전(끝나니까 공부가 됨) | 웃음 | Sneaky Snitch |
+| `teuk3` | 급식 특 | 4교시 메뉴 확인부터 국자 한 번 더까지, 졸업하고 나서야 그리운 급식 | 따뜻한 반전 | 뭉클한 공감 | Monkeys Spinning Monkeys |
+| `teuk4` | 단톡방 특 | 알림 끄고 몰래 읽는 나, 정작 조용해지면 먼저 '심심해' 보내는 나 | 자기 폭로 반전 | 웃음 | Hyperfun |
+| `teuk5` | 자취 첫 달 특 | 냄비가 그릇, 대파 한 단, 마지막 휴지 한 칸, 결국 본가 가는 날만 기다리는 첫 달 | 의외의 결말(자유 → 본가 그리움) | 공감 | Scheming Weasel (faster version) |
+| `teuk6` | 비 오는 날 특 | 우산의 법칙과 밀가루 없는 파전, 집에 오자마자 그치는 비 | 허탈 개그 | 웃음 | Monkeys Spinning Monkeys |
+| `teuk7` | 헬스장 첫 주 특 | 1년 회원권, 다음 날 계단, 운동 후 치킨, 결국 샤워만 하고 오는 헬스장 | 허탈 개그 | 웃음 | Exhilarate |
+| `teuk8` | 월급날 특 | 입금 알림 대기부터 '내가 쏜다' 후회, 이틀 만에 원래 잔고 | 허탈 개그 | 공감 | Hustle |
+| `teuk9` | 떡볶이 특 | 1인분 → 볶음밥, 단무지 리필, 어묵 국물 눈치, '당분간 안 먹어' 다음 날 또 추천 | 자기 배신 반전 | 웃음 | Hyperfun |
+| `teuk10` | 컵라면 특 | 보이지 않는 물 선, 1분째 젓가락 대기, 고르는 데 20분·먹는 데 3분 | 자기 배신 반전 | 웃음 | Sneaky Snitch |
+| `teuk11` | 붕어빵 특 | 팥 vs 슈크림 → 둘 다, 머리·꼬리 성격, 3마리 → 1마리, 지도에 몰래 별표 | 의외의 결말(혼자만 아는 가게) | 웃음 | Monkeys Spinning Monkeys |
+| `teuk12` | 삼겹살 특 | 굽는 사람은 못 먹고, 엘리베이터에서 메뉴가 들키고, 마지막 한 점은 아무도 안 먹는 고깃집 | 펀치라인(그 한 점 내가 먹을게) | 웃음 | Hustle |
+| `teuk13` | 길치 특 | 뒤를 가리키는 화살표, 출구 번호, 오른쪽 하면 왼쪽부터, 근데 맛집 가는 길은 한 번에 | 역전(맛집만 직진) | 웃음 | Scheming Weasel (faster version) |
+| `teuk14` | 눈치 없는 사람 특 | '이거 누가 시켰어요?', 스포, 깜짝 파티 장소 질문 → 근데 제일 착한 친구 → 혹시 나야? | 따뜻한 반전 + 자기 폭로 | 웃음과 공감 | Sneaky Snitch |
+
+### 벤치마크 점수표
+
+벤치마크 값은 `benchmark-targets-drawn.json`의 `teuk`이다(길이·훅·컷·음절 속도는 보고서가 *추정*으로 표시한 값). 우리 값은 렌더(`final/<id>.mp4`, qa_review와 같은 그림 칸·장면 기준 0.12)와 목소리 타임라인(`build/<id>/timeline.json`, 한글 음절 수 ÷ 대사 길이 합, 줄 사이 쉼 제외)에서 쟀다. `python3 media/teuk/score.py <id>`로 다시 잴 수 있다.
+
+| 편 | 길이 | 훅 끝 | 첫 화면 변화 | 평균 / 최장 장면 | 음절/초 | 줄 수 | 제목 |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| 목표 | 28초 | 1.5초 | 1.5초 | 2.2 / 3.5초 | 6.5 | 14 | 3~7자 |
+| `teuk1` 월요일 아침 특 | 28.4초 | 1.36초 | 1.60초 | 2.03 / 2.77초 | 6.76 | 14 | 6자 |
+| `teuk2` 시험 기간 특 | 28.9초 | 1.34초 | 1.60초 | 1.92 / 2.77초 | 6.43 | 14 | 5자 |
+| `teuk3` 급식 특 | 28.6초 | 0.98초 | 1.23초 | 1.90 / 2.63초 | 6.84 | 14 | 3자 |
+| `teuk4` 단톡방 특 | 27.7초 | 1.11초 | 1.37초 | 1.73 / 3.37초 | 6.30 | 14 | 4자 |
+| `teuk5` 자취 첫 달 특 | 27.3초 | 1.19초 | 1.43초 | 1.95 / 3.17초 | 6.94 | 14 | 5자 |
+| `teuk6` 비 오는 날 특 | 27.5초 | 1.16초 | 1.40초 | 1.96 / 2.70초 | 6.40 | 14 | 5자 |
+| `teuk7` 헬스장 첫 주 특 | 25.4초 | 1.14초 | 1.40초 | 1.81 / 2.57초 | 6.77 | 14 | 6자 |
+| `teuk8` 월급날 특 | 27.4초 | 1.70초 | 1.97초 | 1.95 / 2.80초 | 6.38 | 14 | 4자 |
+| `teuk9` 떡볶이 특 | 29.5초 | 1.27초 | 1.53초 | 2.11 / 3.27초 | 6.72 | 13 | 4자 |
+| `teuk10` 컵라면 특 | 30.3초 | 1.34초 | 1.60초 | 2.16 / 3.13초 | 6.36 | 14 | 4자 |
+| `teuk11` 붕어빵 특 | 27.6초 | 1.20초 | 1.47초 | 1.97 / 2.90초 | 6.51 | 13 | 4자 |
+| `teuk12` 삼겹살 특 | 28.8초 | 1.12초 | 1.37초 | 2.06 / 3.37초 | 6.85 | 14 | 4자 |
+| `teuk13` 길치 특 | 27.6초 | 1.28초 | 1.53초 | 1.97 / 2.63초 | 6.66 | 14 | 3자 |
+| `teuk14` 눈치 없는 사람 특 | 29.0초 | 1.01초 | 1.27초 | 1.93 / 2.83초 | 6.60 | 14 | 7자 |
+
+**목표와 다른 점**
+
+- 길이는 25.4~30.3초(중앙값 28.5초)로 목표(28초, 25~35초) 안이다. 가장 짧은 teuk7(25.4초)은 항목 문장이 짧은 편이다.
+- 음절 속도는 6.30~6.94음절/초로 모두 6.2 이상이다(목표 6.5, v1 중앙값 5.27).
+- 훅 끝: 첫 줄을 짧게 나눠 1.0~1.7초로 목표(1.5초)에 맞췄다.
+- 평균 장면 길이는 목표(2.2초)보다 조금 짧거나 비슷하다. 줄마다 그림을 바꾸고, 사진 클립의 반응 인서트가 뜨는 순간도 화면 변화로 잡힌다.
+- 줄 수는 13~14줄로 목표(14, 12~16)에 맞췄다. teuk9·teuk11은 항목이 길어 13줄이다.
+- 제목 길이: `눈치 없는 사람 특`은 7자로, 목표 범위(3~7자)의 끝이다. 보고서 아이디어 목록의 제목(자체공감 「눈치 없는 사람 특」 117만)을 그대로 썼다.
+- qa_review의 '제목 띠' WARN은 의도한 것이다. 벤치마크 레시피가 "위 제목 띠 없음"이라서 띠를 뺐다.
+
+### 이야기 검토 (REVIEW.md 2-1, 2026-10-10)로 다시 쓴 항목
+
+흔한 말, 구체적이지 않은 말, 마지막이 약한 항목을 바꿨다. 마지막 항목은 꺾이거나 가장 세게 했다. 바꾼 뒤 모두 다시 녹음하고 다시 렌더했다.
+
+- `teuk1`: 일어나는 게 기본 → 마지막 알람 이름이 '진짜_최종_마지막' · 회사 앞 깊은 한숨 → 출입 카드 '삑' 소리가 하루 중 제일 슬픔 · 커피 마셔야 사람 됨 → 커피 전엔 메일을 읽어도 글자가 안 들어옴 · 출근하자마자 점심 고민(마지막) → 이렇게 버텼는데 아직 오전 10시
+- `teuk2`: 새벽 3시 배고픔 → 새벽 3시에 갑자기 방 구조 바꾸고 싶음 · 벼락치기 중 인생 고민(마지막) → 시험 끝나고 나니까 공부가 제일 잘됨
+- `teuk3`: 디저트 날은 하루 종일 행복 → 국자가 한 번 더 오면 그날은 대성공 · 우유 원샷(마지막) → 졸업하고 나니까 그 급식이 제일 그리움
+- `teuk4`: 나가기 버튼 100번(마지막) → 막상 조용해지면 내가 먼저 '심심해' 보냄
+- `teuk5`: 엄마 반찬이 세상에서 제일 맛있음 → 엄마 반찬통 돌려줄 때 빈 통 미안해서 과자 넣음 · 관리비 고지서 보고 깜짝(마지막) → 자유롭다더니 한 달 뒤 본가 가는 날만 기다림
+- `teuk6`: 양말 젖으면 하루 종일 찝찝 → 젖은 운동화에서 하루 종일 '찌걱' 소리 · 비 오면 괜히 파전 생각 → 파전 해 먹자 했는데 밀가루가 없음
+- `teuk7`: 사흘째부터 갈까 말까(마지막) → 결국 1년 회원권으로 샤워만 하고 옴
+- `teuk8`: 고생한 나한테 선물 → '오늘은 내가 쏜다' 계산할 때 살짝 후회 · 다음 월급날 세기(마지막) → 이틀 만에 잔고가 월급 전이랑 같아짐
+- `teuk9`: 맵다 맵다 하면서 젓가락 안 멈춤 → 맵다면서 단무지만 세 번 리필 · 어묵은 마지막에 먹어야 제맛 → 포장마차 어묵 국물 세 번째 컵부터 눈치 · 떡파 vs 어묵파 → 떡만 골라 먹는 친구랑 먹으면 어묵만 산더미 · 튀김 국물에 퐁당 → 김말이 찍는 순간 반은 국물 속으로 · 다음 날 또 생각남(마지막) → '당분간 안 먹어' 해 놓고 다음 날 점심에 또 추천
+- `teuk10`: 2분 반에 뚜껑 → 1분째 젓가락 들고 대기 · 밤 11시엔 세상에서 제일 맛있음 → 붓기는 내일의 나에게 · 김치 없으면 허전 → 뚜껑 접어서 앞접시로 쓰는 건 국룰 · 하나 더 땡김 → 고르는 데 20분, 먹는 데 3분 · 다음 날 얼굴 퉁퉁(마지막) → '다음엔 다른 맛' 다짐하고 또 같은 맛
+- `teuk11`: 입천장 데임 → 한 입에 입천장 데고 말 잃음 · 식으면 데워 먹음 → 천 원에 몇 마리인지로 물가 체감 · 파는 곳 찾으면 보물 찾은 기분(마지막) → 파는 곳 발견하면 지도에 몰래 별표
+- `teuk12`: 옷 냄새는 집에 가서야 앎 → 엘리베이터 탄 사람들이 내 저녁 메뉴 맞힘 · 냄새 맡으면 또 배고픔 → '불판 갈아 드릴까요?' 배부른데 '네!' · 쌈장으로 밥 한 공기 → 마늘 안 먹는다더니 불판 위 마늘만 노림
+- `teuk14`: 단체 사진에서 눈 감음(눈치와 무관) → 깜짝 생일 파티 장소를 주인공 앞에서 물어봄
+
+### 사진 출처와 라이선스
+
+Pexels와 Pixabay를 먼저 시도했지만, 두 사이트 모두 이 환경에 봇 확인 화면(Cloudflare)을 돌려줘서 항목별 라이선스 페이지를 열 수 없었다. 그래서 쓰지 않았다. 대신 Wikimedia Commons에서 CC0, 퍼블릭 도메인, CC BY 파일만 골랐다(BY-SA, NC, ND 제외). 라이선스는 각 파일 페이지의 메타데이터(imageinfo extmetadata)에서 2026-10-10에 확인했다(`media/teuk/fetch.py resolve`). 모든 사진을 큰 크기로 보고 상표, 가게 이름, 앱 아이콘, 알아볼 수 있는 얼굴이 없는 것만 남겼다. 컵라면 제품 사진은 위에서 내려다본 컵 속만 보이는 것만 썼다. 물 끓이는 주전자 사진은 각인된 글씨 때문에, 학교 급식 사진은 군 관련 사진뿐이라서 뺐다. 각 파일의 페이지 주소, 파일 주소, 라이선스, 작가, 쓴 구간은 `media/teuk/photos.json`과 각 `edit.json`의 `sources`에 있다. 화면에는 크레딧을 넣지 않고 설명란에 넣는다.
+
+| 사진 키 | 파일 (Commons) | 작가 | 라이선스 | 쓴 편 (초) |
+| --- | --- | --- | --- | --- |
+| `alarm` | [Alarm clock on a chair (Unsplash).jpg](https://commons.wikimedia.org/wiki/File:Alarm_clock_on_a_chair_(Unsplash).jpg) | Szűcs László szucslaszlo | CC0 | teuk1 3.7~4.8 |
+| `alley1` | [Bukchon, Seoul - Bukchon3283.jpg](https://commons.wikimedia.org/wiki/File:Bukchon,_Seoul_-_Bukchon3283.jpg) | lumoplank | CC0 | teuk13 3.6~5.6 |
+| `bungeo1` | [Taiyaki - cut section.jpg](https://commons.wikimedia.org/wiki/File:Taiyaki_-_cut_section.jpg) | 毒島みるく | CC0 | teuk11 0.0~1.5 |
+| `bungeo2` | [Bungeoppang-01.jpg](https://commons.wikimedia.org/wiki/File:Bungeoppang-01.jpg) | Siqbal at en.wikipedia | Public domain | teuk11 10.1~12.3 |
+| `bungeo3` | [시장 2.jpg](https://commons.wikimedia.org/wiki/File:%EC%8B%9C%EC%9E%A5_2.jpg) | Chae Ji-young | CC BY 4.0 | teuk11 21.3~23.9 |
+| `bungeo4` | [Taiyaki 003.jpg](https://commons.wikimedia.org/wiki/File:Taiyaki_003.jpg) | Ocdp | CC0 | teuk11 23.9~25.2 |
+| `cake` | [Piece of chocolate cake on a white plate decorated with chocolate sauce.jpg](https://commons.wikimedia.org/wiki/File:Piece_of_chocolate_cake_on_a_white_plate_decorated_with_chocolate_sauce.jpg) | Daria Yakovleva (minor edits by Subsidiary account) | CC0 | teuk14 26.1~27.4 |
+| `calendar` | [WallCalendar.jpg](https://commons.wikimedia.org/wiki/File:WallCalendar.jpg) | Claudio Elias | Public domain | teuk8 21.5~24.0 |
+| `cart` | [Mini grocery toy pushcart.jpg](https://commons.wikimedia.org/wiki/File:Mini_grocery_toy_pushcart.jpg) | Me (Elsa Versailles) | Public domain | teuk8 11.5~13.5 |
+| `chicken` | [Korean fried chicken 5.jpg](https://commons.wikimedia.org/wiki/File:Korean_fried_chicken_5.jpg) | insatiablemunch | CC BY 2.0 | teuk3 9.4~11.9, teuk7 13.2~15.1 |
+| `coffee` | [Cappuchino latte art.jpg](https://commons.wikimedia.org/wiki/File:Cappuchino_latte_art.jpg) | Blanka Novotná | Public domain | teuk1 15.8~18.6 |
+| `crossroad` | [An Example of Raised Crosswalks near Sogang University 2.jpg](https://commons.wikimedia.org/wiki/File:An_Example_of_Raised_Crosswalks_near_Sogang_University_2.jpg) | Monotaxism | CC0 | teuk13 9.3~11.4 |
+| `cup` | [Cup Noodle Zeitaku-nikumori-Dandanmian.jpg](https://commons.wikimedia.org/wiki/File:Cup_Noodle_Zeitaku-nikumori-Dandanmian.jpg) | 毒島みるく | CC0 | teuk10 0.0~1.6 |
+| `cup2` | [Cup Noodle Zeitaku-toromi-fukahire-soup.jpg](https://commons.wikimedia.org/wiki/File:Cup_Noodle_Zeitaku-toromi-fukahire-soup.jpg) | 毒島みるく | CC0 | teuk10 2.9~5.7 |
+| `desk` | [Working on a planning session with stationery items, notebook, and colorful pencils on a wooden desk.jpg](https://commons.wikimedia.org/wiki/File:Working_on_a_planning_session_with_stationery_items,_notebook,_and_colorful_pencils_on_a_wooden_desk.jpg) | Shixart1985 | CC BY 2.0 | teuk2 26.5~28.9 |
+| `dumbbell` | [Exercise equipment (rubber ball, light-weight dumbbells, jump rope).jpg](https://commons.wikimedia.org/wiki/File:Exercise_equipment_(rubber_ball,_light-weight_dumbbells,_jump_rope).jpg) | CDC/ Debora Cartagena | Public domain | teuk7 8.4~10.4 |
+| `fried_kimchi` | [Kimchi fried rice.jpg](https://commons.wikimedia.org/wiki/File:Kimchi_fried_rice.jpg) | Sharon Ang | CC0 | teuk9 1.5~4.0 |
+| `fried_pan` | [Kimchi-bokkeum-bap (Kimchi fried rice) - Kogi 2023-09-11.jpg](https://commons.wikimedia.org/wiki/File:Kimchi-bokkeum-bap_(Kimchi_fried_rice)_-_Kogi_2023-09-11.jpg) | Andy Li | CC0 | teuk12 14.8~16.8 |
+| `greenonion` | [Beijing scallions.jpg](https://commons.wikimedia.org/wiki/File:Beijing_scallions.jpg) | Fumikas Sagisavas | CC0 | teuk5 5.7~7.9 |
+| `greenonion2` | [CSA-Red-Spring-Onions.jpg](https://commons.wikimedia.org/wiki/File:CSA-Red-Spring-Onions.jpg) | Evan-Amos | Public domain | teuk5 23.9~25.2 |
+| `grill1` | [Samgyeopsal-gui 1.jpg](https://commons.wikimedia.org/wiki/File:Samgyeopsal-gui_1.jpg) | chomjong | CC BY 2.0 | teuk12 0.0~1.4 |
+| `grill2` | [Korean.food-Samgyeopsal-02.jpg](https://commons.wikimedia.org/wiki/File:Korean.food-Samgyeopsal-02.jpg) | Blue Lotus (a flickr user) | CC BY 2.0 | teuk12 8.7~11.4 |
+| `grill3` | [Samgyeopsal-gui.jpg](https://commons.wikimedia.org/wiki/File:Samgyeopsal-gui.jpg) | jinsoo jang | CC0 | teuk12 26.6~28.8 |
+| `kimchi` | [Korean cuisine-Kimchi-08.jpg](https://commons.wikimedia.org/wiki/File:Korean_cuisine-Kimchi-08.jpg) | Jeremy Keith | CC BY 2.0 | teuk3 24.9~26.1 |
+| `lastslice` | [Pepperoni pizza slice on a red plate.jpg](https://commons.wikimedia.org/wiki/File:Pepperoni_pizza_slice_on_a_red_plate.jpg) | MVS9966 | CC BY 3.0 | teuk14 13.3~15.6 |
+| `map` | [World Map 1689.JPG](https://commons.wikimedia.org/wiki/File:World_Map_1689.JPG) | Gerard van Schagen | Public domain | teuk13 25.6~27.6 |
+| `notes` | [Personal organizer with metallic ring binder.jpg](https://commons.wikimedia.org/wiki/File:Personal_organizer_with_metallic_ring_binder.jpg) | Old Photo Profile | CC BY 2.0 | teuk2 3.7~5.7 |
+| `pajeon` | [Korean pancake-Pajeon-08.jpg](https://commons.wikimedia.org/wiki/File:Korean_pancake-Pajeon-08.jpg) | Jamie | CC BY 2.0 | teuk6 10.9~13.6 |
+| `phone` | [Smartphone display screen.jpg](https://commons.wikimedia.org/wiki/File:Smartphone_display_screen.jpg) | Skitterphoto | CC0 | teuk4 14.3~16.6 |
+| `pot` | [Ramyeon and kimchi.jpg](https://commons.wikimedia.org/wiki/File:Ramyeon_and_kimchi.jpg) | Hyeon-Jeong Suk | CC BY 2.0 | teuk5 2.9~4.5 |
+| `rainwindow` | [Clear Umbrella Rain Liverpool (Unsplash).jpg](https://commons.wikimedia.org/wiki/File:Clear_Umbrella_Rain_Liverpool_(Unsplash).jpg) | freddie marriage fredmarriage | CC0 | teuk6 5.3~6.5 |
+| `ramyeon` | [20200804 033546 Ramyeon IMG 8515.jpg](https://commons.wikimedia.org/wiki/File:20200804_033546_Ramyeon_IMG_8515.jpg) | Choi Kwang-mo | CC0 | teuk10 17.2~19.6 |
+| `ssam` | [Samgyeopsal table.jpg](https://commons.wikimedia.org/wiki/File:Samgyeopsal_table.jpg) | 이동원 | CC0 | teuk12 6.3~8.7 |
+| `stairs` | [Stairs steps.jpg](https://commons.wikimedia.org/wiki/File:Stairs_steps.jpg) | Knites | CC0 | teuk7 10.4~12.0 |
+| `steak` | [Steak, carrots, bok choy, sweet peppers, and mashed potatoes - Massachusetts.jpg](https://commons.wikimedia.org/wiki/File:Steak,_carrots,_bok_choy,_sweet_peppers,_and_mashed_potatoes_-_Massachusetts.jpg) | Daderot | CC0 | teuk8 6.8~8.7 |
+| `tbk_cheese` | [Korean food at Tteokbokki restaurant in Shin-Okubo 3.jpg](https://commons.wikimedia.org/wiki/File:Korean_food_at_Tteokbokki_restaurant_in_Shin-Okubo_3.jpg) | Syced | CC0 | teuk9 16.9~19.9 |
+| `tbk_eomuk` | [Korean.snacks-Tteokbokki-08.jpg](https://commons.wikimedia.org/wiki/File:Korean.snacks-Tteokbokki-08.jpg) | jetalone (flickr) | CC BY 2.0 | teuk9 7.6~10.6 |
+| `tbk_fork` | [Tteokbokki Bunsik Korean food 02.jpg](https://commons.wikimedia.org/wiki/File:Tteokbokki_Bunsik_Korean_food_02.jpg) | Hankook12 | CC0 | teuk9 14.3~16.9 |
+| `tbk_pan` | [Korean.snacks-Tteokbokki-04.jpg](https://commons.wikimedia.org/wiki/File:Korean.snacks-Tteokbokki-04.jpg) | Sung Sook | CC BY 2.0 | teuk9 0.0~1.5, teuk13 22.0~24.3 |
+| `tbk_plate` | [Korean rice cake (tteokbokki).jpg](https://commons.wikimedia.org/wiki/File:Korean_rice_cake_(tteokbokki).jpg) | Fumikas Sagisavas | CC0 | teuk9 26.1~27.4 |
+| `tissue` | [Chained rolls of toilet paper at MBTA Sullivan station bathrooms.jpg](https://commons.wikimedia.org/wiki/File:Chained_rolls_of_toilet_paper_at_MBTA_Sullivan_station_bathrooms.jpg) | 4300streetcar | CC BY 4.0 | teuk5 7.9~10.2 |
+| `umbrella` | [Closeup of black umbrella in rain.jpg](https://commons.wikimedia.org/wiki/File:Closeup_of_black_umbrella_in_rain.jpg) | Shixart1985 | CC BY 2.0 | teuk6 6.5~8.5 |
+
+### 사실 확인
+
+14편 모두 관찰체 창작 대본이다. 통계, 가격, 법규 같은 사실 주장은 없다. 시간·숫자("10분", "3분", "천 원에 몇 마리")는 장면 속 표현이고 사실로 내세우지 않는다. 그래서 인용할 출처가 없다. 실제 브랜드, 가게, 앱, 회사 이름은 없다("국룰", "밀떡/쌀떡"은 일반 명사). 사람 유형 편(길치, 눈치 없는 사람)은 "나"의 습관으로 쓰고, 끝에서 "혹시 나야?", "맛집 가는 길은 한 번에"처럼 자기 자신을 소재로 돌린다. 몸, 지역, 직업, 집단은 놀리지 않는다. 설명란 요약 앞에 "(창작)"이 붙는다.
+
+### 업로드 문구
+
+설명글은 공통 형식(`upload/README.md`)으로 `upload/specs/<id>.json` → `python3 upload/make_desc.py <id>` → `upload/txt/<id>.txt`에 있다. 채널 이름과 핸들은 아직 자리표시자다. 아래는 그 내용이다.
+
+`teuk1`
+- 제목: 월요일 아침 특ㅋㅋ
+- 설명:
+  ```
+  (창작) 알람을 다섯 번 끄고서야 겨우 일어나는 월요일 아침을 담았습니다. 마지막 알람 이름이 '진짜_최종_마지막'이고, 출입 카드 '삑' 소리가 하루 중 제일 슬프다면 공감할 겁니다. 여러분은 몇 개 해당되나요?
+  
+  ▶ [채널명] 채널 구독: https://www.youtube.com/@[핸들]
+  
+  출처: 그림·대본·목소리 직접 제작(등장인물·채팅방은 실제와 관계없음) · 사진: Alarm clock on a chair (Unsplash).jpg by Szűcs László szucslaszlo (CC0, http://creativecommons.org/publicdomain/zero/1.0/deed.en), via Wikimedia Commons · 사진: Cappuchino latte art.jpg by Blanka Novotná (Public domain), via Wikimedia Commons · 음악: "Hustle" Kevin MacLeod (incompetech.com), CC BY 4.0 (creativecommons.org/licenses/by/4.0)
+  
+  #Shorts #공감 #특 #공감툰 #공감애니 #창작애니 #일상공감 #월요일 #직장인 #출근 #직장인공감
+  ```
+- 해시태그: #Shorts #공감 #특 #공감툰 #공감애니 #창작애니 #일상공감 #월요일 #직장인 #출근 #직장인공감
+- 고정 댓글: 알람 몇 번 끄고 일어나세요?
+
+`teuk2`
+- 제목: 시험 기간 특ㅋㅋ
+- 설명:
+  ```
+  (창작) 시험 전날만 되면 갑자기 책상 정리가 하고 싶어지는 시험 기간의 모습을 모았습니다. 계획표만 한 시간 만들고, 새벽 3시에 방 구조를 바꾸고 싶어지는 바로 그 마음입니다. 여러분은 몇 개 해당되나요?
+  
+  ▶ [채널명] 채널 구독: https://www.youtube.com/@[핸들]
+  
+  출처: 그림·대본·목소리 직접 제작(등장인물·채팅방은 실제와 관계없음) · 사진: Personal organizer with metallic ring binder.jpg by Old Photo Profile (CC BY 2.0, https://creativecommons.org/licenses/by/2.0), via Wikimedia Commons · 사진: Working on a planning session with stationery items, notebook, and colorful pencils on a wooden desk.jpg by Shixart1985 (CC BY 2.0, https://creativecommons.org/licenses/by/2.0), via Wikimedia Commons · 음악: "Sneaky Snitch" Kevin MacLeod (incompetech.com), CC BY 4.0 (creativecommons.org/licenses/by/4.0)
+  
+  #Shorts #공감 #특 #공감툰 #공감애니 #창작애니 #일상공감 #시험기간 #학생공감 #벼락치기 #중간고사
+  ```
+- 해시태그: #Shorts #공감 #특 #공감툰 #공감애니 #창작애니 #일상공감 #시험기간 #학생공감 #벼락치기 #중간고사
+- 고정 댓글: 시험 전날 제일 많이 한 딴짓은?
+
+`teuk3`
+- 제목: 급식 특ㅋㅋ
+- 설명:
+  ```
+  (창작) 4교시부터 오늘 급식 메뉴만 생각하던 학교 급식 시간을 떠올려 봤습니다. 종이 치자마자 뛰지 않고 아주 빠르게 걷고, 국자가 한 번 더 오면 그날은 대성공이었죠. 여러분은 몇 개 해당되나요?
+  
+  ▶ [채널명] 채널 구독: https://www.youtube.com/@[핸들]
+  
+  출처: 그림·대본·목소리 직접 제작(등장인물·채팅방은 실제와 관계없음) · 사진: Korean fried chicken 5.jpg by insatiablemunch (CC BY 2.0, https://creativecommons.org/licenses/by/2.0), via Wikimedia Commons · 사진: Korean cuisine-Kimchi-08.jpg by Jeremy Keith (CC BY 2.0, https://creativecommons.org/licenses/by/2.0), via Wikimedia Commons · 음악: "Monkeys Spinning Monkeys" Kevin MacLeod (incompetech.com), CC BY 4.0 (creativecommons.org/licenses/by/4.0)
+  
+  #Shorts #공감 #특 #공감툰 #공감애니 #창작애니 #일상공감 #급식 #학교 #학창시절 #추억
+  ```
+- 해시태그: #Shorts #공감 #특 #공감툰 #공감애니 #창작애니 #일상공감 #급식 #학교 #학창시절 #추억
+- 고정 댓글: 최애 급식 메뉴 하나만 적고 가기
+
+`teuk4`
+- 제목: 단톡방 특ㅋㅋ
+- 설명:
+  ```
+  (창작) 알림은 꺼 놓고 몰래 다 읽는 단톡방의 하루를 모았습니다. 질문하면 아무도 대답이 없고, 엄마한테 보낼 톡을 단톡방에 보내는 그 순간까지 담았습니다. 여러분은 몇 개 해당되나요?
+  
+  ▶ [채널명] 채널 구독: https://www.youtube.com/@[핸들]
+  
+  출처: 그림·대본·목소리 직접 제작(등장인물·채팅방은 실제와 관계없음) · 사진: Smartphone display screen.jpg by Skitterphoto (CC0, http://creativecommons.org/publicdomain/zero/1.0/deed.en), via Wikimedia Commons · 음악: "Hyperfun" Kevin MacLeod (incompetech.com), CC BY 4.0 (creativecommons.org/licenses/by/4.0)
+  
+  #Shorts #공감 #특 #공감툰 #공감애니 #창작애니 #일상공감 #단톡방 #카톡공감 #친구공감 #읽씹
+  ```
+- 해시태그: #Shorts #공감 #특 #공감툰 #공감애니 #창작애니 #일상공감 #단톡방 #카톡공감 #친구공감 #읽씹
+- 고정 댓글: 지금 안 읽은 톡 몇 개 있어요?
+
+`teuk5`
+- 제목: 자취 첫 달 특ㅋㅋ
+- 설명:
+  ```
+  (창작) 집이 너무 조용해서 오히려 잠이 안 오는 자취 첫 달의 모습입니다. 라면 냄비가 곧 그릇이 되고, 대파 한 단은 끝까지 먹은 적이 없는 그 시절입니다. 여러분은 몇 개 해당되나요?
+  
+  ▶ [채널명] 채널 구독: https://www.youtube.com/@[핸들]
+  
+  출처: 그림·대본·목소리 직접 제작(등장인물·채팅방은 실제와 관계없음) · 사진: Ramyeon and kimchi.jpg by Hyeon-Jeong Suk (CC BY 2.0, https://creativecommons.org/licenses/by/2.0), via Wikimedia Commons · 사진: Beijing scallions.jpg by Fumikas Sagisavas (CC0, http://creativecommons.org/publicdomain/zero/1.0/deed.en), via Wikimedia Commons · 사진: Chained rolls of toilet paper at MBTA Sullivan station bathrooms.jpg by 4300streetcar (CC BY 4.0, https://creativecommons.org/licenses/by/4.0), via Wikimedia Commons · 사진: CSA-Red-Spring-Onions.jpg by Evan-Amos (Public domain), via Wikimedia Commons · 음악: "Scheming Weasel" Kevin MacLeod (incompetech.com), CC BY 4.0 (creativecommons.org/licenses/by/4.0)
+  
+  #Shorts #공감 #특 #공감툰 #공감애니 #창작애니 #일상공감 #자취 #자취생 #자취공감 #혼자살기
+  ```
+- 해시태그: #Shorts #공감 #특 #공감툰 #공감애니 #창작애니 #일상공감 #자취 #자취생 #자취공감 #혼자살기
+- 고정 댓글: 자취하면서 제일 놀랐던 순간은?
+
+`teuk6`
+- 제목: 비 오는 날 특ㅋㅋ
+- 설명:
+  ```
+  (창작) 우산 챙긴 날엔 비가 한 방울도 안 오는 비 오는 날의 법칙을 모았습니다. 집에 우산이 많은데 또 하나 사고, 파전 해 먹자 했는데 밀가루가 없는 날입니다. 여러분은 몇 개 해당되나요?
+  
+  ▶ [채널명] 채널 구독: https://www.youtube.com/@[핸들]
+  
+  출처: 그림·대본·목소리 직접 제작(등장인물·채팅방은 실제와 관계없음) · 사진: Clear Umbrella Rain Liverpool (Unsplash).jpg by freddie marriage fredmarriage (CC0, http://creativecommons.org/publicdomain/zero/1.0/deed.en), via Wikimedia Commons · 사진: Closeup of black umbrella in rain.jpg by Shixart1985 (CC BY 2.0, https://creativecommons.org/licenses/by/2.0), via Wikimedia Commons · 사진: Korean pancake-Pajeon-08.jpg by Jamie (CC BY 2.0, https://creativecommons.org/licenses/by/2.0), via Wikimedia Commons · 음악: "Monkeys Spinning Monkeys" Kevin MacLeod (incompetech.com), CC BY 4.0 (creativecommons.org/licenses/by/4.0)
+  
+  #Shorts #공감 #특 #공감툰 #공감애니 #창작애니 #일상공감 #비오는날 #장마 #우산 #날씨공감
+  ```
+- 해시태그: #Shorts #공감 #특 #공감툰 #공감애니 #창작애니 #일상공감 #비오는날 #장마 #우산 #날씨공감
+- 고정 댓글: 집에 우산 몇 개 있어요?
+
+`teuk7`
+- 제목: 헬스장 첫 주 특ㅋㅋ
+- 설명:
+  ```
+  (창작) 일단 회원권은 1년짜리부터 끊는 헬스장 첫 주의 모습입니다. 첫날부터 너무 열심히 해서 다음 날 계단을 못 내려가고, 운동했으니까 치킨은 괜찮다고 믿습니다. 여러분은 몇 개 해당되나요?
+  
+  ▶ [채널명] 채널 구독: https://www.youtube.com/@[핸들]
+  
+  출처: 그림·대본·목소리 직접 제작(등장인물·채팅방은 실제와 관계없음) · 사진: Exercise equipment (rubber ball, light-weight dumbbells, jump rope).jpg by CDC/ Debora Cartagena (Public domain), via Wikimedia Commons · 사진: Stairs steps.jpg by Knites (CC0, http://creativecommons.org/publicdomain/zero/1.0/deed.en), via Wikimedia Commons · 사진: Korean fried chicken 5.jpg by insatiablemunch (CC BY 2.0, https://creativecommons.org/licenses/by/2.0), via Wikimedia Commons · 음악: "Exhilarate" Kevin MacLeod (incompetech.com), CC BY 4.0 (creativecommons.org/licenses/by/4.0)
+  
+  #Shorts #공감 #특 #공감툰 #공감애니 #창작애니 #일상공감 #헬스장 #운동 #헬린이 #다이어트
+  ```
+- 해시태그: #Shorts #공감 #특 #공감툰 #공감애니 #창작애니 #일상공감 #헬스장 #운동 #헬린이 #다이어트
+- 고정 댓글: 헬스장 며칠째까지 가 봤어요?
+
+`teuk8`
+- 제목: 월급날 특ㅋㅋ
+- 설명:
+  ```
+  (창작) 아침부터 입금 알림만 기다리는 월급날 하루를 담았습니다. 들어오자마자 카드값이 빠져나가고, '오늘은 내가 쏜다' 해 놓고 계산할 때 살짝 후회합니다. 여러분은 몇 개 해당되나요?
+  
+  ▶ [채널명] 채널 구독: https://www.youtube.com/@[핸들]
+  
+  출처: 그림·대본·목소리 직접 제작(등장인물·채팅방은 실제와 관계없음) · 사진: Steak, carrots, bok choy, sweet peppers, and mashed potatoes - Massachusetts.jpg by Daderot (CC0, http://creativecommons.org/publicdomain/zero/1.0/deed.en), via Wikimedia Commons · 사진: Mini grocery toy pushcart.jpg by Me (Elsa Versailles) (Public domain), via Wikimedia Commons · 사진: WallCalendar.jpg by Claudio Elias (Public domain), via Wikimedia Commons · 음악: "Hustle" Kevin MacLeod (incompetech.com), CC BY 4.0 (creativecommons.org/licenses/by/4.0)
+  
+  #Shorts #공감 #특 #공감툰 #공감애니 #창작애니 #일상공감 #월급날 #직장인 #월급 #직장인공감
+  ```
+- 해시태그: #Shorts #공감 #특 #공감툰 #공감애니 #창작애니 #일상공감 #월급날 #직장인 #월급 #직장인공감
+- 고정 댓글: 월급날 제일 먼저 사는 건?
+
+`teuk9`
+- 제목: 떡볶이 특ㅋㅋ
+- 설명:
+  ```
+  (창작) 1인분 시켰는데 정신 차려 보면 볶음밥까지 먹고 있는 떡볶이의 법칙을 모았습니다. 맵다면서 단무지만 세 번 리필하고, 밀떡 쌀떡 토론은 10분이 걸립니다. 여러분은 몇 개 해당되나요?
+  
+  ▶ [채널명] 채널 구독: https://www.youtube.com/@[핸들]
+  
+  출처: 그림·대본·목소리 직접 제작(등장인물·채팅방은 실제와 관계없음) · 사진: Korean.snacks-Tteokbokki-04.jpg by Sung Sook (CC BY 2.0, https://creativecommons.org/licenses/by/2.0), via Wikimedia Commons · 사진: Kimchi fried rice.jpg by Sharon Ang (CC0, http://creativecommons.org/publicdomain/zero/1.0/deed.en), via Wikimedia Commons · 사진: Korean.snacks-Tteokbokki-08.jpg by jetalone (flickr) (CC BY 2.0, https://creativecommons.org/licenses/by/2.0), via Wikimedia Commons · 사진: Tteokbokki Bunsik Korean food 02.jpg by Hankook12 (CC0, http://creativecommons.org/publicdomain/zero/1.0/deed.en), via Wikimedia Commons · 사진: Korean food at Tteokbokki restaurant in Shin-Okubo 3.jpg by Syced (CC0, http://creativecommons.org/publicdomain/zero/1.0/deed.en), via Wikimedia Commons · 사진: Korean rice cake (tteokbokki).jpg by Fumikas Sagisavas (CC0, http://creativecommons.org/publicdomain/zero/1.0/deed.en), via Wikimedia Commons · 음악: "Hyperfun" Kevin MacLeod (incompetech.com), CC BY 4.0 (creativecommons.org/licenses/by/4.0)
+  
+  #Shorts #공감 #특 #공감툰 #공감애니 #창작애니 #일상공감 #떡볶이 #분식 #먹방공감 #밀떡쌀떡
+  ```
+- 해시태그: #Shorts #공감 #특 #공감툰 #공감애니 #창작애니 #일상공감 #떡볶이 #분식 #먹방공감 #밀떡쌀떡
+- 고정 댓글: 밀떡 vs 쌀떡, 여러분은?
+
+`teuk10`
+- 제목: 컵라면 특ㅋㅋ
+- 설명:
+  ```
+  (창작) 물 선까지 부으라는데 그 선이 안 보이는 컵라면의 순간들을 모았습니다. 3분 기다리라는데 1분째 젓가락을 들고 있고, 고르는 데 20분, 먹는 데 3분이 걸립니다. 여러분은 몇 개 해당되나요?
+  
+  ▶ [채널명] 채널 구독: https://www.youtube.com/@[핸들]
+  
+  출처: 그림·대본·목소리 직접 제작(등장인물·채팅방은 실제와 관계없음) · 사진: 컵라면 사진 1 by 毒島みるく (CC0, http://creativecommons.org/publicdomain/zero/1.0/deed.en), via Wikimedia Commons · 사진: 컵라면 사진 2 by 毒島みるく (CC0, http://creativecommons.org/publicdomain/zero/1.0/deed.en), via Wikimedia Commons · 사진: 20200804 033546 Ramyeon IMG 8515.jpg by Choi Kwang-mo (CC0, http://creativecommons.org/publicdomain/zero/1.0/deed.en), via Wikimedia Commons · 음악: "Sneaky Snitch" Kevin MacLeod (incompetech.com), CC BY 4.0 (creativecommons.org/licenses/by/4.0)
+  
+  #Shorts #공감 #특 #공감툰 #공감애니 #창작애니 #일상공감 #컵라면 #라면 #야식 #편의점
+  ```
+- 해시태그: #Shorts #공감 #특 #공감툰 #공감애니 #창작애니 #일상공감 #컵라면 #라면 #야식 #편의점
+- 고정 댓글: 컵라면 몇 분 기다리세요?
+
+`teuk11`
+- 제목: 붕어빵 특ㅋㅋ
+- 설명:
+  ```
+  (창작) 팥이냐 슈크림이냐 고르다가 결국 둘 다 사는 붕어빵의 계절입니다. 머리부터 먹냐 꼬리부터 먹냐로 성격이 나오고, 세 마리 샀는데 집에 오면 한 마리만 남습니다. 여러분은 몇 개 해당되나요?
+  
+  ▶ [채널명] 채널 구독: https://www.youtube.com/@[핸들]
+  
+  출처: 그림·대본·목소리 직접 제작(등장인물·채팅방은 실제와 관계없음) · 사진: Taiyaki - cut section.jpg by 毒島みるく (CC0, http://creativecommons.org/publicdomain/zero/1.0/deed.en), via Wikimedia Commons · 사진: Bungeoppang-01.jpg by Siqbal at en.wikipedia (Public domain), via Wikimedia Commons · 사진: 시장 2.jpg by Chae Ji-young (CC BY 4.0, https://creativecommons.org/licenses/by/4.0), via Wikimedia Commons · 사진: Taiyaki 003.jpg by Ocdp (CC0, http://creativecommons.org/publicdomain/zero/1.0/deed.en), via Wikimedia Commons · 음악: "Monkeys Spinning Monkeys" Kevin MacLeod (incompetech.com), CC BY 4.0 (creativecommons.org/licenses/by/4.0)
+  
+  #Shorts #공감 #특 #공감툰 #공감애니 #창작애니 #일상공감 #붕어빵 #겨울간식 #팥붕슈붕 #길거리음식
+  ```
+- 해시태그: #Shorts #공감 #특 #공감툰 #공감애니 #창작애니 #일상공감 #붕어빵 #겨울간식 #팥붕슈붕 #길거리음식
+- 고정 댓글: 팥 vs 슈크림, 머리 vs 꼬리?
+
+`teuk12`
+- 제목: 삼겹살 특ㅋㅋ
+- 설명:
+  ```
+  (창작) 고기 굽는 사람은 정작 한 점도 못 먹는 삼겹살 자리의 모습을 모았습니다. 다 익었냐고 물으면 대답은 늘 '조금만 더'이고, 배부르다면서 볶음밥은 꼭 시킵니다. 여러분은 몇 개 해당되나요?
+  
+  ▶ [채널명] 채널 구독: https://www.youtube.com/@[핸들]
+  
+  출처: 그림·대본·목소리 직접 제작(등장인물·채팅방은 실제와 관계없음) · 사진: Samgyeopsal-gui 1.jpg by chomjong (CC BY 2.0, https://creativecommons.org/licenses/by/2.0), via Wikimedia Commons · 사진: Samgyeopsal table.jpg by 이동원 (CC0, http://creativecommons.org/publicdomain/zero/1.0/deed.en), via Wikimedia Commons · 사진: Korean.food-Samgyeopsal-02.jpg by Blue Lotus (a flickr user) (CC BY 2.0, https://creativecommons.org/licenses/by/2.0), via Wikimedia Commons · 사진: Kimchi-bokkeum-bap (Kimchi fried rice) - Kogi 2023-09-11.jpg by Andy Li (CC0, http://creativecommons.org/publicdomain/zero/1.0/deed.en), via Wikimedia Commons · 사진: Samgyeopsal-gui.jpg by jinsoo jang (CC0, http://creativecommons.org/publicdomain/zero/1.0/deed.en), via Wikimedia Commons · 음악: "Hustle" Kevin MacLeod (incompetech.com), CC BY 4.0 (creativecommons.org/licenses/by/4.0)
+  
+  #Shorts #공감 #특 #공감툰 #공감애니 #창작애니 #일상공감 #삼겹살 #고기 #회식 #먹방공감
+  ```
+- 해시태그: #Shorts #공감 #특 #공감툰 #공감애니 #창작애니 #일상공감 #삼겹살 #고기 #회식 #먹방공감
+- 고정 댓글: 고기 굽는 담당 누구예요?
+
+`teuk13`
+- 제목: 길치 특ㅋㅋ
+- 설명:
+  ```
+  (창작) 지도 앱을 켜고 걷는데 화살표가 계속 뒤를 가리키는 길치의 하루입니다. 길을 물어봐 놓고 반대로 걷고, 오른쪽이라고 하면 일단 왼쪽부터 봅니다. 여러분은 몇 개 해당되나요?
+  
+  ▶ [채널명] 채널 구독: https://www.youtube.com/@[핸들]
+  
+  출처: 그림·대본·목소리 직접 제작(등장인물·채팅방은 실제와 관계없음) · 사진: Bukchon, Seoul - Bukchon3283.jpg by lumoplank (CC0, http://creativecommons.org/publicdomain/zero/1.0/deed.en), via Wikimedia Commons · 사진: 횡단보도 사진 by Monotaxism (CC0, http://creativecommons.org/publicdomain/zero/1.0/deed.en), via Wikimedia Commons · 사진: Korean.snacks-Tteokbokki-04.jpg by Sung Sook (CC BY 2.0, https://creativecommons.org/licenses/by/2.0), via Wikimedia Commons · 사진: World Map 1689.JPG by Gerard van Schagen (Public domain), via Wikimedia Commons · 음악: "Scheming Weasel" Kevin MacLeod (incompetech.com), CC BY 4.0 (creativecommons.org/licenses/by/4.0)
+  
+  #Shorts #공감 #특 #공감툰 #공감애니 #창작애니 #일상공감 #길치 #방향치 #길찾기 #공감짤
+  ```
+- 해시태그: #Shorts #공감 #특 #공감툰 #공감애니 #창작애니 #일상공감 #길치 #방향치 #길찾기 #공감짤
+- 고정 댓글: 길 잃어버린 썰 하나씩 풀고 가기
+
+`teuk14`
+- 제목: 눈치 없는 사람 특ㅋㅋ
+- 설명:
+  ```
+  (창작) 다들 조용한데 혼자 '이거 누가 시켰어요?' 하고 묻는 친구, 주변에 한 명쯤 있죠. 결말이 궁금하다니까 진짜 결말을 말해 주고, 깜짝 파티 장소를 주인공 앞에서 물어봅니다. 여러분 주변에도 있나요, 아니면 혹시 나인가요?
+  
+  ▶ [채널명] 채널 구독: https://www.youtube.com/@[핸들]
+  
+  출처: 그림·대본·목소리 직접 제작(등장인물·채팅방은 실제와 관계없음) · 사진: Pepperoni pizza slice on a red plate.jpg by MVS9966 (CC BY 3.0, https://creativecommons.org/licenses/by/3.0), via Wikimedia Commons · 사진: Piece of chocolate cake on a white plate decorated with chocolate sauce.jpg by Daria Yakovleva (minor edits by Subsidiary account) (CC0, http://creativecommons.org/publicdomain/zero/1.0/deed.en), via Wikimedia Commons · 음악: "Sneaky Snitch" Kevin MacLeod (incompetech.com), CC BY 4.0 (creativecommons.org/licenses/by/4.0)
+  
+  #Shorts #공감 #특 #공감툰 #공감애니 #창작애니 #일상공감 #눈치 #친구공감 #인간관계 #MBTI
+  ```
+- 해시태그: #Shorts #공감 #특 #공감툰 #공감애니 #창작애니 #일상공감 #눈치 #친구공감 #인간관계 #MBTI
+- 고정 댓글: 혹시… 나야? 몇 개 해당?
+
+
+---
+
+## 롱폼: 반찬통에 이름 써 붙이는 남편과 각방 쓴 사연
+
+`lfsaeyeon1` · 그림 사연툰 단편(리서치 `research/research-longform-story.md` 4절 레시피 ①, 아이디어 1) · 1920×1080, 10분 17초 · 창작 사연
+
+- 파일: `final/lfsaeyeon1.mp4`, `final/lfsaeyeon1-thumb.jpg`
+- 만들기: `longform/lfsaeyeon1/render.sh` (voice.py → build.py → prep.py → Remotion `src/lib/long/lfsaeyeon1_comps.tsx` → 2-pass H.264 + loudnorm −14 LUFS) · QA `python3 longform/lfsaeyeon1/qa.py`
+- 원고: `longform/lfsaeyeon1/story.py`(장면 153개), 개요 3개는 `outlines.md`, 대본은 `script.json`, 컷 목록은 `scenes.json`, 음악·효과음은 `edit.json`
+- 그림: 새 파일만 썼다. `src/lib/long/lfsaeyeon1_cast.tsx`(인물 4명), `_set.tsx`(배경·소품), `_stage.tsx`(16:9 한 컷), `_video.tsx`(전체), `_thumb.tsx`, `_comps.tsx`(컴포지션 2개). 쇼츠 템플릿 파일은 고치지 않았고, `src/Root.tsx` 끝에 `<LfSaeyeon1Comps />` 한 줄(과 import 한 줄)만 더했다. 롱폼 키트(`src/Long.tsx`)가 합쳐지기 전이라 자체 컴포지션으로 렌더했다. 키트가 들어오면 `SyStage`를 키트의 썰 장면에서 부르거나, 완성본에 `qa_long.py`를 돌리면 된다.
+
+### 이야기 검토 (REVIEW.md 2-1, 녹음 전)
+
+| 항목 | 결과 |
+|---|---|
+| 1. 한 줄 요약 | 반찬통에 이름표를 붙이던 남편 때문에 각방까지 썼는데, 남편은 손을 못 쓰게 된 어머님 체면과 내 반찬을 둘 다 지키려고 새벽마다 내 장조림을 흉내 내 만들고 있었다 |
+| 2. 제목으로 결말을 못 맞힘 | 제목의 첫 추측은 "치사한 남편 / 혼자 먹으려는 남편". 5:00쯤 나오는 1차 답("시어머니가 가져갔다")도 미끼이고, 진짜 답(남편이 만든 '엄마' 통)은 6:46까지 안 나온다. 제목에는 결과(각방)만 있다 |
+| 3. 구체적인 장면 | 별 모양 당근 장조림, 은색 스테인리스 '엄마' 통, 케첩에 붙은 '우리' 이름표, 밴드 세 개, 메추리알 껍데기, 화·목 14:10 도어록 기록, 한여름 면장갑 |
+| 4. 커지는 갈등 | 이름표 → 거짓말(깻잎·헬스장·새벽 운동) → 각방 → 시댁에서 "올케도 좀 배워" 망신 → 짐 싸기. 네 번 커지고, 친구의 "딴 집 반찬?" 의심이 한 번 꺾는다 |
+| 5. 복선 있는 반전 | 아래 단서 표. 우연·꿈·갑작스러운 제3자 없음. 1차 반전(시어머니)과 2차 반전(남편)이 같은 단서로 풀린다 |
+| 6. 감정 하나 | 뭉클(따뜻한 반전). 사이다는 어머님이 스스로 장갑을 벗고 진실을 말하는 행동으로, 웃음은 "그럼 짠 건 누가 했는데?" → 손 드는 남편 한 번 |
+| 7. 설교 금지 | 교훈 문장 없음. 해결은 장갑 벗기, 손 들기, 같이 장조림 만들기 |
+| 8. 살아 있는 인물 | 나("아니 근데,", 별 깎는 버릇) · 남편("그냥…", 거짓말하면 귀가 빨개짐) · 어머님("아이고, 됐다 됐어", 손 관절, 딸에게만은 엄마 반찬을 끊기 싫음) · 형님("아 진짜~", 백일 아기, 지쳐서 말이 앞섬). 악역 없음, 모두 이유가 있다 |
+| 9. 구조 돌려쓰기 | 결말 유형: 숨은 동기 + 이중 반전. 직전 썰(sseol13, 따뜻한 반전 "~하는 이유")과 뼈대가 다르다 |
+| 10. 쓰는 순서 | 개요 3개(A 선택, B·C 버림) → 1번 기준 선택 → "20대 댓글" 거르기(예상 댓글: "각방 수락이 복선이었네", "삐뚤빼뚤 별에서 울컥", "짠 건 누가 했는데 ㅋㅋ") |
+
+- **훅(0:00~0:18)**: 남편이 은색 통을 들고 "이건 엄마 거야. 당신은 손대지 마." → "아니 근데… 여기 우리 집 냉장고거든?" → "결혼 2년 차. 남편이 반찬통에 이름을 써 붙이기 시작했어요. 그리고 저희는… 각방을 썼습니다." → 제목 카드
+- **반전**: 이름표는 나한테 한 말이 아니었다. '지은' = "엄마, 이건 손대지 마세요", '엄마' = "이건 가져가세요, 내가 만든 거예요". 1년 전부터 칼을 못 쥐는 어머님이 산후조리 중인 형님에게 "엄마 반찬"을 끊지 못해 우리 집 반찬을 가져갔고, 그걸 안 남편이 어머님 체면과 내 반찬을 둘 다 지키려고 새벽 4시 반마다 내 레시피로 장조림을 만들었다. 각방을 1초 만에 받아들인 것도 새벽에 나를 깨우지 않으려고.
+- **노리는 감정**: 뭉클. 끝맛은 웃음("귀가… 빨갰어요.")
+
+**복선(심은 시각 → 풀리는 시각)**
+
+| 단서 | 심음 | 풀림 |
+|---|---|---|
+| 별 모양 당근(내 표시) | 0:31 | 4:19 형님 사진 속 별 당근 → 6:20 '엄마' 통 속 찌그러진 별 → 6:54 새벽에 별을 깎는 남편 |
+| 남편은 라면 물도 못 맞춤 | 0:52 | 6:20 짠 장조림, 9:25 "그럼 짠 건 누가 했는데?" |
+| 거짓말하면 귀가 빨개짐 | 0:57 | 1:25, 2:04, 2:46 거짓말마다 / 10:04 마지막 펀치라인 |
+| 깻잎을 질색 → "내가 다 먹었어" | 1:02, 1:25 | 8:21 "엄마가 실수로 가져가신 거" |
+| 맨 안쪽 은색 '엄마' 통, "빈 통이야" | 1:45, 2:04 | 6:07 어머님은 '엄마' 통만 가져감, 7:55 "내가 만든 거니까" |
+| 손가락 밴드 세 개("덤벨") | 2:19 | 8:21 "별 깎다가", 9:30 손 든 남편 |
+| 새벽 간장 냄새, 메추리알 껍데기 | 2:33, 2:37 | 6:36 세 단서가 한 줄로 맞물림, 6:49 새벽 4시 반 |
+| 각방을 1초 만에 받아들임("일찍 일어나니까") | 3:29 | 8:13 "당신 깨우면 안 되니까" |
+| 한여름 면장갑, 파스 냄새 | 3:58 | 7:07 관절, 8:52 장갑을 벗는 어머님 |
+| "요즘 건 별이 찌그러졌더라, 좀 짜" | 4:44, 4:50 | 6:20 |
+| 도어록 화·목 14:10 | 5:32 | 5:42~6:07 숨어서 본 어머님, 7:27 "석 달 전 도어록 알림" |
+
+**버린 개요 2개** (전문은 `longform/lfsaeyeon1/outlines.md`)
+- **B. 남편의 저염 식단**: 신장 수치 경고를 받은 남편이 걱정시킬까 봐 저염 반찬을 따로 먹으려 이름표를 붙였다. 버린 이유: "알고 보니 아팠다"는 사연 오디오북 단골 공식이라 병원 봉투가 나오는 순간 끝나고, 제3자가 판을 키우지 못하며, 감정이 슬픔으로 무거워진다. 저염이면 이름이 아니라 "저염"이라고 쓰면 된다.
+- **C. 리서치 원안(시어머니의 반찬 바꿔치기)**: 시어머니가 내 반찬을 시누이에게 "엄마가 했다"며 주는 걸 막으려고 남편이 이름표를 붙였다. 버린 이유: 시댁 사연 시청자의 첫 추측이 "시어머니가 범인"이고, 결말이 시어머니 망신(빌런 → 벌)이 된다. 이름표로 막는다는 논리도 약하다. 이 개요는 A의 중간 반전(4:19~5:28)으로 썼다.
+
+### 챕터
+
+```
+0:00 콜드 오픈
+0:18 발단: 이름표
+2:10 고조 1: 깻잎과 각방
+3:42 고조 2: 시어머니 생신
+5:28 단서: 도어록 기록
+6:53 반전: 새벽 4시 반
+8:42 사이다: 일요일 시댁
+9:34 여운
+10:07 여러분이라면?
+```
+
+레시피(0:20 / 2:00 / 4:00 / 6:00 / 7:30 / 9:00 / 9:40)보다 고조 2와 단서가 20~30초 이르다. 반전·사이다 구간이 길어서 둘로 나눴다(챕터 9개).
+
+### 목소리 (Edge TTS, 한국어 목소리 3개를 인물별 속도·높이로 나눔)
+
+| 인물 | voice | rate | pitch | 메모 |
+|---|---|---|---|---|
+| 내레이션(지은) | ko-KR-SunHiNeural | +4% | +0Hz | 리서치 권장 +3~5% |
+| 나(지은, 대사) | ko-KR-SunHiNeural | +7% | +7Hz | 내레이션보다 밝고 빠르게 |
+| 남편 도윤 | ko-KR-HyunsuMultilingualNeural | +0% | −5Hz | 말수 적고 낮게 |
+| 어머님 | ko-KR-SunHiNeural | −12% | −20Hz | 느리고 낮게 |
+| 형님 도희 | ko-KR-SunHiNeural | +12% | +16Hz | 빠르고 높게 |
+
+- 대사 : 내레이션 = 줄 수로 88 : 65(약 6 : 4), 글자 수로 약 5 : 5. 문장은 짧게 끊고 "…", "아이고", "아 진짜~", "어? 아…" 같은 말버릇을 넣었다. 장면 전환마다 쉼을 길게(0.4~0.9초), 새벽 장면 직전에는 음악을 끊고 1.4초 무음.
+- 한국어 Edge 목소리는 여성 1개(SunHi)뿐이라 지은·어머님·형님이 같은 목소리의 속도·높이 변형이다. 리서치(사람 목소리 채널이 히트)를 생각하면 가장 큰 약점이다. 사람 녹음으로 바꾸려면 `script.json`의 대사를 그대로 읽으면 된다.
+
+### 그림
+
+- 98컷(평균 6.3초에 한 컷). 같은 구도에서 표정과 말풍선만 바뀌는 줄은 컷으로 세지 않는다.
+- 배경 8개: 부엌, 새벽 부엌, 냉장고 속, 거실, 안방(각방 분할 포함), 시댁 거실, 현관, 회상. 클로즈업: 장조림(반듯한 별 / 찌그러진 별), 밴드 붙은 손, 어머님 손, 도어록 기록, 형님 휴대폰 사진, 레시피 노트, 메추리알 껍데기.
+- 인물은 썰 찹쌀떡과 같은 몸·표정 13개에 고정된 차림을 더했다. 나 = 복숭아색, 갈색 앞머리 + 노란 곱창밴드 묶음머리, 산호색 옷 · 남편 = 하늘색, 짧은 검은 머리 + 삐침머리, 남색 옷, 거짓말하면 빨개지는 귀 · 어머님 = 연보라, 회색 파마, 동그란 안경, 눈가 주름, 보라 카디건, 면장갑 · 형님 = 민트, 검은 단발 + 분홍 머리띠, 다크서클, 회색 후드, 분홍 포대기의 아기.
+- 대사는 말풍선, 내레이션은 아래 자막. 화면 밖 목소리 말풍선에는 이름표를 붙였다. 오른쪽 위에 "창작 사연" 표시.
+
+### 인코딩과 QA (`python3 longform/lfsaeyeon1/qa.py`, 0 FAIL)
+
+- 1920×1080 30fps, H.264 2-pass 1,002 kbps(95MB에 맞춘 값) + AAC 192 kbps 48 kHz, faststart · 617.2초(10:17) · 93.0MB · −14.0 LUFS, 피크 −1.5 dBTP
+- 검은 프레임 0, 마지막 프레임 밝음(평균 휘도 216), 1.5초 넘는 무음 0, 12초 넘게 멈춘 화면 0, 자막 최장 27자(6장은 1500px 안에 들도록 글자를 줄임, 넘침 없음), 금지어 없음
+- WARN 1: 한 구도가 가장 길게 이어지는 곳은 3:02의 거실 다툼(23.5초). 같은 구도에서 표정·말풍선 7번이 바뀐다
+- 콘택트 시트(30초 간격): `out/review/lfsaeyeon1/sheet_*.jpg` (git 밖). 썸네일 1280×720
+
+### 출처와 라이선스
+
+- 그림·이야기·목소리: 직접 제작(창작). 사진·영상 소스 없음. 실제 브랜드·로고·앱 화면 없음(도어록 앱, 채팅, 케첩병은 이름 없는 일반 그림).
+- 음악: Kevin MacLeod (incompetech.com), CC BY 4.0 — "Carefree"(0:00~2:10, 9:34~), "Sneaky Snitch"(2:10~3:42), "Investigations"(3:42~6:48), "Heartwarming"(6:49~9:34). `longform/lfsaeyeon1/fetch_music.sh`가 incompetech.com에서 받는다.
+- 효과음: Kenney Interface Sounds(CC0)와 `../tools/sfx.py`로 합성한 소리(`fetch.sh`).
+- 글꼴: Black Han Sans, Pretendard (SIL OFL).
+
+### 업로드
+
+- 제목: 반찬통에 이름 써 붙이는 남편과 각방 쓴 사연 [사연툰]
+- 설명글: `upload/txt/lfsaeyeon1.txt` (spec `upload/specs/lfsaeyeon1.json`, channel "sseol", long, fiction). 요약은 반전을 말하지 않는다.
+- 고정 댓글: 여러분이라면 이름표 붙인 남편, 바로 용서했을까요? 아니면 각방 한 달 더? 🤔
+- 주기: 사연툰 단편은 주 1편(같은 요일·시간). 단편 4편이 쌓이면 모음집 1편(4편, 720p 또는 2편씩 1080p). 제목에 "썰툰", "야담", "참교육 애니"는 쓰지 않는다(로그아웃 검색 연령 확인).

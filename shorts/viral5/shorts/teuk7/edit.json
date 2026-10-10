@@ -1,366 +1,413 @@
 {
  "credit": "",
- "titleStyle": "band",
- "captionY": 1650,
- "sources": {},
+ "layout": "teuk",
+ "teuk": {
+  "bg": "#2a2526",
+  "mascot": "#FFB36B"
+ },
+ "sources": {
+  "dumbbell": {
+   "file": "dumbbell.jpg",
+   "page": "https://commons.wikimedia.org/wiki/File:Exercise_equipment_(rubber_ball,_light-weight_dumbbells,_jump_rope).jpg",
+   "file_url": "https://upload.wikimedia.org/wikipedia/commons/8/8b/Exercise_equipment_%28rubber_ball%2C_light-weight_dumbbells%2C_jump_rope%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+   "license": "Public domain",
+   "credit": "Exercise equipment (rubber ball, light-weight dumbbells, jump rope).jpg by CDC/ Debora Cartagena (Public domain), via Wikimedia Commons",
+   "used_seconds": [
+    [
+     8.38,
+     10.41
+    ]
+   ]
+  },
+  "stairs": {
+   "file": "stairs.jpg",
+   "page": "https://commons.wikimedia.org/wiki/File:Stairs_steps.jpg",
+   "file_url": "https://upload.wikimedia.org/wikipedia/commons/b/bd/Stairs_steps.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+   "license": "CC0",
+   "credit": "Stairs steps.jpg by Knites (CC0, http://creativecommons.org/publicdomain/zero/1.0/deed.en), via Wikimedia Commons",
+   "used_seconds": [
+    [
+     10.41,
+     11.99
+    ]
+   ]
+  },
+  "chicken": {
+   "file": "chicken.jpg",
+   "page": "https://commons.wikimedia.org/wiki/File:Korean_fried_chicken_5.jpg",
+   "file_url": "https://upload.wikimedia.org/wikipedia/commons/6/62/Korean_fried_chicken_5.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+   "license": "CC BY 2.0",
+   "credit": "Korean fried chicken 5.jpg by insatiablemunch (CC BY 2.0, https://creativecommons.org/licenses/by/2.0), via Wikimedia Commons",
+   "used_seconds": [
+    [
+     13.19,
+     15.14
+    ]
+   ]
+  }
+ },
  "music": {
   "file": "music/Exhilarate.mp3",
-  "gain": 0.2,
+  "gain": 0.16,
   "start": 0
  },
  "sfx": [
   [
-   "c1",
-   "pop",
-   0.25
+   "a1",
+   "whoosh",
+   0.15
   ],
   [
-   "b1",
+   "a1b",
    "whoosh",
+   0.15
+  ],
+  [
+   "a2",
+   "whoosh",
+   0.15
+  ],
+  [
+   "c1",
+   "pop",
    0.22
   ],
   [
-   "b1.회원권",
-   "boing",
-   0.3
+   "a3",
+   "whoosh",
+   0.15
+  ],
+  [
+   "a4",
+   "pop_hi",
+   0.18
+  ],
+  [
+   "a4",
+   "whoosh",
+   0.15
+  ],
+  [
+   "a5",
+   "pop_hi",
+   0.18
+  ],
+  [
+   "a5",
+   "whoosh",
+   0.15
   ],
   [
    "c2",
    "pop",
-   0.25
-  ],
-  [
-   "b2",
-   "whoosh",
    0.22
   ],
   [
-   "c3",
-   "pop",
-   0.25
+   "a6",
+   "pop_hi",
+   0.18
   ],
   [
-   "b3",
+   "a6",
    "whoosh",
-   0.22
+   0.15
   ],
   [
-   "c4",
-   "pop",
-   0.25
-  ],
-  [
-   "b4",
+   "a8",
    "whoosh",
-   0.22
+   0.15
   ],
   [
-   "b4.너무",
-   "boing",
-   0.3
-  ],
-  [
-   "c5",
-   "pop",
-   0.25
-  ],
-  [
-   "b5",
+   "a9",
    "whoosh",
-   0.22
+   0.15
   ],
   [
-   "b5.계단",
-   "boing",
-   0.3
-  ],
-  [
-   "c6",
-   "pop",
-   0.25
-  ],
-  [
-   "b6",
+   "a7",
    "whoosh",
-   0.22
-  ],
-  [
-   "c7",
-   "pop",
-   0.25
-  ],
-  [
-   "b7",
-   "whoosh",
-   0.22
-  ],
-  [
-   "y",
-   "pop",
-   0.25
+   0.15
   ],
   [
    "z",
    "whoosh",
+   0.15
+  ],
+  [
+   "y",
+   "pop",
    0.22
   ],
   [
-   "z.몇",
-   "ding",
-   0.3
+   "a1b.끊음",
+   "boing",
+   0.25
   ],
   [
-   "a",
-   "pop_hi",
-   0.3
+   "a7.샤워만",
+   "boing",
+   0.25
+  ],
+  [
+   "z",
+   "ding",
+   0.25
   ]
  ],
  "clips": [
   {
-   "from": "a",
-   "label": "hook",
+   "from": "a1",
+   "label": "a1",
    "gfx": {
-    "type": "scene",
-    "bg": "gym",
-    "place": "📍 헬스장 1일 차",
-    "prop": "💪",
-    "propX": 0.3,
-    "chars": [
-     {
-      "name": "나",
-      "color": "#FFB36B",
-      "mood": "happy",
-      "x": 0.62
-     }
-    ],
+    "type": "face",
+    "mood": "smug",
+    "pos": "close",
+    "fx": "sparkle",
+    "prop": "💳",
+    "propX": 0.82,
+    "propY": 0.72,
     "steps": [
+     0.9,
      0.05,
-     -1,
-     9,
-     -1
+     0.15
     ]
    }
   },
   {
-   "from": "b1",
-   "label": "beat1",
+   "from": "a1b",
+   "label": "a1b",
    "gfx": {
     "type": "scene",
     "bg": "gym",
-    "big": "✅ [12개월]",
     "chars": [
      {
       "name": "나",
       "color": "#FFB36B",
       "mood": "happy",
-      "x": 0.4
+      "size": 1.25
      }
     ],
-    "say": {
-     "who": 0,
-     "text": "이제 [갓생] 산다!"
-    },
+    "big": "1년!",
     "steps": [
-     "c1",
-     0.1,
      9,
-     "b1.회원권"
+     9,
+     9,
+     "a1b.끊음"
     ]
    }
   },
   {
-   "from": "b2",
-   "label": "beat2",
+   "from": "a2",
+   "label": "a2",
    "gfx": {
-    "type": "scene",
-    "bg": "store",
+    "type": "face",
+    "mood": "happy",
+    "pos": "left",
     "prop": "👟",
-    "propX": 0.72,
-    "chars": [
-     {
-      "name": "나",
-      "color": "#FFB36B",
-      "mood": "love",
-      "x": 0.32
-     }
-    ],
-    "say": {
-     "who": 0,
-     "text": "장비가 [반]이지!"
-    },
     "steps": [
-     "c2",
-     0.1,
-     9,
-     0.1
+     0.9,
+     0.05,
+     0.15
     ]
    }
   },
   {
-   "from": "b3",
-   "label": "beat3",
+   "from": "c1",
+   "label": "c1",
+   "gfx": {
+    "type": "face",
+    "mood": "smug",
+    "pos": "right",
+    "fx": "lines",
+    "steps": [
+     0.9,
+     0.05,
+     0.15
+    ]
+   }
+  },
+  {
+   "from": "a3",
+   "label": "a3",
    "gfx": {
     "type": "scene",
     "bg": "gym",
     "chars": [
      {
       "color": "#8FD3FF",
-      "mood": "happy",
-      "x": 0.25
+      "mood": "happy"
      },
      {
       "name": "나",
       "color": "#FFB36B",
-      "mood": "think",
-      "to": "smug",
-      "x": 0.68
+      "mood": "think"
      }
     ],
-    "say": {
-     "who": 1,
-     "text": "[저렇게] 하는 거구나…"
-    },
     "steps": [
-     "c3",
-     0.1,
-     "c3",
-     0.1
+     9,
+     9,
+     9,
+     9
     ]
    }
   },
   {
-   "from": "b4",
-   "label": "beat4",
+   "from": "a4",
+   "label": "a4",
+   "src": "dumbbell",
+   "gfx": {
+    "type": "photo",
+    "react": {
+     "mood": "angry",
+     "side": "right"
+    },
+    "tag": "의욕 200%",
+    "steps": [
+     0.12,
+     0.2,
+     0.25,
+     1000.0
+    ]
+   }
+  },
+  {
+   "from": "a5",
+   "label": "a5",
+   "src": "stairs",
+   "gfx": {
+    "type": "photo",
+    "react": {
+     "mood": "cry",
+     "side": "left"
+    },
+    "steps": [
+     0.12,
+     0.2,
+     0.25,
+     1000.0
+    ]
+   }
+  },
+  {
+   "from": "c2",
+   "label": "c2",
+   "gfx": {
+    "type": "face",
+    "mood": "cry",
+    "pos": "tilt",
+    "fx": "sweat",
+    "steps": [
+     0.9,
+     0.05,
+     0.15
+    ]
+   }
+  },
+  {
+   "from": "a6",
+   "label": "a6",
+   "src": "chicken",
+   "gfx": {
+    "type": "photo",
+    "react": {
+     "mood": "love",
+     "side": "right"
+    },
+    "steps": [
+     0.12,
+     0.2,
+     0.25,
+     1000.0
+    ]
+   }
+  },
+  {
+   "from": "a8",
+   "label": "a8",
+   "gfx": {
+    "type": "face",
+    "mood": "smug",
+    "pos": "tilt",
+    "prop": "💪",
+    "propX": 0.2,
+    "propY": 0.3,
+    "steps": [
+     0.9,
+     0.05,
+     0.15
+    ]
+   }
+  },
+  {
+   "from": "a9",
+   "label": "a9",
    "gfx": {
     "type": "scene",
     "bg": "gym",
-    "big": "🔥 [풀파워]",
+    "place": "📸 오운완",
     "chars": [
      {
       "name": "나",
       "color": "#FFB36B",
       "mood": "happy",
-      "to": "angry",
-      "x": 0.4
+      "size": 1.2
      }
     ],
-    "say": {
-     "who": 0,
-     "text": "하나 더! [하나] 더!"
-    },
     "steps": [
-     "c4",
-     0.1,
-     "c4",
-     "b4.너무"
-    ]
-   }
-  },
-  {
-   "from": "b5",
-   "label": "beat5",
-   "gfx": {
-    "type": "scene",
-    "bg": "street",
-    "big": "[근육통]",
-    "chars": [
-     {
-      "name": "나",
-      "color": "#FFB36B",
-      "mood": "sick"
-     }
-    ],
-    "say": {
-     "who": 0,
-     "text": "다리가 [말을] 안 들어…"
-    },
-    "steps": [
-     "c5",
-     0.1,
      9,
-     "b5.계단"
-    ]
-   }
-  },
-  {
-   "from": "b6",
-   "label": "beat6",
-   "gfx": {
-    "type": "scene",
-    "bg": "home",
-    "prop": "🍗",
-    "propX": 0.72,
-    "chars": [
-     {
-      "name": "나",
-      "color": "#FFB36B",
-      "mood": "laugh",
-      "x": 0.32
-     }
-    ],
-    "say": {
-     "who": 0,
-     "text": "이건 [단백질]이야!"
-    },
-    "steps": [
-     "c6",
-     0.1,
      9,
-     0.1
+     9,
+     9
     ]
    }
   },
   {
-   "from": "b7",
-   "label": "beat7",
+   "from": "a7",
+   "label": "a7",
    "gfx": {
-    "type": "scene",
-    "bg": "bedroom",
-    "place": "📍 3일 차",
-    "chars": [
-     {
-      "name": "나",
-      "color": "#FFB36B",
-      "mood": "think",
-      "to": "sleep"
-     }
-    ],
-    "say": {
-     "who": 0,
-     "text": "오늘은 [쉬는 날]로 하자…"
-    },
+    "type": "face",
+    "mood": "happy",
+    "pos": "low",
+    "fx": "steam",
+    "prop": "🚿",
+    "big": "샤워 완료",
+    "propX": 0.8,
+    "propY": 0.3,
     "steps": [
-     "c7",
-     0.1,
-     "c7",
-     0.1
+     0.9,
+     0.05,
+     "a7.샤워만"
     ]
    }
   },
   {
    "from": "z",
-   "label": "end",
+   "label": "z",
    "gfx": {
-    "type": "scene",
-    "bg": "gym",
-    "big": "[몇 개]?",
-    "chars": [
-     {
-      "name": "나",
-      "color": "#FFB36B",
-      "mood": "laugh"
-     }
-    ],
+    "type": "face",
+    "mood": "happy",
+    "pos": "close",
+    "fx": "sparkle",
     "steps": [
-     "y",
-     0.1,
-     9,
-     "z.몇"
-    ],
-    "say": {
-     "who": 0,
-     "text": "난 [7개] 다…ㅋㅋ"
-    }
+     0.9,
+     0.05,
+     0.15
+    ]
+   }
+  },
+  {
+   "from": "y",
+   "label": "y",
+   "gfx": {
+    "type": "face",
+    "mood": "angry",
+    "pos": "right",
+    "fx": "fire",
+    "burst": "#FF8A5C",
+    "steps": [
+     0.9,
+     0.05,
+     0.15
+    ]
    }
   }
  ]

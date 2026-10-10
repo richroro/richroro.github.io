@@ -1,0 +1,591 @@
+{
+ "credit": "",
+ "titleStyle": "band",
+ "titleKey": "#FFE14D",
+ "frame": "capTall",
+ "capBox": {
+  "y": 1600
+ },
+ "sources": {
+  "px19870620": {
+   "file": "px19870620.jpg",
+   "path": "public/doodle/px19870620.jpg",
+   "page": "https://www.pexels.com/photo/empty-seats-on-train-19870620/",
+   "file_url": "https://images.pexels.com/photos/19870620/pexels-photo-19870620.jpeg?auto=compress&cs=tinysrgb&w=1600",
+   "license": "Pexels License",
+   "creator": "Budget Bizar",
+   "credit": "사진: Pexels (설명란 표기)",
+   "seconds": [
+    [
+     0.0,
+     1.49
+    ],
+    [
+     11.46,
+     13.31
+    ],
+    [
+     21.14,
+     22.12
+    ],
+    [
+     25.75,
+     28.08
+    ]
+   ]
+  },
+  "px14715657": {
+   "file": "px14715657.jpg",
+   "path": "public/doodle/px14715657.jpg",
+   "page": "https://www.pexels.com/photo/empty-train-car-14715657/",
+   "file_url": "https://images.pexels.com/photos/14715657/pexels-photo-14715657.jpeg?auto=compress&cs=tinysrgb&w=1600",
+   "license": "Pexels License",
+   "creator": "Kristina Chuprina",
+   "credit": "사진: Pexels (설명란 표기)",
+   "seconds": [
+    [
+     1.49,
+     3.38
+    ],
+    [
+     4.77,
+     6.16
+    ],
+    [
+     13.31,
+     14.7
+    ],
+    [
+     16.0,
+     17.66
+    ]
+   ]
+  }
+ },
+ "music": {
+  "file": "music/hyperfun.mp3",
+  "gain": 0.12,
+  "start": 0
+ },
+ "sfx": [
+  [
+   "a",
+   "whoosh",
+   0.2
+  ],
+  [
+   "b",
+   "pop",
+   0.22
+  ],
+  [
+   "d.권리",
+   "pop",
+   0.22
+  ],
+  [
+   "e.못",
+   "pop",
+   0.22
+  ],
+  [
+   "g",
+   "whoosh",
+   0.2
+  ],
+  [
+   "h",
+   "pop",
+   0.22
+  ],
+  [
+   "i",
+   "whoosh",
+   0.2
+  ],
+  [
+   "j.도미노",
+   "boing",
+   0.28
+  ],
+  [
+   "k",
+   "whoosh",
+   0.2
+  ],
+  [
+   "l",
+   "boing",
+   0.3
+  ],
+  [
+   "z",
+   "pop",
+   0.22
+  ]
+ ],
+ "clips": [
+  {
+   "from": "a0",
+   "label": "a0",
+   "gfx": {
+    "type": "scene",
+    "photo": "doodle/px19870620.jpg",
+    "chars": [
+     {
+      "style": "doodle",
+      "hairdo": "bob",
+      "hair": "#7a4a2a",
+      "mood": "angry",
+      "size": 2.0,
+      "x": 0.5,
+      "y": 100
+     }
+    ],
+    "steps": [
+     9,
+     9,
+     9,
+     9
+    ],
+    "floor": 400
+   }
+  },
+  {
+   "from": "a",
+   "label": "a",
+   "gfx": {
+    "type": "scene",
+    "photo": "doodle/px14715657.jpg",
+    "chars": [
+     {
+      "style": "doodle",
+      "hair": "#FF7A1A",
+      "mood": "smug",
+      "size": 2.1,
+      "x": 0.5,
+      "y": 110
+     }
+    ],
+    "steps": [
+     9,
+     9,
+     9,
+     9
+    ],
+    "place": "📍 기차 안",
+    "floor": 400
+   }
+  },
+  {
+   "from": "b",
+   "label": "b",
+   "gfx": {
+    "type": "scene",
+    "bg": "subway",
+    "chars": [
+     {
+      "style": "doodle",
+      "hair": "#FF7A1A",
+      "mood": "angry",
+      "size": 1.75,
+      "x": 0.3,
+      "rot": -3
+     }
+    ],
+    "prop": "🎫",
+    "steps": [
+     "b",
+     0.1,
+     9,
+     9
+    ],
+    "floor": 400,
+    "propX": 0.76
+   }
+  },
+  {
+   "from": "c",
+   "label": "c",
+   "gfx": {
+    "type": "scene",
+    "photo": "doodle/px14715657.jpg",
+    "photoPos": "60% 50%",
+    "chars": [
+     {
+      "style": "doodle",
+      "hairdo": "bob",
+      "hair": "#7a4a2a",
+      "mood": "sad",
+      "size": 1.75,
+      "x": 0.3,
+      "rot": -3
+     }
+    ],
+    "prop": "🍱",
+    "steps": [
+     "c",
+     0.1,
+     9,
+     9
+    ],
+    "floor": 400,
+    "propX": 0.76
+   }
+  },
+  {
+   "from": "d",
+   "label": "d",
+   "gfx": {
+    "type": "scene",
+    "bg": "#FFE14D",
+    "chars": [
+     {
+      "style": "doodle",
+      "hair": "#FF7A1A",
+      "mood": "smug",
+      "size": 1.75,
+      "x": 0.3,
+      "rot": -3
+     }
+    ],
+    "prop": "💺",
+    "big": "내 권리",
+    "steps": [
+     9,
+     0.1,
+     9,
+     "d.권리"
+    ],
+    "floor": 400,
+    "propX": 0.76
+   }
+  },
+  {
+   "from": "e",
+   "label": "e",
+   "gfx": {
+    "type": "scene",
+    "bg": "#dff3ff",
+    "chars": [
+     {
+      "style": "doodle",
+      "hairdo": "bob",
+      "hair": "#7a4a2a",
+      "mood": "cry",
+      "size": 1.75,
+      "x": 0.3,
+      "rot": -3
+     }
+    ],
+    "prop": "🍱",
+    "big": "못 폄",
+    "steps": [
+     9,
+     0.1,
+     9,
+     "e.못"
+    ],
+    "floor": 400,
+    "propX": 0.76
+   }
+  },
+  {
+   "from": "f",
+   "label": "f",
+   "gfx": {
+    "type": "scene",
+    "photo": "doodle/px19870620.jpg",
+    "photoPos": "30% 50%",
+    "chars": [
+     {
+      "style": "doodle",
+      "hairdo": "bob",
+      "hair": "#7a4a2a",
+      "mood": "smug",
+      "size": 1.75,
+      "x": 0.3,
+      "rot": -4
+     }
+    ],
+    "steps": [
+     "f",
+     9,
+     9,
+     9
+    ],
+    "floor": 400
+   }
+  },
+  {
+   "from": "f2",
+   "label": "f2",
+   "gfx": {
+    "type": "scene",
+    "photo": "doodle/px14715657.jpg",
+    "photoPos": "40% 50%",
+    "chars": [
+     {
+      "style": "doodle",
+      "hair": "#FF7A1A",
+      "mood": "sick",
+      "size": 1.95,
+      "x": 0.64,
+      "y": 80,
+      "flip": true,
+      "rot": 3
+     }
+    ],
+    "steps": [
+     "f2",
+     9,
+     9,
+     9
+    ],
+    "floor": 400
+   }
+  },
+  {
+   "from": "g",
+   "label": "g",
+   "gfx": {
+    "type": "scene",
+    "bg": "subway",
+    "chars": [
+     {
+      "style": "doodle",
+      "hair": "#FF7A1A",
+      "mood": "shock",
+      "size": 1.4
+     },
+     {
+      "style": "doodle",
+      "hairdo": "bob",
+      "hair": "#7a4a2a",
+      "mood": "smug",
+      "rot": -14,
+      "size": 1.4
+     }
+    ],
+    "steps": [
+     9,
+     9,
+     9,
+     9
+    ],
+    "floor": 400
+   }
+  },
+  {
+   "from": "h",
+   "label": "h",
+   "gfx": {
+    "type": "scene",
+    "photo": "doodle/px14715657.jpg",
+    "chars": [
+     {
+      "style": "doodle",
+      "hairdo": "bald",
+      "hair": "#3b3b3b",
+      "mood": "angry",
+      "size": 1.75,
+      "x": 0.3,
+      "rot": -3
+     }
+    ],
+    "prop": "☕",
+    "steps": [
+     "h",
+     0.1,
+     9,
+     9
+    ],
+    "floor": 400,
+    "propX": 0.76
+   }
+  },
+  {
+   "from": "i",
+   "label": "i",
+   "gfx": {
+    "type": "scene",
+    "bg": "subway",
+    "chars": [
+     {
+      "style": "doodle",
+      "hairdo": "bob",
+      "hair": "#7a4a2a",
+      "mood": "smug",
+      "rot": -14,
+      "size": 1.4
+     },
+     {
+      "style": "doodle",
+      "hairdo": "bald",
+      "hair": "#3b3b3b",
+      "mood": "angry",
+      "rot": -14,
+      "size": 1.4
+     }
+    ],
+    "steps": [
+     9,
+     9,
+     9,
+     9
+    ],
+    "floor": 400
+   }
+  },
+  {
+   "from": "j",
+   "label": "j",
+   "gfx": {
+    "type": "scene",
+    "bg": "subway",
+    "chars": [
+     {
+      "style": "doodle",
+      "hair": "#FF7A1A",
+      "mood": "laugh",
+      "rot": -12,
+      "size": 1.12
+     },
+     {
+      "style": "doodle",
+      "hairdo": "bob",
+      "hair": "#7a4a2a",
+      "mood": "sick",
+      "rot": -12,
+      "size": 1.12
+     },
+     {
+      "style": "doodle",
+      "hairdo": "bald",
+      "hair": "#3b3b3b",
+      "mood": "sick",
+      "rot": -12,
+      "size": 1.12
+     }
+    ],
+    "big": "도미노",
+    "steps": [
+     9,
+     9,
+     9,
+     "j.도미노"
+    ],
+    "floor": 400
+   }
+  },
+  {
+   "from": "k",
+   "label": "k",
+   "gfx": {
+    "type": "scene",
+    "photo": "doodle/px19870620.jpg",
+    "photoPos": "50% 50%",
+    "chars": [
+     {
+      "style": "doodle",
+      "hair": "#FF7A1A",
+      "mood": "think",
+      "size": 1.6,
+      "x": 0.5
+     }
+    ],
+    "place": "📍 맨 뒷줄",
+    "steps": [
+     9,
+     9,
+     9,
+     9
+    ],
+    "floor": 400
+   }
+  },
+  {
+   "from": "k2",
+   "label": "k2",
+   "gfx": {
+    "type": "scene",
+    "bg": "subway",
+    "chars": [
+     {
+      "style": "doodle",
+      "hairdo": "perm",
+      "hair": "#c9c9c9",
+      "mood": "angry",
+      "size": 1.75,
+      "x": 0.3,
+      "rot": -3
+     }
+    ],
+    "prop": "🔘",
+    "steps": [
+     9,
+     "k2.꾹",
+     9,
+     9
+    ],
+    "floor": 400,
+    "propX": 0.76
+   }
+  },
+  {
+   "from": "l",
+   "label": "l",
+   "gfx": {
+    "type": "scene",
+    "bg": "#e9e4dc",
+    "chars": [
+     {
+      "style": "doodle",
+      "hairdo": "perm",
+      "hair": "#c9c9c9",
+      "mood": "cry",
+      "size": 1.75,
+      "x": 0.3,
+      "rot": -4
+     }
+    ],
+    "steps": [
+     "l",
+     9,
+     9,
+     9
+    ],
+    "floor": 400
+   }
+  },
+  {
+   "from": "z",
+   "label": "z",
+   "gfx": {
+    "type": "scene",
+    "photo": "doodle/px19870620.jpg",
+    "photoPos": "40% 50%",
+    "chars": [
+     {
+      "style": "doodle",
+      "hair": "#FF7A1A",
+      "mood": "think",
+      "to": "smug",
+      "size": 1.95,
+      "x": 0.64,
+      "y": 80,
+      "flip": true,
+      "rot": 3
+     }
+    ],
+    "steps": [
+     9,
+     9,
+     "z.반만",
+     9
+    ],
+    "floor": 400
+   }
+  }
+ ]
+}
