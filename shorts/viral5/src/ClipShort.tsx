@@ -8,6 +8,7 @@ import { BODY, TITLE, loadFonts } from "./lib/fonts";
 import { Sticker, clamp, eOut, prog } from "./lib/fx";
 import { GFX_BG, GfxView, Marked, Marks, type Gfx, type Mark } from "./lib/Gfx";
 import { ROUNDED43, Rounded43, YearSticker, rounded43Crop } from "./lib/Retro";
+import { TeukShort, type TeukOpts } from "./lib/Teuk";
 
 loadFonts();
 export const FPS = 30;
@@ -59,6 +60,9 @@ export type ShortData = {
   marks?: Mark[];
   /** a ranking list ("TOP 5") under the picture: a row per place, filled in when that place's clip starts */
   ranks?: { rows: { n: number; label: string; from: number }[]; y?: number };
+  /** "teuk": the "○○ 특" v2 look (lib/Teuk.tsx), which draws the whole short itself */
+  layout?: "teuk";
+  teuk?: TeukOpts;
 };
 
 const FRAME = { square: { top: 400, height: 1080 }, wide: { top: 656, height: 608 }, full: { top: 0, height: 1920 },
@@ -289,6 +293,7 @@ export const ClipShort: React.FC<{ data: ShortData }> = ({ data: d }) => {
     const tt = f / FPS, inMoment = d.moments.some((m) => tt >= m.from - 0.2 && tt <= m.to + 0.2);
     return d.music.gain * (1 - 0.6 * (d.env[f] ?? 0)) * (inMoment ? 0.35 : 1) * prog(tt, 0, 0.1) * (1 - prog(tt, d.end - 1.0, 1.0));
   };
+  if (d.layout === "teuk") return <TeukShort d={d} />;
   return (
     <AbsoluteFill style={{ background: "#000" }}>
       {d.clips.map((c, i) => (

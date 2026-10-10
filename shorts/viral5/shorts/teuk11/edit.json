@@ -2,26 +2,33 @@
  "credit": "",
  "layout": "teuk",
  "teuk": {
-  "bg": "#2a2526",
+  "bg": "#2b2520",
   "mascot": "#FFB36B"
  },
  "sources": {
-  "dumbbell": {
-   "file": "dumbbell.jpg",
+  "bungeo1": {
+   "file": "bungeo1.jpg",
    "page": "",
    "file_url": "",
    "license": "",
    "credit": ""
   },
-  "stairs": {
-   "file": "stairs.jpg",
+  "bungeo2": {
+   "file": "bungeo2.jpg",
    "page": "",
    "file_url": "",
    "license": "",
    "credit": ""
   },
-  "chicken": {
-   "file": "chicken.jpg",
+  "bungeo3": {
+   "file": "bungeo3.jpg",
+   "page": "",
+   "file_url": "",
+   "license": "",
+   "credit": ""
+  },
+  "bungeo4": {
+   "file": "bungeo4.jpg",
    "page": "",
    "file_url": "",
    "license": "",
@@ -29,11 +36,16 @@
   }
  },
  "music": {
-  "file": "music/Exhilarate.mp3",
-  "gain": 0.16,
+  "file": "music/monkeys_spinning_monkeys.mp3",
+  "gain": 0.18,
   "start": 0
  },
  "sfx": [
+  [
+   "a1",
+   "pop_hi",
+   0.18
+  ],
   [
    "a1",
    "whoosh",
@@ -71,11 +83,11 @@
   ],
   [
    "a5",
-   "pop_hi",
-   0.18
+   "whoosh",
+   0.15
   ],
   [
-   "a5",
+   "a6",
    "whoosh",
    0.15
   ],
@@ -85,29 +97,24 @@
    0.22
   ],
   [
-   "a6",
-   "pop_hi",
-   0.18
-  ],
-  [
-   "a6",
-   "whoosh",
-   0.15
-  ],
-  [
    "a8",
    "whoosh",
    0.15
   ],
   [
-   "a9",
-   "whoosh",
-   0.15
+   "a7",
+   "pop_hi",
+   0.18
   ],
   [
    "a7",
    "whoosh",
    0.15
+  ],
+  [
+   "z",
+   "pop_hi",
+   0.18
   ],
   [
    "z",
@@ -120,7 +127,22 @@
    0.22
   ],
   [
-   "a1b.끊음",
+   "a1b.둘",
+   "boing",
+   0.25
+  ],
+  [
+   "a2",
+   "boing",
+   0.25
+  ],
+  [
+   "a3.입천장",
+   "boing",
+   0.25
+  ],
+  [
+   "a6.집에",
    "boing",
    0.25
   ],
@@ -134,18 +156,20 @@
   {
    "from": "a1",
    "label": "a1",
+   "src": "bungeo1",
    "gfx": {
-    "type": "face",
-    "mood": "smug",
-    "pos": "close",
-    "fx": "sparkle",
-    "prop": "💳",
-    "propX": 0.82,
-    "propY": 0.72,
+    "type": "photo",
+    "react": {
+     "mood": "think",
+     "side": "right",
+     "size": 470
+    },
+    "tag": "팥? 슈크림?",
     "steps": [
-     0.9,
-     0.05,
-     0.15
+     -1,
+     0.2,
+     0.25,
+     1000.0
     ]
    }
   },
@@ -153,22 +177,15 @@
    "from": "a1b",
    "label": "a1b",
    "gfx": {
-    "type": "scene",
-    "bg": "gym",
-    "chars": [
-     {
-      "name": "나",
-      "color": "#FFB36B",
-      "mood": "happy",
-      "size": 1.25
-     }
-    ],
-    "big": "1년!",
+    "type": "face",
+    "mood": "shock",
+    "pos": "close",
+    "fx": "lines",
+    "big": "둘 다!",
     "steps": [
-     9,
-     9,
-     9,
-     "a1b.끊음"
+     0.9,
+     0.05,
+     "a1b.둘"
     ]
    }
   },
@@ -177,13 +194,16 @@
    "label": "a2",
    "gfx": {
     "type": "face",
-    "mood": "happy",
+    "mood": "think",
     "pos": "left",
-    "prop": "👟",
+    "prop": "🐟",
+    "big": "머리? 꼬리?",
+    "propX": 0.8,
+    "propY": 0.72,
     "steps": [
      0.9,
      0.05,
-     0.15
+     0.0
     ]
    }
   },
@@ -192,9 +212,9 @@
    "label": "c1",
    "gfx": {
     "type": "face",
-    "mood": "smug",
+    "mood": "happy",
     "pos": "right",
-    "fx": "lines",
+    "fx": "sparkle",
     "steps": [
      0.9,
      0.05,
@@ -206,38 +226,30 @@
    "from": "a3",
    "label": "a3",
    "gfx": {
-    "type": "scene",
-    "bg": "gym",
-    "chars": [
-     {
-      "color": "#8FD3FF",
-      "mood": "happy"
-     },
-     {
-      "name": "나",
-      "color": "#FFB36B",
-      "mood": "think"
-     }
-    ],
+    "type": "face",
+    "mood": "shock",
+    "pos": "tilt",
+    "fx": "fire",
+    "big": "앗 뜨!",
+    "burst": "#FF8A5C",
     "steps": [
-     9,
-     9,
-     9,
-     9
+     0.9,
+     0.05,
+     "a3.입천장"
     ]
    }
   },
   {
    "from": "a4",
    "label": "a4",
-   "src": "dumbbell",
+   "src": "bungeo2",
    "gfx": {
     "type": "photo",
     "react": {
-     "mood": "angry",
-     "side": "right"
+     "mood": "love",
+     "side": "left"
     },
-    "tag": "의욕 200%",
+    "tag": "이유 1순위",
     "steps": [
      0.12,
      0.2,
@@ -249,11 +261,108 @@
   {
    "from": "a5",
    "label": "a5",
-   "src": "stairs",
+   "gfx": {
+    "type": "scene",
+    "bg": "street",
+    "place": "📍 집 가는 길",
+    "chars": [
+     {
+      "name": "나",
+      "color": "#FFB36B",
+      "mood": "happy",
+      "size": 1.15
+     }
+    ],
+    "prop": "🐟",
+    "steps": [
+     9,
+     0.1,
+     9,
+     9
+    ]
+   }
+  },
+  {
+   "from": "a6",
+   "label": "a6",
+   "gfx": {
+    "type": "face",
+    "mood": "smug",
+    "pos": "left",
+    "prop": "🐟",
+    "big": "3 → 1",
+    "steps": [
+     0.9,
+     0.05,
+     "a6.집에"
+    ]
+   }
+  },
+  {
+   "from": "c2",
+   "label": "c2",
+   "gfx": {
+    "type": "face",
+    "mood": "shy",
+    "pos": "close",
+    "fx": "sweat",
+    "steps": [
+     0.9,
+     0.05,
+     0.15
+    ]
+   }
+  },
+  {
+   "from": "a8",
+   "label": "a8",
+   "gfx": {
+    "type": "scene",
+    "bg": "home",
+    "chars": [
+     {
+      "name": "나",
+      "color": "#FFB36B",
+      "mood": "happy",
+      "size": 1.2
+     }
+    ],
+    "prop": "🐟",
+    "steps": [
+     9,
+     0.1,
+     9,
+     9
+    ]
+   }
+  },
+  {
+   "from": "a7",
+   "label": "a7",
+   "src": "bungeo3",
    "gfx": {
     "type": "photo",
     "react": {
-     "mood": "cry",
+     "mood": "love",
+     "side": "right"
+    },
+    "tag": "발견!",
+    "steps": [
+     0.12,
+     0.2,
+     0.25,
+     1000.0
+    ]
+   }
+  },
+  {
+   "from": "z",
+   "label": "z",
+   "src": "bungeo4",
+   "gfx": {
+    "type": "photo",
+    "react": {
+     "mood": "happy",
      "side": "left"
     },
     "steps": [
@@ -265,117 +374,13 @@
    }
   },
   {
-   "from": "c2",
-   "label": "c2",
-   "gfx": {
-    "type": "face",
-    "mood": "cry",
-    "pos": "tilt",
-    "fx": "sweat",
-    "steps": [
-     0.9,
-     0.05,
-     0.15
-    ]
-   }
-  },
-  {
-   "from": "a6",
-   "label": "a6",
-   "src": "chicken",
-   "gfx": {
-    "type": "photo",
-    "react": {
-     "mood": "love",
-     "side": "right"
-    },
-    "steps": [
-     0.12,
-     0.2,
-     0.25,
-     1000.0
-    ]
-   }
-  },
-  {
-   "from": "a8",
-   "label": "a8",
-   "gfx": {
-    "type": "face",
-    "mood": "smug",
-    "pos": "tilt",
-    "prop": "💪",
-    "propX": 0.2,
-    "propY": 0.3,
-    "steps": [
-     0.9,
-     0.05,
-     0.15
-    ]
-   }
-  },
-  {
-   "from": "a9",
-   "label": "a9",
-   "gfx": {
-    "type": "scene",
-    "bg": "gym",
-    "place": "📸 오운완",
-    "chars": [
-     {
-      "name": "나",
-      "color": "#FFB36B",
-      "mood": "happy",
-      "size": 1.2
-     }
-    ],
-    "steps": [
-     9,
-     9,
-     9,
-     9
-    ]
-   }
-  },
-  {
-   "from": "a7",
-   "label": "a7",
-   "gfx": {
-    "type": "face",
-    "mood": "think",
-    "pos": "low",
-    "fx": "gloom",
-    "steps": [
-     0.9,
-     0.05,
-     0.15
-    ]
-   }
-  },
-  {
-   "from": "z",
-   "label": "z",
-   "gfx": {
-    "type": "face",
-    "mood": "happy",
-    "pos": "close",
-    "fx": "sparkle",
-    "steps": [
-     0.9,
-     0.05,
-     0.15
-    ]
-   }
-  },
-  {
    "from": "y",
    "label": "y",
    "gfx": {
     "type": "face",
-    "mood": "angry",
-    "pos": "right",
-    "fx": "fire",
-    "burst": "#FF8A5C",
+    "mood": "laugh",
+    "pos": "close",
+    "fx": "lines",
     "steps": [
      0.9,
      0.05,

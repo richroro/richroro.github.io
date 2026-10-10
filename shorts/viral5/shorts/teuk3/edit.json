@@ -1,217 +1,222 @@
 {
  "credit": "",
- "titleStyle": "band",
- "captionY": 1650,
- "sources": {},
+ "layout": "teuk",
+ "teuk": {
+  "bg": "#2a2b24",
+  "mascot": "#FFB36B"
+ },
+ "sources": {
+  "tray": {
+   "file": "tray.jpg",
+   "page": "",
+   "file_url": "",
+   "license": "",
+   "credit": ""
+  },
+  "tray2": {
+   "file": "tray2.jpg",
+   "page": "",
+   "file_url": "",
+   "license": "",
+   "credit": ""
+  }
+ },
  "music": {
   "file": "music/monkeys_spinning_monkeys.mp3",
-  "gain": 0.2,
+  "gain": 0.18,
   "start": 0
  },
  "sfx": [
   [
-   "c1",
-   "pop",
-   0.25
+   "a1",
+   "whoosh",
+   0.15
   ],
   [
-   "b1",
+   "a1b",
    "whoosh",
+   0.15
+  ],
+  [
+   "a2",
+   "whoosh",
+   0.15
+  ],
+  [
+   "c1",
+   "pop",
    0.22
+  ],
+  [
+   "a3",
+   "whoosh",
+   0.15
+  ],
+  [
+   "a4",
+   "pop_hi",
+   0.18
+  ],
+  [
+   "a4",
+   "whoosh",
+   0.15
+  ],
+  [
+   "a5",
+   "whoosh",
+   0.15
   ],
   [
    "c2",
    "pop",
-   0.25
-  ],
-  [
-   "b2",
-   "whoosh",
    0.22
   ],
   [
-   "b2.급식실로",
-   "boing",
-   0.3
-  ],
-  [
-   "c3",
-   "pop",
-   0.25
-  ],
-  [
-   "b3",
+   "a6",
    "whoosh",
-   0.22
+   0.15
   ],
   [
-   "b3.몇",
-   "boing",
-   0.3
-  ],
-  [
-   "c4",
-   "pop",
-   0.25
-  ],
-  [
-   "b4",
+   "a8",
    "whoosh",
-   0.22
+   0.15
   ],
   [
-   "c5",
-   "pop",
-   0.25
-  ],
-  [
-   "b5",
+   "a9",
    "whoosh",
-   0.22
+   0.15
   ],
   [
-   "c6",
-   "pop",
-   0.25
-  ],
-  [
-   "b6",
+   "a7",
    "whoosh",
-   0.22
+   0.15
   ],
   [
-   "c7",
-   "pop",
-   0.25
-  ],
-  [
-   "b7",
-   "whoosh",
-   0.22
-  ],
-  [
-   "b7.원샷",
-   "boing",
-   0.3
-  ],
-  [
-   "y",
-   "pop",
-   0.25
+   "z",
+   "pop_hi",
+   0.18
   ],
   [
    "z",
    "whoosh",
+   0.15
+  ],
+  [
+   "y",
+   "pop",
    0.22
   ],
   [
-   "z.몇",
-   "ding",
-   0.3
+   "a2",
+   "boing",
+   0.25
   ],
   [
-   "a",
-   "pop_hi",
-   0.3
+   "a7.우유는",
+   "boing",
+   0.25
+  ],
+  [
+   "z",
+   "ding",
+   0.25
   ]
  ],
  "clips": [
   {
-   "from": "a",
-   "label": "hook",
+   "from": "a1",
+   "label": "a1",
+   "gfx": {
+    "type": "face",
+    "mood": "love",
+    "pos": "close",
+    "fx": "hearts",
+    "prop": "🍱",
+    "propX": 0.82,
+    "propY": 0.72,
+    "steps": [
+     0.9,
+     0.05,
+     0.15
+    ]
+   }
+  },
+  {
+   "from": "a1b",
+   "label": "a1b",
    "gfx": {
     "type": "scene",
-    "bg": "cafeteria",
-    "sign": "오늘의 메뉴",
-    "prop": "🍱",
-    "propX": 0.75,
+    "bg": "class",
+    "sign": "4교시",
     "chars": [
      {
       "name": "나",
       "color": "#FFB36B",
       "mood": "love",
-      "x": 0.35
+      "size": 1.1
      }
     ],
+    "prop": "🍱",
     "steps": [
-     0.05,
-     -1,
      9,
-     -1
-    ]
-   }
-  },
-  {
-   "from": "b1",
-   "label": "beat1",
-   "gfx": {
-    "type": "scene",
-    "bg": "class",
-    "sign": "4교시",
-    "prop": "📋",
-    "propX": 0.78,
-    "chars": [
-     {
-      "name": "나",
-      "color": "#FFB36B",
-      "mood": "think",
-      "to": "love",
-      "x": 0.38
-     }
-    ],
-    "say": {
-     "who": 0,
-     "text": "오늘 [돈가스]다!"
-    },
-    "steps": [
-     "c1",
      0.1,
-     "c1",
-     0.1
+     9,
+     9
     ]
    }
   },
   {
-   "from": "b2",
-   "label": "beat2",
-   "gfx": {
-    "type": "scene",
-    "bg": "class",
-    "big": "🔔 땡!",
-    "chars": [
-     {
-      "name": "나",
-      "color": "#FFB36B",
-      "mood": "shock",
-      "to": "smug"
-     }
-    ],
-    "say": {
-     "who": 0,
-     "text": "뛰지 말고… [빠르게 걷기!]"
-    },
-    "steps": [
-     "c2",
-     0.1,
-     "c2",
-     "b2.급식실로"
-    ]
-   }
-  },
-  {
-   "from": "b3",
-   "label": "beat3",
+   "from": "a2",
+   "label": "a2",
    "gfx": {
     "type": "scene",
     "bg": "cafeteria",
-    "big": "[24]명",
+    "chars": [
+     {
+      "name": "나",
+      "color": "#FFB36B",
+      "mood": "happy",
+      "size": 1.1
+     }
+    ],
+    "big": "경보 모드",
+    "steps": [
+     9,
+     9,
+     9,
+     0.2
+    ]
+   }
+  },
+  {
+   "from": "c1",
+   "label": "c1",
+   "gfx": {
+    "type": "face",
+    "mood": "shock",
+    "pos": "right",
+    "fx": "sweat",
+    "steps": [
+     0.9,
+     0.05,
+     0.15
+    ]
+   }
+  },
+  {
+   "from": "a3",
+   "label": "a3",
+   "gfx": {
+    "type": "scene",
+    "bg": "cafeteria",
     "chars": [
      {
       "color": "#8FD3FF",
       "mood": "happy"
      },
      {
-      "color": "#B9F27C",
+      "color": "#C9A7FF",
       "mood": "neutral"
      },
      {
@@ -220,161 +225,167 @@
       "mood": "think"
      }
     ],
-    "say": {
-     "who": 2,
-     "text": "23… [24]…"
-    },
     "steps": [
-     "c3",
-     0.1,
      9,
-     "b3.몇"
-    ]
-   }
-  },
-  {
-   "from": "b4",
-   "label": "beat4",
-   "gfx": {
-    "type": "scene",
-    "bg": "cafeteria",
-    "sign": "급식실",
-    "prop": "🍗",
-    "propX": 0.75,
-    "chars": [
-     {
-      "name": "나",
-      "color": "#FFB36B",
-      "mood": "smug",
-      "x": 0.35
-     }
-    ],
-    "say": {
-     "who": 0,
-     "text": "이건 [아껴] 먹어야지"
-    },
-    "steps": [
-     "c4",
-     0.1,
      9,
-     0.1
+     9,
+     9
     ]
    }
   },
   {
-   "from": "b5",
-   "label": "beat5",
+   "from": "a4",
+   "label": "a4",
+   "src": "tray",
    "gfx": {
-    "type": "scene",
-    "bg": "cafeteria",
-    "sign": "급식실",
-    "prop": "🥚",
-    "chars": [
-     {
-      "name": "나",
-      "color": "#FFB36B",
-      "mood": "think",
-      "to": "love"
-     },
-     {
-      "name": "친구",
-      "color": "#8FD3FF",
-      "mood": "neutral",
-      "to": "happy"
-     }
-    ],
-    "say": {
-     "who": 0,
-     "text": "너 [그거] 안 먹어?"
+    "type": "photo",
+    "react": {
+     "mood": "love",
+     "side": "right"
     },
+    "tag": "최애 반찬",
     "steps": [
-     "c5",
-     0.1,
-     "c5",
-     0.1
+     0.12,
+     0.2,
+     0.25,
+     1000.0
     ]
    }
   },
   {
-   "from": "b6",
-   "label": "beat6",
+   "from": "a5",
+   "label": "a5",
    "gfx": {
-    "type": "scene",
-    "bg": "street",
+    "type": "face",
+    "mood": "happy",
+    "pos": "tilt",
+    "fx": "sparkle",
     "prop": "🍮",
-    "propX": 0.75,
-    "chars": [
-     {
-      "name": "나",
-      "color": "#FFB36B",
-      "mood": "love",
-      "x": 0.35
-     }
-    ],
-    "say": {
-     "who": 0,
-     "text": "오늘 [푸딩] 나온대!"
-    },
+    "propX": 0.2,
+    "propY": 0.3,
     "steps": [
-     "c6",
-     0.1,
-     9,
-     0.1
+     0.9,
+     0.05,
+     0.15
     ]
    }
   },
   {
-   "from": "b7",
-   "label": "beat7",
+   "from": "c2",
+   "label": "c2",
    "gfx": {
-    "type": "scene",
-    "bg": "cafeteria",
-    "big": "🥛 [원샷]",
-    "chars": [
-     {
-      "name": "나",
-      "color": "#FFB36B",
-      "mood": "think",
-      "to": "laugh",
-      "x": 0.5
-     }
-    ],
-    "say": {
-     "who": 0,
-     "text": "크, [이 맛]이지!"
-    },
+    "type": "face",
+    "mood": "laugh",
+    "pos": "left",
+    "fx": "lines",
     "steps": [
-     "c7",
-     0.1,
-     "c7",
-     "b7.원샷"
+     0.9,
+     0.05,
+     0.15
+    ]
+   }
+  },
+  {
+   "from": "a6",
+   "label": "a6",
+   "gfx": {
+    "type": "face",
+    "mood": "smug",
+    "pos": "low",
+    "prop": "🥢",
+    "propX": 0.82,
+    "propY": 0.3,
+    "steps": [
+     0.9,
+     0.05,
+     0.15
+    ]
+   }
+  },
+  {
+   "from": "a8",
+   "label": "a8",
+   "gfx": {
+    "type": "face",
+    "mood": "happy",
+    "pos": "right",
+    "prop": "✏️",
+    "propX": 0.2,
+    "propY": 0.3,
+    "steps": [
+     0.9,
+     0.05,
+     0.15
+    ]
+   }
+  },
+  {
+   "from": "a9",
+   "label": "a9",
+   "gfx": {
+    "type": "face",
+    "mood": "love",
+    "pos": "low",
+    "fx": "steam",
+    "prop": "🍛",
+    "propX": 0.8,
+    "propY": 0.3,
+    "steps": [
+     0.9,
+     0.05,
+     0.15
+    ]
+   }
+  },
+  {
+   "from": "a7",
+   "label": "a7",
+   "gfx": {
+    "type": "face",
+    "mood": "laugh",
+    "pos": "close",
+    "prop": "🥛",
+    "big": "원샷",
+    "propX": 0.8,
+    "propY": 0.72,
+    "steps": [
+     0.9,
+     0.05,
+     "a7.우유는"
     ]
    }
   },
   {
    "from": "z",
-   "label": "end",
+   "label": "z",
+   "src": "tray2",
    "gfx": {
-    "type": "scene",
-    "bg": "cafeteria",
-    "big": "[몇 개]?",
-    "chars": [
-     {
-      "name": "나",
-      "color": "#FFB36B",
-      "mood": "laugh"
-     }
-    ],
+    "type": "photo",
+    "react": {
+     "mood": "happy",
+     "side": "left"
+    },
     "steps": [
-     "y",
-     0.1,
-     9,
-     "z.몇"
-    ],
-    "say": {
-     "who": 0,
-     "text": "난 [7개] 다…ㅋㅋ"
-    }
+     0.12,
+     0.2,
+     0.25,
+     1000.0
+    ]
+   }
+  },
+  {
+   "from": "y",
+   "label": "y",
+   "gfx": {
+    "type": "face",
+    "mood": "cry",
+    "pos": "right",
+    "fx": "sweat",
+    "steps": [
+     0.9,
+     0.05,
+     0.15
+    ]
    }
   }
  ]

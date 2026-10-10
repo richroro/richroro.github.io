@@ -2,26 +2,33 @@
  "credit": "",
  "layout": "teuk",
  "teuk": {
-  "bg": "#25283a",
+  "bg": "#23282a",
   "mascot": "#FFB36B"
  },
  "sources": {
-  "notes": {
-   "file": "notes.jpg",
+  "alley1": {
+   "file": "alley1.jpg",
    "page": "",
    "file_url": "",
    "license": "",
    "credit": ""
   },
-  "books": {
-   "file": "books.jpg",
+  "crossroad": {
+   "file": "crossroad.jpg",
    "page": "",
    "file_url": "",
    "license": "",
    "credit": ""
   },
-  "desk": {
-   "file": "desk.jpg",
+  "alley2": {
+   "file": "alley2.jpg",
+   "page": "",
+   "file_url": "",
+   "license": "",
+   "credit": ""
+  },
+  "map": {
+   "file": "map.jpg",
    "page": "",
    "file_url": "",
    "license": "",
@@ -29,7 +36,7 @@
   }
  },
  "music": {
-  "file": "music/sneaky_snitch.mp3",
+  "file": "music/scheming_weasel.mp3",
   "gain": 0.18,
   "start": 0
  },
@@ -66,16 +73,21 @@
   ],
   [
    "a4",
+   "pop_hi",
+   0.18
+  ],
+  [
+   "a4",
    "whoosh",
    0.15
   ],
   [
    "a5",
-   "pop_hi",
-   0.18
+   "whoosh",
+   0.15
   ],
   [
-   "a5",
+   "a6",
    "whoosh",
    0.15
   ],
@@ -83,11 +95,6 @@
    "c2",
    "pop",
    0.22
-  ],
-  [
-   "a6",
-   "whoosh",
-   0.15
   ],
   [
    "a8",
@@ -98,6 +105,11 @@
    "a9",
    "whoosh",
    0.15
+  ],
+  [
+   "a7",
+   "pop_hi",
+   0.18
   ],
   [
    "a7",
@@ -120,12 +132,17 @@
    0.22
   ],
   [
-   "a1",
+   "a1b.뒤를",
    "boing",
    0.25
   ],
   [
-   "a6.전부",
+   "a6",
+   "boing",
+   0.25
+  ],
+  [
+   "a9.양쪽",
    "boing",
    0.25
   ],
@@ -144,14 +161,13 @@
     "mood": "shock",
     "pos": "close",
     "fx": "lines",
-    "prop": "📚",
-    "big": "D-1",
+    "prop": "🧭",
     "propX": 0.82,
     "propY": 0.72,
     "steps": [
      0.9,
      0.05,
-     0.0
+     0.15
     ]
    }
   },
@@ -160,35 +176,35 @@
    "label": "a1b",
    "gfx": {
     "type": "scene",
-    "bg": "desk",
+    "bg": "street",
     "chars": [
      {
       "name": "나",
       "color": "#FFB36B",
-      "mood": "happy",
+      "mood": "think",
+      "to": "shock",
       "size": 1.2
      }
     ],
-    "prop": "🧹",
+    "big": "뒤?!",
     "steps": [
      9,
-     0.1,
      9,
-     9
+     "a1b.뒤를",
+     "a1b.뒤를"
     ]
    }
   },
   {
    "from": "a2",
    "label": "a2",
-   "src": "notes",
+   "src": "alley1",
    "gfx": {
     "type": "photo",
     "react": {
-     "mood": "smug",
+     "mood": "think",
      "side": "right"
     },
-    "tag": "계획 완벽",
     "steps": [
      0.12,
      0.2,
@@ -202,9 +218,9 @@
    "label": "c1",
    "gfx": {
     "type": "face",
-    "mood": "smug",
+    "mood": "sad",
     "pos": "right",
-    "fx": "sparkle",
+    "fx": "gloom",
     "steps": [
      0.9,
      0.05,
@@ -217,20 +233,21 @@
    "label": "a3",
    "gfx": {
     "type": "scene",
-    "bg": "home",
+    "bg": "subway",
+    "place": "📍 출구가 어디지",
     "chars": [
      {
       "name": "나",
       "color": "#FFB36B",
-      "mood": "love",
+      "mood": "think",
+      "to": "shock",
       "size": 1.2
      }
     ],
-    "prop": "📺",
     "steps": [
      9,
-     0.1,
      9,
+     "a3.역에서만",
      9
     ]
    }
@@ -238,31 +255,14 @@
   {
    "from": "a4",
    "label": "a4",
-   "gfx": {
-    "type": "face",
-    "mood": "sleep",
-    "pos": "low",
-    "to": "shock",
-    "prop": "☀️",
-    "propX": 0.8,
-    "propY": 0.25,
-    "steps": [
-     "a4.아침",
-     0.05,
-     0.15
-    ]
-   }
-  },
-  {
-   "from": "a5",
-   "label": "a5",
-   "src": "books",
+   "src": "crossroad",
    "gfx": {
     "type": "photo",
     "react": {
-     "mood": "think",
+     "mood": "laugh",
      "side": "left"
     },
+    "tag": "반대쪽!",
     "steps": [
      0.12,
      0.2,
@@ -272,13 +272,16 @@
    }
   },
   {
-   "from": "c2",
-   "label": "c2",
+   "from": "a5",
+   "label": "a5",
    "gfx": {
     "type": "face",
-    "mood": "laugh",
-    "pos": "left",
-    "fx": "lines",
+    "mood": "cry",
+    "pos": "tilt",
+    "fx": "sweat",
+    "prop": "⏰",
+    "propX": 0.18,
+    "propY": 0.3,
     "steps": [
      0.9,
      0.05,
@@ -291,16 +294,28 @@
    "label": "a6",
    "gfx": {
     "type": "face",
-    "mood": "happy",
-    "pos": "tilt",
-    "prop": "🧠",
-    "big": "삭제",
-    "propX": 0.2,
-    "propY": 0.3,
+    "mood": "think",
+    "pos": "left",
+    "big": "← ? →",
     "steps": [
      0.9,
      0.05,
-     "a6.전부"
+     0.0
+    ]
+   }
+  },
+  {
+   "from": "c2",
+   "label": "c2",
+   "gfx": {
+    "type": "face",
+    "mood": "shy",
+    "pos": "low",
+    "fx": "sweat",
+    "steps": [
+     0.9,
+     0.05,
+     0.15
     ]
    }
   },
@@ -309,26 +324,27 @@
    "label": "a8",
    "gfx": {
     "type": "scene",
-    "bg": "class",
+    "bg": "office",
     "chars": [
      {
       "color": "#8FD3FF",
-      "mood": "think"
+      "mood": "neutral"
+     },
+     {
+      "color": "#C9A7FF",
+      "mood": "neutral"
      },
      {
       "name": "나",
       "color": "#FFB36B",
-      "mood": "smug"
+      "mood": "think",
+      "to": "shock"
      }
     ],
-    "say": {
-     "who": 0,
-     "text": "범위 어디까지야?"
-    },
     "steps": [
-     0.2,
      9,
      9,
+     "a8.못",
      9
     ]
    }
@@ -338,39 +354,32 @@
    "label": "a9",
    "gfx": {
     "type": "face",
-    "mood": "sad",
+    "mood": "think",
     "pos": "right",
-    "fx": "gloom",
-    "prop": "🍜",
-    "propX": 0.2,
-    "propY": 0.3,
+    "big": "← →",
     "steps": [
      0.9,
      0.05,
-     0.15
+     "a9.양쪽"
     ]
    }
   },
   {
    "from": "a7",
    "label": "a7",
+   "src": "alley2",
    "gfx": {
-    "type": "scene",
-    "bg": "night",
-    "chars": [
-     {
-      "name": "나",
-      "color": "#FFB36B",
-      "mood": "think",
-      "size": 1.2
-     }
-    ],
-    "prop": "💭",
+    "type": "photo",
+    "react": {
+     "mood": "love",
+     "side": "right"
+    },
+    "tag": "맛집은 직진",
     "steps": [
-     9,
-     0.1,
-     9,
-     9
+     0.12,
+     0.2,
+     0.25,
+     1000.0
     ]
    }
   },
@@ -380,7 +389,7 @@
    "gfx": {
     "type": "face",
     "mood": "happy",
-    "pos": "close",
+    "pos": "right",
     "fx": "sparkle",
     "steps": [
      0.9,
@@ -392,12 +401,12 @@
   {
    "from": "y",
    "label": "y",
-   "src": "desk",
+   "src": "map",
    "gfx": {
     "type": "photo",
     "react": {
-     "mood": "laugh",
-     "side": "right"
+     "mood": "shock",
+     "side": "left"
     },
     "steps": [
      0.12,

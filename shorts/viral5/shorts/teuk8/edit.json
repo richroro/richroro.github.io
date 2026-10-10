@@ -1,365 +1,388 @@
 {
  "credit": "",
- "titleStyle": "band",
- "captionY": 1650,
- "sources": {},
+ "layout": "teuk",
+ "teuk": {
+  "bg": "#22302a",
+  "mascot": "#FFB36B"
+ },
+ "sources": {
+  "steak": {
+   "file": "steak.jpg",
+   "page": "",
+   "file_url": "",
+   "license": "",
+   "credit": ""
+  },
+  "cart": {
+   "file": "cart.jpg",
+   "page": "",
+   "file_url": "",
+   "license": "",
+   "credit": ""
+  },
+  "calendar": {
+   "file": "calendar.jpg",
+   "page": "",
+   "file_url": "",
+   "license": "",
+   "credit": ""
+  }
+ },
  "music": {
   "file": "music/hustle.mp3",
-  "gain": 0.2,
+  "gain": 0.18,
   "start": 0
  },
  "sfx": [
   [
-   "c1",
-   "pop",
-   0.25
+   "a1",
+   "whoosh",
+   0.15
   ],
   [
-   "b1",
+   "a1b",
    "whoosh",
+   0.15
+  ],
+  [
+   "a2",
+   "whoosh",
+   0.15
+  ],
+  [
+   "c1",
+   "pop",
    0.22
+  ],
+  [
+   "a3",
+   "pop_hi",
+   0.18
+  ],
+  [
+   "a3",
+   "whoosh",
+   0.15
+  ],
+  [
+   "a4",
+   "whoosh",
+   0.15
+  ],
+  [
+   "a5",
+   "pop_hi",
+   0.18
+  ],
+  [
+   "a5",
+   "whoosh",
+   0.15
   ],
   [
    "c2",
    "pop",
-   0.25
-  ],
-  [
-   "b2",
-   "whoosh",
    0.22
   ],
   [
-   "b2.카드값",
-   "boing",
-   0.3
-  ],
-  [
-   "c3",
-   "pop",
-   0.25
-  ],
-  [
-   "b3",
+   "a6",
    "whoosh",
-   0.22
+   0.15
   ],
   [
-   "c4",
-   "pop",
-   0.25
-  ],
-  [
-   "b4",
+   "a8",
    "whoosh",
-   0.22
+   0.15
   ],
   [
-   "c5",
-   "pop",
-   0.25
-  ],
-  [
-   "b5",
+   "a9",
    "whoosh",
-   0.22
+   0.15
   ],
   [
-   "b5.전부",
-   "boing",
-   0.3
+   "a7",
+   "pop_hi",
+   0.18
   ],
   [
-   "c6",
-   "pop",
-   0.25
-  ],
-  [
-   "b6",
+   "a7",
    "whoosh",
-   0.22
-  ],
-  [
-   "c7",
-   "pop",
-   0.25
-  ],
-  [
-   "b7",
-   "whoosh",
-   0.22
-  ],
-  [
-   "b7.다음",
-   "boing",
-   0.3
-  ],
-  [
-   "y",
-   "pop",
-   0.25
+   0.15
   ],
   [
    "z",
    "whoosh",
+   0.15
+  ],
+  [
+   "y",
+   "pop",
    0.22
   ],
   [
-   "z.몇",
-   "ding",
-   0.3
+   "a1",
+   "boing",
+   0.25
   ],
   [
-   "a",
-   "pop_hi",
-   0.3
+   "a6.아끼자고",
+   "boing",
+   0.25
+  ],
+  [
+   "z",
+   "ding",
+   0.25
   ]
  ],
  "clips": [
   {
-   "from": "a",
-   "label": "hook",
+   "from": "a1",
+   "label": "a1",
    "gfx": {
-    "type": "scene",
-    "bg": "office",
-    "place": "📍 월급날",
-    "prop": "💰",
-    "propX": 0.72,
-    "chars": [
-     {
-      "name": "나",
-      "color": "#FFB36B",
-      "mood": "love",
-      "x": 0.32
-     }
-    ],
+    "type": "face",
+    "mood": "love",
+    "pos": "close",
+    "fx": "sparkle",
+    "prop": "📱",
+    "big": "입금?",
+    "propX": 0.82,
+    "propY": 0.72,
     "steps": [
+     0.9,
      0.05,
-     -1,
-     9,
-     -1
+     0.0
     ]
    }
   },
   {
-   "from": "b1",
-   "label": "beat1",
+   "from": "a1b",
+   "label": "a1b",
    "gfx": {
     "type": "scene",
-    "bg": "subway",
-    "place": "📍 출근길",
-    "prop": "📱",
-    "propX": 0.72,
+    "bg": "office",
     "chars": [
      {
       "name": "나",
       "color": "#FFB36B",
       "mood": "think",
       "to": "love",
-      "x": 0.32
+      "size": 1.2
      }
     ],
-    "say": {
-     "who": 0,
-     "text": "[들어왔다]!!"
-    },
+    "prop": "📱",
     "steps": [
-     "c1",
-     0.1,
-     "c1",
-     0.1
-    ]
-   }
-  },
-  {
-   "from": "b2",
-   "label": "beat2",
-   "gfx": {
-    "type": "scene",
-    "bg": "office",
-    "big": "💸 [스쳐 감]",
-    "chars": [
-     {
-      "name": "나",
-      "color": "#FFB36B",
-      "mood": "shock",
-      "to": "cry"
-     }
-    ],
-    "say": {
-     "who": 0,
-     "text": "안녕, 내 [월급]…"
-    },
-    "steps": [
-     "c2",
-     0.1,
-     "c2",
-     "b2.카드값"
-    ]
-   }
-  },
-  {
-   "from": "b3",
-   "label": "beat3",
-   "gfx": {
-    "type": "scene",
-    "bg": "office",
-    "prop": "🍣",
-    "propX": 0.72,
-    "chars": [
-     {
-      "name": "나",
-      "color": "#FFB36B",
-      "mood": "love",
-      "x": 0.32
-     }
-    ],
-    "say": {
-     "who": 0,
-     "text": "오늘은 [초밥]이다!"
-    },
-    "steps": [
-     "c3",
-     0.1,
      9,
-     0.1
+     0.1,
+     "a1b.기다림",
+     9
     ]
    }
   },
   {
-   "from": "b4",
-   "label": "beat4",
+   "from": "a2",
+   "label": "a2",
+   "gfx": {
+    "type": "face",
+    "mood": "shock",
+    "pos": "tilt",
+    "fx": "lines",
+    "prop": "💸",
+    "propX": 0.2,
+    "propY": 0.3,
+    "steps": [
+     0.9,
+     0.05,
+     0.15
+    ]
+   }
+  },
+  {
+   "from": "c1",
+   "label": "c1",
+   "gfx": {
+    "type": "face",
+    "mood": "cry",
+    "pos": "right",
+    "fx": "gloom",
+    "steps": [
+     0.9,
+     0.05,
+     0.15
+    ]
+   }
+  },
+  {
+   "from": "a3",
+   "label": "a3",
+   "src": "steak",
+   "gfx": {
+    "type": "photo",
+    "react": {
+     "mood": "love",
+     "side": "right"
+    },
+    "tag": "오늘만",
+    "steps": [
+     0.12,
+     0.2,
+     0.25,
+     1000.0
+    ]
+   }
+  },
+  {
+   "from": "a4",
+   "label": "a4",
+   "gfx": {
+    "type": "face",
+    "mood": "happy",
+    "pos": "left",
+    "prop": "🎁",
+    "steps": [
+     0.9,
+     0.05,
+     0.15
+    ]
+   }
+  },
+  {
+   "from": "a5",
+   "label": "a5",
+   "src": "cart",
+   "gfx": {
+    "type": "photo",
+    "react": {
+     "mood": "smug",
+     "side": "left"
+    },
+    "tag": "전부 결제",
+    "steps": [
+     0.12,
+     0.2,
+     0.25,
+     1000.0
+    ]
+   }
+  },
+  {
+   "from": "c2",
+   "label": "c2",
+   "gfx": {
+    "type": "face",
+    "mood": "smug",
+    "pos": "low",
+    "fx": "sparkle",
+    "steps": [
+     0.9,
+     0.05,
+     0.15
+    ]
+   }
+  },
+  {
+   "from": "a6",
+   "label": "a6",
+   "gfx": {
+    "type": "face",
+    "mood": "angry",
+    "pos": "close",
+    "fx": "fire",
+    "big": "절약!",
+    "burst": "#FF8A5C",
+    "steps": [
+     0.9,
+     0.05,
+     "a6.아끼자고"
+    ]
+   }
+  },
+  {
+   "from": "a8",
+   "label": "a8",
+   "gfx": {
+    "type": "face",
+    "mood": "think",
+    "pos": "right",
+    "prop": "🏦",
+    "propX": 0.2,
+    "propY": 0.3,
+    "steps": [
+     0.9,
+     0.05,
+     0.15
+    ]
+   }
+  },
+  {
+   "from": "a9",
+   "label": "a9",
    "gfx": {
     "type": "scene",
-    "bg": "store",
-    "prop": "🎁",
-    "propX": 0.72,
+    "bg": "office",
     "chars": [
      {
       "name": "나",
       "color": "#FFB36B",
       "mood": "happy",
-      "x": 0.32
+      "size": 1.2
      }
     ],
-    "say": {
-     "who": 0,
-     "text": "수고했어, [나]!"
-    },
+    "prop": "💰",
     "steps": [
-     "c4",
+     9,
      0.1,
      9,
-     0.1
+     9
     ]
    }
   },
   {
-   "from": "b5",
-   "label": "beat5",
+   "from": "a7",
+   "label": "a7",
+   "src": "calendar",
    "gfx": {
-    "type": "scene",
-    "bg": "bedroom",
-    "big": "🛍️ × [5]",
-    "chars": [
-     {
-      "name": "나",
-      "color": "#FFB36B",
-      "mood": "smug",
-      "to": "laugh"
-     }
-    ],
-    "say": {
-     "who": 0,
-     "text": "[결제] 완료!"
+    "type": "photo",
+    "react": {
+     "mood": "sad",
+     "side": "right"
     },
     "steps": [
-     "c5",
-     0.1,
-     "c5",
-     "b5.전부"
-    ]
-   }
-  },
-  {
-   "from": "b6",
-   "label": "beat6",
-   "gfx": {
-    "type": "scene",
-    "bg": "desk",
-    "prop": "📒",
-    "propX": 0.66,
-    "chars": [
-     {
-      "name": "나",
-      "color": "#FFB36B",
-      "mood": "angry",
-      "x": 0.3
-     }
-    ],
-    "say": {
-     "who": 0,
-     "text": "오늘부터 [가계부] 쓴다!"
-    },
-    "steps": [
-     "c6",
-     0.1,
-     9,
-     0.1
-    ]
-   }
-  },
-  {
-   "from": "b7",
-   "label": "beat7",
-   "gfx": {
-    "type": "scene",
-    "bg": "office",
-    "big": "D-[30]",
-    "chars": [
-     {
-      "name": "나",
-      "color": "#FFB36B",
-      "mood": "think",
-      "to": "cry"
-     }
-    ],
-    "say": {
-     "who": 0,
-     "text": "월급날 [언제] 와…"
-    },
-    "steps": [
-     "c7",
-     0.1,
-     "c7",
-     "b7.다음"
+     0.12,
+     0.2,
+     0.25,
+     1000.0
     ]
    }
   },
   {
    "from": "z",
-   "label": "end",
+   "label": "z",
    "gfx": {
-    "type": "scene",
-    "bg": "office",
-    "big": "[몇 개]?",
-    "chars": [
-     {
-      "name": "나",
-      "color": "#FFB36B",
-      "mood": "laugh"
-     }
-    ],
+    "type": "face",
+    "mood": "happy",
+    "pos": "right",
+    "fx": "sparkle",
     "steps": [
-     "y",
-     0.1,
-     9,
-     "z.몇"
-    ],
-    "say": {
-     "who": 0,
-     "text": "난 [7개] 다…ㅋㅋ"
-    }
+     0.9,
+     0.05,
+     0.15
+    ]
+   }
+  },
+  {
+   "from": "y",
+   "label": "y",
+   "gfx": {
+    "type": "face",
+    "mood": "cry",
+    "pos": "close",
+    "fx": "gloom",
+    "steps": [
+     0.9,
+     0.05,
+     0.15
+    ]
    }
   }
  ]

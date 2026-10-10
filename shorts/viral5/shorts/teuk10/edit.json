@@ -2,26 +2,40 @@
  "credit": "",
  "layout": "teuk",
  "teuk": {
-  "bg": "#25283a",
+  "bg": "#22262e",
   "mascot": "#FFB36B"
  },
  "sources": {
-  "notes": {
-   "file": "notes.jpg",
+  "cup": {
+   "file": "cup.jpg",
    "page": "",
    "file_url": "",
    "license": "",
    "credit": ""
   },
-  "books": {
-   "file": "books.jpg",
+  "cup2": {
+   "file": "cup2.jpg",
    "page": "",
    "file_url": "",
    "license": "",
    "credit": ""
   },
-  "desk": {
-   "file": "desk.jpg",
+  "kimchi": {
+   "file": "kimchi.jpg",
+   "page": "",
+   "file_url": "",
+   "license": "",
+   "credit": ""
+  },
+  "ramyeon": {
+   "file": "ramyeon.jpg",
+   "page": "",
+   "file_url": "",
+   "license": "",
+   "credit": ""
+  },
+  "kettle": {
+   "file": "kettle.jpg",
    "page": "",
    "file_url": "",
    "license": "",
@@ -34,6 +48,11 @@
   "start": 0
  },
  "sfx": [
+  [
+   "a1",
+   "pop_hi",
+   0.18
+  ],
   [
    "a1",
    "whoosh",
@@ -66,13 +85,13 @@
   ],
   [
    "a4",
-   "whoosh",
-   0.15
-  ],
-  [
-   "a5",
    "pop_hi",
    0.18
+  ],
+  [
+   "a4",
+   "whoosh",
+   0.15
   ],
   [
    "a5",
@@ -83,6 +102,11 @@
    "c2",
    "pop",
    0.22
+  ],
+  [
+   "a6",
+   "pop_hi",
+   0.18
   ],
   [
    "a6",
@@ -106,13 +130,13 @@
   ],
   [
    "z",
-   "whoosh",
-   0.15
-  ],
-  [
-   "y",
    "pop_hi",
    0.18
+  ],
+  [
+   "z",
+   "whoosh",
+   0.15
   ],
   [
    "y",
@@ -120,12 +144,17 @@
    0.22
   ],
   [
-   "a1",
+   "a1b",
    "boing",
    0.25
   ],
   [
-   "a6.전부",
+   "a5.바닥",
+   "boing",
+   0.25
+  ],
+  [
+   "a7.얼굴",
    "boing",
    0.25
   ],
@@ -139,15 +168,35 @@
   {
    "from": "a1",
    "label": "a1",
+   "src": "cup",
+   "gfx": {
+    "type": "photo",
+    "react": {
+     "mood": "shock",
+     "side": "right",
+     "size": 470
+    },
+    "tag": "물 선?",
+    "steps": [
+     -1,
+     0.2,
+     0.25,
+     1000.0
+    ]
+   }
+  },
+  {
+   "from": "a1b",
+   "label": "a1b",
    "gfx": {
     "type": "face",
     "mood": "shock",
     "pos": "close",
     "fx": "lines",
-    "prop": "📚",
-    "big": "D-1",
+    "prop": "🍜",
+    "big": "선 어디?",
     "propX": 0.82,
-    "propY": 0.72,
+    "propY": 0.7,
     "steps": [
      0.9,
      0.05,
@@ -156,39 +205,16 @@
    }
   },
   {
-   "from": "a1b",
-   "label": "a1b",
-   "gfx": {
-    "type": "scene",
-    "bg": "desk",
-    "chars": [
-     {
-      "name": "나",
-      "color": "#FFB36B",
-      "mood": "happy",
-      "size": 1.2
-     }
-    ],
-    "prop": "🧹",
-    "steps": [
-     9,
-     0.1,
-     9,
-     9
-    ]
-   }
-  },
-  {
    "from": "a2",
    "label": "a2",
-   "src": "notes",
+   "src": "cup2",
    "gfx": {
     "type": "photo",
     "react": {
      "mood": "smug",
-     "side": "right"
+     "side": "left"
     },
-    "tag": "계획 완벽",
+    "tag": "2분 30초",
     "steps": [
      0.12,
      0.2,
@@ -217,7 +243,8 @@
    "label": "a3",
    "gfx": {
     "type": "scene",
-    "bg": "home",
+    "bg": "night",
+    "place": "📍 밤 11시",
     "chars": [
      {
       "name": "나",
@@ -226,7 +253,7 @@
       "size": 1.2
      }
     ],
-    "prop": "📺",
+    "prop": "🍜",
     "steps": [
      9,
      0.1,
@@ -238,29 +265,11 @@
   {
    "from": "a4",
    "label": "a4",
-   "gfx": {
-    "type": "face",
-    "mood": "sleep",
-    "pos": "low",
-    "to": "shock",
-    "prop": "☀️",
-    "propX": 0.8,
-    "propY": 0.25,
-    "steps": [
-     "a4.아침",
-     0.05,
-     0.15
-    ]
-   }
-  },
-  {
-   "from": "a5",
-   "label": "a5",
-   "src": "books",
+   "src": "kimchi",
    "gfx": {
     "type": "photo",
     "react": {
-     "mood": "think",
+     "mood": "sad",
      "side": "left"
     },
     "steps": [
@@ -272,13 +281,33 @@
    }
   },
   {
+   "from": "a5",
+   "label": "a5",
+   "gfx": {
+    "type": "face",
+    "mood": "laugh",
+    "pos": "tilt",
+    "fx": "sweat",
+    "prop": "🥣",
+    "big": "원샷",
+    "steps": [
+     0.9,
+     0.05,
+     "a5.바닥"
+    ]
+   }
+  },
+  {
    "from": "c2",
    "label": "c2",
    "gfx": {
     "type": "face",
-    "mood": "laugh",
-    "pos": "left",
-    "fx": "lines",
+    "mood": "sick",
+    "pos": "low",
+    "fx": "gloom",
+    "prop": "🥤",
+    "propX": 0.82,
+    "propY": 0.35,
     "steps": [
      0.9,
      0.05,
@@ -289,18 +318,19 @@
   {
    "from": "a6",
    "label": "a6",
+   "src": "ramyeon",
    "gfx": {
-    "type": "face",
-    "mood": "happy",
-    "pos": "tilt",
-    "prop": "🧠",
-    "big": "삭제",
-    "propX": 0.2,
-    "propY": 0.3,
+    "type": "photo",
+    "react": {
+     "mood": "think",
+     "side": "right"
+    },
+    "tag": "하나 더?",
     "steps": [
-     0.9,
-     0.05,
-     "a6.전부"
+     0.12,
+     0.2,
+     0.25,
+     1000.0
     ]
    }
   },
@@ -308,28 +338,16 @@
    "from": "a8",
    "label": "a8",
    "gfx": {
-    "type": "scene",
-    "bg": "class",
-    "chars": [
-     {
-      "color": "#8FD3FF",
-      "mood": "think"
-     },
-     {
-      "name": "나",
-      "color": "#FFB36B",
-      "mood": "smug"
-     }
-    ],
-    "say": {
-     "who": 0,
-     "text": "범위 어디까지야?"
-    },
+    "type": "face",
+    "mood": "angry",
+    "pos": "right",
+    "prop": "🥢",
+    "propX": 0.2,
+    "propY": 0.3,
     "steps": [
-     0.2,
-     9,
-     9,
-     9
+     0.9,
+     0.05,
+     0.15
     ]
    }
   },
@@ -338,11 +356,11 @@
    "label": "a9",
    "gfx": {
     "type": "face",
-    "mood": "sad",
-    "pos": "right",
-    "fx": "gloom",
-    "prop": "🍜",
-    "propX": 0.2,
+    "mood": "shock",
+    "pos": "low",
+    "fx": "steam",
+    "prop": "👓",
+    "propX": 0.8,
     "propY": 0.3,
     "steps": [
      0.9,
@@ -356,47 +374,33 @@
    "label": "a7",
    "gfx": {
     "type": "scene",
-    "bg": "night",
+    "bg": "bath",
     "chars": [
      {
       "name": "나",
       "color": "#FFB36B",
-      "mood": "think",
-      "size": 1.2
+      "mood": "shock",
+      "size": 1.35
      }
     ],
-    "prop": "💭",
+    "prop": "🪞",
+    "big": "퉁퉁",
     "steps": [
      9,
      0.1,
      9,
-     9
+     "a7.얼굴"
     ]
    }
   },
   {
    "from": "z",
    "label": "z",
-   "gfx": {
-    "type": "face",
-    "mood": "happy",
-    "pos": "close",
-    "fx": "sparkle",
-    "steps": [
-     0.9,
-     0.05,
-     0.15
-    ]
-   }
-  },
-  {
-   "from": "y",
-   "label": "y",
-   "src": "desk",
+   "src": "kettle",
    "gfx": {
     "type": "photo",
     "react": {
-     "mood": "laugh",
+     "mood": "happy",
      "side": "right"
     },
     "steps": [
@@ -404,6 +408,21 @@
      0.2,
      0.25,
      1000.0
+    ]
+   }
+  },
+  {
+   "from": "y",
+   "label": "y",
+   "gfx": {
+    "type": "face",
+    "mood": "happy",
+    "pos": "close",
+    "fx": "steam",
+    "steps": [
+     0.9,
+     0.05,
+     0.15
     ]
    }
   }

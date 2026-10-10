@@ -2,26 +2,19 @@
  "credit": "",
  "layout": "teuk",
  "teuk": {
-  "bg": "#25283a",
+  "bg": "#262330",
   "mascot": "#FFB36B"
  },
  "sources": {
-  "notes": {
-   "file": "notes.jpg",
+  "lastslice": {
+   "file": "lastslice.jpg",
    "page": "",
    "file_url": "",
    "license": "",
    "credit": ""
   },
-  "books": {
-   "file": "books.jpg",
-   "page": "",
-   "file_url": "",
-   "license": "",
-   "credit": ""
-  },
-  "desk": {
-   "file": "desk.jpg",
+  "cake": {
+   "file": "cake.jpg",
    "page": "",
    "file_url": "",
    "license": "",
@@ -43,11 +36,6 @@
    "a1b",
    "whoosh",
    0.15
-  ],
-  [
-   "a2",
-   "pop_hi",
-   0.18
   ],
   [
    "a2",
@@ -80,14 +68,14 @@
    0.15
   ],
   [
-   "c2",
-   "pop",
-   0.22
-  ],
-  [
    "a6",
    "whoosh",
    0.15
+  ],
+  [
+   "c2",
+   "pop",
+   0.22
   ],
   [
    "a8",
@@ -106,13 +94,13 @@
   ],
   [
    "z",
-   "whoosh",
-   0.15
-  ],
-  [
-   "y",
    "pop_hi",
    0.18
+  ],
+  [
+   "z",
+   "whoosh",
+   0.15
   ],
   [
    "y",
@@ -121,11 +109,6 @@
   ],
   [
    "a1",
-   "boing",
-   0.25
-  ],
-  [
-   "a6.전부",
    "boing",
    0.25
   ],
@@ -144,10 +127,7 @@
     "mood": "shock",
     "pos": "close",
     "fx": "lines",
-    "prop": "📚",
-    "big": "D-1",
-    "propX": 0.82,
-    "propY": 0.72,
+    "big": "...?",
     "steps": [
      0.9,
      0.05,
@@ -160,20 +140,28 @@
    "label": "a1b",
    "gfx": {
     "type": "scene",
-    "bg": "desk",
+    "bg": "home",
     "chars": [
+     {
+      "color": "#8FD3FF",
+      "mood": "neutral"
+     },
      {
       "name": "나",
       "color": "#FFB36B",
-      "mood": "happy",
-      "size": 1.2
+      "mood": "happy"
+     },
+     {
+      "color": "#C9A7FF",
+      "mood": "neutral",
+      "to": "shock"
      }
     ],
-    "prop": "🧹",
+    "prop": "🍗",
     "steps": [
      9,
      0.1,
-     9,
+     "a1b.물어봄",
      9
     ]
    }
@@ -181,19 +169,15 @@
   {
    "from": "a2",
    "label": "a2",
-   "src": "notes",
    "gfx": {
-    "type": "photo",
-    "react": {
-     "mood": "smug",
-     "side": "right"
-    },
-    "tag": "계획 완벽",
+    "type": "face",
+    "mood": "smug",
+    "pos": "left",
+    "prop": "🎬",
     "steps": [
-     0.12,
-     0.2,
-     0.25,
-     1000.0
+     0.9,
+     0.05,
+     0.15
     ]
    }
   },
@@ -202,9 +186,9 @@
    "label": "c1",
    "gfx": {
     "type": "face",
-    "mood": "smug",
+    "mood": "shock",
     "pos": "right",
-    "fx": "sparkle",
+    "fx": "sweat",
     "steps": [
      0.9,
      0.05,
@@ -217,21 +201,46 @@
    "label": "a3",
    "gfx": {
     "type": "scene",
-    "bg": "home",
     "chars": [
      {
       "name": "나",
       "color": "#FFB36B",
-      "mood": "love",
-      "size": 1.2
+      "mood": "happy"
      }
     ],
-    "prop": "📺",
+    "chat": {
+     "title": "우리 반 (28)",
+     "msgs": [
+      {
+       "name": "민지",
+       "text": "아 그건 좀…"
+      },
+      {
+       "name": "준호",
+       "text": "…"
+      },
+      {
+       "text": "😆😆😆🎉🎉",
+       "me": true,
+       "unread": "26"
+      },
+      {
+       "text": "🥳🥳🥳",
+       "me": true,
+       "unread": "26"
+      }
+     ]
+    },
+    "bg": "linear-gradient(180deg, #fff6e8 0%, #ffe9cf 100%)",
     "steps": [
      9,
-     0.1,
      9,
-     9
+     9,
+     9,
+     0.1,
+     0.5,
+     "a3.혼자",
+     "a3.폭탄"
     ]
    }
   },
@@ -239,28 +248,150 @@
    "from": "a4",
    "label": "a4",
    "gfx": {
-    "type": "face",
-    "mood": "sleep",
-    "pos": "low",
-    "to": "shock",
-    "prop": "☀️",
-    "propX": 0.8,
-    "propY": 0.25,
+    "type": "scene",
+    "bg": "office",
+    "chars": [
+     {
+      "color": "#8FD3FF",
+      "mood": "sleep"
+     },
+     {
+      "name": "나",
+      "color": "#FFB36B",
+      "mood": "happy",
+      "hat": "✋"
+     },
+     {
+      "color": "#C9A7FF",
+      "mood": "shock"
+     }
+    ],
     "steps": [
-     "a4.아침",
-     0.05,
-     0.15
+     9,
+     9,
+     9,
+     9
     ]
    }
   },
   {
    "from": "a5",
    "label": "a5",
-   "src": "books",
+   "src": "lastslice",
    "gfx": {
     "type": "photo",
     "react": {
      "mood": "think",
+     "side": "right"
+    },
+    "tag": "마지막 1조각",
+    "steps": [
+     0.12,
+     0.2,
+     0.25,
+     1000.0
+    ]
+   }
+  },
+  {
+   "from": "a6",
+   "label": "a6",
+   "gfx": {
+    "type": "face",
+    "mood": "happy",
+    "pos": "tilt",
+    "fx": "sparkle",
+    "steps": [
+     0.9,
+     0.05,
+     0.15
+    ]
+   }
+  },
+  {
+   "from": "c2",
+   "label": "c2",
+   "gfx": {
+    "type": "face",
+    "mood": "think",
+    "pos": "low",
+    "steps": [
+     0.9,
+     0.05,
+     0.15
+    ]
+   }
+  },
+  {
+   "from": "a8",
+   "label": "a8",
+   "gfx": {
+    "type": "face",
+    "mood": "happy",
+    "pos": "right",
+    "prop": "🍰",
+    "propX": 0.2,
+    "propY": 0.3,
+    "steps": [
+     0.9,
+     0.05,
+     0.15
+    ]
+   }
+  },
+  {
+   "from": "a9",
+   "label": "a9",
+   "gfx": {
+    "type": "scene",
+    "bg": "street",
+    "place": "📸 찰칵",
+    "chars": [
+     {
+      "color": "#8FD3FF",
+      "mood": "happy"
+     },
+     {
+      "name": "나",
+      "color": "#FFB36B",
+      "mood": "sleep"
+     },
+     {
+      "color": "#C9A7FF",
+      "mood": "happy"
+     }
+    ],
+    "steps": [
+     9,
+     9,
+     9,
+     9
+    ]
+   }
+  },
+  {
+   "from": "a7",
+   "label": "a7",
+   "gfx": {
+    "type": "face",
+    "mood": "love",
+    "pos": "close",
+    "fx": "hearts",
+    "steps": [
+     0.9,
+     0.05,
+     0.15
+    ]
+   }
+  },
+  {
+   "from": "z",
+   "label": "z",
+   "src": "cake",
+   "gfx": {
+    "type": "photo",
+    "react": {
+     "mood": "happy",
      "side": "left"
     },
     "steps": [
@@ -272,138 +403,17 @@
    }
   },
   {
-   "from": "c2",
-   "label": "c2",
+   "from": "y",
+   "label": "y",
    "gfx": {
     "type": "face",
-    "mood": "laugh",
-    "pos": "left",
+    "mood": "shock",
+    "pos": "close",
     "fx": "lines",
     "steps": [
      0.9,
      0.05,
      0.15
-    ]
-   }
-  },
-  {
-   "from": "a6",
-   "label": "a6",
-   "gfx": {
-    "type": "face",
-    "mood": "happy",
-    "pos": "tilt",
-    "prop": "🧠",
-    "big": "삭제",
-    "propX": 0.2,
-    "propY": 0.3,
-    "steps": [
-     0.9,
-     0.05,
-     "a6.전부"
-    ]
-   }
-  },
-  {
-   "from": "a8",
-   "label": "a8",
-   "gfx": {
-    "type": "scene",
-    "bg": "class",
-    "chars": [
-     {
-      "color": "#8FD3FF",
-      "mood": "think"
-     },
-     {
-      "name": "나",
-      "color": "#FFB36B",
-      "mood": "smug"
-     }
-    ],
-    "say": {
-     "who": 0,
-     "text": "범위 어디까지야?"
-    },
-    "steps": [
-     0.2,
-     9,
-     9,
-     9
-    ]
-   }
-  },
-  {
-   "from": "a9",
-   "label": "a9",
-   "gfx": {
-    "type": "face",
-    "mood": "sad",
-    "pos": "right",
-    "fx": "gloom",
-    "prop": "🍜",
-    "propX": 0.2,
-    "propY": 0.3,
-    "steps": [
-     0.9,
-     0.05,
-     0.15
-    ]
-   }
-  },
-  {
-   "from": "a7",
-   "label": "a7",
-   "gfx": {
-    "type": "scene",
-    "bg": "night",
-    "chars": [
-     {
-      "name": "나",
-      "color": "#FFB36B",
-      "mood": "think",
-      "size": 1.2
-     }
-    ],
-    "prop": "💭",
-    "steps": [
-     9,
-     0.1,
-     9,
-     9
-    ]
-   }
-  },
-  {
-   "from": "z",
-   "label": "z",
-   "gfx": {
-    "type": "face",
-    "mood": "happy",
-    "pos": "close",
-    "fx": "sparkle",
-    "steps": [
-     0.9,
-     0.05,
-     0.15
-    ]
-   }
-  },
-  {
-   "from": "y",
-   "label": "y",
-   "src": "desk",
-   "gfx": {
-    "type": "photo",
-    "react": {
-     "mood": "laugh",
-     "side": "right"
-    },
-    "steps": [
-     0.12,
-     0.2,
-     0.25,
-     1000.0
     ]
    }
   }
