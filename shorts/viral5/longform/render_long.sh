@@ -34,8 +34,8 @@ ABR=$(python3 -c "print(160 if $DUR <= 600 else 128 if $DUR <= 1200 else 96)")
 echo "render $ID: $N frames ($DUR s) in chunks of $CHUNK"
 
 # 1) picture
-T0=$(date +%s); : > "$W/list.txt"; : > "$W/alist.txt"; i=0; RESUMED=False
-ls "$W"/v*.mkv >/dev/null 2>&1 && RESUMED=True  # render_fps then covers only the chunks rendered this time
+T0=$(date +%s); : > "$W/list.txt"; : > "$W/alist.txt"; i=0; RESUMED=False; NR=0  # NR: frames rendered in this run
+ls "$W"/v*.mkv >/dev/null 2>&1 && RESUMED=True
 for ((a = 0; a < N; a += CHUNK)); do
   b=$((a + CHUNK - 1)); ((b >= N)) && b=$((N - 1))
   f=$(printf "v%03d.mkv" $i)
@@ -44,7 +44,7 @@ for ((a = 0; a < N; a += CHUNK)); do
     npx remotion render src/index.ts "$ID" "$W/tmp.mkv" --frames=$a-$b --codec=h264-mkv --audio-codec=pcm-16 --crf=12 --x264-preset=veryfast \
       --browser-executable="$BX" --concurrency="$CONC" --log=error 2>&1 | grep -v -e "memory" -e "Memory" -e "docker" || true
     [ -s "$W/tmp.mkv" ] || { echo "chunk $i failed"; exit 1; }
-    mv "$W/tmp.mkv" "$W/$f"
+    mv "$W/tmp.mkv" "$W/$f"; NR=$((NR + b - a + 1))
     echo "  chunk $i: frames $a-$b in $(( $(date +%s) - t )) s"
   fi
   # each chunk's sound cut to exactly its frames (Remotion adds a few samples), so the joined track never drifts or clicks
@@ -92,7 +92,7 @@ SZ=$(stat -c %s "final/$ID.mp4")
 python3 - "$W/render.json" <<EOF
 import json, sys
 d = dict(id="$ID", frames=$N, seconds=$DUR, picture_s=$((T1 - T0)), audio_s=$((T2 - T1)), encode_s=$((T3 - T2)),
-         render_fps=round($N / max(1, $((T1 - T0))), 2), resumed=$RESUMED, content="$CONTENT", codec="$CODEC", height=$SCALE, video_kbps=$KB, audio_kbps=$ABR,
+         frames_rendered=$NR, render_fps=round($NR / $((T1 - T0)), 2) if $NR else None, resumed=$RESUMED, content="$CONTENT", codec="$CODEC", height=$SCALE, video_kbps=$KB, audio_kbps=$ABR,
          size_mb=round($SZ / 1e6, 2), mb_per_min=round($SZ / 1e6 / ($DUR / 60), 2))
 json.dump(d, open(sys.argv[1], "w"), indent=1); print(json.dumps(d))
 EOF

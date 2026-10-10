@@ -607,7 +607,7 @@ class Long:
         at = lambda i, dflt: st[i] if len(st) > i and st[i] is not None else dflt
         if g["type"] == "post":
             return {"type": "post", "g": {k: v for k, v in g.items() if k != "type"}}
-        sc = {k: g[k] for k in ("bg", "sign", "place", "photo", "chars", "prop", "propX", "big", "card", "zoom", "focus") if k in g}
+        sc = {k: g[k] for k in ("bg", "sign", "place", "photo", "chars", "prop", "propX", "big", "bigSize", "card", "zoom", "focus") if k in g}
         sc["says"] = [{"who": g["say"]["who"], "text": g["say"]["text"], "at": at(0, 0.05)}] if g.get("say") else []
         sc["propAt"], sc["bigAt"] = at(1, 0.1), at(3, 0.1)
         sc["turn"] = at(2, None) if any(c.get("to") for c in g.get("chars", [])) else None
@@ -745,7 +745,8 @@ class Long:
             out += srcs
             for sid in shorts_used:
                 ed = self.short_edit(sid)
-                out.append(f"- 우리 쇼츠 「{sid}」 — {ed.get('credit') or '출처는 해당 쇼츠 설명란'}")
+                cr = ed.get("credit") or next((x["credit"] for x in ed.get("segments", []) + ed.get("clips", []) if x.get("credit")), None)
+                out.append(f"- 우리 쇼츠 「{sid}」 — {cr or '출처는 해당 쇼츠 설명란과 같음'}")
             out.append("")
         if E.get("mapUsed", any(s.get("kind") == "map" for s in self.shots if s["type"] == "card")):
             out += ["지도: Natural Earth (public domain)", ""]

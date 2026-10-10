@@ -41,7 +41,7 @@ export type SceneSpec = {
   /** when chars switch to their `to` mood */
   turn?: number | null;
   prop?: string; propX?: number; propAt?: number | null;
-  big?: string; bigAt?: number | null;
+  big?: string; bigAt?: number | null; bigSize?: number;
   card?: string;
   chat?: Omit<Chat, "msgs"> & { msgs: (Chat["msgs"][number] & { at?: number | null })[] };
   zoom?: number; focus?: number;

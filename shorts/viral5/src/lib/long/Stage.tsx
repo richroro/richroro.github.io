@@ -64,7 +64,8 @@ export const Stage: React.FC<{ g: SceneSpec; t: number }> = ({ g, t }) => {
             transform: `translateX(-50%) scale(${ps}) rotate(${6 * Math.sin(t * 4)}deg)`, filter: "drop-shadow(0 10px 10px rgba(0,0,0,.25))" }}>{g.prop}</div>
         ) : null}
         {g.chars.map((c, i) => (
-          <div key={i} style={{ position: "absolute", left: xs[i] * W - sz[i] / 2, top: floor - sz[i], width: sz[i], height: sz[i] }}>
+          <div key={i} style={{ position: "absolute", left: xs[i] * W - sz[i] / 2, top: floor - sz[i] + (c.y ?? 0), width: sz[i], height: sz[i],
+            ...(c.rot ? { transform: `rotate(${c.rot}deg)`, transformOrigin: "50% 100%" } : {}) }}>
             <Mochi c={c} i={i} t={turned && c.to ? t - (g.turn ?? 0) : t} size={sz[i]} mood={turned && c.to ? c.to : c.mood} />
             {c.name ? (
               <div style={{ position: "absolute", left: -120, right: -120, top: sz[i] + 2, textAlign: "center" }}>
@@ -81,7 +82,7 @@ export const Stage: React.FC<{ g: SceneSpec; t: number }> = ({ g, t }) => {
         </div>
       ) : null}
       {say && g.chars[say.who] ? (
-        <Bubble key={say.at} text={say.text} sx={xs[say.who] * W} head={floor - sz[say.who] * z} t={t} at={say.at} />
+        <Bubble key={say.at} text={say.text} sx={xs[say.who] * W} head={floor + (g.chars[say.who].y ?? 0) - sz[say.who] * z} t={t} at={say.at} />
       ) : null}
       {g.place ? (
         <div style={{ position: "absolute", left: 40, top: 112, fontFamily: BODY, fontWeight: 900, fontSize: 36, color: INK, background: "white", border: `5px solid ${INK}`,
@@ -89,7 +90,7 @@ export const Stage: React.FC<{ g: SceneSpec; t: number }> = ({ g, t }) => {
       ) : null}
       {g.big || g.card ? (
         <AbsoluteFill>
-          <Scene g={{ chars: [], bg: "transparent", big: g.big, card: g.card, steps: [1e9, 1e9, 1e9, g.bigAt ?? 0.1] }} t={t} h={1080} />
+          <Scene g={{ chars: [], bg: "transparent", big: g.big, bigSize: g.bigSize, card: g.card, steps: [1e9, 1e9, 1e9, g.bigAt ?? 0.1] }} t={t} h={1080} />
         </AbsoluteFill>
       ) : null}
     </AbsoluteFill>

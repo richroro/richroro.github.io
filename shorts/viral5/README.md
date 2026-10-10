@@ -5246,3 +5246,212 @@ Pexels와 Pixabay를 먼저 시도했지만, 두 사이트 모두 이 환경에 
 - 설명글: `upload/txt/lfsaeyeon1.txt` (spec `upload/specs/lfsaeyeon1.json`, channel "sseol", long, fiction). 요약은 반전을 말하지 않는다.
 - 고정 댓글: 여러분이라면 이름표 붙인 남편, 바로 용서했을까요? 아니면 각방 한 달 더? 🤔
 - 주기: 사연툰 단편은 주 1편(같은 요일·시간). 단편 4편이 쌓이면 모음집 1편(4편, 720p 또는 2편씩 1080p). 제목에 "썰툰", "야담", "참교육 애니"는 쓰지 않는다(로그아웃 검색 연령 확인).
+
+## 롱폼 제작 키트 (가로 16:9, `src/Long.tsx`)
+
+쇼츠만 만들던 이 프로젝트에서 **가로 1920×1080, 30fps 내레이션 롱폼**을 만드는 틀입니다. 쇼츠 템플릿(ClipShort, Captions, Sseol, Doodle, Road, prep.py)은 건드리지 않고 가져다 씁니다. 새 파일은 `src/Long.tsx`, `src/lib/long/*`, `longform/*`이고, 쇼츠와 함께 쓰는 곳은 `src/Root.tsx`의 `<LongCompositions />` 한 줄뿐입니다(기존 쇼츠는 전과 똑같이 렌더링됨, 아래 "확인").
+
+다룰 수 있는 형식:
+- 지식·우주·심해·자연 다큐 — 미국 연방정부 PD(NASA, NOAA, USGS, NPS)·Pexels 영상과 사진 위에 내레이션
+- 그 시절 옛날 영상 — 국가기록원 등 공공누리 제1유형 영상·사진(`photo`의 켄 번스, 4:3은 `"fit": "contain"`)
+- 썰 모음·괴담 몰아보기 — 우리 캐릭터(Mochi·낙서)가 16:9 무대에서 연기하거나 어두운 분위기 영상 위에 내레이션
+- 우리 쇼츠 모음 — 세로 쇼츠를 흐린 배경 위에, 또는 쇼츠의 원본 클립으로 가로 화면을 다시 짜서
+
+### 만드는 순서
+
+```bash
+npm i && ./fetch.sh && longform/fetch_long.sh        # 글꼴·효과음·음악 + 롱폼용 음악·환경음(빗소리·바람·심해·방 소리)
+# longform/<id>/script.json, edit.json 작성. 원본 영상·사진은 edit.json "sources"의 file 경로에(media/… 등, 저장소에는 안 넣음)
+python3 longform/prep_long.py <id>                   # TTS·자막·컷 → src/longdata/<id>.json, public/long/<id>/, longform/<id>/chapters.txt
+npx remotion still src/index.ts <id>-thumb final/<id>-thumb.jpg --image-format=jpeg --jpeg-quality=88   # 썸네일 1280×720
+longform/render_long.sh <id>                         # final/<id>.mp4 (−14 LUFS, 95MB 이하)
+python3 longform/qa_long.py <id>                     # 검사 → out/review/<id>/
+npx remotion studio                                  # 미리보기 (<id>, <id>-thumb)
+```
+
+- `prep_long.py`는 Edge TTS 결과를 `build/long/<id>/tts/`에 저장해 두므로, 문장을 고친 줄만 다시 읽습니다. TTS 호출·무음 자르기·음절 시간은 `voice_edge.py`의 함수를, 숫자 읽기(`spoken_form`)는 `prep.py`의 함수를 그 파일에서 그대로 불러 씁니다(함수 정의만 읽음).
+- 원본 위치: `edit.json`의 `file`은 `shorts/viral5/` 기준 경로(예: `media/top6/x.mp4`), 아니면 `$MEDIA/…`, `public/…` 순서로 찾습니다. 없으면 자리 표시 화면으로 렌더링되고 prep이 WARN을 냅니다.
+- `src/longdata/`는 저장소에 넣습니다(작은 JSON). 그래서 롱폼을 prep하지 않은 상태에서도 쇼츠 렌더링이 깨지지 않습니다.
+
+### 구성 (타임라인)
+
+콜드 오픈(뒤 챕터의 가장 센 문장과 그 장면을 모아 20~40초) → 제목 카드(3초) → 챕터마다 [챕터 카드(1.5~2.5초, 번호와 제목) → 내레이션] → 아웃트로(20초, 엔드스크린 자리 + 내레이션 한 줄).
+챕터 안에서는 왼쪽 위에 작은 챕터 표시, 오른쪽 위에 지금 화면의 출처("영상: NOAA Ocean Exploration")가 나옵니다. 자막은 아래 가운데 1~2줄(한 줄 약 22자), 흰 글씨에 검은 테두리, `[키워드]`는 노란색이고 Edge TTS 단어 경계로 소리에 맞춥니다. 아웃트로의 자막은 위쪽에 둡니다(아래는 구독 버튼 자리).
+
+### `script.json`
+
+```json
+{
+ "title": "수심 4,000m, 아무도 몰랐던 세계 | 심해 다큐",
+ "sps": 6.0,
+ "gap": 0.35,
+ "voices": {
+  "nar": {"edge": "ko-KR-InJoonNeural", "pitch": "+0Hz"},
+  "minji": {"edge": "ko-KR-SunHiNeural", "rate": "+12%", "pitch": "+20Hz"},
+  "sunbae": {"edge": "ko-KR-HyunsuMultilingualNeural", "rate": "+5%"}
+ },
+ "chapters": [
+  {"id": "c1", "title": "빛이 사라지는 곳", "tail": 0.8, "lines": [
+   {"id": "c1a", "text": "바닷속으로 [200m]만 내려가도 / 햇빛은 거의 사라집니다.", "say": "바닷속으로 이백 미터만 내려가도, 햇빛은 거의 사라집니다."},
+   {"id": "c1b", "text": "그 아래는 [빛 한 줄기 없는] 어둠, / 바로 심해입니다."}
+  ]},
+  {"id": "c2", "title": "탐사선의 새벽 세 시", "lines": [
+   {"id": "c2d", "voice": "minji", "text": "선배! 방금 [뭐가] 지나갔어요!", "cap": false, "gap": 0.3},
+   {"id": "c4s", "short": "deepsea", "mode": "vertical"}
+  ]}
+ ],
+ "outro": {"id": "out", "text": "다음 영상에서는 / [더 깊은 곳]으로 내려가 보겠습니다."}
+}
+```
+
+| 값 | 쓰임 |
+|---|---|
+| `sps` | 내레이터 목표 속도(초당 음절). 있으면 prep이 첫 4문장을 기본 속도로 읽어 보고 `rate`를 계산합니다(데모: 기본 5.32 → `+13%` → 실제 5.98). 없으면 `voices.nar.rate`(기본 `+0%`). 롱폼 내레이션은 보통 5.5~6.5이고, 벗어나면 prep이 WARN |
+| `voices` | 목소리 `{edge, rate, pitch}`. 줄마다 `"voice"`로 골라 대화를 만듭니다. 줄마다 음량을 맞추므로 목소리가 달라도 크기는 같습니다 |
+| `gap` | 문장 사이 쉼(초). 줄마다 `"gap"`으로 바꿈 |
+| 줄 `text` | 자막. `[키워드]` 노란색, `/`는 자막 페이지 나눔(없으면 쉼표·마침표에서 자동으로 2줄 이하로 나눔) |
+| 줄 `say` | 읽는 문장(숫자를 한글로 등). 없으면 `text`에서 괄호와 `/`를 뺀 것 |
+| 줄 `cap: false` | 아래 자막 없음(인물 대사를 말풍선으로만 보일 때) |
+| 줄 `text`의 `{단어}` | 빨간 자막(괴담의 핵심어) |
+| 줄 `pause` | 일부러 둔 침묵(초). 예: `{"id": "q3", "pause": 3, "text": "멈추고 생각해 보세요"}` — 목소리 없이 그 글이 자막으로 떠 있고, QA의 공백 검사에서 빠집니다(괴담 몰아보기의 "정답은?" 3초) |
+| 목소리 `fx: "radio"` | 안내 방송·전화 목소리(대역 제한 + 약간 거친 소리). 예: `"pa": {"edge": "ko-KR-SunHiNeural", "fx": "radio"}` |
+| 줄 `short` | 우리 쇼츠를 그 자리에서 재생. `"mode": "vertical"`은 `final/<id>.mp4`를 흐린 배경 위에(쇼츠 소리 그대로, 롱폼 음악은 꺼짐), `"mode": "relayout"`은 prep한 쇼츠(`src/data/<id>.json`)의 클립을 가로 전체 화면으로, 쇼츠의 목소리와 자막을 롱폼 자막으로. `from`/`to`(초)로 일부만, `gain` 음량 |
+| 챕터 `tail` | 챕터 끝 여유(기본 0.8초) |
+| `outro` | 아웃트로 내레이션 한 줄 |
+
+### `edit.json`
+
+```json
+{
+ "captions": true, "maxChars": 22, "captionSize": 56, "watermark": "",
+ "credit": "영상: NOAA Ocean Exploration",
+ "sources": {
+  "jelly": {"file": "media/top6/red_jellyfish_poralia.mp4", "credit": "영상: NOAA Ocean Exploration",
+            "desc": "붉은 해파리 Poralia, 2021 North Atlantic Stepping Stones — NOAA Ocean Exploration", "url": "https://oceanexplorer.noaa.gov/…"},
+  "wreckStill": {"file": "media/top6/shipwreck_19th_century.mp4", "time": 8.0, "credit": "사진: NOAA Ocean Exploration"}
+ },
+ "music": {"gain": 0.24, "duck": 0.6, "xfade": 1.5},
+ "coldOpen": {"lines": ["c1b", "c2d", "c3d", "c3h", "c1e"], "music": "Deep Haze", "gap": 0.5},
+ "titleCard": {"dur": 3, "kicker": "심해 다큐", "title": ["수심 4,000m", "아무도 몰랐던 세계"], "bg": {"type": "footage", "src": "jelly", "in": 5}},
+ "chapterCard": {"dur": 2},
+ "chapters": {
+  "c1": {"music": "Investigations", "ambience": {"name": "deep", "gain": 0.18}, "shots": [
+   {"type": "footage", "src": "bubbles", "in": 6.0, "crop": [0.5, 0.5, 1.0], "push": [1.0, 1.08]},
+   {"at": "c1a.햇빛", "type": "card", "kind": "fact", "label": "햇빛이 거의 사라지는 깊이", "big": "200m", "bg": "bubbles", "fade": 0.4},
+   {"at": "c1g", "type": "photo", "src": "wreckStill", "kb": {"from": [0.5, 0.5, 1.0], "to": [0.42, 0.55, 1.18]}, "fade": 0.5, "lower": "2019 · 멕시코만"}
+  ]}
+ },
+ "outro": {"dur": 20, "music": "Lost Frontier", "label": "다음 영상", "bg": {"type": "footage", "src": "smoker", "in": 0, "speed": 0.6}},
+ "thumb": {"lines": ["수심 4,000m에서", "[찍힌] 것들"], "tag": "심해 다큐", "src": "jellyStill", "crop": [0.55, 0.5, 1.15], "circle": {"x": 900, "y": 360, "r": 190}},
+ "description": {"head": ["…"], "tail": ["…"], "tags": ["#심해", "#다큐"]}
+}
+```
+
+| 값 | 쓰임 |
+|---|---|
+| `captions` | `false`면 자막을 전부 끕니다 |
+| `sleep` | 수면판: 화면을 30% 어둡게(`dim`), 샷 전환 기본 1초 교차, 챕터는 카드 대신 1초 검은 화면(`dip`), 음악 0.18·교차 3초. 내레이션 속도는 `voices.nar.rate`(예: `-10%`)로 |
+| `dim` | 화면 전체를 이만큼 어둡게(0~1) |
+| `maxChars` / `captionSize` | 자막 한 줄 글자 수(기본 22) / 글자 크기(기본 56px) |
+| `credit` | 출처가 따로 없는 장면의 오른쪽 위 출처 |
+| `sources` | 원본. `file`, `credit`(화면 오른쪽 위), `desc`·`url`(설명란 출처 줄), `time`(영상에서 한 장면을 사진으로 쓸 때 그 초) |
+| `music` | `gain`(기본 0.25), `duck`(목소리 밑으로 내리는 정도, 기본 0.6), `xfade`(챕터 사이 음악 교차 시간, 기본 1.5초) |
+| `coldOpen` | 콜드 오픈에 쓸 줄 id 목록(그 줄이 원래 챕터에서 가진 화면을 그 순간부터 가져옴), 음악, 문장 사이 `gap`, 권장 길이 `min`·`max`(기본 20~40초, 사연툰은 10~15초) |
+| `titleCard` | `dur`, `kicker`(위 작은 글), `title`(2줄, 둘째 줄 노란색), `sub`, `bg`(샷 하나, 흐리게) |
+| `chapterCard` | `dur`(1.5~2.5초, `dip`은 기본 1초), `style`(`card` 전체 화면 카드 · `dip` 검은 화면에 제목만 작게, 다음 장면은 0.5초 페이드인), `kicker`(위 작은 글, 기본 `"CHAPTER {n:02d}"`; 몰아보기는 `"괴담 {n:02d} / {total}"`) |
+| `chapters.<id>` | `music`(곡 이름, 또는 `{"track", "from", "gain", "restart"}`; 이웃 챕터와 같은 곡이면 끊기지 않고 이어짐), `ambience`(`"rain"`·`"wind"`·`"deep"`·`"room"`·`"hum"`(형광등·냉장고, 밤 편의점) 또는 `{"name", "gain"}`), `sfx`(`[["앵커", "pop", 0.4], …]`, `public/sfx/`의 효과음), `musicCuts`(`[{"at": "앵커", "dur": 1.5}]` 반전 직전 음악을 뚝 끊었다가 0.5초에 걸쳐 돌아옴), `shots` |
+| `outro` | `dur`(기본 20초), `music`, `label`, `bg`(샷 하나, 흐리게), `lineAt`(내레이션 시작, 기본 0.8초), `boxes`(엔드스크린 자리 표시, 기본 true) |
+| `thumb` | 썸네일(아래) |
+| `description` | `head`(설명 첫 줄들), `tail`, `tags`, `fiction`(기본 true: 그림 장면이 있으면 "창작" 문구) |
+
+**샷 시간**은 쇼츠의 `edit.json`과 같은 앵커입니다: `"c1a"`(그 줄 시작), `"c1a.햇빛"`(그 단어를 말하는 순간), `"c1a@end+0.2"`(그 줄 끝 0.2초 뒤), 숫자(챕터 첫 줄부터 몇 초). 챕터의 첫 샷은 `at`이 없어도 챕터 시작에 붙고, 샷은 다음 샷이 시작할 때까지 이어집니다. 모든 샷에 `fade`(그 샷으로 넘어가는 교차 시간, 0.3~0.5 권장, 0이면 컷), `lower`(왼쪽 아래 작은 이름표), `badge`(왼쪽 위 큰 노란 딱지, 예: "15위"), `credit`을 줄 수 있습니다.
+
+### 샷 종류
+
+| `type` | 쓰임과 값 |
+|---|---|
+| `footage` | 영상. `src`, `in`(원본 시작 초), `speed`(0.5 = 슬로모션), `crop: [cx, cy, zoom]`(원본의 이 지점을 화면 가운데로), `push: [시작 배율, 끝 배율]`(느린 밀기, 기본 1.0→1.06), `fit`(`cover` 기본 · `contain`은 흐린 배경 위에 전체, 4:3·세로 원본은 자동 contain). prep이 그 구간만 1080p 30fps로 잘라 둡니다(렌더러가 긴 원본을 찾아 넘기지 않게) |
+| `photo` | 사진(또는 `sources.time`으로 영상의 한 장면). `kb: {"from": [cx, cy, zoom], "to": [cx, cy, zoom]}` 켄 번스, `fit` |
+| `scene` | 그림 장면(16:9 무대). 쇼츠의 배경(`bg` "class"·"home"·"street"·"store"·"night"·"office"·"desk"·"door"·"hospital"·"bedroom"·"bath"·"subway"·"cafeteria"·"gym"·"rain"…, `sign`, `photo`), 캐릭터 `chars`(Mochi·`"style": "doodle"`, `name`·`color`·`mood`·`to`·`x`·`size`·`flip`·`hat`), `says: [{"who": 0, "line": "c2d"}]`(그 줄이 나올 때 그 인물 머리 위 말풍선, 또는 `{"who", "text", "at", "to"}`), `turn`(인물이 `to` 표정으로 바뀌는 앵커), `prop`·`propX`·`propAt`, `big`·`bigAt`(크게 박히는 말), `card`(화면을 덮는 "다음 날 아침..."), `place`, `chat`(단톡방 폰, 메시지마다 `at` 앵커), `zoom`·`focus`, `size`(인물 크기 px)·`floor`(발 위치). 인물은 1~4명이 왼쪽·오른쪽으로 자동 배치되고 자막 띠 위에 섭니다 |
+| `post` | 썰 훅 카드(Sseol의 Post를 가운데에). `board`, `title`, `body`, `meta`, `chars`, `steps`(본문 줄이 나타나는 앵커) |
+| `card` `kind: "fact"` | 큰 숫자·사실 카드: `label`(위, 노랑), `big`(가운데 크게, `[ ]` 노랑), `sub`, `revealAt`(숫자가 박히는 앵커), `bg`(흐린 배경 원본, `bgIn`) |
+| `card` `kind: "text"` | 문장 카드: `text`(`\n` 줄바꿈), `bg` |
+| `card` `kind: "rank"` | TOP n 카드: `n`(○위), `total`, `title`(위 노란 딱지, 기본 "TOP n"), `label`, `bg` |
+| `card` `kind: "map"` | 지도 카드: `center: [경도, 위도]`, `span`(가로 몇 도), `label`(왼쪽 위), `dots: [{lon, lat, label, at}]`(빨간 점·이름표), `arrows: [{from, to, at, dashed}]`(그려지는 빨간 화살표, `dashed`는 점선 경로). `at`은 초 또는 앵커. 육지 윤곽은 Natural Earth 1:50m(퍼블릭 도메인, `longform/worldmap.py`로 `src/lib/long/worldmap.ts` 생성) |
+| `card` `kind: "grid"` | 잡학 리스트의 "목차" 화면: 흰 판에 동그란 아이콘 `items: [{icon, label}]`, `cols`, `title`. `focus`(지금 항목, 노란 테두리)·`zoomAt`(그 항목으로 카메라가 들어가는 앵커), `done`(지난 항목, 흐리게 + ✓), `circle`·`circleAt`(빨간 동그라미, 답 공개). 항목마다 그리드로 돌아왔다가 들어가는 흐름을 샷 두 개로 만듭니다 |
+| `card` `kind: "doc"` | 문서 카드(안내문·인수인계서·근무 수칙): `title`, `lines`(줄마다 `steps`의 앵커에 나타남, `{빨강}`·`[노랑]`), `page`("3쪽"), `paper`(종이 색), `bg`(뒤 흐린 원본) |
+| `relayout` | 우리 쇼츠를 **가로로 다시 짜기**(쇼츠 원본이 가로 영상일 때 권장): `short`(id), `parts`(쓸 클립 번호), `lowerThirds`(순위 이름표, 기본 true), `push`, `cutFade`. `politics/<id>/edit.json`의 `segments`(src·in·out·speed·credit·rank)를 원본에서 다시 잘라 1920×1080 전체 화면으로 차례로 보여 주고(내레이션이 더 길면 처음부터 다시), `rank`가 있는 쇼츠는 "5위 · 이름"이 왼쪽 아래에 붙습니다. `shorts/<id>/`형 쇼츠는 prep된 `src/data/<id>.json`의 클립을 쓰고, **그림 썰 쇼츠(`scene`·`post` 클립)는 세로 화면을 자르지 않고 16:9 무대에서 다시 연기합니다**(같은 인물·배경·말풍선·표정 변화 시각) |
+| 세로 쇼츠 | `script.json` 줄의 `"short": "<id>", "mode": "vertical"`이 자동으로 샷을 만듭니다(세로 화면 가운데 + 같은 영상을 흐리게 깐 배경). 그 사이 원래 샷은 쇼츠가 끝난 뒤 이어집니다 |
+
+### 썸네일 (`<id>-thumb`, 1280×720)
+
+`edit.json`의 `"thumb"`: `lines`(2~3줄, 아주 크게, `[키]` 노랑 또는 `key` 색, `{키}` 빨강, 굵은 검은 테두리), `src`+`time`(사진 또는 영상 한 장면)·`crop: [cx, cy, zoom]`, `char`(Mochi 캐릭터 `{color, mood, x, y, size}`), `circle: {x, y, r}`(빨간 원), `arrow: {x, y, rot, len}`(빨간 화살표, 끝이 x,y), `side`(`left` 기본 · `right`), `tag`(위 작은 딱지, "몰아보기 EP1~4"), `bg`. `npx remotion still … --image-format=jpeg --jpeg-quality=88`로 2MB 이하.
+
+`"style"`로 조사에서 본 다른 틀도 씁니다:
+- `"band"` — 사연툰: 위 띠에 제목 1~2줄(핵심어 `[ ]`는 `key` 색, `{ }`는 빨강), 아래에 그림 장면(`scene` 배경, `chars` 2~3명, `says: [{who, text}]` 말풍선), `bandBg`.
+- `"grid"` — 잡학 리스트: 흰 바탕, 위 검은 굵은 제목(`{빨강}`·`[key 색]`), 아래 동그란 색 아이콘 `items: [{icon, label}]` 6~8개.
+- 기본(사진·그림 + 큰 글씨) — 다큐·괴담: 어두운 실사 + 흰 2~3줄 + 노랑/빨강 강조어, 괴담은 `char`에 창백한 얼굴을 `side` 반대편에.
+
+### 챕터와 설명란 (`longform/<id>/chapters.txt`)
+
+prep이 쓰는 파일입니다: 업로드 제목, `description.head`, 유튜브 타임스탬프(첫 줄 0:00 "인트로" = 콜드 오픈+제목 카드, 이후 챕터 카드 시작 시각), 영상·사진 출처(`sources`의 `desc`·`url`, 다시 쓴 쇼츠와 그 출처), 지도를 쓰면 "지도: Natural Earth", 그림 장면이 있으면 창작 문구, 쓴 모든 음악의 Kevin MacLeod CC BY 4.0 문구(세로로 다시 쓴 쇼츠의 음악 포함), `description.tail`, 태그. 유튜브 챕터 규칙(0:00 시작, 3개 이상, 각 10초 이상)을 어기면 prep이 WARN을 냅니다.
+
+### 렌더링과 용량 (`longform/render_long.sh`)
+
+1. **화면**: `CHUNK`프레임(기본 2700 = 90초)씩 `--frames`로 나눠 소리 없이 렌더링(x264 CRF 12, veryfast — 거의 무손실 중간본)하고, 다시 인코딩하지 않고 이어 붙입니다. 끝난 조각은 남겨 두므로 도중에 멈춰도 이어서 렌더링됩니다(prep을 다시 했다면 `out/long/<id>/`를 지우고 처음부터: 남은 조각은 옛 데이터로 그려진 것입니다). 25분이어도 한 번에 메모리에 올리는 것은 한 조각뿐입니다.
+2. **소리**: 전체 타임라인을 한 번에 소리만 렌더링(이음매 없음) → 2-pass loudnorm −14 LUFS/−1.5 dBTP → AAC 160k. `out/long/<id>/master.mkv`가 업로드용 고화질 원본입니다(저장소에는 안 넣음).
+3. **용량 맞추기**: 저장소 파일 한도(100MB) 때문에 `final/<id>.mp4`는 **95MB 이하**(`MAXMB`)입니다. 길이로 비트레이트를 계산해 2-pass로 인코딩하고 `+faststart`를 붙입니다. 소리는 10분까지 AAC 160k, 20분까지 128k, 그 위는 96k입니다(25분에 160k면 소리만 30MB).
+
+**분당 용량 (실측).** 데모의 그림 챕터(30초)와 심해 영상 챕터(28초, 바닷눈·거품이 가득한 가장 무거운 경우)를 화질 고정(CRF)으로 인코딩한 값입니다. 깨끗하게 보이는 데 필요한 크기입니다.
+
+| 내용 | x264 1080p CRF 23 | x265 1080p CRF 26 | x265 720p CRF 26 |
+|---|---|---|---|
+| 그림(썰·카드·지도) | 5.7MB/분 (750kb/s) | **3.5MB/분** (460kb/s) | 1.7MB/분 (220kb/s) |
+| 실사 영상(심해) | 44MB/분 (5,900kb/s) | 21MB/분 (2,800kb/s) | **11.5MB/분** (1,530kb/s) |
+
+그래서 코덱은 길이로 정해지는 비트레이트와 `edit.json`의 `"encode": {"content": "drawn" \| "mixed" \| "footage"}`(기본 `mixed`)로 고릅니다.
+
+| 내용 | x264 1080p | x265 1080p (`hvc1`) | x265 720p | 95MB에 깨끗하게 들어가는 길이 |
+|---|---|---|---|---|
+| `drawn` | 900kb/s 이상 | 450kb/s 이상 | 그 아래 | 1080p로 약 25분까지(소리 96k 포함) |
+| `mixed` (기본) | 3,000kb/s 이상 | 1,400kb/s 이상 | 그 아래 | 1080p 약 8분, 720p 약 15분 |
+| `footage` | 5,000kb/s 이상 | 2,000kb/s 이상 | 그 아래 | 720p로 약 8분. 그보다 긴 실사 위주 롱폼은 95MB 안에서 깨끗할 수 없으므로 `master.mkv`를 업로드하고 `final/`은 보관용으로 둡니다(또는 편을 나눔) |
+
+x265를 고르는 이유: 같은 모양에 x264보다 약 45~50% 작습니다(표). x264 1080p를 2Mb/s 아래로 내리면 심해 입자·물결처럼 움직임이 많은 화면이 뭉개지고, 그때는 해상도를 720p로 낮춰 화소당 비트를 지키는 편이 낫습니다. `X264_MIN`, `X265_MIN`, `CAP`(짧은 영상의 상한, 기본 8,000kb/s), `PRESET`(x265, 기본 `fast`)으로 바꿀 수 있고, 결과는 `out/long/<id>/render.json`(조각별 시간, 렌더링 fps, 코덱, 비트레이트, 용량)에 남습니다.
+
+**렌더링 속도 (이 머신, 4코어·15GB).** 화면 렌더링 **초당 6.6~6.7프레임**(데모: 실사·그림·카드가 섞인 5,807프레임을 871~885초, 조각마다 번들 5초 포함). 흐린 배경을 CSS `blur()`로 그리던 첫 버전은 초당 약 4~5프레임이었고, prep이 만드는 192×108 미리 흐린 사본으로 바꿔 빨라졌습니다. x265 720p 2-pass는 초당 약 24프레임. 그래서 10분 롱폼은 렌더링 약 45분 + 인코딩 약 25분, 25분 롱폼은 약 1시간 55분 + 1시간 5분입니다. 메모리는 조각 하나 분량(크롬 4개 각 약 600MB)만 씁니다. 소리를 따로 한 번 더 렌더링하면(Remotion은 소리만 뽑을 때도 모든 프레임을 계산함) 시간이 거의 두 배가 되므로, 조각마다 16비트 PCM으로 같이 뽑아 프레임 수에 딱 맞게 잘라 이어 붙입니다(이음매 없음).
+
+x265 2-pass에서 MP4로 바로 쓰면 전역 헤더 때문에 1차와 2차 설정이 달라져 "Incomplete CU-tree stats file"로 멈추므로, 2차는 MKV로 쓰고 MP4로 다시 담습니다.
+
+### 검사 (`longform/qa_long.py`)
+
+길이(타임라인과 일치, 10~25분 밖이면 WARN), 소리 −14 LUFS ±1, 용량 95MB 이하, 검은 화면(0.05초 이상, 마지막 한 프레임), 내레이션 안의 1.5초 넘는 공백(대본 기준 + 실제 믹스의 −50dB 무음), 자막 넘침(줄 너비 1,600px 초과·3줄 이상), 챕터 목록, 썸네일(1280×720, 2MB 이하), 20초 넘게 멈춘 화면(WARN). `out/review/<id>/`에 30초마다 한 장(`sheet.jpg`), 첫 15초 1초 간격(`first15.jpg`), 썸네일, `report.md`를 씁니다. FAIL이 있으면 종료 코드 1. `qa_review.py`(쇼츠용)는 바꾸지 않았습니다.
+
+### 조사 보고서(`research/research-longform-docu.md`, `research-longform-story.md`)가 요구한 것과 키트
+
+| 조사에서 나온 요구 | 키트 |
+|---|---|
+| 잡학 리스트(F3): 아이콘 그리드 목차로 돌아왔다가 항목으로 줌인, 답 공개에 빨간 동그라미, 흰 바탕 아이콘 그리드 썸네일 | `card` `grid`(`focus`·`zoomAt`·`done`·`circle`), 썸네일 `style: "grid"`, 낙서 인물은 `scene`의 `"style": "doodle"` |
+| 스토리형 역사(F1): 켄 번스 3~5% 스틸, 지도 2~3장(화살표·점선 경로), 챕터 전환 1초 검은 페이드, 하단 자막 한 줄 | `photo` `kb`, `card` `map`(`dashed`), `chapterCard.style: "dip"`, 자막 페이지 자동 분할 |
+| 가장 ○○한 N곳(F4): 순위 숫자를 왼쪽 위에, 지도 핀, 우리 TOP5 쇼츠 원본 재사용 | 샷 `badge`, `map` `dots`, `relayout` + `lower` |
+| 수면판 재편집: 느린 내레이션, 어두운 화면 | `"sleep": true`(+ `voices.nar.rate: "-10%"`) |
+| 사연툰: 콜드 오픈 10~15초, 인물별 목소리, 반전 직전 음악 끊고 1초 무음, 말풍선 팝·쿵 효과음, 위 띠 썸네일 | `coldOpen.min/max`, `voices` + 줄 `voice`, `musicCuts`, `sfx`, 썸네일 `style: "band"` |
+| 커뮤니티 글 괴담: 어두운 실사 + 단순 인물, 문서 카드(인수인계서·안내문), 안내 방송 목소리, 형광등·냉장고 환경음, 핵심어 빨간 자막 | `scene`의 `photo` 배경 + `chars`, `card` `doc`, 목소리 `fx: "radio"`, `ambience: "hum"`, 자막 `{단어}` |
+| 괴담 몰아보기: 편 사이 "괴담 03 / 12" 번호 카드, "정답은?" 3초 정지, 쇼츠는 세로 틀보다 16:9로 다시 배치 | `chapterCard.kicker: "괴담 {n:02d} / {total}"`, 줄 `pause`, `relayout`(그림 썰 쇼츠는 16:9 무대에서 다시 연기) |
+| 음악: 다큐 저음 패드, 잡학 가벼운 곡, 괴담 패드 | `fetch_long.sh`에 Kevin MacLeod "Long Note Three", "Dark Walk", "Fluffing a Duck", "Darkest Child" 등 추가(CC BY 4.0, 설명란 문구는 prep이 씀) |
+
+### 데모 `longdemo` (심해 다큐, 3분 14초)
+
+`final/longdemo.mp4`(37.1MB, x265 720p 1,363kb/s + AAC 160k, `MAXMB=38`로 렌더링해 저장소에 넣을 수 있게 함), `final/longdemo-thumb.jpg`(0.13MB), `longform/longdemo/chapters.txt`. 모든 기능을 한 편에서 씁니다.
+- 콜드 오픈 26초(뒤 챕터 다섯 문장과 그 장면) → 제목 카드 → 챕터 4개 → 아웃트로 20초(엔드스크린 자리)
+- 1장 「빛이 사라지는 곳」: NOAA 심해 영상(`footage`, `crop`·`push`, 0.4초 교차), 숫자 카드 3장(`fact`), 지도 카드(한국 → 마리아나 해구 점선 화살표), 난파선 사진 켄 번스(`photo`, 영상의 한 장면), 효과음, 환경음 `deep`
+- 2장 「탐사선의 새벽 세 시」: 그림 장면 — 썰 글 카드(`post`), Mochi 인물과 말풍선 대화(인물별 목소리 SunHi·Hyunsu), 표정 바뀜, 소품, 단톡방 폰, 문서 카드(근무 수칙), 빨간 자막 단어, "다음 날 아침..." 카드, 큰 글씨
+- 3장 「바닷속 소름 돋는 장면 TOP5」: `top6` 쇼츠를 **가로로 다시 짜기**(`relayout`, 원본 NOAA 클립을 1920×1080 전체 화면으로), 아이콘 그리드 목차 + 줌인, 순위 딱지(`badge`), 1위 직전 2초 `pause`("1위는 과연?")와 음악 끊기(`musicCuts`), 그리드 답 공개 동그라미, TOP n 카드
+- 4장 「쇼츠로 다시 보기」: `deepsea` 쇼츠(`final/deepsea.mp4`)를 흐린 배경 위 세로로 재생(쇼츠 소리 그대로, 롱폼 음악 꺼짐)
+- 음악: Deep Haze → Investigations → Clean Soul → Gathering Darkness → Lost Frontier(챕터마다 교차, 목소리 밑 더킹)
+
+**출처**: 영상 모두 NOAA Ocean Exploration · NOAA/PMEL(미국 정부 저작물), `media/top6/*.json`에 페이지·파일 주소·구간이 있고(받는 법: `media/fetch_top.py`, 또는 각 `file_url`을 받아 `cut_from_original_seconds` 구간을 1920×1080 30fps로 자름, 브림스톤은 위 ROV 정보 줄을 잘라 냄), 설명란 출처 줄은 `chapters.txt`에 있습니다. 지도는 Natural Earth(퍼블릭 도메인), 그림은 직접 제작, 음악은 Kevin MacLeod(CC BY 4.0). 이야기(2장)는 창작입니다.
+
+`python3 longform/qa_long.py longdemo` 결과: 길이 3:13.6(타임라인과 일치) · −14.0 LUFS · 37.1MB · 검은 화면 0 · 마지막 프레임 밝기 39/255 · 내레이션 공백 0 · 무음 0 · 자막 가장 긴 줄 861px · 챕터 5개(0:00 인트로, 0:26, 1:02, 1:37, 2:21) · 썸네일 1280×720 0.13MB · 멈춘 화면 0. WARN 하나: 데모라 10~25분 목표보다 짧음.
+
+**확인 (기존 쇼츠는 그대로).** `src/Root.tsx`에 `<LongCompositions />`를 넣기 전과 후에 `sseol1`을 같은 설정으로 렌더링해 비교했습니다: 영상 1,008프레임의 framemd5가 모두 같고 소리 MD5도 같습니다(`b13659905638fd71ff57eda7cac6f7be`). `deepsea`의 0·300·600프레임 스틸도 바이트 단위로 같습니다.
