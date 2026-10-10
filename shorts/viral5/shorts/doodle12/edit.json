@@ -1,0 +1,596 @@
+{
+ "credit": "",
+ "titleStyle": "band",
+ "titleKey": "#FFE14D",
+ "frame": "capTall",
+ "capBox": {
+  "y": 1600
+ },
+ "sources": {
+  "px5264140": {
+   "file": "px5264140.jpg",
+   "path": "public/doodle/px5264140.jpg",
+   "page": "https://www.pexels.com/photo/red-fire-hydrant-on-street-5264140/",
+   "file_url": "https://images.pexels.com/photos/5264140/pexels-photo-5264140.jpeg?auto=compress&cs=tinysrgb&w=1600",
+   "license": "Pexels License",
+   "creator": "Brett Sayles",
+   "credit": "사진: Pexels (설명란 표기)",
+   "seconds": [
+    [
+     0.0,
+     1.12
+    ],
+    [
+     1.12,
+     3.16
+    ],
+    [
+     6.89,
+     9.09
+    ],
+    [
+     31.71,
+     33.39
+    ]
+   ]
+  },
+  "px15818611": {
+   "file": "px15818611.jpg",
+   "path": "public/doodle/px15818611.jpg",
+   "page": "https://www.pexels.com/photo/zebra-crossing-in-a-town-15818611/",
+   "file_url": "https://images.pexels.com/photos/15818611/pexels-photo-15818611.jpeg?auto=compress&cs=tinysrgb&w=1600",
+   "license": "Pexels License",
+   "creator": "Dương Huỳnh Trung",
+   "credit": "사진: Pexels (설명란 표기)",
+   "seconds": [
+    [
+     9.09,
+     12.96
+    ],
+    [
+     14.48,
+     17.36
+    ]
+   ]
+  }
+ },
+ "music": {
+  "file": "music/scheming_weasel.mp3",
+  "gain": 0.12,
+  "start": 0
+ },
+ "sfx": [
+  [
+   "a",
+   "whoosh",
+   0.2
+  ],
+  [
+   "b",
+   "pop",
+   0.22
+  ],
+  [
+   "c",
+   "pop",
+   0.22
+  ],
+  [
+   "e",
+   "pop",
+   0.22
+  ],
+  [
+   "g",
+   "pop",
+   0.22
+  ],
+  [
+   "j.팔만",
+   "boing",
+   0.28
+  ],
+  [
+   "l",
+   "whoosh",
+   0.2
+  ],
+  [
+   "m",
+   "pop",
+   0.22
+  ],
+  [
+   "n.아빠",
+   "boing",
+   0.3
+  ],
+  [
+   "z",
+   "pop",
+   0.22
+  ]
+ ],
+ "clips": [
+  {
+   "from": "a0",
+   "label": "a0",
+   "gfx": {
+    "type": "scene",
+    "photo": "doodle/px5264140.jpg",
+    "chars": [
+     {
+      "style": "doodle",
+      "hairdo": "perm",
+      "hair": "#8a8a8a",
+      "mood": "angry",
+      "size": 2.0,
+      "x": 0.5,
+      "y": 100
+     }
+    ],
+    "steps": [
+     9,
+     9,
+     9,
+     9
+    ],
+    "floor": 400
+   }
+  },
+  {
+   "from": "a",
+   "label": "a",
+   "gfx": {
+    "type": "scene",
+    "photo": "doodle/px5264140.jpg",
+    "photoPos": "70% 50%",
+    "chars": [
+     {
+      "style": "doodle",
+      "hair": "#FF7A1A",
+      "mood": "smug",
+      "size": 1.75,
+      "x": 0.3,
+      "rot": -3
+     }
+    ],
+    "prop": "📸",
+    "steps": [
+     9,
+     0.1,
+     9,
+     9
+    ],
+    "floor": 400,
+    "propX": 0.76
+   }
+  },
+  {
+   "from": "b",
+   "label": "b",
+   "gfx": {
+    "type": "scene",
+    "bg": "street",
+    "chars": [
+     {
+      "style": "doodle",
+      "hair": "#FF7A1A",
+      "mood": "think",
+      "size": 1.75,
+      "x": 0.3,
+      "rot": -3
+     }
+    ],
+    "prop": "🚗",
+    "steps": [
+     9,
+     0.1,
+     9,
+     9
+    ],
+    "floor": 400,
+    "propX": 0.76
+   }
+  },
+  {
+   "from": "c",
+   "label": "c",
+   "gfx": {
+    "type": "scene",
+    "bg": "street",
+    "chars": [
+     {
+      "style": "doodle",
+      "hairdo": "perm",
+      "hair": "#8a8a8a",
+      "mood": "angry",
+      "size": 1.4
+     },
+     {
+      "style": "doodle",
+      "hair": "#FF7A1A",
+      "mood": "sick",
+      "size": 1.4
+     }
+    ],
+    "steps": [
+     "c",
+     9,
+     9,
+     9
+    ],
+    "say": {
+     "who": 0,
+     "text": "잠깐 세운 건데 너무하네"
+    },
+    "floor": 400
+   }
+  },
+  {
+   "from": "d",
+   "label": "d",
+   "gfx": {
+    "type": "scene",
+    "photo": "doodle/px5264140.jpg",
+    "photoPos": "40% 50%",
+    "chars": [
+     {
+      "style": "doodle",
+      "hair": "#FF7A1A",
+      "mood": "angry",
+      "size": 1.6,
+      "x": 0.5
+     }
+    ],
+    "steps": [
+     "d",
+     9,
+     9,
+     9
+    ],
+    "floor": 400
+   }
+  },
+  {
+   "from": "e",
+   "label": "e",
+   "gfx": {
+    "type": "scene",
+    "photo": "doodle/px15818611.jpg",
+    "chars": [
+     {
+      "style": "doodle",
+      "hair": "#FF7A1A",
+      "mood": "think",
+      "size": 2.1,
+      "x": 0.5,
+      "y": 110
+     }
+    ],
+    "big": "6곳 = 1분",
+    "steps": [
+     9,
+     9,
+     9,
+     "e+0.8"
+    ],
+    "floor": 400
+   }
+  },
+  {
+   "from": "f",
+   "label": "f",
+   "gfx": {
+    "type": "scene",
+    "bg": "#e9e4dc",
+    "chars": [
+     {
+      "style": "doodle",
+      "hairdo": "perm",
+      "hair": "#8a8a8a",
+      "mood": "think",
+      "size": 1.75,
+      "x": 0.3,
+      "rot": -3
+     }
+    ],
+    "prop": "📱",
+    "steps": [
+     "f",
+     0.1,
+     9,
+     9
+    ],
+    "floor": 400,
+    "propX": 0.76
+   }
+  },
+  {
+   "from": "g",
+   "label": "g",
+   "gfx": {
+    "type": "scene",
+    "photo": "doodle/px15818611.jpg",
+    "photoPos": "60% 50%",
+    "chars": [
+     {
+      "style": "doodle",
+      "hair": "#FF7A1A",
+      "mood": "smug",
+      "size": 1.75,
+      "x": 0.3,
+      "rot": -3
+     }
+    ],
+    "prop": "📸",
+    "big": "1분 간격 2장",
+    "steps": [
+     "g",
+     0.1,
+     9,
+     "g+0.9"
+    ],
+    "floor": 400,
+    "propX": 0.76
+   }
+  },
+  {
+   "from": "h",
+   "label": "h",
+   "gfx": {
+    "type": "scene",
+    "bg": "office",
+    "chars": [
+     {
+      "style": "doodle",
+      "hair": "#FF7A1A",
+      "mood": "neutral",
+      "to": "smug",
+      "size": 1.75,
+      "x": 0.3,
+      "rot": -3
+     }
+    ],
+    "prop": "📄",
+    "steps": [
+     9,
+     0.1,
+     "h.과태료",
+     9
+    ],
+    "floor": 400,
+    "propX": 0.76
+   }
+  },
+  {
+   "from": "i",
+   "label": "i",
+   "gfx": {
+    "type": "scene",
+    "bg": "street",
+    "chars": [
+     {
+      "style": "doodle",
+      "hairdo": "perm",
+      "hair": "#8a8a8a",
+      "mood": "shock",
+      "size": 2.1,
+      "x": 0.5,
+      "y": 110
+     }
+    ],
+    "steps": [
+     "i",
+     9,
+     9,
+     9
+    ],
+    "floor": 400
+   }
+  },
+  {
+   "from": "j",
+   "label": "j",
+   "gfx": {
+    "type": "scene",
+    "bg": "#FFB3C7",
+    "chars": [
+     {
+      "style": "doodle",
+      "hair": "#FF7A1A",
+      "mood": "smug",
+      "size": 1.75,
+      "x": 0.3,
+      "rot": -3
+     }
+    ],
+    "prop": "💸",
+    "big": "8만 원",
+    "steps": [
+     "j",
+     0.1,
+     9,
+     "j.팔만"
+    ],
+    "floor": 400,
+    "propX": 0.76
+   }
+  },
+  {
+   "from": "k",
+   "label": "k",
+   "gfx": {
+    "type": "scene",
+    "bg": "#d8f5c8",
+    "chars": [
+     {
+      "style": "doodle",
+      "hair": "#FF7A1A",
+      "mood": "laugh",
+      "size": 1.75,
+      "x": 0.3,
+      "rot": -3
+     }
+    ],
+    "prop": "✅",
+    "steps": [
+     9,
+     0.1,
+     9,
+     9
+    ],
+    "floor": 400,
+    "propX": 0.76
+   }
+  },
+  {
+   "from": "l",
+   "label": "l",
+   "gfx": {
+    "type": "scene",
+    "bg": "night",
+    "chars": [
+     {
+      "style": "doodle",
+      "hair": "#FF7A1A",
+      "mood": "happy",
+      "size": 1.6,
+      "x": 0.5
+     }
+    ],
+    "steps": [
+     9,
+     9,
+     9,
+     9
+    ],
+    "place": "📍 며칠 뒤 저녁",
+    "floor": 400
+   }
+  },
+  {
+   "from": "m",
+   "label": "m",
+   "gfx": {
+    "type": "scene",
+    "bg": "home",
+    "chars": [
+     {
+      "style": "doodle",
+      "hairdo": "spiky",
+      "hair": "#3b3b3b",
+      "mood": "sad",
+      "size": 1.4
+     },
+     {
+      "style": "doodle",
+      "hair": "#FF7A1A",
+      "mood": "shock",
+      "size": 1.4
+     }
+    ],
+    "prop": "📄",
+    "steps": [
+     "m",
+     0.1,
+     9,
+     9
+    ],
+    "say": {
+     "who": 0,
+     "text": "아빠 차에 과태료가 나왔다?"
+    },
+    "floor": 400
+   }
+  },
+  {
+   "from": "n",
+   "label": "n",
+   "gfx": {
+    "type": "scene",
+    "bg": "#2b1c1c",
+    "chars": [
+     {
+      "style": "doodle",
+      "hair": "#FF7A1A",
+      "mood": "shock",
+      "to": "cry",
+      "size": 1.75,
+      "x": 0.3,
+      "rot": -3
+     }
+    ],
+    "prop": "🚗",
+    "big": "아빠 차",
+    "steps": [
+     9,
+     0.1,
+     "n.아빠",
+     "n.아빠"
+    ],
+    "floor": 400,
+    "propX": 0.76
+   }
+  },
+  {
+   "from": "o",
+   "label": "o",
+   "gfx": {
+    "type": "scene",
+    "bg": "home",
+    "chars": [
+     {
+      "style": "doodle",
+      "hair": "#FF7A1A",
+      "mood": "sick",
+      "size": 1.4
+     },
+     {
+      "style": "doodle",
+      "hairdo": "spiky",
+      "hair": "#3b3b3b",
+      "mood": "think",
+      "size": 1.4
+     }
+    ],
+    "steps": [
+     "o",
+     9,
+     9,
+     9
+    ],
+    "say": {
+     "who": 0,
+     "text": "아빠, 그거 사실 내가…"
+    },
+    "floor": 400
+   }
+  },
+  {
+   "from": "z",
+   "label": "z",
+   "gfx": {
+    "type": "scene",
+    "photo": "doodle/px5264140.jpg",
+    "chars": [
+     {
+      "style": "doodle",
+      "hair": "#FF7A1A",
+      "mood": "think",
+      "to": "smug",
+      "size": 1.6,
+      "x": 0.5
+     }
+    ],
+    "steps": [
+     9,
+     9,
+     "z.신고",
+     9
+    ],
+    "floor": 400
+   }
+  }
+ ]
+}

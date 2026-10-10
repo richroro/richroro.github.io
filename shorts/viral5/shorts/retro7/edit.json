@@ -1,8 +1,7 @@
 {
  "titleStyle": "band",
- "frame": "rounded43",
+ "frame": "retrobox",
  "grain": 0.15,
- "captionY": 1335,
  "credit": "",
  "sources": {
   "13070891": {
@@ -17,11 +16,11 @@
    "seconds": [
     [
      0.0,
-     1.63
+     1.45
     ],
     [
-     1.63,
-     3.31
+     1.45,
+     2.9
     ]
    ]
   },
@@ -36,8 +35,8 @@
    "year": "1957",
    "seconds": [
     [
-     3.31,
-     7.15
+     2.9,
+     6.24
     ]
    ]
   },
@@ -52,24 +51,8 @@
    "year": "1954",
    "seconds": [
     [
-     7.15,
-     10.55
-    ]
-   ]
-  },
-  "13154123": {
-   "file": "13154123.jpg",
-   "credit": "사진: 한국저작권위원회",
-   "label": "1952년 서울역과 역 앞 거리 모습 (한국저작권위원회, 공유마당, CC BY (저작자표시))",
-   "url": "https://gongu.copyright.or.kr/gongu/wrt/wrt/view.do?wrtSn=13154123&menuNo=200018",
-   "file_url": "https://gongu.copyright.or.kr/gongu/wrt/cmmn/wrtFileImageView.do?wrtSn=13154123&filePath=L2Rpc2sxL25ld2RhdGEvMjAxOC8yMS9DTFMxLzEzMTU0MTIzX0NPTENUX1dSVDIwMTgxMTI2XzE=&thumbAt=N&wrtTy=10006",
-   "creator": "한국저작권위원회",
-   "license": "CC BY (저작자표시)",
-   "year": "1952",
-   "seconds": [
-    [
-     10.55,
-     14.11
+     6.24,
+     9.21
     ]
    ]
   },
@@ -84,8 +67,8 @@
    "year": "1953",
    "seconds": [
     [
-     14.11,
-     17.95
+     9.21,
+     12.56
     ]
    ]
   },
@@ -100,24 +83,8 @@
    "year": "1952",
    "seconds": [
     [
-     17.95,
-     21.52
-    ]
-   ]
-  },
-  "13153143": {
-   "file": "13153143.jpg",
-   "credit": "사진: 한국저작권위원회",
-   "label": "1952년 여름, 열차를 타고가며 바라본 경주 남산 (한국저작권위원회, 공유마당, CC BY (저작자표시))",
-   "url": "https://gongu.copyright.or.kr/gongu/wrt/wrt/view.do?wrtSn=13153143&menuNo=200018",
-   "file_url": "https://gongu.copyright.or.kr/gongu/wrt/cmmn/wrtFileImageView.do?wrtSn=13153143&filePath=L2Rpc2sxL25ld2RhdGEvMjAxOC8yMS9DTFMxLzEzMTUzMTQzX0NPTENUX1dSVDIwMTgxMTI2XzE=&thumbAt=N&wrtTy=10006",
-   "creator": "한국저작권위원회",
-   "license": "CC BY (저작자표시)",
-   "year": "1952",
-   "seconds": [
-    [
-     21.52,
-     23.95
+     12.56,
+     15.66
     ]
    ]
   },
@@ -132,8 +99,8 @@
    "year": "1957",
    "seconds": [
     [
-     23.95,
-     28.1
+     15.66,
+     19.29
     ]
    ]
   },
@@ -148,8 +115,8 @@
    "year": "1964",
    "seconds": [
     [
-     28.1,
-     31.15
+     19.29,
+     21.93
     ]
    ]
   },
@@ -164,12 +131,12 @@
    "year": "1958",
    "seconds": [
     [
-     31.15,
-     34.87
+     21.93,
+     25.22
     ],
     [
-     34.87,
-     36.81
+     25.22,
+     26.89
     ]
    ]
   },
@@ -184,8 +151,8 @@
    "year": "1973",
    "seconds": [
     [
-     36.81,
-     39.5
+     26.89,
+     29.33
     ]
    ]
   }
@@ -241,17 +208,6 @@
    "audio": 0
   },
   {
-   "src": "13154123",
-   "from": "seoul2",
-   "label": "1952년 서울역과 역 앞 거리 모습",
-   "year": "1952",
-   "zoom": [
-    1.0,
-    1.06
-   ],
-   "audio": 0
-  },
-  {
    "src": "13152491",
    "from": "daegu",
    "label": "1953년 대구역 앞에서 차를 기다리는 사람들",
@@ -266,17 +222,6 @@
    "src": "13153930",
    "from": "steam",
    "label": "1952년 부산철도 공작창과 수리를 위해 있는 증기 기관차들",
-   "year": "1952",
-   "zoom": [
-    1.0,
-    1.06
-   ],
-   "audio": 0
-  },
-  {
-   "src": "13153143",
-   "from": "window",
-   "label": "1952년 여름, 열차를 타고가며 바라본 경주 남산",
    "year": "1952",
    "zoom": [
     1.0,
@@ -345,17 +290,7 @@
    "audio": 0
   }
  ],
- "stickers": [
-  {
-   "text": "e-나라지표 「고속철도 여객 수송동향」 (국토교통부)",
-   "from": "now",
-   "to": "end-0.1",
-   "y": 1478,
-   "size": 30,
-   "bg": "#fff",
-   "rot": -1
-  }
- ],
+ "stickers": [],
  "sfx": [
   [
    "end",
@@ -369,5 +304,6 @@
   "file": "music/Gymnopedie No 1.mp3",
   "gain": 0.22,
   "start": 0
- }
+ },
+ "look": "retro2"
 }

@@ -1,8 +1,11 @@
 {
  "credit": "",
  "titleStyle": "band",
- "titleKey": "#3CFF6A",
- "captionY": 1640,
+ "titleKey": "#FFE14D",
+ "frame": "capTall",
+ "capBox": {
+  "y": 1600
+ },
  "sources": {
   "px16886334": {
    "file": "px16886334.jpg",
@@ -11,11 +14,15 @@
    "file_url": "https://images.pexels.com/photos/16886334/pexels-photo-16886334.jpeg?auto=compress&cs=tinysrgb&w=1600",
    "license": "Pexels License",
    "creator": "Саша Алалыкин (Sasha Alalykin)",
-   "credit": "사진: Pexels",
+   "credit": "사진: Pexels (설명란 표기)",
    "seconds": [
     [
      0.0,
-     2.35
+     1.51
+    ],
+    [
+     17.42,
+     20.07
     ]
    ]
   },
@@ -26,11 +33,11 @@
    "file_url": "https://images.pexels.com/photos/8101095/pexels-photo-8101095.jpeg?auto=compress&cs=tinysrgb&w=1600",
    "license": "Pexels License",
    "creator": "Nikita Nikitin",
-   "credit": "사진: Pexels",
+   "credit": "사진: Pexels (설명란 표기)",
    "seconds": [
     [
-     8.01,
-     11.52
+     7.22,
+     9.51
     ]
    ]
   },
@@ -41,26 +48,11 @@
    "file_url": "https://images.pexels.com/photos/8101107/pexels-photo-8101107.jpeg?auto=compress&cs=tinysrgb&w=1600",
    "license": "Pexels License",
    "creator": "Nikita Nikitin",
-   "credit": "사진: Pexels",
+   "credit": "사진: Pexels (설명란 표기)",
    "seconds": [
     [
-     16.66,
-     18.64
-    ]
-   ]
-  },
-  "px16886336": {
-   "file": "px16886336.jpg",
-   "path": "public/doodle/px16886336.jpg",
-   "page": "https://www.pexels.com/photo/many-chargers-are-connected-to-an-electrical-outlet-on-a-white-background-16886336/",
-   "file_url": "https://images.pexels.com/photos/16886336/pexels-photo-16886336.jpeg?auto=compress&cs=tinysrgb&w=1600",
-   "license": "Pexels License",
-   "creator": "Саша Алалыкин (Sasha Alalykin)",
-   "credit": "사진: Pexels",
-   "seconds": [
-    [
-     18.64,
-     20.58
+     21.86,
+     23.3
     ]
    ]
   },
@@ -71,11 +63,19 @@
    "file_url": "https://images.pexels.com/photos/5544612/pexels-photo-5544612.jpeg?auto=compress&cs=tinysrgb&w=1600",
    "license": "Pexels License",
    "creator": "Tim Mossholder",
-   "credit": "사진: Pexels",
+   "credit": "사진: Pexels (설명란 표기)",
    "seconds": [
     [
-     26.63,
-     29.93
+     1.51,
+     3.91
+    ],
+    [
+     15.27,
+     17.42
+    ],
+    [
+     24.7,
+     26.46
     ]
    ]
   }
@@ -87,44 +87,34 @@
  },
  "sfx": [
   [
+   "a.삼",
+   "pop",
+   0.25
+  ],
+  [
    "b",
    "pop",
    0.22
   ],
   [
-   "c",
-   "whoosh",
-   0.2
-  ],
-  [
    "d",
    "pop",
-   0.25
-  ],
-  [
-   "e.없음",
-   "boing",
-   0.3
+   0.22
   ],
   [
    "f",
+   "boing",
+   0.25
+  ],
+  [
+   "g",
+   "pop",
+   0.22
+  ],
+  [
+   "h",
    "whoosh",
    0.2
-  ],
-  [
-   "g.헐렁",
-   "pop",
-   0.25
-  ],
-  [
-   "h.누렇게",
-   "pop",
-   0.25
-  ],
-  [
-   "i.교체",
-   "boing",
-   0.3
   ],
   [
    "j",
@@ -132,14 +122,14 @@
    0.2
   ],
   [
-   "k.금지",
-   "k_error_003",
+   "k.안",
+   "boing",
    0.3
   ],
   [
    "l",
-   "whoosh",
-   0.2
+   "pop",
+   0.22
   ],
   [
    "z",
@@ -149,9 +139,8 @@
  ],
  "clips": [
   {
-   "from": "a",
-   "label": "hook",
-   "credit": "사진: Pexels",
+   "from": "a0",
+   "label": "a0",
    "gfx": {
     "type": "scene",
     "photo": "doodle/px16886334.jpg",
@@ -159,9 +148,10 @@
      {
       "style": "doodle",
       "hair": "#FF7A1A",
-      "mood": "shock",
-      "x": 0.74,
-      "size": 1
+      "mood": "angry",
+      "size": 2.0,
+      "x": 0.5,
+      "y": 100
      }
     ],
     "steps": [
@@ -169,59 +159,95 @@
      9,
      9,
      9
-    ]
+    ],
+    "floor": 400
+   }
+  },
+  {
+   "from": "a",
+   "label": "a",
+   "gfx": {
+    "type": "scene",
+    "photo": "doodle/px5544612.jpg",
+    "chars": [
+     {
+      "style": "doodle",
+      "hair": "#FF7A1A",
+      "mood": "shock",
+      "size": 2.1,
+      "x": 0.5,
+      "y": 110
+     }
+    ],
+    "big": "3층",
+    "steps": [
+     9,
+     9,
+     9,
+     "a.삼"
+    ],
+    "floor": 400
    }
   },
   {
    "from": "b",
-   "label": "memory",
+   "label": "b",
    "gfx": {
     "type": "scene",
     "bg": "bedroom",
     "chars": [
      {
       "style": "doodle",
-      "hair": "#FF7A1A",
-      "mood": "think",
-      "to": "sad"
+      "hairdo": "bob",
+      "hair": "#3b3b3b",
+      "mood": "smug",
+      "size": 1.75,
+      "x": 0.3,
+      "rot": -3
      }
     ],
+    "prop": "🔌",
     "steps": [
-     9,
+     "b",
      0.1,
-     "b.꽤",
+     9,
      9
     ],
-    "prop": "🔌"
-   }
-  },
-  {
-   "from": "b2",
-   "label": "stat",
-   "gfx": {
-    "type": "scene",
-    "bg": "office",
-    "chars": [
-     {
-      "style": "doodle",
-      "hair": "#FF7A1A",
-      "mood": "shock",
-      "x": 0.5
-     }
-    ],
-    "steps": [
-     9,
-     9,
-     9,
-     "b2.사고"
-    ],
-    "big": "[387]건"
+    "floor": 400,
+    "propX": 0.76
    }
   },
   {
    "from": "c",
-   "label": "question",
-   "credit": "사진: Pexels",
+   "label": "c",
+   "gfx": {
+    "type": "scene",
+    "bg": "bedroom",
+    "chars": [
+     {
+      "style": "doodle",
+      "hairdo": "bob",
+      "hair": "#3b3b3b",
+      "mood": "think",
+      "size": 1.75,
+      "x": 0.3,
+      "rot": -3
+     }
+    ],
+    "prop": "📱",
+    "steps": [
+     "c",
+     0.1,
+     9,
+     9
+    ],
+    "floor": 400,
+    "propX": 0.76
+   }
+  },
+  {
+   "from": "d",
+   "label": "d",
    "gfx": {
     "type": "scene",
     "photo": "doodle/px8101095.jpg",
@@ -229,9 +255,9 @@
      {
       "style": "doodle",
       "hair": "#FF7A1A",
-      "mood": "think",
-      "x": 0.72,
-      "size": 1
+      "mood": "angry",
+      "size": 1.6,
+      "x": 0.5
      }
     ],
     "steps": [
@@ -240,143 +266,154 @@
      9,
      9
     ],
-    "say": {
-     "who": 0,
-     "text": "3년? 5년?"
-    }
+    "floor": 400
    }
   },
   {
    "from": "e",
-   "label": "answer",
+   "label": "e",
    "gfx": {
     "type": "scene",
-    "bg": "#FFE14D",
+    "bg": "#e9e4dc",
     "chars": [
      {
       "style": "doodle",
-      "hair": "#FF7A1A",
-      "mood": "shock",
-      "to": "smug",
-      "x": 0.3
+      "hairdo": "bob",
+      "hair": "#3b3b3b",
+      "mood": "smug",
+      "size": 2.1,
+      "x": 0.5,
+      "y": 110
      }
     ],
     "steps": [
+     "e",
      9,
      9,
-     "e.없음",
-     "e.없음"
+     9
     ],
-    "big": "정답 {✕}"
+    "floor": 400
    }
   },
   {
    "from": "f",
-   "label": "signal",
+   "label": "f",
    "gfx": {
     "type": "scene",
-    "bg": "home",
-    "chars": [
-     {
-      "style": "doodle",
-      "hair": "#FF7A1A",
-      "mood": "think",
-      "x": 0.28
-     }
-    ],
-    "steps": [
-     9,
-     "f.신호",
-     9,
-     9
-    ],
-    "prop": "📡",
-    "propX": 0.7
-   }
-  },
-  {
-   "from": "g",
-   "label": "loose",
-   "credit": "사진: Pexels",
-   "gfx": {
-    "type": "scene",
-    "photo": "doodle/px8101107.jpg",
+    "bg": "office",
     "chars": [
      {
       "style": "doodle",
       "hair": "#FF7A1A",
       "mood": "shock",
-      "x": 0.25,
-      "size": 1
+      "size": 1.75,
+      "x": 0.3,
+      "rot": -4
      }
     ],
+    "big": "387건",
     "steps": [
+     "f",
      9,
      9,
-     9,
-     "g.헐렁"
+     "f+0.9"
     ],
-    "big": "[①] 헐렁"
+    "floor": 400
    }
   },
   {
-   "from": "h",
-   "label": "yellow",
-   "credit": "사진: Pexels",
+   "from": "g",
+   "label": "g",
    "gfx": {
     "type": "scene",
-    "photo": "doodle/px16886336.jpg",
+    "bg": "bedroom",
     "chars": [
+     {
+      "style": "doodle",
+      "hairdo": "bob",
+      "hair": "#3b3b3b",
+      "mood": "angry",
+      "size": 1.4
+     },
      {
       "style": "doodle",
       "hair": "#FF7A1A",
       "mood": "sick",
-      "x": 0.76,
-      "size": 1
+      "size": 1.4
      }
     ],
     "steps": [
+     "g",
      9,
      9,
-     9,
-     "h.누렇게"
+     9
     ],
-    "big": "[②] 변색"
+    "say": {
+     "who": 0,
+     "text": "우리 건 멀쩡하거든?"
+    },
+    "floor": 400
    }
   },
   {
-   "from": "i",
-   "label": "smell",
+   "from": "h",
+   "label": "h",
    "gfx": {
     "type": "scene",
-    "bg": "#2b1c1c",
+    "photo": "doodle/px5544612.jpg",
+    "photoPos": "30% 50%",
     "chars": [
      {
       "style": "doodle",
       "hair": "#FF7A1A",
       "mood": "think",
-      "x": 0.32,
-      "to": "shock"
+      "size": 1.75,
+      "x": 0.3,
+      "rot": -3
      }
     ],
+    "prop": "🔍",
     "steps": [
-     "i2",
+     9,
      0.1,
-     "i.타는",
-     "i.교체"
+     9,
+     9
     ],
-    "prop": "🔥",
-    "propX": 0.74,
-    "big": "{교체!}",
-    "say": {
-     "who": 0,
-     "text": "킁킁… 무슨 [냄새]지?"
-    }
+    "floor": 400,
+    "propX": 0.76
+   }
+  },
+  {
+   "from": "i",
+   "label": "i",
+   "gfx": {
+    "type": "scene",
+    "photo": "doodle/px16886334.jpg",
+    "photoPos": "60% 50%",
+    "chars": [
+     {
+      "style": "doodle",
+      "hair": "#FF7A1A",
+      "mood": "think",
+      "size": 1.75,
+      "x": 0.3,
+      "rot": -3
+     }
+    ],
+    "prop": "🌀",
+    "steps": [
+     9,
+     "i.선풍기",
+     9,
+     9
+    ],
+    "floor": 400,
+    "propX": 0.76
    }
   },
   {
    "from": "j",
-   "label": "dust",
+   "label": "j",
    "gfx": {
     "type": "scene",
     "bg": "night",
@@ -386,23 +423,87 @@
       "hair": "#FF7A1A",
       "mood": "think",
       "to": "shock",
-      "x": 0.3
+      "size": 1.75,
+      "x": 0.3,
+      "rot": -3
      }
     ],
+    "prop": "🔌",
     "steps": [
      9,
      0.1,
-     "j.불씨",
+     "j@end",
      9
     ],
-    "prop": "💨",
-    "propX": 0.72
+    "floor": 400,
+    "propX": 0.76
    }
   },
   {
    "from": "k",
-   "label": "chain",
-   "credit": "사진: Pexels",
+   "label": "k",
+   "gfx": {
+    "type": "scene",
+    "photo": "doodle/px8101107.jpg",
+    "chars": [
+     {
+      "style": "doodle",
+      "hair": "#FF7A1A",
+      "mood": "shock",
+      "size": 1.95,
+      "x": 0.64,
+      "y": 80,
+      "flip": true,
+      "rot": 3
+     }
+    ],
+    "big": "안 꽂힘",
+    "steps": [
+     9,
+     9,
+     9,
+     "k.안"
+    ],
+    "floor": 400
+   }
+  },
+  {
+   "from": "l",
+   "label": "l",
+   "gfx": {
+    "type": "scene",
+    "bg": "bedroom",
+    "chars": [
+     {
+      "style": "doodle",
+      "hairdo": "bob",
+      "hair": "#3b3b3b",
+      "mood": "laugh",
+      "size": 1.4
+     },
+     {
+      "style": "doodle",
+      "hair": "#FF7A1A",
+      "mood": "cry",
+      "size": 1.4
+     }
+    ],
+    "steps": [
+     "l",
+     9,
+     9,
+     9
+    ],
+    "say": {
+     "who": 0,
+     "text": "어쩐지 충전이 안 되더라"
+    },
+    "floor": 400
+   }
+  },
+  {
+   "from": "z",
+   "label": "z",
    "gfx": {
     "type": "scene",
     "photo": "doodle/px5544612.jpg",
@@ -410,63 +511,20 @@
      {
       "style": "doodle",
       "hair": "#FF7A1A",
-      "mood": "angry",
-      "x": 0.74,
-      "size": 1
-     }
-    ],
-    "steps": [
-     9,
-     9,
-     9,
-     "k.금지"
-    ],
-    "big": "{금지}"
-   }
-  },
-  {
-   "from": "l",
-   "label": "wall",
-   "gfx": {
-    "type": "vs",
-    "title": "에어컨·온열기는?",
-    "left": {
-     "label": "벽 콘센트",
-     "emoji": "✅"
-    },
-    "right": {
-     "label": "멀티탭",
-     "emoji": "🔌"
-    },
-    "win": "left",
-    "steps": [
-     0.05,
-     0.3,
-     "l.벽"
-    ]
-   }
-  },
-  {
-   "from": "z",
-   "label": "ask",
-   "gfx": {
-    "type": "scene",
-    "bg": "bedroom",
-    "chars": [
-     {
-      "style": "doodle",
-      "hair": "#FF7A1A",
       "mood": "think",
-      "to": "shock"
+      "to": "smug",
+      "size": 2.1,
+      "x": 0.5,
+      "y": 110
      }
     ],
     "steps": [
      9,
-     0.1,
+     9,
      "z.몇",
      9
     ],
-    "prop": "🔌"
+    "floor": 400
    }
   }
  ]
