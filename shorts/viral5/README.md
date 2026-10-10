@@ -2836,11 +2836,11 @@ for id in horror1 horror2 horror3 horror4; do python3 qa_review.py $id; done
 ```
 
 ### 영상과 라이선스 (2026-10-10, 각 페이지에서 라이선스 확인)
-사람이 나오는 클립은 쓰지 않았다. 35999369(문 잠금장치)는 손이 들어오기 전(0~2.5초)과 손이 빠진 뒤(5.6초~)만 썼다. 화면에는 “영상: Pexels” 또는 “영상: Pixabay”만 표시한다. 페이지·파일 주소·제작자·쓴 구간은 `media/horror/sources.json`과 각 `edit.json`의 `sources`에 있다.
+사람이 나오는 클립은 쓰지 않았다. 35999369(문 잠금장치)는 손이 들어오기 전(0~2.5초)과 손이 빠진 뒤(5.9초~)만 썼다. horror3의 택배 상자(7362620)와 종이봉투(7362603)는 상표·스티커·“LEAVE PACKAGE HERE” 매트가 화면에 안 들어오게 잘라 썼다(`crop`). 화면에는 “영상: Pexels” 또는 “영상: Pixabay”만 표시한다. 페이지·파일 주소·제작자·쓴 구간은 `media/horror/sources.json`과 각 `edit.json`의 `sources`에 있다.
 - **Pexels License** (무료, 수정 가능, 출처 표기 불필요. 수정 없는 판매·재배포 금지):
   - horror1: 978049 Stefan Kwiecinski, 5823578 Charlotte May, 34779661 Stefan, 37410328 Airam Dato-on, 15201563 Darina Evstafeva, 19217894 Nino Souza, 15434928 Yusuf Çelik
   - horror2: 9658661 Videas Cl, 35999369 Jakub Bukowski, 29038649 Адам Аушев, 8472547 MART PRODUCTION, 3512344 Bran Sodre, 19217899 Nino Souza, 7598737 Artadya Gumelar, 5384813 Tima Miroshnichenko
-  - horror3: 34786856·34786878 Sambhaji Gaikwad, 7362603·7362808 RDNE Stock project, 5483080 cottonbro studio, 8346903 Kampus Production, 9658661 Videas Cl, 15365449 Matthias Groeneveld, 7598737 Artadya Gumelar
+  - horror3: 34786856·34786878 Sambhaji Gaikwad, 7362603·7362620 RDNE Stock project, 5483080 cottonbro studio, 8346903 Kampus Production, 9658661 Videas Cl, 15365449 Matthias Groeneveld, 7598737 Artadya Gumelar
   - horror4: 36778198 Curtis Adams, 32834268 Benjamin Eriksen, 27861219 Nothing Ahead, 5384813 Tima Miroshnichenko, 4623153 Artem Podrez, 19217895 Nino Souza, 7598737 Artadya Gumelar
 - **Pixabay Content License** (무료, 수정 가능, 출처 표기 불필요. 원본 그대로의 판매·배포 금지): [130783](https://pixabay.com/videos/elevator-door-open-waiting-elevator-130783/)·[131012](https://pixabay.com/videos/inside-elevator-elevator-rise-131012/) Jesehab(horror1), [28237](https://pixabay.com/videos/house-door-open-spirit-haunted-28237/) Jacques_Barrette(horror2)
 - 음악: Kevin MacLeod (incompetech.com), CC BY 4.0.
