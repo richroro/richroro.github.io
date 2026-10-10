@@ -45,6 +45,8 @@ export type ShortData = {
   /** "news": the title as black type on a white banner (Korean news-shorts look) instead of the outlined title;
    *  "band": white and yellow type on a solid black band over the top 400 px (the Korean info-shorts look) */
   titleStyle?: "news" | "band";
+  /** the band title's key colour: line 2, or the [marked] words (default yellow; red for horror) */
+  titleKey?: string;
   /** a two-line headline in red with a white outline over the picture, centred on hookY, shown until hookTo (default: throughout) */
   hook?: [string, string];
   hookY?: number;
@@ -170,8 +172,9 @@ const Title: React.FC<{ d: ShortData }> = ({ d }) => {
   if (d.titleStyle === "band") {
     // the second line is the yellow one unless the lines mark their own [key] words
     const marked = d.title.some((l) => l.includes("["));
+    const key = d.titleKey ?? "#FFE14D";
     const line = (l: string, i: number) => (
-      <div style={{ fontSize: size(l.replace(/[[\]]/g, ""), 104, 1010), color: !marked && i ? "#FFE14D" : "white" }}><Marked text={l} /></div>
+      <div style={{ fontSize: size(l.replace(/[[\]]/g, ""), 104, 1010), color: !marked && i ? key : "white" }}><Marked text={l} color={key} /></div>
     );
     return (
       <div style={{ position: "absolute", top: 0, left: 0, width: 1080, height: 400, background: "#000", display: "flex", flexDirection: "column",

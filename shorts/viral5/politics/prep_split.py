@@ -18,7 +18,7 @@ edit.json:
              that puts words in someone's mouth is worse than no caption, so leave unclear bits out.
              translated shorts write {"who", "ko", "en", "at", "to"} instead: "at"/"to" pin a line to source seconds
              ("t"/"tend" to output seconds), "ko" is the caption and "en" the original under it ("" = Korean only)
-  titleStyle "news" sets the title as black type on a white banner;  hook: [line 1, line 2] in red with a white outline
+  titleStyle "news" sets the title as black type on a white banner; titleKey: the band title's key colour (default yellow);  hook: [line 1, line 2] in red with a white outline
              over the picture (hookY its centre, hookTo when it goes, in output seconds) — the Korean news-shorts look
   subOrder   "en-ko" leads with the English line, Korean under it (subtitle-study layout; [bracketed] English words
              are yellow);  captionY: the caption block's centre (default 1370)
@@ -307,7 +307,7 @@ def main(sid):
                                                                        or ed["segments"][k].get("src") != ed["segments"][k - 1].get("src")
                                                                        and not (ed["segments"][k].get("broll") or ed["segments"][k - 1].get("broll")))], "punches": [],
             "split": {"w": W, "h": H, "panels": panels}, "speakers": speakers, "captionY": ed.get("captionY", 1370), "subOrder": ed.get("subOrder", "ko-en"),
-            **{k: ed[k] for k in ("titleStyle", "hook", "hookY", "hookTo") if ed.get(k) is not None},
+            **{k: ed[k] for k in ("titleStyle", "titleKey", "hook", "hookY", "hookTo") if ed.get(k) is not None},
             **({"ranks": {"rows": ranks, **({"y": ed["rankY"]} if ed.get("rankY") else {})}} if ranks else {})}
     os.makedirs(f"{V}/src/data", exist_ok=True)
     json.dump(data, open(f"{V}/src/data/{sid}.json", "w"), ensure_ascii=False)
