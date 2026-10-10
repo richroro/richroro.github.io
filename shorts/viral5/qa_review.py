@@ -67,8 +67,8 @@ def review(sid):
     f = f"{HERE}/final/{sid}.mp4"
     out = f"{HERE}/out/review/{sid}"; os.makedirs(out, exist_ok=True)
     title, pages, trans, say, edit = texts(sid)
-    # drawn story scenes differ by a character or a bubble, so they need a finer threshold than footage cuts
-    drawn = bool(edit.get("clips")) and all(c.get("gfx", {}).get("type") in ("scene", "post") for c in edit["clips"])
+    # drawn story scenes (and the planned top-down road cartoons) differ by a character or a bubble, so they need a finer threshold than footage cuts
+    drawn = bool(edit.get("clips")) and all(c.get("gfx", {}).get("type") in ("scene", "post", "road") for c in edit["clips"])
     dur, lufs, black, cuts = measure(f, 0.04 if drawn else 0.12)
     if edit.get("segments"):  # translated-clip shorts: segment joins are cuts too, even when the picture barely changes
         t = 0.0
