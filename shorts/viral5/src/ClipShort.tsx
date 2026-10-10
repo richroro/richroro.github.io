@@ -8,6 +8,7 @@ import { BODY, TITLE, loadFonts } from "./lib/fonts";
 import { Sticker, clamp, eOut, prog } from "./lib/fx";
 import { GFX_BG, GfxView, Marked, Marks, type Gfx, type Mark } from "./lib/Gfx";
 import { ROUNDED43, Rounded43, YearSticker, rounded43Crop } from "./lib/Retro";
+import { PlainCaptions, RiddleTitle } from "./lib/Riddle";
 
 loadFonts();
 export const FPS = 30;
@@ -48,7 +49,11 @@ export type ShortData = {
   subOrder?: "ko-en" | "en-ko";
   /** "news": the title as black type on a white banner (Korean news-shorts look) instead of the outlined title;
    *  "band": white and yellow type on a solid black band over the top 400 px (the Korean info-shorts look) */
-  titleStyle?: "news" | "band";
+  titleStyle?: "news" | "band" | "riddle";
+  /** "riddle" title (lib/Riddle.tsx): where the title block is centred (default 330) */
+  titleY?: number;
+  /** "plain": white-only captions with no highlight or entrance (lib/Riddle.tsx) */
+  capLook?: "plain";
   /** the band title's key colour: line 2, or the [marked] words (default yellow; red for horror) */
   titleKey?: string;
   /** a two-line headline in red with a white outline over the picture, centred on hookY, shown until hookTo (default: throughout) */
@@ -202,6 +207,7 @@ const Title: React.FC<{ d: ShortData }> = ({ d }) => {
       </div>
     );
   }
+  if (d.titleStyle === "riddle") return <RiddleTitle title={d.title} y={d.titleY} color={d.titleKey} />;
   if (d.titleStyle === "news") {
     return (
       <div style={{ position: "absolute", top: 150, left: 0, width: 1080, height: 240, background: "white", display: "flex", flexDirection: "column",
@@ -307,7 +313,8 @@ export const ClipShort: React.FC<{ data: ShortData }> = ({ data: d }) => {
       {d.stickers.map((s, i) => (
         <Sticker key={i} t={t} t0={s.from} t1={s.to} x={s.x} y={s.y} rot={s.rot} bg={s.bg} fg={s.fg} size={s.size}>{s.text}</Sticker>
       ))}
-      <Captions pages={d.pages} centerY={d.captionY ?? 1370} order={d.subOrder} />
+      {d.capLook === "plain" ? <PlainCaptions pages={d.pages} centerY={d.captionY} />
+        : <Captions pages={d.pages} centerY={d.captionY ?? 1370} order={d.subOrder} />}
       {flash > 0.002 && <AbsoluteFill style={{ background: "white", opacity: flash }} />}
 
       {d.lines.map((l) => (
