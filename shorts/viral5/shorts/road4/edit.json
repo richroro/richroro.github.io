@@ -1,0 +1,847 @@
+{
+ "credit": "",
+ "titleStyle": "band",
+ "titleKey": "#FF3B3B",
+ "captionY": 1640,
+ "sources": {},
+ "music": {
+  "file": "music/hustle.mp3",
+  "gain": 0.13,
+  "start": 0
+ },
+ "sfx": [
+  [
+   "b",
+   "pop",
+   0.25
+  ],
+  [
+   "c",
+   "whoosh",
+   0.2
+  ],
+  [
+   "c.제한속도",
+   "ding",
+   0.25
+  ],
+  [
+   "d.튀어나와요",
+   "k_drop_002",
+   0.3
+  ],
+  [
+   "e",
+   "pop",
+   0.2
+  ],
+  [
+   "f",
+   "whoosh",
+   0.2
+  ],
+  [
+   "f.범칙금",
+   "boing",
+   0.25
+  ],
+  [
+   "g",
+   "whoosh",
+   0.2
+  ],
+  [
+   "g.일반",
+   "coin",
+   0.3
+  ],
+  [
+   "h.딱",
+   "siren",
+   0.3
+  ],
+  [
+   "i",
+   "pop",
+   0.2
+  ],
+  [
+   "j",
+   "boing",
+   0.25
+  ],
+  [
+   "k.범칙금",
+   "coin",
+   0.35
+  ],
+  [
+   "l",
+   "whoosh",
+   0.2
+  ],
+  [
+   "l.여러분",
+   "pop",
+   0.2
+  ]
+ ],
+ "clips": [
+  {
+   "from": "a",
+   "label": "스쿨존 과속",
+   "gfx": {
+    "type": "road",
+    "view": "top",
+    "road": "school",
+    "lanes": 2,
+    "place": "📍 스쿨존",
+    "speed": 1300,
+    "steps": [
+     0.05
+    ],
+    "zoom": 1.05,
+    "focus": 0,
+    "signs": [
+     {
+      "x": 1010,
+      "y": 220,
+      "text": "30",
+      "kind": "speed",
+      "size": 120
+     }
+    ],
+    "people": [
+     {
+      "x": 1012,
+      "y": 640,
+      "color": "#FF9EBB",
+      "mood": "happy",
+      "hat": "🧢",
+      "size": 100
+     },
+     {
+      "x": 70,
+      "y": 420,
+      "color": "#B9F27C",
+      "mood": "neutral",
+      "hat": "🎀",
+      "size": 100
+     }
+    ],
+    "paint": [
+     {
+      "lane": 2,
+      "y": 760,
+      "text": "30",
+      "color": "#FFF"
+     }
+    ],
+    "cars": [
+     {
+      "color": "#FF5C5C",
+      "face": "#C9A7FF",
+      "lane": 1,
+      "y": 520,
+      "mood": "laugh",
+      "tag": "빌런",
+      "fast": true
+     }
+    ]
+   }
+  },
+  {
+   "from": "b",
+   "label": "아무도 없는데",
+   "gfx": {
+    "type": "road",
+    "view": "top",
+    "road": "school",
+    "lanes": 2,
+    "speed": 1300,
+    "zoom": 1.2,
+    "focus": 0,
+    "steps": [
+     0.05
+    ],
+    "signs": [
+     {
+      "x": 1010,
+      "y": 220,
+      "text": "30",
+      "kind": "speed",
+      "size": 120
+     }
+    ],
+    "people": [
+     {
+      "x": 1012,
+      "y": 640,
+      "color": "#FF9EBB",
+      "mood": "happy",
+      "hat": "🧢",
+      "size": 100
+     }
+    ],
+    "say": {
+     "who": 0,
+     "text": "[아무도] 없는데 뭐 어때~"
+    },
+    "cars": [
+     {
+      "color": "#FF5C5C",
+      "face": "#C9A7FF",
+      "lane": 1,
+      "y": 640,
+      "mood": "smug",
+      "tag": "빌런",
+      "fast": true
+     }
+    ]
+   }
+  },
+  {
+   "from": "c",
+   "label": "보호구역",
+   "gfx": {
+    "type": "road",
+    "view": "top",
+    "road": "school",
+    "lanes": 2,
+    "speed": 350,
+    "steps": [
+     0.05
+    ],
+    "signs": [
+     {
+      "x": 540,
+      "y": 110,
+      "text": "어린이 보호구역",
+      "kind": "warn",
+      "size": 150
+     }
+    ],
+    "people": [
+     {
+      "x": 1012,
+      "y": 640,
+      "color": "#FF9EBB",
+      "mood": "happy",
+      "hat": "🧢",
+      "size": 100
+     },
+     {
+      "x": 70,
+      "y": 420,
+      "color": "#B9F27C",
+      "mood": "neutral",
+      "hat": "🎀",
+      "size": 100
+     }
+    ],
+    "paint": [
+     {
+      "lane": 1,
+      "y": 260,
+      "text": "천천히",
+      "color": "#FFF"
+     }
+    ],
+    "cars": [
+     {
+      "color": "#4DA3FF",
+      "face": "#FFD84D",
+      "tag": "나",
+      "lane": 1,
+      "y": 760,
+      "mood": "happy"
+     }
+    ]
+   }
+  },
+  {
+   "from": "c.제한속도",
+   "label": "30",
+   "gfx": {
+    "type": "road",
+    "view": "top",
+    "road": "school",
+    "lanes": 2,
+    "speed": 350,
+    "steps": [
+     0.05
+    ],
+    "signs": [
+     {
+      "x": 540,
+      "y": 420,
+      "text": "30",
+      "kind": "speed",
+      "size": 380
+     }
+    ],
+    "people": [
+     {
+      "x": 1012,
+      "y": 640,
+      "color": "#FF9EBB",
+      "mood": "happy",
+      "hat": "🧢",
+      "size": 100
+     },
+     {
+      "x": 70,
+      "y": 420,
+      "color": "#B9F27C",
+      "mood": "neutral",
+      "hat": "🎀",
+      "size": 100
+     }
+    ],
+    "cars": [
+     {
+      "color": "#4DA3FF",
+      "face": "#FFD84D",
+      "tag": "나",
+      "lane": 1,
+      "y": 880,
+      "mood": "smug"
+     }
+    ]
+   }
+  },
+  {
+   "from": "d",
+   "label": "튀어나옴",
+   "gfx": {
+    "type": "road",
+    "view": "top",
+    "road": "school",
+    "lanes": 2,
+    "speed": 250,
+    "stopAt": 1,
+    "steps": [
+     0.15,
+     0.55,
+     0.5
+    ],
+    "shake": [
+     1
+    ],
+    "people": [
+     {
+      "x": 800,
+      "y": 380,
+      "color": "#FF9EBB",
+      "mood": "neutral",
+      "to": "shock",
+      "toAt": 1,
+      "hat": "🧢",
+      "size": 100,
+      "path": [
+       [
+        0,
+        560,
+        380,
+        0.5
+       ]
+      ]
+     }
+    ],
+    "cars": [
+     {
+      "lane": 2,
+      "y": 200,
+      "kind": "bus",
+      "color": "#FFC21A",
+      "brake": true
+     },
+     {
+      "lane": 2,
+      "y": 620,
+      "color": "#E8E8E8",
+      "brake": true
+     },
+     {
+      "color": "#4DA3FF",
+      "face": "#FFD84D",
+      "tag": "나",
+      "lane": 1,
+      "y": 880,
+      "mood": "neutral",
+      "to": "shock",
+      "toAt": 1,
+      "brake": 1,
+      "path": [
+       [
+        1,
+        1,
+        800,
+        0,
+        0.6
+       ]
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "from": "e",
+   "label": "휴",
+   "gfx": {
+    "type": "road",
+    "view": "cockpit",
+    "road": "school",
+    "lanes": 2,
+    "speed": 0,
+    "steps": [
+     0.05,
+     0.1,
+     0.7
+    ],
+    "me": {
+     "lane": 1,
+     "mood": "shock",
+     "to": "happy",
+     "toAt": 2
+    },
+    "say": {
+     "who": "me",
+     "text": "휴, [천천히] 가길 잘했다."
+    },
+    "cars": []
+   }
+  },
+  {
+   "from": "f",
+   "label": "시간",
+   "gfx": {
+    "type": "road",
+    "view": "top",
+    "road": "school",
+    "lanes": 2,
+    "speed": 350,
+    "steps": [
+     0.05,
+     0.1,
+     9,
+     0.15
+    ],
+    "big": "[오전 8시~오후 8시]",
+    "people": [
+     {
+      "x": 1012,
+      "y": 640,
+      "color": "#FF9EBB",
+      "mood": "happy",
+      "hat": "🧢",
+      "size": 100
+     },
+     {
+      "x": 70,
+      "y": 420,
+      "color": "#B9F27C",
+      "mood": "neutral",
+      "hat": "🎀",
+      "size": 100
+     }
+    ],
+    "cars": [
+     {
+      "color": "#4DA3FF",
+      "face": "#FFD84D",
+      "tag": "나",
+      "lane": 1,
+      "y": 800,
+      "mood": "happy"
+     }
+    ]
+   }
+  },
+  {
+   "from": "f.범칙금",
+   "label": "더 무겁게",
+   "gfx": {
+    "type": "road",
+    "view": "top",
+    "road": "school",
+    "lanes": 2,
+    "speed": 350,
+    "steps": [
+     0.05,
+     0.1,
+     9,
+     0.15
+    ],
+    "zoom": 1.1,
+    "big": "범칙금 [더 무겁게]",
+    "signs": [
+     {
+      "x": 1010,
+      "y": 220,
+      "text": "30",
+      "kind": "speed",
+      "size": 120
+     }
+    ],
+    "people": [
+     {
+      "x": 70,
+      "y": 420,
+      "color": "#B9F27C",
+      "mood": "neutral",
+      "hat": "🎀",
+      "size": 100
+     }
+    ],
+    "cars": [
+     {
+      "color": "#FF5C5C",
+      "face": "#C9A7FF",
+      "lane": 1,
+      "y": 700,
+      "mood": "think"
+     }
+    ]
+   }
+  },
+  {
+   "from": "g",
+   "label": "20km 초과",
+   "gfx": {
+    "type": "road",
+    "view": "top",
+    "road": "school",
+    "lanes": 2,
+    "speed": 1300,
+    "steps": [
+     0.05,
+     0.1,
+     9,
+     0.3
+    ],
+    "big": "[+20km] 넘게 과속",
+    "signs": [
+     {
+      "x": 1010,
+      "y": 220,
+      "text": "30",
+      "kind": "speed",
+      "size": 120
+     }
+    ],
+    "cars": [
+     {
+      "color": "#FF5C5C",
+      "face": "#C9A7FF",
+      "lane": 1,
+      "y": 700,
+      "mood": "laugh",
+      "tag": "빌런",
+      "fast": true
+     }
+    ]
+   }
+  },
+  {
+   "from": "g.일반",
+   "label": "6만 vs 9만",
+   "gfx": {
+    "type": "road",
+    "view": "top",
+    "road": "school",
+    "lanes": 2,
+    "speed": 0,
+    "steps": [
+     0,
+     0,
+     0,
+     0.15
+    ],
+    "ticket": {
+     "title": "과속 21~40km/h (승용차)",
+     "lines": [
+      "일반 도로 6만 원",
+      "스쿨존 [9만 원]"
+     ]
+    },
+    "cars": [
+     {
+      "color": "#FF5C5C",
+      "face": "#C9A7FF",
+      "lane": 1,
+      "y": 200,
+      "mood": "shock"
+     }
+    ]
+   }
+  },
+  {
+   "from": "h",
+   "label": "딱 걸림",
+   "gfx": {
+    "type": "road",
+    "view": "top",
+    "road": "school",
+    "lanes": 2,
+    "speed": 1100,
+    "steps": [
+     0.05,
+     0.7,
+     0.8
+    ],
+    "cars": [
+     {
+      "color": "#FF5C5C",
+      "face": "#C9A7FF",
+      "lane": 1,
+      "y": 900,
+      "mood": "laugh",
+      "to": "shock",
+      "toAt": 1,
+      "tag": "빌런",
+      "fast": true,
+      "path": [
+       [
+        0,
+        1,
+        380,
+        0,
+        0.8
+       ]
+      ]
+     },
+     {
+      "lane": 2,
+      "y": 540,
+      "kind": "police",
+      "sirenAt": 1
+     }
+    ]
+   }
+  },
+  {
+   "from": "i",
+   "label": "세우세요",
+   "gfx": {
+    "type": "road",
+    "view": "top",
+    "road": "school",
+    "lanes": 2,
+    "speed": 900,
+    "stopAt": 2,
+    "steps": [
+     0.05,
+     0.5,
+     1.4
+    ],
+    "say": {
+     "who": 1,
+     "text": "25km 초과입니다. [잠시 세우세요]."
+    },
+    "cars": [
+     {
+      "color": "#FF5C5C",
+      "face": "#C9A7FF",
+      "lane": 1,
+      "y": 330,
+      "mood": "shock",
+      "blink": "R",
+      "blinkAt": 1,
+      "brake": 2,
+      "path": [
+       [
+        1,
+        2,
+        330,
+        0,
+        0.8
+       ]
+      ]
+     },
+     {
+      "lane": 2,
+      "y": 1150,
+      "kind": "police",
+      "sirenAt": 0,
+      "path": [
+       [
+        0,
+        2,
+        720,
+        0,
+        1.0
+       ]
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "from": "j",
+   "label": "아무도 없었는데",
+   "gfx": {
+    "type": "road",
+    "view": "top",
+    "road": "school",
+    "lanes": 2,
+    "speed": 0,
+    "zoom": 1.3,
+    "focus": 0,
+    "steps": [
+     0.05
+    ],
+    "say": {
+     "who": 0,
+     "text": "아무도 없었는데…"
+    },
+    "people": [
+     {
+      "x": 1012,
+      "y": 640,
+      "color": "#FF9EBB",
+      "mood": "happy",
+      "hat": "🧢",
+      "size": 100
+     }
+    ],
+    "cars": [
+     {
+      "color": "#FF5C5C",
+      "face": "#C9A7FF",
+      "lane": 2,
+      "y": 560,
+      "mood": "sad",
+      "brake": true
+     },
+     {
+      "lane": 2,
+      "y": 900,
+      "kind": "police"
+     }
+    ]
+   }
+  },
+  {
+   "from": "k",
+   "label": "범칙금",
+   "gfx": {
+    "type": "road",
+    "view": "top",
+    "road": "school",
+    "lanes": 2,
+    "speed": 0,
+    "steps": [
+     0,
+     0,
+     0,
+     0.3
+    ],
+    "ticket": {
+     "title": "범칙금 납부 통고",
+     "lines": [
+      "어린이보호구역 속도위반",
+      "승용차 [9만 원]"
+     ]
+    },
+    "cars": [
+     {
+      "color": "#FF5C5C",
+      "face": "#C9A7FF",
+      "lane": 2,
+      "y": 200,
+      "mood": "cry",
+      "brake": true
+     },
+     {
+      "lane": 2,
+      "y": 520,
+      "kind": "police"
+     }
+    ]
+   }
+  },
+  {
+   "from": "l",
+   "label": "스쿨존은 30",
+   "gfx": {
+    "type": "road",
+    "view": "top",
+    "road": "school",
+    "lanes": 2,
+    "speed": 350,
+    "steps": [
+     0.05
+    ],
+    "signs": [
+     {
+      "x": 1010,
+      "y": 220,
+      "text": "30",
+      "kind": "speed",
+      "size": 120
+     }
+    ],
+    "people": [
+     {
+      "x": 1012,
+      "y": 640,
+      "color": "#FF9EBB",
+      "mood": "happy",
+      "hat": "🧢",
+      "size": 100
+     },
+     {
+      "x": 70,
+      "y": 420,
+      "color": "#B9F27C",
+      "mood": "neutral",
+      "hat": "🎀",
+      "size": 100
+     }
+    ],
+    "paint": [
+     {
+      "lane": 1,
+      "y": 500,
+      "text": "30",
+      "color": "#FFF"
+     }
+    ],
+    "cars": [
+     {
+      "color": "#4DA3FF",
+      "face": "#FFD84D",
+      "tag": "나",
+      "lane": 1,
+      "y": 760,
+      "mood": "happy"
+     }
+    ]
+   }
+  },
+  {
+   "from": "l.여러분",
+   "label": "질문",
+   "gfx": {
+    "type": "road",
+    "view": "cockpit",
+    "road": "school",
+    "lanes": 2,
+    "speed": 300,
+    "steps": [
+     0.05,
+     0.1,
+     0.6
+    ],
+    "me": {
+     "lane": 1,
+     "mood": "happy",
+     "to": "laugh",
+     "toAt": 2
+    },
+    "cars": []
+   }
+  }
+ ]
+}
