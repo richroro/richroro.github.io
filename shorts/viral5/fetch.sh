@@ -21,6 +21,7 @@ for s in drop_002 maximize_003 question_001 confirmation_002 error_003 glitch_00
 done
 [ -s "$P/sfx/whoosh.wav" ] || python3 ../tools/sfx.py "$P/sfx" >/dev/null
 [ -s "$P/sfx/horn.wav" ] || python3 road_sfx.py "$P/sfx" >/dev/null  # road cartoons: horn, siren
+[ -s "$P/sfx/dundun.wav" ] || python3 drive_sfx.py "$P/sfx" >/dev/null  # wordless road cartoons: engine, tyre squeal, dun-dun
 
 M=$RAW/cjthomas-opensource/mcmusic-kevin-macleod/master/music
 for m in monkeys_spinning_monkeys scheming_weasel hyperfun hustle sneaky_snitch; do

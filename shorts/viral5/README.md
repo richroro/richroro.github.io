@@ -3465,3 +3465,238 @@ python3 qa_review.py top5                                    # 네 편 모두 FA
 > 영상: 미국 국립공원관리청(NPS) — Neal Herbert, Jacob W. Frank · 미국 지질조사국(USGS) (각 기관이 이 영상을 보증하거나 후원하지 않습니다.)
 > 음악: "Dreamer" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
 > #신기한장소 #국립공원 #옐로스톤 #데스밸리 #shorts
+
+## 2D 운전 애니 무언 해외판 (벤치마크, `drive1`~`drive10`)
+
+`research/benchmark-drawn.md` 2절과 `research/benchmark-targets-drawn.json`의 `road` 목표(알룔료 R1 3,201만·R2 2,865만·R3 2,601만)를 그대로 따른 **말 없는 해외판** 10편이다. 내레이션과 자막이 없고, 9:16 화면 가운데 16:9 그림, 위 검정 칸에 흰 한국어 제목 한 줄, 아래 검정 칸에 영어 한 줄이 처음부터 끝까지 있다. 운전자 얼굴 클로즈업(그림 높이의 약 70%)과 3D 차 장면(3/4 뒤·옆·앞·위)을 1.5~2초마다 번갈아 자르고, 효과음(경적·엔진·타이어·둥둥·사이렌)과 음악만으로 진행한다. 결말은 모두 자업자득이다(출구를 놓침, 맨 뒤 줄, 트럭 뒤에 갇힘, 단속 카메라, 경찰에 갓길로). 사고·부상·주인공의 보복은 없고, 주인공은 거리를 두거나 비켜 주거나 깜빡이를 켠다. `drive1`~`drive6`은 보고서 아이디어 목록의 새 편이고, `drive7`~`drive10`은 기존 `road1`·`road2`·`road8`·`road9`의 무언판이다(`road1`~`road10`은 그대로 둠).
+
+- **그림·소리**: 전부 직접 그린 것(코드로 그림)과 numpy 합성음이다. 외부 사진·영상이 없어서 `sources`는 비어 있고 화면 크레딧도 없다. 실제 차종·로고·번호판·상표·사람은 없다. 화면의 글자는 제목 두 줄과 표지판 숫자("1km", "32km", "100", "30")뿐이다.
+- **같은 틀**: 주인공은 노란 후드(`HERO`) 또는 분홍 옷(`HEROINE`)에 파란 차(`#4DA3FF`), 경찰은 남색 모자·콧수염(`COP`), 트럭 기사는 초록 모자·수염(`TRUCKER`). 악역은 편마다 바뀐다. 컷 순서는 0초 얼굴(썸네일) → 차 장면 → 얼굴 반응 → … → "둥둥"과 붉은 테두리 → 악역 우는 얼굴.
+- **무언판으로 고른 기존 4편과 이유**: `road1`(1차로 정속), `road2`(깜빡이 없이 끼어들기), `road8`(갓길 주행), `road9`(상향등·바짝 붙기)는 고속도로 한 곳에서 일어나고, 세계 어디서나 같은 빌런이며, 원래 결말(경찰이 갓길로 세움, 갓길 끝의 경찰차, 앞차가 경찰)이 그림만으로 통쾌하다. `road3`(빨간불 우회전)·`road4`(스쿨존 범칙금 구간)·`road7`(휴대폰 예외)·`road10`(버스전용차로 인원)·`road5`(터널 실선)는 한국 법 조문을 말로 설명해야 이해되고, `road6`(꼬리물기)은 교차로 장면이 필요해서 뺐다.
+- **보복운전 없음**: 주인공은 경적을 울리지 않고(1편의 경적은 악역), 막아서지 않는다. 9편 주인공은 갓길 차를 막지 않고, 8편 주인공은 마지막에 깜빡이를 켜고 들어간다.
+
+```bash
+python3 drive_eps.py                          # 장면 목록 → shorts/drive*/edit.json, script.json (내레이션 없음)
+python3 voice_edge.py drive1 && python3 prep.py drive1 && ./render.sh drive1 final/drive1.mp4 && python3 qa_review.py drive1
+```
+`voice_edge.py`는 대사 줄이 없으면 음성을 만들지 않고 길이(`tail`)만 적는다. `drive7`은 렌더 뒤 −12.7 LUFS(WARN)라서 영상은 그대로 두고 소리만 −1.3dB 다시 인코딩했다(−14.0 LUFS).
+
+### 새 템플릿 옵션 (모두 새 값이라 기존 쇼츠는 그대로)
+
+| 파일 | 바뀐 것 |
+|---|---|
+| `src/lib/Drive.tsx` (새 파일) | `road` 그래픽의 새 시점 `view: "face"`(운전석 얼굴 클로즈업)와 `view: "car"`(작은 3D 장면). 1920×1080 무대를 클립 칸에 맞춰 줄인다(`"frame": "wide"`면 1080×608 = 16:9) |
+| `src/lib/DriveFace.tsx` (새 파일) | 운전자 얼굴(머리·어깨) 17가지 표정, 머리 모양 8가지, 선글라스·안경, 콧수염·수염, 표정 타임라인. 기호(`!`, `?`, `?!`, 분노, 땀, 음표)와 경적 폭발 그림(글자 없음) |
+| `src/lib/Bilingual.tsx` (새 파일) | `titleEn`이 있으면 쓰는 제목: 그림 위 검정 칸에 흰 한국어(Pretendard 800), 그림 아래 검정 칸에 영어 |
+| `src/lib/Road.tsx` | `view`가 `"face"`/`"car"`면 `Drive`로 넘기는 한 줄(+ 타입에 두 값) |
+| `src/ClipShort.tsx` | `ShortData.titleEn` 타입과 `Title` 첫 줄의 분기 한 줄 |
+| `prep.py` | `titleEn`을 데이터로 넘김. 음성이 하나도 없으면 더킹 정규화를 건너뜀(빈 배열의 percentile 오류 방지, 음성이 있으면 같은 계산) |
+| `drive_sfx.py` (새 파일), `fetch.sh` 한 줄 | `engine.wav`(엔진 부앙), `squeal.wav`(타이어 끼익), `dundun.wav`(둥둥) 합성. 경적·사이렌은 기존 `road_sfx.py` |
+| `drive_eps.py` (새 파일) | 10편의 장면 목록과 `edit.json`/`script.json` 생성기 |
+
+**쓰는 법** (`edit.json`): `"titleStyle": "band"`, `"titleEn": "English line"`, 각 클립 `"frame": "wide"`, `"gfx": {"type": "road", "view": "face" | "car", ...}`. 시간 값은 모두 **그 클립이 시작한 뒤 초**다(`steps` 안 씀). `script.json`은 `"lines": []`, `"tail"`이 전체 길이.
+
+| 값 | 쓰임 |
+|---|---|
+| 공통 `zoom` `shake` `dun` `flash` `streaks` `time` | 천천히 다가감(`[from,to]`), 흔들림, "둥둥"(살짝 줌 + 어두운 붉은 테두리), 흰 번쩍(단속 카메라), 집중선 `[t0,t1]`, `"night"`/`"dusk"` |
+| 공통 `speed` `stopAt` | 세상이 흐르는 속도(car: m/s, face: 옆 창 px/s), `stopAt` 초에 서서히 멈춤 |
+| face `driver` | `{skin, hair: short\|spiky\|slick\|bald\|cap\|bob\|curly\|long, hairColor, cap, glasses: sun\|round, beard: mustache\|stubble\|full, shirt, mood, moods: [[t, mood]]}`. 표정: neutral smug grin angry rage shock scared sad cry happy laugh cool side bored yell eek squint |
+| face `flip` `car` | 좌우 반전(악역 컷은 반대쪽을 봄), 문틀에 보이는 차 색 |
+| face `ahead` | 앞유리로 보이는 앞차 `{kind, color, size 0..1, to, toAt, brake: [[t0,t1]], siren, dark}` |
+| face `peer` | 옆 창으로 지나가는 차·트럭 `{kind, color, driver, x0, x1, at, dur, siren}` |
+| face `honk` `marks` `police` `glare` | 손으로 경적(그림 + 흔들림), 머리 위 기호 `[[t, "!"]]`, 경광등 빛(t부터), 뒤차 상향등 눈부심 `[[t0,t1]]` |
+| car `cam` `cam2` `camAt` `camDur` `follow` | 카메라 프리셋 `rear` `rearL` `rearR` `side` `sideL` `front` `frontL` `high` 또는 `{x,y,z,yaw,pitch,fov}`(따라가는 차 기준), 중간에 다른 카메라로 이동 |
+| car `cars[]` | `{kind: car\|tiny\|suv\|sports\|van\|truck\|police\|work, color, lane, z, vz, path: [[t, lane, z, dur]], heading, driver, brake, blink, blinkAt, blinkOff, honk, siren, lights, dark (true 또는 그 초까지), smoke, fast, marks}`. 1차로가 왼쪽, `lanes+1`이 갓길. 운전자 얼굴은 유리 너머로만 보이고, 뒤에서 보면 뒤통수 |
+| car 도로 | `lanes`, `cones: [[lane, z]]`, `laneEnd: {lane, z0, z1}`(차로 끝 라바콘·빗금), `exit: {z}`(오른쪽 출구 + 140m 앞 표지), `signs: [{z, kind: exit\|km\|speed\|merge\|work, text}]`, `speedCam: {z, at}`, `hill`(오르막) |
+
+**확인**: 손대지 않은 기존 쇼츠 `road1`(도로 그래픽)과 `sseol1`(썰 장면)을 원래 커밋의 코드와 바뀐 코드로 같은 음성 빌드에서 렌더해 비교했다. 두 편 모두 영상 프레임이 비트 단위로 같았다(framemd5 일치, PSNR inf).
+
+### 벤치마크 점수표
+
+목표는 `benchmark-targets-drawn.json`의 `road`: 길이 28초, 훅 끝 0.0초, 첫 화면 변화 ≤1.5초, 평균 장면 2.0초, 최장 4.0초, 초당 음절 0(내레이션 없음), 줄 1(제목 한 줄 + 영어), 제목 9~16자. 우리 값은 렌더한 `final/<id>.mp4`를 `qa_review.py`와 같은 방법(그림 칸 scene > 0.04, 0.3초 안 전환 합침)으로 잰 것이다. 이 방법은 표정·줌·경광등이 바뀌어도 전환으로 센다. 훅 끝은 0.0초다: 0초 첫 프레임에 제목과 얼굴(또는 차)이 이미 있고 말이 없다. 초당 음절과 내레이션 줄은 `build/<id>/timeline.json`의 대사 줄이 0개라서 0이다.
+
+| id | 화면 제목 (한 / 영) | 길이 | 훅 끝 | 첫 전환 | 평균 / 최장 장면 | 전환 | 초당 음절 | 줄 | 제목 글자 | qa |
+|---|---|---|---|---|---|---|---|---|---|---|
+| `drive1` | 감히 경차를 무시해? / How dare you ignore a tiny car? | 27.2초 | 0.0초 | 0.7초 | 1.4 / 2.6초 | 18 | 0 | 0 (제목 1줄 + 영어) | 8자 | PASS 10/10, -14.0 LUFS, 6.8MB |
+| `drive2` | 합류 끝까지 달린 차의 최후 / The Last-Second Merger | 27.0초 | 0.0초 | 1.4초 | 1.5 / 2.6초 | 17 | 0 | 0 (제목 1줄 + 영어) | 11자 | PASS 10/10, -13.9 LUFS, 6.8MB |
+| `drive3` | 트럭 옆에서 까불면 안되는 이유 / Never Mess With a Truck | 27.1초 | 0.0초 | 1.5초 | 1.4 / 3.0초 | 18 | 0 | 0 (제목 1줄 + 영어) | 13자 | PASS 10/10, -14.0 LUFS, 7.1MB |
+| `drive4` | 추월하면 빨라지는 차의 최후 / He Speeds Up When You Pass | 26.6초 | 0.0초 | 1.4초 | 1.8 / 2.6초 | 14 | 0 | 0 (제목 1줄 + 영어) | 12자 | PASS 10/10, -14.0 LUFS, 6.4MB |
+| `drive5` | 브레이크만 밟는 빌런 / The Brake Checker | 26.6초 | 0.0초 | 0.3초 | 1.6 / 2.6초 | 16 | 0 | 0 (제목 1줄 + 영어) | 9자 | PASS 10/10, -14.0 LUFS, 6.9MB |
+| `drive6` | 밤에 라이트 안 켠 차의 최후 / The Invisible Car (No Headlights) | 26.7초 | 0.0초 | 1.3초 | 1.6 / 2.6초 | 16 | 0 | 0 (제목 1줄 + 영어) | 11자 | PASS 10/10, -14.6 LUFS, 4.7MB |
+| `drive7` | 1차로 막는 차의 최후 / The Left-Lane Hog | 27.0초 | 0.0초 | 1.4초 | 1.8 / 2.6초 | 14 | 0 | 0 (제목 1줄 + 영어) | 9자 | PASS 10/10, -14.0 LUFS, 6.3MB |
+| `drive8` | 깜빡이 없이 끼어든 차의 최후 / Cut In Without a Signal? | 26.5초 | 0.0초 | 0.2초 | 1.7 / 2.4초 | 15 | 0 | 0 (제목 1줄 + 영어) | 12자 | PASS 10/10, -14.0 LUFS, 6.3MB |
+| `drive9` | 갓길로 새치기한 차의 최후 / The Shoulder Cheater | 26.0초 | 0.0초 | 1.4초 | 1.6 / 2.6초 | 15 | 0 | 0 (제목 1줄 + 영어) | 11자 | PASS 10/10, -14.0 LUFS, 7.2MB |
+| `drive10` | 상향등 켜고 붙던 차의 최후 / Tailgating With High Beams? | 26.1초 | 0.0초 | 1.3초 | 1.5 / 2.6초 | 17 | 0 | 0 (제목 1줄 + 영어) | 11자 | PASS 10/10, -14.0 LUFS, 5.7MB |
+
+**놓친 것과 이유**
+- 길이 26.0~27.2초로 목표 28초보다 0.8~2초 짧다. 레시피 범위(20~35초)와 이번 요청(25~30초) 안이고, 마지막 컷을 늘리면 우는 얼굴이 늘어져 루프가 느려져서 그대로 뒀다.
+- 평균 장면 1.4~1.8초는 목표 2.0초보다 짧다. 표정이 바뀌는 순간(같은 컷 안)과 "둥둥" 줌도 전환으로 세는 측정 방식 때문이다. 실제 컷은 편마다 14개로, 컷 평균은 1.86~1.94초다.
+- 첫 전환 0.2~1.5초는 모두 목표(≤1.5초) 안이다. 최장 장면 2.4~3.0초도 목표(≤4.0초) 안이다.
+- 벤치마크 값 중 길이·첫 전환·장면 길이는 보고서가 *추정*으로 적은 것이다(유튜브가 로그인을 요구해 재지 못함).
+
+**qa_review**: 10편 모두 FAIL 0. 처음 렌더에서 `drive7`만 소리 WARN(−12.7 LUFS)이 나와 소리만 다시 맞췄다(위). 첫 시트를 보고 고친 것: 얼굴 눈꺼풀 기울기가 화남·슬픔에서 반대로 그려지던 것, 트럭 옆 카메라가 트레일러에 가려지던 컷(`drive1` 9번째), 옆 카메라 앞을 가리던 나무, 경찰차가 카메라 바로 앞에 크게 걸리던 컷(`drive8`), 영어 제목 한 단어 줄바꿈(`drive4`).
+
+### 출처·라이선스·사실 근거
+
+- 그림: 전부 이 저장소 코드로 직접 그림(`src/lib/Drive.tsx`, `DriveFace.tsx`). 외부 이미지·영상 없음. 벤치마크 채널(알룔료)의 영상·캐릭터는 쓰지 않았고 구성(얼굴 클로즈업 ↔ 차 장면, 16:9 레터박스, 한·영 제목, 자업자득 결말)만 따랐다.
+- 효과음: `drive_sfx.py`(엔진·타이어·둥둥), `road_sfx.py`(경적·사이렌), `../tools/sfx.py`(`shutter`, `click`) — 모두 numpy 합성.
+- 음악: Kevin MacLeod (incompetech.com), CC BY 4.0 — Sneaky Snitch(1·5편), Hustle(2·8편), Scheming Weasel(3·6·10편), Hyperfun(4·9편), Monkeys Spinning Monkeys(7편).
+- 사이드카: `media/drive/sources.json`(외부 출처 없음, 음악·효과음·사실 근거).
+- 사실(설명란에만 씀, 2026-10-10 국가법령정보센터 도로교통법 현행 본문에서 확인):
+  - 제37조제1항: 밤(해가 진 후부터 해가 뜨기 전까지)에 도로에서 차를 운행하면 전조등·차폭등·미등과 그 밖의 등화를 켜야 한다. 제2항: 밤에 마주 보고 가거나 앞차 바로 뒤를 따라갈 때는 등화 밝기를 줄이는 등 필요한 조작을 해야 한다. (`drive6`, `drive10`)
+  - 제19조제1항(앞차가 갑자기 서도 충돌을 피할 거리), 제4항(위험방지 등 부득이한 경우가 아니면 급제동 금지). (`drive3`, `drive5`, `drive10`)
+  - 제46조의3: 안전거리 미확보·진로변경 금지 위반·급제동 금지 위반, 정당한 사유 없는 소음 발생 등을 연달아 하거나 지속·반복해 위협하면 난폭운전. (`drive1`, `drive5`, `drive10`)
+  - `drive7`·`drive8`·`drive9`의 1차로(제60조제1항·시행규칙 [별표 9]), 깜빡이 시기(제38조제1항·시행령 [별표 2]), 갓길(제60조제1항)은 위 `road1`~`road4`, `road5`~`road10` 절의 출처 그대로다.
+  - 화면에는 법 조문·범칙금을 쓰지 않았다. `drive2`(합류)와 `drive4`(추월)는 설명란에도 법 문장을 쓰지 않았다.
+
+### 업로드 문구
+
+모든 편의 설명란 끝에 같은 창작 표시와 음악 크레딧을 붙인다. 해시태그는 한국어와 영어를 섞어 5개다.
+
+`drive1`
+- 제목: 감히 경차를 무시해?ㄷㄷ / How dare you ignore a tiny car? 🚗
+- 설명:
+  ```
+  (창작 애니) 경차 뒤에 바짝 붙어 빵빵대던 SUV, 결국 나가야 할 출구를 놓쳤다 🚗
+  The SUV that bullied a tiny car missed its own exit.
+  바짝 붙거나 경적으로 계속 위협하면 난폭운전이 될 수 있어요(도로교통법 제46조의3).
+  직접 그린 창작 애니메이션입니다. 등장인물·차량·상황은 실제와 관계없습니다.
+  An original hand-drawn cartoon (fiction). No real people, cars or brands.
+  Music: "Sneaky Snitch" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
+  #운전공감 #참교육 #애니메이션 #karma #driving
+  ```
+- 해시태그: #운전공감 #참교육 #애니메이션 #karma #driving
+- 고정 댓글: 경차 무시하는 차, 여러분도 만나 보셨나요? / Ever been bullied for driving a small car? 👇
+
+`drive2`
+- 제목: 합류 끝까지 달린 차의 최후ㄷㄷ / The Last-Second Merger
+- 설명:
+  ```
+  (창작 애니) 줄 선 차들 옆으로 끝까지 달려간 차, 결국 맨 뒤 작업차 뒤로 🐢
+  He raced past the whole line to the very end of the lane... and ended up behind the slowest truck.
+  직접 그린 창작 애니메이션입니다. 등장인물·차량·상황은 실제와 관계없습니다.
+  An original hand-drawn cartoon (fiction). No real people, cars or brands.
+  Music: "Hustle" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
+  #운전공감 #참교육 #애니메이션 #karma #driving
+  ```
+- 해시태그: #운전공감 #참교육 #애니메이션 #karma #driving
+- 고정 댓글: 합류 구간 새치기, 여러분은 양보해 주나요? / Do you let last-second mergers in? 👇
+
+`drive3`
+- 제목: 트럭 옆에서 까불면 안되는 이유ㄷㄷ / Never Mess With a Truck 🚚
+- 설명:
+  ```
+  (창작 애니) 트럭 앞에서 알짱대던 스포츠카, 오르막 한 차로에서 트럭 뒤에 갇혔다 🚚
+  The show-off who taunted a truck got stuck behind it on a one-lane hill.
+  앞차를 놀리듯 갑자기 브레이크를 밟는 급제동은 금지예요(도로교통법 제19조제4항).
+  직접 그린 창작 애니메이션입니다. 등장인물·차량·상황은 실제와 관계없습니다.
+  An original hand-drawn cartoon (fiction). No real people, cars or brands.
+  Music: "Scheming Weasel" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
+  #운전공감 #참교육 #트럭 #karma #truck
+  ```
+- 해시태그: #운전공감 #참교육 #트럭 #karma #truck
+- 고정 댓글: 트럭 앞에서 급제동하는 차, 보신 적 있나요? / Seen anyone brake-test a truck? 👇
+
+`drive4`
+- 제목: 추월하면 빨라지는 차의 최후ㄷㄷ / He Speeds Up When You Pass
+- 설명:
+  ```
+  (창작 애니) 추월하려고만 하면 밟아 버리던 차, 결국 단속 카메라 앞에서 번쩍 📸
+  He sped up every time someone tried to pass... right into a speed camera.
+  직접 그린 창작 애니메이션입니다. 등장인물·차량·상황은 실제와 관계없습니다.
+  An original hand-drawn cartoon (fiction). No real people, cars or brands.
+  Music: "Hyperfun" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
+  #운전공감 #참교육 #애니메이션 #karma #driving
+  ```
+- 해시태그: #운전공감 #참교육 #애니메이션 #karma #driving
+- 고정 댓글: 추월하면 빨라지는 차, 왜 그러는 걸까요? / Why do people speed up when you pass? 👇
+
+`drive5`
+- 제목: 브레이크만 밟는 빌런ㄷㄷ / The Brake Checker
+- 설명:
+  ```
+  (창작 애니) 뒤차 겁주려고 브레이크를 콕콕 밟던 빌런, 이번 뒤차는… 🚓
+  The brake checker picked the wrong car to brake-check.
+  부득이한 경우가 아니면 급제동은 금지(도로교통법 제19조제4항), 반복해서 위협하면 난폭운전(제46조의3)이에요. 이런 차를 만나면 거리를 넉넉히 두세요.
+  직접 그린 창작 애니메이션입니다. 등장인물·차량·상황은 실제와 관계없습니다.
+  An original hand-drawn cartoon (fiction). No real people, cars or brands.
+  Music: "Sneaky Snitch" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
+  #운전공감 #참교육 #급제동 #karma #brakecheck
+  ```
+- 해시태그: #운전공감 #참교육 #급제동 #karma #brakecheck
+- 고정 댓글: 브레이크 빌런 만나면 어떻게 하세요? / What do you do with a brake checker? 👇
+
+`drive6`
+- 제목: 밤에 라이트 안 켠 차의 최후ㄷㄷ / The Invisible Car (No Headlights)
+- 설명:
+  ```
+  (창작 애니) 밤길에 라이트도 안 켜고 달리던 차, 드디어 켰더니 바로 앞에… 🚓
+  He finally switched his headlights on... right behind a police car.
+  밤(해가 진 뒤부터 뜨기 전까지)에 도로를 달릴 때는 전조등·차폭등·미등을 켜야 해요(도로교통법 제37조).
+  직접 그린 창작 애니메이션입니다. 등장인물·차량·상황은 실제와 관계없습니다.
+  An original hand-drawn cartoon (fiction). No real people, cars or brands.
+  Music: "Scheming Weasel" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
+  #운전공감 #참교육 #스텔스차량 #karma #headlights
+  ```
+- 해시태그: #운전공감 #참교육 #스텔스차량 #karma #headlights
+- 고정 댓글: 밤에 라이트 안 켠 차, 얼마나 무서운지 아시죠? / Ever met an invisible car at night? 👇
+
+`drive7` (`road1` 무언판)
+- 제목: 1차로 막는 차의 최후ㄷㄷ / The Left-Lane Hog
+- 설명:
+  ```
+  (창작 애니) 뻥 뚫린 길에서 1차로를 막고 느긋하게 가던 차, 결국 🚓
+  The left-lane hog finally meets the car behind him.
+  편도 3차로 이상 고속도로의 1차로는 앞지르기할 때 쓰는 차로예요(도로교통법 제60조제1항, 시행규칙 [별표 9]). 그래도 바짝 붙어 위협하면 보복운전입니다.
+  직접 그린 창작 애니메이션입니다. 등장인물·차량·상황은 실제와 관계없습니다.
+  An original hand-drawn cartoon (fiction). No real people, cars or brands.
+  Music: "Monkeys Spinning Monkeys" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
+  #운전공감 #참교육 #1차로 #karma #leftlane
+  ```
+- 해시태그: #운전공감 #참교육 #1차로 #karma #leftlane
+- 고정 댓글: 1차로 정속 주행, 여러분 생각은? / Left-lane campers: annoying or fine? 👇
+
+`drive8` (`road2` 무언판)
+- 제목: 깜빡이 없이 끼어든 차의 최후ㄷㄷ / Cut In Without a Signal?
+- 설명:
+  ```
+  (창작 애니) 깜빡이 없이 훅훅 끼어들던 차, 이번에 끼어든 앞은 하필… 🚓
+  No signal, no warning... and this time he cut in front of the police.
+  진로를 바꿀 땐 30m(고속도로 100m) 앞부터 깜빡이를 켜야 해요(도로교통법 제38조, 시행령 [별표 2]). 화가 나도 똑같이 끼어들면 보복운전입니다.
+  직접 그린 창작 애니메이션입니다. 등장인물·차량·상황은 실제와 관계없습니다.
+  An original hand-drawn cartoon (fiction). No real people, cars or brands.
+  Music: "Hustle" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
+  #운전공감 #참교육 #깜빡이 #karma #turnsignal
+  ```
+- 해시태그: #운전공감 #참교육 #깜빡이 #karma #turnsignal
+- 고정 댓글: 깜빡이 안 켜고 끼어드는 차, 하루에 몇 번 보세요? / How many no-signal cut-ins do you see a day? 👇
+
+`drive9` (`road8` 무언판)
+- 제목: 갓길로 새치기한 차의 최후ㄷㄷ / The Shoulder Cheater
+- 설명:
+  ```
+  (창작 애니) 꽉 막힌 길에서 갓길로 쌩 달리던 차, 갓길 끝에서 기다리던 건… 🚧
+  He used the shoulder to skip the jam... until the shoulder ended.
+  고속도로 갓길은 고장 등 부득이한 경우가 아니면 달릴 수 없어요(도로교통법 제60조제1항). 막아서지 마세요, 그게 더 위험합니다.
+  직접 그린 창작 애니메이션입니다. 등장인물·차량·상황은 실제와 관계없습니다.
+  An original hand-drawn cartoon (fiction). No real people, cars or brands.
+  Music: "Hyperfun" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
+  #운전공감 #참교육 #갓길 #karma #trafficjam
+  ```
+- 해시태그: #운전공감 #참교육 #갓길 #karma #trafficjam
+- 고정 댓글: 갓길 주행하는 차 보면 어떤 생각 드세요? / What do you think of shoulder drivers? 👇
+
+`drive10` (`road9` 무언판)
+- 제목: 상향등 켜고 붙던 차의 최후ㄷㄷ / Tailgating With High Beams?
+- 설명:
+  ```
+  (창작 애니) 상향등 켜고 바짝 붙던 차, 다음에 붙은 앞차는… 🚓
+  High beams, tailgating... and the next car he tailgated was a police car.
+  밤에 앞차 바로 뒤를 따라갈 때는 등화 밝기를 줄여야 하고(도로교통법 제37조제2항), 앞차가 갑자기 서도 피할 거리를 둬야 해요(제19조제1항). 계속 위협하면 난폭운전(제46조의3).
+  직접 그린 창작 애니메이션입니다. 등장인물·차량·상황은 실제와 관계없습니다.
+  An original hand-drawn cartoon (fiction). No real people, cars or brands.
+  Music: "Scheming Weasel" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
+  #운전공감 #참교육 #상향등 #karma #tailgating
+  ```
+- 해시태그: #운전공감 #참교육 #상향등 #karma #tailgating
+- 고정 댓글: 상향등 테러 당해 보신 분? / Ever been blinded by high beams from behind? 👇
