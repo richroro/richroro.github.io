@@ -1,6 +1,6 @@
 """낙서 짤툰 v2 builder: writes shorts/<id>/script.json and edit.json in the v2 look (README "낙서 짤툰 v2").
 
-The v2 look: the picture box runs to the bottom ("frame": "tall"), captions sit in a navy box over the bottom of the picture
+The v2 look: the picture box runs to the bottom ("frame": "tall1520"), captions sit in a navy box over the bottom of the picture
 ("capBox"), one accent colour (yellow) everywhere, no on-screen source badge, and 도치 is drawn 1.5-2x bigger with a
 different shot per scene (mid, close-up cut at the chest, side with a tilt). doodle1-10 reuse their v1 scenes (read from
 git at the v1 commit) under a new script; doodle11-16 are written here from scratch.
@@ -120,7 +120,7 @@ def build(sid, title, lines, clips, music, sfx, voices=None, sources=None):
         g = shoot({"type": "scene", **g} if "type" not in g else g, k)
         out.append({"from": frm, "label": frm, "gfx": g})
     photos = {g["gfx"]["photo"].split("/")[-1].rsplit(".", 1)[0] for g in out if g["gfx"].get("photo")}
-    edit = {"credit": "", "titleStyle": "band", "titleKey": "#FFE14D", "frame": "tall", "capBox": {"y": 1600},
+    edit = {"credit": "", "titleStyle": "band", "titleKey": "#FFE14D", "frame": "tall1520", "capBox": {"y": 1600},
             "sources": {k: v for k, v in (sources or {}).items() if k in photos}, "music": music, "sfx": sfx, "clips": out}
     missing = photos - set(edit["sources"])
     if missing: raise SystemExit(f"{sid}: no source for {missing}")

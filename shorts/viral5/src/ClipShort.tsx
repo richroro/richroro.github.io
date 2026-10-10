@@ -8,8 +8,9 @@ import { BODY, TITLE, loadFonts } from "./lib/fonts";
 import { Sticker, clamp, eOut, prog } from "./lib/fx";
 import { GFX_BG, GfxView, Marked, Marks, type Gfx, type Mark } from "./lib/Gfx";
 import { ROUNDED43, Rounded43, YearSticker, rounded43Crop } from "./lib/Retro";
-import { CapBox, TALL, type CapBoxOpts } from "./lib/CapBox";
+import { CapBox, TALL1520, type CapBoxOpts } from "./lib/CapBox";
 import { RETROBOX, RetroTitle, RetroYear, StripCaptions } from "./lib/RetroV2";
+import { BoxCaptions, RankBand, RankList, TALL, type Rank2 } from "./lib/RankV2";
 import { BilingualTitle } from "./lib/Bilingual";
 
 loadFonts();
@@ -18,7 +19,7 @@ const fr = (s: number) => Math.round(s * FPS);
 
 export type Clip = {
   file: string | null; label: string; at: number; dur: number; speed: number;
-  frame: "square" | "wide" | "full" | "film" | "rounded43" | "retrobox" | "tall"; zoom: [number, number]; focus: string; audio: number;
+  frame: "square" | "wide" | "full" | "film" | "rounded43" | "retrobox" | "tall" | "tall1520"; zoom: [number, number]; focus: string; audio: number;
   /** face-centred crop: (cx, cy) in 0..1 of the source frame, zoom over a plain cover fit, source size */
   crop?: { cx: number; cy: number; zoom: number; w: number; h: number };
   /** this clip's own credit line, shown instead of the short's while it is on screen */
@@ -68,11 +69,13 @@ export type ShortData = {
   look?: "retro2";
   /** captions in a box over the bottom of the picture, one accent colour (lib/CapBox.tsx), in place of the word captions */
   capBox?: CapBoxOpts;
+  /** ranking v2 (lib/RankV2.tsx): 3-line band, the list over the picture's left edge, boxed captions */
+  rank2?: Rank2;
 };
 
 const FRAME = { square: { top: 400, height: 1080 }, wide: { top: 656, height: 608 }, full: { top: 0, height: 1920 },
   film: { top: 400, height: 810 } /* a whole 4:3 frame (silent films) */, rounded43: { top: ROUNDED43.top, height: ROUNDED43.height },
-  retrobox: { top: RETROBOX.top, height: RETROBOX.height }, tall: TALL };
+  retrobox: { top: RETROBOX.top, height: RETROBOX.height }, tall: TALL, tall1520: TALL1520 };
 const PANELS = [{ top: 400, height: 540 }, { top: 940, height: 540 }];
 const have = (file: string | null) => !!file && getStaticFiles().some((f) => f.name === file);
 const isImg = (file: string | null) => !!file && /\.(jpe?g|png|webp)$/i.test(file);
@@ -200,6 +203,7 @@ const Title: React.FC<{ d: ShortData }> = ({ d }) => {
   // long quote titles shrink to fit the width instead of running off the edge
   const size = (line: string, max = 96, within = 1010) => Math.min(max, fitText({ text: line, withinWidth: within, fontFamily: TITLE }).fontSize);
   if (d.look === "retro2") return <RetroTitle title={d.title} />;
+  if (d.rank2) return <RankBand title={d.title} r={d.rank2} />;
   if (d.titleStyle === "band") {
     // the second line is the yellow one unless the lines mark their own [key] words
     const marked = d.title.some((l) => /(^|[^\\])\[/.test(l)); // "\[괴담]" is a literal bracket, not a mark
@@ -315,11 +319,13 @@ export const ClipShort: React.FC<{ data: ShortData }> = ({ data: d }) => {
       <Credit d={d} t={t} />
       <Hook d={d} t={t} />
       {d.marks ? <Marks marks={d.marks} t={t} /> : null}
-      {d.ranks ? <Ranks r={d.ranks} t={t} /> : null}
+      {d.ranks ? (d.rank2 ? <RankList ranks={d.ranks} r={d.rank2} t={t} /> : <Ranks r={d.ranks} t={t} />) : null}
       {d.stickers.map((s, i) => (
         <Sticker key={i} t={t} t0={s.from} t1={s.to} x={s.x} y={s.y} rot={s.rot} bg={s.bg} fg={s.fg} size={s.size}>{s.text}</Sticker>
       ))}
-      {d.capBox ? <CapBox pages={d.pages} o={d.capBox} /> : d.look === "retro2" ? <StripCaptions pages={d.pages} /> : <Captions pages={d.pages} centerY={d.captionY ?? 1370} order={d.subOrder} />}
+      {d.capBox ? <CapBox pages={d.pages} o={d.capBox} /> : d.look === "retro2" ? <StripCaptions pages={d.pages} />
+        : d.rank2 ? <BoxCaptions pages={d.pages} centerY={d.captionY ?? 1640} />
+        : <Captions pages={d.pages} centerY={d.captionY ?? 1370} order={d.subOrder} />}
       {flash > 0.002 && <AbsoluteFill style={{ background: "white", opacity: flash }} />}
 
       {d.lines.map((l) => (

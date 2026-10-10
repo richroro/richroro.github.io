@@ -55,11 +55,12 @@ def credits(sid):
     m = e["music"]["file"].split("/")[-1][:-4]
     return names, MUSIC[m]
 
-for sid, (title, desc, src, fic, tags, pin) in EP.items():
-    names, music = credits(sid)
-    print(f"`{sid}`\n- 제목: {title}\n- 설명:\n  ```\n  {desc}" + (" (창작)" if fic else ""))
-    if fic: print(f"  {FICTION}")
-    if src: print(f"  {src}")
-    print(f"  사진: Pexels ({', '.join(names)}) · 캐릭터와 배경 그림은 직접 그린 그림입니다." if names else "  그림: 직접 그린 그림입니다.")
-    print(f'  Music: "{music}" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/\n  ```')
-    print(f"- 해시태그: {tags}\n- 고정 댓글: {pin}\n")
+if __name__ == "__main__":
+    for sid, (title, desc, src, fic, tags, pin) in EP.items():
+        names, music = credits(sid)
+        print(f"`{sid}`\n- 제목: {title}\n- 설명:\n  ```\n  {desc}" + (" (창작)" if fic else ""))
+        if fic: print(f"  {FICTION}")
+        if src: print(f"  {src}")
+        print(f"  사진: Pexels ({', '.join(names)}) · 캐릭터와 배경 그림은 직접 그린 그림입니다." if names else "  그림: 직접 그린 그림입니다.")
+        print(f'  Music: "{music}" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/\n  ```')
+        print(f"- 해시태그: {tags}\n- 고정 댓글: {pin}\n")
