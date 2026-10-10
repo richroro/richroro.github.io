@@ -351,7 +351,7 @@ MEDIA=<저장소>/media python3 politics/prep_split.py obama09    # 원본: medi
   |---|---|
   | `chars[]` | 등장인물. `name`(이름표), `color`, `mood`, `to`(steps[2]에 바뀌는 표정), `size`(1보다 크면 키가 큼), `x`(0~1), `hat`(머리 위 이모지), `flip` |
   | `mood` | `neutral` `happy` `laugh` `shock` `sad` `cry` `angry` `smug` `shy` `think` `sleep` `love` `sick` |
-  | `bg` | 배경 `class` `home` `street` `store` `army` `night` `stage` `office` `door`(현관문·초인종), 또는 CSS 배경 |
+  | `bg` | 배경 `class` `home` `street` `store` `army` `night` `stage` `office` `door`(현관문·초인종) `hospital`(병실 창·침대), 또는 CSS 배경. 칠판(`class`)에 `sign`이 있으면 `big`은 칠판 아래로 내려온다 |
   | `sign` | 배경 판에 쓰는 글(칠판, 무대 현수막, 생활관 게시판, 가게 간판, 현관문 호수) |
   | `say` | 말풍선 `{"who": 0, "text": "야! [내 거]잖아!"}`. 말하는 인물 머리 위에 뜬다(steps[0]) |
   | `prop` / `propX` | 소품 이모지(🥛📱💸). steps[1]에 튀어나온다 |
@@ -1967,13 +1967,14 @@ MEDIA=<저장소>/media python3 politics/prep_split.py rank1    # 원본: media/
 | `life1` | 비행기 창문이 / 네모가 아닌 진짜 이유 | 28.6초 | 둥근 모서리 창 → 1954년 코멧 2대 공중분해 → 물탱크 압력 시험 → 네모난 창 모서리에서 균열(실제로는 지붕 안테나 창·비상구 창이라고 스티커로 밝힘) → 각진 모서리에 힘이 몰림 → 그래서 둥글게 | Movement Proposition |
 | `life2` | 엘리베이터 거울이 / 셀카용이 아닌 진짜 이유 | 29.1초 | 엘베 거울 셀카 → “기다림이 덜 지루하라고”는 흔한 설 → 진짜 이유는 법에 있음 → 휠체어는 안에서 못 돌아서 후진으로 내림 → 뒷벽 0.6m 이상 높이에 견고한 거울 → 돌 수 없는 장애인용 승강기는 의무 → “휠체어의 백미러” | Sneaky Snitch |
 | `life3` | 제한속도 지켜도 / 1차로에서 단속되는 이유 | 27.4초 | 인천대교 ‘급차선 변경 집중 단속중(고속도로순찰대)’ 전광판 → 편도 3차로 이상 고속도로 1차로는 앞지르기 차로 → 추월 후 오른쪽으로 → 지정차로 위반 승용 4만 원·벌점 10점(승합 5만 원) → 시속 80km 미만 정체 땐 예외 → “여러분은 몇 차로?” | Exhilarate |
-| `life4` | 이착륙 때 창문 덮개 / 열라고 하는 진짜 이유 | 30.4초 | 창밖 상황 빨리 발견·대응 → 정전 시 바깥 빛으로 비상구 찾기 → 밖에서도 기내 확인 → 조명 낮추는 것도 눈의 어둠 적응 → 반전: 대한항공은 2021년부터 의무 아닌 권고, 날개 위·비상구 창은 여는 게 원칙 | Floating Cities |
+| `life4` | 이착륙 때 창문 덮개 / 열라고 하는 진짜 이유 | 30.7초 | 창밖 상황 빨리 발견·대응 → 정전 시 바깥 빛으로 비상구 찾기 → 밖에서도 기내 확인 → 조명 낮추는 것도 눈의 어둠 적응 → 반전: 대한항공은 2021년부터 의무 아닌 권고, 날개 위·비상구 창은 여는 게 원칙 → “여러분은 열어 두시나요?” | Floating Cities |
 
 ```bash
 # 원본: media/life/sources.json 의 주소에서 받아 1080p로 다시 인코딩해 public/life*/src/ 에 (파일 이름은 edit.json sources.file)
 # life3 운전 영상 3개(36017323, 36108436, 35186893)는 번호판이 안 읽히도록 화면 아래 42%를 흐리게 처리:
 ffmpeg -i <원본>.mp4 -filter_complex "[0]scale=-2:1080,split[a][b];[b]crop=iw:ih*0.42:0:ih*0.5,gblur=sigma=5[c];[a][c]overlay=0:H*0.5" -an px<id>.mp4
 for id in life1 life2 life3 life4; do python3 voice_edge.py $id && python3 prep.py $id && ./render.sh $id final/$id.mp4; done
+for id in life1 life2 life3 life4; do python3 qa_review.py $id; done   # 네 편 모두 FAIL·WARN 없음
 ```
 
 ### 사실과 출처 (2026-10-09 확인)
@@ -2030,10 +2031,15 @@ for id in life1 life2 life3 life4; do python3 voice_edge.py $id && python3 prep.
 > #고속도로 #1차로 #지정차로 #운전상식 #shorts
 
 **life4** — 이착륙 때 창문 덮개 열라는 진짜 이유 ✈️
-> 이착륙 때 창문 덮개를 열어 두면 창밖 상황을 빨리 발견할 수 있고, 정전 때 바깥 빛으로 비상구를 찾을 수 있고, 밖에서도 기내를 확인할 수 있습니다. 조명을 낮추는 것도 눈이 어둠에 적응하도록 하는 것. 다만 대한항공은 2021년부터 의무가 아닌 권고로 운영하고, 날개 위·비상구 창문은 여는 게 원칙입니다(대한항공 뉴스룸 2023.9). 항공사마다 규정은 다를 수 있어요.
+> 이착륙 때 창문 덮개를 열어 두면 창밖 상황을 빨리 발견할 수 있고, 정전 때 바깥 빛으로 비상구를 찾을 수 있고, 밖에서도 기내를 확인할 수 있습니다. 조명을 낮추는 것도 눈이 어둠에 적응하도록 하는 것. 다만 대한항공은 2021년부터 의무가 아닌 권고로 운영하고, 날개 위·비상구 창문은 여는 게 원칙입니다(대한항공 뉴스룸 2023.9). 항공사마다 규정은 다를 수 있어요. 여러분은 이착륙 때 창문, 열어 두시나요?
 > 영상: Pexels (Dilara Hazıroğlu, Afif Ramdhasuma, K, Content Kiosk, Grigoriy Bunkov, Taryn Elliott)
 > 음악: "Floating Cities" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
 > #비행기 #항공상식 #창문덮개 #대한항공 #shorts
+**issue4** — 노벨물리학상 받은 남극 얼음 덩어리의 정체 🧊
+> 2026년 노벨물리학상은 남극 얼음 1km³를 통째로 검출기로 만든 '아이스큐브 중성미자 관측소'를 이끈 프랜시스 할젠 교수에게 돌아갔습니다(10월 6일 발표, 단독 수상). 얼음 속 1,450~2,450m에 심은 센서 5,160개가 중성미자가 드물게 부딪힐 때 나는 빛을 잡아, 2013년 우주에서 온 고에너지 중성미자를 처음 확인했습니다. 중성미자는 지금도 1초에 약 100조 개씩 우리 몸을 통과합니다.
+> 출처: 노벨위원회 발표(서울신문·한국일보 보도), IceCube 공식 자료, NASA / 영상: NASA 고다드 우주비행센터 애니메이션 · 사진: John Hardin(CC BY 4.0), IceCube Collaboration 구조도(CC BY 4.0), 미국 국립과학재단(NSF). NASA·NSF가 이 영상을 보증하지 않습니다.
+> 음악: "Floating Cities" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
+> #노벨물리학상 #중성미자 #아이스큐브 #남극 #shorts
 
 ## 이번 주 이슈 30초 정리 (`issue1`~`issue4`)
 
