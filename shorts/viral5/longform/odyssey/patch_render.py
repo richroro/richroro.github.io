@@ -34,19 +34,22 @@ for a, b in merged:
         subprocess.run(["npx", "remotion", "render", bundle, "odyssey", p + ".tmp.mp4", f"--frames={a}-{b}", f"--browser-executable={BX}",
                         "--concurrency=3", "--crf=17", "--muted", "--log=error"], cwd=V, check=True)
         os.replace(p + ".tmp.mp4", p)
-# splice: original up to each window, the window, ... (frame-exact trims, one re-encode of the intermediate)
-inputs, parts, fc, k, cur = ["-i", orig], [], [], 1, 0
+# splice: each kept stretch of the original is its own seeked input, so the concat filter reads them one after another
+# (trimming one input 20 times buffers the whole film and runs out of memory)
+inputs, labels, cur = [], [], 0
+def keep(a, b):
+    inputs.extend(["-ss", f"{a / 30:.6f}", "-t", f"{(b - a) / 30:.6f}", "-i", orig])
 for a, b in merged:
     if a > cur:
-        fc.append(f"[0:v]trim=start_frame={cur}:end_frame={a},setpts=PTS-STARTPTS[v{len(parts)}]"); parts.append(len(parts))
-    inputs += ["-i", f"{W}/patch_{a:05d}.mp4"]
-    fc.append(f"[{k}:v]setpts=PTS-STARTPTS[v{len(parts)}]"); parts.append(len(parts)); k += 1
+        keep(cur, a)
+    inputs.extend(["-i", f"{W}/patch_{a:05d}.mp4"])
     cur = b + 1
 if cur < FR:
-    fc.append(f"[0:v]trim=start_frame={cur}:end_frame={FR},setpts=PTS-STARTPTS[v{len(parts)}]"); parts.append(len(parts))
-fc.append("".join(f"[v{i}]" for i in parts) + f"concat=n={len(parts)}:v=1:a=0[out]")
-subprocess.run(["ffmpeg", "-hide_banner", "-loglevel", "error", "-y", *inputs, "-filter_complex", ";".join(fc), "-map", "[out]",
-                "-c:v", "libx264", "-preset", "veryfast", "-crf", "16", "-pix_fmt", "yuv420p", "-r", "30", f"{W}/video.mp4"], check=True)
+    keep(cur, FR)
+n_in = inputs.count("-i")
+fc = "".join(f"[{i}:v]setpts=PTS-STARTPTS,fps=30[v{i}];" for i in range(n_in)) + "".join(f"[v{i}]" for i in range(n_in)) + f"concat=n={n_in}:v=1:a=0[out]"
+subprocess.run(["ffmpeg", "-hide_banner", "-loglevel", "error", "-y", *inputs, "-filter_complex", fc, "-map", "[out]",
+                "-c:v", "libx264", "-preset", "veryfast", "-crf", "16", "-pix_fmt", "yuv420p", f"{W}/video.mp4"], check=True)
 n = int(subprocess.run(["ffprobe", "-v", "error", "-count_packets", "-select_streams", "v", "-show_entries", "stream=nb_read_packets", "-of", "csv=p=0",
                         f"{W}/video.mp4"], capture_output=True, text=True).stdout.strip())
 print(f"{len(merged)} windows re-rendered, {n} frames (edit: {FR})")
