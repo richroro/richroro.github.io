@@ -1,7 +1,7 @@
 """lfsaeyeon1: put the cuts on the voice timeline and write what the stage renders.
 
 reads  longform/lfsaeyeon1/scenes.json (build.py), build/lfsaeyeon1/timeline.json (voice.py), edit.json (music, sfx)
-writes src/data/lfsaeyeon1.json (git-ignored) and public/lfsaeyeon1/voice/*.wav, and longform/lfsaeyeon1/chapters.json
+writes src/data/lfsaeyeon1.json (git-ignored) and its committed copy longform/lfsaeyeon1/video.json, and public/lfsaeyeon1/voice/*.wav, and longform/lfsaeyeon1/chapters.json
 
 Each beat's cut starts a little before its line (inside the pause before it) and lasts until the next cut. Narration
 lines become bottom-caption pages; dialogue is in the bubbles. A mood change (cast[].to) lands 45% into the line.
@@ -91,6 +91,8 @@ def main():
             "music": music, "sfx": sfx, "chapters": chapters}
     os.makedirs(f"{ROOT}/src/data", exist_ok=True)
     json.dump(data, open(f"{ROOT}/src/data/{SID}.json", "w"), ensure_ascii=False)
+    # a committed copy, so Root.tsx can import the episode without running prep first
+    json.dump(data, open(f"{HERE}/video.json", "w"), ensure_ascii=False)
     json.dump(chapters, open(f"{HERE}/chapters.json", "w"), ensure_ascii=False, indent=1)
     print(f"{len(cuts)} beats, {sum(1 for c in cuts if not c['g'].get('hold'))} pictures, {len(caps)} caption pages, end {end:.1f} s")
     for t, n in chapters:

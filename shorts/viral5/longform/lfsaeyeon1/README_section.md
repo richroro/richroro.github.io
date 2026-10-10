@@ -6,7 +6,7 @@
 `lfsaeyeon1` · 그림 사연툰 단편(리서치 `research/research-longform-story.md` 4절 레시피 ①, 아이디어 1) · 1920×1080, 10분 17초 · 창작 사연
 
 - 파일: `final/lfsaeyeon1.mp4`, `final/lfsaeyeon1-thumb.jpg`
-- 만들기: `longform/lfsaeyeon1/render.sh` (voice.py → build.py → prep.py → Remotion `src/lib/long/lfsaeyeon1_entry.tsx` → 2-pass H.264 + loudnorm −14 LUFS) · QA `python3 longform/lfsaeyeon1/qa.py`
+- 만들기: `longform/lfsaeyeon1/render.sh` (voice.py → build.py → prep.py → Remotion `src/lib/long/lfsaeyeon1_comps.tsx` → 2-pass H.264 + loudnorm −14 LUFS) · QA `python3 longform/lfsaeyeon1/qa.py`
 - 원고: `longform/lfsaeyeon1/story.py`(장면 153개), 개요 3개는 `outlines.md`, 대본은 `script.json`, 컷 목록은 `scenes.json`, 음악·효과음은 `edit.json`
 - 그림: 새 파일만 썼다. `src/lib/long/lfsaeyeon1_cast.tsx`(인물 4명), `_set.tsx`(배경·소품), `_stage.tsx`(16:9 한 컷), `_video.tsx`(전체), `_thumb.tsx`. 쇼츠 템플릿 파일은 건드리지 않았다. 롱폼 키트(`src/Long.tsx`)가 아직 합쳐지지 않아 자체 진입 파일(`_entry.tsx`)로 렌더했다. 키트가 들어오면 `SyStage`를 키트의 썰 장면에서 부르면 된다.
 
