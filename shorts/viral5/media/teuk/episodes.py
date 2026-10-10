@@ -104,7 +104,7 @@ EPISODES = {
   ("a8", "nar", "화장실 다녀오면 내 자리를 못 찾음.", "화장실 다녀오면 / 내 자리를 못 찾음",
    S(bg="office", chars=[{"color": "#8FD3FF", "mood": "neutral"}, {"color": "#C9A7FF", "mood": "neutral"}, me("think", to="shock")], steps=[9, 9, "a8.못", 9])),
   ("a9", "nar", "엘리베이터에서 내리면 양쪽 다 가 봄.", "엘리베이터에서 내리면 / 양쪽 다 가 봄", F("think", "right", big="← →", bigat="a9.양쪽")),
-  ("a7", "nar", "그래도 맛집 가는 길은 한 번에 찾음.", "그래도 맛집 가는 길은 / 한 번에 찾음", P("alley2", react="love", tag="맛집은 직진")),
+  ("a7", "nar", "그래도 맛집 가는 길은 한 번에 찾음.", "그래도 맛집 가는 길은 / 한 번에 찾음", P("tbk_pan", react="love", tag="맛집은 직진")),
   (*END, F("happy", "right", fx="sparkle")),
   ("y", "me", "근데 여기 어디야?", "\"근데 여기 어디야?\"", P("map", react="shock", side="left")),
  ]),
