@@ -3657,6 +3657,314 @@ edit.json 예:
 > 고정 댓글: 1번 제목 지어주세요 👇
 
 창작: 열두 편 모두 실제 영상이고 지어낸 이야기는 없어 "창작" 표시는 필요 없습니다. 자막 중 "~했는데.."·"~??"는 다음 장면을 예고하는 말투일 뿐 사실 주장이 아닙니다.
+## 그 시절 레트로 v2 (벤치마크, `retro1`~`retro12`)
+
+`research/benchmark-footage.md` 2절과 `research/benchmark-targets-footage.json`의 `retro` 목표에 맞춰 다시 만든 판입니다. 벤치마크는 그 시절 우리의 「김치 식단」(359만), 「80년대 캠핑」(314만), 「계곡 식사」(189만)입니다. 바뀐 점은 다음과 같습니다.
+
+- **화면 제목**: 노란 1줄은 도발·대비형("요즘 ○○ 반성해라", "○○ 없어도 ○○했다"), 흰 2줄은 시대("80년대 ○○ 모습/실태"). `retro1`~`retro8`은 사진이 1950~70년대라서 2줄을 "그 시절 ○○ 모습"으로 썼습니다.
+- **그림 박스**: 높이 27~73%(위 518px, 높이 884px), 폭 95%, 둥근 모서리. 바탕은 검정입니다.
+- **자막**: 박스 안 아래쪽의 반투명 검정 띠 위에 흰 글씨로 넣고, 강조색은 노랑 하나만 씁니다. 단어별 초록 강조는 쓰지 않습니다. 첫 자막은 0초 프레임부터 떠 있어 썸네일에 잡힙니다.
+- **출처 표시**: 화면의 출처 배지·각주 스티커와 위아래 그림자를 모두 뺐습니다. 크레딧은 설명란에 넣습니다.
+- **연도 표시**: 박스 왼쪽 위에 작은 노란 연도 태그를 둡니다.
+- **길이와 발화**: 27~31초, Edge TTS `ko-KR-SunHiNeural` `+25%`, 9~12문장. 첫 구절은 연도나 짧은 문장으로 끊어 1.5초 안에 끝냅니다.
+- **시대**: 새 편 `retro9`~`retro12`는 1980~1995년 사진입니다.
+
+### 새 템플릿 옵션 (`src/lib/RetroV2.tsx`)
+
+`edit.json` 최상위에 두 키를 넣으면 켜집니다. 키가 없는 쇼츠는 예전과 똑같이 렌더됩니다.
+
+- 확인 1: 이 판 이전(HEAD 1dcdd42)의 `retro1`(`rounded43`)을 옛 코드와 새 코드로 렌더해 0·120·400프레임을 비교했습니다. 다른 픽셀은 0개였습니다.
+- 확인 2: `teuk1`의 0·200·500·800프레임도 바꾸기 전후로 렌더해 비교했습니다. 역시 0픽셀이 달랐습니다.
+
+```json
+{ "titleStyle": "band", "frame": "retrobox", "look": "retro2", "grain": 0.12, "credit": "" }
+```
+
+- `"frame": "retrobox"`: 사진을 27~73% 높이의 둥근 박스(`RETROBOX`)에 넣습니다. `rounded43`과 같은 필름 그레인(`grain`), `crop: [cx, cy, zoom]` 디테일 컷, 클립별 `year`를 씁니다. 연도는 작은 노란 태그로 보이고, 첫 클립에서는 튀어나오지 않아 0초 프레임에도 보입니다.
+- `"look": "retro2"`: 위 25% 안의 노랑(1줄)·흰색(2줄) 제목(`RetroTitle`), 박스 안 반투명 띠 자막(`StripCaptions`)을 켜고, 그림자 오버레이와 출처 배지(`Credit`)를 끕니다. `titleStyle`은 `qa_review.py`의 제목 띠 검사 때문에 `"band"`로 둡니다.
+- 바꾼 곳:
+  - `src/lib/RetroV2.tsx`(새 파일).
+  - `src/lib/Retro.tsx`: `Rounded43`과 `rounded43Crop`에 생략 가능한 `box` 인자를 추가했습니다. 기본값은 기존 `ROUNDED43`입니다.
+  - `src/ClipShort.tsx`: import 1줄, `Clip.frame`에 `"retrobox"`, `ShortData.look`, `FRAME` 1줄, ClipView 분기 조건과 연도 태그 1줄, Title 1줄, Credit 조건 1개, 그림자 조건 1개, Captions 분기 1줄을 바꿨습니다.
+  - `prep.py`: `look`을 넘기는 1줄을 추가했습니다.
+- 도구(`media/retro/`):
+  - `v2_remake.py`: `retro1`~`retro8`을 v2로 바꾼 일회성 스크립트입니다. 제목, `+25%`, 간격 0.06초, 줄 빼기, 첫 구절, 각주 스티커 제거를 합니다.
+  - `fetch_commons.py`: 위키미디어 공용 파일 페이지에서 라이선스를 확인하고, 썸네일러로 받아 sRGB로 변환합니다. 서울역사아카이브 스캔 중 일부가 CMYK입니다.
+  - `v2_new.py`: `retro9`~`retro12`의 대본과 편집을 만듭니다.
+  - `v2_seconds.py`: 사진별 화면 사용 구간(초)을 edit.json과 사이드카에 기록합니다.
+  - `v2_scorecard.py`: 아래 성적표를 계산합니다.
+
+```bash
+python3 media/retro/fetch.py retro1 retro2 retro3 retro4 retro5 retro6 retro7 retro8   # 공유마당 사진 (기존)
+python3 media/retro/fetch_commons.py retro9 retro10 retro11 retro12                   # 위키미디어 공용 사진 (라이선스 확인)
+python3 media/retro/v2_new.py                                                           # retro9~12 script.json·edit.json
+python3 voice_edge.py retro9 && python3 prep.py retro9 && python3 media/retro/v2_seconds.py retro9
+./render.sh retro9 final/retro9.mp4    # 30MB가 넘으면 CRF 23으로 다시 인코딩(retro9~12는 그렇게 했습니다)
+python3 qa_review.py retro9
+python3 media/retro/v2_scorecard.py retro1 retro2 retro3 retro4 retro5 retro6 retro7 retro8 retro9 retro10 retro11 retro12
+```
+
+`retro9`~`retro12`는 그레인과 세밀한 사진 때문에 처음 렌더가 30MB를 넘었습니다(31~44MB). 그래서 `ffmpeg -c:v libx264 -crf 23 -preset slow -c:a copy`로 다시 인코딩했습니다(9.6~14.3MB).
+
+### 에피소드
+
+| id | 화면 제목 (노랑 / 흰) | 길이 | 사진 시대 | 내용 | 음악 |
+| --- | --- | --- | --- | --- | --- |
+| `retro1` | 요즘 키즈카페 반성해라 / 그 시절 골목 놀이 모습 | 28.0초 | 1952~1978 | 기존 대본 12줄, 마지막 국가기록원 문장을 짧게 | Heartwarming |
+| `retro2` | 세탁기 없어도 끄떡없던 / 그 시절 빨래터 모습 | 28.4초 | 1952~1973 | "수로 밑", "1960년대에도" 2줄 뺌 | Gymnopedie No 1 |
+| `retro3` | 트럭 없어도 다 날랐다 / 그 시절 지게꾼 모습 | 28.9초 | 1952~1967 | "큰 가구도", "쉴 땐" 2줄 뺌 | Gymnopedie No 2 |
+| `retro4` | 요즘 정류장 반성해라 / 그 시절 버스 정류장 | 30.5초 | 1952~1968 | 첫 구절 "1968년 종로." | Gymnopedie No 1 |
+| `retro5` | 요즘 대형마트 반성해라 / 그 시절 시장 구경 모습 | 29.2초 | 1952~1978 | "좌판", "밤 포목점" 2줄 뺌, 첫 구절 "1966년 부산." | Heartwarming |
+| `retro6` | 편의점 없어도 행복했다 / 그 시절 길거리 간식 | 28.6초 | 1952~1978 | "도너츠", "1967년 번데기" 2줄 뺌 | Heartwarming |
+| `retro7` | 고속열차보다 낭만 있던 / 그 시절 기차역 모습 | 29.4초 | 1952~1973 | "1952년 서울역 앞", "창밖 논밭" 2줄 뺌 | Gymnopedie No 1 |
+| `retro8` | 의자 없이 땅바닥 입학식 / 그 시절 국민학교 실태 | 27.6초 | 1952~1966 | "돌담 학교", "여중생 소풍" 2줄 뺌, 첫 구절 "의자도 없이 땅바닥에." | Gymnopedie No 2 |
+| `retro9` | 요즘 출근길 반성해라 / 80년대 지하철 모습 | 28.1초 | 1983~1987 | 1983년 꽃 단 2호선 개통 열차 → 시운전 노선도 → 1984년 이대역 초록 타일 터널 → 구로공단역(지금 구로디지털단지역) → 1984년 5월 2호선 48.8km 완전 개통 → 하루 230만 명 → 1986년 자동 개찰구 → 지금은 카드 "삑" → 기억나는 분? | Heartwarming |
+| `retro10` | 요즘 놀이공원 반성해라 / 80년대 나들이 모습 | 27.1초 | 1984, 1989 | 1984년 5월 1일 서울대공원 개원 인파 → 공사 5년 7개월 → 코끼리 얼굴 열차 → 꼬마·엄마 아빠 → 돌아오는 길 1989년 분식집의 튀김·김밥·만두, 국밥·김치찌개 → 예약 없이 가던 시절 → 기억나는 분? | Heartwarming |
+| `retro11` | 엘리베이터 없어도 살았다 / 80년대 산동네 실태 | 27.7초 | 1981, 1984, 1989 | 1981년 서울 성북구 산을 덮은 집 → 지붕 위에 지붕 → 언덕 → 1989년 부산 영도 산비탈·항구 → 1984년 남산에서 본 도심 빌딩 → 지금은 엘리베이터 → 기억나는 분? | Gymnopedie No 1 |
+| `retro12` | 빌딩숲 없어도 북적였다 / 80년대 시내 모습 | 29.6초 | 1980~1995 | 1980년 광화문과 뒤의 중앙청 → 1984년 숭례문 일대 빌딩, 시청과 호텔 → 1983년 연말 남대문시장 털옷 → 1985년 상봉터미널 준공 → 1995년 부산 자갈치시장 좌판·소쿠리 → 1993년 광화문 앞 한산한 도로 → 기억나는 분? | Gymnopedie No 2 |
+
+모든 편은 `python3 qa_review.py retro1 … retro12`에서 **WARN 0개, FAIL 0개**입니다. 베이스 브랜치에 새로 생긴 "설명글" 검사도 통과했습니다. 업로드 설명글 spec은 `upload/specs/retro1~12.json`, 생성된 설명글은 `upload/txt/retro1~12.txt`에 있습니다. 채널 이름과 핸들은 아직 `upload/channels.json`의 자리표시자입니다. 길이 27.1~30.5초, 자막 한 장 최장 12자, 소리 −13.9~−14.0 LUFS, 용량 9.6~28.6MB입니다. 각 편의 `out/review/<id>/first.png`, `last.png`, `sheet.png`를 보고 다음을 확인했습니다.
+
+- 0초 프레임에 2줄 제목, 사람 또는 풍경, 첫 자막이 함께 보입니다.
+- 마지막 장면은 첫 장면의 사진이라 루프로 이어집니다.
+- 글자가 겹치거나 잘리지 않았습니다.
+- 크게 보이는 상표가 없습니다(아래 참고).
+
+### 벤치마크 성적표 (`python3 media/retro/v2_scorecard.py`)
+
+측정 방법은 다음과 같습니다.
+
+- 길이·첫 전환·평균/최장 샷: `final/<id>.mp4`를 `qa_review.py`와 같은 장면 감지(그림 박스, 임계값 0.12)로 쟀습니다.
+- 훅 끝: 첫 내레이션 구절(첫 `|`까지)의 마지막 음절이 끝나는 시각입니다(`build/<id>/timeline.json`).
+- 음절/초: 숫자를 읽는 음절까지 센 전체 발화 음절 수 ÷ 길이입니다.
+- 줄 수: 내레이션 문장 수입니다.
+- 제목 글자: 줄마다 셌고, 띄어쓰기는 뺐습니다.
+
+| id | 길이 | 훅 끝 | 첫 전환 | 평균 샷 | 최장 샷 | 음절/초 | 줄 수 | 제목 글자 |
+|---|---|---|---|---|---|---|---|---|
+| 목표 | 28초 | ≤1.5초 | ≤2.5초 | 2.7초 | ≤4.0초 | 6.0 | ≤12 | 11/9 |
+| `retro1` | 28.0초 | 1.5초 | 2.2초 | 2.2초 | 3.6초 | 6.0 | 12 | 10/9 |
+| `retro2` | 28.4초 | 1.1초 | 1.5초 | 2.6초 | 3.4초 | 6.1 | 10 | 10/8 |
+| `retro3` | 28.9초 | 1.3초 | 2.1초 | 2.2초 | 3.6초 | 6.0 | 10 | 9/8 |
+| `retro4` | 30.5초 | 1.4초 | 2.2초 | 2.3초 | 3.5초 | 6.2 | 10 | 9/8 |
+| `retro5` | 29.2초 | 1.4초 | 2.1초 | 2.7초 | 3.5초 | 6.3 | 10 | 10/9 |
+| `retro6` | 28.6초 | 1.5초 | 1.5초 | 2.6초 | 3.7초 | 5.9 | 10 | 10/8 |
+| `retro7` | 29.4초 | 0.7초 | 1.5초 | 2.7초 | 3.6초 | 6.4 | 9 | 10/8 |
+| `retro8` | 27.6초 | 1.4초 | 1.5초 | 2.5초 | 3.3초 | 6.2 | 9 | 10/9 |
+| `retro9` | 28.1초 | 1.2초 | 1.6초 | 2.3초 | 3.7초 | 6.2 | 10 | 9/9 |
+| `retro10` | 27.1초 | 1.2초 | 1.6초 | 2.3초 | 3.8초 | 5.8 | 11 | 10/9 |
+| `retro11` | 27.7초 | 1.1초 | 1.6초 | 2.3초 | 3.9초 | 6.2 | 11 | 11/9 |
+| `retro12` | 29.6초 | 1.0초 | 1.6초 | 2.5초 | 3.6초 | 6.1 | 11 | 10/8 |
+
+**놓친 것과 이유**
+
+- **제목 1줄 글자 수**: 9~11자로, 목표 11자에 1~2자 모자랍니다. 짧은 도발형("요즘 ○○ 반성해라")은 띄어쓰기를 빼면 9~10자입니다. 줄당 13자 이하인 검토 기준은 모두 지킵니다.
+- **`retro10` 음절/초 5.8**: 목표 6.0보다 조금 낮습니다. 사진이 두 장뿐이라 컷마다 문장을 짧게 끊었습니다.
+- **`retro4` 길이 30.5초**: 목표 28초보다 2.5초 깁니다. 대본은 10문장으로 이미 짧고, 숫자(810대, 7,383대)를 읽느라 길어졌습니다.
+- **벤치마크 쪽 수치는 대부분 추정입니다**: 길이·컷·음성은 측정하지 못했고(`benchmark-footage.md` 0절), 확실한 것은 레이아웃과 제목뿐입니다. 우리 쪽은 모두 실측입니다.
+- **움직이는 영상은 쓰지 못했습니다** (가장 큰 차이). 1980~90년대 대한뉴스와 KTV 영상을 찾았지만 조건에 맞는 것이 없었습니다.
+  - e-영상역사관: 대한뉴스·문화영화 항목 페이지(예: 대한뉴스 1602호 「여름 피서철」(1986), 1497호 「물놀이 조심」(1984))에 공공누리 표시가 없고, "공공누리가 부착되지 않은 자료는 사전에 협의"라고 나옵니다.
+  - e-영상역사관 국가기록사진(해수욕장, 피서, 귀성 등 1983~1999년 26건): 모두 **공공누리 제4유형**(변경금지·상업 이용 금지)이었습니다.
+  - 공유마당 영상: 1980년대 대한뉴스·KTV 영상이 없습니다(대한뉴스 검색 3건은 2000년대 이후 영상).
+  - 공유마당 KTV 사진(공공누리 제1유형, wrtSn 13070800~13071799): 하나씩 열어 봤는데 모두 1950~70년대였습니다.
+  - 위키미디어 공용의 대한뉴스 영상: 1953년 2건뿐입니다.
+- **아이디어 목록 소재를 대부분 바꿨습니다**: 양은 도시락, 연탄, 해수욕장, 귀성길, 구멍가게, 안내양, 운동회는 쓸 수 있는 1980~90년대 사진이 거의 없었습니다.
+  - 국립민속박물관의 양은도시락·연탄화덕 같은 유물 사진(공유마당, 공공누리 제1유형): 원본 이미지가 외부 서버(nfm.museum.go.kr)에 있는데, 이 환경에서 접속되지 않았습니다. 사람도 나오지 않습니다.
+  - 그래서 공공누리 제1유형·CC BY 사진이 실제로 있는 소재로 정했습니다: 지하철 출근길(아이디어 7번의 출근길 실태), 놀이공원 나들이(6번), 산동네, 시내.
+  - `retro10`·`retro11`은 사진이 2~3장이라, 한 사진을 여러 각도의 디테일 컷(`crop`)으로 나눴습니다. 벤치마크 ③도 한 장면을 길게 씁니다.
+- **뺀 사진**:
+  - 1984년 여의도 고층 빌딩 공사 사진 12장(CC BY 3.0): 위키미디어 공용이 "건축저작물, 한국 파노라마 자유는 비영리만"이라고 경고해서 뺐습니다.
+  - 1988년 "John TDY" 서울 거리 사진(CC BY 2.0): 미군 출장(TDY) 사진첩이라 뺐습니다(군대 관련 배제).
+  - 1990년 실내 놀이공원 간식 수레 사진(공공누리 제1유형): 수레와 냉동고에 기업 로고와 캐릭터가 커서 뺐습니다.
+- **`retro1`~`retro8`의 시대**: 사진은 그대로 1950~70년대입니다. 알려진 한계입니다.
+
+### 사진 출처와 라이선스
+
+`retro1`~`retro8`은 기존과 같습니다. 공유마당 항목 페이지에서 라이선스 코드(`21` CC BY, `01` 공공누리 제1유형)를 `media/retro/fetch.py`로 2026-10-10에 다시 확인했습니다.
+
+- 저작자는 한국저작권위원회(2018년 공유저작물DB수집, 부경근대사료연구소 수집)와 한국정책방송원입니다.
+- v2에서 뺀 줄의 사진은 `edit.json`의 `sources`에서도 뺐습니다. 사이드카 `media/retro/retroN.json`에는 남아 있고 `used_seconds`가 `[]`입니다.
+
+`retro9`~`retro12`는 **위키미디어 공용** 파일 페이지의 라이선스 틀을 `media/retro/fetch_commons.py`로 확인했습니다(2026-10-10). 허용한 라이선스는 KOGL Type 1, CC BY(버전 무관), CC0, 퍼블릭 도메인뿐이고, 17개 파일이 모두 통과했습니다.
+
+| 묶음 | 라이선스 | 원 출처 |
+| --- | --- | --- |
+| 서울역사박물관 / 서울특별시 | 공공누리 제1유형 | 서울역사아카이브, 『선진 수도로의 도약: 1979-1983』(2018), 『세계는 서울로, 서울은 세계로: 1984-1988』(2019) |
+| 후지모토 다쿠미 기증 | 공공누리 제1유형 | 국립민속박물관 민속아카이브 |
+| 한국저작권위원회 | CC BY 4.0 | 공유마당 |
+| 서울특별시 | CC BY 3.0 | 서울사진아카이브 (상봉터미널 1985) |
+
+- 이미지는 이 컨테이너에서 `upload.wikimedia.org`가 429를 돌려줘서 `commons.wikimedia.org/w/thumb.php`(폭 2000px)로 받았습니다. 그다음 sRGB로 바꾸고 1600px로 줄였습니다.
+- 항목별 페이지·파일 주소·라이선스·저작자·원 출처·설명·사용 구간(초)은 `media/retro/retro9~12.json`과 각 `edit.json`의 `sources`에 있습니다.
+- 사람이 나오는 사진은 다음과 같이 처리했습니다.
+  - 인파, 승객, 시장 손님은 모두 일상 장면입니다.
+  - `retro9` 시운전 사진과 자동 개찰 사진에는 당시 서울시장과 공무원들이 있습니다. 그래서 노선도와 손잡이, 개찰구 기계만 보이게 확대해서 썼습니다.
+  - `retro12` 남대문시장 사진에는 시장과 수행원이 있습니다. 오른쪽 털옷 진열만 확대해서 썼습니다.
+  - 정치 인물은 이름을 말하지도 보여 주지도 않습니다.
+- 간판: 분식집 간판(국밥·백반·김치찌개)과 역 이름판, 노선도 같은 일반 글자는 보입니다. 기업 로고는 크게 나오지 않습니다.
+- 확인 필요: `retro9` 0초의 2호선 개통 열차 앞면에는 당시 서울지하철공사(공기업) 원형 마크가 작게 보입니다.
+
+항목별 목록(사용한 사진, 쓴 구간):
+
+- **retro1**: [1978년 서울 한남동 주택가 골목안 아이들](https://gongu.copyright.or.kr/gongu/wrt/wrt/view.do?wrtSn=13154972&menuNo=200018) (한국저작권위원회, 1978년, CC BY (저작자표시); 0–2.25, 2.25–3.59초); [1978년 서울 한남동 학교 앞 문구점 앞의 아이들](https://gongu.copyright.or.kr/gongu/wrt/wrt/view.do?wrtSn=13154977&menuNo=200018) (한국저작권위원회, 1978년, CC BY (저작자표시); 3.59–5.87초); [1952년 진해의 어느 공터에서 고무줄 뛰기를 하는 여자 아이들](https://gongu.copyright.or.kr/gongu/wrt/wrt/view.do?wrtSn=13154364&menuNo=200018) (한국저작권위원회, 1952년, CC BY (저작자표시); 5.87–9.5초); [1952년 마산의 어느골목에서 고무줄 뛰기를 하는 소녀들](https://gongu.copyright.or.kr/gongu/wrt/wrt/view.do?wrtSn=13154363&menuNo=200018) (한국저작권위원회, 1952년, CC BY (저작자표시); 9.5–11.04초); [1952년 경남 진해 어느 마을 골목 마당에서 널뛰기를 하는 아이들](https://gongu.copyright.or.kr/gongu/wrt/wrt/view.do?wrtSn=13154340&menuNo=200018) (한국저작권위원회, 1952년, CC BY (저작자표시); 11.04–12.6초); [1978년 서울 한남동 골목에 모여 놀이를 하는 아이들](https://gongu.copyright.or.kr/gongu/wrt/wrt/view.do?wrtSn=13154959&menuNo=200018) (한국저작권위원회, 1978년, CC BY (저작자표시); 12.6–15.21초); [1968년 물방개를 황용한 뽑기놀이 장수](https://gongu.copyright.or.kr/gongu/wrt/wrt/view.do?wrtSn=13153490&menuNo=200018) (한국저작권위원회, 1968년, CC BY (저작자표시); 15.21–18.2초); [주택가 길에서 축구하는 어린이들](https://gongu.copyright.or.kr/gongu/wrt/wrt/view.do?wrtSn=13071730&menuNo=200018) (한국정책방송원, 1973-06-08, 공공누리 제1유형 (출처표시); 18.2–19.49초); [물놀이하는 어린이들](https://gongu.copyright.or.kr/gongu/wrt/wrt/view.do?wrtSn=13070985&menuNo=200018) (한국정책방송원, 1958-07-08, 공공누리 제1유형 (출처표시); 19.49–21.04초); [서울 시내 주택가 어린이 놀이터](https://gongu.copyright.or.kr/gongu/wrt/wrt/view.do?wrtSn=13071729&menuNo=200018) (한국정책방송원, 1973-06-08, 공공누리 제1유형 (출처표시); 21.04–22.92초); [1952년경 대구 둔산로 주변 마을 고목에서 그네 뛰는 아이들](https://gongu.copyright.or.kr/gongu/wrt/wrt/view.do?wrtSn=13152472&menuNo=200018) (한국저작권위원회, 1952년경, CC BY (저작자표시); 22.92–25.29초); [1952년 부산 수영구 남천동 농가의 마당에서 노는 여자 아이들](https://gongu.copyright.or.kr/gongu/wrt/wrt/view.do?wrtSn=13153791&menuNo=200018) (한국저작권위원회, 1952년, CC BY (저작자표시); 25.29–27.94초)
+- **retro2**: [1952년 부산 중구 보수천 하구에서 빨래를 하는 주민들_2](https://gongu.copyright.or.kr/gongu/wrt/wrt/view.do?wrtSn=13153849&menuNo=200018) (한국저작권위원회, 1952년, CC BY (저작자표시); 0–1.45, 1.45–2.92초); [1952년 부산 보수천 하구에서 빨래를 하는 주민들_1](https://gongu.copyright.or.kr/gongu/wrt/wrt/view.do?wrtSn=13153772&menuNo=200018) (한국저작권위원회, 1952년, CC BY (저작자표시); 2.92–6.25초); [1952년 부산 보수천 하구에서 빨래를 하는 여인](https://gongu.copyright.or.kr/gongu/wrt/wrt/view.do?wrtSn=13153771&menuNo=200018) (한국저작권위원회, 1952년, CC BY (저작자표시); 6.25–8.83초); [1952년 부산 수영구 남천동 개울에서 아이를 업고 빨래를 하는 여인](https://gongu.copyright.or.kr/gongu/wrt/wrt/view.do?wrtSn=13153790&menuNo=200018) (한국저작권위원회, 1952년, CC BY (저작자표시); 8.83–11.08초); [1953년 부산 외곽의 마을공동 빨래터](https://gongu.copyright.or.kr/gongu/wrt/wrt/view.do?wrtSn=13153990&menuNo=200018) (한국저작권위원회, 1953년, CC BY (저작자표시); 11.08–13.1초); [1952년 대구 신천 강변에서 빨래를 널거나  머리를 감고 있는 여인_1](https://gongu.copyright.or.kr/gongu/wrt/wrt/view.do?wrtSn=13152451&menuNo=200018) (한국저작권위원회, 1952년, CC BY (저작자표시); 13.1–16.02초); [1968년 서울의 어느 골목에서 빨래감을 발로 문지르고 있는 할머니](https://gongu.copyright.or.kr/gongu/wrt/wrt/view.do?wrtSn=13154904&menuNo=200018) (한국저작권위원회, 1968년, CC BY (저작자표시); 16.02–19.11초); [1973년 10월 충주 달천에서 빨래하는 사람들과 계명산](https://gongu.copyright.or.kr/gongu/wrt/wrt/view.do?wrtSn=13154395&menuNo=200018) (한국저작권위원회, 1973년 10월, CC BY (저작자표시); 19.11–22.54초); [1953년 서울 외곽지역 정비된 하천에서 빨래하는 여인들_1](https://gongu.copyright.or.kr/gongu/wrt/wrt/view.do?wrtSn=13154702&menuNo=200018) (한국저작권위원회, 1953년, CC BY (저작자표시); 22.54–25.9초); [1953년 서울 외곽지역 정비된 하천에서 빨래하는 여인들_2](https://gongu.copyright.or.kr/gongu/wrt/wrt/view.do?wrtSn=13154703&menuNo=200018) (한국저작권위원회, 1953년, CC BY (저작자표시); 25.9–28.39초)
+- **retro3**: [1960년 수원 용주여관앞을 지나는 지게에 세간살이를 얹고가는 사람](https://gongu.copyright.or.kr/gongu/wrt/wrt/view.do?wrtSn=13153007&menuNo=200018) (한국저작권위원회, 1960년, CC BY (저작자표시); 0–2.08, 2.08–3.8, 3.8–5.19초); [1953년 부산 중구의 가구를 지게에 지고 다니며 팔러 다니는 사람과 그 뒤를 따라 가는 아가씨들](https://gongu.copyright.or.kr/gongu/wrt/wrt/view.do?wrtSn=13155025&menuNo=200018) (한국저작권위원회, 1953년, CC BY (저작자표시); 5.19–8.78초); [1952년 부산 중구 광복로 거리의 멸치 지게 행상인](https://gongu.copyright.or.kr/gongu/wrt/wrt/view.do?wrtSn=13153842&menuNo=200018) (한국저작권위원회, 1952년, CC BY (저작자표시); 8.78–10.04초); [1952년 대구 지겟짐에 사과를 담아 거리에서 팔고있는 참외장수](https://gongu.copyright.or.kr/gongu/wrt/wrt/view.do?wrtSn=13152344&menuNo=200018) (한국저작권위원회, 1952년, CC BY (저작자표시); 10.04–11.58초); [1952년 부산 남구 대연동 우룡산 자락 밭에서 농작물을 캐서 지게에 지고 가는 여인](https://gongu.copyright.or.kr/gongu/wrt/wrt/view.do?wrtSn=13153641&menuNo=200018) (한국저작권위원회, 1952년, CC BY (저작자표시); 11.58–14.3초); [1952년 부산 남구 대연동의 산에서 나무뿌리를 캐서 지게에 지고 가는 어르신](https://gongu.copyright.or.kr/gongu/wrt/wrt/view.do?wrtSn=13153680&menuNo=200018) (한국저작권위원회, 1952년, CC BY (저작자표시); 14.3–16.02초); [1953년 작은 지게를 진 아이](https://gongu.copyright.or.kr/gongu/wrt/wrt/view.do?wrtSn=13153202&menuNo=200018) (한국저작권위원회, 1953년, CC BY (저작자표시); 16.02–18.38초); [1953년 서울 영등포역 앞 역전식당과 지게꾼](https://gongu.copyright.or.kr/gongu/wrt/wrt/view.do?wrtSn=13154692&menuNo=200018) (한국저작권위원회, 1953년, CC BY (저작자표시); 18.38–21.06초); [1960년 6월 경기도 파주 법원리 도로의 지게에 짐을 지고 가는 사람](https://gongu.copyright.or.kr/gongu/wrt/wrt/view.do?wrtSn=13153114&menuNo=200018) (한국저작권위원회, 1960년6월, CC BY (저작자표시); 21.06–23.88초); [1952년 부산 남구 감만동 주민이 빈지게를 지고 지나가는 모습](https://gongu.copyright.or.kr/gongu/wrt/wrt/view.do?wrtSn=13153603&menuNo=200018) (한국저작권위원회, 1952년, CC BY (저작자표시); 23.88–26.5초); [1967년 대구거리_ 짐 운반용 지게를 진 사람들](https://gongu.copyright.or.kr/gongu/wrt/wrt/view.do?wrtSn=13152680&menuNo=200018) (한국저작권위원회, 1967년, CC BY (저작자표시); 26.5–28.84초)
+- **retro4**: [1968년 서울 종로5가 거리와 택시, 시내버스 모습_2](https://gongu.copyright.or.kr/gongu/wrt/wrt/view.do?wrtSn=13154193&menuNo=200018) (한국저작권위원회, 1968년, CC BY (저작자표시); 0–2.16, 2.16–4.18초); [1968년 서울 종로3가 거리와 택시, 시내버스 모습_1](https://gongu.copyright.or.kr/gongu/wrt/wrt/view.do?wrtSn=13154192&menuNo=200018) (한국저작권위원회, 1968년, CC BY (저작자표시); 4.18–7.01초); [1954년 7월 14일 서울 중앙청 앞 대로를 지나는 시내버스](https://gongu.copyright.or.kr/gongu/wrt/wrt/view.do?wrtSn=13154758&menuNo=200018) (한국저작권위원회, 19919, CC BY (저작자표시); 7.01–9.41초); [1952년 대구역 앞 시영버스](https://gongu.copyright.or.kr/gongu/wrt/wrt/view.do?wrtSn=13152535&menuNo=200018) (한국저작권위원회, 1952년, CC BY (저작자표시); 9.41–12.43초); [1953년 서울 서대문구 독립문 옆 버스정류장의 사람들과 아이들](https://gongu.copyright.or.kr/gongu/wrt/wrt/view.do?wrtSn=13154682&menuNo=200018) (한국저작권위원회, 1953년, CC BY (저작자표시); 12.43–14.52초); [1953년 서울 영등포의 버스를 기다리는 어르신들](https://gongu.copyright.or.kr/gongu/wrt/wrt/view.do?wrtSn=13154695&menuNo=200018) (한국저작권위원회, 1953년, CC BY (저작자표시); 14.52–16.66초); [1960년 3월 서울시내 한국상업은행 앞 거리와 시내버스](https://gongu.copyright.or.kr/gongu/wrt/wrt/view.do?wrtSn=13154858&menuNo=200018) (한국저작권위원회, 1960년 3월, CC BY (저작자표시); 16.66–19.65초); [1963년 서울거리의 시내버스 모습](https://gongu.copyright.or.kr/gongu/wrt/wrt/view.do?wrtSn=13154652&menuNo=200018) (한국저작권위원회, 1963년, CC BY (저작자표시); 19.64–21.21초); [1953년 부산 부산진구 연지동의 시내버스](https://gongu.copyright.or.kr/gongu/wrt/wrt/view.do?wrtSn=13155010&menuNo=200018) (한국저작권위원회, 1953년, CC BY (저작자표시); 21.21–23.06초); [1959년 서울역](https://gongu.copyright.or.kr/gongu/wrt/wrt/view.do?wrtSn=13154168&menuNo=200018) (한국저작권위원회, 1959년, CC BY (저작자표시); 23.06–26.6, 26.6–27.71초); [1967년 대구 거리_ 외곽지역에서 버스를 기다리는 사람들](https://gongu.copyright.or.kr/gongu/wrt/wrt/view.do?wrtSn=13152653&menuNo=200018) (한국저작권위원회, 1967년, CC BY (저작자표시); 27.7–30.46초)
+- **retro5**: [1966년 부산 중구 부평동 부평시장](https://gongu.copyright.or.kr/gongu/wrt/wrt/view.do?wrtSn=13155112&menuNo=200018) (한국저작권위원회, 1966년, CC BY (저작자표시); 0–2.14, 2.14–4.4초); [1952년 부산 중구 부평시장의 고춧가루 노점상들](https://gongu.copyright.or.kr/gongu/wrt/wrt/view.do?wrtSn=13153869&menuNo=200018) (한국저작권위원회, 1952년, CC BY (저작자표시); 4.41–6.2초); [1952년 부산 중구 부평동시장의 과일구루마 노점상](https://gongu.copyright.or.kr/gongu/wrt/wrt/view.do?wrtSn=13153856&menuNo=200018) (한국저작권위원회, 1952년, CC BY (저작자표시); 6.2–7.9초); [1952년 부산 중구 부평시장의 금붕어 장수](https://gongu.copyright.or.kr/gongu/wrt/wrt/view.do?wrtSn=13153871&menuNo=200018) (한국저작권위원회, 1952년, CC BY (저작자표시); 7.9–10.31초); [1967년 대구 서문시장_어물전의 갈치장수_1](https://gongu.copyright.or.kr/gongu/wrt/wrt/view.do?wrtSn=13152674&menuNo=200018) (한국저작권위원회, 1967년, CC BY (저작자표시); 10.31–13.66초); [1968년 자갈치시장 생선 노점상과 사람들](https://gongu.copyright.or.kr/gongu/wrt/wrt/view.do?wrtSn=13153524&menuNo=200018) (한국저작권위원회, 1968년, CC BY (저작자표시); 13.66–17초); [1968년 서울 남대문시장 모습](https://gongu.copyright.or.kr/gongu/wrt/wrt/view.do?wrtSn=13154179&menuNo=200018) (한국저작권위원회, 1968년, CC BY (저작자표시); 17–19.83초); [1978년 서울 한남동 재래시장 입구_1](https://gongu.copyright.or.kr/gongu/wrt/wrt/view.do?wrtSn=13154970&menuNo=200018) (한국저작권위원회, 1978년, CC BY (저작자표시); 19.83–23.32초); [1978년 서울 한남동 재래시장 내 과일가게](https://gongu.copyright.or.kr/gongu/wrt/wrt/view.do?wrtSn=13154966&menuNo=200018) (한국저작권위원회, 1978년, CC BY (저작자표시); 23.32–26.49초); [1978년 서울 한남동 재래시장 내 야채 노점상들](https://gongu.copyright.or.kr/gongu/wrt/wrt/view.do?wrtSn=13154969&menuNo=200018) (한국저작권위원회, 1978년, CC BY (저작자표시); 26.49–29.2초)
+- **retro6**: [1952년 부산 중구 보수동 축대식 담벼락 아래의 뻥튀기 장수](https://gongu.copyright.or.kr/gongu/wrt/wrt/view.do?wrtSn=13153848&menuNo=200018) (한국저작권위원회, 1952년, CC BY (저작자표시); 0–1.53, 1.53–3.79, 3.79–6.17초); [1952년 부산 중구 부평시장의 옥수수 모양의 풀빵 노점상](https://gongu.copyright.or.kr/gongu/wrt/wrt/view.do?wrtSn=13153881&menuNo=200018) (한국저작권위원회, 1952년, CC BY (저작자표시); 6.17–8.71초); [1953년 대구거리의 번데기 장수](https://gongu.copyright.or.kr/gongu/wrt/wrt/view.do?wrtSn=13152591&menuNo=200018) (한국저작권위원회, 1953년, CC BY (저작자표시); 8.71–11.39초); [1952년 광주 거리의 리어카 빙수 판매점](https://gongu.copyright.or.kr/gongu/wrt/wrt/view.do?wrtSn=13153161&menuNo=200018) (한국저작권위원회, 1952년, CC BY (저작자표시); 11.39–15.08초); [1968년 부산_ 거리의 아이스케익 뽑기 노점](https://gongu.copyright.or.kr/gongu/wrt/wrt/view.do?wrtSn=13153509&menuNo=200018) (한국저작권위원회, 1968년, CC BY (저작자표시); 15.08–18.03초); [1978년 서울 동대문시장 거리의 엿장수 엿판](https://gongu.copyright.or.kr/gongu/wrt/wrt/view.do?wrtSn=13154943&menuNo=200018) (한국저작권위원회, 1978년, CC BY (저작자표시); 18.03–21.08초); [1952년 마산 어시장 인근 거리에서 사탕과 과자를 팔면서 전을 굽고있는 노점상](https://gongu.copyright.or.kr/gongu/wrt/wrt/view.do?wrtSn=13154354&menuNo=200018) (한국저작권위원회, 1952년, CC BY (저작자표시); 21.08–23.99초); [1952년 부산 중구 부평시장 카바이트상가 앞의 팥죽과 콩국 노점상](https://gongu.copyright.or.kr/gongu/wrt/wrt/view.do?wrtSn=13153864&menuNo=200018) (한국저작권위원회, 1952년, CC BY (저작자표시); 23.99–25.86초); [1967년 대구 서문시장_엿장수, 과일 노점 등](https://gongu.copyright.or.kr/gongu/wrt/wrt/view.do?wrtSn=13152677&menuNo=200018) (한국저작권위원회, 1967년, CC BY (저작자표시); 25.86–28.6초)
+- **retro7**: [함백선을 질주하는 열차](https://gongu.copyright.or.kr/gongu/wrt/wrt/view.do?wrtSn=13070891&menuNo=200018) (한국정책방송원, 1957, 공공누리 제1유형 (출처표시); 0–1.45, 1.45–2.9초); [함백선 개통과 함께 신축된 강원도 영월의 철도역사](https://gongu.copyright.or.kr/gongu/wrt/wrt/view.do?wrtSn=13070892&menuNo=200018) (한국정책방송원, 1957, 공공누리 제1유형 (출처표시); 2.9–6.24초); [1954년 7월 14일 서울역](https://gongu.copyright.or.kr/gongu/wrt/wrt/view.do?wrtSn=13154762&menuNo=200018) (한국저작권위원회, 1954, CC BY (저작자표시); 6.24–9.21초); [1953년 대구역 앞에서 차를 기다리는 사람들](https://gongu.copyright.or.kr/gongu/wrt/wrt/view.do?wrtSn=13152491&menuNo=200018) (한국저작권위원회, 1953, CC BY (저작자표시); 9.21–12.56초); [1952년 부산철도 공작창과 수리를 위해 있는 증기 기관차들](https://gongu.copyright.or.kr/gongu/wrt/wrt/view.do?wrtSn=13153930&menuNo=200018) (한국저작권위원회, 1952, CC BY (저작자표시); 12.56–15.66초); [외국에서 도입된 디젤기관차를 서울역에서 시운전중이다](https://gongu.copyright.or.kr/gongu/wrt/wrt/view.do?wrtSn=13070920&menuNo=200018) (한국정책방송원, 1957, 공공누리 제1유형 (출처표시); 15.66–19.29초); [1964년 열차 안에서 촬영한 서울 한강대교](https://gongu.copyright.or.kr/gongu/wrt/wrt/view.do?wrtSn=13154170&menuNo=200018) (한국저작권위원회, 1964, CC BY (저작자표시); 19.29–21.93초); [서울역 야경](https://gongu.copyright.or.kr/gongu/wrt/wrt/view.do?wrtSn=13070998&menuNo=200018) (한국정책방송원, 1958, 공공누리 제1유형 (출처표시); 21.93–25.22, 25.22–26.89초); [1973년 10월 26일  청주역](https://gongu.copyright.or.kr/gongu/wrt/wrt/view.do?wrtSn=13154382&menuNo=200018) (한국저작권위원회, 1973, CC BY (저작자표시); 26.89–29.33초)
+- **retro8**: [1952년 부산의 야외에서 진행 중인 초등학생 입학식 모습](https://gongu.copyright.or.kr/gongu/wrt/wrt/view.do?wrtSn=13153919&menuNo=200018) (한국저작권위원회, 1952, CC BY (저작자표시); 0–1.45, 1.45–3.92, 24.92–27.56초); [남대문 초등학교의 체조시간](https://gongu.copyright.or.kr/gongu/wrt/wrt/view.do?wrtSn=13070976&menuNo=200018) (한국정책방송원, 1958, 공공누리 제1유형 (출처표시); 3.92–6.51, 6.51–9.24초); [소풍나온 어린이들](https://gongu.copyright.or.kr/gongu/wrt/wrt/view.do?wrtSn=13070827&menuNo=200018) (한국정책방송원, 1954, 공공누리 제1유형 (출처표시); 9.24–11.58초); [1958년 초등학교 소풍의 점심시간](https://gongu.copyright.or.kr/gongu/wrt/wrt/view.do?wrtSn=13152627&menuNo=200018) (한국저작권위원회, 1958, CC BY (저작자표시); 11.58–13.9초); [62년도 실력고사](https://gongu.copyright.or.kr/gongu/wrt/wrt/view.do?wrtSn=13071202&menuNo=200018) (한국정책방송원, 1962, 공공누리 제1유형 (출처표시); 13.9–17.02초); [1952년 진해우체국과 여학생들](https://gongu.copyright.or.kr/gongu/wrt/wrt/view.do?wrtSn=13154322&menuNo=200018) (한국저작권위원회, 1952, CC BY (저작자표시); 17.02–20.09초); [1966년 부산 중구 옛 부산시청 앞을 지나는 여학생들](https://gongu.copyright.or.kr/gongu/wrt/wrt/view.do?wrtSn=13155113&menuNo=200018) (한국저작권위원회, 1966, CC BY (저작자표시); 20.09–23.41, 23.41–24.92초)
+- **retro9**: [지하철 2호선 개통](https://commons.wikimedia.org/wiki/File%3A%EC%A7%80%ED%95%98%EC%B2%A0_2%ED%98%B8%EC%84%A0_%EA%B0%9C%ED%86%B5_%281983.12.17%29.jpg) ([파일](https://upload.wikimedia.org/wikipedia/commons/2/20/%EC%A7%80%ED%95%98%EC%B2%A0_2%ED%98%B8%EC%84%A0_%EA%B0%9C%ED%86%B5_%281983.12.17%29.jpg); 서울역사박물관, 1983년, KOGL Type 1, 원 출처 서울역사아카이브; 0–1.6, 1.6–3.36, 3.36–6.05, 25.64–28.07초); [지하철 2호선 연장구간 시운전](https://commons.wikimedia.org/wiki/File%3A%EC%A7%80%ED%95%98%EC%B2%A0_2%ED%98%B8%EC%84%A0_%EC%97%B0%EC%9E%A5%EA%B5%AC%EA%B0%84_%EC%8B%9C%EC%9A%B4%EC%A0%84_%281983.03.19%29.jpg) ([파일](https://upload.wikimedia.org/wikipedia/commons/6/69/%EC%A7%80%ED%95%98%EC%B2%A0_2%ED%98%B8%EC%84%A0_%EC%97%B0%EC%9E%A5%EA%B5%AC%EA%B0%84_%EC%8B%9C%EC%9A%B4%EC%A0%84_%281983.03.19%29.jpg); 서울특별시, 1983년, KOGL Type 1, 원 출처 『세계는 서울로, 서울은 세계로: 1984-1988』(2019); 6.05–8.52초); [이대역](https://commons.wikimedia.org/wiki/File%3A%EC%9D%B4%EB%8C%80%EC%97%AD_%281984.04.15%29.jpg) ([파일](https://upload.wikimedia.org/wikipedia/commons/d/df/%EC%9D%B4%EB%8C%80%EC%97%AD_%281984.04.15%29.jpg); 서울역사박물관, 1984년, KOGL Type 1, 원 출처 서울역사아카이브; 8.52–10.71, 10.71–12.05초); [구로공단역](https://commons.wikimedia.org/wiki/File%3A%EA%B5%AC%EB%A1%9C%EA%B3%B5%EB%8B%A8%EC%97%AD_%281984.05.03%29.jpg) ([파일](https://upload.wikimedia.org/wikipedia/commons/c/c1/%EA%B5%AC%EB%A1%9C%EA%B3%B5%EB%8B%A8%EC%97%AD_%281984.05.03%29.jpg); 서울역사박물관, 1984년, KOGL Type 1, 원 출처 서울역사아카이브; 12.05–14.7초); [지하철 2호선 순환열차](https://commons.wikimedia.org/wiki/File%3A%EC%A7%80%ED%95%98%EC%B2%A0_2%ED%98%B8%EC%84%A0_%EC%88%9C%ED%99%98%EC%97%B4%EC%B0%A8_%281984.08.07%29.jpg) ([파일](https://upload.wikimedia.org/wikipedia/commons/3/3e/%EC%A7%80%ED%95%98%EC%B2%A0_2%ED%98%B8%EC%84%A0_%EC%88%9C%ED%99%98%EC%97%B4%EC%B0%A8_%281984.08.07%29.jpg); 서울역사박물관, 1984년, KOGL Type 1, 원 출처 서울역사아카이브; 14.7–18.39, 18.39–20.59, 24.12–25.64초); [지하철 역무 자동화](https://commons.wikimedia.org/wiki/File%3A%EC%A7%80%ED%95%98%EC%B2%A0_%EC%97%AD%EB%AC%B4_%EC%9E%90%EB%8F%99%ED%99%94_%281987.03.10%29.jpg) ([파일](https://upload.wikimedia.org/wikipedia/commons/f/fd/%EC%A7%80%ED%95%98%EC%B2%A0_%EC%97%AD%EB%AC%B4_%EC%9E%90%EB%8F%99%ED%99%94_%281987.03.10%29.jpg); 서울역사박물관, 1987년, KOGL Type 1, 원 출처 서울역사아카이브; 20.59–24.12초)
+- **retro10**: [서울대공원 개원.jpg](https://commons.wikimedia.org/wiki/File%3A%EC%84%9C%EC%9A%B8%EB%8C%80%EA%B3%B5%EC%9B%90_%EA%B0%9C%EC%9B%90.jpg) ([파일](https://upload.wikimedia.org/wikipedia/commons/e/e8/%EC%84%9C%EC%9A%B8%EB%8C%80%EA%B3%B5%EC%9B%90_%EA%B0%9C%EC%9B%90.jpg); 서울역사아카이브, 1984년, KOGL Type 1, 원 출처 『세계는 서울로, 서울은 세계로: 1984-1988』(2019); 0–1.6, 1.6–2.45, 2.45–4.88, 4.88–6.8, 6.8–9.33, 9.33–11.99, 11.99–14.28, 22.36–24.63, 24.63–27.07초); [Bunsikjeom in Seoul](https://commons.wikimedia.org/wiki/File%3ABunsikjeom_in_Seoul_%281989%29.jpg) ([파일](https://upload.wikimedia.org/wikipedia/commons/6/60/Bunsikjeom_in_Seoul_%281989%29.jpg); 후지모토 다쿠미, 1989년, KOGL Type 1, 원 출처 민속아카이브; 14.28–18.03, 18.03–20.87, 20.87–22.36초)
+- **retro11**: [Villages in Seongbuk-gu, 1981.jpg](https://commons.wikimedia.org/wiki/File%3AVillages_in_Seongbuk-gu%2C_1981.jpg) ([파일](https://upload.wikimedia.org/wikipedia/commons/9/9f/Villages_in_Seongbuk-gu%2C_1981.jpg); 후지모토 다쿠미, 1981년, KOGL Type 1, 원 출처 민속아카이브; 0–1.6, 1.6–3.33, 3.33–5.56, 5.56–7.45, 7.45–9.96, 23.09–25.15, 25.15–27.68초); [1989년 부산 남항에서 바라본 영도 영선동 산자락 주거 모습.jpg](https://commons.wikimedia.org/wiki/File%3A1989%EB%85%84_%EB%B6%80%EC%82%B0_%EB%82%A8%ED%95%AD%EC%97%90%EC%84%9C_%EB%B0%94%EB%9D%BC%EB%B3%B8_%EC%98%81%EB%8F%84_%EC%98%81%EC%84%A0%EB%8F%99_%EC%82%B0%EC%9E%90%EB%9D%BD_%EC%A3%BC%EA%B1%B0_%EB%AA%A8%EC%8A%B5.jpg) ([파일](https://upload.wikimedia.org/wikipedia/commons/9/98/1989%EB%85%84_%EB%B6%80%EC%82%B0_%EB%82%A8%ED%95%AD%EC%97%90%EC%84%9C_%EB%B0%94%EB%9D%BC%EB%B3%B8_%EC%98%81%EB%8F%84_%EC%98%81%EC%84%A0%EB%8F%99_%EC%82%B0%EC%9E%90%EB%9D%BD_%EC%A3%BC%EA%B1%B0_%EB%AA%A8%EC%8A%B5.jpg); 한국저작권위원회, 1989년, CC BY 4.0, 원 출처 공유마당; 9.96–13.44, 13.44–15.48, 15.48–17.58초); [남산에서 내려다 본 1984년 서울도심 전경.jpg](https://commons.wikimedia.org/wiki/File%3A%EB%82%A8%EC%82%B0%EC%97%90%EC%84%9C_%EB%82%B4%EB%A0%A4%EB%8B%A4_%EB%B3%B8_1984%EB%85%84_%EC%84%9C%EC%9A%B8%EB%8F%84%EC%8B%AC_%EC%A0%84%EA%B2%BD.jpg) ([파일](https://upload.wikimedia.org/wikipedia/commons/b/b1/%EB%82%A8%EC%82%B0%EC%97%90%EC%84%9C_%EB%82%B4%EB%A0%A4%EB%8B%A4_%EB%B3%B8_1984%EB%85%84_%EC%84%9C%EC%9A%B8%EB%8F%84%EC%8B%AC_%EC%A0%84%EA%B2%BD.jpg); 서울특별시청, 1984년, KOGL Type 1, 원 출처 서울역사아카이브 > 서울시정사진> 촬영연도별 > 1984-1988 > 남산에서 내려다 본 서울전경; 17.58–21.46, 21.46–23.09초)
+- **retro12**: [서울 광화문과 중앙청](https://commons.wikimedia.org/wiki/File%3A%EC%84%9C%EC%9A%B8_%EA%B4%91%ED%99%94%EB%AC%B8%EA%B3%BC_%EC%A4%91%EC%95%99%EC%B2%AD_%281980%EB%85%84_10%EC%9B%94_14%EC%9D%BC%29.jpg) ([파일](https://upload.wikimedia.org/wikipedia/commons/e/ea/%EC%84%9C%EC%9A%B8_%EA%B4%91%ED%99%94%EB%AC%B8%EA%B3%BC_%EC%A4%91%EC%95%99%EC%B2%AD_%281980%EB%85%84_10%EC%9B%94_14%EC%9D%BC%29.jpg); 한국저작권위원회, 1980년, CC BY 4.0, 원 출처 공유마당; 0–1.6, 1.6–2.92, 2.92–4.67, 26.91–29.63초); [숭례문 일대](https://commons.wikimedia.org/wiki/File%3A%EC%88%AD%EB%A1%80%EB%AC%B8_%EC%9D%BC%EB%8C%80_%281984.10.15%29.jpg) ([파일](https://upload.wikimedia.org/wikipedia/commons/0/04/%EC%88%AD%EB%A1%80%EB%AC%B8_%EC%9D%BC%EB%8C%80_%281984.10.15%29.jpg); 서울역사박물관, 1984년, KOGL Type 1, 원 출처 서울역사아카이브; 4.67–8.18, 8.18–10.03초); [남대문 시장.jpg](https://commons.wikimedia.org/wiki/File%3A%EB%82%A8%EB%8C%80%EB%AC%B8_%EC%8B%9C%EC%9E%A5.jpg) ([파일](https://upload.wikimedia.org/wikipedia/commons/4/4a/%EB%82%A8%EB%8C%80%EB%AC%B8_%EC%8B%9C%EC%9E%A5.jpg); Seoul History Archive, 1983년, KOGL Type 1, 원 출처 https://museum.seoul.go.kr/archive/archiveNew/NR_archiveView.do?ctgryId=CTGRY766&type=B&upperNodeId=CTGRY770&fileSn=300&fileId=H-TRNS-97471-770; 10.03–13.59초); [Seoul Sangbong Bus Terminal 1985.JPG](https://commons.wikimedia.org/wiki/File%3ASeoul_Sangbong_Bus_Terminal_1985.JPG) ([파일](https://upload.wikimedia.org/wikipedia/commons/b/b9/Seoul_Sangbong_Bus_Terminal_1985.JPG); 서울특별시, 1985년, CC BY 3.0, 원 출처 http://photoarchives.seoul.go.kr/photo/view/70278?only=true; 13.6–16.66초); [1995년 부산 자갈치시장 수변.jpg](https://commons.wikimedia.org/wiki/File%3A1995%EB%85%84_%EB%B6%80%EC%82%B0_%EC%9E%90%EA%B0%88%EC%B9%98%EC%8B%9C%EC%9E%A5_%EC%88%98%EB%B3%80.jpg) ([파일](https://upload.wikimedia.org/wikipedia/commons/4/46/1995%EB%85%84_%EB%B6%80%EC%82%B0_%EC%9E%90%EA%B0%88%EC%B9%98%EC%8B%9C%EC%9E%A5_%EC%88%98%EB%B3%80.jpg); 한국저작권위원회, 1995년, CC BY 4.0, 원 출처 공유마당; 16.66–20.21, 20.21–22.25초); [Gwanghwamun in November 1993.jpg](https://commons.wikimedia.org/wiki/File%3AGwanghwamun_in_November_1993.jpg) ([파일](https://upload.wikimedia.org/wikipedia/commons/d/d4/Gwanghwamun_in_November_1993.jpg); 후지모토 다쿠미, 1993년, KOGL Type 1, 원 출처 민속아카이브; 22.25–24.91, 24.91–26.91초)
+
+### 사실과 출처
+
+`retro1`~`retro8`의 사실 문장은 앞 섹션 「그 시절 레트로 쇼츠」·「그 시절 레트로 쇼츠 2」의 "사실과 출처"를 그대로 따릅니다. v2에서 남은 사실 문장과 출처는 다음과 같습니다.
+
+| id | 남은 사실 문장 | 출처 |
+| --- | --- | --- |
+| `retro1` | 산업화로 놀이가 사라짐 | 국가기록원 「사진대한민국: 민속놀이」 |
+| `retro2` | 세탁기는 1970년대에 늘기 시작, 2002년 말 보급률 96% | 「가전제품」 |
+| `retro3` | 1956년 서울 자동차 5,335대 | 「자동차」 |
+| `retro4` | 1956년 서울 버스 810대, 1959년 첫 신호등, 지금 서울 시내버스 7,383대 | 「자동차」, 서울시 교통분야 누리집 |
+| `retro5` | 인터넷 장보기 | 「시장과 백화점」 |
+| `retro6` | 연도만 (사진 제목) | 공유마당 사진 제목 |
+| `retro7` | 2004년 KTX, 2024년 이용객 8천만 명 넘음 | e-나라지표, 국토교통부 |
+| `retro8` | 1950년대 4월 학기, 1962년부터 3월, 1996년 초등학교 | 「졸업」, 「초·중·고등학교」 |
+
+`retro9`~`retro12`의 사실 문장은 모두 각 사진의 공식 기록 설명에서 왔습니다(서울역사박물관 간행 사진집이 위키미디어 공용 파일 설명에 인용되어 있음). 사진에 보이지 않는 사연이나 가격은 넣지 않았습니다.
+
+- `retro9`:
+  - [「지하철 2호선 개통 (1983.12.17)」](https://commons.wikimedia.org/wiki/File:%EC%A7%80%ED%95%98%EC%B2%A0_2%ED%98%B8%EC%84%A0_%EA%B0%9C%ED%86%B5_(1983.12.17).jpg) — 『선진 수도로의 도약: 1979-1983』(서울역사박물관, 2018) 154쪽: "1983년 12월 지하철 2호선 중 교대역에서 서울대입구역 구간이 개통되었다." → "1983년 12월, 2호선 새 구간이 개통한 날".
+  - [「지하철 2호선 연장구간 시운전 (1983.03.19)」](https://commons.wikimedia.org/wiki/File:%EC%A7%80%ED%95%98%EC%B2%A0_2%ED%98%B8%EC%84%A0_%EC%97%B0%EC%9E%A5%EA%B5%AC%EA%B0%84_%EC%8B%9C%EC%9A%B4%EC%A0%84_(1983.03.19).jpg): "미개통 구간인 서울대입구역-홍대입구역을 … 시운전하는 모습" → "개통 전엔 시운전도 했죠".
+  - [「이대역 (1984.04.15)」](https://commons.wikimedia.org/wiki/File:%EC%9D%B4%EB%8C%80%EC%97%AD_(1984.04.15).jpg): "시운전 중인 지하철 2호선이 이대역을 지나고 있다."
+  - [「구로공단역 (1984.05.03)」](https://commons.wikimedia.org/wiki/File:%EA%B5%AC%EB%A1%9C%EA%B3%B5%EB%8B%A8%EC%97%AD_(1984.05.03).jpg): "현재 '구로디지털단지'역이 개통 당시에는 '구로공단'역으로 표기되어 있다."
+  - [「지하철 2호선 순환열차 (1984.08.07)」](https://commons.wikimedia.org/wiki/File:%EC%A7%80%ED%95%98%EC%B2%A0_2%ED%98%B8%EC%84%A0_%EC%88%9C%ED%99%98%EC%97%B4%EC%B0%A8_(1984.08.07).jpg) — 『세계는 서울로, 서울은 세계로: 1984-1988』(2019): "1984년 5월 22일 … 지하철 2호선 48.8km 전구간이 완전 개통되었다", "하루 230만 명을 수송" → "그해 5월 48.8킬로미터가 다 이어졌어요", "하루 230만 명이 지하철을 탔대요". 230만 명은 1·2호선 합계 수송 인원이라 "2호선만"이라고 말하지 않았습니다.
+  - [「지하철 역무 자동화 (1987.03.10)」](https://commons.wikimedia.org/wiki/File:%EC%A7%80%ED%95%98%EC%B2%A0_%EC%97%AD%EB%AC%B4_%EC%9E%90%EB%8F%99%ED%99%94_(1987.03.10).jpg): "1986년 4월부터 승차권 발매에서 집표에 이르는 지하철 역무의 자동화가 이루어짐에 따라 자동 개찰 장치를 이용하여" → "1986년부터는 표를 넣는 자동 개찰구".
+- `retro10`:
+  - [「서울대공원 개원」](https://commons.wikimedia.org/wiki/File:%EC%84%9C%EC%9A%B8%EB%8C%80%EA%B3%B5%EC%9B%90_%EA%B0%9C%EC%9B%90.jpg): "1984년 5월 서울대공원이 착공 5년 7개월 만에 개원하였다. (1984.05.01)" → "1984년 5월 1일 서울대공원이 문 연 날", "공사만 5년 7개월". 코끼리 얼굴을 단 열차는 사진에 보이는 그대로입니다.
+  - [「Bunsikjeom in Seoul (1989)」](https://commons.wikimedia.org/wiki/File:Bunsikjeom_in_Seoul_(1989).jpg): "서울에서 촬영한 튀김과 김밥, 만두 등을 판매하는 분식집." 국밥·김치찌개는 사진 속 간판 글자입니다.
+- `retro11`: 사진 설명의 연도·장소만 썼습니다.
+  - [「Villages in Seongbuk-gu, 1981」](https://commons.wikimedia.org/wiki/File:Villages_in_Seongbuk-gu,_1981.jpg): "서울 성북구에서 촬영한 마을의 가옥들"
+  - [「1989년 부산 남항에서 바라본 영도 영선동 산자락 주거 모습」](https://commons.wikimedia.org/wiki/File:1989%EB%85%84_%EB%B6%80%EC%82%B0_%EB%82%A8%ED%95%AD%EC%97%90%EC%84%9C_%EB%B0%94%EB%9D%BC%EB%B3%B8_%EC%98%81%EB%8F%84_%EC%98%81%EC%84%A0%EB%8F%99_%EC%82%B0%EC%9E%90%EB%9D%BD_%EC%A3%BC%EA%B1%B0_%EB%AA%A8%EC%8A%B5.jpg)
+  - [「남산에서 내려다 본 1984년 서울도심 전경」](https://commons.wikimedia.org/wiki/File:%EB%82%A8%EC%82%B0%EC%97%90%EC%84%9C_%EB%82%B4%EB%A0%A4%EB%8B%A4_%EB%B3%B8_1984%EB%85%84_%EC%84%9C%EC%9A%B8%EB%8F%84%EC%8B%AC_%EC%A0%84%EA%B2%BD.jpg)
+  - "지금은 엘리베이터로 집에 올라가지만"은 숫자나 특정 장소 없이 쓴 일반 대비 문장입니다.
+- `retro12`:
+  - [「서울 광화문과 중앙청 (1980년 10월 14일)」](https://commons.wikimedia.org/wiki/File:%EC%84%9C%EC%9A%B8_%EA%B4%91%ED%99%94%EB%AC%B8%EA%B3%BC_%EC%A4%91%EC%95%99%EC%B2%AD_(1980%EB%85%84_10%EC%9B%94_14%EC%9D%BC).jpg)
+  - [「숭례문 일대 (1984.10.15)」](https://commons.wikimedia.org/wiki/File:%EC%88%AD%EB%A1%80%EB%AC%B8_%EC%9D%BC%EB%8C%80_(1984.10.15).jpg): "오른쪽 상단에는 서울 플라자호텔, 서울시청, 프레스센터가 위치" → "시청과 호텔이 보이죠"(호텔 이름은 말하지 않음).
+  - [「남대문 시장」](https://commons.wikimedia.org/wiki/File:%EB%82%A8%EB%8C%80%EB%AC%B8_%EC%8B%9C%EC%9E%A5.jpg): "(1983.12.24)" → "1983년 연말 남대문시장".
+  - [「Seoul Sangbong Bus Terminal 1985」](https://commons.wikimedia.org/wiki/File:Seoul_Sangbong_Bus_Terminal_1985.JPG): "서울 상봉시외버스터미널이 준공", 1985-08-01 → "1985년엔 상봉터미널이 새로 지어졌어요".
+  - [「1995년 부산 자갈치시장 수변」](https://commons.wikimedia.org/wiki/File:1995%EB%85%84_%EB%B6%80%EC%82%B0_%EC%9E%90%EA%B0%88%EC%B9%98%EC%8B%9C%EC%9E%A5_%EC%88%98%EB%B3%80.jpg)
+  - [「Gwanghwamun in November 1993」](https://commons.wikimedia.org/wiki/File:Gwanghwamun_in_November_1993.jpg)
+  - 중앙청 철거 같은 정치·역사 평가는 넣지 않았습니다.
+
+### 업로드 문구
+
+모든 편은 실제 기록 사진과 사실 문장으로 만들었습니다. 창작(허구) 장면이 없어서 "창작" 표기는 필요 없습니다.
+
+설명란 공통 끝줄은 음악 크레딧입니다. 곡 이름은 편마다 다릅니다.
+
+> 음악: "곡 이름" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
+
+공통 고정 댓글 틀: "여러분은 이 시절 ○○, 어떤 기억이 있으세요? 그때 몇 살이었는지도 댓글로 알려 주세요 👇"
+
+**retro1** — 해 질 때까지 골목에서 놀던 그 시절, 지금은 상상도 못할 진짜 골목 놀이
+> 학교만 끝나면 다 골목으로! 1952년 진해·마산의 고무줄 뛰기, 마당의 널뛰기, 1968년 물방개 뽑기 장수, 1973년 서울 주택가 찻길 축구와 놀이터, 1978년 서울 한남동 골목의 아이들까지. 국가기록원은 산업화로 많은 놀이가 우리 곁에서 사라졌다고 적었습니다(「사진대한민국: 민속놀이」). 이 시절 골목 놀이, 기억나는 분?
+> 사진: 한국저작권위원회(공유마당, CC BY, 부경근대사료연구소 수집), 한국정책방송원(공유마당, 공공누리 제1유형) · 크기 조정·밝기 보정·부분 확대
+> 음악: "Heartwarming" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
+> #그시절 #골목놀이 #옛날사진 #추억 #shorts
+>
+> 고정 댓글: 고무줄, 널뛰기, 물방개 뽑기… 여러분 동네에선 뭐 하고 놀았어요? 👇
+
+**retro2** — 개울 돌 위에서 빨래 비비던 그 시절, 지금은 상상도 못할 진짜 빨래터 풍경
+> 세탁기가 없던 시절, 빨래는 개울에서 했습니다. 1952년 부산 보수천, 아이를 업은 채 빨래하는 엄마, 마을 공동 빨래터, 자갈 위에 널어 말린 빨래, 1968년 서울 골목에서 발로 밟아 빨던 할머니까지. 국가기록원에 따르면 세탁기 보급은 1970년대에 들어서야 높아지기 시작했고, 2002년 말 보급률은 96%였습니다(「사진대한민국: 가전제품」). 이 시절 빨래터, 기억나는 분?
+> 사진: 한국저작권위원회(공유마당, CC BY, 부경근대사료연구소 수집) · 크기 조정·부분 확대
+> 음악: "Gymnopedie No 1" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
+> #그시절 #빨래터 #옛날사진 #추억 #shorts
+>
+> 고정 댓글: 개울 빨래, 방망이 소리 기억나는 분? 집에 세탁기 처음 들어온 날도 알려 주세요 👇
+
+**retro3** — 세간살이 통째로 지게에 지고 나르던 그 시절, 다시는 볼 수 없는 진짜 지게꾼
+> 1960년 수원, 등에 진 건 세간살이 통째로! 1953년 부산의 가구 지게 행상, 멸치·과일 장수, 밭에서 캔 작물과 땔감, 아이용 작은 지게까지. 1956년 서울의 자동차는 5,335대뿐이었습니다(국가기록원 「사진대한민국: 자동차」). 지금은 클릭 한 번이면 문 앞까지 오는 택배. 이 시절 지게, 기억나는 분?
+> 사진: 한국저작권위원회(공유마당, CC BY, 부경근대사료연구소 수집) · 크기 조정·부분 확대
+> 음악: "Gymnopedie No 2" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
+> #그시절 #지게 #옛날사진 #추억 #shorts
+>
+> 고정 댓글: 할아버지 댁에 지게 있었던 분? 직접 져 본 분도 손! 👇
+
+**retro4** — 한복에 양산 쓰고 버스 기다리던 그 시절, 지금은 상상도 못할 진짜 정류장
+> 1968년 종로, 한복에 양산 쓰고 버스를 기다리던 풍경. 1954년 중앙청 앞 시내버스, 1952년 대구 버스, 독립문 옆 정류장의 아이들까지. 1956년 서울의 버스는 810대, 1959년엔 서울에 첫 교통신호등이 생겼습니다(국가기록원). 지금 서울 시내버스는 7,383대(서울시, 2026년 1월 기준). 이 시절 버스 정류장, 기억나는 분?
+> 사진: 한국저작권위원회(공유마당, CC BY, 부경근대사료연구소 수집) · 크기 조정·밝기 보정·부분 확대
+> 음악: "Gymnopedie No 1" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
+> #그시절 #버스정류장 #옛날서울 #추억 #shorts
+>
+> 고정 댓글: 처음 타 본 시내버스, 기억나세요? 그때 버스비 얼마였는지도 알려 주세요 👇
+
+**retro5** — 엄마 손 잡고 시장 따라가던 그 시절, 요즘 마트가 못 주는 진짜 장보기 풍경
+> 엄마 손 잡고 따라가던 시장, 기억나세요? 1952년 부산 부평시장의 고춧가루 노점과 과일 수레, 금붕어 장수, 1967년 대구 서문시장의 갈치, 1968년 자갈치시장과 남대문시장, 1978년 서울 한남동 시장까지. 지금은 손으로 만져 보지도 않고 인터넷으로 장을 보죠(국가기록원 「사진대한민국: 시장과 백화점」). 이 시절 시장 구경, 기억나는 분?
+> 사진: 한국저작권위원회(공유마당, CC BY, 부경근대사료연구소 수집) · 크기 조정·부분 확대
+> 음악: "Heartwarming" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
+> #그시절 #재래시장 #옛날사진 #추억 #shorts
+>
+> 고정 댓글: 시장 따라가면 꼭 사 달라고 조르던 거 있었죠? 뭐였어요? 👇
+
+**retro6** — 뻥 소리에 귀 막고 기다리던 그 시절, 지금은 사라진 진짜 길거리 간식
+> "뻥!" 소리에 귀부터 막던 뻥튀기, 기억나세요? 1952년 부산의 뻥튀기 장수와 옥수수 모양 풀빵, 1953년 대구의 번데기 노점, 1952년 광주 리어카 빙수, 1968년 부산 아이스케익 뽑기, 1978년 서울 엿장수 엿판까지. 이 시절 길거리 간식, 기억나는 분?
+> 사진: 한국저작권위원회(공유마당, CC BY, 부경근대사료연구소 수집) · 크기 조정·부분 확대
+> 음악: "Heartwarming" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
+> #그시절 #추억의간식 #뻥튀기 #옛날사진 #shorts
+>
+> 고정 댓글: 뻥튀기, 번데기, 엿… 여러분의 최애 길거리 간식은? 👇
+
+**retro7** — 연기 뿜는 증기기관차 타던 그 시절, 다시는 볼 수 없는 진짜 기차역 풍경
+> 연기 뿜으며 달리던 증기기관차, 기억나세요? 1957년 함백선 열차와 영월의 기와지붕 새 역, 1950년대 서울역과 대구역, 부산 철도공작창의 증기기관차, 1957년 서울역 디젤기관차 시운전, 1964년 열차에서 본 한강대교까지. 지금은 2004년 4월부터 KTX가 달리고, 2024년 한 해 KTX 이용객은 8,118만 명이었습니다(e-나라지표, 국토교통부). 이 시절 기차역, 기억나는 분?
+> 사진: 한국저작권위원회(공유마당, CC BY, 부경근대사료연구소 수집), 한국정책방송원(공유마당, 공공누리 제1유형) · 크기 조정·부분 확대
+> 음악: "Gymnopedie No 1" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
+> #그시절 #기차역 #증기기관차 #옛날사진 #shorts
+>
+> 고정 댓글: 기차 타고 처음 간 곳 어디였어요? 삶은 달걀 까먹던 기억도 👇
+
+**retro8** — 땅바닥에 앉아 입학식 하던 그 시절, 지금은 상상도 못할 진짜 국민학교
+> 의자도 없이 땅바닥에 앉아 치른 1952년 입학식, 1958년 체조 시간, 소풍날의 줄 맞춘 행렬과 점심시간, 1962년 실력고사까지. 1950년대엔 새 학년이 4월에 시작했고 1962년부터 3월로 바뀌었으며, 1941년부터 쓰던 "국민학교"라는 이름은 1996년 "초등학교"가 됐습니다(국가기록원 「사진대한민국: 졸업」). 이 시절 국민학교, 기억나는 분?
+> 사진: 한국저작권위원회(공유마당, CC BY, 부경근대사료연구소 수집), 한국정책방송원(공유마당, 공공누리 제1유형) · 크기 조정·부분 확대
+> 음악: "Gymnopedie No 2" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
+> #그시절 #국민학교 #입학식 #추억 #shorts
+>
+> 고정 댓글: 국민학교 졸업생 손! 몇 회 졸업이세요? 👇
+
+**retro9** — 꽃 단 열차로 2호선이 개통하던 80년대, 지금은 상상도 못할 진짜 지하철 풍경
+> 1983년 12월, 꽃 장식을 단 2호선 열차가 새 구간 개통을 알렸습니다. 개통 전 시운전, 1984년 초록 타일 터널의 이대역, 지금은 구로디지털단지역이 된 구로공단역까지. 1984년 5월 22일 2호선 48.8km가 완전 개통됐고, 그 무렵 서울 지하철은 하루 230만 명을 실어 날랐습니다. 1986년 4월부터는 표를 넣는 자동 개찰구가 생겼죠(서울역사박물관 『선진 수도로의 도약: 1979-1983』, 『세계는 서울로, 서울은 세계로: 1984-1988』). 이 시절 2호선, 기억나는 분?
+> 사진: 서울역사박물관·서울특별시(서울역사아카이브, 공공누리 제1유형, Wikimedia Commons) · 크기 조정·색 공간 변환·부분 확대
+> 음악: "Heartwarming" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
+> #그시절 #80년대 #지하철2호선 #출근길 #shorts
+>
+> 고정 댓글: 종이 승차권 넣고 개찰구 통과하던 기억 있으세요? 처음 탄 지하철 노선은? 👇
+
+**retro10** — 코끼리 열차 보려고 인파가 몰리던 80년대, 다시는 볼 수 없는 진짜 나들이 풍경
+> 1984년 5월 1일, 착공 5년 7개월 만에 서울대공원이 문을 열던 날의 인파(서울역사박물관 『세계는 서울로, 서울은 세계로: 1984-1988』). 코끼리 얼굴을 단 열차, 모자 쓴 꼬마와 엄마 아빠, 그리고 돌아오는 길 1989년 서울 분식집의 튀김·김밥·만두까지. 이 시절 나들이, 기억나는 분?
+> 사진: 서울역사박물관(서울역사아카이브, 공공누리 제1유형), 후지모토 다쿠미 기증(국립민속박물관 민속아카이브, 공공누리 제1유형), Wikimedia Commons · 크기 조정·색 공간 변환·부분 확대
+> 음악: "Heartwarming" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
+> #그시절 #80년대 #서울대공원 #나들이 #shorts
+>
+> 고정 댓글: 어릴 때 처음 간 동물원·놀이공원 어디였어요? 그날 먹은 것도 알려 주세요 👇
+
+**retro11** — 산비탈 끝까지 집이 빼곡하던 80년대, 지금은 상상도 못할 진짜 산동네 풍경
+> 1981년 서울 성북구, 산이 집으로 덮였던 풍경. 지붕 위에 지붕, 집 위에 또 집. 1989년 부산 영도의 산비탈 마을과 항구, 그리고 1984년 남산에서 내려다본 서울 도심까지. 이 시절 산동네, 기억나는 분?
+> 사진: 후지모토 다쿠미 기증(국립민속박물관 민속아카이브, 공공누리 제1유형), 서울특별시(서울역사아카이브, 공공누리 제1유형), 한국저작권위원회(공유마당, CC BY 4.0, https://creativecommons.org/licenses/by/4.0/), Wikimedia Commons · 크기 조정·색 공간 변환·부분 확대
+> 음악: "Gymnopedie No 1" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
+> #그시절 #80년대 #산동네 #옛날사진 #shorts
+>
+> 고정 댓글: 언덕 위 동네 살아 본 분? 계단 몇 개였는지 기억나세요? 👇
+
+**retro12** — 광화문 뒤에 중앙청이 서 있던 80년대, 다시는 볼 수 없는 진짜 시내 풍경
+> 1980년 광화문과 그 뒤의 중앙청, 1984년 숭례문 일대와 시청 쪽 빌딩들, 1983년 연말 남대문시장의 털옷 가게, 1985년 새로 지어진 상봉시외버스터미널, 1995년 부산 자갈치시장 물가의 좌판, 1993년 한산한 광화문 앞까지. 이 시절 시내 풍경, 기억나는 분?
+> 사진: 한국저작권위원회(공유마당, CC BY 4.0, https://creativecommons.org/licenses/by/4.0/), 서울역사박물관(서울역사아카이브, 공공누리 제1유형), 서울특별시(서울사진아카이브, CC BY 3.0, https://creativecommons.org/licenses/by/3.0/), 후지모토 다쿠미 기증(국립민속박물관 민속아카이브, 공공누리 제1유형), Wikimedia Commons · 크기 조정·색 공간 변환·부분 확대
+> 음악: "Gymnopedie No 2" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
+> #그시절 #80년대 #옛날서울 #광화문 #shorts
+>
+> 고정 댓글: 80~90년대 시내 나가면 꼭 들르던 곳 있었죠? 어디였어요? 👇
 
 ## 2D 운전 애니 무언 해외판 (벤치마크, `drive1`~`drive10`)
 

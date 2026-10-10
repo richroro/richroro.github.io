@@ -39,9 +39,13 @@ def music_of(vid):
         ms = ms if isinstance(ms, list) else [ms] if ms else []
         out = []
         for m in ms:
-            name = Path(m if isinstance(m, str) else m.get("file", "")).stem
-            if name:
-                out.append(name if " " in name or name[:1].isupper() else name.replace("_", " ").title())
+            # shorts/ edits name the track "music/x.mp3", politics/ edits use {"src": "public/music/x.mp3"}; other audio
+            # in that list (a hearing's question, a sound bite) is not a Kevin MacLeod track
+            path = m if isinstance(m, str) else m.get("file") or m.get("src") or ""
+            if "music/" not in path:
+                continue
+            name = Path(path).stem
+            out.append(name if " " in name or name[:1].isupper() else name.replace("_", " ").title())
         return out
     return []
 
