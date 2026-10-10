@@ -30,8 +30,9 @@ export type SceneG = {
   /** a slow push-in to this scale over the first 3 s, centred on chars[focus] */
   zoom?: number; focus?: number;
 };
-/** the hook card; `meta` is the grey line under the title (default "익명 · 창작 썰"), likes and comments are shown if given */
-export type PostG = { board?: string; title: string; body?: string[]; meta?: string; likes?: string; comments?: string; hot?: boolean };
+/** the hook card; `meta` is the grey line under the title (default "익명 · 창작 썰"), likes and comments are shown if given;
+ *  `chars` (one or two) stand at the bottom right from frame 0, so the thumbnail shows a face, not just text */
+export type PostG = { board?: string; title: string; body?: string[]; meta?: string; likes?: string; comments?: string; hot?: boolean; chars?: Char[] };
 
 const INK = "#1b1b1f";
 const PALETTE = ["#FFD84D", "#FF9EBB", "#8FD3FF", "#B9F27C", "#C9A7FF", "#FFB36B", "#D9D9D9"];
@@ -258,7 +259,7 @@ export const Scene: React.FC<{ g: SceneG & { steps?: number[] }; t: number; h: n
 export const Post: React.FC<{ g: PostG & { steps?: number[] }; t: number }> = ({ g, t }) => {
   const titleSize = Math.max(62, Math.min(84, fitText({ text: g.title.replace(/[[\]]/g, ""), withinWidth: 2 * 880, fontFamily: BODY, fontWeight: "900" }).fontSize));
   return (
-    <div style={{ position: "absolute", inset: 0, background: "#eef0f4", display: "flex", alignItems: "center", justifyContent: "center" }}>
+    <div style={{ position: "absolute", inset: 0, background: "#eef0f4", display: "flex", alignItems: g.chars?.length ? "flex-start" : "center", justifyContent: "center", paddingTop: g.chars?.length ? 40 : 0 }}>
       <div style={{ width: 1000, background: "white", borderRadius: 40, boxShadow: "0 18px 40px rgba(0,0,0,.16)", padding: "44px 50px 40px", transform: `translateY(${30 * (1 - eOut(prog(t, 0, 0.3)))}px)` }}>
         <div style={{ display: "flex", alignItems: "center", gap: 16, fontFamily: BODY, fontWeight: 800, fontSize: 38, color: "#6b7280" }}>
           <span>{g.board ?? "썰 게시판"}</span>
@@ -284,6 +285,14 @@ export const Post: React.FC<{ g: PostG & { steps?: number[] }; t: number }> = ({
           </div>
         ) : null}
       </div>
+      {(g.chars ?? []).slice(0, 2).map((c, i, all) => {
+        const size = all.length === 1 ? 330 : 280, x = all.length === 1 ? 0.8 : [0.62, 0.86][i];
+        return (
+          <div key={i} style={{ position: "absolute", left: x * 1080 - size / 2, bottom: 26, width: size, height: size }}>
+            <Mochi c={c} i={i} t={t} size={size} />
+          </div>
+        );
+      })}
     </div>
   );
 };

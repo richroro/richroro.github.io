@@ -24,6 +24,7 @@ npm i
 python3 voice_edge.py <id>                  # 내레이션(Edge TTS) + 음절 타이밍 → build/<id>/
 python3 prep.py <id>                        # 컷 편집·자막 페이지·더킹 데이터 → src/data/<id>.json
 ./render.sh <id>                            # out/<id>.mp4 (1080×1920, 30fps, -14 LUFS)
+python3 qa_review.py <id>                   # 조회수 10만+ 쇼츠 형식 검토(REVIEW.md) → out/review/<id>/
 npx remotion studio                         # 미리보기
 ```
 
@@ -343,7 +344,7 @@ MEDIA=<저장소>/media python3 politics/prep_split.py obama09    # 원본: medi
 조회수 10만 이상 오락 쇼츠 중 TTS·내레이션 썰은 중앙값 109만이다. 썰구리(구독 3.9만)는 커뮤니티 글 화면, 캐릭터, AI 내레이션만으로 최근 15편 중 14편이 10만을 넘었다(`research/research-fun.md`). 우리는 AI 그림 도구가 없어서 캐릭터를 직접 그린다(`src/lib/Sseol.tsx`). 표정이 바뀌는 찹쌀떡 모양 캐릭터가 문장마다 장면을 연기한다. 예시는 `shorts/sseol1/`이다.
 
 - **화면**: `"titleStyle": "band"` 제목 띠, 가운데 1080×1080 장면, 아래 자막(`"captionY": 1650`). 장면 위에는 자막용 그늘을 깔지 않는다.
-- **첫 클립 `post`**: 커뮤니티 글 카드(실제 서비스 이름이나 로고 없음)로 훅을 건다. `title`, `body`(줄마다 `steps`로 한 줄씩 나타남), `board`(기본 "썰 게시판"), `meta`(기본 "익명 · 창작 썰"). 조회수·추천 수를 지어내지 않도록 `likes`·`comments`·`hot`(🔥 인기글)은 기본으로 끈다.
+- **첫 클립 `post`**: 커뮤니티 글 카드(실제 서비스 이름이나 로고 없음)로 훅을 건다. `chars`에 주인공 한두 명(예: 놀란 얼굴 `shock`)을 넣으면 카드 오른쪽 아래에 0초부터 서 있어서, 첫 프레임(썸네일)에 글만이 아니라 얼굴이 보인다(조회수 높은 쇼츠는 첫 프레임에 주인공을 보여 준다). `title`, `body`(줄마다 `steps`로 한 줄씩 나타남), `board`(기본 "썰 게시판"), `meta`(기본 "익명 · 창작 썰"). 조회수·추천 수를 지어내지 않도록 `likes`·`comments`·`hot`(🔥 인기글)은 기본으로 끈다.
 - **장면 `scene`**: 문장마다 한 장면(2~3초)을 둔다.
 
   | 값 | 쓰임 |
