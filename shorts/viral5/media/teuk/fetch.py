@@ -26,19 +26,26 @@ def get(url, binary=False):
 def text(h): return re.sub(r"\s+", " ", html.unescape(re.sub(r"<[^>]+>", "", h or ""))).strip()
 
 def resolve():
+    """one API call for all titles (Commons rate-limits anonymous clients)"""
     path = f"{HERE}/photos.json"; P = json.load(open(path))
-    for k, p in P.items():
-        if p.get("license") and not p["credit"].startswith(p["title"][5:] + " by by"): continue
-        r = get(API + "?" + urllib.parse.urlencode({"action": "query", "titles": p["title"], "prop": "imageinfo", "iiprop": "url|extmetadata", "iiurlwidth": 1600, "format": "json"}))
-        ii = next(iter(r["query"]["pages"].values()))["imageinfo"][0]; m = ii["extmetadata"]
-        lic = m.get("LicenseShortName", {}).get("value", "")
-        if not ALLOWED.match(lic) or re.search(r"\b(sa|nc|nd)\b", lic, re.I): raise SystemExit(f"{k}: licence {lic} not allowed")
-        artist = re.sub(r"^by\s+", "", text(m.get("Artist", {}).get("value", ""))) or "unknown"
-        p.update({"page": ii["descriptionurl"], "file_url": ii["url"], "thumb_url": ii.get("thumburl", ii["url"]), "license": lic,
-                  "license_url": m.get("LicenseUrl", {}).get("value", ""), "author": artist,
-                  "credit": f"{p['title'][5:]} by {artist} ({lic}{', ' + m['LicenseUrl']['value'] if m.get('LicenseUrl') else ''}), via Wikimedia Commons"})
-        print(k, lic, artist[:60]); time.sleep(1.5)
-        json.dump(P, open(path, "w"), ensure_ascii=False, indent=1)
+    todo = {p["title"]: k for k, p in P.items() if not p.get("license")}
+    titles = list(todo)
+    for i in range(0, len(titles), 40):
+        r = get(API + "?" + urllib.parse.urlencode({"action": "query", "titles": "|".join(titles[i:i + 40]), "prop": "imageinfo",
+                                                    "iiprop": "url|extmetadata", "iiurlwidth": 1600, "format": "json"}))
+        norm = {n["to"]: n["from"] for n in r["query"].get("normalized", [])}
+        for pg in r["query"]["pages"].values():
+            k = todo[norm.get(pg["title"], pg["title"])]; p = P[k]
+            ii = pg["imageinfo"][0]; m = ii["extmetadata"]
+            lic = m.get("LicenseShortName", {}).get("value", "")
+            if not ALLOWED.match(lic) or re.search(r"\b(sa|nc|nd)\b", lic, re.I): raise SystemExit(f"{k}: licence {lic} not allowed")
+            artist = re.sub(r"^by\s+", "", text(m.get("Artist", {}).get("value", ""))) or "unknown"
+            lurl = m.get("LicenseUrl", {}).get("value", "")
+            p.update({"page": ii["descriptionurl"], "file_url": ii["url"], "thumb_url": ii.get("thumburl", ii["url"]), "license": lic,
+                      "license_url": lurl, "author": artist,
+                      "credit": f"{p['title'][5:]} by {artist} ({lic}{', ' + lurl if lurl else ''}), via Wikimedia Commons"})
+            print(k, lic, artist[:60])
+        json.dump(P, open(path, "w"), ensure_ascii=False, indent=1); time.sleep(3)
 
 def download(sid):
     P = json.load(open(f"{HERE}/photos.json"))
