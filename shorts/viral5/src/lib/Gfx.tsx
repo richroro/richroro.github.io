@@ -9,6 +9,7 @@ import { BODY, TITLE } from "./fonts";
 import { clamp, eBack, eInOut, eOut, lerp, prog } from "./fx";
 import { Marked } from "./Marked";
 import { Post, Scene, type PostG, type SceneG } from "./Sseol";
+import { Road, type RoadG } from "./Road";
 
 export { Marked };
 
@@ -35,6 +36,8 @@ export type Gfx = { steps?: number[] } & (
   | ({ type: "scene" } & SceneG)
   /** a community-app post for a story's hook; steps[i] reveals body line i */
   | ({ type: "post" } & PostG)
+  /** a road cartoon (lib/Road.tsx): cars and drivers from above or from the driver's seat */
+  | ({ type: "road" } & RoadG)
 );
 
 const KEY = "#FFE14D", RED = "#FF3B3B", GREEN = "#2BD46B", ORANGE = "#FF9F1C";
@@ -321,6 +324,7 @@ export const GfxView: React.FC<{ g: Gfx; t: number; h: number }> = ({ g, t, h })
     case "quiz": return <Quiz g={g} t={t} />;
     case "scene": return <Scene g={g} t={t} h={h} />;
     case "post": return <Post g={g} t={t} />;
+    case "road": return <Road g={g} t={t} h={h} />;
   }
 };
 
