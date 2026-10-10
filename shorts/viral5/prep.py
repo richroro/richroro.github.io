@@ -192,6 +192,7 @@ def prep(sid):
     if edit.get("captionY"): data["captionY"] = edit["captionY"]  # e.g. lower the captions when the action sits at the bottom of the frame
     for k in ("titleStyle", "titleKey", "hook", "hookY"):  # news-shorts look: banner title and a red headline over the picture
         if edit.get(k) is not None: data[k] = edit[k]
+    if edit.get("capBox"): data["capBox"] = edit["capBox"]  # captions in a box over the picture's bottom (src/lib/CapBox.tsx)
     if edit.get("hookTo") is not None: data["hookTo"] = round(at(edit["hookTo"]), 3)
     if ranks: data["ranks"] = {"rows": ranks, **({"y": edit["rankY"]} if edit.get("rankY") else {})}
     if edit.get("marks"):
