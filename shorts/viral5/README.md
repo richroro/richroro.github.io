@@ -2506,4 +2506,4 @@ python3 voice_edge.py teuk1 && python3 prep.py teuk1 && ./render.sh teuk1 final/
   직접 그린 창작 애니메이션입니다. 등장인물과 채팅방은 실제와 관계없습니다.
   Music: "Hyperfun" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
   ```
-- 해시태그: #공감 #특 #단톡방 #카톡공감 #공감애니
+- 해시태그: #공감 #특 #단톡방 #친구공감 #공감애니
