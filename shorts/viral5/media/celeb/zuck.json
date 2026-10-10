@@ -1,0 +1,36 @@
+{
+ "id": "ceo1",
+ "committee": "Senate Commerce, Science & Transportation + Senate Judiciary (joint hearing)",
+ "hearing": "Facebook, Social Media Privacy, and the Use and Abuse of Data",
+ "date": "2018-04-10",
+ "source_page": "https://www.commerce.senate.gov/2018/4/facebook-social-media-privacy-and-the-use-and-abuse-of-data",
+ "also": "https://www.judiciary.senate.gov/committee-activity/hearings/facebook-social-media-privacy-and-the-use-and-abuse-of-data",
+ "player": "https://www.senate.gov/isvp/?type=arch&comm=commerce&filename=commerce041018",
+ "file_url": "https://www-senate-gov-msl3archive.akamaized.net/commerce/commerce041018_1/master.m3u8 (640x360, the only rendition)",
+ "stream_cut_s": [
+  5450,
+  5540
+ ],
+ "clip_note": "zuck.mp4 = re-encoded with timestamps from 0",
+ "used_in_clip_s": [
+  [
+   27.2,
+   49.4
+  ],
+  [
+   59.62,
+   71.85
+  ]
+ ],
+ "transcript": "https://www.govinfo.gov/content/pkg/CHRG-115shrg37801/html/CHRG-115shrg37801.htm (S. Hrg. 115-683)",
+ "speakers": [
+  "Sen. Orrin Hatch (R-UT)",
+  "Mark Zuckerberg, CEO, Facebook"
+ ],
+ "credit": "미국 상원 (U.S. Senate)",
+ "file": "zuck.mp4",
+ "license": "Work of the United States Government, public domain (17 U.S.C. §105): the hearing was recorded by the U.S. Senate Recording Studio and streamed/archived through the Senate's own ISVP player (senate.gov/isvp) embedded on the committee's hearing page; the HLS stream is hosted on the Senate's Akamai account (www-senate-gov-media-srs / www-senate-gov-msl3archive). NOT C-SPAN footage (no C-SPAN bug; C-SPAN's own camera feed is not used).",
+ "use_restrictions": "Senate rules (S.Res.431, 99th Congress) bar use of Senate broadcast coverage for political or commercial-campaign purposes; use as news/commentary only, don't edit to misrepresent, don't imply endorsement by the Senate, the senators, the witnesses or their companies.",
+ "checked": "ASR: faster-whisper small.en + medium.en (and tiny.en for locating) against the official GPO transcript; Senate caption track where available",
+ "stream_cut_note": "stream_cut_s is the ffmpeg -ss/-t requested on the HLS master; a stream-copy seek lands on a segment boundary, so the clip's 0 s may be up to ~15 s off that stream time. Locate the exchange by the quoted words."
+}
