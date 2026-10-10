@@ -2,7 +2,7 @@
 next to the report.
 
 usage: python3 longform/qa_long.py <id> [<id> ...]
-reads  final/<id>.mp4, final/<id>-thumb.jpg, src/longdata/<id>.json, longform/<id>/chapters.txt
+reads  final/<id>.mp4, final/<id>-thumb.jpg, src/longdata/<id>.json, upload/specs/<id>.json (chapters)
 writes out/review/<id>/sheet.jpg (a frame every 30 s), first15.jpg (the first 15 s at 1 s steps), thumb.jpg, report.md
 exit status 1 if any check FAILs (WARN does not fail)
 
@@ -88,12 +88,11 @@ def review(lid):
             if wpx > 1600: wide.append((p["startMs"] / 1000, text, wpx))
     row("자막 넘침", not wide and not tall, f"가장 긴 줄 {longest:.0f}px", "; ".join(f"{ts(a)} '{t}' {w:.0f}px" for a, t, w in wide[:4]) + (f"; {len(tall)} pages over 2 lines" if tall else ""))
     # chapter list
-    cpath = f"{V}/longform/{lid}/chapters.txt"
+    spath = f"{V}/upload/specs/{lid}.json"  # prep_long.py writes the chapters there
     stamps = []
-    if os.path.exists(cpath):
-        for line in open(cpath):
-            mm = re.match(r"^(?:(\d+):)?(\d+):(\d\d) (.+)$", line.strip())
-            if mm: stamps.append((int(mm.group(1) or 0) * 3600 + int(mm.group(2)) * 60 + int(mm.group(3)), mm.group(4)))
+    for t, name in (json.load(open(spath)).get("chapters", []) if os.path.exists(spath) else []):
+        parts = [int(x) for x in t.split(":")]
+        stamps.append((sum(v * 60 ** k for k, v in enumerate(reversed(parts))), name))
     errs = []
     if not stamps or stamps[0][0] != 0: errs.append("first is not 0:00")
     if len(stamps) < 3: errs.append(f"{len(stamps)} chapters (need 3)")

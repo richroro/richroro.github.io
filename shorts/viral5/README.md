@@ -5251,7 +5251,7 @@ Pexels와 Pixabay를 먼저 시도했지만, 두 사이트 모두 이 환경에 
 ```bash
 npm i && ./fetch.sh && longform/fetch_long.sh        # 글꼴·효과음·음악 + 롱폼용 음악·환경음(빗소리·바람·심해·방 소리)
 # longform/<id>/script.json, edit.json 작성. 원본 영상·사진은 edit.json "sources"의 file 경로에(media/… 등, 저장소에는 안 넣음)
-python3 longform/prep_long.py <id>                   # TTS·자막·컷 → src/longdata/<id>.json, public/long/<id>/, longform/<id>/chapters.txt
+python3 longform/prep_long.py <id>                   # TTS·자막·컷 → src/longdata/<id>.json, public/long/<id>/, upload/specs/<id>.json의 chapters·music
 npx remotion still src/index.ts <id>-thumb final/<id>-thumb.jpg --image-format=jpeg --jpeg-quality=88   # 썸네일 1280×720
 longform/render_long.sh <id>                         # final/<id>.mp4 (−14 LUFS, 95MB 이하)
 python3 longform/qa_long.py <id>                     # 검사 → out/review/<id>/
@@ -5332,7 +5332,7 @@ npx remotion studio                                  # 미리보기 (<id>, <id>-
  },
  "outro": {"dur": 20, "music": "Lost Frontier", "label": "다음 영상", "bg": {"type": "footage", "src": "smoker", "in": 0, "speed": 0.6}},
  "thumb": {"lines": ["수심 4,000m에서", "[찍힌] 것들"], "tag": "심해 다큐", "src": "jellyStill", "crop": [0.55, 0.5, 1.15], "circle": {"x": 900, "y": 360, "r": 190}},
- "description": {"head": ["…"], "tail": ["…"], "tags": ["#심해", "#다큐"]}
+ "description": {"fiction": true}
 }
 ```
 
@@ -5351,7 +5351,7 @@ npx remotion studio                                  # 미리보기 (<id>, <id>-
 | `chapters.<id>` | `music`(곡 이름, 또는 `{"track", "from", "gain", "restart"}`; 이웃 챕터와 같은 곡이면 끊기지 않고 이어짐), `ambience`(`"rain"`·`"wind"`·`"deep"`·`"room"`·`"hum"`(형광등·냉장고, 밤 편의점) 또는 `{"name", "gain"}`), `sfx`(`[["앵커", "pop", 0.4], …]`, `public/sfx/`의 효과음), `musicCuts`(`[{"at": "앵커", "dur": 1.5}]` 반전 직전 음악을 뚝 끊었다가 0.5초에 걸쳐 돌아옴), `shots` |
 | `outro` | `dur`(기본 20초), `music`, `label`, `bg`(샷 하나, 흐리게), `lineAt`(내레이션 시작, 기본 0.8초), `boxes`(엔드스크린 자리 표시, 기본 true) |
 | `thumb` | 썸네일(아래) |
-| `description` | `head`(설명 첫 줄들), `tail`, `tags`, `fiction`(기본 true: 그림 장면이 있으면 "창작" 문구) |
+| `description.fiction` | 새 spec을 만들 때 그림 장면이 있으면 `"fiction": true`로 둘지(기본 true). 설명글 자체는 `upload/specs/<id>.json`에 씁니다(아래) |
 
 **샷 시간**은 쇼츠의 `edit.json`과 같은 앵커입니다: `"c1a"`(그 줄 시작), `"c1a.햇빛"`(그 단어를 말하는 순간), `"c1a@end+0.2"`(그 줄 끝 0.2초 뒤), 숫자(챕터 첫 줄부터 몇 초). 챕터의 첫 샷은 `at`이 없어도 챕터 시작에 붙고, 샷은 다음 샷이 시작할 때까지 이어집니다. 모든 샷에 `fade`(그 샷으로 넘어가는 교차 시간, 0.3~0.5 권장, 0이면 컷), `lower`(왼쪽 아래 작은 이름표), `badge`(왼쪽 위 큰 노란 딱지, 예: "15위"), `credit`을 줄 수 있습니다.
 
@@ -5381,9 +5381,9 @@ npx remotion studio                                  # 미리보기 (<id>, <id>-
 - `"grid"` — 잡학 리스트: 흰 바탕, 위 검은 굵은 제목(`{빨강}`·`[key 색]`), 아래 동그란 색 아이콘 `items: [{icon, label}]` 6~8개.
 - 기본(사진·그림 + 큰 글씨) — 다큐·괴담: 어두운 실사 + 흰 2~3줄 + 노랑/빨강 강조어, 괴담은 `char`에 창백한 얼굴을 `side` 반대편에.
 
-### 챕터와 설명란 (`longform/<id>/chapters.txt`)
+### 챕터와 설명란 (`upload/specs/<id>.json` → `upload/make_desc.py`)
 
-prep이 쓰는 파일입니다: 업로드 제목, `description.head`, 유튜브 타임스탬프(첫 줄 0:00 "인트로" = 콜드 오픈+제목 카드, 이후 챕터 카드 시작 시각), 영상·사진 출처(`sources`의 `desc`·`url`, 다시 쓴 쇼츠와 그 출처), 지도를 쓰면 "지도: Natural Earth", 그림 장면이 있으면 창작 문구, 쓴 모든 음악의 Kevin MacLeod CC BY 4.0 문구(세로로 다시 쓴 쇼츠의 음악 포함), `description.tail`, 태그. 유튜브 챕터 규칙(0:00 시작, 3개 이상, 각 10초 이상)을 어기면 prep이 WARN을 냅니다.
+**연결: prep_long.py가 챕터 타임스탬프와 쓴 음악 제목을 `upload/specs/<id>.json`의 `chapters`·`music`에 채우고, `python3 upload/make_desc.py <id>`가 모든 채널 공통 형식의 설명글(`upload/txt/<id>.txt`, 음악 크레딧 자동)을 만듭니다.** 챕터는 0:00 "인트로"(콜드 오픈+제목 카드)와 챕터 카드 시작 시각이고, 음악은 챕터마다 고른 곡에 세로로 다시 쓴 쇼츠의 곡까지 더한 목록입니다(edit.json의 `music`은 믹스 설정이라 make_desc가 곡을 읽을 수 없어서 spec에 적음). spec이 없으면 prep이 `title`(script 제목), `sources`(edit.json `sources`의 `desc`, 지도, 직접 그림), `long: true`와 요약·태그 자리표시자로 새로 만들고, 있으면 `chapters`·`music`만 바꿉니다. 요약·태그·`channel`(다큐는 `docu`)·`pinned`는 사람이 씁니다(`upload/README.md`). 유튜브 챕터 규칙(0:00 시작, 3개 이상, 각 10초 이상)을 어기면 prep이 WARN을 내고, `qa_long.py`가 spec의 챕터를 다시 검사합니다.
 
 ### 렌더링과 용량 (`longform/render_long.sh`)
 
@@ -5431,7 +5431,7 @@ x265 2-pass에서 MP4로 바로 쓰면 전역 헤더 때문에 1차와 2차 설�
 
 ### 데모 `longdemo` (심해 다큐, 3분 14초)
 
-`final/longdemo.mp4`(37.1MB, x265 720p 1,363kb/s + AAC 160k, `MAXMB=38`로 렌더링해 저장소에 넣을 수 있게 함), `final/longdemo-thumb.jpg`(0.13MB), `longform/longdemo/chapters.txt`. 모든 기능을 한 편에서 씁니다.
+`final/longdemo.mp4`(37.1MB, x265 720p 1,363kb/s + AAC 160k, `MAXMB=38`로 렌더링해 저장소에 넣을 수 있게 함), `final/longdemo-thumb.jpg`(0.13MB), 설명글 `upload/specs/longdemo.json` → `upload/txt/longdemo.txt`(channel `docu`, long). 모든 기능을 한 편에서 씁니다.
 - 콜드 오픈 26초(뒤 챕터 다섯 문장과 그 장면) → 제목 카드 → 챕터 4개 → 아웃트로 20초(엔드스크린 자리)
 - 1장 「빛이 사라지는 곳」: NOAA 심해 영상(`footage`, `crop`·`push`, 0.4초 교차), 숫자 카드 3장(`fact`), 지도 카드(한국 → 마리아나 해구 점선 화살표), 난파선 사진 켄 번스(`photo`, 영상의 한 장면), 효과음, 환경음 `deep`
 - 2장 「탐사선의 새벽 세 시」: 그림 장면 — 썰 글 카드(`post`), Mochi 인물과 말풍선 대화(인물별 목소리 SunHi·Hyunsu), 표정 바뀜, 소품, 단톡방 폰, 문서 카드(근무 수칙), 빨간 자막 단어, "다음 날 아침..." 카드, 큰 글씨
@@ -5439,7 +5439,7 @@ x265 2-pass에서 MP4로 바로 쓰면 전역 헤더 때문에 1차와 2차 설�
 - 4장 「쇼츠로 다시 보기」: `deepsea` 쇼츠(`final/deepsea.mp4`)를 흐린 배경 위 세로로 재생(쇼츠 소리 그대로, 롱폼 음악 꺼짐)
 - 음악: Deep Haze → Investigations → Clean Soul → Gathering Darkness → Lost Frontier(챕터마다 교차, 목소리 밑 더킹)
 
-**출처**: 영상 모두 NOAA Ocean Exploration · NOAA/PMEL(미국 정부 저작물), `media/top6/*.json`에 페이지·파일 주소·구간이 있고(받는 법: `media/fetch_top.py`, 또는 각 `file_url`을 받아 `cut_from_original_seconds` 구간을 1920×1080 30fps로 자름, 브림스톤은 위 ROV 정보 줄을 잘라 냄), 설명란 출처 줄은 `chapters.txt`에 있습니다. 지도는 Natural Earth(퍼블릭 도메인), 그림은 직접 제작, 음악은 Kevin MacLeod(CC BY 4.0). 이야기(2장)는 창작입니다.
+**출처**: 영상 모두 NOAA Ocean Exploration · NOAA/PMEL(미국 정부 저작물), `media/top6/*.json`에 페이지·파일 주소·구간이 있고(받는 법: `media/fetch_top.py`, 또는 각 `file_url`을 받아 `cut_from_original_seconds` 구간을 1920×1080 30fps로 자름, 브림스톤은 위 ROV 정보 줄을 잘라 냄), 설명란 출처 줄은 `upload/txt/longdemo.txt`에 있습니다. 지도는 Natural Earth(퍼블릭 도메인), 그림은 직접 제작, 음악은 Kevin MacLeod(CC BY 4.0). 이야기(2장)는 창작입니다.
 
 `python3 longform/qa_long.py longdemo` 결과: 길이 3:13.6(타임라인과 일치) · −14.0 LUFS · 37.1MB · 검은 화면 0 · 마지막 프레임 밝기 39/255 · 내레이션 공백 0 · 무음 0 · 자막 가장 긴 줄 861px · 챕터 5개(0:00 인트로, 0:26, 1:02, 1:37, 2:21) · 썸네일 1280×720 0.13MB · 멈춘 화면 0. WARN 하나: 데모라 10~25분 목표보다 짧음.
 

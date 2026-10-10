@@ -5,7 +5,7 @@ Reads   longform/<id>/script.json   chapters of narration lines (see the README 
         longform/<id>/edit.json     the picture: sources, shots per chapter, cold open, cards, music, thumbnail
 Writes  public/long/<id>/voice/*.wav, clips/*.mp4, img/*, shorts/*.mp4   (git-ignored, rebuilt here)
         src/longdata/<id>.json + src/longdata/index.ts                   (the composition's data)
-        longform/<id>/chapters.txt                                       (YouTube timestamps + description skeleton)
+        upload/specs/<id>.json "chapters" and "music" (python3 upload/make_desc.py <id> writes the description)
 TTS takes are cached in build/long/<id>/tts/, so a re-run only synthesizes changed lines (--no-tts fails on a missing one).
 
 The Edge TTS call, its trimming and the syllable timing are voice_edge.py's own code, and the number reading
@@ -451,7 +451,7 @@ class Long:
         os.makedirs(f"{V}/src/longdata", exist_ok=True)
         json.dump(data, open(f"{V}/src/longdata/{self.id}.json", "w"), ensure_ascii=False, separators=(",", ":"))
         self.write_index()
-        self.write_chapters(data)
+        self.write_spec(data)
         nar = [L for L in lines.values() if L.get("syl")]
         sps = sum(L["syl"] for L in nar) / max(1e-6, sum(L["dur"] for L in nar))
         if not 5.5 <= sps <= 6.5: self.warn.append(f"narration runs {sps:.2f} syllables/s (long-form narration is usually 5.5-6.5)")
@@ -724,47 +724,32 @@ class Long:
             for i in ids: f.write(f"import {re.sub(r'[^A-Za-z0-9_]', '_', i)} from \"./{i}.json\";\n")
             f.write("export const LONGDATA = [" + ", ".join(re.sub(r"[^A-Za-z0-9_]", "_", i) for i in ids) + "] as unknown as LongData[];\n")
 
-    def write_chapters(self, data):
+    def write_spec(self, data):
+        """the YouTube chapters (and the music credits) go into upload/specs/<id>.json, which upload/make_desc.py turns
+        into the description in the channels' common format; other keys of an existing spec are left alone"""
         S, E = self.S, self.E
         stamps = [(0.0, E.get("introTitle", "인트로"))] + [(c["card"], c["title"]) for c in data["chapters"]]
-        errs = []
-        if len(stamps) < 3: errs.append("YouTube needs at least 3 chapters")
         for (a, _), (b, t) in zip(stamps, stamps[1:] + [(data["end"], "")]):
-            if b - a < 10: errs.append(f"chapter at {fmt_ts(a)} is {b - a:.1f} s (YouTube needs 10 s)")
-        for e in errs: self.warn.append(e)
-        D = E.get("description", {})
-        out = [S.get("title", ""), ""] + D.get("head", []) + [""]
-        out += [f"{fmt_ts(a)} {t}" for a, t in stamps] + [""]
-        srcs = []
-        for name, s in E.get("sources", {}).items():
-            if s.get("desc"): srcs.append(f"- {s['desc']}" + (f" {s['url']}" if s.get("url") else ""))
-        shorts_used = sorted({L["short"] for L in self.lines.values() if L.get("short")} |
-                             {sh.get("short") for C in E.get("chapters", {}).values() for sh in C.get("shots", []) if sh.get("type") == "relayout"})
-        if srcs or shorts_used:
-            out.append("[영상·사진 출처]")
-            out += srcs
-            for sid in shorts_used:
-                ed = self.short_edit(sid)
-                cr = ed.get("credit") or next((x["credit"] for x in ed.get("segments", []) + ed.get("clips", []) if x.get("credit")), None)
-                out.append(f"- 우리 쇼츠 「{sid}」 — {cr or '출처는 해당 쇼츠 설명란과 같음'}")
-            out.append("")
-        if E.get("mapUsed", any(s.get("kind") == "map" for s in self.shots if s["type"] == "card")):
-            out += ["지도: Natural Earth (public domain)", ""]
-        if any(s["type"] in ("scene", "post") for s in self.shots):
-            out += ["그림·캐릭터 직접 제작. 이야기는 창작이며 실제 인물·단체와 관계없습니다." if D.get("fiction", True) else "그림·캐릭터 직접 제작.", ""]
-        # a reused vertical short plays with its own music bed, which needs its credit line too
+            if b - a < 10: self.warn.append(f"chapter at {fmt_ts(a)} is {b - a:.1f} s (YouTube needs 10 s)")
+        if len(stamps) < 3: self.warn.append("YouTube needs at least 3 chapters")
+        # a reused vertical short plays with its own bed, which needs its credit too
         for L in self.lines.values():
             if L.get("short") and L.get("mode", "vertical") == "vertical":
                 m = self.short_edit(L["short"]).get("music")
                 for f in ([m["file"]] if isinstance(m, dict) else [x.get("src", "") for x in m] if isinstance(m, list) else []):
                     if "/music/" in "/" + f: self.music_tracks = sorted(set(self.music_tracks) | {os.path.splitext(os.path.basename(f))[0]})
-        out.append("[음악]")
-        for tr in self.music_tracks:
-            out += [f"\"{tr}\" Kevin MacLeod (incompetech.com)", "Licensed under Creative Commons: By Attribution 4.0 License", "http://creativecommons.org/licenses/by/4.0/", ""]
-        out += D.get("tail", [])
-        if D.get("tags"): out += ["", " ".join(D["tags"])]
-        open(f"{self.dir}/chapters.txt", "w").write("\n".join(out).rstrip() + "\n")
-
+        path = f"{V}/upload/specs/{self.id}.json"
+        spec = json.load(open(path)) if os.path.exists(path) else {}
+        if not spec:  # a new spec: placeholders for what a person writes, and the sources prep already knows
+            srcs = [s_["desc"] for s_ in E.get("sources", {}).values() if s_.get("desc")]
+            if any(s_["type"] == "card" and s_.get("kind") == "map" for s_ in self.shots): srcs.append("지도: Natural Earth")
+            if any(s_["type"] in ("scene", "post") for s_ in self.shots): srcs.append("그림·캐릭터 직접 제작")
+            spec = {"title": S.get("title") or "[제목]", "summary": "[요약 2~4문장, 60~320자]", "tags": ["[태그]"], "sources": srcs or ["[출처]"], "long": True}
+            if any(s_["type"] in ("scene", "post") for s_ in self.shots) and E.get("description", {}).get("fiction", True): spec["fiction"] = True
+        spec["chapters"] = [[fmt_ts(a), t] for a, t in stamps]
+        spec["music"] = self.music_tracks  # the beds are per chapter in edit.json, so prep lists the resolved titles here
+        os.makedirs(os.path.dirname(path), exist_ok=True)
+        json.dump(spec, open(path, "w"), ensure_ascii=False, indent=1); open(path, "a").write("\n")
 
 if __name__ == "__main__":
     args = [a for a in sys.argv[1:] if not a.startswith("--")]
