@@ -2040,3 +2040,69 @@ for id in life1 life2 life3 life4; do python3 qa_review.py $id; done   # 네 편
 > 출처: 노벨위원회 발표(서울신문·한국일보 보도), IceCube 공식 자료, NASA / 영상: NASA 고다드 우주비행센터 애니메이션 · 사진: John Hardin(CC BY 4.0), IceCube Collaboration 구조도(CC BY 4.0), 미국 국립과학재단(NSF). NASA·NSF가 이 영상을 보증하지 않습니다.
 > 음악: "Floating Cities" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
 > #노벨물리학상 #중성미자 #아이스큐브 #남극 #shorts
+
+### 2차: `life5`~`life8` (31~45초)
+
+같은 형식(검정 띠 제목 + 실사 영상·사진 + 한 줄 자막, Edge TTS InJoon +20%)입니다. 군 영상은 없습니다. `qa_review.py` 네 편 모두 FAIL·WARN 없음(30MB를 넘은 life5·life8은 CRF 22로 다시 인코딩). 출처 기록은 `media/life/sources2.json`과 각 `edit.json`의 `sources`에 있습니다.
+
+| id | 띠 제목 | 길이 | 내용 | 음악 |
+| --- | --- | --- | --- | --- |
+| `life5` | 신호등 노란불이 / 3초인 진짜 이유 | 37.5초 | 대부분 교차로가 3초 → 노란불은 “정지선 앞에서 멈추라”는 신호(시행규칙 별표 2) → 시속 50km는 멈추는 데 2.46초(KOTI) → 시속 70km는 5.9초, 딜레마존 → 2024년 대법원 “못 멈출 거리였어도 신호위반” → “밟는 시간이 아니라 줄이라는 시간” | Hustle |
+| `life6` | 비상구 표시가 / 초록색인 진짜 이유 | 35.1초 | “연기 속 초록이 잘 보여서”는 근거 부족(연기 실험에서 빨강·초록 비슷) → 국제표준에서 초록은 안전, 빨강은 금지·소방 장비 → 소방청 고시: 피난구유도등은 녹색 바탕에 백색 문자 → 달리는 사람 그림은 1970년대 일본 공모전 → 1980년대 ISO 채택 → 미국엔 빨간 EXIT도 많지만 한국은 초록 | Lightless Dawn |
+| `life7` | 볼펜 뚜껑에 / 구멍이 뚫린 진짜 이유 | 35.4초 | “잉크 마르지 말라고?” → 아님, ISO 11540 → 아이가 뚜껑을 들이마셔 기도가 막히는 위험 → 14세 이하용 펜 뚜껑은 크게(16mm 게이지) 또는 공기가 통하게 → 분당 8L, 지름 약 2mm 구멍 하나면 충분 → 질식을 완전히 막진 못해도 시간을 벎 → 한국 학용품 안전기준에도 마킹펜 뚜껑 질식 기준 → “뚜껑 씹는 버릇 있으세요?” | Scheming Weasel |
+| `life8` | 지하철 임산부 배려석이 / 분홍색인 진짜 이유 | 36.3초 | 2013.12 서울 지하철 1~8호선 칸당 2석 시작, 처음엔 엠블럼뿐 → 눈에 안 띄어 참여 저조 → 2015년 좌석·등받이·바닥까지 분홍 ‘핑크카펫’(새 생명을 품은 임산부 환영) → 임신 초기는 티가 안 남 → 2016년 1~8호선 7,140석 → “분홍 자리, 비워 두시나요?” | Heartwarming |
+
+#### 사실과 출처 (2026-10-10 확인)
+
+**life5 — 노란불 3초**
+- [한국교통연구원 카드뉴스 「황색신호와 딜레마존」 2025.5.21](https://www.koti.re.kr/user/bbs/cardnewsView.do?bbs_no=69012): “현실에서는 대부분의 신호교차로에서 3초의 황색 현시시간을 부여하고 있고”, “주행속도별(50km/h, 60km/h, 70km/h, 100km/h)로 각각 2.46초, 3.58초, 5.90초, 10~11초의 정지시간이 필요”, 딜레마존 정의. 출처는 KOTI 수시연구 「신호교차로 통행권 전환시간 정의 재정립 연구」.
+- 법령에는 황색 시간을 3초로 정한 조항이 없습니다(도로교통법 시행규칙 [별표 3]에도 없음). 그래서 “대부분 딱 3초”라고만 하고 화면에 “법정 시간은 아님”을 붙였습니다. 경찰청 「교통신호기 설치·관리 매뉴얼」 원문은 확인하지 못했습니다.
+- 황색 등화의 뜻: 도로교통법 시행규칙 [별표 2] — “차마는 정지선이 있거나 횡단보도가 있을 때는 그 직전이나 교차로의 직전에 정지하여야 하며, 이미 교차로에 차마의 일부라도 진입한 경우에는 신속히 교차로 밖으로 진행하여야 한다.”
+- 대법원 3부 판결(2024.5 보도): “교차로 진입 전 황색 신호로 바뀐 이상 차의 정지거리가 정지선까지의 거리보다 길 것으로 예상되더라도, 교차로 직전에 정지하지 않았다면 신호를 위반했다고 보는 게 타당하다” — [세계일보 2024.5.13](https://www.segye.com/newsView/20240513501777), [문화일보](https://www.munhwa.com/article/11429407). 사건은 제한속도 40km/h 도로에서 61km/h로 달리던 차가 정지선 약 8.3m 앞에서 황색으로 바뀐 경우(1심 무죄 → 파기환송).
+
+**life6 — 비상구 초록**
+- 소방청 고시 「유도등의 형식승인 및 제품검사의 기술기준」(시행 2024.4.1., 제2024-6호) 제2조 2호: 피난구유도등은 “녹색등화의 유도등”, 제9조 ②: “유도등의 표시면 색상은 피난구유도등인 경우 녹색바탕에 백색문자로, 통로유도등인 경우는 백색바탕에 녹색문자를 사용하여야 한다.”, 제9조 ①: “국제표준화기구(ISO)의 기준에 의한 그림문자를 준용” (law.go.kr 행정규칙).
+- ISO 3864(안전색: 초록 = 안전 상태, 빨강 = 금지·소방 장비), ISO 7010 E001(비상구 그림문자). 달리는 사람 그림은 1978~79년 일본 소방청 공모에서 오타 유키오가 디자인, 1980년대 ISO 채택(채택 연도는 자료마다 1984·1985·1987로 달라 “1980년대”로만 표기).
+- “연기 속에서 초록이 더 잘 보인다”는 통설: 연기 챔버 연구 요약에서 빨강·초록 표지의 가시성은 비슷하고 밝기·연기 농도가 더 중요했다는 결과(예: [Hull 대학 논문](https://hull-repository.worktribe.com/OutputFile/4213042), [arXiv 2404.11439](https://arxiv.org/abs/2404.11439)). 그래서 “연구로 뒷받침되지 않는다”가 아니라 “연기 실험에선 빨강과 초록이 비슷하게 보였다”고만 말합니다.
+- 미국 비상구 표시는 빨강·초록이 함께 쓰입니다(“빨간 EXIT도 많다”).
+
+**life7 — 볼펜 뚜껑 구멍**
+- ISO 11540:2021 (Pens and refill caps for children up to 14 years — 3판): 서문 “If a child inhales a pen cap it might become lodged below the larynx and block the trachea. The risk of asphyxiation can be reduced if the pen cap is ventilated or too large to enter the airway.” 4.2: 16mm 링 게이지를 통과하지 못하는 뚜껑은 흡입 위험이 없는 크기, 4.3: “caps shall permit a minimum air flow of 8 l/min … with a maximum pressure drop of 1,33 kPa”, 비고: 단일 원형 구멍 “approximately 3,4 mm²”이면 충족 예상(지름 약 2.1mm). 서문은 목적을 질식을 “delay … pending medical intervention”으로 설명 → “병원에 갈 시간을 벌어 준다”.
+- 한국: 산업통상자원부 공고 제2016-492호(학용품 안전기준 개정안, [WTO 통보문](https://members.wto.org/crnattachments/2016/TBT/KOR/16_4257_01_x.pdf)) “마킹펜류의 뚜껑은 6.8에 따라 시험했을 때 적합하거나, 질식 위험에 대한 경고 표시를 하여야 함”. 부록 수치와 현행 고시 번호는 확인하지 못해 수치 없이 “질식 기준이 있다”고만 말합니다.
+- “잉크 마름·기압 때문”은 ISO가 밝힌 목적이 아니라 화면에서 “아닙니다”로 처리했습니다.
+
+**life8 — 임산부 배려석 분홍**
+- [서울시 교통 2013](https://news.seoul.go.kr/traffic/archives/13937): “12.2(월)부터 지하철 1~8호선 열차 1칸 당 2석 씩 ‘임산부 배려석’을 본격 운영”, 처음엔 30cm 엠블럼 표시.
+- [서울시 미디어허브 2015.7.23](https://mediahub.seoul.go.kr/archives/894957): “좌석과 등받이, 바닥까지 ‘분홍색’으로 연출해 주목도를 높이기로”, 핑크카펫은 “미래 주인공이 될 새 생명을 잉태한 임산부를 환영한다는 뜻”, “입덧 등으로 힘든 초기 임신부는 외관상으론 표시가 나지 않아 자리를 양보 받지 못하는 경우가 많다”.
+- [뉴스토마토 2016.1.15](https://www.newstomato.com/ReadNews.aspx?no=615973): 배려석 “인지 및 참여도가 낮게 나타나면서” 확대, “1~8호선 전체 임산부 배려석 7,140석”(2016년 기준, 현재 수는 확인 못 함).
+
+#### 영상·사진과 라이선스
+- Pexels License — life5: 33825909 SHOX ART, 3999410 K, 17041886 Ben Garves, 5921059 Aleks Magnusson, 1390281 Zuzanna Musial, 31801544 Paul Bill(광화문), 34507814 JMT 35, 39573529 Yasemin Gül / life6: 사진 31827772 Nischal Pradhan, 37643871 Norbert Szomszéd, 24702725 Jakub Zerdzicki, 영상 7644222 Yaroslav Shuraev, 3134591 Caleb Oquendo, 16657022 Erik Mclean, 14595546 Mustafa Akkuş, 28957437 Paolo San, 31801555 Paul Bill(서울 지하철) / life7: 6878203 cottonbro studio, 28405798 Адам Аушев, 5601055·5599021 Allan Mas, 12760956 Mizuno K, 3678073 cottonbro studio, 6324531 Vanessa Garcia / life8: 사진 36621878 wal_ 172619(서울 지하철), 영상 31801555 Paul Bill, 36302344 Earth Photart, 7677215 PNW Production, 27355485 Orhan Pergel, 8772870 KADO FUETA.
+- Wikimedia Commons — life7: [02](https://commons.wikimedia.org/wiki/File:02-BICcristal2008-03-26.jpg)·[04](https://commons.wikimedia.org/wiki/File:04-BICcristal2008-03-26.jpg)·[05-BICcristal2008-03-26.jpg](https://commons.wikimedia.org/wiki/File:05-BICcristal2008-03-26.jpg), Trounce, CC BY 3.0(GFDL과 이중 라이선스 중 CC BY 3.0 선택; 같은 범주의 Carlos Delgado 사진들은 CC BY-SA라 쓰지 않음). 화면 표기 “사진: Trounce (CC BY 3.0)”. life8: [Designated seats for pregnant women of Seoul Metro Line 1 in 2018.jpg](https://commons.wikimedia.org/wiki/File:Designated_seats_for_pregnant_women_of_Seoul_Metro_Line_1_in_2018.jpg), Garam, {{Attribution}}(“allows anyone to use it for any purpose, provided that the copyright holder is properly attributed”; 국내 신문·페이스북 약관과는 호환되지 않는다는 안내가 있어 그 플랫폼에는 올리지 말 것). 화면 표기 “사진: Garam (위키미디어 공용)”.
+- 음악: Kevin MacLeod (incompetech.com), CC BY 4.0.
+
+#### 업로드 문구
+
+**life5** — 신호등 노란불이 3초인 진짜 이유 🚦
+> 대부분의 교차로 노란불은 3초. 시속 50km면 멈추는 데 2.46초라 충분하지만, 시속 70km면 5.9초가 필요해 ‘딜레마존’이 생깁니다(한국교통연구원). 노란불은 ‘정지선 앞에서 멈추라’는 신호이고(도로교통법 시행규칙 별표 2), 2024년 대법원은 못 멈출 거리였어도 정지선 앞에서 안 멈췄다면 신호위반이라고 봤습니다. 노란불 3초는 밟는 시간이 아니라 미리 줄이라는 시간!
+> 영상: Pexels (SHOX ART, K, Ben Garves, Aleks Magnusson, Zuzanna Musial, Paul Bill, JMT 35, Yasemin Gül)
+> 음악: "Hustle" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
+> #신호등 #노란불 #딜레마존 #운전상식 #shorts
+
+**life6** — 비상구 표시가 초록색인 진짜 이유 🟩
+> 비상구 표시가 초록인 건 연기 속에서 더 잘 보여서가 아니라 국제 약속 때문입니다. 국제표준(ISO 3864·7010)에서 초록은 ‘안전’, 빨강은 ‘금지·소방 장비’. 우리 소방청 기준도 피난구유도등은 녹색 바탕에 흰 문자로 정해 뒀어요. 달리는 사람 그림은 1970년대 일본 공모전에서 나와 1980년대 국제표준이 됐습니다. (2026년 10월 기준)
+> 영상·사진: Pexels (Nischal Pradhan, Norbert Szomszéd, Jakub Zerdzicki, Yaroslav Shuraev, Caleb Oquendo, Erik Mclean, Mustafa Akkuş, Paolo San, Paul Bill)
+> 음악: "Lightless Dawn" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
+> #비상구 #생활상식 #소방 #픽토그램 #shorts
+
+**life7** — 볼펜 뚜껑에 구멍이 뚫린 진짜 이유 🖊️
+> 볼펜 뚜껑 끝 구멍은 잉크 때문이 아니라 아이 안전 때문입니다. 국제표준 ISO 11540은 14세 이하 아이가 쓸 만한 펜의 뚜껑을 충분히 크게 만들거나, 분당 8리터 이상 공기가 통하게 하라고 정합니다. 지름 약 2mm 구멍 하나면 충분하고, 질식을 완전히 막진 못해도 병원에 갈 시간을 벌어 줘요. 우리 학용품 안전기준에도 마킹펜 뚜껑 질식 기준이 있습니다. 볼펜 뚜껑 씹는 버릇, 있으신가요?
+> 영상: Pexels (cottonbro studio, Адам Аушев, Allan Mas, Mizuno K, Vanessa Garcia) · 사진: Trounce, Wikimedia Commons (CC BY 3.0)
+> 음악: "Scheming Weasel (faster version)" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
+> #볼펜 #생활상식 #어린이안전 #ISO #shorts
+
+**life8** — 지하철 임산부 배려석이 분홍색인 진짜 이유 🩷
+> 서울 지하철 임산부 배려석은 2013년 12월 1~8호선 칸당 2석으로 시작했지만, 처음엔 작은 엠블럼뿐이라 눈에 잘 띄지 않았습니다. 그래서 서울시는 2015년 좌석·등받이·바닥까지 분홍으로 바꾼 ‘핑크카펫’을 도입했어요. 새 생명을 품은 임산부를 환영한다는 뜻이고, 티가 나지 않는 임신 초기 임산부를 배려하려는 것. 2016년엔 1~8호선 7,140석으로 늘었습니다(서울시 발표). 여러분은 분홍 자리, 비워 두시나요?
+> 사진: Garam, Wikimedia Commons · 영상·사진: Pexels (wal_ 172619, Paul Bill, Earth Photart, PNW Production, Orhan Pergel, KADO FUETA)
+> 음악: "Heartwarming" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
+> #임산부배려석 #핑크카펫 #지하철 #서울지하철 #shorts

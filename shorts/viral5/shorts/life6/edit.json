@@ -1,0 +1,405 @@
+{
+ "titleStyle": "band",
+ "captionY": 1640,
+ "credit": "영상: Pexels",
+ "sources": {
+  "signph": {
+   "file": "ph31827772.jpg",
+   "credit": "사진: Pexels",
+   "label": "Pexels photo 31827772 by Nischal Pradhan (Pexels License)",
+   "url": "https://www.pexels.com/photo/green-emergency-exit-sign-with-lighting-fixture-31827772/",
+   "creator": "Nischal Pradhan",
+   "license": "Pexels License"
+  },
+  "darkph": {
+   "file": "ph37643871.jpg",
+   "credit": "사진: Pexels",
+   "label": "Pexels photo 37643871 by Norbert Szomszéd (Pexels License)",
+   "url": "https://www.pexels.com/photo/green-emergency-exit-sign-in-dark-corridor-37643871/",
+   "creator": "Norbert Szomszéd",
+   "license": "Pexels License"
+  },
+  "ceilph": {
+   "file": "ph24702725.jpg",
+   "credit": "사진: Pexels",
+   "label": "Pexels photo 24702725 by Jakub Zerdzicki (Pexels License)",
+   "url": "https://www.pexels.com/photo/evacuation-sign-hanging-under-ceiling-24702725/",
+   "creator": "Jakub Zerdzicki",
+   "license": "Pexels License"
+  },
+  "sign": {
+   "file": "px7644222.mp4",
+   "credit": "영상: Pexels",
+   "label": "Pexels video 7644222 by Yaroslav Shuraev (Pexels License)",
+   "url": "https://www.pexels.com/video/an-exit-signage-at-the-building-7644222/",
+   "creator": "Yaroslav Shuraev",
+   "license": "Pexels License"
+  },
+  "red1": {
+   "file": "px3134591.mp4",
+   "credit": "영상: Pexels",
+   "label": "Pexels video 3134591 by Caleb Oquendo (Pexels License)",
+   "url": "https://www.pexels.com/video/a-lighted-exit-sign-for-direction-3134591/",
+   "creator": "Caleb Oquendo",
+   "license": "Pexels License"
+  },
+  "red2": {
+   "file": "px16657022.mp4",
+   "credit": "영상: Pexels",
+   "label": "Pexels video 16657022 by Erik Mclean (Pexels License)",
+   "url": "https://www.pexels.com/video/a-red-exit-sign-in-the-dark-16657022/",
+   "creator": "Erik Mclean",
+   "license": "Pexels License"
+  },
+  "smoke": {
+   "file": "px14595546.mp4",
+   "credit": "영상: Pexels",
+   "label": "Pexels video 14595546 by Mustafa Akkuş (Pexels License)",
+   "url": "https://www.pexels.com/video/people-walking-in-corridor-in-green-lights-14595546/",
+   "creator": "Mustafa Akkuş",
+   "license": "Pexels License"
+  },
+  "fog": {
+   "file": "px28957437.mp4",
+   "credit": "영상: Pexels",
+   "label": "Pexels video 28957437 by Paolo San (Pexels License)",
+   "url": "https://www.pexels.com/video/dramatic-foggy-light-show-in-dark-hallway-28957437/",
+   "creator": "Paolo San",
+   "license": "Pexels License"
+  },
+  "seoul": {
+   "file": "px31801555.mp4",
+   "credit": "영상: Pexels",
+   "label": "Pexels video 31801555 by Paul Bill (Pexels License)",
+   "url": "https://www.pexels.com/video/urban-subway-commuters-boarding-a-train-31801555/",
+   "creator": "Paul Bill",
+   "license": "Pexels License"
+  }
+ },
+ "clips": [
+  {
+   "src": "signph",
+   "from": "hook",
+   "label": "초록 피난구 표시",
+   "zoom": [
+    1.0,
+    1.05
+   ],
+   "audio": 0,
+   "crop": [
+    0.55,
+    0.5,
+    1.0
+   ]
+  },
+  {
+   "src": "red1",
+   "from": "hook.초록색일까요",
+   "label": "빨간 EXIT",
+   "zoom": [
+    1.0,
+    1.05
+   ],
+   "audio": 0,
+   "in": 3,
+   "crop": [
+    0.55,
+    0.5,
+    1.0
+   ]
+  },
+  {
+   "src": "smoke",
+   "from": "myth",
+   "label": "연기 낀 복도",
+   "zoom": [
+    1.0,
+    1.06
+   ],
+   "audio": 0,
+   "in": 1,
+   "crop": [
+    0.5,
+    0.5,
+    1.0
+   ]
+  },
+  {
+   "src": "fog",
+   "from": "myth.실험에선",
+   "label": "연기 낀 복도",
+   "zoom": [
+    1.0,
+    1.06
+   ],
+   "audio": 0,
+   "in": 12,
+   "crop": [
+    0.5,
+    0.5,
+    1.0
+   ]
+  },
+  {
+   "src": "red1",
+   "from": "iso",
+   "label": "빨간 EXIT",
+   "zoom": [
+    1.0,
+    1.06
+   ],
+   "audio": 0,
+   "in": 2,
+   "crop": [
+    0.55,
+    0.5,
+    1.0
+   ]
+  },
+  {
+   "src": "darkph",
+   "from": "iso.국제표준에서",
+   "label": "초록 표시",
+   "zoom": [
+    1.0,
+    1.06
+   ],
+   "audio": 0,
+   "crop": [
+    0.5,
+    0.5,
+    1.0
+   ]
+  },
+  {
+   "src": "red2",
+   "from": "iso.빨강은",
+   "label": "빨간 EXIT",
+   "zoom": [
+    1.0,
+    1.06
+   ],
+   "audio": 0,
+   "in": 1,
+   "crop": [
+    0.5,
+    0.5,
+    1.0
+   ]
+  },
+  {
+   "src": "seoul",
+   "from": "kr",
+   "label": "서울 지하철",
+   "zoom": [
+    1.0,
+    1.06
+   ],
+   "audio": 0,
+   "in": 0.5,
+   "crop": [
+    0.5,
+    0.5,
+    1.0
+   ]
+  },
+  {
+   "src": "sign",
+   "from": "kr.피난구",
+   "label": "피난구 유도등",
+   "zoom": [
+    1.0,
+    1.03
+   ],
+   "audio": 0,
+   "in": 8.6,
+   "crop": [
+    0.62,
+    0.45,
+    1.5
+   ]
+  },
+  {
+   "src": "signph",
+   "from": "man",
+   "label": "달리는 사람",
+   "zoom": [
+    1.0,
+    1.04
+   ],
+   "audio": 0,
+   "crop": [
+    0.55,
+    0.5,
+    1.6
+   ]
+  },
+  {
+   "src": "darkph",
+   "from": "man.일본",
+   "label": "초록 표시",
+   "zoom": [
+    1.0,
+    1.05
+   ],
+   "audio": 0,
+   "crop": [
+    0.5,
+    0.5,
+    1.3
+   ]
+  },
+  {
+   "src": "fog",
+   "from": "man.국제표준이",
+   "label": "복도",
+   "zoom": [
+    1.0,
+    1.06
+   ],
+   "audio": 0,
+   "in": 3,
+   "crop": [
+    0.5,
+    0.5,
+    1.0
+   ]
+  },
+  {
+   "src": "smoke",
+   "from": "why",
+   "label": "복도의 사람들",
+   "zoom": [
+    1.0,
+    1.06
+   ],
+   "audio": 0,
+   "in": 7,
+   "crop": [
+    0.5,
+    0.5,
+    1.0
+   ]
+  },
+  {
+   "src": "ceilph",
+   "from": "why.한눈에",
+   "label": "천장 표시",
+   "zoom": [
+    1.0,
+    1.06
+   ],
+   "audio": 0,
+   "crop": [
+    0.7,
+    0.35,
+    1.2
+   ]
+  },
+  {
+   "src": "red2",
+   "from": "end",
+   "label": "빨간 EXIT",
+   "zoom": [
+    1.0,
+    1.06
+   ],
+   "audio": 0,
+   "in": 3,
+   "crop": [
+    0.5,
+    0.5,
+    1.0
+   ]
+  },
+  {
+   "src": "sign",
+   "from": "end.우리나라",
+   "label": "피난구 유도등",
+   "zoom": [
+    1.0,
+    1.06
+   ],
+   "audio": 0,
+   "crop": [
+    0.62,
+    0.45,
+    1.5
+   ],
+   "in": 9.4
+  }
+ ],
+ "marks": [
+  {
+   "kind": "circle",
+   "x": 540,
+   "y": 940,
+   "r": 230,
+   "from": "man",
+   "to": "man.일본"
+  }
+ ],
+ "stickers": [
+  {
+   "text": "소방청 고시 「유도등의 형식승인 및 제품검사의 기술기준」 제9조",
+   "from": "kr.피난구",
+   "to": "man-0.1",
+   "y": 540,
+   "size": 30
+  },
+  {
+   "text": "ISO 7010 E001 · ISO 3864",
+   "from": "iso.국제표준에서",
+   "to": "kr-0.1",
+   "y": 540,
+   "size": 40,
+   "bg": "#fff"
+  }
+ ],
+ "sfx": [
+  [
+   "myth",
+   "whoosh",
+   0.4
+  ],
+  [
+   "iso",
+   "riser",
+   0.4
+  ],
+  [
+   "iso.국제표준에서",
+   "ding",
+   0.5
+  ],
+  [
+   "kr",
+   "whoosh",
+   0.4
+  ],
+  [
+   "man",
+   "pop",
+   0.6
+  ],
+  [
+   "why",
+   "whoosh",
+   0.4
+  ],
+  [
+   "end",
+   "whoosh",
+   0.4
+  ]
+ ],
+ "punches": [
+  "iso.국제표준에서"
+ ],
+ "flashes": [],
+ "music": {
+  "file": "music/Lightless Dawn.mp3",
+  "gain": 0.1,
+  "start": 0
+ }
+}
