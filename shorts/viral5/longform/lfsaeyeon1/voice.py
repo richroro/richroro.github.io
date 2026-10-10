@@ -10,6 +10,7 @@ voice, and puts longer pauses where a scene or chapter turns.
 
 usage: python3 longform/lfsaeyeon1/voice.py [--script-only] [--voices cast.json]
 --voices replaces entries of VOICES from a JSON file for this run (A/B; script.json keeps the cast it was written with).
+VOICE_ENGINE=azure reads the Edge voices with the same-named Azure voices.
 An entry with "engine" (README "음성 v2") is read by voice_engine.py (cached in build/tts_cache/, word times aligned).
 """
 import asyncio, difflib, hashlib, json, os, re, subprocess, sys, wave
@@ -89,7 +90,7 @@ async def synth(text, v):
     import edge_tts, ssl, edge_tts.communicate as etc
     ca = os.environ.get("SSL_CERT_FILE")  # edge-tts trusts only certifi's bundle; behind a TLS-inspecting proxy use the system's
     if ca and os.path.exists(ca) and hasattr(etc, "_SSL_CTX"): etc._SSL_CTX = ssl.create_default_context(cafile=ca)
-    com = edge_tts.Communicate(text, v["edge"], rate=v["rate"], pitch=v["pitch"], boundary="WordBoundary", proxy=os.environ.get("HTTPS_PROXY") or None)
+    com = edge_tts.Communicate(text, v["edge"], rate=v.get("rate", "+0%"), pitch=v.get("pitch", "+0Hz"), boundary="WordBoundary", proxy=os.environ.get("HTTPS_PROXY") or None)
     audio, words = bytearray(), []
     async for ch in com.stream():
         if ch["type"] == "audio":
@@ -122,6 +123,9 @@ def main():
     S = script()
     if "--voices" in sys.argv:  # after script(): script.json keeps the cast it was written with
         VOICES.update(json.load(open(sys.argv[sys.argv.index("--voices") + 1])))
+    if os.environ.get("VOICE_ENGINE", "edge") != "edge":  # VOICE_ENGINE=azure: the same voice names on Azure
+        for r, v in VOICES.items():
+            if v.get("engine", "edge") == "edge": VOICES[r] = dict(v, engine=os.environ["VOICE_ENGINE"])
     if "--script-only" in sys.argv:
         print(len(S["lines"]), "lines"); return
     out = f"{ROOT}/build/{SID}"; cache = f"{out}/cache"
@@ -131,7 +135,7 @@ def main():
     for L in S["lines"]:
         v = VOICES[L["voice"]]; spoken = L["say"].replace("|", "")
         key = hashlib.sha1(json.dumps([spoken, v], ensure_ascii=False).encode()).hexdigest()[:16]
-        if v.get("engine", "edge") != "edge" or v.get("post") or v.get("tempo"):  # 음성 v2: voice_engine.py reads, trims, aligns
+        if v.get("engine", "edge") != "edge" or v.get("post") or v.get("tempo") or v.get("sps"):  # 음성 v2: voice_engine.py reads, trims, aligns
             sys.path.insert(0, ROOT); import voice_engine
             x, words = voice_engine.synth(spoken if v.get("engine", "edge") == "edge" else voice_engine.ko_text(spoken), v)
         elif not os.path.exists(f"{cache}/{key}.json"):
@@ -141,7 +145,7 @@ def main():
                 except Exception as e:  # the service drops a connection now and then
                     print("retry", L["id"], e); import time; time.sleep(2 ** attempt)
             open(f"{cache}/{key}.mp3", "wb").write(mp3); json.dump(words, open(f"{cache}/{key}.json", "w"))
-        if not (v.get("engine", "edge") != "edge" or v.get("post") or v.get("tempo")):
+        if not (v.get("engine", "edge") != "edge" or v.get("post") or v.get("tempo") or v.get("sps")):
             x = decode(open(f"{cache}/{key}.mp3", "rb").read()); words = json.load(open(f"{cache}/{key}.json"))
             x, words = trim(x, words)
         dur = len(x) / SR

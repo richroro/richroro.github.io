@@ -6496,3 +6496,153 @@ hanban2의 힌남노 9일 플립북(`hinnamnor_wv_wide_sequence.mp4`)은 `media/
 
 고정 댓글: 여러분 동네 까치는 길조인가요, 해조인가요? 🐦
 
+
+## 음성 v2 (목소리 조사·비교 시험·엔진)
+
+사용자 요청은 "음성도 인기 영상 음성처럼 개선해줘"였다.
+- 조사: `research/research-voice.md`, `.csv`
+- 비교 시험 도구: `voicelab/`
+- 엔진: `voice_engine.py`
+- A/B 파일: `final/voice_ab/`
+- **사용자가 A/B를 듣고 고를 때까지 기존 쇼츠는 다시 녹음하지 않는다.** voices에 `"engine"`이 없는 대본은 전과 똑같이 Edge로 만들어진다.
+
+### 무엇을 알았나
+
+- **히트 쇼츠는 유료 TTS를 크레딧 없이 쓴다(*추정*).**
+  - 설명란을 직접 읽은 26편에 TTS 제품명이 하나도 없다.
+  - 업체 사례 23건은 Typecast다. 캐릭터는 발키리 5, 도한 3, 그 밖에 하영·최정·한나 등이다.
+  - Typecast는 유료 플랜이면 출처 표기가 필요 없다.
+- **롱폼 사연·괴담·수면 낭독의 히트는 사람 목소리다.** 제목에 "성우 이지선 낭독", "직접 녹음, AI아님", "[성우 버전]"을 내세우고, 사연툰은 남녀 성우를 따로 쓴다.
+- **우리 목소리의 문제**(측정)
+  - 썰 내레이션이 너무 빠르다(SunHi +28% = 7.8음절/초, 업체 권장 1.1배 ≈ 6.8~7.3).
+  - 인물을 음높이 조작(±4~20Hz)으로만 나눠서 모든 여자 인물이 같은 SunHi다.
+  - 예측 자연스러움이 가장 낮은 줄이 지금의 썰 내레이션이다(MOS 2.3).
+- **약관 문제**
+  - 지금 쓰는 Edge 읽기 서비스(edge-tts)는 Edge 안에 든 토큰을 밖에서 쓴다. Edge 사용권 계약 §1.3과 §2.8(f)가 금지하는 행위다.
+  - 수익화 영상에 쓸 근거가 없다(research-voice.md 6절).
+  - 같은 목소리의 정식 서비스는 Azure AI Speech이고, F0 무료 등급이 월 50만 자라 우리 분량은 $0다.
+- 시험 환경 연결: 이 환경에서는 Edge 음성 서버에 연결된다. 실패 원인은 차단이 아니라 TLS였다(edge-tts가 certifi 인증서만 믿음). 지금은 세 스크립트가 `SSL_CERT_FILE`을 따른다.
+
+### 비교 시험 (12줄, 객관 지표. 아무도 듣지 못했으니 최종 선택은 귀로)
+
+| 후보 | MOS(예측) | CER | 목표 속도 오차 | 음높이 폭 내레이션/대사 | RTF(CPU 4코어) | 판정 |
+|---|---|---|---|---|---|---|
+| **Supertonic 3** (오픈 모델, 키 없음) | **3.80** | 4.5% | 6% | 11.4 / 10.7반음 | 합성 0.27 + 자막 정렬 1.1 | A/B 후보 |
+| **Azure 같은 목소리 (지금은 edge-tts로 미리 듣기)** = `edge_tuned`: 다국어 목소리로 인물 분리, 음높이 조작 없음, 형식 속도 | 3.41 | 2.8% | **2%** | 17.1 / 10.6 | 0.2 | A/B 후보 |
+| Edge 지금 (A) | 3.36 | **2.0%** | 17% | **18.1 / 15.6** | 0.2 | 기준 |
+| Qwen3-TTS 0.6B | 2.59 | 12.3% | 2% | 16.7 / 7.0 | 약 5 | 버림(남자 한국어 화자 없음) |
+| Qwen3-TTS 1.7B, Chatterbox, CosyVoice-SFT | 1줄만 시험 | | | | 13 | 버림(느림, CosyVoice CER 44%) |
+| MeloTTS 한국어 | - | | | | | 제외(필요한 BERT가 상업 사용에 MOU 요구) |
+
+- 지표의 뜻, 변화마다 효과가 있었는지, 라이선스는 `research/research-voice.md` 4절에 있다.
+- 줄별 점수는 `voicelab/results.csv`에 있다.
+- 후처리 체인(고역 통과, 존재감 대역 올림, 압축, 치찰음 감소)은 예측 MOS를 올리지 못해서 기본으로 끈다.
+
+### 형식별 설정 (voices 항목)
+
+속도는 `"sps"`(줄 전체 음절/초)로 적는다. 엔진이 줄마다 한 번 시험 녹음을 해서 Edge의 `rate`, Supertonic의 `speed`, 그 밖의 `tempo`를 맞춘다. Supertonic `speed`는 1.2에서 멈추고 나머지는 시간 늘이기로 처리한다. 1.2를 넘기면 글자를 삼켰다.
+
+| 형식 | sps | pauses(line/turn/punch, 초) |
+|---|---|---|
+| 썰 쇼츠 | 6.8 | 0.14 / 0.24 / 0.5 |
+| 정보 쇼츠 | 7.2, 훅 줄은 7.8 | 0.16 / 0.16 / 0.4 |
+| 낙서 짤툰 | 7.6 | 0.12 / 0.2 / 0.4 |
+| ○○ 특 | 7.2 | 0.25 / 0.25 / 0.4 |
+| 괴담 | 5.2 | 0.3 / 0.3 / 0.75 |
+| 사연툰 롱폼 | 내레이션 5.6, 대사 6.0 | lfsaeyeon1/voice.py의 장면 쉼 규칙 그대로 |
+| 다큐 롱폼 | 5.2 | 롱폼 키트의 `gap` 그대로 |
+
+예(썰 쇼츠, Supertonic):
+
+```json
+"voices": {
+  "nar": {"engine": "supertonic", "voice": "F1", "sps": 6.8},
+  "me":  {"engine": "supertonic", "voice": "F1", "sps": 6.8},
+  "gma": {"engine": "supertonic", "voice": "F3", "sps": 6.8},
+  "gpa": {"engine": "supertonic", "voice": "M3", "sps": 6.8}
+},
+"pauses": {"line": 0.14, "turn": 0.24, "punch": 0.5}
+```
+
+### 배역표
+
+| 역할 | Supertonic 3 | Azure 같은 목소리 (A/B는 edge-tts로 미리 듣기) | Azure로 갈 때 더 쓸 수 있는 목소리 |
+|---|---|---|---|
+| 썰·○○ 특 내레이터, '나'(여) | F1 | fr-FR-VivienneMultilingualNeural | ko-KR-SunHiNeural, JiMinNeural |
+| 젊은 여자, 친구, 신난 대사 | F2 | en-US-AvaMultilingualNeural | ko-KR-SeoHyeonNeural |
+| 엄마, 할머니, 어머님(차분, 슬픔) | F3 | de-DE-SeraphinaMultilingualNeural | ko-KR-SoonBokNeural |
+| 버럭 엄마, 형님(빠르고 높음) | F4 | en-US-EmmaMultilingualNeural | ko-KR-YuJinNeural |
+| 젊은 남자, 남편, 다큐 내레이터 | M1 | ko-KR-HyunsuMultilingualNeural | ko-KR-GookMinNeural |
+| 정보 쇼츠 내레이터, 짤툰 내레이터 | M4 | ko-KR-InJoonNeural | ko-KR-InJoonNeural |
+| 괴담 내레이터(낮고 평평) | M5 | ko-KR-HyunsuMultilingualNeural | ko-KR-BongJinNeural |
+| 할아버지, 아빠 | M3 | fr-FR-RemyMultilingualNeural | ko-KR-BongJinNeural |
+
+- Azure 열은 목소리 목록에서 고른 것이다. 들어 보지 못했으니 키를 받으면 `voicelab/screen.py`로 다시 고른다.
+- `edge_tuned`의 여자 목소리 3개는 외국어 목소리가 한국어를 읽는 것이다. 받아쓰기 오류는 0~5%였지만 억양은 귀로 확인해야 한다.
+
+### A/B 파일 (`final/voice_ab/`)
+
+| 영상 | A(지금 Edge) | B: Supertonic 3 | C: Azure 같은 목소리 (지금은 edge-tts로 미리 듣기) |
+|---|---|---|---|
+| 썰 `sseol16` (인물 4명) | `final/sseol16.mp4` | `sseol16-supertonic.mp4` | `sseol16-edge_tuned.mp4` |
+| 정보 `issue4` | `final/issue4.mp4` | `issue4-supertonic.mp4` | `issue4-edge_tuned.mp4` |
+| 괴담 `horror6` | `final/horror6.mp4` | `horror6-supertonic.mp4` | `horror6-edge_tuned.mp4` |
+| 롱폼 `lfsaeyeon1` 첫 1분(720p) | `lfsaeyeon1-1min-edge_now.mp4` | `lfsaeyeon1-1min-supertonic.mp4` | `lfsaeyeon1-1min-edge_tuned.mp4` |
+| 12줄 샘플 시트 | `samples-edge_now.mp3` | `samples-supertonic.mp3` | `samples-edge_tuned.mp3` |
+
+- 쇼츠는 평소처럼 렌더했다. 영상당 30MB 이하이고, 넘는 것은 CRF 23으로 다시 인코딩했다.
+- 샘플 시트는 12줄을 0.7초 간격으로 이었다(1MB 이하).
+- 시험 렌더용 issue4 사진 3장은 Wikimedia 원본 주소가 429(요청 과다)로 막혔다. 그래서 같은 파일의 1920px 축소본 주소(`…/thumb/…/1920px-…`)에서 받았다.
+
+### 자막이 음절에 맞나 (`voicelab/capcheck.py`, `voicelab/capcheck.csv`)
+
+A/B마다 자막 데이터와 목소리만 깐 트랙(음악 없음)을 비교했다.
+- **어긋남**: 자막 단어가 켜지는 시각과, faster-whisper가 전체 트랙에서 들은 같은 단어의 시작 시각의 차이. 중앙값과 95%다.
+- **조용한 시작**: 단어가 켜진 뒤 0.12초 동안 소리가 없는 자막 단어의 수.
+- **페이지 받아쓰기 오류**: 각 자막 페이지 구간의 소리만 받아쓴 결과. 자막이 대사를 줄여 쓴 곳("휴대폰 사진첩이 전부" → 자막 "사진첩이 전부")에서도 오류로 잡혀서, A와 견줄 때만 의미가 있다.
+
+| 영상 | 어긋남 중앙값/95% (ms): A 지금 Edge | B Supertonic | C Azure 같은 목소리 | 조용한 시작 A/B/C | 페이지 받아쓰기 오류 A/B/C |
+|---|---|---|---|---|---|
+| sseol16 | 36 / 396 | 88 / 463 | 51 / 394 | 2/68 · 0/68 · 0/68 | 0.38 · 0.52 · 0.39 |
+| issue4 | 54 / 992 | 106 / 789 | 52 / 882 | 3/46 · 1/46 · 3/46 | 0.70 · 0.65 · 0.70 |
+| horror6 | 141 / 947 | 93 / 585 | 93 / 563 | 3/44 · 3/44 · 2/44 | 0.02 · 0.05 · 0.04 |
+| lfsaeyeon1 첫 1분(자막 묶음 단위) | 107 / 684 | 176 / 739 | 223 / 672 | 3/15 · 2/18 · 3/15 | 0.02 · 0.06 · 0.01 |
+
+- **결론: 세 목소리 모두 자막이 음절에 맞는다.**
+  - Supertonic(Whisper로 정렬)은 중앙값이 Edge보다 40~70ms 늦다. 영상 1~2프레임 차이다. 95% 값과 조용한 시작은 A와 같은 수준이다.
+  - 롱폼은 자막 묶음 단위로 쟀다. 묶음은 일부러 0.06초 먼저 켜지고, 첫 단어가 짧은 감탄이면 Whisper의 단어 시작이 늦게 잡혀서 값이 크다. A도 107ms다.
+- sseol16의 B 페이지 오류 0.52(A 0.38)는 페이지별로 받아쓴 결과를 하나씩 확인했다. 줄여 쓴 자막과 짧은 구간에서 Whisper가 지어낸 말("한글자막 by …") 때문이다. 페이지가 다른 줄로 밀린 곳은 없었다.
+
+### 설치와 실행
+
+```bash
+pip install edge-tts supertonic faster-whisper onnxruntime librosa     # (+ qwen-tts, CPU torch: Qwen을 쓸 때만)
+python3 voicelab/fetch_models.py               # 가중치를 받아 캐시에 둔다: Supertonic 3, 자막 정렬용 Whisper, (시험용) UTMOS. 저장소에는 넣지 않는다
+python3 voice_edge.py <id>                     # voices에 "engine"이 있으면 voice_engine.py가 읽는다(build/tts_cache/에 캐시)
+python3 longform/prep_long.py <id>             # 롱폼 키트도 같다(대본의 "sps"도 v2 내레이터에 맞춰진다)
+python3 longform/lfsaeyeon1/voice.py [--voices cast.json]
+
+# 비교 시험
+python3 voicelab/screen.py edge|supertonic|qwen          # 목소리 고르기(2줄) → voicelab/screen.csv
+python3 voicelab/bakeoff.py <후보>...                     # 12줄 → voicelab/results.csv;  --table → results.md;  --sheet <후보> → 샘플 mp3
+voicelab/ab.sh <후보> sseol16 issue4 horror6 lfsaeyeon1   # A/B 렌더 + 자막 확인(voicelab/capcheck.py)
+```
+
+- **엔진**
+  - `voice_engine.py`는 엔진을 고르는 곳이다: `edge`(기본), `supertonic`, `azure`, `qwen`(시험에서 버림, 코드만 남김).
+  - 단어 경계를 주지 않는 엔진은 faster-whisper(MIT) 단어 시간으로 정렬한다. 단어 시작은 소리가 커지는 지점에 맞춘다.
+  - 그 뒤의 음절 시간 계산은 Edge와 같아서 `timeline.json`의 형식이 그대로다. MMS 강제 정렬(비상업 가중치)은 쓰지 않는다.
+- **Azure를 쓰려면** (Edge 읽기 서비스는 발행하는 영상에 쓰지 않는다. A/B에서만 같은 목소리를 미리 듣는 용도다)
+  - 사용자가 Claude Code 클라우드 환경 설정에 환경 시크릿 `AZURE_SPEECH_KEY`, `AZURE_SPEECH_REGION`을 넣는다. 채팅이나 커밋에는 넣지 않는다.
+  - 설치: `pip install azure-cognitiveservices-speech`(Speech SDK).
+  - `azure` 엔진은 SSML(prosody 속도·음높이, MAI-Voice-2의 `"style"`)로 읽는다. SDK의 WordBoundary 이벤트로 Edge와 같은 음절 타임라인을 만들고, 테이크는 캐시한다.
+  - **배역을 다시 짤 필요가 없다.** Edge 항목의 목소리 이름이 Azure 이름과 1:1이다.
+    - `python3 voice_edge.py <id> --engine azure`로 돌리거나, 환경변수 `VOICE_ENGINE=azure`를 쓰면 된다. `longform/prep_long.py`와 `lfsaeyeon1/voice.py`도 이 환경변수를 따른다.
+    - 항목 하나만 바꿀 때는 `{"engine": "azure", "edge": "ko-KR-SunHiNeural", "sps": 6.8}`로 쓴다.
+    - Edge에 없는 목소리는 `"voice": "ko-KR-JiMinNeural"`로 쓴다. SunHi, JiMin, SeoHyeon, SoonBok, YuJin, InJoon, BongJin, GookMin, Hyunsu와 다국어 목소리를 쓸 수 있다.
+  - 키가 없으면 무엇을 넣어야 하는지 알리고 멈춘다. 키가 없어 실제 호출은 아직 해 보지 못했다(프록시 연결과 인증서도 미확인).
+  - 분량: 지금 카탈로그 전체(쇼츠 약 137편 × 평균 244자 = 3.35만 자, 롱폼 약 3.8천·7.6천·8천 자)는 약 5.5만 자다. F0 무료 한도 월 50만 자의 약 11%라서, 전부 한 번 다시 녹음해도 무료 범위다.
+- **크레딧**: 설명란의 "목소리: AI 합성 음성"(괴담은 "내레이션: AI 합성 음성")을 그대로 둔다.
+  - Supertonic(OpenRAIL-M)과 Azure(Code of Conduct)가 요구하는 AI 생성 고지가 이것으로 충족된다.
+  - Typecast·CLOVA Dubbing 무료 플랜을 쓰게 되면 정해진 문구를 따로 넣어야 한다(research-voice.md 5절). 유료 플랜은 필요 없다.
+- **디스크**: 가중치는 Supertonic 약 0.4GB, Whisper turbo 1.6GB, UTMOS 0.4GB다. 버린 후보(Qwen 1.7B, Chatterbox, CosyVoice)는 지웠다.

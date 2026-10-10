@@ -2,8 +2,9 @@
 
 usage: python3 voicelab/make_ab.py <candidate> <id> [...]
 CASTING maps each script role to a role of the bake-off cast (candidates.json) and a format (bakeoff.TARGET_SPS).
-Each role's speed is calibrated on that role's own lines in the script: one take at the cast's base speed, measured
-in syllables per second, then the Edge rate / Supertonic speed / tempo that brings it to the format's target.
+Each role's speed is calibrated on that role's own lines in the script: takes at the cast's base speed, measured in
+syllables per second (long pauses left out), then the Edge rate / Supertonic speed / tempo that brings it to the
+format's target, within 0.85-1.3 of the voice's own pace.
 """
 import json, os, sys
 HERE = os.path.dirname(os.path.abspath(__file__)); V = os.path.dirname(HERE)
@@ -28,11 +29,14 @@ def script_lines(sid):
 
 
 def calibrate(v, texts, target):
+    """rate factor from up to 6 of the role's lines. Pauses of 0.25 s or more inside a take (the "…" of a hesitant
+    line) are left out of the measured time, and the factor stays within 0.85-1.3 of the voice's own pace, so a
+    halting character is not rushed into a gabble."""
     syl = dur = 0.0
-    for t in texts[:3]:
+    for t in texts[:6]:
         x, _ = ve.synth(t if ve.engine_of(v) == "edge" else ve.ko_text(t), v)
-        syl += len(score.hangul(t)); dur += len(x) / ve.SR
-    return bakeoff.retime(v, target / (syl / dur))
+        syl += len(score.hangul(t)); dur += len(x) / ve.SR - sum(p for p in score.pauses(x) if p >= 0.25)
+    return bakeoff.retime(v, min(1.3, max(0.85, target / (syl / dur))))
 
 
 def main(cand, sid):

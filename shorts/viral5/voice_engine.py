@@ -3,8 +3,11 @@
 A script's "voices" entry picks its engine; an entry without "engine" is Edge, read exactly as before:
   {"edge": "ko-KR-SunHiNeural", "rate": "+25%", "pitch": "+0Hz"}                       Edge TTS (network)
   {"engine": "supertonic", "voice": "F3", "speed": 1.3}                                 Supertonic 3 preset voice (CPU, ONNX)
-  {"engine": "qwen", "speaker": "sohee", "instruct": "...", "tempo": 1.15}              Qwen3-TTS built-in speaker (CPU, slow)
-Every engine also takes "post": true (high-pass, presence lift, gentle compression, de-ess) and "tempo" (time-stretch
+  {"engine": "qwen", "speaker": "sohee", "tempo": 1.15}                                  Qwen3-TTS built-in speaker (CPU, slow)
+  {"engine": "azure", "edge": "ko-KR-SunHiNeural", "rate": "+10%"}                       Azure AI Speech, the same voice names as Edge
+  {"engine": "azure", "voice": "ko-KR-JiMinNeural", "style": "sad"}                      (also the ko-KR voices Edge lacks; needs the
+                                                                                         secrets AZURE_SPEECH_KEY, AZURE_SPEECH_REGION)
+Every entry may give "sps" (target syllables per second for each line; one probe take sets the rate), and every engine takes "post": true (high-pass, presence lift, gentle compression, de-ess) and "tempo" (time-stretch
 after synthesis, 0.8-1.6). synth(text, entry) returns (x, words) like voice_edge.py's synth: x is float32 mono 44.1 kHz,
 trimmed; words are [(start, duration, word)]. Edge gives its word boundaries; the other engines get theirs from
 faster-whisper word timestamps (MIT code and weights), so the per-syllable caption timing is computed the same way.
@@ -19,6 +22,7 @@ SR = 44100
 HERE = os.path.dirname(os.path.abspath(__file__))
 CACHE = os.environ.get("VOICE_CACHE", f"{HERE}/build/tts_cache")
 ASR_MODEL = os.environ.get("VOICE_ASR", "deepdml/faster-whisper-large-v3-turbo-ct2")
+SPEED_CAP = 1.2  # Supertonic "speed" above this skipped words in the bake-off (T09 CER 0.35-0.53 at 1.46; 0.06-0.18 at 1.2 + tempo)
 POST = "highpass=f=80,equalizer=f=3500:t=q:w=1.0:g=2.5,acompressor=threshold=-20dB:ratio=2.5:attack=8:release=150:makeup=1.5,deesser=i=0.35:m=0.5:f=0.5"
 _models = {}
 
@@ -94,6 +98,7 @@ def supertonic_raw(text, v):
     if m is None:
         m = _models["supertonic"] = TTS(model=v.get("model", "supertonic-3"), auto_download=True)
     style = m.get_voice_style(voice_name=v.get("voice", "F1"))
+    np.random.seed(int(v.get("seed", 7)) + int(hashlib.sha1(text.encode()).hexdigest()[:6], 16))  # its noise is np.random: same text, same take
     wav, _ = m.synthesize(text, voice_style=style, lang="ko", speed=float(v.get("speed", 1.05)), total_steps=int(v.get("steps", 8)),
                           silence_duration=float(v.get("silence", 0.3)))
     return np.asarray(wav).reshape(-1), m.sample_rate
@@ -114,6 +119,45 @@ def qwen_raw(text, v):
         kw = {"instruct": v["instruct"]} if v.get("instruct") else {}
         w, sr = m.generate_custom_voice(text=text, language="Korean", speaker=v.get("speaker", "sohee"), **kw)
     return np.asarray(w[0]).reshape(-1), sr
+
+
+def azure_key():
+    key = os.environ.get("AZURE_SPEECH_KEY") or os.environ.get("SPEECH_KEY")
+    region = os.environ.get("AZURE_SPEECH_REGION") or os.environ.get("SPEECH_REGION")
+    if not key or not region:
+        raise SystemExit("azure engine: no key. Add AZURE_SPEECH_KEY and AZURE_SPEECH_REGION as environment secrets "
+                         "(Claude Code cloud environment settings), never in a file or a commit.")
+    return key, region
+
+
+def azure_ssml(text, v):
+    from xml.sax.saxutils import escape
+    voice = v.get("voice") or v.get("edge", "ko-KR-SunHiNeural")  # Edge entries name the same Azure voices 1:1
+    body = escape(text)
+    if v.get("style"): body = f'<mstts:express-as style="{v["style"]}">{body}</mstts:express-as>'
+    pros = f'rate="{v.get("rate", "+0%")}" pitch="{v.get("pitch", "+0Hz")}"'
+    return ('<speak version="1.0" xmlns="http://www.w3.org/2001/10/synthesis" xmlns:mstts="https://www.w3.org/2001/mstts" xml:lang="ko-KR">'
+            f'<voice name="{voice}"><prosody {pros}>{body}</prosody></voice></speak>')
+
+
+def azure_synth(text, v):
+    """Azure AI Speech through the Speech SDK (pip install azure-cognitiveservices-speech): the licensed service for
+    Edge's voices plus more ko-KR voices. Word boundaries come from the SDK, like Edge's. Returns (pcm float 44.1 kHz, words)."""
+    import azure.cognitiveservices.speech as sdk
+    key, region = azure_key()
+    cfg = sdk.SpeechConfig(subscription=key, region=region)
+    cfg.set_speech_synthesis_output_format(sdk.SpeechSynthesisOutputFormat.Riff24Khz16BitMonoPcm)
+    if os.environ.get("HTTPS_PROXY"):
+        from urllib.parse import urlparse
+        u = urlparse(os.environ["HTTPS_PROXY"]); cfg.set_proxy(u.hostname, u.port or 443)
+    syn = sdk.SpeechSynthesizer(speech_config=cfg, audio_config=None)
+    words = []
+    syn.synthesis_word_boundary.connect(lambda e: words.append((e.audio_offset / 1e7, e.duration.total_seconds(), e.text))
+                                        if str(e.boundary_type).endswith("Word") else None)
+    r = syn.speak_ssml_async(azure_ssml(text, v)).get()
+    if r.reason != sdk.ResultReason.SynthesizingAudioCompleted:
+        raise SystemExit(f"azure engine: {r.reason} {getattr(r, 'cancellation_details', '') and r.cancellation_details.error_details}")
+    return ffmpeg_pcm(bytes(r.audio_data), []), words
 
 
 RAW = {"supertonic": supertonic_raw, "qwen": qwen_raw}
@@ -156,6 +200,10 @@ def snap(words, x, win=0.12):
 
 def synth(text, v):
     """(x, words) for one line with the entry's engine. Edge is not cached here (voice_edge.py never cached it)."""
+    if v.get("sps"):  # a target rate (syllables per second over the line): one probe take, then the matching rate/speed/tempo
+        base = {a: b for a, b in v.items() if a != "sps"}
+        n = len(re.findall(r"[가-힣]", ko_text(text)))
+        return synth(text, retime(base, float(v["sps"]) / max(0.5, n / probe_dur(text, base)))) if n >= 4 else synth(text, base)
     eng = engine_of(v)
     if eng == "edge":
         mp3, words = asyncio.run(edge_synth(text, v["edge"], v.get("rate", "+0%"), v.get("pitch", "+0Hz")))
@@ -164,22 +212,63 @@ def synth(text, v):
         words = [(t0 / t, d / t, w) for t0, d, w in words]
         x, a = trim(x)
         return x, [(t0 - a, d, w) for t0, d, w in words]
+    if eng == "azure":  # word boundaries from the service, cached (it is billed per character)
+        os.makedirs(CACHE, exist_ok=True)
+        k = key_of(text, v); wav, js = f"{CACHE}/{k}.wav", f"{CACHE}/{k}.json"
+        if os.path.exists(js): return read_wav(wav), [tuple(w) for w in json.load(open(js))["words"]]
+        x, words = azure_synth(text, v)
+        x = to_float(x, SR, post_chain(v)) if post_chain(v) else x
+        t = float(v.get("tempo", 1.0)); x, a = trim(x)
+        words = [(round(t0 / t - a, 3), round(d / t, 3), w) for t0, d, w in words]
+        write_wav(wav, x); json.dump({"text": text, "entry": v, "words": words}, open(js, "w"), ensure_ascii=False)
+        return x, words
+    if eng == "supertonic" and float(v.get("speed", 1.05)) > SPEED_CAP:  # past ~1.2 it drops syllables: read at the cap, stretch the rest
+        v = dict(v, speed=SPEED_CAP, tempo=round(float(v.get("tempo", 1.0)) * float(v["speed"]) / SPEED_CAP, 3))
     if eng not in RAW: raise SystemExit(f"unknown voice engine {eng!r} (edge, {', '.join(RAW)})")
     os.makedirs(CACHE, exist_ok=True)
     k = key_of(text, v); wav, js = f"{CACHE}/{k}.wav", f"{CACHE}/{k}.json"
     if os.path.exists(js):
         return read_wav(wav), [tuple(w) for w in json.load(open(js))["words"]]
-    rk = key_of(text, {a: b for a, b in v.items() if a not in ("tempo", "post")})  # the raw take, before tempo and post
-    if os.path.exists(f"{CACHE}/raw-{rk}.npy"):
-        raw, sr = np.load(f"{CACHE}/raw-{rk}.npy"), int(open(f"{CACHE}/raw-{rk}.sr").read())
-    else:
-        raw, sr = RAW[eng](text, v)
-        np.save(f"{CACHE}/raw-{rk}.npy", np.asarray(raw, np.float32)); open(f"{CACHE}/raw-{rk}.sr", "w").write(str(sr))
+    raw, sr = raw_take(text, v)
     x, _ = trim(to_float(raw, sr, post_chain(v)))
     _, words = transcribe(x, prompt=text)
     words = snap(words, x)
     write_wav(wav, x); json.dump({"text": text, "entry": v, "words": words}, open(js, "w"), ensure_ascii=False)
     return x, words
+
+
+def raw_take(text, v):
+    """the engine's untrimmed take before tempo and post, cached"""
+    os.makedirs(CACHE, exist_ok=True)
+    rk = key_of(text, {a: b for a, b in v.items() if a not in ("tempo", "post")})
+    if os.path.exists(f"{CACHE}/raw-{rk}.npy"):
+        return np.load(f"{CACHE}/raw-{rk}.npy"), int(open(f"{CACHE}/raw-{rk}.sr").read())
+    raw, sr = RAW[engine_of(v)](text, v)
+    np.save(f"{CACHE}/raw-{rk}.npy", np.asarray(raw, np.float32)); open(f"{CACHE}/raw-{rk}.sr", "w").write(str(sr))
+    return raw, sr
+
+
+def probe_dur(text, v):
+    """trimmed length of a take in seconds, without the word alignment"""
+    if engine_of(v) == "azure":
+        return len(synth(text, v)[0]) / SR
+    if engine_of(v) == "edge":
+        mp3, _ = asyncio.run(edge_synth(text, v["edge"], v.get("rate", "+0%"), v.get("pitch", "+0Hz")))
+        return len(trim(ffmpeg_pcm(mp3, [], post_chain(v)))[0]) / SR
+    return len(trim(to_float(*raw_take(text, v), post_chain(v)))[0]) / SR
+
+
+def retime(v, factor):
+    """the same entry, faster by factor: Edge or Azure "rate", Supertonic "speed" (synth() caps it at SPEED_CAP), else "tempo" """
+    v = dict(v); eng = engine_of(v)
+    if eng in ("edge", "azure"):
+        r = (1 + int(str(v.get("rate", "+0%")).rstrip("%")) / 100) * factor
+        v["rate"] = f"{round((r - 1) * 100):+d}%"
+    elif eng == "supertonic":
+        v["speed"] = round(min(2.0, max(0.7, float(v.get("speed", 1.05)) * factor)), 3)
+    else:
+        v["tempo"] = round(float(v.get("tempo", 1.0)) * factor, 3)
+    return v
 
 
 def read_wav(path):
@@ -212,8 +301,14 @@ def read_num(n):
     return out
 
 
+WORDS = {"NASA": "나사", "UFO": "유에프오", "KTX": "케이티엑스", "TV": "티비", "CG": "씨지", "ISO": "아이에스오", "AI": "에이아이"}
+LETTER = dict(zip("ABCDEFGHIJKLMNOPQRSTUVWXYZ", "에이 비 씨 디 이 에프 지 에이치 아이 제이 케이 엘 엠 엔 오 피 큐 알 에스 티 유 브이 더블유 엑스 와이 지".split()))
+
+
 def ko_text(text):
-    """what the local engines read: digits as Korean words (Edge reads digits itself), "…" as a comma pause"""
-    t = re.sub(r"(\d),(\d)", r"\1\2", text)
+    """what the local engines read: digits as Korean words (Edge reads digits itself), "…" as a comma pause, and
+    capital-letter abbreviations in Korean (Supertonic read "NASA" as "날세이")"""
+    t = re.sub(r"[A-Z]{2,}", lambda m: WORDS.get(m.group(), "".join(LETTER[c] for c in m.group())), text)
+    t = re.sub(r"(\d),(\d)", r"\1\2", t)
     t = re.sub(r"\d+", lambda m: read_num(int(m.group())), t)
     return t.replace("…", ",").replace(",,", ",")

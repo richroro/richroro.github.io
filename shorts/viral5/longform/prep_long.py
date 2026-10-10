@@ -7,7 +7,8 @@ Writes  public/long/<id>/voice/*.wav, clips/*.mp4, img/*, shorts/*.mp4   (git-ig
         src/longdata/<id>.json + src/longdata/index.ts                   (the composition's data)
         upload/specs/<id>.json "chapters" and "music" (python3 upload/make_desc.py <id> writes the description)
 TTS takes are cached in build/long/<id>/tts/, so a re-run only synthesizes changed lines (--no-tts fails on a missing one).
-A "voices" entry with "engine" (README "음성 v2") is read by voice_engine.py instead, which caches in build/tts_cache/.
+A "voices" entry with "engine" (README "음성 v2") is read by voice_engine.py instead, which caches in build/tts_cache/;
+VOICE_ENGINE=azure reads every Edge entry with the Azure voice of the same name.
 
 The Edge TTS call, its trimming and the syllable timing are voice_edge.py's own code, and the number reading
 (spoken_form) is prep.py's; both are loaded from those files (their function definitions only), so the long-forms
@@ -154,7 +155,9 @@ class Long:
     def entry_v2(self, L):
         """the line's "voices" entry when voice_engine.py should read it (another engine, or Edge with post/tempo), else None"""
         nar = self.voices.get("nar", {}); v = dict(self.voices.get(L.get("voice", "nar"), nar))
-        if v.get("engine", "edge") == "edge" and not v.get("post") and not v.get("tempo"): return None
+        if os.environ.get("VOICE_ENGINE", "edge") != "edge" and v.get("engine", "edge") == "edge":  # same voice names on azure
+            v = {"edge": nar.get("edge", "ko-KR-InJoonNeural"), "rate": self.rate, **v, "engine": os.environ["VOICE_ENGINE"]}
+        if v.get("engine", "edge") == "edge" and not (v.get("post") or v.get("tempo") or v.get("sps")): return None
         if L.get("voice", "nar") == "nar" and getattr(self, "v2_factor", None):  # "sps" calibration of a v2 narrator
             if v.get("engine") == "supertonic": v["speed"] = round(min(2.0, float(v.get("speed", 1.05)) * self.v2_factor), 3)
             else: v["tempo"] = round(float(v.get("tempo", 1.0)) * self.v2_factor, 3)

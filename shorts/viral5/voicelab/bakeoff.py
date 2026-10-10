@@ -32,17 +32,7 @@ def text_for(v, L):
     return L["say"] if ve.engine_of(v) == "edge" else ve.ko_text(L["say"])
 
 
-def retime(v, factor):
-    """the same entry, faster by factor"""
-    v = dict(v); eng = ve.engine_of(v)
-    if eng == "edge":
-        r = (1 + int(v.get("rate", "+0%").rstrip("%")) / 100) * factor
-        v["rate"] = f"{round((r - 1) * 100):+d}%"
-    elif eng == "supertonic":
-        v["speed"] = round(min(2.0, max(0.7, float(v.get("speed", 1.05)) * factor)), 3)
-    else:
-        v["tempo"] = round(float(v.get("tempo", 1.0)) * factor, 3)
-    return v
+retime = ve.retime  # Edge "rate", Supertonic "speed", else "tempo"
 
 
 def take(v, L):
@@ -70,14 +60,14 @@ def run(name):
 
 
 def table():
-    rows = list(csv.DictReader(open(RES))); out = ["| 후보 | 엔진 | MOS 평균 | CER 평균 | 목표 속도 오차 | F0 범위(반음) 내레이션/대사 | 줄 사이 쉼 | RTF |", "|---|---|---|---|---|---|---|---|"]
+    rows = list(csv.DictReader(open(RES))); out = ["| 후보 | 엔진 | MOS 평균 | CER 평균 | 목표 속도 오차 | F0 범위(반음) 내레이션/대사 | T08 문장 사이 쉼 |", "|---|---|---|---|---|---|---|"]  # RTF: README (measured apart; takes here may come from the cache)
     for name in dict.fromkeys(r["cand"] for r in rows):
         R = [r for r in rows if r["cand"] == name]; f = lambda k: [float(r[k]) for r in R]
         err = sum(abs(float(r["sps"]) / float(r["target"]) - 1) for r in R) / len(R)
         dia = [float(r["f0st"]) for r in R if r["line"] in ("T02", "T03", "T11", "T12")]
         nar = [float(r["f0st"]) for r in R if r["line"] not in ("T02", "T03", "T11", "T12")]
         out.append(f"| {name} | {R[0]['engine']} | {sum(f('mos')) / len(R):.2f} | {100 * sum(f('cer')) / len(R):.1f}% | {100 * err:.0f}% | "
-                   f"{sum(nar) / len(nar):.1f} / {sum(dia) / len(dia):.1f} | {float(R[7]['pmean']):.2f} s (T08) | {sorted(f('rtf'))[len(R) // 2]:.2f} |")
+                   f"{sum(nar) / len(nar):.1f} / {sum(dia) / len(dia):.1f} | {float(R[7]['pmean']):.2f} s |")
     open(f"{HERE}/results.md", "w").write("\n".join(out) + "\n"); print("\n".join(out))
 
 

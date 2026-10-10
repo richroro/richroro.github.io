@@ -8,6 +8,7 @@ The voice and rate default to the script's "voices.nar" entry. A line's "voice" 
 speech.platform.bing.com.
 An entry with "engine" (README "음성 v2": "supertonic", "qwen", or "edge" with "post"/"tempo") is read by
 voice_engine.py instead; its syllable times come from aligned word times, so timeline.json has the same fields.
+--engine azure (or env VOICE_ENGINE=azure) reads every Edge entry with the Azure voice of the same name.
 --voices replaces entries of "voices" from a JSON file ({"nar": {...}, "me": {...}}) without touching the script (A/B);
 its "pauses" key, like a script's own "pauses" ({"line": 0.15, "turn": 0.25, "punch": 0.45}), sets the gap before each
 line: "turn" when the speaker changes, "punch" before the last line, "line" otherwise. Without it each line's "gap" counts.
@@ -20,6 +21,8 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 ARGS = [a for a in sys.argv[1:] if not a.startswith("--")]
 CAST = sys.argv[sys.argv.index("--voices") + 1] if "--voices" in sys.argv else None
 if CAST: ARGS.remove(CAST)
+if "--engine" in sys.argv:  # --engine azure: read every Edge voice with the same-named Azure voice (no recasting)
+    os.environ["VOICE_ENGINE"] = sys.argv[sys.argv.index("--engine") + 1]; ARGS.remove(os.environ["VOICE_ENGINE"])
 sid = ARGS[0]
 out = f"{HERE}/build/{sid}"
 S = json.load(open(f"{HERE}/shorts/{sid}/script.json"))
@@ -31,6 +34,10 @@ P = S.get("pauses")  # 음성 v2 pause rules {"line", "turn", "punch"} (s) repla
 nar = S.get("voices", {}).get("nar", {})
 VOICE = ARGS[1] if len(ARGS) > 1 else nar.get("edge", "ko-KR-SunHiNeural")
 RATE = ARGS[2] if len(ARGS) > 2 else nar.get("rate", "+8%")
+if os.environ.get("VOICE_ENGINE", "edge") != "edge":  # same voice names and rates, another engine (azure)
+    S["voices"] = {r: ({"edge": VOICE, "rate": RATE, **v, "engine": os.environ["VOICE_ENGINE"]} if v.get("engine", "edge") == "edge" else v)
+                   for r, v in {"nar": {}, **S.get("voices", {})}.items()}
+    nar = S["voices"]["nar"]
 SR = 44100
 KEEP = re.compile(r"[가-힣A-Za-z0-9]")
 chars = lambda s: [c for c in s if KEEP.match(c)]
@@ -46,7 +53,7 @@ def voice_of(L):
 def entry_of(L):
     """the line's whole "voices" entry when it names another engine or a v2 option, else None (plain Edge)"""
     v = S.get("voices", {}).get(L.get("voice", "nar")) or nar
-    return v if v.get("engine", "edge") != "edge" or v.get("post") or v.get("tempo") else None
+    return v if v.get("engine", "edge") != "edge" or v.get("post") or v.get("tempo") or v.get("sps") else None
 
 async def synth(text, voice=None, rate=None, pitch="+0Hz"):
     ca = os.environ.get("SSL_CERT_FILE")  # edge-tts trusts only certifi's bundle; behind a TLS-inspecting proxy use the system's
