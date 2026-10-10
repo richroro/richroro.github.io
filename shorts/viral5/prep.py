@@ -195,6 +195,9 @@ def prep(sid):
         if edit.get(k) is not None: data[k] = edit[k]
     if edit.get("capBox"): data["capBox"] = edit["capBox"]  # captions in a box over the picture's bottom (src/lib/CapBox.tsx)
     if edit.get("hookTo") is not None: data["hookTo"] = round(at(edit["hookTo"]), 3)
+    if edit.get("postFrame"):  # 썰 v2 (src/lib/PostFrame.tsx): the whole short is a post; its body is each line's caption, one row per "/" page
+        body = [{"from": round(L["start"] - 0.05 if i else 0.0, 3), "text": "\n".join(p.strip() for c in caps[L["id"]] for p in c.split("/") if p.strip())} for i, L in enumerate(tl["lines"])]
+        data["postFrame"] = {**edit["postFrame"], "body": [b for b in body if b["text"]]}
     for k in ("layout", "teuk"):  # "teuk": the "○○ 특" v2 look (src/lib/Teuk.tsx); its caption pages carry "g", the script caption they belong to
         if edit.get(k) is not None: data[k] = edit[k]
     if ranks: data["ranks"] = {"rows": ranks, **({"y": edit["rankY"]} if edit.get("rankY") else {})}

@@ -30,14 +30,6 @@
    "license": "Pexels License",
    "creator": "Caleb Oquendo"
   },
-  "px9152640": {
-   "file": "px9152640.mp4",
-   "label": "Pexels video 9152640 by Erik Mclean (Pexels License)",
-   "url": "https://www.pexels.com/video/high-angle-shot-of-stairs-9152640/",
-   "file_url": "https://www.pexels.com/download/video/9152640/",
-   "license": "Pexels License",
-   "creator": "Erik Mclean"
-  },
   "px12096163": {
    "file": "px12096163.mp4",
    "label": "Pexels video 12096163 by Sasha Poberailo (Pexels License)",
@@ -45,6 +37,14 @@
    "file_url": "https://www.pexels.com/download/video/12096163/",
    "license": "Pexels License",
    "creator": "Sasha Poberailo"
+  },
+  "px9152640": {
+   "file": "px9152640.mp4",
+   "label": "Pexels video 9152640 by Erik Mclean (Pexels License)",
+   "url": "https://www.pexels.com/video/high-angle-shot-of-stairs-9152640/",
+   "file_url": "https://www.pexels.com/download/video/9152640/",
+   "license": "Pexels License",
+   "creator": "Erik Mclean"
   },
   "px39024320": {
    "file": "px39024320.mp4",
@@ -77,14 +77,6 @@
    "file_url": "https://www.pexels.com/download/video/4990438/",
    "license": "Pexels License",
    "creator": "Pavel Danilyuk"
-  },
-  "px7644222": {
-   "file": "px7644222.mp4",
-   "label": "Pexels video 7644222 by Yaroslav Shuraev (Pexels License)",
-   "url": "https://www.pexels.com/video/an-exit-signage-at-the-building-7644222/",
-   "file_url": "https://www.pexels.com/download/video/7644222/",
-   "license": "Pexels License",
-   "creator": "Yaroslav Shuraev"
   }
  },
  "clips": [
@@ -125,20 +117,8 @@
    "label": "비상구 표시"
   },
   {
-   "src": "px9152640",
-   "from": "b.사람이",
-   "in": 4.0,
-   "zoom": [
-    1.0,
-    1.07
-   ],
-   "audio": 0,
-   "credit": "",
-   "label": "계단"
-  },
-  {
    "src": "px12096163",
-   "from": "c",
+   "from": "b.삼십",
    "in": 1.0,
    "zoom": [
     1.0,
@@ -147,6 +127,18 @@
    "audio": 0,
    "credit": "",
    "label": "어두운 계단"
+  },
+  {
+   "src": "px9152640",
+   "from": "c",
+   "in": 4.0,
+   "zoom": [
+    1.0,
+    1.07
+   ],
+   "audio": 0,
+   "credit": "",
+   "label": "계단"
   },
   {
    "src": "px39024320",
@@ -161,20 +153,8 @@
    "label": "켜진 불"
   },
   {
-   "src": "px9152640",
-   "from": "d",
-   "in": 8.0,
-   "zoom": [
-    1.0,
-    1.07
-   ],
-   "audio": 0,
-   "credit": "",
-   "label": "아래층"
-  },
-  {
    "src": "px5986347",
-   "from": "d.아홉",
+   "from": "d",
    "in": 3.0,
    "zoom": [
     1.0,
@@ -186,7 +166,7 @@
   },
   {
    "src": "px6010700",
-   "from": "d.꼭",
+   "from": "e",
    "in": 2.0,
    "zoom": [
     1.0,
@@ -197,8 +177,20 @@
    "label": "어두운 계단"
   },
   {
+   "src": "px9152640",
+   "from": "e.오",
+   "in": 8.0,
+   "zoom": [
+    1.0,
+    1.07
+   ],
+   "audio": 0,
+   "credit": "",
+   "label": "아래층"
+  },
+  {
    "src": "px4990438",
-   "from": "e",
+   "from": "f",
    "in": 1.0,
    "zoom": [
     1.0,
@@ -209,20 +201,20 @@
    "label": "1층"
   },
   {
-   "src": "px7644222",
-   "from": "e.잡는",
-   "in": 5.0,
+   "src": "px5986347",
+   "from": "f.계단",
+   "in": 8.0,
    "zoom": [
-    1.0,
-    1.07
+    1.1,
+    1.16
    ],
    "audio": 0,
    "credit": "",
-   "label": "비상구"
+   "label": "위를 올려다봄"
   },
   {
    "src": "px12096163",
-   "from": "f",
+   "from": "g",
    "in": 6.0,
    "zoom": [
     1.08,
@@ -230,11 +222,11 @@
    ],
    "audio": 0,
    "credit": "",
-   "label": "등 뒤"
+   "label": "켜진 계단"
   },
   {
    "src": "px39024320",
-   "from": "f.이",
+   "from": "g.하나도",
    "in": 5.0,
    "zoom": [
     1.12,
@@ -242,19 +234,7 @@
    ],
    "audio": 0,
    "credit": "",
-   "label": "2층 불"
-  },
-  {
-   "src": "px6010700",
-   "from": "g",
-   "in": 10.0,
-   "zoom": [
-    1.15,
-    1.25
-   ],
-   "audio": 0,
-   "credit": "",
-   "label": "위층 어둠"
+   "label": "켜진 불"
   }
  ],
  "stickers": [],
@@ -265,23 +245,18 @@
    0.45
   ],
   [
-   "f.딸깍",
-   "click",
-   0.6
-  ],
-  [
-   "f.이",
+   "f",
    "heartbeat",
    0.6
   ],
   [
-   "g",
+   "g.하나도",
    "k_glitch_002",
    0.3
   ]
  ],
  "flashes": [
-  "f.이"
+  "g.하나도"
  ],
  "music": {
   "file": "music/Gathering Darkness.mp3",

@@ -3468,14 +3468,23 @@ python3 qa_review.py top5                                    # 네 편 모두 FA
 
 ## 괴담 쇼츠 v2 (벤치마크, `horror1`~`horror12`)
 
-`research/benchmark-footage.md` 1절과 `research/benchmark-targets-footage.json`의 `horror_riddle`(디로록 「[괴담] 이해하면 무서운」, 중앙값 21초)에 맞춰 `horror1`~`horror8`을 같은 이야기·같은 영상으로 다시 만들고, 아이디어 목록에서 학교·일상 물건 괴담 4편(`horror9`~`horror12`)을 새로 만들었다. 열두 편 모두 **직접 쓴 창작 괴담**이다. 피·폭력·실존 장소·브랜드·인물은 없고, 공포는 암시로만 준다.
+`research/benchmark-footage.md` 1절과 `research/benchmark-targets-footage.json`의 `horror_riddle`(디로록 「[괴담] 이해하면 무서운」, 중앙값 21초)에 맞춰 `horror1`~`horror8`을 같은 영상으로 다시 만들고, 아이디어 목록에서 학교·일상 물건 괴담 4편(`horror9`~`horror12`)을 새로 만들었다. 이야기는 2, 6, 7, 8편이 v1과 같다. 1, 3, 4, 5, 12편은 아래 이야기 검토에서 다시 썼다. 열두 편 모두 **직접 쓴 창작 괴담**이다. 피·폭력·실존 장소·브랜드·인물은 없고, 공포는 암시로만 준다.
+
+**이야기 검토 (REVIEW.md 2-1, 2026-10-10).** 다 만든 뒤 2-1절로 열두 편을 다시 봤다. 세 가지를 확인했다. 단서가 앞에 공정하게 깔렸는가. 반전이 마지막 한 줄에 오는가. 제목이나 첫 줄로 맞힐 수 없고, 흔한 괴담을 되풀이하지 않는가. 그 결과 다섯 편을 다시 썼다.
+- **`horror1` 엘리베이터:** “보이지 않는 사람들로 정원 초과”는 이미 널리 알려진 괴담이었다. 화자가 귀신인 이야기로 바꿨다.
+- **`horror3` 택배:** “안에 계신 분이 받아 가셨어요”에서 정답이 중간에 드러났다. 빈 옆집 이야기로 바꿨다.
+- **`horror4` 거울:** 거울 속 다른 방은 흔한 괴담이다. 「정전」으로 바꿔 따뜻한 반전을 넣었다.
+- **`horror5` 센서등:** 끝이 “등 뒤에 누가 있다”였다. 30초 규칙을 단서로 쓰는 끝으로 바꿨다.
+- **`horror12` 숨바꼭질:** 끝이 “옷장 안 내 뒤에 누가 있다”였고, 반전이 마지막 줄보다 앞에 왔다. 술래가 동생이 아니었다는 문자 반전으로 바꿨다.
+- **남긴 일곱 편:** 2, 6, 7, 8, 9, 10, 11편은 단서가 공정하고 반전이 마지막 줄에 와서 그대로 뒀다. 다만 2, 7, 8, 10편은 모두 “숨은 누군가”라는 뼈대다. 2-1의 9번(같은 뼈대를 연달아 쓰지 않는다)에 따라 아래 업로드 순서에서 이 넷이 붙지 않게 했다.
+- **다시 쓴 편의 영상:** 같은 영상 묶음 안에서 컷을 다시 짰다. `horror4`는 손(10210122, 7546178), 꺼진 휴대폰을 든 손(7822022), 현관 손잡이(2108274), 복도(7598737, 9658661, 19217899)를 더했다.
 
 **v1에서 바뀐 것**
-- **길이 32.4초 → 20.0~22.2초.** 목소리를 Edge TTS `ko-KR-InJoonNeural` `+18%` `-4Hz`로 다시 녹음하고, 대본을 7~8줄로 줄였다. 줄 사이 쉼은 0.18초(`horror9`·`horror11`은 0.26초)다.
+- **길이 32.4초 → 20.0~22.5초.** 목소리를 Edge TTS `ko-KR-InJoonNeural` `+18%` `-4Hz`로 다시 녹음하고, 대본을 7~8줄로 줄였다. 줄 사이 쉼은 0.18초(`horror9`·`horror11`은 0.26초)다.
 - **끝.** “이해하셨나요? 정답은 댓글에” 줄을 지웠다. 반전 한 줄 뒤 0.45~0.6초에서 끊고 첫 장면으로 돌아간다(루프). 정답 유도는 고정 댓글로 옮겼다.
-- **0초.** 첫 자막(3~5음절, “밤 열한 시”)과 제목 단어가 첫 프레임에 이미 떠 있다. 첫 줄의 `gap`을 0으로 두면 첫 자막 페이지가 0 ms에 시작하고, `capLook: "plain"`은 등장 애니메이션이 없어서 첫 프레임에 글자가 다 보인다. 첫 장면은 열두 편 모두 **얼굴 없는 손이나 실루엣**이다(버튼을 누르는 손, 문손잡이를 잡는 손, 휴대폰을 든 손, 열쇠를 든 손, 젖은 유리를 짚은 손, 텐트 안 손 그림자, 공책을 든 손, 할머니 손 위의 아이 손, 옷걸이를 잡은 손).
+- **0초.** 첫 자막(3~5음절, “밤 열한 시”)과 제목 단어가 첫 프레임에 이미 떠 있다. 첫 줄의 `gap`을 0으로 두면 첫 자막 페이지가 0 ms에 시작하고, `capLook: "plain"`은 등장 애니메이션이 없어서 첫 프레임에 글자가 다 보인다. 첫 장면은 열두 편 모두 **얼굴 없는 손이나 실루엣**이다(버튼을 누르는 손, 문손잡이를 잡는 손, 휴대폰을 든 손, 꺼진 휴대폰을 든 손, 젖은 유리를 짚은 손, 텐트 안 손 그림자, 공책을 든 손, 할머니 손 위의 아이 손, 옷걸이를 잡은 손).
 - **화면.** 검정 띠와 1:1 박스를 없애고 9:16 전체 화면에 영상을 깔았다. 위쪽에 흰 작은 글씨 “이해하면 무서운”과 큰 빨간 한 단어(예: “엘리베이터”)를 그림 위에 얹는다. 자막은 흰색 한 가지이고 높이 62.5%(y=1200)에 둔다. 강조색과 현재 단어 초록 강조는 없다. 화면에 출처 배지가 없고, 영상 크레딧은 모두 설명란에 넣는다.
-- **제목 명사.** 장소 대신 물건으로 바꾼 편이 있다: 비상계단 → **센서등**, 지하주차장 → **김 서린 차**, 캠핑장 → **발자국**.
+- **제목 명사.** 장소 대신 물건으로 바꾼 편이 있다: 비상계단 → **센서등**, 지하주차장 → **김 서린 차**, 캠핑장 → **발자국**, 거울 → **정전**(이야기를 새로 씀).
 - 어두운 보정과 아껴 쓴 효과음(편마다 3~4개, 번쩍임 1번)은 그대로다. 음악은 Kevin MacLeod “Gathering Darkness”(홀수 편)와 “Ghost Story”(짝수 편)를 번갈아 쓴다.
 - **브랜드 점검.** v1 `horror2`의 운동화(8472547)는 옆면에 상표 별 무늬가 보여서 빼고, 손이 신발을 내려놓는 장면(8533759)으로 바꿨다. v1 `horror3`의 택배 상자(7362620)는 빨간 “FRAGILE” 스티커가 9:16 화면에 들어와서 빼고, 종이봉투(7362603)만 쓴다. 화면이 거의 검게 보이던 휴대폰 알림 클립(34786856·34786878)도 손에 든 휴대폰 장면으로 바꿨다. 0초 화면에는 상표·간판·라벨이 없다.
 
@@ -3501,26 +3510,28 @@ for i in $(seq 1 12); do python3 qa_review.py horror$i; done
 python3 media/horror/scorecard.py $(seq -f "horror%g" 1 12)
 ```
 
-| id | 화면 제목 | 길이 | 이야기 (정답) |
-| --- | --- | --- | --- |
-| `horror1` | 이해하면 무서운 / 엘리베이터 | 22.2초 | 밤 11시 혼자 남은 건물, 1층에서 부른 엘리베이터가 텅 빈 채 열리는데 한 발 들이자 "정원이 초과되었습니다". 엘리베이터는 혼자 위로. "나는 다음 걸 타기로 했다." (정답: 눈에 안 보이는 '누군가들'로 이미 꽉 차 있었다) |
-| `horror2` | 이해하면 무서운 / 도어락 | 21.8초 | 새벽 3시 도어락이 열렸다 다시 잠김. 비밀번호는 나만 앎. 아침 현관은 그대로, 신발만 한 켤레 더. "나는 혼자 산다." (정답: 누군가 들어와 안에서 문을 잠갔고, 나간 적이 없다) |
-| `horror3` | 이해하면 무서운 / 택배 | 20.1초 | 점심시간 택배 문자, 이어서 "안에 계신 분이 바로 받아 가셨어요". 나는 회사, 혼자 살고, 문은 잠갔다. 퇴근해 보니 문 앞엔 아무것도 없다. (정답: 잠긴 집 안에 누군가 있었고 지금도 있다) |
-| `horror4` | 이해하면 무서운 / 거울 | 20.1초 | 이사 온 원룸의 큰 거울 속 방은 늘 조금 어둡다. 불을 끄고 누웠는데 거울 속 방은 아직 밝고, 거울 속 침대엔 아무도 없다. (정답: 거울 속 '나'는 누워 있지 않고 일어나서 이쪽을 보고 있다) |
-| `horror5` | 이해하면 무서운 / 센서등 | 21.4초 | 점검 날 밤 계단으로 내려가는데, 센서등이 내가 가기 전에 한 층씩 먼저 켜진다. 1층 문손잡이를 잡자 등 뒤 2층 불이 딸깍. "나는 뒤돌아보지 않았다." (정답: 보이지 않는 누군가가 한 층 앞서 내려가다가, 지금 내 바로 뒤로 올라갔다) |
-| `horror6` | 이해하면 무서운 / 김 서린 차 | 21.0초 | 몇 달째 안 움직인 차의 운전석 유리에 김이 서려 있고, 손가락 글씨 "또 봤네?"가 좌우로 뒤집혀 있다. 차 문은 전부 잠겨 있다. (정답: 잠긴 차 안에 누군가 있어 숨을 쉬고, 안쪽에서 글씨를 썼다) |
-| `horror7` | 이해하면 무서운 / 홈캠 | 20.5초 | 현관을 향해 단 홈캠에 새벽 2~4시, 침대 옆에서 자는 나를 내려다보는 영상. 그날 밤 현관문은 열리지 않았다. (정답: 처음부터 집 안에 있던 누군가가 카메라를 옮겨 찍고 되돌려 놓았다) |
-| `horror8` | 이해하면 무서운 / 발자국 | 22.2초 | 혼자 캠핑, 새벽에 텐트 주위를 한 바퀴 도는 발소리. 아침에 보니 입구에서 나와 한 바퀴 돌고 다시 입구로 들어간 발자국. "나는 밤새 나간 적이 없다." (정답: 텐트 안에 나 말고 누가 있었다) |
-| `horror9` | 이해하면 무서운 / 단톡방 | 20.2초 | 새벽 3시, 누군가 나를 반 단톡방에 초대한다. 나 빼고 다 들어와 있고, 이름 없는 사람이 "이제야 다 모였네". 참여 인원 30명. "우리 반은 나까지 스물아홉 명이다." (정답: 반 아이가 아닌 누군가가 한 명 끼어 있고, 나를 기다리고 있었다) |
-| `horror10` | 이해하면 무서운 / 알림장 | 20.0초 | 알림장 부모님 확인 칸에 엄마 이름으로 사인이 되어 있다. 엄마는 지난주부터 출장 중, 어젯밤 집엔 나 혼자. "알림장은 밤새 내 방 책가방 안에 있었다." (정답: 내가 자는 동안 누군가 내 방에 들어와 엄마인 척 사인했다) |
-| `horror11` | 이해하면 무서운 / 할머니 손금 | 20.1초 | 할머니가 내 손금을 보며 "오래 살겠네". 장난삼아 할머니 손을 펴 보니 얼음처럼 차갑고, 손바닥엔 손금이 하나도 없다. (정답: 그 '할머니'는 살아 있는 사람이 아니다) |
-| `horror12` | 이해하면 무서운 / 숨바꼭질 | 20.2초 | 동생이 술래, 나는 안방 옷장에 숨었다. 동생 목소리가 멀어진 뒤 옷장 안 내 등 뒤에서 "여기 좋지?". "우리 집엔 나랑 동생, 딱 둘뿐이다." (정답: 옷장 안에 처음부터 다른 '누군가'가 숨어 있었다) |
+| id | 화면 제목 | 길이 | 검토 | 한 줄 요약 | 결말 유형 | 노리는 감정 | 정답 해설 |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| `horror1` | 엘리베이터 | 20.7초 | 다시 씀 | 혼자 탄 엘리베이터에 탄 아저씨가 '텅 빈' 안을 보고 도망가고, 층마다 아무도 안 탄다 | 정체 반전(화자가 귀신) | 소름 | 아저씨는 내가 있는데도 텅 빈 안을 봤다(나는 안 보인다). 나 혼자인데 정원 초과였다(안에 나 같은 것들이 가득하다). 나는 이 엘리베이터에서 내리지 못하는 귀신이다 |
+| `horror2` | 도어락 | 21.8초 | 유지 | 새벽 3시 도어락이 열렸다 다시 잠기고, 아침엔 신발이 한 켤레 늘었다 | 숨은 침입자 | 소름 | 도어락은 안에서 다시 잠겼고 신발이 늘었다. 들어온 사람은 나가지 않았고 아직 집 안에 있다 |
+| `horror3` | 택배 | 20.7초 | 다시 씀 | 사흘째 그대로인 옆집 택배, 석 달 전 이사 가 비었다는 관리사무소 답장, 그리고 어제 날짜 주문 | 정체 반전(빈집의 주인) | 소름 | 비었다는 옆집에서 밤마다 TV 소리·발소리가 나고 어제 주문까지 했다. 빈집에 누군가 몰래 살고 있고, 택배를 가지러 문밖으로는 나오지 않는다(사흘째 그대로) |
+| `horror4` | 정전 | 22.3초 | 다시 씀 | 정전된 새벽, 작은 손이 나를 현관 밖까지 데려다줬는데 엄마는 "집에 너 혼자라 걱정했다"고 한다 | 따뜻한 반전 | 뭉클한 소름 | 집엔 나 혼자였다. 나를 데리고 나온 작은 손은 사람이 아니다. 그래도 그 손은 나를 구했다 |
+| `horror5` | 센서등 | 21.2초 | 다시 씀 | 30초 뒤 꺼지는 비상계단 센서등이 5분 넘게 내려가는 동안 하나도 꺼지지 않았다 | 규칙 단서(의외의 이유) | 소름 | 센서등은 사람이 지나가고 30초 뒤 꺼진다. 5분이 지나도 하나도 안 꺼졌다면, 층마다 지금도 누군가 서 있다 |
+| `horror6` | 김 서린 차 | 21.0초 | 유지 | 몇 달째 안 움직인 잠긴 차, 김 서린 운전석 유리에 좌우가 뒤집힌 "또 봤네?" | 사물 단서 | 소름 | 김은 차 안에서 숨을 쉬어야 서리고, 뒤집힌 글씨는 안쪽에서 쓴 것이다. 잠긴 차 안에 몇 달째 누가 있다 |
+| `horror7` | 홈캠 | 20.5초 | 유지 | 현관만 비추던 홈캠에, 침대 옆에서 자는 나를 내려다본 두 시간이 찍혀 있다 | 숨은 침입자(기록 단서) | 소름 | 현관문은 열린 적이 없는데 카메라가 옮겨졌다 돌아왔다. 처음부터 집 안에 있던 누군가의 짓이다 |
+| `horror8` | 발자국 | 22.2초 | 유지 | 텐트를 한 바퀴 돈 발소리, 아침엔 입구에서 나와 다시 입구로 들어간 발자국 | 숨은 동행 | 소름 | 발자국은 밖에서 온 게 아니라 텐트 안에서 나왔다 들어갔다. 밤새 텐트 안에 나 말고 누가 있었다 |
+| `horror9` | 단톡방 | 20.2초 | 유지 | 새벽 3시 반 단톡방 초대, "이제야 다 모였네", 참여 인원 30명 | 숫자 단서 | 소름 | 우리 반은 나까지 29명인데 30명이다. 반 아이가 아닌 누군가가 끼어 있고, 내가 들어오길 기다리고 있었다 |
+| `horror10` | 알림장 | 20.0초 | 유지 | 출장 간 엄마 이름으로 알림장에 사인이 되어 있다 | 숨은 침입자(물건 단서) | 소름 | 엄마는 출장, 집엔 나 혼자, 알림장은 밤새 내 방 가방 안. 내가 자는 사이 누군가 내 방에 들어와 엄마인 척 사인했다 |
+| `horror11` | 할머니 손금 | 20.1초 | 유지 | 내 손금을 보고 웃으신 할머니의 손바닥에는 손금이 하나도 없다 | 정체 반전 | 소름 | 얼음처럼 차갑고 손금이 없는 손. 그 '할머니'는 살아 있는 사람이 아니다 |
+| `horror12` | 숨바꼭질 | 22.5초 | 다시 씀 | 옷장에 숨었는데, 방문을 하나씩 열던 술래가 안방 앞에서 멈춘 순간 동생 문자: "나 아직 화장실인데" | 정체 반전(술래가 다르다) | 소름 | 동생은 아직 화장실에 있다. 낮은 목소리로 열을 세고 방문을 열던 '술래'는 동생이 아니고, 지금 안방 문 앞에 서 있다 |
+
+**업로드 순서(결말 유형이 연달아 겹치지 않게):** `horror1` → `horror6` → `horror11` → `horror2` → `horror9` → `horror4` → `horror8` → `horror3` → `horror5` → `horror7` → `horror12` → `horror10`
 
 ### 검토 결과 (`qa_review.py`)
-열두 편 모두 **FAIL 0**이다. WARN은 편마다 같은 두 줄이다.
-- **길이 WARN (20.0~22.2초).** 검토표의 PASS 구간은 25~45초인데, 이 포맷의 벤치마크 목표가 20~23초다. 일부러 맞춘 값이다.
+열두 편 모두 **FAIL 0**이고, `설명글` 줄은 PASS다. WARN은 편마다 같은 두 줄이다.
+- **길이 WARN (20.0~22.5초).** 검토표의 PASS 구간은 25~45초인데, 이 포맷의 벤치마크 목표가 20~23초다. 일부러 맞춘 값이다.
 - **제목 띠 WARN (`riddle`).** 벤치마크가 띠 없는 그림 위 제목이라 일부러 띠를 뺐다.
-- 그 밖에 첫 장면 0.2~1.2초, 최장 샷 2.0~3.0초, 자막 한 장 최장 9자, −14.0 LUFS, 검은 화면 없음, 용량 10.4~27.3MB로 모두 PASS다.
+- 그 밖에 첫 장면 0.2~1.5초, 최장 샷 2.1~3.0초, 자막 한 장 최장 12자 이하, −14.0 LUFS, 검은 화면 없음, 용량 10.4~27.3MB로 모두 PASS다.
 - 사람이 본 것(first.png, last.png, sheet.png): 0초에 손이나 실루엣, 빨간 제목 단어, 첫 자막이 함께 보인다. 끝은 반전 자막 위의 정지에 가까운 장면이다. 글자가 겹치거나 잘린 곳은 없다. 얼굴이 알아볼 수 있게 나오는 장면은 없다(`horror6` 빈 주차장 먼 문 앞의 작은 실루엣 하나는 v1과 같은 클립이고, 알아볼 수 없는 크기다).
 
 ### 벤치마크 점수표
@@ -3528,145 +3539,123 @@ python3 media/horror/scorecard.py $(seq -f "horror%g" 1 12)
 
 | id | 길이 (목표 20–23, 21) | 훅 끝 (≤1.2) | 첫 전환 (≤1.5) | 평균 샷 (1.9) | 최장 샷 (≤3.0) | 음절/초 (≥5.8) | 줄 수 (9) | 화면 제목 (10+5자) |
 |---|---|---|---|---|---|---|---|---|
-| `horror1` | 22.2초 | 0.67초 | 0.77초 | 1.71초 | 2.97초 | 4.41 (98음절) | 8줄 (13문장) | 이해하면 무서운 / 엘리베이터 (7+5자) |
+| `horror1` | 20.7초 | 0.65초 | 0.8초 | 1.72초 | 2.37초 | 5.9 (122음절) | 7줄 (12문장) | 이해하면 무서운 / 엘리베이터 (7+5자) |
 | `horror2` | 21.8초 | 0.73초 | 0.23초 | 1.28초 | 2.07초 | 3.99 (87음절) | 8줄 (12문장) | 이해하면 무서운 / 도어락 (7+3자) |
-| `horror3` | 20.1초 | 0.72초 | 0.93초 | 1.55초 | 2.43초 | 5.22 (105음절) | 7줄 (10문장) | 이해하면 무서운 / 택배 (7+2자) |
-| `horror4` | 20.1초 | 0.94초 | 1.2초 | 1.34초 | 1.97초 | 5.46 (110음절) | 7줄 (10문장) | 이해하면 무서운 / 거울 (7+2자) |
-| `horror5` | 21.4초 | 0.81초 | 0.33초 | 1.43초 | 2.07초 | 4.85 (104음절) | 7줄 (12문장) | 이해하면 무서운 / 센서등 (7+3자) |
+| `horror3` | 20.7초 | 1.42초 | 0.73초 | 1.59초 | 2.53초 | 5.47 (113음절) | 7줄 (9문장) | 이해하면 무서운 / 택배 (7+2자) |
+| `horror4` | 22.3초 | 0.68초 | 1.5초 | 1.72초 | 2.77초 | 4.89 (109음절) | 7줄 (13문장) | 이해하면 무서운 / 정전 (7+2자) |
+| `horror5` | 21.2초 | 0.81초 | 0.33초 | 1.51초 | 2.57초 | 5.75 (122음절) | 7줄 (12문장) | 이해하면 무서운 / 센서등 (7+3자) |
 | `horror6` | 21.0초 | 0.64초 | 0.83초 | 1.4초 | 2.6초 | 5.18 (109음절) | 7줄 (10문장) | 이해하면 무서운 / 김 서린 차 (7+4자) |
 | `horror7` | 20.5초 | 0.68초 | 0.77초 | 1.46초 | 2.47초 | 5.56 (114음절) | 7줄 (11문장) | 이해하면 무서운 / 홈캠 (7+2자) |
 | `horror8` | 22.2초 | 0.76초 | 1.0초 | 1.48초 | 2.67초 | 4.92 (109음절) | 7줄 (12문장) | 이해하면 무서운 / 발자국 (7+3자) |
 | `horror9` | 20.2초 | 0.65초 | 0.77초 | 1.44초 | 3.0초 | 5.36 (108음절) | 8줄 (10문장) | 이해하면 무서운 / 단톡방 (7+3자) |
 | `horror10` | 20.0초 | 0.89초 | 1.23초 | 1.43초 | 2.5초 | 5.69 (114음절) | 8줄 (9문장) | 이해하면 무서운 / 알림장 (7+3자) |
 | `horror11` | 20.1초 | 0.55초 | 0.7초 | 1.43초 | 2.3초 | 5.48 (110음절) | 7줄 (10문장) | 이해하면 무서운 / 할머니 손금 (7+5자) |
-| `horror12` | 20.2초 | 0.83초 | 1.1초 | 1.34초 | 2.33초 | 4.12 (83음절) | 7줄 (11문장) | 이해하면 무서운 / 숨바꼭질 (7+4자) |
+| `horror12` | 22.5초 | 0.83초 | 1.1초 | 1.6초 | 2.8초 | 4.72 (106음절) | 7줄 (11문장) | 이해하면 무서운 / 숨바꼭질 (7+4자) |
 
 **못 맞춘 것과 이유**
-- **음절/초 3.99~5.69 (목표 5.8 이상).** 목표 5.8은 벤치마크에서 잰 값이 아니다. “+18%로 약 6.2음절/초”를 가정한 추정이다. 실제 InJoon `+18%`의 순수 발화 속도는 약 5.6음절/초라, 쉼이 전혀 없어도 5.8에 닿지 않는다. 지시대로 +18%를 지켰고, 문장 안 쉼과 줄 사이 쉼을 줄여 v1(4.1)보다 빨라졌다. `horror1`·`horror2`·`horror12`가 특히 낮은 이유는 “사, 삼, 이, 일. 띵.”, “삑, 삑, 삑, 삑”, “하나, 둘, 셋”처럼 박자를 두고 읽는 소리 구절 때문이다(지우면 이야기의 소리 단서가 사라진다).
-- **평균 샷 1.28~1.71초 (목표 1.9, 추정).** 목표보다 조금 더 빠르다. 장면 감지는 한 클립 안에서 문이 열리거나 불이 켜지는 변화도 전환으로 센다. 최장 샷은 모두 3.0초 이하로 목표 안이다.
+- **음절/초 3.99~5.9 (목표 5.8 이상).** `horror1`(5.9)만 넘었다. 목표 5.8은 벤치마크에서 잰 값이 아니다. “+18%로 약 6.2음절/초”를 가정한 추정이다. 실제 InJoon `+18%`의 순수 발화 속도는 약 5.6음절/초라 대부분 편이 닿기 어렵다. 지시대로 +18%를 지켰고, 문장 안 쉼과 줄 사이 쉼을 줄여 v1(4.1)보다 빨라졌다. `horror2`가 가장 낮은 이유는 “삑, 삑, 삑, 삑”처럼 박자를 두고 읽는 소리 구절 때문이다(지우면 이야기의 소리 단서가 사라진다).
+- **평균 샷 1.28~1.72초 (목표 1.9, 추정).** 목표보다 조금 더 빠르다. 장면 감지는 한 클립 안에서 문이 열리거나 불이 켜지는 변화도 전환으로 센다. 최장 샷은 모두 3.0초 이하로 목표 안이다.
+- **훅 끝:** `horror3`은 1.42초(목표 1.2초 이하)다. 첫 문장 “옆집 문 앞의 택배 봉투.”가 9음절이기 때문이다. 0초 자막은 “옆집 문 앞 택배” 한 장이다.
 - **줄 수 7~8줄 (목표 9, 추정).** 문장 수로는 9~13문장이고, 자막 한 장은 3~9음절이다.
 - **화면 제목 7+2~5자 (목표 10+5).** 벤치마크 화면 제목이 “신기한 / 지우개”처럼 짧은 수식어 + 명사라서 화면에서는 “[괴담]”을 빼고 “이해하면 무서운 / ○○”만 둔다. “[괴담] 이해하면 무서운 ○○”는 업로드 제목에 쓴다.
-- 길이, 훅 끝(0.55~0.94초), 첫 전환(0.23~1.23초), 최장 샷은 열두 편 모두 목표 안이다.
+- 길이, 첫 전환(0.23~1.5초), 최장 샷은 열두 편 모두 목표 안이다. 훅 끝도 `horror3`을 빼면 모두 목표 안이다.
 
 ### 영상과 라이선스 (2026-10-10, 각 영상 페이지를 열어 “Free”·제작자를 확인)
-페이지 주소·파일 주소·제작자·쓴 구간(초)은 `media/horror/sources_v2.json`과 각 `edit.json`의 `sources`에 있다. 화면에는 출처를 표시하지 않고, 업로드 설명란에 모든 제작자를 적는다.
+페이지 주소·파일 주소·제작자·쓴 구간(초)은 `media/horror/sources_v2.json`과 각 `edit.json`의 `sources`에 있다. 화면에는 출처를 표시하지 않고, 업로드 설명란 출처 줄에 모든 제작자를 적는다.
 - **Pexels License** (https://www.pexels.com/license/ — 무료, 수정 가능, 출처 표기 불필요. 수정 없는 판매·재배포와 사람을 나쁘게 보이게 하는 사용은 금지):
-  - horror1: 7701962 MART PRODUCTION, 15201563 Darina Evstafeva, 34779661 Stefan, 15434928 Yusuf Çelik, 5823578 Charlotte May, 978049 Stefan Kwiecinski / Pixabay: 130783·131012 Jesehab
+  - horror1: 7701962 MART PRODUCTION, 15434928 Yusuf Çelik, 34779661 Stefan, 15201563 Darina Evstafeva, 5823578 Charlotte May, 978049 Stefan Kwiecinski / Pixabay: 131012·130783 Jesehab
   - horror2: 2108274 Nazar Matveichev, 35999369 Jakub Bukowski, 9658661 Videas Cl, 29038649 Адам Аушев, 7598737 Artadya Gumelar, 19217899 Nino Souza, 5384813 Tima Miroshnichenko, 3512344 Bran Sodre, 8533759 Kaboompics (karola-g) / Pixabay: 28237 Jacques_Barrette
-  - horror3: 6611938 Tima Miroshnichenko, 8346903 Kampus Production, 7362603 RDNE Stock project, 13358555 Edwin Lopez, 9658661 Videas Cl, 5483080 cottonbro studio, 15365449 Matthias Groeneveld, 7598737 Artadya Gumelar
-  - horror4: 7646797 Alena Darmel, 32834268 Benjamin Eriksen, 36778198 Curtis Adams, 27861219 Nothing Ahead, 5384813 Tima Miroshnichenko, 4623153 Artem Podrez, 19217895 Nino Souza
-  - horror5: 4354915 Ahmet Akpolat, 5843879·9152640 Erik Mclean, 3134591 Caleb Oquendo, 12096163 Sasha Poberailo, 39024320 Alef Morais, 5986347 Pat Whelen, 6010700 Tima Miroshnichenko, 4990438 Pavel Danilyuk, 7644222 Yaroslav Shuraev
+  - horror3: 6611938 Tima Miroshnichenko, 7362603 RDNE Stock project, 9658661 Videas Cl, 15365449 Matthias Groeneveld, 7598737 Artadya Gumelar, 13358555 Edwin Lopez
+  - horror4: 7822022 RDNE Stock project, 4623153 Artem Podrez, 19217895·19217899 Nino Souza, 7598737 Artadya Gumelar, 10210122 cottonbro studio, 7546178 SHVETS production, 2108274 Nazar Matveichev, 9658661 Videas Cl
+  - horror5: 4354915 Ahmet Akpolat, 5843879·9152640 Erik Mclean, 3134591 Caleb Oquendo, 12096163 Sasha Poberailo, 39024320 Alef Morais, 5986347 Pat Whelen, 6010700 Tima Miroshnichenko, 4990438 Pavel Danilyuk
   - horror6: 6302990 Klaus Nielsen, 27890130 Baran Robin, 6028858·6028882 Артем Ковальчук, 19217892 Nino Souza, 38433795 Rishabh Kaple, 5192033 Ming Z, 5227362 Francesco Ungaro, 32078487 Rec Everywhere
   - horror7: 13358555 Edwin Lopez, 19228170·15887293 Curtis Adams, 34106136 Cemrecan Yurtman, 6028175 Ricky Esquivel, 19193293 Rafael Fernanz, 6114429 cottonbro studio, 5245970 Hemanth K M, 6443851 Pavel Danilyuk
   - horror8: 5994916·5994907·5994915 cottonbro studio, 9976082 George Morina, 34405948 Emir Reinado, 7714908 Greta Hoffman, 9591436 Kain kn, 5391986 Saidouni Sidi Med, 4162882 Grisha Grishkoff, 39485457·39619866 Nothing Ahead, 5419248 Yaroslav Shuraev
   - horror9: 6611941·5384813 Tima Miroshnichenko, 13358555 Edwin Lopez, 8342690·8342695 Pavel Danilyuk, 6935499·7822022 RDNE Stock project, 19193293 Rafael Fernanz
   - horror10: 7055339 Kindel Media, 5897634 Katerina Holmes, 6326847 Kaboompics (karola-g), 8342690 Pavel Danilyuk, 6863499 Nataliya Vaitkevich, 7598737 Artadya Gumelar, 19193293 Rafael Fernanz, 5384813 Tima Miroshnichenko, 19217899 Nino Souza, 39425735 Sergei Starostin
   - horror11: 9479751 Ron Lach, 19585708 Salih Sezgen, 35889601 K (@kelly), 10210122·4547598 cottonbro studio, 7234023 Artem Podrez, 5271483 Moe Magners, 7546178 SHVETS production
-  - horror12: 9594994·8322393 Ron Lach, 7598737 Artadya Gumelar, 2108274 Nazar Matveichev, 4547598 cottonbro studio, 19217899 Nino Souza, 9658661 Videas Cl, 37554583 Zulfugar Karimov
-  - v2에서 새로 쓴 클립의 페이지: 7701962, 2108274, 6611938, 7646797, 4354915, 6302990, 13358555, 5994916, 5994907, 6611941, 7822022, 8342690, 6935499, 8342695, 7055339, 5897634, 6326847, 6863499, 39425735, 9479751, 19585708, 35889601, 10210122, 7234023, 5271483, 7546178, 4547598, 9594994, 8322393, 37554583, 8533759. 주소는 `https://www.pexels.com/video/<slug>-<id>/`이고, slug는 `catalog.py`에 있다.
+  - horror12: 9594994·8322393 Ron Lach, 7598737 Artadya Gumelar, 19217899 Nino Souza, 9658661 Videas Cl, 4547598 cottonbro studio, 37554583 Zulfugar Karimov, 13358555 Edwin Lopez
+  - v2에서 새로 쓴 클립의 페이지: 7701962, 2108274, 6611938, 7646797, 4354915, 6302990, 13358555, 5994916, 5994907, 6611941, 7822022, 8342690, 6935499, 8342695, 7055339, 5897634, 6326847, 6863499, 39425735, 9479751, 19585708, 35889601, 10210122, 7234023, 5271483, 7546178, 4547598, 9594994, 8322393, 37554583, 8533759. 주소는 `https://www.pexels.com/video/<slug>-<id>/`이고, slug는 `catalog.py`에 있다. 7646797은 v2 첫 판의 `horror4`에만 썼고, 지금 편에는 쓰지 않는다.
 - **Pixabay Content License** (무료, 수정 가능, 출처 표기 불필요. 원본 그대로의 판매·배포 금지): 130783·131012 Jesehab(`horror1`), 28237 Jacques_Barrette(`horror2`).
 - 손은 모두 얼굴이 나오지 않는 익명의 손이다. 무섭거나 나쁜 맥락의 장면에 알아볼 수 있는 사람은 없다.
 - 음악: Kevin MacLeod (incompetech.com), CC BY 4.0.
-- 사실 인용: 열두 편 모두 창작 괴담이라 숫자·법·날짜 같은 사실 주장이 없다.
+- 사실 인용: 열두 편 모두 창작 괴담이라 숫자·법·날짜 같은 사실 주장이 없다(`horror5`의 “30초 뒤 꺼진다”는 이야기 속 설정이다).
 
 ### 업로드 문구
-설명란 첫 줄에 **창작 괴담**이라고 밝힌다. 정답 유도는 영상에서 빼고 고정 댓글로 옮겼다. 고정 댓글은 정답을 직접 말하지 않고 단서를 준다.
+설명글은 `upload/README.md` 형식이다. `upload/specs/horror1~12.json`(`"fiction": true`, 요약은 상황과 궁금증까지만 쓰고 정답은 쓰지 않음)을 `python3 upload/make_desc.py horror<n>`으로 돌려 `upload/txt/horror<n>.txt`를 만들었다. 요약 앞에 “(창작)”이 붙는다. 출처 줄에는 모든 영상 제작자, “이야기 직접 제작(창작 괴담, 실제 장소·인물과 무관) · 내레이션: AI 합성 음성”, 음악 크레딧(CC BY 4.0)이 들어간다. 해시태그는 #Shorts를 포함해 10개다. 채널 이름과 핸들은 `[채널명]`·`[핸들]` 자리표시자로 두었다. 업로드 제목은 「[괴담] 이해하면 무서운 ○○ ㄷㄷ」이다. 정답 유도는 영상에서 빼고 고정 댓글로 옮겼다. 고정 댓글은 정답을 직접 말하지 않고 단서를 준다.
 
 **horror1** — [괴담] 이해하면 무서운 엘리베이터 ㄷㄷ
-> 창작 괴담입니다. 실제 장소·인물과 관계없습니다. 텅 빈 엘리베이터에 한 발 들였을 뿐인데 정원 초과?
-> 영상: Pexels (MART PRODUCTION, Darina Evstafeva, Stefan, Yusuf Çelik, Charlotte May, Stefan Kwiecinski), Pixabay (Jesehab)
-> 음악: "Gathering Darkness" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
-> #괴담 #이해하면무서운이야기 #공포 #엘리베이터 #shorts
 
-고정 댓글: “정원 초과인데 안은 텅 비어 있었다면… 그 엘리베이터엔 몇 명이 타고 있었을까요? 위층에서 누가 불렀던 걸까요? 정답은 답글로 👀”
+설명글: `upload/txt/horror1.txt` (`upload/specs/horror1.json`)
+
+고정 댓글: “아저씨는 왜 '텅 빈' 안을 보고 놀랐을까요? 정원 초과 경고가 울린 이유까지 맞히면 정답! 풀이는 답글로 👀”
 
 **horror2** — [괴담] 이해하면 무서운 도어락 ㄷㄷ
-> 창작 괴담입니다. 실제 장소·인물과 관계없습니다. 새벽 세 시에 열렸다가 다시 잠긴 도어락. 비밀번호는 나만 아는데요.
-> 영상: Pexels (Nazar Matveichev, Jakub Bukowski, Videas Cl, Адам Аушев, Artadya Gumelar, Nino Souza, Tima Miroshnichenko, Bran Sodre, Kaboompics (karola-g)), Pixabay (Jacques_Barrette)
-> 음악: "Ghost Story" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
-> #괴담 #이해하면무서운이야기 #공포 #도어락 #shorts
 
-고정 댓글: “문은 안에서 다시 잠겼고, 신발은 한 켤레 늘었습니다. 그 사람은 언제 나갔을까요? 정답은 답글로 👀”
+설명글: `upload/txt/horror2.txt` (`upload/specs/horror2.json`)
 
-**horror3** — [괴담] 이해하면 무서운 택배 문자 ㄷㄷ
-> 창작 괴담입니다. 실제 업체·인물과 관계없습니다. 나는 회사에 있고, 혼자 사는데… 택배는 누가 받아 갔을까요?
-> 영상: Pexels (Tima Miroshnichenko, Kampus Production, RDNE Stock project, Edwin Lopez, Videas Cl, cottonbro studio, Matthias Groeneveld, Artadya Gumelar)
-> 음악: "Gathering Darkness" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
-> #괴담 #이해하면무서운이야기 #공포 #택배 #shorts
+고정 댓글: “문은 '안에서' 다시 잠겼고, 신발은 한 켤레 늘었습니다. 그 사람은 언제 나갔을까요? 풀이는 답글로 👀”
 
-고정 댓글: “잠긴 집 안에서 택배를 받아 간 '안에 계신 분'은 지금 어디 있을까요? 정답은 답글로 👀”
+**horror3** — [괴담] 이해하면 무서운 택배 ㄷㄷ
 
-**horror4** — [괴담] 이해하면 무서운 거울 ㄷㄷ
-> 창작 괴담입니다. 실제 장소·인물과 관계없습니다. 불을 껐는데 거울 속 방은 아직 밝았다면?
-> 영상: Pexels (Alena Darmel, Benjamin Eriksen, Curtis Adams, Nothing Ahead, Tima Miroshnichenko, Artem Podrez, Nino Souza)
-> 음악: "Ghost Story" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
-> #괴담 #이해하면무서운이야기 #공포 #거울 #shorts
+설명글: `upload/txt/horror3.txt` (`upload/specs/horror3.json`)
 
-고정 댓글: “거울 속 침대가 비어 있었다면, 거울 속 '나'는 지금 어디서 무엇을 하고 있을까요? 정답은 답글로 👀”
+고정 댓글: “석 달째 비어 있다는 옆집, 밤마다 들리던 TV 소리, 그리고 어제 날짜의 주문. 택배는 누가 시켰을까요? 풀이는 답글로 👀”
+
+**horror4** — [괴담] 이해하면 무서운 정전 ㄷㄷ
+
+설명글: `upload/txt/horror4.txt` (`upload/specs/horror4.json`)
+
+고정 댓글: “엄마 말대로라면 그날 밤 집에는 나 혼자였어요. 그럼 나를 데리고 나온 작은 손은… 풀이는 답글로 👀”
 
 **horror5** — [괴담] 이해하면 무서운 센서등 ㄷㄷ
-> 창작 괴담입니다. 실제 장소·인물과 관계없습니다. 내가 가기도 전에 한 층씩 먼저 켜지던 비상계단 센서등.
-> 영상: Pexels (Ahmet Akpolat, Erik Mclean, Caleb Oquendo, Sasha Poberailo, Alef Morais, Pat Whelen, Tima Miroshnichenko, Pavel Danilyuk, Yaroslav Shuraev)
-> 음악: "Gathering Darkness" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
-> #괴담 #이해하면무서운이야기 #공포 #비상계단 #shorts
 
-고정 댓글: “센서등은 사람이 지나가야 켜집니다. 계속 한 층 아래를 지나간 건 누구였고, 마지막에 2층 불은 왜 켜졌을까요? 정답은 답글로 👀”
+설명글: `upload/txt/horror5.txt` (`upload/specs/horror5.json`)
+
+고정 댓글: “센서등은 30초 뒤에 꺼집니다. 5분이 지나도 하나도 꺼지지 않았다면, 계단 층층마다… 풀이는 답글로 👀”
 
 **horror6** — [괴담] 이해하면 무서운 김 서린 차 ㄷㄷ
-> 창작 괴담입니다. 실제 장소·인물과 관계없습니다. 몇 달째 서 있는 차, 김 서린 유리에 좌우가 뒤집힌 글씨 "또 봤네?"
-> 영상: Pexels (Klaus Nielsen, Baran Robin, Артем Ковальчук, Nino Souza, Rishabh Kaple, Ming Z, Francesco Ungaro, Rec Everywhere)
-> 음악: "Ghost Story" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
-> #괴담 #이해하면무서운이야기 #공포 #지하주차장 #shorts
 
-고정 댓글: “김은 어느 쪽에서 숨을 쉬어야 서릴까요? 그리고 글씨는 왜 뒤집혀 있었을까요? 정답은 답글로 👀”
+설명글: `upload/txt/horror6.txt` (`upload/specs/horror6.json`)
+
+고정 댓글: “김은 어느 쪽에서 숨을 쉬어야 서릴까요? 그리고 글씨는 왜 뒤집혀 있었을까요? 풀이는 답글로 👀”
 
 **horror7** — [괴담] 이해하면 무서운 홈캠 ㄷㄷ
-> 창작 괴담입니다. 실제 장소·인물·제품과 관계없습니다. 현관만 비추던 홈캠에 왜 자는 내가 찍혀 있었을까요?
-> 영상: Pexels (Edwin Lopez, Curtis Adams, Cemrecan Yurtman, Ricky Esquivel, Rafael Fernanz, cottonbro studio, Hemanth K M, Pavel Danilyuk)
-> 음악: "Gathering Darkness" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
-> #괴담 #이해하면무서운이야기 #공포 #홈캠 #shorts
 
-고정 댓글: “현관문은 한 번도 열리지 않았는데, 누가 홈캠을 침대 옆으로 옮겼다가 다시 돌려놨을까요? 정답은 답글로 👀”
+설명글: `upload/txt/horror7.txt` (`upload/specs/horror7.json`)
+
+고정 댓글: “현관문은 한 번도 열리지 않았는데, 누가 홈캠을 침대 옆으로 옮겼다가 다시 돌려놨을까요? 풀이는 답글로 👀”
 
 **horror8** — [괴담] 이해하면 무서운 발자국 ㄷㄷ
-> 창작 괴담입니다. 실제 장소·인물과 관계없습니다. 텐트 입구에서 나와 한 바퀴 돌고 다시 들어간 발자국. 나는 밤새 나간 적이 없는데요.
-> 영상: Pexels (cottonbro studio, George Morina, Emir Reinado, Greta Hoffman, Kain kn, Saidouni Sidi Med, Grisha Grishkoff, Nothing Ahead, Yaroslav Shuraev)
-> 음악: "Ghost Story" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
-> #괴담 #이해하면무서운이야기 #공포 #캠핑 #shorts
 
-고정 댓글: “발자국은 밖에서 온 게 아니라 입구에서 '나와서' 다시 '들어갔습니다'. 그날 밤 텐트 안엔 몇 명이 있었을까요? 정답은 답글로 👀”
+설명글: `upload/txt/horror8.txt` (`upload/specs/horror8.json`)
+
+고정 댓글: “발자국은 입구에서 '나와서' 다시 '들어갔습니다'. 그날 밤 텐트 안엔 몇 명이 있었을까요? 풀이는 답글로 👀”
 
 **horror9** — [괴담] 이해하면 무서운 단톡방 ㄷㄷ
-> 창작 괴담입니다. 실제 인물·학교·앱과 관계없습니다. 새벽 세 시에 초대된 반 단톡방, 그리고 "이제야 다 모였네".
-> 영상: Pexels (Tima Miroshnichenko, Edwin Lopez, Pavel Danilyuk, RDNE Stock project, Rafael Fernanz)
-> 음악: "Gathering Darkness" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
-> #괴담 #이해하면무서운이야기 #공포 #단톡방 #shorts
 
-고정 댓글: “우리 반은 나까지 29명인데 참여 인원은 30명. 서른 번째는 누구였고, 누구를 기다리고 있었을까요? 정답은 답글로 👀”
+설명글: `upload/txt/horror9.txt` (`upload/specs/horror9.json`)
+
+고정 댓글: “우리 반은 나까지 29명인데 참여 인원은 30명. 서른 번째는 누구였고, 누구를 기다리고 있었을까요? 풀이는 답글로 👀”
 
 **horror10** — [괴담] 이해하면 무서운 알림장 ㄷㄷ
-> 창작 괴담입니다. 실제 인물·학교와 관계없습니다. 출장 간 엄마의 사인이 내 알림장에 있었다면?
-> 영상: Pexels (Kindel Media, Katerina Holmes, Kaboompics (karola-g), Pavel Danilyuk, Nataliya Vaitkevich, Artadya Gumelar, Rafael Fernanz, Tima Miroshnichenko, Nino Souza, Sergei Starostin)
-> 음악: "Ghost Story" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
-> #괴담 #이해하면무서운이야기 #공포 #알림장 #shorts
 
-고정 댓글: “엄마는 출장 중이고 집엔 나 혼자였습니다. 밤새 내 방 가방에서 알림장을 꺼내 사인한 사람은 누구일까요? 정답은 답글로 👀”
+설명글: `upload/txt/horror10.txt` (`upload/specs/horror10.json`)
+
+고정 댓글: “엄마는 출장 중이고 집엔 나 혼자였습니다. 밤새 내 방 가방에서 알림장을 꺼내 사인한 사람은 누구일까요? 풀이는 답글로 👀”
 
 **horror11** — [괴담] 이해하면 무서운 할머니 손금 ㄷㄷ
-> 창작 괴담입니다. 실제 인물과 관계없습니다. 내 손금을 보고 웃으신 할머니, 그런데 할머니 손바닥엔…
-> 영상: Pexels (Ron Lach, Salih Sezgen, K (@kelly), cottonbro studio, Artem Podrez, Moe Magners, SHVETS production)
-> 음악: "Gathering Darkness" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
-> #괴담 #이해하면무서운이야기 #공포 #손금 #shorts
 
-고정 댓글: “살아 있는 사람이라면 손바닥에 손금이 있죠. 얼음처럼 차가운 손, 손금 없는 손바닥의 '할머니'는 누구였을까요? 정답은 답글로 👀”
+설명글: `upload/txt/horror11.txt` (`upload/specs/horror11.json`)
+
+고정 댓글: “살아 있는 사람이라면 손바닥에 손금이 있죠. 얼음처럼 차가운 손, 손금 없는 손바닥의 '할머니'는 누구였을까요? 풀이는 답글로 👀”
 
 **horror12** — [괴담] 이해하면 무서운 숨바꼭질 ㄷㄷ
-> 창작 괴담입니다. 실제 인물과 관계없습니다. 옷장에 숨었는데 등 뒤에서 들린 한마디, "여기 좋지?"
-> 영상: Pexels (Ron Lach, Artadya Gumelar, Nazar Matveichev, cottonbro studio, Nino Souza, Videas Cl, Zulfugar Karimov)
-> 음악: "Ghost Story" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
-> #괴담 #이해하면무서운이야기 #공포 #숨바꼭질 #shorts
 
-고정 댓글: “동생은 밖에서 나를 찾고 있었고, 집엔 우리 둘뿐입니다. 옷장 안에서 속삭인 건 누구였을까요? 정답은 답글로 👀”
+설명글: `upload/txt/horror12.txt` (`upload/specs/horror12.json`)
+
+고정 댓글: “동생은 아직 화장실에 있었습니다. 그럼 열까지 세고 방문을 하나씩 열던 건 누구였을까요? 풀이는 답글로 👀”
+
 ## 그 시절 레트로 v2 (벤치마크, `retro1`~`retro12`)
 
 `research/benchmark-footage.md` 2절과 `research/benchmark-targets-footage.json`의 `retro` 목표에 맞춰 다시 만든 판입니다. 벤치마크는 그 시절 우리의 「김치 식단」(359만), 「80년대 캠핑」(314만), 「계곡 식사」(189만)입니다. 바뀐 점은 다음과 같습니다.
@@ -5139,6 +5128,751 @@ Pexels와 Pixabay를 먼저 시도했지만, 두 사이트 모두 이 환경에 
 - 해시태그: #Shorts #공감 #특 #공감툰 #공감애니 #창작애니 #일상공감 #눈치 #친구공감 #인간관계 #MBTI
 - 고정 댓글: 혹시… 나야? 몇 개 해당?
 
+
+---
+
+## 롱폼: 반찬통에 이름 써 붙이는 남편과 각방 쓴 사연
+
+`lfsaeyeon1` · 그림 사연툰 단편(리서치 `research/research-longform-story.md` 4절 레시피 ①, 아이디어 1) · 1920×1080, 10분 17초 · 창작 사연
+
+- 파일: `final/lfsaeyeon1.mp4`, `final/lfsaeyeon1-thumb.jpg`
+- 만들기: `longform/lfsaeyeon1/render.sh` (voice.py → build.py → prep.py → Remotion `src/lib/long/lfsaeyeon1_comps.tsx` → 2-pass H.264 + loudnorm −14 LUFS) · QA `python3 longform/lfsaeyeon1/qa.py`
+- 원고: `longform/lfsaeyeon1/story.py`(장면 153개), 개요 3개는 `outlines.md`, 대본은 `script.json`, 컷 목록은 `scenes.json`, 음악·효과음은 `edit.json`
+- 그림: 새 파일만 썼다. `src/lib/long/lfsaeyeon1_cast.tsx`(인물 4명), `_set.tsx`(배경·소품), `_stage.tsx`(16:9 한 컷), `_video.tsx`(전체), `_thumb.tsx`, `_comps.tsx`(컴포지션 2개). 쇼츠 템플릿 파일은 고치지 않았고, `src/Root.tsx` 끝에 `<LfSaeyeon1Comps />` 한 줄(과 import 한 줄)만 더했다. 롱폼 키트(`src/Long.tsx`)가 합쳐지기 전이라 자체 컴포지션으로 렌더했다. 키트가 들어오면 `SyStage`를 키트의 썰 장면에서 부르거나, 완성본에 `qa_long.py`를 돌리면 된다.
+
+### 이야기 검토 (REVIEW.md 2-1, 녹음 전)
+
+| 항목 | 결과 |
+|---|---|
+| 1. 한 줄 요약 | 반찬통에 이름표를 붙이던 남편 때문에 각방까지 썼는데, 남편은 손을 못 쓰게 된 어머님 체면과 내 반찬을 둘 다 지키려고 새벽마다 내 장조림을 흉내 내 만들고 있었다 |
+| 2. 제목으로 결말을 못 맞힘 | 제목의 첫 추측은 "치사한 남편 / 혼자 먹으려는 남편". 5:00쯤 나오는 1차 답("시어머니가 가져갔다")도 미끼이고, 진짜 답(남편이 만든 '엄마' 통)은 6:46까지 안 나온다. 제목에는 결과(각방)만 있다 |
+| 3. 구체적인 장면 | 별 모양 당근 장조림, 은색 스테인리스 '엄마' 통, 케첩에 붙은 '우리' 이름표, 밴드 세 개, 메추리알 껍데기, 화·목 14:10 도어록 기록, 한여름 면장갑 |
+| 4. 커지는 갈등 | 이름표 → 거짓말(깻잎·헬스장·새벽 운동) → 각방 → 시댁에서 "올케도 좀 배워" 망신 → 짐 싸기. 네 번 커지고, 친구의 "딴 집 반찬?" 의심이 한 번 꺾는다 |
+| 5. 복선 있는 반전 | 아래 단서 표. 우연·꿈·갑작스러운 제3자 없음. 1차 반전(시어머니)과 2차 반전(남편)이 같은 단서로 풀린다 |
+| 6. 감정 하나 | 뭉클(따뜻한 반전). 사이다는 어머님이 스스로 장갑을 벗고 진실을 말하는 행동으로, 웃음은 "그럼 짠 건 누가 했는데?" → 손 드는 남편 한 번 |
+| 7. 설교 금지 | 교훈 문장 없음. 해결은 장갑 벗기, 손 들기, 같이 장조림 만들기 |
+| 8. 살아 있는 인물 | 나("아니 근데,", 별 깎는 버릇) · 남편("그냥…", 거짓말하면 귀가 빨개짐) · 어머님("아이고, 됐다 됐어", 손 관절, 딸에게만은 엄마 반찬을 끊기 싫음) · 형님("아 진짜~", 백일 아기, 지쳐서 말이 앞섬). 악역 없음, 모두 이유가 있다 |
+| 9. 구조 돌려쓰기 | 결말 유형: 숨은 동기 + 이중 반전. 직전 썰(sseol13, 따뜻한 반전 "~하는 이유")과 뼈대가 다르다 |
+| 10. 쓰는 순서 | 개요 3개(A 선택, B·C 버림) → 1번 기준 선택 → "20대 댓글" 거르기(예상 댓글: "각방 수락이 복선이었네", "삐뚤빼뚤 별에서 울컥", "짠 건 누가 했는데 ㅋㅋ") |
+
+- **훅(0:00~0:18)**: 남편이 은색 통을 들고 "이건 엄마 거야. 당신은 손대지 마." → "아니 근데… 여기 우리 집 냉장고거든?" → "결혼 2년 차. 남편이 반찬통에 이름을 써 붙이기 시작했어요. 그리고 저희는… 각방을 썼습니다." → 제목 카드
+- **반전**: 이름표는 나한테 한 말이 아니었다. '지은' = "엄마, 이건 손대지 마세요", '엄마' = "이건 가져가세요, 내가 만든 거예요". 1년 전부터 칼을 못 쥐는 어머님이 산후조리 중인 형님에게 "엄마 반찬"을 끊지 못해 우리 집 반찬을 가져갔고, 그걸 안 남편이 어머님 체면과 내 반찬을 둘 다 지키려고 새벽 4시 반마다 내 레시피로 장조림을 만들었다. 각방을 1초 만에 받아들인 것도 새벽에 나를 깨우지 않으려고.
+- **노리는 감정**: 뭉클. 끝맛은 웃음("귀가… 빨갰어요.")
+
+**복선(심은 시각 → 풀리는 시각)**
+
+| 단서 | 심음 | 풀림 |
+|---|---|---|
+| 별 모양 당근(내 표시) | 0:31 | 4:19 형님 사진 속 별 당근 → 6:20 '엄마' 통 속 찌그러진 별 → 6:54 새벽에 별을 깎는 남편 |
+| 남편은 라면 물도 못 맞춤 | 0:52 | 6:20 짠 장조림, 9:25 "그럼 짠 건 누가 했는데?" |
+| 거짓말하면 귀가 빨개짐 | 0:57 | 1:25, 2:04, 2:46 거짓말마다 / 10:04 마지막 펀치라인 |
+| 깻잎을 질색 → "내가 다 먹었어" | 1:02, 1:25 | 8:21 "엄마가 실수로 가져가신 거" |
+| 맨 안쪽 은색 '엄마' 통, "빈 통이야" | 1:45, 2:04 | 6:07 어머님은 '엄마' 통만 가져감, 7:55 "내가 만든 거니까" |
+| 손가락 밴드 세 개("덤벨") | 2:19 | 8:21 "별 깎다가", 9:30 손 든 남편 |
+| 새벽 간장 냄새, 메추리알 껍데기 | 2:33, 2:37 | 6:36 세 단서가 한 줄로 맞물림, 6:49 새벽 4시 반 |
+| 각방을 1초 만에 받아들임("일찍 일어나니까") | 3:29 | 8:13 "당신 깨우면 안 되니까" |
+| 한여름 면장갑, 파스 냄새 | 3:58 | 7:07 관절, 8:52 장갑을 벗는 어머님 |
+| "요즘 건 별이 찌그러졌더라, 좀 짜" | 4:44, 4:50 | 6:20 |
+| 도어록 화·목 14:10 | 5:32 | 5:42~6:07 숨어서 본 어머님, 7:27 "석 달 전 도어록 알림" |
+
+**버린 개요 2개** (전문은 `longform/lfsaeyeon1/outlines.md`)
+- **B. 남편의 저염 식단**: 신장 수치 경고를 받은 남편이 걱정시킬까 봐 저염 반찬을 따로 먹으려 이름표를 붙였다. 버린 이유: "알고 보니 아팠다"는 사연 오디오북 단골 공식이라 병원 봉투가 나오는 순간 끝나고, 제3자가 판을 키우지 못하며, 감정이 슬픔으로 무거워진다. 저염이면 이름이 아니라 "저염"이라고 쓰면 된다.
+- **C. 리서치 원안(시어머니의 반찬 바꿔치기)**: 시어머니가 내 반찬을 시누이에게 "엄마가 했다"며 주는 걸 막으려고 남편이 이름표를 붙였다. 버린 이유: 시댁 사연 시청자의 첫 추측이 "시어머니가 범인"이고, 결말이 시어머니 망신(빌런 → 벌)이 된다. 이름표로 막는다는 논리도 약하다. 이 개요는 A의 중간 반전(4:19~5:28)으로 썼다.
+
+### 챕터
+
+```
+0:00 콜드 오픈
+0:18 발단: 이름표
+2:10 고조 1: 깻잎과 각방
+3:42 고조 2: 시어머니 생신
+5:28 단서: 도어록 기록
+6:53 반전: 새벽 4시 반
+8:42 사이다: 일요일 시댁
+9:34 여운
+10:07 여러분이라면?
+```
+
+레시피(0:20 / 2:00 / 4:00 / 6:00 / 7:30 / 9:00 / 9:40)보다 고조 2와 단서가 20~30초 이르다. 반전·사이다 구간이 길어서 둘로 나눴다(챕터 9개).
+
+### 목소리 (Edge TTS, 한국어 목소리 3개를 인물별 속도·높이로 나눔)
+
+| 인물 | voice | rate | pitch | 메모 |
+|---|---|---|---|---|
+| 내레이션(지은) | ko-KR-SunHiNeural | +4% | +0Hz | 리서치 권장 +3~5% |
+| 나(지은, 대사) | ko-KR-SunHiNeural | +7% | +7Hz | 내레이션보다 밝고 빠르게 |
+| 남편 도윤 | ko-KR-HyunsuMultilingualNeural | +0% | −5Hz | 말수 적고 낮게 |
+| 어머님 | ko-KR-SunHiNeural | −12% | −20Hz | 느리고 낮게 |
+| 형님 도희 | ko-KR-SunHiNeural | +12% | +16Hz | 빠르고 높게 |
+
+- 대사 : 내레이션 = 줄 수로 88 : 65(약 6 : 4), 글자 수로 약 5 : 5. 문장은 짧게 끊고 "…", "아이고", "아 진짜~", "어? 아…" 같은 말버릇을 넣었다. 장면 전환마다 쉼을 길게(0.4~0.9초), 새벽 장면 직전에는 음악을 끊고 1.4초 무음.
+- 한국어 Edge 목소리는 여성 1개(SunHi)뿐이라 지은·어머님·형님이 같은 목소리의 속도·높이 변형이다. 리서치(사람 목소리 채널이 히트)를 생각하면 가장 큰 약점이다. 사람 녹음으로 바꾸려면 `script.json`의 대사를 그대로 읽으면 된다.
+
+### 그림
+
+- 98컷(평균 6.3초에 한 컷). 같은 구도에서 표정과 말풍선만 바뀌는 줄은 컷으로 세지 않는다.
+- 배경 8개: 부엌, 새벽 부엌, 냉장고 속, 거실, 안방(각방 분할 포함), 시댁 거실, 현관, 회상. 클로즈업: 장조림(반듯한 별 / 찌그러진 별), 밴드 붙은 손, 어머님 손, 도어록 기록, 형님 휴대폰 사진, 레시피 노트, 메추리알 껍데기.
+- 인물은 썰 찹쌀떡과 같은 몸·표정 13개에 고정된 차림을 더했다. 나 = 복숭아색, 갈색 앞머리 + 노란 곱창밴드 묶음머리, 산호색 옷 · 남편 = 하늘색, 짧은 검은 머리 + 삐침머리, 남색 옷, 거짓말하면 빨개지는 귀 · 어머님 = 연보라, 회색 파마, 동그란 안경, 눈가 주름, 보라 카디건, 면장갑 · 형님 = 민트, 검은 단발 + 분홍 머리띠, 다크서클, 회색 후드, 분홍 포대기의 아기.
+- 대사는 말풍선, 내레이션은 아래 자막. 화면 밖 목소리 말풍선에는 이름표를 붙였다. 오른쪽 위에 "창작 사연" 표시.
+
+### 인코딩과 QA (`python3 longform/lfsaeyeon1/qa.py`, 0 FAIL)
+
+- 1920×1080 30fps, H.264 2-pass 1,002 kbps(95MB에 맞춘 값) + AAC 192 kbps 48 kHz, faststart · 617.2초(10:17) · 93.0MB · −14.0 LUFS, 피크 −1.5 dBTP
+- 검은 프레임 0, 마지막 프레임 밝음(평균 휘도 216), 1.5초 넘는 무음 0, 12초 넘게 멈춘 화면 0, 자막 최장 27자(6장은 1500px 안에 들도록 글자를 줄임, 넘침 없음), 금지어 없음
+- WARN 1: 한 구도가 가장 길게 이어지는 곳은 3:02의 거실 다툼(23.5초). 같은 구도에서 표정·말풍선 7번이 바뀐다
+- 콘택트 시트(30초 간격): `out/review/lfsaeyeon1/sheet_*.jpg` (git 밖). 썸네일 1280×720
+
+### 출처와 라이선스
+
+- 그림·이야기·목소리: 직접 제작(창작). 사진·영상 소스 없음. 실제 브랜드·로고·앱 화면 없음(도어록 앱, 채팅, 케첩병은 이름 없는 일반 그림).
+- 음악: Kevin MacLeod (incompetech.com), CC BY 4.0 — "Carefree"(0:00~2:10, 9:34~), "Sneaky Snitch"(2:10~3:42), "Investigations"(3:42~6:48), "Heartwarming"(6:49~9:34). `longform/lfsaeyeon1/fetch_music.sh`가 incompetech.com에서 받는다.
+- 효과음: Kenney Interface Sounds(CC0)와 `../tools/sfx.py`로 합성한 소리(`fetch.sh`).
+- 글꼴: Black Han Sans, Pretendard (SIL OFL).
+
+### 업로드
+
+- 제목: 반찬통에 이름 써 붙이는 남편과 각방 쓴 사연 [사연툰]
+- 설명글: `upload/txt/lfsaeyeon1.txt` (spec `upload/specs/lfsaeyeon1.json`, channel "sseol", long, fiction). 요약은 반전을 말하지 않는다.
+- 고정 댓글: 여러분이라면 이름표 붙인 남편, 바로 용서했을까요? 아니면 각방 한 달 더? 🤔
+- 주기: 사연툰 단편은 주 1편(같은 요일·시간). 단편 4편이 쌓이면 모음집 1편(4편, 720p 또는 2편씩 1080p). 제목에 "썰툰", "야담", "참교육 애니"는 쓰지 않는다(로그아웃 검색 연령 확인).
+
+## 롱폼 제작 키트 (가로 16:9, `src/Long.tsx`)
+
+쇼츠만 만들던 이 프로젝트에서 **가로 1920×1080, 30fps 내레이션 롱폼**을 만드는 틀입니다. 쇼츠 템플릿(ClipShort, Captions, Sseol, Doodle, Road, prep.py)은 건드리지 않고 가져다 씁니다. 새 파일은 `src/Long.tsx`, `src/lib/long/*`, `longform/*`이고, 쇼츠와 함께 쓰는 곳은 `src/Root.tsx`의 `<LongCompositions />` 한 줄뿐입니다(기존 쇼츠는 전과 똑같이 렌더링됨, 아래 "확인").
+
+다룰 수 있는 형식:
+- 지식·우주·심해·자연 다큐 — 미국 연방정부 PD(NASA, NOAA, USGS, NPS)·Pexels 영상과 사진 위에 내레이션
+- 그 시절 옛날 영상 — 국가기록원 등 공공누리 제1유형 영상·사진(`photo`의 켄 번스, 4:3은 `"fit": "contain"`)
+- 썰 모음·괴담 몰아보기 — 우리 캐릭터(Mochi·낙서)가 16:9 무대에서 연기하거나 어두운 분위기 영상 위에 내레이션
+- 우리 쇼츠 모음 — 세로 쇼츠를 흐린 배경 위에, 또는 쇼츠의 원본 클립으로 가로 화면을 다시 짜서
+
+### 만드는 순서
+
+```bash
+npm i && ./fetch.sh && longform/fetch_long.sh        # 글꼴·효과음·음악 + 롱폼용 음악·환경음(빗소리·바람·심해·방 소리)
+# longform/<id>/script.json, edit.json 작성. 원본 영상·사진은 edit.json "sources"의 file 경로에(media/… 등, 저장소에는 안 넣음)
+python3 longform/prep_long.py <id>                   # TTS·자막·컷 → src/longdata/<id>.json, public/long/<id>/, upload/specs/<id>.json의 chapters·music
+npx remotion still src/index.ts <id>-thumb final/<id>-thumb.jpg --image-format=jpeg --jpeg-quality=88   # 썸네일 1280×720
+longform/render_long.sh <id>                         # final/<id>.mp4 (−14 LUFS, 95MB 이하)
+python3 longform/qa_long.py <id>                     # 검사 → out/review/<id>/
+npx remotion studio                                  # 미리보기 (<id>, <id>-thumb)
+```
+
+- `prep_long.py`는 Edge TTS 결과를 `build/long/<id>/tts/`에 저장해 두므로, 문장을 고친 줄만 다시 읽습니다. TTS 호출·무음 자르기·음절 시간은 `voice_edge.py`의 함수를, 숫자 읽기(`spoken_form`)는 `prep.py`의 함수를 그 파일에서 그대로 불러 씁니다(함수 정의만 읽음).
+- 원본 위치: `edit.json`의 `file`은 `shorts/viral5/` 기준 경로(예: `media/top6/x.mp4`), 아니면 `$MEDIA/…`, `public/…` 순서로 찾습니다. 없으면 자리 표시 화면으로 렌더링되고 prep이 WARN을 냅니다.
+- `src/longdata/`는 저장소에 넣습니다(작은 JSON). 그래서 롱폼을 prep하지 않은 상태에서도 쇼츠 렌더링이 깨지지 않습니다.
+
+### 구성 (타임라인)
+
+콜드 오픈(뒤 챕터의 가장 센 문장과 그 장면을 모아 20~40초) → 제목 카드(3초) → 챕터마다 [챕터 카드(1.5~2.5초, 번호와 제목) → 내레이션] → 아웃트로(20초, 엔드스크린 자리 + 내레이션 한 줄).
+챕터 안에서는 왼쪽 위에 작은 챕터 표시, 오른쪽 위에 지금 화면의 출처("영상: NOAA Ocean Exploration")가 나옵니다. 자막은 아래 가운데 1~2줄(한 줄 약 22자), 흰 글씨에 검은 테두리, `[키워드]`는 노란색이고 Edge TTS 단어 경계로 소리에 맞춥니다. 아웃트로의 자막은 위쪽에 둡니다(아래는 구독 버튼 자리).
+
+### `script.json`
+
+```json
+{
+ "title": "수심 4,000m, 아무도 몰랐던 세계 | 심해 다큐",
+ "sps": 6.0,
+ "gap": 0.35,
+ "voices": {
+  "nar": {"edge": "ko-KR-InJoonNeural", "pitch": "+0Hz"},
+  "minji": {"edge": "ko-KR-SunHiNeural", "rate": "+12%", "pitch": "+20Hz"},
+  "sunbae": {"edge": "ko-KR-HyunsuMultilingualNeural", "rate": "+5%"}
+ },
+ "chapters": [
+  {"id": "c1", "title": "빛이 사라지는 곳", "tail": 0.8, "lines": [
+   {"id": "c1a", "text": "바닷속으로 [200m]만 내려가도 / 햇빛은 거의 사라집니다.", "say": "바닷속으로 이백 미터만 내려가도, 햇빛은 거의 사라집니다."},
+   {"id": "c1b", "text": "그 아래는 [빛 한 줄기 없는] 어둠, / 바로 심해입니다."}
+  ]},
+  {"id": "c2", "title": "탐사선의 새벽 세 시", "lines": [
+   {"id": "c2d", "voice": "minji", "text": "선배! 방금 [뭐가] 지나갔어요!", "cap": false, "gap": 0.3},
+   {"id": "c4s", "short": "deepsea", "mode": "vertical"}
+  ]}
+ ],
+ "outro": {"id": "out", "text": "다음 영상에서는 / [더 깊은 곳]으로 내려가 보겠습니다."}
+}
+```
+
+| 값 | 쓰임 |
+|---|---|
+| `sps` | 내레이터 목표 속도(초당 음절). 있으면 prep이 첫 4문장을 기본 속도로 읽어 보고 `rate`를 계산합니다(데모: 기본 5.32 → `+13%` → 실제 5.98). 없으면 `voices.nar.rate`(기본 `+0%`). 롱폼 내레이션은 보통 5.5~6.5이고, 벗어나면 prep이 WARN |
+| `voices` | 목소리 `{edge, rate, pitch}`. 줄마다 `"voice"`로 골라 대화를 만듭니다. 줄마다 음량을 맞추므로 목소리가 달라도 크기는 같습니다 |
+| `gap` | 문장 사이 쉼(초). 줄마다 `"gap"`으로 바꿈 |
+| 줄 `text` | 자막. `[키워드]` 노란색, `/`는 자막 페이지 나눔(없으면 쉼표·마침표에서 자동으로 2줄 이하로 나눔) |
+| 줄 `say` | 읽는 문장(숫자를 한글로 등). 없으면 `text`에서 괄호와 `/`를 뺀 것 |
+| 줄 `cap: false` | 아래 자막 없음(인물 대사를 말풍선으로만 보일 때) |
+| 줄 `text`의 `{단어}` | 빨간 자막(괴담의 핵심어) |
+| 줄 `pause` | 일부러 둔 침묵(초). 예: `{"id": "q3", "pause": 3, "text": "멈추고 생각해 보세요"}` — 목소리 없이 그 글이 자막으로 떠 있고, QA의 공백 검사에서 빠집니다(괴담 몰아보기의 "정답은?" 3초) |
+| 목소리 `fx: "radio"` | 안내 방송·전화 목소리(대역 제한 + 약간 거친 소리). 예: `"pa": {"edge": "ko-KR-SunHiNeural", "fx": "radio"}` |
+| 줄 `short` | 우리 쇼츠를 그 자리에서 재생. `"mode": "vertical"`은 `final/<id>.mp4`를 흐린 배경 위에(쇼츠 소리 그대로, 롱폼 음악은 꺼짐), `"mode": "relayout"`은 prep한 쇼츠(`src/data/<id>.json`)의 클립을 가로 전체 화면으로, 쇼츠의 목소리와 자막을 롱폼 자막으로. `from`/`to`(초)로 일부만, `gain` 음량 |
+| 챕터 `tail` | 챕터 끝 여유(기본 0.8초) |
+| `outro` | 아웃트로 내레이션 한 줄 |
+
+### `edit.json`
+
+```json
+{
+ "captions": true, "maxChars": 22, "captionSize": 56, "watermark": "",
+ "credit": "영상: NOAA Ocean Exploration",
+ "sources": {
+  "jelly": {"file": "media/top6/red_jellyfish_poralia.mp4", "credit": "영상: NOAA Ocean Exploration",
+            "desc": "붉은 해파리 Poralia, 2021 North Atlantic Stepping Stones — NOAA Ocean Exploration", "url": "https://oceanexplorer.noaa.gov/…"},
+  "wreckStill": {"file": "media/top6/shipwreck_19th_century.mp4", "time": 8.0, "credit": "사진: NOAA Ocean Exploration"}
+ },
+ "music": {"gain": 0.24, "duck": 0.6, "xfade": 1.5},
+ "coldOpen": {"lines": ["c1b", "c2d", "c3d", "c3h", "c1e"], "music": "Deep Haze", "gap": 0.5},
+ "titleCard": {"dur": 3, "kicker": "심해 다큐", "title": ["수심 4,000m", "아무도 몰랐던 세계"], "bg": {"type": "footage", "src": "jelly", "in": 5}},
+ "chapterCard": {"dur": 2},
+ "chapters": {
+  "c1": {"music": "Investigations", "ambience": {"name": "deep", "gain": 0.18}, "shots": [
+   {"type": "footage", "src": "bubbles", "in": 6.0, "crop": [0.5, 0.5, 1.0], "push": [1.0, 1.08]},
+   {"at": "c1a.햇빛", "type": "card", "kind": "fact", "label": "햇빛이 거의 사라지는 깊이", "big": "200m", "bg": "bubbles", "fade": 0.4},
+   {"at": "c1g", "type": "photo", "src": "wreckStill", "kb": {"from": [0.5, 0.5, 1.0], "to": [0.42, 0.55, 1.18]}, "fade": 0.5, "lower": "2019 · 멕시코만"}
+  ]}
+ },
+ "outro": {"dur": 20, "music": "Lost Frontier", "label": "다음 영상", "bg": {"type": "footage", "src": "smoker", "in": 0, "speed": 0.6}},
+ "thumb": {"lines": ["수심 4,000m에서", "[찍힌] 것들"], "tag": "심해 다큐", "src": "jellyStill", "crop": [0.55, 0.5, 1.15], "circle": {"x": 900, "y": 360, "r": 190}},
+ "description": {"fiction": true}
+}
+```
+
+| 값 | 쓰임 |
+|---|---|
+| `captions` | `false`면 자막을 전부 끕니다 |
+| `sleep` | 수면판: 화면을 30% 어둡게(`dim`), 샷 전환 기본 1초 교차, 챕터는 카드 대신 1초 검은 화면(`dip`), 음악 0.18·교차 3초. 내레이션 속도는 `voices.nar.rate`(예: `-10%`)로 |
+| `dim` | 화면 전체를 이만큼 어둡게(0~1) |
+| `maxChars` / `captionSize` | 자막 한 줄 글자 수(기본 22) / 글자 크기(기본 56px) |
+| `credit` | 출처가 따로 없는 장면의 오른쪽 위 출처 |
+| `sources` | 원본. `file`, `credit`(화면 오른쪽 위), `desc`·`url`(설명란 출처 줄), `time`(영상에서 한 장면을 사진으로 쓸 때 그 초) |
+| `music` | `gain`(기본 0.25), `duck`(목소리 밑으로 내리는 정도, 기본 0.6), `xfade`(챕터 사이 음악 교차 시간, 기본 1.5초) |
+| `coldOpen` | 콜드 오픈에 쓸 줄 id 목록(그 줄이 원래 챕터에서 가진 화면을 그 순간부터 가져옴), 음악, 문장 사이 `gap`, 권장 길이 `min`·`max`(기본 20~40초, 사연툰은 10~15초) |
+| `titleCard` | `dur`, `kicker`(위 작은 글), `title`(2줄, 둘째 줄 노란색), `sub`, `bg`(샷 하나, 흐리게) |
+| `chapterCard` | `dur`(1.5~2.5초, `dip`은 기본 1초), `style`(`card` 전체 화면 카드 · `dip` 검은 화면에 제목만 작게, 다음 장면은 0.5초 페이드인), `kicker`(위 작은 글, 기본 `"CHAPTER {n:02d}"`; 몰아보기는 `"괴담 {n:02d} / {total}"`) |
+| `chapters.<id>` | `music`(곡 이름, 또는 `{"track", "from", "gain", "restart"}`; 이웃 챕터와 같은 곡이면 끊기지 않고 이어짐), `ambience`(`"rain"`·`"wind"`·`"deep"`·`"room"`·`"hum"`(형광등·냉장고, 밤 편의점) 또는 `{"name", "gain"}`), `sfx`(`[["앵커", "pop", 0.4], …]`, `public/sfx/`의 효과음), `musicCuts`(`[{"at": "앵커", "dur": 1.5}]` 반전 직전 음악을 뚝 끊었다가 0.5초에 걸쳐 돌아옴), `shots` |
+| `outro` | `dur`(기본 20초), `music`, `label`, `bg`(샷 하나, 흐리게), `lineAt`(내레이션 시작, 기본 0.8초), `boxes`(엔드스크린 자리 표시, 기본 true) |
+| `thumb` | 썸네일(아래) |
+| `description.fiction` | 새 spec을 만들 때 그림 장면이 있으면 `"fiction": true`로 둘지(기본 true). 설명글 자체는 `upload/specs/<id>.json`에 씁니다(아래) |
+
+**샷 시간**은 쇼츠의 `edit.json`과 같은 앵커입니다: `"c1a"`(그 줄 시작), `"c1a.햇빛"`(그 단어를 말하는 순간), `"c1a@end+0.2"`(그 줄 끝 0.2초 뒤), 숫자(챕터 첫 줄부터 몇 초). 챕터의 첫 샷은 `at`이 없어도 챕터 시작에 붙고, 샷은 다음 샷이 시작할 때까지 이어집니다. 모든 샷에 `fade`(그 샷으로 넘어가는 교차 시간, 0.3~0.5 권장, 0이면 컷), `lower`(왼쪽 아래 작은 이름표), `badge`(왼쪽 위 큰 노란 딱지, 예: "15위"), `credit`을 줄 수 있습니다.
+
+### 샷 종류
+
+| `type` | 쓰임과 값 |
+|---|---|
+| `footage` | 영상. `src`, `in`(원본 시작 초), `speed`(0.5 = 슬로모션), `crop: [cx, cy, zoom]`(원본의 이 지점을 화면 가운데로), `push: [시작 배율, 끝 배율]`(느린 밀기, 기본 1.0→1.06), `fit`(`cover` 기본 · `contain`은 흐린 배경 위에 전체, 4:3·세로 원본은 자동 contain). prep이 그 구간만 1080p 30fps로 잘라 둡니다(렌더러가 긴 원본을 찾아 넘기지 않게) |
+| `photo` | 사진(또는 `sources.time`으로 영상의 한 장면). `kb: {"from": [cx, cy, zoom], "to": [cx, cy, zoom]}` 켄 번스, `fit` |
+| `scene` | 그림 장면(16:9 무대). 쇼츠의 배경(`bg` "class"·"home"·"street"·"store"·"night"·"office"·"desk"·"door"·"hospital"·"bedroom"·"bath"·"subway"·"cafeteria"·"gym"·"rain"…, `sign`, `photo`), 캐릭터 `chars`(Mochi·`"style": "doodle"`, `name`·`color`·`mood`·`to`·`x`·`size`·`flip`·`hat`), `says: [{"who": 0, "line": "c2d"}]`(그 줄이 나올 때 그 인물 머리 위 말풍선, 또는 `{"who", "text", "at", "to"}`), `turn`(인물이 `to` 표정으로 바뀌는 앵커), `prop`·`propX`·`propAt`, `big`·`bigAt`(크게 박히는 말), `card`(화면을 덮는 "다음 날 아침..."), `place`, `chat`(단톡방 폰, 메시지마다 `at` 앵커), `zoom`·`focus`, `size`(인물 크기 px)·`floor`(발 위치). 인물은 1~4명이 왼쪽·오른쪽으로 자동 배치되고 자막 띠 위에 섭니다 |
+| `post` | 썰 훅 카드(Sseol의 Post를 가운데에). `board`, `title`, `body`, `meta`, `chars`, `steps`(본문 줄이 나타나는 앵커) |
+| `card` `kind: "fact"` | 큰 숫자·사실 카드: `label`(위, 노랑), `big`(가운데 크게, `[ ]` 노랑), `sub`, `revealAt`(숫자가 박히는 앵커), `bg`(흐린 배경 원본, `bgIn`) |
+| `card` `kind: "text"` | 문장 카드: `text`(`\n` 줄바꿈), `bg` |
+| `card` `kind: "rank"` | TOP n 카드: `n`(○위), `total`, `title`(위 노란 딱지, 기본 "TOP n"), `label`, `bg` |
+| `card` `kind: "map"` | 지도 카드: `center: [경도, 위도]`, `span`(가로 몇 도), `label`(왼쪽 위), `dots: [{lon, lat, label, at}]`(빨간 점·이름표), `arrows: [{from, to, at, dashed}]`(그려지는 빨간 화살표, `dashed`는 점선 경로). `at`은 초 또는 앵커. 육지 윤곽은 Natural Earth 1:50m(퍼블릭 도메인, `longform/worldmap.py`로 `src/lib/long/worldmap.ts` 생성) |
+| `card` `kind: "grid"` | 잡학 리스트의 "목차" 화면: 흰 판에 동그란 아이콘 `items: [{icon, label}]`, `cols`, `title`. `focus`(지금 항목, 노란 테두리)·`zoomAt`(그 항목으로 카메라가 들어가는 앵커), `done`(지난 항목, 흐리게 + ✓), `circle`·`circleAt`(빨간 동그라미, 답 공개). 항목마다 그리드로 돌아왔다가 들어가는 흐름을 샷 두 개로 만듭니다 |
+| `card` `kind: "doc"` | 문서 카드(안내문·인수인계서·근무 수칙): `title`, `lines`(줄마다 `steps`의 앵커에 나타남, `{빨강}`·`[노랑]`), `page`("3쪽"), `paper`(종이 색), `bg`(뒤 흐린 원본) |
+| `relayout` | 우리 쇼츠를 **가로로 다시 짜기**(쇼츠 원본이 가로 영상일 때 권장): `short`(id), `parts`(쓸 클립 번호), `lowerThirds`(순위 이름표, 기본 true), `push`, `cutFade`. `politics/<id>/edit.json`의 `segments`(src·in·out·speed·credit·rank)를 원본에서 다시 잘라 1920×1080 전체 화면으로 차례로 보여 주고(내레이션이 더 길면 처음부터 다시), `rank`가 있는 쇼츠는 "5위 · 이름"이 왼쪽 아래에 붙습니다. `shorts/<id>/`형 쇼츠는 prep된 `src/data/<id>.json`의 클립을 쓰고, **그림 썰 쇼츠(`scene`·`post` 클립)는 세로 화면을 자르지 않고 16:9 무대에서 다시 연기합니다**(같은 인물·배경·말풍선·표정 변화 시각) |
+| 세로 쇼츠 | `script.json` 줄의 `"short": "<id>", "mode": "vertical"`이 자동으로 샷을 만듭니다(세로 화면 가운데 + 같은 영상을 흐리게 깐 배경). 그 사이 원래 샷은 쇼츠가 끝난 뒤 이어집니다 |
+
+### 썸네일 (`<id>-thumb`, 1280×720)
+
+`edit.json`의 `"thumb"`: `lines`(2~3줄, 아주 크게, `[키]` 노랑 또는 `key` 색, `{키}` 빨강, 굵은 검은 테두리), `src`+`time`(사진 또는 영상 한 장면)·`crop: [cx, cy, zoom]`, `char`(Mochi 캐릭터 `{color, mood, x, y, size}`), `circle: {x, y, r}`(빨간 원), `arrow: {x, y, rot, len}`(빨간 화살표, 끝이 x,y), `side`(`left` 기본 · `right`), `tag`(위 작은 딱지, "몰아보기 EP1~4"), `bg`. `npx remotion still … --image-format=jpeg --jpeg-quality=88`로 2MB 이하.
+
+`"style"`로 조사에서 본 다른 틀도 씁니다:
+- `"band"` — 사연툰: 위 띠에 제목 1~2줄(핵심어 `[ ]`는 `key` 색, `{ }`는 빨강), 아래에 그림 장면(`scene` 배경, `chars` 2~3명, `says: [{who, text}]` 말풍선), `bandBg`.
+- `"grid"` — 잡학 리스트: 흰 바탕, 위 검은 굵은 제목(`{빨강}`·`[key 색]`), 아래 동그란 색 아이콘 `items: [{icon, label}]` 6~8개.
+- 기본(사진·그림 + 큰 글씨) — 다큐·괴담: 어두운 실사 + 흰 2~3줄 + 노랑/빨강 강조어, 괴담은 `char`에 창백한 얼굴을 `side` 반대편에.
+
+### 챕터와 설명란 (`upload/specs/<id>.json` → `upload/make_desc.py`)
+
+**연결: prep_long.py가 챕터 타임스탬프와 쓴 음악 제목을 `upload/specs/<id>.json`의 `chapters`·`music`에 채우고, `python3 upload/make_desc.py <id>`가 모든 채널 공통 형식의 설명글(`upload/txt/<id>.txt`, 음악 크레딧 자동)을 만듭니다.** 챕터는 0:00 "인트로"(콜드 오픈+제목 카드)와 챕터 카드 시작 시각이고, 음악은 챕터마다 고른 곡에 세로로 다시 쓴 쇼츠의 곡까지 더한 목록입니다(edit.json의 `music`은 믹스 설정이라 make_desc가 곡을 읽을 수 없어서 spec에 적음). spec이 없으면 prep이 `title`(script 제목), `sources`(edit.json `sources`의 `desc`, 지도, 직접 그림), `long: true`와 요약·태그 자리표시자로 새로 만들고, 있으면 `chapters`·`music`만 바꿉니다. 요약·태그·`channel`(다큐는 `docu`)·`pinned`는 사람이 씁니다(`upload/README.md`). 유튜브 챕터 규칙(0:00 시작, 3개 이상, 각 10초 이상)을 어기면 prep이 WARN을 내고, `qa_long.py`가 spec의 챕터를 다시 검사합니다.
+
+### 렌더링과 용량 (`longform/render_long.sh`)
+
+1. **화면**: `CHUNK`프레임(기본 2700 = 90초)씩 `--frames`로 나눠 소리 없이 렌더링(x264 CRF 12, veryfast — 거의 무손실 중간본)하고, 다시 인코딩하지 않고 이어 붙입니다. 끝난 조각은 남겨 두므로 도중에 멈춰도 이어서 렌더링됩니다(prep을 다시 했다면 `out/long/<id>/`를 지우고 처음부터: 남은 조각은 옛 데이터로 그려진 것입니다). 25분이어도 한 번에 메모리에 올리는 것은 한 조각뿐입니다.
+2. **소리**: 전체 타임라인을 한 번에 소리만 렌더링(이음매 없음) → 2-pass loudnorm −14 LUFS/−1.5 dBTP → AAC 160k. `out/long/<id>/master.mkv`가 업로드용 고화질 원본입니다(저장소에는 안 넣음).
+3. **용량 맞추기**: 저장소 파일 한도(100MB) 때문에 `final/<id>.mp4`는 **95MB 이하**(`MAXMB`)입니다. 길이로 비트레이트를 계산해 2-pass로 인코딩하고 `+faststart`를 붙입니다. 소리는 10분까지 AAC 160k, 20분까지 128k, 그 위는 96k입니다(25분에 160k면 소리만 30MB).
+
+**분당 용량 (실측).** 데모의 그림 챕터(30초)와 심해 영상 챕터(28초, 바닷눈·거품이 가득한 가장 무거운 경우)를 화질 고정(CRF)으로 인코딩한 값입니다. 깨끗하게 보이는 데 필요한 크기입니다.
+
+| 내용 | x264 1080p CRF 23 | x265 1080p CRF 26 | x265 720p CRF 26 |
+|---|---|---|---|
+| 그림(썰·카드·지도) | 5.7MB/분 (750kb/s) | **3.5MB/분** (460kb/s) | 1.7MB/분 (220kb/s) |
+| 실사 영상(심해) | 44MB/분 (5,900kb/s) | 21MB/분 (2,800kb/s) | **11.5MB/분** (1,530kb/s) |
+
+그래서 코덱은 길이로 정해지는 비트레이트와 `edit.json`의 `"encode": {"content": "drawn" \| "mixed" \| "footage"}`(기본 `mixed`)로 고릅니다.
+
+| 내용 | x264 1080p | x265 1080p (`hvc1`) | x265 720p | 95MB에 깨끗하게 들어가는 길이 |
+|---|---|---|---|---|
+| `drawn` | 900kb/s 이상 | 450kb/s 이상 | 그 아래 | 1080p로 약 25분까지(소리 96k 포함) |
+| `mixed` (기본) | 3,000kb/s 이상 | 1,400kb/s 이상 | 그 아래 | 1080p 약 8분, 720p 약 15분 |
+| `footage` | 5,000kb/s 이상 | 2,000kb/s 이상 | 그 아래 | 720p로 약 8분. 그보다 긴 실사 위주 롱폼은 95MB 안에서 깨끗할 수 없으므로 `master.mkv`를 업로드하고 `final/`은 보관용으로 둡니다(또는 편을 나눔) |
+
+x265를 고르는 이유: 같은 모양에 x264보다 약 45~50% 작습니다(표). x264 1080p를 2Mb/s 아래로 내리면 심해 입자·물결처럼 움직임이 많은 화면이 뭉개지고, 그때는 해상도를 720p로 낮춰 화소당 비트를 지키는 편이 낫습니다. `X264_MIN`, `X265_MIN`, `CAP`(짧은 영상의 상한, 기본 8,000kb/s), `PRESET`(x265, 기본 `fast`)으로 바꿀 수 있고, 결과는 `out/long/<id>/render.json`(조각별 시간, 렌더링 fps, 코덱, 비트레이트, 용량)에 남습니다.
+
+**렌더링 속도 (이 머신, 4코어·15GB).** 화면 렌더링 **초당 6.6~6.7프레임**(데모: 실사·그림·카드가 섞인 5,807프레임을 871~885초, 조각마다 번들 5초 포함). 흐린 배경을 CSS `blur()`로 그리던 첫 버전은 초당 약 4~5프레임이었고, prep이 만드는 192×108 미리 흐린 사본으로 바꿔 빨라졌습니다. x265 720p 2-pass는 초당 약 24프레임. 그래서 10분 롱폼은 렌더링 약 45분 + 인코딩 약 25분, 25분 롱폼은 약 1시간 55분 + 1시간 5분입니다. 메모리는 조각 하나 분량(크롬 4개 각 약 600MB)만 씁니다. 소리를 따로 한 번 더 렌더링하면(Remotion은 소리만 뽑을 때도 모든 프레임을 계산함) 시간이 거의 두 배가 되므로, 조각마다 16비트 PCM으로 같이 뽑아 프레임 수에 딱 맞게 잘라 이어 붙입니다(이음매 없음).
+
+x265 2-pass에서 MP4로 바로 쓰면 전역 헤더 때문에 1차와 2차 설정이 달라져 "Incomplete CU-tree stats file"로 멈추므로, 2차는 MKV로 쓰고 MP4로 다시 담습니다.
+
+### 검사 (`longform/qa_long.py`)
+
+길이(타임라인과 일치, 10~25분 밖이면 WARN), 소리 −14 LUFS ±1, 용량 95MB 이하, 검은 화면(0.05초 이상, 마지막 한 프레임), 내레이션 안의 1.5초 넘는 공백(대본 기준 + 실제 믹스의 −50dB 무음), 자막 넘침(줄 너비 1,600px 초과·3줄 이상), 챕터 목록, 썸네일(1280×720, 2MB 이하), 20초 넘게 멈춘 화면(WARN). `out/review/<id>/`에 30초마다 한 장(`sheet.jpg`), 첫 15초 1초 간격(`first15.jpg`), 썸네일, `report.md`를 씁니다. FAIL이 있으면 종료 코드 1. `qa_review.py`(쇼츠용)는 바꾸지 않았습니다.
+
+### 조사 보고서(`research/research-longform-docu.md`, `research-longform-story.md`)가 요구한 것과 키트
+
+| 조사에서 나온 요구 | 키트 |
+|---|---|
+| 잡학 리스트(F3): 아이콘 그리드 목차로 돌아왔다가 항목으로 줌인, 답 공개에 빨간 동그라미, 흰 바탕 아이콘 그리드 썸네일 | `card` `grid`(`focus`·`zoomAt`·`done`·`circle`), 썸네일 `style: "grid"`, 낙서 인물은 `scene`의 `"style": "doodle"` |
+| 스토리형 역사(F1): 켄 번스 3~5% 스틸, 지도 2~3장(화살표·점선 경로), 챕터 전환 1초 검은 페이드, 하단 자막 한 줄 | `photo` `kb`, `card` `map`(`dashed`), `chapterCard.style: "dip"`, 자막 페이지 자동 분할 |
+| 가장 ○○한 N곳(F4): 순위 숫자를 왼쪽 위에, 지도 핀, 우리 TOP5 쇼츠 원본 재사용 | 샷 `badge`, `map` `dots`, `relayout` + `lower` |
+| 수면판 재편집: 느린 내레이션, 어두운 화면 | `"sleep": true`(+ `voices.nar.rate: "-10%"`) |
+| 사연툰: 콜드 오픈 10~15초, 인물별 목소리, 반전 직전 음악 끊고 1초 무음, 말풍선 팝·쿵 효과음, 위 띠 썸네일 | `coldOpen.min/max`, `voices` + 줄 `voice`, `musicCuts`, `sfx`, 썸네일 `style: "band"` |
+| 커뮤니티 글 괴담: 어두운 실사 + 단순 인물, 문서 카드(인수인계서·안내문), 안내 방송 목소리, 형광등·냉장고 환경음, 핵심어 빨간 자막 | `scene`의 `photo` 배경 + `chars`, `card` `doc`, 목소리 `fx: "radio"`, `ambience: "hum"`, 자막 `{단어}` |
+| 괴담 몰아보기: 편 사이 "괴담 03 / 12" 번호 카드, "정답은?" 3초 정지, 쇼츠는 세로 틀보다 16:9로 다시 배치 | `chapterCard.kicker: "괴담 {n:02d} / {total}"`, 줄 `pause`, `relayout`(그림 썰 쇼츠는 16:9 무대에서 다시 연기) |
+| 음악: 다큐 저음 패드, 잡학 가벼운 곡, 괴담 패드 | `fetch_long.sh`에 Kevin MacLeod "Long Note Three", "Dark Walk", "Fluffing a Duck", "Darkest Child" 등 추가(CC BY 4.0, 설명란 문구는 prep이 씀) |
+
+### 데모 `longdemo` (심해 다큐, 3분 14초)
+
+`final/longdemo.mp4`(37.1MB, x265 720p 1,363kb/s + AAC 160k, `MAXMB=38`로 렌더링해 저장소에 넣을 수 있게 함), `final/longdemo-thumb.jpg`(0.13MB), 설명글 `upload/specs/longdemo.json` → `upload/txt/longdemo.txt`(channel `docu`, long). 모든 기능을 한 편에서 씁니다.
+- 콜드 오픈 26초(뒤 챕터 다섯 문장과 그 장면) → 제목 카드 → 챕터 4개 → 아웃트로 20초(엔드스크린 자리)
+- 1장 「빛이 사라지는 곳」: NOAA 심해 영상(`footage`, `crop`·`push`, 0.4초 교차), 숫자 카드 3장(`fact`), 지도 카드(한국 → 마리아나 해구 점선 화살표), 난파선 사진 켄 번스(`photo`, 영상의 한 장면), 효과음, 환경음 `deep`
+- 2장 「탐사선의 새벽 세 시」: 그림 장면 — 썰 글 카드(`post`), Mochi 인물과 말풍선 대화(인물별 목소리 SunHi·Hyunsu), 표정 바뀜, 소품, 단톡방 폰, 문서 카드(근무 수칙), 빨간 자막 단어, "다음 날 아침..." 카드, 큰 글씨
+- 3장 「바닷속 소름 돋는 장면 TOP5」: `top6` 쇼츠를 **가로로 다시 짜기**(`relayout`, 원본 NOAA 클립을 1920×1080 전체 화면으로), 아이콘 그리드 목차 + 줌인, 순위 딱지(`badge`), 1위 직전 2초 `pause`("1위는 과연?")와 음악 끊기(`musicCuts`), 그리드 답 공개 동그라미, TOP n 카드
+- 4장 「쇼츠로 다시 보기」: `deepsea` 쇼츠(`final/deepsea.mp4`)를 흐린 배경 위 세로로 재생(쇼츠 소리 그대로, 롱폼 음악 꺼짐)
+- 음악: Deep Haze → Investigations → Clean Soul → Gathering Darkness → Lost Frontier(챕터마다 교차, 목소리 밑 더킹)
+
+**출처**: 영상 모두 NOAA Ocean Exploration · NOAA/PMEL(미국 정부 저작물), `media/top6/*.json`에 페이지·파일 주소·구간이 있고(받는 법: `media/fetch_top.py`, 또는 각 `file_url`을 받아 `cut_from_original_seconds` 구간을 1920×1080 30fps로 자름, 브림스톤은 위 ROV 정보 줄을 잘라 냄), 설명란 출처 줄은 `upload/txt/longdemo.txt`에 있습니다. 지도는 Natural Earth(퍼블릭 도메인), 그림은 직접 제작, 음악은 Kevin MacLeod(CC BY 4.0). 이야기(2장)는 창작입니다.
+
+`python3 longform/qa_long.py longdemo` 결과: 길이 3:13.6(타임라인과 일치) · −14.0 LUFS · 37.1MB · 검은 화면 0 · 마지막 프레임 밝기 39/255 · 내레이션 공백 0 · 무음 0 · 자막 가장 긴 줄 861px · 챕터 5개(0:00 인트로, 0:26, 1:02, 1:37, 2:21) · 썸네일 1280×720 0.13MB · 멈춘 화면 0. WARN 하나: 데모라 10~25분 목표보다 짧음.
+
+**확인 (기존 쇼츠는 그대로).** `src/Root.tsx`에 `<LongCompositions />`를 넣기 전과 후에 `sseol1`을 같은 설정으로 렌더링해 비교했습니다: 영상 1,008프레임의 framemd5가 모두 같고 소리 MD5도 같습니다(`b13659905638fd71ff57eda7cac6f7be`). `deepsea`의 0·300·600프레임 스틸도 바이트 단위로 같습니다.
+
+## 썰 쇼츠 v2 (벤치마크, `sseol1`~`sseol20`)
+
+`research/benchmark-drawn.md` 4절과 `research/benchmark-targets-drawn.json`의 `sseol` 목표(썰구리 "27살에 동생이 생겼다" 185만, "삼촌이 나보다 두 살 어리다" 109만)에 맞춰 `sseol1`~`sseol16`을 다시 만들고 `sseol17`~`sseol20`을 새로 만들었다. 20편 모두 창작이다. 화면 그림은 전부 직접 그린 것이라 외부 사진·영상은 쓰지 않았다(`edit.json`의 `sources`가 비어 있다).
+
+**바뀐 점(벤치마크 레시피 그대로)**
+- **화면 전체가 밝은 커뮤니티 앱 화면**이다. 위에서부터 앱 헤더("썰방", 우리가 지은 이름, 실제 서비스의 이름·로고·디자인 아님) → 글 제목 바(제목 + "익명 | 창작 사연게시판" + 빈 하트 "공감" 버튼, 숫자 없음) → **지금 말하는 문장**(검정 굵은 글씨 1~4줄, 강조어 한 색만 빨강) → **정사각형 풀컬러 그림 칸**(폭 900px, 83%) → 공감·댓글·공유 줄, 연한 "썰방" 워터마크 바탕. 0초부터 제목·첫 문장·그림이 함께 보인다. 아래 회색 빈칸, 화면 출처 표시, 무지개 강조색이 없다.
+- **제목**은 "~한 이유" 2줄 25자에서 **이상한 사실 한 줄(11~13자)**로 바꿨다. `qa_review.py`의 "제목 호기심" 검사가 숫자·ㅋㅋ·? 같은 패턴을 요구해서, 숫자가 자연스러운 제목은 숫자를 넣고(“1년”, “100일째”, “3살”) 나머지는 커뮤니티 글 제목처럼 끝에 "ㅋㅋ"를 붙였다(ㅋ은 글자 수에 안 셈).
+- **말투**는 문어체("~했다")에서 반말 구어체("~했어", "~거든", "겁나")로 다시 썼고, 내레이션은 Edge TTS **+28%**(인물 +26% 안팎, 노인 +10~16%)로 다시 녹음했다. 대사 안의 "!"·"..."는 TTS가 길게 쉬어서 말할 때는 쉼표로 바꾸고 화면 글에만 남겼다.
+- **첫 문장(훅)**은 10~13음절로 줄여 2초 안팎에 끝난다. 대사는 말풍선 대신 본문에 따옴표로 나온다(벤치마크와 같음).
+- **인물**은 모두 같은 찹쌀떡 대신 머리 모양·머리색·옷·나이가 다른 치비 캐릭터(`"style": "chibi"`)다. 할머니는 흰 파마 + 카디건, 아빠는 정장, 학생은 교복, 강아지는 강아지. 장면마다 크기·위치를 바꿔(클로즈업 1.4~1.55배, 둘이 마주 보기, 셋 이상 넓게) 같은 인물이 같은 자리에 같은 크기로 서 있지 않게 했다.
+
+### 새 템플릿 옵션 (예전 쇼츠는 그대로)
+
+| 파일 | 바뀐 것 |
+|---|---|
+| `src/lib/PostFrame.tsx` (새 파일) | `PostFrameShort`: `edit.json`에 `"postFrame"`이 있는 쇼츠를 위 앱 화면으로 그린다. 장면(`scene` 클립)은 1080×1080으로 그려서 그림 칸에 줄여 넣는다. 아래 자막·제목 띠는 그리지 않는다. 음성·음악·효과음은 `ClipShort`와 같다 |
+| `src/lib/Chibi.tsx` (새 파일) | 치비 인물. `Look` = `hairdo`(`short` `spiky` `side` `buzz` `long` `bob` `pony` `pigtails` `bun` `perm` `bald`), `hair`, `skin`, `topKind`(`tee` `hoodie` `shirt` `suit` `cardigan` `uniform` `apron` `dress` `vest` `gown`), `top`, `pants`, `age`(`baby` `kid` `teen` `adult` `old`), `glasses`, `mustache`, `acc`(`ribbon` `pin` `headband` `cap`), `accColor`, `kind: "dog"`. 표정 13가지와 움직임은 찹쌀떡과 같다 |
+| `src/lib/Sseol.tsx` | `Char`에 `style: "chibi"`와 `look`, 그리고 장면의 `zoom0`(시작 배율; `zoom`과 같으면 고정 클로즈업). 찹쌀떡 함수에 치비로 넘기는 한 줄. 둘 다 안 쓰면 예전과 같다 |
+| `src/Root.tsx` | `postFrame`이 있는 쇼츠만 `PostFrameShort`로 그린다(한 줄) |
+| `prep.py` | `edit.json`의 `postFrame`이 있으면 줄마다 본문 문장(그 줄 `cap`의 `/` 조각이 한 줄씩)과 시각을 `src/data/<id>.json`에 쓴다(세 줄) |
+| `sseol_v2/build.py` (새 파일) | `sseol_v2/eps/<id>.py`의 짧은 이야기 명세(제목, 목소리, 등장인물 생김새, `(줄 id, 목소리, 대사, 본문, 장면)` 목록)에서 `shorts/<id>/script.json`·`edit.json`을 만든다 |
+| `sseol_v2/score.py` (새 파일) | 아래 벤치마크 성적표를 잰다 |
+
+`edit.json` 예:
+```json
+"postFrame": {"app": "썰방", "color": "#FF8A4C", "meta": "익명 | 창작 사연게시판"}
+```
+장면 인물 예: `{"style": "chibi", "mood": "shock", "size": 1.5, "look": {"age": "old", "hairdo": "perm", "hair": "#ececf0", "topKind": "cardigan", "top": "#c9a7ff"}}`
+
+**만드는 순서**
+```bash
+python3 sseol_v2/build.py sseol17          # eps/sseol17.py → shorts/sseol17/script.json, edit.json
+python3 voice_edge.py sseol17 && python3 prep.py sseol17
+./render.sh sseol17 final/sseol17.mp4
+python3 qa_review.py sseol17 && python3 sseol_v2/score.py sseol17
+```
+본문 한 줄(`cap`의 `/` 조각)은 12자 이하로 쓴다(`build.py`가 넘으면 알려 준다).
+
+**다른 쇼츠가 그대로인지 확인**: 템플릿을 바꾸기 전에 `teuk1`, `road1`, 예전 `sseol2`(찹쌀떡 + 글 카드)의 0·100·300·600번째 프레임을 뽑아 두고, 바꾼 뒤 같은 데이터로 다시 뽑아 비교했다. 12장 모두 다른 픽셀이 0개였다(ImageMagick `compare -metric AE`).
+
+### 이야기 검토 (REVIEW.md 2-1)
+
+20편 모두 녹음 전에 2-1절 10개 항목으로 다시 봤다. 특히 1번(친구에게 전할 만한 한 줄), 2번(제목으로 결말을 못 맞힘), 5번(반전에 복선), 7번(설교 없음)을 봤다. 결말 유형은 9번에 따라 돌려 썼다.
+
+**다시 쓴 편과 이유**
+- `sseol5` (이야기 전체): 예전 결말 "착한 알바 → 시급 인상"은 2번이 금지하는 "착한 일 → 보상" 공식이었다. 새 이야기에서는 할아버지가 가게의 진짜 주인이고, 야간을 몰래 알바에게 떠넘긴 사장님이 들킨다. 복선: "나 찾으면 방금 나갔다고 해", 매일 "사장은 오늘도 야간 하지?"라고 묻기, 근무표.
+- `sseol9` (이유): 예전 이유 "3년 전 쌀 포대를 들어 드린 보답"도 "착한 일 → 보상"이라 제목만 보고 맞힐 수 있었다. 새 이유: 밤마다 연습한 내 노래가 할머니의 자장가였고, 연습을 쉬자 반찬 대신 "왜 안 불러, 잠이 안 와" 쪽지가 걸린다. 복선: 반찬마다 들어 있는 도라지 배즙(목), 반찬이 시작된 주.
+- `sseol12` (이유): 예전 "은퇴한 지점장 → 명예 지점장"은 뻔하고 보상형이었다. 새 이유: 할아버지는 내가 태어난 날부터 20년 동안 매일 천 원씩 저금했다. 펀치라인: 730만 원이어야 할 잔액이 300만 원이고, 범인은 할머니. 복선: "은퇴한 지 딱 20년", 매일 천 원, 할머니의 딴청.
+- `sseol3` (제목·복선): 제목 "할머니가 내 운동화를 숨긴다"는 범인을 말해 버렸다. 그래서 "비 오면 내 운동화가 사라진다"로 바꿨다. 반전에 필요한 복선(다음 날 돌아온 운동화가 늘 따끈함 = 전기장판)과 마지막 펀치라인의 복선(할머니는 일기예보보다 무릎을 믿음)을 넣었다.
+- 복선 보강(5번): `sseol1` "그 뒤로 내가 보건실 갈 일이 싹 없어짐", `sseol4` 남자친구가 "외국에서 자랐다고만" 말함, `sseol6` "회의 있는 날엔 꼭 제일 큰 사탕", `sseol7` 소개팅 상대 바지의 갈색 털, `sseol8` 조카가 일주일 놀러 온 뒤로 현관 카메라가 이상함, `sseol10` 내 패딩을 안 돌려준 동생, `sseol11` 비 오는 날 노란 우산, `sseol13` 내가 8살 때 고른 할머니 폰, `sseol14` "엄마가 외출한 날만 틀려", `sseol15` 에어컨 바로 밑 자리, `sseol17` 사 온 빵을 꼭 반 갈라 줌, `sseol18` 나는 동아리·엠티·미팅으로 바쁨.
+- 손대지 않은 편: `sseol2`(쪽지 내용 "물 많이 마셔, 우산 챙겨"가 처음부터 엄마 잔소리 말투라는 복선이 있음), `sseol16`(사진마다 남은 보낸 기록), `sseol19`, `sseol20`(이름 "하나", 메모로 풀림).
+- 설교(7번)는 20편 어디에도 없다. 교훈이나 "~하면 안 돼요"로 끝나는 편이 없다.
+
+| id | 한 줄 요약 | 결말 유형 | 노리는 감정 |
+|---|---|---|---|
+| `sseol1` | 짝꿍이 1년 내내 내 우유를 뺏어 마셨는데, 사실 우유 못 먹는 애가 배 아픈 나 대신 마신 거였고, 지금은 남편이 돼서 습관처럼 다 마신다 | 의외의 이유 + 허탈 개그 | 설렘 |
+| `sseol2` | 반장이 100일째 쪽지를 줘서 "나도 좋아" 답장까지 했는데, 쪽지는 엄마가 반장(엄마 친구 아들)에게 부탁한 잔소리였다 | 정체 반전 | 웃음 |
+| `sseol3` | 비만 오면 운동화가 사라졌는데, 할머니가 몰래 빨아 전기장판에 말리고 있었고, 지금은 할머니 무릎 예보 때문에 맑은 날에도 장화를 신는다 | 의외의 이유 + 허탈 개그 | 웃음 |
+| `sseol4` | 60살 아빠가 외국에서 자란 딸 남자친구를 맞으려고 석 달 영어를 연습했는데, 남자친구는 한국말을 더 잘했고 아빠는 지금도 영어만 쓴다 | 허탈 개그 | 웃음 |
+| `sseol5` | 새벽 3시 할아버지한테 돈 받지 말라던 사장님, 할아버지는 가게 진짜 주인이었고 야간을 몰래 떠넘긴 게 들통났다 | 정체 반전 + 역전 | 사이다 웃음 |
+| `sseol6` | 신입이 팀장님 책상에 매일 사탕을 둬서 아부·짝사랑 소문이 났는데, 굶은 날 회의가 2시간이 된다는 걸 알아낸 작전이었다 | 의외의 이유 | 공감 |
+| `sseol7` | 소개팅 상대가 내 이름 "보리"에 웃음을 참았는데, 그 집 강아지 이름도 보리였다 | 오해 | 웃음 |
+| `sseol8` | 택배 기사님들이 우리 집 초인종만 누르면 웃는데, 5살 조카가 초인종 소리를 "아저씨 사랑해요"로 바꿔 놓았다 | 정체 반전 | 뭉클한 웃음 |
+| `sseol9` | 옆집 할머니가 3년째 반찬과 배즙을 걸어 줬는데, 밤마다 연습한 내 노래가 할머니 자장가였다 | 의외의 이유 | 뭉클 |
+| `sseol10` | 동생이 생일마다 양말 한 짝, 이어폰 한쪽을 줬는데, 다 내가 잃어버린 거였고 마지막 상자엔 동생이 안 돌려준 내 패딩이 "선물"로 들어 있었다 | 허탈 개그 | 웃음 |
+| `sseol11` | 카페 사장님이 내 컵에만 노란 우산 고양이 만화를 연재했는데, 그 고양이는 비 오는 날만 오는 나였다 | 정체 반전 | 설렘 |
+| `sseol12` | 은퇴한 할아버지가 매일 은행에 천 원을 넣으러 갔는데, 내가 태어난 날부터 모은 통장이었고, 절반은 할머니가 꺼내 썼다 | 따뜻한 반전 + 허탈 개그 | 뭉클한 웃음 |
+| `sseol13` | 할머니가 내 전화만 늦게 받았는데, 8살 내가 녹음한 벨소리를 끝까지 들으려고 그랬다 | 의외의 이유 | 뭉클 |
+| `sseol14` | 강아지가 아빠 퇴근 10분 전을 맞혔는데, 엄마의 "아빠 오신다"를 외운 거였고, 엄마의 장난에 속은 날 진짜 아빠를 외면했다 | 의외의 이유 + 역전 개그 | 웃음 |
+| `sseol15` | 한여름 독서실 내 자리에 매일 핫팩이 있었는데, 에어컨 밑에서 떠는 나를 본 사장님이었고, 다음 날 그 에어컨엔 "고장"이 붙었다 | 따뜻한 반전 | 뭉클 |
+| `sseol16` | 할아버지가 1년 동안 같은 나무만 찍었는데, 입원한 할머니에게 계절을 보내는 거였고, 퇴원한 할머니는 "실물이 더 예쁘네" | 따뜻한 반전 | 뭉클 |
+| `sseol17` | 족보가 꼬여 조카가 나보다 3살 위인데, 학교에선 날 부려 먹던 조카가 끝에 "우리 삼촌 건드리지 마" | 역전 | 사이다 웃음 |
+| `sseol18` | 엄마랑 같은 해 같은 대학에 입학했는데, 첫 학기 성적이 엄마는 장학금, 나는 학사 경고 | 역전 개그 | 웃음 |
+| `sseol19` | 할머니가 실수로 우리 반 단톡방에 들어왔는데, 반 애들이 할머니 공지를 반장보다 더 잘 듣게 됐다 | 의외의 전개 | 웃음 |
+| `sseol20` | 모르는 "하나"가 매달 만 원을 보냈는데, 2학년 때 천 원 빌려준 짝꿍의 1년치 상환이었고, 나는 "12만 원어치 밥 사"로 답했다 | 정체 반전 | 뭉클한 웃음 |
+
+### 벤치마크 성적표
+
+`python3 sseol_v2/score.py <id>`로 쟀다. 벤치마크 쪽 길이·훅·전환·초당 음절·줄 수는 보고서의 *추정값*이다(재생 페이지가 로그인을 요구해서 못 쟀음). 우리 쪽은 렌더한 mp4(1080×1080 그림 칸, scene > 0.04)와 `build/<id>/timeline.json`에서 쟀다. 그림 칸에는 본문 문장도 들어가므로 문장이 바뀌는 것도 화면 변화로 센다.
+
+| id | 제목 (글자) | 길이 | 훅 끝 | 첫 전환 | 평균/최장 화면 | 초당 음절 | 줄 |
+|---|---|---|---|---|---|---|---|
+| 목표 | 8~12자, "이유" 없음 | 40초 (35~55) | ≤2.0초 | ≤2.5초 | 2.8 / ≤4.0초 | ≥6.2 | 16 (14~20) |
+| `sseol1` | 짝꿍이 내 우유를 1년 마셨다 (12) | 41.9초 | 1.86초 | 1.97초 | 2.33 / 3.83초 | 6.42 | 18 |
+| `sseol2` | 반장 쪽지가 100일째 온다 (12) | 34.6초 | 1.63초 | 1.73초 | 2.16 / 2.87초 | 6.4 | 16 |
+| `sseol3` | 비 오면 내 운동화가 사라진다ㅋㅋ (12) | 42.7초 | 1.77초 | 1.87초 | 2.25 / 3.83초 | 6.61 | 17 |
+| `sseol4` | 60살 아빠가 영어 시작했다 (12) | 37.4초 | 1.88초 | 1.97초 | 2.34 / 3.4초 | 6.13 | 16 |
+| `sseol5` | 3시 손님한텐 돈 받지 말래 (11) | 41.4초 | 1.95초 | 2.03초 | 2.59 / 3.43초 | 6.28 | 16 |
+| `sseol6` | 신입이 매일 사탕을 두고 간다ㅋㅋ (12) | 36.5초 | 1.74초 | 1.83초 | 2.28 / 3.53초 | 6.27 | 16 |
+| `sseol7` | 소개팅남이 내 이름에 웃었다ㅋㅋ (12) | 36.7초 | 2.18초 | 2.27초 | 2.29 / 3.73초 | 6.44 | 16 |
+| `sseol8` | 택배 기사님이 매번 웃는다ㅋㅋ (11) | 37.8초 | 1.96초 | 2.03초 | 2.36 / 3.43초 | 6.38 | 16 |
+| `sseol9` | 옆집에서 3년째 반찬이 온다 (12) | 38.4초 | 1.68초 | 1.77초 | 2.4 / 3.8초 | 6.52 | 16 |
+| `sseol10` | 동생 선물이 양말 1짝이다ㅋㅋ (11) | 39.8초 | 2.04초 | 2.13초 | 2.49 / 3.77초 | 6.27 | 16 |
+| `sseol11` | 카페 컵에 내 만화가 연재된다ㅋㅋ (12) | 41.1초 | 1.67초 | 1.77초 | 2.57 / 4.43초 | 6.45 | 16 |
+| `sseol12` | 할아버지가 은행에 출근한다ㅋㅋ (12) | 38.7초 | 1.51초 | 1.6초 | 2.42 / 3.97초 | 6.58 | 16 |
+| `sseol13` | 할머니가 내 전화만 늦게 받아ㅋㅋ (12) | 38.5초 | 1.72초 | 1.8초 | 2.41 / 3.47초 | 6.49 | 16 |
+| `sseol14` | 강아지가 아빠 퇴근을 안다ㅋㅋ (11) | 35.5초 | 1.49초 | 1.57초 | 2.22 / 3.0초 | 6.41 | 16 |
+| `sseol15` | 8월인데 책상에 핫팩이 있다 (12) | 41.5초 | 1.68초 | 1.77초 | 2.59 / 3.43초 | 6.49 | 16 |
+| `sseol16` | 할아버지가 나무만 1년 찍었다 (13) | 35.8초 | 1.86초 | 1.93초 | 2.38 / 3.7초 | 6.57 | 15 |
+| `sseol17` | 조카가 나보다 3살 형이다 (11) | 33.8초 | 1.46초 | 1.57초 | 2.11 / 2.97초 | 6.71 | 16 |
+| `sseol18` | 엄마랑 같은 해에 입학했다ㅋㅋ (11) | 36.8초 | 1.65초 | 1.73초 | 2.3 / 3.1초 | 6.36 | 16 |
+| `sseol19` | 할머니가 우리 단톡방에 있다ㅋㅋ (12) | 34.6초 | 1.75초 | 1.83초 | 2.16 / 3.1초 | 6.79 | 16 |
+| `sseol20` | 매달 1일 만 원이 입금된다 (11) | 35.6초 | 1.56초 | 1.63초 | 2.37 / 3.77초 | 6.28 | 15 |
+
+**목표를 못 맞춘 칸과 이유**
+- **평균 화면 길이**는 20편 모두 2.1~2.6초로, 목표 2.8초보다 짧다. 문장마다 그림과 본문이 같이 바뀌기 때문이다. 벤치마크 S1·S2도 프레임 4장 중 3장이 달랐다. 최장 화면은 모두 4.5초 이하라서 qa 기준과 목표 4.0초 안팎을 지킨다(`sseol3` 3.83초, `sseol11` 4.43초는 한 문장이 길어서다).
+- **길이**: `sseol2`·`sseol17`·`sseol19`는 35초보다 조금 짧다. 목표 40초는 추정값이고 qa 최적 구간(31~45초)에는 들어간다. 이야기를 늘리면 2-1절 "커지는 갈등"보다 군더더기가 늘어서 그대로 뒀다.
+- **초당 음절**: `sseol4`는 6.13이다. 아빠가 더듬더듬 읽는 영어 두 줄("아임, 수아스, 파더", "오케이, 땡큐, 굿")이 일부러 느린 개그이고, 그 두 줄을 빼면 6.59다.
+- **훅 끝**: 2.0초를 조금 넘는 편(`sseol7` 2.18초, `sseol10` 2.04초)은 첫 문장이 13음절이다. 첫 화면에는 0초부터 제목·첫 문장·그림이 함께 떠 있어서 훅은 0초에 보인다.
+- **제목 길이**: `sseol16`은 13자로 목표(8~12자)보다 1자 길다. qa 기준(13자 이하)은 통과한다. 벤치마크처럼 숫자를 넣으면서 결말(할머니)을 숨기려면 이 길이가 필요했다.
+- **줄 수**: 15~18줄로 목표(14~20)에 들어간다.
+
+**`qa_review.py` 결과** (FAIL 0편)
+
+- `sseol1`:  제목 띠 WARN 없음 
+- `sseol2`:  제목 띠 WARN 없음 
+- `sseol3`:  제목 띠 WARN 없음 
+- `sseol4`:  제목 띠 WARN 없음 
+- `sseol5`:  제목 띠 WARN 없음 
+- `sseol6`:  제목 띠 WARN 없음 
+- `sseol7`:  제목 띠 WARN 없음 
+- `sseol8`:  제목 띠 WARN 없음 
+- `sseol9`:  제목 띠 WARN 없음 
+- `sseol10`:  제목 띠 WARN 없음 
+- `sseol11`:  제목 띠 WARN 없음 
+- `sseol12`:  제목 띠 WARN 없음 
+- `sseol13`:  제목 띠 WARN 없음 
+- `sseol14`:  제목 띠 WARN 없음 
+- `sseol15`:  제목 띠 WARN 없음 
+- `sseol16`:  제목 띠 WARN 없음 
+- `sseol17`:  제목 띠 WARN 없음 
+- `sseol18`:  제목 띠 WARN 없음 
+- `sseol19`:  제목 띠 WARN 없음 
+- `sseol20`:  제목 띠 WARN 없음 
+
+`제목 띠` WARN은 20편 모두 같다. 이 검사는 위쪽 검정 띠 2줄 제목(`titleStyle: band`)을 찾는데, 썰 v2는 벤치마크대로 앱 화면의 글 제목 바가 제목 자리다. 그래서 띠를 일부러 쓰지 않았다(검사는 바꾸지 않았다).
+
+### 출처·라이선스·사실
+
+- **그림**: 20편 모두 `src/lib/Chibi.tsx`·`Sseol.tsx`로 직접 그렸다. 사진·영상·다른 채널의 캐릭터는 쓰지 않았다(`edit.json` `sources` = `{}`). 앱 화면 "썰방"은 지어낸 이름이고, 실제 서비스의 이름·로고·색을 따라 하지 않았다. 화면 안 간판·게시판 글은 "24시 편의점", "동네 서점", "작은 카페"처럼 일반 명사만 쓴다.
+- **목소리**: Microsoft Edge TTS(ko-KR SunHi·InJoon·HyunsuMultilingual), `voice_edge.py`.
+- **음악**: Kevin MacLeod (incompetech.com), CC BY 4.0. `sseol1`·`3`·`7`·`9`·`16` "Monkeys Spinning Monkeys", `sseol2`·`6`·`10`·`15`·`17`·`20` "Sneaky Snitch", `sseol4`·`5`·`12`·`13` "Scheming Weasel", `sseol8`·`11`·`14`·`18`·`19` "Hyperfun". 크레딧은 각 설명글에 있다.
+- **사실 주장**: 20편 모두 지어낸 이야기(창작)이고, 사실로 내세우는 정보(수치, 법, 통계)가 없어서 인용할 자료가 없다. 설명글마다 "(창작)"과 "그림·이야기·목소리 직접 제작"이 들어간다. 실존 인물·학교·회사·은행·앱 이름은 없다.
+
+### 업로드 문구
+
+설명글은 `upload/specs/<id>.json` → `python3 upload/make_desc.py <id>` → `upload/txt/<id>.txt` 형식이다(채널 이름·핸들은 아직 `[채널명]`/`[핸들]` 자리표시자). 아래는 그 파일 내용 그대로이고, 고정 댓글을 함께 적었다.
+
+
+`sseol1`
+- 제목: 짝꿍이 내 우유를 1년 마셨다ㅋㅋ
+- 설명:
+  ```
+  (창작) 초등학교 6학년 때 짝꿍은 1년 내내 급식 우유가 나오면 내 것까지 가져가서 원샷했습니다. 그렇게 뺏긴 우유만 200개, 그런데 걔는 마실 때마다 표정이 썩어 있었습니다. 졸업식 날, 짝꿍이 할 말이 있다며 나를 불렀습니다.
+
+  ▶ [채널명] 채널 구독: https://www.youtube.com/@[핸들]
+
+  출처: 그림·이야기·목소리 직접 제작 · 음악: "Monkeys Spinning Monkeys" Kevin MacLeod (incompetech.com), CC BY 4.0 (creativecommons.org/licenses/by/4.0)
+
+  #Shorts #썰 #썰툰 #창작썰 #썰애니 #웃긴썰 #학교썰 #짝꿍 #급식 #우유 #초등학교 #설렘
+  ```
+- 고정 댓글: 여러분 짝꿍은 뭘 뺏어 먹었어요?ㅋㅋ
+
+`sseol2`
+- 제목: 반장 쪽지가 100일째 온다ㅋㅋ
+- 설명:
+  ```
+  (창작) 고등학교 1학년, 반장이 100일째 매일 아침 내 책상에 접힌 쪽지를 두고 갔습니다. 물 많이 마셔, 우산 챙겨, 밥 꼭 먹어. 밤새 고민해서 답장까지 넣었는데, 그날 저녁 엄마가 나를 불렀습니다.
+
+  ▶ [채널명] 채널 구독: https://www.youtube.com/@[핸들]
+
+  출처: 그림·이야기·목소리 직접 제작 · 음악: "Sneaky Snitch" Kevin MacLeod (incompetech.com), CC BY 4.0 (creativecommons.org/licenses/by/4.0)
+
+  #Shorts #썰 #썰툰 #창작썰 #썰애니 #웃긴썰 #학교썰 #반장 #쪽지 #고백 #엄마 #고등학생
+  ```
+- 고정 댓글: 답장 엄마한테 들킨 적 있는 사람?ㅋㅋ
+
+`sseol3`
+- 제목: 비 오면 내 운동화가 사라진다ㅋㅋ
+- 설명:
+  ```
+  (창작) 초등학생 시절, 비만 오면 현관에 있던 내 운동화가 감쪽같이 사라졌습니다. 덕분에 노란 장화를 신고 학교에 가서 놀림받은 게 세 번, 그런데 다음 날 돌아온 운동화는 늘 따끈따끈했습니다. 비 오는 밤, 몰래 현관을 지켜보기로 했습니다.
+
+  ▶ [채널명] 채널 구독: https://www.youtube.com/@[핸들]
+
+  출처: 그림·이야기·목소리 직접 제작 · 음악: "Monkeys Spinning Monkeys" Kevin MacLeod (incompetech.com), CC BY 4.0 (creativecommons.org/licenses/by/4.0)
+
+  #Shorts #썰 #썰툰 #창작썰 #썰애니 #웃긴썰 #가족썰 #할머니 #운동화 #장마 #초등학생 #공감
+  ```
+- 고정 댓글: 할머니 사랑 느낀 순간 있으면 댓글로!
+
+`sseol4`
+- 제목: 60살 아빠가 영어 시작했다ㅋㅋ
+- 설명:
+  ```
+  (창작) 예순 살 아빠가 갑자기 매일 새벽 5시에 거실에서 영어 한 문장만 백 번씩 연습하기 시작했습니다. 엄마도 이유를 모르는 아빠의 새벽 공부는 석 달 동안 계속됐습니다. 그 시작은 다음 주에 인사 오기로 한 딸의 남자친구였습니다.
+
+  ▶ [채널명] 채널 구독: https://www.youtube.com/@[핸들]
+
+  출처: 그림·이야기·목소리 직접 제작 · 음악: "Scheming Weasel" Kevin MacLeod (incompetech.com), CC BY 4.0 (creativecommons.org/licenses/by/4.0)
+
+  #Shorts #썰 #썰툰 #창작썰 #썰애니 #웃긴썰 #가족썰 #아빠 #영어공부 #남자친구 #상견례 #아빠썰
+  ```
+- 고정 댓글: 여러분 아빠의 필살기 한마디는?ㅋㅋ
+
+`sseol5`
+- 제목: 3시 손님한텐 돈 받지 말래ㄷㄷ
+- 설명:
+  ```
+  (창작) 편의점 야간 알바 첫날, 사장님은 새벽 3시에 오는 할아버지에게는 돈을 받지 말라는 이상한 규칙을 줬습니다. 할아버지는 매일 우유와 빵을 올려놓고 가게를 둘러본 뒤 사장님이 오늘도 야간을 하는지 물었습니다. 한 달째 되던 날, 할아버지가 근무표를 넘겨 보기 시작했습니다.
+
+  ▶ [채널명] 채널 구독: https://www.youtube.com/@[핸들]
+
+  출처: 그림·이야기·목소리 직접 제작 · 음악: "Scheming Weasel" Kevin MacLeod (incompetech.com), CC BY 4.0 (creativecommons.org/licenses/by/4.0)
+
+  #Shorts #썰 #썰툰 #창작썰 #썰애니 #웃긴썰 #알바썰 #편의점 #편의점알바 #야간알바 #사장님 #사이다
+  ```
+- 고정 댓글: 알바하면서 들은 제일 이상한 규칙은?ㅋㅋ
+
+`sseol6`
+- 제목: 신입이 매일 사탕을 두고 간다ㅋㅋ
+- 설명:
+  ```
+  (창작) 회사 신입이 매일 아침 팀장님 책상에 사탕을 하나씩 두고 갔고, 회의가 있는 날엔 꼭 제일 큰 사탕이었습니다. 사무실에는 아부다, 짝사랑이다 소문이 돌았습니다. 참다못해 직접 물어보니, 신입은 회의 때문이라고 답했습니다.
+
+  ▶ [채널명] 채널 구독: https://www.youtube.com/@[핸들]
+
+  출처: 그림·이야기·목소리 직접 제작 · 음악: "Sneaky Snitch" Kevin MacLeod (incompetech.com), CC BY 4.0 (creativecommons.org/licenses/by/4.0)
+
+  #Shorts #썰 #썰툰 #창작썰 #썰애니 #웃긴썰 #회사생활 #직장인 #신입 #팀장님 #회의 #공감
+  ```
+- 고정 댓글: 우리 팀장님 회의 몇 분 해요?ㅋㅋ
+
+`sseol7`
+- 제목: 소개팅남이 내 이름에 웃었다ㅋㅋ
+- 설명:
+  ```
+  (창작) 첫 소개팅 자리에서 "보리예요" 하고 이름을 말하자마자 상대가 고개를 숙이고 웃음을 참았습니다. 그 사람 바지에는 갈색 털이 잔뜩 묻어 있었습니다. 기분이 상해 일어나려는데, 상대가 휴대폰을 꺼내 보여 줬습니다.
+
+  ▶ [채널명] 채널 구독: https://www.youtube.com/@[핸들]
+
+  출처: 그림·이야기·목소리 직접 제작 · 음악: "Monkeys Spinning Monkeys" Kevin MacLeod (incompetech.com), CC BY 4.0 (creativecommons.org/licenses/by/4.0)
+
+  #Shorts #썰 #썰툰 #창작썰 #썰애니 #웃긴썰 #소개팅 #연애썰 #이름 #강아지 #커플 #설렘
+  ```
+- 고정 댓글: 이름 때문에 생긴 웃긴 일 있어요?ㅋㅋ
+
+`sseol8`
+- 제목: 택배 기사님이 매번 웃는다ㅋㅋ
+- 설명:
+  ```
+  (창작) 조카가 일주일 놀러 왔다 간 뒤로, 택배 기사님들이 우리 집 초인종만 누르면 웃음을 터뜨렸습니다. 배를 잡고 웃는 분도, 카메라에 손을 흔드는 분도 있었지만 문에는 아무것도 붙어 있지 않았습니다. 결국 직접 초인종을 눌러 보기로 했습니다.
+
+  ▶ [채널명] 채널 구독: https://www.youtube.com/@[핸들]
+
+  출처: 그림·이야기·목소리 직접 제작 · 음악: "Hyperfun" Kevin MacLeod (incompetech.com), CC BY 4.0 (creativecommons.org/licenses/by/4.0)
+
+  #Shorts #썰 #썰툰 #창작썰 #썰애니 #웃긴썰 #택배 #조카 #초인종 #택배기사님 #가족썰 #훈훈
+  ```
+- 고정 댓글: 조카가 친 사고 자랑해 주세요ㅋㅋ
+
+`sseol9`
+- 제목: 옆집에서 3년째 반찬이 온다
+- 설명:
+  ```
+  (창작) 3년째 매일 저녁, 우리 집 문고리에 멸치볶음과 김치, 그리고 꼭 도라지 배즙 한 봉지가 든 반찬 봉지가 걸려 있습니다. 범인은 옆집 할머니였습니다. 왜 자꾸 반찬을 주시냐고 묻자, 할머니는 뜻밖에도 내 목 걱정을 했습니다.
+
+  ▶ [채널명] 채널 구독: https://www.youtube.com/@[핸들]
+
+  출처: 그림·이야기·목소리 직접 제작 · 음악: "Monkeys Spinning Monkeys" Kevin MacLeod (incompetech.com), CC BY 4.0 (creativecommons.org/licenses/by/4.0)
+
+  #Shorts #썰 #썰툰 #창작썰 #썰애니 #웃긴썰 #이웃 #반찬 #할머니 #아파트 #층간소음 #감동
+  ```
+- 고정 댓글: 벽 너머 이웃이랑 생긴 일 있어요?
+
+`sseol10`
+- 제목: 동생 선물이 양말 1짝이다ㅋㅋ
+- 설명:
+  ```
+  (창작) 내 패딩을 빌려 가서 안 돌려준 동생이 생일 선물이라며 준 상자에는 양말 딱 한 짝이 들어 있었습니다. 다음엔 이어폰 한쪽, 그다음엔 머리끈, 마지막엔 접는 우산까지 나왔습니다. 그런데 우산을 펼쳐 보니 거기에 내 이름이 쓰여 있었습니다.
+
+  ▶ [채널명] 채널 구독: https://www.youtube.com/@[핸들]
+
+  출처: 그림·이야기·목소리 직접 제작 · 음악: "Sneaky Snitch" Kevin MacLeod (incompetech.com), CC BY 4.0 (creativecommons.org/licenses/by/4.0)
+
+  #Shorts #썰 #썰툰 #창작썰 #썰애니 #웃긴썰 #남매 #동생 #생일선물 #가족썰 #현실남매 #선물
+  ```
+- 고정 댓글: 동생한테 받은 제일 이상한 선물은?ㅋㅋ
+
+`sseol11`
+- 제목: 카페 컵에 내 만화가 연재된다ㅋㅋ
+- 설명:
+  ```
+  (창작) 비 오는 날마다 노란 우산을 쓰고 가는 단골 카페에서, 사장님은 내 컵 홀더에만 그림을 그려 줬습니다. 노란 우산 쓴 고양이가 버스를 타고, 비에 젖고, 만화처럼 이어졌습니다. 그런데 그림은 이상하게 비 오는 날에만 받을 수 있었습니다.
+
+  ▶ [채널명] 채널 구독: https://www.youtube.com/@[핸들]
+
+  출처: 그림·이야기·목소리 직접 제작 · 음악: "Hyperfun" Kevin MacLeod (incompetech.com), CC BY 4.0 (creativecommons.org/licenses/by/4.0)
+
+  #Shorts #썰 #썰툰 #창작썰 #썰애니 #웃긴썰 #카페 #단골 #고양이 #비오는날 #카페사장님 #설렘
+  ```
+- 고정 댓글: 단골 가게에서 받은 서비스 자랑해 주세요!
+
+`sseol12`
+- 제목: 할아버지가 은행에 출근한다ㅋㅋ
+- 설명:
+  ```
+  (창작) 은퇴한 지 딱 20년 된 할아버지가 매일 오전 10시, 천 원짜리 한 장을 들고 동네 은행으로 출근합니다. 직원들도 다 아는 단골인데, 넣는 돈은 늘 천 원뿐이었습니다. 할머니에게 이유를 묻자 할머니는 갑자기 딴청을 피웠습니다.
+
+  ▶ [채널명] 채널 구독: https://www.youtube.com/@[핸들]
+
+  출처: 그림·이야기·목소리 직접 제작 · 음악: "Scheming Weasel" Kevin MacLeod (incompetech.com), CC BY 4.0 (creativecommons.org/licenses/by/4.0)
+
+  #Shorts #썰 #썰툰 #창작썰 #썰애니 #웃긴썰 #할아버지 #은행 #적금 #가족썰 #할머니 #감동
+  ```
+- 고정 댓글: 할머니 할아버지한테 받은 제일 큰 선물은?
+
+`sseol13`
+- 제목: 할머니가 내 전화만 늦게 받아ㅠㅠ
+- 설명:
+  ```
+  (창작) 엄마가 전화하면 바로 받는 할머니가 내 전화만은 꼭 한참 울리게 둔 뒤에 받습니다. 할머니 폰은 내가 8살 때 같이 고른, 10년도 넘은 폰입니다. 할머니 집에서 몰래 전화를 걸어 보니, 할머니는 휴대폰을 보며 가만히 듣고만 있었습니다.
+
+  ▶ [채널명] 채널 구독: https://www.youtube.com/@[핸들]
+
+  출처: 그림·이야기·목소리 직접 제작 · 음악: "Scheming Weasel" Kevin MacLeod (incompetech.com), CC BY 4.0 (creativecommons.org/licenses/by/4.0)
+
+  #Shorts #썰 #썰툰 #창작썰 #썰애니 #웃긴썰 #할머니 #가족썰 #전화 #벨소리 #손녀 #감동
+  ```
+- 고정 댓글: 오늘 할머니한테 전화 한 통 어때요?
+
+`sseol14`
+- 제목: 강아지가 아빠 퇴근을 안다ㅋㅋ
+- 설명:
+  ```
+  (창작) 우리 집 강아지 초코는 아빠가 오기 딱 10분 전이면 현관에 가서 앉습니다. 하루도 틀리지 않는데, 이상하게 엄마가 외출한 날만 틀립니다. 그래서 하루 종일 초코를 지켜보기로 했습니다.
+
+  ▶ [채널명] 채널 구독: https://www.youtube.com/@[핸들]
+
+  출처: 그림·이야기·목소리 직접 제작 · 음악: "Hyperfun" Kevin MacLeod (incompetech.com), CC BY 4.0 (creativecommons.org/licenses/by/4.0)
+
+  #Shorts #썰 #썰툰 #창작썰 #썰애니 #웃긴썰 #강아지 #반려견 #아빠 #퇴근 #가족썰 #댕댕이
+  ```
+- 고정 댓글: 여러분 강아지의 초능력은?ㅋㅋ
+
+`sseol15`
+- 제목: 8월인데 책상에 핫팩이 있다?
+- 설명:
+  ```
+  (창작) 고3 여름, 독서실 에어컨 바로 밑 자리에서 공부하던 내 책상에 매일 저녁 핫팩이 하나씩 놓여 있었습니다. 한여름에 핫팩이라니 누가 장난을 치는 줄 알았습니다. 하루는 일찍 와서 숨어 지켜봤더니, 핫팩을 두고 간 사람은 독서실 사장님이었습니다.
+
+  ▶ [채널명] 채널 구독: https://www.youtube.com/@[핸들]
+
+  출처: 그림·이야기·목소리 직접 제작 · 음악: "Sneaky Snitch" Kevin MacLeod (incompetech.com), CC BY 4.0 (creativecommons.org/licenses/by/4.0)
+
+  #Shorts #썰 #썰툰 #창작썰 #썰애니 #웃긴썰 #독서실 #고3 #수험생 #핫팩 #에어컨 #감동
+  ```
+- 고정 댓글: 공부할 때 고마웠던 사람 있어요?
+
+`sseol16`
+- 제목: 할아버지가 나무만 1년 찍었다
+- 설명:
+  ```
+  (창작) 할아버지는 1년 동안 매일 아침 같은 시간, 같은 자리에서, 같은 나무만 찍었습니다. 휴대폰 사진첩이 전부 그 나무였고, 사진마다 누군가에게 보낸 기록이 남아 있었습니다. 받는 사람은 할머니였습니다.
+
+  ▶ [채널명] 채널 구독: https://www.youtube.com/@[핸들]
+
+  출처: 그림·이야기·목소리 직접 제작 · 음악: "Monkeys Spinning Monkeys" Kevin MacLeod (incompetech.com), CC BY 4.0 (creativecommons.org/licenses/by/4.0)
+
+  #Shorts #썰 #썰툰 #창작썰 #썰애니 #웃긴썰 #할아버지 #할머니 #나무 #사진 #부부 #감동
+  ```
+- 고정 댓글: 할머니 할아버지 이야기 들려주세요
+
+`sseol17`
+- 제목: 조카가 나보다 3살 형이다ㅋㅋ
+- 설명:
+  ```
+  (창작) 큰누나와 나는 스물다섯 살 차이라서, 나보다 세 살 많은 조카가 있습니다. 문제는 그 조카와 같은 고등학교에 다닌다는 것, 학교에서는 선배인 조카에게 빵 심부름을 합니다. 그런데 명절만 되면 상황이 완전히 바뀝니다.
+
+  ▶ [채널명] 채널 구독: https://www.youtube.com/@[핸들]
+
+  출처: 그림·이야기·목소리 직접 제작 · 음악: "Sneaky Snitch" Kevin MacLeod (incompetech.com), CC BY 4.0 (creativecommons.org/licenses/by/4.0)
+
+  #Shorts #썰 #썰툰 #창작썰 #썰애니 #웃긴썰 #족보 #조카 #삼촌 #가족썰 #명절 #고등학교
+  ```
+- 고정 댓글: 여러분 집 족보도 꼬였어요?ㅋㅋ
+
+`sseol18`
+- 제목: 엄마랑 같은 해에 입학했다ㅋㅋ
+- 설명:
+  ```
+  (창작) 내가 대학에 붙은 날, 엄마도 합격 문자를 받았습니다. 스무 살에 나를 낳느라 대학을 못 간 엄마가 마흔에 수능을 다시 봤고, 하필 나와 같은 학교였습니다. 입학식 날 우리 과 단체 사진에는 엄마가 껴 있었습니다.
+
+  ▶ [채널명] 채널 구독: https://www.youtube.com/@[핸들]
+
+  출처: 그림·이야기·목소리 직접 제작 · 음악: "Hyperfun" Kevin MacLeod (incompetech.com), CC BY 4.0 (creativecommons.org/licenses/by/4.0)
+
+  #Shorts #썰 #썰툰 #창작썰 #썰애니 #웃긴썰 #대학생 #새내기 #엄마 #만학도 #가족썰 #캠퍼스
+  ```
+- 고정 댓글: 엄마랑 같은 학교 다니면 어떨 것 같아요?ㅋㅋ
+
+`sseol19`
+- 제목: 할머니가 우리 단톡방에 있다ㅋㅋ
+- 설명:
+  ```
+  (창작) 어느 날 우리 반 단톡방에 '할미'라는 사람이 들어왔습니다. 프로필 사진은 우리 할머니, 내 폰으로 사진을 보다가 초대 버튼을 누른 것이었습니다. 할머니의 첫 메시지 한 줄에 단톡방은 난리가 났습니다.
+
+  ▶ [채널명] 채널 구독: https://www.youtube.com/@[핸들]
+
+  출처: 그림·이야기·목소리 직접 제작 · 음악: "Hyperfun" Kevin MacLeod (incompetech.com), CC BY 4.0 (creativecommons.org/licenses/by/4.0)
+
+  #Shorts #썰 #썰툰 #창작썰 #썰애니 #웃긴썰 #단톡방 #할머니 #학교썰 #고등학생 #카톡 #공감
+  ```
+- 고정 댓글: 단톡방에서 생긴 웃긴 일 있어요?ㅋㅋ
+
+`sseol20`
+- 제목: 매달 1일 만 원이 입금된다ㄷㄷ
+- 설명:
+  ```
+  (창작) 매달 1일, 모르는 사람이 내 통장에 만 원을 보냅니다. 입금자 이름은 매번 '하나', 벌써 1년째 한 번도 빠지지 않았습니다. 은행에서도 정상 계좌라고 해서, 나도 1원을 보내며 메모를 적었습니다.
+
+  ▶ [채널명] 채널 구독: https://www.youtube.com/@[핸들]
+
+  출처: 그림·이야기·목소리 직접 제작 · 음악: "Sneaky Snitch" Kevin MacLeod (incompetech.com), CC BY 4.0 (creativecommons.org/licenses/by/4.0)
+
+  #Shorts #썰 #썰툰 #창작썰 #썰애니 #웃긴썰 #입금 #통장 #친구 #초등학교 #우정 #감동
+  ```
+- 고정 댓글: 여러분은 어릴 때 빌려준 돈 기억나요?ㅋㅋ
 
 ## 정보 쇼츠 v2 (벤치마크: life·issue·hanban·why)
 
