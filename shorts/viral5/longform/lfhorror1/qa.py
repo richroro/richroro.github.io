@@ -26,12 +26,27 @@ ed = json.load(open(f"{HERE}/edit.json")); ds = [s["t1"] - s["t0"] for s in ed["
 rep(max(ds) <= 13, "new picture every ≤ 13 s", f"{len(ds)} shots, mean {sum(ds) / len(ds):.1f}s, longest {max(ds):.1f}s")
 live = sum(s["t1"] - s["t0"] for s in ed["shots"] if s["k"] in ("v", "static")) / ed["end"]
 rep(0.2 <= live <= 0.3, "live clips 20~30 %", f"{live:.0%}")
+sl = subprocess.run(["ffmpeg", "-nostdin", "-i", F, "-af", "silencedetect=n=-50dB:d=1.5", "-vn", "-f", "null", "-"], capture_output=True, text=True).stderr
+sil = re.findall(r"silence_start: ([\d.]+)", sl)
+rep(not sil, "no silence > 1.5 s (−50 dB)", sil[:6] or "none")
+# caption width: Pretendard ExtraBold 56 px ≈ 56 px per Hangul syllable, 0.55 em for Latin/digits/space; plus a speaker label
+def cap_w(c):
+    import re as _r
+    t = _r.sub(r"[\[\]]", "", c["text"]); w = sum(56 if "가" <= ch <= "힣" else 31 for ch in t)
+    return w + (0 if c["who"] in ("nar", "doc") else 4 * 40 + 14) + 52
+wmax = max(ed["caps"], key=cap_w)
+rep(cap_w(wmax) <= 1800, "captions fit one line (≤ 1800 px)", f"widest ≈ {cap_w(wmax)} px: {wmax['text']}")
 words = " ".join(c["text"] for c in ed["caps"])
 bad = [w for w in ("저작권", "퍼블릭 도메인", "공공누리", "실화", "레딧") if w in words]
 rep(not bad, "no banned words on screen", bad or "none")
 rep(len(ed["chapters"]) >= 3 and ed["chapters"][0][0] == "0:00", "chapters from 0:00", " / ".join(f"{a} {b}" for a, b in ed["chapters"]))
-for k in range(0, int(dur), 160):
+for k in range(0, int(dur), 480):  # one frame every 30 s, 16 per sheet
+    subprocess.run(["ffmpeg", "-nostdin", "-v", "error", "-y", "-ss", str(k), "-t", "480", "-i", F, "-vf", "fps=1/30,scale=480:270,tile=4x4", "-frames:v", "1", f"{R}/sheet30_{k // 480}.jpg"])
+for k in range(0, int(dur), 160):  # one frame every 10 s
     subprocess.run(["ffmpeg", "-nostdin", "-v", "error", "-y", "-ss", str(k), "-t", "160", "-i", F, "-vf", "fps=1/10,scale=384:216,tile=4x4", "-frames:v", "1", f"{R}/sheet_{k // 160}.jpg"])
 subprocess.run(["ffmpeg", "-nostdin", "-v", "error", "-y", "-i", F, "-frames:v", "1", f"{R}/first.jpg"])
-subprocess.run(["ffmpeg", "-nostdin", "-v", "error", "-y", "-sseof", "-0.1", "-i", F, "-frames:v", "1", f"{R}/last.jpg"])
+subprocess.run(["ffmpeg", "-nostdin", "-v", "error", "-y", "-sseof", "-0.2", "-i", F, "-update", "1", f"{R}/last.jpg"])
+import PIL.Image as _I
+lm = sum(_I.open(f"{R}/last.jpg").convert("L").getdata()) / (1920 * 1080)
+rep(lm > 8, "last frame not black", f"mean luma {lm:.0f}")
 n = sum(r[0] == "FAIL" for r in res); print(f"\n{n} FAIL, {len(res) - n} PASS")
