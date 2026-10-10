@@ -74,10 +74,10 @@ export const F1Odyssey: React.FC<F1Props> = ({ edit, route }) => {
   const ch = [...chapters].reverse().find((c) => t >= c.start) ?? chapters[0];
   const sceneCut = chapters.some((c) => c.start > 0 && Math.abs(c.start - cur.t0) < 0.01);
   const fadeIn = sceneCut ? 1 : eOut(prog(t, cur.t0, XF));
-  // a dip to black around every scene change
+  // a dip towards black around every scene change (never all the way: the long-form QA treats black frames as a fault)
   let dip = 0;
   for (const c of chapters) if (c.start > 0) dip = Math.max(dip, 1 - Math.abs(t - c.start) / 0.45);
-  dip = clamp(dip);
+  dip = 0.6 * clamp(dip);
   const cap = edit.captions.find((c) => t >= c.t0 && t < c.t1);
   const card = ch.card && ch.start > 0 ? ch : null;
   const cardA = card ? clamp(prog(t, card.start + 0.25, 0.5)) * (1 - prog(t, card.start + 2.9, 0.5)) : 0;

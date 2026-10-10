@@ -223,13 +223,19 @@ export const TitleCard: React.FC<{ s: F1Shot; t: number; title: string }> = ({ s
   );
 };
 
+/** the closing card: the opening storm, dimmed, under the title; it stays up to the last frame (no fade to black) */
 export const EndCard: React.FC<{ s: F1Shot; t: number; title: string }> = ({ s, t, title }) => {
-  const lt = t - s.t0, dur = s.t1 - s.t0;
-  const a = eOut(prog(lt, 0.3, 1.0)) * (1 - prog(lt, dur - 0.8, 0.8));
+  const lt = t - s.t0;
+  const a = eOut(prog(lt, 0.3, 1.0));
   return (
-    <AbsoluteFill style={{ background: "#000", alignItems: "center", justifyContent: "center", flexDirection: "column", opacity: a }}>
-      <div style={{ fontFamily: TITLE, fontSize: 64, color: INK }}>{title}</div>
-      <div style={{ fontFamily: BODY, fontWeight: 700, fontSize: 28, color: "#a39a85", marginTop: 26 }}>그림 출처와 인용 문헌은 설명란에 있습니다</div>
+    <AbsoluteFill>
+      <AbsoluteFill style={{ overflow: "hidden", background: "#000" }}>
+        <Img src={staticFile("odyssey/img/nuijen_storm.jpg")} style={{ width: "100%", height: "100%", objectFit: "cover", filter: "brightness(.45) saturate(.8)", transform: `scale(${1.05 + 0.004 * lt})` }} />
+      </AbsoluteFill>
+      <AbsoluteFill style={{ alignItems: "center", justifyContent: "center", flexDirection: "column", opacity: a }}>
+        <div style={{ fontFamily: TITLE, fontSize: 64, color: INK, textShadow: "0 4px 18px #000" }}>{title}</div>
+        <div style={{ fontFamily: BODY, fontWeight: 700, fontSize: 28, color: "#d8cdb2", marginTop: 26, textShadow: "0 2px 8px #000" }}>그림 출처와 인용 문헌은 설명란에 있습니다</div>
+      </AbsoluteFill>
     </AbsoluteFill>
   );
 };
