@@ -11,7 +11,7 @@ EP = {
     "voices": {"nar": ("SunHi", "+28%"), "me": ("SunHi", "+26%", "+8Hz"), "fr": ("SunHi", "+26%", "-4Hz"), "clk": ("Hyunsu", "+26%")},
     "cast": {"me": ME, "fr": FR, "kme": KME, "kfr": KFR, "clk": CLK},
     "beats": [
-        ("a", "nar", "매달 일 일, 모르는 사람이 만 원을 보내.", "매달 1일 / 모르는 [만 원]이 와", {"bg": "bedroom", "chars": ["me:shock@0.24"], "chat": {"title": APP, "msgs": [{"name": "입금", "text": "[10,000원] 하나", "color": "#9be07b"}]}, "steps": [0, 0, 9, 0, 0.05]}),
+        ("a", "nar", "매달 일 일에 모르는 만 원이 와.", "매달 1일 / 모르는 [만 원]이 와", {"bg": "bedroom", "chars": ["me:shock@0.24"], "chat": {"title": APP, "msgs": [{"name": "입금", "text": "[10,000원] 하나", "color": "#9be07b"}]}, "steps": [0, 0, 9, 0, 0.05]}),
         ("b", "nar", "입금자 이름은 매번 똑같아, 하나.", "입금자는 / 매번 '[하나]'", {"bg": "bedroom", "chars": ["me:think@0.24"], "chat": {"title": APP, "msgs": [{"name": "입금", "text": "10,000원 [하나]", "color": "#9be07b"}, {"name": "입금", "text": "10,000원 [하나]", "color": "#9be07b"}, {"name": "입금", "text": "10,000원 [하나]", "color": "#9be07b"}]}, "steps": [0, 0, 9, 0, 0.1, 0.5, 0.9]}),
         ("c", "me", "하나, 그게 누구지?", "\"[하나]? / 그게 누구지?\"", {"bg": "bedroom", "chars": ["me:think*1.5"]}),
         ("d", "nar", "벌써 일 년째, 한 번도 안 빠졌어.", "벌써 [1년째] / 한 번도 안 빠졌어", {"bg": "home", "chars": ["me:shock@0.3*1.1"], "big": "💸 × [12]"}),
