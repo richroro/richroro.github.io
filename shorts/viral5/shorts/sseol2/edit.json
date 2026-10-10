@@ -1,0 +1,400 @@
+{
+ "credit": "",
+ "titleStyle": "band",
+ "captionY": 1650,
+ "sources": {},
+ "music": {
+  "file": "music/sneaky_snitch.mp3",
+  "gain": 0.2,
+  "start": 0
+ },
+ "sfx": [
+  [
+   "b",
+   "pop",
+   0.3
+  ],
+  [
+   "c",
+   "pop",
+   0.3
+  ],
+  [
+   "d.백",
+   "coin",
+   0.25
+  ],
+  [
+   "e",
+   "boing",
+   0.3
+  ],
+  [
+   "f.진짜",
+   "ding",
+   0.25
+  ],
+  [
+   "h",
+   "pop_hi",
+   0.3
+  ],
+  [
+   "j.어머니가",
+   "k_error_003",
+   0.3
+  ],
+  [
+   "l.문자를",
+   "pop",
+   0.3
+  ],
+  [
+   "m",
+   "whoosh",
+   0.3
+  ],
+  [
+   "n.주더라",
+   "boing",
+   0.35
+  ]
+ ],
+ "clips": [
+  {
+   "from": "a",
+   "label": "post",
+   "gfx": {
+    "type": "post",
+    "title": "고1 때 반장이 매일 아침 [내 책상에] 쪽지 두고 간 썰",
+    "body": [
+     "“내일 체육복 챙겨”",
+     "“수행평가 금요일까지” 📝"
+    ],
+    "steps": [
+     "a.책상에",
+     "a.쪽지를"
+    ]
+   }
+  },
+  {
+   "from": "b",
+   "label": "gym",
+   "gfx": {
+    "type": "scene",
+    "bg": "class",
+    "place": "📍 1학년 2반",
+    "prop": "📝",
+    "say": {
+     "who": 1,
+     "text": "내일 [체육복] 챙겨."
+    },
+    "chars": [
+     {
+      "name": "나",
+      "mood": "neutral",
+      "color": "#FFD84D"
+     },
+     {
+      "name": "반장",
+      "color": "#8FD3FF",
+      "mood": "neutral"
+     }
+    ],
+    "sign": "체육복 챙기기"
+   }
+  },
+  {
+   "from": "c",
+   "label": "test",
+   "gfx": {
+    "type": "scene",
+    "bg": "class",
+    "prop": "📝",
+    "say": {
+     "who": 1,
+     "text": "수행평가, [금요일]까지."
+    },
+    "chars": [
+     {
+      "name": "나",
+      "mood": "think",
+      "color": "#FFD84D"
+     },
+     {
+      "name": "반장",
+      "color": "#8FD3FF",
+      "mood": "neutral"
+     }
+    ],
+    "sign": "수행평가 금요일까지!"
+   }
+  },
+  {
+   "from": "d",
+   "label": "100",
+   "gfx": {
+    "type": "scene",
+    "bg": "class",
+    "prop": "📝",
+    "big": "📝 × [100]",
+    "chars": [
+     {
+      "name": "나",
+      "mood": "shock",
+      "color": "#FFD84D"
+     },
+     {
+      "name": "반장",
+      "color": "#8FD3FF",
+      "mood": "neutral"
+     }
+    ],
+    "steps": [
+     0,
+     0.1,
+     9,
+     "d.백"
+    ]
+   }
+  },
+  {
+   "from": "e",
+   "label": "tease",
+   "gfx": {
+    "type": "scene",
+    "bg": "class",
+    "say": {
+     "who": 1,
+     "text": "야, 반장이 [너 좋아하는] 거 아냐?"
+    },
+    "zoom": 1.08,
+    "focus": 1,
+    "chars": [
+     {
+      "name": "나",
+      "mood": "shock",
+      "color": "#FFD84D"
+     },
+     {
+      "name": "짝꿍",
+      "color": "#B9F27C",
+      "mood": "laugh"
+     }
+    ],
+    "sign": "쉿! 자습 중"
+   }
+  },
+  {
+   "from": "f",
+   "label": "really",
+   "gfx": {
+    "type": "scene",
+    "bg": "class",
+    "chars": [
+     {
+      "name": "나",
+      "mood": "think",
+      "to": "shy",
+      "color": "#FFD84D"
+     }
+    ],
+    "prop": "💭",
+    "steps": [
+     0,
+     0.1,
+     "f.진짜"
+    ],
+    "sign": "쉿! 자습 중"
+   }
+  },
+  {
+   "from": "g",
+   "label": "reply",
+   "gfx": {
+    "type": "scene",
+    "bg": "night",
+    "place": "📍 새벽 2시",
+    "prop": "💌",
+    "chars": [
+     {
+      "name": "나",
+      "mood": "love",
+      "color": "#FFD84D"
+     }
+    ]
+   }
+  },
+  {
+   "from": "h",
+   "label": "letter",
+   "gfx": {
+    "type": "scene",
+    "bg": "night",
+    "say": {
+     "who": 0,
+     "text": "반장아, 사실 나도 [너 좋아.]"
+    },
+    "prop": "💌",
+    "zoom": 1.1,
+    "focus": 0,
+    "chars": [
+     {
+      "name": "나",
+      "mood": "shy",
+      "color": "#FFD84D"
+     }
+    ]
+   }
+  },
+  {
+   "from": "i",
+   "label": "huh",
+   "gfx": {
+    "type": "scene",
+    "bg": "class",
+    "place": "📍 다음 날",
+    "prop": "💌",
+    "chars": [
+     {
+      "name": "나",
+      "mood": "shy",
+      "color": "#FFD84D"
+     },
+     {
+      "name": "반장",
+      "color": "#8FD3FF",
+      "mood": "neutral",
+      "to": "think"
+     }
+    ],
+    "steps": [
+     0,
+     0.1,
+     "i.갸우뚱"
+    ],
+    "sign": "쉿! 자습 중"
+   }
+  },
+  {
+   "from": "j",
+   "label": "mom",
+   "gfx": {
+    "type": "scene",
+    "bg": "class",
+    "say": {
+     "who": 1,
+     "text": "어... 그거 [너희 어머니가] 부탁하신 건데?"
+    },
+    "zoom": 1.1,
+    "focus": 1,
+    "chars": [
+     {
+      "name": "나",
+      "mood": "shy",
+      "to": "shock",
+      "color": "#FFD84D"
+     },
+     {
+      "name": "반장",
+      "color": "#8FD3FF",
+      "mood": "think"
+     }
+    ],
+    "steps": [
+     0,
+     0,
+     "j.어머니가"
+    ],
+    "sign": "쉿! 자습 중"
+   }
+  },
+  {
+   "from": "k",
+   "label": "friends",
+   "gfx": {
+    "type": "scene",
+    "bg": "home",
+    "place": "📍 엄마들 모임",
+    "prop": "☕",
+    "chars": [
+     {
+      "name": "엄마",
+      "color": "#FF9EBB",
+      "mood": "laugh"
+     },
+     {
+      "name": "반장 엄마",
+      "color": "#C9A7FF",
+      "mood": "laugh"
+     }
+    ]
+   }
+  },
+  {
+   "from": "l",
+   "label": "texts",
+   "gfx": {
+    "type": "scene",
+    "bg": "night",
+    "prop": "📱",
+    "chars": [
+     {
+      "name": "엄마",
+      "color": "#FF9EBB",
+      "mood": "smug"
+     }
+    ],
+    "big": "매일 밤 [문자]",
+    "steps": [
+     0,
+     0.1,
+     9,
+     "l.문자를"
+    ]
+   }
+  },
+  {
+   "from": "m",
+   "label": "evening",
+   "gfx": {
+    "type": "scene",
+    "bg": "home",
+    "card": "그날 저녁...",
+    "chars": []
+   }
+  },
+  {
+   "from": "n",
+   "label": "caught",
+   "gfx": {
+    "type": "scene",
+    "bg": "home",
+    "place": "📍 우리 집",
+    "say": {
+     "who": 0,
+     "text": "딸~ 이 쪽지, [반장 엄마가] 주더라?"
+    },
+    "prop": "💌",
+    "chars": [
+     {
+      "name": "엄마",
+      "color": "#FF9EBB",
+      "mood": "smug"
+     },
+     {
+      "name": "나",
+      "mood": "shock",
+      "to": "cry",
+      "color": "#FFD84D"
+     }
+    ],
+    "steps": [
+     0,
+     0.1,
+     "n.주더라"
+    ]
+   }
+  }
+ ]
+}

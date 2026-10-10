@@ -1,0 +1,26 @@
+{
+ "title": ["신입이 매일 아침 팀장님", "책상에 사탕을 두는 이유"],
+ "voices": {
+  "nar": {"edge": "ko-KR-HyunsuMultilingualNeural", "rate": "+14%"},
+  "me": {"edge": "ko-KR-HyunsuMultilingualNeural", "rate": "+15%", "pitch": "+8Hz"},
+  "new": {"edge": "ko-KR-SunHiNeural", "rate": "+10%", "pitch": "+6Hz"},
+  "sen": {"edge": "ko-KR-InJoonNeural", "rate": "+10%", "pitch": "+0Hz"},
+  "co": {"edge": "ko-KR-SunHiNeural", "rate": "+14%", "pitch": "-6Hz"},
+  "lead": {"edge": "ko-KR-InJoonNeural", "rate": "+5%", "pitch": "-8Hz"}
+ },
+ "tail": 0.5,
+ "lines": [
+  {"id": "a", "voice": "nar", "gap": 0.05, "say": "우리 팀 신입은 매일 아침, 팀장님 책상에 사탕을 하나 둔다.", "cap": ["우리 팀 신입은 / 매일 아침 팀장님 책상에 / [사탕]을 하나 둔다"]},
+  {"id": "b", "voice": "nar", "gap": 0.1, "say": "아무도 출근 안 한 시간에, 몰래.", "cap": ["아무도 출근 안 한 시간에 / [몰래]"]},
+  {"id": "c", "voice": "nar", "gap": 0.15, "say": "당연히 팀에 소문이 돌았다.", "cap": ["당연히 팀에 / [소문]이 돌았다"]},
+  {"id": "d", "voice": "sen", "gap": 0.1, "say": "저거 완전 아부하는 거지.", "cap": [""]},
+  {"id": "e", "voice": "co", "gap": 0.1, "say": "아니야, 팀장님 좋아하는 거야.", "cap": [""]},
+  {"id": "f", "voice": "nar", "gap": 0.15, "say": "궁금해서 아침 여덟 시에 일찍 나가 봤다.", "cap": ["궁금해서 / 아침 [8시]에 / 일찍 나가 봤다"]},
+  {"id": "g", "voice": "me", "gap": 0.1, "say": "저기... 사탕은 왜 두는 거야?", "cap": [""]},
+  {"id": "h", "voice": "new", "gap": 0.15, "say": "팀장님은 배고프시면, 회의가 길어지시더라고요.", "cap": [""]},
+  {"id": "i", "voice": "nar", "gap": 0.15, "say": "알고 보니 두 시간짜리 회의는, 전부 팀장님이 아침을 거른 날이었다.", "cap": ["알고 보니 / [2시간]짜리 회의는 / 전부 팀장님이 / [아침을 거른 날]이었다"]},
+  {"id": "j", "voice": "nar", "gap": 0.15, "say": "그날 이후, 우리 회의는 딱 십 분.", "cap": ["그날 이후 / 우리 회의는 딱 [10분]"]},
+  {"id": "k", "voice": "lead", "gap": 0.1, "say": "자, 오늘 회의 끝!", "cap": [""]},
+  {"id": "l", "voice": "nar", "gap": 0.15, "say": "이제 사탕값은 팀 전체가 나눠 낸다.", "cap": ["이제 [사탕값]은 / [팀 전체]가 나눠 낸다"]}
+ ]
+}

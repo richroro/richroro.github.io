@@ -1,0 +1,426 @@
+{
+ "credit": "",
+ "titleStyle": "band",
+ "captionY": 1650,
+ "sources": {},
+ "music": {
+  "file": "music/scheming_weasel.mp3",
+  "gain": 0.2,
+  "start": 0
+ },
+ "sfx": [
+  [
+   "b",
+   "pop",
+   0.3
+  ],
+  [
+   "c",
+   "boing",
+   0.3
+  ],
+  [
+   "e",
+   "whoosh",
+   0.3
+  ],
+  [
+   "e.할아버지",
+   "heartbeat",
+   0.35
+  ],
+  [
+   "e.우유랑",
+   "pop",
+   0.3
+  ],
+  [
+   "g.나가",
+   "whoosh_dn",
+   0.3
+  ],
+  [
+   "h.똑같이",
+   "k_glitch_002",
+   0.25
+  ],
+  [
+   "i",
+   "heartbeat",
+   0.35
+  ],
+  [
+   "j",
+   "whoosh",
+   0.3
+  ],
+  [
+   "k",
+   "bubble",
+   0.3
+  ],
+  [
+   "l.쪽지",
+   "pop_hi",
+   0.3
+  ],
+  [
+   "n.아버지",
+   "k_error_003",
+   0.3
+  ],
+  [
+   "o.시급이",
+   "tada",
+   0.35
+  ]
+ ],
+ "clips": [
+  {
+   "from": "a",
+   "label": "post",
+   "gfx": {
+    "type": "post",
+    "title": "새벽 3시 할아버지한테는 [돈 받지 말래]",
+    "body": [
+     "편의점 야간 알바 첫날",
+     "사장님의 [이상한 규칙]"
+    ],
+    "steps": [
+     "a.야간",
+     "a.말했다"
+    ]
+   }
+  },
+  {
+   "from": "b",
+   "label": "rule",
+   "gfx": {
+    "type": "scene",
+    "chars": [
+     {
+      "name": "나",
+      "mood": "neutral"
+     },
+     {
+      "name": "사장님",
+      "mood": "think",
+      "color": "#C9A7FF"
+     }
+    ],
+    "place": "📍 편의점",
+    "say": {
+     "who": 1,
+     "text": "새⁠벽 3⁠시 할⁠아⁠버⁠지⁠한⁠테⁠는 [⁠돈 받⁠지 마⁠.⁠]"
+    },
+    "bg": "store"
+   }
+  },
+  {
+   "from": "c",
+   "label": "why",
+   "gfx": {
+    "type": "scene",
+    "chars": [
+     {
+      "name": "나",
+      "mood": "shock"
+     },
+     {
+      "name": "사장님",
+      "mood": "neutral",
+      "color": "#C9A7FF"
+     }
+    ],
+    "say": {
+     "who": 0,
+     "text": "네⁠? [⁠왜⁠요⁠?⁠]"
+    },
+    "zoom": 1.08,
+    "focus": 0,
+    "bg": "store",
+    "sign": "24시 편의점"
+   }
+  },
+  {
+   "from": "e",
+   "label": "3am",
+   "gfx": {
+    "type": "scene",
+    "chars": [],
+    "card": "새벽 [3:00]",
+    "bg": "night"
+   }
+  },
+  {
+   "from": "e.할아버지",
+   "label": "enter",
+   "gfx": {
+    "type": "scene",
+    "chars": [
+     {
+      "name": "나",
+      "mood": "neutral",
+      "to": "shock"
+     },
+     {
+      "name": "할아버지",
+      "mood": "neutral",
+      "color": "#E6D5B8"
+     }
+    ],
+    "prop": "🥛🍞",
+    "steps": [
+     0,
+     "e.우유랑",
+     "e.우유랑"
+    ],
+    "bg": "store",
+    "sign": "24시 편의점"
+   }
+  },
+  {
+   "from": "g",
+   "label": "leave",
+   "gfx": {
+    "type": "scene",
+    "chars": [
+     {
+      "name": "나",
+      "mood": "shock"
+     },
+     {
+      "name": "할아버지",
+      "mood": "neutral",
+      "color": "#E6D5B8",
+      "flip": true,
+      "x": 0.8
+     }
+    ],
+    "prop": "🚪",
+    "propX": 0.52,
+    "steps": [
+     0,
+     "g.나가"
+    ],
+    "bg": "store",
+    "sign": "24시 편의점"
+   }
+  },
+  {
+   "from": "h",
+   "label": "again",
+   "gfx": {
+    "type": "scene",
+    "chars": [
+     {
+      "name": "나",
+      "mood": "sick"
+     },
+     {
+      "name": "할아버지",
+      "mood": "neutral",
+      "color": "#E6D5B8"
+     }
+    ],
+    "prop": "🥛🍞",
+    "big": "매일 [3:00]",
+    "place": "📍 매일 새벽",
+    "steps": [
+     0,
+     0.1,
+     9,
+     "h.똑같이"
+    ],
+    "bg": "store"
+   }
+  },
+  {
+   "from": "i",
+   "label": "ghost",
+   "gfx": {
+    "type": "scene",
+    "chars": [
+     {
+      "name": "나",
+      "mood": "sick"
+     }
+    ],
+    "prop": "👻",
+    "say": {
+     "who": 0,
+     "text": "혹⁠시⁠.⁠.⁠. [⁠사⁠람 아⁠닌 거⁠] 아⁠니⁠야⁠?"
+    },
+    "zoom": 1.1,
+    "focus": 0,
+    "steps": [
+     0,
+     "i.사람"
+    ],
+    "bg": "night"
+   }
+  },
+  {
+   "from": "j",
+   "label": "month",
+   "gfx": {
+    "type": "scene",
+    "chars": [],
+    "card": "한 달 뒤...",
+    "bg": "store",
+    "sign": "24시 편의점"
+   }
+  },
+  {
+   "from": "k",
+   "label": "envelope",
+   "gfx": {
+    "type": "scene",
+    "chars": [
+     {
+      "name": "나",
+      "mood": "shock"
+     },
+     {
+      "name": "할아버지",
+      "mood": "happy",
+      "color": "#E6D5B8"
+     }
+    ],
+    "place": "📍 마지막 날",
+    "prop": "✉️",
+    "say": {
+     "who": 1,
+     "text": "그⁠동⁠안 [⁠고⁠마⁠웠⁠네⁠.⁠]"
+    },
+    "steps": [
+     0,
+     0.4
+    ],
+    "bg": "store"
+   }
+  },
+  {
+   "from": "l",
+   "label": "inside",
+   "gfx": {
+    "type": "scene",
+    "chars": [
+     {
+      "name": "나",
+      "mood": "shock"
+     }
+    ],
+    "prop": "💵📝",
+    "steps": [
+     0,
+     "l.우유"
+    ],
+    "bg": "store",
+    "sign": "24시 편의점"
+   }
+  },
+  {
+   "from": "m",
+   "label": "note",
+   "gfx": {
+    "type": "scene",
+    "chars": [
+     {
+      "name": "나",
+      "mood": "cry"
+     },
+     {
+      "name": "할아버지",
+      "mood": "happy",
+      "color": "#E6D5B8"
+     }
+    ],
+    "prop": "📝",
+    "say": {
+     "who": 1,
+     "text": "우⁠리 아⁠들 가⁠게⁠, [⁠잘 지⁠켜 줘⁠서⁠] 고⁠맙⁠네⁠."
+    },
+    "bg": "store",
+    "sign": "24시 편의점"
+   }
+  },
+  {
+   "from": "n",
+   "label": "father",
+   "gfx": {
+    "type": "scene",
+    "chars": [
+     {
+      "name": "할아버지",
+      "mood": "smug",
+      "color": "#E6D5B8"
+     },
+     {
+      "name": "사장님",
+      "mood": "laugh",
+      "color": "#C9A7FF"
+     }
+    ],
+    "big": "[아버지]?!",
+    "steps": [
+     0,
+     0,
+     9,
+     "n.아버지"
+    ],
+    "bg": "store",
+    "sign": "24시 편의점"
+   }
+  },
+  {
+   "from": "n.알바생이",
+   "label": "check",
+   "gfx": {
+    "type": "scene",
+    "chars": [
+     {
+      "name": "할아버지",
+      "mood": "smug",
+      "color": "#E6D5B8"
+     }
+    ],
+    "prop": "👀",
+    "place": "📍 매일 새벽 3시",
+    "steps": [
+     0,
+     "n.몰래"
+    ],
+    "bg": "store"
+   }
+  },
+  {
+   "from": "o",
+   "label": "raise",
+   "gfx": {
+    "type": "scene",
+    "chars": [
+     {
+      "name": "나",
+      "mood": "love"
+     },
+     {
+      "name": "사장님",
+      "mood": "happy",
+      "color": "#C9A7FF"
+     }
+    ],
+    "prop": "💰",
+    "big": "시급 [UP]",
+    "steps": [
+     0,
+     0.1,
+     9,
+     "o.올랐다"
+    ],
+    "bg": "store",
+    "sign": "24시 편의점"
+   }
+  }
+ ]
+}

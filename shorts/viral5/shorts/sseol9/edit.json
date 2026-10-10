@@ -1,0 +1,386 @@
+{
+ "credit": "",
+ "titleStyle": "band",
+ "captionY": 1650,
+ "sources": {},
+ "music": {
+  "file": "music/monkeys_spinning_monkeys.mp3",
+  "gain": 0.2,
+  "start": 0
+ },
+ "sfx": [
+  [
+   "b",
+   "pop",
+   0.3
+  ],
+  [
+   "b.어제는",
+   "pop",
+   0.3
+  ],
+  [
+   "b.그저께는",
+   "pop_hi",
+   0.3
+  ],
+  [
+   "c",
+   "k_question_001",
+   0.3
+  ],
+  [
+   "d.숨어서",
+   "whoosh_dn",
+   0.3
+  ],
+  [
+   "e",
+   "whoosh",
+   0.3
+  ],
+  [
+   "e.옆집",
+   "heartbeat",
+   0.35
+  ],
+  [
+   "f",
+   "boing",
+   0.35
+  ],
+  [
+   "g",
+   "whoosh",
+   0.3
+  ],
+  [
+   "h.오",
+   "pop_hi",
+   0.3
+  ],
+  [
+   "i",
+   "bubble",
+   0.3
+  ],
+  [
+   "k.더",
+   "boing",
+   0.35
+  ],
+  [
+   "l.할머니",
+   "tada",
+   0.35
+  ]
+ ],
+ "clips": [
+  {
+   "from": "a",
+   "label": "post",
+   "gfx": {
+    "type": "post",
+    "title": "매일 저녁 우리 집 문고리에 [반찬]이 걸려 있음",
+    "body": [
+     "누가 거는지 [모름]",
+     "쪽지도 없음"
+    ],
+    "steps": [
+     "a.매일",
+     "a.반찬이"
+    ]
+   }
+  },
+  {
+   "from": "b",
+   "label": "fish",
+   "gfx": {
+    "type": "scene",
+    "chars": [
+     {
+      "name": "나",
+      "mood": "happy"
+     }
+    ],
+    "place": "📍 우리 집 문 앞",
+    "prop": "🐟",
+    "steps": [
+     0,
+     0.05
+    ],
+    "bg": "linear-gradient(180deg, #efe9de 0%, #ddd3c3 100%)"
+   }
+  },
+  {
+   "from": "b.어제는",
+   "label": "kimchi",
+   "gfx": {
+    "type": "scene",
+    "chars": [
+     {
+      "name": "나",
+      "mood": "happy"
+     }
+    ],
+    "prop": "🥬",
+    "steps": [
+     0,
+     0.05
+    ],
+    "bg": "linear-gradient(180deg, #efe9de 0%, #ddd3c3 100%)"
+   }
+  },
+  {
+   "from": "b.그저께는",
+   "label": "beef",
+   "gfx": {
+    "type": "scene",
+    "chars": [
+     {
+      "name": "나",
+      "mood": "love"
+     }
+    ],
+    "prop": "🥩",
+    "steps": [
+     0,
+     0.05
+    ],
+    "bg": "linear-gradient(180deg, #efe9de 0%, #ddd3c3 100%)"
+   }
+  },
+  {
+   "from": "c",
+   "label": "who",
+   "gfx": {
+    "type": "scene",
+    "chars": [
+     {
+      "name": "나",
+      "mood": "think"
+     }
+    ],
+    "prop": "🛍️",
+    "say": {
+     "who": 0,
+     "text": "이거... [누가] 주는 거지?"
+    },
+    "bg": "linear-gradient(180deg, #efe9de 0%, #ddd3c3 100%)"
+   }
+  },
+  {
+   "from": "d",
+   "label": "hide",
+   "gfx": {
+    "type": "scene",
+    "chars": [
+     {
+      "name": "나",
+      "mood": "shy",
+      "x": 0.3
+     }
+    ],
+    "prop": "🚪",
+    "propX": 0.7,
+    "place": "📍 문 뒤",
+    "bg": "linear-gradient(180deg, #efe9de 0%, #ddd3c3 100%)"
+   }
+  },
+  {
+   "from": "e",
+   "label": "6pm",
+   "gfx": {
+    "type": "scene",
+    "chars": [],
+    "card": "저녁 [6:00]",
+    "bg": "linear-gradient(180deg, #efe9de 0%, #ddd3c3 100%)"
+   }
+  },
+  {
+   "from": "e.옆집",
+   "label": "sneak",
+   "gfx": {
+    "type": "scene",
+    "chars": [
+     {
+      "name": "나",
+      "mood": "shock"
+     },
+     {
+      "name": "할머니",
+      "mood": "neutral",
+      "color": "#F4C7D6"
+     }
+    ],
+    "prop": "🛍️",
+    "steps": [
+     0,
+     "e.살금살금"
+    ],
+    "bg": "linear-gradient(180deg, #efe9de 0%, #ddd3c3 100%)"
+   }
+  },
+  {
+   "from": "f",
+   "label": "caught",
+   "gfx": {
+    "type": "scene",
+    "chars": [
+     {
+      "name": "나",
+      "mood": "shock"
+     },
+     {
+      "name": "할머니",
+      "mood": "shy",
+      "color": "#F4C7D6"
+     }
+    ],
+    "say": {
+     "who": 1,
+     "text": "아이고, [들켰네.]"
+    },
+    "zoom": 1.08,
+    "focus": 1,
+    "bg": "linear-gradient(180deg, #efe9de 0%, #ddd3c3 100%)"
+   }
+  },
+  {
+   "from": "g",
+   "label": "3y",
+   "gfx": {
+    "type": "scene",
+    "chars": [],
+    "card": "3년 전...",
+    "bg": "linear-gradient(180deg, #efe9de 0%, #ddd3c3 100%)"
+   }
+  },
+  {
+   "from": "h",
+   "label": "rice",
+   "gfx": {
+    "type": "scene",
+    "chars": [
+     {
+      "name": "나",
+      "mood": "sick"
+     },
+     {
+      "name": "할머니",
+      "mood": "happy",
+      "color": "#F4C7D6"
+     }
+    ],
+    "prop": "🌾",
+    "big": "계단 [5층]",
+    "place": "📍 엘리베이터 고장",
+    "steps": [
+     0,
+     0.1,
+     9,
+     "h.오"
+    ],
+    "bg": "linear-gradient(180deg, #efe9de 0%, #ddd3c3 100%)"
+   }
+  },
+  {
+   "from": "i",
+   "label": "repay",
+   "gfx": {
+    "type": "scene",
+    "chars": [
+     {
+      "name": "나",
+      "mood": "cry"
+     },
+     {
+      "name": "할머니",
+      "mood": "happy",
+      "color": "#F4C7D6"
+     }
+    ],
+    "say": {
+     "who": 1,
+     "text": "그때 고마워서, [매일 갚는 거야.]"
+    },
+    "bg": "linear-gradient(180deg, #efe9de 0%, #ddd3c3 100%)"
+   }
+  },
+  {
+   "from": "j",
+   "label": "return",
+   "gfx": {
+    "type": "scene",
+    "chars": [
+     {
+      "name": "나",
+      "mood": "happy"
+     },
+     {
+      "name": "할머니",
+      "mood": "neutral",
+      "color": "#F4C7D6"
+     }
+    ],
+    "prop": "🍱",
+    "place": "📍 옆집",
+    "steps": [
+     0,
+     "j.반찬통을"
+    ],
+    "bg": "linear-gradient(180deg, #efe9de 0%, #ddd3c3 100%)"
+   }
+  },
+  {
+   "from": "k",
+   "label": "more",
+   "gfx": {
+    "type": "scene",
+    "chars": [
+     {
+      "name": "나",
+      "mood": "shock"
+     },
+     {
+      "name": "할머니",
+      "mood": "laugh",
+      "color": "#F4C7D6"
+     }
+    ],
+    "prop": "🍱🍱🍱",
+    "big": "[더 많이]",
+    "steps": [
+     0,
+     0,
+     9,
+     "k.더"
+    ],
+    "bg": "linear-gradient(180deg, #efe9de 0%, #ddd3c3 100%)"
+   }
+  },
+  {
+   "from": "l",
+   "label": "fridge",
+   "gfx": {
+    "type": "scene",
+    "chars": [
+     {
+      "name": "나",
+      "mood": "laugh"
+     }
+    ],
+    "place": "📍 우리 집",
+    "prop": "🍱",
+    "big": "냉장고 [절반]",
+    "steps": [
+     0,
+     0.1,
+     9,
+     "l.할머니"
+    ],
+    "bg": "home"
+   }
+  }
+ ]
+}

@@ -1,0 +1,334 @@
+{
+ "credit": "",
+ "titleStyle": "band",
+ "captionY": 1650,
+ "sources": {},
+ "music": {
+  "file": "music/hyperfun.mp3",
+  "gain": 0.2,
+  "start": 0
+ },
+ "sfx": [
+  [
+   "b.고양이",
+   "pop",
+   0.3
+  ],
+  [
+   "c.노란",
+   "pop",
+   0.3
+  ],
+  [
+   "d.빗속을",
+   "pop",
+   0.3
+  ],
+  [
+   "e.만화처럼",
+   "ding",
+   0.3
+  ],
+  [
+   "f",
+   "k_question_001",
+   0.3
+  ],
+  [
+   "g",
+   "bubble",
+   0.3
+  ],
+  [
+   "g2.노란",
+   "pop",
+   0.3
+  ],
+  [
+   "h.비",
+   "whoosh_dn",
+   0.3
+  ],
+  [
+   "i",
+   "whoosh",
+   0.3
+  ],
+  [
+   "j.도장판을",
+   "pop_hi",
+   0.35
+  ],
+  [
+   "k.무료예요",
+   "tada",
+   0.35
+  ]
+ ],
+ "clips": [
+  {
+   "from": "a",
+   "label": "post",
+   "gfx": {
+    "type": "post",
+    "title": "카페 사장님이 [내 컵에만] 그림을 그려 줌",
+    "body": [
+     "컵 홀더에 갈 때마다",
+     "[다른 그림]이 있음"
+    ],
+    "steps": [
+     "a.카페",
+     "a.그림을"
+    ]
+   }
+  },
+  {
+   "from": "b",
+   "label": "cat1",
+   "gfx": {
+    "type": "scene",
+    "chars": [
+     {
+      "name": "나",
+      "mood": "happy"
+     }
+    ],
+    "place": "📍 단골 카페",
+    "prop": "☕🐱",
+    "steps": [
+     0,
+     "b.고양이"
+    ],
+    "bg": "linear-gradient(180deg, #fbe7cf 0%, #f2cfa6 100%)"
+   }
+  },
+  {
+   "from": "c",
+   "label": "cat2",
+   "gfx": {
+    "type": "scene",
+    "chars": [
+     {
+      "name": "나",
+      "mood": "happy"
+     }
+    ],
+    "prop": "🐱☂️",
+    "steps": [
+     0,
+     "c.노란"
+    ],
+    "bg": "linear-gradient(180deg, #fbe7cf 0%, #f2cfa6 100%)"
+   }
+  },
+  {
+   "from": "d",
+   "label": "cat3",
+   "gfx": {
+    "type": "scene",
+    "chars": [
+     {
+      "name": "나",
+      "mood": "think"
+     }
+    ],
+    "prop": "🐱🌧️",
+    "steps": [
+     0,
+     "d.빗속을"
+    ],
+    "bg": "linear-gradient(180deg, #fbe7cf 0%, #f2cfa6 100%)"
+   }
+  },
+  {
+   "from": "e",
+   "label": "comic",
+   "gfx": {
+    "type": "scene",
+    "chars": [
+     {
+      "name": "나",
+      "mood": "love"
+     },
+     {
+      "name": "사장님",
+      "mood": "smug",
+      "color": "#C9A7FF"
+     }
+    ],
+    "prop": "☕",
+    "big": "[연재] 중",
+    "steps": [
+     0,
+     0,
+     9,
+     "e.만화처럼"
+    ],
+    "bg": "linear-gradient(180deg, #fbe7cf 0%, #f2cfa6 100%)"
+   }
+  },
+  {
+   "from": "f",
+   "label": "who",
+   "gfx": {
+    "type": "scene",
+    "chars": [
+     {
+      "name": "나",
+      "mood": "think"
+     },
+     {
+      "name": "사장님",
+      "mood": "neutral",
+      "color": "#C9A7FF"
+     }
+    ],
+    "say": {
+     "who": 0,
+     "text": "근데 이 고양이... [누구지?]"
+    },
+    "bg": "linear-gradient(180deg, #fbe7cf 0%, #f2cfa6 100%)"
+   }
+  },
+  {
+   "from": "g",
+   "label": "you",
+   "gfx": {
+    "type": "scene",
+    "chars": [
+     {
+      "name": "나",
+      "mood": "neutral",
+      "to": "shock"
+     },
+     {
+      "name": "사장님",
+      "mood": "smug",
+      "color": "#C9A7FF"
+     }
+    ],
+    "say": {
+     "who": 1,
+     "text": "[손님이요.]"
+    },
+    "zoom": 1.08,
+    "focus": 1,
+    "steps": [
+     0,
+     0,
+     "g@end"
+    ],
+    "bg": "linear-gradient(180deg, #fbe7cf 0%, #f2cfa6 100%)"
+   }
+  },
+  {
+   "from": "g2",
+   "label": "umbrella",
+   "gfx": {
+    "type": "scene",
+    "chars": [
+     {
+      "name": "나",
+      "mood": "shock"
+     },
+     {
+      "name": "사장님",
+      "mood": "smug",
+      "color": "#C9A7FF"
+     }
+    ],
+    "prop": "☂️",
+    "say": {
+     "who": 1,
+     "text": "비 오는 날만 [노란 우산] 쓰고 오시잖아요."
+    },
+    "steps": [
+     0,
+     "g2.노란"
+    ],
+    "bg": "linear-gradient(180deg, #fbe7cf 0%, #f2cfa6 100%)"
+   }
+  },
+  {
+   "from": "h",
+   "label": "rain",
+   "gfx": {
+    "type": "scene",
+    "chars": [
+     {
+      "name": "나",
+      "mood": "shock",
+      "hat": "☂️"
+     }
+    ],
+    "place": "📍 비 오는 날",
+    "prop": "🌧️",
+    "steps": [
+     0,
+     0.1
+    ],
+    "bg": "linear-gradient(180deg, #8d9aab 0%, #c6cfd9 100%)"
+   }
+  },
+  {
+   "from": "i",
+   "label": "final",
+   "gfx": {
+    "type": "scene",
+    "chars": [],
+    "card": "마지막 화",
+    "bg": "linear-gradient(180deg, #fbe7cf 0%, #f2cfa6 100%)"
+   }
+  },
+  {
+   "from": "j",
+   "label": "stamps",
+   "gfx": {
+    "type": "scene",
+    "chars": [
+     {
+      "name": "나",
+      "mood": "think",
+      "to": "love"
+     },
+     {
+      "name": "사장님",
+      "mood": "smug",
+      "color": "#C9A7FF"
+     }
+    ],
+    "prop": "🐱🎫",
+    "steps": [
+     0,
+     "j.도장판을",
+     "j.도장판을"
+    ],
+    "bg": "linear-gradient(180deg, #fbe7cf 0%, #f2cfa6 100%)"
+   }
+  },
+  {
+   "from": "k",
+   "label": "free",
+   "gfx": {
+    "type": "scene",
+    "chars": [
+     {
+      "name": "나",
+      "mood": "love"
+     },
+     {
+      "name": "사장님",
+      "mood": "happy",
+      "color": "#C9A7FF"
+     }
+    ],
+    "prop": "☕",
+    "say": {
+     "who": 1,
+     "text": "단골 도장 다 모으셨어요. [오늘은 무료예요!]"
+    },
+    "bg": "linear-gradient(180deg, #fbe7cf 0%, #f2cfa6 100%)"
+   }
+  }
+ ]
+}
