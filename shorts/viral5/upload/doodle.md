@@ -17,7 +17,7 @@
 
 ▶ [채널명] 채널 구독: https://www.youtube.com/@[핸들]
 
-출처: 자료: 행정안전부 국가승강기정보센터(세계일보 2026-08-28) · 더팩트(2026-08 토론회) · SBS Biz(2026-09-23) · YTN(2026-04-23) · 사진: Pexels(SpotwizardLee, Orhan Pergel) · 그림·이야기·목소리 직접 제작 · 음악: "Sneaky Snitch" Kevin MacLeod (incompetech.com), CC BY 4.0 (creativecommons.org/licenses/by/4.0)
+출처: 자료: 행정안전부 국가승강기정보센터(세계일보 2026-08-28) · 더팩트(2026-08 토론회) · SBS Biz(2026-09-23) · YTN(2026-04-23) · 사진: Pexels(SpotwizardLee, Orhan Pergel) · 그림·이야기 직접 제작 · 목소리: AI 합성 음성 · 음악: "Sneaky Snitch" Kevin MacLeod (incompetech.com), CC BY 4.0 (creativecommons.org/licenses/by/4.0)
 
 #Shorts #에스컬레이터 #두줄서기 #한줄서기 #출근길 #논란 #짤툰 #낙서툰 #공감 #창작툰 #지하철
 ```
@@ -43,7 +43,7 @@
 
 ▶ [채널명] 채널 구독: https://www.youtube.com/@[핸들]
 
-출처: 사진: Pexels(Gizem Gökce, Tima Miroshnichenko) · 그림·이야기·목소리 직접 제작 · 음악: "Monkeys Spinning Monkeys" Kevin MacLeod (incompetech.com), CC BY 4.0 (creativecommons.org/licenses/by/4.0)
+출처: 사진: Pexels(Gizem Gökce, Tima Miroshnichenko) · 그림·이야기 직접 제작 · 목소리: AI 합성 음성 · 음악: "Monkeys Spinning Monkeys" Kevin MacLeod (incompetech.com), CC BY 4.0 (creativecommons.org/licenses/by/4.0)
 
 #Shorts #중고거래 #네고 #중고마켓 #짤툰 #낙서툰 #공감 #웃긴영상 #창작툰 #거래썰 #직장인공감
 ```
@@ -69,7 +69,7 @@
 
 ▶ [채널명] 채널 구독: https://www.youtube.com/@[핸들]
 
-출처: 사진: Pexels(Polina Tankilevitch, thAnh nguyễn, Max Vakhtbovych, cottonbro studio) · 그림·이야기·목소리 직접 제작 · 음악: "Hyperfun" Kevin MacLeod (incompetech.com), CC BY 4.0 (creativecommons.org/licenses/by/4.0)
+출처: 사진: Pexels(Polina Tankilevitch, thAnh nguyễn, Max Vakhtbovych, cottonbro studio) · 그림·이야기 직접 제작 · 목소리: AI 합성 음성 · 음악: "Hyperfun" Kevin MacLeod (incompetech.com), CC BY 4.0 (creativecommons.org/licenses/by/4.0)
 
 #Shorts #엄마 #냉장고 #김치 #엄마공감 #짤툰 #낙서툰 #공감 #웃긴영상 #창작툰 #가족
 ```
@@ -95,7 +95,7 @@
 
 ▶ [채널명] 채널 구독: https://www.youtube.com/@[핸들]
 
-출처: 자료: 서울특별시 교통 누리집 「교통법규 위반차량 시민신고제 운영 안내」(2026-03-12) · 경기일보(2023-08-02, 행정안전부) · 강동구청 보도자료(2019-08-13) · 사진: Pexels(Brett Sayles, Dương Huỳnh Trung) · 그림·이야기·목소리 직접 제작 · 음악: "Scheming Weasel" Kevin MacLeod (incompetech.com), CC BY 4.0 (creativecommons.org/licenses/by/4.0)
+출처: 자료: 서울특별시 교통 누리집 「교통법규 위반차량 시민신고제 운영 안내」(2026-03-12) · 경기일보(2023-08-02, 행정안전부) · 강동구청 보도자료(2019-08-13) · 사진: Pexels(Brett Sayles, Dương Huỳnh Trung) · 그림·이야기 직접 제작 · 목소리: AI 합성 음성 · 음악: "Scheming Weasel" Kevin MacLeod (incompetech.com), CC BY 4.0 (creativecommons.org/licenses/by/4.0)
 
 #Shorts #불법주차 #안전신문고 #소화전 #주민신고 #과태료 #짤툰 #낙서툰 #생활꿀팁 #창작툰 #아빠
 ```
@@ -121,7 +121,7 @@
 
 ▶ [채널명] 채널 구독: https://www.youtube.com/@[핸들]
 
-출처: 자료: 산업통상부·한국소비자원·국립소방연구원 보도자료(2025-09-04) · 사진: Pexels(Саша Алалыкин, Nikita Nikitin, Tim Mossholder) · 그림·이야기·목소리 직접 제작 · 음악: "Sneaky Snitch" Kevin MacLeod (incompetech.com), CC BY 4.0 (creativecommons.org/licenses/by/4.0)
+출처: 자료: 산업통상부·한국소비자원·국립소방연구원 보도자료(2025-09-04) · 사진: Pexels(Саша Алалыкин, Nikita Nikitin, Tim Mossholder) · 그림·이야기 직접 제작 · 목소리: AI 합성 음성 · 음악: "Sneaky Snitch" Kevin MacLeod (incompetech.com), CC BY 4.0 (creativecommons.org/licenses/by/4.0)
 
 #Shorts #멀티탭 #전기안전 #자취 #룸메이트 #짤툰 #낙서툰 #생활꿀팁 #공감 #웃긴영상 #창작툰
 ```
@@ -147,7 +147,7 @@
 
 ▶ [채널명] 채널 구독: https://www.youtube.com/@[핸들]
 
-출처: 사진: Pexels(Elina Volkova, Pramod Tiwari) · 그림·이야기·목소리 직접 제작 · 음악: "Scheming Weasel" Kevin MacLeod (incompetech.com), CC BY 4.0 (creativecommons.org/licenses/by/4.0)
+출처: 사진: Pexels(Elina Volkova, Pramod Tiwari) · 그림·이야기 직접 제작 · 목소리: AI 합성 음성 · 음악: "Scheming Weasel" Kevin MacLeod (incompetech.com), CC BY 4.0 (creativecommons.org/licenses/by/4.0)
 
 #Shorts #버스 #하차벨 #눈치게임 #대중교통 #짤툰 #낙서툰 #공감 #웃긴영상 #창작툰 #출근길
 ```
@@ -173,7 +173,7 @@
 
 ▶ [채널명] 채널 구독: https://www.youtube.com/@[핸들]
 
-출처: 사진: Pexels(Pew Nguyen, Arnie Chou, Jonathan Borba) · 그림·이야기·목소리 직접 제작 · 음악: "Sneaky Snitch" Kevin MacLeod (incompetech.com), CC BY 4.0 (creativecommons.org/licenses/by/4.0)
+출처: 사진: Pexels(Pew Nguyen, Arnie Chou, Jonathan Borba) · 그림·이야기 직접 제작 · 목소리: AI 합성 음성 · 음악: "Sneaky Snitch" Kevin MacLeod (incompetech.com), CC BY 4.0 (creativecommons.org/licenses/by/4.0)
 
 #Shorts #세탁소 #동네사장님 #단골 #기억력 #훈훈 #짤툰 #낙서툰 #감동 #창작툰 #일상툰
 ```
@@ -199,7 +199,7 @@
 
 ▶ [채널명] 채널 구독: https://www.youtube.com/@[핸들]
 
-출처: 자료: 식품의약품안전처(2019-08-02)·농림축산식품부(2019-02-21, 2022-01-20) 난각표시 안내 · 사진: Pexels(thAnh nguyễn, Marcello Sokal, Ben Molyneux, Alexas Fotos, Magda Ehlers, Klaus Nielsen) · 그림·이야기·목소리 직접 제작 · 음악: "Sneaky Snitch" Kevin MacLeod (incompetech.com), CC BY 4.0 (creativecommons.org/licenses/by/4.0)
+출처: 자료: 식품의약품안전처(2019-08-02)·농림축산식품부(2019-02-21, 2022-01-20) 난각표시 안내 · 사진: Pexels(thAnh nguyễn, Marcello Sokal, Ben Molyneux, Alexas Fotos, Magda Ehlers, Klaus Nielsen) · 그림·이야기 직접 제작 · 목소리: AI 합성 음성 · 음악: "Sneaky Snitch" Kevin MacLeod (incompetech.com), CC BY 4.0 (creativecommons.org/licenses/by/4.0)
 
 #Shorts #계란 #난각번호 #산란일 #사육환경 #생활꿀팁 #짤툰 #낙서툰 #엄마 #공감 #창작툰
 ```
@@ -225,7 +225,7 @@
 
 ▶ [채널명] 채널 구독: https://www.youtube.com/@[핸들]
 
-출처: 사진: Pexels(Hanna Pad, Jim) · 그림·이야기·목소리 직접 제작 · 음악: "Hustle" Kevin MacLeod (incompetech.com), CC BY 4.0 (creativecommons.org/licenses/by/4.0)
+출처: 사진: Pexels(Hanna Pad, Jim) · 그림·이야기 직접 제작 · 목소리: AI 합성 음성 · 음악: "Hustle" Kevin MacLeod (incompetech.com), CC BY 4.0 (creativecommons.org/licenses/by/4.0)
 
 #Shorts #동창회 #단톡방 #단톡 #반장 #공지 #짤툰 #낙서툰 #공감 #창작툰 #직장인공감
 ```
@@ -251,7 +251,7 @@
 
 ▶ [채널명] 채널 구독: https://www.youtube.com/@[핸들]
 
-출처: 사진: Pexels(Sander Dalhuisen, Gabriel, Arda Kaykısız, Pavel Danilyuk, Chevanon Photography) · 그림·이야기·목소리 직접 제작 · 음악: "Monkeys Spinning Monkeys" Kevin MacLeod (incompetech.com), CC BY 4.0 (creativecommons.org/licenses/by/4.0)
+출처: 사진: Pexels(Sander Dalhuisen, Gabriel, Arda Kaykısız, Pavel Danilyuk, Chevanon Photography) · 그림·이야기 직접 제작 · 목소리: AI 합성 음성 · 음악: "Monkeys Spinning Monkeys" Kevin MacLeod (incompetech.com), CC BY 4.0 (creativecommons.org/licenses/by/4.0)
 
 #Shorts #카페 #진동벨 #카페알바 #친구 #짤툰 #낙서툰 #공감 #웃긴영상 #창작툰 #일상툰
 ```
@@ -277,7 +277,7 @@
 
 ▶ [채널명] 채널 구독: https://www.youtube.com/@[핸들]
 
-출처: 자료: 국립국어원 우리말샘·표준국어대사전 · 사진: Pexels(Muneeb Babar, Junsu Park, Rüveyda Akkaya) · 그림·이야기·목소리 직접 제작 · 음악: "Monkeys Spinning Monkeys" Kevin MacLeod (incompetech.com), CC BY 4.0 (creativecommons.org/licenses/by/4.0)
+출처: 자료: 국립국어원 우리말샘·표준국어대사전 · 사진: Pexels(Muneeb Babar, Junsu Park, Rüveyda Akkaya) · 그림·이야기 직접 제작 · 목소리: AI 합성 음성 · 음악: "Monkeys Spinning Monkeys" Kevin MacLeod (incompetech.com), CC BY 4.0 (creativecommons.org/licenses/by/4.0)
 
 #Shorts #부산사투리 #경상도사투리 #사투리 #서울vs부산 #부산 #짤툰 #낙서툰 #공감 #창작툰 #국어
 ```
@@ -303,7 +303,7 @@
 
 ▶ [채널명] 채널 구독: https://www.youtube.com/@[핸들]
 
-출처: 자료: 충북 영동소방서·인천 남동소방서·인천 서부소방서 소화기 관리 안내 · 사진: Pexels(Jakub Zerdzicki, Mohsen Adelimoghaddam, Tibor Szabo) · 그림·이야기·목소리 직접 제작 · 음악: "Scheming Weasel" Kevin MacLeod (incompetech.com), CC BY 4.0 (creativecommons.org/licenses/by/4.0)
+출처: 자료: 충북 영동소방서·인천 남동소방서·인천 서부소방서 소화기 관리 안내 · 사진: Pexels(Jakub Zerdzicki, Mohsen Adelimoghaddam, Tibor Szabo) · 그림·이야기 직접 제작 · 목소리: AI 합성 음성 · 음악: "Scheming Weasel" Kevin MacLeod (incompetech.com), CC BY 4.0 (creativecommons.org/licenses/by/4.0)
 
 #Shorts #소화기 #화재안전 #압력계 #생활꿀팁 #아빠 #짤툰 #낙서툰 #공감 #웃긴영상 #창작툰
 ```
@@ -329,7 +329,7 @@
 
 ▶ [채널명] 채널 구독: https://www.youtube.com/@[핸들]
 
-출처: 사진: Pexels(El Jundi, Markus Winkler, Denniz Futalan, More Amore) · 그림·이야기·목소리 직접 제작 · 음악: "Sneaky Snitch" Kevin MacLeod (incompetech.com), CC BY 4.0 (creativecommons.org/licenses/by/4.0)
+출처: 사진: Pexels(El Jundi, Markus Winkler, Denniz Futalan, More Amore) · 그림·이야기 직접 제작 · 목소리: AI 합성 음성 · 음악: "Sneaky Snitch" Kevin MacLeod (incompetech.com), CC BY 4.0 (creativecommons.org/licenses/by/4.0)
 
 #Shorts #편의점 #알바 #새벽 #편의점알바 #짤툰 #낙서툰 #훈훈 #감동 #창작툰 #일상툰
 ```
@@ -355,7 +355,7 @@
 
 ▶ [채널명] 채널 구독: https://www.youtube.com/@[핸들]
 
-출처: 사진: Pexels(Budget Bizar, Kristina Chuprina) · 그림·이야기·목소리 직접 제작 · 음악: "Hyperfun" Kevin MacLeod (incompetech.com), CC BY 4.0 (creativecommons.org/licenses/by/4.0)
+출처: 사진: Pexels(Budget Bizar, Kristina Chuprina) · 그림·이야기 직접 제작 · 목소리: AI 합성 음성 · 음악: "Hyperfun" Kevin MacLeod (incompetech.com), CC BY 4.0 (creativecommons.org/licenses/by/4.0)
 
 #Shorts #기차 #의자젖히기 #기차매너 #논란 #여행 #짤툰 #낙서툰 #공감 #창작툰 #웃긴영상
 ```
@@ -381,7 +381,7 @@
 
 ▶ [채널명] 채널 구독: https://www.youtube.com/@[핸들]
 
-출처: 사진: Pexels(Hanna Pad, Cup of Couple, cottonbro studio, Letícia Alvares) · 그림·이야기·목소리 직접 제작 · 음악: "Hustle" Kevin MacLeod (incompetech.com), CC BY 4.0 (creativecommons.org/licenses/by/4.0)
+출처: 사진: Pexels(Hanna Pad, Cup of Couple, cottonbro studio, Letícia Alvares) · 그림·이야기 직접 제작 · 목소리: AI 합성 음성 · 음악: "Hustle" Kevin MacLeod (incompetech.com), CC BY 4.0 (creativecommons.org/licenses/by/4.0)
 
 #Shorts #회사생활 #넵 #단톡방 #직장인 #직장인공감 #짤툰 #낙서툰 #공감 #웃긴영상 #창작툰
 ```
@@ -407,7 +407,7 @@
 
 ▶ [채널명] 채널 구독: https://www.youtube.com/@[핸들]
 
-출처: 사진: Pexels(Jim, Cynthia Ortega Espinosa, Maria Orlova, Lio Photography) · 그림·이야기·목소리 직접 제작 · 음악: "Hyperfun" Kevin MacLeod (incompetech.com), CC BY 4.0 (creativecommons.org/licenses/by/4.0)
+출처: 사진: Pexels(Jim, Cynthia Ortega Espinosa, Maria Orlova, Lio Photography) · 그림·이야기 직접 제작 · 목소리: AI 합성 음성 · 음악: "Hyperfun" Kevin MacLeod (incompetech.com), CC BY 4.0 (creativecommons.org/licenses/by/4.0)
 
 #Shorts #식당 #여기요 #저기요 #외식 #짤툰 #낙서툰 #공감 #웃긴영상 #창작툰 #내향인
 ```

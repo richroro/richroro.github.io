@@ -27,7 +27,7 @@
 - `prep.py`: 위 키가 있을 때만 `info2_prep.extend()`를 부르는 2줄.
 - 나머지는 새 파일입니다: `src/lib/Info2.tsx`, `info2_prep.py`, `media/info2/*`.
 
-**다른 쇼츠는 그대로인지 확인했습니다.** origin을 합치기 전, 손대지 않은 v1 `issue1`을 훅이 없는 원래 `ClipShort.tsx`와 훅을 넣은 `ClipShort.tsx`로 각각 렌더해 비교했더니, 두 mp4가 바이트까지 같았습니다(`cmp` 동일, 프레임별 md5 동일). `qa_review.py`는 고치지 않았습니다.
+**다른 쇼츠는 그대로인지 확인했습니다.** origin을 합치기 전, 손대지 않은 v1 `issue1`을 훅이 없는 원래 `ClipShort.tsx`와 훅을 넣은 `ClipShort.tsx`로 각각 렌더해 비교했더니, 두 mp4가 바이트까지 같았습니다(`cmp` 동일, 프레임별 md5 동일). origin을 두 번 합친 뒤에도 같은 v1 `issue1`을 합친 `ClipShort.tsx`와 origin의 `ClipShort.tsx`로 렌더해 비교했고, 역시 바이트까지 같았습니다. `tsc`는 데이터 파일 외 오류가 없습니다. `qa_review.py`는 고치지 않았습니다.
 
 ### 만드는 순서
 
