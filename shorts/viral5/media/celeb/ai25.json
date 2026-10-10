@@ -1,0 +1,45 @@
+{
+ "id": "ceo4",
+ "committee": "Senate Commerce, Science & Transportation",
+ "hearing": "Winning the AI Race: Strengthening U.S. Capabilities in Computing and Innovation",
+ "date": "2025-05-08",
+ "source_page": "https://www.commerce.senate.gov/2025/5/winning-the-ai-race-strengthening-u-s-capabilities-in-computing-and-innovation_2",
+ "player": "https://www.senate.gov/isvp/?comm=commerce&filename=commerce050825",
+ "file_url": "https://www-senate-gov-media-srs.akamaized.net/hls/live/2036779/commerce/commerce050825/master.m3u8 (1280x720, with caption track)",
+ "stream_cut_s": [
+  11630,
+  11770
+ ],
+ "clip_note": "ai25.mp4 re-encoded from 0",
+ "used_in_clip_s": [
+  [
+   20.25,
+   30.38
+  ],
+  [
+   34.6,
+   47.3
+  ],
+  [
+   85.3,
+   89.7
+  ],
+  [
+   100.55,
+   107.2
+  ]
+ ],
+ "transcript": "https://www.govinfo.gov/content/pkg/CHRG-119shrg61426/html/CHRG-119shrg61426.htm (S. Hrg. 119-143)",
+ "speakers": [
+  "Sen. Ted Cruz (R-TX), Chairman",
+  "Sam Altman, CEO, OpenAI",
+  "Lisa Su, Chair & CEO, AMD"
+ ],
+ "credit": "미국 상원 (U.S. Senate)",
+ "side_fact": "Lisa Su and Jensen Huang are distant relatives: Su called them 'distant relatives' (CTA event 2020; Bloomberg interview 2024: 'we were really distant, so we didn't grow up together'), and an Nvidia spokesperson confirmed Huang is a distant cousin through his mother's side (Business Insider, AOL/Business Insider 2024).",
+ "file": "ai25.mp4",
+ "license": "Work of the United States Government, public domain (17 U.S.C. §105): the hearing was recorded by the U.S. Senate Recording Studio and streamed/archived through the Senate's own ISVP player (senate.gov/isvp) embedded on the committee's hearing page; the HLS stream is hosted on the Senate's Akamai account (www-senate-gov-media-srs / www-senate-gov-msl3archive). NOT C-SPAN footage (no C-SPAN bug; C-SPAN's own camera feed is not used).",
+ "use_restrictions": "Senate rules (S.Res.431, 99th Congress) bar use of Senate broadcast coverage for political or commercial-campaign purposes; use as news/commentary only, don't edit to misrepresent, don't imply endorsement by the Senate, the senators, the witnesses or their companies.",
+ "checked": "ASR: faster-whisper small.en + medium.en (and tiny.en for locating) against the official GPO transcript; Senate caption track where available",
+ "stream_cut_note": "stream_cut_s is the ffmpeg -ss/-t requested on the HLS master; a stream-copy seek lands on a segment boundary, so the clip's 0 s may be up to ~15 s off that stream time. Locate the exchange by the quoted words."
+}

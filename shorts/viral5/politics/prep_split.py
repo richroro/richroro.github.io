@@ -37,6 +37,7 @@ edit.json:
              and "broll": true (its src runs on the same timeline as the main clip, the B-roll picture over the same speech,
              so moving to or from it with no gap in time is not a cut and gets no flash)
              and "credit" (this stretch's own credit line, shown instead of the short's while it is on screen)
+             and "cutaway": true (a reaction picture, usually with "audio": 0 under a voice part in "music": no line is timed onto it)
   flash      false: plain hard cuts, no white flash at any cut (animal clip shorts)
 """
 import difflib, json, os, re, subprocess, sys
@@ -205,6 +206,7 @@ def main(sid):
     def out_t(t, src_name=None):
         for s, a in zip(ed["segments"], starts):
             if src_name is not None and s.get("src", ed["src"]) != src_name: continue
+            if s.get("cutaway"): continue  # a listener shot shown over other audio never places a line
             if s["in"] - 0.3 <= t <= s["out"] + 0.3: return a + (t - s["in"]) / s.get("speed", 1.0)
         return None
 

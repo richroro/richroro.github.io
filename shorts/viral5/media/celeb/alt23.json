@@ -1,0 +1,31 @@
+{
+ "id": "ceo2",
+ "committee": "Senate Judiciary Subcommittee on Privacy, Technology, and the Law",
+ "hearing": "Oversight of A.I.: Rules for Artificial Intelligence",
+ "date": "2023-05-16",
+ "source_page": "https://www.judiciary.senate.gov/committee-activity/hearings/oversight-of-ai-rules-for-artificial-intelligence",
+ "player": "https://www.senate.gov/isvp/?comm=judiciary&filename=judiciary051623",
+ "file_url": "https://www-senate-gov-media-srs.akamaized.net/hls/live/2036788/judiciary/judiciary051623/master.m3u8 (1280x720)",
+ "stream_cut_s": [
+  7090,
+  7160
+ ],
+ "clip_note": "alt23.mp4 re-encoded from 0",
+ "used_in_clip_s": [
+  [
+   2.2,
+   39.3
+  ]
+ ],
+ "transcript": "https://www.govinfo.gov/content/pkg/CHRG-118shrg52706/html/CHRG-118shrg52706.htm (S. Hrg. 118-37)",
+ "speakers": [
+  "Sen. John Kennedy (R-LA)",
+  "Sam Altman, CEO, OpenAI"
+ ],
+ "credit": "미국 상원 (U.S. Senate)",
+ "file": "alt23.mp4",
+ "license": "Work of the United States Government, public domain (17 U.S.C. §105): the hearing was recorded by the U.S. Senate Recording Studio and streamed/archived through the Senate's own ISVP player (senate.gov/isvp) embedded on the committee's hearing page; the HLS stream is hosted on the Senate's Akamai account (www-senate-gov-media-srs / www-senate-gov-msl3archive). NOT C-SPAN footage (no C-SPAN bug; C-SPAN's own camera feed is not used).",
+ "use_restrictions": "Senate rules (S.Res.431, 99th Congress) bar use of Senate broadcast coverage for political or commercial-campaign purposes; use as news/commentary only, don't edit to misrepresent, don't imply endorsement by the Senate, the senators, the witnesses or their companies.",
+ "checked": "ASR: faster-whisper small.en + medium.en (and tiny.en for locating) against the official GPO transcript; Senate caption track where available",
+ "stream_cut_note": "stream_cut_s is the ffmpeg -ss/-t requested on the HLS master; a stream-copy seek lands on a segment boundary, so the clip's 0 s may be up to ~15 s off that stream time. Locate the exchange by the quoted words."
+}
