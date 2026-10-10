@@ -1,218 +1,267 @@
 {
  "credit": "",
- "titleStyle": "band",
- "captionY": 1650,
- "sources": {},
+ "layout": "teuk",
+ "teuk": {
+  "bg": "#232a33",
+  "mascot": "#FFB36B"
+ },
+ "sources": {
+  "phone": {
+   "file": "phone.jpg",
+   "page": "https://commons.wikimedia.org/wiki/File:Smartphone_display_screen.jpg",
+   "file_url": "https://upload.wikimedia.org/wikipedia/commons/8/89/Smartphone_display_screen.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+   "license": "CC0",
+   "credit": "Smartphone display screen.jpg by Skitterphoto (CC0, http://creativecommons.org/publicdomain/zero/1.0/deed.en), via Wikimedia Commons",
+   "used_seconds": [
+    [
+     14.28,
+     16.64
+    ]
+   ]
+  }
+ },
  "music": {
   "file": "music/hyperfun.mp3",
-  "gain": 0.2,
+  "gain": 0.18,
   "start": 0
  },
  "sfx": [
   [
-   "c1",
-   "pop",
-   0.25
+   "a1",
+   "whoosh",
+   0.15
   ],
   [
-   "b1",
+   "a1b",
    "whoosh",
+   0.15
+  ],
+  [
+   "a2",
+   "whoosh",
+   0.15
+  ],
+  [
+   "c1",
+   "pop",
    0.22
+  ],
+  [
+   "a3",
+   "whoosh",
+   0.15
+  ],
+  [
+   "a4",
+   "whoosh",
+   0.15
+  ],
+  [
+   "a5",
+   "whoosh",
+   0.15
   ],
   [
    "c2",
    "pop",
-   0.25
-  ],
-  [
-   "b2",
-   "whoosh",
    0.22
   ],
   [
-   "b2.대답",
-   "boing",
-   0.3
+   "a6",
+   "pop_hi",
+   0.18
   ],
   [
-   "c3",
-   "pop",
-   0.25
-  ],
-  [
-   "b3",
+   "a6",
    "whoosh",
-   0.22
+   0.15
   ],
   [
-   "c4",
-   "pop",
-   0.25
-  ],
-  [
-   "b4",
+   "a8",
    "whoosh",
-   0.22
+   0.15
   ],
   [
-   "b4.후회",
-   "boing",
-   0.3
-  ],
-  [
-   "c5",
-   "pop",
-   0.25
-  ],
-  [
-   "b5",
+   "a9",
    "whoosh",
-   0.22
+   0.15
   ],
   [
-   "c6",
-   "pop",
-   0.25
-  ],
-  [
-   "b6",
+   "a7",
    "whoosh",
-   0.22
-  ],
-  [
-   "c7",
-   "pop",
-   0.25
-  ],
-  [
-   "b7",
-   "whoosh",
-   0.22
-  ],
-  [
-   "y",
-   "pop",
-   0.25
+   0.15
   ],
   [
    "z",
    "whoosh",
+   0.15
+  ],
+  [
+   "y",
+   "pop",
    0.22
   ],
   [
-   "z.몇",
-   "ding",
-   0.3
-  ],
-  [
-   "a",
-   "pop",
+   "a1",
+   "boing",
    0.25
   ],
   [
-   "a+0.2",
-   "pop_hi",
-   0.2
+   "y",
+   "boing",
+   0.25
   ],
   [
-   "a+0.4",
-   "pop",
-   0.2
+   "z",
+   "ding",
+   0.25
   ]
  ],
  "clips": [
   {
-   "from": "a",
-   "label": "hook",
+   "from": "a1",
+   "label": "a1",
    "gfx": {
-    "type": "scene",
-    "bg": "home",
-    "place": "💬 +300",
-    "chars": [
-     {
-      "name": "나",
-      "color": "#FFB36B",
-      "mood": "shock"
-     }
-    ],
-    "chat": {
-     "title": "우리 반 (28)",
-     "msgs": [
-      {
-       "name": "민지",
-       "text": "ㅋㅋㅋㅋㅋㅋ"
-      },
-      {
-       "name": "준호",
-       "text": "ㅋㅋㅋㅋㅋㅋㅋㅋ"
-      },
-      {
-       "name": "서연",
-       "text": "아 진짜 웃겨ㅋㅋ"
-      },
-      {
-       "name": "도윤",
-       "text": "ㅋㅋㅋㅋㅋㅋㅋ"
-      },
-      {
-       "name": "하은",
-       "text": "ㄹㅇㅋㅋㅋㅋ"
-      }
-     ]
-    },
+    "type": "face",
+    "mood": "smug",
+    "pos": "close",
+    "fx": "sparkle",
+    "prop": "📱",
+    "big": "몰래 읽기",
+    "propX": 0.82,
+    "propY": 0.72,
     "steps": [
+     0.9,
      0.05,
-     -1,
-     9,
-     -1,
-     -1,
-     -1,
-     -1,
-     0.2,
-     0.4
+     0.0
     ]
    }
   },
   {
-   "from": "b1",
-   "label": "beat1",
+   "from": "a1b",
+   "label": "a1b",
    "gfx": {
     "type": "scene",
-    "bg": "home",
-    "place": "🔕 알림 끔",
     "chars": [
      {
       "name": "나",
       "color": "#FFB36B",
-      "mood": "shy"
+      "mood": "smug"
+     }
+    ],
+    "chat": {
+     "title": "동아리 (12)",
+     "msgs": [
+      {
+       "name": "민지",
+       "text": "이번 주 회식 어때?"
+      },
+      {
+       "name": "준호",
+       "text": "난 좋아!"
+      },
+      {
+       "name": "지수",
+       "text": "누구 대답 좀 ㅋㅋ"
+      }
+     ]
+    },
+    "bg": "linear-gradient(180deg, #fff6e8 0%, #ffe9cf 100%)",
+    "steps": [
+     9,
+     9,
+     9,
+     9,
+     0.05,
+     0.35,
+     0.65
+    ]
+   }
+  },
+  {
+   "from": "a2",
+   "label": "a2",
+   "gfx": {
+    "type": "scene",
+    "chars": [
+     {
+      "name": "나",
+      "color": "#FFB36B",
+      "mood": "neutral",
+      "to": "sad"
      }
     ],
     "chat": {
      "title": "우리 반 (28)",
      "msgs": [
       {
-       "name": "민지",
-       "text": "내일 체육복 입고 와?"
-      },
-      {
-       "name": "준호",
-       "text": "ㅇㅇ"
-      },
-      {
-       "name": "서연",
-       "text": "나 몰랐어ㅋㅋ"
+       "text": "내일 몇 시에 만나?",
+       "me": true,
+       "unread": "5"
       }
      ]
     },
-    "say": {
-     "who": 0,
-     "text": "[읽기만] 할게…"
-    },
+    "bg": "linear-gradient(180deg, #fff6e8 0%, #ffe9cf 100%)",
     "steps": [
-     "c1",
-     0.1,
      9,
-     0.1,
+     9,
+     "a2.아무도",
+     9,
+     0.1
+    ]
+   }
+  },
+  {
+   "from": "c1",
+   "label": "c1",
+   "gfx": {
+    "type": "face",
+    "mood": "sad",
+    "pos": "right",
+    "fx": "gloom",
+    "steps": [
+     0.9,
+     0.05,
+     0.15
+    ]
+   }
+  },
+  {
+   "from": "a3",
+   "label": "a3",
+   "gfx": {
+    "type": "scene",
+    "chars": [
+     {
+      "name": "나",
+      "color": "#FFB36B",
+      "mood": "happy",
+      "to": "sad"
+     }
+    ],
+    "chat": {
+     "title": "친구들 (4)",
+     "msgs": [
+      {
+       "name": "민지",
+       "text": "언제 한번 보자!"
+      },
+      {
+       "name": "준호",
+       "text": "ㅇㅇ 꼭 보자"
+      },
+      {
+       "text": "좋아!",
+       "me": true
+      }
+     ]
+    },
+    "bg": "linear-gradient(180deg, #eef6ff 0%, #dbe9ff 100%)",
+    "steps": [
+     9,
+     9,
+     "a3.결국",
+     9,
      0.1,
      0.5,
      0.9
@@ -220,148 +269,29 @@
    }
   },
   {
-   "from": "b2",
-   "label": "beat2",
+   "from": "a4",
+   "label": "a4",
    "gfx": {
-    "type": "scene",
-    "bg": "home",
-    "big": "…",
-    "chars": [
-     {
-      "name": "나",
-      "color": "#FFB36B",
-      "mood": "think",
-      "to": "sad"
-     }
-    ],
-    "chat": {
-     "title": "우리 반 (28)",
-     "msgs": [
-      {
-       "text": "내일 준비물 뭐야?",
-       "me": true,
-       "unread": "1"
-      }
-     ]
-    },
-    "say": {
-     "who": 0,
-     "text": "다들 [읽었잖아]…"
-    },
+    "type": "face",
+    "mood": "shy",
+    "pos": "tilt",
+    "to": "shock",
+    "fx": "sweat",
+    "prop": "🌙",
+    "propX": 0.2,
+    "propY": 0.3,
     "steps": [
-     "c2",
-     0.1,
-     "c2",
-     "b2.대답",
-     0.1
+     "a4.아침에",
+     0.05,
+     0.15
     ]
    }
   },
   {
-   "from": "b3",
-   "label": "beat3",
+   "from": "a5",
+   "label": "a5",
    "gfx": {
     "type": "scene",
-    "bg": "home",
-    "chars": [
-     {
-      "name": "나",
-      "color": "#FFB36B",
-      "mood": "happy",
-      "to": "sad"
-     }
-    ],
-    "chat": {
-     "title": "친구들 (5)",
-     "msgs": [
-      {
-       "name": "민지",
-       "text": "다음 주에 보자!"
-      },
-      {
-       "name": "준호",
-       "text": "ㄱㄱ"
-      },
-      {
-       "text": "언제 돼?",
-       "me": true
-      },
-      {
-       "name": "서연",
-       "text": "난 다 돼"
-      },
-      {
-       "name": "도윤",
-       "text": "그럼 [다음에]~"
-      }
-     ]
-    },
-    "say": {
-     "who": 0,
-     "text": "또 [다음에]야?"
-    },
-    "steps": [
-     "c3",
-     0.1,
-     "c3",
-     0.1,
-     0.1,
-     0.45,
-     0.8,
-     1.15,
-     "b3.결국"
-    ]
-   }
-  },
-  {
-   "from": "b4",
-   "label": "beat4",
-   "gfx": {
-    "type": "scene",
-    "bg": "night",
-    "place": "📍 새벽 3시",
-    "big": "☀️ 아침",
-    "chars": [
-     {
-      "name": "나",
-      "color": "#FFB36B",
-      "mood": "love",
-      "to": "shock"
-     }
-    ],
-    "chat": {
-     "title": "친구들 (5)",
-     "msgs": [
-      {
-       "text": "얘들아…",
-       "me": true
-      },
-      {
-       "text": "너희가 있어서 [진짜 다행이야]",
-       "me": true
-      }
-     ]
-    },
-    "say": {
-     "who": 0,
-     "text": "으악, [내가 보냈어?]"
-    },
-    "steps": [
-     "c4",
-     0.1,
-     "b4.후회",
-     "b4.후회",
-     0.1,
-     0.5
-    ]
-   }
-  },
-  {
-   "from": "b5",
-   "label": "beat5",
-   "gfx": {
-    "type": "scene",
-    "bg": "home",
     "chars": [
      {
       "name": "나",
@@ -374,156 +304,156 @@
      "title": "우리 반 (28)",
      "msgs": [
       {
-       "text": "엄마 사랑해 💕",
-       "me": true
-      },
-      {
-       "name": "준호",
-       "text": "?"
-      },
-      {
-       "name": "민지",
-       "text": "ㅋㅋㅋㅋㅋㅋ"
-      },
-      {
-       "name": "서연",
-       "text": "나도 사랑해ㅋㅋ"
-      }
-     ]
-    },
-    "say": {
-     "who": 0,
-     "text": "잠깐, [여기 아니야!]"
-    },
-    "steps": [
-     "c5",
-     0.1,
-     "c5",
-     0.1,
-     0.1,
-     "b5.단톡방에",
-     "b5@end",
-     "c5"
-    ]
-   }
-  },
-  {
-   "from": "b6",
-   "label": "beat6",
-   "gfx": {
-    "type": "scene",
-    "bg": "home",
-    "chars": [
-     {
-      "name": "나",
-      "color": "#FFB36B",
-      "mood": "think",
-      "to": "love"
-     }
-    ],
-    "chat": {
-     "title": "친구들 (5)",
-     "msgs": [
-      {
-       "text": "나 오늘 생일인데…",
+       "text": "엄마 나 오늘 늦어❤️",
        "me": true,
-       "unread": "1"
-      },
-      {
-       "name": "민지",
-       "text": "헐 [생일 축하해]!!"
-      },
-      {
-       "name": "준호",
-       "text": "🎂🎂🎂"
+       "unread": "27"
       }
      ]
     },
-    "say": {
-     "who": 0,
-     "text": "[읽었다]!"
-    },
+    "bg": "linear-gradient(180deg, #fff6e8 0%, #ffe9cf 100%)",
     "steps": [
-     "c6",
-     0.1,
-     "c6",
-     0.1,
-     0.1,
-     "c6",
-     "c6+0.4"
+     9,
+     9,
+     "a5.단톡방에",
+     9,
+     0.2
     ]
    }
   },
   {
-   "from": "b7",
-   "label": "beat7",
+   "from": "c2",
+   "label": "c2",
+   "gfx": {
+    "type": "face",
+    "mood": "shock",
+    "pos": "close",
+    "fx": "lines",
+    "steps": [
+     0.9,
+     0.05,
+     0.15
+    ]
+   }
+  },
+  {
+   "from": "a6",
+   "label": "a6",
+   "src": "phone",
+   "gfx": {
+    "type": "photo",
+    "react": {
+     "mood": "think",
+     "side": "right"
+    },
+    "tag": "1 → ?",
+    "steps": [
+     0.12,
+     0.2,
+     0.25,
+     1000.0
+    ]
+   }
+  },
+  {
+   "from": "a8",
+   "label": "a8",
+   "gfx": {
+    "type": "face",
+    "mood": "cry",
+    "pos": "low",
+    "fx": "sweat",
+    "prop": "💬",
+    "propX": 0.8,
+    "propY": 0.3,
+    "steps": [
+     0.9,
+     0.05,
+     0.15
+    ]
+   }
+  },
+  {
+   "from": "a9",
+   "label": "a9",
    "gfx": {
     "type": "scene",
-    "bg": "night",
     "chars": [
      {
       "name": "나",
       "color": "#FFB36B",
-      "mood": "think",
-      "to": "happy"
+      "mood": "think"
      }
     ],
     "chat": {
-     "title": "우리 반 (28)",
+     "title": "친구들 (4)",
      "msgs": [
       {
-       "name": "도윤",
-       "text": "ㅋㅋㅋㅋㅋㅋ"
-      },
-      {
-       "name": "하은",
-       "text": "아 배아파ㅋㅋㅋ"
-      },
-      {
        "name": "민지",
+       "text": "ㅋ"
+      },
+      {
+       "name": "준호",
        "text": "ㅋㅋㅋㅋㅋㅋㅋ"
       }
      ]
     },
-    "say": {
-     "who": 0,
-     "text": "그래도 [재밌으니까]…"
-    },
+    "bg": "linear-gradient(180deg, #eef6ff 0%, #dbe9ff 100%)",
     "steps": [
-     "c7",
+     9,
+     9,
+     9,
+     9,
      0.1,
-     "c7",
-     0.1,
-     0.1,
-     "b7.고민만",
-     "c7"
+     0.6
+    ]
+   }
+  },
+  {
+   "from": "a7",
+   "label": "a7",
+   "gfx": {
+    "type": "face",
+    "mood": "shy",
+    "pos": "left",
+    "prop": "📱",
+    "propX": 0.8,
+    "propY": 0.35,
+    "steps": [
+     0.9,
+     0.05,
+     0.15
     ]
    }
   },
   {
    "from": "z",
-   "label": "end",
+   "label": "z",
    "gfx": {
-    "type": "scene",
-    "bg": "home",
-    "big": "[몇 개]?",
-    "chars": [
-     {
-      "name": "나",
-      "color": "#FFB36B",
-      "mood": "laugh"
-     }
-    ],
+    "type": "face",
+    "mood": "happy",
+    "pos": "low",
+    "fx": "sparkle",
     "steps": [
-     "y",
-     0.1,
-     9,
-     "z.몇"
-    ],
-    "say": {
-     "who": 0,
-     "text": "난 [7개] 다…ㅋㅋ"
-    }
+     0.9,
+     0.05,
+     0.15
+    ]
+   }
+  },
+  {
+   "from": "y",
+   "label": "y",
+   "gfx": {
+    "type": "face",
+    "mood": "laugh",
+    "pos": "right",
+    "fx": "lines",
+    "big": "99+",
+    "steps": [
+     0.9,
+     0.05,
+     0.0
+    ]
    }
   }
  ]

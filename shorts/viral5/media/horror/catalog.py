@@ -75,6 +75,38 @@ PX = {  # id: (slug, creator)
     "39485454": ("raindrops-dripping-from-canopy-focused-in-frame", "Nothing Ahead"),
     "39619866": ("rainwater-puddles-in-a-muddy-pathway", "Nothing Ahead"),
     "7714908": ("muddy-puddle", "Greta Hoffman"),
+    # [괴담] v2: the first-shot hands and silhouettes, and horror9-12 (licence pages opened 2026-10-10)
+    "7701962": ("close-up-view-of-a-person-pressing-elevator-button", "MART PRODUCTION"),
+    "2108274": ("person-opening-and-closing-the-door", "Nazar Matveichev"),
+    "6611938": ("man-tapping-blank-screen-on-smartphone", "Tima Miroshnichenko"),
+    "7646797": ("person-opening-the-door", "Alena Darmel"),
+    "4354915": ("a-person-pressing-an-elevator-button", "Ahmet Akpolat"),
+    "6302990": ("hand-slipping-on-rainy-window", "Klaus Nielsen"),
+    "13358555": ("hands-scrolling-on-cellphone", "Edwin Lopez"),
+    "5994916": ("silhouette-of-hands-inside-a-tent-in-the-middle-of-the-forest", "cottonbro studio"),
+    "5994907": ("silhouette-of-a-person-inside-a-tent", "cottonbro studio"),
+    "6611941": ("person-holding-a-smartphone", "Tima Miroshnichenko"),
+    "7822022": ("notification-on-a-phone", "RDNE Stock project"),
+    "8342690": ("tables-and-chairs-inside-the-classroom", "Pavel Danilyuk"),
+    "6935499": ("student-desks-inside-the-classroom", "RDNE Stock project"),
+    "8342695": ("close-up-video-of-tables-and-chairs-inside-the-classroom", "Pavel Danilyuk"),
+    "7055339": ("a-person-flipping-pages-in-the-dark", "Kindel Media"),
+    "5897634": ("an-empty-classroom", "Katerina Holmes"),
+    "6326847": ("person-writing-on-a-notebook-using-a-pen", "Kaboompics (karola-g)"),
+    "6863499": ("person-stamping-on-pink-paper", "Nataliya Vaitkevich"),
+    "39425735": ("cozy-nighttime-journal-writing-by-lamp", "Sergei Starostin"),
+    "9479751": ("close-up-video-of-a-people-holding-hands-together", "Ron Lach"),
+    "19585708": ("a-house-in-the-middle-of-the-woods", "Salih Sezgen"),
+    "35889601": ("nighttime-view-of-cozy-home-interior", "K (@kelly)"),
+    "10210122": ("a-close-up-of-a-person-s-hand", "cottonbro studio"),
+    "7234023": ("close-up-of-a-person-s-palm", "Artem Podrez"),
+    "5271483": ("cropped-video-of-an-old-lady-hands", "Moe Magners"),
+    "7546178": ("a-close-up-footage-of-people-holding-hands", "SHVETS production"),
+    "4547598": ("a-door-is-open-in-a-dark-room-with-sunlight-coming-in", "cottonbro studio"),
+    "9594994": ("garments-on-clothes-hangers", "Ron Lach"),
+    "8322393": ("hanging-clothes", "Ron Lach"),
+    "8533759": ("ground-level-shot-of-a-person-picking-up-and-putting-down-a-pair-of-shoes", "Kaboompics (karola-g)"),
+    "37554583": ("silhouette-hands-on-frosted-glass-at-night", "Zulfugar Karimov"),
 }
 NIGHTVISION = {"6443851", "15887293"}
 PB = {  # id: (slug, creator, cdn file)
@@ -93,3 +125,15 @@ def source(key):
     return {"file": f"{key}.mp4", "credit": "영상: Pexels", "label": f"Pexels video {i} by {who} (Pexels License)",
             "url": f"https://www.pexels.com/video/{slug}-{i}/", "file_url": f"https://www.pexels.com/download/video/{i}/",
             "license": "Pexels License", "creator": who}
+
+# ── [괴담] v2 (make_edits_v2.py, grade3.sh) ──
+# horizontal crop centre for the 9:16 full-screen frame (0 = left edge of the source, 1 = right; default 0.5)
+CX = {"7701962": 0.64, "4354915": 0.35, "6611938": 0.42, "13358555": 0.28, "2108274": 0.27, "9479751": 0.57,
+      "6326847": 0.36, "39425735": 0.64, "7546178": 0.55, "9594994": 0.6, "37554583": 0.45, "5897634": 0.4,
+      "7362620": 0.3, "7362603": 0.35, "8533759": 0.9}
+# already-dark clips (colour only) and daylight clips that need a deeper grade
+DARK = {"19217894", "19217895", "19217899", "7598737", "5384813", "4623153", "34786856", "34786878",
+        "5994915", "9591436", "9976082", "5391986", "34405948", "12096163", "6028858", "6028882", "19193293", "6114429", "3134591",
+        "13358555", "6611941", "5994916", "5994907", "7055339", "37554583", "35889601", "39425735", "4547598", "7701962"}
+BRIGHT = {"9479751", "7546178", "5271483", "6326847", "6863499", "8342690", "8342695", "6935499", "5897634", "9594994",
+          "8322393", "2108274", "7646797", "6302990", "4354915", "8533759", "6611938", "10210122", "7234023", "19585708", "7822022"}

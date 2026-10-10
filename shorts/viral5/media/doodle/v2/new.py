@@ -63,7 +63,7 @@ def doodle11():
 
 @ep
 def doodle12():
-    """도치 reports a red car parked at a fire hydrant, explaining the rules to a neighbour who defends it; that evening dad gets the 8만 원 fine (역전)"""
+    """도치 reports a red car parked at a fire hydrant, explaining the rules to a neighbour who defends it; a few days later dad gets the fine (역전)"""
     L = [("a0", "nb", "사진은 왜 찍어요?", ""),
          ("a", "nar", "소화전 앞 불법주차 신고하다 들은 말.", "소화전 앞 불법주차 / 신고하다 [들은 말]"),
          ("b", "nar", "빨간 차. 근데 어디서 많이 본 차.", "빨간 차 / 어디서 [많이 본] 차"),
@@ -73,11 +73,11 @@ def doodle12():
          ("f", "nb", "사진 한 장 찍으면 끝이에요?", ""),
          ("g", "me", "같은 자리, 같은 각도로 일 분 간격 두 장이요.", ""),
          ("h", "nar", "앱으로 보내면 단속 공무원 없이 과태료.", "앱으로 보내면 / 현장 단속 [없이] 과태료"),
-         ("i", "nb", "얼만데요?", ""),
-         ("j", "me", "소화전 앞은 승용차 팔만 원이요.", ""),
+         ("i", "nb", "과태료는 얼마 안 하죠?", ""),
+         ("j", "me", "소화전 앞은 과태료가 더 세요.", ""),
          ("k", "nar", "도치, 뿌듯하게 신고 완료.", "도치, 뿌듯하게 / 신고 [완료]"),
          ("l", "nar", "그리고 며칠 뒤 저녁.", "그리고 / [며칠 뒤] 저녁"),
-         ("m", "dad", "아들, 아빠 차에 과태료 팔만 원이 나왔다?", ""),
+         ("m", "dad", "아들, 아빠 차에 과태료가 나왔다?", ""),
          ("n", "nar", "그 빨간 차, 아빠 차였음.", "그 빨간 차 / [아빠 차]였음"),
          ("o", "me", "아빠, 그거 사실 내가…", ""),
          ("z", "nar", "님이면 신고함, 안 함?", "님이면 / [신고]함? 안 함?")]
@@ -91,15 +91,15 @@ def doodle12():
          ("f", {"bg": "#e9e4dc", "chars": [guy("think", **OWNER)], "prop": "📱", "steps": ["f", 0.1, 9, 9], "say": say("한 장 찍으면 끝이에요?")}),
          ("g", {"photo": P(15818611), "photoPos": "60% 50%", "chars": [me("smug")], "prop": "📸", "big": "1분 간격 2장", "steps": ["g", 0.1, 9, "g+0.9"]}),
          ("h", {"bg": "office", "chars": [me("neutral", to="smug")], "prop": "📄", "steps": [9, 0.1, "h.과태료", 9]}),
-         ("i", {"bg": "street", "chars": [guy("shock", **OWNER)], "steps": ["i", 9, 9, 9], "say": say("얼만데요?")}),
-         ("j", {"bg": "#FFB3C7", "chars": [me("smug")], "prop": "💸", "big": "8만 원", "steps": ["j", 0.1, 9, "j.팔만"], "say": say("승용차 8만 원이요")}),
+         ("i", {"bg": "street", "chars": [guy("shock", **OWNER)], "steps": ["i", 9, 9, 9], "say": say("과태료는 얼마 안 하죠?")}),
+         ("j", {"bg": "#FFB3C7", "chars": [me("smug")], "prop": "💸", "big": "더 셈", "steps": ["j", 0.1, 9, "j.세요"]}),
          ("k", {"bg": "#d8f5c8", "chars": [me("laugh")], "prop": "✅", "steps": [9, 0.1, 9, 9]}),
          ("l", {"bg": "night", "chars": [me("happy")], "steps": [9, 9, 9, 9], "place": "📍 며칠 뒤 저녁"}),
          ("m", {"bg": "home", "chars": [guy("sad", **DAD), me("shock")], "prop": "📄", "steps": ["m", 0.1, 9, 9], "say": say("아빠 차에 과태료가 나왔다?")}),
          ("n", {"bg": "#2b1c1c", "chars": [me("shock", to="cry")], "prop": "🚗", "big": "아빠 차", "steps": [9, 0.1, "n.아빠", "n.아빠"]}),
          ("o", {"bg": "home", "chars": [me("sick"), guy("think", **DAD)], "steps": ["o", 9, 9, 9], "say": say("아빠, 그거 사실 내가…")}),
          ("z", {"photo": P(5264140), "chars": [me("think", to="smug")], "steps": [9, 9, "z.신고", 9]})]
-    sfx = [["a", "whoosh", 0.2], ["b", "pop", 0.22], ["c", "pop", 0.22], ["e", "pop", 0.22], ["g", "pop", 0.22], ["j.팔만", "boing", 0.28],
+    sfx = [["a", "whoosh", 0.2], ["b", "pop", 0.22], ["c", "pop", 0.22], ["e", "pop", 0.22], ["g", "pop", 0.22], ["j.세요", "boing", 0.28],
            ["l", "whoosh", 0.2], ["m", "pop", 0.22], ["n.아빠", "boing", 0.3], ["z", "pop", 0.22]]
     build("doodle12", ["불법주차 신고하면", "벌어지는 일"], L, C, M("scheming_weasel"), sfx,
           voices={"nb": {"edge": "ko-KR-SunHiNeural", "rate": "+38%", "pitch": "-6Hz"}, "dad": {"edge": "ko-KR-HyunsuMultilingualNeural", "rate": "+30%", "pitch": "-10Hz"}}, sources=SRC)
@@ -241,7 +241,7 @@ def doodle15():
          ("z", {"photo": P(19870620), "photoPos": "40% 50%", "chars": [me("think", to="smug")], "steps": [9, 9, "z.반만", 9]})]
     sfx = [["a", "whoosh", 0.2], ["b", "pop", 0.22], ["d.권리", "pop", 0.22], ["e.못", "pop", 0.22], ["g", "whoosh", 0.2], ["h", "pop", 0.22],
            ["i", "whoosh", 0.2], ["j.도미노", "boing", 0.28], ["k", "whoosh", 0.2], ["l", "boing", 0.3], ["z", "pop", 0.22]]
-    build("doodle15", ["현재 논란중인", "KTX 의자 끝까지 젖히기?"], L, C, M("hyperfun"), sfx,
+    build("doodle15", ["현재 논란중인", "기차 의자 끝까지 젖히기?"], L, C, M("hyperfun"), sfx,
           voices={"back": {"edge": "ko-KR-SunHiNeural", "rate": "+40%", "pitch": "+3Hz"}, "back2": {"edge": "ko-KR-HyunsuMultilingualNeural", "rate": "+32%", "pitch": "-8Hz"},
                   "back3": {"edge": "ko-KR-SunHiNeural", "rate": "+30%", "pitch": "-6Hz"}}, sources=SRC)
 

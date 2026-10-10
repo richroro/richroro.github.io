@@ -8,7 +8,9 @@ import { BODY, TITLE, loadFonts } from "./lib/fonts";
 import { Sticker, clamp, eOut, prog } from "./lib/fx";
 import { GFX_BG, GfxView, Marked, Marks, type Gfx, type Mark } from "./lib/Gfx";
 import { ROUNDED43, Rounded43, YearSticker, rounded43Crop } from "./lib/Retro";
+import { TeukShort, type TeukOpts } from "./lib/Teuk";
 import { CAP_TALL, CapBox, type CapBoxOpts } from "./lib/CapBox";
+import { PlainCaptions, RiddleTitle } from "./lib/Riddle";
 import { RETROBOX, RetroTitle, RetroYear, StripCaptions } from "./lib/RetroV2";
 import { BoxCaptions, RankBand, RankList, TALL, type Rank2 } from "./lib/RankV2";
 import { BilingualTitle } from "./lib/Bilingual";
@@ -52,7 +54,11 @@ export type ShortData = {
   subOrder?: "ko-en" | "en-ko";
   /** "news": the title as black type on a white banner (Korean news-shorts look) instead of the outlined title;
    *  "band": white and yellow type on a solid black band over the top 400 px (the Korean info-shorts look) */
-  titleStyle?: "news" | "band";
+  titleStyle?: "news" | "band" | "riddle";
+  /** "riddle" title (lib/Riddle.tsx): where the title block is centred (default 330) */
+  titleY?: number;
+  /** "plain": white-only captions with no highlight or entrance (lib/Riddle.tsx) */
+  capLook?: "plain";
   /** the band title's key colour: line 2, or the [marked] words (default yellow; red for horror) */
   titleKey?: string;
   /** an English line under a 16:9 picture: the title becomes thin white Korean over the picture, English under it (lib/Bilingual.tsx) */
@@ -65,6 +71,9 @@ export type ShortData = {
   marks?: Mark[];
   /** a ranking list ("TOP 5") under the picture: a row per place, filled in when that place's clip starts */
   ranks?: { rows: { n: number; label: string; from: number }[]; y?: number };
+  /** "teuk": the "○○ 특" v2 look (lib/Teuk.tsx), which draws the whole short itself */
+  layout?: "teuk";
+  teuk?: TeukOpts;
   /** "retro2" (lib/RetroV2.tsx): yellow/white title over the top quarter, captions inside the picture box, no shade or credit badge */
   look?: "retro2";
   /** ranking v2 (lib/RankV2.tsx): 3-line band, the list over the picture's left edge, boxed captions */
@@ -218,6 +227,7 @@ const Title: React.FC<{ d: ShortData }> = ({ d }) => {
       </div>
     );
   }
+  if (d.titleStyle === "riddle") return <RiddleTitle title={d.title} y={d.titleY} color={d.titleKey} />;
   if (d.titleStyle === "news") {
     return (
       <div style={{ position: "absolute", top: 150, left: 0, width: 1080, height: 240, background: "white", display: "flex", flexDirection: "column",
@@ -305,6 +315,7 @@ export const ClipShort: React.FC<{ data: ShortData }> = ({ data: d }) => {
     const tt = f / FPS, inMoment = d.moments.some((m) => tt >= m.from - 0.2 && tt <= m.to + 0.2);
     return d.music.gain * (1 - 0.6 * (d.env[f] ?? 0)) * (inMoment ? 0.35 : 1) * prog(tt, 0, 0.1) * (1 - prog(tt, d.end - 1.0, 1.0));
   };
+  if (d.layout === "teuk") return <TeukShort d={d} />;
   return (
     <AbsoluteFill style={{ background: "#000" }}>
       {d.clips.map((c, i) => (
@@ -324,6 +335,7 @@ export const ClipShort: React.FC<{ data: ShortData }> = ({ data: d }) => {
         <Sticker key={i} t={t} t0={s.from} t1={s.to} x={s.x} y={s.y} rot={s.rot} bg={s.bg} fg={s.fg} size={s.size}>{s.text}</Sticker>
       ))}
       {d.capBox ? <CapBox pages={d.pages} o={d.capBox} />
+        : d.capLook === "plain" ? <PlainCaptions pages={d.pages} centerY={d.captionY} />
         : d.look === "retro2" ? <StripCaptions pages={d.pages} />
         : d.rank2 ? <BoxCaptions pages={d.pages} centerY={d.captionY ?? 1640} />
         : <Captions pages={d.pages} centerY={d.captionY ?? 1370} order={d.subOrder} />}
