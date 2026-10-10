@@ -71,7 +71,7 @@ def spoken_form(word):
     w = re.sub(r"(\d),(\d)", r"\1\2", word)
     return "".join(SYL.findall(re.sub(r"\d+", lambda m: read_num(int(m.group())), w)))
 
-def caption_pages(tl, caps):
+def caption_pages(tl, caps, grouped=False):
     pages = []
     for L in tl["lines"]:
         groups = [(ci, words_of(p)) for ci, cap in enumerate(caps[L["id"]]) for p in cap.split("/") if p.strip()]
@@ -96,7 +96,7 @@ def caption_pages(tl, caps):
             toks = []
             for w in p:
                 toks.append({"text": w["text"], "key": w["key"], **({"red": True} if w.get("red") else {}), "fromMs": round((L["start"] + times[wi]) * 1000)}); wi += 1
-            pages.append({"tokens": toks, "lineEndMs": round((L["start"] + L["dur"]) * 1000)})
+            pages.append({"tokens": toks, "lineEndMs": round((L["start"] + L["dur"]) * 1000), **({"g": f"{L['id']}:{ci}"} if grouped else {})})
     for i, p in enumerate(pages):
         nxt = pages[i + 1]["tokens"][0]["fromMs"] if i + 1 < len(pages) else 10 ** 9
         p["startMs"] = p["tokens"][0]["fromMs"]
@@ -176,7 +176,7 @@ def prep(sid):
     data = {
         "id": sid, "end": tl["end"], "title": script["title"], "credit": edit["credit"],
         "lines": [{"id": L["id"], "start": L["start"], "dur": L["dur"]} for L in tl["lines"]],
-        "pages": caption_pages(tl, caps), "env": [round(float(v), 3) for v in sm], "clips": clips,
+        "pages": caption_pages(tl, caps, edit.get("layout") == "teuk"), "env": [round(float(v), 3) for v in sm], "clips": clips,
         "moments": [{"from": round(at(m["from"]), 3), "to": round(at(m["to"]), 3), "gain": m.get("gain", 1.0)} for m in edit.get("moments", [])],
         "stickers": [{"text": s["text"], "from": round(at(s["from"]), 3), "to": round(at(s["to"]), 3), "x": s.get("x", 540), "y": s.get("y", 560),
                       "rot": s.get("rot", -3), "bg": s.get("bg", "#FFE14D"), "fg": s.get("fg", "#111"), "size": s.get("size", 46)} for s in edit.get("stickers", [])],
@@ -191,9 +191,12 @@ def prep(sid):
     data["pages"].sort(key=lambda p: p["startMs"])
     if edit.get("captionY"): data["captionY"] = edit["captionY"]  # e.g. lower the captions when the action sits at the bottom of the frame
     if edit.get("look"): data["look"] = edit["look"]  # "retro2": 그 시절 레트로 v2 layout (src/lib/RetroV2.tsx)
-    for k in ("titleStyle", "titleKey", "hook", "hookY", "titleEn"):  # news-shorts look: banner title and a red headline over the picture
+    for k in ("titleStyle", "titleKey", "hook", "hookY", "titleEn", "titleY", "capLook"):  # news-shorts look: banner title and a red headline over the picture
         if edit.get(k) is not None: data[k] = edit[k]
+    if edit.get("capBox"): data["capBox"] = edit["capBox"]  # captions in a box over the picture's bottom (src/lib/CapBox.tsx)
     if edit.get("hookTo") is not None: data["hookTo"] = round(at(edit["hookTo"]), 3)
+    for k in ("layout", "teuk"):  # "teuk": the "○○ 특" v2 look (src/lib/Teuk.tsx); its caption pages carry "g", the script caption they belong to
+        if edit.get(k) is not None: data[k] = edit[k]
     if ranks: data["ranks"] = {"rows": ranks, **({"y": edit["rankY"]} if edit.get("rankY") else {})}
     if edit.get("marks"):
         data["marks"] = [{**{k: m[k] for k in ("kind", "x", "y", "r", "rot", "color") if k in m}, "from": round(at(m["from"]), 3), "to": round(at(m["to"]), 3)}

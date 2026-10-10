@@ -1,0 +1,439 @@
+{
+ "credit": "",
+ "layout": "teuk",
+ "teuk": {
+  "bg": "#2c2321",
+  "mascot": "#FFB36B"
+ },
+ "sources": {
+  "grill1": {
+   "file": "grill1.jpg",
+   "page": "https://commons.wikimedia.org/wiki/File:Samgyeopsal-gui_1.jpg",
+   "file_url": "https://upload.wikimedia.org/wikipedia/commons/d/d9/Samgyeopsal-gui_1.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+   "license": "CC BY 2.0",
+   "credit": "Samgyeopsal-gui 1.jpg by chomjong (CC BY 2.0, https://creativecommons.org/licenses/by/2.0), via Wikimedia Commons",
+   "used_seconds": [
+    [
+     0.0,
+     1.38
+    ]
+   ]
+  },
+  "ssam": {
+   "file": "ssam.jpg",
+   "page": "https://commons.wikimedia.org/wiki/File:Samgyeopsal_table.jpg",
+   "file_url": "https://upload.wikimedia.org/wikipedia/commons/f/fe/Samgyeopsal_table.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+   "license": "CC0",
+   "credit": "Samgyeopsal table.jpg by 이동원 (CC0, http://creativecommons.org/publicdomain/zero/1.0/deed.en), via Wikimedia Commons",
+   "used_seconds": [
+    [
+     6.31,
+     8.65
+    ]
+   ]
+  },
+  "grill2": {
+   "file": "grill2.jpg",
+   "page": "https://commons.wikimedia.org/wiki/File:Korean.food-Samgyeopsal-02.jpg",
+   "file_url": "https://upload.wikimedia.org/wikipedia/commons/0/0c/Korean.food-Samgyeopsal-02.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+   "license": "CC BY 2.0",
+   "credit": "Korean.food-Samgyeopsal-02.jpg by Blue Lotus (a flickr user) (CC BY 2.0, https://creativecommons.org/licenses/by/2.0), via Wikimedia Commons",
+   "used_seconds": [
+    [
+     8.65,
+     11.44
+    ]
+   ]
+  },
+  "fried_pan": {
+   "file": "fried_pan.jpg",
+   "page": "https://commons.wikimedia.org/wiki/File:Kimchi-bokkeum-bap_(Kimchi_fried_rice)_-_Kogi_2023-09-11.jpg",
+   "file_url": "https://upload.wikimedia.org/wikipedia/commons/f/f6/Kimchi-bokkeum-bap_%28Kimchi_fried_rice%29_-_Kogi_2023-09-11.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+   "license": "CC0",
+   "credit": "Kimchi-bokkeum-bap (Kimchi fried rice) - Kogi 2023-09-11.jpg by Andy Li (CC0, http://creativecommons.org/publicdomain/zero/1.0/deed.en), via Wikimedia Commons",
+   "used_seconds": [
+    [
+     14.8,
+     16.79
+    ]
+   ]
+  },
+  "grill3": {
+   "file": "grill3.jpg",
+   "page": "https://commons.wikimedia.org/wiki/File:Samgyeopsal-gui.jpg",
+   "file_url": "https://upload.wikimedia.org/wikipedia/commons/7/77/Samgyeopsal-gui.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+   "license": "CC0",
+   "credit": "Samgyeopsal-gui.jpg by jinsoo jang (CC0, http://creativecommons.org/publicdomain/zero/1.0/deed.en), via Wikimedia Commons",
+   "used_seconds": [
+    [
+     26.63,
+     28.79
+    ]
+   ]
+  }
+ },
+ "music": {
+  "file": "music/hustle.mp3",
+  "gain": 0.18,
+  "start": 0
+ },
+ "sfx": [
+  [
+   "a1",
+   "pop_hi",
+   0.18
+  ],
+  [
+   "a1",
+   "whoosh",
+   0.15
+  ],
+  [
+   "a1b",
+   "whoosh",
+   0.15
+  ],
+  [
+   "a2",
+   "whoosh",
+   0.15
+  ],
+  [
+   "c1",
+   "pop",
+   0.22
+  ],
+  [
+   "a3",
+   "pop_hi",
+   0.18
+  ],
+  [
+   "a3",
+   "whoosh",
+   0.15
+  ],
+  [
+   "a4",
+   "pop_hi",
+   0.18
+  ],
+  [
+   "a4",
+   "whoosh",
+   0.15
+  ],
+  [
+   "a5",
+   "whoosh",
+   0.15
+  ],
+  [
+   "a6",
+   "pop_hi",
+   0.18
+  ],
+  [
+   "a6",
+   "whoosh",
+   0.15
+  ],
+  [
+   "c2",
+   "pop",
+   0.22
+  ],
+  [
+   "a8",
+   "whoosh",
+   0.15
+  ],
+  [
+   "a9",
+   "whoosh",
+   0.15
+  ],
+  [
+   "a7",
+   "whoosh",
+   0.15
+  ],
+  [
+   "z",
+   "whoosh",
+   0.15
+  ],
+  [
+   "y",
+   "pop_hi",
+   0.18
+  ],
+  [
+   "y",
+   "pop",
+   0.22
+  ],
+  [
+   "a3.입보다",
+   "boing",
+   0.25
+  ],
+  [
+   "a7.아무도",
+   "boing",
+   0.25
+  ],
+  [
+   "z",
+   "ding",
+   0.25
+  ]
+ ],
+ "clips": [
+  {
+   "from": "a1",
+   "label": "a1",
+   "src": "grill1",
+   "gfx": {
+    "type": "photo",
+    "react": {
+     "mood": "cry",
+     "side": "right",
+     "size": 470
+    },
+    "steps": [
+     -1,
+     0.2,
+     0.25,
+     1000.0
+    ]
+   }
+  },
+  {
+   "from": "a1b",
+   "label": "a1b",
+   "gfx": {
+    "type": "face",
+    "mood": "cry",
+    "pos": "tilt",
+    "fx": "gloom",
+    "prop": "🥢",
+    "propX": 0.2,
+    "propY": 0.3,
+    "steps": [
+     0.9,
+     0.05,
+     0.15
+    ]
+   }
+  },
+  {
+   "from": "a2",
+   "label": "a2",
+   "gfx": {
+    "type": "face",
+    "mood": "think",
+    "pos": "close",
+    "prop": "🥓",
+    "propX": 0.82,
+    "propY": 0.72,
+    "steps": [
+     0.9,
+     0.05,
+     0.15
+    ]
+   }
+  },
+  {
+   "from": "c1",
+   "label": "c1",
+   "gfx": {
+    "type": "face",
+    "mood": "shy",
+    "pos": "right",
+    "fx": "sparkle",
+    "steps": [
+     0.9,
+     0.05,
+     0.15
+    ]
+   }
+  },
+  {
+   "from": "a3",
+   "label": "a3",
+   "src": "ssam",
+   "gfx": {
+    "type": "photo",
+    "react": {
+     "mood": "shock",
+     "side": "right"
+    },
+    "big": "왕쌈",
+    "steps": [
+     0.12,
+     0.2,
+     "a3.입보다",
+     1000.0
+    ]
+   }
+  },
+  {
+   "from": "a4",
+   "label": "a4",
+   "src": "grill2",
+   "gfx": {
+    "type": "photo",
+    "react": {
+     "mood": "love",
+     "side": "left"
+    },
+    "tag": "진짜 시작",
+    "steps": [
+     0.12,
+     0.2,
+     0.25,
+     1000.0
+    ]
+   }
+  },
+  {
+   "from": "a5",
+   "label": "a5",
+   "gfx": {
+    "type": "scene",
+    "bg": "home",
+    "chars": [
+     {
+      "name": "나",
+      "color": "#FFB36B",
+      "mood": "neutral",
+      "to": "shock",
+      "size": 1.2
+     }
+    ],
+    "prop": "👕",
+    "steps": [
+     9,
+     0.1,
+     "a5.맞힘",
+     9
+    ]
+   }
+  },
+  {
+   "from": "a6",
+   "label": "a6",
+   "src": "fried_pan",
+   "gfx": {
+    "type": "photo",
+    "react": {
+     "mood": "laugh",
+     "side": "left"
+    },
+    "steps": [
+     0.12,
+     0.2,
+     0.25,
+     1000.0
+    ]
+   }
+  },
+  {
+   "from": "c2",
+   "label": "c2",
+   "gfx": {
+    "type": "face",
+    "mood": "smug",
+    "pos": "close",
+    "fx": "sparkle",
+    "steps": [
+     0.9,
+     0.05,
+     0.15
+    ]
+   }
+  },
+  {
+   "from": "a8",
+   "label": "a8",
+   "gfx": {
+    "type": "face",
+    "mood": "love",
+    "pos": "low",
+    "fx": "steam",
+    "steps": [
+     0.9,
+     0.05,
+     0.15
+    ]
+   }
+  },
+  {
+   "from": "a9",
+   "label": "a9",
+   "gfx": {
+    "type": "face",
+    "mood": "smug",
+    "pos": "left",
+    "prop": "🧄",
+    "propX": 0.8,
+    "propY": 0.35,
+    "steps": [
+     0.9,
+     0.05,
+     0.15
+    ]
+   }
+  },
+  {
+   "from": "a7",
+   "label": "a7",
+   "gfx": {
+    "type": "face",
+    "mood": "shy",
+    "pos": "tilt",
+    "prop": "🥓",
+    "big": "1점",
+    "steps": [
+     0.9,
+     0.05,
+     "a7.아무도"
+    ]
+   }
+  },
+  {
+   "from": "z",
+   "label": "z",
+   "gfx": {
+    "type": "face",
+    "mood": "happy",
+    "pos": "left",
+    "fx": "hearts",
+    "steps": [
+     0.9,
+     0.05,
+     0.15
+    ]
+   }
+  },
+  {
+   "from": "y",
+   "label": "y",
+   "src": "grill3",
+   "gfx": {
+    "type": "photo",
+    "react": {
+     "mood": "laugh",
+     "side": "right"
+    },
+    "steps": [
+     0.12,
+     0.2,
+     0.25,
+     1000.0
+    ]
+   }
+  }
+ ]
+}

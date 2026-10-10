@@ -1,8 +1,11 @@
 {
  "credit": "",
  "titleStyle": "band",
- "titleKey": "#3CFF6A",
- "captionY": 1640,
+ "titleKey": "#FFE14D",
+ "frame": "capTall",
+ "capBox": {
+  "y": 1600
+ },
  "sources": {
   "px36757234": {
    "file": "px36757234.jpg",
@@ -11,19 +14,19 @@
    "file_url": "https://images.pexels.com/photos/36757234/pexels-photo-36757234.jpeg?auto=compress&cs=tinysrgb&w=1600",
    "license": "Pexels License",
    "creator": "Gizem Gökce",
-   "credit": "사진: Pexels",
+   "credit": "사진: Pexels (설명란 표기)",
    "seconds": [
     [
-     0.0,
-     3.38
+     1.39,
+     3.27
     ],
     [
-     21.25,
-     22.96
+     16.4,
+     17.86
     ],
     [
-     27.48,
-     30.22
+     23.09,
+     25.36
     ]
    ]
   },
@@ -34,11 +37,15 @@
    "file_url": "https://images.pexels.com/photos/6170455/pexels-photo-6170455.jpeg?auto=compress&cs=tinysrgb&w=1600",
    "license": "Pexels License",
    "creator": "Tima Miroshnichenko",
-   "credit": "사진: Pexels",
+   "credit": "사진: Pexels (설명란 표기)",
    "seconds": [
     [
-     24.65,
-     27.48
+     0.0,
+     1.39
+    ],
+    [
+     21.19,
+     23.09
     ]
    ]
   }
@@ -108,22 +115,27 @@
    "z",
    "pop",
    0.22
+  ],
+  [
+   "k0",
+   "boing",
+   0.28
   ]
  ],
  "clips": [
   {
-   "from": "a",
-   "label": "hook",
-   "credit": "사진: Pexels",
+   "from": "k0",
+   "label": "k0",
    "gfx": {
     "type": "scene",
-    "photo": "doodle/px36757234.jpg",
+    "photo": "doodle/px6170455.jpg",
     "chars": [
      {
       "style": "doodle",
       "hair": "#FF7A1A",
-      "mood": "smug",
-      "x": 0.74
+      "mood": "shock",
+      "size": 1.6,
+      "x": 0.5
      }
     ],
     "steps": [
@@ -132,12 +144,40 @@
      9,
      -1
     ],
-    "big": "[10,000원]"
+    "big": "배송비 내가?",
+    "floor": 400
+   }
+  },
+  {
+   "from": "a",
+   "label": "a",
+   "gfx": {
+    "type": "scene",
+    "photo": "doodle/px36757234.jpg",
+    "chars": [
+     {
+      "style": "doodle",
+      "hair": "#FF7A1A",
+      "mood": "smug",
+      "size": 2.1,
+      "x": 0.5,
+      "y": 110
+     }
+    ],
+    "steps": [
+     9,
+     9,
+     9,
+     "a+0.3"
+    ],
+    "big": "10,000원",
+    "floor": 400,
+    "bigSize": 118
    }
   },
   {
    "from": "b",
-   "label": "nego1",
+   "label": "b",
    "gfx": {
     "type": "scene",
     "bg": "home",
@@ -146,7 +186,8 @@
       "style": "doodle",
       "hair": "#FF7A1A",
       "mood": "neutral",
-      "to": "think"
+      "to": "think",
+      "size": 1.25
      }
     ],
     "steps": [
@@ -165,12 +206,13 @@
        "color": "#B9F27C"
       }
      ]
-    }
+    },
+    "floor": 400
    }
   },
   {
    "from": "d",
-   "label": "nego2",
+   "label": "d",
    "gfx": {
     "type": "scene",
     "chars": [
@@ -178,7 +220,9 @@
       "style": "doodle",
       "hair": "#FF7A1A",
       "mood": "think",
-      "x": 0.3
+      "size": 1.75,
+      "x": 0.3,
+      "rot": -3
      }
     ],
     "steps": [
@@ -189,13 +233,14 @@
     ],
     "bg": "night",
     "prop": "📱",
-    "propX": 0.72,
-    "place": "📍 새벽 1시"
+    "propX": 0.76,
+    "place": "📍 새벽 1시",
+    "floor": 400
    }
   },
   {
    "from": "e",
-   "label": "minus",
+   "label": "e",
    "gfx": {
     "type": "scene",
     "bg": "#FFE14D",
@@ -204,7 +249,9 @@
       "style": "doodle",
       "hair": "#FF7A1A",
       "mood": "shock",
-      "x": 0.3
+      "size": 1.75,
+      "x": 0.3,
+      "rot": -3
      }
     ],
     "steps": [
@@ -213,14 +260,15 @@
      9,
      "e+0.5"
     ],
-    "big": "{-2,000}",
+    "big": "-2,000",
     "prop": "💸",
-    "propX": 0.72
+    "propX": 0.76,
+    "floor": 400
    }
   },
   {
    "from": "f",
-   "label": "nego3",
+   "label": "f",
    "gfx": {
     "type": "scene",
     "bg": "home",
@@ -228,7 +276,8 @@
      {
       "style": "doodle",
       "hair": "#FF7A1A",
-      "mood": "shock"
+      "mood": "shock",
+      "size": 1.25
      }
     ],
     "steps": [
@@ -259,12 +308,13 @@
        "color": "#B9F27C"
       }
      ]
-    }
+    },
+    "floor": 400
    }
   },
   {
    "from": "g",
-   "label": "pickup",
+   "label": "g",
    "gfx": {
     "type": "scene",
     "bg": "street",
@@ -273,7 +323,9 @@
       "style": "doodle",
       "hair": "#FF7A1A",
       "mood": "angry",
-      "x": 0.3
+      "size": 1.75,
+      "x": 0.3,
+      "rot": -3
      }
     ],
     "steps": [
@@ -283,13 +335,14 @@
      "g+0.5"
     ],
     "prop": "🚶",
-    "propX": 0.72,
-    "big": "[픽업] = 할인?"
+    "propX": 0.76,
+    "big": "픽업 = 할인?",
+    "floor": 400
    }
   },
   {
    "from": "h",
-   "label": "free",
+   "label": "h",
    "gfx": {
     "type": "scene",
     "bg": "home",
@@ -298,7 +351,8 @@
       "style": "doodle",
       "hair": "#FF7A1A",
       "mood": "think",
-      "to": "shock"
+      "to": "shock",
+      "size": 1.25
      }
     ],
     "steps": [
@@ -331,16 +385,17 @@
       },
       {
        "name": "구매자",
-       "text": "혹시 [무료 나눔]은 안 되나요?",
+       "text": "혹시 무료 나눔은 안 되나요?",
        "color": "#B9F27C"
       }
      ]
-    }
+    },
+    "floor": 400
    }
   },
   {
    "from": "i",
-   "label": "zero",
+   "label": "i",
    "gfx": {
     "type": "scene",
     "bg": "#FFB3C7",
@@ -349,7 +404,9 @@
       "style": "doodle",
       "hair": "#FF7A1A",
       "mood": "cry",
-      "x": 0.3
+      "size": 1.75,
+      "x": 0.3,
+      "rot": -3
      }
     ],
     "steps": [
@@ -359,14 +416,14 @@
      "i+0.5"
     ],
     "prop": "🪑",
-    "propX": 0.72,
-    "big": "{0원}"
+    "propX": 0.76,
+    "big": "0원",
+    "floor": 400
    }
   },
   {
    "from": "j",
-   "label": "nope",
-   "credit": "사진: Pexels",
+   "label": "j",
    "gfx": {
     "type": "scene",
     "photo": "doodle/px36757234.jpg",
@@ -375,7 +432,9 @@
       "style": "doodle",
       "hair": "#FF7A1A",
       "mood": "angry",
-      "x": 0.28
+      "size": 2.1,
+      "x": 0.5,
+      "y": 110
      }
     ],
     "steps": [
@@ -384,16 +443,40 @@
      9,
      9
     ],
-    "say": {
-     "who": 0,
-     "text": "아… 그냥 [안 팔래요]"
-    },
-    "photoPos": "70% 50%"
+    "photoPos": "70% 50%",
+    "floor": 400
+   }
+  },
+  {
+   "from": "j2",
+   "label": "j2",
+   "gfx": {
+    "type": "scene",
+    "bg": "night",
+    "chars": [
+     {
+      "style": "doodle",
+      "hair": "#FF7A1A",
+      "mood": "shock",
+      "size": 1.75,
+      "x": 0.3,
+      "rot": -3
+     }
+    ],
+    "prop": "📱",
+    "steps": [
+     9,
+     0.1,
+     9,
+     9
+    ],
+    "floor": 400,
+    "propX": 0.76
    }
   },
   {
    "from": "k",
-   "label": "ship",
+   "label": "k",
    "gfx": {
     "type": "scene",
     "bg": "home",
@@ -402,7 +485,8 @@
       "style": "doodle",
       "hair": "#FF7A1A",
       "mood": "neutral",
-      "to": "shock"
+      "to": "shock",
+      "size": 1.25
      }
     ],
     "steps": [
@@ -436,22 +520,22 @@
       },
       {
        "name": "구매자",
-       "text": "혹시 [무료 나눔]은 안 되나요?",
+       "text": "혹시 무료 나눔은 안 되나요?",
        "color": "#B9F27C"
       },
       {
        "name": "구매자",
-       "text": "그럼 [배송비]만 내주세요",
+       "text": "그럼 배송비만 내주세요",
        "color": "#B9F27C"
       }
      ]
-    }
+    },
+    "floor": 400
    }
   },
   {
    "from": "l",
-   "label": "ship2",
-   "credit": "사진: Pexels",
+   "label": "l",
    "gfx": {
     "type": "scene",
     "photo": "doodle/px6170455.jpg",
@@ -460,7 +544,8 @@
       "style": "doodle",
       "hair": "#FF7A1A",
       "mood": "sick",
-      "x": 0.26
+      "size": 1.6,
+      "x": 0.5
      }
     ],
     "steps": [
@@ -469,13 +554,13 @@
      9,
      "l+0.4"
     ],
-    "big": "배송비 {내가}?"
+    "big": "배송비 내가?",
+    "floor": 400
    }
   },
   {
    "from": "y",
-   "label": "still",
-   "credit": "사진: Pexels",
+   "label": "y",
    "gfx": {
     "type": "scene",
     "photo": "doodle/px36757234.jpg",
@@ -484,7 +569,9 @@
       "style": "doodle",
       "hair": "#FF7A1A",
       "mood": "sad",
-      "x": 0.74
+      "size": 2.1,
+      "x": 0.5,
+      "y": 110
      }
     ],
     "steps": [
@@ -493,12 +580,40 @@
      9,
      9
     ],
-    "photoPos": "25% 60%"
+    "photoPos": "25% 60%",
+    "floor": 400
+   }
+  },
+  {
+   "from": "y2",
+   "label": "y2",
+   "gfx": {
+    "type": "scene",
+    "bg": "bedroom",
+    "chars": [
+     {
+      "style": "doodle",
+      "hair": "#FF7A1A",
+      "mood": "love",
+      "size": 1.75,
+      "x": 0.3,
+      "rot": -3
+     }
+    ],
+    "prop": "🪑",
+    "steps": [
+     9,
+     0.1,
+     9,
+     9
+    ],
+    "floor": 400,
+    "propX": 0.76
    }
   },
   {
    "from": "z",
-   "label": "ask",
+   "label": "z",
    "gfx": {
     "type": "scene",
     "bg": "bedroom",
@@ -507,7 +622,10 @@
       "style": "doodle",
       "hair": "#FF7A1A",
       "mood": "think",
-      "to": "smug"
+      "to": "smug",
+      "size": 1.75,
+      "x": 0.3,
+      "rot": -3
      }
     ],
     "steps": [
@@ -517,7 +635,8 @@
      9
     ],
     "prop": "🪑",
-    "propX": 0.74
+    "propX": 0.76,
+    "floor": 400
    }
   }
  ]
