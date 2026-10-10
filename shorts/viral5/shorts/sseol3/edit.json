@@ -1,410 +1,505 @@
 {
  "credit": "",
- "titleStyle": "band",
- "captionY": 1650,
+ "postFrame": {
+  "app": "썰방",
+  "color": "#FF8A4C",
+  "meta": "익명 | 창작 사연게시판"
+ },
  "sources": {},
  "music": {
   "file": "music/monkeys_spinning_monkeys.mp3",
-  "gain": 0.2,
+  "gain": 0.17,
   "start": 0
  },
  "sfx": [
   [
-   "b.장화만",
-   "boing",
-   0.3
-  ],
-  [
-   "c",
+   "a",
    "pop",
-   0.3
-  ],
-  [
-   "d",
-   "k_error_003",
    0.25
   ],
   [
-   "e.이만큼",
-   "pop_hi",
-   0.3
-  ],
-  [
    "f",
-   "whoosh",
-   0.3
-  ],
-  [
-   "g.찾았다",
-   "ding",
+   "boing",
    0.3
   ],
   [
    "h",
-   "boing",
-   0.3
-  ],
-  [
-   "k.뽀송하게",
-   "tada",
+   "whoosh",
    0.25
   ],
   [
-   "l.쨍쨍했다",
-   "ding",
-   0.25
-  ],
-  [
-   "m.가라",
+   "k",
    "k_error_003",
-   0.3
+   0.25
   ],
   [
-   "n",
-   "pop",
+   "p",
+   "pop_hi",
    0.3
   ]
  ],
  "clips": [
   {
    "from": "a",
-   "label": "post",
+   "label": "a",
    "gfx": {
-    "type": "post",
-    "title": "초딩 때 비만 오면 [내 운동화]가 사라진 썰",
-    "body": [
-     "신발장엔 [장화]만 덩그러니",
-     "할머니는 모른 척 ㅋㅋ"
-    ],
-    "steps": [
-     "a.비만",
-     "a.운동화가"
-    ],
+    "type": "scene",
+    "bg": "rain",
+    "prop": "👟❓",
+    "propX": 0.8,
     "chars": [
      {
-      "name": "나",
-      "color": "#FFD84D",
-      "hat": "🧢",
-      "mood": "angry"
-     },
-     {
-      "name": "할머니",
-      "color": "#C9A7FF",
-      "mood": "smug"
+      "style": "chibi",
+      "look": {
+       "age": "kid",
+       "hairdo": "buzz",
+       "hair": "#2a1f1a",
+       "top": "#9be07b",
+       "topKind": "tee",
+       "pants": "#3d5a8a"
+      },
+      "mood": "shock",
+      "x": 0.4,
+      "size": 1.2
      }
     ]
    }
   },
   {
-   "from": "a@end",
-   "label": "boots",
+   "from": "b",
+   "label": "b",
    "gfx": {
     "type": "scene",
-    "bg": "home",
-    "place": "📍 현관",
-    "prop": "👢",
+    "bg": "door",
+    "sign": "101호",
+    "prop": "❓",
+    "propX": 0.5,
     "chars": [
      {
-      "name": "나",
-      "hat": "🧢",
+      "style": "chibi",
+      "look": {
+       "age": "kid",
+       "hairdo": "buzz",
+       "hair": "#2a1f1a",
+       "top": "#9be07b",
+       "topKind": "tee",
+       "pants": "#3d5a8a"
+      },
       "mood": "think",
-      "to": "shock",
-      "color": "#FFD84D"
+      "x": 0.25,
+      "size": 1.1
      }
-    ],
-    "steps": [
-     0,
-     0.1,
-     "b.장화만"
     ]
    }
   },
   {
    "from": "c",
-   "label": "wear",
+   "label": "c",
    "gfx": {
     "type": "scene",
     "bg": "home",
-    "say": {
-     "who": 0,
-     "text": "이거 [신고 가라.]"
-    },
-    "prop": "👢",
+    "zoom0": 1.0,
+    "zoom": 1.06,
     "chars": [
      {
-      "name": "할머니",
-      "color": "#C9A7FF",
-      "mood": "happy"
-     },
-     {
-      "name": "나",
-      "hat": "🧢",
+      "style": "chibi",
+      "look": {
+       "age": "kid",
+       "hairdo": "buzz",
+       "hair": "#2a1f1a",
+       "top": "#9be07b",
+       "topKind": "tee",
+       "pants": "#3d5a8a"
+      },
       "mood": "sad",
-      "color": "#FFD84D"
+      "size": 1.5
      }
     ]
    }
   },
   {
    "from": "d",
-   "label": "no",
+   "label": "d",
    "gfx": {
     "type": "scene",
     "bg": "home",
-    "say": {
-     "who": 1,
-     "text": "싫어! 장화 신으면 [아기 같잖아!]"
-    },
-    "zoom": 1.08,
-    "focus": 1,
+    "prop": "🥾",
+    "propX": 0.84,
     "chars": [
      {
-      "name": "할머니",
-      "color": "#C9A7FF",
-      "mood": "neutral"
-     },
-     {
-      "name": "나",
-      "hat": "🧢",
-      "mood": "angry",
-      "color": "#FFD84D"
+      "style": "chibi",
+      "look": {
+       "age": "old",
+       "hairdo": "perm",
+       "hair": "#ececf0",
+       "top": "#c9a7ff",
+       "topKind": "cardigan",
+       "pants": "#6b5a7a"
+      },
+      "mood": "smug",
+      "x": 0.4,
+      "size": 1.45
      }
     ]
    }
   },
   {
    "from": "e",
-   "label": "sulk",
+   "label": "e",
    "gfx": {
     "type": "scene",
-    "bg": "linear-gradient(180deg,#7d8ea3 0%,#b8c4d2 70%,#8a96a3 70%)",
-    "place": "📍 등굣길",
+    "bg": "class",
+    "sign": "3학년 1반",
+    "prop": "🥾",
+    "propX": 0.8,
     "chars": [
      {
-      "name": "나",
-      "hat": "☔",
-      "mood": "angry",
-      "color": "#FFD84D"
+      "style": "chibi",
+      "look": {
+       "age": "kid",
+       "hairdo": "buzz",
+       "hair": "#2a1f1a",
+       "top": "#9be07b",
+       "topKind": "tee",
+       "pants": "#3d5a8a"
+      },
+      "mood": "sad",
+      "x": 0.5,
+      "size": 1.0
      }
-    ],
-    "big": "입 [삐죽]",
-    "steps": [
-     0,
-     0.1,
-     9,
-     "e.이만큼"
     ]
    }
   },
   {
    "from": "f",
-   "label": "blanket",
+   "label": "f",
    "gfx": {
     "type": "scene",
-    "bg": "home",
-    "place": "📍 할머니 방",
-    "prop": "🛏️",
+    "bg": "class",
+    "sign": "3학년 1반",
     "chars": [
      {
-      "name": "나",
-      "hat": "🧢",
-      "mood": "think",
-      "color": "#FFD84D"
+      "style": "chibi",
+      "look": {
+       "age": "kid",
+       "hairdo": "spiky",
+       "hair": "#5a3a22",
+       "top": "#ff8f6b",
+       "topKind": "hoodie"
+      },
+      "mood": "laugh",
+      "x": 0.3,
+      "size": 1.1
+     },
+     {
+      "style": "chibi",
+      "look": {
+       "age": "kid",
+       "hairdo": "buzz",
+       "hair": "#2a1f1a",
+       "top": "#9be07b",
+       "topKind": "tee",
+       "pants": "#3d5a8a"
+      },
+      "mood": "cry",
+      "x": 0.74,
+      "size": 0.9
      }
     ]
    }
   },
   {
    "from": "g",
-   "label": "found",
+   "label": "g",
    "gfx": {
     "type": "scene",
-    "bg": "home",
-    "prop": "👟",
-    "big": "[찾았다!]",
+    "bg": "class",
+    "big": "[3]번째",
     "chars": [
      {
-      "name": "나",
-      "hat": "🧢",
-      "mood": "shock",
-      "color": "#FFD84D"
+      "style": "chibi",
+      "look": {
+       "age": "kid",
+       "hairdo": "buzz",
+       "hair": "#2a1f1a",
+       "top": "#9be07b",
+       "topKind": "tee",
+       "pants": "#3d5a8a"
+      },
+      "mood": "cry",
+      "size": 1.5
      }
-    ],
-    "steps": [
-     0,
-     0.05,
-     9,
-     "g.찾았다"
+    ]
+   }
+  },
+  {
+   "from": "g2",
+   "label": "g2",
+   "gfx": {
+    "type": "scene",
+    "bg": "door",
+    "sign": "101호",
+    "prop": "👟♨️",
+    "propX": 0.72,
+    "chars": [
+     {
+      "style": "chibi",
+      "look": {
+       "age": "kid",
+       "hairdo": "buzz",
+       "hair": "#2a1f1a",
+       "top": "#9be07b",
+       "topKind": "tee",
+       "pants": "#3d5a8a"
+      },
+      "mood": "think",
+      "x": 0.3,
+      "size": 1.1
+     }
     ]
    }
   },
   {
    "from": "h",
-   "label": "why",
+   "label": "h",
    "gfx": {
     "type": "scene",
-    "bg": "home",
-    "say": {
-     "who": 1,
-     "text": "할머니! 이게 [왜 여기] 있어?"
-    },
-    "prop": "👟",
+    "bg": "night",
+    "prop": "👀",
+    "propX": 0.6,
     "chars": [
      {
-      "name": "할머니",
-      "color": "#C9A7FF",
-      "mood": "shy"
-     },
-     {
-      "name": "나",
-      "hat": "🧢",
-      "mood": "shock",
-      "color": "#FFD84D"
+      "style": "chibi",
+      "look": {
+       "age": "kid",
+       "hairdo": "buzz",
+       "hair": "#2a1f1a",
+       "top": "#9be07b",
+       "topKind": "tee",
+       "pants": "#3d5a8a"
+      },
+      "mood": "think",
+      "x": 0.2,
+      "size": 1.0
      }
     ]
    }
   },
   {
    "from": "i",
-   "label": "cold",
+   "label": "i",
    "gfx": {
     "type": "scene",
-    "bg": "home",
-    "place": "📍 그때",
-    "prop": "🌡️",
+    "bg": "bath",
+    "place": "📍 욕실",
+    "prop": "👟",
+    "propX": 0.25,
     "chars": [
      {
-      "name": "나",
-      "hat": "🧢",
-      "mood": "sick",
-      "color": "#FFD84D"
+      "style": "chibi",
+      "look": {
+       "age": "old",
+       "hairdo": "perm",
+       "hair": "#ececf0",
+       "top": "#c9a7ff",
+       "topKind": "cardigan",
+       "pants": "#6b5a7a"
+      },
+      "mood": "neutral",
+      "x": 0.62
      }
     ]
    }
   },
   {
    "from": "j",
-   "label": "hide",
+   "label": "j",
    "gfx": {
     "type": "scene",
-    "bg": "night",
-    "prop": "👟",
+    "bg": "bedroom",
+    "prop": "👟♨️",
+    "propX": 0.7,
     "chars": [
      {
-      "name": "할머니",
-      "color": "#C9A7FF",
-      "mood": "smug"
+      "style": "chibi",
+      "look": {
+       "age": "old",
+       "hairdo": "perm",
+       "hair": "#ececf0",
+       "top": "#c9a7ff",
+       "topKind": "cardigan",
+       "pants": "#6b5a7a"
+      },
+      "mood": "happy",
+      "x": 0.3,
+      "size": 1.1
      }
     ]
    }
   },
   {
    "from": "k",
-   "label": "dry",
+   "label": "k",
    "gfx": {
     "type": "scene",
-    "bg": "night",
-    "prop": "🫧👟",
+    "bg": "bedroom",
+    "zoom0": 1.0,
+    "zoom": 1.06,
     "chars": [
      {
-      "name": "할머니",
-      "color": "#C9A7FF",
-      "mood": "love"
+      "style": "chibi",
+      "look": {
+       "age": "old",
+       "hairdo": "perm",
+       "hair": "#ececf0",
+       "top": "#c9a7ff",
+       "topKind": "cardigan",
+       "pants": "#6b5a7a"
+      },
+      "mood": "angry",
+      "size": 1.5
      }
-    ],
-    "big": "[뽀송뽀송]",
-    "steps": [
-     0,
-     0.1,
-     9,
-     "k.뽀송하게"
     ]
    }
   },
   {
    "from": "l",
-   "label": "sunny",
+   "label": "l",
    "gfx": {
     "type": "scene",
-    "bg": "street",
-    "place": "📍 그날 아침",
-    "prop": "☀️",
+    "bg": "rain",
+    "prop": "💧👟",
+    "propX": 0.82,
     "chars": [
      {
-      "name": "나",
-      "hat": "🧢",
-      "mood": "happy",
-      "to": "laugh",
-      "color": "#FFD84D"
+      "style": "chibi",
+      "look": {
+       "age": "kid",
+       "hairdo": "buzz",
+       "hair": "#2a1f1a",
+       "top": "#9be07b",
+       "topKind": "tee",
+       "pants": "#3d5a8a"
+      },
+      "mood": "sad",
+      "x": 0.5,
+      "size": 1.1
      }
-    ],
-    "steps": [
-     0,
-     0.1,
-     "l.쨍쨍했다"
     ]
    }
   },
   {
    "from": "m",
-   "label": "still",
+   "label": "m",
    "gfx": {
     "type": "scene",
     "bg": "home",
-    "say": {
-     "who": 0,
-     "text": "그래도 [신고 가라.]"
-    },
-    "prop": "👢",
-    "zoom": 1.1,
-    "focus": 0,
     "chars": [
      {
-      "name": "할머니",
-      "color": "#C9A7FF",
-      "mood": "smug"
+      "style": "chibi",
+      "look": {
+       "age": "kid",
+       "hairdo": "buzz",
+       "hair": "#2a1f1a",
+       "top": "#9be07b",
+       "topKind": "tee",
+       "pants": "#3d5a8a"
+      },
+      "mood": "cry",
+      "x": 0.3
      },
      {
-      "name": "나",
-      "hat": "🧢",
-      "mood": "shock",
-      "to": "cry",
-      "color": "#FFD84D"
+      "style": "chibi",
+      "look": {
+       "age": "old",
+       "hairdo": "perm",
+       "hair": "#ececf0",
+       "top": "#c9a7ff",
+       "topKind": "cardigan",
+       "pants": "#6b5a7a"
+      },
+      "mood": "shy",
+      "x": 0.72
      }
-    ],
-    "steps": [
-     0,
-     0.1,
-     "m.가라"
     ]
    }
   },
   {
    "from": "n",
-   "label": "alone",
+   "label": "n",
+   "gfx": {
+    "type": "scene",
+    "bg": "home",
+    "prop": "🥾",
+    "propX": 0.85,
+    "chars": [
+     {
+      "style": "chibi",
+      "look": {
+       "age": "old",
+       "hairdo": "perm",
+       "hair": "#ececf0",
+       "top": "#c9a7ff",
+       "topKind": "cardigan",
+       "pants": "#6b5a7a"
+      },
+      "mood": "laugh",
+      "x": 0.45,
+      "size": 1.4
+     }
+    ]
+   }
+  },
+  {
+   "from": "o",
+   "label": "o",
+   "gfx": {
+    "type": "scene",
+    "bg": "home",
+    "prop": "☀️",
+    "propX": 0.2,
+    "chars": [
+     {
+      "style": "chibi",
+      "look": {
+       "age": "old",
+       "hairdo": "perm",
+       "hair": "#ececf0",
+       "top": "#c9a7ff",
+       "topKind": "cardigan",
+       "pants": "#6b5a7a"
+      },
+      "mood": "smug",
+      "x": 0.6,
+      "size": 1.2
+     }
+    ]
+   }
+  },
+  {
+   "from": "p",
+   "label": "p",
    "gfx": {
     "type": "scene",
     "bg": "street",
-    "place": "📍 등굣길",
+    "prop": "🥾",
+    "propX": 0.82,
     "chars": [
      {
-      "name": "친구",
-      "color": "#8FD3FF",
-      "mood": "happy"
-     },
-     {
-      "name": "나",
-      "hat": "🧢",
+      "style": "chibi",
+      "look": {
+       "age": "kid",
+       "hairdo": "buzz",
+       "hair": "#2a1f1a",
+       "top": "#9be07b",
+       "topKind": "tee",
+       "pants": "#3d5a8a"
+      },
       "mood": "sad",
-      "color": "#FFD84D"
-     },
-     {
-      "name": "친구",
-      "color": "#B9F27C",
-      "mood": "happy"
+      "x": 0.45,
+      "size": 1.2
      }
-    ],
-    "big": "☀️ + 👢"
+    ]
    }
   }
  ]

@@ -6,17 +6,22 @@
  "voices": {
   "nar": {
    "edge": "ko-KR-InJoonNeural",
-   "rate": "+20%"
+   "rate": "+25%"
+  },
+  "hook": {
+   "edge": "ko-KR-InJoonNeural",
+   "rate": "+50%"
   }
  },
  "lines": [
   {
    "id": "hook",
-   "voice": "nar",
+   "voice": "hook",
    "gap": 0.05,
-   "say": "엘리베이터 거울, 셀카 찍으라고 있는 걸까요?",
+   "say": "엘리베이터 거울, 셀카용 아닙니다.",
    "cap": [
-    "엘리베이터 거울 / [셀카]용일까?"
+    "엘리베이터 거울",
+    "[셀카용] 아닙니다"
    ]
   },
   {

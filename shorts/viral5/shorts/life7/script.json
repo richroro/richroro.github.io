@@ -6,17 +6,30 @@
  "voices": {
   "nar": {
    "edge": "ko-KR-InJoonNeural",
-   "rate": "+20%"
+   "rate": "+25%"
+  },
+  "hook": {
+   "edge": "ko-KR-InJoonNeural",
+   "rate": "+40%"
   }
  },
  "lines": [
   {
    "id": "hook",
-   "voice": "nar",
+   "voice": "hook",
    "gap": 0.05,
-   "say": "볼펜 뚜껑 끝에 뚫린 작은 구멍,| 잉크 마르지 말라고 있는 걸까요?",
+   "say": "볼펜 뚜껑 구멍은, 숨구멍입니다.",
    "cap": [
-    "볼펜 뚜껑 끝 / 작은 [구멍]",
+    "볼펜 뚜껑 [구멍]은",
+    "[숨구멍]입니다"
+   ]
+  },
+  {
+   "voice": "nar",
+   "gap": 0.15,
+   "id": "ink",
+   "say": "잉크 마르지 말라고 뚫은 걸까요?",
+   "cap": [
     "잉크 마르지 말라고?"
    ]
   },

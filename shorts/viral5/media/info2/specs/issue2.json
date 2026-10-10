@@ -1,0 +1,326 @@
+{
+ "voices": {
+  "hook": {
+   "edge": "ko-KR-InJoonNeural",
+   "rate": "+35%"
+  }
+ },
+ "lines": [
+  {
+   "id": "hook",
+   "voice": "hook",
+   "say": "경유값이 이십 퍼센트 올랐습니다.",
+   "cap": [
+    "경유값 [20%] 상승"
+   ]
+  },
+  {
+   "id": "more",
+   "after": "hook",
+   "say": "가격 상한제가 있는데도,| 구월 기준 일 년 새 오른 겁니다.",
+   "cap": [
+    "가격 [상한제]가 있는데도",
+    "9월 기준 / 1년 새 오른 것"
+   ]
+  }
+ ],
+ "clipsReplace": [
+  {
+   "src": "pump",
+   "from": "hook",
+   "label": "주유기 금액 표시",
+   "audio": 0,
+   "in": 0.0,
+   "crop": [
+    0.5,
+    0.45,
+    1.0
+   ]
+  },
+  {
+   "src": "refill",
+   "from": "more",
+   "label": "주유하는 손",
+   "audio": 0,
+   "in": 1.0,
+   "crop": [
+    0.3,
+    0.55,
+    1.0
+   ]
+  },
+  {
+   "src": "nozzle",
+   "from": "more.구월",
+   "label": "주유 노즐",
+   "audio": 0,
+   "in": 2.6,
+   "crop": [
+    0.55,
+    0.5,
+    1.0
+   ]
+  },
+  {
+   "src": "hormuz",
+   "from": "war",
+   "label": "우주에서 본 호르무즈 해협",
+   "audio": 0,
+   "zoom": [
+    1.05,
+    1.15
+   ]
+  },
+  {
+   "src": "tksun",
+   "from": "war.국제유가",
+   "label": "유조선",
+   "audio": 0,
+   "in": 2.0,
+   "crop": [
+    0.4,
+    0.55,
+    1.0
+   ]
+  },
+  {
+   "src": "tkdeck",
+   "from": "war.삼월에",
+   "label": "유조선 갑판",
+   "audio": 0,
+   "in": 1.0,
+   "crop": [
+    0.55,
+    0.5,
+    1.0
+   ]
+  },
+  {
+   "src": "refill",
+   "from": "catch",
+   "label": "주유 중",
+   "audio": 0,
+   "in": 5.5,
+   "crop": [
+    0.3,
+    0.55,
+    1.0
+   ]
+  },
+  {
+   "src": "refsea",
+   "from": "catch.정유사가",
+   "label": "정유 공장",
+   "audio": 0,
+   "in": 3.0,
+   "crop": [
+    0.5,
+    0.5,
+    1.0
+   ]
+  },
+  {
+   "src": "refnight",
+   "from": "reset",
+   "label": "밤의 정유 공장",
+   "audio": 0,
+   "in": 5.0,
+   "crop": [
+    0.55,
+    0.55,
+    1.0
+   ]
+  },
+  {
+   "src": "pump",
+   "from": "reset.경유",
+   "label": "올라가는 금액",
+   "audio": 0,
+   "in": 0.6,
+   "crop": [
+    0.5,
+    0.38,
+    1.4
+   ]
+  },
+  {
+   "src": "tanks",
+   "from": "reset.지금은",
+   "label": "저유 탱크",
+   "audio": 0,
+   "in": 20.0,
+   "crop": [
+    0.5,
+    0.5,
+    1.0
+   ]
+  },
+  {
+   "src": "refsph",
+   "from": "effect",
+   "label": "정유 시설",
+   "audio": 0,
+   "in": 6.0,
+   "crop": [
+    0.5,
+    0.5,
+    1.0
+   ]
+  },
+  {
+   "src": "nozzle",
+   "from": "effect.물가",
+   "label": "주유 노즐",
+   "audio": 0,
+   "in": 5.5,
+   "crop": [
+    0.6,
+    0.5,
+    1.0
+   ]
+  },
+  {
+   "src": "tkdock",
+   "from": "end",
+   "label": "부두의 유조선",
+   "audio": 0,
+   "in": 2.0,
+   "crop": [
+    0.45,
+    0.5,
+    1.0
+   ]
+  },
+  {
+   "src": "refill",
+   "from": "end.다음",
+   "label": "주유",
+   "audio": 0,
+   "in": 4.0,
+   "crop": [
+    0.3,
+    0.55,
+    1.0
+   ]
+  }
+ ],
+ "marks": [],
+ "dropSources": [
+  "hong",
+  "ks",
+  "songak",
+  "sk",
+  "songnae",
+  "tk_pa",
+  "tk_cal",
+  "fill"
+ ],
+ "sources": {
+  "pump": {
+   "file": "px9592759.mp4",
+   "credit": "영상: Pexels",
+   "label": "Pexels video 9592759 by David Bronner (Pexels License)",
+   "url": "https://www.pexels.com/video/close-up-of-gas-pump-display-9592759/",
+   "license": "Pexels License (free to use, no attribution required; checked on the item page 2026-10-10)",
+   "creator": "David Bronner",
+   "fileUrl": "https://www.pexels.com/download/video/9592759/"
+  },
+  "refill": {
+   "file": "px9109484.mp4",
+   "credit": "영상: Pexels",
+   "label": "Pexels video 9109484 by Shoot With Riyas (Pexels License)",
+   "url": "https://www.pexels.com/video/a-person-refilling-gas-on-a-car-9109484/",
+   "license": "Pexels License (free to use, no attribution required; checked on the item page 2026-10-10)",
+   "creator": "Shoot With Riyas",
+   "fileUrl": "https://www.pexels.com/download/video/9109484/"
+  },
+  "nozzle": {
+   "file": "px15556113.mp4",
+   "credit": "영상: Pexels",
+   "label": "Pexels video 15556113 by African Creator (Pexels License)",
+   "url": "https://www.pexels.com/video/fuel-pump-15556113/",
+   "license": "Pexels License (free to use, no attribution required; checked on the item page 2026-10-10)",
+   "creator": "African Creator",
+   "fileUrl": "https://www.pexels.com/download/video/15556113/"
+  },
+  "tksun": {
+   "file": "px4911815.mp4",
+   "credit": "영상: Pexels",
+   "label": "Pexels video 4911815 by Esteban M (Pexels License)",
+   "url": "https://www.pexels.com/video/an-oil-tanker-in-the-sea-4911815/",
+   "license": "Pexels License (free to use, no attribution required; checked on the item page 2026-10-10)",
+   "creator": "Esteban M",
+   "fileUrl": "https://www.pexels.com/download/video/4911815/"
+  },
+  "tkdeck": {
+   "file": "px9654558.mp4",
+   "credit": "영상: Pexels",
+   "label": "Pexels video 9654558 by Zahid Nisar (Pexels License)",
+   "url": "https://www.pexels.com/video/an-oil-tanker-traveling-across-the-sea-9654558/",
+   "license": "Pexels License (free to use, no attribution required; checked on the item page 2026-10-10)",
+   "creator": "Zahid Nisar",
+   "fileUrl": "https://www.pexels.com/download/video/9654558/"
+  },
+  "tkdock": {
+   "file": "px14807918.mp4",
+   "credit": "영상: Pexels",
+   "label": "Pexels video 14807918 by Luke Nomad (Pexels License)",
+   "url": "https://www.pexels.com/video/drone-footage-of-a-docked-oil-tanker-14807918/",
+   "license": "Pexels License (free to use, no attribution required; checked on the item page 2026-10-10)",
+   "creator": "Luke Nomad",
+   "fileUrl": "https://www.pexels.com/download/video/14807918/"
+  },
+  "refnight": {
+   "file": "px10396407.mp4",
+   "credit": "영상: Pexels",
+   "label": "Pexels video 10396407 by Tom Fisk (Pexels License)",
+   "url": "https://www.pexels.com/video/aerial-view-of-oil-refinery-plant-10396407/",
+   "license": "Pexels License (free to use, no attribution required; checked on the item page 2026-10-10)",
+   "creator": "Tom Fisk",
+   "fileUrl": "https://www.pexels.com/download/video/10396407/"
+  },
+  "refsea": {
+   "file": "px29959405.mp4",
+   "credit": "영상: Pexels",
+   "label": "Pexels video 29959405 by Toàn BDS (Pexels License)",
+   "url": "https://www.pexels.com/video/aerial-view-of-industrial-oil-refinery-by-the-sea-29959405/",
+   "license": "Pexels License (free to use, no attribution required; checked on the item page 2026-10-10)",
+   "creator": "Toàn BDS",
+   "fileUrl": "https://www.pexels.com/download/video/29959405/"
+  },
+  "refsph": {
+   "file": "px30899591.mp4",
+   "credit": "영상: Pexels",
+   "label": "Pexels video 30899591 by Toàn BDS (Pexels License)",
+   "url": "https://www.pexels.com/video/aerial-view-of-industrial-plant-and-storage-tanks-30899591/",
+   "license": "Pexels License (free to use, no attribution required; checked on the item page 2026-10-10)",
+   "creator": "Toàn BDS",
+   "fileUrl": "https://www.pexels.com/download/video/30899591/"
+  },
+  "tanks": {
+   "file": "px33682128.mp4",
+   "credit": "영상: Pexels",
+   "label": "Pexels video 33682128 by Toàn BDS (Pexels License)",
+   "url": "https://www.pexels.com/video/aerial-view-of-industrial-storage-tank-facility-33682128/",
+   "license": "Pexels License (free to use, no attribution required; checked on the item page 2026-10-10)",
+   "creator": "Toàn BDS",
+   "fileUrl": "https://www.pexels.com/download/video/33682128/"
+  }
+ },
+ "cover": {
+  "src": "refill",
+  "in": 2.4,
+  "focus": "38% 50%",
+  "zoom": 1.0,
+  "title": [
+   "기름값 상한제 있는데",
+   "경유 [20%] 오른 이유"
+  ],
+  "arrow": {
+   "x": 470,
+   "y": 1130,
+   "rot": -25,
+   "len": 260
+  }
+ }
+}

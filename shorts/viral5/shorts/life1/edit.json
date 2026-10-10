@@ -1,6 +1,6 @@
 {
  "titleStyle": "band",
- "captionY": 1640,
+ "captionY": 1580,
  "credit": "영상: Pexels",
  "sources": {
   "win": {
@@ -108,7 +108,7 @@
    "crop": [
     0.42,
     0.55,
-    1.5
+    1.066
    ],
    "zoom": [
     1.0,
@@ -150,7 +150,7 @@
    "crop": [
     0.36,
     0.53,
-    2.4
+    1.705
    ],
    "zoom": [
     1.0,
@@ -233,7 +233,7 @@
   {
    "kind": "circle",
    "x": 175,
-   "y": 585,
+   "y": 798,
    "r": 120,
    "from": "hook.모서리",
    "to": "hook@end"
@@ -241,37 +241,21 @@
   {
    "kind": "circle",
    "x": 360,
-   "y": 945,
+   "y": 1165,
    "r": 150,
    "from": "crack",
    "to": "crack@end"
   },
   {
    "kind": "circle",
-   "x": 370,
-   "y": 530,
-   "r": 100,
+   "x": 301,
+   "y": 583,
+   "r": 141,
    "from": "now",
    "to": "now.힘이"
   }
  ],
- "stickers": [
-  {
-   "text": "1954.1 엘바섬 · 1954.4 나폴리 앞바다",
-   "from": "comet.석",
-   "to": "tank-0.1",
-   "y": 540,
-   "size": 40
-  },
-  {
-   "text": "실제 균열: 지붕 안테나 창·비상구 창 모서리",
-   "from": "crack.금속이",
-   "to": "why-0.1",
-   "y": 540,
-   "size": 36,
-   "bg": "#fff"
-  }
- ],
+ "stickers": [],
  "sfx": [
   [
    "comet",
@@ -317,5 +301,24 @@
   "file": "music/Movement Proposition.mp3",
   "gain": 0.12,
   "start": 0
+ },
+ "frame": "capTall",
+ "capStyle": "info2",
+ "hideCredit": true,
+ "tags": [],
+ "cover": {
+  "src": "win",
+  "in": 0.3,
+  "focus": "50% 40%",
+  "zoom": 1.0,
+  "title": [
+   "비행기 창문이",
+   "[네모가 아닌] 진짜 이유"
+  ],
+  "ring": {
+   "x": 130,
+   "y": 1720,
+   "r": 170
+  }
  }
 }

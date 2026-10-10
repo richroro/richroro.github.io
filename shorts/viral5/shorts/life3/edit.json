@@ -1,6 +1,6 @@
 {
  "titleStyle": "band",
- "captionY": 1640,
+ "captionY": 1580,
  "credit": "영상: Pexels",
  "sources": {
   "bridge": {
@@ -150,6 +150,18 @@
    "audio": 0
   },
   {
+   "src": "pov",
+   "from": "van",
+   "in": 10,
+   "crop": [
+    0.5,
+    0.55,
+    1.0
+   ],
+   "label": "고속도로 주행",
+   "audio": 0
+  },
+  {
    "src": "jam",
    "from": "exc",
    "in": 8,
@@ -217,30 +229,14 @@
  "marks": [
   {
    "kind": "arrow",
-   "x": 230,
-   "y": 1190,
+   "x": 104,
+   "y": 1512,
    "rot": 300,
    "from": "law.차로는",
    "to": "law@end"
   }
  ],
- "stickers": [
-  {
-   "text": "도로교통법 시행규칙 [별표 9]",
-   "from": "law.차로는",
-   "to": "back-0.1",
-   "y": 540,
-   "size": 40
-  },
-  {
-   "text": "승합차 5만 원 · 2026년 10월 기준",
-   "from": "fine.승용차는",
-   "to": "exc-0.1",
-   "y": 540,
-   "size": 40,
-   "bg": "#fff"
-  }
- ],
+ "stickers": [],
  "sfx": [
   [
    "law",
@@ -286,5 +282,19 @@
   "file": "music/Exhilarate.mp3",
   "gain": 0.1,
   "start": 0
+ },
+ "frame": "capTall",
+ "capStyle": "info2",
+ "hideCredit": true,
+ "tags": [],
+ "cover": {
+  "src": "aerial",
+  "in": 1,
+  "focus": "55% 50%",
+  "zoom": 1.0,
+  "title": [
+   "제한속도 지켜도",
+   "[1차로]에서 단속되는 이유"
+  ]
  }
 }

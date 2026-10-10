@@ -1,52 +1,368 @@
 {
  "titleStyle": "band",
- "captionY": 1640,
+ "captionY": 1580,
  "credit": "사진: NASA",
  "sources": {
-  "msh": {"file": "msh1980_plume_usgs.jpg", "credit": "사진: USGS", "label": "Mount St. Helens eruption column, 18 May 1980 (USGS/Austin Post)", "url": "https://commons.wikimedia.org/wiki/File:MSH80_eruption_mount_st_helens_05-18-80.jpg"},
-  "kil": {"file": "kilauea2018_ash_explosion_usgs.mp4", "credit": "영상: USGS", "label": "Kilauea summit ash explosion, 24 May 2018 (USGS HVO)", "url": "https://www.usgs.gov/media/videos/kilauea-volcano-summit-eruption-may-24-2018"},
-  "landsat": {"file": "paektu_landsat8_2015.jpg", "credit": "사진: NASA", "label": "Mount Paektu, Landsat 8 OLI, Sep 2015 (NASA Earth Observatory)", "url": "https://science.nasa.gov/earth/earth-observatory/mount-paektu-north-koreas-slumbering-giant-88020/"},
-  "pina": {"file": "pinatubo1991_plume_usgs.jpg", "credit": "사진: USGS", "label": "Pinatubo eruption column, 12 Jun 1991 (USGS/Dave Harlow)", "url": "https://commons.wikimedia.org/wiki/File:Pinatubo91eruption_plume.jpg"},
-  "iss": {"file": "paektu_iss006_2003.jpg", "credit": "사진: NASA", "label": "Baitoushan/Paektu caldera from the ISS, ISS006-E-43366, Apr 2003 (NASA JSC)", "url": "https://eol.jsc.nasa.gov/Collections/EarthObservatory/articles/Baitoushan_Volcano,_China_and_North_Korea.htm"},
-  "modis": {"file": "korea_modis_2010003.jpg", "credit": "사진: NASA", "label": "Korean Peninsula and Japan, Terra MODIS, 3 Jan 2010 (NASA Earth Observatory)", "url": "https://science.nasa.gov/earth/earth-observatory/heavy-snow-in-korea-42211/"},
-  "tonga": {"file": "tonga2022_goes_umbrella_nasa_noaa.mp4", "credit": "영상: NASA·NOAA", "label": "Hunga Tonga-Hunga Ha'apai umbrella cloud, GOES-17, 15 Jan 2022 (NASA Earth Observatory)", "url": "https://science.nasa.gov/earth/earth-observatory/hunga-tonga-hunga-haapai-erupts-149347/"}
+  "msh": {
+   "file": "msh1980_plume_usgs.jpg",
+   "credit": "사진: USGS",
+   "label": "Mount St. Helens eruption column, 18 May 1980 (USGS/Austin Post)",
+   "url": "https://commons.wikimedia.org/wiki/File:MSH80_eruption_mount_st_helens_05-18-80.jpg"
+  },
+  "kil": {
+   "file": "kilauea2018_ash_explosion_usgs.mp4",
+   "credit": "영상: USGS",
+   "label": "Kilauea summit ash explosion, 24 May 2018 (USGS HVO)",
+   "url": "https://www.usgs.gov/media/videos/kilauea-volcano-summit-eruption-may-24-2018"
+  },
+  "landsat": {
+   "file": "paektu_landsat8_2015.jpg",
+   "credit": "사진: NASA",
+   "label": "Mount Paektu, Landsat 8 OLI, Sep 2015 (NASA Earth Observatory)",
+   "url": "https://science.nasa.gov/earth/earth-observatory/mount-paektu-north-koreas-slumbering-giant-88020/"
+  },
+  "pina": {
+   "file": "pinatubo1991_plume_usgs.jpg",
+   "credit": "사진: USGS",
+   "label": "Pinatubo eruption column, 12 Jun 1991 (USGS/Dave Harlow)",
+   "url": "https://commons.wikimedia.org/wiki/File:Pinatubo91eruption_plume.jpg"
+  },
+  "iss": {
+   "file": "paektu_iss006_2003.jpg",
+   "credit": "사진: NASA",
+   "label": "Baitoushan/Paektu caldera from the ISS, ISS006-E-43366, Apr 2003 (NASA JSC)",
+   "url": "https://eol.jsc.nasa.gov/Collections/EarthObservatory/articles/Baitoushan_Volcano,_China_and_North_Korea.htm"
+  },
+  "modis": {
+   "file": "korea_modis_2010003.jpg",
+   "credit": "사진: NASA",
+   "label": "Korean Peninsula and Japan, Terra MODIS, 3 Jan 2010 (NASA Earth Observatory)",
+   "url": "https://science.nasa.gov/earth/earth-observatory/heavy-snow-in-korea-42211/"
+  },
+  "tonga": {
+   "file": "tonga2022_goes_umbrella_nasa_noaa.mp4",
+   "credit": "영상: NASA·NOAA",
+   "label": "Hunga Tonga-Hunga Ha'apai umbrella cloud, GOES-17, 15 Jan 2022 (NASA Earth Observatory)",
+   "url": "https://science.nasa.gov/earth/earth-observatory/hunga-tonga-hunga-haapai-erupts-149347/"
+  }
  },
  "clips": [
-  {"src": "msh", "from": "hook", "label": "세인트헬렌스 분화 기둥", "crop": [0.5, 0.33, 1.0], "zoom": [1.0, 1.08]},
-  {"src": "kil", "from": "hook.화산재", "in": 12.0, "label": "킬라우에아 화산재", "crop": [0.4, 0.45, 1.0], "zoom": [1.0, 1.06], "audio": 0},
-  {"src": "landsat", "from": "past", "label": "백두산 천지", "crop": [0.425, 0.294, 2.2], "zoom": [1.0, 1.06]},
-  {"src": "pina", "from": "past.지난", "label": "피나투보 분화 기둥", "crop": [0.5, 0.4, 1.0], "zoom": [1.0, 1.06]},
-  {"src": "iss", "from": "past.가장", "label": "우주에서 본 백두산 칼데라", "crop": [0.49, 0.55, 1.5], "zoom": [1.0, 1.06]},
-  {"src": "modis", "from": "ash", "label": "한반도 위성사진 (백두산)", "crop": [0.5, 0.0, 1.0], "zoom": [1.0, 1.0]},
-  {"src": "modis", "from": "ash.일본", "label": "한반도 위성사진 (일본)", "crop": [0.5, 1.0, 1.0], "zoom": [1.0, 1.0]},
-  {"src": "tonga", "from": "wind", "in": 0.0, "speed": 0.55, "label": "통가 분화 우산 구름 (위성)", "crop": [0.48, 0.5, 1.6], "zoom": [1.0, 1.0], "audio": 0},
-  {"src": "iss", "from": "now", "label": "눈 덮인 백두산", "crop": [0.49, 0.5, 1.15], "zoom": [1.0, 1.06]},
-  {"src": "landsat", "from": "now.작은", "label": "백두산 전체", "crop": [0.45, 0.35, 1.0], "zoom": [1.0, 1.08]},
-  {"src": "landsat", "from": "watch", "label": "위성으로 본 천지", "crop": [0.425, 0.294, 3.2], "zoom": [1.0, 1.06]},
-  {"src": "modis", "from": "watch.온도와", "label": "위성으로 본 백두산 일대", "crop": [0.5, 0.11, 2.2], "zoom": [1.0, 1.06]},
-  {"src": "kil", "from": "end", "in": 20.0, "label": "화산재 기둥", "crop": [0.4, 0.45, 1.0], "zoom": [1.0, 1.06], "audio": 0},
-  {"src": "landsat", "from": "end.그래서", "label": "고요한 천지", "crop": [0.425, 0.294, 1.6], "zoom": [1.0, 1.1]}
+  {
+   "src": "msh",
+   "from": "hook",
+   "label": "세인트헬렌스 분화 기둥",
+   "crop": [
+    0.5,
+    0.33,
+    1.0
+   ],
+   "zoom": [
+    1.0,
+    1.08
+   ]
+  },
+  {
+   "src": "kil",
+   "from": "q",
+   "in": 12.0,
+   "label": "킬라우에아 화산재",
+   "crop": [
+    0.4,
+    0.45,
+    1.0
+   ],
+   "zoom": [
+    1.0,
+    1.06
+   ],
+   "audio": 0
+  },
+  {
+   "src": "landsat",
+   "from": "past",
+   "label": "백두산 천지",
+   "crop": [
+    0.425,
+    0.294,
+    1.563
+   ],
+   "zoom": [
+    1.0,
+    1.06
+   ]
+  },
+  {
+   "src": "pina",
+   "from": "past.지난",
+   "label": "피나투보 분화 기둥",
+   "crop": [
+    0.5,
+    0.4,
+    1.0
+   ],
+   "zoom": [
+    1.0,
+    1.06
+   ]
+  },
+  {
+   "src": "iss",
+   "from": "past.가장",
+   "label": "우주에서 본 백두산 칼데라",
+   "crop": [
+    0.49,
+    0.55,
+    1.066
+   ],
+   "zoom": [
+    1.0,
+    1.06
+   ]
+  },
+  {
+   "src": "modis",
+   "from": "ash",
+   "label": "한반도 위성사진 (백두산)",
+   "crop": [
+    0.5,
+    0.0,
+    1.0
+   ],
+   "zoom": [
+    1.0,
+    1.0
+   ]
+  },
+  {
+   "src": "modis",
+   "from": "ash.일본",
+   "label": "한반도 위성사진 (일본)",
+   "crop": [
+    0.5,
+    1.0,
+    1.0
+   ],
+   "zoom": [
+    1.0,
+    1.0
+   ]
+  },
+  {
+   "src": "tonga",
+   "from": "wind",
+   "in": 0.0,
+   "speed": 0.55,
+   "label": "통가 분화 우산 구름 (위성)",
+   "crop": [
+    0.48,
+    0.5,
+    1.137
+   ],
+   "zoom": [
+    1.0,
+    1.0
+   ],
+   "audio": 0
+  },
+  {
+   "src": "iss",
+   "from": "now",
+   "label": "눈 덮인 백두산",
+   "crop": [
+    0.49,
+    0.5,
+    1.0
+   ],
+   "zoom": [
+    1.0,
+    1.06
+   ]
+  },
+  {
+   "src": "landsat",
+   "from": "now.작은",
+   "label": "백두산 전체",
+   "crop": [
+    0.45,
+    0.35,
+    1.0
+   ],
+   "zoom": [
+    1.0,
+    1.08
+   ]
+  },
+  {
+   "src": "landsat",
+   "from": "watch",
+   "label": "위성으로 본 천지",
+   "crop": [
+    0.425,
+    0.294,
+    2.274
+   ],
+   "zoom": [
+    1.0,
+    1.06
+   ]
+  },
+  {
+   "src": "modis",
+   "from": "watch.온도와",
+   "label": "위성으로 본 백두산 일대",
+   "crop": [
+    0.5,
+    0.11,
+    2.115
+   ],
+   "zoom": [
+    1.0,
+    1.06
+   ]
+  },
+  {
+   "src": "kil",
+   "from": "end",
+   "in": 20.0,
+   "label": "화산재 기둥",
+   "crop": [
+    0.4,
+    0.45,
+    1.0
+   ],
+   "zoom": [
+    1.0,
+    1.06
+   ],
+   "audio": 0
+  },
+  {
+   "src": "landsat",
+   "from": "end.그래서",
+   "label": "고요한 천지",
+   "crop": [
+    0.425,
+    0.294,
+    1.137
+   ],
+   "zoom": [
+    1.0,
+    1.1
+   ]
+  }
  ],
  "marks": [
-  {"kind": "circle", "x": 540, "y": 940, "r": 130, "from": "past+0.2", "to": "past.지난-0.05"},
-  {"kind": "circle", "x": 548, "y": 568, "r": 90, "from": "ash+0.2", "to": "ash.일본-0.05"},
-  {"kind": "arrow", "x": 850, "y": 1320, "rot": 50, "from": "ash.일본+0.1", "to": "wind-0.05"},
-  {"kind": "circle", "x": 540, "y": 940, "r": 110, "from": "watch+0.2", "to": "watch.온도와-0.05"}
+  {
+   "kind": "circle",
+   "x": 540,
+   "y": 1119,
+   "r": 130,
+   "from": "past+0.2",
+   "to": "past.지난-0.05"
+  },
+  {
+   "kind": "circle",
+   "x": 548,
+   "y": 575,
+   "r": 94,
+   "from": "ash+0.2",
+   "to": "ash.일본-0.05"
+  },
+  {
+   "kind": "arrow",
+   "x": 862,
+   "y": 1754,
+   "rot": 50,
+   "from": "ash.일본+0.1",
+   "to": "wind-0.05"
+  },
+  {
+   "kind": "circle",
+   "x": 540,
+   "y": 1160,
+   "r": 110,
+   "from": "watch+0.2",
+   "to": "watch.온도와-0.05"
+  }
  ],
- "stickers": [
-  {"text": "참고: 1980 美 세인트헬렌스 분화", "from": "hook+0.1", "to": "hook.화산재-0.05", "y": 520, "size": 40},
-  {"text": "참고: 하와이 킬라우에아", "from": "hook.화산재+0.1", "to": "past-0.05", "y": 520, "size": 40},
-  {"text": "백두산 천지 (위성, 2015)", "from": "past+0.1", "to": "past.지난-0.05", "y": 520},
-  {"text": "참고: 1991 필리핀 피나투보", "from": "past.지난+0.1", "to": "past.가장-0.05", "y": 520, "size": 40},
-  {"text": "📍 백두산", "from": "ash+0.1", "to": "ash.일본-0.05", "x": 760, "y": 520},
-  {"text": "946년 화산재 → 일본", "from": "ash.일본+0.1", "to": "wind-0.05", "y": 520},
-  {"text": "참고: 2022 통가 분화 (위성)", "from": "wind+0.1", "to": "now-0.05", "y": 520, "size": 40},
-  {"text": "2002~2005년 무렵", "from": "now.작은-0.6", "to": "watch-0.05", "y": 520},
-  {"text": "기상청: Landsat·Sentinel-1 위성 감시", "from": "watch+0.1", "to": "end-0.05", "y": 520, "size": 40},
-  {"text": "참고: 하와이 킬라우에아", "from": "end+0.1", "to": "end.그래서-0.35", "y": 520, "size": 40}
+ "stickers": [],
+ "sfx": [
+  [
+   "hook",
+   "whoosh",
+   0.4
+  ],
+  [
+   "past",
+   "boom",
+   0.35
+  ],
+  [
+   "ash.일본",
+   "pop",
+   0.4
+  ],
+  [
+   "now",
+   "k_question_001",
+   0.4
+  ],
+  [
+   "end",
+   "k_error_003",
+   0.35
+  ]
  ],
- "sfx": [["hook", "whoosh", 0.4], ["past", "boom", 0.35], ["ash.일본", "pop", 0.4], ["now", "k_question_001", 0.4], ["end", "k_error_003", 0.35]],
- "punches": ["past", "now"],
- "flashes": ["past"],
- "music": {"file": "music/Lightless Dawn.mp3", "gain": 0.13, "start": 0}
+ "punches": [
+  "past",
+  "now"
+ ],
+ "flashes": [
+  "past"
+ ],
+ "music": {
+  "file": "music/Lightless Dawn.mp3",
+  "gain": 0.13,
+  "start": 0
+ },
+ "frame": "capTall",
+ "capStyle": "info2",
+ "hideCredit": true,
+ "tags": [
+  {
+   "text": "참고: 1980 美 세인트헬렌스 분화",
+   "from": "hook",
+   "to": "q-0.05"
+  },
+  {
+   "text": "참고: 하와이 킬라우에아",
+   "from": "q",
+   "to": "past-0.05"
+  },
+  {
+   "text": "참고: 1991 필리핀 피나투보",
+   "from": "past.지난",
+   "to": "past.가장-0.05"
+  },
+  {
+   "text": "참고: 2022 통가 분화(위성)",
+   "from": "wind",
+   "to": "now-0.05"
+  },
+  {
+   "text": "참고: 하와이 킬라우에아",
+   "from": "end",
+   "to": "end.그래서-0.05"
+  }
+ ],
+ "cover": {
+  "src": "landsat",
+  "focus": "42% 29%",
+  "zoom": 1.0,
+  "title": [
+   "백두산이 폭발하면",
+   "[화산재]는 어디로 갈까?"
+  ],
+  "at": "bottom"
+ }
 }
