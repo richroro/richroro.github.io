@@ -11,7 +11,11 @@ SYL = re.compile(r"[가-힣A-Za-z0-9%]")
 # title patterns of 100k+ shorts (research-fun.md §5, research-info.md §1): "~하는 이유", "~썰", "정체", "생긴 일", "역대급",
 # "TOP N", "소름", "~에 대한 몇가지", "~의 필살기", "~ 특", "~의 최후/결말", X vs Y, second person, ㅋㅋ/ㄷㄷ/?, numbers
 HOOKS = ["이유", "썰", "정체", "생긴 일", "생기는 일", "하는 일", "최후", "결말", "역대급", "TOP", "소름", "실화", "레전드", "현실", "충격", "차이",
-         "vs", "몇가지", "몇 가지", "필살기", " 특", "당신", "반응", "?", "ㅋㅋ", "ㄷㄷ", "!!"]
+         "vs", "몇가지", "몇 가지", "필살기", " 특", "당신", "반응", "?", "ㅋㅋ", "ㄷㄷ", "!!",
+         # research-formats2.md §5-7: 낙서 짤툰 noun phrases ("~의 수명", "~ 근황", "~의 말투 특징", "~하면 벌어지는 일"),
+         # 그 시절 레트로 ("그 시절 ~", "MZ는 모르는"), 2D 운전 애니 ("~ 빌런 참교육", "30초 만에 이해하기"), [괴담]
+         "벌어지는 일", "근황", "특징", "수명", "모르는", "단계", "진화", "비결", "민폐", "시절", "참교육", "빌런", "이해하기",
+         "괴담", "무서운"]
 # a subscribe/like ask; "좋아요" alone is ordinary speech ("그 나무가 좋아요?"), so it counts only with 눌러·부탁·구독
 ASKS = re.compile(r"구독|알림\s*설정|좋아요\s*(눌|부탁|와|랑|및)")
 PICTURE = "crop=1080:1080:0:400"  # the frame box under the title band, where cuts and black frames count
@@ -30,7 +34,11 @@ def measure(f, thr):
     cuts = []
     for x in (float(x) for x in re.findall(r"pts_time:([\d.]+)", err)):
         if x > 0.2 and (not cuts or x - cuts[-1] > 0.3): cuts.append(x)
-    return dur, (lufs[-1] if lufs else None), black, cuts
+    # one black closing frame (a clip that stopped a frame before the end) is too short for blackdetect but blinks on every loop
+    err = run(["ffmpeg", "-hide_banner", "-nostats", "-sseof", "-0.25", "-i", f, "-vf", f"{PICTURE},signalstats,metadata=print:key=lavfi.signalstats.YAVG", "-an", "-f", "null", "-"]).stderr
+    ys = [float(y) for y in re.findall(r"YAVG=([\d.]+)", err)]
+    endblack = len(ys) >= 2 and ys[-1] < 3 and ys[-2] > 10
+    return dur, (lufs[-1] if lufs else None), black, cuts, endblack
 
 def stills(f, dur, out):
     run(["ffmpeg", "-v", "error", "-y", "-ss", "0.03", "-i", f, "-frames:v", "1", f"{out}/first.png"])
@@ -63,9 +71,9 @@ def review(sid):
     f = f"{HERE}/final/{sid}.mp4"
     out = f"{HERE}/out/review/{sid}"; os.makedirs(out, exist_ok=True)
     title, pages, trans, say, edit = texts(sid)
-    # drawn story scenes differ by a character or a bubble, so they need a finer threshold than footage cuts
-    drawn = bool(edit.get("clips")) and all(c.get("gfx", {}).get("type") in ("scene", "post") for c in edit["clips"])
-    dur, lufs, black, cuts = measure(f, 0.04 if drawn else 0.12)
+    # drawn story scenes (and the planned top-down road cartoons) differ by a character or a bubble, so they need a finer threshold than footage cuts
+    drawn = bool(edit.get("clips")) and all(c.get("gfx", {}).get("type") in ("scene", "post", "road") for c in edit["clips"])
+    dur, lufs, black, cuts, endblack = measure(f, 0.04 if drawn else 0.12)
     if edit.get("segments"):  # translated-clip shorts: segment joins are cuts too, even when the picture barely changes
         t = 0.0
         for sg in edit["segments"][:-1]:
@@ -97,7 +105,7 @@ def review(sid):
     asked = sorted({m.group(0) for s in say + pages for m in [ASKS.search(s)] if m})
     row("구독·좋아요 요청", not asked, False, ", ".join(asked) or "없음")
     row("소리", lufs is not None and abs(lufs + 14) <= 1, lufs is not None and abs(lufs + 14) <= 2, f"{lufs} LUFS")
-    row("검은 화면", not black, False, ", ".join(f"{a}~{b}초" for a, b in black) or "없음")
+    row("검은 화면", not black and not endblack, False, ", ".join([f"{a}~{b}초" for a, b in black] + (["마지막 1프레임"] if endblack else [])) or "없음")
     size = os.path.getsize(f) / 1e6
     row("용량", size <= 30, False, f"{size:.1f}MB")
     lines = [f"# {sid} 검토", "", "| 항목 | 결과 | 값 |", "|---|---|---|"] + [f"| {n} | {r} | {v} |" for n, r, v in rows]

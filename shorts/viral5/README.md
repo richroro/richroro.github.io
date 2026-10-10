@@ -28,7 +28,7 @@ python3 qa_review.py <id>                   # 조회수 10만+ 쇼츠 형식 검
 npx remotion studio                         # 미리보기
 ```
 
-- `shorts/<id>/script.json` — 대사(`say`, `|`로 호흡), 자막(`cap`, `/`로 페이지, `[키워드]`는 노란색)
+- `shorts/<id>/script.json` — 대사(`say`, `|`로 호흡), 자막(`cap`, `/`로 페이지, `[키워드]`는 노란색, `{키워드}`는 빨강)
 - `shorts/<id>/edit.json` — 컷 목록. 시간은 내레이션 기준 앵커라 목소리를 다시 뽑아도 편집이 따라갑니다.
   `"crane"`(그 줄 시작), `"crane.줄에"`(그 단어를 말하는 순간), `"crane@end+0.1"`(그 줄 끝 0.1초 뒤).
   `crop: [cx, cy, zoom]`은 원본의 한 지점을 화면 가운데로, `moments`는 원본 소리(관제실 음성 등)를 올리는 구간입니다.
@@ -2432,12 +2432,385 @@ MEDIA=$PWD/media python3 politics/prep_split.py jensen1     # 원본: media/cele
 > 영상: 백악관(The White House, 2025.1.21) · 이 영상은 영상 속 인물이나 기관이 보증·후원한 것이 아닙니다.
 > #손정의 #AGI #초인공지능 #스타게이트 #영어공부
 
+## "○○ 특" 공감 애니 (`teuk1`~`teuk4`)
+
+자체공감(구독 31.6만)의 벡터 마스코트 "○○ 특" 쇼츠(편당 36~58만, `research/research-fun.md` 4절, 8절 제안 4번)를 우리 찹쌀떡 캐릭터로 만든 4편이다. 썰 쇼츠와 같은 `scene` 클립을 쓰지만 글 카드(`post`)는 없다. 0초부터 첫 장면(제목 띠 + 주인공 표정 + 소품)으로 시작한다. 이어서 번호 붙은 공감 7개를 장면 하나에 3~4초씩 보여 주고, "여러분은 몇 개 해당?ㅋㅋ"라는 댓글 질문으로 끝난다. 마지막 줄은 주인공의 말풍선 "난 7개 다…ㅋㅋ"다.
+
+- **틀**: 내레이터가 항목 이름만 빠르게 읽는다(+15%). 자막은 `"1. 알람 [다섯 번] 끄기"`처럼 번호를 붙인다(번호는 읽지 않음). 그다음 주인공이 말풍선 한 줄로 반응하고(목소리 있음, 아래 자막 없음), 표정이 바뀌며(`to`), 큰 글씨(`big`)가 박힌다.
+- **시리즈 마스코트**: 주홍색 찹쌀떡 "나"(`#FFB36B`)가 네 편 모두에 나온다. 제목 띠 첫 줄은 대상("직장인", "학생이라면 공감", "학교 다닐 때", "누구나 있는"), 둘째 줄은 "○○ 특"이다.
+- **그림**: 전부 직접 그렸다(`src/lib/Sseol.tsx`). 외부 사진·영상은 없다. 그래서 `sources`는 비어 있고 화면 크레딧도 없다.
+- **유머**: 자기 자신을 소재로 한 가벼운 공감이다. 특정 집단, 몸, 지역, 직업을 놀리지 않는다. 등장인물, 학교, 회사, 앱 이름은 모두 지어낸 것이고, 단톡방 화면은 실제 메신저의 로고나 디자인을 쓰지 않은 일반 채팅 화면이다.
+
+| id | 제목 띠 | 길이 | 1~7 | 음악 |
+| --- | --- | --- | --- | --- |
+| `teuk1` | 직장인 / 월요일 아침 특 | 29.0초 | 알람 다섯 번 끄기 · 주말까지 며칠 남았는지 세기 · 씻다가 다시 잠들 뻔 · 지하철에서 서서 졸기 · 회사 앞에서 깊은 한숨 · 커피 마시고 겨우 사람 되기 · 출근하자마자 점심 메뉴 고민 | Hustle |
+| `teuk2` | 학생이라면 공감 / 시험 기간 특 | 31.9초 | 갑자기 책상 정리 · 계획표만 한 시간 · 안 보던 다큐가 꿀잼 · 10분만 누웠는데 아침 · 쉬는 시간 10분에 제일 많이 외움 · 끝나자마자 전부 까먹기 · 벼락치기 중 갑자기 인생 고민 | Sneaky Snitch |
+| `teuk3` | 학교 다닐 때 / 급식 먹을 때 특 | 29.4초 | 4교시부터 메뉴 확인 · 종 치자마자 급식실 직행("뛰지 말고… 빠르게 걷기!") · 앞에 몇 명인지 세기 · 맛있는 반찬은 마지막에 · 친구가 안 먹는 반찬 노리기 · 디저트 나오는 날은 하루 종일 행복 · 식판 반납 전 우유 원샷 | Monkeys Spinning Monkeys |
+| `teuk4` | 누구나 있는 / 단톡방 특 | 29.9초 | 알림 끄고 몰래 다 읽기 · 질문하면 아무도 대답 안 함 · 약속 잡으면 결국 안 만남 · 새벽 감성 톡 아침에 후회 · 엄마한테 보낼 톡을 단톡방에 · 숫자 1 사라지는지 계속 확인(생일 축하로 끝남) · 나가기 버튼 고민만 100번 | Hyperfun |
+
+```bash
+python3 voice_edge.py teuk1 && python3 prep.py teuk1 && ./render.sh teuk1 final/teuk1.mp4 && python3 qa_review.py teuk1
+```
+
+**목소리**(`script.json`의 `voices`)
+
+- `teuk1`: 내레이터 `SunHi` +15%, 나 `InJoon` +10%·+8Hz
+- `teuk2`: 내레이터 `HyunsuMultilingual` +15%, 나 `SunHi` +15%·+20Hz
+- `teuk3`: 내레이터 `SunHi` +15%, 나 `InJoon` +15%·+25Hz
+- `teuk4`: 내레이터 `HyunsuMultilingual` +15%, 나 `SunHi` +12%·+10Hz
+
+**템플릿 추가**(`src/lib/Sseol.tsx`, 기존 편은 그대로)
+
+- 배경 5종을 더했다. `bedroom`(침대·커튼 창), `bath`(타일·거울·세면대), `subway`(지하철 창·손잡이·좌석), `cafeteria`(배식대·메뉴판, `sign` 가능), `desk`(밤 책상·스탠드·책 더미).
+- `chat`은 장면 오른쪽에 단톡방 휴대폰 화면을 그린다. 값은 `{"title": "우리 반 (28)", "msgs": [{"name", "text", "me", "unread"}]}`이다. 메시지 i는 `steps[4 + i]`에 뜨고(없으면 0.45초 간격), 넘치면 위로 밀린다. `chat`이 있으면 인물은 기본적으로 왼쪽(x 0.24)에 선다.
+
+**qa_review**: 4편 모두 11개 항목 PASS(WARN·FAIL 0). 칠판이나 급식실 `sign`이 있는 장면에서는 `big`이 표지판과 겹쳐서 그 장면의 `sign`을 뺐다.
+
+**업로드 문구**
+
+`teuk1`
+- 제목: 직장인 월요일 아침 특ㅋㅋ
+- 설명:
+  ```
+  알람 다섯 번 끄기부터 출근하자마자 점심 고민까지 ⏰☕ 여러분은 몇 개 해당?ㅋㅋ (창작 애니)
+  직접 그린 창작 애니메이션입니다. 등장인물은 실제와 관계없습니다.
+  Music: "Hustle" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
+  ```
+- 해시태그: #공감 #특 #직장인 #월요일 #공감애니
+
+`teuk2`
+- 제목: 시험 기간 특ㅋㅋ
+- 설명:
+  ```
+  시험 전날만 되면 책상 정리가 왜 이렇게 하고 싶을까 📚 여러분은 몇 개 해당?ㅋㅋ (창작 애니)
+  직접 그린 창작 애니메이션입니다. 등장인물은 실제와 관계없습니다.
+  Music: "Sneaky Snitch" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
+  ```
+- 해시태그: #공감 #특 #시험기간 #학생공감 #공감애니
+
+`teuk3`
+- 제목: 급식 먹을 때 특ㅋㅋ
+- 설명:
+  ```
+  4교시부터 메뉴 확인하던 그 시절 🍱 여러분은 몇 개 해당?ㅋㅋ (창작 애니)
+  직접 그린 창작 애니메이션입니다. 등장인물은 실제와 관계없습니다.
+  Music: "Monkeys Spinning Monkeys" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
+  ```
+- 해시태그: #공감 #특 #급식 #학교 #공감애니
+
+`teuk4`
+- 제목: 단톡방 특ㅋㅋ
+- 설명:
+  ```
+  알림 끄고 몰래 다 읽는 사람 손 🙋 여러분은 몇 개 해당?ㅋㅋ (창작 애니)
+  직접 그린 창작 애니메이션입니다. 등장인물과 채팅방은 실제와 관계없습니다.
+  Music: "Hyperfun" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
+  ```
+- 해시태그: #공감 #특 #단톡방 #친구공감 #공감애니
+
+## 역대급 랭킹 TOP5 쇼츠 (`politics/top1`~`top4`, 군대 아님)
+
+「역대급 ○○ 랭킹 TOP5」형(오락 쇼츠 중 조회수 중앙값 410만, `research/research-fun.md`)을 **쓸 수 있는 영상만으로** 만든 네 편입니다. 내레이션 없음, 음악 + 한 줄 자막. 순위는 편집자 선정이고 공식 순위가 아닙니다. 1위가 끝나면 바로 끊겨 5위로 다시 돌아갑니다(`"tail": 0`). 장소·장면마다 두 컷(3.4초 안팎, 두 번째는 다른 구간이나 더 크게 자른 컷)이라 한 장면이 4초를 넘지 않습니다. 사람·얼굴이 나오는 장면은 쓰지 않았습니다(top2만 손).
+
+| id | 제목(화면) | 길이 | 5위 → 1위 | 음악 |
+| --- | --- | --- | --- | --- |
+| `top1` | 역대급 소름 돋는 백룸 같은 공간 / TOP5 (몇 위가 제일 소름?) | 35.1초 | 한밤의 텅 빈 수영장 · 끝이 안 보이는 주차장 · 끝없는 지하 에스컬레이터 · 아무도 없는 쇼핑몰 복도 · 불 꺼진 병원 복도 | Dark Fog |
+| `top2` | 역대급 만족스러운 순간 / TOP5 (몇 위가 제일 좋음?ㅋㅋ) | 35.1초 | 구슬 슬라임 주무르기 · 초코 케이크 단면 · 연필심에 하트 조각 · 물감 흘러내리기 · 키네틱 샌드 자르기 | Monkeys Spinning Monkeys |
+| `top3` | 역대급 신기한 자연현상 / TOP5 (몇 위가 제일 신기?ㄷㄷ) | 37.4초 | 세계 최대 활동 간헐천 · 바다 밑의 호수 · 알래스카 오로라 · 구름에 잠긴 그랜드캐니언 · 최고 400m 용암 분수 | Floating Cities |
+| `top4` | 우주에서 찍힌 소름 돋는 장면 / TOP5 (몇 위가 제일 소름?) | 34.6초 | 우주에서 본 번개 폭풍 · 발밑에 깔린 오로라 · 지구에 드리운 달 그림자 · 지구 위로 떠오른 혜성 · 달 뒤로 지는 지구 | Lightless Dawn |
+
+```bash
+./fetch.sh                                                   # "Dark Fog"(top1) 포함
+MEDIA=$PWD/media python3 politics/prep_split.py top1         # 원본: media/top1~top4/*.mp4 (저장소에 없음, 각 .json의 주소로 다시 받기)
+./render.sh top1 final/top1.mp4                              # top3·top4 보관본은 이어서 CRF 22로 다시 압축(30MB 이하)
+python3 qa_review.py top1                                    # 네 편 모두 FAIL 0, WARN 0
+```
+
+- 레이아웃: `"titleStyle": "band"`, 정사각 화면에 `single` 크롭, 자막 `"captionY": 1380`, 그 아래 순위표(`rank`, 안 나온 순위는 "???", 지금 순위는 노랑). 순위가 바뀔 때 흰 번쩍임 + “○위” 노란 스티커 + `whoosh`. 첫 프레임에 제목·순위표·5위 영상이 함께 보입니다. 원본 소리는 모두 껐습니다(`audio: 0`; 음악·잡음이 섞인 원본이 있어서).
+- top1의 “백룸”은 장르 이름으로만 썼고, 원조 백룸 사진이나 위키 이미지는 쓰지 않았습니다. 영상은 모두 실제 공간의 Pexels 영상이며 어둡게·비네트만 더했습니다(`vf`). 수영장 시계는 21시 28분이라 자막을 “밤 9시 반”으로 적었습니다.
+- top4의 ISS 장면은 NASA 웹 영상(1024×768)이 흐려서, NASA ‘Gateway to Astronaut Photography’의 원본 사진(4256×2832)을 받아 우리가 다시 타임랩스로 이었습니다(사진 번호는 아래). 1위는 NASA 사진 한 장(art002e021278)에 천천히 다가가는 화면입니다. 브리프의 “우주에서 본 로켓 발사”는 쓸 만한 NASA 영상이 없어(ISS에서 찍은 소유스 발사는 연기 자국 사진뿐) 혜성 장면으로 바꿨습니다.
+
+### 영상과 라이선스 (원본 페이지·파일 주소·크레딧·쓴 구간: `media/top*/*.json`, 각 `edit.json`의 `sources`)
+- **Pexels License** (상업적 이용·수정 가능, 출처 표기 선택, 식별 가능한 인물 비하·보증 암시 금지 — 각 영상 페이지와 https://www.pexels.com/license/ 확인)
+  - top1: [6011926](https://www.pexels.com/video/an-indoor-swimming-pool-used-in-training-6011926/) Tima Miroshnichenko, [5972198](https://www.pexels.com/video/view-of-an-empty-indoor-parking-space-5972198/) gusat silviu, [31053763](https://www.pexels.com/video/empty-underground-escalator-in-urban-setting-31053763/) Yunus Kılıç, [15365449](https://www.pexels.com/video/an-empty-shopping-mall-corridor-with-flickering-lights-15365449/) Matthias Groeneveld, [29241126](https://www.pexels.com/video/dimly-lit-hospital-corridor-with-gurney-29241126/) SN.CHE
+  - top2: [6150670](https://www.pexels.com/video/person-squishing-a-purple-slime-with-beads-6150670/) cottonbro studio, [3326577](https://www.pexels.com/video/slicing-the-cake-in-slow-motion-3326577/) Taryn Elliott, [30324202](https://www.pexels.com/video/precision-crafting-of-pink-pencil-sculpture-30324202/) Vũ Vũ, [5908184](https://www.pexels.com/video/pouring-paint-into-a-shape-5908184/) Mike Murray
+- **Pixabay Content License**: top2 1위 [키네틱 샌드 144459](https://pixabay.com/videos/kinetic-sand-sand-cutting-asmr-144459/) (u_5l867xgjyb)
+- **미국 연방기관 퍼블릭 도메인 (17 U.S.C. §105)**
+  - top3: [Steamboat Geyser](https://www.nps.gov/media/video/view.htm?id=E82CA7B7-2638-42F3-9480-5280D003D608) NPS/Jacob W. Frank(2018.9.17) · [브라인 풀](https://archive.oceanexplorer.noaa.gov/okeanos/explorations/ex1711/dailyupdates/media/video/dive10-brinepool/brinepool.html) NOAA Office of Ocean Exploration and Research(2017, 멕시코만) · [데날리 오로라](https://www.nps.gov/media/video/view.htm?id=7207C6A8-ED77-4A35-B3F8-4F09E00B0B86) NPS/Jacob W. Frank(원본 배경음악은 별도 저작물이라 소리 없이 영상만) · [그랜드캐니언 구름 바다](https://www.nps.gov/media/video/view.htm?id=8564EE61-9CF1-4B78-A32F-546EEA5230E8) NPS/M. Quinn(2015.1.28) · [킬라우에아 43번째 분출](https://www.usgs.gov/media/videos/march-10-2026-video-kilauea-episode-43-lava-fountaining) USGS/M. Patrick(2026.3.10)
+  - top4: ISS Crew Earth Observations (Image Science & Analysis Laboratory, NASA Johnson Space Center) — [번개](https://eol.jsc.nasa.gov/BeyondThePhotography/CrewEarthObservationsVideos/#lightningstorms_iss_20120218) ISS030-E-104579~104672(2012.2.18, 우간다→잔지바르) · [남극 오로라](https://eol.jsc.nasa.gov/BeyondThePhotography/CrewEarthObservationsVideos/#aurora_iss_20110917) ISS029-E-5985~6095(2011.9.17, 인도양) · [일식 그림자](https://eol.jsc.nasa.gov/BeyondThePhotography/CrewEarthObservationsVideos/#solareclipse_iss_20120520) ISS031-E-56780~57000(2012.5.20) · [러브조이 혜성](https://eol.jsc.nasa.gov/BeyondThePhotography/CrewEarthObservationsVideos/#lovejoy_iss_20111221) ISS030-E-14287~14400(2011.12.21) · [Earthset art002e021278](https://images.nasa.gov/details/art002e021278) NASA(아르테미스 2호, 2026.4.6)
+  - 화면에는 “영상: Pexels/Pixabay/NASA”, “사진: NASA”, “영상: 미국 국립공원관리청(NPS)” 등 짧은 출처만 적었습니다. 기관 로고·타이틀 카드는 쓰지 않았습니다.
+- 음악: "Dark Fog", "Monkeys Spinning Monkeys", "Floating Cities", "Lightless Dawn" Kevin MacLeod (incompetech.com), CC BY 4.0
+
+### 자막 속 사실과 출처
+- 스팀보트 간헐천은 세계에서 가장 높이 솟는 활동 간헐천, 큰 분출은 300피트(91m) 이상 — [NPS Yellowstone](https://www.nps.gov/yell/learn/nature/steamboat-geyser.htm)
+- 브라인 풀은 사실상 바닷속 호수, 염도가 주변 바닷물의 3~8배 — [NOAA Ocean Exploration EX1711](https://archive.oceanexplorer.noaa.gov/okeanos/explorations/ex1711/dailyupdates/media/video/dive10-brinepool/brinepool.html)
+- 데날리 오로라: 영상 페이지(NPS Denali). 그랜드캐니언: 찬 공기가 따뜻한 공기층 아래 갇히는 드문 ‘지면 역전’이 협곡을 구름으로 채움 — [DOI/NPS](https://www.doi.gov/employees/news/nps-grand-canyon-fills-with-sea-of-clouds)
+- 킬라우에아 43번째 분출(2026.3.10) 최고 분수 높이는 두 분출구 모두 “적어도 1,300피트(400m)로 추정” — [USGS HVO](https://www.usgs.gov/observatories/hvo/news/photo-video-chronology-march-10-11-2026-kilauea-episode-43-eruption-and) (화면: “최고 400m 이상 (추정)”)
+- top4는 각 NASA 페이지 설명 그대로: 2012.2.18 중앙아프리카 번개 폭풍 / 2011.9.17 남극 오로라(인도양 상공) / 2012.5.20 동아시아 금환일식 때 구름 위 달 그림자 / 2011.12.21 러브조이 혜성 / 2026.4.6 아르테미스 2호 승무원이 찍은 Earthset(달 뒤로 지는 지구)
+
+### 업로드 문구
+
+**top1** — 역대급 소름 돋는 백룸 같은 공간 TOP5 ㄷㄷ
+> 아무도 없는 밤 수영장, 끝이 안 보이는 지하주차장, 끝없는 지하 에스컬레이터, 사람 하나 없는 쇼핑몰 복도, 그리고 불 꺼진 병원 복도까지. ‘백룸’ 느낌 나는 실제 공간 TOP5! 다들 몇 위가 제일 소름 돋나요? 순위는 저희 마음대로 고른 것입니다.
+> 영상: Pexels — Tima Miroshnichenko, gusat silviu, Yunus Kılıç, Matthias Groeneveld, SN.CHE
+> 음악: "Dark Fog" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
+> #백룸 #리미널스페이스 #소름 #랭킹 #shorts
+
+**top2** — 역대급 만족스러운 순간 TOP5 ㅋㅋ
+> 구슬 슬라임, 초코 케이크 단면, 연필심 하트 조각, 흘러내리는 물감, 그리고 키네틱 샌드 자르기까지! 보기만 해도 속이 시원한 순간 TOP5. 다들 몇 위가 제일 좋아요? 순위는 저희 마음대로 고른 것입니다.
+> 영상: Pexels — cottonbro studio, Taryn Elliott, Vũ Vũ, Mike Murray · Pixabay — u_5l867xgjyb
+> 음악: "Monkeys Spinning Monkeys" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
+> #만족 #ASMR #키네틱샌드 #힐링 #shorts
+
+**top3** — 역대급 신기한 자연현상 TOP5 ㄷㄷ
+> 91m 넘게 치솟는 세계 최대 활동 간헐천, 바닷속에 있는 호수(브라인 풀), 알래스카 데날리의 오로라, 구름 바다에 잠긴 그랜드캐니언, 그리고 2026년 3월 최고 400m(추정)까지 솟은 하와이 킬라우에아 용암 분수까지. 다들 몇 위가 제일 신기해요? 순위는 저희 마음대로 고른 것입니다.
+> 영상: 미국 국립공원관리청(NPS) — Jacob W. Frank, M. Quinn · 미국 해양대기청(NOAA Ocean Exploration) · 미국 지질조사국(USGS) — M. Patrick (각 기관이 이 영상을 보증하거나 후원하지 않습니다.)
+> 음악: "Floating Cities" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
+> #자연현상 #용암 #오로라 #신기한영상 #shorts
+
+**top4** — 우주에서 찍힌 소름 돋는 장면 TOP5 ㄷㄷ
+> 국제우주정거장(ISS)에서 내려다본 번개 폭풍과 오로라, 2012년 금환일식 때 구름 위에 드리운 달 그림자, 지구 위로 떠오른 러브조이 혜성, 그리고 2026년 4월 아르테미스 2호 승무원이 찍은 ‘달 뒤로 지는 지구’까지. 전부 실제 사진·영상입니다. 다들 몇 위가 제일 소름?
+> 영상·사진: NASA (ISS Crew Earth Observations, Image Science & Analysis Laboratory, NASA Johnson Space Center · Artemis II) (NASA가 이 영상을 보증하거나 후원하지 않습니다.)
+> 음악: "Lightless Dawn" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
+> #우주 #NASA #소름 #지구 #shorts
+
+## 낙서 짤툰 쇼츠 (`doodle1`~`doodle4`)
+
+`research/research-formats2.md` 5절의 "낙서 짤툰 내레이션"(김블루·원정상·도롱챠·콩자반: 최근 15편 중 9~15편이 10만 이상)을 우리 그림과 스톡 사진으로 만든 4편이다. 화면은 검정 바탕에 위쪽 2줄 제목 띠(윗줄 흰색, 아랫줄 초록 `#3CFF6A`), 가운데 1080×1080 그림, 아래 한 줄 자막(`captionY` 1640)이다. 그림은 세 종류를 섞는다. 사진 위에 선 낙서 주인공, 그린 배경의 낙서 장면, 가끔 `gfx` `vs`다. 2~4초마다 바뀐다. 내레이터는 Edge TTS `ko-KR-InJoonNeural` +25%로 빠르고 건조하게 읽는다. 짧은 인물 대사는 자기 목소리로 말풍선에 뜨고, 아래 자막은 없다. 끝은 시청자에게 묻는 한 줄이고, 0.3초 뒤에 끊는다(`"tail": 0.3`). 구독 요청이나 페이드아웃은 없다.
+
+**시리즈 주인공 "도치"**: 주황색 삐죽머리(`#FF7A1A`)에 흰 감자 모양 몸, 막대 팔다리를 가진 낙서 캐릭터다. 네 편 모두에 나온다. 김블루(파란 머리 남자, 흰 곰 후드)나 다른 채널의 캐릭터를 본뜨지 않고 새로 그렸다. 조연도 같은 스킨이고 머리만 다르다. 엄마는 갈색 파마(`perm`), 승객은 검은 단발(`bob`), 민머리(`bald`), 회색 파마다.
+
+| id | 제목 띠 | 길이 | 내용 | 사실/창작 | 음악 |
+| --- | --- | --- | --- | --- | --- |
+| `doodle1` | 대부분 모르는 / 멀티탭의 수명 | 34.4초 | "몇 년 됐음?" → 콘센트·멀티탭 사고 5년간 387건 → "3년? 5년?" → 반전: 정해진 숫자는 없음 → 교체 신호(헐렁, 변색, 타는 냄새), 먼지, 멀티탭에 멀티탭 금지, 에어컨·온열기는 벽 콘센트 → "님 멀티탭은 몇 개 해당?" | 사실 (출처 아래) | Sneaky Snitch |
+| `doodle2` | 중고거래 / "네고 되나요?"의 진화 | 32.1초 | 1만 원 의자 → 네고 → 8천 → "직접 가니까 5천" → 무료 나눔 요청 → "안 팔래요" → "배송비만 내주세요"(5단계) → 반전: 그 의자 아직 내 방에 있음 → "님들이 받은 최강 네고는?" | 창작 | Monkeys Spinning Monkeys |
+| `doodle3` | 버스 하차벨 / 아무도 안 누르면 벌어지는 일 | 33.3초 | 두 정거장 전 → "누가 누르겠지" → 다들 같은 생각, 폰 보는 척 벨만 봄(`vs` 내가 누름 vs 남이 누름) → 버스 통과, 공기 영하 10도 → 네 명이 동시에 벌떡 "기사님, 내려요!" → 반전: 전부 같은 정류장 → 다 같이 걸어서 복귀 → "님들은 벨 먼저 누르는 쪽?" | 창작 | Scheming Weasel |
+| `doodle4` | 엄마가 "냉장고에 있잖아" / 하면 벌어지는 일 | 35.0초 | 김치가 없음 → 엄마 "냉장고에 있잖아!" → 열어 봄, 없음 → 반찬통 탑 해체, 10분째 수색, 엄마 "문 좀 닫아!" → "눈은 장식이니?" → 엄마가 1초 만에 꺼냄, 맨 앞 칸 → `vs` 내 손 vs 엄마 손 → "님 집 냉장고도 엄마만 보이는 칸 있음?" | 창작 | Hyperfun |
+
+```bash
+media/doodle/fetch.sh                      # 사진 17장 → public/doodle/ (저장소에는 넣지 않음)
+for i in 1 2 3 4; do python3 voice_edge.py doodle$i && python3 prep.py doodle$i && ./render.sh doodle$i final/doodle$i.mp4 && python3 qa_review.py doodle$i; done
+```
+
+**목소리**(`script.json`의 `voices`): 내레이터 `InJoon` +25%. 도치는 `HyunsuMultilingual` +18%·+12Hz. doodle2의 구매자는 `SunHi` +15%·+5Hz다. 구매자 대사는 따옴표 자막으로도 나온다. doodle4의 엄마는 `SunHi` +12%·−4Hz다.
+
+**새 템플릿 부품**(모두 하위호환이다. 값을 안 쓰면 예전과 똑같이 그린다)
+
+- **사진 배경** (`src/lib/Doodle.tsx`의 `PhotoBackdrop`, `Sseol.tsx`의 `Scene`): `scene`에 `"photo": "doodle/px16886334.jpg"`(public/ 아래 경로)를 주면 `bg` 대신 그 사진이 장면 칸을 채운다. 천천히 줌인하고(1.03→), 인물은 그 위에 선다. `"photoFit": "cover"`(기본) 또는 `"contain"`, `"photoPos": "70% 50%"`(CSS object-position)로 보일 부분을 고른다. 화면 크레딧은 클립의 `"credit": "사진: Pexels"`로 단다.
+- **낙서 스킨** (`src/lib/Doodle.tsx`의 `Doodle`): 인물에 `"style": "doodle"`을 주면 찹쌀떡 대신 낙서 캐릭터로 그린다. 흰 몸, 막대 팔다리, 굵기가 고르지 않은 검정 선(선을 두 번, 다른 흔들림과 굵기로 그림)이다. 선은 1초에 8번 새로 그려져서 손그림처럼 떨린다(line boil). `"hair": "#FF7A1A"`는 머리색이고, `"hairdo"`는 `spiky`(기본), `perm`, `bob`, `bald` 중 하나다. 기존 13가지 `mood`와 `to`를 그대로 쓴다. 표정마다 팔 자세도 바뀐다(놀람은 만세, 생각은 턱 괴기, 거만은 팔짱, 화남은 허리에 손). `name`, `hat`, `flip`, `size`, `x`도 같다.
+- **빨간 강조** `{단어}` (`src/lib/Marked.tsx`, `Captions.tsx`, `prep.py`): 자막(`cap`)과 제목 띠, 말풍선, `big`, 채팅에서 `{ }` 안의 단어가 빨강(`#FF3B3B`)이 된다. `[ ]` 노랑은 그대로다. 자막의 빨간 단어는 읽는 순간에도 빨강을 유지한다. prep.py는 `{ }`를 쓴 단어에만 `"red": true`를 적으므로, 기존 쇼츠의 `src/data/*.json`은 바이트 단위로 같다. teuk1로 확인했다. 데이터가 같고, 템플릿 변경 전과 후의 정지 화면(123프레임) md5가 같다.
+
+**사진**: 모두 Pexels 사진이다. 사람 얼굴이 없는 물건·장소 사진이고, 읽히는 상표나 로고가 없는 것만 골랐다. 처음 고른 18358118(플러그 사진)은 상표 로고가 보여서 16886336으로 바꿨고, 4061622(냉장고)는 음료 상표가 보여서 뺐다. 각 사진 페이지를 2026-10-10에 열어 "License: Free"(Pexels License)를 확인했다. [Pexels License](https://www.pexels.com/license/)는 무료이고, 상업적 이용과 수정이 가능하며, 출처 표기는 필요 없다. 다만 식별 가능한 인물을 나쁘게 보여 주거나, 보증을 암시하거나, 수정하지 않은 사본을 다시 팔 수는 없다. 그래서 사진을 저장소에 넣지 않고 `media/doodle/fetch.sh`가 받는다. 페이지 주소, 파일 주소, 제작자, 쓴 구간(초)은 `media/doodle/sources.json`과 각 `edit.json`의 `sources`에 있다. 화면에는 "사진: Pexels"만 쓴다.
+
+| 파일 | 제작자 | 쓴 곳(초) |
+| --- | --- | --- |
+| [16886334](https://www.pexels.com/photo/many-chargers-are-connected-to-an-electrical-outlet-on-a-white-background-16886334/) 멀티탭과 충전기 | Саша Алалыкин | doodle1 0~2.4 |
+| [8101095](https://www.pexels.com/photo/white-power-strip-on-gray-floor-8101095/) 바닥의 멀티탭 | Nikita Nikitin | doodle1 8.0~11.5 |
+| [8101107](https://www.pexels.com/photo/white-wall-socket-on-white-painted-wall-8101107/) 벽 콘센트 | Nikita Nikitin | doodle1 16.7~18.6 |
+| [16886336](https://www.pexels.com/photo/many-chargers-are-connected-to-an-electrical-outlet-on-a-white-background-16886336/) 충전기 꽂힌 멀티탭 | Саша Алалыкин | doodle1 18.6~20.6 |
+| [5544612](https://www.pexels.com/photo/sockets-and-cables-5544612/) 줄줄이 이은 콘센트 | Tim Mossholder | doodle1 26.6~29.9 |
+| [36757234](https://www.pexels.com/photo/rustic-wooden-chair-against-weathered-wall-36757234/) 낡은 나무 의자 | Gizem Gökce | doodle2 0~3.4, 21.2~23.0, 27.5~30.2 |
+| [6170455](https://www.pexels.com/photo/brown-cardboard-box-beside-white-wooden-door-6170455/) 문 앞 상자 | Tima Miroshnichenko | doodle2 24.7~27.5 |
+| [17800465](https://www.pexels.com/photo/stop-button-on-a-bus-17800465/) 버스 하차 버튼 | Elina Volkova | doodle3 0~2.8, 12.6~14.8, 31.2~33.2 |
+| [15595486](https://www.pexels.com/photo/interior-of-bus-15595486/) 빈 버스 안 | Pramod Tiwari | doodle3 4.8~6.8 |
+| [15595490](https://www.pexels.com/photo/empty-seats-in-bus-15595490/) 버스 좌석 | Pramod Tiwari | doodle3 6.8~10.9 |
+| [21348105](https://www.pexels.com/photo/seoul-21348105/) 밤의 서울 버스 | Elina Volkova | doodle3 18.0~19.8 |
+| [21235187](https://www.pexels.com/photo/bus-at-stop-on-street-21235187/) 정류장의 버스 | Elina Volkova | doodle3 25.8~27.4 |
+| [38853682](https://www.pexels.com/photo/organized-refrigerator-with-bottles-and-limes-38853682/) 냉장고 안 | thAnh nguyễn | doodle4 0~2.3, 23.5~26.9 |
+| [6508345](https://www.pexels.com/photo/interior-of-contemporary-light-kitchen-with-white-furniture-and-modern-appliances-6508345/) 부엌 | Max Vakhtbovych | doodle4 2.3~4.3, 17.3~20.4 |
+| [4058699](https://www.pexels.com/photo/evening-kitchen-neon-home-4058699/) 밤의 냉장고 | cottonbro studio | doodle4 5.7~6.8 |
+| [4443439](https://www.pexels.com/photo/fruits-and-vegetables-in-the-fridge-4443439/) 냉장고 채소 칸 | Polina Tankilevitch | doodle4 6.8~10.4, 32.5~35.0 |
+| [6823267](https://www.pexels.com/photo/clear-glass-jar-with-kimchi-beside-the-wooden-chopsticks-6823267/) 김치 병 | Antoni Shkraba | doodle4 26.9~28.6 |
+
+**doodle1 사실 확인**
+
+- "콘센트·멀티탭 사고 5년간 387건": 2020~2024년 소비자위해감시시스템(CISS)에 접수된 콘센트·멀티탭·플러그 안전사고 387건이다(79건에서 101건으로 늘었다). 출처는 산업통상부(제품안전정보과)·한국소비자원·국립소방연구원 보도자료 「멀티탭 오사용 시 화재 위험, 어린이 사고 많아 보호자 주의 필요」, 2025-09-04: https://www.motir.go.kr/kor/article/ATCL3f49a5a8c/170883/view
+- "멀티탭에 멀티탭 꽂기 금지", "에어컨·온열기는 벽 콘센트": 같은 보도자료의 주의사항이다. 원문은 "멀티탭에 또 다른 멀티탭을 연결해 사용하지 말 것", "에어컨, 온열기같이 높은 소비전력의 제품은 벽면의 전용·단독 콘센트를 사용할 것"이다.
+- "정해진 숫자(수명 몇 년)는 없음": 위 정부 보도자료와 소방 당국 안내에는 공통 교체 연수가 없다. 언론과 블로그가 인용하는 기간도 2년, 3~5년 등으로 서로 다르다. 그래서 숫자를 쓰지 않고 교체 신호를 소개했다. 비건뉴스(2026-08-29)는 "공식 소비자 자료에 공통 기준이 없다"고 정리했다: https://www.vegannews.co.kr/news/article.html?no=385250
+- 교체 신호, 먼지, 오래된 멀티탭
+  - 헐렁함: 서울시와 한국전기안전공사의 생활 전기안전 캠페인은 "플러그가 느슨하게 접속되면 먼지 등 인화성 물질이 불꽃을 일으킬 수 있다"고 안내한다. 위 비건뉴스 기사에서 인용했다.
+  - 오래된 멀티탭: 소방청은 "피복이 벗겨진 전선이나 오래된 멀티탭을 즉시 새 제품으로 교체"하라고 안내했다. 같은 기사에서 인용했다.
+  - 노후화와 먼지: 부산소방재난본부 화재조사담당은 "노후화ㆍ먼지 오염 등으로 화재가 발생할 수 있으므로" "오래된 멀티탭을 교환하고 먼지 제거 등 자주 청소를 해야 한다"고 밝혔다. 소방방재신문 2019-10-07: https://www.fpn119.co.kr/123504
+  - 콘센트 사이 먼지: 전남 강진소방서는 콘센트 사이에 쌓인 먼지가 전류와 만나 불꽃 화재가 나는 사례(트래킹)를 알렸다(2023-01, 시민일보): https://siminilbo.co.kr/news/newsview.php?ncode=1160275377962087
+  - 변색·그을음·타는 냄새는 위 비건뉴스 기사가 정리한 사용 중단 신호다. 화면에서는 "변색", "타는 냄새면 바로 교체"로만 짧게 말한다.
+- "기억 안 나면 이미 꽤 된 거임"은 농담조 문장이고 수치를 말하지 않는다.
+
+**qa_review**: 4편 모두 11개 항목 PASS(WARN·FAIL 0). 처음 doodle2·doodle3에서 `big`이 장면 끝에 떨어져 거의 안 보였다. 그래서 `big`은 줄 시작 0.4~0.5초 뒤(`"e+0.5"`)로 당겼고, 첫 장면은 0초부터 보이게(-1) 했다. doodle2는 처음에 다른 의자 사진을 섞어 썼는데, "그 의자 아직 내 방에 있음"과 맞지 않아서 같은 의자(36757234)로 통일했다.
+
+**업로드 문구**
+
+`doodle1`
+- 제목: 대부분 모르는 멀티탭의 수명 ㄷㄷ
+- 설명:
+  ```
+  님 방 멀티탭, 몇 년 됐음? 🔌 정해진 수명 대신 이런 신호가 오면 교체! 님 멀티탭은 몇 개 해당?
+  출처: 산업통상부·한국소비자원·국립소방연구원 보도자료(2025.9.4, 2020~2024년 CISS 접수 387건), 소방청·부산소방재난본부·서울시·한국전기안전공사 안전 안내
+  사진: Pexels (Саша Алалыкин, Nikita Nikitin, Tim Mossholder) · 캐릭터는 직접 그린 그림입니다.
+  Music: "Sneaky Snitch" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
+  ```
+- 해시태그: #멀티탭 #생활꿀팁 #전기안전 #짤툰 #낙서툰
+
+`doodle2`
+- 제목: "네고 되나요?"의 진화ㅋㅋ
+- 설명:
+  ```
+  만 원짜리 의자 올렸다가 배송비 낼 뻔한 썰 🪑 님들이 받아본 최강 네고는? (창작)
+  창작 짤툰입니다. 등장인물과 대화는 실제와 관계없으며 특정 앱·서비스와 무관합니다.
+  사진: Pexels (Gizem Gökce, Tima Miroshnichenko)
+  Music: "Monkeys Spinning Monkeys" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
+  ```
+- 해시태그: #중고거래 #네고 #공감 #짤툰 #낙서툰
+
+`doodle3`
+- 제목: 버스 하차벨 아무도 안 누르면ㅋㅋ
+- 설명:
+  ```
+  누가 누르겠지… 하다가 다 같이 걸어간 썰 🚌🔔 님들은 벨 먼저 누르는 쪽? (창작)
+  창작 짤툰입니다. 등장인물은 실제와 관계없습니다.
+  사진: Pexels (Elina Volkova, Pramod Tiwari)
+  Music: "Scheming Weasel" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
+  ```
+- 해시태그: #버스 #하차벨 #눈치게임 #공감 #짤툰
+
+`doodle4`
+- 제목: 엄마 "냉장고에 있잖아"ㅋㅋ
+- 설명:
+  ```
+  10분 찾아도 없던 김치, 엄마는 1초 컷 🫙 님 집 냉장고도 엄마만 보이는 칸 있음? (창작)
+  창작 짤툰입니다. 등장인물은 실제와 관계없습니다.
+  사진: Pexels (thAnh nguyễn, Max Vakhtbovych, cottonbro studio, Polina Tankilevitch, Antoni Shkraba)
+  Music: "Hyperfun" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
+  ```
+- 해시태그: #엄마 #냉장고 #공감 #짤툰 #낙서툰
+
+## 2D 운전 참교육 애니 (`road1`~`road4`)
+
+알룔료(구독 35.2만, 최근 15편 모두 10만+, 중앙값 127만)의 "2D 운전 참교육" 쇼츠(`research/research-formats2.md` 7절)를 우리 그림으로 만든 4편이다. 단순한 2D 차와 찹쌀떡 운전자가 도로 빌런(1차로 정속 주행, 깜빡이 없는 끼어들기, 빨간불 우회전, 스쿨존 과속)을 연기한다. 주인공 표정이 바뀌고, 법규가 나오고, 빌런은 **합법적인 결과**(경찰 단속, 범칙금)로 참교육을 당한다. 사고 장면, 실제 차종·로고, 번호판은 없다. 보복운전은 "범죄"라고 화면과 내레이션에서 말한다(1·2편).
+
+- **틀**: 박자 4개. ① 빌런 행동(0초부터, 첫 프레임이 썸네일) → ② 주인공 반응(운전석 시점, 말풍선) → ③ 법규(조문 그대로, 숫자는 확인한 것만) → ④ 경찰 단속과 범칙금 통고 카드 → 댓글 질문 한 줄, 바로 컷.
+- **시리즈 고정**: 주인공 "나"는 파란 차·노란 얼굴(`#4DA3FF`/`#FFD84D`), 빌런은 빨간 차·보라 얼굴(`#FF5C5C`/`#C9A7FF`), 제목 띠 둘째 줄은 빨강(`"titleKey": "#FF3B3B"`).
+- **목소리**: 내레이터 `InJoon` +20%, 빌런 `HyunsuMultilingual` +10~12%·−6Hz, 나 `SunHi` +15%·+10Hz, 경찰 `InJoon` +12%·−14Hz. 대사 줄은 `"cap": [""]`(말풍선만).
+- **그림·소리**: 전부 직접 그린 것(`src/lib/Road.tsx`, 얼굴은 `Sseol.tsx`의 `Mochi`)이고 경적·사이렌은 numpy로 합성했다(`road_sfx.py`). 외부 사진·영상이 없어서 `sources`는 비어 있고 화면 크레딧도 없다. 사실 근거는 `media/road/facts.json`.
+
+| id | 제목 띠 | 길이 | 내용 | 음악 |
+| --- | --- | --- | --- | --- |
+| `road1` | 고속도로 1차로 / 정속 주행 빌런 참교육 | 36.4초 | 뻥 뚫린 1차로를 막는 빌런 → 답답한 나(위협은 보복운전) → 1차로는 추월할 때만, 끝나면 오른쪽으로(막힐 땐 예외) → 순찰차에 갓길로, 범칙금 4만 원 → "여러분 앞에도 이런 차 있었죠?" | Hyperfun |
+| `road2` | 깜빡이 없이 / 훅 들어오는 차의 최후 | 39.5초 | 노깜빡이 끼어들기, 급브레이크 연쇄 → 똑같이 하면 보복운전 → 30m(고속도로 100m) 전부터, 다 옮길 때까지 깜빡이 → 또 끼어든 뒤차가 경찰차, 범칙금 3만 원 → "깜빡이 잘 켜시나요?" | Sneaky Snitch |
+| `road3` | 빨간불 우회전 / 무조건 서야 하는 이유 | 39.8초 | 빨간불에 멈춘 나에게 빵빵대는 빌런 → 앞 신호 빨간불이면 정지선에서 일단 멈춤(2023.1.22~), 건너려는 사람 있으면 또 멈춤 → 안 서고 간 빌런 단속, 신호 위반 6만 원 → 반전: 우회전 신호등이 있으면 초록 화살표에만 | Scheming Weasel |
+| `road4` | 스쿨존에서 / 30km 넘으면 생기는 일 | 38.3초 | 스쿨존 55km/h 빌런 → 제한속도 대부분 30, 아이가 튀어나와도 30이라 멈춘 나 → 오전 8시~오후 8시 범칙금 가중(20~40 초과: 6만 → 9만) → 25km 초과 단속, 범칙금 9만 원 → "지키고 계신가요?" | Hustle |
+
+```bash
+python3 voice_edge.py road1 && python3 prep.py road1 && ./render.sh road1 final/road1.mp4 && python3 qa_review.py road1
+```
+
+**qa_review**: 4편 모두 11개 항목 PASS(WARN·FAIL 0). 첫 시도에서 `road3`가 제목 호기심(패턴 없음)과 장면 길이(7.1초, 같은 교차로 장면끼리 이어진 곳)에서 FAIL이어서, 제목을 "빨간불 우회전 / 무조건 서야 하는 이유"로 바꾸고 그 두 클립을 이미 확대된 채로 시작하게(`zoom: [from, to]`) 했다. `road2`는 끝 시각이 프레임 반올림 경계에 걸려 마지막 1프레임이 검게 나와서 `tail`을 0.42로 늘렸다(템플릿 수정 없음, 아래 참고).
+
+### 새 템플릿 부품: `road` 그래픽 클립 (`src/lib/Road.tsx`)
+
+`clips`의 한 항목에 `"gfx": {"type": "road", ...}`를 넣는다. 1080×1080 칸에 그려지고, `scene`·`post`처럼 검정 바탕에 자막 그늘이 없다(`ClipShort.tsx`). qa_review는 `road` 클립을 그림 장면으로 세서 더 작은 화면 변화도 전환으로 잡는다. `steps`는 다른 그래픽처럼 내레이션 기준점이나 클립 시작 후 초이고, 아래 값의 "step"은 `steps`의 번호다.
+
+| 값 | 쓰임 |
+|---|---|
+| `view` | `"top"`(위에서 본 도로, 기본) 또는 `"cockpit"`(운전석: 앞유리·대시보드·핸들·주인공 얼굴, 앞차는 뒷모습) |
+| `lanes` | 차로 수(기본 3). 1차로가 가장 왼쪽(중앙선 옆). 갓길 장면은 `lanes: 4`로 두고 4차로에 `paint` "갓길" |
+| `road` | `"highway"`(잔디, 기본) `"city"`(보도) `"school"`(붉은 스쿨존 포장) `"tunnel"`(어두운 벽·주황 조명) |
+| `speed` / `stopAt` | 차선이 흘러가는 속도 px/s(기본 900, 0이면 정지). `stopAt` step에 서서히 멈춤 |
+| `solid` | 차선을 실선으로(차로 변경 금지 구간) |
+| `cars[]` | `{lane, y, color, kind: "car"\|"truck"\|"bus"\|"police", face, mood, to, toAt, tag, path, blink, blinkAt, blinkOff, brake, brakeOff, honk, honkAt, fast, sirenAt}` |
+| `cars[].y` | top: 차 중심 y(0 위 ~ 1080 아래). cockpit: 거리(0 멀리 ~ 1080 바로 앞) |
+| `cars[].path` | `[[step, lane, y, rot?, dur?], ...]`. 그 step부터 `dur`초(기본 0.7) 동안 부드럽게 이동. `lane`은 소수 가능(차로 사이), 차로 변경 때 차 머리가 저절로 돌아간다. `rot` 90은 오른쪽을 향함(우회전) |
+| `blink` | `"L"`/`"R"` 깜빡이(`blinkAt`~`blinkOff` step 동안 점멸) |
+| `brake` | 브레이크등. `true`(처음부터) 또는 step 번호, `brakeOff` |
+| `honk` | 경적 말풍선("빵!"), `honkAt` step부터 1.2초. 화면이 살짝 떨린다(소리는 `sfx`의 `horn`) |
+| `mood` / `to` / `toAt` | 운전자 표정(썰 캐릭터와 같은 13가지), `toAt` step(기본 steps[2])에 `to`로 바뀜 |
+| `kind: "police"` | 흰 차체·검은 앞뒤·"경찰" 글씨·경광등(`sirenAt` step부터 빨강/파랑 점멸). 얼굴 없음 |
+| `tag` / `fast` | 차 밑 이름표("나", "빌런"), 과속 차 뒤 속도선 |
+| `people[]` | 걷는 사람(작은 찹쌀떡) `{x, y, path: [[step, x, y, dur]], color, mood, to, hat, size}` |
+| `cross` | 이 y에 가로 교차로(위아래 횡단보도, 아래쪽 정지선) |
+| `paint[]` | 아스팔트 글씨 `{lane, y, text}`(도로와 함께 흐름) |
+| `signs[]` | 표지 `{x, y, text, kind: "speed"(빨간 원 숫자)\|"info"(파랑)\|"warn"(노랑)\|"green"(고속도로 초록), size}` |
+| `light` | 오른쪽 위 신호등 `"red"`/`"yellow"`/`"green"`/`"arrow"`(초록 →), 또는 `[[step, 상태], ...]`(step −1은 처음) |
+| `shake` | 이 step들에서 화면 흔들림(급정거) |
+| `zoom` / `focus` | 천천히 다가감(숫자), 또는 `[시작, 끝]`(컷 순간부터 다른 화면 크기라서 비슷한 장면끼리도 전환으로 보임). `focus`는 가운데 둘 차 번호 |
+| `say` / `sayAt` | 썰과 같은 말풍선. `who`는 차 번호, 또는 운전석 시점의 주인공 `"me"` |
+| `big` / `bigAt` | 썰과 같은 큰 글씨(기본 steps[3]) |
+| `ticket` / `ticketAt` | 아래에서 올라오는 통고 카드 `{title, lines}`(마지막 줄이 크게, `[ ]`는 빨강) |
+| `imagine` | 과장·상상 장면: 보라 테두리 + "※ 상상" 표시 |
+| `me` | 운전석 시점 주인공 `{face, mood, to, toAt, lane}`(`lane`은 주인공이 달리는 차로, 기본 2) |
+| `place` | 왼쪽 위 장소 표시("📍 고속도로") |
+
+- 효과음 `horn`·`siren`은 `fetch.sh`가 `road_sfx.py`로 `public/sfx/`에 만든다.
+- 알아 둘 점: 컴포지션 길이는 `ceil(end×30)`인데 마지막 클립은 `round(end×30)`에서 끝나서, `end×30`의 소수부가 0.5 미만이면 마지막 1프레임이 비어 검게 나온다(기존 템플릿 동작). 이번에는 `tail`로 피했고 공유 코드는 고치지 않았다.
+- 이번 4편은 모두 합법적인 결과(단속·범칙금)로 끝나서 `imagine`을 쓰지 않았다. 초능력·과장 참교육을 넣을 때는 반드시 `imagine: true`로 표시한다.
+
+### 사실과 출처 (2026-10-10, 국가법령정보센터 현행 본문과 별표 원문 HWP에서 확인)
+
+- 고속도로 1차로: 편도 3차로 이상은 "앞지르기를 하려는" 승용·경형·소형·중형 승합차가 다닌다. 차량통행량 증가 등으로 부득이하게 시속 80km 미만으로 다닐 수밖에 없으면 예외다. — 도로교통법 제60조제1항, 같은 법 시행규칙 제39조·[별표 9]
+- 고속도로 지정차로 통행 위반 범칙금: 승용자동차등 4만 원. — 도로교통법 시행령 제93조제1항·[별표 8] 제39호
+- 깜빡이 시기: 진로를 바꾸려는 지점 30m(고속도로 100m) 이상 앞에서. — 도로교통법 시행령 제21조·[별표 2]. 그 행위가 끝날 때까지 신호. — 도로교통법 제38조제1항
+- 진로변경 신호 불이행 범칙금: 승용자동차등 3만 원. — 시행령 [별표 8] 제52호
+- 빨간불 우회전: 정지선·횡단보도·교차로 직전에서 정지한 후, 신호에 따라 진행하는 다른 차의 교통을 방해하지 않고 우회전. 우회전 삼색등이 적색이면 우회전 불가. — 도로교통법 시행규칙 [별표 2](2022.1.21 개정). 2023년 1월 22일 시행, 우회전 신호등이 있으면 녹색 화살표에만 우회전. — 경찰청 발표 보도([보안뉴스](https://m.boannews.com/html/detail.html?idx=104515), [이투데이](https://www.etoday.co.kr/news/view/2213636))
+- 횡단보도에 보행자가 통행하고 있거나 통행하려고 할 때 일시정지. — 도로교통법 제27조제1항
+- 신호·지시 위반 범칙금: 승용자동차등 6만 원. — 시행령 [별표 8] 제4호
+- 어린이 보호구역 제한속도: 시속 30km 이내로 제한할 수 있다(그래서 "대부분 30"이라고 썼다). — 도로교통법 제12조제1항
+- 스쿨존 범칙금(오전 8시~오후 8시, 승용): 20km/h 초과 40km/h 이하 9만 원(일반 도로는 6만 원, [별표 8] 제6호). 55km/h는 25km/h 초과라서 이 구간이다. — 시행령 제93조제2항·[별표 10] 제3호
+- 보복운전은 형사처벌 대상(형법상 특수협박 등)이라는 일반 설명만 썼고, 형량 숫자는 쓰지 않았다.
+- 벌점은 별표 28의 표 구조를 확실히 읽지 못해서 쓰지 않았다. 별표 8의 묶음 금액(제21~43호 5/4만 원, 제44~53호 3/3만 원)은 HWP 표에서 병합 칸 순서를 보고 읽었고, 별표 10의 2배 관계(통행 금지·제한 위반 4만 → 8만, 보행자 보호 불이행 4만 → 8만)로 교차 확인했다.
+
+### 업로드 문구
+
+`road1`
+- 제목: 1차로 정속 주행 빌런 참교육ㄷㄷ
+- 설명:
+  ```
+  뻥 뚫린 고속도로 1차로를 막고 가는 차, 법으로는 어떻게 될까? 🚗💨 (창작 애니)
+  1차로는 앞지르기할 때 쓰는 차로예요(도로교통법 제60조, 시행규칙 별표 9). 고속도로 지정차로 위반 범칙금은 승용차 4만 원(시행령 별표 8).
+  뒤에서 바짝 붙거나 위협하는 보복운전은 범죄입니다. 위험한 차는 블랙박스 영상으로 신고하세요.
+  직접 그린 창작 애니메이션입니다. 등장인물과 차량은 실제와 관계없습니다.
+  Music: "Hyperfun" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
+  ```
+- 해시태그: #운전 #참교육 #1차로 #고속도로 #도로교통법
+
+`road2`
+- 제목: 깜빡이 없이 훅 들어오는 차의 최후ㄷㄷ
+- 설명:
+  ```
+  깜빡이 없이 끼어드는 차, 결국 이렇게 됩니다 🚨 (창작 애니)
+  차로를 바꿀 땐 30m 전부터(고속도로 100m), 다 옮길 때까지 방향지시등(도로교통법 제38조, 시행령 별표 2). 신호 불이행 범칙금은 승용차 3만 원(시행령 별표 8).
+  화가 나도 똑같이 끼어들면 보복운전, 범죄입니다.
+  직접 그린 창작 애니메이션입니다. 등장인물과 차량은 실제와 관계없습니다.
+  Music: "Sneaky Snitch" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
+  ```
+- 해시태그: #운전 #참교육 #깜빡이 #끼어들기 #도로교통법
+
+`road3`
+- 제목: 빨간불 우회전 무조건 서야 하는 이유ㄷㄷ
+- 설명:
+  ```
+  빨간불 우회전, 그냥 가면 신호 위반! 뒤에서 빵빵대도 일단 멈춤 ✋ (창작 애니)
+  2023년 1월 22일부터 앞 신호가 빨간불이면 정지선에서 멈춘 뒤 우회전(도로교통법 시행규칙 별표 2). 우회전 신호등이 있으면 초록 화살표에만. 신호 위반 범칙금은 승용차 6만 원(시행령 별표 8).
+  직접 그린 창작 애니메이션입니다. 등장인물과 차량은 실제와 관계없습니다.
+  Music: "Scheming Weasel" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
+  ```
+- 해시태그: #운전 #우회전 #일시정지 #참교육 #도로교통법
+
+`road4`
+- 제목: 스쿨존에서 30km 넘으면 생기는 일ㄷㄷ
+- 설명:
+  ```
+  아무도 없어 보여도 스쿨존은 30 🚸 (창작 애니)
+  어린이 보호구역은 시속 30km 이내로 제한할 수 있어요(도로교통법 제12조). 오전 8시~오후 8시 20km/h 초과 40km/h 이하 과속 범칙금은 승용차 9만 원, 일반 도로는 6만 원(시행령 별표 8·10).
+  직접 그린 창작 애니메이션입니다. 등장인물과 차량은 실제와 관계없습니다.
+  Music: "Hustle" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
+  ```
+- 해시태그: #스쿨존 #운전 #참교육 #어린이보호구역 #도로교통법
+
 ## 괴담 쇼츠 “이해하면 소름 돋는 ○○” (`horror1`~`horror4`)
 
 디로록(구독 13.1만)의 「[괴담] 이해하면 무서운 ○○」는 최근 8편이 모두 70만~130만 회다. 짧은 수수께끼 괴담에 빨간 한 단어 제목을 붙이고, 다시 보게 만드는 반전 한 줄로 끝낸다. 공포·괴담은 10만+ 한국 오락 쇼츠에서 다섯 번째로 큰 주제다(중앙값 82만, `research/research-fun.md`). 네 편 모두 **직접 쓴 창작 괴담**이고, 사람이 나오지 않는 Pexels·Pixabay 실사 영상을 어둡게 보정해 깔았다.
 
 - **화면**: 검정 띠 제목(`"titleStyle": "band"`, `"titleKey": "#ff2a2a"`). 둘째 줄은 장소 한 단어로, 빨간색이다. 아래쪽에 한 줄 자막(`"captionY": 1640`)을 둔다.
-- **제목 첫 줄**: 디로록처럼 「[괴담] 이해하면 무서운」으로 하면 `qa_review.py`의 「제목 호기심」이 FAIL이다(목록에 “무서운”이 없음). 그래서 목록에 있는 “소름”을 넣어 「[괴담] 이해하면 소름 돋는」으로 했다. 업로드 제목에는 “이해하면 무서운”을 그대로 쓴다(검색어 #이해하면무서운이야기).
+- **제목 첫 줄**: 화면에는 「[괴담] 이해하면 소름 돋는」을 쓴다. 만들 때는 `qa_review.py`의 제목 패턴 목록에 “무서운”이 없어서 “소름”을 넣었다. 지금은 “괴담”과 “무서운”도 목록에 있다. 업로드 제목에는 “이해하면 무서운”을 그대로 쓴다(검색어 #이해하면무서운이야기).
 - **대괄호**: 띠 제목에서 `[ ]`는 강조 표시라 “[괴담]”이 그대로 보이지 않았다. 그래서 `\[`로 쓰면 대괄호를 글자 그대로 보여 주도록 `src/lib/Marked.tsx`와 `src/ClipShort.tsx`(Title)를 고쳤다. 기존 제목·자막에는 `\[`가 없어서 바뀌는 것이 없다. script.json에는 `"\\[괴담] 이해하면 소름 돋는"`으로 쓴다.
 - **내레이션**: Edge TTS `ko-KR-InJoonNeural` `+5%` `-10Hz`, 짧은 문장. 엘리베이터 안내 방송(horror1)과 택배 문자(horror3)는 `ko-KR-SunHiNeural`로 읽는다.
 - **구성**: 평범한 상황 3~4문장, 생각해야 이상한 한 가지, 봉인하는 마지막 줄, 0.5~0.6초 쉼, 그리고 “이해하셨나요? 정답은 댓글에”.

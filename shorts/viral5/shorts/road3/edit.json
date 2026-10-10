@@ -1,0 +1,715 @@
+{
+ "credit": "",
+ "titleStyle": "band",
+ "titleKey": "#FF3B3B",
+ "captionY": 1640,
+ "sources": {},
+ "music": {
+  "file": "music/scheming_weasel.mp3",
+  "gain": 0.13,
+  "start": 0
+ },
+ "sfx": [
+  [
+   "a",
+   "horn",
+   0.28
+  ],
+  [
+   "b",
+   "horn",
+   0.28
+  ],
+  [
+   "c",
+   "pop",
+   0.2
+  ],
+  [
+   "d",
+   "k_confirmation_002",
+   0.3
+  ],
+  [
+   "d.앞",
+   "whoosh",
+   0.2
+  ],
+  [
+   "e",
+   "ding",
+   0.25
+  ],
+  [
+   "f",
+   "whoosh",
+   0.2
+  ],
+  [
+   "g",
+   "pop",
+   0.2
+  ],
+  [
+   "h",
+   "whoosh",
+   0.2
+  ],
+  [
+   "i",
+   "whoosh_dn",
+   0.25
+  ],
+  [
+   "j",
+   "siren",
+   0.3
+  ],
+  [
+   "k.범칙금",
+   "coin",
+   0.35
+  ],
+  [
+   "l",
+   "whoosh",
+   0.2
+  ],
+  [
+   "l.초록",
+   "ding",
+   0.25
+  ],
+  [
+   "l.알고",
+   "pop",
+   0.2
+  ]
+ ],
+ "clips": [
+  {
+   "from": "a",
+   "label": "빨간불 우회전",
+   "gfx": {
+    "type": "road",
+    "view": "top",
+    "road": "city",
+    "cross": 330,
+    "place": "📍 교차로",
+    "speed": 0,
+    "light": "red",
+    "steps": [
+     -0.15,
+     0.9,
+     1.4
+    ],
+    "cars": [
+     {
+      "color": "#4DA3FF",
+      "face": "#FFD84D",
+      "tag": "나",
+      "lane": 3,
+      "y": 720,
+      "mood": "think",
+      "brake": true,
+      "blink": "R"
+     },
+     {
+      "color": "#FF5C5C",
+      "face": "#C9A7FF",
+      "lane": 3,
+      "y": 1000,
+      "mood": "angry",
+      "tag": "빌런",
+      "honk": "빵빵!",
+      "honkAt": 0
+     },
+     {
+      "lane": 1,
+      "y": 900,
+      "color": "#E8E8E8",
+      "mood": "neutral",
+      "brake": true
+     }
+    ]
+   }
+  },
+  {
+   "from": "b",
+   "label": "재촉",
+   "gfx": {
+    "type": "road",
+    "view": "top",
+    "road": "city",
+    "cross": 330,
+    "speed": 0,
+    "light": "red",
+    "zoom": 1.2,
+    "focus": 1,
+    "steps": [
+     0.05,
+     0.3
+    ],
+    "say": {
+     "who": 1,
+     "text": "우회전인데 [왜 서] 있어!"
+    },
+    "cars": [
+     {
+      "color": "#4DA3FF",
+      "face": "#FFD84D",
+      "tag": "나",
+      "lane": 3,
+      "y": 560,
+      "mood": "sad",
+      "brake": true,
+      "blink": "R"
+     },
+     {
+      "color": "#FF5C5C",
+      "face": "#C9A7FF",
+      "lane": 3,
+      "y": 860,
+      "mood": "angry",
+      "tag": "빌런",
+      "honk": "빵!",
+      "honkAt": 1
+     }
+    ]
+   }
+  },
+  {
+   "from": "c",
+   "label": "빨간불이잖아요",
+   "gfx": {
+    "type": "road",
+    "view": "cockpit",
+    "road": "city",
+    "speed": 0,
+    "light": "red",
+    "lanes": 3,
+    "me": {
+     "lane": 3,
+     "mood": "angry"
+    },
+    "steps": [
+     0.05
+    ],
+    "say": {
+     "who": "me",
+     "text": "[빨간불]이잖아요!"
+    },
+    "cars": [
+     {
+      "lane": 2,
+      "y": 300,
+      "color": "#E8E8E8",
+      "brake": true
+     }
+    ]
+   }
+  },
+  {
+   "from": "d",
+   "label": "일단 멈춤",
+   "gfx": {
+    "type": "road",
+    "view": "top",
+    "road": "city",
+    "cross": 330,
+    "speed": 0,
+    "light": "red",
+    "zoom": 1.25,
+    "focus": 0,
+    "steps": [
+     0.05,
+     0.3,
+     9,
+     0.25
+    ],
+    "big": "일단 [멈춤]",
+    "cars": [
+     {
+      "color": "#4DA3FF",
+      "face": "#FFD84D",
+      "tag": "나",
+      "lane": 3,
+      "y": 720,
+      "mood": "happy",
+      "brake": true
+     }
+    ]
+   }
+  },
+  {
+   "from": "d.앞",
+   "label": "정지선",
+   "gfx": {
+    "type": "road",
+    "view": "top",
+    "road": "city",
+    "cross": 330,
+    "speed": 0,
+    "light": "red",
+    "steps": [
+     0.1,
+     1.4,
+     1.4
+    ],
+    "signs": [
+     {
+      "x": 540,
+      "y": 980,
+      "text": "빨간불이면 정지선에서 멈춤",
+      "kind": "info",
+      "size": 120
+     }
+    ],
+    "cars": [
+     {
+      "color": "#4DA3FF",
+      "face": "#FFD84D",
+      "tag": "나",
+      "lane": 3,
+      "y": 1150,
+      "mood": "neutral",
+      "to": "happy",
+      "toAt": 1,
+      "brake": 1,
+      "path": [
+       [
+        0,
+        3,
+        720,
+        0,
+        1.3
+       ]
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "from": "e",
+   "label": "2023.1.22",
+   "gfx": {
+    "type": "road",
+    "view": "top",
+    "road": "city",
+    "cross": 330,
+    "speed": 0,
+    "light": "red",
+    "steps": [
+     0.05,
+     0.2,
+     9,
+     0.2
+    ],
+    "big": "[2023.1.22]부터",
+    "cars": [
+     {
+      "color": "#4DA3FF",
+      "face": "#FFD84D",
+      "tag": "나",
+      "lane": 3,
+      "y": 720,
+      "mood": "smug",
+      "brake": true,
+      "blink": "R"
+     },
+     {
+      "lane": 2,
+      "y": 760,
+      "color": "#B9F27C",
+      "mood": "neutral",
+      "brake": true
+     }
+    ]
+   }
+  },
+  {
+   "from": "f",
+   "label": "천천히 우회전",
+   "gfx": {
+    "type": "road",
+    "view": "top",
+    "road": "city",
+    "cross": 330,
+    "speed": 0,
+    "light": "red",
+    "steps": [
+     0.2,
+     1.3,
+     2.4
+    ],
+    "cars": [
+     {
+      "color": "#4DA3FF",
+      "face": "#FFD84D",
+      "tag": "나",
+      "lane": 3,
+      "y": 720,
+      "mood": "happy",
+      "blink": "R",
+      "brake": true,
+      "brakeOff": 0,
+      "path": [
+       [
+        0,
+        3,
+        720,
+        0,
+        0.3
+       ],
+       [
+        1,
+        3.35,
+        430,
+        45,
+        1.1
+       ],
+       [
+        2,
+        4.9,
+        330,
+        90,
+        1.0
+       ]
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "from": "g",
+   "label": "보행자",
+   "gfx": {
+    "type": "road",
+    "view": "top",
+    "road": "city",
+    "cross": 330,
+    "speed": 0,
+    "light": "red",
+    "steps": [
+     0.05,
+     2.1,
+     0.6
+    ],
+    "people": [
+     {
+      "x": 1000,
+      "y": 515,
+      "color": "#FF9EBB",
+      "mood": "happy",
+      "path": [
+       [
+        0,
+        330,
+        515,
+        2.4
+       ]
+      ]
+     }
+    ],
+    "cars": [
+     {
+      "color": "#4DA3FF",
+      "face": "#FFD84D",
+      "tag": "나",
+      "lane": 3,
+      "y": 740,
+      "mood": "think",
+      "to": "happy",
+      "toAt": 1,
+      "blink": "R",
+      "brake": true
+     }
+    ],
+    "zoom": [
+     1.3,
+     1.4
+    ],
+    "focus": 0
+   }
+  },
+  {
+   "from": "h",
+   "label": "그 차는",
+   "gfx": {
+    "type": "road",
+    "view": "top",
+    "road": "city",
+    "cross": 330,
+    "speed": 0,
+    "light": "red",
+    "zoom": 1.15,
+    "focus": 0,
+    "steps": [
+     0.05
+    ],
+    "cars": [
+     {
+      "color": "#FF5C5C",
+      "face": "#C9A7FF",
+      "lane": 3,
+      "y": 1100,
+      "mood": "smug",
+      "tag": "빌런",
+      "path": [
+       [
+        0,
+        3,
+        800,
+        0,
+        1.2
+       ]
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "from": "i",
+   "label": "안 서고",
+   "gfx": {
+    "type": "road",
+    "view": "top",
+    "road": "city",
+    "cross": 330,
+    "speed": 0,
+    "light": "red",
+    "steps": [
+     0.05,
+     0.5,
+     1.4
+    ],
+    "say": {
+     "who": 0,
+     "text": "난 [안 서고] 그냥 간다~"
+    },
+    "cars": [
+     {
+      "color": "#FF5C5C",
+      "face": "#C9A7FF",
+      "lane": 3,
+      "y": 800,
+      "mood": "laugh",
+      "tag": "빌런",
+      "fast": true,
+      "path": [
+       [
+        1,
+        3.35,
+        430,
+        45,
+        0.6
+       ],
+       [
+        2,
+        4.9,
+        330,
+        90,
+        0.5
+       ]
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "from": "j",
+   "label": "단속",
+   "gfx": {
+    "type": "road",
+    "view": "top",
+    "road": "city",
+    "speed": 0,
+    "steps": [
+     0.05,
+     0.05,
+     0.6
+    ],
+    "say": {
+     "who": 1,
+     "text": "빨간불에 [정지] 안 하셨죠?"
+    },
+    "cars": [
+     {
+      "color": "#FF5C5C",
+      "face": "#C9A7FF",
+      "lane": 3,
+      "y": 380,
+      "mood": "shock",
+      "to": "sad",
+      "toAt": 2,
+      "brake": true
+     },
+     {
+      "lane": 3,
+      "y": 720,
+      "kind": "police",
+      "sirenAt": 0
+     }
+    ]
+   }
+  },
+  {
+   "from": "k",
+   "label": "범칙금",
+   "gfx": {
+    "type": "road",
+    "view": "top",
+    "road": "city",
+    "speed": 0,
+    "steps": [
+     0,
+     0,
+     0,
+     0.3
+    ],
+    "ticket": {
+     "title": "범칙금 납부 통고",
+     "lines": [
+      "신호·지시 위반",
+      "승용차 [6만 원]"
+     ]
+    },
+    "cars": [
+     {
+      "color": "#FF5C5C",
+      "face": "#C9A7FF",
+      "lane": 3,
+      "y": 200,
+      "mood": "cry",
+      "brake": true
+     },
+     {
+      "lane": 3,
+      "y": 520,
+      "kind": "police"
+     }
+    ]
+   }
+  },
+  {
+   "from": "l",
+   "label": "우회전 신호등",
+   "gfx": {
+    "type": "road",
+    "view": "top",
+    "road": "city",
+    "cross": 330,
+    "speed": 0,
+    "light": "red",
+    "steps": [
+     0.05
+    ],
+    "cars": [
+     {
+      "color": "#4DA3FF",
+      "face": "#FFD84D",
+      "tag": "나",
+      "lane": 3,
+      "y": 720,
+      "mood": "think",
+      "blink": "R",
+      "brake": true
+     }
+    ],
+    "signs": [
+     {
+      "x": 800,
+      "y": 980,
+      "text": "우회전 신호등",
+      "kind": "info",
+      "size": 110
+     }
+    ]
+   }
+  },
+  {
+   "from": "l.초록",
+   "label": "초록 화살표",
+   "gfx": {
+    "type": "road",
+    "view": "top",
+    "road": "city",
+    "cross": 330,
+    "speed": 0,
+    "light": [
+     [
+      -1,
+      "red"
+     ],
+     [
+      0,
+      "arrow"
+     ]
+    ],
+    "steps": [
+     0.3,
+     0.9,
+     1.9
+    ],
+    "cars": [
+     {
+      "color": "#4DA3FF",
+      "face": "#FFD84D",
+      "tag": "나",
+      "lane": 3,
+      "y": 720,
+      "mood": "think",
+      "to": "happy",
+      "toAt": 0,
+      "blink": "R",
+      "brake": true,
+      "brakeOff": 1,
+      "path": [
+       [
+        1,
+        3.35,
+        430,
+        45,
+        1.0
+       ],
+       [
+        2,
+        4.9,
+        330,
+        90,
+        0.9
+       ]
+      ]
+     }
+    ],
+    "zoom": [
+     1.25,
+     1.1
+    ],
+    "focus": 0
+   }
+  },
+  {
+   "from": "l.알고",
+   "label": "질문",
+   "gfx": {
+    "type": "road",
+    "view": "cockpit",
+    "road": "city",
+    "speed": 300,
+    "lanes": 3,
+    "light": "arrow",
+    "me": {
+     "lane": 3,
+     "mood": "happy",
+     "to": "laugh",
+     "toAt": 0
+    },
+    "steps": [
+     0.3
+    ],
+    "cars": []
+   }
+  }
+ ]
+}
