@@ -2431,3 +2431,70 @@ MEDIA=$PWD/media python3 politics/prep_split.py jensen1     # 원본: media/cele
 > 2025년 1월 21일 미국 백악관, AI 인프라 '스타게이트' 발표. 손정의 소프트뱅크그룹 회장: "AGI는 아주, 아주 곧 옵니다. 그다음엔 초인공지능이 와서 인류가 풀 수 있으리라 생각하지 못한 문제들을 풀 겁니다." 영어 원문과 한국어 번역 자막(직접 번역).
 > 영상: 백악관(The White House, 2025.1.21) · 이 영상은 영상 속 인물이나 기관이 보증·후원한 것이 아닙니다.
 > #손정의 #AGI #초인공지능 #스타게이트 #영어공부
+
+## 괴담 쇼츠 “이해하면 소름 돋는 ○○” (`horror1`~`horror4`)
+
+디로록(구독 13.1만)의 「[괴담] 이해하면 무서운 ○○」는 최근 8편이 모두 70만~130만 회다. 짧은 수수께끼 괴담에 빨간 한 단어 제목을 붙이고, 다시 보게 만드는 반전 한 줄로 끝낸다. 공포·괴담은 10만+ 한국 오락 쇼츠에서 다섯 번째로 큰 주제다(중앙값 82만, `research/research-fun.md`). 네 편 모두 **직접 쓴 창작 괴담**이고, 사람이 나오지 않는 Pexels·Pixabay 실사 영상을 어둡게 보정해 깔았다.
+
+- **화면**: 검정 띠 제목(`"titleStyle": "band"`, `"titleKey": "#ff2a2a"`). 둘째 줄은 장소 한 단어로, 빨간색이다. 아래쪽에 한 줄 자막(`"captionY": 1640`)을 둔다.
+- **제목 첫 줄**: 디로록처럼 「[괴담] 이해하면 무서운」으로 하면 `qa_review.py`의 「제목 호기심」이 FAIL이다(목록에 “무서운”이 없음). 그래서 목록에 있는 “소름”을 넣어 「[괴담] 이해하면 소름 돋는」으로 했다. 업로드 제목에는 “이해하면 무서운”을 그대로 쓴다(검색어 #이해하면무서운이야기).
+- **대괄호**: 띠 제목에서 `[ ]`는 강조 표시라 “[괴담]”이 그대로 보이지 않았다. 그래서 `\[`로 쓰면 대괄호를 글자 그대로 보여 주도록 `src/lib/Marked.tsx`와 `src/ClipShort.tsx`(Title)를 고쳤다. 기존 제목·자막에는 `\[`가 없어서 바뀌는 것이 없다. script.json에는 `"\\[괴담] 이해하면 소름 돋는"`으로 쓴다.
+- **내레이션**: Edge TTS `ko-KR-InJoonNeural` `+5%` `-10Hz`, 짧은 문장. 엘리베이터 안내 방송(horror1)과 택배 문자(horror3)는 `ko-KR-SunHiNeural`로 읽는다.
+- **구성**: 평범한 상황 3~4문장, 생각해야 이상한 한 가지, 봉인하는 마지막 줄, 0.5~0.6초 쉼, 그리고 “이해하셨나요? 정답은 댓글에”.
+- **효과음**: 효과음은 아껴 썼다. 딩·경고음·도어락 확인음은 상황 소리로 쓰고, 반전 직전에 심장박동, 끝 줄에 글리치를 넣었다. 번쩍임은 편마다 한 번이다.
+- **음악**: Kevin MacLeod “Gathering Darkness”(horror1·3), “Ghost Story”(horror2·4). `fetch.sh`의 incompetech 목록에 두 곡을 더했다.
+- 피·폭력·실존 장소·브랜드·인물은 없다. 공포는 암시로만 준다.
+
+| id | 띠 제목 | 길이 | 이야기 (정답) |
+| --- | --- | --- | --- |
+| `horror1` | [괴담] 이해하면 소름 돋는 / 엘리베이터 | 34.3초 | 밤 11시, 건물엔 나 혼자. 1층에서 부른 엘리베이터가 4→3→2→1로 내려와 텅 빈 채 열림. 한 발 들어서자 “정원이 초과되었습니다”. 뒷걸음질, 엘리베이터는 혼자 위로. “나는 다음 걸 타기로 했다.” (정답: 눈에 안 보이는 ‘누군가들’로 이미 꽉 차 있었다. 위층에서 내려온 것도 그들) |
+| `horror2` | [괴담] 이해하면 소름 돋는 / 도어락 | 36.4초 | 새벽 3시 도어락이 열렸다 다시 잠김. 비밀번호는 나만 앎. 아침에 현관은 그대로인데 신발이 한 켤레 더. “나는 혼자 산다.” (정답: 누군가 들어와서 안에서 문을 잠갔고, 나간 적이 없다. 아직 집 안에 있다) |
+| `horror3` | [괴담] 이해하면 소름 돋는 / 택배 | 28.0초 | 회사에서 받은 택배 문자: “문 앞에 두었습니다. 안에 계신 분이 바로 받아 가셨어요.” 나는 회사, 혼자 살고, 문은 잠그고 나왔다. 퇴근해 보니 문 앞엔 아무것도 없다. (정답: 잠긴 집 안에 누군가 있었고, 택배를 들고 들어갔다. 지금도 안에 있다) |
+| `horror4` | [괴담] 이해하면 소름 돋는 / 거울 | 28.5초 | 새 원룸의 큰 거울 속 방은 늘 조금 어둡다. 불을 끄고 누웠는데 거울 속 방은 아직 불이 켜져 있고, 거울 속 침대엔 아무도 누워 있지 않다. (정답: 거울 속은 내 방의 반사가 아니라 다른 ‘누군가’의 방이다. 그 사람은 지금 누워 있지 않다. 일어나서 이쪽을 보고 있다) |
+
+```bash
+# 원본: media/horror/sources.json 의 file_url에서 받아 public/<id>/src/ 에 (파일 이름은 edit.json sources.file)
+#   40~60초로 자르고 1080p·무음으로 줄인 뒤 어둡게 보정:
+#   ffmpeg -i <원본> -t 40 -vf "scale=-2:1080,fps=30,eq=gamma=0.78:contrast=1.08:saturation=0.5,colorbalance=bs=0.06:bm=0.04:rs=-0.03,vignette=PI/4.5" -an <file>
+#   (이미 어두운 클립 19217894/5/9, 7598737, 5384813, 4623153, 34786856/878은 eq=saturation=0.6과 푸른 톤만, Pixabay 28237은 eq=gamma=1.6:saturation=0.6과 푸른 톤)
+python3 media/horror/make_edits.py          # shorts/horror*/edit.json + media/horror/sources.json
+for id in horror1 horror2 horror3 horror4; do python3 voice_edge.py $id && python3 prep.py $id && ./render.sh $id final/$id.mp4; done
+for id in horror1 horror2 horror3 horror4; do python3 qa_review.py $id; done
+```
+
+### 영상과 라이선스 (2026-10-10, 각 페이지에서 라이선스 확인)
+사람이 나오는 클립은 쓰지 않았다. 35999369(문 잠금장치)는 손이 들어오기 전(0~2.5초)과 손이 빠진 뒤(5.6초~)만 썼다. 화면에는 “영상: Pexels” 또는 “영상: Pixabay”만 표시한다. 페이지·파일 주소·제작자·쓴 구간은 `media/horror/sources.json`과 각 `edit.json`의 `sources`에 있다.
+- **Pexels License** (무료, 수정 가능, 출처 표기 불필요. 수정 없는 판매·재배포 금지):
+  - horror1: 978049 Stefan Kwiecinski, 5823578 Charlotte May, 34779661 Stefan, 37410328 Airam Dato-on, 15201563 Darina Evstafeva, 19217894 Nino Souza, 15434928 Yusuf Çelik
+  - horror2: 9658661 Videas Cl, 35999369 Jakub Bukowski, 29038649 Адам Аушев, 8472547 MART PRODUCTION, 3512344 Bran Sodre, 19217899 Nino Souza, 7598737 Artadya Gumelar, 5384813 Tima Miroshnichenko
+  - horror3: 34786856·34786878 Sambhaji Gaikwad, 7362603·7362808 RDNE Stock project, 5483080 cottonbro studio, 8346903 Kampus Production, 9658661 Videas Cl, 15365449 Matthias Groeneveld, 7598737 Artadya Gumelar
+  - horror4: 36778198 Curtis Adams, 32834268 Benjamin Eriksen, 27861219 Nothing Ahead, 5384813 Tima Miroshnichenko, 4623153 Artem Podrez, 19217895 Nino Souza, 7598737 Artadya Gumelar
+- **Pixabay Content License** (무료, 수정 가능, 출처 표기 불필요. 원본 그대로의 판매·배포 금지): [130783](https://pixabay.com/videos/elevator-door-open-waiting-elevator-130783/)·[131012](https://pixabay.com/videos/inside-elevator-elevator-rise-131012/) Jesehab(horror1), [28237](https://pixabay.com/videos/house-door-open-spirit-haunted-28237/) Jacques_Barrette(horror2)
+- 음악: Kevin MacLeod (incompetech.com), CC BY 4.0.
+
+### 업로드 문구
+설명란 첫 줄에 **창작 괴담**이라고 밝힌다. 고정 댓글: “정답 맞히신 분? 댓글로 풀이해 주세요 👀”.
+
+**horror1** — [괴담] 이해하면 무서운 엘리베이터 ㄷㄷ
+> 창작 괴담입니다. 실제 장소·인물과 관계없습니다. 아무도 없는 엘리베이터가 왜 정원 초과였을까요? 이해하셨다면 댓글로 정답을 남겨 주세요.
+> 영상: Pexels (Stefan Kwiecinski, Charlotte May, Stefan, Airam Dato-on, Darina Evstafeva, Nino Souza, Yusuf Çelik), Pixabay (Jesehab)
+> 음악: "Gathering Darkness" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
+> #괴담 #이해하면무서운이야기 #공포 #엘리베이터 #shorts
+
+**horror2** — [괴담] 이해하면 무서운 도어락 ㄷㄷ
+> 창작 괴담입니다. 실제 장소·인물과 관계없습니다. 새벽 3시에 열렸다 닫힌 도어락, 그리고 한 켤레 늘어난 신발. 이해하셨다면 댓글로 정답을 남겨 주세요.
+> 영상: Pexels (Videas Cl, Jakub Bukowski, Адам Аушев, MART PRODUCTION, Bran Sodre, Nino Souza, Artadya Gumelar, Tima Miroshnichenko), Pixabay (Jacques_Barrette)
+> 음악: "Ghost Story" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
+> #괴담 #이해하면무서운이야기 #공포 #도어락 #shorts
+
+**horror3** — [괴담] 이해하면 무서운 택배 문자 ㄷㄷ
+> 창작 괴담입니다. 실제 업체·인물과 관계없습니다. 나는 회사에 있고, 혼자 사는데… 택배는 누가 받아 갔을까요? 이해하셨다면 댓글로 정답을 남겨 주세요.
+> 영상: Pexels (Sambhaji Gaikwad, RDNE Stock project, cottonbro studio, Kampus Production, Videas Cl, Matthias Groeneveld, Artadya Gumelar)
+> 음악: "Gathering Darkness" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
+> #괴담 #이해하면무서운이야기 #공포 #택배 #shorts
+
+**horror4** — [괴담] 이해하면 무서운 거울 ㄷㄷ
+> 창작 괴담입니다. 실제 장소·인물과 관계없습니다. 불을 껐는데 거울 속 방은 아직 밝았다면? 이해하셨다면 댓글로 정답을 남겨 주세요.
+> 영상: Pexels (Curtis Adams, Benjamin Eriksen, Nothing Ahead, Tima Miroshnichenko, Artem Podrez, Nino Souza, Artadya Gumelar)
+> 음악: "Ghost Story" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
+> #괴담 #이해하면무서운이야기 #공포 #거울 #shorts
