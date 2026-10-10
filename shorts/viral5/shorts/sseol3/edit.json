@@ -1,0 +1,398 @@
+{
+ "credit": "",
+ "titleStyle": "band",
+ "captionY": 1650,
+ "sources": {},
+ "music": {
+  "file": "music/monkeys_spinning_monkeys.mp3",
+  "gain": 0.2,
+  "start": 0
+ },
+ "sfx": [
+  [
+   "b.장화만",
+   "boing",
+   0.3
+  ],
+  [
+   "c",
+   "pop",
+   0.3
+  ],
+  [
+   "d",
+   "k_error_003",
+   0.25
+  ],
+  [
+   "e.이만큼",
+   "pop_hi",
+   0.3
+  ],
+  [
+   "f",
+   "whoosh",
+   0.3
+  ],
+  [
+   "g.찾았다",
+   "ding",
+   0.3
+  ],
+  [
+   "h",
+   "boing",
+   0.3
+  ],
+  [
+   "k.뽀송하게",
+   "tada",
+   0.25
+  ],
+  [
+   "l.쨍쨍했다",
+   "ding",
+   0.25
+  ],
+  [
+   "m.가라",
+   "k_error_003",
+   0.3
+  ],
+  [
+   "n",
+   "pop",
+   0.3
+  ]
+ ],
+ "clips": [
+  {
+   "from": "a",
+   "label": "post",
+   "gfx": {
+    "type": "post",
+    "title": "초딩 때 비만 오면 [내 운동화]가 사라진 썰",
+    "body": [
+     "신발장엔 [장화]만 덩그러니",
+     "할머니는 모른 척 ㅋㅋ"
+    ],
+    "steps": [
+     "a.비만",
+     "a.운동화가"
+    ]
+   }
+  },
+  {
+   "from": "b",
+   "label": "boots",
+   "gfx": {
+    "type": "scene",
+    "bg": "home",
+    "place": "📍 현관",
+    "prop": "👢",
+    "chars": [
+     {
+      "name": "나",
+      "hat": "🧢",
+      "mood": "think",
+      "to": "shock",
+      "color": "#FFD84D"
+     }
+    ],
+    "steps": [
+     0,
+     0.1,
+     "b.장화만"
+    ]
+   }
+  },
+  {
+   "from": "c",
+   "label": "wear",
+   "gfx": {
+    "type": "scene",
+    "bg": "home",
+    "say": {
+     "who": 0,
+     "text": "이거 [신고 가라.]"
+    },
+    "prop": "👢",
+    "chars": [
+     {
+      "name": "할머니",
+      "color": "#C9A7FF",
+      "mood": "happy"
+     },
+     {
+      "name": "나",
+      "hat": "🧢",
+      "mood": "sad",
+      "color": "#FFD84D"
+     }
+    ]
+   }
+  },
+  {
+   "from": "d",
+   "label": "no",
+   "gfx": {
+    "type": "scene",
+    "bg": "home",
+    "say": {
+     "who": 1,
+     "text": "싫어! 장화 신으면 [아기 같잖아!]"
+    },
+    "zoom": 1.08,
+    "focus": 1,
+    "chars": [
+     {
+      "name": "할머니",
+      "color": "#C9A7FF",
+      "mood": "neutral"
+     },
+     {
+      "name": "나",
+      "hat": "🧢",
+      "mood": "angry",
+      "color": "#FFD84D"
+     }
+    ]
+   }
+  },
+  {
+   "from": "e",
+   "label": "sulk",
+   "gfx": {
+    "type": "scene",
+    "bg": "linear-gradient(180deg,#7d8ea3 0%,#b8c4d2 70%,#8a96a3 70%)",
+    "place": "📍 등굣길",
+    "chars": [
+     {
+      "name": "나",
+      "hat": "☔",
+      "mood": "angry",
+      "color": "#FFD84D"
+     }
+    ],
+    "big": "입 [삐죽]",
+    "steps": [
+     0,
+     0.1,
+     9,
+     "e.이만큼"
+    ]
+   }
+  },
+  {
+   "from": "f",
+   "label": "blanket",
+   "gfx": {
+    "type": "scene",
+    "bg": "home",
+    "place": "📍 할머니 방",
+    "prop": "🛏️",
+    "chars": [
+     {
+      "name": "나",
+      "hat": "🧢",
+      "mood": "think",
+      "color": "#FFD84D"
+     }
+    ]
+   }
+  },
+  {
+   "from": "g",
+   "label": "found",
+   "gfx": {
+    "type": "scene",
+    "bg": "home",
+    "prop": "👟",
+    "big": "[찾았다!]",
+    "chars": [
+     {
+      "name": "나",
+      "hat": "🧢",
+      "mood": "shock",
+      "color": "#FFD84D"
+     }
+    ],
+    "steps": [
+     0,
+     0.05,
+     9,
+     "g.찾았다"
+    ]
+   }
+  },
+  {
+   "from": "h",
+   "label": "why",
+   "gfx": {
+    "type": "scene",
+    "bg": "home",
+    "say": {
+     "who": 1,
+     "text": "할머니! 이게 [왜 여기] 있어?"
+    },
+    "prop": "👟",
+    "chars": [
+     {
+      "name": "할머니",
+      "color": "#C9A7FF",
+      "mood": "shy"
+     },
+     {
+      "name": "나",
+      "hat": "🧢",
+      "mood": "shock",
+      "color": "#FFD84D"
+     }
+    ]
+   }
+  },
+  {
+   "from": "i",
+   "label": "cold",
+   "gfx": {
+    "type": "scene",
+    "bg": "home",
+    "place": "📍 그때",
+    "prop": "🌡️",
+    "chars": [
+     {
+      "name": "나",
+      "hat": "🧢",
+      "mood": "sick",
+      "color": "#FFD84D"
+     }
+    ]
+   }
+  },
+  {
+   "from": "j",
+   "label": "hide",
+   "gfx": {
+    "type": "scene",
+    "bg": "night",
+    "prop": "👟",
+    "chars": [
+     {
+      "name": "할머니",
+      "color": "#C9A7FF",
+      "mood": "smug"
+     }
+    ]
+   }
+  },
+  {
+   "from": "k",
+   "label": "dry",
+   "gfx": {
+    "type": "scene",
+    "bg": "night",
+    "prop": "🫧👟",
+    "chars": [
+     {
+      "name": "할머니",
+      "color": "#C9A7FF",
+      "mood": "love"
+     }
+    ],
+    "big": "[뽀송뽀송]",
+    "steps": [
+     0,
+     0.1,
+     9,
+     "k.뽀송하게"
+    ]
+   }
+  },
+  {
+   "from": "l",
+   "label": "sunny",
+   "gfx": {
+    "type": "scene",
+    "bg": "street",
+    "place": "📍 그날 아침",
+    "prop": "☀️",
+    "chars": [
+     {
+      "name": "나",
+      "hat": "🧢",
+      "mood": "happy",
+      "to": "laugh",
+      "color": "#FFD84D"
+     }
+    ],
+    "steps": [
+     0,
+     0.1,
+     "l.쨍쨍했다"
+    ]
+   }
+  },
+  {
+   "from": "m",
+   "label": "still",
+   "gfx": {
+    "type": "scene",
+    "bg": "home",
+    "say": {
+     "who": 0,
+     "text": "그래도 [신고 가라.]"
+    },
+    "prop": "👢",
+    "zoom": 1.1,
+    "focus": 0,
+    "chars": [
+     {
+      "name": "할머니",
+      "color": "#C9A7FF",
+      "mood": "smug"
+     },
+     {
+      "name": "나",
+      "hat": "🧢",
+      "mood": "shock",
+      "to": "cry",
+      "color": "#FFD84D"
+     }
+    ],
+    "steps": [
+     0,
+     0.1,
+     "m.가라"
+    ]
+   }
+  },
+  {
+   "from": "n",
+   "label": "alone",
+   "gfx": {
+    "type": "scene",
+    "bg": "street",
+    "place": "📍 등굣길",
+    "chars": [
+     {
+      "name": "친구",
+      "color": "#8FD3FF",
+      "mood": "happy"
+     },
+     {
+      "name": "나",
+      "hat": "🧢",
+      "mood": "sad",
+      "color": "#FFD84D"
+     },
+     {
+      "name": "친구",
+      "color": "#B9F27C",
+      "mood": "happy"
+     }
+    ],
+    "big": "☀️ + 👢"
+   }
+  }
+ ]
+}

@@ -13,7 +13,7 @@ export type Char = { name?: string; color?: string; mood?: Mood; to?: Mood; hat?
 export type SceneG = {
   /** "📍 편의점" tag at the top left */
   place?: string;
-  /** a backdrop drawn here ("class", "home", "street", "store", "army", "night", "stage", "office") or any CSS background */
+  /** a backdrop drawn here ("class", "home", "street", "store", "army", "night", "stage", "office", "door") or any CSS background */
   bg?: string;
   chars: Char[];
   /** a speech bubble over chars[who]; steps[0] is when it pops (default at once) */
@@ -30,8 +30,9 @@ export type SceneG = {
   /** a slow push-in to this scale over the first 3 s, centred on chars[focus] */
   zoom?: number; focus?: number;
 };
-/** the hook card; `meta` is the grey line under the title (default "익명 · 창작 썰"), likes and comments are shown if given */
-export type PostG = { board?: string; title: string; body?: string[]; meta?: string; likes?: string; comments?: string; hot?: boolean };
+/** the hook card; `meta` is the grey line under the title (default "익명 · 창작 썰"), likes and comments are shown if given;
+ *  `chars` (one or two) stand at the bottom right from frame 0, so the thumbnail shows a face, not just text */
+export type PostG = { board?: string; title: string; body?: string[]; meta?: string; likes?: string; comments?: string; hot?: boolean; chars?: Char[] };
 
 const INK = "#1b1b1f";
 const PALETTE = ["#FFD84D", "#FF9EBB", "#8FD3FF", "#B9F27C", "#C9A7FF", "#FFB36B", "#D9D9D9"];
@@ -119,7 +120,7 @@ export const Mochi: React.FC<{ c: Char; i: number; t: number; size: number; mood
 
 /** simple drawn backdrops, so each place reads at a glance; h is the box height, the floor is the bottom 260 px.
  *  `sign` is written on the place's board (chalkboard, stage banner, barracks notice, shop sign) */
-const Backdrop: React.FC<{ kind: string; h: number; sign?: string }> = ({ kind, h, sign }) => {
+const Backdrop: React.FC<{ kind: string; h: number; sign?: string; tagged?: boolean }> = ({ kind, h, sign, tagged }) => {
   const F = h - 260, box = (st: React.CSSProperties, k?: number) => <div key={k} style={{ position: "absolute", ...st }} />;
   const wall = (c1: string, c2: string, floor: string) => (
     <>{box({ inset: 0, background: `linear-gradient(180deg, ${c1}, ${c2})` })}{box({ left: 0, right: 0, top: F, bottom: 0, background: floor })}
@@ -127,7 +128,7 @@ const Backdrop: React.FC<{ kind: string; h: number; sign?: string }> = ({ kind, 
   );
   const write = (left: number, top: number, width: number, height: number, color: string, size = 64) => sign ? (
     <div style={{ position: "absolute", left, top, width, height, display: "flex", justifyContent: "center", alignItems: "center", textAlign: "center",
-      fontFamily: BODY, fontWeight: 900, fontSize: Math.min(size, fitText({ text: sign, withinWidth: width - 60, fontFamily: BODY, fontWeight: "900" }).fontSize), color, lineHeight: 1.2 }}>{sign}</div>
+      fontFamily: BODY, fontWeight: 900, fontSize: Math.min(size, fitText({ text: sign, withinWidth: width - 60, fontFamily: BODY, fontWeight: "900" }).fontSize), color, lineHeight: 1.2, wordBreak: "keep-all" }}>{sign}</div>
   ) : null;
   switch (kind) {
     case "class": return (<>{wall("#f6efdc", "#efe3c4", "#c99a64")}
@@ -145,7 +146,7 @@ const Backdrop: React.FC<{ kind: string; h: number; sign?: string }> = ({ kind, 
         box({ left: x, top, width: w, height: F - top, background: k % 2 ? "#b9c8dc" : "#cdd8e6", borderRadius: "10px 10px 0 0" }, k))}
       {box({ left: 0, right: 0, top: F, bottom: 0, background: "#9aa3ad" })}{box({ left: 0, right: 0, top: F, height: 26, background: "#d8dde2" })}</>);
     case "store": return (<>{wall("#fbfbf6", "#f1f1ea", "#dcdfe3")}
-      {box({ left: 0, right: 0, top: 0, height: 120, background: "linear-gradient(90deg,#2bb3a0,#3d7bd9)" })}{write(0, 0, 1080, 120, "white", 62)}
+      {box({ left: 0, right: 0, top: 0, height: 120, background: "linear-gradient(90deg,#2bb3a0,#3d7bd9)" })}{tagged ? write(400, 0, 680, 120, "white", 62) : write(0, 0, 1080, 120, "white", 62)}
       {[200, 350, 500].map((y, k) => <div key={k} style={{ position: "absolute", left: 60, right: 60, top: y, height: 110, display: "flex", gap: 14, alignItems: "flex-end", borderBottom: "14px solid #b8bec7" }}>
         {Array.from({ length: 12 }, (_, j) => <div key={j} style={{ flex: 1, height: 60 + ((j * 37 + k * 11) % 40), borderRadius: 8, background: PALETTE[(j + k) % PALETTE.length] }} />)}
       </div>)}</>);
@@ -164,6 +165,14 @@ const Backdrop: React.FC<{ kind: string; h: number; sign?: string }> = ({ kind, 
     case "office": return (<>{wall("#eef2f7", "#e3e9f1", "#b7c0cc")}
       {[0, 1, 2].map((k) => box({ left: 110 + k * 300, top: 140, width: 240, height: 300, background: "linear-gradient(180deg,#cfe8ff,#f2f9ff)", border: "12px solid #fff", boxShadow: "0 0 0 5px #b9c3cf" }, k))}
       {box({ left: 60, right: 60, top: F - 40, height: 40, background: "#c9a37a", borderRadius: 8 })}</>);
+    case "door": return (<>{wall("#efe6d8", "#e6dac8", "#b9a58c")}
+      {box({ left: 560, top: 110, width: 330, height: F - 100, background: "linear-gradient(90deg,#8a5a3c,#7a4e33)", border: "12px solid #5e3b26", borderBottom: "none", borderRadius: "8px 8px 0 0" })}
+      {box({ left: 655, top: 140, width: 140, height: 56, background: "#f3e7c9", border: "4px solid #5e3b26", borderRadius: 8 })}{write(655, 140, 140, 56, "#5e3b26", 34)}
+      {box({ left: 712, top: 240, width: 26, height: 26, borderRadius: 13, background: "#2b2b2b", border: "5px solid #d9c27a" })}
+      {box({ left: 598, top: F / 2 + 60, width: 60, height: 18, background: "#d9c27a", borderRadius: 9, boxShadow: "0 3px 0 #9c8540" })}
+      {box({ left: 930, top: 400, width: 74, height: 116, background: "#f7f7f7", border: "5px solid #8a8a8a", borderRadius: 12 })}
+      {box({ left: 953, top: 452, width: 28, height: 28, borderRadius: 14, background: "#ff5a5a" })}
+      {box({ left: 590, top: F + 18, width: 270, height: 34, background: "#7d6b5a", borderRadius: 8 })}</>);
     default: return box({ inset: 0, background: kind });
   }
 };
@@ -178,21 +187,23 @@ export const Scene: React.FC<{ g: SceneG & { steps?: number[] }; t: number; h: n
   // the bubble sits over its speaker (kept on screen), its tail pointing down at them
   let bubble: { left: number; top: number; w: number; size: number; tail: number } | null = null;
   if (g.say) {
-    const text = g.say.text.replace(/[[\]]/g, ""), maxW = 940, pad = 46;
-    const fs = Math.max(50, Math.min(76, fitText({ text, withinWidth: maxW - 2 * pad, fontFamily: BODY, fontWeight: "900" }).fontSize));
+    const text = g.say.text.replace(/[[\]]/g, ""), maxW = 940, pad = 46, inner = maxW - 2 * pad - 12;
+    const fit1 = (width: number) => fitText({ text, withinWidth: width, fontFamily: BODY, fontWeight: "900" }).fontSize;
+    // too long for a big single line: two lines at a bigger size (fitted to a bit under twice the width, as words break unevenly)
+    const one = fit1(inner), fs = Math.max(50, Math.min(76, one >= 60 ? one : fit1(inner * 2 * 0.88)));
     const tw = measureText({ text, fontFamily: BODY, fontSize: fs, fontWeight: "900" }).width, w = Math.min(maxW, tw + 2 * pad + 12);
-    const bh = Math.ceil(tw / (maxW - 2 * pad - 12)) * fs * 1.25 + 60;  // just above the speaker's head, tail included
+    const bh = Math.ceil(tw / (inner * 0.9)) * fs * 1.25 + 60;  // just above the speaker's head, tail included
     const sx = (xs[g.say.who] ?? 0.5) * 1080, left = clamp(sx - w / 2, 24, 1080 - 24 - w);
     bubble = { left, top: Math.max(120, foot - (sz[g.say.who] ?? size) - bh - 64), w, size: fs, tail: clamp(sx - left - 30, 34, w - 94) };
   }
   const bub = bubble ? eBack(prog(t, sayAt, 0.28), 2.2) : 0;
-  const px = g.propX ?? (n === 1 ? Math.min(0.84, xs[0] + 0.36) : 0.5), py = n === 1 ? baseY + 40 : baseY - 70;
+  const px = g.propX ?? (n === 1 ? Math.min(0.84, xs[0] + 0.36) : 0.5), py = n === 1 ? baseY + 40 : n === 2 ? baseY - 70 : baseY - 200;
   const z = 1 + ((g.zoom ?? 1) - 1) * eInOut(prog(t, 0, 3));
   const fx = g.focus != null ? xs[g.focus] * 1080 : 540;
   return (
     <div style={{ position: "absolute", inset: 0, overflow: "hidden" }}>
       <div style={{ position: "absolute", inset: 0, transform: `scale(${z})`, transformOrigin: `${fx}px ${baseY + size / 2}px` }}>
-        <Backdrop kind={g.bg ?? "linear-gradient(180deg, #fff6e8 0%, #ffe9cf 100%)"} h={h} sign={g.sign} />
+        <Backdrop kind={g.bg ?? "linear-gradient(180deg, #fff6e8 0%, #ffe9cf 100%)"} h={h} sign={g.sign} tagged={!!g.place} />
         {g.prop ? (
           <div style={{ position: "absolute", left: px * 1080, top: py, fontSize: 190, lineHeight: 1, whiteSpace: "nowrap",
             transform: `translateX(-50%) scale(${eBack(prog(t, propAt, 0.3), 2.4)}) rotate(${6 * Math.sin(t * 4)}deg)`, filter: "drop-shadow(0 10px 10px rgba(0,0,0,.25))" }}>{g.prop}</div>
@@ -224,7 +235,7 @@ export const Scene: React.FC<{ g: SceneG & { steps?: number[] }; t: number; h: n
       {bubble && g.say ? (
         <div style={{ position: "absolute", left: bubble.left, top: bubble.top, width: bubble.w, transform: `scale(${bub})`, transformOrigin: `${bubble.tail + 30}px 100%`, opacity: clamp(bub * 2) }}>
           <div style={{ position: "relative", background: "white", border: `6px solid ${INK}`, borderRadius: 40, padding: "24px 40px", boxShadow: `8px 8px 0 ${INK}`,
-            fontFamily: BODY, fontWeight: 900, fontSize: bubble.size, lineHeight: 1.25, color: INK, textAlign: "center" }}>
+            fontFamily: BODY, fontWeight: 900, fontSize: bubble.size, lineHeight: 1.25, color: INK, textAlign: "center", wordBreak: "keep-all" }}>
             <Marked text={g.say.text} color="#e8212e" />
             <svg width={60} height={50} style={{ position: "absolute", left: bubble.tail - 6, bottom: -46 }} viewBox="0 0 60 50">
               <path d="M6 0 L30 46 L54 0 Z" fill="white" stroke={INK} strokeWidth={6} strokeLinejoin="round" />
@@ -248,7 +259,7 @@ export const Scene: React.FC<{ g: SceneG & { steps?: number[] }; t: number; h: n
 export const Post: React.FC<{ g: PostG & { steps?: number[] }; t: number }> = ({ g, t }) => {
   const titleSize = Math.max(62, Math.min(84, fitText({ text: g.title.replace(/[[\]]/g, ""), withinWidth: 2 * 880, fontFamily: BODY, fontWeight: "900" }).fontSize));
   return (
-    <div style={{ position: "absolute", inset: 0, background: "#eef0f4", display: "flex", alignItems: "center", justifyContent: "center" }}>
+    <div style={{ position: "absolute", inset: 0, background: "#eef0f4", display: "flex", alignItems: g.chars?.length ? "flex-start" : "center", justifyContent: "center", paddingTop: g.chars?.length ? 40 : 0 }}>
       <div style={{ width: 1000, background: "white", borderRadius: 40, boxShadow: "0 18px 40px rgba(0,0,0,.16)", padding: "44px 50px 40px", transform: `translateY(${30 * (1 - eOut(prog(t, 0, 0.3)))}px)` }}>
         <div style={{ display: "flex", alignItems: "center", gap: 16, fontFamily: BODY, fontWeight: 800, fontSize: 38, color: "#6b7280" }}>
           <span>{g.board ?? "썰 게시판"}</span>
@@ -274,6 +285,14 @@ export const Post: React.FC<{ g: PostG & { steps?: number[] }; t: number }> = ({
           </div>
         ) : null}
       </div>
+      {(g.chars ?? []).slice(0, 2).map((c, i, all) => {
+        const size = all.length === 1 ? 330 : 280, x = all.length === 1 ? 0.8 : [0.62, 0.86][i];
+        return (
+          <div key={i} style={{ position: "absolute", left: x * 1080 - size / 2, bottom: 26, width: size, height: size }}>
+            <Mochi c={c} i={i} t={t} size={size} />
+          </div>
+        );
+      })}
     </div>
   );
 };

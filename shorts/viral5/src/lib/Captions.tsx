@@ -21,7 +21,7 @@ const Word: React.FC<{ token: Token; active: boolean; pop: number }> = ({ token,
       whiteSpace: "pre",
       color: active ? HIGHLIGHT_COLOR : token.key ? KEY_COLOR : "white",
       transform: `scale(${1 + 0.12 * pop}) translateY(${-10 * pop}px)`,
-      margin: "0 0.12em",
+      margin: "0 0.16em",  // wide enough that the popped (1.12x) word doesn't touch its neighbours
     }}
   >
     {token.text.split(EMOJI).map((part, i) =>
