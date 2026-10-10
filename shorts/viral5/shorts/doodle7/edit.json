@@ -1,0 +1,471 @@
+{
+ "credit": "",
+ "titleStyle": "band",
+ "titleKey": "#3CFF6A",
+ "captionY": 1640,
+ "sources": {
+  "px21299748": {
+   "file": "px21299748.jpg",
+   "path": "public/doodle/px21299748.jpg",
+   "page": "https://www.pexels.com/photo/fire-alarm-21299748/",
+   "file_url": "https://images.pexels.com/photos/21299748/pexels-photo-21299748.jpeg?auto=compress&cs=tinysrgb&w=1600",
+   "license": "Pexels License",
+   "creator": "Jakub Zerdzicki",
+   "credit": "사진: Pexels",
+   "seconds": [
+    [
+     0.0,
+     2.52
+    ],
+    [
+     30.67,
+     33.16
+    ]
+   ]
+  },
+  "px39649976": {
+   "file": "px39649976.jpg",
+   "path": "public/doodle/px39649976.jpg",
+   "page": "https://www.pexels.com/photo/analog-pressure-gauge-on-cutting-mat-39649976/",
+   "file_url": "https://images.pexels.com/photos/39649976/pexels-photo-39649976.jpeg?auto=compress&cs=tinysrgb&w=1600",
+   "license": "Pexels License",
+   "creator": "Mohsen Adelimoghaddam",
+   "credit": "사진: Pexels",
+   "seconds": [
+    [
+     4.26,
+     8.35
+    ]
+   ]
+  },
+  "px13756513": {
+   "file": "px13756513.jpg",
+   "path": "public/doodle/px13756513.jpg",
+   "page": "https://www.pexels.com/photo/photograph-of-a-red-fire-extinguisher-13756513/",
+   "file_url": "https://images.pexels.com/photos/13756513/pexels-photo-13756513.jpeg?auto=compress&cs=tinysrgb&w=1600",
+   "license": "Pexels License",
+   "creator": "Tibor Szabo",
+   "credit": "사진: Pexels",
+   "seconds": [
+    [
+     12.91,
+     14.68
+    ]
+   ]
+  },
+  "px4099350": {
+   "file": "px4099350.jpg",
+   "path": "public/doodle/px4099350.jpg",
+   "page": "https://www.pexels.com/photo/kitchen-room-design-4099350/",
+   "file_url": "https://images.pexels.com/photos/4099350/pexels-photo-4099350.jpeg?auto=compress&cs=tinysrgb&w=1600",
+   "license": "Pexels License",
+   "creator": "Taryn Elliott",
+   "credit": "사진: Pexels",
+   "seconds": [
+    [
+     22.82,
+     24.43
+    ]
+   ]
+  }
+ },
+ "music": {
+  "file": "music/scheming_weasel.mp3",
+  "gain": 0.12,
+  "start": 0
+ },
+ "sfx": [
+  [
+   "b",
+   "pop",
+   0.22
+  ],
+  [
+   "c",
+   "whoosh",
+   0.2
+  ],
+  [
+   "d",
+   "ding",
+   0.25
+  ],
+  [
+   "e",
+   "k_error_003",
+   0.3
+  ],
+  [
+   "f",
+   "whoosh",
+   0.2
+  ],
+  [
+   "g",
+   "boing",
+   0.3
+  ],
+  [
+   "h",
+   "pop",
+   0.22
+  ],
+  [
+   "h2",
+   "pop",
+   0.22
+  ],
+  [
+   "i",
+   "whoosh",
+   0.2
+  ],
+  [
+   "j",
+   "pop",
+   0.22
+  ],
+  [
+   "k",
+   "pop",
+   0.22
+  ],
+  [
+   "z",
+   "ding",
+   0.22
+  ]
+ ],
+ "clips": [
+  {
+   "from": "a",
+   "label": "hook",
+   "credit": "사진: Pexels",
+   "gfx": {
+    "type": "scene",
+    "photo": "doodle/px21299748.jpg",
+    "chars": [
+     {
+      "style": "doodle",
+      "hair": "#FF7A1A",
+      "mood": "think",
+      "to": "shock",
+      "x": 0.78,
+      "size": 1
+     }
+    ],
+    "steps": [
+     9,
+     9,
+     "a.바늘",
+     9
+    ]
+   }
+  },
+  {
+   "from": "b",
+   "label": "what",
+   "gfx": {
+    "type": "scene",
+    "bg": "home",
+    "chars": [
+     {
+      "style": "doodle",
+      "hair": "#FF7A1A",
+      "mood": "shock",
+      "x": 0.3
+     }
+    ],
+    "steps": [
+     "b",
+     0.1,
+     9,
+     9
+    ],
+    "prop": "🧯",
+    "propX": 0.74,
+    "say": {
+     "who": 0,
+     "text": "소화기에 [바늘]이 있었어?"
+    }
+   }
+  },
+  {
+   "from": "c",
+   "label": "gauge",
+   "credit": "사진: Pexels",
+   "gfx": {
+    "type": "scene",
+    "photo": "doodle/px39649976.jpg",
+    "chars": [
+     {
+      "style": "doodle",
+      "hair": "#FF7A1A",
+      "mood": "think",
+      "x": 0.2,
+      "size": 0.85
+     }
+    ],
+    "steps": [
+     9,
+     9,
+     9,
+     "c+0.5"
+    ],
+    "big": "[압력계]",
+    "photoPos": "50% 35%"
+   }
+  },
+  {
+   "from": "d",
+   "label": "green",
+   "gfx": {
+    "type": "scene",
+    "bg": "#d8f5c8",
+    "chars": [
+     {
+      "style": "doodle",
+      "hair": "#FF7A1A",
+      "mood": "happy",
+      "x": 0.3
+     }
+    ],
+    "steps": [
+     9,
+     0.1,
+     9,
+     "d+0.5"
+    ],
+    "prop": "✅",
+    "propX": 0.74,
+    "big": "[초록] = 정상"
+   }
+  },
+  {
+   "from": "e",
+   "label": "out",
+   "gfx": {
+    "type": "scene",
+    "bg": "#FFB3C7",
+    "chars": [
+     {
+      "style": "doodle",
+      "hair": "#FF7A1A",
+      "mood": "shock",
+      "x": 0.3
+     }
+    ],
+    "steps": [
+     9,
+     0.1,
+     9,
+     "e+1.3"
+    ],
+    "prop": "🧯",
+    "propX": 0.74,
+    "big": "벗어나면 {교체}"
+   }
+  },
+  {
+   "from": "f",
+   "label": "limit",
+   "credit": "사진: Pexels",
+   "gfx": {
+    "type": "scene",
+    "photo": "doodle/px13756513.jpg",
+    "chars": [
+     {
+      "style": "doodle",
+      "hair": "#FF7A1A",
+      "mood": "think",
+      "x": 0.22,
+      "size": 0.9
+     }
+    ],
+    "steps": [
+     9,
+     9,
+     9,
+     "f+0.6"
+    ],
+    "big": "[기한]?"
+   }
+  },
+  {
+   "from": "g",
+   "label": "10y",
+   "gfx": {
+    "type": "scene",
+    "bg": "#FFE14D",
+    "chars": [
+     {
+      "style": "doodle",
+      "hair": "#FF7A1A",
+      "mood": "shock",
+      "x": 0.3
+     }
+    ],
+    "steps": [
+     9,
+     0.1,
+     9,
+     "g+0.5"
+    ],
+    "prop": "⏳",
+    "propX": 0.74,
+    "big": "분말 [10년]"
+   }
+  },
+  {
+   "from": "h",
+   "label": "extend",
+   "gfx": {
+    "type": "vs",
+    "title": "10년 지나면?",
+    "left": {
+     "label": "교체",
+     "emoji": "🧯"
+    },
+    "right": {
+     "label": "검사 합격",
+     "value": "+3년 (1회)",
+     "emoji": "✅"
+    },
+    "steps": [
+     0.05,
+     0.3,
+     "h+1.0"
+    ]
+   }
+  },
+  {
+   "from": "h2",
+   "label": "2010",
+   "gfx": {
+    "type": "scene",
+    "bg": "home",
+    "chars": [
+     {
+      "style": "doodle",
+      "hair": "#FF7A1A",
+      "mood": "sick",
+      "x": 0.3
+     }
+    ],
+    "steps": [
+     "h2",
+     0.1,
+     9,
+     9
+    ],
+    "prop": "🧯",
+    "propX": 0.74,
+    "say": {
+     "who": 0,
+     "text": "우리 집 거 [2010년산]인데?"
+    }
+   }
+  },
+  {
+   "from": "i",
+   "label": "how",
+   "credit": "사진: Pexels",
+   "gfx": {
+    "type": "scene",
+    "photo": "doodle/px4099350.jpg",
+    "chars": [
+     {
+      "style": "doodle",
+      "hair": "#FF7A1A",
+      "mood": "neutral",
+      "to": "smug",
+      "x": 0.78,
+      "size": 0.9
+     }
+    ],
+    "steps": [
+     9,
+     9,
+     "i+0.8",
+     "i+0.5"
+    ],
+    "big": "딱 [네 동작]"
+   }
+  },
+  {
+   "from": "j",
+   "label": "pin",
+   "gfx": {
+    "type": "scene",
+    "bg": "#fff0e0",
+    "chars": [
+     {
+      "style": "doodle",
+      "hair": "#FF7A1A",
+      "mood": "angry",
+      "x": 0.3
+     }
+    ],
+    "steps": [
+     9,
+     "j+1.6",
+     9,
+     "j+0.3"
+    ],
+    "prop": "🔥",
+    "propX": 0.76,
+    "big": "핀 뽑고 → [불 쪽]"
+   }
+  },
+  {
+   "from": "k",
+   "label": "sweep",
+   "gfx": {
+    "type": "scene",
+    "bg": "#dff3ff",
+    "chars": [
+     {
+      "style": "doodle",
+      "hair": "#FF7A1A",
+      "mood": "smug",
+      "x": 0.3
+     }
+    ],
+    "steps": [
+     9,
+     0.1,
+     9,
+     "k+1.2"
+    ],
+    "prop": "🧹",
+    "propX": 0.74,
+    "big": "{쓱쓱}"
+   }
+  },
+  {
+   "from": "z",
+   "label": "ask",
+   "credit": "사진: Pexels",
+   "gfx": {
+    "type": "scene",
+    "photo": "doodle/px21299748.jpg",
+    "chars": [
+     {
+      "style": "doodle",
+      "hair": "#FF7A1A",
+      "mood": "think",
+      "to": "smug",
+      "x": 0.78,
+      "size": 1
+     }
+    ],
+    "steps": [
+     9,
+     9,
+     "z.초록",
+     9
+    ]
+   }
+  }
+ ]
+}

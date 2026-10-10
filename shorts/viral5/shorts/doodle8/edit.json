@@ -1,0 +1,499 @@
+{
+ "credit": "",
+ "titleStyle": "band",
+ "titleKey": "#3CFF6A",
+ "captionY": 1640,
+ "sources": {
+  "px2566027": {
+   "file": "px2566027.jpg",
+   "path": "public/doodle/px2566027.jpg",
+   "page": "https://www.pexels.com/photo/coffee-machine-2566027/",
+   "file_url": "https://images.pexels.com/photos/2566027/pexels-photo-2566027.jpeg?auto=compress&cs=tinysrgb&w=1600",
+   "license": "Pexels License",
+   "creator": "Sander Dalhuisen",
+   "credit": "사진: Pexels",
+   "seconds": [
+    [
+     0.0,
+     3.05
+    ]
+   ]
+  },
+  "px12620633": {
+   "file": "px12620633.jpg",
+   "path": "public/doodle/px12620633.jpg",
+   "page": "https://www.pexels.com/photo/cup-of-latte-art-on-brown-wooden-table-12620633/",
+   "file_url": "https://images.pexels.com/photos/12620633/pexels-photo-12620633.jpeg?auto=compress&cs=tinysrgb&w=1600",
+   "license": "Pexels License",
+   "creator": "Gabriel",
+   "credit": "사진: Pexels",
+   "seconds": [
+    [
+     3.05,
+     4.91
+    ]
+   ]
+  },
+  "px18721982": {
+   "file": "px18721982.jpg",
+   "path": "public/doodle/px18721982.jpg",
+   "page": "https://www.pexels.com/photo/plants-near-chairs-in-restaurant-18721982/",
+   "file_url": "https://images.pexels.com/photos/18721982/pexels-photo-18721982.jpeg?auto=compress&cs=tinysrgb&w=1600",
+   "license": "Pexels License",
+   "creator": "Arda Kaykısız",
+   "credit": "사진: Pexels",
+   "seconds": [
+    [
+     8.26,
+     10.72
+    ]
+   ]
+  },
+  "px6612572": {
+   "file": "px6612572.jpg",
+   "path": "public/doodle/px6612572.jpg",
+   "page": "https://www.pexels.com/photo/an-espresso-machine-6612572/",
+   "file_url": "https://images.pexels.com/photos/6612572/pexels-photo-6612572.jpeg?auto=compress&cs=tinysrgb&w=1600",
+   "license": "Pexels License",
+   "creator": "Pavel Danilyuk",
+   "credit": "사진: Pexels",
+   "seconds": [
+    [
+     13.84,
+     15.45
+    ]
+   ]
+  },
+  "px302900": {
+   "file": "px302900.jpg",
+   "path": "public/doodle/px302900.jpg",
+   "page": "https://www.pexels.com/photo/cappuccino-drink-on-table-302900/",
+   "file_url": "https://images.pexels.com/photos/302900/pexels-photo-302900.jpeg?auto=compress&cs=tinysrgb&w=1600",
+   "license": "Pexels License",
+   "creator": "Chevanon Photography",
+   "credit": "사진: Pexels",
+   "seconds": [
+    [
+     26.58,
+     29.94
+    ]
+   ]
+  }
+ },
+ "music": {
+  "file": "music/monkeys_spinning_monkeys.mp3",
+  "gain": 0.12,
+  "start": 0
+ },
+ "sfx": [
+  [
+   "b",
+   "pop",
+   0.22
+  ],
+  [
+   "c",
+   "whoosh",
+   0.2
+  ],
+  [
+   "c2",
+   "pop",
+   0.22
+  ],
+  [
+   "d",
+   "boing",
+   0.3
+  ],
+  [
+   "e",
+   "whoosh",
+   0.2
+  ],
+  [
+   "f",
+   "whoosh",
+   0.2
+  ],
+  [
+   "g",
+   "pop",
+   0.22
+  ],
+  [
+   "h",
+   "k_error_003",
+   0.3
+  ],
+  [
+   "i",
+   "boing",
+   0.3
+  ],
+  [
+   "j",
+   "whoosh_dn",
+   0.3
+  ],
+  [
+   "k",
+   "ding",
+   0.25
+  ],
+  [
+   "z",
+   "pop",
+   0.22
+  ]
+ ],
+ "clips": [
+  {
+   "from": "a",
+   "label": "hook",
+   "credit": "사진: Pexels",
+   "gfx": {
+    "type": "scene",
+    "photo": "doodle/px2566027.jpg",
+    "chars": [
+     {
+      "style": "doodle",
+      "hair": "#FF7A1A",
+      "mood": "smug",
+      "x": 0.76,
+      "size": 1
+     }
+    ],
+    "steps": [
+     9,
+     0,
+     9,
+     9
+    ],
+    "prop": "📳",
+    "propX": 0.5
+   }
+  },
+  {
+   "from": "b",
+   "label": "stare",
+   "credit": "사진: Pexels",
+   "gfx": {
+    "type": "scene",
+    "photo": "doodle/px12620633.jpg",
+    "chars": [
+     {
+      "style": "doodle",
+      "hair": "#FF7A1A",
+      "mood": "think",
+      "x": 0.8,
+      "size": 0.9
+     }
+    ],
+    "steps": [
+     9,
+     0.1,
+     9,
+     9
+    ],
+    "prop": "📳",
+    "propX": 0.6
+   }
+  },
+  {
+   "from": "c",
+   "label": "eyes",
+   "gfx": {
+    "type": "vs",
+    "title": "카페에서 내 눈이 보는 것",
+    "left": {
+     "label": "친구 얼굴",
+     "emoji": "🙂"
+    },
+    "right": {
+     "label": "진동벨",
+     "emoji": "📳"
+    },
+    "steps": [
+     0.05,
+     0.3,
+     "c+0.8"
+    ],
+    "win": "right"
+   }
+  },
+  {
+   "from": "c2",
+   "label": "friend",
+   "gfx": {
+    "type": "scene",
+    "bg": "#fff0e0",
+    "chars": [
+     {
+      "style": "doodle",
+      "mood": "angry",
+      "hair": "#3b3b3b",
+      "hairdo": "bob",
+      "x": 0.3
+     },
+     {
+      "style": "doodle",
+      "hair": "#FF7A1A",
+      "mood": "think",
+      "x": 0.72
+     }
+    ],
+    "steps": [
+     "c2",
+     9,
+     9,
+     9
+    ],
+    "say": {
+     "who": 0,
+     "text": "야, 내 말 [듣고] 있어?"
+    }
+   }
+  },
+  {
+   "from": "d",
+   "label": "flinch",
+   "credit": "사진: Pexels",
+   "gfx": {
+    "type": "scene",
+    "photo": "doodle/px18721982.jpg",
+    "chars": [
+     {
+      "style": "doodle",
+      "hair": "#FF7A1A",
+      "mood": "shock",
+      "x": 0.3,
+      "size": 0.9
+     }
+    ],
+    "steps": [
+     9,
+     0.1,
+     9,
+     "d+1.6"
+    ],
+    "prop": "📳",
+    "propX": 0.78,
+    "big": "{움찔!}"
+   }
+  },
+  {
+   "from": "e",
+   "label": "10min",
+   "gfx": {
+    "type": "scene",
+    "bg": "night",
+    "chars": [
+     {
+      "style": "doodle",
+      "hair": "#FF7A1A",
+      "mood": "sick",
+      "x": 0.3
+     }
+    ],
+    "steps": [
+     9,
+     0.1,
+     9,
+     "e+0.4"
+    ],
+    "prop": "📳",
+    "propX": 0.74,
+    "big": "[10분]째"
+   }
+  },
+  {
+   "from": "f",
+   "label": "go",
+   "credit": "사진: Pexels",
+   "gfx": {
+    "type": "scene",
+    "photo": "doodle/px6612572.jpg",
+    "chars": [
+     {
+      "style": "doodle",
+      "hair": "#FF7A1A",
+      "mood": "angry",
+      "x": 0.78,
+      "size": 0.9
+     }
+    ],
+    "steps": [
+     9,
+     9,
+     9,
+     9
+    ]
+   }
+  },
+  {
+   "from": "g",
+   "label": "ask",
+   "gfx": {
+    "type": "scene",
+    "bg": "store",
+    "chars": [
+     {
+      "style": "doodle",
+      "hair": "#FF7A1A",
+      "mood": "think",
+      "x": 0.5
+     }
+    ],
+    "steps": [
+     "g",
+     9,
+     9,
+     9
+    ],
+    "say": {
+     "who": 0,
+     "text": "저기, 제 거 [아직]인가요?"
+    }
+   }
+  },
+  {
+   "from": "h",
+   "label": "buzz",
+   "gfx": {
+    "type": "scene",
+    "bg": "#FFE14D",
+    "chars": [
+     {
+      "style": "doodle",
+      "hair": "#FF7A1A",
+      "mood": "shock",
+      "x": 0.3
+     }
+    ],
+    "steps": [
+     9,
+     0.1,
+     9,
+     "h+1.3"
+    ],
+    "prop": "📳",
+    "propX": 0.74,
+    "big": "{부르르르}"
+   }
+  },
+  {
+   "from": "i",
+   "label": "shame",
+   "gfx": {
+    "type": "scene",
+    "bg": "#FFB3C7",
+    "chars": [
+     {
+      "style": "doodle",
+      "hair": "#FF7A1A",
+      "mood": "shy",
+      "x": 0.5
+     }
+    ],
+    "steps": [
+     9,
+     9,
+     9,
+     "i+1.6"
+    ],
+    "big": "민망함 {100%}"
+   }
+  },
+  {
+   "from": "j",
+   "label": "twist",
+   "gfx": {
+    "type": "scene",
+    "bg": "#e9e4dc",
+    "chars": [
+     {
+      "style": "doodle",
+      "mood": "happy",
+      "hair": "#3b3b3b",
+      "hairdo": "bob",
+      "x": 0.28
+     },
+     {
+      "style": "doodle",
+      "hair": "#FF7A1A",
+      "mood": "shock",
+      "x": 0.72
+     }
+    ],
+    "steps": [
+     9,
+     9,
+     9,
+     "j+1.2"
+    ],
+    "big": "{친구} 벨"
+   }
+  },
+  {
+   "from": "k",
+   "label": "thanks",
+   "credit": "사진: Pexels",
+   "gfx": {
+    "type": "scene",
+    "photo": "doodle/px302900.jpg",
+    "chars": [
+     {
+      "style": "doodle",
+      "mood": "laugh",
+      "hair": "#3b3b3b",
+      "hairdo": "bob",
+      "x": 0.24,
+      "size": 0.9
+     },
+     {
+      "style": "doodle",
+      "hair": "#FF7A1A",
+      "mood": "cry",
+      "x": 0.8,
+      "size": 0.85
+     }
+    ],
+    "steps": [
+     "k",
+     9,
+     9,
+     9
+    ],
+    "say": {
+     "who": 0,
+     "text": "오, 내 거 가져왔어? [고마워]!"
+    }
+   }
+  },
+  {
+   "from": "z",
+   "label": "ask",
+   "gfx": {
+    "type": "scene",
+    "bg": "home",
+    "chars": [
+     {
+      "style": "doodle",
+      "hair": "#FF7A1A",
+      "mood": "think",
+      "to": "smug"
+     }
+    ],
+    "steps": [
+     9,
+     0.1,
+     "z+1.2",
+     9
+    ],
+    "prop": "📳",
+    "propX": 0.74
+   }
+  }
+ ]
+}
