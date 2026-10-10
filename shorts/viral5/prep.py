@@ -137,7 +137,7 @@ def prep(sid):
         for k in range(len(x) // hop):
             f = int(round(L["start"] * FPS)) + k
             if f < n_frames: env[f] = max(env[f], float(np.sqrt(np.mean(x[k * hop:(k + 1) * hop] ** 2))))
-    env = np.clip(env / (np.percentile(env[env > 0], 90) + 1e-9), 0, 1)
+    if (env > 0).any(): env = np.clip(env / (np.percentile(env[env > 0], 90) + 1e-9), 0, 1)  # a wordless short has no voice
     sm = np.zeros_like(env)
     for i in range(1, len(env)): sm[i] = env[i] if env[i] > sm[i - 1] else sm[i - 1] + (env[i] - sm[i - 1]) * 0.13
 
@@ -191,7 +191,7 @@ def prep(sid):
     data["pages"].sort(key=lambda p: p["startMs"])
     if edit.get("captionY"): data["captionY"] = edit["captionY"]  # e.g. lower the captions when the action sits at the bottom of the frame
     if edit.get("look"): data["look"] = edit["look"]  # "retro2": 그 시절 레트로 v2 layout (src/lib/RetroV2.tsx)
-    for k in ("titleStyle", "titleKey", "hook", "hookY"):  # news-shorts look: banner title and a red headline over the picture
+    for k in ("titleStyle", "titleKey", "hook", "hookY", "titleEn"):  # news-shorts look: banner title and a red headline over the picture
         if edit.get(k) is not None: data[k] = edit[k]
     if edit.get("hookTo") is not None: data["hookTo"] = round(at(edit["hookTo"]), 3)
     if ranks: data["ranks"] = {"rows": ranks, **({"y": edit["rankY"]} if edit.get("rankY") else {})}

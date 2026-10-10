@@ -1,0 +1,70 @@
+{
+ "series": "drive1~drive10 (2D 운전 애니 무언 해외판)",
+ "sources": [],
+ "pictures": "all drawn in code (src/lib/Drive.tsx, src/lib/DriveFace.tsx); no external images or footage",
+ "sounds": "numpy-synthesized: drive_sfx.py (engine, squeal, dundun), road_sfx.py (horn, siren), ../tools/sfx.py (shutter, click)",
+ "music": {
+  "license": "CC BY 4.0",
+  "credit": "Kevin MacLeod (incompetech.com)",
+  "tracks": {
+   "Sneaky Snitch": [
+    "drive1",
+    "drive5"
+   ],
+   "Hustle": [
+    "drive2",
+    "drive8"
+   ],
+   "Scheming Weasel": [
+    "drive3",
+    "drive6",
+    "drive10"
+   ],
+   "Hyperfun": [
+    "drive4",
+    "drive9"
+   ],
+   "Monkeys Spinning Monkeys": [
+    "drive7"
+   ]
+  }
+ },
+ "facts_checked": "2026-10-10, 국가법령정보센터 도로교통법 현행 본문 (https://www.law.go.kr/법령/도로교통법)",
+ "facts": [
+  {
+   "used_in": [
+    "drive6",
+    "drive10"
+   ],
+   "law": "도로교통법 제37조제1항제1호·제2항",
+   "text": "밤(해가 진 후부터 해가 뜨기 전까지)에 도로에서 차를 운행하는 경우 전조등·차폭등·미등과 그 밖의 등화를 켜야 한다. 밤에 앞차의 바로 뒤를 따라가는 경우 등화의 밝기를 줄이는 등 필요한 조작을 해야 한다."
+  },
+  {
+   "used_in": [
+    "drive3",
+    "drive5",
+    "drive10"
+   ],
+   "law": "도로교통법 제19조제1항·제4항",
+   "text": "앞차가 갑자기 정지해도 충돌을 피할 거리 확보. 위험방지 등 부득이한 경우가 아니면 급제동 금지."
+  },
+  {
+   "used_in": [
+    "drive1",
+    "drive5",
+    "drive10"
+   ],
+   "law": "도로교통법 제46조의3",
+   "text": "안전거리 미확보·진로변경 금지 위반·급제동 금지 위반, 정당한 사유 없는 소음 발생 등을 연달아 하거나 지속·반복해 위협하면 난폭운전."
+  },
+  {
+   "used_in": [
+    "drive7",
+    "drive8",
+    "drive9"
+   ],
+   "law": "see media/road/facts.json, facts2.json",
+   "text": "1차로(제60조제1항, 시행규칙 별표 9), 깜빡이(제38조제1항, 시행령 별표 2), 갓길(제60조제1항)"
+  }
+ ]
+}
