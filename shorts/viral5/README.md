@@ -2254,3 +2254,52 @@ MEDIA=$PWD/media python3 politics/prep_split.py ceo1    # 원본: media/celeb/
 > 2025년 5월 8일, 미국 상원 상무위원회 ‘AI 경쟁’ 청문회(워싱턴 D.C.). 테드 크루즈 위원장이 “딥시크는 얼마나 큰일이었나”라고 묻자 오픈AI 샘 올트먼 CEO와 AMD 리사 수 CEO의 답이 엇갈렸습니다. 리사 수 CEO는 엔비디아 젠슨 황 CEO와 먼 친척이기도 합니다(본인 언급). 발언 속 수치·평가는 발언 그대로입니다. 영어 원문과 한국어 번역 자막(답변 일부 생략).
 > 영상: 미국 상원(U.S. Senate) 위원회 청문회 공식 영상 · 이 영상은 영상 속 인물이나 기관이 보증·후원한 것이 아닙니다.
 > #딥시크 #샘올트먼 #리사수 #AI #shorts
+
+## 젠슨 황·테크 리더 육성 쇼츠 (`politics/jensen*`)
+
+레퍼런스(유명인 육성 + 위 영어·아래 한국어 2단 자막 + 질문형 제목)의 **형식만** 따랐습니다. 젠슨 황 인터뷰를 올리는 국내 채널들이 쓰는 방송·행사 영상은 쓰지 않았고, 라이선스를 확인한 영상만 썼습니다. 내레이션·AI 음성·음악 없이 본인 목소리만 씁니다.
+
+| id | 제목 (검정 띠, 2줄째 노랑) | 길이 | 출처 · 쓴 구간 (클립 기준 초) |
+| --- | --- | --- | --- |
+| `jensen1` | 젠슨 황이 말한 GPU 1대, / 무게가 32kg..? | 44.8초 | 백악관 2025.4.30 · 17.5–21.75, 43.15–83.0 (컷 1번) |
+| `jensen2` | 젠슨 황: 전기를 넣으면 / '이것'이 나오는 기계..? | 35.3초 | 백악관 2025.4.30 · 112.6–117.5, 136.75–166.5 (컷 1번) |
+| `jensen3` | 젠슨 황이 인도에 / '지금이 기회'라고 한 이유..? | 32.1초 | 모디 총리 공식 채널(CC BY) 2024.9.22 · 18.6–31.1, 84.6–103.5 (컷 1번) |
+| `jensen4` | 손정의가 말한 / AGI 다음에 오는 것..? | 37.0초 | 백악관 2025.1.21 '스타게이트' 발표 · 11.0–47.3 (자르지 않음) |
+
+```bash
+MEDIA=$PWD/media python3 politics/prep_split.py jensen1     # 원본: media/celeb/ (출처·구간은 같은 이름의 .json)
+./render.sh jensen1 final/jensen1.mp4
+```
+
+- **장면 전환**: 긴 원본 테이크를 문장 시작마다(3~4초) 이어지는 구간으로 나눠 얼굴 크롭을 번갈아 바꿨습니다(가까이↔조금 멀리). 시간이 이어지는 구간이라 흰 번쩍임은 없고 말도 그대로입니다. 백악관 와이드 화면은 연단의 젠슨 황에 맞춰 1.8~2.2배로 당겼습니다(360p라 흐림). `qa_review.py` 결과 네 편 모두 WARN·FAIL 없음.
+- **레이아웃**: `"titleStyle": "band"`, `"subOrder": "en-ko"`, `captionY` 1590(사진 아래, 유튜브 버튼 영역 위), 정사각 얼굴 크롭, 첫 화면부터 제목. 영어 `[괄호]`와 한국어 `keys`로 핵심 구절만 노랗게. 시작 3초 흰 스티커로 장소·날짜만 적었습니다. 화면 출처 표기는 "백악관 영상 · 날짜", "나렌드라 모디 공식 채널 · 2024.9".
+- **영상 1 — 백악관 "Investing in America" 행사(2025.4.30)**: 백악관 공식 유튜브 [WtXHaYrhflk](https://www.youtube.com/watch?v=WtXHaYrhflk)의 25:10–28:30. 이 컨테이너에서는 유튜브 다운로드가 봇 확인으로 막혀서, 같은 업로드를 그대로 보존한 archive.org 미러 [youtube-WtXHaYrhflk](https://archive.org/details/youtube-WtXHaYrhflk)(channel @WhiteHouse, creator "The White House")에서 받았습니다. 미러가 **360p뿐**이라 화질이 낮고, 원본 중계가 중간에 객석 뒤 와이드 화면으로 바뀌어(클립 57–95초, 144–172초) 그 구간은 연단의 젠슨 황을 작게 비춥니다. 미국 연방정부 저작물, 퍼블릭 도메인(17 U.S.C. §105).
+  - 자막: 백악관이 올린 영어 자막(en-US.vtt)과 faster-whisper small.en·medium.en·large-v3 대조. "Well, after all this time"(자막·small·large 일치), `jensen2` 첫 줄은 "manufacturing, manufacturing…"으로 말을 고쳐 시작해 둘째 "Manufacturing isn't about…"부터 썼고(구간만 따로 돌린 세 모델 모두 같은 문장), "The really, the really amazing thing"도 고쳐 말한 뒤의 "The really amazing thing"부터 썼습니다(세 모델 일치; 백악관 자막은 "real").
+  - 뺀 부분: IBM System 360 설명, 대통령 지도력·정책에 대한 감사(83–111초, 166초 이후). 정치적 발언을 빼고 기술 설명만 남겼습니다. 컷은 각각 문장 경계에서 한 번(흰 번쩍임).
+  - "70파운드(약 32kg)": 단위 환산만 괄호로 덧붙였습니다. "That's one GPU unit"은 무대 옆 전시물(GB200 NVL 랙 계열로 보이나 영상에서 확인 불가)을 가리킨 말이라 번역은 "저게 GPU 한 대"로 그대로 뒀습니다.
+- **영상 2 — 모디 총리 공식 채널 인터뷰(2024.9.22, 뉴욕)**: Wikimedia Commons [File:PM Modi is such an incredible student, NVIDIA CEO Jensen Huang.webm](https://commons.wikimedia.org/wiki/File:PM_Modi_is_such_an_incredible_student,_NVIDIA_CEO_Jensen_Huang.webm) (원본: Narendra Modi 유튜브 [saTD1u8PorI](https://www.youtube.com/watch?v=saTD1u8PorI), 유튜브 "크리에이티브 커먼즈 저작자 표시"로 공개, Commons 표기 **CC BY 3.0**). 총리 채널이 직접 찍고 자막(이름표)을 넣은 인터뷰라 업로더가 원저작자입니다. Commons에는 "라이선스 검토 대기" 표시가 있습니다. 1080p.
+  - 자막: 공식 녹취록이 없어 whisper 세 모델만으로 맞췄고 세 모델이 일치합니다.
+  - 정치색을 피하려고 앞부분의 총리 칭찬("such an incredible student")과 협력사 나열은 빼고, 인도 인재·AI 산업·"AI가 컴퓨팅을 대중화했다·지금이 인도의 순간" 부분만 썼습니다. 컷 1번(31.1→84.6초, 문장 경계).
+- **영상 3 (대체편) — 백악관 '스타게이트' 발표(2025.1.21, 루스벨트룸)**: 백악관 공식 유튜브 [X5gMiDnYEds](https://www.youtube.com/watch?v=X5gMiDnYEds)의 8:00–9:05, archive.org 미러 [youtube-X5gMiDnYEds](https://archive.org/details/youtube-X5gMiDnYEds)(360p). 퍼블릭 도메인(17 U.S.C. §105). 젠슨 황 본인 영상이 2건뿐이라 넷째 편은 손정의 소프트뱅크그룹 회장의 발언으로 채웠습니다. 백악관 자막은 "AGI"를 "Asia"로 잘못 적었는데 whisper 세 모델 모두 "AGI"로 들어서 AGI로 썼습니다. 마지막 "Well, this is the beginning of our golden age."(정치 구호와 겹침)는 넣지 않고 "…we could solve."에서 끝냈습니다. "Larry"는 래리 엘리슨(오라클)입니다.
+- 원본 클립과 출처·라이선스·구간 기록: `media/celeb/*.mp4`·`.json`. 단어 시간: `politics/jensen*/whisper.json`(faster-whisper medium.en).
+- **찾았지만 쓰지 않은 젠슨 황 영상**: 2025.10.31 APEC 경주 이재명 대통령 접견·CEO 서밋 특별세션·GPU 26만 장 발표(정책브리핑 기사는 "텍스트에 한하여" 공공누리 1유형이고 사진은 연합뉴스, 영상은 정책브리핑에 저작권 없음 표기; KTV 영상은 "All Rights Reserved"이고 공공누리 1유형 표시를 찾지 못함; CEO 서밋은 대한상의 주최), 2026.6 방한(기업·대학 행사, 정부 영상 없음), 2026.9.2 G20 혁신장관회의 러트닉 장관 대담(상무부 주최라 유력했지만 찾은 영상은 CNBC·News Central·DRM News 등 방송사 업로드뿐, 상무부 자체 녹화본을 찾지 못함), 2026.9.29 백악관 AI 오찬(공개 발언은 대통령뿐), 2026.10.8 국가과학·기술메달 수여(대통령·크라치오스만 발언), 2026.8.19 백악관 기술 리더 행사(젠슨 황 발언 확인 불가, 유튜브 다운로드 불가), 2025.11.19 미·사우디 투자포럼 머스크 대담(포럼 주최측 제작·C-SPAN, 머스크 동석), 대만 총통부·행정원(젠슨 황 발언 영상 없음), Commons의 Computex 2025 한국 유튜버 영상(CC BY지만 젠슨 황은 지나가는 장면뿐이고 기조연설 화면은 엔비디아 저작물), GTC·Computex·스탠퍼드·칼텍·CMU 연설과 팟캐스트(라이선스 불가).
+
+**jensen1** — 젠슨 황이 말한 GPU 1대, 무게가 32kg..?
+> 2025년 4월 30일 미국 백악관 'Investing in America' 행사. 엔비디아 젠슨 황 CEO가 "60년 만에 컴퓨터를 다시 발명했다"며 GPU 한 대가 70파운드(약 32kg), 부품 6만 개, 1만 와트라고 설명합니다. "슈퍼컴퓨터를 시험하는 데도 슈퍼컴퓨터가 필요합니다." 영어 원문과 한국어 번역 자막(직접 번역).
+> 영상: 백악관(The White House, 2025.4.30) · 이 영상은 영상 속 인물이나 기관이 보증·후원한 것이 아닙니다.
+> #젠슨황 #엔비디아 #GPU #영어공부 #한영자막
+
+**jensen2** — 젠슨 황: 전기를 넣으면 '이것'이 나오는 기계..?
+> 2025년 4월 30일 미국 백악관 행사에서 젠슨 황 엔비디아 CEO가 말한 AI의 정체. "제조업은 이제 값싼 노동력이 아니라 기술의 문제입니다." "예전엔 물이 들어가면 전기가 나왔다면, 이제는 전기가 들어가면 토큰, 즉 인공지능이 나옵니다." 영어 원문과 한국어 번역 자막(직접 번역).
+> 영상: 백악관(The White House, 2025.4.30) · 이 영상은 영상 속 인물이나 기관이 보증·후원한 것이 아닙니다.
+> #젠슨황 #엔비디아 #인공지능 #AI공장 #영어공부
+
+**jensen3** — 젠슨 황이 인도에 '지금이 기회'라고 한 이유..?
+> 2024년 9월 22일 미국 뉴욕, 인도 총리와 테크 CEO 간담회 뒤 젠슨 황 엔비디아 CEO 인터뷰. "AI는 컴퓨팅을 정말 대중화했습니다. 지금이 인도의 순간입니다. 기회를 잡아야 합니다." 영어 원문과 한국어 번역 자막(직접 번역, 일부 구간 생략).
+> 영상: Narendra Modi 공식 유튜브 "PM Modi is such an incredible student: NVIDIA CEO Jensen Huang" (https://www.youtube.com/watch?v=saTD1u8PorI), CC BY 3.0 (https://creativecommons.org/licenses/by/3.0/) — 잘라내고 확대·자막을 넣음. 이 영상은 영상 속 인물이나 기관이 보증·후원한 것이 아닙니다.
+> #젠슨황 #엔비디아 #인도 #AI #한영자막
+
+**jensen4** — 손정의가 말한 AGI 다음에 오는 것..?
+> 2025년 1월 21일 미국 백악관, AI 인프라 '스타게이트' 발표. 손정의 소프트뱅크그룹 회장: "AGI는 아주, 아주 곧 옵니다. 그다음엔 초인공지능이 와서 인류가 풀 수 있으리라 생각하지 못한 문제들을 풀 겁니다." 영어 원문과 한국어 번역 자막(직접 번역).
+> 영상: 백악관(The White House, 2025.1.21) · 이 영상은 영상 속 인물이나 기관이 보증·후원한 것이 아닙니다.
+> #손정의 #AGI #초인공지능 #스타게이트 #영어공부
