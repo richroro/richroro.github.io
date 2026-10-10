@@ -89,6 +89,7 @@ def main(sid):
             m["x"], m["y"] = round(l1 + u * S1), round(400 + t1 + v * S1)
             if "r" in m: m["r"] = round(m["r"] * S1 / S0)
     for c in edit["clips"]: c.pop("_wh", None)
+    for k, v in spec.get("markEdits", {}).items(): edit["marks"][int(k)].update(v)
     if "clipsReplace" in spec: edit["clips"] = spec["clipsReplace"]
     for k in spec.get("dropSources", []): edit["sources"].pop(k, None)
     for k, v in spec.get("clips", {}).items():

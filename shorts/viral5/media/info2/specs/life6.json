@@ -1,0 +1,43 @@
+{
+ "voices": {
+  "hook": {
+   "edge": "ko-KR-InJoonNeural",
+   "rate": "+40%"
+  }
+ },
+ "lines": [
+  {
+   "id": "hook",
+   "voice": "hook",
+   "say": "비상구 초록색, 국제 약속입니다.",
+   "cap": [
+    "비상구 [초록색]",
+    "[국제 약속]입니다"
+   ]
+  }
+ ],
+ "clips": {
+  "1": {
+   "from": "hook.국제"
+  }
+ },
+ "cover": {
+  "src": "signph",
+  "focus": "55% 50%",
+  "zoom": 1.0,
+  "title": [
+   "비상구 표시가",
+   "[초록색]인 진짜 이유"
+  ]
+ },
+ "sources": {
+  "darkph": {
+   "file": "ph37643871_clean.jpg",
+   "credit": "사진: Pexels",
+   "label": "Pexels photo 37643871 by Norbert Szomszéd (Pexels License) — maker name on the sign painted over by us",
+   "url": "https://www.pexels.com/photo/green-emergency-exit-sign-in-dark-corridor-37643871/",
+   "creator": "Norbert Szomszéd",
+   "license": "Pexels License"
+  }
+ }
+}

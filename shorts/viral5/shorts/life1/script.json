@@ -6,17 +6,22 @@
  "voices": {
   "nar": {
    "edge": "ko-KR-InJoonNeural",
-   "rate": "+20%"
+   "rate": "+25%"
+  },
+  "hook": {
+   "edge": "ko-KR-InJoonNeural",
+   "rate": "+45%"
   }
  },
  "lines": [
   {
    "id": "hook",
-   "voice": "nar",
+   "voice": "hook",
    "gap": 0.05,
-   "say": "비행기 창문은 왜 전부 모서리가 둥글까요?",
+   "say": "창 모서리가, 비행기를 찢었습니다.",
    "cap": [
-    "비행기 창문은 왜 / [모서리]가 둥글까?"
+    "[창 모서리]가",
+    "비행기를 [찢었습니다]"
    ]
   },
   {

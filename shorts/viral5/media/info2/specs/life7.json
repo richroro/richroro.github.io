@@ -1,0 +1,141 @@
+{
+ "voices": {
+  "hook": {
+   "edge": "ko-KR-InJoonNeural",
+   "rate": "+40%"
+  }
+ },
+ "lines": [
+  {
+   "id": "hook",
+   "voice": "hook",
+   "say": "볼펜 뚜껑 구멍은, 숨구멍입니다.",
+   "cap": [
+    "볼펜 뚜껑 [구멍]은",
+    "[숨구멍]입니다"
+   ]
+  },
+  {
+   "id": "ink",
+   "after": "hook",
+   "say": "잉크 마르지 말라고 뚫은 걸까요?",
+   "cap": [
+    "잉크 마르지 말라고?"
+   ]
+  }
+ ],
+ "clips": {
+  "0": {
+   "src": "cap",
+   "crop": [
+    0.5,
+    0.2475,
+    1.6
+   ],
+   "label": "뚜껑 끝 구멍 (그림)"
+  },
+  "3": {
+   "src": "pens",
+   "crop": [
+    0.45,
+    0.5,
+    1.0
+   ],
+   "label": "볼펜"
+  },
+  "7": {
+   "src": "cap",
+   "crop": [
+    0.5,
+    0.5,
+    1.0
+   ],
+   "label": "뚜껑 (그림)"
+  },
+  "8": {
+   "src": "cap",
+   "crop": [
+    0.5,
+    0.2475,
+    1.6
+   ],
+   "label": "뚜껑 끝 구멍 (그림)"
+  },
+  "9": {
+   "src": "cap",
+   "crop": [
+    0.5,
+    0.2475,
+    3.0
+   ],
+   "label": "구멍 확대 (그림)"
+  },
+  "1": {
+   "from": "ink"
+  }
+ },
+ "cover": {
+  "src": "cap",
+  "focus": "50% 50%",
+  "zoom": 1.0,
+  "at": "bottom",
+  "title": [
+   "볼펜 뚜껑에",
+   "[구멍이 뚫린] 진짜 이유"
+  ],
+  "ring": {
+   "x": 540,
+   "y": 475,
+   "r": 105
+  }
+ },
+ "sources": {
+  "cap": {
+   "file": "cap_drawn.png",
+   "credit": "그림: 직접 그림",
+   "label": "Ballpoint pen cap with the ventilation hole, our own drawing (media/info2/draw_cap.py)",
+   "url": "https://github.com/richroro/richroro.github.io/blob/main/shorts/viral5/media/info2/draw_cap.py",
+   "license": "our own drawing"
+  },
+  "pens": {
+   "file": "ph983826.jpg",
+   "credit": "사진: Pexels",
+   "label": "Pexels photo 983826 'Three ball point pens' (Pexels License)",
+   "url": "https://www.pexels.com/photo/three-ball-point-pens-983826/",
+   "license": "Pexels License (free to use; checked on the item page 2026-10-10)",
+   "fileUrl": "https://images.pexels.com/photos/983826/pexels-photo-983826.jpeg?w=1920"
+  }
+ },
+ "dropSources": [
+  "b2",
+  "b4",
+  "b5"
+ ],
+ "marks": [
+  {
+   "kind": "circle",
+   "x": 540,
+   "y": 1050,
+   "r": 110,
+   "from": "hook+0.3",
+   "to": "ink-0.1"
+  },
+  {
+   "kind": "circle",
+   "x": 540,
+   "y": 1050,
+   "r": 110,
+   "from": "num+0.2",
+   "to": "num.지름-0.1"
+  },
+  {
+   "kind": "arrow",
+   "x": 540,
+   "y": 1159,
+   "r": 220,
+   "rot": 200,
+   "from": "num.지름+0.1",
+   "to": "time-0.1"
+  }
+ ]
+}

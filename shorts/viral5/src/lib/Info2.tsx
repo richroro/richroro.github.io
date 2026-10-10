@@ -27,6 +27,8 @@ export type Cover = {
   ring?: { x: number; y: number; r?: number };
   /** where the title block sits: "top" (default, over a dark top fade) or "bottom" */
   at?: "top" | "bottom";
+  /** a small truth note at the bottom left ("사진: 같은 폭풍, 미국") when the picture is not what the title names */
+  note?: string;
 };
 export type Tag = { text: string; from: number; to: number; y?: number };
 
@@ -70,6 +72,8 @@ export const CoverView: React.FC<{ c: Cover; t: number }> = ({ c, t }) => {
         </svg>
       ) : null}
       {c.arrow ? <Arrow {...c.arrow} /> : null}
+      {c.note ? <div style={{ position: "absolute", left: 28, bottom: 40, fontFamily: BODY, fontWeight: 800, fontSize: 30, color: "rgba(255,255,255,.92)",
+        background: "rgba(0,0,0,.45)", borderRadius: 10, padding: "4px 12px" }}>{c.note}</div> : null}
       <div style={{ position: "absolute", left: 0, width: 1080, ...(top ? { top: 150 } : { bottom: 170 }), display: "flex", flexDirection: "column", alignItems: "center",
         fontFamily: TITLE, lineHeight: 1.08, WebkitTextStroke: "22px black", paintOrder: "stroke", filter: "drop-shadow(0 8px 14px rgba(0,0,0,.7))" }}>
         {c.title.map((l, i) => <TitleLine key={i} text={l} yellow={!marked && i === 1} />)}

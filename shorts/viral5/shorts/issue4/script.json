@@ -6,19 +6,23 @@
  "voices": {
   "nar": {
    "edge": "ko-KR-InJoonNeural",
-   "rate": "+20%"
+   "rate": "+25%"
+  },
+  "hook": {
+   "edge": "ko-KR-InJoonNeural",
+   "rate": "+40%"
   }
  },
  "tail": 0.5,
  "lines": [
   {
    "id": "hook",
-   "voice": "nar",
+   "voice": "hook",
    "gap": 0.05,
-   "say": "지금 이 순간에도,| 일 초에 약 백조 개씩 당신 몸을 뚫고 지나가는 입자가 있습니다.",
+   "say": "일 초에 백조 개가 몸을 뚫고 갑니다.",
    "cap": [
-    "지금 이 순간에도",
-    "1초에 약 [100조 개] / 내 몸을 통과"
+    "1초에 [100조 개]가",
+    "몸을 [뚫고 갑니다]"
    ]
   },
   {

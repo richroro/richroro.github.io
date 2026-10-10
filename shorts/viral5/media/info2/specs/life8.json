@@ -1,0 +1,33 @@
+{
+ "voices": {
+  "hook": {
+   "edge": "ko-KR-InJoonNeural",
+   "rate": "+40%"
+  }
+ },
+ "lines": [
+  {
+   "id": "hook",
+   "voice": "hook",
+   "say": "분홍 배려석, 눈에 띄라고 칠했습니다.",
+   "cap": [
+    "[분홍] 배려석",
+    "[눈에 띄라고] 칠함"
+   ]
+  }
+ ],
+ "markEdits": {
+  "0": {
+   "from": "hook+0.3"
+  }
+ },
+ "cover": {
+  "src": "pink",
+  "focus": "75% 50%",
+  "zoom": 1.0,
+  "title": [
+   "지하철 임산부 배려석이",
+   "[분홍색]인 진짜 이유"
+  ]
+ }
+}

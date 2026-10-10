@@ -2,7 +2,8 @@
 
 edit.json
   "cover": {"src": "<source key>", "in": 12.3, "title": ["줄 1", "[노랑] 줄 2"], "dur": 0.5, "focus": "50% 40%", "zoom": 1.1,
-            "arrow": {"x": 640, "y": 1100, "rot": 35, "len": 230}, "ring": {"x": 540, "y": 1000, "r": 140}, "at": "top"}
+            "arrow": {"x": 640, "y": 1100, "rot": 35, "len": 230}, "ring": {"x": 540, "y": 1000, "r": 140}, "at": "top",
+            "note": "사진: 같은 폭풍, 미국"}
       a 0.5 s thumbnail frame before the episode: a still of the source (a photo as is, a video's frame at "in" seconds)
       full screen, the two-line title big in white and yellow, an optional red arrow or ring. Without "title" it uses the
       script's title.
@@ -27,4 +28,4 @@ def extend(data, edit, script, sid, pub, at):
     else:
         subprocess.run(["ffmpeg", "-v", "error", "-y", "-ss", str(c.get("in", 0)), "-i", srcf, "-frames:v", "1", "-q:v", "2", out], check=True)
     data["cover"] = {"file": f"{sid}/cover.jpg", "title": c.get("title", script["title"]), "dur": c.get("dur", 0.5),
-                     **{k: c[k] for k in ("focus", "zoom", "arrow", "ring", "at") if k in c}}
+                     **{k: c[k] for k in ("focus", "zoom", "arrow", "ring", "at", "note") if k in c}}
