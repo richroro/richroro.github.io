@@ -174,7 +174,7 @@ const Title: React.FC<{ d: ShortData }> = ({ d }) => {
     const marked = d.title.some((l) => l.includes("["));
     const key = d.titleKey ?? "#FFE14D";
     const line = (l: string, i: number) => (
-      <div style={{ fontSize: size(l.replace(/[[\]]/g, ""), 104, 1010), color: !marked && i ? key : "white" }}><Marked text={l} color={key} /></div>
+      <div style={{ fontSize: size(l.replace(/[[\]{}]/g, ""), 104, 1010), color: !marked && i ? key : "white" }}><Marked text={l} color={key} /></div>
     );
     return (
       <div style={{ position: "absolute", top: 0, left: 0, width: 1080, height: 400, background: "#000", display: "flex", flexDirection: "column",

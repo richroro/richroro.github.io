@@ -28,7 +28,7 @@ python3 qa_review.py <id>                   # 조회수 10만+ 쇼츠 형식 검
 npx remotion studio                         # 미리보기
 ```
 
-- `shorts/<id>/script.json` — 대사(`say`, `|`로 호흡), 자막(`cap`, `/`로 페이지, `[키워드]`는 노란색)
+- `shorts/<id>/script.json` — 대사(`say`, `|`로 호흡), 자막(`cap`, `/`로 페이지, `[키워드]`는 노란색, `{키워드}`는 빨강)
 - `shorts/<id>/edit.json` — 컷 목록. 시간은 내레이션 기준 앵커라 목소리를 다시 뽑아도 편집이 따라갑니다.
   `"crane"`(그 줄 시작), `"crane.줄에"`(그 단어를 말하는 순간), `"crane@end+0.1"`(그 줄 끝 0.1초 뒤).
   `crop: [cx, cy, zoom]`은 원본의 한 지점을 화면 가운데로, `moments`는 원본 소리(관제실 음성 등)를 올리는 구간입니다.
@@ -2573,3 +2573,112 @@ python3 qa_review.py top1                                    # 네 편 모두 FA
 > 영상·사진: NASA (ISS Crew Earth Observations, Image Science & Analysis Laboratory, NASA Johnson Space Center · Artemis II) (NASA가 이 영상을 보증하거나 후원하지 않습니다.)
 > 음악: "Lightless Dawn" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
 > #우주 #NASA #소름 #지구 #shorts
+
+## 낙서 짤툰 쇼츠 (`doodle1`~`doodle4`)
+
+`research/research-formats2.md` 5절의 "낙서 짤툰 내레이션"(김블루·원정상·도롱챠·콩자반: 최근 15편 중 9~15편이 10만 이상)을 우리 그림과 스톡 사진으로 만든 4편이다. 화면은 검정 바탕에 위쪽 2줄 제목 띠(윗줄 흰색, 아랫줄 초록 `#3CFF6A`), 가운데 1080×1080 그림, 아래 한 줄 자막(`captionY` 1640)이다. 그림은 세 종류를 섞는다. 사진 위에 선 낙서 주인공, 그린 배경의 낙서 장면, 가끔 `gfx` `vs`다. 2~4초마다 바뀐다. 내레이터는 Edge TTS `ko-KR-InJoonNeural` +25%로 빠르고 건조하게 읽는다. 짧은 인물 대사는 자기 목소리로 말풍선에 뜨고, 아래 자막은 없다. 끝은 시청자에게 묻는 한 줄이고, 0.3초 뒤에 끊는다(`"tail": 0.3`). 구독 요청이나 페이드아웃은 없다.
+
+**시리즈 주인공 "도치"**: 주황색 삐죽머리(`#FF7A1A`)에 흰 감자 모양 몸, 막대 팔다리를 가진 낙서 캐릭터다. 네 편 모두에 나온다. 김블루(파란 머리 남자, 흰 곰 후드)나 다른 채널의 캐릭터를 본뜨지 않고 새로 그렸다. 조연도 같은 스킨이고 머리만 다르다. 엄마는 갈색 파마(`perm`), 승객은 검은 단발(`bob`), 민머리(`bald`), 회색 파마다.
+
+| id | 제목 띠 | 길이 | 내용 | 사실/창작 | 음악 |
+| --- | --- | --- | --- | --- | --- |
+| `doodle1` | 대부분 모르는 / 멀티탭의 수명 | 34.4초 | "몇 년 됐음?" → 콘센트·멀티탭 사고 5년간 387건 → "3년? 5년?" → 반전: 정해진 숫자는 없음 → 교체 신호(헐렁, 변색, 타는 냄새), 먼지, 멀티탭에 멀티탭 금지, 에어컨·온열기는 벽 콘센트 → "님 멀티탭은 몇 개 해당?" | 사실 (출처 아래) | Sneaky Snitch |
+| `doodle2` | 중고거래 / "네고 되나요?"의 진화 | 32.1초 | 1만 원 의자 → 네고 → 8천 → "직접 가니까 5천" → 무료 나눔 요청 → "안 팔래요" → "배송비만 내주세요"(5단계) → 반전: 그 의자 아직 내 방에 있음 → "님들이 받은 최강 네고는?" | 창작 | Monkeys Spinning Monkeys |
+| `doodle3` | 버스 하차벨 / 아무도 안 누르면 벌어지는 일 | 33.3초 | 두 정거장 전 → "누가 누르겠지" → 다들 같은 생각, 폰 보는 척 벨만 봄(`vs` 내가 누름 vs 남이 누름) → 버스 통과, 공기 영하 10도 → 네 명이 동시에 벌떡 "기사님, 내려요!" → 반전: 전부 같은 정류장 → 다 같이 걸어서 복귀 → "님들은 벨 먼저 누르는 쪽?" | 창작 | Scheming Weasel |
+| `doodle4` | 엄마가 "냉장고에 있잖아" / 하면 벌어지는 일 | 35.0초 | 김치가 없음 → 엄마 "냉장고에 있잖아!" → 열어 봄, 없음 → 반찬통 탑 해체, 10분째 수색, 엄마 "문 좀 닫아!" → "눈은 장식이니?" → 엄마가 1초 만에 꺼냄, 맨 앞 칸 → `vs` 내 손 vs 엄마 손 → "님 집 냉장고도 엄마만 보이는 칸 있음?" | 창작 | Hyperfun |
+
+```bash
+media/doodle/fetch.sh                      # 사진 17장 → public/doodle/ (저장소에는 넣지 않음)
+for i in 1 2 3 4; do python3 voice_edge.py doodle$i && python3 prep.py doodle$i && ./render.sh doodle$i final/doodle$i.mp4 && python3 qa_review.py doodle$i; done
+```
+
+**목소리**(`script.json`의 `voices`): 내레이터 `InJoon` +25%. 도치는 `HyunsuMultilingual` +18%·+12Hz. doodle2의 구매자는 `SunHi` +15%·+5Hz다. 구매자 대사는 따옴표 자막으로도 나온다. doodle4의 엄마는 `SunHi` +12%·−4Hz다.
+
+**새 템플릿 부품**(모두 하위호환이다. 값을 안 쓰면 예전과 똑같이 그린다)
+
+- **사진 배경** (`src/lib/Doodle.tsx`의 `PhotoBackdrop`, `Sseol.tsx`의 `Scene`): `scene`에 `"photo": "doodle/px16886334.jpg"`(public/ 아래 경로)를 주면 `bg` 대신 그 사진이 장면 칸을 채운다. 천천히 줌인하고(1.03→), 인물은 그 위에 선다. `"photoFit": "cover"`(기본) 또는 `"contain"`, `"photoPos": "70% 50%"`(CSS object-position)로 보일 부분을 고른다. 화면 크레딧은 클립의 `"credit": "사진: Pexels"`로 단다.
+- **낙서 스킨** (`src/lib/Doodle.tsx`의 `Doodle`): 인물에 `"style": "doodle"`을 주면 찹쌀떡 대신 낙서 캐릭터로 그린다. 흰 몸, 막대 팔다리, 굵기가 고르지 않은 검정 선(선을 두 번, 다른 흔들림과 굵기로 그림)이다. 선은 1초에 8번 새로 그려져서 손그림처럼 떨린다(line boil). `"hair": "#FF7A1A"`는 머리색이고, `"hairdo"`는 `spiky`(기본), `perm`, `bob`, `bald` 중 하나다. 기존 13가지 `mood`와 `to`를 그대로 쓴다. 표정마다 팔 자세도 바뀐다(놀람은 만세, 생각은 턱 괴기, 거만은 팔짱, 화남은 허리에 손). `name`, `hat`, `flip`, `size`, `x`도 같다.
+- **빨간 강조** `{단어}` (`src/lib/Marked.tsx`, `Captions.tsx`, `prep.py`): 자막(`cap`)과 제목 띠, 말풍선, `big`, 채팅에서 `{ }` 안의 단어가 빨강(`#FF3B3B`)이 된다. `[ ]` 노랑은 그대로다. 자막의 빨간 단어는 읽는 순간에도 빨강을 유지한다. prep.py는 `{ }`를 쓴 단어에만 `"red": true`를 적으므로, 기존 쇼츠의 `src/data/*.json`은 바이트 단위로 같다. teuk1로 확인했다. 데이터가 같고, 템플릿 변경 전과 후의 정지 화면(123프레임) md5가 같다.
+
+**사진**: 모두 Pexels 사진이다. 사람 얼굴이 없는 물건·장소 사진이고, 읽히는 상표나 로고가 없는 것만 골랐다. 처음 고른 18358118(플러그 사진)은 상표 로고가 보여서 16886336으로 바꿨고, 4061622(냉장고)는 음료 상표가 보여서 뺐다. 각 사진 페이지를 2026-10-10에 열어 "License: Free"(Pexels License)를 확인했다. [Pexels License](https://www.pexels.com/license/)는 무료이고, 상업적 이용과 수정이 가능하며, 출처 표기는 필요 없다. 다만 식별 가능한 인물을 나쁘게 보여 주거나, 보증을 암시하거나, 수정하지 않은 사본을 다시 팔 수는 없다. 그래서 사진을 저장소에 넣지 않고 `media/doodle/fetch.sh`가 받는다. 페이지 주소, 파일 주소, 제작자, 쓴 구간(초)은 `media/doodle/sources.json`과 각 `edit.json`의 `sources`에 있다. 화면에는 "사진: Pexels"만 쓴다.
+
+| 파일 | 제작자 | 쓴 곳(초) |
+| --- | --- | --- |
+| [16886334](https://www.pexels.com/photo/many-chargers-are-connected-to-an-electrical-outlet-on-a-white-background-16886334/) 멀티탭과 충전기 | Саша Алалыкин | doodle1 0~2.4 |
+| [8101095](https://www.pexels.com/photo/white-power-strip-on-gray-floor-8101095/) 바닥의 멀티탭 | Nikita Nikitin | doodle1 8.0~11.5 |
+| [8101107](https://www.pexels.com/photo/white-wall-socket-on-white-painted-wall-8101107/) 벽 콘센트 | Nikita Nikitin | doodle1 16.7~18.6 |
+| [16886336](https://www.pexels.com/photo/many-chargers-are-connected-to-an-electrical-outlet-on-a-white-background-16886336/) 충전기 꽂힌 멀티탭 | Саша Алалыкин | doodle1 18.6~20.6 |
+| [5544612](https://www.pexels.com/photo/sockets-and-cables-5544612/) 줄줄이 이은 콘센트 | Tim Mossholder | doodle1 26.6~29.9 |
+| [36757234](https://www.pexels.com/photo/rustic-wooden-chair-against-weathered-wall-36757234/) 낡은 나무 의자 | Gizem Gökce | doodle2 0~3.4, 21.2~23.0, 27.5~30.2 |
+| [6170455](https://www.pexels.com/photo/brown-cardboard-box-beside-white-wooden-door-6170455/) 문 앞 상자 | Tima Miroshnichenko | doodle2 24.7~27.5 |
+| [17800465](https://www.pexels.com/photo/stop-button-on-a-bus-17800465/) 버스 하차 버튼 | Elina Volkova | doodle3 0~2.8, 12.6~14.8, 31.2~33.2 |
+| [15595486](https://www.pexels.com/photo/interior-of-bus-15595486/) 빈 버스 안 | Pramod Tiwari | doodle3 4.8~6.8 |
+| [15595490](https://www.pexels.com/photo/empty-seats-in-bus-15595490/) 버스 좌석 | Pramod Tiwari | doodle3 6.8~10.9 |
+| [21348105](https://www.pexels.com/photo/seoul-21348105/) 밤의 서울 버스 | Elina Volkova | doodle3 18.0~19.8 |
+| [21235187](https://www.pexels.com/photo/bus-at-stop-on-street-21235187/) 정류장의 버스 | Elina Volkova | doodle3 25.8~27.4 |
+| [38853682](https://www.pexels.com/photo/organized-refrigerator-with-bottles-and-limes-38853682/) 냉장고 안 | thAnh nguyễn | doodle4 0~2.3, 23.5~26.9 |
+| [6508345](https://www.pexels.com/photo/interior-of-contemporary-light-kitchen-with-white-furniture-and-modern-appliances-6508345/) 부엌 | Max Vakhtbovych | doodle4 2.3~4.3, 17.3~20.4 |
+| [4058699](https://www.pexels.com/photo/evening-kitchen-neon-home-4058699/) 밤의 냉장고 | cottonbro studio | doodle4 5.7~6.8 |
+| [4443439](https://www.pexels.com/photo/fruits-and-vegetables-in-the-fridge-4443439/) 냉장고 채소 칸 | Polina Tankilevitch | doodle4 6.8~10.4, 32.5~35.0 |
+| [6823267](https://www.pexels.com/photo/clear-glass-jar-with-kimchi-beside-the-wooden-chopsticks-6823267/) 김치 병 | Antoni Shkraba | doodle4 26.9~28.6 |
+
+**doodle1 사실 확인**
+
+- "콘센트·멀티탭 사고 5년간 387건": 2020~2024년 소비자위해감시시스템(CISS)에 접수된 콘센트·멀티탭·플러그 안전사고 387건이다(79건에서 101건으로 늘었다). 출처는 산업통상부(제품안전정보과)·한국소비자원·국립소방연구원 보도자료 「멀티탭 오사용 시 화재 위험, 어린이 사고 많아 보호자 주의 필요」, 2025-09-04: https://www.motir.go.kr/kor/article/ATCL3f49a5a8c/170883/view
+- "멀티탭에 멀티탭 꽂기 금지", "에어컨·온열기는 벽 콘센트": 같은 보도자료의 주의사항이다. 원문은 "멀티탭에 또 다른 멀티탭을 연결해 사용하지 말 것", "에어컨, 온열기같이 높은 소비전력의 제품은 벽면의 전용·단독 콘센트를 사용할 것"이다.
+- "정해진 숫자(수명 몇 년)는 없음": 위 정부 보도자료와 소방 당국 안내에는 공통 교체 연수가 없다. 언론과 블로그가 인용하는 기간도 2년, 3~5년 등으로 서로 다르다. 그래서 숫자를 쓰지 않고 교체 신호를 소개했다. 비건뉴스(2026-08-29)는 "공식 소비자 자료에 공통 기준이 없다"고 정리했다: https://www.vegannews.co.kr/news/article.html?no=385250
+- 교체 신호, 먼지, 오래된 멀티탭
+  - 헐렁함: 서울시와 한국전기안전공사의 생활 전기안전 캠페인은 "플러그가 느슨하게 접속되면 먼지 등 인화성 물질이 불꽃을 일으킬 수 있다"고 안내한다. 위 비건뉴스 기사에서 인용했다.
+  - 오래된 멀티탭: 소방청은 "피복이 벗겨진 전선이나 오래된 멀티탭을 즉시 새 제품으로 교체"하라고 안내했다. 같은 기사에서 인용했다.
+  - 노후화와 먼지: 부산소방재난본부 화재조사담당은 "노후화ㆍ먼지 오염 등으로 화재가 발생할 수 있으므로" "오래된 멀티탭을 교환하고 먼지 제거 등 자주 청소를 해야 한다"고 밝혔다. 소방방재신문 2019-10-07: https://www.fpn119.co.kr/123504
+  - 콘센트 사이 먼지: 전남 강진소방서는 콘센트 사이에 쌓인 먼지가 전류와 만나 불꽃 화재가 나는 사례(트래킹)를 알렸다(2023-01, 시민일보): https://siminilbo.co.kr/news/newsview.php?ncode=1160275377962087
+  - 변색·그을음·타는 냄새는 위 비건뉴스 기사가 정리한 사용 중단 신호다. 화면에서는 "변색", "타는 냄새면 바로 교체"로만 짧게 말한다.
+- "기억 안 나면 이미 꽤 된 거임"은 농담조 문장이고 수치를 말하지 않는다.
+
+**qa_review**: 4편 모두 11개 항목 PASS(WARN·FAIL 0). 처음 doodle2·doodle3에서 `big`이 장면 끝에 떨어져 거의 안 보였다. 그래서 `big`은 줄 시작 0.4~0.5초 뒤(`"e+0.5"`)로 당겼고, 첫 장면은 0초부터 보이게(-1) 했다. doodle2는 처음에 다른 의자 사진을 섞어 썼는데, "그 의자 아직 내 방에 있음"과 맞지 않아서 같은 의자(36757234)로 통일했다.
+
+**업로드 문구**
+
+`doodle1`
+- 제목: 대부분 모르는 멀티탭의 수명 ㄷㄷ
+- 설명:
+  ```
+  님 방 멀티탭, 몇 년 됐음? 🔌 정해진 수명 대신 이런 신호가 오면 교체! 님 멀티탭은 몇 개 해당?
+  출처: 산업통상부·한국소비자원·국립소방연구원 보도자료(2025.9.4, 2020~2024년 CISS 접수 387건), 소방청·부산소방재난본부·서울시·한국전기안전공사 안전 안내
+  사진: Pexels (Саша Алалыкин, Nikita Nikitin, Tim Mossholder) · 캐릭터는 직접 그린 그림입니다.
+  Music: "Sneaky Snitch" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
+  ```
+- 해시태그: #멀티탭 #생활꿀팁 #전기안전 #짤툰 #낙서툰
+
+`doodle2`
+- 제목: "네고 되나요?"의 진화ㅋㅋ
+- 설명:
+  ```
+  만 원짜리 의자 올렸다가 배송비 낼 뻔한 썰 🪑 님들이 받아본 최강 네고는? (창작)
+  창작 짤툰입니다. 등장인물과 대화는 실제와 관계없으며 특정 앱·서비스와 무관합니다.
+  사진: Pexels (Gizem Gökce, Tima Miroshnichenko)
+  Music: "Monkeys Spinning Monkeys" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
+  ```
+- 해시태그: #중고거래 #네고 #공감 #짤툰 #낙서툰
+
+`doodle3`
+- 제목: 버스 하차벨 아무도 안 누르면ㅋㅋ
+- 설명:
+  ```
+  누가 누르겠지… 하다가 다 같이 걸어간 썰 🚌🔔 님들은 벨 먼저 누르는 쪽? (창작)
+  창작 짤툰입니다. 등장인물은 실제와 관계없습니다.
+  사진: Pexels (Elina Volkova, Pramod Tiwari)
+  Music: "Scheming Weasel" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
+  ```
+- 해시태그: #버스 #하차벨 #눈치게임 #공감 #짤툰
+
+`doodle4`
+- 제목: 엄마 "냉장고에 있잖아"ㅋㅋ
+- 설명:
+  ```
+  10분 찾아도 없던 김치, 엄마는 1초 컷 🫙 님 집 냉장고도 엄마만 보이는 칸 있음? (창작)
+  창작 짤툰입니다. 등장인물은 실제와 관계없습니다.
+  사진: Pexels (thAnh nguyễn, Max Vakhtbovych, cottonbro studio, Polina Tankilevitch, Antoni Shkraba)
+  Music: "Hyperfun" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
+  ```
+- 해시태그: #엄마 #냉장고 #공감 #짤툰 #낙서툰
