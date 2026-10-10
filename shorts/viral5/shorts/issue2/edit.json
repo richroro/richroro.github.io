@@ -1,0 +1,288 @@
+{
+ "credit": "사진: 위키미디어 공용",
+ "titleStyle": "band",
+ "captionY": 1640,
+ "sources": {
+  "fill": {
+   "file": "fillup_ccby.webm",
+   "credit": "영상: Antti Makkonen (CC BY)",
+   "label": "Filling Up Gas Tank (Sounds of Changes / Antti Makkonen, CC BY 4.0)",
+   "url": "https://commons.wikimedia.org/wiki/File:Filling_Up_Gas_Tank.webm",
+   "license": "CC BY 4.0",
+   "fileUrl": "https://upload.wikimedia.org/wikipedia/commons/d/d5/Filling_Up_Gas_Tank.webm"
+  },
+  "tank": {
+   "file": "tankers_uscg.mp4",
+   "credit": "영상: 미국 해안경비대",
+   "label": "Oil Tankers at anchor in Southern California, 2020-04-23 (U.S. Coast Guard, PO3 Aidan Cooney, public domain)",
+   "url": "https://www.dvidshub.net/video/749266/oil-tankers-anchor-southern-california",
+   "license": "Public domain (U.S. Coast Guard work, DVIDS VIRIN 200423-G-SL960-827)",
+   "fileUrl": "https://d34w7g4gy10iej.cloudfront.net/video/2004/DOD_107784864/DOD_107784864.mp4"
+  },
+  "hong": {
+   "file": "hongcheon_station_cc0.jpg",
+   "credit": "사진: 최광모 (CC0)",
+   "label": "태창주유소(홍천군 서면) IMG 3903 (CC0)",
+   "url": "https://commons.wikimedia.org/wiki/File:태창주유소(홍천군_서면)IMG_3903.jpg",
+   "license": "CC0",
+   "fileUrl": "https://upload.wikimedia.org/wikipedia/commons/f/f5/%ED%83%9C%EC%B0%BD%EC%A3%BC%EC%9C%A0%EC%86%8C%28%ED%99%8D%EC%B2%9C%EA%B5%B0_%EC%84%9C%EB%A9%B4%29IMG_3903.jpg"
+  },
+  "ks": {
+   "file": "ks_station_cc0.jpg",
+   "credit": "사진: Hankook12 (CC0)",
+   "label": "Filling station in South Korea (CC0)",
+   "url": "https://commons.wikimedia.org/wiki/File:Filling_station_in_South_Korea.jpg",
+   "license": "CC0",
+   "fileUrl": "https://upload.wikimedia.org/wikipedia/commons/d/df/Filling_station_in_South_Korea.jpg"
+  },
+  "songak": {
+   "file": "songak_station_cc0.jpg",
+   "credit": "사진: LandAndTree (CC0)",
+   "label": "Hyundai Oilbank Songak Gas Station 20240729 (CC0)",
+   "url": "https://commons.wikimedia.org/wiki/File:Hyundai_Oilbank_Songak_Gas_Station_20240729.jpg",
+   "license": "CC0",
+   "fileUrl": "https://upload.wikimedia.org/wikipedia/commons/3/35/Hyundai_Oilbank_Songak_Gas_Station_20240729.jpg"
+  },
+  "sk": {
+   "file": "sk_enclean_ccby.jpg",
+   "credit": "사진: iTurtle (CC BY 3.0)",
+   "label": "SK Enclean (iTurtle, CC BY 3.0)",
+   "url": "https://commons.wikimedia.org/wiki/File:SK_Enclean.jpg",
+   "license": "CC BY 3.0",
+   "fileUrl": "https://upload.wikimedia.org/wikipedia/commons/3/31/SK_Enclean.jpg"
+  },
+  "songnae": {
+   "file": "songnae_ccby.jpg",
+   "credit": "사진: 슈트레인저 (CC BY 3.0)",
+   "label": "S Oil Songnae Interchange Gas Station - panoramio (슈트레인저, CC BY 3.0)",
+   "url": "https://commons.wikimedia.org/wiki/File:S_Oil_Songnae_Interchange_Gas_Station_-_panoramio.jpg",
+   "license": "CC BY 3.0",
+   "fileUrl": "https://upload.wikimedia.org/wikipedia/commons/7/72/S_Oil_Songnae_Interchange_Gas_Station_-_panoramio.jpg"
+  }
+ },
+ "clips": [
+  {
+   "src": "hong",
+   "from": "hook",
+   "label": "시골 주유소 주유기",
+   "zoom": [
+    1.1,
+    1.22
+   ],
+   "focus": "50% 60%"
+  },
+  {
+   "src": "fill",
+   "from": "hook.경유값이",
+   "in": 24.0,
+   "label": "주유구에 꽂힌 노즐",
+   "audio": 0.3,
+   "zoom": [
+    1.05,
+    1.15
+   ]
+  },
+  {
+   "src": "tank",
+   "from": "war",
+   "in": 30.0,
+   "label": "바다 위 유조선들",
+   "audio": 0.1
+  },
+  {
+   "src": "tank",
+   "from": "war.국제유가",
+   "in": 42.0,
+   "label": "유조선 근접",
+   "audio": 0.1,
+   "zoom": [
+    1.0,
+    1.1
+   ]
+  },
+  {
+   "src": "ks",
+   "from": "war.삼월에",
+   "label": "주유소",
+   "zoom": [
+    1.05,
+    1.15
+   ]
+  },
+  {
+   "src": "songak",
+   "from": "catch",
+   "label": "셀프 주유소",
+   "zoom": [
+    1.05,
+    1.15
+   ]
+  },
+  {
+   "src": "songnae",
+   "from": "catch.정유사가",
+   "label": "탱크로리가 있는 주유소",
+   "zoom": [
+    1.02,
+    1.08
+   ],
+   "focus": "0% 50%"
+  },
+  {
+   "src": "fill",
+   "from": "reset",
+   "in": 3.0,
+   "label": "주유기 화면",
+   "audio": 0.2
+  },
+  {
+   "src": "sk",
+   "from": "reset.경유",
+   "label": "고속도로 주유소",
+   "zoom": [
+    1.05,
+    1.15
+   ]
+  },
+  {
+   "src": "fill",
+   "from": "reset.지금은",
+   "in": 61.5,
+   "label": "주유 노즐들",
+   "audio": 0.2,
+   "zoom": [
+    1.0,
+    1.1
+   ]
+  },
+  {
+   "src": "tank",
+   "from": "effect",
+   "in": 9.0,
+   "label": "정박한 유조선",
+   "audio": 0.1,
+   "zoom": [
+    1.0,
+    1.1
+   ]
+  },
+  {
+   "src": "fill",
+   "from": "effect.물가",
+   "in": 33.0,
+   "label": "주유 중",
+   "audio": 0.2
+  },
+  {
+   "src": "fill",
+   "from": "end",
+   "in": 15.0,
+   "label": "주유구 여는 손",
+   "audio": 0.2
+  },
+  {
+   "src": "hong",
+   "from": "end.다음",
+   "label": "주유소",
+   "zoom": [
+    1.0,
+    1.1
+   ]
+  }
+ ],
+ "marks": [
+  {
+   "kind": "circle",
+   "x": 540,
+   "y": 1060,
+   "r": 170,
+   "from": "hook+0.3",
+   "to": "hook.경유값이-0.1"
+  },
+  {
+   "kind": "circle",
+   "x": 150,
+   "y": 950,
+   "r": 120,
+   "from": "catch.정유사가+0.2",
+   "to": "reset-0.1"
+  }
+ ],
+ "stickers": [
+  {
+   "text": "2026년 9월 소비자물가 · 국가데이터처",
+   "from": "hook+0.0",
+   "to": "war-0.1",
+   "y": 520,
+   "size": 38
+  },
+  {
+   "text": "2026년 3월 13일 시행",
+   "from": "war.삼월에+0.1",
+   "to": "catch-0.1",
+   "y": 520
+  },
+  {
+   "text": "탱크로리 = 정유사 → 주유소",
+   "from": "catch.정유사가+0.2",
+   "to": "reset-0.1",
+   "y": 520,
+   "size": 40
+  },
+  {
+   "text": "10차 최고가격 · 9월 19일부터 4주",
+   "from": "reset.지금은+0.1",
+   "to": "effect-0.1",
+   "y": 520,
+   "size": 38
+  },
+  {
+   "text": "2026년 10월 기준",
+   "from": "end+0.1",
+   "to": "end@end+0.5",
+   "y": 520
+  }
+ ],
+ "sfx": [
+  [
+   "hook",
+   "whoosh",
+   0.4
+  ],
+  [
+   "hook.이십",
+   "k_error_003",
+   0.35
+  ],
+  [
+   "catch",
+   "k_question_001",
+   0.35
+  ],
+  [
+   "reset.지금은",
+   "ding",
+   0.3
+  ],
+  [
+   "effect.삼",
+   "pop",
+   0.35
+  ],
+  [
+   "end",
+   "riser",
+   0.3
+  ]
+ ],
+ "punches": [
+  "hook.이십",
+  "catch.정유사가"
+ ],
+ "flashes": [],
+ "music": {
+  "file": "music/Movement Proposition.mp3",
+  "gain": 0.14,
+  "start": 0
+ }
+}

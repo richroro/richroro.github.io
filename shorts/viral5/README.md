@@ -1787,3 +1787,73 @@ MEDIA=<저장소>/media python3 politics/prep_split.py rank1    # 원본: media/
 > 영상: 미 해병대·미 육군(알링턴 국립묘지)·미 해군·미 공군 (DVIDS) — Cpl. Christopher Prelle, Daryl Vaca, MC2 Caden Richmond, Airman 1st Class Nathan Langston, Cpl. Jordy Morales. 미 국방부와 각 군이 이 영상을 보증하거나 후원하지 않습니다.
 > 음악: "Heroic Age" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
 > #군대 #미군 #해병대 #소름 #shorts
+
+## 이번 주 이슈 30초 정리 (`issue1`~`issue4`)
+
+2026년 10월 둘째 주 뉴스 4편. 장르는 하나로 묶었습니다: **정치색 없는 뉴스를 30초에 풀어 주는 질문형 해설**(검정 제목 띠 + 실제 영상·사진 + 1줄 자막 + Edge TTS +20%). 원본은 `media/{nuri,oil,hangul,nobel}/`(영상 파일은 저장소에 넣지 않음, `sources.json`에 페이지·파일 주소·라이선스·크레디트·쓴 구간), 작업 사본은 `public/issueN/src/`.
+
+| id | 제목(화면 띠) | 길이 | 내용 | 정확한 날짜 한계 | 음악 |
+| --- | --- | --- | --- | --- | --- |
+| `issue1` | 누리호 위성 15기 중 / 1기만 못 나온 이유 | 33.2초 | 10월 7일 5차 발사 성공 → 군집위성 5기 궤도 → 고도 약 570km 분리 → 큐브위성 1기는 사출관 덮개가 안 열려 미분리 → 군집위성 5기 당일 교신 성공 → 내년 5기 더, 한반도 하루 3번 넘게 → 5번 중 4번 성공, 다음은 내년 하반기 | **10월 14일께**까지(발사 1주일. 숫자는 이후에도 맞지만, 큐브위성 교신 결과나 최종 판정 등 우주청 추가 발표가 나오면 그 전에 올리거나 내용 확인) | Heroic Age |
+| `issue2` | 기름값 상한제 있는데 / 경유 20% 오른 이유 | 32.4초 | 9월 경유 1년 새 20.0%↑ → 중동 전쟁·국제유가 → 3월 13일 석유 최고가격제 → 상한은 주유소 판매가가 아니라 정유사 공급가 → 경유 상한 1,713원(1차) → 1,773원(10차) → 상한제 없었으면 물가 3.5%(정부 추정) → 지금 상한은 10월 중순까지 | **10월 15일까지**(10차 최고가격은 9월 19일부터 4주 → 16일께 11차 발표. 10월 소비자물가는 11월 초 발표) | Movement Proposition |
+| `issue3` | 한글날이 22년 동안 / 쉬는 날 아니었던 이유 | 28.7초 | 1991년부터 공휴일 제외(어려운 경제 여건 등, 국군의 날과 함께) → 2006년 국경일 → 2012년 12월 24일 국무회의 의결로 2013년부터 다시 공휴일 → "한글날에 학교 간 기억 있나요?" | 내용은 늘 맞음. 다만 화제성은 한글날 주간(**10월 12일께**까지). 화면의 "2026년 제580돌 한글날"은 올해만 맞음 | Heartwarming |
+| `issue4` | 올해 노벨물리학상 / 남극 얼음 덩어리의 정체 | 33.7초 | 1초에 약 100조 개가 몸을 통과하는 중성미자 → 남극 얼음 1km³ 검출기 아이스큐브, 센서 5,160개 → 2013년 우주 고에너지 중성미자 첫 확인 → 프랜시스 할젠 단독 수상(10월 6일 발표) → 물리학상 단독 수상은 34년 만 | 내용은 계속 맞음. 화제성은 시상식 전후(**10월 말**까지, 늦어도 12월 10일 시상식) | Floating Cities |
+
+### 사실 근거
+**issue1 누리호 5차 발사**
+- 10월 7일 낮 12시 25분 발사, 주탑재 초소형군집위성(네온샛) 5기 목표 궤도 투입, 큐브위성 10기 중 9기 투입, 1기는 "분리 신호를 받았으나 위성을 내보내는 덮개가 열리지 않음", 분리 고도 570km±15km 기준 충족, 성공률 75%→80%: [파이낸셜뉴스](https://www.fnnews.com/news/202610071826359850), [아시아경제](https://view.asiae.co.kr/article/2026100713324180944), [아이뉴스24](https://inews24.com/view/2012682)(큐브위성 10기 중 9기 분리), [머니투데이방송](https://news.mtn.co.kr/news-detail/2026100717103775939)("정상 분리 신호를 냈지만 사출관 뚜껑이 열리지 않은 것으로 확인")
+- 분리 고도 약 575km, 7~11호기 내년 9월 발사, 10기 운용 시 한반도 하루 3회 이상 촬영: [전자신문](https://www.etnews.com/20261007000371)
+- 군집위성 5기 교신 전원 성공(13:08~17:52, 세종기지·스발바르 지상국): [정책브리핑 카드(우주항공청)](https://www.korea.kr/multi/visualNewsView.do?newsId=148973195)
+- 6차 발사 내년 하반기 목표, 2032년까지 매년 1회 이상: [정책브리핑 우주항공청 기사](https://www.korea.kr/news/policyNewsView.do?newsId=148973163)
+- 누리호 1차(2021) 실패, 2·3·4·5차 성공 → 5번 중 4번(80%): 위 기사들의 성공률 75%→80%
+
+**issue2 경유값**
+- 2026년 9월 소비자물가 2.9%, 석유류 14.8%, 경유 20.0%, 휘발유 11.8%, 등유 19.5%: [정책브리핑 9월 소비자물가동향 브리핑](https://www.korea.kr/briefing/policyBriefingView.do?newsId=156784092), [이투데이](https://www.etoday.co.kr/news/view/2631864), [서울신문](https://www.seoul.co.kr/news/economy/2026/10/02/20261002500041)
+- 최고가격제가 없었다면 9월 3.5%(0.6%p 낮춤, 재정경제부 추정): [이투데이](https://www.etoday.co.kr/news/view/2631784), [뉴데일리](https://biz.newdaily.co.kr/site/data/html/2026/10/02/2026100200046.html)
+- 3월 13일 0시 시행, 상한은 정유사 공급가(주유소 판매가 아님), 1차 경유 1,713원: [KDI 경제정보센터(정부 발표)](https://eiec.kdi.re.kr/policy/materialView.do?num=277913), [뉴닉 정리](https://newneek.co/@saltylife/article/39324)
+- 중동 전쟁 이후 도입: [에너지경제](https://m.ekn.kr/view.php?key=20260313022247530), 산업통상부 10차 자료("중동정세 불안")
+- 10차 경유 1,773원, 9월 19일 0시부터 4주: [산업통상부 참고자료](https://www.motir.go.kr/kor/article/ATCL3f49a5a8c/172224/view), [머니투데이](https://www.mt.co.kr/economy/2026/09/18/2026091816121493397)
+
+**issue3 한글날**
+- "1991년 어려운 경제 여건 등을 이유로 공휴일에서 제외된 지 22년 만", "2013년도부터 한글날이 다시 공휴일(12. 24., 국무회의 의결)": [문화체육관광부 보도자료](https://www.mcst.go.kr/kor/s_notice/press/pressView.jsp?pSeq=12511)
+- 국군의 날과 함께 1991년부터 제외, 2005년 12월 8일 국회 통과 → 2006년 국경일: [국가기록원 기록으로 보는 국경일](https://theme.archives.go.kr/next/koreaOfRecord/nationHoliday.do)
+- 1990년 대통령령 개정으로 국군의 날과 함께 제외(공휴일이 10월에 몰리고 해외 평균 13.4일보다 많다는 이유), 시행은 1991년부터: [서울신문 2024](https://m.seoul.co.kr/news/2024/09/17/20240917500023)
+- 2026년은 제580돌(1446년 반포, 2025년 제579돌): [시대일보 2025](https://www.sidae.com/article/2025100116340066353)
+
+**issue4 노벨물리학상**
+- 10월 6일 발표, 프랜시스 할젠(82, 위스콘신대) 단독 수상, "아이스큐브 중성미자 관측소에 대한 결정적 기여와 천체 기원 고에너지 중성미자 발견", 약 1km³, 86줄 5,160개 광센서, 최대 2,450m, 2013년 첫 확인, 물리학상 단독 수상 34년 만(1992년 샤르파크 이후): [서울신문](https://www.seoul.co.kr/news/peoples/2026/10/07/20261007023005), [한국일보](https://www.hankookilbo.com/news/article/A2026100709400000234), [Al Jazeera(의학상 등 일정)](https://www.aljazeera.com/news/2026/10/5/nobel-medicine-prize-honours-us-and-german-scientists-for-optogenetics-work)
+- 1km³, 5,160개 센서, 1,450~2,450m, 1초에 약 100조 개가 몸을 통과: [IceCube 공식 Facts](https://icecube.wisc.edu/about-us/facts/)
+- 중성미자는 물질과 거의 상호작용하지 않아 지구도 통과: [NASA SVS 20281 설명](https://svs.gsfc.nasa.gov/20281)
+
+### 사진·영상 출처와 라이선스
+화면에는 짧은 크레디트만 씁니다(오른쪽 위). 라이선스는 여기와 업로드 문구에만 적습니다.
+- **issue1** — 한국항공우주연구원(KARI) 공식 영상: [누리호 1차 발사 장면(2021)](https://commons.wikimedia.org/wiki/File:%EB%88%84%EB%A6%AC%ED%98%B8_1%EC%B0%A8_%EC%8B%9C%ED%97%98_%EB%B0%9C%EC%82%AC_%EC%9E%A5%EB%A9%B4.webm), [2차 발사(2022)](https://commons.wikimedia.org/wiki/File:Second_launch_of_the_Korean_Space_Launch_Vehicle-II_on_21_June_2022.webm), [3차 발사·탑재 카메라(2023)](https://commons.wikimedia.org/wiki/File:Third_launch_of_the_Korean_Space_Launch_Vehicle-II_on_25_May_2023.webm) — 모두 위키미디어 공용, **CC BY**(KARI TV가 CC BY로 공개). 사진 [KSLV-II Nuri and the launchpad 01](https://commons.wikimedia.org/wiki/File:KSLV-II_Nuri_and_the_launchpad_01.jpg) — KARI, **공공누리 제1유형**. 5차 발사 자체의 영상·사진은 쓰지 않았습니다(정책브리핑의 5차 영상엔 공공누리 표시가 없고, 기사 사진은 뉴스1·연합뉴스). 그래서 화면에 "자료화면: 지난 발사 영상", "자료화면 · 3차 발사 탑재 카메라" 스티커를 붙였습니다.
+- **issue2** — [Filling Up Gas Tank](https://commons.wikimedia.org/wiki/File:Filling_Up_Gas_Tank.webm)(Antti Makkonen / Sounds of Changes, **CC BY 4.0**); [Oil Tankers at anchor in Southern California](https://www.dvidshub.net/video/749266)(미국 해안경비대 PO3 Aidan Cooney, **퍼블릭 도메인**); 주유소 사진 [태창주유소](https://commons.wikimedia.org/wiki/File:%ED%83%9C%EC%B0%BD%EC%A3%BC%EC%9C%A0%EC%86%8C(%ED%99%8D%EC%B2%9C%EA%B5%B0_%EC%84%9C%EB%A9%B4)IMG_3903.jpg)(최광모, **CC0**), [Filling station in South Korea](https://commons.wikimedia.org/wiki/File:Filling_station_in_South_Korea.jpg)(Hankook12, **CC0**), [Hyundai Oilbank Songak](https://commons.wikimedia.org/wiki/File:Hyundai_Oilbank_Songak_Gas_Station_20240729.jpg)(LandAndTree, **CC0**), [SK Enclean](https://commons.wikimedia.org/wiki/File:SK_Enclean.jpg)(iTurtle, **CC BY 3.0**), [S Oil Songnae](https://commons.wikimedia.org/wiki/File:S_Oil_Songnae_Interchange_Gas_Station_-_panoramio.jpg)(슈트레인저, **CC BY 3.0**). 특정 주유소·정유사를 탓하는 문장은 없습니다(브랜드는 배경으로만 보임).
+- **issue3** — [훈민정음 해례본](https://commons.wikimedia.org/wiki/Category:Hunminjeongeum_Haerye) 1·2·7면(**퍼블릭 도메인**); [한글날 기념식(1954)](https://commons.wikimedia.org/wiki/File:%ED%95%9C%EA%B8%80%EB%82%A0_%EA%B8%B0%EB%85%90%EC%8B%9D_(1954).jpg)(한국정책방송원, 공유마당); [Gwanghwamun in November 1993](https://commons.wikimedia.org/wiki/File:Gwanghwamun_in_November_1993.jpg)(국립민속박물관 민속아카이브); [광화문 (1996.05)](https://commons.wikimedia.org/wiki/File:%EA%B4%91%ED%99%94%EB%AC%B8_(1996.05).jpg)·[광화문과 구중앙청 (1996.08)](https://commons.wikimedia.org/wiki/File:%EA%B4%91%ED%99%94%EB%AC%B8%EA%B3%BC_%EA%B5%AC%EC%A4%91%EC%95%99%EC%B2%AD_(1996.08)_01.jpg)(서울연구원 사진으로 본 서울); [광화문광장 야경 2024](https://commons.wikimedia.org/wiki/File:Nightview_of_the_Gwanghwamun_Square_2024.jpg)(서울관광재단); [나신걸 한글편지(1490)](https://commons.wikimedia.org/wiki/File:%EB%82%98%EC%8B%A0%EA%B1%B8_%ED%95%9C%EA%B8%80%ED%8E%B8%EC%A7%80,_1490.jpg)·[여주 영릉 항공](https://commons.wikimedia.org/wiki/File:%EC%97%AC%EC%A3%BC_%EC%98%81%EB%A6%89%EA%B3%BC_%EC%98%81%EB%A6%89_%EC%84%B8%EC%A2%85_%EC%98%81%EB%A6%89_%EC%A0%84%EA%B2%BD(%ED%95%AD%EA%B3%B5).jpg)(국가유산청) — 해례본 외 모두 **공공누리 제1유형**. 광화문 세종대왕 동상 사진은 쓰지 않았습니다(한국은 조형물 파노라마 자유가 비영리로 한정). 연표 그래픽 1장은 해례본 사진을 어둡게 깐 위에 올렸습니다.
+- **issue4** — NASA 고다드 우주비행센터 애니메이션 [SVS 20281 Blazar EarthShot A·B](https://svs.gsfc.nasa.gov/20281), [SVS 12994](https://svs.gsfc.nasa.gov/12994)(**퍼블릭 도메인**, 12994의 배경음악 "Hidden Tides"(Killer Tracks)는 소리를 0으로 꺼서 쓰지 않음, 12994 안의 Mellinger·SYSTEM Sounds 항목은 쓰지 않음); [The ICL at Dawn](https://commons.wikimedia.org/wiki/File:The_ICL_at_Dawn.jpg)·[The ICL at Night](https://commons.wikimedia.org/wiki/File:The_ICL_at_Night.jpg)(John Hardin, **CC BY 4.0**); [The IceCube Neutrino Observatory 구조도](https://commons.wikimedia.org/wiki/File:The_IceCube_Neutrino_Observatory.jpg)(Karen Andeen·Matthias Plum for the IceCube Collaboration, **CC BY 4.0**); [Amundsen-Scott dome Aurora](https://commons.wikimedia.org/wiki/File:Amundsen-Scott_dome_Aurora_1.jpg)(Jonathan Berry/NSF, **퍼블릭 도메인**). 수상자 사진은 쓰지 않았습니다.
+- 음악: Kevin MacLeod (incompetech.com), CC BY 4.0.
+
+### 업로드 문구
+**issue1** — 누리호 위성 15기 중 1기만 못 나온 이유 🚀
+> 10월 7일 누리호 5차 발사 성공! 주탑재위성인 초소형 군집위성 5기는 모두 궤도에 올라 당일 교신까지 성공했지만, 큐브위성 10기 중 1기는 분리 신호를 받고도 위성을 내보내는 덮개가 열리지 않아 분리되지 못했습니다. 누리호는 5번 중 4번 성공(80%), 6차 발사는 내년 하반기 목표입니다. (2026년 10월 기준)
+> 출처: 우주항공청·정책브리핑, 파이낸셜뉴스, 전자신문, 머니투데이방송, 아이뉴스24 / 영상: 한국항공우주연구원(KARI) 2021~2023 발사 영상(CC BY, 자료화면) · 사진: 한국항공우주연구원(공공누리 제1유형)
+> 음악: "Heroic Age" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
+> #누리호 #우주항공청 #군집위성 #나로우주센터 #shorts
+
+**issue2** — 기름값 상한제 있는데 경유 20% 오른 이유 ⛽
+> 2026년 9월 소비자물가에서 경유는 1년 전보다 20.0%, 휘발유는 11.8% 올랐습니다. 3월 13일 시작된 석유 최고가격제는 주유소 판매가가 아니라 정유사가 주유소에 공급하는 가격에 상한을 두고, 상한선도 국제유가에 따라 다시 정해집니다(경유 1차 1,713원 → 10차 1,773원). 정부는 상한제가 없었다면 9월 물가 상승률이 2.9%가 아니라 3.5%였을 것으로 추정합니다. 10차 상한은 9월 19일부터 4주간 적용됩니다. (2026년 10월 기준)
+> 출처: 국가데이터처 9월 소비자물가동향(정책브리핑), 재정경제부·산업통상부 자료, 이투데이, 머니투데이, KDI 경제정보센터 / 영상: Antti Makkonen "Filling Up Gas Tank"(CC BY 4.0), 미국 해안경비대(DVIDS) · 사진: 위키미디어 공용 최광모·Hankook12·LandAndTree(CC0), iTurtle·슈트레인저(CC BY 3.0). 미국 정부가 이 영상을 보증하지 않습니다.
+> 음악: "Movement Proposition" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
+> #기름값 #경유 #석유최고가격제 #소비자물가 #shorts
+
+**issue3** — 한글날이 22년 동안 쉬는 날이 아니었던 이유 📅
+> 한글날은 1991년부터 "공휴일이 너무 많다", "어려운 경제 여건" 등을 이유로 국군의 날과 함께 공휴일에서 빠졌습니다. 2006년 국경일이 됐지만 쉬지는 않았고, 2012년 12월 24일 국무회의 의결로 2013년부터 다시 공휴일이 됐습니다. 여러분은 한글날에 학교 간 기억, 있나요?
+> 출처: 문화체육관광부 보도자료(2012), 국가기록원 '기록으로 보는 국경일' / 사진: 훈민정음 해례본(퍼블릭 도메인), 한국정책방송원·국립민속박물관·서울연구원·서울관광재단·국가유산청(공공누리 제1유형)
+> 음악: "Heartwarming" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
+> #한글날 #공휴일 #훈민정음 #한국사 #shorts
+
+**issue4** — 노벨물리학상 받은 남극 얼음 덩어리의 정체 🧊
+> 2026년 노벨물리학상은 남극 얼음 1km³를 통째로 검출기로 만든 '아이스큐브 중성미자 관측소'를 이끈 프랜시스 할젠 교수에게 돌아갔습니다(10월 6일 발표, 단독 수상). 얼음 속 1,450~2,450m에 심은 센서 5,160개가 중성미자가 드물게 부딪힐 때 나는 빛을 잡아, 2013년 우주에서 온 고에너지 중성미자를 처음 확인했습니다. 중성미자는 지금도 1초에 약 100조 개씩 우리 몸을 통과합니다.
+> 출처: 노벨위원회 발표(서울신문·한국일보 보도), IceCube 공식 자료, NASA / 영상: NASA 고다드 우주비행센터 애니메이션 · 사진: John Hardin(CC BY 4.0), IceCube Collaboration 구조도(CC BY 4.0), 미국 국립과학재단(NSF). NASA·NSF가 이 영상을 보증하지 않습니다.
+> 음악: "Floating Cities" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
+> #노벨물리학상 #중성미자 #아이스큐브 #남극 #shorts
