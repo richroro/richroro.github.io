@@ -1,4 +1,4 @@
-"""Write shorts/horror1-4/edit.json from the compact cut lists below, and media/horror/sources.json (every clip,
+"""Write shorts/horror1-8/edit.json from the compact cut lists below, and media/horror/sources.json (every clip,
 its licence and the source seconds each short uses).  usage: python3 media/horror/make_edits.py"""
 import json, os, sys
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
@@ -99,6 +99,106 @@ CUTS = {
   "sfx": [["d", "click", 0.6], ["f", "heartbeat", 0.7], ["g.아무도", "k_glitch_002", 0.3], ["end", "k_glitch_002", 0.35]],
   "flashes": ["f"],
  },
+ "horror5": {
+  "music": {"file": "music/Gathering Darkness.mp3", "gain": 0.13, "start": 60},
+  "cuts": [
+   ("a", "px5843879", 0.0, {"label": "비상계단"}),
+   ("a.열두", "px6010700", 2.0, {"label": "어두운 계단"}),
+   ("b", "px3134591", 1.0, {"label": "비상구 표시"}),
+   ("b.사람이", "px9152640", 4.0, {"label": "계단"}),
+   ("c", "px12096163", 1.0, {"label": "어두운 계단"}),
+   ("c.내가", "px5843879", 3.0, {"label": "내려가는 계단"}),
+   ("c.아래층", "px39024320", 1.0, {"label": "켜진 불"}),
+   ("d", "px9152640", 8.0, {"label": "아래층"}),
+   ("d.끝까지", "px5986347", 3.0, {"label": "나선 계단"}),
+   ("e", "px4990438", 1.0, {"label": "1층"}),
+   ("e.일", "px7644222", 5.0, {"label": "비상구"}),
+   ("f", "px12096163", 6.0, {"label": "등 뒤", "zoom": [1.08, 1.15]}),
+   ("f.이", "px39024320", 5.0, {"label": "2층 불", "zoom": [1.12, 1.2]}),
+   ("g", "px6010700", 10.0, {"label": "위층 어둠", "zoom": [1.15, 1.25]}),
+   ("end", "px5843879", 0.5, {"label": "비상계단", "zoom": [1.06, 1.14]}),
+   ("end.정답은", "px3134591", 5.0, {"label": "비상구 표시"}),
+  ],
+  "sfx": [["c.아래층", "click", 0.45], ["f.딸깍", "click", 0.6], ["g", "heartbeat", 0.7], ["end", "k_glitch_002", 0.35]],
+  "flashes": ["f.이"],
+ },
+ "horror6": {
+  "music": {"file": "music/Ghost Story.mp3", "gain": 0.11, "start": 40},
+  "cuts": [
+   ("a", "px6028858", 0.5, {"label": "지하주차장"}),
+   ("a.몇", "px27890130", 0.5, {"label": "세워 둔 차"}),
+   ("b", "px19217892", 1.0, {"label": "빈 주차장"}),
+   ("b.주인을", "px5972195", 4.0, {"label": "기둥"}),
+   ("c", "px6028882", 2.0, {"label": "지나가는 길"}),
+   ("c.괜히", "px38433795", 1.0, {"label": "차 안"}),
+   ("d", "px5192033", 2.0, {"label": "김 서린 유리"}),
+   ("d.하얗게", "px38433795", 8.0, {"label": "김 서린 창", "zoom": [1.1, 1.18]}),
+   ("e", "px5227362", 3.0, {"label": "유리"}),
+   ("e.또", "px5192033", 10.0, {"label": "글씨", "zoom": [1.1, 1.2]}),
+   ("f", "px6028882", 14.0, {"label": "주차장", "zoom": [1.1, 1.18]}),
+   ("f.그런데", "px38433795", 12.0, {"label": "창"}),
+   ("f.좌우로", "px5227362", 15.0, {"label": "뒤집힌 글씨", "zoom": [1.12, 1.22]}),
+   ("g", "px32078487", 4.0, {"label": "닫힌 문"}),
+   ("end", "px6028858", 6.0, {"label": "지하주차장", "zoom": [1.06, 1.14]}),
+   ("end.정답은", "px19217892", 6.0, {"label": "빈 주차장"}),
+  ],
+  "stickers": [
+   {"text": "또 봤네?", "from": "e.또", "to": "f", "x": 540, "y": 600, "rot": 0, "bg": "#E8ECEF", "fg": "#222", "size": 64},
+  ],
+  "sfx": [["e.또", "k_question_001", 0.4], ["f.좌우로", "heartbeat", 0.7], ["end", "k_glitch_002", 0.35]],
+  "flashes": ["f.좌우로"],
+ },
+ "horror7": {
+  "music": {"file": "music/Gathering Darkness.mp3", "gain": 0.13, "start": 90},
+  "cuts": [
+   ("a", "px5245970", 2.0, {"label": "카메라 렌즈"}),
+   ("a.홈캠을", "px34106136", 1.0, {"label": "카메라"}),
+   ("b", "px19228170", 0.5, {"label": "현관"}),
+   ("b.누가", "px6028175", 1.0, {"label": "렌즈"}),
+   ("c", "px19228170", 8.0, {"label": "현관", "zoom": [1.1, 1.16]}),
+   ("c.출퇴근하는", "px19193293", 1.0, {"label": "거실"}),
+   ("d", "px6114429", 3.0, {"label": "아침 불"}),
+   ("d.어젯밤", "px5245970", 10.0, {"label": "렌즈", "zoom": [1.1, 1.18]}),
+   ("e", "px6443851", 1.0, {"label": "녹화 화면 침대"}),
+   ("e.자고", "px15887293", 2.0, {"label": "녹화 화면 침대"}),
+   ("f", "px6443851", 8.0, {"label": "침대 옆", "zoom": [1.15, 1.25]}),
+   ("f.나를", "px15887293", 7.0, {"label": "내려다보는 각도", "zoom": [1.12, 1.2]}),
+   ("f2", "px19228170", 12.0, {"label": "현관문"}),
+   ("f2.한", "px19193293", 6.0, {"label": "거실", "zoom": [1.08, 1.15]}),
+   ("g", "px34106136", 6.0, {"label": "카메라", "zoom": [1.1, 1.2]}),
+   ("end", "px5245970", 3.0, {"label": "렌즈", "zoom": [1.06, 1.14]}),
+   ("end.정답은", "px3773489", 2.0, {"label": "침실"}),
+  ],
+  "stickers": [
+   {"text": "● REC  02:13", "from": "e", "to": "f2", "x": 540, "y": 600, "rot": 0, "bg": "#111", "fg": "#ff2a2a", "size": 44},
+  ],
+  "sfx": [["e", "k_glitch_002", 0.3], ["f", "heartbeat", 0.7], ["end", "k_glitch_002", 0.35]],
+  "flashes": ["e.자고"],
+ },
+ "horror8": {
+  "music": {"file": "music/Ghost Story.mp3", "gain": 0.11, "start": 60},
+  "cuts": [
+   ("a", "px5994915", 5.0, {"label": "숲속 텐트"}),
+   ("a.밤새", "px9976082", 2.0, {"label": "밤비"}),
+   ("b", "px34405948", 1.0, {"label": "밤 숲"}),
+   ("b.철벅", "px7714908", 1.0, {"label": "진흙"}),
+   ("b.발소리가", "px9591436", 1.0, {"label": "텐트"}),
+   ("c", "px5391986", 2.0, {"label": "흔들리는 나뭇잎"}),
+   ("c.천천히", "px5994915", 20.0, {"label": "텐트 주위", "zoom": [1.1, 1.18]}),
+   ("d", "px9591436", 6.0, {"label": "꺼진 텐트"}),
+   ("d.아침을", "px4162882", 1.0, {"label": "새벽 텐트"}),
+   ("e", "px39485457", 1.0, {"label": "젖은 텐트"}),
+   ("e.젖은", "px39619866", 1.0, {"label": "젖은 흙"}),
+   ("f", "px5419248", 2.0, {"label": "텐트 입구"}),
+   ("f.한", "px39619866", 6.0, {"label": "발자국", "zoom": [1.1, 1.18]}),
+   ("f.다시", "px5419248", 12.0, {"label": "텐트", "zoom": [1.12, 1.2]}),
+   ("g", "px39485454", 2.0, {"label": "텐트 끝"}),
+   ("end", "px5994915", 30.0, {"label": "숲속 텐트", "zoom": [1.06, 1.14]}),
+   ("end.정답은", "px9976082", 20.0, {"label": "밤비"}),
+  ],
+  "sfx": [["f.다시", "heartbeat", 0.7], ["end", "k_glitch_002", 0.35]],
+  "flashes": ["f.다시"],
+ },
 }
 catalog = {}
 for sid, c in CUTS.items():
@@ -112,8 +212,8 @@ for sid, c in CUTS.items():
             "sources": {k: source(k) for k in keys}, "clips": clips, "stickers": c.get("stickers", []),
             "sfx": c["sfx"], "flashes": c.get("flashes", []), "music": c["music"]}
     json.dump(edit, open(f"{HERE}/shorts/{sid}/edit.json", "w"), ensure_ascii=False, indent=1)
-out = {"note": "Stock footage for horror1-horror4 (licence pages opened 2026-10-10). Files are not committed; download from file_url, "
-               "cut, scale to 1080p, mute and grade as described in media/horror/catalog.py, save as public/<short>/src/<file>. "
+out = {"note": "Stock footage for horror1-horror8 (licence pages opened 2026-10-10). Files are not committed; download from file_url, "
+               "cut, scale to 1080p, mute and grade as described in media/horror/catalog.py (horror5-8: media/horror/grade2.sh), save as public/<short>/src/<file>. "
                "used_in = source in-points (seconds) per short; each cut runs 1-4.5 s (speed 3-4x for the floor indicators).",
        "sources": [{**v, "used_in": [{"short": s, "source_in_seconds": t} for s, t in v["used_in"].items()]} for v in catalog.values()]}
 json.dump(out, open(f"{HERE}/media/horror/sources.json", "w"), ensure_ascii=False, indent=1)

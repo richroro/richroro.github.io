@@ -2949,3 +2949,64 @@ python3 qa_review.py retro1
 > 사진: 한국저작권위원회(공유마당, CC BY, 부경근대사료연구소 수집) · 크기 조정·밝기 보정
 > 음악: "Gymnopedie No 1" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
 > #그시절 #버스정류장 #옛날서울 #추억 #shorts
+
+## 괴담 쇼츠 2 (`horror5`~`horror8`)
+
+「[괴담] 이해하면 소름 돋는 ○○」 시리즈 2차분이다. 틀은 `horror1`~`horror4`와 똑같다. 검정 띠 제목에 빨간 장소 한 단어(`"titleKey": "#ff2a2a"`)를 두고, 자막은 `"captionY": 1640`에 둔다. 내레이션은 Edge TTS `ko-KR-InJoonNeural` `+5%` `-10Hz`다. 평범한 3~4문장 뒤에 생각해야 이상한 한 가지가 오고, 봉인하는 한 줄, 0.6초 쉼, “이해하셨나요? 정답은 댓글에”로 끝난다. 음악은 같은 두 곡을 번갈아 쓴다. 효과음은 편마다 2~4개, 번쩍임은 한 번이다. 네 편 모두 **직접 쓴 창작 괴담**이다. 피·폭력·실존 장소·브랜드·인물은 없고, 공포는 암시로만 준다. 화면은 사람이 나오지 않는 Pexels 영상을 어둡게 보정해 깔았다.
+
+- **horror7 녹화 화면**: 홈캠에 찍힌 침대 장면(6443851, 15887293)은 회색 야간 카메라처럼 보정했다(흑백, 노이즈, 비네트). 그 위에 빨간 “● REC 02:13” 스티커를 띄운다.
+- **horror6 글씨**: 김 서린 유리 장면에 흰 스티커 “또 봤네?”를 띄운다. 글씨는 우리가 넣은 것이다.
+- 템플릿 코드는 바꾸지 않았다. `media/horror/catalog.py`에 새 클립을 더했고(`NIGHTVISION` 포함), `make_edits.py`에 `horror5`~`horror8` 컷 목록을 더했다. 보정은 `media/horror/grade2.sh`로 한다. `make_edits.py`를 다시 돌려도 `horror1`~`horror4`의 edit.json은 그대로다.
+
+| id | 띠 제목 | 길이 | 이야기 (정답) | 음악 |
+| --- | --- | --- | --- | --- |
+| `horror5` | [괴담] 이해하면 소름 돋는 / 비상계단 | 33.5초 | 엘리베이터 점검 날, 12층에서 계단으로 내려간다. 비상계단은 사람이 지나가야 켜지는 센서등인데, 내가 도착하기 전에 아래층 불이 먼저 켜진다. 1층까지 꼭 한 층씩 먼저. 1층 문손잡이를 잡자 등 뒤에서 딸깍, 2층 불이 켜진다. “나는 뒤돌아보지 않았다.” (정답: 눈에 안 보이는 누군가가 계속 한 층 아래에서 앞서 내려가고 있었다. 1층에 다 오자 그것은 내 옆을 지나 등 뒤 2층으로 올라갔다. 지금 내 바로 뒤에 있다) | Gathering Darkness |
+| `horror6` | [괴담] 이해하면 소름 돋는 / 지하주차장 | 32.0초 | 지하 3층의, 몇 달째 안 움직인 먼지투성이 차. 주인을 본 사람이 없다. 지나갈 때마다 창문 안을 들여다보는데, 오늘은 운전석 유리에 김이 서려 있고 손가락 글씨가 있다: “또 봤네?” 글씨는 좌우가 뒤집혀 있었다. 차 문은 전부 잠겨 있었다. (정답: 김은 차 안에서 누가 숨을 쉬어야 서린다. 뒤집힌 글씨는 안쪽에서 쓴 것이다. 잠긴 차 안에 몇 달째 누군가 있고, 내가 들여다볼 때마다 나를 보고 있었다) | Ghost Story |
+| `horror7` | [괴담] 이해하면 소름 돋는 / 홈캠 | 32.6초 | 혼자 사는 집, 현관을 향하게 홈캠을 달았다. 며칠 동안 찍힌 건 나뿐이다. 어젯밤 영상을 돌려 보니 새벽 2~4시에 자고 있는 내가 찍혀 있다. 침대 바로 옆에서, 나를 내려다보는 각도로. 그날 밤 현관문은 한 번도 열리지 않았다. “홈캠은 지금도 현관을 보고 있다.” (정답: 누군가 카메라를 떼어 두 시간 동안 내 머리맡에서 나를 찍고, 다시 현관 쪽으로 돌려 놓았다. 현관으로 들어온 기록이 없으니 그 사람은 처음부터 집 안에 있었고, 지금도 있다) | Gathering Darkness |
+| `horror8` | [괴담] 이해하면 소름 돋는 / 캠핑장 | 33.6초 | 혼자 캠핑, 밤새 비. 새벽에 텐트 밖에서 철벅철벅 발소리가 텐트를 한 바퀴 돈다. 아침에 나가 보니 젖은 흙 위에 발자국이 있다. 텐트 입구에서 나와서, 한 바퀴 돌고, 다시 입구로 들어간 발자국. “나는 밤새 텐트 밖으로 나간 적이 없다.” (정답: 발자국의 주인은 밖에서 온 게 아니라 내 텐트 안에서 나왔다가 다시 들어갔다. 밤새 텐트 안에 나 말고 누가 있었고, 아직 나오지 않았다) | Ghost Story |
+
+```bash
+python3 media/horror/make_edits.py          # shorts/horror*/edit.json + media/horror/sources.json
+media/horror/grade2.sh                      # Pexels 원본 받기 + 보정 → public/horror5-8/src/
+for id in horror5 horror6 horror7 horror8; do python3 voice_edge.py $id && python3 prep.py $id && ./render.sh $id final/$id.mp4; done
+for id in horror5 horror6 horror7 horror8; do python3 qa_review.py $id; done
+# horror7(야간 노이즈)·horror8은 30MB를 넘어서 CRF 23으로 다시 인코딩했다 (15.3MB, 13.0MB):
+#   ffmpeg -i final/$id.mp4 -c:v libx264 -crf 23 -preset slow -pix_fmt yuv420p -c:a copy -movflags +faststart out/$id.mp4
+```
+
+### 영상과 라이선스 (2026-10-10, 각 영상 페이지에서 “Free”·제작자를 확인)
+사람이 나오는 클립과 사람이 지나가는 구간은 쓰지 않았다. 상표·간판·번호판이 읽히는 클립도 뺐다(광고판이 보이던 주차장 29019380, 상표가 보이던 차 35099109·14481621, 카메라 상표가 보이는 7205347). 0초 화면은 horror5 빈 계단, horror6 빈 지하주차장, horror7 렌즈 조리개, horror8 숲속 텐트다. 화면에는 “영상: Pexels”만 표시한다. 페이지·파일 주소·제작자·쓴 구간은 `media/horror/sources.json`과 각 `edit.json`의 `sources`에 있다.
+- **Pexels License** (https://www.pexels.com/license/ — 무료, 수정 가능, 출처 표기 불필요. 수정 없는 판매·재배포, 사람을 나쁘게 보이게 하는 사용 금지):
+  - horror5: 5843879·9152640 Erik Mclean, 6010700 Tima Miroshnichenko, 12096163 Sasha Poberailo, 5986347 Pat Whelen, 39024320 Alef Morais, 7644222 Yaroslav Shuraev, 3134591 Caleb Oquendo, 4990438 Pavel Danilyuk
+  - horror6: 6028858·6028882 Артем Ковальчук, 19217892 Nino Souza, 5972195 gusat silviu, 27890130 Baran Robin, 38433795 Rishabh Kaple, 5192033 Ming Z, 5227362 Francesco Ungaro, 32078487 Rec Everywhere
+  - horror7: 5245970 Hemanth K M, 6028175 Ricky Esquivel, 34106136 Cemrecan Yurtman, 19228170·3773489·15887293 Curtis Adams, 19193293 Rafael Fernanz, 6443851 Pavel Danilyuk, 6114429 cottonbro studio
+  - horror8: 5994915 cottonbro studio, 9591436 Kain kn, 4162882 Grisha Grishkoff, 5419248 Yaroslav Shuraev, 9976082 George Morina, 5391986 Saidouni Sidi Med, 34405948 Emir Reinado, 39485457·39485454·39619866 Nothing Ahead, 7714908 Greta Hoffman
+- 음악: Kevin MacLeod (incompetech.com), CC BY 4.0.
+- 사실 인용: 네 편 모두 창작 괴담이라 숫자·법·날짜 같은 사실 주장이 없다.
+
+### 업로드 문구
+설명란 첫 줄에 **창작 괴담**이라고 밝힌다. 고정 댓글: “정답 맞히신 분? 댓글로 풀이해 주세요 👀”.
+
+**horror5** — [괴담] 이해하면 무서운 비상계단 ㄷㄷ
+> 창작 괴담입니다. 실제 장소·인물과 관계없습니다. 내가 가기도 전에 먼저 켜지던 아래층 센서등, 그리고 등 뒤에서 켜진 2층 불. 이해하셨다면 댓글로 정답을 남겨 주세요.
+> 영상: Pexels (Erik Mclean, Tima Miroshnichenko, Sasha Poberailo, Pat Whelen, Alef Morais, Yaroslav Shuraev, Caleb Oquendo, Pavel Danilyuk)
+> 음악: "Gathering Darkness" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
+> #괴담 #이해하면무서운이야기 #공포 #비상계단 #shorts
+
+**horror6** — [괴담] 이해하면 무서운 지하주차장 ㄷㄷ
+> 창작 괴담입니다. 실제 장소·인물과 관계없습니다. 몇 달째 서 있는 차, 김 서린 유리에 좌우가 뒤집힌 글씨 “또 봤네?”. 이해하셨다면 댓글로 정답을 남겨 주세요.
+> 영상: Pexels (Артем Ковальчук, Nino Souza, gusat silviu, Baran Robin, Rishabh Kaple, Ming Z, Francesco Ungaro, Rec Everywhere)
+> 음악: "Ghost Story" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
+> #괴담 #이해하면무서운이야기 #공포 #지하주차장 #shorts
+
+**horror7** — [괴담] 이해하면 무서운 홈캠 영상 ㄷㄷ
+> 창작 괴담입니다. 실제 장소·인물·제품과 관계없습니다. 현관만 비추던 홈캠에 왜 자는 내가 찍혀 있었을까요? 이해하셨다면 댓글로 정답을 남겨 주세요.
+> 영상: Pexels (Hemanth K M, Ricky Esquivel, Cemrecan Yurtman, Curtis Adams, Rafael Fernanz, Pavel Danilyuk, cottonbro studio)
+> 음악: "Gathering Darkness" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
+> #괴담 #이해하면무서운이야기 #공포 #홈캠 #shorts
+
+**horror8** — [괴담] 이해하면 무서운 캠핑장 ㄷㄷ
+> 창작 괴담입니다. 실제 장소·인물과 관계없습니다. 텐트 입구에서 나와 한 바퀴 돌고 다시 들어간 발자국. 나는 밤새 나간 적이 없는데요. 이해하셨다면 댓글로 정답을 남겨 주세요.
+> 영상: Pexels (cottonbro studio, Kain kn, Grisha Grishkoff, Yaroslav Shuraev, George Morina, Saidouni Sidi Med, Emir Reinado, Nothing Ahead, Greta Hoffman)
+> 음악: "Ghost Story" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
+> #괴담 #이해하면무서운이야기 #공포 #캠핑 #shorts
