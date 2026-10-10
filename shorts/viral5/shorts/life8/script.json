@@ -6,17 +6,22 @@
  "voices": {
   "nar": {
    "edge": "ko-KR-InJoonNeural",
-   "rate": "+20%"
+   "rate": "+25%"
+  },
+  "hook": {
+   "edge": "ko-KR-InJoonNeural",
+   "rate": "+52%"
   }
  },
  "lines": [
   {
    "id": "hook",
-   "voice": "nar",
+   "voice": "hook",
    "gap": 0.05,
-   "say": "지하철 임산부 배려석, 왜 분홍색일까요?",
+   "say": "분홍 배려석 눈에 띄라고 칠했습니다.",
    "cap": [
-    "지하철 [임산부 배려석] / 왜 분홍색일까?"
+    "[분홍] 배려석",
+    "[눈에 띄라고] 칠함"
    ]
   },
   {
