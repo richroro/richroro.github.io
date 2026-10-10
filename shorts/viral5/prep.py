@@ -14,7 +14,7 @@ A clip may be a graphic instead of footage (src/lib/Gfx.tsx): "gfx": {"type": "c
 A gfx clip needs no "src"; with one, that footage plays darkened behind the graphic. A source whose file is a photo
 (.jpg/.png/.webp) is shown still, with the slow zoom. "marks": [{"kind": "circle" | "arrow", "x", "y", "r", "rot",
 "from", "to"}] draws red circles and arrows over the picture (x, y in the 1080x1920 frame).
-A line whose "cap" is [""] gets no caption (a character's line that the scene shows in a speech bubble).
+In a "cap", [word] is yellow and {word} is red. A line whose "cap" is [""] gets no caption (a character's line that the scene shows in a speech bubble).
 """
 import difflib, json, os, re, subprocess, sys, wave
 import numpy as np
@@ -35,17 +35,20 @@ def write(path, x, sr=SR):
 
 # ── captions: same rules as number-oops (pages split on '/', words timed on the spoken syllables) ──
 def words_of(page):
-    out, key = [], False
+    out, key, red = [], False, False
     for raw in page.split():
         segs, buf = [], ""
         for ch in raw:
-            if ch in "[]":
-                if buf: segs.append((buf, key)); buf = ""
-                key = ch == "["
+            if ch in "[]{}":
+                if buf: segs.append((buf, key, red)); buf = ""
+                if ch in "[]": key = ch == "["
+                else: red = ch == "{"
             else:
                 buf += ch
-        if buf: segs.append((buf, key))
-        out.append({"text": "".join(s for s, _ in segs), "key": any(k for _, k in segs), "n": sum(len(SYL.findall(s)) for s, _ in segs)})
+        if buf: segs.append((buf, key, red))
+        w = {"text": "".join(s for s, _, _ in segs), "key": any(k for _, k, _ in segs), "n": sum(len(SYL.findall(s)) for s, _, _ in segs)}
+        if any(r for _, _, r in segs): w["red"] = True  # {word}: red (only written when used, so older shorts' data is unchanged)
+        out.append(w)
     merged = []
     for w in out:
         if w["n"] == 0 and merged: merged[-1]["text"] += " " + w["text"]
@@ -92,7 +95,7 @@ def caption_pages(tl, caps):
         for ci, p in groups:
             toks = []
             for w in p:
-                toks.append({"text": w["text"], "key": w["key"], "fromMs": round((L["start"] + times[wi]) * 1000)}); wi += 1
+                toks.append({"text": w["text"], "key": w["key"], **({"red": True} if w.get("red") else {}), "fromMs": round((L["start"] + times[wi]) * 1000)}); wi += 1
             pages.append({"tokens": toks, "lineEndMs": round((L["start"] + L["dur"]) * 1000)})
     for i, p in enumerate(pages):
         nxt = pages[i + 1]["tokens"][0]["fromMs"] if i + 1 < len(pages) else 10 ** 9

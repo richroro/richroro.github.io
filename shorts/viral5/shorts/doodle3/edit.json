@@ -1,0 +1,571 @@
+{
+ "credit": "",
+ "titleStyle": "band",
+ "titleKey": "#3CFF6A",
+ "captionY": 1640,
+ "sources": {
+  "px17800465": {
+   "file": "px17800465.jpg",
+   "path": "public/doodle/px17800465.jpg",
+   "page": "https://www.pexels.com/photo/stop-button-on-a-bus-17800465/",
+   "file_url": "https://images.pexels.com/photos/17800465/pexels-photo-17800465.jpeg?auto=compress&cs=tinysrgb&w=1600",
+   "license": "Pexels License",
+   "creator": "Elina Volkova",
+   "credit": "사진: Pexels",
+   "seconds": [
+    [
+     0.0,
+     2.82
+    ],
+    [
+     12.62,
+     14.79
+    ],
+    [
+     31.23,
+     33.24
+    ]
+   ]
+  },
+  "px15595486": {
+   "file": "px15595486.jpg",
+   "path": "public/doodle/px15595486.jpg",
+   "page": "https://www.pexels.com/photo/interior-of-bus-15595486/",
+   "file_url": "https://images.pexels.com/photos/15595486/pexels-photo-15595486.jpeg?auto=compress&cs=tinysrgb&w=1600",
+   "license": "Pexels License",
+   "creator": "Pramod Tiwari",
+   "credit": "사진: Pexels",
+   "seconds": [
+    [
+     4.84,
+     6.8
+    ]
+   ]
+  },
+  "px15595490": {
+   "file": "px15595490.jpg",
+   "path": "public/doodle/px15595490.jpg",
+   "page": "https://www.pexels.com/photo/empty-seats-in-bus-15595490/",
+   "file_url": "https://images.pexels.com/photos/15595490/pexels-photo-15595490.jpeg?auto=compress&cs=tinysrgb&w=1600",
+   "license": "Pexels License",
+   "creator": "Pramod Tiwari",
+   "credit": "사진: Pexels",
+   "seconds": [
+    [
+     6.8,
+     10.88
+    ]
+   ]
+  },
+  "px21348105": {
+   "file": "px21348105.jpg",
+   "path": "public/doodle/px21348105.jpg",
+   "page": "https://www.pexels.com/photo/seoul-21348105/",
+   "file_url": "https://images.pexels.com/photos/21348105/pexels-photo-21348105.jpeg?auto=compress&cs=tinysrgb&w=1600",
+   "license": "Pexels License",
+   "creator": "Elina Volkova",
+   "credit": "사진: Pexels",
+   "seconds": [
+    [
+     18.03,
+     19.75
+    ]
+   ]
+  },
+  "px21235187": {
+   "file": "px21235187.jpg",
+   "path": "public/doodle/px21235187.jpg",
+   "page": "https://www.pexels.com/photo/bus-at-stop-on-street-21235187/",
+   "file_url": "https://images.pexels.com/photos/21235187/pexels-photo-21235187.jpeg?auto=compress&cs=tinysrgb&w=1600",
+   "license": "Pexels License",
+   "creator": "Elina Volkova",
+   "credit": "사진: Pexels",
+   "seconds": [
+    [
+     25.75,
+     27.44
+    ]
+   ]
+  }
+ },
+ "music": {
+  "file": "music/scheming_weasel.mp3",
+  "gain": 0.12,
+  "start": 0
+ },
+ "sfx": [
+  [
+   "b",
+   "whoosh",
+   0.2
+  ],
+  [
+   "c",
+   "whoosh",
+   0.2
+  ],
+  [
+   "d",
+   "pop",
+   0.25
+  ],
+  [
+   "e",
+   "pop",
+   0.22
+  ],
+  [
+   "f",
+   "whoosh",
+   0.2
+  ],
+  [
+   "g",
+   "whoosh_dn",
+   0.3
+  ],
+  [
+   "h",
+   "boing",
+   0.3
+  ],
+  [
+   "i",
+   "pop",
+   0.25
+  ],
+  [
+   "j.정류장",
+   "boing",
+   0.3
+  ],
+  [
+   "k",
+   "whoosh",
+   0.2
+  ],
+  [
+   "z",
+   "ding",
+   0.22
+  ]
+ ],
+ "clips": [
+  {
+   "from": "a",
+   "label": "hook",
+   "credit": "사진: Pexels",
+   "gfx": {
+    "type": "scene",
+    "photo": "doodle/px17800465.jpg",
+    "chars": [
+     {
+      "style": "doodle",
+      "hair": "#FF7A1A",
+      "mood": "think",
+      "x": 0.24
+     }
+    ],
+    "steps": [
+     9,
+     9,
+     9,
+     9
+    ],
+    "photoPos": "60% 50%"
+   }
+  },
+  {
+   "from": "a2",
+   "label": "game",
+   "gfx": {
+    "type": "scene",
+    "bg": "subway",
+    "chars": [
+     {
+      "style": "doodle",
+      "hair": "#FF7A1A",
+      "mood": "smug",
+      "x": 0.3
+     }
+    ],
+    "prop": "🔔",
+    "propX": 0.72,
+    "steps": [
+     9,
+     0.1,
+     9,
+     9
+    ],
+    "place": "📍 버스 안"
+   }
+  },
+  {
+   "from": "b",
+   "label": "two",
+   "credit": "사진: Pexels",
+   "gfx": {
+    "type": "scene",
+    "photo": "doodle/px15595486.jpg",
+    "chars": [
+     {
+      "style": "doodle",
+      "hair": "#FF7A1A",
+      "mood": "neutral",
+      "to": "smug"
+     }
+    ],
+    "steps": [
+     9,
+     9,
+     "b.여유",
+     9
+    ],
+    "place": "📍 버스 안",
+    "big": "D-[2]"
+   }
+  },
+  {
+   "from": "c",
+   "label": "one",
+   "credit": "사진: Pexels",
+   "gfx": {
+    "type": "scene",
+    "photo": "doodle/px15595490.jpg",
+    "chars": [
+     {
+      "style": "doodle",
+      "hair": "#FF7A1A",
+      "mood": "think",
+      "x": 0.28
+     },
+     {
+      "style": "doodle",
+      "hairdo": "bald",
+      "mood": "sleep",
+      "x": 0.74,
+      "size": 1.05
+     }
+    ],
+    "steps": [
+     "d",
+     9,
+     9,
+     "c+0.3"
+    ],
+    "say": {
+     "who": 0,
+     "text": "저 아저씨도 [내릴 것] 같은데?"
+    }
+   }
+  },
+  {
+   "from": "e",
+   "label": "same",
+   "gfx": {
+    "type": "scene",
+    "bg": "subway",
+    "chars": [
+     {
+      "style": "doodle",
+      "hair": "#3b3b3b",
+      "hairdo": "bob",
+      "mood": "think",
+      "x": 0.2
+     },
+     {
+      "style": "doodle",
+      "hairdo": "bald",
+      "mood": "think",
+      "x": 0.5
+     },
+     {
+      "style": "doodle",
+      "hair": "#c9c9c9",
+      "hairdo": "perm",
+      "mood": "think",
+      "x": 0.8
+     }
+    ],
+    "steps": [
+     9,
+     9,
+     9,
+     9
+    ]
+   }
+  },
+  {
+   "from": "e2",
+   "label": "stare",
+   "credit": "사진: Pexels",
+   "gfx": {
+    "type": "scene",
+    "photo": "doodle/px17800465.jpg",
+    "photoPos": "75% 40%",
+    "chars": [
+     {
+      "style": "doodle",
+      "hair": "#3b3b3b",
+      "hairdo": "bob",
+      "mood": "think",
+      "x": 0.2,
+      "size": 0.85
+     },
+     {
+      "style": "doodle",
+      "hairdo": "bald",
+      "mood": "think",
+      "x": 0.45,
+      "size": 0.85
+     }
+    ],
+    "prop": "📱",
+    "propX": 0.75,
+    "steps": [
+     9,
+     0.1,
+     9,
+     9
+    ]
+   }
+  },
+  {
+   "from": "f",
+   "label": "vs",
+   "gfx": {
+    "type": "vs",
+    "title": "하차벨 앞 눈치게임",
+    "left": {
+     "label": "내가 누름",
+     "emoji": "🙋"
+    },
+    "right": {
+     "label": "남이 누름",
+     "emoji": "🙄"
+    },
+    "win": "right",
+    "steps": [
+     0.05,
+     0.3,
+     "f.아무도"
+    ]
+   }
+  },
+  {
+   "from": "g",
+   "label": "pass",
+   "credit": "사진: Pexels",
+   "gfx": {
+    "type": "scene",
+    "photo": "doodle/px21348105.jpg",
+    "chars": [
+     {
+      "style": "doodle",
+      "hair": "#FF7A1A",
+      "mood": "shock",
+      "x": 0.26
+     }
+    ],
+    "steps": [
+     9,
+     9,
+     9,
+     "g+0.4"
+    ],
+    "big": "{통과}"
+   }
+  },
+  {
+   "from": "g2",
+   "label": "freeze",
+   "gfx": {
+    "type": "scene",
+    "bg": "#bfe7ff",
+    "chars": [
+     {
+      "style": "doodle",
+      "hair": "#FF7A1A",
+      "mood": "sick",
+      "x": 0.3
+     }
+    ],
+    "prop": "🥶",
+    "propX": 0.72,
+    "big": "[-10℃]",
+    "steps": [
+     9,
+     0.1,
+     9,
+     "g2+0.4"
+    ]
+   }
+  },
+  {
+   "from": "h",
+   "label": "jump",
+   "gfx": {
+    "type": "scene",
+    "bg": "subway",
+    "chars": [
+     {
+      "style": "doodle",
+      "hair": "#FF7A1A",
+      "mood": "shock",
+      "x": 0.14,
+      "size": 0.95
+     },
+     {
+      "style": "doodle",
+      "hair": "#3b3b3b",
+      "hairdo": "bob",
+      "mood": "shock",
+      "x": 0.38,
+      "size": 0.95
+     },
+     {
+      "style": "doodle",
+      "hairdo": "bald",
+      "mood": "shock",
+      "x": 0.62,
+      "size": 0.95
+     },
+     {
+      "style": "doodle",
+      "hair": "#c9c9c9",
+      "hairdo": "perm",
+      "mood": "shock",
+      "x": 0.86,
+      "size": 0.95
+     }
+    ],
+    "steps": [
+     "i",
+     9,
+     9,
+     9
+    ],
+    "say": {
+     "who": 0,
+     "text": "기사님, [내려요]!"
+    }
+   }
+  },
+  {
+   "from": "j",
+   "label": "same stop",
+   "credit": "사진: Pexels",
+   "gfx": {
+    "type": "scene",
+    "photo": "doodle/px21235187.jpg",
+    "chars": [
+     {
+      "style": "doodle",
+      "hair": "#FF7A1A",
+      "mood": "shock",
+      "to": "laugh",
+      "x": 0.2,
+      "size": 0.8
+     },
+     {
+      "style": "doodle",
+      "hair": "#3b3b3b",
+      "hairdo": "bob",
+      "mood": "laugh",
+      "x": 0.45,
+      "size": 0.8
+     },
+     {
+      "style": "doodle",
+      "hairdo": "bald",
+      "mood": "laugh",
+      "x": 0.7,
+      "size": 0.8
+     }
+    ],
+    "steps": [
+     9,
+     9,
+     "j.정류장",
+     9
+    ],
+    "photoPos": "40% 50%"
+   }
+  },
+  {
+   "from": "k",
+   "label": "walk",
+   "gfx": {
+    "type": "scene",
+    "bg": "street",
+    "chars": [
+     {
+      "style": "doodle",
+      "hair": "#FF7A1A",
+      "mood": "sad",
+      "x": 0.2,
+      "size": 0.85
+     },
+     {
+      "style": "doodle",
+      "hair": "#3b3b3b",
+      "hairdo": "bob",
+      "mood": "sad",
+      "x": 0.42,
+      "size": 0.85
+     },
+     {
+      "style": "doodle",
+      "hairdo": "bald",
+      "mood": "sad",
+      "x": 0.64,
+      "size": 0.85
+     },
+     {
+      "style": "doodle",
+      "hair": "#c9c9c9",
+      "hairdo": "perm",
+      "mood": "sick",
+      "x": 0.86,
+      "size": 0.85
+     }
+    ],
+    "steps": [
+     "k2",
+     9,
+     9,
+     "k+0.4"
+    ],
+    "big": "+1 정거장 🚶",
+    "say": {
+     "who": 0,
+     "text": "다음엔 [내가] 누른다…"
+    }
+   }
+  },
+  {
+   "from": "z",
+   "label": "ask",
+   "credit": "사진: Pexels",
+   "gfx": {
+    "type": "scene",
+    "photo": "doodle/px17800465.jpg",
+    "chars": [
+     {
+      "style": "doodle",
+      "hair": "#FF7A1A",
+      "mood": "smug",
+      "x": 0.76
+     }
+    ],
+    "steps": [
+     9,
+     9,
+     9,
+     9
+    ],
+    "photoPos": "40% 50%"
+   }
+  }
+ ]
+}
