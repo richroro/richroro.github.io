@@ -1,0 +1,65 @@
+{
+ "_meta": {
+  "collected": "2026-10-10",
+  "report": "research/benchmark-drawn.md",
+  "measured": "views, likes, dates, title length and on-screen layout of the benchmarks (watch page ytInitialData + oar2/maxres1-3 stills); every 'ours_*' value (final/<id>.mp4 scene>0.04 in the 1080x1080 picture box, build/<id>/timeline.json from voice_edge.py)",
+  "estimated": "benchmark length, hook end, first cut, shot lengths and syllables per second: the watch pages returned LOGIN_REQUIRED (bot check), so no lengthSeconds, captions or storyboard; values below marked est_* fields come from research-fun.md medians and the frame evidence, not from measurement",
+  "shot_note": "ours_shot_mean_s counts any visible change (expression, bubble, big text) at scene>0.04, not only hard cuts"
+ },
+ "doodle": {
+  "length_s": 34,
+  "hook_end_s": 1.8,
+  "first_cut_s": 2.0,
+  "shot_mean_s": 2.5,
+  "shot_max_s": 4.0,
+  "syl_per_s": 6.2,
+  "lines": 14,
+  "title_chars_per_line": [6, 9],
+  "estimated_fields": ["length_s", "hook_end_s", "first_cut_s", "shot_mean_s", "shot_max_s", "syl_per_s"],
+  "ours_median": {"length_s": 33.25, "hook_end_s": 2.67, "first_cut_s": 2.49, "shot_mean_s": 1.84, "shot_max_s": 3.43, "syl_per_s": 5.3, "lines": 14},
+  "benchmarks": ["UNuTufYaWrU 9,553,769", "mGHs1NhvqNk 6,139,886", "2uY59tRzxAQ 4,938,702", "2dKJMH551ec 2,016,977"],
+  "notes": "Title 2 lines on black (white + yellow/green), optional small yellow '(뜻 풀이)' line above for a hard word. Caption inside the picture box, bottom, in a navy/black box, up to 2 lines, quotes in yellow. Topic angle: conflict/etiquette/report ('현재 논란중인 ○○', '○○ 신고하면 벌어지는 일', '읽기만 해도 기빨리는 ○○', 'A vs B' + big numbers). Character 40-60% of the frame, exaggerated emotion. Our pacing is already fast enough; the gap is topic and picture density."
+ },
+ "road": {
+  "length_s": 28,
+  "hook_end_s": 0.0,
+  "first_cut_s": 1.5,
+  "shot_mean_s": 2.0,
+  "shot_max_s": 4.0,
+  "syl_per_s": 0,
+  "lines": 1,
+  "title_chars_per_line": [9, 16],
+  "estimated_fields": ["length_s", "first_cut_s", "shot_mean_s", "shot_max_s", "syl_per_s"],
+  "ours_median": {"length_s": 38.7, "hook_end_s": 2.85, "first_cut_s": 2.77, "shot_mean_s": 1.92, "shot_max_s": 3.6, "syl_per_s": 5.19, "lines": 12},
+  "benchmarks": ["0VHltrUnuKM 32,013,520", "HNRyVjOGPa0 28,652,510", "XVVpRhYbcjM 26,012,955"],
+  "notes": "Wordless: no narration captions or speech bubbles in any of 12 benchmark stills (audio not checked). 16:9 animation centred in 9:16 with black bars; optional one thin white Korean title line above and an English translation below. Driver face close-ups at 60-70% of picture height cut against 3/4-rear car shots; many cuts are the same cockpit with a new expression or a zoom. Title is a taunt or a villain line, 9-16 chars. Ending = karma/catharsis, not a fine notice. syl_per_s 0 and lines 1 mean: no narration, one title line."
+ },
+ "teuk": {
+  "length_s": 28,
+  "hook_end_s": 1.5,
+  "first_cut_s": 1.5,
+  "shot_mean_s": 2.2,
+  "shot_max_s": 3.5,
+  "syl_per_s": 6.5,
+  "lines": 14,
+  "title_chars_per_line": [3, 7],
+  "estimated_fields": ["length_s", "hook_end_s", "first_cut_s", "shot_mean_s", "shot_max_s", "syl_per_s"],
+  "ours_median": {"length_s": 32.0, "hook_end_s": 1.25, "first_cut_s": 1.6, "shot_mean_s": 2.09, "shot_max_s": 3.78, "syl_per_s": 5.27, "lines": 17},
+  "benchmarks": ["TAyHeSGAnmw 1,911,315", "zf7SJEmGn4c 987,217", "8Xf5fNuS54A 968,512"],
+  "notes": "Title is one line '○○ 특' (3-6 chars measured) about a food/product/person type, not a situation. No top title band: dark solid background, mascot logo top-right, picture box in the middle, white 2-line sentence captions below (no colour keywords). Title card can appear mid-video; start at 0 s with the strongest reaction frame and the first item. Every item gets a different strong picture (reaction face, product/food photo, mascot only for the punch line). Do not read the title aloud as line 1; cut the per-item reaction bubbles to reach ~14 lines."
+ },
+ "sseol": {
+  "length_s": 40,
+  "hook_end_s": 2.0,
+  "first_cut_s": 2.5,
+  "shot_mean_s": 2.8,
+  "shot_max_s": 4.0,
+  "syl_per_s": 6.2,
+  "lines": 16,
+  "title_chars_per_line": [8, 12],
+  "estimated_fields": ["length_s", "hook_end_s", "first_cut_s", "shot_mean_s", "shot_max_s", "syl_per_s", "lines"],
+  "ours_median": {"length_s": 35.25, "hook_end_s": 3.21, "first_cut_s": 3.17, "shot_mean_s": 2.29, "shot_max_s": 3.77, "syl_per_s": 5.23, "lines": 13},
+  "benchmarks": ["olsie3OiuRE 1,848,162", "VKPEJrdm3h8 1,087,041", "xI76Egk0z90 945,466"],
+  "notes": "One-line declarative title stating an odd fact, 8-11 chars measured, no '~한 이유' ('삼촌이 나보다 두 살 어리다'). Whole video is a light-theme community-app screen: header with app name, post title bar + meta + like button, body = current narration sentence in bold black 1-4 lines centred, square full-colour illustration (~80% width) under it, faint watermark background. Colloquial 반말 narration. Picture and sentence change per sentence. Length can run longer (썰구리 대리운전 썰 56 s measured in research-fun.csv)."
+ }
+}

@@ -13,6 +13,7 @@ import { BODY, TITLE } from "./fonts";
 import { clamp, eBack, eInOut, eOut, lerp, prog } from "./fx";
 import { Marked } from "./Marked";
 import { Mochi, type Mood } from "./Sseol";
+import { Drive, type DriveG } from "./Drive";
 
 export type RoadCar = {
   id?: string; color?: string; kind?: "car" | "truck" | "bus" | "police";
@@ -39,7 +40,8 @@ export type RoadCar = {
 };
 export type Walker = { x: number; y: number; path?: (number[])[]; color?: string; mood?: Mood; to?: Mood; toAt?: number; hat?: string; size?: number };
 export type RoadG = {
-  view?: "top" | "cockpit";
+  /** "face" and "car" are the wordless cartoons' views (lib/Drive.tsx, drawn on a 16:9 stage) */
+  view?: "top" | "cockpit" | "face" | "car";
   lanes?: number;
   /** the setting: "highway" (grass, median), "city" (pavements), "school" (city + red school-zone surface), "tunnel" */
   road?: "highway" | "city" | "school" | "tunnel";
@@ -465,7 +467,8 @@ const Bubble: React.FC<{ text: string; px: number; py: number; t: number; t0: nu
   );
 };
 
-export const Road: React.FC<{ g: RoadG; t: number; h: number }> = ({ g, t }) => {
+export const Road: React.FC<{ g: RoadG; t: number; h: number }> = ({ g, t, h }) => {
+  if (g.view === "face" || g.view === "car") return <Drive g={g as unknown as DriveG} t={t} h={h} />;
   const cockpit = g.view === "cockpit";
   // a hard brake: a short decaying shake
   let sx = 0, sy = 0;

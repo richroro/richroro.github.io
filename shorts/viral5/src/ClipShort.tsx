@@ -9,6 +9,7 @@ import { Sticker, clamp, eOut, prog } from "./lib/fx";
 import { GFX_BG, GfxView, Marked, Marks, type Gfx, type Mark } from "./lib/Gfx";
 import { ROUNDED43, Rounded43, YearSticker, rounded43Crop } from "./lib/Retro";
 import { BoxCaptions, RankBand, RankList, TALL, type Rank2 } from "./lib/RankV2";
+import { BilingualTitle } from "./lib/Bilingual";
 
 loadFonts();
 export const FPS = 30;
@@ -52,6 +53,8 @@ export type ShortData = {
   titleStyle?: "news" | "band";
   /** the band title's key colour: line 2, or the [marked] words (default yellow; red for horror) */
   titleKey?: string;
+  /** an English line under a 16:9 picture: the title becomes thin white Korean over the picture, English under it (lib/Bilingual.tsx) */
+  titleEn?: string;
   /** a two-line headline in red with a white outline over the picture, centred on hookY, shown until hookTo (default: throughout) */
   hook?: [string, string];
   hookY?: number;
@@ -189,6 +192,7 @@ const ClipView: React.FC<{ c: Clip; d: ShortData }> = ({ c, d }) => {
 };
 
 const Title: React.FC<{ d: ShortData }> = ({ d }) => {
+  if (d.titleEn != null) return <BilingualTitle title={d.title} en={d.titleEn} />;
   // long quote titles shrink to fit the width instead of running off the edge
   const size = (line: string, max = 96, within = 1010) => Math.min(max, fitText({ text: line, withinWidth: within, fontFamily: TITLE }).fontSize);
   if (d.rank2) return <RankBand title={d.title} r={d.rank2} />;

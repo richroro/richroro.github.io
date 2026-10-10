@@ -108,7 +108,14 @@ def review(sid):
     row("검은 화면", not black and not endblack, False, ", ".join([f"{a}~{b}초" for a, b in black] + (["마지막 1프레임"] if endblack else [])) or "없음")
     size = os.path.getsize(f) / 1e6
     row("용량", size <= 30, False, f"{size:.1f}MB")
-    lines = [f"# {sid} 검토", "", "| 항목 | 결과 | 값 |", "|---|---|---|"] + [f"| {n} | {r} | {v} |" for n, r, v in rows]
+    # the upload description in the house format (upload/README.md); channel placeholders don't count against it
+    if os.path.exists(f"upload/specs/{sid}.json"):
+        r = run([sys.executable, "upload/make_desc.py", sid])
+        issues = [l.split(": ", 1)[1] for l in r.stdout.splitlines() if l.startswith(("WARN", "FAIL")) and "placeholders" not in l]
+        row("설명글", r.returncode == 0 and not issues, r.returncode == 0, "; ".join(issues) or f"upload/txt/{sid}.txt")
+    else:
+        row("설명글", False, True, "upload/specs/<id>.json 없음 (upload/README.md)")
+    lines =[f"# {sid} 검토", "", "| 항목 | 결과 | 값 |", "|---|---|---|"] + [f"| {n} | {r} | {v} |" for n, r, v in rows]
     lines += ["", "**사람이 볼 것** (REVIEW.md 2절): first.png(썸네일), last.png(끝), sheet.png(16칸)", "",
               f"- 첫 문장(훅): {say[0] if say else ''}", f"- 마지막 문장(반전): {say[-1] if say else ''}"]
     open(f"{out}/report.md", "w").write("\n".join(lines) + "\n")
