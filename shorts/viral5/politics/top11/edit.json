@@ -1,0 +1,441 @@
+{
+ "src": "top11/lava_sampling_hammer.mp4",
+ "title": [
+  "역대급 화산·용암 모먼트",
+  "랭킹 TOP5"
+ ],
+ "titleStyle": "band",
+ "credit": "",
+ "panels": [],
+ "rank2": {
+  "sub": "(몇 번이 제일 무서움?)",
+  "color": "#FF6A3D",
+  "hide": [
+   1
+  ]
+ },
+ "flash": false,
+ "keys": [],
+ "sfx": [
+  [
+   5.1,
+   "whoosh",
+   0.5
+  ],
+  [
+   10.2,
+   "whoosh",
+   0.5
+  ],
+  [
+   15.3,
+   "whoosh",
+   0.5
+  ],
+  [
+   20.4,
+   "whoosh",
+   0.5
+  ]
+ ],
+ "music": [
+  {
+   "src": "public/music/Gathering Darkness.mp3",
+   "from": 0.0,
+   "at": 0.0,
+   "to": 25.6,
+   "fade": 0.3,
+   "gain": 1.0
+  }
+ ],
+ "musicGain": 0.8,
+ "duck": false,
+ "captionY": 1640,
+ "tail": 0.0,
+ "segments": [
+  {
+   "src": "top11/lava_sampling_hammer.mp4",
+   "in": 4.8,
+   "out": 7.1,
+   "frame": "tall",
+   "single": [
+    0.6,
+    0.4,
+    1.0
+   ],
+   "push": [
+    1.0,
+    1.06
+   ],
+   "audio": 0,
+   "rank": {
+    "n": 5,
+    "label": "용암채취"
+   }
+  },
+  {
+   "src": "top11/lava_sampling_hammer.mp4",
+   "in": 10.2,
+   "out": 13.0,
+   "frame": "tall",
+   "single": [
+    0.55,
+    0.5,
+    1.0
+   ],
+   "push": [
+    1.0,
+    1.06
+   ],
+   "audio": 0
+  },
+  {
+   "src": "top11/lava_burns_forest.mp4",
+   "in": 2.0,
+   "out": 4.5,
+   "frame": "tall",
+   "single": [
+    0.7,
+    0.5,
+    1.0
+   ],
+   "push": [
+    1.0,
+    1.06
+   ],
+   "audio": 0,
+   "rank": {
+    "n": 4,
+    "label": "숲 삼킴"
+   }
+  },
+  {
+   "src": "top11/lava_burns_forest.mp4",
+   "in": 9.0,
+   "out": 11.6,
+   "frame": "tall",
+   "single": [
+    0.75,
+    0.45,
+    1.1
+   ],
+   "push": [
+    1.0,
+    1.06
+   ],
+   "audio": 0
+  },
+  {
+   "src": "top11/lava_onto_street.mp4",
+   "in": 0.0,
+   "out": 2.5,
+   "frame": "tall",
+   "single": [
+    0.6,
+    0.5,
+    1.0
+   ],
+   "push": [
+    1.0,
+    1.06
+   ],
+   "audio": 0,
+   "rank": {
+    "n": 3,
+    "label": "도로침공"
+   }
+  },
+  {
+   "src": "top11/lava_onto_street.mp4",
+   "in": 6.0,
+   "out": 8.6,
+   "frame": "tall",
+   "single": [
+    0.62,
+    0.5,
+    1.1
+   ],
+   "push": [
+    1.0,
+    1.06
+   ],
+   "audio": 0
+  },
+  {
+   "src": "top11/ocean_entry_explosions.mp4",
+   "in": 0.0,
+   "out": 2.5,
+   "frame": "tall",
+   "single": [
+    0.45,
+    0.5,
+    1.0
+   ],
+   "push": [
+    1.0,
+    1.06
+   ],
+   "audio": 0,
+   "rank": {
+    "n": 2,
+    "label": "바다폭발"
+   }
+  },
+  {
+   "src": "top11/ocean_entry_explosions.mp4",
+   "in": 3.8,
+   "out": 6.4,
+   "frame": "tall",
+   "single": [
+    0.4,
+    0.45,
+    1.0
+   ],
+   "push": [
+    1.0,
+    1.06
+   ],
+   "audio": 0
+  },
+  {
+   "src": "top11/lava_lake_rockfall_blast.mp4",
+   "in": 0.0,
+   "out": 1.8,
+   "frame": "tall",
+   "single": [
+    0.5,
+    0.53,
+    1.12
+   ],
+   "push": [
+    1.0,
+    1.06
+   ],
+   "audio": 0,
+   "rank": {
+    "n": 1,
+    "label": "용암호"
+   }
+  },
+  {
+   "src": "top11/lava_lake_rockfall_blast.mp4",
+   "in": 2.0,
+   "out": 3.7,
+   "frame": "tall",
+   "single": [
+    0.5,
+    0.53,
+    1.12
+   ],
+   "push": [
+    1.0,
+    1.06
+   ],
+   "audio": 0
+  },
+  {
+   "src": "top11/lava_lake_rockfall_blast.mp4",
+   "in": 5.0,
+   "out": 6.7,
+   "frame": "tall",
+   "single": [
+    0.5,
+    0.53,
+    1.12
+   ],
+   "push": [
+    1.0,
+    1.06
+   ],
+   "audio": 0
+  }
+ ],
+ "lines": [
+  {
+   "who": 0,
+   "t": 0.0,
+   "tend": 2.3,
+   "ko": "용암에 망치 대는데.."
+  },
+  {
+   "who": 0,
+   "t": 2.3,
+   "tend": 5.1,
+   "ko": "그대로 퍼 올림??"
+  },
+  {
+   "who": 0,
+   "t": 5.1,
+   "tend": 7.6,
+   "ko": "숲으로 밀려오는데.."
+  },
+  {
+   "who": 0,
+   "t": 7.6,
+   "tend": 10.2,
+   "ko": "나무가 그대로 불탐??"
+  },
+  {
+   "who": 0,
+   "t": 10.2,
+   "tend": 12.7,
+   "ko": "도로를 덮치더니.."
+  },
+  {
+   "who": 0,
+   "t": 12.7,
+   "tend": 15.3,
+   "ko": "아스팔트까지 불탐??"
+  },
+  {
+   "who": 0,
+   "t": 15.3,
+   "tend": 17.8,
+   "ko": "용암이 바다 만나자.."
+  },
+  {
+   "who": 0,
+   "t": 17.8,
+   "tend": 20.4,
+   "ko": "돌이 20m 치솟음??"
+  },
+  {
+   "who": 0,
+   "t": 20.4,
+   "tend": 22.2,
+   "ko": "돌이 떨어지자.."
+  },
+  {
+   "who": 0,
+   "t": 22.2,
+   "tend": 25.6,
+   "ko": "카메라까지 날아옴??"
+  }
+ ],
+ "sources": [
+  {
+   "file": "top11/lava_burns_forest.mp4",
+   "title": "Flow Front Moving Through Vegetation",
+   "page": "https://www.usgs.gov/media/videos/flow-front-moving-through-vegetation",
+   "file_url": "https://usgs-ocapsv2-public-input-media.s3.us-west-2.amazonaws.com/assets/palladium/production/s3fs-public/atoms/video/multimediaFile-1396.mp4",
+   "license": "Public domain (17 U.S.C. §105)",
+   "license_url": "https://www.usgs.gov/information-policies-and-instructions/copyrights-and-credits",
+   "credit": "USGS Hawaiian Volcano Observatory",
+   "date": "2016-06-29",
+   "cut_from_original_seconds": [
+    12.2,
+    26.2
+   ],
+   "used_seconds": [
+    [
+     2.0,
+     4.5
+    ],
+    [
+     9.0,
+     11.6
+    ]
+   ]
+  },
+  {
+   "file": "top11/lava_lake_rockfall_blast.mp4",
+   "title": "Large Rockfall at Halema`uma`u Crater",
+   "page": "https://www.usgs.gov/media/videos/large-rockfall-halemaumau-crater",
+   "file_url": "https://usgs-ocapsv2-public-input-media.s3.us-west-2.amazonaws.com/assets/palladium/production/s3fs-public/atoms/video/multimediaFile-1281.mp4",
+   "license": "Public domain (17 U.S.C. §105)",
+   "license_url": "https://www.usgs.gov/information-policies-and-instructions/copyrights-and-credits",
+   "credit": "USGS Hawaiian Volcano Observatory",
+   "date": "2016-01-08",
+   "cut_from_original_seconds": [
+    0,
+    12.07
+   ],
+   "used_seconds": [
+    [
+     0.0,
+     1.8
+    ],
+    [
+     2.0,
+     3.7
+    ],
+    [
+     5.0,
+     6.7
+    ]
+   ]
+  },
+  {
+   "file": "top11/lava_onto_street.mp4",
+   "title": "Kīlauea Volcano — Pāhoehoe Flows on Kaupili Street",
+   "page": "https://www.usgs.gov/media/videos/kilauea-volcano-pahoehoe-flows-kaupili-street",
+   "file_url": "https://usgs-ocapsv2-public-input-media.s3.us-west-2.amazonaws.com/assets/palladium/production/s3fs-public/atoms/video/multimediaFile-2115.mp4",
+   "license": "Public domain (17 U.S.C. §105)",
+   "license_url": "https://www.usgs.gov/information-policies-and-instructions/copyrights-and-credits",
+   "credit": "USGS Hawaiian Volcano Observatory (HVO)",
+   "date": "2018-05-24",
+   "cut_from_original_seconds": [
+    63.5,
+    77
+   ],
+   "used_seconds": [
+    [
+     0.0,
+     2.5
+    ],
+    [
+     6.0,
+     8.6
+    ]
+   ]
+  },
+  {
+   "file": "top11/lava_sampling_hammer.mp4",
+   "title": "Lava sampling in Halemaʻumaʻu (June 22, 2023)",
+   "page": "https://www.usgs.gov/media/videos/lava-sampling-halemaumau-june-22-2023",
+   "file_url": "https://usgs-ocapsv2-public-input-media.s3.us-west-2.amazonaws.com/assets/palladium/production/s3fs-public/media/video/20230622_Zoeller_HMM_v2.mp4",
+   "license": "Public domain (17 U.S.C. §105)",
+   "license_url": "https://www.usgs.gov/information-policies-and-instructions/copyrights-and-credits",
+   "credit": "USGS Hawaiian Volcano Observatory (page contact: Michael H. Zoeller, Geologist/GIS analyst, HVO)",
+   "date": "2023-06-22 (filmed; page dated 2023-07-22)",
+   "cut_from_original_seconds": [
+    63,
+    76
+   ],
+   "used_seconds": [
+    [
+     4.8,
+     7.1
+    ],
+    [
+     10.2,
+     13.0
+    ]
+   ]
+  },
+  {
+   "file": "top11/ocean_entry_explosions.mp4",
+   "title": "Successive littoral explosions at the Puhi-o-Kalaikini ocean entry",
+   "page": "https://www.usgs.gov/media/videos/successive-littoral-explosions-puhi-o-kalaikini-ocean-entry",
+   "file_url": "https://usgs-ocapsv2-public-input-media.s3.us-west-2.amazonaws.com/assets/palladium/production/s3fs-public/atoms/video/PuhioKalaikini_28sep2010.mp4",
+   "license": "Public domain (17 U.S.C. §105)",
+   "license_url": "https://www.usgs.gov/information-policies-and-instructions/copyrights-and-credits",
+   "credit": "USGS Hawaiian Volcano Observatory",
+   "date": "2010-09-28",
+   "cut_from_original_seconds": [
+    16,
+    30
+   ],
+   "used_seconds": [
+    [
+     0.0,
+     2.5
+    ],
+    [
+     3.8,
+     6.4
+    ]
+   ]
+  }
+ ]
+}
