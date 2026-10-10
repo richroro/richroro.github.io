@@ -1,0 +1,371 @@
+{
+ "credit": "",
+ "titleStyle": "band",
+ "captionY": 1650,
+ "sources": {},
+ "music": {
+  "file": "music/scheming_weasel.mp3",
+  "gain": 0.2,
+  "start": 0
+ },
+ "sfx": [
+  [
+   "b",
+   "pop",
+   0.3
+  ],
+  [
+   "c",
+   "pop_hi",
+   0.3
+  ],
+  [
+   "d.한참",
+   "k_error_003",
+   0.25
+  ],
+  [
+   "e",
+   "boing",
+   0.3
+  ],
+  [
+   "f",
+   "pop",
+   0.25
+  ],
+  [
+   "g",
+   "whoosh",
+   0.3
+  ],
+  [
+   "h.들린",
+   "ding",
+   0.3
+  ],
+  [
+   "j",
+   "whoosh",
+   0.25
+  ],
+  [
+   "l.세",
+   "coin",
+   0.25
+  ],
+  [
+   "m",
+   "boing",
+   0.35
+  ]
+ ],
+ "clips": [
+  {
+   "from": "a",
+   "label": "post",
+   "gfx": {
+    "type": "post",
+    "title": "외할머니가 내 전화만 [3초 늦게] 받는 썰",
+    "body": [
+     "엄마 전화는 한 번에 받으심",
+     "내 전화만 꼭 3초 뒤에 ㅋㅋ"
+    ],
+    "steps": [
+     "a.전화만",
+     "a.늦게"
+    ],
+    "chars": [
+     {
+      "name": "나",
+      "color": "#FFD84D",
+      "mood": "think"
+     },
+     {
+      "name": "외할머니",
+      "color": "#C9A7FF",
+      "mood": "smug"
+     }
+    ]
+   }
+  },
+  {
+   "from": "a@end",
+   "label": "mom",
+   "gfx": {
+    "type": "scene",
+    "bg": "home",
+    "place": "📍 외할머니 댁",
+    "prop": "📱",
+    "chars": [
+     {
+      "name": "엄마",
+      "color": "#FF9EBB",
+      "mood": "happy"
+     },
+     {
+      "name": "외할머니",
+      "color": "#C9A7FF",
+      "mood": "happy"
+     }
+    ]
+   }
+  },
+  {
+   "from": "c",
+   "label": "quick",
+   "gfx": {
+    "type": "scene",
+    "bg": "home",
+    "say": {
+     "who": 1,
+     "text": "어, 그래 [딸!]"
+    },
+    "prop": "📱",
+    "zoom": 1.08,
+    "focus": 1,
+    "chars": [
+     {
+      "name": "엄마",
+      "color": "#FF9EBB",
+      "mood": "laugh"
+     },
+     {
+      "name": "외할머니",
+      "color": "#C9A7FF",
+      "mood": "laugh"
+     }
+    ]
+   }
+  },
+  {
+   "from": "d",
+   "label": "ring",
+   "gfx": {
+    "type": "scene",
+    "bg": "street",
+    "prop": "📱",
+    "big": "📞 [띠리리…]",
+    "chars": [
+     {
+      "name": "나",
+      "color": "#FFD84D",
+      "mood": "think"
+     }
+    ],
+    "steps": [
+     0,
+     0.1,
+     9,
+     "d.한참"
+    ]
+   }
+  },
+  {
+   "from": "e",
+   "label": "why",
+   "gfx": {
+    "type": "scene",
+    "bg": "street",
+    "say": {
+     "who": 0,
+     "text": "할머니! 왜 이렇게 [늦게] 받아?"
+    },
+    "prop": "📱",
+    "chars": [
+     {
+      "name": "나",
+      "color": "#FFD84D",
+      "mood": "angry"
+     }
+    ]
+   }
+  },
+  {
+   "from": "f",
+   "label": "ears",
+   "gfx": {
+    "type": "scene",
+    "bg": "home",
+    "say": {
+     "who": 0,
+     "text": "응~ 할머니가 [귀가 좀 어두워서] 그래~"
+    },
+    "prop": "📱",
+    "zoom": 1.08,
+    "focus": 0,
+    "chars": [
+     {
+      "name": "외할머니",
+      "color": "#C9A7FF",
+      "mood": "smug"
+     }
+    ]
+   }
+  },
+  {
+   "from": "g",
+   "label": "holiday",
+   "gfx": {
+    "type": "scene",
+    "bg": "home",
+    "place": "📍 명절",
+    "chars": [
+     {
+      "name": "나",
+      "color": "#FFD84D",
+      "mood": "happy"
+     },
+     {
+      "name": "외할머니",
+      "color": "#C9A7FF",
+      "mood": "happy"
+     }
+    ]
+   }
+  },
+  {
+   "from": "h",
+   "label": "call",
+   "gfx": {
+    "type": "scene",
+    "bg": "home",
+    "prop": "📱",
+    "chars": [
+     {
+      "name": "나",
+      "color": "#FFD84D",
+      "mood": "think"
+     },
+     {
+      "name": "외할머니",
+      "color": "#C9A7FF",
+      "mood": "neutral",
+      "to": "shock"
+     }
+    ],
+    "steps": [
+     0,
+     0.1,
+     "h.들린"
+    ]
+   }
+  },
+  {
+   "from": "i",
+   "label": "ringtone",
+   "gfx": {
+    "type": "scene",
+    "bg": "home",
+    "prop": "📱🎵",
+    "zoom": 1.1,
+    "focus": 1,
+    "chars": [
+     {
+      "name": "나",
+      "color": "#FFD84D",
+      "mood": "shock"
+     },
+     {
+      "name": "외할머니",
+      "color": "#C9A7FF",
+      "mood": "love"
+     }
+    ]
+   }
+  },
+  {
+   "from": "j",
+   "label": "then",
+   "gfx": {
+    "type": "scene",
+    "bg": "home",
+    "place": "📍 그때",
+    "prop": "🎙️",
+    "chars": [
+     {
+      "name": "8살 나",
+      "color": "#FFD84D",
+      "size": 0.8,
+      "mood": "laugh"
+     },
+     {
+      "name": "외할머니",
+      "color": "#C9A7FF",
+      "mood": "happy"
+     }
+    ]
+   }
+  },
+  {
+   "from": "k",
+   "label": "listen",
+   "gfx": {
+    "type": "scene",
+    "bg": "home",
+    "prop": "📱",
+    "chars": [
+     {
+      "name": "나",
+      "color": "#FFD84D",
+      "mood": "cry"
+     },
+     {
+      "name": "외할머니",
+      "color": "#C9A7FF",
+      "mood": "shy"
+     }
+    ]
+   }
+  },
+  {
+   "from": "l",
+   "label": "three",
+   "gfx": {
+    "type": "scene",
+    "bg": "street",
+    "place": "📍 요즘",
+    "prop": "📱",
+    "big": "📞 × [3]",
+    "chars": [
+     {
+      "name": "나",
+      "color": "#FFD84D",
+      "mood": "happy"
+     }
+    ],
+    "steps": [
+     0,
+     0.1,
+     9,
+     "l.세"
+    ]
+   }
+  },
+  {
+   "from": "m",
+   "label": "again",
+   "gfx": {
+    "type": "scene",
+    "bg": "home",
+    "say": {
+     "who": 0,
+     "text": "끊고 [다시 걸어 봐라~] 벨소리 듣게."
+    },
+    "prop": "📱🎵",
+    "chars": [
+     {
+      "name": "외할머니",
+      "color": "#C9A7FF",
+      "mood": "love"
+     },
+     {
+      "name": "나",
+      "color": "#FFD84D",
+      "mood": "shock"
+     }
+    ]
+   }
+  }
+ ]
+}

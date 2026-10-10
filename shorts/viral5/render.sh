@@ -10,6 +10,6 @@ npx remotion render src/index.ts "$ID" "out/$ID.raw.mp4" --browser-executable="$
 M=$(ffmpeg -hide_banner -nostats -i "out/$ID.raw.mp4" -af loudnorm=I=-14:TP=-1.5:LRA=11:print_format=json -f null - 2>&1 | sed -n '/^{/,/^}/p')
 get() { echo "$M" | python3 -c "import sys,json; print(json.load(sys.stdin)['$1'])"; }
 LN="loudnorm=I=-14:TP=-1.5:LRA=11:measured_I=$(get input_i):measured_TP=$(get input_tp):measured_LRA=$(get input_lra):measured_thresh=$(get input_thresh):offset=$(get target_offset):linear=true"
-ffmpeg -hide_banner -loglevel error -y -i "out/$ID.raw.mp4" -c:v copy -af "$LN,aresample=48000" -c:a aac -b:a 192k -movflags +faststart "$OUT"
+ffmpeg -hide_banner -loglevel error -y -i "out/$ID.raw.mp4" -c:v copy -af "$LN,aresample=48000" -c:a aac -b:a 192k -shortest -movflags +faststart "$OUT"
 rm -f "out/$ID.raw.mp4"
 ffprobe -v error -show_entries format=duration,size -of compact "$OUT"

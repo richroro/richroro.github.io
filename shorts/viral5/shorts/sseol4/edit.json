@@ -79,11 +79,18 @@
     "steps": [
      "a.새벽",
      "a.단어장을"
+    ],
+    "chars": [
+     {
+      "name": "아빠",
+      "color": "#FFB36B",
+      "mood": "think"
+     }
     ]
    }
   },
   {
-   "from": "b",
+   "from": "a@end",
    "label": "dawn",
    "gfx": {
     "type": "scene",
@@ -202,20 +209,36 @@
     "type": "scene",
     "bg": "home",
     "place": "📍 그러고 보니",
-    "prop": "✈️",
+    "prop": "💡",
     "chars": [
      {
       "name": "나",
       "mood": "shock",
-      "to": "shy",
       "color": "#FFD84D"
      }
     ],
     "steps": [
      0,
-     "h.외국에서",
-     "h.남자친구를"
+     0.1
     ]
+   }
+  },
+  {
+   "from": "h.외국에서",
+   "label": "abroad",
+   "gfx": {
+    "type": "scene",
+    "bg": "home",
+    "prop": "✈️",
+    "chars": [
+     {
+      "name": "나",
+      "mood": "shy",
+      "color": "#FFD84D"
+     }
+    ],
+    "zoom": 1.08,
+    "focus": 0
    }
   },
   {
@@ -338,13 +361,39 @@
     "bg": "home",
     "say": {
      "who": 0,
-     "text": "하우 아 유? [아임 파인, 땡큐!]"
+     "text": "하우 아 유?"
     },
     "chars": [
      {
       "name": "아빠",
       "color": "#FFB36B",
       "mood": "happy"
+     },
+     {
+      "name": "남자친구",
+      "color": "#8FD3FF",
+      "mood": "laugh"
+     }
+    ]
+   }
+  },
+  {
+   "from": "o.아임",
+   "label": "fine",
+   "gfx": {
+    "type": "scene",
+    "bg": "home",
+    "say": {
+     "who": 0,
+     "text": "[아임 파인, 땡큐!]"
+    },
+    "zoom": 1.1,
+    "focus": 0,
+    "chars": [
+     {
+      "name": "아빠",
+      "color": "#FFB36B",
+      "mood": "laugh"
      },
      {
       "name": "남자친구",

@@ -79,11 +79,24 @@
     "steps": [
      "a.비만",
      "a.운동화가"
+    ],
+    "chars": [
+     {
+      "name": "나",
+      "color": "#FFD84D",
+      "hat": "🧢",
+      "mood": "angry"
+     },
+     {
+      "name": "할머니",
+      "color": "#C9A7FF",
+      "mood": "smug"
+     }
     ]
    }
   },
   {
-   "from": "b",
+   "from": "a@end",
    "label": "boots",
    "gfx": {
     "type": "scene",
