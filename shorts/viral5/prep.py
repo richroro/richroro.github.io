@@ -190,6 +190,7 @@ def prep(sid):
         data["pages"].append({"startMs": t0, "endMs": t1, "tokens": toks, "en": s.get("en", "")})
     data["pages"].sort(key=lambda p: p["startMs"])
     if edit.get("captionY"): data["captionY"] = edit["captionY"]  # e.g. lower the captions when the action sits at the bottom of the frame
+    if edit.get("look"): data["look"] = edit["look"]  # "retro2": 그 시절 레트로 v2 layout (src/lib/RetroV2.tsx)
     for k in ("titleStyle", "titleKey", "hook", "hookY"):  # news-shorts look: banner title and a red headline over the picture
         if edit.get(k) is not None: data[k] = edit[k]
     if edit.get("hookTo") is not None: data["hookTo"] = round(at(edit["hookTo"]), 3)

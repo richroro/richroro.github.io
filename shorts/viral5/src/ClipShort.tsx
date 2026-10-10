@@ -8,6 +8,7 @@ import { BODY, TITLE, loadFonts } from "./lib/fonts";
 import { Sticker, clamp, eOut, prog } from "./lib/fx";
 import { GFX_BG, GfxView, Marked, Marks, type Gfx, type Mark } from "./lib/Gfx";
 import { ROUNDED43, Rounded43, YearSticker, rounded43Crop } from "./lib/Retro";
+import { RETROBOX, RetroTitle, RetroYear, StripCaptions } from "./lib/RetroV2";
 
 loadFonts();
 export const FPS = 30;
@@ -15,7 +16,7 @@ const fr = (s: number) => Math.round(s * FPS);
 
 export type Clip = {
   file: string | null; label: string; at: number; dur: number; speed: number;
-  frame: "square" | "wide" | "full" | "film" | "rounded43"; zoom: [number, number]; focus: string; audio: number;
+  frame: "square" | "wide" | "full" | "film" | "rounded43" | "retrobox"; zoom: [number, number]; focus: string; audio: number;
   /** face-centred crop: (cx, cy) in 0..1 of the source frame, zoom over a plain cover fit, source size */
   crop?: { cx: number; cy: number; zoom: number; w: number; h: number };
   /** this clip's own credit line, shown instead of the short's while it is on screen */
@@ -59,10 +60,13 @@ export type ShortData = {
   marks?: Mark[];
   /** a ranking list ("TOP 5") under the picture: a row per place, filled in when that place's clip starts */
   ranks?: { rows: { n: number; label: string; from: number }[]; y?: number };
+  /** "retro2" (lib/RetroV2.tsx): yellow/white title over the top quarter, captions inside the picture box, no shade or credit badge */
+  look?: "retro2";
 };
 
 const FRAME = { square: { top: 400, height: 1080 }, wide: { top: 656, height: 608 }, full: { top: 0, height: 1920 },
-  film: { top: 400, height: 810 } /* a whole 4:3 frame (silent films) */, rounded43: { top: ROUNDED43.top, height: ROUNDED43.height } };
+  film: { top: 400, height: 810 } /* a whole 4:3 frame (silent films) */, rounded43: { top: ROUNDED43.top, height: ROUNDED43.height },
+  retrobox: { top: RETROBOX.top, height: RETROBOX.height } };
 const PANELS = [{ top: 400, height: 540 }, { top: 940, height: 540 }];
 const have = (file: string | null) => !!file && getStaticFiles().some((f) => f.name === file);
 const isImg = (file: string | null) => !!file && /\.(jpe?g|png|webp)$/i.test(file);
@@ -146,18 +150,18 @@ const ClipView: React.FC<{ c: Clip; d: ShortData }> = ({ c, d }) => {
       </AbsoluteFill>
     );
   }
-  if (c.frame === "rounded43") {  // 그 시절 레트로: the photo in a rounded 4:3 frame on black, grain, year sticker
-    const prev = d.clips[d.clips.indexOf(c) - 1];
+  if (c.frame === "rounded43" || c.frame === "retrobox") {  // 그 시절 레트로: the photo in a rounded 4:3 frame on black, grain, year sticker
+    const prev = d.clips[d.clips.indexOf(c) - 1], rb = c.frame === "retrobox" ? RETROBOX : undefined;
     return (
       <AbsoluteFill>
-        <Rounded43 grain={c.grain} frame={f}>
-          {c.crop && ok ? <Media c={c} volume={vol} style={rounded43Crop(c.crop, s)} /> : (
+        <Rounded43 grain={c.grain} frame={f} box={rb}>
+          {c.crop && ok ? <Media c={c} volume={vol} style={rounded43Crop(c.crop, s, rb)} /> : (
             <AbsoluteFill style={{ transform: `scale(${s})` }}>
               {ok ? <Media c={c} volume={vol} style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: c.focus }} /> : <Placeholder label={c.label} />}
             </AbsoluteFill>
           )}
         </Rounded43>
-        {c.year ? <YearSticker year={c.year} t={f / FPS} popIn={prev?.year !== c.year} /> : null}
+        {c.year ? (rb ? <RetroYear year={c.year} t={f / FPS} popIn={!!prev && prev.year !== c.year} /> : <YearSticker year={c.year} t={f / FPS} popIn={prev?.year !== c.year} />) : null}
       </AbsoluteFill>
     );
   }
@@ -188,6 +192,7 @@ const ClipView: React.FC<{ c: Clip; d: ShortData }> = ({ c, d }) => {
 const Title: React.FC<{ d: ShortData }> = ({ d }) => {
   // long quote titles shrink to fit the width instead of running off the edge
   const size = (line: string, max = 96, within = 1010) => Math.min(max, fitText({ text: line, withinWidth: within, fontFamily: TITLE }).fontSize);
+  if (d.look === "retro2") return <RetroTitle title={d.title} />;
   if (d.titleStyle === "band") {
     // the second line is the yellow one unless the lines mark their own [key] words
     const marked = d.title.some((l) => /(^|[^\\])\[/.test(l)); // "\[괴담]" is a literal bracket, not a mark
@@ -262,7 +267,7 @@ const Ranks: React.FC<{ r: NonNullable<ShortData["ranks"]>; t: number }> = ({ r,
 const Credit: React.FC<{ d: ShortData; t: number }> = ({ d, t }) => {
   const c = d.clips.find((x) => t >= x.at && t < x.at + x.dur);
   const text = c?.credit ?? d.credit;
-  if (!text) return null;
+  if (!text || d.look === "retro2") return null;
   // the speaker label sits at the frame's top left (clips-with-captions shorts): when a long label and the credit
   // would run into each other on that row, the credit drops below the label
   const label = d.split && c?.label && FRAME[c.frame].top < 420 ? c.label : "";
@@ -297,7 +302,7 @@ export const ClipShort: React.FC<{ data: ShortData }> = ({ data: d }) => {
         </Sequence>
       ))}
       {/* the shade that keeps captions readable over footage; a story's drawn scenes stay clean */}
-      {["scene", "post", "road"].includes(d.clips.find((c) => t >= c.at && (t < c.at + c.dur || until(c) === total))?.gfx?.type ?? "") ? null
+      {d.look === "retro2" || ["scene", "post", "road"].includes(d.clips.find((c) => t >= c.at && (t < c.at + c.dur || until(c) === total))?.gfx?.type ?? "") ? null
         : <AbsoluteFill style={{ background: "linear-gradient(to bottom, rgba(0,0,0,.75) 0%, rgba(0,0,0,0) 22%, rgba(0,0,0,0) 62%, rgba(0,0,0,.65) 80%, rgba(0,0,0,.2) 100%)" }} />}
       <Title d={d} />
       <Credit d={d} t={t} />
@@ -307,7 +312,7 @@ export const ClipShort: React.FC<{ data: ShortData }> = ({ data: d }) => {
       {d.stickers.map((s, i) => (
         <Sticker key={i} t={t} t0={s.from} t1={s.to} x={s.x} y={s.y} rot={s.rot} bg={s.bg} fg={s.fg} size={s.size}>{s.text}</Sticker>
       ))}
-      <Captions pages={d.pages} centerY={d.captionY ?? 1370} order={d.subOrder} />
+      {d.look === "retro2" ? <StripCaptions pages={d.pages} /> : <Captions pages={d.pages} centerY={d.captionY ?? 1370} order={d.subOrder} />}
       {flash > 0.002 && <AbsoluteFill style={{ background: "white", opacity: flash }} />}
 
       {d.lines.map((l) => (
