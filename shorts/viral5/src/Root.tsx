@@ -1,6 +1,7 @@
 import { Composition } from "remotion";
 import { ClipShort, FPS, type ShortData } from "./ClipShort";
 import { LongForm, longFrames } from "./LongForm";
+import { LongCompositions } from "./Long";
 import { SHORTS } from "./data";
 import { LONGS } from "./longs";
 
@@ -16,5 +17,6 @@ export const RemotionRoot: React.FC = () => (
           durationInFrames={longFrames(parts)} />
       ) : null;
     })}
+    <LongCompositions />
   </>
 );
