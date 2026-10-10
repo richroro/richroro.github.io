@@ -11,7 +11,11 @@ SYL = re.compile(r"[가-힣A-Za-z0-9%]")
 # title patterns of 100k+ shorts (research-fun.md §5, research-info.md §1): "~하는 이유", "~썰", "정체", "생긴 일", "역대급",
 # "TOP N", "소름", "~에 대한 몇가지", "~의 필살기", "~ 특", "~의 최후/결말", X vs Y, second person, ㅋㅋ/ㄷㄷ/?, numbers
 HOOKS = ["이유", "썰", "정체", "생긴 일", "생기는 일", "하는 일", "최후", "결말", "역대급", "TOP", "소름", "실화", "레전드", "현실", "충격", "차이",
-         "vs", "몇가지", "몇 가지", "필살기", " 특", "당신", "반응", "?", "ㅋㅋ", "ㄷㄷ", "!!"]
+         "vs", "몇가지", "몇 가지", "필살기", " 특", "당신", "반응", "?", "ㅋㅋ", "ㄷㄷ", "!!",
+         # research-formats2.md §5-7: 낙서 짤툰 noun phrases ("~의 수명", "~ 근황", "~의 말투 특징", "~하면 벌어지는 일"),
+         # 그 시절 레트로 ("그 시절 ~", "MZ는 모르는"), 2D 운전 애니 ("~ 빌런 참교육", "30초 만에 이해하기"), [괴담]
+         "벌어지는 일", "근황", "특징", "수명", "모르는", "단계", "진화", "비결", "민폐", "시절", "참교육", "빌런", "이해하기",
+         "괴담", "무서운"]
 # a subscribe/like ask; "좋아요" alone is ordinary speech ("그 나무가 좋아요?"), so it counts only with 눌러·부탁·구독
 ASKS = re.compile(r"구독|알림\s*설정|좋아요\s*(눌|부탁|와|랑|및)")
 PICTURE = "crop=1080:1080:0:400"  # the frame box under the title band, where cuts and black frames count
