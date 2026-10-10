@@ -258,6 +258,10 @@ const Credit: React.FC<{ d: ShortData; t: number }> = ({ d, t }) => {
 
 export const ClipShort: React.FC<{ data: ShortData }> = ({ data: d }) => {
   const t = useCurrentFrame() / FPS;
+  // the composition is ceil(end) frames long but clips end on rounded frames: a clip that ends the short runs to the
+  // last frame, which otherwise stays black and blinks when the short loops
+  const { durationInFrames: total } = useVideoConfig();
+  const until = (c: Clip) => (fr(c.at + c.dur) >= total - 1 ? total : fr(c.at + c.dur));
   let flash = 0;
   for (const a of d.flashes) if (t >= a) flash = Math.max(flash, 0.85 * (1 - eOut(prog(t, a, 0.25))));
   const musicVol = (f: number) => {
@@ -268,12 +272,12 @@ export const ClipShort: React.FC<{ data: ShortData }> = ({ data: d }) => {
   return (
     <AbsoluteFill style={{ background: "#000" }}>
       {d.clips.map((c, i) => (
-        <Sequence key={i} from={fr(c.at)} durationInFrames={Math.max(1, fr(c.at + c.dur) - fr(c.at))}>
+        <Sequence key={i} from={fr(c.at)} durationInFrames={Math.max(1, until(c) - fr(c.at))}>
           <ClipView c={c} d={d} />
         </Sequence>
       ))}
       {/* the shade that keeps captions readable over footage; a story's drawn scenes stay clean */}
-      {["scene", "post", "road"].includes(d.clips.find((c) => t >= c.at && t < c.at + c.dur)?.gfx?.type ?? "") ? null
+      {["scene", "post", "road"].includes(d.clips.find((c) => t >= c.at && (t < c.at + c.dur || until(c) === total))?.gfx?.type ?? "") ? null
         : <AbsoluteFill style={{ background: "linear-gradient(to bottom, rgba(0,0,0,.75) 0%, rgba(0,0,0,0) 22%, rgba(0,0,0,0) 62%, rgba(0,0,0,.65) 80%, rgba(0,0,0,.2) 100%)" }} />}
       <Title d={d} />
       <Credit d={d} t={t} />
