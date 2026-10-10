@@ -1,0 +1,353 @@
+{
+ "titleStyle": "band",
+ "captionY": 1640,
+ "credit": "영상: Pexels",
+ "sources": {
+  "win": {
+   "file": "px10710412.mp4",
+   "credit": "영상: Pexels",
+   "label": "Pexels video 10710412 by Afif Ramdhasuma (Pexels License)",
+   "url": "https://www.pexels.com/video/an-airplane-window-seat-view-10710412/",
+   "license": "Pexels License",
+   "creator": "Afif Ramdhasuma"
+  },
+  "takeoff": {
+   "file": "px3723453.mp4",
+   "credit": "영상: Pexels",
+   "label": "Pexels video 3723453 by K (Pexels License)",
+   "url": "https://www.pexels.com/video/footage-of-the-plane-taking-off-3723453/",
+   "license": "Pexels License",
+   "creator": "K"
+  },
+  "arrow": {
+   "file": "px35576270.mp4",
+   "credit": "영상: Pexels",
+   "label": "Pexels video 35576270 by Content Kiosk (Pexels License)",
+   "url": "https://www.pexels.com/video/aerial-view-from-airplane-window-on-runway-35576270/",
+   "license": "Pexels License",
+   "creator": "Content Kiosk"
+  },
+  "sil": {
+   "file": "px3701057.mp4",
+   "credit": "영상: Pexels",
+   "label": "Pexels video 3701057 by K (Pexels License)",
+   "url": "https://www.pexels.com/video/silhouette-footage-of-a-person-in-the-window-3701057/",
+   "license": "Pexels License",
+   "creator": "K"
+  },
+  "crew": {
+   "file": "px3740022.mp4",
+   "credit": "영상: Pexels",
+   "label": "Pexels video 3740022 by K (Pexels License)",
+   "url": "https://www.pexels.com/video/footage-inside-the-airplane-3740022/",
+   "license": "Pexels License",
+   "creator": "K"
+  },
+  "blue": {
+   "file": "px35507462.mp4",
+   "credit": "영상: Pexels",
+   "label": "Pexels video 35507462 by Grigoriy Bunkov (Pexels License)",
+   "url": "https://www.pexels.com/video/airplane-cabin-with-passengers-and-crew-35507462/",
+   "license": "Pexels License",
+   "creator": "Grigoriy Bunkov"
+  },
+  "shade": {
+   "file": "px18749262.mp4",
+   "credit": "영상: Pexels",
+   "label": "Pexels video 18749262 by Dilara Hazıroğlu (Pexels License)",
+   "url": "https://www.pexels.com/video/a-view-of-an-airplane-window-from-inside-the-plane-18749262/",
+   "license": "Pexels License",
+   "creator": "Dilara Hazıroğlu"
+  },
+  "row": {
+   "file": "px3740041.mp4",
+   "credit": "영상: Pexels",
+   "label": "Pexels video 3740041 by K (Pexels License)",
+   "url": "https://www.pexels.com/video/view-of-sunset-from-an-airplane-in-flight-3740041/",
+   "license": "Pexels License",
+   "creator": "K"
+  },
+  "round": {
+   "file": "px3785721.mp4",
+   "credit": "영상: Pexels",
+   "label": "Pexels video 3785721 by Taryn Elliott (Pexels License)",
+   "url": "https://www.pexels.com/video/view-of-the-airport-field-from-an-airplane-s-window-3785721/",
+   "license": "Pexels License",
+   "creator": "Taryn Elliott"
+  }
+ },
+ "clips": [
+  {
+   "src": "shade",
+   "from": "hook",
+   "in": 2,
+   "label": "창문 덮개",
+   "crop": [
+    0.5,
+    0.3,
+    1.0
+   ],
+   "zoom": [
+    1.0,
+    1.04
+   ],
+   "audio": 0
+  },
+  {
+   "src": "win",
+   "from": "hook.왜일까요",
+   "in": 4,
+   "label": "창밖",
+   "crop": [
+    0.5,
+    0.4,
+    1.0
+   ],
+   "zoom": [
+    1.0,
+    1.05
+   ],
+   "audio": 0
+  },
+  {
+   "src": "takeoff",
+   "from": "see",
+   "in": 8,
+   "label": "이륙 창밖",
+   "zoom": [
+    1.0,
+    1.06
+   ],
+   "audio": 0
+  },
+  {
+   "src": "arrow",
+   "from": "see.빨리",
+   "in": 2,
+   "label": "날개 비상 탈출 화살표",
+   "crop": [
+    0.5,
+    0.6,
+    1.0
+   ],
+   "zoom": [
+    1.0,
+    1.05
+   ],
+   "audio": 0
+  },
+  {
+   "src": "sil",
+   "from": "dark",
+   "in": 1,
+   "label": "어두운 기내, 창빛",
+   "zoom": [
+    1.0,
+    1.06
+   ],
+   "audio": 0
+  },
+  {
+   "src": "blue",
+   "from": "dark.비상구를",
+   "in": 0.5,
+   "label": "비상구 표시등",
+   "crop": [
+    0.5,
+    0.3,
+    1.0
+   ],
+   "zoom": [
+    1.0,
+    1.03
+   ],
+   "audio": 0
+  },
+  {
+   "src": "row",
+   "from": "in",
+   "in": 1,
+   "label": "창문 줄",
+   "zoom": [
+    1.0,
+    1.06
+   ],
+   "audio": 0
+  },
+  {
+   "src": "crew",
+   "from": "light",
+   "in": 2,
+   "label": "기내",
+   "zoom": [
+    1.0,
+    1.05
+   ],
+   "audio": 0
+  },
+  {
+   "src": "sil",
+   "from": "light.눈이",
+   "in": 5,
+   "label": "어둠에 적응",
+   "zoom": [
+    1.05,
+    1.1
+   ],
+   "audio": 0
+  },
+  {
+   "src": "win",
+   "from": "twist",
+   "in": 2,
+   "label": "열린 덮개",
+   "crop": [
+    0.5,
+    0.35,
+    1.0
+   ],
+   "zoom": [
+    1.0,
+    1.05
+   ],
+   "audio": 0
+  },
+  {
+   "src": "blue",
+   "from": "twist.의무가",
+   "in": 6,
+   "label": "기내 조명",
+   "crop": [
+    0.5,
+    0.45,
+    1.0
+   ],
+   "zoom": [
+    1.0,
+    1.05
+   ],
+   "audio": 0
+  },
+  {
+   "src": "arrow",
+   "from": "twist.날개",
+   "in": 7,
+   "label": "날개 위 비상구 쪽 창",
+   "crop": [
+    0.5,
+    0.6,
+    1.0
+   ],
+   "zoom": [
+    1.0,
+    1.04
+   ],
+   "audio": 0
+  },
+  {
+   "src": "round",
+   "from": "end",
+   "in": 2,
+   "label": "창가 자리",
+   "zoom": [
+    1.0,
+    1.06
+   ],
+   "audio": 0
+  }
+ ],
+ "marks": [
+  {
+   "kind": "circle",
+   "x": 540,
+   "y": 600,
+   "r": 140,
+   "from": "hook.창문",
+   "to": "hook.왜일까요"
+  },
+  {
+   "kind": "arrow",
+   "x": 540,
+   "y": 620,
+   "rot": 120,
+   "from": "dark.비상구를",
+   "to": "dark@end"
+  },
+  {
+   "kind": "circle",
+   "x": 540,
+   "y": 1150,
+   "r": 220,
+   "from": "twist.날개",
+   "to": "twist@end"
+  }
+ ],
+ "stickers": [
+  {
+   "text": "대한항공 뉴스룸 2023.9 설명",
+   "from": "see",
+   "to": "see@end",
+   "y": 540,
+   "size": 38,
+   "bg": "#fff"
+  },
+  {
+   "text": "항공사·공항마다 규정이 다를 수 있음",
+   "from": "twist",
+   "to": "twist.날개",
+   "y": 540,
+   "size": 38
+  }
+ ],
+ "sfx": [
+  [
+   "see",
+   "whoosh",
+   0.4
+  ],
+  [
+   "dark",
+   "k_error_003",
+   0.4
+  ],
+  [
+   "dark.비상구를",
+   "pop",
+   0.6
+  ],
+  [
+   "in",
+   "whoosh",
+   0.4
+  ],
+  [
+   "light",
+   "whoosh",
+   0.4
+  ],
+  [
+   "twist",
+   "riser",
+   0.4
+  ],
+  [
+   "twist.날개",
+   "ding",
+   0.6
+  ],
+  [
+   "end",
+   "whoosh",
+   0.4
+  ]
+ ],
+ "punches": [
+  "twist.권고로"
+ ],
+ "flashes": [],
+ "music": {
+  "file": "music/Floating Cities.mp3",
+  "gain": 0.1,
+  "start": 0
+ }
+}

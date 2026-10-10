@@ -1957,3 +1957,150 @@ MEDIA=<저장소>/media python3 politics/prep_split.py rank1    # 원본: media/
 > 영상: 미 해병대·미 육군(알링턴 국립묘지)·미 해군·미 공군 (DVIDS) — Cpl. Christopher Prelle, Daryl Vaca, MC2 Caden Richmond, Airman 1st Class Nathan Langston, Cpl. Jordy Morales. 미 국방부와 각 군이 이 영상을 보증하거나 후원하지 않습니다.
 > 음악: "Heroic Age" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
 > #군대 #미군 #해병대 #소름 #shorts
+
+## 생활 상식 “~하는 이유” 쇼츠 (`life1`~`life4`)
+
+질문형 해설 + 스톡 실사 B-roll 방식(`research/research-info.md` 형식 A)입니다. 위쪽 검정 띠에 두 줄 제목이 0초부터 끝까지 있고, 가운데 정사각 화면은 2~3초마다 바뀌는 실제 영상·사진이며, 아래에 한 줄 자막이 붙습니다. 내레이션은 Edge TTS `ko-KR-InJoonNeural` `+20%`이고, 마지막 줄 직후에 바로 끊습니다. 그래픽 카드는 쓰지 않았고 군 영상(DVIDS 등)도 없습니다.
+
+| id | 띠 제목 | 길이 | 내용 | 음악 |
+| --- | --- | --- | --- | --- |
+| `life1` | 비행기 창문이 / 네모가 아닌 진짜 이유 | 28.6초 | 둥근 모서리 창 → 1954년 코멧 2대 공중분해 → 물탱크 압력 시험 → 네모난 창 모서리에서 균열(실제로는 지붕 안테나 창·비상구 창이라고 스티커로 밝힘) → 각진 모서리에 힘이 몰림 → 그래서 둥글게 | Movement Proposition |
+| `life2` | 엘리베이터 거울이 / 셀카용이 아닌 진짜 이유 | 29.1초 | 엘베 거울 셀카 → “기다림이 덜 지루하라고”는 흔한 설 → 진짜 이유는 법에 있음 → 휠체어는 안에서 못 돌아서 후진으로 내림 → 뒷벽 0.6m 이상 높이에 견고한 거울 → 돌 수 없는 장애인용 승강기는 의무 → “휠체어의 백미러” | Sneaky Snitch |
+| `life3` | 제한속도 지켜도 / 1차로에서 단속되는 이유 | 27.4초 | 인천대교 ‘급차선 변경 집중 단속중(고속도로순찰대)’ 전광판 → 편도 3차로 이상 고속도로 1차로는 앞지르기 차로 → 추월 후 오른쪽으로 → 지정차로 위반 승용 4만 원·벌점 10점(승합 5만 원) → 시속 80km 미만 정체 땐 예외 → “여러분은 몇 차로?” | Exhilarate |
+| `life4` | 이착륙 때 창문 덮개 / 열라고 하는 진짜 이유 | 30.4초 | 창밖 상황 빨리 발견·대응 → 정전 시 바깥 빛으로 비상구 찾기 → 밖에서도 기내 확인 → 조명 낮추는 것도 눈의 어둠 적응 → 반전: 대한항공은 2021년부터 의무 아닌 권고, 날개 위·비상구 창은 여는 게 원칙 | Floating Cities |
+
+```bash
+# 원본: media/life/sources.json 의 주소에서 받아 1080p로 다시 인코딩해 public/life*/src/ 에 (파일 이름은 edit.json sources.file)
+# life3 운전 영상 3개(36017323, 36108436, 35186893)는 번호판이 안 읽히도록 화면 아래 42%를 흐리게 처리:
+ffmpeg -i <원본>.mp4 -filter_complex "[0]scale=-2:1080,split[a][b];[b]crop=iw:ih*0.42:0:ih*0.5,gblur=sigma=5[c];[a][c]overlay=0:H*0.5" -an px<id>.mp4
+for id in life1 life2 life3 life4; do python3 voice_edge.py $id && python3 prep.py $id && ./render.sh $id final/$id.mp4; done
+```
+
+### 사실과 출처 (2026-10-09 확인)
+
+**life1 — 코멧 사고와 둥근 창**
+- [FAA Lessons Learned: de Havilland Comet](https://www.faa.gov/lessons_learned/transport_airplane/accidents/G-ALYV): BOAC 781편(G-ALYP) 1954.1.10 엘바섬 근처 공중분해 35명 사망, 남아공항공 201편(G-ALYY) 1954.4.8 나폴리 근처 21명 사망. 물탱크 시험 기체 G-ALYU는 실제 비행 1,230회 뒤 탱크 ‘비행’ 1,830회 만에 “squarish forward escape hatch window” 모서리에서 파손. 엘바 사고의 첫 균열은 동체 지붕의 “ADF windows, also squarish”. 결론: “squarish windows were creating stress concentrations… fatigued the material around the window corners.”
+- [DH Aircraft Heritage – Comet 1 inquiry](https://www.dh-aircraft.co.uk/aircraft/dh106/comet1/inquiry/): 균열은 지붕의 ADF 창에서 시작해 앞쪽 창으로 이어짐, 3,060회 압력 주기 뒤 파손.
+- [Aerossurance – Comet misconceptions](https://aerossurance.com/safety-management/comet-misconceptions/): “객실 네모 창 때문에 추락했다”는 단순화된 설명이고 나폴리 사고 기원은 확인되지 않았다는 점. 그래서 내레이션은 “네모난 창의 모서리”라고만 하고, 화면 스티커로 “실제 균열: 지붕 안테나 창·비상구 창 모서리”를 밝혔습니다. “세계 첫 제트 여객기”는 코멧 1이 1952년 5월 BOAC 런던–요하네스버그 노선으로 세계 첫 정기 제트 여객 운항을 한 기종이라는 뜻입니다([This Day in Aviation](https://www.thisdayinaviation.com/tag/de-havilland-dh-106-comet-1/)). “칠십 년 전”은 1954년 기준 어림수(72년)입니다.
+
+**life2 — 엘리베이터 거울**
+- [장애인·노인·임산부 등의 편의증진 보장에 관한 법률 시행규칙 [별표 1]](https://www.law.go.kr/법령/장애인·노인·임산부등의편의증진보장에관한법률시행규칙/별표) (시행 2026.7.2., 별표 1 개정 2023.12.11.) 9. 장애인용 승강기 라. 기타 설비 (2): “승강기 내부의 후면에는 내부에서 휠체어가 180도 회전이 불가능할 경우에는 휠체어가 후진하여 문의 개폐여부를 확인하거나 내릴 수 있도록 승강기 후면의 0.6미터 이상의 높이에 견고한 재질의 거울을 설치하여야 한다.”
+- 적용 대상(장애인용 승강기를 둬야 하는 시설)은 같은 법 시행령 [별표 2]. 그래서 “모든 엘리베이터”가 아니라 “휠체어가 돌 수 없는 장애인용 승강기라면 의무”라고 말했습니다. “기다림이 덜 지루하라고”는 1차 출처가 없는 통설이라 “흔히 ~ 하는데요”로만 소개했습니다.
+
+**life3 — 고속도로 1차로**
+- [도로교통법](https://www.law.go.kr/법령/도로교통법) (시행 2026.7.1.) 제60조①(고속도로에서 행정안전부령으로 정하는 차로에 따라 통행), 제60조②(앞지르기는 정해진 차로로).
+- [도로교통법 시행규칙](https://www.law.go.kr/법령/도로교통법시행규칙) (시행 2026.8.24.) 제16조③(중앙선 쪽부터 1차로), [별표 9] 고속도로 편도 3차로 이상 1차로: “앞지르기를 하려는 승용자동차 및 앞지르기를 하려는 경형·소형·중형 승합자동차. 다만, 차량통행량 증가 등 도로상황으로 인하여 부득이하게 시속 80킬로미터 미만으로 통행할 수밖에 없는 경우에는 앞지르기를 하는 경우가 아니라도 통행할 수 있다.” [별표 28] 21. 지정차로 통행위반(제60조제1항 포함) 벌점 10점.
+- [도로교통법 시행령 [별표 8]](https://www.law.go.kr/법령/도로교통법시행령) (시행 2026.10.2.) 39. 고속도로 지정차로 통행 위반(제60조제1항): 승합자동차등 5만 원, 승용자동차등 4만 원.
+- 언론·정부 확인: [SBS 2025.7.16](https://news.sbs.co.kr/news/endPage.do?news_id=N1008178713) “벌점 10점에 승용차 운전자에게는 범칙금 4만 원, 승합차는 5만 원”, [정책브리핑 2023.7.25](https://www.korea.kr/news/policyNewsView.do?newsId=148918108) “1차로(추월차로)… 벌점 10점… 승용 4만 원 / 승합 5만 원”.
+- 화면의 “고속도로 급차선 변경 집중 단속중(고속도로순찰대)” 전광판은 Pexels 영상(인천대교 구간으로 보임) 속 실제 표지이고, 지정차로 단속과는 별개의 안내입니다. 내레이션은 전광판을 설명하지 않습니다.
+
+**life4 — 이착륙 때 창문 덮개**
+- [대한항공 뉴스룸 2023.9.6 「항공상식 Q&A」](https://news.koreanair.com/항공상식qa-우리-비행기는-곧-착륙하오니-이-것/): “이·착륙 시 창문 밖으로 벌어지는 상황을 신속하게 발견하고 빠르게 대응”, “혹 기내가 정전이 될 경우 바깥의 불빛에 의지해 비상구를 찾거나…”, “외부에서도 항공기 내부 상황을 확인해 대처”, 조명을 낮추는 것은 “승객들의 눈을 어둠에 빠르게 적응하도록 하는 예방 조치”, “대한항공은 2021년부터 이·착륙 시 창문 덮개를 열어두는 것을 의무가 아닌 권고 사항으로 실시”, “날개 위쪽, 비상구 창문 등은 법적으로 개방하는 것이 원칙”.
+- 미국 FAA에는 창문 덮개 규정이 없고 항공사마다 다르다는 점(예: [AFAR](https://www.afar.com/magazine/why-do-window-shades-have-to-be-open-for-takeoff-and-landing))을 고려해 “항공사·공항마다 규정이 다를 수 있음” 스티커를 붙였습니다. “사고는 대부분 이착륙 때” 같은 통계는 출처를 확인하지 못해 쓰지 않았습니다.
+
+### 영상·사진과 라이선스
+모든 원본의 페이지·파일 주소·제작자·라이선스·쓴 구간은 `media/life/sources.json`과 각 `edit.json`의 `sources`에 있습니다. 화면에는 “영상: Pexels”, “사진: Pexels”, “영상: Pixabay”, “사진: 영국 정보부(IWM TR 6113)”만 표시합니다.
+- **Pexels License**: 상업적 이용·수정 가능, 출처 표기 불필요(식별 가능한 인물을 나쁘게 보이게 하거나 보증을 암시하는 사용 금지). 이번 쇼츠의 인물 장면은 셀카·대기·탑승 등 중립적 장면뿐입니다.
+  - life1: 10710412 Afif Ramdhasuma, 3740041 K, 11292266 Alireza Akhlaghi, 2023708 Sher Lyn ., 8511231 Lukas L, 35839565 Rise Within Studio, 3785721 Taryn Elliott
+  - life2: 사진 32571093 Anna Holodna, 17489439 Zakhar Vozhdaienko, 7722159 Max Vakhtbovych; 영상 5378938 cottonbro studio, 15434928 Yusuf Çelik, 7423581 Gustavo Fring, 8400828 SHVETS production, 8525792 cottonbro studio
+  - life3: 36017323 Raphael Kim, 18565055 FREE VIDEO HAPPY, 36108436 Airam Dato-on, 35186893 Nothing Ahead, 4608282 K, 28690652 SHOX ART
+  - life4: 18749262 Dilara Hazıroğlu, 10710412 Afif Ramdhasuma, 3723453 K, 35576270 Content Kiosk, 3701057 K, 35507462 Grigoriy Bunkov, 3740041 K, 3740022 K, 3785721 Taryn Elliott
+- **Pixabay Content License**: [131012 Jesehab](https://pixabay.com/videos/inside-elevator-elevator-rise-131012/) (life2 엘리베이터 안·문 열림).
+- **퍼블릭 도메인(PD-UKGov)**: [BOAC Comet, Entebbe 1952](https://commons.wikimedia.org/wiki/File:BOAC_Comet_1952.jpg), Ministry of Information official photographer, Imperial War Museums TR 6113 (1957년 6월 1일 이전 촬영된 영국 정부 사진). 코멧 잔해 사진(CC BY-SA)은 쓰지 않았습니다.
+- 음악: Kevin MacLeod (incompetech.com), CC BY 4.0.
+
+### 업로드 문구
+
+**life1** — 비행기 창문이 네모가 아닌 진짜 이유 ✈️
+> 1954년, 세계 첫 제트 여객기 ‘코멧’ 두 대가 석 달 사이 하늘에서 부서졌습니다. 동체를 통째로 물탱크에 넣고 압력을 수천 번 넣었다 빼는 시험 끝에 찾은 원인은 네모난 창(지붕 안테나 창·비상구 창) 모서리의 금속 피로. 그래서 지금 비행기 창문은 모서리를 둥글게 만듭니다. (출처: FAA Lessons Learned – de Havilland Comet)
+> 영상: Pexels (Afif Ramdhasuma, K, Alireza Akhlaghi, Sher Lyn, Lukas L, Rise Within Studio, Taryn Elliott) · 사진: BOAC Comet 1952, Ministry of Information/Imperial War Museums (퍼블릭 도메인)
+> 음악: "Movement Proposition" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
+> #비행기 #비행기창문 #항공상식 #생활상식 #shorts
+
+**life2** — 엘리베이터 거울이 셀카용이 아닌 진짜 이유 🪞
+> 엘리베이터 거울, 기다림이 덜 지루하라고 달았다는 얘기 들어 보셨죠? 우리 법에는 다른 이유가 적혀 있습니다. 「장애인·노인·임산부 등의 편의증진 보장에 관한 법률 시행규칙」 [별표 1]: 휠체어가 안에서 180도 돌 수 없는 장애인용 승강기는, 후진하며 문이 열렸는지 확인할 수 있도록 뒷벽 0.6m 이상 높이에 견고한 거울을 달아야 합니다. (2026년 10월 기준, law.go.kr)
+> 영상·사진: Pexels (Anna Holodna, Zakhar Vozhdaienko, Max Vakhtbovych, cottonbro studio, Yusuf Çelik, Gustavo Fring, SHVETS production), Pixabay (Jesehab)
+> 음악: "Sneaky Snitch" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
+> #엘리베이터 #엘베거울 #생활상식 #휠체어 #shorts
+
+**life3** — 제한속도 지켜도 1차로에서 단속되는 이유 🚗
+> 편도 3차로 이상 고속도로의 1차로는 앞지르기할 때만 쓰는 차로입니다(도로교통법 시행규칙 별표 9). 계속 달리면 고속도로 지정차로 위반 — 승용차 범칙금 4만 원, 승합차 5만 원, 벌점 10점. 단, 정체로 시속 80km 미만일 땐 예외입니다. (2026년 10월 기준, law.go.kr) 여러분은 몇 차로로 달리시나요?
+> 영상: Pexels (Raphael Kim, FREE VIDEO HAPPY, Airam Dato-on, Nothing Ahead, K, SHOX ART)
+> 음악: "Exhilarate" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
+> #고속도로 #1차로 #지정차로 #운전상식 #shorts
+
+**life4** — 이착륙 때 창문 덮개 열라는 진짜 이유 ✈️
+> 이착륙 때 창문 덮개를 열어 두면 창밖 상황을 빨리 발견할 수 있고, 정전 때 바깥 빛으로 비상구를 찾을 수 있고, 밖에서도 기내를 확인할 수 있습니다. 조명을 낮추는 것도 눈이 어둠에 적응하도록 하는 것. 다만 대한항공은 2021년부터 의무가 아닌 권고로 운영하고, 날개 위·비상구 창문은 여는 게 원칙입니다(대한항공 뉴스룸 2023.9). 항공사마다 규정은 다를 수 있어요.
+> 영상: Pexels (Dilara Hazıroğlu, Afif Ramdhasuma, K, Content Kiosk, Grigoriy Bunkov, Taryn Elliott)
+> 음악: "Floating Cities" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
+> #비행기 #항공상식 #창문덮개 #대한항공 #shorts
+
+## 이번 주 이슈 30초 정리 (`issue1`~`issue4`)
+
+2026년 10월 둘째 주 뉴스 4편. 장르는 하나로 묶었습니다: **정치색 없는 뉴스를 30초에 풀어 주는 질문형 해설**(검정 제목 띠 + 실제 영상·사진 + 1줄 자막 + Edge TTS +20%). 원본은 `media/{nuri,oil,hangul,nobel}/`(영상 파일은 저장소에 넣지 않음, `sources.json`에 페이지·파일 주소·라이선스·크레디트·쓴 구간), 작업 사본은 `public/issueN/src/`.
+
+| id | 제목(화면 띠) | 길이 | 내용 | 정확한 날짜 한계 | 음악 |
+| --- | --- | --- | --- | --- | --- |
+| `issue1` | 누리호 위성 15기 중 / 1기만 못 나온 이유 | 33.2초 | 10월 7일 5차 발사 성공 → 군집위성 5기 궤도 → 고도 약 570km 분리 → 큐브위성 1기는 사출관 덮개가 안 열려 미분리 → 군집위성 5기 당일 교신 성공 → 내년 5기 더, 한반도 하루 3번 넘게 → 5번 중 4번 성공, 다음은 내년 하반기 | **10월 14일께**까지(발사 1주일. 숫자는 이후에도 맞지만, 큐브위성 교신 결과나 최종 판정 등 우주청 추가 발표가 나오면 그 전에 올리거나 내용 확인) | Heroic Age |
+| `issue2` | 기름값 상한제 있는데 / 경유 20% 오른 이유 | 32.4초 | 9월 경유 1년 새 20.0%↑ → 중동 전쟁·국제유가 → 3월 13일 석유 최고가격제 → 상한은 주유소 판매가가 아니라 정유사 공급가 → 경유 상한 1,713원(1차) → 1,773원(10차) → 상한제 없었으면 물가 3.5%(정부 추정) → 지금 상한은 10월 중순까지 | **10월 15일까지**(10차 최고가격은 9월 19일부터 4주 → 16일께 11차 발표. 10월 소비자물가는 11월 초 발표) | Movement Proposition |
+| `issue3` | 한글날이 22년 동안 / 쉬는 날 아니었던 이유 | 28.7초 | 1991년부터 공휴일 제외(어려운 경제 여건 등, 국군의 날과 함께) → 2006년 국경일 → 2012년 12월 24일 국무회의 의결로 2013년부터 다시 공휴일 → "한글날에 학교 간 기억 있나요?" | 내용은 늘 맞음. 다만 화제성은 한글날 주간(**10월 12일께**까지). 화면의 "2026년 제580돌 한글날"은 올해만 맞음 | Heartwarming |
+| `issue4` | 올해 노벨물리학상 / 남극 얼음 덩어리의 정체 | 33.7초 | 1초에 약 100조 개가 몸을 통과하는 중성미자 → 남극 얼음 1km³ 검출기 아이스큐브, 센서 5,160개 → 2013년 우주 고에너지 중성미자 첫 확인 → 프랜시스 할젠 단독 수상(10월 6일 발표) → 물리학상 단독 수상은 34년 만 | 내용은 계속 맞음. 화제성은 시상식 전후(**10월 말**까지, 늦어도 12월 10일 시상식) | Floating Cities |
+
+### 사실 근거
+**issue1 누리호 5차 발사**
+- 10월 7일 낮 12시 25분 발사, 주탑재 초소형군집위성(네온샛) 5기 목표 궤도 투입, 큐브위성 10기 중 9기 투입, 1기는 "분리 신호를 받았으나 위성을 내보내는 덮개가 열리지 않음", 분리 고도 570km±15km 기준 충족, 성공률 75%→80%: [파이낸셜뉴스](https://www.fnnews.com/news/202610071826359850), [아시아경제](https://view.asiae.co.kr/article/2026100713324180944), [아이뉴스24](https://inews24.com/view/2012682)(큐브위성 10기 중 9기 분리), [머니투데이방송](https://news.mtn.co.kr/news-detail/2026100717103775939)("정상 분리 신호를 냈지만 사출관 뚜껑이 열리지 않은 것으로 확인")
+- 분리 고도 약 575km, 7~11호기 내년 9월 발사, 10기 운용 시 한반도 하루 3회 이상 촬영: [전자신문](https://www.etnews.com/20261007000371)
+- 군집위성 5기 교신 전원 성공(13:08~17:52, 세종기지·스발바르 지상국): [정책브리핑 카드(우주항공청)](https://www.korea.kr/multi/visualNewsView.do?newsId=148973195)
+- 6차 발사 내년 하반기 목표, 2032년까지 매년 1회 이상: [정책브리핑 우주항공청 기사](https://www.korea.kr/news/policyNewsView.do?newsId=148973163)
+- 누리호 1차(2021) 실패, 2·3·4·5차 성공 → 5번 중 4번(80%): 위 기사들의 성공률 75%→80%
+
+**issue2 경유값**
+- 2026년 9월 소비자물가 2.9%, 석유류 14.8%, 경유 20.0%, 휘발유 11.8%, 등유 19.5%: [정책브리핑 9월 소비자물가동향 브리핑](https://www.korea.kr/briefing/policyBriefingView.do?newsId=156784092), [이투데이](https://www.etoday.co.kr/news/view/2631864), [서울신문](https://www.seoul.co.kr/news/economy/2026/10/02/20261002500041)
+- 최고가격제가 없었다면 9월 3.5%(0.6%p 낮춤, 재정경제부 추정): [이투데이](https://www.etoday.co.kr/news/view/2631784), [뉴데일리](https://biz.newdaily.co.kr/site/data/html/2026/10/02/2026100200046.html)
+- 3월 13일 0시 시행, 상한은 정유사 공급가(주유소 판매가 아님), 1차 경유 1,713원: [KDI 경제정보센터(정부 발표)](https://eiec.kdi.re.kr/policy/materialView.do?num=277913), [뉴닉 정리](https://newneek.co/@saltylife/article/39324)
+- 중동 전쟁 이후 도입: [에너지경제](https://m.ekn.kr/view.php?key=20260313022247530), 산업통상부 10차 자료("중동정세 불안")
+- 10차 경유 1,773원, 9월 19일 0시부터 4주: [산업통상부 참고자료](https://www.motir.go.kr/kor/article/ATCL3f49a5a8c/172224/view), [머니투데이](https://www.mt.co.kr/economy/2026/09/18/2026091816121493397)
+
+**issue3 한글날**
+- "1991년 어려운 경제 여건 등을 이유로 공휴일에서 제외된 지 22년 만", "2013년도부터 한글날이 다시 공휴일(12. 24., 국무회의 의결)": [문화체육관광부 보도자료](https://www.mcst.go.kr/kor/s_notice/press/pressView.jsp?pSeq=12511)
+- 국군의 날과 함께 1991년부터 제외, 2005년 12월 8일 국회 통과 → 2006년 국경일: [국가기록원 기록으로 보는 국경일](https://theme.archives.go.kr/next/koreaOfRecord/nationHoliday.do)
+- 1990년 대통령령 개정으로 국군의 날과 함께 제외(공휴일이 10월에 몰리고 해외 평균 13.4일보다 많다는 이유), 시행은 1991년부터: [서울신문 2024](https://m.seoul.co.kr/news/2024/09/17/20240917500023)
+- 2026년은 제580돌(1446년 반포, 2025년 제579돌): [시대일보 2025](https://www.sidae.com/article/2025100116340066353)
+
+**issue4 노벨물리학상**
+- 10월 6일 발표, 프랜시스 할젠(82, 위스콘신대) 단독 수상, "아이스큐브 중성미자 관측소에 대한 결정적 기여와 천체 기원 고에너지 중성미자 발견", 약 1km³, 86줄 5,160개 광센서, 최대 2,450m, 2013년 첫 확인, 물리학상 단독 수상 34년 만(1992년 샤르파크 이후): [서울신문](https://www.seoul.co.kr/news/peoples/2026/10/07/20261007023005), [한국일보](https://www.hankookilbo.com/news/article/A2026100709400000234), [Al Jazeera(의학상 등 일정)](https://www.aljazeera.com/news/2026/10/5/nobel-medicine-prize-honours-us-and-german-scientists-for-optogenetics-work)
+- 1km³, 5,160개 센서, 1,450~2,450m, 1초에 약 100조 개가 몸을 통과: [IceCube 공식 Facts](https://icecube.wisc.edu/about-us/facts/)
+- 중성미자는 물질과 거의 상호작용하지 않아 지구도 통과: [NASA SVS 20281 설명](https://svs.gsfc.nasa.gov/20281)
+
+### 사진·영상 출처와 라이선스
+화면에는 짧은 크레디트만 씁니다(오른쪽 위). 라이선스는 여기와 업로드 문구에만 적습니다.
+- **issue1** — 한국항공우주연구원(KARI) 공식 영상: [누리호 1차 발사 장면(2021)](https://commons.wikimedia.org/wiki/File:%EB%88%84%EB%A6%AC%ED%98%B8_1%EC%B0%A8_%EC%8B%9C%ED%97%98_%EB%B0%9C%EC%82%AC_%EC%9E%A5%EB%A9%B4.webm), [2차 발사(2022)](https://commons.wikimedia.org/wiki/File:Second_launch_of_the_Korean_Space_Launch_Vehicle-II_on_21_June_2022.webm), [3차 발사·탑재 카메라(2023)](https://commons.wikimedia.org/wiki/File:Third_launch_of_the_Korean_Space_Launch_Vehicle-II_on_25_May_2023.webm) — 모두 위키미디어 공용, **CC BY**(KARI TV가 CC BY로 공개). 사진 [KSLV-II Nuri and the launchpad 01](https://commons.wikimedia.org/wiki/File:KSLV-II_Nuri_and_the_launchpad_01.jpg) — KARI, **공공누리 제1유형**. 5차 발사 자체의 영상·사진은 쓰지 않았습니다(정책브리핑의 5차 영상엔 공공누리 표시가 없고, 기사 사진은 뉴스1·연합뉴스). 그래서 화면에 "자료화면: 지난 발사 영상", "자료화면 · 3차 발사 탑재 카메라" 스티커를 붙였습니다.
+- **issue2** — [Filling Up Gas Tank](https://commons.wikimedia.org/wiki/File:Filling_Up_Gas_Tank.webm)(Antti Makkonen / Sounds of Changes, **CC BY 4.0**); [Oil Tankers at anchor in Southern California](https://www.dvidshub.net/video/749266)(미국 해안경비대 PO3 Aidan Cooney, **퍼블릭 도메인**); 주유소 사진 [태창주유소](https://commons.wikimedia.org/wiki/File:%ED%83%9C%EC%B0%BD%EC%A3%BC%EC%9C%A0%EC%86%8C(%ED%99%8D%EC%B2%9C%EA%B5%B0_%EC%84%9C%EB%A9%B4)IMG_3903.jpg)(최광모, **CC0**), [Filling station in South Korea](https://commons.wikimedia.org/wiki/File:Filling_station_in_South_Korea.jpg)(Hankook12, **CC0**), [Hyundai Oilbank Songak](https://commons.wikimedia.org/wiki/File:Hyundai_Oilbank_Songak_Gas_Station_20240729.jpg)(LandAndTree, **CC0**), [SK Enclean](https://commons.wikimedia.org/wiki/File:SK_Enclean.jpg)(iTurtle, **CC BY 3.0**), [S Oil Songnae](https://commons.wikimedia.org/wiki/File:S_Oil_Songnae_Interchange_Gas_Station_-_panoramio.jpg)(슈트레인저, **CC BY 3.0**). 특정 주유소·정유사를 탓하는 문장은 없습니다(브랜드는 배경으로만 보임).
+- **issue3** — [훈민정음 해례본](https://commons.wikimedia.org/wiki/Category:Hunminjeongeum_Haerye) 1·2·7면(**퍼블릭 도메인**); [한글날 기념식(1954)](https://commons.wikimedia.org/wiki/File:%ED%95%9C%EA%B8%80%EB%82%A0_%EA%B8%B0%EB%85%90%EC%8B%9D_(1954).jpg)(한국정책방송원, 공유마당); [Gwanghwamun in November 1993](https://commons.wikimedia.org/wiki/File:Gwanghwamun_in_November_1993.jpg)(국립민속박물관 민속아카이브); [광화문 (1996.05)](https://commons.wikimedia.org/wiki/File:%EA%B4%91%ED%99%94%EB%AC%B8_(1996.05).jpg)·[광화문과 구중앙청 (1996.08)](https://commons.wikimedia.org/wiki/File:%EA%B4%91%ED%99%94%EB%AC%B8%EA%B3%BC_%EA%B5%AC%EC%A4%91%EC%95%99%EC%B2%AD_(1996.08)_01.jpg)(서울연구원 사진으로 본 서울); [광화문광장 야경 2024](https://commons.wikimedia.org/wiki/File:Nightview_of_the_Gwanghwamun_Square_2024.jpg)(서울관광재단); [나신걸 한글편지(1490)](https://commons.wikimedia.org/wiki/File:%EB%82%98%EC%8B%A0%EA%B1%B8_%ED%95%9C%EA%B8%80%ED%8E%B8%EC%A7%80,_1490.jpg)·[여주 영릉 항공](https://commons.wikimedia.org/wiki/File:%EC%97%AC%EC%A3%BC_%EC%98%81%EB%A6%89%EA%B3%BC_%EC%98%81%EB%A6%89_%EC%84%B8%EC%A2%85_%EC%98%81%EB%A6%89_%EC%A0%84%EA%B2%BD(%ED%95%AD%EA%B3%B5).jpg)(국가유산청) — 해례본 외 모두 **공공누리 제1유형**. 광화문 세종대왕 동상 사진은 쓰지 않았습니다(한국은 조형물 파노라마 자유가 비영리로 한정). 연표 그래픽 1장은 해례본 사진을 어둡게 깐 위에 올렸습니다.
+- **issue4** — NASA 고다드 우주비행센터 애니메이션 [SVS 20281 Blazar EarthShot A·B](https://svs.gsfc.nasa.gov/20281), [SVS 12994](https://svs.gsfc.nasa.gov/12994)(**퍼블릭 도메인**, 12994의 배경음악 "Hidden Tides"(Killer Tracks)는 소리를 0으로 꺼서 쓰지 않음, 12994 안의 Mellinger·SYSTEM Sounds 항목은 쓰지 않음); [The ICL at Dawn](https://commons.wikimedia.org/wiki/File:The_ICL_at_Dawn.jpg)·[The ICL at Night](https://commons.wikimedia.org/wiki/File:The_ICL_at_Night.jpg)(John Hardin, **CC BY 4.0**); [The IceCube Neutrino Observatory 구조도](https://commons.wikimedia.org/wiki/File:The_IceCube_Neutrino_Observatory.jpg)(Karen Andeen·Matthias Plum for the IceCube Collaboration, **CC BY 4.0**); [Amundsen-Scott dome Aurora](https://commons.wikimedia.org/wiki/File:Amundsen-Scott_dome_Aurora_1.jpg)(Jonathan Berry/NSF, **퍼블릭 도메인**). 수상자 사진은 쓰지 않았습니다.
+- 음악: Kevin MacLeod (incompetech.com), CC BY 4.0.
+
+### 업로드 문구
+**issue1** — 누리호 위성 15기 중 1기만 못 나온 이유 🚀
+> 10월 7일 누리호 5차 발사 성공! 주탑재위성인 초소형 군집위성 5기는 모두 궤도에 올라 당일 교신까지 성공했지만, 큐브위성 10기 중 1기는 분리 신호를 받고도 위성을 내보내는 덮개가 열리지 않아 분리되지 못했습니다. 누리호는 5번 중 4번 성공(80%), 6차 발사는 내년 하반기 목표입니다. (2026년 10월 기준)
+> 출처: 우주항공청·정책브리핑, 파이낸셜뉴스, 전자신문, 머니투데이방송, 아이뉴스24 / 영상: 한국항공우주연구원(KARI) 2021~2023 발사 영상(CC BY, 자료화면) · 사진: 한국항공우주연구원(공공누리 제1유형)
+> 음악: "Heroic Age" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
+> #누리호 #우주항공청 #군집위성 #나로우주센터 #shorts
+
+**issue2** — 기름값 상한제 있는데 경유 20% 오른 이유 ⛽
+> 2026년 9월 소비자물가에서 경유는 1년 전보다 20.0%, 휘발유는 11.8% 올랐습니다. 3월 13일 시작된 석유 최고가격제는 주유소 판매가가 아니라 정유사가 주유소에 공급하는 가격에 상한을 두고, 상한선도 국제유가에 따라 다시 정해집니다(경유 1차 1,713원 → 10차 1,773원). 정부는 상한제가 없었다면 9월 물가 상승률이 2.9%가 아니라 3.5%였을 것으로 추정합니다. 10차 상한은 9월 19일부터 4주간 적용됩니다. (2026년 10월 기준)
+> 출처: 국가데이터처 9월 소비자물가동향(정책브리핑), 재정경제부·산업통상부 자료, 이투데이, 머니투데이, KDI 경제정보센터 / 영상: Antti Makkonen "Filling Up Gas Tank"(CC BY 4.0), 미국 해안경비대(DVIDS) · 사진: 위키미디어 공용 최광모·Hankook12·LandAndTree(CC0), iTurtle·슈트레인저(CC BY 3.0). 미국 정부가 이 영상을 보증하지 않습니다.
+> 음악: "Movement Proposition" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
+> #기름값 #경유 #석유최고가격제 #소비자물가 #shorts
+
+**issue3** — 한글날이 22년 동안 쉬는 날이 아니었던 이유 📅
+> 한글날은 1991년부터 "공휴일이 너무 많다", "어려운 경제 여건" 등을 이유로 국군의 날과 함께 공휴일에서 빠졌습니다. 2006년 국경일이 됐지만 쉬지는 않았고, 2012년 12월 24일 국무회의 의결로 2013년부터 다시 공휴일이 됐습니다. 여러분은 한글날에 학교 간 기억, 있나요?
+> 출처: 문화체육관광부 보도자료(2012), 국가기록원 '기록으로 보는 국경일' / 사진: 훈민정음 해례본(퍼블릭 도메인), 한국정책방송원·국립민속박물관·서울연구원·서울관광재단·국가유산청(공공누리 제1유형)
+> 음악: "Heartwarming" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
+> #한글날 #공휴일 #훈민정음 #한국사 #shorts
+
+**issue4** — 노벨물리학상 받은 남극 얼음 덩어리의 정체 🧊
+> 2026년 노벨물리학상은 남극 얼음 1km³를 통째로 검출기로 만든 '아이스큐브 중성미자 관측소'를 이끈 프랜시스 할젠 교수에게 돌아갔습니다(10월 6일 발표, 단독 수상). 얼음 속 1,450~2,450m에 심은 센서 5,160개가 중성미자가 드물게 부딪힐 때 나는 빛을 잡아, 2013년 우주에서 온 고에너지 중성미자를 처음 확인했습니다. 중성미자는 지금도 1초에 약 100조 개씩 우리 몸을 통과합니다.
+> 출처: 노벨위원회 발표(서울신문·한국일보 보도), IceCube 공식 자료, NASA / 영상: NASA 고다드 우주비행센터 애니메이션 · 사진: John Hardin(CC BY 4.0), IceCube Collaboration 구조도(CC BY 4.0), 미국 국립과학재단(NSF). NASA·NSF가 이 영상을 보증하지 않습니다.
+> 음악: "Floating Cities" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
+> #노벨물리학상 #중성미자 #아이스큐브 #남극 #shorts
