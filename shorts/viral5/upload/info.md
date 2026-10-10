@@ -95,7 +95,7 @@
 
 ▶ [채널명] 채널 구독: https://www.youtube.com/@[핸들]
 
-출처: 자료: 우주항공청·정책브리핑, 파이낸셜뉴스, 전자신문, 머니투데이방송, 아이뉴스24(2026-10 기준) · 영상: 한국항공우주연구원(2022 자료) (CC BY) · 영상: 한국항공우주연구원(2023 자료) (CC BY) · 영상: 한국항공우주연구원(2021 자료) (CC BY) · 음악: "Heroic Age" Kevin MacLeod (incompetech.com), CC BY 4.0 (creativecommons.org/licenses/by/4.0) · 영상은 지난 발사(2021~2023) 자료화면입니다
+출처: 자료: 우주항공청·정책브리핑, 파이낸셜뉴스, 전자신문, 머니투데이방송, 아이뉴스24(2026-10 기준) · 영상: 한국항공우주연구원(2022 자료) (CC BY) · 영상: 한국항공우주연구원(2023 자료) (CC BY) · 영상: 한국항공우주연구원(2021 자료) (CC BY) · 음악: "Heroic Age" Kevin MacLeod (incompetech.com), CC BY 4.0 (creativecommons.org/licenses/by/4.0) · 영상은 지난 발사(2021~2023) 자료화면입니다. 분리·교신 결과는 우주항공청 발표 기준이며 독립 검증 결과는 아닙니다
 
 #Shorts #누리호 #우주항공청 #군집위성 #나로우주센터 #우주 #로켓 #과학뉴스 #이슈
 ```
@@ -277,7 +277,7 @@
 
 ▶ [채널명] 채널 구독: https://www.youtube.com/@[핸들]
 
-출처: 자료: 국립공원공단 발표(한국경제·경기일보 2026.7.2, 세계일보 2026.5.7), 환경부 발표(데일리벳 2022.6.2) · 영상·사진: Pexels(Magda Ehlers, PUWOOK Kwak, Irina Fedotova, Simo Herold) · 음악: "Heartwarming" Kevin MacLeod (incompetech.com), CC BY 4.0 (creativecommons.org/licenses/by/4.0) · 곰 영상은 동물원의 반달가슴곰, 산 영상은 참고 영상입니다. 개체 수는 국립공원공단 추정치입니다
+출처: 자료: 국립공원공단 발표(한국경제·경기일보 2026.7.2, 세계일보 2026.5.7), 환경부 발표(데일리벳 2022.6.2) · 영상·사진: Pexels(Magda Ehlers, PUWOOK Kwak, Irina Fedotova, Simo Herold) · 음악: "Heartwarming" Kevin MacLeod (incompetech.com), CC BY 4.0 (creativecommons.org/licenses/by/4.0) · 곰 영상은 동물원의 반달가슴곰, 산 영상은 참고 영상입니다. 개체 수와 위치 기록은 국립공원공단 발표 기준이며 독립 검증 결과는 아닙니다
 
 #Shorts #반달가슴곰 #지리산 #국립공원 #멸종위기 #반달곰 #동물 #진짜이유 #동물상식
 ```
@@ -329,7 +329,7 @@
 
 ▶ [채널명] 채널 구독: https://www.youtube.com/@[핸들]
 
-출처: 자료: 국가데이터처 9월 소비자물가동향(정책브리핑), 재정경제부·산업통상부 자료, KDI 경제정보센터(2026-10 기준) · 영상·사진: Pexels(David Bronner, Shoot With Riyas, African Creator, Esteban M, Zahid Nisar, Toàn BDS, Tom Fisk, Luke Nomad) · 사진: NASA (퍼블릭 도메인) · 음악: "Movement Proposition" Kevin MacLeod (incompetech.com), CC BY 4.0 (creativecommons.org/licenses/by/4.0) · NASA·NOAA·USGS 등 미국 정부 기관은 이 영상을 보증하지 않습니다
+출처: 자료: 국가데이터처 9월 소비자물가동향(정책브리핑), 재정경제부·산업통상부 자료, KDI 경제정보센터(2026-10 기준) · 영상·사진: Pexels(David Bronner, Shoot With Riyas, African Creator, Esteban M, Zahid Nisar, Toàn BDS, Tom Fisk, Luke Nomad) · 사진: NASA (퍼블릭 도메인) · 음악: "Movement Proposition" Kevin MacLeod (incompetech.com), CC BY 4.0 (creativecommons.org/licenses/by/4.0) · 상한제가 없었을 때의 물가 상승률 3.5%는 정부(재정경제부) 추정 발표 기준이며 독립 검증 결과는 아닙니다. NASA·NOAA·USGS 등 미국 정부 기관은 이 영상을 보증하지 않습니다
 
 #Shorts #기름값 #경유 #석유최고가격제 #소비자물가 #유가 #주유소 #경제뉴스 #이슈
 ```
@@ -381,7 +381,7 @@
 
 ▶ [채널명] 채널 구독: https://www.youtube.com/@[핸들]
 
-출처: 자료: 철원군 조사(강원도민일보 2025.12.14), 철원 두루미 운영협의체(뉴스펭귄), International Crane Foundation, BirdLife · 영상·사진: Pexels(Nicky Pe, Brixiv) · 음악: "Dreamer" Kevin MacLeod (incompetech.com), CC BY 4.0 (creativecommons.org/licenses/by/4.0) · 두루미 영상은 국외에서 찍은 참고 영상입니다. 개체 수는 철원군 조사 결과입니다
+출처: 자료: 철원군 조사(강원도민일보 2025.12.14), 철원 두루미 운영협의체(뉴스펭귄), International Crane Foundation, BirdLife · 영상·사진: Pexels(Nicky Pe, Brixiv) · 음악: "Dreamer" Kevin MacLeod (incompetech.com), CC BY 4.0 (creativecommons.org/licenses/by/4.0) · 두루미 영상은 국외에서 찍은 참고 영상입니다. 개체 수는 철원군 조사 발표 기준이며 독립 검증 결과는 아닙니다
 
 #Shorts #두루미 #철원 #철새 #멸종위기 #재두루미 #천연기념물 #동물 #진짜이유
 ```
