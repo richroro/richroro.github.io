@@ -1,0 +1,124 @@
+# 롱폼 다큐 채널 업로드 문구
+
+제목, 설명글, 고정 댓글을 그대로 복사해 씁니다. 설명글 파일만 따로 필요하면 `upload/txt/<id>.txt`를 엽니다.
+
+## odyssey
+
+**제목**
+
+```
+오디세우스는 왜 집까지 10년이나 걸렸을까? — 8년은 바다가 아니었다
+```
+
+**설명글**
+
+```
+호메로스의 『오디세이아』에서 오디세우스가 트로이에서 이타카로 돌아오는 데 걸린 10년 가운데 7년은 칼립소의 섬, 1년은 키르케의 집에서 흘렀습니다. 900km도 안 되는 바닷길이 왜 10년이 됐을까요? 영역본 원문(새뮤얼 버틀러 1900, A.T. 머리 1919)을 따라 키클롭스의 동굴에서 이타카 해변까지, 흔히 듣는 두 가지 답을 하나씩 확인합니다.
+
+0:00 10년 중 8년
+1:22 900km도 안 되는 길
+2:07 집을 잊게 하는 열매
+3:09 내 이름은 ‘아무도 아니’
+4:26 한 번의 외침, 네 줄의 저주
+5:38 열흘째, 고향이 보였다
+7:14 바다는 아무 짓도 하지 않았다
+8:18 같은 예언
+9:17 말하지 않은 여섯 명
+10:06 두 번째 잠
+11:21 늙지 않는 7년
+12:48 열여드레째의 폭풍
+13:26 세 번째 잠
+14:43 아무도 알아보지 못했다
+15:42 진짜 이유
+16:51 아무도 옮길 수 없는 침대
+
+▶ [채널명] 채널 구독: https://www.youtube.com/@[핸들]
+
+출처: 그림: 테오도르 판 튈던 「오디세우스의 업적」 연작(1633), Rijksmuseum, CC0 · 존 플랙스먼 원화 『오디세이아』 삽화(1805년 판), Rijksmuseum, CC0 · 헤라르트 더 라이레서 「오디세우스와 칼립소」(1680년경), Rijksmuseum, CC0 · 야코프 요르단스 「오디세우스와 나우시카」(1630년경), Rijksmuseum, CC0 · 바이난트 나위언 「바위 해안의 난파선」(1837년경), Rijksmuseum, CC0 · 그 밖의 그림도 모두 Rijksmuseum CC0 — 그림 76점의 전체 출처는 고정 댓글 · 지도: Natural Earth 위에 직접 그림 · 원문: 호메로스 『오디세이아』 영역본(새뮤얼 버틀러 1900, A.T. 머리 1919) · 자료: 브리태니커 「Odyssey」, 유네스코 세계유산 「고창·화순·강화 고인돌 유적」 · 내레이션: AI 합성 음성 · 음악: "Bittersweet", "Darkness is Coming", "Despair and Triumph", "Dreams Become Real", "Echoes of Time v2", "Healing", "Impact Lento", "Lasting Hope", "Long Note Four", "Long Note Three", "Long Note Two", "Midnight Tale", "Ossuary 6 - Air", "Penumbra", "Sad Trio", "Teller of the Tales", "The Descent" Kevin MacLeod (incompetech.com), CC BY 4.0 (creativecommons.org/licenses/by/4.0) · 지도의 지명(제르바, 시칠리아, 메시나 해협, 코르푸 등)은 고대와 근대 학자들의 추정입니다
+
+#오디세이아 #오디세우스 #그리스신화 #호메로스 #신화 #역사다큐 #다큐 #지식 #Odyssey
+```
+
+**고정 댓글**
+
+```
+늙지 않는 몸을 주겠다는 칼립소의 제안, 여러분이라면 7년 동안 거절할 수 있었을까요?
+
+그림 출처 (모두 Rijksmuseum, CC0)
+· anoniem, Laestrygonen verpletteren de vloot van Odysseus met zware st (1500 - 1640) https://id.rijksmuseum.nl/200138822
+· Francesco Bartolozzi, The meeting of Ulysses and Penelope (1788-01-01) https://id.rijksmuseum.nl/200153692
+· Willem Basse, Odysseus bouwt een boot op het eiland Ogygia (1632 - 1634) https://id.rijksmuseum.nl/200154289
+· Marius Bauer, Willem Treub als Odysseus tussen Scylla en Charybdis (1896-02-16) https://id.rijksmuseum.nl/200279470
+· Johann Wilhelm Baur, Vijf zeilschepen op zee tijdens een storm (1640) https://id.rijksmuseum.nl/200154575
+· Joseph Brown, Ulysses (1855) https://id.rijksmuseum.nl/200166691
+· Thomas Burke, Penelope awakened by Euryclea, with the News of Ulysses's re (1773-02) https://id.rijksmuseum.nl/200504304
+· Abraham Casembroot, Gezichten van de haven van Messina (1603 - 1658) https://id.rijksmuseum.nl/200169442
+· Giovanni Benedetto Castiglione, Circe met de in dieren veranderde reisgenoten van Odysseus (1650 - 1651) https://id.rijksmuseum.nl/200123998
+· Daniel Nikolaus Chodowiecki, Penelope (1780) https://id.rijksmuseum.nl/200172175
+· Jean-Marie Delattre, Penelope wenend met de boog van Odysseus in haar hand (1779) https://id.rijksmuseum.nl/200183041
+· Louis Ducros, Capo Grosso entre Messine & Taormina (1778) https://id.rijksmuseum.nl/20012335
+· Louis Ducros, Voyage en Italie, en Sicile et à Malte - 1778 (1778) https://id.rijksmuseum.nl/200510565
+· Etienne Fessard, Olisse evoque l'ombre de Tiresias (1730 - 1740) https://id.rijksmuseum.nl/200387437
+· James Parker, Ulysses asleep laid on his own coast by the Phaeacian sailor (1805) https://id.rijksmuseum.nl/200778093
+· James Neagle, Ulysses weeps at the song of Demodocus (1805) https://id.rijksmuseum.nl/200778027
+· James Parker, Odyssee (1805) https://id.rijksmuseum.nl/200778117
+· James Parker, Odyssey (1805) https://id.rijksmuseum.nl/200778073
+· James Neagle, Odyssey (1805) https://id.rijksmuseum.nl/200778017
+· James Parker, Minerva restoring Ulysses to his own shape (1805) https://id.rijksmuseum.nl/200778112
+· James Parker, Ulysses giving wine to Polyphemus (1805) https://id.rijksmuseum.nl/200778031
+· James Parker, Odyssey (1805) https://id.rijksmuseum.nl/200778084
+· Jacques Jordaens, Ontmoeting van Odysseus en Nausicaa (ca. 1630 - ca. 1640) https://id.rijksmuseum.nl/200550768
+· Max Klinger, Penelope kijkt in gedachten verzonken naar haar weefgetouw (1895) https://id.rijksmuseum.nl/200555558
+· Hendrik Kobell, Twee schepen op zee bij storm (1761 - 1779) https://id.rijksmuseum.nl/200305914
+· Gerard de Lairesse, Odysseus and Calypso (c. 1680) https://id.rijksmuseum.nl/200111829
+· Gerard de Lairesse, Mercurius gelast Calypso om Odysseus te laten vertrekken (c. 1680) https://id.rijksmuseum.nl/200111835
+· B. Rulli, Het Kanaal van Messina (1700 - 1782) https://id.rijksmuseum.nl/200147237
+· Nicolas Mignard, Odysseus en de sirenen (1637) https://id.rijksmuseum.nl/200623690
+· Ledru Mauro, Nettuno (1880 - 1900) https://id.rijksmuseum.nl/200325242
+· Jean Baptiste Nolin, Odysseus naar het paleis van Alkinoös geleid (1677) https://id.rijksmuseum.nl/200242764
+· Wijnand Nuijen, Schipbreuk op een rotsachtige kust (ca. 1837) https://id.rijksmuseum.nl/200107810
+· James Anderson, Sculptuur van Penelope, Vaticaan (ca. 1857 - ca. 1875) https://id.rijksmuseum.nl/200144983
+· Monogrammist FG, Penelope en haar vrouwen aan het weven (1529 - 1542) https://id.rijksmuseum.nl/200370660
+· atelier van Bernard Picart, Penelope weeft de lijkwade voor Laërtes (1733) https://id.rijksmuseum.nl/200370111
+· Peter Paul Rubens, Aankomst van Odysseus en metgezellen bij Circe (1587 - 1640) https://id.rijksmuseum.nl/200153405
+· Peter Paul Rubens, Drie gecombineerde episoden uit de geschiedenis van Odysseus (1587 - 1640) https://id.rijksmuseum.nl/200153406
+· Joachim von Sandrart, Odysseus and Nausicaa (c. 1630 - c. 1688) https://id.rijksmuseum.nl/2006375
+· Lodewijk Schelfhout, Olivier, Corse (1921) https://id.rijksmuseum.nl/200295157
+· Pierre Louis Dubourcq, Olijfboom, te Tivoli (1843-05-28) https://id.rijksmuseum.nl/200317227
+· Antonio da Trento, Odysseus op het eiland van Circe (1602) https://id.rijksmuseum.nl/200139886
+· Theodoor van Thulden, Odysseus door zijn hond Argus herkend (1632 - 1633) https://id.rijksmuseum.nl/200394057
+· Theodoor van Thulden, Odysseus krijgt een aalmoes van een van zijn bedienden (1632 - 1633) https://id.rijksmuseum.nl/200394058
+· Theodoor van Thulden, Odysseus ontvangt van Aeolus de zak met tegenwinden (1632 - 1633) https://id.rijksmuseum.nl/200394036
+· Theodoor van Thulden, De werken van Odysseus (1632 - 1633) https://id.rijksmuseum.nl/200394039
+· Theodoor van Thulden, De werken van Odysseus (1632 - 1633) https://id.rijksmuseum.nl/200394071
+· Theodoor van Thulden, Odysseus als bedelaar aan de deur van zijn huis (1632 - 1633) https://id.rijksmuseum.nl/200394059
+· Theodoor van Thulden, De werken van Odysseus (1632 - 1633) https://id.rijksmuseum.nl/200394061
+· Theodoor van Thulden, Odysseus ontsnapt uit de grot van Polyphemus (1632 - 1633) https://id.rijksmuseum.nl/200394034
+· Theodoor van Thulden, De werken van Odysseus (1632 - 1633) https://id.rijksmuseum.nl/200394041
+· Theodoor van Thulden, De werken van Odysseus (1632 - 1633) https://id.rijksmuseum.nl/200394029
+· Theodoor van Thulden, De werken van Odysseus (1632 - 1633) https://id.rijksmuseum.nl/200394069
+· Theodoor van Thulden, De werken van Odysseus (1632 - 1633) https://id.rijksmuseum.nl/200394056
+· Theodoor van Thulden, Odysseus neemt afscheid van Alcinoüs (1632 - 1633) https://id.rijksmuseum.nl/200394052
+· Theodoor van Thulden, Odysseus in het land van de lotuseters (1632 - 1633) https://id.rijksmuseum.nl/200394028
+· Theodoor van Thulden, De werken van Odysseus (1632 - 1633) https://id.rijksmuseum.nl/200394038
+· Theodoor van Thulden, Odysseus in het land van de Laistrygonen (1632 - 1633) https://id.rijksmuseum.nl/200394040
+· Theodoor van Thulden, Odysseus offert aan de goden (1632 - 1633) https://id.rijksmuseum.nl/200394025
+· Theodoor van Thulden, Minerva toont Ithaka aan Odysseus (1632 - 1633) https://id.rijksmuseum.nl/200394054
+· Theodoor van Thulden, De werken van Odysseus (1632 - 1633) https://id.rijksmuseum.nl/200394073
+· Theodoor van Thulden, De werken van Odysseus (1632 - 1633) https://id.rijksmuseum.nl/200394051
+· Theodoor van Thulden, Polyphemus werpt een rots naar het schip van Odysseus (1632 - 1633) https://id.rijksmuseum.nl/200394035
+· Theodoor van Thulden, Odysseus arriveert bij de onderwereld (1632 - 1633) https://id.rijksmuseum.nl/200394044
+· Theodoor van Thulden, Odysseus cremeert het lichaam van Elpenor (1632 - 1633) https://id.rijksmuseum.nl/200394048
+· Theodoor van Thulden, De werken van Odysseus (1632 - 1633) https://id.rijksmuseum.nl/200394049
+· Theodoor van Thulden, Odysseus in de onderwereld (1632 - 1633) https://id.rijksmuseum.nl/200394047
+· Theodoor van Thulden, Minerva verschijnt in de gedaante van Telemachus aan Odysseu (1632 - 1633) https://id.rijksmuseum.nl/200394055
+· Theodoor van Thulden, De werken van Odysseus (1632 - 1633) https://id.rijksmuseum.nl/200394037
+· anoniem, Mercurius beveelt Calypso om Odysseus te laten vertrekken (1670) https://id.rijksmuseum.nl/200214701
+· Theodoor van Thulden, De metgezellen van Odysseus maken de zak open waarin Aeolus  (1631 - 1633) https://id.rijksmuseum.nl/20012371
+· Philippus Velijn, Titelpagina voor: Penelope, 1821. (1821) https://id.rijksmuseum.nl/200390804
+· Adam van Vianen, Drinkschaal met een voorstelling van Circe en de gezellen va (1610) https://id.rijksmuseum.nl/200390664
+· Reinier Vinkeles, Schip in storm op zee (1751 - 1816) https://id.rijksmuseum.nl/200269380
+· James Watson, Storm op zee met schipbreuk en zinkend schip (1758 - 1790) https://id.rijksmuseum.nl/200273119
+· Adam Willaerts, Shipwreck off a Rocky Coast (1614) https://id.rijksmuseum.nl/200108404
+· Reinier Zeeman, Zeegezichten en landschappen (1650) https://id.rijksmuseum.nl/200128623
+```
