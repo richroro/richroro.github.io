@@ -1,0 +1,473 @@
+{
+ "credit": "",
+ "titleStyle": "band",
+ "titleKey": "#3CFF6A",
+ "captionY": 1640,
+ "sources": {
+  "px16886334": {
+   "file": "px16886334.jpg",
+   "path": "public/doodle/px16886334.jpg",
+   "page": "https://www.pexels.com/photo/many-chargers-are-connected-to-an-electrical-outlet-on-a-white-background-16886334/",
+   "file_url": "https://images.pexels.com/photos/16886334/pexels-photo-16886334.jpeg?auto=compress&cs=tinysrgb&w=1600",
+   "license": "Pexels License",
+   "creator": "Саша Алалыкин (Sasha Alalykin)",
+   "credit": "사진: Pexels",
+   "seconds": [
+    [
+     0.0,
+     2.35
+    ]
+   ]
+  },
+  "px8101095": {
+   "file": "px8101095.jpg",
+   "path": "public/doodle/px8101095.jpg",
+   "page": "https://www.pexels.com/photo/white-power-strip-on-gray-floor-8101095/",
+   "file_url": "https://images.pexels.com/photos/8101095/pexels-photo-8101095.jpeg?auto=compress&cs=tinysrgb&w=1600",
+   "license": "Pexels License",
+   "creator": "Nikita Nikitin",
+   "credit": "사진: Pexels",
+   "seconds": [
+    [
+     8.01,
+     11.52
+    ]
+   ]
+  },
+  "px8101107": {
+   "file": "px8101107.jpg",
+   "path": "public/doodle/px8101107.jpg",
+   "page": "https://www.pexels.com/photo/white-wall-socket-on-white-painted-wall-8101107/",
+   "file_url": "https://images.pexels.com/photos/8101107/pexels-photo-8101107.jpeg?auto=compress&cs=tinysrgb&w=1600",
+   "license": "Pexels License",
+   "creator": "Nikita Nikitin",
+   "credit": "사진: Pexels",
+   "seconds": [
+    [
+     16.66,
+     18.64
+    ]
+   ]
+  },
+  "px16886336": {
+   "file": "px16886336.jpg",
+   "path": "public/doodle/px16886336.jpg",
+   "page": "https://www.pexels.com/photo/many-chargers-are-connected-to-an-electrical-outlet-on-a-white-background-16886336/",
+   "file_url": "https://images.pexels.com/photos/16886336/pexels-photo-16886336.jpeg?auto=compress&cs=tinysrgb&w=1600",
+   "license": "Pexels License",
+   "creator": "Саша Алалыкин (Sasha Alalykin)",
+   "credit": "사진: Pexels",
+   "seconds": [
+    [
+     18.64,
+     20.58
+    ]
+   ]
+  },
+  "px5544612": {
+   "file": "px5544612.jpg",
+   "path": "public/doodle/px5544612.jpg",
+   "page": "https://www.pexels.com/photo/sockets-and-cables-5544612/",
+   "file_url": "https://images.pexels.com/photos/5544612/pexels-photo-5544612.jpeg?auto=compress&cs=tinysrgb&w=1600",
+   "license": "Pexels License",
+   "creator": "Tim Mossholder",
+   "credit": "사진: Pexels",
+   "seconds": [
+    [
+     26.63,
+     29.93
+    ]
+   ]
+  }
+ },
+ "music": {
+  "file": "music/sneaky_snitch.mp3",
+  "gain": 0.12,
+  "start": 0
+ },
+ "sfx": [
+  [
+   "b",
+   "pop",
+   0.22
+  ],
+  [
+   "c",
+   "whoosh",
+   0.2
+  ],
+  [
+   "d",
+   "pop",
+   0.25
+  ],
+  [
+   "e.없음",
+   "boing",
+   0.3
+  ],
+  [
+   "f",
+   "whoosh",
+   0.2
+  ],
+  [
+   "g.헐렁",
+   "pop",
+   0.25
+  ],
+  [
+   "h.누렇게",
+   "pop",
+   0.25
+  ],
+  [
+   "i.교체",
+   "boing",
+   0.3
+  ],
+  [
+   "j",
+   "whoosh",
+   0.2
+  ],
+  [
+   "k.금지",
+   "k_error_003",
+   0.3
+  ],
+  [
+   "l",
+   "whoosh",
+   0.2
+  ],
+  [
+   "z",
+   "pop",
+   0.22
+  ]
+ ],
+ "clips": [
+  {
+   "from": "a",
+   "label": "hook",
+   "credit": "사진: Pexels",
+   "gfx": {
+    "type": "scene",
+    "photo": "doodle/px16886334.jpg",
+    "chars": [
+     {
+      "style": "doodle",
+      "hair": "#FF7A1A",
+      "mood": "shock",
+      "x": 0.74,
+      "size": 1
+     }
+    ],
+    "steps": [
+     9,
+     9,
+     9,
+     9
+    ]
+   }
+  },
+  {
+   "from": "b",
+   "label": "memory",
+   "gfx": {
+    "type": "scene",
+    "bg": "bedroom",
+    "chars": [
+     {
+      "style": "doodle",
+      "hair": "#FF7A1A",
+      "mood": "think",
+      "to": "sad"
+     }
+    ],
+    "steps": [
+     9,
+     0.1,
+     "b.꽤",
+     9
+    ],
+    "prop": "🔌"
+   }
+  },
+  {
+   "from": "b2",
+   "label": "stat",
+   "gfx": {
+    "type": "scene",
+    "bg": "office",
+    "chars": [
+     {
+      "style": "doodle",
+      "hair": "#FF7A1A",
+      "mood": "shock",
+      "x": 0.5
+     }
+    ],
+    "steps": [
+     9,
+     9,
+     9,
+     "b2.사고"
+    ],
+    "big": "[387]건"
+   }
+  },
+  {
+   "from": "c",
+   "label": "question",
+   "credit": "사진: Pexels",
+   "gfx": {
+    "type": "scene",
+    "photo": "doodle/px8101095.jpg",
+    "chars": [
+     {
+      "style": "doodle",
+      "hair": "#FF7A1A",
+      "mood": "think",
+      "x": 0.72,
+      "size": 1
+     }
+    ],
+    "steps": [
+     "d",
+     9,
+     9,
+     9
+    ],
+    "say": {
+     "who": 0,
+     "text": "3년? 5년?"
+    }
+   }
+  },
+  {
+   "from": "e",
+   "label": "answer",
+   "gfx": {
+    "type": "scene",
+    "bg": "#FFE14D",
+    "chars": [
+     {
+      "style": "doodle",
+      "hair": "#FF7A1A",
+      "mood": "shock",
+      "to": "smug",
+      "x": 0.3
+     }
+    ],
+    "steps": [
+     9,
+     9,
+     "e.없음",
+     "e.없음"
+    ],
+    "big": "정답 {✕}"
+   }
+  },
+  {
+   "from": "f",
+   "label": "signal",
+   "gfx": {
+    "type": "scene",
+    "bg": "home",
+    "chars": [
+     {
+      "style": "doodle",
+      "hair": "#FF7A1A",
+      "mood": "think",
+      "x": 0.28
+     }
+    ],
+    "steps": [
+     9,
+     "f.신호",
+     9,
+     9
+    ],
+    "prop": "📡",
+    "propX": 0.7
+   }
+  },
+  {
+   "from": "g",
+   "label": "loose",
+   "credit": "사진: Pexels",
+   "gfx": {
+    "type": "scene",
+    "photo": "doodle/px8101107.jpg",
+    "chars": [
+     {
+      "style": "doodle",
+      "hair": "#FF7A1A",
+      "mood": "shock",
+      "x": 0.25,
+      "size": 1
+     }
+    ],
+    "steps": [
+     9,
+     9,
+     9,
+     "g.헐렁"
+    ],
+    "big": "[①] 헐렁"
+   }
+  },
+  {
+   "from": "h",
+   "label": "yellow",
+   "credit": "사진: Pexels",
+   "gfx": {
+    "type": "scene",
+    "photo": "doodle/px16886336.jpg",
+    "chars": [
+     {
+      "style": "doodle",
+      "hair": "#FF7A1A",
+      "mood": "sick",
+      "x": 0.76,
+      "size": 1
+     }
+    ],
+    "steps": [
+     9,
+     9,
+     9,
+     "h.누렇게"
+    ],
+    "big": "[②] 변색"
+   }
+  },
+  {
+   "from": "i",
+   "label": "smell",
+   "gfx": {
+    "type": "scene",
+    "bg": "#2b1c1c",
+    "chars": [
+     {
+      "style": "doodle",
+      "hair": "#FF7A1A",
+      "mood": "think",
+      "x": 0.32,
+      "to": "shock"
+     }
+    ],
+    "steps": [
+     "i2",
+     0.1,
+     "i.타는",
+     "i.교체"
+    ],
+    "prop": "🔥",
+    "propX": 0.74,
+    "big": "{교체!}",
+    "say": {
+     "who": 0,
+     "text": "킁킁… 무슨 [냄새]지?"
+    }
+   }
+  },
+  {
+   "from": "j",
+   "label": "dust",
+   "gfx": {
+    "type": "scene",
+    "bg": "night",
+    "chars": [
+     {
+      "style": "doodle",
+      "hair": "#FF7A1A",
+      "mood": "think",
+      "to": "shock",
+      "x": 0.3
+     }
+    ],
+    "steps": [
+     9,
+     0.1,
+     "j.불씨",
+     9
+    ],
+    "prop": "💨",
+    "propX": 0.72
+   }
+  },
+  {
+   "from": "k",
+   "label": "chain",
+   "credit": "사진: Pexels",
+   "gfx": {
+    "type": "scene",
+    "photo": "doodle/px5544612.jpg",
+    "chars": [
+     {
+      "style": "doodle",
+      "hair": "#FF7A1A",
+      "mood": "angry",
+      "x": 0.74,
+      "size": 1
+     }
+    ],
+    "steps": [
+     9,
+     9,
+     9,
+     "k.금지"
+    ],
+    "big": "{금지}"
+   }
+  },
+  {
+   "from": "l",
+   "label": "wall",
+   "gfx": {
+    "type": "vs",
+    "title": "에어컨·온열기는?",
+    "left": {
+     "label": "벽 콘센트",
+     "emoji": "✅"
+    },
+    "right": {
+     "label": "멀티탭",
+     "emoji": "🔌"
+    },
+    "win": "left",
+    "steps": [
+     0.05,
+     0.3,
+     "l.벽"
+    ]
+   }
+  },
+  {
+   "from": "z",
+   "label": "ask",
+   "gfx": {
+    "type": "scene",
+    "bg": "bedroom",
+    "chars": [
+     {
+      "style": "doodle",
+      "hair": "#FF7A1A",
+      "mood": "think",
+      "to": "shock"
+     }
+    ],
+    "steps": [
+     9,
+     0.1,
+     "z.몇",
+     9
+    ],
+    "prop": "🔌"
+   }
+  }
+ ]
+}

@@ -1,0 +1,457 @@
+{
+ "src": "top1/pool_dark_px6011926.mp4",
+ "title": [
+  "역대급 소름 돋는 백룸 같은 공간",
+  "[TOP5] (몇 위가 제일 소름?)"
+ ],
+ "titleStyle": "band",
+ "credit": "영상: Pexels",
+ "panels": [],
+ "stickers": [
+  {
+   "text": "5위",
+   "from": 0.0,
+   "to": 1.4,
+   "x": 130,
+   "y": 500,
+   "rot": -4,
+   "bg": "#FFE14D",
+   "fg": "#111",
+   "size": 64
+  },
+  {
+   "text": "4위",
+   "from": 7.0,
+   "to": 8.4,
+   "x": 130,
+   "y": 500,
+   "rot": -4,
+   "bg": "#FFE14D",
+   "fg": "#111",
+   "size": 64
+  },
+  {
+   "text": "3위",
+   "from": 13.9,
+   "to": 15.3,
+   "x": 130,
+   "y": 500,
+   "rot": -4,
+   "bg": "#FFE14D",
+   "fg": "#111",
+   "size": 64
+  },
+  {
+   "text": "2위",
+   "from": 20.8,
+   "to": 22.2,
+   "x": 130,
+   "y": 500,
+   "rot": -4,
+   "bg": "#FFE14D",
+   "fg": "#111",
+   "size": 64
+  },
+  {
+   "text": "1위",
+   "from": 27.7,
+   "to": 29.1,
+   "x": 130,
+   "y": 500,
+   "rot": -4,
+   "bg": "#FFE14D",
+   "fg": "#111",
+   "size": 64
+  }
+ ],
+ "keys": [
+  "수영장",
+  "한",
+  "내려감",
+  "CCTV만",
+  "아무도",
+  "소름?"
+ ],
+ "sfx": [
+  [
+   7.0,
+   "whoosh",
+   0.5
+  ],
+  [
+   13.9,
+   "whoosh",
+   0.5
+  ],
+  [
+   20.8,
+   "whoosh",
+   0.5
+  ],
+  [
+   27.7,
+   "whoosh",
+   0.5
+  ]
+ ],
+ "music": [
+  {
+   "src": "public/music/Dark Fog.mp3",
+   "from": 0.0,
+   "at": 0.0,
+   "to": 35.1,
+   "fade": 0.3,
+   "gain": 1.0
+  }
+ ],
+ "musicGain": 0.8,
+ "duck": false,
+ "captionY": 1380,
+ "tail": 0.0,
+ "segments": [
+  {
+   "src": "top1/pool_dark_px6011926.mp4",
+   "in": 0.0,
+   "out": 3.4,
+   "single": [
+    0.5,
+    0.5,
+    1.0
+   ],
+   "push": [
+    1.0,
+    1.05
+   ],
+   "audio": 0,
+   "credit": "영상: Pexels",
+   "vf": "vignette=PI/4.5",
+   "rank": {
+    "n": 5,
+    "label": "한밤의 텅 빈 수영장"
+   }
+  },
+  {
+   "src": "top1/pool_dark_px6011926.mp4",
+   "in": 3.6,
+   "out": 7.2,
+   "single": [
+    0.5,
+    0.45,
+    1.35
+   ],
+   "push": [
+    1.0,
+    1.05
+   ],
+   "audio": 0,
+   "credit": "영상: Pexels",
+   "vf": "vignette=PI/4.5"
+  },
+  {
+   "src": "top1/parking_px5972198.mp4",
+   "in": 0.3,
+   "out": 3.7,
+   "single": [
+    0.5,
+    0.5,
+    1.0
+   ],
+   "push": [
+    1.0,
+    1.05
+   ],
+   "audio": 0,
+   "credit": "영상: Pexels",
+   "vf": "eq=brightness=-0.07:gamma=0.9:saturation=0.7,vignette=PI/4.5",
+   "rank": {
+    "n": 4,
+    "label": "끝이 안 보이는 주차장"
+   }
+  },
+  {
+   "src": "top1/parking_px5972198.mp4",
+   "in": 6.0,
+   "out": 9.5,
+   "single": [
+    0.5,
+    0.5,
+    1.2
+   ],
+   "push": [
+    1.0,
+    1.05
+   ],
+   "audio": 0,
+   "credit": "영상: Pexels",
+   "vf": "eq=brightness=-0.07:gamma=0.9:saturation=0.7,vignette=PI/4.5"
+  },
+  {
+   "src": "top1/escalator_down_px31053763.mp4",
+   "in": 0.5,
+   "out": 3.9,
+   "single": [
+    0.5,
+    0.55,
+    1.0
+   ],
+   "push": [
+    1.0,
+    1.05
+   ],
+   "audio": 0,
+   "credit": "영상: Pexels",
+   "vf": "vignette=PI/4.5",
+   "rank": {
+    "n": 3,
+    "label": "끝없는 지하 에스컬레이터"
+   }
+  },
+  {
+   "src": "top1/escalator_down_px31053763.mp4",
+   "in": 4.5,
+   "out": 8.0,
+   "single": [
+    0.5,
+    0.35,
+    1.4
+   ],
+   "push": [
+    1.0,
+    1.05
+   ],
+   "audio": 0,
+   "credit": "영상: Pexels",
+   "vf": "vignette=PI/4.5"
+  },
+  {
+   "src": "top1/mall_corridor_px15365449.mp4",
+   "in": 0.5,
+   "out": 3.9,
+   "single": [
+    0.5,
+    0.5,
+    1.0
+   ],
+   "push": [
+    1.0,
+    1.05
+   ],
+   "audio": 0,
+   "credit": "영상: Pexels",
+   "vf": "vignette=PI/4.5",
+   "rank": {
+    "n": 2,
+    "label": "아무도 없는 쇼핑몰 복도"
+   }
+  },
+  {
+   "src": "top1/mall_corridor_px15365449.mp4",
+   "in": 12.0,
+   "out": 15.5,
+   "single": [
+    0.5,
+    0.5,
+    1.0
+   ],
+   "push": [
+    1.0,
+    1.05
+   ],
+   "audio": 0,
+   "credit": "영상: Pexels",
+   "vf": "vignette=PI/4.5"
+  },
+  {
+   "src": "top1/hospital_corridor_px29241126.mp4",
+   "in": 0.0,
+   "out": 3.4,
+   "single": [
+    0.5,
+    0.5,
+    1.0
+   ],
+   "push": [
+    1.0,
+    1.05
+   ],
+   "audio": 0,
+   "credit": "영상: Pexels",
+   "vf": "vignette=PI/4.5",
+   "rank": {
+    "n": 1,
+    "label": "불 꺼진 병원 복도"
+   }
+  },
+  {
+   "src": "top1/hospital_corridor_px29241126.mp4",
+   "in": 3.4,
+   "out": 7.4,
+   "single": [
+    0.5,
+    0.5,
+    1.45
+   ],
+   "push": [
+    1.0,
+    1.05
+   ],
+   "audio": 0,
+   "credit": "영상: Pexels",
+   "vf": "vignette=PI/4.5"
+  }
+ ],
+ "lines": [
+  {
+   "who": 0,
+   "t": 0.1,
+   "tend": 3.35,
+   "ko": "밤 9시 반, 텅 빈 수영장"
+  },
+  {
+   "who": 0,
+   "t": 3.5,
+   "tend": 6.95,
+   "ko": "물소리 하나 안 들림"
+  },
+  {
+   "who": 0,
+   "t": 7.1,
+   "tend": 10.35,
+   "ko": "차가 한 대도 없다"
+  },
+  {
+   "who": 0,
+   "t": 10.5,
+   "tend": 13.85,
+   "ko": "기둥만 끝없이 반복됨"
+  },
+  {
+   "who": 0,
+   "t": 14.0,
+   "tend": 17.25,
+   "ko": "지하로 끝없이 내려감"
+  },
+  {
+   "who": 0,
+   "t": 17.4,
+   "tend": 20.75,
+   "ko": "CCTV만 나를 보고 있다"
+  },
+  {
+   "who": 0,
+   "t": 20.9,
+   "tend": 24.15,
+   "ko": "문 닫은 쇼핑몰 복도"
+  },
+  {
+   "who": 0,
+   "t": 24.3,
+   "tend": 27.65,
+   "ko": "걸어도 걸어도 아무도 없음"
+  },
+  {
+   "who": 0,
+   "t": 27.8,
+   "tend": 31.05,
+   "ko": "아무도 없는 병동 복도"
+  },
+  {
+   "who": 0,
+   "t": 31.2,
+   "tend": 35.05,
+   "ko": "다들 몇 위가 제일 소름?"
+  }
+ ],
+ "sources": [
+  {
+   "file": "top1/pool_dark_px6011926.mp4",
+   "title": "An Indoor Swimming Pool Used In Training",
+   "page": "https://www.pexels.com/video/an-indoor-swimming-pool-used-in-training-6011926/",
+   "file_url": "https://videos.pexels.com/video-files/6011926/6011926-uhd_3840_2160_25fps.mp4",
+   "license": "Pexels License",
+   "credit": "Tima Miroshnichenko",
+   "used_seconds": [
+    [
+     0.0,
+     3.4
+    ],
+    [
+     3.6,
+     7.2
+    ]
+   ]
+  },
+  {
+   "file": "top1/parking_px5972198.mp4",
+   "title": "View of an Empty Indoor Parking Space",
+   "page": "https://www.pexels.com/video/view-of-an-empty-indoor-parking-space-5972198/",
+   "file_url": "https://videos.pexels.com/video-files/5972198/5972198-uhd_3840_2160_25fps.mp4",
+   "license": "Pexels License",
+   "credit": "gusat silviu",
+   "used_seconds": [
+    [
+     0.3,
+     3.7
+    ],
+    [
+     6.0,
+     9.5
+    ]
+   ]
+  },
+  {
+   "file": "top1/escalator_down_px31053763.mp4",
+   "title": "Empty Underground Escalator in Urban Setting",
+   "page": "https://www.pexels.com/video/empty-underground-escalator-in-urban-setting-31053763/",
+   "file_url": "https://videos.pexels.com/video-files/31053763/13271177_3840_2160_30fps.mp4",
+   "license": "Pexels License",
+   "credit": "Yunus Kılıç",
+   "used_seconds": [
+    [
+     0.5,
+     3.9
+    ],
+    [
+     4.5,
+     8.0
+    ]
+   ]
+  },
+  {
+   "file": "top1/mall_corridor_px15365449.mp4",
+   "title": "An Empty Shopping Mall Corridor with Flickering Lights",
+   "page": "https://www.pexels.com/video/an-empty-shopping-mall-corridor-with-flickering-lights-15365449/",
+   "file_url": "https://videos.pexels.com/video-files/15365449/15365449-hd_1080_1920_30fps.mp4",
+   "license": "Pexels License",
+   "credit": "Matthias Groeneveld",
+   "used_seconds": [
+    [
+     0.5,
+     3.9
+    ],
+    [
+     12.0,
+     15.5
+    ]
+   ]
+  },
+  {
+   "file": "top1/hospital_corridor_px29241126.mp4",
+   "title": "Dimly Lit Hospital Corridor with Gurney",
+   "page": "https://www.pexels.com/video/dimly-lit-hospital-corridor-with-gurney-29241126/",
+   "file_url": "https://videos.pexels.com/video-files/29241126/12618420_2160_3840_30fps.mp4",
+   "license": "Pexels License",
+   "credit": "SN.CHE",
+   "used_seconds": [
+    [
+     0.0,
+     3.4
+    ],
+    [
+     3.4,
+     7.4
+    ]
+   ]
+  }
+ ]
+}

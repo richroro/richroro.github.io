@@ -1,0 +1,524 @@
+{
+ "credit": "",
+ "titleStyle": "band",
+ "titleKey": "#3CFF6A",
+ "captionY": 1640,
+ "sources": {
+  "px36757234": {
+   "file": "px36757234.jpg",
+   "path": "public/doodle/px36757234.jpg",
+   "page": "https://www.pexels.com/photo/rustic-wooden-chair-against-weathered-wall-36757234/",
+   "file_url": "https://images.pexels.com/photos/36757234/pexels-photo-36757234.jpeg?auto=compress&cs=tinysrgb&w=1600",
+   "license": "Pexels License",
+   "creator": "Gizem Gökce",
+   "credit": "사진: Pexels",
+   "seconds": [
+    [
+     0.0,
+     3.38
+    ],
+    [
+     21.25,
+     22.96
+    ],
+    [
+     27.48,
+     30.22
+    ]
+   ]
+  },
+  "px6170455": {
+   "file": "px6170455.jpg",
+   "path": "public/doodle/px6170455.jpg",
+   "page": "https://www.pexels.com/photo/brown-cardboard-box-beside-white-wooden-door-6170455/",
+   "file_url": "https://images.pexels.com/photos/6170455/pexels-photo-6170455.jpeg?auto=compress&cs=tinysrgb&w=1600",
+   "license": "Pexels License",
+   "creator": "Tima Miroshnichenko",
+   "credit": "사진: Pexels",
+   "seconds": [
+    [
+     24.65,
+     27.48
+    ]
+   ]
+  }
+ },
+ "music": {
+  "file": "music/monkeys_spinning_monkeys.mp3",
+  "gain": 0.12,
+  "start": 0
+ },
+ "sfx": [
+  [
+   "b",
+   "ding",
+   0.25
+  ],
+  [
+   "d",
+   "ding",
+   0.25
+  ],
+  [
+   "e.증발",
+   "boing",
+   0.3
+  ],
+  [
+   "f",
+   "ding",
+   0.25
+  ],
+  [
+   "g.할인",
+   "pop",
+   0.25
+  ],
+  [
+   "h",
+   "ding",
+   0.25
+  ],
+  [
+   "i.공짜",
+   "boing",
+   0.3
+  ],
+  [
+   "j",
+   "pop",
+   0.25
+  ],
+  [
+   "k",
+   "ding",
+   0.25
+  ],
+  [
+   "l.내가",
+   "k_error_003",
+   0.3
+  ],
+  [
+   "y",
+   "whoosh",
+   0.2
+  ],
+  [
+   "z",
+   "pop",
+   0.22
+  ]
+ ],
+ "clips": [
+  {
+   "from": "a",
+   "label": "hook",
+   "credit": "사진: Pexels",
+   "gfx": {
+    "type": "scene",
+    "photo": "doodle/px36757234.jpg",
+    "chars": [
+     {
+      "style": "doodle",
+      "hair": "#FF7A1A",
+      "mood": "smug",
+      "x": 0.74
+     }
+    ],
+    "steps": [
+     9,
+     9,
+     9,
+     -1
+    ],
+    "big": "[10,000원]"
+   }
+  },
+  {
+   "from": "b",
+   "label": "nego1",
+   "gfx": {
+    "type": "scene",
+    "bg": "home",
+    "chars": [
+     {
+      "style": "doodle",
+      "hair": "#FF7A1A",
+      "mood": "neutral",
+      "to": "think"
+     }
+    ],
+    "steps": [
+     9,
+     9,
+     "c",
+     9,
+     "b"
+    ],
+    "chat": {
+     "title": "원목 의자 · 1만원",
+     "msgs": [
+      {
+       "name": "구매자",
+       "text": "네고 되나요?",
+       "color": "#B9F27C"
+      }
+     ]
+    }
+   }
+  },
+  {
+   "from": "d",
+   "label": "nego2",
+   "gfx": {
+    "type": "scene",
+    "chars": [
+     {
+      "style": "doodle",
+      "hair": "#FF7A1A",
+      "mood": "think",
+      "x": 0.3
+     }
+    ],
+    "steps": [
+     9,
+     0.1,
+     9,
+     9
+    ],
+    "bg": "night",
+    "prop": "📱",
+    "propX": 0.72,
+    "place": "📍 새벽 1시"
+   }
+  },
+  {
+   "from": "e",
+   "label": "minus",
+   "gfx": {
+    "type": "scene",
+    "bg": "#FFE14D",
+    "chars": [
+     {
+      "style": "doodle",
+      "hair": "#FF7A1A",
+      "mood": "shock",
+      "x": 0.3
+     }
+    ],
+    "steps": [
+     9,
+     9,
+     9,
+     "e+0.5"
+    ],
+    "big": "{-2,000}",
+    "prop": "💸",
+    "propX": 0.72
+   }
+  },
+  {
+   "from": "f",
+   "label": "nego3",
+   "gfx": {
+    "type": "scene",
+    "bg": "home",
+    "chars": [
+     {
+      "style": "doodle",
+      "hair": "#FF7A1A",
+      "mood": "shock"
+     }
+    ],
+    "steps": [
+     9,
+     9,
+     9,
+     9,
+     0,
+     0,
+     "f"
+    ],
+    "chat": {
+     "title": "원목 의자 · 1만원",
+     "msgs": [
+      {
+       "name": "구매자",
+       "text": "네고 되나요?",
+       "color": "#B9F27C"
+      },
+      {
+       "name": "구매자",
+       "text": "8천 원 되나요?",
+       "color": "#B9F27C"
+      },
+      {
+       "name": "구매자",
+       "text": "직접 가니까 5천 원?",
+       "color": "#B9F27C"
+      }
+     ]
+    }
+   }
+  },
+  {
+   "from": "g",
+   "label": "pickup",
+   "gfx": {
+    "type": "scene",
+    "bg": "street",
+    "chars": [
+     {
+      "style": "doodle",
+      "hair": "#FF7A1A",
+      "mood": "angry",
+      "x": 0.3
+     }
+    ],
+    "steps": [
+     9,
+     0.1,
+     9,
+     "g+0.5"
+    ],
+    "prop": "🚶",
+    "propX": 0.72,
+    "big": "[픽업] = 할인?"
+   }
+  },
+  {
+   "from": "h",
+   "label": "free",
+   "gfx": {
+    "type": "scene",
+    "bg": "home",
+    "chars": [
+     {
+      "style": "doodle",
+      "hair": "#FF7A1A",
+      "mood": "think",
+      "to": "shock"
+     }
+    ],
+    "steps": [
+     9,
+     9,
+     "h@end",
+     9,
+     0,
+     0,
+     0,
+     "h"
+    ],
+    "chat": {
+     "title": "원목 의자 · 1만원",
+     "msgs": [
+      {
+       "name": "구매자",
+       "text": "네고 되나요?",
+       "color": "#B9F27C"
+      },
+      {
+       "name": "구매자",
+       "text": "8천 원 되나요?",
+       "color": "#B9F27C"
+      },
+      {
+       "name": "구매자",
+       "text": "직접 가니까 5천 원?",
+       "color": "#B9F27C"
+      },
+      {
+       "name": "구매자",
+       "text": "혹시 [무료 나눔]은 안 되나요?",
+       "color": "#B9F27C"
+      }
+     ]
+    }
+   }
+  },
+  {
+   "from": "i",
+   "label": "zero",
+   "gfx": {
+    "type": "scene",
+    "bg": "#FFB3C7",
+    "chars": [
+     {
+      "style": "doodle",
+      "hair": "#FF7A1A",
+      "mood": "cry",
+      "x": 0.3
+     }
+    ],
+    "steps": [
+     9,
+     0.1,
+     9,
+     "i+0.5"
+    ],
+    "prop": "🪑",
+    "propX": 0.72,
+    "big": "{0원}"
+   }
+  },
+  {
+   "from": "j",
+   "label": "nope",
+   "credit": "사진: Pexels",
+   "gfx": {
+    "type": "scene",
+    "photo": "doodle/px36757234.jpg",
+    "chars": [
+     {
+      "style": "doodle",
+      "hair": "#FF7A1A",
+      "mood": "angry",
+      "x": 0.28
+     }
+    ],
+    "steps": [
+     "j",
+     9,
+     9,
+     9
+    ],
+    "say": {
+     "who": 0,
+     "text": "아… 그냥 [안 팔래요]"
+    },
+    "photoPos": "70% 50%"
+   }
+  },
+  {
+   "from": "k",
+   "label": "ship",
+   "gfx": {
+    "type": "scene",
+    "bg": "home",
+    "chars": [
+     {
+      "style": "doodle",
+      "hair": "#FF7A1A",
+      "mood": "neutral",
+      "to": "shock"
+     }
+    ],
+    "steps": [
+     9,
+     9,
+     "k@end",
+     9,
+     0,
+     0,
+     0,
+     0,
+     "k"
+    ],
+    "chat": {
+     "title": "원목 의자 · 1만원",
+     "msgs": [
+      {
+       "name": "구매자",
+       "text": "네고 되나요?",
+       "color": "#B9F27C"
+      },
+      {
+       "name": "구매자",
+       "text": "8천 원 되나요?",
+       "color": "#B9F27C"
+      },
+      {
+       "name": "구매자",
+       "text": "직접 가니까 5천 원?",
+       "color": "#B9F27C"
+      },
+      {
+       "name": "구매자",
+       "text": "혹시 [무료 나눔]은 안 되나요?",
+       "color": "#B9F27C"
+      },
+      {
+       "name": "구매자",
+       "text": "그럼 [배송비]만 내주세요",
+       "color": "#B9F27C"
+      }
+     ]
+    }
+   }
+  },
+  {
+   "from": "l",
+   "label": "ship2",
+   "credit": "사진: Pexels",
+   "gfx": {
+    "type": "scene",
+    "photo": "doodle/px6170455.jpg",
+    "chars": [
+     {
+      "style": "doodle",
+      "hair": "#FF7A1A",
+      "mood": "sick",
+      "x": 0.26
+     }
+    ],
+    "steps": [
+     9,
+     9,
+     9,
+     "l+0.4"
+    ],
+    "big": "배송비 {내가}?"
+   }
+  },
+  {
+   "from": "y",
+   "label": "still",
+   "credit": "사진: Pexels",
+   "gfx": {
+    "type": "scene",
+    "photo": "doodle/px36757234.jpg",
+    "chars": [
+     {
+      "style": "doodle",
+      "hair": "#FF7A1A",
+      "mood": "sad",
+      "x": 0.74
+     }
+    ],
+    "steps": [
+     9,
+     9,
+     9,
+     9
+    ],
+    "photoPos": "25% 60%"
+   }
+  },
+  {
+   "from": "z",
+   "label": "ask",
+   "gfx": {
+    "type": "scene",
+    "bg": "bedroom",
+    "chars": [
+     {
+      "style": "doodle",
+      "hair": "#FF7A1A",
+      "mood": "think",
+      "to": "smug"
+     }
+    ],
+    "steps": [
+     9,
+     0.1,
+     "z.최강",
+     9
+    ],
+    "prop": "🪑",
+    "propX": 0.74
+   }
+  }
+ ]
+}
