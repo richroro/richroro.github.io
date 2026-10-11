@@ -7479,3 +7479,191 @@ qa_review.py: 두 편 모두 11/11 PASS(길이, 제목, 호기심 "?", 첫 전�
 #Shorts #화산 #하와이 #킬라우에아 #용암 #자연재해 #USGS #실제사진 #지구
 ```
 고정 댓글: 사흘 만에 바다가 땅이 됐다니… 직접 보면 어떨까요? 🌋
+
+
+## 쇼츠 50만+ 무음: 흰 카드 4편 (`bug1` 곤충, `breath2` 깊이 차이, `story2` 허리케인, `bird1` 새)
+
+사용자 요청은 "사연은 안되겠다 음성 많이 들어가면 어색해 음성없고 50만 이상으로 해서 조사해서 더 만들어줘"였다. 그래서 목소리 없이 50만 이상이 검증된 흰 카드 형식으로 4편을 더 만들었다. 내레이션, 대사, TTS는 없다. 음악, 효과음, 화면 글자만 쓴다.
+
+### 벤치마크와 숫자 (`research/research-500k-footage.csv`, 흰 카드 레이아웃)
+
+- **흰 카드 전체**: 50만+ 44편, 조회수 중앙값 273만. 44편 중 43편이 구독 10만 미만 채널이다. 모두 내레이션 없이 음악만 쓴다.
+- **주제별로 가장 많이 본 흰 카드(자연·과학)**
+  - 티비불꽃 「흔히 오해하고 있는 우주의 진실」: 15,479,704회.
+  - 오레오쿠키 「보는것만으로 숨 멎는 바다생물」: 9,071,256회.
+  - 틈새지식 「사진 21장이 기록한 역사적인 화산 폭발」: 8,558,356회.
+  - 컷노트 「인류 문명보다 오래 산 '만 년 된 생명체'의 실제 모습」: 4,152,783회.
+  - 쇼츠붐 「자연의 진짜 파괴력」: 4,019,140회.
+- **반복해서 터지는 제목 틀(겔라다, 구독 1.68만, 최근 30편 중 11편이 50만+)**
+  - 「보는 것만으로 숨 멎는 ○○」: 습도 차이 164만, 현실 생명체 158만, 체급 차이 149만, 동물 120만, 못생긴 동물 108만.
+  - 「세상에 그렇게 생긴 동물이 어디 있어?(진짜 있음)」: 1,021,759회.
+- **고른 4편과 이유**
+  - `bug1` 「세상에 이렇게 생긴 게 진짜 있다고? (곤충편)」: 겔라다 "생긴 동물" 틀. 사진은 USGS 꿀벌 연구소의 초접사 사진이다. 합법 사진 가운데 가장 강했다.
+  - `breath2` 「보는 것만으로 숨 멎는 깊이 차이」: "숨 멎는 ○○ 차이" 틀(164만·149만)에 바다생물(907만)을 합쳤다.
+  - `story2` 「사진 8장이 기록한 괴물 허리케인의 6일」: "사진 N장이 기록한"(855만) 틀에 "자연의 진짜 파괴력"(402만) 소재를 썼다. `story1`이 화산이라서 이번에는 허리케인으로 했다.
+  - `bird1` 「세상에 이렇게 생긴 게 진짜 있다고? (새편)」: 겔라다 "생긴 동물" 틀. 사진은 USFWS·BLM·NOAA 직원이 찍은 것이다.
+
+### 무엇을 맞췄나
+
+`deep1`·`breath1`·`story1`과 같은 `src/lib/Card.tsx` 레이아웃이다.
+- **틀**: 흰 바탕, "세상 신기한 도감" 배지, 검은 2줄 제목, 1000×750 둥근 사진, "한국어 한 줄 + (영어 이름)" 이름표, 회색 출처.
+- **리듬**: 항목당 2.7초(bug1), 2.8초(bird1), 3.15초(breath2·story2).
+- **첫 장면**
+  - bug1은 `deep1`처럼 우리가 그린 뿔매미 낙서("제가 대충 그린 거 아니고요")에서 1.3초 뒤 실물로 넘어간다.
+  - bird1은 가장 센 사진(공기주머니를 부풀린 산쑥들꿩)으로 시작한다.
+  - breath2는 수심 30m에서 시작한다.
+  - story2는 우주에서 본 허리케인의 눈을 먼저 보여 주고 시간순으로 돌아간다.
+- **빨간 원**: story2의 '눈' 두 장면에 그렸다.
+- **끝**: 마지막 항목 뒤 바로 끊긴다. 다시 재생하면 첫 장면으로 이어진다.
+- **소리**: 목소리는 없다. Kevin MacLeod 음악에 항목마다 pop을 넣었고, story2는 whoosh다. `final/<id>-nomusic.mp4`는 효과음만 남긴 판이다.
+
+### 영상
+
+| id | 화면 제목 | 길이 | 용량 | 음악 | 항목 |
+|---|---|---|---|---|---|
+| `bug1` | 세상에 이렇게 생긴 게 / 진짜 있다고? (곤충편) | 28.3초 | 20.5MB (무음악 19.8MB) | Fluffing a Duck | 뿔매미 낙서 → 뿔매미(옆·정면), 난초벌, 청벌, 등에, 솜털개미벌, '소 잡는 벌', '역병 의사' 바구미, 메뚜기, 길앞잡이 |
+| `breath2` | 보는 것만으로 숨 멎는 / 깊이 차이 | 25.2초 | 9.2MB (8.6MB) | Deep Haze | 30m 말미잘 → 712m 쏨뱅이류 → 880m 왕관해파리 → 1,365m 꼼치(영상) → 3,000m '우주 해파리' → 4,000m 해삼 → 4,950m 망간단괴 밭 → 5,900m 마리아나 해구 물고기 |
+| `story2` | 사진 8장이 기록한 / 괴물 허리케인의 6일 | 25.2초 | 7.0MB (6.4MB) | Volatile Reaction | 우주에서 본 밀턴(10.8) → 열대폭풍(10.5) → 허리케인(10.6) → ISS 아래(10.7, 4등급) → 눈(10.7) → 5등급, 895hPa(10.7) → 플로리다로(10.9) → 상륙 후 풀림(10.10) |
+| `bird1` | 세상에 이렇게 생긴 게 / 진짜 있다고? (새편) | 25.2초 | 6.1MB (5.5MB) | Carefree | 산쑥들꿩, 안경솜털오리, 캘리포니아콘도르, 야생칠면조, 초원뇌조, 댕기바다오리, 뿔바다오리, 붉은저어새, 큰군함조 |
+
+- **qa_review.py**: 네 편 모두 11/11 PASS. 0 FAIL, 0 WARN, −13.9~−14.0 LUFS, 검은 화면 없음. first.png와 sheet.png는 직접 봤다.
+- **용량**: 처음 렌더(CRF 18)에서 bug1은 49.8MB였다. 그래서 네 편 모두 영상만 `-crf 23 -preset slow`로 다시 압축했고, 오디오는 복사했다.
+
+### 템플릿 변경 (다른 형식은 그대로)
+
+- **새 파일**
+  - `src/lib/CardDoodles.tsx`: 뿔매미 낙서.
+  - `media/cards/make_card.py`: `media/<id>/card.json` 한 장에서 edit.json, script.json, 빈 timeline을 만든다.
+  - `media/bug1/fetch_flickr.py`: USGS 꿀벌 연구소 Flickr 페이지에서 받고, 라이선스·설명을 `sources.json`에 적는다.
+  - `media/bug1/fetch_commons.py`: Commons용. 이번에는 429 때문에 쓰지 못했다.
+- **공유 파일에 건 고리**
+  - `src/lib/Card.tsx`: import 한 줄. `doodle` 타입에 새 낙서 이름을 더했다. 낙서를 고르는 한 줄에서 `MORE_DOODLES`를 먼저 찾는다. 낙서 도우미 함수 셋을 export했다.
+  - `upload/channels.json`: `card` 채널 접두어에 `bug`, `bird`를 더했다.
+  - `fetch.sh`: 음악 4곡(Fluffing a Duck, Deep Haze, Carefree, Volatile Reaction)을 더했다.
+- **회귀 확인**
+  - 손대지 않은 `drive1`을 다시 렌더했다. `final/drive1.mp4`와 바이트까지 같다(cmp).
+  - 같은 Card.tsx를 쓰는 `story1`도 다시 렌더했다. `final/story1.mp4`와 바이트까지 같다.
+- **만드는 법**: `python3 media/cards/make_card.py media/<id>/card.json && python3 prep.py <id> && ./render.sh <id>`. 그다음 CRF 23으로 다시 압축해 `final/<id>.mp4`에 두고, `./render_nomusic.sh <id>`도 같은 방식으로 다시 압축한다.
+
+### 출처와 라이선스 (항목별)
+
+**bug1**: USGS Bee Inventory and Monitoring Lab(미국 지질조사국 꿀벌 조사·모니터링 연구소)의 Flickr 사진이다. 페이지마다 Public Domain Mark가 붙어 있고, 설명에 "All photographs are public domain"이라고 적혀 있다. 이름표의 사실은 각 사진 설명에서 가져왔다.
+- 긴 혀(orchid): "has a long tongue".
+- "Not an ant, but a wasp"(velvet).
+- "Badass Cowkiller"(velvetface).
+- "Plague Doctor Beetle… christened this unknown weevil"(plague).
+- 첫 장면 낙서는 직접 그렸다.
+- 사진 설명에 연구소 기술원·인턴 이름(Brooke Alexander, Elizabeth Garcia, Wayne Boo 등)이 촬영자로 적혀 있다. 연구소 계정이 PD로 공개한 것을 근거로 썼다.
+
+- `hopside`: Buffalo Treehopper, side, MD, PG County_2013-08-20-17.33.42 ZS PMax — https://www.flickr.com/photos/usgsbiml/9579134248/
+- `hopface`: Buffalo Treehopper, face, MD, PG County_2013-08-20-17.40.04 ZS PMax — https://www.flickr.com/photos/usgsbiml/9609823425/
+- `chrysis`: Chrysis conica — https://www.flickr.com/photos/usgsbiml/13588125805/
+- `orchid`: Euglossa imperialis, male, right side, coasta rica_2020-09-30-18.01.29 ZS PMax UDR — https://www.flickr.com/photos/usgsbiml/50428844088/
+- `horsefly`: Tabanus atratus, U, Face, MD_2013-08-21-16.06.31 ZS PMax — https://www.flickr.com/photos/usgsbiml/9599360121/
+- `velvet`: Dasymutilla gloriosa, right side 2, Cochise Co., AZ_2016-09-02-14.37 — https://www.flickr.com/photos/usgsbiml/29141358090/
+- `velvetface`: Velvet Ant, F, Face, Hot Springs Village, AR_2015-08-20-16.34.50 ZS PMax UDR — https://www.flickr.com/photos/usgsbiml/21462541422/
+- `plague`: Plague doctor beetle, head shot_2020-08-19-16.52.37 ZS PMax UDR — https://www.flickr.com/photos/usgsbiml/50341833713/
+- `slant`: Slant faced grasshopper, front_2020-08-27-15.10.15 ZS PMax UDR — https://www.flickr.com/photos/usgsbiml/50317082533/
+- `tiger`: Cicindella purpurea, face, u, Alleghany, MD_2019-10-21-16.42.12 ZS PMax UDR — https://www.flickr.com/photos/usgsbiml/49042834518/
+
+**breath2**: NOAA Ocean Exploration(미국 연방정부 저작물). 수심은 각 페이지 설명의 숫자다.
+- `anemone`: NOAA Photo Library (sanc1635, NOAA's Sanctuaries Collection); Photographer: Michael Carver/CBNMS — https://commons.wikimedia.org/wiki/File:Sanc1635.jpg
+- `rosefish`: NOAA Ocean Exploration, Voyage to the Ridge 2022 — https://oceanexplorer.noaa.gov/multimedia/okeanos-explorations-22voyage-to-the-ridge-features-fishy-faces-media-blackbelly-rosefish/
+- `atolla`: NOAA Ocean Exploration, Windows to the Deep 2018 — https://oceanexplorer.noaa.gov/multimedia/daily-image-media-20210319/
+- `snailfish`: NOAA Ocean Exploration, Seascape Alaska — https://oceanexplorer.noaa.gov/multimedia/deep-sea-snailfish/
+- `cosmic`: NOAA Ocean Exploration, 2017 American Samoa — https://oceanexplorer.noaa.gov/multimedia/daily-image-media-20201013/
+- `cucumber`: NOAA Ocean Exploration, 2017 American Samoa — https://oceanexplorer.noaa.gov/multimedia/daily-image-media-20210404/
+- `nodules`: NOAA Ocean Exploration, 2026 Cook Islands ROV Exploration — https://oceanexplorer.noaa.gov/multimedia/nodules-from-dive-06/
+- `prickle`: NOAA Ocean Exploration, 2016 Deepwater Exploration of the Marianas — https://oceanexplorer.noaa.gov/multimedia/daily-image-media-20211123/
+- `anemone`은 NOAA Photo Library에 있다. Commons/Flickr 표기는 CC BY 2.0이고, 크레디트는 Michael Carver/CBNMS(코델뱅크 해양보호구역)다.
+- `snailfish` 클립은 NOAA 자막(1.0~6.9초)과 엔딩 카드(34.5초~)를 피해서 11.5초부터 썼다.
+
+**story2**: NASA(미국 연방정부 저작물).
+- `born`: NASA Worldview / GIBS (NASA EOSDIS ESDIS), VIIRS NOAA-21 Corrected Reflectance True Color — https://worldview.earthdata.nasa.gov/?t=2024-10-05
+- `spin`: NASA Worldview / GIBS (NASA EOSDIS ESDIS), MODIS Terra Corrected Reflectance True Color — https://worldview.earthdata.nasa.gov/?t=2024-10-06
+- `wide`: NASA (Expedition 72 crew, International Space Station; NASA JSC) — https://images.nasa.gov/details/iss072e014652
+- `eye`: NASA (Expedition 72 crew, International Space Station; NASA JSC) — https://images.nasa.gov/details/iss072e029017
+- `peak`: NASA Worldview / GIBS (NASA EOSDIS ESDIS), VIIRS NOAA-21 Corrected Reflectance True Color — https://worldview.earthdata.nasa.gov/?t=2024-10-07
+- `gulf`: NASA (Expedition 72 crew, International Space Station; NASA JSC) — https://images.nasa.gov/details/iss072e029127
+- `florida`: NASA/Butch Wilmore (Expedition 72 crew, International Space Station; NASA JSC) — https://images.nasa.gov/details/iss072e031398
+- `exit`: NASA Worldview / GIBS (NASA EOSDIS ESDIS), MODIS Aqua Corrected Reflectance True Color — https://worldview.earthdata.nasa.gov/?t=2024-10-10
+- **사실 근거**: NHC Tropical Cyclone Report AL142024. 10.5 12UTC 열대저압부, 6시간 뒤 열대폭풍, 10.6 18UTC 허리케인, 10.7 20UTC 895mb·155kt, 10.10 00:30UTC 시에스타 키에 3등급으로 상륙(현지 10.9 밤). "49시간도 안 돼 5등급"은 NOAA NESDIS 문장이다.
+- **ISS 사진 두 장의 설명이 NHC와 다르다**: iss072e029017과 029127의 설명은 "Category 5"이지만, 그 시각 best track은 4등급이다. 그래서 그 두 장에는 등급을 쓰지 않았다.
+- **뺀 것**
+  - CIRA·CIMSS(대학) 위성 영상.
+  - 미 공군 허리케인 헌터 사진(군).
+  - NOAA 허리케인 헌터 기내 사진(LT CMDR Andrew Utama/NOAA Corps): noaa.gov 원본은 우리 User-Agent에 403을 줬고, Commons 사본은 업로드 서버가 40분 넘게 429를 줬다. 그래서 9장 대신 8장으로 했다.
+
+**bird1**: 각 기관 Flickr 페이지에서 받았다. 모두 기관 직원 크레디트다.
+- `sagegrouse`: Bob Wick, BLM (CC BY 2.0) — https://www.flickr.com/photos/mypubliclands/17381991205/
+- `eider`: Peter Pearsall/USFWS (Public Domain Mark) — https://www.flickr.com/photos/usfws_alaska/51101433164/
+- `condor`: John Heil/USFWS (Public Domain Mark) — https://www.flickr.com/photos/usfws_pacificsw/53190400143/
+- `turkey`: Courtney Celley/USFWS (Public Domain Mark) — https://www.flickr.com/photos/usfwsmidwest/48407273167/
+- `prairiechicken`: Grayson Smith/USFWS (Public Domain Mark) — https://www.flickr.com/photos/usfwsmidwest/52869814576/
+- `puffin`: Lisa Hupp/USFWS (Public Domain Mark) — https://www.flickr.com/photos/usfws_alaska/28661854862/
+- `spoonbill`: Mike Carlo/U.S. Fish & Wildlife Service (CC BY 2.0) — https://www.flickr.com/photos/usfwshq/26170061721/
+- `frigatebird`: Robert Schwemmer/NOAA (Public Domain Mark) — https://www.flickr.com/photos/onms/48779123396/
+- `hpuffin`: Lisa Hupp/USFWS (Public Domain Mark) — https://www.flickr.com/photos/usfws_alaska/50442668847/
+- 산쑥들꿩과 붉은저어새는 페이지 표기가 CC BY 2.0이라서 설명란에 크레디트를 적었다. 연방 직원 저작물이라 미국에서는 퍼블릭 도메인이다.
+- 뾰족꼬리뇌조(Rick Bohn)는 직원 여부를 확인하지 못해서 빼고, 뿔바다오리(Lisa Hupp/USFWS, PD)로 바꿨다.
+- **사실 근거**
+  - 공기주머니: USFWS 종 소개.
+  - "북미에서 가장 큰 육지 새, 날개 9.5피트": USFWS 사진 설명.
+  - 칠면조 snood: 사진 설명.
+  - 군함조 "inflates its throat pouch": 사진 설명.
+
+**공통**
+- 음악: Kevin MacLeod (incompetech.com), CC BY 4.0. 곡명은 설명란에 있다.
+- 기관의 "보증하지 않음" 문구는 설명란에 넣었다.
+- 화면에 "저작권", "퍼블릭 도메인", "공공누리"는 쓰지 않았다. 사람 얼굴, 상표, 군 자료는 없다.
+
+### 업로드 문구
+
+**bug1**: 세상에 이렇게 생긴 게 진짜 있다고? (곤충편) ㄷㄷ
+```
+미국 지질조사국(USGS) 꿀벌 연구소가 표본을 수십 장씩 겹쳐 찍은 초접사 사진 10장입니다. 들소 뿔을 단 것 같은 뿔매미, 긴 혀로 꿀을 빠는 난초벌, 보석처럼 빛나는 청벌, 개미처럼 생겼지만 사실은 벌인 개미벌, 연구원이 '역병 의사'라는 별명을 붙인 바구미까지 모두 실제 곤충입니다. 첫 장면의 그림만 직접 그렸습니다.
+
+▶ [채널명] 채널 구독: https://www.youtube.com/@[핸들]
+
+출처: 사진: USGS Bee Inventory and Monitoring Lab (flickr.com/photos/usgsbiml, Public Domain Mark) · 첫 장면 그림 직접 제작 · 음악: "Fluffing a Duck" Kevin MacLeod (incompetech.com), CC BY 4.0 (creativecommons.org/licenses/by/4.0) · USGS는 이 영상을 보증하거나 후원하지 않습니다. 이름과 설명은 USGS 꿀벌 연구소 사진 설명 기준입니다
+
+#Shorts #곤충 #신기한곤충 #벌레 #뿔매미 #난초벌 #청벌 #개미벌 #길앞잡이 #접사 #USGS
+```
+고정 댓글: 10개 중에 제일 안 믿기는 건 몇 번이에요? 🐛
+
+**breath2**: 보는 것만으로 숨 멎는 깊이 차이 ㄷㄷ
+```
+수심 30m의 하얀 말미잘에서 시작해 712m 쏨뱅이류, 880m 왕관해파리, 1,365m 꼼치, 3,000m '우주 해파리', 4,000m에 서 있는 해삼, 4,950m 테니스공만 한 금속 덩어리 밭을 지나 마리아나 해구 수심 5,900m의 물고기까지 내려갑니다. 모두 미국 해양대기청(NOAA)의 무인잠수정과 해양보호구역 조사에서 찍은 실제 영상과 사진입니다.
+
+▶ [채널명] 채널 구독: https://www.youtube.com/@[핸들]
+
+출처: 영상·사진: NOAA Ocean Exploration (Voyage to the Ridge 2022, Windows to the Deep 2018, Seascape Alaska 2023, 2017 American Samoa, 2026 Cook Islands, 2016 Deepwater Exploration of the Marianas) · NOAA Photo Library sanc1635 (Michael Carver/Cordell Bank National Marine Sanctuary) · 음악: "Deep Haze" Kevin MacLeod (incompetech.com), CC BY 4.0 (creativecommons.org/licenses/by/4.0) · NOAA는 이 영상을 보증하거나 후원하지 않습니다. 수심은 NOAA 영상·사진 설명 기준입니다
+
+#Shorts #심해 #바다 #수심 #깊이차이 #해파리 #마리아나해구 #심해생물 #NOAA
+```
+고정 댓글: 몇 m부터 숨 막혔어요? 🌊
+
+**story2**: 사진 8장이 기록한 괴물 허리케인의 6일 ㄷㄷ
+```
+2024년 10월 5일 멕시코만에서 열대폭풍으로 태어난 허리케인 밀턴은 10월 7일, 열대저압부가 된 지 49시간도 안 돼 5등급이 됐고 중심기압은 895hPa까지 떨어졌습니다. 국제우주정거장에서 내려다본 '눈'과 위성 사진 8장으로, 플로리다에 상륙해 풀려 버리기까지의 6일을 따라갑니다.
+
+▶ [채널명] 채널 구독: https://www.youtube.com/@[핸들]
+
+출처: 사진: NASA (국제우주정거장 iss072e014652, iss072e029017, iss072e029127, iss072e031398) · NASA Worldview/GIBS 위성 영상 (VIIRS NOAA-21, MODIS Terra·Aqua, 2024.10.5~10.10) · 음악: "Volatile Reaction" Kevin MacLeod (incompetech.com), CC BY 4.0 (creativecommons.org/licenses/by/4.0) · NASA·NOAA는 이 영상을 보증하거나 후원하지 않습니다. 날짜·등급·기압은 미국 국립허리케인센터(NHC) 허리케인 밀턴 보고서(AL142024)와 NOAA NESDIS 기준입니다
+
+#Shorts #허리케인 #태풍 #밀턴 #자연재해 #우주 #국제우주정거장 #위성사진 #NASA #실제사진
+```
+고정 댓글: 우주에서 본 태풍의 눈… 몇 번째 사진이 제일 소름이었어요? 🌀
+
+**bird1**: 세상에 이렇게 생긴 게 진짜 있다고? (새편) ㄷㄷ
+```
+가슴의 노란 공기주머니를 부풀리는 산쑥들꿩, 눈가에 안경 같은 무늬가 있는 안경솜털오리, 날개 길이 2.9m로 북미에서 가장 큰 육지 새인 캘리포니아콘도르, 목 주머니를 빨간 풍선처럼 부풀리는 큰군함조까지. 미국 어류·야생동물관리국(USFWS)과 토지관리국(BLM), 해양대기청(NOAA) 직원들이 야생에서 찍은 실제 새 9종입니다.
+
+▶ [채널명] 채널 구독: https://www.youtube.com/@[핸들]
+
+출처: 사진: Bob Wick/BLM (CC BY 2.0) · Peter Pearsall/USFWS · John Heil/USFWS · Courtney Celley/USFWS · Grayson Smith/USFWS · Lisa Hupp/USFWS · Mike Carlo/USFWS (CC BY 2.0) · Robert Schwemmer/NOAA · 음악: "Carefree" Kevin MacLeod (incompetech.com), CC BY 4.0 (creativecommons.org/licenses/by/4.0) · USFWS·BLM·NOAA는 이 영상을 보증하거나 후원하지 않습니다. 설명은 각 기관의 사진 설명과 종 소개 기준입니다
+
+#Shorts #새 #신기한동물 #조류 #산쑥들꿩 #콘도르 #퍼핀 #군함조 #칠면조 #야생동물
+```
+고정 댓글: 제일 안 믿기는 새는 몇 번이에요? 🐦
+
