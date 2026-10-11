@@ -11,6 +11,7 @@ import { ROUNDED43, Rounded43, YearSticker, rounded43Crop } from "./lib/Retro";
 import { CoverView, InfoCaps, Tags, type Cover, type Tag } from "./lib/Info2";
 import { TeukShort, type TeukOpts } from "./lib/Teuk";
 import { CardShort, type CardOpts } from "./lib/Card";
+import { QuoteShort, isQuoteShort } from "./lib/Quote";
 import { CAP_TALL, CapBox, type CapBoxOpts } from "./lib/CapBox";
 import { PlainCaptions, RiddleTitle } from "./lib/Riddle";
 import { RETROBOX, RetroTitle, RetroYear, StripCaptions } from "./lib/RetroV2";
@@ -322,7 +323,7 @@ export const ClipShort: React.FC<{ data: ShortData }> = ({ data: d }) => {
     return d.music.gain * (1 - 0.6 * (d.env[f] ?? 0)) * (inMoment ? 0.35 : 1) * prog(tt, 0, 0.1) * (1 - prog(tt, d.end - 1.0, 1.0));
   };
   if (d.layout === "teuk") return <TeukShort d={d} />;
-  if (d.layout === "card") return <CardShort d={d} />;
+  if (d.layout === "card") return isQuoteShort(d.card) ? <QuoteShort d={d} /> : <CardShort d={d} />;
   return (
     <AbsoluteFill style={{ background: "#000" }}>
       {d.clips.map((c, i) => (

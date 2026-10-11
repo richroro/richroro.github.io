@@ -1,0 +1,292 @@
+{
+ "credit": "",
+ "layout": "card",
+ "card": {
+  "items": [
+   {
+    "at": 0.0,
+    "ko": "서른한 살, 베토벤에게 생긴 일",
+    "en": "루트비히 판 베토벤"
+   },
+   {
+    "at": 3.2,
+    "ko": "음악가의 귀가 점점 멀어졌다"
+   },
+   {
+    "at": 6.2,
+    "ko": "빈 근교 시골 마을에 머물던 가을",
+    "panel": {
+     "big": "숨겼다",
+     "small": "\"더 크게 말해 주세요\"\n그 말을 할 수 없었다",
+     "bg": "#2b2d42",
+     "fg": "#ffffff"
+    }
+   },
+   {
+    "at": 9.2,
+    "ko": "그곳에서 몰래 편지를 썼다",
+    "panel": {
+     "big": "동생들에게",
+     "small": "귀가 멀어 간다는 고백",
+     "bg": "#FFE8A3",
+     "doodle": "music"
+    }
+   },
+   {
+    "at": 12.2,
+    "ko": "절망이 가득한 편지였다",
+    "panel": {
+     "big": "부치지\n않은 편지",
+     "small": "그가 세상을 떠난 뒤에야 발견됐다",
+     "bg": "#E8DDFF"
+    }
+   },
+   {
+    "at": 15.2,
+    "ko": "그런데 그 편지 한가운데",
+    "quote": {
+     "ko": "오직 예술이 나를 붙잡았다./내 안의 모든 걸 꺼내기 전엔/세상을 떠날 수 없었다.",
+     "orig": "nur sie die Kunst, sie hielt mich zurück, ach es dünkte mir unmöglich, die Welt eher zu verlassen, bis ich das alles hervorgebracht …",
+     "who": "베토벤, 하일리겐슈타트 유서"
+    }
+   },
+   {
+    "at": 19.6,
+    "ko": "그는 다시 피아노 앞에 앉았다",
+    "en": "베토벤이 쓰던 피아노"
+   },
+   {
+    "at": 22.6,
+    "ko": "거의 듣지 못하게 된 뒤 완성한 곡",
+    "en": "교향곡 9번 '합창'"
+   },
+   {
+    "at": 25.6,
+    "ko": "공연이 끝났을 때",
+    "panel": {
+     "big": "초연 날",
+     "small": "그는 박수 소리를 듣지 못했다",
+     "bg": "#CFE8FF"
+    }
+   },
+   {
+    "at": 28.6,
+    "ko": "돌아선 그의 눈앞엔 환호가 있었다",
+    "panel": {
+     "big": "돌아보니",
+     "small": "객석 가득 박수 치는 사람들",
+     "bg": "#FFE8A3"
+    }
+   }
+  ],
+  "badge": {
+   "name": "오늘의 한마디",
+   "icon": "말",
+   "color": "#c2410c"
+  },
+  "box": {
+   "height": 900
+  },
+  "clipAudio": 0
+ },
+ "sources": {
+  "portrait": {
+   "file": "portrait.jpg",
+   "download": "https://tile.loc.gov/storage-services/service/pnp/pga/02300/02397v.jpg",
+   "url": "https://www.loc.gov/item/2003663903/",
+   "label": "Ludwig Van Beethoven (chromolithograph, 1870)",
+   "author": "after Joseph Karl Stieler",
+   "licence": "public domain (LOC: No known restrictions on publication)",
+   "crop": [
+    0.03,
+    0.03,
+    0.97,
+    0.97
+   ]
+  },
+  "dream": {
+   "file": "dream.jpg",
+   "download": "https://tile.loc.gov/storage-services/service/pnp/cph/3b30000/3b32000/3b32300/3b32355r.jpg",
+   "url": "https://www.loc.gov/item/2002714663/",
+   "label": "Ludwig Van Beethoven, 1770-1827 (print, 1892)",
+   "author": "Braun, Clément & Cie (publisher)",
+   "licence": "public domain (LOC: No known restrictions on publication)",
+   "crop": [
+    0.02,
+    0.06,
+    0.98,
+    0.84
+   ]
+  },
+  "engraving": {
+   "file": "engraving.jpg",
+   "download": "https://tile.loc.gov/storage-services/service/pnp/cph/3a30000/3a30000/3a30100/3a30173r.jpg",
+   "url": "https://www.loc.gov/item/2004671942/",
+   "label": "Ludwig van Beethoven (print)",
+   "author": "unknown",
+   "licence": "public domain (LOC: No known restrictions on publication)",
+   "crop": [
+    0.02,
+    0.02,
+    0.98,
+    0.98
+   ]
+  },
+  "piano": {
+   "file": "piano.jpg",
+   "download": "https://tile.loc.gov/storage-services/service/pnp/pcrd/1b00000/1b06000/1b06300/1b06371v.jpg",
+   "url": "https://www.loc.gov/item/2025709323/",
+   "label": "Beethovens Flügel und seine Streichinstrumente (postcard, Beethovenhaus Bonn, 1920)",
+   "author": "Verlag des Beethovenhauses in Bonn",
+   "licence": "public domain (LOC: No known restrictions on publication)",
+   "crop": [
+    0.02,
+    0.04,
+    0.79,
+    0.95
+   ]
+  }
+ },
+ "clips": [
+  {
+   "from": 0.0,
+   "zoom": [
+    1.0,
+    1.08
+   ],
+   "focus": "50% 25%",
+   "src": "portrait",
+   "in": 0
+  },
+  {
+   "from": 3.2,
+   "zoom": [
+    1.05,
+    1.15
+   ],
+   "focus": "30% 60%",
+   "src": "dream",
+   "in": 0
+  },
+  {
+   "from": 6.2,
+   "zoom": [
+    1.0,
+    1.07
+   ],
+   "focus": "50% 40%"
+  },
+  {
+   "from": 9.2,
+   "zoom": [
+    1.0,
+    1.07
+   ],
+   "focus": "50% 40%"
+  },
+  {
+   "from": 12.2,
+   "zoom": [
+    1.0,
+    1.07
+   ],
+   "focus": "50% 40%"
+  },
+  {
+   "from": 15.2,
+   "zoom": [
+    1.0,
+    1.07
+   ],
+   "focus": "50% 40%"
+  },
+  {
+   "from": 19.6,
+   "zoom": [
+    1.0,
+    1.08
+   ],
+   "focus": "40% 50%",
+   "src": "piano",
+   "in": 0
+  },
+  {
+   "from": 22.6,
+   "zoom": [
+    1.0,
+    1.08
+   ],
+   "focus": "50% 30%",
+   "src": "engraving",
+   "in": 0
+  },
+  {
+   "from": 25.6,
+   "zoom": [
+    1.0,
+    1.07
+   ],
+   "focus": "50% 40%"
+  },
+  {
+   "from": 28.6,
+   "zoom": [
+    1.0,
+    1.07
+   ],
+   "focus": "50% 40%"
+  }
+ ],
+ "music": {
+  "file": "music/Touching Moments Two - Higher.mp3",
+  "gain": 0.55,
+  "start": 0.0
+ },
+ "sfx": [
+  [
+   3.2,
+   "pop",
+   0.25
+  ],
+  [
+   6.2,
+   "pop",
+   0.25
+  ],
+  [
+   9.2,
+   "pop",
+   0.25
+  ],
+  [
+   12.2,
+   "pop",
+   0.25
+  ],
+  [
+   15.2,
+   "pop_hi",
+   0.25
+  ],
+  [
+   19.6,
+   "pop",
+   0.25
+  ],
+  [
+   22.6,
+   "pop",
+   0.25
+  ],
+  [
+   25.6,
+   "pop",
+   0.25
+  ],
+  [
+   28.6,
+   "pop",
+   0.25
+  ]
+ ]
+}
