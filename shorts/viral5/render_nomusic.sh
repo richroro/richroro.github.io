@@ -2,7 +2,7 @@
 # Export final/<id>-nomusic.mp4: the same short with the music track removed (sound effects and voice stay), so a
 # trending sound can be added in the YouTube app at upload. The audio gets the same gain render.sh gave the full mix
 # (full mix measured to -14 LUFS), so the remaining sounds sit at the level they have in final/<id>.mp4.
-# usage: ./render_nomusic.sh <id>          needs src/data/<id>.json (prep.py) and the shared assets (fetch.sh)
+# usage: [CRF=<n>] ./render_nomusic.sh <id>   needs src/data/<id>.json (prep.py) and the shared assets (fetch.sh)
 set -euo pipefail
 cd "$(dirname "$0")"
 ID=$1
@@ -17,7 +17,7 @@ I=$(ffmpeg -hide_banner -nostats -i "out/$ID.full.wav" -af loudnorm=I=-14:TP=-1.
 G=$(python3 -c "print(round(-14 - float('$I'), 2))")
 # 2) the short without its music
 python3 -c "import json,sys; d=json.load(open('$D')); d['music']=None; json.dump(d, open('$D','w'), ensure_ascii=False)"
-npx remotion render src/index.ts "$ID" "out/$ID.nomusic.raw.mp4" --browser-executable="$BX" --concurrency="$(nproc)" --crf=18 --log=error
+npx remotion render src/index.ts "$ID" "out/$ID.nomusic.raw.mp4" --browser-executable="$BX" --concurrency="$(nproc)" --crf="${CRF:-18}" --log=error
 ffmpeg -hide_banner -loglevel error -y -i "out/$ID.nomusic.raw.mp4" -c:v copy -af "volume=${G}dB,alimiter=limit=0.84,aresample=48000" -c:a aac -b:a 192k -shortest -movflags +faststart "final/$ID-nomusic.mp4"
 rm -f "out/$ID.full.wav" "out/$ID.nomusic.raw.mp4"
 echo "final/$ID-nomusic.mp4 (full mix ${I} LUFS -> gain ${G} dB)"
