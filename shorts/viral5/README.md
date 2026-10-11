@@ -8390,6 +8390,8 @@ MEDIA=$PWD/media python3 politics/prep_split.py people4 && ./render.sh people4 f
 | `star2` | 닐 타이슨이 우주에 / 돈 써야 한다는 이유..? | 닐 디그래스 타이슨 · 천체물리학자 | 42.3초 | 18.4MB | 「Neil deGrasse Tyson Testifies Before Senate Science Committee, March 7, 2012」 764,465회, Space Policy and Politics, youtube.com/watch?v=rmKlA_UnX8c (그 밖에 「Dr. Neil deGrasse Tyson's remarks at Senate Commerce hearing…」 268,543회, CommerceRepublicans, youtube.com/watch?v=Xhc25v0DpJc) | 미국 상원 녹화실 영상 `commerce030712` (2012-03-07) |
 | `star3` | 펠프스가 늘 지키는 / 좌우명 딱 세 단어..? | 마이클 펠프스 · 수영 | 34.5초 | 21.3MB | 「Michael Phelps" Dream, Plan, Reach" #shorts」 25.6만회, youtube.com/shorts/NjzrlPRQTog (같은 좌우명. 벤치마크의 원본은 다른 인터뷰라서 같은 장면은 아님) | VOA 인터뷰 영상 (2018-04-19) |
 | `star4` | 브래드 피트가 우주에 / '누가 더 낫냐' 묻자..? | 브래드 피트 · 배우 | 34.5초 | 22.4MB | NASA 「Brad Pitt Speaks with NASA Astronaut Nick Hague Aboard the International Space Station」 165,431회, youtube.com/watch?v=_oVYSwmIrZk (같은 원본) | NASA 본부 생중계 영상 (2019-09-16) |
+| `star5` | 복싱 전설 레너드가 / 프로가 된 진짜 이유..? | 슈거 레이 레너드 · 복싱 | 43.8초 | 22.7MB | 「Why Sugar Ray Leonard Couldn’t Save His Own Family」 76.7만회, youtube.com/shorts/FeOfjrJl49Q (가족 이야기 각도. 원본은 다름) | 미국 상원 녹화실 영상 `govtaff062409` (2009-06-24) |
+| `star6` | 닉 조나스가 의사에게 / '저 죽나요?' 묻자..? | 닉 조나스 · 가수 | 37.4초 | 20.6MB | 닉 조나스 본인 쇼츠 「Sharing my signs so that others can #SeeTheSigns…」 400만회, youtube.com/shorts/vbAk72Vkz5w, 「Singer Nick Jonas shared the symptoms he faced before he was diagnosed…」 14.9만회, youtube.com/shorts/R5s5IXcUB1Q (같은 진단 이야기. 원본은 다름) | 같은 상원 청문회 영상 |
 
 - **한국 쪽 기준**: 해외 인물 50만+ 한국어 쇼츠 조사(`research/research-500k-people.csv`)의 유명인 육성 히트작과 같은 제목 틀을 썼다.
   - 「~하는 진짜 이유..?」 틀은 「머스크가 1,700조 괴물을 우주로 탈출시킨 소름 돋는 이유」(894만)의 것이다.
@@ -8486,6 +8488,34 @@ MEDIA=$PWD/media python3 politics/prep_split.py star1 && ./render.sh star1 final
 - **녹취**: NASA .srt와 faster-whisper medium.en이 쓴 줄마다 같다.
 - **사실**: 피트가 우주비행사 역의 영화 개봉을 앞두고 있었다는 것은 NASA 영상 설명("Brad Pitt is playing an astronaut in his latest film")에서 가져왔다. 조지 클루니는 피트가 질문에서 직접 꺼낸 이름이다.
 
+### star5·star6: 슈거 레이 레너드와 닉 조나스 (상원 국토안보·정부업무위원회, 2009-06-24)
+
+- **원본**: JDRF 어린이 의회 청문회 "Type 1 Diabetes Research: Real Progress and Real Hope for a Cure"의 상원 녹화실 영상이다(`govtaff062409`, 320×240뿐). 공식 기록은 [S. Hrg. 111-908](https://www.govinfo.gov/content/pkg/CHRG-111shrg51789/html/CHRG-111shrg51789.htm)이다. 같은 1부 패널에 두 사람이 나왔다.
+- **화면**
+  - 원본이 너무 작아서 얼굴 크롭 대신 4:3 전체 화면(`frame: film`)을 쓴다.
+  - 아래 29%(상원 자막과 이름표)는 잘라냈다(`trim`). 4배 lanczos 확대와 샤프닝을 했다.
+  - 화면이 흐릿한 편이다.
+  - 장면 전환은 확대 1.0 ↔ 1.16 교대다. 자막 위치는 1330이다.
+- **star5 (레너드)**: 클립은 스트림 3520초부터 잘랐다.
+  - 66.1–74.4: 프로 전향 이유(아버지 치료비).
+  - 14.4–23.7: 링에서 잘나가던 시절, 집에서는 아버지가 당뇨와 싸웠다는 대목.
+  - 263.4–273.6: 듀란의 "No más".
+  - 288.4–303.8: "이 아이들에겐 싸울 힘이 있다".
+  - 뺀 것: 의원 감사 인사, 당뇨 비용 통계, 특별 당뇨 프로그램 예산 요청. "(듀란과의 재대결)"과 "(10대 시절)"은 바로 앞 문장(원본에서 말함)을 한국어 자막 괄호로 보탠 것이다.
+- **star6 (조나스)**: 클립은 스트림 3860초부터 잘랐다.
+  - 113.3–122.5: "저 죽나요?"와 의사의 답.
+  - 72.9–78.3: 2005년 투어 중 진단.
+  - 84.1–88.9: 목마름, 짜증("원래 그런 애가 아닌데요", 청문회장 웃음).
+  - 263.4–267.6: "당뇨 때문에 멈추지 않기로".
+  - 298.7–311.9: "아이들에게 꿈을 이룰 수 있다는 걸 보여 주고 싶다".
+  - 순서는 바꿨다(가장 센 질문을 맨 앞에).
+  - 노래 「A Little Bit Longer」 가사를 읽는 부분은 저작권이 있는 노래라 쓰지 않았다. 예산 요청과 인슐린 펌프 대목도 뺐다.
+- **녹취**: 회의록과 faster-whisper medium.en으로 맞췄다.
+  - 들리는 대로 적은 곳: "but it's clear, it's totally clear", "First thing I did"(회의록 "The first thing").
+- **사실**
+  - 레너드의 1976년 올림픽 금메달: 콜린스 의원의 소개와 레너드 본인의 답변(회의록)에 나온다.
+  - 혈당 700 이상과 2005년 투어 중 진단: 조나스 본인 증언이다.
+
 **업로드 문구**
 
 **star1**: 세스 로건이 청문회에 나온 진짜 이유..? 🥲
@@ -8535,6 +8565,30 @@ MEDIA=$PWD/media python3 politics/prep_split.py star1 && ./render.sh star1 final
 #Shorts #브래드피트 #BradPitt #조지클루니 #우주정거장 #ISS #우주비행사 #NASA #할리우드 #한영자막 #영어공부 #인터뷰
 ```
 고정 댓글: 여러분이 우주비행사와 통화할 수 있다면, 첫 질문은 뭘 하실 건가요? 🚀
+
+**star5**: 복싱 전설 레너드가 프로가 된 진짜 이유..? 🥊
+```
+1976년 올림픽 복싱 금메달리스트 슈거 레이 레너드가 2009년 6월 미국 상원 1형 당뇨 연구 청문회에서 한 증언입니다. 대학 진학을 앞두고 있던 그가 프로로 전향한 건 당뇨를 앓던 아버지의 치료비를 대기 위해서였다고 합니다. 로베르토 듀란이 "노 마스(그만)"를 외치고 기권한 경기를 꺼내며, 당뇨와 싸우는 아이들에겐 끝까지 싸울 힘이 있다고 말했습니다. 영어 원문과 한국어 번역 자막(증언 중간 일부 생략).
+
+▶ [채널명] 채널 구독: https://www.youtube.com/@[핸들]
+
+출처: 영상: 미국 상원(U.S. Senate) 국토안보·정부업무위원회 청문회 "Type 1 Diabetes Research: Real Progress and Real Hope for a Cure" 공식 영상 (2009-06-24, senate.gov) · 청문회 기록 S. Hrg. 111-908 · 영어 자막·한국어 번역 직접 제작(증언 중간 일부 생략) · 이 영상은 영상 속 인물이나 기관이 보증·후원한 것이 아닙니다
+
+#Shorts #슈거레이레너드 #SugarRayLeonard #복싱 #권투 #올림픽금메달 #노마스 #당뇨 #동기부여 #청문회 #한영자막 #영어공부 #인터뷰
+```
+고정 댓글: 가족을 위해 꿈의 방향을 바꿔 본 적 있나요?
+
+**star6**: 닉 조나스가 의사에게 '저 죽나요?' 묻자..?
+```
+조나스 브라더스의 닉 조나스는 2005년 콘서트 투어 중에 1형 당뇨 진단을 받았습니다. 2009년 6월 미국 상원 청문회에서 그는 진단받던 날 의사에게 "저 죽나요?"라고 물었고, 평생 관리해야 한다는 답을 들었다고 털어놨습니다. 그리고 당뇨 때문에 멈추지 않겠다며, 같은 병을 가진 아이들에게 꿈을 이룰 수 있다는 걸 보여 주고 싶다고 했습니다. 영어 원문과 한국어 번역 자막(증언 일부를 이어 붙임, 순서 바꿈).
+
+▶ [채널명] 채널 구독: https://www.youtube.com/@[핸들]
+
+출처: 영상: 미국 상원(U.S. Senate) 국토안보·정부업무위원회 청문회 "Type 1 Diabetes Research: Real Progress and Real Hope for a Cure" 공식 영상 (2009-06-24, senate.gov) · 청문회 기록 S. Hrg. 111-908 · 영어 자막·한국어 번역 직접 제작(증언 일부 생략·순서 바꿈) · 이 영상은 영상 속 인물이나 기관이 보증·후원한 것이 아닙니다
+
+#Shorts #닉조나스 #NickJonas #조나스브라더스 #JonasBrothers #1형당뇨 #당뇨 #팝스타 #동기부여 #청문회 #한영자막 #영어공부 #인터뷰
+```
+고정 댓글: 힘든 소식을 들은 날, 여러분은 어떻게 다시 일어나나요?
 
 ### people1~people4 다시 렌더 (화면에서 출처·날짜 빼기)
 

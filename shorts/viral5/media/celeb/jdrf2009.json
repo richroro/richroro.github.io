@@ -1,0 +1,17 @@
+{
+ "id": "star5 (leonard.mp4), star6 (jonas.mp4)",
+ "committee": "Senate Committee on Homeland Security and Governmental Affairs",
+ "hearing": "Type 1 Diabetes Research: Real Progress and Real Hope for a Cure (JDRF Children's Congress)",
+ "date": "2009-06-24",
+ "source_page": "https://www.hsgac.senate.gov/hearings/type-1-diabetes-research-real-progress-and-real-hope-for-a-cure",
+ "player": "https://www.senate.gov/isvp/?type=arch&comm=govtaff&filename=govtaff062409",
+ "file_url": "https://www-senate-gov-msl3archive.akamaized.net/hsgac/govtaff062409_1/master.m3u8 (320x240, the only rendition)",
+ "clips": {"leonard.mp4": "stream 3520 s + 330 s", "jonas.mp4": "stream 3860 s + 330 s"},
+ "cut": "ffmpeg -ss <from> -i <stream> -t 330 -c:v libx264 -crf 16 -preset fast -c:a aac -b:a 192k <clip>",
+ "picture": "whole 4:3 frame (frame 'film'), bottom 29% trimmed off (the Senate's committee/room caption and the name card), 4x lanczos + unsharp",
+ "left_out": "both men's thanks to senators and all funding requests (Special Diabetes Program); Leonard's cost statistics; Jonas's reading of his song lyrics ('A Little Bit Longer', a copyrighted song) and his technology/pump passage",
+ "transcript": "https://www.govinfo.gov/content/pkg/CHRG-111shrg51789/html/CHRG-111shrg51789.htm (S. Hrg. 111-908), checked against faster-whisper medium.en; prepared statements https://www.hsgac.senate.gov/wp-content/uploads/imo/media/doc/TestimonyJonas20090624.doc",
+ "facts": "Leonard: 1976 Olympic boxing gold (Sen. Collins' introduction and his own answer in the record); turned pro to pay his father's diabetes care (his statement). Jonas: diagnosed on a 2005 concert tour, blood sugar over 700 (his statement).",
+ "credit": "미국 상원 (U.S. Senate)",
+ "license": "Senate Recording Studio video, U.S. government work, public domain (17 U.S.C. §105). Not C-SPAN footage."
+}
