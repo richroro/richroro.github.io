@@ -1,7 +1,7 @@
-"""Download the open image-model weights aigen/gen.py uses, and build stable-diffusion.cpp. Nothing here is committed.
+"""Download the open image-model weights aigen/sseol/gen.py uses, and build stable-diffusion.cpp. Nothing here is committed.
 
-usage: python3 aigen/fetch_models.py            weights → ~/.cache/aigen (about 7.3 GB), sd-cli → ~/.cache/aigen/sdcpp/build/bin/sd-cli
-       python3 aigen/fetch_models.py --no-build  weights only
+usage: python3 aigen/sseol/fetch_models.py            weights → ~/.cache/aigen (about 7.3 GB), sd-cli → ~/.cache/aigen/sdcpp/build/bin/sd-cli
+       python3 aigen/sseol/fetch_models.py --no-build  weights only
 
 | file                                  | what                                      | from (Hugging Face)                     | licence                 |
 |---------------------------------------|-------------------------------------------|-----------------------------------------|-------------------------|
@@ -23,7 +23,7 @@ FILES = {
     "taesdxl.safetensors": "madebyollin/taesdxl/resolve/main/diffusion_pytorch_model.safetensors",
 }
 SDCPP = "https://github.com/leejet/stable-diffusion.cpp"
-SDCPP_REV = "2988060a4338a5dcd94721c964a8e87003c1ac8b"  # the build the timings in aigen/README.md were measured with
+SDCPP_REV = "2988060a4338a5dcd94721c964a8e87003c1ac8b"  # the build the timings in aigen/README.md ("썰 캐릭터 시험") were measured with
 
 
 def fetch():

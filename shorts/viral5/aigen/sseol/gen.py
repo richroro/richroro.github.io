@@ -1,10 +1,10 @@
 """Generate a short's AI scene pictures with SDXL base 1.0 + SDXL-Lightning (4 steps) through stable-diffusion.cpp on CPU.
 
-usage: python3 aigen/gen.py <id> [<line> ...]   pictures for aigen/eps/<id>.py (only the named lines; existing ones are kept)
-       python3 aigen/gen.py --test               the character-consistency test (cast.TEST) → aigen/img/test/
-       python3 aigen/gen.py <id> --redo <line>   generate a line again (with "seed" in its pic dict changed, usually)
-Writes aigen/img/<id>/<line>.jpg (832x832, the square slot of the post frame is 900 px) and appends the seconds to
-aigen/img/<id>/timings.csv. Weights and sd-cli: python3 aigen/fetch_models.py.
+usage: python3 aigen/sseol/gen.py <id> [<line> ...]   pictures for aigen/sseol/eps/<id>.py (only the named lines; existing ones are kept)
+       python3 aigen/sseol/gen.py --test               the character-consistency test (cast.TEST) → aigen/sseol/img/test/
+       python3 aigen/sseol/gen.py <id> --redo <line>   generate a line again (with "seed" in its pic dict changed, usually)
+Writes aigen/sseol/img/<id>/<line>.jpg (832x832, the square slot of the post frame is 900 px) and appends the seconds to
+aigen/sseol/img/<id>/timings.csv. Weights and sd-cli: python3 aigen/sseol/fetch_models.py.
 """
 import csv, importlib.util, os, subprocess, sys, time
 from PIL import Image

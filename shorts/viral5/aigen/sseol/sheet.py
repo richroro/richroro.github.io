@@ -1,6 +1,6 @@
-"""Contact sheet of a short's AI pictures (to check that the same characters come back): aigen/img/<id>/sheet.jpg
+"""Contact sheet of a short's AI pictures (to check that the same characters come back): aigen/sseol/img/<id>/sheet.jpg
 
-usage: python3 aigen/sheet.py <id> [<id> ...]      (test = the consistency test)
+usage: python3 aigen/sseol/sheet.py <id> [<id> ...]      (test = the consistency test)
 """
 import os, sys
 from PIL import Image, ImageDraw, ImageFont

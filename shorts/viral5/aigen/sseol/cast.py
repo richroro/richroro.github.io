@@ -1,7 +1,7 @@
 """The AI 썰 series' fixed look: one style line and one character sheet, pasted word for word into every scene prompt so the
 same people come back in every picture (consistency method: fixed character sheet + fixed style + one seed per short).
 
-Scene prompts write {me}, {tae}, ... where a character appears; aigen/gen.py fills them in from CAST.
+Scene prompts write {me}, {tae}, ... where a character appears; aigen/sseol/gen.py fills them in from CAST.
 Rules for every prompt: no real people or lookalikes, no brands/logos/signs (generated letters come out as gibberish, so
 the words live in the post body instead), nothing violent, military or sexual, and the students are never hurt or threatened.
 """
@@ -23,7 +23,7 @@ CAST = {
     "baker": "a stout korean baker in his fifties with a short gray beard, white baker hat and white apron",
 }
 
-# the consistency test (python3 aigen/gen.py --test): every recurring character, alone and together, in different places
+# the consistency test (python3 aigen/sseol/gen.py --test): every recurring character, alone and together, in different places
 TEST = [
     ("t1_me", "only one character: {me}, sitting alone at a school desk, nervous smile, bright empty classroom with big windows"),
     ("t2_me_tae", "exactly two characters: {tae} standing next to the desk and looking down at {me}, who is sitting nervously, classroom"),
