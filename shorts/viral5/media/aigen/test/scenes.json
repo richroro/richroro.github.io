@@ -1,0 +1,35 @@
+{
+ "style": "3d render, stylized doll-like characters with big glossy dark eyes, soft clay skin, dim moody horror atmosphere, cinematic lighting, detailed small korean apartment",
+ "negative": "text, letters, words, caption, watermark, logo, signature, brand, blood, gore, wound, nsfw, photorealistic photo, deformed hands",
+ "size": [
+  640,
+  1152
+ ],
+ "chars": {
+  "me": "a 25-year-old young adult korean man with short messy black hair and a mustard yellow hoodie",
+  "friend": "a 25-year-old young adult korean woman with a long black ponytail and a red jacket"
+ },
+ "scenes": [
+  {
+   "key": "s01",
+   "seed": 1101,
+   "prompt": "close-up of {me} holding a small plain white instant camera up to his eye, the other eye wide and nervous, dark bedroom at night, desk lamp glow"
+  },
+  {
+   "key": "s02",
+   "seed": 1102,
+   "prompt": "{friend} on a city sidewalk at dusk, laughing and raising one hand toward the viewer as if saying stop, street lights, no signs"
+  },
+  {
+   "key": "s03",
+   "seed": 1103,
+   "prompt": "close-up of a hand holding a small square instant photo print, the photo shows {friend} sitting fallen on a sidewalk, dusk, shallow depth of field"
+  },
+  {
+   "key": "s04",
+   "seed": 1104,
+   "prompt": "{friend} sitting on the sidewalk after slipping, surprised open mouth, one sneaker untied, dusk street, not hurt"
+  }
+ ],
+ "_note": "Image-model test only (aigen/README.md). The horror short these scenes were drafted for was dropped at the user's request; nothing here is published."
+}
