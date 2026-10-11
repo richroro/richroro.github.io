@@ -39,8 +39,6 @@ jobs:
     timeout-minutes: 40
     steps:
       - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
 
       - uses: actions/setup-python@v5
         with:
@@ -56,7 +54,9 @@ jobs:
         env:
           BEFORE: ${{ github.event.before }}
         run: |
-          if [ -n "$BEFORE" ] && git cat-file -e "$BEFORE^{commit}" 2>/dev/null; then
+          # 다른 브랜치의 큰 영상까지 받지 않게, 직전 커밋 하나만 더 받는다
+          if [ -n "$BEFORE" ] && [ "$BEFORE" != 0000000000000000000000000000000000000000 ] &&
+             git fetch -q --depth=1 origin "$BEFORE" 2>/dev/null; then
             git diff --name-only "$BEFORE" HEAD > "$RUNNER_TEMP/changed.txt"
           else
             git ls-files coupang-shorts/requests coupang-shorts/specs > "$RUNNER_TEMP/changed.txt"
