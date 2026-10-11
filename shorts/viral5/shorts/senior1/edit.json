@@ -1,0 +1,687 @@
+{
+ "credit": "",
+ "titleStyle": "band",
+ "titleKey": "#FFE14D",
+ "frame": "capTall",
+ "capBox": {
+  "y": 1600
+ },
+ "sources": {
+  "samgyeopsal_table": {
+   "file": "samgyeopsal_table.jpg",
+   "path": "public/hit500/samgyeopsal_table.jpg",
+   "page": "https://commons.wikimedia.org/wiki/File:Samgyeopsal_table.jpg",
+   "file_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/f/fe/Samgyeopsal_table.jpg/1920px-Samgyeopsal_table.jpg",
+   "license": "CC0",
+   "creator": "이동원",
+   "credit": "사진: Wikimedia Commons (설명란 표기)",
+   "seconds": [
+    [
+     4.27,
+     8.18
+    ]
+   ]
+  },
+  "samgyeopsal_gui": {
+   "file": "samgyeopsal_gui.jpg",
+   "path": "public/hit500/samgyeopsal_gui.jpg",
+   "page": "https://commons.wikimedia.org/wiki/File:Samgyeopsal-gui.jpg",
+   "file_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/77/Samgyeopsal-gui.jpg/1920px-Samgyeopsal-gui.jpg",
+   "license": "CC0",
+   "creator": "jinsoo jang",
+   "credit": "사진: Wikimedia Commons (설명란 표기)",
+   "seconds": [
+    [
+     13.92,
+     16.41
+    ]
+   ]
+  }
+ },
+ "music": {
+  "file": "music/Heartwarming.mp3",
+  "gain": 0.14,
+  "start": 0
+ },
+ "sfx": [
+  [
+   "a",
+   "whoosh",
+   0.18
+  ],
+  [
+   "b.반만",
+   "pop",
+   0.22
+  ],
+  [
+   "e",
+   "pop",
+   0.2
+  ],
+  [
+   "f.직원",
+   "ding",
+   0.22
+  ],
+  [
+   "i",
+   "whoosh_dn",
+   0.2
+  ],
+  [
+   "k",
+   "pop",
+   0.18
+  ],
+  [
+   "l.알바",
+   "ding",
+   0.25
+  ],
+  [
+   "n",
+   "whoosh",
+   0.18
+  ]
+ ],
+ "clips": [
+  {
+   "from": "a0",
+   "label": "a0",
+   "gfx": {
+    "type": "scene",
+    "bg": "gogiNight",
+    "chars": [
+     {
+      "style": "chibi",
+      "look": {
+       "age": "old",
+       "hairdo": "short",
+       "hair": "#e4e4ea",
+       "top": "#c8b38a",
+       "topKind": "shirt",
+       "pants": "#5b5f66"
+      },
+      "mood": "neutral",
+      "size": 1.9,
+      "x": 0.5,
+      "y": 90
+     }
+    ],
+    "prop": "🥩",
+    "propX": 0.82,
+    "steps": [
+     9,
+     0.1,
+     9,
+     9
+    ],
+    "floor": 400
+   }
+  },
+  {
+   "from": "a",
+   "label": "a",
+   "gfx": {
+    "type": "scene",
+    "bg": "gogiNight",
+    "chars": [
+     {
+      "style": "chibi",
+      "look": {
+       "age": "old",
+       "hairdo": "short",
+       "hair": "#e4e4ea",
+       "top": "#c8b38a",
+       "topKind": "shirt",
+       "pants": "#5b5f66"
+      },
+      "mood": "neutral",
+      "size": 2.1,
+      "x": 0.5,
+      "y": 110
+     }
+    ],
+    "place": "📍 목요일 저녁 7시",
+    "steps": [
+     9,
+     9,
+     9,
+     9
+    ],
+    "floor": 400
+   }
+  },
+  {
+   "from": "b",
+   "label": "b",
+   "gfx": {
+    "type": "scene",
+    "photo": "hit500/samgyeopsal_table.jpg",
+    "chars": [
+     {
+      "style": "chibi",
+      "look": {
+       "age": "old",
+       "hairdo": "short",
+       "hair": "#e4e4ea",
+       "top": "#c8b38a",
+       "topKind": "shirt",
+       "pants": "#5b5f66"
+      },
+      "mood": "happy",
+      "size": 1.75,
+      "x": 0.3,
+      "rot": -4
+     }
+    ],
+    "big": "딱 반만",
+    "steps": [
+     9,
+     9,
+     9,
+     "b.반만"
+    ],
+    "floor": 400
+   }
+  },
+  {
+   "from": "c",
+   "label": "c",
+   "gfx": {
+    "type": "scene",
+    "bg": "gogiNight",
+    "chars": [
+     {
+      "style": "chibi",
+      "look": {
+       "age": "old",
+       "hairdo": "short",
+       "hair": "#e4e4ea",
+       "top": "#c8b38a",
+       "topKind": "shirt",
+       "pants": "#5b5f66"
+      },
+      "mood": "happy",
+      "size": 1.4
+     },
+     {
+      "style": "chibi",
+      "look": {
+       "age": "adult",
+       "hairdo": "spiky",
+       "hair": "#1f1f24",
+       "top": "#2e3a55",
+       "topKind": "apron",
+       "pants": "#2b2b30"
+      },
+      "mood": "neutral",
+      "size": 1.4
+     }
+    ],
+    "steps": [
+     "c",
+     9,
+     9,
+     9
+    ],
+    "say": {
+     "who": 0,
+     "text": "학생, 저녁은 먹었어?"
+    },
+    "floor": 400
+   }
+  },
+  {
+   "from": "d",
+   "label": "d",
+   "gfx": {
+    "type": "scene",
+    "bg": "gogiBack",
+    "chars": [
+     {
+      "style": "chibi",
+      "look": {
+       "age": "adult",
+       "hairdo": "spiky",
+       "hair": "#1f1f24",
+       "top": "#2e3a55",
+       "topKind": "apron",
+       "pants": "#2b2b30"
+      },
+      "mood": "shy",
+      "to": "sad",
+      "size": 1.75,
+      "x": 0.3,
+      "rot": -3
+     }
+    ],
+    "prop": "🍜",
+    "steps": [
+     9,
+     0.1,
+     "d.사실",
+     9
+    ],
+    "floor": 400,
+    "propX": 0.76
+   }
+  },
+  {
+   "from": "e",
+   "label": "e",
+   "gfx": {
+    "type": "scene",
+    "bg": "gogiBack",
+    "chars": [
+     {
+      "style": "chibi",
+      "look": {
+       "age": "adult",
+       "hairdo": "buzz",
+       "hair": "#141414",
+       "top": "#b3423a",
+       "topKind": "apron",
+       "pants": "#3a3a40",
+       "mustache": true
+      },
+      "mood": "neutral",
+      "size": 1.4
+     },
+     {
+      "style": "chibi",
+      "look": {
+       "age": "adult",
+       "hairdo": "spiky",
+       "hair": "#1f1f24",
+       "top": "#2e3a55",
+       "topKind": "apron",
+       "pants": "#2b2b30"
+      },
+      "mood": "shock",
+      "to": "happy",
+      "size": 1.4
+     }
+    ],
+    "prop": "🥩",
+    "steps": [
+     "e",
+     0.2,
+     "e+0.9",
+     9
+    ],
+    "say": {
+     "who": 0,
+     "text": "잔말 말고 구워 먹어"
+    },
+    "floor": 400
+   }
+  },
+  {
+   "from": "f",
+   "label": "f",
+   "gfx": {
+    "type": "scene",
+    "photo": "hit500/samgyeopsal_gui.jpg",
+    "chars": [
+     {
+      "style": "chibi",
+      "look": {
+       "age": "adult",
+       "hairdo": "spiky",
+       "hair": "#1f1f24",
+       "top": "#2e3a55",
+       "topKind": "apron",
+       "pants": "#2b2b30"
+      },
+      "mood": "love",
+      "size": 1.75,
+      "x": 0.3,
+      "rot": -4
+     }
+    ],
+    "big": "직원 고기",
+    "steps": [
+     9,
+     9,
+     9,
+     "f.직원"
+    ],
+    "floor": 400
+   }
+  },
+  {
+   "from": "g",
+   "label": "g",
+   "gfx": {
+    "type": "scene",
+    "bg": "gogi",
+    "chars": [
+     {
+      "style": "chibi",
+      "look": {
+       "age": "adult",
+       "hairdo": "spiky",
+       "hair": "#1f1f24",
+       "top": "#2e3a55",
+       "topKind": "apron",
+       "pants": "#2b2b30"
+      },
+      "mood": "angry",
+      "size": 1.4
+     },
+     {
+      "style": "chibi",
+      "look": {
+       "age": "adult",
+       "hairdo": "buzz",
+       "hair": "#141414",
+       "top": "#b3423a",
+       "topKind": "apron",
+       "pants": "#3a3a40",
+       "mustache": true
+      },
+      "mood": "think",
+      "size": 1.4
+     }
+    ],
+    "steps": [
+     "g",
+     9,
+     9,
+     9
+    ],
+    "say": {
+     "who": 0,
+     "text": "매번 반이나 남기세요"
+    },
+    "floor": 400
+   }
+  },
+  {
+   "from": "h",
+   "label": "h",
+   "gfx": {
+    "type": "scene",
+    "bg": "gogi",
+    "chars": [
+     {
+      "style": "chibi",
+      "look": {
+       "age": "adult",
+       "hairdo": "buzz",
+       "hair": "#141414",
+       "top": "#b3423a",
+       "topKind": "apron",
+       "pants": "#3a3a40",
+       "mustache": true
+      },
+      "mood": "angry",
+      "size": 1.6,
+      "x": 0.5
+     }
+    ],
+    "steps": [
+     9,
+     9,
+     9,
+     9
+    ],
+    "floor": 400
+   }
+  },
+  {
+   "from": "i",
+   "label": "i",
+   "gfx": {
+    "type": "scene",
+    "bg": "gogiNight",
+    "chars": [
+     {
+      "style": "chibi",
+      "look": {
+       "age": "adult",
+       "hairdo": "spiky",
+       "hair": "#1f1f24",
+       "top": "#2e3a55",
+       "topKind": "apron",
+       "pants": "#2b2b30"
+      },
+      "mood": "think",
+      "size": 1.75,
+      "x": 0.3,
+      "rot": -3
+     }
+    ],
+    "place": "📍 그 주 목요일",
+    "prop": "🪑",
+    "steps": [
+     9,
+     0.3,
+     9,
+     9
+    ],
+    "floor": 400,
+    "propX": 0.76
+   }
+  },
+  {
+   "from": "j",
+   "label": "j",
+   "gfx": {
+    "type": "scene",
+    "bg": "gogiBack",
+    "chars": [
+     {
+      "style": "chibi",
+      "look": {
+       "age": "adult",
+       "hairdo": "spiky",
+       "hair": "#1f1f24",
+       "top": "#2e3a55",
+       "topKind": "apron",
+       "pants": "#2b2b30"
+      },
+      "mood": "sad",
+      "size": 1.75,
+      "x": 0.3,
+      "rot": -3
+     }
+    ],
+    "prop": "🍜",
+    "steps": [
+     9,
+     0.1,
+     9,
+     9
+    ],
+    "floor": 400,
+    "propX": 0.76
+   }
+  },
+  {
+   "from": "k",
+   "label": "k",
+   "gfx": {
+    "type": "scene",
+    "bg": "gogiBack",
+    "chars": [
+     {
+      "style": "chibi",
+      "look": {
+       "age": "adult",
+       "hairdo": "buzz",
+       "hair": "#141414",
+       "top": "#b3423a",
+       "topKind": "apron",
+       "pants": "#3a3a40",
+       "mustache": true
+      },
+      "mood": "sad",
+      "size": 1.95,
+      "x": 0.64,
+      "y": 80,
+      "flip": true,
+      "rot": 3
+     }
+    ],
+    "steps": [
+     9,
+     9,
+     9,
+     9
+    ],
+    "floor": 400
+   }
+  },
+  {
+   "from": "l",
+   "label": "l",
+   "gfx": {
+    "type": "scene",
+    "bg": "#f3ead6",
+    "chars": [
+     {
+      "style": "chibi",
+      "look": {
+       "age": "adult",
+       "hairdo": "spiky",
+       "hair": "#1f1f24",
+       "top": "#2e3a55",
+       "topKind": "apron",
+       "pants": "#2b2b30"
+      },
+      "mood": "shock",
+      "size": 1.75,
+      "x": 0.3,
+      "rot": -3
+     }
+    ],
+    "prop": "📒",
+    "big": "알바 학생 저녁",
+    "steps": [
+     9,
+     0.1,
+     9,
+     "l.알바"
+    ],
+    "floor": 400,
+    "propX": 0.76
+   }
+  },
+  {
+   "from": "m",
+   "label": "m",
+   "gfx": {
+    "type": "scene",
+    "bg": "gogi",
+    "chars": [
+     {
+      "style": "chibi",
+      "look": {
+       "age": "adult",
+       "hairdo": "buzz",
+       "hair": "#141414",
+       "top": "#b3423a",
+       "topKind": "apron",
+       "pants": "#3a3a40",
+       "mustache": true
+      },
+      "mood": "think",
+      "to": "happy",
+      "size": 1.75,
+      "x": 0.3,
+      "rot": -3
+     }
+    ],
+    "prop": "🖼️",
+    "steps": [
+     9,
+     0.2,
+     "m.우리",
+     9
+    ],
+    "floor": 400,
+    "propX": 0.76
+   }
+  },
+  {
+   "from": "n",
+   "label": "n",
+   "gfx": {
+    "type": "scene",
+    "bg": "gogiNight",
+    "chars": [
+     {
+      "style": "chibi",
+      "look": {
+       "age": "old",
+       "hairdo": "short",
+       "hair": "#e4e4ea",
+       "top": "#c8b38a",
+       "topKind": "shirt",
+       "pants": "#5b5f66"
+      },
+      "mood": "happy",
+      "size": 1.4
+     },
+     {
+      "style": "chibi",
+      "look": {
+       "age": "adult",
+       "hairdo": "spiky",
+       "hair": "#1f1f24",
+       "top": "#2e3a55",
+       "topKind": "apron",
+       "pants": "#2b2b30"
+      },
+      "mood": "neutral",
+      "size": 1.4
+     }
+    ],
+    "place": "📍 다음 주 목요일",
+    "steps": [
+     9,
+     9,
+     9,
+     9
+    ],
+    "floor": 400
+   }
+  },
+  {
+   "from": "z",
+   "label": "z",
+   "gfx": {
+    "type": "scene",
+    "bg": "gogiNight",
+    "chars": [
+     {
+      "style": "chibi",
+      "look": {
+       "age": "adult",
+       "hairdo": "spiky",
+       "hair": "#1f1f24",
+       "top": "#2e3a55",
+       "topKind": "apron",
+       "pants": "#2b2b30"
+      },
+      "mood": "cry",
+      "to": "happy",
+      "size": 1.9,
+      "x": 0.5,
+      "y": 90
+     }
+    ],
+    "steps": [
+     9,
+     9,
+     "z.덕분에",
+     9
+    ],
+    "floor": 400
+   }
+  }
+ ]
+}
