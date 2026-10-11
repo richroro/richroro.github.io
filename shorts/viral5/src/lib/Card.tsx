@@ -28,6 +28,10 @@ export type CardOpts = {
   items: CardItem[];
   /** the small grey credit at the bottom of the page */
   credit?: string;
+  /** a different picture box (e.g. taller for the process clips, lib/Process notes in README); default CARD_BOX */
+  box?: Partial<typeof CARD_BOX>;
+  /** play the clips' own sound (machines, water, engines) at this level times each clip's "audio"; default muted */
+  clipAudio?: number;
 };
 
 const isImg = (f: string | null) => !!f && /\.(jpe?g|png|webp)$/i.test(f);
@@ -111,7 +115,7 @@ const ChickenDoodle: React.FC<{ f: number }> = ({ f }) => {
 };
 
 /** one item's clip in the rounded box: a cover fit with a slow push-in, popping in a little on the cut */
-const CardClip: React.FC<{ c: Clip }> = ({ c }) => {
+const CardClip: React.FC<{ c: Clip; vol?: number }> = ({ c, vol = 0 }) => {
   const f = useCurrentFrame();
   const { durationInFrames } = useVideoConfig();
   const p = Math.min(1, f / Math.max(1, durationInFrames - 1));
@@ -119,6 +123,7 @@ const CardClip: React.FC<{ c: Clip }> = ({ c }) => {
   const style: React.CSSProperties = { width: "100%", height: "100%", objectFit: "cover", objectPosition: c.focus, transform: `scale(${s})`, transformOrigin: c.focus };
   if (!c.file) return <AbsoluteFill style={{ background: "#ddd" }} />;
   return isImg(c.file) ? <Img src={staticFile(c.file)} style={style} />
+    : vol > 0 ? <OffthreadVideo src={staticFile(c.file)} playbackRate={c.speed} volume={vol * c.audio} style={style} />
     : <OffthreadVideo src={staticFile(c.file)} playbackRate={c.speed} muted style={style} />;
 };
 
@@ -133,7 +138,7 @@ export const CardShort: React.FC<{ d: ShortData & { card?: CardOpts } }> = ({ d 
   const tSize = Math.min(64, ...title.map((l) => fitText({ text: l, withinWidth: 960, fontFamily: BODY, fontWeight: 800 }).fontSize));
   const pop = item ? 1 + 0.04 * (1 - eOut(prog(t, item.at, 0.18))) : 1;
   const musicVol = (mf: number) => (d.music ? d.music.gain * prog(mf / FPS, 0, 0.05) * (1 - prog(mf / FPS, d.end - 0.6, 0.6)) : 0);
-  const B = CARD_BOX;
+  const B = { ...CARD_BOX, ...(o.box ?? {}) };
   return (
     <AbsoluteFill style={{ background: "#fff" }}>
       {o.badge ? (
@@ -152,7 +157,7 @@ export const CardShort: React.FC<{ d: ShortData & { card?: CardOpts } }> = ({ d 
       <div style={{ position: "absolute", left: B.left, top: B.top, width: B.width, height: B.height, borderRadius: B.radius, overflow: "hidden", background: "#000" }}>
         {d.clips.map((c, i) => (
           <Sequence key={i} from={fr(c.at)} durationInFrames={Math.max(1, until(c) - fr(c.at))}>
-            <CardClip c={c} />
+            <CardClip c={c} vol={o.clipAudio} />
           </Sequence>
         ))}
         {o.items.map((it, i) => {
