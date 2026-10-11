@@ -8392,6 +8392,7 @@ MEDIA=$PWD/media python3 politics/prep_split.py people4 && ./render.sh people4 f
 | `star4` | 브래드 피트가 우주에 / '누가 더 낫냐' 묻자..? | 브래드 피트 · 배우 | 34.5초 | 22.1MB | NASA 「Brad Pitt Speaks with NASA Astronaut Nick Hague Aboard the International Space Station」 165,431회, youtube.com/watch?v=_oVYSwmIrZk (같은 원본) | NASA 본부 생중계 영상 (2019-09-16) |
 | `star5` | 복싱 전설 레너드가 / 프로가 된 진짜 이유..? | 슈거 레이 레너드 · 복싱 | 43.8초 | 21.5MB | 「Why Sugar Ray Leonard Couldn’t Save His Own Family」 76.7만회, youtube.com/shorts/FeOfjrJl49Q (가족 이야기 각도. 원본은 다름) | 미국 상원 녹화실 영상 `govtaff062409` (2009-06-24) |
 | `star6` | 닉 조나스가 의사에게 / '저 죽나요?' 묻자..? | 닉 조나스 · 가수 | 37.4초 | 19.8MB | 닉 조나스 본인 쇼츠 「Sharing my signs so that others can #SeeTheSigns…」 400만회, youtube.com/shorts/vbAk72Vkz5w, 「Singer Nick Jonas shared the symptoms he faced before he was diagnosed…」 14.9만회, youtube.com/shorts/R5s5IXcUB1Q (같은 진단 이야기. 원본은 다름) | 같은 상원 청문회 영상 |
+| `star7` | 마윈이 하버드에 / 10번 떨어지고 한 말..? | 마윈 · 기업인(알리바바 창업자) | 44.6초 | 19.9MB | WEF 「Jack Ma: I've Had Lots Of Failures And Rejections \| Davos 2015」 3,261,908회, youtube.com/watch?v=1O3ghiyirvU (같은 원본), WEF 「Alibaba Founder Jack Ma: 'Harvard Rejected Me 10 Times'」 1,449,441회, youtube.com/watch?v=6SuFGpYQt0E | 세계경제포럼 다보스 2015 대담, Wikimedia Commons (CC BY 3.0) |
 
 - **한국 쪽 기준**: 해외 인물 50만+ 한국어 쇼츠 조사(`research/research-500k-people.csv`)의 유명인 육성 히트작과 같은 제목 틀을 썼다.
   - 「~하는 진짜 이유..?」 틀은 「머스크가 1,700조 괴물을 우주로 탈출시킨 소름 돋는 이유」(894만)의 것이다.
@@ -8516,6 +8517,23 @@ MEDIA=$PWD/media python3 politics/prep_split.py star1 && ./render.sh star1 final
   - 레너드의 1976년 올림픽 금메달: 콜린스 의원의 소개와 레너드 본인의 답변(회의록)에 나온다.
   - 혈당 700 이상과 2005년 투어 중 진단: 조나스 본인 증언이다.
 
+### star7: 마윈 (세계경제포럼 다보스 2015, CC BY 3.0)
+
+- **원본**: World Economic Forum 「Davos 2015 - An Insight, An Idea with Jack Ma」를 Wikimedia Commons에서 받았다([파일 페이지](https://commons.wikimedia.org/wiki/File:Davos_2015_-_An_Insight_An_Idea_with_Jack_Ma.webm), 1280×720, 44:32).
+  - 라이선스는 CC BY 3.0이다. Commons 라이선스 검토를 2016-12-19에 통과했다.
+  - 같은 대담의 WEF 유튜브 원본 페이지도 2026-10-11에 글만 읽어 "Creative Commons Attribution license (reuse allowed)"를 확인했다.
+  - 유튜브에서는 아무것도 받지 않았다.
+- **CC BY 표시**: 설명란에 "World Economic Forum, CC BY 3.0, via Wikimedia Commons", 라이선스 링크, 바꾼 점(잘라 붙임, 확대, 자막)을 적었다.
+- **구간** (원본 초): 515.0–522.9(30번 낙방, 경찰), 523.2–536.4(KFC 24명 중 23명 합격), 547.0–557.85(하버드 10번, 웃음), 562.98–564.5("…I should go teach there"), 2622.5–2636.1(30번 넘게 떨어져 본 사람, 포기하지 않는다, 남 탓 안 한다).
+- **진행자는 쓰지 않았다**: 진행자의 얼굴과 목소리를 넣지 않고, 마윈 클로즈업 카메라만 썼다.
+  - 557.9–563.0은 무대 전체 화면(바닥에 WEF 로고)이라 건너뛰었다. 그래서 "someday"가 빠지고 자막이 "…"로 시작한다.
+  - 2630초의 "we're like a forest gone"(알아듣기 어려운 말)도 뺐다.
+- **뒷배경**: 초점 밖 'WORLD ECONOMIC FORUM' 글자는 목 왼쪽 띠(원본 y 292–412)를 흐리게 했다. 오른쪽에 'D' 조각이 흐릿하게 남는 장면이 있다.
+- **크롭**: OpenCV 얼굴 검출이 이 환경에서 동작하지 않았다. 그래서 구간마다 처음·가운데·끝 프레임을 격자로 보고 얼굴 x 위치(0.57~0.67)를 정했다.
+- **녹취**: 공식 녹취록이 없어서 faster-whisper medium.en(단어 시간)과 tiny.en(전체)으로 맞췄다.
+  - 영어는 마윈이 말한 그대로 적었다("got rejected", "change ourself" 등 비문 포함).
+- **받기**: upload.wikimedia.org가 10:21~13:33 내내 HTTP 429(Retry-After 600)를 돌려줬다. 13:48에 받았다. 우회나 미러는 쓰지 않았다.
+
 ### 자막 상자 (`capBoxEn`, star4~)
 
 사용자가 보낸 참고 쇼츠(여러 클립을 한 이야기로 잇고, 검은 상자 한국어 자막을 다는 형식)에 맞춰 star4~star6의 자막을 바꿨다.
@@ -8602,6 +8620,18 @@ MEDIA=$PWD/media python3 politics/prep_split.py star1 && ./render.sh star1 final
 #Shorts #닉조나스 #NickJonas #조나스브라더스 #JonasBrothers #1형당뇨 #당뇨 #팝스타 #동기부여 #청문회 #한영자막 #영어공부 #인터뷰
 ```
 고정 댓글: 힘든 소식을 들은 날, 여러분은 어떻게 다시 일어나나요?
+
+**star7**: 마윈이 하버드에 10번 떨어지고 한 말..? 💪
+```
+알리바바 창업자 마윈이 2015년 1월 스위스 다보스 세계경제포럼(WEF) 대담에서 자기 실패담을 털어놨습니다. 일자리에 30번 지원해 다 떨어지고, KFC가 그의 도시에 들어왔을 때는 24명 중 23명이 붙었는데 혼자 떨어졌고, 하버드에도 10번 지원해 10번 다 떨어졌다는 것. 그래도 중요한 건 절대 포기하지 않고, 남 탓 대신 스스로를 바꾸는 거라고 말했습니다. 영어 원문과 한국어 번역 자막(대담 일부를 이어 붙임, 중간 생략).
+
+▶ [채널명] 채널 구독: https://www.youtube.com/@[핸들]
+
+출처: 영상: World Economic Forum, "Davos 2015 - An Insight, An Idea with Jack Ma" (Wikimedia Commons, CC BY 3.0 https://creativecommons.org/licenses/by/3.0/) — 잘라 붙이고 화면을 확대하고 자막을 넣음 · Commons 파일: https://commons.wikimedia.org/wiki/File:Davos_2015_-_An_Insight_An_Idea_with_Jack_Ma.webm · 영어 자막·한국어 번역 직접 제작(대담 일부 생략) · 세계경제포럼(WEF)은 이 영상을 보증하거나 후원하지 않습니다 · 이 영상은 영상 속 인물이나 기관이 보증·후원한 것이 아닙니다
+
+#Shorts #마윈 #JackMa #알리바바 #Alibaba #다보스포럼 #실패 #동기부여 #명언 #하버드 #한영자막 #영어공부 #인터뷰
+```
+고정 댓글: 여러분이 가장 많이 떨어져 본 건 몇 번인가요? 🙋
 
 ### people1~people4 다시 렌더 (화면에서 출처·날짜 빼기)
 
