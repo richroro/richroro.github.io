@@ -105,3 +105,107 @@
 ```
 사흘 만에 바다가 땅이 됐다니… 직접 보면 어떨까요? 🌋
 ```
+
+## bug1
+
+**제목**
+
+```
+세상에 이렇게 생긴 게 진짜 있다고? (곤충편) ㄷㄷ
+```
+
+**설명글**
+
+```
+미국 지질조사국(USGS) 꿀벌 연구소가 표본을 수십 장씩 겹쳐 찍은 초접사 사진 10장입니다. 들소 뿔을 단 것 같은 뿔매미, 긴 혀로 꿀을 빠는 난초벌, 보석처럼 빛나는 청벌, 개미처럼 생겼지만 사실은 벌인 개미벌, 연구원이 '역병 의사'라는 별명을 붙인 바구미까지 모두 실제 곤충입니다. 첫 장면의 그림만 직접 그렸습니다.
+
+▶ [채널명] 채널 구독: https://www.youtube.com/@[핸들]
+
+출처: 사진: USGS Bee Inventory and Monitoring Lab (flickr.com/photos/usgsbiml, Public Domain Mark) · 첫 장면 그림 직접 제작 · 음악: "Fluffing a Duck" Kevin MacLeod (incompetech.com), CC BY 4.0 (creativecommons.org/licenses/by/4.0) · USGS는 이 영상을 보증하거나 후원하지 않습니다. 이름과 설명은 USGS 꿀벌 연구소 사진 설명 기준입니다
+
+#Shorts #곤충 #신기한곤충 #벌레 #뿔매미 #난초벌 #청벌 #개미벌 #길앞잡이 #접사 #USGS
+```
+
+**고정 댓글**
+
+```
+10개 중에 제일 안 믿기는 건 몇 번이에요? 🐛
+```
+
+## breath2
+
+**제목**
+
+```
+보는 것만으로 숨 멎는 깊이 차이 ㄷㄷ
+```
+
+**설명글**
+
+```
+수심 30m의 하얀 말미잘에서 시작해 712m 쏨뱅이류, 880m 왕관해파리, 1,365m 꼼치, 3,000m '우주 해파리', 4,000m에 서 있는 해삼, 4,950m 테니스공만 한 금속 덩어리 밭을 지나 마리아나 해구 수심 5,900m의 물고기까지 내려갑니다. 모두 미국 해양대기청(NOAA)의 무인잠수정과 해양보호구역 조사에서 찍은 실제 영상과 사진입니다.
+
+▶ [채널명] 채널 구독: https://www.youtube.com/@[핸들]
+
+출처: 영상·사진: NOAA Ocean Exploration (Voyage to the Ridge 2022, Windows to the Deep 2018, Seascape Alaska 2023, 2017 American Samoa, 2026 Cook Islands, 2016 Deepwater Exploration of the Marianas) · NOAA Photo Library sanc1635 (Michael Carver/Cordell Bank National Marine Sanctuary) · 음악: "Deep Haze" Kevin MacLeod (incompetech.com), CC BY 4.0 (creativecommons.org/licenses/by/4.0) · NOAA는 이 영상을 보증하거나 후원하지 않습니다. 수심은 NOAA 영상·사진 설명 기준입니다
+
+#Shorts #심해 #바다 #수심 #깊이차이 #해파리 #마리아나해구 #심해생물 #NOAA
+```
+
+**고정 댓글**
+
+```
+몇 m부터 숨 막혔어요? 🌊
+```
+
+## bird1
+
+**제목**
+
+```
+세상에 이렇게 생긴 게 진짜 있다고? (새편) ㄷㄷ
+```
+
+**설명글**
+
+```
+가슴의 노란 공기주머니를 부풀리는 산쑥들꿩, 눈가에 안경 같은 무늬가 있는 안경솜털오리, 날개 길이 2.9m로 북미에서 가장 큰 육지 새인 캘리포니아콘도르, 목 주머니를 빨간 풍선처럼 부풀리는 큰군함조까지. 미국 어류·야생동물관리국(USFWS)과 토지관리국(BLM), 해양대기청(NOAA) 직원들이 야생에서 찍은 실제 새 9종입니다.
+
+▶ [채널명] 채널 구독: https://www.youtube.com/@[핸들]
+
+출처: 사진: Bob Wick/BLM (CC BY 2.0) · Peter Pearsall/USFWS · John Heil/USFWS · Courtney Celley/USFWS · Grayson Smith/USFWS · Lisa Hupp/USFWS · Mike Carlo/USFWS (CC BY 2.0) · Robert Schwemmer/NOAA · 음악: "Carefree" Kevin MacLeod (incompetech.com), CC BY 4.0 (creativecommons.org/licenses/by/4.0) · USFWS·BLM·NOAA는 이 영상을 보증하거나 후원하지 않습니다. 설명은 각 기관의 사진 설명과 종 소개 기준입니다
+
+#Shorts #새 #신기한동물 #조류 #산쑥들꿩 #콘도르 #퍼핀 #군함조 #칠면조 #야생동물
+```
+
+**고정 댓글**
+
+```
+제일 안 믿기는 새는 몇 번이에요? 🐦
+```
+
+## story2
+
+**제목**
+
+```
+사진 8장이 기록한 괴물 허리케인의 6일 ㄷㄷ
+```
+
+**설명글**
+
+```
+2024년 10월 5일 멕시코만에서 열대폭풍으로 태어난 허리케인 밀턴은 10월 7일, 열대저압부가 된 지 49시간도 안 돼 5등급이 됐고 중심기압은 895hPa까지 떨어졌습니다. 국제우주정거장에서 내려다본 '눈'과 위성 사진 8장으로, 플로리다에 상륙해 풀려 버리기까지의 6일을 따라갑니다.
+
+▶ [채널명] 채널 구독: https://www.youtube.com/@[핸들]
+
+출처: 사진: NASA (국제우주정거장 iss072e014652, iss072e029017, iss072e029127, iss072e031398) · NASA Worldview/GIBS 위성 영상 (VIIRS NOAA-21, MODIS Terra·Aqua, 2024.10.5~10.10) · 음악: "Volatile Reaction" Kevin MacLeod (incompetech.com), CC BY 4.0 (creativecommons.org/licenses/by/4.0) · NASA·NOAA는 이 영상을 보증하거나 후원하지 않습니다. 날짜·등급·기압은 미국 국립허리케인센터(NHC) 허리케인 밀턴 보고서(AL142024)와 NOAA NESDIS 기준입니다
+
+#Shorts #허리케인 #태풍 #밀턴 #자연재해 #우주 #국제우주정거장 #위성사진 #NASA #실제사진
+```
+
+**고정 댓글**
+
+```
+우주에서 본 태풍의 눈… 몇 번째 사진이 제일 소름이었어요? 🌀
+```
