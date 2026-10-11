@@ -7695,3 +7695,123 @@ qa_review.py: 두 편 모두 11/11 PASS(길이, 제목, 호기심 "?", 첫 전�
   - 한 장에 인물이 한 명이면 인물 시트만으로 머리, 옷, 소품이 이어진다.
   - 두 명이면 특징이 섞여서(모두 안경, 포니테일 사라짐) 쓸 수 없다.
   - AI 그림으로 대화 장면을 만들 때는 한 명씩 그리고 상대는 시점 샷으로 처리한다.
+
+
+## 쇼츠 50만+ 무음: 흰 카드 + 동물 클립 (`wild1` 독수리, `wild2` 바다거북, `wild3` 물범)
+
+사용자 요청은 "사연은 안되겠다 음성 많이 들어가면 어색해 음성없고 50만 이상으로 해서 조사해서 더 만들어줘"였다(괴담도 별로). 그래서 목소리 없는 50만+ 형식 중 작은 채널 적중률이 가장 높은 **흰 카드 + 실제 클립 한 편 + 이야기 자막**으로 동물 이야기 3편을 만들었다. 내레이션, 대사, TTS는 없다. 음악, 효과음, 자연음, 화면 글자만 쓴다.
+
+### 벤치마크와 숫자 (`research/research-500k-mute.md` §1·§3·§4, 2026-10-11)
+
+- **형식별 작은 채널(구독 10만 미만) 50만+ 적중률**: 흰 카드 + 실제 클립 + 장면 자막 20/60 = **33%**(2곳). 흰 카드 + 클립 27%, 클립 모음 TOP N 19.5%, 흰 카드 사진 리스트 13%, 자막 동물 클립 7.5%, 공정·작업 6.7%.
+- **지구촌동물극장**(구독 2.53만, 최근 30편 중 9편 50만+, 30편 중앙값 16만): 둥지 카메라·구조 이야기를 자막으로 푼다.
+  - 「눈보라 속에서 알 품는 아내를 지키는 남편 독수리의 찐사랑」 1075만(2026-09-12, youtube.com/shorts/jWlTt7gJH_U).
+  - 「푸른박새의 46일짜리 프리미엄 독채 룸투어」 943만, 「도로 장벽에 갇힌 아기 곰」 717만, 「사람 손으론 가망 없던 핏덩이에게 일어난 기적..」 607만, 「알들이 모두 부화에 실패하는데..」 504만.
+- **사랑빛**(1.84만, 11/30, 중앙값 19.5만): 「시도 때도 없이 앞구르기하는 고양이」 520만, 「하수구에 빠진 아기를 구한 어미 냥이」 213만, 「고양이 영역에 잘못 들어온 맹금류」 167만.
+- 두 채널 모두 남의 영상을 다시 올린다. 우리는 레이아웃과 이야기 리듬만 따르고, 영상은 연방기관 직원이 찍은 것만 쓴다. 이번에는 YouTube를 새로 읽지 않았다(숫자는 위 조사 그대로).
+
+### 무엇을 맞췄나
+
+| 항목 | 벤치마크 (조사 §4 ②) | 우리 |
+|---|---|---|
+| 바탕·제목 | 흰 바탕, 검은 제목 + ㅠㅠ/ㄷㄷ | 흰 바탕, 검은 2줄 제목, 끝에 ㄷㄷ·ㅠㅠ |
+| 그림 | 둥근 상자에 클립 하나 | `src/lib/Card.tsx`, 1000×1000 둥근 상자, 한 출처의 연속 영상만 |
+| 자막 | 그림 아래 이야기 한 줄 | 장면마다 한 줄 + 괄호 보조 줄(종 이름, 날짜, 배속) |
+| 시간 점프 | 날짜·일수 표시 | 새 `tag`: 사진 왼쪽 위 검은 칩("2022년 2월 2일", "2월 2일") |
+| 첫 1초 | 가장 센 장면 | 날개 편 아기 독수리 / 손에서 버둥대는 거북 / 기어가는 물범 |
+| 끝 | 결말 한 줄 | 첫 장면과 같은 모습으로 끝나 반복 재생 |
+| 소리 | 음악만 | Kevin MacLeod + 부드러운 효과음. wild1·wild3은 원본 자연음(새·바람·파도)을 낮게 깔았다 |
+| 제목 틀 | 「~하는 남편 ○○의 찐사랑」, 「~하는데..」 | 「엄마 아빠가 지켜보는 앞에서 ~ ㄷㄷ」, 「~이 비행기 타고 간 곳 ㄷㄷ」, 「~상자 문이 열리자 보인 반응 ㅠㅠ」 (벤치마크 제목은 베끼지 않았다) |
+
+### 영상
+
+| id | 화면 제목 | 길이 | 용량 | 음악 | 이야기 (한 줄 요약 / 결말 유형 / 감정) |
+|---|---|---|---|---|---|
+| `wild1` | 엄마 아빠가 지켜보는 앞에서 / 날갯짓 연습하는 아기 독수리 ㄷㄷ | 28.6초 | 11.8MB (무음악 11.7MB) | Heartwarming | 갈색 아기 흰머리수리가 둥지에서 퍼덕이다 윗가지로 폴짝, 옆 가지의 어른 독수리는 자리를 지킨다 / 따뜻한 반전(아직 비행은 아님) / 뭉클·귀여움 |
+| `wild2` | 추위에 기절한 거북이들이 / 비행기 타고 간 곳 ㄷㄷ | 30.2초 | 8.8MB (8.1MB) | Dreamer | 차가운 바다에서 몸이 굳어 구조된 켐프각시바다거북이 비행기로 NASA 우주센터 활주로에 내려 대서양으로 돌아간다 / 의외의 이유(왜 비행기?) / 뭉클 |
+| `wild3` | 낚싯바늘 삼켰던 어린 물범이 / 상자 문이 열리자 보인 반응 ㅠㅠ | 29.8초 | 10.2MB (10.1MB) | Touching Moments Two - Higher | 바늘을 삼켜 구조된 하와이몽크물범이 치료 엿새 만에 상자 문이 열리자 바다 쪽으로 꿈틀꿈틀 / 따뜻한 반전 / 뭉클·귀여움 |
+
+- **qa_review.py**: 세 편 모두 11/11 PASS, 0 FAIL, 0 WARN. −14.0 / −14.3 / −14.1 LUFS, 검은 화면 없음. first.png와 sheet.png는 직접 봤다.
+- **자연음 확인**: faster-whisper(small)로 원본 소리를 받아썼다. 독수리·물범 영상은 사람 말이 없었다(무음 구간 환각 "You"만). 거북 영상에는 사람 말("Hey Laura, there's a thermistor" 등)이 있어서 `clipAudio: 0`으로 껐다. 배속 장면은 소리를 껐다.
+- **용량**: 렌더(CRF 18) 뒤 영상만 `-crf 23 -preset slow`로 다시 압축했고 오디오는 복사했다. 무음악판도 같다.
+- **화면 확인**: 거북 영상의 바나나 상자 상표와 비행기 꼬리 번호(N12JD), 단체 로고가 보이는 장면은 쓰지 않았다(담요 덮인 상자, 옆모습 비행기만). 사람은 구조·방류하는 모습으로만 나온다. NOAA 운반 상자의 기관 로고는 남아 있다.
+
+### 템플릿 변경 (다른 형식은 그대로)
+
+- **새 파일**: `media/wild/make_wild.py`. `media/<id>/wild.json` 한 장(장면마다 길이, 원본 시작점, 배속, 확대, 자막, 날짜 칩)에서 edit.json, script.json, 빈 timeline을 만든다. 채널 표시(임시 "오늘의 동물 일기")는 이 파일의 `BADGE`에 있다.
+- **공유 파일에 건 고리**
+  - `src/lib/Card.tsx`: `CardItem`에 선택 필드 `tag` 하나와 그것을 그리는 몇 줄. 없으면 아무것도 그리지 않는다.
+  - `upload/channels.json`: `wild` 채널.
+- **회귀 확인**: 손대지 않은 `how1`(공정 카드, 같은 Card.tsx)을 다시 렌더했다(`CRF=22 ./render.sh how1`). `final/how1.mp4`와 바이트까지 같다(cmp).
+- **만드는 법**: `python3 media/how1/fetch_nasa_video.py <id> key=nasa_id`(NOAA는 영상 갤러리 페이지의 mp4) → `python3 media/wild/make_wild.py <id> && python3 prep.py <id> && ./render.sh <id>` → CRF 23 재압축 → `./render_nomusic.sh <id>`도 같은 방식.
+
+### 출처와 라이선스 (항목별)
+
+모두 미국 연방기관 직원이 찍은 영상이다(퍼블릭 도메인). 사실은 각 영상 설명과 연방기관 종 소개에서만 가져왔다.
+
+**wild1**: NASA/Ben Smegelsky, "Wildlife Video - Bald Eagles" (KSC-20260313-MH-JBS01-0001, 2026-03-13) — https://images.nasa.gov/details/KSC-20260313-MH-JBS01-0001-Wildlife_Video_Bald_Eagles_BROLL-M19993
+- 설명: "Two American bald eagles sit perched on a tree branch while two eaglets sit in their nest at NASA's Kennedy Space Center… on Friday, March 13, 2026."
+- 원본 0:46~1:20(날갯짓·윗가지로 폴짝)과 1:27~1:30(가지 위 어른 두 마리)을 썼다. 처음 5초 NASA 슬레이트는 뺐다.
+- 종 사실(USFWS 흰머리수리 종 소개, fws.gov/species/bald-eagle-haliaeetus-leucocephalus): 플로리다에서는 겨울에 둥지를 튼다, 새끼는 석 달 안에 난다("flying within 3 months of age"), 4~5살까지 갈색 얼룩이고 5살쯤 머리가 희어진다, 짝은 평생 간다.
+- **"엄마 아빠"**: 설명은 "두 어른 독수리가 가지에, 새끼 둘이 둥지에"라고만 한다. 둥지 바로 옆을 지키는 어른 한 쌍이라 부모로 불렀다(가벼운 의인화). 날갯짓은 영상에 보이는 그대로다.
+
+**wild2**: NASA/Cory Huston, "Rescued Sea Turtles Arrival at LLF, Release at Playalinda Beach, Florida" (2021-02-26) — https://images.nasa.gov/details/KSC-20210226-MH-CSH01-0001-Rescued_Sea_Turtles_Arrival_at_LLF_Released_at_Playalinda_Beach-3269767
+- 설명: 켐프각시바다거북 등이 북동부 수족관에서 콜드 스턴(cold-stunning) 치료를 받고 PC12 비행기로 케네디 우주센터 발사·착륙 시설(LLF)에 도착, 캐너버럴 국립해안에서 대서양으로 방류. 비행은 Turtles Fly Too가 매사추세츠·뉴욕에서 제공.
+- 허가: "All marine turtle footage/images was obtained with the approval of the Florida Fish and Wildlife Conservation Commission (FWC)… FWC 2021 Consent Permit, MTP-21-005 and MTP-21-114."
+- 종 사실(NOAA Fisheries 켐프각시바다거북 종 소개): 세상에서 가장 작은 바다거북, 수온이 갑자기 떨어지면 콜드 스턴으로 수백~수천 마리가 구조가 필요해진다.
+- "기절"은 콜드 스턴(저체온으로 움직이지 못함)을 쉽게 옮긴 말이다.
+
+**wild3**: NOAA Fisheries, "B-Roll: Release of Hawaiian Monk Seal R7AF" — https://videos.fisheries.noaa.gov/detail/videos/b-roll:-seals-and-sea-lions/video/6297080580001/b-roll:-release-of-hawaiian-monk-seal-r7af
+- 슬레이트: "All footage courtesy of the National Oceanic and Atmospheric Administration… Please credit: NOAA Fisheries, taken under NMFS MMHSRP Permit #18786". 갤러리 페이지는 B-roll이 퍼블릭 도메인이고 NOAA Fisheries 크레디트로 쓸 수 있다고 적는다.
+- 슬레이트 설명: 2022-01-27 NOAA 주도 팀이 오아후 하나우마 만에서 낚싯바늘에 걸린 어린 수컷 R7AF에 대응, 하와이섬 Ke Kai Ola에서 삼킨 낚시 도구 치료, 2022-02-02 NOAA와 Hawaii Marine Animal Response가 오아후에서 방류. "엿새"는 1/27→2/2다.
+- 종 사실(NOAA Fisheries 하와이몽크물범 종 소개): 하와이에만 산다, 멸종위기종, 약 1,600마리.
+- 영상은 물범이 물가 바위 앞까지 가는 데서 끝나서, "풍덩" 대신 "바다 바로 앞까지"라고 썼다.
+
+**검토했지만 뺀 것**
+- NOAA "Waikīkī Pup Pualani Safely Released at New Home"(Permit #24359): NOAA 영상이지만 물범이 화면에서 너무 작다.
+- USGS 북극곰 목걸이 카메라: usgs.gov 페이지가 504를 줬고, 일부 클립은 Polar Bears International·WWF 공동 촬영이며 사냥 장면이 있다.
+- Pexels·Pixabay: 우리 User-Agent에 403(쓰지 않았다).
+
+**공통**
+- 음악: Kevin MacLeod (incompetech.com), CC BY 4.0. 곡명은 설명란에 있다.
+- 기관의 "보증하지 않음" 문구와 허가 번호를 설명란에 넣었다.
+- 화면에 "저작권", "퍼블릭 도메인", "공공누리"는 쓰지 않았다. 군 자료, 정치, 피는 없다.
+- 채널 표시 "오늘의 동물 일기"는 임시다(벤치마크 채널 이름과 닮지 않게 골랐다).
+
+### 업로드 문구
+
+**wild1**: 엄마 아빠가 지켜보는 앞에서 날갯짓 연습하는 아기 독수리 ㅠㅠ
+```
+2026년 3월 13일, NASA 케네디 우주센터의 흰머리수리 둥지입니다. 온몸이 갈색인 아기 독수리 두 마리 가운데 한 마리가 둥지 위에서 날개를 퍼덕이다가 윗가지로 폴짝 올라앉고, 바로 옆 가지에서는 머리가 흰 어른 독수리들이 그 모습을 지켜봅니다. 흰머리수리 새끼는 알에서 깬 지 석 달 안에 날게 된다고 합니다. NASA 직원이 찍은 실제 영상입니다.
+
+▶ [채널명] 채널 구독: https://www.youtube.com/@[핸들]
+
+출처: 영상: NASA/Ben Smegelsky, Wildlife Video - Bald Eagles (2026, NASA Kennedy Space Center, images.nasa.gov) · 음악: "Heartwarming" Kevin MacLeod (incompetech.com), CC BY 4.0 (creativecommons.org/licenses/by/4.0) · NASA는 이 영상을 보증하거나 후원하지 않습니다. 흰머리수리 생태는 미국 어류·야생동물관리국(USFWS) 종 소개 기준입니다
+
+#Shorts #독수리 #아기독수리 #흰머리수리 #동물 #야생동물 #새 #둥지 #귀여운동물 #동물이야기 #NASA
+```
+고정 댓글: 몇 번 퍼덕여야 진짜로 날 수 있을까요? 🦅
+
+**wild2**: 추위에 기절한 바다거북들이 비행기 타고 간 곳 ㄷㄷ
+```
+미국 북동부 바다에서 갑자기 차가워진 물에 몸이 굳어(콜드 스턴) 구조된 켐프각시바다거북들이 수족관에서 치료를 마치고, 2021년 2월 26일 작은 비행기를 타고 플로리다의 NASA 케네디 우주센터 활주로에 내렸습니다. 거북이들은 근처 캐너버럴 국립해안으로 옮겨져 한 마리씩 따뜻한 대서양으로 돌아갔습니다. 켐프각시바다거북은 세상에서 가장 작은 바다거북입니다. NASA 직원이 찍은 실제 영상입니다.
+
+▶ [채널명] 채널 구독: https://www.youtube.com/@[핸들]
+
+출처: 영상: NASA/Cory Huston, Rescued Sea Turtles Arrival at LLF, Release at Playalinda Beach, Florida (2021, NASA Kennedy Space Center, images.nasa.gov) · 바다거북 촬영은 플로리다 어류·야생동물보존위원회(FWC) 승인, 허가 MTP-21-005·MTP-21-114 · 음악: "Dreamer" Kevin MacLeod (incompetech.com), CC BY 4.0 (creativecommons.org/licenses/by/4.0) · NASA는 이 영상을 보증하거나 후원하지 않습니다. 날짜와 경위는 NASA 영상 설명, 종 정보는 미국 해양대기청(NOAA Fisheries) 종 소개 기준입니다
+
+#Shorts #바다거북 #거북이 #구조 #동물구조 #동물 #야생동물 #감동 #바다 #동물이야기 #NASA
+```
+고정 댓글: 비행기까지 타고 집에 간 거북이들… 다들 잘 지내겠죠? 🐢
+
+**wild3**: 낚싯바늘 삼켰던 어린 물범이 상자 문이 열리자 보인 반응 ㅠㅠ
+```
+2022년 1월 27일, 하와이 오아후섬 하나우마 만에서 낚싯바늘에 걸린 어린 수컷 하와이몽크물범 R7AF를 미국 해양대기청(NOAA)이 이끄는 팀이 구조했습니다. 물범은 하와이섬의 물범 병원 '케 카이 올라'에서 삼킨 낚시 도구 치료를 받았고, 2월 2일 NOAA와 구조 단체 Hawaii Marine Animal Response가 오아후 해변에서 운반 상자 문을 열어 주었습니다. 하와이몽크물범은 하와이에만 사는 멸종위기종으로, 약 1,600마리가 남아 있습니다. NOAA가 공개한 실제 영상입니다.
+
+▶ [채널명] 채널 구독: https://www.youtube.com/@[핸들]
+
+출처: 영상: NOAA Fisheries, taken under NMFS MMHSRP Permit #18786 — B-Roll: Release of Hawaiian Monk Seal R7AF (2022, videos.fisheries.noaa.gov) · 음악: "Touching Moments Two - Higher" Kevin MacLeod (incompetech.com), CC BY 4.0 (creativecommons.org/licenses/by/4.0) · NOAA는 이 영상을 보증하거나 후원하지 않습니다. 날짜와 경위는 NOAA 영상 설명, 개체 수는 NOAA Fisheries 종 소개 기준입니다
+
+#Shorts #물범 #바다표범 #하와이몽크물범 #구조 #동물구조 #동물 #야생동물 #감동 #하와이 #동물이야기 #NOAA
+```
+고정 댓글: 다시는 바늘 삼키지 말고 건강하게 살자… 🦭

@@ -20,7 +20,9 @@ export const CARD_BOX = { left: 40, top: 430, width: 1000, height: 750, radius: 
 
 /** `ring`: a red circle drawn round something small in the picture (x, y, r as fractions of the picture box),
  *  e.g. the Earth in the Pale Blue Dot; it draws itself 0.4 s after the item starts */
-export type CardItem = { at: number; ko: string; en?: string; doodle?: "seapig" | "chicken" | keyof typeof MORE_DOODLES; ring?: { x: number; y: number; r: number } };
+export type CardItem = { at: number; ko: string; en?: string; doodle?: "seapig" | "chicken" | keyof typeof MORE_DOODLES; ring?: { x: number; y: number; r: number };
+  /** a small black label in the picture's top-left corner for time jumps ("3일째", "2월 2일"), as the nest-cam story cards have */
+  tag?: string };
 export type CardOpts = {
   /** the small channel mark over the title (a round icon and a name), as the benchmark pages have; the series name
    *  lives in edit.json so the real channel name can be swapped in later. `icon` is one or two characters (default:
@@ -172,6 +174,9 @@ export const CardShort: React.FC<{ d: ShortData & { card?: CardOpts } }> = ({ d 
               strokeDasharray={2 * Math.PI * item.ring.r * B.width} strokeDashoffset={2 * Math.PI * item.ring.r * B.width * (1 - eOut(prog(t, item.at + 0.4, 0.45)))}
               transform={`rotate(-90 ${item.ring.x * B.width} ${item.ring.y * B.height})`} strokeLinecap="round" />
           </svg>
+        ) : null}
+        {item?.tag ? (
+          <div style={{ position: "absolute", left: 28, top: 28, padding: "8px 22px", borderRadius: 999, background: "rgba(0,0,0,0.72)", color: "#fff", fontFamily: BODY, fontWeight: 800, fontSize: 38 }}>{item.tag}</div>
         ) : null}
       </div>
       {item ? (
