@@ -1,0 +1,133 @@
+{
+ "badge": {
+  "name": "오늘의 궁금증",
+  "icon": "?",
+  "color": "#e8590c"
+ },
+ "note": "voiceless white-card curiosity reveal (src/lib/Card.tsx, one clip, the reason or identity held to ~65%)",
+ "musicStart": 0.3,
+ "title": [
+  "로켓 발사대에",
+  "물을 쏟아붓는 이유ㄷㄷ"
+ ],
+ "credit": "영상: NASA 케네디 우주센터",
+ "music": "Investigations",
+ "gain": 0.5,
+ "clipAudio": 4,
+ "sources": {
+  "deluge": {
+   "file": "deluge.mp4",
+   "label": "Nominal Wet Flow Test at Pad 39B (NASA/Chris Swanson, 2019-09-13)",
+   "url": "https://images.nasa.gov/details/KSC-20190913-RV-CMS01_0001-Nominal_Wet_Flow_Test_at_Pad_39B-3229665"
+  }
+ },
+ "beats": [
+  {
+   "dur": 3.0,
+   "in": 59.0,
+   "zoom": [
+    1.0,
+    1.08
+   ],
+   "ko": "로켓 발사대가 물바다",
+   "en": "NASA 케네디 우주센터",
+   "tag": "2019년 9월"
+  },
+  {
+   "dur": 2.8,
+   "in": 15.0,
+   "zoom": [
+    1.35,
+    1.4
+   ],
+   "ko": "원래는 이렇게 멀쩡한데",
+   "en": "로켓이 서는 자리",
+   "focus": "0% 55%"
+  },
+  {
+   "dur": 3.0,
+   "in": 25.0,
+   "zoom": [
+    1.7,
+    1.76
+   ],
+   "ko": "신호가 떨어지자",
+   "en": "쏴아아",
+   "sfx": [
+    [
+     0.0,
+     "whoosh",
+     0.35
+    ]
+   ],
+   "focus": "0% 70%"
+  },
+  {
+   "dur": 3.0,
+   "in": 53.5,
+   "zoom": [
+    1.0,
+    1.06
+   ],
+   "ko": "물대포처럼 뿜는 곳도",
+   "en": "발사대 위쪽"
+  },
+  {
+   "dur": 3.0,
+   "in": 64.5,
+   "zoom": [
+    1.0,
+    1.08
+   ],
+   "ko": "사방에서 물이 쏟아진다"
+  },
+  {
+   "dur": 3.0,
+   "in": 82.5,
+   "zoom": [
+    1.0,
+    1.06
+   ],
+   "ko": "근데 이상한 건..",
+   "en": "불도 안 났는데 왜?"
+  },
+  {
+   "dur": 3.2,
+   "in": 75.0,
+   "zoom": [
+    1.0,
+    1.06
+   ],
+   "ko": "정답은 '소리' 때문",
+   "en": "로켓 엔진의 엄청난 굉음",
+   "sfx": [
+    [
+     0.0,
+     "pop_hi",
+     0.4
+    ]
+   ]
+  },
+  {
+   "dur": 3.2,
+   "in": 42.0,
+   "zoom": [
+    1.35,
+    1.4
+   ],
+   "ko": "물이 소리 충격을 흡수한다",
+   "en": "로켓·발사대가 안 부서지게",
+   "focus": "0% 55%"
+  },
+  {
+   "dur": 3.4,
+   "in": 60.0,
+   "zoom": [
+    1.0,
+    1.08
+   ],
+   "ko": "30초 남짓에 약 170만 L",
+   "en": "45만 갤런"
+  }
+ ]
+}

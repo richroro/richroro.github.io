@@ -7948,6 +7948,283 @@ NASA 마셜 우주비행센터에서 차세대 로켓 상단(EUS) 연료탱크�
 ```
 고정 댓글: 다시는 바늘 삼키지 말고 건강하게 살자… 🦭
 
+## 쇼츠 50만+ 무음: 흰 카드 + 정체·이유 (`fact1` 발사대 물, `fact2` 우주 불꽃, `fact3` 사막 동그라미, `fact4` 바다 밑 '난파선')
+
+사용자 요청은 "다른 것도 만들어봐 흥미가질만한"이었다(음성 없음, 50만+ 근거, 괴담·롱폼 제외). 이번 형식은 **흰 카드 + 실제 클립 한 편 + 정체·이유 공개**다. 첫 1초에 이상한 장면을 보여 주고, 2~3개 장면으로 질문을 키운 뒤("근데 이상한 건..") 영상의 약 65% 지점에서 기관 설명에 있는 사실 하나로 답한다. 마지막 장면은 첫 장면과 같은 그림이라 반복 재생된다. 내레이션, 대사, TTS는 없다.
+
+### 벤치마크와 숫자
+
+- **잘난지**(구독 2.77만): 최근 30편 중 8편이 50만+(27%), 30편 중앙값 11만(`research/research-500k-mute.md` §1, `research-500k-footage.md` F2, `research-500k-footage.csv`의 채널 탭 행).
+  - 「거북이를 바다에 바로 않넣는 이유ㄷㄷ」 1553만, 「전세계에 딱 1대 남은 트레일러ㄷㄷ」 698만, 「올해 노벨상 받은 실험ㄷㄷ」 257만(youtube.com/shorts/2u-76tboUkA), 「NASA도 쓰는 1달러 카메라ㄷㄷ」 206만, 「우주에서 그린 바다밑 지도ㄷㄷ」 90만(ByWj-FOGt5Q), 「천장에 비행기를 쏴주는 장치ㄷㄷ」 90만(UHJ5leIF_bs), 「14년째 논란인 생명체ㄷㄷ」 74만, 「초당 2만장으로 찍은 물방울ㄷㄷ」 72만, 「고장난 것 같은 서랍이 최고인 이유ㄷㄷ」 57만.
+- **레이아웃 확인(2026-10-11)**: 위 세 편의 썸네일(i.ytimg.com, 1080×1920)만 봤다. 흰 바탕, 왼쪽 위 동그란 채널 아이콘 + 이름 + @핸들, 왼쪽 정렬 검은 2줄 제목(끝에 ㄷㄷ), 가로 꽉 찬 16:9 클립 하나, 바로 아래 가운데 정렬 2줄 자막(자막에도 ㄷㄷ), 아래쪽 절반은 비어 있다. 화면에 출처 줄은 보이지 않았다. 썸네일은 저장소에 넣지 않았다.
+- **길이는 읽지 못했다**: 같은 세 편의 영상 페이지를 열자 google.com/sorry 페이지로 넘어가서 규칙대로 YouTube를 멈췄다(07:20 UTC). 그 뒤로는 YouTube에 요청하지 않았다. 숫자는 위 조사 그대로다.
+
+### 무엇을 맞췄나
+
+| 항목 | 벤치마크 | 우리 |
+|---|---|---|
+| 바탕·제목 | 흰 바탕, 채널 표시, 검은 2줄 제목 + ㄷㄷ | 같음(제목은 가운데 정렬, Card.tsx 그대로). 배지 "오늘의 궁금증"(임시) |
+| 그림 | 클립 하나 | 1000×1000 둥근 상자(`make_wild.py` 기본값), 한 출처의 영상만 |
+| 자막 | 그림 바로 아래 1~2줄 | 한 줄 + 괄호 보조 줄. 2.8~3.4초마다 바뀐다 |
+| 제목 틀 | 「~하는 이유ㄷㄷ」, 「~의 정체ㄷㄷ」, 「~하면 생기는 일」 | 「로켓 발사대에 물을 쏟아붓는 이유ㄷㄷ」, 「사막 한가운데 초록 동그라미의 정체ㄷㄷ」, 「우주에서 불을 붙이면 생기는 일ㄷㄷ」, 「수심 1,900m에서 찾은 '난파선'의 정체ㄷㄷ」 (벤치마크 제목은 베끼지 않았다) |
+| 이야기 | 이상한 것 → 이유 | 이상한 장면(0초) → "원래는…/근데 이상한 건.." → 답(약 65%) → 첫 장면으로 끝 |
+| 소리 | 목소리 없음, 음악 | 목소리 없음. Kevin MacLeod "Investigations"(네 편 공통) + 효과음. fact1은 원본 물소리를 깔았다 |
+| 배경 | 하늘·우주·바다·지구 | 발사대(지상), 우주정거장, 사막(위성), 심해 |
+
+### 영상
+
+| id | 화면 제목 | 길이 | 용량 (무음악) | 이야기 (한 줄 요약 / 결말 유형 / 감정) |
+|---|---|---|---|---|
+| `fact1` | 로켓 발사대에 / 물을 쏟아붓는 이유ㄷㄷ | 27.6초 | 8.6MB (8.5MB) | 불도 안 났는데 발사대에 물 170만 L를 30초 남짓에 쏟는다 → 엔진 굉음의 충격을 물이 흡수 / 의외의 이유 / 신기함 |
+| `fact2` | 우주에서 불을 붙이면 / 생기는 일ㄷㄷ | 27.4초 | 8.3MB (7.6MB) | 우주정거장에서 붙인 불이 공 모양으로 부풀고 반짝이는 점이 생긴다 → 무중력이라 뜨거운 공기가 안 올라가고, 점은 그을음 덩어리 / 의외의 이유 / 신기함 |
+| `fact3` | 사막 한가운데 / 초록 동그라미의 정체ㄷㄷ | 26.8초 | 6.0MB (5.3MB) | 1987년 모래뿐이던 사막이 2012년 초록 점으로 덮였다 → 빙하기 때 갇힌 지하수를 뽑아 빙빙 도는 스프링클러로 뿌린 밭 / 정체 반전 / 신기함 |
+| `fact4` | 수심 1,900m에서 찾은 / '난파선'의 정체ㄷㄷ | 27.6초 | 5.7MB (5.1MB) | 음파 탐지기에 잡힌 배 모양 덩어리, 잠수정이 비춰 보니 사람이 만든 게 아니다 → 굳은 아스팔트 '타르 백합' / 정체 반전 / 소름·신기함 |
+
+- **qa_review.py**: 네 편 모두 FAIL 0. 설명글 WARN은 없어졌고, 남은 WARN은 없다(길이·제목·첫 장면·장면 길이·소리·검은 화면·용량 PASS). −14.0 / −14.1 / −14.1 / −14.1 LUFS. first.png와 sheet.png는 직접 봤다.
+- **장면 감지**: 처음 렌더에서 fact2(어두운 불꽃)와 fact3(위성 사진)은 비슷한 그림이 이어져 장면 길이 FAIL이 났다. 넓게/가깝게 번갈아 잡도록 확대를 바꿔 다시 렌더했다(실제로도 전환이 더 잘 보인다).
+- **자연음 확인**: faster-whisper(small)로 원본 소리를 받아썼다. 발사대 영상은 물소리뿐이었다(사람 말 없음, 잡음 환각만). 불꽃 영상은 배경음악, 위성 영상은 무음, 심해 영상은 탐사팀의 영어 해설이라 셋 다 `clipAudio: 0`으로 껐다.
+- **화면 확인**
+  - fact1: 이동식 발사대 옆면의 "JP DONOVAN / MOBILE LAUNCHER GSE INSTALLATION" 현수막(시공 회사 이름)이 넓은 장면에서 읽혀서, 그 장면들은 왼쪽으로 확대해 현수막이 화면 밖에 있게 했다. 성조기는 남아 있다(기관 장비의 국기).
+  - fact2: 원본 영상 아래쪽의 영어 자막과 끝의 NASA·EXPLORE 로고는 쓰지 않았다(위쪽만 확대, 0~42초 구간).
+  - fact3: 원본의 "Saudi Arabia 1987" 글자, 축척, 북쪽 화살표는 화면 밖으로 잘랐다. 연도는 우리 칩(`tag`)으로 다시 썼다.
+  - fact4: 처음 5초의 NOAA 로고 슬레이트는 쓰지 않았다. 잠수정에는 기관 이름만 있다.
+- **용량**: 렌더(CRF 18) 뒤 영상만 `-crf 23 -preset slow`로 다시 압축했다(오디오 복사). 무음악판도 같다.
+
+### 템플릿 변경 (다른 형식은 그대로)
+
+- **새 코드 없음**: `media/wild/make_wild.py`를 그대로 쓴다. 각 편의 `media/fact<n>/wild.json`에 `badge`(오늘의 궁금증)를 넣었다.
+- **공유 파일에 건 고리**
+  - `media/wild/make_wild.py`: script.json의 `note`를 spec에서 받을 수 있게 한 줄 바꿨다(없으면 예전 문구 그대로). `wild1`을 다시 만들어도 파일이 그대로다.
+  - `fetch.sh`: 음악 "Investigations"(incompetech.com).
+  - `upload/channels.json`: `fact` 채널.
+- **회귀 확인**: 손대지 않은 `how1`(공정 카드, 같은 Card.tsx)을 다시 렌더했다(`CRF=22 ./render.sh how1`). `final/how1.mp4`와 바이트까지 같다(cmp).
+- **만드는 법**: `python3 media/how1/fetch_nasa_video.py fact<n> key=nasa_id[@orig]`(fact4는 NOAA 페이지의 mp4를 `public/fact4/src/tar.mp4`로) → `python3 media/wild/make_wild.py fact<n> && python3 prep.py fact<n> && ./render.sh fact<n>` → CRF 23 재압축 → `./render_nomusic.sh fact<n>`도 같은 방식.
+
+### 출처와 라이선스 (항목별)
+
+모두 미국 연방기관이 만든 영상이다(퍼블릭 도메인). 사실은 각 영상 설명과 연방기관 페이지에서만 가져왔다.
+
+**fact1**: NASA/Chris Swanson, "Nominal Wet Flow Test at Pad 39B" (KSC, 2019-09-13) — https://images.nasa.gov/details/KSC-20190913-RV-CMS01_0001-Nominal_Wet_Flow_Test_at_Pad_39B-3229665
+- 설명: 아르테미스 I용 소음 억제 장치 시험, "about 450,000 gallons of water poured onto the Pad B flame deflector, the mobile launcher flame hole and onto the launcher's blast deck". 45만 갤런 ≈ 170만 L.
+- "30초 남짓": NASA "Inside KSC! Sept. 20, 2019"(KSC-201920-VP-JLG01-INSIDEKSC) 설명, "released 450,000 gallons of water across the mobile launcher and flame deflector in a little over 30 seconds". 이 문장은 그 주의 "another successful test"를 말한다. 9월 13일 시험의 시간과 정확히 같은지는 확인하지 못했다(같은 장치, 같은 물의 양).
+- 원리: NASA KSC-04-S-00166(2004, 39A 발사대 소음 억제 장치 시험) "The Sound Suppression System uses water to absorb potentially damaging shock waves generated during a Shuttle launch". 셔틀 시절 설명이지만 같은 원리의 장치다. 2023년 아르테미스 II 시험 설명도 "ignition overpressure and sound protection system"이라 부른다.
+- 원본 15~83초 구간만 썼다(처음 13초 NASA 슬레이트와 검은 화면 제외).
+
+**fact2**: NASA, "Designing Flames Aboard ISS" (jsc2019m000710, 2019) — https://images.nasa.gov/details/jsc2019m000710_Designing-Flames-Aboard-ISS-MP4
+- 설명: 국제우주정거장의 Flame Design 실험, 조건에 따라 생기는 그을음 양을 연구. 원본 화면 자막에는 연료가 순수 에틸렌이라고 나온다.
+- 원리: NASA 생물·물리과학부 "Why NASA is studying flames in space" (science.nasa.gov/biological-physical/resources/explainers-infographics/why-nasa-is-studying-flames-in-space/) "The typical shape of a candle flame is caused by less dense warm air rising… In microgravity, however, that circulation effect does not happen, creating a spherical flame!"
+- 반짝이는 점: NASA "Studying Flames in Microgravity"(2022-02-23, nasa.gov/image-article/studying-flames-microgravity/), 노란 그을음 덩어리는 뜨거우면 빛나고 무중력에서는 불꽃 안에 더 오래 머물러 더 크게 자란다.
+- 원본의 배경음악은 껐다.
+
+**fact3**: NASA Goddard Space Flight Center (Matthew R. Radcliff, James R. Irons), "Pivot Irrigation in Saudi Arabia" (2013) — https://images.nasa.gov/details/GSFC_20130523_Wadi_m11290_Saudi_Arabia
+- 설명: 랜드샛 4·5·7(NASA·USGS) 영상, 사막 밑 지하수(일부는 마지막 빙하기 때 채워진 "fossil water")를 뚫어 원형 스프링클러(센터 피벗)로 뿌림, 비는 1년에 몇 cm, 밭 하나가 약 1km, 경제성 있게 퍼 올릴 수 있는 기간은 약 50년으로 추정.
+- "25년 전": 영상 연도 1987 → 2012. 연도 칩은 원본 화면의 연도를 그대로 옮겼다(1987, 1989, 1991, 2000, 2012).
+- 고다드 시각화 스튜디오 쪽 제작자에 계약직이 있을 수 있다. 이 저장소의 앞선 편(issue4, hanban2)처럼 NASA 고다드 영상으로 보고 NASA 크레디트를 달았다.
+
+**fact4**: NOAA Ocean Exploration, Exploration of the Gulf of Mexico 2014, "Tar Lilies" (EX1402 Dive 12, 2014-04-24) — https://oceanexplorer.noaa.gov/multimedia/video-playlist-ex1402-tar-lilies/ (mp4: oceanexplorer.noaa.gov/wp-content/uploads/2018/06/ex1402_dive12_640x360.mp4)
+- 설명: 측면 주사 음파 탐지기에 수심 1,900m의 큰 구조물들이 잡혀 난파선으로 생각하고 ROV Deep Discoverer를 내렸으나, 사람이 만든 것이 아니라 해저에 꽃처럼 밀려 나온 아스팔트였고 "tar lily"라는 별명이 붙었다. 이 지역에서 처음 기록된 형태다. 꽃잎은 휘어 있고 안에 층이 있다. 말미잘, 해면, 산호(팔방산호·대나무산호), 바다조름, 새우(Alvinocaris) 등이 붙어 산다.
+- 원본은 640×360뿐이라 화질이 조금 무르다. 원본의 영어 해설은 껐다.
+- 브라인 풀(바다 밑 호수)은 NOAA 새 사이트에 쓸 만한 영상이 없었다(사진뿐). 2006년 브라인 호수 영상은 Alvin(WHOI)과 대학 연구진 촬영이라 뺐다.
+
+**검토했지만 뺀 것**
+- 1984 CID(여객기 일부러 추락): NASA 라이브러리에는 사진만 있고 영상이 없다.
+- 충격파 슐리렌(AirBOS): 2019 사진의 비행기가 공군 시험조종사학교 T-38이라 군 항공기 규칙에 걸린다.
+- 날개 끝 소용돌이: NASA 라이브러리에 영상이 없었다.
+- Cool Flames(jsc2021m000185), SoFIE-GEL: 불꽃이 작거나 덜 선명해서 Flame Design을 골랐다.
+
+**공통**
+- 음악: Kevin MacLeod "Investigations" (incompetech.com), CC BY 4.0.
+- 기관의 "보증하지 않음" 문구를 설명란에 넣었다. 화면에 "저작권", "퍼블릭 도메인", "공공누리"는 쓰지 않았다. 군 자료, 정치, 피는 없다.
+- 채널 표시 "오늘의 궁금증"은 임시다(벤치마크 채널 이름과 닮지 않게 골랐다).
+
+### 업로드 문구
+
+**fact1**: 로켓 발사대에 물을 쏟아붓는 이유ㄷㄷ
+```
+2019년 9월 13일, NASA 케네디 우주센터 39B 발사대에서 물을 쏟아붓는 시험을 했습니다. 불을 끄려는 게 아니라 '소음 억제 장치' 시험으로, 로켓이 뜰 때 엔진이 만드는 엄청난 소리 충격(음파)을 물이 흡수해 로켓과 발사대가 망가지지 않게 합니다. 이 시험에서는 약 45만 갤런(약 170만 L)의 물이 30초 남짓 동안 발사대 위로 쏟아집니다. NASA 직원이 찍은 실제 영상입니다.
+
+▶ [채널명] 채널 구독: https://www.youtube.com/@[핸들]
+
+출처: 영상: NASA/Chris Swanson, Nominal Wet Flow Test at Pad 39B (2019, NASA Kennedy Space Center, images.nasa.gov) · 수치·원리: NASA 영상 설명(약 45만 갤런), NASA 'Inside KSC! Sept. 20, 2019'(30초 남짓), NASA KSC-04-S-00166(물이 발사 때 생기는 충격파를 흡수) · 음악: "Investigations" Kevin MacLeod (incompetech.com), CC BY 4.0 (creativecommons.org/licenses/by/4.0) · NASA는 이 영상을 보증하거나 후원하지 않습니다
+
+#Shorts #로켓 #NASA #발사대 #우주 #과학 #신기한영상 #궁금증 #아르테미스 #물 #정체
+```
+고정 댓글: 물 170만 리터… 우리 집 욕조 몇 개일까요? 🚀
+
+**fact4**: 수심 1,900m에서 찾은 '난파선'의 정체ㄷㄷ
+```
+2014년 멕시코만 수심 1,900m에서 음파 탐지기에 큰 덩어리들이 잡혔습니다. 미국 해양대기청(NOAA) 탐사팀은 난파선일 거라 생각하고 무인 잠수정 '딥 디스커버러'를 내려보냈지만, 정체는 땅속에서 밀려 나와 꽃잎처럼 굳은 아스팔트였습니다. 꽃처럼 생긴 이 아스팔트에는 '타르 백합(tar lily)'이라는 별명이 붙었고(이 지역에서 처음 기록된 형태), 그 위에는 말미잘, 산호, 새우 같은 생물들이 살고 있었습니다.
+
+▶ [채널명] 채널 구독: https://www.youtube.com/@[핸들]
+
+출처: 영상: NOAA Ocean Exploration, Exploration of the Gulf of Mexico 2014 — Tar Lilies (oceanexplorer.noaa.gov). 원본 영상의 해설 음성은 쓰지 않았습니다 · 음악: "Investigations" Kevin MacLeod (incompetech.com), CC BY 4.0 (creativecommons.org/licenses/by/4.0) · NOAA는 이 영상을 보증하거나 후원하지 않습니다. 수심과 설명은 NOAA 영상 설명 기준입니다
+
+#Shorts #심해 #바다 #NOAA #난파선 #아스팔트 #신기한영상 #궁금증 #정체 #해저탐사 #멕시코만
+```
+고정 댓글: 처음 봤을 때 뭐라고 생각했어요? 🌊
+
+**fact2**: 우주에서 불을 붙이면 생기는 일ㄷㄷ
+```
+국제우주정거장의 연소 실험 장치 안에서 에틸렌 연료에 불을 붙인 NASA 'Flame Design' 실험 영상입니다. 지구에서는 뜨거워진 공기가 위로 올라가서 촛불 모양이 되지만, 무중력에서는 그 흐름이 생기지 않아 불꽃이 공처럼 동그랗게 됩니다. 반짝이는 점들은 그을음 덩어리로, 무중력에서는 불꽃 안에 더 오래 머물러 더 크게 자란다고 합니다.
+
+▶ [채널명] 채널 구독: https://www.youtube.com/@[핸들]
+
+출처: 영상: NASA, Designing Flames Aboard ISS (2019, images.nasa.gov) · 원리: NASA 생물·물리과학부 'Why NASA is studying flames in space', NASA 'Studying Flames in Microgravity'(2022) · 음악: "Investigations" Kevin MacLeod (incompetech.com), CC BY 4.0 (creativecommons.org/licenses/by/4.0) · NASA는 이 영상을 보증하거나 후원하지 않습니다
+
+#Shorts #우주 #불 #NASA #우주정거장 #무중력 #과학 #실험 #신기한영상 #궁금증 #ISS
+```
+고정 댓글: 우주에서 생일 케이크 촛불을 켜면 어떻게 될까요? 🔥
+
+**fact3**: 사막 한가운데 초록 동그라미의 정체ㄷㄷ
+```
+사우디아라비아 사막을 랜드샛 위성으로 1987년부터 2012년까지 찍은 사진입니다. 모래뿐이던 땅에 지름 약 1km의 초록 동그라미가 빽빽하게 생겼는데, 사막 깊은 땅속의 지하수(일부는 마지막 빙하기 때 갇힌 '화석수')를 뚫어 끌어올린 뒤 빙빙 도는 스프링클러(센터 피벗 관개)로 뿌린 밭입니다. 이곳 비는 1년에 몇 cm뿐이라 이 물은 다시 채워지지 않는 자원입니다.
+
+▶ [채널명] 채널 구독: https://www.youtube.com/@[핸들]
+
+출처: 영상: NASA Goddard Space Flight Center, Pivot Irrigation in Saudi Arabia (2013, images.nasa.gov), 랜드샛 위성 자료 NASA·USGS · 음악: "Investigations" Kevin MacLeod (incompetech.com), CC BY 4.0 (creativecommons.org/licenses/by/4.0) · NASA는 이 영상을 보증하거나 후원하지 않습니다. 수치와 설명은 NASA 영상 설명 기준입니다
+
+#Shorts #사막 #위성사진 #지구 #NASA #랜드샛 #사우디아라비아 #지하수 #신기한영상 #궁금증 #정체
+```
+고정 댓글: 위성 사진으로 보니까 꼭 초록 물방울 같지 않나요? 🛰️
+
+## 쇼츠 50만+ 무음: 역대급 모먼트 (`moment1` 로켓 발사, `moment2` 로봇, `moment3` 파괴 실험)
+
+사용자 요청은 "다른 것도 만들어봐 흥미가질만한"이었다(목소리 없이, 50만+ 근거, 괴담·사연 제외). 그래서 무음 50만+ 가운데 가장 크게 터진 "역대급 ○○ 모먼트" 클립 모음을 합법 영상으로 만들었다. 내레이션, 대사, TTS는 없다. 음악, 효과음, 원본 자연음(사람 목소리가 없는 것만), 화면 글자만 쓴다.
+
+### 벤치마크와 숫자 (`research/research-500k-mute.csv`, 2026-10-11)
+
+- **숏랭커**(구독 15.9만): 「역대급 번개 모먼트」 22,762,051회(올해 검색), 「역대급 로봇 모먼트」 858만, 「역대급 현실 카트라이더 모먼트」 774만, 「역대급 새 모먼트」 232만.
+- **하루각**(1.24만): 「레전드 번개 모먼트」 7,011,914회(올해 검색), 「역대급 스키 모먼트 TOP7」 181만, 「역대급 창의적인 트랩 TOP6」 156만. 다만 최근 30편 적중률은 1/30이다(조사 §3).
+- **철멈뭄**: 「눈사태를 스키로 피한 선수」 1951만(자연 클립 한 편).
+- **랭킹공·랭킹권·랭킹김**: 「역대급 ○○ 모먼트 랭킹 TOP5」 형식. 클립 모음 TOP N은 무음 50만+ 50편, 중앙값 162만(조사 §2). 자연 "모먼트" 모음 23편 중앙값 293만.
+- 모두 남의 영상을 다시 올린 채널이다. 우리는 화면 틀과 리듬만 따르고, 영상은 NASA가 공개한 것만 쓴다.
+- **화면 확인 방법**: 숏랭커·하루각 4편의 썸네일(i.ytimg.com)만 분석용으로 받아 봤다(저장소에 올리지 않음). 영상 페이지 2개를 열었더니 `LOGIN_REQUIRED`라 규칙대로 YouTube를 30분 멈췄고(07:47 UTC~), 그 뒤로 YouTube는 읽지 않았다. 그래서 클립 길이는 썸네일과 기존 TOP5 v2 조사(`benchmark-footage.md` §3, 5개 × 4.5~5초)로 맞췄다.
+
+### 무엇을 맞췄나
+
+| 항목 | 벤치마크 (썸네일 4장) | 우리 |
+|---|---|---|
+| 화면 | 위 검정 띠 + 아래 전체 클립 | 같음. 기존 `src/lib/RankV2.tsx`(top1~12의 틀), 띠 아래 1080×1500 |
+| 제목 | 1줄 청록·연두색 "역대급 ○○ 모먼트", 2줄 큰 흰 글씨 "랭킹 TOP5/6/7" | 1줄 청록 `#33F0D0` "역대급 ○○ 모먼트", 2줄 "랭킹 TOP5", 3줄 작은 질문 |
+| 순위표 | 왼쪽에 1~5(1 빨강, 2 노랑·주황, 3 주황·노랑), 5위부터 채워짐 | 같음(1 빨강, 2 주황, 3 노랑). 이번에는 1위도 나올 때 이름이 채워진다(`hide: []`) |
+| 자막 | 화면 가운데 아래쪽 검정 상자 한 줄(반응·대사) | 검정 상자 한 줄, 높이 1330px(벤치마크 위치). "~하는데.." → "~ㄷㄷ/??" 반응 + 사실 |
+| 길이 | 클립 2~4초씩 | 25.6초, 11컷, 컷당 1.7~2.8초 |
+| 순서 | 5위 → 1위, 1위가 가장 셈 | 같음. 첫 장면부터 움직이는 장면(엔진 점화 / 뱀 로봇 / 우주선 입수) |
+| 소리 | 원본 소리 + 음악 | Kevin MacLeod + 효과음(riser, whoosh, boom). moment3은 목소리 없는 원본 소리(탱크 파열, 물보라, 충돌)를 깔았다 |
+| 끝 | 1위 뒤 바로 끝 | 1위 뒤 바로 5위로 이어져 반복 재생 |
+
+### 주제 고르기
+
+- 지시한 다섯 주제 가운데 **화산**(top11 「역대급 화산·용암 모먼트」)과 **토네이도**(top7 「역대급 무서운 날씨」)는 같은 랭킹 틀로 이미 있다.
+- **번개**는 쓸 수 있는 연방 영상이 거의 없다. images.nasa.gov의 "lightning" 영상은 브리핑·인터뷰·해설 프로그램뿐이고, 아르테미스 1호 발사대 낙뢰(2022)와 아폴로 12호 낙뢰(1969)는 사진만 있다. 사진과 ISS 타임랩스만으로는 "모먼트" 클립 모음이 안 돼서 뺐다.
+- 그래서 **로켓 발사**와 **로봇**에, 같은 틀로 크게 터지는 **파괴 실험**(무음 클립 모음의 "시원한" 계열)을 더했다. 셋 다 NASA 영상이 충분하고 첫 장면부터 움직인다.
+
+### 영상
+
+| id | 화면 제목 (1줄 / 2줄 / 3줄) | 길이 | 용량 | 5위 → 1위 | 음악 |
+|---|---|---|---|---|---|
+| `moment1` | 역대급 로켓 발사 모먼트 / 랭킹 TOP5 / (몇 번이 제일 소름?) | 25.6초 | 18.4MB (무음악 17.9MB) | 엔진 점화 · 연결선 · 하늘 시점 · 부스터 분리 · 로켓 카메라 | Volatile Reaction |
+| `moment2` | 역대급 로봇 모먼트 / 랭킹 TOP5 / (몇 번이 제일 신기?) | 25.6초 | 19.8MB (무음악 19.2MB) | 뱀 로봇 · 화성 헬기 시험 · 헬기 시점 · 화성 낙하산 · 스카이크레인 | Hackbeat |
+| `moment3` | 역대급 파괴 실험 모먼트 / 랭킹 TOP5 / (몇 번이 제일 시원함?) | 25.6초 | 25.5MB (무음악 25.2MB) | 우주선 입수 · 에어택시 추락 · 초고속 총알 · 수소 탱크 · 산소 탱크 | Volatile Reaction (20초부터) |
+
+- 세 편 모두 음악 없는 판(`final/<id>-nomusic.mp4`)이 있다.
+- **qa_review.py**: 세 편 모두 FAIL 0. 11개 항목 PASS(길이 25.6초, 첫 전환 2.3/2.3/2.5초, 최장 장면 2.8초, −14.0/−13.9/−14.0 LUFS, 검은 화면 없음). 설명글 항목도 `upload/specs/<id>.json`을 쓴 뒤 PASS. first.png와 sheet.png는 직접 봤다.
+- **자연음 확인**(faster-whisper small, 원본 소리 받아쓰기)
+  - moment1: 발사 클립은 모두 무음이거나(−91dB) 소리 트랙이 없다. SLS 로켓 카메라 영상에는 NASA 중계 해설("Booster separation expected at the 2-minute 9-second mark…")이 있어 껐다.
+  - moment2: 착륙 영상은 관제실 음성, 나머지는 기계 소음뿐이지만 전부 껐다.
+  - moment3: 수소 탱크(−13dB), 오리온 스윙 낙하, 에어택시 2022 영상은 사람 말이 없어 0.8로 깔았다. 오리온 낙하 2021("1…2…1…release")과 에어택시 2025("3, 2, 1, release")는 카운트다운 목소리가 있어 껐다. 초고속 충돌 영상은 해설 프로그램이라 껐다.
+- **화면 확인**: 상표 글자는 없다. 화면에 보이는 글자는 NASA 웜 로고(SLS 로켓 몸체), "LANDING AND IMPACT RESEARCH FACILITY"(NASA 랭글리 시설 벽)뿐이다. 원본에 박힌 제목 카드, "30% speed / real time", 시각 표시, 아이콘 줄은 잘라냈다(`trim`, 확대). 사람은 거의 안 나오고, 나와도 작업 중인 뒷모습이다. 에어택시 안의 사람 모양은 충돌 시험용 인형이다.
+
+### 템플릿 변경 (다른 형식은 그대로)
+
+- **`politics/top_v2.py`**(공유 파일, 두 줄): 샷마다 `"audio"`(원본 소리 크기, 기본 0 = 지금처럼 음소거)와 spec의 `"sfx"`(추가 효과음 목록)를 받는다. 둘 다 없으면 예전과 같은 edit.json을 쓴다.
+- **새 파일**
+  - `media/moment/nasa_cut.py`: images.nasa.gov 영상에서 필요한 구간만 HTTP로 잘라 `media/<id>/<key>.mp4`로 받고, 출처 JSON(페이지, 파일 주소, 크레디트, 날짜, 원래 설명, 자른 구간)을 `media/<id>/<key>.json`에 쓴다.
+  - `media/moment/sources.py`: spec이 쓰는 클립의 JSON으로 `politics/<id>/spec.json`의 `sources`를 채운다.
+  - `politics/moment1~3/spec.json`, `edit.json`.
+- **`upload/channels.json`**: 새 채널 `moment`(접두어 `moment`).
+- **회귀 확인**
+  - 손대지 않은 `how1`(공정 카드)을 다시 받아 다시 렌더했다(`CRF=22 ./render.sh how1`). `final/how1.mp4`와 **바이트까지 같다**(cmp).
+  - 바뀐 `top_v2.py`로 top1~12의 edit.json을 다시 만들었다. 저장소의 파일과 한 글자도 다르지 않다(git diff 없음).
+- **만드는 법**
+  ```bash
+  python3 media/moment/nasa_cut.py moment1 ignite="KSC-20260401-MH-AJN01-0001-Artemis_II_Launch_Mobile_Launcher_High_Speed-M19183:252-266" …  # 키와 구간은 media/moment1/*.json의 cut_from_original_seconds
+  python3 media/moment/sources.py moment1 && python3 politics/top_v2.py moment1
+  MEDIA=$PWD/media python3 politics/prep_split.py moment1
+  ./render.sh moment1 final/moment1.mp4 && ./render_nomusic.sh moment1 && python3 qa_review.py moment1
+  ```
+
+### 출처와 라이선스 (항목별)
+
+모두 images.nasa.gov의 NASA 영상이다(미국 연방정부 저작물, NASA 미디어 이용 지침). 회사·대학 크레디트가 붙은 영상은 쓰지 않았다(예: "NASA/United Launch Alliance" GOES-T 발사, "Boeing" Starliner 낙하산 시험, DART "NASA/SpaceX"). 군 자료·군 장비는 없다(AA-2 탈출 시험은 군 미사일 모터라 뺐다). 사실은 각 영상의 NASA 설명에서만 가져왔다.
+
+**moment1** (모두 2026-04-01 아르테미스 2호 발사, 케네디 우주센터 39B)
+- 5위 엔진 점화: Artemis II Launch - Mobile Launcher High Speed Cameras, NASA — 원본 252~266초 중 9.0~11.3초(코어 스테이지 엔진 점화), 424~440초 중 9.0~11.8초(부스터 점화) — https://images.nasa.gov/details/KSC-20260401-MH-AJN01-0001-Artemis_II_Launch_Mobile_Launcher_High_Speed-M19183
+- 4위 연결선: Artemis II Launch - 35mm High Speed Film, NASA — 원본 398~414초 중 9.0~11.5, 11.6~14.2초 — https://images.nasa.gov/details/KSC-20260401-MH-AJN01-0001-Artemis_II_Launch_35mm_High_Speed_Film-M19183
+- 3위 하늘 시점: Artemis II Live Launch Coverage - Cessna (8K, 120fps), NASA/Jamie Peer — 원본 34~64초 중 1.0~3.5, 14.0~16.6초 — https://images.nasa.gov/details/KSC-20260401-MH-JBP01-0001-Artemis_II_Launch_Cessna_GSS_8k_120fps-M19183
+- 2위 부스터 분리: Artemis II Live Launch Coverage - WB-57 (Visible), NASA — 원본 130~146초 중 5.6~8.1, 9.2~11.8초(오른쪽 위 시각 표시는 잘라냄) — https://images.nasa.gov/details/KSC-20260401-MH-NAS01-0001-Artemis_II_Launch_WB57_Visible
+- 1위 로켓 카메라: Artemis II Live Launch Coverage - SLS Launch Vehicle Camera, Switched Feed, NASA — 원본 155~173초 중 7.8~9.6, 10.2~11.9초 — https://images.nasa.gov/details/KSC-20260401-MH-AJN01-0001-Artemis_II_Launch_ISO_SLS_Launch_Vehicle_Camera_Switched_Feed_720p · Orion Camera View of Artemis II Climb to Orbit (art002m1200912237), NASA JSC — 원본 16~28초 중 3.7~5.4초 — https://images.nasa.gov/details/art002m1200912237_SAJ-Jettison
+- 사실: "6:35 p.m. EDT on Wednesday, April 1, 2026, from Launch Complex 39B", 4명(설명의 승무원 명단), "solid rocket boosters that propelled Orion for the first two minutes of flight"(오리온 영상 설명). "엔진 4개"는 SLS 코어 스테이지의 RS-25 네 개.
+- 1위 세 번째 샷("우주선 카메라에도 찍힘")은 오리온 영상 설명의 "jettison of the solid rocket boosters"에 해당하는 장면으로 보았다. 자막은 화면만 말하고 무엇이 분리되는지는 적지 않았다.
+
+**moment2** (Credit: NASA/JPL-Caltech, JPL 이미지 이용 정책)
+- 5위 뱀 로봇: EELS (Exobiology Extant Life Surveyor) Media Reel — 원본 175~235초 중 19.5~21.8초(JPL 실험실에서 머리 들기), 47.0~49.8초(35도 눈 비탈) — https://images.nasa.gov/details/JPL-20240508-EELSf-0001-EELS%20Media%20Reel — "13 feet (4 meters) long", "about 220 pounds (100 kilograms)". 설명에 대학 협력이 적혀 있지만 영상 크레디트는 NASA/JPL-Caltech이다.
+- 4위 화성 헬기 시험: NASA Ingenuity Mars Helicopter Testing Media Reel — 원본 45~160초 중 6.3~8.8, 10.0~12.6초(2016-05-31 개념 증명 비행, JPL 25피트 우주 시뮬레이터) — https://images.nasa.gov/details/JPL-20220623-TECHf-0001-Mars%20Helicopter%20Testing%20Media%20Reel — "the Martian atmosphere was reproduced".
+- 3위 헬기 시점: Ingenuity Mars Helicopter's Record-Breaking Flight — 원본 4.5~33초 중 0.8~3.3, 6.5~9.1초(앞 4.5초의 제목 글자는 뺌) — https://images.nasa.gov/details/JPL-20220527-M2020f-0001-NASAs_Ingenuity_Mars_Helicopter_Captures_Video_of_Record_Flight2 — "25th flight on April 18, 2022", "2,310 feet (704 meters)", "sped up approximately five times".
+- 2위 낙하산, 1위 스카이크레인: Perseverance Rover's Descent and Touchdown on Mars: Onboard Camera Views — 원본 12~32초 중 2.6~5.1(왼쪽 30% 속도 칸), 6.0~8.6초(오른쪽 실시간 칸); 원본 160~185초 중 14.0~15.8(위 칸: 하강 장치), 15.0~16.7, 19.0~20.7초(아래 칸: 줄에 매달린 로버) — https://images.nasa.gov/details/JPL-20210222-M2020f-0001-Perseverance%20Rover%E2%80%99s%20Descent%20and%20Touchdown%20on%20Mars — "landing in Mars' Jezero Crater on Feb. 18, 2021", "descent stage (a kind of rocket-powered jet pack…)". 칸 위 "30% speed"/"real time" 글자와 아래 아이콘 줄은 잘라냈다.
+
+**moment3**
+- 5위 우주선 입수: NASA Drop Test of Orion Spacecraft for Crewed Artemis Missions(NASA HQ, 2021-04-06) — 원본 8~18초 중 2.6~5.1초 — https://images.nasa.gov/details/NASA%20Drop%20Test%20of%20Orion%20Spacecraft%20for%20Crewed%20Artemis%20Missions · ORION10ftSwingDrop_Documentation(NASA Langley, Gary Banziger, 2021-05-20) — 원본 80~95초 중 7.4~10.0초 — https://images.nasa.gov/details/ORION10ftSwingDrop_Documentation — "14,000-pound test version of the Orion spacecraft into the Hydro Impact Basin"(약 6.4톤 → 자막 "6톤").
+- 4위 에어택시 추락: 2022-H1_V_Lift&CruiseDropTest-5(NASA Langley, Gary Banziger, 2022-11-09) — 원본 68~86초 중 6.4~8.9초 — https://images.nasa.gov/details/2022-H1_V_Lift%26CruiseDropTest-5 · NASA Drop Test Supports Safer Air Taxi Designs(NASA LaRC, 2025-06-24) — 원본 84~98초 중 8.6~11.2초 — https://images.nasa.gov/details/LRC-2025-V-06242025-RVLT-Gantry-Drop-Test-With-Slate-V0002050 — "full-scale crash test of an electric vertical takeoff and landing (eVTOL) concept vehicle", "dropped a full-scale aircraft body, modeled after an air taxi".
+- 3위 초고속 총알: White Sands Test Facility (WSTF) Hypervelocity Impact Testing Capabilities(NASA JSC, 2021-06-04) — 원본 52~90초 중 18.6~20.9(고속 카메라 그림자 영상), 23.3~26.1초(파편 구름) — https://images.nasa.gov/details/jsc2021m000811_WSTF-Hypervelocity_Impact_Testing — "simulating Micrometeoroid and Orbital Debris impacts on spacecraft materials".
+- 2위 수소 탱크: Space Launch System Liquid Hydrogen Tank Test (Dec 5, 2019), NASA Marshall — 원본 20~38초 중 4.6~7.1, 7.5~10.1초 — https://images.nasa.gov/details/PD003-Test-Case-13B-4693-SE-12-05-2019 — "withstood more than 260% of expected flight loads before buckling and rupturing".
+- 1위 산소 탱크: Engineers Break SLS Rocket Propellant Tank On Purpose(NASA Marshall, David Olive, 2020-06-24) — 원본 0~36초 중 3.5~7.1, 11.0~14.4, 19.0~22.4초(2배속) — https://images.nasa.gov/details/MSFC_2020_XP_SLS_V_0130_PD002-Test-Case-TTF-4697%20LOX%20Tank%20Test-to-Failure%20color-1_06242020_timelapse — "slow motion video", "water used to simulate the liquid oxygen flows out of the tank after it ruptures".
+
+**공통**
+- 음악: "Volatile Reaction", "Hackbeat" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License. 효과음은 저장소의 기존 효과음(riser, whoosh, boom).
+- 설명란에 "NASA는(NASA와 JPL은) 이 영상을 보증하거나 후원하지 않습니다"와 "순위는 편집자가 고른 것"을 넣었다.
+- 화면에 "저작권", "퍼블릭 도메인", "공공누리"는 쓰지 않았다. 군 자료, 정치, 피는 없다.
+- 채널 표시(배지)는 이 틀에 없다(벤치마크도 띠에 채널명이 없다). 채널 이름과 핸들은 `upload/channels.json`의 `moment`에 정해지면 넣는다.
+
+### 업로드 문구
+
+**moment1**: 역대급 로켓 발사 모먼트 랭킹 TOP5 ㄷㄷ
+```
+2026년 4월 1일 오후 6시 35분(미국 동부 시간) 플로리다 NASA 케네디 우주센터 39B 발사대에서 우주비행사 4명을 태우고 달로 떠난 아르테미스 2호 발사를, NASA가 공개한 카메라 영상으로 다섯 장면 골랐습니다. 발사대 아래 고속 카메라에 찍힌 엔진 점화, 로켓이 뜨는 순간 떨어져 나가는 연결선, 비행기에서 내려다본 발사, 이륙 약 2분 뒤 고체 로켓 부스터 2개가 떨어져 나가는 장면, 그리고 로켓과 우주선에 단 카메라가 찍은 부스터 분리입니다.
+
+▶ [채널명] 채널 구독: https://www.youtube.com/@[핸들]
+
+출처: 영상: NASA (Artemis II Launch - Mobile Launcher High Speed Cameras · 35mm High Speed Film · Live Launch Coverage: Cessna 8K, WB-57, SLS Launch Vehicle Camera · Orion Camera View of Artemis II Climb to Orbit, images.nasa.gov) · 음악: "Volatile Reaction" Kevin MacLeod (incompetech.com), CC BY 4.0 (creativecommons.org/licenses/by/4.0) · 순위는 편집자가 고른 것이며 공식 순위가 아닙니다 · NASA는 이 영상을 보증하거나 후원하지 않습니다. 날짜·시각과 부스터 분리 시점은 NASA 영상 설명 기준입니다
+
+#Shorts #로켓 #로켓발사 #아르테미스 #NASA #우주 #SLS #부스터분리 #랭킹 #TOP5 #역대급
+```
+고정 댓글: 몇 번이 제일 소름이었음? 👇 저는 1번 로켓 카메라…
+
+**moment2**: 역대급 로봇 모먼트 랭킹 TOP5 ㄷㄷ
+```
+NASA와 제트추진연구소(JPL)가 공개한 실제 영상으로 로봇 모먼트 다섯 개를 골랐습니다. 길이 4m, 무게 약 100kg의 뱀 로봇 EELS, 화성 대기를 재현한 시험실에서 떠오른 화성 헬기 시험기(2016), 화성 헬기 인제뉴어티가 2022년 4월 18일 25번째 비행에서 직접 찍은 704m 비행(약 5배속), 2021년 2월 18일 화성 예제로 충돌구에 내려앉은 퍼서비어런스 로버의 낙하산, 그리고 로켓 달린 하강 장치가 로버를 줄에 매달아 내려놓는 '스카이크레인' 장면입니다.
+
+▶ [채널명] 채널 구독: https://www.youtube.com/@[핸들]
+
+출처: 영상: NASA/JPL-Caltech (Perseverance Rover's Descent and Touchdown on Mars: Onboard Camera Views · EELS Media Reel · NASA Ingenuity Mars Helicopter Testing Media Reel · Ingenuity Mars Helicopter's Record-Breaking Flight, images.nasa.gov) · 음악: "Hackbeat" Kevin MacLeod (incompetech.com), CC BY 4.0 (creativecommons.org/licenses/by/4.0) · 순위는 편집자가 고른 것이며 공식 순위가 아닙니다 · NASA와 JPL은 이 영상을 보증하거나 후원하지 않습니다. 크기·날짜·비행 거리는 NASA 영상 설명 기준입니다
+
+#Shorts #로봇 #화성 #NASA #퍼서비어런스 #인제뉴어티 #화성헬기 #뱀로봇 #우주 #랭킹 #TOP5 #역대급
+```
+고정 댓글: 몇 번이 제일 신기했음? 👇 뱀 로봇 vs 스카이크레인
+
+**moment3**: 역대급 파괴 실험 모먼트 랭킹 TOP5 ㄷㄷ
+```
+NASA가 일부러 부수고, 떨어뜨리고, 터뜨린 실험 다섯 개를 골랐습니다. 약 6.4톤(1만4천 파운드)짜리 오리온 우주선 시험체를 랭글리 연구센터 수조에 떨어뜨린 입수 시험, 에어택시 모양 기체를 높은 철탑에서 떨어뜨린 충돌 시험, 우주 쓰레기·미세 운석이 부딪치는 속도를 재현한 초고속 충돌 시험, 비행 하중의 260% 넘게 버티다 찢어진 SLS 로켓 액체수소 탱크(2019년 12월 5일), 그리고 액체산소 대신 물을 채운 SLS 산소 탱크를 한계까지 눌러 터뜨린 시험(슬로모션)입니다.
+
+▶ [채널명] 채널 구독: https://www.youtube.com/@[핸들]
+
+출처: 영상: NASA (Engineers Break SLS Rocket Propellant Tank On Purpose · Space Launch System Liquid Hydrogen Tank Test · NASA Drop Test of Orion Spacecraft for Crewed Artemis Missions · ORION 10ft Swing Drop · Lift & Cruise Drop Test · NASA Drop Test Supports Safer Air Taxi Designs · WSTF Hypervelocity Impact Testing, images.nasa.gov) · 음악: "Volatile Reaction" Kevin MacLeod (incompetech.com), CC BY 4.0 (creativecommons.org/licenses/by/4.0) · 순위는 편집자가 고른 것이며 공식 순위가 아닙니다 · NASA는 이 영상을 보증하거나 후원하지 않습니다. 무게·날짜·하중 수치는 NASA 영상 설명 기준입니다
+
+#Shorts #파괴실험 #실험 #NASA #로켓 #충돌실험 #슬로모션 #우주선 #시원한영상 #랭킹 #TOP5 #역대급
+```
+고정 댓글: 1위 보고 소리 지른 사람? 👇 몇 번이 제일 시원했음?
+
+
 
 ## 쇼츠 50만+: 해외 인물 (`politics/people1`~`people3`, 일론 머스크 육성)
 
