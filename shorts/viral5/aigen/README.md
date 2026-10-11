@@ -62,3 +62,28 @@ python3 aigen/contact.py <id>            # media/aigen/<id>/contact.jpg
 - **네트워크:** Hugging Face와 GitHub(git clone)에 연결된다.
   - `black-forest-labs/FLUX.1-schnell` 원본 저장소는 로그인 동의가 필요한 gated 저장소다. 그래서 HF 안의 Apache-2.0 GGUF 변환본을 받았다.
   - GitHub 릴리스 페이지는 curl로 403이었다. 그래서 소스를 받아 직접 빌드했다.
+
+## 썰 캐릭터 시험 (`aigen/sseol/`, 2026-10-11, AI 썰 제작 중단)
+
+썰구리식 "앱 글 카드 + 줄마다 AI 치비 장면"(`aisseol1`~`3`)을 만들려고 한 시험이다. 사용자가 목소리가 많이 들어가는 사연 형식을 접어서 쇼츠는 만들지 않았다. 대본, 녹음, 업로드 문구는 저장소에 넣지 않았다. 도구와 시험 그림만 남긴다.
+
+- **설정:** 위와 같은 SDXL base 1.0 + SDXL-Lightning 4-step이다. 다만 합쳐진 체크포인트 대신 base 체크포인트에 LoRA(`sdxl_lightning_4step_lora.safetensors`)를 `--lora-apply-mode immediately`로 얹고, f16으로 돌린다. 크기는 정사각 832×832(글 카드 그림 칸이 900px), `--diffusion-fa`, taesdxl 디코더다.
+  - 이 sd.cpp 빌드(2988060)에서는 `--type q8_0`과 LoRA를 함께 쓰면 `apply_loras_to_params`에서 죽는다. q8_0은 f16보다 빠르지도 않았다(1024²에서 88 s/스텝 대 86 s/스텝, 계산이 병목).
+
+| 설정 | 샘플링 | 한 장 전체(모델 로드 약 25초 포함) |
+|---|---|---|
+| FLUX.1-schnell Q4_0, 512×512, 2스텝 | 190 s/스텝 | 489초 |
+| SDXL + Lightning LoRA, f16, 1024×1024 | 86 s/스텝 | 400초 |
+| **SDXL + Lightning LoRA, f16, 832×832, flash attention** | **41 s/스텝** | **213~226초** |
+| Animagine XL 4.0(OpenRAIL++-M, 추가 제한 없음) + Lightning LoRA, 832² | 비슷함 | 233초. 4스텝에서 그림이 뭉개져서 버렸다(LoRA 없이 쓰려면 약 25스텝) |
+
+- **일관성: 인물 시트 + 장면 구도.** `aigen/sseol/cast.py`에 그림체 문장 하나와 인물 시트(나: 둥근 검정 안경·빨간 넥타이, 서아: 높은 포니테일·노란 곱창끈, 할머니: 흰 파마·연보라 카디건 등)를 두고, 모든 프롬프트에 그대로 넣는다. 시드는 편마다 하나다. 시험 그림은 `aigen/sseol/img/test/sheet.jpg`다.
+  - **한 장에 인물 한 명이면 이어진다.** `t3_seoa`(포니테일, 노란 곱창끈), `t1_me`(안경, 빨간 넥타이), `t5_gma`(흰 파마, 연보라)는 시트대로 나왔다.
+  - **한 장에 인물 두 명이면 특징이 섞인다.** 4스텝, cfg 1에서는 "누가 무엇을" 묶지 못한다. `t2_me_tae`에서는 일진이 사라지고 모두 안경을 썼다. `t4_me_seoa`에서는 서아도 안경을 쓰고 포니테일이 없어졌다.
+  - 그래서 **장면마다 인물을 한 명만 그리고, 상대는 시점 샷으로 처리한다**("seen from the point of view of …", "smiling at the viewer"). 웹툰이 대화를 그리는 방식과 같다. 벤치마크 썸네일도 대부분 한두 명이다.
+  - 그 밖에 보인 것
+    - 배경의 반 친구들이 주인공 특징(안경)을 따라 한다.
+    - "only one character", "empty classroom"이라고 써도 없어지지 않는다.
+    - 사람이 작게 나오면(`t5_gma` 버스 정류장, `t6_driver`) 시트가 흐려지고 인물이 둘로 늘기도 한다. "upper body shot", "close-up"처럼 구도를 적는다.
+    - 칠판에는 뜻 없는 글자가 생긴다. 칠판·간판이 들어가는 배경은 피한다.
+- **명령:** `python3 aigen/sseol/fetch_models.py`(가중치 → `~/.cache/aigen`, sd.cpp 빌드), `python3 aigen/sseol/gen.py --test`, `python3 aigen/sseol/sheet.py test`.
