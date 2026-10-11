@@ -1,0 +1,123 @@
+name: 쿠팡 파트너스 쇼츠 만들기
+
+# coupang-shorts/requests/<id>.json (상품 주소·검색어·카테고리)을 올리면
+#   쿠팡 파트너스 API 로 상품 정보·내 파트너스 링크를 받고 (data/)
+#   장면 문구를 쓰고 (specs/ — ANTHROPIC_API_KEY 가 있으면 Claude 가 사진을 보고 씀)
+#   1080×1920 쇼츠와 업로드 문구를 만들어 (out/) 같은 브랜치에 커밋한다.
+# specs/<id>.json 을 고쳐 올리면 그 편만 다시 렌더한다.
+#
+# 필요한 시크릿 (Settings → Secrets and variables → Actions → New repository secret)
+#   COUPANG_ACCESS_KEY, COUPANG_SECRET_KEY   쿠팡 파트너스 → 추가기능 → Open API 에서 발급
+#   ANTHROPIC_API_KEY                        (선택) 문구 자동 작성
+# 선택 변수 (Variables): CHANNEL_NAME (영상 왼쪽 위 채널 이름), COUPANG_SUB_ID (채널 구분용 subId),
+#   COUPANG_COPY_MODEL (기본 claude-opus-5-5)
+
+on:
+  push:
+    paths: ['coupang-shorts/requests/**', 'coupang-shorts/specs/**']
+  workflow_dispatch:
+    inputs:
+      ids:
+        description: '다시 만들 id (빈칸이면 전체 확인, 여러 개는 띄어쓰기)'
+        required: false
+        default: ''
+      force:
+        description: '상품 정보를 다시 받고 다시 렌더'
+        type: boolean
+        default: false
+
+concurrency:
+  group: coupang-shorts-${{ github.ref }}
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+jobs:
+  make:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: 준비 (ffmpeg·글꼴·음악)
+        run: |
+          sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg >/dev/null
+          pip install --quiet pillow numpy anthropic
+          coupang-shorts/tools/assets.sh
+
+      - name: 이번 푸시에서 바뀐 파일
+        env:
+          BEFORE: ${{ github.event.before }}
+        run: |
+          if [ -n "$BEFORE" ] && git cat-file -e "$BEFORE^{commit}" 2>/dev/null; then
+            git diff --name-only "$BEFORE" HEAD > "$RUNNER_TEMP/changed.txt"
+          else
+            git ls-files coupang-shorts/requests coupang-shorts/specs > "$RUNNER_TEMP/changed.txt"
+          fi
+          cat "$RUNNER_TEMP/changed.txt"
+
+      - name: 만들기
+        env:
+          COUPANG_ACCESS_KEY: ${{ secrets.COUPANG_ACCESS_KEY }}
+          COUPANG_SECRET_KEY: ${{ secrets.COUPANG_SECRET_KEY }}
+          COUPANG_SUB_ID: ${{ vars.COUPANG_SUB_ID }}
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          COUPANG_COPY_MODEL: ${{ vars.COUPANG_COPY_MODEL }}
+          CHANNEL_NAME: ${{ vars.CHANNEL_NAME }}
+          IDS: ${{ inputs.ids }}
+          FORCE: ${{ inputs.force && '--force' || '' }}
+        run: |
+          set -o pipefail
+          if [ -z "$COUPANG_ACCESS_KEY" ]; then
+            echo "::warning::COUPANG_ACCESS_KEY / COUPANG_SECRET_KEY 시크릿이 없어 새 상품은 받지 못합니다 (이미 받은 data 로만 렌더)."
+          fi
+          rc=0
+          python coupang-shorts/tools/pipeline.py --changed "$RUNNER_TEMP/changed.txt" $FORCE $IDS 2>&1 | tee "$RUNNER_TEMP/run.log" || rc=$?
+          {
+            echo "### 쿠팡 쇼츠"
+            echo '```'
+            cat "$RUNNER_TEMP/run.log"
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
+          exit $rc
+
+      - name: 영상 파일 보관 (Actions 화면에서 내려받기)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: coupang-shorts
+          path: |
+            coupang-shorts/out/*.mp4
+            coupang-shorts/out/*.txt
+          if-no-files-found: ignore
+          retention-days: 14
+
+      - name: 바뀐 게 있으면 커밋
+        if: always()
+        run: |
+          if [ -z "$(git status --porcelain -- coupang-shorts/data coupang-shorts/specs coupang-shorts/out)" ]; then
+            echo "변경 없음 — 커밋하지 않습니다." >> "$GITHUB_STEP_SUMMARY"
+            exit 0
+          fi
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A coupang-shorts/data coupang-shorts/specs coupang-shorts/out
+          git commit -q -m "쿠팡 쇼츠 자동 제작 $(TZ=Asia/Seoul date '+%Y-%m-%d %H:%M KST')"
+          pushed=0
+          for i in 1 2 3 4; do
+            if git push -q origin "HEAD:${GITHUB_REF_NAME}"; then pushed=1; break; fi
+            echo "푸시 실패, 재시도 $i"
+            git pull -q --rebase --autostash origin "${GITHUB_REF_NAME}" || true
+            sleep $((2 ** i))
+          done
+          if [ "$pushed" -ne 1 ]; then
+            echo "::error::커밋은 만들었지만 푸시하지 못했습니다."
+            exit 1
+          fi
