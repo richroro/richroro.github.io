@@ -1,0 +1,16 @@
+{
+ "id": "star1",
+ "committee": "Senate Appropriations Subcommittee on Labor, Health and Human Services, Education, and Related Agencies",
+ "hearing": "Taking a Toll on Families and the Economy: The Rising Cost of Alzheimer's in America",
+ "date": "2014-02-26",
+ "source_page": "https://www.appropriations.senate.gov/webcast/rising-cost-alzheimers-america (committee page as captured 2014-04-13; the page is gone from the current site, the video stream is still served by the Senate)",
+ "player": "https://www.senate.gov/isvp/?type=arch&comm=approps&filename=appropsA022614",
+ "file_url": "https://www-senate-gov-msl3archive.akamaized.net/appropriations/appropsA022614_1/master.m3u8 (640x360, the only rendition; 2:18:30)",
+ "clip": "rogen.mp4 = stream 6000 s + 400 s, re-encoded: ffmpeg -ss 6000 -i <stream> -t 400 -c:v libx264 -crf 16 -preset fast -c:a aac -b:a 192k rogen.mp4",
+ "used_in_clip_s": [[16.75, 23.2], [24.45, 32.25], [94.3, 101.5], [132.6, 145.2], [359.7, 367.45]],
+ "left_out": "the marijuana joke, the House of Cards / Doritos jokes, the funding statistics and the closing request to the subcommittee; the senators' replies",
+ "transcript": "S. Hrg. 113-487, https://www.govinfo.gov/content/pkg/CHRG-113shrg91479/html/CHRG-113shrg91479.htm (S. Hrg. 113-487, oral statement of Seth Rogen), checked against faster-whisper medium.en (word times) and tiny.en (whole hearing)",
+ "speakers": ["Seth Rogen, actor and comedian (witness, panel II)"],
+ "credit": "미국 상원 (U.S. Senate)",
+ "license": "Senate Recording Studio video, a work of the U.S. government, public domain (17 U.S.C. §105). Not C-SPAN footage."
+}
