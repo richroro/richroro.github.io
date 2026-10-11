@@ -7124,3 +7124,133 @@ python3 longform/odyssey/qa.py final/odyssey.mp4 <dir>  # QA + 콘택트 시트
   ```
 
 설명란 길이: 1470자 (YouTube 한도 5,000자), 고정 댓글 7984자 (한도 10,000자).
+
+## 쇼츠 50만+ 벤치마크: 생활 규칙 짤툰 · 시니어 반전 드라마 (`rule1`, `senior1`)
+
+사용자 요청은 "롱폼은 멈추고, 숏폼 50만 이상 잘나가는 것 분석해서 5개 만들어봐"였다. 이 절은 그림·그래픽 쪽 작업자의 2편이다. 조사는 `research/research-500k-drawn.md`(채널 95곳의 최근 30편 적중률, 2026-04-01 이후 50만+ 592편)에 있다. 나머지 3편(흰 카드 실사)은 실사 쪽 작업자가 만든다.
+
+### 무엇을 알았나 (요약)
+
+- **그림 쪽에서 작은 채널이 50만을 반복해서 넘는 형식은 AI 생성 그림, 웹툰 작화, 남의 영상이다.** 우리 도구만으로 되는 형식(○)으로 작은 채널이 50만을 넘은 것은 30편 중 1편씩 두 번뿐이다(썰왕, 오늘의 기준).
+- **틀린그림찾기, 숨은그림찾기, 3초 퀴즈, 마블 레이스, 채팅 썰, 지도 애니는 올해 50만+가 0편이다.** 시니어 넌센스 퀴즈 카드(137만)와 손동작 두뇌운동(491만)은 그 채널에서 한 번뿐이었다(1/30, 0/30).
+- **2026년의 큰 흐름은 AI 실사 "시니어 반전 드라마"다.** 훈작가 25/30(중앙값 92만), 작은 채널은 서민희(6.2만) 10/30, 마음우체국(6.4만) 9/30, ai방송국(1.7만) 9/30이다.
+- **썰구리(4.1만) 17/30과 우리 썰의 차이는 형식이 아니다.** 제목 공식은 같다. 다른 것은 그림의 밀도(줄마다 AI 치비 장면)와 양(6일에 30편)이다.
+
+### 오케스트레이터 배정과 이미지 모델 시험
+
+- **배정**: ① 콩자반 「오프리쉬 신고하면 벌어지는 일」 구조의 안전한 변형 1편. 특정 사건이나 개인을 다루지 않고, 공공 규칙을 공식 자료로 설명한다. ② 시니어 반전 드라마 1편(REVIEW 2-1 통과). 그 전에 이미지 생성 모델을 45분 동안 시험한다.
+- **시험 결과: 불합격(인물 일관성).**
+  - 모델: SDXL-Lightning 4단계(ByteDance), stable-diffusion.cpp, CPU 4코어, q8_0, TAESD-XL 디코더.
+  - 라이선스: CreativeML Open RAIL++-M을 직접 읽었다. 출력물에 권리를 주장하지 않으며 상업 사용이 가능하고, Attachment A의 사용 제한(명예훼손, 미성년자 피해, 해를 끼칠 목적의 허위정보 금지 등)을 따른다.
+  - 속도: 768×960에서 장당 150~161초, 896×1152 + 기본 VAE에서 285초.
+  - 그림 한 장의 질은 웹툰 일러스트 수준이었다. 하지만 같은 시드와 같은 인물 설명으로 6장을 뽑았더니 인물이 유지되지 않았다. 두 사람 장면에서 한 명이 사라지고, "no glasses"인데 안경이 생기고, 옷 색이 바뀌었다.
+  - 그래서 우리 치비 캐릭터에 더 풍부한 배경을 그렸다. 생성 이미지는 하나도 쓰지 않았고, 설명란에 "이미지: AI 생성"을 넣지 않는다.
+  - AI 그림 채택은 사용자가 정할 일이다. 사람이 없는 배경만 생성하는 방법은 남아 있다.
+
+### `rule1` 테이크아웃 컵 들고 버스 타면 벌어지는 일 (33.7초)
+
+- **벤치마크**
+  - 구조: 콩자반(구독 2.24만) 「오프리쉬 신고하면 벌어지는 일」 616만(2026-08-23), 채널 15/30, 중앙값 55만.
+  - 맞춘 것:
+    - 제목 "~하면 벌어지는 일", 2줄 띠.
+    - 0초 첫 줄이 대사("손님, 그 컵 들고는 못 타세요.").
+    - 장소 사진 위에 캐릭터.
+    - 한 줄 자막, 판정 질문으로 끝.
+  - 그대로 둔 차이: 콩자반의 엔진은 실제 사건 현장 영상이다. 우리는 쓸 수 없어서 공공 규칙 자체를 소재로 했다.
+- **이야기 검토 (2-1)**
+  - 한 줄 요약: 도치가 아이스 아메리카노 때문에 버스를 못 타서 원샷했는데, 마시는 사이 버스가 떠났다.
+  - 결말 유형: 허탈 개그. 노리는 감정: 웃음.
+  - 복선: 기사님의 "출발 시간이에요", 남은 얼음.
+  - 갈등이 커지는 순서: 거부 → "텀블러는?" → "벌금 내면?" → "벌금 없음, 그냥 못 탐" → 원샷.
+  - 규칙은 기사님 대사와 내레이션 사실 줄에만 넣었다(설교 없음).
+- **사실과 출처**
+  - 서울시 교통 누리집 보도자료(2018-03, 「시내버스 음식물 반입 제한」): 「서울특별시 시내버스 재정지원 및 안전 운행기준에 관한 조례」 개정(2018-01-04 시행)으로, 운전자가 음식물이 담긴 일회용 컵 등의 운송을 거부할 수 있다.
+  - 금지 예: 일회용 컵에 든 뜨거운 음료·얼음, 컵에 담긴 치킨·떡볶이, 뚜껑 없거나 빨대 꽂힌 캔·병.
+  - 허용 예: 종이 상자 포장 음식, 뚜껑 닫힌 병, 따지 않은 캔, 텀블러·보온병, 비닐봉지 식재료.
+  - 같은 안내에 승객 벌금은 없고, 차 안에서 먹으면 하차시킬 수 있다고 되어 있다.
+  - 조례 조문 번호와 그 뒤 개정 여부는 자치법규 사이트가 이 환경에서 열리지 않아 확인하지 못했다(설명란에는 조례명과 시행일만 적었다).
+- **목소리 (Supertonic, 음성 v2)**: 내레이터 M4 7.6음절/초, 도치 M1 7.6, 기사님 M2 7.2. 쉼은 0.12/0.2/0.4초다. 받아쓰기로 확인했고, 처음에 "vs"를 "뉴스"로 읽고 끝 음절을 삼킨 줄은 다시 썼다.
+- **qa_review**: 12/12 PASS. 길이 33.7초, 최장 장면 3.6초, 자막 최장 12자, −14.0 LUFS, 28.2MB.
+
+### `senior1` 매주 혼자 와서 2인분 시키던 할아버지 (41.8초)
+
+- **벤치마크**
+  - ai방송국(구독 1.73만) 「혼자 왔다고 쫓아낸 고깃집」 83만(2026-10-04), 「12년 지킨 가게에서 쫓겨나는 순간」 167만(2026-09-27), 채널 9/30.
+  - 마음우체국(6.44만) 「그 돈으로 무슨 집을 사요? 허름한 노인을 무시한 부동산 사장」 160만(2026-10-06), 9/30.
+  - 맞춘 것:
+    - 가게 배경의 시니어 생활 갈등, 인물마다 다른 목소리의 대화극, 따뜻한 반전.
+    - 제목 끝 "..", 화면 가운데 큰 그림, 아래 한 줄 자막.
+  - 다른 것: 벤치마크는 AI 실사이고 우리는 그린 치비다(위 시험 결과). 그림판 시니어 드라마의 50만 사례는 찾지 못했다. 이 편은 **그림으로도 이 시청층이 보는지 재는 시험**이다.
+- **이야기 검토 (2-1)**
+  - 전제 3개:
+    - "매일 반찬 하나만 사 가는 할머니"(깨 빼고).
+    - "만 원 내고 거스름돈을 안 받는 할아버지".
+    - 이 편.
+  - 이 편을 고른 이유: 반전이 시청자 자신(알바 '나')에게 돌아오고, 제목으로 결말을 맞힐 수 없다.
+  - 한 줄 요약: 고깃집 알바가 2인분 시키고 반 남기는 할아버지를 흉봤는데, 목요일마다 받던 '직원 고기'가 그 반이었다.
+  - 결말 유형: 따뜻한 반전. 노리는 감정: 뭉클.
+  - 복선:
+    - 늘 목요일이다.
+    - "학생, 저녁은 먹었어?"
+    - 사장님의 "잔말 말고 2인분 드려".
+    - 직원 고기는 목요일에만 나온다.
+  - 갈등이 커지는 순서: 반만 먹음 → 사장님이 1인분을 막음 → 할아버지가 안 온 날 직원 고기가 없음 → 장부.
+  - 인물:
+    - 할아버지: 말수가 적고 같은 질문만 한다.
+    - 사장님: 말버릇이 "잔말 말고"다.
+    - '나': 투덜대는 알바다.
+  - 결말 이유도 앞에 깔았다. 40년 전 그 가게 알바였던 할아버지, 그때 사장님의 아들이 지금 사장님이다.
+- **그림**: 치비 3인(`Chibi.tsx`)과 새 배경 `src/lib/Places.tsx`(고깃집 홀 낮·밤, 직원 휴게실; 배기 후드, 차림표, 숯불 테이블)를 썼다. 클로즈업 2컷은 Commons CC0 사진이다.
+- **목소리 (Supertonic)**: '나'(내레이터 겸 대사) M1 6.8, 할아버지 M3 6.0, 사장님 M2 6.6. 음높이 조작은 없다. 쉼은 0.14/0.24/0.5초(썰)다. 받아쓰기로 확인했고, 처음 끝 줄 "네. 덕분에요."의 "덕분에요"가 빠져서 "네, 덕분에 잘 먹었어요."로 고쳤다.
+- **qa_review**: 12/12 PASS. 길이 41.8초, 최장 장면 4.1초, 자막 최장 12자, −14.1 LUFS, 22.8MB.
+
+### 템플릿 변경과 회귀 확인
+
+- **새 파일**
+  - `src/lib/Places.tsx`: 배경 `gogi`, `gogiNight`, `gogiBack`.
+  - `media/hit500/build.py`: 두 편의 대본·편집 빌더. 낙서 v2의 `media/doodle/v2/lib.py`를 그대로 쓴다.
+  - `media/hit500/seconds.py`: 사진이 화면에 나온 초를 edit.json에 쓴다.
+- **공유 파일 수정**: `src/lib/Sseol.tsx` 두 줄. `Places` import와 Backdrop `default:`에서 `PLACES`에 있는 이름이면 `<Place>`를 그리는 분기다. 다른 배경 이름은 전과 같다.
+- **회귀 확인**
+  - `sseol16`(손대지 않은 썰)의 데이터를 Supertonic으로 다시 만들어 0·123·400·700프레임을 렌더했다. 수정 전 `Sseol.tsx`(HEAD)와 수정 후로 각각 렌더했다.
+  - 4장 모두 PNG md5가 같다.
+- **음악 없는 판**: `final/rule1-nomusic.mp4`, `final/senior1-nomusic.mp4`. 음악만 빼고 효과음은 둔 채 −14 LUFS로 맞췄다. 사용자가 유튜브 앱에서 인기 음원을 붙일 수 있게 한 것이다.
+
+```bash
+./fetch.sh && media/doodle/fetch.sh                       # 폰트·효과음·음악, 버스 사진
+mkdir -p public/hit500 && curl -sSfL -A "richroro-shorts/1.0" -o public/hit500/samgyeopsal_table.jpg https://upload.wikimedia.org/wikipedia/commons/thumb/f/fe/Samgyeopsal_table.jpg/1920px-Samgyeopsal_table.jpg
+curl -sSfL -A "richroro-shorts/1.0" -o public/hit500/samgyeopsal_gui.jpg https://upload.wikimedia.org/wikipedia/commons/thumb/7/77/Samgyeopsal-gui.jpg/1920px-Samgyeopsal-gui.jpg
+python3 media/hit500/build.py                            # shorts/rule1, shorts/senior1
+for s in rule1 senior1; do python3 voice_edge.py $s && python3 prep.py $s; done
+python3 media/hit500/seconds.py rule1 senior1
+for s in rule1 senior1; do ./render.sh $s final/$s.mp4 && python3 qa_review.py $s; done
+# 음악 없는 판: edit.json의 "music"을 null로 바꿔 prep.py → render.sh final/<id>-nomusic.mp4, 그 뒤 원래대로 돌리고 prep.py
+python3 upload/make_desc.py rule1 senior1
+```
+
+### 출처와 라이선스
+
+| 자료 | 작가 | 라이선스 | 쓴 곳 |
+|---|---|---|---|
+| [Bus at Stop on Street](https://www.pexels.com/photo/bus-at-stop-on-street-21235187/) | Elina Volkova | Pexels License | rule1 0~7초 외 |
+| [Interior of Bus](https://www.pexels.com/photo/interior-of-bus-15595486/) | Pramod Tiwari | Pexels License | rule1 6.9~10.1초 외 |
+| [Empty Seats in Bus](https://www.pexels.com/photo/empty-seats-in-bus-15595490/) | Pramod Tiwari | Pexels License | rule1 10.1~13.8초 외 |
+| [Stop Button on a Bus](https://www.pexels.com/photo/stop-button-on-a-bus-17800465/) | Elina Volkova | Pexels License | rule1 25.2~26.6초 |
+| [Samgyeopsal table.jpg](https://commons.wikimedia.org/wiki/File:Samgyeopsal_table.jpg) | 이동원 | CC0 | senior1 4.3~8.2초 |
+| [Samgyeopsal-gui.jpg](https://commons.wikimedia.org/wiki/File:Samgyeopsal-gui.jpg) | jinsoo jang | CC0 | senior1 13.9~16.4초 |
+| "Scheming Weasel", "Heartwarming" | Kevin MacLeod (incompetech.com) | CC BY 4.0 | 배경음악 |
+| 효과음 | 직접 합성(`../tools/sfx.py`) | – | |
+| 목소리 | Supertonic 3 프리셋 M1·M2·M3·M4 | OpenRAIL-M (AI 생성 고지: 설명란 "목소리: AI 합성 음성") | |
+
+- 버스 사진 4장은 낙서 짤툰에서 이미 라이선스 페이지를 확인해 `media/doodle/sources.json`에 적어 둔 것이다.
+- Commons 2장은 "○○ 특"(`teuk12`)에서 확인한 CC0 파일이다.
+- 화면에 사람 얼굴이 나오는 사진은 없다.
+
+### 업로드 문구
+
+| id | 제목 | 고정 댓글 |
+|---|---|---|
+| `rule1` | 테이크아웃 컵 들고 버스 타면 벌어지는 일ㅋㅋ | 기사님이 맞다 🚌 vs 도치가 억울하다 🥤 님은 어느 쪽? |
+| `senior1` | 매주 혼자 와서 2인분 시키던 할아버지.. | 여러분에게도 말없이 챙겨 주던 어른이 있었나요? 🍚 |
+
+설명글은 `upload/txt/rule1.txt`, `upload/txt/senior1.txt`(`upload/specs/*.json` → `make_desc.py`)에 있다. 둘 다 창작이라 요약 앞에 "(창작)"이 붙는다.

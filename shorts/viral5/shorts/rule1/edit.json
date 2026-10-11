@@ -1,0 +1,632 @@
+{
+ "credit": "",
+ "titleStyle": "band",
+ "titleKey": "#FFE14D",
+ "frame": "capTall",
+ "capBox": {
+  "y": 1600
+ },
+ "sources": {
+  "px17800465": {
+   "file": "px17800465.jpg",
+   "path": "public/doodle/px17800465.jpg",
+   "page": "https://www.pexels.com/photo/stop-button-on-a-bus-17800465/",
+   "file_url": "https://images.pexels.com/photos/17800465/pexels-photo-17800465.jpeg?auto=compress&cs=tinysrgb&w=1600",
+   "license": "Pexels License",
+   "creator": "Elina Volkova",
+   "credit": "사진: Pexels (설명란 표기)",
+   "seconds": [
+    [
+     25.16,
+     26.6
+    ]
+   ]
+  },
+  "px15595486": {
+   "file": "px15595486.jpg",
+   "path": "public/doodle/px15595486.jpg",
+   "page": "https://www.pexels.com/photo/interior-of-bus-15595486/",
+   "file_url": "https://images.pexels.com/photos/15595486/pexels-photo-15595486.jpeg?auto=compress&cs=tinysrgb&w=1600",
+   "license": "Pexels License",
+   "creator": "Pramod Tiwari",
+   "credit": "사진: Pexels (설명란 표기)",
+   "seconds": [
+    [
+     6.93,
+     10.12
+    ],
+    [
+     13.78,
+     15.39
+    ],
+    [
+     22.55,
+     25.16
+    ]
+   ]
+  },
+  "px15595490": {
+   "file": "px15595490.jpg",
+   "path": "public/doodle/px15595490.jpg",
+   "page": "https://www.pexels.com/photo/empty-seats-in-bus-15595490/",
+   "file_url": "https://images.pexels.com/photos/15595490/pexels-photo-15595490.jpeg?auto=compress&cs=tinysrgb&w=1600",
+   "license": "Pexels License",
+   "creator": "Pramod Tiwari",
+   "credit": "사진: Pexels (설명란 표기)",
+   "seconds": [
+    [
+     10.12,
+     13.78
+    ],
+    [
+     15.39,
+     17.83
+    ]
+   ]
+  },
+  "px21235187": {
+   "file": "px21235187.jpg",
+   "path": "public/doodle/px21235187.jpg",
+   "page": "https://www.pexels.com/photo/bus-at-stop-on-street-21235187/",
+   "file_url": "https://images.pexels.com/photos/21235187/pexels-photo-21235187.jpeg?auto=compress&cs=tinysrgb&w=1600",
+   "license": "Pexels License",
+   "creator": "Elina Volkova",
+   "credit": "사진: Pexels (설명란 표기)",
+   "seconds": [
+    [
+     0.0,
+     1.74
+    ],
+    [
+     1.74,
+     3.48
+    ],
+    [
+     5.7,
+     6.93
+    ],
+    [
+     21.21,
+     22.55
+    ],
+    [
+     27.73,
+     30.11
+    ],
+    [
+     31.68,
+     33.64
+    ]
+   ]
+  }
+ },
+ "music": {
+  "file": "music/scheming_weasel.mp3",
+  "gain": 0.12,
+  "start": 0
+ },
+ "sfx": [
+  [
+   "a0",
+   "whoosh",
+   0.2
+  ],
+  [
+   "c",
+   "pop",
+   0.22
+  ],
+  [
+   "d",
+   "pop",
+   0.22
+  ],
+  [
+   "e",
+   "pop",
+   0.22
+  ],
+  [
+   "h.안 되는",
+   "boing",
+   0.26
+  ],
+  [
+   "j",
+   "pop",
+   0.22
+  ],
+  [
+   "k",
+   "whoosh_dn",
+   0.22
+  ],
+  [
+   "l.원샷",
+   "boing",
+   0.3
+  ],
+  [
+   "m.이미",
+   "whoosh",
+   0.25
+  ],
+  [
+   "n",
+   "pop",
+   0.2
+  ],
+  [
+   "z",
+   "pop",
+   0.22
+  ]
+ ],
+ "clips": [
+  {
+   "from": "a0",
+   "label": "a0",
+   "gfx": {
+    "type": "scene",
+    "photo": "doodle/px21235187.jpg",
+    "chars": [
+     {
+      "style": "doodle",
+      "hairdo": "bald",
+      "hair": "#3b3b3b",
+      "mood": "angry",
+      "hat": "🧢",
+      "size": 2.0,
+      "x": 0.5,
+      "y": 100
+     }
+    ],
+    "prop": "🥤",
+    "propX": 0.82,
+    "steps": [
+     9,
+     0.1,
+     9,
+     9
+    ],
+    "floor": 400
+   }
+  },
+  {
+   "from": "a",
+   "label": "a",
+   "gfx": {
+    "type": "scene",
+    "photo": "doodle/px21235187.jpg",
+    "photoPos": "70% 50%",
+    "chars": [
+     {
+      "style": "doodle",
+      "hair": "#FF7A1A",
+      "mood": "shock",
+      "size": 1.75,
+      "x": 0.3,
+      "rot": -3
+     }
+    ],
+    "prop": "🥤",
+    "steps": [
+     9,
+     0.1,
+     9,
+     9
+    ],
+    "floor": 400,
+    "propX": 0.76
+   }
+  },
+  {
+   "from": "b",
+   "label": "b",
+   "gfx": {
+    "type": "scene",
+    "bg": "#dff3ff",
+    "chars": [
+     {
+      "style": "doodle",
+      "hair": "#FF7A1A",
+      "mood": "happy",
+      "size": 1.75,
+      "x": 0.3,
+      "rot": -3
+     }
+    ],
+    "prop": "🥤",
+    "steps": [
+     9,
+     0.1,
+     9,
+     9
+    ],
+    "floor": 400,
+    "propX": 0.76
+   }
+  },
+  {
+   "from": "c",
+   "label": "c",
+   "gfx": {
+    "type": "scene",
+    "photo": "doodle/px21235187.jpg",
+    "chars": [
+     {
+      "style": "doodle",
+      "hairdo": "bald",
+      "hair": "#3b3b3b",
+      "mood": "neutral",
+      "hat": "🧢",
+      "size": 1.4
+     },
+     {
+      "style": "doodle",
+      "hair": "#FF7A1A",
+      "mood": "think",
+      "size": 1.4
+     }
+    ],
+    "steps": [
+     "c",
+     9,
+     9,
+     9
+    ],
+    "say": {
+     "who": 1,
+     "text": "뚜껑 닫혀 있는데요?"
+    },
+    "floor": 400
+   }
+  },
+  {
+   "from": "d",
+   "label": "d",
+   "gfx": {
+    "type": "scene",
+    "photo": "doodle/px15595486.jpg",
+    "chars": [
+     {
+      "style": "doodle",
+      "hairdo": "bald",
+      "hair": "#3b3b3b",
+      "mood": "angry",
+      "hat": "🧢",
+      "size": 1.75,
+      "x": 0.3,
+      "rot": -3
+     }
+    ],
+    "prop": "⏱️",
+    "steps": [
+     9,
+     0.1,
+     9,
+     9
+    ],
+    "floor": 400,
+    "propX": 0.76
+   }
+  },
+  {
+   "from": "e",
+   "label": "e",
+   "gfx": {
+    "type": "scene",
+    "photo": "doodle/px15595490.jpg",
+    "chars": [
+     {
+      "style": "doodle",
+      "hair": "#FF7A1A",
+      "mood": "think",
+      "size": 2.1,
+      "x": 0.5,
+      "y": 110
+     }
+    ],
+    "big": "2018년~",
+    "steps": [
+     9,
+     9,
+     9,
+     "e+0.6"
+    ],
+    "floor": 400
+   }
+  },
+  {
+   "from": "f",
+   "label": "f",
+   "gfx": {
+    "type": "scene",
+    "photo": "doodle/px15595486.jpg",
+    "photoPos": "30% 50%",
+    "chars": [
+     {
+      "style": "doodle",
+      "hair": "#FF7A1A",
+      "mood": "smug",
+      "size": 1.4
+     },
+     {
+      "style": "doodle",
+      "hairdo": "perm",
+      "hair": "#5a3a2a",
+      "mood": "neutral",
+      "size": 1.4
+     }
+    ],
+    "prop": "🍶",
+    "propX": 0.84,
+    "steps": [
+     "f",
+     0.4,
+     9,
+     9
+    ],
+    "say": {
+     "who": 0,
+     "text": "저분 텀블러는요?"
+    },
+    "floor": 400
+   }
+  },
+  {
+   "from": "g",
+   "label": "g",
+   "gfx": {
+    "type": "scene",
+    "photo": "doodle/px15595490.jpg",
+    "photoPos": "60% 50%",
+    "chars": [
+     {
+      "style": "doodle",
+      "hairdo": "bald",
+      "hair": "#3b3b3b",
+      "mood": "neutral",
+      "hat": "🧢",
+      "size": 1.75,
+      "x": 0.3,
+      "rot": -3
+     }
+    ],
+    "prop": "🍶",
+    "steps": [
+     9,
+     0.1,
+     9,
+     9
+    ],
+    "floor": 400,
+    "propX": 0.76
+   }
+  },
+  {
+   "from": "h",
+   "label": "h",
+   "gfx": {
+    "type": "scene",
+    "bg": "#FFE14D",
+    "chars": [
+     {
+      "style": "doodle",
+      "hair": "#FF7A1A",
+      "mood": "think",
+      "size": 1.75,
+      "x": 0.3,
+      "rot": -3
+     }
+    ],
+    "prop": "📦🥫",
+    "big": "컵 = NO",
+    "steps": [
+     9,
+     0.1,
+     9,
+     "h.안 되는"
+    ],
+    "floor": 400,
+    "propX": 0.76
+   }
+  },
+  {
+   "from": "i",
+   "label": "i",
+   "gfx": {
+    "type": "scene",
+    "photo": "doodle/px21235187.jpg",
+    "chars": [
+     {
+      "style": "doodle",
+      "hair": "#FF7A1A",
+      "mood": "smug",
+      "size": 1.75,
+      "x": 0.3,
+      "rot": -3
+     }
+    ],
+    "prop": "💸",
+    "steps": [
+     9,
+     0.1,
+     9,
+     9
+    ],
+    "floor": 400,
+    "propX": 0.76
+   }
+  },
+  {
+   "from": "j",
+   "label": "j",
+   "gfx": {
+    "type": "scene",
+    "photo": "doodle/px15595486.jpg",
+    "chars": [
+     {
+      "style": "doodle",
+      "hairdo": "bald",
+      "hair": "#3b3b3b",
+      "mood": "smug",
+      "hat": "🧢",
+      "size": 1.75,
+      "x": 0.3,
+      "rot": -4
+     }
+    ],
+    "big": "벌금 0원",
+    "steps": [
+     9,
+     9,
+     9,
+     "j+0.4"
+    ],
+    "floor": 400
+   }
+  },
+  {
+   "from": "k",
+   "label": "k",
+   "gfx": {
+    "type": "scene",
+    "photo": "doodle/px17800465.jpg",
+    "chars": [
+     {
+      "style": "doodle",
+      "hair": "#FF7A1A",
+      "mood": "cry",
+      "size": 1.95,
+      "x": 0.64,
+      "y": 80,
+      "flip": true,
+      "rot": 3
+     }
+    ],
+    "big": "15분",
+    "steps": [
+     9,
+     9,
+     9,
+     "k+0.3"
+    ],
+    "floor": 400
+   }
+  },
+  {
+   "from": "l",
+   "label": "l",
+   "gfx": {
+    "type": "scene",
+    "bg": "#2b1c1c",
+    "chars": [
+     {
+      "style": "doodle",
+      "hair": "#FF7A1A",
+      "mood": "angry",
+      "to": "laugh",
+      "size": 1.75,
+      "x": 0.3,
+      "rot": -3
+     }
+    ],
+    "prop": "🥤",
+    "big": "원샷",
+    "steps": [
+     9,
+     0.1,
+     "l.원샷",
+     "l.원샷"
+    ],
+    "floor": 400,
+    "propX": 0.76
+   }
+  },
+  {
+   "from": "m",
+   "label": "m",
+   "gfx": {
+    "type": "scene",
+    "photo": "doodle/px21235187.jpg",
+    "photoPos": "40% 50%",
+    "chars": [
+     {
+      "style": "doodle",
+      "hair": "#FF7A1A",
+      "mood": "shock",
+      "size": 1.75,
+      "x": 0.3,
+      "rot": -3
+     }
+    ],
+    "prop": "🚌💨",
+    "big": "출발",
+    "steps": [
+     9,
+     0.1,
+     9,
+     "m.이미"
+    ],
+    "floor": 400,
+    "propX": 0.76
+   }
+  },
+  {
+   "from": "n",
+   "label": "n",
+   "gfx": {
+    "type": "scene",
+    "bg": "street",
+    "chars": [
+     {
+      "style": "doodle",
+      "hair": "#FF7A1A",
+      "mood": "cry",
+      "size": 1.75,
+      "x": 0.3,
+      "rot": -3
+     }
+    ],
+    "prop": "🧊",
+    "steps": [
+     9,
+     0.1,
+     9,
+     9
+    ],
+    "floor": 400,
+    "propX": 0.76
+   }
+  },
+  {
+   "from": "z",
+   "label": "z",
+   "gfx": {
+    "type": "scene",
+    "photo": "doodle/px21235187.jpg",
+    "chars": [
+     {
+      "style": "doodle",
+      "hair": "#FF7A1A",
+      "mood": "think",
+      "to": "smug",
+      "size": 1.95,
+      "x": 0.64,
+      "y": 80,
+      "flip": true,
+      "rot": 3
+     }
+    ],
+    "steps": [
+     9,
+     9,
+     "z.누가",
+     9
+    ],
+    "floor": 400
+   }
+  }
+ ]
+}
