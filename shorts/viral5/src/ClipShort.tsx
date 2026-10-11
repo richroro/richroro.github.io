@@ -13,6 +13,7 @@ import { TeukShort, type TeukOpts } from "./lib/Teuk";
 import { CardShort, type CardOpts } from "./lib/Card";
 import { QuoteShort, isQuoteShort } from "./lib/Quote";
 import { CAP_TALL, CapBox, type CapBoxOpts } from "./lib/CapBox";
+import { CapBoxEn, type CapBoxEnOpts } from "./lib/CapBoxEn";
 import { PlainCaptions, RiddleTitle } from "./lib/Riddle";
 import { RETROBOX, RetroTitle, RetroYear, StripCaptions } from "./lib/RetroV2";
 import { BoxCaptions, RankBand, RankList, TALL, type Rank2 } from "./lib/RankV2";
@@ -85,6 +86,8 @@ export type ShortData = {
   rank2?: Rank2;
   /** captions in a box over the bottom of the picture, one accent colour (lib/CapBox.tsx), in place of the word captions */
   capBox?: CapBoxOpts;
+  /** translated captions in a black box, the English small under the Korean (lib/CapBoxEn.tsx) */
+  capBoxEn?: CapBoxEnOpts;
   /** 정보 쇼츠 v2 (lib/Info2.tsx): a 0.5 s thumbnail cover, two-line yellow-only captions, no credit badge, small truth tags */
   cover?: Cover; capStyle?: "info2"; hideCredit?: boolean; tags?: Tag[];
 };
@@ -344,6 +347,7 @@ export const ClipShort: React.FC<{ data: ShortData }> = ({ data: d }) => {
       ))}
       {d.tags ? <Tags tags={d.tags} t={t} /> : null}
       {d.capStyle === "info2" ? <InfoCaps pages={d.pages} centerY={d.captionY ?? 1370} />
+        : d.capBoxEn ? <CapBoxEn pages={d.pages} o={d.capBoxEn} />
         : d.capBox ? <CapBox pages={d.pages} o={d.capBox} />
         : d.capLook === "plain" ? <PlainCaptions pages={d.pages} centerY={d.captionY} />
         : d.look === "retro2" ? <StripCaptions pages={d.pages} />

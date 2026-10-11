@@ -8516,6 +8516,19 @@ MEDIA=$PWD/media python3 politics/prep_split.py star1 && ./render.sh star1 final
   - 레너드의 1976년 올림픽 금메달: 콜린스 의원의 소개와 레너드 본인의 답변(회의록)에 나온다.
   - 혈당 700 이상과 2005년 투어 중 진단: 조나스 본인 증언이다.
 
+### 자막 상자 (`capBoxEn`, star4~)
+
+사용자가 보낸 참고 쇼츠(여러 클립을 한 이야기로 잇고, 검은 상자 한국어 자막을 다는 형식)에 맞춰 star4~star6의 자막을 바꿨다.
+- 한국어는 검은 상자 안에 크게 쓰고, 키워드는 노랑이다. 영어 원문은 그 아래 작게 쓴다.
+- 새 파일은 `src/lib/CapBoxEn.tsx`다. edit.json에 `"capBoxEn": {"y": 1585}`를 두면 쓰인다.
+- 공유 파일에 건 고리
+  - `src/ClipShort.tsx`: import 한 줄, 타입 한 줄, 자막 선택 한 줄.
+  - `politics/prep_split.py`: 그대로 넘기는 키 목록에 `"capBoxEn"`을 더했다.
+- 회귀 확인
+  - `deep1`(다른 시리즈)을 다시 렌더했다. `final/deep1.mp4`와 바이트까지 같다(cmp 일치).
+  - 이 옵션이 없는 `star1`도 다시 렌더했다. 기존 파일과 바이트까지 같다.
+- star1~star3은 앞서 만든 위 영어·아래 한국어 자막 그대로다.
+
 **업로드 문구**
 
 **star1**: 세스 로건이 청문회에 나온 진짜 이유..? 🥲
