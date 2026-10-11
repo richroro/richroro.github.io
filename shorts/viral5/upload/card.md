@@ -28,32 +28,6 @@
 9개 중에 제일 안 믿기는 건 몇 번이에요? 👀
 ```
 
-## deep2
-
-**제목**
-
-```
-세상에 이렇게 생긴 게 진짜 있다고? (심해편 2) ㄷㄷ
-```
-
-**설명글**
-
-```
-미국 해양대기청(NOAA) 무인잠수정이 심해에서 찍은 생물 9종입니다. '머리 없는 닭 괴물'이라는 별명이 붙은 헤엄치는 해삼, 수심 1,030m에서 만난 채찍 오징어, 지름이 30cm 가까운 해파리, 한 마리가 아니라 여럿이 모인 군체인 관해파리, 지느러미로 바닥에 서 있는 물고기까지 모두 실제 영상과 사진입니다. 첫 장면의 그림만 직접 그렸습니다.
-
-▶ [채널명] 채널 구독: https://www.youtube.com/@[핸들]
-
-출처: 영상·사진: NOAA Ocean Exploration (2025 ROV and Mapping Shakedown, Deep Connections 2019, 2023 Shakedown + EXPRESS West Coast, Deep-Sea Symphony 2017, Windows to the Deep 2019, 2019 Southeastern U.S., 2026 American Samoa) · 첫 장면 그림 직접 제작 · 음악: "Fluffing a Duck" Kevin MacLeod (incompetech.com), CC BY 4.0 (creativecommons.org/licenses/by/4.0) · NOAA는 이 영상을 보증하거나 후원하지 않습니다. 수심과 크기는 NOAA 영상·사진 설명 기준입니다
-
-#Shorts #심해 #심해생물 #바다 #해파리 #오징어 #아귀 #신기한동물 #NOAA
-```
-
-**고정 댓글**
-
-```
-머리 없는 닭 괴물… 이름 지은 사람 누구예요? 🐔
-```
-
 ## breath1
 
 **제목**
@@ -78,6 +52,32 @@
 
 ```
 몇 번째 사진에서 숨 멎었어요? 🌍
+```
+
+## deep2
+
+**제목**
+
+```
+세상에 이렇게 생긴 게 진짜 있다고? (심해편 2) ㄷㄷ
+```
+
+**설명글**
+
+```
+미국 해양대기청(NOAA) 무인잠수정이 심해에서 찍은 생물 9종입니다. '머리 없는 닭 괴물'이라는 별명이 붙은 헤엄치는 해삼, 수심 1,030m에서 만난 채찍 오징어, 지름이 30cm 가까운 해파리, 한 마리가 아니라 여럿이 모인 군체인 관해파리, 지느러미로 바닥에 서 있는 물고기까지 모두 실제 영상과 사진입니다. 첫 장면의 그림만 직접 그렸습니다.
+
+▶ [채널명] 채널 구독: https://www.youtube.com/@[핸들]
+
+출처: 영상·사진: NOAA Ocean Exploration (2025 ROV and Mapping Shakedown, Deep Connections 2019, 2023 Shakedown + EXPRESS West Coast, Deep-Sea Symphony 2017, Windows to the Deep 2019, 2019 Southeastern U.S., 2026 American Samoa) · 첫 장면 그림 직접 제작 · 음악: "Fluffing a Duck" Kevin MacLeod (incompetech.com), CC BY 4.0 (creativecommons.org/licenses/by/4.0) · NOAA는 이 영상을 보증하거나 후원하지 않습니다. 수심과 크기는 NOAA 영상·사진 설명 기준입니다
+
+#Shorts #심해 #심해생물 #바다 #해파리 #오징어 #아귀 #신기한동물 #NOAA
+```
+
+**고정 댓글**
+
+```
+머리 없는 닭 괴물… 이름 지은 사람 누구예요? 🐔
 ```
 
 ## story1
