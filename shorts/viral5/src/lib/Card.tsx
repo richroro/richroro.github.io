@@ -17,7 +17,7 @@ const INK = "#111";
 /** the picture: 1000 x 750 (4:3), rounded; qa_review's picture crop (y 400..1480) holds it and the label */
 export const CARD_BOX = { left: 40, top: 430, width: 1000, height: 750, radius: 34 };
 
-export type CardItem = { at: number; ko: string; en?: string; doodle?: "seapig" };
+export type CardItem = { at: number; ko: string; en?: string; doodle?: "seapig" | "chicken" };
 export type CardOpts = {
   /** the page title, one or two lines (from the script's title) is drawn here; `badge` is a small channel mark over it */
   badge?: string;
@@ -76,6 +76,36 @@ const SeaPigDoodle: React.FC<{ f: number }> = ({ f }) => {
   );
 };
 
+/** a marker doodle of a chicken with no head (our own drawing, the hook for the "headless chicken monster" sea
+ *  cucumber): a round white body, a tail tuft, a wing, two stick legs and a neck that just stops, plus "?" marks */
+const ChickenDoodle: React.FC<{ f: number }> = ({ f }) => {
+  const s = Math.floor(f / (FPS / 8)) % 3 + 1;
+  const W = CARD_BOX.width, H = CARD_BOX.height;
+  return (
+    <svg width={W} height={H} viewBox={`0 0 ${W} ${H}`}>
+      <rect width={W} height={H} fill="#FFF7EC" />
+      <path d={line([[60, 640], [300, 632], [520, 644], [760, 630], [940, 640]], s * 3, 4)} stroke={INK} strokeWidth={6} fill="none" strokeLinecap="round" />
+      {[[440, 0], [560, 1]].map(([x, k]) => (
+        <path key={k} d={line([[x, 520], [x - 6, 600], [x - 30, 630], [x, 630], [x + 30, 630]], s * 7 + k, 3)} stroke="#E8A13A" strokeWidth={12} fill="none" strokeLinecap="round" strokeLinejoin="round" />
+      ))}
+      {/* tail feathers, behind the body */}
+      {[[-35, 0], [0, 1], [35, 2]].map(([r, k]) => (
+        <path key={k} d={blob(690, 300, 38, 95, s * 13 + k, 12, 0.1)} fill="#fff" stroke={INK} strokeWidth={8} transform={`rotate(${r + 20} 690 380)`} />
+      ))}
+      {/* the neck: a plain stump that just stops where the head should be */}
+      <path d={blob(330, 280, 52, 105, s * 17, 14, 0.06)} fill="#fff" stroke={INK} strokeWidth={10} transform="rotate(-18 330 280)" />
+      <path d={blob(500, 420, 220, 150, s, 22, 0.04)} fill="#fff" stroke={INK} strokeWidth={10} strokeLinejoin="round" />
+      {/* cover the stump's lower outline so neck and body read as one shape */}
+      <ellipse cx={372} cy={352} rx={58} ry={46} fill="#fff" />
+      {/* the wing: two curved strokes */}
+      <path d={line([[500, 360], [530, 440], [600, 480], [660, 440], [640, 380]], s * 5, 3)} stroke={INK} strokeWidth={9} fill="none" strokeLinecap="round" />
+      <path d={line([[560, 420], [600, 445], [630, 420]], s * 6, 3)} stroke={INK} strokeWidth={7} fill="none" strokeLinecap="round" />
+      <text x={230 + rnd(s, 3) * 3} y={150} fontFamily={BODY} fontWeight={800} fontSize={90} fill={INK}>?</text>
+      <text x={390 + rnd(s, 4) * 3} y={120} fontFamily={BODY} fontWeight={800} fontSize={70} fill={INK}>?</text>
+    </svg>
+  );
+};
+
 /** one item's clip in the rounded box: a cover fit with a slow push-in, popping in a little on the cut */
 const CardClip: React.FC<{ c: Clip }> = ({ c }) => {
   const f = useCurrentFrame();
@@ -122,7 +152,7 @@ export const CardShort: React.FC<{ d: ShortData & { card?: CardOpts } }> = ({ d 
         {o.items.map((it, i) => {
           if (!it.doodle) return null;
           const next = o.items[i + 1]?.at ?? d.end;
-          return t >= it.at && t < next ? <AbsoluteFill key={i}><SeaPigDoodle f={f} /></AbsoluteFill> : null;
+          return t >= it.at && t < next ? <AbsoluteFill key={i}>{it.doodle === "chicken" ? <ChickenDoodle f={f} /> : <SeaPigDoodle f={f} />}</AbsoluteFill> : null;
         })}
       </div>
       {item ? (
