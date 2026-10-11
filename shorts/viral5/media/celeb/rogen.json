@@ -9,7 +9,7 @@
  "clip": "rogen.mp4 = stream 6000 s + 400 s, re-encoded: ffmpeg -ss 6000 -i <stream> -t 400 -c:v libx264 -crf 16 -preset fast -c:a aac -b:a 192k rogen.mp4",
  "used_in_clip_s": [[16.75, 23.2], [24.45, 32.25], [94.3, 101.5], [132.6, 145.2], [359.7, 367.45]],
  "left_out": "the marijuana joke, the House of Cards / Doritos jokes, the funding statistics and the closing request to the subcommittee; the senators' replies",
- "transcript": "https://www.govinfo.gov/content/pkg/CHRG-113shrg91479/html/CHRG-113shrg91479.htm (S. Hrg. 113-487, oral statement of Seth Rogen), checked against faster-whisper medium.en (word times) and tiny.en (whole hearing)",
+ "transcript": "S. Hrg. 113-487, https://www.govinfo.gov/content/pkg/CHRG-113shrg91479/html/CHRG-113shrg91479.htm (S. Hrg. 113-487, oral statement of Seth Rogen), checked against faster-whisper medium.en (word times) and tiny.en (whole hearing)",
  "speakers": ["Seth Rogen, actor and comedian (witness, panel II)"],
  "credit": "미국 상원 (U.S. Senate)",
  "license": "Senate Recording Studio video, a work of the U.S. government, public domain (17 U.S.C. §105). Not C-SPAN footage."
