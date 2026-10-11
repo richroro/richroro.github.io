@@ -8326,3 +8326,48 @@ python3 qa_review.py people1
 #Shorts #일론머스크 #머스크 #화성 #스페이스X #SpaceX #ElonMusk #NASA #우주 #한영자막 #영어공부
 ```
 고정 댓글: 화성에 갈 수 있다면, 여러분은 가실 건가요?
+
+
+### people4 (추가편): 달 착륙 원본 영상이 사라졌던 진짜 이유 (`politics/people4`, 닐 암스트롱)
+
+오케스트레이터가 제안해서 추가로 만든 편이다. 해외 인물 50만+ 중 합법적으로 따라 할 수 있는 가장 큰 히트작은 「미국이 그동안 달 착륙 영상을 숨겼던 이유 ㄷㄷ」(3285만, ˇ_ˇ 5.8만, youtube.com/shorts/jTLNpabzt_s)였다. 이 편은 그 각도를 따랐고, "숨겼다"는 루머 대신 NASA 공식 보고서에 있는 실제 사연을 담았다. 달 착륙은 진짜였고, 사라진 것은 백업 원본 테이프다.
+
+| id | 제목 (띠) | 길이 | 용량 | 기준 히트작 |
+| --- | --- | --- | --- | --- |
+| `people4` | 달 착륙 원본 영상이 / 사라졌던 진짜 이유 ㄷㄷ | 40.7초 | 14.7MB (음악 없는 판 13.9MB) | 「미국이 그동안 달 착륙 영상을 숨겼던 이유 ㄷㄷ」 3285만, 「달 착륙은 정말 조작이었을까?」 192만 (youtube.com/shorts/WXOyUbmTSoA) |
+
+```bash
+MEDIA=$PWD/media python3 politics/prep_split.py people4 && ./render.sh people4 final/people4.mp4
+# 음악 없는 판: edit.json의 "music"을 null로 바꿔 prep → ./render.sh people4 final/people4-nomusic.mp4 → 되돌리고 prep
+```
+
+- **구성**
+  - 0~9초: 암스트롱 본인의 목소리 "That's one small step for man, one giant leap for mankind."를 복원된 사다리 장면 위에 영어·한국어 자막으로 깔았다.
+  - 9~40초: 목소리 없는 자막 카드 7장(장면당 4.4초)을 NASA 복원 비교 영상(왼쪽 NASA Archive, 오른쪽 2009 Restoration)과 복원 몽타주 위에 얹었다. 이 부분의 원본 소리는 껐다.
+  - 음악은 Kevin MacLeod "Floating Cities"(CC BY 4.0)다. `final/people4-nomusic.mp4`도 있다.
+- **qa_review**: FAIL 0, WARN 0이다. 처음에 한국어 자막 34자로 WARN이 나서, 두 줄을 짧게 고쳤다.
+- **사실 확인**: 모두 NASA "The Apollo 11 Telemetry Data Recordings: A Final Report"(2009, [PDF](https://www.nasa.gov/wp-content/uploads/2015/01/398311main_apollo_11_report.pdf))에서 가져왔다.
+  - 생중계 화면은 지상 기술자들이 본 원본보다 흐렸다(1쪽).
+  - 카메라는 초당 10프레임·320줄의 비표준 방식이라 방송용으로 변환했다(3쪽).
+  - 추적소 3곳이 각각 15릴, 모두 45개의 1인치 테이프에 원본을 녹화했다(13쪽).
+  - 이 테이프들은 1980년대 초 NASA 전체의 테이프 부족 때 "degaussed, recertified, and reused" 됐을 가능성이 크다(12~13쪽).
+  - 대신 가장 좋은 TV 방식 녹화본을 찾아 NASA 예산으로 디지털 복원했다(2~3쪽).
+  - 암스트롱 발언은 [ALSJ 109:24:23](https://apollojournals.org/alsj/a11/a11.step.html)과 faster-whisper medium.en으로 대조했다. 실제 발음대로 "for man"으로 적었다(ALSJ는 "for (a) man").
+- **출처와 라이선스**: NASA images의 세 영상을 썼다. NASA 페이지 [Apollo 11 HD Videos](https://www.nasa.gov/history/apollo-11-hd-videos/)에 같은 세 영상이 올라 있다.
+  - [Apollo 11 Restored Moonwalk](https://images.nasa.gov/details/KSC-20090716-MH-NAS01-0001-Apollo_11_Restored_Moonwalk-HM_795)(2009, 메타데이터 제작자 NASA): 원본 2:33.6–2:42.9.
+  - [One Small Step 비교](https://images.nasa.gov/details/One_Small_Step_Comparison_720p): 0.6–14.4초.
+  - [Moonwalk Montage](https://images.nasa.gov/details/Apollo_11_moonwalk_montage_720p): 14–18.4, 58–62.4, 66–70.4, 100–104.4초. 몽타주에 들어 있던 원래 소리는 쓰지 않았다.
+  - 모두 퍼블릭 도메인이다(17 U.S.C. §105). 기록은 `media/apollo/people4.json`에 있다.
+- **업로드**: 유명인 인터뷰 채널. 다른 편과 달리 목소리가 앞 9초뿐이고 나머지는 자막 카드다.
+
+**people4**: 달 착륙 원본 영상이 사라졌던 진짜 이유 ㄷㄷ
+```
+1969년 7월 20일 닐 암스트롱의 첫걸음을 전 세계가 생중계로 봤지만, 그 화면은 달에서 온 원본 신호를 방송용으로 바꾸면서 흐려진 것이었습니다. 선명한 원본 신호를 녹화한 1인치 테이프 45개는 수년간의 수색에도 찾지 못했고, NASA의 2009년 최종 보고서는 1980년대 초 테이프가 부족했을 때 지워져 재사용됐을 가능성이 크다고 결론지었습니다. 그래서 NASA는 남아 있던 가장 좋은 방송 녹화본을 2009년 디지털로 복원했습니다. 달 착륙 자체의 기록과는 무관한, 백업 테이프 이야기입니다.
+
+▶ [채널명] 채널 구독: https://www.youtube.com/@[핸들]
+
+출처: 영상: NASA 'Apollo 11 Restored Moonwalk'(2009), 'One Small Step' 복원 비교 영상, 'Apollo 11 Moonwalk Montage' (images.nasa.gov) · 자료: NASA 'The Apollo 11 Telemetry Data Recordings: A Final Report'(2009) · 한국어 자막 직접 제작 · 음악: "Floating Cities" Kevin MacLeod (incompetech.com), CC BY 4.0 (creativecommons.org/licenses/by/4.0) · NASA는 이 영상을 보증하거나 후원하지 않습니다 · 이 영상은 영상 속 인물이나 기관이 보증·후원한 것이 아닙니다
+
+#Shorts #달착륙 #아폴로11호 #닐암스트롱 #NASA #우주 #역사 #Apollo11 #NeilArmstrong
+```
+고정 댓글: 1969년 생중계, 여러분 부모님이나 조부모님도 보셨대요?
