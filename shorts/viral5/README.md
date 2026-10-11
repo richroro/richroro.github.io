@@ -7481,6 +7481,138 @@ qa_review.py: 두 편 모두 11/11 PASS(길이, 제목, 호기심 "?", 첫 전�
 고정 댓글: 사흘 만에 바다가 땅이 됐다니… 직접 보면 어떨까요? 🌋
 
 
+## 쇼츠 50만+ 무음: 흰 카드 공정 클립 (`how1`~`how3`)
+
+사용자 요청은 "사연은 안되겠다 음성 많이 들어가면 어색해 음성없고 50만 이상으로 해서 조사해서 더 만들어줘"였다. 그래서 목소리(내레이션·대사·TTS)가 없는 50만+ 쇼츠를 다시 조사했고, 같은 조건으로 3편을 만들었다. 조사는 `research/research-500k-mute.md`·`.csv`에 있다.
+
+### 벤치마크와 숫자
+
+- **표본**: 무음으로 판정한 50만+는 423행, 채널 45곳이다.
+  - 그중 날짜가 묶인 것(검색 "올해/이번 달" 필터 안이거나 채널 탭 최신 33편 안)은 278행, 43곳이다.
+  - 목소리 유무는 해시태그, 제목, 썸네일 자막 모양으로 **추정**했다.
+  - 정확한 게시일은 읽지 못했다. 첫 영상 페이지의 재생 정보가 `LOGIN_REQUIRED`라 규칙대로 30분 멈췄고, 그 뒤로는 검색, 채널 탭, oEmbed만 썼다.
+- **작은 무음 채널(구독 10만 미만) 32곳의 최근 30편 적중률**
+  - 흰 카드 + 실제 클립 + 장면 자막(사랑빛 11/30, 지구촌동물극장 9/30): 33%.
+  - 흰 카드 + 클립(잘난지 8/30): 27%.
+  - 흰 카드 사진 리스트(겔라다 11/30 등): 13%.
+  - 해외 공정·작업 #worker #process 채널 5곳: 10/150 = 6.7%. 강남각 1/30, 순삭슈퍼 0/30, Quick Hands 6/30.
+- **판단**: 공정 채널 자체는 식었지만, 공정 **소재**는 흰 카드 안에서 크게 터진다. 그래서 무음 적중률이 가장 높은 레이아웃(흰 카드 + 클립 한 편 + 장면 자막)에 공정 클립을 담았다.
+- **벤치마크**
+  - 왓츠무비(0.62만) 「참치캔 공장에서 '진짜 광기'라고 불리는 역대급 공정」: 16,024,059회, 2026-05-06, youtube.com/shorts/oz1QWbwd_zM. 흰 카드 + 공장 클립 + 아래 자막 2줄.
+  - 지구촌동물극장(2.53만) 「눈보라 속에서 알 품는 아내를 지키는 남편 독수리의 찐사랑」: 1074만, 2026-09-12, youtube.com/shorts/jWlTt7gJH_U. 흰 카드 + 클립 한 편 + 장면 자막.
+  - Quick Hands(3.46만) 「긴 배관 입선 작업을 단 몇 초 만에 끝내는 현장 실무 팁 #worker #process」: 754,430회, 이번 달 검색, youtube.com/shorts/ZHKIp0CAYl4. 무음 현장음 공정.
+  - 랭킹권 「역대급 3D프린팅 ASMR 랭킹 TOP6」: 341만, 올해 검색, youtube.com/shorts/SP3zbN2fKHM. 3D 프린팅 소재가 지금 50만+를 낸다는 근거다(그 밖에 516만·493만·171만).
+
+### 무엇을 맞췄나
+
+| 항목 | 벤치마크 | 우리 |
+|---|---|---|
+| 바탕·제목 | 흰 바탕, 위 계정 표시, 검은 2줄 제목 | 같음. 배지 "공정 도감"(임시 이름, `card.badge`) |
+| 그림 | 가운데 클립 하나 | 1000×1000 정사각 둥근 상자(`card.box`). 세로·가로 원본이 다 들어간다 |
+| 첫 1초 | 결과가 보이는 장면 | 레이저가 새긴 격자 / 위에서 본 돔이 용접 장치에 내려앉는 장면 / 점화 1초 전 시험대 |
+| 자막 | 그림 아래 한 줄 | 한 줄 + (단계·배속 표시). 3초마다 바뀐다 |
+| 속도 | 긴 작업을 짧게 | 0.5배 → 1배 → 4~64배 → 1배 |
+| 소리 | 목소리 없음, 기계·현장음 + 음악 | 목소리 없음. Kevin MacLeod + 직접 합성한 레이저·마찰 용접·금속 소리(`media/how1/how_sfx.py`). how3는 NASA 원본 엔진 소리 |
+| 끝 | 바로 끝 | 첫 장면과 같은 상태로 끝나 반복 재생이 이어진다 |
+| 제목 | "~하는 역대급 공정", 숫자 | "~만드는 역대급 공정", "8분 … 27초로" |
+
+### 영상
+
+| id | 화면 제목 | 길이 | 용량 | 내용 |
+|---|---|---|---|---|
+| `how1` | 금속 가루로 우주 부품 / 만드는 역대급 공정 | 26.4초 | 24.9MB | NASA 글렌 연구센터의 레이저 금속 3D 프린팅 타임랩스(새 합금 GRX-810). 0.5~4배속 |
+| `how2` | 로켓 연료탱크 뚜껑 / 만드는 역대급 공정 | 27.0초 | 14.1MB | NASA 마셜의 EUS 연료탱크 시험용 돔: 용접 장치에 올리기 → 가장자리 깎기 → 마찰 교반 용접 → 완성. 같은 용접으로 만든 지름 8.4m 링 타임랩스 |
+| `how3` | 로켓 엔진 8분 연소 시험 / 27초로 줄여 봤다 | 27.0초 | 11.2MB | NASA 스테니스의 RS-25 엔진 전체 시간(약 500초) 시험 한 편을 1배 → 64배 → 1배로 |
+
+- 세 편 모두 음악 없는 판(`final/<id>-nomusic.mp4`)이 있다.
+- **qa_review.py**: 세 편 모두 FAIL 0이다.
+  - how1: 10 PASS, WARN 1(장면 길이 최장 5.3초: 같은 초록 가루판끼리 이어져 장면 전환이 덜 잡힘).
+  - how2: 11/11 PASS(최장 3.0초, −14.1 LUFS).
+  - how3: 11/11 PASS(최장 3.0초, −13.8 LUFS).
+- **이야기 검토(2-1절)**: 이야기 형식이 아니다. 대신 자막의 사실을 NASA 설명과 맞췄다.
+  - "1,000배 오래 버틴다": GRX-810 영상 속 NASA 설명 글("survive extreme temperatures 1000x longer compared to current state of the art high temperature 3D printed alloys").
+  - "링 지름 8.4m": 링 영상 설명("A completed ring is 27.6 feet in diameter", "welded together through a friction-stir welding process").
+  - "약 500초", "로켓이 궤도에 오르는 데 드는 시간만큼": 2023-11-15 RS-25 시험 설명("full-duration test of more than eight minutes (500 seconds)", "the same amount of time needed to help launch SLS rockets to orbit").
+  - 2018-10-31 영상은 같은 "full-duration" 시험이다. 영상에서 재 보니 점화(약 10.0초)부터 멈춤(약 510.2초)까지 약 500초다.
+
+### 템플릿 변경 (다른 형식은 그대로)
+
+- **`src/lib/Card.tsx`**: `card.box`(그림 상자 크기 바꾸기)와 `card.clipAudio`(클립 자체 소리 크기, 기본은 음소거)를 더했다. 둘 다 없으면 예전과 같다.
+- **`render.sh`·`render_nomusic.sh`**: `CRF=<n>` 환경 변수를 받는다(기본 18). 금속 가루처럼 결이 고운 영상이 30MB를 넘어서 how1~3은 `CRF=22`로 렌더했다.
+- **`fetch.sh`**
+  - 합성 기계 소리 `laser`·`grind`·`clunk`·`hiss`(`media/how1/how_sfx.py`)를 만든다.
+  - 음악 "Hackbeat"·"Ouroboros"를 받는다.
+- **새 파일**
+  - `media/how1/fetch_nasa_video.py`: images.nasa.gov 영상을 nasa_id로 받고 출처를 `media/<id>/sources.json`에 적는다.
+  - `media/how3/make_roar.sh`: how3 가운데 빠른 구간에 까는 엔진 소리. NASA 원본 100~115.6초의 소리이고, 받아쓰기로 사람 목소리가 없음을 확인했다.
+- **`upload/channels.json`**: 새 채널 `how`(접두어 `how`).
+- **회귀 확인**: 손대지 않은 `drive1`을 다시 렌더했다. `final/drive1.mp4`와 **바이트까지 같다**(cmp 일치).
+- **만드는 법**
+  1. `python3 media/how1/fetch_nasa_video.py <id> key=nasa_id …` (how3는 이어서 `media/how3/make_roar.sh`).
+  2. `build/<id>/timeline.json`에 `{"lines": [], "end": …}`를 둔다.
+  3. `python3 prep.py <id> && CRF=22 ./render.sh <id> final/<id>.mp4 && CRF=22 ./render_nomusic.sh <id>`를 돌린다.
+
+### 출처와 라이선스
+
+- **영상**: 모두 NASA 직원이 찍은 NASA 영상이다(미국 연방정부 저작물, 퍼블릭 도메인). 각 페이지의 크레디트는 아래와 같다.
+  - 계약업체(Boeing·Lockheed Martin·Aerojet) 이름이 크레디트에 붙은 영상은 쓰지 않았다(Orion 용접 영상 등).
+  - 화면에 NASA 로고, 성조기, 상표 글자가 나오는 구간은 자르거나 확대해서 뺐다.
+  - 원본에 박힌 제목 카드와 설명 글자 구간도 쓰지 않았다.
+- **how1** `grx`: 3D Printing of GRX-810 Time-lapse, NASA Glenn Research Center (GRC), Jordan Salkin, 2023-04-05. https://images.nasa.gov/details/3D%20Printing%20of%20GRX-810%20Time-lapse_Full%20Res%20H264
+  - 원본 16.4~45초 구간만 썼다. 49초부터 박힌 설명 글자와 NASA 로고 모양 결과물은 쓰지 않았다.
+- **how2**
+  - `dome`: EUS STA FWD Dome Progress - Vertical, NASA Marshall Space Flight Center (MSFC), "NASA /Sam Lott and Brandon Hancock", 2025-03-14. https://images.nasa.gov/details/SLS-5321_MSFC_EUS%20STA%20FWD%20Dome%20Progress%20Vertical%20VOTY%202025%20Entry
+    - 원본은 위아래 두 화면을 붙인 세로 편집이다. 반쪽씩 확대해서 썼다.
+    - 원본 소리는 음악으로 보여서 껐다.
+  - `ring`: Production Begins on Sixth Core Stage Hardware (time-lapse), NASA Michoud Assembly Facility (MAF), Evan Deroche & Michael DeMocker, 2026-08-14. https://images.nasa.gov/details/MAF_20260814_CS6_Ring_Lift_TL
+    - 9.4~15.4초만 썼다. 벽의 업체 표시가 보이는 0~4초와 8~9초는 쓰지 않았다.
+- **how3**
+  - `rs25`: RS-25 Engine Test - 2018-10-31 - 4K Full Duration, NASA Stennis Space Center (SSC). https://images.nasa.gov/details/2018-10-31%20-%20RS-25%20Engine%20Test%20-%204K%20Full%20Duration
+  - 시간 설명 출처(영상은 쓰지 않음): NASA Continues RS-25 Engine Certification Test Fire Series, SSC, 2023-11-15. https://images.nasa.gov/details/SSC_2023-11-15_RS-25_Engine_Test
+- **음악**: "Hackbeat"(how1, how2), "Ouroboros"(how3). Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License.
+- **효과음**: 직접 합성(`media/how1/how_sfx.py`)과 이 저장소의 기존 효과음(pop, whoosh)이다.
+- **목소리**: 없음. 설명란에 "목소리" 줄도 없다.
+- 화면에 "저작권", "퍼블릭 도메인", "공공누리"는 쓰지 않았다.
+
+### 업로드 문구
+
+**how1**: 금속 가루로 우주 부품 만드는 역대급 공정 ㄷㄷ
+```
+레이저가 금속 가루 위를 지나가면 닿은 자리만 녹았다가 굳고, 한 층이 끝나면 그 위에 또 한 층을 쌓습니다. NASA 글렌 연구센터가 이렇게 3D 프린팅으로 만든 새 합금 GRX-810은 극한의 온도에서 기존 3D 프린팅 고온 합금보다 1,000배 오래 버틴다고 합니다. NASA가 공개한 실제 타임랩스 영상입니다.
+
+▶ [채널명] 채널 구독: https://www.youtube.com/@[핸들]
+
+출처: 영상: NASA 글렌 연구센터, 3D Printing of GRX-810 Time-lapse (2023, images.nasa.gov) · 음악: "Hackbeat" Kevin MacLeod (incompetech.com), CC BY 4.0 (creativecommons.org/licenses/by/4.0) · NASA는 이 영상을 보증하거나 후원하지 않습니다. '1,000배'는 NASA 영상 속 설명 기준입니다
+
+#Shorts #공정 #3D프린터 #3D프린팅 #금속 #레이저 #NASA #만드는과정 #satisfying #asmr
+```
+고정 댓글: 이걸 몇 층이나 쌓아야 부품 하나가 될까요? 🤔
+
+**how2**: 로켓 연료탱크 뚜껑 만드는 역대급 공정 ㄷㄷ
+```
+NASA 마셜 우주비행센터에서 차세대 로켓 상단(EUS) 연료탱크의 시험용 돔을 만드는 과정입니다. 돔을 로봇 용접 장치 위에 올리고, 가장자리를 깎아 다듬은 뒤, 회전하는 툴로 이음매를 붙이는 마찰 교반 용접(friction stir welding)까지 이어집니다. 같은 방식으로 용접한 SLS 코어 스테이지 링은 지름이 8.4m(27.6피트)입니다. 모두 NASA가 공개한 실제 영상입니다.
+
+▶ [채널명] 채널 구독: https://www.youtube.com/@[핸들]
+
+출처: 영상: NASA 마셜 우주비행센터, EUS STA FWD Dome Progress (2025, Sam Lott·Brandon Hancock) · NASA 미추드 조립시설, Production Begins on Sixth Core Stage Hardware 타임랩스 (2026) · 음악: "Hackbeat" Kevin MacLeod (incompetech.com), CC BY 4.0 (creativecommons.org/licenses/by/4.0) · NASA는 이 영상을 보증하거나 후원하지 않습니다. 링 지름은 NASA 영상 설명 기준입니다
+
+#Shorts #공정 #용접 #마찰교반용접 #로켓 #NASA #만드는과정 #satisfying #asmr #공장
+```
+고정 댓글: 금속 부스러기 장면에서 멈춘 사람? ✋
+
+**how3**: 로켓 엔진 8분 연소 시험 27초로 줄여 봤다 ㄷㄷ
+```
+2018년 10월 31일 NASA 스테니스 우주센터 A-1 시험대에서 RS-25 엔진을 처음부터 끝까지 태운 '전체 시간 시험' 영상을 27초로 줄였습니다. 엔진은 8분 넘게(약 500초) 쉬지 않고 타다가 딱 멈춥니다. NASA 설명에 따르면 500초는 SLS 로켓이 궤도에 오르는 데 필요한 시간과 같고, 이날 시험은 엔진의 '두뇌'인 비행용 제어기를 합격시키는 시험이었습니다.
+
+▶ [채널명] 채널 구독: https://www.youtube.com/@[핸들]
+
+출처: 영상: NASA 스테니스 우주센터, RS-25 Engine Test - 2018-10-31 - 4K Full Duration · 시간 설명: NASA 스테니스, NASA Continues RS-25 Engine Certification Test Fire Series (2023-11-15) · 음악: "Ouroboros" Kevin MacLeod (incompetech.com), CC BY 4.0 (creativecommons.org/licenses/by/4.0) · NASA는 이 영상을 보증하거나 후원하지 않습니다. 시험 시간은 NASA 영상 설명 기준입니다
+
+#Shorts #로켓 #로켓엔진 #엔진테스트 #NASA #타임랩스 #공정 #SLS #아르테미스 #satisfying
+```
+고정 댓글: 몇 배속에서 제일 소름 돋았어요? 🚀
+
+
 ## 쇼츠 50만+ 무음: 흰 카드 4편 (`bug1` 곤충, `breath2` 깊이 차이, `story2` 허리케인, `bird1` 새)
 
 사용자 요청은 "사연은 안되겠다 음성 많이 들어가면 어색해 음성없고 50만 이상으로 해서 조사해서 더 만들어줘"였다. 그래서 목소리 없이 50만 이상이 검증된 흰 카드 형식으로 4편을 더 만들었다. 내레이션, 대사, TTS는 없다. 음악, 효과음, 화면 글자만 쓴다.
