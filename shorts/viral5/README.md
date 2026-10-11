@@ -7947,3 +7947,141 @@ NASA 마셜 우주비행센터에서 차세대 로켓 상단(EUS) 연료탱크�
 #Shorts #물범 #바다표범 #하와이몽크물범 #구조 #동물구조 #동물 #야생동물 #감동 #하와이 #동물이야기 #NOAA
 ```
 고정 댓글: 다시는 바늘 삼키지 말고 건강하게 살자… 🦭
+
+## 쇼츠 50만+ 무음: 역대급 모먼트 (`moment1` 로켓 발사, `moment2` 로봇, `moment3` 파괴 실험)
+
+사용자 요청은 "다른 것도 만들어봐 흥미가질만한"이었다(목소리 없이, 50만+ 근거, 괴담·사연 제외). 그래서 무음 50만+ 가운데 가장 크게 터진 "역대급 ○○ 모먼트" 클립 모음을 합법 영상으로 만들었다. 내레이션, 대사, TTS는 없다. 음악, 효과음, 원본 자연음(사람 목소리가 없는 것만), 화면 글자만 쓴다.
+
+### 벤치마크와 숫자 (`research/research-500k-mute.csv`, 2026-10-11)
+
+- **숏랭커**(구독 15.9만): 「역대급 번개 모먼트」 22,762,051회(올해 검색), 「역대급 로봇 모먼트」 858만, 「역대급 현실 카트라이더 모먼트」 774만, 「역대급 새 모먼트」 232만.
+- **하루각**(1.24만): 「레전드 번개 모먼트」 7,011,914회(올해 검색), 「역대급 스키 모먼트 TOP7」 181만, 「역대급 창의적인 트랩 TOP6」 156만. 다만 최근 30편 적중률은 1/30이다(조사 §3).
+- **철멈뭄**: 「눈사태를 스키로 피한 선수」 1951만(자연 클립 한 편).
+- **랭킹공·랭킹권·랭킹김**: 「역대급 ○○ 모먼트 랭킹 TOP5」 형식. 클립 모음 TOP N은 무음 50만+ 50편, 중앙값 162만(조사 §2). 자연 "모먼트" 모음 23편 중앙값 293만.
+- 모두 남의 영상을 다시 올린 채널이다. 우리는 화면 틀과 리듬만 따르고, 영상은 NASA가 공개한 것만 쓴다.
+- **화면 확인 방법**: 숏랭커·하루각 4편의 썸네일(i.ytimg.com)만 분석용으로 받아 봤다(저장소에 올리지 않음). 영상 페이지 2개를 열었더니 `LOGIN_REQUIRED`라 규칙대로 YouTube를 30분 멈췄고(07:47 UTC~), 그 뒤로 YouTube는 읽지 않았다. 그래서 클립 길이는 썸네일과 기존 TOP5 v2 조사(`benchmark-footage.md` §3, 5개 × 4.5~5초)로 맞췄다.
+
+### 무엇을 맞췄나
+
+| 항목 | 벤치마크 (썸네일 4장) | 우리 |
+|---|---|---|
+| 화면 | 위 검정 띠 + 아래 전체 클립 | 같음. 기존 `src/lib/RankV2.tsx`(top1~12의 틀), 띠 아래 1080×1500 |
+| 제목 | 1줄 청록·연두색 "역대급 ○○ 모먼트", 2줄 큰 흰 글씨 "랭킹 TOP5/6/7" | 1줄 청록 `#33F0D0` "역대급 ○○ 모먼트", 2줄 "랭킹 TOP5", 3줄 작은 질문 |
+| 순위표 | 왼쪽에 1~5(1 빨강, 2 노랑·주황, 3 주황·노랑), 5위부터 채워짐 | 같음(1 빨강, 2 주황, 3 노랑). 이번에는 1위도 나올 때 이름이 채워진다(`hide: []`) |
+| 자막 | 화면 가운데 아래쪽 검정 상자 한 줄(반응·대사) | 검정 상자 한 줄, 높이 1330px(벤치마크 위치). "~하는데.." → "~ㄷㄷ/??" 반응 + 사실 |
+| 길이 | 클립 2~4초씩 | 25.6초, 11컷, 컷당 1.7~2.8초 |
+| 순서 | 5위 → 1위, 1위가 가장 셈 | 같음. 첫 장면부터 움직이는 장면(엔진 점화 / 뱀 로봇 / 우주선 입수) |
+| 소리 | 원본 소리 + 음악 | Kevin MacLeod + 효과음(riser, whoosh, boom). moment3은 목소리 없는 원본 소리(탱크 파열, 물보라, 충돌)를 깔았다 |
+| 끝 | 1위 뒤 바로 끝 | 1위 뒤 바로 5위로 이어져 반복 재생 |
+
+### 주제 고르기
+
+- 지시한 다섯 주제 가운데 **화산**(top11 「역대급 화산·용암 모먼트」)과 **토네이도**(top7 「역대급 무서운 날씨」)는 같은 랭킹 틀로 이미 있다.
+- **번개**는 쓸 수 있는 연방 영상이 거의 없다. images.nasa.gov의 "lightning" 영상은 브리핑·인터뷰·해설 프로그램뿐이고, 아르테미스 1호 발사대 낙뢰(2022)와 아폴로 12호 낙뢰(1969)는 사진만 있다. 사진과 ISS 타임랩스만으로는 "모먼트" 클립 모음이 안 돼서 뺐다.
+- 그래서 **로켓 발사**와 **로봇**에, 같은 틀로 크게 터지는 **파괴 실험**(무음 클립 모음의 "시원한" 계열)을 더했다. 셋 다 NASA 영상이 충분하고 첫 장면부터 움직인다.
+
+### 영상
+
+| id | 화면 제목 (1줄 / 2줄 / 3줄) | 길이 | 용량 | 5위 → 1위 | 음악 |
+|---|---|---|---|---|---|
+| `moment1` | 역대급 로켓 발사 모먼트 / 랭킹 TOP5 / (몇 번이 제일 소름?) | 25.6초 | 18.4MB (무음악 17.9MB) | 엔진 점화 · 연결선 · 하늘 시점 · 부스터 분리 · 로켓 카메라 | Volatile Reaction |
+| `moment2` | 역대급 로봇 모먼트 / 랭킹 TOP5 / (몇 번이 제일 신기?) | 25.6초 | 19.8MB (무음악 19.2MB) | 뱀 로봇 · 화성 헬기 시험 · 헬기 시점 · 화성 낙하산 · 스카이크레인 | Hackbeat |
+| `moment3` | 역대급 파괴 실험 모먼트 / 랭킹 TOP5 / (몇 번이 제일 시원함?) | 25.6초 | 25.5MB (무음악 25.2MB) | 우주선 입수 · 에어택시 추락 · 초고속 총알 · 수소 탱크 · 산소 탱크 | Volatile Reaction (20초부터) |
+
+- 세 편 모두 음악 없는 판(`final/<id>-nomusic.mp4`)이 있다.
+- **qa_review.py**: 세 편 모두 FAIL 0. 11개 항목 PASS(길이 25.6초, 첫 전환 2.3/2.3/2.5초, 최장 장면 2.8초, −14.0/−13.9/−14.0 LUFS, 검은 화면 없음). 설명글 항목도 `upload/specs/<id>.json`을 쓴 뒤 PASS. first.png와 sheet.png는 직접 봤다.
+- **자연음 확인**(faster-whisper small, 원본 소리 받아쓰기)
+  - moment1: 발사 클립은 모두 무음이거나(−91dB) 소리 트랙이 없다. SLS 로켓 카메라 영상에는 NASA 중계 해설("Booster separation expected at the 2-minute 9-second mark…")이 있어 껐다.
+  - moment2: 착륙 영상은 관제실 음성, 나머지는 기계 소음뿐이지만 전부 껐다.
+  - moment3: 수소 탱크(−13dB), 오리온 스윙 낙하, 에어택시 2022 영상은 사람 말이 없어 0.8로 깔았다. 오리온 낙하 2021("1…2…1…release")과 에어택시 2025("3, 2, 1, release")는 카운트다운 목소리가 있어 껐다. 초고속 충돌 영상은 해설 프로그램이라 껐다.
+- **화면 확인**: 상표 글자는 없다. 화면에 보이는 글자는 NASA 웜 로고(SLS 로켓 몸체), "LANDING AND IMPACT RESEARCH FACILITY"(NASA 랭글리 시설 벽)뿐이다. 원본에 박힌 제목 카드, "30% speed / real time", 시각 표시, 아이콘 줄은 잘라냈다(`trim`, 확대). 사람은 거의 안 나오고, 나와도 작업 중인 뒷모습이다. 에어택시 안의 사람 모양은 충돌 시험용 인형이다.
+
+### 템플릿 변경 (다른 형식은 그대로)
+
+- **`politics/top_v2.py`**(공유 파일, 두 줄): 샷마다 `"audio"`(원본 소리 크기, 기본 0 = 지금처럼 음소거)와 spec의 `"sfx"`(추가 효과음 목록)를 받는다. 둘 다 없으면 예전과 같은 edit.json을 쓴다.
+- **새 파일**
+  - `media/moment/nasa_cut.py`: images.nasa.gov 영상에서 필요한 구간만 HTTP로 잘라 `media/<id>/<key>.mp4`로 받고, 출처 JSON(페이지, 파일 주소, 크레디트, 날짜, 원래 설명, 자른 구간)을 `media/<id>/<key>.json`에 쓴다.
+  - `media/moment/sources.py`: spec이 쓰는 클립의 JSON으로 `politics/<id>/spec.json`의 `sources`를 채운다.
+  - `politics/moment1~3/spec.json`, `edit.json`.
+- **`upload/channels.json`**: 새 채널 `moment`(접두어 `moment`).
+- **회귀 확인**
+  - 손대지 않은 `how1`(공정 카드)을 다시 받아 다시 렌더했다(`CRF=22 ./render.sh how1`). `final/how1.mp4`와 **바이트까지 같다**(cmp).
+  - 바뀐 `top_v2.py`로 top1~12의 edit.json을 다시 만들었다. 저장소의 파일과 한 글자도 다르지 않다(git diff 없음).
+- **만드는 법**
+  ```bash
+  python3 media/moment/nasa_cut.py moment1 ignite="KSC-20260401-MH-AJN01-0001-Artemis_II_Launch_Mobile_Launcher_High_Speed-M19183:252-266" …  # 키와 구간은 media/moment1/*.json의 cut_from_original_seconds
+  python3 media/moment/sources.py moment1 && python3 politics/top_v2.py moment1
+  MEDIA=$PWD/media python3 politics/prep_split.py moment1
+  ./render.sh moment1 final/moment1.mp4 && ./render_nomusic.sh moment1 && python3 qa_review.py moment1
+  ```
+
+### 출처와 라이선스 (항목별)
+
+모두 images.nasa.gov의 NASA 영상이다(미국 연방정부 저작물, NASA 미디어 이용 지침). 회사·대학 크레디트가 붙은 영상은 쓰지 않았다(예: "NASA/United Launch Alliance" GOES-T 발사, "Boeing" Starliner 낙하산 시험, DART "NASA/SpaceX"). 군 자료·군 장비는 없다(AA-2 탈출 시험은 군 미사일 모터라 뺐다). 사실은 각 영상의 NASA 설명에서만 가져왔다.
+
+**moment1** (모두 2026-04-01 아르테미스 2호 발사, 케네디 우주센터 39B)
+- 5위 엔진 점화: Artemis II Launch - Mobile Launcher High Speed Cameras, NASA — 원본 252~266초 중 9.0~11.3초(코어 스테이지 엔진 점화), 424~440초 중 9.0~11.8초(부스터 점화) — https://images.nasa.gov/details/KSC-20260401-MH-AJN01-0001-Artemis_II_Launch_Mobile_Launcher_High_Speed-M19183
+- 4위 연결선: Artemis II Launch - 35mm High Speed Film, NASA — 원본 398~414초 중 9.0~11.5, 11.6~14.2초 — https://images.nasa.gov/details/KSC-20260401-MH-AJN01-0001-Artemis_II_Launch_35mm_High_Speed_Film-M19183
+- 3위 하늘 시점: Artemis II Live Launch Coverage - Cessna (8K, 120fps), NASA/Jamie Peer — 원본 34~64초 중 1.0~3.5, 14.0~16.6초 — https://images.nasa.gov/details/KSC-20260401-MH-JBP01-0001-Artemis_II_Launch_Cessna_GSS_8k_120fps-M19183
+- 2위 부스터 분리: Artemis II Live Launch Coverage - WB-57 (Visible), NASA — 원본 130~146초 중 5.6~8.1, 9.2~11.8초(오른쪽 위 시각 표시는 잘라냄) — https://images.nasa.gov/details/KSC-20260401-MH-NAS01-0001-Artemis_II_Launch_WB57_Visible
+- 1위 로켓 카메라: Artemis II Live Launch Coverage - SLS Launch Vehicle Camera, Switched Feed, NASA — 원본 155~173초 중 7.8~9.6, 10.2~11.9초 — https://images.nasa.gov/details/KSC-20260401-MH-AJN01-0001-Artemis_II_Launch_ISO_SLS_Launch_Vehicle_Camera_Switched_Feed_720p · Orion Camera View of Artemis II Climb to Orbit (art002m1200912237), NASA JSC — 원본 16~28초 중 3.7~5.4초 — https://images.nasa.gov/details/art002m1200912237_SAJ-Jettison
+- 사실: "6:35 p.m. EDT on Wednesday, April 1, 2026, from Launch Complex 39B", 4명(설명의 승무원 명단), "solid rocket boosters that propelled Orion for the first two minutes of flight"(오리온 영상 설명). "엔진 4개"는 SLS 코어 스테이지의 RS-25 네 개.
+- 1위 세 번째 샷("우주선 카메라에도 찍힘")은 오리온 영상 설명의 "jettison of the solid rocket boosters"에 해당하는 장면으로 보았다. 자막은 화면만 말하고 무엇이 분리되는지는 적지 않았다.
+
+**moment2** (Credit: NASA/JPL-Caltech, JPL 이미지 이용 정책)
+- 5위 뱀 로봇: EELS (Exobiology Extant Life Surveyor) Media Reel — 원본 175~235초 중 19.5~21.8초(JPL 실험실에서 머리 들기), 47.0~49.8초(35도 눈 비탈) — https://images.nasa.gov/details/JPL-20240508-EELSf-0001-EELS%20Media%20Reel — "13 feet (4 meters) long", "about 220 pounds (100 kilograms)". 설명에 대학 협력이 적혀 있지만 영상 크레디트는 NASA/JPL-Caltech이다.
+- 4위 화성 헬기 시험: NASA Ingenuity Mars Helicopter Testing Media Reel — 원본 45~160초 중 6.3~8.8, 10.0~12.6초(2016-05-31 개념 증명 비행, JPL 25피트 우주 시뮬레이터) — https://images.nasa.gov/details/JPL-20220623-TECHf-0001-Mars%20Helicopter%20Testing%20Media%20Reel — "the Martian atmosphere was reproduced".
+- 3위 헬기 시점: Ingenuity Mars Helicopter's Record-Breaking Flight — 원본 4.5~33초 중 0.8~3.3, 6.5~9.1초(앞 4.5초의 제목 글자는 뺌) — https://images.nasa.gov/details/JPL-20220527-M2020f-0001-NASAs_Ingenuity_Mars_Helicopter_Captures_Video_of_Record_Flight2 — "25th flight on April 18, 2022", "2,310 feet (704 meters)", "sped up approximately five times".
+- 2위 낙하산, 1위 스카이크레인: Perseverance Rover's Descent and Touchdown on Mars: Onboard Camera Views — 원본 12~32초 중 2.6~5.1(왼쪽 30% 속도 칸), 6.0~8.6초(오른쪽 실시간 칸); 원본 160~185초 중 14.0~15.8(위 칸: 하강 장치), 15.0~16.7, 19.0~20.7초(아래 칸: 줄에 매달린 로버) — https://images.nasa.gov/details/JPL-20210222-M2020f-0001-Perseverance%20Rover%E2%80%99s%20Descent%20and%20Touchdown%20on%20Mars — "landing in Mars' Jezero Crater on Feb. 18, 2021", "descent stage (a kind of rocket-powered jet pack…)". 칸 위 "30% speed"/"real time" 글자와 아래 아이콘 줄은 잘라냈다.
+
+**moment3**
+- 5위 우주선 입수: NASA Drop Test of Orion Spacecraft for Crewed Artemis Missions(NASA HQ, 2021-04-06) — 원본 8~18초 중 2.6~5.1초 — https://images.nasa.gov/details/NASA%20Drop%20Test%20of%20Orion%20Spacecraft%20for%20Crewed%20Artemis%20Missions · ORION10ftSwingDrop_Documentation(NASA Langley, Gary Banziger, 2021-05-20) — 원본 80~95초 중 7.4~10.0초 — https://images.nasa.gov/details/ORION10ftSwingDrop_Documentation — "14,000-pound test version of the Orion spacecraft into the Hydro Impact Basin"(약 6.4톤 → 자막 "6톤").
+- 4위 에어택시 추락: 2022-H1_V_Lift&CruiseDropTest-5(NASA Langley, Gary Banziger, 2022-11-09) — 원본 68~86초 중 6.4~8.9초 — https://images.nasa.gov/details/2022-H1_V_Lift%26CruiseDropTest-5 · NASA Drop Test Supports Safer Air Taxi Designs(NASA LaRC, 2025-06-24) — 원본 84~98초 중 8.6~11.2초 — https://images.nasa.gov/details/LRC-2025-V-06242025-RVLT-Gantry-Drop-Test-With-Slate-V0002050 — "full-scale crash test of an electric vertical takeoff and landing (eVTOL) concept vehicle", "dropped a full-scale aircraft body, modeled after an air taxi".
+- 3위 초고속 총알: White Sands Test Facility (WSTF) Hypervelocity Impact Testing Capabilities(NASA JSC, 2021-06-04) — 원본 52~90초 중 18.6~20.9(고속 카메라 그림자 영상), 23.3~26.1초(파편 구름) — https://images.nasa.gov/details/jsc2021m000811_WSTF-Hypervelocity_Impact_Testing — "simulating Micrometeoroid and Orbital Debris impacts on spacecraft materials".
+- 2위 수소 탱크: Space Launch System Liquid Hydrogen Tank Test (Dec 5, 2019), NASA Marshall — 원본 20~38초 중 4.6~7.1, 7.5~10.1초 — https://images.nasa.gov/details/PD003-Test-Case-13B-4693-SE-12-05-2019 — "withstood more than 260% of expected flight loads before buckling and rupturing".
+- 1위 산소 탱크: Engineers Break SLS Rocket Propellant Tank On Purpose(NASA Marshall, David Olive, 2020-06-24) — 원본 0~36초 중 3.5~7.1, 11.0~14.4, 19.0~22.4초(2배속) — https://images.nasa.gov/details/MSFC_2020_XP_SLS_V_0130_PD002-Test-Case-TTF-4697%20LOX%20Tank%20Test-to-Failure%20color-1_06242020_timelapse — "slow motion video", "water used to simulate the liquid oxygen flows out of the tank after it ruptures".
+
+**공통**
+- 음악: "Volatile Reaction", "Hackbeat" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License. 효과음은 저장소의 기존 효과음(riser, whoosh, boom).
+- 설명란에 "NASA는(NASA와 JPL은) 이 영상을 보증하거나 후원하지 않습니다"와 "순위는 편집자가 고른 것"을 넣었다.
+- 화면에 "저작권", "퍼블릭 도메인", "공공누리"는 쓰지 않았다. 군 자료, 정치, 피는 없다.
+- 채널 표시(배지)는 이 틀에 없다(벤치마크도 띠에 채널명이 없다). 채널 이름과 핸들은 `upload/channels.json`의 `moment`에 정해지면 넣는다.
+
+### 업로드 문구
+
+**moment1**: 역대급 로켓 발사 모먼트 랭킹 TOP5 ㄷㄷ
+```
+2026년 4월 1일 오후 6시 35분(미국 동부 시간) 플로리다 NASA 케네디 우주센터 39B 발사대에서 우주비행사 4명을 태우고 달로 떠난 아르테미스 2호 발사를, NASA가 공개한 카메라 영상으로 다섯 장면 골랐습니다. 발사대 아래 고속 카메라에 찍힌 엔진 점화, 로켓이 뜨는 순간 떨어져 나가는 연결선, 비행기에서 내려다본 발사, 이륙 약 2분 뒤 고체 로켓 부스터 2개가 떨어져 나가는 장면, 그리고 로켓과 우주선에 단 카메라가 찍은 부스터 분리입니다.
+
+▶ [채널명] 채널 구독: https://www.youtube.com/@[핸들]
+
+출처: 영상: NASA (Artemis II Launch - Mobile Launcher High Speed Cameras · 35mm High Speed Film · Live Launch Coverage: Cessna 8K, WB-57, SLS Launch Vehicle Camera · Orion Camera View of Artemis II Climb to Orbit, images.nasa.gov) · 음악: "Volatile Reaction" Kevin MacLeod (incompetech.com), CC BY 4.0 (creativecommons.org/licenses/by/4.0) · 순위는 편집자가 고른 것이며 공식 순위가 아닙니다 · NASA는 이 영상을 보증하거나 후원하지 않습니다. 날짜·시각과 부스터 분리 시점은 NASA 영상 설명 기준입니다
+
+#Shorts #로켓 #로켓발사 #아르테미스 #NASA #우주 #SLS #부스터분리 #랭킹 #TOP5 #역대급
+```
+고정 댓글: 몇 번이 제일 소름이었음? 👇 저는 1번 로켓 카메라…
+
+**moment2**: 역대급 로봇 모먼트 랭킹 TOP5 ㄷㄷ
+```
+NASA와 제트추진연구소(JPL)가 공개한 실제 영상으로 로봇 모먼트 다섯 개를 골랐습니다. 길이 4m, 무게 약 100kg의 뱀 로봇 EELS, 화성 대기를 재현한 시험실에서 떠오른 화성 헬기 시험기(2016), 화성 헬기 인제뉴어티가 2022년 4월 18일 25번째 비행에서 직접 찍은 704m 비행(약 5배속), 2021년 2월 18일 화성 예제로 충돌구에 내려앉은 퍼서비어런스 로버의 낙하산, 그리고 로켓 달린 하강 장치가 로버를 줄에 매달아 내려놓는 '스카이크레인' 장면입니다.
+
+▶ [채널명] 채널 구독: https://www.youtube.com/@[핸들]
+
+출처: 영상: NASA/JPL-Caltech (Perseverance Rover's Descent and Touchdown on Mars: Onboard Camera Views · EELS Media Reel · NASA Ingenuity Mars Helicopter Testing Media Reel · Ingenuity Mars Helicopter's Record-Breaking Flight, images.nasa.gov) · 음악: "Hackbeat" Kevin MacLeod (incompetech.com), CC BY 4.0 (creativecommons.org/licenses/by/4.0) · 순위는 편집자가 고른 것이며 공식 순위가 아닙니다 · NASA와 JPL은 이 영상을 보증하거나 후원하지 않습니다. 크기·날짜·비행 거리는 NASA 영상 설명 기준입니다
+
+#Shorts #로봇 #화성 #NASA #퍼서비어런스 #인제뉴어티 #화성헬기 #뱀로봇 #우주 #랭킹 #TOP5 #역대급
+```
+고정 댓글: 몇 번이 제일 신기했음? 👇 뱀 로봇 vs 스카이크레인
+
+**moment3**: 역대급 파괴 실험 모먼트 랭킹 TOP5 ㄷㄷ
+```
+NASA가 일부러 부수고, 떨어뜨리고, 터뜨린 실험 다섯 개를 골랐습니다. 약 6.4톤(1만4천 파운드)짜리 오리온 우주선 시험체를 랭글리 연구센터 수조에 떨어뜨린 입수 시험, 에어택시 모양 기체를 높은 철탑에서 떨어뜨린 충돌 시험, 우주 쓰레기·미세 운석이 부딪치는 속도를 재현한 초고속 충돌 시험, 비행 하중의 260% 넘게 버티다 찢어진 SLS 로켓 액체수소 탱크(2019년 12월 5일), 그리고 액체산소 대신 물을 채운 SLS 산소 탱크를 한계까지 눌러 터뜨린 시험(슬로모션)입니다.
+
+▶ [채널명] 채널 구독: https://www.youtube.com/@[핸들]
+
+출처: 영상: NASA (Engineers Break SLS Rocket Propellant Tank On Purpose · Space Launch System Liquid Hydrogen Tank Test · NASA Drop Test of Orion Spacecraft for Crewed Artemis Missions · ORION 10ft Swing Drop · Lift & Cruise Drop Test · NASA Drop Test Supports Safer Air Taxi Designs · WSTF Hypervelocity Impact Testing, images.nasa.gov) · 음악: "Volatile Reaction" Kevin MacLeod (incompetech.com), CC BY 4.0 (creativecommons.org/licenses/by/4.0) · 순위는 편집자가 고른 것이며 공식 순위가 아닙니다 · NASA는 이 영상을 보증하거나 후원하지 않습니다. 무게·날짜·하중 수치는 NASA 영상 설명 기준입니다
+
+#Shorts #파괴실험 #실험 #NASA #로켓 #충돌실험 #슬로모션 #우주선 #시원한영상 #랭킹 #TOP5 #역대급
+```
+고정 댓글: 1위 보고 소리 지른 사람? 👇 몇 번이 제일 시원했음?
+

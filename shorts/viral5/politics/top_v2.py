@@ -13,6 +13,8 @@ spec.json:
   places     [{"n": 5, "label": "2–4자", "caps": ["~하는데..", "그대로 ○○??"],
                "shots": [{"src": "topN/x.mp4", "in": s, "dur": s, "single": [cx, cy, zoom], "vf"?: "...", "speed"?: 1}]}]
   sources    [{"file", "page", "file_url", "license", "credit", ...}]
+  sfx        optional extra effects [[output second, name in public/sfx, gain], ...] on top of the whooshes
+  shots may also carry "audio": the clip's own sound level (default 0 = muted; only sound checked to have no voice)
 """
 import json, os, sys
 
@@ -27,7 +29,7 @@ def build(sid):
         for si, sh in enumerate(pl["shots"]):
             speed = sh.get("speed", 1.0)
             seg = {"src": sh["src"], "in": sh["in"], "out": round(sh["in"] + sh["dur"] * speed, 3), "frame": "tall",
-                   "single": sh.get("single", [0.5, 0.5, 1.0]), "push": sh.get("push", [1.0, 1.06]), "audio": 0}
+                   "single": sh.get("single", [0.5, 0.5, 1.0]), "push": sh.get("push", [1.0, 1.06]), "audio": sh.get("audio", 0)}
             for k in ("vf", "trim", "rotate"):
                 if sh.get(k): seg[k] = sh[k]
             if speed != 1.0: seg["speed"] = speed
@@ -39,6 +41,7 @@ def build(sid):
             else:  # no caption of its own: the place's last caption stays up
                 lines[-1]["tend"] = round(t + sh["dur"], 3)
             t += sh["dur"]
+    sfx += sp.get("sfx", [])  # extra effects from the spec: [[t, name, gain], ...]
     for s in sp.get("sources", []):
         if s["file"] in used: s["used_seconds"] = used[s["file"]]
     missing = sorted(set(used) - {s["file"] for s in sp.get("sources", [])})

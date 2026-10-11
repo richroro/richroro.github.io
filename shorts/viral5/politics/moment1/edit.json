@@ -1,0 +1,511 @@
+{
+ "src": "moment1/ignite.mp4",
+ "title": [
+  "역대급 로켓 발사 모먼트",
+  "랭킹 TOP5"
+ ],
+ "titleStyle": "band",
+ "credit": "",
+ "panels": [],
+ "rank2": {
+  "sub": "(몇 번이 제일 소름?)",
+  "color": "#33F0D0",
+  "hide": []
+ },
+ "flash": false,
+ "keys": [],
+ "sfx": [
+  [
+   5.1,
+   "whoosh",
+   0.5
+  ],
+  [
+   10.2,
+   "whoosh",
+   0.5
+  ],
+  [
+   15.3,
+   "whoosh",
+   0.5
+  ],
+  [
+   20.4,
+   "whoosh",
+   0.5
+  ],
+  [
+   0.0,
+   "riser",
+   0.35
+  ],
+  [
+   2.3,
+   "boom",
+   0.6
+  ],
+  [
+   17.8,
+   "boom",
+   0.45
+  ],
+  [
+   20.4,
+   "boom",
+   0.5
+  ]
+ ],
+ "music": [
+  {
+   "src": "public/music/Volatile Reaction.mp3",
+   "from": 0.0,
+   "at": 0.0,
+   "to": 25.6,
+   "fade": 0.3,
+   "gain": 1.0
+  }
+ ],
+ "musicGain": 0.8,
+ "duck": false,
+ "captionY": 1330,
+ "tail": 0.0,
+ "segments": [
+  {
+   "src": "moment1/ignite.mp4",
+   "in": 9.0,
+   "out": 11.3,
+   "frame": "tall",
+   "single": [
+    0.46,
+    0.62,
+    1.2
+   ],
+   "push": [
+    1.0,
+    1.06
+   ],
+   "audio": 0,
+   "rank": {
+    "n": 5,
+    "label": "엔진 점화"
+   }
+  },
+  {
+   "src": "moment1/boostign.mp4",
+   "in": 9.0,
+   "out": 11.8,
+   "frame": "tall",
+   "single": [
+    0.5,
+    0.5,
+    1.0
+   ],
+   "push": [
+    1.0,
+    1.06
+   ],
+   "audio": 0
+  },
+  {
+   "src": "moment1/arms.mp4",
+   "in": 9.0,
+   "out": 11.5,
+   "frame": "tall",
+   "single": [
+    0.42,
+    0.5,
+    1.0
+   ],
+   "push": [
+    1.0,
+    1.06
+   ],
+   "audio": 0,
+   "rank": {
+    "n": 4,
+    "label": "연결선"
+   }
+  },
+  {
+   "src": "moment1/arms.mp4",
+   "in": 11.6,
+   "out": 14.2,
+   "frame": "tall",
+   "single": [
+    0.42,
+    0.5,
+    1.0
+   ],
+   "push": [
+    1.0,
+    1.06
+   ],
+   "audio": 0
+  },
+  {
+   "src": "moment1/climb.mp4",
+   "in": 1.0,
+   "out": 3.5,
+   "frame": "tall",
+   "single": [
+    0.5,
+    0.45,
+    1.15
+   ],
+   "push": [
+    1.0,
+    1.06
+   ],
+   "audio": 0,
+   "rank": {
+    "n": 3,
+    "label": "하늘 시점"
+   }
+  },
+  {
+   "src": "moment1/climb.mp4",
+   "in": 14.0,
+   "out": 16.6,
+   "frame": "tall",
+   "single": [
+    0.5,
+    0.4,
+    1.1
+   ],
+   "push": [
+    1.0,
+    1.06
+   ],
+   "audio": 0
+  },
+  {
+   "src": "moment1/wb57sep.mp4",
+   "in": 5.6,
+   "out": 8.1,
+   "frame": "tall",
+   "single": [
+    0.3,
+    0.45,
+    1.0
+   ],
+   "push": [
+    1.0,
+    1.06
+   ],
+   "audio": 0,
+   "rank": {
+    "n": 2,
+    "label": "부스터 분리"
+   }
+  },
+  {
+   "src": "moment1/wb57sep.mp4",
+   "in": 9.2,
+   "out": 11.8,
+   "frame": "tall",
+   "single": [
+    0.28,
+    0.45,
+    1.0
+   ],
+   "push": [
+    1.0,
+    1.06
+   ],
+   "audio": 0
+  },
+  {
+   "src": "moment1/onboard.mp4",
+   "in": 7.8,
+   "out": 9.6,
+   "frame": "tall",
+   "single": [
+    0.34,
+    0.5,
+    1.0
+   ],
+   "push": [
+    1.0,
+    1.06
+   ],
+   "audio": 0,
+   "rank": {
+    "n": 1,
+    "label": "로켓 카메라"
+   }
+  },
+  {
+   "src": "moment1/onboard.mp4",
+   "in": 10.2,
+   "out": 11.9,
+   "frame": "tall",
+   "single": [
+    0.34,
+    0.5,
+    1.0
+   ],
+   "push": [
+    1.0,
+    1.06
+   ],
+   "audio": 0
+  },
+  {
+   "src": "moment1/orion.mp4",
+   "in": 3.7,
+   "out": 5.4,
+   "frame": "tall",
+   "single": [
+    0.5,
+    0.5,
+    1.0
+   ],
+   "push": [
+    1.0,
+    1.06
+   ],
+   "audio": 0
+  }
+ ],
+ "lines": [
+  {
+   "who": 0,
+   "t": 0.0,
+   "tend": 2.3,
+   "ko": "엔진 4개 켜지는데.."
+  },
+  {
+   "who": 0,
+   "t": 2.3,
+   "tend": 5.1,
+   "ko": "부스터 켜지자 불바다??"
+  },
+  {
+   "who": 0,
+   "t": 5.1,
+   "tend": 7.6,
+   "ko": "로켓이 뜨는 순간.."
+  },
+  {
+   "who": 0,
+   "t": 7.6,
+   "tend": 10.2,
+   "ko": "연결선이 휙 떨어짐 ㄷㄷ"
+  },
+  {
+   "who": 0,
+   "t": 10.2,
+   "tend": 12.7,
+   "ko": "비행기에서 찍은 발사.."
+  },
+  {
+   "who": 0,
+   "t": 12.7,
+   "tend": 15.3,
+   "ko": "하늘로 쭉 솟구침"
+  },
+  {
+   "who": 0,
+   "t": 15.3,
+   "tend": 17.8,
+   "ko": "2분 뒤 하늘에서.."
+  },
+  {
+   "who": 0,
+   "t": 17.8,
+   "tend": 20.4,
+   "ko": "부스터 2개가 떨어짐??"
+  },
+  {
+   "who": 0,
+   "t": 20.4,
+   "tend": 22.2,
+   "ko": "로켓에 단 카메라엔.."
+  },
+  {
+   "who": 0,
+   "t": 22.2,
+   "tend": 23.9,
+   "ko": "부스터가 이렇게 떨어짐"
+  },
+  {
+   "who": 0,
+   "t": 23.9,
+   "tend": 25.6,
+   "ko": "우주선 카메라에도 찍힘 ㄷㄷ"
+  }
+ ],
+ "sources": [
+  {
+   "file": "moment1/arms.mp4",
+   "title": "Artemis II Launch - 35mm High Speed Film",
+   "file_url": "https://images-assets.nasa.gov/video/KSC-20260401-MH-AJN01-0001-Artemis_II_Launch_35mm_High_Speed_Film-M19183/KSC-20260401-MH-AJN01-0001-Artemis_II_Launch_35mm_High_Speed_Film-M19183~large.mp4",
+   "license": "Public domain (17 U.S.C. §105), NASA media usage guidelines",
+   "license_url": "https://www.nasa.gov/nasa-brand-center/images-and-media/",
+   "credit": "NASA",
+   "center": "KSC",
+   "date": "2026-04-01",
+   "cut_from_original_seconds": [
+    398.0,
+    414.0
+   ],
+   "nasa_id": "KSC-20260401-MH-AJN01-0001-Artemis_II_Launch_35mm_High_Speed_Film-M19183",
+   "page": "https://images.nasa.gov/details/KSC-20260401-MH-AJN01-0001-Artemis_II_Launch_35mm_High_Speed_Film-M19183",
+   "used_seconds": [
+    [
+     9.0,
+     11.5
+    ],
+    [
+     11.6,
+     14.2
+    ]
+   ]
+  },
+  {
+   "file": "moment1/boostign.mp4",
+   "title": "Artemis II Launch - Mobile Launcher High Speed Cameras",
+   "file_url": "https://images-assets.nasa.gov/video/KSC-20260401-MH-AJN01-0001-Artemis_II_Launch_Mobile_Launcher_High_Speed-M19183/KSC-20260401-MH-AJN01-0001-Artemis_II_Launch_Mobile_Launcher_High_Speed-M19183~large.mp4",
+   "license": "Public domain (17 U.S.C. §105), NASA media usage guidelines",
+   "license_url": "https://www.nasa.gov/nasa-brand-center/images-and-media/",
+   "credit": "NASA",
+   "center": "KSC",
+   "date": "2026-04-01",
+   "cut_from_original_seconds": [
+    424.0,
+    440.0
+   ],
+   "nasa_id": "KSC-20260401-MH-AJN01-0001-Artemis_II_Launch_Mobile_Launcher_High_Speed-M19183",
+   "page": "https://images.nasa.gov/details/KSC-20260401-MH-AJN01-0001-Artemis_II_Launch_Mobile_Launcher_High_Speed-M19183",
+   "used_seconds": [
+    [
+     9.0,
+     11.8
+    ]
+   ]
+  },
+  {
+   "file": "moment1/climb.mp4",
+   "title": "Artemis II Live Launch Coverage - Cessna (8K, 120fps)",
+   "file_url": "https://images-assets.nasa.gov/video/KSC-20260401-MH-JBP01-0001-Artemis_II_Launch_Cessna_GSS_8k_120fps-M19183/KSC-20260401-MH-JBP01-0001-Artemis_II_Launch_Cessna_GSS_8k_120fps-M19183~large.mp4",
+   "license": "Public domain (17 U.S.C. §105), NASA media usage guidelines",
+   "license_url": "https://www.nasa.gov/nasa-brand-center/images-and-media/",
+   "credit": "NASA/Jamie Peer",
+   "center": "KSC",
+   "date": "2026-04-01",
+   "cut_from_original_seconds": [
+    34.0,
+    64.0
+   ],
+   "nasa_id": "KSC-20260401-MH-JBP01-0001-Artemis_II_Launch_Cessna_GSS_8k_120fps-M19183",
+   "page": "https://images.nasa.gov/details/KSC-20260401-MH-JBP01-0001-Artemis_II_Launch_Cessna_GSS_8k_120fps-M19183",
+   "used_seconds": [
+    [
+     1.0,
+     3.5
+    ],
+    [
+     14.0,
+     16.6
+    ]
+   ]
+  },
+  {
+   "file": "moment1/ignite.mp4",
+   "title": "Artemis II Launch - Mobile Launcher High Speed Cameras",
+   "file_url": "https://images-assets.nasa.gov/video/KSC-20260401-MH-AJN01-0001-Artemis_II_Launch_Mobile_Launcher_High_Speed-M19183/KSC-20260401-MH-AJN01-0001-Artemis_II_Launch_Mobile_Launcher_High_Speed-M19183~large.mp4",
+   "license": "Public domain (17 U.S.C. §105), NASA media usage guidelines",
+   "license_url": "https://www.nasa.gov/nasa-brand-center/images-and-media/",
+   "credit": "NASA",
+   "center": "KSC",
+   "date": "2026-04-01",
+   "cut_from_original_seconds": [
+    252.0,
+    266.0
+   ],
+   "nasa_id": "KSC-20260401-MH-AJN01-0001-Artemis_II_Launch_Mobile_Launcher_High_Speed-M19183",
+   "page": "https://images.nasa.gov/details/KSC-20260401-MH-AJN01-0001-Artemis_II_Launch_Mobile_Launcher_High_Speed-M19183",
+   "used_seconds": [
+    [
+     9.0,
+     11.3
+    ]
+   ]
+  },
+  {
+   "file": "moment1/onboard.mp4",
+   "title": "Artemis II Live Launch Coverage - SLS Launch Vehicle Camera, Switched Feed",
+   "file_url": "https://images-assets.nasa.gov/video/KSC-20260401-MH-AJN01-0001-Artemis_II_Launch_ISO_SLS_Launch_Vehicle_Camera_Switched_Feed_720p/KSC-20260401-MH-AJN01-0001-Artemis_II_Launch_ISO_SLS_Launch_Vehicle_Camera_Switched_Feed_720p~large.mp4",
+   "license": "Public domain (17 U.S.C. §105), NASA media usage guidelines",
+   "license_url": "https://www.nasa.gov/nasa-brand-center/images-and-media/",
+   "credit": "NASA",
+   "center": "KSC",
+   "date": "2026-04-01",
+   "cut_from_original_seconds": [
+    155.0,
+    173.0
+   ],
+   "nasa_id": "KSC-20260401-MH-AJN01-0001-Artemis_II_Launch_ISO_SLS_Launch_Vehicle_Camera_Switched_Feed_720p",
+   "page": "https://images.nasa.gov/details/KSC-20260401-MH-AJN01-0001-Artemis_II_Launch_ISO_SLS_Launch_Vehicle_Camera_Switched_Feed_720p",
+   "used_seconds": [
+    [
+     7.8,
+     9.6
+    ],
+    [
+     10.2,
+     11.9
+    ]
+   ]
+  },
+  {
+   "file": "moment1/orion.mp4",
+   "title": "Orion Camera View of Artemis II Climb to Orbit",
+   "file_url": "https://images-assets.nasa.gov/video/art002m1200912237_SAJ-Jettison/art002m1200912237_SAJ-Jettison~orig.mp4",
+   "license": "Public domain (17 U.S.C. §105), NASA media usage guidelines",
+   "license_url": "https://www.nasa.gov/nasa-brand-center/images-and-media/",
+   "credit": "NASA",
+   "center": "JSC",
+   "date": "2026-04-01",
+   "cut_from_original_seconds": [
+    16.0,
+    28.0
+   ],
+   "nasa_id": "art002m1200912237_SAJ-Jettison",
+   "page": "https://images.nasa.gov/details/art002m1200912237_SAJ-Jettison",
+   "used_seconds": [
+    [
+     3.7,
+     5.4
+    ]
+   ]
+  },
+  {
+   "file": "moment1/wb57sep.mp4",
+   "title": "Artemis II Live Launch Coverage - WB-57 (Visible)",
+   "file_url": "https://images-assets.nasa.gov/video/KSC-20260401-MH-NAS01-0001-Artemis_II_Launch_WB57_Visible/KSC-20260401-MH-NAS01-0001-Artemis_II_Launch_WB57_Visible~large.mp4",
+   "license": "Public domain (17 U.S.C. §105), NASA media usage guidelines",
+   "license_url": "https://www.nasa.gov/nasa-brand-center/images-and-media/",
+   "credit": "NASA",
+   "center": "KSC",
+   "date": "2026-04-01",
+   "cut_from_original_seconds": [
+    130.0,
+    146.0
+   ],
+   "nasa_id": "KSC-20260401-MH-NAS01-0001-Artemis_II_Launch_WB57_Visible",
+   "page": "https://images.nasa.gov/details/KSC-20260401-MH-NAS01-0001-Artemis_II_Launch_WB57_Visible",
+   "used_seconds": [
+    [
+     5.6,
+     8.1
+    ],
+    [
+     9.2,
+     11.8
+    ]
+   ]
+  }
+ ]
+}

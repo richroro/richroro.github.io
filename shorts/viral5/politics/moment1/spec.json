@@ -1,0 +1,311 @@
+{
+ "title": [
+  "역대급 로켓 발사 모먼트",
+  "랭킹 TOP5"
+ ],
+ "sub": "(몇 번이 제일 소름?)",
+ "color": "#33F0D0",
+ "music": "public/music/Volatile Reaction.mp3",
+ "keys": [],
+ "hide": [],
+ "places": [
+  {
+   "n": 5,
+   "label": "엔진 점화",
+   "caps": [
+    "엔진 4개 켜지는데..",
+    "부스터 켜지자 불바다??"
+   ],
+   "shots": [
+    {
+     "src": "moment1/ignite.mp4",
+     "in": 9.0,
+     "dur": 2.3,
+     "single": [
+      0.46,
+      0.62,
+      1.2
+     ]
+    },
+    {
+     "src": "moment1/boostign.mp4",
+     "in": 9.0,
+     "dur": 2.8,
+     "single": [
+      0.5,
+      0.5,
+      1.0
+     ]
+    }
+   ]
+  },
+  {
+   "n": 4,
+   "label": "연결선",
+   "caps": [
+    "로켓이 뜨는 순간..",
+    "연결선이 휙 떨어짐 ㄷㄷ"
+   ],
+   "shots": [
+    {
+     "src": "moment1/arms.mp4",
+     "in": 9.0,
+     "dur": 2.5,
+     "single": [
+      0.42,
+      0.5,
+      1.0
+     ]
+    },
+    {
+     "src": "moment1/arms.mp4",
+     "in": 11.6,
+     "dur": 2.6,
+     "single": [
+      0.42,
+      0.5,
+      1.0
+     ]
+    }
+   ]
+  },
+  {
+   "n": 3,
+   "label": "하늘 시점",
+   "caps": [
+    "비행기에서 찍은 발사..",
+    "하늘로 쭉 솟구침"
+   ],
+   "shots": [
+    {
+     "src": "moment1/climb.mp4",
+     "in": 1.0,
+     "dur": 2.5,
+     "single": [
+      0.5,
+      0.45,
+      1.15
+     ]
+    },
+    {
+     "src": "moment1/climb.mp4",
+     "in": 14.0,
+     "dur": 2.6,
+     "single": [
+      0.5,
+      0.4,
+      1.1
+     ]
+    }
+   ]
+  },
+  {
+   "n": 2,
+   "label": "부스터 분리",
+   "caps": [
+    "2분 뒤 하늘에서..",
+    "부스터 2개가 떨어짐??"
+   ],
+   "shots": [
+    {
+     "src": "moment1/wb57sep.mp4",
+     "in": 5.6,
+     "dur": 2.5,
+     "single": [
+      0.3,
+      0.45,
+      1.0
+     ]
+    },
+    {
+     "src": "moment1/wb57sep.mp4",
+     "in": 9.2,
+     "dur": 2.6,
+     "single": [
+      0.28,
+      0.45,
+      1.0
+     ]
+    }
+   ]
+  },
+  {
+   "n": 1,
+   "label": "로켓 카메라",
+   "caps": [
+    "로켓에 단 카메라엔..",
+    "부스터가 이렇게 떨어짐",
+    "우주선 카메라에도 찍힘 ㄷㄷ"
+   ],
+   "shots": [
+    {
+     "src": "moment1/onboard.mp4",
+     "in": 7.8,
+     "dur": 1.8,
+     "single": [
+      0.34,
+      0.5,
+      1.0
+     ]
+    },
+    {
+     "src": "moment1/onboard.mp4",
+     "in": 10.2,
+     "dur": 1.7,
+     "single": [
+      0.34,
+      0.5,
+      1.0
+     ]
+    },
+    {
+     "src": "moment1/orion.mp4",
+     "in": 3.7,
+     "dur": 1.7,
+     "single": [
+      0.5,
+      0.5,
+      1.0
+     ]
+    }
+   ]
+  }
+ ],
+ "sources": [
+  {
+   "file": "moment1/arms.mp4",
+   "title": "Artemis II Launch - 35mm High Speed Film",
+   "file_url": "https://images-assets.nasa.gov/video/KSC-20260401-MH-AJN01-0001-Artemis_II_Launch_35mm_High_Speed_Film-M19183/KSC-20260401-MH-AJN01-0001-Artemis_II_Launch_35mm_High_Speed_Film-M19183~large.mp4",
+   "license": "Public domain (17 U.S.C. §105), NASA media usage guidelines",
+   "license_url": "https://www.nasa.gov/nasa-brand-center/images-and-media/",
+   "credit": "NASA",
+   "center": "KSC",
+   "date": "2026-04-01",
+   "cut_from_original_seconds": [
+    398.0,
+    414.0
+   ],
+   "nasa_id": "KSC-20260401-MH-AJN01-0001-Artemis_II_Launch_35mm_High_Speed_Film-M19183",
+   "page": "https://images.nasa.gov/details/KSC-20260401-MH-AJN01-0001-Artemis_II_Launch_35mm_High_Speed_Film-M19183"
+  },
+  {
+   "file": "moment1/boostign.mp4",
+   "title": "Artemis II Launch - Mobile Launcher High Speed Cameras",
+   "file_url": "https://images-assets.nasa.gov/video/KSC-20260401-MH-AJN01-0001-Artemis_II_Launch_Mobile_Launcher_High_Speed-M19183/KSC-20260401-MH-AJN01-0001-Artemis_II_Launch_Mobile_Launcher_High_Speed-M19183~large.mp4",
+   "license": "Public domain (17 U.S.C. §105), NASA media usage guidelines",
+   "license_url": "https://www.nasa.gov/nasa-brand-center/images-and-media/",
+   "credit": "NASA",
+   "center": "KSC",
+   "date": "2026-04-01",
+   "cut_from_original_seconds": [
+    424.0,
+    440.0
+   ],
+   "nasa_id": "KSC-20260401-MH-AJN01-0001-Artemis_II_Launch_Mobile_Launcher_High_Speed-M19183",
+   "page": "https://images.nasa.gov/details/KSC-20260401-MH-AJN01-0001-Artemis_II_Launch_Mobile_Launcher_High_Speed-M19183"
+  },
+  {
+   "file": "moment1/climb.mp4",
+   "title": "Artemis II Live Launch Coverage - Cessna (8K, 120fps)",
+   "file_url": "https://images-assets.nasa.gov/video/KSC-20260401-MH-JBP01-0001-Artemis_II_Launch_Cessna_GSS_8k_120fps-M19183/KSC-20260401-MH-JBP01-0001-Artemis_II_Launch_Cessna_GSS_8k_120fps-M19183~large.mp4",
+   "license": "Public domain (17 U.S.C. §105), NASA media usage guidelines",
+   "license_url": "https://www.nasa.gov/nasa-brand-center/images-and-media/",
+   "credit": "NASA/Jamie Peer",
+   "center": "KSC",
+   "date": "2026-04-01",
+   "cut_from_original_seconds": [
+    34.0,
+    64.0
+   ],
+   "nasa_id": "KSC-20260401-MH-JBP01-0001-Artemis_II_Launch_Cessna_GSS_8k_120fps-M19183",
+   "page": "https://images.nasa.gov/details/KSC-20260401-MH-JBP01-0001-Artemis_II_Launch_Cessna_GSS_8k_120fps-M19183"
+  },
+  {
+   "file": "moment1/ignite.mp4",
+   "title": "Artemis II Launch - Mobile Launcher High Speed Cameras",
+   "file_url": "https://images-assets.nasa.gov/video/KSC-20260401-MH-AJN01-0001-Artemis_II_Launch_Mobile_Launcher_High_Speed-M19183/KSC-20260401-MH-AJN01-0001-Artemis_II_Launch_Mobile_Launcher_High_Speed-M19183~large.mp4",
+   "license": "Public domain (17 U.S.C. §105), NASA media usage guidelines",
+   "license_url": "https://www.nasa.gov/nasa-brand-center/images-and-media/",
+   "credit": "NASA",
+   "center": "KSC",
+   "date": "2026-04-01",
+   "cut_from_original_seconds": [
+    252.0,
+    266.0
+   ],
+   "nasa_id": "KSC-20260401-MH-AJN01-0001-Artemis_II_Launch_Mobile_Launcher_High_Speed-M19183",
+   "page": "https://images.nasa.gov/details/KSC-20260401-MH-AJN01-0001-Artemis_II_Launch_Mobile_Launcher_High_Speed-M19183"
+  },
+  {
+   "file": "moment1/onboard.mp4",
+   "title": "Artemis II Live Launch Coverage - SLS Launch Vehicle Camera, Switched Feed",
+   "file_url": "https://images-assets.nasa.gov/video/KSC-20260401-MH-AJN01-0001-Artemis_II_Launch_ISO_SLS_Launch_Vehicle_Camera_Switched_Feed_720p/KSC-20260401-MH-AJN01-0001-Artemis_II_Launch_ISO_SLS_Launch_Vehicle_Camera_Switched_Feed_720p~large.mp4",
+   "license": "Public domain (17 U.S.C. §105), NASA media usage guidelines",
+   "license_url": "https://www.nasa.gov/nasa-brand-center/images-and-media/",
+   "credit": "NASA",
+   "center": "KSC",
+   "date": "2026-04-01",
+   "cut_from_original_seconds": [
+    155.0,
+    173.0
+   ],
+   "nasa_id": "KSC-20260401-MH-AJN01-0001-Artemis_II_Launch_ISO_SLS_Launch_Vehicle_Camera_Switched_Feed_720p",
+   "page": "https://images.nasa.gov/details/KSC-20260401-MH-AJN01-0001-Artemis_II_Launch_ISO_SLS_Launch_Vehicle_Camera_Switched_Feed_720p"
+  },
+  {
+   "file": "moment1/orion.mp4",
+   "title": "Orion Camera View of Artemis II Climb to Orbit",
+   "file_url": "https://images-assets.nasa.gov/video/art002m1200912237_SAJ-Jettison/art002m1200912237_SAJ-Jettison~orig.mp4",
+   "license": "Public domain (17 U.S.C. §105), NASA media usage guidelines",
+   "license_url": "https://www.nasa.gov/nasa-brand-center/images-and-media/",
+   "credit": "NASA",
+   "center": "JSC",
+   "date": "2026-04-01",
+   "cut_from_original_seconds": [
+    16.0,
+    28.0
+   ],
+   "nasa_id": "art002m1200912237_SAJ-Jettison",
+   "page": "https://images.nasa.gov/details/art002m1200912237_SAJ-Jettison"
+  },
+  {
+   "file": "moment1/wb57sep.mp4",
+   "title": "Artemis II Live Launch Coverage - WB-57 (Visible)",
+   "file_url": "https://images-assets.nasa.gov/video/KSC-20260401-MH-NAS01-0001-Artemis_II_Launch_WB57_Visible/KSC-20260401-MH-NAS01-0001-Artemis_II_Launch_WB57_Visible~large.mp4",
+   "license": "Public domain (17 U.S.C. §105), NASA media usage guidelines",
+   "license_url": "https://www.nasa.gov/nasa-brand-center/images-and-media/",
+   "credit": "NASA",
+   "center": "KSC",
+   "date": "2026-04-01",
+   "cut_from_original_seconds": [
+    130.0,
+    146.0
+   ],
+   "nasa_id": "KSC-20260401-MH-NAS01-0001-Artemis_II_Launch_WB57_Visible",
+   "page": "https://images.nasa.gov/details/KSC-20260401-MH-NAS01-0001-Artemis_II_Launch_WB57_Visible"
+  }
+ ],
+ "captionY": 1330,
+ "sfx": [
+  [
+   0.0,
+   "riser",
+   0.35
+  ],
+  [
+   2.3,
+   "boom",
+   0.6
+  ],
+  [
+   17.8,
+   "boom",
+   0.45
+  ],
+  [
+   20.4,
+   "boom",
+   0.5
+  ]
+ ]
+}

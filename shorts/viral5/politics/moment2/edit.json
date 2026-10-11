@@ -1,0 +1,495 @@
+{
+ "src": "moment2/eelsice.mp4",
+ "title": [
+  "역대급 로봇 모먼트",
+  "랭킹 TOP5"
+ ],
+ "titleStyle": "band",
+ "credit": "",
+ "panels": [],
+ "rank2": {
+  "sub": "(몇 번이 제일 신기?)",
+  "color": "#33F0D0",
+  "hide": []
+ },
+ "flash": false,
+ "keys": [],
+ "sfx": [
+  [
+   5.1,
+   "whoosh",
+   0.5
+  ],
+  [
+   10.2,
+   "whoosh",
+   0.5
+  ],
+  [
+   15.3,
+   "whoosh",
+   0.5
+  ],
+  [
+   20.4,
+   "whoosh",
+   0.5
+  ],
+  [
+   0.0,
+   "riser",
+   0.3
+  ],
+  [
+   20.4,
+   "boom",
+   0.4
+  ]
+ ],
+ "music": [
+  {
+   "src": "public/music/Hackbeat.mp3",
+   "from": 0.0,
+   "at": 0.0,
+   "to": 25.6,
+   "fade": 0.3,
+   "gain": 1.0
+  }
+ ],
+ "musicGain": 0.8,
+ "duck": false,
+ "captionY": 1330,
+ "tail": 0.0,
+ "segments": [
+  {
+   "src": "moment2/eelsice.mp4",
+   "in": 19.5,
+   "out": 21.8,
+   "frame": "tall",
+   "single": [
+    0.45,
+    0.6,
+    1.1
+   ],
+   "push": [
+    1.0,
+    1.06
+   ],
+   "audio": 0,
+   "rank": {
+    "n": 5,
+    "label": "뱀 로봇"
+   }
+  },
+  {
+   "src": "moment2/eelsice.mp4",
+   "in": 47.0,
+   "out": 49.8,
+   "frame": "tall",
+   "single": [
+    0.45,
+    0.62,
+    1.25
+   ],
+   "push": [
+    1.0,
+    1.06
+   ],
+   "audio": 0
+  },
+  {
+   "src": "moment2/heli.mp4",
+   "in": 6.3,
+   "out": 8.8,
+   "frame": "tall",
+   "single": [
+    0.47,
+    0.74,
+    1.5
+   ],
+   "push": [
+    1.0,
+    1.06
+   ],
+   "audio": 0,
+   "rank": {
+    "n": 4,
+    "label": "화성 헬기 시험"
+   }
+  },
+  {
+   "src": "moment2/heli.mp4",
+   "in": 10.0,
+   "out": 12.6,
+   "frame": "tall",
+   "single": [
+    0.47,
+    0.78,
+    2.0
+   ],
+   "push": [
+    1.0,
+    1.06
+   ],
+   "audio": 0
+  },
+  {
+   "src": "moment2/ingflight.mp4",
+   "in": 0.8,
+   "out": 3.3,
+   "frame": "tall",
+   "single": [
+    0.5,
+    0.5,
+    1.0
+   ],
+   "push": [
+    1.0,
+    1.06
+   ],
+   "audio": 0,
+   "rank": {
+    "n": 3,
+    "label": "헬기 시점"
+   }
+  },
+  {
+   "src": "moment2/ingflight.mp4",
+   "in": 6.5,
+   "out": 9.1,
+   "frame": "tall",
+   "single": [
+    0.5,
+    0.5,
+    1.0
+   ],
+   "push": [
+    1.0,
+    1.06
+   ],
+   "audio": 0
+  },
+  {
+   "src": "moment2/chute.mp4",
+   "in": 2.6,
+   "out": 5.1,
+   "frame": "tall",
+   "single": [
+    0.5,
+    0.5,
+    1.0
+   ],
+   "push": [
+    1.0,
+    1.06
+   ],
+   "audio": 0,
+   "trim": [
+    0.0,
+    0.13,
+    0.497,
+    0.84
+   ],
+   "rank": {
+    "n": 2,
+    "label": "화성 낙하산"
+   }
+  },
+  {
+   "src": "moment2/chute.mp4",
+   "in": 6.0,
+   "out": 8.6,
+   "frame": "tall",
+   "single": [
+    0.55,
+    0.5,
+    1.0
+   ],
+   "push": [
+    1.0,
+    1.06
+   ],
+   "audio": 0,
+   "trim": [
+    0.502,
+    0.13,
+    1.0,
+    0.84
+   ]
+  },
+  {
+   "src": "moment2/crane.mp4",
+   "in": 14.0,
+   "out": 15.8,
+   "frame": "tall",
+   "single": [
+    0.5,
+    0.5,
+    1.0
+   ],
+   "push": [
+    1.0,
+    1.06
+   ],
+   "audio": 0,
+   "trim": [
+    0.074,
+    0.0,
+    0.435,
+    0.51
+   ],
+   "rank": {
+    "n": 1,
+    "label": "스카이크레인"
+   }
+  },
+  {
+   "src": "moment2/crane.mp4",
+   "in": 15.0,
+   "out": 16.7,
+   "frame": "tall",
+   "single": [
+    0.5,
+    0.5,
+    1.0
+   ],
+   "push": [
+    1.0,
+    1.06
+   ],
+   "audio": 0,
+   "trim": [
+    0.076,
+    0.517,
+    0.435,
+    0.995
+   ]
+  },
+  {
+   "src": "moment2/crane.mp4",
+   "in": 19.0,
+   "out": 20.7,
+   "frame": "tall",
+   "single": [
+    0.5,
+    0.5,
+    1.0
+   ],
+   "push": [
+    1.0,
+    1.06
+   ],
+   "audio": 0,
+   "trim": [
+    0.076,
+    0.517,
+    0.435,
+    0.995
+   ]
+  }
+ ],
+ "lines": [
+  {
+   "who": 0,
+   "t": 0.0,
+   "tend": 2.3,
+   "ko": "4m짜리 뱀 로봇이.."
+  },
+  {
+   "who": 0,
+   "t": 2.3,
+   "tend": 5.1,
+   "ko": "고개를 쓱 듦 ㄷㄷ"
+  },
+  {
+   "who": 0,
+   "t": 5.1,
+   "tend": 7.6,
+   "ko": "화성 공기를 만든 방에서.."
+  },
+  {
+   "who": 0,
+   "t": 7.6,
+   "tend": 10.2,
+   "ko": "헬기가 진짜 뜸??"
+  },
+  {
+   "who": 0,
+   "t": 10.2,
+   "tend": 12.7,
+   "ko": "화성 헬기에 달린 카메라.."
+  },
+  {
+   "who": 0,
+   "t": 12.7,
+   "tend": 15.3,
+   "ko": "704m 날아감 (5배속)"
+  },
+  {
+   "who": 0,
+   "t": 15.3,
+   "tend": 17.8,
+   "ko": "화성 하늘에서 펑!"
+  },
+  {
+   "who": 0,
+   "t": 17.8,
+   "tend": 20.4,
+   "ko": "낙하산이 쫙 펴짐"
+  },
+  {
+   "who": 0,
+   "t": 20.4,
+   "tend": 22.2,
+   "ko": "로켓 달린 크레인이.."
+  },
+  {
+   "who": 0,
+   "t": 22.2,
+   "tend": 23.9,
+   "ko": "로버를 줄에 매달아 내림"
+  },
+  {
+   "who": 0,
+   "t": 23.9,
+   "tend": 25.6,
+   "ko": "화성 착륙 성공 ㄷㄷ"
+  }
+ ],
+ "sources": [
+  {
+   "file": "moment2/chute.mp4",
+   "title": "Perseverance Rover’s Descent and Touchdown on Mars: Onboard Camera Views",
+   "file_url": "https://images-assets.nasa.gov/video/JPL-20210222-M2020f-0001-Perseverance%20Rover’s%20Descent%20and%20Touchdown%20on%20Mars/JPL-20210222-M2020f-0001-Perseverance%20Rover’s%20Descent%20and%20Touchdown%20on%20Mars~large.mp4",
+   "license": "Public domain (17 U.S.C. §105), NASA media usage guidelines",
+   "license_url": "https://www.nasa.gov/nasa-brand-center/images-and-media/",
+   "credit": "NASA",
+   "center": "JPL",
+   "date": "2021-02-22",
+   "cut_from_original_seconds": [
+    12.0,
+    32.0
+   ],
+   "nasa_id": "JPL-20210222-M2020f-0001-Perseverance Rover’s Descent and Touchdown on Mars",
+   "page": "https://images.nasa.gov/details/JPL-20210222-M2020f-0001-Perseverance%20Rover%E2%80%99s%20Descent%20and%20Touchdown%20on%20Mars",
+   "used_seconds": [
+    [
+     2.6,
+     5.1
+    ],
+    [
+     6.0,
+     8.6
+    ]
+   ]
+  },
+  {
+   "file": "moment2/crane.mp4",
+   "title": "Perseverance Rover’s Descent and Touchdown on Mars: Onboard Camera Views",
+   "file_url": "https://images-assets.nasa.gov/video/JPL-20210222-M2020f-0001-Perseverance%20Rover’s%20Descent%20and%20Touchdown%20on%20Mars/JPL-20210222-M2020f-0001-Perseverance%20Rover’s%20Descent%20and%20Touchdown%20on%20Mars~large.mp4",
+   "license": "Public domain (17 U.S.C. §105), NASA media usage guidelines",
+   "license_url": "https://www.nasa.gov/nasa-brand-center/images-and-media/",
+   "credit": "NASA",
+   "center": "JPL",
+   "date": "2021-02-22",
+   "cut_from_original_seconds": [
+    160.0,
+    185.0
+   ],
+   "nasa_id": "JPL-20210222-M2020f-0001-Perseverance Rover’s Descent and Touchdown on Mars",
+   "page": "https://images.nasa.gov/details/JPL-20210222-M2020f-0001-Perseverance%20Rover%E2%80%99s%20Descent%20and%20Touchdown%20on%20Mars",
+   "used_seconds": [
+    [
+     14.0,
+     15.8
+    ],
+    [
+     15.0,
+     16.7
+    ],
+    [
+     19.0,
+     20.7
+    ]
+   ]
+  },
+  {
+   "file": "moment2/eelsice.mp4",
+   "title": "EELS (Exobiology Extant Life Surveyor) Media Reel",
+   "file_url": "https://images-assets.nasa.gov/video/JPL-20240508-EELSf-0001-EELS%20Media%20Reel/JPL-20240508-EELSf-0001-EELS%20Media%20Reel~large.mp4",
+   "license": "Public domain (17 U.S.C. §105), NASA media usage guidelines",
+   "license_url": "https://www.nasa.gov/nasa-brand-center/images-and-media/",
+   "credit": "NASA",
+   "center": "JPL",
+   "date": "2023-05-08",
+   "cut_from_original_seconds": [
+    175.0,
+    235.0
+   ],
+   "nasa_id": "JPL-20240508-EELSf-0001-EELS Media Reel",
+   "page": "https://images.nasa.gov/details/JPL-20240508-EELSf-0001-EELS%20Media%20Reel",
+   "used_seconds": [
+    [
+     19.5,
+     21.8
+    ],
+    [
+     47.0,
+     49.8
+    ]
+   ]
+  },
+  {
+   "file": "moment2/heli.mp4",
+   "title": "NASA Ingenuity Mars Helicopter Testing Media Reel",
+   "file_url": "https://images-assets.nasa.gov/video/JPL-20220623-TECHf-0001-Mars%20Helicopter%20Testing%20Media%20Reel/JPL-20220623-TECHf-0001-Mars%20Helicopter%20Testing%20Media%20Reel~orig.mp4",
+   "license": "Public domain (17 U.S.C. §105), NASA media usage guidelines",
+   "license_url": "https://www.nasa.gov/nasa-brand-center/images-and-media/",
+   "credit": "NASA",
+   "center": "JPL",
+   "date": "2020-06-23",
+   "cut_from_original_seconds": [
+    45.0,
+    160.0
+   ],
+   "nasa_id": "JPL-20220623-TECHf-0001-Mars Helicopter Testing Media Reel",
+   "page": "https://images.nasa.gov/details/JPL-20220623-TECHf-0001-Mars%20Helicopter%20Testing%20Media%20Reel",
+   "used_seconds": [
+    [
+     6.3,
+     8.8
+    ],
+    [
+     10.0,
+     12.6
+    ]
+   ]
+  },
+  {
+   "file": "moment2/ingflight.mp4",
+   "title": "Ingenuity Mars Helicopter’s Record-Breaking Flight",
+   "file_url": "https://images-assets.nasa.gov/video/JPL-20220527-M2020f-0001-NASAs_Ingenuity_Mars_Helicopter_Captures_Video_of_Record_Flight2/JPL-20220527-M2020f-0001-NASAs_Ingenuity_Mars_Helicopter_Captures_Video_of_Record_Flight2~orig.mp4",
+   "license": "Public domain (17 U.S.C. §105), NASA media usage guidelines",
+   "license_url": "https://www.nasa.gov/nasa-brand-center/images-and-media/",
+   "credit": "NASA's Jet Propulsion Laboratory",
+   "center": "JPL",
+   "date": "2022-05-27",
+   "cut_from_original_seconds": [
+    4.5,
+    33.0
+   ],
+   "nasa_id": "JPL-20220527-M2020f-0001-NASAs_Ingenuity_Mars_Helicopter_Captures_Video_of_Record_Flight2",
+   "page": "https://images.nasa.gov/details/JPL-20220527-M2020f-0001-NASAs_Ingenuity_Mars_Helicopter_Captures_Video_of_Record_Flight2",
+   "used_seconds": [
+    [
+     0.8,
+     3.3
+    ],
+    [
+     6.5,
+     9.1
+    ]
+   ]
+  }
+ ]
+}
