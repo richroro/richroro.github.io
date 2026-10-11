@@ -8381,13 +8381,15 @@ MEDIA=$PWD/media python3 politics/prep_split.py people4 && ./render.sh people4 f
 - 형식은 people1~3·jensen1~4와 같다.
   - 본인 목소리에 위 영어·아래 한국어 자막을 단다.
   - 제목은 검정 띠에 「~하는 진짜 이유..?」 같은 질문형 두 줄이다.
-  - 이름표와 출처 칩을 넣고, 0초부터 얼굴을 크게 보여 준다.
+  - 이름표만 넣고 0초부터 얼굴을 크게 보여 준다. 사용자 규칙("쇼츠 완성본에 출처 날짜는 넣지 말고")에 따라 출처 칩·날짜 스티커·이름표의 연도는 화면에 없다. edit.json에 `"credit": ""`를 두고 `context`를 빼면 된다(템플릿 변경 없음). 출처와 날짜는 설명란에만 적는다.
   - 음악·내레이션·TTS는 없다.
 
 | id | 제목 (띠) | 인물 · 분야 | 길이 | 용량 | 해외 벤치마크 (제목, 조회수, 채널, URL) | 원본 (공식) |
 | --- | --- | --- | --- | --- | --- | --- |
-| `star1` | 세스 로건이 청문회에 / 나온 진짜 이유..? | 세스 로건 · 배우·코미디언 | 42.4초 | 20.3MB | 「Seth Rogen Opening Statement (C-SPAN)」 6,995,593회, C-SPAN, youtube.com/watch?v=UHqx3-mfHAY (그 밖에 WSJ 「Seth Rogen's Speaks to Congress About Alzheimer's」 39,528회, youtube.com/watch?v=fTmPGdL8rxs) | 미국 상원 녹화실 영상 `appropsA022614` (2014-02-26) |
-| `star2` | 닐 타이슨이 우주에 / 돈 써야 한다는 이유..? | 닐 디그래스 타이슨 · 천체물리학자 | 42.3초 | 18.7MB | 「Neil deGrasse Tyson Testifies Before Senate Science Committee, March 7, 2012」 764,465회, Space Policy and Politics, youtube.com/watch?v=rmKlA_UnX8c (그 밖에 「Dr. Neil deGrasse Tyson's remarks at Senate Commerce hearing…」 268,543회, CommerceRepublicans, youtube.com/watch?v=Xhc25v0DpJc) | 미국 상원 녹화실 영상 `commerce030712` (2012-03-07) |
+| `star1` | 세스 로건이 청문회에 / 나온 진짜 이유..? | 세스 로건 · 배우·코미디언 | 42.4초 | 20.0MB | 「Seth Rogen Opening Statement (C-SPAN)」 6,995,593회, C-SPAN, youtube.com/watch?v=UHqx3-mfHAY (그 밖에 WSJ 「Seth Rogen's Speaks to Congress About Alzheimer's」 39,528회, youtube.com/watch?v=fTmPGdL8rxs) | 미국 상원 녹화실 영상 `appropsA022614` (2014-02-26) |
+| `star2` | 닐 타이슨이 우주에 / 돈 써야 한다는 이유..? | 닐 디그래스 타이슨 · 천체물리학자 | 42.3초 | 18.4MB | 「Neil deGrasse Tyson Testifies Before Senate Science Committee, March 7, 2012」 764,465회, Space Policy and Politics, youtube.com/watch?v=rmKlA_UnX8c (그 밖에 「Dr. Neil deGrasse Tyson's remarks at Senate Commerce hearing…」 268,543회, CommerceRepublicans, youtube.com/watch?v=Xhc25v0DpJc) | 미국 상원 녹화실 영상 `commerce030712` (2012-03-07) |
+| `star3` | 펠프스가 늘 지키는 / 좌우명 딱 세 단어..? | 마이클 펠프스 · 수영 | 34.5초 | 21.3MB | 「Michael Phelps" Dream, Plan, Reach" #shorts」 25.6만회, youtube.com/shorts/NjzrlPRQTog (같은 좌우명. 벤치마크의 원본은 다른 인터뷰라서 같은 장면은 아님) | VOA 인터뷰 영상 (2018-04-19) |
+| `star4` | 브래드 피트가 우주에 / '누가 더 낫냐' 묻자..? | 브래드 피트 · 배우 | 34.5초 | 22.4MB | NASA 「Brad Pitt Speaks with NASA Astronaut Nick Hague Aboard the International Space Station」 165,431회, youtube.com/watch?v=_oVYSwmIrZk (같은 원본) | NASA 본부 생중계 영상 (2019-09-16) |
 
 - **한국 쪽 기준**: 해외 인물 50만+ 한국어 쇼츠 조사(`research/research-500k-people.csv`)의 유명인 육성 히트작과 같은 제목 틀을 썼다.
   - 「~하는 진짜 이유..?」 틀은 「머스크가 1,700조 괴물을 우주로 탈출시킨 소름 돋는 이유」(894만)의 것이다.
@@ -8452,6 +8454,38 @@ MEDIA=$PWD/media python3 politics/prep_split.py star1 && ./render.sh star1 final
   - 영상은 미국 상원 녹화실 보관 스트림이다: `https://www-senate-gov-msl3archive.akamaized.net/commerce/commerce030712_1/master.m3u8`. 위원회 페이지의 플레이어(`filename=commerce030712`)가 쓰는 파일이다.
   - 퍼블릭 도메인이다(17 U.S.C. §105).
 
+### star3: 마이클 펠프스 (VOA 인터뷰, 2018-04-19)
+
+- **원본**: VOA(미국의소리) 기자 Tina Trinh가 직접 찍은 인터뷰 「Michael Phelps Promotes Water Conservation for Earth Day」이다([voanews.com](https://www.voanews.com/a/michael-phelps-water-conservation-earth-day/4355537.html)). 기사 페이지의 VOA 다운로드 링크(1080p mp4)로 받았다. VOA 제작물은 미국 정부 저작물이라 퍼블릭 도메인이다.
+- **원래 지시였던 펠프스 하원 청문회(2017-02-28)는 쓰지 못했다.**
+  - 하원 위원회 문서 저장소(docs.house.gov, EventID 105613)에는 PDF만 있고 영상 파일이 없다.
+  - congress.gov는 Cloudflare 봇 확인 화면이 떠서 열 수 없다(우회하지 않았다).
+  - 2017년 SAMHSA 정신건강 행사 영상은 유튜브에만 있다.
+- **VOA 촬영분만 썼다.** ffmpeg 장면 검출로 샷을 나눠, VOA의 좌담 카메라 구간만 골랐다.
+  - 쓰지 않은 것: 콜게이트 광고 화면, 라이더컵 골프 사진(통신사 사진), 인스타그램 가족 영상, VOA 기자 내레이션.
+  - VOA 로고와 이름 자막은 얼굴 크롭 밖에 있다.
+  - "If you fall short, go back to the drawing board…"와 "so many people that doubted…"는 소리가 골프 사진 위에 깔려 있어서 뺐다. 그래서 끝 문장은 "I believed that I could do it"부터 시작한다.
+- **구간** (원본 초): 109.65–115.35(좌우명), 16.6–26.05(물), 3.4–7.95(샤워하며 양치), 76.4–83.62(누구나 할 수 있다), 120.1–121.8("anything is possible"), 125.66–131.05("I believed … until I got it done").
+- **녹취**: 공식 녹취록은 없다. faster-whisper medium.en으로 받아 적었다. VOA의 긴 판본 「Michael Phelps is Saving Water」(2018-05-18, [voanews.com/a/4400445.html](https://www.voanews.com/a/4400445.html))에 박힌 영어 자막과도 같은 답변을 대조했다.
+- **사실**: "올림픽 메달 28개(금 23개)"는 그 VOA 판본의 화면 자막("28 total medals, 23 gold medals")이다.
+- **주의**: 이 인터뷰는 콜게이트의 물 절약 캠페인 홍보 자리였다. 우리 편에는 상표가 나오지 않고, 홍보 문구("Did you know…" 광고, 스티커 설명)도 쓰지 않았다.
+
+### star4: 브래드 피트 × 우주비행사 닉 헤이그 (NASA 본부, 2019-09-16)
+
+- **원본**: NASA가 생중계하고 공개한 「Brad Pitt Speaks with NASA Astronaut Nick Hague on the Space Station about Artemis Program」([images.nasa.gov](https://images.nasa.gov/details/NHQ_2019_0916_Brad%20Pitt%20Speaks%20with%20NASA%20Astronaut%20Nick%20Hague%20on%20the%20Space%20Station%20about%20Artemis%20Program))의 `~orig.mp4`(1280×720, 17:44)와 NASA 자막 파일(.srt)이다.
+  - 이 편이 이 작업의 NASA 한 편이다.
+- **구성**: 질문은 맨 앞에, 답은 맨 끝에 두었다.
+  - 첫머리: 마지막 질문 "Who was more believable, Clooney or Pitt?"(원본 972.9–981.3).
+  - 그다음: 앞부분의 "let's talk about me … How was our zero G?"(48.0–59.5)와 헤이그의 "it was really good"(62.6–65.7).
+  - 끝: 헤이그가 몇 초 웃다가 하는 대답 "You were, absolutely."(981.4–989.1)와 피트의 웃음(989.2–992.4).
+  - 순서를 바꿨다는 것은 설명란에 적었다.
+- **로고**
+  - 피트 뒤의 NASA 로고와 'NASA Headquarters' 간판은 크롭 밖에 있다(얼굴 아래쪽 기준).
+  - 헤이그 셔츠의 노란 'Expedition 60' 원정대 엠블럼은 흐리게 했다(52×46px).
+  - 화면 속 ISS 모형과 피트 앞의 이름표("BRAD PITT")는 그대로다.
+- **녹취**: NASA .srt와 faster-whisper medium.en이 쓴 줄마다 같다.
+- **사실**: 피트가 우주비행사 역의 영화 개봉을 앞두고 있었다는 것은 NASA 영상 설명("Brad Pitt is playing an astronaut in his latest film")에서 가져왔다. 조지 클루니는 피트가 질문에서 직접 꺼낸 이름이다.
+
 **업로드 문구**
 
 **star1**: 세스 로건이 청문회에 나온 진짜 이유..? 🥲
@@ -8477,3 +8511,27 @@ MEDIA=$PWD/media python3 politics/prep_split.py star1 && ./render.sh star1 final
 #Shorts #닐디그래스타이슨 #NeilDeGrasseTyson #천체물리학자 #NASA #우주 #코스모스 #청문회 #미국상원 #명언 #한영자막 #영어공부 #인터뷰
 ```
 고정 댓글: 우주 탐사에 세금 1%를 쓴다면, 여러분은 찬성인가요?
+
+**star3**: 펠프스가 늘 지키는 좌우명 딱 세 단어..? 🏊
+```
+올림픽 메달 28개(금메달 23개)로 역대 가장 많은 메달을 딴 수영 선수 마이클 펠프스가 2018년 VOA(미국의소리) 인터뷰에서 자기 좌우명을 말했습니다. '꿈을 갖고, 계획을 세우고, 손을 뻗어라(Dream, plan, reach)'. 은퇴한 뒤에는 물 절약을 알리는 일을 하고 있다며, 많은 사람이 의심했지만 해낼 때까지 멈추지 않았다고 했습니다. 영어 원문과 한국어 번역 자막(인터뷰 일부를 이어 붙임, 중간 생략).
+
+▶ [채널명] 채널 구독: https://www.youtube.com/@[핸들]
+
+출처: 영상: VOA(Voice of America) 'Michael Phelps Promotes Water Conservation for Earth Day' (2018-04-19, 기자·촬영 Tina Trinh, voanews.com) · 메달 기록: VOA 'Michael Phelps is Saving Water' (2018-05-18) 화면 자막 · 영어 자막·한국어 번역 직접 제작(인터뷰 일부 생략) · VOA는 이 영상을 보증하거나 후원하지 않습니다 · 이 영상은 영상 속 인물이나 기관이 보증·후원한 것이 아닙니다
+
+#Shorts #마이클펠프스 #MichaelPhelps #펠프스 #수영 #올림픽 #금메달 #좌우명 #동기부여 #명언 #한영자막 #영어공부 #인터뷰
+```
+고정 댓글: 여러분의 좌우명은 뭔가요? 세 단어로 적어 주세요 ✍️
+
+**star4**: 브래드 피트가 우주에 '누가 더 낫냐' 묻자..? 😂
+```
+2019년 9월 16일, 우주비행사 역을 맡은 영화 개봉을 앞둔 브래드 피트가 NASA 본부에서 국제우주정거장의 우주비행사 닉 헤이그와 생중계로 대화했습니다. 처음에는 "우주정거장까지 연결됐으니 제 얘기 좀 해 보자"며 무중력 연기를 평가해 달라더니, 마지막 질문으로 조지 클루니와 자신 중 누가 더 그럴듯했냐고 물었습니다. 몇 초 뒤 돌아온 우주비행사의 대답에 피트는 크게 웃었습니다. 영어 원문과 한국어 번역 자막(대화 일부를 이어 붙임, 순서 바꿈).
+
+▶ [채널명] 채널 구독: https://www.youtube.com/@[핸들]
+
+출처: 영상: NASA 'Brad Pitt Speaks with NASA Astronaut Nick Hague on the Space Station about Artemis Program' (2019-09-16, images.nasa.gov) · 영어 자막·한국어 번역 직접 제작(NASA 자막 파일과 대조, 대화 일부 생략·순서 바꿈) · NASA는 이 영상을 보증하거나 후원하지 않습니다 · 이 영상은 영상 속 인물이나 기관이 보증·후원한 것이 아닙니다
+
+#Shorts #브래드피트 #BradPitt #조지클루니 #우주정거장 #ISS #우주비행사 #NASA #할리우드 #한영자막 #영어공부 #인터뷰
+```
+고정 댓글: 여러분이 우주비행사와 통화할 수 있다면, 첫 질문은 뭘 하실 건가요? 🚀
