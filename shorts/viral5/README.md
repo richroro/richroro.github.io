@@ -8371,3 +8371,109 @@ MEDIA=$PWD/media python3 politics/prep_split.py people4 && ./render.sh people4 f
 #Shorts #달착륙 #아폴로11호 #닐암스트롱 #NASA #우주 #역사 #Apollo11 #NeilArmstrong
 ```
 고정 댓글: 1969년 생중계, 여러분 부모님이나 조부모님도 보셨대요?
+
+
+## 유명인 명장면 쇼츠 (`politics/star1`~, 분야별 유명인 육성)
+
+사용자 요청은 이랬다: "위에 일론머스크처럼 유명인들의 주요 인상적인 인터뷰를 짤라서 쇼츠로 만들어줘. 나사 영상만 말고. 모든 분야 유명인". 그 뒤 "해외 유사한 인기 조회수 영상을 벤치마킹해서 해당 원본으로 이용해서 만들어"가 더해졌다.
+- 그래서 해외(영어권)에서 크게 퍼진 유명인 발언 영상을 찾았다. 그 영상이 잘라 온 **원본**이 미국 상원 녹화실 영상(퍼블릭 도메인)이나 CC BY 영상이면, 같은 장면을 그 원본에서 직접 받아 만들었다.
+- 벤치마크 영상의 파일·화면·소리는 쓰지 않았다. 방송사가 찍은 원본(C-SPAN, 토크쇼 등)은 아예 쓰지 않았다.
+- 형식은 people1~3·jensen1~4와 같다.
+  - 본인 목소리에 위 영어·아래 한국어 자막을 단다.
+  - 제목은 검정 띠에 「~하는 진짜 이유..?」 같은 질문형 두 줄이다.
+  - 이름표와 출처 칩을 넣고, 0초부터 얼굴을 크게 보여 준다.
+  - 음악·내레이션·TTS는 없다.
+
+| id | 제목 (띠) | 인물 · 분야 | 길이 | 용량 | 해외 벤치마크 (제목, 조회수, 채널, URL) | 원본 (공식) |
+| --- | --- | --- | --- | --- | --- | --- |
+| `star1` | 세스 로건이 청문회에 / 나온 진짜 이유..? | 세스 로건 · 배우·코미디언 | 42.4초 | 20.3MB | 「Seth Rogen Opening Statement (C-SPAN)」 6,995,593회, C-SPAN, youtube.com/watch?v=UHqx3-mfHAY (그 밖에 WSJ 「Seth Rogen's Speaks to Congress About Alzheimer's」 39,528회, youtube.com/watch?v=fTmPGdL8rxs) | 미국 상원 녹화실 영상 `appropsA022614` (2014-02-26) |
+| `star2` | 닐 타이슨이 우주에 / 돈 써야 한다는 이유..? | 닐 디그래스 타이슨 · 천체물리학자 | 42.3초 | 18.7MB | 「Neil deGrasse Tyson Testifies Before Senate Science Committee, March 7, 2012」 764,465회, Space Policy and Politics, youtube.com/watch?v=rmKlA_UnX8c (그 밖에 「Dr. Neil deGrasse Tyson's remarks at Senate Commerce hearing…」 268,543회, CommerceRepublicans, youtube.com/watch?v=Xhc25v0DpJc) | 미국 상원 녹화실 영상 `commerce030712` (2012-03-07) |
+
+- **한국 쪽 기준**: 해외 인물 50만+ 한국어 쇼츠 조사(`research/research-500k-people.csv`)의 유명인 육성 히트작과 같은 제목 틀을 썼다.
+  - 「~하는 진짜 이유..?」 틀은 「머스크가 1,700조 괴물을 우주로 탈출시킨 소름 돋는 이유」(894만)의 것이다.
+  - 할리우드 스타 미담 각도는 「할리우드 대표 미담 제조기 "키아누리브스"」(534만, youtube.com/shorts/D4bg0P0VA4c)를 따랐다.
+- 조회수는 2026-10-11에 유튜브 검색·영상 페이지의 글과 JSON만 읽어서 적었다(요청 사이 3초 이상). 영상과 소리는 유튜브에서 하나도 받지 않았다.
+
+```bash
+# 원본: 상원 ISVP의 보관 스트림에서 쓰는 구간만 잘라 media/celeb/{rogen,tyson}.mp4 로 (명령·구간은 media/celeb/rogen.json, tyson.json)
+MEDIA=$PWD/media python3 politics/prep_split.py star1 && ./render.sh star1 final/star1.mp4 && python3 qa_review.py star1
+```
+
+- **qa_review**: 두 편 모두 FAIL 0이다. 남은 WARN은 채널 이름·핸들이 아직 자리표시자라는 설명글 경고뿐이다(다른 편과 같음).
+- **템플릿 변경 없음**: 기존 `prep_split.py`의 `trim`·`vf`·`single`만 썼다. 공유 파일은 `upload/channels.json`의 `celeb` prefixes에 `"star"`만 더했다.
+- **회귀 확인**: 손대지 않은 `deep1`을 다시 렌더했다. NOAA 원본은 `media/deep2/fetch_noaa.py`로 다시 받았다. 결과가 `final/deep1.mp4`와 바이트까지 같았다(cmp 일치, md5 ed7314d3…).
+- **화질**: 상원이 2012·2014년 청문회에 내주는 화질은 640×360 하나뿐이다.
+  - 그래서 얼굴 쪽(가로 12~90%, 세로 위 86%)만 남기고, lanczos로 3배 키운 뒤 살짝 샤프닝했다.
+  - 화면 아래의 상원 자막("Appropriations Subcommittee SD-106" 등)과 이름표는 흐리게 처리했다. 확대 1.15/1.38에서는 그 띠가 거의 화면 밖으로 나간다.
+  - 물병(상표)은 잘라낸 쪽에 있다. 화면에 다른 로고는 없다. 로건의 옷깃 핀은 자선단체 배지로 작게 보인다.
+- **장면 전환**: 한 테이크를 3~5초마다 가까운 크롭과 조금 먼 크롭(1.15 ↔ 1.38)으로 바꿨다. 다른 대목으로 건너뛰는 곳은 흰 번쩍임으로 표시했다.
+
+### star1: 세스 로건 (상원 세출위원회 노동·보건복지·교육 소위원회, 2014-02-26)
+
+- **구간** (`media/celeb/rogen.mp4` = 스트림 6000초부터 400초. 클립 초 기준)
+  - 16.75–23.2: 증언 첫머리의 농담 "전문가로 불릴 기회도 주셔서, 멋지잖아요".
+  - 24.45–32.25: "'사고친 후에'(Knocked Up)를 안 보셨다니 섭섭하다".
+  - 94.3–101.5: 장모가 55세에 조기 발병 알츠하이머 진단을 받은 대목.
+  - 132.6–145.2: 35년 교사였던 장모가 예순 무렵 말하는 법·먹는 법·옷 입는 법까지 잊었다는 대목.
+  - 359.7–367.45: 마지막 "제 자선단체가 필요 없는 날을 꿈꾼다, 그러면 다시 철부지로 돌아가겠다".
+- **뺀 것**:
+  - 마리화나 농담, 'House of Cards'·도리토스 농담, 예산 통계와 위원회에 대한 요청("government whispers…").
+  - 위원장의 "knocked up" 농담 등 의원들의 말. 의원은 화면에 나오지 않는다.
+- **녹취 확인**: 공식 회의록 [S. Hrg. 113-487](https://www.govinfo.gov/content/pkg/CHRG-113shrg91479/html/CHRG-113shrg91479.htm)의 로건 구두 증언과 faster-whisper medium.en(단어 시간), tiny.en(청문회 전체)으로 맞췄다.
+  - 끝 문장은 회의록에 "being the lazy"로 적혀 있다. 소리는 두 모델 모두 "being a lazy"로 들려서, 들리는 대로 적었다.
+  - 번역은 직접 했다. "Lauren's mother"는 지금의 장모라서 "장모님"으로, "Soon after this trip"은 바로 앞 문장의 첫 인사 여행이라 "처음 인사드린 그 여행 직후"로 옮겼다.
+  - "Knocked Up"은 한국 개봉 제목 「사고친 후에」(2007)로 적었다.
+- **사실 확인**
+  - 청문회 제목·날짜·증인: 위원회 공지(2014-02-26, Panel II Seth Rogen)와 위 회의록.
+  - 'Hilarity for Charity'가 알츠하이머협회 안의 기금이라는 것: 로건 본인 증언(회의록).
+  - 오디오는 회의록과 같은 내용이다.
+- **출처와 라이선스**
+  - 영상은 미국 상원 녹화실(Senate Recording Studio)의 보관 스트림이다: `https://www-senate-gov-msl3archive.akamaized.net/appropriations/appropsA022614_1/master.m3u8`. 상원 플레이어 `senate.gov/isvp/?comm=approps&filename=appropsA022614`가 쓰는 주소다.
+  - 위원회의 2014년 웹캐스트 페이지(appropriations.senate.gov/webcast/rising-cost-alzheimers-america)에 이 파일명이 박혀 있었다. 지금 사이트에서는 그 페이지가 빠졌다. 파일명은 웹 아카이브에 남은 그 페이지의 글만 읽어 확인했다.
+  - 미국 연방정부 저작물이라 퍼블릭 도메인이다(17 U.S.C. §105). C-SPAN 화면은 쓰지 않았다.
+
+### star2: 닐 디그래스 타이슨 (상원 상무·과학·교통위원회, 2012-03-07)
+
+- **구간** (`media/celeb/tyson.mp4` = 스트림 6160초부터 760초. 클립 초 기준)
+  - 512.0–517.7: 증언 끝의 질문 "우주에는 얼마를 내시겠습니까?". 가장 센 한 줄이라 맨 앞에 뒀다.
+  - 16.5–20.15: "저는 NASA가 세워진 바로 그 주에 태어났습니다".
+  - 46.8–59.6: 생텍쥐페리 인용 "배를 만들고 싶다면 … 끝없는 바다를 그리워하게 하라".
+  - 725.45–741.15와 745.65–749.45: 넬슨 의원이 존 글렌을 '마지막 미국 영웅'이라 한 칼럼 이야기를 꺼내자 타이슨이 한 답.
+- **뺀 것**:
+  - 증언 가운데의 예산, 냉전·전쟁, 구제금융, 일자리 이야기. 정치·군사 내용이라 뺐다.
+  - 의원의 발언.
+  - 마지막 답의 "And this is an understood risk, in fact, of the history of our species".
+  - "If you want to build a ship" 앞에 생텍쥐페리를 소개하는 문장은 뺐다. 대신 한국어 자막에 "(생텍쥐페리)"를 붙였다.
+- **녹취 확인**: 공식 회의록 [S. Hrg. 112-576](https://www.govinfo.gov/content/pkg/CHRG-112shrg76351/pdf/CHRG-112shrg76351.pdf)의 구두 증언·질의응답과 단어까지 같다.
+  - 서면 증언 [PDF](https://www.commerce.senate.gov/wp-content/uploads/meetings/A2593BD3-8859-4E7D-869D-7E670A654664/Tyson%20Testimony.pdf)도 대조했다.
+  - "And from my scientific heart"는 faster-whisper medium.en, small.en, large-v3가 모두 같게 들었고, 회의록도 같다.
+- **사실 확인**: 청문회 제목·날짜·증인(2부 타이슨, 미국 자연사박물관 헤이든 천체투영관 관장)은 [위원회 페이지](https://www.commerce.senate.gov/2012/3/priorities-plans-and-progress-of-the-nation-s-space-program)에서 확인했다. "NASA가 세워진 주에 태어났다"는 본인 발언이고, 화면·설명글에도 본인 발언으로만 적었다.
+- **출처와 라이선스**
+  - 영상은 미국 상원 녹화실 보관 스트림이다: `https://www-senate-gov-msl3archive.akamaized.net/commerce/commerce030712_1/master.m3u8`. 위원회 페이지의 플레이어(`filename=commerce030712`)가 쓰는 파일이다.
+  - 퍼블릭 도메인이다(17 U.S.C. §105).
+
+**업로드 문구**
+
+**star1**: 세스 로건이 청문회에 나온 진짜 이유..? 🥲
+```
+2014년 2월 26일 미국 상원 알츠하이머 청문회에 배우 세스 로건이 증인으로 나와 "전문가로 불려서 멋지다"는 농담으로 말문을 열었습니다. 이어진 건 35년 동안 교사였던 장모님이 55세에 조기 발병 알츠하이머 진단을 받고, 예순 무렵에는 말하는 법과 먹는 법까지 잊었다는 이야기였습니다. 그는 아내와 함께 만든 자선단체 'Hilarity for Charity'가 더는 필요 없는 날을 꿈꾼다고 말했습니다. 영어 원문과 한국어 번역 자막(증언 중간 일부 생략).
+
+▶ [채널명] 채널 구독: https://www.youtube.com/@[핸들]
+
+출처: 영상: 미국 상원(U.S. Senate) 세출위원회 노동·보건복지·교육 소위원회 청문회 "Taking a Toll on Families and the Economy: The Rising Cost of Alzheimer's in America" 공식 영상 (2014-02-26, senate.gov) · 청문회 기록 S. Hrg. 113-487 · 영어 자막·한국어 번역 직접 제작(증언 중간 일부 생략) · 이 영상은 영상 속 인물이나 기관이 보증·후원한 것이 아닙니다
+
+#Shorts #세스로건 #SethRogen #알츠하이머 #치매 #청문회 #미국상원 #할리우드 #배우 #한영자막 #영어공부 #인터뷰
+```
+고정 댓글: 웃으면서 시작해서 끝은 뭉클했던 증언, 어떤 문장이 제일 남았나요?
+
+**star2**: 닐 타이슨이 우주에 돈 써야 한다는 이유..? 🚀
+```
+2012년 3월 7일 미국 상원 상무위원회의 NASA 예산 청문회에서 천체물리학자 닐 디그래스 타이슨은 "우주에는 얼마를 내시겠습니까?"라고 물었습니다. NASA가 세워진 바로 그 주에 태어났다는 그는 생텍쥐페리의 말(배를 만들고 싶다면 바다를 그리워하게 하라)로 증언을 시작했습니다. 이어진 질의에서는 큰 목표가 있으면 어느 나라든 영웅을 만들 수 있고, 성공한 사람은 영원히 기억된다고 답했습니다. 영어 원문과 한국어 번역 자막(증언과 질의응답 일부를 이어 붙임, 중간 생략).
+
+▶ [채널명] 채널 구독: https://www.youtube.com/@[핸들]
+
+출처: 영상: 미국 상원(U.S. Senate) 상무·과학·교통위원회 청문회 "Priorities, Plans, and Progress of the Nation's Space Program" 공식 영상 (2012-03-07, senate.gov) · 청문회 기록 S. Hrg. 112-576 · 영어 자막·한국어 번역 직접 제작(증언 중간 일부 생략) · 이 영상은 영상 속 인물이나 기관이 보증·후원한 것이 아닙니다
+
+#Shorts #닐디그래스타이슨 #NeilDeGrasseTyson #천체물리학자 #NASA #우주 #코스모스 #청문회 #미국상원 #명언 #한영자막 #영어공부 #인터뷰
+```
+고정 댓글: 우주 탐사에 세금 1%를 쓴다면, 여러분은 찬성인가요?
