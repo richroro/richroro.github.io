@@ -1,0 +1,232 @@
+{
+ "credit": "영상: NASA",
+ "layout": "card",
+ "card": {
+  "items": [
+   {
+    "at": 0.0,
+    "ko": "로켓 연료탱크의 둥근 뚜껑(돔)을",
+    "en": "1단계 · 용접 로봇 위로"
+   },
+   {
+    "at": 3.0,
+    "ko": "크레인으로 들어 올려 내려놓고",
+    "en": "아래에서 본 돔"
+   },
+   {
+    "at": 6.0,
+    "ko": "가장자리를 깎아 다듬고",
+    "en": "2단계 · 트리밍 · 0.6배속"
+   },
+   {
+    "at": 9.0,
+    "ko": "깎여 나온 금속 부스러기",
+    "en": "0.6배속"
+   },
+   {
+    "at": 12.0,
+    "ko": "이제 용접 로봇 차례",
+    "en": "3단계 · 로봇 용접 장치"
+   },
+   {
+    "at": 15.0,
+    "ko": "회전하는 툴이 이음매를 따라간다",
+    "en": "마찰 교반 용접 · 0.5배속"
+   },
+   {
+    "at": 18.0,
+    "ko": "같은 용접으로 만든 링은 지름 8.4m",
+    "en": "SLS 코어 스테이지 링 · 2배속"
+   },
+   {
+    "at": 21.0,
+    "ko": "완성된 돔",
+    "en": "NASA 마셜 우주비행센터"
+   },
+   {
+    "at": 24.0,
+    "ko": "올릴 때는 이랬는데",
+    "en": "처음부터 다시"
+   }
+  ],
+  "credit": "영상: NASA 마셜 우주비행센터 · 미추드 조립시설",
+  "badge": {
+   "name": "공정 도감",
+   "icon": "공",
+   "color": "#d35400"
+  },
+  "box": {
+   "height": 1000
+  },
+  "clipAudio": 0
+ },
+ "sources": {
+  "dome": {
+   "file": "dome.mp4",
+   "label": "EUS STA FWD Dome Progress - Vertical (NASA MSFC, Sam Lott and Brandon Hancock)",
+   "url": "https://images.nasa.gov/details/SLS-5321_MSFC_EUS%20STA%20FWD%20Dome%20Progress%20Vertical%20VOTY%202025%20Entry"
+  },
+  "ring": {
+   "file": "ring.mp4",
+   "label": "Production Begins on Sixth Core Stage Hardware, time-lapse (NASA MAF, Evan Deroche & Michael DeMocker)",
+   "url": "https://images.nasa.gov/details/MAF_20260814_CS6_Ring_Lift_TL"
+  }
+ },
+ "clips": [
+  {
+   "src": "dome",
+   "from": 0.0,
+   "in": 20.4,
+   "speed": 1.5,
+   "zoom": [
+    1.13,
+    1.2
+   ],
+   "focus": "50% 0%"
+  },
+  {
+   "src": "dome",
+   "from": 3.0,
+   "in": 16.0,
+   "zoom": [
+    1.13,
+    1.22
+   ],
+   "focus": "50% 100%"
+  },
+  {
+   "src": "dome",
+   "from": 6.0,
+   "in": 35.2,
+   "speed": 0.6,
+   "zoom": [
+    1.13,
+    1.22
+   ],
+   "focus": "50% 100%"
+  },
+  {
+   "src": "dome",
+   "from": 9.0,
+   "in": 33.0,
+   "zoom": [
+    1.13,
+    1.2
+   ],
+   "focus": "50% 100%",
+   "speed": 0.6
+  },
+  {
+   "src": "dome",
+   "from": 12.0,
+   "in": 29.6,
+   "zoom": [
+    1.3,
+    1.36
+   ],
+   "focus": "50% 0%",
+   "speed": 1.0
+  },
+  {
+   "src": "dome",
+   "from": 15.0,
+   "in": 40.0,
+   "speed": 0.5,
+   "zoom": [
+    1.13,
+    1.25
+   ],
+   "focus": "50% 100%"
+  },
+  {
+   "src": "ring",
+   "from": 18.0,
+   "in": 9.4,
+   "speed": 2.0,
+   "zoom": [
+    1.0,
+    1.06
+   ],
+   "focus": "50% 50%"
+  },
+  {
+   "src": "dome",
+   "from": 21.0,
+   "in": 43.6,
+   "speed": 0.6,
+   "zoom": [
+    1.13,
+    1.2
+   ],
+   "focus": "50% 100%"
+  },
+  {
+   "src": "dome",
+   "from": 24.0,
+   "in": 19.6,
+   "speed": 1.2,
+   "zoom": [
+    1.13,
+    1.18
+   ],
+   "focus": "50% 0%"
+  }
+ ],
+ "music": {
+  "file": "music/Hackbeat.mp3",
+  "gain": 0.5,
+  "start": 30.0
+ },
+ "sfx": [
+  [
+   0.0,
+   "grind",
+   0.25
+  ],
+  [
+   2.6,
+   "clunk",
+   0.5
+  ],
+  [
+   6.0,
+   "grind",
+   0.35
+  ],
+  [
+   9.0,
+   "grind",
+   0.4
+  ],
+  [
+   12.0,
+   "grind",
+   0.35
+  ],
+  [
+   15.0,
+   "grind",
+   0.4
+  ],
+  [
+   18.0,
+   "whoosh",
+   0.35
+  ],
+  [
+   21.0,
+   "clunk",
+   0.45
+  ],
+  [
+   21.0,
+   "pop_hi",
+   0.35
+  ],
+  [
+   24.0,
+   "grind",
+   0.25
+  ]
+ ]
+}
