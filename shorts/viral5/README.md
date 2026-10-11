@@ -8484,6 +8484,7 @@ MEDIA=$PWD/media python3 politics/prep_split.py legend2 && ./render.sh legend2 f
 ```
 
 - **qa_review**: 두 편 모두 FAIL 0이다. WARN은 채널 이름·핸들이 아직 자리표시자라는 것뿐이다(설명글 spec 포함). 처음 렌더에서 나온 WARN은 고쳤다: legend1 첫 장면 3.6초(첫 구간 3.3초로), 영어 자막 82자·77자(두 줄로 나눔).
+- **화면에 출처·날짜 없음**(사용자 규칙 "쇼츠 완성본에 출처 날짜는 넣지 말고"): 오른쪽 위 출처 칩을 없앴고(`"credit": ""`), 이름표와 첫 스티커에서 연도·날짜를 뺐다. 출처·날짜·NARA 번호는 설명란과 이 README에만 둔다.
 - **템플릿 변경 없음**: `prep_split.py`의 `trim`·`vf`·`single`·`stickers`만 썼다. 공유 파일은 `upload/channels.json`의 `celeb` prefixes에 `"legend"`만 더했다. 손대지 않은 `deep1`을 다시 렌더해 `final/deep1.mp4`와 바이트까지 같은 것을 확인했다(md5 ed7314d3…).
 - **로고**: legend1은 NARA가 화면 아래에 박은 타임코드와 기자들 마이크(방송국 이름표가 있을 수 있음)를 잘라 냈다(중간 샷은 아래 20% 자름, 클로즈업은 타임코드 자리만 흐리게). legend2는 기자석 이름표와 'JOHN F. KENNEDY SPACE CENTER' 패널 화면을 쓰지 않았고, 콜린스 셔츠에는 로고가 없다. 원본 픽셀 비율(10:11)은 `scale=656:480,setsar=1`로 바로잡았다.
 
