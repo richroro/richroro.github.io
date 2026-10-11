@@ -8535,3 +8535,22 @@ MEDIA=$PWD/media python3 politics/prep_split.py star1 && ./render.sh star1 final
 #Shorts #브래드피트 #BradPitt #조지클루니 #우주정거장 #ISS #우주비행사 #NASA #할리우드 #한영자막 #영어공부 #인터뷰
 ```
 고정 댓글: 여러분이 우주비행사와 통화할 수 있다면, 첫 질문은 뭘 하실 건가요? 🚀
+
+### people1~people4 다시 렌더 (화면에서 출처·날짜 빼기)
+
+사용자 규칙 "쇼츠 완성본에 출처 날짜는 넣지 말고"에 따라 people1~4의 화면 표시를 바꿨다. 출처와 날짜는 설명란에 그대로 있다.
+- 바꾼 것:
+  - 출처 칩을 뺐다(`"credit": ""`).
+  - 이름표의 연도를 뺐다("(2020)", "(1969)").
+  - 시작 스티커의 날짜를 뺐다.
+    - people1: "첫 유인 우주선 발사 직후".
+    - people3: "첫 유인 우주선 발사 직후".
+    - people4: "아폴로 11호 달 착륙".
+    - people2는 원래 날짜 없는 "기자: '발사 직전 기분이 어땠나요?'"라 그대로 두었다.
+- 원본 클립은 `media/celeb/demo2.json`·`media/apollo/people4.json`의 명령대로 NASA에서 다시 받았다.
+- 결과
+  - people1 39.3초 23.9MB.
+  - people2 31.5초 19.3MB.
+  - people3 34.5초 21.8MB.
+  - people4 40.7초 14.6MB(음악 없는 판 13.9MB).
+  - 네 편 모두 qa_review FAIL 0, WARN 0이다.
