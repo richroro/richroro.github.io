@@ -32,7 +32,7 @@ edit = {"credit": spec["credit"], "layout": "card", "card": card, "sources": spe
 os.makedirs(f"{HERE}/shorts/{sid}", exist_ok=True); os.makedirs(f"{HERE}/build/{sid}", exist_ok=True)
 json.dump(edit, open(f"{HERE}/shorts/{sid}/edit.json", "w"), ensure_ascii=False, indent=1)
 json.dump({"title": spec["title"], "voices": {}, "tail": end, "lines": [],
-           "note": "voiceless white-card animal story (src/lib/Card.tsx, one clip, story captions); built from media/%s/wild.json by media/wild/make_wild.py" % sid},
+           "note": spec.get("note", "voiceless white-card animal story (src/lib/Card.tsx, one clip, story captions)") + "; built from media/%s/wild.json by media/wild/make_wild.py" % sid},
           open(f"{HERE}/shorts/{sid}/script.json", "w"), ensure_ascii=False, indent=1)
 json.dump({"lines": [], "end": end}, open(f"{HERE}/build/{sid}/timeline.json", "w"))
 print(f"{sid}: {len(items)} beats, {end}s")

@@ -1,0 +1,209 @@
+{
+ "credit": "영상: NOAA Ocean Exploration (멕시코만 2014)",
+ "layout": "card",
+ "card": {
+  "items": [
+   {
+    "at": 0.0,
+    "ko": "바닷속 1,900m의 이상한 덩어리",
+    "en": "멕시코만",
+    "tag": "2014년 4월"
+   },
+   {
+    "at": 3.0,
+    "ko": "음파 탐지기에 잡힌 큰 덩어리",
+    "en": "난파선인 줄 알고 잠수정 출동"
+   },
+   {
+    "at": 6.0,
+    "ko": "불빛에 드러난 모습",
+    "en": "NOAA 무인 잠수정 딥 디스커버러"
+   },
+   {
+    "at": 9.0,
+    "ko": "근데 이상한 건..",
+    "en": "사람이 만든 게 아니다"
+   },
+   {
+    "at": 12.0,
+    "ko": "꽃잎처럼 벌어진 판들"
+   },
+   {
+    "at": 15.0,
+    "ko": "겹겹이 쌓인 결",
+    "en": "휘어진 층"
+   },
+   {
+    "at": 18.0,
+    "ko": "정체는 '아스팔트'",
+    "en": "땅속에서 밀려 나와 굳었다"
+   },
+   {
+    "at": 21.2,
+    "ko": "그 위엔 생물들이 산다",
+    "en": "말미잘·산호·새우까지"
+   },
+   {
+    "at": 24.2,
+    "ko": "이름하여 '타르 백합'",
+    "en": "tar lily"
+   }
+  ],
+  "credit": "영상: NOAA Ocean Exploration (멕시코만 2014)",
+  "badge": {
+   "name": "오늘의 궁금증",
+   "icon": "?",
+   "color": "#e8590c"
+  },
+  "box": {
+   "height": 1000
+  },
+  "clipAudio": 0
+ },
+ "sources": {
+  "tar": {
+   "file": "tar.mp4",
+   "label": "Tar Lilies (NOAA Ocean Exploration, Exploration of the Gulf of Mexico 2014)",
+   "url": "https://oceanexplorer.noaa.gov/multimedia/video-playlist-ex1402-tar-lilies/"
+  }
+ },
+ "clips": [
+  {
+   "src": "tar",
+   "from": 0.0,
+   "in": 60.0,
+   "zoom": [
+    1.0,
+    1.08
+   ],
+   "focus": "50% 50%"
+  },
+  {
+   "src": "tar",
+   "from": 3.0,
+   "in": 20.0,
+   "zoom": [
+    1.0,
+    1.06
+   ],
+   "focus": "50% 50%"
+  },
+  {
+   "src": "tar",
+   "from": 6.0,
+   "in": 84.0,
+   "zoom": [
+    1.0,
+    1.06
+   ],
+   "focus": "50% 50%"
+  },
+  {
+   "src": "tar",
+   "from": 9.0,
+   "in": 44.0,
+   "zoom": [
+    1.0,
+    1.06
+   ],
+   "focus": "50% 50%"
+  },
+  {
+   "src": "tar",
+   "from": 12.0,
+   "in": 100.0,
+   "zoom": [
+    1.0,
+    1.06
+   ],
+   "focus": "50% 50%"
+  },
+  {
+   "src": "tar",
+   "from": 15.0,
+   "in": 108.0,
+   "zoom": [
+    1.0,
+    1.06
+   ],
+   "focus": "50% 50%"
+  },
+  {
+   "src": "tar",
+   "from": 18.0,
+   "in": 236.0,
+   "zoom": [
+    1.0,
+    1.06
+   ],
+   "focus": "50% 50%"
+  },
+  {
+   "src": "tar",
+   "from": 21.2,
+   "in": 200.0,
+   "zoom": [
+    1.0,
+    1.06
+   ],
+   "focus": "50% 50%"
+  },
+  {
+   "src": "tar",
+   "from": 24.2,
+   "in": 61.0,
+   "zoom": [
+    1.0,
+    1.08
+   ],
+   "focus": "50% 50%"
+  }
+ ],
+ "music": {
+  "file": "music/Investigations.mp3",
+  "gain": 0.5,
+  "start": 0.3
+ },
+ "sfx": [
+  [
+   3.0,
+   "pop",
+   0.3
+  ],
+  [
+   6.0,
+   "bubble",
+   0.3
+  ],
+  [
+   9.0,
+   "pop",
+   0.3
+  ],
+  [
+   12.0,
+   "pop",
+   0.3
+  ],
+  [
+   15.0,
+   "pop",
+   0.3
+  ],
+  [
+   18.0,
+   "pop_hi",
+   0.4
+  ],
+  [
+   21.2,
+   "pop",
+   0.3
+  ],
+  [
+   24.2,
+   "pop",
+   0.3
+  ]
+ ]
+}
