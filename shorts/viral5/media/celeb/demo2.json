@@ -1,0 +1,20 @@
+{
+ "id": "people1, people2, people3",
+ "event": "NASA SpaceX Demo-2 post-launch news conference, Kennedy Space Center, 2020-05-30",
+ "title": "After the Launch: NASA and SpaceX Share Updates about Historic #LaunchAmerica Mission",
+ "nasa_id": "NASA’s SpaceX Demonstration Mission 2 Postlaunch News Conference",
+ "source_page": "https://images.nasa.gov/details/NASA’s SpaceX Demonstration Mission 2 Postlaunch News Conference",
+ "file_url": "https://images-assets.nasa.gov/video/NASA%E2%80%99s%20SpaceX%20Demonstration%20Mission%202%20Postlaunch%20News%20Conference/NASA%E2%80%99s%20SpaceX%20Demonstration%20Mission%202%20Postlaunch%20News%20Conference~orig.mp4 (1280x720, 56:18)",
+ "clips": {
+  "demo2_a.mp4": "orig from 235 s, 100 s (Musk opening remarks)",
+  "demo2_b.mp4": "orig from 1105 s, 80 s (Q: how did you feel before liftoff)",
+  "demo2_c.mp4": "orig from 1212 s, 66 s (smooth-ride question; not used)",
+  "demo2_d.mp4": "orig from 1325 s, 115 s (Q: impact on SpaceX; 'overcome by emotion', Mars, '18 years')",
+  "demo2_e.mp4": "orig from 1565 s, 80 s (Q: keeping the team on human spaceflight)"
+ },
+ "cut": "ffmpeg -ss <from> -i <file_url> -t <len> -c:v libx264 -crf 16 -preset fast -c:a aac -b:a 192k demo2_<x>.mp4",
+ "speakers": ["Elon Musk, founder and chief engineer, SpaceX (lower third: 'Chief Engineer, SpaceX')"],
+ "credit": "NASA",
+ "license": "NASA-produced video; U.S. federal government work, public domain (17 U.S.C. §105). NASA media guidelines: no NASA insignia used as branding, no implied endorsement.",
+ "transcript": "faster-whisper medium.en per clip (and small.en over the whole conference); no official transcript"
+}

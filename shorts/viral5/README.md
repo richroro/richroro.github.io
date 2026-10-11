@@ -7947,3 +7947,105 @@ NASA 마셜 우주비행센터에서 차세대 로켓 상단(EUS) 연료탱크�
 #Shorts #물범 #바다표범 #하와이몽크물범 #구조 #동물구조 #동물 #야생동물 #감동 #하와이 #동물이야기 #NOAA
 ```
 고정 댓글: 다시는 바늘 삼키지 말고 건강하게 살자… 🦭
+
+
+## 쇼츠 50만+: 해외 인물 (`politics/people1`~`people3`, 일론 머스크 육성)
+
+사용자 요청 "해외 인물인 조회수 높은 것을 활용해서"에 맞춰 만들었다. 해외 인물을 다룬 50만+ 한국어 쇼츠를 조사했다(`research/research-500k-people.md`, `.csv`). 결과를 요약하면 이렇다.
+
+- 작은 채널이 반복해서 터뜨리는 형식은 할리우드 스타 모먼트(19%), 해외 스타 한국 방문(22%), 스포츠 클립(18%)이다. 셋 다 방송·영화·경기 화면이라 우리가 쓸 수 없다.
+- 인물 본인 목소리를 합법적으로 쓸 수 있는 형식은 CEO 육성 + 영한 자막뿐이다. 적중률은 3.3%로 낮지만, 영상 하나의 천장은 높다(「울컥한 일론머스크의 한마디」 241만, 구독 0.22만 채널).
+- 해외 인물 50만+에서 가장 많이 나온 인물이 일론 머스크(17편)였다.
+- 그래서 NASA가 직접 찍은 머스크 기자회견 영상으로, 히트작과 같은 인물·각도·제목 틀의 3편을 만들었다. 유명인 인터뷰 채널(ceo·jensen)과 같은 틀이다: 본인 목소리, 위 영어·아래 한국어 자막, 검정 띠 질문형 제목, 음악·내레이션·TTS 없음.
+
+| id | 제목 (띠) | 길이 | 용량 | 기준 히트작 (조회수, 채널, URL) |
+| --- | --- | --- | --- | --- |
+| `people1` | 머스크가 18년 만에 / 울컥하며 한 말..? | 39.3초 | 23.9MB | 「울컥한 일론머스크의 한마디」 241만, 탕비실 김대리(0.22만), youtube.com/shorts/mGIx8WviJ9U |
+| `people2` | 발사 직전 긴장했냐 묻자 / 머스크의 대답..? | 31.5초 | 19.2MB | 「자폐 성향 아들의 질문에 일론 머스크가 한 대답」 193만, 슬기로운 부자생활(0.79만), youtube.com/shorts/NcuRfgKWFcY |
+| `people3` | 머스크가 화성에 / 집착하는 진짜 이유..? | 34.5초 | 21.8MB | 「머스크가 1,700조 괴물을 우주로 탈출시킨 소름 돋는 이유」 894만, 머스크의 모든 것(6.97만), youtube.com/shorts/dA2QpHqmUdA |
+
+```bash
+# 원본: NASA 원본 mp4(1280x720)에서 쓰는 구간만 잘라 media/celeb/demo2_{a,b,d,e}.mp4 로 (명령과 구간은 media/celeb/demo2.json)
+MEDIA=$PWD/media python3 politics/prep_split.py people1
+./render.sh people1 final/people1.mp4
+python3 qa_review.py people1
+```
+
+- **qa_review**: 세 편 모두 FAIL 0, WARN 0이다(설명글 spec을 넣은 뒤). 처음 렌더에서 나온 WARN·FAIL은 고쳤다.
+  - people1·people2의 첫 장면 WARN(3.9초): 첫 구간을 3.2~3.4초로 줄였다.
+  - people3의 첫 장면 FAIL(5.3초): 첫 구간을 둘로 나눴다.
+  - people3의 영어 자막 WARN(72자): 그 줄을 둘로 나눴다.
+- **템플릿 변경 없음**: 기존 `prep_split.py`의 `trim`·`vf`·`single`만 썼다. 공유 파일은 `upload/channels.json`의 `celeb` prefixes에 `"people"`만 더했다. 다른 시리즈의 `deep1`을 다시 렌더링해 `final/deep1.mp4`와 바이트까지 같은 것을 확인했다(md5 ed7314d3…).
+- **로고 처리**: 머스크 티셔츠에는 NASA·SpaceX 글자가 있는 Demo-2 임무 패치가 있고, 뒤 배경에는 NASA 로고가 흐리게 있다.
+  - 원본을 위 56%(얼굴과 옷깃)만 남기고 잘랐다(`trim`).
+  - 그 아래쪽 띠(옷깃, 배경 로고의 위끝)는 흐리게 처리했다(`vf` boxblur).
+  - 무대 전경 화면(NASA 로고, 'LAUNCH AMERICA' 화면)과 화면 아래 이름표는 쓰지 않았다.
+  - 얼굴 위치는 구간마다 얼굴 검출로 확인했다(얼굴 아래끝은 원본 높이의 0.39~0.47).
+- **장면 전환**: 한 테이크를 3~4.5초마다 가까운 크롭과 조금 먼 크롭(줌 1.0 ↔ 1.2)으로 번갈아 바꿨다. 시간이 이어지므로 흰 번쩍임이 없다. 다른 답변으로 넘어가는 곳만 흰 번쩍임으로 표시했다.
+- **자막**: 공식 녹취록이 없어서 faster-whisper medium.en(구간별, 단어 시간)과 small.en(회견 전체)으로 맞췄다. 쓴 문장은 두 모델의 결과를 대조해 같은 것을 확인했다(다른 곳: small.en은 people1 첫 문장을 "Mean I'm really quite overcome with emotion in this day"로 들었다. 화면에는 medium.en의 "So … on this day"를 썼다). 번역은 직접 했다.
+  - "railed at 100%"는 두 모델 모두 "railed"로 들었다(뜻은 "꽉 찼다").
+  - people2의 "수요일 첫 카운트다운(날씨로 취소)"에서 괄호 안은 우리가 덧붙인 사실이다(아래 사실 확인).
+
+**편별 구간** (각 클립 기준 초. 원본 시각 = 클립 시작 + 구간)
+- `people1`: demo2_a 49.05–65.0 (원본 약 4:44–5:00, 개회 발언) + demo2_d 19.1–30.9 (원본 약 22:24–22:36, UPI 기자 질문에 대한 답) + demo2_d 88.0–98.9 (원본 약 23:33–23:44).
+  - 뺀 것: 개회 발언 앞부분의 감사 인사와 "도킹 전이고 무사히 데려와야 한다"는 부분, 둘째 답변 중간의 화성 설명(people3에 일부)과 NASA 칭찬.
+  - 끝 문장 "that's seeming increasingly real"의 "that"은 바로 앞에서 말한 목표(다행성 생명, 화성 문명)다. 그래서 "그 목표가"로 옮겼다.
+- `people2`: demo2_b 33.1–64.0 (원본 약 18:58–19:29).
+  - 기자 질문(셧웰 사장이 긴장했다는데 당신은 어땠나)은 무대 전경 화면에서 나와서 쓰지 않았다. 대신 첫 3초 스티커 "기자: '발사 직전 기분이 어땠나요?'"로 알렸다.
+  - "I didn't feel nervous," 뒤의 "it felt like it was going to work"는 화면이 전경으로 바뀌어서 뺐다.
+- `people3`: demo2_e 8.6–13.9, 24.6–51.95, 68.3–69.5 (원본 약 26:14–26:20, 26:30–26:57, 27:13–27:15).
+  - 뺀 것: "like I said, to create the technologies…"(앞 문장과 같은 말), "I call upon the public to support this goal…"(대중에 대한 호소).
+  - 제목의 "화성"은 같은 회견의 다른 답(demo2_d 32.7–40, "a journey towards civilization on Mars")에 나온 말이다. 이 편의 답은 "다행성 생명" 이야기라서, 설명글에 그렇게 밝혔다.
+
+**출처와 라이선스**
+- 영상: NASA, "After the Launch: NASA and SpaceX Share Updates about Historic #LaunchAmerica Mission"(NASA id `NASA’s SpaceX Demonstration Mission 2 Postlaunch News Conference`, 2020-05-30, 56:18, 1280×720). [images.nasa.gov](https://images.nasa.gov/details/NASA%E2%80%99s%20SpaceX%20Demonstration%20Mission%202%20Postlaunch%20News%20Conference)에서 `~orig.mp4`를 그 페이지의 자산 목록 그대로 받았다.
+  - NASA 케네디 우주센터 공보팀이 제작한 기자회견 영상이다. 미국 연방정부 저작물이라 퍼블릭 도메인이다(17 U.S.C. §105).
+  - NASA 이미지 사용 지침에 따라 NASA 로고를 쓰지 않았다. 설명란에 "NASA는 이 영상을 보증하거나 후원하지 않습니다"와 인물·기관 비보증 문구를 넣었다.
+- 유튜브, 방송사(C-SPAN 등), 미러에서 받은 것은 없다. 벤치마크 영상의 화면과 소리도 쓰지 않았다.
+- 구간 기록: `media/celeb/demo2.json`.
+
+**사실 확인**
+- 발사: 2020년 5월 30일 오후 3시 22분(미 동부), 케네디 우주센터 39A 발사대에서 NASA 우주비행사 로버트 벤켄과 더글러스 헐리가 탄 크루 드래건이 올라갔다(NASA 영상 메타데이터 설명).
+- 미국 땅에서 유인 발사가 9년 만이라는 것: 마지막 우주왕복선 발사가 2011년 7월이다. 머스크도 회견에서 "after almost a decade"라고 말한다.
+- 수요일(5월 27일) 첫 시도가 날씨로 취소된 것: NASA 사진 NHQ202005270045 설명 "after the launch was scrubbed due to weather, Wednesday, May 27, 2020".
+- "18년": 머스크 본인 발언이다(스페이스X는 2002년 설립).
+- 직함: 회견 화면 이름표는 "Chief Engineer, SpaceX"다. 머스크는 당시 스페이스X 창업자·CEO·수석 엔지니어였고, 화면에는 "스페이스X CEO"로 적었다.
+- 정치 관련 질문(대통령과의 통화, 시위)에 대한 답은 쓰지 않았다.
+
+**업로드 문구**
+
+**people1**: 머스크가 18년 만에 울컥하며 한 말..? ㄷㄷ
+```
+2020년 5월 30일, 스페이스X 크루 드래건이 NASA 우주비행사 두 명을 태우고 미국 땅에서 9년 만에 유인 발사에 성공한 직후 열린 NASA 기자회견입니다. 일론 머스크는 "18년을 이 목표 하나 보고 달려왔다"며 감정이 북받쳐 말을 잇기 어렵다고 했습니다. 영어 원문과 한국어 번역 자막(같은 회견의 두 답변을 이어 붙임).
+
+▶ [채널명] 채널 구독: https://www.youtube.com/@[핸들]
+
+출처: 영상: NASA 'After the Launch: NASA and SpaceX Share Updates about Historic #LaunchAmerica Mission' (2020-05-30, images.nasa.gov) · 영어 자막·한국어 번역 직접 제작 · NASA는 이 영상을 보증하거나 후원하지 않습니다 · 이 영상은 영상 속 인물이나 기관이 보증·후원한 것이 아닙니다
+
+#Shorts #일론머스크 #머스크 #스페이스X #SpaceX #ElonMusk #크루드래건 #NASA #우주 #한영자막 #영어공부 #인터뷰
+```
+고정 댓글: 18년 걸려 꿈을 이룬다면, 여러분은 어떤 말이 나올 것 같나요?
+
+**people2**: 발사 직전 긴장했냐 묻자 머스크의 대답..?
+```
+첫 유인 발사 직후인 2020년 5월 30일 NASA 기자회견에서 한 기자가 일론 머스크에게 발사 직전 기분을 물었습니다. 사흘 전 첫 카운트다운이 날씨 때문에 취소됐을 때는 아드레날린이 100%에서 0%로 떨어져 1년 만에 가장 오래 잤다는 것. 그런데 정작 발사 당일에는 긴장이 안 됐다고 답했습니다. 영어 원문과 한국어 번역 자막.
+
+▶ [채널명] 채널 구독: https://www.youtube.com/@[핸들]
+
+출처: 영상: NASA 'After the Launch: NASA and SpaceX Share Updates about Historic #LaunchAmerica Mission' (2020-05-30, images.nasa.gov) · 영어 자막·한국어 번역 직접 제작 · NASA는 이 영상을 보증하거나 후원하지 않습니다 · 이 영상은 영상 속 인물이나 기관이 보증·후원한 것이 아닙니다
+
+#Shorts #일론머스크 #머스크 #스페이스X #SpaceX #ElonMusk #NASA #우주 #한영자막 #영어공부 #인터뷰
+```
+고정 댓글: 중요한 날 직전, 여러분은 긴장하는 편인가요?
+
+**people3**: 머스크가 화성에 집착하는 진짜 이유..?
+```
+2020년 5월 30일 첫 유인 발사 직후 NASA 기자회견에서 일론 머스크가 스페이스X를 만든 이유를 직접 말했습니다. 생명이 여러 행성에서 살 수 있게 하는 것, 지구의 동물과 식물까지 다른 행성으로 데려가는 것이 목표라는 것. 같은 회견에서 그는 이번 발사를 "화성 문명으로 가는 첫걸음"이라고 불렀습니다. 영어 원문과 한국어 번역 자막(답변 중간 일부 생략).
+
+▶ [채널명] 채널 구독: https://www.youtube.com/@[핸들]
+
+출처: 영상: NASA 'After the Launch: NASA and SpaceX Share Updates about Historic #LaunchAmerica Mission' (2020-05-30, images.nasa.gov) · 영어 자막·한국어 번역 직접 제작 · NASA는 이 영상을 보증하거나 후원하지 않습니다 · 이 영상은 영상 속 인물이나 기관이 보증·후원한 것이 아닙니다
+
+#Shorts #일론머스크 #머스크 #화성 #스페이스X #SpaceX #ElonMusk #NASA #우주 #한영자막 #영어공부
+```
+고정 댓글: 화성에 갈 수 있다면, 여러분은 가실 건가요?
