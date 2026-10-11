@@ -10,6 +10,7 @@ import { fitText } from "@remotion/layout-utils";
 import type { Clip, ShortData } from "../ClipShort";
 import { BODY } from "./fonts";
 import { eOut, prog } from "./fx";
+import { MORE_DOODLES } from "./CardDoodles";
 
 const FPS = 30;
 const fr = (s: number) => Math.round(s * FPS);
@@ -19,7 +20,7 @@ export const CARD_BOX = { left: 40, top: 430, width: 1000, height: 750, radius: 
 
 /** `ring`: a red circle drawn round something small in the picture (x, y, r as fractions of the picture box),
  *  e.g. the Earth in the Pale Blue Dot; it draws itself 0.4 s after the item starts */
-export type CardItem = { at: number; ko: string; en?: string; doodle?: "seapig" | "chicken"; ring?: { x: number; y: number; r: number } };
+export type CardItem = { at: number; ko: string; en?: string; doodle?: "seapig" | "chicken" | keyof typeof MORE_DOODLES; ring?: { x: number; y: number; r: number } };
 export type CardOpts = {
   /** the small channel mark over the title (a round icon and a name), as the benchmark pages have; the series name
    *  lives in edit.json so the real channel name can be swapped in later. `icon` is one or two characters (default:
@@ -33,12 +34,12 @@ export type CardOpts = {
 const isImg = (f: string | null) => !!f && /\.(jpe?g|png|webp)$/i.test(f);
 
 /** deterministic noise in -1..1, so the doodle's line "boils" the same way on every render */
-const rnd = (a: number, b: number) => {
+export const rnd = (a: number, b: number) => {
   const x = Math.sin(a * 127.1 + b * 311.7) * 43758.5453;
   return (x - Math.floor(x)) * 2 - 1;
 };
 /** a closed wobbly outline through an ellipse-ish set of points */
-const blob = (cx: number, cy: number, rx: number, ry: number, seed: number, n = 18, amp = 0.05) => {
+export const blob = (cx: number, cy: number, rx: number, ry: number, seed: number, n = 18, amp = 0.05) => {
   const p = Array.from({ length: n }, (_, k) => {
     const a = (k / n) * Math.PI * 2, r = 1 + amp * rnd(seed, k);
     return [cx + Math.cos(a) * rx * r, cy + Math.sin(a) * ry * r] as [number, number];
@@ -51,7 +52,7 @@ const blob = (cx: number, cy: number, rx: number, ry: number, seed: number, n = 
   }
   return d + " Z";
 };
-const line = (pts: [number, number][], seed: number, j = 3) =>
+export const line = (pts: [number, number][], seed: number, j = 3) =>
   pts.map(([x, y], k) => `${k ? "L" : "M"}${(x + j * rnd(seed, k)).toFixed(1)} ${(y + j * rnd(seed + 7, k)).toFixed(1)}`).join(" ");
 
 /** a marker doodle of a sea pig (our own drawing): a pink sausage body, stubby tube feet underneath, two pairs of
@@ -158,7 +159,7 @@ export const CardShort: React.FC<{ d: ShortData & { card?: CardOpts } }> = ({ d 
         {o.items.map((it, i) => {
           if (!it.doodle) return null;
           const next = o.items[i + 1]?.at ?? d.end;
-          return t >= it.at && t < next ? <AbsoluteFill key={i}>{it.doodle === "chicken" ? <ChickenDoodle f={f} /> : <SeaPigDoodle f={f} />}</AbsoluteFill> : null;
+          return t >= it.at && t < next ? <AbsoluteFill key={i}>{it.doodle in MORE_DOODLES ? React.createElement(MORE_DOODLES[it.doodle as keyof typeof MORE_DOODLES], { f }) : it.doodle === "chicken" ? <ChickenDoodle f={f} /> : <SeaPigDoodle f={f} />}</AbsoluteFill> : null;
         })}
         {item?.ring ? (
           <svg width={B.width} height={B.height} style={{ position: "absolute", left: 0, top: 0 }}>
