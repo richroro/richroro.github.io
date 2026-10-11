@@ -17,10 +17,14 @@ const INK = "#111";
 /** the picture: 1000 x 750 (4:3), rounded; qa_review's picture crop (y 400..1480) holds it and the label */
 export const CARD_BOX = { left: 40, top: 430, width: 1000, height: 750, radius: 34 };
 
-export type CardItem = { at: number; ko: string; en?: string; doodle?: "seapig" | "chicken" };
+/** `ring`: a red circle drawn round something small in the picture (x, y, r as fractions of the picture box),
+ *  e.g. the Earth in the Pale Blue Dot; it draws itself 0.4 s after the item starts */
+export type CardItem = { at: number; ko: string; en?: string; doodle?: "seapig" | "chicken"; ring?: { x: number; y: number; r: number } };
 export type CardOpts = {
-  /** the page title, one or two lines (from the script's title) is drawn here; `badge` is a small channel mark over it */
-  badge?: string;
+  /** the small channel mark over the title (a round icon and a name), as the benchmark pages have; the series name
+   *  lives in edit.json so the real channel name can be swapped in later. `icon` is one or two characters (default:
+   *  the name's first), `color` the icon's background */
+  badge?: { name: string; icon?: string; color?: string };
   items: CardItem[];
   /** the small grey credit at the bottom of the page */
   credit?: string;
@@ -133,9 +137,11 @@ export const CardShort: React.FC<{ d: ShortData & { card?: CardOpts } }> = ({ d 
   return (
     <AbsoluteFill style={{ background: "#fff" }}>
       {o.badge ? (
-        <div style={{ position: "absolute", left: 60, top: 130, display: "flex", alignItems: "center", gap: 16, fontFamily: BODY, fontWeight: 800, fontSize: 30, color: "#333" }}>
-          <div style={{ width: 54, height: 54, borderRadius: 27, background: "#1d4e89", color: "#fff", fontSize: 30, display: "flex", alignItems: "center", justifyContent: "center" }}>🐙</div>
-          {o.badge}
+        <div style={{ position: "absolute", left: 70, top: 120, display: "flex", alignItems: "center", gap: 16, fontFamily: BODY, fontWeight: 800, fontSize: 32, color: "#222" }}>
+          <div style={{ width: 60, height: 60, borderRadius: 30, background: o.badge.color ?? "#1d4e89", color: "#fff", fontSize: 30, display: "flex", alignItems: "center", justifyContent: "center" }}>
+            {o.badge.icon ?? o.badge.name.slice(0, 1)}
+          </div>
+          {o.badge.name}
         </div>
       ) : null}
       <div style={{ position: "absolute", left: 0, right: 0, top: 220, height: 190, display: "flex", flexDirection: "column", justifyContent: "flex-end", alignItems: "center" }}>
@@ -154,6 +160,13 @@ export const CardShort: React.FC<{ d: ShortData & { card?: CardOpts } }> = ({ d 
           const next = o.items[i + 1]?.at ?? d.end;
           return t >= it.at && t < next ? <AbsoluteFill key={i}>{it.doodle === "chicken" ? <ChickenDoodle f={f} /> : <SeaPigDoodle f={f} />}</AbsoluteFill> : null;
         })}
+        {item?.ring ? (
+          <svg width={B.width} height={B.height} style={{ position: "absolute", left: 0, top: 0 }}>
+            <circle cx={item.ring.x * B.width} cy={item.ring.y * B.height} r={item.ring.r * B.width} fill="none" stroke="#FF2D2D" strokeWidth={9}
+              strokeDasharray={2 * Math.PI * item.ring.r * B.width} strokeDashoffset={2 * Math.PI * item.ring.r * B.width * (1 - eOut(prog(t, item.at + 0.4, 0.45)))}
+              transform={`rotate(-90 ${item.ring.x * B.width} ${item.ring.y * B.height})`} strokeLinecap="round" />
+          </svg>
+        ) : null}
       </div>
       {item ? (
         <div style={{ position: "absolute", left: 40, right: 40, top: B.top + B.height + 44, textAlign: "center", transform: `scale(${pop})` }}>

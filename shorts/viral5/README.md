@@ -7239,3 +7239,114 @@ qa_review.py: 두 편 모두 11/11 PASS(길이, 제목, 호기심 "?", 첫 전�
 #Shorts #심해 #심해생물 #바다 #해파리 #오징어 #아귀 #신기한동물 #NOAA
 ```
 고정 댓글: 머리 없는 닭 괴물… 이름 지은 사람 누구예요? 🐔
+
+
+## 쇼츠 50만+ 벤치마크: 흰 카드 2·3 (`breath1` 높이 차이, `story1` 사진으로 본 사흘)
+
+오케스트레이터가 실사 반쪽에 맡긴 3편은 이렇게 정해졌다.
+1. 사진 리스트: `deep1`. 이미 만든 `deep2`는 메인에 합쳐져 있어서 그대로 둔다.
+2. 「보는 것만으로 숨 멎는 ○○」: `breath1`.
+3. 실제 영상 한 편 + 이야기 자막: 30분 안에 강한 퍼블릭 도메인 클립을 찾지 못하면 USGS 킬라우에아 2018 사진 연속으로 바꾼다 → `story1`.
+
+### 바뀐 것 (네 편 공통)
+
+- **카드 위 채널 표시**를 edit.json에서 바꿀 수 있다: `"card": {"badge": {"name": "세상 신기한 도감", "icon": "도", "color": "#1d4e89"}}`. 채널 이름이 정해지면 이 값만 바꾸고 다시 렌더한다. 지금 이름은 중립적인 시리즈 이름이다.
+- **음악 없는 판**: `final/<id>-nomusic.mp4`. 유튜브 앱에서 업로드할 때 유행 음원을 붙일 수 있게 했다.
+  - 만드는 법: `./render_nomusic.sh <id>`.
+  - 음악만 빼고 효과음은 남긴다.
+  - 음량은 음악이 있는 판에 render.sh가 준 이득을 그대로 적용한다. 그래서 효과음 크기가 같다(통합 음량 −16~−19 LUFS).
+- **`deep1` 수정**: 오케스트레이터 검토에서 NOAA 영상에 박힌 글자가 지적됐다.
+  - 덤보 문어는 원본 1.0~3.5초에 "DUMBO OCTOPUS" 글자가 있어서 5.0초부터 쓴다.
+  - 유리오징어는 원본 1.0~4.5초에 "500 meters…" 띠가 있어서 6.5초부터 쓴다.
+  - 다시 렌더한 뒤 4.0/4.5/5.4/12.0/12.7/13.4초 프레임을 확인했다. 글자는 없다.
+- **`Card.tsx` 항목에 `"ring"`을 더했다**: 사진 속 작은 것을 빨간 원으로 표시하고, 원은 0.4초 뒤에 그려진다. 창백한 푸른 점과 메워지기 전의 카포호 만에 썼다.
+- **회귀 확인**: `drive1`을 다시 렌더했고 `final/drive1.mp4`와 바이트까지 같다.
+
+### `breath1` 보는 것만으로 숨 멎는 높이 차이 (25.2초, 17.7MB)
+
+- **벤치마크**: 겔라다 「보는 것만으로 숨 멎는 ○○」 시리즈. 습도 차이 1,645,321회, 체급 차이 1,495,730회. 그 채널 최근 30편 중 11편이 50만 이상이다. 3절 표를 그대로 따른다.
+- **구성**: 8장 × 3.15초. 높이가 올라가는 순서다.
+
+| 순서 | 사진 | 높이(근거) |
+|---|---|---|
+| 1 | 에베레스트 | ISS 외부 카메라, 고도 약 400km |
+| 2 | 오로라 | ISS, 257마일 ≈ 414km(설명) |
+| 3 | 번개 치는 밤 | ISS, 259마일 ≈ 417km |
+| 4 | 거대 제트 번개 | ISS, 2025.7.3 |
+| 5 | 우주유영 중 발밑의 지구 | 250마일 ≈ 400km. 우주비행사의 발만 보이고 얼굴은 없다 |
+| 6 | 달로 가며 돌아본 지구 | 아르테미스 2호, 달 전이 궤도 진입 뒤 |
+| 7 | 달 뒤로 지는 지구 | 아르테미스 2호 달 근접 비행 |
+| 8 | 창백한 푸른 점 | 보이저 1호, 약 60억km. 점에 빨간 원을 그렸다 |
+
+- **음악**: Kevin MacLeod "Floating Cities" (CC BY 4.0).
+- **qa_review**: 11/11 PASS(길이 25.2초, 제목 호기심 "차이", 첫 전환 3.2초, 최장 장면 3.2초, −13.9 LUFS, 검은 화면 없음).
+- **출처**: NASA Image and Video Library. 모두 NASA 직원이나 NASA 카메라가 찍은 것이고, 페이지는 아래와 같다. PIA23645는 NASA/JPL-Caltech다.
+  - `everest`: iss069e003192 (JSC) — https://images.nasa.gov/details/iss069e003192
+  - `citylight`: iss073e0257211 (JSC) — https://images.nasa.gov/details/iss073e0257211
+  - `jet`: iss073e0281502 (JSC) — https://images.nasa.gov/details/iss073e0281502
+  - `aurora`: iss072e159172 (JSC) — https://images.nasa.gov/details/iss072e159172
+  - `orion`: art002e000193 (JSC) — https://images.nasa.gov/details/art002e000193
+  - `earthset`: art002e021278 (JSC) — https://images.nasa.gov/details/art002e021278
+  - `dot`: PIA23645 (JPL) — https://images.nasa.gov/details/PIA23645
+  - `foot`: iss061e064798 (JSC) — https://images.nasa.gov/details/iss061e064798
+
+### `story1` 사진 9장이 기록한 바다가 땅이 된 사흘 (25.2초, 24.5MB)
+
+- **벤치마크**
+  - 틈새지식 「사진 21장이 기록한 역사적인 화산 폭발」: 8,558,356회, 2026-07-22, 흰 카드 + 연속 사진.
+  - 지구촌동물극장의 흰 카드 + 장면마다 한 줄 이야기 자막: 9/30, 중앙값 16만.
+- **동물 영상을 쓰지 않은 이유(30분 조사)**
+  - Yellowstone NPS 영상 자료실(NPS/Neal Herbert, "Public domain")에서 들소 새끼 영상을 찾았다. 하지만 이야기가 약했다.
+  - USFWS NCTC 독수리 캠은 Outdoor Channel과의 협력 사업이다.
+  - NOAA 고래 구조 영상은 협력 단체 크레디트가 섞여 있다.
+  - 그래서 대안이던 USGS 연속 사진으로 갔다.
+- **이야기(실화, 2-1절 기준 점검)**
+  - 한 줄 요약: "용암이 사흘 만에 바다 하나를 메워 땅으로 만들었다."
+  - 커지는 흐름: 솟는 용암 → 12.5km 흐름 → 도로를 덮음 → 바다까지 457m → 바다에 닿음 → 만이 사라짐 → 새 땅 → 마을 일부만 남음 → 끓는 바다.
+  - 4번째 장면에서 메워지기 전의 만을 빨간 원으로 보여 준다. 6번째 장면의 "만이 통째로 메워졌다"가 그 원으로 납득된다.
+  - 감정은 "소름·압도" 하나다. 사람은 나오지 않는다.
+- **사실 근거(USGS 사진 설명)**
+  - 분수 높이 40~70m(6.7), 용암 수로 약 12.5km(6.7).
+  - 6.3 오전 7시 해안까지 500야드(457m).
+  - 6.3 밤 10시 30분까지 바다 도달.
+  - 6.5 아침 카포호 만이 완전히 메워짐.
+  - 6.6 Kapoho Beach Lots 마을의 남은 부분.
+- **음악**: Kevin MacLeod "Lightless Dawn" (CC BY 4.0). 효과음은 장면 전환마다 whoosh.
+- **qa_review**: 11/11 PASS(25.2초, 제목 호기심 숫자, 첫 전환 2.8초, 최장 2.8초, −14.0 LUFS).
+- **출처**: 미국 지질조사국(USGS) 하와이 화산 관측소, "Photo and Video Chronology – Kīlauea" 2018.6.2~6.7. 페이지마다 "Sources/Usage: Public Domain"이라고 적혀 있다.
+  - 하와이 카운티 소방서가 찍은 Green Lake 사진은 뺐다.
+  - `road`: vhp_img6334.jpg — https://www.usgs.gov/center-news/photo-and-video-chronology-k-lauea-ne-2-2018
+  - `front`: vhp_img6343.jpg — https://www.usgs.gov/center-news/photo-and-video-chronology-k-lauea-ne-3-2018
+  - `entry`: vhp_img6348.jpg — https://www.usgs.gov/center-news/photo-and-video-chronology-k-lauea-ne-4-2018
+  - `filled`: multimediaFile-2176.jpg — https://www.usgs.gov/center-news/photo-and-video-chronology-k-lauea-ne-5-2018
+  - `delta`: multimediaFile-2182.jpg — https://www.usgs.gov/center-news/photo-and-video-chronology-k-lauea-ne-6-2018
+  - `remains`: multimediaFile-2185.jpg — https://www.usgs.gov/center-news/photo-and-video-chronology-k-lauea-ne-6-2018
+  - `channel`: multimediaFile-2191.jpg — https://www.usgs.gov/center-news/photo-and-video-chronology-k-lauea-ne-7-2018
+  - `fountain`: multimediaFile-2190.jpg — https://www.usgs.gov/center-news/photo-and-video-chronology-k-lauea-ne-7-2018
+  - `laze`: vhp_img6376.jpg — https://www.usgs.gov/center-news/photo-and-video-chronology-k-lauea-ne-7-2018
+
+### 업로드 문구
+
+**breath1**: 보는 것만으로 숨 멎는 높이 차이 ㄷㄷ
+```
+국제우주정거장(고도 약 400km)에서 본 에베레스트와 오로라, 우주 쪽으로 솟는 번개 '거대 제트', 우주유영 중 발밑으로 보이는 지구, 2026년 아르테미스 2호가 달 뒤에서 찍은 지구, 그리고 1990년 보이저 1호가 약 60억km 밖에서 찍은 '창백한 푸른 점'까지. 모두 NASA가 공개한 실제 사진입니다.
+
+▶ [채널명] 채널 구독: https://www.youtube.com/@[핸들]
+
+출처: 사진: NASA (ISS 승무원·외부 카메라 iss069e003192, iss072e159172, iss073e0257211, iss073e0281502, iss061e064798; Artemis II art002e000193, art002e021278) · NASA/JPL-Caltech (Pale Blue Dot Revisited, PIA23645) · 음악: "Floating Cities" Kevin MacLeod (incompetech.com), CC BY 4.0 (creativecommons.org/licenses/by/4.0) · NASA는 이 영상을 보증하거나 후원하지 않습니다. 고도는 NASA 사진 설명 기준입니다(257~259마일 ≈ 414~417km)
+
+#Shorts #우주 #지구 #NASA #오로라 #국제우주정거장 #아르테미스 #창백한푸른점 #보이저 #높이차이
+```
+고정 댓글: 몇 번째 사진에서 숨 멎었어요? 🌍
+
+**story1**: 사진 9장이 기록한 바다가 땅이 된 사흘 ㄷㄷ
+```
+2018년 하와이 킬라우에아 화산의 8번 균열(fissure 8)에서 솟은 용암은 약 12.5km를 흘러 6월 3일 밤 카포호 만에 닿았고, 6월 5일 아침에는 만 전체를 메웠습니다. 미국 지질조사국(USGS) 하와이 화산 관측소가 헬기에서 찍은 사진 9장으로 그 사흘을 따라갑니다.
+
+▶ [채널명] 채널 구독: https://www.youtube.com/@[핸들]
+
+출처: 사진: 미국 지질조사국(USGS) 하와이 화산 관측소, Photo and Video Chronology – Kīlauea (2018.6.2~6.7) · 음악: "Lightless Dawn" Kevin MacLeod (incompetech.com), CC BY 4.0 (creativecommons.org/licenses/by/4.0) · USGS는 이 영상을 보증하거나 후원하지 않습니다. 날짜·거리·높이는 USGS 사진 설명 기준입니다
+
+#Shorts #화산 #하와이 #킬라우에아 #용암 #자연재해 #USGS #실제사진 #지구
+```
+고정 댓글: 사흘 만에 바다가 땅이 됐다니… 직접 보면 어떨까요? 🌋
