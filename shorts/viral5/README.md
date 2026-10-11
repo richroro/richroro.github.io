@@ -7124,3 +7124,374 @@ python3 longform/odyssey/qa.py final/odyssey.mp4 <dir>  # QA + 콘택트 시트
   ```
 
 설명란 길이: 1470자 (YouTube 한도 5,000자), 고정 댓글 7984자 (한도 10,000자).
+
+## 쇼츠 50만+ 벤치마크: 생활 규칙 짤툰 · 시니어 반전 드라마 (`rule1`, `senior1`)
+
+사용자 요청은 "롱폼은 멈추고, 숏폼 50만 이상 잘나가는 것 분석해서 5개 만들어봐"였다. 이 절은 그림·그래픽 쪽 작업자의 2편이다. 조사는 `research/research-500k-drawn.md`(채널 95곳의 최근 30편 적중률, 2026-04-01 이후 50만+ 592편)에 있다. 나머지 3편(흰 카드 실사)은 실사 쪽 작업자가 만든다.
+
+### 무엇을 알았나 (요약)
+
+- **그림 쪽에서 작은 채널이 50만을 반복해서 넘는 형식은 AI 생성 그림, 웹툰 작화, 남의 영상이다.** 우리 도구만으로 되는 형식(○)으로 작은 채널이 50만을 넘은 것은 30편 중 1편씩 두 번뿐이다(썰왕, 오늘의 기준).
+- **틀린그림찾기, 숨은그림찾기, 3초 퀴즈, 마블 레이스, 채팅 썰, 지도 애니는 올해 50만+가 0편이다.** 시니어 넌센스 퀴즈 카드(137만)와 손동작 두뇌운동(491만)은 그 채널에서 한 번뿐이었다(1/30, 0/30).
+- **2026년의 큰 흐름은 AI 실사 "시니어 반전 드라마"다.** 훈작가 25/30(중앙값 92만), 작은 채널은 서민희(6.2만) 10/30, 마음우체국(6.4만) 9/30, ai방송국(1.7만) 9/30이다.
+- **썰구리(4.1만) 17/30과 우리 썰의 차이는 형식이 아니다.** 제목 공식은 같다. 다른 것은 그림의 밀도(줄마다 AI 치비 장면)와 양(6일에 30편)이다.
+
+### 오케스트레이터 배정과 이미지 모델 시험
+
+- **배정**: ① 콩자반 「오프리쉬 신고하면 벌어지는 일」 구조의 안전한 변형 1편. 특정 사건이나 개인을 다루지 않고, 공공 규칙을 공식 자료로 설명한다. ② 시니어 반전 드라마 1편(REVIEW 2-1 통과). 그 전에 이미지 생성 모델을 45분 동안 시험한다.
+- **시험 결과: 불합격(인물 일관성).**
+  - 모델: SDXL-Lightning 4단계(ByteDance), stable-diffusion.cpp, CPU 4코어, q8_0, TAESD-XL 디코더.
+  - 라이선스: CreativeML Open RAIL++-M을 직접 읽었다. 출력물에 권리를 주장하지 않으며 상업 사용이 가능하고, Attachment A의 사용 제한(명예훼손, 미성년자 피해, 해를 끼칠 목적의 허위정보 금지 등)을 따른다.
+  - 속도: 768×960에서 장당 150~161초, 896×1152 + 기본 VAE에서 285초.
+  - 그림 한 장의 질은 웹툰 일러스트 수준이었다. 하지만 같은 시드와 같은 인물 설명으로 6장을 뽑았더니 인물이 유지되지 않았다. 두 사람 장면에서 한 명이 사라지고, "no glasses"인데 안경이 생기고, 옷 색이 바뀌었다.
+  - 그래서 우리 치비 캐릭터에 더 풍부한 배경을 그렸다. 생성 이미지는 하나도 쓰지 않았고, 설명란에 "이미지: AI 생성"을 넣지 않는다.
+  - AI 그림 채택은 사용자가 정할 일이다. 사람이 없는 배경만 생성하는 방법은 남아 있다.
+
+### `rule1` 테이크아웃 컵 들고 버스 타면 벌어지는 일 (33.7초)
+
+- **벤치마크**
+  - 구조: 콩자반(구독 2.24만) 「오프리쉬 신고하면 벌어지는 일」 616만(2026-08-23), 채널 15/30, 중앙값 55만.
+  - 맞춘 것:
+    - 제목 "~하면 벌어지는 일", 2줄 띠.
+    - 0초 첫 줄이 대사("손님, 그 컵 들고는 못 타세요.").
+    - 장소 사진 위에 캐릭터.
+    - 한 줄 자막, 판정 질문으로 끝.
+  - 그대로 둔 차이: 콩자반의 엔진은 실제 사건 현장 영상이다. 우리는 쓸 수 없어서 공공 규칙 자체를 소재로 했다.
+- **이야기 검토 (2-1)**
+  - 한 줄 요약: 도치가 아이스 아메리카노 때문에 버스를 못 타서 원샷했는데, 마시는 사이 버스가 떠났다.
+  - 결말 유형: 허탈 개그. 노리는 감정: 웃음.
+  - 복선: 기사님의 "출발 시간이에요", 남은 얼음.
+  - 갈등이 커지는 순서: 거부 → "텀블러는?" → "벌금 내면?" → "벌금 없음, 그냥 못 탐" → 원샷.
+  - 규칙은 기사님 대사와 내레이션 사실 줄에만 넣었다(설교 없음).
+- **사실과 출처**
+  - 서울시 교통 누리집 보도자료(2018-03, 「시내버스 음식물 반입 제한」): 「서울특별시 시내버스 재정지원 및 안전 운행기준에 관한 조례」 개정(2018-01-04 시행)으로, 운전자가 음식물이 담긴 일회용 컵 등의 운송을 거부할 수 있다.
+  - 금지 예: 일회용 컵에 든 뜨거운 음료·얼음, 컵에 담긴 치킨·떡볶이, 뚜껑 없거나 빨대 꽂힌 캔·병.
+  - 허용 예: 종이 상자 포장 음식, 뚜껑 닫힌 병, 따지 않은 캔, 텀블러·보온병, 비닐봉지 식재료.
+  - 같은 안내에 승객 벌금은 없고, 차 안에서 먹으면 하차시킬 수 있다고 되어 있다.
+  - 조례 조문 번호와 그 뒤 개정 여부는 자치법규 사이트가 이 환경에서 열리지 않아 확인하지 못했다(설명란에는 조례명과 시행일만 적었다).
+- **목소리 (Supertonic, 음성 v2)**: 내레이터 M4 7.6음절/초, 도치 M1 7.6, 기사님 M2 7.2. 쉼은 0.12/0.2/0.4초다. 받아쓰기로 확인했고, 처음에 "vs"를 "뉴스"로 읽고 끝 음절을 삼킨 줄은 다시 썼다.
+- **qa_review**: 12/12 PASS. 길이 33.7초, 최장 장면 3.6초, 자막 최장 12자, −14.0 LUFS, 28.2MB.
+
+### `senior1` 매주 혼자 와서 2인분 시키던 할아버지 (41.8초)
+
+- **벤치마크**
+  - ai방송국(구독 1.73만) 「혼자 왔다고 쫓아낸 고깃집」 83만(2026-10-04), 「12년 지킨 가게에서 쫓겨나는 순간」 167만(2026-09-27), 채널 9/30.
+  - 마음우체국(6.44만) 「그 돈으로 무슨 집을 사요? 허름한 노인을 무시한 부동산 사장」 160만(2026-10-06), 9/30.
+  - 맞춘 것:
+    - 가게 배경의 시니어 생활 갈등, 인물마다 다른 목소리의 대화극, 따뜻한 반전.
+    - 제목 끝 "..", 화면 가운데 큰 그림, 아래 한 줄 자막.
+  - 다른 것: 벤치마크는 AI 실사이고 우리는 그린 치비다(위 시험 결과). 그림판 시니어 드라마의 50만 사례는 찾지 못했다. 이 편은 **그림으로도 이 시청층이 보는지 재는 시험**이다.
+- **이야기 검토 (2-1)**
+  - 전제 3개:
+    - "매일 반찬 하나만 사 가는 할머니"(깨 빼고).
+    - "만 원 내고 거스름돈을 안 받는 할아버지".
+    - 이 편.
+  - 이 편을 고른 이유: 반전이 시청자 자신(알바 '나')에게 돌아오고, 제목으로 결말을 맞힐 수 없다.
+  - 한 줄 요약: 고깃집 알바가 2인분 시키고 반 남기는 할아버지를 흉봤는데, 목요일마다 받던 '직원 고기'가 그 반이었다.
+  - 결말 유형: 따뜻한 반전. 노리는 감정: 뭉클.
+  - 복선:
+    - 늘 목요일이다.
+    - "학생, 저녁은 먹었어?"
+    - 사장님의 "잔말 말고 2인분 드려".
+    - 직원 고기는 목요일에만 나온다.
+  - 갈등이 커지는 순서: 반만 먹음 → 사장님이 1인분을 막음 → 할아버지가 안 온 날 직원 고기가 없음 → 장부.
+  - 인물:
+    - 할아버지: 말수가 적고 같은 질문만 한다.
+    - 사장님: 말버릇이 "잔말 말고"다.
+    - '나': 투덜대는 알바다.
+  - 결말 이유도 앞에 깔았다. 40년 전 그 가게 알바였던 할아버지, 그때 사장님의 아들이 지금 사장님이다.
+- **그림**: 치비 3인(`Chibi.tsx`)과 새 배경 `src/lib/Places.tsx`(고깃집 홀 낮·밤, 직원 휴게실; 배기 후드, 차림표, 숯불 테이블)를 썼다. 클로즈업 2컷은 Commons CC0 사진이다.
+- **목소리 (Supertonic)**: '나'(내레이터 겸 대사) M1 6.8, 할아버지 M3 6.0, 사장님 M2 6.6. 음높이 조작은 없다. 쉼은 0.14/0.24/0.5초(썰)다. 받아쓰기로 확인했고, 처음 끝 줄 "네. 덕분에요."의 "덕분에요"가 빠져서 "네, 덕분에 잘 먹었어요."로 고쳤다.
+- **qa_review**: 12/12 PASS. 길이 41.8초, 최장 장면 4.1초, 자막 최장 12자, −14.1 LUFS, 22.8MB.
+
+### 템플릿 변경과 회귀 확인
+
+- **새 파일**
+  - `src/lib/Places.tsx`: 배경 `gogi`, `gogiNight`, `gogiBack`.
+  - `media/hit500/build.py`: 두 편의 대본·편집 빌더. 낙서 v2의 `media/doodle/v2/lib.py`를 그대로 쓴다.
+  - `media/hit500/seconds.py`: 사진이 화면에 나온 초를 edit.json에 쓴다.
+- **공유 파일 수정**: `src/lib/Sseol.tsx` 두 줄. `Places` import와 Backdrop `default:`에서 `PLACES`에 있는 이름이면 `<Place>`를 그리는 분기다. 다른 배경 이름은 전과 같다.
+- **회귀 확인**
+  - `sseol16`(손대지 않은 썰)의 데이터를 Supertonic으로 다시 만들어 0·123·400·700프레임을 렌더했다. 수정 전 `Sseol.tsx`(HEAD)와 수정 후로 각각 렌더했다.
+  - 4장 모두 PNG md5가 같다.
+- **음악 없는 판**: `final/rule1-nomusic.mp4`, `final/senior1-nomusic.mp4`. 음악만 빼고 효과음은 둔 채 −14 LUFS로 맞췄다. 사용자가 유튜브 앱에서 인기 음원을 붙일 수 있게 한 것이다.
+
+```bash
+./fetch.sh && media/doodle/fetch.sh                       # 폰트·효과음·음악, 버스 사진
+mkdir -p public/hit500 && curl -sSfL -A "richroro-shorts/1.0" -o public/hit500/samgyeopsal_table.jpg https://upload.wikimedia.org/wikipedia/commons/thumb/f/fe/Samgyeopsal_table.jpg/1920px-Samgyeopsal_table.jpg
+curl -sSfL -A "richroro-shorts/1.0" -o public/hit500/samgyeopsal_gui.jpg https://upload.wikimedia.org/wikipedia/commons/thumb/7/77/Samgyeopsal-gui.jpg/1920px-Samgyeopsal-gui.jpg
+python3 media/hit500/build.py                            # shorts/rule1, shorts/senior1
+for s in rule1 senior1; do python3 voice_edge.py $s && python3 prep.py $s; done
+python3 media/hit500/seconds.py rule1 senior1
+for s in rule1 senior1; do ./render.sh $s final/$s.mp4 && python3 qa_review.py $s; done
+# 음악 없는 판: edit.json의 "music"을 null로 바꿔 prep.py → render.sh final/<id>-nomusic.mp4, 그 뒤 원래대로 돌리고 prep.py
+python3 upload/make_desc.py rule1 senior1
+```
+
+### 출처와 라이선스
+
+| 자료 | 작가 | 라이선스 | 쓴 곳 |
+|---|---|---|---|
+| [Bus at Stop on Street](https://www.pexels.com/photo/bus-at-stop-on-street-21235187/) | Elina Volkova | Pexels License | rule1 0~7초 외 |
+| [Interior of Bus](https://www.pexels.com/photo/interior-of-bus-15595486/) | Pramod Tiwari | Pexels License | rule1 6.9~10.1초 외 |
+| [Empty Seats in Bus](https://www.pexels.com/photo/empty-seats-in-bus-15595490/) | Pramod Tiwari | Pexels License | rule1 10.1~13.8초 외 |
+| [Stop Button on a Bus](https://www.pexels.com/photo/stop-button-on-a-bus-17800465/) | Elina Volkova | Pexels License | rule1 25.2~26.6초 |
+| [Samgyeopsal table.jpg](https://commons.wikimedia.org/wiki/File:Samgyeopsal_table.jpg) | 이동원 | CC0 | senior1 4.3~8.2초 |
+| [Samgyeopsal-gui.jpg](https://commons.wikimedia.org/wiki/File:Samgyeopsal-gui.jpg) | jinsoo jang | CC0 | senior1 13.9~16.4초 |
+| "Scheming Weasel", "Heartwarming" | Kevin MacLeod (incompetech.com) | CC BY 4.0 | 배경음악 |
+| 효과음 | 직접 합성(`../tools/sfx.py`) | – | |
+| 목소리 | Supertonic 3 프리셋 M1·M2·M3·M4 | OpenRAIL-M (AI 생성 고지: 설명란 "목소리: AI 합성 음성") | |
+
+- 버스 사진 4장은 낙서 짤툰에서 이미 라이선스 페이지를 확인해 `media/doodle/sources.json`에 적어 둔 것이다.
+- Commons 2장은 "○○ 특"(`teuk12`)에서 확인한 CC0 파일이다.
+- 화면에 사람 얼굴이 나오는 사진은 없다.
+
+### 업로드 문구
+
+| id | 제목 | 고정 댓글 |
+|---|---|---|
+| `rule1` | 테이크아웃 컵 들고 버스 타면 벌어지는 일ㅋㅋ | 기사님이 맞다 🚌 vs 도치가 억울하다 🥤 님은 어느 쪽? |
+| `senior1` | 매주 혼자 와서 2인분 시키던 할아버지.. | 여러분에게도 말없이 챙겨 주던 어른이 있었나요? 🍚 |
+
+설명글은 `upload/txt/rule1.txt`, `upload/txt/senior1.txt`(`upload/specs/*.json` → `make_desc.py`)에 있다. 둘 다 창작이라 요약 앞에 "(창작)"이 붙는다.
+
+## 쇼츠 50만+ 벤치마크: 흰 카드 사진 리스트 (`deep1`, `deep2`)
+
+사용자 요청은 "롱폼은 멈추고, 숏폼 50만 이상 잘나가는 것 분석해서 5개 만들어봐"였다. 조사는 `research/research-500k-footage.md`·`.csv`에 있다(실사·사진 반쪽).
+
+### 벤치마크와 숫자
+
+- **표본**: 2026-04-01 이후 게시된 한국어 쇼츠 가운데 조회수 50만 이상 210편(채널 166곳). 채널 165곳의 최근 쇼츠 탭도 봤고, 그중 구독 10만 미만은 112곳이다.
+- **첫 화면 레이아웃별**
+  - 흰 카드(흰 바탕 + 검은 제목 한 줄 + 둥근 사진 + 아래 이름표): 39편, 조회수 중앙값 414만, 100%가 구독 10만 미만 채널.
+  - 검정 위 띠(우리가 쓰던 형식): 78편, 중앙값 144만.
+- **겔라다**(구독 1.68만)는 최근 30편 중 11편이 50만 이상이고, 중앙값은 19만이다. 같은 틀을 반복한다.
+  - 「보는 것만으로 숨 멎는 습도 차이」: 1,645,321회, 2026-10-03.
+  - 「…체급 차이」: 1,495,730회, 2026-09-18.
+  - 「세상에 그렇게 생긴 동물이 어디 있어?(진짜 있음)」: 1,021,759회, 2026-09-17.
+- **오레오쿠키**(2.52만) 「보는것만으로 숨 멎는 바다생물」은 9,071,256회다. 이 채널의 적중률은 0/30이라 운이다.
+- **정직하게**: 흰 카드 계열 작은 채널 31곳의 평균 50만 적중률은 8.6%다. 반복해서 터지는 곳은 겔라다·사랑빛(11/30), 지구촌동물극장(9/30) 정도다. 대부분은 남의 영상을 쓴다. 우리는 레이아웃과 리듬만 따르고, 사진과 클립은 NOAA 퍼블릭 도메인으로 바꿨다.
+
+### 무엇을 맞췄나
+
+| 항목 | 벤치마크(썸네일 프레임으로 본 것) | 우리 |
+|---|---|---|
+| 바탕 | 흰색 | 흰색 |
+| 제목 | 검은 굵은 글씨, 위 15% 지점, 한 줄 + 괄호 부제 | Pretendard 800, 2줄 "세상에 이렇게 생긴 게 / 진짜 있다고? (심해편)" |
+| 그림 | 가로로 꽉 찬 사진·클립 하나, 오레오쿠키는 둥근 모서리 | 1000×750(4:3) 둥근 상자, 천천히 확대 |
+| 이름표 | "수식어 + 한국어 이름" / "(영어 이름)" 두 줄 | 같음. 예: "헤엄도 치는 바다돼지" / "(Sea pig)" |
+| 리듬 | 25/50/75% 지점이 모두 다른 동물. 항목당 2~3초(추정) | 항목당 2.7초, 9항목, 25.6초 |
+| 첫 장면 | 「(극사실주의)」 편은 그림에서 실물로 넘어간다 | 0~1.3초에 우리가 그린 낙서("제가 대충 그린 거 아니고요"), 그다음 실물 |
+| 소리 | 내레이션 없음, 음악만(추정, 들을 수 없었음) | 목소리 없음. Kevin MacLeod "Fluffing a Duck" + 항목마다 짧은 pop |
+| 끝 | 마지막 항목 뒤 바로 끝 | 마지막 항목(유령 문어·삼각다리물고기) 뒤 바로 첫 낙서로 반복 재생 |
+
+**길이**: 벤치마크 길이는 잴 수 없었다. qa_review.py 기준(25초 이상)에 맞춰 9항목 25.6초로 했다.
+
+### 영상
+
+| id | 화면 제목 | 길이 | 용량 | 항목 |
+|---|---|---|---|---|
+| `deep1` | 세상에 이렇게 생긴 게 / 진짜 있다고? (심해편) | 25.6초 | 18.1MB | 바다돼지 낙서 → 바다돼지, 덤보 문어, 바다두꺼비, 블롭피시, 유리오징어, 바다거미, 은상어, 얼굴 없는 물고기, 유령 문어 '캐스퍼' |
+| `deep2` | 세상에 이렇게 생긴 게 / 진짜 있다고? (심해편 2) | 25.6초 | 14.8MB | 머리 없는 닭 낙서 → 헤엄치는 해삼('머리 없는 닭 괴물'), 채찍 오징어, 티부로니아 해파리, 불우렁쉥이, 관해파리, 꼬마 오징어(밥테일), 아귀, 송곳니고기, 삼각다리물고기 |
+
+qa_review.py: 두 편 모두 11/11 PASS(길이, 제목, 호기심 "?", 첫 전환 1.3초, 최장 장면 2.7초, −14.0/−14.1 LUFS, 검은 화면 없음, 설명글).
+
+**이야기 검토(2-1절)**: 이야기 형식이 아니라서 해당하지 않는다. 대신 이름표의 사실을 확인했다. 수식어는 모두 NOAA 영상·사진 설명에 있는 내용이다.
+- 수심 4,934m(얼굴 없는 물고기), 다리 폭 20cm 이상(바다거미), 수심 1,030m(채찍 오징어), 지름 30cm 가까이(해파리), 군체(관해파리 영상 자막 "not one individual animal").
+- 블롭피시의 "물속에선 멀쩡한"은 NOAA 사진(Seascape Alaska 5, Dive 15, 해저에서 쉬는 모습)이 보여 주는 그대로다. 흔히 알려진 흐물흐물한 모습은 물 밖으로 끌어올렸을 때 생긴다는 것은 널리 알려진 내용이다.
+
+### 템플릿 변경 (다른 형식은 그대로)
+
+- **새 파일**
+  - `src/lib/Card.tsx`(`"layout": "card"`): 흰 카드 레이아웃과 낙서 두 개(바다돼지, 머리 없는 닭)를 그린다.
+  - `media/deep2/fetch_noaa.py`: NOAA Ocean Exploration WordPress 미디어 API에서 id로 받고, 출처 페이지와 크레디트 줄을 `media/<id>/sources.json`에 적는다.
+- **공유 파일에 건 고리**
+  - `src/ClipShort.tsx`: import 한 줄, 타입 두 줄, `if (d.layout === "card") return <CardShort d={d} />;` 한 줄.
+  - `prep.py`: 그대로 복사하는 키 목록에 `"card"`를 더했다.
+  - `qa_review.py`: 제목 띠 검사가 `layout` `"card"`도 통과시킨다.
+  - `upload/channels.json`: 새 채널 `card`(접두어 `deep`).
+- **회귀 확인**: 손대지 않은 `drive1`(2D 운전 애니)을 다시 렌더했다. `final/drive1.mp4`와 **바이트까지 같다**(cmp 일치, SSIM 1.0).
+- **만드는 법(목소리 없는 쇼츠)**: `build/<id>/timeline.json`에 `{"lines": [], "end": 25.6}`을 두고 `python3 prep.py <id> && ./render.sh <id>`를 돌린다. 이 환경에는 edge_tts가 없어서 voice_edge.py를 거치지 않았다. 원본은 `python3 media/deep2/fetch_noaa.py <id> key=media_id …`로 받는다(public/는 git 밖이다).
+
+### 출처와 라이선스
+
+- **영상·사진**: NOAA Ocean Exploration(미국 연방정부 저작물, 퍼블릭 도메인). 화면에는 "영상·사진: NOAA Ocean Exploration"을 표시하고, 설명란에 "NOAA는 이 영상을 보증하거나 후원하지 않습니다"를 넣었다.
+- **NOAA 사이트의 파트너 크레디트는 뺐다**: Oceaneering-DSSI 표기 빗해파리, Magnapinna 2025, 출처 표기가 없는 bloody-belly 빗해파리.
+- 클립의 NOAA 자막과 엔딩 카드가 보이지 않게 구간과 확대 기준점을 골랐다. 바다거미는 26.9초부터, 해파리와 밥테일은 로고가 빠지게 확대했다.
+- deep1 원본
+  - `seapig`: NOAA Ocean Exploration, Exploring Puerto Rico’s Seamounts, Trenches, and Troughs — https://oceanexplorer.noaa.gov/multimedia/video-shorts-ex1502-seapig/
+  - `dumbo`: Video courtesy of the NOAA Office of Ocean Exploration and Research, Windows to the Deep 2019. — https://oceanexplorer.noaa.gov/multimedia/video-shorts-ex1903-dumbo/
+  - `seatoad`: NOAA Ocean Exploration, 2025 ROV and Mapping Shakedown (EX2502) — https://oceanexplorer.noaa.gov/wp-content/uploads/2026/09/ex2502-sea-toad.jpg
+  - `blobfish`: NOAA Ocean Exploration, Seascape Alaska — https://oceanexplorer.noaa.gov/multimedia/okeanos-explorations-seascape-alaska-ex2306-gallery-media-dive15-blobfish/
+  - `glasssquid`: NOAA Ocean Exploration, Deep-Sea Symphony: Exploring the Musicians Seamounts — https://oceanexplorer.noaa.gov/multimedia/video-shorts-ex1708-glass-squid/
+  - `seaspider`: NOAA Ocean Exploration, 2017 Laulima O Ka Moana — https://oceanexplorer.noaa.gov/multimedia/video-shorts-ex1706-seaspider/
+  - `chimaera`: NOAA Ocean Exploration, 2019 Southeastern U.S. Deep-Sea Exploration — https://oceanexplorer.noaa.gov/multimedia/video-shorts-ex1907-chimaera/
+  - `cuskeel`: NOAA Ocean Exploration, 2026 Cook Islands ROV Exploration — https://oceanexplorer.noaa.gov/multimedia/cusk-eel-3/
+  - `casper`: NOAA Ocean Exploration, Hohonu Moana 2016 — https://oceanexplorer.noaa.gov/wp-content/uploads/2020/07/20200802-hires.jpg
+- deep2 원본
+  - `cucumber`: NOAA Ocean Exploration, 2025 ROV and Mapping Shakedown (EX2502) — https://oceanexplorer.noaa.gov/wp-content/uploads/2026/09/ex2502-swimming-sea-cucumber.jpg
+  - `whiplash`: NOAA Ocean Exploration, Deep Connections 2019 — https://oceanexplorer.noaa.gov/multimedia/video-shorts-ex1905-whiplash-squid/
+  - `bigjelly`: NOAA Ocean Exploration, 2023 Shakedown + EXPRESS West Coast Exploration — https://oceanexplorer.noaa.gov/multimedia/okeanos-explorations-express-ex2301-gallery-media-ex2301-dive07-bigjelly/
+  - `pyrosome`: NOAA Ocean Exploration, 2025 ROV and Mapping Shakedown (EX2502) — https://oceanexplorer.noaa.gov/wp-content/uploads/2026/09/ex2502-pyrosome.jpg
+  - `bobtail`: NOAA Ocean Exploration, Windows to the Deep 2019 — https://oceanexplorer.noaa.gov/multimedia/bobtail-squid/
+  - `siphonophore`: NOAA Ocean Exploration, Deep-Sea Symphony: Exploring the Musicians Seamounts — https://oceanexplorer.noaa.gov/multimedia/video-shorts-ex1708-siphonophore/
+  - `anglerfish`: NOAA Ocean Exploration, 2019 Southeastern U.S. Deep-Sea Exploration — https://oceanexplorer.noaa.gov/multimedia/schaefers-anglerfish/
+  - `fang`: NOAA Ocean Exploration, Deep-Sea Symphony: Exploring the Musicians Seamounts — https://oceanexplorer.noaa.gov/wp-content/uploads/2026/03/EX1708-Fangtooth-1920x1080-1.mp4
+  - `tripod`: NOAA Ocean Exploration, 2026 American Samoa ROV + Mapping Exploration — https://oceanexplorer.noaa.gov/wp-content/uploads/2026/08/ex2606-dive03-tripodfish.jpg
+- **음악**: "Fluffing a Duck" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License.
+- **낙서 두 개**: 직접 그림(`Card.tsx`의 SVG).
+- **목소리**: 없음. 그래서 설명란에 "목소리: AI 합성 음성"은 넣지 않았다.
+- 화면에 "저작권", "퍼블릭 도메인", "공공누리"는 쓰지 않았다.
+
+### 업로드 문구
+
+**deep1**: 세상에 이렇게 생긴 게 진짜 있다고? (심해편) ㄷㄷ
+```
+미국 해양대기청(NOAA) 무인잠수정이 심해에서 직접 찍은 생물 9종입니다. 헤엄치는 바다돼지, 귀처럼 생긴 지느러미로 헤엄치는 덤보 문어, 수심 4,934m에서 만난 얼굴 없는 물고기, 그리고 '캐스퍼'라는 별명이 붙은 유령 문어까지 모두 실제 영상과 사진입니다. 첫 장면의 그림만 직접 그렸습니다.
+
+▶ [채널명] 채널 구독: https://www.youtube.com/@[핸들]
+
+출처: 영상·사진: NOAA Ocean Exploration (2015 Puerto Rico, Windows to the Deep 2019, 2025 ROV and Mapping Shakedown, Seascape Alaska 2023, Deep-Sea Symphony 2017, Laulima O Ka Moana 2017, 2019 Southeastern U.S., 2026 Cook Islands, Hohonu Moana 2016) · 첫 장면 그림 직접 제작 · 음악: "Fluffing a Duck" Kevin MacLeod (incompetech.com), CC BY 4.0 (creativecommons.org/licenses/by/4.0) · NOAA는 이 영상을 보증하거나 후원하지 않습니다. 수심 등은 NOAA 영상·사진 설명 기준입니다
+
+#Shorts #심해 #심해생물 #바다 #덤보문어 #블롭피시 #바다돼지 #유령문어 #신기한동물 #NOAA
+```
+고정 댓글: 9개 중에 제일 안 믿기는 건 몇 번이에요? 👀
+
+**deep2**: 세상에 이렇게 생긴 게 진짜 있다고? (심해편 2) ㄷㄷ
+```
+미국 해양대기청(NOAA) 무인잠수정이 심해에서 찍은 생물 9종입니다. '머리 없는 닭 괴물'이라는 별명이 붙은 헤엄치는 해삼, 수심 1,030m에서 만난 채찍 오징어, 지름이 30cm 가까운 해파리, 한 마리가 아니라 여럿이 모인 군체인 관해파리, 지느러미로 바닥에 서 있는 물고기까지 모두 실제 영상과 사진입니다. 첫 장면의 그림만 직접 그렸습니다.
+
+▶ [채널명] 채널 구독: https://www.youtube.com/@[핸들]
+
+출처: 영상·사진: NOAA Ocean Exploration (2025 ROV and Mapping Shakedown, Deep Connections 2019, 2023 Shakedown + EXPRESS West Coast, Deep-Sea Symphony 2017, Windows to the Deep 2019, 2019 Southeastern U.S., 2026 American Samoa) · 첫 장면 그림 직접 제작 · 음악: "Fluffing a Duck" Kevin MacLeod (incompetech.com), CC BY 4.0 (creativecommons.org/licenses/by/4.0) · NOAA는 이 영상을 보증하거나 후원하지 않습니다. 수심과 크기는 NOAA 영상·사진 설명 기준입니다
+
+#Shorts #심해 #심해생물 #바다 #해파리 #오징어 #아귀 #신기한동물 #NOAA
+```
+고정 댓글: 머리 없는 닭 괴물… 이름 지은 사람 누구예요? 🐔
+
+
+## 쇼츠 50만+ 벤치마크: 흰 카드 2·3 (`breath1` 높이 차이, `story1` 사진으로 본 사흘)
+
+오케스트레이터가 실사 반쪽에 맡긴 3편은 이렇게 정해졌다.
+1. 사진 리스트: `deep1`. 이미 만든 `deep2`는 메인에 합쳐져 있어서 그대로 둔다.
+2. 「보는 것만으로 숨 멎는 ○○」: `breath1`.
+3. 실제 영상 한 편 + 이야기 자막: 30분 안에 강한 퍼블릭 도메인 클립을 찾지 못하면 USGS 킬라우에아 2018 사진 연속으로 바꾼다 → `story1`.
+
+### 바뀐 것 (네 편 공통)
+
+- **카드 위 채널 표시**를 edit.json에서 바꿀 수 있다: `"card": {"badge": {"name": "세상 신기한 도감", "icon": "도", "color": "#1d4e89"}}`. 채널 이름이 정해지면 이 값만 바꾸고 다시 렌더한다. 지금 이름은 중립적인 시리즈 이름이다.
+- **음악 없는 판**: `final/<id>-nomusic.mp4`. 유튜브 앱에서 업로드할 때 유행 음원을 붙일 수 있게 했다.
+  - 만드는 법: `./render_nomusic.sh <id>`.
+  - 음악만 빼고 효과음은 남긴다.
+  - 음량은 음악이 있는 판에 render.sh가 준 이득을 그대로 적용한다. 그래서 효과음 크기가 같다(통합 음량 −16~−19 LUFS).
+- **`deep1` 수정**: 오케스트레이터 검토에서 NOAA 영상에 박힌 글자가 지적됐다.
+  - 덤보 문어는 원본 1.0~3.5초에 "DUMBO OCTOPUS" 글자가 있어서 5.0초부터 쓴다.
+  - 유리오징어는 원본 1.0~4.5초에 "500 meters…" 띠가 있어서 6.5초부터 쓴다.
+  - 다시 렌더한 뒤 4.0/4.5/5.4/12.0/12.7/13.4초 프레임을 확인했다. 글자는 없다.
+- **`Card.tsx` 항목에 `"ring"`을 더했다**: 사진 속 작은 것을 빨간 원으로 표시하고, 원은 0.4초 뒤에 그려진다. 창백한 푸른 점과 메워지기 전의 카포호 만에 썼다.
+- **회귀 확인**: `drive1`을 다시 렌더했고 `final/drive1.mp4`와 바이트까지 같다.
+
+### `breath1` 보는 것만으로 숨 멎는 높이 차이 (25.2초, 17.7MB)
+
+- **벤치마크**: 겔라다 「보는 것만으로 숨 멎는 ○○」 시리즈. 습도 차이 1,645,321회, 체급 차이 1,495,730회. 그 채널 최근 30편 중 11편이 50만 이상이다. 3절 표를 그대로 따른다.
+- **구성**: 8장 × 3.15초. 높이가 올라가는 순서다.
+
+| 순서 | 사진 | 높이(근거) |
+|---|---|---|
+| 1 | 에베레스트 | ISS 외부 카메라, 고도 약 400km |
+| 2 | 오로라 | ISS, 257마일 ≈ 414km(설명) |
+| 3 | 번개 치는 밤 | ISS, 259마일 ≈ 417km |
+| 4 | 거대 제트 번개 | ISS, 2025.7.3 |
+| 5 | 우주유영 중 발밑의 지구 | 250마일 ≈ 400km. 우주비행사의 발만 보이고 얼굴은 없다 |
+| 6 | 달로 가며 돌아본 지구 | 아르테미스 2호, 달 전이 궤도 진입 뒤 |
+| 7 | 달 뒤로 지는 지구 | 아르테미스 2호 달 근접 비행 |
+| 8 | 창백한 푸른 점 | 보이저 1호, 약 60억km. 점에 빨간 원을 그렸다 |
+
+- **음악**: Kevin MacLeod "Floating Cities" (CC BY 4.0).
+- **qa_review**: 11/11 PASS(길이 25.2초, 제목 호기심 "차이", 첫 전환 3.2초, 최장 장면 3.2초, −13.9 LUFS, 검은 화면 없음).
+- **출처**: NASA Image and Video Library. 모두 NASA 직원이나 NASA 카메라가 찍은 것이고, 페이지는 아래와 같다. PIA23645는 NASA/JPL-Caltech다.
+  - `everest`: iss069e003192 (JSC) — https://images.nasa.gov/details/iss069e003192
+  - `citylight`: iss073e0257211 (JSC) — https://images.nasa.gov/details/iss073e0257211
+  - `jet`: iss073e0281502 (JSC) — https://images.nasa.gov/details/iss073e0281502
+  - `aurora`: iss072e159172 (JSC) — https://images.nasa.gov/details/iss072e159172
+  - `orion`: art002e000193 (JSC) — https://images.nasa.gov/details/art002e000193
+  - `earthset`: art002e021278 (JSC) — https://images.nasa.gov/details/art002e021278
+  - `dot`: PIA23645 (JPL) — https://images.nasa.gov/details/PIA23645
+  - `foot`: iss061e064798 (JSC) — https://images.nasa.gov/details/iss061e064798
+
+### `story1` 사진 9장이 기록한 바다가 땅이 된 사흘 (25.2초, 24.5MB)
+
+- **벤치마크**
+  - 틈새지식 「사진 21장이 기록한 역사적인 화산 폭발」: 8,558,356회, 2026-07-22, 흰 카드 + 연속 사진.
+  - 지구촌동물극장의 흰 카드 + 장면마다 한 줄 이야기 자막: 9/30, 중앙값 16만.
+- **동물 영상을 쓰지 않은 이유(30분 조사)**
+  - Yellowstone NPS 영상 자료실(NPS/Neal Herbert, "Public domain")에서 들소 새끼 영상을 찾았다. 하지만 이야기가 약했다.
+  - USFWS NCTC 독수리 캠은 Outdoor Channel과의 협력 사업이다.
+  - NOAA 고래 구조 영상은 협력 단체 크레디트가 섞여 있다.
+  - 그래서 대안이던 USGS 연속 사진으로 갔다.
+- **이야기(실화, 2-1절 기준 점검)**
+  - 한 줄 요약: "용암이 사흘 만에 바다 하나를 메워 땅으로 만들었다."
+  - 커지는 흐름: 솟는 용암 → 12.5km 흐름 → 도로를 덮음 → 바다까지 457m → 바다에 닿음 → 만이 사라짐 → 새 땅 → 마을 일부만 남음 → 끓는 바다.
+  - 4번째 장면에서 메워지기 전의 만을 빨간 원으로 보여 준다. 6번째 장면의 "만이 통째로 메워졌다"가 그 원으로 납득된다.
+  - 감정은 "소름·압도" 하나다. 사람은 나오지 않는다.
+- **사실 근거(USGS 사진 설명)**
+  - 분수 높이 40~70m(6.7), 용암 수로 약 12.5km(6.7).
+  - 6.3 오전 7시 해안까지 500야드(457m).
+  - 6.3 밤 10시 30분까지 바다 도달.
+  - 6.5 아침 카포호 만이 완전히 메워짐.
+  - 6.6 Kapoho Beach Lots 마을의 남은 부분.
+- **음악**: Kevin MacLeod "Lightless Dawn" (CC BY 4.0). 효과음은 장면 전환마다 whoosh.
+- **qa_review**: 11/11 PASS(25.2초, 제목 호기심 숫자, 첫 전환 2.8초, 최장 2.8초, −14.0 LUFS).
+- **출처**: 미국 지질조사국(USGS) 하와이 화산 관측소, "Photo and Video Chronology – Kīlauea" 2018.6.2~6.7. 페이지마다 "Sources/Usage: Public Domain"이라고 적혀 있다.
+  - 하와이 카운티 소방서가 찍은 Green Lake 사진은 뺐다.
+  - `road`: vhp_img6334.jpg — https://www.usgs.gov/center-news/photo-and-video-chronology-k-lauea-ne-2-2018
+  - `front`: vhp_img6343.jpg — https://www.usgs.gov/center-news/photo-and-video-chronology-k-lauea-ne-3-2018
+  - `entry`: vhp_img6348.jpg — https://www.usgs.gov/center-news/photo-and-video-chronology-k-lauea-ne-4-2018
+  - `filled`: multimediaFile-2176.jpg — https://www.usgs.gov/center-news/photo-and-video-chronology-k-lauea-ne-5-2018
+  - `delta`: multimediaFile-2182.jpg — https://www.usgs.gov/center-news/photo-and-video-chronology-k-lauea-ne-6-2018
+  - `remains`: multimediaFile-2185.jpg — https://www.usgs.gov/center-news/photo-and-video-chronology-k-lauea-ne-6-2018
+  - `channel`: multimediaFile-2191.jpg — https://www.usgs.gov/center-news/photo-and-video-chronology-k-lauea-ne-7-2018
+  - `fountain`: multimediaFile-2190.jpg — https://www.usgs.gov/center-news/photo-and-video-chronology-k-lauea-ne-7-2018
+  - `laze`: vhp_img6376.jpg — https://www.usgs.gov/center-news/photo-and-video-chronology-k-lauea-ne-7-2018
+
+### 업로드 문구
+
+**breath1**: 보는 것만으로 숨 멎는 높이 차이 ㄷㄷ
+```
+국제우주정거장(고도 약 400km)에서 본 에베레스트와 오로라, 우주 쪽으로 솟는 번개 '거대 제트', 우주유영 중 발밑으로 보이는 지구, 2026년 아르테미스 2호가 달 뒤에서 찍은 지구, 그리고 1990년 보이저 1호가 약 60억km 밖에서 찍은 '창백한 푸른 점'까지. 모두 NASA가 공개한 실제 사진입니다.
+
+▶ [채널명] 채널 구독: https://www.youtube.com/@[핸들]
+
+출처: 사진: NASA (ISS 승무원·외부 카메라 iss069e003192, iss072e159172, iss073e0257211, iss073e0281502, iss061e064798; Artemis II art002e000193, art002e021278) · NASA/JPL-Caltech (Pale Blue Dot Revisited, PIA23645) · 음악: "Floating Cities" Kevin MacLeod (incompetech.com), CC BY 4.0 (creativecommons.org/licenses/by/4.0) · NASA는 이 영상을 보증하거나 후원하지 않습니다. 고도는 NASA 사진 설명 기준입니다(257~259마일 ≈ 414~417km)
+
+#Shorts #우주 #지구 #NASA #오로라 #국제우주정거장 #아르테미스 #창백한푸른점 #보이저 #높이차이
+```
+고정 댓글: 몇 번째 사진에서 숨 멎었어요? 🌍
+
+**story1**: 사진 9장이 기록한 바다가 땅이 된 사흘 ㄷㄷ
+```
+2018년 하와이 킬라우에아 화산의 8번 균열(fissure 8)에서 솟은 용암은 약 12.5km를 흘러 6월 3일 밤 카포호 만에 닿았고, 6월 5일 아침에는 만 전체를 메웠습니다. 미국 지질조사국(USGS) 하와이 화산 관측소가 헬기에서 찍은 사진 9장으로 그 사흘을 따라갑니다.
+
+▶ [채널명] 채널 구독: https://www.youtube.com/@[핸들]
+
+출처: 사진: 미국 지질조사국(USGS) 하와이 화산 관측소, Photo and Video Chronology – Kīlauea (2018.6.2~6.7) · 음악: "Lightless Dawn" Kevin MacLeod (incompetech.com), CC BY 4.0 (creativecommons.org/licenses/by/4.0) · USGS는 이 영상을 보증하거나 후원하지 않습니다. 날짜·거리·높이는 USGS 사진 설명 기준입니다
+
+#Shorts #화산 #하와이 #킬라우에아 #용암 #자연재해 #USGS #실제사진 #지구
+```
+고정 댓글: 사흘 만에 바다가 땅이 됐다니… 직접 보면 어떨까요? 🌋
+
+## 쇼츠 50만+ AI: 이미지 모델 시험 (제작 중단)
+
+- **무엇을 하려 했나.** 사용자가 "Ai로 그만큼 만들수 있는걸 만들어줘"라고 했다. 그래서 디로록식 AI 이미지 괴담(`aihorror1`)과 똘킹식 AI 일러스트+텍스트 화제(`aitopic1`)를 만들려 했다.
+- **왜 멈췄나.** 사용자가 "괴담도 별로야"라고 해서 괴담은 버렸다. 화제 편에는 조건이 셋 붙었다. 똘킹의 50만+ 영상이 목소리 없이(글과 음악만) 되는지, 공포가 아닌지, AI 그림을 그림이라고 밝히고 만들 수 있는지다. 첫 조건은 확인하지 못해서 제작을 멈췄다.
+  - YouTube 영상 페이지가 "로그인하여 봇이 아님을 확인하세요"와 `LOGIN_REQUIRED`를 돌려줬다. 규칙대로 30분 동안 YouTube를 멈췄고, 그 뒤에는 썸네일(`oardefault.jpg`)만 2.6초 간격으로 봤다. 썸네일로는 소리를 알 수 없다. 영상과 음성은 받지 않았다.
+- **썸네일에서 본 것** (저장소에는 넣지 않았다)
+  - **똘킹 33편:** 검정 화면 위에 흰 2줄 제목(줄마다 약 9~13자, 끝에 이모지)이 있다. 그 아래 y 약 400~1470에 정사각 그림 한 장이 있고, 그림 아래쪽에 검정 상자 자막(흰 글씨 1~2줄)과 큰 외곽선 글자("이걸 먹었군요", "잔인한 구도", "완벽 포장")가 얹힌다. 화면 아래 약 23%는 검정이다.
+    - 그림은 웹툰풍 AI 일러스트가 약 절반이다.
+    - 나머지 절반은 남의 커뮤니티 글, 카톡, 실사 사진의 캡처다. 실존 연예인(「남주혁 피지컬」), 남의 시간표 사진, OTT 화면도 있다.
+    - 업로드 제목은 "~.jpg"와 이모지로 끝난다.
+  - **디로록 33편:** 3D 인형 같은 캐릭터가 화면을 채운다. 얼굴이 크고 방이 어둡다. 빨간 한 단어 제목이 있거나 아예 없다. 자막은 작은 흰 글씨로 화면 가운데쯤에 있고, 대사는 따옴표에 넣는다.
+- **이미지 모델:** SDXL base 1.0 + SDXL-Lightning 4-step(CreativeML OpenRAIL++-M)을 stable-diffusion.cpp(CPU)로 돌린다. 640×1152 한 장에 250~330초가 걸린다. FLUX.1-schnell은 768×1344에서 한 스텝에 858초라 쓸 수 없었다.
+  - 일관성: 인물 시트 문장과 시드를 고정했다. 옷과 머리는 이어지지만 얼굴과 그림체는 장면마다 달라진다.
+  - 자세한 내용과 라이선스, 명령은 `aigen/README.md`에 있다. 시험 그림은 `media/aigen/test/contact.jpg`에 있다.
+- 공유 파일(`src/ClipShort.tsx`, `prep.py`)은 바꾸지 않았다. 렌더한 영상, 업로드 문구, 채널 항목도 없다.

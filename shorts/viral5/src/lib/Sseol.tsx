@@ -8,6 +8,7 @@ import { clamp, eBack, eInOut, eOut, prog } from "./fx";
 import { Marked } from "./Marked";
 import { Doodle, PhotoBackdrop } from "./Doodle";
 import { Chibi, type Look } from "./Chibi";
+import { PLACES, Place } from "./Places";
 
 export type Mood = "neutral" | "happy" | "laugh" | "shock" | "sad" | "cry" | "angry" | "smug" | "shy" | "think" | "sleep" | "love" | "sick";
 /** a character: `mood` until steps[2], then `to` (a reaction mid-scene); x is 0..1 across the frame */
@@ -249,7 +250,7 @@ const Backdrop: React.FC<{ kind: string; h: number; sign?: string; tagged?: bool
       {Array.from({ length: 46 }, (_, k) => box({ left: (k * 233) % 1060, top: (k * 157) % (F - 60), width: 5, height: 46, borderRadius: 3, background: "rgba(225,240,255,.75)", transform: "rotate(14deg)" }, 20 + k))}
       {box({ left: 0, right: 0, top: F, bottom: 0, background: "#6f7883" })}{box({ left: 0, right: 0, top: F, height: 26, background: "#a9b3bd" })}
       {[[120, 90, 220], [560, 130, 300], [860, 80, 180]].map(([x, y, w], k) => box({ left: x, top: F + y, width: w, height: 34, borderRadius: "50%", background: "rgba(190,215,240,.7)" }, 80 + k))}</>);
-    default: return box({ inset: 0, background: kind });
+    default: return PLACES.has(kind) ? <Place kind={kind} h={h} /> : box({ inset: 0, background: kind });
   }
 };
 

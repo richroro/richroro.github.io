@@ -1,0 +1,230 @@
+{
+ "credit": "사진: NASA",
+ "layout": "card",
+ "card": {
+  "items": [
+   {
+    "at": 0.0,
+    "ko": "고도 400km에서 본 에베레스트",
+    "en": "Mount Everest · ISS"
+   },
+   {
+    "at": 3.15,
+    "ko": "고도 414km에서 본 오로라",
+    "en": "Aurora · ISS"
+   },
+   {
+    "at": 6.3,
+    "ko": "고도 417km, 번개 치는 밤",
+    "en": "Lightning & city lights · ISS"
+   },
+   {
+    "at": 9.45,
+    "ko": "우주 쪽으로 솟는 번개 '거대 제트'",
+    "en": "Gigantic Jet · ISS"
+   },
+   {
+    "at": 12.6,
+    "ko": "발밑 400km 아래가 지구",
+    "en": "Spacewalk · ISS"
+   },
+   {
+    "at": 15.75,
+    "ko": "달로 가면서 돌아본 지구",
+    "en": "Earth from Orion · Artemis II"
+   },
+   {
+    "at": 18.9,
+    "ko": "달 뒤로 지는 지구",
+    "en": "Earthset · Artemis II"
+   },
+   {
+    "at": 22.05,
+    "ko": "60억km 밖, 저 점이 지구",
+    "en": "Pale Blue Dot · Voyager 1",
+    "ring": {
+     "x": 0.5,
+     "y": 0.5,
+     "r": 0.06
+    }
+   }
+  ],
+  "credit": "사진: NASA, NASA/JPL-Caltech",
+  "badge": {
+   "name": "세상 신기한 도감",
+   "icon": "도",
+   "color": "#1d4e89"
+  }
+ },
+ "sources": {
+  "everest": {
+   "file": "everest.jpg",
+   "label": "The Himalayas and Mount Everest in Nepal (iss069e003192, NASA)",
+   "url": "https://images.nasa.gov/details/iss069e003192",
+   "credit": "사진: NASA"
+  },
+  "aurora": {
+   "file": "aurora.jpg",
+   "label": "The aurora borealis blankets the Earth (iss072e159172, NASA)",
+   "url": "https://images.nasa.gov/details/iss072e159172",
+   "credit": "사진: NASA"
+  },
+  "citylight": {
+   "file": "citylight.jpg",
+   "label": " The city lights of Southeast Asia and lightning storms streak below the International Space Station (iss073e0257211, NASA)",
+   "url": "https://images.nasa.gov/details/iss073e0257211",
+   "credit": "사진: NASA"
+  },
+  "jet": {
+   "file": "jet.jpg",
+   "label": "iss073e0281502 (iss073e0281502, NASA)",
+   "url": "https://images.nasa.gov/details/iss073e0281502",
+   "credit": "사진: NASA"
+  },
+  "foot": {
+   "file": "foot.jpg",
+   "label": "iss061e064798 (iss061e064798, NASA)",
+   "url": "https://images.nasa.gov/details/iss061e064798",
+   "credit": "사진: NASA"
+  },
+  "orion": {
+   "file": "orion.jpg",
+   "label": "Artemis II Captures Dark Side of the Earth  (art002e000193, NASA)",
+   "url": "https://images.nasa.gov/details/art002e000193",
+   "credit": "사진: NASA"
+  },
+  "earthset": {
+   "file": "earthset.jpg",
+   "label": "A Breathtaking Earthset from Orion (art002e021278, NASA)",
+   "url": "https://images.nasa.gov/details/art002e021278",
+   "credit": "사진: NASA"
+  },
+  "dot": {
+   "file": "dot43.jpg",
+   "label": "Pale Blue Dot Revisited (PIA23645, NASA/JPL-Caltech)",
+   "url": "https://images.nasa.gov/details/PIA23645",
+   "credit": "사진: NASA/JPL-Caltech"
+  }
+ },
+ "clips": [
+  {
+   "src": "everest",
+   "from": 0.0,
+   "zoom": [
+    1.0,
+    1.1
+   ],
+   "focus": "50% 50%"
+  },
+  {
+   "src": "aurora",
+   "from": 3.15,
+   "zoom": [
+    1.05,
+    1.12
+   ],
+   "focus": "50% 55%"
+  },
+  {
+   "src": "citylight",
+   "from": 6.3,
+   "zoom": [
+    1.05,
+    1.12
+   ],
+   "focus": "50% 60%"
+  },
+  {
+   "src": "jet",
+   "from": 9.45,
+   "zoom": [
+    1.3,
+    1.4
+   ],
+   "focus": "40% 45%"
+  },
+  {
+   "src": "foot",
+   "from": 12.6,
+   "zoom": [
+    1.0,
+    1.08
+   ],
+   "focus": "50% 50%"
+  },
+  {
+   "src": "orion",
+   "from": 15.75,
+   "zoom": [
+    1.0,
+    1.08
+   ],
+   "focus": "45% 50%"
+  },
+  {
+   "src": "earthset",
+   "from": 18.9,
+   "zoom": [
+    1.05,
+    1.12
+   ],
+   "focus": "50% 55%"
+  },
+  {
+   "src": "dot",
+   "from": 22.05,
+   "zoom": [
+    1.0,
+    1.0
+   ],
+   "focus": "50% 50%"
+  }
+ ],
+ "music": {
+  "file": "music/Floating Cities.mp3",
+  "gain": 0.6,
+  "start": 0.0
+ },
+ "sfx": [
+  [
+   3.15,
+   "pop",
+   0.4
+  ],
+  [
+   6.3,
+   "pop",
+   0.4
+  ],
+  [
+   9.45,
+   "pop",
+   0.4
+  ],
+  [
+   12.6,
+   "pop",
+   0.4
+  ],
+  [
+   15.75,
+   "pop",
+   0.4
+  ],
+  [
+   18.9,
+   "pop",
+   0.4
+  ],
+  [
+   22.05,
+   "pop",
+   0.4
+  ],
+  [
+   22.45,
+   "ding",
+   0.35
+  ]
+ ]
+}
