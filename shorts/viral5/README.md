@@ -8372,6 +8372,101 @@ MEDIA=$PWD/media python3 politics/prep_split.py people4 && ./render.sh people4 f
 ```
 고정 댓글: 1969년 생중계, 여러분 부모님이나 조부모님도 보셨대요?
 
+## 쇼츠: 유명인 감동 메시지 (검증된 명언) (`quote1`~`quote6`)
+
+사용자 요청은 "더 많은 유명인으로 만들어줘 감동 영감을 주는 메시지를 전달하고 싶어"였다(수익화는 상관없음). 유명인 인터뷰 영상은 대부분 저작권이 있어서 쓸 수 없다. 그래서 이 형식은 **유명인이 실제로 한 말(검증한 원문)을 무음 메시지 카드로** 보여 준다. 한 편이 한 사람의 실제 한 순간(실패, 거절, 절망)을 따라가고, 이야기가 꺾이는 지점에 짧은 원문 한마디를 둔다. 목소리(TTS·내레이션)는 없고, 음악은 Kevin MacLeod다. 다른 작업자의 육성 클립 형식과 짝이 된다.
+
+### 벤치마크와 숫자 (`research/` CSV, 영상은 열지 않음)
+
+| 채널(구독) | 제목 | 조회수 | 출처 |
+|---|---|---:|---|
+| 유성호의 데맨톡 | 스티브 잡스가 죽기 전에 가장 후회한 것은? | 63만 | research-500k-people.csv |
+| 더셀럽라운지 | 오드리 헵번이 죽기 전 가장 행복했던 순간 | 52만 | research-500k-people.csv |
+| 인생지혜(18.6만) | 100만명이 감동한 레전드 인생명언.. | 96.8만 | research-500k-drawn.csv |
+| 인생뜀틀 | 이 방법을 모르면 평생 가난하게 산다. 워런 버핏 5가지 명언 | 149만 | research-500k-people.csv |
+| 인생의 문장들 | 돈이 모이는 습관 3가지 \| 워런 버핏이 강조한 부자의 원칙 | 208만 | research-500k-people.csv |
+| 짧은명언:AWAKE(22.3만) | 올림픽 역사에 길이 남을 아름다운 장면 #동기부여 #감동 | 276만 | research-500k-footage.csv |
+| 짧주(3.4만) | 진짜 유명한 명언인데 누가 했는지 모른다는 것 | 101만 | research-500k-footage.csv |
+| 인생보물창고(3.1만) | 다산 정약용이 18년 유배 끝에 남긴 인생의 문장 | 11만 | research-500k-drawn.csv |
+| 인생보물창고 | 배우 윤여정의 인생? 그냥 나답게 살다 가~ | 12만 | research-500k-drawn.csv |
+
+- **정직하게**: 명언 전문 채널의 반복 적중률은 낮다. 인생지혜는 최근 30편 중 0편이 50만을 넘었고 30편 중앙값은 3만이다(research-500k-drawn.md). 성공한스푼(CEO 명언)은 1/30, 조언모음은 1/30이다(research-500k-people.md 2절). 크게 터진 편은 **인물 이름 + 극적인 순간**("죽기 전", "18년 유배 끝에", "가장 후회한")을 제목에 건 것이다. 그래서 명언 나열 대신 인물 한 명의 실제 사연 한 줄을 쓰기로 했다.
+- **흔한 함정**: 데맨톡 제목의 소재인 "잡스가 죽기 전 남긴 말"(병상 연설)은 잡스가 한 말이 아니라는 것이 널리 확인된 가짜다. 이 시리즈는 원문을 찾을 수 있는 말만 쓴다.
+- **YouTube 요청 없음**: 오늘 이 환경은 YouTube에 막혀 있어서 이번 작업에서는 YouTube에 한 번도 요청하지 않았다. 숫자는 위 CSV 그대로다. 그래서 벤치마크의 길이와 화면은 확인하지 못했다(추정). 길이는 REVIEW.md의 31~45초 기준에 맞췄다.
+
+### 무엇을 맞췄나
+
+| 항목 | 벤치마크 | 우리 |
+|---|---|---|
+| 제목 | 「○○가 죽기 전 남긴 말」, 「○○ 끝에 남긴 인생의 문장」 | 「(시련) + 인물 + 남긴 한마디?」: 「자기 회사에서 쫓겨난 / 잡스가 남긴 한마디?」 등. 벤치마크 제목은 베끼지 않았다 |
+| 첫 화면 | 인물 얼굴 + 제목 | 흰 카드(Card.tsx) 위 인물 사진(PD 사진이 있는 4편). 조던·짐 캐리는 사진이 없어 큰 글자 카드 |
+| 이야기 | 인물 사연 → 명언 | 실화 7~8장면(장면마다 3초, 한 줄 자막) → 원문 한마디(4.4초) |
+| 명언 화면 | 한국어 큰 글씨 | 어두운 카드에 한국어 번역을 크게, 그 아래 원문(영어·독일어)을 작게, 말한 사람과 자리 |
+| 소리 | 잔잔한 음악 | 목소리 없음. Kevin MacLeod(따뜻한 곡) + 장면마다 작은 pop |
+| 화면 글자 | | 출처·날짜 칩 없음. "저작권", "퍼블릭 도메인", "공공누리" 없음. 크레디트는 설명란에만 |
+
+### 영상
+
+| id | 화면 제목 | 인물(분야) | 길이 | 용량 (무음악) | 한 줄 요약 / 감정 |
+|---|---|---|---|---|---|
+| `quote1` | 자기 회사에서 쫓겨난 / 잡스가 남긴 한마디? | 스티브 잡스(사업) | 31.6초 | 3.7MB (3.0MB) | 자기가 세운 회사에서 서른에 해고 → 넥스트·픽사 → 애플로 복귀 → "벽돌로 머리를 칠 때… 믿음을 잃지 마세요" / 뭉클 |
+| `quote2` | 1군 명단에 없던 15살 / 조던이 남긴 한마디? | 마이클 조던(스포츠) | 31.6초 | 2.5MB (1.7MB) | 대표팀 명단에 없어 방에서 울던 15살 → 2군 에이스 → 31년 뒤 명예의 전당 객석에 그 친구 → "한계는 두려움처럼 착각일 뿐" / 뭉클·사이다 |
+| `quote3` | 귀가 멀어가던 베토벤이 / 몰래 남긴 편지? | 베토벤(음악) | 31.8초 | 7.9MB (7.2MB) | 귀가 멀어 가는 걸 숨기던 서른한 살, 부치지 않은 편지 속 "오직 예술이 나를 붙잡았다" → 9번 교향곡 초연, 돌아서서야 본 환호 / 뭉클 |
+| `quote4` | 2년 시한부 판정받은 / 호킹이 남긴 한마디? | 스티븐 호킹(과학) | 31.2초 | 7.8MB (7.1MB) | 21살에 2년 시한부 → 목소리를 잃고도 연구 → 55년을 더 살며 블랙홀 강연에서 "빠져나갈 길은 있습니다" / 희망 |
+| `quote5` | 보지도 듣지도 못했던 / 헬렌 켈러의 한마디? | 헬렌 켈러(역사 인물) | 31.6초 | 7.5MB (6.8MB) | 어둠과 침묵 → 우물가의 w-a-t-e-r → 대학 우등 졸업 → "희망 없이는 아무것도 할 수 없다" / 희망 |
+| `quote6` | 짐 캐리가 아버지에게 / 배운 인생의 한마디? | 짐 캐리(영화) | 31.6초 | 2.2MB (1.5MB) | 꿈을 접고 안전한 길을 택한 아버지가 해고됨 → 아들은 웃기는 일에 인생을 걺 → "어차피 실패할 수 있다면 사랑하는 일에" / 뭉클 |
+
+- **qa_review.py**: 여섯 편 모두 11/11 PASS(FAIL·WARN 0). −14.0 / −14.0 / −14.3 / −14.0 / −13.9 / −14.0 LUFS, 최장 장면 4.4초(명언 카드), 1080×1920. first.png와 sheet.png는 직접 봤다. 처음 렌더에서 quote2는 비슷한 밝은 색 카드 두 장(2군 에이스 → 우승 6번)이 한 장면으로 잡혀 장면 길이 WARN(6.0초)이 나서, 우승 6번 카드를 남색으로 바꿔 다시 렌더했다. 명언 카드는 한국어 줄이 0.3초 간격으로 차례로 떠오르므로 시트의 첫 칸이 비어 보일 수 있다.
+- **결말 유형(2-1절 9번)**: 역전(잡스·호킹), 따뜻한 반전(조던: 떨어뜨린 친구를 31년 뒤 초대석에), 의외의 이유(베토벤: 유서처럼 보이던 편지가 버틴 이유), 깨달음(켈러), 아버지의 교훈(짐 캐리). 같은 뼈대를 연달아 쓰지 않도록 업로드 순서를 섞었다(UPLOAD_PLAN).
+- **이야기 사실**: 자막 한 줄 한 줄은 아래 출처에 있는 내용만 썼다. 원문이 없는 감정 묘사("울고 난 다음 날부터 연습")는 지웠다.
+
+### 명언 검증 (원문과 출처)
+
+| id | 화면 한국어 | 원문 | 출처와 확인 |
+|---|---|---|---|
+| quote1 | 가끔 인생이 벽돌로 머리를 내리칠 때가 있습니다. 믿음을 잃지 마세요. | "Sometimes life hits you in the head with a brick. Don't lose faith." | 스탠퍼드대 졸업식 연설(2005-06-12). 연설문(Stanford Report 게재본, Entrepreneur 재게재본)에서 확인. 이야기의 숫자도 같은 연설: "started Apple in my parents' garage when I was 20", "in 10 years … a $2 billion company with over 4,000 employees", "I had just turned 30. And then I got fired", "very publicly out", "thought about running away from the Valley", NeXT·Pixar·"Toy Story", "Apple bought NeXT, I returned to Apple", "getting fired from Apple was the best thing that could have ever happened to me" |
+| quote2 | 절대 안 된다고 말하지 마세요. 한계는 두려움처럼 대개 착각일 뿐이니까요. | "Never say never. Because limits, like fears, are often just an illusion." | 농구 명예의 전당 헌액 연설(2009-09-11) 연설문. 같은 연설의 "Leroy Smith … when I got cut, he made the team on the varsity team, and he's here tonight", "I wanted to prove not just to Leroy Smith, not just to myself". **뺀 것**: "I've failed over and over…"(1997 나이키 광고 'Failure', 카피라이터 Jamie Barrett가 쓴 대본)와 "I can accept failure… can't accept not trying"(원출처를 찾지 못함) |
+| quote3 | 오직 예술이 나를 붙잡았다. 내 안의 모든 걸 꺼내기 전엔 세상을 떠날 수 없었다. | "nur sie die Kunst, sie hielt mich zurück, ach es dünkte mir unmöglich, die Welt eher zu verlassen, bis ich das alles hervorgebracht …" | 하일리겐슈타트 유서(1802-10-06), 독일어 원문은 de.wikisource(Beethoven-Briefwechsel Gesamtausgabe, Henle 1996 대조본). 원문이 독일어라 영어 대신 독일어를 작게 넣었다. 한국어는 직접 옮겼다. 자살 언급은 화면에 쓰지 않았다 |
+| quote4 | 블랙홀에 빠진 것 같아도 포기하지 마세요. 빠져나갈 길은 있습니다. | "If you feel you are in a black hole, don't give up. There's a way out." | 2015년 8월 스톡홀름 KTH 공개 강연. The Christian Science Monitor(2015-08-25), Cosmos 등 보도 |
+| quote5 | 낙관은 성취로 이끄는 믿음이다. 희망 없이는 아무것도 할 수 없다. | "Optimism is the faith that leads to achievement; nothing can be done without hope." | Helen Keller, *Optimism: An Essay*(1903) 본문, Project Gutenberg #31622에서 확인. 흔히 퍼진 "…without hope and confidence"는 원문과 다르다(설명란에 적음) |
+| quote6 | 원하지 않는 일을 해도 실패할 수 있다. 그러니 사랑하는 일에 걸어 봐라. | "You can fail at what you don't want, so you might as well take a chance on doing what you love." | 마하리시 경영대학 졸업식 연설(2014년 5월) 연설문. 아버지 이야기("My father could have been a great comedian, but he didn't believe that was possible for him", 회계사, 12살 때 해고)와 "fear disguised as practicality"도 같은 연설 |
+
+### 이야기 사실의 출처
+
+- **조던**: Newsweek(1978년 레이니 고교, 15살 5피트 10인치, 친구 리로이 스미스 6피트 7인치, 방에서 울었다, 그해 2군의 스타), NBC Sports·Biography.com(실제로는 2군 배정이었다). 그래서 화면에는 "탈락" 대신 "1군 명단에 없던"이라고 썼다. 우승 6번·MVP 5번은 NBA 공식 기록.
+- **베토벤**: 유서 본문(동생 카를·요한에게, 부치지 않음, 1827년 사후 발견, 함부르크 국립대학도서관 소장). 9번 교향곡 초연 1824-05-07 빈. 박수를 보지 못해 돌려세워졌다는 장면은 목격자 회고(Caroline Unger, Thalberg)가 시점에서 엇갈린다. 화면은 "돌아선 그의 눈앞엔 환호가 있었다"까지만 썼다.
+- **호킹**: hawking.org.uk 공식 전기(21살 진단, 2년, 1985년 기관절개로 목소리를 잃음, '시간의 역사' 2천만 부 이상, 2018-03-14 76세 별세).
+- **켈러**: *The Story of My Life*(1903, Gutenberg #2397): 생후 19개월, 1887-03-03 "three months before I was seven", 우물가 w-a-t-e-r, 1890년 봄 말하기를 배움. 래드클리프 1904 우등 졸업, 시청각장애인 최초 학사(AFB 연보, Perkins).
+- **짐 캐리**: 연설문, 1994년 세 편은 IMDb 약력.
+
+### 그림과 사진 (항목별, 모두 확인한 페이지 기준)
+
+- **원칙**: 사진은 PD·CC0·CC BY만 쓴다. 영화 장면, 방송 화면, 리그 영상, 로고는 쓰지 않았다. 나머지는 직접 만든 글자 카드와 그림(공책 명단, 농구공, 오선, 별)이다.
+- **quote1**: Bernard Gotfryd, "Steve Jobs [Apple computer]"(1984), 의회도서관 loc.gov/item/2020731396, "No known restrictions on publication"(Gotfryd 컬렉션). 맥킨토시 앞면의 애플 로고는 화면 밖으로 잘랐다(위 65%만 씀).
+- **quote3**: 의회도서관, 모두 "No known restrictions": 2003663903(1870 석판화, 슈틸러 초상을 따름), 2002714663(1892), 2004671942(판화), 2025709323(베토벤하우스 엽서, 1920. 엽서 오른쪽 글자 칸은 잘라냄).
+- **quote4**: NASA/Paul E. Alers, NASA 50주년 강연(2008) 200804210005HQ·200804210008HQ, NASA/JPL-Caltech PIA16695(블랙홀 그림). NASA 로고와 글자가 있는 컷(0004, 0009, 0010)은 쓰지 않았다.
+- **quote5**: 의회도서관, 모두 "No known restrictions": 94515457(1904년 무렵 초상), 2004672077(앤 설리번과, 1897), 2002706625(Gerhard Sisters, 1914), 2016691950(C.M. Bell, 1891), 2002706506(졸업 사진, 1904). 대지 테두리와 사진 번호 글자는 잘라냈다.
+- **quote2·quote6**: 사진 없음(글자 카드와 직접 그린 그림).
+- **Wikimedia Commons**: 이번 작업 동안 API가 거의 매번 429를 돌려줬다(2026-10-11 10:50~11:35 UTC 무렵). 규칙대로 물러섰고 우회하지 않았다. 검색 한 번이 통과했을 때 CC BY 2.0 후보(짐 캐리 2008 Flickr "Jennifer", 잡스 2007 Steve Jurvetson)를 봤지만, 파일 페이지를 읽지 못해 라이선스를 확인하지 못했으므로 쓰지 않았다. 확인되면 그 사진으로 바꿔 넣을 수 있다.
+- **음악**: Kevin MacLeod (incompetech.com), CC BY 4.0: "Inspired"(quote1·quote2), "Touching Moments Two - Higher"(quote3), "Floating Cities"(quote4), "Healing"(quote5), "Heartwarming"(quote6). "Inspired"와 "Healing"은 fetch.sh에 더했다.
+
+### 템플릿 변경 (다른 형식은 그대로)
+
+- **새 파일**
+  - `src/lib/Quote.tsx`: `QuoteShort`가 `CardShort`(흰 카드)를 그대로 그리고, 그림 상자 위에 글자 카드(`panel`)나 명언 카드(`quote`)를 얹는다. 따옴표는 Pretendard 글리프가 곧은 따옴표라 SVG로 그렸다.
+  - `media/quote/make_quote.py`: `media/<id>/quote.json` → `shorts/<id>/edit.json`, `script.json`, `build/<id>/timeline.json`.
+  - `media/quote/fetch_pics.py`: 사진을 받아 잘라서 `public/<id>/src/`에 두고, `media/<id>/sources.json`에 페이지·작가·라이선스를 적는다.
+- **공유 파일에 건 고리**
+  - `src/ClipShort.tsx`: import 한 줄, 그리고 `layout: "card"` 줄을 `isQuoteShort(d.card) ? <QuoteShort/> : <CardShort/>`로 바꿨다. card 항목에 `panel`이나 `quote`가 없는 기존 편은 그대로 CardShort로 간다.
+  - `fetch.sh`: 음악 "Inspired", "Healing".
+  - `upload/channels.json`: `quote` 채널.
+- **회귀 확인**: 손대지 않은 `drive1`을 다시 렌더했다(`python3 prep.py drive1 && ./render.sh drive1`, 빈 `build/drive1/timeline.json`). `final/drive1.mp4`와 **바이트까지 같다**(cmp 일치). 기존 card 편(deep·breath·how·fact 등)은 원본 클립이 public/ 밖이라 이 환경에서 다시 받지 않았다. 코드상으로는 card 항목에 `panel`·`quote`가 없으면 예전과 같은 `CardShort`로 간다.
+- **만드는 법**: `python3 media/quote/fetch_pics.py quote<n> && python3 media/quote/make_quote.py quote<n> && python3 prep.py quote<n> && ./render.sh quote<n> final/quote<n>.mp4 && ./render_nomusic.sh quote<n> && python3 qa_review.py quote<n>`.
+
+### 업로드 문구
+
+설명글은 `upload/specs/quote<n>.json` → `python3 upload/make_desc.py quote<n>` → `upload/txt/quote<n>.txt`, 채널별 모음은 `upload/quote.md`다. 설명란의 "보증·후원하지 않습니다" 줄은 지우지 않는다.
+
 
 ## 쇼츠 50만+: 역사 속 레전드 육성 (`politics/legend1` 제시 오언스, `legend2` 마이클 콜린스)
 

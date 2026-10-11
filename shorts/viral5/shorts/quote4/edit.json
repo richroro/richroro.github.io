@@ -1,0 +1,259 @@
+{
+ "credit": "",
+ "layout": "card",
+ "card": {
+  "items": [
+   {
+    "at": 0.0,
+    "ko": "21살 대학원생이 받은 진단",
+    "en": "스티븐 호킹"
+   },
+   {
+    "at": 3.2,
+    "ko": "근육이 점점 힘을 잃는 병, 루게릭병",
+    "panel": {
+     "big": "2년",
+     "small": "의사가 말한 남은 시간",
+     "bg": "#2b2d42",
+     "fg": "#ffffff"
+    }
+   },
+   {
+    "at": 6.2,
+    "ko": "그래도 우주 연구를 멈추지 않았다"
+   },
+   {
+    "at": 9.2,
+    "ko": "폐렴으로 목소리마저 잃었지만",
+    "panel": {
+     "big": "43살",
+     "small": "수술로 목소리를 잃었다",
+     "bg": "#FFD6C9"
+    }
+   },
+   {
+    "at": 12.2,
+    "ko": "컴퓨터 목소리로 세상과 말했다",
+    "panel": {
+     "big": "2,000만 부",
+     "small": "그가 쓴 책 '시간의 역사'",
+     "bg": "#FFE8A3"
+    }
+   },
+   {
+    "at": 15.2,
+    "ko": "그리고 아주 오래 살았다",
+    "panel": {
+     "big": "55년 더",
+     "small": "2년이라던 그는 76살까지 살았다",
+     "bg": "#D9F2D0"
+    }
+   },
+   {
+    "at": 18.2,
+    "ko": "73살, 블랙홀 강연에서",
+    "en": "스웨덴 스톡홀름"
+   },
+   {
+    "at": 21.2,
+    "ko": "어려운 물리 이야기 끝에",
+    "panel": {
+     "big": "블랙홀의\n비밀",
+     "bg": "#0b1026",
+     "fg": "#ffffff",
+     "doodle": "stars"
+    }
+   },
+   {
+    "at": 24.2,
+    "ko": "그가 사람들에게 건넨 말",
+    "quote": {
+     "ko": "블랙홀에 빠진 것 같아도/포기하지 마세요./빠져나갈 길은 있습니다.",
+     "orig": "If you feel you are in a black hole, don't give up. There's a way out.",
+     "who": "스티븐 호킹, 스톡홀름 강연"
+    }
+   },
+   {
+    "at": 28.6,
+    "ko": "2년을 선고받았던 사람의 말"
+   }
+  ],
+  "badge": {
+   "name": "오늘의 한마디",
+   "icon": "말",
+   "color": "#c2410c"
+  },
+  "box": {
+   "height": 900
+  },
+  "clipAudio": 0
+ },
+ "sources": {
+  "hawking": {
+   "file": "hawking.jpg",
+   "download": "https://images-assets.nasa.gov/image/200804210005HQ/200804210005HQ~large.jpg",
+   "url": "https://images.nasa.gov/details/200804210005HQ",
+   "label": "Stephen Hawking NASA 50th (2008)",
+   "author": "NASA/Paul E. Alers",
+   "licence": "public domain (NASA)"
+  },
+  "lecture": {
+   "file": "lecture.jpg",
+   "download": "https://images-assets.nasa.gov/image/200804210008HQ/200804210008HQ~large.jpg",
+   "url": "https://images.nasa.gov/details/200804210008HQ",
+   "label": "Stephen Hawking NASA 50th (2008)",
+   "author": "NASA/Paul E. Alers",
+   "licence": "public domain (NASA)"
+  },
+  "space": {
+   "file": "bh.jpg",
+   "download": "https://images-assets.nasa.gov/image/PIA16695/PIA16695~large.jpg",
+   "url": "https://images.nasa.gov/details/PIA16695",
+   "label": "Black Holes: Monsters in Space Artist Concept (PIA16695)",
+   "author": "NASA/JPL-Caltech",
+   "licence": "public domain (NASA)"
+  }
+ },
+ "clips": [
+  {
+   "from": 0.0,
+   "zoom": [
+    1.0,
+    1.08
+   ],
+   "focus": "50% 30%",
+   "src": "hawking",
+   "in": 0
+  },
+  {
+   "from": 3.2,
+   "zoom": [
+    1.0,
+    1.07
+   ],
+   "focus": "50% 40%"
+  },
+  {
+   "from": 6.2,
+   "zoom": [
+    1.0,
+    1.08
+   ],
+   "focus": "50% 70%",
+   "src": "lecture",
+   "in": 0
+  },
+  {
+   "from": 9.2,
+   "zoom": [
+    1.0,
+    1.07
+   ],
+   "focus": "50% 40%"
+  },
+  {
+   "from": 12.2,
+   "zoom": [
+    1.0,
+    1.07
+   ],
+   "focus": "50% 40%"
+  },
+  {
+   "from": 15.2,
+   "zoom": [
+    1.0,
+    1.07
+   ],
+   "focus": "50% 40%"
+  },
+  {
+   "from": 18.2,
+   "zoom": [
+    1.0,
+    1.1
+   ],
+   "focus": "50% 40%",
+   "src": "space",
+   "in": 0
+  },
+  {
+   "from": 21.2,
+   "zoom": [
+    1.0,
+    1.07
+   ],
+   "focus": "50% 40%"
+  },
+  {
+   "from": 24.2,
+   "zoom": [
+    1.0,
+    1.07
+   ],
+   "focus": "50% 40%"
+  },
+  {
+   "from": 28.6,
+   "zoom": [
+    1.08,
+    1.0
+   ],
+   "focus": "50% 30%",
+   "src": "hawking",
+   "in": 0
+  }
+ ],
+ "music": {
+  "file": "music/Floating Cities.mp3",
+  "gain": 0.5,
+  "start": 0.0
+ },
+ "sfx": [
+  [
+   3.2,
+   "pop",
+   0.25
+  ],
+  [
+   6.2,
+   "pop",
+   0.25
+  ],
+  [
+   9.2,
+   "pop",
+   0.25
+  ],
+  [
+   12.2,
+   "pop",
+   0.25
+  ],
+  [
+   15.2,
+   "pop",
+   0.25
+  ],
+  [
+   18.2,
+   "pop",
+   0.25
+  ],
+  [
+   21.2,
+   "pop",
+   0.25
+  ],
+  [
+   24.2,
+   "pop_hi",
+   0.25
+  ],
+  [
+   28.6,
+   "pop",
+   0.25
+  ]
+ ]
+}
