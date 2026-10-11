@@ -8688,3 +8688,73 @@ MEDIA=$PWD/media python3 politics/prep_split.py star1 && ./render.sh star1 final
 - 정책브리핑과 KTV 영상은 대부분 "허락 필요"다. 정책브리핑 저작권 담당자나 KTV 나누리(nanuri.ktv.go.kr)에 **이용 신청**을 하면 쓸 수 있다. 계정과 신청은 사용자가 해야 한다.
 - 지자체 직장운동부 선수(대전 오상욱, 용인 우상혁, 청주 김우진, 강원 황선우 등)의 새 영상이 자체 서버에 1유형으로 올라오는지 주기적으로 본다. 대전시 인터넷방송은 파일을 자체 호스팅하고 항목마다 유형을 표시하므로 확인이 쉽다.
 - 사진만 쓰면(정책브리핑 사진 일부는 1유형) 본인 목소리가 없다. 이번 요청의 형식(육성 + 자막)과 맞지 않아 만들지 않았다.
+
+## 쇼츠 50만+: 역사 속 레전드 육성 (`politics/legend1` 제시 오언스, `legend2` 마이클 콜린스)
+
+사용자 요청 "일론머스크처럼 유명인들의 주요 인상적인 인터뷰를 짤라서 쇼츠로… 나사 영상만 말고. 모든 분야 유명인"에 맞춰, 역사 속 레전드 본인 목소리로 만든 편이다. 틀은 people1~3·jensen과 같다: 본인 목소리, 위 영어·아래 한국어 자막, 검정 띠 질문형 제목, 음악·내레이션·TTS 없음. 채널은 유명인 인터뷰 채널(`celeb`, 접두어 `legend` 추가)이다.
+
+| id | 제목 (띠) | 인물·분야 | 길이 | 용량 | 기준 (조회수, 채널, URL) |
+| --- | --- | --- | --- | --- | --- |
+| `legend1` | 올림픽 4관왕에게 / 계획 묻자 그의 대답..? | 제시 오언스 · 스포츠 | 42.8초 | 28.1MB | 국내 「온 국민을 울렸던 올림픽 은메달 인터뷰」 122만, esports KBS, youtube.com/shorts/kaLbbUsxbWw · 제목 틀 「자폐 성향 아들의 질문에 일론 머스크가 한 대답」 193만, youtube.com/shorts/NcuRfgKWFcY · 해외 「Jessie Owens wins 100m Gold as Hitler Watches at 1936 Olympics」 56.9만, youtube.com/shorts/1a6mzFvkwuk(경기 영상), 「Jesse Owens Rare Interview」 11.7만, BIG 13, youtube.com/watch?v=6hLFgTFfzhE(육성 인터뷰) |
+| `legend2` | 달에 못 내리는 우주인, / 소감 묻자 그의 대답..? | 마이클 콜린스 · 과학(우주) | 35.6초 | 28.4MB | 국내 「미국이 그동안 달 착륙 영상을 숨겼던 이유 ㄷㄷ」 3285만, youtube.com/shorts/jTLNpabzt_s(달 착륙 소재) · 제목 틀 「~묻자 ~의 대답..?」(위 193만) · 해외 「Michael Collins, Apollo 11 astronaut - BBC HARDtalk」 26.1만, youtube.com/watch?v=e3ydGj00pKk(방송 인터뷰라 쓰지 않음), "loneliest man in history" 쇼츠들은 0.1~0.6만 |
+
+```bash
+MEDIA=$PWD/media python3 politics/prep_split.py legend1 && ./render.sh legend1 final/legend1.mp4 && python3 qa_review.py legend1
+MEDIA=$PWD/media python3 politics/prep_split.py legend2 && ./render.sh legend2 final/legend2.mp4 && python3 qa_review.py legend2
+# 원본(git 밖): media/legend/raw/un-un-1885x2.mp4, media/legend/nasa/a11pre.mp4. 주소와 쓴 구간은 media/legend/legend.json
+```
+
+- **qa_review**: 두 편 모두 FAIL 0이다. WARN은 채널 이름·핸들이 아직 자리표시자라는 것뿐이다(설명글 spec 포함). 처음 렌더에서 나온 WARN은 고쳤다: legend1 첫 장면 3.6초(첫 구간 3.3초로), 영어 자막 82자·77자(두 줄로 나눔).
+- **화면에 출처·날짜 없음**(사용자 규칙 "쇼츠 완성본에 출처 날짜는 넣지 말고"): 오른쪽 위 출처 칩을 없앴고(`"credit": ""`), 이름표와 첫 스티커에서 연도·날짜를 뺐다. 출처·날짜·NARA 번호는 설명란과 이 README에만 둔다.
+- **템플릿 변경 없음**: `prep_split.py`의 `trim`·`vf`·`single`·`stickers`만 썼다. 공유 파일은 `upload/channels.json`의 `celeb` prefixes에 `"legend"`만 더했다. 손대지 않은 `deep1`을 다시 렌더해 `final/deep1.mp4`와 바이트까지 같은 것을 확인했다(md5 ed7314d3…).
+- **로고**: legend1은 NARA가 화면 아래에 박은 타임코드와 기자들 마이크(방송국 이름표가 있을 수 있음)를 잘라 냈다(중간 샷은 아래 20% 자름, 클로즈업은 타임코드 자리만 흐리게). legend2는 기자석 이름표와 'JOHN F. KENNEDY SPACE CENTER' 패널 화면을 쓰지 않았고, 콜린스 셔츠에는 로고가 없다. 원본 픽셀 비율(10:11)은 `scale=656:480,setsar=1`로 바로잡았다.
+
+### legend1: 제시 오언스 (1936년 8월, 베를린 올림픽 4관왕 귀국 날)
+
+- **구간**(원본 초): 176.3–192.0(다음 계획: 오하이오 주립대로 돌아가 졸업장을 받겠다), 58.6–67.45(프로 전향?), 27.5–45.1(가장 짜릿했던 순간, 독일 음식). 같은 날 기자들이 같은 질문을 여러 번 찍었는데, 가장 또렷한 테이크를 골라 순서를 바꿔 이어 붙였다(흰 번쩍임). 설명란에 "답변 중 일부를 골라 이어 붙임"이라고 밝혔다.
+- **뺀 것**: 정학 처분(AAU suspension)을 묻는 질문과 답, 같은 답의 다른 테이크.
+- **자막 확인**: 공식 녹취록은 없다. faster-whisper small.en·medium.en(클립 전체)과 large-v3(쓴 구간)를 대조했다. 오언스가 "hundred-yard dash… hundred-meter dash, rather"로 말을 고친 곳은 large-v3대로 "100-meter dash"로 적었다(뜻은 같다). "marvelous thing"은 medium·large가 같고 small만 "sight"였다. 번역은 직접 했다.
+- **사실**: 베를린 올림픽 금메달 4개(100m·200m·멀리뛰기·400m 계주)는 오하이오 주립대 도서관 'Jesse Owens: A Lasting Legend'(library.osu.edu/site/jesseowens)에 있다(첫 화면 "the first person ever to win four gold medals at one time in Olympic track history"). 종목 넷은 위키백과 Jesse Owens 문서로 맞췄다. 같은 대회 마라톤 금메달 손기정은 설명란에만 적었다. 날짜는 NARA 카탈로그의 제작·방영일 1936-08-23을 따라 "1936년 8월"로 적었다.
+- **출처와 라이선스**: NARA [UN-UN-1885x2 'Jesse Owens Back from Olympics Gets Big Welcome'](https://catalog.archives.gov/id/503127880), MCA/Universal Pictures Collection의 유니버설 뉴스릴 미방영분(outtake). NARA 카탈로그에서 직접 받았다. NARA는 유니버설 뉴스릴 전체를 "Restricted - Possibly (Copyright)"로 표시한다. NARA 뉴스릴 안내 페이지(archives.gov/research/motion-pictures/newsreels)는 그 이유를 이렇게 설명한다: "MCA/Universal deeded the copyright to this collection to the US Government. However, individual reels may include content acquired and under copyright to a third party." 이 릴은 유니버설 카메라맨이 직접 찍은 동시녹음 인터뷰(카드: Winner and Graham 촬영)이고 음악이 없다. 그래서 제3자 자료가 섞였을 위험은 낮다고 판단했지만, **카탈로그 표시가 "Unrestricted"는 아니라는 점을 오케스트레이터에게 알렸다.**
+- 유튜브, 미러, 방송사 화면은 쓰지 않았다. 벤치마크 영상의 화면과 소리도 쓰지 않았다. 벤치마크 56.9만 쇼츠는 경기 장면(레니 리펜슈탈 「올림피아」 등 저작권 영상)이라 같은 원본은 쓸 수 없다.
+
+### legend2: 마이클 콜린스 (1969년 7월, 아폴로 11호 발사 이틀 전 NASA 기자회견)
+
+- **구간**(원본 초): 305.5–308.6, 320.2–329.95(뉴스위크 기자가 "아폴로 11호의 잊혀진 남자"에게 착륙 순간 무엇을 할지 묻자 "집 보는 거죠", 다음 날 두 사람이 돌아올 때까지 사령선을 준비해 둔다), 1417.9–1420.6, 1433.0–1452.4(UPI 기자가 28시간 혼자 비행이 괜찮겠냐고 묻자 "전혀요… 불만은 하나, 우주선에 TV가 없어 달 위를 걷는 장면(EVA)을 못 보니 테이프를 남겨 달라").
+- **기자 질문**은 기자 얼굴과 이름표가 나오는 화면이라 쓰지 않고, 화면 위 흰 스티커로 요약했다(people2와 같은 방식). 뺀 것: "명령 모듈은 복잡해서 아무것도 안 하는 데도 스위치를 많이 켜야 한다"(309–320초), 데이브 스콧·존 영 이야기(1420–1431초).
+- **자막 확인**: 공식 녹취록은 없다. small.en(회견 전체)과 large-v3(쓴 구간)를 대조했다. large-v3는 "tending the storm", "switch drawing"으로 들었지만 small.en의 "tending the store"(가게를 지키다 = 집 보다)가 맞는 관용구라 그쪽을 썼다. "28 hours"는 기자의 말("some 28 hours, I believe")이라 스티커에 그대로 옮겼다.
+- **사실**: 콜린스가 사령선 컬럼비아를 타고 달 궤도에 남고 암스트롱과 올드린이 착륙선으로 내려간 것은 NASA 아폴로 11호 임무 페이지(nasa.gov/mission/apollo-11: "Collins served as command module pilot", 발사 1969년 7월 16일)와 이 회견 속 질문·답("flying the command module alone… around the moon")에 있다. 회견 날짜는 NASA 영상 제목의 "T-2 Day"(발사 7월 16일의 이틀 전)를 따랐다.
+- **출처와 라이선스**: NASA, [Apollo 11 Crew Prelaunch Press Conference](https://images.nasa.gov/details/KSC-19690715-MH-NAS01-0001-Historical_Video_Apollo_11_T-2_Day_Press_Conference-B_1493)(제작자 NASA, `~orig.mp4`). 미국 연방정부 저작물이라 퍼블릭 도메인이다(17 U.S.C. §105). NASA 로고는 쓰지 않았다. 이 워커의 NASA 편은 이것 하나다.
+
+### 찾았지만 쓰지 않은 것 (다음 작업자 참고)
+
+- **NARA 유니버설 뉴스릴, 디지털 파일은 있지만 소리가 없음**: 베이브 루스 데이 1947(UN-UN-5546x1~x3, 루스 연설 없음; x2·x3에는 기도와 챈들러 커미셔너, 소년 대표 말만 있다), 베이브 루스 1947~48 다른 아웃테이크, 아멜리아 에어하트 1936~37(1221x10, 1842x4/5, 2181x1~3), 손야 헤니, 하워드 휴스 1936~37, 디마지오 1941, 에디슨(포드 컬렉션 FC-FC-1551·3531).
+- **NARA에 온라인 파일이 없음**: 캐시어스 클레이(무하마드 알리) 1960년대 릴, 비틀스 1964 기자회견(UN-UN-37-12 릴은 내레이션뿐), 아인슈타인.
+- **규칙에 걸려서 뺀 것**: 위키미디어 커먼즈의 헬렌 켈러 1929 폭스 무비톤 영상(출처가 유튜브 사본), 아인슈타인 1933 영상(archive.org 사본, 나치 맥락), CERN 힉스 2012 영상(라이선스가 CC BY가 아닌 'CERN' 이용약관), 레이건·클린턴 백악관 영상 속 마이클 잭슨·프랭크 시나트라·펠레·마이클 조던(대통령이 함께 주인공), 대니 케이 1960 기자회견(미 의회도서관 "No known restrictions", 다만 한국 시청자에게 약함), 벤치마크로 쓸 만한 무하마드 알리·비틀스 히트작은 모두 방송·경기 원본이라 같은 원본을 쓸 수 없다.
+- **음악·연예 분야 편은 만들지 못했다.** 규칙을 지키는 원본(공공 기록물, 본인 목소리, 정치인이 주인공이 아님)을 찾지 못했다.
+
+**업로드 문구**
+
+**legend1**: 올림픽 4관왕에게 계획 묻자 그의 대답..? ㄷㄷ
+```
+1936년 베를린 올림픽에서 금메달 4개(100m·200m·멀리뛰기·400m 계주)를 딴 제시 오언스가 미국으로 돌아온 날, 기자들이 앞으로의 계획을 묻자 그는 프로 전향 대신 "대학 마지막 1년을 마치고 졸업장을 받는 게 4년 동안의 꿈"이라고 답했습니다. 가장 짜릿했던 순간은 성조기가 올라가던 시상식, 독일 음식은 "괜찮았는데 나오는 데 너무 오래 걸렸다"고. 같은 대회에서 손기정 선수가 마라톤 금메달을 땄습니다. 영어 원문과 한국어 번역 자막(같은 날 여러 번 찍은 답변 중 일부를 골라 이어 붙임).
+
+▶ [채널명] 채널 구독: https://www.youtube.com/@[핸들]
+
+출처: 영상: 미국 국립문서기록관리청(NARA) 유니버설 뉴스릴 미방영분 'Jesse Owens Back from Olympics Gets Big Welcome' (1936-08, UN-UN-1885x2, catalog.archives.gov/id/503127880) · 영어 자막·한국어 번역 직접 제작 · 이 영상은 영상 속 인물이나 기관이 보증·후원한 것이 아닙니다
+
+#Shorts #제시오언스 #JesseOwens #올림픽 #베를린올림픽 #손기정 #육상 #레전드 #한영자막 #영어공부 #인터뷰
+```
+고정 댓글: 금메달 4개를 따고도 졸업장이 꿈이라니, 여러분이라면 뭘 먼저 하실 건가요?
+
+**legend2**: 달에 못 내리는 우주인, 소감 묻자 그의 대답..? ㅋㅋ
+```
+1969년 7월 아폴로 11호 발사 이틀 전 NASA 기자회견. 닐 암스트롱과 버즈 올드린이 달에 내리는 동안 혼자 달 궤도에 남아 사령선을 지킨 마이클 콜린스에게 기자들이 '잊혀진 남자'의 소감을 묻자, 그는 "집 보는 거죠"라며 담담하게 답하고, 불만은 딱 하나, 우주선에 TV가 없어 달 위를 걷는 장면을 못 본다며 녹화 테이프를 남겨 달라고 부탁했습니다. 영어 원문과 한국어 번역 자막(같은 회견의 두 답변, 기자 질문은 화면 글로 요약).
+
+▶ [채널명] 채널 구독: https://www.youtube.com/@[핸들]
+
+출처: 영상: NASA 'Apollo 11 Crew Prelaunch Press Conference' (1969, images.nasa.gov, KSC-19690715-MH-NAS01-0001) · 영어 자막·한국어 번역 직접 제작 · NASA는 이 영상을 보증하거나 후원하지 않습니다 · 이 영상은 영상 속 인물이나 기관이 보증·후원한 것이 아닙니다
+
+#Shorts #아폴로11호 #마이클콜린스 #MichaelCollins #Apollo11 #달착륙 #닐암스트롱 #NASA #우주 #레전드 #한영자막 #영어공부
+```
+고정 댓글: 인류 첫 달 착륙을 바로 위에서 혼자 기다린다면, 여러분은 어떤 기분일 것 같나요?
