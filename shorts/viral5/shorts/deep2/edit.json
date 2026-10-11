@@ -1,0 +1,250 @@
+{
+ "credit": "영상·사진: NOAA Ocean Exploration",
+ "layout": "card",
+ "card": {
+  "items": [
+   {
+    "at": 0.0,
+    "ko": "머리 없는 닭… 그린 거 아니고요",
+    "doodle": "chicken"
+   },
+   {
+    "at": 1.3,
+    "ko": "별명이 '머리 없는 닭 괴물'",
+    "en": "Swimming sea cucumber"
+   },
+   {
+    "at": 4.0,
+    "ko": "팔이 채찍 같은 오징어",
+    "en": "Whiplash squid"
+   },
+   {
+    "at": 6.7,
+    "ko": "지름이 30cm 가까운 해파리",
+    "en": "Tiburonia jellyfish"
+   },
+   {
+    "at": 9.4,
+    "ko": "여럿이 모여 한 몸인 불우렁쉥이",
+    "en": "Pyrosome"
+   },
+   {
+    "at": 12.1,
+    "ko": "한 마리가 아니라 무리, 관해파리",
+    "en": "Siphonophore"
+   },
+   {
+    "at": 14.8,
+    "ko": "눈이 왕방울만 한 꼬마 오징어",
+    "en": "Bobtail squid"
+   },
+   {
+    "at": 17.5,
+    "ko": "바닥에 납작 숨은 아귀",
+    "en": "Schaefer's anglerfish"
+   },
+   {
+    "at": 20.2,
+    "ko": "이빨이 너무 큰 송곳니고기",
+    "en": "Fangtooth"
+   },
+   {
+    "at": 22.9,
+    "ko": "지느러미로 서 있는 물고기",
+    "en": "Tripod fish"
+   }
+  ],
+  "credit": "영상·사진: NOAA Ocean Exploration",
+  "badge": {
+   "name": "세상 신기한 도감",
+   "icon": "도",
+   "color": "#1d4e89"
+  }
+ },
+ "sources": {
+  "cucumber": {
+   "file": "cucumber.jpg",
+   "label": "Swimming sea cucumber (NOAA Ocean Exploration, 2025 ROV and Mapping Shakedown (EX2502))",
+   "url": "https://oceanexplorer.noaa.gov/wp-content/uploads/2026/09/ex2502-swimming-sea-cucumber.jpg"
+  },
+  "whiplash": {
+   "file": "whiplash.mp4",
+   "label": "Whiplash squid (NOAA Ocean Exploration, Deep Connections 2019)",
+   "url": "https://oceanexplorer.noaa.gov/multimedia/video-shorts-ex1905-whiplash-squid/"
+  },
+  "bigjelly": {
+   "file": "bigjelly.mp4",
+   "label": "Tiburonia jellyfish (NOAA Ocean Exploration, 2023 Shakedown + EXPRESS West Coast Exploration)",
+   "url": "https://oceanexplorer.noaa.gov/multimedia/okeanos-explorations-express-ex2301-gallery-media-ex2301-dive07-bigjelly/"
+  },
+  "pyrosome": {
+   "file": "pyrosome.jpg",
+   "label": "Pyrosome (NOAA Ocean Exploration, 2025 ROV and Mapping Shakedown (EX2502))",
+   "url": "https://oceanexplorer.noaa.gov/wp-content/uploads/2026/09/ex2502-pyrosome.jpg"
+  },
+  "siphonophore": {
+   "file": "siphonophore.mp4",
+   "label": "Siphonophore (NOAA Ocean Exploration, Deep-Sea Symphony: Exploring the Musicians Seamounts)",
+   "url": "https://oceanexplorer.noaa.gov/multimedia/video-shorts-ex1708-siphonophore/"
+  },
+  "bobtail": {
+   "file": "bobtail.jpg",
+   "label": "Bobtail squid (NOAA Ocean Exploration, Windows to the Deep 2019)",
+   "url": "https://oceanexplorer.noaa.gov/multimedia/bobtail-squid/"
+  },
+  "anglerfish": {
+   "file": "anglerfish.mp4",
+   "label": "Schaefer's anglerfish (NOAA Ocean Exploration, 2019 Southeastern U.S. Deep-Sea Exploration)",
+   "url": "https://oceanexplorer.noaa.gov/multimedia/schaefers-anglerfish/"
+  },
+  "fang": {
+   "file": "fang.jpg",
+   "label": "Fangtooth (NOAA Ocean Exploration, Deep-Sea Symphony: Exploring the Musicians Seamounts)",
+   "url": "https://oceanexplorer.noaa.gov/wp-content/uploads/2026/03/EX1708-Fangtooth.jpg"
+  },
+  "tripod": {
+   "file": "tripod.jpg",
+   "label": "Tripod fish (NOAA Ocean Exploration, 2026 American Samoa ROV + Mapping Exploration)",
+   "url": "https://oceanexplorer.noaa.gov/wp-content/uploads/2026/08/ex2606-dive03-tripodfish.jpg"
+  }
+ },
+ "clips": [
+  {
+   "src": "cucumber",
+   "from": 0.0,
+   "zoom": [
+    1.0,
+    1.08
+   ],
+   "focus": "50% 50%"
+  },
+  {
+   "src": "whiplash",
+   "from": 4.0,
+   "zoom": [
+    1.05,
+    1.12
+   ],
+   "focus": "50% 50%",
+   "in": 27.0
+  },
+  {
+   "src": "bigjelly",
+   "from": 6.7,
+   "zoom": [
+    1.2,
+    1.26
+   ],
+   "focus": "62% 60%",
+   "in": 7.0
+  },
+  {
+   "src": "pyrosome",
+   "from": 9.4,
+   "zoom": [
+    1.0,
+    1.08
+   ],
+   "focus": "50% 50%"
+  },
+  {
+   "src": "siphonophore",
+   "from": 12.1,
+   "zoom": [
+    1.1,
+    1.18
+   ],
+   "focus": "50% 50%",
+   "in": 8.6
+  },
+  {
+   "src": "bobtail",
+   "from": 14.8,
+   "zoom": [
+    1.14,
+    1.2
+   ],
+   "focus": "40% 35%"
+  },
+  {
+   "src": "anglerfish",
+   "from": 17.5,
+   "zoom": [
+    1.05,
+    1.12
+   ],
+   "focus": "50% 50%",
+   "in": 19.0
+  },
+  {
+   "src": "fang",
+   "from": 20.2,
+   "zoom": [
+    1.9,
+    2.05
+   ],
+   "focus": "51% 76%"
+  },
+  {
+   "src": "tripod",
+   "from": 22.9,
+   "zoom": [
+    1.0,
+    1.08
+   ],
+   "focus": "50% 50%"
+  }
+ ],
+ "music": {
+  "file": "music/Fluffing a Duck.mp3",
+  "gain": 0.55,
+  "start": 12.0
+ },
+ "sfx": [
+  [
+   1.3,
+   "pop_hi",
+   0.6
+  ],
+  [
+   4.0,
+   "pop",
+   0.45
+  ],
+  [
+   6.7,
+   "pop",
+   0.45
+  ],
+  [
+   9.4,
+   "pop",
+   0.45
+  ],
+  [
+   12.1,
+   "pop",
+   0.45
+  ],
+  [
+   14.8,
+   "pop",
+   0.45
+  ],
+  [
+   17.5,
+   "pop",
+   0.45
+  ],
+  [
+   20.2,
+   "pop",
+   0.45
+  ],
+  [
+   22.9,
+   "pop",
+   0.45
+  ]
+ ]
+}

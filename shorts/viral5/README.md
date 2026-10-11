@@ -7254,3 +7254,228 @@ python3 upload/make_desc.py rule1 senior1
 | `senior1` | 매주 혼자 와서 2인분 시키던 할아버지.. | 여러분에게도 말없이 챙겨 주던 어른이 있었나요? 🍚 |
 
 설명글은 `upload/txt/rule1.txt`, `upload/txt/senior1.txt`(`upload/specs/*.json` → `make_desc.py`)에 있다. 둘 다 창작이라 요약 앞에 "(창작)"이 붙는다.
+
+## 쇼츠 50만+ 벤치마크: 흰 카드 사진 리스트 (`deep1`, `deep2`)
+
+사용자 요청은 "롱폼은 멈추고, 숏폼 50만 이상 잘나가는 것 분석해서 5개 만들어봐"였다. 조사는 `research/research-500k-footage.md`·`.csv`에 있다(실사·사진 반쪽).
+
+### 벤치마크와 숫자
+
+- **표본**: 2026-04-01 이후 게시된 한국어 쇼츠 가운데 조회수 50만 이상 210편(채널 166곳). 채널 165곳의 최근 쇼츠 탭도 봤고, 그중 구독 10만 미만은 112곳이다.
+- **첫 화면 레이아웃별**
+  - 흰 카드(흰 바탕 + 검은 제목 한 줄 + 둥근 사진 + 아래 이름표): 39편, 조회수 중앙값 414만, 100%가 구독 10만 미만 채널.
+  - 검정 위 띠(우리가 쓰던 형식): 78편, 중앙값 144만.
+- **겔라다**(구독 1.68만)는 최근 30편 중 11편이 50만 이상이고, 중앙값은 19만이다. 같은 틀을 반복한다.
+  - 「보는 것만으로 숨 멎는 습도 차이」: 1,645,321회, 2026-10-03.
+  - 「…체급 차이」: 1,495,730회, 2026-09-18.
+  - 「세상에 그렇게 생긴 동물이 어디 있어?(진짜 있음)」: 1,021,759회, 2026-09-17.
+- **오레오쿠키**(2.52만) 「보는것만으로 숨 멎는 바다생물」은 9,071,256회다. 이 채널의 적중률은 0/30이라 운이다.
+- **정직하게**: 흰 카드 계열 작은 채널 31곳의 평균 50만 적중률은 8.6%다. 반복해서 터지는 곳은 겔라다·사랑빛(11/30), 지구촌동물극장(9/30) 정도다. 대부분은 남의 영상을 쓴다. 우리는 레이아웃과 리듬만 따르고, 사진과 클립은 NOAA 퍼블릭 도메인으로 바꿨다.
+
+### 무엇을 맞췄나
+
+| 항목 | 벤치마크(썸네일 프레임으로 본 것) | 우리 |
+|---|---|---|
+| 바탕 | 흰색 | 흰색 |
+| 제목 | 검은 굵은 글씨, 위 15% 지점, 한 줄 + 괄호 부제 | Pretendard 800, 2줄 "세상에 이렇게 생긴 게 / 진짜 있다고? (심해편)" |
+| 그림 | 가로로 꽉 찬 사진·클립 하나, 오레오쿠키는 둥근 모서리 | 1000×750(4:3) 둥근 상자, 천천히 확대 |
+| 이름표 | "수식어 + 한국어 이름" / "(영어 이름)" 두 줄 | 같음. 예: "헤엄도 치는 바다돼지" / "(Sea pig)" |
+| 리듬 | 25/50/75% 지점이 모두 다른 동물. 항목당 2~3초(추정) | 항목당 2.7초, 9항목, 25.6초 |
+| 첫 장면 | 「(극사실주의)」 편은 그림에서 실물로 넘어간다 | 0~1.3초에 우리가 그린 낙서("제가 대충 그린 거 아니고요"), 그다음 실물 |
+| 소리 | 내레이션 없음, 음악만(추정, 들을 수 없었음) | 목소리 없음. Kevin MacLeod "Fluffing a Duck" + 항목마다 짧은 pop |
+| 끝 | 마지막 항목 뒤 바로 끝 | 마지막 항목(유령 문어·삼각다리물고기) 뒤 바로 첫 낙서로 반복 재생 |
+
+**길이**: 벤치마크 길이는 잴 수 없었다. qa_review.py 기준(25초 이상)에 맞춰 9항목 25.6초로 했다.
+
+### 영상
+
+| id | 화면 제목 | 길이 | 용량 | 항목 |
+|---|---|---|---|---|
+| `deep1` | 세상에 이렇게 생긴 게 / 진짜 있다고? (심해편) | 25.6초 | 18.1MB | 바다돼지 낙서 → 바다돼지, 덤보 문어, 바다두꺼비, 블롭피시, 유리오징어, 바다거미, 은상어, 얼굴 없는 물고기, 유령 문어 '캐스퍼' |
+| `deep2` | 세상에 이렇게 생긴 게 / 진짜 있다고? (심해편 2) | 25.6초 | 14.8MB | 머리 없는 닭 낙서 → 헤엄치는 해삼('머리 없는 닭 괴물'), 채찍 오징어, 티부로니아 해파리, 불우렁쉥이, 관해파리, 꼬마 오징어(밥테일), 아귀, 송곳니고기, 삼각다리물고기 |
+
+qa_review.py: 두 편 모두 11/11 PASS(길이, 제목, 호기심 "?", 첫 전환 1.3초, 최장 장면 2.7초, −14.0/−14.1 LUFS, 검은 화면 없음, 설명글).
+
+**이야기 검토(2-1절)**: 이야기 형식이 아니라서 해당하지 않는다. 대신 이름표의 사실을 확인했다. 수식어는 모두 NOAA 영상·사진 설명에 있는 내용이다.
+- 수심 4,934m(얼굴 없는 물고기), 다리 폭 20cm 이상(바다거미), 수심 1,030m(채찍 오징어), 지름 30cm 가까이(해파리), 군체(관해파리 영상 자막 "not one individual animal").
+- 블롭피시의 "물속에선 멀쩡한"은 NOAA 사진(Seascape Alaska 5, Dive 15, 해저에서 쉬는 모습)이 보여 주는 그대로다. 흔히 알려진 흐물흐물한 모습은 물 밖으로 끌어올렸을 때 생긴다는 것은 널리 알려진 내용이다.
+
+### 템플릿 변경 (다른 형식은 그대로)
+
+- **새 파일**
+  - `src/lib/Card.tsx`(`"layout": "card"`): 흰 카드 레이아웃과 낙서 두 개(바다돼지, 머리 없는 닭)를 그린다.
+  - `media/deep2/fetch_noaa.py`: NOAA Ocean Exploration WordPress 미디어 API에서 id로 받고, 출처 페이지와 크레디트 줄을 `media/<id>/sources.json`에 적는다.
+- **공유 파일에 건 고리**
+  - `src/ClipShort.tsx`: import 한 줄, 타입 두 줄, `if (d.layout === "card") return <CardShort d={d} />;` 한 줄.
+  - `prep.py`: 그대로 복사하는 키 목록에 `"card"`를 더했다.
+  - `qa_review.py`: 제목 띠 검사가 `layout` `"card"`도 통과시킨다.
+  - `upload/channels.json`: 새 채널 `card`(접두어 `deep`).
+- **회귀 확인**: 손대지 않은 `drive1`(2D 운전 애니)을 다시 렌더했다. `final/drive1.mp4`와 **바이트까지 같다**(cmp 일치, SSIM 1.0).
+- **만드는 법(목소리 없는 쇼츠)**: `build/<id>/timeline.json`에 `{"lines": [], "end": 25.6}`을 두고 `python3 prep.py <id> && ./render.sh <id>`를 돌린다. 이 환경에는 edge_tts가 없어서 voice_edge.py를 거치지 않았다. 원본은 `python3 media/deep2/fetch_noaa.py <id> key=media_id …`로 받는다(public/는 git 밖이다).
+
+### 출처와 라이선스
+
+- **영상·사진**: NOAA Ocean Exploration(미국 연방정부 저작물, 퍼블릭 도메인). 화면에는 "영상·사진: NOAA Ocean Exploration"을 표시하고, 설명란에 "NOAA는 이 영상을 보증하거나 후원하지 않습니다"를 넣었다.
+- **NOAA 사이트의 파트너 크레디트는 뺐다**: Oceaneering-DSSI 표기 빗해파리, Magnapinna 2025, 출처 표기가 없는 bloody-belly 빗해파리.
+- 클립의 NOAA 자막과 엔딩 카드가 보이지 않게 구간과 확대 기준점을 골랐다. 바다거미는 26.9초부터, 해파리와 밥테일은 로고가 빠지게 확대했다.
+- deep1 원본
+  - `seapig`: NOAA Ocean Exploration, Exploring Puerto Rico’s Seamounts, Trenches, and Troughs — https://oceanexplorer.noaa.gov/multimedia/video-shorts-ex1502-seapig/
+  - `dumbo`: Video courtesy of the NOAA Office of Ocean Exploration and Research, Windows to the Deep 2019. — https://oceanexplorer.noaa.gov/multimedia/video-shorts-ex1903-dumbo/
+  - `seatoad`: NOAA Ocean Exploration, 2025 ROV and Mapping Shakedown (EX2502) — https://oceanexplorer.noaa.gov/wp-content/uploads/2026/09/ex2502-sea-toad.jpg
+  - `blobfish`: NOAA Ocean Exploration, Seascape Alaska — https://oceanexplorer.noaa.gov/multimedia/okeanos-explorations-seascape-alaska-ex2306-gallery-media-dive15-blobfish/
+  - `glasssquid`: NOAA Ocean Exploration, Deep-Sea Symphony: Exploring the Musicians Seamounts — https://oceanexplorer.noaa.gov/multimedia/video-shorts-ex1708-glass-squid/
+  - `seaspider`: NOAA Ocean Exploration, 2017 Laulima O Ka Moana — https://oceanexplorer.noaa.gov/multimedia/video-shorts-ex1706-seaspider/
+  - `chimaera`: NOAA Ocean Exploration, 2019 Southeastern U.S. Deep-Sea Exploration — https://oceanexplorer.noaa.gov/multimedia/video-shorts-ex1907-chimaera/
+  - `cuskeel`: NOAA Ocean Exploration, 2026 Cook Islands ROV Exploration — https://oceanexplorer.noaa.gov/multimedia/cusk-eel-3/
+  - `casper`: NOAA Ocean Exploration, Hohonu Moana 2016 — https://oceanexplorer.noaa.gov/wp-content/uploads/2020/07/20200802-hires.jpg
+- deep2 원본
+  - `cucumber`: NOAA Ocean Exploration, 2025 ROV and Mapping Shakedown (EX2502) — https://oceanexplorer.noaa.gov/wp-content/uploads/2026/09/ex2502-swimming-sea-cucumber.jpg
+  - `whiplash`: NOAA Ocean Exploration, Deep Connections 2019 — https://oceanexplorer.noaa.gov/multimedia/video-shorts-ex1905-whiplash-squid/
+  - `bigjelly`: NOAA Ocean Exploration, 2023 Shakedown + EXPRESS West Coast Exploration — https://oceanexplorer.noaa.gov/multimedia/okeanos-explorations-express-ex2301-gallery-media-ex2301-dive07-bigjelly/
+  - `pyrosome`: NOAA Ocean Exploration, 2025 ROV and Mapping Shakedown (EX2502) — https://oceanexplorer.noaa.gov/wp-content/uploads/2026/09/ex2502-pyrosome.jpg
+  - `bobtail`: NOAA Ocean Exploration, Windows to the Deep 2019 — https://oceanexplorer.noaa.gov/multimedia/bobtail-squid/
+  - `siphonophore`: NOAA Ocean Exploration, Deep-Sea Symphony: Exploring the Musicians Seamounts — https://oceanexplorer.noaa.gov/multimedia/video-shorts-ex1708-siphonophore/
+  - `anglerfish`: NOAA Ocean Exploration, 2019 Southeastern U.S. Deep-Sea Exploration — https://oceanexplorer.noaa.gov/multimedia/schaefers-anglerfish/
+  - `fang`: NOAA Ocean Exploration, Deep-Sea Symphony: Exploring the Musicians Seamounts — https://oceanexplorer.noaa.gov/wp-content/uploads/2026/03/EX1708-Fangtooth-1920x1080-1.mp4
+  - `tripod`: NOAA Ocean Exploration, 2026 American Samoa ROV + Mapping Exploration — https://oceanexplorer.noaa.gov/wp-content/uploads/2026/08/ex2606-dive03-tripodfish.jpg
+- **음악**: "Fluffing a Duck" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License.
+- **낙서 두 개**: 직접 그림(`Card.tsx`의 SVG).
+- **목소리**: 없음. 그래서 설명란에 "목소리: AI 합성 음성"은 넣지 않았다.
+- 화면에 "저작권", "퍼블릭 도메인", "공공누리"는 쓰지 않았다.
+
+### 업로드 문구
+
+**deep1**: 세상에 이렇게 생긴 게 진짜 있다고? (심해편) ㄷㄷ
+```
+미국 해양대기청(NOAA) 무인잠수정이 심해에서 직접 찍은 생물 9종입니다. 헤엄치는 바다돼지, 귀처럼 생긴 지느러미로 헤엄치는 덤보 문어, 수심 4,934m에서 만난 얼굴 없는 물고기, 그리고 '캐스퍼'라는 별명이 붙은 유령 문어까지 모두 실제 영상과 사진입니다. 첫 장면의 그림만 직접 그렸습니다.
+
+▶ [채널명] 채널 구독: https://www.youtube.com/@[핸들]
+
+출처: 영상·사진: NOAA Ocean Exploration (2015 Puerto Rico, Windows to the Deep 2019, 2025 ROV and Mapping Shakedown, Seascape Alaska 2023, Deep-Sea Symphony 2017, Laulima O Ka Moana 2017, 2019 Southeastern U.S., 2026 Cook Islands, Hohonu Moana 2016) · 첫 장면 그림 직접 제작 · 음악: "Fluffing a Duck" Kevin MacLeod (incompetech.com), CC BY 4.0 (creativecommons.org/licenses/by/4.0) · NOAA는 이 영상을 보증하거나 후원하지 않습니다. 수심 등은 NOAA 영상·사진 설명 기준입니다
+
+#Shorts #심해 #심해생물 #바다 #덤보문어 #블롭피시 #바다돼지 #유령문어 #신기한동물 #NOAA
+```
+고정 댓글: 9개 중에 제일 안 믿기는 건 몇 번이에요? 👀
+
+**deep2**: 세상에 이렇게 생긴 게 진짜 있다고? (심해편 2) ㄷㄷ
+```
+미국 해양대기청(NOAA) 무인잠수정이 심해에서 찍은 생물 9종입니다. '머리 없는 닭 괴물'이라는 별명이 붙은 헤엄치는 해삼, 수심 1,030m에서 만난 채찍 오징어, 지름이 30cm 가까운 해파리, 한 마리가 아니라 여럿이 모인 군체인 관해파리, 지느러미로 바닥에 서 있는 물고기까지 모두 실제 영상과 사진입니다. 첫 장면의 그림만 직접 그렸습니다.
+
+▶ [채널명] 채널 구독: https://www.youtube.com/@[핸들]
+
+출처: 영상·사진: NOAA Ocean Exploration (2025 ROV and Mapping Shakedown, Deep Connections 2019, 2023 Shakedown + EXPRESS West Coast, Deep-Sea Symphony 2017, Windows to the Deep 2019, 2019 Southeastern U.S., 2026 American Samoa) · 첫 장면 그림 직접 제작 · 음악: "Fluffing a Duck" Kevin MacLeod (incompetech.com), CC BY 4.0 (creativecommons.org/licenses/by/4.0) · NOAA는 이 영상을 보증하거나 후원하지 않습니다. 수심과 크기는 NOAA 영상·사진 설명 기준입니다
+
+#Shorts #심해 #심해생물 #바다 #해파리 #오징어 #아귀 #신기한동물 #NOAA
+```
+고정 댓글: 머리 없는 닭 괴물… 이름 지은 사람 누구예요? 🐔
+
+
+## 쇼츠 50만+ 벤치마크: 흰 카드 2·3 (`breath1` 높이 차이, `story1` 사진으로 본 사흘)
+
+오케스트레이터가 실사 반쪽에 맡긴 3편은 이렇게 정해졌다.
+1. 사진 리스트: `deep1`. 이미 만든 `deep2`는 메인에 합쳐져 있어서 그대로 둔다.
+2. 「보는 것만으로 숨 멎는 ○○」: `breath1`.
+3. 실제 영상 한 편 + 이야기 자막: 30분 안에 강한 퍼블릭 도메인 클립을 찾지 못하면 USGS 킬라우에아 2018 사진 연속으로 바꾼다 → `story1`.
+
+### 바뀐 것 (네 편 공통)
+
+- **카드 위 채널 표시**를 edit.json에서 바꿀 수 있다: `"card": {"badge": {"name": "세상 신기한 도감", "icon": "도", "color": "#1d4e89"}}`. 채널 이름이 정해지면 이 값만 바꾸고 다시 렌더한다. 지금 이름은 중립적인 시리즈 이름이다.
+- **음악 없는 판**: `final/<id>-nomusic.mp4`. 유튜브 앱에서 업로드할 때 유행 음원을 붙일 수 있게 했다.
+  - 만드는 법: `./render_nomusic.sh <id>`.
+  - 음악만 빼고 효과음은 남긴다.
+  - 음량은 음악이 있는 판에 render.sh가 준 이득을 그대로 적용한다. 그래서 효과음 크기가 같다(통합 음량 −16~−19 LUFS).
+- **`deep1` 수정**: 오케스트레이터 검토에서 NOAA 영상에 박힌 글자가 지적됐다.
+  - 덤보 문어는 원본 1.0~3.5초에 "DUMBO OCTOPUS" 글자가 있어서 5.0초부터 쓴다.
+  - 유리오징어는 원본 1.0~4.5초에 "500 meters…" 띠가 있어서 6.5초부터 쓴다.
+  - 다시 렌더한 뒤 4.0/4.5/5.4/12.0/12.7/13.4초 프레임을 확인했다. 글자는 없다.
+- **`Card.tsx` 항목에 `"ring"`을 더했다**: 사진 속 작은 것을 빨간 원으로 표시하고, 원은 0.4초 뒤에 그려진다. 창백한 푸른 점과 메워지기 전의 카포호 만에 썼다.
+- **회귀 확인**: `drive1`을 다시 렌더했고 `final/drive1.mp4`와 바이트까지 같다.
+
+### `breath1` 보는 것만으로 숨 멎는 높이 차이 (25.2초, 17.7MB)
+
+- **벤치마크**: 겔라다 「보는 것만으로 숨 멎는 ○○」 시리즈. 습도 차이 1,645,321회, 체급 차이 1,495,730회. 그 채널 최근 30편 중 11편이 50만 이상이다. 3절 표를 그대로 따른다.
+- **구성**: 8장 × 3.15초. 높이가 올라가는 순서다.
+
+| 순서 | 사진 | 높이(근거) |
+|---|---|---|
+| 1 | 에베레스트 | ISS 외부 카메라, 고도 약 400km |
+| 2 | 오로라 | ISS, 257마일 ≈ 414km(설명) |
+| 3 | 번개 치는 밤 | ISS, 259마일 ≈ 417km |
+| 4 | 거대 제트 번개 | ISS, 2025.7.3 |
+| 5 | 우주유영 중 발밑의 지구 | 250마일 ≈ 400km. 우주비행사의 발만 보이고 얼굴은 없다 |
+| 6 | 달로 가며 돌아본 지구 | 아르테미스 2호, 달 전이 궤도 진입 뒤 |
+| 7 | 달 뒤로 지는 지구 | 아르테미스 2호 달 근접 비행 |
+| 8 | 창백한 푸른 점 | 보이저 1호, 약 60억km. 점에 빨간 원을 그렸다 |
+
+- **음악**: Kevin MacLeod "Floating Cities" (CC BY 4.0).
+- **qa_review**: 11/11 PASS(길이 25.2초, 제목 호기심 "차이", 첫 전환 3.2초, 최장 장면 3.2초, −13.9 LUFS, 검은 화면 없음).
+- **출처**: NASA Image and Video Library. 모두 NASA 직원이나 NASA 카메라가 찍은 것이고, 페이지는 아래와 같다. PIA23645는 NASA/JPL-Caltech다.
+  - `everest`: iss069e003192 (JSC) — https://images.nasa.gov/details/iss069e003192
+  - `citylight`: iss073e0257211 (JSC) — https://images.nasa.gov/details/iss073e0257211
+  - `jet`: iss073e0281502 (JSC) — https://images.nasa.gov/details/iss073e0281502
+  - `aurora`: iss072e159172 (JSC) — https://images.nasa.gov/details/iss072e159172
+  - `orion`: art002e000193 (JSC) — https://images.nasa.gov/details/art002e000193
+  - `earthset`: art002e021278 (JSC) — https://images.nasa.gov/details/art002e021278
+  - `dot`: PIA23645 (JPL) — https://images.nasa.gov/details/PIA23645
+  - `foot`: iss061e064798 (JSC) — https://images.nasa.gov/details/iss061e064798
+
+### `story1` 사진 9장이 기록한 바다가 땅이 된 사흘 (25.2초, 24.5MB)
+
+- **벤치마크**
+  - 틈새지식 「사진 21장이 기록한 역사적인 화산 폭발」: 8,558,356회, 2026-07-22, 흰 카드 + 연속 사진.
+  - 지구촌동물극장의 흰 카드 + 장면마다 한 줄 이야기 자막: 9/30, 중앙값 16만.
+- **동물 영상을 쓰지 않은 이유(30분 조사)**
+  - Yellowstone NPS 영상 자료실(NPS/Neal Herbert, "Public domain")에서 들소 새끼 영상을 찾았다. 하지만 이야기가 약했다.
+  - USFWS NCTC 독수리 캠은 Outdoor Channel과의 협력 사업이다.
+  - NOAA 고래 구조 영상은 협력 단체 크레디트가 섞여 있다.
+  - 그래서 대안이던 USGS 연속 사진으로 갔다.
+- **이야기(실화, 2-1절 기준 점검)**
+  - 한 줄 요약: "용암이 사흘 만에 바다 하나를 메워 땅으로 만들었다."
+  - 커지는 흐름: 솟는 용암 → 12.5km 흐름 → 도로를 덮음 → 바다까지 457m → 바다에 닿음 → 만이 사라짐 → 새 땅 → 마을 일부만 남음 → 끓는 바다.
+  - 4번째 장면에서 메워지기 전의 만을 빨간 원으로 보여 준다. 6번째 장면의 "만이 통째로 메워졌다"가 그 원으로 납득된다.
+  - 감정은 "소름·압도" 하나다. 사람은 나오지 않는다.
+- **사실 근거(USGS 사진 설명)**
+  - 분수 높이 40~70m(6.7), 용암 수로 약 12.5km(6.7).
+  - 6.3 오전 7시 해안까지 500야드(457m).
+  - 6.3 밤 10시 30분까지 바다 도달.
+  - 6.5 아침 카포호 만이 완전히 메워짐.
+  - 6.6 Kapoho Beach Lots 마을의 남은 부분.
+- **음악**: Kevin MacLeod "Lightless Dawn" (CC BY 4.0). 효과음은 장면 전환마다 whoosh.
+- **qa_review**: 11/11 PASS(25.2초, 제목 호기심 숫자, 첫 전환 2.8초, 최장 2.8초, −14.0 LUFS).
+- **출처**: 미국 지질조사국(USGS) 하와이 화산 관측소, "Photo and Video Chronology – Kīlauea" 2018.6.2~6.7. 페이지마다 "Sources/Usage: Public Domain"이라고 적혀 있다.
+  - 하와이 카운티 소방서가 찍은 Green Lake 사진은 뺐다.
+  - `road`: vhp_img6334.jpg — https://www.usgs.gov/center-news/photo-and-video-chronology-k-lauea-ne-2-2018
+  - `front`: vhp_img6343.jpg — https://www.usgs.gov/center-news/photo-and-video-chronology-k-lauea-ne-3-2018
+  - `entry`: vhp_img6348.jpg — https://www.usgs.gov/center-news/photo-and-video-chronology-k-lauea-ne-4-2018
+  - `filled`: multimediaFile-2176.jpg — https://www.usgs.gov/center-news/photo-and-video-chronology-k-lauea-ne-5-2018
+  - `delta`: multimediaFile-2182.jpg — https://www.usgs.gov/center-news/photo-and-video-chronology-k-lauea-ne-6-2018
+  - `remains`: multimediaFile-2185.jpg — https://www.usgs.gov/center-news/photo-and-video-chronology-k-lauea-ne-6-2018
+  - `channel`: multimediaFile-2191.jpg — https://www.usgs.gov/center-news/photo-and-video-chronology-k-lauea-ne-7-2018
+  - `fountain`: multimediaFile-2190.jpg — https://www.usgs.gov/center-news/photo-and-video-chronology-k-lauea-ne-7-2018
+  - `laze`: vhp_img6376.jpg — https://www.usgs.gov/center-news/photo-and-video-chronology-k-lauea-ne-7-2018
+
+### 업로드 문구
+
+**breath1**: 보는 것만으로 숨 멎는 높이 차이 ㄷㄷ
+```
+국제우주정거장(고도 약 400km)에서 본 에베레스트와 오로라, 우주 쪽으로 솟는 번개 '거대 제트', 우주유영 중 발밑으로 보이는 지구, 2026년 아르테미스 2호가 달 뒤에서 찍은 지구, 그리고 1990년 보이저 1호가 약 60억km 밖에서 찍은 '창백한 푸른 점'까지. 모두 NASA가 공개한 실제 사진입니다.
+
+▶ [채널명] 채널 구독: https://www.youtube.com/@[핸들]
+
+출처: 사진: NASA (ISS 승무원·외부 카메라 iss069e003192, iss072e159172, iss073e0257211, iss073e0281502, iss061e064798; Artemis II art002e000193, art002e021278) · NASA/JPL-Caltech (Pale Blue Dot Revisited, PIA23645) · 음악: "Floating Cities" Kevin MacLeod (incompetech.com), CC BY 4.0 (creativecommons.org/licenses/by/4.0) · NASA는 이 영상을 보증하거나 후원하지 않습니다. 고도는 NASA 사진 설명 기준입니다(257~259마일 ≈ 414~417km)
+
+#Shorts #우주 #지구 #NASA #오로라 #국제우주정거장 #아르테미스 #창백한푸른점 #보이저 #높이차이
+```
+고정 댓글: 몇 번째 사진에서 숨 멎었어요? 🌍
+
+**story1**: 사진 9장이 기록한 바다가 땅이 된 사흘 ㄷㄷ
+```
+2018년 하와이 킬라우에아 화산의 8번 균열(fissure 8)에서 솟은 용암은 약 12.5km를 흘러 6월 3일 밤 카포호 만에 닿았고, 6월 5일 아침에는 만 전체를 메웠습니다. 미국 지질조사국(USGS) 하와이 화산 관측소가 헬기에서 찍은 사진 9장으로 그 사흘을 따라갑니다.
+
+▶ [채널명] 채널 구독: https://www.youtube.com/@[핸들]
+
+출처: 사진: 미국 지질조사국(USGS) 하와이 화산 관측소, Photo and Video Chronology – Kīlauea (2018.6.2~6.7) · 음악: "Lightless Dawn" Kevin MacLeod (incompetech.com), CC BY 4.0 (creativecommons.org/licenses/by/4.0) · USGS는 이 영상을 보증하거나 후원하지 않습니다. 날짜·거리·높이는 USGS 사진 설명 기준입니다
+
+#Shorts #화산 #하와이 #킬라우에아 #용암 #자연재해 #USGS #실제사진 #지구
+```
+고정 댓글: 사흘 만에 바다가 땅이 됐다니… 직접 보면 어떨까요? 🌋

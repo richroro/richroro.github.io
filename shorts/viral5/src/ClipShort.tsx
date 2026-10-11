@@ -10,6 +10,7 @@ import { GFX_BG, GfxView, Marked, Marks, type Gfx, type Mark } from "./lib/Gfx";
 import { ROUNDED43, Rounded43, YearSticker, rounded43Crop } from "./lib/Retro";
 import { CoverView, InfoCaps, Tags, type Cover, type Tag } from "./lib/Info2";
 import { TeukShort, type TeukOpts } from "./lib/Teuk";
+import { CardShort, type CardOpts } from "./lib/Card";
 import { CAP_TALL, CapBox, type CapBoxOpts } from "./lib/CapBox";
 import { PlainCaptions, RiddleTitle } from "./lib/Riddle";
 import { RETROBOX, RetroTitle, RetroYear, StripCaptions } from "./lib/RetroV2";
@@ -73,8 +74,10 @@ export type ShortData = {
   /** a ranking list ("TOP 5") under the picture: a row per place, filled in when that place's clip starts */
   ranks?: { rows: { n: number; label: string; from: number }[]; y?: number };
   /** "teuk": the "○○ 특" v2 look (lib/Teuk.tsx), which draws the whole short itself */
-  layout?: "teuk";
+  layout?: "teuk" | "card";
   teuk?: TeukOpts;
+  /** "card": the white post-card photo list (lib/Card.tsx), which draws the whole short itself */
+  card?: CardOpts;
   /** "retro2" (lib/RetroV2.tsx): yellow/white title over the top quarter, captions inside the picture box, no shade or credit badge */
   look?: "retro2";
   /** ranking v2 (lib/RankV2.tsx): 3-line band, the list over the picture's left edge, boxed captions */
@@ -319,6 +322,7 @@ export const ClipShort: React.FC<{ data: ShortData }> = ({ data: d }) => {
     return d.music.gain * (1 - 0.6 * (d.env[f] ?? 0)) * (inMoment ? 0.35 : 1) * prog(tt, 0, 0.1) * (1 - prog(tt, d.end - 1.0, 1.0));
   };
   if (d.layout === "teuk") return <TeukShort d={d} />;
+  if (d.layout === "card") return <CardShort d={d} />;
   return (
     <AbsoluteFill style={{ background: "#000" }}>
       {d.clips.map((c, i) => (
