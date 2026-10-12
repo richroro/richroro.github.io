@@ -8870,6 +8870,7 @@ MEDIA=$PWD/media python3 politics/prep_split.py legend2 && ./render.sh legend2 f
 | --- | --- | --- | --- | --- | --- | --- |
 | `star8` | 조니 김이 우주 가기 전 / 가장 힘들었던 것..? | 조니 김 · NASA 우주비행사(한국계) | 43.3초 | 22.2MB | 「▶ 네이비씰, 의사, 나사 우주비행사까지? 현실판 사기캐 조니 킴의 진짜 인생 스토리」 106,030회, PeopleTwistCut, youtube.com/shorts/StWcL66Gags. 「군대리아 안 부럽다…우주비행사 조니 김이 공개한 '특급 레시피'」 39,133회, JTBC News, youtube.com/shorts/hbwpEO-1KqQ. 조회수는 2026-10-11에 유튜브 검색 페이지의 글만 읽어서 적었다 | NASA 「Interviews with Expedition 73 Flight Engineer Jonny Kim」 (2025-03-19, images.nasa.gov) |
 | `star9` | NBA 우승 직전 / 레이 앨런에게 생긴 일..? | 레이 앨런 · 농구(NBA) | 42.6초 | 23.6MB | 같은 틀 「~에게 생긴 일」. 가족 각도는 star5의 「Why Sugar Ray Leonard Couldn’t Save His Own Family」 77만과 같다. 레이 앨런 청문회 장면의 해외 히트작은 찾지 못했다 | 미국 상원 녹화실 영상 `aging071013` (2013-07-10) |
+| `star10` | 타이타닉 배우 빅터 가버 / 11살에 생긴 일..? | 빅터 가버 · 배우(「타이타닉」 토머스 앤드루스 역) | 43.7초 | 24.8MB | 같은 틀 「~에게 생긴 일」, 레이 앨런(star9)과 같은 어린이 의회 청문회 형식. 가버 청문회 장면의 해외 히트작은 찾지 못했다 | 미국 상원 녹화실 영상 `aging071019` (2019-07-10) |
 
 ### star8: 조니 김 (NASA 우주비행 전 인터뷰, 2025-03-18 촬영)
 
@@ -8908,6 +8909,29 @@ MEDIA=$PWD/media python3 politics/prep_split.py legend2 && ./render.sh legend2 f
 - **녹취**: 공식 기록과 단어까지 같다(구두 증언과 질의응답 모두). faster-whisper medium.en으로 시간을 잡았다. 번역은 직접 했다.
 - **사실**: 2008년 보스턴 셀틱스 우승, 5차전 중 진단, 17개월, 2013년 마이애미 히트 소속은 모두 본인 증언과 기록의 증인 소개("Ray Allen, Player, Miami Heat")에서 가져왔다.
 
+### star10: 빅터 가버 (상원 고령화특별위원회, 2019-07-10)
+
+- **원본**: JDRF 어린이 의회 청문회 "Redefining Reality: How the Special Diabetes Program is Changing the Lives of Americans with Type 1 Diabetes"의 상원 녹화실 영상이다.
+  - 위원회 페이지([aging.senate.gov](https://www.aging.senate.gov/hearings/redefining-reality-how-the-special-diabetes-program-is-changing-the-lives-of-americans-with-type-1-diabetes))의 플레이어가 `filename=aging071019`을 쓴다.
+  - 스트림: `https://www-senate-gov-msl3archive.akamaized.net/aging/aging071019_1/master.m3u8`(640×360). `media/celeb/garber.mp4`는 스트림 2735초부터 170초다.
+  - 퍼블릭 도메인이다(17 U.S.C. §105).
+- **구간** (클립 초): 30.1–36.95(현관에 서 있던 어머니), 38.3–45.6(그 눈의 두려움과 절망), 11.9–16.6(11살에 진단), 85.6–93.9(오렌지에 주사 연습, 스스로 놓을 용기), 129.2–134.2(16살에 집을 떠남), 135.1–141.0(포크 가수, 접시닦이, 단역), 156.2–161.2(결심과 의지).
+- **순서를 바꿨다**: 어머니 장면을 맨 앞에 뒀다. 설명란에 "순서 바꿈, 중간 생략"을 적었다.
+- **뺀 것**
+  - 특별 당뇨 프로그램 예산 요청.
+  - 인슐린 가격 대목과 그 질의응답. 정책·정치 주제라서 뺐다.
+  - "Whenever I meet the mother…", 식단·주사기 소독 이야기, 의원들의 말.
+- **화면**
+  - 한 카메라 한 테이크다.
+  - 아래 28%(상원 자막 "Special Committee on Aging SD-106", 명패, 물병)를 잘라냈다. 3배 lanczos 확대에 샤프닝을 했다.
+  - 마이크만 보이고 상표는 없다.
+- **녹취**: [서면 증언](https://www.aging.senate.gov/imo/media/doc/SCA_Garber_JDRF_7_10_19.pdf)과 대조했다.
+  - 말할 때 조금 바꿔 읽었다("could take its toll" → "was daunting", "that determination, and will, kept me from giving up" → "my determination and will kept me from just giving up").
+  - 자막은 소리(faster-whisper medium.en)를 따랐다.
+- **사실**
+  - 11살 진단, 16살에 집을 떠난 것: 본인 증언.
+  - 「타이타닉」(1997) 토머스 앤드루스 역: [CNN 보도(KTVZ 전재, 2023-11-14)](https://ktvz.com/entertainment/cnn-entertainment/2023/11/14/victor-garber-says-jennifer-garner-played-a-crucial-role-in-his-diabetes-care/)와 영화 크레디트.
+
 **업로드 문구**
 
 **star8**: 조니 김이 우주 가기 전 가장 힘들었던 것..? 🚀
@@ -8933,3 +8957,15 @@ MEDIA=$PWD/media python3 politics/prep_split.py legend2 && ./render.sh legend2 f
 #Shorts #레이앨런 #RayAllen #NBA #보스턴셀틱스 #NBA파이널 #1형당뇨 #아빠 #가족 #감동 #청문회 #한영자막 #영어공부 #인터뷰
 ```
 고정 댓글: 우승보다 더 기억에 남는 날, 여러분에게도 있나요?
+
+**star10**: 타이타닉 배우 빅터 가버, 11살에 생긴 일..? 🥲
+```
+영화 「타이타닉」(1997)에서 배를 설계한 토머스 앤드루스 역을 맡은 배우 빅터 가버가 2019년 7월 미국 상원 고령화특별위원회 청문회에서 한 증언입니다. 11살에 1형 당뇨 진단을 받던 날, 현관에 서서 병원으로 떠나는 자신을 바라보던 어머니의 눈빛을 60년 가까이 잊지 못한다고 했습니다. 오렌지에 주사 연습을 하던 소년은 16살에 꿈을 좇아 집을 떠났고, 포기하지 않게 해 준 건 결심과 의지였다고 말했습니다. 영어 원문과 한국어 번역 자막(증언 일부를 이어 붙임, 순서 바꿈, 중간 생략).
+
+▶ [채널명] 채널 구독: https://www.youtube.com/@[핸들]
+
+출처: 영상: 미국 상원(U.S. Senate) 고령화특별위원회 청문회 "Redefining Reality: How the Special Diabetes Program is Changing the Lives of Americans with Type 1 Diabetes" 공식 영상 (2019-07-10, senate.gov) · 빅터 가버 서면 증언 (aging.senate.gov) · 영어 자막·한국어 번역 직접 제작(증언 중간 일부 생략·순서 바꿈) · 이 영상은 영상 속 인물이나 기관이 보증·후원한 것이 아닙니다
+
+#Shorts #빅터가버 #VictorGarber #타이타닉 #Titanic #할리우드 #배우 #1형당뇨 #어머니 #감동 #청문회 #한영자막 #영어공부 #인터뷰
+```
+고정 댓글: 어릴 때 기억 중 지금도 또렷한 부모님 얼굴, 있나요?
