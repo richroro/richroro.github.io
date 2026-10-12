@@ -9243,3 +9243,54 @@ MEDIA=$PWD/media python3 politics/prep_split.py hope1 && ./render.sh hope1 final
   ffmpeg -i final/ship1.mp4 -c:v libx264 -crf 23 -preset slow -pix_fmt yuv420p -c:a copy -movflags +faststart out/ship1.c.mp4 && mv out/ship1.c.mp4 final/ship1.mp4
   python3 qa_review.py ship1
   ```
+
+## 일반인 감동 쇼츠 (해외 오픈 라이선스) (`politics/hope7`~, 감동 이야기 채널)
+
+사용자 요청은 차례로 "유명인이 아니더라도 감동 메시지가 있는 영상 기반", "원본 영상이 있어야해", "다른 나라 등 저작권 자유로운 영상에서"였다. hope1~6(미국 연방 출처)과 같은 채널·형식으로, 미국 연방이 아닌 출처만 썼다.
+- 형식은 hope1·star8~12와 같다.
+  - 본인 목소리에 검은 상자 한국어 자막(`capBoxEn`)과 작은 영어 원문을 단다.
+  - 흰·노랑 두 줄 제목 띠를 쓰고, 0초부터 얼굴을 크게 보여 준다.
+  - 출처 칩·이름표·날짜는 화면에 없고 설명란에만 있다.
+  - 음악·내레이션·TTS는 없다.
+- 한 편은 원본 영상 하나에서만 자른다. 원본 페이지, 라이선스, 사용 구간은 편마다 아래와 `upload/specs/<id>.json`의 출처 줄에 있다.
+- 템플릿과 공유 코드는 바꾸지 않았다. 새 파일은 `politics/hope7~/edit.json`, `media/hope2/*.json`, `upload/specs/hope7~.json`뿐이다.
+- **회귀 확인**: 손대지 않은 `hope1`을 원본 스트림에서 다시 받아(`media/hope/willman.json`의 명령) 다시 렌더했다. `final/hope1.mp4`와 바이트까지 같다(cmp 일치, md5 9734a6b2…).
+- **받기**: 영상은 Wikimedia Commons(upload.wikimedia.org)에서 한 번에 한 요청씩 받았다. upload.wikimedia.org는 2026-10-12 11:58 UTC부터 HTTP 429(Varnish, Retry-After 600)를 돌려줬다(11:58~13:52 UTC 12번 모두 429). Retry-After를 지켜 10분마다 한 번씩만 다시 요청했고, 미러·다른 CDN·유튜브는 쓰지 않았다.
+
+### 진행 상황 (2026-10-12 13:55 UTC)
+
+아직 완성한 편이 없다. 쓸 수 있는 해외 출처로 찾은 것은 Wikimedia Commons의 세계경제포럼(WEF) 영상(CC BY 3.0, "Category:Videos by the World Economic Forum")뿐이다. star7·star12와 같은 경로로, WEF 공식 채널이 CC BY로 올린 영상을 Commons가 옮겨 둔 것이다(유튜브에서 받지 않음). 그런데 위처럼 upload.wikimedia.org가 계속 429여서 아직 한 편도 받지 못했다.
+
+후보 (모두 본인 목소리로 자기 이야기를 한다. 유명 연예인은 아니지만 포럼 연사다):
+
+| 후보 | Commons 파일 | 길이·화질 | 라이선스 (Commons extmetadata) |
+| --- | --- | --- | --- |
+| 프랜시스 케레(부르키나파소 건축가): 마을 사람들과 고향 간도에 첫 학교를 지음 | ["We should do it ourselves" Francis Kéré](https://commons.wikimedia.org/wiki/File:%22We_should_do_it_ourselves%22_Francis_K%C3%A9r%C3%A9.webm) (WEF 쇼츠, 2024-01-18) | 47.5초, 1080×1920 | CC BY 3.0, World Economic Forum, 라이선스 검토 완료 |
+| 우르바시 사니(인도 교육자): 여성을 세우려면 어린 남자아이부터 가르쳐야 | [Change Boys' Mindsets When They're Young](https://commons.wikimedia.org/wiki/File:Change_Boys%27_Mindsets_When_They%27re_Young.webm) (2017-10-14) | 1:51, 1920×1080 | CC BY 3.0, World Economic Forum, 라이선스 검토 완료 |
+| 와스피아 나즈린(방글라데시 산악인): 보수적인 마을의 소녀가 7대륙 최고봉에 오르고 소녀 교육을 함 | [Nature and the Human Spirit - Wasfia Nazreen](https://commons.wikimedia.org/wiki/File:Nature_and_the_Human_Spirit_-_Wasfia_Nazreen.webm) (2017-02-14) | 18:50, 1920×1080 | CC BY 3.0, World Economic Forum, YouTubeReviewBot 검토 |
+| 힐러리 오닐(넬슨)(산악·스키인): 실패가 완벽주의에서 풀어 준다 | [Hilaree O'Neill- Failure Frees Us from Perfection](https://commons.wikimedia.org/wiki/File:Hilaree_O%27Neill-_Failure_Frees_Us_from_Perfection.webm) (2018) | 14:54, 1920×1080 | CC BY 3.0, World Economic Forum, 라이선스 검토 대기 |
+| 세바스티앙 살가두(사진가): 부모님의 메마른 농장에 숲을 되살림 | [An Insight, An Idea with Sebastião Salgado](https://commons.wikimedia.org/wiki/File:An_Insight,_An_Idea_with_Sebasti%C3%A3o_Salgado_-_DAVOS_AGENDA_2021.webm) (2021-01-25) | 35:59, 1920×1080 | CC BY 3.0, World Economic Forum, 라이선스 검토 완료 |
+| 레나 에펜디(사진기자) | [Betazone Davos 2020 - Seeing The Other with Rena Effendi](https://commons.wikimedia.org/wiki/File:Betazone_Davos_2020_-_Seeing_The_Other_with_Rena_Effendi.webm) | 19:16, 1920×1080 | CC BY 3.0, World Economic Forum, 라이선스 검토 대기 |
+
+- 힐러리 넬슨은 2022년, 살가두는 2025년에 세상을 떠났다. 만들게 되면 설명란에 맞게 적는다.
+- WEF 정책 세션, 정치인 연설, 유명 연예인 영상(같은 분류에 많다)은 이 채널에 쓰지 않는다.
+
+### 확인했지만 쓰지 못한 출처 (2026-10-12)
+
+| 출처 | 결과 | 근거 (이용 조건 원문·주소) |
+| --- | --- | --- |
+| 유럽연합 집행위원회 시청각 서비스 (audiovisual.ec.europa.eu) | **받을 길 없음** | 이용 조건은 맞다. [Conditions of use](https://audiovisual.ec.europa.eu/en/conditions-of-use): "licensed under CC BY 4.0 unless stated otherwise", "reuse is allowed provided appropriate credit is given and changes made are clearly indicated", 표기 "© European Union, 202X, licensed under CC BY 4.0". 하지만 영상 파일은 플레이어가 `webgate.ec.europa.eu/apis/parrotfish/` API로만 불러온다. 이 API는 인증 토큰을 요구한다. 플레이어 JS에 토큰이 들어 있지만 공개 다운로드 경로가 아니어서, 쓰면 인증 우회가 된다. 그래서 쓰지 않았다. 공개 다운로드 링크는 없다. 유럽 청년 포털(youth.europa.eu)도 같은 플레이어를 쓴다 |
+| Wikimedia Commons의 EC 시청각 영상 ("Category:Videos by the European Commission", CC BY 4.0) | **주제 안 맞음** | 1990~2000년대 정상회담·기자회견뿐이다. 사람 이야기는 없다 |
+| 유럽의회 멀티미디어 센터 | **조건 안 맞음** | EP 법적 고지: "if the entire item is reproduced and the source is acknowledged"(전체를 그대로 쓸 때만). 그리고 대부분 정치 영상이다 |
+| 네덜란드 정부 (rijksoverheid.nl) | **영상 제외** | [copyright](https://www.rijksoverheid.nl/copyright): 사이트는 CC0이지만 "Beeldmateriaal (zoals foto's en video's) mag u bijna nooit gebruiken" |
+| 유럽우주국 (esa.int) | **조건 안 맞음** | [이용 조건](https://www.esa.int/ESA_Multimedia/Terms_and_conditions_of_use_of_images_and_videos_available_on_the_esa_website): "for education, editorial and/or information purposes only. All other uses (e.g. commercial ones) are excluded", "shall not be used for a commercial purpose, such as but not limited to, entertainment". 파라 우주비행사 존 맥폴 영상(ESA Standard Licence)이 좋았지만 쓰지 않았다. CC BY-SA 3.0 IGO 영상은 대부분 과학 영상이다 |
+| 공공누리 포털 (kogl.or.kr) | **1유형 사람 영상 없음** | 영상 '인터뷰' 검색은 7건이다. 그중 「실패 경험과 가치 #5 인터뷰」(경제·인문사회연구회)는 "제4유형: 출처표시 + 상업적 이용금지 + 변경금지"다. 나머지는 풍경·홍보·동화 영상이다 |
+| Vimeo (CC BY) | **막힘** | 검색 페이지가 CAPTCHA(HTTP 403)를 돌려줬다. 우회하지 않았다 |
+| 일본 정부 (gov-online.go.jp, nettv.gov-online.go.jp) | **막힘** | HTTP 403. 부처 영상은 대부분 유튜브에만 있다 |
+| canada.ca, health.gov.au | **막힘** | 연결 시간 초과. (캐나다 사이트 조건은 원래 비상업적 복제만 허용한다) |
+| gov.ie, moc.gov.tw | **막힘** | HTTP 403 |
+| memory.culture.tw (대만 국가문화기억고) | **막힘** | 프록시가 CONNECT에 502를 돌려줬다 |
+| korea.kr, mois.go.kr, police.go.kr, nfa.go.kr | **막힘** | 연결이 끊겼다(connection reset) |
+| Commons 「Mukti - My story and the story of panchachuli women cooperative」 | **안 씀** | CC BY-SA 3.0, 올린 사람이 만든 사람이다. 2011년 NGO 프로젝트 기록(27분)이고 SA(같은 조건 배포)가 붙어서 뒤로 미뤘다. 받지 않았다 |
+| Commons 「Reggie Bibbs Wiki Interview」 (Wikinews, CC BY 3.0) | **안 씀** | 160×120 화질 |
+| Commons 「Dr. Nana Šumrada Slavnič…」 | **안 씀** | 신문사(Delo) 팟캐스트를 유튜브에서 옮긴 것이다 |
