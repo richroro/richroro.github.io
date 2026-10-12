@@ -9030,3 +9030,36 @@ MEDIA=$PWD/media python3 politics/prep_split.py star12 && ./render.sh star12 fin
 ```
 
 **star12**: 양자경이 다보스에서 여성에 대해 한 말..? ✊ (설명글 전문은 `upload/txt/star12.txt`)
+
+## 일반인 감동 쇼츠 (`politics/hope1`~, 감동 이야기 채널)
+
+사용자 요청은 "유명인이 아니더라도 감동 메시지가 있는 영상 기반"이었고, 그 뒤 "원본 영상이 있어야해"가 더해졌다.
+- 유명인이 아닌 사람이 **본인 목소리로** 자기 이야기를 하는 실제 영상만 쓴다. 한 편은 원본 영상 하나에서만 자른다. 스톡 영상, 사진, AI·그래픽, 재연은 없다.
+- 원본은 미국 상원 녹화실 영상(퍼블릭 도메인, 17 U.S.C. §105)을 위원회 공식 페이지의 플레이어 스트림에서 직접 받았다. C-SPAN, 방송, 유튜브는 쓰지 않았다.
+- 형식은 star8~12와 같다. 검은 상자 한국어 자막(`capBoxEn`)과 작은 영어 원문, 흰·노랑 두 줄 제목 띠, 0초부터 얼굴 확대. 출처 칩·이름표·날짜는 화면에 없고 설명란에만 적는다. 음악·내레이션·TTS는 없다.
+- 고난은 나오되 끝은 희망·사랑·회복으로 맺는다. 정책 요청, 법안, 의원 발언은 모두 뺐다. 의원은 화면에 나오지 않는다.
+- 새 파일만 더했다: `politics/hope*/edit.json`, `media/hope/*.json`, `upload/specs/hope*.json`, `upload/channels.json`의 `hope` 항목. 템플릿과 공유 코드는 바꾸지 않았다.
+
+| id | 제목 (띠) | 누구 · 주제 | 길이 | 용량 | 벤치마크 | 원본 (공식 페이지, 사용 구간) |
+| --- | --- | --- | --- | --- | --- | --- |
+| `hope1` | 앞 못 보는 사장님이 / 시급 더 준 진짜 이유..? | 에린 윌먼(화이트 케인 커피 창업자) · 장애를 딛고 남을 믿어 준 이야기 | 43.8초 | 28.4MB | 「~하는 진짜 이유..?」 틀. 같은 틀의 50만+ 예: 「워렌 버핏이 '오르는 주식'은 절대 안 사는 진짜 이유」 62만, 「일론머스크가 위대한 이유」 421만(`research-500k-people.csv`). 일반인 장애 극복 쇼츠의 조회수는 이 조사에 없다 | [상원 고령화특별위원회 2024-02-29](https://www.aging.senate.gov/hearings/all-means-all-empowering-people-with-disabilities-to-thrive-in-careers-and-the-workplace) 30:35–34:44 |
+
+### hope1: 에린 윌먼 (상원 고령화특별위원회, 2024-02-29)
+
+- **원본**: 청문회 "All Means All: Empowering People with Disabilities to Thrive in Careers and the Workplace"의 상원 녹화실 영상이다.
+  - 위원회 페이지([aging.senate.gov](https://www.aging.senate.gov/hearings/all-means-all-empowering-people-with-disabilities-to-thrive-in-careers-and-the-workplace))의 플레이어가 `filename=aging022924`를 쓴다.
+  - 스트림: `https://www-senate-gov-media-srs.akamaized.net/hls/live/2036801/aging/aging022924/master.m3u8`(1280×720, 영어 자막 트랙). `media/hope/willman.mp4`는 스트림 1690초부터 480초다(`media/hope/willman.json`). 스트림 2022초를 다시 받아 들어 보고 오프셋을 확인했다.
+- **구간** (클립 초 → 원본 시각): 332.1–345.2 → 33:42–33:55("시급 7.25달러, 아니 그 이하도 괜찮다", "'그 이하'라는 말이 마음에 걸렸다", "누군가 그를 덜 가치 있는 사람으로 느끼게 만들었다"), 144.95–147.45 → 30:35(15살에 시력을 잃음), 185.25–189.3 → 31:15(제대로 된 직장은 절대 못 가질 거란 말), 195.5–207.7 → 31:26–31:38(아빠의 게임, 일자리를 직접 만든다면, 커피 사업), 360.15–366.2 → 34:10–34:16(가치 있는 사람, 시급 9달러), 382.55–393.95 → 34:33–34:44(지금은 팀장, "누군가 그를 믿어 줬기 때문").
+- **순서를 바꿨다**: 직원 Jay의 "7.25달러 이하" 대목을 맨 앞에 뒀다. 설명란에 "순서 바꿈, 중간 생략"을 적었다.
+- **뺀 것**: 의원들에게 하는 인사, 오빠가 보호작업장에서 받은 시급·점심 이야기, 점자 포장, 맹학교 강연, 법안(Transformation to Competitive Employment Act) 요청, 질의응답. "He's also risen in our business and is now / a team leader" 사이의 2.3초 쉼은 잘라냈다(문장 중간 컷).
+- **화면**
+  - 원본 화면에 상원의 **자막이 그려져 있고**(아래 왼쪽), 오른쪽 위에 수어 통역 화면, 앞에 이름표가 있다. `trim` x 0.30–0.67, y 0–0.58로 셋 다 잘라냈다. 2배 lanczos 확대에 샤프닝을 했다.
+  - 뒤에 방청객이 흐리게 보인다. 의원·로고·휘장은 화면에 없다. first.png, sheet.png, 원본 크기 프레임을 직접 봤다.
+- **녹취**: [서면 증언](https://www.aging.senate.gov/download/testimony_willman-022924pdf)과 faster-whisper medium.en(단어 시간), 상원 자막 트랙을 대조했다. 말할 때 조금 바꿔 읽은 곳("since I couldn't find one" → "since I didn't find one", "Some businesses treat their employees as liabilities" → "like liabilities")은 소리대로 적었다. "Jay"는 본인이 붙인 가명이다("an employee we'll call Jay"). 번역은 직접 했다.
+- **사실**: 15살 실명, 거절과 직업재활 상담에서 들은 말, 아빠와의 게임, 화이트 케인 커피 창업, 7.25달러·9달러, 팀장은 모두 본인 증언이다. 회사 이름·지역(펜실베이니아주 워런)은 위원회 페이지의 증인 소개에서 가져왔다. 7.25달러는 미국 연방 최저임금이다(미국 노동부, https://www.dol.gov/general/topic/wages/minimumwage) — 화면에는 쓰지 않았다.
+
+```bash
+MEDIA=$PWD/media python3 politics/prep_split.py hope1 && ./render.sh hope1 final/hope1.mp4 && python3 qa_review.py hope1   # FAIL 0
+```
+
+**hope1**: 앞 못 보는 사장님이 시급 더 준 진짜 이유..? ☕ (설명글 전문은 `upload/txt/hope1.txt`)

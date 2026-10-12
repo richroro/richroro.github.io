@@ -1,0 +1,92 @@
+{
+ "id": "hope1",
+ "committee": "U.S. Senate Special Committee on Aging",
+ "hearing": "All Means All: Empowering People with Disabilities to Thrive in Careers and the Workplace",
+ "date": "2024-02-29",
+ "source_page": "https://www.aging.senate.gov/hearings/all-means-all-empowering-people-with-disabilities-to-thrive-in-careers-and-the-workplace",
+ "player": "https://www.senate.gov/isvp/?comm=aging&filename=aging022924",
+ "file_url": "https://www-senate-gov-media-srs.akamaized.net/hls/live/2036801/aging/aging022924/master.m3u8 (1280x720, with an English caption track; the picture also has burned-in open captions and an ASL interpreter inset)",
+ "fetch": "ffmpeg -user_agent 'richroro-shorts/1.0 (+https://github.com/richroro/richroro.github.io)' -ss 1690 -i <stream>/master/index_1.m3u8 -t 480 -c:v libx264 -crf 16 -preset fast -c:a aac -b:a 192k willman.mp4",
+ "clip": "willman.mp4 = stream 1690 s + 480 s",
+ "used_in_clip_s": [
+  [
+   332.1,
+   334.6
+  ],
+  [
+   334.6,
+   336.95
+  ],
+  [
+   337.4,
+   340.0
+  ],
+  [
+   340.35,
+   345.2
+  ],
+  [
+   144.95,
+   147.45
+  ],
+  [
+   185.25,
+   189.3
+  ],
+  [
+   195.5,
+   199.6
+  ],
+  [
+   201.35,
+   205.35
+  ],
+  [
+   205.8,
+   207.7
+  ],
+  [
+   360.15,
+   363.4
+  ],
+  [
+   364.1,
+   366.2
+  ],
+  [
+   382.55,
+   385.65
+  ],
+  [
+   387.85,
+   390.7
+  ],
+  [
+   390.9,
+   393.95
+  ]
+ ],
+ "used_in_stream": [
+  "0:33:42-0:33:45",
+  "0:33:45-0:33:47",
+  "0:33:47-0:33:50",
+  "0:33:50-0:33:55",
+  "0:30:35-0:30:37",
+  "0:31:15-0:31:19",
+  "0:31:26-0:31:30",
+  "0:31:31-0:31:35",
+  "0:31:36-0:31:38",
+  "0:34:10-0:34:13",
+  "0:34:14-0:34:16",
+  "0:34:33-0:34:36",
+  "0:34:38-0:34:41",
+  "0:34:41-0:34:44"
+ ],
+ "speaker": "Erin Willman, Founder and CEO, White Cane Coffee Company, Warren, PA (oral statement)",
+ "transcript": "written statement https://www.aging.senate.gov/download/testimony_willman-022924pdf ; official transcript https://www.aging.senate.gov/download/official-hearing-transcript_2292024pdf ; checked against faster-whisper medium.en word times and the Senate caption track",
+ "picture": "trim x 0.30-0.67, y 0-0.58 of the 1280x720 frame (drops the burned-in captions, the name card, and the ASL inset at top right), 2x lanczos + unsharp",
+ "left_out": "thanks to senators; her brother's sheltered-workshop pay and lunch; Braille packaging; schools for the blind; all policy asks (Transformation to Competitive Employment Act) and the Q&A",
+ "credit": "미국 상원 (U.S. Senate)",
+ "license": "Work of the United States Government recorded by the Senate Recording Studio, public domain (17 U.S.C. §105). Not C-SPAN footage.",
+ "use_restrictions": "Senate broadcast coverage may not be used for political or commercial-campaign purposes; no implied endorsement."
+}
