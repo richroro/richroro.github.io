@@ -131,3 +131,81 @@
 ```
 사람이 탄 채로 배에 실리는 거 알고 있었어요? 🚢
 ```
+
+## ship2
+
+**제목**
+
+```
+우주정거장에서 찍힌 역사상 가장 큰 로켓ㄷㄷ
+```
+
+**설명글**
+
+```
+2024년 11월 19일, 국제우주정거장(고도 약 400km) 바깥 카메라에 하얀 꼬리를 그으며 올라가는 로켓이 찍혔습니다. 정체는 높이 약 122m(400피트), 역사상 가장 크고 힘센 로켓인 스페이스X 스타십의 6번째 시험 비행입니다. 이날은 1단 부스터를 발사탑의 '젓가락 팔'로 잡을 계획이었지만, 비행 조건이 맞지 않아 취소하고 부스터를 멕시코만 바다에 내렸습니다. 한 달 전인 10월 13일 5번째 비행에서는 처음으로 부스터를 잡는 데 성공했습니다(영상: NASA 우주정거장 외부 카메라).
+
+▶ [채널명] 채널 구독: https://www.youtube.com/@[핸들]
+
+출처: 영상: NASA JSC, Views of Starship Flight 6 from International Space Station (jsc2024m000188, 2024) https://images.nasa.gov/details/jsc2024m000188_Views_of_Starship_Flight_6_from_International_Space_Station (미국 연방정부 저작물, NASA 미디어 이용 지침 https://www.nasa.gov/nasa-brand-center/images-and-media/) · 사실: NASA 영상 설명(고도 약 250마일, 11월 19일 발사) · Scientific American 'SpaceX's Starship Soars in 6th Test Flight but Skips Booster Catch'(2024, 높이 400피트·122m, 가장 크고 힘센 로켓, 부스터 포획 취소와 멕시코만 착수) https://www.scientificamerican.com/article/spacexs-starship-soars-in-6th-test-flight-but-skips-booster-catch/ · NPR 'SpaceX rocket booster successfully caught on first attempt during flight test'(2024-10-13) https://www.npr.org/2024/10/13/nx-s1-5151788/spacex-starship-booster-caught-first-launch · 음악: "Investigations" Kevin MacLeod (incompetech.com), CC BY 4.0 (creativecommons.org/licenses/by/4.0) · 이 영상은 영상 속 인물이나 기관이 보증·후원한 것이 아닙니다. NASA와 스페이스X는 이 영상을 보증하거나 후원하지 않습니다. '아파트 40층'은 높이를 쉽게 말한 어림값입니다
+
+#Shorts #스타십 #스페이스X #SpaceX #Starship #로켓 #우주정거장 #NASA #우주 #젓가락팔 #신기한영상 #궁금증
+```
+
+**고정 댓글**
+
+```
+우주에서도 보일 만큼 큰 로켓… 다음엔 잡을 수 있을까요? 🚀
+```
+
+## ship3
+
+**제목**
+
+```
+쏘아 올린 부스터 2개가 다시 돌아온 곳ㄷㄷ
+```
+
+**설명글**
+
+```
+2023년 10월 13일 오전 10시 19분(미국 동부), NASA 케네디 우주센터 39A 발사대에서 로켓 3개를 묶은 스페이스X 팰컨 헤비가 NASA 소행성 탐사선 '사이키'를 싣고 떠났습니다. 몇 분 뒤, 양옆에 붙어 있던 부스터 2개는 스스로 날아 돌아와 케이프커내버럴의 착륙장 LZ-1과 LZ-2에 하나씩 거의 동시에 내려앉았습니다. 두 부스터는 이날이 4번째 비행이었고, 가운데 부스터는 탐사선에 연료를 최대한 몰아주느라 회수하지 않았습니다. NASA 헬기에서 찍은 실제 영상입니다.
+
+▶ [채널명] 채널 구독: https://www.youtube.com/@[핸들]
+
+출처: 영상: NASA/Michelle Stone(촬영), NASA/Isaac Watson(편집), Psyche Live Launch Coverage - Helicopter B-Roll (8K) (2023, NASA Kennedy Space Center) https://images.nasa.gov/details/KSC-20231013-VP-MMS01-0001-SpaceX_Psyche_Helicopter_BRoll_8K-WON_M1708 (미국 연방정부 저작물, NASA 미디어 이용 지침 https://www.nasa.gov/nasa-brand-center/images-and-media/) · 사실: NASA 사이키 블로그 'Successful Landing of Side Boosters'(2023-10-13, LZ-1·LZ-2) https://science.nasa.gov/blogs/psyche/2023/10/13/successful-landing-of-side-boosters/ · NASA 영상 설명(10월 13일 오전 10시 19분, 39A) · AmericaSpace 'Falcon Heavy Successfully Launches NASA's Psyche'(2023-10-13, 두 부스터 4번째 비행) https://www.americaspace.com/2023/10/13/falcon-heavy-successfully-launches-nasas-psyche-looks-to-record-setting-year-end/ · Everyday Astronaut 'Psyche | Falcon Heavy'(가운데 부스터 미회수) https://everydayastronaut.com/psyche-falcon-heavy/ · 음악: "Investigations" Kevin MacLeod (incompetech.com), CC BY 4.0 (creativecommons.org/licenses/by/4.0) · 이 영상은 영상 속 인물이나 기관이 보증·후원한 것이 아닙니다. NASA와 스페이스X는 이 영상을 보증하거나 후원하지 않습니다. 영상에는 착륙하는 순간이 아니라 착륙을 마친 부스터가 담겨 있습니다
+
+#Shorts #스페이스X #SpaceX #팰컨헤비 #부스터 #로켓 #로켓착륙 #회수 #NASA #사이키 #우주 #궁금증
+```
+
+**고정 댓글**
+
+```
+다 쓴 로켓을 다시 쓰는 시대… 몇 번까지 재사용할 수 있을까요? 🚀
+```
+
+## ship4
+
+**제목**
+
+```
+캄캄한 밤바다에 우주선이 떨어지면 생기는 일ㄷㄷ
+```
+
+**설명글**
+
+```
+2021년 5월 2일 새벽 2시 56분(미국 동부), 우주정거장에서 168일을 보낸 우주비행사 4명을 태운 스페이스X 크루 드래곤 '레질리언스'가 낙하산을 펴고 플로리다 파나마시티 앞 멕시코만에 내려앉았습니다. 깜깜한 밤이라 낙하산은 야간 카메라로 찍었고, 회수선은 조명을 환하게 켜고 다가가 작은 보트로 줄을 건 뒤 캡슐을 사람이 탄 채로 갑판 위까지 끌어 올렸습니다. 미국 유인 우주선의 밤바다 착수는 1968년 아폴로 8호 이후 53년 만이었습니다. NASA 직원이 드론으로 찍은 실제 영상입니다.
+
+▶ [채널명] 채널 구독: https://www.youtube.com/@[핸들]
+
+출처: 영상: NASA/Jamie Peer, SpaceX Crew-1 Splashdown - DRONE (2021, NASA Kennedy Space Center) https://images.nasa.gov/details/KSC-20210502-MH-JBP01_0001-SpaceX_Crew_1_Splashdown_Drone_Imagery-3275583 (미국 연방정부 저작물, NASA 미디어 이용 지침 https://www.nasa.gov/nasa-brand-center/images-and-media/) · 사실: NASA 영상 설명(5월 2일 새벽 2시 56분, 우주비행사 4명) · NASA 'Crew-1 Makes Nighttime Splashdown, Ends Mission'(파나마시티 앞 멕시코만, 168일, 야간 카메라, 갑판으로 들어 올림) https://www.nasa.gov/?p=781780 · Space.com 'SpaceX Crew Dragon makes 1st nighttime splashdown with US astronauts since Apollo era'(1968년 아폴로 8호 이후 처음) https://www.space.com/spacex-crew-1-astronaut-dragon-capsule-splashdown · 음악: "Investigations" Kevin MacLeod (incompetech.com), CC BY 4.0 (creativecommons.org/licenses/by/4.0) · 이 영상은 영상 속 인물이나 기관이 보증·후원한 것이 아닙니다. NASA와 스페이스X는 이 영상을 보증하거나 후원하지 않습니다
+
+#Shorts #스페이스X #SpaceX #크루드래곤 #우주선 #회수 #NASA #밤바다 #우주비행사 #신기한영상 #궁금증 #우주
+```
+
+**고정 댓글**
+
+```
+깜깜한 바다에서 우주선 찾기… 생각보다 훨씬 밝죠? 🌙
+```
