@@ -9272,7 +9272,7 @@ MEDIA=$PWD/media python3 politics/prep_split.py hope1 && ./render.sh hope1 final
 | 세바스티앙 살가두(사진가): 부모님의 메마른 농장에 숲을 되살림 | [An Insight, An Idea with Sebastião Salgado](https://commons.wikimedia.org/wiki/File:An_Insight,_An_Idea_with_Sebasti%C3%A3o_Salgado_-_DAVOS_AGENDA_2021.webm) (2021-01-25) | 35:59, 1920×1080 | CC BY 3.0, World Economic Forum, 라이선스 검토 완료 |
 | 레나 에펜디(사진기자) | [Betazone Davos 2020 - Seeing The Other with Rena Effendi](https://commons.wikimedia.org/wiki/File:Betazone_Davos_2020_-_Seeing_The_Other_with_Rena_Effendi.webm) | 19:16, 1920×1080 | CC BY 3.0, World Economic Forum, 라이선스 검토 대기 |
 
-- 힐러리 넬슨은 2022년, 살가두는 2025년에 세상을 떠났다. 만들게 되면 설명란에 맞게 적는다.
+- 오케스트레이터 결정(2026-10-12): 나즈린·케레·사니·살가두는 승인. 힐러리 오닐(넬슨)은 쓰지 않는다('실패' 메시지와 2022년 산에서의 사고가 겹쳐 씁쓸함). 에펜디는 개인적이고 희망적인 이야기가 있을 때만 쓴다. 살가두 편은 설명란에 2025년 별세를 정중하게 적고, 화면에는 故·RIP 표현을 쓰지 않는다. 받는 순서는 짧은 파일부터(사니 1:51, 케레 쇼츠).
 - WEF 정책 세션, 정치인 연설, 유명 연예인 영상(같은 분류에 많다)은 이 채널에 쓰지 않는다.
 
 ### 확인했지만 쓰지 못한 출처 (2026-10-12)
