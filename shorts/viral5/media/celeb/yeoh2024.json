@@ -1,0 +1,24 @@
+{
+ "id": "star12",
+ "title": "Michelle Yeoh on gender inequality at the 2024 World Economic Forum (Crystal Award, Annual Meeting 2024, Davos, 15 January 2024)",
+ "commons_page": "https://commons.wikimedia.org/wiki/File:Michelle_Yeoh_on_gender_inequality_at_the_2024_World_Economic_Forum.webm",
+ "file_url": "https://upload.wikimedia.org/wikipedia/commons/8/8f/Michelle_Yeoh_on_gender_inequality_at_the_2024_World_Economic_Forum.webm (1080x1920 VP9, 49.6 s, 6,156,748 bytes)",
+ "license": "CC BY 3.0, author World Economic Forum (Commons API extmetadata LicenseShortName 'CC BY 3.0', Artist 'World Economic Forum', read 2026-10-12 05:00 UTC)",
+ "attribution": "\"Michelle Yeoh on gender inequality at the 2024 World Economic Forum\", World Economic Forum, CC BY 3.0, via Wikimedia Commons; cut, reordered, cropped, captions added",
+ "used_s": [
+  [
+   26.6,
+   45.95
+  ],
+  [
+   11.8,
+   26.45
+  ]
+ ],
+ "left_out": "0-11.8 s: wide stage shot ('ANNUAL MEETING 2024', crystal award logos) and the name lower third; 'At the core of their work… while subjugating half the world's populations. Seems obvious to me.'; the WEF end card",
+ "screen": "this is WEF's own vertical social edit: only the inner picture's face area is kept (trim x 0.237-0.937, y 0.219-0.552 = 256-1012 x 420-1060 px), which leaves out the 'Annual Meeting Davos 2024' header, the corner graphic, the name lower third, the SDG lapel pin, WEF's burned-in English captions and the 'World Economic Forum / Crystal Awards 2024' podium bar",
+ "transcript": "WEF's burned-in captions and faster-whisper medium.en (word times) agree word for word ('programmes' in the captions)",
+ "download_note": "upload.wikimedia.org answered HTTP 429 (Retry-After 600) to this environment at 04:55, 05:26, 06:01, 06:14, 06:46 and 07:18 UTC on 2026-10-12; this file was fetched at 07:50 UTC with one request. No mirror or other CDN was used.",
+ "credit": "World Economic Forum (CC BY 3.0)",
+ "clip": "yeoh2024.mp4 = the Commons webm re-encoded whole: ffmpeg -i <webm> -c:v libx264 -crf 14 -preset slow -pix_fmt yuv420p -c:a aac -b:a 256k yeoh2024.mp4"
+}

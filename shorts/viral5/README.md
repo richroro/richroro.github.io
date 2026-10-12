@@ -9000,3 +9000,33 @@ MEDIA=$PWD/media python3 politics/prep_split.py legend2 && ./render.sh legend2 f
   - [유엔 이용 약관](https://www.un.org/en/about-us/terms-of-use): 개인적·비상업적 이용만 허용하고, "without any right to resell or redistribute them or to compile or create derivative works therefrom".
   - [유니세프 법적 고지](https://www.unicef.org/legal): 사전 서면 허가 없이는 어떤 목적의 이용도 금지한다.
 - 연설 원문은 [유니세프 보도자료](https://www.unicef.org/press-releases/remarks-kim-nam-jun-launch-generation-unlimited-new-york-24-september-2018)에 있다(이것도 유니세프 저작물).
+
+### star12: 양자경 (세계경제포럼 다보스 2024 크리스털 어워드, CC BY 3.0)
+
+| id | 제목 (띠) | 인물 · 분야 | 길이 | 용량 | 벤치마크 | 원본 |
+| --- | --- | --- | --- | --- | --- | --- |
+| `star12` | 양자경이 다보스에서 / 여성에 대해 한 말..? | 양자경(미셸 여) · 배우 | 34.6초 | 23.9MB | 50만+ 조사(`research-500k-people.csv`)에 양자경 편은 없다. star7(마윈, WEF 대담)과 같은 「~가 ○○에서 한 말..?」 틀 | WEF 「Michelle Yeoh on gender inequality at the 2024 World Economic Forum」, Wikimedia Commons (CC BY 3.0) |
+
+- **원본**: [Commons 파일 페이지](https://commons.wikimedia.org/wiki/File:Michelle_Yeoh_on_gender_inequality_at_the_2024_World_Economic_Forum.webm). 1080×1920(세로), 49.6초다.
+  - 라이선스는 CC BY 3.0, 저작자는 World Economic Forum이다. 2026-10-12에 Commons API(extmetadata)로 다시 확인했다(SA·NC·ND 아님).
+  - 받기: upload.wikimedia.org가 04:55~07:18 UTC 내내 HTTP 429(Retry-After 600)를 돌려줬다. 07:50 UTC에 한 번 요청해서 받았다. 미러나 다른 CDN은 쓰지 않았다.
+  - `media/celeb/yeoh2024.mp4`는 webm을 통째로 H.264로 다시 인코딩한 파일이다(`media/celeb/yeoh2024.json`).
+- **화면**: WEF가 직접 만든 세로 편집본이다. 바깥에 'Annual Meeting Davos 2024' 머리글, 모서리 그래픽, 이름 자막, 영어 자막, 'World Economic Forum / Crystal Awards 2024' 연단 띠가 있다.
+  - 안쪽 화면의 얼굴 부분만 남겼다(`trim` x 0.237–0.937, y 0.219–0.552 = 256–1012 × 420–1060px). 그래서 위 문구들과 옷깃의 SDG 배지는 모두 화면 밖이다.
+  - 첫 11.8초(무대 전체 화면, 이름 자막)와 끝 화면(WEF 로고)은 쓰지 않았다.
+  - first.png, sheet.png, 원본 크기 프레임을 직접 보고 로고·휘장이 없음을 확인했다.
+- **구간** (원본 초): 26.6–45.95("저도, 그들도 믿어요. 성평등이 … 문제를 풀 힘과 리더십도 갖고 있다"), 11.8–26.45(출산 지원을 못 받는 엄마들, 교육 기회를 빼앗기는 소녀들, "우리 모두의 미래를 밝힐 수 있는데도").
+- **순서를 바꿨다**: 가장 센 대목(성평등, 여성의 리더십)을 맨 앞에 뒀다. 설명란에 "순서 바꿈, 중간 생략"을 적었다.
+- **뺀 것**: "At the core of their work … while subjugating half the world's populations. Seems obvious to me."(앞부분이 무대 전체 화면이라 문장이 반만 남는다).
+- **녹취**: WEF 화면 자막과 faster-whisper medium.en(단어 시간)이 단어까지 같다. 번역은 직접 했다. 'They'는 앞 문장의 유엔개발계획(UNDP)을 가리키지만, 화면에는 말한 그대로 "그들도"라고 적었다.
+- **사실**
+  - 2024년 크리스털 어워드 수상(2024-01-15 다보스 연차총회 개막 행사): [WEF 발표](https://www.weforum.org/press/2024/01/wef24-crystal-award-winners/).
+  - 2016년부터 UNDP 친선대사: 같은 WEF 발표. 영상의 이름 자막에도 'United Nations Development Programme Goodwill Ambassador'라고 나온다.
+  - 2023년 「에브리씽 에브리웨어 올 앳 원스」로 아시아계 여성 최초 아카데미 여우주연상: [NPR(2023-03-12)](https://www.kunc.org/npr-news/npr-news/2023-03-12/michelle-yeoh-is-the-first-asian-woman-to-win-best-actress-oscar).
+- **CC BY 표시**: 설명란에 제목, 저작자 World Economic Forum, CC BY 3.0과 링크, Commons 파일 주소, 바꾼 점(편집·자막 추가: 잘라 붙임, 순서 바꿈, 얼굴만 확대, 원본 자막·문구 잘라냄)을 적었다.
+
+```bash
+MEDIA=$PWD/media python3 politics/prep_split.py star12 && ./render.sh star12 final/star12.mp4 && python3 qa_review.py star12   # FAIL 0
+```
+
+**star12**: 양자경이 다보스에서 여성에 대해 한 말..? ✊ (설명글 전문은 `upload/txt/star12.txt`)
