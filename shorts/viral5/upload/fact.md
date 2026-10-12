@@ -143,7 +143,7 @@
 **설명글**
 
 ```
-2024년 11월 19일, 국제우주정거장(고도 약 400km) 바깥 카메라에 하얀 꼬리를 그으며 올라가는 로켓이 찍혔습니다. 정체는 높이 약 122m(400피트), 역사상 가장 크고 힘센 로켓인 스페이스X 스타십의 6번째 시험 비행입니다. 이날은 1단 부스터를 발사탑의 '젓가락 팔'로 잡을 계획이었지만, 비행 조건이 맞지 않아 취소하고 부스터를 멕시코만 바다에 내렸습니다. 한 달 전인 10월 13일 5번째 비행에서는 처음으로 부스터를 잡는 데 성공했습니다. 영상은 NASA가 공개한 우주정거장 외부 카메라 영상입니다.
+2024년 11월 19일, 국제우주정거장(고도 약 400km) 바깥 카메라에 하얀 꼬리를 그으며 올라가는 로켓이 찍혔습니다. 정체는 높이 약 122m(400피트), 역사상 가장 크고 힘센 로켓인 스페이스X 스타십의 6번째 시험 비행입니다. 이날은 1단 부스터를 발사탑의 '젓가락 팔'로 잡을 계획이었지만, 비행 조건이 맞지 않아 취소하고 부스터를 멕시코만 바다에 내렸습니다. 한 달 전인 10월 13일 5번째 비행에서는 처음으로 부스터를 잡는 데 성공했습니다(영상: NASA 우주정거장 외부 카메라).
 
 ▶ [채널명] 채널 구독: https://www.youtube.com/@[핸들]
 
@@ -182,4 +182,30 @@
 
 ```
 다 쓴 로켓을 다시 쓰는 시대… 몇 번까지 재사용할 수 있을까요? 🚀
+```
+
+## ship4
+
+**제목**
+
+```
+캄캄한 밤바다에 우주선이 떨어지면 생기는 일ㄷㄷ
+```
+
+**설명글**
+
+```
+2021년 5월 2일 새벽 2시 56분(미국 동부), 우주정거장에서 168일을 보낸 우주비행사 4명을 태운 스페이스X 크루 드래곤 '레질리언스'가 낙하산을 펴고 플로리다 파나마시티 앞 멕시코만에 내려앉았습니다. 깜깜한 밤이라 낙하산은 야간 카메라로 찍었고, 회수선은 조명을 환하게 켜고 다가가 작은 보트로 줄을 건 뒤 캡슐을 사람이 탄 채로 갑판 위까지 끌어 올렸습니다. 미국 유인 우주선의 밤바다 착수는 1968년 아폴로 8호 이후 53년 만이었습니다. NASA 직원이 드론으로 찍은 실제 영상입니다.
+
+▶ [채널명] 채널 구독: https://www.youtube.com/@[핸들]
+
+출처: 영상: NASA/Jamie Peer, SpaceX Crew-1 Splashdown - DRONE (2021, NASA Kennedy Space Center) https://images.nasa.gov/details/KSC-20210502-MH-JBP01_0001-SpaceX_Crew_1_Splashdown_Drone_Imagery-3275583 (미국 연방정부 저작물, NASA 미디어 이용 지침 https://www.nasa.gov/nasa-brand-center/images-and-media/) · 사실: NASA 영상 설명(5월 2일 새벽 2시 56분, 우주비행사 4명) · NASA 'Crew-1 Makes Nighttime Splashdown, Ends Mission'(파나마시티 앞 멕시코만, 168일, 야간 카메라, 갑판으로 들어 올림) https://www.nasa.gov/?p=781780 · Space.com 'SpaceX Crew Dragon makes 1st nighttime splashdown with US astronauts since Apollo era'(1968년 아폴로 8호 이후 처음) https://www.space.com/spacex-crew-1-astronaut-dragon-capsule-splashdown · 음악: "Investigations" Kevin MacLeod (incompetech.com), CC BY 4.0 (creativecommons.org/licenses/by/4.0) · 이 영상은 영상 속 인물이나 기관이 보증·후원한 것이 아닙니다. NASA와 스페이스X는 이 영상을 보증하거나 후원하지 않습니다
+
+#Shorts #스페이스X #SpaceX #크루드래곤 #우주선 #회수 #NASA #밤바다 #우주비행사 #신기한영상 #궁금증 #우주
+```
+
+**고정 댓글**
+
+```
+깜깜한 바다에서 우주선 찾기… 생각보다 훨씬 밝죠? 🌙
 ```
