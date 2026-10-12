@@ -9046,6 +9046,7 @@ MEDIA=$PWD/media python3 politics/prep_split.py star12 && ./render.sh star12 fin
 | `hope2` | 1형 당뇨 10살 소년이 / 꿈에 대해 한 말..? | 찰리 알베어(10살, JDRF 어린이 의회 대표) · 아이의 꿈, 병을 웃어넘기는 용기 | 43.0초 | 23.1MB | 「~가 한 말..?」 틀. 같은 각도의 50만+ 예: 「자폐 성향 아들의 질문에 일론 머스크가 한 대답」 193만, 「호날두 주니어가 아빠의 위대함을 깨닫는순간」 109만(`research-500k-people.csv`, 아이 등장 편) | [상원 고령화특별위원회 2017-07-26](https://www.aging.senate.gov/hearings/progress-toward-a-cure-for-type-i-diabetes-research-and-the-artificial-pancreas) 51:03–52:47 |
 | `hope3` | 학점 3.9 자폐 청년에게 / 생긴 일..? | 프랭크 헬머(데이터 분석가) · 무너졌다 다시 일어선 이야기, 믿어 준 친구들 | 43.6초 | 27.9MB | 「~에게 생긴 일..?」 틀(star9·star10과 같은 틀). 같은 틀의 50만+ 예: 「못생겼다고 9년 동안 맞은 일론머스크 엄마의 반격」 166만(역경→반전, `research-500k-people.csv`) | [상원 고령화특별위원회 2024-02-29](https://www.aging.senate.gov/hearings/all-means-all-empowering-people-with-disabilities-to-thrive-in-careers-and-the-workplace) 42:24–47:54 |
 | `hope4` | 1형 당뇨 소녀가 / 39년 기록 깬 비결..? | 케이트 홀(당시 고교 졸업생, 육상 선수) · 벤치에서 신기록까지 | 39.5초 | 24.4MB | 「~하는 진짜 이유/비결..?」 틀. 같은 각도의 50만+ 예: 「로다주가 아이언맨 수트를 입기 위해 견뎌야 했던 고통의 순간」 553만(고통→성취, `research-500k-people.csv`) | [상원 고령화특별위원회 2015-07-15](https://www.aging.senate.gov/hearings/diabetes-research_improving-lives-on-the-path-to-a-cure) 44:24–47:52 |
+| `hope5` | 남의 아이 10명 키운 / 75세 할머니가 한 말..? | 루스 스티븐스(75세 할머니) · 위탁 가정에서 손자를 데려와 키운 사랑 | 43.1초 | 21.1MB | 「~가 한 말..?」 틀(star12와 같은 틀). 노인·가족 각도의 50만+ 예: 「60세에 모델이 된 일론머스크 엄마의 반전 인생」 71만, 「상사가 눈물을 보이자 70세 인턴이 보인 반응」 64만(`research-500k-people.csv`) | [상원 고령화특별위원회 2022-06-23](https://www.aging.senate.gov/hearings/strengthening-support-for-grandfamilies-during-the-covid-19-pandemic-and-beyond) 48:02–53:25 |
 
 ### hope1: 에린 윌먼 (상원 고령화특별위원회, 2024-02-29)
 
@@ -9109,3 +9110,17 @@ MEDIA=$PWD/media python3 politics/prep_split.py hope1 && ./render.sh hope1 final
 - **사실**: 10살 진단, 첫 축구 경기 벤치, 39년 묵은 전국 고교 기록(22피트 5인치, New Balance Nationals), 올림픽의 꿈은 본인 증언이다. 위원회 페이지 증인 소개도 "recently broke a 39-year old national long-jumping record"라고 적었다. 22피트 5인치 = 269인치 × 2.54cm = 6.83m(계산).
 
 **hope4**: 1형 당뇨 소녀가 39년 기록 깬 비결..? 🏃‍♀️ (설명글 전문은 `upload/txt/hope4.txt`)
+
+### hope5: 루스 스티븐스 (상원 고령화특별위원회, 2022-06-23)
+
+- **원본**: 청문회 "Strengthening Support for Grandfamilies During the COVID-19 Pandemic and Beyond"의 상원 녹화실 영상이다.
+  - 위원회 페이지([aging.senate.gov](https://www.aging.senate.gov/hearings/strengthening-support-for-grandfamilies-during-the-covid-19-pandemic-and-beyond))의 플레이어가 `filename=aging062322`를 쓴다.
+  - 스트림: `https://www-senate-gov-media-srs.akamaized.net/hls/live/2036801/aging/aging062322/master.m3u8`(1280×720). msl3archive 주소는 404였다. `media/hope/stevens.mp4`는 스트림 2870초부터 345초다(`media/hope/stevens.json`). 스트림 전체를 tiny.en으로 받아 적은 시각("Taking care of kids make me feel loved" 3184.8초)과 클립 시각(314.6초)이 맞는다.
+- **구간** (클립 초 → 원본 시각): 314.5–319.0 → 53:04–53:09("아이들을 돌보면 사랑받는 느낌", "누군가 날 사랑한다는 느낌"), 11.85–14.9 → 48:02(75살), 34.8–49.0 → 48:25–48:39(남의 아이 10명 넘게, 모두 졸업하고 마약에 손대지 않음), 65.6–70.8 → 48:56–49:01(손자가 위탁 가정에), 79.55–88.6 → 49:10–49:19(손자는 나와 있어야 했다, 기차로 3시간 반), 109.0–114.2 → 49:39–49:44(집으로 데려옴, 생후 8주), 246.15–248.1 → 51:56(고등학교 졸업), 329.95–334.6 → 53:20–53:25(최선을 다해 지킨다, 키운 내가 자랑스럽다).
+- **순서를 바꿨다**: 증언 끝의 "아이들을 돌보면 사랑받는 느낌"을 맨 앞에 뒀다. 설명란에 "순서 바꿈, 중간 생략"을 적었다.
+- **뺀 것**: 자녀 소개, 자전거·여행 이야기, 위탁 가정의 지역과 입양 의사, 법률 지원, 호흡기 치료, 버스로 병원 다닌 일, 공공부조·장애 보험(제도), 템플대 지원 프로그램, 코로나 고립, 손자의 보청기·일자리·급여, "가끔은 날 원수처럼 대한다", 의원 질의. 손자 타미르의 얼굴을 크게 보여 주지 않는다(뒤에 마스크를 쓴 젊은 남자가 흐리게 보이는데, 손자인지 확인되지 않는다).
+- **화면**: 원본 화면에 상원 자막이 그려져 있고, 오른쪽 아래 수어 통역 화면, 이름표, 상표가 보이는 물병이 있다. `trim` x 0.28–0.70, y 0–0.68로 모두 잘라냈다. 2배 lanczos 확대. 용량 때문에 `CRF=21`로 렌더했다(21.1MB).
+- **녹취**: [서면 증언](https://www.aging.senate.gov/download/07/31/2023/testimony_stevens-062322)과 faster-whisper medium.en을 대조했다. 소리대로 적었다("makes me feel loved. I feel somebody loves me", 서면은 "I know somebody loves me"). whisper가 "Tommy", "Tamiya"로 들은 이름은 서면 증언과 위원회 페이지의 표기(Tamir)로 적었다.
+- **사실**: 75살, 남의 아이 10명 넘게 양육, 위탁 가정, 기차로 3시간 반, 생후 8주, 50살에 손자를 맡음, 고등학교 졸업은 모두 본인 증언이다. 위원회 페이지의 증인 소개는 "Grandmother (accompanied by grandson Tamier Mills)"다.
+
+**hope5**: 남의 아이 10명 키운 75세 할머니가 한 말..? 👵 (설명글 전문은 `upload/txt/hope5.txt`)
