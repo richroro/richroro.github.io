@@ -157,3 +157,29 @@
 ```
 우주에서도 보일 만큼 큰 로켓… 다음엔 잡을 수 있을까요? 🚀
 ```
+
+## ship3
+
+**제목**
+
+```
+쏘아 올린 부스터 2개가 다시 돌아온 곳ㄷㄷ
+```
+
+**설명글**
+
+```
+2023년 10월 13일 오전 10시 19분(미국 동부), NASA 케네디 우주센터 39A 발사대에서 로켓 3개를 묶은 스페이스X 팰컨 헤비가 NASA 소행성 탐사선 '사이키'를 싣고 떠났습니다. 몇 분 뒤, 양옆에 붙어 있던 부스터 2개는 스스로 날아 돌아와 케이프커내버럴의 착륙장 LZ-1과 LZ-2에 하나씩 거의 동시에 내려앉았습니다. 두 부스터는 이날이 4번째 비행이었고, 가운데 부스터는 탐사선에 연료를 최대한 몰아주느라 회수하지 않았습니다. NASA 헬기에서 찍은 실제 영상입니다.
+
+▶ [채널명] 채널 구독: https://www.youtube.com/@[핸들]
+
+출처: 영상: NASA/Michelle Stone(촬영), NASA/Isaac Watson(편집), Psyche Live Launch Coverage - Helicopter B-Roll (8K) (2023, NASA Kennedy Space Center) https://images.nasa.gov/details/KSC-20231013-VP-MMS01-0001-SpaceX_Psyche_Helicopter_BRoll_8K-WON_M1708 (미국 연방정부 저작물, NASA 미디어 이용 지침 https://www.nasa.gov/nasa-brand-center/images-and-media/) · 사실: NASA 사이키 블로그 'Successful Landing of Side Boosters'(2023-10-13, LZ-1·LZ-2) https://science.nasa.gov/blogs/psyche/2023/10/13/successful-landing-of-side-boosters/ · NASA 영상 설명(10월 13일 오전 10시 19분, 39A) · AmericaSpace 'Falcon Heavy Successfully Launches NASA's Psyche'(2023-10-13, 두 부스터 4번째 비행) https://www.americaspace.com/2023/10/13/falcon-heavy-successfully-launches-nasas-psyche-looks-to-record-setting-year-end/ · Everyday Astronaut 'Psyche | Falcon Heavy'(가운데 부스터 미회수) https://everydayastronaut.com/psyche-falcon-heavy/ · 음악: "Investigations" Kevin MacLeod (incompetech.com), CC BY 4.0 (creativecommons.org/licenses/by/4.0) · 이 영상은 영상 속 인물이나 기관이 보증·후원한 것이 아닙니다. NASA와 스페이스X는 이 영상을 보증하거나 후원하지 않습니다. 영상에는 착륙하는 순간이 아니라 착륙을 마친 부스터가 담겨 있습니다
+
+#Shorts #스페이스X #SpaceX #팰컨헤비 #부스터 #로켓 #로켓착륙 #회수 #NASA #사이키 #우주 #궁금증
+```
+
+**고정 댓글**
+
+```
+다 쓴 로켓을 다시 쓰는 시대… 몇 번까지 재사용할 수 있을까요? 🚀
+```
