@@ -1,0 +1,106 @@
+{
+ "committee": "U.S. Senate Special Committee on Aging",
+ "hearing": "Renewing Our Commitment: How the Older Americans Act Uplifts Families Living with Aging-Related Diseases",
+ "date": "2025-11-05",
+ "source_page": "https://www.aging.senate.gov/hearings/renewing-our-commitment-how-the-older-americans-act-uplifts-families-living-with-aging-related-diseases",
+ "player": "https://www.senate.gov/isvp/?comm=aging&filename=aging110525",
+ "file_url": "https://www-senate-gov-media-srs.akamaized.net/hls/live/2036801/aging/aging110525/master.m3u8 (1280x720; burned-in open captions)",
+ "fetch": "ffmpeg -user_agent 'richroro-shorts/1.0 (+https://github.com/richroro/richroro.github.io)' -ss 1880 -i <stream>/master/index_1.m3u8 -t 240 -c:v libx264 -crf 16 -preset fast -c:a aac -b:a 192k sappington.mp4 (offset checked against a whole-stream tiny.en pass: 'My neurologist tells me' at stream 2066.5 s = clip 186.7 s)",
+ "speaker": "Stephen (Steve) Sappington, Patient Advocate, Harford County, MD (oral statement)",
+ "transcript": "written statement https://www.aging.senate.gov/download/testimony_sappington-110525pdf ; official transcript https://www.aging.senate.gov/download/official-hearing-transcript_11052025pdf ; checked against faster-whisper medium.en, large-v3 (last sentence) and small.en",
+ "picture": "trim x 0.36-0.72, y 0-0.66 of the 1280x720 frame (drops the burned-in captions, the name card and a water bottle), 2x lanczos + unsharp, zoom 1.25/1.45",
+ "left_out": "greeting; five sons and nine grandchildren; early symptoms; doctor referral; his wife's friend; 'ignoring the obvious'; class details; the funding-in-jeopardy passage; how the nonprofit was run and funded (grants, Older Americans Act); class counts; every policy ask (OAA reauthorization, Title III, research funding, National Plan to End Parkinson's Act); senators' remarks",
+ "credit": "미국 상원 (U.S. Senate)",
+ "license": "Work of the United States Government recorded by the Senate Recording Studio, public domain (17 U.S.C. §105). Not C-SPAN footage.",
+ "id": "hope6",
+ "clip": "sappington.mp4 = stream 1880 s + clip length",
+ "used_in_clip_s": [
+  [
+   186.65,
+   188.9
+  ],
+  [
+   188.9,
+   190.6
+  ],
+  [
+   191.05,
+   194.75
+  ],
+  [
+   194.75,
+   195.8
+  ],
+  [
+   15.9,
+   19.08
+  ],
+  [
+   19.4,
+   22.2
+  ],
+  [
+   209.7,
+   212.45
+  ],
+  [
+   212.55,
+   214.2
+  ],
+  [
+   79.7,
+   81.84
+  ],
+  [
+   81.84,
+   83.8
+  ],
+  [
+   91.88,
+   94.85
+  ],
+  [
+   95.3,
+   98.62
+  ],
+  [
+   98.7,
+   100.9
+  ],
+  [
+   144.85,
+   147.98
+  ],
+  [
+   196.5,
+   199.28
+  ],
+  [
+   216.0,
+   218.88
+  ],
+  [
+   218.88,
+   221.7
+  ]
+ ],
+ "used_in_stream": [
+  "0:34:27-0:34:29",
+  "0:34:29-0:34:31",
+  "0:34:31-0:34:35",
+  "0:34:35-0:34:36",
+  "0:31:36-0:31:39",
+  "0:31:39-0:31:42",
+  "0:34:50-0:34:52",
+  "0:34:53-0:34:54",
+  "0:32:40-0:32:42",
+  "0:32:42-0:32:44",
+  "0:32:52-0:32:55",
+  "0:32:55-0:32:59",
+  "0:32:59-0:33:01",
+  "0:33:45-0:33:48",
+  "0:34:36-0:34:39",
+  "0:34:56-0:34:59",
+  "0:34:59-0:35:02"
+ ]
+}
