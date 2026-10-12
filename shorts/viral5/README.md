@@ -9124,3 +9124,69 @@ MEDIA=$PWD/media python3 politics/prep_split.py hope1 && ./render.sh hope1 final
 - **사실**: 75살, 남의 아이 10명 넘게 양육, 위탁 가정, 기차로 3시간 반, 생후 8주, 50살에 손자를 맡음, 고등학교 졸업은 모두 본인 증언이다. 위원회 페이지의 증인 소개는 "Grandmother (accompanied by grandson Tamier Mills)"다.
 
 **hope5**: 남의 아이 10명 키운 75세 할머니가 한 말..? 👵 (설명글 전문은 `upload/txt/hope5.txt`)
+
+## 스페이스X 스타십 쇼츠 (`ship1`~, 회수 영상)
+
+사용자 요청은 "스타쉽 영상"(스페이스X 스타십)이었고, 이어서 "회수 영상"으로 좁혀졌다. 그래서 **로켓·우주선을 다시 가져오는 장면**을 주제로 만들었다. 형식은 fact 시리즈와 같은 **흰 카드 + 실제 클립 + 장면 자막**(`media/wild/make_wild.py`, `src/lib/Card.tsx`)이다. 무음 50만+ 조사에서 작은 채널 적중률이 가장 높았던 틀이다(`research/research-500k-mute.md`, 33%). 내레이션, 대사, TTS는 없다.
+
+### 영상 찾기: 스타십 '젓가락 포획' 영상은 합법 원본을 찾지 못했다
+
+- **Flickr**(CC BY·CC0·PDM 필터, 서버가 그려 준 검색 결과만 읽음): "starship", "spacex starship", "super heavy", "booster catch", "mechazilla", "IFT-5", "starbase" 영상 검색 결과가 0건이거나 무관한 영상이었다. 스티브 저벳슨(jurvetson)의 Flight 5 포획 **사진**(CC BY)은 있다. 사진이라 쓰지 않았다.
+- **images.nasa.gov**: 스타십 영상은 `jsc2024m000188`(우주정거장 외부 카메라가 찍은 6차 비행) 하나뿐이다. SCIFLI 페이지에도 스타십 재진입 영상은 없었다.
+- **Wikimedia Commons**: API(commons.wikimedia.org)가 2026-10-12 내내 429를 돌려줬다. 우회하지 않았다.
+- **NASA "Isolated Launch and Landing Views"**(Crew-7~13, Roman, IM-1 등): 크레디트가 "NASA/SpaceX"이거나, 영상 안에 스페이스X 기체 카메라 화면이 섞여 있다(Psyche ISO 문자열 27~32분). 구간별 촬영 주체를 가를 수 없어서 쓰지 않았다.
+- 그래서 회수 장면은 **NASA 직원이 직접 찍은 영상**(드론, 헬기, 적외선 카메라)으로 만들었다.
+
+### 벤치마크 (YouTube 검색 페이지 글자만 읽음, 2026-10-12, 요청 간격 4초 이상, 영상은 받지 않음)
+
+- 짤소리 「진짜 젓가락으로 로켓을 잡네? 스페이스X 역대급 공중 포획 성공 😮」: 17,532,709회, 3개월 전, 0:52 (youtube.com/shorts/QhHLy5zQNTY)
+- 안될과학 「점점 고여가는 우주 발사체 회수?!」: 3,615,531회, 1년 전, 1:00 (07NPyjegB1M)
+- 지식픽 「일론머스크 스타쉽 실제 크기 체감」: 2,529,675회, 1년 전, 0:38 (pSnGaS6qhQc)
+- 엘랑의 우주정복 「우주에서 지구로 돌아오는 팰컨9 로켓」: 1,013,407회, 3년 전, 1:00 (inXP0VWRViE)
+- 잡식일기 「스페이스X의 12척의 배」: 440,465회, 2개월 전, 0:37 (i8Nh8cIEmC8). 회수선이 소재다.
+- 리뷰엉이 「스페이스X 스타십 1단 로켓 회수 기술이 미친 혁신인 이유」: 408,830회, 1년 전, 0:56 (P3hbuipnFPk)
+- 판단: "회수" 소재는 큰 채널에서 크게 터진다(41만~1753만). 위 영상들은 모두 남의 영상(스페이스X 중계·뉴스)을 다시 쓴 것이다. 우리는 소재와 제목 틀("~하는 이유", "~하는 법", "생긴 일")만 따르고, 영상은 NASA가 찍은 것만 쓴다. `research/*.csv`에는 스타십·회수 쇼츠 행이 없었다.
+
+### 영상
+
+| id | 화면 제목 | 길이 | 용량 | 이야기 (한 줄 요약 / 결말 유형 / 감정) |
+|---|---|---|---|---|
+| `ship1` | 우주에서 돌아온 캡슐을 / 바다에서 건지는 법ㄷㄷ | 36.4초 | 14.1MB | 낙하산 캡슐이 바다에 풍덩 → "이걸 어떻게 건질까..?" → 회수선 꽁무니 크레인이 사람이 탄 채로 통째로 끌어 올린다 → 45년 만의 바다 귀환 / 의외의 방법 / 신기함 |
+
+- **qa_review.py**: FAIL 0. 길이·제목·첫 장면(2.8초)·장면 길이(최장 3.4초)·소리(−14.2 LUFS)·검은 화면·용량 PASS. 설명글 WARN은 채널 이름이 아직 자리표시라서다. first.png, sheet.png, 원본 프레임을 직접 봤다.
+- **장면 감지**: 처음 렌더에서는 하늘색 화면 두 장(착수 → 낙하산 분리)이 이어져 장면 하나로 잡혔다(6.0초 FAIL). 넷째 장면을 물 위 캡슐 확대로 바꿔 다시 렌더했다.
+- **소리**: 네 원본 모두 소리 트랙이 무음이다(−91dB). 그래서 음악과 효과음만 쓴다. 엔진 소리는 쓸 수 있는 합법 원본이 없어서 넣지 않았다.
+- **화면 글자·로고**: 원본 앞부분의 NASA 슬레이트(제목 카드)는 쓰지 않았다. 캡슐과 회수선에 읽히는 로고는 없다(원본 1920×1080 프레임으로 확인). 화면 아래의 출처 줄(`credit`)은 비웠다. 출처는 설명란에만 둔다.
+- **용량**: 렌더(CRF 18)가 35MB라서 영상만 `-crf 23 -preset slow`로 다시 압축했다(오디오는 복사). fact 시리즈와 같은 방법이다.
+
+### 출처와 라이선스 (항목별, 원본 페이지 · 쓴 구간)
+
+모두 NASA 직원이 찍은 NASA 영상이다(미국 연방정부 저작물, NASA 미디어 이용 지침 https://www.nasa.gov/nasa-brand-center/images-and-media/). 크레디트에 "SpaceX"가 붙은 항목은 쓰지 않았다.
+
+**ship1**
+- `chute`: SpaceX Crew-4 Splashdown, NASA/Jamie Peer and Mike Downs, KSC, 2022-10-14. https://images.nasa.gov/details/KSC-20221014-MH-MTD01-0001-SpaceX_Crew_4_Splashdown_UAS_Recovery_Footage-3316493 (~large.mp4). 쓴 구간: 9.5~12.3초, 10.0~13.4초.
+- `splash`: SpaceX Demo-2 Splashdown, NASA/Mike Downs, KSC, 2020-08-02. https://images.nasa.gov/details/KSC-20200802-MH-MTD01-0001-SpaceX_Demo-2_Splashdown_4K-3255694 (~large.mp4). 쓴 구간: 57.0~60.0, 92.5~95.5, 118.0~121.0초.
+- `boat`: SpaceX Demo-2 Crew Return - Recovery Ops, NASA/Mike Downs, KSC, 2020-08-02. https://images.nasa.gov/details/KSC-20200802-MH-MTD03-0001-SpaceX_Demo-2_Recovery_Ops_4K-3255694 (~large.mp4). 쓴 구간: 7.2~10.2, 11.0~14.0, 18.5~21.5, 35.5~38.5초.
+- `hoist`: SpaceX Crew-4 UAS Recovery Footage, NASA/Jamie Peer and Mike Downs, KSC, 2022-10-14. https://images.nasa.gov/details/KSC-20221014-MH-MTD02-0001-SpaceX_Crew_4_Splashdown_UAS_Recovery_Footage-3316493 (~large.mp4). 쓴 구간: 6.5~9.7, 13.0~16.0, 74.0~77.0초.
+- 사실
+  - 데모-2 착수: NASA 보도자료 "NASA Astronauts Safely Splash Down after First Commercial Crew Flight to Space Station"(2020-08-02, https://www.nasa.gov/news-release/nasa-astronauts-safely-splash-down-after-first-commercial-crew-flight-to-space-station/). 오후 2시 48분(미국 동부), 펜서콜라 앞 멕시코만, 회수선 "Go Navigator", 1975년 아폴로-소유스 이후 첫 미국 우주비행사 착수(→ "45년 만").
+  - 크루-4 착수: NASA, 2022-10-14 오후 4시 55분 잭슨빌 앞 대서양(https://blogs.nasa.gov/crew-4/). 회수선 이름은 화면에 쓰지 않았다.
+  - 회수 절차: NASA 크루-1 귀환 기사(https://www.nasa.gov/?p=781780). 회수선이 캡슐을 갑판으로 들어 올리고("hoist Crew Dragon onto the main deck"), 갑판에서 내려 검진을 받는다. 헬기 이동은 같은 기사와 크루-4 보도.
+  - "겉이 까맣게 그을림 = 대기권을 뚫고 온 흔적": 원본 화면 그대로의 모습이다. 원리는 일반 상식(재진입 열)이라 숫자는 쓰지 않았다.
+- 음악: "Investigations" Kevin MacLeod (incompetech.com), CC BY 4.0. 효과음은 저장소의 기존 효과음(whoosh, bubble, clunk, pop_hi, pop)이다.
+
+### 공통 규칙
+
+- 화면에 출처·날짜 칩, "저작권", "퍼블릭 도메인", "공공누리"는 넣지 않았다. AI 이미지와 그래픽 해설 화면은 없다. 처음부터 끝까지 실제 영상이다.
+- 설명란에 "이 영상은 영상 속 인물이나 기관이 보증·후원한 것이 아닙니다"와 NASA·스페이스X 비보증 문구를 넣었다. 원본 페이지 주소는 설명란 출처 줄에 있다.
+- 군 자료, 정치, 머스크 관련 정치 이야기는 없다.
+- **채널**: `fact`(오늘의 궁금증)에 접두어 `ship`을 더했다(`upload/channels.json`).
+- **새 코드 없음**: `media/wild/make_wild.py`와 `media/how1/fetch_nasa_video.py`를 그대로 쓴다. 바뀐 공유 파일은 `upload/channels.json` 한 줄이다.
+- **회귀 확인**: 손대지 않은 `how1`을 다시 받아 다시 렌더했다(`CRF=22 ./render.sh how1`). `final/how1.mp4`와 바이트까지 같다(cmp).
+- **만드는 법**
+  ```bash
+  python3 media/how1/fetch_nasa_video.py ship1 chute=<nasa_id> splash=<nasa_id> boat=<nasa_id> hoist=<nasa_id>   # nasa_id는 media/ship1/sources.json
+  python3 media/wild/make_wild.py ship1 && python3 prep.py ship1 && ./render.sh ship1 final/ship1.mp4
+  ffmpeg -i final/ship1.mp4 -c:v libx264 -crf 23 -preset slow -pix_fmt yuv420p -c:a copy -movflags +faststart out/ship1.c.mp4 && mv out/ship1.c.mp4 final/ship1.mp4
+  python3 qa_review.py ship1
+  ```

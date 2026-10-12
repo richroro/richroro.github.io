@@ -1,0 +1,205 @@
+{
+ "badge": {
+  "name": "오늘의 궁금증",
+  "icon": "?",
+  "color": "#e8590c"
+ },
+ "note": "voiceless white-card curiosity reveal (src/lib/Card.tsx): NASA-shot Crew Dragon splashdown and recovery footage, the 'how' held to ~65%",
+ "musicStart": 0.3,
+ "title": [
+  "우주에서 돌아온 캡슐을",
+  "바다에서 건지는 법ㄷㄷ"
+ ],
+ "credit": "",
+ "music": "Investigations",
+ "gain": 0.55,
+ "clipAudio": 0,
+ "sources": {
+  "chute": {
+   "file": "chute.mp4",
+   "label": "SpaceX Crew-4 Splashdown (NASA/Jamie Peer and Mike Downs, 2022-10-14)",
+   "url": "https://images.nasa.gov/details/KSC-20221014-MH-MTD01-0001-SpaceX_Crew_4_Splashdown_UAS_Recovery_Footage-3316493"
+  },
+  "splash": {
+   "file": "splash.mp4",
+   "label": "SpaceX Demo-2 Splashdown (NASA/Mike Downs, 2020-08-02)",
+   "url": "https://images.nasa.gov/details/KSC-20200802-MH-MTD01-0001-SpaceX_Demo-2_Splashdown_4K-3255694"
+  },
+  "boat": {
+   "file": "boat.mp4",
+   "label": "SpaceX Demo-2 Crew Return - Recovery Ops (NASA/Mike Downs, 2020-08-02)",
+   "url": "https://images.nasa.gov/details/KSC-20200802-MH-MTD03-0001-SpaceX_Demo-2_Recovery_Ops_4K-3255694"
+  },
+  "hoist": {
+   "file": "hoist.mp4",
+   "label": "SpaceX Crew-4 UAS Recovery Footage (NASA/Jamie Peer and Mike Downs, 2022-10-14)",
+   "url": "https://images.nasa.gov/details/KSC-20221014-MH-MTD02-0001-SpaceX_Crew_4_Splashdown_UAS_Recovery_Footage-3316493"
+  }
+ },
+ "beats": [
+  {
+   "dur": 2.8,
+   "src": "chute",
+   "in": 9.5,
+   "zoom": [
+    1.0,
+    1.1
+   ],
+   "ko": "우주에서 돌아오는 캡슐",
+   "en": "낙하산을 펴고 내려온다"
+  },
+  {
+   "dur": 3.0,
+   "src": "splash",
+   "in": 57.0,
+   "zoom": [
+    1.15,
+    1.25
+   ],
+   "focus": "50% 40%",
+   "ko": "땅 말고 바다로 간다",
+   "en": "멕시코만 한가운데",
+   "sfx": [
+    [
+     0.0,
+     "whoosh",
+     0.3
+    ]
+   ]
+  },
+  {
+   "dur": 3.0,
+   "src": "splash",
+   "in": 92.5,
+   "zoom": [
+    1.2,
+    1.3
+   ],
+   "focus": "50% 70%",
+   "ko": "풍덩!",
+   "en": "바다에 그대로 내려앉는다",
+   "sfx": [
+    [
+     0.6,
+     "bubble",
+     0.5
+    ]
+   ]
+  },
+  {
+   "dur": 3.0,
+   "src": "splash",
+   "in": 118.0,
+   "zoom": [
+    1.7,
+    1.8
+   ],
+   "ko": "낙하산은 바로 떼어 낸다",
+   "focus": "50% 85%"
+  },
+  {
+   "dur": 3.0,
+   "src": "boat",
+   "in": 7.2,
+   "zoom": [
+    1.6,
+    1.7
+   ],
+   "focus": "50% 82%",
+   "ko": "겉은 까맣게 그을렸다",
+   "en": "대기권을 뚫고 온 흔적"
+  },
+  {
+   "dur": 3.0,
+   "src": "boat",
+   "in": 11.0,
+   "zoom": [
+    1.05,
+    1.12
+   ],
+   "ko": "이걸 어떻게 건질까..?",
+   "en": "작은 보트로는 못 끈다"
+  },
+  {
+   "dur": 3.0,
+   "src": "boat",
+   "in": 18.5,
+   "zoom": [
+    1.05,
+    1.12
+   ],
+   "ko": "큰 배가 뒤로 다가온다",
+   "en": "배 꽁무니에 'ㄷ'자 크레인"
+  },
+  {
+   "dur": 3.2,
+   "src": "hoist",
+   "in": 6.5,
+   "zoom": [
+    1.0,
+    1.08
+   ],
+   "ko": "크레인에 캡슐을 걸고",
+   "en": "배 뒤쪽 경사로 위로",
+   "sfx": [
+    [
+     0.0,
+     "clunk",
+     0.4
+    ]
+   ]
+  },
+  {
+   "dur": 3.0,
+   "src": "hoist",
+   "in": 13.0,
+   "zoom": [
+    1.05,
+    1.12
+   ],
+   "ko": "통째로 끌어 올린다",
+   "en": "사람이 탄 채로!",
+   "sfx": [
+    [
+     0.0,
+     "pop_hi",
+     0.4
+    ]
+   ]
+  },
+  {
+   "dur": 3.0,
+   "src": "boat",
+   "in": 35.5,
+   "zoom": [
+    1.05,
+    1.12
+   ],
+   "ko": "갑판 위에 쏙",
+   "en": "배가 그대로 출발"
+  },
+  {
+   "dur": 3.0,
+   "src": "hoist",
+   "in": 74.0,
+   "zoom": [
+    1.0,
+    1.08
+   ],
+   "focus": "62% 50%",
+   "ko": "배 위에서 바로 내린다",
+   "en": "우주비행사는 검진 후 헬기로"
+  },
+  {
+   "dur": 3.4,
+   "src": "chute",
+   "in": 10.0,
+   "zoom": [
+    1.0,
+    1.1
+   ],
+   "ko": "45년 만의 바다 귀환",
+   "en": "미국 우주비행사 기준 (2020년)"
+  }
+ ]
+}
