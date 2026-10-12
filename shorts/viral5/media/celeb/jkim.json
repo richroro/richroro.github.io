@@ -1,0 +1,57 @@
+{
+ "id": "star8",
+ "title": "Interviews with Expedition 73 Flight Engineer Jonny Kim – Wednesday, March 19, 2025 (NASA, recorded in Star City, Russia, 18 March 2025)",
+ "page": "https://images.nasa.gov/details/iss072m260781259_Interviews_with_Expedition_73_Flight_Engineer_Jonny_Kim_250319",
+ "file_url": "https://images-assets.nasa.gov/video/iss072m260781259_Interviews_with_Expedition_73_Flight_Engineer_Jonny_Kim_250319/iss072m260781259_Interviews_with_Expedition_73_Flight_Engineer_Jonny_Kim_250319~large.mp4 (1280x720, 1:25:30)",
+ "fetch": "ffmpeg -user_agent 'richroro-shorts/1.0 (+https://github.com/richroro/richroro.github.io)' -ss <start> -i <file_url> -t <len> -c:v libx264 -crf 14 -preset fast -c:a aac -b:a 192k <out>",
+ "clips": {
+  "jkim_a.mp4": "orig 1005 s + 70 s",
+  "jkim_b.mp4": "orig 3600 s + 125 s"
+ },
+ "used_orig_s": [
+  [
+   1060.5,
+   1064.95
+  ],
+  [
+   1065.4,
+   1069.5
+  ],
+  [
+   1021.55,
+   1022.95
+  ],
+  [
+   1034.7,
+   1043.75
+  ],
+  [
+   1057.2,
+   1059.75
+  ],
+  [
+   3635.3,
+   3639.45
+  ],
+  [
+   3643.75,
+   3645.6
+  ],
+  [
+   3699.4,
+   3703.75
+  ],
+  [
+   3705.4,
+   3712.1
+  ],
+  [
+   3712.95,
+   3717.05
+  ]
+ ],
+ "license": "NASA-produced video, U.S. federal government work, public domain (17 U.S.C. 105); NASA media guidelines: no endorsement implied, NASA insignia not used as a logo",
+ "transcript": "NASA .srt (same page) + faster-whisper medium.en word times",
+ "logos": "NASA meatball and name tag on the flight suit are below the face crop (zoom >= 1.55)",
+ "credit": "NASA"
+}

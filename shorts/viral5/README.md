@@ -8855,3 +8855,81 @@ MEDIA=$PWD/media python3 politics/prep_split.py legend2 && ./render.sh legend2 f
 #Shorts #아폴로11호 #마이클콜린스 #MichaelCollins #Apollo11 #달착륙 #닐암스트롱 #NASA #우주 #레전드 #한영자막 #영어공부
 ```
 고정 댓글: 인류 첫 달 착륙을 바로 위에서 혼자 기다린다면, 여러분은 어떤 기분일 것 같나요?
+
+## 유명인 명장면 쇼츠 2차 (`politics/star8`~, 현대 유명인 더 찾기)
+
+사용자 요청은 "현대 유명인 가능한 것 더 찾아봐"였다. star1~7과 같은 형식으로 만들었다.
+- 본인 목소리에 검은 상자 한국어 자막(`capBoxEn`)과 작은 영어 원문을 단다.
+- 흰·노랑 두 줄 제목 띠를 쓴다.
+- 0초부터 얼굴을 크게 보여 준다.
+- 출처 칩, 이름표, 날짜는 화면에 없다. edit.json에 `label`을 두지 않고 모든 구간에 `"shows": 0`을 둔다. 출처·날짜는 설명란에만 적는다.
+- 음악·내레이션·TTS는 없다.
+- 템플릿과 공유 코드는 바꾸지 않았다. 새 파일은 `politics/star8~/edit.json`, `media/celeb/*.json`, `upload/specs/star8~.json`이다.
+
+| id | 제목 (띠) | 인물 · 분야 | 길이 | 용량 | 벤치마크 | 원본 (공식) |
+| --- | --- | --- | --- | --- | --- | --- |
+| `star8` | 조니 김이 우주 가기 전 / 가장 힘들었던 것..? | 조니 김 · NASA 우주비행사(한국계) | 43.3초 | 22.2MB | 「▶ 네이비씰, 의사, 나사 우주비행사까지? 현실판 사기캐 조니 킴의 진짜 인생 스토리」 106,030회, PeopleTwistCut, youtube.com/shorts/StWcL66Gags. 「군대리아 안 부럽다…우주비행사 조니 김이 공개한 '특급 레시피'」 39,133회, JTBC News, youtube.com/shorts/hbwpEO-1KqQ. 조회수는 2026-10-11에 유튜브 검색 페이지의 글만 읽어서 적었다 | NASA 「Interviews with Expedition 73 Flight Engineer Jonny Kim」 (2025-03-19, images.nasa.gov) |
+| `star9` | NBA 우승 직전 / 레이 앨런에게 생긴 일..? | 레이 앨런 · 농구(NBA) | 42.6초 | 23.6MB | 같은 틀 「~에게 생긴 일」. 가족 각도는 star5의 「Why Sugar Ray Leonard Couldn’t Save His Own Family」 77만과 같다. 레이 앨런 청문회 장면의 해외 히트작은 찾지 못했다 | 미국 상원 녹화실 영상 `aging071013` (2013-07-10) |
+
+### star8: 조니 김 (NASA 우주비행 전 인터뷰, 2025-03-18 촬영)
+
+- **원본**: NASA 「Interviews with Expedition 73 Flight Engineer Jonny Kim – Wednesday, March 19, 2025」([images.nasa.gov](https://images.nasa.gov/details/iss072m260781259_Interviews_with_Expedition_73_Flight_Engineer_Jonny_Kim_250319))의 `~large.mp4`(1280×720, 1:25:30)이다. NASA 설명: 2025년 3월 18일 러시아 스타시티에서 한 인터뷰이고, 4월 소유스 MS-27로 발사해 약 8개월 머문다.
+  - 이 묶음(star8~)의 NASA 편은 이것 하나다.
+  - 3.3GB 전체를 받지 않았다. ffmpeg로 두 구간만 HTTP에서 바로 잘라 받았다(`media/celeb/jkim.json`).
+  - 미국 연방정부 저작물이라 퍼블릭 도메인이다. 설명란에 NASA 비보증 문구를 넣었다.
+- **구간** (원본 초): 1060.5–1069.5("아빠가 왜 8개월이나 떠나야 하는지 설명하는 게 생각보다 훨씬 어려웠다"), 1021.55–1022.95("아이가 셋"), 1034.7–1043.75(첫 우주비행에서 가장 힘든 건 관계), 1057.2–1059.75(가족 사랑), 3635.3–3645.6(한국계 뿌리, 부모님이 한국에서 이민), 3699.4–3717.05(먼저 꿈을 꾸고, 멈추지 말고, 실패와 거절도 과정).
+- **순서를 바꿨다**: 가장 센 줄("아빠가 왜 8개월이나…")을 맨 앞에 뒀다. 설명란에 "순서 바꿈, 답변 일부 생략"을 적었다.
+- **뺀 것**
+  - 기자 질문(질문에 군 경력 이야기와 'immigrant children'이 들어 있다).
+  - 'sacrifices and fighting for what you believe in' 이후, "I am a proud American…" 대목.
+  - 아이 나이. NASA 자막은 "8 TO 14"이고 whisper는 "18 and 14"로 들어서 확실하지 않다.
+- **로고**: 비행복 가슴의 NASA 로고와 이름표, 어깨 국기 패치는 얼굴 크롭(확대 1.55/1.85) 아래에 있어서 보이지 않는다. 뒤는 우주 그림 배경이다.
+- **녹취**: NASA 자막 파일(.srt)과 faster-whisper medium.en(단어 시간)으로 맞췄다. 두 쪽이 다른 곳은 소리대로 적었다. "getting no's"는 whisper만 맞게 들었다(NASA 자막 "getting those").
+- **사실**: 촬영 장소·날짜, 4월 소유스 MS-27 발사, 약 8개월 체류는 NASA 영상 설명에서 가져왔다(같은 라이브러리의 「NASA Astronaut Jonny Kim Soyuz MS-27 Launch – Tuesday, April 8, 2025」도 있다). '한국계 1세대', '부모님이 한국에서 이민'은 본인 발언이다. 화면에는 본인 발언만 있다.
+
+### star9: 레이 앨런 (상원 고령화특별위원회, 2013-07-10)
+
+- **원본**: JDRF 어린이 의회 청문회 "Diabetes Research: Reducing the Burden of Diabetes at All Ages and Stages"의 상원 녹화실 영상이다.
+  - 위원회 페이지([aging.senate.gov](https://www.aging.senate.gov/hearings/diabetes-research-reducing-the-burden-of-diabetes-at-all-ages-and-stages))의 플레이어가 `filename=aging071013`을 쓴다.
+  - 스트림: `https://www-senate-gov-msl3archive.akamaized.net/aging/aging071013_1/master.m3u8`(640×360 하나뿐).
+  - 공식 기록은 [S. Hrg. 113-807](https://www.govinfo.gov/content/pkg/CHRG-113shrg91169/html/CHRG-113shrg91169.htm)이다.
+  - 퍼블릭 도메인이다(17 U.S.C. §105). C-SPAN 화면은 쓰지 않았다.
+- **구간** (`allen_a.mp4` = 스트림 3020초부터, `allen_b.mp4` = 5190초부터)
+  - a 76.35–98.95: 2008년 파이널 5차전 때 LA에서 17개월 아들 워커가 1형 당뇨 진단을 받은 이야기. "발밑이 꺼지는 것 같았다. 우리가 알던 삶은 끝났다". 며칠 뒤 우승.
+  - a 178.5–188.9: 2시간마다 일어나 혈당을 잰다, "뱀파이어", 5년 동안 밤새 자 본 적이 없다.
+  - b 30.1–40.95: 섀힌 의원의 질문에 대한 답. 형제들은 나가 노는데 워커는 남아서 주사를 맞고 "이거 언제 끝나요?"라고 묻는다.
+  - a 382.3–384.85: 증언 끝 "우리는 함께라서 이기는 팀".
+- **뺀 것**
+  - a 69.3–76.3은 넓은 방 화면이라 건너뛰었다. 그래서 "While our family was in LA"가 빠지고 자막이 "…for Game 5"로 시작한다.
+  - 파이널 시청률 통계, 당뇨 관리 세부, 특별 당뇨 프로그램·JDRF 예산 요청, 의원들의 말.
+- **화면**
+  - 아래 14%를 잘라냈다(`trim`). 상원 자막("Select Committee on Aging SDG-50")과 물병은 흐리게 하거나 잘라냈다. 3배 lanczos 확대에 샤프닝을 했다. 의원은 화면에 나오지 않는다.
+  - 질의응답 화면에서는 옆자리 아들과 뒷줄 방청객이 함께 잡혔다. 그래서 앨런 얼굴 크롭(1.3/1.55)만 썼다.
+- **녹취**: 공식 기록과 단어까지 같다(구두 증언과 질의응답 모두). faster-whisper medium.en으로 시간을 잡았다. 번역은 직접 했다.
+- **사실**: 2008년 보스턴 셀틱스 우승, 5차전 중 진단, 17개월, 2013년 마이애미 히트 소속은 모두 본인 증언과 기록의 증인 소개("Ray Allen, Player, Miami Heat")에서 가져왔다.
+
+**업로드 문구**
+
+**star8**: 조니 김이 우주 가기 전 가장 힘들었던 것..? 🚀
+```
+한국계 미국인 NASA 우주비행사 조니 김이 2025년 4월 첫 우주비행을 앞두고 러시아 스타시티에서 한 NASA 인터뷰입니다. 그는 가장 힘든 건 소중한 사람들과의 관계였다며, 세 아이에게 아빠가 왜 8개월이나 떠나야 하는지 설명하는 게 생각보다 훨씬 어려웠다고 털어놨습니다. 한국계로서 해 주고 싶은 조언을 묻자 "먼저 꿈을 꾸고, 뜻대로 안 돼도 멈추지 말라, 실패와 거절도 과정"이라고 답했습니다. 영어 원문과 한국어 번역 자막(인터뷰 일부를 이어 붙임, 순서 바꿈, 답변 일부 생략).
+
+▶ [채널명] 채널 구독: https://www.youtube.com/@[핸들]
+
+출처: 영상: NASA 'Interviews with Expedition 73 Flight Engineer Jonny Kim – Wednesday, March 19, 2025' (images.nasa.gov) · 영어 자막·한국어 번역 직접 제작(NASA 자막 파일과 대조, 답변 일부 생략·순서 바꿈) · NASA는 이 영상을 보증하거나 후원하지 않습니다 · 이 영상은 영상 속 인물이나 기관이 보증·후원한 것이 아닙니다
+
+#Shorts #조니김 #JonnyKim #한국계 #우주비행사 #NASA #국제우주정거장 #ISS #꿈 #동기부여 #가족 #한영자막 #영어공부 #인터뷰
+```
+고정 댓글: 꿈 때문에 소중한 사람과 떨어져 본 적 있나요? 🌏
+
+**star9**: NBA 우승 직전 레이 앨런에게 생긴 일..? 🏀
+```
+2008년 NBA 파이널 5차전을 앞두고 LA에 있던 레이 앨런의 17개월 아들 워커가 1형 당뇨 진단을 받았습니다. 2013년 7월 미국 상원 고령화특별위원회 청문회에서 그는 며칠 뒤 우승을 했지만 '우리가 알던 삶은 끝났다'고, 부부가 5년 동안 2시간마다 깨어 아들 혈당을 잰다고 털어놨습니다. 질의응답에서는 형제들이 나가 노는 동안 주사를 맞는 아들이 "이거 언제 끝나요?"라고 묻는다고 전했습니다. 영어 원문과 한국어 번역 자막(증언과 질의응답 일부를 이어 붙임, 순서 바꿈, 중간 생략).
+
+▶ [채널명] 채널 구독: https://www.youtube.com/@[핸들]
+
+출처: 영상: 미국 상원(U.S. Senate) 고령화특별위원회 청문회 "Diabetes Research: Reducing the Burden of Diabetes at All Ages and Stages" 공식 영상 (2013-07-10, senate.gov) · 청문회 기록 S. Hrg. 113-807 · 영어 자막·한국어 번역 직접 제작(증언 중간 일부 생략·순서 바꿈) · 이 영상은 영상 속 인물이나 기관이 보증·후원한 것이 아닙니다
+
+#Shorts #레이앨런 #RayAllen #NBA #보스턴셀틱스 #NBA파이널 #1형당뇨 #아빠 #가족 #감동 #청문회 #한영자막 #영어공부 #인터뷰
+```
+고정 댓글: 우승보다 더 기억에 남는 날, 여러분에게도 있나요?

@@ -1,0 +1,61 @@
+{
+ "id": "star9",
+ "committee": "U.S. Senate Special Committee on Aging",
+ "hearing": "Diabetes Research: Reducing the Burden of Diabetes at All Ages and Stages (JDRF Children's Congress)",
+ "date": "2013-07-10",
+ "source_page": "https://www.aging.senate.gov/hearings/diabetes-research-reducing-the-burden-of-diabetes-at-all-ages-and-stages",
+ "player": "https://www.senate.gov/isvp/?comm=aging&filename=aging071013",
+ "file_url": "https://www-senate-gov-msl3archive.akamaized.net/aging/aging071013_1/master.m3u8 (640x360, the only rendition; 2:04:40)",
+ "clips": {
+  "allen_a.mp4": "stream 3020 s + 400 s (opening statement)",
+  "allen_b.mp4": "stream 5190 s + 90 s (answer to Sen. Shaheen's question)"
+ },
+ "fetch": "ffmpeg -user_agent 'richroro-shorts/1.0 (+https://github.com/richroro/richroro.github.io)' -ss <start> -i <stream> -t <len> -c:v libx264 -crf 16 -preset fast -c:a aac -b:a 192k <clip>",
+ "used_in_clip_s": {
+  "allen_a.mp4": [
+   [
+    76.35,
+    81.95
+   ],
+   [
+    82.8,
+    86.3
+   ],
+   [
+    87.2,
+    92.1
+   ],
+   [
+    93.5,
+    98.95
+   ],
+   [
+    178.5,
+    183.4
+   ],
+   [
+    184.4,
+    188.9
+   ],
+   [
+    382.3,
+    384.85
+   ]
+  ],
+  "allen_b.mp4": [
+   [
+    30.1,
+    35.1
+   ],
+   [
+    35.4,
+    40.95
+   ]
+  ]
+ },
+ "left_out": "the wide room shot (clip 69.3-76.3, so 'While our family was in LA' is cut and the caption starts with '…for Game 5'); the Finals statistics; diabetes care details; the funding requests (Special Diabetes Program, JDRF); senators' words",
+ "transcript": "S. Hrg. 113-807, https://www.govinfo.gov/content/pkg/CHRG-113shrg91169/html/CHRG-113shrg91169.htm: Ray Allen's oral statement and his answer to Senator Shaheen; same words as faster-whisper medium.en (word times). Audio says 'as if a rug' -> whisper heard 'if a rug'; the record's 'It was as if a rug' is used",
+ "screen": "bottom 14% trimmed, the Senate caption ('Select Committee on Aging SDG-50') and water bottles blurred/cropped; senators not shown",
+ "credit": "미국 상원 (U.S. Senate)",
+ "license": "Senate Recording Studio video, a work of the U.S. government, public domain (17 U.S.C. §105). Not C-SPAN footage."
+}
