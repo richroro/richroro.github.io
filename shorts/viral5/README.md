@@ -9171,10 +9171,12 @@ MEDIA=$PWD/media python3 politics/prep_split.py hope1 && ./render.sh hope1 final
 | `ship1` | 우주에서 돌아온 캡슐을 / 바다에서 건지는 법ㄷㄷ | 36.4초 | 14.1MB | 낙하산 캡슐이 바다에 풍덩 → "이걸 어떻게 건질까..?" → 회수선 꽁무니 크레인이 사람이 탄 채로 통째로 끌어 올린다 → 45년 만의 바다 귀환 / 의외의 방법 / 신기함 |
 | `ship2` | 우주정거장에서 찍힌 / 역사상 가장 큰 로켓ㄷㄷ | 36.4초 | 6.5MB | 우주정거장 카메라에 찍힌 하얀 꼬리 → "이게 뭐길래..?" → 정체는 스타십 6차 비행 → 이날 젓가락 포획은 취소, 부스터는 바다로 → "한 달 전엔 잡았었다" / 정체 반전 + 의외의 결말 / 신기함 |
 | `ship3` | 쏘아 올린 부스터 2개가 / 다시 돌아온 곳ㄷㄷ | 36.4초 | 7.7MB | 숲속에 로켓 2개가 서 있는데 발사대가 아니다 → 몇 분 전 팰컨 헤비 발사 → 정체는 그 양옆 부스터, 스스로 돌아와 착륙 → 4번째 비행, 가운데 부스터만 바다로 / 정체 반전 / 신기함 |
+| `ship4` | 캄캄한 밤바다에 우주선이 / 떨어지면 생기는 일ㄷㄷ | 36.4초 | 8.4MB | 깜깜한 바다 위 하얀 물체 → 야간 카메라에 잡힌 낙하산과 새벽 착수 → "밤인데 어떻게 건지지..?" → 조명 켠 회수선이 줄을 걸어 통째로 끌어 올린다 → 53년 만의 밤바다 귀환 / 의외의 방법 / 신기함 |
 
-- **qa_review.py**: FAIL 0. 길이·제목·첫 장면(2.8초)·장면 길이(최장 3.4초)·소리(−14.2 LUFS)·검은 화면·용량 PASS. 설명글 WARN은 채널 이름이 아직 자리표시라서다. first.png, sheet.png, 원본 프레임을 직접 봤다.
+- **qa_review.py**: FAIL 0. 길이·제목·첫 장면(2.8초)·장면 길이(최장 3.4초)·소리(−14.2 LUFS)·검은 화면·용량 PASS. 설명글은 PASS다(채널 이름은 아직 자리표시). first.png, sheet.png, 원본 프레임을 직접 봤다.
 - **ship2 qa_review.py**: FAIL 0(장면 최장 3.4초, −14.2 LUFS, 6.5MB). 연기 꼬리가 화면 안에서 움직여서, 장면마다 원본 프레임으로 꼬리 위치를 재고 `focus`를 맞췄다. 파란 화면끼리 이어지면 장면 전환이 안 잡혀서 가까운 장면과 넓은 장면(정거장 몸체, 해안)을 번갈아 놓았다. 원본이 1080p라 1.2~1.6배로 확대한 장면은 조금 무르다.
 - **ship3 qa_review.py**: FAIL 0(장면 최장 3.4초, −14.2 LUFS, 7.7MB). 첫 렌더에서는 첫 장면이 두 착륙장 사이를 확대해 부스터가 안 보였다. 넓게 다시 잡았다. 착륙 장면끼리 이어지면 장면 전환이 안 잡혀서 넓은 장면과 확대 장면을 번갈아 놓았다.
+- **ship4 qa_review.py**: FAIL 0(장면 최장 3.4초, −14.2 LUFS, 8.4MB). 회색 야간 카메라 장면끼리 이어지면 전환이 안 잡혀서 넓게(1.0배)와 크게(2.0~2.4배)를 번갈아 놓았다. ship1과 같은 회수 소재지만 밤 착수라서 장면과 이야기가 다르다. 두 편은 하루 이상 띄워 올린다.
 - **장면 감지**: 처음 렌더에서는 하늘색 화면 두 장(착수 → 낙하산 분리)이 이어져 장면 하나로 잡혔다(6.0초 FAIL). 넷째 장면을 물 위 캡슐 확대로 바꿔 다시 렌더했다.
 - **소리**: 네 원본 모두 소리 트랙이 무음이다(−91dB). 그래서 음악과 효과음만 쓴다. 엔진 소리는 쓸 수 있는 합법 원본이 없어서 넣지 않았다.
 - **화면 글자·로고**: 원본 앞부분의 NASA 슬레이트(제목 카드)는 쓰지 않았다. 캡슐과 회수선에 읽히는 로고는 없다(원본 1920×1080 프레임으로 확인). 화면 아래의 출처 줄(`credit`)은 비웠다. 출처는 설명란에만 둔다.
@@ -9216,6 +9218,15 @@ MEDIA=$PWD/media python3 politics/prep_split.py hope1 && ./render.sh hope1 final
   - 4번째 비행, 거의 동시 착륙: AmericaSpace(2023-10-13). https://www.americaspace.com/2023/10/13/falcon-heavy-successfully-launches-nasas-psyche-looks-to-record-setting-year-end/ ("synchronized … touchdowns", 두 부스터 모두 4번째 비행).
   - 가운데 부스터 미회수(연료를 탐사선 궤도에 몰아줌): Everyday Astronaut, "Psyche | Falcon Heavy". https://everydayastronaut.com/psyche-falcon-heavy/
 - 소리: 원본은 무음이다(−91dB). 음악 "Investigations" Kevin MacLeod (incompetech.com), CC BY 4.0 + 효과음(whoosh, boom, pop_hi, pop).
+
+**ship4**
+- `night`: SpaceX Crew-1 Splashdown - DRONE, NASA/Jamie Peer, KSC, 2021-05-02. https://images.nasa.gov/details/KSC-20210502-MH-JBP01_0001-SpaceX_Crew_1_Splashdown_Drone_Imagery-3275583 (~large.mp4). 쓴 구간: 204.0~206.8, 88.5~91.5, 100.0~103.0, 116.5~119.5, 125.0~128.0, 145.0~148.0, 182.0~185.0, 213.0~216.0, 244.0~247.2, 354.0~357.0, 379.0~382.0, 205.0~208.4초. 앞부분 NASA 슬레이트(0~8초)는 쓰지 않았다. 캡슐과 회수선에 읽히는 로고는 없다(원본 프레임으로 확인).
+- 사실
+  - 새벽 2시 56분, 우주비행사 4명: NASA 영상 설명("returned to Earth at 2:56 a.m. EDT on May 2 under the parachutes of their Crew Dragon Resilience spacecraft").
+  - 파나마시티 앞 멕시코만, 168일, 야간 카메라, 갑판으로 들어 올림: NASA, "Crew-1 Makes Nighttime Splashdown, Ends Mission"(https://www.nasa.gov/?p=781780). "A night-vision camera captures the SpaceX Crew Dragon parachuting to splashdown", "hoist Crew Dragon onto the main deck".
+  - "53년 만, 아폴로 8호 이후": Space.com, "SpaceX Crew Dragon makes 1st nighttime splashdown with US astronauts since Apollo era"(2021-05-02). https://www.space.com/spacex-crew-1-astronaut-dragon-capsule-splashdown (아폴로 8호 1968-12-27).
+  - "작은 보트가 먼저 붙는다", "줄을 걸고", "꽁무니로 끌어와": 화면 그대로의 모습이다.
+- 소리: 원본은 무음이다(−91dB). 음악 "Investigations" Kevin MacLeod (incompetech.com), CC BY 4.0 + 효과음(whoosh, bubble, clunk, pop_hi, pop).
 
 ### 공통 규칙
 

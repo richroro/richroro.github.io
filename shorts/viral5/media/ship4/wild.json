@@ -1,0 +1,27 @@
+{
+ "badge": {"name": "오늘의 궁금증", "icon": "?", "color": "#e8590c"},
+ "note": "voiceless white-card curiosity reveal (src/lib/Card.tsx): NASA drone footage of the Crew-1 night splashdown (night-vision descent, lit recovery), the 'how' held to ~65%",
+ "musicStart": 0.3,
+ "title": ["캄캄한 밤바다에 우주선이", "떨어지면 생기는 일ㄷㄷ"],
+ "credit": "",
+ "music": "Investigations",
+ "gain": 0.55,
+ "clipAudio": 0,
+ "sources": {
+  "night": {"file": "night.mp4", "label": "SpaceX Crew-1 Splashdown - DRONE (NASA/Jamie Peer, 2021-05-02)", "url": "https://images.nasa.gov/details/KSC-20210502-MH-JBP01_0001-SpaceX_Crew_1_Splashdown_Drone_Imagery-3275583"}
+ },
+ "beats": [
+  {"dur": 2.8, "in": 204.0, "zoom": [1.3, 1.4], "focus": "68% 55%", "ko": "깜깜한 바다 위 하얀 물체", "en": "배가 불을 켜고 다가간다"},
+  {"dur": 3.0, "in": 88.5, "zoom": [1.0, 1.05], "focus": "36% 30%", "ko": "몇 분 전, 야간 카메라에..", "en": "하늘에서 뭔가 내려온다", "sfx": [[0.0, "whoosh", 0.3]]},
+  {"dur": 3.0, "in": 100.0, "zoom": [2.3, 2.4], "focus": "40% 37%", "ko": "낙하산에 매달린 캡슐"},
+  {"dur": 3.0, "in": 116.5, "zoom": [1.0, 1.05], "focus": "37% 52%", "ko": "우주정거장에서 돌아오는 길", "en": "우주비행사 4명이 타고 있다"},
+  {"dur": 3.0, "in": 125.0, "zoom": [2.0, 2.1], "focus": "38% 62%", "ko": "새벽 2시 56분, 바다에 착수", "en": "멕시코만, 플로리다 앞바다", "sfx": [[0.8, "bubble", 0.4]]},
+  {"dur": 3.0, "in": 145.0, "zoom": [1.0, 1.05], "focus": "39% 70%", "ko": "근데 밤인데 어떻게 건지지..?", "en": "주변은 완전히 깜깜"},
+  {"dur": 3.0, "in": 182.0, "zoom": [1.1, 1.2], "focus": "53% 55%", "ko": "회수선이 조명을 켜고", "en": "작은 보트가 먼저 붙는다"},
+  {"dur": 3.0, "in": 213.0, "zoom": [1.4, 1.5], "focus": "64% 55%", "ko": "캡슐에 줄을 걸고", "sfx": [[0.0, "clunk", 0.4]]},
+  {"dur": 3.2, "in": 244.0, "zoom": [1.1, 1.2], "focus": "44% 58%", "ko": "배 꽁무니로 끌어와서"},
+  {"dur": 3.0, "in": 354.0, "zoom": [1.4, 1.5], "focus": "45% 42%", "ko": "통째로 들어 올린다", "en": "사람이 탄 채로!", "sfx": [[0.0, "pop_hi", 0.4]]},
+  {"dur": 3.0, "in": 379.0, "zoom": [1.1, 1.2], "focus": "55% 45%", "ko": "갑판 위에 쏙", "en": "168일 만의 귀환"},
+  {"dur": 3.4, "in": 205.0, "zoom": [1.3, 1.4], "focus": "68% 55%", "ko": "53년 만의 밤바다 귀환", "en": "미국 유인 우주선, 아폴로 8호 이후"}
+ ]
+}
