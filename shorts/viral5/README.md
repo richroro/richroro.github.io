@@ -9045,6 +9045,7 @@ MEDIA=$PWD/media python3 politics/prep_split.py star12 && ./render.sh star12 fin
 | `hope1` | 앞 못 보는 사장님이 / 시급 더 준 진짜 이유..? | 에린 윌먼(화이트 케인 커피 창업자) · 장애를 딛고 남을 믿어 준 이야기 | 43.8초 | 28.4MB | 「~하는 진짜 이유..?」 틀. 같은 틀의 50만+ 예: 「워렌 버핏이 '오르는 주식'은 절대 안 사는 진짜 이유」 62만, 「일론머스크가 위대한 이유」 421만(`research-500k-people.csv`). 일반인 장애 극복 쇼츠의 조회수는 이 조사에 없다 | [상원 고령화특별위원회 2024-02-29](https://www.aging.senate.gov/hearings/all-means-all-empowering-people-with-disabilities-to-thrive-in-careers-and-the-workplace) 30:35–34:44 |
 | `hope2` | 1형 당뇨 10살 소년이 / 꿈에 대해 한 말..? | 찰리 알베어(10살, JDRF 어린이 의회 대표) · 아이의 꿈, 병을 웃어넘기는 용기 | 43.0초 | 23.1MB | 「~가 한 말..?」 틀. 같은 각도의 50만+ 예: 「자폐 성향 아들의 질문에 일론 머스크가 한 대답」 193만, 「호날두 주니어가 아빠의 위대함을 깨닫는순간」 109만(`research-500k-people.csv`, 아이 등장 편) | [상원 고령화특별위원회 2017-07-26](https://www.aging.senate.gov/hearings/progress-toward-a-cure-for-type-i-diabetes-research-and-the-artificial-pancreas) 51:03–52:47 |
 | `hope3` | 학점 3.9 자폐 청년에게 / 생긴 일..? | 프랭크 헬머(데이터 분석가) · 무너졌다 다시 일어선 이야기, 믿어 준 친구들 | 43.6초 | 27.9MB | 「~에게 생긴 일..?」 틀(star9·star10과 같은 틀). 같은 틀의 50만+ 예: 「못생겼다고 9년 동안 맞은 일론머스크 엄마의 반격」 166만(역경→반전, `research-500k-people.csv`) | [상원 고령화특별위원회 2024-02-29](https://www.aging.senate.gov/hearings/all-means-all-empowering-people-with-disabilities-to-thrive-in-careers-and-the-workplace) 42:24–47:54 |
+| `hope4` | 1형 당뇨 소녀가 / 39년 기록 깬 비결..? | 케이트 홀(당시 고교 졸업생, 육상 선수) · 벤치에서 신기록까지 | 39.5초 | 24.4MB | 「~하는 진짜 이유/비결..?」 틀. 같은 각도의 50만+ 예: 「로다주가 아이언맨 수트를 입기 위해 견뎌야 했던 고통의 순간」 553만(고통→성취, `research-500k-people.csv`) | [상원 고령화특별위원회 2015-07-15](https://www.aging.senate.gov/hearings/diabetes-research_improving-lives-on-the-path-to-a-cure) 44:24–47:52 |
 
 ### hope1: 에린 윌먼 (상원 고령화특별위원회, 2024-02-29)
 
@@ -9094,3 +9095,17 @@ MEDIA=$PWD/media python3 politics/prep_split.py hope1 && ./render.sh hope1 final
 - **사실**: 자폐, 2016년 아칸소 공대 학점 3.9 졸업, 2015년 어머니의 암 사망, 2018년의 위기, 친구들의 도움, 센틴(Centene) 데이터 분석가 취업은 모두 본인 증언이다. 직함은 위원회 페이지의 증인 소개("Data Analyst and Self-Advocate, Little Rock, AR")에서 가져왔다.
 
 **hope3**: 학점 3.9 자폐 청년에게 생긴 일..? 🌱 (설명글 전문은 `upload/txt/hope3.txt`)
+
+### hope4: 케이트 홀 (상원 고령화특별위원회, 2015-07-15)
+
+- **원본**: JDRF 2015 어린이 의회 청문회 "Diabetes Research: Improving Lives on the Path to a Cure"의 상원 녹화실 영상이다.
+  - 위원회 페이지([aging.senate.gov](https://www.aging.senate.gov/hearings/diabetes-research_improving-lives-on-the-path-to-a-cure))의 플레이어가 `filename=aging071515`를 쓴다.
+  - 스트림: `https://www-senate-gov-msl3archive.akamaized.net/aging/aging071515_1/master.m3u8`(640×360 하나뿐). `media/hope/kate.mp4`는 스트림 2640초부터 240초다(`media/hope/kate.json`). 스트림 2868.6초를 다시 받아 "My dream is to one day represent the United States at the Olympics"가 들리는 것으로 오프셋을 확인했다.
+- **구간** (클립 초 → 원본 시각): 205.05–212.45 → 47:25–47:32(39년 묵은 고교 기록, 22피트 5인치), 24.1–27.45 → 44:24(10살 진단), 47.8–66.2 → 44:48–45:06(첫 축구 경기 벤치, "당뇨는 나를 막을 수 없다", "다시는 벤치에 앉아만 있지 않겠다", "이건 내가 해결한다"), 91.1–96.0 → 45:31–45:36(관리가 힘들고 혼자서는 다 못 한다), 197.6–201.78 → 47:18–47:22(가족과 의료진 덕분에), 228.7–231.6 → 47:49–47:52(올림픽의 꿈).
+- **순서를 바꿨다**: 기록을 깬 대목을 맨 앞에 뒀다. 설명란에 "순서 바꿈, 중간 생략"을 적었다.
+- **뺀 것**: 인사, 혈당 관리·훈련 세부, 근육 경련, 건강보험과 연속혈당측정기 보험 적용 이야기(정책), 미국 주니어 기록과 올림픽 선발전 기준, 100m 기록, 대학 진학, 의회 연구비에 대한 감사, 콜린스 의원의 말("아이들에게 꿈을 이룰 수 있다는 영감을 준다").
+- **화면**: 아래 30%(상원 자막 "Select Committee on Aging SDG-50", 물병)와 왼쪽(로고가 찍힌 듯한 방청객 가방)을 잘라냈다(`trim` x 0.30–0.78, y 0–0.70). 3배 lanczos 확대에 샤프닝. 의원·로고·휘장은 없다.
+- **녹취**: 위원회 페이지에 서면 증언이 없어서 faster-whisper medium.en(단어 시간)과 tiny.en을 대조하고 다시 들었다. 번역은 직접 했다. "benched"는 '벤치에 앉아 있던'으로, "I am figuring this thing out"은 '이건 내가 꼭 이겨 낸다'로 옮겼다.
+- **사실**: 10살 진단, 첫 축구 경기 벤치, 39년 묵은 전국 고교 기록(22피트 5인치, New Balance Nationals), 올림픽의 꿈은 본인 증언이다. 위원회 페이지 증인 소개도 "recently broke a 39-year old national long-jumping record"라고 적었다. 22피트 5인치 = 269인치 × 2.54cm = 6.83m(계산).
+
+**hope4**: 1형 당뇨 소녀가 39년 기록 깬 비결..? 🏃‍♀️ (설명글 전문은 `upload/txt/hope4.txt`)

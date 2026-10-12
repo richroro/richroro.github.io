@@ -1,0 +1,91 @@
+{
+ "committee": "U.S. Senate Special Committee on Aging",
+ "hearing": "Diabetes Research: Improving Lives on the Path to a Cure (JDRF 2015 Children's Congress)",
+ "date": "2015-07-15",
+ "source_page": "https://www.aging.senate.gov/hearings/diabetes-research_improving-lives-on-the-path-to-a-cure",
+ "player": "https://www.senate.gov/isvp/?comm=aging&filename=aging071515",
+ "file_url": "https://www-senate-gov-msl3archive.akamaized.net/aging/aging071515_1/master.m3u8 (640x360, the only rendition)",
+ "fetch": "ffmpeg -user_agent 'richroro-shorts/1.0 (+https://github.com/richroro/richroro.github.io)' -ss 2640 -i <stream> -t 240 -c:v libx264 -crf 16 -preset fast -c:a aac -b:a 192k kate.mp4",
+ "speaker": "Kate Hall, recent high-school graduate and track and field athlete, Casco, Maine (oral statement)",
+ "transcript": "checked against faster-whisper medium.en word times (no written statement posted for her on the committee page)",
+ "picture": "trim x 0.30-0.78, y 0-0.70 of the 640x360 frame (drops the Senate room caption 'Select Committee on Aging SDG-50', water bottles, and a handbag with a printed logo behind her), 3x lanczos + unsharp",
+ "left_out": "thanks to senators; daily diabetes routine and training details; muscle cramps; health-insurance/CGM coverage passage (policy); US junior record and Olympic Trials standard; 100 m result; Iowa State; research-funding thanks to Congress; Sen. Collins' reply",
+ "credit": "미국 상원 (U.S. Senate)",
+ "license": "Work of the United States Government recorded by the Senate Recording Studio, public domain (17 U.S.C. §105). Not C-SPAN footage.",
+ "id": "hope4",
+ "clip": "kate.mp4 = stream 2640 s + clip length",
+ "used_in_clip_s": [
+  [
+   205.05,
+   207.5
+  ],
+  [
+   207.5,
+   210.05
+  ],
+  [
+   210.05,
+   212.45
+  ],
+  [
+   24.1,
+   27.45
+  ],
+  [
+   47.8,
+   49.58
+  ],
+  [
+   49.58,
+   52.6
+  ],
+  [
+   53.2,
+   57.0
+  ],
+  [
+   57.0,
+   58.65
+  ],
+  [
+   59.75,
+   63.98
+  ],
+  [
+   64.5,
+   66.2
+  ],
+  [
+   91.1,
+   93.52
+  ],
+  [
+   93.52,
+   96.0
+  ],
+  [
+   197.6,
+   201.78
+  ],
+  [
+   228.7,
+   231.6
+  ]
+ ],
+ "used_in_stream": [
+  "0:47:25-0:47:28",
+  "0:47:28-0:47:30",
+  "0:47:30-0:47:32",
+  "0:44:24-0:44:27",
+  "0:44:48-0:44:50",
+  "0:44:50-0:44:53",
+  "0:44:53-0:44:57",
+  "0:44:57-0:44:59",
+  "0:45:00-0:45:04",
+  "0:45:04-0:45:06",
+  "0:45:31-0:45:34",
+  "0:45:34-0:45:36",
+  "0:47:18-0:47:22",
+  "0:47:49-0:47:52"
+ ]
+}
