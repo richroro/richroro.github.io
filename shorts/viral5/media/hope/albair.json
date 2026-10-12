@@ -1,0 +1,92 @@
+{
+ "committee": "U.S. Senate Special Committee on Aging",
+ "hearing": "Progress Toward a Cure for Type 1 Diabetes: Research and the Artificial Pancreas (JDRF 2017 Children's Congress)",
+ "date": "2017-07-26",
+ "source_page": "https://www.aging.senate.gov/hearings/progress-toward-a-cure-for-type-i-diabetes-research-and-the-artificial-pancreas",
+ "player": "https://www.senate.gov/isvp/?comm=aging&filename=aging072617",
+ "file_url": "https://www-senate-gov-msl3archive.akamaized.net/aging/aging072617_1/master.m3u8 (640x360, the only rendition)",
+ "fetch": "ffmpeg -user_agent 'richroro-shorts/1.0 (+https://github.com/richroro/richroro.github.io)' -ss 3035 -i <stream> -t 160 -c:v libx264 -crf 16 -preset fast -c:a aac -b:a 192k albair.mp4 (offset re-checked: stream 3131.2 s = 'stop making noise')",
+ "speaker": "Charlie Albair, age 10, JDRF 2017 Children's Congress delegate, Gray, Maine (oral statement)",
+ "transcript": "written statement https://www.aging.senate.gov/download/05/22/2024/sca_albair_7_26_17 ; official transcript https://www.aging.senate.gov/download/05/22/2024/official-hearing-transcript_7262017 ; checked against faster-whisper medium.en word times",
+ "picture": "trim x 0.25-0.78, y 0-0.72 of the 640x360 frame (drops the Senate room caption 'Special Committee on Aging SD-106', the name card and the water bottle), 3x lanczos + unsharp",
+ "left_out": "greeting to senators, school name, pump/syringe details, all funding asks ('We need money for research...', 'all I ask is that you continue to do so', 'And if you do'), Sen. Collins' reply and the Q&A",
+ "credit": "미국 상원 (U.S. Senate)",
+ "license": "Work of the United States Government recorded by the Senate Recording Studio, public domain (17 U.S.C. §105). Not C-SPAN footage.",
+ "consent_note": "A child; he and his family chose to testify publicly as a JDRF Children's Congress delegate. Only his own words about his own life are used, with dignity; no medical detail beyond what he said.",
+ "id": "hope2",
+ "clip": "albair.mp4 = stream 3035 s + clip length",
+ "used_in_clip_s": [
+  [
+   80.4,
+   82.72
+  ],
+  [
+   82.72,
+   85.3
+  ],
+  [
+   85.26,
+   88.45
+  ],
+  [
+   88.6,
+   90.75
+  ],
+  [
+   38.0,
+   41.6
+  ],
+  [
+   45.85,
+   49.75
+  ],
+  [
+   50.0,
+   53.35
+  ],
+  [
+   53.7,
+   56.25
+  ],
+  [
+   91.2,
+   94.2
+  ],
+  [
+   94.2,
+   96.8
+  ],
+  [
+   96.85,
+   99.45
+  ],
+  [
+   105.85,
+   109.75
+  ],
+  [
+   27.85,
+   32.5
+  ],
+  [
+   130.15,
+   132.1
+  ]
+ ],
+ "used_in_stream": [
+  "0:51:55-0:51:58",
+  "0:51:58-0:52:00",
+  "0:52:00-0:52:03",
+  "0:52:04-0:52:06",
+  "0:51:13-0:51:17",
+  "0:51:21-0:51:25",
+  "0:51:25-0:51:28",
+  "0:51:29-0:51:31",
+  "0:52:06-0:52:09",
+  "0:52:09-0:52:12",
+  "0:52:12-0:52:14",
+  "0:52:21-0:52:25",
+  "0:51:03-0:51:08",
+  "0:52:45-0:52:47"
+ ]
+}

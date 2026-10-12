@@ -9043,6 +9043,7 @@ MEDIA=$PWD/media python3 politics/prep_split.py star12 && ./render.sh star12 fin
 | id | 제목 (띠) | 누구 · 주제 | 길이 | 용량 | 벤치마크 | 원본 (공식 페이지, 사용 구간) |
 | --- | --- | --- | --- | --- | --- | --- |
 | `hope1` | 앞 못 보는 사장님이 / 시급 더 준 진짜 이유..? | 에린 윌먼(화이트 케인 커피 창업자) · 장애를 딛고 남을 믿어 준 이야기 | 43.8초 | 28.4MB | 「~하는 진짜 이유..?」 틀. 같은 틀의 50만+ 예: 「워렌 버핏이 '오르는 주식'은 절대 안 사는 진짜 이유」 62만, 「일론머스크가 위대한 이유」 421만(`research-500k-people.csv`). 일반인 장애 극복 쇼츠의 조회수는 이 조사에 없다 | [상원 고령화특별위원회 2024-02-29](https://www.aging.senate.gov/hearings/all-means-all-empowering-people-with-disabilities-to-thrive-in-careers-and-the-workplace) 30:35–34:44 |
+| `hope2` | 1형 당뇨 10살 소년이 / 꿈에 대해 한 말..? | 찰리 알베어(10살, JDRF 어린이 의회 대표) · 아이의 꿈, 병을 웃어넘기는 용기 | 43.0초 | 23.1MB | 「~가 한 말..?」 틀. 같은 각도의 50만+ 예: 「자폐 성향 아들의 질문에 일론 머스크가 한 대답」 193만, 「호날두 주니어가 아빠의 위대함을 깨닫는순간」 109만(`research-500k-people.csv`, 아이 등장 편) | [상원 고령화특별위원회 2017-07-26](https://www.aging.senate.gov/hearings/progress-toward-a-cure-for-type-i-diabetes-research-and-the-artificial-pancreas) 51:03–52:47 |
 
 ### hope1: 에린 윌먼 (상원 고령화특별위원회, 2024-02-29)
 
@@ -9063,3 +9064,19 @@ MEDIA=$PWD/media python3 politics/prep_split.py hope1 && ./render.sh hope1 final
 ```
 
 **hope1**: 앞 못 보는 사장님이 시급 더 준 진짜 이유..? ☕ (설명글 전문은 `upload/txt/hope1.txt`)
+
+### hope2: 찰리 알베어 (상원 고령화특별위원회, 2017-07-26)
+
+- **원본**: JDRF 2017 어린이 의회 청문회 "Progress Toward a Cure for Type 1 Diabetes: Research and the Artificial Pancreas"의 상원 녹화실 영상이다.
+  - 위원회 페이지([aging.senate.gov](https://www.aging.senate.gov/hearings/progress-toward-a-cure-for-type-i-diabetes-research-and-the-artificial-pancreas))에는 플레이어 주소가 보이지 않지만, 상원 플레이어 규칙(`comm=aging&filename=aging072617`)대로 스트림이 열린다: `https://www-senate-gov-msl3archive.akamaized.net/aging/aging072617_1/master.m3u8`(640×360 하나뿐, 1:42:43).
+  - `media/hope/albair.mp4`는 스트림 3035초부터 160초다(`media/hope/albair.json`). 스트림 3131.2초를 다시 받아 "stop making noise"가 들리는 것으로 오프셋을 확인했다.
+- **구간** (클립 초 → 원본 시각): 80.4–90.75 → 51:55–52:06(진단받고 인생이 바뀔 줄 알았다, 운동선수 꿈은 못 이룰 줄 알았다, 이제는 뭐든 할 수 있다), 38.0–41.6 → 51:13(6살 진단), 45.85–56.25 → 51:21–51:31(화장실, 화난 선생님, 미안해한 선생님), 91.2–99.45 → 52:06–52:14(펌프가 울리면 '로봇 소리'), 105.85–109.75 → 52:21(병이 다른 아이들한테서도 사라지길), 27.85–32.5 → 51:03(레드삭스의 꿈), 130.15–132.1 → 52:45(레드삭스 선수가 되면 경기에 초대할게요).
+  - 원본 시각은 플레이어 시각(스트림 초)이다.
+- **순서를 바꿨다**: "처음 알았을 때 인생이 바뀔 줄 알았다 → 이제는 뭐든 할 수 있다"를 맨 앞에 뒀다. 설명란에 "순서 바꿈, 중간 생략"을 적었다.
+- **뺀 것**: 의원 인사, 학교 이름, 주사기·펌프 설명, 연구비 요청("We need money for research…", "all I ask is that you continue to do so", 초대 문장 앞의 "And if you do"), 콜린스 의원의 답("Fenway Park에서 뛰는 걸 보러 가겠다")과 질의응답. 의원은 화면에 나오지 않는다.
+- **아이**: 본인과 가족이 JDRF 어린이 의회 대표로 공개 증언을 하기로 한 영상이다. 본인이 한 말만, 본인이 말한 만큼만 썼다. 놀리거나 아픔을 부풀리는 편집은 없다.
+- **화면**: 아래 28%(상원 자막 "Special Committee on Aging SD-106", 이름표, 물병)와 양옆을 잘라냈다(`trim` x 0.25–0.78, y 0–0.72). 3배 lanczos 확대에 샤프닝을 했다. 첫 구간은 종이를 넘기느라 몸이 왼쪽으로 기울어서 얼굴 중심을 0.36으로 따로 잡았다. 뒤의 방청객은 흐리게 보인다. 로고·휘장은 없다.
+- **녹취**: [서면 증언](https://www.aging.senate.gov/download/05/22/2024/sca_albair_7_26_17)과 faster-whisper medium.en을 대조했다. 소리대로 적었다("I'll invite you", 서면은 "I will invite you"). 'Omnipod'(인슐린 펌프), 'CGM'(연속혈당측정기)은 번역에서 "인슐린 펌프나 혈당기"로 풀었다.
+- **사실**: 10살, 메인주 그레이, 6살(1학년) 진단, 레드삭스의 꿈은 모두 본인 증언과 위원회 페이지의 증인 소개다.
+
+**hope2**: 1형 당뇨 10살 소년이 꿈에 대해 한 말..? ⚾ (설명글 전문은 `upload/txt/hope2.txt`)
