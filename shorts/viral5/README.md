@@ -9169,8 +9169,10 @@ MEDIA=$PWD/media python3 politics/prep_split.py hope1 && ./render.sh hope1 final
 | id | 화면 제목 | 길이 | 용량 | 이야기 (한 줄 요약 / 결말 유형 / 감정) |
 |---|---|---|---|---|
 | `ship1` | 우주에서 돌아온 캡슐을 / 바다에서 건지는 법ㄷㄷ | 36.4초 | 14.1MB | 낙하산 캡슐이 바다에 풍덩 → "이걸 어떻게 건질까..?" → 회수선 꽁무니 크레인이 사람이 탄 채로 통째로 끌어 올린다 → 45년 만의 바다 귀환 / 의외의 방법 / 신기함 |
+| `ship2` | 우주정거장에서 찍힌 / 역사상 가장 큰 로켓ㄷㄷ | 36.4초 | 6.5MB | 우주정거장 카메라에 찍힌 하얀 꼬리 → "이게 뭐길래..?" → 정체는 스타십 6차 비행 → 이날 젓가락 포획은 취소, 부스터는 바다로 → "한 달 전엔 잡았었다" / 정체 반전 + 의외의 결말 / 신기함 |
 
 - **qa_review.py**: FAIL 0. 길이·제목·첫 장면(2.8초)·장면 길이(최장 3.4초)·소리(−14.2 LUFS)·검은 화면·용량 PASS. 설명글 WARN은 채널 이름이 아직 자리표시라서다. first.png, sheet.png, 원본 프레임을 직접 봤다.
+- **ship2 qa_review.py**: FAIL 0(장면 최장 3.4초, −14.2 LUFS, 6.5MB). 연기 꼬리가 화면 안에서 움직여서, 장면마다 원본 프레임으로 꼬리 위치를 재고 `focus`를 맞췄다. 파란 화면끼리 이어지면 장면 전환이 안 잡혀서 가까운 장면과 넓은 장면(정거장 몸체, 해안)을 번갈아 놓았다. 원본이 1080p라 1.2~1.6배로 확대한 장면은 조금 무르다.
 - **장면 감지**: 처음 렌더에서는 하늘색 화면 두 장(착수 → 낙하산 분리)이 이어져 장면 하나로 잡혔다(6.0초 FAIL). 넷째 장면을 물 위 캡슐 확대로 바꿔 다시 렌더했다.
 - **소리**: 네 원본 모두 소리 트랙이 무음이다(−91dB). 그래서 음악과 효과음만 쓴다. 엔진 소리는 쓸 수 있는 합법 원본이 없어서 넣지 않았다.
 - **화면 글자·로고**: 원본 앞부분의 NASA 슬레이트(제목 카드)는 쓰지 않았다. 캡슐과 회수선에 읽히는 로고는 없다(원본 1920×1080 프레임으로 확인). 화면 아래의 출처 줄(`credit`)은 비웠다. 출처는 설명란에만 둔다.
@@ -9191,6 +9193,15 @@ MEDIA=$PWD/media python3 politics/prep_split.py hope1 && ./render.sh hope1 final
   - 회수 절차: NASA 크루-1 귀환 기사(https://www.nasa.gov/?p=781780). 회수선이 캡슐을 갑판으로 들어 올리고("hoist Crew Dragon onto the main deck"), 갑판에서 내려 검진을 받는다. 헬기 이동은 같은 기사와 크루-4 보도.
   - "겉이 까맣게 그을림 = 대기권을 뚫고 온 흔적": 원본 화면 그대로의 모습이다. 원리는 일반 상식(재진입 열)이라 숫자는 쓰지 않았다.
 - 음악: "Investigations" Kevin MacLeod (incompetech.com), CC BY 4.0. 효과음은 저장소의 기존 효과음(whoosh, bubble, clunk, pop_hi, pop)이다.
+
+**ship2**
+- `iss`: Views of Starship Flight 6 from International Space Station, NASA JSC (jsc2024m000188, 2024-12-03 공개). https://images.nasa.gov/details/jsc2024m000188_Views_of_Starship_Flight_6_from_International_Space_Station (~large.mp4). 우주정거장 외부 카메라 영상이고 크레디트에 회사 이름은 없다. 쓴 구간: 68.3~71.1, 80.0~83.0, 108.0~111.0, 86.0~89.0, 56.0~59.0, 51.0~54.0, 74.5~77.7, 113.0~116.0, 131.0~134.0, 119.0~122.0, 135.5~138.5, 68.0~71.4초. 앞 15초의 영어 설명 글자와 141초부터의 NASA 로고는 쓰지 않았다.
+- 사실
+  - "고도 약 400km", 11월 19일: NASA 영상 설명("approximately 250 miles above Earth", "liftoff at 4 p.m. CST on Tuesday, Nov. 19").
+  - "높이 약 122m", "역사상 가장 크고 힘센 로켓", 포획 취소, 부스터 멕시코만 착수, 윗단 인도양 착수: Scientific American, "SpaceX's Starship Soars in 6th Test Flight but Skips Booster Catch"(2024-11-19). https://www.scientificamerican.com/article/spacexs-starship-soars-in-6th-test-flight-but-skips-booster-catch/ ("400-foot-tall (122 meters)", "The biggest and most powerful rocket ever built", "the flight data didn't support an attempt", "controlled splashdown in the Gulf of Mexico"). 자막 "안전 조건이 안 맞았다"는 스페이스X 해설자의 "We tripped a commit criteria"를 쉽게 옮긴 것이다.
+  - "한 달 전엔 잡았었다": NPR, "SpaceX rocket booster successfully 'caught' on first attempt during flight test"(2024-10-13). https://www.npr.org/2024/10/13/nx-s1-5151788/spacex-starship-booster-caught-first-launch
+  - "아파트 40층쯤": 122m를 층 높이 약 3m로 나눈 어림값이다(설명란에 적음).
+- 소리: 원본은 무음이다(−91dB). 음악 "Investigations" Kevin MacLeod (incompetech.com), CC BY 4.0 + 효과음.
 
 ### 공통 규칙
 
