@@ -8990,3 +8990,13 @@ MEDIA=$PWD/media python3 politics/prep_split.py legend2 && ./render.sh legend2 f
 - 나머지 사본은 유튜브(백악관 채널), C-SPAN, 방송사 영상뿐이다. 모두 금지된 출처다.
 - 녹취록은 위 보관 사이트에서 확인했다(멤버 발언은 한국어, 통역은 영어).
 - 받은 VOA 파일은 확인만 했다. 저장소에 넣지 않았고, 영상에도 쓰지 않았다.
+
+### BTS 유엔 연설(RM "Speak Yourself", 2018-09-24) — 만들지 않음 (이용 조건)
+
+사용자가 추가로 물었다("유엔 영상 있지 않아 bts"). 2018-09-24 유엔총회 주간의 유니세프 'Generation Unlimited' 출범 행사에서 RM이 한 연설을 찾아봤다.
+- **Wikimedia Commons**: API로 검색했다(BTS + United Nations/UNICEF/Generation Unlimited/Speak Yourself/RM, 그리고 BTS 동영상 전체). 이 연설 파일은 없다. 나온 BTS 행사 영상은 2022 백악관 브리핑과 바이든 트윗 영상뿐이다. 둘 다 백악관 유튜브·트위터 영상을 옮겨 올린 것으로 보여서 쓰지 않았다.
+- **유엔 영상(UN Web TV, UNTV 촬영)**: 이용 조건이 수정과 재배포를 금지하고, 라이선스 계약을 요구한다. 그래서 받지 않았다.
+  - [UN Audiovisual Library 지침](https://media.un.org/avlibrary/en/guidelines): "UN audiovisual files cannot be altered, sold or redistributed." "UN footage is not in the public domain, therefore, any use of the footage must be authorized by the United Nations and a license agreement must be signed…"(유료).
+  - [유엔 이용 약관](https://www.un.org/en/about-us/terms-of-use): 개인적·비상업적 이용만 허용하고, "without any right to resell or redistribute them or to compile or create derivative works therefrom".
+  - [유니세프 법적 고지](https://www.unicef.org/legal): 사전 서면 허가 없이는 어떤 목적의 이용도 금지한다.
+- 연설 원문은 [유니세프 보도자료](https://www.unicef.org/press-releases/remarks-kim-nam-jun-launch-generation-unlimited-new-york-24-september-2018)에 있다(이것도 유니세프 저작물).
