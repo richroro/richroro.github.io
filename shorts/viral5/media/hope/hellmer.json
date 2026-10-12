@@ -1,0 +1,81 @@
+{
+ "committee": "U.S. Senate Special Committee on Aging",
+ "hearing": "All Means All: Empowering People with Disabilities to Thrive in Careers and the Workplace",
+ "date": "2024-02-29",
+ "source_page": "https://www.aging.senate.gov/hearings/all-means-all-empowering-people-with-disabilities-to-thrive-in-careers-and-the-workplace",
+ "player": "https://www.senate.gov/isvp/?comm=aging&filename=aging022924",
+ "file_url": "https://www-senate-gov-media-srs.akamaized.net/hls/live/2036801/aging/aging022924/master.m3u8 (1280x720; burned-in open captions and an ASL interpreter inset)",
+ "fetch": "ffmpeg -user_agent 'richroro-shorts/1.0 (+https://github.com/richroro/richroro.github.io)' -ss 2500 -i <stream>/master/index_1.m3u8 -t 450 -c:v libx264 -crf 16 -preset fast -c:a aac -b:a 192k hellmer.mp4 (offset re-checked: stream 2815.5 s = 'Most people would have given up on me')",
+ "speaker": "Frank Hellmer, Data Analyst and Self-Advocate, Little Rock, AR (oral statement)",
+ "transcript": "written statement https://www.aging.senate.gov/download/testimony_hellmer-022924pdf ; official transcript https://www.aging.senate.gov/download/official-hearing-transcript_2292024pdf ; checked against faster-whisper medium.en word times",
+ "picture": "trim x 0.30-0.66, y 0-0.60 of the 1280x720 frame (drops the burned-in captions, the name card, a branded soda can on the table, the ASL inset and the neighbouring witness), 2x lanczos + unsharp",
+ "left_out": "thanks; employer praise and disclaimer; job duties; flexible schedule; purchases (games, consoles); the Arkansas Medicaid waiver explanation (policy); best friend/pastor and church; CPA exam and internship detail; institutions/waiver; the subminimum-wage workshop passage (wash bay, $35 check); financial guardian; anniversary date; Q&A",
+ "credit": "미국 상원 (U.S. Senate)",
+ "license": "Work of the United States Government recorded by the Senate Recording Studio, public domain (17 U.S.C. §105). Not C-SPAN footage.",
+ "id": "hope3",
+ "clip": "hellmer.mp4 = stream 2500 s + clip length",
+ "used_in_clip_s": [
+  [
+   315.82,
+   317.6
+  ],
+  [
+   43.9,
+   46.9
+  ],
+  [
+   229.65,
+   234.3
+  ],
+  [
+   280.95,
+   284.12
+  ],
+  [
+   284.12,
+   287.2
+  ],
+  [
+   287.2,
+   290.7
+  ],
+  [
+   291.3,
+   296.12
+  ],
+  [
+   304.42,
+   308.62
+  ],
+  [
+   308.62,
+   310.88
+  ],
+  [
+   310.88,
+   315.8
+  ],
+  [
+   364.4,
+   367.85
+  ],
+  [
+   370.2,
+   374.4
+  ]
+ ],
+ "used_in_stream": [
+  "0:46:56-0:46:58",
+  "0:42:24-0:42:27",
+  "0:45:30-0:45:34",
+  "0:46:21-0:46:24",
+  "0:46:24-0:46:27",
+  "0:46:27-0:46:31",
+  "0:46:31-0:46:36",
+  "0:46:44-0:46:49",
+  "0:46:49-0:46:51",
+  "0:46:51-0:46:56",
+  "0:47:44-0:47:48",
+  "0:47:50-0:47:54"
+ ]
+}

@@ -9044,6 +9044,7 @@ MEDIA=$PWD/media python3 politics/prep_split.py star12 && ./render.sh star12 fin
 | --- | --- | --- | --- | --- | --- | --- |
 | `hope1` | 앞 못 보는 사장님이 / 시급 더 준 진짜 이유..? | 에린 윌먼(화이트 케인 커피 창업자) · 장애를 딛고 남을 믿어 준 이야기 | 43.8초 | 28.4MB | 「~하는 진짜 이유..?」 틀. 같은 틀의 50만+ 예: 「워렌 버핏이 '오르는 주식'은 절대 안 사는 진짜 이유」 62만, 「일론머스크가 위대한 이유」 421만(`research-500k-people.csv`). 일반인 장애 극복 쇼츠의 조회수는 이 조사에 없다 | [상원 고령화특별위원회 2024-02-29](https://www.aging.senate.gov/hearings/all-means-all-empowering-people-with-disabilities-to-thrive-in-careers-and-the-workplace) 30:35–34:44 |
 | `hope2` | 1형 당뇨 10살 소년이 / 꿈에 대해 한 말..? | 찰리 알베어(10살, JDRF 어린이 의회 대표) · 아이의 꿈, 병을 웃어넘기는 용기 | 43.0초 | 23.1MB | 「~가 한 말..?」 틀. 같은 각도의 50만+ 예: 「자폐 성향 아들의 질문에 일론 머스크가 한 대답」 193만, 「호날두 주니어가 아빠의 위대함을 깨닫는순간」 109만(`research-500k-people.csv`, 아이 등장 편) | [상원 고령화특별위원회 2017-07-26](https://www.aging.senate.gov/hearings/progress-toward-a-cure-for-type-i-diabetes-research-and-the-artificial-pancreas) 51:03–52:47 |
+| `hope3` | 학점 3.9 자폐 청년에게 / 생긴 일..? | 프랭크 헬머(데이터 분석가) · 무너졌다 다시 일어선 이야기, 믿어 준 친구들 | 43.6초 | 27.9MB | 「~에게 생긴 일..?」 틀(star9·star10과 같은 틀). 같은 틀의 50만+ 예: 「못생겼다고 9년 동안 맞은 일론머스크 엄마의 반격」 166만(역경→반전, `research-500k-people.csv`) | [상원 고령화특별위원회 2024-02-29](https://www.aging.senate.gov/hearings/all-means-all-empowering-people-with-disabilities-to-thrive-in-careers-and-the-workplace) 42:24–47:54 |
 
 ### hope1: 에린 윌먼 (상원 고령화특별위원회, 2024-02-29)
 
@@ -9080,3 +9081,16 @@ MEDIA=$PWD/media python3 politics/prep_split.py hope1 && ./render.sh hope1 final
 - **사실**: 10살, 메인주 그레이, 6살(1학년) 진단, 레드삭스의 꿈은 모두 본인 증언과 위원회 페이지의 증인 소개다.
 
 **hope2**: 1형 당뇨 10살 소년이 꿈에 대해 한 말..? ⚾ (설명글 전문은 `upload/txt/hope2.txt`)
+
+### hope3: 프랭크 헬머 (상원 고령화특별위원회, 2024-02-29)
+
+- **원본**: hope1과 같은 청문회, 같은 스트림이다(한 편 = 원본 영상 하나). `media/hope/hellmer.mp4`는 스트림 2500초부터 450초다(`media/hope/hellmer.json`). 스트림 2815.5초를 다시 받아 "Most people would have given up on me"가 들리는 것으로 오프셋을 확인했다.
+- **구간** (클립 초 → 원본 시각): 315.82–317.6 → 46:56(다른 사람이었으면 포기했을 것), 43.9–46.9 → 42:24(자폐, 열심히 살아옴), 229.65–234.3 → 45:30(학점 3.9 졸업), 280.95–296.12 → 46:21–46:36(엄마를 잃은 슬픔, 2018년에 무너짐), 304.42–315.8 → 46:44–46:56(믿어 준 친구들, "산이라도 옮길 듯"), 364.4–374.4 → 47:44–47:54(일자리, 지금도 행복하게 일함).
+- **순서를 바꿨다**: "다른 사람이었으면 저를 포기했을 거예요"를 맨 앞에 뒀다. 설명란에 "순서 바꿈, 중간 생략"을 적었다.
+- **뺀 것**: 인사, 회사 칭찬과 "회사를 대표하지 않는다"는 말, 업무·근무 방식, 산 물건(게임기 등), 아칸소주 메디케이드 제도 설명(정책), 목사 친구와 교회, CPA 시험·인턴십 세부, 치료 시설과 제도 이름, 최저임금 미만 작업장 이야기(세차, 2주 35달러), 재정 후견인, 근속 날짜, 질의응답.
+- **화면**: 원본 화면에 상원 자막이 그려져 있고, 수어 통역 화면, 이름표, 상표가 보이는 빨간 음료 캔, 옆 증인이 있다. `trim` x 0.30–0.66, y 0–0.60으로 모두 잘라냈다. 목걸이 줄의 글자("…BEACH")가 조금 보이지만 로고·휘장은 아니다. 2배 lanczos 확대.
+- **자막 시간**: "산이라도 옮길 듯" 줄의 끝(원본 315.74초)이 바로 다음 원본 구간(315.82초~, 첫 컷)의 0.3초 여유 안에 들어서 prep_split가 첫 컷으로 잘못 계산했다(−0.08초). 끝을 315.45초로 잡아 피했다(템플릿은 그대로).
+- **녹취**: [서면 증언](https://www.aging.senate.gov/download/testimony_hellmer-022924pdf)과 faster-whisper medium.en을 대조했다. 소리대로 적었다("my mom's passing", 서면은 "my mother's passing"; "continue to believe", 서면은 "continued").
+- **사실**: 자폐, 2016년 아칸소 공대 학점 3.9 졸업, 2015년 어머니의 암 사망, 2018년의 위기, 친구들의 도움, 센틴(Centene) 데이터 분석가 취업은 모두 본인 증언이다. 직함은 위원회 페이지의 증인 소개("Data Analyst and Self-Advocate, Little Rock, AR")에서 가져왔다.
+
+**hope3**: 학점 3.9 자폐 청년에게 생긴 일..? 🌱 (설명글 전문은 `upload/txt/hope3.txt`)
