@@ -8969,3 +8969,24 @@ MEDIA=$PWD/media python3 politics/prep_split.py legend2 && ./render.sh legend2 f
 #Shorts #빅터가버 #VictorGarber #타이타닉 #Titanic #할리우드 #배우 #1형당뇨 #어머니 #감동 #청문회 #한영자막 #영어공부 #인터뷰
 ```
 고정 댓글: 어릴 때 기억 중 지금도 또렷한 부모님 얼굴, 있나요?
+
+## 유명인 명장면 쇼츠 3차 (`politics/star11`~, BTS 백악관 · WEF 영상)
+
+사용자는 두 가지를 승인했다("1번 2번 다").
+1. BTS의 2022-05-31 백악관 브리핑에서 멤버 본인의 비정치적 발언만 쓴다(`star11`).
+2. Wikimedia Commons에 있는 세계경제포럼(WEF) 영상(CC BY 3.0)의 유명인 발언을 쓴다(`star12`~).
+
+형식은 star8~10과 같다. 화면에는 출처 칩·이름표·날짜를 두지 않고, 음악·내레이션·TTS도 없다.
+
+### star11: BTS 백악관 브리핑 — 만들지 않음 (합법 원본 없음)
+
+조건은 "미국 정부 공식 사이트(유튜브 아님)에서 받은 영상만"이었다. 그런 영상을 찾지 못해서 만들지 않았다.
+- **바이든 백악관 보관 사이트**: [브리핑 페이지](https://bidenwhitehouse.archives.gov/briefing-room/press-briefings/2022/05/31/press-briefing-by-press-secretary-karine-jean-pierre-members-of-bts-and-national-economic-council-director-brian-deese-may-31-2022/)에는 녹취록만 있다. 영상 링크는 백악관 유튜브 채널로만 간다. 2022년 당시 생중계도 whitehouse.gov/live에 유튜브를 붙인 것이었다.
+- **국립문서보관소(NARA) 카탈로그**(catalog.archives.gov): "BTS", "Bangtan", 브리핑 검색어로 찾아봤지만 이 브리핑 영상은 없다. 바이든 정부 기록은 아직 온라인에 없다.
+- **VOA(미국의소리) 한국어**: 연방 기관인 VOA 사이트에 영상 두 편이 있다([/a/6597502](https://www.voakorea.com/a/6597502.html), [/a/6597661](https://www.voakorea.com/a/6597661.html)). 둘 다 1080p mp4를 VOA 주소에서 받을 수 있다.
+  - 하지만 브리핑 화면 왼쪽 위에 **"AP" 표시**가 있다. AP 통신 화면(제3자 저작물)이라 쓸 수 없다.
+  - 한국어 자막과 VOA 로고도 화면에 새겨져 있다.
+  - 두 번째 편에는 Reuters 화면도 섞여 있다.
+- 나머지 사본은 유튜브(백악관 채널), C-SPAN, 방송사 영상뿐이다. 모두 금지된 출처다.
+- 녹취록은 위 보관 사이트에서 확인했다(멤버 발언은 한국어, 통역은 영어).
+- 받은 VOA 파일은 확인만 했다. 저장소에 넣지 않았고, 영상에도 쓰지 않았다.
