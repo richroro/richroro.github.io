@@ -9047,6 +9047,10 @@ MEDIA=$PWD/media python3 politics/prep_split.py star12 && ./render.sh star12 fin
 | `hope3` | 학점 3.9 자폐 청년에게 / 생긴 일..? | 프랭크 헬머(데이터 분석가) · 무너졌다 다시 일어선 이야기, 믿어 준 친구들 | 43.6초 | 27.9MB | 「~에게 생긴 일..?」 틀(star9·star10과 같은 틀). 같은 틀의 50만+ 예: 「못생겼다고 9년 동안 맞은 일론머스크 엄마의 반격」 166만(역경→반전, `research-500k-people.csv`) | [상원 고령화특별위원회 2024-02-29](https://www.aging.senate.gov/hearings/all-means-all-empowering-people-with-disabilities-to-thrive-in-careers-and-the-workplace) 42:24–47:54 |
 | `hope4` | 1형 당뇨 소녀가 / 39년 기록 깬 비결..? | 케이트 홀(당시 고교 졸업생, 육상 선수) · 벤치에서 신기록까지 | 39.5초 | 24.4MB | 「~하는 진짜 이유/비결..?」 틀. 같은 각도의 50만+ 예: 「로다주가 아이언맨 수트를 입기 위해 견뎌야 했던 고통의 순간」 553만(고통→성취, `research-500k-people.csv`) | [상원 고령화특별위원회 2015-07-15](https://www.aging.senate.gov/hearings/diabetes-research_improving-lives-on-the-path-to-a-cure) 44:24–47:52 |
 | `hope5` | 남의 아이 10명 키운 / 75세 할머니가 한 말..? | 루스 스티븐스(75세 할머니) · 위탁 가정에서 손자를 데려와 키운 사랑 | 43.1초 | 21.1MB | 「~가 한 말..?」 틀(star12와 같은 틀). 노인·가족 각도의 50만+ 예: 「60세에 모델이 된 일론머스크 엄마의 반전 인생」 71만, 「상사가 눈물을 보이자 70세 인턴이 보인 반응」 64만(`research-500k-people.csv`) | [상원 고령화특별위원회 2022-06-23](https://www.aging.senate.gov/hearings/strengthening-support-for-grandfamilies-during-the-covid-19-pandemic-and-beyond) 48:02–53:25 |
+| `hope6` | 파킨슨병 73세 할아버지가 / 복싱 시작하고 생긴 일..? | 스티브 새핑턴(73세, 파킨슨병) · 싫어했던 복싱이 바꾼 인생, 남을 위해 세운 단체 | 43.9초 | 24.5MB | 「~하고 생긴 일..?」 틀. 노년 도전 각도의 50만+ 예: 「60세에 모델이 된 일론머스크 엄마의 반전 인생」 71만(`research-500k-people.csv`) | [상원 고령화특별위원회 2025-11-05](https://www.aging.senate.gov/hearings/renewing-our-commitment-how-the-older-americans-act-uplifts-families-living-with-aging-related-diseases) 31:36–35:02 |
+
+- **기존 쇼츠는 그대로인지 확인**: 이번 작업은 데이터 파일만 더했다(코드·템플릿 변경 없음). 손대지 않은 `star10`을 작업 전 커밋(a3fabf1) 워크트리와 지금 트리에서 같은 원본 클립으로 각각 prep·렌더했더니 `src/data/star10.json`과 mp4가 바이트까지 같았고, 저장소의 `final/star10.mp4`와도 바이트까지 같았다(`cmp` 동일).
+- **만들지 않은 후보**: 청문회 증인 중 이야기가 슬픔·정책 위주이거나(가족 간병 2024-08-07, 조손가정 엥겔 2022-06-23, 희귀암 아버지 2023-10-26), 정치인 가족이 주인공이거나(플로이드 스펜스 주니어 2021-09-08, 아버지가 하원의원), 같은 당뇨 어린이 의회가 너무 겹치는 편(로린 와트 2017, 이저벨 레벡 2015)은 뺐다. NASA 라이브러리에서는 일반인의 본인 이야기 영상(가족 상봉, 직원 인생 이야기)을 찾지 못했다. VOA 인물 기사는 기자 내레이션 사이에 본인 육성이 몇 초씩만 있어서 31초 이상을 본인 목소리로 채울 수 없었다.
 
 ### hope1: 에린 윌먼 (상원 고령화특별위원회, 2024-02-29)
 
@@ -9125,6 +9129,19 @@ MEDIA=$PWD/media python3 politics/prep_split.py hope1 && ./render.sh hope1 final
 
 **hope5**: 남의 아이 10명 키운 75세 할머니가 한 말..? 👵 (설명글 전문은 `upload/txt/hope5.txt`)
 
+### hope6: 스티브 새핑턴 (상원 고령화특별위원회, 2025-11-05)
+
+- **원본**: 청문회 "Renewing Our Commitment: How the Older Americans Act Uplifts Families Living with Aging-Related Diseases"의 상원 녹화실 영상이다.
+  - 위원회 페이지([aging.senate.gov](https://www.aging.senate.gov/hearings/renewing-our-commitment-how-the-older-americans-act-uplifts-families-living-with-aging-related-diseases))의 플레이어가 `filename=aging110525`를 쓴다.
+  - 스트림: `https://www-senate-gov-media-srs.akamaized.net/hls/live/2036801/aging/aging110525/master.m3u8`(1280×720). `media/hope/sappington.mp4`는 스트림 1880초부터 240초다(`media/hope/sappington.json`). 스트림 전체를 tiny.en으로 받아 적은 시각("My neurologist tells me" 2066.5초)과 클립 시각(186.7초)이 맞는다.
+- **구간** (클립 초 → 원본 시각): 186.65–195.8 → 34:27–34:36(주치의: 증상이 그대로, 수십 년 처음, 기적), 15.9–22.2 → 31:36–31:42(73살, 결혼 51년), 209.7–214.2 → 34:50–34:54(진단에 세상이 무너짐, 앞날을 몰랐다), 79.7–100.9 → 32:40–33:01(복싱은 싫었다, 잔소리 그만 들으려 구경 감, 싫어할 작정, 그런데 재미있었다), 144.85–147.98 → 33:45–33:48(비영리 단체를 세움), 196.5–199.28 → 34:36–34:39(8년간 약을 늘리지 않음), 216.0–221.7 → 34:56–35:02("그래도 갔다. 그 결정 하나가 인생을 바꿨다").
+- **순서를 바꿨다**: 주치의의 "기적" 대목을 맨 앞에 뒀다. 설명란에 "순서 바꿈, 중간 생략"을 적었다.
+- **뺀 것**: 인사, 다섯 아들·아홉 손주, 초기 증상, 병원 의뢰, 아내 친구 이야기, 수업 세부, 수업 지원금이 끊길 뻔한 대목, 단체 운영과 지원금(노인복지법), 수업 수, 모든 정책 요청(노인복지법 재승인, Title III, 연구비, 파킨슨병 국가계획법), 의원들의 말. 그래서 "비영리 단체" 줄 앞의 사정(지원금 위기)은 화면에 없고, 자막은 "수업이 이어지도록"으로 옮겼다('them' = 수업).
+- **화면**: 원본 화면에 상원 자막이 그려져 있고, 이름표와 물병이 있다. `trim` x 0.36–0.72, y 0–0.66으로 잘라내고 확대(1.25/1.45)해서 뒤 방청객의 다리도 대부분 화면 밖으로 뺐다. 2배 lanczos. 로고·휘장은 없다. `CRF=20`(24.5MB).
+- **녹취**: [서면 증언](https://www.aging.senate.gov/download/testimony_sappington-110525pdf)과 faster-whisper medium.en을 대조했다. 말로 한 문장이 서면과 다른 곳이 많아서(서면 "My neurologist calls me 'a miracle'" → 말 "…saying it has never happened before in decades of her practice and dubbing it a miracle") 소리대로 적었다. 마지막 문장은 medium.en이 한 단어로 뭉개서 large-v3로 다시 들었다("but I went. That single decision changed my life").
+- **사실**: 73살, 결혼 51년, 2015년 진단, 복싱 수업(Rock Steady Boxing), 2018년 비영리 단체(Rally Against Parkinson's) 설립, 8년간 약 용량 유지, 주치의의 "기적"은 모두 본인 증언이다.
+
+**hope6**: 파킨슨병 73세 할아버지가 복싱 시작하고 생긴 일..? 🥊 (설명글 전문은 `upload/txt/hope6.txt`)
 ## 스페이스X 스타십 쇼츠 (`ship1`~, 회수 영상)
 
 사용자 요청은 "스타쉽 영상"(스페이스X 스타십)이었고, 이어서 "회수 영상"으로 좁혀졌다. 그래서 **로켓·우주선을 다시 가져오는 장면**을 주제로 만들었다. 형식은 fact 시리즈와 같은 **흰 카드 + 실제 클립 + 장면 자막**(`media/wild/make_wild.py`, `src/lib/Card.tsx`)이다. 무음 50만+ 조사에서 작은 채널 적중률이 가장 높았던 틀이다(`research/research-500k-mute.md`, 33%). 내레이션, 대사, TTS는 없다.
