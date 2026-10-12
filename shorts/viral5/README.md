@@ -9219,11 +9219,11 @@ MEDIA=$PWD/media python3 politics/prep_split.py hope1 && ./render.sh hope1 final
 - 한 편은 원본 영상 하나에서만 자른다. 원본 페이지, 라이선스, 사용 구간은 편마다 아래와 `upload/specs/<id>.json`의 출처 줄에 있다.
 - 템플릿과 공유 코드는 바꾸지 않았다. 새 파일은 `politics/hope7~/edit.json`, `media/hope2/*.json`, `upload/specs/hope7~.json`뿐이다.
 - **회귀 확인**: 손대지 않은 `hope1`을 원본 스트림에서 다시 받아(`media/hope/willman.json`의 명령) 다시 렌더했다. `final/hope1.mp4`와 바이트까지 같다(cmp 일치, md5 9734a6b2…).
-- **받기**: 영상은 Wikimedia Commons(upload.wikimedia.org)에서 한 번에 한 요청씩 받았다. upload.wikimedia.org는 2026-10-12 11:58 UTC부터 HTTP 429(Varnish, Retry-After 600)를 돌려줬다(11:58~13:52 UTC 12번 모두 429). Retry-After를 지켜 10분마다 한 번씩만 다시 요청했고, 미러·다른 CDN·유튜브는 쓰지 않았다.
+- **받기**: 영상은 Wikimedia Commons(upload.wikimedia.org)에서 한 번에 한 요청씩 받았다. upload.wikimedia.org는 2026-10-12 11:58 UTC부터 HTTP 429(Varnish, Retry-After 600)를 돌려줬다(11:58~15:44 UTC, 10분 간격으로 24번 요청해 모두 429). Retry-After를 지켜 10분마다 한 번씩만 다시 요청했고, 미러·다른 CDN·유튜브는 쓰지 않았다.
 
-### 진행 상황 (2026-10-12 13:55 UTC)
+### 결과 (2026-10-12 15:45 UTC): 0편
 
-아직 완성한 편이 없다. 쓸 수 있는 해외 출처로 찾은 것은 Wikimedia Commons의 세계경제포럼(WEF) 영상(CC BY 3.0, "Category:Videos by the World Economic Forum")뿐이다. star7·star12와 같은 경로로, WEF 공식 채널이 CC BY로 올린 영상을 Commons가 옮겨 둔 것이다(유튜브에서 받지 않음). 그런데 위처럼 upload.wikimedia.org가 계속 429여서 아직 한 편도 받지 못했다.
+완성한 편이 없다. 5시간 작업 한도에서 멈췄다. 쓸 수 있는 해외 출처로 찾은 것은 Wikimedia Commons의 세계경제포럼(WEF) 영상(CC BY 3.0, "Category:Videos by the World Economic Forum")뿐이다. star7·star12와 같은 경로로, WEF 공식 채널이 CC BY로 올린 영상을 Commons가 옮겨 둔 것이다(유튜브에서 받지 않음). 그런데 위처럼 upload.wikimedia.org가 계속 429여서 한 편도 받지 못했다. 다음에 429가 풀리면 아래 후보를 작은 파일부터(케레 5MB → 사니 37MB → 나즈린 358MB) 받아 hope7~로 만든다. 그때 할 일: 전사(faster-whisper medium.en + WEF 화면 자막 대조), 얼굴 크롭, 31~45초 편집, `upload/specs`, UPLOAD_PLAN 행.
 
 후보 (모두 본인 목소리로 자기 이야기를 한다. 유명 연예인은 아니지만 포럼 연사다):
 
