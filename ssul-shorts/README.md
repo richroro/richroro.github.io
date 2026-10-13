@@ -5,7 +5,7 @@
 | 스크립트 | 형식 |
 | --- | --- |
 | `make_short.py` | 썰쇼핑 — 썰 나레이션 + 제품 컷 편집 |
-| `make_comment_short.py` | 댓글 반응 — SNS 댓글 화면을 스크롤하며 하나씩 읽어주는 뉴스형 |
+| `make_comment_short.py` | 댓글 반응 — SNS(인스타식)·유튜브 댓글 화면을 스크롤하며 하나씩 읽어주는 뉴스형 |
 
 ## 썰쇼핑
 
@@ -118,6 +118,24 @@ python make_comment_short.py --demo      # 예시 댓글로 시험
 | 카메라 | 문장이 바뀌면 그 문장의 댓글로 0.45초 동안 부드럽게 스크롤, 나머지 댓글은 어둡게 |
 | 자막 | 큰 팝업 자막, `*"인용"*` 은 민트색 (뉴스 쇼츠 스타일) |
 | 상단 | 라벨 박스(`label`) + 헤드라인 2줄, 하단에 출처(`source`) |
+
+### 유튜브 댓글 쇼츠
+
+```bash
+# 링크만 → 제목·썸네일·인기 댓글 자동 수집 → 대본 → 영상
+python make_comment_short.py --youtube "https://youtu.be/VIDEO_ID"
+
+# 댓글을 직접 넣고 유튜브 화면 모양만 쓰기
+python make_comment_short.py --style youtube --comments comments.txt --post thumb.jpg
+
+python make_comment_short.py --demo --style youtube
+```
+
+- 화면: 유튜브 앱 다크 모드 — 썸네일 → 영상 제목·채널 → `댓글 N개` → `@핸들 · 2일 전`, 👍 `1.2만` 👎 💬, 파란 `▾ 답글 38개`
+- 수집: `YOUTUBE_API_KEY` 가 있으면 YouTube Data API v3(`commentThreads`, 관련성 순), 없으면 `yt-dlp` 로 인기 댓글을 가져온다.
+  좋아요 많은 순으로 `--max-comments`(기본 6)개, 90자 넘는 댓글은 뺀다.
+- 기본값: 헤드라인 = 영상 제목 + "시청자 댓글 반응", 출처 = `유튜브 '채널명' 댓글`. 프로젝트 파일이나 옵션으로 덮어쓸 수 있다.
+- 템플릿 대본은 "한 시청자는 / 공감을 많이 받은 댓글은 …" 식으로 소개한다.
 
 닉네임 블러를 끄려면 `--show-names`. 목소리 기본값은 뉴스 톤 여성 `ko-KR-SunHiNeural` 이다.
 

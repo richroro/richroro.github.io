@@ -2,3 +2,4 @@ edge-tts>=7
 Pillow
 anthropic>=1.0  # 선택: 대본 자동 생성
 gTTS  # 선택: --tts gtts
+yt-dlp  # 선택: --youtube 링크로 댓글 수집 (YOUTUBE_API_KEY 있으면 불필요)

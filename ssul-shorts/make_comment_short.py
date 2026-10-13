@@ -87,14 +87,18 @@ def load_comment_file(path: Path) -> list[Comment]:
 INTROS = ["한 누리꾼은", "또 다른 댓글에는", "이런 반응도 나왔습니다", "다른 누리꾼은", "이런 댓글도 있었습니다"]
 
 
-def template_lines(headline: list[str], comments: list[Comment], context: str) -> list[Line]:
+YT_INTROS = ["한 시청자는", "또 다른 댓글에는", "이런 반응도 나왔습니다", "다른 시청자는", "공감을 많이 받은 댓글은"]
+
+
+def template_lines(headline: list[str], comments: list[Comment], context: str,
+                   intros: list[str] = INTROS) -> list[Line]:
     """API 없이: 상황 설명 → 댓글을 좋아요 많은 순으로 소개 → 마무리."""
     lines = [Line(" ".join(headline).strip())]
     if context:
         lines += [Line(s.strip()) for s in context.replace("?", "?.").split(".") if s.strip()][:2]
     order = sorted(range(len(comments)), key=lambda i: -comments[i].likes)[:6]
     for n, i in enumerate(sorted(order)):
-        lines.append(Line(INTROS[n % len(INTROS)], focus=i))
+        lines.append(Line(intros[n % len(intros)], focus=i))
         lines.append(Line(f'*"{comments[i].text}"*', focus=i))
     lines.append(Line("여러분 생각은 어떠신가요?"))
     return lines
@@ -266,6 +270,117 @@ def render_panel(comments: list[Comment], post: Path | None, blur_names: bool):
     return np.asarray(img), spans
 
 
+# ───────────────────────── 유튜브 스타일 ─────────────────────────
+
+YT_BG, YT_TEXT, YT_GREY, YT_BLUE = (15, 15, 15), (241, 241, 241), (170, 170, 170), (62, 166, 255)
+
+
+def k_num(n: int) -> str:
+    """유튜브식 숫자: 1234 → 1.2천, 56789 → 5.7만."""
+    if n >= 10000:
+        return f"{n / 10000:.1f}".rstrip("0").rstrip(".") + "만"
+    if n >= 1000:
+        return f"{n / 1000:.1f}".rstrip("0").rstrip(".") + "천"
+    return str(n) if n else ""
+
+
+def thumb_icon(size: int, color, down: bool = False) -> Image.Image:
+    im = Image.new("RGBA", (size, size), (0, 0, 0, 0))
+    d = ImageDraw.Draw(im)
+    s, w = size / 40, max(2, size // 14)
+    d.rectangle([2 * s, 17 * s, 9 * s, 37 * s], outline=color, width=w)               # 소매
+    d.rounded_rectangle([12 * s, 16 * s, 37 * s, 37 * s], 4 * s, outline=color, width=w)  # 손바닥
+    d.line([(12 * s, 17 * s), (20 * s, 3 * s), (25 * s, 5 * s), (23 * s, 16 * s)], fill=color, width=w,
+           joint="curve")                                                              # 엄지
+    return im.transpose(Image.FLIP_TOP_BOTTOM) if down else im
+
+
+def bubble_icon(size: int, color) -> Image.Image:
+    im = Image.new("RGBA", (size, size), (0, 0, 0, 0))
+    d = ImageDraw.Draw(im)
+    s, w = size / 40, max(2, size // 14)
+    d.rounded_rectangle([3 * s, 5 * s, 37 * s, 29 * s], 6 * s, outline=color, width=w)
+    d.line([(12 * s, 29 * s), (10 * s, 37 * s), (20 * s, 29 * s)], fill=color, width=w)
+    return im
+
+
+def render_panel_youtube(comments: list[Comment], post: Path | None, blur_names: bool,
+                         video_title: str = "", channel: str = "", comment_count: int = 0):
+    """유튜브 앱(다크 모드) 댓글 화면. 썸네일 → 영상 제목 → '댓글 N개' → 댓글들."""
+    f_title, f_head = font("Bold", 44), font("Bold", 42)
+    f_handle, f_text, f_meta = font("Medium", 32), font("Medium", 40), font("Medium", 32)
+    f_reply = font("Bold", 34)
+    probe = ImageDraw.Draw(Image.new("RGB", (1, 1)))
+    x0, av, tx = 40, 80, 40 + 80 + 28
+    tw = W - tx - 80
+
+    head_parts, y = [], 0
+    thumb = None
+    if post:
+        thumb = Image.open(post).convert("RGB")
+        thumb = thumb.resize((W, int(thumb.height * W / thumb.width)))
+        y = thumb.height
+    t_rows = wrap(probe, video_title, f_title, W - 80)[:2] if video_title else []
+    if t_rows:
+        head_parts.append(("title", y + 28))
+        y += 28 + len(t_rows) * 60 + (52 if channel else 0)
+    head_y = y + 40
+    y = head_y + 90
+
+    blocks = []
+    for c in comments:
+        rows = wrap(probe, c.text, f_text, tw)
+        h = 26 + 48 + len(rows) * 56 + 84 + (70 if c.replies else 0) + 20
+        blocks.append((c, rows, y, y + h))
+        y += h
+    img = Image.new("RGB", (W, max(y + 200, PANEL_H)), YT_BG)
+    d = ImageDraw.Draw(img)
+    if thumb:
+        img.paste(thumb, (0, 0))
+    if t_rows:
+        ty = head_parts[0][1]
+        for k, row in enumerate(t_rows):
+            d.text((40, ty + k * 60), row, font=f_title, fill=YT_TEXT)
+        if channel:
+            d.text((40, ty + len(t_rows) * 60 + 6), channel, font=f_meta, fill=YT_GREY)
+        d.line([(0, head_y - 14), (W, head_y - 14)], fill=(48, 48, 48), width=2)
+    head = f"댓글 {comment_count:,}개" if comment_count else "댓글"
+    d.text((40, head_y), head, font=f_head, fill=YT_TEXT)
+    hw = probe.textlength(head, font=f_head)
+    d.text((40 + hw + 30, head_y + 8), "≡ 정렬", font=f_meta, fill=YT_GREY)
+
+    up, down, bub = thumb_icon(40, YT_TEXT), thumb_icon(40, YT_TEXT, True), bubble_icon(40, YT_TEXT)
+    spans = []
+    for c, rows, y0, y1 in blocks:
+        top = y0 + 26
+        img.paste(a := avatar(av, c.user + c.text[:4]), (x0, top), a)
+        handle = c.user if c.user.startswith("@") else "@" + c.user
+        d.text((tx, top), handle, font=f_handle, fill=YT_GREY)
+        hw = probe.textlength(handle, font=f_handle)
+        if blur_names:
+            box = (tx - 6, top - 4, int(tx + hw + 6), top + 44)
+            img.paste(img.crop(box).filter(ImageFilter.GaussianBlur(10)), box[:2])
+        d.text((tx + hw + 14, top), f"· {c.time}", font=f_meta, fill=YT_GREY)
+        for dx in (0, 1, 2):                                   # ⋮ 메뉴
+            d.ellipse([W - 52, top + 4 + dx * 12, W - 45, top + 11 + dx * 12], fill=YT_TEXT)
+        ty = top + 48
+        for k, row in enumerate(rows):
+            d.text((tx, ty + k * 56), row, font=f_text, fill=YT_TEXT)
+        ay = ty + len(rows) * 56 + 22
+        img.paste(up, (tx, ay), up)
+        lk = k_num(c.likes)
+        d.text((tx + 52, ay + 4), lk, font=f_meta, fill=YT_GREY)
+        bx = tx + 52 + probe.textlength(lk, font=f_meta) + 44
+        img.paste(down, (int(bx), ay + 2), down)
+        img.paste(bub, (int(bx + 92), ay + 2), bub)
+        if c.replies:
+            ry = ay + 76
+            d.polygon([(tx + 4, ry + 12), (tx + 24, ry + 12), (tx + 14, ry + 24)], fill=YT_BLUE)
+            d.text((tx + 40, ry), f"답글 {c.replies:,}개", font=f_reply, fill=YT_BLUE)
+        spans.append((y0, y1))
+    return np.asarray(img), spans
+
+
 # ───────────────────────── 카메라 + 프레임 ─────────────────────────
 
 def ease(x: float) -> float:
@@ -273,7 +388,8 @@ def ease(x: float) -> float:
     return 4 * x ** 3 if x < .5 else 1 - (-2 * x + 2) ** 3 / 2
 
 
-def render_body(panel: np.ndarray, cspans, lines: list[Line], tspans, total: float, out: Path) -> None:
+def render_body(panel: np.ndarray, cspans, lines: list[Line], tspans, total: float, out: Path,
+                tint=(255, 244, 200)) -> None:
     """읽는 댓글로 스크롤 + 주변 어둡게. 프레임을 ffmpeg 로 바로 흘려보낸다."""
     ph = panel.shape[0]
     max_y = max(0, ph - PANEL_H)
@@ -313,7 +429,7 @@ def render_body(panel: np.ndarray, cspans, lines: list[Line], tspans, total: flo
             dim = DIM * (1 if prev_focus is not None else k)    # 처음 강조될 때만 서서히
             frame *= 1 - dim
             if b > a:
-                frame[a:b] = panel[y + a:y + b] * 0.92 + np.array([255, 244, 200]) * 0.08
+                frame[a:b] = panel[y + a:y + b] * 0.92 + np.array(tint) * 0.08
         proc.stdin.write(frame.clip(0, 255).astype(np.uint8).tobytes())
     proc.stdin.close()
     if proc.wait() != 0:
@@ -384,6 +500,24 @@ DEMO = {
 }
 
 
+YT_DEMO = {
+    "label": "댓글 반응",
+    "headline": ["\"이게 무슨 일?\"", "영상에 달린 시청자 댓글"],
+    "context": "한 영상에 시청자들의 댓글이 쏟아졌습니다.",
+    "source": "※ 댓글은 예시입니다",
+    "video_title": "예시 영상 제목이 여기에 들어갑니다 | 오늘의 화제",
+    "channel": "예시 채널 · 조회수 12만회",
+    "comment_count": 1234,
+    "comments": [
+        "@viewer01|이거 보고 진짜 소름 돋았어요|12400|2일 전|38",
+        "@hello_kr|3분부터 보세요 레전드입니다|5300|1일 전|12",
+        "@abc123|댓글 보러 왔다가 영상 또 보고 갑니다|980|20시간 전|0",
+        "@mr_kim|이 채널은 왜 이렇게 편집을 잘함?|431|15시간 전|4",
+        "@user_x|솔직히 이건 좀 아닌 듯|212|9시간 전|57",
+    ],
+}
+
+
 def main() -> None:
     ap = argparse.ArgumentParser(description="댓글 기반 쇼츠 자동 생성")
     ap.add_argument("--project", help="프로젝트 JSON (headline/comments/lines/post …)")
@@ -396,6 +530,9 @@ def main() -> None:
     ap.add_argument("--tts", choices=["edge", "gtts", "none"], default="edge")
     ap.add_argument("--voice", default=None, help="기본 ko-KR-SunHiNeural (뉴스 톤)")
     ap.add_argument("--rate", default=None)
+    ap.add_argument("--style", choices=["insta", "youtube"], default=None, help="댓글 화면 모양 (기본 insta)")
+    ap.add_argument("--youtube", help="유튜브 영상 링크 → 제목·썸네일·인기 댓글 자동 수집 (style=youtube)")
+    ap.add_argument("--max-comments", type=int, default=6, help="--youtube 로 가져올 댓글 수")
     ap.add_argument("--show-names", action="store_true", help="닉네임 블러 끄기 (기본은 블러)")
     ap.add_argument("--no-llm", action="store_true")
     ap.add_argument("--demo", action="store_true")
@@ -414,9 +551,35 @@ def main() -> None:
                 cfg[k] = str(base / cfg[k])
     if args.headline:
         cfg["headline"] = args.headline.split("/")
-    for k in ("context", "post", "bgm", "voice", "rate"):
+    for k in ("context", "post", "bgm", "voice", "rate", "style"):
         if getattr(args, k):
             cfg[k] = getattr(args, k)
+    if args.demo and cfg.get("style") == "youtube":
+        cfg.update(YT_DEMO)
+    work = Path(tempfile.mkdtemp(prefix="cmt_"))
+    if args.youtube:
+        import yt_fetch
+        ms.log("유튜브 댓글 가져오는 중")
+        yt = yt_fetch.fetch(args.youtube, work, limit=args.max_comments)
+        cfg.setdefault("style", "youtube")
+        cfg.setdefault("comments", yt["comments"])
+        cfg.setdefault("video_title", yt["title"])
+        cfg.setdefault("channel", yt["channel"])
+        cfg.setdefault("comment_count", yt["comment_count"])
+        cfg.setdefault("headline", [yt["title"][:18], "시청자 댓글 반응"])
+        cfg.setdefault("source", f"출처: 유튜브 '{yt['channel']}' 댓글")
+        if yt.get("thumb"):
+            cfg.setdefault("post", yt["thumb"])
+        ms.log(f"댓글 {len(yt['comments'])}개 · {yt['title']}")
+    youtube = cfg.get("style") == "youtube"
+    if args.demo and youtube and not cfg.get("post"):      # 데모용 가짜 썸네일
+        th = Image.new("RGB", (1280, 720))
+        dd = ImageDraw.Draw(th)
+        for yy in range(720):
+            dd.line([(0, yy), (1280, yy)], fill=(200 - yy // 6, 40 + yy // 8, 60 + yy // 5))
+        dd.text((640, 360), "THUMBNAIL", font=font("Black", 120), fill="white", anchor="mm")
+        th.save(work / "thumb.jpg")
+        cfg["post"] = str(work / "thumb.jpg")
     comments = load_comment_file(Path(args.comments)) if args.comments else parse_comments(cfg.get("comments", []))
     if not comments:
         sys.exit("댓글이 없습니다. --comments 파일이나 프로젝트의 comments 를 넣어주세요.")
@@ -435,13 +598,13 @@ def main() -> None:
             title, lines = got
             ms.log("대본: Claude 생성")
         else:
-            lines = template_lines(headline, comments, cfg.get("context", ""))
+            lines = template_lines(headline, comments, cfg.get("context", ""),
+                                   YT_INTROS if youtube else INTROS)
             ms.log("대본: 내장 템플릿")
     title = cfg.get("title") or title
     for i, l in enumerate(lines, 1):
         print(f"   {i:2d}. {ms.plain(l.text)}" + (f"   ← 댓글 {l.focus}" if l.focus is not None else ""))
 
-    work = Path(tempfile.mkdtemp(prefix="cmt_"))
     out = Path(args.out).resolve()
     out.parent.mkdir(parents=True, exist_ok=True)
     try:
@@ -453,10 +616,14 @@ def main() -> None:
         ms.log(f"총 길이 {total:.1f}초")
 
         ms.log("댓글 화면 그리기")
-        panel, cspans = render_panel(comments, Path(cfg["post"]) if cfg.get("post") else None,
-                                     blur_names=not args.show_names)
+        post = Path(cfg["post"]) if cfg.get("post") else None
+        if youtube:
+            panel, cspans = render_panel_youtube(comments, post, not args.show_names, cfg.get("video_title", ""),
+                                                 cfg.get("channel", ""), int(cfg.get("comment_count") or 0))
+        else:
+            panel, cspans = render_panel(comments, post, blur_names=not args.show_names)
         body = work / "body.mp4"
-        render_body(panel, cspans, lines, spans, total, body)
+        render_body(panel, cspans, lines, spans, total, body, tint=(255, 255, 255) if youtube else (255, 244, 200))
 
         ass = build_ass(title, cfg.get("label", ""), cfg.get("source", ""), lines, spans, total,
                         work / "subs.ass", font_name)
@@ -465,7 +632,8 @@ def main() -> None:
         cwd = os.getcwd()
         os.chdir(work)
         try:
-            ms.compose(body, voice, ass, bgm, total, out, args.bgm_volume, video_y=PANEL_Y, bg=BG)
+            ms.compose(body, voice, ass, bgm, total, out, args.bgm_volume, video_y=PANEL_Y,
+                       bg="0x0f0f0f" if youtube else BG)
         finally:
             os.chdir(cwd)
         meta = {"title": title, "lines": [{"text": l.text, "focus": l.focus} for l in lines],
