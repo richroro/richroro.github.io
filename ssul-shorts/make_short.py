@@ -39,7 +39,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent
 FONT_DIR = ROOT / "fonts"
 FONT_URL = "https://cdn.jsdelivr.net/npm/pretendard@1.3.9/dist/public/static/{}.otf"
-FONT_FILES = ["Pretendard-Black", "Pretendard-ExtraBold"]
+FONT_FILES = ["Pretendard-Black", "Pretendard-ExtraBold", "Pretendard-Bold", "Pretendard-Medium"]
 
 W, H, FPS = 1080, 1920, 30
 VIDEO_Y, VIDEO_SIZE = 560, 1080        # 가운데 1:1 영상 영역 (y=560~1640)
@@ -397,6 +397,9 @@ def chunk_caption(text: str, limit: int = CAPTION_CHARS) -> list[str]:
             cur = cand
     if cur:
         chunks.append(cur)
+    # 마지막 덩어리가 한 단어(3자 이하)로 남으면 앞 덩어리에 붙인다
+    if len(chunks) > 1 and len(plain(chunks[-1]).strip('"')) <= 3:
+        chunks[-2:] = [f"{chunks[-2]} {chunks[-1]}"]
     # 별표가 덩어리 사이에서 끊기면 양쪽을 각각 닫아준다
     fixed, open_ = [], False
     for c in chunks:
@@ -487,9 +490,9 @@ def ensure_fonts() -> str:
 
 
 def compose(body: Path, voice: Path, ass: Path, bgm: Path | None, total: float, out: Path,
-            bgm_volume: float) -> None:
+            bgm_volume: float, video_y: int = VIDEO_Y, bg: str = "black") -> None:
     inputs = ["-i", str(body), "-i", str(voice)]
-    vf = (f"[0:v]pad={W}:{H}:0:{VIDEO_Y}:black,"
+    vf = (f"[0:v]pad={W}:{H}:0:{video_y}:{bg},"
           f"ass={ass.name}:fontsdir={FONT_DIR.as_posix()},format=yuv420p[v]")
     if bgm:
         inputs += ["-stream_loop", "-1", "-i", str(bgm)]
