@@ -9311,12 +9311,23 @@ MEDIA=$PWD/media python3 politics/prep_split.py hope1 && ./render.sh hope1 final
 - 네 명 모두 2018 자카르타-팔렘방 아시안게임 금메달 멤버다(각 선수 문서 Honours "South Korea U23: Asian Games 2018").
 - 2026-10 기사에 '96라인 대표팀 은퇴설'이 있다(머니투데이 2026-10-07 등). 확인된 발표가 아니고 갈등으로 읽힐 수 있어서 **쇼츠에 쓰지 않는다**. 황인범은 "아니요"라고 답했다는 보도가 있다.
 
+### 결과 (2026-10-13 18:30 UTC): 0편
+
+line96_1~3은 만들지 않았다. Commons에 쓸 수 있는 CC BY 영상 원본은 있지만(아래 후보), 파일 서버 upload.wikimedia.org가 이날 내내 HTTP 429(Retry-After 600)를 돌려줘서 한 파일도 받지 못했다. 사진이나 그래픽으로 빈자리를 채우지 않았다. 429가 풀리면 `media/line96/jobs.tsv`의 순서대로(작은 파일부터) 받아 아래 계획대로 만든다.
+
+**다음에 만들 계획 (영상을 받은 뒤)**
+- `line96_1` 「96라인이 대표팀 / 핵심이 된 이유..?」: 네 선수를 잇는 편. 김민재 콘서트 클립(본인 촬영 CC BY 4.0), 황희찬 2016 인터뷰(theDEEP), 나상호 FC서울 영상, 황인범 CC BY 사진 1장(짧게, 조건 6). 사실 자막: 네 명 모두 2018 아시안게임 금, 김민재 세리에A 우승·최우수 수비수, 황희찬 포르투갈전 결승골, 황인범 세르비아 리그 올해의 선수, 나상호 K리그2 MVP·득점왕. 원음이 없는 구간은 CC BY 음악(Kevin MacLeod).
+- `line96_2` 나상호 편: FC서울 입단 인터뷰·피치캠 육성 + 검정 상자 자막. "K리그2 MVP·득점왕에서 국가대표 공격수까지".
+- `line96_3` 김민재 편: GOAL TV 인터뷰 육성(2021, 베이징 궈안 시절 이적설에 직접 답함) → 2년 뒤 세리에A 우승·최우수 수비수라는 사실 자막.
+- 만드는 법은 hope·star 편과 같다: `politics/line96_N/edit.json`(`titleStyle: band`, `credit: ""`, 세그먼트마다 `src`·`trim`·로고 흐림 `vf`), `MEDIA=$PWD/media python3 politics/prep_split.py line96_N && ./render.sh line96_N final/line96_N.mp4 && python3 qa_review.py line96_N`. 전사는 faster-whisper large-v3(한국어)로 하고, 확실히 들리는 말만 자막으로 쓴다.
+- **회귀 확인은 해 두었다**: 손대지 않은 `ship2`를 NASA 원본에서 다시 받아 다시 렌더하고(`make_wild.py` → `prep.py` → `render.sh` → CRF 23 재압축) `final/ship2.mp4`와 바이트까지 같음을 확인했다(cmp 일치, md5 4596179e…).
+
 ### 찾아본 곳과 결과 (2026-10-13, 16:05 UTC~)
 
 | 출처 | 방법 | 결과 |
 | --- | --- | --- |
 | Wikimedia Commons API (commons.wikimedia.org/w/api.php) | 요청 하나씩, 6초 간격, 429면 Retry-After(7~54초)를 지켜 다시. 검색어: 김민재/황희찬/황인범/나상호, Kim Min-jae/Hwang Hee-chan/Hwang In-beom/Na Sang-ho, "South Korea national football team", 2018 FIFA World Cup Korea, Korea.net/코리아넷 축구, Asian Games football Korea, 국가대표 축구, FC서울 2022, 손흥민(같은 영상에 96라인이 나오는지) + 분류(Category:Hwang In-beom, Na Sang-ho 등) | **CC 영상 21건 확인** (아래 표, `media/line96/candidates.json`). 황인범 영상은 0건(사진만) |
-| upload.wikimedia.org (파일 받기) | 한 번에 한 파일, Retry-After를 지켜 10분마다 한 번 | **HTTP 429, Retry-After 600** (16:2x, 16:39, 16:49, 16:59 UTC …). 우회·미러·유튜브는 쓰지 않았다 |
+| upload.wikimedia.org (파일 받기) | 한 번에 한 파일, Retry-After를 지켜 10분마다 한 번 | **HTTP 429, Retry-After 600**. 16:2x(HEAD 1번)부터 16:39~18:29 UTC까지 GET 12번이 모두 429였다(첫 파일 `kmj_concert.webm`, 36MB). 우회·미러·다른 CDN·유튜브는 쓰지 않았다 |
 | 공공누리 1유형 (korea.kr, mcst.go.kr, 지자체) | kstar 섹션(2026-10-11)의 결과를 그대로 따른다 | 선수 영상 1유형 0건. korea.kr·mois·police.go.kr은 연결이 끊긴다 |
 | Commons의 코리아넷(KOCIS) 자료 | "2018 World Cup South Korea national football team Farewell Ceremony" | **사진만** 있다(공공누리 1유형, 코리아넷뉴스). 영상 0건 |
 
