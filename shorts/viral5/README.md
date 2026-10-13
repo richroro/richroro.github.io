@@ -9294,3 +9294,56 @@ MEDIA=$PWD/media python3 politics/prep_split.py hope1 && ./render.sh hope1 final
 | Commons 「Mukti - My story and the story of panchachuli women cooperative」 | **안 씀** | CC BY-SA 3.0, 올린 사람이 만든 사람이다. 2011년 NGO 프로젝트 기록(27분)이고 SA(같은 조건 배포)가 붙어서 뒤로 미뤘다. 받지 않았다 |
 | Commons 「Reggie Bibbs Wiki Interview」 (Wikinews, CC BY 3.0) | **안 씀** | 160×120 화질 |
 | Commons 「Dr. Nana Šumrada Slavnič…」 | **안 씀** | 신문사(Delo) 팟캐스트를 유튜브에서 옮긴 것이다 |
+
+## 축구 96라인 쇼츠 (`line96_1`~`line96_3`, kstar 채널)
+
+사용자 요청은 "96라인 관련 쇼츠 만들어줘"였고, 오케스트레이터가 **축구 국가대표 1996년생 '96라인'**(김민재·황희찬·황인범·나상호)이라고 확인했다. 형식은 모닝픽 틀(흰·노랑 두 줄 제목 띠, 실제 클립, 검정 상자 자막)이고, 출처·날짜 칩은 화면에 없다. 내레이션·TTS는 없다. 영상은 **원작자가 직접 CC BY로 공개한 영상**만 쓴다. 경기 중계, KFA·리그 영상, 선수 SNS는 쓰지 않는다. 유튜브·미러에서는 아무것도 받지 않는다.
+
+### 96라인 확인 (2026-10-13)
+
+| 선수 | 생년월일 (출생지) | 쇼츠에 쓸 수 있는 확인된 기록 | 근거 |
+| --- | --- | --- | --- |
+| 김민재 | 1996-11-15 (통영) | 2018 아시안게임 금, 나폴리 2022-23 세리에A 우승·세리에A 최우수 수비수, 2023 대한축구협회 올해의 선수, 바이에른 뮌헨 분데스리가 우승(2024-25, 2025-26) | [en.wikipedia Kim Min-jae (footballer)](https://en.wikipedia.org/wiki/Kim_Min-jae_(footballer)) Honours |
+| 황희찬 | 1996-01-26 (춘천) | 2018 아시안게임 금, 2022 카타르 월드컵 포르투갈전 추가시간 결승골(2022-12-02, 2-1 → 16강), 2022 대한축구협회 올해의 골 | [en.wikipedia Hwang Hee-chan](https://en.wikipedia.org/wiki/Hwang_Hee-chan) |
+| 황인범 | 1996-09-20 (대전) | 2018 아시안게임 금, 2019 EAFF E-1 챔피언십 MVP, 2023-24 세르비아 수페르리가 올해의 선수(츠르베나 즈베즈다) | [en.wikipedia Hwang In-beom](https://en.wikipedia.org/wiki/Hwang_In-beom) |
+| 나상호 | 1996-08-12 (담양) | 2018 아시안게임 금, 2018 K리그2 MVP·득점왕(광주FC), 2019 EAFF E-1 챔피언십 우승 | [en.wikipedia Na Sang-ho](https://en.wikipedia.org/wiki/Na_Sang-ho) |
+
+- 네 명 모두 2018 자카르타-팔렘방 아시안게임 금메달 멤버다(각 선수 문서 Honours "South Korea U23: Asian Games 2018").
+- 2026-10 기사에 '96라인 대표팀 은퇴설'이 있다(머니투데이 2026-10-07 등). 확인된 발표가 아니고 갈등으로 읽힐 수 있어서 **쇼츠에 쓰지 않는다**. 황인범은 "아니요"라고 답했다는 보도가 있다.
+
+### 찾아본 곳과 결과 (2026-10-13, 16:05 UTC~)
+
+| 출처 | 방법 | 결과 |
+| --- | --- | --- |
+| Wikimedia Commons API (commons.wikimedia.org/w/api.php) | 요청 하나씩, 6초 간격, 429면 Retry-After(7~54초)를 지켜 다시. 검색어: 김민재/황희찬/황인범/나상호, Kim Min-jae/Hwang Hee-chan/Hwang In-beom/Na Sang-ho, "South Korea national football team", 2018 FIFA World Cup Korea, Korea.net/코리아넷 축구, Asian Games football Korea, 국가대표 축구, FC서울 2022, 손흥민(같은 영상에 96라인이 나오는지) + 분류(Category:Hwang In-beom, Na Sang-ho 등) | **CC 영상 21건 확인** (아래 표, `media/line96/candidates.json`). 황인범 영상은 0건(사진만) |
+| upload.wikimedia.org (파일 받기) | 한 번에 한 파일, Retry-After를 지켜 10분마다 한 번 | **HTTP 429, Retry-After 600** (16:2x, 16:39, 16:49, 16:59 UTC …). 우회·미러·유튜브는 쓰지 않았다 |
+| 공공누리 1유형 (korea.kr, mcst.go.kr, 지자체) | kstar 섹션(2026-10-11)의 결과를 그대로 따른다 | 선수 영상 1유형 0건. korea.kr·mois·police.go.kr은 연결이 끊긴다 |
+| Commons의 코리아넷(KOCIS) 자료 | "2018 World Cup South Korea national football team Farewell Ceremony" | **사진만** 있다(공공누리 1유형, 코리아넷뉴스). 영상 0건 |
+
+### 쓸 수 있는 CC 영상 후보 (Commons 파일 페이지 = 원본 페이지)
+
+| 선수 | 파일 | 라이선스 · 올린 주체 | 길이 | 판단 |
+| --- | --- | --- | --- | --- |
+| 김민재 | [Jeonbuk HyundaI Motors FC players … Kim Min-jae attended The Remind Green Concert.webm](https://commons.wikimedia.org/wiki/File:Jeonbuk_HyundaI_Motors_FC_players_Lee_Jae-Sung,_Choi_Chul-soon,_Shin_Hyung-min_and_Kim_Min-jae_attended_The_Remind_Green_Concert.webm) | CC BY 4.0, 촬영자 본인(User:고려, {{own}}), 2018-04-20, 4K | 26초 | 사용. 무대 배경 글자·로고는 크롭·흐림 |
+| 김민재 | [토트넘-유벤투스 이적설에 직접 답한 김민재.webm](https://commons.wikimedia.org/wiki/File:%ED%86%A0%ED%8A%B8%EB%84%98-%EC%9C%A0%EB%B2%A4%ED%88%AC%EC%8A%A4_%EC%9D%B4%EC%A0%81%EC%84%A4%EC%97%90_%EC%A7%81%EC%A0%91_%EB%8B%B5%ED%95%9C_%EA%B9%80%EB%AF%BC%EC%9E%AC.webm) | CC BY 3.0, GOAL TV(골닷컴 코리아) 공식 채널이 CC BY로 공개(유튜브 wnBAOze-38c, 2021-06-07, YouTubeReview) | 221초 | 사용. GOAL TV가 직접 찍은 인터뷰 장면만 쓴다(중계 화면이 섞이면 제외) |
+| 황희찬 | [러시아 월드컵 중국전 승리 지동원 황희찬 인터뷰.webm](https://commons.wikimedia.org/wiki/File:%EB%9F%AC%EC%8B%9C%EC%95%84_%EC%9B%94%EB%93%9C%EC%BB%B5_%EC%A4%91%EA%B5%AD%EC%A0%84_%EC%8A%B9%EB%A6%AC_%EC%A7%80%EB%8F%99%EC%9B%90_%ED%99%A9%ED%9D%AC%EC%B0%AC_%EC%9D%B8%ED%84%B0%EB%B7%B0.webm) | CC BY 3.0, theDEEP(유튜브 SCN21aRtDjQ, 2016-09-01), LicenseReviewerBot 확인 | 85초 | 사용. 믹스트존 뒤 후원사 벽은 크롭·흐림 |
+| 황희찬 | ['노란황소' 황희찬의 '즐거운' 출국 인터뷰 (O! SPORTS).webm](https://commons.wikimedia.org/wiki/File:%27%EB%85%B8%EB%9E%80%ED%99%A9%EC%86%8C%27_%ED%99%A9%ED%9D%AC%EC%B0%AC%EC%9D%98_%27%EC%A6%90%EA%B1%B0%EC%9A%B4%27_%EC%B6%9C%EA%B5%AD_%EC%9D%B8%ED%84%B0%EB%B7%B0_(O!_SPORTS).webm) | CC BY 3.0, OSEN SPORTS 공식 채널(유튜브 q3Q0lRhuaKI, 2022-07-09) | 196초 | 사용. 공항 인터뷰(OSEN 직접 촬영). 마이크 로고는 흐림 |
+| 황희찬(?) | [Disbanding ceremony … 2018 FIFA World Cup (2).webm](https://commons.wikimedia.org/wiki/File:Disbanding_ceremony_at_South_Korea_national_football_team_in_the_2018_FIFA_World_Cup_(2).webm) | CC BY 4.0, 촬영자 본인(User:고려), 2018-06-30 | 343초 | 해단식 단체 장면. 황희찬이 보이는지 원본으로 확인해야 한다. KFA 현수막은 흐림 |
+| 나상호 | FC SEOUL 공식 채널이 CC BY로 공개한 영상들: [(오피셜) 나상호 영입](https://commons.wikimedia.org/wiki/File:(%EC%98%A4%ED%94%BC%EC%85%9C)_FC%EC%84%9C%EC%9A%B8,_%EA%B5%AD%EA%B0%80%EB%8C%80%ED%91%9C_%EA%B3%B5%EA%B2%A9%EC%88%98_%EB%82%98%EC%83%81%ED%98%B8_%EC%98%81%EC%9E%85.webm), [입단 인터뷰](https://commons.wikimedia.org/wiki/File:%27%EA%B5%AD%EA%B0%80%EB%8C%80%ED%91%9C_%EA%B3%B5%EA%B2%A9%EC%88%98%27_%EB%82%98%EC%83%81%ED%98%B8%EC%9D%98_%EC%98%AC_%EC%8B%9C%EC%A6%8C_%EB%AA%A9%ED%91%9C%EB%8A%94-_FC%EC%84%9C%EC%9A%B8_%EC%9E%85%EB%8B%A8_%EC%9D%B8%ED%84%B0%EB%B7%B0_%EC%B5%9C%EC%B4%88%EA%B3%B5%EA%B0%9C!.webm), [피치캠 상암 데뷔전](https://commons.wikimedia.org/wiki/File:(%ED%94%BC%EC%B9%98%EC%BA%A0)_%EB%82%98%EC%83%81%ED%98%B8-%ED%99%8D%EC%A4%80%ED%98%B8_%EC%83%81%EC%95%94_%EB%8D%B0%EB%B7%94%EC%A0%84_%EC%86%8C%EA%B0%90!_%EC%84%9C%EC%9A%B8_3-0_%EC%88%98%EC%9B%90FC_(2021.3.7).webm), [선수들에게 서울이란](https://commons.wikimedia.org/wiki/File:FC%EC%84%9C%EC%9A%B8_%EC%84%A0%EC%88%98%EB%93%A4%EC%97%90%EA%B2%8C_%EC%84%9C%EC%9A%B8%EC%9D%B4%EB%9E%80_(FC%EC%84%9C%EC%9A%B8_X_%EC%84%9C%EC%9A%B8%EB%A9%94%EC%9D%B4%EB%93%9C).webm), [2021 프로필 촬영](https://commons.wikimedia.org/wiki/File:FC%EC%84%9C%EC%9A%B8_2021%EC%8B%9C%EC%A6%8C_%ED%94%84%EB%A1%9C%ED%95%84_%EC%B4%AC%EC%98%81_%ED%98%84%EC%9E%A5_%EC%98%81%EC%83%81_-_%EC%8B%A4%EC%B0%A9_%EC%9C%A0%EB%8B%88%ED%8F%BC_%EC%9D%B4%EB%B2%A4%ED%8A%B8!.webm) 외 | CC BY 3.0, FC SEOUL(유튜브 공식 채널), 대부분 LicenseReviewerBot 확인(2022-01) | 33초~17분 | 사용. **구단 엠블럼·후원사 로고가 유니폼과 배경에 많다** → 얼굴 쪽으로 크롭하고 남는 로고는 흐림 |
+
+- 쓰지 않는 것: 마리끌레르 코리아의 황희찬 화보·패션 필름(CC BY 3.0이지만 로에베·로저드뷔 광고 화보), 「밀워키 이달의 선수 - 나상호 … 제품 언박싱」(후원사 제품 광고), 조규성·손흥민 단독 영상(96라인 아님), 「2023 슈퍼 루키」(검색어 오탐, 황인범 아님).
+- **주의 (오케스트레이터 판단 필요)**: FC SEOUL·GOAL TV·OSEN SPORTS·theDEEP 영상은 "구단·언론사 영상"이지만, 그 채널이 **스스로 CC BY로 공개**했고 Commons가 라이선스를 검토했다(지시서의 "official CC channel" 경로). 경기 중계 화면은 들어 있지 않은 인터뷰·현장 영상만 고른다.
+
+### CC 사진 (만들지 않음, 기록만)
+
+| 선수 | 파일 | 라이선스 · 작가 |
+| --- | --- | --- |
+| 황인범 | 190608 오픈 트레이닝 데이 황인범 1·2.jpg | CC BY 4.0, Nori Picture |
+| 황인범 | Lebanon v South Korea, 14 November 2019 20 (Hwang In-beom).jpg, KOR-QAT 20190125 Asian Cup6.jpg | CC BY 4.0, Mohammad Moussa / Mehdi Bolourian |
+| 황인범 | 축구선수 황인범.jpg, 240611 대한민국 vs 중국 (황인범).jpg | CC BY-SA 4.0, Llzz77 / Explicit |
+| 김민재 | Lebanon v South Korea, 14 November 2019 01~06.jpg, South Korea & Bahrain 20190122, Asian Cup 2.jpg | CC BY 4.0, Mohammad Moussa / Zare-Ostovari |
+| 김민재 | Min-Jae Kim (2021-22 Süper Lig) - Resim1~6.png | CC BY 3.0, beIN SPORTS Türkiye (중계 화면 캡처라 쓰지 않음) |
+| 황희찬 | Hwang Hee-chan 01112025 (1)~(3).jpg | CC0, Timmy96 |
+| 황희찬 | Asian Nations Cup - Jordan and South Korea (21)(54)(70).jpg | CC BY 4.0, M.Sadegh Nikgostar |
+| 나상호 | 231022 FC 서울 vs 강원 FC (나상호).jpg | CC BY-SA 4.0, Explicit |
+| 단체 | 2018 World Cup South Korea national football team Farewell Ceremony (1).jpg | 공공누리 1유형, 코리아넷뉴스 |
