@@ -33,6 +33,9 @@ from pathlib import Path
 import numpy as np
 from PIL import Image, ImageDraw, ImageFont
 
+sys.path.insert(0, str(Path(__file__).parent))
+import platforms  # noqa: E402
+
 ROOT = Path(__file__).resolve().parent.parent
 ASSETS = Path(os.environ.get("CS_ASSETS", ROOT / ".assets"))
 CACHE = Path(os.environ.get("CS_CACHE", ROOT / ".cache"))
@@ -40,7 +43,6 @@ W, H, FPS, SR = 1080, 1920, 30, 48000
 INK, GREY, RED, BLUE = (17, 17, 17), (68, 68, 68), (255, 45, 45), (0, 116, 233)
 BOX = (90, 450, 900, 900)  # x, y, w, h — 정사각형 (쿠팡 상품 사진은 1:1)
 RADIUS = 34
-DISCLOSURE = ["이 영상은 쿠팡 파트너스 활동의 일환으로,", "이에 따른 일정액의 수수료를 제공받습니다."]
 
 
 def font(weight: str, size: int) -> ImageFont.FreeTypeFont:
@@ -120,6 +122,8 @@ class Short:
             t += b["dur"]
             self.beats.append(b)
         self.end = float(spec.get("end", t))
+        # 이 편에 나오는 상품들의 링크로 광고 표시 문구를 고른다 (spec "platforms" 로 직접 정할 수도 있다)
+        self.platforms = spec.get("platforms") or platforms.used([b["prod"] for b in self.beats if b["prod"]])
         self.images = {}
         self.mask = rounded_mask(BOX[2], BOX[3], RADIUS)
         self.base = self.draw_base()
@@ -155,7 +159,7 @@ class Short:
             d.text((146, 132), name, font=font("ExtraBold", 32), fill=(34, 34, 34))
         # 광고 표시 (공정위 추천·보증 심사지침: 소비자가 바로 알 수 있게)
         f = font("Bold", 28)
-        tag = "광고 · 쿠팡 파트너스"
+        tag = platforms.chip(self.platforms)
         tw = f.getlength(tag)
         d.rounded_rectangle((W - 70 - tw - 36, 124, W - 70, 176), 26, fill=(242, 242, 242))
         d.text((W - 70 - tw - 18, 133), tag, font=f, fill=(110, 110, 110))
@@ -169,8 +173,9 @@ class Short:
             y += lh
         x, y0, w, h = BOX
         d.rounded_rectangle((x - 3, y0 - 3, x + w + 2, y0 + h + 2), RADIUS + 3, fill=(232, 232, 232))
-        f = font("Bold", 26)
-        for i, l in enumerate(DISCLOSURE):
+        lines = platforms.screen_lines(self.platforms)
+        f = font("Bold", min(fit(l, "Bold", 26, 1000).size for l in lines))
+        for i, l in enumerate(lines):
             d.text(((W - f.getlength(l)) / 2, 1560 + i * 36), l, font=f, fill=(150, 150, 150))
         return im
 

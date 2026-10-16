@@ -37,7 +37,7 @@ def main(argv: list[str]) -> int:
                                 ROOT / "specs" / f"{i}.json", ROOT / "out" / f"{i}.mp4")
         refetched = False
         if req.exists() and (force or not data.exists() or rel(req) in changed):
-            if not (os.environ.get("COUPANG_ACCESS_KEY") and os.environ.get("COUPANG_SECRET_KEY")):
+            if fetch.needs_api(json.loads(req.read_text())) and not (os.environ.get("COUPANG_ACCESS_KEY") and os.environ.get("COUPANG_SECRET_KEY")):
                 print(f"[{i}] 쿠팡 API 키가 없어 상품을 받지 못했습니다 — 시크릿을 넣은 뒤 이 요청 파일을 다시 올리세요")
                 continue
             if fetch.main([i]):
