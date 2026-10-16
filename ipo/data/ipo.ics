@@ -699,8 +699,8 @@ DTSTART;VALUE=DATE:20261020
 DTEND;VALUE=DATE:20261022
 SUMMARY:[청약] 티앤이코리아 (신한투자증권)
 DESCRIPTION:청약 10/20~10/21 10:00~16:00\n주간사 신한투자증권\n
- 희망 공모가 12\,600원~15\,300원\n자세히: https://richroro.github
- .io/ipo/#i=2322
+ 확정 공모가 15\,300원\n기관경쟁률 1\,041:1\n확약 29.52%\n자
+ 세히: https://richroro.github.io/ipo/#i=2322
 URL:https://richroro.github.io/ipo/#i=2322
 TRANSP:TRANSPARENT
 BEGIN:VALARM
@@ -1467,6 +1467,52 @@ SUMMARY:[환불] 엔키화이트햇
 DESCRIPTION:증거금 환불 · 배정 결과 확인\n자세히: https://ri
  chroro.github.io/ipo/#i=2343
 URL:https://richroro.github.io/ipo/#i=2343
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:feed-sub-2346@richroro.github.io
+DTSTAMP:20261016T000000Z
+DTSTART;VALUE=DATE:20261112
+DTEND;VALUE=DATE:20261114
+SUMMARY:[청약] 씨앤엠 (한국투자증권)
+DESCRIPTION:청약 11/12~11/13 10:00~16:00\n주간사 한국투자증권\n
+ 희망 공모가 10\,000원~13\,000원\n자세히: https://richroro.github
+ .io/ipo/#i=2346
+URL:https://richroro.github.io/ipo/#i=2346
+TRANSP:TRANSPARENT
+BEGIN:VALARM
+ACTION:DISPLAY
+TRIGGER;RELATED=START:PT9H30M
+DESCRIPTION:[청약] 씨앤엠 (한국투자증권) · 청약 시작 30분 
+ 전
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:feed-end-2346@richroro.github.io
+DTSTAMP:20261016T000000Z
+DTSTART;VALUE=DATE:20261113
+DTEND;VALUE=DATE:20261114
+SUMMARY:[청약 마감 16시] 씨앤엠
+DESCRIPTION:오늘 16시 청약 마감 — 증권사별 청약 건수를 
+ 보고 고르세요\n주간사 한국투자증권\n자세히: https://rich
+ roro.github.io/ipo/#i=2346
+URL:https://richroro.github.io/ipo/#i=2346
+TRANSP:TRANSPARENT
+BEGIN:VALARM
+ACTION:DISPLAY
+TRIGGER;RELATED=START:PT13H
+DESCRIPTION:[청약 마감 16시] 씨앤엠 · 마감 3시간 전
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:feed-refund-2346@richroro.github.io
+DTSTAMP:20261016T000000Z
+DTSTART;VALUE=DATE:20261117
+DTEND;VALUE=DATE:20261118
+SUMMARY:[환불] 씨앤엠
+DESCRIPTION:증거금 환불 · 배정 결과 확인\n자세히: https://ri
+ chroro.github.io/ipo/#i=2346
+URL:https://richroro.github.io/ipo/#i=2346
 TRANSP:TRANSPARENT
 END:VEVENT
 BEGIN:VEVENT
