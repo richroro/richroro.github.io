@@ -198,6 +198,9 @@ def main(argv: list[str]) -> int:
         else:
             spec = rule_spec(data)
         req = data.get("request", {})
+        for k in ("title", "ytTitle", "summary", "hashtags"):  # 요청에 직접 쓴 제목·태그가 있으면 그걸 쓴다
+            if req.get(k):
+                spec[k] = req[k]
         spec = {"data": rid, "badge": req.get("channel") or os.environ.get("CHANNEL_NAME") or "",
                 "music": req.get("music") or MUSIC[sum(map(ord, rid)) % 3], "musicStart": 0, **spec}
         out.parent.mkdir(parents=True, exist_ok=True)
