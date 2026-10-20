@@ -657,14 +657,31 @@ URL:https://richroro.github.io/ipo/#i=2323
 TRANSP:TRANSPARENT
 END:VEVENT
 BEGIN:VEVENT
+UID:feed-list-2323@richroro.github.io
+DTSTAMP:20261020T000000Z
+DTSTART;VALUE=DATE:20261030
+DTEND;VALUE=DATE:20261031
+SUMMARY:[상장] 크리에이츠
+DESCRIPTION:09:00 시초가 결정 · 공모가 15\,000원\n매도 전략
+ 을 미리 정해 두세요\n자세히: https://richroro.github.io/ipo/#i=
+ 2323
+URL:https://richroro.github.io/ipo/#i=2323
+TRANSP:TRANSPARENT
+BEGIN:VALARM
+ACTION:DISPLAY
+TRIGGER;RELATED=START:PT8H20M
+DESCRIPTION:[상장] 크리에이츠 · 장 시작 40분 전
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
 UID:feed-sub-2328@richroro.github.io
 DTSTAMP:20261020T000000Z
 DTSTART;VALUE=DATE:20261021
 DTEND;VALUE=DATE:20261023
 SUMMARY:[청약] 인텔리빅스 (미래에셋증권)
 DESCRIPTION:청약 10/21~10/22 10:00~16:00\n주간사 미래에셋증권\n
- 희망 공모가 7\,600원~9\,000원\n자세히: https://richroro.github.i
- o/ipo/#i=2328
+ 확정 공모가 9\,000원\n기관경쟁률 1\,234:1\n확약 6.14%\n자세
+ 히: https://richroro.github.io/ipo/#i=2328
 URL:https://richroro.github.io/ipo/#i=2328
 TRANSP:TRANSPARENT
 BEGIN:VALARM
@@ -701,6 +718,23 @@ DESCRIPTION:증거금 환불 · 배정 결과 확인\n자세히: https://ri
  chroro.github.io/ipo/#i=2328
 URL:https://richroro.github.io/ipo/#i=2328
 TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:feed-list-2328@richroro.github.io
+DTSTAMP:20261020T000000Z
+DTSTART;VALUE=DATE:20261030
+DTEND;VALUE=DATE:20261031
+SUMMARY:[상장] 인텔리빅스
+DESCRIPTION:09:00 시초가 결정 · 공모가 9\,000원\n매도 전략을
+  미리 정해 두세요\n자세히: https://richroro.github.io/ipo/#i=232
+ 8
+URL:https://richroro.github.io/ipo/#i=2328
+TRANSP:TRANSPARENT
+BEGIN:VALARM
+ACTION:DISPLAY
+TRIGGER;RELATED=START:PT8H20M
+DESCRIPTION:[상장] 인텔리빅스 · 장 시작 40분 전
+END:VALARM
 END:VEVENT
 BEGIN:VEVENT
 UID:feed-sub-2332@richroro.github.io
@@ -1434,6 +1468,52 @@ URL:https://richroro.github.io/ipo/#i=2347
 TRANSP:TRANSPARENT
 END:VEVENT
 BEGIN:VEVENT
+UID:feed-sub-2349@richroro.github.io
+DTSTAMP:20261020T000000Z
+DTSTART;VALUE=DATE:20261118
+DTEND;VALUE=DATE:20261120
+SUMMARY:[청약] 에스에프씨 (미래에셋증권)
+DESCRIPTION:청약 11/18~11/19 10:00~16:00\n주간사 미래에셋증권\, 
+ 한국투자증권\, 삼성증권\n희망 공모가 31\,600원~36\,100원\
+ n자세히: https://richroro.github.io/ipo/#i=2349
+URL:https://richroro.github.io/ipo/#i=2349
+TRANSP:TRANSPARENT
+BEGIN:VALARM
+ACTION:DISPLAY
+TRIGGER;RELATED=START:PT9H30M
+DESCRIPTION:[청약] 에스에프씨 (미래에셋증권) · 청약 시작 
+ 30분 전
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:feed-end-2349@richroro.github.io
+DTSTAMP:20261020T000000Z
+DTSTART;VALUE=DATE:20261119
+DTEND;VALUE=DATE:20261120
+SUMMARY:[청약 마감 16시] 에스에프씨
+DESCRIPTION:오늘 16시 청약 마감 — 증권사별 청약 건수를 
+ 보고 고르세요\n주간사 미래에셋증권\, 한국투자증권\, 
+ 삼성증권\n자세히: https://richroro.github.io/ipo/#i=2349
+URL:https://richroro.github.io/ipo/#i=2349
+TRANSP:TRANSPARENT
+BEGIN:VALARM
+ACTION:DISPLAY
+TRIGGER;RELATED=START:PT13H
+DESCRIPTION:[청약 마감 16시] 에스에프씨 · 마감 3시간 전
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:feed-refund-2349@richroro.github.io
+DTSTAMP:20261020T000000Z
+DTSTART;VALUE=DATE:20261123
+DTEND;VALUE=DATE:20261124
+SUMMARY:[환불] 에스에프씨
+DESCRIPTION:증거금 환불 · 배정 결과 확인\n자세히: https://ri
+ chroro.github.io/ipo/#i=2349
+URL:https://richroro.github.io/ipo/#i=2349
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
 UID:feed-sub-2345@richroro.github.io
 DTSTAMP:20261020T000000Z
 DTSTART;VALUE=DATE:20261123
@@ -1522,6 +1602,53 @@ SUMMARY:[환불] 케이엠에프
 DESCRIPTION:증거금 환불 · 배정 결과 확인\n자세히: https://ri
  chroro.github.io/ipo/#i=2340
 URL:https://richroro.github.io/ipo/#i=2340
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:feed-sub-2348@richroro.github.io
+DTSTAMP:20261020T000000Z
+DTSTART;VALUE=DATE:20261210
+DTEND;VALUE=DATE:20261212
+SUMMARY:[청약] 씨아이에스케미칼 (KB증권)
+DESCRIPTION:청약 12/10~12/11 10:00~16:00\n주간사 KB증권\n희망 공
+ 모가 5\,400원~6\,800원\n자세히: https://richroro.github.io/ipo/#i=2
+ 348
+URL:https://richroro.github.io/ipo/#i=2348
+TRANSP:TRANSPARENT
+BEGIN:VALARM
+ACTION:DISPLAY
+TRIGGER;RELATED=START:PT9H30M
+DESCRIPTION:[청약] 씨아이에스케미칼 (KB증권) · 청약 시작 3
+ 0분 전
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:feed-end-2348@richroro.github.io
+DTSTAMP:20261020T000000Z
+DTSTART;VALUE=DATE:20261211
+DTEND;VALUE=DATE:20261212
+SUMMARY:[청약 마감 16시] 씨아이에스케미칼
+DESCRIPTION:오늘 16시 청약 마감 — 증권사별 청약 건수를 
+ 보고 고르세요\n주간사 KB증권\n자세히: https://richroro.githu
+ b.io/ipo/#i=2348
+URL:https://richroro.github.io/ipo/#i=2348
+TRANSP:TRANSPARENT
+BEGIN:VALARM
+ACTION:DISPLAY
+TRIGGER;RELATED=START:PT13H
+DESCRIPTION:[청약 마감 16시] 씨아이에스케미칼 · 마감 3시
+ 간 전
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:feed-refund-2348@richroro.github.io
+DTSTAMP:20261020T000000Z
+DTSTART;VALUE=DATE:20261215
+DTEND;VALUE=DATE:20261216
+SUMMARY:[환불] 씨아이에스케미칼
+DESCRIPTION:증거금 환불 · 배정 결과 확인\n자세히: https://ri
+ chroro.github.io/ipo/#i=2348
+URL:https://richroro.github.io/ipo/#i=2348
 TRANSP:TRANSPARENT
 END:VEVENT
 END:VCALENDAR
