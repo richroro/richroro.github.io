@@ -867,6 +867,23 @@ URL:https://richroro.github.io/ipo/#i=2335
 TRANSP:TRANSPARENT
 END:VEVENT
 BEGIN:VEVENT
+UID:feed-list-2335@richroro.github.io
+DTSTAMP:20261022T000000Z
+DTSTART;VALUE=DATE:20261103
+DTEND;VALUE=DATE:20261104
+SUMMARY:[상장] 래블업
+DESCRIPTION:09:00 시초가 결정 · 공모가 19\,000원\n매도 전략
+ 을 미리 정해 두세요\n자세히: https://richroro.github.io/ipo/#i=
+ 2335
+URL:https://richroro.github.io/ipo/#i=2335
+TRANSP:TRANSPARENT
+BEGIN:VALARM
+ACTION:DISPLAY
+TRIGGER;RELATED=START:PT8H20M
+DESCRIPTION:[상장] 래블업 · 장 시작 40분 전
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
 UID:feed-sub-2325@richroro.github.io
 DTSTAMP:20261022T000000Z
 DTSTART;VALUE=DATE:20261102
@@ -1506,6 +1523,52 @@ SUMMARY:[환불] 에스에프씨
 DESCRIPTION:증거금 환불 · 배정 결과 확인\n자세히: https://ri
  chroro.github.io/ipo/#i=2349
 URL:https://richroro.github.io/ipo/#i=2349
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:feed-sub-2352@richroro.github.io
+DTSTAMP:20261022T000000Z
+DTSTART;VALUE=DATE:20261118
+DTEND;VALUE=DATE:20261120
+SUMMARY:[청약] 유캐스트 (유진투자증권)
+DESCRIPTION:청약 11/18~11/19 10:00~16:00\n주간사 유진투자증권\, 
+ 신영증권\n희망 공모가 19\,000원~23\,000원\n자세히: https://r
+ ichroro.github.io/ipo/#i=2352
+URL:https://richroro.github.io/ipo/#i=2352
+TRANSP:TRANSPARENT
+BEGIN:VALARM
+ACTION:DISPLAY
+TRIGGER;RELATED=START:PT9H30M
+DESCRIPTION:[청약] 유캐스트 (유진투자증권) · 청약 시작 30
+ 분 전
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:feed-end-2352@richroro.github.io
+DTSTAMP:20261022T000000Z
+DTSTART;VALUE=DATE:20261119
+DTEND;VALUE=DATE:20261120
+SUMMARY:[청약 마감 16시] 유캐스트
+DESCRIPTION:오늘 16시 청약 마감 — 증권사별 청약 건수를 
+ 보고 고르세요\n주간사 유진투자증권\, 신영증권\n자세
+ 히: https://richroro.github.io/ipo/#i=2352
+URL:https://richroro.github.io/ipo/#i=2352
+TRANSP:TRANSPARENT
+BEGIN:VALARM
+ACTION:DISPLAY
+TRIGGER;RELATED=START:PT13H
+DESCRIPTION:[청약 마감 16시] 유캐스트 · 마감 3시간 전
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:feed-refund-2352@richroro.github.io
+DTSTAMP:20261022T000000Z
+DTSTART;VALUE=DATE:20261123
+DTEND;VALUE=DATE:20261124
+SUMMARY:[환불] 유캐스트
+DESCRIPTION:증거금 환불 · 배정 결과 확인\n자세히: https://ri
+ chroro.github.io/ipo/#i=2352
+URL:https://richroro.github.io/ipo/#i=2352
 TRANSP:TRANSPARENT
 END:VEVENT
 BEGIN:VEVENT
