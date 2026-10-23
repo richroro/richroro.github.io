@@ -1746,6 +1746,52 @@ URL:https://richroro.github.io/ipo/#i=2351
 TRANSP:TRANSPARENT
 END:VEVENT
 BEGIN:VEVENT
+UID:feed-sub-2353@richroro.github.io
+DTSTAMP:20261023T000000Z
+DTSTART;VALUE=DATE:20261209
+DTEND;VALUE=DATE:20261211
+SUMMARY:[청약] 인터엑스 (한국투자증권)
+DESCRIPTION:청약 12/9~12/10 10:00~16:00\n주간사 한국투자증권\, B
+ NK투자증권\n희망 공모가 10\,000원~13\,000원\n자세히: https:/
+ /richroro.github.io/ipo/#i=2353
+URL:https://richroro.github.io/ipo/#i=2353
+TRANSP:TRANSPARENT
+BEGIN:VALARM
+ACTION:DISPLAY
+TRIGGER;RELATED=START:PT9H30M
+DESCRIPTION:[청약] 인터엑스 (한국투자증권) · 청약 시작 30
+ 분 전
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:feed-end-2353@richroro.github.io
+DTSTAMP:20261023T000000Z
+DTSTART;VALUE=DATE:20261210
+DTEND;VALUE=DATE:20261211
+SUMMARY:[청약 마감 16시] 인터엑스
+DESCRIPTION:오늘 16시 청약 마감 — 증권사별 청약 건수를 
+ 보고 고르세요\n주간사 한국투자증권\, BNK투자증권\n자
+ 세히: https://richroro.github.io/ipo/#i=2353
+URL:https://richroro.github.io/ipo/#i=2353
+TRANSP:TRANSPARENT
+BEGIN:VALARM
+ACTION:DISPLAY
+TRIGGER;RELATED=START:PT13H
+DESCRIPTION:[청약 마감 16시] 인터엑스 · 마감 3시간 전
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:feed-refund-2353@richroro.github.io
+DTSTAMP:20261023T000000Z
+DTSTART;VALUE=DATE:20261214
+DTEND;VALUE=DATE:20261215
+SUMMARY:[환불] 인터엑스
+DESCRIPTION:증거금 환불 · 배정 결과 확인\n자세히: https://ri
+ chroro.github.io/ipo/#i=2353
+URL:https://richroro.github.io/ipo/#i=2353
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
 UID:feed-sub-2348@richroro.github.io
 DTSTAMP:20261023T000000Z
 DTSTART;VALUE=DATE:20261210
