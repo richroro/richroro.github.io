@@ -993,51 +993,6 @@ URL:https://richroro.github.io/ipo/#i=2336
 TRANSP:TRANSPARENT
 END:VEVENT
 BEGIN:VEVENT
-UID:feed-sub-2341@richroro.github.io
-DTSTAMP:20261026T000000Z
-DTSTART;VALUE=DATE:20261104
-DTEND;VALUE=DATE:20261106
-SUMMARY:[청약] 제논 (삼성증권)
-DESCRIPTION:청약 11/4~11/5 10:00~16:00\n주간사 삼성증권\n희망 
- 공모가 9\,700원~12\,200원\n자세히: https://richroro.github.io/ipo/
- #i=2341
-URL:https://richroro.github.io/ipo/#i=2341
-TRANSP:TRANSPARENT
-BEGIN:VALARM
-ACTION:DISPLAY
-TRIGGER;RELATED=START:PT9H30M
-DESCRIPTION:[청약] 제논 (삼성증권) · 청약 시작 30분 전
-END:VALARM
-END:VEVENT
-BEGIN:VEVENT
-UID:feed-end-2341@richroro.github.io
-DTSTAMP:20261026T000000Z
-DTSTART;VALUE=DATE:20261105
-DTEND;VALUE=DATE:20261106
-SUMMARY:[청약 마감 16시] 제논
-DESCRIPTION:오늘 16시 청약 마감 — 증권사별 청약 건수를 
- 보고 고르세요\n주간사 삼성증권\n자세히: https://richroro.g
- ithub.io/ipo/#i=2341
-URL:https://richroro.github.io/ipo/#i=2341
-TRANSP:TRANSPARENT
-BEGIN:VALARM
-ACTION:DISPLAY
-TRIGGER;RELATED=START:PT13H
-DESCRIPTION:[청약 마감 16시] 제논 · 마감 3시간 전
-END:VALARM
-END:VEVENT
-BEGIN:VEVENT
-UID:feed-refund-2341@richroro.github.io
-DTSTAMP:20261026T000000Z
-DTSTART;VALUE=DATE:20261109
-DTEND;VALUE=DATE:20261110
-SUMMARY:[환불] 제논
-DESCRIPTION:증거금 환불 · 배정 결과 확인\n자세히: https://ri
- chroro.github.io/ipo/#i=2341
-URL:https://richroro.github.io/ipo/#i=2341
-TRANSP:TRANSPARENT
-END:VEVENT
-BEGIN:VEVENT
 UID:feed-sub-2342@richroro.github.io
 DTSTAMP:20261026T000000Z
 DTSTART;VALUE=DATE:20261104
@@ -1632,6 +1587,51 @@ SUMMARY:[환불] 케이엠에프
 DESCRIPTION:증거금 환불 · 배정 결과 확인\n자세히: https://ri
  chroro.github.io/ipo/#i=2340
 URL:https://richroro.github.io/ipo/#i=2340
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:feed-sub-2341@richroro.github.io
+DTSTAMP:20261026T000000Z
+DTSTART;VALUE=DATE:20261124
+DTEND;VALUE=DATE:20261126
+SUMMARY:[청약] 제논 (삼성증권)
+DESCRIPTION:청약 11/24~11/25 10:00~16:00\n주간사 삼성증권\n희망 
+ 공모가 9\,700원~12\,200원\n자세히: https://richroro.github.io/ipo/
+ #i=2341
+URL:https://richroro.github.io/ipo/#i=2341
+TRANSP:TRANSPARENT
+BEGIN:VALARM
+ACTION:DISPLAY
+TRIGGER;RELATED=START:PT9H30M
+DESCRIPTION:[청약] 제논 (삼성증권) · 청약 시작 30분 전
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:feed-end-2341@richroro.github.io
+DTSTAMP:20261026T000000Z
+DTSTART;VALUE=DATE:20261125
+DTEND;VALUE=DATE:20261126
+SUMMARY:[청약 마감 16시] 제논
+DESCRIPTION:오늘 16시 청약 마감 — 증권사별 청약 건수를 
+ 보고 고르세요\n주간사 삼성증권\n자세히: https://richroro.g
+ ithub.io/ipo/#i=2341
+URL:https://richroro.github.io/ipo/#i=2341
+TRANSP:TRANSPARENT
+BEGIN:VALARM
+ACTION:DISPLAY
+TRIGGER;RELATED=START:PT13H
+DESCRIPTION:[청약 마감 16시] 제논 · 마감 3시간 전
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:feed-refund-2341@richroro.github.io
+DTSTAMP:20261026T000000Z
+DTSTART;VALUE=DATE:20261127
+DTEND;VALUE=DATE:20261128
+SUMMARY:[환불] 제논
+DESCRIPTION:증거금 환불 · 배정 결과 확인\n자세히: https://ri
+ chroro.github.io/ipo/#i=2341
+URL:https://richroro.github.io/ipo/#i=2341
 TRANSP:TRANSPARENT
 END:VEVENT
 BEGIN:VEVENT
