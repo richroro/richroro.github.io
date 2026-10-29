@@ -1045,9 +1045,9 @@ DTSTAMP:20261029T000000Z
 DTSTART;VALUE=DATE:20261105
 DTEND;VALUE=DATE:20261107
 SUMMARY:[청약] 옵토닉스 (한국투자증권)
-DESCRIPTION:청약 11/5~11/6 10:00~16:00\n주간사 한국투자증권\n희
- 망 공모가 10\,000원~12\,000원\n자세히: https://richroro.github.io
- /ipo/#i=2338
+DESCRIPTION:청약 11/5~11/6 10:00~16:00\n주간사 한국투자증권\n확
+ 정 공모가 12\,000원\n기관경쟁률 1\,202:1\n확약 5.62%\n자세
+ 히: https://richroro.github.io/ipo/#i=2338
 URL:https://richroro.github.io/ipo/#i=2338
 TRANSP:TRANSPARENT
 BEGIN:VALARM
@@ -1084,6 +1084,23 @@ DESCRIPTION:증거금 환불 · 배정 결과 확인\n자세히: https://ri
  chroro.github.io/ipo/#i=2338
 URL:https://richroro.github.io/ipo/#i=2338
 TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:feed-list-2338@richroro.github.io
+DTSTAMP:20261029T000000Z
+DTSTART;VALUE=DATE:20261117
+DTEND;VALUE=DATE:20261118
+SUMMARY:[상장] 옵토닉스
+DESCRIPTION:09:00 시초가 결정 · 공모가 12\,000원\n매도 전략
+ 을 미리 정해 두세요\n자세히: https://richroro.github.io/ipo/#i=
+ 2338
+URL:https://richroro.github.io/ipo/#i=2338
+TRANSP:TRANSPARENT
+BEGIN:VALARM
+ACTION:DISPLAY
+TRIGGER;RELATED=START:PT8H20M
+DESCRIPTION:[상장] 옵토닉스 · 장 시작 40분 전
+END:VALARM
 END:VEVENT
 BEGIN:VEVENT
 UID:feed-sub-2331@richroro.github.io
