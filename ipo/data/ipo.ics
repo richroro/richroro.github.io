@@ -827,9 +827,9 @@ DTSTAMP:20261030T000000Z
 DTSTART;VALUE=DATE:20261102
 DTEND;VALUE=DATE:20261104
 SUMMARY:[청약] 바로팜 (미래에셋증권)
-DESCRIPTION:청약 11/2~11/3 10:00~16:00\n주간사 미래에셋증권\n희
- 망 공모가 16\,400원~20\,200원\n자세히: https://richroro.github.io
- /ipo/#i=2325
+DESCRIPTION:청약 11/2~11/3 10:00~16:00\n주간사 미래에셋증권\n확
+ 정 공모가 16\,400원\n자세히: https://richroro.github.io/ipo/#i=232
+ 5
 URL:https://richroro.github.io/ipo/#i=2325
 TRANSP:TRANSPARENT
 BEGIN:VALARM
@@ -868,14 +868,31 @@ URL:https://richroro.github.io/ipo/#i=2325
 TRANSP:TRANSPARENT
 END:VEVENT
 BEGIN:VEVENT
+UID:feed-list-2325@richroro.github.io
+DTSTAMP:20261030T000000Z
+DTSTART;VALUE=DATE:20261111
+DTEND;VALUE=DATE:20261112
+SUMMARY:[상장] 바로팜
+DESCRIPTION:09:00 시초가 결정 · 공모가 16\,400원\n매도 전략
+ 을 미리 정해 두세요\n자세히: https://richroro.github.io/ipo/#i=
+ 2325
+URL:https://richroro.github.io/ipo/#i=2325
+TRANSP:TRANSPARENT
+BEGIN:VALARM
+ACTION:DISPLAY
+TRIGGER;RELATED=START:PT8H20M
+DESCRIPTION:[상장] 바로팜 · 장 시작 40분 전
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
 UID:feed-sub-2339@richroro.github.io
 DTSTAMP:20261030T000000Z
 DTSTART;VALUE=DATE:20261102
 DTEND;VALUE=DATE:20261104
 SUMMARY:[청약] 동원파츠 (삼성증권)
-DESCRIPTION:청약 11/2~11/3 10:00~16:00\n주간사 삼성증권\n희망 
- 공모가 23\,000원~26\,500원\n자세히: https://richroro.github.io/ipo
- /#i=2339
+DESCRIPTION:청약 11/2~11/3 10:00~16:00\n주간사 삼성증권\n확정 
+ 공모가 26\,500원\n기관경쟁률 841:1\n확약 16.61%\n자세히: htt
+ ps://richroro.github.io/ipo/#i=2339
 URL:https://richroro.github.io/ipo/#i=2339
 TRANSP:TRANSPARENT
 BEGIN:VALARM
@@ -913,14 +930,30 @@ URL:https://richroro.github.io/ipo/#i=2339
 TRANSP:TRANSPARENT
 END:VEVENT
 BEGIN:VEVENT
+UID:feed-list-2339@richroro.github.io
+DTSTAMP:20261030T000000Z
+DTSTART;VALUE=DATE:20261110
+DTEND;VALUE=DATE:20261111
+SUMMARY:[상장] 동원파츠
+DESCRIPTION:09:00 시초가 결정 · 공모가 26\,500원\n매도 전략
+ 을 미리 정해 두세요\n자세히: https://richroro.github.io/ipo/#i=
+ 2339
+URL:https://richroro.github.io/ipo/#i=2339
+TRANSP:TRANSPARENT
+BEGIN:VALARM
+ACTION:DISPLAY
+TRIGGER;RELATED=START:PT8H20M
+DESCRIPTION:[상장] 동원파츠 · 장 시작 40분 전
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
 UID:feed-sub-2336@richroro.github.io
 DTSTAMP:20261030T000000Z
 DTSTART;VALUE=DATE:20261103
 DTEND;VALUE=DATE:20261105
 SUMMARY:[청약] 넥스아이 (한국투자증권)
-DESCRIPTION:청약 11/3~11/4 10:00~16:00\n주간사 한국투자증권\n희
- 망 공모가 10\,500원~13\,000원\n자세히: https://richroro.github.io
- /ipo/#i=2336
+DESCRIPTION:청약 11/3~11/4 10:00~16:00\n주간사 한국투자증권\n확
+ 정 공모가 8\,000원\n자세히: https://richroro.github.io/ipo/#i=2336
 URL:https://richroro.github.io/ipo/#i=2336
 TRANSP:TRANSPARENT
 BEGIN:VALARM
@@ -957,6 +990,23 @@ DESCRIPTION:증거금 환불 · 배정 결과 확인\n자세히: https://ri
  chroro.github.io/ipo/#i=2336
 URL:https://richroro.github.io/ipo/#i=2336
 TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:feed-list-2336@richroro.github.io
+DTSTAMP:20261030T000000Z
+DTSTART;VALUE=DATE:20261112
+DTEND;VALUE=DATE:20261113
+SUMMARY:[상장] 넥스아이
+DESCRIPTION:09:00 시초가 결정 · 공모가 8\,000원\n매도 전략을
+  미리 정해 두세요\n자세히: https://richroro.github.io/ipo/#i=233
+ 6
+URL:https://richroro.github.io/ipo/#i=2336
+TRANSP:TRANSPARENT
+BEGIN:VALARM
+ACTION:DISPLAY
+TRIGGER;RELATED=START:PT8H20M
+DESCRIPTION:[상장] 넥스아이 · 장 시작 40분 전
+END:VALARM
 END:VEVENT
 BEGIN:VEVENT
 UID:feed-sub-2342@richroro.github.io
