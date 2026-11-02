@@ -743,8 +743,8 @@ DTSTART;VALUE=DATE:20261102
 DTEND;VALUE=DATE:20261104
 SUMMARY:[청약] 바로팜 (미래에셋증권)
 DESCRIPTION:청약 11/2~11/3 10:00~16:00\n주간사 미래에셋증권\n확
- 정 공모가 16\,400원\n자세히: https://richroro.github.io/ipo/#i=232
- 5
+ 정 공모가 16\,400원\n기관경쟁률 152:1\n확약 0.03%\n자세히: 
+ https://richroro.github.io/ipo/#i=2325
 URL:https://richroro.github.io/ipo/#i=2325
 TRANSP:TRANSPARENT
 BEGIN:VALARM
@@ -868,7 +868,8 @@ DTSTART;VALUE=DATE:20261103
 DTEND;VALUE=DATE:20261105
 SUMMARY:[청약] 넥스아이 (한국투자증권)
 DESCRIPTION:청약 11/3~11/4 10:00~16:00\n주간사 한국투자증권\n확
- 정 공모가 8\,000원\n자세히: https://richroro.github.io/ipo/#i=2336
+ 정 공모가 8\,000원\n기관경쟁률 67:1\n확약 0.06%\n자세히: ht
+ tps://richroro.github.io/ipo/#i=2336
 URL:https://richroro.github.io/ipo/#i=2336
 TRANSP:TRANSPARENT
 BEGIN:VALARM
@@ -1627,6 +1628,51 @@ SUMMARY:[환불] 엔키화이트햇
 DESCRIPTION:증거금 환불 · 배정 결과 확인\n자세히: https://ri
  chroro.github.io/ipo/#i=2343
 URL:https://richroro.github.io/ipo/#i=2343
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:feed-sub-2358@richroro.github.io
+DTSTAMP:20261102T000000Z
+DTSTART;VALUE=DATE:20261201
+DTEND;VALUE=DATE:20261203
+SUMMARY:[청약] 다비오 (대신증권)
+DESCRIPTION:청약 12/1~12/2 10:00~16:00\n주간사 대신증권\n희망 
+ 공모가 12\,300원~16\,600원\n자세히: https://richroro.github.io/ipo
+ /#i=2358
+URL:https://richroro.github.io/ipo/#i=2358
+TRANSP:TRANSPARENT
+BEGIN:VALARM
+ACTION:DISPLAY
+TRIGGER;RELATED=START:PT9H30M
+DESCRIPTION:[청약] 다비오 (대신증권) · 청약 시작 30분 전
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:feed-end-2358@richroro.github.io
+DTSTAMP:20261102T000000Z
+DTSTART;VALUE=DATE:20261202
+DTEND;VALUE=DATE:20261203
+SUMMARY:[청약 마감 16시] 다비오
+DESCRIPTION:오늘 16시 청약 마감 — 증권사별 청약 건수를 
+ 보고 고르세요\n주간사 대신증권\n자세히: https://richroro.g
+ ithub.io/ipo/#i=2358
+URL:https://richroro.github.io/ipo/#i=2358
+TRANSP:TRANSPARENT
+BEGIN:VALARM
+ACTION:DISPLAY
+TRIGGER;RELATED=START:PT13H
+DESCRIPTION:[청약 마감 16시] 다비오 · 마감 3시간 전
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:feed-refund-2358@richroro.github.io
+DTSTAMP:20261102T000000Z
+DTSTART;VALUE=DATE:20261204
+DTEND;VALUE=DATE:20261205
+SUMMARY:[환불] 다비오
+DESCRIPTION:증거금 환불 · 배정 결과 확인\n자세히: https://ri
+ chroro.github.io/ipo/#i=2358
+URL:https://richroro.github.io/ipo/#i=2358
 TRANSP:TRANSPARENT
 END:VEVENT
 BEGIN:VEVENT
