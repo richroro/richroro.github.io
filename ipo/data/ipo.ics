@@ -930,9 +930,9 @@ DTSTAMP:20261103T000000Z
 DTSTART;VALUE=DATE:20261104
 DTEND;VALUE=DATE:20261106
 SUMMARY:[청약] 영광와이케이엠씨 (대신증권)
-DESCRIPTION:청약 11/4~11/5 10:00~16:00\n주간사 대신증권\n희망 
- 공모가 9\,400원~11\,000원\n자세히: https://richroro.github.io/ipo/
- #i=2342
+DESCRIPTION:청약 11/4~11/5 10:00~16:00\n주간사 대신증권\n확정 
+ 공모가 11\,000원\n기관경쟁률 1\,163:1\n확약 7.21%\n자세히: h
+ ttps://richroro.github.io/ipo/#i=2342
 URL:https://richroro.github.io/ipo/#i=2342
 TRANSP:TRANSPARENT
 BEGIN:VALARM
@@ -970,6 +970,23 @@ DESCRIPTION:증거금 환불 · 배정 결과 확인\n자세히: https://ri
  chroro.github.io/ipo/#i=2342
 URL:https://richroro.github.io/ipo/#i=2342
 TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:feed-list-2342@richroro.github.io
+DTSTAMP:20261103T000000Z
+DTSTART;VALUE=DATE:20261116
+DTEND;VALUE=DATE:20261117
+SUMMARY:[상장] 영광와이케이엠씨
+DESCRIPTION:09:00 시초가 결정 · 공모가 11\,000원\n매도 전략
+ 을 미리 정해 두세요\n자세히: https://richroro.github.io/ipo/#i=
+ 2342
+URL:https://richroro.github.io/ipo/#i=2342
+TRANSP:TRANSPARENT
+BEGIN:VALARM
+ACTION:DISPLAY
+TRIGGER;RELATED=START:PT8H20M
+DESCRIPTION:[상장] 영광와이케이엠씨 · 장 시작 40분 전
+END:VALARM
 END:VEVENT
 BEGIN:VEVENT
 UID:feed-sub-2338@richroro.github.io
