@@ -1024,14 +1024,31 @@ URL:https://richroro.github.io/ipo/#i=2331
 TRANSP:TRANSPARENT
 END:VEVENT
 BEGIN:VEVENT
+UID:feed-list-2331@richroro.github.io
+DTSTAMP:20261109T000000Z
+DTSTART;VALUE=DATE:20261118
+DTEND;VALUE=DATE:20261119
+SUMMARY:[상장] 에이엘로봇
+DESCRIPTION:09:00 시초가 결정 · 공모가 17\,600원\n매도 전략
+ 을 미리 정해 두세요\n자세히: https://richroro.github.io/ipo/#i=
+ 2331
+URL:https://richroro.github.io/ipo/#i=2331
+TRANSP:TRANSPARENT
+BEGIN:VALARM
+ACTION:DISPLAY
+TRIGGER;RELATED=START:PT8H20M
+DESCRIPTION:[상장] 에이엘로봇 · 장 시작 40분 전
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
 UID:feed-sub-2334@richroro.github.io
 DTSTAMP:20261109T000000Z
 DTSTART;VALUE=DATE:20261110
 DTEND;VALUE=DATE:20261112
 SUMMARY:[청약] 하나에어로다이내믹스 (IBK투자증권)
-DESCRIPTION:청약 11/10~11/11 10:00~16:00\n주간사 IBK투자증권\n희
- 망 공모가 4\,700원~5\,700원\n자세히: https://richroro.github.io/i
- po/#i=2334
+DESCRIPTION:청약 11/10~11/11 10:00~16:00\n주간사 IBK투자증권\n확
+ 정 공모가 5\,700원\n기관경쟁률 1\,051:1\n확약 4.16%\n자세히
+ : https://richroro.github.io/ipo/#i=2334
 URL:https://richroro.github.io/ipo/#i=2334
 TRANSP:TRANSPARENT
 BEGIN:VALARM
@@ -1069,6 +1086,23 @@ DESCRIPTION:증거금 환불 · 배정 결과 확인\n자세히: https://ri
  chroro.github.io/ipo/#i=2334
 URL:https://richroro.github.io/ipo/#i=2334
 TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:feed-list-2334@richroro.github.io
+DTSTAMP:20261109T000000Z
+DTSTART;VALUE=DATE:20261120
+DTEND;VALUE=DATE:20261121
+SUMMARY:[상장] 하나에어로다이내믹스
+DESCRIPTION:09:00 시초가 결정 · 공모가 5\,700원\n매도 전략을
+  미리 정해 두세요\n자세히: https://richroro.github.io/ipo/#i=233
+ 4
+URL:https://richroro.github.io/ipo/#i=2334
+TRANSP:TRANSPARENT
+BEGIN:VALARM
+ACTION:DISPLAY
+TRIGGER;RELATED=START:PT8H20M
+DESCRIPTION:[상장] 하나에어로다이내믹스 · 장 시작 40분 전
+END:VALARM
 END:VEVENT
 BEGIN:VEVENT
 UID:feed-sub-2344@richroro.github.io
