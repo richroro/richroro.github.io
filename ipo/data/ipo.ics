@@ -1155,9 +1155,9 @@ DTSTAMP:20261110T000000Z
 DTSTART;VALUE=DATE:20261112
 DTEND;VALUE=DATE:20261114
 SUMMARY:[청약] 엠비디 (하나증권)
-DESCRIPTION:청약 11/12~11/13 10:00~16:00\n주간사 하나증권\n희망 
- 공모가 9\,600원~11\,700원\n자세히: https://richroro.github.io/ipo/
- #i=2321
+DESCRIPTION:청약 11/12~11/13 10:00~16:00\n주간사 하나증권\n확정 
+ 공모가 7\,000원\n기관경쟁률 187:1\n확약 0%\n자세히: https://
+ richroro.github.io/ipo/#i=2321
 URL:https://richroro.github.io/ipo/#i=2321
 TRANSP:TRANSPARENT
 BEGIN:VALARM
@@ -1193,6 +1193,23 @@ DESCRIPTION:증거금 환불 · 배정 결과 확인\n자세히: https://ri
  chroro.github.io/ipo/#i=2321
 URL:https://richroro.github.io/ipo/#i=2321
 TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:feed-list-2321@richroro.github.io
+DTSTAMP:20261110T000000Z
+DTSTART;VALUE=DATE:20261124
+DTEND;VALUE=DATE:20261125
+SUMMARY:[상장] 엠비디
+DESCRIPTION:09:00 시초가 결정 · 공모가 7\,000원\n매도 전략을
+  미리 정해 두세요\n자세히: https://richroro.github.io/ipo/#i=232
+ 1
+URL:https://richroro.github.io/ipo/#i=2321
+TRANSP:TRANSPARENT
+BEGIN:VALARM
+ACTION:DISPLAY
+TRIGGER;RELATED=START:PT8H20M
+DESCRIPTION:[상장] 엠비디 · 장 시작 40분 전
+END:VALARM
 END:VEVENT
 BEGIN:VEVENT
 UID:feed-sub-2346@richroro.github.io
@@ -1697,6 +1714,51 @@ SUMMARY:[환불] 이노보테라퓨틱스
 DESCRIPTION:증거금 환불 · 배정 결과 확인\n자세히: https://ri
  chroro.github.io/ipo/#i=2351
 URL:https://richroro.github.io/ipo/#i=2351
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:feed-sub-2359@richroro.github.io
+DTSTAMP:20261110T000000Z
+DTSTART;VALUE=DATE:20261208
+DTEND;VALUE=DATE:20261210
+SUMMARY:[청약] 마더스제약 (KB증권)
+DESCRIPTION:청약 12/8~12/9 10:00~16:00\n주간사 KB증권\, NH투자증
+ 권\n희망 공모가 11\,000원~14\,500원\n자세히: https://richroro.g
+ ithub.io/ipo/#i=2359
+URL:https://richroro.github.io/ipo/#i=2359
+TRANSP:TRANSPARENT
+BEGIN:VALARM
+ACTION:DISPLAY
+TRIGGER;RELATED=START:PT9H30M
+DESCRIPTION:[청약] 마더스제약 (KB증권) · 청약 시작 30분 전
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:feed-end-2359@richroro.github.io
+DTSTAMP:20261110T000000Z
+DTSTART;VALUE=DATE:20261209
+DTEND;VALUE=DATE:20261210
+SUMMARY:[청약 마감 16시] 마더스제약
+DESCRIPTION:오늘 16시 청약 마감 — 증권사별 청약 건수를 
+ 보고 고르세요\n주간사 KB증권\, NH투자증권\n자세히: https
+ ://richroro.github.io/ipo/#i=2359
+URL:https://richroro.github.io/ipo/#i=2359
+TRANSP:TRANSPARENT
+BEGIN:VALARM
+ACTION:DISPLAY
+TRIGGER;RELATED=START:PT13H
+DESCRIPTION:[청약 마감 16시] 마더스제약 · 마감 3시간 전
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:feed-refund-2359@richroro.github.io
+DTSTAMP:20261110T000000Z
+DTSTART;VALUE=DATE:20261211
+DTEND;VALUE=DATE:20261212
+SUMMARY:[환불] 마더스제약
+DESCRIPTION:증거금 환불 · 배정 결과 확인\n자세히: https://ri
+ chroro.github.io/ipo/#i=2359
+URL:https://richroro.github.io/ipo/#i=2359
 TRANSP:TRANSPARENT
 END:VEVENT
 BEGIN:VEVENT
