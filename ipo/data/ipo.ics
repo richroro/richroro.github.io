@@ -1332,6 +1332,22 @@ URL:https://richroro.github.io/ipo/#i=2349
 TRANSP:TRANSPARENT
 END:VEVENT
 BEGIN:VEVENT
+UID:feed-list-2349@richroro.github.io
+DTSTAMP:20261112T000000Z
+DTSTART;VALUE=DATE:20261127
+DTEND;VALUE=DATE:20261128
+SUMMARY:[상장] 에스에프씨
+DESCRIPTION:09:00 시초가 결정\n매도 전략을 미리 정해 두세
+ 요\n자세히: https://richroro.github.io/ipo/#i=2349
+URL:https://richroro.github.io/ipo/#i=2349
+TRANSP:TRANSPARENT
+BEGIN:VALARM
+ACTION:DISPLAY
+TRIGGER;RELATED=START:PT8H20M
+DESCRIPTION:[상장] 에스에프씨 · 장 시작 40분 전
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
 UID:feed-sub-2352@richroro.github.io
 DTSTAMP:20261112T000000Z
 DTSTART;VALUE=DATE:20261118
@@ -1378,6 +1394,22 @@ URL:https://richroro.github.io/ipo/#i=2352
 TRANSP:TRANSPARENT
 END:VEVENT
 BEGIN:VEVENT
+UID:feed-list-2352@richroro.github.io
+DTSTAMP:20261112T000000Z
+DTSTART;VALUE=DATE:20261130
+DTEND;VALUE=DATE:20261201
+SUMMARY:[상장] 유캐스트
+DESCRIPTION:09:00 시초가 결정\n매도 전략을 미리 정해 두세
+ 요\n자세히: https://richroro.github.io/ipo/#i=2352
+URL:https://richroro.github.io/ipo/#i=2352
+TRANSP:TRANSPARENT
+BEGIN:VALARM
+ACTION:DISPLAY
+TRIGGER;RELATED=START:PT8H20M
+DESCRIPTION:[상장] 유캐스트 · 장 시작 40분 전
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
 UID:feed-sub-2345@richroro.github.io
 DTSTAMP:20261112T000000Z
 DTSTART;VALUE=DATE:20261123
@@ -1421,6 +1453,22 @@ DESCRIPTION:증거금 환불 · 배정 결과 확인\n자세히: https://ri
  chroro.github.io/ipo/#i=2345
 URL:https://richroro.github.io/ipo/#i=2345
 TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:feed-list-2345@richroro.github.io
+DTSTAMP:20261112T000000Z
+DTSTART;VALUE=DATE:20261202
+DTEND;VALUE=DATE:20261203
+SUMMARY:[상장] 아델
+DESCRIPTION:09:00 시초가 결정\n매도 전략을 미리 정해 두세
+ 요\n자세히: https://richroro.github.io/ipo/#i=2345
+URL:https://richroro.github.io/ipo/#i=2345
+TRANSP:TRANSPARENT
+BEGIN:VALARM
+ACTION:DISPLAY
+TRIGGER;RELATED=START:PT8H20M
+DESCRIPTION:[상장] 아델 · 장 시작 40분 전
+END:VALARM
 END:VEVENT
 BEGIN:VEVENT
 UID:feed-sub-2340@richroro.github.io
