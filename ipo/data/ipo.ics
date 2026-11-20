@@ -1875,4 +1875,50 @@ DESCRIPTION:증거금 환불 · 배정 결과 확인\n자세히: https://ri
 URL:https://richroro.github.io/ipo/#i=2361
 TRANSP:TRANSPARENT
 END:VEVENT
+BEGIN:VEVENT
+UID:feed-sub-2363@richroro.github.io
+DTSTAMP:20261120T000000Z
+DTSTART;VALUE=DATE:20261217
+DTEND;VALUE=DATE:20261219
+SUMMARY:[청약] 피지티 (한국투자증권)
+DESCRIPTION:청약 12/17~12/18 10:00~16:00\n주간사 한국투자증권\, 
+ 유안타증권\n희망 공모가 18\,000원~20\,000원\n자세히: https:
+ //richroro.github.io/ipo/#i=2363
+URL:https://richroro.github.io/ipo/#i=2363
+TRANSP:TRANSPARENT
+BEGIN:VALARM
+ACTION:DISPLAY
+TRIGGER;RELATED=START:PT9H30M
+DESCRIPTION:[청약] 피지티 (한국투자증권) · 청약 시작 30분 
+ 전
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:feed-end-2363@richroro.github.io
+DTSTAMP:20261120T000000Z
+DTSTART;VALUE=DATE:20261218
+DTEND;VALUE=DATE:20261219
+SUMMARY:[청약 마감 16시] 피지티
+DESCRIPTION:오늘 16시 청약 마감 — 증권사별 청약 건수를 
+ 보고 고르세요\n주간사 한국투자증권\, 유안타증권\n자
+ 세히: https://richroro.github.io/ipo/#i=2363
+URL:https://richroro.github.io/ipo/#i=2363
+TRANSP:TRANSPARENT
+BEGIN:VALARM
+ACTION:DISPLAY
+TRIGGER;RELATED=START:PT13H
+DESCRIPTION:[청약 마감 16시] 피지티 · 마감 3시간 전
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:feed-refund-2363@richroro.github.io
+DTSTAMP:20261120T000000Z
+DTSTART;VALUE=DATE:20261222
+DTEND;VALUE=DATE:20261223
+SUMMARY:[환불] 피지티
+DESCRIPTION:증거금 환불 · 배정 결과 확인\n자세히: https://ri
+ chroro.github.io/ipo/#i=2363
+URL:https://richroro.github.io/ipo/#i=2363
+TRANSP:TRANSPARENT
+END:VEVENT
 END:VCALENDAR
