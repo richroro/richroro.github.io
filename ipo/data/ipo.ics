@@ -1261,53 +1261,6 @@ URL:https://richroro.github.io/ipo/#i=2358
 TRANSP:TRANSPARENT
 END:VEVENT
 BEGIN:VEVENT
-UID:feed-sub-2348@richroro.github.io
-DTSTAMP:20261127T000000Z
-DTSTART;VALUE=DATE:20261210
-DTEND;VALUE=DATE:20261212
-SUMMARY:[청약] 씨아이에스케미칼 (KB증권)
-DESCRIPTION:청약 12/10~12/11 10:00~16:00\n주간사 KB증권\n희망 공
- 모가 5\,400원~6\,800원\n자세히: https://richroro.github.io/ipo/#i=2
- 348
-URL:https://richroro.github.io/ipo/#i=2348
-TRANSP:TRANSPARENT
-BEGIN:VALARM
-ACTION:DISPLAY
-TRIGGER;RELATED=START:PT9H30M
-DESCRIPTION:[청약] 씨아이에스케미칼 (KB증권) · 청약 시작 3
- 0분 전
-END:VALARM
-END:VEVENT
-BEGIN:VEVENT
-UID:feed-end-2348@richroro.github.io
-DTSTAMP:20261127T000000Z
-DTSTART;VALUE=DATE:20261211
-DTEND;VALUE=DATE:20261212
-SUMMARY:[청약 마감 16시] 씨아이에스케미칼
-DESCRIPTION:오늘 16시 청약 마감 — 증권사별 청약 건수를 
- 보고 고르세요\n주간사 KB증권\n자세히: https://richroro.githu
- b.io/ipo/#i=2348
-URL:https://richroro.github.io/ipo/#i=2348
-TRANSP:TRANSPARENT
-BEGIN:VALARM
-ACTION:DISPLAY
-TRIGGER;RELATED=START:PT13H
-DESCRIPTION:[청약 마감 16시] 씨아이에스케미칼 · 마감 3시
- 간 전
-END:VALARM
-END:VEVENT
-BEGIN:VEVENT
-UID:feed-refund-2348@richroro.github.io
-DTSTAMP:20261127T000000Z
-DTSTART;VALUE=DATE:20261215
-DTEND;VALUE=DATE:20261216
-SUMMARY:[환불] 씨아이에스케미칼
-DESCRIPTION:증거금 환불 · 배정 결과 확인\n자세히: https://ri
- chroro.github.io/ipo/#i=2348
-URL:https://richroro.github.io/ipo/#i=2348
-TRANSP:TRANSPARENT
-END:VEVENT
-BEGIN:VEVENT
 UID:feed-sub-2356@richroro.github.io
 DTSTAMP:20261127T000000Z
 DTSTART;VALUE=DATE:20261211
@@ -1672,6 +1625,52 @@ SUMMARY:[환불] 범한메카텍
 DESCRIPTION:증거금 환불 · 배정 결과 확인\n자세히: https://ri
  chroro.github.io/ipo/#i=2364
 URL:https://richroro.github.io/ipo/#i=2364
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:feed-sub-2348@richroro.github.io
+DTSTAMP:20261127T000000Z
+DTSTART;VALUE=DATE:20270121
+DTEND;VALUE=DATE:20270123
+SUMMARY:[청약] 씨아이에스케미칼 (KB증권)
+DESCRIPTION:청약 1/21~1/22 10:00~16:00\n주간사 KB증권\n희망 공모
+ 가 5\,000원~6\,000원\n자세히: https://richroro.github.io/ipo/#i=2348
+URL:https://richroro.github.io/ipo/#i=2348
+TRANSP:TRANSPARENT
+BEGIN:VALARM
+ACTION:DISPLAY
+TRIGGER;RELATED=START:PT9H30M
+DESCRIPTION:[청약] 씨아이에스케미칼 (KB증권) · 청약 시작 3
+ 0분 전
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:feed-end-2348@richroro.github.io
+DTSTAMP:20261127T000000Z
+DTSTART;VALUE=DATE:20270122
+DTEND;VALUE=DATE:20270123
+SUMMARY:[청약 마감 16시] 씨아이에스케미칼
+DESCRIPTION:오늘 16시 청약 마감 — 증권사별 청약 건수를 
+ 보고 고르세요\n주간사 KB증권\n자세히: https://richroro.githu
+ b.io/ipo/#i=2348
+URL:https://richroro.github.io/ipo/#i=2348
+TRANSP:TRANSPARENT
+BEGIN:VALARM
+ACTION:DISPLAY
+TRIGGER;RELATED=START:PT13H
+DESCRIPTION:[청약 마감 16시] 씨아이에스케미칼 · 마감 3시
+ 간 전
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:feed-refund-2348@richroro.github.io
+DTSTAMP:20261127T000000Z
+DTSTART;VALUE=DATE:20270126
+DTEND;VALUE=DATE:20270127
+SUMMARY:[환불] 씨아이에스케미칼
+DESCRIPTION:증거금 환불 · 배정 결과 확인\n자세히: https://ri
+ chroro.github.io/ipo/#i=2348
+URL:https://richroro.github.io/ipo/#i=2348
 TRANSP:TRANSPARENT
 END:VEVENT
 END:VCALENDAR
